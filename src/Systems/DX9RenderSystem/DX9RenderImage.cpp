@@ -73,9 +73,9 @@ namespace Mengine
 
         m_upscalePow2 = _width != m_hwWidth || _height != m_hwHeight;
 
-        STATISTIC_INC_INTEGER( STATISTIC_RENDER_IMAGE_ALLOC_NEW );
-        STATISTIC_INC_INTEGER( STATISTIC_RENDER_IMAGE_ALLOC_COUNT );
-        STATISTIC_ADD_INTEGER( STATISTIC_RENDER_IMAGE_ALLOC_SIZE, m_hwWidth * m_hwHeight * Helper::getPixelFormatChannels( m_hwPixelFormat ) );
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_NEW );
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_COUNT );
+        STATISTIC_ADD_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE, Helper::getTextureMemorySize( m_hwWidth, m_hwHeight, m_hwPixelFormat ) );
 
         return true;
     }
@@ -86,9 +86,9 @@ namespace Mengine
 
         if( m_pD3DTexture != nullptr )
         {
-            STATISTIC_INC_INTEGER( STATISTIC_RENDER_IMAGE_ALLOC_FREE );
-            STATISTIC_DEC_INTEGER( STATISTIC_RENDER_IMAGE_ALLOC_COUNT );
-            STATISTIC_DEL_INTEGER( STATISTIC_RENDER_IMAGE_ALLOC_SIZE, m_hwWidth * m_hwHeight * Helper::getPixelFormatChannels( m_hwPixelFormat ) );
+            STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_FREE );
+            STATISTIC_DEC_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_COUNT );
+            STATISTIC_DEL_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE, Helper::getTextureMemorySize( m_hwWidth, m_hwHeight, m_hwPixelFormat ) );
 
             MENGINE_DXRELEASE( m_pD3DTexture );
         }
@@ -148,8 +148,8 @@ namespace Mengine
             return nullptr;
         }
 
-        STATISTIC_INC_INTEGER( STATISTIC_RENDER_IMAGE_LOCK_COUNT );
-        STATISTIC_ADD_INTEGER( STATISTIC_RENDER_IMAGE_LOCK_PIXEL, (rect.bottom - rect.top) * (rect.right - rect.left) );
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_LOCK_COUNT );
+        STATISTIC_ADD_INTEGER( STATISTIC_RENDER_TEXTURE_LOCK_PIXEL, (rect.bottom - rect.top) * (rect.right - rect.left) );
 
         DX9RenderImageLockedPtr imageLocked = DX9RenderImageLockedFactoryStorage::createObject( MENGINE_DOCUMENT_FACTORABLE );
 

@@ -12,6 +12,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/TextureHelper.h"
+#include "Kernel/StatisticHelper.h"
 #include "Kernel/PixelFormatHelper.h"
 
 namespace Mengine
@@ -176,15 +177,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderImage::release()
     {
-        if( m_uid != 0 )
+        if( m_uid == 0 )
         {
-            OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
-                ->getUnknown();
-
-            extension->deleteTexture( m_uid );
-
-            m_uid = 0;
+            return;
         }
+
+        OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
+            ->getUnknown();
+
+        extension->deleteTexture( m_uid );
+
+        m_uid = 0;
+
+        STATISTIC_DEL_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE, m_hwWidth * m_hwHeight * Helper::getPixelFormatChannels( m_hwPixelFormat ) );
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderImage::create()
@@ -204,6 +209,8 @@ namespace Mengine
         m_uid = tuid;
 
         m_lockFirst = true;
+
+        STATISTIC_ADD_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE, m_hwWidth * m_hwHeight * Helper::getPixelFormatChannels( m_hwPixelFormat ) );
 
         return true;
     }
@@ -225,6 +232,9 @@ namespace Mengine
         size_t pitch = size / miplevel_height;
 
         imageLocked->initialize( size, pitch, _rect );
+
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_LOCK_COUNT );
+        STATISTIC_ADD_INTEGER( STATISTIC_RENDER_TEXTURE_LOCK_PIXEL, (_rect.bottom - _rect.top) * (_rect.right - _rect.left) );
 
         return imageLocked;
     }

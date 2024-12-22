@@ -269,7 +269,7 @@ namespace Mengine
 
         RenderPass & renderPass = this->requestRenderPass_( _context, batch, vertexBuffer, indexBuffer, vertexAttribute, _programVariable );
 
-#if defined(MENGINE_STATISTIC_ENABLE)
+#if defined(MENGINE_DEBUG)
         if( _debug == false )
         {
             EPrimitiveType primitiveType = _material->getPrimitiveType();

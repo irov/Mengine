@@ -1,6 +1,7 @@
 #include "POSIXAllocatorSystem.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/StatisticHelper.h"
 #include "Kernel/DocumentHelper.h"
 
 #include "Config/StdLib.h"
@@ -42,6 +43,11 @@ namespace Mengine
             , _doc
         );
 
+        size_t usage_size = MENGINE_MALLOC_SIZE( mem );
+
+        STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_NEW, usage_size );
+        STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_SIZE, usage_size );
+
         return mem;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -54,7 +60,12 @@ namespace Mengine
             return;
         }
 
+        size_t old_size = MENGINE_MALLOC_SIZE( _mem );
+
         StdLib::free( _mem );
+
+        STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_FREE, old_size );
+        STATISTIC_DEL_INTEGER( STATISTIC_ALLOCATOR_SIZE, old_size );
     }
     //////////////////////////////////////////////////////////////////////////
     void * POSIXAllocatorSystem::calloc( size_t _num, size_t _size, const Char * _doc )
@@ -67,6 +78,11 @@ namespace Mengine
             , _num * _size
             , _doc
         );
+
+        size_t usage_size = MENGINE_MALLOC_SIZE( mem );
+
+        STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_NEW, usage_size );
+        STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_SIZE, usage_size );
 
         return mem;
     }
@@ -84,8 +100,18 @@ namespace Mengine
                 , _doc
             );
 
+            size_t usage_size = MENGINE_MALLOC_SIZE( mem );
+
+            STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_NEW, usage_size );
+            STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_SIZE, usage_size );
+
             return mem;
         }
+
+        size_t old_size = MENGINE_MALLOC_SIZE( _mem );
+
+        STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_FREE, old_size );
+        STATISTIC_DEL_INTEGER( STATISTIC_ALLOCATOR_SIZE, old_size );
 
         void * mem = StdLib::realloc( _mem, _size );
 
@@ -94,6 +120,11 @@ namespace Mengine
             , _mem
             , _doc
         );
+
+        size_t usage_size = MENGINE_MALLOC_SIZE( mem );
+
+        STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_NEW, usage_size );
+        STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_SIZE, usage_size );
 
         return mem;
     }

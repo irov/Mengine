@@ -229,7 +229,7 @@ namespace Mengine
 
         m_renderResourceHandlers.clear();
 
-        MENGINE_ASSERTION_STATISTIC_EMPTY( STATISTIC_RENDER_TEXTURE_COUNT );
+        MENGINE_ASSERTION_STATISTIC_EMPTY( STATISTIC_RENDER_TEXTURE_ALLOC_COUNT );
         MENGINE_ASSERTION_STATISTIC_EMPTY( STATISTIC_RENDER_INDEX_BUFFER_COUNT );
         MENGINE_ASSERTION_STATISTIC_EMPTY( STATISTIC_RENDER_VERTEX_BUFFER_COUNT );
 
@@ -699,19 +699,6 @@ namespace Mengine
 
         m_renderResourceHandlers.push_back( renderImage.get() );
 
-        STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_NEW );
-        STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_COUNT );
-
-#if defined(MENGINE_STATISTIC_ENABLE)
-        uint32_t hwWidth = renderImage->getHWHeight();
-        uint32_t hwHeight = renderImage->getHWHeight();
-        EPixelFormat hwPixelFormat = renderImage->getHWPixelFormat();
-
-        uint32_t memoryUse = Helper::getTextureMemorySize( hwWidth, hwHeight, hwPixelFormat );
-
-        STATISTIC_ADD_INTEGER( STATISTIC_RENDER_TEXTURE_MEMORY_USAGE, memoryUse );
-#endif
-
         return renderImage;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -748,19 +735,6 @@ namespace Mengine
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
-        STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_NEW );
-        STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_COUNT );
-
-#if defined(MENGINE_STATISTIC_ENABLE)
-        uint32_t hwWidth = renderTargetTexture->getHWHeight();
-        uint32_t hwHeight = renderTargetTexture->getHWHeight();
-        EPixelFormat hwPixelFormat = renderTargetTexture->getHWPixelFormat();
-
-        uint32_t memoryUse = Helper::getTextureMemorySize( hwWidth, hwHeight, hwPixelFormat );
-
-        STATISTIC_ADD_INTEGER( STATISTIC_RENDER_TEXTURE_MEMORY_USAGE, memoryUse );
-#endif
-
         return renderTargetTexture;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -796,19 +770,6 @@ namespace Mengine
             , renderTargetOffscreen->getHWPixelFormat()
             , MENGINE_DOCUMENT_STR( _doc )
         );
-
-        STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_NEW );
-        STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_COUNT );
-
-#if defined(MENGINE_STATISTIC_ENABLE)
-        uint32_t hwWidth = renderTargetOffscreen->getHWHeight();
-        uint32_t hwHeight = renderTargetOffscreen->getHWHeight();
-        EPixelFormat hwPixelFormat = renderTargetOffscreen->getHWPixelFormat();
-
-        uint32_t memoryUse = Helper::getTextureMemorySize( hwWidth, hwHeight, hwPixelFormat );
-
-        STATISTIC_ADD_INTEGER( STATISTIC_RENDER_TEXTURE_MEMORY_USAGE, memoryUse );
-#endif
 
         return renderTargetOffscreen;
     }
@@ -1991,19 +1952,6 @@ namespace Mengine
     void DX9RenderSystem::onDestroyDX9RenderImage_( DX9RenderImage * _image )
     {
         _image->finalize();
-
-        STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_FREE );
-        STATISTIC_DEC_INTEGER( STATISTIC_RENDER_TEXTURE_COUNT );
-
-#if defined(MENGINE_STATISTIC_ENABLE)
-        uint32_t hwWidth = _image->getHWWidth();
-        uint32_t hwHeight = _image->getHWHeight();
-        EPixelFormat hwPixelFormat = _image->getHWPixelFormat();
-
-        uint32_t memoryUse = Helper::getTextureMemorySize( hwWidth, hwHeight, hwPixelFormat );
-
-        STATISTIC_DEL_INTEGER( STATISTIC_RENDER_TEXTURE_MEMORY_USAGE, memoryUse );
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::onDestroyDX9RenderImageTarget_( DX9RenderImageTarget * _imageTarget )
@@ -2014,37 +1962,11 @@ namespace Mengine
     void DX9RenderSystem::onDestroyDX9RenderTargetTexture_( DX9RenderTargetTexture * _targetTexture )
     {
         _targetTexture->finalize();
-
-        STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_FREE );
-        STATISTIC_DEC_INTEGER( STATISTIC_RENDER_TEXTURE_COUNT );
-
-#if defined(MENGINE_STATISTIC_ENABLE)
-        uint32_t hwWidth = _targetTexture->getHWWidth();
-        uint32_t hwHeight = _targetTexture->getHWHeight();
-        EPixelFormat hwPixelFormat = _targetTexture->getHWPixelFormat();
-
-        uint32_t memoryUse = Helper::getTextureMemorySize( hwWidth, hwHeight, hwPixelFormat );
-
-        STATISTIC_DEL_INTEGER( STATISTIC_RENDER_TEXTURE_MEMORY_USAGE, memoryUse );
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::onDestroyDX9RenderTargetOffscreen_( DX9RenderTargetOffscreen * _targetOffscreen )
     {
         _targetOffscreen->finalize();
-
-        STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_FREE );
-        STATISTIC_DEC_INTEGER( STATISTIC_RENDER_TEXTURE_COUNT );
-
-#if defined(MENGINE_STATISTIC_ENABLE)
-        uint32_t hwWidth = _targetOffscreen->getHWWidth();
-        uint32_t hwHeight = _targetOffscreen->getHWHeight();
-        EPixelFormat hwPixelFormat = _targetOffscreen->getHWPixelFormat();
-
-        uint32_t memoryUse = Helper::getTextureMemorySize( hwWidth, hwHeight, hwPixelFormat );
-
-        STATISTIC_DEL_INTEGER( STATISTIC_RENDER_TEXTURE_MEMORY_USAGE, memoryUse );
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::updateWVPInvMatrix_()

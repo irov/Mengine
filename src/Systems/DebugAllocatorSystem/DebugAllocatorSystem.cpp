@@ -268,9 +268,9 @@ namespace Mengine
         this->report( _doc, usage_size, old_size );
 
         STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_NEW, usage_size );
-        STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_FREE, old_size );
-
         STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_SIZE, usage_size );
+
+        STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_FREE, old_size );
         STATISTIC_DEL_INTEGER( STATISTIC_ALLOCATOR_SIZE, old_size );
         
         return new_mem;

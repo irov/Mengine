@@ -6,19 +6,6 @@
 
 #include "Config/StatisticId.h"
 
-//////////////////////////////////////////////////////////////////////////
-#if !defined(MENGINE_STATISTIC)
-#   if defined(MENGINE_DEBUG)
-#       define MENGINE_STATISTIC 1
-#   else
-#       define MENGINE_STATISTIC 0
-#   endif
-#endif
-//////////////////////////////////////////////////////////////////////////
-#if MENGINE_STATISTIC == 1
-#   define MENGINE_STATISTIC_ENABLE
-#endif
-//////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     class StatisticServiceInterface

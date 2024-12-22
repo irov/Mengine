@@ -57,6 +57,7 @@ val fileAppProperties = file("$ANDROID_APP_MAIN_PROJECT/app.properties")
 
 if (fileAppProperties.exists() == true) {
     println("\u001b[32m" + "[+] Load $ANDROID_APP_MAIN_PROJECT" + "/app.properties" + "\u001b[0m")
+
     val appProperties = java.util.Properties()
 
     fileAppProperties.reader().use { reader -> appProperties.load(reader) }

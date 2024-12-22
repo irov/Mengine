@@ -1442,11 +1442,11 @@ namespace Mengine
 
         payloadNode.append_attribute( "AvailableTextureMemory" ).set_value( availableTextureMemory );
 
-        int64_t textureMemoryUse = STATISTIC_GET_INTEGER( STATISTIC_RENDER_TEXTURE_MEMORY_USAGE );
+        int64_t textureMemoryUse = STATISTIC_GET_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE );
 
         payloadNode.append_attribute( "TextureMemoryUse" ).set_value( textureMemoryUse );
 
-        int64_t textureCount = STATISTIC_GET_INTEGER( STATISTIC_RENDER_TEXTURE_COUNT );
+        int64_t textureCount = STATISTIC_GET_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_COUNT );
 
         payloadNode.append_attribute( "TextureCount" ).set_value( textureCount );
 

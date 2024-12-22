@@ -24,7 +24,9 @@ public class MengineMonitorPerformance extends MengineService implements Mengine
     private MenginePerformanceTrace m_traceMemory;
     private Timer m_timerMemory;
     private long m_measurementMemoryCount = 0;
-    private long m_totalUsedMemory = 0;
+    private long m_totalJVMUsedMemory = 0;
+    private long m_totalNativeUsedMemory = 0;
+    private long m_totalRenderTextureMemory = 0;
 
     @Override
     public void onAppInit(@NonNull MengineApplication application, boolean isMainProcess) {
@@ -120,23 +122,44 @@ public class MengineMonitorPerformance extends MengineService implements Mengine
             m_traceMemory.putAttribute("screen_name", screenName);
 
             m_measurementMemoryCount = 0;
-            m_totalUsedMemory = 0;
+            m_totalJVMUsedMemory = 0;
+            m_totalNativeUsedMemory = 0;
+            m_totalRenderTextureMemory = 0;
         }
     }
 
     protected void traceMemory() {
         synchronized (this) {
-            Runtime runtime = Runtime.getRuntime();
-
-            long usedMemory = runtime.totalMemory() - runtime.freeMemory();
+            long usedJVMMemory = MengineUtils.getUsedJVMMemory();
+            long usedNativeMemory = MengineNative.AndroidStatistic_getAllocatorSize();
+            long usedRenderTextureMemory = MengineNative.AndroidStatistic_getRenderTextureAllocSize();
 
             m_measurementMemoryCount += 1;
-            m_totalUsedMemory += usedMemory;
+            m_totalJVMUsedMemory += usedJVMMemory;
+            m_totalNativeUsedMemory += usedNativeMemory;
+            m_totalRenderTextureMemory += usedRenderTextureMemory;
 
-            long averageUsedMemory = m_totalUsedMemory / m_measurementMemoryCount;
-            long averageUsedMemoryMB = averageUsedMemory / 1024 / 1024;
+            long averageJVMUsedMemory = m_totalJVMUsedMemory / m_measurementMemoryCount;
+            long averageJVMUsedMemoryMB = averageJVMUsedMemory / 1024 / 1024;
 
-            m_traceMemory.putMetric("used_memory", averageUsedMemoryMB);
+            long averageNativeUsedMemory = m_totalNativeUsedMemory / m_measurementMemoryCount;
+            long averageNativeUsedMemoryMB = averageNativeUsedMemory / 1024 / 1024;
+
+            long averageRenderTextureMemory = m_totalRenderTextureMemory / m_measurementMemoryCount;
+            long averageRenderTextureMemoryMB = averageRenderTextureMemory / 1024 / 1024;
+
+            m_traceMemory.putMetric("used_jvm_memory", averageJVMUsedMemoryMB);
+            m_traceMemory.putMetric("used_native_memory", averageNativeUsedMemoryMB);
+            m_traceMemory.putMetric("used_render_texture_memory", averageRenderTextureMemoryMB);
+
+            this.logDebug("Memory JVM: %dMb %dKb Native: %dMb %dKb Texture: %dMb %dKb"
+                , averageJVMUsedMemoryMB
+                , (averageJVMUsedMemory / 1024) % 1024
+                , averageNativeUsedMemoryMB
+                , (averageNativeUsedMemory / 1024) % 1024
+                , averageRenderTextureMemoryMB
+                , (averageRenderTextureMemory / 1024) % 1024
+            );
         }
     }
 

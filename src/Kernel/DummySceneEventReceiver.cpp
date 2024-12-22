@@ -33,7 +33,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DummySceneEventReceiver::onEntityCreate( const EntityBehaviorInterfacePtr & _behavior, class Entity * _entity )
+    bool DummySceneEventReceiver::onEntityCreate( const EntityBehaviorInterfacePtr & _behavior, Entity * _entity )
     {
         MENGINE_UNUSED( _behavior );
         MENGINE_UNUSED( _entity );

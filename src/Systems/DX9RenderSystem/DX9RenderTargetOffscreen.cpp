@@ -6,6 +6,8 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionNotImplemented.h"
+#include "Kernel/StatisticHelper.h"
+#include "Kernel/PixelFormatHelper.h"
 
 namespace Mengine
 {
@@ -30,12 +32,18 @@ namespace Mengine
 
         m_pD3DSurfacePlain = pD3DSurfacePlain;
 
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_NEW );
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_COUNT );
+        STATISTIC_ADD_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE, Helper::getTextureMemorySize( m_hwWidth, m_hwHeight, PF_A8R8G8B8 ) );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderTargetOffscreen::_finalize()
     {
-        DX9RenderTargetTexture::_finalize();
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_FREE );
+        STATISTIC_DEC_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_COUNT );
+        STATISTIC_DEL_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE, Helper::getTextureMemorySize( m_hwWidth, m_hwHeight, PF_A8R8G8B8 ) );
 
         MENGINE_DXRELEASE( m_pD3DSurfacePlain );
     }

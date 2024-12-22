@@ -6,6 +6,8 @@
 #include "DX9RenderErrorHelper.h"
 
 #include "Kernel/TextureHelper.h"
+#include "Kernel/StatisticHelper.h"
+#include "Kernel/PixelFormatHelper.h"
 #include "Kernel/Assertion.h"
 
 namespace Mengine
@@ -69,16 +71,21 @@ namespace Mengine
 
         mt::uv4_from_mask( &m_uv, mt::vec4f( 0.f, 0.f, u, v ) );
 
+        m_pD3DTexture = pD3DTexture;
+
+        m_upscalePow2 = m_hwWidth != _width || m_hwHeight != _height;
+
         if( this->_initialize() == false )
         {
-            MENGINE_DXRELEASE( pD3DTexture );
+            MENGINE_DXRELEASE( m_pD3DTexture );
+            m_pD3DTexture = NULL;
 
             return false;
         }
 
-        m_pD3DTexture = pD3DTexture;
-
-        m_upscalePow2 = m_hwWidth != _width || m_hwHeight != _height;
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_NEW );
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_COUNT );
+        STATISTIC_ADD_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE, Helper::getTextureMemorySize( m_hwWidth, m_hwHeight, m_hwPixelFormat ) );
 
         return true;
     }
@@ -96,6 +103,10 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( m_pD3DSurfaceCurrent == nullptr, "surface not released" );
 
         MENGINE_DXRELEASE( m_pD3DTexture );
+
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_FREE );
+        STATISTIC_DEC_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_COUNT );
+        STATISTIC_DEL_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE, Helper::getTextureMemorySize( m_hwWidth, m_hwHeight, m_hwPixelFormat ) );
 
         this->_finalize();
     }
@@ -223,6 +234,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderTargetTexture::onRenderReset()
     {
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_FREE );
+        STATISTIC_DEC_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_COUNT );
+        STATISTIC_DEL_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE, Helper::getTextureMemorySize( m_hwWidth, m_hwHeight, m_hwPixelFormat ) );
+
         MENGINE_DXRELEASE( m_pD3DTexture );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -239,6 +254,10 @@ namespace Mengine
         }
 
         m_pD3DTexture = pD3DTexture;
+
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_NEW );
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_COUNT );
+        STATISTIC_ADD_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE, Helper::getTextureMemorySize( m_hwWidth, m_hwHeight, m_hwPixelFormat ) );
 
         return true;
     }

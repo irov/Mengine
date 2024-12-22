@@ -10,6 +10,8 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/TextureHelper.h"
 #include "Kernel/Logger.h"
+#include "Kernel/StatisticHelper.h"
+#include "Kernel/PixelFormatHelper.h"
 
 namespace Mengine
 {
@@ -102,7 +104,7 @@ namespace Mengine
         GLuint tuid = extension->genTexture();
 
         MENGINE_GLCALL( glBindTexture, (GL_TEXTURE_2D, tuid) );
-        MENGINE_GLCALL( glTexImage2D, (GL_TEXTURE_2D, 0, GL_RGB, m_hwWidth, m_hwHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, 0) );
+        MENGINE_GLCALL( glTexImage2D, (GL_TEXTURE_2D, 0, GL_RGB, m_hwWidth, m_hwHeight, 0, m_format, m_type, 0) );
 
         m_tuid = tuid;
 
@@ -152,6 +154,8 @@ namespace Mengine
         
         MENGINE_GLCALL( glBindTexture, (GL_TEXTURE_2D, 0) );
 
+        STATISTIC_ADD_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE, m_hwWidth * m_hwHeight * Helper::getPixelFormatChannels( m_hwPixelFormat ) );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -171,19 +175,8 @@ namespace Mengine
             extension->deleteFramebuffer( m_fuid );
             m_fuid = 0;
         }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderTargetTexture::reload()
-    {
-        MENGINE_ASSERTION_FATAL( m_tuid == 0, "texture is not released" );
-        MENGINE_ASSERTION_FATAL( m_fuid == 0, "framebuffer is not released" );
 
-        if( this->create() == false )
-        {
-            return false;
-        }
-
-        return true;
+        STATISTIC_DEL_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE, m_hwWidth * m_hwHeight * Helper::getPixelFormatChannels( m_hwPixelFormat ) );
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t OpenGLRenderTargetTexture::getHWMipmaps() const

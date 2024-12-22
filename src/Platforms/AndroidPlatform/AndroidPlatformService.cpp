@@ -243,10 +243,6 @@ extern "C"
             return;
         }
 
-        const Mengine::Char * tag_str = env->GetStringUTFChars( _tag, nullptr );
-        const Mengine::Char * msg_str = env->GetStringUTFChars( _msg, nullptr );
-
-        Mengine::ELoggerLevel level;
         uint32_t color;
 
         switch( _level )
@@ -254,43 +250,38 @@ extern "C"
         case Mengine::LM_SILENT:
             return;
         case Mengine::LM_FATAL:
-            level = Mengine::LM_FATAL;
             color = Mengine::LCOLOR_RED;
             break;
         case Mengine::LM_MESSAGE_RELEASE:
-            level = Mengine::LM_MESSAGE_RELEASE;
             color = Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE;
             break;
         case Mengine::LM_ERROR:
-            level = Mengine::LM_ERROR;
             color = Mengine::LCOLOR_RED;
             break;
         case Mengine::LM_WARNING:
-            level = Mengine::LM_WARNING;
             color = Mengine::LCOLOR_RED | Mengine::LCOLOR_GREEN;
             break;
         case Mengine::LM_MESSAGE:
-            level = Mengine::LM_MESSAGE;
             color = Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE;
             break;
         case Mengine::LM_INFO:
-            level = Mengine::LM_INFO;
             color = Mengine::LCOLOR_GREEN | Mengine::LCOLOR_BLUE;
             break;
         case Mengine::LM_DEBUG:
-            level = Mengine::LM_DEBUG;
             color = Mengine::LCOLOR_BLUE;
             break;
         case Mengine::LM_VERBOSE:
-            level = Mengine::LM_VERBOSE;
             color = Mengine::LCOLOR_NONE;
             break;
         }
 
-        LOGGER_VERBOSE_LEVEL( "android", level, Mengine::LFILTER_NONE | Mengine::LFILTER_ANDROID, color, nullptr, 0, Mengine::LFLAG_SHORT )("[%s] %s"
+        const Mengine::Char * tag_str = env->GetStringUTFChars( _tag, nullptr );
+        const Mengine::Char * msg_str = env->GetStringUTFChars( _msg, nullptr );
+
+        LOGGER_VERBOSE_LEVEL( "android", (Mengine::ELoggerLevel)_level, Mengine::LFILTER_NONE | Mengine::LFILTER_ANDROID, color, nullptr, 0, Mengine::LFLAG_SHORT )("[%s] %s"
             , tag_str
             , msg_str
-            );
+        );
 
         env->ReleaseStringUTFChars( _tag, tag_str );
         env->ReleaseStringUTFChars( _msg, msg_str );
@@ -447,6 +438,20 @@ extern "C"
         int64_t Statistic_RenderFrameCount = STATISTIC_GET_INTEGER( Mengine::STATISTIC_RENDER_FRAME_COUNT );
 
         return Statistic_RenderFrameCount;
+    }
+    ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT jlong JNICALL MENGINE_JAVA_INTERFACE( AndroidStatistic_1getAllocatorSize )(JNIEnv * env, jclass cls)
+    {
+        int64_t Statistic_AllocatorSize = STATISTIC_GET_INTEGER( Mengine::STATISTIC_ALLOCATOR_SIZE );
+
+        return Statistic_AllocatorSize;
+    }
+    ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT jlong JNICALL MENGINE_JAVA_INTERFACE( AndroidStatistic_1getRenderTextureAllocSize )(JNIEnv * env, jclass cls)
+    {
+        int64_t Statistic_RenderTextureAllocSize = STATISTIC_GET_INTEGER( Mengine::STATISTIC_RENDER_TEXTURE_ALLOC_SIZE );
+
+        return Statistic_RenderTextureAllocSize;
     }
     ///////////////////////////////////////////////////////////////////////
 }

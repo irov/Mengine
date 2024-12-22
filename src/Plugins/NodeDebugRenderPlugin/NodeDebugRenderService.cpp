@@ -310,11 +310,11 @@ namespace Mengine
 
                 ss << "Available Texture Memory: " << (float)availableTextureMemory / (1024.f * 1024.f) << std::endl;
 
-                int64_t textureMemoryUse = STATISTIC_GET_INTEGER( STATISTIC_RENDER_TEXTURE_MEMORY_USAGE );
+                int64_t textureMemoryUse = STATISTIC_GET_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE );
 
                 ss << "Texture Memory Usage: " << (float)textureMemoryUse / (1024.f * 1024.f) << std::endl;
 
-                int64_t textureCount = STATISTIC_GET_INTEGER( STATISTIC_RENDER_TEXTURE_COUNT );
+                int64_t textureCount = STATISTIC_GET_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_COUNT );
 
                 ss << "Texture Count: " << textureCount << std::endl;
 

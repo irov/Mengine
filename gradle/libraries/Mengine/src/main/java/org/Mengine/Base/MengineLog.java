@@ -102,23 +102,23 @@ public class MengineLog {
     }
 
     private static String log(int level, @Size(min = 1L,max = 23L) String tag, int filter, String format, Object ... args) {
-        String totalMsg = MengineLog.buildTotalMsg(format, args);
+        String message = MengineLog.buildTotalMsg(format, args);
 
-        MengineLog.logLevel(level, tag, totalMsg);
+        MengineLog.logLevel(level, tag, message);
 
         if (level >= LM_INFO) {
-            return totalMsg;
+            return message;
         }
 
         synchronized (MengineLog.m_lock) {
             if (MengineLog.m_initializeBaseServices == true) {
-                MengineNative.AndroidEnvironmentService_log(level, tag, totalMsg);
+                MengineNative.AndroidEnvironmentService_log(level, tag, message);
             } else {
                 HistoryRecord record = new HistoryRecord();
                 record.level = level;
                 record.filter = filter;
                 record.tag = tag;
-                record.message = totalMsg;
+                record.message = message;
                 record.application = MengineLog.m_application;
 
                 MengineLog.m_history.add(record);
@@ -126,10 +126,10 @@ public class MengineLog {
         }
 
         if (MengineLog.m_application != null) {
-            MengineLog.m_application.onMengineLogger(level, MengineLog.LFILTER_NONE, tag, totalMsg);
+            MengineLog.m_application.onMengineLogger(level, MengineLog.LFILTER_NONE, tag, message);
         }
 
-        return totalMsg;
+        return message;
     }
 
     public static String logVerbose(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {

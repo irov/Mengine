@@ -22,11 +22,13 @@ namespace Mengine
         __EVENT_ENTITY_LAST__
     };
     //////////////////////////////////////////////////////////////////////////
+    class Entity;
+    //////////////////////////////////////////////////////////////////////////
     class EntityEventReceiverInterface
         : public EventReceiverInterface
     {
     public:
-        virtual bool onEntityCreate( const EntityBehaviorInterfacePtr & _behavior, class Entity * _entity ) = 0;
+        virtual bool onEntityCreate( const EntityBehaviorInterfacePtr & _behavior, Entity * _entity ) = 0;
         virtual void onEntityDestroy( const EntityBehaviorInterfacePtr & _behavior ) = 0;
         virtual bool onEntityPreparation( const EntityBehaviorInterfacePtr & _behavior ) = 0;
         virtual bool onEntityActivate( const EntityBehaviorInterfacePtr & _behavior ) = 0;

@@ -29,7 +29,6 @@ namespace Mengine
     public:
         bool create();
         void release();
-        bool reload();
 
     public:
         uint32_t getHWMipmaps() const override;

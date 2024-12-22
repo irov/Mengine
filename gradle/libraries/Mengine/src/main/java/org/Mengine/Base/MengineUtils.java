@@ -619,19 +619,19 @@ public class MengineUtils {
 
     public static void showAreYouSureAlertDialog(Activity activity, Runnable yes, Runnable cancel, long delayMillis, String title, String format, Object ... args) {
         activity.runOnUiThread(() -> {
-            String messageText = MengineLog.buildTotalMsg(format, args);
+            String message = MengineLog.buildTotalMsg(format, args);
 
             MengineLog.logMessage(TAG, "show YES|CANCEL alert dialog title: %s message: %s"
                 , title
-                , messageText
+                , message
             );
 
             String AreYouSureText = "\n\nAre you sure?";
 
-            SpannableString spannableMessage = new SpannableString(messageText + AreYouSureText);
+            SpannableString spannableMessage = new SpannableString(message + AreYouSureText);
 
-            spannableMessage.setSpan(new StyleSpan(Typeface.BOLD), messageText.length(), (messageText + AreYouSureText).length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            spannableMessage.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_OPPOSITE), messageText.length(), spannableMessage.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannableMessage.setSpan(new StyleSpan(Typeface.BOLD), message.length(), (message + AreYouSureText).length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannableMessage.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_OPPOSITE), message.length(), spannableMessage.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
@@ -958,5 +958,13 @@ public class MengineUtils {
         }
 
         return false;
+    }
+
+    public static long getUsedJVMMemory() {
+        Runtime runtime = Runtime.getRuntime();
+
+        long usedJVMMemory = runtime.totalMemory() - runtime.freeMemory();
+
+        return usedJVMMemory;
     }
 }

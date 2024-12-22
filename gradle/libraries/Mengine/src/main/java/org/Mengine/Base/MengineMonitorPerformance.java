@@ -121,6 +121,18 @@ public class MengineMonitorPerformance extends MengineService implements Mengine
             m_traceMemory.putAttribute("screen_type", screenType);
             m_traceMemory.putAttribute("screen_name", screenName);
 
+            long usedJVMMemory = MengineUtils.getUsedJVMMemory();
+            long usedNativeMemory = MengineNative.AndroidStatistic_getAllocatorSize();
+            long usedRenderTextureMemory = MengineNative.AndroidStatistic_getRenderTextureAllocSize();
+
+            long usedJVMMemoryMB = usedJVMMemory / 1024 / 1024;
+            long usedNativeMemoryMB = usedNativeMemory / 1024 / 1024;
+            long usedRenderTextureMemoryMB = usedRenderTextureMemory / 1024 / 1024;
+
+            m_traceMemory.putMetric("used_jvm_memory", usedJVMMemoryMB);
+            m_traceMemory.putMetric("used_native_memory", usedNativeMemoryMB);
+            m_traceMemory.putMetric("used_render_texture_memory", usedRenderTextureMemoryMB);
+
             m_measurementMemoryCount = 0;
             m_totalJVMUsedMemory = 0;
             m_totalNativeUsedMemory = 0;
@@ -172,7 +184,7 @@ public class MengineMonitorPerformance extends MengineService implements Mengine
             this.traceFPS();
         });
 
-        m_timerMemory = MengineUtils.scheduleAtFixedRate(0, 1000, () -> {
+        m_timerMemory = MengineUtils.scheduleAtFixedRate(0, 5000, () -> {
             this.traceMemory();
         });
     }

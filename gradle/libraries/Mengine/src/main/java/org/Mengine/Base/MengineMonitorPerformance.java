@@ -35,9 +35,6 @@ public class MengineMonitorPerformance extends MengineService implements Mengine
         }
 
         m_traceStartup = application.startPerformanceTrace(TRACE_STARTUP, Map.of());
-
-        this.createTraceFPS(application, "Initialize", "Initialize");
-        this.createTraceMemory(application, "Initialize", "Initialize");
     }
 
     @Override

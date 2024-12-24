@@ -1,12 +1,13 @@
 #import "AppleAppLovinBannerDelegate.h"
 
 #import "Environment/Apple/AppleDetail.h"
+#import "Environment/Apple/AppleBundle.h"
 #import "Environment/Apple/AppleString.h"
 #import "Environment/Apple/AppleAnalytics.h"
 
 #import "Environment/iOS/iOSDetail.h"
 
-#include "AppleAppLovinApplicationDelegate.h"
+#import "AppleAppLovinApplicationDelegate.h"
 
 #include "Kernel/Logger.h"
 
@@ -14,7 +15,6 @@
 
 - (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
                                           placement:(NSString * _Nonnull) placement
-                                       amazonSlotId:(NSString * _Nullable) amazonSlotId
                                            provider:(const Mengine::AppleAppLovinBannerProviderInterfacePtr &) provider {
     self = [super initWithAdUnitIdentifier:adUnitId adFormat:MAAdFormat.banner];
     
@@ -22,7 +22,7 @@
     
     BOOL MengineAppleAppLovinPlugin_BannerAdaptive = [AppleBundle getPluginConfigBoolean:@PLUGIN_BUNDLE_NAME withKey:@"BannerAdaptive" withDefault:YES];
     
-    m_bannerAdaptive = MengineAppleAppLovinPlugin_BannerAdaptive;
+    self.m_bannerAdaptive = MengineAppleAppLovinPlugin_BannerAdaptive;
     
     MAAdView * adView;
     
@@ -58,7 +58,7 @@
     
     adView.backgroundColor = UIColor.clearColor;
     
-    if (m_bannerAdaptive == YES) {
+    if (self.m_bannerAdaptive == YES) {
         [adView setExtraParameterForKey:@"adaptive_banner" value:@"true"];
     }
 
@@ -110,7 +110,7 @@
 }
 
 - (void) loadAd {
-    if( self.m_adView == nil ) {
+    if (self.m_adView == nil) {
         return;
     }
     
@@ -126,7 +126,7 @@
 }
 
 - (CGSize) getSize {
-    if (m_bannerAdaptive == YES) {
+    if (self.m_bannerAdaptive == YES) {
         return MAAdFormat.banner.adaptiveSize;
     } else {
         BOOL isPad = UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPad;
@@ -140,7 +140,7 @@
 }
 
 - (CGRect) getRect {
-    if( self.m_adView == nil ) {
+    if (self.m_adView == nil) {
         return CGRectZero;
     }
     

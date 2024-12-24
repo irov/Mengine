@@ -50,7 +50,7 @@
 
 - (void) dealloc {
 #if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON)
-    if( self.m_amazonLoader != nil ) {
+    if (self.m_amazonLoader != nil) {
         [self.m_amazonLoader release];
         self.m_amazonLoader = nil;
     }
@@ -92,7 +92,7 @@
         @"ready": @(ready)
     }];
     
-    if( ready == NO ) {
+    if (ready == NO) {
         return NO;
     }
     

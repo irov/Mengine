@@ -131,14 +131,12 @@ namespace Mengine
             return false;
         }
 
-        NSError * error = nil;
         NSFileHandle * fileHandle = [NSFileHandle fileHandleForReadingAtPath:@(_fullPath)];
 
         if( fileHandle == nil )
         {
-            LOGGER_ERROR( "invalid open file '%s' error '%s'"
+            LOGGER_ERROR( "invalid open file '%s' [not found]"
                 , _fullPath
-                , [[AppleDetail getMessageFromNSError:error] UTF8String]
             );
 
             return false;

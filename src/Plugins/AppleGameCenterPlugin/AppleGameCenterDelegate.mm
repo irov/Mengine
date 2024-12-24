@@ -16,8 +16,7 @@
     GKLocalPlayer * localPlayer = [GKLocalPlayer localPlayer];
     
     [localPlayer setAuthenticateHandler:^(UIViewController* v, NSError * error) {
-        if( error != nil )
-        {
+        if (error != nil) {
             self.m_authenticateSuccess = false;
             
             Mengine::Helper::dispatchMainThreadEvent([handler, error]() {
@@ -38,14 +37,12 @@
 }
 
 - (BOOL) loadCompletedAchievements:(void(^)(NSError * _Nullable, NSArray * _Nullable))handler {
-    if( self.m_authenticateSuccess == false )
-    {
+    if (self.m_authenticateSuccess == false) {
         return NO;
     }
     
     [GKAchievement loadAchievementsWithCompletionHandler:^(NSArray<GKAchievement *> * _Nullable achievements, NSError * _Nullable error) {
-        if( error != nil )
-        {
+        if (error != nil) {
             Mengine::Helper::dispatchMainThreadEvent([handler, error]() {
                 handler( error, nil );
             });
@@ -53,8 +50,7 @@
             return;
         }
         
-        if( achievements != nil )
-        {
+        if (achievements != nil) {
             Mengine::Helper::dispatchMainThreadEvent([handler]() {
                 handler( nil, nil );
             });
@@ -64,10 +60,8 @@
         
         NSMutableArray * cmpAch = [[NSMutableArray alloc] init];
         
-        for( GKAchievement * ach in achievements )
-        {
-            if( [ach isCompleted] == TRUE )
-            {
+        for (GKAchievement * ach in achievements) {
+            if ([ach isCompleted] == TRUE) {
                 [cmpAch addObject:[ach identifier]];
             }
         }
@@ -81,8 +75,7 @@
 }
 
 - (BOOL) resetAchievements:(void(^ _Nonnull)(NSError * __nullable error))handler {
-    if( self.m_authenticateSuccess == false )
-    {
+    if (self.m_authenticateSuccess == false) {
         return NO;
     }
     
@@ -96,8 +89,7 @@
 }
 
 - (BOOL) reportScore:(NSString*)identifier score:(int64_t)score response:(void(^)(NSError * _Nullable))handler {
-	if( self.m_authenticateSuccess == false )
-    {
+	if (self.m_authenticateSuccess == false) {
         return NO;
     }
     
@@ -116,8 +108,7 @@
 }
 
 - (BOOL) reportAchievementIdentifier:(NSString*)identifier percentComplete:(double)percent withBanner:(BOOL)banner response:(void(^)(NSError * _Nullable))handler {
-    if( self.m_authenticateSuccess == false )
-    {
+    if (self.m_authenticateSuccess == false) {
         return NO;
     }
     

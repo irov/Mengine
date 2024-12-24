@@ -17,14 +17,12 @@
 #   import <FBAudienceNetwork/FBAdSettings.h>
 #endif
 
-#define PLUGIN_BUNDLE_NAME "MengineAppleAppLovinPlugin"
-
 @implementation AppleAppLovinApplicationDelegate
 
 #pragma mark - iOSPluginApplicationDelegateInterface
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    if( [AppleBundle hasPluginConfig:@PLUGIN_BUNDLE_NAME] == NO ) {
+    if ([AppleBundle hasPluginConfig:@PLUGIN_BUNDLE_NAME] == NO) {
         [AppleLog withFormat:@"🔴 [ERROR] AppLovin plugin not found bundle config [%@]", @PLUGIN_BUNDLE_NAME];
         
         return NO;
@@ -38,11 +36,11 @@
     
     NSString * MengineAppleAppLovinPlugin_CCPA = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"CCPA" withDefault:@"UNKNOWN"];
     
-    if( [MengineAppleAppLovinPlugin_CCPA caseInsensitiveCompare:@"YES"] == NSOrderedSame ) {
+    if ([MengineAppleAppLovinPlugin_CCPA caseInsensitiveCompare:@"YES"] == NSOrderedSame) {
         [ALPrivacySettings setDoNotSell: YES];
-    } else if( [MengineAppleAppLovinPlugin_CCPA caseInsensitiveCompare:@"NO"] == NSOrderedSame ) {
+    } else if ([MengineAppleAppLovinPlugin_CCPA caseInsensitiveCompare:@"NO"] == NSOrderedSame) {
         [ALPrivacySettings setDoNotSell: NO];
-    } else if( [MengineAppleAppLovinPlugin_CCPA caseInsensitiveCompare:@"UNKNOWN"] == NSOrderedSame ) {
+    } else if ([MengineAppleAppLovinPlugin_CCPA caseInsensitiveCompare:@"UNKNOWN"] == NSOrderedSame) {
         //Nothing
     } else {
         [AppleLog withFormat:@"🔴 [ERROR] AppLovin plugin invalid config [%@.CCPA] value %@ [YES|NO|UNKNOWN]", @PLUGIN_BUNDLE_NAME, MengineAppleAppLovinPlugin_CCPA];
@@ -52,7 +50,7 @@
     
     NSString * MengineAppleAppLovinPlugin_SdkKey = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"SdkKey" withDefault:nil];
     
-    if( MengineAppleAppLovinPlugin_SdkKey == nil ) {
+    if (MengineAppleAppLovinPlugin_SdkKey == nil) {
         [AppleLog withFormat:@"🔴 [ERROR] AppLovin plugin missed required config [%@.SdkKey]", @PLUGIN_BUNDLE_NAME];
         
         return NO;
@@ -68,7 +66,7 @@
     
     BOOL MengineAppleAppLovinPlugin_Verbose = [AppleBundle getPluginConfigBoolean:@PLUGIN_BUNDLE_NAME withKey:@"Verbose" withDefault:NO];
     
-    if( MengineAppleAppLovinPlugin_Verbose == YES ) {
+    if (MengineAppleAppLovinPlugin_Verbose == YES) {
         settings.verboseLoggingEnabled = YES;
     } else {
         settings.verboseLoggingEnabled = NO;
@@ -80,17 +78,17 @@
 
     BOOL MengineAppleAppLovinPlugin_TermsAndPrivacyPolicyFlow = [AppleBundle getPluginConfigBoolean:@PLUGIN_BUNDLE_NAME withKey:@"TermsAndPrivacyPolicyFlow" withDefault:NO];
 
-    if( MengineAppleAppLovinPlugin_TermsAndPrivacyPolicyFlow == YES ) {
+    if (MengineAppleAppLovinPlugin_TermsAndPrivacyPolicyFlow == YES) {
         NSString * MengineAppleAppLovinPlugin_PrivacyPolicyURL = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"PrivacyPolicyURL" withDefault:nil];
         NSString * MengineAppleAppLovinPlugin_TermsOfServiceURL = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"TermsOfServiceURL" withDefault:nil];
         
-        if( MengineAppleAppLovinPlugin_PrivacyPolicyURL == nil ) {
+        if (MengineAppleAppLovinPlugin_PrivacyPolicyURL == nil) {
             [AppleLog withFormat:@"🔴 [ERROR] AppLovin plugin missed required config [%@.PrivacyPolicyURL]", @PLUGIN_BUNDLE_NAME];
             
             return NO;
         }
         
-        if( MengineAppleAppLovinPlugin_TermsOfServiceURL == nil ) {
+        if (MengineAppleAppLovinPlugin_TermsOfServiceURL == nil) {
             [AppleLog withFormat:@"🔴 [ERROR] AppLovin plugin missed required config [%@.TermsOfServiceURL]", @PLUGIN_BUNDLE_NAME];
             
             return NO;

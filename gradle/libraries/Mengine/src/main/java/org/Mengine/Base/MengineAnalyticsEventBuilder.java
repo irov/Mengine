@@ -3,6 +3,8 @@ package org.Mengine.Base;
 import androidx.annotation.NonNull;
 import androidx.annotation.Size;
 
+import org.json.JSONObject;
+
 import java.util.Locale;
 import java.util.Map;
 
@@ -21,6 +23,10 @@ public class MengineAnalyticsEventBuilder {
     }
 
     private void assertBases(@NonNull String key) {
+        if (BuildConfig.DEBUG == false) {
+            return;
+        }
+
         if (m_bases.containsKey(key)) {
             String msg = String.format(Locale.US, "event builder '%s' parameter '%s' already exist in context", m_name, key);
             throw new AssertionError(msg);
@@ -28,9 +34,26 @@ public class MengineAnalyticsEventBuilder {
     }
 
     private void assertParameters(@NonNull String key) {
+        if (BuildConfig.DEBUG == false) {
+            return;
+        }
+
         if (m_parameters.containsKey(key)) {
             String msg = String.format(Locale.US, "event builder '%s' parameter '%s' already exist in parameters", m_name, key);
             throw new AssertionError(msg);
+        }
+    }
+
+    private void assertJSON(@NonNull String key, @NonNull String json) {
+        if (BuildConfig.DEBUG == false) {
+            return;
+        }
+
+        try {
+            new JSONObject(json);
+        } catch (Exception e) {
+            String msg = String.format(Locale.US, "event builder '%s' parameter '%s' invalid json", m_name, key);
+            throw new AssertionError(msg, e);
         }
     }
 
@@ -68,15 +91,8 @@ public class MengineAnalyticsEventBuilder {
         return this;
     }
 
-    private void validateJSON(@NonNull String key, @NonNull String json) {
-        if (json == null || json.isEmpty() == true || json.length() < 2 || json.charAt(0) != '{' || json.charAt(json.length() - 1) != '}') {
-            String msg = String.format(Locale.US, "event builder '%s' parameter '%s' invalid json", m_name, key);
-            throw new AssertionError(msg);
-        }
-    }
-
     public MengineAnalyticsEventBuilder addParameterJSON(@NonNull @Size(min = 1L,max = 40L) String key, @NonNull @Size(min = 0L,max = 100L) String value) {
-        this.validateJSON(key, value);
+        this.assertJSON(key, value);
 
         this.addParameterString(key, value);
 

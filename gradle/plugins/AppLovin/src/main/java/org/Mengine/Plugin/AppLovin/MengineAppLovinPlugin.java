@@ -44,6 +44,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
     public static final String METADATA_ENABLE_PRIVACY_POLICY_FLOW = "mengine.applovin.enable_privacy_policy_flow";
     public static final String METADATA_PRIVACY_POLICY_URL = "mengine.applovin.privacy_policy_url";
     public static final String METADATA_TERMS_OF_SERVICE_URL = "mengine.applovin.terms_of_service_url";
+    public static final String METADATA_BANNER_ADAPTIVE = "mengine.applovin.banner_adaptive";
 
     private AppLovinSdk m_appLovinSdk;
 
@@ -55,11 +56,22 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
 
     private MengineAppLovinNonetBannersInterface m_nonetBanners;
 
+    private boolean m_bannerAdaptive;
+
     @Override
     public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
         m_banners = new HashMap<>();
         m_interstitials = new HashMap<>();
         m_rewardeds = new HashMap<>();
+
+        boolean MengineAppLovinPlugin_BannerAdaptive = this.getMetaDataBoolean(METADATA_BANNER_ADAPTIVE);
+
+        this.logMessage("%s: %b"
+            , METADATA_BANNER_ADAPTIVE
+            , MengineAppLovinPlugin_BannerAdaptive
+        );
+
+        m_bannerAdaptive = MengineAppLovinPlugin_BannerAdaptive;
 
         if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_META == true) {
             com.facebook.ads.AdSettings.setDataProcessingOptions( new String[] {} );
@@ -250,27 +262,26 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
     public void onDestroy(@NonNull MengineActivity activity) {
         if (m_banners != null) {
             for (MengineAppLovinBanner banner : m_banners.values()) {
-                banner.onDestroy();
+                banner.onDestroy(activity);
             }
         }
 
         if (m_interstitials != null) {
             for (MengineAppLovinInterstitial interstitial : m_interstitials.values()) {
-                interstitial.onDestroy();
+                interstitial.onDestroy(activity);
             }
         }
 
         if (m_rewardeds != null) {
             for (MengineAppLovinRewarded rewarded : m_rewardeds.values()) {
-                rewarded.onDestroy();
+                rewarded.onDestroy(activity);
             }
         }
 
         if (m_nonetBanners != null) {
-            m_nonetBanners.onDestroy();
+            m_nonetBanners.onDestroy(activity);
         }
     }
-
 
     public MengineAppLovinMediationInterface getMediationAmazon() {
         return m_mediationAmazon;
@@ -287,13 +298,14 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
             return false;
         }
 
-        this.logMessage("initBanner adUnitId: %s placement: %s"
+        this.logMessage("initBanner adUnitId: %s placement: %s adaptive: %b"
             , adUnitId
             , placement
+            , m_bannerAdaptive
         );
 
         try {
-            MengineAppLovinBanner banner = new MengineAppLovinBanner(this, adUnitId, placement);
+            MengineAppLovinBanner banner = new MengineAppLovinBanner(this, adUnitId, placement, m_bannerAdaptive);
 
             MengineActivity activity = this.getMengineActivity();
 
@@ -348,6 +360,20 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
         Rect rect = banner.getViewport();
 
         return rect;
+    }
+
+    public int getBannerHeight(String adUnitId) {
+        MengineAppLovinBanner banner = m_banners.get(adUnitId);
+
+        if (banner == null) {
+            this.assertionError("not found banner: %s", adUnitId);
+
+            return 0;
+        }
+
+        int height = banner.getHeight();
+
+        return height;
     }
 
     public boolean initInterstitial(String adUnitId) {

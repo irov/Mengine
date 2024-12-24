@@ -48,7 +48,7 @@ public class MengineAppLovinBase {
         //Empty
     }
 
-    public void onDestroy() {
+    public void onDestroy(@NonNull MengineActivity activity) {
     }
 
     public void loadAd() {

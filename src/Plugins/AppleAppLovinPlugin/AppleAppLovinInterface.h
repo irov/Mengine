@@ -83,6 +83,7 @@ namespace Mengine
         virtual bool showBanner( const ConstString & _adUnitId ) = 0;
         virtual bool hideBanner( const ConstString & _adUnitId ) = 0;
         
+        virtual bool getBannerHeight( const ConstString & _adUnitId, uint32_t * const _height ) const = 0;
         virtual bool getBannerViewport( const ConstString & _adUnitId, Viewport * const _viewport ) const = 0;
         
     public:

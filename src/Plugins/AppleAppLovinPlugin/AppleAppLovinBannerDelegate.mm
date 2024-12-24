@@ -20,6 +20,10 @@
     
     self.m_provider = provider;
     
+    BOOL MengineAppleAppLovinPlugin_BannerAdaptive = [AppleBundle getPluginConfigBoolean:@PLUGIN_BUNDLE_NAME withKey:@"BannerAdaptive" withDefault:YES];
+    
+    m_bannerAdaptive = MengineAppleAppLovinPlugin_BannerAdaptive;
+    
     MAAdView * adView;
     
     @try {
@@ -41,9 +45,22 @@
     adView.requestDelegate = self;
     adView.adReviewDelegate = self;
     
-    [adView setExtraParameterForKey:@"adaptive_banner" value:@"true"];
+    CGSize size = [self getSize];
+    
+    CGFloat banner_height = size.height;
+    
+    CGFloat screen_width = CGRectGetWidth(UIScreen.mainScreen.bounds);
+    CGFloat screen_height = CGRectGetHeight(UIScreen.mainScreen.bounds);
+    
+    CGRect rect = CGRectMake(0, screen_height - banner_height, screen_width, banner_height);
+    
+    adView.frame = rect;
     
     adView.backgroundColor = UIColor.clearColor;
+    
+    if (m_bannerAdaptive == YES) {
+        [adView setExtraParameterForKey:@"adaptive_banner" value:@"true"];
+    }
 
     UIViewController * viewController = [iOSDetail getRootViewController];
     [viewController.view addSubview:adView];
@@ -88,6 +105,7 @@
 - (void) hide {
     self.m_adView.hidden = YES;
 
+    [self.m_adView setExtraParameterForKey:@"allow_pause_auto_refresh_immediately" value:@"true"];
     [self.m_adView stopAutoRefresh];
 }
 
@@ -107,6 +125,20 @@
     [self.m_adView loadAd];
 }
 
+- (CGSize) getSize {
+    if (m_bannerAdaptive == YES) {
+        return MAAdFormat.banner.adaptiveSize;
+    } else {
+        BOOL isPad = UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPad;
+        
+        if (isPad == YES) {
+            return MAAdFormat.leader.size;
+        } else {
+            return MAAdFormat.banner.size;
+        }
+    }
+}
+
 - (CGRect) getRect {
     if( self.m_adView == nil ) {
         return CGRectZero;
@@ -117,28 +149,26 @@
     return frame;
 }
 
-- (void) repositionAdView:(MAAd *) ad {
-    MAAdFormat * adFormat = ad.format;
+- (CGFloat) getHeight {
+    CGSize banner_size = [self getSize];
     
-    CGFloat banner_height = adFormat.adaptiveSize.height;
-    
-    CGFloat screen_width = CGRectGetWidth(UIScreen.mainScreen.bounds);
-    CGFloat screen_height = CGRectGetHeight(UIScreen.mainScreen.bounds);
-    
-    CGRect rect = CGRectMake(0, screen_height - banner_height, screen_width, banner_height);
-    
-    self.m_adView.frame = rect;
+    CGFloat banner_heightDp = banner_size.height;
+    CGFloat banner_scale = UIScreen.mainScreen.scale;
+
+    CGFloat banner_heightPx = banner_heightDp * banner_scale;
+
+    return banner_heightPx;
 }
 
 #pragma mark - MAAdRequestDelegate Protocol
 
-- (void)didStartAdRequestForAdUnitIdentifier:(NSString *)adUnitIdentifier {
+- (void) didStartAdRequestForAdUnitIdentifier:(NSString *)adUnitIdentifier {
     [self log:@"didStartAdRequestForAdUnitIdentifier"];
     
     [AppleAnalytics event:@"mng_ad_banner_request_started" params:@{
         @"ad_unit_id": adUnitIdentifier,
         @"request_id": @(self.m_requestId),
-        @"attempt": @(self.m_retryAttempt)        
+        @"attempt": @(self.m_retryAttempt)
     }];
     
     self.m_provider->onAppleAppLovinBannerDidStartAdRequestForAdUnitIdentifier();
@@ -157,8 +187,6 @@
     }];
     
     self.m_retryAttempt = 0;
-    
-    [self repositionAdView:ad];
     
     self.m_provider->onAppleAppLovinBannerDidLoadAd();
 }
@@ -179,7 +207,7 @@
     self.m_provider->onAppleAppLovinBannerDidFailToLoadAdForAdUnitIdentifier();
 }
 
-- (void)didDisplayAd:(MAAd *)ad
+- (void) didDisplayAd:(MAAd *)ad
 {
     [self log:@"didDisplayAd" withMAAd:ad];
     
@@ -192,7 +220,7 @@
     self.m_provider->onAppleAppLovinBannerDidDisplayAd();
 }
 
-- (void)didHideAd:(MAAd *)ad
+- (void) didHideAd:(MAAd *)ad
 {
     [self log:@"didHideAd" withMAAd:ad];
     
@@ -262,7 +290,7 @@
     
 #pragma mark - Revenue Callbacks
 
-- (void)didPayRevenueForAd:(MAAd *)ad {
+- (void) didPayRevenueForAd:(MAAd *)ad {
     [self log:@"didPayRevenueForAd" withMAAd:ad];
     
     [AppleAnalytics event:@"mng_ad_banner_revenue_paid" params:@{
@@ -284,7 +312,7 @@
 
 #pragma mark - AdReview Callbacks
 
-- (void)didGenerateCreativeIdentifier:(NSString *)creativeIdentifier forAd:(MAAd *)ad {
+- (void) didGenerateCreativeIdentifier:(NSString *)creativeIdentifier forAd:(MAAd *)ad {
     //ToDo
 }
 

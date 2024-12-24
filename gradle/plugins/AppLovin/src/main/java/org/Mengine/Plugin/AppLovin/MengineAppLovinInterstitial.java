@@ -41,10 +41,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
         m_interstitialAd = interstitialAd;
 
-        m_plugin.logMessage("[%s] create adUnitId: %s"
-            , m_adFormat.getLabel()
-            , m_adUnitId
-        );
+        this.log("create");
 
         m_plugin.setState("applovin.interstitial.state." + m_adUnitId, "init");
 
@@ -60,10 +57,16 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDestroy(@NonNull MengineActivity activity) {
+        super.onDestroy(activity);
 
         if (m_interstitialAd != null) {
+            m_interstitialAd.setListener(null);
+            m_interstitialAd.setRequestListener(null);
+            m_interstitialAd.setRevenueListener(null);
+            m_interstitialAd.setExpirationListener(null);
+            m_interstitialAd.setAdReviewListener(null);
+
             m_interstitialAd.destroy();
             m_interstitialAd = null;
         }

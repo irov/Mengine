@@ -434,7 +434,7 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     @SuppressWarnings("deprecation")
-    private void syncFullscreenWindowR(Window window) {
+    private void syncFullscreenWindowQ(Window window) {
         int flags = View.SYSTEM_UI_FLAG_FULLSCREEN |
                 View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
                 View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
@@ -466,13 +466,13 @@ public class MengineActivity extends AppCompatActivity {
             WindowInsetsController insetsController = window.getInsetsController();
 
             if (insetsController == null) {
-                this.syncFullscreenWindowR(window);
+                this.syncFullscreenWindowQ(window);
             } else {
                 insetsController.hide(WindowInsets.Type.systemBars());
                 insetsController.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
             }
         } else {
-            this.syncFullscreenWindowR(window);
+            this.syncFullscreenWindowQ(window);
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -529,7 +529,7 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setupFullscreenModeListener(window);
 
-        this.syncFullscreenWindowR(window);
+        this.syncFullscreenWindow(window);
     }
 
     @Override

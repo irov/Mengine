@@ -71,15 +71,8 @@ namespace Mengine
         NSString * adUnitId = [AppleString NSStringFromConstString:_adUnitId];
         NSString * placement = [AppleString NSStringFromConstString:_placement];
         
-        NSString * amazonBannerSlotId = nil;
-        
-#if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON)
-        amazonBannerSlotId = [m_amazonService getAmazonBannerSlotId];
-#endif
-        
         AppleAppLovinBannerDelegate * banner = [[AppleAppLovinBannerDelegate alloc] initWithAdUnitIdentifier:adUnitId
                                                                                                    placement:placement
-                                                                                                amazonSlotId:amazonBannerSlotId
                                                                                                     provider:_provider];
         
         if( banner == nil )
@@ -120,6 +113,24 @@ namespace Mengine
         }
         
         [banner hide];
+        
+        return true;
+    }
+    /////////////////////////////////////////////////////////////////////////
+    bool AppleAppLovinService::getBannerHeight( const ConstString & _adUnitId, uint32_t * const _height ) const
+    {
+        NSString * adUnit = [AppleString NSStringFromConstString:_adUnitId];
+        
+        AppleAppLovinBannerDelegate * banner = [m_banners objectForKey:adUnit];
+        
+        if( banner == nil )
+        {
+            return false;
+        }
+        
+        CGFloat banner_height = [banner getHeight];
+        
+        *_height = (uint32_t)banner_height;
         
         return true;
     }

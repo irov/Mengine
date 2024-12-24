@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 
 import org.Mengine.Base.MengineActivity;
@@ -173,7 +174,7 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroy(@NonNull MengineActivity activity) {
         if (m_refreshTimer != null) {
             m_refreshTimer.cancel();
             m_refreshTimer = null;
@@ -181,8 +182,6 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
 
         synchronized (this) {
             if (m_showBanner != null) {
-                MengineActivity activity = m_plugin.getMengineActivity();
-
                 ViewGroup viewGroup = activity.getContentViewGroup();
                 viewGroup.removeView(m_showBanner.view);
 

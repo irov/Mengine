@@ -42,10 +42,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
 
         m_rewardedAd = rewardedAd;
 
-        m_plugin.logMessage("[%s] create adUnitId: %s"
-            , m_adFormat.getLabel()
-            , m_adUnitId
-        );
+        this.log("create");
 
         m_plugin.setState("applovin.rewarded.state." + m_adUnitId, "init");
 
@@ -61,10 +58,16 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDestroy(@NonNull MengineActivity activity) {
+        super.onDestroy(activity);
 
         if (m_rewardedAd != null) {
+            m_rewardedAd.setListener(this);
+            m_rewardedAd.setRequestListener(this);
+            m_rewardedAd.setRevenueListener(this);
+            m_rewardedAd.setExpirationListener(this);
+            m_rewardedAd.setAdReviewListener(this);
+
             m_rewardedAd.destroy();
             m_rewardedAd = null;
         }

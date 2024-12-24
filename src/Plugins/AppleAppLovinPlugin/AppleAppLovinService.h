@@ -35,6 +35,7 @@ namespace Mengine
         bool hideBanner( const ConstString & _adUnitId ) override;
         
     public:
+        bool getBannerHeight( const ConstString & _adUnitId, uint32_t * const _height ) const override;
         bool getBannerViewport( const ConstString & _adUnitId, Viewport * const _viewport ) const override;
         
     public:

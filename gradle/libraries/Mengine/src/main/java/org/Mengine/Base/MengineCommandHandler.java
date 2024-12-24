@@ -11,7 +11,7 @@ public class MengineCommandHandler extends Handler {
 
     protected final MengineActivity m_activity;
 
-    public MengineCommandHandler(Looper looper, MengineActivity activity) {
+    public MengineCommandHandler(@NonNull Looper looper, @NonNull MengineActivity activity) {
         super(looper);
 
         m_activity = activity;

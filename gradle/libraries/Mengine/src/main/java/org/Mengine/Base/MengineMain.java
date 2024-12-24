@@ -2,6 +2,8 @@ package org.Mengine.Base;
 
 import android.os.Process;
 
+import androidx.annotation.NonNull;
+
 import java.util.concurrent.CountDownLatch;
 
 public class MengineMain implements Runnable {
@@ -13,7 +15,7 @@ public class MengineMain implements Runnable {
 
     protected Thread m_thread;
 
-    public MengineMain(Object nativeApplication) {
+    public MengineMain(@NonNull Object nativeApplication) {
         m_nativeApplication = nativeApplication;
     }
 

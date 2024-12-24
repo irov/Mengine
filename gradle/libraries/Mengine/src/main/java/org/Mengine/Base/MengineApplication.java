@@ -1294,6 +1294,21 @@ public class MengineApplication extends Application {
 
             l.onMengineLogger(this, level, filter, category, msg);
         }
+
+        if (BuildConfig.DEBUG == true) {
+            if (m_activity != null) {
+                switch (level) {
+                    case MengineLog.LM_FATAL:
+                        MengineUtils.showOkAlertDialog(m_activity, () -> {
+                            System.exit(0);
+                        }, "Fatal", "%s", msg);
+                        break;
+                    case MengineLog.LM_ERROR:
+                        MengineUtils.showToast(m_activity, msg);
+                        break;
+                }
+            }
+        }
     }
 
     public void onMengineAnalyticsEvent(@NonNull @Size(min = 1L,max = 40L) String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {

@@ -1,5 +1,6 @@
 package org.Mengine.Base;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Size;
 
 import java.lang.reflect.Field;
@@ -12,7 +13,7 @@ public class MengineService implements MengineServiceInterface {
     private boolean m_embedding;
     private Boolean m_availableStatus = null;
 
-    public boolean onInitialize(MengineApplication application, String serviceName, boolean embedding) {
+    public boolean onInitialize(@NonNull MengineApplication application, String serviceName, boolean embedding) {
         m_application = application;
         m_serviceName = serviceName;
         m_embedding = embedding;
@@ -20,7 +21,7 @@ public class MengineService implements MengineServiceInterface {
         return true;
     }
 
-    public void onFinalize(MengineApplication application) {
+    public void onFinalize(@NonNull MengineApplication application) {
         m_application = null;
     }
 
@@ -28,7 +29,7 @@ public class MengineService implements MengineServiceInterface {
         return m_application;
     }
 
-    public void setMengineActivity(MengineActivity activity) {
+    public void setMengineActivity(@NonNull MengineActivity activity) {
         m_activity = activity;
     }
 

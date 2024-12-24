@@ -40,7 +40,7 @@ public class MengineNetwork {
         return m_networkUnmetered;
     }
 
-    public static void setNetworkTransport(MengineNetworkTransport transport) {
+    public static void setNetworkTransport(@NonNull MengineNetworkTransport transport) {
         m_networkTransport = transport;
     }
 
@@ -48,7 +48,7 @@ public class MengineNetwork {
         return m_networkTransport;
     }
 
-    protected static HttpURLConnection openConnection(MengineHttpRequestParam request, String method, boolean output) throws IOException {
+    protected static HttpURLConnection openConnection(@NonNull MengineHttpRequestParam request, String method, boolean output) throws IOException {
         URL httpUrl = new URL(request.HTTP_URL);
 
         HttpURLConnection connection = (HttpURLConnection)httpUrl.openConnection();
@@ -62,7 +62,7 @@ public class MengineNetwork {
         return connection;
     }
 
-    protected static MengineHttpResponseParam processConnectionData(HttpURLConnection connection) throws IOException {
+    protected static MengineHttpResponseParam processConnectionData(@NonNull HttpURLConnection connection) throws IOException {
         connection.connect();
 
         MengineHttpResponseParam response = MengineNetwork.makeResponseData(connection);
@@ -73,7 +73,7 @@ public class MengineNetwork {
     }
 
     @Nullable
-    public static MengineHttpResponseParam httpRequestPing(MengineHttpRequestParam request) {
+    public static MengineHttpResponseParam httpRequestPing(@NonNull MengineHttpRequestParam request) {
         if (m_networkAvailable == false) {
             return null;
         }
@@ -92,7 +92,7 @@ public class MengineNetwork {
     }
 
     @Nullable
-    public static MengineHttpResponseParam httpRequestPostMessage(MengineHttpRequestParam request, Map<String, String> properties) {
+    public static MengineHttpResponseParam httpRequestPostMessage(@NonNull MengineHttpRequestParam request, Map<String, String> properties) {
         if (m_networkAvailable == false) {
             return null;
         }
@@ -113,7 +113,7 @@ public class MengineNetwork {
     }
 
     @Nullable
-    public static MengineHttpResponseParam httpRequestHeaderData(MengineHttpRequestParam request, byte[] data) {
+    public static MengineHttpResponseParam httpRequestHeaderData(@NonNull MengineHttpRequestParam request, byte[] data) {
         if (m_networkAvailable == false) {
             return null;
         }
@@ -134,7 +134,7 @@ public class MengineNetwork {
     }
 
     @Nullable
-    public static MengineHttpResponseParam httpRequestGetMessage(MengineHttpRequestParam request) {
+    public static MengineHttpResponseParam httpRequestGetMessage(@NonNull MengineHttpRequestParam request) {
         if (m_networkAvailable == false) {
             return null;
         }
@@ -153,7 +153,7 @@ public class MengineNetwork {
     }
 
     @Nullable
-    public static MengineHttpResponseParam httpRequestDeleteMessage(MengineHttpRequestParam request) {
+    public static MengineHttpResponseParam httpRequestDeleteMessage(@NonNull MengineHttpRequestParam request) {
         if (m_networkAvailable == false) {
             return null;
         }
@@ -172,7 +172,7 @@ public class MengineNetwork {
     }
 
     @Nullable
-    public static MengineHttpResponseParam httpRequestGetAsset(MengineHttpRequestParam request, String login, String password) {
+    public static MengineHttpResponseParam httpRequestGetAsset(@NonNull MengineHttpRequestParam request, String login, String password) {
         if (m_networkAvailable == false) {
             return null;
         }

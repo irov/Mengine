@@ -2,6 +2,7 @@ package org.Mengine.Base;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Size;
 
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class MengineLog {
 
     private static final ArrayList<HistoryRecord> m_history = new ArrayList<>();
 
-    public static void setMengineApplication(MengineApplication application) {
+    public static void setMengineApplication(@NonNull MengineApplication application) {
         MengineLog.m_application = application;
     }
 

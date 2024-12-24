@@ -3,6 +3,7 @@ package org.Mengine.Base;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
 public class MengineTransparencyConsentParam {
@@ -25,7 +26,7 @@ public class MengineTransparencyConsentParam {
     public String TRANSPARENCYCONSENT_PUBLISHERCUSTOMPURPOSESCONSENTS;
     public String TRANSPARENCYCONSENT_PUBLISHERCUSTOMPURPOSESLEGITIMATEINTERESTS;
 
-    public void initFromDefaultSharedPreferences(Context context) {
+    public void initFromDefaultSharedPreferences(@NonNull Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
         TRANSPARENCYCONSENT_CMPSDKID = preferences.getInt("IABTCF_CmpSdkID", 0);

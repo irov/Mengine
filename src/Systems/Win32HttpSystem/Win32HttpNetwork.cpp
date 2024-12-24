@@ -668,7 +668,7 @@ namespace Mengine
                 const Char * credentials_str = credentials.c_str();
                 ArrayString<1024>::size_type credentials_size = credentials.size();
 
-                CHAR bstrEncoded[1024];
+                CHAR bstrEncoded[1024 + 1] = {'\0'};
                 DWORD dwSize = 1024;
                 ::CryptBinaryToStringA( (const BYTE *)credentials_str, credentials_size, CRYPT_STRING_BASE64 | CRYPT_STRING_NOCRLF, bstrEncoded, &dwSize );
 

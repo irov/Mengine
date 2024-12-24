@@ -3125,7 +3125,7 @@ namespace Mengine
             {
                 uint32_t botId = GET_OPTION_VALUE_UINT32( "bot", Engine_BotId );
 
-                WChar suffixBuffer[16];
+                WChar suffixBuffer[32 + 1] = {L'\0'};
                 Helper::stringalized( botId, suffixBuffer, 32 );
 
                 StdString::wcscat( currentDirectory, suffixBuffer );

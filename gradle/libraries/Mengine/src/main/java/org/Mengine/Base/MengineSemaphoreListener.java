@@ -1,9 +1,11 @@
 package org.Mengine.Base;
 
+import androidx.annotation.NonNull;
+
 public class MengineSemaphoreListener {
     private Object m_impl;
 
-    MengineSemaphoreListener(Object impl) {
+    MengineSemaphoreListener(@NonNull Object impl) {
         m_impl = impl;
     }
 

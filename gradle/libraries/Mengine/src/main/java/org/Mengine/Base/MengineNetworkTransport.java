@@ -16,7 +16,7 @@ public class MengineNetworkTransport {
 
     private final String m_name;
 
-    MengineNetworkTransport(String name) {
+    MengineNetworkTransport(@NonNull String name) {
         m_name = name;
     }
 

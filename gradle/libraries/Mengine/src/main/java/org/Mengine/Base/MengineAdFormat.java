@@ -15,7 +15,7 @@ public class MengineAdFormat {
 
     private final String m_name;
 
-    MengineAdFormat(String name) {
+    MengineAdFormat(@NonNull String name) {
         m_name = name;
     }
 

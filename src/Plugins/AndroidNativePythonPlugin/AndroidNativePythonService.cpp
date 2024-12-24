@@ -823,7 +823,7 @@ namespace Mengine
 
             _jenv->DeleteLocalRef( plugin_class );
 
-            LOGGER_ERROR( "android plugin '%s' not found method '%s' with signature '%s'"
+            LOGGER_FATAL( "android plugin '%s' not found method '%s' with signature '%s'"
                 , _plugin.c_str()
                 , _method.c_str()
                 , signature

@@ -1,5 +1,6 @@
 package org.Mengine.Base;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Size;
 
 import java.util.HashMap;
@@ -12,7 +13,7 @@ public class MengineAnalytics {
     private static final Map<String, Object> m_bases = new HashMap<>();
     private static final Map<String, Object> m_getter = new HashMap<>();
 
-    public static void setMengineApplication(MengineApplication application) {
+    public static void setMengineApplication(@NonNull MengineApplication application) {
         MengineAnalytics.m_application = application;
     }
 

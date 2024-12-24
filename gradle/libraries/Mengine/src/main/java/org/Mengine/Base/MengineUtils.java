@@ -580,7 +580,7 @@ public class MengineUtils {
         return true;
     }
 
-    public static void showToast(Activity activity, String format, Object ... args) {
+    public static void showToast(@NonNull Activity activity, String format, Object ... args) {
         activity.runOnUiThread(() -> {
             String message = MengineLog.buildTotalMsg(format, args);
 
@@ -590,7 +590,7 @@ public class MengineUtils {
         });
     }
 
-    public static void showOkAlertDialog(Activity activity, Runnable ok, String title, String format, Object ... args) {
+    public static void showOkAlertDialog(@NonNull Activity activity, Runnable ok, String title, String format, Object ... args) {
         activity.runOnUiThread(() -> {
             String message = MengineLog.buildTotalMsg(format, args);
 
@@ -617,7 +617,7 @@ public class MengineUtils {
         });
     }
 
-    public static void showAreYouSureAlertDialog(Activity activity, Runnable yes, Runnable cancel, long delayMillis, String title, String format, Object ... args) {
+    public static void showAreYouSureAlertDialog(@NonNull Activity activity, Runnable yes, Runnable cancel, long delayMillis, String title, String format, Object ... args) {
         activity.runOnUiThread(() -> {
             String message = MengineLog.buildTotalMsg(format, args);
 
@@ -672,7 +672,7 @@ public class MengineUtils {
         });
     }
 
-    public static void finishActivityWithAlertDialog(Activity activity, String format, Object... args) {
+    public static void finishActivityWithAlertDialog(@NonNull Activity activity, String format, Object... args) {
         MengineLog.logErrorException(TAG, format, args);
 
         MengineUtils.showOkAlertDialog(activity, () -> {

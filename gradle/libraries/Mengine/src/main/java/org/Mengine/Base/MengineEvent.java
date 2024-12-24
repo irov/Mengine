@@ -8,7 +8,7 @@ public class MengineEvent {
 
     private final String m_name;
 
-    MengineEvent(String name) {
+    MengineEvent(@NonNull String name) {
         m_name = name;
     }
 

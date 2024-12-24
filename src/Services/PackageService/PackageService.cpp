@@ -419,12 +419,12 @@ namespace Mengine
         {
             const PackageDesc & desc = package->getPackageDesc();
 
-            if( Algorithm::find( desc.locales.begin(), desc.locales.end(), _locale ) == desc.locales.end() )
+            if( _platformTags.hasTags( desc.platform ) == false )
             {
                 continue;
             }
 
-            if( _platformTags.hasTags( desc.platform ) == false )
+            if( Algorithm::find( desc.locales.begin(), desc.locales.end(), _locale ) == desc.locales.end() )
             {
                 continue;
             }
@@ -476,7 +476,15 @@ namespace Mengine
                     , Helper::tagsToString( _platformTags ).c_str()
                 );
 
-                this->loadLocalePacksByName_( m_defaultLocale, _platformTags, &packages );
+                if( this->loadLocalePacksByName_( m_defaultLocale, _platformTags, &packages ) == false )
+                {
+                    LOGGER_ERROR( "not found default locale '%s' platform '%s' pack"
+                        , m_defaultLocale.c_str()
+                        , Helper::tagsToString( _platformTags ).c_str()
+                    );
+
+                    return false;
+                }
             }
         }
 

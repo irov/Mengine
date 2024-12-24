@@ -7,7 +7,7 @@ public class MengineAdMediation {
 
     private final String m_name;
 
-    MengineAdMediation(String name) {
+    MengineAdMediation(@NonNull String name) {
         m_name = name;
     }
 

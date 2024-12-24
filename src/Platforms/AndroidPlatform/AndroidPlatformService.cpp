@@ -21,7 +21,6 @@
 #include "Environment/Android/AndroidHelper.h"
 #include "Environment/Android/AndroidApplicationHelper.h"
 #include "Environment/Android/AndroidActivityHelper.h"
-#include "Environment/Android/AndroidPlatformServiceExtensionInterface.h"
 #include "Environment/Android/AndroidSemaphoreListenerInterface.h"
 
 #include "AndroidAnalyticsEventProvider.h"
@@ -320,7 +319,7 @@ extern "C"
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1keyEvent )(JNIEnv * env, jclass cls, jboolean isDown, jint keyCode, jint repeatCount)
     {
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
-                ->getUnknown();
+            ->getUnknown();
 
         platformExtension->androidNativeKeyEvent( isDown, keyCode, repeatCount );
     }

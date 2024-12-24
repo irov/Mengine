@@ -1,5 +1,7 @@
 package org.Mengine.Base;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 
 public class MengineSemaphore {
@@ -23,7 +25,7 @@ public class MengineSemaphore {
         return listeners;
     }
 
-    public void addListener(MengineSemaphoreListener _listener) {
+    public void addListener(@NonNull MengineSemaphoreListener _listener) {
         m_listeners.add(_listener);
     }
 }

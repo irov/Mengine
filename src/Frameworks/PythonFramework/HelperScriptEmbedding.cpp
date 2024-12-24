@@ -898,15 +898,15 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLATFORM_ANDROID)
             //////////////////////////////////////////////////////////////////////////
-            String s_getAndroidId()
+            PyObject * s_getAndroidId( pybind::kernel_interface * _kernel )
             {
                 AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
                     ->getUnknown();
 
-                Char androidId[128];
-                platformExtension->androidNativeGetAndroidId( androidId, 128 );
+                Char androidId[128] = {'\0'};
+                size_t androidIdLen = platformExtension->androidNativeGetAndroidId( androidId, 128 );
 
-                return String( androidId );
+                return _kernel->string_from_char_size( androidId, androidIdLen );
             }
             //////////////////////////////////////////////////////////////////////////
 #endif
@@ -4524,7 +4524,7 @@ namespace Mengine
         pybind::def_functor_kernel( _kernel, "decompressBase64", helperScriptMethod, &HelperScriptMethod::s_decompressBase64 );
 
 #if defined(MENGINE_PLATFORM_ANDROID)
-        pybind::def_functor( _kernel, "getAndroidId", helperScriptMethod, &HelperScriptMethod::s_getAndroidId );
+        pybind::def_functor_kernel( _kernel, "getAndroidId", helperScriptMethod, &HelperScriptMethod::s_getAndroidId );
 #endif
 
         m_implement = helperScriptMethod;

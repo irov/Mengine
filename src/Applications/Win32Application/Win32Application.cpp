@@ -92,7 +92,7 @@ namespace Mengine
         {
             PWSTR arg = szArglist[i];
 
-            CHAR utf_arg[1024];
+            CHAR utf_arg[1024 + 1] = {'\0'};
             int32_t utf_arg_size = ::WideCharToMultiByte( CP_UTF8, dwConversionFlags, arg, -1, utf_arg, 1024, NULL, NULL );
 
             if( utf_arg_size <= 0 )

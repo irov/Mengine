@@ -148,6 +148,11 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
 
         long futureInMillis = SystemClock.elapsedRealtime() + delay;
         AlarmManager alarmManager = (AlarmManager)activity.getSystemService(Context.ALARM_SERVICE);
+
+        if (alarmManager == null) {
+            return;
+        }
+
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
     }
 
@@ -163,6 +168,11 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
         MengineActivity activity = this.getMengineActivity();
         
         NotificationManager notificationManager = (NotificationManager)activity.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (notificationManager == null) {
+            return;
+        }
+
         notificationManager.notify(id, notification);
     }
     
@@ -173,6 +183,10 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationManager notificationManager = (NotificationManager)activity.getSystemService(Context.NOTIFICATION_SERVICE);
+
+            if (notificationManager == null) {
+                return;
+            }
 
             int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, importance);
@@ -204,10 +218,15 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
         MengineActivity activity = this.getMengineActivity();
         
         NotificationManager notificationManager = (NotificationManager)activity.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancelAll();
+
+        if (notificationManager != null) {
+            notificationManager.cancelAll();
+        }
 
         JobScheduler jobScheduler = (JobScheduler)activity.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-        jobScheduler.cancelAll();
+        if (jobScheduler != null) {
+            jobScheduler.cancelAll();
+        }
     }
 
     protected void parseInternalLocalNotifications(MengineActivity activity) {
@@ -367,6 +386,11 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
             .build();
 
         JobScheduler jobScheduler = (JobScheduler)activity.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+
+        if (jobScheduler == null) {
+            return;
+        }
+
         jobScheduler.schedule(jobInfo);
     }
 }

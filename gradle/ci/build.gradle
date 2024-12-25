@@ -1,0 +1,1 @@
+apply from: rootProject.projectDir.getAbsolutePath() + '/app.gradle'

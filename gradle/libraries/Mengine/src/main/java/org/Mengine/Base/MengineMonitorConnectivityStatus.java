@@ -105,7 +105,10 @@ public class MengineMonitorConnectivityStatus extends MengineService implements 
         Context context = application.getApplicationContext();
 
         ConnectivityManager connectivityManager = context.getSystemService(ConnectivityManager.class);
-        connectivityManager.registerDefaultNetworkCallback(networkCallback);
+
+        if (connectivityManager != null) {
+            connectivityManager.registerDefaultNetworkCallback(networkCallback);
+        }
 
         m_networkCallback = networkCallback;
     }
@@ -123,7 +126,10 @@ public class MengineMonitorConnectivityStatus extends MengineService implements 
         Context context = application.getApplicationContext();
 
         ConnectivityManager connectivityManager = context.getSystemService(ConnectivityManager.class);
-        connectivityManager.unregisterNetworkCallback(m_networkCallback);
+
+        if (connectivityManager != null) {
+            connectivityManager.unregisterNetworkCallback(m_networkCallback);
+        }
 
         m_networkCallback = null;
     }

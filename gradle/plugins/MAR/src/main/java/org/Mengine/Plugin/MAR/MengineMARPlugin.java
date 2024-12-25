@@ -260,6 +260,12 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
 
             ClipboardManager clipboard = (ClipboardManager)context.getSystemService(Context.CLIPBOARD_SERVICE);
 
+            if (clipboard == null) {
+                this.logError("[ERROR] pasteCode clipboard is null");
+
+                return false;
+            }
+
             boolean hasPrimaryClip = clipboard.hasPrimaryClip();
 
             if (hasPrimaryClip == true) {

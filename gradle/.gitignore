@@ -11,4 +11,4 @@
 /daemon
 /native
 **/build/**
-app__*
+app_*

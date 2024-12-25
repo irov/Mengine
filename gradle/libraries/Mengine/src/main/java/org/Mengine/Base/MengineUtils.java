@@ -286,6 +286,10 @@ public class MengineUtils {
     public static int getBatteryLevel(Context context) {
         BatteryManager bm = (BatteryManager)context.getSystemService(Context.BATTERY_SERVICE);
 
+        if (bm == null) {
+            return Integer.MIN_VALUE;
+        }
+
         int batteryLevel = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
 
         return batteryLevel;
@@ -297,6 +301,10 @@ public class MengineUtils {
         }
 
         BatteryManager bm = (BatteryManager)context.getSystemService(Context.BATTERY_SERVICE);
+
+        if (bm == null) {
+            return BatteryManager.BATTERY_STATUS_UNKNOWN;
+        }
 
         int batteryStatus = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_STATUS);
 
@@ -346,6 +354,10 @@ public class MengineUtils {
     public static long getRamTotal(Context context) {
         ActivityManager activityManager = (ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);
 
+        if (activityManager == null) {
+            return 0;
+        }
+
         ActivityManager.MemoryInfo memInfo = new ActivityManager.MemoryInfo();
         activityManager.getMemoryInfo(memInfo);
 
@@ -356,6 +368,10 @@ public class MengineUtils {
 
     public static long getRamUsage(Context context) {
         ActivityManager activityManager = (ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);
+
+        if (activityManager == null) {
+            return 0;
+        }
 
         ActivityManager.MemoryInfo memInfo = new ActivityManager.MemoryInfo();
         activityManager.getMemoryInfo(memInfo);
@@ -525,6 +541,11 @@ public class MengineUtils {
         int mypid = android.os.Process.myPid();
 
         ActivityManager manager = (ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);
+
+        if (manager == null) {
+            return null;
+        }
+
         List<ActivityManager.RunningAppProcessInfo> infos = manager.getRunningAppProcesses();
 
         if (infos == null) {
@@ -886,6 +907,11 @@ public class MengineUtils {
             return context.getDisplay();
         } else {
             WindowManager windowManager = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+
+            if (windowManager == null) {
+                return null;
+            }
+
             return windowManager.getDefaultDisplay();
         }
     }
@@ -895,6 +921,11 @@ public class MengineUtils {
     {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
             WindowManager windowManager = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+
+            if (windowManager == null) {
+                return null;
+            }
+
             WindowMetrics windowMetrics = windowManager.getCurrentWindowMetrics();
 
             Rect bounds = windowMetrics.getBounds();
@@ -937,6 +968,11 @@ public class MengineUtils {
 
     public static boolean isAppInForeground(Context context) {
         ActivityManager activityManager = (ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);
+
+        if (activityManager == null) {
+            return false;
+        }
+
         List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
 
         if (appProcesses == null) {

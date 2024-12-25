@@ -4,14 +4,10 @@ apply from: rootProject.projectDir.getAbsolutePath() + '/base.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/androidx.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/split.gradle'
 
-def ANDROID_APP_ASSETS_RES_CI = Utils.getBooleanProperty("ANDROID_APP_ASSETS_RES_CI", false)
-
 android {
     sourceSets {
         main {
-            if (ANDROID_APP_ASSETS_RES_CI == true) {
-                res.srcDirs += ['../../app/res_ci']
-            } else if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR")) {
+            if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR")) {
                 def f = new File(ANDROID_APP_ASSETS_RES_DIR)
 
                 if (f.exists() == false) {

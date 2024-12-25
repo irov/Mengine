@@ -53,6 +53,12 @@ println("\u001b[32m" + "=== Start configure ===" + "\u001b[0m")
 
 val ANDROID_APP_MAIN_PROJECT = getStringProperty("ANDROID_APP_MAIN_PROJECT", "app");
 
+if (file(ANDROID_APP_MAIN_PROJECT).exists() == false) {
+    println("\u001b[31m" + "[-] Not found $ANDROID_APP_MAIN_PROJECT" + "\u001b[0m")
+
+    throw kotlin.Exception("Not found $ANDROID_APP_MAIN_PROJECT")
+}
+
 val fileAppProperties = file("$ANDROID_APP_MAIN_PROJECT/app.properties")
 
 if (fileAppProperties.exists() == true) {

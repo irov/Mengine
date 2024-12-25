@@ -70,8 +70,13 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
         this.setOnTouchListener(this);
 
         if (m_sensorManager != null) {
-            m_sensorManager.registerListener(this, m_accelerometer, SensorManager.SENSOR_DELAY_GAME);
-            m_sensorManager.registerListener(this, m_linearAccelerometer, SensorManager.SENSOR_DELAY_GAME);
+            if (m_accelerometer != null) {
+                m_sensorManager.registerListener(this, m_accelerometer, SensorManager.SENSOR_DELAY_GAME);
+            }
+
+            if (m_linearAccelerometer != null) {
+                m_sensorManager.registerListener(this, m_linearAccelerometer, SensorManager.SENSOR_DELAY_GAME);
+            }
         }
 
         MengineNative.AndroidPlatform_resumeEvent();

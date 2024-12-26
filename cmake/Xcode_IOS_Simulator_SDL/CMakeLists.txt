@@ -1,12 +1,12 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
 
-SET(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/../xcode_ios_simulator_toolchains.cmake")
+SET(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_LIST_DIR}/../xcode_ios_simulator_toolchains.cmake")
 
 SET(MENGINE_PROJECT_NAME "Mengine_Xcode_IOS_Simulator_SDL" CACHE STRING "Mengine project name" FORCE)
 
 PROJECT(${MENGINE_PROJECT_NAME})
 
-SET(MENGINE_REPOSITORY ${CMAKE_CURRENT_SOURCE_DIR}/../..)
+SET(MENGINE_REPOSITORY ${CMAKE_CURRENT_LIST_DIR}/../..)
 
 INCLUDE(${MENGINE_REPOSITORY}/cmake/master_options_template.cmake)
 INCLUDE(${MENGINE_REPOSITORY}/cmake/base_template.cmake)

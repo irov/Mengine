@@ -5,7 +5,7 @@ OPTION(MENGINE_BUILD_MENGINE_DEVELOPMENT "Mengine build development" OFF)
 OPTION(MENGINE_USE_PRECOMPILED_HEADER "Mengine use precompiled header" OFF)
 OPTION(MENGINE_USE_SCRIPT_SERVICE "Mengine use script" ON)
 OPTION(MENGINE_EXTERNAL_PDB "Mengine external pdb" OFF)
-OPTION(MENGINE_EXTERNAL_SOURCE "Mengine external sources" OFF)
+OPTION(MENGINE_EXTERNAL_BOOTSTRAPPER_NAME "Mengine external bootstrapper" OFF)
 OPTION(MENGINE_USE_SUBFOLDER "Mengine use subfolder" OFF)
 
 SET(MENGINE_EXTERNAL_PDB_PATH "" CACHE STRING "Mengine external pdb path")

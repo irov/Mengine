@@ -340,7 +340,7 @@ namespace Mengine
 
         if( hasGlobalAccount == false )
         {
-            LOGGER_INFO( "game", "game create global account" );
+            LOGGER_INFO( "game", "create global account" );
 
             EVENTABLE_METHOD( EVENT_GAME_CREATE_GLOBAL_ACCOUNT )
                 ->onGameCreateGlobalAccount();
@@ -351,7 +351,7 @@ namespace Mengine
 
         if( hasCurrentAccount == false )
         {
-            LOGGER_INFO( "game", "game create default account" );
+            LOGGER_INFO( "game", "create default account" );
 
             EVENTABLE_METHOD( EVENT_GAME_CREATE_DEFAULT_ACCOUNT )
                 ->onGameCreateDefaultAccount();
@@ -397,7 +397,7 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_MESSAGE( "personality preparation [%s]"
+        LOGGER_INFO( "game", "preparation [%s]"
             , is_debug == true ? "debug" : "release"
         );
 
@@ -406,7 +406,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void GameService::run()
     {
-        LOGGER_MESSAGE( "run game" );
+        LOGGER_INFO( "game", "run" );
 
         EVENTABLE_METHOD( EVENT_GAME_RUN )
             ->onGameRun();
@@ -414,7 +414,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void GameService::interruption()
     {
-        LOGGER_MESSAGE( "interruption game" );
+        LOGGER_INFO( "game", "interruption" );
 
         EVENTABLE_METHOD( EVENT_GAME_INTERRUPTION )
             ->onGameInterruption();
@@ -422,7 +422,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void GameService::stop()
     {
-        LOGGER_MESSAGE( "stop game" );
+        LOGGER_INFO( "game", "stop" );
 
         EVENTABLE_METHOD( EVENT_GAME_STOP )
             ->onGameStop();

@@ -180,7 +180,7 @@ SERVICE_EXTERN( AppleKernelService );
 SERVICE_EXTERN( iOSKernelService );
 #endif
 //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_EXTERNAL_SOURCE)
+#if defined(MENGINE_EXTERNAL_BOOTSTRAPPER)
 PLUGIN_EXPORT( ExternalBootstrapper );
 #endif
 //////////////////////////////////////////////////////////////////////////
@@ -1261,8 +1261,8 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( AppleSentry, "plugin AppleSentry...", MENGINE_DOCUMENT_FACTORABLE );
 #endif        
 
-#if defined(MENGINE_EXTERNAL_SOURCE)
-        MENGINE_ADD_PLUGIN( ExternalBootstrapper, "initialize external Bootstrapper...", MENGINE_DOCUMENT_FACTORABLE );
+#if defined(MENGINE_EXTERNAL_BOOTSTRAPPER)
+        MENGINE_ADD_PLUGIN( ExternalBootstrapper, "initialize external Bootstrapper [" MENGINE_PP_STRINGIZE( MENGINE_EXTERNAL_BOOTSTRAPPER ) "]...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #if defined(MENGINE_PLUGIN_PYTHONFRAMEWORK_STATIC)

@@ -6,7 +6,7 @@ SET(MENGINE_PROJECT_NAME "Mengine_Android" CACHE STRING "Mengine project name")
 
 PROJECT(${MENGINE_PROJECT_NAME})
 
-SET(MENGINE_REPOSITORY ${CMAKE_CURRENT_SOURCE_DIR}/../../..)
+SET(MENGINE_REPOSITORY ${CMAKE_CURRENT_LIST_DIR}/../../..)
 
 INCLUDE(${MENGINE_REPOSITORY}/cmake/master_options_template.cmake)
 INCLUDE(${MENGINE_REPOSITORY}/cmake/base_template.cmake)

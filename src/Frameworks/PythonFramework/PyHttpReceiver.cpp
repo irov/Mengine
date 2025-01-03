@@ -13,14 +13,6 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PyHttpReceiver::initialize( const pybind::object & _cb, const pybind::args & _args )
-    {
-        m_cb = _cb;
-        m_args = _args;
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void PyHttpReceiver::onHttpRequestComplete( const HttpResponseInterfacePtr & _response )
     {
         const HttpRequestInterfacePtr & request = _response->getRequest();
@@ -37,7 +29,7 @@ namespace Mengine
         EHttpCode code = _response->getCode();
         bool successful = _response->isSuccessful();
                 
-        m_cb.call_args( requestId, status, errorMessage, json, code, successful, m_args );
+        this->call_cb( requestId, status, errorMessage, json, code, successful );
     }
     //////////////////////////////////////////////////////////////////////////
 }

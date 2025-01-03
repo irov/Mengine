@@ -3,6 +3,7 @@
 #include "GOAP/NodeInterface.h"
 
 #include "Kernel/Affector.h"
+#include "Kernel/Factorable.h"
 
 #include "Config/Lambda.h"
 

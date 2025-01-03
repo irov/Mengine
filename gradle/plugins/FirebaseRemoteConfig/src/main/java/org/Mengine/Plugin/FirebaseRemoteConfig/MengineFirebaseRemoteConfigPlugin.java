@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MengineFirebaseRemoteConfigPlugin extends MengineService implements MengineListenerApplication, MengineListenerActivity {
-    public static final String SERVICE_NAME = "MengineFBRemoteConfig";
+    public static final String SERVICE_NAME = "FBRemoteConfig";
     public static final boolean SERVICE_EMBEDDING = true;
 
     private static final String METADATA_MINIMUM_FETCH_INTERVAL = "mengine.firebase_remote_config.minimum_fetch_interval";

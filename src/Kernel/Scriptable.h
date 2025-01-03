@@ -35,12 +35,8 @@ namespace Mengine
         const ScriptWrapperInterfacePtr & getScriptWrapper() const;
 
     protected:
-        PyObject * _embedded( pybind::kernel_interface * _kernel );
-
-    protected:
         ScriptWrapperInterfacePtr m_scriptWrapper;
 
-        pybind::kernel_interface * m_kernel;
         PyObject * m_embed;
     };
     //////////////////////////////////////////////////////////////////////////

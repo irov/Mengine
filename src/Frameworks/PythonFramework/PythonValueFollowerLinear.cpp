@@ -12,15 +12,14 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonValueFollowerLinear::initialize( float _value, float _speed, const pybind::object & _cb, const pybind::args & _args )
+    void PythonValueFollowerLinear::initialize( float _value, float _speed, const pybind::object & _cb, const pybind::args & _args )
     {
         this->resetValue( _value );
         this->setSpeed( _speed );
-        this->setCb( _cb, _args );
+
+        PythonValueFollower::initialize( _cb, _args );
 
         m_cacheValue = _value;
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonValueFollowerLinear::setSpeed( float _value )
@@ -74,7 +73,7 @@ namespace Mengine
         {
             m_cacheValue = value;
 
-            this->callCb( value );
+            this->call_cb( value );
         }
 
         return false;

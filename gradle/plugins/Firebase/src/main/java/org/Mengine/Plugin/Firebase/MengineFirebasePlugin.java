@@ -10,7 +10,7 @@ import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import com.google.firebase.FirebaseApp;
 
 public class MengineFirebasePlugin extends MengineService implements MengineListenerApplication {
-    public static final String SERVICE_NAME = "MengineFB";
+    public static final String SERVICE_NAME = "FB";
 
     @Override
     public void onAppInit(@NonNull MengineApplication application, boolean isMainProcess) throws MengineServiceInvalidInitializeException {

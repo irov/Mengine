@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/Interface.h"
+#include "Kernel/Mixin.h"
 
 #include "Config/UniqueId.h"
 
@@ -10,7 +10,7 @@ namespace Mengine
     class Animatable;
     //////////////////////////////////////////////////////////////////////////
     class AnimationInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual Animatable * getAnimatable() = 0;

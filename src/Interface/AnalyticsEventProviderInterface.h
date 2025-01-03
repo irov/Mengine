@@ -1,15 +1,15 @@
 #pragma once
 
-#include "Interface/Interface.h"
 #include "Interface/AnalyticsEventInterface.h"
 
+#include "Kernel/Mixin.h"
 #include "Kernel/ConstString.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class AnalyticsEventProviderInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual void onAnalyticsEvent( const AnalyticsEventInterfacePtr & _event ) = 0;

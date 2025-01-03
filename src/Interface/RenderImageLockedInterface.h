@@ -1,14 +1,13 @@
 #pragma once
 
-#include "Interface/Interface.h"
-
+#include "Kernel/Mixin.h"
 #include "Kernel/Pointer.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class RenderImageLockedInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual Pointer getBuffer( size_t * const _pitch ) const = 0;

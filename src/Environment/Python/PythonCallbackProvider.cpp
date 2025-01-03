@@ -1,0 +1,42 @@
+#include "PythonCallbackProvider.h"
+
+namespace Mengine
+{
+    //////////////////////////////////////////////////////////////////////////
+    PythonCallbackProvider::PythonCallbackProvider()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    PythonCallbackProvider::PythonCallbackProvider( const pybind::object & _cb, const pybind::args & _args )
+        : m_cb( _cb )
+        , m_args( _args )
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PythonCallbackProvider::initialize( const pybind::object & _cb, const pybind::args & _args )
+    {
+        m_cb = _cb;
+        m_args = _args;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PythonCallbackProvider::finalize()
+    {
+        m_cb = nullptr;
+        m_args = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    PythonCallbackProvider::~PythonCallbackProvider()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const pybind::object & PythonCallbackProvider::get_cb() const
+    {
+        return m_cb;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const pybind::args & PythonCallbackProvider::get_args() const
+    {
+        return m_args;
+    }
+    //////////////////////////////////////////////////////////////////////////
+}

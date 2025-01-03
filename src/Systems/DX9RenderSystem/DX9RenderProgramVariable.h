@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/RenderProgramVariableInterface.h"
+#include "Interface/RenderProgramInterface.h"
 
 #include "Environment/DirectX9/DX9RenderIncluder.h"
 

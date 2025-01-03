@@ -16,7 +16,7 @@ namespace Mengine
         ~PythonValueFollowerLinear() override;
 
     public:
-        bool initialize( float _value, float _speed, const pybind::object & _cb, const pybind::args & _args );
+        void initialize( float _value, float _speed, const pybind::object & _cb, const pybind::args & _args );
 
     public:
         void setSpeed( float _value );

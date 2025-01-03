@@ -31,6 +31,7 @@
 
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonDocumentTraceback.h"
+#include "Environment/Python/PythonCallbackProvider.h"
 
 #if defined(MENGINE_PLATFORM_ANDROID)
 #   include "Environment/Android/AndroidPlatformServiceExtensionInterface.h"
@@ -1527,39 +1528,6 @@ namespace Mengine
                 return t;
             }
             //////////////////////////////////////////////////////////////////////////
-#if defined(PYBIND_VISIT_OBJECTS)
-            class MyObjectVisits
-                : public pybind::pybind_visit_objects
-            {
-            public:
-                MyObjectVisits( const pybind::list & _py_list )
-                    : m_py_list( _py_list )
-                {
-                }
-
-            protected:
-                void visit( PyObject * _obj ) override
-                {
-                    m_py_list.append( _obj );
-                }
-
-            protected:
-                pybind::list m_py_list;
-            };
-#endif
-            //////////////////////////////////////////////////////////////////////////
-            pybind::list s_objects( pybind::kernel_interface * _kernel )
-            {
-                pybind::list py_list( _kernel );
-
-#if defined(PYBIND_VISIT_OBJECTS)
-                MyObjectVisits mov( py_list );
-                pybind::visit_objects( &mov );
-#endif
-
-                return py_list;
-            }
-            //////////////////////////////////////////////////////////////////////////
             pybind::list s_textures( pybind::kernel_interface * _kernel )
             {
                 pybind::list py_list( _kernel );
@@ -1834,8 +1802,9 @@ namespace Mengine
             }
             //////////////////////////////////////////////////////////////////////////
             class PythonAccountSettingProvider
-                : public Factorable
-                , public AccountSettingProviderInterface
+                : public AccountSettingProviderInterface
+                , public PythonCallbackProvider
+                , public Factorable
             {
                 DECLARE_FACTORABLE( PythonAccountSettingProvider );
 
@@ -1843,8 +1812,7 @@ namespace Mengine
                 PythonAccountSettingProvider( pybind::kernel_interface * _kernel, const ConstString & _accountId, const pybind::object & _cb, const pybind::args & _args )
                     : m_kernel( _kernel )
                     , m_accountId( _accountId )
-                    , m_cb( _cb )
-                    , m_args( _args )
+                    , PythonCallbackProvider( _cb, _args )
                 {
                 }
 
@@ -1857,7 +1825,7 @@ namespace Mengine
                 {
                     PyObject * pyunicode_value = m_kernel->unicode_from_utf8( _value );
 
-                    m_cb.call_args( m_accountId, pyunicode_value, m_args );
+                    this->call_cb( m_accountId, pyunicode_value );
 
                     m_kernel->decref( pyunicode_value );
                 }
@@ -1866,9 +1834,6 @@ namespace Mengine
                 pybind::kernel_interface * m_kernel;
 
                 ConstString m_accountId;
-
-                pybind::object m_cb;
-                pybind::args m_args;
             };
             //////////////////////////////////////////////////////////////////////////
             typedef IntrusivePtr<PythonAccountSettingProvider, AccountSettingProviderInterface> PyAccountSettingProviderPtr;
@@ -1893,12 +1858,7 @@ namespace Mengine
                     return false;
                 }
 
-                PyAccountSettingProviderPtr provider = nullptr;
-
-                if( _cb.is_none() == false )
-                {
-                    provider = Helper::makeFactorableUnique<PythonAccountSettingProvider>( MENGINE_DOCUMENT_PYBIND, _kernel, _accountId, _cb, _args );
-                }
+                PyAccountSettingProviderPtr provider = Helper::makeFactorableUnique<PythonAccountSettingProvider>( MENGINE_DOCUMENT_PYBIND, _kernel, _accountId, _cb, _args );
 
                 const Char * utf8_defaultValue = _kernel->unicode_to_utf8( _defaultValue );
 
@@ -4410,7 +4370,6 @@ namespace Mengine
         pybind::def_functor_args( _kernel, "makeTags", helperScriptMethod, &HelperScriptMethod::s_makeTags );
 
 
-        pybind::def_functor_kernel( _kernel, "objects", helperScriptMethod, &HelperScriptMethod::s_objects );
         pybind::def_functor_kernel( _kernel, "textures", helperScriptMethod, &HelperScriptMethod::s_textures );
 
         pybind::def_functor( _kernel, "watchdog", helperScriptMethod, &HelperScriptMethod::s_watchdog );

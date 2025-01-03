@@ -1,9 +1,9 @@
 #pragma once
 
 #if defined(MENGINE_USE_SCRIPT_SERVICE)
-#include "Kernel/ScriptablePrototypeGenerator.h"
+#   include "Kernel/ScriptablePrototypeGenerator.h"
 #else
-#include "Kernel/DefaultPrototypeGenerator.h"
+#   include "Kernel/DefaultPrototypeGenerator.h"
 #endif
 
 #include "Kernel/Resource.h"

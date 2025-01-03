@@ -34,8 +34,8 @@ namespace Mengine
             ValueFollowerLinear<float> follower;
         };
 
-        typedef Vector<Element> VectorMixerElement;
-        VectorMixerElement m_mixer;
+        typedef Vector<Element> VectorElement;
+        VectorElement m_mixer;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<MixerValue, MixerValueInterface> MixerValuePtr;

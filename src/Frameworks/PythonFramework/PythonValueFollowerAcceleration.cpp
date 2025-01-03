@@ -17,7 +17,8 @@ namespace Mengine
         this->resetValue( _value );
         this->setSpeed( _speed );
         this->setAcceleration( _acceleration );
-        this->setCb( _cb, _args );
+        
+        PythonValueFollower::initialize( _cb, _args );
 
         m_cacheValue = _value;
 
@@ -87,7 +88,7 @@ namespace Mengine
         {
             m_cacheValue = value;
 
-            this->callCb( value );
+            this->call_cb( value );
         }
 
         return false;

@@ -21,38 +21,16 @@ namespace Mengine
         : public Mixin
     {
     public:
-        PythonEventReceiver()
-            : m_kernel( nullptr )
-        {
-        };
-
-        ~PythonEventReceiver() override
-        {
-        };
+        PythonEventReceiver();
+        ~PythonEventReceiver() override;
 
     public:
-        void initialize( pybind::kernel_interface * _kernel, const ConstString & _method, const pybind::object & _cb )
-        {
-            m_kernel = _kernel;
-            m_method = _method;
-            m_cb = _cb;
-        }
+        void initialize( pybind::kernel_interface * _kernel, const ConstString & _method, const pybind::object & _cb );
 
     public:
-        pybind::kernel_interface * getKernel() const
-        {
-            return m_kernel;
-        }
-
-        const ConstString & getMethod() const
-        {
-            return m_method;
-        }
-
-        const pybind::object & getCb() const
-        {
-            return m_cb;
-        }
+        pybind::kernel_interface * getKernel() const;
+        const ConstString & getMethod() const;
+        const pybind::object & getCb() const;
 
     protected:
         pybind::kernel_interface * m_kernel;
@@ -63,31 +41,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE void assertPythonEventReceiver( const Factorable * _factorable, const pybind::dict & _kwds )
-        {
-            if( _kwds.empty() == true )
-            {
-                return;
-            }
-
-            for( pybind::dict::iterator
-                it = _kwds.begin(),
-                it_end = _kwds.end();
-                it != it_end;
-                ++it )
-            {
-                String k = it.key();
-
-                LOGGER_ERROR( "node type '%s' invalid kwds '%s'"
-                    , _factorable->getType().c_str()
-                    , k.c_str()
-                );
-            }
-
-            MENGINE_ERROR_FATAL( "invalid python event receiver type '%s'"
-                , _factorable->getType().c_str()
-            );
-        }
+        void assertPythonEventReceiver( const Factorable * _factorable, const pybind::dict & _kwds );
         //////////////////////////////////////////////////////////////////////////
         template<class T_Receiver>
         void registerPythonEventReceiver( pybind::kernel_interface * _kernel, const pybind::dict & _kwds, Eventable * const _eventable, const ConstString & _method, uint32_t _event, const DocumentInterfacePtr & _doc )

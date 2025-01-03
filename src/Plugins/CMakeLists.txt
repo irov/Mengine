@@ -6,10 +6,6 @@ if(MENGINE_PLUGIN_WAV)
     ADD_SUBDIRECTORY(WAVPlugin)
 endif()
 
-if(MENGINE_PLUGIN_AMPLIFIER)
-    ADD_SUBDIRECTORY(AmplifierPlugin)
-endif()
-
 if(MENGINE_PLUGIN_OGG_VORBIS)
     ADD_SUBDIRECTORY(OggVorbisPlugin)
 endif()
@@ -48,6 +44,10 @@ endif()
 
 if(MENGINE_PLUGIN_DEBUGPANEL)
     ADD_SUBDIRECTORY(DebugPanelPlugin)
+endif()
+
+if(MENGINE_PLUGIN_LAYOUTEDITOR)
+    ADD_SUBDIRECTORY(LayoutEditorPlugin)
 endif()
 
 if(MENGINE_PLUGIN_METABUF)

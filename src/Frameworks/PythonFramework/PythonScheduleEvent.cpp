@@ -11,20 +11,14 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonScheduleEvent::initialize( const pybind::object & _cb, const pybind::args & _args )
-    {
-        m_cb = _cb;
-        m_args = _args;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void PythonScheduleEvent::onSchedulerComplete( UniqueId _id )
     {
-        m_cb.call_args( _id, true, m_args );
+        this->call_cb( _id, true );
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonScheduleEvent::onSchedulerStop( UniqueId _id )
     {
-        m_cb.call_args( _id, false, m_args );
+        this->call_cb( _id, false );
     }
     //////////////////////////////////////////////////////////////////////////
 }

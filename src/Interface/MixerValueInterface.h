@@ -16,7 +16,7 @@ namespace Mengine
         : public ServantInterface
     {
     public:
-        virtual void setValue( const ConstString & _type, float _value, float _from, float _speed, bool _force) = 0;
+        virtual void setValue( const ConstString & _type, float _value, float _from, float _speed, bool _force ) = 0;
         virtual float getValue( const ConstString & _type ) const = 0;
 
     public:

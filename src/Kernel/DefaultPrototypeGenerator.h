@@ -1,6 +1,6 @@
 #pragma once
 
-#include "FactoryPrototypeGenerator.h"
+#include "Kernel/FactoryPrototypeGenerator.h"
 
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/FactorableUnique.h"

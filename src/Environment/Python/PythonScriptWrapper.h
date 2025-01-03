@@ -3,6 +3,7 @@
 #include "Interface/ScriptWrapperInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 
+#include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonDocumentTraceback.h"
 
 #include "Kernel/Node.h"
@@ -73,13 +74,20 @@ namespace Mengine
         }
 
     protected:
-        PyObject * wrap( Scriptable * _scriptable ) override
+        PyObject * wrap( Scriptable * _scriptable, PyObject * _embed ) override
         {
+            if( _embed != nullptr )
+            {
+                m_kernel->incref( _embed );
+
+                return _embed;
+            }
+
             MENGINE_ASSERTION_TYPE( _scriptable, T *, "invalid wrap type '%s' (doc %s)"
                 , MENGINE_TYPEINFO_NAME( T )
                 , MENGINE_DOCUMENT_STR( MENGINE_DOCUMENT_PYBIND )
             );
-
+            
             T * obj = static_cast<T *>(_scriptable);
 
             PyObject * py_obj = m_kernel->scope_create_holder_t( obj );
@@ -87,6 +95,17 @@ namespace Mengine
             //pybind::set_attr( py_embedded, "Mengine_name", pybind::ptr(_node->getName()) );
             //pybind::set_attr( py_embedded, "Mengine_type", pybind::ptr(_node->getType()) );
             //pybind::set_attr( py_embedded, "Mengine_tag", pybind::ptr(_node->getTag()) );
+
+#if defined(MENGINE_DEBUG)
+            if( m_kernel->is_object_bindable( py_obj ) == false )
+            {
+                MENGINE_THROW_EXCEPTION( "'%s' but scope not setup bindable"
+                    , m_kernel->object_repr_type( py_obj ).c_str()
+                );
+
+                return nullptr;
+            }
+#endif
 
             return py_obj;
         }

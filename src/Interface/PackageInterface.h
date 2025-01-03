@@ -50,7 +50,7 @@ namespace Mengine
     typedef IntrusivePtr<PackageInterface> PackageInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class PackageLoaderInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual bool load( const PackageInterfacePtr & _package, const DocumentInterfacePtr & _doc ) = 0;

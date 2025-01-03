@@ -9,7 +9,7 @@ import android.os.Build;
 import androidx.annotation.NonNull;
 
 public class MengineMonitorConnectivityStatus extends MengineService implements MengineListenerApplication {
-    public static final String SERVICE_NAME = "MengineMConnStatus";
+    public static final String SERVICE_NAME = "MConnStatus";
 
     private ConnectivityManager.NetworkCallback m_networkCallback;
 

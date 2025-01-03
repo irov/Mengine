@@ -3,6 +3,7 @@
 #include "Kernel/EnumeratorHelper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/PrototypeHelper.h"
+#include "Kernel/MixerValue.h"
 
 namespace Mengine
 {

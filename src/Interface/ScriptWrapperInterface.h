@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Interface/Interface.h"
-
 #include "Environment/Python/PythonForwardDeclaration.h"
+
+#include "Kernel/Mixin.h"
 
 namespace Mengine
 {
@@ -10,10 +10,10 @@ namespace Mengine
     class Scriptable;
     //////////////////////////////////////////////////////////////////////////
     class ScriptWrapperInterface
-        : public Interface
+        : public Mixin
     {
     public:
-        virtual PyObject * wrap( Scriptable * _scriptable ) = 0;
+        virtual PyObject * wrap( Scriptable * _scriptable, PyObject * _embed ) = 0;
         virtual void unwrap( PyObject * _obj ) = 0;
 
     public:

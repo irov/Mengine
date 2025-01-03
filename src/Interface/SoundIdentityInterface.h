@@ -31,10 +31,10 @@ namespace Mengine
         : public Mixin
     {
     public:
-        virtual void onSoundPause( const SoundIdentityInterfacePtr & _emitter ) = 0;
-        virtual void onSoundResume( const SoundIdentityInterfacePtr & _emitter ) = 0;
-        virtual void onSoundStop( const SoundIdentityInterfacePtr & _emitter ) = 0;
-        virtual void onSoundEnd( const SoundIdentityInterfacePtr & _emitter ) = 0;
+        virtual void onSoundPause( const SoundIdentityInterfacePtr & _identity ) = 0;
+        virtual void onSoundResume( const SoundIdentityInterfacePtr & _identity ) = 0;
+        virtual void onSoundStop( const SoundIdentityInterfacePtr & _identity ) = 0;
+        virtual void onSoundEnd( const SoundIdentityInterfacePtr & _identity ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class SoundListenerInterface> SoundListenerInterfacePtr;

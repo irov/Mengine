@@ -29,7 +29,7 @@ import org.Mengine.Base.MenginePluginRemoteMessageListener;
 import org.Mengine.Base.MengineTransparencyConsentParam;
 
 public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginApplicationListener, MenginePluginActivityListener, MenginePluginAdRevenueListener, MenginePluginTransparencyConsentListener, MenginePluginRemoteMessageListener, MenginePluginPushTokenListener {
-    public static final String SERVICE_NAME = "MengineAdjust";
+    public static final String SERVICE_NAME = "Adjust";
     public static final boolean SERVICE_EMBEDDING = true;
 
     public static final String METADATA_APP_TOKEN = "mengine.adjust.app_token";

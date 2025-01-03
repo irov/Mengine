@@ -3,6 +3,7 @@
 #include "Interface/SchedulerInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
+#include "Environment/Python/PythonCallbackProvider.h"
 
 #include "Kernel/Factorable.h"
 
@@ -11,6 +12,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class PythonScheduleTiming
         : public SchedulerTimingInterface
+        , public PythonCallbackProvider
         , public Factorable
     {
         DECLARE_FACTORABLE( PythonScheduleTiming );
@@ -19,17 +21,10 @@ namespace Mengine
         PythonScheduleTiming();
         ~PythonScheduleTiming() override;
 
-    public:
-        void initialize( const pybind::object & _cb, const pybind::args & _args );
-
     protected:
         void onSchedulerTiming( UniqueId _id, uint32_t _iterate, float _delay ) override;
-
-    protected:
-        pybind::object m_cb;
-        pybind::args m_args;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<PythonScheduleTiming> PythonScheduleTimingPtr;
+    typedef IntrusivePtr<PythonScheduleTiming, SchedulerTimingInterface> PythonScheduleTimingPtr;
     //////////////////////////////////////////////////////////////////////////
 }

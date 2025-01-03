@@ -1,2 +1,0 @@
-LIBRARY "AmplifierPlugin"
-EXPORTS dllCreatePlugin @1

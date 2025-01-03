@@ -5,13 +5,15 @@
 #include "Interface/RenderProgramInterface.h"
 #include "Interface/RenderTextureInterface.h"
 
+#include "Kernel/Mixin.h"
+
 #include "Config/UniqueId.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class RenderMaterialStageCacheInterface
-        : public Interface
+        : public Mixin
     {
     };
     //////////////////////////////////////////////////////////////////////////

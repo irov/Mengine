@@ -10,14 +10,16 @@ import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 
+import java.util.Map;
+
 public class MengineFirebaseAppCheckPlugin extends MengineService implements MengineListenerApplication {
-    public static final String SERVICE_NAME = "MengineFBAppCheck";
+    public static final String SERVICE_NAME = "FBAppCheck";
     public static final boolean SERVICE_EMBEDDING = true;
     
     FirebaseAppCheck m_firebaseAppCheck;
 
     @Override
-    public void onAppPrepare(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
+    public void onAppPrepare(@NonNull MengineApplication application, @NonNull Map<String, String> pluginVersions) throws MengineServiceInvalidInitializeException {
         FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.getInstance();
 
         PlayIntegrityAppCheckProviderFactory factory = PlayIntegrityAppCheckProviderFactory.getInstance();

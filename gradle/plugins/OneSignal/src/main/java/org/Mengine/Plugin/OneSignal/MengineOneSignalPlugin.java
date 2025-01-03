@@ -8,7 +8,7 @@ import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
 public class MengineOneSignalPlugin extends MenginePlugin implements MenginePluginApplicationListener {
-    public static final String SERVICE_NAME = "MengineOneSignal";
+    public static final String SERVICE_NAME = "OneSignal";
 
     public static final String METADATA_APP_ID = "mengine.onesignal.app_id";
 

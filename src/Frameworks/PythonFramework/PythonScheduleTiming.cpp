@@ -11,15 +11,9 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonScheduleTiming::initialize( const pybind::object & _cb, const pybind::args & _args )
-    {
-        m_cb = _cb;
-        m_args = _args;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void PythonScheduleTiming::onSchedulerTiming( UniqueId _id, uint32_t _iterate, float _delay )
     {
-        m_cb.call_args( _id, _iterate, _delay, m_args );
+        this->call_cb( _id, _iterate, _delay );
     }
     ////////////////////////////////////////////////////////////////////////////
 }

@@ -4,18 +4,18 @@
 
 namespace Mengine
 {
-    class AmplifierPlugin
+    class LayoutEditorPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "Amplifier" )
+        PLUGIN_DECLARE( "LayoutEditor" );
 
     public:
-        AmplifierPlugin();
-        ~AmplifierPlugin() override;
+        LayoutEditorPlugin();
+        ~LayoutEditorPlugin() override;
 
     protected:
+        bool _availablePlugin() const override;
         bool _initializePlugin() override;
         void _finalizePlugin() override;
-        void _destroyPlugin() override;
     };
 }

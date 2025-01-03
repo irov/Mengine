@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Interface/Interface.h"
 #include "Interface/PickerInputHandlerInterface.h"
 
+#include "Kernel/Mixin.h"
 #include "Kernel/Resolution.h"
 #include "Kernel/BoundingBox.h"
 #include "Kernel/RenderContext.h"
@@ -22,7 +22,7 @@ namespace Mengine
     typedef IntrusivePtr<class ArrowInterface> ArrowInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class PickerInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual Pickerable * getPickerable() = 0;

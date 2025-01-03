@@ -2,6 +2,8 @@
 
 #include "Interface/EventReceiverInterface.h"
 
+#include "Kernel/Mixin.h"
+
 #include "Config/Lambda.h"
 
 #if defined(MENGINE_DEBUG)
@@ -18,7 +20,7 @@ namespace Mengine
     class Eventable;
     //////////////////////////////////////////////////////////////////////////
     class EventationInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual Eventable * getEventable() = 0;

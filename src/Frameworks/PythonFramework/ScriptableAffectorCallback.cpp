@@ -14,8 +14,8 @@ namespace Mengine
     void ScriptableAffectorCallback::initialize( const ScriptablePtr & _scriptable, const pybind::object & _cb, const pybind::args & _args )
     {
         m_scriptable = _scriptable;
-        m_cb = _cb;
-        m_args = _args;
+
+        PythonCallbackProvider::initialize( _cb, _args );
     }
     //////////////////////////////////////////////////////////////////////////
     void ScriptableAffectorCallback::onAffectorEnd( UniqueId _id, bool _isEnd )
@@ -23,17 +23,7 @@ namespace Mengine
         ScriptablePtr scriptable = m_scriptable;
         m_scriptable = nullptr;
 
-        if( m_cb.is_invalid() == true )
-        {
-            return;
-        }
-
-        if( m_cb.is_none() == true )
-        {
-            return;
-        }
-
-        m_cb.call_args( scriptable, _id, _isEnd, m_args );
+        this->call_cb( scriptable, _id, _isEnd );
     }
     //////////////////////////////////////////////////////////////////////////
 }

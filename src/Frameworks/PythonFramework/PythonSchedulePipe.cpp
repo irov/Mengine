@@ -11,16 +11,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonSchedulePipe::initialize( const pybind::object & _cb, const pybind::args & _args )
-    {
-        m_cb = _cb;
-        m_args = _args;
-    }
-    //////////////////////////////////////////////////////////////////////////
     float PythonSchedulePipe::onSchedulerPipe( UniqueId _id, uint32_t _index )
     {
-        float delay = m_cb.call_args( _id, _index, m_args );
+        float delay = this->call_cb( _id, _index );
 
         return delay;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

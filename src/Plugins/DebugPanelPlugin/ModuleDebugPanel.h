@@ -68,6 +68,6 @@ namespace Mengine
 
         mutable HistogramPerframe m_histogramPerFrameFillrate;
 
-        bool m_showDebugPanel;
+        bool m_show;
     };
 }

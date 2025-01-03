@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Interface/Interface.h"
+#include "Kernel/Mixin.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class SceneDataProviderInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual void setUpdateSceneFlag( bool _flag ) = 0;

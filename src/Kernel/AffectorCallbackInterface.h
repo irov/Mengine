@@ -1,9 +1,6 @@
 #pragma once
 
-#include "Kernel/AffectorType.h"
-#include "Kernel/Updatable.h"
-#include "Kernel/Factorable.h"
-#include "Kernel/UpdateContext.h"
+#include "Kernel/Mixin.h"
 
 #include "Config/UniqueId.h"
 
@@ -11,7 +8,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class AffectorCallbackInterface
-        : public Factorable
+        : public Mixin
     {
     public:
         virtual void onAffectorEnd( UniqueId _id, bool _isEnd ) = 0;

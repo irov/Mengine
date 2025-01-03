@@ -14,7 +14,7 @@ import org.Mengine.Base.MengineListenerActivity;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 
 public class MengineGoogleInAppReviewsPlugin extends MengineService implements MengineListenerActivity {
-    public static final String SERVICE_NAME = "MengineGInAppReviews";
+    public static final String SERVICE_NAME = "GInAppReviews";
     public static final boolean SERVICE_EMBEDDING = true;
 
     private ReviewManager m_manager;

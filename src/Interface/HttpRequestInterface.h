@@ -1,15 +1,16 @@
 #pragma once
 
-#include "Interface/Interface.h"
 #include "Interface/HttpResponseInterface.h"
 #include "Interface/HttpReceiverInterface.h"
 #include "Interface/ThreadTaskInterface.h"
+
+#include "Kernel/Mixin.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class HttpRequestInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual void setURL( const String & _url ) = 0;

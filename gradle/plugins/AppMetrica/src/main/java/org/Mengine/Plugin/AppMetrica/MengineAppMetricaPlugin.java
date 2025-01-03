@@ -27,7 +27,7 @@ import io.appmetrica.analytics.AppMetrica;
 import io.appmetrica.analytics.AppMetricaConfig;
 
 public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePluginLoggerListener, MenginePluginAnalyticsListener, MenginePluginAdRevenueListener, MenginePluginApplicationListener, MenginePluginEngineListener, MenginePluginSessionIdListener {
-    public static final String SERVICE_NAME = "MengineAppMetrica";
+    public static final String SERVICE_NAME = "AppMetrica";
     public static final boolean SERVICE_EMBEDDING = true;
 
     public static final String METADATA_API_KEY = "mengine.appmetrica.api_key";

@@ -1,13 +1,14 @@
 #pragma once
 
-#include "Interface/Interface.h"
 #include "Interface/HttpResponseInterface.h"
+
+#include "Kernel/Mixin.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class HttpReceiverInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual void onHttpRequestComplete( const HttpResponseInterfacePtr & _response ) = 0;

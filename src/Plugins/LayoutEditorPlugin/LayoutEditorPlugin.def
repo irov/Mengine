@@ -1,0 +1,3 @@
+LIBRARY "LayoutEditorPlugin"
+EXPORTS
+   dllCreatePlugin @1

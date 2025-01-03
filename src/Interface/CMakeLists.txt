@@ -2,7 +2,6 @@ MENGINE_PROJECT(Interface)
 
 ADD_FILTER(
 Common
-    Interface.h
     ServiceInterface.h
     ServiceProviderInterface.h
     AllocatorSystemInterface.h
@@ -131,6 +130,7 @@ Common
     DebugFileInterface.h
     TimerServiceInterface.h
     MixerValueInterface.h
+    MixerBooleanInterface.h
     PreferencesSystemInterface.h
     CryptographySystemInterface.h
     HttpResponseInterface.h
@@ -141,8 +141,9 @@ Common
     AndroidAssetServiceInterface.h
     AppleKernelServiceInterface.h
     iOSKernelServiceInterface.h
-    ArrowServiceInterface.h
     Win32KernelServiceInterface.h
+    ArrowServiceInterface.h
+    AmplifierServiceInterface.h
 )
 
 ADD_FILTER(

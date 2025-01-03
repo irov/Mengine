@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Timer;
 
 public class MengineMonitorPerformance extends MengineService implements MengineListenerApplication, MengineListenerEngine, MengineListenerAnalytics {
-    public static final String SERVICE_NAME = "MengineMPerformance";
+    public static final String SERVICE_NAME = "MPerformance";
 
     private static final String TRACE_STARTUP = "mng_startup";
     private static final String TRACE_FPS = "mng_fps";

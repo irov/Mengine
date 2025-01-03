@@ -64,16 +64,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float MixerValue::mixValue() const
     {
-        float volume = 1.f;
+        float mix = 1.f;
 
         for( const Element & mixer : m_mixer )
         {
             float value = mixer.follower.getValue();
 
-            volume *= value;
+            mix *= value;
         }
 
-        return volume;
+        return mix;
     }
     //////////////////////////////////////////////////////////////////////////
     bool MixerValue::update( const UpdateContext * _context )

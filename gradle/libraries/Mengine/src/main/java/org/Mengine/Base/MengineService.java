@@ -98,43 +98,43 @@ public class MengineService implements MengineServiceInterface {
     }
 
     public String logVerbose(String format, Object ... args) {
-        String m = MengineLog.logVerbose(m_serviceName, format, args);
+        String m = MengineLog.logVerbose("Mengine" + m_serviceName, format, args);
 
         return m;
     }
 
     public String logDebug(String format, Object ... args) {
-        String m = MengineLog.logDebug(m_serviceName, format, args);
+        String m = MengineLog.logDebug("Mengine" + m_serviceName, format, args);
 
         return m;
     }
 
     public String logInfo(String format, Object ... args) {
-        String m = MengineLog.logInfo(m_serviceName, format, args);
+        String m = MengineLog.logInfo("Mengine" + m_serviceName, format, args);
 
         return m;
     }
 
     public String logMessage(String format, Object ... args) {
-        String m = MengineLog.logMessage(m_serviceName, format, args);
+        String m = MengineLog.logMessage("Mengine" + m_serviceName, format, args);
 
         return m;
     }
 
     public String logMessageRelease(String format, Object ... args) {
-        String m = MengineLog.logMessageRelease(m_serviceName, format, args);
+        String m = MengineLog.logMessageRelease("Mengine" + m_serviceName, format, args);
 
         return m;
     }
 
     public String logWarning(String format, Object ... args) {
-        String m = MengineLog.logWarning(m_serviceName, format, args);
+        String m = MengineLog.logWarning("Mengine" + m_serviceName, format, args);
 
         return m;
     }
 
     public String logError(String format, Object ... args) {
-        String m = MengineLog.logError(m_serviceName, format, args);
+        String m = MengineLog.logError("Mengine" + m_serviceName, format, args);
 
         return m;
     }
@@ -142,7 +142,7 @@ public class MengineService implements MengineServiceInterface {
     public void assertionError(String format, Object ... args) {
         String msg = String.format(Locale.US, format, args);
 
-        throw new AssertionError("[" + m_serviceName + "] " + msg);
+        throw new AssertionError("[" + "Mengine" + m_serviceName + "] " + msg);
     }
 
     public MengineAnalyticsEventBuilder buildEvent(@Size(min = 1L,max = 40L) String name) {
@@ -156,7 +156,7 @@ public class MengineService implements MengineServiceInterface {
             return;
         }
 
-        m_activity.pythonCall(m_serviceName, method, args);
+        m_activity.pythonCall("Mengine" + m_serviceName, method, args);
     }
 
     public void activateSemaphore(String name) {

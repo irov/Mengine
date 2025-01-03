@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Interface/Interface.h"
 #include "Interface/AccountSettingProviderInterface.h"
 #include "Interface/InputStreamInterface.h"
 #include "Interface/OutputStreamInterface.h"
 #include "Interface/MemoryInterface.h"
 
+#include "Kernel/Mixin.h"
 #include "Kernel/AccountUID.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/Factorable.h"
@@ -18,7 +18,7 @@ namespace Mengine
     DECLARE_MAGIC_NUMBER( MAGIC_ACCOUNT_DATA, 'A', 'C', 'D', '1', 1 );
     //////////////////////////////////////////////////////////////////////////
     class AccountInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual const ConstString & getId() const = 0;

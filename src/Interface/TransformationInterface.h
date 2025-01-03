@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Interface/Interface.h"
-
+#include "Kernel/Mixin.h"
 #include "Kernel/Vector.h"
 
 #include "math/mat4.h"
@@ -43,7 +42,7 @@ namespace Mengine
     typedef IntrusivePtr<class TransformationInterface> TransformationInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class TransformationInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual Transformable * getTransformable() = 0;

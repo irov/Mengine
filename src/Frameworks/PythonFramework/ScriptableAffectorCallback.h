@@ -1,15 +1,19 @@
 #pragma once
 
 #include "Environment/Python/PythonIncluder.h"
+#include "Environment/Python/PythonCallbackProvider.h"
 
 #include "Kernel/AffectorCallbackInterface.h"
 #include "Kernel/Scriptable.h"
+#include "Kernel/Factorable.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class ScriptableAffectorCallback
         : public AffectorCallbackInterface
+        , public PythonCallbackProvider
+        , public Factorable
     {
         DECLARE_FACTORABLE( ScriptableAffectorCallback );
 
@@ -25,9 +29,6 @@ namespace Mengine
 
     protected:
         ScriptablePtr m_scriptable;
-
-        pybind::object m_cb;
-        pybind::args m_args;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ScriptableAffectorCallback, AffectorCallbackInterface> ScriptableAffectorCallbackPtr;

@@ -10,7 +10,6 @@
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
-#include "Kernel/MixerValue.h"
 #include "Kernel/Unknowable.h"
 
 #include "math/vec3.h"

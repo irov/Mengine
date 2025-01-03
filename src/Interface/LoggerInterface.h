@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Interface/Interface.h"
 #include "Interface/LoggerRecordInterface.h"
 
+#include "Kernel/Mixin.h"
 #include "Kernel/LoggerMessage.h"
 #include "Kernel/LoggerLevel.h"
 #include "Kernel/ConstString.h"
@@ -15,7 +15,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class LoggerInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual bool initializeLogger() = 0;

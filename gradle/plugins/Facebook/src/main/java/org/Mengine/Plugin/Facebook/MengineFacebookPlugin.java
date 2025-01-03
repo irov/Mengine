@@ -44,7 +44,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MengineFacebookPlugin extends MengineService implements MengineListenerAnalytics, MengineListenerApplication, MengineListenerRemoteMessage, MengineListenerPushToken, MengineListenerSessionId {
-    public static final String SERVICE_NAME = "MengineFacebook";
+    public static final String SERVICE_NAME = "Facebook";
     public static final boolean SERVICE_EMBEDDING = true;
 
     private static final int ERROR_CODE_UNKNOWN = 0;
@@ -57,6 +57,13 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
     private AccessTokenTracker m_accessTokenTracker;
     private ProfileTracker m_profileTracker;
     private AppEventsLogger m_logger;
+
+    @Override
+    public String onAppVersion(@NonNull MengineApplication application) {
+        String fbSdkVersion = FacebookSdk.getSdkVersion();
+
+        return fbSdkVersion;
+    }
 
     @Override
     public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {

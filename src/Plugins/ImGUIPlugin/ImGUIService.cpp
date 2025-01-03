@@ -239,9 +239,43 @@ namespace Mengine
 
         ImGui_ImplWin32_Init( hWnd );
 
-        uint32_t handlerId = win32Platform->addWin32ProcessHandler( []( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, BOOL * const pHandled )
+        UniqueId handlerId = win32Platform->addWin32ProcessHandler( []( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, BOOL * const pHandled )
         {
-            *pHandled = FALSE;
+            if( ImGui::IsWindowFocused( ImGuiFocusedFlags_AnyWindow ) == true )
+            {
+                switch( msg )
+                {
+                case WM_MOUSEMOVE:
+                case WM_NCMOUSEMOVE:
+                case WM_MOUSELEAVE:
+                case WM_NCMOUSELEAVE:
+                case WM_LBUTTONDOWN: case WM_LBUTTONDBLCLK:
+                case WM_RBUTTONDOWN: case WM_RBUTTONDBLCLK:
+                case WM_MBUTTONDOWN: case WM_MBUTTONDBLCLK:
+                case WM_XBUTTONDOWN: case WM_XBUTTONDBLCLK:
+                case WM_LBUTTONUP:
+                case WM_RBUTTONUP:
+                case WM_MBUTTONUP:
+                case WM_XBUTTONUP:
+                case WM_MOUSEWHEEL:
+                case WM_MOUSEHWHEEL:
+                case WM_KEYDOWN:
+                case WM_KEYUP:
+                case WM_SYSKEYDOWN:
+                case WM_SYSKEYUP:
+                case WM_CHAR:
+                case WM_SETCURSOR:
+                    *pHandled = TRUE;
+                    break;
+                default:
+                    *pHandled = FALSE;
+                    break;
+                }
+            }
+            else
+            {
+                *pHandled = FALSE;
+            }
 
             LRESULT result = ImGui_ImplWin32_WndProcHandler( hwnd, msg, wParam, lParam );
 
@@ -260,7 +294,7 @@ namespace Mengine
 
         ImGui_ImplSDL2_InitForOpenGL( window, gl_context );        
 
-        uint32_t handlerId = sdlPlatform->addSDLEventHandler( []( SDL_Event * _event )
+        UniqueId handlerId = sdlPlatform->addSDLEventHandler( []( SDL_Event * _event )
         {
             ImGui_ImplSDL2_ProcessEvent( _event );
         } );

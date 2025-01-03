@@ -3,6 +3,7 @@
 #include "Interface/ServantInterface.h"
 #include "Interface/ServiceInterface.h"
 
+#include "Kernel/Mixin.h"
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
 
@@ -12,7 +13,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class SchedulerEventInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual void onSchedulerComplete( UniqueId _id ) = 0;
@@ -22,7 +23,7 @@ namespace Mengine
     typedef IntrusivePtr<SchedulerEventInterface> SchedulerEventInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class SchedulerTimingInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual void onSchedulerTiming( UniqueId _id, uint32_t _iterate, float _time ) = 0;
@@ -31,7 +32,7 @@ namespace Mengine
     typedef IntrusivePtr<SchedulerTimingInterface> SchedulerTimingInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class SchedulerPipeInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual float onSchedulerPipe( UniqueId _id, uint32_t _iterate ) = 0;

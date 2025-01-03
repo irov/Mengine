@@ -1,14 +1,13 @@
 #pragma once
 
-#include "Interface/Interface.h"
-
+#include "Kernel/Mixin.h"
 #include "Kernel/ConstString.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class AccountProviderInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual void onCreateAccount( const ConstString & _accountId, bool _global ) = 0;

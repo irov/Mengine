@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Interface/Interface.h"
 #include "Interface/InputStreamInterface.h"
 
+#include "Kernel/Mixin.h"
 #include "Kernel/Pointer.h"
 #include "Kernel/DocumentHelper.h"
 
@@ -12,7 +12,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class MemoryInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual Pointer getBuffer() const = 0;
@@ -31,7 +31,7 @@ namespace Mengine
         virtual void clearBuffer() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<MemoryBufferInterface> MemoryBufferInterfacePtr;
+    typedef IntrusivePtr<MemoryBufferInterface, MemoryInterface> MemoryBufferInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class MemoryProxyInterface
         : public MemoryInterface
@@ -40,7 +40,7 @@ namespace Mengine
         virtual void setBuffer( void * _ptr, size_t _size ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<MemoryProxyInterface> MemoryProxyInterfacePtr;
+    typedef IntrusivePtr<MemoryProxyInterface, MemoryInterface> MemoryProxyInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class MemoryGetterStreamInterface
         : public InputStreamInterface
@@ -50,6 +50,8 @@ namespace Mengine
         virtual size_t getSize() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<MemoryGetterStreamInterface, InputStreamInterface> MemoryGetterStreamInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
     class MemoryCacheInputInterface
         : public MemoryGetterStreamInterface
     {
@@ -57,7 +59,7 @@ namespace Mengine
         virtual Pointer cacheBuffer( size_t _size ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<MemoryCacheInputInterface> MemoryCacheInputInterfacePtr;
+    typedef IntrusivePtr<MemoryCacheInputInterface, InputStreamInterface> MemoryCacheInputInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class MemoryProxyInputInterface
         : public MemoryGetterStreamInterface
@@ -66,7 +68,7 @@ namespace Mengine
         virtual Pointer setBuffer( void * _memory, size_t _offset, size_t _size ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<MemoryProxyInputInterface> MemoryProxyInputInterfacePtr;
+    typedef IntrusivePtr<MemoryProxyInputInterface, InputStreamInterface> MemoryProxyInputInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class MemoryInputInterface
         : public MemoryGetterStreamInterface
@@ -75,6 +77,6 @@ namespace Mengine
         virtual Pointer newBuffer( size_t _size ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<MemoryInputInterface> MemoryInputInterfacePtr;
+    typedef IntrusivePtr<MemoryInputInterface, InputStreamInterface> MemoryInputInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 }

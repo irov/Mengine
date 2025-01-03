@@ -3,7 +3,7 @@ MENGINE_PROJECT(AreaOfInterestPlugin)
 ADD_FILTER(
 src
     AreaOfInterestPlugin.h
-    AreaOfInterestPlugin.cpp   
+    AreaOfInterestPlugin.cpp
     AreaOfInterestPlugin.def
     
     AreaOfInterestInterface.h
@@ -18,9 +18,9 @@ src
     NodeAreaOfInterestActor.cpp
     NodeAreaOfInterestActor.h
     AreaOfInterestTrigger.cpp
-    AreaOfInterestTrigger.h    
+    AreaOfInterestTrigger.h
     AreaOfInterestActor.cpp
-    AreaOfInterestActor.h    
+    AreaOfInterestActor.h
 )
 
 if(MENGINE_USE_SCRIPT_SERVICE)
@@ -39,7 +39,7 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}stdex${MENGINE_LIB_SUFFIX})
 
 if(MENGINE_USE_SCRIPT_SERVICE)
-    TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}pybind${MENGINE_LIB_SUFFIX})
+    TARGET_LINK_LIBRARIES(${PROJECT_NAME} Python)
 endif()
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)

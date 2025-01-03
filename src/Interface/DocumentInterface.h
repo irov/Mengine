@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/Interface.h"
+#include "Kernel/Mixin.h"
 
 #include "Config/Char.h"
 
@@ -10,7 +10,7 @@ namespace Mengine
     typedef IntrusivePtr<class DocumentInterface> DocumentInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class DocumentInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual void setParent( const DocumentInterfacePtr & _parent ) = 0;

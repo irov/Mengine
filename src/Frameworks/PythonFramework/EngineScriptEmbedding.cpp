@@ -663,6 +663,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             class PythonSceneChangeCallback
                 : public SceneChangeCallbackInterface
+                , public PythonCallbackProvider
                 , public Factorable
             {
                 DECLARE_FACTORABLE( PythonSceneChangeCallback );
@@ -677,13 +678,6 @@ namespace Mengine
                 }
 
             public:
-                void initialize( const pybind::object & _cb, const pybind::args & _args )
-                {
-                    m_cb = _cb;
-                    m_args = _args;
-                }
-
-            public:
                 void onSceneChange( const ScenePtr & _scene, bool _enable, bool _remove, bool _error ) override
                 {
                     MENGINE_UNUSED( _error );
@@ -692,25 +686,21 @@ namespace Mengine
                     {
                         if( _scene == nullptr )
                         {
-                            m_cb.call_args( nullptr, _enable, _error, m_args );
+                            this->call_cb( nullptr, _enable, _error );
                         }
                         else
                         {
                             const PythonEntityBehaviorPtr & behavior = _scene->getBehavior();
                             const pybind::object & py_scene = behavior->getScriptObject();
 
-                            m_cb.call_args( py_scene, _enable, _error, m_args );
+                            this->call_cb( py_scene, _enable, _error );
                         }
                     }
                     else
                     {
-                        m_cb.call_args( m_args );
+                        this->call_cb();
                     }
                 }
-
-            public:
-                pybind::object m_cb;
-                pybind::args m_args;
             };
             //////////////////////////////////////////////////////////////////////////
             typedef IntrusivePtr<PythonSceneChangeCallback> PythonSceneChangeCallbackPtr;
@@ -724,24 +714,8 @@ namespace Mengine
                     return false;
                 }
 
-                PythonSceneChangeCallbackPtr py_cb;
-
-                if( _cb.is_none() == false )
-                {
-                    if( _cb.is_callable() == false )
-                    {
-                        LOGGER_ERROR( "prototype '%s' name '%s' cb '%s' not callable"
-                            , _prototype.c_str()
-                            , _name.c_str()
-                            , _cb.repr().c_str()
-                        );
-
-                        return false;
-                    }
-
-                    py_cb = m_factoryPythonSceneChangeCallback->createObject( MENGINE_DOCUMENT_PYBIND );
-                    py_cb->initialize( _cb, _args );
-                }
+                PythonSceneChangeCallbackPtr py_cb = m_factoryPythonSceneChangeCallback->createObject( MENGINE_DOCUMENT_PYBIND );
+                py_cb->initialize( _cb, _args );
 
                 ScenePtr currentScene = SCENE_SERVICE()
                     ->getCurrentScene();
@@ -776,30 +750,15 @@ namespace Mengine
                 return true;
             }
             //////////////////////////////////////////////////////////////////////////
-            bool setCurrentScene( const ScenePtr & _scene, const ConstString & _name, bool _immediately, bool _destroyOld, const pybind::object & _cb, const pybind::args & _args )
+            bool setCurrentScene( const ScenePtr & _scene, bool _immediately, bool _destroyOld, const pybind::object & _cb, const pybind::args & _args )
             {
                 if( SERVICE_IS_INITIALIZE( SceneServiceInterface ) == false )
                 {
                     return false;
                 }
 
-                PythonSceneChangeCallbackPtr py_cb = nullptr;
-
-                if( _cb.is_none() == false )
-                {
-                    if( _cb.is_callable() == false )
-                    {
-                        LOGGER_ERROR( "scene name '%s' cb '%s' not callable"
-                            , _name.c_str()
-                            , _cb.repr().c_str()
-                        );
-
-                        return false;
-                    }
-
-                    py_cb = m_factoryPythonSceneChangeCallback->createObject( MENGINE_DOCUMENT_PYBIND );
-                    py_cb->initialize( _cb, _args );
-                }
+                PythonSceneChangeCallbackPtr py_cb = m_factoryPythonSceneChangeCallback->createObject( MENGINE_DOCUMENT_PYBIND );
+                py_cb->initialize( _cb, _args );
 
                 ScenePtr currentScene = SCENE_SERVICE()
                     ->getCurrentScene();
@@ -831,22 +790,8 @@ namespace Mengine
                     return false;
                 }
 
-                PythonSceneChangeCallbackPtr py_cb = nullptr;
-
-                if( _cb.is_none() == false )
-                {
-                    if( _cb.is_callable() == false )
-                    {
-                        LOGGER_ERROR( "restart scene cb '%s' not callable"
-                            , _cb.repr().c_str()
-                        );
-
-                        return false;
-                    }
-
-                    py_cb = m_factoryPythonSceneChangeCallback->createObject( MENGINE_DOCUMENT_PYBIND );
-                    py_cb->initialize( _cb, _args );
-                }
+                PythonSceneChangeCallbackPtr py_cb = m_factoryPythonSceneChangeCallback->createObject( MENGINE_DOCUMENT_PYBIND );
+                py_cb->initialize( _cb, _args );
 
                 if( SCENE_SERVICE()
                     ->restartCurrentScene( _immediately, py_cb ) == false )
@@ -1326,25 +1271,21 @@ namespace Mengine
             {
                 class HotSpotVisitor
                     : public Visitor
-                    , public Factorable
                     , public ConcreteVisitor<HotSpot>
+                    , public PythonCallbackProvider
+                    , public Factorable
                 {
                 public:
                     HotSpotVisitor( const pybind::object & _cb, const pybind::args & _args )
-                        : m_cb( _cb )
-                        , m_args( _args )
+                        : PythonCallbackProvider( _cb, _args )
                     {
                     }
 
                 public:
                     void accept( HotSpot * _hotspot ) override
                     {
-                        m_cb.call( _hotspot, m_args );
+                        this->call_cb( _hotspot );
                     }
-
-                protected:
-                    pybind::object m_cb;
-                    pybind::args m_args;
                 };
 
                 typedef IntrusivePtr<HotSpotVisitor> HotSpotVisitorPtr;
@@ -2333,8 +2274,9 @@ namespace Mengine
             }
             //////////////////////////////////////////////////////////////////////////
             class PyInputMousePositionProvider
-                : public Factorable
-                , public InputMousePositionProviderInterface
+                : public InputMousePositionProviderInterface
+                , public PythonCallbackProvider
+                , public Factorable
             {
                 DECLARE_FACTORABLE( PyInputMousePositionProvider );
 
@@ -2350,8 +2292,8 @@ namespace Mengine
                 {
                     m_renderCamera = _camera;
                     m_renderViewport = _viewport;
-                    m_cb = _cb;
-                    m_args = _args;
+
+                    PythonCallbackProvider::initialize( _cb, _args );
                 }
 
             protected:
@@ -2371,14 +2313,12 @@ namespace Mengine
 
                     mt::vec3f v3( wp.x, wp.y, 0.f );
 
-                    m_cb.call_args( _touchId, v3, m_args );
+                    this->call_cb( _touchId, v3 );
                 }
 
             protected:
                 RenderCameraInterfacePtr m_renderCamera;
                 RenderViewportInterfacePtr m_renderViewport;
-                pybind::object m_cb;
-                pybind::args m_args;
             };
             //////////////////////////////////////////////////////////////////////////
             typedef IntrusivePtr<PyInputMousePositionProvider, InputMousePositionProviderInterface> PyInputMousePositionProviderPtr;
@@ -2614,31 +2554,19 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             class AffectorUser
                 : public Affector
+                , public PythonCallbackProvider
             {
                 DECLARE_FACTORABLE( AffectorUser );
-
-            public:
-                bool initialize( const pybind::object & _cb, const pybind::args & _args )
-                {
-                    m_cb = _cb;
-                    m_args = _args;
-
-                    return true;
-                }
 
             protected:
                 bool _affect( const UpdateContext * _context, float * const _used ) override
                 {
                     *_used = _context->time;
 
-                    bool complete = m_cb.call_args( _context->time, m_args );
+                    bool complete = this->call_cb( _context->time );
 
                     return complete;
                 }
-
-            protected:
-                pybind::object m_cb;
-                pybind::args m_args;
             };
             //////////////////////////////////////////////////////////////////////////
             typedef IntrusivePtr<AffectorUser> AffectorUserPtr;
@@ -2649,10 +2577,7 @@ namespace Mengine
             {
                 AffectorUserPtr affector = m_factoryAffectorUser->createObject( MENGINE_DOCUMENT_PYBIND );
 
-                if( affector->initialize( _cb, _args ) == false )
-                {
-                    return nullptr;
-                }
+                affector->initialize( _cb, _args );
 
                 return affector;
             }
@@ -2661,10 +2586,7 @@ namespace Mengine
             {
                 AffectorUserPtr affector = m_factoryAffectorUser->createObject( MENGINE_DOCUMENT_PYBIND );
 
-                if( affector->initialize( _cb, _args ) == false )
-                {
-                    return 0;
-                }
+                affector->initialize( _cb, _args );
 
                 const AffectorHubInterfacePtr & affectorHub = PLAYER_SERVICE()
                     ->getGlobalAffectorHub();
@@ -2964,10 +2886,7 @@ namespace Mengine
             {
                 PythonValueFollowerLinearPtr follower = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ), MENGINE_DOCUMENT_PYBIND );
 
-                if( follower->initialize( _value, _speed, _cb, _args ) == false )
-                {
-                    return nullptr;
-                }
+                follower->initialize( _value, _speed, _cb, _args );
 
                 const AffectorHubInterfacePtr & affectorHub = PLAYER_SERVICE()
                     ->getGlobalAffectorHub();
@@ -2981,10 +2900,7 @@ namespace Mengine
             {
                 PythonValueFollowerAccelerationPtr follower = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ), MENGINE_DOCUMENT_PYBIND );
 
-                if( follower->initialize( _value, _speed, _acceleration, _cb, _args ) == false )
-                {
-                    return nullptr;
-                }
+                follower->initialize( _value, _speed, _acceleration, _cb, _args );
 
                 const AffectorHubInterfacePtr & affectorHub = PLAYER_SERVICE()
                     ->getGlobalAffectorHub();
@@ -3351,15 +3267,6 @@ namespace Mengine
                     return false;
                 }
 
-                if( _cb.is_callable() == false )
-                {
-                    LOGGER_ERROR( "cb '%s' not callable"
-                        , _cb.repr().c_str()
-                    );
-
-                    return false;
-                }
-
                 PythonSceneChangeCallbackPtr py_cb = m_factoryPythonSceneChangeCallback
                     ->createObject( MENGINE_DOCUMENT_PYBIND );
 
@@ -3376,6 +3283,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             class PyGlobalBaseHandler
                 : public InputHandlerInterface
+                , public PythonCallbackProvider
                 , public Factorable
             {
             public:
@@ -3384,17 +3292,6 @@ namespace Mengine
                 }
 
                 ~PyGlobalBaseHandler() override
-                {
-                }
-
-            public:
-                void initialize( const pybind::object & _cb, const pybind::args & _args )
-                {
-                    m_cb = _cb;
-                    m_args = _args;
-                }
-
-                void finalize()
                 {
                 }
 
@@ -3488,10 +3385,6 @@ namespace Mengine
 
                     //Empty
                 }
-
-            protected:
-                pybind::object m_cb;
-                pybind::args m_args;
             };
             //////////////////////////////////////////////////////////////////////////
             typedef IntrusivePtr<PyGlobalBaseHandler> PyGlobalBaseHandlerPtr;
@@ -3514,12 +3407,13 @@ namespace Mengine
                     ev.x = wp.x;
                     ev.y = wp.y;
 
-                    pybind::object py_result = m_cb.call_args( ev, m_args );
+                    pybind::object py_result = this->call_cb( ev );
 
                     if( py_result.is_none() == false )
                     {
-                        LOGGER_ERROR( "'%s' return value '%s' type '%s' not None"
-                            , m_cb.repr().c_str()
+                        LOGGER_ERROR( "cb '%s' args '%s' return value '%s' type '%s' not None"
+                            , this->get_cb().repr().c_str()
+                            , this->get_args().repr().c_str()
                             , py_result.repr().c_str()
                             , py_result.repr_type().c_str()
                         );
@@ -3571,12 +3465,13 @@ namespace Mengine
                     ev.dx = wd.x;
                     ev.dy = wd.y;
 
-                    pybind::object py_result = m_cb.call_args( ev, m_args );
+                    pybind::object py_result = this->call_cb( ev );
 
                     if( py_result.is_none() == false )
                     {
-                        LOGGER_ERROR( "'%s' return value '%s' type '%s' not None"
-                            , m_cb.repr().c_str()
+                        LOGGER_ERROR( "cb '%s' args '%s' return value '%s' type '%s' not None"
+                            , this->get_cb().repr().c_str()
+                            , this->get_args().repr().c_str()
                             , py_result.repr().c_str()
                             , py_result.repr_type().c_str()
                         );
@@ -3623,12 +3518,13 @@ namespace Mengine
                     ev.x = wp.x;
                     ev.y = wp.y;
 
-                    pybind::object py_result = m_cb.call_args( ev, m_args );
+                    pybind::object py_result = this->call_cb( ev );
 
                     if( py_result.is_none() == false )
                     {
-                        LOGGER_ERROR( "'%s' return value '%s' type '%s' not None"
-                            , m_cb.repr().c_str()
+                        LOGGER_ERROR( "cb '%s' args '%s' return value '%s' type '%s' not None"
+                            , this->get_cb().repr().c_str()
+                            , this->get_args().repr().c_str()
                             , py_result.repr().c_str()
                             , py_result.repr_type().c_str()
                         );
@@ -3676,12 +3572,13 @@ namespace Mengine
                     ev.x = wp.x;
                     ev.y = wp.y;
 
-                    pybind::object py_result = m_cb.call_args( ev, m_args );
+                    pybind::object py_result = this->call_cb( ev );
 
                     if( py_result.is_none() == false )
                     {
-                        LOGGER_ERROR( "'%s' return value '%s' type '%s' not None"
-                            , m_cb.repr().c_str()
+                        LOGGER_ERROR( "cb '%s' args '%s' return value '%s' type '%s' not None"
+                            , this->get_cb().repr().c_str()
+                            , this->get_args().repr().c_str()
                             , py_result.repr().c_str()
                             , py_result.repr_type().c_str()
                         );
@@ -3729,12 +3626,13 @@ namespace Mengine
                     ev.x = wp.x;
                     ev.y = wp.y;
 
-                    pybind::object py_result = m_cb.call_args( ev, m_args );
+                    pybind::object py_result = this->call_cb( ev );
 
                     if( py_result.is_none() == false )
                     {
-                        LOGGER_ERROR( "'%s' return value '%s' type '%s' not None"
-                            , m_cb.repr().c_str()
+                        LOGGER_ERROR( "cb '%s' args '%s' return value '%s' type '%s' not None"
+                            , this->get_cb().repr().c_str()
+                            , this->get_args().repr().c_str()
                             , py_result.repr().c_str()
                             , py_result.repr_type().c_str()
                         );
@@ -3774,12 +3672,13 @@ namespace Mengine
                 //////////////////////////////////////////////////////////////////////////
                 bool handleMouseWheel( const InputMouseWheelEvent & _event ) override
                 {
-                    pybind::object py_result = m_cb.call_args( _event, m_args );
+                    pybind::object py_result = this->call_cb( _event );
 
                     if( py_result.is_none() == false )
                     {
-                        LOGGER_ERROR( "'%s' return value '%s' type '%s' not None"
-                            , m_cb.repr().c_str()
+                        LOGGER_ERROR( "cb '%s' args '%s' return value '%s' type '%s' not None"
+                            , this->get_cb().repr().c_str()
+                            , this->get_args().repr().c_str()
                             , py_result.repr().c_str()
                             , py_result.repr_type().c_str()
                         );
@@ -3818,12 +3717,13 @@ namespace Mengine
             protected:
                 bool handleKeyEvent( const InputKeyEvent & _event ) override
                 {
-                    pybind::object py_result = m_cb.call_args( _event, m_args );
+                    pybind::object py_result = this->call_cb( _event );
 
                     if( py_result.is_none() == false )
                     {
-                        LOGGER_ERROR( "'%s' return value '%s' type '%s' not None"
-                            , m_cb.repr().c_str()
+                        LOGGER_ERROR( "cb '%s' args '%s' return value '%s' type '%s' not None"
+                            , this->get_cb().repr().c_str()
+                            , this->get_args().repr().c_str()
                             , py_result.repr().c_str()
                             , py_result.repr_type().c_str()
                         );
@@ -3862,12 +3762,13 @@ namespace Mengine
             protected:
                 bool handleTextEvent( const InputTextEvent & _event ) override
                 {
-                    pybind::object py_result = m_cb.call_args( _event, m_args );
+                    pybind::object py_result = this->call_cb( _event );
 
                     if( py_result.is_none() == false )
                     {
-                        LOGGER_ERROR( "'%s' return value '%s' type '%s' not None"
-                            , m_cb.repr().c_str()
+                        LOGGER_ERROR( "cb '%s' args '%s' return value '%s' type '%s' not None"
+                            , this->get_cb().repr().c_str()
+                            , this->get_args().repr().c_str()
                             , py_result.repr().c_str()
                             , py_result.repr_type().c_str()
                         );
@@ -3904,12 +3805,13 @@ namespace Mengine
             protected:
                 bool handleAccelerometerEvent( const InputAccelerometerEvent & _event ) override
                 {
-                    pybind::object py_result = m_cb.call_args( _event, m_args );
+                    pybind::object py_result = this->call_cb( _event );
 
                     if( py_result.is_none() == false )
                     {
-                        LOGGER_ERROR( "'%s' return value '%s' type '%s' not None"
-                            , m_cb.repr().c_str()
+                        LOGGER_ERROR( "cb '%s' args '%s' return value '%s' type '%s' not None"
+                            , this->get_cb().repr().c_str()
+                            , this->get_args().repr().c_str()
                             , py_result.repr().c_str()
                             , py_result.repr_type().c_str()
                         );
@@ -3952,8 +3854,6 @@ namespace Mengine
                 MENGINE_ASSERTION_MEMORY_PANIC( py_handler, "%u handler invalid"
                     , _id
                 );
-
-                py_handler->finalize();
 
                 return true;
             }

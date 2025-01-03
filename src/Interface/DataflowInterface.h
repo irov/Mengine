@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Interface/Interface.h"
 #include "Interface/DataInterface.h"
 #include "Interface/InputStreamInterface.h"
 #include "Interface/MemoryInterface.h"
 #include "Interface/DocumentInterface.h"
 
+#include "Kernel/Mixin.h"
 #include "Kernel/FilePath.h"
 
 #include "Config/Char.h"
@@ -20,7 +20,7 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     class DataflowInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual bool initialize() = 0;

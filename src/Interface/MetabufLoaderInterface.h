@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Interface/Interface.h"
-
+#include "Kernel/Mixin.h"
 #include "Kernel/Factorable.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -14,7 +13,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class MetabufLoaderInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual bool load( const FactorablePtr & _factorable, const Metabuf::Metadata * _meta ) = 0;

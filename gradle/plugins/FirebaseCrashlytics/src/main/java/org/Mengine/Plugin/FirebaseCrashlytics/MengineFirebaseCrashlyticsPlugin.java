@@ -22,8 +22,10 @@ import org.Mengine.Base.MengineListenerLogger;
 import org.Mengine.Base.MengineListenerSessionId;
 import org.Mengine.Base.MengineUtils;
 
+import java.util.Map;
+
 public class MengineFirebaseCrashlyticsPlugin extends MengineService implements MengineListenerLogger, MengineListenerApplication, MengineListenerActivity, MengineListenerEngine, MengineListenerSessionId {
-    public static final String SERVICE_NAME = "MengineFBCrashlytics";
+    public static final String SERVICE_NAME = "FBCrashlytics";
     public static final boolean SERVICE_EMBEDDING = true;
 
     @Override
@@ -39,9 +41,13 @@ public class MengineFirebaseCrashlyticsPlugin extends MengineService implements 
     }
 
     @Override
-    public void onAppPrepare(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
+    public void onAppPrepare(@NonNull MengineApplication application, @NonNull Map<String, String> pluginVersions) throws MengineServiceInvalidInitializeException {
         String sessionId = application.getSessionId();
         FirebaseCrashlytics.getInstance().setUserId(sessionId);
+
+        String pluginVersionsString = String.valueOf(pluginVersions);
+
+        FirebaseCrashlytics.getInstance().setCustomKey("plugins.version", pluginVersionsString);
     }
 
     @Override

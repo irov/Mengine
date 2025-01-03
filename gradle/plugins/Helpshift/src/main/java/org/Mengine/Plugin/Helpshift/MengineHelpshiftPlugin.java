@@ -25,7 +25,7 @@ import java.util.Map;
 import androidx.annotation.NonNull;
 
 public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEventsListener, MenginePluginRemoteMessageListener, MenginePluginActivityListener, MenginePluginPushTokenListener {
-    public static final String SERVICE_NAME = "MengineHelpshift";
+    public static final String SERVICE_NAME = "Helpshift";
     public static final boolean SERVICE_EMBEDDING = true;
 
     public static final String METADATA_PLATFORM_ID = "mengine.helpshift.platform_id";

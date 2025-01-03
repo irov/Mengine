@@ -15,7 +15,7 @@ import com.google.android.ump.ConsentRequestParameters;
 import com.google.android.ump.UserMessagingPlatform;
 
 public class MengineGoogleConsentPlugin extends MengineService implements MengineListenerActivity {
-    public static final String SERVICE_NAME = "MengineGConsent";
+    public static final String SERVICE_NAME = "GConsent";
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {

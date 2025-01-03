@@ -20,6 +20,8 @@
 #include "Kernel/ContentHelper.h"
 #include "Kernel/PrototypeHelper.h"
 #include "Kernel/PrefetcherHelper.h"
+#include "Kernel/MixerBoolean.h"
+#include "Kernel/MixerValue.h"
 
 #include "Config/Algorithm.h"
 
@@ -35,7 +37,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     SoundService::SoundService()
         : m_supportStream( true )
-        , m_muted( false )
         , m_turnStream( false )
         , m_turnSound( false )
     {
@@ -56,8 +57,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::_initializeService()
     {
-        m_commonVolume = Helper::generatePrototype( MixerValue::getFactorableType(), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+        m_muted = Helper::generatePrototype( MixerBoolean::getFactorableType(), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
+        m_commonVolume = Helper::generatePrototype( MixerValue::getFactorableType(), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
         m_soundVolume = Helper::generatePrototype( MixerValue::getFactorableType(), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
         m_musicVolume = Helper::generatePrototype( MixerValue::getFactorableType(), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
         m_voiceVolume = Helper::generatePrototype( MixerValue::getFactorableType(), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
@@ -150,6 +152,8 @@ namespace Mengine
 
         TIMEPIPE_SERVICE()
             ->removeTimepipe( TimepipeInterfacePtr::from( this ) );
+
+        m_muted = nullptr;
 
         m_commonVolume = nullptr;
         m_soundVolume = nullptr;
@@ -753,21 +757,18 @@ namespace Mengine
         m_soundIdentitiesEndAux.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void SoundService::mute( bool _mute )
+    void SoundService::mute( const ConstString & _type, bool _mute )
     {
-        if( m_muted == _mute )
-        {
-            return;
-        }
-
-        m_muted = _mute;
+        m_muted->setValue( _type, _mute );
 
         this->updateVolume();
     }
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::isMute() const
     {
-        return m_muted;
+        bool muted = m_muted->mixValue();
+
+        return muted;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::playEmitter( const SoundIdentityInterfacePtr & _identity )
@@ -1140,7 +1141,9 @@ namespace Mengine
         mixVoiceVolume *= commonVolume;
         mixVoiceVolume *= voiceVolume;
 
-        _provider->onSoundChangeVolume( mixSoundVolume, mixMusicVolume, mixVoiceVolume, m_muted );
+        bool mixMuted = m_muted->mixValue();
+
+        _provider->onSoundChangeVolume( mixSoundVolume, mixMusicVolume, mixVoiceVolume, mixMuted );
     }
     //////////////////////////////////////////////////////////////////////////
     void SoundService::updateVolume()

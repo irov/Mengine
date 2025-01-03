@@ -8,6 +8,7 @@
 
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonDocumentTraceback.h"
+#include "Environment/Python/PythonCallbackProvider.h"
 
 #include "ResourcePrefetcherServiceInterface.h"
 
@@ -22,13 +23,13 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         class PyPrefetcherObserver
             : public PrefetcherObserverInterface
+            , public PythonCallbackProvider
             , public Factorable
         {
         public:
             PyPrefetcherObserver( const ConstString & _groupName, const pybind::object & _cb, const pybind::args & _args )
-                : m_groupName( _groupName )
-                , m_cb( _cb )
-                , m_args( _args )
+                : PythonCallbackProvider( _cb, _args )
+                , m_groupName( _groupName )
                 , m_count( 0 )
                 , m_successful( true )
             {
@@ -75,9 +76,7 @@ namespace Mengine
                 {
                     bool successful = m_successful;
                     
-                    m_cb.call_args( successful, m_args );
-                    m_cb.reset();
-                    m_args.reset();
+                    this->call_cb( successful );
                 }
             }
 
@@ -89,17 +88,12 @@ namespace Mengine
                 {
                     bool successful = m_successful;
                     
-                    m_cb.call_args( successful, m_args );
-                    m_cb.reset();
-                    m_args.reset();
+                    this->call_cb( successful );
                 }
             }
 
         protected:
             ConstString m_groupName;
-
-            pybind::object m_cb;
-            pybind::args m_args;
 
             AtomicUInt32 m_count;
             AtomicBool m_successful;

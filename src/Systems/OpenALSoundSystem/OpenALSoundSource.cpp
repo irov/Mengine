@@ -121,6 +121,8 @@ namespace Mengine
         m_playing = true;
         m_pausing = true;
 
+        MENGINE_OPENAL_CALL( alSourcef, (m_sourceId, AL_GAIN, 0.f) );
+
         m_soundBuffer->pauseSource( m_sourceId );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -142,6 +144,9 @@ namespace Mengine
 
             return false;
         }
+
+        ALfloat gain = (ALfloat)Math::powf( m_volume, 2.f );
+        MENGINE_OPENAL_CALL( alSourcef, (m_sourceId, AL_GAIN, gain) );
 
         m_soundBuffer->resumeSource( m_sourceId );
 

@@ -11,7 +11,7 @@ import org.Mengine.Base.MengineListenerPerformance;
 import java.util.Map;
 
 public class MengineFirebasePerformanceMonitoringPlugin extends MengineService implements MengineListenerPerformance {
-    public static final String SERVICE_NAME = "MengineFBPMonitoring";
+    public static final String SERVICE_NAME = "FBPMonitoring";
     public static final boolean SERVICE_EMBEDDING = true;
 
     @Override

@@ -1034,11 +1034,31 @@ public class MengineApplication extends Application {
         String engine_gitsha1 = this.getEngineGITSHA1();
         this.setState("engine.gitsha1", engine_gitsha1);
 
-        String engine_version = this.getEngineVersion();
-        this.setState("engine.version", engine_version);
+        this.setState("application.init", "services_version");
 
-        String engine_builddate = this.getBuildDate();
-        this.setState("engine.build_date", engine_builddate);
+        Map<String, String> pluginVersions = new HashMap<>();
+
+        for (MengineListenerApplication l : applicationListeners) {
+            String version = l.onAppVersion(this);
+
+            if (version == null) {
+                continue;
+            }
+
+            String serviceName = l.getServiceName();
+
+            pluginVersions.put(serviceName, version);
+        }
+
+        for (Map.Entry<String, String> entry: pluginVersions.entrySet()) {
+            String name = entry.getKey();
+            String version = entry.getValue();
+
+            MengineLog.logMessage(TAG, "plugin: %s version: %s"
+                , name
+                , version
+            );
+        }
 
         this.setState("application.init", "services_prepare");
 
@@ -1048,7 +1068,7 @@ public class MengineApplication extends Application {
                     , l.getServiceName()
                 );
 
-                l.onAppPrepare(this);
+                l.onAppPrepare(this, pluginVersions);
             } catch (final MengineServiceInvalidInitializeException e) {
                 MengineAnalytics.buildEvent("mng_app_create_failed")
                     .addParameterException("exception", e)
@@ -1121,7 +1141,7 @@ public class MengineApplication extends Application {
 
             String name = p.getServiceName();
 
-            MengineNative.AndroidNativePython_addPlugin(name, p);
+            MengineNative.AndroidNativePython_addPlugin("Mengine" + name, p);
         }
 
         this.setState("application.init", "run_main");
@@ -1159,7 +1179,7 @@ public class MengineApplication extends Application {
 
             String name = p.getServiceName();
 
-            MengineNative.AndroidNativePython_removePlugin(name);
+            MengineNative.AndroidNativePython_removePlugin("Mengine" + name);
         }
 
         for (MengineService service : m_services) {

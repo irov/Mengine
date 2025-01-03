@@ -27,6 +27,6 @@ namespace Mengine
         float m_delay;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DelaySchedulePipe> DelaySchedulePipePtr;
+    typedef IntrusivePtr<DelaySchedulePipe, SchedulerPipeInterface> DelaySchedulePipePtr;
     //////////////////////////////////////////////////////////////////////////
 }

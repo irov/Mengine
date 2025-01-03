@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Interface/Interface.h"
 #include "Interface/FontInterface.h"
 
+#include "Kernel/Mixin.h"
 #include "Kernel/Tags.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
@@ -30,7 +30,7 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     class TextEntryInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual const ConstString & getKey() const = 0;

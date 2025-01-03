@@ -1,9 +1,7 @@
 #pragma once
 
-#include "Interface/Interface.h"
-
+#include "Kernel/Mixin.h"
 #include "Kernel/UpdateContext.h"
-
 #include "Kernel/UpdateMode.h"
 
 namespace Mengine
@@ -18,7 +16,7 @@ namespace Mengine
     class Updatable;
     //////////////////////////////////////////////////////////////////////////
     class UpdationInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual Updatable * getUpdatable() = 0;

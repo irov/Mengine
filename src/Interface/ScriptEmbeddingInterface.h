@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/Interface.h"
+#include "Kernel/Mixin.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace pybind
@@ -12,7 +12,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class ScriptEmbeddingInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual bool embed( pybind::kernel_interface * _kernel ) = 0;

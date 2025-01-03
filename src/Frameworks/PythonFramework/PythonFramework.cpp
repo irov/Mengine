@@ -15,6 +15,7 @@
 #include "NodeScriptEmbedding.h"
 #include "ResourceScriptEmbedding.h"
 #include "SoundScriptEmbedding.h"
+#include "AmplifierScriptEmbedding.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/ConstStringHelper.h"
@@ -94,6 +95,12 @@ namespace Mengine
         {
             return false;
         }
+        
+        if( SCRIPT_SERVICE()
+            ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "AmplifierScriptEmbedding" ), Helper::makeFactorableUnique<AmplifierScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        {
+            return false;
+        }
 
         if( SCRIPT_SERVICE()
             ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "EngineScriptEmbedding" ), Helper::makeFactorableUnique<EngineScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
@@ -146,6 +153,9 @@ namespace Mengine
 
         SCRIPT_SERVICE()
             ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "SoundScriptEmbedding" ) );
+
+        SCRIPT_SERVICE()
+            ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "AmplifierScriptEmbedding" ) );
 
         SCRIPT_SERVICE()
             ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "EngineScriptEmbedding" ) );

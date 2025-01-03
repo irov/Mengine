@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/Interface.h"
+#include "Kernel/Mixin.h"
 
 namespace Mengine
 {
@@ -13,7 +13,7 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     class ArchivatorInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual size_t compressBound( size_t _size ) const = 0;

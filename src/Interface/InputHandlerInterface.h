@@ -1,14 +1,13 @@
 #pragma once
 
-#include "Interface/Interface.h"
-
+#include "Kernel/Mixin.h"
 #include "Kernel/InputEvent.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class InputHandlerInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual bool handleKeyEvent( const InputKeyEvent & _event ) = 0;

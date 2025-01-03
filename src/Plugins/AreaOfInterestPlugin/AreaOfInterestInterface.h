@@ -2,7 +2,6 @@
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/ServantInterface.h"
-#include "Interface/Interface.h"
 
 #include "Kernel/Mixin.h"
 #include "Kernel/IntrusivePtr.h"

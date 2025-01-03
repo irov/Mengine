@@ -42,6 +42,8 @@
 #include "Kernel/MT19937Randomizer.h"
 #include "Kernel/VocabularyHelper.h"
 #include "Kernel/PluginHelper.h"
+#include "Kernel/MixerValue.h"
+#include "Kernel/MixerBoolean.h"
 
 #include "Config/Path.h"
 
@@ -113,6 +115,7 @@ SERVICE_EXTERN( StatisticService );
 SERVICE_EXTERN( Application );
 SERVICE_EXTERN( EnumeratorService );
 SERVICE_EXTERN( ChronometerService );
+SERVICE_EXTERN( AmplifierService );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( MockupRenderSystem );
 SERVICE_EXTERN( SilentSoundSystem );
@@ -204,10 +207,6 @@ PLUGIN_EXPORT( ImageCodec );
 PLUGIN_EXPORT( WAV );
 #endif
 //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_AMPLIFIER_STATIC)
-PLUGIN_EXPORT( Amplifier );
-#endif
-//////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_OGG_VORBIS_STATIC)
 PLUGIN_EXPORT( OggVorbis );
 #endif
@@ -230,6 +229,10 @@ PLUGIN_EXPORT( NodeDebugRender );
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_DEBUGPANEL_STATIC)
 PLUGIN_EXPORT( DebugPanel );
+#endif
+//////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_PLUGIN_LAYOUTEDITOR_STATIC)
+PLUGIN_EXPORT( LayoutEditor );
 #endif
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_RESOURCEPREFETCHER_STATIC)
@@ -799,7 +802,7 @@ namespace Mengine
         }
 
         VOCABULARY_SET( FileGroupInterface, STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "user" ), userFileGroup, MENGINE_DOCUMENT_FACTORABLE );
-        
+
         NOTIFICATION_NOTIFY( NOTIFICATOR_MOUNT_USER_FILEGROUP );
 
         return true;
@@ -929,6 +932,12 @@ namespace Mengine
             return false;
         }
 
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "MixerBoolean" ), ConstString::none(), Helper::makeDefaultPrototypeGenerator<MixerBoolean, 32>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        {
+            return false;
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -944,6 +953,9 @@ namespace Mengine
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "MixerValue" ), ConstString::none(), nullptr );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "MixerBoolean" ), ConstString::none(), nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
 #define MENGINE_ADD_FRAMEWORK( Name, Info, Doc )\
@@ -1006,7 +1018,7 @@ namespace Mengine
         MENGINE_ADD_SERVICE( DateTimeSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( PreferencesSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( CryptographySystem, MENGINE_DOCUMENT_FACTORABLE );
-        
+
 #if defined(MENGINE_PLATFORM_WINDOWS)
         MENGINE_ADD_SERVICE( Win32KernelService, MENGINE_DOCUMENT_FACTORABLE );
 #endif
@@ -1035,7 +1047,7 @@ namespace Mengine
         MENGINE_ADD_SERVICE( TimerService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( TimelineService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( TimepipeService, MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ADD_SERVICE( PluginService, MENGINE_DOCUMENT_FACTORABLE );        
+        MENGINE_ADD_SERVICE( PluginService, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ADD_SERVICE( EnvironmentService, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -1202,11 +1214,11 @@ namespace Mengine
         BOOTSTRAPPER_SERVICE_CREATE( CodecService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( DataService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( PrefetcherService, MENGINE_DOCUMENT_FACTORABLE );
-        
+
 #if defined(MENGINE_MASTER_RELEASE_DISABLE)
         BOOTSTRAPPER_SERVICE_CREATE( ConverterService, MENGINE_DOCUMENT_FACTORABLE );
 #endif
-        
+
         BOOTSTRAPPER_SERVICE_CREATE( InputService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( ArrowService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( ChronometerService, MENGINE_DOCUMENT_FACTORABLE );
@@ -1225,6 +1237,7 @@ namespace Mengine
         BOOTSTRAPPER_SERVICE_CREATE( PlayerService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( AccountService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( GameService, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( AmplifierService, MENGINE_DOCUMENT_FACTORABLE );
 
         LOGGER_INFO( "bootstrapper", "bootstrapper create dynamic priority plugins" );
 
@@ -1281,6 +1294,10 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( DebugPanel, "plugin DebugPanel...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
+#if defined(MENGINE_PLUGIN_LAYOUTEDITOR_STATIC)
+        MENGINE_ADD_PLUGIN( LayoutEditor, "plugin LayoutEditor...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
 #if defined(MENGINE_PLUGIN_RESOURCEPREFETCHER_STATIC)
         MENGINE_ADD_PLUGIN( ResourcePrefetcher, "plugin ResourcePrefetcher...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
@@ -1331,10 +1348,6 @@ namespace Mengine
 
 #if defined(MENGINE_PLUGIN_OGG_VORBIS_STATIC)
         MENGINE_ADD_PLUGIN( OggVorbis, "plugin OggVorbisCodec...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-#if defined(MENGINE_PLUGIN_AMPLIFIER_STATIC)
-        MENGINE_ADD_PLUGIN( Amplifier, "plugin Amplifier...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #if defined(MENGINE_PLUGIN_PVRTC_STATIC)
@@ -1448,7 +1461,7 @@ namespace Mengine
 #if defined(MENGINE_PLUGIN_ANDROID_NATIVE_PYTHON_STATIC)
         MENGINE_ADD_PLUGIN( AndroidNativePython, "plugin AndroidNativePython...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
-        
+
 #if defined(MENGINE_PLUGIN_APPLE_NATIVE_PYTHON_STATIC)
         MENGINE_ADD_PLUGIN( AppleNativePython, "plugin AppleNativePython...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
@@ -2172,16 +2185,17 @@ namespace Mengine
         SERVICE_FINALIZE( ModuleService );
         SERVICE_FINALIZE( FrameworkService );
         SERVICE_FINALIZE( PlayerService );
+        SERVICE_FINALIZE( AmplifierService );
         SERVICE_FINALIZE( PickerService );
         SERVICE_FINALIZE( UpdateService );
         SERVICE_FINALIZE( InputService );
         SERVICE_FINALIZE( CodecService );
         SERVICE_FINALIZE( SoundService );
-        
+
 #if defined(MENGINE_MASTER_RELEASE_DISABLE)
         SERVICE_FINALIZE( ConverterService );
 #endif
-        
+
         SERVICE_FINALIZE( RenderService );
         SERVICE_FINALIZE( RenderMaterialService );
         SERVICE_FINALIZE( RenderTextureService );
@@ -2275,6 +2289,7 @@ namespace Mengine
         SERVICE_DESTROY( HttpService );
         SERVICE_DESTROY( SceneService );
         SERVICE_DESTROY( GameService );
+        SERVICE_DESTROY( AmplifierService );
         SERVICE_DESTROY( Application );
         SERVICE_DESTROY( SecureService );
         SERVICE_DESTROY( AccountService );
@@ -2301,11 +2316,11 @@ namespace Mengine
         SERVICE_DESTROY( CodecService );
         SERVICE_DESTROY( SoundService );
         SERVICE_DESTROY( SoundSystem );
-        
+
 #if defined(MENGINE_MASTER_RELEASE_DISABLE)
         SERVICE_DESTROY( ConverterService );
 #endif
-        
+
         SERVICE_DESTROY( RenderService );
         SERVICE_DESTROY( PrototypeService );
         SERVICE_DESTROY( RenderMaterialService );

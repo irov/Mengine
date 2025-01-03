@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Interface/Interface.h"
-
+#include "Kernel/Mixin.h"
 #include "Kernel/ConstString.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -14,7 +13,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class ScriptModuleInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual bool onInitialize( const ConstString & _method ) = 0;

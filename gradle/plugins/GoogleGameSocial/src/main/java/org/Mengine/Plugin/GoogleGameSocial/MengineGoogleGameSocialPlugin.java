@@ -26,7 +26,7 @@ import org.Mengine.Base.MengineUtils;
 import org.Mengine.Plugin.GoogleService.MengineGoogleServicePlugin;
 
 public class MengineGoogleGameSocialPlugin extends MengineService implements MengineListenerApplication, MengineListenerActivity {
-    public static final String SERVICE_NAME = "MengineGGameSocial";
+    public static final String SERVICE_NAME = "GGameSocial";
     public static final boolean SERVICE_EMBEDDING = true;
 
     private ActivityResultLauncher<Intent> m_achievementLauncher;

@@ -3,6 +3,7 @@
 #include "Interface/SoundServiceInterface.h"
 #include "Interface/TimepipeInterface.h"
 #include "Interface/FactoryInterface.h"
+#include "Interface/MixerBooleanInterface.h"
 
 #include "SoundIdentity.h"
 #include "ThreadWorkerSoundBufferUpdate.h"
@@ -104,7 +105,7 @@ namespace Mengine
         bool setPosMs( const SoundIdentityInterfacePtr & _identity, float _pos ) override;
         float getPosMs( const SoundIdentityInterfacePtr & _identity ) override;
 
-        void mute( bool _mute ) override;
+        void mute( const ConstString & _type, bool _mute ) override;
         bool isMute() const override;
 
     public:
@@ -132,6 +133,8 @@ namespace Mengine
         bool checkMaxSoundPlay_() const;
 
     protected:
+        MixerBooleanInterfacePtr m_muted;
+
         MixerValueInterfacePtr m_commonVolume;
         MixerValueInterfacePtr m_soundVolume;
         MixerValueInterfacePtr m_musicVolume;
@@ -150,8 +153,7 @@ namespace Mengine
         typedef Vector<SoundVolumeProviderInterfacePtr> VectorSoundVolumeProviders;
         VectorSoundVolumeProviders m_soundVolumeProviders;
 
-        bool m_supportStream;
-        bool m_muted;
+        bool m_supportStream;        
 
         bool m_turnStream;
         bool m_turnSound;

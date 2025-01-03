@@ -26,13 +26,13 @@ import java.util.EnumMap;
 import java.util.Map;
 
 public class MengineFirebaseAnalyticsPlugin extends MengineService implements MengineListenerAnalytics, MengineListenerAdRevenue, MengineListenerTransparencyConsent, MengineListenerApplication, MengineListenerSessionId {
-    public static final String SERVICE_NAME = "MengineFBAnalytics";
+    public static final String SERVICE_NAME = "FBAnalytics";
     public static final boolean SERVICE_EMBEDDING = true;
 
     FirebaseAnalytics m_firebaseAnalytics;
 
     @Override
-    public void onAppPrepare(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
+    public void onAppPrepare(@NonNull MengineApplication application, @NonNull Map<String, String> pluginVersions) throws MengineServiceInvalidInitializeException {
         FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(application);
 
         String sessionId = application.getSessionId();

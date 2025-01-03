@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/Interface.h"
+#include "Kernel/Mixin.h"
 
 #include "Config/Char.h"
 
@@ -8,7 +8,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class AccountSettingProviderInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual void onChangeSetting( const Char * _value ) = 0;

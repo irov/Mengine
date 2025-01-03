@@ -1,9 +1,11 @@
-#include "Amplifier.h"
+#include "AmplifierService.h"
 
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/SoundServiceInterface.h"
 #include "Interface/NotificatorInterface.h"
+
+#include "AmplifierSoundListener.h"
 
 #include "Engine/ResourceMusic.h"
 
@@ -15,116 +17,37 @@
 #include "Kernel/ContentHelper.h"
 #include "Kernel/VocabularyHelper.h"
 
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
-#   include "Interface/ScriptServiceInterface.h"
-
-#   include "AmplifierScriptEmbedding.h"
-#endif
-
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( Amplifier, Mengine::Amplifier );
+SERVICE_FACTORY( AmplifierService, Mengine::AmplifierService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    namespace Detail
-    {
-        //////////////////////////////////////////////////////////////////////////
-        class MyMusicSoundListener
-            : public Factorable
-            , public SoundListenerInterface
-        {
-            DECLARE_FACTORABLE( Amplifier );
-
-        public:
-            explicit MyMusicSoundListener( const AmplifierMusicCallbackInterfacePtr & _callback )
-                : m_callback( _callback )
-            {
-            }
-
-            ~MyMusicSoundListener() override
-            {
-            }
-
-        protected:
-            void onSoundPause( const SoundIdentityInterfacePtr & _emitter ) override
-            {
-                MENGINE_UNUSED( _emitter );
-
-                m_callback->onMusicPause();
-            }
-
-            void onSoundResume( const SoundIdentityInterfacePtr & _emitter ) override
-            {
-                MENGINE_UNUSED( _emitter );
-
-                m_callback->onMusicResume();
-            }
-
-            void onSoundStop( const SoundIdentityInterfacePtr & _emitter ) override
-            {
-                MENGINE_UNUSED( _emitter );
-
-                m_callback->onMusicStop();
-            }
-
-            void onSoundEnd( const SoundIdentityInterfacePtr & _emitter ) override
-            {
-                MENGINE_UNUSED( _emitter );
-
-                m_callback->onMusicEnd();
-            }
-
-        protected:
-            AmplifierMusicCallbackInterfacePtr m_callback;
-        };
-        //////////////////////////////////////////////////////////////////////////
-    }
-    //////////////////////////////////////////////////////////////////////////
-    Amplifier::Amplifier()
+    AmplifierService::AmplifierService()
         : m_play( false )
         , m_pause( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    Amplifier::~Amplifier()
+    AmplifierService::~AmplifierService()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Amplifier::_initializeService()
+    bool AmplifierService::_initializeService()
     {
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_TURN_SOUND, &Amplifier::notifyTurnSound_, MENGINE_DOCUMENT_FACTORABLE );
-
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
-        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
-        {
-            SCRIPT_SERVICE()
-                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "AmplifierScriptEmbedding" ), Helper::makeFactorableUnique<AmplifierScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
-        }, MENGINE_DOCUMENT_FACTORABLE );
-
-        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
-        {
-            SCRIPT_SERVICE()
-                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "AmplifierScriptEmbedding" ) );
-        }, MENGINE_DOCUMENT_FACTORABLE );
-#endif
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_TURN_SOUND, &AmplifierService::notifyTurnSound_, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Amplifier::_finalizeService()
+    void AmplifierService::_finalizeService()
     {
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
-#endif
-
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_TURN_SOUND );
 
         MENGINE_ASSERTION_FATAL( m_soundIdentity == nullptr, "amplifier invalid finalize" );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Amplifier::playMusic( const ConstString & _resourceName, float _pos, bool _looped, const AmplifierMusicCallbackInterfacePtr & _callback )
+    bool AmplifierService::playMusic( const ConstString & _resourceName, float _pos, bool _looped, const AmplifierMusicCallbackInterfacePtr & _callback )
     {
         MENGINE_ASSERTION_RESOURCE_TYPE_BY_NAME( _resourceName, ResourceMusicPtr, false, "resource '%s' type does not match 'ResourceMusic'"
             , _resourceName.c_str()
@@ -186,7 +109,7 @@ namespace Mengine
 
         if( _callback != nullptr )
         {
-            SoundListenerInterfacePtr soundListener = Helper::makeFactorableUnique<Detail::MyMusicSoundListener>( MENGINE_DOCUMENT_FACTORABLE, _callback );
+            SoundListenerInterfacePtr soundListener = Helper::makeFactorableUnique<AmplifierSoundListener>( MENGINE_DOCUMENT_FACTORABLE, _callback );
 
             soundIdentity->setSoundListener( soundListener );
         }
@@ -243,7 +166,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Amplifier::stopMusic()
+    void AmplifierService::stopMusic()
     {
         m_play = false;
         m_pause = false;
@@ -260,7 +183,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Amplifier::pauseMusic()
+    bool AmplifierService::pauseMusic()
     {
         if( m_soundIdentity == nullptr )
         {
@@ -286,7 +209,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Amplifier::resumeMusic()
+    bool AmplifierService::resumeMusic()
     {
         if( m_soundIdentity == nullptr )
         {
@@ -312,7 +235,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    float Amplifier::getDuration() const
+    float AmplifierService::getDuration() const
     {
         if( m_soundIdentity == nullptr )
         {
@@ -325,7 +248,7 @@ namespace Mengine
         return pos;
     }
     //////////////////////////////////////////////////////////////////////////
-    float Amplifier::getPosMs() const
+    float AmplifierService::getPosMs() const
     {
         if( m_soundIdentity == nullptr )
         {
@@ -338,7 +261,7 @@ namespace Mengine
         return pos;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Amplifier::setPosMs( float _posMs )
+    void AmplifierService::setPosMs( float _posMs )
     {
         if( m_soundIdentity == nullptr )
         {
@@ -349,12 +272,12 @@ namespace Mengine
             ->setPosMs( m_soundIdentity, _posMs );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Amplifier::_stopService()
+    void AmplifierService::_stopService()
     {
         this->stopMusic();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Amplifier::notifyTurnSound_( bool _turn )
+    void AmplifierService::notifyTurnSound_( bool _turn )
     {
         if( _turn == true )
         {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/Interface.h"
+#include "Kernel/Mixin.h"
 
 #include "Config/Typedef.h"
 
@@ -8,7 +8,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class InputStreamInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual size_t read( void * const _buffer, size_t _size ) = 0;

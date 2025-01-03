@@ -12,7 +12,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     ModuleDebugPanel::ModuleDebugPanel()
-        : m_showDebugPanel( false )
+        : m_show( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -39,7 +39,7 @@ namespace Mengine
     {
         if( _event.code == KC_F9 && _event.isDown == true )
         {
-            m_showDebugPanel = !m_showDebugPanel;            
+            m_show = !m_show;            
         }
 
         return false;
@@ -107,7 +107,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ModuleDebugPanel::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context )
     {
-        if( m_showDebugPanel == false )
+        if( m_show == false )
         {
             return;
         }

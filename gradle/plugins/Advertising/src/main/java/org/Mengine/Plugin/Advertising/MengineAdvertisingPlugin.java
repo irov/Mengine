@@ -20,7 +20,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class MengineAdvertisingPlugin extends MengineService implements MengineListenerApplication {
-    public static final String SERVICE_NAME = "MengineAdvertising";
+    public static final String SERVICE_NAME = "Advertising";
 
     private static final String LIMIT_ADVERTISING_ID = "00000000-0000-0000-0000-000000000000";
 

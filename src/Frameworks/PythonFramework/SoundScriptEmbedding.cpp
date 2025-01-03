@@ -9,6 +9,7 @@
 
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonDocumentTraceback.h"
+#include "Environment/Python/PythonCallbackProvider.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/Logger.h"
@@ -66,16 +67,16 @@ namespace Mengine
         public:
             //////////////////////////////////////////////////////////////////////////
             class MySoundNodeListener
-                : public Factorable
-                , public SoundListenerInterface
+                : public SoundListenerInterface
+                , public PythonCallbackProvider
+                , public Factorable
             {
                 DECLARE_FACTORABLE( MySoundNodeListener );
 
             public:
-                MySoundNodeListener( const ResourceSoundPtr & _resource, const pybind::object & _cb, const pybind::args & _args )
-                    : m_resource( _resource )
-                    , m_cb( _cb )
-                    , m_args( _args )
+                MySoundNodeListener( const ResourceSoundPtr & _resource, const pybind::object & _cbs, const pybind::args & _args )
+                    : PythonCallbackProvider( _cbs, _args )
+                    , m_resource( _resource )
                 {
                 }
 
@@ -93,14 +94,14 @@ namespace Mengine
                 {
                     MENGINE_UNUSED( _emitter );
 
-                    //Empty
+                    this->call_method( "onSoundPause", _emitter );
                 }
 
                 void onSoundResume( const SoundIdentityInterfacePtr & _emitter ) override
                 {
                     MENGINE_UNUSED( _emitter );
 
-                    //Empty
+                    this->call_method( "onSoundResume", _emitter );
                 }
 
                 void onSoundStop( const SoundIdentityInterfacePtr & _emitter ) override
@@ -116,10 +117,7 @@ namespace Mengine
                         );
                     }
 
-                    if( m_cb.is_callable() == true )
-                    {
-                        m_cb.call_args( _emitter, 0, m_args );
-                    }
+                    this->call_method( "onSoundStop", _emitter );
 
                     m_resource->release();
                     m_resource = nullptr;
@@ -138,10 +136,7 @@ namespace Mengine
                         );
                     }
 
-                    if( m_cb.is_callable() == true )
-                    {
-                        m_cb.call_args( _emitter, 1, m_args );
-                    }
+                    this->call_method( "onSoundEnd", _emitter );
 
                     m_resource->release();
                     m_resource = nullptr;
@@ -149,8 +144,6 @@ namespace Mengine
 
             protected:
                 ResourceSoundPtr m_resource;
-                pybind::object m_cb;
-                pybind::args m_args;
             };
             //////////////////////////////////////////////////////////////////////////
             typedef IntrusivePtr<MySoundNodeListener> MySoundNodeListenerPtr;
@@ -176,7 +169,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryInterfacePtr m_factorySoundNodeListener;
             //////////////////////////////////////////////////////////////////////////
-            SoundIdentityInterfacePtr s_createSoundSource( const ConstString & _resourceName, bool _loop, ESoundSourceCategory _category, const pybind::object & _cb, const pybind::args & _args, const DocumentInterfacePtr & _doc )
+            SoundIdentityInterfacePtr s_createSoundSource( const ConstString & _resourceName, bool _loop, ESoundSourceCategory _category, const pybind::object & _cbs, const pybind::args & _args, const DocumentInterfacePtr & _doc )
             {
                 MENGINE_ASSERTION_RESOURCE_TYPE_BY_NAME( _resourceName, ResourceSoundPtr, nullptr, "resource '%s' type does not match 'ResourceSound'"
                     , _resourceName.c_str()
@@ -221,11 +214,6 @@ namespace Mengine
                         , _resourceName.c_str()
                     );
 
-                    if( _cb.is_callable() == true )
-                    {
-                        _cb.call_args( nullptr, 2, _args );
-                    }
-
                     resource->release();
 
                     return nullptr;
@@ -244,35 +232,35 @@ namespace Mengine
                         , volume
                     );
 
-                    if( _cb.is_callable() == true )
-                    {
-                        _cb.call_args( nullptr, 2, _args );
-                    }
-
                     resource->release();
 
                     return nullptr;
                 }
 
-                MySoundNodeListenerPtr snlistener = Helper::makeFactorableUnique<MySoundNodeListener>( _doc, resource, _cb, _args );
+                MySoundNodeListenerPtr snlistener = Helper::makeFactorableUnique<MySoundNodeListener>( _doc, resource, _cbs, _args );
 
                 soundIdentity->setSoundListener( snlistener );
 
                 return soundIdentity;
             }
             //////////////////////////////////////////////////////////////////////////
-            SoundIdentityInterfacePtr soundPlay( const ConstString & _resourceName, bool _loop, const pybind::object & _cb, const pybind::args & _args )
+            SoundIdentityInterfacePtr soundPlay( const ConstString & _resourceName, bool _loop, const pybind::object & _cbs, const pybind::args & _args )
             {
-                SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args, MENGINE_DOCUMENT_PYBIND );
-
-                MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, "can't get resource '%s'"
-                    , _resourceName.c_str()
-                );
-
                 LOGGER_INFO( "sound", "[script] sound play resource '%s' file '%s'"
                     , _resourceName.c_str()
                     , Helper::getResourceFilePathByName( _resourceName ).c_str()
                 );
+
+                SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cbs, _args, MENGINE_DOCUMENT_PYBIND );
+
+                if( soundIdentity == nullptr )
+                {
+                    LOGGER_ERROR( "invalid create sound source '%s'"
+                        , _resourceName.c_str()
+                    );
+
+                    return nullptr;
+                }
 
                 if( SOUND_SERVICE()
                     ->playEmitter( soundIdentity ) == false )
@@ -288,18 +276,23 @@ namespace Mengine
                 return soundIdentity;
             }
             //////////////////////////////////////////////////////////////////////////
-            SoundIdentityInterfacePtr voicePlay( const ConstString & _resourceName, bool _loop, const pybind::object & _cb, const pybind::args & _args )
+            SoundIdentityInterfacePtr voicePlay( const ConstString & _resourceName, bool _loop, const pybind::object & _cbs, const pybind::args & _args )
             {
-                SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_VOICE, _cb, _args, MENGINE_DOCUMENT_PYBIND );
-
-                MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, "can't get resource '%s'"
-                    , _resourceName.c_str()
-                );
-
                 LOGGER_INFO( "sound", "[script] voice play resource '%s' file '%s'"
                     , _resourceName.c_str()
                     , Helper::getResourceFilePathByName( _resourceName ).c_str()
                 );
+
+                SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_VOICE, _cbs, _args, MENGINE_DOCUMENT_PYBIND );
+
+                if( soundIdentity == nullptr )
+                {
+                    LOGGER_ERROR( "invalid create voice source '%s'"
+                        , _resourceName.c_str()
+                    );
+
+                    return nullptr;
+                }
 
                 if( SOUND_SERVICE()
                     ->playEmitter( soundIdentity ) == false )
@@ -331,13 +324,24 @@ namespace Mengine
                 return successful;
             }
             //////////////////////////////////////////////////////////////////////////
-            SoundIdentityInterfacePtr soundPlayFromPosition( const ConstString & _resourceName, float _position, bool _loop, const pybind::object & _cb, const pybind::args & _args )
+            SoundIdentityInterfacePtr soundPlayFromPosition( const ConstString & _resourceName, float _position, bool _loop, const pybind::object & _cbs, const pybind::args & _args )
             {
-                SoundIdentityInterfacePtr sourceEmitter = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args, MENGINE_DOCUMENT_PYBIND );
-
-                MENGINE_ASSERTION_MEMORY_PANIC( sourceEmitter, "can't get resource '%s'"
+                LOGGER_INFO( "sound", "[script] voice play resource '%s' file '%s' from position '%f'"
                     , _resourceName.c_str()
+                    , Helper::getResourceFilePathByName( _resourceName ).c_str()
+                    , _position
                 );
+
+                SoundIdentityInterfacePtr sourceEmitter = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cbs, _args, MENGINE_DOCUMENT_PYBIND );
+
+                if( sourceEmitter == nullptr )
+                {
+                    LOGGER_ERROR( "invalid create sound source '%s'"
+                        , _resourceName.c_str()
+                    );
+
+                    return nullptr;
+                }
 
                 if( SOUND_SERVICE()
                     ->setPosMs( sourceEmitter, _position ) == false )
@@ -349,13 +353,6 @@ namespace Mengine
 
                     return nullptr;
                 }
-
-                LOGGER_INFO( "sound", "[script] voice play resource '%s' file '%s' from position '%f'"
-                    , _resourceName.c_str()
-                    , Helper::getResourceFilePathByName( _resourceName ).c_str()
-                    , _position
-                );
-
 
                 if( SOUND_SERVICE()
                     ->playEmitter( sourceEmitter ) == false )
@@ -388,6 +385,8 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             class SoundAffectorCallback
                 : public AffectorCallbackInterface
+                , public PythonCallbackProvider
+                , public Factorable
             {
                 DECLARE_FACTORABLE( SoundAffectorCallback );
 
@@ -404,8 +403,8 @@ namespace Mengine
                 void initialize( const SoundIdentityInterfacePtr & _emitter, const pybind::object & _cb, const pybind::args & _args )
                 {
                     m_soundIdentity = _emitter;
-                    m_cb = _cb;
-                    m_args = _args;
+
+                    PythonCallbackProvider::initialize( _cb, _args );
                 }
 
             protected:
@@ -417,23 +416,11 @@ namespace Mengine
                             ->stopEmitter( m_soundIdentity );
                     }
 
-                    if( m_cb.is_invalid() == true )
-                    {
-                        return;
-                    }
-
-                    if( m_cb.is_none() == true )
-                    {
-                        return;
-                    }
-
-                    m_cb.call_args( _id, _isEnd, m_args );
+                    this->call_cb( _id, _isEnd );
                 }
 
             protected:
                 SoundIdentityInterfacePtr m_soundIdentity;
-                pybind::object m_cb;
-                pybind::args m_args;
             };
             //////////////////////////////////////////////////////////////////////////
             typedef IntrusivePtr<SoundAffectorCallback> SoundAffectorCallbackPtr;
@@ -485,18 +472,23 @@ namespace Mengine
                 affectorHub->addAffector( affector );
             }
             //////////////////////////////////////////////////////////////////////////
-            SoundIdentityInterfacePtr soundFadeOut( const ConstString & _resourceName, bool _loop, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            SoundIdentityInterfacePtr soundFadeOut( const ConstString & _resourceName, bool _loop, float _time, const ConstString & _easingType, const pybind::object & _cbs, const pybind::args & _args )
             {
-                SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args, MENGINE_DOCUMENT_PYBIND );
-
-                MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, "can't get resource '%s'"
-                    , _resourceName.c_str()
-                );
-
                 LOGGER_INFO( "sound", "[script] sound fade out resource '%s' file '%s'"
                     , _resourceName.c_str()
                     , Helper::getResourceFilePathByName( _resourceName ).c_str()
                 );
+
+                SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cbs, _args, MENGINE_DOCUMENT_PYBIND );
+
+                if( soundIdentity == nullptr )
+                {
+                    LOGGER_ERROR( "invalid create sound source '%s'"
+                        , _resourceName.c_str()
+                    );
+
+                    return nullptr;
+                }
 
                 if( SOUND_SERVICE()
                     ->playEmitter( soundIdentity ) == false )
@@ -566,18 +558,23 @@ namespace Mengine
                 affectorHub->addAffector( affector );
             }
             //////////////////////////////////////////////////////////////////////////
-            SoundIdentityInterfacePtr soundFadeOutTo( const ConstString & _resourceName, bool _loop, float _to, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            SoundIdentityInterfacePtr soundFadeOutTo( const ConstString & _resourceName, bool _loop, float _to, float _time, const ConstString & _easingType, const pybind::object & _cbs, const pybind::args & _args )
             {
-                SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args, MENGINE_DOCUMENT_PYBIND );
-
-                MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, "can't get resource '%s'"
-                    , _resourceName.c_str()
-                );
-
                 LOGGER_INFO( "sound", "[script] sound fade out to resource '%s' file '%s'"
                     , _resourceName.c_str()
                     , Helper::getResourceFilePathByName( _resourceName ).c_str()
                 );
+
+                SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cbs, _args, MENGINE_DOCUMENT_PYBIND );
+
+                if( soundIdentity == nullptr )
+                {
+                    LOGGER_ERROR( "invalid create sound source '%s'"
+                        , _resourceName.c_str()
+                    );
+
+                    return nullptr;
+                }
 
                 if( SOUND_SERVICE()
                     ->playEmitter( soundIdentity ) == false )
@@ -721,7 +718,7 @@ namespace Mengine
             void soundMute( bool _mute )
             {
                 SOUND_SERVICE()
-                    ->mute( _mute );
+                    ->mute( STRINGIZE_STRING_LOCAL( "Generic" ), _mute );
             }
             //////////////////////////////////////////////////////////////////////////
             bool isMute()

@@ -2,8 +2,7 @@
 
 #include "Interface/ScriptWrapperInterface.h"
 
-#include "FactoryPrototypeGenerator.h"
-
+#include "Kernel/FactoryPrototypeGenerator.h"
 #include "Kernel/Observable.h"
 #include "Kernel/Scriptable.h"
 

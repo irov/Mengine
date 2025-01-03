@@ -21,7 +21,7 @@ import org.Mengine.Base.MenginePluginInvalidInitializeException;
 import java.util.Map;
 
 public class MengineDevToDevPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginAdRevenueListener, MenginePluginApplicationListener, MenginePluginSessionIdListener {
-    public static final String SERVICE_NAME = "MengineDevToDev";
+    public static final String SERVICE_NAME = "DevToDev";
     public static final boolean SERVICE_EMBEDDING = true;
 
     public static final String METADATA_APP_ID = "mengine.devtodev.app_id";

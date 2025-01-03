@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Interface/Interface.h"
 #include "Interface/DocumentInterface.h"
 
+#include "Kernel/Mixin.h"
 #include "Kernel/FactorablePointer.h"
 #include "Kernel/ConstString.h"
 
@@ -10,7 +10,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class PrototypeGeneratorInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual void setCategory( const ConstString & _category ) = 0;

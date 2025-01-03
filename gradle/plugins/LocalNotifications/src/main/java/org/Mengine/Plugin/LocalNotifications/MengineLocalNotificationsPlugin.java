@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MengineLocalNotificationsPlugin extends MengineService implements MengineListenerActivity {
-    public static final String SERVICE_NAME = "MengineLNotifications";
+    public static final String SERVICE_NAME = "LNotifications";
     public static final boolean SERVICE_EMBEDDING = true;
 
     private static final String CHANNEL_ID = "mengine_channel_id";

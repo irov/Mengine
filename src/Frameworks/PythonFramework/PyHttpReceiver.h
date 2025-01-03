@@ -3,6 +3,7 @@
 #include "Interface/HttpSystemInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
+#include "Environment/Python/PythonCallbackProvider.h"
 
 #include "Kernel/Factorable.h"
 
@@ -11,6 +12,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class PyHttpReceiver
         : public HttpReceiverInterface
+        , public PythonCallbackProvider
         , public Factorable
     {
         DECLARE_FACTORABLE( PyHttpReceiver );
@@ -19,15 +21,8 @@ namespace Mengine
         PyHttpReceiver();
         ~PyHttpReceiver() override;
 
-    public:
-        bool initialize( const pybind::object & _cb, const pybind::args & _args );
-
     protected:
         void onHttpRequestComplete( const HttpResponseInterfacePtr & _response ) override;
-
-    protected:
-        pybind::object m_cb;
-        pybind::args m_args;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<PyHttpReceiver, HttpReceiverInterface> PyHttpReceiverPtr;

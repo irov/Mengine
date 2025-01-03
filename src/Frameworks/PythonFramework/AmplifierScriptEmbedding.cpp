@@ -1,6 +1,6 @@
 #include "AmplifierScriptEmbedding.h"
 
-#include "AmplifierInterface.h"
+#include "Interface/AmplifierServiceInterface.h"
 
 #include "Interface/SoundServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
@@ -9,6 +9,7 @@
 
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonDocumentTraceback.h"
+#include "Environment/Python/PythonCallbackProvider.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/AffectorCallbackInterface.h"
@@ -59,12 +60,14 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             class PythonAmplifierMusicCallback
                 : public AmplifierMusicCallbackInterface
+                , public PythonCallbackProvider
                 , public Factorable
             {
+                DECLARE_FACTORABLE( PythonAmplifierMusicCallback );
+
             public:
-                PythonAmplifierMusicCallback( const pybind::object & _cb, const pybind::args & _args )
-                    : m_cb( _cb )
-                    , m_args( _args )
+                PythonAmplifierMusicCallback( const pybind::object & _cbs, const pybind::args & _args )
+                    : PythonCallbackProvider( _cbs, _args )
                 {
                 }
 
@@ -73,47 +76,46 @@ namespace Mengine
                 }
 
             protected:
-                void onMusicPause() override
+                void onMusicPause( const SoundIdentityInterfacePtr & _identity ) override
                 {
-                    m_cb.call_args( 0, m_args );
+                    this->call_method( "onAmplifierMusicPause", _identity );
                 }
 
-                void onMusicResume() override
+                void onMusicResume( const SoundIdentityInterfacePtr & _identity ) override
                 {
-                    m_cb.call_args( 1, m_args );
+                    this->call_method( "onAmplifierMusicResume", _identity );
                 }
 
-                void onMusicStop() override
+                void onMusicStop( const SoundIdentityInterfacePtr & _identity ) override
                 {
-                    m_cb.call_args( 2, m_args );
+                    this->call_method( "onAmplifierMusicStop", _identity );
                 }
 
-                void onMusicEnd() override
+                void onMusicEnd( const SoundIdentityInterfacePtr & _identity ) override
                 {
-                    m_cb.call_args( 3, m_args );
+                    this->call_method( "onAmplifierMusicEnd", _identity );
                 }
-
-            protected:
-                pybind::object m_cb;
-                pybind::args m_args;
             };
             //////////////////////////////////////////////////////////////////////////
-            void musicPlay( const ConstString & _resourceMusic, float _pos, bool _isLooped, const pybind::object & _cb, const pybind::args & _args )
+            bool musicPlay( const ConstString & _resourceMusic, float _pos, bool _isLooped, const pybind::object & _cbs, const pybind::args & _args )
             {
-                if( SERVICE_IS_INITIALIZE( AmplifierInterface ) == false )
+                LOGGER_INFO( "amplifier", "[script] music play resource '%s' pos '%.2f' loop [%u]"
+                    , _resourceMusic.c_str()
+                    , _pos
+                    , _isLooped
+                );
+
+                if( SERVICE_IS_INITIALIZE( AmplifierServiceInterface ) == false )
                 {
-                    return;
+                    return false;
                 }
 
-                AmplifierMusicCallbackInterfacePtr cb = nullptr;
-
-                if( _cb.is_callable() == true )
-                {
-                    cb = Helper::makeFactorableUnique<PythonAmplifierMusicCallback>( MENGINE_DOCUMENT_PYBIND, _cb, _args );
-                }
+                AmplifierMusicCallbackInterfacePtr cb = Helper::makeFactorableUnique<PythonAmplifierMusicCallback>( MENGINE_DOCUMENT_PYBIND, _cbs, _args );
 
                 AMPLIFIER_SERVICE()
                     ->playMusic( _resourceMusic, _pos, _isLooped, cb );
+
+                return true;
             }
             //////////////////////////////////////////////////////////////////////////
             void musicSetVolume( float _volume )
@@ -124,8 +126,10 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             float musicGetVolume()
             {
-                return SOUND_SERVICE()
+                float volume = SOUND_SERVICE()
                     ->getMusicVolume( STRINGIZE_STRING_LOCAL( "Generic" ) );
+
+                return volume;
             }
             //////////////////////////////////////////////////////////////////////////
             void musicSetVolumeTag( const ConstString & _tag, float _volume, float _from )
@@ -136,8 +140,10 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             float musicGetVolumeTag( const ConstString & _tag )
             {
-                return SOUND_SERVICE()
+                float volume = SOUND_SERVICE()
                     ->getMusicVolume( _tag );
+
+                return volume;
             }
             //////////////////////////////////////////////////////////////////////////
             void musicStop()
@@ -192,6 +198,8 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             class MusicAffectorCallback
                 : public AffectorCallbackInterface
+                , public PythonCallbackProvider
+                , public Factorable
             {
                 DECLARE_FACTORABLE( MusicAffectorCallback );
 
@@ -204,35 +212,14 @@ namespace Mengine
                 {
                 }
 
-            public:
-                void initialize( const pybind::object & _cb, const pybind::args & _args )
-                {
-                    m_cb = _cb;
-                    m_args = _args;
-                }
-
             protected:
                 void onAffectorEnd( UniqueId _id, bool _isEnd ) override
                 {
-                    if( m_cb.is_invalid() == true )
-                    {
-                        return;
-                    }
-
-                    if( m_cb.is_none() == true )
-                    {
-                        return;
-                    }
-
                     AMPLIFIER_SERVICE()
                         ->stopMusic();
 
-                    m_cb.call_args( _id, _isEnd, m_args );
+                    this->call_cb( _id, _isEnd );
                 }
-
-            protected:
-                pybind::object m_cb;
-                pybind::args m_args;
             };
             //////////////////////////////////////////////////////////////////////////
             typedef IntrusivePtr<MusicAffectorCallback> MusicAffectorCallbackPtr;
@@ -242,6 +229,7 @@ namespace Mengine
             MusicAffectorCallbackPtr createMusicAffectorCallback( const pybind::object & _cb, const pybind::args & _args )
             {
                 MusicAffectorCallbackPtr callback = m_factoryMusicAffectorCallback->createObject( MENGINE_DOCUMENT_PYBIND );
+
                 callback->initialize( _cb, _args );
 
                 return callback;
@@ -251,11 +239,16 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float>> m_affectorCreatorMusic;
             //////////////////////////////////////////////////////////////////////////
-            uint32_t musicFadeIn( float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            UniqueId musicFadeIn( float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
-                if( SERVICE_IS_INITIALIZE( AmplifierInterface ) == false )
+                LOGGER_INFO( "amplifier", "[script] music fade in time '%.2f' easing '%s'"
+                    , _time
+                    , _easingType.c_str()
+                );
+
+                if( SERVICE_IS_INITIALIZE( AmplifierServiceInterface ) == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
@@ -291,19 +284,22 @@ namespace Mengine
                 return id;
             }
             //////////////////////////////////////////////////////////////////////////
-            uint32_t musicFadeOut( const ConstString & _resourceMusic, float _pos, bool _isLooped, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            UniqueId musicFadeOut( const ConstString & _resourceMusic, float _pos, bool _isLooped, float _time, const ConstString & _easingType, const pybind::object & _cbs, const pybind::args & _args )
             {
-                if( SERVICE_IS_INITIALIZE( AmplifierInterface ) == false )
+                LOGGER_INFO( "amplifier", "[script] music fade out resource '%s' pos '%.2f' loop [%u] time '%.2f' easing '%s'"
+                    , _resourceMusic.c_str()
+                    , _pos
+                    , _isLooped
+                    , _time
+                    , _easingType.c_str()
+                );
+
+                if( SERVICE_IS_INITIALIZE( AmplifierServiceInterface ) == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
-                AmplifierMusicCallbackInterfacePtr cb = nullptr;
-
-                if( _cb.is_callable() == true )
-                {
-                    cb = Helper::makeFactorableUnique<PythonAmplifierMusicCallback>( MENGINE_DOCUMENT_PYBIND, _cb, _args );
-                }
+                AmplifierMusicCallbackInterfacePtr cb = Helper::makeFactorableUnique<PythonAmplifierMusicCallback>( MENGINE_DOCUMENT_PYBIND, _cbs, _args );
 
                 if( AMPLIFIER_SERVICE()
                     ->playMusic( _resourceMusic, _pos, _isLooped, cb ) == false )
@@ -312,7 +308,7 @@ namespace Mengine
                         , _resourceMusic.c_str()
                     );
 
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );

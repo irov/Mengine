@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/Interface.h"
+#include "Kernel/Mixin.h"
 
 namespace Mengine
 {
@@ -8,7 +8,7 @@ namespace Mengine
     class Unknowable;
     //////////////////////////////////////////////////////////////////////////
     class UnknownInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual Unknowable * getUnknowable() = 0;

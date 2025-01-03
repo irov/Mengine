@@ -2,13 +2,14 @@
 
 #include "Interface/InputHandlerInterface.h"
 
+#include "Kernel/Mixin.h"
 #include "Kernel/RenderContext.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class PickerInputHandlerInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual bool handleKeyEvent( const RenderContext * _context, const InputKeyEvent & _event ) = 0;

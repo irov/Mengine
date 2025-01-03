@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MengineAppLovinPlugin extends MengineService implements MengineListenerApplication, MengineListenerActivity, MengineListenerEngine {
-    public static final String SERVICE_NAME = "MengineAppLovin";
+    public static final String SERVICE_NAME = "AppLovin";
     public static final boolean SERVICE_EMBEDDING = true;
 
     public static final String METADATA_SDK_KEY = "mengine.applovin.sdk_key";
@@ -48,9 +48,9 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
 
     private AppLovinSdk m_appLovinSdk;
 
-    private Map<String, MengineAppLovinBanner> m_banners;
-    private Map<String, MengineAppLovinInterstitial> m_interstitials;
-    private Map<String, MengineAppLovinRewarded> m_rewardeds;
+    private Map<String, MengineAppLovinBanner> m_banners = new HashMap<>();
+    private Map<String, MengineAppLovinInterstitial> m_interstitials = new HashMap<>();
+    private Map<String, MengineAppLovinRewarded> m_rewardeds = new HashMap<>();
 
     private MengineAppLovinMediationInterface m_mediationAmazon;
 
@@ -59,11 +59,14 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
     private boolean m_bannerAdaptive;
 
     @Override
-    public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
-        m_banners = new HashMap<>();
-        m_interstitials = new HashMap<>();
-        m_rewardeds = new HashMap<>();
+    public String onAppVersion(@NonNull MengineApplication application) {
+        String sdkVersion = AppLovinSdk.VERSION;
 
+        return sdkVersion;
+    }
+
+    @Override
+    public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
         boolean MengineAppLovinPlugin_BannerAdaptive = this.getMetaDataBoolean(METADATA_BANNER_ADAPTIVE);
 
         this.logMessage("%s: %b"

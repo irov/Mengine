@@ -5,12 +5,20 @@ import android.content.res.Configuration;
 
 import androidx.annotation.NonNull;
 
+import java.util.Map;
+
 public interface MengineListenerApplication extends MengineServiceInterface {
     default void onAppInit(@NonNull MengineApplication application, boolean isMainProcess) throws MengineServiceInvalidInitializeException {
         //Empty
     }
+
+    default String onAppVersion(@NonNull MengineApplication application) {
+        //Empty
+
+        return null;
+    }
     
-    default void onAppPrepare(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
+    default void onAppPrepare(@NonNull MengineApplication application, @NonNull Map<String, String> pluginVersions) throws MengineServiceInvalidInitializeException {
         //Empty
     }
 

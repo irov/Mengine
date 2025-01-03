@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Interface/Interface.h"
+#include "Kernel/Mixin.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class EventReceiverInterface
-        : public Interface
+        : public Mixin
     {
     };
     //////////////////////////////////////////////////////////////////////////

@@ -1,27 +1,27 @@
 #pragma once
 
-#include "Interface/Interface.h"
-
 #include "Interface/ServiceInterface.h"
+#include "Interface/SoundIdentityInterface.h"
 
+#include "Kernel/Mixin.h"
 #include "Kernel/ConstString.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class AmplifierMusicCallbackInterface
-        : public Interface
+        : public Mixin
     {
     public:
-        virtual void onMusicPause() = 0;
-        virtual void onMusicResume() = 0;
-        virtual void onMusicStop() = 0;
-        virtual void onMusicEnd() = 0;
+        virtual void onMusicPause( const SoundIdentityInterfacePtr & _identity ) = 0;
+        virtual void onMusicResume( const SoundIdentityInterfacePtr & _identity ) = 0;
+        virtual void onMusicStop( const SoundIdentityInterfacePtr & _identity ) = 0;
+        virtual void onMusicEnd( const SoundIdentityInterfacePtr & _identity ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AmplifierMusicCallbackInterface> AmplifierMusicCallbackInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
-    class AmplifierInterface
+    class AmplifierServiceInterface
         : public ServiceInterface
     {
         SERVICE_DECLARE( "Amplifier" )
@@ -43,5 +43,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define AMPLIFIER_SERVICE()\
-    ((Mengine::AmplifierInterface *)SERVICE_GET(Mengine::AmplifierInterface))
+    ((Mengine::AmplifierServiceInterface *)SERVICE_GET(Mengine::AmplifierServiceInterface))
 //////////////////////////////////////////////////////////////////////////

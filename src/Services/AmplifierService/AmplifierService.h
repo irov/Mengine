@@ -1,6 +1,6 @@
 #pragma once
 
-#include "AmplifierInterface.h"
+#include "Interface/AmplifierServiceInterface.h"
 
 #include "Interface/SoundIdentityInterface.h"
 
@@ -12,12 +12,12 @@
 
 namespace Mengine
 {
-    class Amplifier
-        : public ServiceBase<AmplifierInterface>
+    class AmplifierService
+        : public ServiceBase<AmplifierServiceInterface>
     {
     public:
-        Amplifier();
-        ~Amplifier() override;
+        AmplifierService();
+        ~AmplifierService() override;
 
     public:
         bool _initializeService() override;

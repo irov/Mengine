@@ -1,14 +1,14 @@
 #pragma once
 
-#include "Config/Typedef.h"
+#include "Kernel/Mixin.h"
 
-#include "Interface/Interface.h"
+#include "Config/Typedef.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class OutputStreamInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual size_t write( const void * _data, size_t _size ) = 0;

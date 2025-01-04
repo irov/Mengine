@@ -1,5 +1,7 @@
 apply plugin: 'com.android.library'
 
+def ANDROID_APP_MAIN_PROJECT = Utils.getStringProperty("ANDROID_APP_MAIN_PROJECT", "app")
+
 apply from: rootProject.projectDir.getAbsolutePath() + '/base.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/androidx.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/split.gradle'
@@ -16,7 +18,7 @@ android {
 
                 res.srcDirs += [ANDROID_APP_ASSETS_RES_DIR]
             } else {
-                res.srcDirs += ['../../app/res']
+                res.srcDirs += ["../../$ANDROID_APP_MAIN_PROJECT/res"]
             }
         }
     }

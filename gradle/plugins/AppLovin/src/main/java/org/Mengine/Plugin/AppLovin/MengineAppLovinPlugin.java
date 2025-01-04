@@ -45,6 +45,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
     public static final String METADATA_PRIVACY_POLICY_URL = "mengine.applovin.privacy_policy_url";
     public static final String METADATA_TERMS_OF_SERVICE_URL = "mengine.applovin.terms_of_service_url";
     public static final String METADATA_BANNER_ADAPTIVE = "mengine.applovin.banner_adaptive";
+    public static final String METADATA_APPOPEN_ADUNITID = "mengine.applovin.appopen.adunitid";
 
     private AppLovinSdk m_appLovinSdk;
 
@@ -54,6 +55,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
 
     private MengineAppLovinMediationInterface m_mediationAmazon;
 
+    private MengineAppLovinAppOpenAdInterface m_appOpenAd;
     private MengineAppLovinNonetBannersInterface m_nonetBanners;
 
     private boolean m_bannerAdaptive;
@@ -189,6 +191,12 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
 
             application.onMengineTransparencyConsent(tcParam);
 
+            if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_APPOPENAD == true) {
+                if (m_appOpenAd != null) {
+                    m_appOpenAd.initializeAppOpenAd(application, this);
+                }
+            }
+
             if (this.hasOption("applovin.show_mediation_debugger") == true) {
                 this.showMediationDebugger();
             }
@@ -198,24 +206,40 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
 
         m_appLovinSdk = appLovinSdk;
 
-        MengineAppLovinMediationInterface mediationAmazon = this.newInstance("org.Mengine.Plugin.AppLovin.MengineAppLovinMediationAmazon", false);
+        if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON == true) {
+            MengineAppLovinMediationInterface mediationAmazon = this.newInstance("org.Mengine.Plugin.AppLovin.MengineAppLovinMediationAmazon", false);
 
-        if (mediationAmazon != null) {
-            mediationAmazon.initializeMediator(application, this);
+            if (mediationAmazon != null) {
+                mediationAmazon.initializeMediator(application, this);
 
-            m_mediationAmazon = mediationAmazon;
-        } else {
-            this.logMessage("not found mediation amazon");
+                m_mediationAmazon = mediationAmazon;
+            } else {
+                this.logError("not found AppLovin extension Amazon mediation");
+            }
         }
 
-        MengineAppLovinNonetBannersInterface nonetBanners = this.newInstance("org.Mengine.Plugin.AppLovin.MengineAppLovinNonetBanners", false);
+        if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_APPOPENAD == true) {
+            String MengineAppLovinPlugin_AppOpen_AdUnitId = this.getMetaDataString(METADATA_APPOPEN_ADUNITID);
 
-        if (nonetBanners != null) {
-            nonetBanners.onAppCreate(application, this);
+            MengineAppLovinAppOpenAdInterface appOpenAd = this.newInstance("org.Mengine.Plugin.AppLovin.MengineAppLovinAppOpenAd", false, this, MengineAppLovinPlugin_AppOpen_AdUnitId);
 
-            m_nonetBanners = nonetBanners;
-        } else {
-            this.logMessage("not found no-net banners");
+            if (appOpenAd != null) {
+                m_appOpenAd = appOpenAd;
+            } else {
+                this.logError("not found AppLovin extension AppOpenAd");
+            }
+        }
+
+        if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_NONET_BANNERS == true) {
+            MengineAppLovinNonetBannersInterface nonetBanners = this.newInstance("org.Mengine.Plugin.AppLovin.MengineAppLovinNonetBanners", false);
+
+            if (nonetBanners != null) {
+                nonetBanners.onAppCreate(application, this);
+
+                m_nonetBanners = nonetBanners;
+            } else {
+                this.logError("not found AppLovin extension no-net banners");
+            }
         }
     }
 
@@ -229,6 +253,11 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
         m_banners = null;
         m_interstitials = null;
         m_rewardeds = null;
+
+        if (m_appOpenAd != null) {
+            m_appOpenAd.finalizeAppOpenAd(application, this);
+            m_appOpenAd = null;
+        }
 
         if (m_nonetBanners != null) {
             m_nonetBanners.onAppTerminate(application, this);

@@ -11,6 +11,7 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigValue;
 
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineAnalyticsEventBuilder;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MengineService;
@@ -40,9 +41,15 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
 
         FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
 
-        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-                .setMinimumFetchIntervalInSeconds(MengineFirebaseRemoteConfigPlugin_MinimumFetchInterval)
-                .build();
+        FirebaseRemoteConfigSettings.Builder configSettingsBuilder = new FirebaseRemoteConfigSettings.Builder();
+
+        if (BuildConfig.DEBUG == true) {
+            configSettingsBuilder.setMinimumFetchIntervalInSeconds(0);
+        } else {
+            configSettingsBuilder.setMinimumFetchIntervalInSeconds(MengineFirebaseRemoteConfigPlugin_MinimumFetchInterval);
+        }
+
+        FirebaseRemoteConfigSettings configSettings = configSettingsBuilder.build();
         remoteConfig.setConfigSettingsAsync(configSettings);
 
         remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
@@ -52,19 +59,14 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
     public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
         FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
 
+        this.buildEvent("mng_fb_rc_fetch")
+            .log();
+
         remoteConfig.fetchAndActivate()
-            .addOnCompleteListener(activity, task -> {
-                if (task.isSuccessful() == false) {
-                    Exception e = task.getException();
-
-                    this.logError("[ERROR] remote config invalid fetch and activate params: %s"
-                        , e == null ? "No Exception" : e.getMessage()
-                    );
-
-                    return;
-                }
-
-                boolean updated = task.getResult();
+            .addOnSuccessListener(activity, updated -> {
+                this.buildEvent("mng_fb_rc_fetch_successful")
+                    .addParameterBoolean("updated", updated)
+                    .log();
 
                 Map<String, FirebaseRemoteConfigValue> allValues = remoteConfig.getAll();
 
@@ -77,14 +79,23 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
                     allValueString.put(key, valueString);
                 }
 
-                this.logMessage("remote config successful fetch and activate params: %s [%s]"
+                this.logMessage("remote config successful fetch and activate params: %s updated: %b"
                     , allValueString
-                    , updated == true ? "updated" : "not updated"
+                    , updated
                 );
 
                 this.activateSemaphore("FirebaseRemoteConfigFetchSuccessful");
 
                 this.sendEvent(MengineEvent.EVENT_REMOTE_CONFIG_FETCH, updated);
+            })
+            .addOnFailureListener(activity, e -> {
+                this.buildEvent("mng_fb_rc_fetch_error")
+                    .addParameterException("exception", e)
+                    .log();
+
+                this.logError("[ERROR] remote config invalid fetch and activate params: %s"
+                    , e.getMessage()
+                );
             });
     }
 

@@ -82,71 +82,49 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
         m_firebaseAnalytics.setUserId(null);
     }
 
+    private void updateBundle(Bundle bundle, Map<String, Object> parameters) {
+        for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+
+            if (value instanceof Boolean boolValue) {
+                bundle.putBoolean(key, boolValue);
+            } else if (value instanceof Long longValue) {
+                bundle.putLong(key, longValue);
+            } else if (value instanceof Double doubleValue) {
+                bundle.putDouble(key, doubleValue);
+            } else if (value instanceof String stringValue) {
+                if (stringValue.length() > 100) {
+                    String stringValue100 = stringValue.substring(0, 100);
+
+                    bundle.putString(key, stringValue100);
+                } else {
+                    bundle.putString(key, stringValue);
+                }
+            } else {
+                this.logError("[ERROR] unsupported parameter: %s value: %s class: %s"
+                    , key
+                    , value
+                    , value == null ? "null" : value.getClass()
+                );
+
+                return;
+            }
+        }
+    }
+
     @Override
     public void onMengineAnalyticsEvent(@NonNull MengineApplication application, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
         if (m_firebaseAnalytics == null) {
             return;
         }
 
-        Bundle params = new Bundle();
+        Bundle bundle = new Bundle();
 
-        for (Map.Entry<String, Object> entry : bases.entrySet()) {
-            String key = entry.getKey();
-            Object value = entry.getValue();
+        this.updateBundle(bundle, bases);
+        this.updateBundle(bundle, parameters);
 
-            if (value instanceof Boolean boolValue) {
-                params.putBoolean(key, boolValue);
-            } else if (value instanceof Long longValue) {
-                params.putLong(key, longValue);
-            } else if (value instanceof Double doubleValue) {
-                params.putDouble(key, doubleValue);
-            } else if (value instanceof String stringValue) {
-                if (stringValue.length() > 100) {
-                    String stringValue100 = stringValue.substring(0, 100);
-
-                    params.putString(key, stringValue100);
-                } else {
-                    params.putString(key, stringValue);
-                }
-            } else {
-                this.logError("[ERROR] unsupported parameter: %s class: %s"
-                    , value
-                    , value == null ? "null" : value.getClass()
-                );
-
-                return;
-            }
-        }
-
-        for (Map.Entry<String, Object> entry : parameters.entrySet()) {
-            String key = entry.getKey();
-            Object value = entry.getValue();
-
-            if (value instanceof Boolean boolValue) {
-                params.putBoolean(key, boolValue);
-            } else if (value instanceof Long longValue) {
-                params.putLong(key, longValue);
-            } else if (value instanceof Double doubleValue) {
-                params.putDouble(key, doubleValue);
-            } else if (value instanceof String stringValue) {
-                if (stringValue.length() > 100) {
-                    String stringValue100 = stringValue.substring(0, 100);
-
-                    params.putString(key, stringValue100);
-                } else {
-                    params.putString(key, stringValue);
-                }
-            } else {
-                this.logError("[ERROR] unsupported parameter: %s class: %s"
-                    , value
-                    , value == null ? "null" : value.getClass()
-                );
-
-                return;
-            }
-        }
-
-        m_firebaseAnalytics.logEvent(eventName, params);
+        m_firebaseAnalytics.logEvent(eventName, bundle);
     }
 
     @Override

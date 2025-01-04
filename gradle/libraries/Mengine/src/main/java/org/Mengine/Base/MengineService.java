@@ -41,8 +41,8 @@ public class MengineService implements MengineServiceInterface {
         return m_serviceName;
     }
 
-    public <T> T newInstance(String name, boolean exist) {
-        T instance = MengineUtils.newInstance(m_serviceName, name, exist);
+    public <T> T newInstance(String name, boolean exist, Object ... args) {
+        T instance = MengineUtils.newInstance(m_serviceName, name, exist, args);
 
         return instance;
     }

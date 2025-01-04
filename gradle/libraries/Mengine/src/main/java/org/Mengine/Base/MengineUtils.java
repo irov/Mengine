@@ -57,6 +57,7 @@ import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -116,7 +117,7 @@ public class MengineUtils {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T newInstance(String TAG, String name, boolean required) {
+    public static <T> T newInstance(String TAG, String name, boolean required, Object ... args) {
         Class<?> clazz = MengineUtils.getClazz(TAG, name, required);
 
         if (clazz == null) {
@@ -124,8 +125,13 @@ public class MengineUtils {
         }
 
         try {
-            Constructor<?> ctr = clazz.getConstructor();
-            T ob = (T)ctr.newInstance();
+            Class<?>[] parameterTypes = Arrays.stream(args)
+                    .map(Object::getClass)
+                    .toArray(Class<?>[]::new);
+
+            Constructor<?> ctr = clazz.getConstructor(parameterTypes);
+
+            T ob = (T)ctr.newInstance(args);
 
             return ob;
         } catch (final NoSuchMethodException e) {

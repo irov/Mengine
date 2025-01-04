@@ -187,7 +187,7 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
             return;
         }
 
-        if (m_plugin.hasOption("applovin.banner.no_load") == true) {
+        if (m_plugin.hasOption("applovin.banner.no_load") == true || m_plugin.hasOption("applovin.ad.no_load") == true) {
             return;
         }
 
@@ -225,9 +225,11 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
 
         adView.setVisibility(View.VISIBLE);
 
-        if (m_plugin.hasOption("applovin.banner.no_load") == false) {
-            adView.startAutoRefresh();
+        if (m_plugin.hasOption("applovin.banner.no_load") == true || m_plugin.hasOption("applovin.ad.no_load") == true) {
+            return;
         }
+
+        adView.startAutoRefresh();
     }
 
     protected void disableAdView(@NonNull MaxAdView adView) {
@@ -237,10 +239,12 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
 
         adView.setVisibility(View.GONE);
 
-        if (m_plugin.hasOption("applovin.banner.no_load") == false) {
-            adView.setExtraParameter( "allow_pause_auto_refresh_immediately", "true" );
-            adView.stopAutoRefresh();
+        if (m_plugin.hasOption("applovin.banner.no_load") == true || m_plugin.hasOption("applovin.ad.no_load") == true) {
+            return;
         }
+
+        adView.setExtraParameter( "allow_pause_auto_refresh_immediately", "true" );
+        adView.stopAutoRefresh();
     }
 
     private void updateVisible() {

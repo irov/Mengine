@@ -77,7 +77,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
             return;
         }
 
-        if (m_plugin.hasOption("applovin.interstitial.no_load") == true) {
+        if (m_plugin.hasOption("applovin.interstitial.no_load") == true || m_plugin.hasOption("applovin.ad.no_load") == true) {
             return;
         }
 
@@ -166,7 +166,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
         m_plugin.setState("applovin.interstitial.state." + m_adUnitId, "request_started");
 
-        m_plugin.pythonCall("onAppLovinBannerOnAdRequestStarted", m_adUnitId);
+        m_plugin.pythonCall("onAppLovinInterstitialOnAdRequestStarted", m_adUnitId);
     }
 
     @Override

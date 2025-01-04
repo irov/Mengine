@@ -266,12 +266,12 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
             return;
         }
 
-        Bundle params = new Bundle();
+        Bundle bundle = new Bundle();
 
-        this.updateBundle(params, bases);
-        this.updateBundle(params, parameters);
+        this.updateBundle(bundle, bases);
+        this.updateBundle(bundle, parameters);
 
-        m_logger.logEvent(eventName, params);
+        m_logger.logEvent(eventName, bundle);
     }
 
     @Override

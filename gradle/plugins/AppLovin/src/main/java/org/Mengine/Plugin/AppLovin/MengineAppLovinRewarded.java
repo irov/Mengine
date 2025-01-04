@@ -78,7 +78,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
             return;
         }
 
-        if (m_plugin.hasOption("applovin.rewarded.no_load") == true) {
+        if (m_plugin.hasOption("applovin.rewarded.no_load") == true || m_plugin.hasOption("applovin.ad.no_load") == true) {
             return;
         }
 

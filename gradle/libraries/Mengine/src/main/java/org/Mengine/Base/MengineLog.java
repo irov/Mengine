@@ -10,7 +10,6 @@ import com.google.errorprone.annotations.FormatString;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Formatter;
 import java.util.IllegalFormatException;
 
 public class MengineLog {

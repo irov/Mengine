@@ -6,9 +6,6 @@ import androidx.annotation.Size;
 import com.google.errorprone.annotations.FormatMethod;
 import com.google.errorprone.annotations.FormatString;
 
-import java.lang.reflect.Field;
-import java.util.Locale;
-
 public class MengineService implements MengineServiceInterface {
     private MengineApplication m_application;
     private MengineActivity m_activity;

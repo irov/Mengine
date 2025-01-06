@@ -103,6 +103,8 @@ allprojects {
             configureEach {
                 options.encoding = 'UTF-8'
                 options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+                options.errorprone.enabled = true
+                options.errorprone.disableWarningsInGeneratedCode = true
             }
         }
     }

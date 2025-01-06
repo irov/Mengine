@@ -936,6 +936,7 @@ public class MengineUtils {
         }
     }
 
+    @SuppressWarnings("deprecation")
     public static Rect getDeviceWindowRectQ(Context context, Display display) {
         DisplayMetrics realMetrics = new DisplayMetrics();
         display.getRealMetrics( realMetrics );

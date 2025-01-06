@@ -36,8 +36,3 @@ dependencies {
 
     errorprone("com.google.errorprone:error_prone_core:2.36.0")
 }
-
-tasks.withType(JavaCompile).configureEach {
-    options.errorprone.enabled = true
-    options.errorprone.disableWarningsInGeneratedCode = true
-}

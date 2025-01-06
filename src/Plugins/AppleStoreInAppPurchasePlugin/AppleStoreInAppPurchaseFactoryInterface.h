@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Interface/Interface.h"
-
 #include "AppleStoreInAppPurchaseInterface.h"
 
 #import <Foundation/Foundation.h>
@@ -11,7 +9,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class AppleStoreInAppPurchaseFactoryInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual AppleStoreInAppPurchaseProductInterfacePtr makeProduct( SKProduct * _skProduct ) = 0;

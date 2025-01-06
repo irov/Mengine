@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/Interface.h"
 
 #include "Kernel/ConstString.h"
 
@@ -11,7 +10,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class AppleGameCenterProviderInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual void onAppleGameCenterAuthenticate( bool _successful ) = 0;

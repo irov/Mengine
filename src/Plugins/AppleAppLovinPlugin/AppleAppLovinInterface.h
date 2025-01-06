@@ -9,7 +9,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class AppleAppLovinBannerProviderInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual void onAppleAppLovinBannerDidStartAdRequestForAdUnitIdentifier() = 0;
@@ -27,7 +27,7 @@ namespace Mengine
     typedef IntrusivePtr<AppleAppLovinBannerProviderInterface> AppleAppLovinBannerProviderInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class AppleAppLovinInterstitailProviderInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual void onAppleAppLovinInterstitialDidStartAdRequestForAdUnitIdentifier() = 0;
@@ -43,7 +43,7 @@ namespace Mengine
     typedef IntrusivePtr<AppleAppLovinInterstitailProviderInterface> AppleAppLovinInterstitialProviderInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class AppleAppLovinRewardedProviderInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual void onAppleAppLovinRewardedDidStartAdRequestForAdUnitIdentifier() = 0;
@@ -62,7 +62,7 @@ namespace Mengine
     typedef IntrusivePtr<AppleAppLovinRewardedProviderInterface> AppleAppLovinRewardedProviderInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class AppleAppLovinConsentFlowProviderInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual void onAppleAppLovinConsentFlowShowSuccessful() = 0;

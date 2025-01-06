@@ -12,7 +12,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class AppleMARSDKProviderInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual void onPlatformInit( const MapParams & _params ) = 0;

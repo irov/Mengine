@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Interface/Interface.h"
 #include "Interface/ServiceInterface.h"
 #include "Interface/ServantInterface.h"
 
@@ -48,7 +47,7 @@ namespace Mengine
     typedef IntrusivePtr<AppleStoreInAppPurchaseProductsRequestInterface> AppleStoreInAppPurchaseProductsRequestInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class AppleStoreInAppPurchaseProductsResponseInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual void onProductResponse( const AppleStoreInAppPurchaseProductsRequestInterfacePtr & _request, const VectorAppleStoreInAppPurchaseProducts & _products ) = 0;
@@ -72,7 +71,7 @@ namespace Mengine
     typedef IntrusivePtr<AppleStoreInAppPurchasePaymentTransactionProviderInterface> AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class AppleStoreInAppPurchasePaymentQueueProviderInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual void onPaymentQueueShouldContinueTransaction( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) = 0;

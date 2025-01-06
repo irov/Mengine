@@ -10,7 +10,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class AppleFacebookProviderInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual void onFacebookLoginSuccess( const Params & _params ) = 0;

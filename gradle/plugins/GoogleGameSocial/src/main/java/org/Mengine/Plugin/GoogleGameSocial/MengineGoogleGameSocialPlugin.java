@@ -51,7 +51,9 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
         GamesSignInClient gamesSignInClient = PlayGames.getGamesSignInClient(activity);
 
         gamesSignInClient.isAuthenticated().addOnCompleteListener(isAuthenticatedTask -> {
-            if (isAuthenticatedTask.isSuccessful() == false) {
+            boolean isAuthenticated = isAuthenticatedTask.isSuccessful();
+
+            if (isAuthenticated == false) {
                 Exception e = isAuthenticatedTask.getException();
 
                 this.logError("[ERROR] google game social isAuthenticated failed: %s"

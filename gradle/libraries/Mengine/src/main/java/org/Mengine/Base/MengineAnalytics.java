@@ -18,6 +18,10 @@ public class MengineAnalytics {
         MengineAnalytics.m_application = application;
     }
 
+    public static void removeMengineApplication() {
+        MengineAnalytics.m_application = null;
+    }
+
     static private void assertContext(String key) {
         if (BuildConfig.DEBUG == false) {
             return;

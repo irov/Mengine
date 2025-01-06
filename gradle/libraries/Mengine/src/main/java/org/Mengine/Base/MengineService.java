@@ -36,6 +36,10 @@ public class MengineService implements MengineServiceInterface {
         m_activity = activity;
     }
 
+    public void removeMengineActivity() {
+        m_activity = null;
+    }
+
     public MengineActivity getMengineActivity() {
         return m_activity;
     }

@@ -50,6 +50,10 @@ public class MengineLog {
         MengineLog.m_application = application;
     }
 
+    public static void removeMengineApplication() {
+        MengineLog.m_application = null;
+    }
+
     public static void initializeBaseServices() {
         MengineLog.m_initializeBaseServices = true;
 

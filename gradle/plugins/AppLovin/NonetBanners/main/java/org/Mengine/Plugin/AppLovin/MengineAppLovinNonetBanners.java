@@ -46,7 +46,7 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
     protected Timer m_refreshTimer;
 
     @Override
-    public void onAppCreate(MengineApplication application, MengineAppLovinPlugin plugin) throws MengineServiceInvalidInitializeException {
+    public void onAppCreate(@NonNull MengineApplication application, @NonNull MengineAppLovinPlugin plugin) throws MengineServiceInvalidInitializeException {
         m_plugin = plugin;
 
         m_banners = new ArrayList<>();
@@ -110,14 +110,14 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
     }
 
     @Override
-    public void onAppTerminate(MengineApplication application, MengineAppLovinPlugin plugin) {
+    public void onAppTerminate(@NonNull MengineApplication application, @NonNull MengineAppLovinPlugin plugin) {
         m_banners = null;
 
         m_plugin = null;
     }
 
     @Override
-    public void onActivityCreate(MengineActivity activity) throws MengineServiceInvalidInitializeException {
+    public void onActivityCreate(@NonNull MengineActivity activity) throws MengineServiceInvalidInitializeException {
         if (m_banners.isEmpty() == true) {
             return;
         }
@@ -215,23 +215,20 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
         params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         view.setLayoutParams(params);
 
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                m_plugin.logMessage("[NONET_BANNERS] click banner request: %d url: %s"
-                    , m_requestId
-                    , url
-                );
+        view.setOnClickListener(v -> {
+            m_plugin.logMessage("[NONET_BANNERS] click banner request: %d url: %s"
+                , m_requestId
+                , url
+            );
 
-                m_plugin.buildEvent("mng_ad_nonet_banners_clicked")
-                    .addParameterString("url", url)
-                    .addParameterLong("request_id", m_requestId)
-                    .log();
+            m_plugin.buildEvent("mng_ad_nonet_banners_clicked")
+                .addParameterString("url", url)
+                .addParameterLong("request_id", m_requestId)
+                .log();
 
-                MengineActivity activity = m_plugin.getMengineActivity();
+            MengineActivity activity = m_plugin.getMengineActivity();
 
-                MengineUtils.openUrl(activity, url);
-            }
+            MengineUtils.openUrl(activity, url);
         });
 
         m_plugin.logMessage("[NONET_BANNERS] add banner url: %s"

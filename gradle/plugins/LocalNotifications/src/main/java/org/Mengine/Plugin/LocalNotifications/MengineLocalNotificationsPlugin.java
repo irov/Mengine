@@ -329,7 +329,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
 
             return;
         } catch (final IOException e) {
-            this.logError("[LOCAL_NOTIFICATIOINS] XmlPullParserException: %s"
+            this.logError("[LOCAL_NOTIFICATIOINS] IOException: %s"
                 , e.getMessage()
             );
 

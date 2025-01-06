@@ -8,7 +8,7 @@ import org.Mengine.Base.MenginePerformanceTraceProvider;
 import java.util.Map;
 
 class MengineFirebasePerformanceTraceProvider implements MenginePerformanceTraceProvider {
-    private Trace m_trace;
+    private final Trace m_trace;
 
     MengineFirebasePerformanceTraceProvider(String name, Map<String, String> attributes) {
         m_trace = FirebasePerformance.getInstance()

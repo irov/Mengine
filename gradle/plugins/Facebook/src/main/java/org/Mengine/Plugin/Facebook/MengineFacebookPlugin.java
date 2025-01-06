@@ -468,7 +468,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
                     .addParameterString("url", link)
                     .addParameterString("hashtag", hashtag)
                     .addParameterString("quote", quote)
-                    .addParameterString("error", error_message)
+                    .addParameterException("exception", exception)
                     .log();
 
                 MengineFacebookPlugin.this.pythonCall("onFacebookShareError", ERROR_CODE_UNKNOWN, error_message);

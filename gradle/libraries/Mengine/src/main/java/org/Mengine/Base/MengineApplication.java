@@ -294,6 +294,10 @@ public class MengineApplication extends Application {
         return m_androidId;
     }
 
+    public long getSaveVersion() {
+        return m_saveVersion;
+    }
+
     public String getInstallKey() {
         return m_installKey;
     }
@@ -1193,8 +1197,8 @@ public class MengineApplication extends Application {
             service.onFinalize(this);
         }
 
-        MengineLog.setMengineApplication(null);
-        MengineAnalytics.setMengineApplication(null);
+        MengineLog.removeMengineApplication();
+        MengineAnalytics.removeMengineApplication();
 
         MengineNative.AndroidNativePython_removePlugin("Application");
 

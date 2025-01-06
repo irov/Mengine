@@ -820,7 +820,7 @@ public class MengineActivity extends AppCompatActivity {
         List<MengineService> plugins = this.getPlugins();
 
         for (MengineService p : plugins) {
-            p.setMengineActivity(null);
+            p.removeMengineActivity();
         }
 
         if (m_clipboard != null) {

@@ -1,4 +1,4 @@
--keep public class * extends org.Mengine.Base.MenginePluginExtension {
+-keep public class * extends org.Mengine.Base.MengineServiceInvalidInitializeException {
     native <methods>;
     public <methods>;
 }

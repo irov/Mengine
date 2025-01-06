@@ -936,14 +936,23 @@ public class MengineUtils {
         }
     }
 
-    @SuppressWarnings("deprecation")
+    public static Rect getDeviceWindowRectQ(Context context, Display display) {
+        DisplayMetrics realMetrics = new DisplayMetrics();
+        display.getRealMetrics( realMetrics );
+
+        int width = realMetrics.widthPixels;
+        int height = realMetrics.heightPixels;
+
+        return new Rect(0, 0, width, height);
+    }
+
     public static Rect getDeviceWindowRect(Context context, Display display)
     {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
             WindowManager windowManager = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
 
             if (windowManager == null) {
-                return null;
+                return MengineUtils.getDeviceWindowRectQ(context, display);
             }
 
             WindowMetrics windowMetrics = windowManager.getCurrentWindowMetrics();
@@ -952,13 +961,7 @@ public class MengineUtils {
 
             return bounds;
         } else {
-            DisplayMetrics realMetrics = new DisplayMetrics();
-            display.getRealMetrics( realMetrics );
-
-            int width = realMetrics.widthPixels;
-            int height = realMetrics.heightPixels;
-
-            return new Rect(0, 0, width, height);
+            return MengineUtils.getDeviceWindowRectQ(context, display);
         }
     }
 

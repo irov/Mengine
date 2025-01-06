@@ -1,6 +1,7 @@
 package org.Mengine.Plugin.AppLovin;
 
 import androidx.annotation.NonNull;
+
 import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ProcessLifecycleOwner;
@@ -16,20 +17,23 @@ import com.applovin.mediation.MaxError;
 import com.applovin.mediation.ads.MaxAppOpenAd;
 
 import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineUtils;
 
 import java.util.Map;
 
-public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements MengineAppLovinAppOpenAdInterface, DefaultLifecycleObserver, MaxAdListener, MaxAdRequestListener, MaxAdExpirationListener, MaxAdRevenueListener, MaxAdReviewListener {
-    private MaxAppOpenAd m_appOpenAd;
+public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements DefaultLifecycleObserver, MaxAdListener, MaxAdRequestListener, MaxAdExpirationListener, MaxAdRevenueListener, MaxAdReviewListener {
+    protected final String m_placement;
 
-    public MengineAppLovinAppOpenAd(@NonNull MengineAppLovinPlugin plugin, @NonNull String adUnitId) {
-        super(MaxAdFormat.APP_OPEN, plugin, adUnitId);
+    protected MaxAppOpenAd m_appOpenAd;
+
+    public MengineAppLovinAppOpenAd(@NonNull MengineAppLovinPlugin plugin, String adUnitId, String placement) {
+        super(plugin, adUnitId, MaxAdFormat.APP_OPEN);
+
+        m_placement = placement;
     }
 
     @Override
-    public void initializeAppOpenAd(@NonNull MengineApplication application, @NonNull MengineAppLovinPlugin plugin) {
+    public void initialize(@NonNull MengineApplication application) {
         MaxAppOpenAd appOpenAd = new MaxAppOpenAd(m_adUnitId, application);
 
         appOpenAd.setListener( this );
@@ -46,7 +50,7 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Men
     }
 
     @Override
-    public void finalizeAppOpenAd(@NonNull MengineApplication application, @NonNull MengineAppLovinPlugin plugin) {
+    public void finalize(@NonNull MengineApplication application) {
         ProcessLifecycleOwner.get().getLifecycle().removeObserver( this );
 
         m_appOpenAd.destroy();
@@ -72,6 +76,7 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Men
         return true;
     }
 
+    @Override
     public void loadAd() {
         if (m_appOpenAd == null) {
             return;
@@ -107,7 +112,7 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Men
 
     @Override
     public void onStart(@NonNull LifecycleOwner owner) {
-        this.showAdIfReady("start");
+        this.showAdIfReady(m_placement);
     }
 
     @Override
@@ -119,7 +124,7 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Men
 
         m_plugin.setState("applovin.appopen.state." + m_adUnitId, "request_started");
 
-        m_plugin.pythonCall("onAppLovinAppOpenOnAdRequestStarted", m_adUnitId);
+        m_plugin.pythonCall("onAppLovinAppOpenOnAdRequestStarted");
     }
 
     @Override
@@ -134,7 +139,7 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Men
 
         m_requestAttempt = 0;
 
-        m_plugin.pythonCall("onAppLovinAppOpenOnAdLoaded", m_adUnitId);
+        m_plugin.pythonCall("onAppLovinAppOpenOnAdLoaded");
     }
 
     @Override
@@ -150,7 +155,7 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Men
 
         m_plugin.setState("applovin.appopen.state." + m_adUnitId, "displayed." + placement + "." + ad.getNetworkName());
 
-        m_plugin.pythonCall("onAppLovinAppOpenOnAdDisplayed", m_adUnitId);
+        m_plugin.pythonCall("onAppLovinAppOpenOnAdDisplayed", placement);
     }
 
     @Override
@@ -166,7 +171,7 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Men
 
         m_plugin.setState("applovin.appopen.state." + m_adUnitId, "hidden." + placement + "." + ad.getNetworkName());
 
-        m_plugin.pythonCall("onAppLovinAppOpenOnAdHidden", m_adUnitId);
+        m_plugin.pythonCall("onAppLovinAppOpenOnAdHidden", placement);
 
         MengineUtils.performOnMainThread(() -> {
             this.loadAd();
@@ -186,7 +191,7 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Men
 
         m_plugin.setState("applovin.appopen.state." + m_adUnitId, "clicked." + placement + "." + ad.getNetworkName());
 
-        m_plugin.pythonCall("onAppLovinAppOpenOnAdClicked", m_adUnitId);
+        m_plugin.pythonCall("onAppLovinAppOpenOnAdClicked", placement);
     }
 
     @Override
@@ -200,9 +205,9 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Men
             .addParameterJSON("error", this.getMaxErrorParams(error))
             .log();
 
-        m_plugin.setState("applovin.appopen.state." + m_adUnitId, "load_failed");
+        m_plugin.setState("applovin.appopen.state." + m_adUnitId, "load_failed." + errorCode);
 
-        m_plugin.pythonCall("onAppLovinAppOpenOnAdLoadFailed", m_adUnitId);
+        m_plugin.pythonCall("onAppLovinAppOpenOnAdLoadFailed", Map.of("error_code", errorCode));
 
         this.retryLoadAd();
     }
@@ -222,9 +227,9 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Men
             .addParameterJSON("error", this.getMaxErrorParams(error))
             .log();
 
-        m_plugin.setState("applovin.appopen.state." + m_adUnitId, "display_failed." + placement + "." + ad.getNetworkName());
+        m_plugin.setState("applovin.appopen.state." + m_adUnitId, "display_failed." + placement + "." + ad.getNetworkName() + "." + errorCode);
 
-        m_plugin.pythonCall("onAppLovinAppOpenOnAdDisplayFailed", m_adUnitId);
+        m_plugin.pythonCall("onAppLovinAppOpenOnAdDisplayFailed", placement, Map.of("error_code", errorCode));
 
         MengineUtils.performOnMainThread(() -> {
             this.loadAd();
@@ -248,10 +253,7 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Men
 
         double revenue = ad.getRevenue();
 
-        m_plugin.pythonCall("onAppLovinAppOpenOnAdRevenuePaid"
-            , m_adUnitId
-            , Map.of("revenue", revenue)
-        );
+        m_plugin.pythonCall("onAppLovinAppOpenOnAdRevenuePaid", placement, Map.of("revenue", revenue));
     }
 
     @Override

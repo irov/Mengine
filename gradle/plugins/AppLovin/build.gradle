@@ -3,7 +3,6 @@ apply from: rootProject.projectDir.getAbsolutePath() + '/gms.gradle'
 
 def MENGINE_APP_PLUGIN_APPLOVIN_CONSENT_FLOW = Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN_CONSENT_FLOW")
 def MENGINE_APP_PLUGIN_APPLOVIN_NONET_BANNERS = Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN_NONET_BANNERS")
-def MENGINE_APP_PLUGIN_APPLOVIN_APPOPENAD = Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN_APPOPENAD")
 
 def MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON = Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON")
 def MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_BIDMACHINE = Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_BIDMACHINE")
@@ -80,7 +79,6 @@ if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_ADMOB == true) {
 
 Utils.logAvailable("AppLovin add Consent Flow", MENGINE_APP_PLUGIN_APPLOVIN_CONSENT_FLOW)
 Utils.logAvailable("AppLovin add Nonet Banners", MENGINE_APP_PLUGIN_APPLOVIN_NONET_BANNERS)
-Utils.logAvailable("AppLovin add App Open Ad", MENGINE_APP_PLUGIN_APPLOVIN_APPOPENAD)
 Utils.logAvailable("AppLovin add Mediation Amazon", MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON)
 
 subprojects {
@@ -95,9 +93,7 @@ android {
             if (MENGINE_APP_PLUGIN_APPLOVIN_NONET_BANNERS == true) {
                 java.srcDirs += ['NonetBanners']
             }
-            if (MENGINE_APP_PLUGIN_APPLOVIN_APPOPENAD == true) {
-                java.srcDirs += ['AppOpenAd']
-            }
+            
             if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON == true) {
                 java.srcDirs += ['Amazon']
             }
@@ -224,7 +220,6 @@ dependencies {
 android {
     defaultConfig {
         buildConfigField "boolean", "MENGINE_APP_PLUGIN_APPLOVIN_CONSENT_FLOW", "${MENGINE_APP_PLUGIN_APPLOVIN_CONSENT_FLOW}"
-        buildConfigField "boolean", "MENGINE_APP_PLUGIN_APPLOVIN_APPOPENAD", "${MENGINE_APP_PLUGIN_APPLOVIN_APPOPENAD}"
         buildConfigField "boolean", "MENGINE_APP_PLUGIN_APPLOVIN_NONET_BANNERS", "${MENGINE_APP_PLUGIN_APPLOVIN_NONET_BANNERS}"
 
         buildConfigField "boolean", "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON", "${MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON}"

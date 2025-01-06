@@ -12,6 +12,7 @@ public class MengineLocalNotificationsPublisher extends BroadcastReceiver {
     public static final String NOTIFICATION_ID = "NOTIFICATION_ID";
     public static final String NOTIFICATION = "notification";
 
+    @Override
     public void onReceive(Context context, Intent intent) {
         NotificationManager notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
 

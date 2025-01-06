@@ -16,6 +16,7 @@ import com.applovin.sdk.AppLovinSdkUtils;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineAnalyticsEventBuilder;
+import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineUtils;
 
 import java.util.List;
@@ -24,19 +25,19 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class MengineAppLovinBase {
-    protected final MaxAdFormat m_adFormat;
-    protected MengineAppLovinPlugin m_plugin;
+    protected final MengineAppLovinPlugin m_plugin;
     protected final String m_adUnitId;
+    protected final MaxAdFormat m_adFormat;
 
     protected int m_enumeratorRequest;
     protected int m_requestId;
     protected int m_requestAttempt;
     protected long m_requestTimestamp;
 
-    public MengineAppLovinBase(MaxAdFormat adFormat, MengineAppLovinPlugin plugin, String adUnitId) {
-        m_adFormat = adFormat;
+    public MengineAppLovinBase(@NonNull MengineAppLovinPlugin plugin, String adUnitId, MaxAdFormat adFormat) {
         m_plugin = plugin;
         m_adUnitId = adUnitId;
+        m_adFormat = adFormat;
 
         m_enumeratorRequest = 0;
         m_requestId = 0;
@@ -44,11 +45,24 @@ public class MengineAppLovinBase {
         m_requestTimestamp = 0;
     }
 
-    public void onCreate(MengineActivity activity) {
+    public boolean isInitialize() {
+        return false;
+    }
+
+    public void initialize(@NonNull MengineApplication application) {
         //Empty
     }
 
-    public void onDestroy(@NonNull MengineActivity activity) {
+    public void finalize(@NonNull MengineApplication application) {
+        //Empty
+    }
+
+    public void onActivityCreate(@NonNull MengineActivity activity) {
+        //Empty
+    }
+
+    public void onActivityDestroy(@NonNull MengineActivity activity) {
+        //Empty
     }
 
     public void loadAd() {
@@ -193,7 +207,7 @@ public class MengineAppLovinBase {
 
         String message = sb.toString();
 
-        m_plugin.logMessage(message);
+        m_plugin.logMessage("%s", message);
     }
 
     protected void logError(String callback, Exception e) {
@@ -209,7 +223,7 @@ public class MengineAppLovinBase {
 
         String message = sb.toString();
 
-        m_plugin.logMessage(message);
+        m_plugin.logMessage("%s", message);
     }
 
     protected void logMaxAd(String callback, @NonNull MaxAd ad) {
@@ -235,16 +249,21 @@ public class MengineAppLovinBase {
 
         String message = sb.toString();
 
-        m_plugin.logMessage(message);
+        m_plugin.logMessage("%s", message);
     }
 
     protected void logMaxAdReward(String callback, @NonNull MaxAd ad, MaxReward reward) {
+        this.logMaxAdReward(callback, ad, reward, null);
+    }
+
+    protected void logMaxAdReward(String callback, @NonNull MaxAd ad, MaxReward reward, Map<String, Object> params) {
         StringBuilder sb = new StringBuilder(2048);
 
         String label = m_adFormat.getLabel();
 
         sb.append(String.format(Locale.US, "[%s] %s ", label, callback));
 
+        this.writeParams(sb, params);
         this.writeBaseInfo(sb);
         this.writeMaxAdBaseInfo(sb, ad);
 
@@ -258,16 +277,21 @@ public class MengineAppLovinBase {
 
         String message = sb.toString();
 
-        m_plugin.logMessage(message);
+        m_plugin.logMessage("%s", message);
     }
 
     protected void logMaxError(String callback, @NonNull MaxError error) {
+        this.logMaxError(callback, error, null);
+    }
+
+    protected void logMaxError(String callback, @NonNull MaxError error, Map<String, Object> params) {
         StringBuilder sb = new StringBuilder(1024);
 
         String label = m_adFormat.getLabel();
 
         sb.append(String.format(Locale.US, "[%s] %s ", label, callback));
 
+        this.writeParams(sb, params);
         this.writeBaseInfo(sb);
 
         int errorCode = error.getCode();
@@ -286,7 +310,7 @@ public class MengineAppLovinBase {
 
         String message = sb.toString();
 
-        m_plugin.logMessage(message);
+        m_plugin.logMessage("%s", message);
     }
 
     protected void writeParams(StringBuilder sb, Map<String, Object> params) {

@@ -34,7 +34,7 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
     protected boolean m_visible;
     protected int m_requestId;
 
-    class NonetBanner {
+    static class NonetBanner {
         public ImageView view;
         public String url;
     }
@@ -117,7 +117,7 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
     }
 
     @Override
-    public void onCreate(MengineActivity activity) throws MengineServiceInvalidInitializeException {
+    public void onActivityCreate(MengineActivity activity) throws MengineServiceInvalidInitializeException {
         if (m_banners.isEmpty() == true) {
             return;
         }
@@ -174,7 +174,7 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
     }
 
     @Override
-    public void onDestroy(@NonNull MengineActivity activity) {
+    public void onActivityDestroy(@NonNull MengineActivity activity) {
         if (m_refreshTimer != null) {
             m_refreshTimer.cancel();
             m_refreshTimer = null;

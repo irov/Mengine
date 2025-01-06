@@ -3,6 +3,9 @@ package org.Mengine.Base;
 import androidx.annotation.NonNull;
 import androidx.annotation.Size;
 
+import com.google.errorprone.annotations.FormatMethod;
+import com.google.errorprone.annotations.FormatString;
+
 import java.lang.reflect.Field;
 import java.util.Locale;
 
@@ -37,12 +40,13 @@ public class MengineService implements MengineServiceInterface {
         return m_activity;
     }
 
+    @Override
     public String getServiceName() {
         return m_serviceName;
     }
 
-    public <T> T newInstance(String name, boolean exist, Object ... args) {
-        T instance = MengineUtils.newInstance(m_serviceName, name, exist, args);
+    public Object newInstance(String name, boolean exist, Object ... args) {
+        Object instance = MengineUtils.newInstance(m_serviceName, name, exist, args);
 
         return instance;
     }
@@ -65,18 +69,22 @@ public class MengineService implements MengineServiceInterface {
         return value;
     }
 
-    protected void invalidInitialize(String format, Object ... args) throws MengineServiceInvalidInitializeException {
+    @FormatMethod
+    protected void invalidInitialize(@FormatString String format, Object ... args) throws MengineServiceInvalidInitializeException {
         String message = MengineLog.buildTotalMsg(format, args);
 
         throw new MengineServiceInvalidInitializeException(message);
     }
 
-    public void makeToastLong(String text, long delayed) {
+    @FormatMethod
+    public void makeToastLong(long delayed, @FormatString String format, Object ... args) {
         if (m_activity == null) {
             return;
         }
 
-        MengineUtils.makeToastDelayed(m_activity, text, delayed);
+        String message = MengineLog.buildTotalMsg(format, args);
+
+        MengineUtils.makeToastDelayed(m_activity, message, delayed);
     }
 
     public void sendEvent(MengineEvent event, Object ... args) {
@@ -93,56 +101,62 @@ public class MengineService implements MengineServiceInterface {
         m_activity.runOnUiThread(action);
     }
 
-    public void setState(String name, Object value) {
+    public void setState(@NonNull @Size(min = 1L,max = 1024L) String name, Object value) {
         m_application.setState(name, value);
     }
 
-    public String logVerbose(String format, Object ... args) {
+    @FormatMethod
+    public String logVerbose(@FormatString String format, Object ... args) {
         String m = MengineLog.logVerbose("Mengine" + m_serviceName, format, args);
 
         return m;
     }
 
-    public String logDebug(String format, Object ... args) {
+    @FormatMethod
+    public String logDebug(@FormatString String format, Object ... args) {
         String m = MengineLog.logDebug("Mengine" + m_serviceName, format, args);
 
         return m;
     }
 
-    public String logInfo(String format, Object ... args) {
+    @FormatMethod
+    public String logInfo(@FormatString String format, Object ... args) {
         String m = MengineLog.logInfo("Mengine" + m_serviceName, format, args);
 
         return m;
     }
 
-    public String logMessage(String format, Object ... args) {
+    @FormatMethod
+    public String logMessage(@FormatString String format, Object ... args) {
         String m = MengineLog.logMessage("Mengine" + m_serviceName, format, args);
 
         return m;
     }
 
-    public String logMessageRelease(String format, Object ... args) {
+    @FormatMethod
+    public String logMessageRelease(@FormatString String format, Object ... args) {
         String m = MengineLog.logMessageRelease("Mengine" + m_serviceName, format, args);
 
         return m;
     }
 
-    public String logWarning(String format, Object ... args) {
+    @FormatMethod
+    public String logWarning(@FormatString String format, Object ... args) {
         String m = MengineLog.logWarning("Mengine" + m_serviceName, format, args);
 
         return m;
     }
 
-    public String logError(String format, Object ... args) {
+    @FormatMethod
+    public String logError(@FormatString String format, Object ... args) {
         String m = MengineLog.logError("Mengine" + m_serviceName, format, args);
 
         return m;
     }
 
-    public void assertionError(String format, Object ... args) {
-        String msg = String.format(Locale.US, format, args);
-
-        throw new AssertionError("[" + "Mengine" + m_serviceName + "] " + msg);
+    @FormatMethod
+    public void assertionError(@FormatString String format, Object ... args) {
+        MengineUtils.throwAssertionError(m_application, "Mengine" + m_serviceName, null, format, args);
     }
 
     public MengineAnalyticsEventBuilder buildEvent(@Size(min = 1L,max = 40L) String name) {
@@ -181,7 +195,7 @@ public class MengineService implements MengineServiceInterface {
 
             return value;
         } catch (final RuntimeException e) {
-            this.invalidInitialize("invalid get meta data [%s]", name);
+            this.invalidInitialize("invalid get meta data: %s e: %s", name, e.getMessage());
         }
 
         return false;
@@ -193,7 +207,7 @@ public class MengineService implements MengineServiceInterface {
 
             return value;
         } catch (final RuntimeException e) {
-            this.invalidInitialize("invalid get meta data [%s]", name);
+            this.invalidInitialize("invalid get meta data: %s e: %s", name, e.getMessage());
         }
 
         return 0;
@@ -205,7 +219,7 @@ public class MengineService implements MengineServiceInterface {
 
             return value;
         } catch (final RuntimeException e) {
-            this.invalidInitialize("invalid get meta data [%s]", name);
+            this.invalidInitialize("invalid get meta data: %s e: %s", name, e.getMessage());
         }
 
         return 0;
@@ -217,7 +231,7 @@ public class MengineService implements MengineServiceInterface {
 
             return value;
         } catch (final RuntimeException e) {
-            this.invalidInitialize("invalid get meta data [%s]", name);
+            this.invalidInitialize("invalid get meta data: %s e: %s", name, e.getMessage());
         }
 
         return null;

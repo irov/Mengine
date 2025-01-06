@@ -15,6 +15,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Size;
 import androidx.multidex.MultiDex;
 
+import com.google.common.base.Splitter;
+import com.google.errorprone.annotations.FormatMethod;
+import com.google.errorprone.annotations.FormatString;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,6 +56,7 @@ public class MengineApplication extends Application {
 
     private String m_androidId;
 
+    private long m_saveVersion = -1;
     private String m_installKey;
     private long m_installTimestamp = -1;
     private String m_installVersion;
@@ -263,9 +268,9 @@ public class MengineApplication extends Application {
 
         String options_str = this.getApplicationOptions();
 
-        String [] options = options_str.split(" ");
+        List<String> options = Splitter.on(' ').splitToList(options_str);
 
-        if (options.length == 0) {
+        if (options.isEmpty() == true) {
             return false;
         }
 
@@ -643,7 +648,7 @@ public class MengineApplication extends Application {
     }
 
     protected boolean createService(String type) {
-        MengineService service = MengineUtils.newInstance(TAG, type, true);
+        MengineService service = (MengineService)MengineUtils.newInstance(TAG, type, true);
 
         if (service == null) {
             MengineLog.logError(TAG, "invalid create instance service: %s"
@@ -838,7 +843,7 @@ public class MengineApplication extends Application {
     }
 
     protected static String generateInstallKey() {
-        String installKey = "MNIK" + MengineUtils.getSecureRandomHexString(16).toUpperCase();
+        String installKey = "MNIK" + MengineUtils.getSecureRandomHexString(16).toUpperCase(Locale.US);
 
         return installKey;
     }
@@ -944,6 +949,7 @@ public class MengineApplication extends Application {
         editor.putLong("session_index", sessionIndex + 1);
         editor.apply();
 
+        m_saveVersion = saveVersion;
         m_installKey = installKey;
         m_installTimestamp = installTimestamp;
         m_installVersion = installVersion;
@@ -953,6 +959,7 @@ public class MengineApplication extends Application {
         m_sessionTimestamp = MengineUtils.getTimestamp();
         m_purchasesTimestamp = purchasesTimestamp;
 
+        this.setState("user.save_version", m_saveVersion);
         this.setState("user.install_key", m_installKey);
         this.setState("user.install_timestamp", m_installTimestamp);
         this.setState("user.install_version", m_installVersion);
@@ -1324,7 +1331,7 @@ public class MengineApplication extends Application {
                         }, "Fatal", "%s", msg);
                         break;
                     case MengineLog.LM_ERROR:
-                        MengineUtils.showToast(m_activity, msg);
+                        MengineUtils.showToast(m_activity, "%s", msg);
                         break;
                 }
             }
@@ -1531,7 +1538,8 @@ public class MengineApplication extends Application {
         return trace;
     }
 
-    private void invalidInitialize(String format, Object ... args) {
+    @FormatMethod
+    private void invalidInitialize(@FormatString String format, Object ... args) {
         String msg = MengineLog.logErrorException(TAG, format, args);
 
         m_invalidInitialize = true;

@@ -10,8 +10,8 @@ public interface MengineAppLovinNonetBannersInterface {
     void onAppCreate(@NonNull MengineApplication application, @NonNull MengineAppLovinPlugin plugin) throws MengineServiceInvalidInitializeException;
     void onAppTerminate(@NonNull MengineApplication application, @NonNull MengineAppLovinPlugin plugin);
 
-    void onCreate(@NonNull MengineActivity activity) throws MengineServiceInvalidInitializeException;
-    void onDestroy(@NonNull MengineActivity activity);
+    void onActivityCreate(@NonNull MengineActivity activity) throws MengineServiceInvalidInitializeException;
+    void onActivityDestroy(@NonNull MengineActivity activity);
 
     void show();
     void hide();

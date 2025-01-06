@@ -5,7 +5,6 @@ import androidx.annotation.Size;
 
 import org.json.JSONObject;
 
-import java.util.Locale;
 import java.util.Map;
 
 public class MengineAnalyticsEventBuilder {
@@ -28,8 +27,9 @@ public class MengineAnalyticsEventBuilder {
         }
 
         if (m_bases.containsKey(key)) {
-            String msg = String.format(Locale.US, "event builder '%s' parameter '%s' already exist in context", m_name, key);
-            throw new AssertionError(msg);
+            MengineUtils.throwAssertionError(m_application, MengineAnalytics.TAG, null
+                , "event builder: %s parameter: %s already exist in context", m_name, key
+            );
         }
     }
 
@@ -39,8 +39,9 @@ public class MengineAnalyticsEventBuilder {
         }
 
         if (m_parameters.containsKey(key)) {
-            String msg = String.format(Locale.US, "event builder '%s' parameter '%s' already exist in parameters", m_name, key);
-            throw new AssertionError(msg);
+            MengineUtils.throwAssertionError(m_application, MengineAnalytics.TAG, null
+                , "event builder: %s parameter: %s already exist in parameters", m_name, key
+            );
         }
     }
 
@@ -52,8 +53,9 @@ public class MengineAnalyticsEventBuilder {
         try {
             new JSONObject(json);
         } catch (Exception e) {
-            String msg = String.format(Locale.US, "event builder '%s' parameter '%s' invalid json", m_name, key);
-            throw new AssertionError(msg, e);
+            MengineUtils.throwAssertionError(m_application, MengineAnalytics.TAG, e
+                , "event builder: %s parameter: %s invalid json: %s", m_name, key, json
+            );
         }
     }
 

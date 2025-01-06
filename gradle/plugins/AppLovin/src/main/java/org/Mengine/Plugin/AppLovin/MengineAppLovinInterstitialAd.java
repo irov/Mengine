@@ -13,25 +13,26 @@ import com.applovin.mediation.MaxError;
 import com.applovin.mediation.ads.MaxInterstitialAd;
 
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineNetwork;
 import org.Mengine.Base.MengineUtils;
 
 import java.util.Map;
 
-public class MengineAppLovinInterstitial extends MengineAppLovinBase implements MaxAdListener, MaxAdRequestListener, MaxAdRevenueListener, MaxAdExpirationListener, MaxAdReviewListener {
+public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implements MaxAdListener, MaxAdRequestListener, MaxAdRevenueListener, MaxAdExpirationListener, MaxAdReviewListener {
     private MaxInterstitialAd m_interstitialAd;
 
-    public MengineAppLovinInterstitial(MengineAppLovinPlugin plugin, String adUnitId) {
-        super(MaxAdFormat.INTERSTITIAL, plugin, adUnitId);
+    public MengineAppLovinInterstitialAd(MengineAppLovinPlugin plugin, String adUnitId) {
+        super(plugin, adUnitId, MaxAdFormat.INTERSTITIAL);
 
         //Empty
     }
 
     @Override
-    public void onCreate(MengineActivity activity) {
-        super.onCreate(activity);
+    public void initialize(@NonNull MengineApplication application) {
+        super.initialize(application);
 
-        MaxInterstitialAd interstitialAd = new MaxInterstitialAd(m_adUnitId, activity);
+        MaxInterstitialAd interstitialAd = new MaxInterstitialAd(m_adUnitId, application);
 
         interstitialAd.setListener(this);
         interstitialAd.setRequestListener(this);
@@ -48,7 +49,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
         MengineAppLovinMediationInterface mediationAmazon = m_plugin.getMediationAmazon();
 
         if (mediationAmazon != null) {
-            mediationAmazon.loadMediatorInterstitial(activity, m_plugin, m_interstitialAd, () -> {
+            mediationAmazon.loadMediatorInterstitial(application, m_interstitialAd, () -> {
                 this.loadAd();
             });
         } else {
@@ -57,8 +58,8 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
     }
 
     @Override
-    public void onDestroy(@NonNull MengineActivity activity) {
-        super.onDestroy(activity);
+    public void finalize(@NonNull MengineApplication application) {
+        super.finalize(application);
 
         if (m_interstitialAd != null) {
             m_interstitialAd.setListener(null);
@@ -72,6 +73,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
         }
     }
 
+    @Override
     public void loadAd() {
         if (m_interstitialAd == null) {
             return;
@@ -166,7 +168,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
         m_plugin.setState("applovin.interstitial.state." + m_adUnitId, "request_started");
 
-        m_plugin.pythonCall("onAppLovinInterstitialOnAdRequestStarted", m_adUnitId);
+        m_plugin.pythonCall("onAppLovinInterstitialOnAdRequestStarted");
     }
 
     @Override
@@ -181,7 +183,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
         m_requestAttempt = 0;
 
-        m_plugin.pythonCall("onAppLovinInterstitialOnAdLoaded", m_adUnitId);
+        m_plugin.pythonCall("onAppLovinInterstitialOnAdLoaded");
     }
 
     @Override
@@ -197,7 +199,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
         m_plugin.setState("applovin.interstitial.state." + m_adUnitId, "displayed." + placement + "." + ad.getNetworkName());
 
-        m_plugin.pythonCall("onAppLovinInterstitialOnAdDisplayed", m_adUnitId);
+        m_plugin.pythonCall("onAppLovinInterstitialOnAdDisplayed", placement);
     }
 
     @Override
@@ -213,7 +215,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
         m_plugin.setState("applovin.interstitial.state." + m_adUnitId, "hidden." + placement + "." + ad.getNetworkName());
 
-        m_plugin.pythonCall("onAppLovinInterstitialOnAdHidden", m_adUnitId);
+        m_plugin.pythonCall("onAppLovinInterstitialOnAdHidden", placement);
 
         MengineUtils.performOnMainThread(() -> {
             this.loadAd();
@@ -233,7 +235,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
         m_plugin.setState("applovin.interstitial.state." + m_adUnitId, "clicked." + placement + "." + ad.getNetworkName());
 
-        m_plugin.pythonCall("onAppLovinInterstitialOnAdClicked", m_adUnitId);
+        m_plugin.pythonCall("onAppLovinInterstitialOnAdClicked", placement);
     }
 
     @Override
@@ -247,9 +249,9 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
             .addParameterJSON("error", this.getMaxErrorParams(error))
             .log();
 
-        m_plugin.setState("applovin.interstitial.state." + m_adUnitId, "load_failed");
+        m_plugin.setState("applovin.interstitial.state." + m_adUnitId, "load_failed." + errorCode);
 
-        m_plugin.pythonCall("onAppLovinInterstitialOnAdLoadFailed", m_adUnitId);
+        m_plugin.pythonCall("onAppLovinInterstitialOnAdLoadFailed", errorCode);
 
         this.retryLoadAd();
     }
@@ -269,9 +271,9 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
             .addParameterJSON("error", this.getMaxErrorParams(error))
             .log();
 
-        m_plugin.setState("applovin.interstitial.state." + m_adUnitId, "display_failed." + placement + "." + ad.getNetworkName());
+        m_plugin.setState("applovin.interstitial.state." + m_adUnitId, "display_failed." + placement + "." + ad.getNetworkName() + "." + errorCode);
 
-        m_plugin.pythonCall("onAppLovinInterstitialOnAdDisplayFailed", m_adUnitId);
+        m_plugin.pythonCall("onAppLovinInterstitialOnAdDisplayFailed", placement, errorCode);
 
         MengineUtils.performOnMainThread(() -> {
             this.loadAd();
@@ -295,10 +297,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
 		double revenue = ad.getRevenue();
 
-        m_plugin.pythonCall("onAppLovinInterstitialOnAdRevenuePaid"
-            , m_adUnitId
-            , Map.of("revenue", revenue)
-        );
+        m_plugin.pythonCall("onAppLovinInterstitialOnAdRevenuePaid", placement, Map.of("revenue", revenue));
     }
 
     @Override

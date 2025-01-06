@@ -41,7 +41,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
     private static final String CHANNEL_ID = "mengine_channel_id";
     private static final CharSequence CHANNEL_NAME = "Mengine Channel";
 
-    class LocalNotificationDesc {
+    static class LocalNotificationDesc {
         public int id;
         public String title;
         public String content;

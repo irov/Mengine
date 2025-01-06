@@ -4,10 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Size;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 public class MengineAnalytics {
+    public static final String TAG = "MengineAnalytics";
+
     private static MengineApplication m_application;
 
     private static final Map<String, Object> m_bases = new HashMap<>();
@@ -18,16 +19,26 @@ public class MengineAnalytics {
     }
 
     static private void assertContext(String key) {
+        if (BuildConfig.DEBUG == false) {
+            return;
+        }
+
         if (MengineAnalytics.m_bases.containsKey(key) == true) {
-            String msg = String.format(Locale.US, "global analytics context parameter '%s' already exist", key);
-            throw new AssertionError(msg);
+            MengineUtils.throwAssertionError(m_application, MengineAnalytics.TAG, null
+                , "global analytics context parameter: %s already exist", key
+            );
         }
     }
 
     static private void assertGetter(String key) {
+        if (BuildConfig.DEBUG == false) {
+            return;
+        }
+
         if (MengineAnalytics.m_getter.containsKey(key) == true) {
-            String msg = String.format(Locale.US, "global analytics getter parameter '%s' already exist", key);
-            throw new AssertionError(msg);
+            MengineUtils.throwAssertionError(m_application, MengineAnalytics.TAG, null
+                , "global analytics getter parameter: %s already exist", key
+            );
         }
     }
 

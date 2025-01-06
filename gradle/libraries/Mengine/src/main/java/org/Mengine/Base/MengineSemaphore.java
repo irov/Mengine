@@ -2,11 +2,12 @@ package org.Mengine.Base;
 
 import androidx.annotation.NonNull;
 
+import java.util.List;
 import java.util.ArrayList;
 
 public class MengineSemaphore {
     private boolean m_activated;
-    private ArrayList<MengineSemaphoreListener> m_listeners = new ArrayList<>();
+    private List<MengineSemaphoreListener> m_listeners = new ArrayList<>();
 
     MengineSemaphore(boolean _activated) {
         m_activated = _activated;
@@ -16,10 +17,10 @@ public class MengineSemaphore {
         return m_activated;
     }
 
-    public ArrayList<MengineSemaphoreListener> activate() {
+    public List<MengineSemaphoreListener> activate() {
         m_activated = true;
 
-        ArrayList<MengineSemaphoreListener> listeners = m_listeners;
+        List<MengineSemaphoreListener> listeners = m_listeners;
         m_listeners = null;
 
         return listeners;

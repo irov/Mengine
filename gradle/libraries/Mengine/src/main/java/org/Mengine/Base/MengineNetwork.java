@@ -5,6 +5,8 @@ import android.util.Base64;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.common.base.Splitter;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -229,7 +231,7 @@ public class MengineNetwork {
 
         String userCredentials = login + ":" + password;
 
-        String basicAuth = "Basic " + Base64.encodeToString(userCredentials.getBytes(), Base64.DEFAULT);
+        String basicAuth = "Basic " + Base64.encodeToString(userCredentials.getBytes(StandardCharsets.UTF_8), Base64.DEFAULT);
         connection.setRequestProperty("Authorization", basicAuth);
     }
 
@@ -246,13 +248,16 @@ public class MengineNetwork {
         }
 
         for (String header : headers) {
-            String[] parts = header.split(":");
+            List<String> parts = Splitter.on(':').splitToList(header);
 
-            if (parts.length != 2) {
+            if (parts.size() != 2) {
                 continue;
             }
 
-            connection.setRequestProperty(parts[0], parts[1]);
+            String key = parts.get(0);
+            String value = parts.get(1);
+
+            connection.setRequestProperty(key, value);
         }
     }
 

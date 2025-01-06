@@ -31,9 +31,7 @@ import org.Mengine.Base.MengineListenerEngine;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineUtils;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class MengineAppLovinPlugin extends MengineService implements MengineListenerApplication, MengineListenerActivity, MengineListenerEngine {
     public static final String SERVICE_NAME = "AppLovin";
@@ -44,21 +42,23 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
     public static final String METADATA_ENABLE_PRIVACY_POLICY_FLOW = "mengine.applovin.enable_privacy_policy_flow";
     public static final String METADATA_PRIVACY_POLICY_URL = "mengine.applovin.privacy_policy_url";
     public static final String METADATA_TERMS_OF_SERVICE_URL = "mengine.applovin.terms_of_service_url";
-    public static final String METADATA_BANNER_ADAPTIVE = "mengine.applovin.banner_adaptive";
+    public static final String METADATA_BANNER_ADAPTIVE = "mengine.applovin.banner.adaptive";
+    public static final String METADATA_BANNER_PLACEMENT = "mengine.applovin.banner.placement";
+    public static final String METADATA_BANNER_ADUNITID = "mengine.applovin.banner.adunitid";
+    public static final String METADATA_INTERSTITIAL_ADUNITID = "mengine.applovin.interstitial.adunitid";
+    public static final String METADATA_REWARDED_ADUNITID = "mengine.applovin.rewarded.adunitid";
+    public static final String METADATA_APPOPEN_PLACEMENT = "mengine.applovin.appopen.placement";
     public static final String METADATA_APPOPEN_ADUNITID = "mengine.applovin.appopen.adunitid";
 
     private AppLovinSdk m_appLovinSdk;
 
-    private Map<String, MengineAppLovinBanner> m_banners = new HashMap<>();
-    private Map<String, MengineAppLovinInterstitial> m_interstitials = new HashMap<>();
-    private Map<String, MengineAppLovinRewarded> m_rewardeds = new HashMap<>();
+    private MengineAppLovinBannerAd m_bannerAd;
+    private MengineAppLovinInterstitialAd m_interstitialAd;
+    private MengineAppLovinRewardedAd m_rewardedAd;
+    private MengineAppLovinAppOpenAd m_appOpenAd;
 
     private MengineAppLovinMediationInterface m_mediationAmazon;
-
-    private MengineAppLovinAppOpenAdInterface m_appOpenAd;
     private MengineAppLovinNonetBannersInterface m_nonetBanners;
-
-    private boolean m_bannerAdaptive;
 
     @Override
     public String onAppVersion(@NonNull MengineApplication application) {
@@ -69,14 +69,58 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
 
     @Override
     public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
-        boolean MengineAppLovinPlugin_BannerAdaptive = this.getMetaDataBoolean(METADATA_BANNER_ADAPTIVE);
+        String MengineAppLovinPlugin_Banner_AdUnitId = this.getMetaDataString(METADATA_BANNER_ADUNITID);
 
-        this.logMessage("%s: %b"
-            , METADATA_BANNER_ADAPTIVE
-            , MengineAppLovinPlugin_BannerAdaptive
-        );
+        if (MengineAppLovinPlugin_Banner_AdUnitId.isEmpty() == false) {
+            String MengineAppLovinPlugin_Banner_Placement = this.getMetaDataString(METADATA_BANNER_PLACEMENT);
 
-        m_bannerAdaptive = MengineAppLovinPlugin_BannerAdaptive;
+            this.logMessage("%s: %s"
+                    , METADATA_BANNER_PLACEMENT
+                    , MengineAppLovinPlugin_Banner_Placement
+            );
+
+            boolean MengineAppLovinPlugin_BannerAdaptive = this.getMetaDataBoolean(METADATA_BANNER_ADAPTIVE);
+
+            this.logMessage("%s: %b"
+                    , METADATA_BANNER_ADAPTIVE
+                    , MengineAppLovinPlugin_BannerAdaptive
+            );
+
+            MengineAppLovinBannerAd bannerAd = new MengineAppLovinBannerAd(this, MengineAppLovinPlugin_Banner_AdUnitId, MengineAppLovinPlugin_Banner_Placement, MengineAppLovinPlugin_BannerAdaptive);
+
+            m_bannerAd = bannerAd;
+        }
+
+        String MengineAppLovinPlugin_Interstitial_AdUnitId = this.getMetaDataString(METADATA_INTERSTITIAL_ADUNITID);
+
+        if (MengineAppLovinPlugin_Interstitial_AdUnitId.isEmpty() == false) {
+            MengineAppLovinInterstitialAd interstitialAd = new MengineAppLovinInterstitialAd(this, MengineAppLovinPlugin_Interstitial_AdUnitId);
+
+            m_interstitialAd = interstitialAd;
+        }
+
+        String MengineAppLovinPlugin_Rewarded_AdUnitId = this.getMetaDataString(METADATA_REWARDED_ADUNITID);
+
+        if (MengineAppLovinPlugin_Rewarded_AdUnitId.isEmpty() == false) {
+            MengineAppLovinRewardedAd rewardedAd = new MengineAppLovinRewardedAd(this, MengineAppLovinPlugin_Rewarded_AdUnitId);
+
+            m_rewardedAd = rewardedAd;
+        }
+
+        String MengineAppLovinPlugin_AppOpen_AdUnitId = this.getMetaDataString(METADATA_APPOPEN_ADUNITID);
+
+        if (MengineAppLovinPlugin_AppOpen_AdUnitId.isEmpty() == false) {
+            String MengineAppLovinPlugin_AppOpen_Placement = this.getMetaDataString(METADATA_APPOPEN_PLACEMENT);
+
+            this.logMessage("%s: %s"
+                , METADATA_APPOPEN_PLACEMENT
+                , MengineAppLovinPlugin_AppOpen_Placement
+            );
+
+            MengineAppLovinAppOpenAd appOpenAd = new MengineAppLovinAppOpenAd(this, MengineAppLovinPlugin_AppOpen_AdUnitId, MengineAppLovinPlugin_AppOpen_Placement);
+
+            m_appOpenAd = appOpenAd;
+        }
 
         if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_META == true) {
             com.facebook.ads.AdSettings.setDataProcessingOptions( new String[] {} );
@@ -191,9 +235,39 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
 
             application.onMengineTransparencyConsent(tcParam);
 
-            if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_APPOPENAD == true) {
+            if (m_bannerAd != null) {
+                m_bannerAd.initialize(application);
+            }
+
+            if (m_interstitialAd != null) {
+                m_interstitialAd.initialize(application);
+            }
+
+            if (m_rewardedAd != null) {
+                m_rewardedAd.initialize(application);
+            }
+
+            if (m_appOpenAd != null) {
+                m_appOpenAd.initialize(application);
+            }
+
+            MengineActivity activity = this.getMengineActivity();
+
+            if (activity != null) {
+                if (m_bannerAd != null) {
+                    m_bannerAd.onActivityCreate(activity);
+                }
+
+                if (m_interstitialAd != null) {
+                    m_interstitialAd.onActivityCreate(activity);
+                }
+
+                if (m_rewardedAd != null) {
+                    m_rewardedAd.onActivityCreate(activity);
+                }
+
                 if (m_appOpenAd != null) {
-                    m_appOpenAd.initializeAppOpenAd(application, this);
+                    m_appOpenAd.onActivityCreate(activity);
                 }
             }
 
@@ -207,7 +281,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
         m_appLovinSdk = appLovinSdk;
 
         if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON == true) {
-            MengineAppLovinMediationInterface mediationAmazon = this.newInstance("org.Mengine.Plugin.AppLovin.MengineAppLovinMediationAmazon", false);
+            MengineAppLovinMediationInterface mediationAmazon = (MengineAppLovinMediationInterface)this.newInstance("org.Mengine.Plugin.AppLovin.MengineAppLovinMediationAmazon", false);
 
             if (mediationAmazon != null) {
                 mediationAmazon.initializeMediator(application, this);
@@ -218,20 +292,8 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
             }
         }
 
-        if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_APPOPENAD == true) {
-            String MengineAppLovinPlugin_AppOpen_AdUnitId = this.getMetaDataString(METADATA_APPOPEN_ADUNITID);
-
-            MengineAppLovinAppOpenAdInterface appOpenAd = this.newInstance("org.Mengine.Plugin.AppLovin.MengineAppLovinAppOpenAd", false, this, MengineAppLovinPlugin_AppOpen_AdUnitId);
-
-            if (appOpenAd != null) {
-                m_appOpenAd = appOpenAd;
-            } else {
-                this.logError("not found AppLovin extension AppOpenAd");
-            }
-        }
-
         if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_NONET_BANNERS == true) {
-            MengineAppLovinNonetBannersInterface nonetBanners = this.newInstance("org.Mengine.Plugin.AppLovin.MengineAppLovinNonetBanners", false);
+            MengineAppLovinNonetBannersInterface nonetBanners = (MengineAppLovinNonetBannersInterface)this.newInstance("org.Mengine.Plugin.AppLovin.MengineAppLovinNonetBanners", false);
 
             if (nonetBanners != null) {
                 nonetBanners.onAppCreate(application, this);
@@ -250,12 +312,23 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
             m_mediationAmazon = null;
         }
 
-        m_banners = null;
-        m_interstitials = null;
-        m_rewardeds = null;
+        if (m_bannerAd != null) {
+            m_bannerAd.finalize(application);
+            m_bannerAd = null;
+        }
+
+        if (m_interstitialAd != null) {
+            m_interstitialAd.finalize(application);
+            m_interstitialAd = null;
+        }
+
+        if (m_rewardedAd != null) {
+            m_rewardedAd.finalize(application);
+            m_rewardedAd = null;
+        }
 
         if (m_appOpenAd != null) {
-            m_appOpenAd.finalizeAppOpenAd(application, this);
+            m_appOpenAd.finalize(application);
             m_appOpenAd = null;
         }
 
@@ -268,50 +341,46 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
     @Override
     public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
         if (m_nonetBanners != null) {
-            m_nonetBanners.onCreate(activity);
+            m_nonetBanners.onActivityCreate(activity);
         }
 
-        if (m_banners != null) {
-            for (MengineAppLovinBanner banner : m_banners.values()) {
-                banner.onCreate(activity);
-            }
+        if (m_bannerAd != null && m_bannerAd.isInitialize() == true) {
+            m_bannerAd.onActivityCreate(activity);
         }
 
-        if (m_interstitials != null) {
-            for (MengineAppLovinInterstitial interstitial : m_interstitials.values()) {
-                interstitial.onCreate(activity);
-            }
+        if (m_interstitialAd != null && m_interstitialAd.isInitialize() == true) {
+            m_interstitialAd.onActivityCreate(activity);
         }
 
-        if (m_rewardeds != null) {
-            for (MengineAppLovinRewarded rewarded : m_rewardeds.values()) {
-                rewarded.onCreate(activity);
-            }
+        if (m_rewardedAd != null && m_rewardedAd.isInitialize() == true) {
+            m_rewardedAd.onActivityCreate(activity);
+        }
+
+        if (m_appOpenAd != null && m_appOpenAd.isInitialize() == true) {
+            m_appOpenAd.onActivityCreate(activity);
         }
     }
 
     @Override
     public void onDestroy(@NonNull MengineActivity activity) {
-        if (m_banners != null) {
-            for (MengineAppLovinBanner banner : m_banners.values()) {
-                banner.onDestroy(activity);
-            }
-        }
-
-        if (m_interstitials != null) {
-            for (MengineAppLovinInterstitial interstitial : m_interstitials.values()) {
-                interstitial.onDestroy(activity);
-            }
-        }
-
-        if (m_rewardeds != null) {
-            for (MengineAppLovinRewarded rewarded : m_rewardeds.values()) {
-                rewarded.onDestroy(activity);
-            }
-        }
-
         if (m_nonetBanners != null) {
-            m_nonetBanners.onDestroy(activity);
+            m_nonetBanners.onActivityDestroy(activity);
+        }
+
+        if (m_bannerAd != null && m_bannerAd.isInitialize() == true) {
+            m_bannerAd.onActivityDestroy(activity);
+        }
+
+        if (m_interstitialAd != null && m_interstitialAd.isInitialize() == true) {
+            m_interstitialAd.onActivityDestroy(activity);
+        }
+
+        if (m_rewardedAd != null && m_rewardedAd.isInitialize() == true) {
+            m_rewardedAd.onActivityDestroy(activity);
+        }
+
+        if (m_appOpenAd != null && m_appOpenAd.isInitialize() == true) {
+            m_appOpenAd.onActivityDestroy(activity);
         }
     }
 
@@ -323,245 +392,158 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
         return m_nonetBanners;
     }
 
-    public boolean initBanner(String adUnitId, String placement) {
-        if (m_banners.containsKey(adUnitId) == true) {
-            this.assertionError("already exist banner: %s", adUnitId);
-
-            return false;
-        }
-
-        this.logMessage("initBanner adUnitId: %s placement: %s adaptive: %b"
-            , adUnitId
-            , placement
-            , m_bannerAdaptive
-        );
-
-        try {
-            MengineAppLovinBanner banner = new MengineAppLovinBanner(this, adUnitId, placement, m_bannerAdaptive);
-
-            MengineActivity activity = this.getMengineActivity();
-
-            if (activity != null) {
-                banner.onCreate(activity);
-            }
-
-            m_banners.put(adUnitId, banner);
-        } catch (final Exception e) {
-            this.logError("[ERROR] initBanner adUnitId: %s placement: %s catch exception: %s"
-                , adUnitId
-                , placement
-                , e.getMessage()
-            );
-
+    public boolean hasBanner() {
+        if (m_bannerAd == null) {
             return false;
         }
 
         return true;
     }
 
-    public boolean bannerVisible(String adUnitId, boolean show) {
-        MengineAppLovinBanner banner = m_banners.get(adUnitId);
-
-        if (banner == null) {
-            this.assertionError("not found banner: %s", adUnitId);
+    public boolean bannerVisible(boolean show) {
+        if (m_bannerAd == null) {
+            this.assertionError("not found banner");
 
             return false;
         }
 
-        this.logMessage("bannerVisible adUnitId: %s show: %b"
-            , adUnitId
+        this.logMessage("bannerVisible show: %b"
             , show
         );
 
-        if (banner.bannerVisible(show) == false) {
+        if (m_bannerAd.bannerVisible(show) == false) {
             return false;
         }
 
         return true;
     }
 
-    public Rect getBannerViewport(String adUnitId) {
-        MengineAppLovinBanner banner = m_banners.get(adUnitId);
-
-        if (banner == null) {
-            this.assertionError("not found banner: %s", adUnitId);
+    public Rect getBannerViewport() {
+        if (m_bannerAd == null) {
+            this.assertionError("not found banner");
 
             return null;
         }
 
-        Rect rect = banner.getViewport();
+        Rect rect = m_bannerAd.getViewport();
 
         return rect;
     }
 
-    public int getBannerHeight(String adUnitId) {
-        MengineAppLovinBanner banner = m_banners.get(adUnitId);
-
-        if (banner == null) {
-            this.assertionError("not found banner: %s", adUnitId);
+    public int getBannerHeight() {
+        if (m_bannerAd == null) {
+            this.assertionError("not found banner");
 
             return 0;
         }
 
-        int height = banner.getHeight();
+        int height = m_bannerAd.getHeight();
 
         return height;
     }
 
-    public boolean initInterstitial(String adUnitId) {
-        if (m_interstitials.containsKey(adUnitId) == true) {
-            this.assertionError("already exist interstitial: %s", adUnitId);
-
+    public boolean hasInterstitial() {
+        if (m_interstitialAd == null) {
             return false;
         }
 
-        this.logMessage("initInterstitial adUnitId: %s"
-            , adUnitId
-        );
+        return true;
+    }
 
-        try {
-            MengineAppLovinInterstitial interstitial = new MengineAppLovinInterstitial(this, adUnitId);
-
-            MengineActivity activity = this.getMengineActivity();
-
-            if (activity != null) {
-                interstitial.onCreate(activity);
-            }
-
-            m_interstitials.put(adUnitId, interstitial);
-        } catch (final Exception e) {
-            this.logError("[ERROR] initInterstitial adUnitId: %s catch exception: %s"
-                , adUnitId
-                , e.getMessage()
+    public boolean canYouShowInterstitial(String placement) {
+        if (m_interstitialAd == null) {
+            this.assertionError("not found interstitial placement: %s"
+                , placement
             );
 
             return false;
         }
 
-        return true;
-    }
-
-    public boolean canYouShowInterstitial(String adUnitId, String placement) {
-        MengineAppLovinInterstitial interstitial = m_interstitials.get(adUnitId);
-
-        if (interstitial == null) {
-            this.assertionError("not found interstitial: %s", adUnitId);
-
-            return false;
-        }
-
-        if (interstitial.canYouShowInterstitial(placement) == false) {
+        if (m_interstitialAd.canYouShowInterstitial(placement) == false) {
             return false;
         }
 
         return true;
     }
 
-    public boolean showInterstitial(String adUnitId, String placement) {
-        MengineAppLovinInterstitial interstitial = m_interstitials.get(adUnitId);
-
-        if (interstitial == null) {
-            this.assertionError("not found interstitial: %s", adUnitId);
-
-            return false;
-        }
-
-        this.logMessage("showInterstitial adUnitId: %s placement: %s"
-            , adUnitId
-            , placement
-        );
-
-        MengineActivity activity = this.getMengineActivity();
-
-        if (interstitial.showInterstitial(activity, placement) == false) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public boolean initRewarded(String adUnitId) {
-        if (m_rewardeds.containsKey(adUnitId) == true) {
-            this.assertionError("already init rewarded: %s", adUnitId);
-
-            return false;
-        }
-
-        this.logMessage("initRewarded adUnitId: %s"
-            , adUnitId
-        );
-
-        try {
-            MengineAppLovinRewarded rewarded = new MengineAppLovinRewarded(this, adUnitId);
-
-            MengineActivity activity = this.getMengineActivity();
-
-            if (activity != null) {
-                rewarded.onCreate(activity);
-            }
-
-            m_rewardeds.put(adUnitId, rewarded);
-        } catch (final Exception e) {
-            this.logError("[ERROR] initRewarded adUnitId: %s catch exception: %s"
-                , adUnitId
-                , e.getMessage()
+    public boolean showInterstitial(String placement) {
+        if (m_interstitialAd == null) {
+            this.assertionError("not found interstitial placement: %s"
+                , placement
             );
 
             return false;
         }
 
-        return true;
-    }
-
-    public boolean canOfferRewarded(String adUnitId, String placement) {
-        MengineAppLovinRewarded rewarded = m_rewardeds.get(adUnitId);
-
-        if (rewarded == null) {
-            this.assertionError("not found rewarded: %s", adUnitId);
-
-            return false;
-        }
-
-        if (rewarded.canOfferRewarded(placement) == false) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public boolean canYouShowRewarded(String adUnitId, String placement) {
-        MengineAppLovinRewarded rewarded = m_rewardeds.get(adUnitId);
-
-        if (rewarded == null) {
-            this.assertionError("not found rewarded: %s", adUnitId);
-
-            return false;
-        }
-
-        if (rewarded.canYouShowRewarded(placement) == false) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public boolean showRewarded(String adUnitId, String placement) {
-        MengineAppLovinRewarded rewarded = m_rewardeds.get(adUnitId);
-
-        if (rewarded == null) {
-            this.assertionError("not found rewarded: %s", adUnitId);
-
-            return false;
-        }
-
-        this.logMessage("showRewarded adUnitId: %s placement: %s"
-            , adUnitId
+        this.logMessage("showInterstitial placement: %s"
             , placement
         );
 
         MengineActivity activity = this.getMengineActivity();
 
-        if (rewarded.showRewarded(activity, placement) == false) {
+        if (m_interstitialAd.showInterstitial(activity, placement) == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean hasRewarded() {
+        if (m_rewardedAd == null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean canOfferRewarded(String placement) {
+        if (m_rewardedAd == null) {
+            this.assertionError("not found rewarded placement: %s"
+                , placement
+            );
+
+            return false;
+        }
+
+        if (m_rewardedAd.canOfferRewarded(placement) == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean canYouShowRewarded(String placement) {
+        if (m_rewardedAd == null) {
+            this.assertionError("not found rewarded placement: %s"
+                , placement
+            );
+
+            return false;
+        }
+
+        if (m_rewardedAd.canYouShowRewarded(placement) == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean showRewarded(String placement) {
+        if (m_rewardedAd == null) {
+            this.assertionError("not found rewarded placement: %s"
+                , placement
+            );
+
+            return false;
+        }
+
+        this.logMessage("showRewarded placement: %s"
+            , placement
+        );
+
+        MengineActivity activity = this.getMengineActivity();
+
+        if (m_rewardedAd.showRewarded(activity, placement) == false) {
             return false;
         }
 

@@ -196,6 +196,7 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
         m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.AD_IMPRESSION, params);
     }
 
+    @Override
     public void onMengineTransparencyConsent(@NonNull MengineApplication application, MengineTransparencyConsentParam tcParam) {
         if (m_firebaseAnalytics == null) {
             return;

@@ -35,6 +35,10 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
+import com.google.common.base.Splitter;
+import com.google.errorprone.annotations.FormatMethod;
+import com.google.errorprone.annotations.FormatString;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,9 +60,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -116,8 +121,7 @@ public class MengineUtils {
         return clazz;
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T> T newInstance(String TAG, String name, boolean required, Object ... args) {
+    public static Object newInstance(String TAG, String name, boolean required, Object ... args) {
         Class<?> clazz = MengineUtils.getClazz(TAG, name, required);
 
         if (clazz == null) {
@@ -126,12 +130,12 @@ public class MengineUtils {
 
         try {
             Class<?>[] parameterTypes = Arrays.stream(args)
-                    .map(Object::getClass)
-                    .toArray(Class<?>[]::new);
+                .map(Object::getClass)
+                .toArray(Class<?>[]::new);
 
-            Constructor<?> ctr = clazz.getConstructor(parameterTypes);
+            Constructor<?> ctr = clazz.getDeclaredConstructor(parameterTypes);
 
-            T ob = (T)ctr.newInstance(args);
+            Object ob = ctr.newInstance(args);
 
             return ob;
         } catch (final NoSuchMethodException e) {
@@ -470,13 +474,13 @@ public class MengineUtils {
     }
 
     public static String getLastPathComponent(String filePath) {
-        String[] segments = filePath.split("/");
+        List<String> segments = Splitter.on('/').splitToList(filePath);
 
-        if (segments.length == 0) {
+        if (segments.isEmpty() == true) {
             return "";
         }
 
-        String lastPathComponent = segments[segments.length - 1];
+        String lastPathComponent = segments.getLast();
 
         return lastPathComponent;
     }
@@ -525,11 +529,17 @@ public class MengineUtils {
     }
 
     public static String getDateFormat(long timestamp, String format) {
-        SimpleDateFormat df = new SimpleDateFormat(format, Locale.US);
-        Date date = new Date(timestamp);
-        String s = df.format(date);
+        Instant instant = Instant.ofEpochMilli(timestamp);
 
-        return s;
+        ZoneId zone = ZoneId.systemDefault();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format)
+            .withLocale(Locale.US)
+            .withZone(zone);
+
+        String formattedDate = formatter.format(instant);
+
+        return formattedDate;
     }
 
     public static String getThrowableStackTrace(Throwable e) {
@@ -558,7 +568,7 @@ public class MengineUtils {
             return null;
         }
 
-        for(ActivityManager.RunningAppProcessInfo info : infos) {
+        for (ActivityManager.RunningAppProcessInfo info : infos) {
             if (info.pid != mypid) {
                 continue;
             }
@@ -607,7 +617,8 @@ public class MengineUtils {
         return true;
     }
 
-    public static void showToast(@NonNull Activity activity, String format, Object ... args) {
+    @FormatMethod
+    public static void showToast(@NonNull Activity activity, @FormatString String format, Object ... args) {
         activity.runOnUiThread(() -> {
             String message = MengineLog.buildTotalMsg(format, args);
 
@@ -617,7 +628,8 @@ public class MengineUtils {
         });
     }
 
-    public static void showOkAlertDialog(@NonNull Activity activity, Runnable ok, String title, String format, Object ... args) {
+    @FormatMethod
+    public static void showOkAlertDialog(@NonNull Activity activity, Runnable ok, String title, @FormatString String format, Object ... args) {
         activity.runOnUiThread(() -> {
             String message = MengineLog.buildTotalMsg(format, args);
 
@@ -644,7 +656,8 @@ public class MengineUtils {
         });
     }
 
-    public static void showAreYouSureAlertDialog(@NonNull Activity activity, Runnable yes, Runnable cancel, long delayMillis, String title, String format, Object ... args) {
+    @FormatMethod
+    public static void showAreYouSureAlertDialog(@NonNull Activity activity, Runnable yes, Runnable cancel, long delayMillis, String title, @FormatString String format, Object ... args) {
         activity.runOnUiThread(() -> {
             String message = MengineLog.buildTotalMsg(format, args);
 
@@ -699,12 +712,13 @@ public class MengineUtils {
         });
     }
 
-    public static void finishActivityWithAlertDialog(@NonNull Activity activity, String format, Object... args) {
+    @FormatMethod
+    public static void finishActivityWithAlertDialog(@NonNull Activity activity, String title, @FormatString String format, Object ... args) {
         MengineLog.logErrorException(TAG, format, args);
 
         MengineUtils.showOkAlertDialog(activity, () -> {
             activity.finishAndRemoveTask();
-        }, "Mengine", format, args);
+        }, title, format, args);
     }
 
     public static void sleep(long millis) {
@@ -1008,5 +1022,22 @@ public class MengineUtils {
         long usedJVMMemory = runtime.totalMemory() - runtime.freeMemory();
 
         return usedJVMMemory;
+    }
+
+    @FormatMethod
+    public static void throwAssertionError(MengineApplication application, String title, Throwable throwable, @FormatString String format, Object ... args) {
+        String message = MengineLog.buildTotalMsg(format, args);
+
+        if (application == null) {
+            throw new RuntimeException(message, throwable);
+        }
+
+        MengineActivity activity = application.getMengineActivity();
+
+        if (activity == null) {
+            throw new RuntimeException(message, throwable);
+        }
+
+        MengineUtils.finishActivityWithAlertDialog(activity, "AssertionError", "%s", message);
     }
 }

@@ -29,10 +29,14 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.google.errorprone.annotations.FormatMethod;
+import com.google.errorprone.annotations.FormatString;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -199,8 +203,9 @@ public class MengineActivity extends AppCompatActivity {
         return m_surfaceView;
     }
 
-    protected void finishWithAlertDialog(String format, Object... args) {
-        MengineUtils.finishActivityWithAlertDialog(this, format, args);
+    @FormatMethod
+    protected void finishWithAlertDialog(@FormatString String format, Object ... args) {
+        MengineUtils.finishActivityWithAlertDialog(this, "MengineActivity", format, args);
     }
 
     public MengineTransparencyConsentParam makeTransparencyConsentParam() {
@@ -273,7 +278,7 @@ public class MengineActivity extends AppCompatActivity {
                 .addParameterString("reason", invalidInitializeReason)
                 .logAndFlush();
 
-            this.finishWithAlertDialog(invalidInitializeReason);
+            this.finishWithAlertDialog("Activity failed to initialize because the application encountered an error: %s", invalidInitializeReason);
 
             return;
         }
@@ -1047,7 +1052,7 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("python.semaphore", name);
 
-        ArrayList<MengineSemaphoreListener> activate_listeners;
+        List<MengineSemaphoreListener> activate_listeners;
 
         synchronized (m_syncronizationSemaphores) {
             MengineSemaphore semaphore = m_semaphores.get(name);
@@ -1067,7 +1072,7 @@ public class MengineActivity extends AppCompatActivity {
             activate_listeners = semaphore.activate();
         }
 
-        final ArrayList<MengineSemaphoreListener> final_activate_listeners = activate_listeners;
+        final List<MengineSemaphoreListener> final_activate_listeners = activate_listeners;
 
         MengineUtils.performOnMainThread(() -> {
             for (MengineSemaphoreListener listener : final_activate_listeners) {
@@ -1258,7 +1263,7 @@ public class MengineActivity extends AppCompatActivity {
                 return false;
             }
 
-            OutputStreamWriter logFileStream = new OutputStreamWriter(new FileOutputStream(logFile));
+            OutputStreamWriter logFileStream = new OutputStreamWriter(new FileOutputStream(logFile), StandardCharsets.UTF_8);
 
             logFileStream.write("[BEGIN CURRENT LOG]\n\n");
 
@@ -1320,7 +1325,7 @@ public class MengineActivity extends AppCompatActivity {
                 return false;
             }
 
-            OutputStreamWriter oldLogFileStream = new OutputStreamWriter(new FileOutputStream(oldLogFile));
+            OutputStreamWriter oldLogFileStream = new OutputStreamWriter(new FileOutputStream(oldLogFile), StandardCharsets.UTF_8);
 
             oldLogFileStream.write("[BEGIN OLD LOG]\n\n");
 

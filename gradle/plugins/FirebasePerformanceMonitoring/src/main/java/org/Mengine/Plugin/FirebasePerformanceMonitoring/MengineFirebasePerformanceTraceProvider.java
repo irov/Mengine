@@ -19,18 +19,22 @@ class MengineFirebasePerformanceTraceProvider implements MenginePerformanceTrace
         }
     }
 
+    @Override
     public void incrementMetric(String name, long value) {
         m_trace.incrementMetric(name, value);
     }
 
+    @Override
     public void putMetric(String name, long value) {
         m_trace.putMetric(name, value);
     }
 
+    @Override
     public void putAttribute(String name, String value) {
         m_trace.putAttribute(name, value);
     }
 
+    @Override
     public void stop() {
         m_trace.stop();
     }

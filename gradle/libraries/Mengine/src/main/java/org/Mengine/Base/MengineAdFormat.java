@@ -23,7 +23,7 @@ public class MengineAdFormat {
         return m_name;
     }
 
-    @NonNull
+    @Override @NonNull
     public String toString() {
         return m_name;
     }

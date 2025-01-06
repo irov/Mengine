@@ -19,23 +19,25 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         class PythonAppleGameCenterProvider
-            : public PythonCallbackProvider<AppleGameCenterProviderInterface>
+            : public AppleGameCenterProviderInterface
+            , public PythonCallbackProvider
+            , public Factorable
         {
         public:
             PythonAppleGameCenterProvider( const pybind::dict & _cbs, const pybind::args & _args )
-                : PythonCallbackProvider<AppleGameCenterProviderInterface>( _cbs, _args )
+                : PythonCallbackProvider( _cbs, _args )
             {
             }
 
         protected:
             void onAppleGameCenterAuthenticate( bool _successful ) override
             {
-                this->call_cbs( "onAppleGameCenterAuthenticate", _successful );
+                this->call_method( "onAppleGameCenterAuthenticate", _successful );
             }
 
             void onAppleGameCenterSynchronizate( bool _successful ) override
             {
-                this->call_cbs( "onAppleGameCenterSynchronizate", _successful );
+                this->call_method( "onAppleGameCenterSynchronizate", _successful );
             }
         };
         //////////////////////////////////////////////////////////////////////////

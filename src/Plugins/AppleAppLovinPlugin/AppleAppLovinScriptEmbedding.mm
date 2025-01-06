@@ -20,63 +20,65 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         class PythonAppleAppLovinBannerProvider
-            : public PythonCallbackProvider<AppleAppLovinBannerProviderInterface>
+            : public AppleAppLovinBannerProviderInterface
+            , public PythonCallbackProvider
+            , public Factorable
         {
         public:
             PythonAppleAppLovinBannerProvider( const pybind::dict & _cbs, const pybind::args & _args )
-                : PythonCallbackProvider<AppleAppLovinBannerProviderInterface>( _cbs, _args )
+                : PythonCallbackProvider( _cbs, _args )
             {
             }
 
         protected:
             void onAppleAppLovinBannerDidStartAdRequestForAdUnitIdentifier() override
             {
-                this->call_cbs( "onAppleAppLovinBannerDidStartAdRequestForAdUnitIdentifier" );
+                this->call_method( "onAppleAppLovinBannerDidStartAdRequestForAdUnitIdentifier" );
             }
             
             void onAppleAppLovinBannerDidLoadAd() override
             {
-                this->call_cbs( "onAppleAppLovinBannerDidLoadAd" );
+                this->call_method( "onAppleAppLovinBannerDidLoadAd" );
             }
             
             void onAppleAppLovinBannerDidFailToLoadAdForAdUnitIdentifier() override
             {
-                this->call_cbs( "onAppleAppLovinBannerDidFailToLoadAdForAdUnitIdentifier" );
+                this->call_method( "onAppleAppLovinBannerDidFailToLoadAdForAdUnitIdentifier" );
             }
             
             void onAppleAppLovinBannerDidDisplayAd() override
             {
-                this->call_cbs( "onAppleAppLovinBannerDidDisplayAd" );
+                this->call_method( "onAppleAppLovinBannerDidDisplayAd" );
             }
             
             void onAppleAppLovinBannerDidHideAd() override
             {
-                this->call_cbs( "onAppleAppLovinBannerDidHideAd" );
+                this->call_method( "onAppleAppLovinBannerDidHideAd" );
             }
             
             void onAppleAppLovinBannerDidClickAd() override
             {
-                this->call_cbs( "onAppleAppLovinBannerDidClickAd" );
+                this->call_method( "onAppleAppLovinBannerDidClickAd" );
             }
             
             void onAppleAppLovinBannerDidFailToDisplayAd() override
             {
-                this->call_cbs( "onAppleAppLovinBannerDidFailToDisplayAd" );
+                this->call_method( "onAppleAppLovinBannerDidFailToDisplayAd" );
             }
             
             void onAppleAppLovinBannerDidExpandAd() override
             {
-                this->call_cbs( "onAppleAppLovinBannerDidExpandAd" );
+                this->call_method( "onAppleAppLovinBannerDidExpandAd" );
             }
             
             void onAppleAppLovinBannerDidCollapseAd() override
             {
-                this->call_cbs( "onAppleAppLovinBannerDidCollapseAd" );
+                this->call_method( "onAppleAppLovinBannerDidCollapseAd" );
             }
             
             void onAppleAppLovinBannerDidPayRevenueForAd(const Params & _params) override
             {
-                this->call_cbs( "onAppleAppLovinBannerDidPayRevenueForAd", _params );
+                this->call_method( "onAppleAppLovinBannerDidPayRevenueForAd", _params );
             }
         };
         //////////////////////////////////////////////////////////////////////////
@@ -107,53 +109,55 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonAppleAppLovinInterstitialProvider
-            : public PythonCallbackProvider<AppleAppLovinInterstitailProviderInterface>
+            : public AppleAppLovinInterstitailProviderInterface
+            , public PythonCallbackProvider
+            , public Factorable
         {
         public:
             PythonAppleAppLovinInterstitialProvider( const pybind::dict & _cbs, const pybind::args & _args )
-                : PythonCallbackProvider<AppleAppLovinInterstitailProviderInterface>( _cbs, _args )
+                : PythonCallbackProvider( _cbs, _args )
             {
             }
 
         protected:
             void onAppleAppLovinInterstitialDidStartAdRequestForAdUnitIdentifier() override
             {
-                this->call_cbs( "onAppleAppLovinInterstitialDidStartAdRequestForAdUnitIdentifier" );
+                this->call_method( "onAppleAppLovinInterstitialDidStartAdRequestForAdUnitIdentifier" );
             }
             
             void onAppleAppLovinInterstitialDidLoadAd() override
             {
-                this->call_cbs( "onAppleAppLovinInterstitialDidLoadAd" );
+                this->call_method( "onAppleAppLovinInterstitialDidLoadAd" );
             }
             
             void onAppleAppLovinInterstitialDidFailToLoadAdForAdUnitIdentifier() override
             {
-                this->call_cbs( "onAppleAppLovinInterstitialDidFailToLoadAdForAdUnitIdentifier" );
+                this->call_method( "onAppleAppLovinInterstitialDidFailToLoadAdForAdUnitIdentifier" );
             }
             
             void onAppleAppLovinInterstitialDidDisplayAd() override
             {
-                this->call_cbs( "onAppleAppLovinInterstitialDidDisplayAd" );
+                this->call_method( "onAppleAppLovinInterstitialDidDisplayAd" );
             }
             
             void onAppleAppLovinInterstitialDidClickAd() override
             {
-                this->call_cbs( "onAppleAppLovinInterstitialDidClickAd" );
+                this->call_method( "onAppleAppLovinInterstitialDidClickAd" );
             }
             
             void onAppleAppLovinInterstitialDidHideAd() override
             {
-                this->call_cbs( "onAppleAppLovinInterstitialDidHideAd" );
+                this->call_method( "onAppleAppLovinInterstitialDidHideAd" );
             }
             
             void onAppleAppLovinInterstitialDidFailToDisplayAd() override
             {
-                this->call_cbs( "onAppleAppLovinInterstitialDidFailToDisplayAd" );
+                this->call_method( "onAppleAppLovinInterstitialDidFailToDisplayAd" );
             }
             
             void onAppleAppLovinInterstitialDidPayRevenueForAd( const Params & _params ) override
             {
-                this->call_cbs( "onAppleAppLovinInterstitialDidPayRevenueForAd", _params );
+                this->call_method( "onAppleAppLovinInterstitialDidPayRevenueForAd", _params );
             }
         };
         //////////////////////////////////////////////////////////////////////////
@@ -168,68 +172,70 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonAppleAppLovinRewardedProvider
-            : public PythonCallbackProvider<AppleAppLovinRewardedProviderInterface>
+            : public AppleAppLovinRewardedProviderInterface
+            , public PythonCallbackProvider
+            , public Factorable
         {
         public:
             PythonAppleAppLovinRewardedProvider( const pybind::dict & _cbs, const pybind::args & _args )
-                : PythonCallbackProvider<AppleAppLovinRewardedProviderInterface>( _cbs, _args )
+                : PythonCallbackProvider( _cbs, _args )
             {
             }
 
         protected:
             void onAppleAppLovinRewardedDidStartAdRequestForAdUnitIdentifier() override
             {
-                this->call_cbs( "onAppleAppLovinRewardedDidStartAdRequestForAdUnitIdentifier" );
+                this->call_method( "onAppleAppLovinRewardedDidStartAdRequestForAdUnitIdentifier" );
             }
             
             void onAppleAppLovinRewardedDidLoadAd() override
             {
-                this->call_cbs( "onAppleAppLovinRewardedDidLoadAd" );
+                this->call_method( "onAppleAppLovinRewardedDidLoadAd" );
             }
             
             void onAppleAppLovinRewardedDidFailToLoadAdForAdUnitIdentifier() override
             {
-                this->call_cbs( "onAppleAppLovinRewardedDidFailToLoadAdForAdUnitIdentifier" );
+                this->call_method( "onAppleAppLovinRewardedDidFailToLoadAdForAdUnitIdentifier" );
             }
             
             void onAppleAppLovinRewardedDidDisplayAd() override
             {
-                this->call_cbs( "onAppleAppLovinRewardedDidDisplayAd" );
+                this->call_method( "onAppleAppLovinRewardedDidDisplayAd" );
             }
             
             void onAppleAppLovinRewardedDidClickAd() override
             {
-                this->call_cbs( "onAppleAppLovinRewardedDidClickAd" );
+                this->call_method( "onAppleAppLovinRewardedDidClickAd" );
             }
             
             void onAppleAppLovinRewardedDidHideAd() override
             {
-                this->call_cbs( "onAppleAppLovinRewardedDidHideAd" );
+                this->call_method( "onAppleAppLovinRewardedDidHideAd" );
             }
             
             void onAppleAppLovinRewardedDidFailToDisplayAd() override
             {
-                this->call_cbs( "onAppleAppLovinRewardedDidFailToDisplayAd" );
+                this->call_method( "onAppleAppLovinRewardedDidFailToDisplayAd" );
             }
             
             void onAppleAppLovinRewardedDidStartRewardedVideoForAd() override
             {
-                this->call_cbs( "onAppleAppLovinRewardedDidStartRewardedVideoForAd" );
+                this->call_method( "onAppleAppLovinRewardedDidStartRewardedVideoForAd" );
             }
             
             void onAppleAppLovinRewardedDidCompleteRewardedVideoForAd() override
             {
-                this->call_cbs( "onAppleAppLovinRewardedDidCompleteRewardedVideoForAd" );
+                this->call_method( "onAppleAppLovinRewardedDidCompleteRewardedVideoForAd" );
             }
             
             void onAppleAppLovinRewardedDidRewardUserForAd() override
             {
-                this->call_cbs( "onAppleAppLovinRewardedDidRewardUserForAd" );
+                this->call_method( "onAppleAppLovinRewardedDidRewardUserForAd" );
             }
             
             void onAppleAppLovinRewardedDidPayRevenueForAd( const Params & _params ) override
             {
-                this->call_cbs( "onAppleAppLovinRewardedDidPayRevenueForAd", _params );
+                this->call_method( "onAppleAppLovinRewardedDidPayRevenueForAd", _params );
             }
         };
         //////////////////////////////////////////////////////////////////////////
@@ -244,11 +250,13 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonAppleAppLovinConsentFlowProvider
-            : public PythonCallbackProvider<AppleAppLovinConsentFlowProviderInterface>
+            : public AppleAppLovinConsentFlowProviderInterface
+            , public PythonCallbackProvider
+            , public Factorable
         {
         public:
             PythonAppleAppLovinConsentFlowProvider( const pybind::dict & _cbs, const pybind::args & _args )
-                : PythonCallbackProvider<AppleAppLovinConsentFlowProviderInterface>( _cbs, _args )
+                : PythonCallbackProvider( _cbs, _args )
             {
             }
             
@@ -259,12 +267,12 @@ namespace Mengine
         protected:
             void onAppleAppLovinConsentFlowShowSuccessful() override
             {
-                this->call_cbs( "onAppleAppLovinConsentFlowShowSuccessful" );
+                this->call_method( "onAppleAppLovinConsentFlowShowSuccessful" );
             }
             
             void onAppleAppLovinConsentFlowShowFailed() override
             {
-                this->call_cbs( "onAppleAppLovinConsentFlowShowFailed" );
+                this->call_method( "onAppleAppLovinConsentFlowShowFailed" );
             }
         };
         //////////////////////////////////////////////////////////////////////////

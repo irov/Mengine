@@ -290,6 +290,10 @@
 #define MENGINE_INLINE inline
 #endif
 
+#ifndef MENGINE_NODISCARD
+#define MENGINE_NODISCARD [[nodiscard]]
+#endif
+
 #ifndef MENGINE_THREAD_LOCAL
 #   ifndef MENGINE_PLATFORM_IOS
 #       define MENGINE_THREAD_LOCAL thread_local

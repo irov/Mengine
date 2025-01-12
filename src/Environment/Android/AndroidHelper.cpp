@@ -292,13 +292,66 @@ namespace Mengine
 
             jobject value_jobject = _jenv->NewObject( jclass_HashMap, HashMap_constructor, (jint)_count );
 
-            MENGINE_ASSERTION( value_jobject != nullptr, "invalid create HashMap '%d'"
+            MENGINE_ASSERTION( value_jobject != nullptr, "invalid create HashMap count: %d"
                 , _count
             );
 
             _jenv->DeleteLocalRef( jclass_HashMap );
 
             return value_jobject;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        MENGINE_NODISCARD jobject AndroidMakeJObjectHashMap( JNIEnv * _jenv, const Params & _params )
+        {
+            Params::size_type size = _params.size();
+
+            jobject jmap = Helper::AndroidMakeJObjectHashMap( _jenv, size );
+
+            for( auto && [key, value] : _params ) {
+                jobject jkey = Helper::AndroidMakeJObjectString(_jenv, key);
+
+                Helper::visit(value, [_jenv, jmap, jkey](const ParamNull &_element) {
+                    MENGINE_UNUSED(_element);
+
+                    Helper::AndroidPutJObjectMap(_jenv, jmap, jkey, nullptr);
+                }, [_jenv, jmap, jkey](const ParamBool &_element) {
+                    jobject jvalue = Helper::AndroidMakeJObjectBoolean(_jenv, _element);
+                    Helper::AndroidPutJObjectMap(_jenv, jmap, jkey, jvalue);
+                    _jenv->DeleteLocalRef(jvalue);
+                }, [_jenv, jmap, jkey](const ParamInteger &_element) {
+                    jobject jvalue = Helper::AndroidMakeJObjectInteger(_jenv, _element);
+                    Helper::AndroidPutJObjectMap(_jenv, jmap, jkey, jvalue);
+                    _jenv->DeleteLocalRef(jvalue);
+                }, [_jenv, jmap, jkey](const ParamDouble &_element) {
+                    jobject jvalue = Helper::AndroidMakeJObjectDouble(_jenv, _element);
+                    Helper::AndroidPutJObjectMap(_jenv, jmap, jkey, jvalue);
+                    _jenv->DeleteLocalRef(jvalue);
+                }, [_jenv, jmap, jkey](const ParamString &_element) {
+                    jobject jvalue = Helper::AndroidMakeJObjectString(_jenv, _element);
+                    Helper::AndroidPutJObjectMap(_jenv, jmap, jkey, jvalue);
+                    _jenv->DeleteLocalRef(jvalue);
+                }, [_jenv, jmap, jkey](const ParamWString &_element) {
+                    MENGINE_UNUSED(_element);
+
+                    MENGINE_ASSERTION_FATAL(false, "not support ParamWString");
+                }, [_jenv, jmap, jkey](const ParamConstString &_element) {
+                    jobject jvalue = Helper::AndroidMakeJObjectString(_jenv, _element);
+                    Helper::AndroidPutJObjectMap(_jenv, jmap, jkey, jvalue);
+                    _jenv->DeleteLocalRef(jvalue);
+                }, [_jenv, jmap, jkey](const ParamFilePath &_element) {
+                    jobject jvalue = Helper::AndroidMakeJObjectString(_jenv, _element);
+                    Helper::AndroidPutJObjectMap(_jenv, jmap, jkey, jvalue);
+                    _jenv->DeleteLocalRef(jvalue);
+                }, [_jenv, jmap, jkey](const ParamFactorablePtr &_element) {
+                    MENGINE_UNUSED(_element);
+
+                    MENGINE_ASSERTION_FATAL(false, "not support ParamFactorablePtr");
+                });
+
+                _jenv->DeleteLocalRef(jkey);
+            }
+
+            return jmap;
         }
         //////////////////////////////////////////////////////////////////////////
         void * AndroidGetJObjectPointer( JNIEnv * _jenv, jobject _pointer )
@@ -327,7 +380,7 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        jobject AndroidPutJObjectMap( JNIEnv * _jenv, jobject _map, jobject _key, jobject _value )
+        void AndroidPutJObjectMap( JNIEnv * _jenv, jobject _map, jobject _key, jobject _value )
         {
             jclass jclass_Map = _jenv->FindClass( "java/util/Map" );
 
@@ -335,13 +388,12 @@ namespace Mengine
 
             MENGINE_ASSERTION( Map_put != nullptr, "invalid get android method 'java/util/Map [put] (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;'" );
 
-            jobject result = _jenv->CallObjectMethod( _map, Map_put, _key, _value );
+            jobject jresult = _jenv->CallObjectMethod( _map, Map_put, _key, _value );
 
             Helper::AndroidEnvExceptionCheck( _jenv );
 
+            _jenv->DeleteLocalRef( jresult );
             _jenv->DeleteLocalRef( jclass_Map );
-
-            return result;
         }
         //////////////////////////////////////////////////////////////////////////
         jobject AndroidGetJObjectMap( JNIEnv * _jenv, jobject _map, jobject _key )

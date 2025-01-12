@@ -6,8 +6,7 @@
 
 #include "PythonAndroidSemaphoreListener.h"
 #include "AndroidNativePythonInterface.h"
-#include "AndroidNativePythonFunctorVoid.h"
-#include "AndroidNativePythonFunctorBoolean.h"
+#include "AndroidNativePythonCallback.h"
 
 #include "Kernel/ScriptablePrototypeGenerator.h"
 
@@ -111,30 +110,16 @@ namespace Mengine
         pybind::def_function_args( _kernel, "androidStringMethod", &Detail::AndroidNativePythonService_androidStringMethod );
         pybind::def_function_args( _kernel, "androidObjectMethod", &Detail::AndroidNativePythonService_androidObjectMethod );
 
-        pybind::interface_<AndroidNativePythonFunctor, pybind::bases<Scriptable>>( _kernel, "AndroidNativePythonFunctor" )
-            ;
-
-        pybind::interface_<AndroidNativePythonFunctorVoid, pybind::bases<AndroidNativePythonFunctor>>( _kernel, "AndroidNativePythonFunctorVoid" )
-            .def_call( &AndroidNativePythonFunctorVoid::call )
-            ;
-
-        pybind::interface_<AndroidNativePythonFunctorBoolean, pybind::bases<AndroidNativePythonFunctor>>( _kernel, "AndroidNativePythonFunctorBoolean" )
-            .def_call( &AndroidNativePythonFunctorBoolean::call )
+        pybind::interface_<AndroidNativePythonCallback, pybind::bases<Scriptable>>( _kernel, "AndroidNativePythonCallback" )
+            .def_call( &AndroidNativePythonCallback::call )
             ;
 
         pybind::def_function_args( _kernel, "waitSemaphore", &Detail::AndroidNativePythonService_waitSemaphore );
 
-        Helper::registerScriptWrapping<AndroidNativePythonFunctorVoid>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrapping<AndroidNativePythonFunctorBoolean>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<AndroidNativePythonCallback>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "AndroidNativePython" ), STRINGIZE_STRING_LOCAL( "AndroidNativePythonFunctorVoid" ), Helper::makeFactorableUnique<ScriptablePrototypeGenerator<AndroidNativePythonFunctorVoid, 32>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
-        {
-            return false;
-        }
-
-        if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "AndroidNativePython" ), STRINGIZE_STRING_LOCAL( "AndroidNativePythonFunctorBoolean" ), Helper::makeFactorableUnique<ScriptablePrototypeGenerator<AndroidNativePythonFunctorBoolean, 32>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "AndroidNativePython" ), STRINGIZE_STRING_LOCAL( "AndroidNativePythonCallback" ), Helper::makeFactorableUnique<ScriptablePrototypeGenerator<AndroidNativePythonCallback, 32>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
@@ -144,17 +129,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
-        _kernel->remove_scope<AndroidNativePythonFunctorVoid>();
-        _kernel->remove_scope<AndroidNativePythonFunctorBoolean>();
+        _kernel->remove_scope<AndroidNativePythonCallback>();
 
-        Helper::unregisterScriptWrapping<AndroidNativePythonFunctorVoid>();
-        Helper::unregisterScriptWrapping<AndroidNativePythonFunctorBoolean>();
+        Helper::unregisterScriptWrapping<AndroidNativePythonCallback>();
 
         PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "AndroidNativePython" ), STRINGIZE_STRING_LOCAL( "AndroidNativePythonFunctorVoid" ), nullptr );
-
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "AndroidNativePython" ), STRINGIZE_STRING_LOCAL( "AndroidNativePythonFunctorBoolean" ), nullptr );
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "AndroidNativePython" ), STRINGIZE_STRING_LOCAL( "AndroidNativePythonCallback" ), nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
 }

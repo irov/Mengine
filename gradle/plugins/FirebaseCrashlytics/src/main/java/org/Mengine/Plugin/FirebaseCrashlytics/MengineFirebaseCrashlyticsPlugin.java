@@ -58,12 +58,14 @@ public class MengineFirebaseCrashlyticsPlugin extends MengineService implements 
             }
         }
 
-        boolean isFirebaseCrashlyticsForceCrash = this.hasOption("firebase.crashlytics.forcecrash");
+        boolean isCrashlyticsForceCrash = this.hasOption("firebase.crashlytics.forcecrash");
 
-        if (isFirebaseCrashlyticsForceCrash == true) {
+        if (isCrashlyticsForceCrash == true) {
+            long firebaseCrashlyticsForceCrashDelay = this.getOptionValueLong("firebase.crashlytics.forcecrash.delay", 5000);
+
             MengineUtils.performOnMainThreadDelayed(() -> {
                 this.testCrash();
-            }, 5000L);
+            }, firebaseCrashlyticsForceCrashDelay);
         }
     }
 

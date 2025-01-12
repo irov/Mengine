@@ -52,7 +52,7 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
 
         m_loadBannerStatus = ELoadAdStatus.ADLOAD_PROCESS;
 
-        plugin.logMessage("Amazon try load banner [%d:%d] [%s]"
+        plugin.logMessage("Amazon try load banner: %d:%d slotId: %s"
             , width
             , height
             , MengineAppLovinPlugin_AmazonBannerSlotId
@@ -71,7 +71,7 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
 
                 m_loadBannerStatus = ELoadAdStatus.ADLOAD_FAILURE;
 
-                plugin.logError("[ERROR] Amazon failure load banner [%s] code [%s] message: %s"
+                plugin.logError("[ERROR] Amazon failure load banner slotId: %s code: %s message: %s"
                     , MengineAppLovinPlugin_AmazonBannerSlotId
                     , adError.getCode()
                     , adError.getMessage()
@@ -90,7 +90,7 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
 
                 m_loadBannerStatus = ELoadAdStatus.ADLOAD_SUCCESSFUL;
 
-                plugin.logMessage("Amazon successful load banner [%s]"
+                plugin.logMessage("Amazon successful load banner slotId: %s"
                     , MengineAppLovinPlugin_AmazonBannerSlotId
                 );
 
@@ -108,7 +108,7 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
 
                 m_loadInterstitialStatus = ELoadAdStatus.ADLOAD_PROCESS;
 
-                plugin.logMessage("Amazon try load interstitial [%s]"
+                plugin.logMessage("Amazon try load interstitial slotId: %s"
                     , MengineAppLovinPlugin_AmazonInterstitialSlotId
                 );
 
@@ -123,7 +123,7 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
 
                         m_loadInterstitialStatus = ELoadAdStatus.ADLOAD_FAILURE;
 
-                        plugin.logError("[ERROR] Amazon failure load interstitial [%s] code [%s] message: %s"
+                        plugin.logError("[ERROR] Amazon failure load interstitial slotId: %s code: %s message: %s"
                             , MengineAppLovinPlugin_AmazonInterstitialSlotId
                             , adError.getCode()
                             , adError.getMessage()
@@ -142,7 +142,7 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
 
                         m_loadInterstitialStatus = ELoadAdStatus.ADLOAD_SUCCESSFUL;
 
-                        plugin.logMessage("Amazon successful load interstitial [%s]"
+                        plugin.logMessage("Amazon successful load interstitial slotId: %s"
                             , MengineAppLovinPlugin_AmazonInterstitialSlotId
                         );
 
@@ -168,7 +168,7 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
 
                 m_loadRewardedStatus = ELoadAdStatus.ADLOAD_PROCESS;
 
-                plugin.logMessage("Amazon try load rewarded [%s]"
+                plugin.logMessage("Amazon try load rewarded slotId: %s"
                     , MengineAppLovinPlugin_AmazonRewardedSlotId
                 );
 
@@ -188,7 +188,7 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
 
                         m_loadRewardedStatus = ELoadAdStatus.ADLOAD_FAILURE;
 
-                        plugin.logError("[ERROR] Amazon failure load rewarded [%s] code [%s] message: %s"
+                        plugin.logError("[ERROR] Amazon failure load rewarded slotId: %s code: %s message: %s"
                             , MengineAppLovinPlugin_AmazonRewardedSlotId
                             , adError.getCode()
                             , adError.getMessage()
@@ -207,7 +207,7 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
 
                         m_loadRewardedStatus = ELoadAdStatus.ADLOAD_SUCCESSFUL;
 
-                        plugin.logMessage("Amazon successful load rewarded [%s]"
+                        plugin.logMessage("Amazon successful load rewarded slotId: %s"
                             , MengineAppLovinPlugin_AmazonRewardedSlotId
                         );
 

@@ -1060,19 +1060,19 @@ namespace Mengine
         PLATFORM_SERVICE()
             ->initializeFileService();
 
-        LOGGER_INFO( "bootstrapper", "debug mode [%s]", Helper::isDebugMode() == true ? "ON" : "OFF" );
-        LOGGER_INFO( "bootstrapper", "development mode [%s]", Helper::isDevelopmentMode() == true ? "ON" : "OFF" );
-        LOGGER_INFO( "bootstrapper", "build publish [%s]", Helper::isBuildPublish() == true ? "ON" : "OFF" );
-        LOGGER_INFO( "bootstrapper", "master release [%s]", Helper::isMasterRelease() == true ? "ON" : "OFF" );
+        LOGGER_INFO( "bootstrapper", "debug mode: %s", Helper::isDebugMode() == true ? "ON" : "OFF" );
+        LOGGER_INFO( "bootstrapper", "development mode: %s", Helper::isDevelopmentMode() == true ? "ON" : "OFF" );
+        LOGGER_INFO( "bootstrapper", "build publish: %s", Helper::isBuildPublish() == true ? "ON" : "OFF" );
+        LOGGER_INFO( "bootstrapper", "master release: %s", Helper::isMasterRelease() == true ? "ON" : "OFF" );
 
 #if defined(MENGINE_ASSERTION_DEBUG_ENABLE)
-        LOGGER_INFO( "bootstrapper", "enable assertion debug [ON]" );
+        LOGGER_INFO( "bootstrapper", "enable assertion debug: ON" );
 #else
         LOGGER_INFO( "bootstrapper", "enable assertion debug [OFF]" );
 #endif
 
 #if defined(MENGINE_LOGGER_ANALYZE_ENABLE)
-        LOGGER_INFO( "bootstrapper", "enable logger analyze [ON]" );
+        LOGGER_INFO( "bootstrapper", "enable logger analyze: ON" );
 #else
         LOGGER_INFO( "bootstrapper", "enable logger analyze [OFF]" );
 #endif
@@ -1080,11 +1080,11 @@ namespace Mengine
 #if defined(MENGINE_ALLOCATOR_DEBUG_ENABLE)
         LOGGER_INFO( "bootstrapper", "enable allocator debug [ON]" );
 #else
-        LOGGER_INFO( "bootstrapper", "enable allocator debug [OFF]" );
+        LOGGER_INFO( "bootstrapper", "enable allocator debug: OFF" );
 #endif
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
-        LOGGER_INFO( "bootstrapper", "enable document debug [ON]" );
+        LOGGER_INFO( "bootstrapper", "enable document debug: ON" );
 #else
         LOGGER_INFO( "bootstrapper", "enable document debug [OFF]" );
 #endif

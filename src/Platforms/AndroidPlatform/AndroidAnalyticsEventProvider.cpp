@@ -87,9 +87,8 @@ namespace Mengine
                     }break;
                 }
 
-                jobject result_jobject = Helper::AndroidPutJObjectMap( jenv, parameters_jobject, name_jvalue, parameter_jobject );
+                Helper::AndroidPutJObjectMap( jenv, parameters_jobject, name_jvalue, parameter_jobject );
 
-                jenv->DeleteLocalRef( result_jobject );
                 jenv->DeleteLocalRef( parameter_jobject );
             });
 

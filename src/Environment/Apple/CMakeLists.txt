@@ -37,6 +37,9 @@ src
     
     AppleNSLogger.h
     AppleNSLogger.mm
+    
+    AppleFactorablePtr.h
+    AppleFactorablePtr.mm
 )
 
 ADD_MENGINE_APPLE_LIBRARY(Environment)

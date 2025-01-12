@@ -225,7 +225,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
                 String name = networkInfo.getName();
                 String adapterVersion = networkInfo.getAdapterVersion();
 
-                this.logMessage("available mediated network: %s [%s]"
+                this.logMessage("available mediated network: %s adapter version: %s"
                     , name
                     , adapterVersion
                 );
@@ -623,7 +623,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
 
         cmpService.showCmpForExistingUser(activity, error -> {
             if (error != null) {
-                this.logError("Failed to show consent dialog error: %s [%s] cmp: %s [%d]"
+                this.logError("Failed to show consent dialog error: %s code: %s cmp message: %s code: %d"
                     , error.getMessage()
                     , error.getCode().toString()
                     , error.getCmpMessage()

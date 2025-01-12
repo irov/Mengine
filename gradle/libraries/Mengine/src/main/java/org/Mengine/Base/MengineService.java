@@ -70,6 +70,24 @@ public class MengineService implements MengineServiceInterface {
         return value;
     }
 
+    public int getOptionValueInteger(String option, int defaultValue) {
+        int value = m_application.getOptionValueInteger(option, defaultValue);
+
+        return value;
+    }
+
+    public long getOptionValueLong(String option, long defaultValue) {
+        long value = m_application.getOptionValueLong(option, defaultValue);
+
+        return value;
+    }
+
+    public String getOptionValueString(String option, String defaultValue) {
+        String value = m_application.getOptionValueString(option, defaultValue);
+
+        return value;
+    }
+
     @FormatMethod
     protected void invalidInitialize(@FormatString String format, Object ... args) throws MengineServiceInvalidInitializeException {
         String message = MengineLog.buildTotalMsg(format, args);

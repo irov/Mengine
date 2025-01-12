@@ -44,14 +44,14 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Def
 
         m_appOpenAd = appOpenAd;
 
-        ProcessLifecycleOwner.get().getLifecycle().addObserver( this );
+        ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
 
         this.loadAd();
     }
 
     @Override
     public void finalize(@NonNull MengineApplication application) {
-        ProcessLifecycleOwner.get().getLifecycle().removeObserver( this );
+        ProcessLifecycleOwner.get().getLifecycle().removeObserver( this);
 
         m_appOpenAd.destroy();
         m_appOpenAd = null;
@@ -123,8 +123,6 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Def
             .log();
 
         m_plugin.setState("applovin.appopen.state." + m_adUnitId, "request_started");
-
-        m_plugin.pythonCall("onAppLovinAppOpenOnAdRequestStarted");
     }
 
     @Override
@@ -138,8 +136,6 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Def
         m_plugin.setState("applovin.appopen.state." + m_adUnitId, "loaded." + ad.getNetworkName());
 
         m_requestAttempt = 0;
-
-        m_plugin.pythonCall("onAppLovinAppOpenOnAdLoaded");
     }
 
     @Override
@@ -154,8 +150,6 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Def
             .log();
 
         m_plugin.setState("applovin.appopen.state." + m_adUnitId, "displayed." + placement + "." + ad.getNetworkName());
-
-        m_plugin.pythonCall("onAppLovinAppOpenOnAdDisplayed", placement);
     }
 
     @Override
@@ -170,8 +164,6 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Def
             .log();
 
         m_plugin.setState("applovin.appopen.state." + m_adUnitId, "hidden." + placement + "." + ad.getNetworkName());
-
-        m_plugin.pythonCall("onAppLovinAppOpenOnAdHidden", placement);
 
         MengineUtils.performOnMainThread(() -> {
             this.loadAd();
@@ -190,8 +182,6 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Def
             .log();
 
         m_plugin.setState("applovin.appopen.state." + m_adUnitId, "clicked." + placement + "." + ad.getNetworkName());
-
-        m_plugin.pythonCall("onAppLovinAppOpenOnAdClicked", placement);
     }
 
     @Override
@@ -206,8 +196,6 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Def
             .log();
 
         m_plugin.setState("applovin.appopen.state." + m_adUnitId, "load_failed." + errorCode);
-
-        m_plugin.pythonCall("onAppLovinAppOpenOnAdLoadFailed", Map.of("error_code", errorCode));
 
         this.retryLoadAd();
     }
@@ -228,8 +216,6 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Def
             .log();
 
         m_plugin.setState("applovin.appopen.state." + m_adUnitId, "display_failed." + placement + "." + ad.getNetworkName() + "." + errorCode);
-
-        m_plugin.pythonCall("onAppLovinAppOpenOnAdDisplayFailed", placement, Map.of("error_code", errorCode));
 
         MengineUtils.performOnMainThread(() -> {
             this.loadAd();
@@ -253,7 +239,7 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Def
 
         double revenue = ad.getRevenue();
 
-        m_plugin.pythonCall("onAppLovinAppOpenOnAdRevenuePaid", placement, Map.of("revenue", revenue));
+        m_plugin.pythonCall("onAppLovinAppOpenRevenuePaid", Map.of("placement", placement, "revenue", revenue));
     }
 
     @Override

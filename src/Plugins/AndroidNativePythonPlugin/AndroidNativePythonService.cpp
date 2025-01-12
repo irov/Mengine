@@ -16,8 +16,6 @@
 #include "Environment/Android/AndroidApplicationHelper.h"
 
 #include "AndroidNativePythonHelper.h"
-#include "AndroidNativePythonFunctorVoid.h"
-#include "AndroidNativePythonFunctorBoolean.h"
 #include "AndroidNativePythonScriptEmbedding.h"
 
 #include "Kernel/FactorableUnique.h"
@@ -111,9 +109,6 @@ namespace Mengine
 
         m_kernel = kernel;
 
-        m_factoryAndroidNativePythonFunctorVoid = Helper::makeFactoryPool<AndroidNativePythonFunctorVoid, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryAndroidNativePythonFunctorBoolean = Helper::makeFactoryPool<AndroidNativePythonFunctorBoolean, 16>( MENGINE_DOCUMENT_FACTORABLE );
-
         m_callbacksMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
         m_pluginsMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -140,12 +135,6 @@ namespace Mengine
         }
 
         m_plugins.clear();
-
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAndroidNativePythonFunctorVoid );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAndroidNativePythonFunctorBoolean );
-
-        m_factoryAndroidNativePythonFunctorVoid = nullptr;
-        m_factoryAndroidNativePythonFunctorBoolean = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativePythonService::hasPythonMethod( const ConstString & _plugin, const ConstString & _method ) const

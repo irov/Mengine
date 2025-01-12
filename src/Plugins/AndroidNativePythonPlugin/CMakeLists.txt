@@ -19,12 +19,8 @@ src
     PythonAndroidSemaphoreListener.h
     PythonAndroidSemaphoreListener.cpp
     
-    AndroidNativePythonFunctor.h
-    AndroidNativePythonFunctor.cpp
-    AndroidNativePythonFunctorVoid.h
-    AndroidNativePythonFunctorVoid.cpp
-    AndroidNativePythonFunctorBoolean.h
-    AndroidNativePythonFunctorBoolean.cpp
+    AndroidNativePythonCallback.h
+    AndroidNativePythonCallback.cpp
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)

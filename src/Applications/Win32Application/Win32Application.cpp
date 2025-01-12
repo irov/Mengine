@@ -353,7 +353,7 @@ namespace Mengine
         if( APPLICATION_SERVICE()
             ->calcWindowResolution( fullscreen, &windowResolution ) == false )
         {
-            LOGGER_FATAL( "invalid calculate window resolution for fullscreen [%s]"
+            LOGGER_FATAL( "invalid calculate window resolution for fullscreen: %s"
                 , fullscreen == true ? "YES" : "NO"
             );
 
@@ -363,7 +363,7 @@ namespace Mengine
         if( PLATFORM_SERVICE()
             ->createWindow( windowResolution, fullscreen ) == false )
         {
-            LOGGER_FATAL( "invalid create window [%u:%u] fullscreen [%s]"
+            LOGGER_FATAL( "invalid create window: %u:%u fullscreen: %s"
                 , windowResolution.getWidth()
                 , windowResolution.getHeight()
                 , fullscreen == true ? "YES" : "NO"

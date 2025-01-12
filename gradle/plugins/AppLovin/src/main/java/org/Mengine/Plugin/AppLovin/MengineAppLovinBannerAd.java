@@ -309,8 +309,6 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
             .log();
 
         m_plugin.setState("applovin.banner.state." + m_adUnitId, "request_started." + m_placement);
-
-        m_plugin.pythonCall("onAppLovinBannerOnAdRequestStarted", m_placement);
     }
 
     @Override
@@ -326,8 +324,6 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
         m_requestAttempt = 0;
 
         m_plugin.setState("applovin.banner.state." + m_adUnitId, "loaded." + m_placement + "." + ad.getNetworkName());
-
-        m_plugin.pythonCall("onAppLovinBannerOnAdLoaded", m_placement);
 
         MengineAppLovinNonetBannersInterface nonetBanners = m_plugin.getNonetBanners();
 
@@ -349,8 +345,6 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
             .log();
 
         m_plugin.setState("applovin.banner.state." + m_adUnitId, "displayed." + m_placement + "." + ad.getNetworkName());
-
-        m_plugin.pythonCall("onAppLovinBannerOnAdDisplayed", m_placement);
     }
 
     @Override
@@ -362,8 +356,6 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
             .log();
 
         m_plugin.setState("applovin.banner.state." + m_adUnitId, "hidden." + m_placement + "." + ad.getNetworkName());
-
-        m_plugin.pythonCall("onAppLovinBannerOnAdHidden", m_placement);
     }
 
     @Override
@@ -375,8 +367,6 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
             .log();
 
         m_plugin.setState("applovin.banner.state." + m_adUnitId, "clicked." + m_placement + "." + ad.getNetworkName());
-
-        m_plugin.pythonCall("onAppLovinBannerOnAdClicked", m_placement);
     }
 
     @Override
@@ -395,8 +385,6 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
         m_requestAttempt++;
 
         m_plugin.setState("applovin.banner.state." + m_adUnitId, "load_failed." + m_placement + "." + errorCode);
-
-        m_plugin.pythonCall("onAppLovinBannerOnAdLoadFailed", m_placement, errorCode);
 
         MengineAppLovinNonetBannersInterface nonetBanners = m_plugin.getNonetBanners();
 
@@ -422,8 +410,6 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
             .log();
 
         m_plugin.setState("applovin.banner.state." + m_adUnitId, "display_failed." + m_placement + "." + ad.getNetworkName() + "." + errorCode);
-
-        m_plugin.pythonCall("onAppLovinBannerOnAdDisplayFailed", m_placement, errorCode);
     }
 
     @Override
@@ -435,8 +421,6 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
             .log();
 
         m_plugin.setState("applovin.banner.state." + m_adUnitId, "expanded." + m_placement + "." + ad.getNetworkName());
-
-        m_plugin.pythonCall("onAppLovinBannerOnAdExpanded", m_placement);
     }
 
     @Override
@@ -448,8 +432,6 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
             .log();
 
         m_plugin.setState("applovin.banner.state." + m_adUnitId, "collapsed." + m_placement + "." + ad.getNetworkName());
-
-        m_plugin.pythonCall("onAppLovinBannerOnAdCollapsed", m_placement);
     }
 
     @Override
@@ -466,7 +448,7 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
 
         double revenue = ad.getRevenue();
 
-        m_plugin.pythonCall("onAppLovinBannerOnAdRevenuePaid", m_placement, Map.of("revenue", revenue));
+        m_plugin.pythonCall("onAppLovinBannerRevenuePaid", Map.of("placement", m_placement, "revenue", revenue));
     }
 
     @Override

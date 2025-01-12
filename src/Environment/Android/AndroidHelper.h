@@ -10,6 +10,7 @@
 #include "Kernel/ArrayString.h"
 #include "Kernel/StaticString.h"
 #include "Kernel/Viewport.h"
+#include "Kernel/Params.h"
 
 #include "Config/Lambda.h"
 
@@ -21,30 +22,32 @@ namespace Mengine
         StaticString<1024> AndroidGetJavaClassName( JNIEnv * _jenv, jclass _jclass );
         //////////////////////////////////////////////////////////////////////////
         void AndroidCallVoidStaticClassMethod( JNIEnv * _jenv, const Char * _name, const Char * _method, const Char * _signature, ... );
-        jobject AndroidCallObjectStaticClassMethod( JNIEnv * _jenv, const Char * _name, const Char * _method, const Char * _signature, ... );
+        MENGINE_NODISCARD jobject AndroidCallObjectStaticClassMethod( JNIEnv * _jenv, const Char * _name, const Char * _method, const Char * _signature, ... );
         //////////////////////////////////////////////////////////////////////////
-        jobject AndroidMakeJObjectPointer( JNIEnv * _jenv, void * _value );
-        jobject AndroidMakeJObjectBoolean( JNIEnv * _jenv, bool _value );
-        jobject AndroidMakeJObjectCharacter( JNIEnv * _jenv, Char _value );
-        jobject AndroidMakeJObjectInteger( JNIEnv * _jenv, int32_t _value );
-        jobject AndroidMakeJObjectLong( JNIEnv * _jenv, int64_t _value );
-        jobject AndroidMakeJObjectFloat( JNIEnv * _jenv, float _value );
-        jobject AndroidMakeJObjectDouble( JNIEnv * _jenv, double _value );
-        jobject AndroidMakeJObjectString( JNIEnv * _jenv, const Char * _value );
-        jobject AndroidMakeJObjectString( JNIEnv * _jenv, const String & _value );
-        jobject AndroidMakeJObjectString( JNIEnv * _jenv, const ConstString & _value );
+        MENGINE_NODISCARD jobject AndroidMakeJObjectPointer( JNIEnv * _jenv, void * _value );
+        MENGINE_NODISCARD jobject AndroidMakeJObjectBoolean( JNIEnv * _jenv, bool _value );
+        MENGINE_NODISCARD jobject AndroidMakeJObjectCharacter( JNIEnv * _jenv, Char _value );
+        MENGINE_NODISCARD jobject AndroidMakeJObjectInteger( JNIEnv * _jenv, int32_t _value );
+        MENGINE_NODISCARD jobject AndroidMakeJObjectLong( JNIEnv * _jenv, int64_t _value );
+        MENGINE_NODISCARD jobject AndroidMakeJObjectFloat( JNIEnv * _jenv, float _value );
+        MENGINE_NODISCARD jobject AndroidMakeJObjectDouble( JNIEnv * _jenv, double _value );
+        MENGINE_NODISCARD jobject AndroidMakeJObjectString( JNIEnv * _jenv, const Char * _value );
+        MENGINE_NODISCARD jobject AndroidMakeJObjectString( JNIEnv * _jenv, const String & _value );
+        MENGINE_NODISCARD jobject AndroidMakeJObjectString( JNIEnv * _jenv, const ConstString & _value );
         template<size_t N>
-        jobject AndroidMakeJObjectString( JNIEnv * _jenv, const StaticString<N> & _value )
+        MENGINE_NODISCARD jobject AndroidMakeJObjectString( JNIEnv * _jenv, const StaticString<N> & _value )
         {
             return Helper::AndroidMakeJObjectString( _jenv, _value.c_str() );
         }
-        jobject AndroidMakeJObjectArrayList( JNIEnv * _jenv, int32_t _count );
-        jobject AndroidMakeJObjectHashMap( JNIEnv * _jenv, int32_t _count );
+        MENGINE_NODISCARD jobject AndroidMakeJObjectArrayList( JNIEnv * _jenv, int32_t _count );
+        MENGINE_NODISCARD jobject AndroidMakeJObjectHashMap( JNIEnv * _jenv, int32_t _count );
+        MENGINE_NODISCARD jobject AndroidMakeJObjectHashMap( JNIEnv * _jenv, int32_t _count );
+        MENGINE_NODISCARD jobject AndroidMakeJObjectHashMap( JNIEnv * _jenv, const Params & _params );
         //////////////////////////////////////////////////////////////////////////
         void * AndroidGetJObjectPointer( JNIEnv * _jenv, jobject _pointer );
         jboolean AndroidAddJObjectList( JNIEnv * _jenv, jobject _list, jobject _value );
-        jobject AndroidPutJObjectMap( JNIEnv * _jenv, jobject _map, jobject _key, jobject _value );
-        jobject AndroidGetJObjectMap( JNIEnv * _jenv, jobject _map, jobject _key );
+        void AndroidPutJObjectMap( JNIEnv * _jenv, jobject _map, jobject _key, jobject _value );
+        MENGINE_NODISCARD jobject AndroidGetJObjectMap( JNIEnv * _jenv, jobject _map, jobject _key );
         //////////////////////////////////////////////////////////////////////////
         void AndroidDeleteLocalRef( JNIEnv * _jenv, jobject _jobject );
         //////////////////////////////////////////////////////////////////////////
@@ -84,7 +87,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool AndroidGetApplicationFilesDirCanonicalPath( JNIEnv * _jenv, Char * const _path );
         //////////////////////////////////////////////////////////////////////////
-        jobject AndroidGetActivitySurface( JNIEnv * _jenv );
+        MENGINE_NODISCARD jobject AndroidGetActivitySurface( JNIEnv * _jenv );
         //////////////////////////////////////////////////////////////////////////
         void AndroidEnvExceptionCheck( JNIEnv * _jenv );
         //////////////////////////////////////////////////////////////////////////

@@ -10,7 +10,9 @@ import com.google.errorprone.annotations.FormatString;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.IllegalFormatException;
+import java.util.Set;
 
 public class MengineLog {
     public final static int LM_SILENT = 0;
@@ -33,6 +35,7 @@ public class MengineLog {
     private static MengineApplication m_application;
     private static boolean m_initializeBaseServices = false;
     private static final Object m_lock = new Object();
+    private static final Set<String> m_singles = new HashSet<>();
 
     static class HistoryRecord
     {
@@ -77,7 +80,7 @@ public class MengineLog {
         return (filter & flag) == flag;
     }
 
-    public static void logLevel(int level, @Size(min = 1L,max = 23L) String tag, String msg) {
+    public static void logNativeLevel(int level, @Size(min = 1L,max = 23L) String tag, String msg) {
         switch (level) {
             case LM_SILENT:
                 break;
@@ -112,10 +115,16 @@ public class MengineLog {
     private static String log(int level, @Size(min = 1L,max = 23L) String tag, int filter, @FormatString String format, Object ... args) {
         String message = MengineLog.buildTotalMsg(format, args);
 
-        MengineLog.logLevel(level, tag, message);
+        MengineLog.logString(level, tag, filter, message);
+
+        return message;
+    }
+
+    private static void logString(int level, @Size(min = 1L,max = 23L) String tag, int filter, String message) {
+        MengineLog.logNativeLevel(level, tag, message);
 
         if (level >= LM_INFO) {
-            return message;
+            return;
         }
 
         synchronized (MengineLog.m_lock) {
@@ -136,8 +145,6 @@ public class MengineLog {
         if (MengineLog.m_application != null) {
             MengineLog.m_application.onMengineLogger(level, MengineLog.LFILTER_NONE, tag, message);
         }
-
-        return message;
     }
 
     @FormatMethod
@@ -211,6 +218,45 @@ public class MengineLog {
     @FormatMethod
     public static String logFatal(@Size(min = 1L,max = 23L) String tag, @FormatString String format, Object ... args) {
         String m = MengineLog.log(LM_FATAL, tag, MengineLog.LFILTER_NONE, format, args);
+
+        return m;
+    }
+
+    @FormatMethod
+    public static String logSingleMessage(@Size(min = 1L,max = 23L) String tag, @FormatString String format, Object ... args) {
+        String m = MengineLog.buildTotalMsg(format, args);
+
+        if (MengineLog.m_singles.contains(m) == true) {
+            return m;
+        }
+
+        MengineLog.logString(LM_MESSAGE, tag, MengineLog.LFILTER_NONE, m);
+
+        return m;
+    }
+
+    @FormatMethod
+    public static String logSingleWarning(@Size(min = 1L,max = 23L) String tag, @FormatString String format, Object ... args) {
+        String m = MengineLog.buildTotalMsg(format, args);
+
+        if (MengineLog.m_singles.contains(m) == true) {
+            return m;
+        }
+
+        MengineLog.logString(LM_WARNING, tag, MengineLog.LFILTER_NONE, m);
+
+        return m;
+    }
+
+    @FormatMethod
+    public static String logSingleError(@Size(min = 1L,max = 23L) String tag, @FormatString String format, Object ... args) {
+        String m = MengineLog.buildTotalMsg(format, args);
+
+        if (MengineLog.m_singles.contains(m) == true) {
+            return m;
+        }
+
+        MengineLog.logString(LM_ERROR, tag, MengineLog.LFILTER_NONE, m);
 
         return m;
     }

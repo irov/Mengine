@@ -277,6 +277,9 @@ public class MengineApplication extends Application {
         String hyphen_option = "-" + option;
         String double_hyphen_option = "--" + option;
 
+        String hyphen_option_value = hyphen_option + ":";
+        String double_hyphen_option_value = double_hyphen_option + ":";
+
         for(String o : options) {
             if (o.equals(hyphen_option) == true) {
                 return true;
@@ -285,9 +288,183 @@ public class MengineApplication extends Application {
             if (o.equals(double_hyphen_option) == true) {
                 return true;
             }
+
+            if (o.startsWith(hyphen_option_value) == true) {
+                return true;
+            }
+
+            if (o.startsWith(double_hyphen_option_value) == true) {
+                return true;
+            }
         }
 
         return false;
+    }
+
+    public int getOptionValueInteger(String option, int defaultValue) {
+        if (BuildConfig.DEBUG == false) {
+            return defaultValue;
+        }
+
+        String options_str = this.getApplicationOptions();
+
+        List<String> options = Splitter.on(' ').splitToList(options_str);
+
+        if (options.isEmpty() == true) {
+            return defaultValue;
+        }
+
+        String hyphen_option = "-" + option;
+        String double_hyphen_option = "--" + option;
+
+        String hyphen_option_value = hyphen_option + ":";
+        String double_hyphen_option_value = double_hyphen_option + ":";
+
+        for(String o : options) {
+            if (o.equals(hyphen_option) == true) {
+                MengineLog.logSingleWarning(TAG, "option [%s] has no value", option);
+
+                return defaultValue;
+            }
+
+            if (o.equals(double_hyphen_option) == true) {
+                MengineLog.logSingleWarning(TAG, "option [%s] has no value", option);
+
+                return defaultValue;
+            }
+
+            if (o.startsWith(hyphen_option_value) == true) {
+                String value = o.substring(hyphen_option_value.length());
+
+                try {
+                    return Integer.parseInt(value);
+                } catch (final NumberFormatException e) {
+                    MengineLog.logSingleWarning(TAG, "option [%s] invalid integer value [%s]", option, value);
+
+                    return defaultValue;
+                }
+            }
+
+            if (o.startsWith(double_hyphen_option_value) == true) {
+                String value = o.substring(double_hyphen_option_value.length());
+
+                try {
+                    return Integer.parseInt(value);
+                } catch (final NumberFormatException e) {
+                    MengineLog.logSingleWarning(TAG, "option [%s] invalid integer value [%s]", option, value);
+
+                    return defaultValue;
+                }
+            }
+        }
+
+        return defaultValue;
+    }
+
+    public long getOptionValueLong(String option, long defaultValue) {
+        if (BuildConfig.DEBUG == false) {
+            return defaultValue;
+        }
+
+        String options_str = this.getApplicationOptions();
+
+        List<String> options = Splitter.on(' ').splitToList(options_str);
+
+        if (options.isEmpty() == true) {
+            return defaultValue;
+        }
+
+        String hyphen_option = "-" + option;
+        String double_hyphen_option = "--" + option;
+
+        String hyphen_option_value = hyphen_option + ":";
+        String double_hyphen_option_value = double_hyphen_option + ":";
+
+        for(String o : options) {
+            if (o.equals(hyphen_option) == true) {
+                MengineLog.logSingleWarning(TAG, "option [%s] has no value", option);
+
+                return defaultValue;
+            }
+
+            if (o.equals(double_hyphen_option) == true) {
+                MengineLog.logSingleWarning(TAG, "option [%s] has no value", option);
+
+                return defaultValue;
+            }
+
+            if (o.startsWith(hyphen_option_value) == true) {
+                String value = o.substring(hyphen_option_value.length());
+
+                try {
+                    return Long.parseLong(value);
+                } catch (final NumberFormatException e) {
+                    MengineLog.logSingleWarning(TAG, "option [%s] invalid long value [%s]", option, value);
+
+                    return defaultValue;
+                }
+            }
+
+            if (o.startsWith(double_hyphen_option_value) == true) {
+                String value = o.substring(double_hyphen_option_value.length());
+
+                try {
+                    return Long.parseLong(value);
+                } catch (final NumberFormatException e) {
+                    MengineLog.logSingleWarning(TAG, "option [%s] invalid long value [%s]", option, value);
+
+                    return defaultValue;
+                }
+            }
+        }
+
+        return defaultValue;
+    }
+
+    public String getOptionValueString(String option, String defaultValue) {
+        if (BuildConfig.DEBUG == false) {
+            return defaultValue;
+        }
+
+        String options_str = this.getApplicationOptions();
+
+        List<String> options = Splitter.on(' ').splitToList(options_str);
+
+        if (options.isEmpty() == true) {
+            return defaultValue;
+        }
+
+        String hyphen_option = "-" + option;
+        String double_hyphen_option = "--" + option;
+
+        String hyphen_option_value = hyphen_option + ":";
+        String double_hyphen_option_value = double_hyphen_option + ":";
+
+        for(String o : options) {
+            if (o.equals(hyphen_option) == true) {
+                MengineLog.logSingleWarning(TAG, "option [%s] has no value", option);
+
+                return defaultValue;
+            }
+
+            if (o.equals(double_hyphen_option) == true) {
+                MengineLog.logSingleWarning(TAG, "option [%s] has no value", option);
+
+                return defaultValue;
+            }
+
+            if (o.startsWith(hyphen_option_value) == true) {
+                String value = o.substring(hyphen_option_value.length());
+                return value;
+            }
+
+            if (o.startsWith(double_hyphen_option_value) == true) {
+                String value = o.substring(double_hyphen_option_value.length());
+                return value;
+            }
+        }
+
+        return defaultValue;
     }
 
     public String getAndroidId() {

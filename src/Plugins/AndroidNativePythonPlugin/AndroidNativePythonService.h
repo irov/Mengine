@@ -55,9 +55,6 @@ namespace Mengine
     protected:
         pybind::kernel_interface * m_kernel;
 
-        FactoryInterfacePtr m_factoryAndroidNativePythonFunctorVoid;
-        FactoryInterfacePtr m_factoryAndroidNativePythonFunctorBoolean;
-
         struct AndroidPythonCallbackDesc
         {
             pybind::object cb;

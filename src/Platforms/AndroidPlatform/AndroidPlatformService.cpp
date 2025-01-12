@@ -219,18 +219,18 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AnroidEnvironmentService_1callMengineSemaphoreListener )(JNIEnv * env, jclass cls, jobject _impl)
     {
-        void * impl_MengineFunctorVoid = env->GetDirectBufferAddress( _impl );
+        void * impl_AndroidSemaphoreListener = env->GetDirectBufferAddress( _impl );
 
-        Mengine::AndroidSemaphoreListenerInterface * functor = reinterpret_cast<Mengine::AndroidSemaphoreListenerInterface *>(impl_MengineFunctorVoid);
+        Mengine::AndroidSemaphoreListenerInterface * functor = reinterpret_cast<Mengine::AndroidSemaphoreListenerInterface *>(impl_AndroidSemaphoreListener);
 
         functor->invoke();
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AnroidEnvironmentService_1destroyMengineSemaphoreListener )(JNIEnv * env, jclass cls, jobject _impl)
     {
-        void * impl_MengineFunctorVoid = env->GetDirectBufferAddress( _impl );
+        void * impl_AndroidSemaphoreListener = env->GetDirectBufferAddress( _impl );
 
-        Mengine::AndroidSemaphoreListenerInterface * functor = reinterpret_cast<Mengine::AndroidSemaphoreListenerInterface *>(impl_MengineFunctorVoid);
+        Mengine::AndroidSemaphoreListenerInterface * functor = reinterpret_cast<Mengine::AndroidSemaphoreListenerInterface *>(impl_AndroidSemaphoreListener);
 
         Mengine::IntrusivePtrBase::intrusive_ptr_dec_ref( functor );
     }

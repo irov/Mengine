@@ -429,7 +429,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
             public void onSuccess(Sharer.Result result) {
                 String postId = result.getPostId() != null ? result.getPostId() : "";
 
-                MengineFacebookPlugin.this.logMessage("shareLink success [%s]"
+                MengineFacebookPlugin.this.logMessage("shareLink success postId: %s"
                     , postId
                 );
 
@@ -525,7 +525,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
             FacebookRequestError error = response.getError();
 
             if (error != null) {
-                this.logError("[ERROR] profile user picture link [%s] get error: %s"
+                this.logError("[ERROR] profile user picture link: %s get error: %s"
                     , graphPath
                     , error.getErrorMessage()
                 );
@@ -538,7 +538,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
             JSONObject responseObject = response.getJSONObject();
 
             if (responseObject == null) {
-                this.logError("[ERROR] profile user picture link [%s] invalid response: %s"
+                this.logError("[ERROR] profile user picture link: %s invalid response: %s"
                     , graphPath
                     , response
                 );
@@ -552,7 +552,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
             try {
                 pictureURL = responseObject.getJSONObject("data").getString("url");
             } catch (final JSONException e) {
-                this.logError("[ERROR] profile user picture link [%s] catch JSONException: %s"
+                this.logError("[ERROR] profile user picture link: %s catch JSONException: %s"
                     , graphPath
                     , e.getMessage()
                 );
@@ -562,7 +562,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
                 return;
             }
 
-            this.logMessage("request profile user [%s] picture link completed: %s"
+            this.logMessage("request profile user: %s picture link completed: %s"
                 , user_id
                 , pictureURL
             );

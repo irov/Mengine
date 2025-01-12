@@ -21,6 +21,7 @@ import com.android.billingclient.api.QueryPurchasesParams;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineCallback;
 import org.Mengine.Base.MengineFunctorBoolean;
 import org.Mengine.Base.MengineInAppProductParam;
 import org.Mengine.Base.MengineInAppPurchaseParam;
@@ -578,7 +579,15 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
 
         List<String> products = purchase.getProducts();
 
-        MengineFunctorBoolean cb = (boolean isConsumable) -> {
+        MengineCallback cb = (boolean successful, Map<String, Object> result) -> {
+            if (successful == false) {
+                this.logError("[ERROR] handlePurchase invalid isConsumable");
+
+                return;
+            }
+
+            boolean isConsumable = (boolean)result.get("isConsumable");
+
             boolean acknowledged = purchase.isAcknowledged();
 
             this.logMessage("handlePurchase Acknowledged: %s product: %s consumable: %s"

@@ -7,8 +7,7 @@
 #include "Environment/Android/AndroidHelper.h"
 #include "Environment/Python/PythonIncluder.h"
 
-#include "AndroidNativePythonFunctorVoid.h"
-#include "AndroidNativePythonFunctorBoolean.h"
+#include "AndroidNativePythonCallback.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Assertion.h"
@@ -34,8 +33,7 @@ namespace Mengine
             jclass jclass_Map = _jenv->FindClass( "java/util/Map" );
             jclass jclass_Set = _jenv->FindClass( "java/util/Set" );
             jclass jclass_Rect = _jenv->FindClass( "android/graphics/Rect" );
-            jclass jclass_MengineFunctorVoid = Mengine_JNI_FindClass( _jenv, "org/Mengine/Base/MengineFunctorVoid" );
-            jclass jclass_MengineFunctorBoolean = Mengine_JNI_FindClass( _jenv, "org/Mengine/Base/MengineFunctorBoolean" );
+            jclass jclass_MengineCallback = Mengine_JNI_FindClass( _jenv, "org/Mengine/Base/MengineCallback" );
 
             Helper::AndroidEnvExceptionCheck( _jenv );
 
@@ -130,22 +128,10 @@ namespace Mengine
 
                 py_value = pybind::ptr( _kernel, viewport );
             }
-            else if ( _jenv->IsInstanceOf( _obj, jclass_MengineFunctorVoid ) == JNI_TRUE )
+            else if ( _jenv->IsInstanceOf( _obj, jclass_MengineCallback ) == JNI_TRUE )
             {
-                AndroidNativePythonFunctorVoidPtr functor = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "AndroidNativePython" ), STRINGIZE_STRING_LOCAL( "AndroidNativePythonFunctorVoid" ), _doc );
-
-                functor->setKernel( _kernel );
-                functor->setJavaFunctor( _jenv, _obj );
-
-                PyObject * py_functor = pybind::ptr( _kernel, functor );
-
-                py_value = py_functor;
-            }
-            else if ( _jenv->IsInstanceOf( _obj, jclass_MengineFunctorBoolean ) == JNI_TRUE )
-            {
-                AndroidNativePythonFunctorBooleanPtr functor = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "AndroidNativePython" ), STRINGIZE_STRING_LOCAL( "AndroidNativePythonFunctorBoolean" ), _doc );
+                AndroidNativePythonCallbackPtr functor = PROTOTYPE_SERVICE()
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "AndroidNativePython" ), STRINGIZE_STRING_LOCAL( "AndroidNativePythonCallback" ), _doc );
 
                 functor->setKernel( _kernel );
                 functor->setJavaFunctor( _jenv, _obj );
@@ -176,8 +162,7 @@ namespace Mengine
             _jenv->DeleteLocalRef( jclass_Map );
             _jenv->DeleteLocalRef( jclass_Set );
             _jenv->DeleteLocalRef( jclass_Rect );
-            _jenv->DeleteLocalRef( jclass_MengineFunctorVoid );
-            _jenv->DeleteLocalRef( jclass_MengineFunctorBoolean );
+            _jenv->DeleteLocalRef( jclass_MengineCallback );
 
             return py_value;
         }

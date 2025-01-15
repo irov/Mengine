@@ -234,57 +234,6 @@ extern "C"
 
         Mengine::IntrusivePtrBase::intrusive_ptr_dec_ref( functor );
     }
-    //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidEnvironmentService_1log )(JNIEnv * env, jclass cls, jint _level, jstring _tag, jstring _msg)
-    {
-        if( SERVICE_IS_INITIALIZE( Mengine::LoggerServiceInterface ) == false )
-        {
-            return;
-        }
-
-        uint32_t color;
-
-        switch( _level )
-        {
-        case Mengine::LM_SILENT:
-            return;
-        case Mengine::LM_FATAL:
-            color = Mengine::LCOLOR_RED;
-            break;
-        case Mengine::LM_MESSAGE_RELEASE:
-            color = Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE;
-            break;
-        case Mengine::LM_ERROR:
-            color = Mengine::LCOLOR_RED;
-            break;
-        case Mengine::LM_WARNING:
-            color = Mengine::LCOLOR_RED | Mengine::LCOLOR_GREEN;
-            break;
-        case Mengine::LM_MESSAGE:
-            color = Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE;
-            break;
-        case Mengine::LM_INFO:
-            color = Mengine::LCOLOR_GREEN | Mengine::LCOLOR_BLUE;
-            break;
-        case Mengine::LM_DEBUG:
-            color = Mengine::LCOLOR_BLUE;
-            break;
-        case Mengine::LM_VERBOSE:
-            color = Mengine::LCOLOR_NONE;
-            break;
-        }
-
-        const Mengine::Char * tag_str = env->GetStringUTFChars( _tag, nullptr );
-        const Mengine::Char * msg_str = env->GetStringUTFChars( _msg, nullptr );
-
-        LOGGER_VERBOSE_LEVEL( "android", (Mengine::ELoggerLevel)_level, Mengine::LFILTER_NONE | Mengine::LFILTER_ANDROID, color, nullptr, 0, Mengine::LFLAG_SHORT )("[%s] %s"
-            , tag_str
-            , msg_str
-        );
-
-        env->ReleaseStringUTFChars( _tag, tag_str );
-        env->ReleaseStringUTFChars( _msg, msg_str );
-    }
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1surfaceCreatedEvent )(JNIEnv * env, jclass cls, jobject surface)
     {
@@ -645,8 +594,6 @@ namespace Mengine
             ->addEventProvider( m_androidAnalyticsEventProvider );
 
         AndroidProxyLoggerPtr proxyLogger = Helper::makeFactorableUnique<AndroidProxyLogger>( MENGINE_DOCUMENT_FACTORABLE );
-
-        proxyLogger->setVerboseFilter( Mengine::LFILTER_ANDROID );
 
         if( LOGGER_SERVICE()
             ->registerLogger( proxyLogger ) == true )

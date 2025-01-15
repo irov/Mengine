@@ -239,7 +239,7 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Def
 
         double revenue = ad.getRevenue();
 
-        m_plugin.pythonCall("onAppLovinAppOpenRevenuePaid", Map.of("placement", placement, "revenue", revenue));
+        m_plugin.pythonCall("onAndroidAppLovinAppOpenRevenuePaid", Map.of("placement", placement, "revenue", revenue));
     }
 
     @Override

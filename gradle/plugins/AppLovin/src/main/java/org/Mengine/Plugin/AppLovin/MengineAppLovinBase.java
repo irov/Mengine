@@ -95,7 +95,7 @@ public class MengineAppLovinBase {
     }
 
     protected String getMAAdParams(@NonNull MaxAd ad) {
-        StringBuilder sb = new StringBuilder(512);
+        StringBuilder sb = new StringBuilder(1024);
 
         MaxAdFormat format = ad.getFormat();
         String formatLabel = format.getLabel();

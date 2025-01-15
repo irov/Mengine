@@ -29,11 +29,6 @@ namespace Mengine
         MENGINE_ASSERTION_VALIDATE_UTF8( message.category, MENGINE_UNKNOWN_SIZE );
         MENGINE_ASSERTION_VALIDATE_UTF8( message.data, MENGINE_UNKNOWN_SIZE );
 
-        if( (message.filter & Mengine::LFILTER_ANDROID) == Mengine::LFILTER_ANDROID )
-        {
-            return;
-        }
-
         Char buffer[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
 
         if( message.flag & LFLAG_TIMESTAMP )

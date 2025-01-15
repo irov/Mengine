@@ -14,6 +14,7 @@ import com.applovin.mediation.ads.MaxInterstitialAd;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineCallback;
 import org.Mengine.Base.MengineNetwork;
 import org.Mengine.Base.MengineUtils;
 
@@ -21,6 +22,8 @@ import java.util.Map;
 
 public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implements MaxAdListener, MaxAdRequestListener, MaxAdRevenueListener, MaxAdExpirationListener, MaxAdReviewListener {
     private MaxInterstitialAd m_interstitialAd;
+
+    private MengineCallback m_showCallback;
 
     public MengineAppLovinInterstitialAd(MengineAppLovinPlugin plugin, String adUnitId) {
         super(plugin, adUnitId, MaxAdFormat.INTERSTITIAL);
@@ -71,6 +74,8 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
             m_interstitialAd.destroy();
             m_interstitialAd = null;
         }
+
+        m_showCallback = null;
     }
 
     @Override
@@ -132,12 +137,16 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
         return true;
     }
 
-    public boolean showInterstitial(MengineActivity activity, String placement) {
+    public boolean showInterstitial(MengineActivity activity, String placement, MengineCallback showCallback) {
         if (m_interstitialAd == null) {
+            m_plugin.logInfo("interstitial ad is null");
+
             return false;
         }
 
         if (MengineNetwork.isNetworkAvailable() == false) {
+            m_plugin.logInfo("network is not available");
+
             return false;
         }
 
@@ -151,8 +160,18 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
             .log();
 
         if (ready == false) {
+            m_plugin.logInfo("interstitial ad is not ready");
+
             return false;
         }
+
+        if (m_showCallback != null) {
+            m_plugin.logInfo("interstitial ad is already showing");
+
+            return false;
+        }
+
+        m_showCallback = showCallback;
 
         m_interstitialAd.showAd(placement, activity);
 
@@ -209,7 +228,9 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
 
         m_plugin.setState("applovin.interstitial.state." + m_adUnitId, "hidden." + placement + "." + ad.getNetworkName());
 
-        m_plugin.pythonCall("onAppLovinInterstitialShowComplete", true, Map.of("placement", placement));
+        MengineCallback showCallback = m_showCallback;
+        m_showCallback = null;
+        showCallback.call(true, Map.of("placement", placement));
 
         MengineUtils.performOnMainThread(() -> {
             this.loadAd();
@@ -257,13 +278,15 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
         this.buildAdEvent("mng_ad_interstitial_display_failed")
             .addParameterString("placement", placement)
             .addParameterLong("error_code", errorCode)
-            .addParameterJSON("ad", this.getMAAdParams(ad))
             .addParameterJSON("error", this.getMaxErrorParams(error))
+            .addParameterJSON("ad", this.getMAAdParams(ad))
             .log();
 
         m_plugin.setState("applovin.interstitial.state." + m_adUnitId, "display_failed." + placement + "." + ad.getNetworkName() + "." + errorCode);
 
-        m_plugin.pythonCall("onAppLovinInterstitialShowCompleted", false, Map.of("placement", placement, "error_code", errorCode));
+        MengineCallback showCallback = m_showCallback;
+        m_showCallback = null;
+        showCallback.call(false, Map.of("placement", placement, "error_code", errorCode));
 
         MengineUtils.performOnMainThread(() -> {
             this.loadAd();
@@ -287,7 +310,7 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
 
 		double revenue = ad.getRevenue();
 
-        m_plugin.pythonCall("onAppLovinInterstitialRevenuePaid", Map.of("placement", placement, "revenue", revenue));
+        m_plugin.pythonCall("onAndroidAppLovinInterstitialRevenuePaid", Map.of("placement", placement, "revenue", revenue));
     }
 
     @Override

@@ -8,7 +8,6 @@ import androidx.annotation.Size;
 import com.google.errorprone.annotations.FormatMethod;
 import com.google.errorprone.annotations.FormatString;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.IllegalFormatException;
@@ -27,18 +26,13 @@ public class MengineLog {
 
     public final static int LFILTER_NONE = 0 << 0;
     public final static int LFILTER_PROTECTED = 1 << 1;
-    public final static int LFILTER_ANDROID = 1 << 2;
-    public final static int LFILTER_HTTP = 1 << 3;
-    public final static int LFILTER_IMMEDIATE = 1 << 4;
-    public final static int LFILTER_EXCEPTION = 1 << 5;
+    public final static int LFILTER_HTTP = 1 << 2;
+    public final static int LFILTER_EXCEPTION = 1 << 3;
 
     private static MengineApplication m_application;
-    private static boolean m_initializeBaseServices = false;
-    private static final Object m_lock = new Object();
     private static final Set<String> m_singles = new HashSet<>();
 
-    static class HistoryRecord
-    {
+    static class HistoryRecord {
         public int level;
         public int filter;
         public String tag;
@@ -46,34 +40,12 @@ public class MengineLog {
         public MengineApplication application;
     }
 
-    private static final ArrayList<HistoryRecord> m_history = new ArrayList<>();
-
     public static void setMengineApplication(@NonNull MengineApplication application) {
         MengineLog.m_application = application;
     }
 
     public static void removeMengineApplication() {
         MengineLog.m_application = null;
-    }
-
-    public static void initializeBaseServices() {
-        MengineLog.m_initializeBaseServices = true;
-
-        synchronized (MengineLog.m_lock) {
-            for (HistoryRecord record : MengineLog.m_history) {
-                MengineNative.AndroidEnvironmentService_log(record.level, record.tag, record.message);
-
-                if (record.application == null) {
-                    MengineLog.m_application.onMengineLogger(record.level, record.filter, record.tag, record.message);
-                }
-            }
-
-            m_history.clear();
-        }
-    }
-
-    public static void finalizeBaseServices() {
-        MengineLog.m_initializeBaseServices = false;
     }
 
     public static boolean isFilter(int filter, int flag) {
@@ -125,21 +97,6 @@ public class MengineLog {
 
         if (level >= LM_INFO) {
             return;
-        }
-
-        synchronized (MengineLog.m_lock) {
-            if (MengineLog.m_initializeBaseServices == true) {
-                MengineNative.AndroidEnvironmentService_log(level, tag, message);
-            } else {
-                HistoryRecord record = new HistoryRecord();
-                record.level = level;
-                record.filter = filter;
-                record.tag = tag;
-                record.message = message;
-                record.application = MengineLog.m_application;
-
-                MengineLog.m_history.add(record);
-            }
         }
 
         if (MengineLog.m_application != null) {

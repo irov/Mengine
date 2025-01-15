@@ -1429,8 +1429,6 @@ public class MengineApplication extends Application {
 
         m_isMengineInitializeBaseServices = true;
 
-        MengineLog.initializeBaseServices();
-
         List<MengineListenerEngine> listeners = this.getEngineListeners();
 
         for (MengineListenerEngine l : listeners) {
@@ -1488,8 +1486,6 @@ public class MengineApplication extends Application {
 
             l.onMenginePlatformStop(this);
         }
-
-        MengineLog.finalizeBaseServices();
     }
 
     public void onMengineLogger(int level, int filter, String category, String msg) {
@@ -1537,8 +1533,7 @@ public class MengineApplication extends Application {
             , screenName
         );
 
-        this.setState("current.screen.type", screenType);
-        this.setState("current.screen.name", screenName);
+        this.setState("current.screen", screenType + "." + screenName);
 
         List<MengineListenerAnalytics> listeners = this.getAnalyticsListeners();
 

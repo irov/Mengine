@@ -22,7 +22,7 @@ public class MengineFirebaseMessagingPlugin extends MengineService implements Me
     public static final boolean SERVICE_EMBEDDING = true;
 
     @Override
-    public boolean onAvailable(MengineApplication application) {
+    public boolean onAvailable(@NonNull MengineApplication application) {
         GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
 
         Context context = application.getApplicationContext();
@@ -36,7 +36,7 @@ public class MengineFirebaseMessagingPlugin extends MengineService implements Me
     }
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
+    public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
         FirebaseMessaging.getInstance().getToken()
             .addOnCompleteListener(new OnCompleteListener<String>() {
                 @Override

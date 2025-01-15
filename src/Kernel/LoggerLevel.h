@@ -35,9 +35,8 @@ namespace Mengine
     {
         LFILTER_NONE = 0 << 0,
         LFILTER_PROTECTED = 1 << 1,
-        LFILTER_ANDROID = 1 << 2,
-        LFILTER_HTTP = 1 << 3,
-        LFILTER_EXCEPTION = 1 << 4
+        LFILTER_HTTP = 1 << 2,
+        LFILTER_EXCEPTION = 1 << 3
     };
     //////////////////////////////////////////////////////////////////////////
     enum ELoggerFlag : uint32_t

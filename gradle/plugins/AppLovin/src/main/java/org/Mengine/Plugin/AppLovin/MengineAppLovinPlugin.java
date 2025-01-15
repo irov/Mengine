@@ -22,7 +22,9 @@ import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineAdFormat;
 import org.Mengine.Base.MengineAdMediation;
 import org.Mengine.Base.MengineAdRevenueParam;
+import org.Mengine.Base.MengineCallback;
 import org.Mengine.Base.MengineListenerApplication;
+import org.Mengine.Base.MengineNetwork;
 import org.Mengine.Base.MengineTransparencyConsentParam;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineService;
@@ -466,7 +468,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
         return true;
     }
 
-    public boolean showInterstitial(String placement) {
+    public boolean showInterstitial(String placement, MengineCallback showCallback) {
         if (m_interstitialAd == null) {
             this.assertionError("not found interstitial placement: %s"
                 , placement
@@ -481,7 +483,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
 
         MengineActivity activity = this.getMengineActivity();
 
-        if (m_interstitialAd.showInterstitial(activity, placement) == false) {
+        if (m_interstitialAd.showInterstitial(activity, placement, showCallback) == false) {
             return false;
         }
 
@@ -528,7 +530,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
         return true;
     }
 
-    public boolean showRewarded(String placement) {
+    public boolean showRewarded(String placement, MengineCallback showCallback) {
         if (m_rewardedAd == null) {
             this.assertionError("not found rewarded placement: %s"
                 , placement
@@ -543,7 +545,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
 
         MengineActivity activity = this.getMengineActivity();
 
-        if (m_rewardedAd.showRewarded(activity, placement) == false) {
+        if (m_rewardedAd.showRewarded(activity, placement, showCallback) == false) {
             return false;
         }
 
@@ -630,14 +632,14 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
                     , error.getCmpCode()
                 );
 
-                this.pythonCall("onAppLovinConsentFlowError");
+                this.pythonCall("onAndroidAppLovinConsentFlowError");
 
                 return;
             }
 
             this.logMessage("Consent dialog was shown");
 
-            this.pythonCall("onAppLovinConsentFlowCompleted");
+            this.pythonCall("onAndroidAppLovinConsentFlowCompleted");
         });
     }
 

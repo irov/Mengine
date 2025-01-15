@@ -42,11 +42,6 @@ namespace Mengine
         MENGINE_ASSERTION_VALIDATE_UTF8( message.category, MENGINE_UNKNOWN_SIZE );
         MENGINE_ASSERTION_VALIDATE_UTF8( message.data, message.size );
 
-        if((message.filter & Mengine::LFILTER_ANDROID) == Mengine::LFILTER_ANDROID )
-        {
-            return;
-        }
-
         if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
         {
             return;

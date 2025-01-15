@@ -19,7 +19,7 @@ namespace Mengine
         const HttpRequestPostProperties & getPostProperties() const;
 
     protected:
-        MengineHttpResponseParam * _onHttp( MengineHttpRequestParam * request ) override;
+        AppleHttpResponseParam * _onHttp( AppleHttpRequestParam * request ) override;
 
     protected:
         HttpRequestPostProperties m_properties;

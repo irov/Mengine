@@ -1,6 +1,8 @@
 #import "AppleFirebaseCrashlyticsApplicationDelegate.h"
 
 #import "Environment/Apple/AppleString.h"
+
+#import "Environment/iOS/iOSDetail.h"
 #import "Environment/iOS/iOSApplication.h"
 
 #import <FirebaseCrashlytics/FirebaseCrashlytics.h>
@@ -8,6 +10,15 @@
 #define PLUGIN_BUNDLE_NAME "MengineAppleFirebaseAnalyticsPlugin"
 
 @implementation AppleFirebaseCrashlyticsApplicationDelegate
+
++ (AppleFirebaseCrashlyticsApplicationDelegate *) sharedInstance {
+    static AppleFirebaseCrashlyticsApplicationDelegate *sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [iOSDetail getPluginDelegateOfClass:[AppleFirebaseCrashlyticsApplicationDelegate class]];
+    });
+    return sharedInstance;
+}
 
 #pragma mark - iOSPluginApplicationDelegateInterface
 
@@ -30,7 +41,7 @@
     [[FIRCrashlytics crashlytics] setUserID:nil];
 }
 
-- (void)onLogger:(iOSLogRecordParam *)record {
+- (void)onLogger:(AppleLogRecordParam *)record {
     switch (record.LOG_LEVEL) {
         case Mengine::LM_ERROR: {
             if ((record.LOG_FILTER & Mengine::LFILTER_EXCEPTION) == Mengine::LFILTER_EXCEPTION) {

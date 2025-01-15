@@ -1,5 +1,7 @@
 #import "AppleFirebaseRemoteConfigApplicationDelegate.h"
 
+#import "Environment/iOS/iOSDetail.h"
+
 #include "AppleFirebaseRemoteConfigInterface.h"
 
 #include "Kernel/Logger.h"
@@ -7,6 +9,15 @@
 #import <FirebaseRemoteConfig/FirebaseRemoteConfig.h>
 
 @implementation AppleFirebaseRemoteConfigApplicationDelegate
+
++ (AppleFirebaseRemoteConfigApplicationDelegate *) sharedInstance {
+    static AppleFirebaseRemoteConfigApplicationDelegate *sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [iOSDetail getPluginDelegateOfClass:[AppleFirebaseRemoteConfigApplicationDelegate class]];
+    });
+    return sharedInstance;
+}
 
 #pragma mark - iOSPluginApplicationDelegateInterface
 

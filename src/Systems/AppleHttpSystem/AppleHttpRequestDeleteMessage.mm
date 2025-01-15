@@ -12,9 +12,9 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    MengineHttpResponseParam * AppleHttpRequestDeleteMessage::_onHttp( MengineHttpRequestParam * _request )
+    AppleHttpResponseParam * AppleHttpRequestDeleteMessage::_onHttp( AppleHttpRequestParam * _request )
     {
-        MengineHttpResponseParam * response = [MengineHttpNetwork httpRequestDeleteMessage:_request];
+        AppleHttpResponseParam * response = [AppleHttpNetwork httpRequestDeleteMessage:_request];
         
         return response;
     }

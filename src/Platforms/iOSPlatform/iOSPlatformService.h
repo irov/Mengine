@@ -21,7 +21,6 @@
 #include "Environment/SDL/SDLPlatformServiceExtensionInterface.h"
 
 #import "iOSMailComposeDelegate.h"
-#import "iOSProxyLogger.h"
 
 #include "Environment/SDL/SDLIncluder.h"
 
@@ -200,8 +199,6 @@ namespace Mengine
         VectorSDLEventHandlers m_sdlEventHandlers;
 
         SDL_GLContext m_glContext;
-
-        iOSProxyLoggerPtr m_proxyLogger;
 
         iOSInputPtr m_sdlInput;
 

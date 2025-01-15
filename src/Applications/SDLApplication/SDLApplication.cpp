@@ -11,8 +11,8 @@
 #include "Interface/FileServiceInterface.h"
 #include "Interface/PreferencesSystemInterface.h"
 
-#if defined(MENGINE_PLATFORM_APPLE)
-#   include "Environment/Apple/AppleNSLogger.h"
+#if defined(MENGINE_PLATFORM_IOS)
+#   include "iOSLogger.h"
 #else
 #   include "Kernel/StdioLogger.h"
 #endif
@@ -84,8 +84,8 @@ namespace Mengine
             return true;
         }
 
-#if defined(MENGINE_PLATFORM_APPLE)
-        LoggerInterfacePtr loggerStdio = Helper::makeFactorableUnique<AppleNSLogger>( MENGINE_DOCUMENT_FUNCTION );
+#if defined(MENGINE_PLATFORM_IOS)
+        LoggerInterfacePtr loggerStdio = Helper::makeFactorableUnique<iOSLogger>( MENGINE_DOCUMENT_FUNCTION );
 #else
         LoggerInterfacePtr loggerStdio = Helper::makeFactorableUnique<StdioLogger>( MENGINE_DOCUMENT_FUNCTION );
 #endif

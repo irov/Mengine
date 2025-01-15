@@ -1,9 +1,10 @@
 #import "AppleAppLovinBaseDelegate.h"
 
 #import "Environment/Apple/AppleDetail.h"
-#import "Environment/iOS/iOSDetail.h"
+#import "Environment/Apple/AppleAnalytics.h"
 
-#include "Kernel/Logger.h"
+#import "Environment/iOS/iOSDetail.h"
+#import "Environment/iOS/iOSLog.h"
 
 @implementation AppleAppLovinBaseDelegate
 
@@ -14,9 +15,10 @@
     self.m_adUnitId = adUnitId;
     self.m_adFormat = adFormat;
     
-    self.m_retryAttempt = 0;
+    self.m_requestAttempt = 0;
     self.m_enumeratorRequest = 0;
     self.m_requestId = 0;
+    self.m_requestTimestamp = 0.0;
     
     return self;
 }
@@ -77,63 +79,63 @@
 }
 
 - (void) log:(NSString * _Nonnull) method {
-    LOGGER_MESSAGE( "[%s] %s: adUnitId: %s request: %ld"
-        , [self.m_adFormat.label UTF8String]
-        , [method UTF8String]
-        , [self.m_adUnitId UTF8String]
+    IOS_LOGGER_MESSAGE(@"[%@] %@: adUnitId: %@ request: %ld"
+        , self.m_adFormat.label
+        , method
+        , self.m_adUnitId
         , self.m_requestId
     );
 }
 
 
 - (void) log:(NSString * _Nonnull) method withParams:(NSDictionary * _Nonnull) params {
-    LOGGER_MESSAGE( "[%s] %s: adUnitId: %s request: %ld %s"
-        , [self.m_adFormat.label UTF8String]
-        , [method UTF8String]
-        , [self.m_adUnitId UTF8String]
+    IOS_LOGGER_MESSAGE(@"[%@] %@: adUnitId: %@ request: %ld %@"
+        , self.m_adFormat.label
+        , method
+        , self.m_adUnitId
         , self.m_requestId
-        , [[NSString stringWithFormat:@"%@", params] UTF8String]
+        , [NSString stringWithFormat:@"%@", params]
     );
 }
 
 - (void) log:(NSString * _Nonnull) method withMAAd:(MAAd *) ad {
-    LOGGER_MESSAGE( "[%s] %s: adUnitId: %s request: %ld ad: %s"
-        , [self.m_adFormat.label UTF8String]
-        , [method UTF8String]
-        , [self.m_adUnitId UTF8String]
+    IOS_LOGGER_MESSAGE(@"[%@] %@: adUnitId: %@ request: %ld ad: %@"
+        , self.m_adFormat.label
+        , method
+        , self.m_adUnitId
         , self.m_requestId
-        , [[NSString stringWithFormat:@"%@", [self getMAAdParams:ad]] UTF8String]
+        , [NSString stringWithFormat:@"%@", [self getMAAdParams:ad]]
     );
 }
 
 - (void) log:(NSString * _Nonnull) method withMAAd:(MAAd * _Nonnull) ad withMAError:(MAError * _Nonnull) error {
-    LOGGER_MESSAGE( "[%s] %s: adUnitId: %s request: %ld ad: %s with error: %s"
-        , [ad.format.label UTF8String]
-        , [method UTF8String]
-        , [ad.adUnitIdentifier UTF8String]
+    IOS_LOGGER_MESSAGE(@"[%@] %@: adUnitId: %@ request: %ld ad: %@ with error: %@"
+        , ad.format.label
+        , method
+        , ad.adUnitIdentifier
         , self.m_requestId
-        , [[NSString stringWithFormat:@"%@", [self getMAAdParams:ad]] UTF8String]
-        , [[NSString stringWithFormat:@"%@", [self getMAErrorParams:error]] UTF8String]
+        , [NSString stringWithFormat:@"%@", [self getMAAdParams:ad]]
+        , [NSString stringWithFormat:@"%@", [self getMAErrorParams:error]]
     );
 }
 
 - (void) log:(NSString * _Nonnull) method withMAError:(MAError * _Nonnull) error {
-    LOGGER_MESSAGE( "[%s] %s: adUnitId: %s request: %ld with error: %s"
-        , [self.m_adFormat.label UTF8String]
-        , [method UTF8String]
-        , [self.m_adUnitId UTF8String]
+    IOS_LOGGER_MESSAGE(@"[%@] %@: adUnitId: %@ request: %ld with error: %@"
+        , self.m_adFormat.label
+        , method
+        , self.m_adUnitId
         , self.m_requestId
-        , [[NSString stringWithFormat:@"%@", [self getMAErrorParams:error]] UTF8String]
+        , [NSString stringWithFormat:@"%@", [self getMAErrorParams:error]]
     );
 }
 
 - (void) log:(NSString * _Nonnull) method withMAAd:(MAAd * _Nonnull) ad withMAReward:(MAReward * _Nonnull) reward {
-    LOGGER_MESSAGE( "[%s] %s: adUnitId: %s request: %ld with reward lable: %s amount: %ld"
-        , [ad.format.label UTF8String]
-        , [method UTF8String]
-        , [ad.adUnitIdentifier UTF8String]
+    IOS_LOGGER_MESSAGE(@"[%@] %@: adUnitId: %@ request: %ld with reward lable: %@ amount: %ld"
+        , ad.format.label
+        , method
+        , ad.adUnitIdentifier
         , self.m_requestId
-        , [reward.label UTF8String]
+        , reward.label
         , reward.amount
     );
 }
@@ -145,15 +147,46 @@
 }
 
 - (void) retryLoadAd {
-    self.m_retryAttempt++;
+    self.m_requestAttempt++;
     
-    NSTimeInterval delaySec = pow(2, MIN(6, self.m_retryAttempt));
+    NSTimeInterval delaySec = pow(2, MIN(6, self.m_requestAttempt));
     
     [iOSDetail addMainQueueOperation:^{
         [NSThread sleepForTimeInterval:delaySec];
         
         [self loadAd];
     }];
+}
+
+- (NSInteger) increaseRequestId {
+    self.m_requestId = self.m_enumeratorRequest++;
+    self.m_requestTimestamp = [[NSDate date] timeIntervalSince1970];
+
+    return self.m_requestId;
+}
+
+- (NSInteger) getRequestTimeMillisec {
+    NSTimeInterval timestamp = [[NSDate date] timeIntervalSince1970];
+    NSTimeInterval requestTime = timestamp - self.m_requestTimestamp;
+    
+    NSInteger requestTimeMillisec = requestTime * 1000.0;
+    
+    return requestTimeMillisec;
+}
+
+- (void) event:(NSString * _Nonnull)name params:(NSDictionary<NSString*, id> * _Nonnull)params {
+    NSInteger requestTimeMillisec = [self getRequestTimeMillisec];
+    
+    NSMutableDictionary<NSString*, id> * total_params = [@{
+        @"ad_unit_id": self.m_adUnitId,
+        @"request_id": @(self.m_requestId),
+        @"request_time": @(requestTimeMillisec),
+        @"request_attempt": @(self.m_requestAttempt)
+    } mutableCopy];
+    
+    [total_params addEntriesFromDictionary:params];
+    
+    [AppleAnalytics event:name params:total_params];
 }
 
 - (void) eventRevenue:(MAAd * _Nonnull) ad {

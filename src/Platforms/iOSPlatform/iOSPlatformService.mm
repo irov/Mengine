@@ -575,14 +575,6 @@ namespace Mengine
             , deviceSeed
         );
 
-        iOSProxyLoggerPtr proxyLogger = Helper::makeFactorableUnique<iOSProxyLogger>( MENGINE_DOCUMENT_FACTORABLE );
-
-        if( LOGGER_SERVICE()
-            ->registerLogger( proxyLogger ) == true )
-        {
-            m_proxyLogger = proxyLogger;
-        }
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -749,15 +741,7 @@ namespace Mengine
         {
             m_sdlInput->finalize();
             m_sdlInput = nullptr;
-        }
-
-        if( m_proxyLogger != nullptr )
-        {
-            LOGGER_SERVICE()
-                ->unregisterLogger( m_proxyLogger );
-
-            m_proxyLogger = nullptr;
-        }        
+        }   
 
         m_platformTags.clear();
     }

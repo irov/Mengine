@@ -19,7 +19,7 @@ namespace Mengine
         const Data & getData() const;
 
     protected:
-        MengineHttpResponseParam * _onHttp( MengineHttpRequestParam * request ) override;
+        AppleHttpResponseParam * _onHttp( AppleHttpRequestParam * request ) override;
 
     protected:
         Data m_data;

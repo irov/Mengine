@@ -6,17 +6,17 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class AppleNSLogger
+    class iOSLogger
         : public LoggerBase
     {
     public:
-        AppleNSLogger();
-        ~AppleNSLogger() override;
+        iOSLogger();
+        ~iOSLogger() override;
 
     public:
         void _log( const LoggerRecordInterfacePtr & _record ) override;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<AppleNSLogger, LoggerInterface> AppleNSLoggerPtr;
+    typedef IntrusivePtr<iOSLogger, LoggerInterface> iOSLoggerPtr;
     //////////////////////////////////////////////////////////////////////////
 }

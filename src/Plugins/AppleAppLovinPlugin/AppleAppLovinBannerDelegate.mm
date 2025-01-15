@@ -3,36 +3,30 @@
 #import "Environment/Apple/AppleDetail.h"
 #import "Environment/Apple/AppleBundle.h"
 #import "Environment/Apple/AppleString.h"
-#import "Environment/Apple/AppleAnalytics.h"
 
 #import "Environment/iOS/iOSDetail.h"
+#import "Environment/iOS/iOSLog.h"
 
 #import "AppleAppLovinApplicationDelegate.h"
-
-#include "Kernel/Logger.h"
 
 @implementation AppleAppLovinBannerDelegate
 
 - (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
                                           placement:(NSString * _Nonnull) placement
-                                           provider:(const Mengine::AppleAppLovinBannerProviderInterfacePtr &) provider {
+                                           adaptive:(BOOL) adaptive {
     self = [super initWithAdUnitIdentifier:adUnitId adFormat:MAAdFormat.banner];
     
-    self.m_provider = provider;
-    
-    BOOL MengineAppleAppLovinPlugin_BannerAdaptive = [AppleBundle getPluginConfigBoolean:@PLUGIN_BUNDLE_NAME withKey:@"BannerAdaptive" withDefault:YES];
-    
-    self.m_bannerAdaptive = MengineAppleAppLovinPlugin_BannerAdaptive;
+    self.m_bannerAdaptive = adaptive;
     
     MAAdView * adView;
     
     @try {
         adView = [[MAAdView alloc] initWithAdUnitIdentifier:adUnitId];
     } @catch (NSException * ex) {
-        LOGGER_ERROR( "[Error] AppleAppLovinBannerDelegate invalid create MAAdView adUnitId: %s exception: %s [%s]"
-            , [adUnitId UTF8String]
-            , [ex.reason UTF8String]
-            , [ex.name UTF8String]
+        IOS_LOGGER_MESSAGE(@"[Error] AppleAppLovinBannerDelegate invalid create MAAdView adUnitId: %@ exception: %@ [%@]"
+            , adUnitId
+            , ex.reason
+            , ex.name
         );
         
         return nil;
@@ -114,13 +108,11 @@
         return;
     }
     
-    self.m_requestId = self.m_enumeratorRequest++;
+    [self increaseRequestId];
     
-    [AppleAnalytics event:@"mng_ad_banner_load" params:@{
-        @"ad_unit_id": self.m_adUnitId,
-        @"request_id": @(self.m_requestId),
-        @"attempt": @(self.m_retryAttempt)
-    }];
+    [self log:@"loadAd"];
+    
+    [self event:@"mng_ad_banner_load" params:@{}];
     
     [self.m_adView loadAd];
 }
@@ -163,129 +155,87 @@
 #pragma mark - MAAdRequestDelegate Protocol
 
 - (void) didStartAdRequestForAdUnitIdentifier:(NSString *)adUnitIdentifier {
+    [self increaseRequestId];
+    
     [self log:@"didStartAdRequestForAdUnitIdentifier"];
     
-    [AppleAnalytics event:@"mng_ad_banner_request_started" params:@{
-        @"ad_unit_id": adUnitIdentifier,
-        @"request_id": @(self.m_requestId),
-        @"attempt": @(self.m_retryAttempt)
-    }];
-    
-    self.m_provider->onAppleAppLovinBannerDidStartAdRequestForAdUnitIdentifier();
+    [self event:@"mng_ad_banner_request_started" params:@{}];
 }
 
 #pragma mark - MAAdDelegate Protocol
 
-- (void) didLoadAd:(MAAd *) ad {
+- (void) didLoadAd:(MAAd *)ad {
     [self log:@"didLoadAd" withMAAd:ad];
     
-    [AppleAnalytics event:@"mng_ad_banner_loaded" params:@{
-        @"ad_unit_id": ad.adUnitIdentifier,
-        @"request_id": @(self.m_requestId),
-        @"attempt": @(self.m_retryAttempt),
+    [self event:@"mng_ad_banner_loaded" params:@{
         @"ad": [self getMAAdParams:ad]
     }];
     
-    self.m_retryAttempt = 0;
-    
-    self.m_provider->onAppleAppLovinBannerDidLoadAd();
+    self.m_requestAttempt = 0;
 }
 
-- (void) didFailToLoadAdForAdUnitIdentifier:(NSString *) adUnitIdentifier withError:(MAError *) error {
+- (void) didFailToLoadAdForAdUnitIdentifier:(NSString *)adUnitIdentifier withError:(MAError *)error {
     [self log:@"didFailToLoadAdForAdUnitIdentifier" withMAError:error];
     
-    [AppleAnalytics event:@"mng_ad_banner_load_failed" params:@{
-        @"ad_unit_id": adUnitIdentifier,
-        @"request_id": @(self.m_requestId),
-        @"attempt": @(self.m_retryAttempt),
+    [self event:@"mng_ad_banner_load_failed" params:@{
         @"error": [self getMAErrorParams:error],
         @"error_code": @(error.code)
     }];
     
-    self.m_retryAttempt++;
-    
-    self.m_provider->onAppleAppLovinBannerDidFailToLoadAdForAdUnitIdentifier();
+    self.m_requestAttempt++;
 }
 
-- (void) didDisplayAd:(MAAd *)ad
-{
+- (void) didDisplayAd:(MAAd *)ad {
     [self log:@"didDisplayAd" withMAAd:ad];
     
-    [AppleAnalytics event:@"mng_ad_banner_displayed" params:@{
-        @"ad_unit_id": ad.adUnitIdentifier,
-        @"request_id": @(self.m_requestId),
-        @"attempt": @(self.m_retryAttempt)
+    [self event:@"mng_ad_banner_displayed" params:@{
+        @"ad": [self getMAAdParams:ad]
     }];
-    
-    self.m_provider->onAppleAppLovinBannerDidDisplayAd();
 }
 
-- (void) didHideAd:(MAAd *)ad
-{
+- (void) didHideAd:(MAAd *)ad {
     [self log:@"didHideAd" withMAAd:ad];
     
-    [AppleAnalytics event:@"mng_ad_banner_hidden" params:@{
-        @"ad_unit_id": ad.adUnitIdentifier,
-        @"request_id": @(self.m_requestId),
-        @"attempt": @(self.m_retryAttempt)
+    [self event:@"mng_ad_banner_hidden" params:@{
+        @"ad": [self getMAAdParams:ad]
     }];
-    
-    self.m_provider->onAppleAppLovinBannerDidHideAd();
 }
 
-- (void) didClickAd:(MAAd *) ad {
+- (void) didClickAd:(MAAd *)ad {
     [self log:@"didClickAd" withMAAd:ad];
     
-    [AppleAnalytics event:@"mng_ad_banner_clicked" params:@{
-        @"ad_unit_id": ad.adUnitIdentifier,
-        @"placement": ad.placement,
-        @"request_id": @(self.m_requestId),
+    [self event:@"mng_ad_banner_clicked" params:@{
         @"ad": [self getMAAdParams:ad]
     }];
-    
-    self.m_provider->onAppleAppLovinBannerDidClickAd();
 }
 
-- (void) didFailToDisplayAd:(MAAd *) ad withError:(MAError *) error {
+- (void) didFailToDisplayAd:(MAAd *)ad withError:(MAError *)error {
     [self log:@"didFailToDisplayAd" withMAAd:ad withMAError:error];
     
-    [AppleAnalytics event:@"mng_ad_banner_display_failed" params:@{
-        @"ad_unit_id": ad.adUnitIdentifier,
-        @"placement": ad.placement,
-        @"request_id": @(self.m_requestId),
+    [self event:@"mng_ad_banner_display_failed" params:@{
+        @"error": [self getMAErrorParams:error],
+        @"error_code": @(error.code),
         @"ad": [self getMAAdParams:ad]
     }];
-    
-    self.m_provider->onAppleAppLovinBannerDidFailToDisplayAd();
 }
 
 
 #pragma mark - MAAdViewAdDelegate Protocol
 
-- (void) didExpandAd:(MAAd *) ad {
+- (void) didExpandAd:(MAAd *)ad {
     [self log:@"didExpandAd" withMAAd:ad];
     
-    [AppleAnalytics event:@"mng_ad_banner_expand" params:@{
-        @"ad_unit_id": ad.adUnitIdentifier,
-        @"placement": ad.placement,
-        @"request_id": @(self.m_requestId),
+    [self event:@"mng_ad_banner_expand" params:@{
         @"ad": [self getMAAdParams:ad]
     }];
-    
-    self.m_provider->onAppleAppLovinBannerDidExpandAd();
 }
 
-- (void) didCollapseAd:(MAAd *) ad {
+- (void) didCollapseAd:(MAAd *)ad {
     [self log:@"didCollapseAd" withMAAd:ad];
     
-    [AppleAnalytics event:@"mng_ad_banner_collapse" params:@{
-        @"ad_unit_id": ad.adUnitIdentifier,
-        @"placement": ad.placement,
-        @"request_id": @(self.m_requestId),
+    [self event:@"mng_ad_banner_collapse" params:@{
         @"ad": [self getMAAdParams:ad]
     }];
-    
-    self.m_provider->onAppleAppLovinBannerDidCollapseAd();
 }
     
 #pragma mark - Revenue Callbacks
@@ -293,10 +243,7 @@
 - (void) didPayRevenueForAd:(MAAd *)ad {
     [self log:@"didPayRevenueForAd" withMAAd:ad];
     
-    [AppleAnalytics event:@"mng_ad_banner_revenue_paid" params:@{
-        @"ad_unit_id": ad.adUnitIdentifier,
-        @"placement": ad.placement,
-        @"request_id": @(self.m_requestId),
+    [self event:@"mng_ad_banner_revenue_paid" params:@{
         @"revenue_value": @(ad.revenue),
         @"revenue_precision": ad.revenuePrecision,
         @"ad": [self getMAAdParams:ad]
@@ -304,10 +251,14 @@
     
     [self eventRevenue:ad];
     
-    Mengine::Params params;
-    [AppleDetail getParamsFromNSDictionary:@{@"revenue":@(ad.revenue)} outParams:&params];
+    Mengine::AppleAppLovinProviderInterfacePtr provider = [[AppleAppLovinApplicationDelegate sharedInstance] getProvider];
     
-    self.m_provider->onAppleAppLovinBannerDidPayRevenueForAd( params );
+    if (provider != nullptr) {
+        Mengine::Params params;
+        [AppleDetail getParamsFromNSDictionary:@{@"revenue":@(ad.revenue)} outParams:&params];
+        
+        provider->onAppleAppLovinBannerRevenuePaid( params );
+    }
 }
 
 #pragma mark - AdReview Callbacks

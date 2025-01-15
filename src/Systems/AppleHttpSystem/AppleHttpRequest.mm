@@ -48,7 +48,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( m_response, "not setup 'response'" );
         MENGINE_ASSERTION_MEMORY_PANIC( m_receiver, "not setup 'receiver'" );
 
-        MengineHttpRequestParam * request = [MengineHttpRequestParam alloc];
+        AppleHttpRequestParam * request = [AppleHttpRequestParam alloc];
         
         request.HTTP_URL = [AppleString NSStringFromString:m_url];
         request.HTTP_PROXY = [AppleString NSStringFromString:m_proxy];
@@ -56,7 +56,7 @@ namespace Mengine
         request.HTTP_COOKIES = [AppleString NSStringFromString:m_cookies];
         request.HTTP_TIMEOUT = m_timeout;
 
-        MengineHttpResponseParam * response = this->_onHttp( request );
+        AppleHttpResponseParam * response = this->_onHttp( request );
 
         if( response == nil )
         {

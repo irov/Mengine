@@ -1,11 +1,11 @@
 #include "Config/Config.h"
 
-#import "Environment/iOS/iOSLogRecordParam.h"
+#import "Environment/Apple/AppleLogRecordParam.h"
 
 #import <Foundation/Foundation.h>
 
 @protocol iOSPluginLoggerDelegateInterface <NSObject>
 
-- (void)onLogger:(iOSLogRecordParam *)record;
+- (void)onLogger:(AppleLogRecordParam * _Nonnull)record;
 
 @end

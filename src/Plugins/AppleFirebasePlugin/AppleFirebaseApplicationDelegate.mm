@@ -1,8 +1,19 @@
 #import "AppleFirebaseApplicationDelegate.h"
 
+#import "Environment/iOS/iOSDetail.h"
+
 #import <Firebase/Firebase.h>
 
 @implementation AppleFirebaseApplicationDelegate
+
++ (AppleFirebaseApplicationDelegate *) sharedInstance {
+    static AppleFirebaseApplicationDelegate *sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [iOSDetail getPluginDelegateOfClass:[AppleFirebaseApplicationDelegate class]];
+    });
+    return sharedInstance;
+}
 
 #pragma mark - iOSPluginApplicationDelegateInterface
 

@@ -1,5 +1,7 @@
 #import "iOSDetail.h"
 
+#import "Environment/Apple/AppleLog.h"
+
 #include "Kernel/ThreadHelper.h"
 
 #import <AdSupport/ASIdentifierManager.h>
@@ -7,19 +9,19 @@
 
 @implementation iOSDetail
 
-+ (NSString *)getDeviceId {
++ (NSString *) getDeviceId {
     NSString * deviceId = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
 
     return deviceId;
 }
 
-+ (NSString *)getDeviceName {
++ (NSString *) getDeviceName {
     NSString * deviceName = [[UIDevice currentDevice] name];
 
     return deviceName;
 }
 
-+ (BOOL)isAppTrackingTransparencyAllowed {
++ (BOOL) isAppTrackingTransparencyAllowed {
     if (@available(iOS 14.5, *)) {
         if (ATTrackingManager.trackingAuthorizationStatus == ATTrackingManagerAuthorizationStatusAuthorized) {
             return YES;
@@ -33,11 +35,10 @@
     return NO;
 }
 
-+ (NSString *)getIDFA {
++ (NSString *) getIDFA {
     NSUUID * idfa_uuid = [iOSDetail getAdIdentifier];
 
-    if( idfa_uuid == nil )
-    {
+    if (idfa_uuid == nil) {
         return nil;
     }
 
@@ -46,25 +47,23 @@
     return idfa;
 }
 //////////////////////////////////////////////////////////////////////////
-+ (BOOL)isValidIDFA {
++ (BOOL) isValidIDFA {
     NSUUID * idfa_uuid = [iOSDetail getAdIdentifier];
 
-    if( idfa_uuid == nil )
-    {
+    if (idfa_uuid == nil) {
         return NO;
     }
 
     NSString * idfa = [idfa_uuid UUIDString];
 
-    if ([idfa isEqualToString:@"00000000-0000-0000-0000-000000000000"] == YES)
-    {
+    if ([idfa isEqualToString:@"00000000-0000-0000-0000-000000000000"] == YES) {
         return NO;
     }
 
     return YES;
 }
 
-+ (UIWindow *)getRootWindow {
++ (UIWindow *) getRootWindow {
     UIApplication * application = [UIApplication sharedApplication];
     id<UIApplicationDelegate> delegate = application.delegate;
     UIWindow * window = delegate.window;
@@ -72,52 +71,46 @@
     return window;
 }
 
-+ (UIView *)getRootView {
++ (UIView *) getRootView {
     UIWindow * window = [iOSDetail getRootWindow];
     UIView * view = [window.subviews objectAtIndex:0];
     
     return view;
 }
 
-+ (UIViewController *)getRootViewController {
++ (UIViewController *) getRootViewController {
     UIWindow * window = [iOSDetail getRootWindow];
     UIViewController *viewController = window.rootViewController;
     
     return viewController;
 }
 
-+ (NSUUID *)getAdIdentifier {
++ (NSUUID *) getAdIdentifier {
     NSUUID * idfa_uuid = [[ASIdentifierManager sharedManager] advertisingIdentifier];
     
     return idfa_uuid;
 }
 
-+ (void)addMainQueueOperation:(dispatch_block_t)block {
++ (void) addMainQueueOperation:(dispatch_block_t)block {
     NSBlockOperation * operation = [NSBlockOperation blockOperationWithBlock:block];
     
     [[NSOperationQueue mainQueue] addOperation:operation];
 }
 
-+ (NSObject<iOSUIMainApplicationDelegateInterface> *)getUIMainApplicationDelegate {
++ (NSObject<iOSUIMainApplicationDelegateInterface> *) getUIMainApplicationDelegate {
     NSObject<iOSUIMainApplicationDelegateInterface> *delegate = (NSObject<iOSUIMainApplicationDelegateInterface> *)[[UIApplication sharedApplication] delegate];
     
     return delegate;
 }
 
-+ (id)getUIProxyApplicationDelegate:(Class)delegateClass {
-    NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
-    NSArray<id<iOSPluginApplicationDelegateInterface>> *pluginDelegates = [delegate getPluginApplicationDelegates];
++ (id) getPluginDelegateOfClass:(Class)delegateClass {
+    NSObject<iOSUIMainApplicationDelegateInterface> * mainDelegate = [iOSDetail getUIMainApplicationDelegate];
+    id pluginDelegate = [mainDelegate getPluginDelegateOfClass:delegateClass];
 
-    for (NSObject<iOSPluginApplicationDelegateInterface> *pluginDelegate in pluginDelegates) {
-        if ([pluginDelegate isMemberOfClass:delegateClass]) {
-            return pluginDelegate;
-        }
-    }
-
-    return nil;
+    return pluginDelegate;
 }
 
-+ (void)eventNotify:(AppleEvent *)event args:(NSArray<id> *)args {
++ (void) eventNotify:(AppleEvent *)event args:(NSArray<id> *)args {
     [iOSDetail addMainQueueOperation:^{
         NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
         
@@ -125,7 +118,7 @@
     }];
 }
 
-+ (void)setSessionId:(iOSSessionIdParam *)sessionId {
++ (void) setSessionId:(iOSSessionIdParam *)sessionId {
     [iOSDetail addMainQueueOperation:^{
         NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
     
@@ -133,7 +126,7 @@
     }];
 }
 
-+ (void)removeSessionData {
++ (void) removeSessionData {
     [iOSDetail addMainQueueOperation:^{
         NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
     
@@ -141,7 +134,7 @@
     }];
 }
 
-+ (void)adRevenue:(iOSAdRevenueParam *)revenue {
++ (void) adRevenue:(iOSAdRevenueParam *)revenue {
     [iOSDetail addMainQueueOperation:^{
         NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
     
@@ -149,7 +142,7 @@
     }];
 }
 
-+ (void)transparencyConsent:(iOSTransparencyConsentParam *)consent {
++ (void) transparencyConsent:(iOSTransparencyConsentParam *)consent {
     [iOSDetail addMainQueueOperation:^{
         NSObject<iOSUIMainApplicationDelegateInterface> * delegate = [iOSDetail getUIMainApplicationDelegate];
     
@@ -157,7 +150,9 @@
     }];
 }
 
-+ (void)log:(iOSLogRecordParam *)record {
++ (void) log:(AppleLogRecordParam *)record {
+    [AppleLog withRecord:record];
+    
     [iOSDetail addMainQueueOperation:^{
         NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
     
@@ -165,7 +160,7 @@
     }];
 }
 
-+ (NSString *)pathForTemporaryFileWithPrefix:(NSString *)prefix ext:(NSString *)ext {
++ (NSString *) pathForTemporaryFileWithPrefix:(NSString *)prefix ext:(NSString *)ext {
     NSString * result;
     CFUUIDRef uuid = CFUUIDCreate(NULL);
     CFStringRef uuidStr = CFUUIDCreateString(NULL, uuid);
@@ -178,7 +173,7 @@
     return result;
 }
 
-+ (void)showOkAlertWithTitle:(NSString *)title message:(NSString *)message ok:(void (^)(void) _Nonnull)ok {
++ (void) showOkAlertWithTitle:(NSString *)title message:(NSString *)message ok:(void (^)(void) _Nonnull)ok {
     UIViewController * viewController = [iOSDetail getRootViewController];
     
     [iOSDetail showOkAlertWithViewController:viewController
@@ -187,7 +182,7 @@
                                     ok:ok];
 }
 
-+ (void)showOkAlertWithViewController:(UIViewController *)viewController
++ (void) showOkAlertWithViewController:(UIViewController *)viewController
                           title:(NSString *)title
                         message:(NSString *)message
                              ok:(void (^)(void) _Nonnull)ok {
@@ -209,7 +204,7 @@
     });
 }
 
-+ (void)showAreYouSureAlertDialogWithTitle:(NSString *)title
++ (void) showAreYouSureAlertDialogWithTitle:(NSString *)title
                                    message:(NSString *)message
                                      delay:(NSTimeInterval)delayMillis
                                        yes:(void (^)(void) _Nonnull)yes
@@ -224,7 +219,7 @@
                                              cancel:cancel];
 }
 
-+ (void)showAreYouSureAlertDialogWithContext:(UIViewController *)viewController
++ (void) showAreYouSureAlertDialogWithContext:(UIViewController *)viewController
                                        title:(NSString *)title
                                      message:(NSString *)message
                                         delay:(NSTimeInterval)delayMillis

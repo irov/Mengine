@@ -1,39 +1,34 @@
-#include "iOSProxyLogger.h"
+#include "iOSLogger.h"
 
 #import "Environment/Apple/AppleString.h"
 #import "Environment/iOS/iOSDetail.h"
 
-#include "Kernel/AssertionUtf8.h"
+#include "Kernel/LoggerHelper.h"
+
+#include "Config/StdString.h"
+#include "Config/Path.h"
+
+#import <Foundation/Foundation.h>
+
+#define MENGINE_APPLE_LOG_MAX_MESSAGE 1024
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    iOSProxyLogger::iOSProxyLogger()
+    iOSLogger::iOSLogger()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    iOSProxyLogger::~iOSProxyLogger()
+    iOSLogger::~iOSLogger()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool iOSProxyLogger::_initializeLogger()
-    {
-        //Empty
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void iOSProxyLogger::_finalizeLogger()
-    {
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void iOSProxyLogger::_log( const LoggerRecordInterfacePtr & _record )
+    void iOSLogger::_log( const LoggerRecordInterfacePtr & _record )
     {
         LoggerMessage message;
         _record->getMessage( &message );
         
-        iOSLogRecordParam * record = [iOSLogRecordParam alloc];
+        AppleLogRecordParam * record = [AppleLogRecordParam alloc];
         
         record.LOG_TIMESTAMP = message.timestamp;
         record.LOG_CATEGORY = [NSString stringWithUTF8String:message.category];

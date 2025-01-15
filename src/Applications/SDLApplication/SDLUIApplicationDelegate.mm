@@ -20,6 +20,7 @@
 - (id)init {
     NSArray * proxysClassed = [AppleApplicationDelegates getApplicationDelegates];
 
+    self.m_pluginDelegates = [NSMutableArray<id> array];
     self.m_pluginApplicationDelegates = [NSMutableArray<iOSPluginApplicationDelegateInterface> array];
     self.m_pluginLoggerDelegates = [NSMutableArray<iOSPluginLoggerDelegateInterface> array];
     self.m_pluginSessionIdDelegates = [NSMutableArray<iOSPluginSessionIdDelegateInterface> array];
@@ -34,6 +35,8 @@
         }
         
         id delegate = [[c alloc] init];
+        
+        [self.m_pluginDelegates addObject:delegate];
 
         if ([delegate conformsToProtocol:@protocol(iOSPluginApplicationDelegateInterface)] == YES) {
             [self.m_pluginApplicationDelegates addObject:delegate];
@@ -81,6 +84,18 @@
     return self.m_pluginTransparencyConsentDelegates;
 }
 
+- (id)getPluginDelegateOfClass:(Class)delegateClass {
+    for (id delegate in self.m_pluginDelegates) {
+        if ([delegate isKindOfClass:delegateClass] == NO) {
+            continue;
+        }
+         
+        return delegate;
+    }
+    
+    return nil;
+}
+
 - (void)notify:(AppleEvent *)event args:(id)firstArg, ... NS_REQUIRES_NIL_TERMINATION {
     va_list args;
     va_start(args, firstArg);
@@ -104,7 +119,7 @@
     }
 }
 
-- (void)log:(iOSLogRecordParam *)record {
+- (void)log:(AppleLogRecordParam *)record {
     for (NSObject<iOSPluginLoggerDelegateInterface> * delegate in self.m_pluginLoggerDelegates) {
         [delegate onLogger:record];
     }

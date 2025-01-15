@@ -9,5 +9,5 @@
 - (instancetype)initWithValue:(const Mengine::FactorablePtr &)value;
 - (const Mengine::FactorablePtr &)value;
 
-@property (nonatomic, strong) Mengine::FactorablePtr value;
+@property (nonatomic, assign) Mengine::FactorablePtr value;
 @end

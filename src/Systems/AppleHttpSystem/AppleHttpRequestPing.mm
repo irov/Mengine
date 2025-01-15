@@ -12,9 +12,9 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    MengineHttpResponseParam * AppleHttpRequestPing::_onHttp( MengineHttpRequestParam * _request )
+    AppleHttpResponseParam * AppleHttpRequestPing::_onHttp( AppleHttpRequestParam * _request )
     {
-        MengineHttpResponseParam * response = [MengineHttpNetwork httpRequestPing:_request];
+        AppleHttpResponseParam * response = [AppleHttpNetwork httpRequestPing:_request];
         
         return response;
     }

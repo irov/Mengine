@@ -15,7 +15,7 @@
 
 - (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
                                           placement:(NSString * _Nonnull) placement
-                                           provider:(const Mengine::AppleAppLovinBannerProviderInterfacePtr &) provider;
+                                           adaptive:(BOOL) adaptive;
 
 - (void) show;
 - (void) hide;
@@ -27,8 +27,6 @@
 - (CGFloat) getHeight;
 
 @property (nonatomic, strong) MAAdView * _Nullable m_adView;
-
-@property (assign) Mengine::AppleAppLovinBannerProviderInterfacePtr m_provider;
 
 @property (assign) BOOL m_bannerAdaptive;
 

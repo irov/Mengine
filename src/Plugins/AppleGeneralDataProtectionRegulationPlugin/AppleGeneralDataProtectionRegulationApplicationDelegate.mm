@@ -5,6 +5,15 @@
 
 @implementation AppleGeneralDataProtectionRegulationApplicationDelegate
 
++ (AppleGeneralDataProtectionRegulationApplicationDelegate *)sharedInstance {
+    static AppleGeneralDataProtectionRegulationApplicationDelegate *sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [iOSDetail getPluginDelegateOfClass:[AppleGeneralDataProtectionRegulationApplicationDelegate class]];
+    });
+    return sharedInstance;
+}
+
 - (void)setGDPRPass:(BOOL)passGDPR {
     [AppleUserDefaults setBooleanForKey:@("mengine.gdpr.pass") value:passGDPR];
     

@@ -20,7 +20,7 @@ namespace Mengine
         bool _onThreadTaskProcess() override;
         
     protected:
-        virtual MengineHttpResponseParam * _onHttp( MengineHttpRequestParam * request ) = 0;
+        virtual AppleHttpResponseParam * _onHttp( AppleHttpRequestParam * request ) = 0;
 
     protected:
         void _onThreadTaskComplete( bool _successful ) override;

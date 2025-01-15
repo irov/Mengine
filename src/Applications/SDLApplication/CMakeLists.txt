@@ -75,6 +75,9 @@ if(MENGINE_TARGET_IOS)
     ios
         SDLUIApplicationDelegate.mm
         SDLUIApplicationDelegate.h
+		
+		iOSLogger.mm
+		iOSLogger.h
     )
 endif()
 

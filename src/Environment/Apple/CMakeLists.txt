@@ -4,6 +4,8 @@ ADD_FILTER(
 src
     AppleLog.h
     AppleLog.mm
+	AppleLogRecordParam.h
+	AppleLogRecordParam.mm
     AppleDetail.h
     AppleDetail.mm
     AppleBundle.h
@@ -34,9 +36,6 @@ src
     AppleKernelService.mm
     
     AppleSemaphoreListenerInterface.h
-    
-    AppleNSLogger.h
-    AppleNSLogger.mm
     
     AppleFactorablePtr.h
     AppleFactorablePtr.mm

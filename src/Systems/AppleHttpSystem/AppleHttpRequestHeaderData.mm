@@ -24,11 +24,11 @@ namespace Mengine
         return m_data;
     }
     //////////////////////////////////////////////////////////////////////////
-    MengineHttpResponseParam * AppleHttpRequestHeaderData::_onHttp( MengineHttpRequestParam * _request )
+    AppleHttpResponseParam * AppleHttpRequestHeaderData::_onHttp( AppleHttpRequestParam * _request )
     {
         NSData * ns_data = [AppleDetail getNSDataFromData:m_data];
         
-        MengineHttpResponseParam * response = [MengineHttpNetwork httpRequestHeaderData:_request data:ns_data];
+        AppleHttpResponseParam * response = [AppleHttpNetwork httpRequestHeaderData:_request data:ns_data];
         
         return response;
     }

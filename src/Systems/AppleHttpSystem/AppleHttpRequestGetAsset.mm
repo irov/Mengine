@@ -78,12 +78,12 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    MengineHttpResponseParam * AppleHttpRequestGetAsset::_onHttp( MengineHttpRequestParam * _request )
+    AppleHttpResponseParam * AppleHttpRequestGetAsset::_onHttp( AppleHttpRequestParam * _request )
     {
         NSString * ns_login = [AppleString NSStringFromString:m_login];
         NSString * ns_password = [AppleString NSStringFromString:m_password];
         
-        MengineHttpResponseParam * response = [MengineHttpNetwork httpRequestGetAsset:_request login:ns_login password:ns_password];
+        AppleHttpResponseParam * response = [AppleHttpNetwork httpRequestGetAsset:_request login:ns_login password:ns_password];
         
         return response;
     }

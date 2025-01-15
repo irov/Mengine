@@ -45,8 +45,6 @@ src
 
     AppleAppLovinService.h
     AppleAppLovinService.mm
-
-    AppleAppLovinAnalyticsDelegate.h
     
     AppleAppLovinApplicationDelegate.h
     AppleAppLovinApplicationDelegate.mm

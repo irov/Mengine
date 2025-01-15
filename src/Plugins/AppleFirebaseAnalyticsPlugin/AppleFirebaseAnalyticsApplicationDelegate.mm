@@ -1,6 +1,7 @@
 #import "AppleFirebaseAnalyticsApplicationDelegate.h"
 
 #import "Environment/iOS/iOSApplication.h"
+#import "Environment/iOS/iOSDetail.h"
 #import "Environment/iOS/iOSAdRevenueParam.h"
 
 #import <FirebaseAnalytics/FirebaseAnalytics.h>
@@ -8,6 +9,15 @@
 #define PLUGIN_BUNDLE_NAME "MengineAppleFirebaseAnalyticsPlugin"
 
 @implementation AppleFirebaseAnalyticsApplicationDelegate
+
++ (AppleFirebaseAnalyticsApplicationDelegate *) sharedInstance {
+    static AppleFirebaseAnalyticsApplicationDelegate *sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [iOSDetail getPluginDelegateOfClass:[AppleFirebaseAnalyticsApplicationDelegate class]];
+    });
+    return sharedInstance;
+}
 
 #pragma mark - iOSPluginApplicationDelegateInterface
 

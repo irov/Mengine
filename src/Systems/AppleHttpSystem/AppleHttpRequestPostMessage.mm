@@ -24,7 +24,7 @@ namespace Mengine
         return m_properties;
     }
     //////////////////////////////////////////////////////////////////////////
-    MengineHttpResponseParam * AppleHttpRequestPostMessage::_onHttp( MengineHttpRequestParam * _request )
+    AppleHttpResponseParam * AppleHttpRequestPostMessage::_onHttp( AppleHttpRequestParam * _request )
     {
         NSMutableDictionary<NSString *, NSString *> * ns_properties = [NSMutableDictionary dictionary];
             
@@ -36,7 +36,7 @@ namespace Mengine
             ns_properties[key] = value;
         }
 
-        MengineHttpResponseParam * response = [MengineHttpNetwork httpRequestPostMessage:_request properties:ns_properties];
+        AppleHttpResponseParam * response = [AppleHttpNetwork httpRequestPostMessage:_request properties:ns_properties];
         
         return response;
     }

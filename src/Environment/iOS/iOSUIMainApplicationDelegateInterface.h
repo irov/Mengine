@@ -10,20 +10,22 @@
 
 @protocol iOSUIMainApplicationDelegateInterface <NSObject>
 
-- (NSArray<iOSPluginApplicationDelegateInterface> *)getPluginApplicationDelegates;
-- (NSArray<iOSPluginLoggerDelegateInterface> *)getPluginLoggerDelegates;
-- (NSArray<iOSPluginSessionIdDelegateInterface> *)getPluginSessionIdDelegates;
-- (NSArray<iOSPluginAdRevenueDelegateInterface> *)getPluginAdRevenueDelegates;
-- (NSArray<iOSPluginTransparencyConsentDelegateInterface> *)getPluginTransparencyConsentDelegates;
+- (NSArray<iOSPluginApplicationDelegateInterface> * _Nonnull) getPluginApplicationDelegates;
+- (NSArray<iOSPluginLoggerDelegateInterface> * _Nonnull) getPluginLoggerDelegates;
+- (NSArray<iOSPluginSessionIdDelegateInterface> * _Nonnull) getPluginSessionIdDelegates;
+- (NSArray<iOSPluginAdRevenueDelegateInterface> * _Nonnull) getPluginAdRevenueDelegates;
+- (NSArray<iOSPluginTransparencyConsentDelegateInterface> * _Nonnull) getPluginTransparencyConsentDelegates;
 
-- (void)notify:(AppleEvent *)event args:(id)firstArg, ... NS_REQUIRES_NIL_TERMINATION;
-- (void)notify:(AppleEvent *)event arrayArgs:(NSArray<id> *)args;
+- (id _Nonnull) getPluginDelegateOfClass:(Class _Nonnull)delegateClass;
 
-- (void)log:(iOSLogRecordParam *)record;
+- (void) notify:(AppleEvent * _Nonnull)event args:(id _Nonnull)firstArg, ... NS_REQUIRES_NIL_TERMINATION;
+- (void) notify:(AppleEvent * _Nonnull)event arrayArgs:(NSArray<id> * _Nonnull)args;
 
-- (void)setSessionId:(iOSSessionIdParam *)sessionId;
-- (void)removeSessionData;
-- (void)eventAdRevenue:(iOSAdRevenueParam *)revenue;
-- (void)eventTransparencyConsent:(iOSTransparencyConsentParam *)consent;
+- (void) log:(AppleLogRecordParam * _Nonnull)record;
+
+- (void) setSessionId:(iOSSessionIdParam * _Nonnull)sessionId;
+- (void) removeSessionData;
+- (void) eventAdRevenue:(iOSAdRevenueParam * _Nonnull)revenue;
+- (void) eventTransparencyConsent:(iOSTransparencyConsentParam * _Nonnull)consent;
 
 @end

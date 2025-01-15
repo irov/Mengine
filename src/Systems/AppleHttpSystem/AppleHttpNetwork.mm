@@ -1,14 +1,24 @@
 #import "AppleHttpNetwork.h"
 
-@implementation MengineHttpRequestParam
+@implementation AppleHttpRequestParam
 
 @end
 
-@implementation MengineHttpResponseParam
+@implementation AppleHttpResponseParam
 
 @end
 
-@implementation MengineHttpNetwork
+@implementation AppleHttpNetwork
+
++ (void)httpRequestSetCacheWithMemoryCapacity:(NSUInteger)memoryCapacity diskCapacity:(NSUInteger)diskCapacity diskPath:(NSString * _Nonnull)diskPath {
+    NSURLCache *sharedCache = [[NSURLCache alloc] initWithMemoryCapacity:memoryCapacity diskCapacity:diskCapacity diskPath:diskPath];
+    
+    [NSURLCache setSharedURLCache:sharedCache];
+}
+
++ (void)httpRequestClearCache {
+    [[NSURLCache sharedURLCache] removeAllCachedResponses];
+}
 
 + (void)setTimeout:(NSMutableURLRequest *)request timeout:(int)timeout {
     if (timeout != -1) {
@@ -57,8 +67,8 @@
     request.HTTPBody = body;
 }
 
-+ (MengineHttpResponseParam *)makeResponse:(NSHTTPURLResponse *)response data:(NSData *)data error:(NSError *)error {
-    MengineHttpResponseParam * httpResponse = [[MengineHttpResponseParam alloc] init];
++ (AppleHttpResponseParam *)makeResponse:(NSHTTPURLResponse *)response data:(NSData *)data error:(NSError *)error {
+    AppleHttpResponseParam * httpResponse = [[AppleHttpResponseParam alloc] init];
     
     if (response != nil) {
         httpResponse.HTTP_RESPONSE_CODE = (int)response.statusCode;
@@ -85,22 +95,22 @@
     return httpResponse;
 }
 
-+ (NSMutableURLRequest *)makeRequest:(MengineHttpRequestParam *)request method:(NSString *)method {
++ (NSMutableURLRequest *)makeRequest:(AppleHttpRequestParam *)request method:(NSString *)method {
     NSMutableURLRequest * urlRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:request.HTTP_URL]];
     urlRequest.HTTPMethod = method;
-    [MengineHttpNetwork setTimeout:urlRequest timeout:request.HTTP_TIMEOUT];
-    [MengineHttpNetwork setHeaders:urlRequest headers:request.HTTP_HEADERS];
+    [AppleHttpNetwork setTimeout:urlRequest timeout:request.HTTP_TIMEOUT];
+    [AppleHttpNetwork setHeaders:urlRequest headers:request.HTTP_HEADERS];
     
     return urlRequest;
 }
 
-+ (MengineHttpResponseParam *)processRequest:(NSMutableURLRequest *)urlRequest {
-    __block MengineHttpResponseParam *responseParam = nil;
++ (AppleHttpResponseParam *)processRequest:(NSMutableURLRequest *)urlRequest {
+    __block AppleHttpResponseParam *responseParam = nil;
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     
     NSURLSessionDataTask * dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:urlRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *)response;
-        responseParam = [MengineHttpNetwork makeResponse:httpResponse data:data error:error];
+        responseParam = [AppleHttpNetwork makeResponse:httpResponse data:data error:error];
         dispatch_semaphore_signal(semaphore);
     }];
     
@@ -110,11 +120,11 @@
     return responseParam;
 }
 
-+ (nullable MengineHttpResponseParam *)httpRequestPing:(MengineHttpRequestParam *)request {
++ (nullable AppleHttpResponseParam *)httpRequestPing:(AppleHttpRequestParam *)request {
     @try {
-        NSMutableURLRequest * urlRequest = [MengineHttpNetwork makeRequest:request method:@"HEAD"];
+        NSMutableURLRequest * urlRequest = [AppleHttpNetwork makeRequest:request method:@"HEAD"];
         
-        MengineHttpResponseParam * responseParam = [MengineHttpNetwork processRequest:urlRequest];
+        AppleHttpResponseParam * responseParam = [AppleHttpNetwork processRequest:urlRequest];
         
         return responseParam;
     } @catch (NSException *exception) {
@@ -124,13 +134,13 @@
     return nil;
 }
 
-+ (nullable MengineHttpResponseParam *)httpRequestPostMessage:(MengineHttpRequestParam *)request properties:(NSDictionary<NSString *, NSString *> *)properties {
++ (nullable AppleHttpResponseParam *)httpRequestPostMessage:(AppleHttpRequestParam *)request properties:(NSDictionary<NSString *, NSString *> *)properties {
     @try {
-        NSMutableURLRequest * urlRequest = [MengineHttpNetwork makeRequest:request method:@"POST"];
+        NSMutableURLRequest * urlRequest = [AppleHttpNetwork makeRequest:request method:@"POST"];
         
-        [MengineHttpNetwork setMultipartFormData:urlRequest properties:properties];
+        [AppleHttpNetwork setMultipartFormData:urlRequest properties:properties];
         
-        MengineHttpResponseParam * responseParam = [MengineHttpNetwork processRequest:urlRequest];
+        AppleHttpResponseParam * responseParam = [AppleHttpNetwork processRequest:urlRequest];
         
         return responseParam;
     } @catch (NSException *exception) {
@@ -140,13 +150,13 @@
     return nil;
 }
 
-+ (nullable MengineHttpResponseParam *)httpRequestHeaderData:(MengineHttpRequestParam *)request data:(NSData *)data {
++ (nullable AppleHttpResponseParam *)httpRequestHeaderData:(AppleHttpRequestParam *)request data:(NSData *)data {
     @try {
-        NSMutableURLRequest * urlRequest = [MengineHttpNetwork makeRequest:request method:@"POST"];
+        NSMutableURLRequest * urlRequest = [AppleHttpNetwork makeRequest:request method:@"POST"];
 
-        [MengineHttpNetwork setData:urlRequest data:data];
+        [AppleHttpNetwork setData:urlRequest data:data];
         
-        MengineHttpResponseParam * responseParam = [MengineHttpNetwork processRequest:urlRequest];
+        AppleHttpResponseParam * responseParam = [AppleHttpNetwork processRequest:urlRequest];
         
         return responseParam;
     } @catch (NSException *exception) {
@@ -156,11 +166,11 @@
     return nil;
 }
 
-+ (nullable MengineHttpResponseParam *)httpRequestGetMessage:(MengineHttpRequestParam *)request {
++ (nullable AppleHttpResponseParam *)httpRequestGetMessage:(AppleHttpRequestParam *)request {
     @try {
-        NSMutableURLRequest * urlRequest = [MengineHttpNetwork makeRequest:request method:@"GET"];
+        NSMutableURLRequest * urlRequest = [AppleHttpNetwork makeRequest:request method:@"GET"];
         
-        MengineHttpResponseParam * responseParam = [MengineHttpNetwork processRequest:urlRequest];
+        AppleHttpResponseParam * responseParam = [AppleHttpNetwork processRequest:urlRequest];
         
         return responseParam;
     } @catch (NSException *exception) {
@@ -170,11 +180,11 @@
     return nil;
 }
 
-+ (nullable MengineHttpResponseParam *)httpRequestDeleteMessage:(MengineHttpRequestParam *)request {
++ (nullable AppleHttpResponseParam *)httpRequestDeleteMessage:(AppleHttpRequestParam *)request {
     @try {
-        NSMutableURLRequest * urlRequest = [MengineHttpNetwork makeRequest:request method:@"DELETE"];
+        NSMutableURLRequest * urlRequest = [AppleHttpNetwork makeRequest:request method:@"DELETE"];
         
-        MengineHttpResponseParam * responseParam = [MengineHttpNetwork processRequest:urlRequest];
+        AppleHttpResponseParam * responseParam = [AppleHttpNetwork processRequest:urlRequest];
         
         return responseParam;
     } @catch (NSException *exception) {
@@ -184,13 +194,13 @@
     return nil;
 }
 
-+ (nullable MengineHttpResponseParam *)httpRequestGetAsset:(MengineHttpRequestParam *)request login:(NSString *)login password:(NSString *)password {
++ (nullable AppleHttpResponseParam *)httpRequestGetAsset:(AppleHttpRequestParam *)request login:(NSString *)login password:(NSString *)password {
     @try {
-        NSMutableURLRequest * urlRequest = [MengineHttpNetwork makeRequest:request method:@"GET"];
+        NSMutableURLRequest * urlRequest = [AppleHttpNetwork makeRequest:request method:@"GET"];
         
-        [MengineHttpNetwork setBasicAuthorization:urlRequest login:login password:password];
+        [AppleHttpNetwork setBasicAuthorization:urlRequest login:login password:password];
         
-        MengineHttpResponseParam * responseParam = [MengineHttpNetwork processRequest:urlRequest];
+        AppleHttpResponseParam * responseParam = [AppleHttpNetwork processRequest:urlRequest];
         
         return responseParam;
     } @catch (NSException *exception) {

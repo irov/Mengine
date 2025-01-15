@@ -1,6 +1,17 @@
 #import "AppleUserNotificationCenterApplicationDelegate.h"
 
+#import "Environment/iOS/iOSDetail.h"
+
 @implementation AppleUserNotificationCenterApplicationDelegate
+
++ (AppleUserNotificationCenterApplicationDelegate *) sharedInstance {
+    static AppleUserNotificationCenterApplicationDelegate *sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [iOSDetail getPluginDelegateOfClass:[AppleUserNotificationCenterApplicationDelegate class]];
+    });
+    return sharedInstance;
+}
 
 #pragma mark - UIApplicationDelegate Protocol
 

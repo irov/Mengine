@@ -12,6 +12,8 @@
 
 - (void) loadAd;
 - (void) retryLoadAd;
+- (NSInteger) increaseRequestId;
+- (NSInteger) getRequestTimeMillisec;
 
 - (NSDictionary * _Nonnull) getMAAdParams:(MAAd * _Nonnull) ad;
 - (NSDictionary * _Nonnull) getMAErrorParams:(MAError * _Nonnull) error;
@@ -24,13 +26,15 @@
 - (void) log:(NSString * _Nonnull) callback withMAError:(MAError * _Nonnull)error;
 - (void) log:(NSString * _Nonnull) callback withMAAd:(MAAd * _Nonnull) ad withMAReward:(MAReward * _Nonnull)reward;
 
+- (void) event:(NSString * _Nonnull)name params:(NSDictionary<NSString*, id> * _Nonnull)params;
 - (void) eventRevenue:(MAAd * _Nonnull) ad;
 
-@property (strong) NSString * _Nonnull m_adUnitId;
-@property (strong) MAAdFormat * _Nonnull m_adFormat;
+@property (nonatomic, strong) NSString * _Nonnull m_adUnitId;
+@property (nonatomic, strong) MAAdFormat * _Nonnull m_adFormat;
 
-@property (nonatomic, assign) NSInteger m_retryAttempt;
 @property (nonatomic, assign) NSInteger m_enumeratorRequest;
 @property (nonatomic, assign) NSInteger m_requestId;
+@property (nonatomic, assign) NSInteger m_requestAttempt;
+@property (nonatomic, assign) NSTimeInterval m_requestTimestamp;
 
 @end

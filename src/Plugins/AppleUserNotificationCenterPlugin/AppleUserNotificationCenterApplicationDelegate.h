@@ -6,4 +6,6 @@
 
 @interface AppleUserNotificationCenterApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface, UNUserNotificationCenterDelegate>
 
++ (AppleUserNotificationCenterApplicationDelegate *) sharedInstance;
+
 @end

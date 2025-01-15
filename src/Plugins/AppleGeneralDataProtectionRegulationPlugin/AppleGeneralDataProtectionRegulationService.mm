@@ -41,16 +41,12 @@ namespace Mengine
             , _passGDPR
         );
         
-        AppleGeneralDataProtectionRegulationApplicationDelegate * delegate = [iOSDetail getUIProxyApplicationDelegate:[AppleGeneralDataProtectionRegulationApplicationDelegate class]];
-        
-        [delegate setGDPRPass:(BOOL)_passGDPR];
+        [[AppleGeneralDataProtectionRegulationApplicationDelegate sharedInstance] setGDPRPass:(BOOL)_passGDPR];
     }
     //////////////////////////////////////////////////////////////////////////
     bool AppleGeneralDataProtectionRegulationService::isGDPRPass() const
     {
-        AppleGeneralDataProtectionRegulationApplicationDelegate * delegate = [iOSDetail getUIProxyApplicationDelegate:[AppleGeneralDataProtectionRegulationApplicationDelegate class]];
-        
-        BOOL passGDPR = [delegate isGDPRPass];
+        BOOL passGDPR = [[AppleGeneralDataProtectionRegulationApplicationDelegate sharedInstance] isGDPRPass];
         
         return passGDPR;
     }

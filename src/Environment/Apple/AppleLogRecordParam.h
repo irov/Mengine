@@ -6,7 +6,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface iOSLogRecordParam : NSObject
+@interface AppleLogRecordParam : NSObject
 
 @property (nonatomic) Mengine::Timestamp LOG_TIMESTAMP;
 @property (nonatomic, strong) NSString * _Nonnull LOG_CATEGORY;

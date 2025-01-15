@@ -1,26 +1,27 @@
 #import "AppleDetail.h"
 #import "AppleString.h"
+#import "AppleFactorablePtr.h"
 
 @implementation AppleDetail
 
-+ (NSString * _Nonnull)NSIdToString:(id _Nonnull) _value {
-    NSString * value_string = [NSString stringWithFormat:@"%@", _value];
-
++ (NSString * _Nonnull) NSIdToString:(id _Nonnull)value {
+    NSString * value_string = [NSString stringWithFormat:@"%@", value];
+    
     return value_string;
 }
 
-+ (NSString * _Nonnull)getMessageFromNSError:(NSError *) _error {
++ (NSString * _Nonnull) getMessageFromNSError:(NSError * _Nonnull)error {
     NSString * message = [NSString stringWithFormat:@"[Error %ld Description: %@ Failure reason: %@ Recovery suggestion: %@"
-        , [_error code]
-        , [_error description]
-        , [_error localizedFailureReason]
-        , [_error localizedRecoverySuggestion]
-        ];
-
+        , [error code]
+        , [error description]
+        , [error localizedFailureReason]
+        , [error localizedRecoverySuggestion]
+    ];
+    
     return message;
 }
 
-+ (NSInteger)getCurrentTimeMillis {
++ (NSInteger) getCurrentTimeMillis {
     NSTimeInterval time = [[NSDate date] timeIntervalSince1970];
     
     NSInteger millis = (NSInteger)(time * 1000.0);
@@ -28,7 +29,7 @@
     return millis;
 }
 
-+ (NSInteger)getSecureRandomInteger {
++ (NSInteger) getSecureRandomInteger {
     NSInteger randomNumber;
     size_t size = sizeof(randomNumber);
     
@@ -39,30 +40,46 @@
     return randomNumber;
 }
 
-+ (NSString * _Nonnull)getRandomHexString:(NSInteger) _length {
-    NSInteger lengthBytes = (_length + 1) / 2;
++ (NSString * _Nonnull) getRandomHexString:(NSInteger)length {
+    NSInteger lengthBytes = (length + 1) / 2;
     uint8_t randomBytes[lengthBytes];
     if (SecRandomCopyBytes(kSecRandomDefault, lengthBytes, randomBytes) != 0) {
         return @"";
     }
     
-    NSMutableString * randomHexString = [NSMutableString stringWithCapacity:(_length + 1) / 2 * 2];
+    NSMutableString * randomHexString = [NSMutableString stringWithCapacity:(length + 1) / 2 * 2];
     
     for (NSInteger i = 0; i != lengthBytes; ++i) {
         [randomHexString appendFormat:@"%02X", randomBytes[i]];
     }
     
-    NSString * randomHexStringTrim = [randomHexString substringToIndex:_length];
+    NSString * randomHexStringTrim = [randomHexString substringToIndex:length];
     
     return randomHexStringTrim;
 }
 
-+ (BOOL)isValidJSONString:(NSString *) _value {
-    if (_value == nil) {
++ (BOOL) hasOption:(NSString *)value {
+    NSString * hyphen_value = [NSString stringWithFormat:@"-%@", value];
+    
+    if ([[[NSProcessInfo processInfo] arguments] containsObject:hyphen_value] == YES) {
+        return YES;
+    }
+    
+    NSString * double_hyphen_value = [NSString stringWithFormat:@"--%@", value];
+    
+    if ([[[NSProcessInfo processInfo] arguments] containsObject:double_hyphen_value] == YES) {
+        return YES;
+    }
+    
+    return NO;
+}
+
++ (BOOL) isValidJSONString:(NSString *)value {
+    if (value == nil) {
         return NO;
     }
     
-    NSData *data = [_value dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *data = [value dataUsingEncoding:NSUTF8StringEncoding];
     NSError *error = nil;
     
     [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
@@ -74,7 +91,7 @@
     return YES;
 }
 
-+ (BOOL)getParamsFromJSON:(NSString * _Nonnull) _in outParams:(Mengine::Params * const _Nonnull) _out {
++ (BOOL) getParamsFromJSON:(NSString * _Nonnull)_in outParams:(Mengine::Params * const _Nonnull)_out {
     if ([_in length] == 0) {
         return NO;
     }
@@ -84,8 +101,7 @@
     NSError * error = nil;
     id jsonObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
     
-    if( error != nil )
-    {
+    if( error != nil ) {
         return NO;
     }
     
@@ -201,7 +217,7 @@
                 [dictionary setObject:ns_element
                                forKey:ns_key];
             }, [dictionary, ns_key]( const Mengine::ParamFactorablePtr & _element ) {
-                NSValue * ns_element = [NSValue valueWithPointer:_element.get()];
+                AppleFactorablePtr * ns_element = [[AppleFactorablePtr alloc] initWithValue:_element];
                 
                 [dictionary setObject:ns_element
                                forKey:ns_key];

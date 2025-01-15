@@ -4,4 +4,6 @@
 
 @interface AppleFirebaseRemoteConfigApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface>
 
++ (AppleFirebaseRemoteConfigApplicationDelegate *) sharedInstance;
+
 @end

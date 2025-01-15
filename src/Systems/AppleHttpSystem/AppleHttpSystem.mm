@@ -1,5 +1,8 @@
 #include "AppleHttpSystem.h"
 
+#import "Environment/Apple/AppleBundle.h"
+
+#import "AppleHttpNetwork.h"
 #include "AppleHttpRequestPing.h"
 #include "AppleHttpRequestGetMessage.h"
 #include "AppleHttpRequestPostMessage.h"
@@ -33,6 +36,16 @@ namespace Mengine
         m_factoryRequestDeleteMessage = Helper::makeFactoryPool<AppleHttpRequestDeleteMessage, 16>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRequestHeaderData = Helper::makeFactoryPool<AppleHttpRequestHeaderData, 16>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRequestGetAsset = Helper::makeFactoryPool<AppleHttpRequestGetAsset, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        
+        NSInteger MengineAppleHttpSystem_CacheMemoryCapacity = [AppleBundle getPluginConfigInteger:@"MengineAppleHttpSystem" withKey:@"CacheMemoryCapacity" withDefault:4*1024*1024];
+        
+        NSInteger MengineAppleHttpSystem_CacheDiskCapacity = [AppleBundle getPluginConfigInteger:@"MengineAppleHttpSystem" withKey:@"CacheDiskCapacity" withDefault:32*1024*1024];
+        
+        NSString * MengineAppleHttpSystem_CacheDiskPath = [AppleBundle getPluginConfigString:@"MengineAppleHttpSystem" withKey:@"CacheDiskPath" withDefault:@"mngnsurlcache"];
+        
+        [AppleHttpNetwork httpRequestSetCacheWithMemoryCapacity:MengineAppleHttpSystem_CacheMemoryCapacity
+                                                   diskCapacity:MengineAppleHttpSystem_CacheDiskCapacity
+                                                       diskPath:MengineAppleHttpSystem_CacheDiskPath];
 
         return true;
     }
@@ -45,6 +58,8 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRequestDeleteMessage );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRequestHeaderData );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRequestGetMessage );
+        
+        [AppleHttpNetwork httpRequestClearCache];
 
         m_factoryRequestPing = nullptr;
         m_factoryRequestGetAsset = nullptr;

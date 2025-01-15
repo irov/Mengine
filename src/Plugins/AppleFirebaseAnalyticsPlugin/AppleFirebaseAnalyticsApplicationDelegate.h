@@ -7,6 +7,8 @@
 
 @interface AppleFirebaseAnalyticsApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface, iOSPluginAdRevenueDelegateInterface, iOSPluginTransparencyConsentDelegateInterface, iOSPluginSessionIdDelegateInterface>
 
++ (AppleFirebaseAnalyticsApplicationDelegate *) sharedInstance;
+
 @end
 
 

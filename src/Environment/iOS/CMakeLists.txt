@@ -4,6 +4,9 @@ ADD_FILTER(
 src    
     iOSDetail.h
     iOSDetail.mm
+	
+	iOSLog.h
+	iOSLog.mm
     
     iOSIncluder.h
     
@@ -24,9 +27,6 @@ src
 
     iOSAdRevenueParam.h
     iOSAdRevenueParam.mm
-
-    iOSLogRecordParam.h
-    iOSLogRecordParam.mm
     
     iOSUIMainApplicationDelegateInterface.h
     

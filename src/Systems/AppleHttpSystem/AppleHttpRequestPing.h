@@ -15,7 +15,7 @@ namespace Mengine
         ~AppleHttpRequestPing() override;
 
     protected:
-        MengineHttpResponseParam * _onHttp( MengineHttpRequestParam * request ) override;
+        AppleHttpResponseParam * _onHttp( AppleHttpRequestParam * request ) override;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AppleHttpRequestPing, HttpRequestInterface> AppleHttpRequestPingPtr;

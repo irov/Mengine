@@ -8,55 +8,34 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class AppleAppLovinBannerProviderInterface
+    class AppleAppLovinProviderInterface
         : public Mixin
     {
     public:
-        virtual void onAppleAppLovinBannerDidStartAdRequestForAdUnitIdentifier() = 0;
-        virtual void onAppleAppLovinBannerDidLoadAd() = 0;
-        virtual void onAppleAppLovinBannerDidFailToLoadAdForAdUnitIdentifier() = 0;
-        virtual void onAppleAppLovinBannerDidDisplayAd() = 0;
-        virtual void onAppleAppLovinBannerDidHideAd() = 0;
-        virtual void onAppleAppLovinBannerDidClickAd() = 0;
-        virtual void onAppleAppLovinBannerDidFailToDisplayAd() = 0;
-        virtual void onAppleAppLovinBannerDidExpandAd() = 0;
-        virtual void onAppleAppLovinBannerDidCollapseAd() = 0;
-        virtual void onAppleAppLovinBannerDidPayRevenueForAd( const Params & _params ) = 0;
+        virtual void onAppleAppLovinBannerRevenuePaid( const Params & _params ) = 0;
+        virtual void onAppleAppLovinInterstitialRevenuePaid( const Params & _params ) = 0;
+        virtual void onAppleAppLovinRewardedRevenuePaid( const Params & _params ) = 0;
+
+    public:
+        virtual void onAppleAppLovinRewardedUserRewarded( const Params & _params ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<AppleAppLovinBannerProviderInterface> AppleAppLovinBannerProviderInterfacePtr;
+    typedef IntrusivePtr<AppleAppLovinProviderInterface> AppleAppLovinProviderInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
-    class AppleAppLovinInterstitailProviderInterface
+    class AppleAppLovinInterstitialProviderInterface
         : public Mixin
     {
     public:
-        virtual void onAppleAppLovinInterstitialDidStartAdRequestForAdUnitIdentifier() = 0;
-        virtual void onAppleAppLovinInterstitialDidLoadAd() = 0;
-        virtual void onAppleAppLovinInterstitialDidFailToLoadAdForAdUnitIdentifier() = 0;
-        virtual void onAppleAppLovinInterstitialDidDisplayAd() = 0;
-        virtual void onAppleAppLovinInterstitialDidClickAd() = 0;
-        virtual void onAppleAppLovinInterstitialDidHideAd() = 0;
-        virtual void onAppleAppLovinInterstitialDidFailToDisplayAd() = 0;
-        virtual void onAppleAppLovinInterstitialDidPayRevenueForAd( const Params & _params ) = 0;
+        virtual void onAppleAppLovinInterstitialShowCompleted( bool _successful, const Params & _params ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<AppleAppLovinInterstitailProviderInterface> AppleAppLovinInterstitialProviderInterfacePtr;
+    typedef IntrusivePtr<AppleAppLovinInterstitialProviderInterface> AppleAppLovinInterstitialProviderInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class AppleAppLovinRewardedProviderInterface
         : public Mixin
     {
     public:
-        virtual void onAppleAppLovinRewardedDidStartAdRequestForAdUnitIdentifier() = 0;
-        virtual void onAppleAppLovinRewardedDidLoadAd() = 0;
-        virtual void onAppleAppLovinRewardedDidFailToLoadAdForAdUnitIdentifier() = 0;
-        virtual void onAppleAppLovinRewardedDidDisplayAd() = 0;
-        virtual void onAppleAppLovinRewardedDidClickAd() = 0;
-        virtual void onAppleAppLovinRewardedDidHideAd() = 0;
-        virtual void onAppleAppLovinRewardedDidFailToDisplayAd() = 0;
-        virtual void onAppleAppLovinRewardedDidStartRewardedVideoForAd() = 0;
-        virtual void onAppleAppLovinRewardedDidCompleteRewardedVideoForAd() = 0;
-        virtual void onAppleAppLovinRewardedDidRewardUserForAd() = 0;
-        virtual void onAppleAppLovinRewardedDidPayRevenueForAd( const Params & _params ) = 0;
+        virtual void onAppleAppLovinRewardedShowCompleted( bool _successful, const Params & _params ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AppleAppLovinRewardedProviderInterface> AppleAppLovinRewardedProviderInterfacePtr;
@@ -77,28 +56,23 @@ namespace Mengine
         SERVICE_DECLARE( "AppleAppLovinService" )
 
     public:
-        virtual bool initBanner( const ConstString & _adUnitId, const ConstString & _placement, const AppleAppLovinBannerProviderInterfacePtr & _provider ) = 0;
+        virtual void setProvider( const AppleAppLovinProviderInterfacePtr & _provider ) = 0;
         
     public:
-        virtual bool showBanner( const ConstString & _adUnitId ) = 0;
-        virtual bool hideBanner( const ConstString & _adUnitId ) = 0;
+        virtual bool showBanner() = 0;
+        virtual bool hideBanner() = 0;
         
-        virtual bool getBannerHeight( const ConstString & _adUnitId, uint32_t * const _height ) const = 0;
-        virtual bool getBannerViewport( const ConstString & _adUnitId, Viewport * const _viewport ) const = 0;
-        
-    public:
-        virtual bool initInterstitial( const ConstString & _adUnitId, const AppleAppLovinInterstitialProviderInterfacePtr & _provider ) = 0;
+        virtual bool getBannerHeight( uint32_t * const _height ) const = 0;
+        virtual bool getBannerViewport( Viewport * const _viewport ) const = 0;
         
     public:
-        virtual bool canYouShowInterstitial( const ConstString & _adUnitId, const ConstString & _placement ) const = 0;
-        virtual bool showInterstitial( const ConstString & _adUnitId, const ConstString & _placement ) = 0;
+        virtual bool canYouShowInterstitial( const ConstString & _placement ) const = 0;
+        virtual bool showInterstitial( const ConstString & _placement, const AppleAppLovinInterstitialProviderInterfacePtr & _interstitialProvider ) = 0;
         
     public:
-        virtual bool initRewarded( const ConstString & _adUnitId, const AppleAppLovinRewardedProviderInterfacePtr & _provider ) = 0;
-
-        virtual bool canOfferRewarded( const ConstString & _adUnitId, const ConstString & _placement ) const = 0;
-        virtual bool canYouShowRewarded( const ConstString & _adUnitId, const ConstString & _placement ) const = 0;
-        virtual bool showRewarded( const ConstString & _adUnitId, const ConstString & _placement ) = 0;
+        virtual bool canOfferRewarded( const ConstString & _placement ) const = 0;
+        virtual bool canYouShowRewarded( const ConstString & _placement ) const = 0;
+        virtual bool showRewarded( const ConstString & _placement, const AppleAppLovinRewardedProviderInterfacePtr & _rewardedProvider ) = 0;
         
     public:
         virtual bool hasSupportedCMP() const = 0;

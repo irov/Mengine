@@ -1,6 +1,6 @@
 #import "iOSMailComposeDelegate.h"
 
-#include "Kernel/Logger.h"
+#import "Environment/iOS/iOSLog.h"
 
 @implementation iOSMailComposeDelegate
 
@@ -19,17 +19,17 @@
 - (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(nullable NSError *)error {
     switch(result) {
         case MFMailComposeResultCancelled:
-            LOGGER_MESSAGE( "MFMailComposeResultCancelled: The user cancelled the operation. No email message was queued" );
+            IOS_LOGGER_MESSAGE( @"MFMailComposeResultCancelled: The user cancelled the operation. No email message was queued" );
             break;
         case MFMailComposeResultSaved:
-            LOGGER_MESSAGE( "MFMailComposeResultSaved: The email message was saved in the useris Drafts folder" );
+            IOS_LOGGER_MESSAGE( @"MFMailComposeResultSaved: The email message was saved in the useris Drafts folder" );
             break;
         case MFMailComposeResultSent:
-            LOGGER_MESSAGE( "MFMailComposeResultSent: The email message was queued in the useris outbox. It is ready to send the next time the user connects to email" );
+            IOS_LOGGER_MESSAGE( @"MFMailComposeResultSent: The email message was queued in the useris outbox. It is ready to send the next time the user connects to email" );
             break;
         case MFMailComposeResultFailed:
-            LOGGER_ERROR( "MFMailComposeResultFailed: The email message was not saved or queued, possibly due to an error [%s]"
-                , [[error description] UTF8String]
+            IOS_LOGGER_MESSAGE( @"MFMailComposeResultFailed: The email message was not saved or queued, possibly due to an error: %@"
+                , [error description]
             );
             break;
         default:

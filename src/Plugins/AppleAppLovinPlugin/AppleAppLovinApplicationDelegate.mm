@@ -1,11 +1,12 @@
 #import "AppleAppLovinApplicationDelegate.h"
 
 #import "Environment/Apple/AppleBundle.h"
-#import "Environment/Apple/AppleLog.h"
 #import "Environment/Apple/AppleSemaphoreService.h"
+#import "Environment/Apple/AppleDetail.h"
 
 #import "Environment/iOS/iOSApplication.h"
 #import "Environment/iOS/iOSDetail.h"
+#import "Environment/iOS/iOSLog.h"
 #import "Environment/iOS/iOSTransparencyConsentParam.h"
 
 #include "Kernel/ThreadHelper.h"
@@ -19,11 +20,40 @@
 
 @implementation AppleAppLovinApplicationDelegate
 
++ (AppleAppLovinApplicationDelegate *) sharedInstance {
+    static AppleAppLovinApplicationDelegate *sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [iOSDetail getPluginDelegateOfClass:[AppleAppLovinApplicationDelegate class]];
+    });
+    return sharedInstance;
+}
+
+- (void)setProvider:(const Mengine::AppleAppLovinProviderInterfacePtr &)provider {
+    self.m_provider = provider;
+}
+
+- (Mengine::AppleAppLovinProviderInterfacePtr) getProvider {
+    return self.m_provider;
+}
+
+- (AppleAppLovinBannerDelegate *) getBanner {
+    return self.m_bannerAd;
+}
+
+- (AppleAppLovinInterstitialDelegate *) getInterstitial {
+    return self.m_interstitialAd;
+}
+
+- (AppleAppLovinRewardedDelegate *) getRewarded {
+    return self.m_rewardedAd;
+}
+
 #pragma mark - iOSPluginApplicationDelegateInterface
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     if ([AppleBundle hasPluginConfig:@PLUGIN_BUNDLE_NAME] == NO) {
-        [AppleLog withFormat:@"🔴 [ERROR] AppLovin plugin not found bundle config [%@]", @PLUGIN_BUNDLE_NAME];
+        IOS_LOGGER_MESSAGE(@"🔴 [ERROR] AppLovin plugin not found bundle config [%@]", @PLUGIN_BUNDLE_NAME);
         
         return NO;
     }
@@ -32,7 +62,7 @@
     [FBAdSettings setDataProcessingOptions: @[]];
 #endif
     
-    [AppleLog withFormat:@"AppLovin: %@", ALSdk.version];
+    IOS_LOGGER_MESSAGE(@"AppLovin: %@", ALSdk.version);
     
     NSString * MengineAppleAppLovinPlugin_CCPA = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"CCPA" withDefault:@"UNKNOWN"];
     
@@ -43,7 +73,7 @@
     } else if ([MengineAppleAppLovinPlugin_CCPA caseInsensitiveCompare:@"UNKNOWN"] == NSOrderedSame) {
         //Nothing
     } else {
-        [AppleLog withFormat:@"🔴 [ERROR] AppLovin plugin invalid config [%@.CCPA] value %@ [YES|NO|UNKNOWN]", @PLUGIN_BUNDLE_NAME, MengineAppleAppLovinPlugin_CCPA];
+        IOS_LOGGER_MESSAGE(@"🔴 [ERROR] AppLovin plugin invalid config [%@.CCPA] value %@ [YES|NO|UNKNOWN]", @PLUGIN_BUNDLE_NAME, MengineAppleAppLovinPlugin_CCPA);
         
         return NO;
     }
@@ -51,7 +81,7 @@
     NSString * MengineAppleAppLovinPlugin_SdkKey = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"SdkKey" withDefault:nil];
     
     if (MengineAppleAppLovinPlugin_SdkKey == nil) {
-        [AppleLog withFormat:@"🔴 [ERROR] AppLovin plugin missed required config [%@.SdkKey]", @PLUGIN_BUNDLE_NAME];
+        IOS_LOGGER_MESSAGE(@"🔴 [ERROR] AppLovin plugin missed required config [%@.SdkKey]", @PLUGIN_BUNDLE_NAME);
         
         return NO;
     }
@@ -83,13 +113,13 @@
         NSString * MengineAppleAppLovinPlugin_TermsOfServiceURL = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"TermsOfServiceURL" withDefault:nil];
         
         if (MengineAppleAppLovinPlugin_PrivacyPolicyURL == nil) {
-            [AppleLog withFormat:@"🔴 [ERROR] AppLovin plugin missed required config [%@.PrivacyPolicyURL]", @PLUGIN_BUNDLE_NAME];
+            IOS_LOGGER_MESSAGE(@"🔴 [ERROR] AppLovin plugin missed required config [%@.PrivacyPolicyURL]", @PLUGIN_BUNDLE_NAME);
             
             return NO;
         }
         
         if (MengineAppleAppLovinPlugin_TermsOfServiceURL == nil) {
-            [AppleLog withFormat:@"🔴 [ERROR] AppLovin plugin missed required config [%@.TermsOfServiceURL]", @PLUGIN_BUNDLE_NAME];
+            IOS_LOGGER_MESSAGE(@"🔴 [ERROR] AppLovin plugin missed required config [%@.TermsOfServiceURL]", @PLUGIN_BUNDLE_NAME);
             
             return NO;
         }
@@ -107,11 +137,11 @@
         ALAppTrackingTransparencyStatus appTrackingTransparencyStatus = configuration.appTrackingTransparencyStatus;
         BOOL testModeEnabled = configuration.testModeEnabled;
         
-        [AppleLog withFormat:@"[AppLovin] plugin initialize complete"];
-        [AppleLog withFormat:@"[AppLovin] consent flow user geography: %ld", consentFlowUserGeography];
-        [AppleLog withFormat:@"[AppLovin] country code: %@", countryCode];
-        [AppleLog withFormat:@"[AppLovin] app tracking transparency status: %ld", appTrackingTransparencyStatus];
-        [AppleLog withFormat:@"[AppLovin] test mode enabled: %d", testModeEnabled];
+        IOS_LOGGER_MESSAGE(@"[AppLovin] plugin initialize complete");
+        IOS_LOGGER_MESSAGE(@"[AppLovin] consent flow user geography: %ld", consentFlowUserGeography);
+        IOS_LOGGER_MESSAGE(@"[AppLovin] country code: %@", countryCode);
+        IOS_LOGGER_MESSAGE(@"[AppLovin] app tracking transparency status: %ld", appTrackingTransparencyStatus);
+        IOS_LOGGER_MESSAGE(@"[AppLovin] test mode enabled: %d", testModeEnabled);
         
         iOSTransparencyConsentParam * consent = [[iOSTransparencyConsentParam alloc] initFromUserDefaults];
         
@@ -121,10 +151,38 @@
         BOOL ATTAllowed = [iOSDetail isAppTrackingTransparencyAllowed];
         [FBAdSettings setAdvertiserTrackingEnabled:ATTAllowed];
         
-        [AppleLog withFormat:@"FBAdSettings setAdvertiserTrackingEnabled:%d", ATTAllowed];
+        IOS_LOGGER_MESSAGE(@"FBAdSettings setAdvertiserTrackingEnabled:%d", ATTAllowed);
 #endif
         
-        if ([[[NSProcessInfo processInfo] arguments] containsObject:@"-applovin.show_mediation_debugger"] == YES) {
+        NSString * MengineAppleAppLovinPlugin_BannerAdUnitId = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"BannerAdUnitId" withDefault:nil];
+        
+        if (MengineAppleAppLovinPlugin_BannerAdUnitId != nil) {
+            NSString * MengineAppleAppLovinPlugin_BannerPlacement = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"BannerPlacement" withDefault:@"banner"];
+            
+            BOOL MengineAppleAppLovinPlugin_BannerAdaptive = [AppleBundle getPluginConfigBoolean:@PLUGIN_BUNDLE_NAME withKey:@"BannerAdaptive" withDefault:YES];
+            
+            AppleAppLovinBannerDelegate * bannerAd = [[AppleAppLovinBannerDelegate alloc] initWithAdUnitIdentifier:MengineAppleAppLovinPlugin_BannerAdUnitId placement:MengineAppleAppLovinPlugin_BannerPlacement adaptive:MengineAppleAppLovinPlugin_BannerAdaptive];
+            
+            self.m_bannerAd = bannerAd;
+        }
+        
+        NSString * MengineAppleAppLovinPlugin_InterstitialAdUnitId = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"InterstitialAdUnitId" withDefault:nil];
+        
+        if (MengineAppleAppLovinPlugin_InterstitialAdUnitId != nil) {
+            AppleAppLovinInterstitialDelegate * interstitialAd = [[AppleAppLovinInterstitialDelegate alloc] initWithAdUnitIdentifier:MengineAppleAppLovinPlugin_InterstitialAdUnitId];
+            
+            self.m_interstitialAd = interstitialAd;
+        }
+        
+        NSString * MengineAppleAppLovinPlugin_RewardedAdUnitId = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"RewardedAdUnitId" withDefault:nil];
+        
+        if (MengineAppleAppLovinPlugin_RewardedAdUnitId != nil) {
+            AppleAppLovinRewardedDelegate * rewardedAd = [[AppleAppLovinRewardedDelegate alloc] initWithAdUnitIdentifier:MengineAppleAppLovinPlugin_RewardedAdUnitId];
+            
+            self.m_rewardedAd = rewardedAd;
+        }
+        
+        if ([AppleDetail hasOption:@"applovin.show_mediation_debugger"] == YES) {
             [[ALSdk shared] showMediationDebugger];
         }
         

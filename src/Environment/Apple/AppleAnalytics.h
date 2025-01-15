@@ -6,6 +6,6 @@
 
 @interface AppleAnalytics : NSObject
 
-+ (void)event:(NSString*)eventName params:(NSDictionary<NSString*, id> *)params;
++ (void) event:(NSString*)eventName params:(NSDictionary<NSString*, id> *)params;
 
 @end

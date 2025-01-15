@@ -4,6 +4,8 @@
 
 @interface AppleGeneralDataProtectionRegulationApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface>
 
++ (AppleGeneralDataProtectionRegulationApplicationDelegate *) sharedInstance;
+
 - (void) setGDPRPass:(BOOL) passGDPR;
 - (BOOL) isGDPRPass;
 

@@ -30,9 +30,4 @@ dependencies {
 
     implementation 'org.jetbrains.kotlin:kotlin-stdlib:2.1.0'
     implementation("com.google.guava:guava:33.4.0-android")
-
-    compileOnly 'com.google.errorprone:error_prone_annotations:2.36.0'
-    annotationProcessor 'com.google.errorprone:error_prone_core:2.36.0'
-
-    errorprone("com.google.errorprone:error_prone_core:2.36.0")
 }

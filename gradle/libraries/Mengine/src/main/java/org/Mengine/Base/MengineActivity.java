@@ -29,9 +29,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.google.errorprone.annotations.FormatMethod;
-import com.google.errorprone.annotations.FormatString;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -203,8 +200,7 @@ public class MengineActivity extends AppCompatActivity {
         return m_surfaceView;
     }
 
-    @FormatMethod
-    protected void finishWithAlertDialog(@FormatString String format, Object ... args) {
+    protected void finishWithAlertDialog(String format, Object ... args) {
         MengineUtils.finishActivityWithAlertDialog(this, "MengineActivity", format, args);
     }
 

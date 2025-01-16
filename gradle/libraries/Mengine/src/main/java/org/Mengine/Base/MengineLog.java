@@ -5,9 +5,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Size;
 
-import com.google.errorprone.annotations.FormatMethod;
-import com.google.errorprone.annotations.FormatString;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.IllegalFormatException;
@@ -83,8 +80,7 @@ public class MengineLog {
         }
     }
 
-    @FormatMethod
-    private static String log(int level, @Size(min = 1L,max = 23L) String tag, int filter, @FormatString String format, Object ... args) {
+    private static String log(int level, @Size(min = 1L,max = 23L) String tag, int filter, String format, Object ... args) {
         String message = MengineLog.buildTotalMsg(format, args);
 
         MengineLog.logString(level, tag, filter, message);
@@ -100,12 +96,11 @@ public class MengineLog {
         }
 
         if (MengineLog.m_application != null) {
-            MengineLog.m_application.onMengineLogger(level, MengineLog.LFILTER_NONE, tag, message);
+            MengineLog.m_application.onMengineLogger(level, filter, tag, message);
         }
     }
 
-    @FormatMethod
-    public static String logVerbose(@Size(min = 1L,max = 23L) String tag, @FormatString String format, Object ... args) {
+    public static String logVerbose(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
         if (BuildConfig.DEBUG == false) {
             return "";
         }
@@ -115,8 +110,7 @@ public class MengineLog {
         return m;
     }
 
-    @FormatMethod
-    public static String logDebug(@Size(min = 1L,max = 23L) String tag, @FormatString String format, Object ... args) {
+    public static String logDebug(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
         if (BuildConfig.DEBUG == false) {
             return "";
         }
@@ -126,8 +120,7 @@ public class MengineLog {
         return m;
     }
 
-    @FormatMethod
-    public static String logInfo(@Size(min = 1L,max = 23L) String tag, @FormatString String format, Object ... args) {
+    public static String logInfo(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
         if (BuildConfig.DEBUG == false) {
             return "";
         }
@@ -137,50 +130,43 @@ public class MengineLog {
         return m;
     }
 
-    @FormatMethod
-    public static String logMessage(@Size(min = 1L,max = 23L) String tag, @FormatString String format, Object ... args) {
+    public static String logMessage(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
         String m = MengineLog.log(LM_MESSAGE, tag, MengineLog.LFILTER_NONE, format, args);
 
         return m;
     }
 
-    @FormatMethod
-    public static String logWarning(@Size(min = 1L,max = 23L) String tag, @FormatString String format, Object ... args) {
+    public static String logWarning(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
         String m = MengineLog.log(LM_WARNING, tag, MengineLog.LFILTER_NONE, format, args);
 
         return m;
     }
 
-    @FormatMethod
-    public static String logError(@Size(min = 1L,max = 23L) String tag, @FormatString String format, Object ... args) {
+    public static String logError(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
         String m = MengineLog.log(LM_ERROR, tag, MengineLog.LFILTER_NONE, format, args);
 
         return m;
     }
 
-    @FormatMethod
-    public static String logErrorException(@Size(min = 1L,max = 23L) String tag, @FormatString String format, Object ... args) {
+    public static String logErrorException(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
         String m = MengineLog.log(LM_ERROR, tag, MengineLog.LFILTER_EXCEPTION, format, args);
 
         return m;
     }
 
-    @FormatMethod
-    public static String logMessageRelease(@Size(min = 1L,max = 23L) String tag, @FormatString String format, Object ... args) {
+    public static String logMessageRelease(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
         String m = MengineLog.log(LM_MESSAGE_RELEASE, tag, MengineLog.LFILTER_NONE, format, args);
 
         return m;
     }
 
-    @FormatMethod
-    public static String logFatal(@Size(min = 1L,max = 23L) String tag, @FormatString String format, Object ... args) {
+    public static String logFatal(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
         String m = MengineLog.log(LM_FATAL, tag, MengineLog.LFILTER_NONE, format, args);
 
         return m;
     }
 
-    @FormatMethod
-    public static String logSingleMessage(@Size(min = 1L,max = 23L) String tag, @FormatString String format, Object ... args) {
+    public static String logSingleMessage(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
         String m = MengineLog.buildTotalMsg(format, args);
 
         if (MengineLog.m_singles.contains(m) == true) {
@@ -192,8 +178,7 @@ public class MengineLog {
         return m;
     }
 
-    @FormatMethod
-    public static String logSingleWarning(@Size(min = 1L,max = 23L) String tag, @FormatString String format, Object ... args) {
+    public static String logSingleWarning(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
         String m = MengineLog.buildTotalMsg(format, args);
 
         if (MengineLog.m_singles.contains(m) == true) {
@@ -205,8 +190,7 @@ public class MengineLog {
         return m;
     }
 
-    @FormatMethod
-    public static String logSingleError(@Size(min = 1L,max = 23L) String tag, @FormatString String format, Object ... args) {
+    public static String logSingleError(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
         String m = MengineLog.buildTotalMsg(format, args);
 
         if (MengineLog.m_singles.contains(m) == true) {
@@ -218,8 +202,7 @@ public class MengineLog {
         return m;
     }
 
-    @FormatMethod
-    public static String buildTotalMsg(@FormatString String format, Object ... args) {
+    public static String buildTotalMsg(String format, Object ... args) {
         if (args == null || args.length == 0) {
             return format;
         }

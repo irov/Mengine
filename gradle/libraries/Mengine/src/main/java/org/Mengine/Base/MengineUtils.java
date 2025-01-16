@@ -36,8 +36,6 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import com.google.common.base.Splitter;
-import com.google.errorprone.annotations.FormatMethod;
-import com.google.errorprone.annotations.FormatString;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -617,8 +615,7 @@ public class MengineUtils {
         return true;
     }
 
-    @FormatMethod
-    public static void showToast(@NonNull Activity activity, @FormatString String format, Object ... args) {
+    public static void showToast(@NonNull Activity activity, String format, Object ... args) {
         activity.runOnUiThread(() -> {
             String message = MengineLog.buildTotalMsg(format, args);
 
@@ -628,8 +625,7 @@ public class MengineUtils {
         });
     }
 
-    @FormatMethod
-    public static void showOkAlertDialog(@NonNull Activity activity, Runnable ok, String title, @FormatString String format, Object ... args) {
+    public static void showOkAlertDialog(@NonNull Activity activity, Runnable ok, String title, String format, Object ... args) {
         activity.runOnUiThread(() -> {
             String message = MengineLog.buildTotalMsg(format, args);
 
@@ -656,8 +652,7 @@ public class MengineUtils {
         });
     }
 
-    @FormatMethod
-    public static void showAreYouSureAlertDialog(@NonNull Activity activity, Runnable yes, Runnable cancel, long delayMillis, String title, @FormatString String format, Object ... args) {
+    public static void showAreYouSureAlertDialog(@NonNull Activity activity, Runnable yes, Runnable cancel, long delayMillis, String title, String format, Object ... args) {
         activity.runOnUiThread(() -> {
             String message = MengineLog.buildTotalMsg(format, args);
 
@@ -712,8 +707,7 @@ public class MengineUtils {
         });
     }
 
-    @FormatMethod
-    public static void finishActivityWithAlertDialog(@NonNull Activity activity, String title, @FormatString String format, Object ... args) {
+    public static void finishActivityWithAlertDialog(@NonNull Activity activity, String title, String format, Object ... args) {
         MengineLog.logErrorException(TAG, format, args);
 
         MengineUtils.showOkAlertDialog(activity, () -> {
@@ -1028,8 +1022,7 @@ public class MengineUtils {
         return usedJVMMemory;
     }
 
-    @FormatMethod
-    public static void throwAssertionError(MengineApplication application, String title, Throwable throwable, @FormatString String format, Object ... args) {
+    public static void throwAssertionError(MengineApplication application, String title, Throwable throwable, String format, Object ... args) {
         String message = MengineLog.buildTotalMsg(format, args);
 
         if (application == null) {

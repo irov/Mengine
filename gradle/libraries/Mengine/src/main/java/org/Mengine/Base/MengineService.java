@@ -3,9 +3,6 @@ package org.Mengine.Base;
 import androidx.annotation.NonNull;
 import androidx.annotation.Size;
 
-import com.google.errorprone.annotations.FormatMethod;
-import com.google.errorprone.annotations.FormatString;
-
 public class MengineService implements MengineServiceInterface {
     private MengineApplication m_application;
     private MengineActivity m_activity;
@@ -88,15 +85,13 @@ public class MengineService implements MengineServiceInterface {
         return value;
     }
 
-    @FormatMethod
-    protected void invalidInitialize(@FormatString String format, Object ... args) throws MengineServiceInvalidInitializeException {
+    protected void invalidInitialize(String format, Object ... args) throws MengineServiceInvalidInitializeException {
         String message = MengineLog.buildTotalMsg(format, args);
 
         throw new MengineServiceInvalidInitializeException(message);
     }
 
-    @FormatMethod
-    public void makeToastLong(long delayed, @FormatString String format, Object ... args) {
+    public void makeToastLong(long delayed, String format, Object ... args) {
         if (m_activity == null) {
             return;
         }
@@ -124,57 +119,49 @@ public class MengineService implements MengineServiceInterface {
         m_application.setState(name, value);
     }
 
-    @FormatMethod
-    public String logVerbose(@FormatString String format, Object ... args) {
+    public String logVerbose(String format, Object ... args) {
         String m = MengineLog.logVerbose("Mengine" + m_serviceName, format, args);
 
         return m;
     }
 
-    @FormatMethod
-    public String logDebug(@FormatString String format, Object ... args) {
+    public String logDebug(String format, Object ... args) {
         String m = MengineLog.logDebug("Mengine" + m_serviceName, format, args);
 
         return m;
     }
 
-    @FormatMethod
-    public String logInfo(@FormatString String format, Object ... args) {
+    public String logInfo(String format, Object ... args) {
         String m = MengineLog.logInfo("Mengine" + m_serviceName, format, args);
 
         return m;
     }
 
-    @FormatMethod
-    public String logMessage(@FormatString String format, Object ... args) {
+    public String logMessage(String format, Object ... args) {
         String m = MengineLog.logMessage("Mengine" + m_serviceName, format, args);
 
         return m;
     }
 
-    @FormatMethod
-    public String logMessageRelease(@FormatString String format, Object ... args) {
+    public String logMessageRelease(String format, Object ... args) {
         String m = MengineLog.logMessageRelease("Mengine" + m_serviceName, format, args);
 
         return m;
     }
 
-    @FormatMethod
-    public String logWarning(@FormatString String format, Object ... args) {
+    public String logWarning(String format, Object ... args) {
         String m = MengineLog.logWarning("Mengine" + m_serviceName, format, args);
 
         return m;
     }
 
-    @FormatMethod
-    public String logError(@FormatString String format, Object ... args) {
+    public String logError(String format, Object ... args) {
         String m = MengineLog.logError("Mengine" + m_serviceName, format, args);
 
         return m;
     }
 
-    @FormatMethod
-    public void assertionError(@FormatString String format, Object ... args) {
+    public void assertionError(String format, Object ... args) {
         MengineUtils.throwAssertionError(m_application, "Mengine" + m_serviceName, null, format, args);
     }
 

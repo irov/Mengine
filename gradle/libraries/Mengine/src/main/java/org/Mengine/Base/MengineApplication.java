@@ -16,8 +16,6 @@ import androidx.annotation.Size;
 import androidx.multidex.MultiDex;
 
 import com.google.common.base.Splitter;
-import com.google.errorprone.annotations.FormatMethod;
-import com.google.errorprone.annotations.FormatString;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -1714,8 +1712,7 @@ public class MengineApplication extends Application {
         return trace;
     }
 
-    @FormatMethod
-    private void invalidInitialize(@FormatString String format, Object ... args) {
+    private void invalidInitialize(String format, Object ... args) {
         String msg = MengineLog.logErrorException(TAG, format, args);
 
         m_invalidInitialize = true;

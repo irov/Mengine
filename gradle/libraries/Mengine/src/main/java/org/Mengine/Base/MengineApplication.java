@@ -13,7 +13,6 @@ import android.provider.Settings;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Size;
-import androidx.multidex.MultiDex;
 
 import com.google.common.base.Splitter;
 
@@ -1391,8 +1390,6 @@ public class MengineApplication extends Application {
     @Override
     public void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-
-        MultiDex.install(this);
 
         MengineLog.logMessage(TAG, "attachBaseContext");
 

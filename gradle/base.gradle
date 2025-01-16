@@ -10,7 +10,7 @@ android {
     }
 
     defaultConfig {
-        multiDexEnabled project.multiDexEnabled
+        multiDexEnabled true
         minSdkVersion project.minSdkVersion
         targetSdkVersion project.targetSdkVersion
     }

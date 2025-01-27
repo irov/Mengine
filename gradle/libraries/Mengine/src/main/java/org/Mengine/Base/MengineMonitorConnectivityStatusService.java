@@ -8,8 +8,8 @@ import android.os.Build;
 
 import androidx.annotation.NonNull;
 
-public class MengineMonitorConnectivityStatus extends MengineService implements MengineListenerApplication {
-    public static final String SERVICE_NAME = "MConnStatus";
+public class MengineMonitorConnectivityStatusService extends MengineService implements MengineListenerApplication {
+    public static final String SERVICE_NAME = "MonitorConnStatus";
 
     private ConnectivityManager.NetworkCallback m_networkCallback;
 
@@ -24,7 +24,7 @@ public class MengineMonitorConnectivityStatus extends MengineService implements 
             public void onAvailable(@NonNull Network network) {
                 super.onAvailable(network);
 
-                MengineMonitorConnectivityStatus.this.logMessage("network available");
+                MengineMonitorConnectivityStatusService.this.logMessage("network available");
 
                 MengineNetwork.setNetworkAvailable(true);
             }
@@ -33,7 +33,7 @@ public class MengineMonitorConnectivityStatus extends MengineService implements 
             public void onLost(@NonNull Network network) {
                 super.onLost(network);
 
-                MengineMonitorConnectivityStatus.this.logMessage("network lost");
+                MengineMonitorConnectivityStatusService.this.logMessage("network lost");
 
                 MengineNetwork.setNetworkAvailable(false);
             }
@@ -92,7 +92,7 @@ public class MengineMonitorConnectivityStatus extends MengineService implements 
                     return;
                 }
 
-                MengineMonitorConnectivityStatus.this.logMessage("network capabilities changed unmetered: %b transport: %s"
+                MengineMonitorConnectivityStatusService.this.logMessage("network capabilities changed unmetered: %b transport: %s"
                     , unmetered
                     , transport
                 );

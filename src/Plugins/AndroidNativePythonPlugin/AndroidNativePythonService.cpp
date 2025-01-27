@@ -598,7 +598,46 @@ namespace Mengine
 
         jobject jplugin;
         jmethodID jmethodID_method;
-        if( this->getAndroidMethod( jenv, _plugin, _method, _args, "Ljava/util/Map;", jargs, jfree, &freeCount, &jplugin, &jmethodID_method ) == false )
+        if( this->getAndroidMethod( jenv, _plugin, _method, _args, "Ljava/lang/Object;", jargs, jfree, &freeCount, &jplugin, &jmethodID_method ) == false )
+        {
+            return m_kernel->ret_none();
+        }
+
+        jobject jresult = jenv->CallObjectMethodA( jplugin, jmethodID_method, jargs );
+
+        Helper::AndroidEnvExceptionCheck( jenv );
+
+        for( uint32_t index = 0; index != freeCount; ++index )
+        {
+            jobject j = jfree[index];
+
+            jenv->DeleteLocalRef( j );
+        }
+
+        PyObject * py_result = Helper::androidNativePythonMakePyObject( m_kernel, jenv, jresult, MENGINE_DOCUMENT_FACTORABLE );
+
+        return py_result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    PyObject * AndroidNativePythonService::androidJSONObjectMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
+    {
+        LOGGER_INFO( "android", "call android plugin '%s' method '%s' args '%s' [config]"
+            , _plugin.c_str()
+            , _method.c_str()
+            , _args.repr().c_str()
+        );
+
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+
+        jvalue jargs[32];
+        jobject jfree[32];
+        uint32_t freeCount;
+
+        jobject jplugin;
+        jmethodID jmethodID_method;
+        if( this->getAndroidMethod( jenv, _plugin, _method, _args, "Lorg/json/JSONObject;", jargs, jfree, &freeCount, &jplugin, &jmethodID_method ) == false )
         {
             return m_kernel->ret_none();
         }

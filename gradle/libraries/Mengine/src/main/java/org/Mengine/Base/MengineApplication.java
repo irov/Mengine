@@ -16,6 +16,8 @@ import androidx.annotation.Size;
 
 import com.google.common.base.Splitter;
 
+import org.json.JSONObject;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,26 +31,6 @@ public class MengineApplication extends Application {
 
     static {
         System.loadLibrary("AndroidApplication");
-    }
-
-    public boolean isMasterRelease() {
-        return MengineNative.AndroidEnv_isMasterRelease();
-    }
-
-    public String getEngineGITSHA1() {
-        return MengineNative.AndroidEnv_getEngineGITSHA1();
-    }
-
-    public String getEngineVersion() {
-        return MengineNative.AndroidEnv_getEngineVersion();
-    }
-
-    public String getBuildDate() {
-        return MengineNative.AndroidEnv_getBuildDate();
-    }
-
-    public String getBuildUsername() {
-        return MengineNative.AndroidEnv_getBuildUsername();
     }
 
     private String m_androidId;
@@ -94,9 +76,30 @@ public class MengineApplication extends Application {
     private final List<MengineListenerAdvertisingId> m_advertisingIdListeners = new ArrayList<>();
     private final List<MengineListenerSessionId> m_sessionIdListeners = new ArrayList<>();
     private final List<MengineListenerPerformance> m_performanceListeners = new ArrayList<>();
+    private final List<MengineListenerRemoteConfig> m_remoteConfigListeners = new ArrayList<>();
 
     private final Object m_syncEvent = new Object();
     private final Object m_syncState = new Object();
+
+    public boolean isMasterRelease() {
+        return MengineNative.AndroidEnv_isMasterRelease();
+    }
+
+    public String getEngineGITSHA1() {
+        return MengineNative.AndroidEnv_getEngineGITSHA1();
+    }
+
+    public String getEngineVersion() {
+        return MengineNative.AndroidEnv_getEngineVersion();
+    }
+
+    public String getBuildDate() {
+        return MengineNative.AndroidEnv_getBuildDate();
+    }
+
+    public String getBuildUsername() {
+        return MengineNative.AndroidEnv_getBuildUsername();
+    }
 
     public String[] getAndroidPlugins() {
         String[] plugins = {};
@@ -142,9 +145,6 @@ public class MengineApplication extends Application {
             , versionName
             , versionCode
         );
-
-        this.createService("org.Mengine.Base.MengineMonitorPerformance");
-        this.createService("org.Mengine.Base.MengineMonitorConnectivityStatus");
 
         String[] plugins = this.getAndroidPlugins();
 
@@ -198,12 +198,14 @@ public class MengineApplication extends Application {
 
         if (bundle == null) {
             String msg = String.format(Locale.US, "invalid get meta data bundle for [%s]", name);
-            throw new RuntimeException(msg);
+
+            MengineUtils.throwRuntimeException(msg, null);
         }
 
         if (bundle.containsKey(name) == false) {
             String msg = String.format(Locale.US, "invalid setup meta data [%s]", name);
-            throw new RuntimeException(msg);
+
+            MengineUtils.throwRuntimeException(msg, null);
         }
 
         return bundle;
@@ -216,7 +218,8 @@ public class MengineApplication extends Application {
 
         if (value == null) {
             String msg = String.format(Locale.US, "invalid setup meta data [%s]", name);
-            throw new RuntimeException(msg);
+
+            MengineUtils.throwRuntimeException(msg, null);
         }
 
         return value;
@@ -678,6 +681,10 @@ public class MengineApplication extends Application {
         return m_performanceListeners;
     }
 
+    public List<MengineListenerRemoteConfig> getRemoteConfigListeners() {
+        return m_remoteConfigListeners;
+    }
+
     public MengineService findService(String name) {
         MengineService service = m_dictionaryServices.get(name);
 
@@ -766,6 +773,10 @@ public class MengineApplication extends Application {
 
         if (service instanceof MengineListenerPerformance listener) {
             m_performanceListeners.add(listener);
+        }
+
+        if (service instanceof MengineListenerRemoteConfig listener) {
+            m_remoteConfigListeners.add(listener);
         }
     }
 
@@ -951,6 +962,72 @@ public class MengineApplication extends Application {
         editor.apply();
     }
 
+    public Bundle getPreferenceBundle(@NonNull String name) {
+        SharedPreferences settings = this.getPrivateSharedPreferences(TAG);
+
+        String value = settings.getString(name, null);
+
+        if (value == null) {
+            return null;
+        }
+
+        try {
+            JSONObject json = new JSONObject(value);
+
+            Bundle bundle = MengineUtils.bundleFromJSONObject(json);
+
+            return bundle;
+        } catch (final org.json.JSONException e) {
+            MengineLog.logError(TAG, "invalid get preference bundle: %s e: %s"
+                , name
+                , e.getMessage()
+            );
+
+            return null;
+        }
+    }
+
+    public void setPreferenceBundle(@NonNull String name, Bundle value) {
+        SharedPreferences settings = this.getPrivateSharedPreferences(TAG);
+
+        JSONObject json = MengineUtils.jsonObjectFromBundle(value);
+
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString(name, json.toString());
+        editor.apply();
+    }
+
+    public JSONObject getPreferenceJSON(@NonNull String name) {
+        SharedPreferences settings = this.getPrivateSharedPreferences(TAG);
+
+        String value = settings.getString(name, null);
+
+        if (value == null) {
+            return null;
+        }
+
+        try {
+            JSONObject json = new JSONObject(value);
+
+            return json;
+        } catch (final org.json.JSONException e) {
+            MengineLog.logError(TAG, "invalid get preference json: %s e: %s"
+                , name
+                , e.getMessage()
+            );
+
+            return null;
+        }
+    }
+
+    public void setPreferenceJSON(@NonNull String name, JSONObject value) {
+        SharedPreferences settings = this.getPrivateSharedPreferences(TAG);
+
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString(name, value.toString());
+        editor.apply();
+    }
+
     public void removePreference(@NonNull String name) {
         SharedPreferences settings = this.getPrivateSharedPreferences(TAG);
 
@@ -1055,7 +1132,7 @@ public class MengineApplication extends Application {
                     continue;
                 }
 
-                MengineLog.logMessage(TAG, "onAppInit service: %s isMainProcess: %b"
+                MengineLog.logInfo(TAG, "onAppInit service: %s isMainProcess: %b"
                     , l.getServiceName()
                     , isMainProcess
                 );
@@ -1249,7 +1326,7 @@ public class MengineApplication extends Application {
 
         for (MengineListenerApplication l : applicationListeners) {
             try {
-                MengineLog.logMessage(TAG, "onAppPrepare service: %s"
+                MengineLog.logInfo(TAG, "onAppPrepare service: %s"
                     , l.getServiceName()
                 );
 
@@ -1268,17 +1345,19 @@ public class MengineApplication extends Application {
             }
         }
 
-        this.setState("application.init", "services_prepared");
+        this.setState("application.init", "services_load");
+
+        this.onServicesLoad();
+
+        this.setState("application.init", "services_create");
 
         for (MengineListenerApplication l : applicationListeners) {
             try {
                 String serviceName = l.getServiceName();
 
-                MengineLog.logMessage(TAG, "onAppCreate service: %s"
+                MengineLog.logInfo(TAG, "onAppCreate service: %s"
                     , serviceName
                 );
-
-                this.setState("application.init", serviceName);
 
                 l.onAppCreate(this);
             } catch (MengineServiceInvalidInitializeException e) {
@@ -1287,6 +1366,31 @@ public class MengineApplication extends Application {
                     .logAndFlush();
 
                 this.invalidInitialize("onAppCreate service: %s exception: %s"
+                    , l.getServiceName()
+                    , e.getMessage()
+                );
+
+                return;
+            }
+        }
+
+        this.setState("application.init", "services_post");
+
+        for (MengineListenerApplication l : applicationListeners) {
+            try {
+                String serviceName = l.getServiceName();
+
+                MengineLog.logInfo(TAG, "onAppPost service: %s"
+                    , serviceName
+                );
+
+                l.onAppPost(this);
+            } catch (MengineServiceInvalidInitializeException e) {
+                MengineAnalytics.buildEvent("mng_app_create_failed")
+                    .addParameterException("exception", e)
+                    .logAndFlush();
+
+                this.invalidInitialize("onAppPost service: %s exception: %s"
                     , l.getServiceName()
                     , e.getMessage()
                 );
@@ -1339,9 +1443,57 @@ public class MengineApplication extends Application {
         this.setState("application.init", "completed");
     }
 
+    public void onServicesLoad() {
+        MengineLog.logInfo(TAG, "onServicesLoad");
+
+        List<MengineService> services = this.getServices();
+
+        for (MengineService s : services) {
+            String serviceName = s.getServiceName();
+
+            Bundle bundle = this.getPreferenceBundle("service." + serviceName);
+
+            if (bundle == null) {
+                continue;
+            }
+
+            MengineLog.logInfo(TAG, "onLoad service: %s bundle: %s"
+                , serviceName
+                , bundle
+            );
+
+            s.onLoad(this, bundle);
+        }
+    }
+
+    public void onServicesSave() {
+        MengineLog.logInfo(TAG, "onServicesSave");
+
+        List<MengineService> services = this.getServices();
+
+        for (MengineService s : services) {
+            String serviceName = s.getServiceName();
+
+            Bundle bundle = s.onSave(this);
+
+            if (bundle == null) {
+                continue;
+            }
+
+            MengineLog.logInfo(TAG, "onSave service: %s bundle: %s"
+                , serviceName
+                , bundle
+            );
+
+            this.setPreferenceBundle("service." + serviceName, bundle);
+        }
+    }
+
     @Override
     public void onTerminate() {
         MengineLog.logMessage(TAG, "onTerminate");
+
+        this.onServicesSave();
 
         List<MengineListenerApplication> applicationListeners = this.getApplicationListeners();
 
@@ -1550,6 +1702,18 @@ public class MengineApplication extends Application {
             }
 
             l.onMengineAnalyticsFlush(this);
+        }
+    }
+
+    public void onMengineRemoteConfigFetch(@NonNull Map<String, JSONObject> configs) {
+        List<MengineListenerRemoteConfig> listeners = this.getRemoteConfigListeners();
+
+        for (MengineListenerRemoteConfig l : listeners) {
+            if (l.onAvailable(this) == false) {
+                continue;
+            }
+
+            l.onMengineRemoteConfigFetch(this, configs);
         }
     }
 

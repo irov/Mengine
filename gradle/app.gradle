@@ -19,6 +19,10 @@ def ANDROID_APP_REQUIRED_HARDWARE_SENSOR_ACCELEROMETER = Utils.getBooleanPropert
 def MENGINE_APP_LIBRARY_MENGINE = Utils.existAppLibrary("MENGINE_APP_LIBRARY_MENGINE")
 def MENGINE_APP_LIBRARY_OPENAL32 = Utils.existAppLibrary("MENGINE_APP_LIBRARY_OPENAL32")
 
+def MENGINE_APP_SERVICE_AD = Utils.existAppService("MENGINE_APP_SERVICE_AD")
+def MENGINE_APP_SERVICE_MONITORPERFORMANCE = Utils.existAppService("MENGINE_APP_SERVICE_MONITORPERFORMANCE")
+def MENGINE_APP_SERVICE_MONITORCONNECTIVITYSTATUS = Utils.existAppService("MENGINE_APP_SERVICE_MONITORCONNECTIVITYSTATUS")
+
 def MENGINE_APP_PLUGIN_SPLASHSCREEN = Utils.existAppPlugin("MENGINE_APP_PLUGIN_SPLASHSCREEN")
 def MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS = Utils.existAppPlugin("MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS")
 def MENGINE_APP_PLUGIN_ADVERTISING = Utils.existAppPlugin("MENGINE_APP_PLUGIN_ADVERTISING")
@@ -373,6 +377,18 @@ if (MENGINE_APP_LIBRARY_MENGINE == true) {
     dependencies {
         implementation project(':libraries:Mengine')
     }
+}
+
+if (MENGINE_APP_SERVICE_AD == true) {
+    android.ext.plugins += 'org.Mengine.Base.AdService'
+}
+
+if (MENGINE_APP_SERVICE_MONITORPERFORMANCE == true) {
+    android.ext.plugins += 'org.Mengine.Base.MengineMonitorPerformanceService'
+}
+
+if (MENGINE_APP_SERVICE_MONITORCONNECTIVITYSTATUS == true) {
+    android.ext.plugins += 'org.Mengine.Base.MengineMonitorConnectivityStatusService'
 }
 
 Utils.logAvailable("MENGINE_APP_PLUGIN_SPLASHSCREEN", MENGINE_APP_PLUGIN_SPLASHSCREEN)

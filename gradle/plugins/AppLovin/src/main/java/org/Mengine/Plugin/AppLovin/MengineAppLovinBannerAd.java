@@ -139,21 +139,6 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
         }
     }
 
-    public Rect getViewport() {
-        if (m_adView == null) {
-            m_plugin.logError("getViewport: adView is null");
-
-            return null;
-        }
-
-        int left = m_adView.getLeft();
-        int right = m_adView.getRight();
-        int top = m_adView.getTop();
-        int bottom = m_adView.getBottom();
-
-        return new Rect(left, top, right, bottom);
-    }
-
     public int getHeight() {
         MengineApplication application = m_plugin.getMengineApplication();
 
@@ -285,18 +270,28 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
         }
     }
 
-    public boolean bannerVisible(boolean show) {
+    public void bannerShow() {
         m_plugin.runOnUiThread(() -> {
-            if (m_visible == show) {
+            if (m_visible == true) {
                 return;
             }
 
-            m_visible = show;
+            m_visible = true;
 
             this.updateVisible();
         });
+    }
 
-        return true;
+    public void bannerHide() {
+        m_plugin.runOnUiThread(() -> {
+            if (m_visible == false) {
+                return;
+            }
+
+            m_visible = false;
+
+            this.updateVisible();
+        });
     }
 
     @Override

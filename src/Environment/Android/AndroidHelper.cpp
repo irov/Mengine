@@ -555,6 +555,71 @@ namespace Mengine
             return value_size;
         }
         //////////////////////////////////////////////////////////////////////////
+        void AndroidForeachJavaJSONObject( JNIEnv * _jenv, jobject _jjson, const LambdaJavaJSONObjectForeach & _lambda )
+        {
+            jclass jclass_JSONObject = _jenv->FindClass( "org/json/JSONObject" );
+
+            jmethodID JSONObject_keys = _jenv->GetMethodID( jclass_JSONObject, "keys", "()Ljava/util/Iterator;" );
+
+            jclass jclass_Iterator = _jenv->FindClass( "java/util/Iterator" );
+
+            jmethodID Iterator_hasNext = _jenv->GetMethodID( jclass_Iterator, "hasNext", "()Z" );
+            jmethodID Iterator_next = _jenv->GetMethodID( jclass_Iterator, "next", "()Ljava/lang/Object;" );
+
+            jmethodID JSONObject_opt = _jenv->GetMethodID( jclass_JSONObject, "opt", "(Ljava/lang/String;)Ljava/lang/Object;" );
+
+            jobject jkeys = _jenv->CallObjectMethod( _jjson, JSONObject_keys );
+            Helper::AndroidEnvExceptionCheck( _jenv );
+
+            jboolean hasNext = _jenv->CallBooleanMethod( jkeys, Iterator_hasNext );
+            Helper::AndroidEnvExceptionCheck( _jenv );
+
+            while( hasNext == JNI_TRUE )
+            {
+                jobject jkey = _jenv->CallObjectMethod( jkeys, Iterator_next );
+                Helper::AndroidEnvExceptionCheck( _jenv );
+
+                jobject jvalue = _jenv->CallObjectMethod( _jjson, JSONObject_opt, jkey );
+                Helper::AndroidEnvExceptionCheck( _jenv );
+
+                _lambda( jkey, jvalue );
+
+                _jenv->DeleteLocalRef( jkey );
+                _jenv->DeleteLocalRef( jvalue );
+
+                hasNext = _jenv->CallBooleanMethod( jkeys, Iterator_hasNext );
+                Helper::AndroidEnvExceptionCheck( _jenv );
+            }
+
+            _jenv->DeleteLocalRef( jkeys );
+
+            _jenv->DeleteLocalRef( jclass_JSONObject );
+            _jenv->DeleteLocalRef( jclass_Iterator );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void AndroidForeachJavaJSONArray( JNIEnv * _jenv, jobject _jarray, const LambdaJavaJSONArrayForeach & _lambda )
+        {
+            jclass jclass_JSONArray = _jenv->FindClass( "org/json/JSONArray" );
+
+            jmethodID JSONArray_length = _jenv->GetMethodID( jclass_JSONArray, "length", "()I" );
+            jmethodID JSONArray_get = _jenv->GetMethodID( jclass_JSONArray, "get", "(I)Ljava/lang/Object;" );
+
+            jint jarray_length = _jenv->CallIntMethod( _jarray, JSONArray_length );
+            Helper::AndroidEnvExceptionCheck( _jenv );
+
+            for( jint index = 0; index != jarray_length; ++index )
+            {
+                jobject jvalue = _jenv->CallObjectMethod( _jarray, JSONArray_get, index );
+                Helper::AndroidEnvExceptionCheck( _jenv );
+
+                _lambda( index, jvalue );
+
+                _jenv->DeleteLocalRef( jvalue );
+            }
+
+            _jenv->DeleteLocalRef( jclass_JSONArray );
+        }
+        //////////////////////////////////////////////////////////////////////////
         void AndroidForeachJavaMap( JNIEnv * _jenv, jobject _jmap, const LambdaJavaMapForeach & _lambda )
         {
             jclass jclass_Map = _jenv->FindClass( "java/util/Map" );

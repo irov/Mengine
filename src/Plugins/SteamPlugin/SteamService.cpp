@@ -57,9 +57,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SteamService::_initializeService()
     {
-        if( SteamAPI_Init() == false )
+        SteamErrMsg errMsg;
+        ESteamAPIInitResult result = SteamAPI_InitFlat( &errMsg );
+
+        if( result != k_ESteamAPIInitResult_OK )
         {
-            LOGGER_ERROR( "invalid SteamAPI_Init" );
+            LOGGER_ERROR( "invalid SteamAPI_Init result: %d error: %s"
+                , result
+                , errMsg
+            );
 
 #if defined(MENGINE_DEBUG)
             return true;

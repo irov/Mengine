@@ -76,6 +76,20 @@ Utils.existAppPlugin = { String name ->
     return true
 }
 
+Utils.existAppService = { String name ->
+    def p = project.findProperty(name)
+
+    if (p == null) {
+        return true
+    }
+
+    if (p as Integer == 0) {
+        return true
+    }
+
+    return false
+}
+
 Utils.logAvailable = { String name, boolean value ->
     if (value == false) {
         println "\u001b[31m${name}: ${value}\u001b[0m"

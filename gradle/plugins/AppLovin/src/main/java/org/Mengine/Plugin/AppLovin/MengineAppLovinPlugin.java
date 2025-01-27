@@ -1,6 +1,5 @@
 package org.Mengine.Plugin.AppLovin;
 
-import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -21,10 +20,11 @@ import com.applovin.sdk.AppLovinTermsAndPrivacyPolicyFlowSettings;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineAdFormat;
 import org.Mengine.Base.MengineAdMediation;
+import org.Mengine.Base.MengineAdProviderInterface;
 import org.Mengine.Base.MengineAdRevenueParam;
+import org.Mengine.Base.MengineAdService;
 import org.Mengine.Base.MengineCallback;
 import org.Mengine.Base.MengineListenerApplication;
-import org.Mengine.Base.MengineNetwork;
 import org.Mengine.Base.MengineTransparencyConsentParam;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineService;
@@ -35,7 +35,7 @@ import org.Mengine.Base.MengineUtils;
 
 import java.util.List;
 
-public class MengineAppLovinPlugin extends MengineService implements MengineListenerApplication, MengineListenerActivity, MengineListenerEngine {
+public class MengineAppLovinPlugin extends MengineService implements MengineAdProviderInterface, MengineListenerApplication, MengineListenerActivity, MengineListenerEngine {
     public static final String SERVICE_NAME = "AppLovin";
     public static final boolean SERVICE_EMBEDDING = true;
 
@@ -273,6 +273,9 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
                 }
             }
 
+            MengineAdService adService = application.getService(MengineAdService.class);
+            adService.setAdProvider(this);
+
             if (this.hasOption("applovin.show_mediation_debugger") == true) {
                 this.showMediationDebugger();
             }
@@ -402,36 +405,33 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
         return true;
     }
 
-    public boolean bannerVisible(boolean show) {
+    @Override
+    public void showBanner() {
         if (m_bannerAd == null) {
             this.assertionError("not found banner");
 
-            return false;
+            return;
         }
 
-        this.logMessage("bannerVisible show: %b"
-            , show
-        );
+        this.logMessage("banner show");
 
-        if (m_bannerAd.bannerVisible(show) == false) {
-            return false;
-        }
-
-        return true;
+        m_bannerAd.bannerShow();
     }
 
-    public Rect getBannerViewport() {
+    @Override
+    public void hideBanner() {
         if (m_bannerAd == null) {
             this.assertionError("not found banner");
 
-            return null;
+            return;
         }
 
-        Rect rect = m_bannerAd.getViewport();
+        this.logMessage("banner hide");
 
-        return rect;
+        m_bannerAd.bannerHide();
     }
 
+    @Override
     public int getBannerHeight() {
         if (m_bannerAd == null) {
             this.assertionError("not found banner");
@@ -444,7 +444,8 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
         return height;
     }
 
-    public boolean hasInterstitial() {
+    @Override
+    public boolean hasInterstitial(String placement) {
         if (m_interstitialAd == null) {
             return false;
         }
@@ -452,6 +453,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
         return true;
     }
 
+    @Override
     public boolean canYouShowInterstitial(String placement) {
         if (m_interstitialAd == null) {
             this.assertionError("not found interstitial placement: %s"
@@ -468,6 +470,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
         return true;
     }
 
+    @Override
     public boolean showInterstitial(String placement, MengineCallback showCallback) {
         if (m_interstitialAd == null) {
             this.assertionError("not found interstitial placement: %s"
@@ -490,7 +493,8 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
         return true;
     }
 
-    public boolean hasRewarded() {
+    @Override
+    public boolean hasRewarded(String placement) {
         if (m_rewardedAd == null) {
             return false;
         }
@@ -498,6 +502,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
         return true;
     }
 
+    @Override
     public boolean canOfferRewarded(String placement) {
         if (m_rewardedAd == null) {
             this.assertionError("not found rewarded placement: %s"
@@ -514,6 +519,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
         return true;
     }
 
+    @Override
     public boolean canYouShowRewarded(String placement) {
         if (m_rewardedAd == null) {
             this.assertionError("not found rewarded placement: %s"
@@ -530,6 +536,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
         return true;
     }
 
+    @Override
     public boolean showRewarded(String placement, MengineCallback showCallback) {
         if (m_rewardedAd == null) {
             this.assertionError("not found rewarded placement: %s"

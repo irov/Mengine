@@ -7,25 +7,29 @@ import androidx.annotation.NonNull;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigValue;
+import com.google.firebase.remoteconfig.internal.DefaultsXmlParser;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineListenerActivity;
 import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
-import org.Mengine.Base.MengineUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class MengineFirebaseRemoteConfigPlugin extends MengineService implements MengineListenerApplication, MengineListenerActivity {
     public static final String SERVICE_NAME = "FBRemoteConfig";
     public static final boolean SERVICE_EMBEDDING = true;
 
     private static final String METADATA_MINIMUM_FETCH_INTERVAL = "mengine.firebase_remote_config.minimum_fetch_interval";
+
+    private Map<String, JSONObject> m_configs = new HashMap<>();
+    private Map<String, String> m_defaults = new HashMap<>();
 
     @Override
     public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
@@ -49,7 +53,33 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
         FirebaseRemoteConfigSettings configSettings = configSettingsBuilder.build();
         remoteConfig.setConfigSettingsAsync(configSettings);
 
-        remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
+        Map<String, String> defaults = DefaultsXmlParser.getDefaultsFromXml(application, R.xml.remote_config_defaults);
+        this.setRemoteConfigDefaults(defaults);
+
+        this.buildEvent("mng_fb_rc_defaults")
+            .log();
+
+        remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)
+            .addOnSuccessListener(aVoid -> {
+                this.buildEvent("mng_fb_rc_defaults_successful")
+                    .log();
+
+                this.fetchRemoteConfigValues(remoteConfig);
+            })
+            .addOnFailureListener(e -> {
+                this.buildEvent("mng_fb_rc_defaults_error")
+                    .addParameterException("exception", e)
+                    .log();
+
+                this.fetchRemoteConfigValues(remoteConfig);
+            });
+    }
+
+    @Override
+    public void onAppPost(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
+        FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
+
+        this.fetchRemoteConfigValues(remoteConfig);
     }
 
     @Override
@@ -76,14 +106,13 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
                     allValueString.put(key, valueString);
                 }
 
-                this.logMessage("remote config successful fetch and activate params: %s updated: %b"
-                    , allValueString
+                this.logMessage("remote config successful fetch and activate updated: %b"
                     , updated
                 );
 
-                this.activateSemaphore("FirebaseRemoteConfigFetchSuccessful");
-
-                this.sendEvent(MengineEvent.EVENT_REMOTE_CONFIG_FETCH, updated);
+                if (updated == true) {
+                    this.fetchRemoteConfigValues(remoteConfig);
+                }
             })
             .addOnFailureListener(activity, e -> {
                 this.buildEvent("mng_fb_rc_fetch_error")
@@ -96,73 +125,91 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
             });
     }
 
-    public Map<String, String> getRemoteConfig() {
-        FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
+    protected void setRemoteConfigDefaults(Map<String, String> defaults) {
+        m_defaults = defaults;
 
-        Map<String, FirebaseRemoteConfigValue> remoteValues = remoteConfig.getAll();
-
-        Map<String, String> correctValues;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            correctValues = remoteValues.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().asString()));
-        } else {
-            correctValues = new HashMap<>();
-
-            for (Map.Entry<String, FirebaseRemoteConfigValue> entry : remoteValues.entrySet()) {
+        if (BuildConfig.DEBUG == true) {
+            for (Map.Entry<String, String> entry : defaults.entrySet()) {
                 String key = entry.getKey();
-                FirebaseRemoteConfigValue value = entry.getValue();
-                String value_str = value.asString();
+                String value = entry.getValue();
 
-                correctValues.put(key, value_str);
+                try {
+                    new JSONObject(value);
+                } catch (final JSONException e) {
+                    this.assertionError("remote config default invalid json key: %s value: %s exception: %s"
+                        , key
+                        , value
+                        , e.getMessage()
+                    );
+                }
             }
         }
-
-        return correctValues;
     }
 
-    public String getRemoteConfigValueString(String key) {
-        FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
+    protected void fetchRemoteConfigValues(FirebaseRemoteConfig remoteConfig) {
+        Map<String, FirebaseRemoteConfigValue> remoteValues = remoteConfig.getAll();
 
-        String value = remoteConfig.getString(key);
+        Map<String, JSONObject> configs = new HashMap<>();
 
-        return value;
-    }
+        for (Map.Entry<String, String> entry : m_defaults.entrySet()) {
+            String key = entry.getKey();
 
-    public boolean getRemoteConfigValueBoolean(String key) {
-        FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
+            FirebaseRemoteConfigValue value = remoteValues.get(key);
 
-        boolean value = remoteConfig.getBoolean(key);
+            String value_string;
 
-        return value;
-    }
+            if (value == null) {
+                this.logError("remote config invalid key: %s not found in configs: %s"
+                    , key
+                    , remoteValues.keySet()
+                );
 
-    public double getRemoteConfigValueDouble(String key) {
-        FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
+                value_string = m_defaults.get(key);
+            } else {
+                value_string = value.asString();
+            }
 
-        double value = remoteConfig.getDouble(key);
+            JSONObject value_json;
 
-        return value;
-    }
+            try {
+                value_json = new JSONObject(value_string);
+            } catch (final JSONException e) {
+                this.logError("remote config invalid json key: %s value: %s exception: %s"
+                    , key
+                    , value_string
+                    , e.getMessage()
+                );
 
-    public long getRemoteConfigValueLong(String key) {
-        FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
+                continue;
+            }
 
-        long value = remoteConfig.getLong(key);
-
-        return value;
-    }
-
-    public Map<String, Object> getRemoteConfigValueJSON(String key) {
-        FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
-
-        String value = remoteConfig.getString(key);
-
-        if (value.isEmpty() == true) {
-            return new HashMap<>();
+            configs.put(key, value_json);
         }
 
-        Map<String, Object> mapJson = MengineUtils.parseJSONMap(value);
+        this.logMessage("remote config values: %s"
+            , configs
+        );
 
-        return mapJson;
+        synchronized (this) {
+            this.m_configs = configs;
+        }
+
+        MengineApplication application = this.getMengineApplication();
+
+        application.onMengineRemoteConfigFetch(configs);
+    }
+
+    public Map<String, JSONObject> getRemoteConfigs() {
+        synchronized (this) {
+            return this.m_configs;
+        }
+    }
+
+    public JSONObject getRemoteConfigValueJSON(String key) {
+        synchronized (this) {
+            JSONObject value = this.m_configs.get(key);
+
+            return value;
+        }
     }
 }

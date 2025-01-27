@@ -78,6 +78,12 @@ namespace Mengine
                 ->androidObjectMethod( _plugin, _method, _args );
         }
         //////////////////////////////////////////////////////////////////////////
+        static PyObject * AndroidNativePythonService_androidJSONObjectMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args )
+        {
+            return ANDROID_NATIVEPYTHON_SERVICE()
+                ->androidJSONObjectMethod( _plugin, _method, _args );
+        }
+        //////////////////////////////////////////////////////////////////////////
         void AndroidNativePythonService_waitSemaphore( const ConstString & _name, const pybind::object & _cb, const pybind::args & _args )
         {
             AndroidSemaphoreListenerInterfacePtr listener = Helper::makeFactorableUnique<PythonAndroidSemaphoreListener>( MENGINE_DOCUMENT_PYBIND, _cb, _args );
@@ -109,6 +115,7 @@ namespace Mengine
         pybind::def_function_args( _kernel, "androidDoubleMethod", &Detail::AndroidNativePythonService_androidDoubleMethod );
         pybind::def_function_args( _kernel, "androidStringMethod", &Detail::AndroidNativePythonService_androidStringMethod );
         pybind::def_function_args( _kernel, "androidObjectMethod", &Detail::AndroidNativePythonService_androidObjectMethod );
+        pybind::def_function_args( _kernel, "androidJSONObjectMethod", &Detail::AndroidNativePythonService_androidJSONObjectMethod );
 
         pybind::interface_<AndroidNativePythonCallback, pybind::bases<Scriptable>>( _kernel, "AndroidNativePythonCallback" )
             .def_call( &AndroidNativePythonCallback::call )

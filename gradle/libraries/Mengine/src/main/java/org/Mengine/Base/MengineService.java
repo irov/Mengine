@@ -1,5 +1,7 @@
 package org.Mengine.Base;
 
+import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Size;
 
@@ -20,6 +22,13 @@ public class MengineService implements MengineServiceInterface {
 
     public void onFinalize(@NonNull MengineApplication application) {
         m_application = null;
+    }
+
+    public void onLoad(@NonNull MengineApplication application, @NonNull Bundle bundle) {
+    }
+
+    public Bundle onSave(@NonNull MengineApplication application) {
+        return null;
     }
 
     public MengineApplication getMengineApplication() {

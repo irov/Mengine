@@ -13,10 +13,6 @@ public class MengineNative {
 
     public static native void AndroidMain_crash(String reason);
 
-    public static native void AndroidEnv_setMengineAndroidActivityJNI(Object activity);
-    public static native void AndroidEnv_removeMengineAndroidActivityJNI();
-
-    public static native void AndroidEnvironmentService_log(int level, String tag, String msg);
     public static native void AnroidEnvironmentService_callMengineSemaphoreListener(Object impl);
     public static native void AnroidEnvironmentService_destroyMengineSemaphoreListener(Object impl);
     public static native boolean AndroidEnvironmentService_isDevelopmentMode();
@@ -52,9 +48,11 @@ public class MengineNative {
     public static native void AndroidPlatform_trimMemory(int level);
     public static native void AndroidPlatform_changeLocale(String locale);
 
+    public static native void AndroidEnv_nativeDebugBreak();
     public static native void AndroidEnv_setMengineAndroidApplicationJNI(Object activity, ClassLoader cl);
     public static native void AndroidEnv_removeMengineAndroidApplicationJNI();
-
+    public static native void AndroidEnv_setMengineAndroidActivityJNI(Object activity);
+    public static native void AndroidEnv_removeMengineAndroidActivityJNI();
     public static native boolean AndroidEnv_isMasterRelease();
     public static native String AndroidEnv_getEngineGITSHA1();
     public static native String AndroidEnv_getEngineVersion();

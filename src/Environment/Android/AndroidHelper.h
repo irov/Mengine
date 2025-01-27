@@ -74,10 +74,15 @@ namespace Mengine
             return size;
         }
         //////////////////////////////////////////////////////////////////////////
-        typedef Lambda<void( jobject key, jobject value)> LambdaJavaMapForeach;
+        typedef Lambda<void( jobject key, jobject value )> LambdaJavaJSONObjectForeach;
+        void AndroidForeachJavaJSONObject( JNIEnv * _jenv, jobject _jjson, const LambdaJavaJSONObjectForeach & _lambda );
+        typedef Lambda<void( jint index, jobject value )> LambdaJavaJSONArrayForeach;
+        void AndroidForeachJavaJSONArray( JNIEnv * _jenv, jobject _jarray, const LambdaJavaJSONArrayForeach & _lambda );
+        //////////////////////////////////////////////////////////////////////////
+        typedef Lambda<void( jobject key, jobject value )> LambdaJavaMapForeach;
         void AndroidForeachJavaMap( JNIEnv * _jenv, jobject _jmap, const LambdaJavaMapForeach & _lambda );
         //////////////////////////////////////////////////////////////////////////
-        typedef Lambda<void( jsize _index, jobject value)> LambdaJavaListForeach;
+        typedef Lambda<void( jsize _index, jobject value )> LambdaJavaListForeach;
         uint32_t AndroidGetJavaListSize( JNIEnv * _jenv, jobject _jlist );
         void AndroidForeachJavaList( JNIEnv * _jenv, jobject _jlist, const LambdaJavaListForeach & _lambda );
         //////////////////////////////////////////////////////////////////////////

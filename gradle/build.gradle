@@ -61,7 +61,7 @@ allprojects {
         if (ANDROID_APP_BUILD_TOOLS_VERSION != null) {
             buildToolsVersion = ANDROID_APP_BUILD_TOOLS_VERSION
         } else {
-            buildToolsVersion = "35.0.0"
+            buildToolsVersion = "35.0.1"
         }
 
         if (ANDROID_APP_CMAKE_VERSION != null) {

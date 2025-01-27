@@ -17,6 +17,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.LocaleList;
 import android.os.Looper;
@@ -710,6 +711,8 @@ public class MengineUtils {
     public static void finishActivityWithAlertDialog(@NonNull Activity activity, String title, String format, Object ... args) {
         MengineLog.logErrorException(TAG, format, args);
 
+        MengineUtils.debugBreak();
+
         MengineUtils.showOkAlertDialog(activity, () -> {
             activity.finishAndRemoveTask();
         }, title, format, args);
@@ -772,24 +775,17 @@ public class MengineUtils {
         }
     }
 
-    public static Map<String, Object> parseJSONMap(String json) {
+    public static boolean validateJSON(String json) {
         try {
-            JSONObject jsonObject = new JSONObject(json);
-
-            Map<String, Object> map = MengineUtils.jsonObjectToMap(jsonObject);
-
-            return map;
+            new JSONObject(json);
         } catch (final JSONException e) {
-            MengineLog.logError(TAG, "parseJSONMap json: %s JSONException: %s"
-                , json
-                , e.getMessage()
-            );
+            return false;
         }
 
-        return null;
+        return true;
     }
 
-    private static Map<String, Object> jsonObjectToMap(JSONObject obj)  throws JSONException {
+    public static Map<String, Object> jsonObjectToMap(JSONObject obj)  throws JSONException {
         Map<String, Object> map = new HashMap<>();
 
         Iterator<String> keys = obj.keys();
@@ -984,6 +980,14 @@ public class MengineUtils {
         return android.os.Debug.isDebuggerConnected();
     }
 
+    public static void debugBreak() {
+        if (android.os.Debug.isDebuggerConnected() == false) {
+            return;
+        }
+
+        MengineNative.AndroidEnv_nativeDebugBreak();
+    }
+
     public static boolean isAppInForeground(Context context) {
         ActivityManager activityManager = (ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);
 
@@ -1022,19 +1026,140 @@ public class MengineUtils {
         return usedJVMMemory;
     }
 
+    public static void printCurrentStackTrace() {
+        new Exception("StackTrace").printStackTrace();
+    }
+
+    public static void throwRuntimeException(String message, Throwable throwable) {
+        MengineUtils.waitForDebugger();
+
+        throw new RuntimeException(message, throwable);
+    }
+
     public static void throwAssertionError(MengineApplication application, String title, Throwable throwable, String format, Object ... args) {
         String message = MengineLog.buildTotalMsg(format, args);
 
         if (application == null) {
-            throw new RuntimeException(message, throwable);
+            MengineUtils.throwRuntimeException(message, throwable);
         }
 
         MengineActivity activity = application.getMengineActivity();
 
         if (activity == null) {
-            throw new RuntimeException(message, throwable);
+            MengineUtils.throwRuntimeException(message, throwable);
         }
 
         MengineUtils.finishActivityWithAlertDialog(activity, "AssertionError", "%s", message);
+    }
+
+    public static ArrayList<Bundle> parcelableArrayListFromJSON(@NonNull JSONArray value) {
+        ArrayList<Bundle> list = new ArrayList<>();
+
+        for (int i = 0; i < value.length(); i++) {
+            try {
+                JSONObject object = value.getJSONObject(i);
+
+                Bundle bundle = MengineUtils.bundleFromJSONObject(object);
+
+                list.add(bundle);
+            } catch (JSONException e) {
+                MengineLog.logError(TAG, "parcelableArrayListFromJSON catch JSONException: %s"
+                    , e.getMessage()
+                );
+            }
+        }
+
+        return list;
+    }
+
+    public static Bundle bundleFromJSONObject(@NonNull JSONObject value) {
+        Bundle bundle = new Bundle();
+        Iterator<String> keys = value.keys();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            try {
+                Object object = value.get(key);
+                if (object instanceof String) {
+                    bundle.putString(key, (String) object);
+                } else if (object instanceof Integer) {
+                    bundle.putInt(key, (Integer) object);
+                } else if (object instanceof Long) {
+                    bundle.putLong(key, (Long) object);
+                } else if (object instanceof Boolean) {
+                    bundle.putBoolean(key, (Boolean) object);
+                } else if (object instanceof Double) {
+                    bundle.putDouble(key, (Double) object);
+                } else if (object instanceof JSONObject) {
+                    Bundle subBundle = MengineUtils.bundleFromJSONObject((JSONObject) object);
+                    bundle.putBundle(key, subBundle);
+                } else if (object instanceof JSONArray) {
+                    ArrayList<Bundle> bundles = MengineUtils.parcelableArrayListFromJSON((JSONArray) object);
+                    bundle.putParcelableArrayList(key, bundles);
+                }
+            } catch (JSONException e) {
+                MengineLog.logError(TAG, "bundleFromJSONObject catch JSONException: %s"
+                    , e.getMessage()
+                );
+            }
+        }
+
+        return bundle;
+    }
+
+    public static JSONArray jsonArrayFromArrayList(ArrayList list) {
+        JSONArray array = new JSONArray();
+        for (Object object : list) {
+            if (object instanceof String) {
+                array.put(object);
+            } else if (object instanceof Integer) {
+                array.put(object);
+            } else if (object instanceof Long) {
+                array.put(object);
+            } else if (object instanceof Boolean) {
+                array.put(object);
+            } else if (object instanceof Double) {
+                array.put(object);
+            } else if (object instanceof Bundle) {
+                JSONObject subObject = MengineUtils.jsonObjectFromBundle((Bundle) object);
+                array.put(subObject);
+            } else if (object instanceof ArrayList) {
+                JSONArray subArray = MengineUtils.jsonArrayFromArrayList((ArrayList) object);
+                array.put(subArray);
+            }
+        }
+
+        return array;
+    }
+
+    public static JSONObject jsonObjectFromBundle(@NonNull Bundle bundle) {
+        JSONObject object = new JSONObject();
+        for (String key : bundle.keySet()) {
+            Object value = bundle.get(key);
+            try {
+                if (value instanceof String) {
+                    object.put(key, value);
+                } else if (value instanceof Integer) {
+                    object.put(key, value);
+                } else if (value instanceof Long) {
+                    object.put(key, value);
+                } else if (value instanceof Boolean) {
+                    object.put(key, value);
+                } else if (value instanceof Double) {
+                    object.put(key, value);
+                } else if (value instanceof Bundle) {
+                    JSONObject subObject = MengineUtils.jsonObjectFromBundle((Bundle) value);
+                    object.put(key, subObject);
+                } else if (value instanceof ArrayList) {
+                    JSONArray array = MengineUtils.jsonArrayFromArrayList((ArrayList) value);
+                    object.put(key, array);
+                }
+            } catch (JSONException e) {
+                MengineLog.logError(TAG, "jsonObjectFromBundle catch JSONException: %s"
+                    , e.getMessage()
+                );
+            }
+        }
+
+        return object;
     }
 }

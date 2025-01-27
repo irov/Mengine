@@ -118,7 +118,7 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T getPlugin(Class<T> cls) {
+    public <T> T getService(Class<T> cls) {
         MengineApplication application = this.getMengineApplication();
 
         T plugin = application.getService(cls);
@@ -705,6 +705,8 @@ public class MengineActivity extends AppCompatActivity {
         this.setState("activity.lifecycle", "pause");
 
         MengineLog.logMessageRelease(TAG, "onPause");
+
+        application.onServicesSave();
 
         if (m_surfaceView != null) {
             m_surfaceView.handlePause();

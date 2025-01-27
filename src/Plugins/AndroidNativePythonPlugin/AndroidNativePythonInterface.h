@@ -34,6 +34,7 @@ namespace Mengine
         virtual double androidDoubleMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const = 0;
         virtual PyObject * androidStringMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const = 0;
         virtual PyObject * androidObjectMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const = 0;
+        virtual PyObject * androidJSONObjectMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const = 0;
 
     public:
         virtual void waitSemaphore( const ConstString & _name, const AndroidSemaphoreListenerInterfacePtr & _listener ) = 0;

@@ -119,10 +119,15 @@ namespace Mengine
 
         InputStreamInterfacePtr stream = _content->openInputStreamFile( false, false, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid open config '%s' (doc: %s)"
-            , Helper::getContentFullPath( _content ).c_str()
-            , MENGINE_DOCUMENT_STR( _doc )
-        );
+        if( stream == nullptr )
+        {
+            LOGGER_ERROR( "invalid open config '%s' (doc: %s)"
+                , Helper::getContentFullPath( _content ).c_str()
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
+
+            return nullptr;
+        }
 
         ConstString configType = _configType;
 

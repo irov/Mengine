@@ -26,6 +26,10 @@ public interface MengineListenerApplication extends MengineServiceInterface {
         //Empty
     }
 
+    default void onAppPost(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
+        //Empty
+    }
+
     default void onAppTerminate(@NonNull MengineApplication application) {
         //Empty
     }

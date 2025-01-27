@@ -5,6 +5,7 @@
 #include "Kernel/BuildMode.h"
 #include "Kernel/Assertion.h"
 
+#include <signal.h>
 #include <pthread.h>
 
 static JavaVM * g_androidEnvJavaVM;
@@ -15,6 +16,16 @@ static jobject g_jobject_MengineActivity;
 
 extern "C" 
 {
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1nativeDebugBreak )( JNIEnv * env, jclass cls )
+    {
+        jclass jclassMengineUtils = env->FindClass("org/Mengine/Base/MengineUtils");
+        jmethodID jmethodIdPrintCurrentStackTrace = env->GetStaticMethodID(jclassMengineUtils, "printCurrentStackTrace", "()V");
+
+        env->CallStaticVoidMethod(jclassMengineUtils, jmethodIdPrintCurrentStackTrace);
+
+        ::raise( SIGTRAP );
+    }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1setMengineAndroidApplicationJNI )( JNIEnv * env, jclass cls, jobject obj, jobject cl )
     {

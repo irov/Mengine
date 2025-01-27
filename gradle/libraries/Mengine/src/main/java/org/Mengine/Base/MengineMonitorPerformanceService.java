@@ -5,8 +5,8 @@ import androidx.annotation.NonNull;
 import java.util.Map;
 import java.util.Timer;
 
-public class MengineMonitorPerformance extends MengineService implements MengineListenerApplication, MengineListenerEngine, MengineListenerAnalytics {
-    public static final String SERVICE_NAME = "MPerformance";
+public class MengineMonitorPerformanceService extends MengineService implements MengineListenerApplication, MengineListenerEngine, MengineListenerAnalytics {
+    public static final String SERVICE_NAME = "MonitorPerformance";
 
     private static final String TRACE_STARTUP = "mng_startup";
     private static final String TRACE_FPS = "mng_fps";

@@ -3,8 +3,6 @@ package org.Mengine.Base;
 import androidx.annotation.NonNull;
 import androidx.annotation.Size;
 
-import org.json.JSONObject;
-
 import java.util.Map;
 
 public class MengineAnalyticsEventBuilder {
@@ -50,10 +48,8 @@ public class MengineAnalyticsEventBuilder {
             return;
         }
 
-        try {
-            new JSONObject(json);
-        } catch (Exception e) {
-            MengineUtils.throwAssertionError(m_application, MengineAnalytics.TAG, e
+        if (MengineUtils.validateJSON(json) == false) {
+            MengineUtils.throwAssertionError(m_application, MengineAnalytics.TAG, null
                 , "event builder: %s parameter: %s invalid json: %s", m_name, key, json
             );
         }

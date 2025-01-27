@@ -250,6 +250,8 @@ endif()
 if(MENGINE_DEPENDENCE_WEBP)
     message("================libwebp================")
     
+    configure_file(${CMAKE_CURRENT_LIST_DIR}/libwebp/CMakeLists.txt ${THIRDPARTY_DIR}/libwebp/CMakeLists.txt COPYONLY)
+    
     set(PNG_PNG_INCLUDE_DIR ${PNG_INCLUDE_DIRS} CACHE STRING "PNG_PNG_INCLUDE_DIR" FORCE)
     
     set(WEBP_LINK_STATIC ON CACHE BOOL "Link using static libraries. If OFF, use dynamic libraries." FORCE)

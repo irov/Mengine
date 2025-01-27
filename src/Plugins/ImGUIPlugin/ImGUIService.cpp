@@ -202,7 +202,15 @@ namespace Mengine
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
-        ImGui_ImplWin32_Shutdown();
+        Win32PlatformServiceExtensionInterface * win32Platform = PLATFORM_SERVICE()
+            ->getDynamicUnknown();
+
+        HWND hWnd = win32Platform->getWindowHandle();
+
+        if( hWnd != NULL )
+        {
+            ImGui_ImplWin32_Shutdown();
+        }
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)

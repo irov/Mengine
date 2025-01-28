@@ -15,8 +15,6 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:8.8.0'
 
-        classpath 'net.ltgt.errorprone:net.ltgt.errorprone.gradle.plugin:4.1.0'
-
         if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_GOOGLE_SERVICE") == true) {
             classpath 'com.google.gms:google-services:4.4.2'
         }
@@ -47,8 +45,6 @@ def ANDROID_APP_TARGET_SDK_VERSION = Utils.getIntegerProperty("ANDROID_APP_TARGE
 def ANDROID_APP_COMPILE_SDK_VERSION = Utils.getIntegerProperty("ANDROID_APP_COMPILE_SDK_VERSION", null)
 
 allprojects {
-    apply plugin: 'net.ltgt.errorprone'
-
     layout.buildDirectory.set(layout.projectDirectory.dir(rootProject.projectDir.getAbsolutePath() + "/../outputs/gradle/build/${rootProject.name}/${project.name}"))
 
     project.ext {
@@ -95,7 +91,7 @@ allprojects {
         tasks.withType(JavaCompile).tap {
             configureEach {
                 options.encoding = 'UTF-8'
-                options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+                options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation" << "-Xlint:overrides"
             }
         }
     }

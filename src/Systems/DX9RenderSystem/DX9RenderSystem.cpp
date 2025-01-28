@@ -40,7 +40,7 @@
 #include "Kernel/PixelFormatHelper.h"
 #include "Kernel/TextureHelper.h"
 #include "Kernel/OptionHelper.h"
-#include "Kernel/Assertion.h"
+#include "Kernel/NotificationHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdMath.h"
@@ -223,8 +223,6 @@ namespace Mengine
     {
         m_deferredCompilePrograms.clear();
 
-        this->release_();
-
         MENGINE_ASSERTION_CONTAINER_EMPTY( m_renderResourceHandlers );
 
         m_renderResourceHandlers.clear();
@@ -232,8 +230,6 @@ namespace Mengine
         MENGINE_ASSERTION_STATISTIC_EMPTY( STATISTIC_RENDER_TEXTURE_ALLOC_COUNT );
         MENGINE_ASSERTION_STATISTIC_EMPTY( STATISTIC_RENDER_INDEX_BUFFER_COUNT );
         MENGINE_ASSERTION_STATISTIC_EMPTY( STATISTIC_RENDER_VERTEX_BUFFER_COUNT );
-
-        m_d3d9Library = nullptr;
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderVertexAttribute );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderVertexShader );
@@ -260,6 +256,18 @@ namespace Mengine
         m_factoryRenderTargetOffscreen = nullptr;
 
         DX9RenderImageLockedFactoryStorage::finalize();
+
+        if( m_pD3D != nullptr )
+        {
+            ULONG ref = m_pD3D->Release();
+            MENGINE_UNUSED( ref );
+
+            MENGINE_ASSERTION( ref == 0, "D3D has refcount [%lu]", ref );
+
+            m_pD3D = nullptr;
+        }
+
+        m_d3d9Library = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     D3DMULTISAMPLE_TYPE DX9RenderSystem::findMatchingMultiSampleType_( uint32_t _MultiSampleCount )
@@ -593,7 +601,28 @@ namespace Mengine
         m_supportR8G8B8 = this->supportTextureFormat( PF_R8G8B8 );
         m_supportNonPow2 = this->supportTextureNonPow2( m_d3dCaps );
 
+        NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_DEVICE_CREATE );
+
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DX9RenderSystem::destroyRenderWindow()
+    {
+        if( m_pD3DDevice == nullptr )
+        {
+            return;
+        }
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_DEVICE_DESTROY );
+         
+        this->releaseResources_();        
+
+        ULONG ref = m_pD3DDevice->Release();
+        MENGINE_UNUSED( ref );
+
+        MENGINE_ASSERTION( ref == 0, "D3DDevice has refcount [%lu]", ref );
+
+        m_pD3DDevice = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setProjectionMatrix( const mt::mat4f & _projectionMatrix )
@@ -864,10 +893,7 @@ namespace Mengine
                 , cooperativeLevel
             );
 
-            if( this->releaseResources_() == false )
-            {
-                LOGGER_ASSERTION( "release resources" );
-            }
+            this->releaseResources_();
 
             return false;
         }
@@ -1185,7 +1211,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderSystem::releaseResources_()
+    void DX9RenderSystem::releaseResources_()
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
@@ -1246,20 +1272,13 @@ namespace Mengine
 
             MENGINE_DXCALL( m_pD3DDevice, SetVertexDeclaration, (NULL) );
         }
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderSystem::restore_()
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
-        if( this->releaseResources_() == false )
-        {
-            LOGGER_ASSERTION( "release resources" );
-
-            return false;
-        }
+        this->releaseResources_();
 
         RENDER_SERVICE()
             ->onDeviceLostPrepare();
@@ -1321,36 +1340,6 @@ namespace Mengine
         }
 
         return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::release_()
-    {
-        if( m_pD3DDevice != nullptr )
-        {
-            if( this->releaseResources_() == false )
-            {
-                LOGGER_ASSERTION( "invalid release resource" );
-
-                return;
-            }
-
-            ULONG ref = m_pD3DDevice->Release();
-            MENGINE_UNUSED( ref );
-
-            MENGINE_ASSERTION( ref == 0, "D3DDevice has refcount [%lu]", ref );
-
-            m_pD3DDevice = nullptr;
-        }
-
-        if( m_pD3D != nullptr )
-        {
-            ULONG ref = m_pD3D->Release();
-            MENGINE_UNUSED( ref );
-
-            MENGINE_ASSERTION( ref == 0, "D3D has refcount [%lu]", ref );
-
-            m_pD3D = nullptr;
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     RenderVertexBufferInterfacePtr DX9RenderSystem::createVertexBuffer( uint32_t _vertexSize, EBufferType _bufferType, const DocumentInterfacePtr & _doc )

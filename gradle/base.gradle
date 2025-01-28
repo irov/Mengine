@@ -19,9 +19,16 @@ android {
         buildConfig = true
     }
 
-    lintOptions {
-        checkReleaseBuilds false
-        abortOnError false
+    lint {
+        fatal 'NewApi', 'InlinedApi'
+
+        checkOnly += 'NewApi'
+        checkOnly += 'InlinedApi'
+
+		checkReleaseBuilds false
+        warningsAsErrors true
+        abortOnError true
+        checkDependencies true
     }
 }
 

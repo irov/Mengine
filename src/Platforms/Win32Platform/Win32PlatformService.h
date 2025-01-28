@@ -64,6 +64,7 @@ namespace Mengine
 
     public:
         bool atachWindow( HWND _hWnd, bool _fullscreen ) override;
+        bool detachWindow() override;
 
     public:
         const Tags & getPlatformTags() const override;

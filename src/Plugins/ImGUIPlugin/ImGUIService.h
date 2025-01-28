@@ -27,7 +27,8 @@ namespace Mengine
     protected:
         void notifyPlatformAtachWindow_();
         void notifyPlatformDetachWindow_();
-        void notifyCreateRenderWindow_();
+        void notifyRenderDeviceCreate_();
+        void notifyRenderDeviceDestroy_();
         void notifyRenderDeviceLostPrepare_();
         void notifyRenderDeviceLostRestore_();
 

@@ -131,7 +131,8 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_PLATFORM_ATACH_WINDOW, &ImGUIService::notifyPlatformAtachWindow_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_PLATFORM_DETACH_WINDOW, &ImGUIService::notifyPlatformDetachWindow_, MENGINE_DOCUMENT_FACTORABLE );
         
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CREATE_RENDER_WINDOW, &ImGUIService::notifyCreateRenderWindow_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_DEVICE_CREATE, &ImGUIService::notifyRenderDeviceCreate_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_DEVICE_DESTROY, &ImGUIService::notifyRenderDeviceDestroy_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE, &ImGUIService::notifyRenderDeviceLostPrepare_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_RESTORE, &ImGUIService::notifyRenderDeviceLostRestore_, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -154,7 +155,8 @@ namespace Mengine
     {
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_PLATFORM_ATACH_WINDOW );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_PLATFORM_DETACH_WINDOW );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CREATE_RENDER_WINDOW );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RENDER_DEVICE_CREATE );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RENDER_DEVICE_DESTROY );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_RESTORE );
 
@@ -192,33 +194,6 @@ namespace Mengine
         stream->flush();
 
         Helper::closeOutputStreamFile( userFileGroup, stream );
-
-#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
-        if( RENDER_SERVICE()
-            ->isWindowCreated() == true )
-        {
-            ImGui_ImplDX9_Shutdown();
-        }
-#endif
-
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
-        Win32PlatformServiceExtensionInterface * win32Platform = PLATFORM_SERVICE()
-            ->getDynamicUnknown();
-
-        HWND hWnd = win32Platform->getWindowHandle();
-
-        if( hWnd != NULL )
-        {
-            ImGui_ImplWin32_Shutdown();
-        }
-#endif
-
-#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
-        ImGui_ImplOpenGL2_DestroyFontsTexture();
-        ImGui_ImplOpenGL2_DestroyDeviceObjects();
-
-        ImGui_ImplOpenGL2_Shutdown();
-#endif
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
         ImGui_ImplSDL2_Shutdown();
@@ -340,7 +315,7 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    void ImGUIService::notifyCreateRenderWindow_()
+    void ImGUIService::notifyRenderDeviceCreate_()
     {
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL) && defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
         ImGui_ImplOpenGL2_Init();
@@ -357,6 +332,20 @@ namespace Mengine
             ImGui_ImplDX9_Init( d3dDevice );
             ImGui_ImplDX9_CreateDeviceObjects();
         }
+#endif
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ImGUIService::notifyRenderDeviceDestroy_()
+    {
+#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
+        ImGui_ImplDX9_Shutdown();
+#endif
+
+#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
+        ImGui_ImplOpenGL2_DestroyFontsTexture();
+        ImGui_ImplOpenGL2_DestroyDeviceObjects();
+
+        ImGui_ImplOpenGL2_Shutdown();
 #endif
     }
     //////////////////////////////////////////////////////////////////////////

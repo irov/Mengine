@@ -18,6 +18,7 @@ namespace Mengine
     {
     public:
         virtual bool atachWindow( HWND _hwnd, bool _fullscreen ) = 0;
+        virtual bool detachWindow() = 0;
 
     public:
         virtual HWND getWindowHandle() const = 0;

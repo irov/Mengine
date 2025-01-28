@@ -41,6 +41,7 @@ namespace Mengine
 
     public:
         bool createRenderWindow( const RenderWindowDesc * _windowDesc ) override;
+        void destroyRenderWindow() override;
 
     public:
         void setViewMatrix( const mt::mat4f & _view ) override;

@@ -17,6 +17,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/StatisticHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 #include "Kernel/Logger.h"
 
@@ -167,6 +168,7 @@ namespace Mengine
 #if defined(MENGINE_RENDER_OPENGL_NORMAL)
         Mengine::initialize_GLEXT();
 #endif
+
         const Char * versionStr = reinterpret_cast<const Char *>(glGetString( GL_VERSION ));
         MENGINE_GLERRORCHECK();
         
@@ -271,7 +273,14 @@ namespace Mengine
 
         m_renderWindowCreate = true;
 
+        NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_DEVICE_CREATE );
+
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderSystem::destroyRenderWindow()
+    {
+        NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_DEVICE_DESTROY );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setScissor( const Viewport & _viewport )

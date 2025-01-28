@@ -16,6 +16,7 @@
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/AnalyticsServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
+#include "Interface/RenderServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/VectorConstString.h"
@@ -2149,6 +2150,12 @@ namespace Mengine
         {
             THREAD_SERVICE()
                 ->stopTasks();
+        }
+
+        if( SERVICE_IS_INITIALIZE( RenderServiceInterface ) == true )
+        {
+            RENDER_SERVICE()
+                ->destroyRenderWindow();
         }
 
         SERVICE_FINALIZE( HttpService );

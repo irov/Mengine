@@ -400,28 +400,7 @@ namespace Mengine
             m_hIcon = NULL;
         }
 
-        if( m_hWnd != NULL )
-        {
-#if defined(MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA)
-            if( m_sessionNotification == true )
-            {
-                if( ::WTSUnRegisterSessionNotification( m_hWnd ) == FALSE )
-                {
-                    LOGGER_ERROR( "invalid hwnd [%p] unregister session notification %ls"
-                        , m_hWnd
-                        , Helper::Win32GetLastErrorMessageW()
-                    );
-                }
-            }
-#endif
-
-            ::CloseWindow( m_hWnd );
-            ::DestroyWindow( m_hWnd );
-
-            m_hWnd = NULL;
-
-            this->updateWndMessage_();
-        }
+        this->detachWindow();
 
         if( m_hInstance != NULL )
         {
@@ -829,15 +808,7 @@ namespace Mengine
 
         m_mouseEvent.stop();
 
-        if( m_hWnd != NULL )
-        {
-            ::CloseWindow( m_hWnd );
-            ::DestroyWindow( m_hWnd );
-
-            m_hWnd = NULL;
-
-            this->updateWndMessage_();
-        }
+        this->detachWindow();
 
         MENGINE_PROFILER_END_APPLICATION();
     }
@@ -2316,6 +2287,40 @@ namespace Mengine
         this->updateWndMessage_();
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_ATACH_WINDOW );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32PlatformService::detachWindow()
+    {
+        if( m_hWnd == NULL )
+        {
+            return false;
+        }
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_DETACH_WINDOW );
+
+#if defined(MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA)
+        if( m_sessionNotification == true )
+        {
+            m_sessionNotification = false;
+
+            if( ::WTSUnRegisterSessionNotification( m_hWnd ) == FALSE )
+            {
+                LOGGER_ERROR( "invalid hwnd [%p] unregister session notification %ls"
+                    , m_hWnd
+                    , Helper::Win32GetLastErrorMessageW()
+                );
+            }
+        }
+#endif
+
+        ::CloseWindow( m_hWnd );
+        ::DestroyWindow( m_hWnd );
+
+        m_hWnd = NULL;
+
+        this->updateWndMessage_();
 
         return true;
     }

@@ -479,7 +479,7 @@ public class MengineUtils {
             return "";
         }
 
-        String lastPathComponent = segments.getLast();
+        String lastPathComponent = segments.get(segments.size() - 1);
 
         return lastPathComponent;
     }
@@ -1031,7 +1031,7 @@ public class MengineUtils {
     }
 
     public static void throwRuntimeException(String message, Throwable throwable) {
-        MengineUtils.waitForDebugger();
+        MengineUtils.debugBreak();
 
         throw new RuntimeException(message, throwable);
     }
@@ -1148,9 +1148,11 @@ public class MengineUtils {
                     object.put(key, value);
                 } else if (value instanceof Bundle) {
                     JSONObject subObject = MengineUtils.jsonObjectFromBundle((Bundle) value);
+
                     object.put(key, subObject);
                 } else if (value instanceof ArrayList) {
                     JSONArray array = MengineUtils.jsonArrayFromArrayList((ArrayList) value);
+
                     object.put(key, array);
                 }
             } catch (JSONException e) {

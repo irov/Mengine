@@ -28,6 +28,7 @@
 #include "Kernel/PixelFormatHelper.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -156,7 +157,14 @@ namespace Mengine
         m_depth = _windowDesc->depth;
         m_waitForVSync = _windowDesc->waitForVSync;
 
+        NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_DEVICE_CREATE );
+
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MockupRenderSystem::destroyRenderWindow()
+    {
+        NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_DEVICE_DESTROY );
     }
     //////////////////////////////////////////////////////////////////////////
     void MockupRenderSystem::setProjectionMatrix( const mt::mat4f & _projectionMatrix )

@@ -46,6 +46,7 @@ namespace Mengine
 
     public:
         bool createRenderWindow( const RenderWindowDesc * _windowDesc ) override;
+        void destroyRenderWindow() override;
 
     public:
         void setProjectionMatrix( const mt::mat4f & _projection ) override;
@@ -172,8 +173,7 @@ namespace Mengine
         D3DPRESENT_PARAMETERS * m_d3dpp;
 
     protected:
-        bool releaseResources_();
-        void release_();
+        void releaseResources_();
         bool restore_();
 
     protected:

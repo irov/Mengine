@@ -78,6 +78,7 @@ namespace Mengine
 
     public:
         virtual bool createRenderWindow( const RenderWindowDesc * _windowDesc ) = 0;
+        virtual void destroyRenderWindow() = 0;
 
     public:
         virtual void setProjectionMatrix( const mt::mat4f & _projection ) = 0;

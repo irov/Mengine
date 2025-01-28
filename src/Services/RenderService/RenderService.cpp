@@ -210,6 +210,8 @@ namespace Mengine
         m_currentRenderIndexBuffer = nullptr;
         m_currentRenderProgramVariable = nullptr;
         m_currentRenderProgram = nullptr;
+
+        m_renderSystem->destroyRenderWindow();
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderService::createNullTexture_()

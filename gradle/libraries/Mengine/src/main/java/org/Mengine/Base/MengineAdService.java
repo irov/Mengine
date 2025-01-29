@@ -156,12 +156,8 @@ public class MengineAdService extends MengineService implements MengineAdProvide
     }
 
     @Override
-    public boolean hasInterstitial(String placement) {
-        if (m_adProvider.hasInterstitial(placement) == false) {
-            return false;
-        }
-
-        if (m_adInterstitialPoints.containsKey(placement) == false) {
+    public boolean hasInterstitial() {
+        if (m_adProvider.hasInterstitial() == false) {
             return false;
         }
 
@@ -217,12 +213,8 @@ public class MengineAdService extends MengineService implements MengineAdProvide
     }
 
     @Override
-    public boolean hasRewarded(String placement) {
-        if (m_adProvider.hasRewarded(placement) == false) {
-            return false;
-        }
-
-        if (m_adRewardedPoints.containsKey(placement) == false) {
+    public boolean hasRewarded() {
+        if (m_adProvider.hasRewarded() == false) {
             return false;
         }
 

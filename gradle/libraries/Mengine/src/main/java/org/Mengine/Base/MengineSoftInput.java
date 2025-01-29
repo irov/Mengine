@@ -2,7 +2,6 @@ package org.Mengine.Base;
 
 import android.content.Context;
 import android.text.InputType;
-import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.BaseInputConnection;

@@ -445,7 +445,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
     }
 
     @Override
-    public boolean hasInterstitial(String placement) {
+    public boolean hasInterstitial() {
         if (m_interstitialAd == null) {
             return false;
         }
@@ -494,7 +494,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
     }
 
     @Override
-    public boolean hasRewarded(String placement) {
+    public boolean hasRewarded() {
         if (m_rewardedAd == null) {
             return false;
         }

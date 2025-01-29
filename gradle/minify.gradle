@@ -3,6 +3,7 @@ def ANDROID_APP_RELEASE_MINIFY_ENABLE = Utils.getBooleanProperty("ANDROID_APP_RE
 android {
     buildTypes {
         debug {
+            debuggable true
             minifyEnabled false
         }
 

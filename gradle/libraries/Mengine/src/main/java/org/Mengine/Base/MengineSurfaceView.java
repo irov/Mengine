@@ -16,8 +16,6 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
-import java.util.concurrent.CountDownLatch;
-
 public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Callback, View.OnKeyListener, View.OnTouchListener, SensorEventListener {
     public static final String TAG = "MengineSurfaceView";
 

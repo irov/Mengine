@@ -91,7 +91,7 @@ allprojects {
         tasks.withType(JavaCompile).tap {
             configureEach {
                 options.encoding = 'UTF-8'
-                options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation" << "-Xlint:overrides"
+                options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
             }
         }
     }

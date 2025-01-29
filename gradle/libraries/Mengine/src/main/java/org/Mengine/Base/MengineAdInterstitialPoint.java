@@ -4,8 +4,6 @@ import androidx.annotation.NonNull;
 
 import org.json.JSONObject;
 
-import java.util.Map;
-
 public class MengineAdInterstitialPoint extends MengineAdBasePoint {
     public static final String TAG = "AdInterstitialPoint";
 

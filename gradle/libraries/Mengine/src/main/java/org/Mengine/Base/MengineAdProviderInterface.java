@@ -8,12 +8,12 @@ public interface MengineAdProviderInterface {
 
     int getBannerHeight();
 
-    boolean hasInterstitial(String placement);
+    boolean hasInterstitial();
 
     boolean canYouShowInterstitial(String placement);
     boolean showInterstitial(String placement, MengineCallback showCallback);
 
-    boolean hasRewarded(String placement);
+    boolean hasRewarded();
 
     boolean canOfferRewarded(String placement);
     boolean canYouShowRewarded(String placement);

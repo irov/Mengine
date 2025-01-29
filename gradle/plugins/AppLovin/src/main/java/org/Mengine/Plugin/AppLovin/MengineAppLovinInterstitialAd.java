@@ -228,11 +228,11 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
 
         m_plugin.setState("applovin.interstitial.state." + m_adUnitId, "hidden." + placement + "." + ad.getNetworkName());
 
-        MengineCallback showCallback = m_showCallback;
-        m_showCallback = null;
-        showCallback.call(true, Map.of("placement", placement));
-
         MengineUtils.performOnMainThread(() -> {
+            MengineCallback showCallback = m_showCallback;
+            m_showCallback = null;
+            showCallback.call(true, Map.of("placement", placement));
+
             this.loadAd();
         });
     }
@@ -284,11 +284,11 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
 
         m_plugin.setState("applovin.interstitial.state." + m_adUnitId, "display_failed." + placement + "." + ad.getNetworkName() + "." + errorCode);
 
-        MengineCallback showCallback = m_showCallback;
-        m_showCallback = null;
-        showCallback.call(false, Map.of("placement", placement, "error_code", errorCode));
-
         MengineUtils.performOnMainThread(() -> {
+            MengineCallback showCallback = m_showCallback;
+            m_showCallback = null;
+            showCallback.call(false, Map.of("placement", placement, "error_code", errorCode));
+
             this.loadAd();
         });
     }

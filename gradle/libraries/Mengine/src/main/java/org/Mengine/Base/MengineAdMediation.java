@@ -1,6 +1,5 @@
 package org.Mengine.Base;
 
-import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 
 public class MengineAdMediation {

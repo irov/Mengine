@@ -156,18 +156,6 @@ android {
         }
     }
 
-    bundle {
-        language {
-            enableSplit = false
-        }
-        density {
-            enableSplit = false
-        }
-        abi {
-            enableSplit = false
-        }
-    }
-
     defaultConfig {
         manifestPlaceholders = [
             ANDROID_APP_SCREEN_ORIENTATION: ANDROID_APP_SCREEN_ORIENTATION,

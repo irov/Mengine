@@ -12,7 +12,7 @@ void message_error( const char * _format, ... )
 
     va_end( argList );
 
-    ::printf( str );
+    ::printf( "%s", str);
     ::printf( "\n" );
 }
 //////////////////////////////////////////////////////////////////////////

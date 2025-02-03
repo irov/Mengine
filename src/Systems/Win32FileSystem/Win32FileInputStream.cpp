@@ -17,6 +17,7 @@
 #include "Kernel/DebugFileHelper.h"
 
 #include "Config/Algorithm.h"
+#include "Config/Path.h"
 
 namespace Mengine
 {

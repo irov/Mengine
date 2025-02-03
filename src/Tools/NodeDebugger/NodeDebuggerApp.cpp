@@ -1546,7 +1546,7 @@ namespace Mengine
                 , index
             );
 
-            bool isOpened = ImGui::TreeNodeEx( label_node, ImGuiTreeNodeFlags_DefaultOpen, "%s [%u]"
+            bool isOpened = ImGui::TreeNodeEx( label_node, ImGuiTreeNodeFlags_DefaultOpen, "%s [%zu]"
                 , type.c_str()
                 , objects.size()
             );
@@ -1970,7 +1970,7 @@ namespace Mengine
             {
                 ESettingType type = key.type;
 
-                ImGui::Text( key.name.c_str() );
+                ImGui::Text( "%s", key.name.c_str() );
                 ImGui::SameLine( 100.f );
 
                 Char key_lable[256] = {'\0'};

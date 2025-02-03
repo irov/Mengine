@@ -1338,17 +1338,29 @@ static bool run()
     WCHAR python3LibPathItem[MENGINE_MAX_PATH + 1] = {L'\0'};
     Mengine::StdString::wcscpy( python3LibPathItem, python3LibPath );
 
-    wchar_t * token;
-    wchar_t * context;
+    wchar_t * token;    
 
+#ifdef MENGINE_COMPILER_MSVC
+    wchar_t * context;
+#endif
+
+#ifdef MENGINE_COMPILER_MSVC
     token = ::wcstok( python3LibPathCount, L";", &context );
+#else
+    token = ::wcstok( python3LibPathCount, L";" );
+#endif
+
 
     Py_ssize_t pathCount = 0;
-    while( token != NULL )
+    while( token != nullptr )
     {
         ++pathCount;
 
+#ifdef MENGINE_COMPILER_MSVC
         token = ::wcstok( nullptr, L";", &context );
+#else
+        token = ::wcstok( nullptr, L";" );
+#endif
     }
 
     PyObject * py_syspath = PyList_New( pathCount * 2 + 1 );
@@ -1359,7 +1371,11 @@ static bool run()
 
     ++pathIndex;
 
+#ifdef MENGINE_COMPILER_MSVC
     token = ::wcstok( python3LibPathItem, L";", &context );
+#else
+    token = ::wcstok( python3LibPathItem, L";" );
+#endif
     
     while( token != nullptr )
     {
@@ -1380,7 +1396,11 @@ static bool run()
         ++pathIndex;
         ++pathIndex;
 
-        token = ::wcstok( NULL, L";", &context );
+#ifdef MENGINE_COMPILER_MSVC
+        token = ::wcstok( nullptr, L";", &context );
+#else
+        token = ::wcstok( nullptr, L";" );
+#endif
     }
 
     PySys_SetObject( "path", py_syspath );

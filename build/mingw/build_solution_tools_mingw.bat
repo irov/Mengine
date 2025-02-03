@@ -1,22 +1,11 @@
 @echo off
 
-if ["%~1"]==[""] (
-  @echo invalid arguments, please select configuration
-  goto end
-)
+set "SOLUTION_NAME=solution_tools_mingw"
+set "SOURCE_DIRECTORY=%~dp0..\..\cmake\Tools_MinGW"
+set "GENERATOR=Ninja"
 
-set "CONFIGURATION=%1"
+@echo Starting build %SOLUTION_NAME% %CONFIGURATION% configuration...
 
-@echo Starting build solution tools mingw %CONFIGURATION% configuration...
-
-@pushd %~dp0..
-@call cmake_configure CMake "%CD%\..\..\cmake\Tools_MinGW" "%CD%\..\..\solutions\solution_tools_mingw\%CONFIGURATION%" "MinGW Makefiles" %CONFIGURATION%
-@popd
-
-@pushd "%~dp0..\solutions\solution_tools_mingw\%CONFIGURATION%"
-@call mingw32-make.exe
-@popd
-
-:end
+@call %~dp0../build_solution.bat %* "SOLUTION_NAME=%SOLUTION_NAME%" "SOURCE_DIRECTORY=%SOURCE_DIRECTORY%" "GENERATOR=%GENERATOR%"
 
 exit /b %errorlevel%

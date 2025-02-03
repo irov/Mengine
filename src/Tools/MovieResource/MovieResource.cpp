@@ -651,7 +651,7 @@ static bool save_xml( const pugi::xml_document & xmldoc, const std::wstring & ou
 
     std::string s = ss.str();
 
-    fprintf( f_out, s.c_str() );
+    fprintf( f_out, "%s", s.c_str());
     fclose( f_out );
 
     return true;

@@ -1,5 +1,9 @@
 #pragma once
 
+#if !defined(MENGINE_USE_SCRIPT_SERVICE)
+#   error "MENGINE_USE_SCRIPT_SERVICE"
+#endif
+
 #include "Kernel/BaseScriptablePrototypeGenerator.h"
 #include "Kernel/Scriptable.h"
 

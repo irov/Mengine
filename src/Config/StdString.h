@@ -31,6 +31,8 @@ namespace Mengine
         using std::wcsrchr;
         using std::wcsstr;
 
+        using std::wcstol;
+
         MENGINE_INLINE Char * strchrcat( Char * const _out, Char _ch )
         {
             size_t len = StdString::strlen( _out );

@@ -103,7 +103,7 @@ namespace Mengine
         UniqueId globalKeyHandlerF2 = Helper::addGlobalKeyHandler( KC_F2, true, []( const InputKeyEvent & )
         {
             uint32_t exitCode;
-            Helper::Win32CreateProcess( "NodeDebugger.exe", L"127.0.0.1:18790", false, &exitCode );
+            Helper::Win32CreateProcess( "NodeDebugger.exe", L"ip=127.0.0.1:18790", false, &exitCode );
         }, MENGINE_DOCUMENT_FACTORABLE );
 
         m_globalKeyHandlerF2 = globalKeyHandlerF2;

@@ -37,8 +37,6 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
     MENGINE_UNUSED( lpCmdLine );
     MENGINE_UNUSED( nShowCmd );
 
-    PWSTR pwCmdLine = ::GetCommandLineW();
-
     {
         Mengine::ServiceProviderInterface * serviceProvider;
         if( SERVICE_PROVIDER_CREATE( ServiceProvider, &serviceProvider ) == false )
@@ -53,21 +51,35 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
         SERVICE_CREATE( DocumentService, nullptr );
 
         {
+            PWSTR pwCmdLine = ::GetCommandLineW();
+
+            int32_t pNumArgs;
+            LPWSTR * szArglist = ::CommandLineToArgvW( pwCmdLine, &pNumArgs );
+
             Mengine::String address;
             uint16_t port = 0;
 
-            Mengine::WString cmdLine( pwCmdLine );
-            if( !cmdLine.empty() )
+            for( int32_t i = 1; i != pNumArgs; ++i )
             {
-                Mengine::WString::size_type columnPos = cmdLine.find( TEXT( ':' ) );
-                if( Mengine::WString::npos != columnPos )
-                {
-                    Mengine::WString wideAddress = cmdLine.substr( 0, columnPos );
-                    Mengine::WString widePort = cmdLine.substr( columnPos + 1 );
+                LPWSTR arg = szArglist[i];
 
-                    Mengine::WChar * ptr;
-                    port = static_cast<uint16_t>(::wcstol( widePort.c_str(), &ptr, 10 ) & 0xFFFF);
-                    address = WideToUtf8( wideAddress );
+                LPWSTR arg_ip = Mengine::StdString::wcsstr( arg, L"ip=" );
+
+                if( arg_ip != nullptr )
+                {
+                    LPWSTR arg_port = Mengine::StdString::wcsstr( arg, L":" );
+
+                    if( arg_port != nullptr )
+                    {
+                        address.assign( arg + Mengine::StdString::wcslen( L"ip=" ), arg_port );
+
+                        LPWSTR ptr;
+                        port = Mengine::StdString::wcstol( arg_port + Mengine::StdString::wcslen( L":" ), &ptr, 10 ) & 0xFFFF;
+                    }
+                    else
+                    {
+                        address.assign( arg + Mengine::StdString::wcslen( L"ip=" ), arg_ip );
+                    }
                 }
             }
 

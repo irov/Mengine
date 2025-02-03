@@ -118,7 +118,9 @@ public class MengineAnalyticsEventBuilder {
     public long logAndFlush() {
         long timestamp = this.log();
 
-        m_application.onMengineAnalyticsFlush();
+        if (m_application != null) {
+            m_application.onMengineAnalyticsFlush();
+        }
 
         return timestamp;
     }
@@ -126,7 +128,9 @@ public class MengineAnalyticsEventBuilder {
     public long log() {
         long timestamp = MengineUtils.getTimestamp();
 
-        m_application.onMengineAnalyticsEvent(m_name, timestamp, m_bases, m_parameters);
+        if (m_application != null) {
+            m_application.onMengineAnalyticsEvent(m_name, timestamp, m_bases, m_parameters);
+        }
 
         return timestamp;
     }

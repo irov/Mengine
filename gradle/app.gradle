@@ -368,7 +368,7 @@ if (MENGINE_APP_LIBRARY_MENGINE == true) {
 }
 
 if (MENGINE_APP_SERVICE_AD == true) {
-    android.ext.plugins += 'org.Mengine.Base.AdService'
+    android.ext.plugins += 'org.Mengine.Base.MengineAdService'
 }
 
 if (MENGINE_APP_SERVICE_MONITORPERFORMANCE == true) {

@@ -87,7 +87,7 @@ namespace Mengine
     {
         m_status = ECS_READY;
 
-        uint32_t CachalotPlugin_LoggerTime = CONFIG_VALUE( "CachalotPlugin", "Time", 2000 );
+        uint32_t CachalotPlugin_LoggerTime = CONFIG_VALUE_INTEGER( "CachalotPlugin", "Time", 2000 );
 
         ThreadIdentityInterfacePtr thread = Helper::createThreadIdentity( MENGINE_THREAD_DESCRIPTION( "MNGCachalot" ), ETP_BELOW_NORMAL, [this]( const ThreadIdentityRunnerInterfacePtr & _runner )
         {
@@ -108,7 +108,7 @@ namespace Mengine
             return;
         }
 
-        uint32_t CachalotPlugin_BatchCount = CONFIG_VALUE( "CachalotPlugin", "BatchCount", 50 );
+        uint32_t CachalotPlugin_BatchCount = CONFIG_VALUE_INTEGER( "CachalotPlugin", "BatchCount", 50 );
 
         m_mutex->lock();
         VectorMessages messages = Helper::exciseVector( m_messages, CachalotPlugin_BatchCount );

@@ -58,14 +58,15 @@ namespace Mengine
         SOUND_SERVICE()
             ->addSoundVolumeProvider( soundVolumeProvider );
 
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_TIME_FACTOR_CHANGE, &GameService::onTimeFactorChange_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_TIME_FACTOR_CHANGE, &GameService::notifyTimeFactorChange_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_SETTING_CHANGE, &GameService::notifySettingChange_, MENGINE_DOCUMENT_FACTORABLE );
 
 #if defined(MENGINE_PLATFORM_IOS) || defined(MENGINE_PLATFORM_ANDROID)
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_DID_BECOME_ACTIVE, &GameService::onApplicationDidBecomeActive_, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_WILL_ENTER_FOREGROUND, &GameService::onApplicationWillEnterForeground_, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_DID_ENTER_BACKGROUND, &GameService::onApplicationDidEnterBackground_, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_WILL_RESIGN_ACTIVE, &GameService::onApplicationWillResignActive_, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_WILL_TERMINATE, &GameService::onApplicationWillTerminate_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_DID_BECOME_ACTIVE, &GameService::notifyApplicationDidBecomeActive_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_WILL_ENTER_FOREGROUND, &GameService::notifyApplicationWillEnterForeground_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_DID_ENTER_BACKGROUND, &GameService::notifyApplicationDidEnterBackground_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_WILL_RESIGN_ACTIVE, &GameService::notifyApplicationWillResignActive_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_WILL_TERMINATE, &GameService::notifyApplicationWillTerminate_, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
         ANALYTICS_SERVICE()
@@ -77,6 +78,7 @@ namespace Mengine
     void GameService::_finalizeService()
     {
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_TIME_FACTOR_CHANGE );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SETTING_CHANGE );
 
 #if defined(MENGINE_PLATFORM_IOS) || defined(MENGINE_PLATFORM_ANDROID)
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_DID_BECOME_ACTIVE );
@@ -273,7 +275,7 @@ namespace Mengine
     void GameService::update()
     {
 #if defined(MENGINE_DEBUG)
-        double Limit_Fillrate = CONFIG_VALUE( "Limit", "Fillrate", 100.0 );
+        double Limit_Fillrate = CONFIG_VALUE_FLOAT( "Limit", "Fillrate", 100.0 );
 
         const Resolution & contentResolution = APPLICATION_SERVICE()
             ->getContentResolution();
@@ -517,38 +519,44 @@ namespace Mengine
             ->onGameCursorMode( _mode );
     }
     //////////////////////////////////////////////////////////////////////////
-    void GameService::onTimeFactorChange_( float _timeFactor )
+    void GameService::notifyTimeFactorChange_( float _timeFactor )
     {
-        EVENTABLE_METHOD( EVENT_GAME_ON_TIME_FACTOR )
-            ->onGameTimeFactor( _timeFactor );
+        EVENTABLE_METHOD( EVENT_GAME_TIME_FACTOR_CHANGE )
+            ->onGameTimeFactorChange( _timeFactor );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void GameService::notifySettingChange_( const SettingInterfacePtr & _setting, const Char * _key )
+    {
+        EVENTABLE_METHOD( EVENT_GAME_SETTING_CHANGE )
+            ->onGameSettingChange( _setting, _key );
     }
     //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLATFORM_IOS) || defined(MENGINE_PLATFORM_ANDROID)
     //////////////////////////////////////////////////////////////////////////
-    void GameService::onApplicationDidBecomeActive_()
+    void GameService::notifyApplicationDidBecomeActive_()
     {
         EVENTABLE_METHOD( EVENT_GAME_APPLICATION_DID_BECOME_ACTIVE )
             ->onGameApplicationDidBecomeActive();
     }
-    void GameService::onApplicationWillEnterForeground_()
+    void GameService::notifyApplicationWillEnterForeground_()
     {
         EVENTABLE_METHOD( EVENT_GAME_APPLICATION_WILL_ENTER_FOREGROUND )
             ->onGameApplicationWillEnterForeground();
     }
     //////////////////////////////////////////////////////////////////////////
-    void GameService::onApplicationDidEnterBackground_()
+    void GameService::notifyApplicationDidEnterBackground_()
     {
         EVENTABLE_METHOD( EVENT_GAME_APPLICATION_DID_ENTER_BACKGROUD )
             ->onGameApplicationDidEnterBackground();
     }
     //////////////////////////////////////////////////////////////////////////
-    void GameService::onApplicationWillResignActive_()
+    void GameService::notifyApplicationWillResignActive_()
     {
         EVENTABLE_METHOD( EVENT_GAME_APPLICATION_WILL_RESIGN_ACTIVE )
             ->onGameApplicationWillResignActive();
     }
     //////////////////////////////////////////////////////////////////////////
-    void GameService::onApplicationWillTerminate_()
+    void GameService::notifyApplicationWillTerminate_()
     {
         EVENTABLE_METHOD( EVENT_GAME_APPLICATION_WILL_TERMINATE )
             ->onGameApplicationWillTerminate();

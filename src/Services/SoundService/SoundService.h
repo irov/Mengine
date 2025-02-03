@@ -105,8 +105,9 @@ namespace Mengine
         bool setPosMs( const SoundIdentityInterfacePtr & _identity, float _pos ) override;
         float getPosMs( const SoundIdentityInterfacePtr & _identity ) override;
 
-        void mute( const ConstString & _type, bool _mute ) override;
-        bool isMute() const override;
+        void setMute( const ConstString & _type, bool _mute ) override;
+        bool getMute( const ConstString & _type ) const override;
+        bool mixMute() const override;
 
     public:
         void updateVolume() override;

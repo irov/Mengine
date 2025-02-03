@@ -23,7 +23,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LayoutEditorPlugin::_availablePlugin() const
     {
-        bool LayoutEditorPlugin_Available = CONFIG_VALUE( "LayoutEditorPlugin", "Available", true );
+        bool LayoutEditorPlugin_Available = CONFIG_VALUE_BOOLEAN( "LayoutEditorPlugin", "Available", true );
 
         if( LayoutEditorPlugin_Available == false )
         {

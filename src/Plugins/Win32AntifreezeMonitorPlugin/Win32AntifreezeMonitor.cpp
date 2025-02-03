@@ -67,7 +67,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32AntifreezeMonitor::run()
     {
-        uint32_t Win32AntifreezeMonitorPlugin_Seconds = CONFIG_VALUE( "Win32AntifreezeMonitorPlugin", "Seconds", 10U );
+        uint32_t Win32AntifreezeMonitorPlugin_Seconds = CONFIG_VALUE_INTEGER( "Win32AntifreezeMonitorPlugin", "Seconds", 10U );
 
         MENGINE_ASSERTION_FATAL( Win32AntifreezeMonitorPlugin_Seconds != 0, "invalid seconds" );
 

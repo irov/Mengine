@@ -63,8 +63,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool RenderService::_initializeService()
     {
-        m_maxVertexCount = CONFIG_VALUE( "Engine", "RenderMaxVertexCount", 32000U );
-        m_maxIndexCount = CONFIG_VALUE( "Engine", "RenderMaxIndexCount", 48000U );
+        m_maxVertexCount = CONFIG_VALUE_INTEGER( "Engine", "RenderMaxVertexCount", 32000U );
+        m_maxIndexCount = CONFIG_VALUE_INTEGER( "Engine", "RenderMaxIndexCount", 48000U );
 
         STATISTIC_RESET_INTEGER( STATISTIC_RENDER_PERFRAME_DRAWINDEXPRIMITIVES );
         STATISTIC_RESET_DOUBLE( STATISTIC_RENDER_PERFRAME_FILLRATE );
@@ -141,8 +141,8 @@ namespace Mengine
             , m_fullscreen
         );
 
-        bool Engine_RenderEnableAutoDepthStencil = CONFIG_VALUE( "Engine", "RenderEnableAutoDepthStencil", false );
-        uint32_t Engine_RenderMultiSampleCount = CONFIG_VALUE( "Engine", "RenderMultiSampleCount", 2U );
+        bool Engine_RenderEnableAutoDepthStencil = CONFIG_VALUE_BOOLEAN( "Engine", "RenderEnableAutoDepthStencil", false );
+        uint32_t Engine_RenderMultiSampleCount = CONFIG_VALUE_INTEGER( "Engine", "RenderMultiSampleCount", 2U );
 
         LOGGER_INFO( "render", "render auto depth stencil: %s"
             , Engine_RenderEnableAutoDepthStencil == true ? "true" : "false"
@@ -443,19 +443,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderService::clearFrameBuffer_()
     {
-        bool Engine_RenderFrameClear = CONFIG_VALUE( "Engine", "RenderFrameClear", true );
+        bool Engine_RenderFrameClear = CONFIG_VALUE_BOOLEAN( "Engine", "RenderFrameClear", true );
 
         if( Engine_RenderFrameClear == true )
         {
-            uint8_t Engine_RenderFrameClearColorR = CONFIG_VALUET( "Engine", "RenderFrameClearColorR", 0U, uint8_t );
-            uint8_t Engine_RenderFrameClearColorG = CONFIG_VALUET( "Engine", "RenderFrameClearColorG", 0U, uint8_t );
-            uint8_t Engine_RenderFrameClearColorB = CONFIG_VALUET( "Engine", "RenderFrameClearColorB", 0U, uint8_t );
+            uint8_t Engine_RenderFrameClearColorR = CONFIG_VALUE_INTEGER( "Engine", "RenderFrameClearColorR", (uint8_t)0 );
+            uint8_t Engine_RenderFrameClearColorG = CONFIG_VALUE_INTEGER( "Engine", "RenderFrameClearColorG", (uint8_t)0 );
+            uint8_t Engine_RenderFrameClearColorB = CONFIG_VALUE_INTEGER( "Engine", "RenderFrameClearColorB", (uint8_t)0 );
 
             Color argb = Helper::makeColor8( Engine_RenderFrameClearColorR, Engine_RenderFrameClearColorG, Engine_RenderFrameClearColorB, 255U );
 
             uint32_t frameBufferTypes = FBT_COLOR;
 
-            bool Engine_RenderEnableAutoDepthStencil = CONFIG_VALUE( "Engine", "RenderEnableAutoDepthStencil", false );
+            bool Engine_RenderEnableAutoDepthStencil = CONFIG_VALUE_BOOLEAN( "Engine", "RenderEnableAutoDepthStencil", false );
 
             if( Engine_RenderEnableAutoDepthStencil == true )
             {
@@ -850,16 +850,16 @@ namespace Mengine
         scaleViewport.begin += renderViewport.begin;
         scaleViewport.end += renderViewport.begin;
 
-        float vp_x = Math::floorf( scaleViewport.begin.x + 0.5f );
-        float vp_y = Math::floorf( scaleViewport.begin.y + 0.5f );
+        float vp_x = StdMath::floorf( scaleViewport.begin.x + 0.5f );
+        float vp_y = StdMath::floorf( scaleViewport.begin.y + 0.5f );
         //float vp_x = renderViewport.begin.x;
         //float vp_y = renderViewport.begin.y;
 
         float width = scaleViewport.getWidth();
         float height = scaleViewport.getHeight();
 
-        float vp_width = Math::floorf( width + 0.5f );
-        float vp_height = Math::floorf( height + 0.5f );
+        float vp_width = StdMath::floorf( width + 0.5f );
+        float vp_height = StdMath::floorf( height + 0.5f );
         //float vp_width = width;
         //float vp_height = height;
 

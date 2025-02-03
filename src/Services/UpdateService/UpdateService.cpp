@@ -27,7 +27,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool UpdateService::_initializeService()
     {
-        uint32_t Engine_DefaultUpdateLeafs = CONFIG_VALUE( "Engine", "DefaultUpdateLeafs", 256U );
+        uint32_t Engine_DefaultUpdateLeafs = CONFIG_VALUE_INTEGER( "Engine", "DefaultUpdateLeafs", 256U );
 
         m_beforeLeaf.resize( 32 );
         m_leafs.resize( Engine_DefaultUpdateLeafs );

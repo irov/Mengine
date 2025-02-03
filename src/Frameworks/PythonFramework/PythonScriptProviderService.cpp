@@ -101,7 +101,7 @@ namespace Mengine
                 return true;
             }
 
-            bool PythonScript_Debug = CONFIG_VALUE( "PythonScript", "Debug", true );
+            bool PythonScript_Debug = CONFIG_VALUE_BOOLEAN( "PythonScript", "Debug", true );
 
             return PythonScript_Debug;
         }

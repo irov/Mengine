@@ -14,6 +14,9 @@ src
 
     AppleFirebaseCrashlyticsApplicationDelegate.h
     AppleFirebaseCrashlyticsApplicationDelegate.mm
+    
+    AppleFirebaseCrashlyticsANRMonitor.h
+    AppleFirebaseCrashlyticsANRMonitor.mm
 )
 
 ADD_MENGINE_APPLE_PLUGIN(MENGINE_PLUGIN_APPLE_FIREBASE_CRASHLYTICS)

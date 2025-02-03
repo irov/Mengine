@@ -27,7 +27,7 @@ namespace Mengine
 
         bool successful = true;
 
-        uint32_t Limit_VideoSizeDiv = CONFIG_VALUE( "Limit", "VideoSizeDiv", 8U );
+        uint32_t Limit_VideoSizeDiv = CONFIG_VALUE_INTEGER( "Limit", "VideoSizeDiv", 8U );
 
         if( dataInfo->frameWidth % Limit_VideoSizeDiv != 0 ||
             dataInfo->frameHeight % Limit_VideoSizeDiv != 0 )
@@ -46,8 +46,8 @@ namespace Mengine
             successful = false;
         }
 
-        uint32_t Limit_VideoWidth = CONFIG_VALUE( "Limit", "VideoWidth", 2048U );
-        uint32_t Limit_VideoHeight = CONFIG_VALUE( "Limit", "VideoHeight", 2048U );
+        uint32_t Limit_VideoWidth = CONFIG_VALUE_INTEGER( "Limit", "VideoWidth", 2048U );
+        uint32_t Limit_VideoHeight = CONFIG_VALUE_INTEGER( "Limit", "VideoHeight", 2048U );
 
         if( dataInfo->width > Limit_VideoWidth || dataInfo->height > Limit_VideoHeight )
         {
@@ -64,7 +64,7 @@ namespace Mengine
             successful = false;
         }
 
-        float Limit_VideoFrameRate = CONFIG_VALUE( "Limit", "VideoFrameRate", 30.f );
+        float Limit_VideoFrameRate = CONFIG_VALUE_FLOAT( "Limit", "VideoFrameRate", 30.f );
 
         float frameRate = _resource->getFrameRate();
 
@@ -81,7 +81,7 @@ namespace Mengine
             successful = false;
         }
 
-        float Limit_VideoContentFillrateCoeff = CONFIG_VALUE( "Limit", "VideoContentFillrateCoeff", 1.f );
+        float Limit_VideoContentFillrateCoeff = CONFIG_VALUE_FLOAT( "Limit", "VideoContentFillrateCoeff", 1.f );
 
         const Resolution & resolution = APPLICATION_SERVICE()
             ->getContentResolution();

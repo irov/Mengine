@@ -34,6 +34,7 @@ namespace Mengine
     typedef IntrusivePtr<class ArrowInterface> ArrowInterfacePtr;
     typedef IntrusivePtr<class RenderPipelineInterface> RenderPipelineInterfacePtr;
     typedef IntrusivePtr<class HttpResponseInterface> HttpResponseInterfacePtr;
+    typedef IntrusivePtr<class SettingInterface> SettingInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     template<uint32_t ID>
     struct Notificator
@@ -149,6 +150,7 @@ namespace Mengine
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_HTTP_REQUEST, HttpRequestId, const String & );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_HTTP_CANCEL, HttpRequestId );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_HTTP_RESPONSE, const HttpResponseInterfacePtr & );
+    MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_SETTING_CHANGE, const SettingInterfacePtr &, const Char * );
     //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLATFORM_IOS) || defined(MENGINE_PLATFORM_ANDROID)
     //////////////////////////////////////////////////////////////////////////

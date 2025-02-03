@@ -194,8 +194,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t HotspotImageConverterPNGToHIT::calcMimMapBufferLevelAndSize_( uint32_t _width, uint32_t _height, uint32_t * const _level )
     {
-        uint32_t mipmap_pow_width = (uint32_t)(Math::logf( (float)_width ) * Math::constant_inv_log2);
-        uint32_t mipmap_pow_height = (uint32_t)(Math::logf( (float)_height ) * Math::constant_inv_log2);
+        uint32_t mipmap_pow_width = (uint32_t)(StdMath::logf( (float)_width ) * StdMath::constant_inv_log2);
+        uint32_t mipmap_pow_height = (uint32_t)(StdMath::logf( (float)_height ) * StdMath::constant_inv_log2);
 
         uint32_t mipmap_level = MENGINE_MIN( mipmap_pow_width, mipmap_pow_height ) + 1;
 

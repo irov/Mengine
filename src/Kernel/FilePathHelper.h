@@ -83,4 +83,6 @@ namespace Mengine
 //////////////////////////////////////////////////////////////////////////
 #define STRINGIZE_FILEPATH_LOCAL(STRING)\
     Helper::stringizeFileTemplate<STRING##_hash>( STRING, (sizeof(STRING) - 1) )
+#define STRINGIZE_FILEPATH_LOCAL_I( STRING )\
+    STRINGIZE_FILEPATH_LOCAL(STRING)
 //////////////////////////////////////////////////////////////////////////

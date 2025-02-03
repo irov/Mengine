@@ -206,7 +206,7 @@ namespace Mengine
                         break;
                     }
 
-                    float Limit_Movie2ImageImmutableScale = CONFIG_VALUE( "Limit", "Movie2ImageImmutableScale", 0.8f );
+                    float Limit_Movie2ImageImmutableScale = CONFIG_VALUE_FLOAT( "Limit", "Movie2ImageImmutableScale", 0.8f );
 
                     if( MENGINE_ABS( immutable_scale_x ) >= Limit_Movie2ImageImmutableScale && MENGINE_ABS( immutable_scale_y ) >= Limit_Movie2ImageImmutableScale && MENGINE_ABS( immutable_scale_z ) >= Limit_Movie2ImageImmutableScale )
                     {
@@ -235,7 +235,7 @@ namespace Mengine
                         break;
                     }
 
-                    float Limit_Movie2VideoImmutableScale = CONFIG_VALUE( "Limit", "Movie2VideoImmutableScale", 0.9f );
+                    float Limit_Movie2VideoImmutableScale = CONFIG_VALUE_FLOAT( "Limit", "Movie2VideoImmutableScale", 0.9f );
 
                     if( MENGINE_ABS( immutable_scale_x ) >= Limit_Movie2VideoImmutableScale && MENGINE_ABS( immutable_scale_y ) >= Limit_Movie2VideoImmutableScale && MENGINE_ABS( immutable_scale_z ) >= Limit_Movie2VideoImmutableScale )
                     {

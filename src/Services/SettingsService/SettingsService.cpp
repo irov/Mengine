@@ -70,12 +70,37 @@ namespace Mengine
             , filePathExt.c_str()
         );
 
-        if( setting->initialize( _content, _doc ) == false )
+        if( setting->initialize( _name, _content, _doc ) == false )
         {
             return false;
         }
 
         m_settings.emplace( _name, setting );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SettingsService::saveSetting( const ConstString & _name, const DocumentInterfacePtr & _doc )
+    {
+        const SettingInterfacePtr & setting = m_settings.find( _name );
+
+        if( setting == nullptr )
+        {
+            LOGGER_ERROR( "setting '%s' not found"
+                , _name.c_str()
+            );
+
+            return false;
+        }
+
+        if( setting->save( _doc ) == false )
+        {
+            LOGGER_ERROR( "setting '%s' save invalid"
+                , _name.c_str()
+            );
+
+            return false;
+        }
 
         return true;
     }
@@ -101,7 +126,7 @@ namespace Mengine
         );
 
         ConfigInterfacePtr config = CONFIG_SERVICE()
-            ->loadConfig( _content, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+            ->loadConfig( _content, ConstString::none(), _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( config, "invalid load settings '%s'"
             , Helper::getContentFullPath( _content ).c_str()
@@ -145,6 +170,25 @@ namespace Mengine
                 return false;
             }
         }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SettingsService::saveSettings( const DocumentInterfacePtr & _doc )
+    {
+        for( const HashtableSettings::value_type & value : m_settings )
+        {
+            const SettingInterfacePtr & setting = value.element;
+
+            if( setting->save( _doc ) == false )
+            {
+                LOGGER_ERROR( "setting '%s' evict invalid"
+                    , value.key.c_str()
+                );
+
+                return false;
+            }
+        }        
 
         return true;
     }

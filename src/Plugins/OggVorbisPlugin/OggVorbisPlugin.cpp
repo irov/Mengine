@@ -59,7 +59,7 @@ namespace Mengine
             return false;
         }
 
-        bool OggVorbisPlugin_Available = CONFIG_VALUE( "OggVorbisPlugin", "Available", true );
+        bool OggVorbisPlugin_Available = CONFIG_VALUE_BOOLEAN( "OggVorbisPlugin", "Available", true );
 
         if( OggVorbisPlugin_Available == false )
         {

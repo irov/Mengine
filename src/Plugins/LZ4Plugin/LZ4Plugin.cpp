@@ -55,7 +55,7 @@ namespace Mengine
             return false;
         }
 
-        bool LZ4Plugin_Available = CONFIG_VALUE( "LZ4Plugin", "Available", true );
+        bool LZ4Plugin_Available = CONFIG_VALUE_BOOLEAN( "LZ4Plugin", "Available", true );
 
         if( LZ4Plugin_Available == false )
         {

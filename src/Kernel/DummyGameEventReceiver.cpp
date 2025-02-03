@@ -132,9 +132,17 @@ namespace Mengine
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void DummyGameEventReceiver::onGameTimeFactor( float _timeFactor )
+    void DummyGameEventReceiver::onGameTimeFactorChange( float _timeFactor )
     {
         MENGINE_UNUSED( _timeFactor );
+
+        // Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DummyGameEventReceiver::onGameSettingChange( const SettingInterfacePtr & _setting, const Char * _key )
+    {
+        MENGINE_UNUSED( _setting );
+        MENGINE_UNUSED( _key );
 
         // Empty
     }

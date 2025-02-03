@@ -224,7 +224,7 @@ namespace Mengine
         
         float frameTime = 1000.f / frameRate;
 
-        if( Math::fabsf( m_time - _time ) < frameTime )
+        if( StdMath::fabsf( m_time - _time ) < frameTime )
         {
             return;
         }

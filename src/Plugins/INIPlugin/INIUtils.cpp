@@ -197,21 +197,13 @@ namespace Mengine
                 return false;
             }
 
-            uint32_t width;
-            uint32_t height;
-            if( MENGINE_SSCANF( ini_value, "%u %u", &width, &height ) != 2 )
+            Resolution tmp_value;
+            if( Helper::stringalized( ini_value, &tmp_value ) == false )
             {
-                LOGGER_ERROR( "section '%s' key '%s' value '%s' invalid parse resolution"
-                    , _section
-                    , _key
-                    , ini_value
-                );
-
                 return false;
             }
 
-            _value->setWidth( width );
-            _value->setHeight( height );
+            *_value = tmp_value;
 
             return true;
         }
@@ -225,29 +217,13 @@ namespace Mengine
                 return false;
             }
 
-            float r;
-            float g;
-            float b;
-            float a;
-            if( MENGINE_SSCANF( ini_value, "%f %f %f %f", &r, &g, &b, &a ) != 4 )
+            Color tmp_value;
+            if( Helper::stringalized( ini_value, &tmp_value ) == false )
             {
-                LOGGER_ERROR( "section '%s' key '%s' value '%s' invalid parse ColorValue"
-                    , _section
-                    , _key
-                    , ini_value
-                );
-
                 return false;
             }
 
-            float coef = 1.f / 255.f;
-
-            r *= coef;
-            g *= coef;
-            b *= coef;
-            a *= coef;
-
-            _value->setRGBA( r, g, b, a );
+            *_value = tmp_value;
 
             return true;
         }
@@ -481,14 +457,7 @@ namespace Mengine
                 const Char * ini_value = tinyini_get_property_values( &_ini.ini, _section, _key, index );
 
                 AspectRatioViewport arv;
-                if( MENGINE_SSCANF( ini_value, "%f %f %f %f %f %f"
-                    , &arv.width
-                    , &arv.height
-                    , &arv.viewport.begin.x
-                    , &arv.viewport.begin.y
-                    , &arv.viewport.end.x
-                    , &arv.viewport.end.y
-                ) != 6 )
+                if( Helper::stringalized( ini_value, &arv ) == false )
                 {
                     LOGGER_ERROR( "section '%s' key '%s' value '%s' invalid parse aspect ration"
                         , _section

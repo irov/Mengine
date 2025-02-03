@@ -20,10 +20,12 @@ namespace Mengine
 
     public:
         bool loadSetting( const ConstString & _name, const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc ) override;
+        bool saveSetting( const ConstString & _name, const DocumentInterfacePtr & _doc ) override;
         bool unloadSetting( const ConstString & _name ) override;
 
     public:
         bool loadSettings( const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc ) override;
+        bool saveSettings( const DocumentInterfacePtr & _doc ) override;
 
     public:
         const SettingInterfacePtr & getSetting( const ConstString & _name ) const override;

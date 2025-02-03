@@ -11,6 +11,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/VocabularyHelper.h"
+#include "Kernel/ContentHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/Algorithm.h"
@@ -41,7 +42,7 @@ namespace Mengine
 
         m_archivator = archivator;
 
-        uint32_t AstralaxPlugin_ParticleMaxCount = CONFIG_VALUE( "AstralaxPlugin", "ParticleMaxCount", 10000U );
+        uint32_t AstralaxPlugin_ParticleMaxCount = CONFIG_VALUE_INTEGER( "AstralaxPlugin", "ParticleMaxCount", 10000U );
 
         m_maxParticlesNum = AstralaxPlugin_ParticleMaxCount;
 
@@ -154,8 +155,7 @@ namespace Mengine
             new_desc.container = container.get();
 
 #if defined(MENGINE_DEBUG)
-            new_desc.fileGroupName = _content->getFileGroup()->getName();
-            new_desc.FilePath = _content->getFilePath();
+            new_desc.content = _content;
 #endif
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
@@ -234,10 +234,9 @@ namespace Mengine
 
                     const ResourceImagePtr & resourceImage = desc.container->findAtlasResourceImage( c.file );
 
-                    MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, "atlas [%u] file '%s:%s' image '%s' not found"
+                    MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, "atlas [%u] file '%s' image '%s' not found"
                         , c.ptc_id
-                        , MENGINE_DEBUG_VALUE( desc.fileGroupName.c_str(), "UNKNOWN" )
-                        , MENGINE_DEBUG_VALUE( desc.FilePath.c_str(), "UNKNOWN" )
+                        , MENGINE_DEBUG_VALUE( Helper::getContentFullPath( desc.content ).c_str(), "UNKNOWN" )
                         , c.file
                     );
 

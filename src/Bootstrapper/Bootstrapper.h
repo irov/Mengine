@@ -60,7 +60,6 @@ namespace Mengine
 
     protected:
         VectorFilePath m_packagesPaths;
-        VectorFilePath m_settingsPaths;
 
         LoggerInterfacePtr m_loggerFile;
     };

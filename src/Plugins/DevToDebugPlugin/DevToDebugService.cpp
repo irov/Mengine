@@ -148,7 +148,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DevToDebugService::_initializeService()
     {
-        String DevToDebug_DSN = CONFIG_VALUE( "DevToDebugPlugin", "DSN", "" );
+        String DevToDebug_DSN = CONFIG_VALUE_STRING( "DevToDebugPlugin", "DSN", "" );
 
         LOGGER_MESSAGE( "DevToDebug DSN: %s"
             , DevToDebug_DSN.c_str()
@@ -234,7 +234,7 @@ namespace Mengine
 
         Helper::fingerprintSHA1( m_fingerprint, false );
 
-        uint32_t DevToDebug_ProccesTime = CONFIG_VALUE( "DevToDebugPlugin", "ProccesTime", 2000 );
+        uint32_t DevToDebug_ProccesTime = CONFIG_VALUE_INTEGER( "DevToDebugPlugin", "ProccesTime", 2000U );
 
         ThreadIdentityInterfacePtr thread = Helper::createThreadIdentity( MENGINE_THREAD_DESCRIPTION( "MNGD2DProcess" ), ETP_BELOW_NORMAL, [this]( const ThreadIdentityRunnerInterfacePtr & _runner )
         {
@@ -245,7 +245,7 @@ namespace Mengine
 
         m_thread = thread;
 
-        Timestamp DevToDebug_PropertySyncTime = CONFIG_VALUE( "DevToDebugPlugin", "PropertySyncTime", 1000 );
+        Timestamp DevToDebug_PropertySyncTime = CONFIG_VALUE_INTEGER( "DevToDebugPlugin", "PropertySyncTime", 1000ULL );
 
         UniqueId timerId = TIMER_SERVICE()
             ->addTimer( DevToDebug_PropertySyncTime, [this]( UniqueId _id )

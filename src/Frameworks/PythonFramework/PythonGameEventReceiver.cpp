@@ -176,9 +176,14 @@ namespace Mengine
         m_cb.call( _event );
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonGameEventReceiver::onGameTimeFactor( float _timeFactor )
+    void PythonGameEventReceiver::onGameTimeFactorChange( float _timeFactor )
     {
         m_cb.call( _timeFactor );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PythonGameEventReceiver::onGameSettingChange( const SettingInterfacePtr & _setting, const Char * _key )
+    {
+        m_cb.call( _setting, _key );
     }
     //////////////////////////////////////////////////////////////////////////
     bool PythonGameEventReceiver::onGamePreparation( bool _debug )

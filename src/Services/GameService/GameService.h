@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/GameServiceInterface.h"
+#include "Interface/SettingInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/AccountInterface.h"
 #include "Interface/SoundSystemInterface.h"
@@ -85,14 +86,15 @@ namespace Mengine
         void turnSound( bool _turn ) override;
 
     protected:
-        void onTimeFactorChange_( float _timeFactor );
+        void notifyTimeFactorChange_( float _timeFactor );
+        void notifySettingChange_( const SettingInterfacePtr & _setting, const Char * _key );
 
 #if defined(MENGINE_PLATFORM_IOS) || defined(MENGINE_PLATFORM_ANDROID)
-        void onApplicationDidBecomeActive_();
-        void onApplicationWillEnterForeground_();
-        void onApplicationDidEnterBackground_();
-        void onApplicationWillResignActive_();
-        void onApplicationWillTerminate_();
+        void notifyApplicationDidBecomeActive_();
+        void notifyApplicationWillEnterForeground_();
+        void notifyApplicationDidEnterBackground_();
+        void notifyApplicationWillResignActive_();
+        void notifyApplicationWillTerminate_();
 #endif
 
     protected:

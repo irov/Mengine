@@ -4,6 +4,7 @@
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
+#include "Kernel/FileGroupHelper.h"
 
 #include "Config/StdString.h"
 
@@ -99,9 +100,8 @@ namespace Mengine
         {
             InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid open file '%s:%s'"
-                , _fileGroup->getName().c_str()
-                , _filePath.c_str()
+            MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid open file '%s'"
+                , Helper::getFileGroupFullPath( _fileGroup, _filePath ).c_str()
             );
 
             jpp::object j = Helper::loadJSONStream( stream, _doc );
@@ -165,6 +165,19 @@ namespace Mengine
             }
 
             return json;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool writeJSONContent( const jpp::object & _j, const ContentInterfacePtr & _content, bool _withTemp, const DocumentInterfacePtr & _doc )
+        {
+            const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
+            const FilePath & filePath = _content->getFilePath();
+
+            if( Helper::writeJSONFile( _j, fileGroup, filePath, _withTemp, _doc ) == false )
+            {
+                return false;
+            }
+
+            return true;
         }
         //////////////////////////////////////////////////////////////////////////
         bool writeJSONFile( const jpp::object & _j, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _withTemp, const DocumentInterfacePtr & _doc )

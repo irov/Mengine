@@ -177,8 +177,8 @@ namespace Mengine
 
         const ImageCodecDataInfo * dataInfo = imageDecoder->getCodecDataInfo();
 
-        uint32_t Limit_TextureWidth = CONFIG_VALUE( "Limit", "TextureWidth", 2048U );
-        uint32_t Limit_TextureHeight = CONFIG_VALUE( "Limit", "TextureHeight", 2048U );
+        uint32_t Limit_TextureWidth = CONFIG_VALUE_INTEGER( "Limit", "TextureWidth", 2048U );
+        uint32_t Limit_TextureHeight = CONFIG_VALUE_INTEGER( "Limit", "TextureHeight", 2048U );
 
         uint32_t width = dataInfo->width;
         uint32_t height = dataInfo->height;
@@ -228,7 +228,7 @@ namespace Mengine
             successful = false;
         }
 
-        bool Check_ImageTransparency = CONFIG_VALUE( "Check", "ImageTransparency", false );
+        bool Check_ImageTransparency = CONFIG_VALUE_BOOLEAN( "Check", "ImageTransparency", false );
 
         uint32_t dataChannels = Helper::getPixelFormatChannels( dataInfo->format );
 
@@ -277,7 +277,7 @@ namespace Mengine
                 successful = false;
             }
 
-            bool Check_ImageRowColumnTransparency = CONFIG_VALUE( "Check", "ImageRowColumnTransparency", false );
+            bool Check_ImageRowColumnTransparency = CONFIG_VALUE_BOOLEAN( "Check", "ImageRowColumnTransparency", false );
 
             if( Check_ImageRowColumnTransparency == true )
             {

@@ -49,7 +49,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( globalBank, "invalid create global bank" );
 
-        uint32_t Engine_ResourceHashTableSize = CONFIG_VALUE( "Engine", "ResourceHashTableSize", 1024 * 32 );
+        uint32_t Engine_ResourceHashTableSize = CONFIG_VALUE_INTEGER( "Engine", "ResourceHashTableSize", 1024 * 32 );
 
         if( globalBank->initialize( m_mutex, Engine_ResourceHashTableSize ) == false )
         {

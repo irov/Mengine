@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/EventationInterface.h"
+#include "Interface/SettingInterface.h"
 #include "Interface/InputHandlerInterface.h"
 #include "Interface/AnalyticsServiceInterface.h"
 
@@ -33,7 +34,8 @@ namespace Mengine
         EVENT_GAME_MOUSE_WHEEL,
         EVENT_GAME_APP_MOUSE_ENTER,
         EVENT_GAME_APP_MOUSE_LEAVE,
-        EVENT_GAME_ON_TIME_FACTOR,
+        EVENT_GAME_TIME_FACTOR_CHANGE,
+        EVENT_GAME_SETTING_CHANGE,
         EVENT_GAME_PREPARATION,
         EVENT_GAME_RUN,
         EVENT_GAME_INTERRUPTION,
@@ -91,7 +93,8 @@ namespace Mengine
         virtual bool onGameMouseWheel( const InputMouseWheelEvent & _event ) = 0;
         virtual void onGameAppMouseEnter( const InputMouseEnterEvent & _event ) = 0;
         virtual void onGameAppMouseLeave( const InputMouseLeaveEvent & _event ) = 0;
-        virtual void onGameTimeFactor( float _timeFactor ) = 0;
+        virtual void onGameTimeFactorChange( float _timeFactor ) = 0;
+        virtual void onGameSettingChange( const SettingInterfacePtr & _setting, const Char * _key ) = 0;
         virtual bool onGamePreparation( bool _debug ) = 0;
         virtual void onGameRun() = 0;
         virtual void onGameInterruption() = 0;
@@ -145,7 +148,8 @@ namespace Mengine
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_MOUSE_WHEEL );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_APP_MOUSE_ENTER );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_APP_MOUSE_LEAVE );
-    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_ON_TIME_FACTOR );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_TIME_FACTOR_CHANGE );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_SETTING_CHANGE );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_PREPARATION );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_RUN );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_INTERRUPTION );

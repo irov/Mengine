@@ -66,7 +66,7 @@ namespace Mengine
             return false;
         }
 
-        bool CachalotPlugin_Available = CONFIG_VALUE( "CachalotPlugin", "Available", true );
+        bool CachalotPlugin_Available = CONFIG_VALUE_BOOLEAN( "CachalotPlugin", "Available", true );
 
         if( CachalotPlugin_Available == false )
         {
@@ -78,7 +78,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool CachalotPlugin::_initializePlugin()
     {
-        String CachalotPlugin_DSN = CONFIG_VALUE( "CachalotPlugin", "DSN", "" );
+        String CachalotPlugin_DSN = CONFIG_VALUE_STRING( "CachalotPlugin", "DSN", "" );
 
         LOGGER_MESSAGE( "Cachalot DSN: %s"
             , CachalotPlugin_DSN.c_str()

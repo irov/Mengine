@@ -39,14 +39,14 @@ namespace Mengine
             return false;
         }
 
-        bool SteamPlugin_Available = CONFIG_VALUE( "SteamPlugin", "Available", true );
+        bool SteamPlugin_Available = CONFIG_VALUE_BOOLEAN( "SteamPlugin", "Available", true );
 
         if( SteamPlugin_Available == false )
         {
             return false;
         }
 
-        uint32_t SteamPlugin_AppId = CONFIG_VALUE( "SteamPlugin", "AppId", k_uAppIdInvalid );
+        uint32_t SteamPlugin_AppId = CONFIG_VALUE_INTEGER( "SteamPlugin", "AppId", k_uAppIdInvalid );
 
         if( HAS_OPTION( "steamappid" ) == true )
         {

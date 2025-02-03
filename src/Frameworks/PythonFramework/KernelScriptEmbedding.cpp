@@ -1881,7 +1881,7 @@ namespace Mengine
                 }
 
                 float invTime = 1.f / _time;
-                float angularSpeed = Math::fabsf( correct_angle_from - correct_angle_to ) * invTime;
+                float angularSpeed = StdMath::fabsf( correct_angle_from - correct_angle_to ) * invTime;
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 

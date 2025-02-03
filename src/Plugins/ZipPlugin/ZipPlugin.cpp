@@ -34,7 +34,7 @@ namespace Mengine
             return false;
         }
 
-        bool ZipPlugin_Available = CONFIG_VALUE( "ZipPlugin", "Available", true );
+        bool ZipPlugin_Available = CONFIG_VALUE_BOOLEAN( "ZipPlugin", "Available", true );
 
         if( ZipPlugin_Available == false )
         {

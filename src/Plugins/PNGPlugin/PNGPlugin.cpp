@@ -35,7 +35,7 @@ namespace Mengine
             return false;
         }
 
-        bool PNGPlugin_Available = CONFIG_VALUE( "PNGPlugin", "Available", true );
+        bool PNGPlugin_Available = CONFIG_VALUE_BOOLEAN( "PNGPlugin", "Available", true );
 
         if( PNGPlugin_Available == false )
         {

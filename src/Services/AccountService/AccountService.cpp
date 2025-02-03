@@ -557,7 +557,7 @@ namespace Mengine
             return true;
         }
 
-        if( config->hasValue( "SETTINGS", "AccountEnumerator", 0u, &m_playerEnumerator ) == false )
+        if( config->hasValueInteger( "SETTINGS", "AccountEnumerator", 0U, &m_playerEnumerator ) == false )
         {
             LOGGER_ERROR( "get [SETTINGS] AccountEnumerator failed" );
 
@@ -747,7 +747,7 @@ namespace Mengine
             return true;
         }
 
-        FilePath Game_AccountsPath = CONFIG_VALUE( "Game", "AccountsPath", Helper::stringizeFilePath( MENGINE_ACCOUNTS_SETTINGS_JSON_PATH ) );
+        FilePath Game_AccountsPath = CONFIG_VALUE_FILEPATH( "Game", "AccountsPath", STRINGIZE_FILEPATH_LOCAL_I( MENGINE_ACCOUNTS_SETTINGS_JSON_PATH ) );
 
         OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( m_fileGroup, Game_AccountsPath, true, MENGINE_DOCUMENT_FACTORABLE );
 

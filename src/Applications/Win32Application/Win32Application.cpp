@@ -314,7 +314,7 @@ namespace Mengine
 
         LOGGER_INFO( "system", "creating render window..." );
 
-        ConstString Window_ApplicationTitleTextId = CONFIG_VALUE( "Window", "ApplicationTitleTextId", STRINGIZE_STRING_LOCAL( "APPLICATION_TITLE" ) );
+        ConstString Window_ApplicationTitleTextId = CONFIG_VALUE_CONSTSTRING( "Window", "ApplicationTitleTextId", STRINGIZE_STRING_LOCAL( "APPLICATION_TITLE" ) );
 
         const Char * projectTitle = nullptr;
         size_t projectTitleLen = 0;

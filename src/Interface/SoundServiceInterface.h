@@ -87,8 +87,9 @@ namespace Mengine
         virtual float getPosMs( const SoundIdentityInterfacePtr & _identity ) = 0;
 
     public:
-        virtual void mute( const ConstString & _type, bool _mute ) = 0;
-        virtual bool isMute() const = 0;
+        virtual void setMute( const ConstString & _type, bool _mute ) = 0;
+        virtual bool getMute( const ConstString & _type ) const = 0;
+        virtual bool mixMute() const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

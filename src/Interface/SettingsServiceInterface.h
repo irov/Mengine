@@ -18,10 +18,12 @@ namespace Mengine
 
     public:
         virtual bool loadSetting( const ConstString & _name, const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc ) = 0;
+        virtual bool saveSetting( const ConstString & _name, const DocumentInterfacePtr & _doc ) = 0;
         virtual bool unloadSetting( const ConstString & _name ) = 0;
 
     public:
         virtual bool loadSettings( const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc ) = 0;
+        virtual bool saveSettings( const DocumentInterfacePtr & _doc ) = 0;
 
     public:
         virtual const SettingInterfacePtr & getSetting( const ConstString & _name ) const = 0;

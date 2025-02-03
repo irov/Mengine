@@ -15,6 +15,7 @@
 #include "math/vec2.h"
 #include "math/vec3.h"
 #include "math/vec4.h"
+#include "math/uv4.h"
 
 namespace Mengine
 {
@@ -38,6 +39,7 @@ namespace Mengine
         bool stringalized( const Char * _string, mt::vec2f * const _value );
         bool stringalized( const Char * _string, mt::vec3f * const _value );
         bool stringalized( const Char * _string, mt::vec4f * const _value );
+        bool stringalized( const Char * _string, mt::uv4f * const _value );
         bool stringalized( const Char * _string, const Char ** const _value );
         bool stringalized( const Char * _string, String * const _value );
         bool stringalized( const Char * _string, ConstString * const _value );
@@ -64,6 +66,7 @@ namespace Mengine
         bool stringalized( const mt::vec2f & _value, Char * const _string, size_t _capacity );
         bool stringalized( const mt::vec3f & _value, Char * const _string, size_t _capacity );
         bool stringalized( const mt::vec4f & _value, Char * const _string, size_t _capacity );
+        bool stringalized( const mt::uv4f & _value, Char * const _string, size_t _capacity );
         bool stringalized( const Char * _value, Char * const _string, size_t _capacity );
         bool stringalized( const String & _value, Char * const _string, size_t _capacity );
         bool stringalized( const ConstString & _value, Char * const _string, size_t _capacity );
@@ -90,6 +93,7 @@ namespace Mengine
         bool stringalized( const mt::vec2f & _value, WChar * const _string, size_t _capacity );
         bool stringalized( const mt::vec3f & _value, WChar * const _string, size_t _capacity );
         bool stringalized( const mt::vec4f & _value, WChar * const _string, size_t _capacity );
+        bool stringalized( const mt::uv4f & _value, WChar * const _string, size_t _capacity );
         bool stringalized( const WChar * _value, WChar * const _string, size_t _capacity );
         bool stringalized( const WString & _value, WChar * const _string, size_t _capacity );
         bool stringalized( const Resolution & _value, WChar * const _string, size_t _capacity );

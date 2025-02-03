@@ -29,9 +29,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TTFAtlasService::_initializeService()
     {
-        m_minAtlasPow = CONFIG_VALUE( "TTFPlugin", "MinAtlasPow", 4U );
-        m_maxAtlasPow = CONFIG_VALUE( "TTFPlugin", "MaxAtlasPow", 16U );
-        m_maxAtlasWidth = CONFIG_VALUE( "TTFPlugin", "MaxAtlasWidth", 2048U );
+        m_minAtlasPow = CONFIG_VALUE_INTEGER( "TTFPlugin", "MinAtlasPow", 4U );
+        m_maxAtlasPow = CONFIG_VALUE_INTEGER( "TTFPlugin", "MaxAtlasPow", 16U );
+        m_maxAtlasWidth = CONFIG_VALUE_INTEGER( "TTFPlugin", "MaxAtlasWidth", 2048U );
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE, &TTFAtlasService::notifyRenderDeviceLostPrepare, MENGINE_DOCUMENT_FACTORABLE );
 

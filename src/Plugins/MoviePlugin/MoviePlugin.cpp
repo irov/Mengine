@@ -136,7 +136,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MoviePlugin::_initializePlugin()
     {
-        const Char * MoviePlugin_HASHKEY = CONFIG_VALUE( "MoviePlugin", "HASHKEY", "" );
+        const Char * MoviePlugin_HASHKEY = CONFIG_VALUE_STRING( "MoviePlugin", "HASHKEY", "" );
 
         m_hashkey = MoviePlugin_HASHKEY;
 

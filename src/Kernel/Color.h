@@ -81,6 +81,9 @@ namespace Mengine
         }
 
     public:
+        void setRGBA4( const float * _buff );
+
+    public:
         void setRGBA( float _r, float _g, float _b, float _a );
         void setRGB( float _r, float _g, float _b );
 
@@ -110,6 +113,11 @@ namespace Mengine
 
         MENGINE_INLINE Color & operator *= ( float _f )
         {
+            if( _f == 1.f )
+            {
+                return *this;
+            }
+
             m_r *= _f;
             m_g *= _f;
             m_b *= _f;

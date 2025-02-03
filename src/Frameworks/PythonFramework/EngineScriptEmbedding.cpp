@@ -30,6 +30,7 @@
 #include "Interface/TimerServiceInterface.h"
 #include "Interface/PreferencesSystemInterface.h"
 #include "Interface/ArrowServiceInterface.h"
+#include "Interface/SettingsServiceInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonEventReceiver.h"
@@ -2127,7 +2128,7 @@ namespace Mengine
 
                     float angle_length = mt::angle_length( isometric_angle, dir_angle );
 
-                    float abs_angle_length = Math::fabsf( angle_length );
+                    float abs_angle_length = StdMath::fabsf( angle_length );
 
                     if( abs_angle_length < min_angle )
                     {
@@ -2494,7 +2495,7 @@ namespace Mengine
 
                                 float cv_a = cv.getA();
 
-                                float pos_distance = Math::sqrtf( pos_sqrdistance );
+                                float pos_distance = StdMath::sqrtf( pos_sqrdistance );
 
                                 float a0 = (pos_distance - radius) / penumbra;
 
@@ -3047,6 +3048,75 @@ namespace Mengine
             {
                 PREFERENCES_SYSTEM()
                     ->removePreference( "persistent_arguments" );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            pybind::dict s_getSettings( pybind::kernel_interface * _kernel )
+            {
+                pybind::dict py_settings( _kernel );
+
+                SETTINGS_SERVICE()
+                    ->foreachSettings( [_kernel, &py_settings]( const ConstString & _name, const SettingInterfacePtr & _setting )
+                {
+                    pybind::dict py_setting( _kernel );
+
+                    _setting->foreachKeys( [_kernel, _setting, &py_setting]( const Char * _key )
+                    {
+                        ESettingType type = _setting->getValueType( _key );
+
+                        switch( type )
+                        {
+                        case EST_NONE:
+                            {
+                                py_setting[_key] = _kernel->ret_none();
+                            }break;
+                        case EST_BOOL:
+                            {
+                                bool value = _setting->getValueBoolean( _key, false );
+
+                                py_setting[_key] = value;
+                            }break;
+                        case EST_INTEGER:
+                            {
+                                int64_t value = _setting->getValueInteger( _key, 0L );
+
+                                py_setting[_key] = value;
+                            }break;
+                        case EST_REAL:
+                            {
+                                double value = _setting->getValueFloat( _key, 0.0 );
+
+                                py_setting[_key] = value;
+                            }break;
+                        case EST_STRING:
+                            {
+                                const Char * value = _setting->getValueString( _key, "" );
+
+                                py_setting[_key] = value;
+                            }break;
+                        case EST_VEC2F:
+                            {
+                                mt::vec2f value = _setting->getValueVec2f( _key, mt::vec2f::identity() );
+
+                                py_setting[_key] = value;
+                            }break;
+                        case EST_VEC3F:
+                            {
+                                mt::vec3f value = _setting->getValueVec3f( _key, mt::vec3f::identity() );
+                                py_setting[_key] = value;
+                            }break;
+                        case EST_COLOR:
+                            {
+                                Color value = _setting->getValueColor( _key, Color::identity() );
+
+                                py_setting[_key] = value;
+                            }break;
+                        }
+                    } );
+
+                    py_settings[_name] = py_setting;
+                } );
+
+                return py_settings;
             }
             //////////////////////////////////////////////////////////////////////////
             Scene * s_findNodeScene( Node * _node )
@@ -3946,7 +4016,7 @@ namespace Mengine
                     ->getDefaultConfig();
 
                 float param_value;
-                if( config->hasValue( "Params", _paramName.c_str(), 0.f, &param_value ) == false )
+                if( config->hasValueFloat( "Params", _paramName.c_str(), 0.f, &param_value ) == false )
                 {
                     return _kernel->ret_none();
                 }
@@ -3960,7 +4030,7 @@ namespace Mengine
                     ->getDefaultConfig();
 
                 int32_t param_value;
-                if( config->hasValue( "Params", _paramName.c_str(), 0, &param_value ) == false )
+                if( config->hasValueInteger( "Params", _paramName.c_str(), 0, &param_value ) == false )
                 {
                     return _kernel->ret_none();
                 }
@@ -4617,6 +4687,12 @@ namespace Mengine
         pybind::def_functor( _kernel, "setPersistentArguments", nodeScriptMethod, &EngineScriptMethod::s_setPersistentArguments );
         pybind::def_functor_kernel( _kernel, "getPersistentArguments", nodeScriptMethod, &EngineScriptMethod::s_getPersistentArguments );
         pybind::def_functor( _kernel, "removePersistentArguments", nodeScriptMethod, &EngineScriptMethod::s_removePersistentArguments );
+
+        pybind::interface_<SettingInterface, pybind::bases<Mixin>>( _kernel, "SettingInterface" )
+            .def( "getName", &SettingInterface::getName )
+            ;
+
+        pybind::def_functor_kernel( _kernel, "getSettings", nodeScriptMethod, &EngineScriptMethod::s_getSettings );
 
         return true;
     }

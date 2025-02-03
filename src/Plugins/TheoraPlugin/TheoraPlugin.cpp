@@ -31,7 +31,7 @@ namespace Mengine
             return false;
         }
 
-        bool TheoraPlugin_Available = CONFIG_VALUE( "TheoraPlugin", "Available", true );
+        bool TheoraPlugin_Available = CONFIG_VALUE_BOOLEAN( "TheoraPlugin", "Available", true );
 
         if( TheoraPlugin_Available == false )
         {

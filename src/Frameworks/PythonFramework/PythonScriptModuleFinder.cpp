@@ -108,7 +108,7 @@ namespace Mengine
 
         MENGINE_THREAD_GUARD_SCOPE( PythonScriptModuleFinder, this );
 
-        bool PythonScript_AvailableCompileZCode = CONFIG_VALUE( "PythonScript", "AvailableCompileZCode", true );
+        bool PythonScript_AvailableCompileZCode = CONFIG_VALUE_BOOLEAN( "PythonScript", "AvailableCompileZCode", true );
 
         if( PythonScript_AvailableCompileZCode == true )
         {
@@ -127,7 +127,7 @@ namespace Mengine
             loader->finalize();
         }
 
-        bool PythonScript_AvailableSourceCode = CONFIG_VALUE( "PythonScript", "AvailableSourceCode", true );
+        bool PythonScript_AvailableSourceCode = CONFIG_VALUE_BOOLEAN( "PythonScript", "AvailableSourceCode", true );
 
         if( PythonScript_AvailableSourceCode == true )
         {

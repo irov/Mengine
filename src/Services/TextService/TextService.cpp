@@ -52,7 +52,7 @@ namespace Mengine
         m_factoryTextEntry = Helper::makeFactoryPool<TextEntry, 128>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryTextLocalePackage = Helper::makeFactoryPool<TextLocalePackage, 4>( MENGINE_DOCUMENT_FACTORABLE );
 
-        uint32_t Engine_TextServiceReserveTexts = CONFIG_VALUE( "Engine", "TextServiceReserveTexts", 1024U );
+        uint32_t Engine_TextServiceReserveTexts = CONFIG_VALUE_INTEGER( "Engine", "TextServiceReserveTexts", 1024U );
 
         m_texts.reserve( Engine_TextServiceReserveTexts );
 
@@ -226,7 +226,7 @@ namespace Mengine
                     float g = 1.f;
                     float b = 1.f;
                     float a = 1.f;
-                    if( MENGINE_SSCANF( str_value, "%f %f %f %f", &r, &g, &b, &a ) != 4 )
+                    if( MENGINE_SSCANF( str_value, "%g %g %g %g", &r, &g, &b, &a ) != 4 )
                     {
                         LOGGER_ERROR( "text file '%s' invalid read for text '%s' lineOffset '%s'"
                             , Helper::getContentFullPath( m_content ).c_str()

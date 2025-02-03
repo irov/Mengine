@@ -103,7 +103,7 @@ namespace Mengine
     {
         m_status = EDTDS_READY;
 
-        uint32_t DevToDebug_LoggerTime = CONFIG_VALUE( "DevToDebugPlugin", "LoggerTime", 2000 );
+        uint32_t DevToDebug_LoggerTime = CONFIG_VALUE_INTEGER( "DevToDebugPlugin", "LoggerTime", 2000 );
 
         ThreadIdentityInterfacePtr thread = Helper::createThreadIdentity( MENGINE_THREAD_DESCRIPTION( "MNGD2DLogger" ), ETP_BELOW_NORMAL, [this]( const ThreadIdentityRunnerInterfacePtr & _runner )
         {
@@ -144,7 +144,7 @@ namespace Mengine
             return;
         }
 
-        uint32_t DevToDebug_LoggerBatchCount = CONFIG_VALUE( "DevToDebugPlugin", "LoggerBatchCount", 1024 );
+        uint32_t DevToDebug_LoggerBatchCount = CONFIG_VALUE_INTEGER( "DevToDebugPlugin", "LoggerBatchCount", 1024 );
 
         m_mutex->lock();
         VectorMessages messages = Helper::exciseVector( m_messages, DevToDebug_LoggerBatchCount );

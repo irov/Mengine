@@ -31,7 +31,7 @@ namespace Mengine
             return false;
         }
 
-        bool WAVPlugin_Available = CONFIG_VALUE( "WAVPlugin", "Available", true );
+        bool WAVPlugin_Available = CONFIG_VALUE_BOOLEAN( "WAVPlugin", "Available", true );
 
         if( WAVPlugin_Available == false )
         {

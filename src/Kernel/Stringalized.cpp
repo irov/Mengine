@@ -121,7 +121,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const Char * _string, float * const _value )
         {
-            if( MENGINE_SSCANF( _string, "%f", _value ) != 1 )
+            if( MENGINE_SSCANF( _string, "%g", _value ) != 1 )
             {
                 return false;
             }
@@ -141,7 +141,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const Char * _string, mt::vec2f * const _value )
         {
-            if( MENGINE_SSCANF( _string, "%f %f", &_value->x, &_value->y ) != 2 )
+            if( MENGINE_SSCANF( _string, "%g %g", &_value->x, &_value->y ) != 2 )
             {
                 return false;
             }
@@ -151,7 +151,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const Char * _string, mt::vec3f * const _value )
         {
-            if( MENGINE_SSCANF( _string, "%f %f %f", &_value->x, &_value->y, &_value->z ) != 3 )
+            if( MENGINE_SSCANF( _string, "%g %g %g", &_value->x, &_value->y, &_value->z ) != 3 )
             {
                 return false;
             }
@@ -161,7 +161,17 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const Char * _string, mt::vec4f * const _value )
         {
-            if( MENGINE_SSCANF( _string, "%f %f %f %f", &_value->x, &_value->y, &_value->z, &_value->w ) != 4 )
+            if( MENGINE_SSCANF( _string, "%g %g %g %g", &_value->x, &_value->y, &_value->z, &_value->w ) != 4 )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool stringalized( const Char * _string, mt::uv4f * const _value )
+        {
+            if( MENGINE_SSCANF( _string, "%g %g %g %g %g %g %g %g", &_value->p0.x, &_value->p0.y, &_value->p1.x, &_value->p1.y, &_value->p2.x, &_value->p2.y, &_value->p3.x, &_value->p3.y ) != 8 )
             {
                 return false;
             }
@@ -260,17 +270,10 @@ namespace Mengine
             float g;
             float b;
             float a;
-            if( MENGINE_SSCANF( _string, "%f %f %f %f", &r, &g, &b, &a ) != 4 )
+            if( MENGINE_SSCANF( _string, "%g %g %g %g", &r, &g, &b, &a ) != 4 )
             {
                 return false;
             }
-
-            const float coef = 1.f / 255.f;
-
-            r *= coef;
-            g *= coef;
-            b *= coef;
-            a *= coef;
 
             _value->setRGBA( r, g, b, a );
 
@@ -286,7 +289,7 @@ namespace Mengine
             float ex;
             float ey;
 
-            if( MENGINE_SSCANF( _string, "%f %f %f %f %f %f", &width, &height, &bx, &by, &ex, &ey ) != 6 )
+            if( MENGINE_SSCANF( _string, "%g %g %g %g %g %g", &width, &height, &bx, &by, &ex, &ey ) != 6 )
             {
                 return false;
             }
@@ -562,6 +565,23 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        bool stringalized( const mt::uv4f & _value, Char * const _string, size_t _capacity )
+        {
+            int32_t result = MENGINE_SNPRINTF( _string, _capacity, "%g %g %g %g %g %g %g %g", _value.p0.x, _value.p0.y, _value.p1.x, _value.p1.y, _value.p2.x, _value.p2.y, _value.p3.x, _value.p3.y );
+            
+            if( result < 0 )
+            {
+                return false;
+            }
+
+            if( (size_t)result >= _capacity )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
         bool stringalized( const Char * _value, Char * const _string, size_t _capacity )
         {
             int32_t result = MENGINE_SNPRINTF( _string, _capacity, "%s", _value );
@@ -681,7 +701,7 @@ namespace Mengine
             float b = _value.getB();
             float a = _value.getA();
 
-            int32_t result = MENGINE_SNPRINTF( _string, _capacity, "%.16f %.16f %.16f %.16f", r, g, b, a );
+            int32_t result = MENGINE_SNPRINTF( _string, _capacity, "%g %g %g %g", r, g, b, a );
 
             if( result < 0 )
             {
@@ -705,7 +725,7 @@ namespace Mengine
             float ex = _value.viewport.end.x;
             float ey = _value.viewport.end.y;
 
-            int32_t result = MENGINE_SNPRINTF( _string, _capacity, "%f %f %f %f %f %f", width, height, bx, by, ex, ey );
+            int32_t result = MENGINE_SNPRINTF( _string, _capacity, "%g %g %g %g %g %g", width, height, bx, by, ex, ey );
 
             if( result < 0 )
             {
@@ -982,6 +1002,23 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        bool stringalized( const mt::uv4f & _value, WChar * const _string, size_t _capacity )
+        {
+            int32_t result = MENGINE_SWPRINTF( _string, _capacity, L"%g %g %g %g %g %g %g %g", _value.p0.x, _value.p0.y, _value.p1.x, _value.p1.y, _value.p2.x, _value.p2.y, _value.p3.x, _value.p3.y );
+            
+            if( result < 0 )
+            {
+                return false;
+            }
+
+            if( (size_t)result >= _capacity )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
         bool stringalized( const WChar * _value, WChar * const _string, size_t _capacity )
         {
             int32_t result = MENGINE_SWPRINTF( _string, _capacity, L"%s", _value );
@@ -1043,7 +1080,7 @@ namespace Mengine
             float b = _value.getB();
             float a = _value.getA();
 
-            int32_t result = MENGINE_SWPRINTF( _string, _capacity, L"%.16f %.16f %.16f %.16f", r, g, b, a );
+            int32_t result = MENGINE_SWPRINTF( _string, _capacity, L"%g %g %g %g", r, g, b, a );
             
             if( result < 0 )
             {
@@ -1067,7 +1104,7 @@ namespace Mengine
             float ex = _value.viewport.end.x;
             float ey = _value.viewport.end.y;
 
-            int32_t result = MENGINE_SWPRINTF( _string, _capacity, L"%f %f %f %f %f %f", width, height, bx, by, ex, ey );
+            int32_t result = MENGINE_SWPRINTF( _string, _capacity, L"%g %g %g %g %g %g", width, height, bx, by, ex, ey );
 
             if( result < 0 )
             {

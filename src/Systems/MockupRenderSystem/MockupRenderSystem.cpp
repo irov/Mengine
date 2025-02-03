@@ -86,12 +86,12 @@ namespace Mengine
         m_dxMaxCombinedTextureImageUnits = MENGINE_MAX_TEXTURE_STAGES;
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
-        m_renderSystemName = CONFIG_VALUE( "Engine", "MockupRenderSystem", STRINGIZE_STRING_LOCAL( "DX9" ) );
+        m_renderSystemName = CONFIG_VALUE_CONSTSTRING( "Engine", "MockupRenderSystem", STRINGIZE_STRING_LOCAL( "DX9" ) );
 #else
 #   if defined(MENGINE_RENDER_OPENGL_ES)
-        m_renderSystemName = CONFIG_VALUE( "Engine", "MockupRenderSystem", STRINGIZE_STRING_LOCAL( "OpenGLES" ) );
+        m_renderSystemName = CONFIG_VALUE_CONSTSTRING( "Engine", "MockupRenderSystem", STRINGIZE_STRING_LOCAL( "OpenGLES" ) );
 #   else
-        m_renderSystemName = CONFIG_VALUE( "Engine", "MockupRenderSystem", STRINGIZE_STRING_LOCAL( "OpenGL" ) );
+        m_renderSystemName = CONFIG_VALUE_CONSTSTRING( "Engine", "MockupRenderSystem", STRINGIZE_STRING_LOCAL( "OpenGL" ) );
 #   endif
 #endif
 

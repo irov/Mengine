@@ -129,6 +129,16 @@ namespace Mengine
             return nullptr;
         }
 
+        if( stream->size() == 0 )
+        {
+            LOGGER_ERROR( "empty config '%s' (doc: %s)"
+                , Helper::getContentFullPath( _content ).c_str()
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
+
+            return nullptr;
+        }
+
         ConstString configType = _configType;
 
         if( _configType == ConstString::none() )

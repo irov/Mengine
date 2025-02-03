@@ -46,7 +46,7 @@ namespace Mengine
             return false;
         }
 
-        bool VideoPlugin_Available = CONFIG_VALUE( "VideoPlugin", "Available", true );
+        bool VideoPlugin_Available = CONFIG_VALUE_BOOLEAN( "VideoPlugin", "Available", true );
 
         if( VideoPlugin_Available == false )
         {
@@ -78,7 +78,7 @@ namespace Mengine
             return false;
         }
 
-        bool Engine_MockupVideo = CONFIG_VALUE( "Engine", "MockupVideo", false );
+        bool Engine_MockupVideo = CONFIG_VALUE_BOOLEAN( "Engine", "MockupVideo", false );
         bool OPTION_mockupvideo = HAS_OPTION( "mockupvideo" );
 
         if( Engine_MockupVideo == false && OPTION_mockupvideo == false )

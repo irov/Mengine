@@ -41,15 +41,15 @@ namespace Mengine
         }
 
         float lineOffset;
-        if( _config->hasValue( name.c_str(), "LineOffset", 0.f, &lineOffset ) == true )
+        if( _config->hasValueFloat( name.c_str(), "LineOffset", 0.f, &lineOffset ) == true )
         {
-            font->setLineOffset( lineOffset );
+            font->setLineOffset( (float)lineOffset );
         }
 
         float charOffset;
-        if( _config->hasValue( name.c_str(), "CharOffset", 0.f, &charOffset ) == true )
+        if( _config->hasValueFloat( name.c_str(), "CharOffset", 0.f, &charOffset ) == true )
         {
-            font->setCharOffset( charOffset );
+            font->setCharOffset( (float)charOffset );
         }
 
         ConstString glyphName;
@@ -73,7 +73,7 @@ namespace Mengine
         font->setTTFFontGlyph( glyph );
 
         uint32_t height;
-        if( _config->hasValue( name.c_str(), "Height", 0u, &height ) == false )
+        if( _config->hasValueInteger( name.c_str(), "Height", 0U, &height ) == false )
         {
             LOGGER_ERROR( "ttf font '%s' don't setup Height"
                 , name.c_str()
@@ -82,7 +82,7 @@ namespace Mengine
             return false;
         }
 
-        font->setHeight( height );
+        font->setHeight( (uint32_t)height );
 
         FilePath FEPath;
         if( _config->hasValue( name.c_str(), "FEPath", FilePath::none(), &FEPath ) == true )
@@ -116,7 +116,7 @@ namespace Mengine
             unknownFE->setEffectName( FEName );
 
             uint32_t FESample;
-            if( _config->hasValue( name.c_str(), "FESample", 0u, &FESample ) == true )
+            if( _config->hasValueInteger( name.c_str(), "FESample", 0U, &FESample ) == true )
             {
                 fontEffet->setEffectSample( FESample );
             }

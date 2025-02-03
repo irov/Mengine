@@ -40,7 +40,7 @@ namespace Mengine
             return false;
         }
 
-        bool ResourceConvertPlugin_Available = CONFIG_VALUE( "ResourceConvertPlugin", "Available", true );
+        bool ResourceConvertPlugin_Available = CONFIG_VALUE_BOOLEAN( "ResourceConvertPlugin", "Available", true );
 
         if( ResourceConvertPlugin_Available == false )
         {

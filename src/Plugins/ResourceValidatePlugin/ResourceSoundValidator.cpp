@@ -69,7 +69,7 @@ namespace Mengine
 
         const SoundCodecDataInfo * dataInfo = decoder->getCodecDataInfo();
 
-        float Limit_MinimalStreamSoundDuration = CONFIG_VALUE( "Limit", "MinimalStreamSoundDuration", 2000.f ); //4kb
+        float Limit_MinimalStreamSoundDuration = CONFIG_VALUE_FLOAT( "Limit", "MinimalStreamSoundDuration", 2000.f ); //4kb
 
         if( (dataInfo->length <= Limit_MinimalStreamSoundDuration && Limit_MinimalStreamSoundDuration != 0.f) && streamable == true )
         {
@@ -84,7 +84,7 @@ namespace Mengine
             return false;
         }
 
-        float limitNoStreamSoundDurationWarning = CONFIG_VALUE( "Limit", "NoStreamSoundDurationWarning", 2000.f ); //4kb
+        float limitNoStreamSoundDurationWarning = CONFIG_VALUE_FLOAT( "Limit", "NoStreamSoundDurationWarning", 2000.f ); //4kb
 
         if( (dataInfo->length > limitNoStreamSoundDurationWarning && limitNoStreamSoundDurationWarning != 0.f) && streamable == false )
         {
@@ -97,7 +97,7 @@ namespace Mengine
             );
         }
 
-        float Limit_NoStreamSoundDurationError = CONFIG_VALUE( "Limit", "NoStreamSoundDurationError", 10000.f ); //4kb
+        float Limit_NoStreamSoundDurationError = CONFIG_VALUE_FLOAT( "Limit", "NoStreamSoundDurationError", 10000.f ); //4kb
 
         if( (dataInfo->length > Limit_NoStreamSoundDurationError && Limit_NoStreamSoundDurationError != 0.f) && streamable == false )
         {

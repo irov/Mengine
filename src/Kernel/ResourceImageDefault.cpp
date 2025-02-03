@@ -44,7 +44,7 @@ namespace Mengine
         uint32_t decoder_options = DF_IMAGE_NONE;
 
 #if defined(MENGINE_MASTER_RELEASE_DISABLE)
-        bool Engine_ForcePremultiplyAlpha = CONFIG_VALUE( "Engine", "ForcePremultiplyAlpha", false );
+        bool Engine_ForcePremultiplyAlpha = CONFIG_VALUE_BOOLEAN( "Engine", "ForcePremultiplyAlpha", false );
 
         if( Engine_ForcePremultiplyAlpha == true )
         {

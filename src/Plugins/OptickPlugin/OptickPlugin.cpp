@@ -37,7 +37,7 @@ namespace Mengine
             return false;
         }
 
-        bool OptickPlugin_Available = CONFIG_VALUE( "OptickPlugin", "Available", true );
+        bool OptickPlugin_Available = CONFIG_VALUE_BOOLEAN( "OptickPlugin", "Available", true );
 
         if( OptickPlugin_Available == false )
         {

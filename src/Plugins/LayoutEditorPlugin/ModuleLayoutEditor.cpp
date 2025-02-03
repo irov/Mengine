@@ -3,11 +3,14 @@
 #include "Interface/RenderMaterialServiceInterface.h"
 #include "Interface/SceneServiceInterface.h"
 #include "Interface/SoundServiceInterface.h"
+#include "Interface/ApplicationInterface.h"
+#include "Interface/PlatformServiceInterface.h"
 
 #include "Kernel/TimestampHelper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/NodeCast.h"
 #include "Kernel/SceneHelper.h"
+#include "Kernel/Logger.h"
 
 #include "Config/StdIntTypes.h"
 #include "Config/StdIO.h"
@@ -121,7 +124,22 @@ namespace Mengine
         MENGINE_UNUSED( _behavior );
 
         SOUND_SERVICE()
-            ->mute( STRINGIZE_STRING_LOCAL( "LayoutEditor" ), true );
+            ->setMute( STRINGIZE_STRING_LOCAL( "LayoutEditor" ), true );
+
+        Resolution maxClientResolution;
+        if( PLATFORM_SERVICE()
+            ->getMaxClientResolution( &maxClientResolution ) == false )
+        {
+            LOGGER_ERROR( "invalid get max client resolution" );
+
+            return false;
+        }
+
+        Resolution maxClientResolution90;
+        maxClientResolution.scaleTo( {0.9f, 0.9f}, &maxClientResolution90 );
+
+        APPLICATION_SERVICE()
+            ->setWindowResolution( maxClientResolution90 );
 
         m_show = true;
 
@@ -133,7 +151,7 @@ namespace Mengine
         MENGINE_UNUSED( _behavior );
 
         SOUND_SERVICE()
-            ->mute( STRINGIZE_STRING_LOCAL( "LayoutEditor" ), false );
+            ->setMute( STRINGIZE_STRING_LOCAL( "LayoutEditor" ), false );
 
         m_show = false;
     }

@@ -105,7 +105,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderSystem::_initializeService()
     {
-        const Char * Render_D3D9_DLL = CONFIG_VALUE( "DirectX9", "D3D9_DLL", MENGINE_D3D9_DLL_NAME );
+        const Char * Render_D3D9_DLL = CONFIG_VALUE_STRING( "DirectX9", "D3D9_DLL", MENGINE_D3D9_DLL_NAME );
 
         DynamicLibraryInterfacePtr d3d9Library = PLATFORM_SERVICE()
             ->loadDynamicLibrary( Render_D3D9_DLL, MENGINE_DOCUMENT_FACTORABLE );
@@ -629,8 +629,8 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
-        float DirectX9_PerfectPixelOffsetX = CONFIG_VALUE( "DirectX9", "PerfectPixelOffsetX", -0.5f );
-        float DirectX9_PerfectPixelOffsetY = CONFIG_VALUE( "DirectX9", "PerfectPixelOffsetY", 0.f );
+        float DirectX9_PerfectPixelOffsetX = CONFIG_VALUE_FLOAT( "DirectX9", "PerfectPixelOffsetX", -0.5f );
+        float DirectX9_PerfectPixelOffsetY = CONFIG_VALUE_FLOAT( "DirectX9", "PerfectPixelOffsetY", 0.f );
 
         float perfect_x = DirectX9_PerfectPixelOffsetX / (m_windowViewport.end.x - m_windowViewport.begin.x);
         float perfect_y = DirectX9_PerfectPixelOffsetY / (m_windowViewport.end.y - m_windowViewport.begin.y);
@@ -1041,14 +1041,14 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
         D3DVIEWPORT9 VP;
-        VP.X = (DWORD)Math::floorf( _viewport.begin.x + 0.5f );
-        VP.Y = (DWORD)Math::floorf( _viewport.begin.y + 0.5f );
+        VP.X = (DWORD)StdMath::floorf( _viewport.begin.x + 0.5f );
+        VP.Y = (DWORD)StdMath::floorf( _viewport.begin.y + 0.5f );
 
         float width = _viewport.getWidth();
         float height = _viewport.getHeight();
 
-        VP.Width = (DWORD)Math::floorf( width + 0.5f );
-        VP.Height = (DWORD)Math::floorf( height + 0.5f );
+        VP.Width = (DWORD)StdMath::floorf( width + 0.5f );
+        VP.Height = (DWORD)StdMath::floorf( height + 0.5f );
 
         VP.MinZ = 0.f;
         VP.MaxZ = 1.f;

@@ -8,6 +8,7 @@
 #include "Kernel/String.h"
 #include "Kernel/Data.h"
 #include "Kernel/ColorHelper.h"
+#include "Kernel/Stringalized.h"
 
 #include "Config/Lambda.h"
 #include "Config/Char.h"
@@ -38,6 +39,7 @@ namespace Mengine
         {
             const uint8_t * begin = reinterpret_cast<const uint8_t *>(&_hdr);
             const uint8_t * end = begin + sizeof( PacketHeader );
+
             _payload.insert( _payload.begin(), begin, end );
         }
 
@@ -48,45 +50,39 @@ namespace Mengine
         }
 
         template<>
-        MENGINE_INLINE void setXmlValue<float>( pugi::xml_attribute & _attrib, const float & _value )
-        {
-            std::string str = std::to_string( _value );
-
-            _attrib.set_value( str.c_str() );
-        }
-
-        template<>
         MENGINE_INLINE void setXmlValue<mt::vec2f>( pugi::xml_attribute & _attrib, const mt::vec2f & _value )
         {
-            std::string str = std::to_string( _value.x ) + MENGINE_PATH_DELIM_BACKSLASH + std::to_string( _value.y );
+            Char xml_value[64] = {'\0'};
+            Helper::stringalized( _value, xml_value, 64 );
 
-            _attrib.set_value( str.c_str() );
+            _attrib.set_value( xml_value );
         }
 
         template<>
         MENGINE_INLINE void setXmlValue<mt::vec3f>( pugi::xml_attribute & _attrib, const mt::vec3f & _value )
         {
-            std::string str = std::to_string( _value.x ) + MENGINE_PATH_DELIM_BACKSLASH + std::to_string( _value.y ) + MENGINE_PATH_DELIM_BACKSLASH + std::to_string( _value.z );
+            Char xml_value[128] = {'\0'};
+            Helper::stringalized( _value, xml_value, 128 );
 
-            _attrib.set_value( str.c_str() );
+            _attrib.set_value( xml_value );
         }
 
         template<>
         MENGINE_INLINE void setXmlValue<mt::uv4f>( pugi::xml_attribute & _attrib, const mt::uv4f & _value )
         {
-            std::string str 
-                = std::to_string( _value.p0.x ) + MENGINE_PATH_DELIM_BACKSLASH + std::to_string( _value.p0.y ) + MENGINE_PATH_DELIM_BACKSLASH
-                + std::to_string( _value.p1.x ) + MENGINE_PATH_DELIM_BACKSLASH + std::to_string( _value.p1.y ) + MENGINE_PATH_DELIM_BACKSLASH
-                + std::to_string( _value.p2.x ) + MENGINE_PATH_DELIM_BACKSLASH + std::to_string( _value.p2.y ) + MENGINE_PATH_DELIM_BACKSLASH
-                + std::to_string( _value.p3.x ) + MENGINE_PATH_DELIM_BACKSLASH + std::to_string( _value.p3.y );
+            Char xml_value[512] = {'\0'};
+            Helper::stringalized( _value, xml_value, 512 );
 
-            _attrib.set_value( str.c_str() );
+            _attrib.set_value( xml_value );
         }
 
         template<>
         MENGINE_INLINE void setXmlValue<Color>( pugi::xml_attribute & _attrib, const Color & _value )
         {
-            setXmlValue<uint32_t>( _attrib, _value.getAsARGB() );
+            Char xml_value[512] = {'\0'};
+            Helper::stringalized( _value, xml_value, 512 );
+
+            _attrib.set_value( xml_value );
         }
 
         template<>
@@ -161,9 +157,10 @@ namespace Mengine
         template<>
         MENGINE_INLINE mt::vec2f getXmlValue<mt::vec2f>( const pugi::xml_attribute & _attrib )
         {
-            mt::vec2f result;
+            const Char * attrib_value = _attrib.value();
 
-            deserializeFloats( _attrib, result.buff(), 2 );
+            mt::vec2f result;
+            Helper::stringalized( attrib_value, &result );
 
             return result;
         }
@@ -171,9 +168,10 @@ namespace Mengine
         template<>
         MENGINE_INLINE mt::vec3f getXmlValue<mt::vec3f>( const pugi::xml_attribute & _attrib )
         {
-            mt::vec3f result;
+            const Char * attrib_value = _attrib.value();
 
-            deserializeFloats( _attrib, result.buff(), 3 );
+            mt::vec3f result;
+            Helper::stringalized( attrib_value, &result );
 
             return result;
         }
@@ -181,9 +179,10 @@ namespace Mengine
         template<>
         MENGINE_INLINE mt::uv4f getXmlValue<mt::uv4f>( const pugi::xml_attribute & _attrib )
         {
-            mt::uv4f result;
+            const Char * attrib_value = _attrib.value();
 
-            deserializeFloats( _attrib, result.buff(), 8 );
+            mt::uv4f result;
+            Helper::stringalized( attrib_value, &result );
 
             return result;
         }
@@ -191,9 +190,12 @@ namespace Mengine
         template<>
         MENGINE_INLINE Color getXmlValue<Color>( const pugi::xml_attribute & _attrib )
         {
-            uint32_t argb = getXmlValue<uint32_t>( _attrib );
+            const Char * attrib_value = _attrib.value();
 
-            return Helper::makeColorARGB( argb );
+            Color result;
+            Helper::stringalized( attrib_value, &result );
+
+            return result;
         }
 
         template<>

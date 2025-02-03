@@ -23,7 +23,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DebugPanelPlugin::_availablePlugin() const
     {
-        bool DebugPanelPlugin_Available = CONFIG_VALUE( "DebugPanelPlugin", "Available", true );
+        bool DebugPanelPlugin_Available = CONFIG_VALUE_BOOLEAN( "DebugPanelPlugin", "Available", true );
 
         if( DebugPanelPlugin_Available == false )
         {

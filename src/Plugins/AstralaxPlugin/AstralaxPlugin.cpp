@@ -54,7 +54,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxPlugin::_availablePlugin() const
     {
-        bool AstralaxPlugin_Available = CONFIG_VALUE( "AstralaxPlugin", "Available", true );
+        bool AstralaxPlugin_Available = CONFIG_VALUE_BOOLEAN( "AstralaxPlugin", "Available", true );
 
         return AstralaxPlugin_Available;
     }

@@ -25,6 +25,7 @@
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/ArrowServiceInterface.h"
+#include "Interface/SoundServiceInterface.h"
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
 #   include "Environment/Windows/Win32CreateProcess.h"
@@ -1394,20 +1395,99 @@ namespace Mengine
         pugi::xml_node payloadNode = packetNode.append_child( "Payload" );
 
         SETTINGS_SERVICE()
-            ->foreachSettings( [&payloadNode]( const ConstString & _name, const SettingInterfacePtr & _settings )
+            ->foreachSettings( [&payloadNode]( const ConstString & _name, const SettingInterfacePtr & _setting )
         {
-            const ContentInterfacePtr & content = _settings->getContent();
+            const ContentInterfacePtr & content = _setting->getContent();
 
-            const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
             const FilePath & filePath = content->getFilePath();
-
-            Path fullPath = {'\0'};
-            fileGroup->getFullPath( filePath, fullPath );
 
             pugi::xml_node xml_setting = payloadNode.append_child( "Setting" );
 
             xml_setting.append_attribute( "name" ).set_value( _name.c_str() );
-            xml_setting.append_attribute( "file" ).set_value( fullPath );
+            xml_setting.append_attribute( "file" ).set_value( filePath.c_str() );
+
+            _setting->foreachKeys( [&xml_setting, _setting]( const Char * _key )
+            {
+                pugi::xml_node xml_key = xml_setting.append_child( "Key" );
+
+                xml_key.append_attribute( "name" ).set_value( _key );
+
+                ESettingType type = _setting->getValueType( _key );
+
+                if( type == EST_NONE )
+                {
+                    return;
+                }
+
+                switch( type )
+                {
+                case EST_BOOL:
+                    {
+                        xml_key.append_attribute( "type" ).set_value( "bool" );
+
+                        bool value = _setting->getValueBoolean( _key, false );
+
+                        xml_key.append_attribute( "value" ).set_value( value );
+                    }break;
+                case EST_INTEGER:
+                    {
+                        xml_key.append_attribute( "type" ).set_value( "int" );
+
+                        int64_t value = _setting->getValueInteger( _key, 0LL );
+
+                        xml_key.append_attribute( "value" ).set_value( value );
+                    }break;
+                case EST_REAL:
+                    {
+                        xml_key.append_attribute( "type" ).set_value( "real" );
+
+                        double value = _setting->getValueFloat( _key, 0.0 );
+
+                        xml_key.append_attribute( "value" ).set_value( value );
+                    }break;
+                case EST_STRING:
+                    {
+                        xml_key.append_attribute( "type" ).set_value( "string" );
+
+                        const Char * value = _setting->getValueString( _key, "" );
+
+                        xml_key.append_attribute( "value" ).set_value( value );
+                    }break;
+                case EST_VEC2F:
+                    {
+                        xml_key.append_attribute( "type" ).set_value( "vec2f" );
+
+                        mt::vec2f value = _setting->getValueVec2f( _key, mt::vec2f::identity() );
+
+                        Char value_str[256] = {'\0'};
+                        Helper::stringalized( value, value_str, 256 );
+
+                        xml_key.append_attribute( "value" ).set_value( value_str );
+                    }break;
+                case EST_VEC3F:
+                    {
+                        xml_key.append_attribute( "type" ).set_value( "vec3f" );
+
+                        mt::vec3f value = _setting->getValueVec3f( _key, mt::vec3f::identity() );
+
+                        Char value_str[256] = {'\0'};
+                        Helper::stringalized( value, value_str, 256 );
+
+                        xml_key.append_attribute( "value" ).set_value( value_str );
+                    }break;
+                case EST_COLOR:
+                    {
+                        xml_key.append_attribute( "type" ).set_value( "color" );
+
+                        Color value = _setting->getValueColor( _key, Color::identity() );
+
+                        Char value_str[256] = {'\0'};
+                        Helper::stringalized( value, value_str, 256 );
+
+                        xml_key.append_attribute( "value" ).set_value( value_str );
+                    }break;
+                }
+            } );
         } );
 
         NodeDebuggerPacket packet;
@@ -1742,6 +1822,18 @@ namespace Mengine
                 }
             }
         }
+        else if( typeStr == "Settings" )
+        {
+            pugi::xml_node xmlNode = payloadNode.child( "Setting" );
+            if( xmlNode )
+            {
+                pugi::xml_attribute nameAttr = xmlNode.attribute( "name" );
+                pugi::xml_attribute keyAttr = xmlNode.attribute( "key" );
+                pugi::xml_attribute valueAttr = xmlNode.attribute( "value" );
+
+                this->receiveSetting( nameAttr.as_string(), keyAttr.as_string(), valueAttr.as_string() );
+            }
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::receiveChangedNode( const pugi::xml_node & _xmlNode )
@@ -2061,6 +2153,84 @@ namespace Mengine
         {
             m_shouldUpdateScene = true;
         }
+        else if( _command == "mute" )
+        {
+            bool alredyMute = SOUND_SERVICE()
+                ->getMute( STRINGIZE_STRING_LOCAL( "NodeDebugger" ) );
+
+            SOUND_SERVICE()
+                ->setMute( STRINGIZE_STRING_LOCAL( "NodeDebugger" ), !alredyMute );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::receiveSetting( const Char * _setting, const Char * _key, const Char * _value )
+    {
+        ConstString setting_cstr = Helper::stringizeString( _setting );
+
+        SettingInterfacePtr setting = SETTINGS_SERVICE()
+            ->getSetting( setting_cstr );
+
+        if( setting == nullptr )
+        {
+            return;
+        }
+
+        ESettingType type = setting->getValueType( _key );
+
+        switch( type )
+        {
+        case EST_BOOL:
+            {
+                bool value;
+                Helper::stringalized( _value, &value );
+
+                setting->setValueBoolean( _key, value );
+            }break;
+        case EST_INTEGER:
+            {
+                int64_t value;
+                Helper::stringalized( _value, &value );
+
+                setting->setValueInteger( _key, value );
+            }break;
+        case EST_REAL:
+            {
+                double value;
+                Helper::stringalized( _value, &value );
+
+                setting->setValueFloat( _key, value );
+            }break;
+        case EST_STRING:
+            {
+                setting->setValueString( _key, _value );
+            }break;
+        case EST_VEC2F:
+            {
+                mt::vec2f value;
+                Helper::stringalized( _value, &value );
+
+                setting->setValueVec2f( _key, value );
+            }break;
+        case EST_VEC3F:
+            {
+                mt::vec3f value;
+                Helper::stringalized( _value, &value );
+
+                setting->setValueVec3f( _key, value );
+            }break;
+        case EST_COLOR:
+            {
+                Color value;
+                Helper::stringalized( _value, &value );
+
+                setting->setValueColor( _key, value );
+            }break;
+        }
+
+        SETTINGS_SERVICE()
+            ->saveSetting( setting_cstr, MENGINE_DOCUMENT_FACTORABLE );
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_SETTING_CHANGE, setting, _key );
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::stringToPath( const String & _str, VectorNodePath * const _path ) const

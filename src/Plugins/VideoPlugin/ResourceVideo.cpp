@@ -65,7 +65,7 @@ namespace Mengine
     bool ResourceVideo::_compile()
     {
 #if defined(MENGINE_MASTER_RELEASE_DISABLE)
-        bool VideoPlugin_ForcePremultiplyAlpha = CONFIG_VALUE( "VideoPlugin", "ForcePremultiplyAlpha", false );
+        bool VideoPlugin_ForcePremultiplyAlpha = CONFIG_VALUE_BOOLEAN( "VideoPlugin", "ForcePremultiplyAlpha", false );
 
         if( VideoPlugin_ForcePremultiplyAlpha == true )
         {

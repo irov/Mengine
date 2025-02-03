@@ -34,7 +34,7 @@ namespace Mengine
         bool getAllowFullscreenSwitchShortcut() const override;
 
     public:
-        bool initializeGame( const FileGroupInterfacePtr & _fileGroup, const VectorFilePath & _packagesPaths, const VectorFilePath & _settingsPaths ) override;
+        bool initializeGame( const FileGroupInterfacePtr & _fileGroup, const VectorFilePath & _packagesPaths ) override;
         void finalizeGame() override;
 
     public:

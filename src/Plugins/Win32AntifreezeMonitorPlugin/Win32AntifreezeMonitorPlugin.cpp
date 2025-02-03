@@ -33,7 +33,7 @@ namespace Mengine
             return false;
         }
 
-        bool Win32AntifreezeMonitorPlugin_Available = CONFIG_VALUE( "Win32AntifreezeMonitorPlugin", "Available", true );
+        bool Win32AntifreezeMonitorPlugin_Available = CONFIG_VALUE_BOOLEAN( "Win32AntifreezeMonitorPlugin", "Available", true );
 
         if( Win32AntifreezeMonitorPlugin_Available == false )
         {

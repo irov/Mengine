@@ -41,7 +41,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoaderService::_initializeService()
     {
-        m_protocolPath = CONFIG_VALUE( "Engine", "ProtocolPath", STRINGIZE_FILEPATH_LOCAL( "protocol.xml" ) );
+        m_protocolPath = CONFIG_VALUE_FILEPATH( "Engine", "ProtocolPath", STRINGIZE_FILEPATH_LOCAL( "protocol.xml" ) );
 
         LOGGER_MESSAGE( "Metacode version: %u protocol: %u"
             , Metacode::get_metacode_version()

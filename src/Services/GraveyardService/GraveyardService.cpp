@@ -28,7 +28,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool GraveyardService::_initializeService()
     {
-        m_graveyardTime = CONFIG_VALUE( "Engine", "GraveyardTime", 1000.f );
+        m_graveyardTime = CONFIG_VALUE_FLOAT( "Engine", "GraveyardTime", 1000.f );
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_TEXTURE_DESTROY, &GraveyardService::onEngineTextureDestroy, MENGINE_DOCUMENT_FACTORABLE );
 

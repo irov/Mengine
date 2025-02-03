@@ -160,12 +160,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FileGroupZip::_initialize()
     {
-        uint32_t ZipPlugin_ReserveFiles = CONFIG_VALUE( "ZipPlugin", "ReserveFiles", 16 * 1024 );
+        uint32_t ZipPlugin_ReserveFiles = CONFIG_VALUE_INTEGER( "ZipPlugin", "ReserveFiles", 16 * 1024 );
 
         m_files.reserve( ZipPlugin_ReserveFiles );
         m_indexes.reserve( ZipPlugin_ReserveFiles );
 
-        uint32_t ZipPlugin_MappedThreshold = CONFIG_VALUE( "ZipPlugin", "MappedThreshold", 262144U );
+        uint32_t ZipPlugin_MappedThreshold = CONFIG_VALUE_INTEGER( "ZipPlugin", "MappedThreshold", 262144U );
 
         m_mappedThreshold = ZipPlugin_MappedThreshold;
 

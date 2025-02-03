@@ -718,13 +718,13 @@ namespace Mengine
             void soundMute( bool _mute )
             {
                 SOUND_SERVICE()
-                    ->mute( STRINGIZE_STRING_LOCAL( "Generic" ), _mute );
+                    ->setMute( STRINGIZE_STRING_LOCAL( "Generic" ), _mute );
             }
             //////////////////////////////////////////////////////////////////////////
             bool isMute()
             {
                 bool mute = SOUND_SERVICE()
-                    ->isMute();
+                    ->mixMute();
 
                 return mute;
             }

@@ -41,7 +41,7 @@ namespace Mengine
             return false;
         }
 
-        bool Win32CriticalErrorsMonitorPlugin_Available = CONFIG_VALUE( "Win32CriticalErrorsMonitorPlugin", "Available", true );
+        bool Win32CriticalErrorsMonitorPlugin_Available = CONFIG_VALUE_BOOLEAN( "Win32CriticalErrorsMonitorPlugin", "Available", true );
 
         if( Win32CriticalErrorsMonitorPlugin_Available == false )
         {

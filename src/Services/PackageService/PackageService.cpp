@@ -96,7 +96,7 @@ namespace Mengine
 
         m_factoryPackage = Helper::makeFactoryPool<Package, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
-        m_defaultLocale = CONFIG_VALUE( "Locale", "Default", STRINGIZE_STRING_LOCAL( "en" ) );
+        m_defaultLocale = CONFIG_VALUE_CONSTSTRING( "Locale", "Default", STRINGIZE_STRING_LOCAL( "en" ) );
 
         return true;
     }

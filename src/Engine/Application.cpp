@@ -213,19 +213,19 @@ namespace Mengine
         Helper::registerDecoder<ImageDecoderMemory>( STRINGIZE_STRING_LOCAL( "memoryImage" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerDecoder<ImageDecoderArchive>( STRINGIZE_STRING_LOCAL( "archiveImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        const Char * Project_Company = CONFIG_VALUE( "Project", "Company", "UNKNOWN" );
-        const Char * Project_Name = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );
+        const Char * Project_Company = CONFIG_VALUE_STRING( "Project", "Company", "UNKNOWN" );
+        const Char * Project_Name = CONFIG_VALUE_STRING( "Project", "Name", "UNKNOWN" );
 
         m_companyName.assign( Project_Company );
         m_projectName.assign( Project_Name );
 
-        m_projectCodename = CONFIG_VALUE( "Project", "Codename", ConstString::none() );
-        m_projectVersion = CONFIG_VALUE( "Project", "Version", 0U );
+        m_projectCodename = CONFIG_VALUE_CONSTSTRING( "Project", "Codename", ConstString::none() );
+        m_projectVersion = CONFIG_VALUE_INTEGER( "Project", "Version", 0 );
 
-        m_contentResolution = CONFIG_VALUE( "Game", "ContentResolution", Resolution( 1024, 768 ) );
-        m_fixedContentResolution = CONFIG_VALUE( "Game", "FixedContentResolution", true );
-        m_fixedDisplayResolution = CONFIG_VALUE( "Game", "FixedDisplayResolution", true );
-        m_fixedViewportResolution = CONFIG_VALUE( "Game", "FixedViewportResolution", true );
+        m_contentResolution = CONFIG_VALUE_RESOLUTION( "Game", "ContentResolution", Resolution( 1024, 768 ) );
+        m_fixedContentResolution = CONFIG_VALUE_BOOLEAN( "Game", "FixedContentResolution", true );
+        m_fixedDisplayResolution = CONFIG_VALUE_BOOLEAN( "Game", "FixedDisplayResolution", true );
+        m_fixedViewportResolution = CONFIG_VALUE_BOOLEAN( "Game", "FixedViewportResolution", true );
 
         VectorAspectRatioViewports aspectRatioViewports;
         CONFIG_VALUES( "Game", "AspectRatioViewport", &aspectRatioViewports );
@@ -245,7 +245,7 @@ namespace Mengine
         }
         else if( HAS_CONFIG( "Locale", "Force" ) == true )
         {
-            m_locale = CONFIG_VALUE( "Locale", "Force", ConstString::none() );
+            m_locale = CONFIG_VALUE_CONSTSTRING( "Locale", "Force", ConstString::none() );
         }
         else
         {
@@ -264,16 +264,16 @@ namespace Mengine
 #if defined(MENGINE_PLATFORM_IOS)
 #elif defined(MENGINE_PLATFORM_ANDROID)
 #else
-        m_windowResolution = CONFIG_VALUE( "Window", "Size", Resolution( 1024, 768 ) );
+        m_windowResolution = CONFIG_VALUE_RESOLUTION( "Window", "Size", Resolution( 1024, 768 ) );
 #endif
 
-        m_bits = CONFIG_VALUE( "Window", "Bits", 32U );
-        m_fullscreen = CONFIG_VALUE( "Window", "Fullscreen", true );
-        m_nofullscreen = CONFIG_VALUE( "Window", "NoFullscreen", false );
-        m_alwaysfullscreen = CONFIG_VALUE( "Window", "AlwaysFullscreen", false );
-        m_FSAAType = CONFIG_VALUE( "Window", "FSAAType", 0 );
-        m_FSAAQuality = CONFIG_VALUE( "Window", "FSAAQuality", 0 );
-        m_vsync = CONFIG_VALUE( "Window", "VSync", true );
+        m_bits = CONFIG_VALUE_INTEGER( "Window", "Bits", 32U );
+        m_fullscreen = CONFIG_VALUE_BOOLEAN( "Window", "Fullscreen", true );
+        m_nofullscreen = CONFIG_VALUE_BOOLEAN( "Window", "NoFullscreen", false );
+        m_alwaysfullscreen = CONFIG_VALUE_BOOLEAN( "Window", "AlwaysFullscreen", false );
+        m_FSAAType = CONFIG_VALUE_INTEGER( "Window", "FSAAType", 0 );
+        m_FSAAQuality = CONFIG_VALUE_INTEGER( "Window", "FSAAQuality", 0 );
+        m_vsync = CONFIG_VALUE_BOOLEAN( "Window", "VSync", true );
 
         if( HAS_OPTION( "novsync" ) == true )
         {
@@ -361,7 +361,7 @@ namespace Mengine
             , buildNumber
         );
 
-        bool Debug_ShowHotspots = CONFIG_VALUE( "Debug", "ShowHotspots", false );
+        bool Debug_ShowHotspots = CONFIG_VALUE_BOOLEAN( "Debug", "ShowHotspots", false );
 
         if( Debug_ShowHotspots == true )
         {
@@ -395,9 +395,9 @@ namespace Mengine
 
         this->setNopause( OPTION_nopause );
 
-        m_cursorMode = CONFIG_VALUE( "Platform", "Cursor", false );
+        m_cursorMode = CONFIG_VALUE_BOOLEAN( "Platform", "Cursor", false );
 
-        ConstString Engine_RenderPipeline = CONFIG_VALUE( "Engine", "RenderPipeline", STRINGIZE_STRING_LOCAL( "Batch" ) );
+        ConstString Engine_RenderPipeline = CONFIG_VALUE_CONSTSTRING( "Engine", "RenderPipeline", STRINGIZE_STRING_LOCAL( "Batch" ) );
 
         RenderPipelineInterfacePtr renderPipeline = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "RenderPipeline" ), Engine_RenderPipeline, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -830,7 +830,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Application::initializeGame( const FileGroupInterfacePtr & _fileGroup, const VectorFilePath & _packagesPaths, const VectorFilePath & _settingsPaths )
+    bool Application::initializeGame( const FileGroupInterfacePtr & _fileGroup, const VectorFilePath & _packagesPaths )
     {
         for( const FilePath & packagePath : _packagesPaths )
         {
@@ -863,21 +863,6 @@ namespace Mengine
             );
 
             return false;
-        }
-
-        for( const FilePath & settingPath : _settingsPaths )
-        {
-            ContentInterfacePtr content = Helper::makeFileContent( _fileGroup, settingPath, MENGINE_DOCUMENT_FACTORABLE );
-
-            if( SETTINGS_SERVICE()
-                ->loadSettings( content, MENGINE_DOCUMENT_FACTORABLE ) == false )
-            {
-                LOGGER_ERROR( "invalid load setting '%s'"
-                    , Helper::getContentFullPath( content ).c_str()
-                );
-
-                return false;
-            }
         }
 
         m_initailizeGame = true;
@@ -1688,7 +1673,7 @@ namespace Mengine
             , m_focus
         );
 
-        if( m_focus == false )
+        if( m_freeze == true )
         {
             return;
         }
@@ -1696,7 +1681,7 @@ namespace Mengine
         if( SERVICE_IS_INITIALIZE( GameServiceInterface ) == true )
         {
             GAME_SERVICE()
-                ->setFocus( !m_freeze );
+                ->setFocus( m_focus );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -2045,13 +2030,13 @@ namespace Mengine
             dh = 1.f;
         }
 
-        float areaWidth = Math::ceilf( dw * windowWidth );
-        float areaHeight = Math::ceilf( dh * windowHeight );
+        float areaWidth = StdMath::ceilf( dw * windowWidth );
+        float areaHeight = StdMath::ceilf( dh * windowHeight );
 
         *_aspect = bestAspect;
 
-        _viewport->begin.x = Math::ceilf( (windowWidth - areaWidth) * 0.5f );
-        _viewport->begin.y = Math::ceilf( (windowHeight - areaHeight) * 0.5f );
+        _viewport->begin.x = StdMath::ceilf( (windowWidth - areaWidth) * 0.5f );
+        _viewport->begin.y = StdMath::ceilf( (windowHeight - areaHeight) * 0.5f );
         _viewport->end.x = _viewport->begin.x + areaWidth;
         _viewport->end.y = _viewport->begin.y + areaHeight;
     }
@@ -2425,13 +2410,13 @@ namespace Mengine
             dh = 1.f;
         }
 
-        float areaWidth = Math::ceilf( dw * contentWidth );
-        float areaHeight = Math::ceilf( dh * contentHeight );
+        float areaWidth = StdMath::ceilf( dw * contentWidth );
+        float areaHeight = StdMath::ceilf( dh * contentHeight );
 
         *_aspect = contentAspect;
 
-        _viewport->begin.x = Math::ceilf( (contentWidth - areaWidth) * 0.5f );
-        _viewport->begin.y = Math::ceilf( (contentHeight - areaHeight) * 0.5f );
+        _viewport->begin.x = StdMath::ceilf( (contentWidth - areaWidth) * 0.5f );
+        _viewport->begin.y = StdMath::ceilf( (contentHeight - areaHeight) * 0.5f );
         _viewport->end.x = _viewport->begin.x + areaWidth;
         _viewport->end.y = _viewport->begin.y + areaHeight;
     }

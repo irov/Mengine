@@ -944,6 +944,12 @@ namespace Mengine
                     ->addGlobalModule( _name, _module );
             }
             //////////////////////////////////////////////////////////////////////////
+            void s_removeGlobalModule( const Char * _name )
+            {
+                SCRIPT_SERVICE()
+                    ->removeGlobalModule( _name );
+            }
+            //////////////////////////////////////////////////////////////////////////
             void s_logInfo( pybind::kernel_interface * _kernel, const StringView & _message )
             {
                 Path function = {'\0'};
@@ -1106,12 +1112,12 @@ namespace Mengine
 
                 for( float v : l )
                 {
-                    s += Math::powf( v, inv_pow );
+                    s += StdMath::powf( v, inv_pow );
                 }
 
                 s /= (float)l.size();
 
-                s = Math::powf( s, _pow );
+                s = StdMath::powf( s, _pow );
 
                 return s;
             }
@@ -1201,10 +1207,10 @@ namespace Mengine
                 float rp = randomizer->getRandomf( mt::constant::two_pi );
                 float rr = randomizer->getRandomf( 1.f );
 
-                float rr2 = Math::sqrtf( rr ) * _radius;
+                float rr2 = StdMath::sqrtf( rr ) * _radius;
 
-                float x = Math::cosf( rp );
-                float y = Math::sinf( rp );
+                float x = StdMath::cosf( rp );
+                float y = StdMath::sinf( rp );
 
                 float xr = x * rr2;
                 float yr = y * rr2;
@@ -1222,7 +1228,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             float s_roundingf( float _value, float _round )
             {
-                float floor_value = Math::floorf( _value / _round );
+                float floor_value = StdMath::floorf( _value / _round );
                 float round_value = floor_value * _round;
 
                 return round_value;
@@ -1245,67 +1251,67 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             float s_sqrtf( float a )
             {
-                return Math::sqrtf( a );
+                return StdMath::sqrtf( a );
             }
             //////////////////////////////////////////////////////////////////////////
             float s_powf( float a, float b )
             {
-                return Math::powf( a, b );
+                return StdMath::powf( a, b );
             }
             //////////////////////////////////////////////////////////////////////////
             float s_fabsf( float a )
             {
-                return Math::fabsf( a );
+                return StdMath::fabsf( a );
             }
             //////////////////////////////////////////////////////////////////////////
             float s_cosf( float a )
             {
-                return Math::cosf( a );
+                return StdMath::cosf( a );
             }
             //////////////////////////////////////////////////////////////////////////
             float s_sinf( float a )
             {
-                return Math::sinf( a );
+                return StdMath::sinf( a );
             }
             //////////////////////////////////////////////////////////////////////////
             float s_cosf_deg( float a )
             {
-                return Math::cosf( a * mt::constant::deg2rad );
+                return StdMath::cosf( a * mt::constant::deg2rad );
             }
             //////////////////////////////////////////////////////////////////////////
             float s_sinf_deg( float a )
             {
-                return Math::sinf( a * mt::constant::deg2rad );
+                return StdMath::sinf( a * mt::constant::deg2rad );
             }
             //////////////////////////////////////////////////////////////////////////
             float s_tanf( float a )
             {
-                return Math::tanf( a );
+                return StdMath::tanf( a );
             }
             //////////////////////////////////////////////////////////////////////////
             float s_acosf( float a )
             {
-                return Math::acosf( a );
+                return StdMath::acosf( a );
             }
             //////////////////////////////////////////////////////////////////////////
             float s_atanf( float _x )
             {
-                return Math::atan( _x );
+                return StdMath::atan( _x );
             }
             //////////////////////////////////////////////////////////////////////////
             float s_logf( float _x )
             {
-                return Math::logf( _x );
+                return StdMath::logf( _x );
             }
             //////////////////////////////////////////////////////////////////////////
             float s_log10f( float _x )
             {
-                return Math::log10f( _x );
+                return StdMath::log10f( _x );
             }
             //////////////////////////////////////////////////////////////////////////
             double s_log10( double _x )
             {
-                return Math::log10( _x );
+                return StdMath::log10( _x );
             }
             //////////////////////////////////////////////////////////////////////////
             uint32_t s_fibo( uint32_t _n )
@@ -1328,10 +1334,10 @@ namespace Mengine
             {
                 const double nf = (double)_n;
                 const double fplus = (1.0 + 2.2360679774997896964091736687313) * 0.5;
-                const double fplusn = Math::pow( fplus, nf );
+                const double fplusn = StdMath::pow( fplus, nf );
 
                 const double fminus = (1.0 - 2.2360679774997896964091736687313) * 0.5;
-                const double fminusn = Math::pow( fminus, nf );
+                const double fminusn = StdMath::pow( fminus, nf );
 
                 double fbine = (fplusn - fminusn) * 0.44721359549995793928183473374626;
 
@@ -1470,7 +1476,7 @@ namespace Mengine
 
                 float cos_v = mt::dot_v2_v2( v1_norm, v2_norm );
 
-                float angle = Math::acosf( cos_v );
+                float angle = StdMath::acosf( cos_v );
 
                 return angle;
             }
@@ -2449,7 +2455,7 @@ namespace Mengine
                     ->getDefaultConfig();
 
                 int32_t value;
-                config->hasValue( _section, _key, _default, &value );
+                config->hasValueInteger( _section, _key, _default, &value );
 
                 return value;
             }
@@ -2460,7 +2466,7 @@ namespace Mengine
                     ->getDefaultConfig();
 
                 uint32_t value;
-                config->hasValue( _section, _key, _default, &value );
+                config->hasValueInteger( _section, _key, _default, &value );
 
                 return value;
             }
@@ -2470,8 +2476,8 @@ namespace Mengine
                 const ConfigInterfacePtr & config = CONFIG_SERVICE()
                     ->getDefaultConfig();
 
-                int64_t value;
-                config->hasValue( _section, _key, _default, &value );
+                uint64_t value;
+                config->hasValueInteger( _section, _key, _default, &value );
 
                 return value;
             }
@@ -2482,7 +2488,7 @@ namespace Mengine
                     ->getDefaultConfig();
 
                 float value;
-                config->hasValue( _section, _key, _default, &value );
+                config->hasValueFloat( _section, _key, _default, &value );
 
                 return value;
             }
@@ -4375,6 +4381,7 @@ namespace Mengine
         pybind::def_functor( _kernel, "watchdog", helperScriptMethod, &HelperScriptMethod::s_watchdog );
 
         pybind::def_functor( _kernel, "addGlobalModule", helperScriptMethod, &HelperScriptMethod::s_addGlobalModule );
+        pybind::def_functor( _kernel, "removeGlobalModule", helperScriptMethod, &HelperScriptMethod::s_removeGlobalModule );
 
         pybind::def_function( _kernel, "angle_norm", &mt::angle_norm );
         pybind::def_function( _kernel, "angle_delta_deg", &mt::angle_delta_deg );

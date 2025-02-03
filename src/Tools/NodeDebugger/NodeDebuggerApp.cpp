@@ -100,6 +100,7 @@ namespace Mengine
         , m_sceneUpdateTimer( 0.0 )
         , m_updateSceneOnChange( false )
         , m_pauseRequested( false )
+        , m_muteRequested( false )
         , m_memoryTotal( 0 )
         , m_AvailableTextureMemory( 0 )
         , m_TextureMemoryUse( 0 )
@@ -412,6 +413,12 @@ namespace Mengine
                     this->SendPauseRequest();
                     m_pauseRequested = false;
                 }
+
+                if( m_muteRequested == true )
+                {
+                    this->SendMuteRequest();
+                    m_muteRequested = false;
+                }
             }
         }
     }
@@ -717,38 +724,61 @@ namespace Mengine
 
         m_settings.clear();
 
-        for( const pugi::xml_node & child : _xmlContainer.children() )
+        for( const pugi::xml_node & setting : _xmlContainer.children() )
         {
-            const pugi::char_t * name = child.attribute( "name" ).value();
-            const pugi::char_t * file = child.attribute( "file" ).value();
+            const pugi::char_t * name = setting.attribute( "name" ).value();
+            const pugi::char_t * file = setting.attribute( "file" ).value();
 
             SettingDesc desc;
             desc.name = name;
             desc.file = file;
 
-            FILE * f = fopen( desc.file.c_str(), "rb" );
-
-            if( f == NULL )
+            for( const pugi::xml_node & key : setting.children( "Key" ) )
             {
-                continue;
+                const pugi::char_t * key_name = key.attribute( "name" ).value();
+                const pugi::char_t * key_type = key.attribute( "type" ).value();
+                const pugi::char_t * key_value = key.attribute( "value" ).value();
+
+                SettingKeyDesc key_desc;
+                key_desc.name = key_name;
+
+                if( strcmp( key_type, "bool" ) == 0 )
+                {
+                    key_desc.type = EST_BOOL;
+                }
+                else if( strcmp( key_type, "int" ) == 0 )
+                {
+                    key_desc.type = EST_INTEGER;
+                }
+                else if( strcmp( key_type, "real" ) == 0 )
+                {
+                    key_desc.type = EST_REAL;
+                }
+                else if( strcmp( key_type, "string" ) == 0 )
+                {
+                    key_desc.type = EST_STRING;
+                }
+                else if( strcmp( key_type, "vec2f" ) == 0 )
+                {
+                    key_desc.type = EST_VEC2F;
+                }
+                else if( strcmp( key_type, "vec3f" ) == 0 )
+                {
+                    key_desc.type = EST_VEC3F;
+                }
+                else if( strcmp( key_type, "color" ) == 0 )
+                {
+                    key_desc.type = EST_COLOR;
+                }
+                else
+                {
+                    key_desc.type = EST_NONE;
+                }
+
+                StdString::strcpy( key_desc.value, key_value );
+
+                desc.keys.emplace_back( key_desc );
             }
-
-            fseek( f, 0L, SEEK_END );
-            long sz = ftell( f );
-            rewind( f );
-
-            uint8_t buffer[8096];
-            fread( buffer, 1, 8096, f );
-            fclose( f );
-
-            jpp::object json = jpp::load( buffer, sz, jpp::JPP_LOAD_MODE_DISABLE_EOF_CHECK, nullptr, nullptr );
-
-            if( json == jpp::detail::invalid )
-            {
-                continue;
-            }
-
-            desc.json = json;
 
             m_settings.emplace_back( desc );
         }
@@ -1298,6 +1328,11 @@ namespace Mengine
             if( ImGui::Button( "Pause game" ) )
             {
                 OnPauseButton();
+            }
+
+            if( ImGui::Button( "Mute sound" ) )
+            {
+                OnMuteButton();
             }
         }
 
@@ -1931,95 +1966,112 @@ namespace Mengine
                 continue;
             }
 
-            bool dirty = false;
-
-            for( auto && [key, record] : desc.json )
+            for( SettingKeyDesc & key : desc.keys )
             {
-                const jpp::object & j = record["value"];
+                ESettingType type = key.type;
 
-                jpp::e_type type = j.type();
+                ImGui::Text( key.name.c_str() );
+                ImGui::SameLine( 100.f );
+
+                Char key_lable[256] = {'\0'};
+                MENGINE_SNPRINTF( key_lable, 256, "##%s", key.name.c_str() );
 
                 switch( type )
                 {
-                case jpp::e_type::JPP_STRING:
+                case EST_BOOL:
                     {
-                        char value[2048] = {0};
-                        const char * jv = j;
-                        strcpy( value, jv );
-                        if( ImGui::InputText( key, value, 2048 ) == true )
-                        {
-                            record.set( "value", value );
+                        bool v;
+                        Helper::stringalized( key.value, &v );
 
-                            dirty = true;
+                        if( ImGui::Checkbox( key_lable, &v ) == true )
+                        {
+                            Helper::stringalized( v, key.value, 256 );
+                        
+                            this->SendSetting( desc.name, key.name, key.value );
                         }
                     }break;
-                case jpp::e_type::JPP_INTEGER:
+                case EST_INTEGER:
                     {
-                        int min = record.get( "min", 0 );
-                        int max = record.get( "max", 0 );
+                        int v;
+                        Helper::stringalized( key.value, &v );
 
-                        float speed = (min == max) ? 1.f : float( max - min ) * 0.0015f;
-
-                        int value = j;
-                        if( ImGui::DragInt( key, &value, speed, min, max ) == true )
+                        if( ImGui::InputInt( key_lable, &v ) == true && ImGui::IsItemDeactivatedAfterEdit() == true )
                         {
-                            record.set( "value", value );
+                            Helper::stringalized( v, key.value, 256 );
 
-                            dirty = true;
+                            this->SendSetting( desc.name, key.name, key.value );
                         }
                     }break;
-                case jpp::e_type::JPP_REAL:
+                case EST_REAL:
                     {
-                        float min = record.get( "min", 0.f );
-                        float max = record.get( "max", 0.f );
+                        float v;
+                        Helper::stringalized( key.value, &v );
 
-                        float speed = (min == max) ? 1.f : float( max - min ) * 0.0015f;
-
-                        float value = j;
-                        if( ImGui::DragFloat( key, &value, speed, min, max ) == true )
+                        if( ImGui::InputFloat( key_lable, &v ) == true && ImGui::IsItemDeactivatedAfterEdit() == true )
                         {
-                            record.set( "value", value );
+                            Helper::stringalized( v, key.value, 256 );
 
-                            dirty = true;
+                            this->SendSetting( desc.name, key.name, key.value );
                         }
                     }break;
-                case jpp::e_type::JPP_TRUE:
-                case jpp::e_type::JPP_FALSE:
+                case EST_STRING:
                     {
-                        bool value = j;
-                        if( ImGui::Checkbox( key, &value ) == true )
+                        if( ImGui::InputText( key_lable, key.value, 256, ImGuiInputTextFlags_EnterReturnsTrue ) == true )
                         {
-                            record.set( "value", value );
+                            this->SendSetting( desc.name, key.name, key.value );
+                        }
+                    }break;
+                case EST_VEC2F:
+                    {
+                        mt::vec2f v;
+                        Helper::stringalized( key.value, &v );
 
-                            dirty = true;
+                        float buff[2] = {v.x, v.y};
+
+                        if( ImGui::InputFloat2( key_lable, buff ) == true && ImGui::IsItemDeactivatedAfterEdit() == true )
+                        {
+                            v.from_f2( buff );
+
+                            Helper::stringalized( v, key.value, 256 );
+
+                            this->SendSetting( desc.name, key.name, key.value );
+                        }
+                    }break;
+                case EST_VEC3F:
+                    {
+                        mt::vec3f v;
+                        Helper::stringalized( key.value, &v );
+
+                        float buff[3] = {v.x, v.y, v.z};
+
+                        if( ImGui::InputFloat3( key_lable, buff ) == true && ImGui::IsItemDeactivatedAfterEdit() == true )
+                        {
+                            v.from_f3( buff );
+
+                            Helper::stringalized( v, key.value, 256 );
+
+                            this->SendSetting( desc.name, key.name, key.value );
+                        }
+                    }break;
+                case EST_COLOR:
+                    {
+                        Color v;
+                        Helper::stringalized( key.value, &v );
+
+                        float buff[4] = {v.getR(), v.getG(), v.getB(), v.getA()};
+
+                        if( ImGui::ColorEdit4( key_lable, buff ) == true && ImGui::IsItemDeactivatedAfterEdit() == true )
+                        {
+                            v.setRGBA4( buff );
+
+                            Helper::stringalized( v, key.value, 256 );
+
+                            this->SendSetting( desc.name, key.name, key.value );
                         }
                     }break;
                 default:
                     break;
                 }
-            }
-
-            if( dirty == true )
-            {
-                FILE * f = fopen( desc.file.c_str(), "wb" );
-
-                bool successful = jpp::dump( desc.json, []( const char * _buffer, jpp::jpp_size_t _size, void * _ud )
-                {
-                    FILE * f = (FILE *)_ud;
-
-                    size_t writebyte = fwrite( _buffer, _size, 1, f );
-
-                    if( writebyte != 1 )
-                    {
-                        return -1;
-                    }
-
-                    return 0;
-                }, f );
-
-                MENGINE_UNUSED( successful );
-
-                fclose( f );
             }
         }
     }
@@ -2110,7 +2162,7 @@ namespace Mengine
             ImGuiExt::ImIcon * iconPtr = nullptr;
             if( _node->icon )
             {
-                icon.image = reinterpret_cast<ImTextureID>(_node->icon->image);
+                icon.image = static_cast<ImTextureID>(_node->icon->image);
                 icon.uv0 = ImVec2( _node->icon->uv0_X, _node->icon->uv0_Y );
                 icon.uv1 = ImVec2( _node->icon->uv1_X, _node->icon->uv1_Y );
 
@@ -2708,6 +2760,11 @@ namespace Mengine
         m_pauseRequested = true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::OnMuteButton()
+    {
+        m_muteRequested = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::NetworkLoop()
     {
         while( m_shutdown == false )
@@ -3042,6 +3099,29 @@ namespace Mengine
     void NodeDebuggerApp::SendPauseRequest()
     {
         this->SendGameControlCommand( "pause" );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::SendMuteRequest()
+    {
+        this->SendGameControlCommand( "mute" );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::SendSetting( const String & _setting, const String & _key, const Char * _value )
+    {
+        pugi::xml_document doc;
+
+        pugi::xml_node packetNode = doc.append_child( "Packet" );
+        packetNode.append_attribute( "type" ).set_value( "Settings" );
+
+        pugi::xml_node payloadNode = packetNode.append_child( "Payload" );
+
+        pugi::xml_node xmlNode = payloadNode.append_child( "Setting" );
+
+        xmlNode.append_attribute( "name" ).set_value( _setting.c_str() );
+        xmlNode.append_attribute( "key" ).set_value( _key.c_str() );
+        xmlNode.append_attribute( "value" ).set_value( _value );
+
+        this->SendXML( doc );
     }
     //////////////////////////////////////////////////////////////////////////
 }

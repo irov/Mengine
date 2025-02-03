@@ -70,8 +70,7 @@ namespace Mengine
             const AstralaxEmitterContainer * container;
 
 #if defined(MENGINE_DEBUG)
-            ConstString fileGroupName;
-            FilePath FilePath;
+            ContentInterfacePtr content;
 #endif
 
 #if defined(MENGINE_DOCUMENT_ENABLE)

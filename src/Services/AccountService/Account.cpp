@@ -204,7 +204,7 @@ namespace Mengine
         }
 
         uint32_t projectVersion;
-        if( config->hasValue( "ACCOUNT", "PROJECT_VERSION", 0, &projectVersion ) == false )
+        if( config->hasValueInteger( "ACCOUNT", "PROJECT_VERSION", 0U, &projectVersion ) == false )
         {
             LOGGER_ERROR( "account '%s' failed not found project version"
                 , m_id.c_str()

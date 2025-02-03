@@ -1210,7 +1210,7 @@ static bool run()
         , currentPath
     );
 
-    currentPath[len + 0] = MENGINE_PATH_WDELIM;
+    currentPath[len + 0] = MENGINE_PATH_DELIM_FORWARDSLASH;
     currentPath[len + 1] = L'\0';
 
     WCHAR python3LibPath[MENGINE_MAX_PATH + 1] = {L'\0'};

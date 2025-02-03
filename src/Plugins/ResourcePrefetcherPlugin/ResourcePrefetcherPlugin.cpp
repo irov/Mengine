@@ -32,7 +32,7 @@ namespace Mengine
             return false;
         }
 
-        bool ResourcePrefetcherPlugin_Available = CONFIG_VALUE( "ResourcePrefetcherPlugin", "Available", true );
+        bool ResourcePrefetcherPlugin_Available = CONFIG_VALUE_BOOLEAN( "ResourcePrefetcherPlugin", "Available", true );
 
         if( ResourcePrefetcherPlugin_Available == false )
         {

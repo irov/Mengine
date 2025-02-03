@@ -117,7 +117,7 @@ namespace Mengine
 
             if( SERVICE_IS_INITIALIZE( ConfigServiceInterface ) == true )
             {
-                const Char * Info_ContentCommit = Mengine::Detail::getConfigValue( "Info", "ContentCommit", defaultContentCommit );
+                const Char * Info_ContentCommit = CONFIG_VALUE_STRING( "Info", "ContentCommit", defaultContentCommit );
 
                 return Info_ContentCommit;
             }

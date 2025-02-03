@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Interface/SettingInterface.h"
+
 #include "Kernel/Vector.h"
 #include "Kernel/Map.h"
 #include "Kernel/String.h"
@@ -636,12 +638,21 @@ namespace Mengine
         TabFunctor  functor;
     };
 
+    struct SettingKeyDesc
+    {
+        String name;
+
+        ESettingType type;
+        
+        Char value[256];
+    };
+
     struct SettingDesc
     {
         String name;
         String file;
 
-        mutable jpp::object json;
+        Vector<SettingKeyDesc> keys;
     };
 
     class NodeDebuggerApp
@@ -695,6 +706,7 @@ namespace Mengine
         void OnDisconnectButton();
         void OnSelectNode( DebuggerNode * _node, DebuggerNode ** _selectedNode );
         void OnPauseButton();
+        void OnMuteButton();
 
         // network
         void NetworkLoop();
@@ -706,10 +718,11 @@ namespace Mengine
         void SendChangedTab( const String & _tab );
         void SendChangedNode( const DebuggerNode & _node );
         void SendNodeSelection( const String & _path );
-
         void SendGameControlCommand( const String & _command );
         void SendSceneRequest();
         void SendPauseRequest();
+        void SendMuteRequest();
+        void SendSetting( const String & _setting, const String & _key, const Char * _value );
 
         void ShowResponseDataForId( uint32_t _id );
         void addSpacesWithMultiplier( String * const _out, uint32_t _spacesCount, uint32_t _multiplier );
@@ -791,6 +804,7 @@ namespace Mengine
         double m_sceneUpdateTimer;
         bool m_updateSceneOnChange;
         bool m_pauseRequested;
+        bool m_muteRequested;
 
         String m_selectedSetting;
 

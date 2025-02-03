@@ -42,7 +42,8 @@ namespace Mengine
 
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onAppMouseEnter" ), EVENT_GAME_APP_MOUSE_ENTER, _doc );
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onAppMouseLeave" ), EVENT_GAME_APP_MOUSE_LEAVE, _doc );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onTimeFactor" ), EVENT_GAME_ON_TIME_FACTOR, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onTimeFactorChange" ), EVENT_GAME_TIME_FACTOR_CHANGE, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onSettingChange" ), EVENT_GAME_SETTING_CHANGE, _doc );
 
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onPreparation" ), EVENT_GAME_PREPARATION, _doc );
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onRun" ), EVENT_GAME_RUN, _doc );
@@ -104,7 +105,7 @@ namespace Mengine
             return false;
         }
 
-        ConstString Game_PersonalityModule = CONFIG_VALUE( "Game", "PersonalityModule", STRINGIZE_FILEPATH_LOCAL( "Personality" ) );
+        ConstString Game_PersonalityModule = CONFIG_VALUE_CONSTSTRING( "Game", "PersonalityModule", STRINGIZE_FILEPATH_LOCAL( "Personality" ) );
 
         ScriptModuleInterfacePtr module = SCRIPT_SERVICE()
             ->importModule( Game_PersonalityModule );

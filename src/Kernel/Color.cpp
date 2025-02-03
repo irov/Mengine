@@ -19,6 +19,16 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    void Color::setRGBA4( const float * _buff )
+    {
+        m_r = _buff[0];
+        m_g = _buff[1];
+        m_b = _buff[2];
+        m_a = _buff[3];
+
+        this->invalidate();
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Color::setRGBA( float _r, float _g, float _b, float _a )
     {
         m_r = _r;

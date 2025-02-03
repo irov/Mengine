@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/InputStreamInterface.h"
+#include "Interface/ContentInterface.h"
 #include "Interface/FileGroupInterface.h"
 #include "Interface/MemoryInterface.h"
 
@@ -18,6 +19,7 @@ namespace Mengine
         jpp::object loadJSONString( const String & _value, const DocumentInterfacePtr & _doc );
         jpp::object loadJSONBuffer( const void * _buffer, size_t _size, const DocumentInterfacePtr & _doc );
 
+        bool writeJSONContent( const jpp::object & _j, const ContentInterfacePtr & _content, bool _withTemp, const DocumentInterfacePtr & _doc );
         bool writeJSONFile( const jpp::object & _j, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _withTemp, const DocumentInterfacePtr & _doc );
         bool writeJSONFileCompact( const jpp::object & _j, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _withTemp, const DocumentInterfacePtr & _doc );
         bool writeJSONStream( const jpp::object & _j, const OutputStreamInterfacePtr & _stream );

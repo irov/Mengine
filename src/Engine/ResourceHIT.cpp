@@ -190,7 +190,7 @@ namespace Mengine
         uint32_t i = (uint32_t)fi;
         uint32_t j = (uint32_t)fj;
 
-        float radiuslog = Math::logf( _radius );
+        float radiuslog = StdMath::logf( _radius );
 
         float levelF = radiuslog * mt::constant::inv_log2;
         uint32_t level = (uint32_t)levelF;

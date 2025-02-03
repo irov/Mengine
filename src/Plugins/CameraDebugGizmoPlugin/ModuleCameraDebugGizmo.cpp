@@ -22,9 +22,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ModuleCameraDebugGizmo::_initializeModule()
     {
-        m_scaleStepMin = CONFIG_VALUE( "CameraDebugGizmoPlugin", "ScaleStepMin", 0.05f );
-        m_scaleStepStep = CONFIG_VALUE( "CameraDebugGizmoPlugin", "ScaleStepStep", 0.05f );
-        m_scaleStepMax = CONFIG_VALUE( "CameraDebugGizmoPlugin", "ScaleStepMax", 128.f );
+        m_scaleStepMin = CONFIG_VALUE_FLOAT( "CameraDebugGizmoPlugin", "ScaleStepMin", 0.05f );
+        m_scaleStepStep = CONFIG_VALUE_FLOAT( "CameraDebugGizmoPlugin", "ScaleStepStep", 0.05f );
+        m_scaleStepMax = CONFIG_VALUE_FLOAT( "CameraDebugGizmoPlugin", "ScaleStepMax", 128.f );
 
         return true;
     }

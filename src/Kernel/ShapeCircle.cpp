@@ -61,8 +61,8 @@ namespace Mengine
 
         for( uint32_t index = 0; index != m_quality; ++index )
         {
-            float ct = Math::cosf( t );
-            float st = Math::sinf( t );
+            float ct = StdMath::cosf( t );
+            float st = StdMath::sinf( t );
 
             float x = width * ct;
             float y = height * st;

@@ -89,16 +89,16 @@ namespace Mengine
             }
         }
 
-        float Engine_CommonVolume = CONFIG_VALUE( "Engine", "CommonVolume", 1.f );
+        float Engine_CommonVolume = CONFIG_VALUE_FLOAT( "Engine", "CommonVolume", 1.f );
         this->setCommonVolume( STRINGIZE_STRING_LOCAL( "Generic" ), Engine_CommonVolume, 0.f, MENGINE_MIXER_VALUE_DEFAULT_SPEED );
 
-        float Engine_SoundVolume = CONFIG_VALUE( "Engine", "SoundVolume", 1.f );
+        float Engine_SoundVolume = CONFIG_VALUE_FLOAT( "Engine", "SoundVolume", 1.f );
         this->setSoundVolume( STRINGIZE_STRING_LOCAL( "Generic" ), Engine_SoundVolume, 0.f, MENGINE_MIXER_VALUE_DEFAULT_SPEED );
 
-        float Engine_MusicVolume = CONFIG_VALUE( "Engine", "MusicVolume", 1.f );
+        float Engine_MusicVolume = CONFIG_VALUE_FLOAT( "Engine", "MusicVolume", 1.f );
         this->setMusicVolume( STRINGIZE_STRING_LOCAL( "Generic" ), Engine_MusicVolume, 0.f, MENGINE_MIXER_VALUE_DEFAULT_SPEED );
 
-        float Engine_VoiceVolume = CONFIG_VALUE( "Engine", "VoiceVolume", 1.f );
+        float Engine_VoiceVolume = CONFIG_VALUE_FLOAT( "Engine", "VoiceVolume", 1.f );
         this->setVoiceVolume( STRINGIZE_STRING_LOCAL( "Generic" ), Engine_VoiceVolume, 0.f, MENGINE_MIXER_VALUE_DEFAULT_SPEED );
 
         bool OPTION_musicoff = HAS_OPTION( "musicoff" ) || HAS_OPTION( "nomusic" );
@@ -366,7 +366,7 @@ namespace Mengine
 
         bool streamable = _emitter->getStreamable();
 
-        bool mute = this->isMute();
+        bool mute = this->mixMute();
 
         if( mute == true ||
             (m_turnStream == false && streamable == true) ||
@@ -757,14 +757,21 @@ namespace Mengine
         m_soundIdentitiesEndAux.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void SoundService::mute( const ConstString & _type, bool _mute )
+    void SoundService::setMute( const ConstString & _type, bool _mute )
     {
         m_muted->setValue( _type, _mute );
 
         this->updateVolume();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SoundService::isMute() const
+    bool SoundService::getMute( const ConstString & _type ) const
+    {
+        bool value = m_muted->getValue( _type );
+
+        return value;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SoundService::mixMute() const
     {
         bool muted = m_muted->mixValue();
 
@@ -1444,7 +1451,7 @@ namespace Mengine
             return _Identity->getState() == ESS_PLAY;
         } );
 
-        uint32_t Limit_MaxSoundPlay = CONFIG_VALUE( "Limit", "MaxSoundPlay", 16 );
+        uint32_t Limit_MaxSoundPlay = CONFIG_VALUE_INTEGER( "Limit", "MaxSoundPlay", 16 );
 
         if( playCount > Limit_MaxSoundPlay )
         {

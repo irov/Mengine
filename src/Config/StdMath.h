@@ -6,7 +6,7 @@
 
 namespace Mengine
 {
-    namespace Math
+    namespace StdMath
     {
         MENGINE_CONSTEXPR const float constant_pi = 3.1415926535897932384626433832795f;
         MENGINE_CONSTEXPR const float constant_inv_pi = 0.31830988618379067153776752674503f;
@@ -31,7 +31,6 @@ namespace Mengine
         MENGINE_CONSTEXPR const float constant_decimal_base = 10.f;
         MENGINE_CONSTEXPR const float constant_binary_base = 2.f;
 
-
         using std::floorf;
         using std::acosf;
         using std::asinf;
@@ -47,6 +46,7 @@ namespace Mengine
         using std::log10f;
         using std::roundf;
         using std::ceilf;
+        using std::modff;
         using std::abs;
         using std::floor;
         using std::acos;

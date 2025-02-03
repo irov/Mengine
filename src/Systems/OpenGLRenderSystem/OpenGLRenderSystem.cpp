@@ -353,8 +353,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setProjectionMatrix( const mt::mat4f & _projectionMatrix )
     {
-        float OpenGL_PerfectPixelOffsetX = CONFIG_VALUE( "OpenGL", "PerfectPixelOffsetX", 0.f );
-        float OpenGL_PerfectPixelOffsetY = CONFIG_VALUE( "OpenGL", "PerfectPixelOffsetY", 0.f );
+        float OpenGL_PerfectPixelOffsetX = CONFIG_VALUE_FLOAT( "OpenGL", "PerfectPixelOffsetX", 0.f );
+        float OpenGL_PerfectPixelOffsetY = CONFIG_VALUE_FLOAT( "OpenGL", "PerfectPixelOffsetY", 0.f );
 
         if( OpenGL_PerfectPixelOffsetX != 0.f || OpenGL_PerfectPixelOffsetY != 0.f )
         {

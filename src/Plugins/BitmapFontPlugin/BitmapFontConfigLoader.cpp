@@ -37,13 +37,13 @@ namespace Mengine
         }
 
         float lineOffset;
-        if( _config->hasValue( name.c_str(), "LineOffset", 0.f, &lineOffset ) == true )
+        if( _config->hasValueFloat( name.c_str(), "LineOffset", 0.f, &lineOffset ) == true )
         {
             font->setLineOffset( lineOffset );
         }
 
         float charOffset;
-        if( _config->hasValue( name.c_str(), "CharOffset", 0.f, &charOffset ) == true )
+        if( _config->hasValueFloat( name.c_str(), "CharOffset", 0.f, &charOffset ) == true )
         {
             font->setCharOffset( charOffset );
         }

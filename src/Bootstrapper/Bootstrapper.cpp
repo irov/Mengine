@@ -630,7 +630,7 @@ namespace Mengine
         FileGroupInterfacePtr defaultFileGroup = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroup" ), ConstString::none() );
 
         if( APPLICATION_SERVICE()
-            ->initializeGame( defaultFileGroup, m_packagesPaths, m_settingsPaths ) == false )
+            ->initializeGame( defaultFileGroup, m_packagesPaths ) == false )
         {
             LOGGER_FATAL( "application invalid initialize game" );
 
@@ -737,7 +737,6 @@ namespace Mengine
         }
 
         applicationConfig->getValues( "Packages", "Path", &m_packagesPaths );
-        applicationConfig->getValues( "Settings", "Path", &m_settingsPaths );
 
         const Char * option_config = GET_OPTION_VALUE( "config", nullptr );
 
@@ -1121,7 +1120,7 @@ namespace Mengine
 #endif
 
         bool OPTION_assertion = HAS_OPTION( "assertion" );
-        bool Engine_AssertionDebugBreak = CONFIG_VALUE( "Engine", "AssertionDebugBreak", false );
+        bool Engine_AssertionDebugBreak = CONFIG_VALUE_BOOLEAN( "Engine", "AssertionDebugBreak", false );
 
         bool Assertion_NoDebugBreak = OPTION_assertion == false && Engine_AssertionDebugBreak == false;
 
@@ -2102,7 +2101,6 @@ namespace Mengine
         }
 
         m_packagesPaths.clear();
-        m_settingsPaths.clear();
 
         if( SERVICE_IS_INITIALIZE( ApplicationInterface ) == true )
         {

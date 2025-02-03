@@ -35,7 +35,7 @@ namespace Mengine
             return false;
         }
 
-        bool RenderDocPlugin_Available = CONFIG_VALUE( "RenderDocPlugin", "Available", true );
+        bool RenderDocPlugin_Available = CONFIG_VALUE_BOOLEAN( "RenderDocPlugin", "Available", true );
 
         if( RenderDocPlugin_Available == false )
         {

@@ -37,7 +37,7 @@ namespace Mengine
             return false;
         }
 
-        bool FileModifyHookPlugin_Available = CONFIG_VALUE( "FileModifyHookPlugin", "Available", true );
+        bool FileModifyHookPlugin_Available = CONFIG_VALUE_BOOLEAN( "FileModifyHookPlugin", "Available", true );
 
         if( FileModifyHookPlugin_Available == false )
         {

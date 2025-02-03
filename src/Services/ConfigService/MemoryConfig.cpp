@@ -262,37 +262,7 @@ namespace Mengine
         return Detail::hasValueT( m_records, m_platformTags, _section, _key, _default, _value );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MemoryConfig::hasValue( const Char * _section, const Char * _key, int8_t _default, int8_t * const _value ) const
-    {
-        return Detail::hasValueT( m_records, m_platformTags, _section, _key, _default, _value );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MemoryConfig::hasValue( const Char * _section, const Char * _key, uint8_t _default, uint8_t * const _value ) const
-    {
-        return Detail::hasValueT( m_records, m_platformTags, _section, _key, _default, _value );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MemoryConfig::hasValue( const Char * _section, const Char * _key, int32_t _default, int32_t * const _value ) const
-    {
-        return Detail::hasValueT( m_records, m_platformTags, _section, _key, _default, _value );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MemoryConfig::hasValue( const Char * _section, const Char * _key, uint32_t _default, uint32_t * const _value ) const
-    {
-        return Detail::hasValueT( m_records, m_platformTags, _section, _key, _default, _value );
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool MemoryConfig::hasValue( const Char * _section, const Char * _key, int64_t _default, int64_t * const  _value ) const
-    {
-        return Detail::hasValueT( m_records, m_platformTags, _section, _key, _default, _value );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MemoryConfig::hasValue( const Char * _section, const Char * _key, uint64_t _default, uint64_t * const  _value ) const
-    {
-        return Detail::hasValueT( m_records, m_platformTags, _section, _key, _default, _value );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MemoryConfig::hasValue( const Char * _section, const Char * _key, float _default, float * const _value ) const
     {
         return Detail::hasValueT( m_records, m_platformTags, _section, _key, _default, _value );
     }
@@ -337,37 +307,7 @@ namespace Mengine
         return Detail::setValueT( m_records, _section, _key, _value );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MemoryConfig::setValue( const Char * _section, const Char * _key, int8_t _value )
-    {
-        return Detail::setValueT( m_records, _section, _key, _value );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MemoryConfig::setValue( const Char * _section, const Char * _key, uint8_t _value )
-    {
-        return Detail::setValueT( m_records, _section, _key, _value );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MemoryConfig::setValue( const Char * _section, const Char * _key, int32_t _value )
-    {
-        return Detail::setValueT( m_records, _section, _key, _value );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MemoryConfig::setValue( const Char * _section, const Char * _key, uint32_t _value )
-    {
-        return Detail::setValueT( m_records, _section, _key, _value );
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool MemoryConfig::setValue( const Char * _section, const Char * _key, int64_t _value )
-    {
-        return Detail::setValueT( m_records, _section, _key, _value );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MemoryConfig::setValue( const Char * _section, const Char * _key, uint64_t _value )
-    {
-        return Detail::setValueT( m_records, _section, _key, _value );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MemoryConfig::setValue( const Char * _section, const Char * _key, float _value )
     {
         return Detail::setValueT( m_records, _section, _key, _value );
     }

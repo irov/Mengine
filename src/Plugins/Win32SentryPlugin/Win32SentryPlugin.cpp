@@ -37,7 +37,7 @@ namespace Mengine
             return false;
         }
         
-        bool Win32SentryPlugin_Available = CONFIG_VALUE( "Win32SentryPlugin", "Available", true );
+        bool Win32SentryPlugin_Available = CONFIG_VALUE_BOOLEAN( "Win32SentryPlugin", "Available", true );
 
         if( Win32SentryPlugin_Available == false )
         {

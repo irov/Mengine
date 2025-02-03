@@ -109,7 +109,6 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( mem, "invalid realloc memory '%zu' from [nullptr] [%s]"
                 , _size
-                , _mem
                 , _doc
             );
 

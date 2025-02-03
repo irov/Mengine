@@ -48,15 +48,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool BatchRenderPipeline::initialize()
     {
-        uint32_t Engine_RenderMaxObject = CONFIG_VALUE( "Engine", "RenderMaxObject", 8000U );
-        uint32_t Engine_RenderMaxPass = CONFIG_VALUE( "Engine", "RenderMaxPass", 200U );
+        uint32_t Engine_RenderMaxObject = CONFIG_VALUE_INTEGER( "Engine", "RenderMaxObject", 8000U );
+        uint32_t Engine_RenderMaxPass = CONFIG_VALUE_INTEGER( "Engine", "RenderMaxPass", 200U );
 
         m_renderObjects.reserve( Engine_RenderMaxObject );
         m_renderPrimitives.reserve( Engine_RenderMaxObject );
         m_renderPasses.reserve( Engine_RenderMaxPass );
 
-        uint32_t Engine_RenderMaxQuadBatch = CONFIG_VALUE( "Engine", "RenderMaxQuadBatch", 2000U );
-        uint32_t Engine_RenderMaxLineBatch = CONFIG_VALUE( "Engine", "RenderMaxLineBatch", 4000U );
+        uint32_t Engine_RenderMaxQuadBatch = CONFIG_VALUE_INTEGER( "Engine", "RenderMaxQuadBatch", 2000U );
+        uint32_t Engine_RenderMaxLineBatch = CONFIG_VALUE_INTEGER( "Engine", "RenderMaxLineBatch", 4000U );
 
         m_indicesQuad.resize( Engine_RenderMaxQuadBatch * 6 );
         m_indicesLine.resize( Engine_RenderMaxLineBatch * 1 );
@@ -82,7 +82,7 @@ namespace Mengine
             m_indicesLine[i] = vertexOffset;
         }
 
-        uint32_t Engine_RenderServiceBatchMode = CONFIG_VALUE( "Engine", "RenderServiceBatchMode", 1 );
+        uint32_t Engine_RenderServiceBatchMode = CONFIG_VALUE_INTEGER( "Engine", "RenderServiceBatchMode", 1 );
 
         switch( Engine_RenderServiceBatchMode )
         {

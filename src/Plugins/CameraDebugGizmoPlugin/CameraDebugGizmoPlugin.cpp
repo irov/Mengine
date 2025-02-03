@@ -23,7 +23,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool CameraDebugGizmoPlugin::_availablePlugin() const
     {
-        bool CameraDebugGizmoPlugin_Available = CONFIG_VALUE( "CameraDebugGizmoPlugin", "Available", true );
+        bool CameraDebugGizmoPlugin_Available = CONFIG_VALUE_BOOLEAN( "CameraDebugGizmoPlugin", "Available", true );
 
         if( CameraDebugGizmoPlugin_Available == false )
         {

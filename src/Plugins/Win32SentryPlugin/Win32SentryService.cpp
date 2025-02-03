@@ -124,7 +124,7 @@ namespace Mengine
             , sentry_sdk_user_agent()
         );
 
-        const Char * Win32SentryPlugin_DSN = CONFIG_VALUE( "Win32SentryPlugin", "DSN", "" );
+        const Char * Win32SentryPlugin_DSN = CONFIG_VALUE_STRING( "Win32SentryPlugin", "DSN", "" );
 
         if( StdString::strcmp( Win32SentryPlugin_DSN, "" ) == 0 )
         {
@@ -185,9 +185,9 @@ namespace Mengine
         sentryHandlerPath.append( currentPath, (PathString::size_type)currentPathLen );
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
-        const Char * Win32SentryPlugin_Handler = CONFIG_VALUE( "Win32SentryPlugin", "Handler", "crashpad_handler.exe" );
+        const Char * Win32SentryPlugin_Handler = CONFIG_VALUE_STRING( "Win32SentryPlugin", "Handler", "crashpad_handler.exe" );
 #else
-        const Char * Win32SentryPlugin_Handler = CONFIG_VALUE( "Win32SentryPlugin", "Handler", "crashpad_handler" );
+        const Char * Win32SentryPlugin_Handler = CONFIG_VALUE_STRING( "Win32SentryPlugin", "Handler", "crashpad_handler" );
 #endif
 
         LOGGER_INFO_PROTECTED( "sentry", "Sentry handler: %s"
@@ -314,7 +314,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32SentryService::notifyBootstrapperCreateApplication_()
     {
-        const Char * Win32SentryPlugin_Application = CONFIG_VALUE( "Win32SentryPlugin", "Application", "Mengine" );
+        const Char * Win32SentryPlugin_Application = CONFIG_VALUE_STRING( "Win32SentryPlugin", "Application", "Mengine" );
 
         LOGGER_INFO_PROTECTED( "sentry", "Sentry set extra [Application: %s]"
             , Win32SentryPlugin_Application

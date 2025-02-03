@@ -1009,7 +1009,7 @@ namespace Mengine
                 return true;
             } );
 
-            bool PythonScript_AvailableSourceCode = CONFIG_VALUE( "PythonScript", "AvailableSourceCode", true );
+            bool PythonScript_AvailableSourceCode = CONFIG_VALUE_BOOLEAN( "PythonScript", "AvailableSourceCode", true );
 
             if( PythonScript_AvailableSourceCode == true )
             {

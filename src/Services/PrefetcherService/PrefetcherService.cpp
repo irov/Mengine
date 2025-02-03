@@ -34,7 +34,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PrefetcherService::_availableService() const
     {
-        bool Engine_PrefetcherServiceAvailable = CONFIG_VALUE( "Engine", "PrefetcherServiceAvailable", true );
+        bool Engine_PrefetcherServiceAvailable = CONFIG_VALUE_BOOLEAN( "Engine", "PrefetcherServiceAvailable", true );
 
         if( Engine_PrefetcherServiceAvailable == false )
         {
@@ -51,8 +51,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PrefetcherService::_initializeService()
     {
-        uint32_t PrefetcherService_ThreadCount = CONFIG_VALUE( "PrefetcherService", "ThreadCount", 2 );
-        uint32_t PrefetcherService_PacketSize = CONFIG_VALUE( "PrefetcherService", "PacketSize", 64 );
+        uint32_t PrefetcherService_ThreadCount = CONFIG_VALUE_INTEGER( "PrefetcherService", "ThreadCount", 2 );
+        uint32_t PrefetcherService_PacketSize = CONFIG_VALUE_INTEGER( "PrefetcherService", "PacketSize", 64 );
 
         m_threadQueue = THREAD_SERVICE()
             ->createTaskQueue( PrefetcherService_PacketSize, MENGINE_DOCUMENT_FACTORABLE );

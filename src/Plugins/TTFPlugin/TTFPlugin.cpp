@@ -73,7 +73,7 @@ namespace Mengine
             return false;
         }
 
-        bool TTFPlugin_Available = CONFIG_VALUE( "TTFPlugin", "Available", true );
+        bool TTFPlugin_Available = CONFIG_VALUE_BOOLEAN( "TTFPlugin", "Available", true );
 
         if( TTFPlugin_Available == false )
         {

@@ -303,7 +303,7 @@ namespace Mengine
 
         m_factoryDynamicLibraries = Helper::makeFactoryPool<Win32DynamicLibrary, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
-        const Char * Window_ClassName = CONFIG_VALUE( "Window", "ClassName", MENGINE_WINDOW_CLASSNAME );
+        const Char * Window_ClassName = CONFIG_VALUE_STRING( "Window", "ClassName", MENGINE_WINDOW_CLASSNAME );
 
         Helper::utf8ToUnicode( Window_ClassName, m_windowClassName.data(), MENGINE_MAX_PATH );
 
@@ -2121,7 +2121,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32PlatformService::alreadyRunningMonitor()
     {
-        bool Platform_AlreadyRunning = CONFIG_VALUE( "Platform", "AlreadyRunning", true );
+        bool Platform_AlreadyRunning = CONFIG_VALUE_BOOLEAN( "Platform", "AlreadyRunning", true );
 
         if( Platform_AlreadyRunning == true && HAS_OPTION( "noalreadyrunning" ) == false )
         {
@@ -2154,7 +2154,7 @@ namespace Mengine
         m_windowResolution = _resolution;
         m_fullscreen = _fullscreen;
 
-        bool Platform_WithoutWindow = CONFIG_VALUE( "Platform", "WithoutWindow", false );
+        bool Platform_WithoutWindow = CONFIG_VALUE_BOOLEAN( "Platform", "WithoutWindow", false );
 
         if( Platform_WithoutWindow == true || HAS_OPTION( "norender" ) == true )
         {
@@ -2906,7 +2906,7 @@ namespace Mengine
 
         if( this->createDirectoryUser_( szPath, unicode_directoryPath, unicode_filePath, _data, _size ) == false )
         {
-            LOGGER_ERROR( "'%s:%s' invalid createDirectoryUser_ '%ls'"
+            LOGGER_ERROR( "'%s%s' invalid createDirectoryUser_ '%ls'"
                 , _directoryPath
                 , _filePath
                 , szPath
@@ -2950,7 +2950,7 @@ namespace Mengine
 
         if( this->createDirectoryUser_( szPath, unicode_path, unicode_file, _data, _size ) == false )
         {
-            LOGGER_ERROR( "'%s:%s' invalid createDirectoryUser_ '%ls'"
+            LOGGER_ERROR( "'%s%s' invalid createDirectoryUser_ '%ls'"
                 , _directoryPath
                 , _filePath
                 , szPath
@@ -3124,7 +3124,7 @@ namespace Mengine
 
             StdString::wcscat( currentDirectory, MENGINE_DEVELOPMENT_USER_FOLDER_NAME );
 
-            uint32_t Engine_BotId = CONFIG_VALUE( "Engine", "BotId", ~0U );
+            uint32_t Engine_BotId = CONFIG_VALUE_INTEGER( "Engine", "BotId", ~0U );
 
             if( Engine_BotId != ~0U || HAS_OPTION( "bot" ) == true )
             {
@@ -3180,7 +3180,7 @@ namespace Mengine
 
         ::CoTaskMemFree( itemIDList );
 
-        const Char * Project_Company = CONFIG_VALUE( "Project", "Company", "UNKNOWN" );
+        const Char * Project_Company = CONFIG_VALUE_STRING( "Project", "Company", "UNKNOWN" );
 
         if( StdString::strlen( Project_Company ) == 0 )
         {
@@ -3202,7 +3202,7 @@ namespace Mengine
         WPath roamingPath = {L'\0'};
         ::PathCombineW( roamingPath, currentPath, companyNameW );
 
-        const Char * Project_Name = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );
+        const Char * Project_Name = CONFIG_VALUE_STRING( "Project", "Name", "UNKNOWN" );
 
         if( StdString::strlen( Project_Name ) == 0 )
         {
@@ -3240,7 +3240,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t Win32PlatformService::getExtraPreferencesFolderName( Char * const _folderName ) const
     {
-        const Char * Project_ExtraPreferencesFolderName = CONFIG_VALUE( "Project", "ExtraPreferencesFolderName", "" );
+        const Char * Project_ExtraPreferencesFolderName = CONFIG_VALUE_STRING( "Project", "ExtraPreferencesFolderName", "" );
 
         MENGINE_ASSERTION_FATAL( Helper::isCorrectFolderPathA( Project_ExtraPreferencesFolderName ) == true, "invalid extra preferences folder name '%s'"
             , Project_ExtraPreferencesFolderName

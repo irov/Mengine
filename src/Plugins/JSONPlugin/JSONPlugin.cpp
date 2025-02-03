@@ -67,7 +67,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool JSONPlugin::_initializePlugin()
     {
-        uint32_t JSON_Seed = CONFIG_VALUE( "JSONPlugin", "Seed", MENGINE_PLUGIN_JSON_SEED );
+        uint32_t JSON_Seed = CONFIG_VALUE_INTEGER( "JSONPlugin", "Seed", MENGINE_PLUGIN_JSON_SEED );
 
         jpp::set_object_seed( JSON_Seed );
 

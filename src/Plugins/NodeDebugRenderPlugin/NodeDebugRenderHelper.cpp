@@ -54,8 +54,8 @@ namespace Mengine
 
             for( uint32_t i = 0; i != numpoints; ++i )
             {
-                float x = _radius * Math::cosf( mt::constant::two_pi / float( numpoints ) * float( i ) );
-                float y = _radius * Math::sinf( mt::constant::two_pi / float( numpoints ) * float( i ) );
+                float x = _radius * StdMath::cosf( mt::constant::two_pi / float( numpoints ) * float( i ) );
+                float y = _radius * StdMath::sinf( mt::constant::two_pi / float( numpoints ) * float( i ) );
 
                 ring[i] = mt::vec2f( x, y );
             }

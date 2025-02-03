@@ -2060,7 +2060,7 @@ namespace Mengine
 
                         float buff[4] = {v.getR(), v.getG(), v.getB(), v.getA()};
 
-                        if( ImGui::ColorEdit4( key_lable, buff ) == true && ImGui::IsItemDeactivatedAfterEdit() == true )
+                        if( ImGui::ColorEdit4( key_lable, buff ) == true )
                         {
                             v.setRGBA4( buff );
 

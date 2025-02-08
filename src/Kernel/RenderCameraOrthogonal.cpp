@@ -159,9 +159,9 @@ namespace Mengine
         return m_cameraOffset;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderCameraOrthogonal::setOrthogonalViewport( const Viewport & _viewport )
+    void RenderCameraOrthogonal::setOrthogonalViewport( const Viewport & _orthogonalViewport )
     {
-        m_orthogonalViewport = _viewport;
+        m_orthogonalViewport = _orthogonalViewport;
 
         this->invalidateProjectionMatrix_();
     }

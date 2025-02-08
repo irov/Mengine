@@ -41,6 +41,7 @@
 #include "Engine/ResourceCursorICO.h"
 #include "Engine/ResourceCursorSystem.h"
 
+#include "Kernel/NodeScreenPosition.h"
 #include "Kernel/ResourceImageSubstractRGBAndAlpha.h"
 #include "Kernel/ResourceImageSubstract.h"
 #include "Kernel/Polygon.h"
@@ -145,8 +146,11 @@ namespace Mengine
                 m_nodeAffectorCreatorAccumulateLinear = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorAccumulateLinear<mt::vec3f>>( MENGINE_DOCUMENT_FACTORABLE );
                 m_nodeAffectorCreatorAccumulateLinear->initialize();
 
-                m_nodeAffectorCreatorInterpolateQuadraticBezier = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec3f, 1>>( MENGINE_DOCUMENT_FACTORABLE );
-                m_nodeAffectorCreatorInterpolateQuadraticBezier->initialize();
+                m_nodeAffectorCreatorInterpolateQuadraticBezier2f = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec2f, 1>>( MENGINE_DOCUMENT_FACTORABLE );
+                m_nodeAffectorCreatorInterpolateQuadraticBezier2f->initialize();
+
+                m_nodeAffectorCreatorInterpolateQuadraticBezier3f = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec3f, 1>>( MENGINE_DOCUMENT_FACTORABLE );
+                m_nodeAffectorCreatorInterpolateQuadraticBezier3f->initialize();
 
                 m_nodeAffectorCreatorInterpolateQuadratic = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadratic<mt::vec3f>>( MENGINE_DOCUMENT_FACTORABLE );
                 m_nodeAffectorCreatorInterpolateQuadratic->initialize();
@@ -192,8 +196,11 @@ namespace Mengine
                 m_nodeAffectorCreatorAccumulateLinear->finalize();
                 m_nodeAffectorCreatorAccumulateLinear = nullptr;
 
-                m_nodeAffectorCreatorInterpolateQuadraticBezier->finalize();
-                m_nodeAffectorCreatorInterpolateQuadraticBezier = nullptr;
+                m_nodeAffectorCreatorInterpolateQuadraticBezier2f->finalize();
+                m_nodeAffectorCreatorInterpolateQuadraticBezier2f = nullptr;
+
+                m_nodeAffectorCreatorInterpolateQuadraticBezier3f->finalize();
+                m_nodeAffectorCreatorInterpolateQuadraticBezier3f = nullptr;
 
                 m_nodeAffectorCreatorInterpolateQuadratic->finalize();
                 m_nodeAffectorCreatorInterpolateQuadratic = nullptr;
@@ -458,11 +465,9 @@ namespace Mengine
                 return _node->hasParent() == false;
             }
             //////////////////////////////////////////////////////////////////////////
-            mt::vec3f s_Node_getWorldOffsetPosition( Node * _node, const mt::vec3f & _position )
+            mt::vec3f s_Transformation_getWorldOffsetPosition( TransformationInterface * _transformation, const mt::vec3f & _position )
             {
-                const TransformationInterface * transformation = _node->getTransformation();
-
-                const mt::vec3f & wp = transformation->getWorldPosition();
+                const mt::vec3f & wp = _transformation->getWorldPosition();
 
                 mt::vec3f offset = _position - wp;
 
@@ -543,16 +548,16 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorAccumulateLinear<mt::vec3f>> m_nodeAffectorCreatorAccumulateLinear;
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_Node_velocityTo( Node * _node, float _speed, const mt::vec3f & _dir, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            UniqueId s_Node_velocityTo( Node * _node, float _speed, const mt::vec3f & _dir, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
                 if( _node->isActivate() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 if( _node->isAfterActive() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
@@ -578,7 +583,7 @@ namespace Mengine
 
                 if( _node->isActivate() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 mt::vec3f linearSpeed = _dir * _speed;
@@ -707,16 +712,16 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryAffectorVelocity2Ptr m_factoryAffectorVelocity2;
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_Node_velocityTo2( Node * _node, const mt::vec3f & _velocity, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            UniqueId s_Node_velocityTo2( Node * _node, const mt::vec3f & _velocity, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
                 if( _node->isActivate() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 if( _node->isAfterActive() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
@@ -735,7 +740,7 @@ namespace Mengine
 
                 if( _node->isActivate() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
@@ -749,16 +754,16 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<mt::vec3f>> m_nodeAffectorCreatorInterpolateLinear;
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_Node_moveTo( Node * _node, float _time, const mt::vec3f & _point, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            UniqueId s_Node_moveTo( Node * _node, float _time, const mt::vec3f & _point, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
                 if( _node->isActivate() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 if( _node->isAfterActive() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
@@ -785,7 +790,7 @@ namespace Mengine
 
                 if( _node->isActivate() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 float invTime = 1.f / _time;
@@ -803,16 +808,16 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadratic<mt::vec3f>> m_nodeAffectorCreatorInterpolateQuadratic;
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_Node_accMoveTo( Node * _node, float _time, const mt::vec3f & _point, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            UniqueId s_Node_accMoveTo( Node * _node, float _time, const mt::vec3f & _point, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
                 if( _node->isActivate() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 if( _node->isAfterActive() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
@@ -842,7 +847,7 @@ namespace Mengine
 
                 if( _node->isActivate() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 UniqueId id = affectorHub->addAffector( affector );
@@ -850,9 +855,10 @@ namespace Mengine
                 return id;
             }
             //////////////////////////////////////////////////////////////////////////
-            IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec3f, 1>> m_nodeAffectorCreatorInterpolateQuadraticBezier;
+            IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec2f, 1>> m_nodeAffectorCreatorInterpolateQuadraticBezier2f;
+            IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec3f, 1>> m_nodeAffectorCreatorInterpolateQuadraticBezier3f;
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_Node_bezier2To( Node * _node
+            UniqueId s_Node_bezier2To( Node * _node
                 , float _time
                 , const mt::vec3f & _to
                 , const mt::vec3f & _v0
@@ -862,12 +868,12 @@ namespace Mengine
             {
                 if( _node->isActivate() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 if( _node->isAfterActive() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
@@ -878,7 +884,7 @@ namespace Mengine
 
                 ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
-                AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadraticBezier->create( ETA_POSITION
+                AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadraticBezier3f->create( ETA_POSITION
                     , easing
                     , callback
                     , [transformation]( const mt::vec3f & _v )
@@ -907,7 +913,7 @@ namespace Mengine
 
                 if( _node->isActivate() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
@@ -917,7 +923,7 @@ namespace Mengine
                 return id;
             }
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_Node_bezier2Follower( Node * _node
+            UniqueId s_Node_bezier2LocalFollower( Node * _node
                 , float _time
                 , const NodePtr & _follow
                 , const mt::vec3f & _offset
@@ -929,40 +935,54 @@ namespace Mengine
 
                 if( _node->isActivate() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 if( _node->isAfterActive() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
-                TransformationInterface * transformation = _node->getTransformation();
-
-                const mt::vec3f & node_pos = transformation->getWorldPosition();
-
                 ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
-                AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadraticBezier->create( ETA_POSITION
+                AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadraticBezier3f->create( ETA_POSITION
                     , easing
                     , callback
-                    , [transformation]( const mt::vec3f & _v )
+                    , [_node]( const mt::vec3f & _v )
                 {
-                    transformation->setWorldPosition( _v );
+                    TransformationInterface * node_transformation = _node->getTransformation();
+
+                    node_transformation->setLocalPosition( _v );
                 }
-                    , [node_pos]()
+                    , [_node]()
                 {
+                    const TransformationInterface * node_transformation = _node->getTransformation();
+
+                    const mt::vec3f & node_pos = node_transformation->getLocalPosition();
+
                     return node_pos;
                 }
                     , [_follow, _offset]()
                 {
-                    return _follow->getTransformation()->getWorldPosition() + _offset;
+                    const TransformationInterface * follow_transformation = _follow->getTransformation();
+
+                    const mt::vec3f & position = follow_transformation->getLocalPosition();
+
+                    return position + _offset;
                 }
-                    , [node_pos, _follow, _offset]( mt::vec3f * _v )
+                    , [_node, _follow, _offset]( mt::vec3f * _v )
                 {
-                    float x = _follow->getTransformation()->getWorldPosition().x + _offset.x;
+                    TransformationInterface * node_transformation = _node->getTransformation();
+
+                    const mt::vec3f & node_pos = node_transformation->getLocalPosition();
+
+                    const TransformationInterface * follow_transformation = _follow->getTransformation();
+
+                    const mt::vec3f & position = follow_transformation->getLocalPosition();
+
+                    float x = position.x + _offset.x;
 
                     _v[0] = mt::vec3f( x, node_pos.y, 0.f );
                 }
@@ -976,7 +996,168 @@ namespace Mengine
 
                 if( _node->isActivate() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
+                }
+
+                const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
+
+                UniqueId id = affectorHub->addAffector( affector );
+
+                return id;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            UniqueId s_Node_bezier2WorldFollower( Node * _node
+                , float _time
+                , const NodePtr & _follow
+                , const mt::vec3f & _offset
+                , const ConstString & _easingType
+                , const pybind::object & _cb
+                , const pybind::args & _args )
+            {
+                MENGINE_ASSERTION_MEMORY_PANIC( _follow, "invalid create follower" );
+
+                if( _node->isActivate() == false )
+                {
+                    return INVALID_UNIQUE_ID;
+                }
+
+                if( _node->isAfterActive() == false )
+                {
+                    return INVALID_UNIQUE_ID;
+                }
+
+                EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
+                ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
+
+                AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadraticBezier3f->create( ETA_POSITION
+                    , easing
+                    , callback
+                    , [_node]( const mt::vec3f & _v )
+                {
+                    TransformationInterface * node_transformation = _node->getTransformation();
+
+                    node_transformation->setWorldPosition( _v );
+                }
+                    , [_node]()
+                {
+                    const TransformationInterface * node_transformation = _node->getTransformation();
+
+                    const mt::vec3f & node_pos = node_transformation->getWorldPosition();
+
+                    return node_pos;
+                }
+                    , [_follow, _offset]()
+                {
+                    const TransformationInterface * follow_transformation = _follow->getTransformation();
+
+                    const mt::vec3f & position = follow_transformation->getWorldPosition();
+
+                    return position + _offset;
+                }
+                    , [_node, _follow, _offset]( mt::vec3f * _v )
+                {
+                    const TransformationInterface * node_transformation = _node->getTransformation();
+
+                    const mt::vec3f & node_pos = node_transformation->getWorldPosition();
+
+                    const TransformationInterface * follow_transformation = _follow->getTransformation();
+
+                    const mt::vec3f & position = follow_transformation->getWorldPosition();
+
+                    float x = position.x + _offset.x;
+
+                    _v[0] = mt::vec3f( x, node_pos.y, 0.f );
+                }
+                    , _time
+                    , MENGINE_DOCUMENT_PYBIND
+                );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
+
+                s_Node_moveStop( _node );
+
+                if( _node->isActivate() == false )
+                {
+                    return INVALID_UNIQUE_ID;
+                }
+
+                const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
+
+                UniqueId id = affectorHub->addAffector( affector );
+
+                return id;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            UniqueId s_Node_bezier2ScreenFollower( Node * _node
+                , float _time
+                , const NodePtr & _follow
+                , const mt::vec2f & _offset
+                , float _deep
+                , const ConstString & _easingType
+                , const pybind::object & _cb
+                , const pybind::args & _args )
+            {
+                MENGINE_ASSERTION_MEMORY_PANIC( _follow, "invalid create follower" );
+
+                if( _node->isActivate() == false )
+                {
+                    return INVALID_UNIQUE_ID;
+                }
+
+                if( _node->isAfterActive() == false )
+                {
+                    return INVALID_UNIQUE_ID;
+                }
+
+                EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
+                ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
+
+                AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadraticBezier2f->create( ETA_POSITION
+                    , easing
+                    , callback
+                    , [_node, _deep]( const mt::vec2f & _v )
+                {
+                    Helper::setNodeScreenPosition( _node, _v, _deep );
+                }
+                    , [_node]()
+                {
+                    mt::vec2f node_pos;
+                    Helper::getNodeScreenPosition( _node, &node_pos );
+
+                    return node_pos;
+                }
+                    , [_follow, _offset]()
+                {
+                    mt::vec2f follow_pos;
+                    Helper::getNodeScreenPosition( _follow.get(), &follow_pos );
+
+                    return follow_pos + _offset;
+                }
+                    , [_node, _follow, _offset]( mt::vec2f * _v )
+                {
+                    mt::vec2f node_pos;
+                    Helper::getNodeScreenPosition( _node, &node_pos );
+
+                    mt::vec2f follow_pos;
+                    Helper::getNodeScreenPosition( _follow.get(), &follow_pos );
+
+                    float x = follow_pos.x + _offset.x;
+
+                    _v[0] = mt::vec2f( x, node_pos.y );
+                }
+                    , _time
+                    , MENGINE_DOCUMENT_PYBIND
+                );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
+
+                s_Node_moveStop( _node );
+
+                if( _node->isActivate() == false )
+                {
+                    return INVALID_UNIQUE_ID;
                 }
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
@@ -988,7 +1169,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec3f, 2>> m_nodeAffectorCreatorInterpolateCubicBezier;
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_Node_bezier3To( Node * _node
+            UniqueId s_Node_bezier3To( Node * _node
                 , float _time
                 , const mt::vec3f & _to
                 , const mt::vec3f & _v0
@@ -999,12 +1180,12 @@ namespace Mengine
             {
                 if( _node->isActivate() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 if( _node->isAfterActive() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 TransformationInterface * transformation = _node->getTransformation();
@@ -1043,7 +1224,7 @@ namespace Mengine
 
                 if( _node->isActivate() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
@@ -1055,7 +1236,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec3f, 3>> m_nodeAffectorCreatorInterpolateQuarticBezier;
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_Node_bezier4To( Node * _node
+            UniqueId s_Node_bezier4To( Node * _node
                 , float _time
                 , const mt::vec3f & _to
                 , const mt::vec3f & _v0
@@ -1067,12 +1248,12 @@ namespace Mengine
             {
                 if( _node->isActivate() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 if( _node->isAfterActive() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 TransformationInterface * transformation = _node->getTransformation();
@@ -1111,7 +1292,7 @@ namespace Mengine
 
                 if( _node->isActivate() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
@@ -1303,7 +1484,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryAffectorInterpolateParabolicPtr m_nodeAffectorCreatorInterpolateParabolic;
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_Node_parabolaTo( Node * _node
+            UniqueId s_Node_parabolaTo( Node * _node
                 , float _time
                 , const mt::vec3f & _end
                 , const mt::vec3f & _v0
@@ -1313,12 +1494,12 @@ namespace Mengine
             {
                 if( _node->isActivate() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 if( _node->isAfterActive() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
@@ -1338,7 +1519,7 @@ namespace Mengine
 
                 if( _node->isActivate() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
@@ -1560,7 +1741,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryAffectorFollowToPtr m_nodeAffectorCreatorFollowTo;
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_Node_followTo( Node * _node
+            UniqueId s_Node_followTo( Node * _node
                 , const NodePtr & _target
                 , const mt::vec3f & _offset
                 , float _distance
@@ -1605,7 +1786,7 @@ namespace Mengine
 
                 if( _node->isActivate() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
@@ -1775,7 +1956,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryAffectorFollowToWPtr m_nodeAffectorCreatorFollowToW;
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_Node_followToW( Node * _node
+            UniqueId s_Node_followToW( Node * _node
                 , const NodePtr & _target
                 , const mt::vec3f & _offset
                 , float _distance
@@ -1788,12 +1969,12 @@ namespace Mengine
             {
                 if( _node->isActivate() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 if( _node->isAfterActive() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
@@ -1814,7 +1995,7 @@ namespace Mengine
 
                 if( _node->isActivate() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
@@ -1837,16 +2018,16 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float>> m_nodeAffectorCreatorInterpolateLinearFloat;
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_Node_angleTo( Node * _node, float _time, float _angle, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            UniqueId s_Node_angleTo( Node * _node, float _time, float _angle, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
                 if( _node->isActivate() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 if( _node->isAfterActive() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 TransformationInterface * transformation = _node->getTransformation();
@@ -1877,7 +2058,7 @@ namespace Mengine
 
                 if( _node->isActivate() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 float invTime = 1.f / _time;
@@ -1893,16 +2074,16 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadratic<float>> m_nodeAffectorCreatorInterpolateQuadraticFloat;
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_Node_accAngleTo( Node * _node, float _time, float _angle, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            UniqueId s_Node_accAngleTo( Node * _node, float _time, float _angle, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
                 if( _node->isActivate() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 if( _node->isAfterActive() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
@@ -1938,7 +2119,7 @@ namespace Mengine
 
                 if( _node->isActivate() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 UniqueId id = affectorHub->addAffector( affector );
@@ -1969,16 +2150,16 @@ namespace Mengine
                 affectorHub->stopAffectors( ETA_SCALE );
             }
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_Node_scaleTo( Node * _node, float _time, const mt::vec3f & _scale, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            UniqueId s_Node_scaleTo( Node * _node, float _time, const mt::vec3f & _scale, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
                 if( _node->isActivate() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 if( _node->isAfterActive() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 TransformationInterface * transformation = _node->getTransformation();
@@ -2004,7 +2185,7 @@ namespace Mengine
 
                 if( _node->isActivate() == false )
                 {
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
@@ -2026,6 +2207,19 @@ namespace Mengine
             }
             //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Color>> m_nodeAffectorCreatorInterpolateLinearColor;
+            //////////////////////////////////////////////////////////////////////////
+            mt::vec2f s_Node_getScreenPosition( Node * _node )
+            {
+                mt::vec2f screenPosition;
+                Helper::getNodeScreenPosition( _node, &screenPosition );
+
+                return screenPosition;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_Node_setScreenPosition( Node * _node, const mt::vec2f & _screenPosition, float _deep )
+            {
+                Helper::setNodeScreenPosition( _node, _screenPosition, _deep );
+            }
             //////////////////////////////////////////////////////////////////////////
             UniqueId s_Node_colorTo( Node * _node, float _time, const Color & _color, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
@@ -2277,6 +2471,8 @@ namespace Mengine
 
             .def( "getWorldPosition", &TransformationInterface::getWorldPosition )
             .def( "setWorldPosition", &TransformationInterface::setWorldPosition )
+
+            .def_proxy_static( "getWorldOffsetPosition", scriptMethod, &KernelScriptMethod::s_Transformation_getWorldOffsetPosition )
 
             .def( "setAngle", &TransformationInterface::setLocalOrientationX )
             .def( "getAngle", &TransformationInterface::getLocalOrientationX )
@@ -2533,7 +2729,6 @@ namespace Mengine
             .def_proxy_static( "isHomeless", scriptMethod, &KernelScriptMethod::s_Node_isHomeless )
 
             //.def( "getWorldDirection", &Node::getWorldDirection )
-            .def_proxy_static( "getWorldOffsetPosition", scriptMethod, &KernelScriptMethod::s_Node_getWorldOffsetPosition )
             .def_proxy_static( "getLengthTo", scriptMethod, &KernelScriptMethod::s_Node_getLengthTo )
 
             .def_proxy_static( "getDebugId", scriptMethod, &KernelScriptMethod::s_Node_getDebugId )
@@ -2541,6 +2736,9 @@ namespace Mengine
             .def_proxy_static_deprecated( "createChildren", scriptMethod, &KernelScriptMethod::s_Node_createChild, "use createChild" )
             .def_proxy_static( "createChild", scriptMethod, &KernelScriptMethod::s_Node_createChild )
             .def_proxy_static_kernel( "getAllChildren", scriptMethod, &KernelScriptMethod::s_Node_getAllChildren )
+
+            .def_proxy_static( "getScreenPosition", scriptMethod, &KernelScriptMethod::s_Node_getScreenPosition )
+            .def_proxy_static( "setScreenPosition", scriptMethod, &KernelScriptMethod::s_Node_setScreenPosition )
 
             .def_proxy_static_args( "colorTo", scriptMethod, &KernelScriptMethod::s_Node_colorTo )
             .def_proxy_static_args( "alphaTo", scriptMethod, &KernelScriptMethod::s_Node_alphaTo )
@@ -2556,7 +2754,9 @@ namespace Mengine
             .def_proxy_static_args( "parabolaTo", scriptMethod, &KernelScriptMethod::s_Node_parabolaTo )
             .def_proxy_static_args( "followTo", scriptMethod, &KernelScriptMethod::s_Node_followTo )
             .def_proxy_static_args( "followToW", scriptMethod, &KernelScriptMethod::s_Node_followToW )
-            .def_proxy_static_args( "bezier2Follower", scriptMethod, &KernelScriptMethod::s_Node_bezier2Follower )
+            .def_proxy_static_args( "bezier2LocalFollower", scriptMethod, &KernelScriptMethod::s_Node_bezier2LocalFollower )
+            .def_proxy_static_args( "bezier2WorldFollower", scriptMethod, &KernelScriptMethod::s_Node_bezier2WorldFollower )
+            .def_proxy_static_args( "bezier2ScreenFollower", scriptMethod, &KernelScriptMethod::s_Node_bezier2ScreenFollower )
             .def_proxy_static( "moveStop", scriptMethod, &KernelScriptMethod::s_Node_moveStop )
 
             .def_proxy_static_args( "angleTo", scriptMethod, &KernelScriptMethod::s_Node_angleTo )

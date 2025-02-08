@@ -51,7 +51,7 @@ allprojects {
         if (ANDROID_APP_NDK_VERSION != null) {
             ndkVersion = ANDROID_APP_NDK_VERSION
         } else {
-            ndkVersion = "27.2.12479018"
+            ndkVersion = "28.0.13004108"
         }
 
         if (ANDROID_APP_BUILD_TOOLS_VERSION != null) {
@@ -63,7 +63,7 @@ allprojects {
         if (ANDROID_APP_CMAKE_VERSION != null) {
             cmakeVersion = ANDROID_APP_CMAKE_VERSION
         } else {
-            cmakeVersion = "3.30.5"
+            cmakeVersion = "3.31.5"
         }
 
         if (ANDROID_APP_MIN_SDK_VERSION != null) {

@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 import org.json.JSONObject;
 
 public class MengineAdBasePoint {
-    public static final String TAG = "AdBasePoint";
+    public static final String TAG = "MengineAdBasePoint";
 
     public String m_name;
 
@@ -126,8 +126,8 @@ public class MengineAdBasePoint {
 
         Object id = values.opt(key);
 
-        if (id instanceof String == false) {
-            MengineLog.logError(TAG, "%s attribute %s must be a string, but not a %s"
+        if (id instanceof String == false && id != null) {
+            MengineLog.logError(TAG, "%s attribute %s must be a string or null, but not a %s"
                 , m_name
                 , key
                 , id.getClass().getSimpleName()

@@ -32,7 +32,7 @@ namespace Mengine
         const mt::vec2f & getCameraOffset() const;
 
     public:
-        void setOrthogonalViewport( const Viewport & _viewport );
+        void setOrthogonalViewport( const Viewport & _orthogonalViewport );
         const Viewport & getOrthogonalViewport() const;
 
     public:

@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 import org.json.JSONObject;
 
 public class MengineAdInterstitialPoint extends MengineAdBasePoint {
-    public static final String TAG = "AdInterstitialPoint";
+    public static final String TAG = "MengineAdInterstitialPoint";
 
     public int m_id;
     public boolean m_enabled;
@@ -26,7 +26,7 @@ public class MengineAdInterstitialPoint extends MengineAdBasePoint {
         super(name);
 
         m_id = this.parseAdPointInteger(values, "id", false, 1);
-        m_enabled = this.parseAdPointBoolean(values, "enabled", true, false);
+        m_enabled = this.parseAdPointBoolean(values, "enable", true, false);
         m_actionOffset = this.parseAdPointInteger(values, "action_offset", false, -1);
         m_actionCooldown = this.parseAdPointInteger(values, "action_cooldown", false, -1);
         m_showLimit = this.parseAdPointInteger(values, "show_limit", false, -1);

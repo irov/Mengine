@@ -166,6 +166,8 @@ Node
     Node.h  
     NodeRenderHierarchy.cpp
     NodeRenderHierarchy.h
+    NodeScreenPosition.cpp
+    NodeScreenPosition.h
     NodePickerHierarchy.cpp
     NodePickerHierarchy.h
     NodeUniqueFinder.cpp

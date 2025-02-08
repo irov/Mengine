@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 import org.json.JSONObject;
 
 public class MengineAdRewardedPoint extends MengineAdBasePoint {
-    public static final String TAG = "AdRewardedPoint";
+    public static final String TAG = "MengineAdRewardedPoint";
 
     public int m_id;
     public boolean m_enabled;
@@ -17,7 +17,7 @@ public class MengineAdRewardedPoint extends MengineAdBasePoint {
         super(name);
 
         m_id = this.parseAdPointInteger(values, "id", false, 1);
-        m_enabled = this.parseAdPointBoolean(values, "enabled", true, false);
+        m_enabled = this.parseAdPointBoolean(values, "enable", true, false);
     }
 
     public boolean canOfferAd(@NonNull MengineApplication application) {

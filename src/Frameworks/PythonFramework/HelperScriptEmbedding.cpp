@@ -3441,7 +3441,7 @@ namespace Mengine
                     ->setParticleEnable( _enable );
             }
             //////////////////////////////////////////////////////////////////////////
-            mt::vec2f s_getNodeScreenPosition( Node * _node )
+            mt::vec2f s_getNodeScreenAdaptPosition( Node * _node )
             {
                 MENGINE_ASSERTION_MEMORY_PANIC( _node, "node is nullptr" );
 
@@ -4351,7 +4351,7 @@ namespace Mengine
 
         pybind::def_functor( _kernel, "setParticlesEnabled", helperScriptMethod, &HelperScriptMethod::s_setParticlesEnabled );
 
-        pybind::def_functor( _kernel, "getNodeScreenPosition", helperScriptMethod, &HelperScriptMethod::s_getNodeScreenPosition );
+        pybind::def_functor( _kernel, "getNodeScreenAdaptPosition", helperScriptMethod, &HelperScriptMethod::s_getNodeScreenAdaptPosition );
         pybind::def_functor( _kernel, "fromWorldToScreenPosition", helperScriptMethod, &HelperScriptMethod::s_fromWorldToScreenPosition );
 
         pybind::def_functor( _kernel, "hasTextByKey", helperScriptMethod, &HelperScriptMethod::s_hasTextByKey );

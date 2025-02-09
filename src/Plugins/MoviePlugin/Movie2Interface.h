@@ -54,7 +54,7 @@ namespace Mengine
 
     public:
         virtual bool setWorkAreaFromEvent( const ConstString & _eventName ) = 0;
-        virtual bool removeWorkArea() = 0;
+        virtual void removeWorkArea() = 0;
 
     public:
         virtual bool hasSubComposition( const ConstString & _name ) const = 0;

@@ -789,34 +789,39 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie2::removeWorkArea()
+    void Movie2::removeWorkArea()
     {
-        if( m_composition == nullptr )
-        {
-            LOGGER_ERROR( "movie2 '%s' not compile"
-                , this->getName().c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_composition, "movie2 '%s' not compile"
+            , this->getName().c_str()
+        );
 
         ae_remove_movie_composition_work_area( m_composition );
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::hasCompositionBounds() const
     {
+        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == true, "movie2 '%s' not setup composition name"
+            , this->getName().c_str()
+        );
+
         return m_hasBounds;
     }
     //////////////////////////////////////////////////////////////////////////
     const mt::box2f & Movie2::getCompositionBounds() const
     {
+        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == true, "movie2 '%s' not setup composition name"
+            , this->getName().c_str()
+        );
+
         return m_bounds;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::hasSubComposition( const ConstString & _name ) const
     {
+        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == true, "movie2 '%s' not setup composition name"
+            , this->getName().c_str()
+        );
+
         bool result = m_subCompositions.exist( _name );
 
         return result;
@@ -824,6 +829,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const Movie2SubCompositionPtr & Movie2::getSubComposition( const ConstString & _name ) const
     {
+        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == true, "movie2 '%s' not setup composition name"
+            , this->getName().c_str()
+        );
+
         const Movie2SubCompositionPtr & subComposition = m_subCompositions.find( _name );
 
         return subComposition;
@@ -831,6 +840,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::foreachSubComposition( const LambdaSubCompositions & _lambda ) const
     {
+        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == true, "movie2 '%s' not setup composition name"
+            , this->getName().c_str()
+        );
+
         for( const HashtableSubCompositions::value_type & element : m_subCompositions )
         {
             const Movie2SubCompositionPtr & value = element.element;
@@ -841,15 +854,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::hasMovieLayers( const ConstString & _name ) const
     {
-        if( m_composition == nullptr )
-        {
-            LOGGER_ERROR( "movie2 '%s' not compile (layer '%s')"
-                , this->getName().c_str()
-                , _name.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_composition, "movie2 '%s' not compile (layer '%s')"
+            , this->getName().c_str()
+            , _name.c_str()
+        );
 
         if( ae_has_movie_composition_node_any( m_composition, _name.c_str() ) == AE_FALSE )
         {
@@ -861,15 +869,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::setEnableMovieLayers( const ConstString & _name, bool _enable )
     {
-        if( m_composition == nullptr )
-        {
-            LOGGER_ERROR( "movie2 '%s' invalid get layer '%s' not compile"
-                , this->getName().c_str()
-                , _name.c_str()
-            );
-
-            return;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_composition, "movie2 '%s' not compile (layers '%s' enable: %d)"
+            , this->getName().c_str()
+            , _name.c_str()
+            , _enable
+        );
 
 #if defined(MENGINE_DEBUG)
         if( ae_has_movie_composition_node_any( m_composition, _name.c_str() ) == AE_FALSE )
@@ -890,15 +894,11 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL( _opacity >= 0.f && _opacity <= 1.f, "invalid opacity [%.2f] (0..1)", _opacity );
 
-        if( m_composition == nullptr )
-        {
-            LOGGER_ERROR( "movie2 '%s' invalid get layer '%s' not compile"
-                , this->getName().c_str()
-                , _name.c_str()
-            );
-
-            return;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_composition, "movie2 '%s' not compile (layers '%s' opacity: %f)"
+            , this->getName().c_str()
+            , _name.c_str()
+            , _opacity
+        );
 
 #if defined(MENGINE_DEBUG)
         if( ae_has_movie_composition_node_any( m_composition, _name.c_str() ) == AE_FALSE )
@@ -917,6 +917,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::foreachRenderSlots( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const LambdaMovieRenderSlot & _lambda ) const
     {
+        MENGINE_ASSERTION_MEMORY_PANIC( m_composition, "movie2 '%s' not compile"
+            , this->getName().c_str()
+        );
+
         const mt::mat4f & wm = this->getWorldMatrix();
 
         ae_userdata_t composition_camera_userdata = ae_get_movie_composition_camera_userdata( m_composition );
@@ -3435,6 +3439,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const Movie2SlotPtr & Movie2::findSlot( const ConstString & _name ) const
     {
+        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == true, "movie2 '%s' not setup composition name (slot '%s')"
+            , this->getName().c_str()
+            , _name.c_str()
+        );
+
         for( const HashtableSlots::value_type & value : m_slots )
         {
             const Movie2SlotPtr & slot = value.element;
@@ -3452,6 +3461,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::hasSlot( const ConstString & _name ) const
     {
+        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == true, "movie2 '%s' not setup composition name (slot '%s')"
+            , this->getName().c_str()
+            , _name.c_str()
+        );
+
         for( const HashtableSlots::value_type & value : m_slots )
         {
             const Movie2SlotPtr & slot = value.element;
@@ -3469,6 +3483,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::foreachSlots( const LambdaNodes & _lambda )
     {
+        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == true, "movie2 '%s' not setup composition name"
+            , this->getName().c_str()
+        );
+
         for( const HashtableSlots::value_type & value : m_slots )
         {
             uint32_t index = value.key;
@@ -3492,6 +3510,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const HotSpotPolygonPtr & Movie2::findSocket( const ConstString & _name ) const
     {
+        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == true, "movie2 '%s' not setup composition name (socket '%s')"
+            , this->getName().c_str()
+            , _name.c_str()
+        );
+
         for( const HashtableSockets::value_type & value : m_sockets )
         {
             const HotSpotPolygonPtr & socket = value.element;
@@ -3509,6 +3532,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::hasSocket( const ConstString & _name ) const
     {
+        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == true, "movie2 '%s' not setup composition name (socket '%s')"
+            , this->getName().c_str()
+            , _name.c_str()
+        );
+
         for( const HashtableSockets::value_type & value : m_sockets )
         {
             const HotSpotPolygonPtr & socket = value.element;
@@ -3526,6 +3554,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::foreachSockets( const LambdaNodes & _lambda )
     {
+        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == true, "movie2 '%s' not setup composition name"
+            , this->getName().c_str()
+        );
+
         for( const HashtableSockets::value_type & value : m_sockets )
         {
             uint32_t key = value.key;
@@ -3549,6 +3581,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const TextFieldPtr & Movie2::findText( const ConstString & _name ) const
     {
+        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == true, "movie2 '%s' not setup composition name (text '%s')"
+            , this->getName().c_str()
+            , _name.c_str()
+        );
+
         for( const HashtableTexts::value_type & value : m_texts )
         {
             const TextFieldPtr & text = value.element;
@@ -3566,6 +3603,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::hasText( const ConstString & _name ) const
     {
+        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == true, "movie2 '%s' not setup composition name (text '%s')"
+            , this->getName().c_str()
+            , _name.c_str()
+        );
+
         for( const HashtableTexts::value_type & value : m_texts )
         {
             const TextFieldPtr & text = value.element;
@@ -3583,6 +3625,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::foreachTexts( const LambdaNodes & _lambda )
     {
+        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == true, "movie2 '%s' not setup composition name"
+            , this->getName().c_str()
+        );
+
         for( const HashtableTexts::value_type & value : m_texts )
         {
             uint32_t index = value.key;

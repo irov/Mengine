@@ -72,7 +72,7 @@ namespace Mengine
 
     public:
         bool setWorkAreaFromEvent( const ConstString & _eventName ) override;
-        bool removeWorkArea() override;
+        void removeWorkArea() override;
 
     public:
         bool hasCompositionBounds() const override;

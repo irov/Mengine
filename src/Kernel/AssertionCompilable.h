@@ -7,5 +7,5 @@
 #if defined(MENGINE_ASSERTION_DEBUG_ENABLE)
 #   define MENGINE_ASSERTION_COMPILABLE( Compilable, ... ) if( (Compilable)->isCompile() == false ) Mengine::Helper::AssertionOperator( MENGINE_CODE_LIBRARY, Mengine::ASSERTION_LEVEL_FATAL, "Compilable::isCompile == false", MENGINE_CODE_FILE, MENGINE_CODE_LINE ) DETAIL__MENGINE_ASSERTION_CALL(__VA_ARGS__)
 #else
-#   define MENGINE_ASSERTION_MEMORY_PANIC( Compilable, ... )
+#   define MENGINE_ASSERTION_COMPILABLE( Compilable, ... )
 #endif

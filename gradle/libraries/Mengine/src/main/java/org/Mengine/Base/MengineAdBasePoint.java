@@ -25,19 +25,19 @@ public class MengineAdBasePoint {
             return defaultValue;
         }
 
-        Object id = values.opt(key);
+        Object value = values.opt(key);
 
-        if (id instanceof Boolean == false) {
+        if (value instanceof Boolean == false) {
             MengineLog.logError(TAG, "%s attribute %s must be a boolean, but not a %s"
                 , m_name
                 , key
-                , id.getClass().getSimpleName()
+                , value.getClass().getSimpleName()
             );
 
             return defaultValue;
         }
 
-        return (boolean)id;
+        return (boolean)value;
     }
 
     protected int parseAdPointInteger(@NonNull JSONObject values, @NonNull String key, boolean required, int defaultValue) {
@@ -52,19 +52,19 @@ public class MengineAdBasePoint {
             return defaultValue;
         }
 
-        Object id = values.opt(key);
+        Object value = values.opt(key);
 
-        if (id instanceof Integer == false) {
+        if (value instanceof Integer == false) {
             MengineLog.logError(TAG, "%s attribute %s must be an integer, but not a %s"
                 , m_name
                 , key
-                , id.getClass().getSimpleName()
+                , value.getClass().getSimpleName()
             );
 
             return defaultValue;
         }
 
-        if ((int)id < -1) {
+        if ((int)value < -1) {
             MengineLog.logError(TAG, "%s attribute %s must be greater than or equal to -1"
                 , m_name
                 , key
@@ -73,7 +73,7 @@ public class MengineAdBasePoint {
             return defaultValue;
         }
 
-        return (int)id;
+        return (int)value;
     }
 
     protected long parseAdPointLong(@NonNull JSONObject values, @NonNull String key, boolean required, long defaultValue) {
@@ -88,28 +88,43 @@ public class MengineAdBasePoint {
             return defaultValue;
         }
 
-        Object id = values.opt(key);
+        Object value = values.opt(key);
 
-        if (id instanceof Integer == false && id instanceof Long == false) {
-            MengineLog.logError(TAG, "%s attribute %s must be an integer or a long, but not a %s"
-                , m_name
-                , key
-                , id.getClass().getSimpleName()
-            );
+        if (value instanceof Integer == true) {
+            int int_value = (int)value;
 
-            return defaultValue;
+            if (int_value < -1) {
+                MengineLog.logError(TAG, "%s attribute %s must be greater than or equal to -1"
+                    , m_name
+                    , key
+                );
+
+                return defaultValue;
+            }
+
+            return int_value;
+        } else if (value instanceof Long == true) {
+            long long_value = (long) value;
+
+            if (long_value < -1) {
+                MengineLog.logError(TAG, "%s attribute %s must be greater than or equal to -1"
+                    , m_name
+                    , key
+                );
+
+                return defaultValue;
+            }
+
+            return long_value;
         }
 
-        if ((long)id < -1) {
-            MengineLog.logError(TAG, "%s attribute %s must be greater than or equal to -1"
-                , m_name
-                , key
-            );
+        MengineLog.logError(TAG, "%s attribute %s must be an integer or a long, but not a %s"
+            , m_name
+            , key
+            , value.getClass().getSimpleName()
+        );
 
-            return defaultValue;
-        }
-
-        return (long)id;
+        return defaultValue;
     }
 
     protected String parseAdPointString(@NonNull JSONObject values, @NonNull String key, boolean required, String defaultValue) {
@@ -124,18 +139,18 @@ public class MengineAdBasePoint {
             return defaultValue;
         }
 
-        Object id = values.opt(key);
+        Object value = values.opt(key);
 
-        if (id instanceof String == false && id != null) {
+        if (value instanceof String == false && value != null) {
             MengineLog.logError(TAG, "%s attribute %s must be a string or null, but not a %s"
                 , m_name
                 , key
-                , id.getClass().getSimpleName()
+                , value.getClass().getSimpleName()
             );
 
             return defaultValue;
         }
 
-        return (String)id;
+        return (String)value;
     }
 }

@@ -63,6 +63,13 @@ namespace Mengine
             return result;
         }
 
+        bool empty() const
+        {
+            size_t size = this->size();
+
+            return size == 0;
+        }
+
         size_t capacity() const
         {
             return N;
@@ -74,6 +81,11 @@ namespace Mengine
         }
 
     public:
+        void assign( Char _value )
+        {
+            Detail::staticStringAppendChar( m_buffer, N, _value );
+        }
+
         void assign( const Char * _value )
         {
             this->assign( _value, MENGINE_UNKNOWN_SIZE );
@@ -104,7 +116,6 @@ namespace Mengine
 
         void append( Char _value )
         {
-            this->append( &_value, 1 );
             Detail::staticStringAppendChar( m_buffer, N, _value );
         }
 

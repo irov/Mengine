@@ -280,7 +280,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
                 this.showMediationDebugger();
             }
 
-            this.activateSemaphore("AppLovinSdkInitialized");
+            adService.readyAdProvider();
         });
 
         m_appLovinSdk = appLovinSdk;

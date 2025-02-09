@@ -81,11 +81,11 @@ namespace Mengine
         StaticString<MENGINE_ENVIRONMENT_USER_MAXNAME + MENGINE_ENVIRONMENT_DEVICE_MODEL_MAXNAME + 256 + 64> fingerprintGarbage;
 
         fingerprintGarbage.assign( "FINGERPRINT" );
-        fingerprintGarbage.append( "_" );
+        fingerprintGarbage.append( '_' );
         fingerprintGarbage.append( m_userName );
-        fingerprintGarbage.append( "_" );
+        fingerprintGarbage.append( '_' );
         fingerprintGarbage.append( m_deviceModel );
-        fingerprintGarbage.append( "_" );
+        fingerprintGarbage.append( '_' );
         fingerprintGarbage.append( androidId );
         
         StaticString<MENGINE_SHA1_HEX_COUNT + 1> fingerprint;

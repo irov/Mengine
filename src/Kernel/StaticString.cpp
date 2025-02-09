@@ -104,22 +104,15 @@ namespace Mengine
                 value_size = StdString::strlen( _value );
             }
 
-            size_t buffer_size = StdString::strlen( _buffer );
-
-            MENGINE_ASSERTION_FATAL( buffer_size + value_size < _capacity, "static string buffer '%s' [size %zu] append '%s' [size %zu] > [capacity %zu]"
+            MENGINE_ASSERTION_FATAL( StdString::strlen( _buffer ) + value_size < _capacity, "static string buffer '%s' [size %zu] append '%s' [size %zu] > [capacity %zu]"
                 , _buffer
-                , buffer_size
+                , StdString::strlen( _buffer )
                 , _value
                 , value_size
                 , _capacity
             );
 
-            if( buffer_size + value_size >= _capacity )
-            {
-                value_size = _capacity - buffer_size - 1;
-            }
-
-            StdString::strzcat_safe( _buffer, _value, _size, value_size );            
+            StdString::strzcat_safe( _buffer, _value, value_size, _capacity );
         }
         //////////////////////////////////////////////////////////////////////////
         void staticStringFormat( Char * const _buffer, size_t _capacity, const Char * _format, MENGINE_VA_LIST_TYPE _args )

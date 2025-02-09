@@ -7,33 +7,29 @@ import org.json.JSONObject;
 public class MengineAdInterstitialPoint extends MengineAdBasePoint {
     public static final String TAG = "MengineAdInterstitialPoint";
 
-    public int m_id;
-    public boolean m_enabled;
-    public int m_actionOffset;
-    public int m_actionCooldown;
-    public int m_showLimit;
-    public long m_timeOffset;
-    public long m_timeCooldown;
-    public long m_installTimeOffset;
-    public String m_cooldownGroupName;
+    protected int m_id;
+    protected boolean m_enabled;
+    protected int m_actionOffset;
+    protected int m_actionCooldown;
+    protected long m_timeOffset;
+    protected long m_timeCooldown;
+    protected long m_installTimeOffset;
+    protected String m_cooldownGroupName;
 
-    public int m_actionAttempts = 0;
-    public int m_showCount = 0;
-
-    public MengineAdCooldown m_cooldown;
+    protected MengineAdCooldown m_cooldown;
+    protected MengineAdAttempts m_attempts;
 
     MengineAdInterstitialPoint(@NonNull String name, @NonNull JSONObject values) {
         super(name);
 
         m_id = this.parseAdPointInteger(values, "id", false, 1);
         m_enabled = this.parseAdPointBoolean(values, "enable", true, false);
-        m_actionOffset = this.parseAdPointInteger(values, "action_offset", false, -1);
-        m_actionCooldown = this.parseAdPointInteger(values, "action_cooldown", false, -1);
-        m_showLimit = this.parseAdPointInteger(values, "show_limit", false, -1);
-        m_timeOffset = this.parseAdPointLong(values, "time_offset", false, -1);
-        m_timeCooldown = this.parseAdPointLong(values, "time_cooldown", false, -1);
-        m_installTimeOffset = this.parseAdPointLong(values, "install_time_offset", false, 600);
-        m_cooldownGroupName = this.parseAdPointString(values, "cooldown_group", false, null);
+        m_actionOffset = this.parseAdPointInteger(values, "trigger_action_offset", false, -1);
+        m_actionCooldown = this.parseAdPointInteger(values, "trigger_action_cooldown", false, -1);
+        m_timeOffset = this.parseAdPointLong(values, "trigger_time_offset", false, -1);
+        m_timeCooldown = this.parseAdPointLong(values, "trigger_time_cooldown", false, -1);
+        m_installTimeOffset = this.parseAdPointLong(values, "trigger_install_time_offset", false, 600);
+        m_cooldownGroupName = this.parseAdPointString(values, "trigger_cooldown_group", false, null);
     }
 
     public String getCooldownGroupName() {
@@ -42,6 +38,10 @@ public class MengineAdInterstitialPoint extends MengineAdBasePoint {
 
     public void setCooldown(MengineAdCooldown cooldown) {
         m_cooldown = cooldown;
+    }
+
+    public void setAttempts(MengineAdAttempts attempts) {
+        m_attempts = attempts;
     }
 
     public MengineAdCooldown getCooldown() {
@@ -53,20 +53,22 @@ public class MengineAdInterstitialPoint extends MengineAdBasePoint {
             return false;
         }
 
-        m_actionAttempts++;
+        int attempt = m_attempts.attempt();
 
-        if (m_actionOffset != -1 && m_actionAttempts < m_actionOffset) {
+        if (m_actionOffset != -1 && attempt < m_actionOffset) {
             return false;
         }
 
         if (m_actionCooldown != -1 && m_actionCooldown != 0) {
-            if (m_actionAttempts % m_actionCooldown != 0) {
-                return false;
+            if (m_actionOffset != -1) {
+                if ((attempt - m_actionOffset) % m_actionCooldown != 0) {
+                    return false;
+                }
+            } else {
+                if (attempt % m_actionCooldown != 0) {
+                    return false;
+                }
             }
-        }
-
-        if (m_showLimit != -1 && m_showCount >= m_showLimit) {
-            return false;
         }
 
         long currentTimestamp = MengineUtils.getTimestamp();
@@ -99,7 +101,7 @@ public class MengineAdInterstitialPoint extends MengineAdBasePoint {
     }
 
     public void showAd() {
-        m_showCount++;
+        //ToDo: Implement this method
     }
 
     public void completeAd() {

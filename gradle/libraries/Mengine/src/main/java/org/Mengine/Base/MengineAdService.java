@@ -16,6 +16,7 @@ public class MengineAdService extends MengineService implements MengineAdProvide
     private final Map<String, MengineAdInterstitialPoint> m_adInterstitialPoints = new HashMap<>();
     private final Map<String, MengineAdRewardedPoint> m_adRewardedPoints = new HashMap<>();
     private final Map<String, MengineAdCooldown> m_adCooldowns = new HashMap<>();
+    private final Map<String, MengineAdAttempts> m_adAttempts = new HashMap<>();
 
     private MengineAdProviderInterface m_adProvider;
 
@@ -25,6 +26,10 @@ public class MengineAdService extends MengineService implements MengineAdProvide
 
     public MengineAdProviderInterface getAdProvider() {
         return m_adProvider;
+    }
+
+    public void readyAdProvider() {
+        this.activateSemaphore("AdServiceReady");
     }
 
     private void parseInterstitialPoint(String adPointName, JSONObject adPointConfig) {
@@ -53,6 +58,16 @@ public class MengineAdService extends MengineService implements MengineAdProvide
 
             adPoint.setCooldown(cooldown);
         }
+
+        if (m_adAttempts.containsKey(adPointName) == false) {
+            MengineAdAttempts newAttempts = new MengineAdAttempts();
+
+            m_adAttempts.put(adPointName, newAttempts);
+        }
+
+        MengineAdAttempts attempts = m_adAttempts.get(adPointName);
+
+        adPoint.setAttempts(attempts);
 
         m_adInterstitialPoints.put(adPointName, adPoint);
     }
@@ -98,6 +113,20 @@ public class MengineAdService extends MengineService implements MengineAdProvide
 
     @Override
     public void onLoad(@NonNull MengineApplication application, @NonNull Bundle bundle) {
+        Bundle attemptsBundle = bundle.getBundle("attempts");
+
+        if (attemptsBundle != null) {
+            for (String key : attemptsBundle.keySet()) {
+                Bundle attemptsPointBundle = attemptsBundle.getBundle(key);
+
+                MengineAdAttempts attempts = new MengineAdAttempts();
+
+                attempts.onLoad(application, attemptsPointBundle);
+
+                m_adAttempts.put(key, attempts);
+            }
+        }
+
         Bundle cooldownsBundle = bundle.getBundle("cooldowns");
 
         if (cooldownsBundle != null) {
@@ -116,6 +145,19 @@ public class MengineAdService extends MengineService implements MengineAdProvide
     @Override
     public Bundle onSave(@NonNull MengineApplication application) {
         Bundle bundle = new Bundle();
+
+        Bundle attemptsBundle = new Bundle();
+
+        for (Map.Entry<String, MengineAdAttempts> entry : m_adAttempts.entrySet()) {
+            String attemptsPointName = entry.getKey();
+            MengineAdAttempts attempts = entry.getValue();
+
+            Bundle attemptsPointBundle = attempts.onSave(application);
+
+            attemptsBundle.putBundle(attemptsPointName, attemptsPointBundle);
+        }
+
+        bundle.putBundle("attempts", attemptsBundle);
 
         Bundle cooldownsBundle = new Bundle();
 
@@ -176,9 +218,15 @@ public class MengineAdService extends MengineService implements MengineAdProvide
             return false;
         }
 
-        MengineAdInterstitialPoint adPoint = m_adInterstitialPoints.get(placement);
-
         MengineApplication application = this.getMengineApplication();
+
+        if (BuildConfig.DEBUG == true) {
+            if (application.hasOption("adservice.always_interstitial_point." + placement) == true) {
+                return true;
+            }
+        }
+
+        MengineAdInterstitialPoint adPoint = m_adInterstitialPoints.get(placement);
 
         if (adPoint.canYouShowAd(application) == false) {
             return false;
@@ -235,6 +283,12 @@ public class MengineAdService extends MengineService implements MengineAdProvide
 
         MengineApplication application = this.getMengineApplication();
 
+        if (BuildConfig.DEBUG == true) {
+            if (application.hasOption("adservice.always_rewarded_point." + placement) == true) {
+                return true;
+            }
+        }
+
         MengineAdRewardedPoint adPoint = m_adRewardedPoints.get(placement);
 
         if (adPoint.canOfferAd(application) == false) {
@@ -257,6 +311,12 @@ public class MengineAdService extends MengineService implements MengineAdProvide
         }
 
         MengineApplication application = this.getMengineApplication();
+
+        if (BuildConfig.DEBUG == true) {
+            if (application.hasOption("adservice.always_rewarded_point." + placement) == true) {
+                return true;
+            }
+        }
 
         MengineAdRewardedPoint adPoint = m_adRewardedPoints.get(placement);
 

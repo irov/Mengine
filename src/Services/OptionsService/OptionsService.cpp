@@ -66,10 +66,11 @@ namespace Mengine
 
             if( option_value_str == nullptr )
             {
-                if( StdString::strlen( option_key_str ) >= MENGINE_OPTIONS_KEY_SIZE )
-                {
-                    return false;
-                }
+                MENGINE_ASSERTION_FATAL( StdString::strlen( option_key_str ) < MENGINE_OPTIONS_KEY_SIZE, "option '%s' invalid key size %zu (max %u)"
+                    , option_key_str
+                    , StdString::strlen( option_key_str )
+                    , MENGINE_OPTIONS_KEY_SIZE
+                );
 
                 op.key.assign( option_key_str );
 
@@ -80,10 +81,11 @@ namespace Mengine
             {
                 size_t key_size = option_value_str - option_key_str;
 
-                if( key_size >= MENGINE_OPTIONS_KEY_SIZE )
-                {
-                    return false;
-                }
+                MENGINE_ASSERTION_FATAL( key_size < MENGINE_OPTIONS_KEY_SIZE, "option '%s' invalid key size %zu (max %u)"
+                    , option_key_str
+                    , key_size
+                    , MENGINE_OPTIONS_KEY_SIZE
+                );
 
                 op.key.assign( option_key_str, key_size );
 
@@ -93,10 +95,11 @@ namespace Mengine
                 {
                     const Char * op_value = option_value_str + 1;
 
-                    if( StdString::strlen( op_value ) >= MENGINE_OPTIONS_VALUE_SIZE )
-                    {
-                        return false;
-                    }
+                    MENGINE_ASSERTION_FATAL( StdString::strlen( op_value ) < MENGINE_OPTIONS_VALUE_SIZE, "option '%s' invalid value size %zu (max %u)"
+                        , op_value
+                        , StdString::strlen( op_value )
+                        , MENGINE_OPTIONS_VALUE_SIZE
+                    );
 
                     op.value[0].append( op_value );
                     op.value_count = 1;
@@ -109,10 +112,11 @@ namespace Mengine
                     {
                         size_t value_size = option_delim_str - (option_value_str + 1);
 
-                        if( value_size >= MENGINE_OPTIONS_VALUE_SIZE )
-                        {
-                            return false;
-                        }
+                        MENGINE_ASSERTION_FATAL( value_size < MENGINE_OPTIONS_VALUE_SIZE, "option '%s' invalid value size %zu (max %u)"
+                            , option_value_str + 1
+                            , value_size
+                            , MENGINE_OPTIONS_VALUE_SIZE
+                        );
 
                         op.value[op.value_count].append( option_value_str + 1, value_size );
                         ++op.value_count;
@@ -128,17 +132,17 @@ namespace Mengine
 
                         const Char * op_value = option_delim_str + 1;
 
-                        if( StdString::strlen( op_value ) >= MENGINE_OPTIONS_VALUE_SIZE )
-                        {
-                            return false;
-                        }
+                        MENGINE_ASSERTION_FATAL( StdString::strlen( op_value ) < MENGINE_OPTIONS_VALUE_SIZE, "option '%s' invalid value size %zu (max %u)"
+                            , op_value
+                            , StdString::strlen( op_value )
+                            , MENGINE_OPTIONS_VALUE_SIZE
+                        );
 
                         op.value[op.value_count].append( op_value );
                         ++op.value_count;
 
                         break;
                     }
-
                 }
             }
 

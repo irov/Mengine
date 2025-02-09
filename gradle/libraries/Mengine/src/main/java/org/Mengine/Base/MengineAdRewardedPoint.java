@@ -11,7 +11,6 @@ public class MengineAdRewardedPoint extends MengineAdBasePoint {
     public boolean m_enabled;
 
     public int m_actionAttempts = 0;
-    public int m_showCount = 0;
 
     MengineAdRewardedPoint(@NonNull String name, @NonNull JSONObject values) {
         super(name);
@@ -39,7 +38,7 @@ public class MengineAdRewardedPoint extends MengineAdBasePoint {
     }
 
     public void showAd() {
-        m_showCount++;
+        //ToDo: Implement this method
     }
 
     public void completeAd() {

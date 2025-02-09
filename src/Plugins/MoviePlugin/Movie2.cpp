@@ -800,7 +800,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::hasCompositionBounds() const
     {
-        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == true, "movie2 '%s' not setup composition name"
+        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == false, "movie2 '%s' not setup composition name"
             , this->getName().c_str()
         );
 
@@ -809,7 +809,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const mt::box2f & Movie2::getCompositionBounds() const
     {
-        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == true, "movie2 '%s' not setup composition name"
+        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == false, "movie2 '%s' not setup composition name"
             , this->getName().c_str()
         );
 
@@ -818,7 +818,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::hasSubComposition( const ConstString & _name ) const
     {
-        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == true, "movie2 '%s' not setup composition name"
+        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == false, "movie2 '%s' not setup composition name"
             , this->getName().c_str()
         );
 
@@ -829,7 +829,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const Movie2SubCompositionPtr & Movie2::getSubComposition( const ConstString & _name ) const
     {
-        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == true, "movie2 '%s' not setup composition name"
+        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == false, "movie2 '%s' not setup composition name"
             , this->getName().c_str()
         );
 
@@ -840,7 +840,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::foreachSubComposition( const LambdaSubCompositions & _lambda ) const
     {
-        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == true, "movie2 '%s' not setup composition name"
+        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == false, "movie2 '%s' not setup composition name"
             , this->getName().c_str()
         );
 
@@ -3439,7 +3439,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const Movie2SlotPtr & Movie2::findSlot( const ConstString & _name ) const
     {
-        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == true, "movie2 '%s' not setup composition name (slot '%s')"
+        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == false, "movie2 '%s' not setup composition name (slot '%s')"
             , this->getName().c_str()
             , _name.c_str()
         );
@@ -3461,7 +3461,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::hasSlot( const ConstString & _name ) const
     {
-        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == true, "movie2 '%s' not setup composition name (slot '%s')"
+        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == false, "movie2 '%s' not setup composition name (slot '%s')"
             , this->getName().c_str()
             , _name.c_str()
         );
@@ -3483,7 +3483,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::foreachSlots( const LambdaNodes & _lambda )
     {
-        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == true, "movie2 '%s' not setup composition name"
+        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == false, "movie2 '%s' not setup composition name"
             , this->getName().c_str()
         );
 
@@ -3510,7 +3510,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const HotSpotPolygonPtr & Movie2::findSocket( const ConstString & _name ) const
     {
-        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == true, "movie2 '%s' not setup composition name (socket '%s')"
+        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == false, "movie2 '%s' not setup composition name (socket '%s')"
             , this->getName().c_str()
             , _name.c_str()
         );
@@ -3532,7 +3532,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::hasSocket( const ConstString & _name ) const
     {
-        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == true, "movie2 '%s' not setup composition name (socket '%s')"
+        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == false, "movie2 '%s' not setup composition name (socket '%s')"
             , this->getName().c_str()
             , _name.c_str()
         );
@@ -3554,7 +3554,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::foreachSockets( const LambdaNodes & _lambda )
     {
-        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == true, "movie2 '%s' not setup composition name"
+        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == false, "movie2 '%s' not setup composition name"
             , this->getName().c_str()
         );
 
@@ -3581,7 +3581,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const TextFieldPtr & Movie2::findText( const ConstString & _name ) const
     {
-        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == true, "movie2 '%s' not setup composition name (text '%s')"
+        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == false, "movie2 '%s' not setup composition name (text '%s')"
             , this->getName().c_str()
             , _name.c_str()
         );
@@ -3603,7 +3603,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::hasText( const ConstString & _name ) const
     {
-        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == true, "movie2 '%s' not setup composition name (text '%s')"
+        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == false, "movie2 '%s' not setup composition name (text '%s')"
             , this->getName().c_str()
             , _name.c_str()
         );
@@ -3625,7 +3625,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::foreachTexts( const LambdaNodes & _lambda )
     {
-        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == true, "movie2 '%s' not setup composition name"
+        MENGINE_ASSERTION_FATAL( m_compositionName.empty() == false, "movie2 '%s' not setup composition name"
             , this->getName().c_str()
         );
 

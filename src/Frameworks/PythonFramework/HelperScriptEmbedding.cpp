@@ -79,6 +79,7 @@
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/VocabularyHelper.h"
 #include "Kernel/StringView.h"
+#include "Kernel/AssertionCompilable.h"
 
 #include "Config/StdString.h"
 #include "Config/StdMath.h"
@@ -640,10 +641,14 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             mt::box2f s_getHotSpotPolygonBoundingBox( const HotSpotPolygonPtr & _hotspotPolygon )
             {
+                MENGINE_ASSERTION_MEMORY_PANIC( _hotspotPolygon, "hotspot is nullptr" );
+
+                MENGINE_ASSERTION_COMPILABLE( _hotspotPolygon, "hotspot '%s' is not compile"
+                    , _hotspotPolygon->getName().c_str()
+                );
+
                 mt::box2f bb;
                 mt::box2_insideout( &bb );
-
-                MENGINE_ASSERTION_MEMORY_PANIC( _hotspotPolygon, "hotspot is nullptr" );
 
                 const Polygon & polygon = _hotspotPolygon->getPolygon();
 

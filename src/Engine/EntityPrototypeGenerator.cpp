@@ -20,7 +20,7 @@ namespace Mengine
     {
         EntityPtr entity = Helper::generateFactorable<Node, Entity>( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( entity, "can't create '%s' '%s' doc '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( entity, "can't create category '%s' prototype '%s' doc '%s'"
             , m_category.c_str()
             , m_prototype.c_str()
             , MENGINE_DOCUMENT_STR( _doc )

@@ -309,7 +309,7 @@ namespace Mengine
         if( HAS_OPTION( "engineinfo" ) == true )
         {
             PLATFORM_SERVICE()
-                ->messageBox( "Mengine", "url: %s\ncommit: %s\nbranch: %s\ndate: %s"
+                ->messageBox( "Mengine", "url '%s'\ncommit '%s'\nbranch '%s'\ndate '%s'"
                     , engineGitURL
                     , engineGitSHA1
                     , engineGitBranch
@@ -317,20 +317,20 @@ namespace Mengine
                 );
         }
 
-        LOGGER_MESSAGE_RELEASE( "mengine URL: %s", engineGitURL );
-        LOGGER_MESSAGE_RELEASE( "mengine commit: %s", engineGitSHA1 );
-        LOGGER_MESSAGE_RELEASE( "mengine branch: %s", engineGitBranch );
-        LOGGER_MESSAGE_RELEASE( "mengine date: %s", engineGitDate );
+        LOGGER_MESSAGE_RELEASE( "mengine URL '%s'", engineGitURL );
+        LOGGER_MESSAGE_RELEASE( "mengine commit '%s'", engineGitSHA1 );
+        LOGGER_MESSAGE_RELEASE( "mengine branch '%s'", engineGitBranch );
+        LOGGER_MESSAGE_RELEASE( "mengine date '%s'", engineGitDate );
 
         const Char * contentCommit = Helper::getContentCommit();
 
         if( HAS_OPTION( "contentinfo" ) == true )
         {
             PLATFORM_SERVICE()
-                ->messageBox( "Mengine", "Content Commit: %s", contentCommit );
+                ->messageBox( "Mengine", "Content Commit '%s'", contentCommit );
         }
 
-        LOGGER_MESSAGE_RELEASE( "content commit: %s", contentCommit );
+        LOGGER_MESSAGE_RELEASE( "content commit '%s'", contentCommit );
 
         const Char * buildVersion = Helper::getBuildVersion();
         uint32_t buildVersionNumber = Helper::getBuildVersionNumber();
@@ -342,7 +342,7 @@ namespace Mengine
         if( HAS_OPTION( "buildinfo" ) == true )
         {
             PLATFORM_SERVICE()
-                ->messageBox( "Mengine", "build version: %s [0x%08x] user: %s date: %s project: %s number: %" MENGINE_PRIu64 ""
+                ->messageBox( "Mengine", "build version '%s' [0x%08x] user '%s' date '%s' project '%s' number %" MENGINE_PRIu64 ""
                     , buildVersion
                     , buildVersionNumber
                     , buildUserName
@@ -352,7 +352,7 @@ namespace Mengine
                 );
         }
 
-        LOGGER_MESSAGE_RELEASE( "build version: %s [0x%08x] user: %s timestamp: %s project: %s build number: %" MENGINE_PRIu64 ""
+        LOGGER_MESSAGE_RELEASE( "build version '%s' [0x%08x] user '%s' timestamp '%s' project '%s' build number %" MENGINE_PRIu64 ""
             , buildVersion
             , buildVersionNumber
             , buildUserName

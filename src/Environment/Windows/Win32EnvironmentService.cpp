@@ -24,7 +24,7 @@ namespace Mengine
             DWORD unicode_userNameLen = UNLEN + 1;
             ::GetUserNameA( _userName, &unicode_userNameLen );
 
-            LOGGER_INFO_PROTECTED( "environment", "user name: %s"
+            LOGGER_INFO_PROTECTED( "environment", "user name '%s'"
                 , _userName
             );
         }
@@ -33,7 +33,7 @@ namespace Mengine
         {
             MENGINE_STRNCPY_STATIC( _deviceModel, "PC", MENGINE_ENVIRONMENT_DEVICE_MODEL_MAXNAME );
 
-            LOGGER_INFO_PROTECTED( "environment", "device model: %s"
+            LOGGER_INFO_PROTECTED( "environment", "device model '%s'"
                 , _deviceModel
             );
         }
@@ -44,7 +44,7 @@ namespace Mengine
 
             ::GetLocaleInfoA( lcid, LOCALE_SISO639LANGNAME, _deviceLanguage, LOCALE_NAME_MAX_LENGTH );
 
-            LOGGER_INFO_PROTECTED( "environment", "device language: %s"
+            LOGGER_INFO_PROTECTED( "environment", "device language '%s'"
                 , _deviceLanguage
             );
         }
@@ -53,7 +53,7 @@ namespace Mengine
         {
             MENGINE_STRNCPY_STATIC( _osFamily, "Windows", MENGINE_ENVIRONMENT_OS_FAMILY_MAXNAME );
 
-            LOGGER_INFO_PROTECTED( "environment", "os family: %s"
+            LOGGER_INFO_PROTECTED( "environment", "os family '%s'"
                 , _osFamily
             );
         }
@@ -122,7 +122,7 @@ namespace Mengine
                 }break;
             }
 
-            LOGGER_INFO_PROTECTED( "environment", "os version: %s"
+            LOGGER_INFO_PROTECTED( "environment", "os version '%s'"
                 , _osVersion
             );
         }

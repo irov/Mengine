@@ -2,6 +2,9 @@
 
 #include "Interface/RandomizerInterface.h"
 
+#include "Kernel/Vector.h"
+#include "Kernel/String.h"
+
 #include "Config/Algorithm.h"
 #include "Config/Utility.h"
 
@@ -9,6 +12,25 @@ namespace Mengine
 {
     namespace Helper
     {
+        //////////////////////////////////////////////////////////////////////////
+        template<class C>
+        String vectorToString( const C & _vector )
+        {
+            String str;
+
+            str += '[';
+
+            for( const typename C::value_type & value : _vector )
+            {
+                str.append( value.c_str(), value.size() );
+
+                str += ' ';
+            }
+
+            str += ']';
+
+            return str;
+        }
         //////////////////////////////////////////////////////////////////////////
         template<class C>
         C exciseVector( C & _vector, uint32_t _count )

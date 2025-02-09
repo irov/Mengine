@@ -474,6 +474,7 @@ Assertion
     AssertionObservable.h
     AssertionObservable.cpp
     AssertionOptional.h
+    AssertionCompilable.h
     AssertionUnique.h
     AssertionJSONInvalid.h
     AssertionCharacter.cpp

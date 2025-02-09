@@ -14,6 +14,7 @@
 #include "Kernel/AssertionObservable.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/DocumentableHelper.h"
+#include "Kernel/VectorHelper.h"
 
 #include "Config/StdIntTypes.h"
 #include "Config/StdIO.h"
@@ -1897,7 +1898,7 @@ namespace Mengine
         String fmt;
         if( Helper::fillStringFormat( textValue, textSize, textFormatArgs, &fmt ) == false )
         {
-            LOGGER_ERROR( "text field '%s' textId '%s' (base '%s') invalid formating string text '%s' format with args %" MENGINE_PRIuPTR " [alias env: %s]"
+            LOGGER_ERROR( "text field '%s' textId '%s' (base '%s') invalid formating string text '%s' format with args %" MENGINE_PRIuPTR " [alias env '%s']"
                 , this->getName().c_str()
                 , this->getTotalTextId().c_str()
                 , m_textId.c_str()
@@ -1906,13 +1907,10 @@ namespace Mengine
                 , m_aliasEnvironment.c_str()
             );
 
-            for( const String & arg : m_textFormatArgs )
-            {
-                LOGGER_ERROR( "text field '%s' arg: %s"
-                    , this->getName().c_str()
-                    , arg.c_str()
-                );
-            }
+            LOGGER_ERROR( "text field '%s' args '%s'"
+                , this->getName().c_str()
+                , Helper::vectorToString( m_textFormatArgs ).c_str()
+            );
 
             return false;
         }
@@ -1952,7 +1950,7 @@ namespace Mengine
                 return true;
             }, _text, &fmtTagMatched ) == false )
             {
-                LOGGER_ERROR( "text field '%s' textId '%s' (base '%s') invalid tagging string format '%s' with tag '%s' [alias env: %s]"
+                LOGGER_ERROR( "text field '%s' textId '%s' (base '%s') invalid tagging string format '%s' with tag '%s' [alias env '%s']"
                     , this->getName().c_str()
                     , this->getTotalTextId().c_str()
                     , m_textId.c_str()
@@ -2091,7 +2089,7 @@ namespace Mengine
 
                 if( font->prepareText( notextId, MENGINE_STATIC_STRING_LENGTH( notextId ), _cacheText ) == false )
                 {
-                    LOGGER_ERROR( "text field '%s' textId '%s' (base '%s') invalid prepare text '%s' [alias env: %s]"
+                    LOGGER_ERROR( "text field '%s' textId '%s' (base '%s') invalid prepare text '%s' [alias env '%s']"
                         , this->getName().c_str()
                         , this->getTotalTextId().c_str()
                         , m_textId.c_str()
@@ -2106,7 +2104,7 @@ namespace Mengine
             {
                 if( font->prepareText( textId.c_str(), textId.size(), _cacheText ) == false )
                 {
-                    LOGGER_ERROR( "text field '%s' textId '%s' (base '%s') invalid prepare text '%s' [alias env: %s]"
+                    LOGGER_ERROR( "text field '%s' textId '%s' (base '%s') invalid prepare text '%s' [alias env '%s']"
                         , this->getName().c_str()
                         , this->getTotalTextId().c_str()
                         , m_textId.c_str()
@@ -2132,7 +2130,7 @@ namespace Mengine
 
         if( font->prepareText( text_str, text_size, _cacheText ) == false )
         {
-            LOGGER_ERROR( "text field '%s' textId '%s' (base '%s') invalid prepare text '%s' [alias env: %s]"
+            LOGGER_ERROR( "text field '%s' textId '%s' (base '%s') invalid prepare text '%s' [alias env '%s']"
                 , this->getName().c_str()
                 , this->getTotalTextId().c_str()
                 , m_textId.c_str()

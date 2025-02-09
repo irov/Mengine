@@ -33,7 +33,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32DynamicLibrary::load()
     {
-        LOGGER_INFO( "platform", "load dll: %s"
+        LOGGER_INFO( "platform", "load dll '%s'"
             , this->getName()
         );
 
@@ -67,7 +67,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32DynamicLibrary::unload()
     {
-        LOGGER_INFO( "platform", "unload dll: %s"
+        LOGGER_INFO( "platform", "unload dll '%s'"
             , this->getName()
         );
 

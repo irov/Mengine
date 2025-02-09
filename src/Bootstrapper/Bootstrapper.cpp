@@ -782,11 +782,11 @@ namespace Mengine
         if( OPTION_showuserfolder == true )
         {
             PLATFORM_SERVICE()
-                ->messageBox( "Mengine", "user folder: %s", cs_userPath.c_str() );
+                ->messageBox( "Mengine", "user folder '%s'", cs_userPath.c_str() );
         }
         else
         {
-            LOGGER_INFO_PROTECTED( "bootstrapper", "user folder: %s", cs_userPath.c_str() );
+            LOGGER_INFO_PROTECTED( "bootstrapper", "user folder '%s'", cs_userPath.c_str() );
         }
 
         FileGroupInterfacePtr userFileGroup = nullptr;
@@ -899,7 +899,7 @@ namespace Mengine
             Path fullLogFilename = {'\0'};
             userFileGroup->getFullPath( logFilename, fullLogFilename );
 
-            LOGGER_INFO_PROTECTED( "bootstrapper", "write file log to: %s"
+            LOGGER_INFO_PROTECTED( "bootstrapper", "write file log to '%s'"
                 , fullLogFilename
             );
 
@@ -1060,10 +1060,10 @@ namespace Mengine
         PLATFORM_SERVICE()
             ->initializeFileService();
 
-        LOGGER_INFO( "bootstrapper", "debug mode: %s", Helper::isDebugMode() == true ? "ON" : "OFF" );
-        LOGGER_INFO( "bootstrapper", "development mode: %s", Helper::isDevelopmentMode() == true ? "ON" : "OFF" );
-        LOGGER_INFO( "bootstrapper", "build publish: %s", Helper::isBuildPublish() == true ? "ON" : "OFF" );
-        LOGGER_INFO( "bootstrapper", "master release: %s", Helper::isMasterRelease() == true ? "ON" : "OFF" );
+        LOGGER_INFO( "bootstrapper", "debug mode '%s'", Helper::isDebugMode() == true ? "ON" : "OFF" );
+        LOGGER_INFO( "bootstrapper", "development mode '%s'", Helper::isDevelopmentMode() == true ? "ON" : "OFF" );
+        LOGGER_INFO( "bootstrapper", "build publish '%s'", Helper::isBuildPublish() == true ? "ON" : "OFF" );
+        LOGGER_INFO( "bootstrapper", "master release '%s'", Helper::isMasterRelease() == true ? "ON" : "OFF" );
 
 #if defined(MENGINE_ASSERTION_DEBUG_ENABLE)
         LOGGER_INFO( "bootstrapper", "enable assertion debug: ON" );
@@ -1106,7 +1106,7 @@ namespace Mengine
         PLATFORM_SERVICE()
             ->getCurrentPath( currentPath );
 
-        LOGGER_INFO_PROTECTED( "bootstrapper", "current folder: %s"
+        LOGGER_INFO_PROTECTED( "bootstrapper", "current folder '%s'"
             , currentPath
         );
 
@@ -1558,7 +1558,7 @@ namespace Mengine
 
         for( const String & pluginName : plugins )
         {
-            LOGGER_INFO( "bootstrapper", "create dynamic plugin: %s"
+            LOGGER_INFO( "bootstrapper", "create dynamic plugin '%s'"
                 , pluginName.c_str()
             );
 
@@ -1600,7 +1600,7 @@ namespace Mengine
 
         for( const String & pluginName : devPlugins )
         {
-            LOGGER_INFO( "bootstrapper", "create dynamic dev plugin: %s"
+            LOGGER_INFO( "bootstrapper", "create dynamic dev plugin '%s'"
                 , pluginName.c_str()
             );
 
@@ -1623,7 +1623,7 @@ namespace Mengine
 
         for( const String & pluginName : plugins )
         {
-            LOGGER_INFO( "bootstrapper", "create dynamic system plugin: %s"
+            LOGGER_INFO( "bootstrapper", "create dynamic system plugin '%s'"
                 , pluginName.c_str()
             );
 
@@ -1665,7 +1665,7 @@ namespace Mengine
 
         for( const String & pluginName : devPlugins )
         {
-            LOGGER_INFO( "bootstrapper", "create dynamic system dev plugin: %s"
+            LOGGER_INFO( "bootstrapper", "create dynamic system dev plugin '%s'"
                 , pluginName.c_str()
             );
 
@@ -1688,7 +1688,7 @@ namespace Mengine
 
         for( const String & pluginName : plugins )
         {
-            LOGGER_INFO( "bootstrapper", "create dynamic priority plugin: %s"
+            LOGGER_INFO( "bootstrapper", "create dynamic priority plugin '%s'"
                 , pluginName.c_str()
             );
 
@@ -1730,7 +1730,7 @@ namespace Mengine
 
         for( const String & pluginName : devPlugins )
         {
-            LOGGER_INFO( "bootstrapper", "create dynamic priority dev plugin: %s"
+            LOGGER_INFO( "bootstrapper", "create dynamic priority dev plugin '%s'"
                 , pluginName.c_str()
             );
 
@@ -1763,7 +1763,7 @@ namespace Mengine
         {
             const Char * pluginName = *it_plugin;
 
-            LOGGER_INFO( "bootstrapper", "create dynamic options plugin: %s"
+            LOGGER_INFO( "bootstrapper", "create dynamic options plugin '%s'"
                 , pluginName
             );
 
@@ -1813,7 +1813,7 @@ namespace Mengine
 
         for( const ConstString & frameworkName : frameworks )
         {
-            LOGGER_INFO( "bootstrapper", "create framework: %s"
+            LOGGER_INFO( "bootstrapper", "create framework '%s'"
                 , frameworkName.c_str()
             );
 
@@ -1840,7 +1840,7 @@ namespace Mengine
 
         for( const ConstString & moduleName : modules )
         {
-            LOGGER_INFO( "bootstrapper", "run module: %s"
+            LOGGER_INFO( "bootstrapper", "run module '%s'"
                 , moduleName.c_str()
             );
 
@@ -1895,7 +1895,7 @@ namespace Mengine
                     continue;
                 }
 
-                LOGGER_INFO( "bootstrapper", "run dev module: %s"
+                LOGGER_INFO( "bootstrapper", "run dev module '%s'"
                     , moduleName.c_str()
                 );
 
@@ -1955,7 +1955,7 @@ namespace Mengine
                 continue;
             }
 
-            LOGGER_INFO( "bootstrapper", "stop module: %s"
+            LOGGER_INFO( "bootstrapper", "stop module '%s'"
                 , moduleName.c_str()
             );
 
@@ -2021,7 +2021,7 @@ namespace Mengine
                     continue;
                 }
 
-                LOGGER_INFO( "bootstrapper", "stop dev module: %s"
+                LOGGER_INFO( "bootstrapper", "stop dev module '%s'"
                     , moduleName.c_str()
                 );
 
@@ -2054,7 +2054,7 @@ namespace Mengine
                 continue;
             }
 
-            LOGGER_INFO( "bootstrapper", "finalize framework: %s"
+            LOGGER_INFO( "bootstrapper", "finalize framework '%s'"
                 , frameworkName.c_str()
             );
 

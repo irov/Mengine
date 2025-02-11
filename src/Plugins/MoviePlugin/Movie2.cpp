@@ -467,7 +467,7 @@ namespace Mengine
 
                 this->addText_( layer.index, node );
 
-                MatrixProxyPtr matrixProxy = Helper::generateFactorable<Node, MatrixProxy>( MENGINE_DOCUMENT_FACTORABLE );
+                MatrixProxyPtr matrixProxy = Helper::generateFactorable<Node, MatrixProxy>( MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() ) );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( matrixProxy, "name '%s' resource '%s' composition '%s' layer '%s' invalid create 'MatrixProxy'"
                     , this->getName().c_str()
@@ -515,7 +515,7 @@ namespace Mengine
 
                 this->addSlot_( layer.index, node );
 
-                MatrixProxyPtr matrixProxy = Helper::generateFactorable<Node, MatrixProxy>( MENGINE_DOCUMENT_FACTORABLE );
+                MatrixProxyPtr matrixProxy = Helper::generateFactorable<Node, MatrixProxy>( MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() ) );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( matrixProxy, "name '%s' resource '%s' composition '%s' layer '%s' invalid create 'MatrixProxy'"
                     , this->getName().c_str()

@@ -63,34 +63,44 @@ namespace Mengine
         mt::vec3f p_vm;
         mt::mul_v3_v2_m4( &p_vm, p, vm_inv );
 
-        Viewport vp;
-        this->makeViewport_( &vp );
+        //Viewport vp;
+        //this->makeViewport_( &vp );
 
-        p_vm.x -= vp.begin.x;
-        p_vm.y -= vp.begin.y;
-        p_vm.z += _deep;
+        //mt::vec3f wp;
+        //wp.x = p_vm.x - vp.begin.x;
+        //wp.y = p_vm.y - vp.begin.y;
+        //wp.z = p_vm.z + _deep;
 
-        *_worldPosition = p_vm;
+        mt::vec3f wp;
+        wp.x = p_vm.x;
+        wp.y = p_vm.y;
+        wp.z = p_vm.z + _deep;
+
+        *_worldPosition = wp;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderCameraOrthogonal::fromScreenToWorldDelta( const mt::vec2f & _screenDelta, float _deep, mt::vec3f * const _worldDelta ) const
     {
+        MENGINE_UNUSED( _deep );
+        //TODO: implement deep
+
         const mt::mat4f & pm_inv = this->getCameraViewProjectionMatrixInv();
 
-        mt::vec2f p3 = _screenDelta * 2.f - mt::vec2f( 1.f, 1.f );
-        p3.y = -p3.y;
+        mt::vec3f p_pm_base;
+        mt::mul_v3_v2z_m4( &p_pm_base, pm_inv );
+
+        mt::vec2f p_delta = _screenDelta * 2.f;
+        p_delta.y = -p_delta.y;
 
         mt::vec3f p_pm_delta;
-        mt::mul_v3_v2_m4( &p_pm_delta, p3, pm_inv );
+        mt::mul_v3_v2_m4( &p_pm_delta, p_delta, pm_inv );
 
-        Viewport vp;
-        this->makeViewport_( &vp );
+        mt::vec3f wd;
+        wd.x = p_pm_delta.x - p_pm_base.x;
+        wd.y = p_pm_delta.y - p_pm_base.y;
+        wd.z = 0.f;
 
-        p_pm_delta.x -= vp.begin.x;
-        p_pm_delta.y -= vp.begin.y;
-        p_pm_delta.z += _deep;
-
-        *_worldDelta = p_pm_delta;
+        *_worldDelta = wd;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderCameraOrthogonal::setCameraPosition( const mt::vec3f & _pos )

@@ -80,20 +80,18 @@ namespace Mengine
             mt::vec2f v_screen0;
             mt::mul_v2_v2z_m4_homogenize( &v_screen0, vpm );
 
-            v_screen0.x += 1.f;
-            v_screen0.y = 1.f - v_screen0.y;
+            mt::vec2f v_screen0n;
+            v_screen0n.x = (1.f + v_screen0.x) * 0.5f;
+            v_screen0n.y = (1.f - v_screen0.y) * 0.5f;
 
-            v_screen0 *= mt::vec2f( 0.5f, 0.5f );
+            mt::vec2f v_screen1;
+            mt::mul_v2_v2_m4_homogenize( &v_screen1, _worldDelta, vpm );
 
-            mt::vec2f v_screen;
-            mt::mul_v2_v2_m4_homogenize( &v_screen, _worldDelta, vpm );
+            mt::vec2f v_screen1n;
+            v_screen1n.x = (1.f + v_screen1.x) * 0.5f;
+            v_screen1n.y = (1.f - v_screen1.y) * 0.5f;
 
-            v_screen.x += 1.f;
-            v_screen.y = 1.f - v_screen.y;
-
-            v_screen *= mt::vec2f( 0.5f, 0.5f );
-
-            *_screenDelta = (v_screen - v_screen0) * vp_size * contentResolutionInvSize;
+            *_screenDelta = (v_screen1n - v_screen0n) * vp_size * contentResolutionInvSize;
         }
         //////////////////////////////////////////////////////////////////////////
         void worldToScreenBox( const RenderContext * _context, const Resolution & _contentResolution, const mt::box2f & _worldBox, mt::box2f * const _screenBox )

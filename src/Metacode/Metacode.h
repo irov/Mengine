@@ -6474,7 +6474,7 @@ namespace Metacode
                         {
                             if( (m_flagNoRequiredAttribute & EMETA_TrackMatte) == 0 )
                             {
-                                (_self->*_method)( this->false );
+                                (_self->*_method)( false );
                             }
                             else
                             {

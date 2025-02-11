@@ -14,22 +14,6 @@ SERVICE_EXTERN( AllocatorSystem );
 SERVICE_EXTERN( StringizeService );
 SERVICE_EXTERN( DocumentService );
 //////////////////////////////////////////////////////////////////////////
-static Mengine::String WideToUtf8( const Mengine::WString & wideStr )
-{
-    Mengine::String result;
-
-    int inSize = static_cast<int>(wideStr.size());
-    int outSize = ::WideCharToMultiByte( CP_UTF8, 0, wideStr.c_str(), inSize, nullptr, 0, nullptr, nullptr );
-
-    if( outSize > 0 )
-    {
-        result.resize( outSize + 1 );
-        ::WideCharToMultiByte( CP_UTF8, 0, wideStr.c_str(), inSize, result.data(), outSize, nullptr, nullptr );
-    }
-
-    return result;
-}
-//////////////////////////////////////////////////////////////////////////
 int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd )
 {
     MENGINE_UNUSED( hInstance );

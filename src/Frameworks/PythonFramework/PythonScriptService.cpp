@@ -726,12 +726,14 @@ namespace Mengine
             pathes.emplace_back( filePath );
         }
 
+#if defined(MENGINE_LOGGER_INFO_ENABLE)
         for( const FilePath & filePath : pathes )
         {
             LOGGER_INFO( "script", "add module path '%s'"
                 , Helper::getFileGroupFullPath( _fileGroup, filePath ).c_str()
             );
         }
+#endif
 
         m_moduleFinder->addModulePath( _fileGroup, pathes );
 

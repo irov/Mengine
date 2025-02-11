@@ -49,6 +49,7 @@ namespace Mengine
             mt::mat4f matrix;
             Color color;
             Optional<mt::box2f> dimension;
+            bool trackMatte;
             UInt32s options;
         };
 

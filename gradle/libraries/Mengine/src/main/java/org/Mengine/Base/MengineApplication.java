@@ -1474,19 +1474,46 @@ public class MengineApplication extends Application {
         for (MengineService s : services) {
             String serviceName = s.getServiceName();
 
-            Bundle bundle = s.onSave(this);
+            Bundle bundle;
+
+            try {
+                bundle = s.onSave(this);
+            } catch (final Exception e) {
+                MengineLog.logError(TAG, "onSave service: %s exception: %s"
+                    , serviceName
+                    , e.getMessage()
+                );
+
+                continue;
+            }
 
             if (bundle == null) {
                 continue;
             }
 
-            MengineLog.logInfo(TAG, "onSave service: %s bundle: %s"
-                , serviceName
-                , bundle
-            );
-
-            this.setPreferenceBundle("service." + serviceName, bundle);
+            this.forceSaveService(s, bundle);
         }
+    }
+
+    public void forceSaveService(@NonNull MengineService s, Bundle bundle) {
+        String serviceName = s.getServiceName();
+
+        if (BuildConfig.DEBUG == true) {
+            if (bundle.containsKey("version") == false) {
+                MengineLog.logFatal(TAG, "onSave service: %s missing version"
+                    , serviceName
+                );
+
+                return;
+            }
+        }
+
+        MengineLog.logInfo(TAG, "onSave service: %s bundle: %s"
+            , serviceName
+            , bundle
+        );
+
+        this.setPreferenceBundle("service." + serviceName, bundle);
     }
 
     @Override

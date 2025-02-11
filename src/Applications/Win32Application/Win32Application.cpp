@@ -391,6 +391,7 @@ namespace Mengine
             return false;
         }
 
+#if defined(MENGINE_LOGGER_INFO_ENABLE)
         Timestamp runPlatformTimeMilliseconds = PLATFORM_SERVICE()
             ->getPlatfomTime();
 
@@ -399,6 +400,7 @@ namespace Mengine
         LOGGER_INFO( "system", "run platform time: %" MENGINE_PRIu64 " seconds"
             , runPlatformTimeSeconds
         );
+#endif
 
         return true;
     }

@@ -6264,6 +6264,7 @@ namespace Metacode
                             EMETA_Dimension = (1 <<3),
                             EMETA_Matrix = (1 <<0),
                             EMETA_Options = (1 <<2),
+                            EMETA_TrackMatte = (1 <<4),
                         };
                         
                         uint32_t m_flagNoRequiredAttribute;
@@ -6463,6 +6464,34 @@ namespace Metacode
                         
                             return true;
                         }
+                        bool has_TrackMatte() const
+                        {
+                            return (m_flagNoRequiredAttribute & EMETA_TrackMatte) != 0;
+                        }
+                        
+                        template<class C, class M>
+                        void getm_TrackMatte( C _self, M _method ) const
+                        {
+                            if( (m_flagNoRequiredAttribute & EMETA_TrackMatte) == 0 )
+                            {
+                                (_self->*_method)( this->false );
+                            }
+                            else
+                            {
+                                (_self->*_method)( this->m_TrackMatte );
+                            }
+                        }
+                        
+                        bool get_TrackMatte() const
+                        {
+                            if( (m_flagNoRequiredAttribute & EMETA_TrackMatte) == 0 )
+                            {
+                                return false;
+                            }
+                        
+                            return this->m_TrackMatte;
+                        }
+                        
                         template<class C, class M>
                         void getm_Type( C _self, M _method ) const
                         {
@@ -6496,6 +6525,7 @@ namespace Metacode
                         mt::mat4f m_Matrix;
                         Mengine::ConstString m_Name;
                         Mengine::UInt32s m_Options;
+                        bool m_TrackMatte;
                         Mengine::ConstString m_Type;
                     };
                     

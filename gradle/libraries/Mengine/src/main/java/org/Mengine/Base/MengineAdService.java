@@ -12,6 +12,7 @@ import java.util.Map;
 public class MengineAdService extends MengineService implements MengineAdProviderInterface, MengineListenerRemoteConfig {
     public static final String SERVICE_NAME = "AdService";
     public static final boolean SERVICE_EMBEDDING = true;
+    public static final int SAVE_VERSION = 1;
 
     private final Map<String, MengineAdInterstitialPoint> m_adInterstitialPoints = new HashMap<>();
     private final Map<String, MengineAdRewardedPoint> m_adRewardedPoints = new HashMap<>();
@@ -113,6 +114,8 @@ public class MengineAdService extends MengineService implements MengineAdProvide
 
     @Override
     public void onLoad(@NonNull MengineApplication application, @NonNull Bundle bundle) {
+        int version = bundle.getInt("version", 0);
+
         Bundle attemptsBundle = bundle.getBundle("attempts");
 
         if (attemptsBundle != null) {
@@ -145,6 +148,8 @@ public class MengineAdService extends MengineService implements MengineAdProvide
     @Override
     public Bundle onSave(@NonNull MengineApplication application) {
         Bundle bundle = new Bundle();
+
+        bundle.putInt("version", SAVE_VERSION);
 
         Bundle attemptsBundle = new Bundle();
 

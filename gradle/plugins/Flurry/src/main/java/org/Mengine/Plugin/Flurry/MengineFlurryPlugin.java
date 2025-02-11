@@ -40,7 +40,7 @@ public class MengineFlurryPlugin extends MenginePlugin implements MenginePluginA
         builder.withPerformanceMetrics(FlurryPerformance.ALL);
         builder.withLogEnabled(true);
 
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG == true) {
             builder.withLogLevel(Log.VERBOSE);
         } else {
             builder.withLogLevel(Log.ERROR);

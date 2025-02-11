@@ -181,6 +181,7 @@ namespace Mengine
                 d["matrix"] = _layer.matrix;
                 d["color"] = _layer.color;
                 d["dimension"] = _layer.dimension;
+                d["trackmatte"] = _layer.trackMatte;
 
                 pybind::list options = pybind::make_list_t( _kernel );
 

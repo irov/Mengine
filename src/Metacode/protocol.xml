@@ -1,4 +1,4 @@
-<Protocol Version = "152">
+<Protocol Version = "153">
   <Type Name="Mengine::String" Evict="string"/>
   <Type Name="Mengine::WString" Evict="wstring"/>
   <Type Name="Mengine::ConstString" Evict="string"/>
@@ -337,6 +337,7 @@
               <Attribute Name="Color" Type="Color"/>
               <Attribute Name="Options" Type="Mengine::UInt32s"/>
               <Attribute Name="Dimension" Type="mt::box2f"/>
+              <Attribute Name="TrackMatte" Type="bool" Default="false"/>
             </Node>
             
             <Node Name="SubComposition">

@@ -15,12 +15,12 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_version()
     {
-        return 152;
+        return 153;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_crc32()
     {
-        return 102503243; 
+        return 3746598190; 
     }
     //////////////////////////////////////////////////////////////////////////
     const char * getHeaderErrorMessage( Metabuf::HeaderError _error )
@@ -3437,6 +3437,11 @@ namespace Metacode
             if( (m_flagNoRequiredAttribute & EMETA_Options) != 0 )
             {
                 Metabuf::read( _buff, _size, _read, _userData, this->m_Options );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_TrackMatte) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_TrackMatte );
             }
         
         }

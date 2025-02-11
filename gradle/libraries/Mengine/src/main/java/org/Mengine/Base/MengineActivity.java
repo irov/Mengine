@@ -341,7 +341,7 @@ public class MengineActivity extends AppCompatActivity {
                 continue;
             }
 
-            MengineLog.logMessage(TAG, "onCreate plugin: %s"
+            MengineLog.logDebug(TAG, "onCreate plugin: %s"
                 , l.getServiceName()
             );
 
@@ -383,6 +383,35 @@ public class MengineActivity extends AppCompatActivity {
         this.setState("activity.lifecycle", "post_create");
 
         MengineLog.logMessage(TAG, "onPostCreate");
+
+        List<MengineListenerActivity> listeners = this.getActivityListeners();
+
+        for (MengineListenerActivity l : listeners) {
+            if (l.onAvailable(application) == false) {
+                continue;
+            }
+
+            MengineLog.logDebug(TAG, "onPostCreate plugin: %s"
+                , l.getServiceName()
+            );
+
+            try {
+                l.onPostCreate(this, savedInstanceState);
+            } catch (final MengineServiceInvalidInitializeException e) {
+                this.setState("activity.init", "plugin_create_exception." + l.getServiceName());
+
+                MengineAnalytics.buildEvent("mng_activity_create_failed")
+                        .addParameterException("reason", e)
+                        .logAndFlush();
+
+                this.finishWithAlertDialog("[ERROR] create plugin: %s exception: %s"
+                        , l.getServiceName()
+                        , e.getMessage()
+                );
+
+                return;
+            }
+        }
     }
 
     @SuppressWarnings("deprecation")
@@ -614,6 +643,12 @@ public class MengineActivity extends AppCompatActivity {
                 continue;
             }
 
+            MengineLog.logDebug(TAG, "onActivityResultBefore plugin: %s request: %d result: %d"
+                , l.getServiceName()
+                , requestCode
+                , resultCode
+            );
+
             l.onActivityResultBefore(this, requestCode, resultCode, data);
         }
 
@@ -623,6 +658,12 @@ public class MengineActivity extends AppCompatActivity {
             if (l.onAvailable(application) == false) {
                 continue;
             }
+
+            MengineLog.logDebug(TAG, "onActivityResult plugin: %s request: %d result: %d"
+                , l.getServiceName()
+                , requestCode
+                , resultCode
+            );
 
             l.onActivityResult(this, requestCode, resultCode, data);
         }
@@ -650,6 +691,10 @@ public class MengineActivity extends AppCompatActivity {
             if (l.onAvailable(application) == false) {
                 continue;
             }
+
+            MengineLog.logDebug(TAG, "onStart plugin: %s"
+                , l.getServiceName()
+            );
 
             l.onStart(this);
         }
@@ -681,6 +726,10 @@ public class MengineActivity extends AppCompatActivity {
             if (l.onAvailable(application) == false) {
                 continue;
             }
+
+            MengineLog.logDebug(TAG, "onStop plugin: %s"
+                , l.getServiceName()
+            );
 
             l.onStop(this);
         }
@@ -719,6 +768,10 @@ public class MengineActivity extends AppCompatActivity {
                 continue;
             }
 
+            MengineLog.logDebug(TAG, "onPause plugin: %s"
+                , l.getServiceName()
+            );
+
             l.onPause(this);
         }
 
@@ -754,6 +807,10 @@ public class MengineActivity extends AppCompatActivity {
                 continue;
             }
 
+            MengineLog.logDebug(TAG, "onResume plugin: %s"
+                , l.getServiceName()
+            );
+
             l.onResume(this);
         }
 
@@ -785,6 +842,10 @@ public class MengineActivity extends AppCompatActivity {
                 continue;
             }
 
+            MengineLog.logDebug(TAG, "onNewIntent plugin: %s"
+                , l.getServiceName()
+            );
+
             l.onNewIntent(this, intent);
         }
     }
@@ -811,6 +872,10 @@ public class MengineActivity extends AppCompatActivity {
             if (l.onAvailable(application) == false) {
                 continue;
             }
+
+            MengineLog.logDebug(TAG, "onDestroy plugin: %s"
+                , l.getServiceName()
+            );
 
             l.onDestroy(this);
         }
@@ -875,6 +940,10 @@ public class MengineActivity extends AppCompatActivity {
             if (l.onAvailable(application) == false) {
                 continue;
             }
+
+            MengineLog.logDebug(TAG, "onRestart plugin: %s"
+                , l.getServiceName()
+            );
 
             l.onRestart(this);
         }
@@ -947,6 +1016,10 @@ public class MengineActivity extends AppCompatActivity {
                 continue;
             }
 
+            MengineLog.logDebug(TAG, "onConfigurationChanged plugin: %s"
+                , l.getServiceName()
+            );
+
             l.onConfigurationChanged(this, newConfig);
         }
 
@@ -985,6 +1058,11 @@ public class MengineActivity extends AppCompatActivity {
             if (l.onAvailable(application) == false) {
                 continue;
             }
+
+            MengineLog.logDebug(TAG, "onRequestPermissionsResult plugin: %s request: %d"
+                , l.getServiceName()
+                , requestCode
+            );
 
             l.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
         }

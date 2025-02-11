@@ -58,8 +58,8 @@ static void stdlib_movie_logerror( void * _data, aeMovieErrorCode _code, const c
     va_list argList;
 
     va_start( argList, _format );
-    char msg[4096];
-    vsprintf( msg, _format, argList );
+    char msg[4096 + 1] = {'\0'};
+    vsnprintf( msg, 4096, _format, argList );
     va_end( argList );
 
     printf( "# %s code %d"
@@ -71,13 +71,13 @@ static void stdlib_movie_logerror( void * _data, aeMovieErrorCode _code, const c
 struct resource_provider_t
 {
     pugi::xml_node * xmlDataBlock;
-    CHAR movie_name[128];
+    CHAR movie_name[128 + 1];
 };
 //////////////////////////////////////////////////////////////////////////
 static std::string sf( float _f )
 {
-    char data[256];
-    sprintf( data, "%.127f", _f );
+    char data[256 + 1] = {'\0'};
+    snprintf( data, 256, "%.127f", _f );
 
     size_t len = strlen( data );
 
@@ -104,8 +104,8 @@ static std::string sf( float _f )
 //////////////////////////////////////////////////////////////////////////
 static std::string sm( ae_matrix34_ptr_t m )
 {
-    char xmlMatrix[4096];
-    sprintf( xmlMatrix, "%s;%s;%s;%s"";""%s;%s;%s;%s"";""%s;%s;%s;%s"";""%s;%s;%s;%s"
+    char xmlMatrix[1024 + 1] = {'\0'};
+    snprintf( xmlMatrix, 1024, "%s;%s;%s;%s"";""%s;%s;%s;%s"";""%s;%s;%s;%s"";""%s;%s;%s;%s"
         , sf( m[3 * 0 + 0] ).c_str()
         , sf( m[3 * 0 + 1] ).c_str()
         , sf( m[3 * 0 + 2] ).c_str()
@@ -129,8 +129,8 @@ static std::string sm( ae_matrix34_ptr_t m )
 //////////////////////////////////////////////////////////////////////////
 static std::string sc( const ae_color_t & c, float o )
 {
-    char xmlColor[4096];
-    sprintf( xmlColor, "%s;%s;%s;%s"
+    char xmlColor[1024 + 1] = {'\0'};
+    snprintf( xmlColor, 1024, "%s;%s;%s;%s"
         , sf( c.r ).c_str()
         , sf( c.g ).c_str()
         , sf( c.b ).c_str()
@@ -163,8 +163,8 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
 
                 pugi::xml_node xmlResourceFile = xmlResource.append_child( "File" );
 
-                char xmlMaxSize[256];
-                sprintf( xmlMaxSize, "%u;%u"
+                char xmlMaxSize[256 + 1] = {'\0'};
+                snprintf( xmlMaxSize, 256, "%u;%u"
                     , (uint32_t)resource_image->trim_width
                     , (uint32_t)resource_image->trim_height
                 );
@@ -182,15 +182,15 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
                 {
                     pugi::xml_node xmlResourceFile = xmlResource.append_child( "File" );
 
-                    char xmlFilePath[MAX_PATH];
-                    sprintf( xmlFilePath, "Movies2/cache_images/%s"
+                    char xmlFilePath[MAX_PATH + 1] = {'\0'};
+                    snprintf( xmlFilePath, MAX_PATH, "Movies2/cache_images/%s"
                         , resource_image->path
                     );
 
                     xmlResourceFile.append_attribute( "Path" ).set_value( xmlFilePath );
 
-                    char xmlMaxSize[256];
-                    sprintf( xmlMaxSize, "%u;%u"
+                    char xmlMaxSize[256 + 1] = {'\0'};
+                    snprintf( xmlMaxSize, 256, "%u;%u"
                         , (uint32_t)resource_image->base_width
                         , (uint32_t)resource_image->base_height
                     );
@@ -199,8 +199,8 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
 
                     if( resource_image->base_width != resource_image->trim_width || resource_image->base_height != resource_image->trim_height )
                     {
-                        char xmlTrimSize[256];
-                        sprintf( xmlTrimSize, "%u;%u"
+                        char xmlTrimSize[256 + 1] = {'\0'};
+                        snprintf( xmlTrimSize, 256, "%u;%u"
                             , (uint32_t)resource_image->trim_width
                             , (uint32_t)resource_image->trim_height
                         );
@@ -210,8 +210,8 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
 
                     if( resource_image->offset_x != 0.f || resource_image->offset_y != 0.f )
                     {
-                        char xmlOffsetSize[256];
-                        sprintf( xmlOffsetSize, "%u;%u"
+                        char xmlOffsetSize[256 + 1] = {'\0'};
+                        snprintf( xmlOffsetSize, 256, "%u;%u"
                             , (uint32_t)resource_image->offset_x
                             , (uint32_t)resource_image->offset_y
                         );
@@ -223,15 +223,15 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
                 {
                     pugi::xml_node xmlResourceFile = xmlResource.append_child( "File" );
 
-                    char xmlFilePath[MAX_PATH];
-                    sprintf( xmlFilePath, "Movies2/cache_particles/%s"
+                    char xmlFilePath[MAX_PATH + 1] = {'\0'};
+                    snprintf( xmlFilePath, MAX_PATH, "Movies2/cache_particles/%s"
                         , resource_image->path
                     );
 
                     xmlResourceFile.append_attribute( "Path" ).set_value( xmlFilePath );
 
-                    char xmlMaxSize[256];
-                    sprintf( xmlMaxSize, "%u;%u"
+                    char xmlMaxSize[256 + 1] = {'\0'};
+                    snprintf( xmlMaxSize, 256, "%u;%u"
                         , (uint32_t)resource_image->base_width
                         , (uint32_t)resource_image->base_height
                     );
@@ -240,8 +240,8 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
 
                     if( resource_image->base_width != resource_image->trim_width || resource_image->base_height != resource_image->trim_height )
                     {
-                        char xmlTrimSize[256];
-                        sprintf( xmlTrimSize, "%u;%u"
+                        char xmlTrimSize[256 + 1] = {'\0'};
+                        snprintf( xmlTrimSize, 256, "%u;%u"
                             , (uint32_t)resource_image->trim_width
                             , (uint32_t)resource_image->trim_height
                         );
@@ -251,8 +251,8 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
 
                     if( resource_image->offset_x != 0.f || resource_image->offset_y != 0.f )
                     {
-                        char xmlOffsetSize[256];
-                        sprintf( xmlOffsetSize, "%u;%u"
+                        char xmlOffsetSize[256 + 1] = {'\0'};
+                        snprintf( xmlOffsetSize, 256, "%u;%u"
                             , (uint32_t)resource_image->offset_x
                             , (uint32_t)resource_image->offset_y
                         );
@@ -274,17 +274,18 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
                 pugi::xml_node xmlResourceImage = xmlResource.append_child( "Image" );
                 xmlResourceImage.append_attribute( "Alpha" ).set_value( "1" );
 
-                char xmlMaxSize[256];
-                sprintf( xmlMaxSize, "%u;%u"
+                char xmlMaxSize[256 + 1] = {'\0'};
+                snprintf( xmlMaxSize, 256, "%u;%u"
                     , (uint32_t)resource_image->trim_width
                     , (uint32_t)resource_image->trim_height
                 );
+
                 xmlResourceImage.append_attribute( "MaxSize" ).set_value( xmlMaxSize );
 
                 xmlResourceImage.append_attribute( "Name" ).set_value( resource_image->atlas_image->name );
 
-                char xmlUV[256];
-                sprintf( xmlUV, "%s;%s;%s;%s;%s;%s;%s;%s"
+                char xmlUV[256 + 1] = {'\0'};
+                snprintf( xmlUV, 256, "%s;%s;%s;%s;%s;%s;%s;%s"
                     , sf( 0.f ).c_str()
                     , sf( 0.f ).c_str()
                     , sf( 1.f ).c_str()
@@ -332,15 +333,15 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
 
             pugi::xml_node xmlResourceFile = xmlResource.append_child( "File" );
 
-            char xmlFilePath[MAX_PATH];
-            sprintf( xmlFilePath, "Movies2/cache_video/%s"
+            char xmlFilePath[MAX_PATH + 1] = {'\0'};
+            snprintf( xmlFilePath, MAX_PATH, "Movies2/cache_video/%s"
                 , resource_video->path
             );
 
             xmlResourceFile.append_attribute( "Path" ).set_value( xmlFilePath );
 
-            char xmlSize[256];
-            sprintf( xmlSize, "%u;%u"
+            char xmlSize[256 + 1] = {'\0'};
+            snprintf( xmlSize, 256, "%u;%u"
                 , (uint32_t)resource_video->base_width
                 , (uint32_t)resource_video->base_height
             );
@@ -363,13 +364,12 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
 
             pugi::xml_node xmlResourceFile = xmlResource.append_child( "File" );
 
-            char xmlFilePath[MAX_PATH];
-            sprintf( xmlFilePath, "Movies2/cache_sounds/%s"
+            char xmlFilePath[MAX_PATH + 1] = {'\0'};
+            snprintf( xmlFilePath, MAX_PATH, "Movies2/cache_sounds/%s"
                 , resource_sound->path
             );
 
             xmlResourceFile.append_attribute( "Path" ).set_value( xmlFilePath );
-
             xmlResourceFile.append_attribute( "Codec" ).set_value( "oggSound" );
 
             if( resource_sound->duration > 3.f )
@@ -388,8 +388,8 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
 
             pugi::xml_node xmlResourceFile = xmlResource.append_child( "File" );
 
-            char xmlFilePath[MAX_PATH];
-            sprintf( xmlFilePath, "Movies2/cache_particles/%s"
+            char xmlFilePath[MAX_PATH + 1] = {'\0'};
+            snprintf( xmlFilePath, MAX_PATH, "Movies2/cache_particles/%s"
                 , resource_particle->path
             );
 
@@ -479,16 +479,20 @@ static void __add_node_layer_data( node_provider_t * np, const ae_char_t * _type
     ae_aabb_t aabb;
     if( ae_get_movie_layer_data_dimension( layer_data, &aabb ) == AE_TRUE )
     {
-        char xmlDimension[4096];
-        sprintf( xmlDimension, "%s;%s;%s;%s"
+        char xmlDimension[4096 + 1] = {'\0'};
+        snprintf( xmlDimension, 4096, "%s;%s;%s;%s"
             , sf( aabb.minimal_x ).c_str()
-            , sf( aabb.minimal_x ).c_str()
-            , sf( aabb.minimal_x ).c_str()
-            , sf( aabb.minimal_x ).c_str()
+            , sf( aabb.minimal_y ).c_str()
+            , sf( aabb.maximal_x ).c_str()
+            , sf( aabb.maximal_y ).c_str()
         );
 
         xmlLayer.append_attribute( "Dimension" ).set_value( xmlDimension );
     }
+
+    ae_bool_t is_track_matte = ae_is_movie_layer_data_track_mate( layer_data );
+
+    xmlLayer.append_attribute( "TrackMatte" ).set_value( is_track_matte == AE_TRUE ? 1U : 0U );
 }
 //////////////////////////////////////////////////////////////////////////
 static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCallbackData * _callbackData, ae_voidptrptr_t _nd, ae_voidptr_t _ud )
@@ -496,15 +500,6 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
     node_provider_t * np = (node_provider_t *)_ud;
 
     const aeMovieLayerData * layer_data = _callbackData->layer_data;
-
-    ae_bool_t is_track_matte = ae_is_movie_layer_data_track_mate( layer_data );
-
-    if( is_track_matte == AE_TRUE )
-    {
-        *_nd = AE_NULLPTR;
-
-        return AE_TRUE;
-    }
 
     aeMovieLayerTypeEnum type = ae_get_movie_layer_data_type( layer_data );
 
@@ -682,8 +677,8 @@ int main( int argc, char * argv[] )
         return EXIT_FAILURE;
     }
 
-    CHAR utf8_movie_name[128];
-    unicode_to_utf8( utf8_movie_name, 128, movie_name.c_str(), movie_name.size() );
+    CHAR utf8_movie_name[256] = {'\0'};
+    unicode_to_utf8( utf8_movie_name, 256, movie_name.c_str(), movie_name.size() );
 
     const aeMovieInstance * movieInstance = ae_create_movie_instance( "f86464bbdebf0fe3e684b03ec263d049d079e6f1"
         , &stdlib_movie_alloc
@@ -752,7 +747,7 @@ int main( int argc, char * argv[] )
     pugi::xml_node xmlDataResource = xmlDataBlock.append_child( "Resource" );
 
     char xmlMovieName[256];
-    sprintf( xmlMovieName, "Movie2_%s"
+    snprintf( xmlMovieName, 256, "Movie2_%s"
         , utf8_movie_name
     );
 
@@ -761,8 +756,8 @@ int main( int argc, char * argv[] )
 
     pugi::xml_node xmlDataResourceFile = xmlDataResource.append_child( "File" );
 
-    char xmlMoviePath[MAX_PATH];
-    sprintf( xmlMoviePath, "Movies2/%s/%s.aez"
+    char xmlMoviePath[MAX_PATH] = {'\0'};
+    snprintf( xmlMoviePath, MAX_PATH, "Movies2/%s/%s.aez"
         , utf8_movie_name
         , utf8_movie_name
     );

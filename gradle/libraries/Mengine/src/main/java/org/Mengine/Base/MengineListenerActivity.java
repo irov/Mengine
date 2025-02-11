@@ -11,6 +11,10 @@ public interface MengineListenerActivity extends MengineServiceInterface {
         //Empty
     }
 
+    default void onPostCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
+        //Empty
+    }
+
     default void onActivityResultBefore(@NonNull MengineActivity activity, int requestCode, int resultCode, Intent data) {
         //Empty
     }

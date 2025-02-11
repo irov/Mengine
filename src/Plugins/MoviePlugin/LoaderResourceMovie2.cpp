@@ -80,6 +80,8 @@ namespace Mengine
                     layer.dimension = dimension;
                 }
 
+                layer.trackMatte = meta_layer.get_TrackMatte();
+
                 meta_layer.get_Options( &layer.options );
 
                 desc.layers.emplace_back( layer );

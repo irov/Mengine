@@ -31,7 +31,7 @@ public class MengineLeanplumPlugin extends MenginePlugin implements MenginePlugi
             , AppId
         );
 
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG == true) {
             this.logInfo("%s: %s"
                 , METADATA_DEV_KEY
                 , DevKey
@@ -56,7 +56,7 @@ public class MengineLeanplumPlugin extends MenginePlugin implements MenginePlugi
 
         LeanplumActivityHelper.enableLifecycleCallbacks(application);
 
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG == true) {
             Leanplum.setLogLevel(Log.Level.DEBUG);
             Leanplum.setAppIdForDevelopmentMode(AppId, DevKey);
         } else {

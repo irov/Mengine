@@ -4,6 +4,7 @@
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/ErrorLevel.h"
+#include "Kernel/AssertionLevel.h"
 
 namespace Mengine
 {

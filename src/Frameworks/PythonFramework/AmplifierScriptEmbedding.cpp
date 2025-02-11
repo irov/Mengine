@@ -255,7 +255,7 @@ namespace Mengine
 
                 MusicAffectorCallbackPtr callback = createMusicAffectorCallback( _cb, _args );
 
-                AffectorPtr affector = m_affectorCreatorMusic->create( ETA_POSITION
+                AffectorPtr affector = m_affectorCreatorMusic->create( EAFFECTORTYPE_POSITION
                     , easing
                     , callback
                     , [this]( float _value )
@@ -313,7 +313,7 @@ namespace Mengine
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
-                AffectorPtr affector = m_affectorCreatorMusic->create( ETA_POSITION
+                AffectorPtr affector = m_affectorCreatorMusic->create( EAFFECTORTYPE_POSITION
                     , easing
                     , nullptr
                     , [this]( float _value )

@@ -460,7 +460,7 @@ namespace Mengine
 
                 ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _shape, _cb, _args );
 
-                AffectorPtr affector = m_nodeAffectorCreatorInterpolateLinearVec4->create( ETA_VISIBILITY
+                AffectorPtr affector = m_nodeAffectorCreatorInterpolateLinearVec4->create( EAFFECTORTYPE_VISIBILITY
                     , easing
                     , callback
                     , [_shape]( const mt::vec4f & _v )
@@ -475,7 +475,7 @@ namespace Mengine
 
                 const AffectorHubInterfacePtr & affectorHub = _shape->getAffectorHub();
 
-                affectorHub->stopAffectors( ETA_VISIBILITY );
+                affectorHub->stopAffectors( EAFFECTORTYPE_VISIBILITY );
 
                 if( _shape->isActivate() == false )
                 {
@@ -495,7 +495,7 @@ namespace Mengine
                     , _shape->getName().c_str()
                 );
 
-                affectorHub->stopAffectors( ETA_VISIBILITY );
+                affectorHub->stopAffectors( EAFFECTORTYPE_VISIBILITY );
             }
             //////////////////////////////////////////////////////////////////////////
             uint32_t s_Animation_play( AnimationInterface * _animation )

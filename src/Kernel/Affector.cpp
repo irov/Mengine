@@ -10,7 +10,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Affector::Affector()
-        : m_type( ETA_POSITION )
+        : m_type( EAFFECTORTYPE_POSITION )
+        , m_status( EAFFECTORSTATUS_IDLE )
         , m_id( INVALID_UNIQUE_ID )
         , m_speedFactor( 1.f )
         , m_freeze( false )
@@ -83,6 +84,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Affector::prepare( EUpdateMode _updatableMode, uint32_t _updatableLeaf )
     {
+        m_status = EAFFECTORSTATUS_PREPARE;
+
         if( this->_prepare() == false )
         {
             return false;
@@ -90,7 +93,7 @@ namespace Mengine
 
         UpdationInterface * updation = this->getUpdation();
 
-        updation->activate( _updatableMode, _updatableLeaf );
+        updation->activate( _updatableMode, _updatableLeaf );        
 
         return true;
     }
@@ -128,9 +131,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Affector::stop()
     {
+        m_status = EAFFECTORSTATUS_STOP;
+
         this->_stop();
 
-        this->complete( false );
+        this->complete( false );        
     }
     //////////////////////////////////////////////////////////////////////////
     void Affector::_stop()
@@ -145,6 +150,8 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( m_affecting == false, "affector '%u' can not completed or removing in _affect (please return true if you want complete)"
             , this->getId()
         );
+
+        m_status = EAFFECTORSTATUS_COMPLETE;
 
         UpdationInterface * updation = this->getUpdation();
 

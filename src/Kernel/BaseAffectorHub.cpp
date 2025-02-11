@@ -113,11 +113,11 @@ namespace Mengine
 
         switch( _type )
         {
-        case ETA_POSITION:
+        case EAFFECTORTYPE_POSITION:
             {
                 this->setLinearSpeed( mt::vec3f( 0.f, 0.f, 0.f ) );
             }break;
-        case ETA_ANGLE:
+        case EAFFECTORTYPE_ANGLE:
             {
                 this->setAngularSpeed( 0.f );
             }break;

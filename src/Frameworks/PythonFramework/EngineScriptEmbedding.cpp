@@ -2542,7 +2542,7 @@ namespace Mengine
             {
                 AffectorGridBurnTransparencyPtr affector = m_factoryAffectorGridBurnTransparency->createObject( MENGINE_DOCUMENT_PYBIND );
 
-                affector->setAffectorType( ETA_USER );
+                affector->setAffectorType( EAFFECTORTYPE_USER );
 
                 affector->initialize( _grid, _pos, _time, _radius, _ellipse, _penumbra, _cb );
 

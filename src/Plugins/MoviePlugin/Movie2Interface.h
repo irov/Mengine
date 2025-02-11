@@ -2,6 +2,7 @@
 
 #include "Interface/UnknownInterface.h"
 #include "Interface/RenderPipelineInterface.h"
+#include "Interface/TransformationInterface.h"
 
 #include "Kernel/Magic.h"
 #include "Kernel/Resource.h"
@@ -71,6 +72,10 @@ namespace Mengine
         virtual bool hasMovieLayers( const ConstString & _name ) const = 0;
         virtual void setEnableMovieLayers( const ConstString & _name, bool _enable ) = 0;
         virtual void setExtraOpacityMovieLayers( const ConstString & _name, float _opacity ) = 0;
+
+    public:
+        virtual void setExtraTransformation( const ConstString & _name, const TransformationInterfacePtr & _transformation ) = 0;
+        virtual void removeExtraTransformation( const ConstString & _name ) = 0;
 
     public:
         virtual bool getWorldBoundingBox( mt::box2f * const _bb ) const = 0;

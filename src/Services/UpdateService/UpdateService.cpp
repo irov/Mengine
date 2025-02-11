@@ -144,6 +144,20 @@ namespace Mengine
 
         for( const UpdationInterfacePtr & updation : leaf_indecies )
         {
+            uint32_t updation_deep = updation->getDeep();
+
+            if( updation_deep != _deep )
+            {
+                continue;
+            }
+
+            EUpdateState updation_state = updation->getState();
+
+            if( updation_state == EUS_REMOVE )
+            {
+                continue;
+            }
+
             updation->update( _context );
         }
     }

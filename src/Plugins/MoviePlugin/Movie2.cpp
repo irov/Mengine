@@ -915,6 +915,43 @@ namespace Mengine
         ae_set_movie_composition_nodes_extra_opacity_any( m_composition, _name.c_str(), _opacity );
     }
     //////////////////////////////////////////////////////////////////////////
+    static ae_void_t __movie_transformation( ae_matrix34_t _out, ae_uint32_t _index, ae_float_t _t, ae_userdata_t _userdata )
+    {
+        MENGINE_UNUSED( _index );
+        MENGINE_UNUSED( _t );
+
+        TransformationInterface * transformation = reinterpret_cast<TransformationInterface *>(_userdata);
+
+        const mt::mat4f & wm = transformation->getLocalMatrix();
+
+        _out[0 * 3 + 0] = wm.v0.x;
+        _out[0 * 3 + 1] = wm.v0.y;
+        _out[0 * 3 + 2] = wm.v0.z;
+        _out[1 * 3 + 0] = wm.v1.x;
+        _out[1 * 3 + 1] = wm.v1.y;
+        _out[1 * 3 + 2] = wm.v1.z;
+        _out[2 * 3 + 0] = wm.v2.x;
+        _out[2 * 3 + 1] = wm.v2.y;
+        _out[2 * 3 + 2] = wm.v2.z;
+        _out[3 * 3 + 0] = wm.v3.x;
+        _out[3 * 3 + 1] = wm.v3.y;
+        _out[3 * 3 + 2] = wm.v3.z;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::setExtraTransformation( const ConstString & _name, const TransformationInterfacePtr & _transformation )
+    {
+        TransformationInterface * t = _transformation.acquire();
+
+        ae_set_movie_composition_node_extra_transformation( m_composition, _name.c_str(), &__movie_transformation, t );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::removeExtraTransformation( const ConstString & _name )
+    {
+        TransformationInterface * t = (TransformationInterface *)ae_remove_movie_composition_node_extra_transformation( m_composition, _name.c_str() );
+
+        TransformationInterfacePtr::release( t );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Movie2::foreachRenderSlots( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const LambdaMovieRenderSlot & _lambda ) const
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_composition, "movie2 '%s' not compile"

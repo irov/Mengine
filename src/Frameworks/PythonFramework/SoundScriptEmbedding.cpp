@@ -456,7 +456,7 @@ namespace Mengine
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
-                AffectorPtr affector = m_affectorCreatorSound->create( ETA_POSITION
+                AffectorPtr affector = m_affectorCreatorSound->create( EAFFECTORTYPE_POSITION
                     , easing
                     , callback, [this, _emitter]( float _volume )
                 {
@@ -506,7 +506,7 @@ namespace Mengine
                     , _easingType.c_str()
                 );
 
-                AffectorPtr affector = m_affectorCreatorSound->create( ETA_POSITION
+                AffectorPtr affector = m_affectorCreatorSound->create( EAFFECTORTYPE_POSITION
                     , easing
                     , nullptr, [this, soundIdentity]( float _value )
                 {
@@ -542,7 +542,7 @@ namespace Mengine
                 float volume = SOUND_SERVICE()
                     ->getSourceMixerVolume( _emitter, STRINGIZE_STRING_LOCAL( "Fade" ) );
 
-                AffectorPtr affector = m_affectorCreatorSound->create( ETA_POSITION
+                AffectorPtr affector = m_affectorCreatorSound->create( EAFFECTORTYPE_POSITION
                     , easing
                     , callback, [this, _emitter]( float _volume )
                 {
@@ -595,7 +595,7 @@ namespace Mengine
                 float volume = SOUND_SERVICE()
                     ->getSourceMixerVolume( soundIdentity, STRINGIZE_STRING_LOCAL( "Fade" ) );
 
-                AffectorPtr affector = m_affectorCreatorSound->create( ETA_POSITION
+                AffectorPtr affector = m_affectorCreatorSound->create( EAFFECTORTYPE_POSITION
                     , easing
                     , nullptr, [this, soundIdentity]( float _value )
                 {

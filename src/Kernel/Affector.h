@@ -14,6 +14,14 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    enum EAffectorStatus
+    {
+        EAFFECTORSTATUS_IDLE,
+        EAFFECTORSTATUS_PREPARE,
+        EAFFECTORSTATUS_STOP,
+        EAFFECTORSTATUS_COMPLETE
+    };
+    //////////////////////////////////////////////////////////////////////////
     class Affector
         : public IntrusiveSlugLinkedPtr<Affector, void, IntrusivePtr, IntrusivePtrBase>
         , public Factorable
@@ -75,6 +83,7 @@ namespace Mengine
 
     protected:
         EAffectorType m_type;
+        EAffectorStatus m_status;
         UniqueId m_id;
 
         EasingInterfacePtr m_easing;

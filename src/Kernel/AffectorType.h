@@ -6,13 +6,13 @@ namespace Mengine
 {
     enum EAffectorType
     {
-        ETA_POSITION,
-        ETA_ANGLE,
-        ETA_SCALE,
-        ETA_COLOR,
-        ETA_VISIBILITY,
-        ETA_SCRIPT,
-        ETA_USER,
-        ETA_END
+        EAFFECTORTYPE_POSITION,
+        EAFFECTORTYPE_ANGLE,
+        EAFFECTORTYPE_SCALE,
+        EAFFECTORTYPE_COLOR,
+        EAFFECTORTYPE_VISIBILITY,
+        EAFFECTORTYPE_SCRIPT,
+        EAFFECTORTYPE_USER,
+        EAFFECTORTYPE_END
     };
 }

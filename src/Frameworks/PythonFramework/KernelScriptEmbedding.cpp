@@ -275,7 +275,7 @@ namespace Mengine
             {
                 ScriptableAffectorCallbackPtr callback = m_factoryNodeAffectorCallback->createObject( MENGINE_DOCUMENT_PYBIND );
 
-                callback->initialize( ScriptablePtr( _scriptable ), _cb, _args );
+                callback->initialize( ScriptablePtr::from( _scriptable ), _cb, _args );
 
                 return callback;
             }
@@ -543,7 +543,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affectorHub, "invalid get affector hub" );
 
-                affectorHub->stopAffectors( ETA_POSITION );
+                affectorHub->stopAffectors( EAFFECTORTYPE_POSITION );
             }
             //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorAccumulateLinear<mt::vec3f>> m_nodeAffectorCreatorAccumulateLinear;
@@ -566,7 +566,7 @@ namespace Mengine
 
                 TransformationInterface * transformation = _node->getTransformation();
 
-                AffectorPtr affector = m_nodeAffectorCreatorAccumulateLinear->create( ETA_POSITION
+                AffectorPtr affector = m_nodeAffectorCreatorAccumulateLinear->create( EAFFECTORTYPE_POSITION
                     , easing
                     , callback
                     , [transformation]( const mt::vec3f & _v )
@@ -728,7 +728,7 @@ namespace Mengine
 
                 ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
-                AffectorPtr affector = m_factoryAffectorVelocity2->create( ETA_POSITION
+                AffectorPtr affector = m_factoryAffectorVelocity2->create( EAFFECTORTYPE_POSITION
                     , easing
                     , callback
                     , NodePtr( _node ), _velocity, _time, MENGINE_DOCUMENT_PYBIND
@@ -772,17 +772,16 @@ namespace Mengine
 
                 TransformationInterface * transformation = _node->getTransformation();
 
-                AffectorPtr affector =
-                    m_nodeAffectorCreatorInterpolateLinear->create( ETA_POSITION
-                        , easing
-                        , callback
-                        , [transformation]( const mt::vec3f & _v )
+                AffectorPtr affector = m_nodeAffectorCreatorInterpolateLinear->create( EAFFECTORTYPE_POSITION
+                    , easing
+                    , callback
+                    , [transformation]( const mt::vec3f & _v )
                 {
                     transformation->setLocalPosition( _v );
                 }
-                        , transformation->getLocalPosition(), _point, _time
-                        , MENGINE_DOCUMENT_PYBIND
-                    );
+                    , transformation->getLocalPosition(), _point, _time
+                    , MENGINE_DOCUMENT_PYBIND
+                );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
 
@@ -830,7 +829,7 @@ namespace Mengine
 
                 TransformationInterface * transformation = _node->getTransformation();
 
-                AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadratic->create( ETA_POSITION
+                AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadratic->create( EAFFECTORTYPE_POSITION
                     , easing
                     , callback
                     , [transformation]( const mt::vec3f & _v )
@@ -884,7 +883,7 @@ namespace Mengine
 
                 ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
-                AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadraticBezier3f->create( ETA_POSITION
+                AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadraticBezier3f->create( EAFFECTORTYPE_POSITION
                     , easing
                     , callback
                     , [transformation]( const mt::vec3f & _v )
@@ -947,7 +946,7 @@ namespace Mengine
 
                 ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
-                AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadraticBezier3f->create( ETA_POSITION
+                AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadraticBezier3f->create( EAFFECTORTYPE_POSITION
                     , easing
                     , callback
                     , [_node]( const mt::vec3f & _v )
@@ -1030,7 +1029,7 @@ namespace Mengine
 
                 ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
-                AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadraticBezier3f->create( ETA_POSITION
+                AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadraticBezier3f->create( EAFFECTORTYPE_POSITION
                     , easing
                     , callback
                     , [_node]( const mt::vec3f & _v )
@@ -1114,7 +1113,7 @@ namespace Mengine
 
                 ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
-                AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadraticBezier2f->create( ETA_POSITION
+                AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadraticBezier2f->create( EAFFECTORTYPE_POSITION
                     , easing
                     , callback
                     , [_node, _deep]( const mt::vec2f & _v )
@@ -1194,29 +1193,28 @@ namespace Mengine
 
                 ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
-                AffectorPtr affector =
-                    m_nodeAffectorCreatorInterpolateCubicBezier->create( ETA_POSITION
-                        , easing
-                        , callback
-                        , [transformation]( const mt::vec3f & _v )
+                AffectorPtr affector = m_nodeAffectorCreatorInterpolateCubicBezier->create( EAFFECTORTYPE_POSITION
+                    , easing
+                    , callback
+                    , [transformation]( const mt::vec3f & _v )
                 {
                     transformation->setLocalPosition( _v );
                 }
-                        , [transformation]()
+                    , [transformation]()
                 {
                     return transformation->getLocalPosition();
                 }
-                        , [_to]()
+                    , [_to]()
                 {
                     return _to;
                 }
-                        , [_v0, _v1]( mt::vec3f * _v )
+                    , [_v0, _v1]( mt::vec3f * _v )
                 {
                     _v[0] = _v0; _v[1] = _v1;
                 }
-                        , _time
-                        , MENGINE_DOCUMENT_PYBIND
-                    );
+                    , _time
+                    , MENGINE_DOCUMENT_PYBIND
+                );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
 
@@ -1262,29 +1260,28 @@ namespace Mengine
 
                 ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
-                AffectorPtr affector =
-                    m_nodeAffectorCreatorInterpolateQuarticBezier->create( ETA_POSITION
-                        , easing
-                        , callback
-                        , [transformation]( const mt::vec3f & _v )
+                AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuarticBezier->create( EAFFECTORTYPE_POSITION
+                    , easing
+                    , callback
+                    , [transformation]( const mt::vec3f & _v )
                 {
                     transformation->setLocalPosition( _v );
                 }
-                        , [transformation]()
+                    , [transformation]()
                 {
                     return transformation->getLocalPosition();
                 }
-                        , [_to]()
+                    , [_to]()
                 {
                     return _to;
                 }
-                        , [_v0, _v1, _v2]( mt::vec3f * _v )
+                    , [_v0, _v1, _v2]( mt::vec3f * _v )
                 {
                     _v[0] = _v0; _v[1] = _v1; _v[2] = _v2;
                 }
-                        , _time
-                        , MENGINE_DOCUMENT_PYBIND
-                    );
+                    , _time
+                    , MENGINE_DOCUMENT_PYBIND
+                );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
 
@@ -1506,7 +1503,7 @@ namespace Mengine
 
                 ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
-                AffectorPtr affector = m_nodeAffectorCreatorInterpolateParabolic->create( ETA_POSITION
+                AffectorPtr affector = m_nodeAffectorCreatorInterpolateParabolic->create( EAFFECTORTYPE_POSITION
                     , easing
                     , callback
                     , NodePtr( _node ), _end, _v0, _time
@@ -1770,7 +1767,7 @@ namespace Mengine
 
                 ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
-                AffectorPtr affector = m_nodeAffectorCreatorFollowTo->create( ETA_POSITION
+                AffectorPtr affector = m_nodeAffectorCreatorFollowTo->create( EAFFECTORTYPE_POSITION
                     , easing
                     , callback
                     , NodePtr( _node ), _target, _offset, _distance
@@ -1981,7 +1978,7 @@ namespace Mengine
 
                 ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
-                AffectorPtr affector = m_nodeAffectorCreatorFollowToW->create( ETA_POSITION
+                AffectorPtr affector = m_nodeAffectorCreatorFollowToW->create( EAFFECTORTYPE_POSITION
                     , easing
                     , callback
                     , NodePtr( _node ), _target, _offset, _distance
@@ -2013,7 +2010,7 @@ namespace Mengine
                     , _node->getName().c_str()
                 );
 
-                affectorHub->stopAffectors( ETA_ANGLE );
+                affectorHub->stopAffectors( EAFFECTORTYPE_ANGLE );
             }
             //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float>> m_nodeAffectorCreatorInterpolateLinearFloat;
@@ -2041,7 +2038,7 @@ namespace Mengine
 
                 ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
-                AffectorPtr affector = m_nodeAffectorCreatorInterpolateLinearFloat->create( ETA_ANGLE
+                AffectorPtr affector = m_nodeAffectorCreatorInterpolateLinearFloat->create( EAFFECTORTYPE_ANGLE
                     , easing
                     , callback
                     , [transformation]( float _v )
@@ -2102,7 +2099,7 @@ namespace Mengine
                 ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
                 AffectorPtr affector =
-                    m_nodeAffectorCreatorInterpolateQuadraticFloat->create( ETA_ANGLE
+                    m_nodeAffectorCreatorInterpolateQuadraticFloat->create( EAFFECTORTYPE_ANGLE
                         , easing
                         , callback
                         , [transformation]( float _v )
@@ -2147,7 +2144,7 @@ namespace Mengine
                     , _node->getName().c_str()
                 );
 
-                affectorHub->stopAffectors( ETA_SCALE );
+                affectorHub->stopAffectors( EAFFECTORTYPE_SCALE );
             }
             //////////////////////////////////////////////////////////////////////////
             UniqueId s_Node_scaleTo( Node * _node, float _time, const mt::vec3f & _scale, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
@@ -2168,7 +2165,7 @@ namespace Mengine
 
                 ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
-                AffectorPtr affector = m_nodeAffectorCreatorInterpolateLinear->create( ETA_SCALE
+                AffectorPtr affector = m_nodeAffectorCreatorInterpolateLinear->create( EAFFECTORTYPE_SCALE
                     , easing
                     , callback
                     , [transformation]( const mt::vec3f & _v )
@@ -2203,7 +2200,7 @@ namespace Mengine
                     , _node->getName().c_str()
                 );
 
-                affectorHub->stopAffectors( ETA_COLOR );
+                affectorHub->stopAffectors( EAFFECTORTYPE_COLOR );
             }
             //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Color>> m_nodeAffectorCreatorInterpolateLinearColor;
@@ -2259,7 +2256,7 @@ namespace Mengine
                 ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
                 AffectorPtr affector =
-                    m_nodeAffectorCreatorInterpolateLinearColor->create( ETA_COLOR
+                    m_nodeAffectorCreatorInterpolateLinearColor->create( EAFFECTORTYPE_COLOR
                         , easing
                         , callback
                         , [render]( const Color & _v )
@@ -2341,7 +2338,7 @@ namespace Mengine
                 ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
                 AffectorPtr affector =
-                    m_nodeAffectorCreatorInterpolateLinearFloat->create( ETA_COLOR
+                    m_nodeAffectorCreatorInterpolateLinearFloat->create( EAFFECTORTYPE_COLOR
                         , easing
                         , callback
                         , [render]( float _v )

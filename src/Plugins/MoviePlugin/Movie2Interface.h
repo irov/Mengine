@@ -74,7 +74,7 @@ namespace Mengine
         virtual void setExtraOpacityMovieLayers( const ConstString & _name, float _opacity ) = 0;
 
     public:
-        virtual void setExtraTransformation( const ConstString & _name, const TransformationInterfacePtr & _transformation ) = 0;
+        virtual void setExtraTransformation( const ConstString & _name, const TransformationInterfacePtr & _transformation, bool _onlyPosition ) = 0;
         virtual void removeExtraTransformation( const ConstString & _name ) = 0;
 
     public:

@@ -915,6 +915,20 @@ namespace Mengine
         ae_set_movie_composition_nodes_extra_opacity_any( m_composition, _name.c_str(), _opacity );
     }
     //////////////////////////////////////////////////////////////////////////
+    static ae_void_t __movie_transformation_position( ae_matrix34_t _out, ae_uint32_t _index, ae_float_t _t, ae_userdata_t _userdata )
+    {
+        MENGINE_UNUSED( _index );
+        MENGINE_UNUSED( _t );
+
+        TransformationInterface * transformation = reinterpret_cast<TransformationInterface *>(_userdata);
+
+        const mt::mat4f & wm = transformation->getLocalMatrix();
+
+        _out[3 * 3 + 0] = wm.v3.x;
+        _out[3 * 3 + 1] = wm.v3.y;
+        _out[3 * 3 + 2] = wm.v3.z;
+    }
+    //////////////////////////////////////////////////////////////////////////
     static ae_void_t __movie_transformation( ae_matrix34_t _out, ae_uint32_t _index, ae_float_t _t, ae_userdata_t _userdata )
     {
         MENGINE_UNUSED( _index );
@@ -938,11 +952,33 @@ namespace Mengine
         _out[3 * 3 + 2] = wm.v3.z;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::setExtraTransformation( const ConstString & _name, const TransformationInterfacePtr & _transformation )
+    void Movie2::setExtraTransformation( const ConstString & _name, const TransformationInterfacePtr & _transformation, bool _onlyPosition )
     {
+        MENGINE_ASSERTION_MEMORY_PANIC( m_composition, "movie2 '%s' invalid set '%s' not compile"
+            , this->getName().c_str()
+            , _name.c_str()
+        );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( _transformation, "movie2 '%s' invalid set '%s' null extra transformation"
+            , this->getName().c_str()
+            , _name.c_str()
+        );
+
+        MENGINE_ASSERTION_FATAL( ae_has_movie_composition_node( m_composition, _name.c_str(), AE_MOVIE_LAYER_TYPE_NONE ) == AE_TRUE, "movie2 '%s' invalid set '%s' not found"
+            , this->getName().c_str()
+            , _name.c_str()
+        );
+
         TransformationInterface * t = _transformation.acquire();
 
-        ae_set_movie_composition_node_extra_transformation( m_composition, _name.c_str(), &__movie_transformation, t );
+        if( _onlyPosition == true )
+        {
+            ae_set_movie_composition_node_extra_transformation( m_composition, _name.c_str(), &__movie_transformation_position, t );
+        }
+        else
+        {
+            ae_set_movie_composition_node_extra_transformation( m_composition, _name.c_str(), &__movie_transformation, t );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::removeExtraTransformation( const ConstString & _name )

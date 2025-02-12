@@ -89,7 +89,7 @@ namespace Mengine
         void setExtraOpacityMovieLayers( const ConstString & _name, float _opacity ) override;
 
     public:
-        void setExtraTransformation( const ConstString & _name, const TransformationInterfacePtr & _transformation ) override;
+        void setExtraTransformation( const ConstString & _name, const TransformationInterfacePtr & _transformation, bool _onlyPosition ) override;
         void removeExtraTransformation( const ConstString & _name ) override;
 
     public:

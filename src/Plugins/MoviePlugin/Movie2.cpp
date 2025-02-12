@@ -924,9 +924,9 @@ namespace Mengine
 
         const mt::mat4f & wm = transformation->getLocalMatrix();
 
-        _out[3 * 3 + 0] = wm.v3.x;
-        _out[3 * 3 + 1] = wm.v3.y;
-        _out[3 * 3 + 2] = wm.v3.z;
+        _out[3 * 3 + 0] += wm.v3.x;
+        _out[3 * 3 + 1] += wm.v3.y;
+        _out[3 * 3 + 2] += wm.v3.z;
     }
     //////////////////////////////////////////////////////////////////////////
     static ae_void_t __movie_transformation( ae_matrix34_t _out, ae_uint32_t _index, ae_float_t _t, ae_userdata_t _userdata )

@@ -77,15 +77,15 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             String MengineAppLovinPlugin_Banner_Placement = this.getMetaDataString(METADATA_BANNER_PLACEMENT);
 
             this.logMessage("%s: %s"
-                    , METADATA_BANNER_PLACEMENT
-                    , MengineAppLovinPlugin_Banner_Placement
+                , METADATA_BANNER_PLACEMENT
+                , MengineAppLovinPlugin_Banner_Placement
             );
 
             boolean MengineAppLovinPlugin_BannerAdaptive = this.getMetaDataBoolean(METADATA_BANNER_ADAPTIVE);
 
             this.logMessage("%s: %b"
-                    , METADATA_BANNER_ADAPTIVE
-                    , MengineAppLovinPlugin_BannerAdaptive
+                , METADATA_BANNER_ADAPTIVE
+                , MengineAppLovinPlugin_BannerAdaptive
             );
 
             MengineAppLovinBannerAd bannerAd = new MengineAppLovinBannerAd(this, MengineAppLovinPlugin_Banner_AdUnitId, MengineAppLovinPlugin_Banner_Placement, MengineAppLovinPlugin_BannerAdaptive);

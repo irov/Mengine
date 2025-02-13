@@ -594,23 +594,23 @@ namespace Mengine
                 return 0;
             }
 
-            fprintf_s( f_result, "%u\n", width );
-            fprintf_s( f_result, "%u\n", height );
-            fprintf_s( f_result, "%u\n", new_width );
-            fprintf_s( f_result, "%u\n", new_height );
-            fprintf_s( f_result, "%d\n", offset_i );
-            fprintf_s( f_result, "%d\n", offset_j );
+            ::fprintf_s( f_result, "%u\n", width );
+            ::fprintf_s( f_result, "%u\n", height );
+            ::fprintf_s( f_result, "%u\n", new_width );
+            ::fprintf_s( f_result, "%u\n", new_height );
+            ::fprintf_s( f_result, "%d\n", offset_i );
+            ::fprintf_s( f_result, "%d\n", offset_j );
 
             fclose( f_result );
         }
         else
         {
-            printf( "%u\n", width );
-            printf( "%u\n", height );
-            printf( "%u\n", new_width );
-            printf( "%u\n", new_height );
-            printf( "%d\n", offset_i );
-            printf( "%d\n", offset_j );
+            ::fprintf( stdout, "%u\n", width );
+            ::fprintf( stdout, "%u\n", height );
+            ::fprintf( stdout, "%u\n", new_width );
+            ::fprintf( stdout, "%u\n", new_height );
+            ::fprintf( stdout, "%d\n", offset_i );
+            ::fprintf( stdout, "%d\n", offset_j );
         }
 
         return true;

@@ -17,12 +17,14 @@ namespace Mengine
         LoggerMessage message;
         _record->getMessage( &message );
 
-        ::printf( "%s:%d %.*s\n"
+        ::fprintf( stdout, "%s:%d %.*s\n"
             , message.function
             , message.line
             , (int)message.size
             , message.data
         );
+
+        ::fflush( stdout );
     };
     //////////////////////////////////////////////////////////////////////////
 }

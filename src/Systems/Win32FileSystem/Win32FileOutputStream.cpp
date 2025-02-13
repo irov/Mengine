@@ -47,7 +47,7 @@ namespace Mengine
 
         if( m_withTemp == true )
         {
-            size_t fullPathTempLen = Helper::Win32ConcatenateFilePathTempW( m_relationPath, m_folderPath, m_filePath, fullPathTemp, MENGINE_MAX_PATH );
+            size_t fullPathTempLen = Helper::Win32ConcatenateFilePathTempW( m_relationPath, m_folderPath, m_filePath, fullPathTemp );
 
             MENGINE_UNUSED( fullPathTempLen );
 
@@ -59,7 +59,7 @@ namespace Mengine
         }
         else
         {
-            size_t fullPathTempLen = Helper::Win32ConcatenateFilePathW( m_relationPath, m_folderPath, m_filePath, fullPathTemp, MENGINE_MAX_PATH );
+            size_t fullPathTempLen = Helper::Win32ConcatenateFilePathW( m_relationPath, m_folderPath, m_filePath, fullPathTemp );
 
             MENGINE_UNUSED( fullPathTempLen );
 
@@ -79,7 +79,10 @@ namespace Mengine
 
         if( hFile == INVALID_HANDLE_VALUE )
         {
-            LOGGER_ERROR( "invalid open '%ls'"
+            LOGGER_ERROR( "invalid open output relation '%ls' folder '%ls' file '%ls' full '%ls'"
+                , m_relationPath.c_str()
+                , m_folderPath.c_str()
+                , m_filePath.c_str()
                 , fullPathTemp
             );
 
@@ -128,7 +131,7 @@ namespace Mengine
         if( m_withTemp == true )
         {
             Path fullPathTemp = {'\0'};
-            size_t fullPathTempLen = Helper::Win32ConcatenateFilePathTempA( m_relationPath, m_folderPath, m_filePath, fullPathTemp, MENGINE_MAX_PATH );
+            size_t fullPathTempLen = Helper::Win32ConcatenateFilePathTempA( m_relationPath, m_folderPath, m_filePath, fullPathTemp );
 
             MENGINE_UNUSED( fullPathTempLen );
 
@@ -139,7 +142,7 @@ namespace Mengine
             );
 
             Path fullPath = {'\0'};
-            size_t fullPathLen = Helper::Win32ConcatenateFilePathA( m_relationPath, m_folderPath, m_filePath, fullPath, MENGINE_MAX_PATH );
+            size_t fullPathLen = Helper::Win32ConcatenateFilePathA( m_relationPath, m_folderPath, m_filePath, fullPath );
 
             MENGINE_UNUSED( fullPathLen );
 

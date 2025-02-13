@@ -149,7 +149,7 @@ namespace Mengine
 
                     if( successful == TRUE )
                     {
-                        LOGGER_MESSAGE( "%s"
+                        LOGGER_INFO( "platform", "%s"
                             , tempFileBuffer
                         );
                     }

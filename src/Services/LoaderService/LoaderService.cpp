@@ -422,10 +422,12 @@ namespace Mengine
         options.inputContent = _content;
         options.outputContent = Helper::makeFileContent( fileGroup, _pathBin, MENGINE_DOCUMENT_FUNCTION );
 
+        Mengine::ContentInterfacePtr protocolContent = Mengine::Helper::makeFileContent( fileGroup, m_protocolPath, MENGINE_DOCUMENT_FUNCTION );
+
         uint32_t useProtocolVersion = Metacode::get_metacode_protocol_version();
         uint32_t useProtocolCrc32 = Metacode::get_metacode_protocol_crc32();
 
-        Helper::setParam( options.params, STRINGIZE_STRING_LOCAL( "protocolPath" ), m_protocolPath );
+        Helper::setParam( options.params, STRINGIZE_STRING_LOCAL( "protocolContent" ), protocolContent );
         Helper::setParam( options.params, STRINGIZE_STRING_LOCAL( "useProtocolVersion" ), (ParamInteger)useProtocolVersion );
         Helper::setParam( options.params, STRINGIZE_STRING_LOCAL( "useProtocolCrc32" ), (ParamInteger)useProtocolCrc32 );
 

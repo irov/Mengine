@@ -983,7 +983,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::removeExtraTransformation( const ConstString & _name )
     {
+        MENGINE_ASSERTION_MEMORY_PANIC( m_composition, "movie2 '%s' invalid set '%s' not compile"
+            , this->getName().c_str()
+            , _name.c_str()
+        );
+
+        MENGINE_ASSERTION_FATAL( ae_has_movie_composition_node( m_composition, _name.c_str(), AE_MOVIE_LAYER_TYPE_NONE ) == AE_TRUE, "movie2 '%s' invalid set '%s' not found"
+            , this->getName().c_str()
+            , _name.c_str()
+        );
+
         TransformationInterface * t = (TransformationInterface *)ae_remove_movie_composition_node_extra_transformation( m_composition, _name.c_str() );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( t, "movie2 '%s' invalid remove '%s' transformation not set"
+            , this->getName().c_str()
+            , _name.c_str()
+        );
 
         TransformationInterfacePtr::release( t );
     }

@@ -10,14 +10,14 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void PlatformLogMessage( const Char * _message )
         {
-            std::printf( "%s", _message );
+            std::fprintf( stdout, "%s", _message );
         }
         //////////////////////////////////////////////////////////////////////////
         void PlatformLogFormat( const Char * _format, ... )
         {
             MENGINE_VA_LIST_TYPE args;
             MENGINE_VA_LIST_START( args, _format );
-            std::vprintf( _format, args );
+            std::vfprintf( stdout, _format, args );
             MENGINE_VA_LIST_END( args );
         }
         //////////////////////////////////////////////////////////////////////////

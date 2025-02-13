@@ -63,7 +63,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32FileGroupDirectory::getFullPath( const FilePath & _filePath, Char * const _fullPath ) const
     {
-        size_t fullPathLen = Helper::Win32ConcatenateFilePathA( m_relationPath, m_folderPath, _filePath, _fullPath, MENGINE_MAX_PATH );
+        size_t fullPathLen = Helper::Win32ConcatenateFilePathA( m_relationPath, m_folderPath, _filePath, _fullPath );
 
         MENGINE_UNUSED( fullPathLen );
 

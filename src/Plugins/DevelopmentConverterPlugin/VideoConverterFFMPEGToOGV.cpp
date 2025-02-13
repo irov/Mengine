@@ -82,7 +82,7 @@ namespace Mengine
             , full_output.c_str()
         );
 
-        LOGGER_MESSAGE_RELEASE( "converting file '%s' to '%s'\n%ls"
+        LOGGER_INFO( "convert", "converting file '%s' to '%s'\n%ls"
             , full_input.c_str()
             , full_output.c_str()
             , command

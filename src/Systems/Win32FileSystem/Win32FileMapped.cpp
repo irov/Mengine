@@ -36,7 +36,7 @@ namespace Mengine
     bool Win32FileMapped::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, bool _share )
     {
         WPath fullPath = {L'\0'};
-        size_t fullPathLen = Helper::Win32ConcatenateFilePathW( _relationPath, _folderPath, _filePath, fullPath, MENGINE_MAX_PATH );
+        size_t fullPathLen = Helper::Win32ConcatenateFilePathW( _relationPath, _folderPath, _filePath, fullPath );
 
         MENGINE_UNUSED( fullPathLen );
 

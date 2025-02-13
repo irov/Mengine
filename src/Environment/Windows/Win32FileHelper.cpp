@@ -74,14 +74,13 @@ namespace Mengine
             WPath pathCorrect = {L'\0'};
             Helper::pathCorrectForwardslashToW( pathCorrect, _filePath );
 
-            HANDLE handle = ::CreateFileW(
-                pathCorrect, //lpFileName
-                _desiredAccess, //dwDesiredAccess
-                _sharedMode, //dwShareMode
-                NULL, //lpSecurityAttributes
-                _creationDisposition, //dwCreationDisposition
-                FILE_ATTRIBUTE_NORMAL, //dwFlagsAndAttributes
-                NULL //hTemplateFile
+            HANDLE handle = ::CreateFileW( pathCorrect // lpFileName
+                , _desiredAccess // dwDesiredAccess
+                , _sharedMode // dwShareMode
+                , NULL // lpSecurityAttributes
+                , _creationDisposition // dwCreationDisposition
+                , FILE_ATTRIBUTE_NORMAL // dwFlagsAndAttributes
+                , NULL // hTemplateFile
             );
 
             if( handle == INVALID_HANDLE_VALUE )

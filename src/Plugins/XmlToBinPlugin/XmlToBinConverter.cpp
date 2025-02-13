@@ -105,16 +105,14 @@ namespace Mengine
     {
         const ConverterOptions & options = this->getOptions();
 
-        FilePath protocolPath = Helper::getParam( options.params, STRINGIZE_STRING_LOCAL( "protocolPath" ), FilePath::none() );
+        ContentInterfacePtr protocolContent = Helper::getParam( options.params, STRINGIZE_STRING_LOCAL( "protocolContent" ), ContentInterfacePtr::none() );
         ParamInteger useProtocolVersion = Helper::getParam( options.params, STRINGIZE_STRING_LOCAL( "useProtocolVersion" ), 0LL );
         ParamInteger useProtocolCrc32 = Helper::getParam( options.params, STRINGIZE_STRING_LOCAL( "useProtocolCrc32" ), 0LL );
 
-        LOGGER_MESSAGE_RELEASE( "xml to bin:\nxml - %s\nbin - %s"
+        LOGGER_INFO( "convert", "xml to bin:\nxml - %s\nbin - %s"
             , Helper::getContentFullPath( options.inputContent ).c_str()
             , Helper::getContentFullPath( options.outputContent ).c_str()
         );
-
-        ContentInterfacePtr protocolContent = Helper::makeFileContent( m_fileGroupDev, protocolPath, MENGINE_DOCUMENT_FUNCTION );
 
         InputStreamInterfacePtr protocol_stream = protocolContent->openInputStreamFile( false, false, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -228,11 +226,6 @@ namespace Mengine
         );
 
         Metabuf::Xml2Metabuf xml_metabuf( &xml_protocol, xml_meta );
-
-        LOGGER_INFO( "convert", "\nxml %s\nbin %s"
-            , Helper::getContentFullPath( options.inputContent ).c_str()
-            , Helper::getContentFullPath( options.outputContent ).c_str()
-        );
 
         xml_metabuf.initialize();
 

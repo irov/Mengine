@@ -31,21 +31,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ConverterService::_initializeService()
     {
-        const FileGroupInterfacePtr & fileGroupDev = FILE_SERVICE()
-            ->getFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( fileGroupDev, "not found 'dev' file group" );
-
-        m_fileGroupDev = fileGroupDev;
+        //Empty
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ConverterService::_finalizeService()
     {
-        m_fileGroupDev = nullptr;
-
-        MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "ConverterFactory" ) );
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     ConverterInterfacePtr ConverterService::createConverter( const ConstString & _type, const DocumentInterfacePtr & _doc )
@@ -66,7 +59,12 @@ namespace Mengine
             , _type.c_str()
         );
 
-        if( converter->initialize( m_fileGroupDev ) == false )
+        FileGroupInterfacePtr fileGroupDev = FILE_SERVICE()
+            ->getFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( fileGroupDev, "not found 'dev' file group" );
+
+        if( converter->initialize( fileGroupDev ) == false )
         {
             LOGGER_INFO( "convert", "invalid initialize converter '%s'"
                 , _type.c_str()

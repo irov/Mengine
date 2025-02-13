@@ -1176,7 +1176,8 @@ static bool run()
     {
         if( Mengine::initialize() == false )
         {
-            printf( "PyInit_ToolsBuilderPlugin initialize failed\n" );
+            ::fprintf( stdout, "PyInit_ToolsBuilderPlugin initialize failed\n" );
+            ::fflush( stdout );
 
             return false;
         }

@@ -160,7 +160,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileInputStream::openFile_( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, WChar * const _fullPath )
     {
-        size_t fullPathLen = Helper::Win32ConcatenateFilePathW( _relationPath, _folderPath, _filePath, _fullPath, MENGINE_MAX_PATH );
+        size_t fullPathLen = Helper::Win32ConcatenateFilePathW( _relationPath, _folderPath, _filePath, _fullPath );
 
         MENGINE_UNUSED( fullPathLen );
 
@@ -177,16 +177,18 @@ namespace Mengine
             sharedMode |= FILE_SHARE_WRITE | FILE_SHARE_DELETE;
         }
 
-        HANDLE hFile = Helper::Win32CreateFile(
-            _fullPath, // file to open
-            GENERIC_READ, // open for reading
-            sharedMode, // share for reading, exclusive for mapping
-            OPEN_EXISTING // existing file only
+        HANDLE hFile = Helper::Win32CreateFile( _fullPath
+            , GENERIC_READ
+            , sharedMode
+            , OPEN_EXISTING
         );
 
         if( hFile == INVALID_HANDLE_VALUE )
         {
-            LOGGER_ERROR( "file '%ls' invalid open"
+            LOGGER_ERROR( "invalid open input relation '%s' folder '%s' file '%s' full '%ls'"
+                , _relationPath.c_str()
+                , _folderPath.c_str()
+                , _filePath.c_str()
                 , _fullPath
             );
 

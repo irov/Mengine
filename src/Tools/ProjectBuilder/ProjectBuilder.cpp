@@ -391,6 +391,7 @@ namespace Mengine
         SERVICE_FINALIZE( ConfigService );
         SERVICE_FINALIZE( FileService );
         SERVICE_FINALIZE( PlatformService );
+        SERVICE_FINALIZE( FileSystem );
         SERVICE_FINALIZE( PluginService );
         SERVICE_FINALIZE( ModuleService );
         SERVICE_FINALIZE( TimepipeService );

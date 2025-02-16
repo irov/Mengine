@@ -91,6 +91,11 @@ namespace Mengine
 
         pybind::object py_type = m_generator.call( m_prototype );
 
+        MENGINE_ASSERTION_FATAL( py_type.is_invalid() == false, "type '%s' prototype '%s' invalid call generator"
+            , m_category.c_str()
+            , m_prototype.c_str()
+        );
+
         EventablePtr eventable = SCRIPT_SERVICE()
             ->eventableEntity( py_type );
 

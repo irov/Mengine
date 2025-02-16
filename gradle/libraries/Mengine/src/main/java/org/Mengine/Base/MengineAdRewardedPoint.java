@@ -40,8 +40,4 @@ public class MengineAdRewardedPoint extends MengineAdBasePoint {
     public void showAd() {
         //ToDo: Implement this method
     }
-
-    public void completeAd() {
-        //ToDo: Implement this method
-    }
 }

@@ -23,7 +23,6 @@ import org.Mengine.Base.MengineAdMediation;
 import org.Mengine.Base.MengineAdProviderInterface;
 import org.Mengine.Base.MengineAdRevenueParam;
 import org.Mengine.Base.MengineAdService;
-import org.Mengine.Base.MengineCallback;
 import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineTransparencyConsentParam;
 import org.Mengine.Base.MengineApplication;
@@ -471,7 +470,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
     }
 
     @Override
-    public boolean showInterstitial(String placement, MengineCallback showCallback) {
+    public boolean showInterstitial(String placement) {
         if (m_interstitialAd == null) {
             this.assertionError("not found interstitial placement: %s"
                 , placement
@@ -486,7 +485,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
 
         MengineActivity activity = this.getMengineActivity();
 
-        if (m_interstitialAd.showInterstitial(activity, placement, showCallback) == false) {
+        if (m_interstitialAd.showInterstitial(activity, placement) == false) {
             return false;
         }
 
@@ -537,7 +536,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
     }
 
     @Override
-    public boolean showRewarded(String placement, MengineCallback showCallback) {
+    public boolean showRewarded(String placement) {
         if (m_rewardedAd == null) {
             this.assertionError("not found rewarded placement: %s"
                 , placement
@@ -552,7 +551,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
 
         MengineActivity activity = this.getMengineActivity();
 
-        if (m_rewardedAd.showRewarded(activity, placement, showCallback) == false) {
+        if (m_rewardedAd.showRewarded(activity, placement) == false) {
             return false;
         }
 
@@ -572,8 +571,6 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             return MengineAdFormat.ADFORMAT_APP_OPEN;
         } else if (format == MaxAdFormat.REWARDED) {
             return MengineAdFormat.ADFORMAT_REWARDED;
-        } else if (format == MaxAdFormat.REWARDED_INTERSTITIAL) {
-            return MengineAdFormat.ADFORMAT_REWARDED_INTERSTITIAL;
         } else if (format == MaxAdFormat.NATIVE) {
             return MengineAdFormat.ADFORMAT_NATIVE;
         }

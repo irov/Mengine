@@ -49,6 +49,12 @@ public class MengineAdInterstitialPoint extends MengineAdBasePoint {
     }
 
     public boolean canYouShowAd(@NonNull MengineApplication application) {
+        if (BuildConfig.DEBUG == true) {
+            if (application.hasOption("adservice.always_interstitial_point." + m_name) == true) {
+                return true;
+            }
+        }
+
         if (m_enabled == false) {
             return false;
         }
@@ -101,10 +107,6 @@ public class MengineAdInterstitialPoint extends MengineAdBasePoint {
     }
 
     public void showAd() {
-        //ToDo: Implement this method
-    }
-
-    public void completeAd() {
         m_cooldown.resetShownTimestamp();
     }
 }

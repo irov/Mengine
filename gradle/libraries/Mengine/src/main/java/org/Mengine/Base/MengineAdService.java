@@ -225,12 +225,6 @@ public class MengineAdService extends MengineService implements MengineAdProvide
 
         MengineApplication application = this.getMengineApplication();
 
-        if (BuildConfig.DEBUG == true) {
-            if (application.hasOption("adservice.always_interstitial_point." + placement) == true) {
-                return true;
-            }
-        }
-
         MengineAdInterstitialPoint adPoint = m_adInterstitialPoints.get(placement);
 
         if (adPoint.canYouShowAd(application) == false) {
@@ -241,7 +235,7 @@ public class MengineAdService extends MengineService implements MengineAdProvide
     }
 
     @Override
-    public boolean showInterstitial(String placement, MengineCallback showCallback) {
+    public boolean showInterstitial(String placement) {
         if (m_adInterstitialPoints.containsKey(placement) == false) {
             this.logError("ad interstitial point '%s' not found", placement);
 
@@ -250,13 +244,7 @@ public class MengineAdService extends MengineService implements MengineAdProvide
 
         MengineAdInterstitialPoint adPoint = m_adInterstitialPoints.get(placement);
 
-        MengineCallback proxyShowCallback = (successful, params) -> {
-            adPoint.completeAd();
-
-            showCallback.call(successful, params);
-        };
-
-        if (m_adProvider.showInterstitial(placement, proxyShowCallback) == false) {
+        if (m_adProvider.showInterstitial(placement) == false) {
             return false;
         }
 
@@ -333,7 +321,7 @@ public class MengineAdService extends MengineService implements MengineAdProvide
     }
 
     @Override
-    public boolean showRewarded(String placement, MengineCallback showCallback) {
+    public boolean showRewarded(String placement) {
         if (m_adRewardedPoints.containsKey(placement) == false) {
             this.logError("ad rewarded point '%s' not found", placement);
 
@@ -342,13 +330,7 @@ public class MengineAdService extends MengineService implements MengineAdProvide
 
         MengineAdRewardedPoint adPoint = m_adRewardedPoints.get(placement);
 
-        MengineCallback proxyShowCallback = (successful, params) -> {
-            adPoint.completeAd();
-
-            showCallback.call(successful, params);
-        };
-
-        if (m_adProvider.showRewarded(placement, proxyShowCallback) == false) {
+        if (m_adProvider.showRewarded(placement) == false) {
             return false;
         }
 

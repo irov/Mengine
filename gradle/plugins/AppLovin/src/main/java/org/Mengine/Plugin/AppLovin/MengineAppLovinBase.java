@@ -123,12 +123,6 @@ public class MengineAppLovinBase {
             sb.append(String.format(Locale.US, ", \"creative_identifier\": \"%s\"", creativeId));
         }
 
-        String adReviewCreativeId = ad.getAdReviewCreativeId();
-
-        if (adReviewCreativeId != null) {
-            sb.append(String.format(Locale.US, ", \"ad_review_creative_id\": \"%s\"", adReviewCreativeId));
-        }
-
         String placement = ad.getPlacement();
 
         if (placement != null) {
@@ -174,6 +168,10 @@ public class MengineAppLovinBase {
         String params = sb.toString();
 
         return params;
+    }
+
+    protected void setState(@NonNull @Size(min = 1L,max = 1024L) String name, Object value) {
+        m_plugin.setState(name, value);
     }
 
     protected MengineAnalyticsEventBuilder buildAdEvent(@Size(min = 1L,max = 40L) String name) {
@@ -415,5 +413,9 @@ public class MengineAppLovinBase {
         if (error != null) {
             sb.append(String.format(Locale.US, "Error: %s ", error));
         }
+    }
+
+    protected void pythonCall(@NonNull String method, Object ... params) {
+        m_plugin.pythonCall(method, params);
     }
 }

@@ -11,12 +11,12 @@ public interface MengineAdProviderInterface {
     boolean hasInterstitial();
 
     boolean canYouShowInterstitial(String placement);
-    boolean showInterstitial(String placement, MengineCallback showCallback);
+    boolean showInterstitial(String placement);
 
     boolean hasRewarded();
 
     boolean canOfferRewarded(String placement);
     boolean canYouShowRewarded(String placement);
 
-    boolean showRewarded(String placement, MengineCallback showCallback);
+    boolean showRewarded(String placement);
 }

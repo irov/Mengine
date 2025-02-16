@@ -54,9 +54,27 @@ public class MengineNetwork {
         URL httpUrl = new URL(request.HTTP_URL);
 
         HttpURLConnection connection = (HttpURLConnection)httpUrl.openConnection();
-        connection.setRequestMethod(method);
 
+        connection.setRequestMethod(method);
         connection.setDoOutput(output);
+
+        MengineApplication application = MengineApplication.getSharedInstance();
+
+        String installKey = application.getInstallKey();
+        long installRND = application.getInstallRND();
+        String sessionId = application.getSessionId();
+        String applicationId = application.getApplicationId();
+        int versionCode = application.getVersionCode();
+        String versionName = application.getVersionName();
+
+        connection.setRequestProperty("Mengine-Build-Type", BuildConfig.BUILD_TYPE);
+        connection.setRequestProperty("Mengine-Platform", "Android");
+        connection.setRequestProperty("Mengine-Install-Key", installKey);
+        connection.setRequestProperty("Mengine-Install-RND", String.valueOf(installRND));
+        connection.setRequestProperty("Mengine-Session-Id", sessionId);
+        connection.setRequestProperty("Mengine-Application-Id", applicationId);
+        connection.setRequestProperty("Mengine-Application-Code", String.valueOf(versionCode));
+        connection.setRequestProperty("Mengine-Application-Version", versionName);
 
         MengineNetwork.setTimeout(connection, request.HTTP_TIMEOUT);
         MengineNetwork.setHeaders(connection, request.HTTP_HEADERS);

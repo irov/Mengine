@@ -97,8 +97,6 @@ public class MengineAppsFlyerPlugin extends MenginePlugin implements MenginePlug
             return AppsFlyerAdNetworkEventType.INTERSTITIAL.toString();
         } else if (adType == MengineAdFormat.ADFORMAT_REWARDED) {
             return AppsFlyerAdNetworkEventType.REWARDED.toString();
-        } else if (adType == MengineAdFormat.ADFORMAT_REWARDED_INTERSTITIAL) {
-            return AppsFlyerAdNetworkEventType.REWARDED.toString();
         } else if (adType == MengineAdFormat.ADFORMAT_APP_OPEN) {
             return AppsFlyerAdNetworkEventType.APP_OPEN.toString();
         } else if (adType == MengineAdFormat.ADFORMAT_NATIVE) {

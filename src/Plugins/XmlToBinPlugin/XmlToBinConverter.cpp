@@ -109,9 +109,10 @@ namespace Mengine
         ParamInteger useProtocolVersion = Helper::getParam( options.params, STRINGIZE_STRING_LOCAL( "useProtocolVersion" ), 0LL );
         ParamInteger useProtocolCrc32 = Helper::getParam( options.params, STRINGIZE_STRING_LOCAL( "useProtocolCrc32" ), 0LL );
 
-        LOGGER_INFO( "convert", "xml to bin:\nxml - %s\nbin - %s"
+        LOGGER_INFO( "convert", "xml to bin:\nxml - %s\nbin - %s\nversion - %d"
             , Helper::getContentFullPath( options.inputContent ).c_str()
             , Helper::getContentFullPath( options.outputContent ).c_str()
+            , (int32_t)useProtocolVersion
         );
 
         InputStreamInterfacePtr protocol_stream = protocolContent->openInputStreamFile( false, false, MENGINE_DOCUMENT_FACTORABLE );

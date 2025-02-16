@@ -1,6 +1,5 @@
 package org.Mengine.Base;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Size;
 
 import java.util.HashMap;
@@ -9,18 +8,8 @@ import java.util.Map;
 public class MengineAnalytics {
     public static final String TAG = "MengineAnalytics";
 
-    private static MengineApplication m_application;
-
     private static final Map<String, Object> m_bases = new HashMap<>();
     private static final Map<String, Object> m_getter = new HashMap<>();
-
-    public static void setMengineApplication(@NonNull MengineApplication application) {
-        MengineAnalytics.m_application = application;
-    }
-
-    public static void removeMengineApplication() {
-        MengineAnalytics.m_application = null;
-    }
 
     static private void assertContext(String key) {
         if (BuildConfig.DEBUG == false) {
@@ -28,7 +17,7 @@ public class MengineAnalytics {
         }
 
         if (MengineAnalytics.m_bases.containsKey(key) == true) {
-            MengineUtils.throwAssertionError(m_application, MengineAnalytics.TAG, null
+            MengineUtils.throwAssertionError(MengineAnalytics.TAG, null
                 , "global analytics context parameter: %s already exist", key
             );
         }
@@ -40,7 +29,7 @@ public class MengineAnalytics {
         }
 
         if (MengineAnalytics.m_getter.containsKey(key) == true) {
-            MengineUtils.throwAssertionError(m_application, MengineAnalytics.TAG, null
+            MengineUtils.throwAssertionError(MengineAnalytics.TAG, null
                 , "global analytics getter parameter: %s already exist", key
             );
         }
@@ -111,7 +100,7 @@ public class MengineAnalytics {
 
         MengineAnalytics.collapseGetter(parameters);
 
-        MengineAnalyticsEventBuilder eventBuilder = new MengineAnalyticsEventBuilder(MengineAnalytics.m_application, MengineAnalytics.m_bases, parameters, name);
+        MengineAnalyticsEventBuilder eventBuilder = new MengineAnalyticsEventBuilder(MengineAnalytics.m_bases, parameters, name);
 
         return eventBuilder;
     }

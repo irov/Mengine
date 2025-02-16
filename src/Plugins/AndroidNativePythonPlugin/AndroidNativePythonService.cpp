@@ -30,6 +30,10 @@
 #include "Config/StdString.h"
 #include "Config/Utility.h"
 
+#ifndef MENGINE_ANDROID_METHOD_MAX_ARGS
+#define MENGINE_ANDROID_METHOD_MAX_ARGS 32
+#endif
+
 //////////////////////////////////////////////////////////////////////////
 extern "C"
 {
@@ -73,11 +77,19 @@ extern "C"
 
         env->DeleteGlobalRef( jplugin );
     }
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidNativePython_1activateSemaphore )(JNIEnv * env, jclass cls, jstring _name)
+    {
+        Mengine::ConstString name = Mengine::Helper::AndroidMakeConstStringFromJString(env, _name);
+
+        ANDROID_NATIVEPYTHON_SERVICE()
+            ->activateSemaphore( name );
+    }
+    //////////////////////////////////////////////////////////////////////////
 }
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( AndroidNativePythonService, Mengine::AndroidNativePythonService );
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -109,6 +121,7 @@ namespace Mengine
 
         m_kernel = kernel;
 
+        m_semaphoresMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
         m_callbacksMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
         m_pluginsMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -124,9 +137,11 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
+        m_semaphoresMutex = nullptr;
         m_callbacksMutex = nullptr;
         m_pluginsMutex = nullptr;
 
+        m_semaphores.clear();
         m_callbacks.clear();
 
         for( auto && [name, jplugin] : m_plugins )
@@ -326,9 +341,9 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        jvalue jargs[32];
-        jobject jfree[32];
-        uint32_t freeCount;
+        jvalue jargs[MENGINE_ANDROID_METHOD_MAX_ARGS];
+        jobject jfree[MENGINE_ANDROID_METHOD_MAX_ARGS] = {nullptr};
+        uint32_t freeCount = 0;
 
         jobject jplugin;
         jmethodID jmethodID_method;
@@ -361,9 +376,9 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        jvalue jargs[32];
-        jobject jfree[32];
-        uint32_t freeCount;
+        jvalue jargs[MENGINE_ANDROID_METHOD_MAX_ARGS];
+        jobject jfree[MENGINE_ANDROID_METHOD_MAX_ARGS] = {nullptr};
+        uint32_t freeCount = 0;
 
         jobject jplugin;
         jmethodID jmethodID_method;
@@ -398,9 +413,9 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        jvalue jargs[32];
-        jobject jfree[32];
-        uint32_t freeCount;
+        jvalue jargs[MENGINE_ANDROID_METHOD_MAX_ARGS];
+        jobject jfree[MENGINE_ANDROID_METHOD_MAX_ARGS] = {nullptr};
+        uint32_t freeCount = 0;
 
         jobject jplugin;
         jmethodID jmethodID_method;
@@ -435,9 +450,9 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        jvalue jargs[32];
-        jobject jfree[32];
-        uint32_t freeCount;
+        jvalue jargs[MENGINE_ANDROID_METHOD_MAX_ARGS];
+        jobject jfree[MENGINE_ANDROID_METHOD_MAX_ARGS] = {nullptr};
+        uint32_t freeCount = 0;
 
         jobject jplugin;
         jmethodID jmethodID_method;
@@ -472,9 +487,9 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        jvalue jargs[32];
-        jobject jfree[32];
-        uint32_t freeCount;
+        jvalue jargs[MENGINE_ANDROID_METHOD_MAX_ARGS];
+        jobject jfree[MENGINE_ANDROID_METHOD_MAX_ARGS] = {nullptr};
+        uint32_t freeCount = 0;
 
         jobject jplugin;
         jmethodID jmethodID_method;
@@ -509,9 +524,9 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        jvalue jargs[32];
-        jobject jfree[32];
-        uint32_t freeCount;
+        jvalue jargs[MENGINE_ANDROID_METHOD_MAX_ARGS];
+        jobject jfree[MENGINE_ANDROID_METHOD_MAX_ARGS] = {nullptr};
+        uint32_t freeCount = 0;
 
         jobject jplugin;
         jmethodID jmethodID_method;
@@ -546,9 +561,9 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        jvalue jargs[32];
-        jobject jfree[32];
-        uint32_t freeCount;
+        jvalue jargs[MENGINE_ANDROID_METHOD_MAX_ARGS];
+        jobject jfree[MENGINE_ANDROID_METHOD_MAX_ARGS] = {nullptr};
+        uint32_t freeCount = 0;
 
         jobject jplugin;
         jmethodID jmethodID_method;
@@ -592,9 +607,9 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        jvalue jargs[32];
-        jobject jfree[32];
-        uint32_t freeCount;
+        jvalue jargs[MENGINE_ANDROID_METHOD_MAX_ARGS];
+        jobject jfree[MENGINE_ANDROID_METHOD_MAX_ARGS] = {nullptr};
+        uint32_t freeCount = 0;
 
         jobject jplugin;
         jmethodID jmethodID_method;
@@ -631,9 +646,9 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        jvalue jargs[32];
-        jobject jfree[32];
-        uint32_t freeCount;
+        jvalue jargs[MENGINE_ANDROID_METHOD_MAX_ARGS];
+        jobject jfree[MENGINE_ANDROID_METHOD_MAX_ARGS] = {nullptr};
+        uint32_t freeCount = 0;
 
         jobject jplugin;
         jmethodID jmethodID_method;
@@ -658,6 +673,41 @@ namespace Mengine
         return py_result;
     }
     //////////////////////////////////////////////////////////////////////////
+    void AndroidNativePythonService::activateSemaphore( const ConstString & _name )
+    {
+        LOGGER_INFO( "android", "activate semaphore '%s'"
+            , _name.c_str()
+        );
+
+        MENGINE_THREAD_MUTEX_SCOPE( m_semaphoresMutex );
+
+        MapAndroidSemaphores::iterator it_found = m_semaphores.find( _name );
+
+        if( it_found == m_semaphores.end() )
+        {
+            SemaphoreDesc desc;
+            desc.activated = true;
+
+            m_semaphores.emplace( _name, desc );
+
+            return;
+        }
+
+        SemaphoreDesc & semaphore = it_found->second;
+
+        if( semaphore.activated == true )
+        {
+            return;
+        }
+
+        semaphore.activated = true;
+
+        for( const AndroidSemaphoreListenerInterfacePtr & listener : semaphore.listeners )
+        {
+            listener->invoke();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonService::waitSemaphore( const ConstString & _name, const AndroidSemaphoreListenerInterfacePtr & _listener )
     {
         LOGGER_INFO( "android", "wait semaphore '%s'"
@@ -672,26 +722,42 @@ namespace Mengine
 
         jstring jname = jenv->NewStringUTF( name_str );
 
-        jclass jclass_MengineSemaphoreListener = Mengine_JNI_FindClass( jenv, "org/Mengine/Base/MengineSemaphoreListener" );
-
-        Helper::AndroidEnvExceptionCheck( jenv );
-
-        jmethodID jmethodID_MengineSemaphoreListener_constructor = jenv->GetMethodID( jclass_MengineSemaphoreListener, "<init>", "(Ljava/lang/Object;)V" );
-
-        AndroidSemaphoreListenerInterface * listener_ptr = _listener.get();
-        AndroidSemaphoreListenerInterface::intrusive_ptr_add_ref( listener_ptr );
-        jobject jpoint_listener = jenv->NewDirectByteBuffer( listener_ptr, sizeof(void *) );
-
-        jobject jfunctor = jenv->NewObject( jclass_MengineSemaphoreListener, jmethodID_MengineSemaphoreListener_constructor, jpoint_listener );
-
-        Helper::AndroidEnvExceptionCheck( jenv );
-
-        Helper::AndroidCallVoidActivityMethod( jenv, "waitSemaphore", "(Ljava/lang/String;Lorg/Mengine/Base/MengineSemaphoreListener;)V", jname, jfunctor );
+        jboolean jresult = Helper::AndroidCallBooleanActivityMethod( jenv, "waitSemaphore", "(Ljava/lang/String;)Z", jname );
 
         jenv->DeleteLocalRef( jname );
-        jenv->DeleteLocalRef( jfunctor );
-        jenv->DeleteLocalRef( jpoint_listener );
-        jenv->DeleteLocalRef( jclass_MengineSemaphoreListener );
+
+        if( jresult == true )
+        {
+            _listener->invoke();
+
+            return;
+        }
+
+        MENGINE_THREAD_MUTEX_SCOPE( m_semaphoresMutex );
+
+        MapAndroidSemaphores::iterator it_found = m_semaphores.find( _name );
+
+        if( it_found == m_semaphores.end() )
+        {
+            SemaphoreDesc desc;
+            desc.activated = false;
+            desc.listeners.emplace_back( _listener );
+
+            m_semaphores.emplace( _name, desc );
+
+            return;
+        }
+
+        SemaphoreDesc & semaphore = it_found->second;
+
+        if( semaphore.activated == true )
+        {
+            _listener->invoke();
+
+            return;
+        }
+
+        semaphore.listeners.emplace_back( _listener );
     }
     //////////////////////////////////////////////////////////////////////////
     jobject AndroidNativePythonService::getAndroidPlugin( const ConstString & _plugin ) const
@@ -731,14 +797,12 @@ namespace Mengine
             return false;
         }
 
-        jclass plugin_class = _jenv->GetObjectClass( jplugin );
-
         Char signature[1024 + 1] = {'\0'};
 
         StdString::strcat( signature, "(" );
 
-        StdString::memset( _jargs, 0, sizeof( jvalue ) * 32 );
-        StdString::memset( _jfree, 0, sizeof( jstring ) * 32 );
+        StdString::memset( _jargs, 0, sizeof( jvalue ) * MENGINE_ANDROID_METHOD_MAX_ARGS );
+        StdString::memset( _jfree, 0, sizeof( jstring ) * MENGINE_ANDROID_METHOD_MAX_ARGS );
 
         uint32_t index_args = 0;
         uint32_t index_free = 0;
@@ -794,41 +858,26 @@ namespace Mengine
             {
                 pybind::list l = arg.extract();
 
-                pybind::list::size_type s = l.size();
-
-                jclass jclass_ArrayList = _jenv->FindClass( "java/util/ArrayList" );
-
-                jmethodID jmethodID_List_constructor = _jenv->GetMethodID( jclass_ArrayList, "<init>", "(I)V" );
-
-                MENGINE_ASSERTION_FATAL( jmethodID_List_constructor != nullptr, "invalid get android method 'java/lang/ArrayList [<init>] (I)V'" );
-
-                jobject jlist = _jenv->NewObject( jclass_ArrayList, jmethodID_List_constructor, (jsize)s );
-
-                uint32_t index = 0;
-                for( const pybind::object & o : l )
-                {
-                    const Char * o_str = o.extract();
-
-                    jstring jelement = _jenv->NewStringUTF( o_str );
-
-                    jboolean result = Helper::AndroidAddJObjectList( _jenv, jlist, jelement );
-
-                    _jenv->DeleteLocalRef( jelement );
-
-                    ++index;
-                }
+                jobject jlist = Helper::androidNativePythonListMakeJavaObject( _jenv, l );
 
                 _jargs[index_args++].l = jlist;
                 _jfree[index_free++] = jlist;
 
-                _jenv->DeleteLocalRef( jclass_ArrayList );
-
                 StdString::strcat( signature, "Ljava/util/List;" );
+            }
+            else if( arg.is_dict() == true )
+            {
+                pybind::dict d = arg.extract();
+
+                jobject jmap = Helper::androidNativePythonDictMakeJavaObject( _jenv, d );
+
+                _jargs[index_args++].l = jmap;
+                _jfree[index_free++] = jmap;
+
+                StdString::strcat( signature, "Ljava/util/Map;" );
             }
             else
             {
-                _jenv->DeleteLocalRef( plugin_class );
-
                 LOGGER_ERROR( "android plugin '%s' method '%s' unsupported arg [%u] type [%s]"
                     , _plugin.c_str()
                     , _method.c_str()
@@ -842,6 +891,8 @@ namespace Mengine
 
         StdString::strcat( signature, ")" );
         StdString::strcat( signature, _retType );
+
+        jclass plugin_class = _jenv->GetObjectClass( jplugin );
 
         jmethodID jmethodId = _jenv->GetMethodID( plugin_class, _method.c_str(), signature );
 

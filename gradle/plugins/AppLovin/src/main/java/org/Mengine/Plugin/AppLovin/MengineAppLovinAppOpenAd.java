@@ -93,7 +93,7 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Def
         this.buildAdEvent("mng_ad_appopen_load")
             .log();
 
-        m_plugin.setState("applovin.appopen.state." + m_adUnitId, "load");
+        this.setState("applovin.appopen.state." + m_adUnitId, "load");
 
         try {
             m_appOpenAd.loadAd();
@@ -104,7 +104,7 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Def
                 .addParameterException("exception", e)
                 .log();
 
-            m_plugin.setState("applovin.appopen.state." + m_adUnitId, "load_exception");
+            this.setState("applovin.appopen.state." + m_adUnitId, "load_exception");
 
             this.retryLoadAd();
         }
@@ -122,7 +122,7 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Def
         this.buildAdEvent("mng_ad_appopen_request_started")
             .log();
 
-        m_plugin.setState("applovin.appopen.state." + m_adUnitId, "request_started");
+        this.setState("applovin.appopen.state." + m_adUnitId, "request_started");
     }
 
     @Override
@@ -133,7 +133,7 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Def
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .log();
 
-        m_plugin.setState("applovin.appopen.state." + m_adUnitId, "loaded." + ad.getNetworkName());
+        this.setState("applovin.appopen.state." + m_adUnitId, "loaded." + ad.getNetworkName());
 
         m_requestAttempt = 0;
     }
@@ -149,7 +149,7 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Def
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .log();
 
-        m_plugin.setState("applovin.appopen.state." + m_adUnitId, "displayed." + placement + "." + ad.getNetworkName());
+        this.setState("applovin.appopen.state." + m_adUnitId, "displayed." + placement + "." + ad.getNetworkName());
     }
 
     @Override
@@ -163,7 +163,7 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Def
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .log();
 
-        m_plugin.setState("applovin.appopen.state." + m_adUnitId, "hidden." + placement + "." + ad.getNetworkName());
+        this.setState("applovin.appopen.state." + m_adUnitId, "hidden." + placement + "." + ad.getNetworkName());
 
         MengineUtils.performOnMainThread(() -> {
             this.loadAd();
@@ -181,7 +181,7 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Def
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .log();
 
-        m_plugin.setState("applovin.appopen.state." + m_adUnitId, "clicked." + placement + "." + ad.getNetworkName());
+        this.setState("applovin.appopen.state." + m_adUnitId, "clicked." + placement + "." + ad.getNetworkName());
     }
 
     @Override
@@ -195,7 +195,7 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Def
             .addParameterJSON("error", this.getMaxErrorParams(error))
             .log();
 
-        m_plugin.setState("applovin.appopen.state." + m_adUnitId, "load_failed." + errorCode);
+        this.setState("applovin.appopen.state." + m_adUnitId, "load_failed." + errorCode);
 
         this.retryLoadAd();
     }
@@ -215,7 +215,7 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Def
             .addParameterJSON("error", this.getMaxErrorParams(error))
             .log();
 
-        m_plugin.setState("applovin.appopen.state." + m_adUnitId, "display_failed." + placement + "." + ad.getNetworkName() + "." + errorCode);
+        this.setState("applovin.appopen.state." + m_adUnitId, "display_failed." + placement + "." + ad.getNetworkName() + "." + errorCode);
 
         MengineUtils.performOnMainThread(() -> {
             this.loadAd();
@@ -239,7 +239,7 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Def
 
         double revenue = ad.getRevenue();
 
-        m_plugin.pythonCall("onAndroidAppLovinAppOpenRevenuePaid", Map.of("placement", placement, "revenue", revenue));
+        this.pythonCall("onAndroidAppLovinAppOpenRevenuePaid", Map.of("placement", placement, "revenue", revenue));
     }
 
     @Override

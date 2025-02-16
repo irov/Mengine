@@ -15,27 +15,25 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         class PythonAppleSemaphoreListener
             : public AppleSemaphoreListenerInterface
+            , public PythonCallbackProvider
         {
             DECLARE_FACTORABLE("PythonAppleSemaphoreListener")
             
         public:
             PythonAppleSemaphoreListener( const pybind::object & _cb, const pybind::args & _args )
-                : m_cb( _cb )
-                , m_args( _args )
+                : PythonCallbackProvider( _cb, _args )
             {
             }
 
         protected:
             void invoke() override
             {
-                Helper::dispatchMainThreadEvent([this]() {
-                    m_cb.call_args( m_args );
+                PythonCallbackProviderPtr keep = PythonCallbackProviderPtr::from(this);
+
+                Helper::dispatchMainThreadEvent([keep]() {
+                    keep->call_cb();
                 });
             }
-
-        protected:
-            pybind::object m_cb;
-            pybind::args m_args;
         };
         //////////////////////////////////////////////////////////////////////////
         typedef IntrusivePtr<PythonAppleSemaphoreListener, AppleSemaphoreListenerInterface> PythonAppleSemaphoreListenerPtr;

@@ -234,17 +234,21 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
         AppEventsLogger.setPushNotificationsRegistrationId(token);
     }
 
-    private void updateBundle(Bundle bundle, Map<String, Object> parameters) {
+    private void updateBundle(@NonNull Bundle bundle, @NonNull Map<String, Object> parameters) {
         for (Map.Entry<String, Object> entry : parameters.entrySet()) {
             String name = entry.getKey();
             Object value = entry.getValue();
 
-            if (value instanceof Boolean) {
+            if (value == null) {
+                bundle.putString(name, null);
+            } else if (value instanceof Boolean) {
                 if ((Boolean)value == true) {
                     bundle.putLong(name, 1);
                 } else {
                     bundle.putLong(name, 0);
                 }
+            } else if (value instanceof Integer) {
+                bundle.putInt(name, (Integer)value);
             } else if (value instanceof Long) {
                 bundle.putLong(name, (Long)value);
             } else if (value instanceof Double) {

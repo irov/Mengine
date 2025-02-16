@@ -13,7 +13,7 @@ namespace Mengine
         : public Mixin
     {
     public:
-        virtual PyObject * wrap( Scriptable * _scriptable, PyObject * _embed ) = 0;
+        MENGINE_NODISCARD virtual PyObject * wrap( Scriptable * _scriptable, PyObject * _embed ) = 0;
         virtual void unwrap( PyObject * _obj ) = 0;
 
     public:

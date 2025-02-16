@@ -13,8 +13,6 @@ public class MengineNative {
 
     public static native void AndroidMain_crash(String reason);
 
-    public static native void AnroidEnvironmentService_callMengineSemaphoreListener(Object impl);
-    public static native void AnroidEnvironmentService_destroyMengineSemaphoreListener(Object impl);
     public static native boolean AndroidEnvironmentService_isDevelopmentMode();
     public static native String AndroidEnvironmentService_getCompanyName();
     public static native String AndroidEnvironmentService_getProjectName();
@@ -29,6 +27,7 @@ public class MengineNative {
     public static native void AndroidNativePython_addPlugin(String name, Object plugin);
     public static native void AndroidNativePython_removePlugin(String name);
     public static native void AndroidNativePython_call(String plugin, String method, Object []args);
+    public static native void AndroidNativePython_activateSemaphore(String name);
 
     public static native void AndroidPlatform_surfaceCreatedEvent(Surface surface);
     public static native void AndroidPlatform_surfaceDestroyedEvent(Surface surface);

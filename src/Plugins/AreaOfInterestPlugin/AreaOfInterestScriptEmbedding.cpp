@@ -51,7 +51,7 @@ namespace Mengine
             }
         };
         //////////////////////////////////////////////////////////////////////////
-        static PyObject * NodeAOITrigger_setEventListener(pybind::kernel_interface * _kernel, NodeAreaOfInterestTrigger * _node, PyObject * _args, PyObject * _kwds )
+        static PyObject * NodeAOITrigger_setEventListener( pybind::kernel_interface * _kernel, NodeAreaOfInterestTrigger * _node, PyObject * _args, PyObject * _kwds )
         {
             MENGINE_UNUSED( _args );
 

@@ -445,7 +445,7 @@ public class MengineUtils {
 
             String sourceFileParent = sourceFile.getParent();
 
-            if( sourceFileParent == null ) {
+            if (sourceFileParent == null) {
                 return false;
             }
 
@@ -1036,12 +1036,10 @@ public class MengineUtils {
         throw new RuntimeException(message, throwable);
     }
 
-    public static void throwAssertionError(MengineApplication application, String title, Throwable throwable, String format, Object ... args) {
+    public static void throwAssertionError(String title, Throwable throwable, String format, Object ... args) {
         String message = MengineLog.buildTotalMsg(format, args);
 
-        if (application == null) {
-            MengineUtils.throwRuntimeException(message, throwable);
-        }
+        MengineApplication application = MengineApplication.getSharedInstance();
 
         MengineActivity activity = application.getMengineActivity();
 

@@ -82,13 +82,17 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
         m_firebaseAnalytics.setUserId(null);
     }
 
-    private void updateBundle(Bundle bundle, Map<String, Object> parameters) {
+    private void updateBundle(@NonNull Bundle bundle, @NonNull Map<String, Object> parameters) {
         for (Map.Entry<String, Object> entry : parameters.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
 
-            if (value instanceof Boolean boolValue) {
+            if (value == null) {
+                bundle.putString(key, null);
+            } else if (value instanceof Boolean boolValue) {
                 bundle.putBoolean(key, boolValue);
+            } else if (value instanceof Integer intValue) {
+                bundle.putInt(key, intValue);
             } else if (value instanceof Long longValue) {
                 bundle.putLong(key, longValue);
             } else if (value instanceof Double doubleValue) {
@@ -154,8 +158,6 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
             return "APP_OPEN";
         } else if (adType == MengineAdFormat.ADFORMAT_REWARDED) {
             return "REWARDED";
-        } else if (adType == MengineAdFormat.ADFORMAT_REWARDED_INTERSTITIAL) {
-            return "REWARDED_INTERSTITIAL";
         } else if (adType == MengineAdFormat.ADFORMAT_NATIVE) {
             return "NATIVE";
         }

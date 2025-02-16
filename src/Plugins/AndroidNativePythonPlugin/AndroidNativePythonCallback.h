@@ -26,7 +26,7 @@ namespace Mengine
 
     public:
         void setJavaFunctor( JNIEnv * _jenv, jobject _functor );
-        jobject getJavaFunctor() const;
+        MENGINE_NODISCARD jobject getJavaFunctor() const;
 
     public:
         void call( bool _result, const Params & _params );

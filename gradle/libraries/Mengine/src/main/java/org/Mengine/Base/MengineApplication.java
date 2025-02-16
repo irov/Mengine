@@ -33,6 +33,8 @@ public class MengineApplication extends Application {
         System.loadLibrary("AndroidApplication");
     }
 
+    private static MengineApplication m_sharedInstance;
+
     private String m_androidId;
 
     private long m_saveVersion = -1;
@@ -80,6 +82,10 @@ public class MengineApplication extends Application {
 
     private final Object m_syncEvent = new Object();
     private final Object m_syncState = new Object();
+
+    public static MengineApplication getSharedInstance() {
+        return m_sharedInstance;
+    }
 
     public boolean isMasterRelease() {
         return MengineNative.AndroidEnv_isMasterRelease();
@@ -135,6 +141,8 @@ public class MengineApplication extends Application {
 
     public MengineApplication() {
         super();
+
+        m_sharedInstance = this;
 
         String applicationId = this.getApplicationId();
         String versionName = this.getVersionName();
@@ -1115,9 +1123,6 @@ public class MengineApplication extends Application {
             return;
         }
 
-        MengineLog.setMengineApplication(this);
-        MengineAnalytics.setMengineApplication(this);
-
         boolean isMainProcess = this.isMainProcess();
 
         MengineLog.logMessageRelease(TAG, "onCreate isMainProcess: %b "
@@ -1549,9 +1554,6 @@ public class MengineApplication extends Application {
         for (MengineService service : m_services) {
             service.onFinalize(this);
         }
-
-        MengineLog.removeMengineApplication();
-        MengineAnalytics.removeMengineApplication();
 
         MengineNative.AndroidNativePython_removePlugin("Application");
 

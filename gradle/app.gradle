@@ -5,6 +5,7 @@ apply from: rootProject.projectDir.getAbsolutePath() + '/androidx.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/minify.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/split.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/delivery.gradle'
+apply from: rootProject.projectDir.getAbsolutePath() + '/gms.gradle'
 
 def ANDROID_APP_BUILD_PUBLISH = Utils.getBooleanProperty("ANDROID_APP_BUILD_PUBLISH", false)
 def ANDROID_APP_LOGGER_LEVEL_FORCE_VERBOSE = Utils.getBooleanProperty("ANDROID_APP_LOGGER_LEVEL_FORCE_VERBOSE", false)

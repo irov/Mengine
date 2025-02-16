@@ -2,7 +2,6 @@ package org.Mengine.Base;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Size;
 
 import java.util.Arrays;
@@ -26,7 +25,6 @@ public class MengineLog {
     public final static int LFILTER_HTTP = 1 << 2;
     public final static int LFILTER_EXCEPTION = 1 << 3;
 
-    private static MengineApplication m_application;
     private static final Set<String> m_singles = new HashSet<>();
 
     static class HistoryRecord {
@@ -35,14 +33,6 @@ public class MengineLog {
         public String tag;
         public String message;
         public MengineApplication application;
-    }
-
-    public static void setMengineApplication(@NonNull MengineApplication application) {
-        MengineLog.m_application = application;
-    }
-
-    public static void removeMengineApplication() {
-        MengineLog.m_application = null;
     }
 
     public static boolean isFilter(int filter, int flag) {
@@ -95,9 +85,9 @@ public class MengineLog {
             return;
         }
 
-        if (MengineLog.m_application != null) {
-            MengineLog.m_application.onMengineLogger(level, filter, tag, message);
-        }
+        MengineApplication application = MengineApplication.getSharedInstance();
+
+        application.onMengineLogger(level, filter, tag, message);
     }
 
     public static String logVerbose(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {

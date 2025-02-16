@@ -109,8 +109,6 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
             return AdType.INTERSTITIAL;
         } else if (adType == MengineAdFormat.ADFORMAT_REWARDED) {
             return AdType.REWARDED;
-        } else if (adType == MengineAdFormat.ADFORMAT_REWARDED_INTERSTITIAL) {
-            return AdType.REWARDED;
         } else if (adType == MengineAdFormat.ADFORMAT_MREC) {
             return AdType.MREC;
         } else if (adType == MengineAdFormat.ADFORMAT_NATIVE) {

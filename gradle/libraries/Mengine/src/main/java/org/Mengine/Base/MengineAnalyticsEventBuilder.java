@@ -6,14 +6,11 @@ import androidx.annotation.Size;
 import java.util.Map;
 
 public class MengineAnalyticsEventBuilder {
-    private final MengineApplication m_application;
-
     private final String m_name;
     private final Map<String, Object> m_bases;
     private final Map<String, Object> m_parameters;
 
-    MengineAnalyticsEventBuilder(MengineApplication application, Map<String, Object> bases, Map<String, Object> parameters, @NonNull @Size(min = 1L,max = 40L) String name) {
-        m_application = application;
+    MengineAnalyticsEventBuilder(Map<String, Object> bases, Map<String, Object> parameters, @NonNull @Size(min = 1L,max = 40L) String name) {
         m_bases = bases;
         m_parameters = parameters;
         m_name = name;
@@ -25,7 +22,7 @@ public class MengineAnalyticsEventBuilder {
         }
 
         if (m_bases.containsKey(key)) {
-            MengineUtils.throwAssertionError(m_application, MengineAnalytics.TAG, null
+            MengineUtils.throwAssertionError(MengineAnalytics.TAG, null
                 , "event builder: %s parameter: %s already exist in context", m_name, key
             );
         }
@@ -37,7 +34,7 @@ public class MengineAnalyticsEventBuilder {
         }
 
         if (m_parameters.containsKey(key)) {
-            MengineUtils.throwAssertionError(m_application, MengineAnalytics.TAG, null
+            MengineUtils.throwAssertionError(MengineAnalytics.TAG, null
                 , "event builder: %s parameter: %s already exist in parameters", m_name, key
             );
         }
@@ -49,7 +46,7 @@ public class MengineAnalyticsEventBuilder {
         }
 
         if (MengineUtils.validateJSON(json) == false) {
-            MengineUtils.throwAssertionError(m_application, MengineAnalytics.TAG, null
+            MengineUtils.throwAssertionError(MengineAnalytics.TAG, null
                 , "event builder: %s parameter: %s invalid json: %s", m_name, key, json
             );
         }
@@ -118,9 +115,9 @@ public class MengineAnalyticsEventBuilder {
     public long logAndFlush() {
         long timestamp = this.log();
 
-        if (m_application != null) {
-            m_application.onMengineAnalyticsFlush();
-        }
+        MengineApplication application = MengineApplication.getSharedInstance();
+
+        application.onMengineAnalyticsFlush();
 
         return timestamp;
     }
@@ -128,9 +125,9 @@ public class MengineAnalyticsEventBuilder {
     public long log() {
         long timestamp = MengineUtils.getTimestamp();
 
-        if (m_application != null) {
-            m_application.onMengineAnalyticsEvent(m_name, timestamp, m_bases, m_parameters);
-        }
+        MengineApplication application = MengineApplication.getSharedInstance();
+
+        application.onMengineAnalyticsEvent(m_name, timestamp, m_bases, m_parameters);
 
         return timestamp;
     }

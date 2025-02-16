@@ -9,23 +9,18 @@ import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 
-import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MengineListenerActivity;
-import org.Mengine.Base.MengineLog;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Plugin.GoogleService.MengineGoogleServicePlugin;
 
 import java.io.IOException;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-public class MengineAdvertisingPlugin extends MengineService implements MengineListenerApplication, MengineListenerActivity {
+public class MengineAdvertisingPlugin extends MengineService implements MengineListenerApplication {
     public static final String SERVICE_NAME = "Advertising";
     public static final int SAVE_VERSION = 1;
 
@@ -108,33 +103,6 @@ public class MengineAdvertisingPlugin extends MengineService implements MengineL
     }
 
     @Override
-    public void onPostCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
-        if (m_advertisingLimitTrackingFetch == true) {
-            return;
-        }
-
-        if (m_advertisingFuture != null) {
-            try {
-                m_advertisingFuture.get();
-            } catch (CancellationException e) {
-                this.logError("[ERROR] invalid get advertising id info CancellationException: %s"
-                    , e.getMessage()
-                );
-            } catch (InterruptedException e) {
-                this.logError("[ERROR] invalid get advertising id info InterruptedException: %s"
-                    , e.getMessage()
-                );
-            } catch (ExecutionException e) {
-                this.logError("[ERROR] invalid get advertising id info ExecutionException: %s"
-                    , e.getMessage()
-                );
-            }
-
-            m_advertisingFuture = null;
-        }
-    }
-
-    @Override
     public void onAppTerminate(@NonNull MengineApplication application) {
         if (m_advertisingFuture != null) {
             m_advertisingFuture.cancel(true);
@@ -165,7 +133,7 @@ public class MengineAdvertisingPlugin extends MengineService implements MengineL
             m_advertisingLimitTrackingFetch = true;
         }
 
-        this.logMessage("AdvertisingId: %s limit: %s"
+        this.logInfo("AdvertisingId: %s limit: %s"
             , m_advertisingId
             , m_advertisingLimitTrackingEnabled == true ? "true" : "false"
         );

@@ -201,56 +201,121 @@ namespace Mengine
             return py_value;
         }
         //////////////////////////////////////////////////////////////////////////
-        jobject androidNativePythonMakeJavaObject( JNIEnv * _jenv, pybind::kernel_interface * _kernel, PyObject * _obj )
+        jobject androidNativePythonListMakeJavaObject( JNIEnv * _jenv, const pybind::list & _list )
+        {
+            pybind::list::size_type s = _list.size();
+
+            jclass jclass_ArrayList = _jenv->FindClass( "java/util/ArrayList" );
+
+            jmethodID jmethodID_List_constructor = _jenv->GetMethodID( jclass_ArrayList, "<init>", "(I)V" );
+
+            MENGINE_ASSERTION_FATAL( jmethodID_List_constructor != nullptr, "invalid get android method 'java/lang/ArrayList [<init>] (I)V'" );
+
+            jobject jlist = _jenv->NewObject( jclass_ArrayList, jmethodID_List_constructor, (jsize)s );
+
+            for( const pybind::object & o : _list )
+            {
+                jobject jelement = Helper::androidNativePythonMakeJavaObject( _jenv, o );
+
+                Helper::AndroidAddJObjectList( _jenv, jlist, jelement );
+
+                _jenv->DeleteLocalRef( jelement );
+            }
+
+            _jenv->DeleteLocalRef( jclass_ArrayList );
+
+            return jlist;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        jobject androidNativePythonDictMakeJavaObject( JNIEnv * _jenv, const pybind::dict & _dict )
+        {
+            pybind::dict::size_type s = _dict.size();
+
+            jclass jclass_HashMap = _jenv->FindClass( "java/util/HashMap" );
+
+            jmethodID jmethodID_HashMap_constructor = _jenv->GetMethodID( jclass_HashMap, "<init>", "()V" );
+
+            MENGINE_ASSERTION_FATAL( jmethodID_HashMap_constructor != nullptr, "invalid get android method 'java/util/HashMap [<init>] ()V'" );
+
+            jobject jmap = _jenv->NewObject( jclass_HashMap, jmethodID_HashMap_constructor );
+
+            for( const pybind::dict_pair_value & pair : _dict )
+            {
+                const Char * key = pair.key();
+                pybind::object value = pair.value();
+
+                jstring jkey = _jenv->NewStringUTF( key );
+                jobject jelement = Helper::androidNativePythonMakeJavaObject( _jenv, value );
+
+                Helper::AndroidPutJObjectMap( _jenv, jmap, jkey, jelement );
+
+                _jenv->DeleteLocalRef( jkey );
+                _jenv->DeleteLocalRef( jelement );
+            }
+
+            _jenv->DeleteLocalRef( jclass_HashMap );
+
+            return jmap;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        jobject androidNativePythonMakeJavaObject( JNIEnv * _jenv, const pybind::object & _obj )
         {
             jobject jresult;
 
-            if( _kernel->is_none( _obj ) == true )
+            if( _obj.is_none() == true )
             {
-                jclass jclass_Object = _jenv->FindClass( "java/lang/Object" );
-
-                jmethodID constructor = _jenv->GetMethodID( jclass_Object, "<init>", "()V" );
-
-                MENGINE_ASSERTION_FATAL( constructor != nullptr, "invalid get android method 'java/lang/Object [<init>] ()V'" );
-
-                jresult = _jenv->NewObject( jclass_Object, constructor );
-
-                _jenv->DeleteLocalRef( jclass_Object );
+                jresult = nullptr;
             }
-            else if( _kernel->bool_check( _obj ) == true )
+            else if( _obj.is_bool() == true )
             {
-                bool value = pybind::extract<bool>( _kernel, _obj );
+                bool value = _obj.extract();
 
                 jresult = Helper::AndroidMakeJObjectBoolean( _jenv, value );
             }
-            else if( _kernel->int_check( _obj ) == true )
+            else if( _obj.is_integer() == true )
             {
-                int32_t value = pybind::extract<int32_t>( _kernel, _obj );
+                int32_t value = _obj.extract();
 
                 jresult = Helper::AndroidMakeJObjectInteger( _jenv, value );
             }
-            else if( _kernel->long_check( _obj ) == true )
+            else if( _obj.is_long() == true )
             {
-                int64_t value = pybind::extract<int64_t>( _kernel, _obj );
+                int64_t value = _obj.extract();
 
                 jresult = Helper::AndroidMakeJObjectLong( _jenv, value );
             }
-            else if( _kernel->float_check( _obj ) == true )
+            else if( _obj.is_float() == true )
             {
-                double value = pybind::extract<double>( _kernel, _obj );
+                double value = _obj.extract();
 
                 jresult = Helper::AndroidMakeJObjectDouble( _jenv, value );
             }
-            else if( _kernel->string_check( _obj ) == true )
+            else if( _obj.is_string() == true )
             {
-                const Char * value = _kernel->string_to_char( _obj );
+                const Char * value = _obj.extract();
 
                 jresult = Helper::AndroidMakeJObjectString( _jenv, value );
+            }
+            else if( _obj.is_list() == true )
+            {
+                pybind::list l = _obj.extract();
+
+                jobject jlist = Helper::androidNativePythonListMakeJavaObject( _jenv, l );
+
+                jresult = jlist;
+            }
+            else if( _obj.is_dict() == true )
+            {
+                pybind::dict d = _obj.extract();
+
+                jobject jmap = Helper::androidNativePythonDictMakeJavaObject( _jenv, d );
+
+                jresult = jmap;
             }
             else
             {
                 LOGGER_ERROR( "unsupported python argument '%s'"
-                    , _kernel->object_repr_type( _obj ).c_str()
+                    , _obj.repr_type().c_str()
                 );
 
                 return nullptr;

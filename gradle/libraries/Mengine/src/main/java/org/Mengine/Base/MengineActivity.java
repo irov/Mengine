@@ -1128,8 +1128,6 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("python.semaphore", name);
 
-        List<MengineSemaphoreListener> activate_listeners;
-
         synchronized (m_syncronizationSemaphores) {
             MengineSemaphore semaphore = m_semaphores.get(name);
 
@@ -1144,17 +1142,9 @@ public class MengineActivity extends AppCompatActivity {
             if (semaphore.isActivated() == true) {
                 return;
             }
-
-            activate_listeners = semaphore.activate();
         }
 
-        final List<MengineSemaphoreListener> final_activate_listeners = activate_listeners;
-
-        MengineUtils.performOnMainThread(() -> {
-            for (MengineSemaphoreListener listener : final_activate_listeners) {
-                listener.call();
-            }
-        });
+        MengineNative.AndroidNativePython_activateSemaphore(name);
     }
 
     public void deactivateSemaphore(String name) {
@@ -1167,31 +1157,23 @@ public class MengineActivity extends AppCompatActivity {
         }
     }
 
-    public void waitSemaphore(String name, MengineSemaphoreListener cb) {
-        MengineLog.logMessage(TAG, "waitSemaphore semaphore: %s"
-            , name
-        );
-
+    public boolean waitSemaphore(String name) {
         synchronized (m_syncronizationSemaphores) {
             MengineSemaphore semaphore = m_semaphores.get(name);
 
             if (semaphore == null) {
                 semaphore = new MengineSemaphore(false);
-                semaphore.addListener(cb);
 
                 m_semaphores.put(name, semaphore);
-                return;
+                return false;
             }
 
             if (semaphore.isActivated() == false) {
-                semaphore.addListener(cb);
-                return;
+                return false;
             }
         }
 
-        MengineUtils.performOnMainThread(() -> {
-            cb.call();
-        });
+        return true;
     }
 
     /***********************************************************************************************

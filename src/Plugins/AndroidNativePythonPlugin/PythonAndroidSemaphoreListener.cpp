@@ -6,8 +6,11 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     PythonAndroidSemaphoreListener::PythonAndroidSemaphoreListener( const pybind::object & _cb, const pybind::args & _args )
-        : m_cb( _cb )
-        , m_args( _args )
+        : PythonCallbackProvider( _cb, _args )
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    PythonAndroidSemaphoreListener::~PythonAndroidSemaphoreListener()
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -16,10 +19,7 @@ namespace Mengine
         PythonAndroidSemaphoreListenerPtr keep = PythonAndroidSemaphoreListenerPtr::from(this);
 
         Helper::dispatchMainThreadEvent([keep]() {
-            pybind::object cb = keep->m_cb;
-            pybind::args args = keep->m_args;
-
-            cb.call_args(args);
+            keep->call_cb();
         });
     }
     //////////////////////////////////////////////////////////////////////////

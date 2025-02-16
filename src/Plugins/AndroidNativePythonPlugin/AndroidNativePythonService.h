@@ -47,6 +47,7 @@ namespace Mengine
         PyObject * androidJSONObjectMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const override;
 
     public:
+        void activateSemaphore( const ConstString & _name ) override;
         void waitSemaphore( const ConstString & _name, const AndroidSemaphoreListenerInterfacePtr & _listener ) override;
 
     protected:
@@ -67,6 +68,18 @@ namespace Mengine
         typedef Map<Pair<ConstString, ConstString>, VectorAndroidPythonCallbacks> MapAndroidCallbacks;
         MapAndroidCallbacks m_callbacks;
 
+        typedef Vector<AndroidSemaphoreListenerInterfacePtr> VectorAndroidSemaphoreListeners;
+
+        struct SemaphoreDesc
+        {
+            bool activated;
+            VectorAndroidSemaphoreListeners listeners;
+        };
+
+        typedef Map<ConstString, SemaphoreDesc> MapAndroidSemaphores;
+        MapAndroidSemaphores m_semaphores;
+
+        ThreadMutexInterfacePtr m_semaphoresMutex;
         ThreadMutexInterfacePtr m_callbacksMutex;
         ThreadMutexInterfacePtr m_pluginsMutex;
 

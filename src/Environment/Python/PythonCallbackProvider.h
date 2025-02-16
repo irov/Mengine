@@ -2,16 +2,20 @@
 
 #include "Environment/Python/PythonIncluder.h"
 
+#include "Kernel/Mixin.h"
+
 #include "Config/Char.h"
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class PythonCallbackProvider
+        : public Mixin
     {
     public:
         PythonCallbackProvider();
         PythonCallbackProvider( const pybind::object & _cb, const pybind::args & _args );
-        ~PythonCallbackProvider();
+        ~PythonCallbackProvider() override;
 
     public:
         void initialize( const pybind::object & _cb, const pybind::args & _args );
@@ -69,4 +73,7 @@ namespace Mengine
         pybind::object m_cb;
         pybind::args m_args;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<PythonCallbackProvider> PythonCallbackProviderPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

@@ -59,7 +59,7 @@ public class MengineService implements MengineServiceInterface {
     }
 
     public boolean isAvailable() {
-        if( m_availableStatus == null ) {
+        if (m_availableStatus == null) {
             m_availableStatus = this.onAvailable(m_application);
         }
 
@@ -171,7 +171,7 @@ public class MengineService implements MengineServiceInterface {
     }
 
     public void assertionError(String format, Object ... args) {
-        MengineUtils.throwAssertionError(m_application, "Mengine" + m_serviceName, null, format, args);
+        MengineUtils.throwAssertionError("Mengine" + m_serviceName, null, format, args);
     }
 
     public MengineAnalyticsEventBuilder buildEvent(@Size(min = 1L,max = 40L) String name) {

@@ -27,7 +27,7 @@ namespace Mengine
         struct ScriptExtract
             : public pybind::interface_<T>::extract_type_ptr
         {
-            PyObject * wrap( pybind::kernel_interface * _kernel, typename pybind::interface_<T>::extract_type_ptr::TCastRef _self ) override
+            MENGINE_NODISCARD PyObject * wrap( pybind::kernel_interface * _kernel, typename pybind::interface_<T>::extract_type_ptr::TCastRef _self ) override
             {
                 if( _self == nullptr )
                 {

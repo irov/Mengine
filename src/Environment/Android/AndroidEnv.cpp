@@ -24,6 +24,8 @@ extern "C"
 
         env->CallStaticVoidMethod(jclassMengineUtils, jmethodIdPrintCurrentStackTrace);
 
+        env->DeleteLocalRef(jclassMengineUtils);
+
         ::raise( SIGTRAP );
     }
     //////////////////////////////////////////////////////////////////////////

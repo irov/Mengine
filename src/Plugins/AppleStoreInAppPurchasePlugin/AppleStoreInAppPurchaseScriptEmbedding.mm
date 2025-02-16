@@ -25,11 +25,12 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         class PythonAppleStoreInAppPurchasePaymentQueueProvider
-            : public PythonCallbackProvider<AppleStoreInAppPurchasePaymentQueueProviderInterface>
+            : public PythonCallbackProvider
+            , public Factorable
         {
         public:
             PythonAppleStoreInAppPurchasePaymentQueueProvider( const pybind::dict & _cbs, const pybind::args & _args )
-                : PythonCallbackProvider<AppleStoreInAppPurchasePaymentQueueProviderInterface>( _cbs, _args )
+                : PythonCallbackProvider( _cbs, _args )
             {
             }
 
@@ -54,11 +55,12 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonAppleStoreInAppPurchasePaymentTransactionProvider
-            : public PythonCallbackProvider<AppleStoreInAppPurchasePaymentTransactionProviderInterface>
+            : public PythonCallbackProvider
+            , public Factorable
         {
         public:
             PythonAppleStoreInAppPurchasePaymentTransactionProvider( const pybind::dict & _cbs, const pybind::args & _args )
-                : PythonCallbackProvider<AppleStoreInAppPurchasePaymentTransactionProviderInterface>( _cbs, _args )
+                : PythonCallbackProvider( _cbs, _args )
             {
             }
 
@@ -112,11 +114,12 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonAppleStoreInAppPurchaseProductsResponse
-            : public PythonCallbackProvider<AppleStoreInAppPurchaseProductsResponseInterface>
+            : public PythonCallbackProvider
+            , public Factorable
         {
         public:
             PythonAppleStoreInAppPurchaseProductsResponse( const pybind::dict & _cbs, const pybind::args & _args )
-                : PythonCallbackProvider<AppleStoreInAppPurchaseProductsResponseInterface>( _cbs, _args )
+                : PythonCallbackProvider( _cbs, _args )
             {
             }
             

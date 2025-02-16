@@ -146,7 +146,7 @@ namespace Mengine
                 ResourceSoundPtr m_resource;
             };
             //////////////////////////////////////////////////////////////////////////
-            typedef IntrusivePtr<MySoundNodeListener> MySoundNodeListenerPtr;
+            typedef IntrusivePtr<MySoundNodeListener, SoundListenerInterface> MySoundNodeListenerPtr;
             //////////////////////////////////////////////////////////////////////////
             bool hasSound( const ConstString & _resourceName )
             {
@@ -423,7 +423,7 @@ namespace Mengine
                 SoundIdentityInterfacePtr m_soundIdentity;
             };
             //////////////////////////////////////////////////////////////////////////
-            typedef IntrusivePtr<SoundAffectorCallback> SoundAffectorCallbackPtr;
+            typedef IntrusivePtr<SoundAffectorCallback, AffectorCallbackInterface> SoundAffectorCallbackPtr;
             //////////////////////////////////////////////////////////////////////////
             FactoryInterfacePtr m_factorySoundAffectorCallback;
             //////////////////////////////////////////////////////////////////////////

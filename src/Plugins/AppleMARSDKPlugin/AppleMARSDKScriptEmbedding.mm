@@ -18,9 +18,9 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        //////////////////////////////////////////////////////////////////////////
         class PythonAppleMARSDKProvider
-            : public PythonCallbackProvider<AppleMARSDKProviderInterface>
+            : public PythonCallbackProvider
+            , public Factorable
         {
             DECLARE_FACTORABLE( PythonAppleMARSDKProvider );
             

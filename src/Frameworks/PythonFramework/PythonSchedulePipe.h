@@ -9,6 +9,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class PythonSchedulePipe
         : public SchedulerPipeInterface
         , public PythonCallbackProvider
@@ -24,6 +25,6 @@ namespace Mengine
         float onSchedulerPipe( UniqueId _id, uint32_t _index ) override;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<PythonSchedulePipe> PythonSchedulePipePtr;
+    typedef IntrusivePtr<PythonSchedulePipe, SchedulerPipeInterface> PythonSchedulePipePtr;
     //////////////////////////////////////////////////////////////////////////
 }

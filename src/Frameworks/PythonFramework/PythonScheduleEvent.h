@@ -26,6 +26,6 @@ namespace Mengine
         void onSchedulerStop( UniqueId _id ) override;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<PythonScheduleEvent> PythonScheduleEventPtr;
+    typedef IntrusivePtr<PythonScheduleEvent, SchedulerEventInterface> PythonScheduleEventPtr;
     //////////////////////////////////////////////////////////////////////////
 }

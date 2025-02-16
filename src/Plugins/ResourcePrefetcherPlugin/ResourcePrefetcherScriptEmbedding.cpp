@@ -99,7 +99,7 @@ namespace Mengine
             AtomicBool m_successful;
         };
         //////////////////////////////////////////////////////////////////////////
-        typedef IntrusivePtr<PyPrefetcherObserver> PyPrefetcherObserverPtr;
+        typedef IntrusivePtr<PyPrefetcherObserver, PrefetcherObserverInterface> PyPrefetcherObserverPtr;
         //////////////////////////////////////////////////////////////////////////
         static bool prefetchResources( const ConstString & _groupName, const pybind::object & _cb, const pybind::args & _args )
         {

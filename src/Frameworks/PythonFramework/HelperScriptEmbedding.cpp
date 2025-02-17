@@ -715,7 +715,7 @@ namespace Mengine
             int32_t s_getOptionInt32( const Char * _option )
             {
                 uint32_t value = OPTIONS_SERVICE()
-                    ->getOptionInt32( _option, 0U );
+                    ->getOptionInt32( _option, 0 );
 
                 return value;
             }
@@ -780,7 +780,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             PyObject * s_compressBase64( pybind::kernel_interface * _kernel, const ConstString & _archivatorType, const StringView & _data )
             {
-                const char * str = _data.c_str();
+                const Char * str = _data.c_str();
                 size_t size = _data.size();
 
                 ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), _archivatorType );
@@ -804,7 +804,7 @@ namespace Mengine
                 size_t compressSize;
                 if( archivator->compress( MENGINE_PVOID_OFFSET( memory_buffer, sizeof( uint32_t ) + sizeof( uint64_t ) ), compressSize2, str, size, &compressSize, EAC_BEST ) == false )
                 {
-                    return _kernel->get_none();
+                    return _kernel->ret_none();
                 }
 
                 void * new_memory = memory->newBuffer( sizeof( uint32_t ) + sizeof( uint64_t ) + compressSize );

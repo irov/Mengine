@@ -422,7 +422,11 @@ namespace Mengine
         options.inputContent = _content;
         options.outputContent = Helper::makeFileContent( fileGroup, _pathBin, MENGINE_DOCUMENT_FUNCTION );
 
-        Mengine::ContentInterfacePtr protocolContent = Mengine::Helper::makeFileContent( fileGroup, m_protocolPath, MENGINE_DOCUMENT_FUNCTION );
+        FileGroupInterfacePtr fileGroupDev = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "dev" ) );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( fileGroupDev, "not found 'dev' file group" );
+
+        Mengine::ContentInterfacePtr protocolContent = Mengine::Helper::makeFileContent( fileGroupDev, m_protocolPath, MENGINE_DOCUMENT_FUNCTION );
 
         uint32_t useProtocolVersion = Metacode::get_metacode_protocol_version();
         uint32_t useProtocolCrc32 = Metacode::get_metacode_protocol_crc32();

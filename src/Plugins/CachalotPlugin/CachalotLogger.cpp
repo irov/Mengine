@@ -154,7 +154,7 @@ namespace Mengine
         Char os_version[MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME + 1] = {'\0'};
         ENVIRONMENT_SERVICE()
             ->getOSVersion( os_version );
-        
+
         Char build_bundle[MENGINE_ENVIRONMENT_BUNDLEID_MAXNAME + 1] = {'\0'};
         ENVIRONMENT_SERVICE()
             ->getBundleId( build_bundle );
@@ -223,8 +223,7 @@ namespace Mengine
             }
 
             js_object_add_field_string( j, jrecord, JS_CONST_STRING( "build.version" ), build_version );
-            
-            
+
 #if defined(MENGINE_MASTER_RELEASE_ENABLE)
             js_object_add_field_stringn( j, jrecord, JS_CONST_STRING( "build.environment" ), JS_CONST_STRING( "master" ) );
 #else

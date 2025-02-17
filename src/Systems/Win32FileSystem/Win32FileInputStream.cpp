@@ -207,7 +207,7 @@ namespace Mengine
         }
 #endif
 
-        STATISTIC_INC_INTEGER( STATISTIC_OPEN_FILE_COUNT );
+        STATISTIC_INC_INTEGER( STATISTIC_FILE_OPEN_COUNT );
 
         return true;
     }
@@ -304,7 +304,7 @@ namespace Mengine
 
         *_read = (size_t)bytesRead;
 
-        STATISTIC_ADD_INTEGER( STATISTIC_OPEN_FILE_READ_BYTES, bytesRead );
+        STATISTIC_ADD_INTEGER( STATISTIC_FILE_READ_BYTES, bytesRead );
 
         return true;
     }

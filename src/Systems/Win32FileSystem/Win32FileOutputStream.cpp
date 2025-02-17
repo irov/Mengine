@@ -79,7 +79,7 @@ namespace Mengine
 
         if( hFile == INVALID_HANDLE_VALUE )
         {
-            LOGGER_ERROR( "invalid open output relation '%ls' folder '%ls' file '%ls' full '%ls'"
+            LOGGER_ERROR( "invalid open output relation '%s' folder '%s' file '%s' full '%ls'"
                 , m_relationPath.c_str()
                 , m_folderPath.c_str()
                 , m_filePath.c_str()
@@ -91,7 +91,7 @@ namespace Mengine
 
         m_hFile = hFile;
 
-        STATISTIC_INC_INTEGER( STATISTIC_OPEN_FILE_COUNT );
+        STATISTIC_INC_INTEGER( STATISTIC_FILE_OPEN_COUNT );
 
 #if defined(MENGINE_DEBUG)
         if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
@@ -185,7 +185,7 @@ namespace Mengine
 
         m_size += (size_t)bytesWritten;
 
-        STATISTIC_ADD_INTEGER( STATISTIC_OPEN_FILE_WRITE_BYTES, bytesWritten );
+        STATISTIC_ADD_INTEGER( STATISTIC_FILE_WRITE_BYTES, bytesWritten );
 
         return (size_t)bytesWritten;
     }

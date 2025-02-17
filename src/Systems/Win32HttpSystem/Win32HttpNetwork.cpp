@@ -9,6 +9,7 @@
 #include "Kernel/ArrayString.h"
 #include "Kernel/HttpLogger.h"
 #include "Kernel/Stringalized.h"
+#include "Kernel/StatisticHelper.h"
 
 #include "Config/Version.h"
 
@@ -356,6 +357,8 @@ namespace Mengine
                 , _request->getRequestId()
             );
 
+            STATISTIC_INC_INTEGER( STATISTIC_HTTP_REQUEST_COUNT );
+
             HINTERNET hConnect = NULL;
             HINTERNET hRequest = NULL;
             if( Detail::openRequest( _request, _response, "GET", &hConnect, &hRequest ) == false )
@@ -395,6 +398,8 @@ namespace Mengine
                 , _request->getURL().c_str()
                 , _request->getRequestId()
             );
+
+            STATISTIC_INC_INTEGER( STATISTIC_HTTP_REQUEST_COUNT );
 
             HINTERNET hConnect = NULL;
             HINTERNET hRequest = NULL;
@@ -494,6 +499,8 @@ namespace Mengine
                 , _request->getRequestId()
             );
 
+            STATISTIC_INC_INTEGER( STATISTIC_HTTP_REQUEST_COUNT );
+
             HINTERNET hConnect = NULL;
             HINTERNET hRequest = NULL;
             if( Detail::openRequest( _request, _response, "POST", &hConnect, &hRequest ) == false )
@@ -571,6 +578,8 @@ namespace Mengine
                 , _request->getRequestId()
             );
 
+            STATISTIC_INC_INTEGER( STATISTIC_HTTP_REQUEST_COUNT );
+
             HINTERNET hConnect = NULL;
             HINTERNET hRequest = NULL;
             if( Detail::openRequest( _request, _response, "HEAD", &hConnect, &hRequest ) == false )
@@ -611,6 +620,8 @@ namespace Mengine
                 , _request->getRequestId()
             );
 
+            STATISTIC_INC_INTEGER( STATISTIC_HTTP_REQUEST_COUNT );
+
             HINTERNET hConnect = NULL;
             HINTERNET hRequest = NULL;
             if( Detail::openRequest( _request, _response, "DELETE", &hConnect, &hRequest ) == false )
@@ -650,6 +661,8 @@ namespace Mengine
                 , _request->getURL().c_str()
                 , _request->getRequestId()
             );
+
+            STATISTIC_INC_INTEGER( STATISTIC_HTTP_REQUEST_COUNT );
 
             HINTERNET hConnect = NULL;
             HINTERNET hRequest = NULL;

@@ -59,8 +59,7 @@ namespace Mengine
             , _type.c_str()
         );
 
-        FileGroupInterfacePtr fileGroupDev = FILE_SERVICE()
-            ->getFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) );
+        FileGroupInterfacePtr fileGroupDev = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "dev" ) );
 
         MENGINE_ASSERTION_MEMORY_PANIC( fileGroupDev, "not found 'dev' file group" );
 

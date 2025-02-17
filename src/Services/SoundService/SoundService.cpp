@@ -355,16 +355,16 @@ namespace Mengine
         return identity;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SoundService::updateSourceVolume_( const SoundIdentityInterfacePtr & _emitter )
+    void SoundService::updateSourceVolume_( const SoundIdentityInterfacePtr & _identity )
     {
-        const SoundSourceInterfacePtr & source = _emitter->getSoundSource();
+        const SoundSourceInterfacePtr & source = _identity->getSoundSource();
 
         if( source == nullptr )
         {
             return;
         }
 
-        bool streamable = _emitter->getStreamable();
+        bool streamable = _identity->getStreamable();
 
         bool mute = this->mixMute();
 
@@ -376,7 +376,7 @@ namespace Mengine
         }
         else
         {
-            const MixerValueInterfacePtr & emitterVolume = _emitter->getMixerVolume();
+            const MixerValueInterfacePtr & emitterVolume = _identity->getMixerVolume();
 
             float mixVolume = 1.f;
 
@@ -386,7 +386,7 @@ namespace Mengine
             mixVolume *= commonMixVolume;
             mixVolume *= emitterMixVolume;
 
-            ESoundSourceCategory type = _emitter->getCategory();
+            ESoundSourceCategory type = _identity->getCategory();
 
             switch( type )
             {

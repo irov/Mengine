@@ -1260,8 +1260,8 @@ namespace Mengine
             PyObject * trace_line = m_kernel->tuple_getitem( item, 1 );
             PyObject * trace_function = m_kernel->tuple_getitem( item, 2 );
 
-            Path trace_str = {'\0'};
-            MENGINE_SNPRINTF( trace_str, MENGINE_MAX_PATH, "File \"%s\", line %d, in %s"
+            Char trace_str[512 + 1] = {'\0'};
+            MENGINE_SNPRINTF( trace_str, 512, "File \"%s\", line %d, in %s"
                 , m_kernel->string_to_char( trace_file )
                 , pybind::extract<int32_t>( m_kernel, trace_line )
                 , m_kernel->string_to_char( trace_function )

@@ -90,10 +90,10 @@ namespace Mengine
         void _setLoop( bool _value ) override;
 
     protected:
-        void onSoundPause( const SoundIdentityInterfacePtr & _emitter ) override;
-        void onSoundResume( const SoundIdentityInterfacePtr & _emitter ) override;
-        void onSoundStop( const SoundIdentityInterfacePtr & _emitter ) override;
-        void onSoundEnd( const SoundIdentityInterfacePtr & _emitter ) override;
+        void onSoundPause( const SoundIdentityInterfacePtr & _identity ) override;
+        void onSoundResume( const SoundIdentityInterfacePtr & _identity ) override;
+        void onSoundStop( const SoundIdentityInterfacePtr & _identity ) override;
+        void onSoundEnd( const SoundIdentityInterfacePtr & _identity ) override;
 
     protected:
         RenderMaterialInterfacePtr _updateMaterial() const override;

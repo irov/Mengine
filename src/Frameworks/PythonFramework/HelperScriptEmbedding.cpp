@@ -643,10 +643,6 @@ namespace Mengine
             {
                 MENGINE_ASSERTION_MEMORY_PANIC( _hotspotPolygon, "hotspot is nullptr" );
 
-                MENGINE_ASSERTION_COMPILABLE( _hotspotPolygon, "hotspot '%s' is not compile"
-                    , _hotspotPolygon->getName().c_str()
-                );
-
                 mt::box2f bb;
                 mt::box2_insideout( &bb );
 

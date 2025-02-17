@@ -90,26 +90,26 @@ namespace Mengine
                 }
 
             protected:
-                void onSoundPause( const SoundIdentityInterfacePtr & _emitter ) override
+                void onSoundPause( const SoundIdentityInterfacePtr & _identity ) override
                 {
-                    MENGINE_UNUSED( _emitter );
+                    MENGINE_UNUSED( _identity );
 
-                    this->call_method( "onSoundPause", _emitter );
+                    this->call_method( "onSoundPause", _identity );
                 }
 
-                void onSoundResume( const SoundIdentityInterfacePtr & _emitter ) override
+                void onSoundResume( const SoundIdentityInterfacePtr & _identity ) override
                 {
-                    MENGINE_UNUSED( _emitter );
+                    MENGINE_UNUSED( _identity );
 
-                    this->call_method( "onSoundResume", _emitter );
+                    this->call_method( "onSoundResume", _identity );
                 }
 
-                void onSoundStop( const SoundIdentityInterfacePtr & _emitter ) override
+                void onSoundStop( const SoundIdentityInterfacePtr & _identity ) override
                 {
                     if( SOUND_SERVICE()
-                        ->releaseSoundSource( _emitter ) == false )
+                        ->releaseSoundSource( _identity ) == false )
                     {
-                        uint32_t id = _emitter->getId();
+                        uint32_t id = _identity->getId();
 
                         LOGGER_ERROR( "resource sound '%s' emitter invalid release sound '%u'"
                             , m_resource->getName().c_str()
@@ -117,18 +117,18 @@ namespace Mengine
                         );
                     }
 
-                    this->call_method( "onSoundStop", _emitter );
+                    this->call_method( "onSoundStop", _identity );
 
                     m_resource->release();
                     m_resource = nullptr;
                 }
 
-                void onSoundEnd( const SoundIdentityInterfacePtr & _emitter ) override
+                void onSoundEnd( const SoundIdentityInterfacePtr & _identity ) override
                 {
                     if( SOUND_SERVICE()
-                        ->releaseSoundSource( _emitter ) == false )
+                        ->releaseSoundSource( _identity ) == false )
                     {
-                        uint32_t id = _emitter->getId();
+                        uint32_t id = _identity->getId();
 
                         LOGGER_ERROR( "resource sound '%s' emitter invalid release sound '%u'"
                             , m_resource->getName().c_str()
@@ -136,7 +136,7 @@ namespace Mengine
                         );
                     }
 
-                    this->call_method( "onSoundEnd", _emitter );
+                    this->call_method( "onSoundEnd", _identity );
 
                     m_resource->release();
                     m_resource = nullptr;
@@ -308,18 +308,18 @@ namespace Mengine
                 return soundIdentity;
             }
             //////////////////////////////////////////////////////////////////////////
-            bool voicePause( const SoundIdentityInterfacePtr & _emitter )
+            bool voicePause( const SoundIdentityInterfacePtr & _identity )
             {
                 bool successful = SOUND_SERVICE()
-                    ->pauseEmitter( _emitter );
+                    ->pauseEmitter( _identity );
 
                 return successful;
             }
             //////////////////////////////////////////////////////////////////////////
-            bool voiceResume( const SoundIdentityInterfacePtr & _emitter )
+            bool voiceResume( const SoundIdentityInterfacePtr & _identity )
             {
                 bool successful = SOUND_SERVICE()
-                    ->resumeEmitter( _emitter );
+                    ->resumeEmitter( _identity );
 
                 return successful;
             }
@@ -369,18 +369,18 @@ namespace Mengine
                 return sourceEmitter;
             }
             //////////////////////////////////////////////////////////////////////////
-            float soundGetPosMs( const SoundIdentityInterfacePtr & _emitter )
+            float soundGetPosMs( const SoundIdentityInterfacePtr & _identity )
             {
                 float pos = SOUND_SERVICE()
-                    ->getPosMs( _emitter );
+                    ->getPosMs( _identity );
 
                 return pos;
             }
             //////////////////////////////////////////////////////////////////////////
-            void soundSetPosMs( const SoundIdentityInterfacePtr & _emitter, float _pos )
+            void soundSetPosMs( const SoundIdentityInterfacePtr & _identity, float _pos )
             {
                 SOUND_SERVICE()
-                    ->setPosMs( _emitter, _pos );
+                    ->setPosMs( _identity, _pos );
             }
             //////////////////////////////////////////////////////////////////////////
             class SoundAffectorCallback
@@ -400,9 +400,9 @@ namespace Mengine
                 }
 
             public:
-                void initialize( const SoundIdentityInterfacePtr & _emitter, const pybind::object & _cb, const pybind::args & _args )
+                void initialize( const SoundIdentityInterfacePtr & _identity, const pybind::object & _cb, const pybind::args & _args )
                 {
-                    m_soundIdentity = _emitter;
+                    m_soundIdentity = _identity;
 
                     PythonCallbackProvider::initialize( _cb, _args );
                 }
@@ -427,40 +427,41 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryInterfacePtr m_factorySoundAffectorCallback;
             //////////////////////////////////////////////////////////////////////////
-            SoundAffectorCallbackPtr createSoundAffectorCallback( const SoundIdentityInterfacePtr & _emitter, const pybind::object & _cb, const pybind::args & _args )
+            SoundAffectorCallbackPtr createSoundAffectorCallback( const SoundIdentityInterfacePtr & _identity, const pybind::object & _cb, const pybind::args & _args )
             {
                 SoundAffectorCallbackPtr callback = m_factorySoundAffectorCallback->createObject( MENGINE_DOCUMENT_PYBIND );
-                callback->initialize( _emitter, _cb, _args );
+
+                callback->initialize( _identity, _cb, _args );
 
                 return callback;
             }
             //////////////////////////////////////////////////////////////////////////
-            void ___soundFade( const SoundIdentityInterfacePtr & _emitter, float _volume )
+            void ___soundFade( const SoundIdentityInterfacePtr & _identity, float _volume )
             {
                 SOUND_SERVICE()
-                    ->setSourceMixerVolume( _emitter, STRINGIZE_STRING_LOCAL( "Fade" ), _volume, _volume );
+                    ->setSourceMixerVolume( _identity, STRINGIZE_STRING_LOCAL( "Fade" ), _volume, _volume );
             }
             //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float>> m_affectorCreatorSound;
             //////////////////////////////////////////////////////////////////////////
-            void soundFadeIn( const SoundIdentityInterfacePtr & _emitter, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            void soundFadeIn( const SoundIdentityInterfacePtr & _identity, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
-                if( _emitter == nullptr )
+                if( _identity == nullptr )
                 {
                     LOGGER_ERROR( "soundFadeIn invalid emitter" );
 
                     return;
                 }
 
-                SoundAffectorCallbackPtr callback = createSoundAffectorCallback( _emitter, _cb, _args );
+                SoundAffectorCallbackPtr callback = createSoundAffectorCallback( _identity, _cb, _args );
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
                 AffectorPtr affector = m_affectorCreatorSound->create( EAFFECTORTYPE_POSITION
                     , easing
-                    , callback, [this, _emitter]( float _volume )
+                    , callback, [this, _identity]( float _volume )
                 {
-                    this->___soundFade( _emitter, _volume );
+                    this->___soundFade( _identity, _volume );
                 }
                     , 1.f, 0.f, _time
                     , MENGINE_DOCUMENT_PYBIND
@@ -526,27 +527,27 @@ namespace Mengine
                 return soundIdentity;
             }
             //////////////////////////////////////////////////////////////////////////
-            void soundFadeInTo( const SoundIdentityInterfacePtr & _emitter, float _to, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            void soundFadeInTo( const SoundIdentityInterfacePtr & _identity, float _to, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
-                if( _emitter == nullptr )
+                if( _identity == nullptr )
                 {
                     LOGGER_ERROR( "soundFadeInTo invalid emitter" );
 
                     return;
                 }
 
-                SoundAffectorCallbackPtr callback = createSoundAffectorCallback( _emitter, _cb, _args );
+                SoundAffectorCallbackPtr callback = createSoundAffectorCallback( _identity, _cb, _args );
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
                 float volume = SOUND_SERVICE()
-                    ->getSourceMixerVolume( _emitter, STRINGIZE_STRING_LOCAL( "Fade" ) );
+                    ->getSourceMixerVolume( _identity, STRINGIZE_STRING_LOCAL( "Fade" ) );
 
                 AffectorPtr affector = m_affectorCreatorSound->create( EAFFECTORTYPE_POSITION
                     , easing
-                    , callback, [this, _emitter]( float _volume )
+                    , callback, [this, _identity]( float _volume )
                 {
-                    this->___soundFade( _emitter, _volume );
+                    this->___soundFade( _identity, _volume );
                 }
                     , volume, _to, _time
                     , MENGINE_DOCUMENT_PYBIND
@@ -615,64 +616,64 @@ namespace Mengine
                 return soundIdentity;
             }
             //////////////////////////////////////////////////////////////////////////
-            void soundStop( const SoundIdentityInterfacePtr & _emitter )
+            void soundStop( const SoundIdentityInterfacePtr & _identity )
             {
                 SOUND_SERVICE()
-                    ->stopEmitter( _emitter );
+                    ->stopEmitter( _identity );
             }
             //////////////////////////////////////////////////////////////////////////
-            void soundPause( const SoundIdentityInterfacePtr & _emitter )
+            void soundPause( const SoundIdentityInterfacePtr & _identity )
             {
                 SOUND_SERVICE()
-                    ->pauseEmitter( _emitter );
+                    ->pauseEmitter( _identity );
             }
             //////////////////////////////////////////////////////////////////////////
-            void soundResume( const SoundIdentityInterfacePtr & _emitter )
+            void soundResume( const SoundIdentityInterfacePtr & _identity )
             {
                 SOUND_SERVICE()
-                    ->resumeEmitter( _emitter );
+                    ->resumeEmitter( _identity );
             }
             //////////////////////////////////////////////////////////////////////////
-            bool isSoundStop( const SoundIdentityInterfacePtr & _emitter )
+            bool isSoundStop( const SoundIdentityInterfacePtr & _identity )
             {
                 return SOUND_SERVICE()
-                    ->isEmitterStop( _emitter );
+                    ->isEmitterStop( _identity );
             }
             //////////////////////////////////////////////////////////////////////////
-            bool isSoundPlay( const SoundIdentityInterfacePtr & _emitter )
+            bool isSoundPlay( const SoundIdentityInterfacePtr & _identity )
             {
                 return SOUND_SERVICE()
-                    ->isEmitterPlay( _emitter );
+                    ->isEmitterPlay( _identity );
             }
             //////////////////////////////////////////////////////////////////////////
-            bool isSoundPause( const SoundIdentityInterfacePtr & _emitter )
+            bool isSoundPause( const SoundIdentityInterfacePtr & _identity )
             {
                 return SOUND_SERVICE()
-                    ->isEmitterPause( _emitter );
+                    ->isEmitterPause( _identity );
             }
             //////////////////////////////////////////////////////////////////////////
-            void voiceStop( const SoundIdentityInterfacePtr & _emitter )
+            void voiceStop( const SoundIdentityInterfacePtr & _identity )
             {
                 SOUND_SERVICE()
-                    ->stopEmitter( _emitter );
+                    ->stopEmitter( _identity );
             }
             //////////////////////////////////////////////////////////////////////////
-            void soundSourceSetVolume( const SoundIdentityInterfacePtr & _emitter, float _volume )
+            void soundSourceSetVolume( const SoundIdentityInterfacePtr & _identity, float _volume )
             {
                 if( SOUND_SERVICE()
-                    ->setSourceVolume( _emitter, _volume, _volume, MENGINE_MIXER_VALUE_DEFAULT_SPEED, true ) == false )
+                    ->setSourceVolume( _identity, _volume, _volume, MENGINE_MIXER_VALUE_DEFAULT_SPEED, true ) == false )
                 {
                     LOGGER_ERROR( "sound emitter [%u] invalid set source volume [%f]"
-                        , _emitter->getId()
+                        , _identity->getId()
                         , _volume
                     );
                 }
             }
             //////////////////////////////////////////////////////////////////////////
-            float soundSourceGetVolume( const SoundIdentityInterfacePtr & _emitter )
+            float soundSourceGetVolume( const SoundIdentityInterfacePtr & _identity )
             {
                 float volume = SOUND_SERVICE()
-                    ->getSourceVolume( _emitter );
+                    ->getSourceVolume( _identity );
 
                 return volume;
             }

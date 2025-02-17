@@ -434,9 +434,9 @@ namespace Mengine
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceSound::onSoundPause( const SoundIdentityInterfacePtr & _emitter )
+    void SurfaceSound::onSoundPause( const SoundIdentityInterfacePtr & _identity )
     {
-        MENGINE_UNUSED( _emitter );
+        MENGINE_UNUSED( _identity );
 
         uint32_t id = this->getPlayId();
 
@@ -444,9 +444,9 @@ namespace Mengine
             ->onAnimationPause( id );
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceSound::onSoundResume( const SoundIdentityInterfacePtr & _emitter )
+    void SurfaceSound::onSoundResume( const SoundIdentityInterfacePtr & _identity )
     {
-        MENGINE_UNUSED( _emitter );
+        MENGINE_UNUSED( _identity );
 
         uint32_t id = this->getPlayId();
 
@@ -454,16 +454,16 @@ namespace Mengine
             ->onAnimationResume( id, 0.f );
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceSound::onSoundStop( const SoundIdentityInterfacePtr & _emitter )
+    void SurfaceSound::onSoundStop( const SoundIdentityInterfacePtr & _identity )
     {
-        MENGINE_UNUSED( _emitter );
+        MENGINE_UNUSED( _identity );
 
         this->stop();
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceSound::onSoundEnd( const SoundIdentityInterfacePtr & _emitter )
+    void SurfaceSound::onSoundEnd( const SoundIdentityInterfacePtr & _identity )
     {
-        MENGINE_UNUSED( _emitter );
+        MENGINE_UNUSED( _identity );
 
         this->end();
     }

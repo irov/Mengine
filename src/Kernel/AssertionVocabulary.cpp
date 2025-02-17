@@ -12,7 +12,7 @@ namespace Mengine
 {
     namespace Detail
     {
-        void assertionVocabularyEmpty( const Char * _category, const ConstString & _key, const Char * _file, uint32_t _line )
+        void assertionVocabularyEmpty( const Char * _category, const ConstString & _key, const Char * _file, uint32_t _line, const Char * _function )
         {
             uint32_t count = 0;
 
@@ -46,7 +46,7 @@ namespace Mengine
                 , count
             );
 
-            Mengine::Helper::Assertion( _category, ASSERTION_LEVEL_ERROR, msg, _file, _line, "Assertion Vocabulary Empty" );
+            Mengine::Helper::Assertion( _category, ASSERTION_LEVEL_ERROR, msg, _file, _line, _function, "Assertion Vocabulary Empty" );
         }
     }
 }

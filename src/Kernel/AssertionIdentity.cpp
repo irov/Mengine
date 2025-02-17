@@ -11,7 +11,7 @@ namespace Mengine
 {
     namespace Detail
     {        
-        void assertionIdentity( const Char * _category, const Identity * _identity, const Char * _file, uint32_t _line )
+        void assertionIdentity( const Char * _category, const Identity * _identity, const Char * _file, uint32_t _line, const Char * _function )
         {
             UniqueId uniqueId = _identity->getUniqueIdentity();
 
@@ -26,7 +26,7 @@ namespace Mengine
                 , MENGINE_MIXIN_DEBUG_TYPE( _identity )
             );
 
-            Mengine::Helper::Assertion( _category, ASSERTION_LEVEL_ERROR, msg, _file, _line, "Assertion Identity" );
+            Mengine::Helper::Assertion( _category, ASSERTION_LEVEL_ERROR, msg, _file, _line, _function, "Assertion Identity" );
         }
     }
 }

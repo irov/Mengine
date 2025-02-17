@@ -9,7 +9,7 @@ namespace Mengine
 {
     namespace Detail
     {
-        void assertionVSNPRINTF( const Char * _category, size_t _capacity, const Char * _format, MENGINE_VA_LIST_TYPE _args, const Char * _file, uint32_t _line )
+        void assertionVSNPRINTF( const Char * _category, size_t _capacity, const Char * _format, MENGINE_VA_LIST_TYPE _args, const Char * _file, uint32_t _line, const Char * _function )
         {
             MENGINE_VA_LIST_TYPE args_check;
             MENGINE_VA_LIST_COPY( args_check, _args );
@@ -39,7 +39,7 @@ namespace Mengine
                 , _capacity
             );
 
-            Mengine::Helper::Assertion( _category, ASSERTION_LEVEL_ERROR, msg, _file, _line, "Assertion VSNPRINTF" );
+            Mengine::Helper::Assertion( _category, ASSERTION_LEVEL_ERROR, msg, _file, _line, _function, "Assertion VSNPRINTF" );
         }
     }
 }

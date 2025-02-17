@@ -44,10 +44,8 @@ namespace Mengine
 
         if( message.flag & LFLAG_CATEGORYSTAMP )
         {
-            const Char * category = message.category;
-
             StdString::strcat( buffer, "[" );
-            StdString::strcat( buffer, category );
+            StdString::strcat( buffer, message.category );
             StdString::strcat( buffer, "]" );
             StdString::strcat( buffer, " " );
         }
@@ -62,15 +60,18 @@ namespace Mengine
             StdString::strcat( buffer, " " );
         }
 
-        if( message.flag & ELoggerFlag::LFLAG_FUNCTIONSTAMP )
+        if( message.flag & ELoggerFlag::LFLAG_FILESTAMP )
         {
             Path functionstamp = {'\0'};
-
-            const Char * function = message.function;
-            int32_t line = message.line;
-            Helper::makeLoggerFunctionStamp( function, line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH );
+            Helper::makeLoggerFunctionStamp( message.file, message.line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH );
 
             StdString::strcat( buffer, functionstamp );
+            StdString::strcat( buffer, " " );
+        }
+
+        if( message.flag & ELoggerFlag::LFLAG_FUNCTIONSTAMP )
+        {
+            StdString::strcat( buffer, message.function );
             StdString::strcat( buffer, " " );
         }
 

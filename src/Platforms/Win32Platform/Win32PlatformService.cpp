@@ -460,7 +460,7 @@ namespace Mengine
         {
             uint32_t color = (is_supported == true ? LCOLOR_GREEN | LCOLOR_BLUE : LCOLOR_RED);
 
-            LOGGER_VERBOSE_LEVEL( "platform", LM_INFO, LFILTER_NONE, color, nullptr, 0, LFLAG_SHORT )("%s: %s"
+            LOGGER_VERBOSE_LEVEL( "platform", LM_INFO, LFILTER_NONE, color, nullptr, 0, nullptr, LFLAG_SHORT )("%s: %s"
                 , isa_feature
                 , is_supported == true ? "+" : "-"
                 );

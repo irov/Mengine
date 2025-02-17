@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Interface/ServiceProviderInterface.h"
-
 #include "Environment/OpenGL/OpenGLRenderIncluder.h"
 
 #include "Config/Char.h"
@@ -24,13 +22,13 @@ namespace Mengine
     namespace Helper
     {
         const Char * glGetErrorString( GLenum _err );
-        bool OpenGLRenderErrorCheck( const Char * _file, uint32_t _line );
+        bool OpenGLRenderErrorCheck( const Char * _file, uint32_t _line, const Char * _function );
     }
 }
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_OPENGL_RENDER_CHECK_ERROR_ENABLE)
 //////////////////////////////////////////////////////////////////////////
-#   define MENGINE_GLERRORCHECK() Mengine::Helper::OpenGLRenderErrorCheck( __FILE__, __LINE__ )
+#   define MENGINE_GLERRORCHECK() Mengine::Helper::OpenGLRenderErrorCheck( MENGINE_CODE_FILE, MENGINE_CODE_LINE, MENGINE_CODE_FUNCTION )
 //////////////////////////////////////////////////////////////////////////
 #   define MENGINE_IF_GLERRORCHECK() if( MENGINE_GLERRORCHECK() == true )
 //////////////////////////////////////////////////////////////////////////

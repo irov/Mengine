@@ -12,9 +12,10 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    ExceptionHelper::ExceptionHelper( const Char * _file, uint32_t _line ) noexcept
+    ExceptionHelper::ExceptionHelper( const Char * _file, uint32_t _line, const Char * _function ) noexcept
         : m_file( _file )
         , m_line( _line )
+        , m_function( _function )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -49,6 +50,10 @@ namespace Mengine
 
         StdString::strcat_safe( exception_msg, "line: ", MENGINE_LOGGER_MAX_MESSAGE );
         StdString::strcat_safe( exception_msg, lineBuffer, MENGINE_LOGGER_MAX_MESSAGE );
+        StdString::strcat_safe( exception_msg, "\n", MENGINE_LOGGER_MAX_MESSAGE );
+
+        StdString::strcat_safe( exception_msg, "function: ", MENGINE_LOGGER_MAX_MESSAGE );
+        StdString::strcat_safe( exception_msg, m_function, MENGINE_LOGGER_MAX_MESSAGE );
         StdString::strcat_safe( exception_msg, "\n", MENGINE_LOGGER_MAX_MESSAGE );
 
         Helper::debuggerBreak();

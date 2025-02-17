@@ -12,11 +12,11 @@ namespace Mengine
 {
     namespace Detail
     {
-        void assertionVSNPRINTF( const Char * _category, size_t _capacity, const Char * _format, MENGINE_VA_LIST_TYPE _args, const Char * _file, uint32_t _line );
+        void assertionVSNPRINTF( const Char * _category, size_t _capacity, const Char * _format, MENGINE_VA_LIST_TYPE _args, const Char * _file, uint32_t _line, const Char * _function );
     }
 }
 
-#   define MENGINE_ASSERTION_VSNPRINTF(CAPACITY, FORMAT, ARGS) Mengine::Detail::assertionVSNPRINTF(MENGINE_CODE_LIBRARY, CAPACITY, FORMAT, ARGS, MENGINE_CODE_FILE, MENGINE_CODE_LINE)
+#   define MENGINE_ASSERTION_VSNPRINTF(CAPACITY, FORMAT, ARGS) Mengine::Detail::assertionVSNPRINTF(MENGINE_CODE_LIBRARY, CAPACITY, FORMAT, ARGS, MENGINE_CODE_FILE, MENGINE_CODE_LINE, MENGINE_CODE_FUNCTION)
 #else
 #   define MENGINE_ASSERTION_VSNPRINTF(CAPACITY, FORMAT, ARGS)
 #endif

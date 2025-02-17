@@ -32,11 +32,12 @@ namespace Mengine
             return Assertion_NotDebugBreak;
         }
         //////////////////////////////////////////////////////////////////////////
-        AssertionOperator::AssertionOperator( const Char * _category, EAssertionLevel _level, const Char * _test, const Char * _file, uint32_t _line )
+        AssertionOperator::AssertionOperator( const Char * _category, EAssertionLevel _level, const Char * _test, const Char * _file, uint32_t _line, const Char * _function )
             : m_category( _category )
             , m_level( _level )
             , m_test( _test )
             , m_file( _file )
+            , m_function( _function )
             , m_line( _line )
         {
         }
@@ -47,7 +48,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         const AssertionOperator & AssertionOperator::operator()() const
         {
-            Helper::Assertion( m_category, m_level, m_test, m_file, m_line );
+            Helper::Assertion( m_category, m_level, m_test, m_file, m_line, m_function );
 
             return *this;
         }
@@ -64,17 +65,17 @@ namespace Mengine
 
             MENGINE_VA_LIST_END( argList );
 
-            Helper::Assertion( m_category, m_level, m_test, m_file, m_line, "%s", str_info );
+            Helper::Assertion( m_category, m_level, m_test, m_file, m_line, m_function, "%s", str_info );
 
             return *this;
         }
         //////////////////////////////////////////////////////////////////////////
-        void Assertion( const Char * _category, EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line )
+        void Assertion( const Char * _category, EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line, const Char * _function )
         {
-            Helper::Assertion( _category, _level, _test, _file, _line, "Unknown" );
+            Helper::Assertion( _category, _level, _test, _file, _line, _function, "Unknown" );
         }
         //////////////////////////////////////////////////////////////////////////
-        void Assertion( const Char * _category, EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line, const Char * _format, ... )
+        void Assertion( const Char * _category, EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line, const Char * _function, const Char * _format, ... )
         {
             Char message_info[MENGINE_ASSERTION_MAX_MESSAGE + 1] = {'\0'};
 
@@ -94,7 +95,7 @@ namespace Mengine
 
             if( SERVICE_IS_INITIALIZE( LoggerServiceInterface ) == true )
             {
-                LOGGER_VERBOSE_LEVEL( _category, LM_ERROR, LFILTER_NONE, LCOLOR_RED, _file, _line, LFLAG_NONE )("%s"
+                LOGGER_VERBOSE_LEVEL( _category, LM_ERROR, LFILTER_NONE, LCOLOR_RED, _file, _line, _function, LFLAG_NONE )("%s"
                     , assertion_info
                     );
             }
@@ -103,7 +104,7 @@ namespace Mengine
                 Helper::PlatformLogMessage( assertion_info );
             }
 
-            NOTIFICATION_NOTIFY( NOTIFICATOR_ASSERTION, _category, _level, _test, _file, _line, message_info );
+            NOTIFICATION_NOTIFY( NOTIFICATOR_ASSERTION, _category, _level, _test, _file, _line, _function, message_info );
             
             if( _level == ASSERTION_LEVEL_CRITICAL )
             {

@@ -79,7 +79,7 @@ namespace Mengine
                 return;
             }
 
-            LoggerOperator( "sentry", level, 0, LCOLOR_GREEN, nullptr, 0, LFLAG_SHORT ).logMessageArgs( _format, _args );
+            LoggerOperator( "sentry", level, 0, LCOLOR_GREEN, nullptr, 0, nullptr, LFLAG_SHORT ).logMessageArgs( _format, _args );
         }
         //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_WINDOWS_DEBUG)

@@ -29,7 +29,7 @@ namespace Mengine
     class DX9ErrorHelper
     {
     public:
-        DX9ErrorHelper( const Char * _file, uint32_t _line, const Char * _method );
+        DX9ErrorHelper( const Char * _file, uint32_t _line, const Char * _function, const Char * _method );
         ~DX9ErrorHelper();
 
     public:
@@ -38,13 +38,14 @@ namespace Mengine
     protected:
         const Char * m_file;
         uint32_t m_line;
+        const Char * m_function;
         const Char * m_method;
     };
     //////////////////////////////////////////////////////////////////////////
 }
 //////////////////////////////////////////////////////////////////////////
 #define MENGINE_DXERRORCHECK( MethodName, HRES )\
-    (Mengine::DX9ErrorHelper(MENGINE_CODE_FILE, MENGINE_CODE_LINE, MethodName ) == HRES)
+    (Mengine::DX9ErrorHelper(MENGINE_CODE_FILE, MENGINE_CODE_LINE, MENGINE_CODE_FUNCTION, MethodName ) == HRES)
 //////////////////////////////////////////////////////////////////////////
 #define MENGINE_IF_DXERRORCHECK( Method, HRES )\
     if( MENGINE_DXERRORCHECK(#Method, HRES) )

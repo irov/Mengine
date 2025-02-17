@@ -168,7 +168,8 @@ namespace Mengine
 
             j_desc.set( "ts", loggerTimestamp );
             j_desc.set( "tag", message.category );
-            j_desc.set( "file", message.function );
+            j_desc.set( "file", message.file );
+            j_desc.set( "function", message.function );
             j_desc.set( "line", message.line );
             j_desc.set( "thread", message.threadName );
             j_desc.set( "data", message.data );

@@ -97,15 +97,16 @@ namespace Mengine
 
         if( HAS_OPTION( "tracescriptlog" ) == true )
         {
+            Path file = {'\0'};
             Path function = {'\0'};
             uint32_t lineno = 0;
-            _kernel->get_traceback_function( function, MENGINE_MAX_PATH, &lineno );
+            _kernel->get_statetrace_top( file, MENGINE_MAX_PATH, function, MENGINE_MAX_PATH, &lineno );
 
-            LOGGER_VERBOSE_LEVEL( "python", m_level, LFILTER_NONE, color, function, lineno, LFLAG_SHORT | LFLAG_FUNCTIONSTAMP )("%s", m_message);
+            LOGGER_VERBOSE_LEVEL( "python", m_level, LFILTER_NONE, color, file, lineno, function, LFLAG_SHORT | LFLAG_FILESTAMP | LFLAG_FUNCTIONSTAMP )("%s", m_message);
         }
         else
         {
-            LOGGER_VERBOSE_LEVEL( "python", m_level, LFILTER_NONE, color, nullptr, 0, LFLAG_SHORT )("%s", m_message);
+            LOGGER_VERBOSE_LEVEL( "python", m_level, LFILTER_NONE, color, nullptr, 0, nullptr, LFLAG_SHORT )("%s", m_message);
         }
 
         StdString::strcpy_safe( m_message, "", MENGINE_LOGGER_MAX_MESSAGE );

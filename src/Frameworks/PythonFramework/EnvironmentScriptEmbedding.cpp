@@ -13,7 +13,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static PyObject * getEnvironmentUserName( pybind::kernel_interface * _kernel )
         {
-            Char userName[MENGINE_ENVIRONMENT_USER_MAXNAME] = {'\0'};
+            Char userName[MENGINE_ENVIRONMENT_USER_MAXNAME + 1] = {'\0'};
             ENVIRONMENT_SERVICE()
                 ->getUserName( userName );
 
@@ -24,7 +24,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static PyObject * getEnvironmentDeviceModel( pybind::kernel_interface * _kernel )
         {
-            Char deviceModel[MENGINE_ENVIRONMENT_DEVICE_MODEL_MAXNAME] = {'\0'};
+            Char deviceModel[MENGINE_ENVIRONMENT_DEVICE_MODEL_MAXNAME + 1] = {'\0'};
             ENVIRONMENT_SERVICE()
                 ->getDeviceModel( deviceModel );
 
@@ -35,7 +35,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static PyObject * getEnvironmentDeviceLanguage( pybind::kernel_interface * _kernel )
         {
-            Char deviceLanguage[MENGINE_ENVIRONMENT_DEVICE_LANGUAGE_MAXNAME] = {'\0'};
+            Char deviceLanguage[MENGINE_ENVIRONMENT_DEVICE_LANGUAGE_MAXNAME + 1] = {'\0'};
             ENVIRONMENT_SERVICE()
                 ->getDeviceLanguage( deviceLanguage );
 
@@ -46,7 +46,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static PyObject * getEnvironmentOSFamily( pybind::kernel_interface * _kernel )
         {
-            Char osFamily[MENGINE_ENVIRONMENT_OS_FAMILY_MAXNAME] = {'\0'};
+            Char osFamily[MENGINE_ENVIRONMENT_OS_FAMILY_MAXNAME + 1] = {'\0'};
             ENVIRONMENT_SERVICE()
                 ->getOSFamily( osFamily );
 
@@ -57,7 +57,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static PyObject * getEnvironmentOSVersion( pybind::kernel_interface * _kernel )
         {
-            Char osVersion[MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME] = {'\0'};
+            Char osVersion[MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME + 1] = {'\0'};
             ENVIRONMENT_SERVICE()
                 ->getOSVersion( osVersion );
 
@@ -68,7 +68,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static PyObject * getEnvironmentBundleId( pybind::kernel_interface * _kernel )
         {
-            Char bundleId[MENGINE_ENVIRONMENT_BUNDLEID_MAXNAME] = {'\0'};
+            Char bundleId[MENGINE_ENVIRONMENT_BUNDLEID_MAXNAME + 1] = {'\0'};
             ENVIRONMENT_SERVICE()
                 ->getBundleId( bundleId );
 
@@ -79,7 +79,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static PyObject * getEnvironmentSessionId( pybind::kernel_interface * _kernel )
         {
-            Char sessionId[MENGINE_ENVIRONMENT_SESSIONID_MAXNAME] = {'\0'};
+            Char sessionId[MENGINE_ENVIRONMENT_SESSIONID_MAXNAME + 1] = {'\0'};
             ENVIRONMENT_SERVICE()
                 ->getSessionId( sessionId );
 
@@ -90,7 +90,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static PyObject * getEnvironmentInstallKey( pybind::kernel_interface * _kernel )
         {
-            Char installKey[MENGINE_ENVIRONMENT_INSTALLKEY_MAXNAME] = {'\0'};
+            Char installKey[MENGINE_ENVIRONMENT_INSTALLKEY_MAXNAME + 1] = {'\0'};
             ENVIRONMENT_SERVICE()
                 ->getInstallKey( installKey );
 
@@ -101,7 +101,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static PyObject * getEnvironmentInstallVersion( pybind::kernel_interface * _kernel )
         {
-            Char installVersion[MENGINE_ENVIRONMENT_INSTALLVERSION_MAXNAME] = {'\0'};
+            Char installVersion[MENGINE_ENVIRONMENT_INSTALLVERSION_MAXNAME + 1] = {'\0'};
             ENVIRONMENT_SERVICE()
                 ->getInstallVersion( installVersion );
 

@@ -52,7 +52,7 @@ namespace Mengine
         template<>
         MENGINE_INLINE void setXmlValue<mt::vec2f>( pugi::xml_attribute & _attrib, const mt::vec2f & _value )
         {
-            Char xml_value[64] = {'\0'};
+            Char xml_value[64 + 1] = {'\0'};
             Helper::stringalized( _value, xml_value, 64 );
 
             _attrib.set_value( xml_value );
@@ -61,7 +61,7 @@ namespace Mengine
         template<>
         MENGINE_INLINE void setXmlValue<mt::vec3f>( pugi::xml_attribute & _attrib, const mt::vec3f & _value )
         {
-            Char xml_value[128] = {'\0'};
+            Char xml_value[128 + 1] = {'\0'};
             Helper::stringalized( _value, xml_value, 128 );
 
             _attrib.set_value( xml_value );
@@ -70,7 +70,7 @@ namespace Mengine
         template<>
         MENGINE_INLINE void setXmlValue<mt::uv4f>( pugi::xml_attribute & _attrib, const mt::uv4f & _value )
         {
-            Char xml_value[512] = {'\0'};
+            Char xml_value[512 + 1] = {'\0'};
             Helper::stringalized( _value, xml_value, 512 );
 
             _attrib.set_value( xml_value );
@@ -79,7 +79,7 @@ namespace Mengine
         template<>
         MENGINE_INLINE void setXmlValue<Color>( pugi::xml_attribute & _attrib, const Color & _value )
         {
-            Char xml_value[512] = {'\0'};
+            Char xml_value[512 + 1] = {'\0'};
             Helper::stringalized( _value, xml_value, 512 );
 
             _attrib.set_value( xml_value );

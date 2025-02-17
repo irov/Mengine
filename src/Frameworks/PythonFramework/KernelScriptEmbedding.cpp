@@ -502,7 +502,7 @@ namespace Mengine
                 if( correct_type == Node::getFactorableType() )
                 {
                     LOGGER_WARNING( "type 'Node' is old deprecated type, use 'Interender' or other\ntraceback:\n%s"
-                        , MENGINE_PYBIND_TRACEBACK()
+                        , MENGINE_PYBIND_STATETRACE()
                     );
 
                     correct_type = Interender::getFactorableType();

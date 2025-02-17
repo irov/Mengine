@@ -905,7 +905,7 @@ namespace Mengine
                 AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
                     ->getUnknown();
 
-                Char androidId[128] = {'\0'};
+                Char androidId[128 + 1] = {'\0'};
                 size_t androidIdLen = platformExtension->androidNativeGetAndroidId( androidId, 128 );
 
                 return _kernel->string_from_char_size( androidId, androidIdLen );
@@ -953,9 +953,10 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_logInfo( pybind::kernel_interface * _kernel, const StringView & _message )
             {
+                Path filename = {'\0'};
                 Path function = {'\0'};
                 uint32_t lineno = 0;
-                _kernel->get_traceback_function( function, MENGINE_MAX_PATH, &lineno );
+                _kernel->get_statetrace_top( filename, MENGINE_MAX_PATH, function, MENGINE_MAX_PATH, &lineno );
 
                 LoggerMessage msg;
                 msg.timestamp = Helper::getLocalTimestamp();
@@ -965,8 +966,9 @@ namespace Mengine
                 msg.filter = LFILTER_NONE;
                 msg.color = LCOLOR_GREEN | LCOLOR_BLUE;
                 msg.flag = LFLAG_SHORT;
-                msg.function = function;
+                msg.file = filename;
                 msg.line = lineno;
+                msg.function = function;
 
                 msg.data = _message.c_str();
                 msg.size = _message.size();
@@ -977,9 +979,10 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_logMessage( pybind::kernel_interface * _kernel, const StringView & _message )
             {
+                Path filename = {'\0'};
                 Path function = {'\0'};
                 uint32_t lineno = 0;
-                _kernel->get_traceback_function( function, MENGINE_MAX_PATH, &lineno );
+                _kernel->get_statetrace_top( filename, MENGINE_MAX_PATH, function, MENGINE_MAX_PATH, &lineno );
 
                 LoggerMessage msg;
                 msg.timestamp = Helper::getLocalTimestamp();
@@ -989,8 +992,9 @@ namespace Mengine
                 msg.filter = LFILTER_NONE;
                 msg.color = LCOLOR_RED | LCOLOR_BLUE;
                 msg.flag = LFLAG_SHORT;
-                msg.function = function;
+                msg.file = filename;
                 msg.line = lineno;
+                msg.function = function;
 
                 msg.data = _message.c_str();
                 msg.size = _message.size();
@@ -1001,9 +1005,10 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_logWarning( pybind::kernel_interface * _kernel, const StringView & _message )
             {
+                Path filename = {'\0'};
                 Path function = {'\0'};
                 uint32_t lineno = 0;
-                _kernel->get_traceback_function( function, MENGINE_MAX_PATH, &lineno );
+                _kernel->get_statetrace_top( filename, MENGINE_MAX_PATH, function, MENGINE_MAX_PATH, &lineno );
 
                 LoggerMessage msg;
                 msg.timestamp = Helper::getLocalTimestamp();
@@ -1013,8 +1018,9 @@ namespace Mengine
                 msg.filter = LFILTER_NONE;
                 msg.color = LCOLOR_RED | LCOLOR_GREEN;
                 msg.flag = LFLAG_SHORT;
-                msg.function = function;
+                msg.file = filename;
                 msg.line = lineno;
+                msg.function = function;
 
                 msg.data = _message.c_str();
                 msg.size = _message.size();
@@ -1025,9 +1031,10 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_logError( pybind::kernel_interface * _kernel, const StringView & _message )
             {
+                Path filename = {'\0'};
                 Path function = {'\0'};
                 uint32_t lineno = 0;
-                _kernel->get_traceback_function( function, MENGINE_MAX_PATH, &lineno );
+                _kernel->get_statetrace_top( filename, MENGINE_MAX_PATH, function, MENGINE_MAX_PATH, &lineno );
 
                 LoggerMessage msg;
                 msg.timestamp = Helper::getLocalTimestamp();
@@ -1037,8 +1044,9 @@ namespace Mengine
                 msg.filter = LFILTER_NONE;
                 msg.color = LCOLOR_RED;
                 msg.flag = LFLAG_SHORT;
-                msg.function = function;
+                msg.file = filename;
                 msg.line = lineno;
+                msg.function = function;
 
                 msg.data = _message.c_str();
                 msg.size = _message.size();
@@ -1049,9 +1057,10 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_logMessageRelease( pybind::kernel_interface * _kernel, const StringView & _message )
             {
+                Path filename = {'\0'};
                 Path function = {'\0'};
                 uint32_t lineno = 0;
-                _kernel->get_traceback_function( function, MENGINE_MAX_PATH, &lineno );
+                _kernel->get_statetrace_top( filename, MENGINE_MAX_PATH, function, MENGINE_MAX_PATH, &lineno );
 
                 LoggerMessage msg;
                 msg.timestamp = Helper::getLocalTimestamp();
@@ -1061,8 +1070,9 @@ namespace Mengine
                 msg.filter = LFILTER_NONE;
                 msg.color = LCOLOR_RED | LCOLOR_BLUE;
                 msg.flag = LFLAG_SHORT;
-                msg.function = function;
+                msg.file = filename;
                 msg.line = lineno;
+                msg.function = function;
 
                 msg.data = _message.c_str();
                 msg.size = _message.size();
@@ -1073,9 +1083,10 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_logFatal( pybind::kernel_interface * _kernel, const StringView & _message )
             {
+                Path filename = {'\0'};
                 Path function = {'\0'};
                 uint32_t lineno = 0;
-                _kernel->get_traceback_function( function, MENGINE_MAX_PATH, &lineno );
+                _kernel->get_statetrace_top( filename, MENGINE_MAX_PATH, function, MENGINE_MAX_PATH, &lineno );
 
                 LoggerMessage msg;
                 msg.timestamp = Helper::getLocalTimestamp();
@@ -1085,8 +1096,9 @@ namespace Mengine
                 msg.filter = LFILTER_NONE;
                 msg.color = LCOLOR_RED;
                 msg.flag = LFLAG_FULL;
-                msg.function = function;
+                msg.file = filename;
                 msg.line = lineno;
+                msg.function = function;
 
                 msg.data = _message.c_str();
                 msg.size = _message.size();
@@ -2007,7 +2019,7 @@ namespace Mengine
                     return false;
                 }
 
-                Char setting_value[32] = {'\0'};
+                Char setting_value[32 + 1] = {'\0'};
                 if( Helper::stringalized( _value, setting_value, 31 ) == false )
                 {
                     return false;

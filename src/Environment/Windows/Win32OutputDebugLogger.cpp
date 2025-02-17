@@ -57,11 +57,17 @@ namespace Mengine
             ::OutputDebugStringA( " " );
         }
 
+        if( message.flag & ELoggerFlag::LFLAG_FILESTAMP )
+        {
+            Path filestamp = {'\0'};
+            Helper::makeLoggerFunctionStamp( message.file, message.line, "%s[%d]", filestamp, 0, MENGINE_MAX_PATH );
+            ::OutputDebugStringA( filestamp );
+            ::OutputDebugStringA( " " );
+        }
+
         if( message.flag & ELoggerFlag::LFLAG_FUNCTIONSTAMP )
         {
-            Path functionstamp = {'\0'};
-            Helper::makeLoggerFunctionStamp( message.function, message.line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH );
-            ::OutputDebugStringA( functionstamp );
+            ::OutputDebugStringA( message.function );
             ::OutputDebugStringA( " " );
         }
 

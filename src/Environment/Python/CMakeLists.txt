@@ -12,6 +12,8 @@ src
     PythonForwardDeclaration.h
     PythonCallbackProvider.h
     PythonCallbackProvider.cpp
+    PythonTraceback.h
+    PythonTraceback.cpp
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)

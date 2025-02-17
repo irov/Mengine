@@ -61,10 +61,10 @@ namespace Mengine
     MENGINE_NOTIFICATOR_DECLARE_BEGIN();
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_DEBUG_OPEN_FILE, const FilePath &, const FilePath &, bool, bool );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_DEBUG_CLOSE_FILE, const FilePath &, const FilePath &, bool, bool );
-    MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_ASSERTION, const Char *, EAssertionLevel, const Char *, const Char *, int32_t, const Char * );
+    MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_ASSERTION, const Char *, EAssertionLevel, const Char *, const Char *, int32_t, const Char *, const Char * );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_ABORT, const Char * );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_CRASH, const Char * );
-    MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_ERROR, const Char *, EErrorLevel, const Char *, int32_t, const Char * );
+    MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_ERROR, const Char *, EErrorLevel, const Char *, int32_t, const Char *, const Char * );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, bool, Resolution );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_RENDER_DEVICE_CREATE );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_RENDER_DEVICE_DESTROY );

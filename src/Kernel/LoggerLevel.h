@@ -42,11 +42,12 @@ namespace Mengine
     enum ELoggerFlag : uint32_t
     {
         LFLAG_NONE = 0 << 0,
-        LFLAG_FUNCTIONSTAMP = 1 << 1,
-        LFLAG_TIMESTAMP = 1 << 2,
-        LFLAG_THREADSTAMP = 1 << 3,
-        LFLAG_SYMBOLSTAMP = 1 << 4,
-        LFLAG_CATEGORYSTAMP = 1 << 5,
+        LFLAG_FILESTAMP = 1 << 1,
+        LFLAG_FUNCTIONSTAMP = 1 << 2,
+        LFLAG_TIMESTAMP = 1 << 3,
+        LFLAG_THREADSTAMP = 1 << 4,
+        LFLAG_SYMBOLSTAMP = 1 << 5,
+        LFLAG_CATEGORYSTAMP = 1 << 6,
         LFLAG_SHORT = LFLAG_TIMESTAMP | LFLAG_SYMBOLSTAMP | LFLAG_CATEGORYSTAMP,
         LFLAG_FULL = 0xFFFFFFFF
     };

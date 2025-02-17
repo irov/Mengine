@@ -13,7 +13,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        void assertionStandardCharacterSet( const Char * _category, const Char * _value, size_t _len, const Char * _file, uint32_t _line )
+        void assertionStandardCharacterSet( const Char * _category, const Char * _value, size_t _len, const Char * _file, uint32_t _line, const Char * _function )
         {
             for( const Char * ch_iterator = _value; ch_iterator != _value + _len; ++ch_iterator )
             {
@@ -28,7 +28,7 @@ namespace Mengine
                         , (uint32_t)ch
                     );
 
-                    Helper::Assertion( _category, ASSERTION_LEVEL_ERROR, msg, _file, _line, "Assertion Standard Character Set [No ASCII]" );
+                    Helper::Assertion( _category, ASSERTION_LEVEL_ERROR, msg, _file, _line, _function, "Assertion Standard Character Set [No ASCII]" );
                 }
 
                 if( Helper::isStandardCharacterSet( ch ) == false )
@@ -41,12 +41,12 @@ namespace Mengine
                         , (uint32_t)ch
                     );
 
-                    Helper::Assertion( _category, ASSERTION_LEVEL_ERROR, msg, _file, _line, "Assertion Standard Character Set" );
+                    Helper::Assertion( _category, ASSERTION_LEVEL_ERROR, msg, _file, _line, _function, "Assertion Standard Character Set" );
                 }
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        void assertionLowerCharacterSet( const Char * _category, const Char * _value, size_t _len, const Char * _file, uint32_t _line )
+        void assertionLowerCharacterSet( const Char * _category, const Char * _value, size_t _len, const Char * _file, uint32_t _line, const Char * _function )
         {
             for( const Char * ch_iterator = _value; ch_iterator != _value + _len; ++ch_iterator )
             {
@@ -61,7 +61,7 @@ namespace Mengine
                         , (uint32_t)ch
                     );
 
-                    Helper::Assertion( _category, ASSERTION_LEVEL_ERROR, msg, _file, _line, "Assertion Lower Character Set" );
+                    Helper::Assertion( _category, ASSERTION_LEVEL_ERROR, msg, _file, _line, _function, "Assertion Lower Character Set" );
                 }
 
                 if( Helper::isUpperCharacterSet( ch ) == true )
@@ -74,12 +74,12 @@ namespace Mengine
                         , (uint32_t)ch
                     );
 
-                    Helper::Assertion( _category, ASSERTION_LEVEL_ERROR, msg, _file, _line, "Assertion Lower Character Set" );
+                    Helper::Assertion( _category, ASSERTION_LEVEL_ERROR, msg, _file, _line, _function, "Assertion Lower Character Set" );
                 }
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        void assertionUpperCharacterSet( const Char * _category, const Char * _value, size_t _len, const Char * _file, uint32_t _line )
+        void assertionUpperCharacterSet( const Char * _category, const Char * _value, size_t _len, const Char * _file, uint32_t _line, const Char * _function )
         {
             for( const Char * ch_iterator = _value; ch_iterator != _value + _len; ++ch_iterator )
             {
@@ -94,7 +94,7 @@ namespace Mengine
                         , (uint32_t)ch
                     );
 
-                    Helper::Assertion( _category, ASSERTION_LEVEL_ERROR, msg, _file, _line, "Assertion Upper Character Set" );
+                    Helper::Assertion( _category, ASSERTION_LEVEL_ERROR, msg, _file, _line, _function, "Assertion Upper Character Set" );
                 }
 
                 if( Helper::isLowerCharacterSet( ch ) == true )
@@ -107,7 +107,7 @@ namespace Mengine
                         , (uint32_t)ch
                     );
 
-                    Mengine::Helper::Assertion( _category, ASSERTION_LEVEL_ERROR, msg, _file, _line, "Assertion Upper Character Set" );
+                    Mengine::Helper::Assertion( _category, ASSERTION_LEVEL_ERROR, msg, _file, _line, _function, "Assertion Upper Character Set" );
                 }
             }
         }

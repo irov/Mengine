@@ -5,38 +5,36 @@
 
 #include "Environment/Python/PythonIncluder.h"
 
-#ifndef MENGINE_PYBIND_TRACEBACK_MAX_MESSAGE
-#define MENGINE_PYBIND_TRACEBACK_MAX_MESSAGE 8192
-#endif
+#include "Kernel/LoggerMessage.h"
 
 namespace Mengine
 {
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        const Char * getTracebackPybind()
+        const Char * getStatetracePybind()
         {
-            static MENGINE_THREAD_LOCAL Char traceback[MENGINE_PYBIND_TRACEBACK_MAX_MESSAGE + 1] = {'\0'};
+            static MENGINE_THREAD_LOCAL Char statetrace[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
 
             pybind::kernel_interface * kernel = SCRIPTPROVIDER_SERVICE()
                 ->getKernel();
 
-            kernel->get_traceback( traceback, MENGINE_PYBIND_TRACEBACK_MAX_MESSAGE );
+            kernel->get_statetrace( statetrace, MENGINE_LOGGER_MAX_MESSAGE );
 
-            return traceback;
+            return statetrace;
         }
         //////////////////////////////////////////////////////////////////////////
-        DocumentInterfacePtr createDocumentPybind( const Char * _file, const Char * _function, uint32_t _line )
+        DocumentInterfacePtr createDocumentPybind( const Char * _file, uint32_t _line, const Char * _function )
         {
-            Char traceback[MENGINE_PYBIND_TRACEBACK_MAX_MESSAGE + 1] = {'\0'};
+            Char traceback[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
 
             pybind::kernel_interface * kernel = SCRIPTPROVIDER_SERVICE()
                 ->getKernel();
 
-            kernel->get_traceback( traceback, MENGINE_PYBIND_TRACEBACK_MAX_MESSAGE );
+            kernel->get_statetrace( traceback, MENGINE_LOGGER_MAX_MESSAGE );
 
             DocumentInterfacePtr doc = DOCUMENT_SERVICE()
-                ->createDocument( nullptr, MENGINE_CODE_LIBRARY, _file, _function, _line, "traceback: %s", traceback );
+                ->createDocument( nullptr, MENGINE_CODE_LIBRARY, _file, _line, _function, "traceback: %s", traceback );
 
             return doc;
         }

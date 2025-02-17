@@ -9,7 +9,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        bool OpenALErrorCheck( const Char * _method, const Char * _file, uint32_t _line )
+        bool OpenALErrorCheck( const Char * _method, const Char * _file, uint32_t _line, const Char * _function )
         {
             ALenum error = alGetError();
 
@@ -20,7 +20,7 @@ namespace Mengine
 
             const Char * message = alGetString( error );
 
-            LOGGER_VERBOSE_LEVEL( "openal", LM_ERROR, LFILTER_NONE, LCOLOR_RED, _file, _line, LFLAG_FULL )("method '%s' error %s [%d]"
+            LOGGER_VERBOSE_LEVEL( "openal", LM_ERROR, LFILTER_NONE, LCOLOR_RED, _file, _line, _function, LFLAG_FULL )("method '%s' error %s [%d]"
                 , _method
                 , message != nullptr ? message : "unknown"
                 , error

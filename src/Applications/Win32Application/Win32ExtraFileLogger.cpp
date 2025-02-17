@@ -92,11 +92,17 @@ namespace Mengine
             this->writeMessage_( " " );
         }
 
+        if( message.flag & LFLAG_FILESTAMP )
+        {
+            Path filestamp = {'\0'};
+            Helper::makeLoggerFunctionStamp( message.file, message.line, "%s[%d]", filestamp, 0, MENGINE_MAX_PATH );
+            this->writeMessage_( filestamp );
+            this->writeMessage_( " " );
+        }
+
         if( message.flag & LFLAG_FUNCTIONSTAMP )
         {
-            Path functionstamp = {'\0'};
-            Helper::makeLoggerFunctionStamp( message.function, message.line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH );
-            this->writeMessage_( functionstamp );
+            this->writeMessage_( message.function );
             this->writeMessage_( " " );
         }
 

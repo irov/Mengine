@@ -12,11 +12,11 @@ namespace Mengine
 {
     namespace Detail
     {
-        void assertionValidateFilePath( const Char * _category, const FilePath & _filePath, const Char * _file, uint32_t _line );
+        void assertionValidateFilePath( const Char * _category, const FilePath & _filePath, const Char * _file, uint32_t _line, const Char * _function );
     }
 }
 
-#   define MENGINE_ASSERTION_VALIDATE_FILEPATH(Path) Detail::assertionValidateFilePath(MENGINE_CODE_LIBRARY, Path, MENGINE_CODE_FILE, MENGINE_CODE_LINE)
+#   define MENGINE_ASSERTION_VALIDATE_FILEPATH(Path) Detail::assertionValidateFilePath(MENGINE_CODE_LIBRARY, Path, MENGINE_CODE_FILE, MENGINE_CODE_LINE, MENGINE_CODE_FUNCTION)
 #else
 #   define MENGINE_ASSERTION_VALIDATE_FILEPATH(Path)
 #endif

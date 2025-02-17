@@ -58,15 +58,15 @@ namespace Mengine
         m_factoryDocument = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    DocumentInterfacePtr DocumentService::createDocument( const DocumentInterfacePtr & _parent, const Char * _modulePath, const Char * _file, const Char * _function, uint32_t _line, const Char * _format, ... )
+    DocumentInterfacePtr DocumentService::createDocument( const DocumentInterfacePtr & _parent, const Char * _modulePath, const Char * _file, uint32_t _line, const Char * _function, const Char * _format, ... )
     {
         DocumentPtr document = m_factoryDocument->createObject( nullptr );
 
         document->setParent( _parent );
         document->setModulePath( _modulePath );
         document->setFile( _file );
-        document->setFunction( _function );
         document->setLine( _line );
+        document->setFunction( _function );        
 
         Char message[MENGINE_DOCUMENT_MAX_MESSAGE + 1] = {'\0'};
 

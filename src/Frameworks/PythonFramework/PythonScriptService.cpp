@@ -15,6 +15,7 @@
 
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonEventReceiver.h"
+#include "Environment/Python/PythonTraceback.h"
 
 #include "PythonScriptModuleLoader.h"
 #include "PythonEntityEventReceiver.h"
@@ -75,7 +76,7 @@ namespace Mengine
                 ->getKernel();
 
             Char traceback[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
-            kernel->get_traceback( traceback, MENGINE_LOGGER_MAX_MESSAGE );
+            kernel->get_statetrace( traceback, MENGINE_LOGGER_MAX_MESSAGE );
 
             MENGINE_ERROR_FATAL( "invalid parameter detected in function %ls.\nFile: %ls Line: %u\nExpression: %ls\nTrackeback:\n%s"
                 , _function
@@ -238,7 +239,7 @@ namespace Mengine
                     }
                 }
 
-                LOGGER_VERBOSE_LEVEL( "script", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_RED, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE, LFLAG_SHORT )("script call '%s::%s' args [(%s)] kwds [(%s)] and get error!"
+                LOGGER_VERBOSE_LEVEL( "script", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_RED, MENGINE_CODE_FILE, MENGINE_CODE_LINE, MENGINE_CODE_FUNCTION, LFLAG_SHORT )("script call '%s::%s' args [(%s)] kwds [(%s)] and get error!"
                     , _className
                     , _functionName
                     , ss_args.str().c_str()
@@ -246,9 +247,9 @@ namespace Mengine
                     );
 
                 Char traceback[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
-                _kernel->get_traceback( traceback, MENGINE_LOGGER_MAX_MESSAGE );
+                _kernel->get_statetrace( traceback, MENGINE_LOGGER_MAX_MESSAGE );
 
-                LOGGER_VERBOSE_LEVEL( "script", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_RED, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE, LFLAG_SHORT )("traceback:\n%s"
+                LOGGER_VERBOSE_LEVEL( "script", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_RED, MENGINE_CODE_FILE, MENGINE_CODE_LINE, MENGINE_CODE_FUNCTION, LFLAG_SHORT )("traceback:\n%s"
                     , traceback
                     );
             }
@@ -1229,7 +1230,7 @@ namespace Mengine
         }
 
         Char traceback[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
-        if( m_kernel->get_traceback( traceback, MENGINE_LOGGER_MAX_MESSAGE ) == false )
+        if( m_kernel->get_statetrace( traceback, MENGINE_LOGGER_MAX_MESSAGE ) == false )
         {
             return;
         }
@@ -1239,43 +1240,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptService::handleException_( PyTypeObject * _exctype, PyObject * _value, PyObject * _traceback )
     {
-        ArrayString<MENGINE_LOGGER_MAX_MESSAGE> traceback_str;
+        Char traceback_str[MENGINE_LOGGER_MAX_MESSAGE];
 
-        PyObject * traceback = m_kernel->is_none( _traceback ) == false
-            ? m_kernel->get_exception_traceback( _traceback )
-            : m_kernel->get_current_traceback();
-
-        uint32_t traceback_size = m_kernel->list_size( traceback );
-
-        for( uint32_t index = traceback_size; index != 0; --index )
-        {
-            if( index != traceback_size )
-            {
-                traceback_str.append( "\n" );
-            }
-
-            PyObject * item = m_kernel->list_getitem( traceback, index - 1 );
-
-            PyObject * trace_file = m_kernel->tuple_getitem( item, 0 );
-            PyObject * trace_line = m_kernel->tuple_getitem( item, 1 );
-            PyObject * trace_function = m_kernel->tuple_getitem( item, 2 );
-
-            Char trace_str[512 + 1] = {'\0'};
-            MENGINE_SNPRINTF( trace_str, 512, "File \"%s\", line %d, in %s"
-                , m_kernel->string_to_char( trace_file )
-                , pybind::extract<int32_t>( m_kernel, trace_line )
-                , m_kernel->string_to_char( trace_function )
-            );
-
-            traceback_str.append( trace_str );
-        }
-
-        m_kernel->decref( traceback );
+        Helper::getPythonTracebackMessage( traceback_str, MENGINE_LOGGER_MAX_MESSAGE, m_kernel, _traceback );
 
         LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_ERROR, Mengine::LFILTER_EXCEPTION, Mengine::LCOLOR_RED, Mengine::LFLAG_SHORT )("[Python] exception [%s] %s\n%s"
-            , m_kernel->type_name( _exctype )
-            , m_kernel->object_str( _value ).c_str()
-            , traceback_str.c_str()
+            , (_exctype != nullptr) ? m_kernel->type_name( _exctype ) : "UnknownException"
+            , (_value != nullptr) ? m_kernel->object_str( _value ).c_str() : ""
+            , traceback_str
         );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1346,7 +1318,7 @@ namespace Mengine
                 );
 
                 Char traceback[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
-                m_kernel->get_traceback( traceback, MENGINE_LOGGER_MAX_MESSAGE );
+                m_kernel->get_statetrace( traceback, MENGINE_LOGGER_MAX_MESSAGE );
 
                 LOGGER_STATISTIC( "%s", traceback );
             }

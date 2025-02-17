@@ -31,11 +31,12 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
-    LoggerOperator::LoggerOperator( const Char * _category, ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _function, uint32_t _line, uint32_t _flag )
+    LoggerOperator::LoggerOperator( const Char * _category, ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _file, uint32_t _line, const Char * _function, uint32_t _flag )
         : m_category( _category )
         , m_level( _level )
         , m_filter( _filter )
         , m_color( _color )
+        , m_file( _file )
         , m_function( _function )
         , m_line( _line )
         , m_flag( _flag )
@@ -95,6 +96,7 @@ namespace Mengine
         msg.flag = m_flag;
         msg.filter = m_filter;
         msg.color = _color;
+        msg.file = m_file;
         msg.function = m_function;
         msg.line = m_line;
         msg.data = _data;

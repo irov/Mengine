@@ -10,7 +10,7 @@ namespace Mengine
 {
     namespace Detail
     {
-        void assertionValidateFilePath( const Char * _category, const FilePath & _filePath, const Char * _file, uint32_t _line )
+        void assertionValidateFilePath( const Char * _category, const FilePath & _filePath, const Char * _file, uint32_t _line, const Char * _function )
         {
             const Char * filePath_str = _filePath.c_str();
 
@@ -21,7 +21,7 @@ namespace Mengine
                     , filePath_str
                 );
 
-                Helper::Assertion( _category, ASSERTION_LEVEL_ERROR, msg, _file, _line, "Assertion File Path" );
+                Helper::Assertion( _category, ASSERTION_LEVEL_ERROR, msg, _file, _line, _function, "Assertion File Path" );
             }
         }
     }

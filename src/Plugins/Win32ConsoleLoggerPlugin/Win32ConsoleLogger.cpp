@@ -234,11 +234,19 @@ namespace Mengine
             ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
         }
 
+        if( message.flag & ELoggerFlag::LFLAG_FILESTAMP )
+        {
+            Path filestamp = {'\0'};
+            size_t filestampSize = Helper::makeLoggerFunctionStamp( message.file, message.line, "%s[%d]", filestamp, 0, MENGINE_MAX_PATH );
+            ::WriteConsoleA( output_handle, filestamp, (DWORD)filestampSize, &dWritten, NULL );
+            ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
+        }
+
         if( message.flag & ELoggerFlag::LFLAG_FUNCTIONSTAMP )
         {
-            Path functionstamp = {'\0'};
-            size_t functionstampSize = Helper::makeLoggerFunctionStamp( message.function, message.line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH );
-            ::WriteConsoleA( output_handle, functionstamp, (DWORD)functionstampSize, &dWritten, NULL );
+            size_t function_size = StdString::strlen( message.function );
+
+            ::WriteConsoleA( output_handle, message.function, (DWORD)function_size, &dWritten, NULL );
             ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
         }
 

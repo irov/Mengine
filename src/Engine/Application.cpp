@@ -1472,7 +1472,7 @@ namespace Mengine
         {
             if( _streaming == false )
             {
-                LOGGER_VERBOSE_LEVEL( "debug", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, LFLAG_SHORT )("open %s %s%s"
+                LOGGER_VERBOSE_LEVEL( "debug", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, nullptr, LFLAG_SHORT )("open %s %s%s"
                     , _read == true ? "read" : "write"
                     , _folder.c_str()
                     , _filePath.c_str()
@@ -1480,7 +1480,7 @@ namespace Mengine
             }
             else
             {
-                LOGGER_VERBOSE_LEVEL( "debug", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, LFLAG_SHORT )("streaming %s %s%s"
+                LOGGER_VERBOSE_LEVEL( "debug", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, nullptr, LFLAG_SHORT )("streaming %s %s%s"
                     , _read == true ? "read" : "write"
                     , _folder.c_str()
                     , _filePath.c_str()
@@ -1494,7 +1494,7 @@ namespace Mengine
 
             if( _streaming == false )
             {
-                LOGGER_VERBOSE_LEVEL( "debug", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, LFLAG_SHORT )("open [multithread:%" MENGINE_PRIu64 "] open %s %s%s"
+                LOGGER_VERBOSE_LEVEL( "debug", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, nullptr, LFLAG_SHORT )("open [multithread:%" MENGINE_PRIu64 "] open %s %s%s"
                     , tid
                     , _read == true ? "read" : "write"
                     , _folder.c_str()
@@ -1503,7 +1503,7 @@ namespace Mengine
             }
             else
             {
-                LOGGER_VERBOSE_LEVEL( "debug", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, LFLAG_SHORT )("streaming [multithread:%" MENGINE_PRIu64 "] open %s %s%s"
+                LOGGER_VERBOSE_LEVEL( "debug", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, nullptr, LFLAG_SHORT )("streaming [multithread:%" MENGINE_PRIu64 "] open %s %s%s"
                     , tid
                     , _read == true ? "read" : "write"
                     , _folder.c_str()
@@ -1515,7 +1515,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::notifyDebugResourceCompile_( Resource * _resource )
     {
-        LOGGER_VERBOSE_LEVEL( "debug", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, LFLAG_SHORT )("compile %s type %s [%s]"
+        LOGGER_VERBOSE_LEVEL( "debug", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, nullptr, LFLAG_SHORT )("compile %s type %s [%s]"
             , _resource->getName().c_str()
             , _resource->getType().c_str()
             , _resource->getGroupName().c_str()
@@ -1524,7 +1524,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::notifyDebugResourceRelease_( Resource * _resource )
     {
-        LOGGER_VERBOSE_LEVEL( "debug", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, LFLAG_SHORT )("release %s type %s [%s]"
+        LOGGER_VERBOSE_LEVEL( "debug", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, nullptr, LFLAG_SHORT )("release %s type %s [%s]"
             , _resource->getName().c_str()
             , _resource->getType().c_str()
             , _resource->getGroupName().c_str()

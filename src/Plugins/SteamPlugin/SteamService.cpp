@@ -34,7 +34,7 @@ namespace Mengine
         {
             ELoggerLevel level = _severity >= 1 ? LM_ERROR : LM_WARNING;
 
-            LOGGER_VERBOSE_LEVEL( "steam", level, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, nullptr, 0, Mengine::LFLAG_FULL )("[steam] %s", _msg);
+            LOGGER_VERBOSE_LEVEL( "steam", level, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, nullptr, 0, nullptr, Mengine::LFLAG_FULL )("[steam] %s", _msg);
         }
         //////////////////////////////////////////////////////////////////////////
     }

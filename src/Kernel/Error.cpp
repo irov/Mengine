@@ -18,11 +18,12 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        ErrorOperator::ErrorOperator( const Char * _category, EErrorLevel _level, const Char * _file, uint32_t _line )
+        ErrorOperator::ErrorOperator( const Char * _category, EErrorLevel _level, const Char * _file, uint32_t _line, const Char * _function )
             : m_category( _category )
             , m_level( _level )
             , m_file( _file )
             , m_line( _line )
+            , m_function( _function )
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -49,7 +50,7 @@ namespace Mengine
 
             if( SERVICE_IS_INITIALIZE( LoggerServiceInterface ) == true )
             {
-                LOGGER_VERBOSE_LEVEL( m_category, LM_ERROR, LFILTER_NONE, LCOLOR_RED, m_file, m_line, LFLAG_NONE )("%s"
+                LOGGER_VERBOSE_LEVEL( m_category, LM_ERROR, LFILTER_NONE, LCOLOR_RED, m_file, m_line, m_function, LFLAG_NONE )("%s"
                     , error_info
                     );
             }
@@ -58,7 +59,7 @@ namespace Mengine
                 Helper::PlatformLogMessage( error_info );
             }
 
-            NOTIFICATION_NOTIFY( NOTIFICATOR_ERROR, m_category, m_level, m_file, m_line, message_info );
+            NOTIFICATION_NOTIFY( NOTIFICATOR_ERROR, m_category, m_level, m_file, m_line, m_function, message_info );
 
             switch( m_level )
             {

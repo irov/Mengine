@@ -677,7 +677,7 @@ int main( int argc, char * argv[] )
         return EXIT_FAILURE;
     }
 
-    CHAR utf8_movie_name[256] = {'\0'};
+    CHAR utf8_movie_name[256 + 1] = {'\0'};
     unicode_to_utf8( utf8_movie_name, 256, movie_name.c_str(), movie_name.size() );
 
     const aeMovieInstance * movieInstance = ae_create_movie_instance( "f86464bbdebf0fe3e684b03ec263d049d079e6f1"

@@ -23,13 +23,13 @@ namespace Mengine
         void AssertionSetNotDebugBreak( bool _debugBreak );
         bool AssertionIsNotDebugBreak();
         //////////////////////////////////////////////////////////////////////////
-        void Assertion( const Char * _category, EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line );
-        void Assertion( const Char * _category, EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line, const Char * _format, ... ) MENGINE_ATTRIBUTE_FORMAT_STRING( 6, 7 );
+        void Assertion( const Char * _category, EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line, const Char * _function );
+        void Assertion( const Char * _category, EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line, const Char * _function, const Char * _format, ... ) MENGINE_ATTRIBUTE_FORMAT_STRING( 7, 8 );
         //////////////////////////////////////////////////////////////////////////
         class AssertionOperator
         {
         public:
-            AssertionOperator( const Char * _category, EAssertionLevel _level, const Char * _test, const Char * _file, uint32_t _line );
+            AssertionOperator( const Char * _category, EAssertionLevel _level, const Char * _test, const Char * _file, uint32_t _line, const Char * _function );
             ~AssertionOperator();
 
         public:
@@ -46,6 +46,7 @@ namespace Mengine
             const Char * m_test;
             const Char * m_file;
             uint32_t m_line;
+            const Char * m_function;
         };
         //////////////////////////////////////////////////////////////////////////
         template<class T>
@@ -111,10 +112,10 @@ namespace Mengine
 
 #   define DETAIL__MENGINE_ASSERTION_CALL( ... ) (__VA_ARGS__ ) ;static_assert(sizeof(MENGINE_PRINTF(__VA_ARGS__)))
 
-#   define MENGINE_ASSERTION(Condition, ...) if(!(Condition)) Mengine::Helper::AssertionOperator( MENGINE_CODE_LIBRARY, Mengine::ASSERTION_LEVEL_ERROR, #Condition, MENGINE_CODE_FILE, MENGINE_CODE_LINE ) DETAIL__MENGINE_ASSERTION_CALL(__VA_ARGS__)
-#   define MENGINE_ASSERTION_FATAL(Condition, ...) if(!(Condition)) Mengine::Helper::AssertionOperator( MENGINE_CODE_LIBRARY, Mengine::ASSERTION_LEVEL_FATAL, #Condition, MENGINE_CODE_FILE, MENGINE_CODE_LINE ) DETAIL__MENGINE_ASSERTION_CALL(__VA_ARGS__)
-#   define MENGINE_ASSERTION_EXCEPTION(Condition, ...) if(!(Condition)) Mengine::Helper::AssertionOperator( MENGINE_CODE_LIBRARY, Mengine::ASSERTION_LEVEL_EXCEPTION, #Condition, MENGINE_CODE_FILE, MENGINE_CODE_LINE ) DETAIL__MENGINE_ASSERTION_CALL(__VA_ARGS__)
-#   define MENGINE_ASSERTION_CRITICAL(Condition, ...) if(!(Condition)) Mengine::Helper::AssertionOperator( MENGINE_CODE_LIBRARY, Mengine::ASSERTION_LEVEL_CRITICAL, #Condition, MENGINE_CODE_FILE, MENGINE_CODE_LINE ) DETAIL__MENGINE_ASSERTION_CALL(__VA_ARGS__)
+#   define MENGINE_ASSERTION(Condition, ...) if(!(Condition)) Mengine::Helper::AssertionOperator( MENGINE_CODE_LIBRARY, Mengine::ASSERTION_LEVEL_ERROR, #Condition, MENGINE_CODE_FILE, MENGINE_CODE_LINE, MENGINE_CODE_FUNCTION ) DETAIL__MENGINE_ASSERTION_CALL(__VA_ARGS__)
+#   define MENGINE_ASSERTION_FATAL(Condition, ...) if(!(Condition)) Mengine::Helper::AssertionOperator( MENGINE_CODE_LIBRARY, Mengine::ASSERTION_LEVEL_FATAL, #Condition, MENGINE_CODE_FILE, MENGINE_CODE_LINE, MENGINE_CODE_FUNCTION ) DETAIL__MENGINE_ASSERTION_CALL(__VA_ARGS__)
+#   define MENGINE_ASSERTION_EXCEPTION(Condition, ...) if(!(Condition)) Mengine::Helper::AssertionOperator( MENGINE_CODE_LIBRARY, Mengine::ASSERTION_LEVEL_EXCEPTION, #Condition, MENGINE_CODE_FILE, MENGINE_CODE_LINE, MENGINE_CODE_FUNCTION ) DETAIL__MENGINE_ASSERTION_CALL(__VA_ARGS__)
+#   define MENGINE_ASSERTION_CRITICAL(Condition, ...) if(!(Condition)) Mengine::Helper::AssertionOperator( MENGINE_CODE_LIBRARY, Mengine::ASSERTION_LEVEL_CRITICAL, #Condition, MENGINE_CODE_FILE, MENGINE_CODE_LINE, MENGINE_CODE_FUNCTION ) DETAIL__MENGINE_ASSERTION_CALL(__VA_ARGS__)
 #else
 #   define MENGINE_ASSERTION_SET_NOT_DEBUG_BREAK( DebugBreak ) MENGINE_UNUSED( DebugBreak )
 #   define MENGINE_ASSERTION_IS_NOT_DEBUG_BREAK() true

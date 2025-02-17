@@ -59,11 +59,19 @@ namespace Mengine
             std::cout.write( " ", 1 );
         }
 
+        if( message.flag & LFLAG_FILESTAMP )
+        {
+            Path filestamp = {'\0'};
+            size_t filestampSize = Helper::makeLoggerFunctionStamp( message.file, message.line, "%s[%d]", filestamp, 0, MENGINE_MAX_PATH );
+            std::cout.write( filestamp, filestampSize );
+            std::cout.write( " ", 1 );
+        }
+
         if( message.flag & LFLAG_FUNCTIONSTAMP )
         {
-            Path functionstamp = {'\0'};
-            size_t functionstampSize = Helper::makeLoggerFunctionStamp( message.function, message.line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH );
-            std::cout.write( functionstamp, functionstampSize );
+            size_t function_size = StdString::strlen( message.function );
+
+            std::cout.write( message.function, function_size );
             std::cout.write( " ", 1 );
         }
 

@@ -56,9 +56,10 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    DX9ErrorHelper::DX9ErrorHelper( const Char * _file, uint32_t _line, const Char * _method )
+    DX9ErrorHelper::DX9ErrorHelper( const Char * _file, uint32_t _line, const Char * _function, const Char * _method )
         : m_file( _file )
         , m_line( _line )
+        , m_function( _function )
         , m_method( _method )
     {
     }
@@ -76,7 +77,7 @@ namespace Mengine
 
         const Char * message = Helper::getDX9ErrorMessage( _hr );
 
-        LOGGER_VERBOSE_LEVEL( "dx9", LM_ERROR, LFILTER_NONE, LCOLOR_RED, m_file, m_line, LFLAG_SHORT | LFLAG_FUNCTIONSTAMP )("call '%s' get error: %s (hr:%x)"
+        LOGGER_VERBOSE_LEVEL( "dx9", LM_ERROR, LFILTER_NONE, LCOLOR_RED, m_file, m_line, m_function, LFLAG_SHORT | LFLAG_FILESTAMP | LFLAG_FUNCTIONSTAMP )("call '%s' get error: %s (hr:%x)"
             , m_method
             , message
             , (uint32_t)_hr

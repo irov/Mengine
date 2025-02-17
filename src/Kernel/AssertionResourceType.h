@@ -13,7 +13,7 @@
     {\
         if( Mengine::Helper::dynamicResourceCast<ResourceType>(RESOURCE_SERVICE()->getResourceReference(Mengine::ConstString::none(), ResourceName)) == nullptr )\
         {\
-            Mengine::Helper::Assertion(MENGINE_CODE_LIBRARY, Mengine::ASSERTION_LEVEL_FATAL, #ResourceType, MENGINE_CODE_FILE, MENGINE_CODE_LINE, __VA_ARGS__);\
+            Mengine::Helper::Assertion(MENGINE_CODE_LIBRARY, Mengine::ASSERTION_LEVEL_FATAL, #ResourceType, MENGINE_CODE_FILE, MENGINE_CODE_LINE, MENGINE_CODE_FUNCTION, __VA_ARGS__);\
             return Ret;\
         }\
     }
@@ -22,7 +22,7 @@
     {\
         if( Mengine::Helper::dynamicResourceCast<ResourceType>(RESOURCE_SERVICE()->getResourceReference(Mengine::ConstString::none(), ResourceName)) == nullptr )\
         {\
-            Mengine::Helper::Assertion(MENGINE_CODE_LIBRARY, Mengine::ASSERTION_LEVEL_FATAL, #ResourceType, MENGINE_CODE_FILE, MENGINE_CODE_LINE, __VA_ARGS__);\
+            Mengine::Helper::Assertion(MENGINE_CODE_LIBRARY, Mengine::ASSERTION_LEVEL_FATAL, #ResourceType, MENGINE_CODE_FILE, MENGINE_CODE_LINE, MENGINE_CODE_FUNCTION, __VA_ARGS__);\
             return;\
         }\
     }

@@ -8,7 +8,7 @@ namespace Mengine
     class ExceptionHelper
     {
     public:
-        ExceptionHelper( const Char * _file, uint32_t _line ) noexcept;
+        ExceptionHelper( const Char * _file, uint32_t _line, const Char * _function ) noexcept;
         ~ExceptionHelper() noexcept;
 
     public:
@@ -17,10 +17,11 @@ namespace Mengine
     protected:
         const Char * m_file;
         uint32_t m_line;
+        const Char * m_function;
     };
 }
 //////////////////////////////////////////////////////////////////////////
-#define MENGINE_THROW_EXCEPTION Mengine::ExceptionHelper(MENGINE_CODE_FILE, MENGINE_CODE_LINE)
+#define MENGINE_THROW_EXCEPTION Mengine::ExceptionHelper(MENGINE_CODE_FILE, MENGINE_CODE_LINE, MENGINE_CODE_FUNCTION)
 #define MENGINE_THROW_EXCEPTION_FL Mengine::ExceptionHelper
 //////////////////////////////////////////////////////////////////////////
 

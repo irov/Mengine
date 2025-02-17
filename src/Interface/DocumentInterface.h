@@ -23,11 +23,11 @@ namespace Mengine
         virtual void setFile( const Char * _file ) = 0;
         virtual const Char * getFile() const = 0;
 
-        virtual void setFunction( const Char * _function ) = 0;
-        virtual const Char * getFunction() const = 0;
-
         virtual void setLine( uint32_t _line ) = 0;
         virtual uint32_t getLine() const = 0;
+
+        virtual void setFunction( const Char * _function ) = 0;
+        virtual const Char * getFunction() const = 0;
 
     public:
         virtual void setMessage( const Char * _message ) = 0;

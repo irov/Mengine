@@ -30,11 +30,11 @@ namespace Mengine
         void setFile( const Char * _file ) override;
         const Char * getFile() const override;
 
-        void setFunction( const Char * _function ) override;
-        const Char * getFunction() const override;
-
         void setLine( uint32_t _line ) override;
         uint32_t getLine() const override;
+
+        void setFunction( const Char * _function ) override;
+        const Char * getFunction() const override;
 
     public:
         void setMessage( const Char * _message ) override;

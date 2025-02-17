@@ -11,7 +11,7 @@ namespace Mengine
 {
     namespace Detail
     {        
-        void assertionValidateUtf8( const Char * _category, const Utf8 * _value, size_t _len, const Char * _file, uint32_t _line )
+        void assertionValidateUtf8( const Char * _category, const Utf8 * _value, size_t _len, const Char * _file, uint32_t _line, const Char * _function )
         {
             if( _len == MENGINE_UNKNOWN_SIZE )
             {
@@ -30,7 +30,7 @@ namespace Mengine
                     , replace_msg_end
                 );
 
-                Mengine::Helper::Assertion( _category, ASSERTION_LEVEL_ERROR, msg, _file, _line, "Assertion Validate UTF8" );
+                Mengine::Helper::Assertion( _category, ASSERTION_LEVEL_ERROR, msg, _file, _line, _function, "Assertion Validate UTF8" );
             }
         }
     }

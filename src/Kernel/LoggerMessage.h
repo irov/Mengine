@@ -26,8 +26,9 @@ namespace Mengine
         uint32_t flag;
         uint32_t filter;
         uint32_t color;
-        const Char * function;
+        const Char * file;
         int32_t line;
+        const Char * function;
         const Char * data;
         size_t size;
     };

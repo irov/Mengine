@@ -1459,7 +1459,7 @@ namespace Mengine
 
                         mt::vec2f value = _setting->getValueVec2f( _key, mt::vec2f::identity() );
 
-                        Char value_str[256] = {'\0'};
+                        Char value_str[256 + 1] = {'\0'};
                         Helper::stringalized( value, value_str, 256 );
 
                         xml_key.append_attribute( "value" ).set_value( value_str );
@@ -1470,7 +1470,7 @@ namespace Mengine
 
                         mt::vec3f value = _setting->getValueVec3f( _key, mt::vec3f::identity() );
 
-                        Char value_str[256] = {'\0'};
+                        Char value_str[256 + 1] = {'\0'};
                         Helper::stringalized( value, value_str, 256 );
 
                         xml_key.append_attribute( "value" ).set_value( value_str );
@@ -1481,7 +1481,7 @@ namespace Mengine
 
                         Color value = _setting->getValueColor( _key, Color::identity() );
 
-                        Char value_str[256] = {'\0'};
+                        Char value_str[256 + 1] = {'\0'};
                         Helper::stringalized( value, value_str, 256 );
 
                         xml_key.append_attribute( "value" ).set_value( value_str );

@@ -31,7 +31,7 @@ namespace Mengine
             return "GL_UNKNOWN";
         }
         //////////////////////////////////////////////////////////////////////////
-        bool OpenGLRenderErrorCheck( const Char * _file, uint32_t _line )
+        bool OpenGLRenderErrorCheck( const Char * _file, uint32_t _line, const Char * _function )
         {
             GLenum err = glGetError();  
 
@@ -42,7 +42,7 @@ namespace Mengine
 
             const Char * err_str = glGetErrorString( err );
 
-            LOGGER_VERBOSE_LEVEL( "opengl", LM_ERROR, LFILTER_NONE, LCOLOR_RED, _file, _line, LFLAG_SHORT | LFLAG_FUNCTIONSTAMP )("error %s:%d"
+            LOGGER_VERBOSE_LEVEL( "opengl", LM_ERROR, LFILTER_NONE, LCOLOR_RED, _file, _line, _function, LFLAG_SHORT | LFLAG_FILESTAMP | LFLAG_FUNCTIONSTAMP )("error %s:%d"
                 , err_str
                 , err
                 );

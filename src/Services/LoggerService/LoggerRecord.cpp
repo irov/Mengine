@@ -35,6 +35,15 @@ namespace Mengine
         m_filter = _message.filter;
         m_color = _message.color;
 
+        if( _message.file != nullptr )
+        {
+            StdString::strcpy_safe( m_file, _message.file, MENGINE_MAX_PATH );
+        }
+        else
+        {
+            m_file[0] = '\0';
+        }
+
         if( _message.function != nullptr )
         {
             StdString::strcpy_safe( m_function, _message.function, MENGINE_MAX_PATH );
@@ -60,6 +69,7 @@ namespace Mengine
         _message->flag = m_flag;
         _message->filter = m_filter;
         _message->color = m_color;
+        _message->file = m_file;
         _message->function = m_function;
         _message->line = m_line;
         _message->data = m_data;

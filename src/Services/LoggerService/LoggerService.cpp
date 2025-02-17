@@ -199,6 +199,7 @@ namespace Mengine
         msg.flag = LFLAG_SHORT;
         msg.filter = LFILTER_NONE;
         msg.color = LCOLOR_GREEN;
+        msg.file = "";
         msg.function = "";
         msg.line = 0;
         msg.data = loggerLevelMessage;

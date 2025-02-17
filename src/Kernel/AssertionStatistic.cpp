@@ -13,7 +13,7 @@ namespace Mengine
 {
     namespace Detail
     {
-        void assertionStatisticEmpty( const Char * _category, StatisticId _id, const Char * _file, uint32_t _line )
+        void assertionStatisticEmpty( const Char * _category, StatisticId _id, const Char * _file, uint32_t _line, const Char * _function )
         {
             int64_t value = STATISTIC_GET_INTEGER( _id );
 
@@ -28,7 +28,7 @@ namespace Mengine
                 , value
             );
 
-            Helper::Assertion( _category, ASSERTION_LEVEL_ERROR, msg, _file, _line, "Assertion Staticstic Empty" );
+            Helper::Assertion( _category, ASSERTION_LEVEL_ERROR, msg, _file, _line, _function, "Assertion Staticstic Empty" );
         }
     }
 }

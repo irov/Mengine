@@ -7,10 +7,24 @@ import org.json.JSONObject;
 public class MengineAdBasePoint {
     public static final String TAG = "MengineAdBasePoint";
 
-    public String m_name;
+    protected String m_name;
+
+    protected MengineAdAttempts m_attempts;
 
     MengineAdBasePoint(@NonNull String name) {
         m_name = name;
+    }
+
+    public String getName() {
+        return m_name;
+    }
+
+    public void setAttempts(MengineAdAttempts attempts) {
+        m_attempts = attempts;
+    }
+
+    public MengineAdAttempts getAttempts() {
+        return m_attempts;
     }
 
     protected boolean parseAdPointBoolean(@NonNull JSONObject values, @NonNull String key, boolean required, boolean defaultValue) {
@@ -76,7 +90,7 @@ public class MengineAdBasePoint {
         return (int)value;
     }
 
-    protected long parseAdPointLong(@NonNull JSONObject values, @NonNull String key, boolean required, long defaultValue) {
+    protected long parseAdPointTime(@NonNull JSONObject values, @NonNull String key, boolean required, long defaultValue) {
         if (values.has(key) == false) {
             if (required == true) {
                 MengineLog.logError(TAG, "%s attribute %s is required"
@@ -85,7 +99,7 @@ public class MengineAdBasePoint {
                 );
             }
 
-            return defaultValue;
+            return defaultValue * 1000;
         }
 
         Object value = values.opt(key);
@@ -99,10 +113,10 @@ public class MengineAdBasePoint {
                     , key
                 );
 
-                return defaultValue;
+                return defaultValue * 1000;
             }
 
-            return int_value;
+            return int_value * 1000;
         } else if (value instanceof Long == true) {
             long long_value = (long) value;
 
@@ -112,10 +126,10 @@ public class MengineAdBasePoint {
                     , key
                 );
 
-                return defaultValue;
+                return defaultValue * 1000;
             }
 
-            return long_value;
+            return long_value * 1000;
         }
 
         MengineLog.logError(TAG, "%s attribute %s must be an integer or a long, but not a %s"
@@ -124,7 +138,7 @@ public class MengineAdBasePoint {
             , value.getClass().getSimpleName()
         );
 
-        return defaultValue;
+        return defaultValue * 1000;
     }
 
     protected String parseAdPointString(@NonNull JSONObject values, @NonNull String key, boolean required, String defaultValue) {

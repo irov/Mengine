@@ -15,6 +15,7 @@ public class MengineAdCooldown {
 
     public void onLoad(@NonNull MengineApplication application, @NonNull Bundle bundle) {
         int version = bundle.getInt("version", 0);
+
         m_timestamp = bundle.getLong("timestamp", 0);
     }
 

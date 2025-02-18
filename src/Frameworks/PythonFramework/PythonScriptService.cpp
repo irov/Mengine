@@ -1067,7 +1067,9 @@ namespace Mengine
 
         try
         {
-            py_module = m_kernel->module_import( _name.c_str(), exist );
+            const Char * module_name = _name.c_str();
+
+            py_module = m_kernel->module_import( module_name, exist );
         }
         catch( const pybind::pybind_exception & _ex )
         {

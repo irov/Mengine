@@ -7,10 +7,8 @@ import org.json.JSONObject;
 public class MengineAdRewardedPoint extends MengineAdBasePoint {
     public static final String TAG = "MengineAdRewardedPoint";
 
-    public int m_id;
-    public boolean m_enabled;
-
-    public int m_actionAttempts = 0;
+    protected int m_id;
+    protected boolean m_enabled;
 
     MengineAdRewardedPoint(@NonNull String name, @NonNull JSONObject values) {
         super(name);
@@ -32,7 +30,7 @@ public class MengineAdRewardedPoint extends MengineAdBasePoint {
             return false;
         }
 
-        m_actionAttempts++;
+        m_attempts.attempt();
 
         return true;
     }

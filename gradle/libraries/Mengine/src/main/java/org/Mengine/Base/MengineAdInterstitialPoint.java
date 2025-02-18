@@ -17,7 +17,6 @@ public class MengineAdInterstitialPoint extends MengineAdBasePoint {
     protected String m_cooldownGroupName;
 
     protected MengineAdCooldown m_cooldown;
-    protected MengineAdAttempts m_attempts;
 
     MengineAdInterstitialPoint(@NonNull String name, @NonNull JSONObject values) {
         super(name);
@@ -26,9 +25,9 @@ public class MengineAdInterstitialPoint extends MengineAdBasePoint {
         m_enabled = this.parseAdPointBoolean(values, "enable", true, false);
         m_actionOffset = this.parseAdPointInteger(values, "trigger_action_offset", false, -1);
         m_actionCooldown = this.parseAdPointInteger(values, "trigger_action_cooldown", false, -1);
-        m_timeOffset = this.parseAdPointLong(values, "trigger_time_offset", false, -1);
-        m_timeCooldown = this.parseAdPointLong(values, "trigger_time_cooldown", false, -1);
-        m_installTimeOffset = this.parseAdPointLong(values, "trigger_install_time_offset", false, 600);
+        m_timeOffset = this.parseAdPointTime(values, "trigger_time_offset", false, -1);
+        m_timeCooldown = this.parseAdPointTime(values, "trigger_time_cooldown", false, -1);
+        m_installTimeOffset = this.parseAdPointTime(values, "trigger_install_time_offset", false, 600);
         m_cooldownGroupName = this.parseAdPointString(values, "trigger_cooldown_group", false, null);
     }
 
@@ -38,10 +37,6 @@ public class MengineAdInterstitialPoint extends MengineAdBasePoint {
 
     public void setCooldown(MengineAdCooldown cooldown) {
         m_cooldown = cooldown;
-    }
-
-    public void setAttempts(MengineAdAttempts attempts) {
-        m_attempts = attempts;
     }
 
     public MengineAdCooldown getCooldown() {
@@ -61,12 +56,12 @@ public class MengineAdInterstitialPoint extends MengineAdBasePoint {
 
         int attempt = m_attempts.attempt();
 
-        if (m_actionOffset != -1 && attempt < m_actionOffset) {
+        if (m_actionOffset >= 0 && attempt < m_actionOffset) {
             return false;
         }
 
-        if (m_actionCooldown != -1 && m_actionCooldown != 0) {
-            if (m_actionOffset != -1) {
+        if (m_actionCooldown > 0) {
+            if (m_actionOffset >= 0) {
                 if ((attempt - m_actionOffset) % m_actionCooldown != 0) {
                     return false;
                 }
@@ -79,7 +74,7 @@ public class MengineAdInterstitialPoint extends MengineAdBasePoint {
 
         long currentTimestamp = MengineUtils.getTimestamp();
 
-        if (m_installTimeOffset != -1) {
+        if (m_installTimeOffset > 0) {
             long installTimestamp = application.getInstallTimestamp();
 
             if (currentTimestamp - installTimestamp < m_installTimeOffset) {
@@ -87,9 +82,9 @@ public class MengineAdInterstitialPoint extends MengineAdBasePoint {
             }
         }
 
-        long sessionTimestamp = application.getSessionTimestamp();
+        if (m_timeOffset > 0) {
+            long sessionTimestamp = application.getSessionTimestamp();
 
-        if (m_timeOffset != -1) {
             if (currentTimestamp - sessionTimestamp < m_timeOffset) {
                 return false;
             }
@@ -97,7 +92,7 @@ public class MengineAdInterstitialPoint extends MengineAdBasePoint {
 
         long cooldownTimestamp = m_cooldown.getLastShownTimestamp();
 
-        if (m_timeCooldown != -1) {
+        if (m_timeCooldown > 0) {
             if (currentTimestamp - cooldownTimestamp < m_timeCooldown) {
                 return false;
             }

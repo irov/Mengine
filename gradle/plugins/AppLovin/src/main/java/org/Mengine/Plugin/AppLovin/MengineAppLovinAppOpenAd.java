@@ -2,10 +2,6 @@ package org.Mengine.Plugin.AppLovin;
 
 import androidx.annotation.NonNull;
 
-import androidx.lifecycle.DefaultLifecycleObserver;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.ProcessLifecycleOwner;
-
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdExpirationListener;
 import com.applovin.mediation.MaxAdFormat;
@@ -17,11 +13,12 @@ import com.applovin.mediation.MaxError;
 import com.applovin.mediation.ads.MaxAppOpenAd;
 
 import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineNetwork;
 import org.Mengine.Base.MengineUtils;
 
 import java.util.Map;
 
-public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements DefaultLifecycleObserver, MaxAdListener, MaxAdRequestListener, MaxAdExpirationListener, MaxAdRevenueListener, MaxAdReviewListener {
+public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements MaxAdListener, MaxAdRequestListener, MaxAdExpirationListener, MaxAdRevenueListener, MaxAdReviewListener {
     protected final String m_placement;
 
     protected MaxAppOpenAd m_appOpenAd;
@@ -44,27 +41,56 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Def
 
         m_appOpenAd = appOpenAd;
 
-        ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
-
         this.loadAd();
     }
 
     @Override
     public void finalize(@NonNull MengineApplication application) {
-        ProcessLifecycleOwner.get().getLifecycle().removeObserver( this);
-
         m_appOpenAd.destroy();
         m_appOpenAd = null;
     }
 
-    private boolean showAdIfReady(String placement) {
+    public boolean canYouShowAppOpen(String placement) {
+        if (m_appOpenAd == null) {
+            return false;
+        }
+
+        if (MengineNetwork.isNetworkAvailable() == false) {
+            return false;
+        }
+
         boolean ready = m_appOpenAd.isReady();
 
-        this.log("showAdIfReady", Map.of("placement", placement, "ready", ready));
+        this.log("canYouShowAppOpen", Map.of("placement", placement, "ready", ready));
+
+        if (ready == false) {
+            this.buildAdEvent("mng_ad_appopen_show")
+                .addParameterString("placement", placement)
+                .addParameterBoolean("ready", false)
+                .log();
+
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean showAppOpen(String placement) {
+        if (m_appOpenAd == null) {
+            return false;
+        }
+
+        if (MengineNetwork.isNetworkAvailable() == false) {
+            return false;
+        }
+
+        boolean ready = m_appOpenAd.isReady();
+
+        this.log("showAppOpen", Map.of("placement", placement, "ready", ready));
 
         this.buildAdEvent("mng_ad_appopen_show")
             .addParameterString("placement", placement)
-            .addParameterBoolean("ready", false)
+            .addParameterBoolean("ready", ready)
             .log();
 
         if (ready == false) {
@@ -108,11 +134,6 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Def
 
             this.retryLoadAd();
         }
-    }
-
-    @Override
-    public void onStart(@NonNull LifecycleOwner owner) {
-        this.showAdIfReady(m_placement);
     }
 
     @Override

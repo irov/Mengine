@@ -1,6 +1,5 @@
 package org.Mengine.Plugin.AppLovin;
 
-import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -22,7 +21,6 @@ import com.applovin.sdk.AppLovinSdkUtils;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineAnalyticsEventBuilder;
 import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MengineNetwork;
 import org.Mengine.Base.MengineUtils;
 
 import java.util.Map;

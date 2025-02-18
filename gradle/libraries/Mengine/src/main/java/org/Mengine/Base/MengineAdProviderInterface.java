@@ -19,4 +19,9 @@ public interface MengineAdProviderInterface {
     boolean canYouShowRewarded(String placement);
 
     boolean showRewarded(String placement);
+
+    boolean hasAppOpen();
+
+    boolean canYouShowAppOpen(String placement, long timeStop);
+    boolean showAppOpen(String placement);
 }

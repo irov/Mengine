@@ -15,7 +15,6 @@ import com.applovin.mediation.ads.MaxRewardedAd;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MengineCallback;
 import org.Mengine.Base.MengineNetwork;
 import org.Mengine.Base.MengineUtils;
 
@@ -162,16 +161,12 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Ma
         return true;
     }
 
-    public boolean showRewarded(MengineActivity activity, String placement) {
+    public boolean showRewarded(@NonNull MengineActivity activity, String placement) {
         if (m_rewardedAd == null) {
-            m_plugin.logInfo("rewarded ad is null");
-
             return false;
         }
 
         if (MengineNetwork.isNetworkAvailable() == false) {
-            m_plugin.logInfo("network is not available");
-
             return false;
         }
 
@@ -185,8 +180,6 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Ma
             .log();
 
         if (ready == false) {
-            m_plugin.logInfo("rewarded ad is not ready");
-
             return false;
         }
 

@@ -14,7 +14,6 @@ import com.applovin.mediation.ads.MaxInterstitialAd;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MengineCallback;
 import org.Mengine.Base.MengineNetwork;
 import org.Mengine.Base.MengineUtils;
 
@@ -133,16 +132,12 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
         return true;
     }
 
-    public boolean showInterstitial(MengineActivity activity, String placement) {
+    public boolean showInterstitial(@NonNull MengineActivity activity, String placement) {
         if (m_interstitialAd == null) {
-            m_plugin.logInfo("interstitial ad is null");
-
             return false;
         }
 
         if (MengineNetwork.isNetworkAvailable() == false) {
-            m_plugin.logInfo("network is not available");
-
             return false;
         }
 
@@ -156,8 +151,6 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
             .log();
 
         if (ready == false) {
-            m_plugin.logInfo("interstitial ad is not ready");
-
             return false;
         }
 

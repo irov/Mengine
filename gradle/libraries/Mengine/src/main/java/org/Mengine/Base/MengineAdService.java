@@ -3,23 +3,29 @@ package org.Mengine.Base;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.DefaultLifecycleObserver;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.ProcessLifecycleOwner;
 
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class MengineAdService extends MengineService implements MengineAdProviderInterface, MengineListenerRemoteConfig {
+public class MengineAdService extends MengineService implements DefaultLifecycleObserver, MengineAdProviderInterface, MengineListenerActivity, MengineListenerRemoteConfig {
     public static final String SERVICE_NAME = "AdService";
     public static final boolean SERVICE_EMBEDDING = true;
     public static final int SAVE_VERSION = 1;
 
     private final Map<String, MengineAdInterstitialPoint> m_adInterstitialPoints = new HashMap<>();
     private final Map<String, MengineAdRewardedPoint> m_adRewardedPoints = new HashMap<>();
+    private final Map<String, MengineAdAppOpenPoint> m_adAppOpenPoints = new HashMap<>();
     private final Map<String, MengineAdCooldown> m_adCooldowns = new HashMap<>();
     private final Map<String, MengineAdAttempts> m_adAttempts = new HashMap<>();
 
     private MengineAdProviderInterface m_adProvider;
+
+    protected long m_timestampStop = -1;
 
     public void setAdProvider(MengineAdProviderInterface adProvider) {
         m_adProvider = adProvider;
@@ -29,8 +35,36 @@ public class MengineAdService extends MengineService implements MengineAdProvide
         return m_adProvider;
     }
 
+    @Override
+    public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
+        if (this.hasAppOpen() == true) {
+            ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
+        }
+    }
+
+    @Override
+    public void onDestroy(@NonNull MengineActivity activity) {
+        if (this.hasAppOpen() == true) {
+            ProcessLifecycleOwner.get().getLifecycle().removeObserver(this);
+        }
+    }
+
     public void readyAdProvider() {
         this.activateSemaphore("AdServiceReady");
+    }
+
+    private void setupAdBasePointAttemts(MengineAdBasePoint adPoint) {
+        String adPointName = adPoint.getName();
+
+        if (m_adAttempts.containsKey(adPointName) == false) {
+            MengineAdAttempts newAttempts = new MengineAdAttempts();
+
+            m_adAttempts.put(adPointName, newAttempts);
+        }
+
+        MengineAdAttempts attempts = m_adAttempts.get(adPointName);
+
+        adPoint.setAttempts(attempts);
     }
 
     private void parseInterstitialPoint(String adPointName, JSONObject adPointConfig) {
@@ -60,15 +94,7 @@ public class MengineAdService extends MengineService implements MengineAdProvide
             adPoint.setCooldown(cooldown);
         }
 
-        if (m_adAttempts.containsKey(adPointName) == false) {
-            MengineAdAttempts newAttempts = new MengineAdAttempts();
-
-            m_adAttempts.put(adPointName, newAttempts);
-        }
-
-        MengineAdAttempts attempts = m_adAttempts.get(adPointName);
-
-        adPoint.setAttempts(attempts);
+        this.setupAdBasePointAttemts(adPoint);
 
         m_adInterstitialPoints.put(adPointName, adPoint);
     }
@@ -82,7 +108,23 @@ public class MengineAdService extends MengineService implements MengineAdProvide
 
         MengineAdRewardedPoint adPoint = new MengineAdRewardedPoint(adPointName, adPointConfig);
 
+        this.setupAdBasePointAttemts(adPoint);
+
         m_adRewardedPoints.put(adPointName, adPoint);
+    }
+
+    private void parseAppOpenPoint(String adPointName, JSONObject adPointConfig) {
+        if (m_adAppOpenPoints.containsKey(adPointName) == true) {
+            this.logError("ad appopen point '%s' already exists", adPointName);
+
+            return;
+        }
+
+        MengineAdAppOpenPoint adPoint = new MengineAdAppOpenPoint(adPointName, adPointConfig);
+
+        this.setupAdBasePointAttemts(adPoint);
+
+        m_adAppOpenPoints.put(adPointName, adPoint);
     }
 
     @Override
@@ -94,6 +136,7 @@ public class MengineAdService extends MengineService implements MengineAdProvide
 
             String ad_interstitial_prefix = "ad_interstitial_";
             String ad_rewarded_prefix = "ad_rewarded_";
+            String ad_appopen_prefix = "ad_appopen_";
 
             for (Map.Entry<String, JSONObject> entry : remoteConfig.entrySet()) {
                 String key = entry.getKey();
@@ -107,6 +150,10 @@ public class MengineAdService extends MengineService implements MengineAdProvide
                     String adPointName = key.substring(ad_rewarded_prefix.length());
 
                     this.parseRewardedPoint(adPointName, adPointConfig);
+                } else if (key.startsWith(ad_appopen_prefix) == true) {
+                    String adPointName = key.substring(ad_appopen_prefix.length());
+
+                    this.parseAppOpenPoint(adPointName, adPointConfig);
                 }
             }
         }
@@ -178,6 +225,30 @@ public class MengineAdService extends MengineService implements MengineAdProvide
         bundle.putBundle("cooldowns", cooldownsBundle);
 
         return bundle;
+    }
+
+    @Override
+    public void onStart(@NonNull LifecycleOwner owner) {
+        if (m_timestampStop == -1) {
+            return;
+        }
+
+        String placement = "start";
+
+        long timeStop = MengineUtils.getTimestamp() - m_timestampStop;
+
+        if (this.canYouShowAppOpen(placement, timeStop) == false) {
+            return;
+        }
+
+        if (this.showAppOpen(placement) == false) {
+            return;
+        }
+    }
+
+    @Override
+    public void onStop(@NonNull LifecycleOwner owner) {
+        m_timestampStop = MengineUtils.getTimestamp();
     }
 
     @Override
@@ -328,11 +399,64 @@ public class MengineAdService extends MengineService implements MengineAdProvide
             return false;
         }
 
-        MengineAdRewardedPoint adPoint = m_adRewardedPoints.get(placement);
-
         if (m_adProvider.showRewarded(placement) == false) {
             return false;
         }
+
+        MengineAdRewardedPoint adPoint = m_adRewardedPoints.get(placement);
+
+        adPoint.showAd();
+
+        return true;
+    }
+
+    @Override
+    public boolean hasAppOpen() {
+        return m_adProvider.hasAppOpen();
+    }
+
+    @Override
+    public boolean canYouShowAppOpen(String placement, long timeStop) {
+        if (m_adAppOpenPoints.containsKey(placement) == false) {
+            this.logError("ad appopen point '%s' not found", placement);
+
+            return false;
+        }
+
+        if (m_adProvider.canYouShowAppOpen(placement, timeStop) == false) {
+            return false;
+        }
+
+        MengineApplication application = this.getMengineApplication();
+
+        if (BuildConfig.DEBUG == true) {
+            if (application.hasOption("adservice.always_appopen_point." + placement) == true) {
+                return true;
+            }
+        }
+
+        MengineAdAppOpenPoint adPoint = m_adAppOpenPoints.get(placement);
+
+        if (adPoint.canYouShowAd(application, timeStop) == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean showAppOpen(String placement) {
+        if (m_adAppOpenPoints.containsKey(placement) == false) {
+            this.logError("ad appopen point '%s' not found", placement);
+
+            return false;
+        }
+
+        if (m_adProvider.showAppOpen(placement) == false) {
+            return false;
+        }
+
+        MengineAdAppOpenPoint adPoint = m_adAppOpenPoints.get(placement);
 
         adPoint.showAd();
 

@@ -124,11 +124,13 @@ namespace Mengine
     }(MENGINE_CODE_FILE, MENGINE_CODE_LINE, MENGINE_CODE_FUNCTION)
     //////////////////////////////////////////////////////////////////////////
 #else
-#   define MENGINE_DOCUMENT_FORWARD nullptr
-#   define MENGINE_DOCUMENT_FORWARD_PTR(Ptr) nullptr
-#   define MENGINE_DOCUMENT_FUNCTION nullptr
-#   define MENGINE_DOCUMENT_MESSAGE(Format, ...) nullptr
-#   define MENGINE_DOCUMENT_FACTORABLE nullptr
-#   define MENGINE_DOCUMENT_FACTORABLE_PTR(Ptr) nullptr
-#   define MENGINE_DOCUMENT_FACTORABLE_MEMBER(Ptr) nullptr
+#   include "Interface/DocumentInterface.h"
+
+#   define MENGINE_DOCUMENT_FORWARD (Mengine::DocumentInterfacePtr::none())
+#   define MENGINE_DOCUMENT_FORWARD_PTR(Ptr) (Mengine::DocumentInterfacePtr::none())
+#   define MENGINE_DOCUMENT_FUNCTION (Mengine::DocumentInterfacePtr::none())
+#   define MENGINE_DOCUMENT_MESSAGE(Format, ...) (Mengine::DocumentInterfacePtr::none())
+#   define MENGINE_DOCUMENT_FACTORABLE (Mengine::DocumentInterfacePtr::none())
+#   define MENGINE_DOCUMENT_FACTORABLE_PTR(Ptr) (Mengine::DocumentInterfacePtr::none())
+#   define MENGINE_DOCUMENT_FACTORABLE_MEMBER(Ptr) (Mengine::DocumentInterfacePtr::none())
 #endif

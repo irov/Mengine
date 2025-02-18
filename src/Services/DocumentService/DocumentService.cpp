@@ -9,13 +9,10 @@
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ThreadMutexHelper.h"
+#include "Kernel/LoggerMessage.h"
 
 #include "Config/StdIO.h"
 #include "Config/StdArg.h"
-
-#ifndef MENGINE_DOCUMENT_MAX_MESSAGE
-#define MENGINE_DOCUMENT_MAX_MESSAGE 8192
-#endif
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( DocumentService, Mengine::DocumentService );
@@ -68,12 +65,12 @@ namespace Mengine
         document->setLine( _line );
         document->setFunction( _function );        
 
-        Char message[MENGINE_DOCUMENT_MAX_MESSAGE + 1] = {'\0'};
+        Char message[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
 
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _format );
 
-        int32_t size_vsnprintf = MENGINE_VSNPRINTF( message, MENGINE_DOCUMENT_MAX_MESSAGE, _format, args );
+        int32_t size_vsnprintf = MENGINE_VSNPRINTF( message, MENGINE_LOGGER_MAX_MESSAGE, _format, args );
 
         MENGINE_VA_LIST_END( args );
 

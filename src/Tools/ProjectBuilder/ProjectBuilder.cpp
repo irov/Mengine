@@ -50,6 +50,7 @@
 #include "Kernel/ThreadHelper.h"
 #include "Kernel/TextureHelper.h"
 #include "Kernel/PluginHelper.h"
+#include "Kernel/DocumentHelper.h"
 
 #include "ToolUtils/ToolLogger.h"
 

@@ -7,40 +7,22 @@ import org.json.JSONObject;
 public class MengineAdInterstitialPoint extends MengineAdBasePoint {
     public static final String TAG = "MengineAdInterstitialPoint";
 
-    protected int m_id;
-    protected boolean m_enabled;
     protected int m_actionOffset;
     protected int m_actionCooldown;
     protected long m_timeOffset;
     protected long m_timeCooldown;
     protected long m_installTimeOffset;
-    protected String m_cooldownGroupName;
-
-    protected MengineAdCooldown m_cooldown;
+    protected long m_sessionOffset;
 
     MengineAdInterstitialPoint(@NonNull String name, @NonNull JSONObject values) {
-        super(name);
+        super(name, values);
 
-        m_id = this.parseAdPointInteger(values, "id", false, 1);
-        m_enabled = this.parseAdPointBoolean(values, "enable", true, false);
         m_actionOffset = this.parseAdPointInteger(values, "trigger_action_offset", false, -1);
         m_actionCooldown = this.parseAdPointInteger(values, "trigger_action_cooldown", false, -1);
         m_timeOffset = this.parseAdPointTime(values, "trigger_time_offset", false, -1);
         m_timeCooldown = this.parseAdPointTime(values, "trigger_time_cooldown", false, -1);
         m_installTimeOffset = this.parseAdPointTime(values, "trigger_install_time_offset", false, 600);
-        m_cooldownGroupName = this.parseAdPointString(values, "trigger_cooldown_group", false, null);
-    }
-
-    public String getCooldownGroupName() {
-        return m_cooldownGroupName;
-    }
-
-    public void setCooldown(MengineAdCooldown cooldown) {
-        m_cooldown = cooldown;
-    }
-
-    public MengineAdCooldown getCooldown() {
-        return m_cooldown;
+        m_sessionOffset = this.parseAdPointLong(values, "trigger_session_offset", false, -1);
     }
 
     public boolean canYouShowAd(@NonNull MengineApplication application) {
@@ -52,6 +34,14 @@ public class MengineAdInterstitialPoint extends MengineAdBasePoint {
 
         if (m_enabled == false) {
             return false;
+        }
+
+        if (m_sessionOffset > 0) {
+            long sessionIndex = application.getSessionIndex();
+
+            if (sessionIndex < m_sessionOffset) {
+                return false;
+            }
         }
 
         int attempt = m_attempts.attempt();
@@ -99,9 +89,5 @@ public class MengineAdInterstitialPoint extends MengineAdBasePoint {
         }
 
         return true;
-    }
-
-    public void showAd() {
-        m_cooldown.resetShownTimestamp();
     }
 }

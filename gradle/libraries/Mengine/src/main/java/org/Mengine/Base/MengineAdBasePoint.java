@@ -9,10 +9,23 @@ public class MengineAdBasePoint {
 
     protected String m_name;
 
-    protected MengineAdAttempts m_attempts;
+    protected int m_id;
+    protected boolean m_enabled;
 
-    MengineAdBasePoint(@NonNull String name) {
+    protected String m_cooldownGroupName;
+
+    protected MengineAdAttempts m_attempts;
+    protected MengineAdCooldown m_cooldown;
+
+    protected long m_lastShowTime;
+
+    MengineAdBasePoint(@NonNull String name, @NonNull JSONObject values) {
         m_name = name;
+
+        m_id = this.parseAdPointInteger(values, "id", false, 1);
+        m_enabled = this.parseAdPointBoolean(values, "enable", true, false);
+
+        m_cooldownGroupName = this.parseAdPointString(values, "trigger_cooldown_group", false, null);
     }
 
     public String getName() {
@@ -25,6 +38,18 @@ public class MengineAdBasePoint {
 
     public MengineAdAttempts getAttempts() {
         return m_attempts;
+    }
+
+    public String getCooldownGroupName() {
+        return m_cooldownGroupName;
+    }
+
+    public void setCooldown(MengineAdCooldown cooldown) {
+        m_cooldown = cooldown;
+    }
+
+    public MengineAdCooldown getCooldown() {
+        return m_cooldown;
     }
 
     protected boolean parseAdPointBoolean(@NonNull JSONObject values, @NonNull String key, boolean required, boolean defaultValue) {
@@ -90,7 +115,7 @@ public class MengineAdBasePoint {
         return (int)value;
     }
 
-    protected long parseAdPointTime(@NonNull JSONObject values, @NonNull String key, boolean required, long defaultValue) {
+    protected long parseAdPointLong(@NonNull JSONObject values, @NonNull String key, boolean required, long defaultValue) {
         if (values.has(key) == false) {
             if (required == true) {
                 MengineLog.logError(TAG, "%s attribute %s is required"
@@ -99,7 +124,7 @@ public class MengineAdBasePoint {
                 );
             }
 
-            return defaultValue * 1000;
+            return defaultValue;
         }
 
         Object value = values.opt(key);
@@ -113,10 +138,10 @@ public class MengineAdBasePoint {
                     , key
                 );
 
-                return defaultValue * 1000;
+                return defaultValue;
             }
 
-            return int_value * 1000;
+            return int_value;
         } else if (value instanceof Long == true) {
             long long_value = (long) value;
 
@@ -126,10 +151,10 @@ public class MengineAdBasePoint {
                     , key
                 );
 
-                return defaultValue * 1000;
+                return defaultValue;
             }
 
-            return long_value * 1000;
+            return long_value;
         }
 
         MengineLog.logError(TAG, "%s attribute %s must be an integer or a long, but not a %s"
@@ -138,7 +163,15 @@ public class MengineAdBasePoint {
             , value.getClass().getSimpleName()
         );
 
-        return defaultValue * 1000;
+        return defaultValue;
+    }
+
+    protected long parseAdPointTime(@NonNull JSONObject values, @NonNull String key, boolean required, long defaultValue) {
+        long value = this.parseAdPointLong(values, key, required, defaultValue);
+
+        long time = value * 1000;
+
+        return time;
     }
 
     protected String parseAdPointString(@NonNull JSONObject values, @NonNull String key, boolean required, String defaultValue) {
@@ -166,5 +199,11 @@ public class MengineAdBasePoint {
         }
 
         return (String)value;
+    }
+
+    public void showAd() {
+        m_lastShowTime = MengineUtils.getTimestamp();
+
+        m_cooldown.resetShownTimestamp();
     }
 }

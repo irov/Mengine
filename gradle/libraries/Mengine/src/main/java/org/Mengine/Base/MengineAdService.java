@@ -27,6 +27,14 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
 
     protected long m_timestampStop = -1;
 
+    protected long m_lastShowInterstitial = -1;
+    protected long m_lastShowRewarded = -1;
+    protected long m_lastShowAppOpen = -1;
+
+    protected long m_countShowInterstitial = 0;
+    protected long m_countShowRewarded = 0;
+    protected long m_countShowAppOpen = 0;
+
     public void setAdProvider(MengineAdProviderInterface adProvider) {
         m_adProvider = adProvider;
     }
@@ -67,15 +75,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         adPoint.setAttempts(attempts);
     }
 
-    private void parseInterstitialPoint(String adPointName, JSONObject adPointConfig) {
-        if (m_adInterstitialPoints.containsKey(adPointName) == true) {
-            this.logError("ad interstitial point '%s' already exists", adPointName);
-
-            return;
-        }
-
-        MengineAdInterstitialPoint adPoint = new MengineAdInterstitialPoint(adPointName, adPointConfig);
-
+    private void setupAdBasePointCooldown(MengineAdBasePoint adPoint) {
         String cooldownGroupName = adPoint.getCooldownGroupName();
 
         if (cooldownGroupName == null) {
@@ -93,7 +93,18 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
 
             adPoint.setCooldown(cooldown);
         }
+    }
 
+    private void parseInterstitialPoint(String adPointName, JSONObject adPointConfig) {
+        if (m_adInterstitialPoints.containsKey(adPointName) == true) {
+            this.logError("ad interstitial point '%s' already exists", adPointName);
+
+            return;
+        }
+
+        MengineAdInterstitialPoint adPoint = new MengineAdInterstitialPoint(adPointName, adPointConfig);
+
+        this.setupAdBasePointCooldown(adPoint);
         this.setupAdBasePointAttemts(adPoint);
 
         m_adInterstitialPoints.put(adPointName, adPoint);
@@ -108,6 +119,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
 
         MengineAdRewardedPoint adPoint = new MengineAdRewardedPoint(adPointName, adPointConfig);
 
+        this.setupAdBasePointCooldown(adPoint);
         this.setupAdBasePointAttemts(adPoint);
 
         m_adRewardedPoints.put(adPointName, adPoint);
@@ -122,6 +134,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
 
         MengineAdAppOpenPoint adPoint = new MengineAdAppOpenPoint(adPointName, adPointConfig);
 
+        this.setupAdBasePointCooldown(adPoint);
         this.setupAdBasePointAttemts(adPoint);
 
         m_adAppOpenPoints.put(adPointName, adPoint);
@@ -313,11 +326,14 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
             return false;
         }
 
-        MengineAdInterstitialPoint adPoint = m_adInterstitialPoints.get(placement);
-
         if (m_adProvider.showInterstitial(placement) == false) {
             return false;
         }
+
+        MengineAdInterstitialPoint adPoint = m_adInterstitialPoints.get(placement);
+
+        m_lastShowInterstitial = MengineUtils.getTimestamp();
+        m_countShowInterstitial += 1;
 
         adPoint.showAd();
 
@@ -403,6 +419,9 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
             return false;
         }
 
+        m_lastShowRewarded = MengineUtils.getTimestamp();
+        m_countShowRewarded += 1;
+
         MengineAdRewardedPoint adPoint = m_adRewardedPoints.get(placement);
 
         adPoint.showAd();
@@ -455,6 +474,9 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         if (m_adProvider.showAppOpen(placement) == false) {
             return false;
         }
+
+        m_lastShowAppOpen = MengineUtils.getTimestamp();
+        m_countShowAppOpen += 1;
 
         MengineAdAppOpenPoint adPoint = m_adAppOpenPoints.get(placement);
 

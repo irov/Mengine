@@ -53,11 +53,11 @@ namespace Mengine
         bool getImmortal() const;
 
     protected:
-        uint32_t incref() override;
-        void decref() override;
+        uint32_t incref() noexcept override;
+        void decref() noexcept override;
 
     public:
-        uint32_t getrefcount() const override;
+        uint32_t getrefcount() const noexcept override;
 
     private:
         virtual void destroy();

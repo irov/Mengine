@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Config/Typedef.h"
-#include "Config/Char.h"
-
 #include "Kernel/HashType.h"
 #include "Kernel/IntrusiveLinked.h"
+
+#include "Config/Typedef.h"
+#include "Config/Char.h"
 
 namespace Mengine
 {
@@ -12,7 +12,7 @@ namespace Mengine
         : public IntrusiveLinked<ConstStringHolder>
     {
     protected:
-        ConstStringHolder();
+        ConstStringHolder() noexcept;
         virtual ~ConstStringHolder();
 
     public:
@@ -27,29 +27,29 @@ namespace Mengine
         typedef Char value_type;
 
     public:
-        MENGINE_INLINE const value_type * c_str() const noexcept
+        MENGINE_CONSTEXPR const value_type * c_str() const noexcept
         {
             return m_data;
         }
 
-        MENGINE_INLINE size_type size() const noexcept
+        MENGINE_CONSTEXPR size_type size() const noexcept
         {
             return m_size;
         }
 
-        MENGINE_INLINE bool empty() const noexcept
+        MENGINE_CONSTEXPR bool empty() const noexcept
         {
             return m_size == 0;
         }
 
     public:
-        MENGINE_INLINE hash_type hash() const noexcept
+        MENGINE_CONSTEXPR hash_type hash() const noexcept
         {
             return m_hash;
         }
 
     protected:
-        MENGINE_INLINE const value_type * data() const noexcept
+        MENGINE_CONSTEXPR const value_type * data() const noexcept
         {
             return m_data;
         }

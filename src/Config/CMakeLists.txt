@@ -142,6 +142,7 @@ src
     StdIntTypes.h
     StdArg.h
     StdIO.h
+    StdLimits.h
     StdLib.h
     StdString.h
     StdLocale.h

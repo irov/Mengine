@@ -3,7 +3,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    ConstStringHolder::ConstStringHolder()
+    ConstStringHolder::ConstStringHolder() noexcept
         : m_data( nullptr )
         , m_size( 0 )
         , m_hash( 0 )

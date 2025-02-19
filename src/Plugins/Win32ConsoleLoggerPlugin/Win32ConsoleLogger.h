@@ -2,7 +2,7 @@
 
 #include "Kernel/LoggerBase.h"
 
-#include "Config/Char.h"
+#include "Config/StdIO.h"
 
 namespace Mengine
 {

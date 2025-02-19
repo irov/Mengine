@@ -22,7 +22,7 @@ namespace Mengine
         if( m_destroy == false && m_factory != nullptr )
         {
             MENGINE_THROW_EXCEPTION( "Factorable deleter but not destroy!!" );
-            
+
             return;
         }
 #endif
@@ -63,7 +63,7 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t Factorable::incref()
+    uint32_t Factorable::incref() noexcept
     {
         m_reference.incref();
 
@@ -72,7 +72,7 @@ namespace Mengine
         return count;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Factorable::decref()
+    void Factorable::decref() noexcept
     {
         if( m_reference.decref() != 0 )
         {
@@ -82,7 +82,7 @@ namespace Mengine
         this->destroy();
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t Factorable::getrefcount() const
+    uint32_t Factorable::getrefcount() const noexcept
     {
         uint32_t count = m_reference.getReferenceCount();
 
@@ -95,7 +95,7 @@ namespace Mengine
         if( m_immortal == true )
         {
             MENGINE_THROW_EXCEPTION( "m_immortal == true" );
-            
+
             return;
         }
 #endif
@@ -104,7 +104,7 @@ namespace Mengine
         if( m_destroy == true )
         {
             MENGINE_THROW_EXCEPTION( "m_destroy == true" );
-            
+
             return;
         }
 
@@ -117,7 +117,7 @@ namespace Mengine
         if( m_factory == nullptr )
         {
             MENGINE_THROW_EXCEPTION( "m_factory == nullptr" );
-            
+
             return;
         }
 #endif

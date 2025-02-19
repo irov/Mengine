@@ -9,7 +9,7 @@ namespace Mengine
         : public ConstString
     {
     public:
-        FilePath() noexcept
+        MENGINE_CONSTEXPR FilePath() noexcept
         {
         }
 
@@ -19,13 +19,26 @@ namespace Mengine
         }
 
     public:
-        static const FilePath & none();
+        static MENGINE_INLINE const FilePath & none() noexcept
+        {
+            static const FilePath s_none;
+
+            return s_none;
+        }
     };
+    //////////////////////////////////////////////////////////////////////////
+    bool operator == ( const FilePath & _left, const FilePath::value_type * _right );
+    //////////////////////////////////////////////////////////////////////////
+    bool operator == ( const FilePath::value_type * _left, const FilePath & _right );
+    //////////////////////////////////////////////////////////////////////////
+    bool operator != ( const FilePath & _left, const FilePath::value_type * _right );
+    //////////////////////////////////////////////////////////////////////////
+    bool operator != ( const FilePath::value_type * _left, const FilePath & _right );
     //////////////////////////////////////////////////////////////////////////
     template<>
     struct Hashgen<FilePath>
     {
-        HashType operator()( const FilePath & _value ) const
+        MENGINE_CONSTEXPR HashType operator()( const FilePath & _value ) const
         {
             return _value.hash();
         }

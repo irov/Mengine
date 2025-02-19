@@ -1,9 +1,11 @@
 #include "Kernel/BoundingBox.h"
 
+#include "Config/StdLimits.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    constexpr float bounding_max = (std::numeric_limits<float>::max)();
+    constexpr float bounding_max = (StdLimits::numeric_limits<float>::max)();
     //////////////////////////////////////////////////////////////////////////
     BoundingBox::BoundingBox()
         : m_boundingBox( -bounding_max, -bounding_max, bounding_max, bounding_max )

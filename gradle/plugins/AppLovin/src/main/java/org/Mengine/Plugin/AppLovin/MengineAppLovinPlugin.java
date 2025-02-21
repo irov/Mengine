@@ -53,6 +53,8 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
 
     private AppLovinSdk m_appLovinSdk;
 
+    private String m_countryCode;
+
     private MengineAppLovinBannerAd m_bannerAd;
     private MengineAppLovinInterstitialAd m_interstitialAd;
     private MengineAppLovinRewardedAd m_rewardedAd;
@@ -224,6 +226,8 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
                 , enabledAmazonAdUnitIds
                 , consentFlowUserGeography.toString()
             );
+
+            m_countryCode = countryCode;
 
             List<MaxMediatedNetworkInfo> availableMediatedNetworks = appLovinSdk.getAvailableMediatedNetworks();
 

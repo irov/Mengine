@@ -28,6 +28,12 @@ public class MengineAdAppOpenPoint extends MengineAdBasePoint {
     }
 
     public boolean canYouShowAd(@NonNull MengineApplication application, long timeStop) {
+        if (BuildConfig.DEBUG == true) {
+            if (application.hasOption("adservice.always_appopen_point." + m_name) == true) {
+                return true;
+            }
+        }
+
         if (m_enabled == false) {
             return false;
         }

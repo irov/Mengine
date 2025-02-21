@@ -13,6 +13,12 @@ public class MengineAdRewardedPoint extends MengineAdBasePoint {
     }
 
     public boolean canOfferAd(@NonNull MengineApplication application) {
+        if (BuildConfig.DEBUG == true) {
+            if (application.hasOption("adservice.always_rewarded_point." + m_name) == true) {
+                return true;
+            }
+        }
+
         if (m_enabled == false) {
             return false;
         }
@@ -21,6 +27,12 @@ public class MengineAdRewardedPoint extends MengineAdBasePoint {
     }
 
     public boolean canYouShowAd(@NonNull MengineApplication application) {
+        if (BuildConfig.DEBUG == true) {
+            if (application.hasOption("adservice.always_rewarded_point." + m_name) == true) {
+                return true;
+            }
+        }
+
         if (m_enabled == false) {
             return false;
         }

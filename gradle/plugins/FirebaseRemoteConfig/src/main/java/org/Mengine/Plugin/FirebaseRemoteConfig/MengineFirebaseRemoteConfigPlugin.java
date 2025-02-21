@@ -11,6 +11,7 @@ import com.google.firebase.remoteconfig.internal.DefaultsXmlParser;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineNetwork;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineListenerActivity;
 import org.Mengine.Base.MengineListenerApplication;
@@ -84,6 +85,12 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
 
     @Override
     public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
+        if (MengineNetwork.isNetworkAvailable() == false) {
+            this.logInfo("remote config invalid network not available");
+
+            return;
+        }
+
         FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
 
         this.buildEvent("mng_fb_rc_fetch")

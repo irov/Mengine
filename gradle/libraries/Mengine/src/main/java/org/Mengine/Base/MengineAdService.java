@@ -363,12 +363,6 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
 
         MengineApplication application = this.getMengineApplication();
 
-        if (BuildConfig.DEBUG == true) {
-            if (application.hasOption("adservice.always_rewarded_point." + placement) == true) {
-                return true;
-            }
-        }
-
         MengineAdRewardedPoint adPoint = m_adRewardedPoints.get(placement);
 
         if (adPoint.canOfferAd(application) == false) {
@@ -391,12 +385,6 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         }
 
         MengineApplication application = this.getMengineApplication();
-
-        if (BuildConfig.DEBUG == true) {
-            if (application.hasOption("adservice.always_rewarded_point." + placement) == true) {
-                return true;
-            }
-        }
 
         MengineAdRewardedPoint adPoint = m_adRewardedPoints.get(placement);
 
@@ -447,12 +435,6 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         }
 
         MengineApplication application = this.getMengineApplication();
-
-        if (BuildConfig.DEBUG == true) {
-            if (application.hasOption("adservice.always_appopen_point." + placement) == true) {
-                return true;
-            }
-        }
 
         MengineAdAppOpenPoint adPoint = m_adAppOpenPoints.get(placement);
 

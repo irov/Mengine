@@ -34,7 +34,7 @@ namespace Mengine
             return false;
         }
         
-        bool AppleFirebaseAnalyticsPlugin_Available = CONFIG_VALUE( "AppleFirebaseAnalyticsPlugin", "Available", true );
+        bool AppleFirebaseAnalyticsPlugin_Available = CONFIG_VALUE_BOOLEAN( "AppleFirebaseAnalyticsPlugin", "Available", true );
 
         if( AppleFirebaseAnalyticsPlugin_Available == false )
         {

@@ -1,5 +1,6 @@
 #import "AppleFirebaseRemoteConfigApplicationDelegate.h"
 
+#import "Environment/iOS/iOSNetwork.h"
 #import "Environment/iOS/iOSDetail.h"
 
 #include "AppleFirebaseRemoteConfigInterface.h"
@@ -29,48 +30,49 @@
     
     [[FIRRemoteConfig remoteConfig] setDefaultsFromPlistFileName:@MENGINE_FIREBASE_REMOTECONFIG_PLIST_NAME];
     
-    [[FIRRemoteConfig remoteConfig] fetchWithCompletionHandler:^(FIRRemoteConfigFetchStatus status, NSError *error) {
-        switch (status) {
-            case FIRRemoteConfigFetchStatusNoFetchYet:
-                NSLog( @"FIRRemoteConfigFetchStatusNoFetchYet: %@"
-                    , [error description]
-                );
-                
-                break;
-            case FIRRemoteConfigFetchStatusSuccess:
-                NSLog( @"FIRRemoteConfigFetchStatusSuccess" );
-                
-                [[FIRRemoteConfig remoteConfig] activateWithCompletion:^(BOOL changed, NSError * _Nullable error) {
-                    if (error != nil)
-                    {
-                        NSLog( @"FIRRemoteConfigFetchStatusSuccess activate error: %@"
-                            , [error description]
-                        );
-                        
-                        return;
-                    }
+    if ([[iOSNetwork sharedInstance] isNetworkAvailable] == YES) {
+        [[FIRRemoteConfig remoteConfig] fetchWithCompletionHandler:^(FIRRemoteConfigFetchStatus status, NSError *error) {
+            switch (status) {
+                case FIRRemoteConfigFetchStatusNoFetchYet:
+                    NSLog( @"FIRRemoteConfigFetchStatusNoFetchYet: %@"
+                          , [error description]
+                          );
                     
-                    NSLog( @"FIRRemoteConfigFetchStatusSuccess activate changed: %d"
-                        , changed
-                    );
-                }];
-                break;
-            case FIRRemoteConfigFetchStatusFailure:
-                NSLog( @"FIRRemoteConfigFetchStatusFailure: %@"
-                    , [error description]
-                );
-                
-                break;
-            case FIRRemoteConfigFetchStatusThrottled:
-                NSLog( @"FIRRemoteConfigFetchStatusThrottled: %@"
-                    , [error description]
-                );
-                
-                break;
-            default:
-                break;
-        }
-    }];
+                    break;
+                case FIRRemoteConfigFetchStatusSuccess:
+                    NSLog( @"FIRRemoteConfigFetchStatusSuccess" );
+                    
+                    [[FIRRemoteConfig remoteConfig] activateWithCompletion:^(BOOL changed, NSError * _Nullable error) {
+                        if (error != nil) {
+                            NSLog( @"FIRRemoteConfigFetchStatusSuccess activate error: %@"
+                                  , [error description]
+                                  );
+                            
+                            return;
+                        }
+                        
+                        NSLog( @"FIRRemoteConfigFetchStatusSuccess activate changed: %d"
+                              , changed
+                              );
+                    }];
+                    break;
+                case FIRRemoteConfigFetchStatusFailure:
+                    NSLog( @"FIRRemoteConfigFetchStatusFailure: %@"
+                          , [error description]
+                          );
+                    
+                    break;
+                case FIRRemoteConfigFetchStatusThrottled:
+                    NSLog( @"FIRRemoteConfigFetchStatusThrottled: %@"
+                          , [error description]
+                          );
+                    
+                    break;
+                default:
+                    break;
+            }
+        }];
+    }
     
     return YES;
 }

@@ -11,6 +11,7 @@
 #import "Environment/Apple/AppleDetail.h"
 #import "Environment/Apple/AppleLog.h"
 #import "Environment/iOS/iOSApplication.h"
+#import "Environment/iOS/iOSNetwork.h"
 #import "Environment/iOS/iOSDetail.h"
 
 #include "SDLApplication.h"
@@ -84,7 +85,7 @@
     return self.m_pluginTransparencyConsentDelegates;
 }
 
-- (id)getPluginDelegateOfClass:(Class)delegateClass {
+- (id _Nullable)getPluginDelegateOfClass:(Class)delegateClass {
     for (id delegate in self.m_pluginDelegates) {
         if ([delegate isKindOfClass:delegateClass] == NO) {
             continue;
@@ -165,6 +166,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(nullable NSDictionary<UIApplicationLaunchOptionsKey, id> *)launchOptions API_AVAILABLE(ios(3.0)) {
     [AppleLog withFormat:@"Mengine application didFinishLaunchingWithOptions"];
+    
+    [[iOSNetwork sharedInstance] startMonitoring];
     
     @autoreleasepool {
         if( [iOSApplication.sharedInstance didFinishLaunchingWithOptions:launchOptions] == NO) {
@@ -295,6 +298,8 @@
             [delegate applicationWillTerminate:application];
         }
     }
+    
+    [[iOSNetwork sharedInstance] stopMonitoring];
 }
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey, id> *)options API_AVAILABLE(ios(9.0)) {
@@ -360,8 +365,8 @@
         SDL_iPhoneSetEventPump( SDL_FALSE );
         
         [iOSDetail showOkAlertWithTitle:@"Failed..."
-                          message:@"Mengine bootstraped application"
-                               ok:^{
+                                message:@"Mengine bootstraped application"
+                                     ok:^{
             ::exit( EXIT_FAILURE );
         }];
         
@@ -378,8 +383,8 @@
         SDL_iPhoneSetEventPump( SDL_FALSE );
         
         [iOSDetail showOkAlertWithTitle:@"Failed..."
-                          message:@"Mengine initialized application"
-                               ok:^{
+                                message:@"Mengine initialized application"
+                                     ok:^{
             ::exit( EXIT_FAILURE );
         }];
         

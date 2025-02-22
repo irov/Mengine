@@ -23,10 +23,15 @@ namespace Mengine
             ::MessageBoxA( NULL, _doc, "Mengine crash", MB_OK );
 #endif
             
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Weverything"
+            
             volatile uint32_t * p = nullptr;
-
+            
             // cppcheck-suppress nullPointer
             *p = 0x7BADC0DE;
+            
+#pragma clang diagnostic pop
         }
     }
 }

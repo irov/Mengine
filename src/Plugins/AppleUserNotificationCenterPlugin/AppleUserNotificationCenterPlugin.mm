@@ -34,7 +34,7 @@ namespace Mengine
             return false;
         }
         
-        bool AppleUserNotificationCenterPlugin_Available = CONFIG_VALUE( "AppleUserNotificationCenterPlugin", "Available", true );
+        bool AppleUserNotificationCenterPlugin_Available = CONFIG_VALUE_BOOLEAN( "AppleUserNotificationCenterPlugin", "Available", true );
 
         if( AppleUserNotificationCenterPlugin_Available == false )
         {

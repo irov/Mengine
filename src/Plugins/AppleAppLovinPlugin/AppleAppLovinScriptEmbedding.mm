@@ -19,18 +19,18 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        class PythonAppleAppLovinProvider
-            : public AppleAppLovinProviderInterface
+        class PythonAppleAppLovinBannerProvider
+            : public AppleAppLovinBannerProviderInterface
             , public PythonCallbackProvider
             , public Factorable
         {
         public:
-            PythonAppleAppLovinProvider( const pybind::dict & _cbs, const pybind::args & _args )
+            PythonAppleAppLovinBannerProvider( const pybind::dict & _cbs, const pybind::args & _args )
                 : PythonCallbackProvider( _cbs, _args )
             {
             }
             
-            ~PythonAppleAppLovinProvider()
+            ~PythonAppleAppLovinBannerProvider()
             {
             }
 
@@ -39,10 +39,80 @@ namespace Mengine
             {
                 this->call_method( "onAppleAppLovinBannerRevenuePaid", _params );
             }
+        };
+        //////////////////////////////////////////////////////////////////////////
+        static void appleAppLovin_setBannerProvider( const pybind::dict & _cbs, const pybind::args & _args )
+        {
+            AppleAppLovinBannerProviderInterfacePtr provider = Helper::makeFactorableUnique<PythonAppleAppLovinBannerProvider>( MENGINE_DOCUMENT_PYBIND, _cbs, _args );
+            
+            APPLE_APPLOVIN_SERVICE()
+                ->setBannerProvider( provider );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        class PythonAppleAppLovinInterstitialProvider
+            : public AppleAppLovinInterstitialProviderInterface
+            , public PythonCallbackProvider
+            , public Factorable
+        {
+        public:
+            PythonAppleAppLovinInterstitialProvider( const pybind::dict & _cbs, const pybind::args & _args )
+                : PythonCallbackProvider( _cbs, _args )
+            {
+            }
+            
+            ~PythonAppleAppLovinInterstitialProvider()
+            {
+            }
+
+        protected:
+            void onAppleAppLovinInterstitialShowSuccessful( const Params & _params ) override
+            {
+                this->call_method( "onAppleAppLovinInterstitialShowSuccessful", _params );
+            }
+            
+            void onAppleAppLovinInterstitialShowFailed( const Params & _params ) override
+            {
+                this->call_method( "onAppleAppLovinInterstitialShowFailed", _params );
+            }
             
             void onAppleAppLovinInterstitialRevenuePaid( const Params & _params ) override
             {
-                this->call_method( "onAppleAppLovinInterstitialRevenuePaid" );
+                this->call_method( "onAppleAppLovinInterstitialRevenuePaid", _params );
+            }
+        };
+        //////////////////////////////////////////////////////////////////////////
+        static void appleAppLovin_setInterstitialProvider( const pybind::dict & _cbs, const pybind::args & _args )
+        {
+            AppleAppLovinInterstitialProviderInterfacePtr provider = Helper::makeFactorableUnique<PythonAppleAppLovinInterstitialProvider>( MENGINE_DOCUMENT_PYBIND, _cbs, _args );
+            
+            APPLE_APPLOVIN_SERVICE()
+                ->setInterstitialProvider( provider );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        class PythonAppleAppLovinRewardedProvider
+            : public AppleAppLovinRewardedProviderInterface
+            , public PythonCallbackProvider
+            , public Factorable
+        {
+        public:
+            PythonAppleAppLovinRewardedProvider( const pybind::dict & _cbs, const pybind::args & _args )
+                : PythonCallbackProvider( _cbs, _args )
+            {
+            }
+            
+            ~PythonAppleAppLovinRewardedProvider()
+            {
+            }
+
+        protected:
+            void onAppleAppLovinRewardedShowSuccessful( const Params & _params ) override
+            {
+                this->call_method( "onAppleAppLovinRewardedShowSuccessful", _params );
+            }
+            
+            void onAppleAppLovinRewardedShowFailed( const Params & _params ) override
+            {
+                this->call_method( "onAppleAppLovinRewardedShowFailed", _params );
             }
             
             void onAppleAppLovinRewardedUserRewarded( const Params & _params ) override
@@ -56,88 +126,28 @@ namespace Mengine
             }
         };
         //////////////////////////////////////////////////////////////////////////
-        static void appleAppLovin_setProvider( const pybind::dict & _cbs, const pybind::args & _args )
+        static void appleAppLovin_setRewardedProvider( const pybind::dict & _cbs, const pybind::args & _args )
         {
-            AppleAppLovinProviderInterfacePtr provider = Helper::makeFactorableUnique<PythonAppleAppLovinProvider>( MENGINE_DOCUMENT_PYBIND, _cbs, _args );
+            AppleAppLovinRewardedProviderInterfacePtr provider = Helper::makeFactorableUnique<PythonAppleAppLovinRewardedProvider>( MENGINE_DOCUMENT_PYBIND, _cbs, _args );
             
             APPLE_APPLOVIN_SERVICE()
-                ->setProvider( provider );
+                ->setRewardedProvider( provider );
         }
         //////////////////////////////////////////////////////////////////////////
-        PyObject * appleAppLovin_getBannerViewport( pybind::kernel_interface * _kernel, const ConstString & _adUnitId )
+        PyObject * appleAppLovin_getBannerHeight( pybind::kernel_interface * _kernel, const ConstString & _adUnitId )
         {
-            Viewport viewport;
+            uint32_t height;
             bool result = APPLE_APPLOVIN_SERVICE()
-                ->getBannerViewport( &viewport );
+                ->getBannerHeight( &height );
             
             if( result == false )
             {
                 return _kernel->ret_none();
             }
             
-            PyObject * py_viewport = pybind::ptr( _kernel, viewport );
+            PyObject * py_viewport = pybind::ptr( _kernel, height );
             
             return py_viewport;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        class PythonAppleAppLovinInterstitialProvider
-            : public AppleAppLovinInterstitialProviderInterface
-            , public PythonCallbackProvider
-            , public Factorable
-        {
-        public:
-            PythonAppleAppLovinInterstitialProvider( const pybind::object & _cb, const pybind::args & _args )
-                : PythonCallbackProvider( _cb, _args )
-            {
-            }
-            
-            ~PythonAppleAppLovinInterstitialProvider() override
-            {
-            }
-
-        protected:
-            void onAppleAppLovinInterstitialShowCompleted( bool _successful, const Params & _params ) override
-            {
-                this->call_cb( _successful, _params );
-            }
-        };
-        //////////////////////////////////////////////////////////////////////////
-        static bool appleAppLovin_showInterstitial( const ConstString & _placement, const pybind::object & _cb, const pybind::args & _args )
-        {
-            AppleAppLovinInterstitialProviderInterfacePtr provider = Helper::makeFactorableUnique<PythonAppleAppLovinInterstitialProvider>( MENGINE_DOCUMENT_PYBIND, _cb, _args );
-            
-            APPLE_APPLOVIN_SERVICE()
-                ->showInterstitial( _placement, provider );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        class PythonAppleAppLovinRewardedProvider
-            : public AppleAppLovinRewardedProviderInterface
-            , public PythonCallbackProvider
-            , public Factorable
-        {
-        public:
-            PythonAppleAppLovinRewardedProvider( const pybind::object & _cb, const pybind::args & _args )
-                : PythonCallbackProvider( _cb, _args )
-            {
-            }
-            
-            ~PythonAppleAppLovinRewardedProvider() override
-            {
-            }
-
-        protected:
-            void onAppleAppLovinRewardedShowCompleted( bool _successful, const Params & _params ) override
-            {
-                this->call_cb( _successful, _params );
-            }
-        };
-        //////////////////////////////////////////////////////////////////////////
-        static bool appleAppLovin_showRewarded( const ConstString & _placement, const pybind::object & _cb, const pybind::args & _args )
-        {
-            AppleAppLovinRewardedProviderInterfacePtr provider = Helper::makeFactorableUnique<PythonAppleAppLovinRewardedProvider>( MENGINE_DOCUMENT_PYBIND, _cb, _args );
-            
-            APPLE_APPLOVIN_SERVICE()
-                ->showRewarded( _placement, provider );
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonAppleAppLovinConsentFlowProvider
@@ -192,18 +202,20 @@ namespace Mengine
         
         AppleAppLovinServiceInterface * service = APPLE_APPLOVIN_SERVICE();
         
-        pybind::def_function_args( _kernel, "appleAppLovinSetProvider", &Detail::appleAppLovin_setProvider );
+        pybind::def_function_args( _kernel, "appleAppLovinSetBannerProvider", &Detail::appleAppLovin_setBannerProvider );
+        pybind::def_function_args( _kernel, "appleAppLovinSetInterstitialProvider", &Detail::appleAppLovin_setInterstitialProvider );
+        pybind::def_function_args( _kernel, "appleAppLovinSetRewardedProvider", &Detail::appleAppLovin_setRewardedProvider );
         
         pybind::def_functor( _kernel, "appleAppLovinShowBanner", service, &AppleAppLovinServiceInterface::showBanner );
         pybind::def_functor( _kernel, "appleAppLovinHideBanner", service, &AppleAppLovinServiceInterface::hideBanner );
-        pybind::def_function_kernel( _kernel, "appleAppLovinGetBannerViewport", &Detail::appleAppLovin_getBannerViewport );
+        pybind::def_function_kernel( _kernel, "appleAppLovinGetBannerHeight", &Detail::appleAppLovin_getBannerHeight );
         
         pybind::def_functor( _kernel, "appleAppLovinCanYouShowInterstitial", service,  &AppleAppLovinServiceInterface::canYouShowInterstitial );
-        pybind::def_function_args( _kernel, "appleAppLovinShowInterstitial", &Detail::appleAppLovin_showInterstitial );
+        pybind::def_functor( _kernel, "appleAppLovinShowInterstitial", service, &AppleAppLovinServiceInterface::showInterstitial );
         
         pybind::def_functor( _kernel, "appleAppLovinCanOfferRewarded", service, &AppleAppLovinServiceInterface::canOfferRewarded );
         pybind::def_functor( _kernel, "appleAppLovinCanYouShowRewarded", service, &AppleAppLovinServiceInterface::canYouShowRewarded );
-        pybind::def_function_args( _kernel, "appleAppLovinShowRewarded", &Detail::appleAppLovin_showRewarded );
+        pybind::def_functor( _kernel, "appleAppLovinShowRewarded", service, &AppleAppLovinServiceInterface::showRewarded );
         
         pybind::def_functor( _kernel, "appleAppLovinHasSupportedCMP", service, &AppleAppLovinServiceInterface::hasSupportedCMP );
         pybind::def_functor( _kernel, "appleAppLovinIsConsentFlowUserGeographyGDPR", service, &AppleAppLovinServiceInterface::isConsentFlowUserGeographyGDPR );

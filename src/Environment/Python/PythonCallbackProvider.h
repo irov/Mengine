@@ -25,7 +25,7 @@ namespace Mengine
         const pybind::object & get_cb() const;
         const pybind::args & get_args() const;
 
-    protected:
+    public:
         template<class ... Args>
         pybind::detail::extract_operator_t call_cb( Args && ... _args )
         {

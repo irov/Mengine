@@ -40,7 +40,7 @@ namespace Mengine
             return false;
         }
         
-        bool AppleAppTrackingPlugin_Available = CONFIG_VALUE( "AppleAppTrackingPlugin", "Available", true );
+        bool AppleAppTrackingPlugin_Available = CONFIG_VALUE_BOOLEAN( "AppleAppTrackingPlugin", "Available", true );
         
         if( AppleAppTrackingPlugin_Available == false )
         {

@@ -103,7 +103,7 @@
     return delegate;
 }
 
-+ (id) getPluginDelegateOfClass:(Class)delegateClass {
++ (id _Nullable) getPluginDelegateOfClass:(Class)delegateClass {
     NSObject<iOSUIMainApplicationDelegateInterface> * mainDelegate = [iOSDetail getUIMainApplicationDelegate];
     id pluginDelegate = [mainDelegate getPluginDelegateOfClass:delegateClass];
 

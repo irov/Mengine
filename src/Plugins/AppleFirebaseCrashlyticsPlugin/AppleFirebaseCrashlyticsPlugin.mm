@@ -34,7 +34,7 @@ namespace Mengine
             return false;
         }
         
-        bool AppleFirebaseCrashlyticsPlugin_Available = CONFIG_VALUE( "AppleFirebaseCrashlyticsPlugin", "Available", true );
+        bool AppleFirebaseCrashlyticsPlugin_Available = CONFIG_VALUE_BOOLEAN( "AppleFirebaseCrashlyticsPlugin", "Available", true );
 
         if( AppleFirebaseCrashlyticsPlugin_Available == false )
         {

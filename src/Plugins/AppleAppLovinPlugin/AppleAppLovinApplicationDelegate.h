@@ -14,14 +14,22 @@
 
 + (AppleAppLovinApplicationDelegate *) sharedInstance;
 
-- (void) setProvider:(const Mengine::AppleAppLovinProviderInterfacePtr &)provider;
-- (Mengine::AppleAppLovinProviderInterfacePtr) getProvider;
+- (void) setBannerProvider:(const Mengine::AppleAppLovinBannerProviderInterfacePtr &)bannerProvider;
+- (Mengine::AppleAppLovinBannerProviderInterfacePtr) getBannerProvider;
+
+- (void) setInterstitialProvider:(const Mengine::AppleAppLovinInterstitialProviderInterfacePtr &)interstitialProvider;
+- (Mengine::AppleAppLovinInterstitialProviderInterfacePtr) getInterstitialProvider;
+
+- (void) setRewardedProvider:(const Mengine::AppleAppLovinRewardedProviderInterfacePtr &)rewardedProvider;
+- (Mengine::AppleAppLovinRewardedProviderInterfacePtr) getRewardedProvider;
 
 - (AppleAppLovinBannerDelegate *) getBanner;
 - (AppleAppLovinInterstitialDelegate *) getInterstitial;
 - (AppleAppLovinRewardedDelegate *) getRewarded;
 
-@property (nonatomic) Mengine::AppleAppLovinProviderInterfacePtr m_provider;
+@property (nonatomic) Mengine::AppleAppLovinBannerProviderInterfacePtr m_bannerProvider;
+@property (nonatomic) Mengine::AppleAppLovinInterstitialProviderInterfacePtr m_interstitialProvider;
+@property (nonatomic) Mengine::AppleAppLovinRewardedProviderInterfacePtr m_rewardedProvider;
 
 @property (nonatomic, strong) AppleAppLovinBannerDelegate * m_bannerAd;
 @property (nonatomic, strong) AppleAppLovinInterstitialDelegate * m_interstitialAd;

@@ -28,7 +28,7 @@ namespace Mengine
         void _finalizeService() override;
         
     public:
-        void setProvider( const AppleAppLovinProviderInterfacePtr & _provider ) override;
+        void setBannerProvider( const AppleAppLovinBannerProviderInterfacePtr & _bannerProvider ) override;
                 
     public:
         bool showBanner() override;
@@ -36,16 +36,21 @@ namespace Mengine
         
     public:
         bool getBannerHeight( uint32_t * const _height ) const override;
-        bool getBannerViewport( Viewport * const _viewport ) const override;
+        
+    public:
+        void setInterstitialProvider( const AppleAppLovinInterstitialProviderInterfacePtr & _interstitialProvider ) override;
         
     public:
         bool canYouShowInterstitial( const ConstString & _placement ) const override;
-        bool showInterstitial( const ConstString & _placement, const AppleAppLovinInterstitialProviderInterfacePtr & _interstitialProvider ) override;
+        bool showInterstitial( const ConstString & _placement ) override;
 
+    public:
+        void setRewardedProvider( const AppleAppLovinRewardedProviderInterfacePtr & _rewardedProvider ) override;
+        
     public:
         bool canOfferRewarded( const ConstString & _placement ) const override;
         bool canYouShowRewarded( const ConstString & _placement ) const override;
-        bool showRewarded( const ConstString & _placement, const AppleAppLovinRewardedProviderInterfacePtr & _rewardedProvider ) override;
+        bool showRewarded( const ConstString & _placement ) override;
         
     public:
         bool hasSupportedCMP() const override;

@@ -29,12 +29,28 @@
     return sharedInstance;
 }
 
-- (void)setProvider:(const Mengine::AppleAppLovinProviderInterfacePtr &)provider {
-    self.m_provider = provider;
+- (void)setBannerProvider:(const Mengine::AppleAppLovinBannerProviderInterfacePtr &)bannerProvider {
+    self.m_bannerProvider = bannerProvider;
 }
 
-- (Mengine::AppleAppLovinProviderInterfacePtr) getProvider {
-    return self.m_provider;
+- (Mengine::AppleAppLovinBannerProviderInterfacePtr) getBannerProvider {
+    return self.m_bannerProvider;
+}
+
+- (void)setInterstitialProvider:(const Mengine::AppleAppLovinInterstitialProviderInterfacePtr &)interstitialProvider {
+    self.m_interstitialProvider = interstitialProvider;
+}
+
+- (Mengine::AppleAppLovinInterstitialProviderInterfacePtr) getInterstitialProvider {
+    return self.m_interstitialProvider;
+}
+
+- (void)setRewardedProvider:(const Mengine::AppleAppLovinRewardedProviderInterfacePtr &)rewardedProvider {
+    self.m_rewardedProvider = rewardedProvider;
+}
+
+- (Mengine::AppleAppLovinRewardedProviderInterfacePtr) getRewardedProvider {
+    return self.m_rewardedProvider;
 }
 
 - (AppleAppLovinBannerDelegate *) getBanner {

@@ -34,7 +34,7 @@ namespace Mengine
             return false;
         }
         
-        bool AppleFirebaseRemoteConfigPlugin_Available = CONFIG_VALUE( "AppleFirebaseRemoteConfigPlugin", "Available", true );
+        bool AppleFirebaseRemoteConfigPlugin_Available = CONFIG_VALUE_BOOLEAN( "AppleFirebaseRemoteConfigPlugin", "Available", true );
 
         if( AppleFirebaseRemoteConfigPlugin_Available == false )
         {

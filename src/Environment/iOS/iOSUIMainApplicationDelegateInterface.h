@@ -16,7 +16,7 @@
 - (NSArray<iOSPluginAdRevenueDelegateInterface> * _Nonnull) getPluginAdRevenueDelegates;
 - (NSArray<iOSPluginTransparencyConsentDelegateInterface> * _Nonnull) getPluginTransparencyConsentDelegates;
 
-- (id _Nonnull) getPluginDelegateOfClass:(Class _Nonnull)delegateClass;
+- (id _Nullable) getPluginDelegateOfClass:(Class _Nonnull)delegateClass;
 
 - (void) notify:(AppleEvent * _Nonnull)event args:(id _Nonnull)firstArg, ... NS_REQUIRES_NIL_TERMINATION;
 - (void) notify:(AppleEvent * _Nonnull)event arrayArgs:(NSArray<id> * _Nonnull)args;

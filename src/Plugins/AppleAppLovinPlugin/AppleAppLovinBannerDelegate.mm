@@ -251,13 +251,13 @@
     
     [self eventRevenue:ad];
     
-    Mengine::AppleAppLovinProviderInterfacePtr provider = [[AppleAppLovinApplicationDelegate sharedInstance] getProvider];
+    Mengine::AppleAppLovinBannerProviderInterfacePtr bannerProvider = [[AppleAppLovinApplicationDelegate sharedInstance] getBannerProvider];
     
-    if (provider != nullptr) {
+    if (bannerProvider != nullptr) {
         Mengine::Params params;
         [AppleDetail getParamsFromNSDictionary:@{@"revenue":@(ad.revenue)} outParams:&params];
         
-        provider->onAppleAppLovinBannerRevenuePaid( params );
+        bannerProvider->onAppleAppLovinBannerRevenuePaid( params );
     }
 }
 

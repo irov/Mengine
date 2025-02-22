@@ -34,7 +34,6 @@
     interstitialAd.adReviewDelegate = self;
     
     self.m_interstitialAd = interstitialAd;
-    self.m_showCompletion = nil;
     
 #if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON)
     self.m_amazonLoader = [[AppleAppLovinInterstitialAmazonLoader alloc] initWithSlotId:amazonSlotId interstitialAd:self.m_interstitialAd];
@@ -57,6 +56,10 @@
 }
 
 - (BOOL) canYouShow:(NSString * _Nonnull)placement {
+    if (self.m_interstitialAd == nil) {
+        return NO;
+    }
+    
     BOOL ready = [self.m_interstitialAd isReady];
     
     [self log:@"canYouShow" withParams:@{@"placement":placement, @"ready":@(ready)}];
@@ -73,7 +76,7 @@
     return YES;
 }
 
-- (BOOL) show:(NSString * _Nonnull)placement completion:(AppleAppLovinInterstitialShowCompletionHandler _Nonnull)completion {
+- (BOOL) show:(NSString * _Nonnull)placement {
     if (self.m_interstitialAd == nil) {
         return NO;
     }
@@ -90,12 +93,6 @@
     if (ready == NO) {
         return NO;
     }
-    
-    if (self.m_showCompletion != nil) {
-        return NO;
-    }
-    
-    self.m_showCompletion = completion;
     
     [self.m_interstitialAd showAdForPlacement:placement];
 
@@ -173,9 +170,14 @@
         @"ad": [self getMAAdParams:ad]
     }];
     
-    AppleAppLovinInterstitialShowCompletionHandler showCompletion = self.m_showCompletion;
-    self.m_showCompletion = nil;
-    showCompletion(true, @{@"placement":ad.placement});
+    Mengine::AppleAppLovinInterstitialProviderInterfacePtr interstitialProvider = [[AppleAppLovinApplicationDelegate sharedInstance] getInterstitialProvider];
+    
+    if (interstitialProvider != nullptr) {
+        Mengine::Params params;
+        [AppleDetail getParamsFromNSDictionary:@{@"placement":ad.placement} outParams:&params];
+        
+        interstitialProvider->onAppleAppLovinInterstitialShowSuccessful( params );
+    }
     
     [self loadAd];
 }
@@ -190,10 +192,15 @@
         @"ad": [self getMAAdParams:ad]
     }];
     
-    AppleAppLovinInterstitialShowCompletionHandler showCompletion = self.m_showCompletion;
-    self.m_showCompletion = nil;
-    showCompletion(false, @{@"placement":ad.placement, @"error_code":@(error.code)});
+    Mengine::AppleAppLovinInterstitialProviderInterfacePtr interstitialProvider = [[AppleAppLovinApplicationDelegate sharedInstance] getInterstitialProvider];
+    
+    if (interstitialProvider != nullptr) {
+        Mengine::Params params;
+        [AppleDetail getParamsFromNSDictionary:@{@"placement":ad.placement, @"error_code":@(error.code)} outParams:&params];
         
+        interstitialProvider->onAppleAppLovinInterstitialShowFailed( params );
+    }
+            
     [self loadAd];
 }
 
@@ -211,13 +218,13 @@
     
     [self eventRevenue:ad];
     
-    Mengine::AppleAppLovinProviderInterfacePtr provider = [[AppleAppLovinApplicationDelegate sharedInstance] getProvider];
+    Mengine::AppleAppLovinInterstitialProviderInterfacePtr interstitialProvider = [[AppleAppLovinApplicationDelegate sharedInstance] getInterstitialProvider];
     
-    if (provider != nullptr) {
+    if (interstitialProvider != nullptr) {
         Mengine::Params params;
-        [AppleDetail getParamsFromNSDictionary:@{@"revenue":@(ad.revenue)} outParams:&params];
+        [AppleDetail getParamsFromNSDictionary:@{@"placement":ad.placement, @"revenue":@(ad.revenue)} outParams:&params];
         
-        provider->onAppleAppLovinInterstitialRevenuePaid( params );
+        interstitialProvider->onAppleAppLovinInterstitialRevenuePaid( params );
     }
 }
 

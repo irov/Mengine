@@ -220,7 +220,7 @@ namespace Mengine
         const Char * projectTitle = nullptr;
         size_t projectTitleLen = 0;
 
-        ConstString APPLICATION_TITLE = CONFIG_VALUE( "Window", "ApplicationTitleTextId", STRINGIZE_STRING_LOCAL( "APPLICATION_TITLE" ) );
+        ConstString APPLICATION_TITLE = CONFIG_VALUE_CONSTSTRING( "Window", "ApplicationTitleTextId", STRINGIZE_STRING_LOCAL( "APPLICATION_TITLE" ) );
 
         TextEntryInterfacePtr entry;
         if( TEXT_SERVICE()

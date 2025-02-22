@@ -110,8 +110,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t iOSPlatformService::getUserPath( Char * const _userPath ) const
     {
-        const Char * Project_Company = CONFIG_VALUE( "Project", "Company", "UNKNOWN" );
-        const Char * Project_Name = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );
+        const Char * Project_Company = CONFIG_VALUE_STRING( "Project", "Company", "UNKNOWN" );
+        const Char * Project_Name = CONFIG_VALUE_STRING( "Project", "Name", "UNKNOWN" );
 
         NSArray * paths = NSSearchPathForDirectoriesInDomains( NSApplicationSupportDirectory, NSUserDomainMask, YES );
         
@@ -165,7 +165,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t iOSPlatformService::getExtraPreferencesFolderName( Char * const _folderName ) const
     {
-        const Char * Project_ExtraPreferencesFolderName = CONFIG_VALUE( "Project", "ExtraPreferencesFolderName", "" );
+        const Char * Project_ExtraPreferencesFolderName = CONFIG_VALUE_STRING( "Project", "ExtraPreferencesFolderName", "" );
 
         MENGINE_ASSERTION_FATAL( Helper::isCorrectFolderPathA( Project_ExtraPreferencesFolderName ) == true, "invalid extra preferences folder name '%s'"
             , Project_ExtraPreferencesFolderName
@@ -325,7 +325,7 @@ namespace Mengine
             ELoggerLevel level = Detail::SDL_GetLoggerLevel( priority );
             const Char * category_str = Detail::SDL_GetLoggerCategoryString( category );
 
-            LOGGER_VERBOSE_LEVEL( "sdl", level, LFILTER_NONE, LCOLOR_RED, nullptr, 0, LFLAG_SHORT )("[%s] %s"
+            LOGGER_VERBOSE_LEVEL( "sdl", level, LFILTER_NONE, LCOLOR_RED, nullptr, 0, nullptr, LFLAG_SHORT )("[%s] %s"
                 , category_str
                 , message
             );
@@ -1667,7 +1667,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::setupWindow_()
     {
-        uint32_t Engine_SDL_GL_RED_SIZE = CONFIG_VALUE( "SDL", "SDL_GL_RED_SIZE", 8 );
+        uint32_t Engine_SDL_GL_RED_SIZE = CONFIG_VALUE_INTEGER( "SDL", "SDL_GL_RED_SIZE", 8U );
 
         if( SDL_GL_SetAttribute( SDL_GL_RED_SIZE, Engine_SDL_GL_RED_SIZE ) != 0 )
         {
@@ -1677,7 +1677,7 @@ namespace Mengine
             );
         }
 
-        uint32_t Engine_SDL_GL_GREEN_SIZE = CONFIG_VALUE( "SDL", "SDL_GL_GREEN_SIZE", 8 );
+        uint32_t Engine_SDL_GL_GREEN_SIZE = CONFIG_VALUE_INTEGER( "SDL", "SDL_GL_GREEN_SIZE", 8U );
 
         if( SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, Engine_SDL_GL_GREEN_SIZE ) != 0 )
         {
@@ -1687,7 +1687,7 @@ namespace Mengine
             );
         }
 
-        uint32_t Engine_SDL_GL_BLUE_SIZE = CONFIG_VALUE( "SDL", "SDL_GL_BLUE_SIZE", 8 );
+        uint32_t Engine_SDL_GL_BLUE_SIZE = CONFIG_VALUE_INTEGER( "SDL", "SDL_GL_BLUE_SIZE", 8U );
 
         if( SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, Engine_SDL_GL_BLUE_SIZE ) != 0 )
         {
@@ -1697,7 +1697,7 @@ namespace Mengine
             );
         }
 
-        uint32_t Engine_SDL_GL_ALPHA_SIZE = CONFIG_VALUE( "SDL", "SDL_GL_ALPHA_SIZE", 0 );
+        uint32_t Engine_SDL_GL_ALPHA_SIZE = CONFIG_VALUE_INTEGER( "SDL", "SDL_GL_ALPHA_SIZE", 0U );
 
         if( SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, Engine_SDL_GL_ALPHA_SIZE ) != 0 )
         {
@@ -1707,7 +1707,7 @@ namespace Mengine
             );
         }
 
-        uint32_t Engine_SDL_GL_DEPTH_SIZE = CONFIG_VALUE( "SDL", "SDL_GL_DEPTH_SIZE", 24 );
+        uint32_t Engine_SDL_GL_DEPTH_SIZE = CONFIG_VALUE_INTEGER( "SDL", "SDL_GL_DEPTH_SIZE", 24U );
 
         if( SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, Engine_SDL_GL_DEPTH_SIZE ) != 0 )
         {
@@ -1717,7 +1717,7 @@ namespace Mengine
             );
         }
 
-        uint32_t Engine_SDL_GL_DOUBLEBUFFER = CONFIG_VALUE( "SDL", "SDL_GL_DOUBLEBUFFER", 1 );
+        uint32_t Engine_SDL_GL_DOUBLEBUFFER = CONFIG_VALUE_INTEGER( "SDL", "SDL_GL_DOUBLEBUFFER", 1U );
 
         if( SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, Engine_SDL_GL_DOUBLEBUFFER ) != 0 )
         {
@@ -1729,7 +1729,7 @@ namespace Mengine
 
         SDL_SetHint( SDL_HINT_RENDER_DRIVER, "opengles2" );
 
-        uint32_t Engine_SDL_GL_CONTEXT_PROFILE_MASK = CONFIG_VALUE( "SDL", "SDL_GL_CONTEXT_PROFILE_MASK", (uint32_t)SDL_GL_CONTEXT_PROFILE_ES );
+        uint32_t Engine_SDL_GL_CONTEXT_PROFILE_MASK = CONFIG_VALUE_INTEGER( "SDL", "SDL_GL_CONTEXT_PROFILE_MASK", (uint32_t)SDL_GL_CONTEXT_PROFILE_ES );
 
         if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, Engine_SDL_GL_CONTEXT_PROFILE_MASK ) != 0 )
         {
@@ -1739,7 +1739,7 @@ namespace Mengine
             );
         }
 
-        uint32_t Engine_SDL_GL_CONTEXT_MAJOR_VERSION = CONFIG_VALUE( "SDL", "SDL_GL_CONTEXT_MAJOR_VERSION", 2 );
+        uint32_t Engine_SDL_GL_CONTEXT_MAJOR_VERSION = CONFIG_VALUE_INTEGER( "SDL", "SDL_GL_CONTEXT_MAJOR_VERSION", 2U );
 
         if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, Engine_SDL_GL_CONTEXT_MAJOR_VERSION ) != 0 )
         {
@@ -1749,7 +1749,7 @@ namespace Mengine
             );
         }
 
-        uint32_t Engine_SDL_GL_CONTEXT_MINOR_VERSION = CONFIG_VALUE( "SDL", "Engine_SDL_GL_CONTEXT_MINOR_VERSION", 0 );
+        uint32_t Engine_SDL_GL_CONTEXT_MINOR_VERSION = CONFIG_VALUE_INTEGER( "SDL", "Engine_SDL_GL_CONTEXT_MINOR_VERSION", 0U );
 
         if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, Engine_SDL_GL_CONTEXT_MINOR_VERSION ) != 0 )
         {
@@ -1759,7 +1759,7 @@ namespace Mengine
             );
         }
 
-        const Char * Engine_SDL_HINT_RENDER_SCALE_QUALITY = CONFIG_VALUE( "SDL", "SDL_HINT_RENDER_SCALE_QUALITY", "linear" );
+        const Char * Engine_SDL_HINT_RENDER_SCALE_QUALITY = CONFIG_VALUE_STRING( "SDL", "SDL_HINT_RENDER_SCALE_QUALITY", "linear" );
 
         if( SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, Engine_SDL_HINT_RENDER_SCALE_QUALITY ) != SDL_TRUE )
         {
@@ -1769,7 +1769,7 @@ namespace Mengine
             );
         }
 
-        const Char * Engine_SDL_HINT_ORIENTATIONS = CONFIG_VALUE( "SDL", "SDL_HINT_ORIENTATIONS", "Portrait" );
+        const Char * Engine_SDL_HINT_ORIENTATIONS = CONFIG_VALUE_STRING( "SDL", "SDL_HINT_ORIENTATIONS", "Portrait" );
 
         if( SDL_SetHint( SDL_HINT_ORIENTATIONS, Engine_SDL_HINT_ORIENTATIONS ) != SDL_TRUE )
         {
@@ -1779,7 +1779,7 @@ namespace Mengine
             );
         }
 
-        const Char * Engine_SDL_HINT_IOS_HIDE_HOME_INDICATOR = CONFIG_VALUE( "SDL", "SDL_HINT_IOS_HIDE_HOME_INDICATOR", "1" );
+        const Char * Engine_SDL_HINT_IOS_HIDE_HOME_INDICATOR = CONFIG_VALUE_STRING( "SDL", "SDL_HINT_IOS_HIDE_HOME_INDICATOR", "1" );
 
         if( SDL_SetHint( SDL_HINT_IOS_HIDE_HOME_INDICATOR, Engine_SDL_HINT_IOS_HIDE_HOME_INDICATOR ) != SDL_TRUE )
         {

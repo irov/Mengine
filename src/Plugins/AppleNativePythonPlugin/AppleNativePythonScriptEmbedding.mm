@@ -2,6 +2,7 @@
 
 #import "Environment/Apple/AppleSemaphoreListenerInterface.h"
 #import "Environment/Python/PythonScriptWrapper.h"
+#import "Environment/Python/PythonCallbackProvider.h"
 
 #include "AppleNativePythonInterface.h"
 

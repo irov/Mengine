@@ -42,7 +42,7 @@ namespace Mengine
             return false;
         }
         
-        bool AppleStoreReviewPlugin_Available = CONFIG_VALUE( "AppleStoreReviewPlugin", "Available", true );
+        bool AppleStoreReviewPlugin_Available = CONFIG_VALUE_BOOLEAN( "AppleStoreReviewPlugin", "Available", true );
         
         if( AppleStoreReviewPlugin_Available == false )
         {

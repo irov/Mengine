@@ -4,6 +4,7 @@
 #import "Environment/Apple/AppleString.h"
 
 #import "Environment/iOS/iOSLog.h"
+#import "Environment/iOS/iOSNetwork.h"
 
 #include "AppleAppLovinApplicationDelegate.h"
 
@@ -58,6 +59,10 @@
 }
 
 - (BOOL) canOffer:(NSString * _Nonnull)placement {
+    if (self.m_rewardedAd == nil) {
+        return NO;
+    }
+    
     BOOL ready = [self.m_rewardedAd isReady];
     
     [self log:@"canOffer" withParams:@{@"placement":placement, @"ready":@(ready)}];
@@ -71,6 +76,10 @@
 }
 
 - (BOOL) canYouShow:(NSString * _Nonnull)placement {
+    if (self.m_rewardedAd == nil) {
+        return NO;
+    }
+    
     BOOL ready = [self.m_rewardedAd isReady];
 
     [self log:@"canYouShow" withParams:@{@"placement":placement, @"ready":@(ready)}];
@@ -87,7 +96,11 @@
     return YES;
 }
 
-- (BOOL) show:(NSString * _Nonnull)placement completion:(AppleAppLovinRewardedShowCompletionHandler _Nonnull)completion {
+- (BOOL) show:(NSString * _Nonnull)placement {
+    if (self.m_rewardedAd == nil) {
+        return NO;
+    }
+    
     BOOL ready = [self.m_rewardedAd isReady];
        
     [self log:@"show" withParams:@{@"placement":placement, @"ready":@(ready)}];
@@ -100,12 +113,6 @@
     if (ready == NO) {
         return NO;
     }
-    
-    if (self.m_showCompletion != nil) {
-        return NO;
-    }
-    
-    self.m_showCompletion = completion;
     
     [self.m_rewardedAd showAdForPlacement:placement];
 
@@ -183,11 +190,16 @@
         @"placement": ad.placement,
         @"ad": [self getMAAdParams:ad]
     }];
+
+    Mengine::AppleAppLovinRewardedProviderInterfacePtr rewardedProvider = [[AppleAppLovinApplicationDelegate sharedInstance] getRewardedProvider];
     
-    AppleAppLovinInterstitialShowCompletionHandler showCompletion = self.m_showCompletion;
-    self.m_showCompletion = nil;
-    showCompletion(true, @{@"placement":ad.placement});
-    
+    if (rewardedProvider != nullptr) {
+        Mengine::Params params;
+        [AppleDetail getParamsFromNSDictionary:@{@"placement":ad.placement} outParams:&params];
+        
+        rewardedProvider->onAppleAppLovinRewardedShowSuccessful( params );
+    }
+
     [self loadAd];
 }
 
@@ -200,10 +212,15 @@
         @"error_code": @(error.code),
         @"ad": [self getMAAdParams:ad]
     }];
+
+    Mengine::AppleAppLovinRewardedProviderInterfacePtr rewardedProvider = [[AppleAppLovinApplicationDelegate sharedInstance] getRewardedProvider];
     
-    AppleAppLovinInterstitialShowCompletionHandler showCompletion = self.m_showCompletion;
-    self.m_showCompletion = nil;
-    showCompletion(false, @{@"placement":ad.placement, @"error_code":@(error.code)});
+    if (rewardedProvider != nullptr) {
+        Mengine::Params params;
+        [AppleDetail getParamsFromNSDictionary:@{@"placement":ad.placement, @"error_code":@(error.code)} outParams:&params];
+        
+        rewardedProvider->onAppleAppLovinRewardedShowFailed( params );
+    }
     
     [self loadAd];
 }
@@ -227,6 +244,15 @@
         @"amount": @(reward.amount),
         @"ad": [self getMAAdParams:ad]
     }];
+    
+    Mengine::AppleAppLovinRewardedProviderInterfacePtr rewardedProvider = [[AppleAppLovinApplicationDelegate sharedInstance] getRewardedProvider];
+    
+    if (rewardedProvider != nullptr) {
+        Mengine::Params params;
+        [AppleDetail getParamsFromNSDictionary:@{@"placement":ad.placement, @"label":reward.label, @"amount":@(reward.amount)} outParams:&params];
+        
+        rewardedProvider->onAppleAppLovinRewardedRevenuePaid( params );
+    }
 }
 
 #pragma mark - Revenue Callbacks
@@ -243,13 +269,13 @@
     
     [self eventRevenue:ad];
 
-    Mengine::AppleAppLovinProviderInterfacePtr provider = [[AppleAppLovinApplicationDelegate sharedInstance] getProvider];
+    Mengine::AppleAppLovinRewardedProviderInterfacePtr rewardedProvider = [[AppleAppLovinApplicationDelegate sharedInstance] getRewardedProvider];
     
-    if (provider != nullptr) {
+    if (rewardedProvider != nullptr) {
         Mengine::Params params;
-        [AppleDetail getParamsFromNSDictionary:@{@"revenue":@(ad.revenue)} outParams:&params];
+        [AppleDetail getParamsFromNSDictionary:@{@"placement": ad.placement, @"revenue":@(ad.revenue)} outParams:&params];
         
-        provider->onAppleAppLovinRewardedRevenuePaid( params );
+        rewardedProvider->onAppleAppLovinRewardedRevenuePaid( params );
     }
 }
 

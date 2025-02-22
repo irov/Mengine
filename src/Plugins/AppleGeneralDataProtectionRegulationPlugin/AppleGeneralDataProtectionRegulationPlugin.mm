@@ -42,7 +42,7 @@ namespace Mengine
             return false;
         }
         
-        bool AppleGeneralDataProtectionRegulationPlugin_Available = CONFIG_VALUE( "AppleGeneralDataProtectionRegulationPlugin", "Available", true );
+        bool AppleGeneralDataProtectionRegulationPlugin_Available = CONFIG_VALUE_BOOLEAN( "AppleGeneralDataProtectionRegulationPlugin", "Available", true );
         
         if( AppleGeneralDataProtectionRegulationPlugin_Available == false )
         {

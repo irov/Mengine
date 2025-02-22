@@ -1,7 +1,8 @@
-#import <FirebaseCrashlytics/FirebaseCrashlytics.h>
-#import <mach/mach.h>
-
 #import "AppleFirebaseCrashlyticsANRMonitor.h"
+
+#import <FirebaseCrashlytics/FirebaseCrashlytics.h>
+
+#import <mach/mach.h>
 
 @implementation AppleFirebaseCrashlyticsANRMonitor
 
@@ -19,18 +20,18 @@ static void runLoopObserverCallBack(CFRunLoopObserverRef observer, CFRunLoopActi
         if (elapsed >= 10.0) {
             NSArray * stackTraceArray = [NSThread callStackSymbols];
             NSString * stackTrace = [stackTraceArray componentsJoinedByString:@"\n"];
-            NSString * message = [NSString stringWithFormat:@"Application Not Responding %.2f seconfs (ANR)", elapsed]
+            NSString * message = [NSString stringWithFormat:@"Application Not Responding %.2f seconfs (ANR)", elapsed];
             
             NSLog(@"%@\n%@", message, stackTrace);
 
             NSDictionary * userInfo = @{
-                NSLocalizedDescriptionKey:message
+                NSLocalizedDescriptionKey:message,
+                NSLocalizedFailureReasonErrorKey:stackTrace
             };
 
             NSError * error = [NSError errorWithDomain:@"com.mengine.firebase"
-                                                 code:1001
-                                             userInfo:userInfo,
-                     NSLocalizedFailureReasonErrorKey:stackTrace}];
+                                                  code:1001
+                                              userInfo:userInfo];
 
             [[FIRCrashlytics crashlytics] recordError:error];
         }
@@ -42,7 +43,7 @@ static void runLoopObserverCallBack(CFRunLoopObserverRef observer, CFRunLoopActi
     if (self) {
         CFRunLoopObserverContext context = {0, (__bridge void *)self, NULL, NULL, NULL};
 
-        m_observer = CFRunLoopObserverCreate(kCFAllocatorDefault
+        self.m_observer = (__bridge_transfer id)CFRunLoopObserverCreate(kCFAllocatorDefault
             , kCFRunLoopBeforeSources | kCFRunLoopBeforeWaiting
             , true
             , 0
@@ -50,18 +51,17 @@ static void runLoopObserverCallBack(CFRunLoopObserverRef observer, CFRunLoopActi
             , &context
         );
 
-        if (m_observer) {
-            CFRunLoopAddObserver(CFRunLoopGetMain(), m_observer, kCFRunLoopCommonModes);
+        if (self.m_observer != nil) {
+            CFRunLoopAddObserver(CFRunLoopGetMain(), (__bridge CFRunLoopObserverRef)self.m_observer, kCFRunLoopCommonModes);
         }
     }
     return self;
 }
 
 - (void)dealloc  {
-    if (m_observer != nil) {
-        CFRunLoopRemoveObserver(CFRunLoopGetMain(), m_observer, kCFRunLoopCommonModes);
-        CFRelease(m_observer);
-        m_observer = nil;
+    if (self.m_observer != nil) {
+        CFRunLoopRemoveObserver(CFRunLoopGetMain(), (__bridge CFRunLoopObserverRef)self.m_observer, kCFRunLoopCommonModes);
+        self.m_observer = nil;
     }
 }
 

@@ -7,7 +7,7 @@
 
 @interface iOSApplication : NSObject
 
-+ (instancetype _Nonnull) sharedInstance;
++ (instancetype _Nonnull)sharedInstance;
 
 - (BOOL)didFinishLaunchingWithOptions:(nullable NSDictionary<UIApplicationLaunchOptionsKey, id> *)launchOptions;
 

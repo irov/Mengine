@@ -4,6 +4,7 @@
 #import "Environment/Apple/AppleDetail.h"
 
 #import "Environment/iOS/iOSDetail.h"
+#import "Environment/iOS/iOSNetwork.h"
 
 #include "Configuration/Configurations.h"
 
@@ -54,9 +55,9 @@ namespace Mengine
 #endif
     }
     /////////////////////////////////////////////////////////////////////////
-    void AppleAppLovinService::setProvider( const AppleAppLovinProviderInterfacePtr & _provider )
+    void AppleAppLovinService::setBannerProvider( const AppleAppLovinBannerProviderInterfacePtr & _bannerProvider )
     {
-        [[AppleAppLovinApplicationDelegate sharedInstance] setProvider:_provider];
+        [[AppleAppLovinApplicationDelegate sharedInstance] setBannerProvider:_bannerProvider];
     }
     ////////////////////////////////////////////////////////////////////////
     bool AppleAppLovinService::showBanner()
@@ -103,26 +104,9 @@ namespace Mengine
         return true;
     }
     /////////////////////////////////////////////////////////////////////////
-    bool AppleAppLovinService::getBannerViewport( Viewport * const _viewport ) const
+    void AppleAppLovinService::setInterstitialProvider( const AppleAppLovinInterstitialProviderInterfacePtr & _interstitialProvider )
     {
-        AppleAppLovinBannerDelegate * banner = [[AppleAppLovinApplicationDelegate sharedInstance] getBanner];
-        
-        if( banner == nil )
-        {
-            return false;
-        }
-        
-        CGRect rect = [banner getRect];
-        
-        CGFloat screen_scale = UIScreen.mainScreen.scale;
-        
-        _viewport->begin.x = rect.origin.x * screen_scale;
-        _viewport->begin.y = rect.origin.y * screen_scale;
-        
-        _viewport->end.x = rect.origin.x * screen_scale + rect.size.width * screen_scale;
-        _viewport->end.y = rect.origin.y * screen_scale + rect.size.height * screen_scale;
-        
-        return true;
+        [[AppleAppLovinApplicationDelegate sharedInstance] setInterstitialProvider:_interstitialProvider];
     }
     /////////////////////////////////////////////////////////////////////////
     bool AppleAppLovinService::canYouShowInterstitial( const ConstString & _placement ) const
@@ -130,6 +114,11 @@ namespace Mengine
         AppleAppLovinInterstitialDelegate * interstitial = [[AppleAppLovinApplicationDelegate sharedInstance] getInterstitial];
         
         if( interstitial == nil )
+        {
+            return false;
+        }
+        
+        if( [[iOSNetwork sharedInstance] isNetworkAvailable] == NO )
         {
             return false;
         }
@@ -144,7 +133,7 @@ namespace Mengine
         return true;
     }
     ////////////////////////////////////////////////////////////////////////
-    bool AppleAppLovinService::showInterstitial( const ConstString & _placement, const AppleAppLovinInterstitialProviderInterfacePtr & _interstitialProvider )
+    bool AppleAppLovinService::showInterstitial( const ConstString & _placement )
     {
         AppleAppLovinInterstitialDelegate * interstitial = [[AppleAppLovinApplicationDelegate sharedInstance] getInterstitial];
         
@@ -153,16 +142,14 @@ namespace Mengine
             return false;
         }
         
+        if( [[iOSNetwork sharedInstance] isNetworkAvailable] == NO )
+        {
+            return false;
+        }
+        
         NSString * placement = [AppleString NSStringFromConstString:_placement];
         
-        BOOL result = [interstitial show:placement completion:^(BOOL success, NSDictionary<NSString *, id> * _Nonnull _params) {
-            Mengine::Params params;
-            [AppleDetail getParamsFromNSDictionary:_params outParams:&params];
-            
-            _interstitialProvider->onAppleAppLovinInterstitialShowCompleted(success, params);
-        }];
-        
-        if( result == NO )
+        if( [interstitial show:placement] == NO )
         {
             return false;
         }
@@ -175,6 +162,11 @@ namespace Mengine
         AppleAppLovinRewardedDelegate * rewarded = [[AppleAppLovinApplicationDelegate sharedInstance] getRewarded];
         
         if( rewarded == nil )
+        {
+            return false;
+        }
+        
+        if( [[iOSNetwork sharedInstance] isNetworkAvailable] == NO )
         {
             return false;
         }
@@ -198,6 +190,11 @@ namespace Mengine
             return false;
         }
         
+        if( [[iOSNetwork sharedInstance] isNetworkAvailable] == NO )
+        {
+            return false;
+        }
+        
         NSString * placement = [AppleString NSStringFromConstString:_placement];
         
         if( [rewarded canYouShow:placement] == NO )
@@ -207,8 +204,13 @@ namespace Mengine
         
         return true;
     }
+    /////////////////////////////////////////////////////////////////////////
+    void AppleAppLovinService::setRewardedProvider( const AppleAppLovinRewardedProviderInterfacePtr & _rewardedProvider )
+    {
+        [[AppleAppLovinApplicationDelegate sharedInstance] setRewardedProvider:_rewardedProvider];
+    }
     ////////////////////////////////////////////////////////////////////////
-    bool AppleAppLovinService::showRewarded( const ConstString & _placement, const AppleAppLovinRewardedProviderInterfacePtr & _rewardedProvider )
+    bool AppleAppLovinService::showRewarded( const ConstString & _placement )
     {
         AppleAppLovinRewardedDelegate * rewarded = [[AppleAppLovinApplicationDelegate sharedInstance] getRewarded];
         
@@ -217,16 +219,14 @@ namespace Mengine
             return false;
         }
         
+        if( [[iOSNetwork sharedInstance] isNetworkAvailable] == NO )
+        {
+            return false;
+        }
+        
         NSString * placement = [AppleString NSStringFromConstString:_placement];
         
-        BOOL result = [rewarded show:placement completion:^(BOOL success, NSDictionary<NSString *,id> * _Nonnull _params) {
-            Mengine::Params params;
-            [AppleDetail getParamsFromNSDictionary:_params outParams:&params];
-            
-            _rewardedProvider->onAppleAppLovinRewardedShowCompleted(success, params);
-        }];
-        
-        if( result == NO )
+        if( [rewarded show:placement] == NO )
         {
             return false;
         }

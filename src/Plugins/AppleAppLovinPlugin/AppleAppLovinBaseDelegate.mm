@@ -34,23 +34,19 @@
     [params setObject:@(ad.revenue) forKey:@"revenue"];
     [params setObject:ad.revenuePrecision forKey:@"revenuePrecision"];
     
-    if (ad.creativeIdentifier) {
+    if (ad.creativeIdentifier != nil) {
         [params setObject:ad.creativeIdentifier forKey:@"creativeIdentifier"];
     }
     
-    if (ad.adReviewCreativeIdentifier) {
-        [params setObject:ad.adReviewCreativeIdentifier forKey:@"adReviewCreativeIdentifier"];
-    }
-    
-    if (ad.placement) {
+    if (ad.placement != nil) {
         [params setObject:ad.placement forKey:@"placement"];
     }
     
-    if (ad.DSPName) {
+    if (ad.DSPName != nil) {
         [params setObject:ad.DSPName forKey:@"DSPName"];
     }
     
-    if (ad.DSPIdentifier) {
+    if (ad.DSPIdentifier != nil) {
         [params setObject:ad.DSPIdentifier forKey:@"DSPIdentifier"];
     }
     

@@ -28,6 +28,9 @@ src
     iOSAdRevenueParam.h
     iOSAdRevenueParam.mm
     
+    iOSNetwork.h
+    iOSNetwork.mm
+    
     iOSUIMainApplicationDelegateInterface.h
     
     iOSPluginSessionIdDelegateInterface.h

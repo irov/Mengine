@@ -212,7 +212,7 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
         }
     }
 
-    public JSONObject getRemoteConfigValueJSON(String key) {
+    public JSONObject getRemoteConfigValue(String key) {
         synchronized (this) {
             JSONObject value = this.m_configs.get(key);
 

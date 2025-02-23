@@ -187,7 +187,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             }
         }
 
-        if (BuildConfig.DEBUG == true) {
+        if (this.hasOption("applovin.creativedebugger.enabled") == true) {
             settings.setCreativeDebuggerEnabled(true);
         } else {
             settings.setCreativeDebuggerEnabled(false);
@@ -207,7 +207,6 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
         );
 
         AppLovinSdkInitializationConfiguration config = AppLovinSdkInitializationConfiguration.builder(MengineAppLovinPlugin_SdkKey, application)
-            .setPluginVersion("Mengine-AppLovin-Android-1.0.0")
             .setMediationProvider(AppLovinMediationProvider.MAX)
             .build();
 

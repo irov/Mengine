@@ -16,6 +16,25 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        static PyObject * AppleFirebaseRemoteConfigService_GetValue( pybind::kernel_interface * _kernel, const ConstString & _key )
+        {
+            Params params;
+            if( APPLE_FIREBASE_REMOTECONFIG_SERVICE()
+               ->getRemoteConfigValue( _key, &params ) == false )
+            {
+                return _kernel->ret_none();
+            }
+            
+            PyObject * py_params = pybind::ptr( _kernel, params );
+            
+            return py_params;
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
+    //////////////////////////////////////////////////////////////////////////
     AppleFirebaseRemoteConfigScriptEmbedding::AppleFirebaseRemoteConfigScriptEmbedding()
     {
     }
@@ -31,24 +50,16 @@ namespace Mengine
         
         AppleFirebaseRemoteConfigServiceInterface * service = APPLE_FIREBASE_REMOTECONFIG_SERVICE();
 
-        pybind::def_functor( _kernel, "appleFirebaseRemoteConfigGetValueBoolean", service, &AppleFirebaseRemoteConfigServiceInterface::getValueBoolean );
-        pybind::def_functor( _kernel, "appleFirebaseRemoteConfigGetValueInteger", service, &AppleFirebaseRemoteConfigServiceInterface::getValueInteger );
-        pybind::def_functor( _kernel, "appleFirebaseRemoteConfigGetValueDouble", service, &AppleFirebaseRemoteConfigServiceInterface::getValueDouble );
-        pybind::def_functor( _kernel, "appleFirebaseRemoteConfigGetValueConstString", service, &AppleFirebaseRemoteConfigServiceInterface::getValueConstString );
-        pybind::def_functor( _kernel, "appleFirebaseRemoteConfigGetValueJSON", service, &AppleFirebaseRemoteConfigServiceInterface::getValueJSON );
-        pybind::def_functor( _kernel, "appleFirebaseRemoteConfigGetValues", service, &AppleFirebaseRemoteConfigServiceInterface::getValues );
-
+        pybind::def_functor( _kernel, "appleFirebaseRemoteConfigHasValue", service, &AppleFirebaseRemoteConfigServiceInterface::hasRemoteConfig );
+        pybind::def_function_kernel( _kernel, "appleFirebaseRemoteConfigGetValue", &Detail::AppleFirebaseRemoteConfigService_GetValue );
+        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleFirebaseRemoteConfigScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
-        _kernel->remove_from_module( "appleFirebaseRemoteConfigGetValueBoolean", nullptr );
-        _kernel->remove_from_module( "appleFirebaseRemoteConfigGetValueInteger", nullptr );
-        _kernel->remove_from_module( "appleFirebaseRemoteConfigGetValueDouble", nullptr );
-        _kernel->remove_from_module( "appleFirebaseRemoteConfigGetValueConstString", nullptr );
-        _kernel->remove_from_module( "appleFirebaseRemoteConfigGetValueJSON", nullptr );
-        _kernel->remove_from_module( "appleFirebaseRemoteConfigGetValues", nullptr );
+        _kernel->remove_from_module( "appleFirebaseRemoteConfigHasValue", nullptr );
+        _kernel->remove_from_module( "appleFirebaseRemoteConfigGetValue", nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
 }

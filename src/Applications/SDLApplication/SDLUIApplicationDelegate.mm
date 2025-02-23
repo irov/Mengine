@@ -24,6 +24,7 @@
     self.m_pluginDelegates = [NSMutableArray<id> array];
     self.m_pluginApplicationDelegates = [NSMutableArray<iOSPluginApplicationDelegateInterface> array];
     self.m_pluginLoggerDelegates = [NSMutableArray<iOSPluginLoggerDelegateInterface> array];
+    self.m_pluginConfigDelegates = [NSMutableArray<iOSPluginConfigDelegateInterface> array];
     self.m_pluginSessionIdDelegates = [NSMutableArray<iOSPluginSessionIdDelegateInterface> array];
     self.m_pluginAdRevenueDelegates = [NSMutableArray<iOSPluginAdRevenueDelegateInterface> array];
     self.m_pluginTransparencyConsentDelegates = [NSMutableArray<iOSPluginTransparencyConsentDelegateInterface> array];
@@ -45,6 +46,10 @@
         
         if ([delegate conformsToProtocol:@protocol(iOSPluginLoggerDelegateInterface)] == YES) {
             [self.m_pluginLoggerDelegates addObject:delegate];
+        }
+        
+        if ([delegate conformsToProtocol:@protocol(iOSPluginConfigDelegateInterface)] == YES) {
+            [self.m_pluginConfigDelegates addObject:delegate];
         }
         
         if ([delegate conformsToProtocol:@protocol(iOSPluginSessionIdDelegateInterface)] == YES) {
@@ -71,6 +76,10 @@
 
 - (NSArray<iOSPluginLoggerDelegateInterface> *)getPluginLoggerDelegates {
     return self.m_pluginLoggerDelegates;
+}
+
+- (NSArray<iOSPluginConfigDelegateInterface> *)getPluginConfigDelegates {
+    return self.m_pluginConfigDelegates;
 }
 
 - (NSArray<iOSPluginSessionIdDelegateInterface> *)getPluginSessionIdDelegates {
@@ -126,6 +135,14 @@
     @autoreleasepool {
         for (NSObject<iOSPluginLoggerDelegateInterface> * delegate in self.m_pluginLoggerDelegates) {
             [delegate onLogger:record];
+        }
+    }
+}
+
+- (void)config:(NSDictionary *)config {
+    @autoreleasepool {
+        for (NSObject<iOSPluginConfigDelegateInterface> * delegate in self.m_pluginLoggerDelegates) {
+            [delegate onConfig:config];
         }
     }
 }
@@ -189,6 +206,16 @@
         for (id delegate in self.m_pluginApplicationDelegates) {
             if ([delegate application:application didFinishLaunchingWithOptions:launchOptions] == NO) {
                 [AppleLog withFormat:@"🔴 [ERROR] Mengine application didFinishLaunchingWithOptions plugin %@ failed", NSStringFromClass([delegate class])];
+                
+                return NO;
+            }
+        }
+    }
+    
+    @autoreleasepool {
+        for (id delegate in self.m_pluginApplicationDelegates) {
+            if ([delegate application:application didPostLaunchingWithOptions:launchOptions] == NO) {
+                [AppleLog withFormat:@"🔴 [ERROR] Mengine application didPostLaunchingWithOptions plugin %@ failed", NSStringFromClass([delegate class])];
                 
                 return NO;
             }

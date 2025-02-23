@@ -9,6 +9,8 @@
 #   include "AppleFirebaseRemoteConfigScriptEmbedding.h"
 #endif
 
+#import "AppleFirebaseRemoteConfigApplicationDelegate.h"
+
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/Logger.h"
 
@@ -55,22 +57,11 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleFirebaseRemoteConfigService::getValueBoolean( const ConstString & _key ) const
+    bool AppleFirebaseRemoteConfigService::hasRemoteConfig( const ConstString & _key ) const
     {
         NSString * key_ns = [AppleString NSStringFromConstString:_key];
         
-        FIRRemoteConfigValue * firValue = [[FIRRemoteConfig remoteConfig] configValueForKey:key_ns];
-        
-        if( firValue.source == FIRRemoteConfigSourceStatic )
-        {
-            LOGGER_WARNING("Apple firebase remote config not found key: %s"
-               , _key.c_str()
-            );
-            
-            return false;
-        }
-        
-        if( [firValue boolValue] == NO )
+        if( [[AppleFirebaseRemoteConfigApplicationDelegate sharedInstance] existRemoteConfigValue:key_ns] == NO )
         {
             return false;
         }
@@ -78,113 +69,24 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    int64_t AppleFirebaseRemoteConfigService::getValueInteger( const ConstString & _key ) const
+    bool AppleFirebaseRemoteConfigService::getRemoteConfigValue( const ConstString & _key, Params * const _params ) const
     {
         NSString * key_ns = [AppleString NSStringFromConstString:_key];
         
-        FIRRemoteConfigValue * firValue = [[FIRRemoteConfig remoteConfig] configValueForKey:key_ns];
+        NSDictionary * value = [[AppleFirebaseRemoteConfigApplicationDelegate sharedInstance] getRemoteConfigValue:key_ns];
         
-        if( firValue.source == FIRRemoteConfigSourceStatic )
+        if( value == nil )
         {
             LOGGER_WARNING("Apple firebase remote config not found key: %s"
                , _key.c_str()
             );
             
-            return 0;
+            return false;
         }
         
-        NSInteger value = [[firValue numberValue] integerValue];
+        [AppleDetail getParamsFromNSDictionary:value outParams:_params];
         
-        return value;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    double AppleFirebaseRemoteConfigService::getValueDouble( const ConstString & _key ) const
-    {
-        NSString * key_ns = [AppleString NSStringFromConstString:_key];
-        
-        FIRRemoteConfigValue * firValue = [[FIRRemoteConfig remoteConfig] configValueForKey:key_ns];
-        
-        if( firValue.source == FIRRemoteConfigSourceStatic )
-        {
-            LOGGER_WARNING("Apple firebase remote config not found key: %s"
-               , _key.c_str()
-            );
-            
-            return 0.0;
-        }
-        
-        NSInteger value = [[firValue numberValue] doubleValue];
-        
-        return value;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ConstString AppleFirebaseRemoteConfigService::getValueConstString( const ConstString & _key ) const
-    {
-        NSString * key_ns = [AppleString NSStringFromConstString:_key];
-        
-        FIRRemoteConfigValue * firValue = [[FIRRemoteConfig remoteConfig] configValueForKey:key_ns];
-        
-        if( firValue.source == FIRRemoteConfigSourceStatic )
-        {
-            LOGGER_WARNING("Apple firebase remote config not found key: %s"
-               , _key.c_str()
-            );
-            
-            return ConstString::none();
-        }
-        
-        NSString * value = [firValue stringValue];
-        
-        ConstString value_cs = [AppleString NSStringToConstString:value];
-        
-        return value_cs;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    Params AppleFirebaseRemoteConfigService::getValueJSON( const ConstString & _key ) const
-    {
-        NSString * key_ns = [AppleString NSStringFromConstString:_key];
-        
-        FIRRemoteConfigValue * firValue = [[FIRRemoteConfig remoteConfig] configValueForKey:key_ns];
-        
-        if( firValue.source == FIRRemoteConfigSourceStatic )
-        {
-            LOGGER_WARNING("Apple firebase remote config not found key: %s"
-               , _key.c_str()
-            );
-            
-            return Params();
-        }
-        
-        NSDictionary * value = [firValue JSONValue];
-        
-        Params params;
-        [AppleDetail getParamsFromNSDictionary:value outParams:&params];
-        
-        return params;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    Params AppleFirebaseRemoteConfigService::getValues() const
-    {
-        FIRRemoteConfig * remoteConfig = [FIRRemoteConfig remoteConfig];
-        
-        NSArray<NSString *> * remoteKeys = [remoteConfig allKeysFromSource:FIRRemoteConfigSourceRemote];
-        
-        Params params;
-        
-        for( NSString * key in remoteKeys )
-        {
-            Mengine::ConstString key_cstr = [AppleString NSStringToConstString:key];
-            
-            FIRRemoteConfigValue * value = [remoteConfig configValueForKey:key];
-            
-            NSString * value_ns = [value stringValue];
-            
-            String value_str = [AppleString NSStringToString:value_ns];
-            
-            params.emplace( key_cstr, value_str );
-        }
-        
-        return params;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
 }

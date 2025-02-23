@@ -38,6 +38,7 @@ src
     iOSPluginApplicationDelegateInterface.h
     iOSPluginTransparencyConsentDelegateInterface.h
     iOSPluginLoggerDelegateInterface.h
+	iOSPluginConfigDelegateInterface.h
 )
 
 ADD_MENGINE_APPLE_LIBRARY(Environment)

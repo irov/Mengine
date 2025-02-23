@@ -78,13 +78,26 @@
         
         [buffer appendFormat:@"|%@| ", threadName];
     }
+    
+    if( record.LOG_FLAG & Mengine::LFLAG_FILESTAMP )
+    {
+        NSString * file = record.LOG_FILE;
+        int32_t line = record.LOG_LINE;
+        
+        if( file != nil )
+        {
+            [buffer appendFormat:@"%@[%d] ", file, line];
+        }
+    }
 
     if( record.LOG_FLAG & Mengine::LFLAG_FUNCTIONSTAMP )
     {
         NSString * function = record.LOG_FUNCTION;
-        int32_t line = record.LOG_LINE;
         
-        [buffer appendFormat:@"%@[%d] ", function, line];
+        if( function != nil )
+        {
+            [buffer appendFormat:@"%@ ", function];
+        }
     }
 
     NSString * data = record.LOG_DATA;

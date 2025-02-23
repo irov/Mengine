@@ -37,8 +37,9 @@ namespace Mengine
         record.LOG_FLAG = message.flag;
         record.LOG_FILTER = message.filter;
         record.LOG_COLOR = message.color;
-        record.LOG_FUNCTION = [NSString stringWithUTF8String:message.function];
+        record.LOG_FILE = (message.file != nullptr) ? [NSString stringWithUTF8String:message.file] : nil;
         record.LOG_LINE = message.line;
+        record.LOG_FUNCTION = (message.function != nullptr) ? [NSString stringWithUTF8String:message.function] : nil;
         record.LOG_DATA = [AppleString NSStringFromString:message.data withSize:message.size];
         
         [iOSDetail log:record];

@@ -37,6 +37,7 @@
 + (void) adRevenue:(iOSAdRevenueParam * _Nonnull)revenue;
 + (void) transparencyConsent:(iOSTransparencyConsentParam * _Nonnull)consent;
 + (void) log:(AppleLogRecordParam * _Nonnull)record;
++ (void) config:(NSDictionary * _Nonnull)config;
 + (NSString * _Nonnull) pathForTemporaryFileWithPrefix:(NSString * _Nonnull)prefix ext:(NSString * _Nonnull)ext;
 
 + (void) showOkAlertWithTitle:(NSString * _Nonnull)title

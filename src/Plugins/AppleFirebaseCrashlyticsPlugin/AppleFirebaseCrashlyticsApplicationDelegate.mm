@@ -29,6 +29,8 @@
     
     [[FIRCrashlytics crashlytics] setUserID:sessionId];
     
+    self.m_ANRMonitor = [[AppleFirebaseCrashlyticsANRMonitor alloc] init];
+    
     return YES;
 }
 

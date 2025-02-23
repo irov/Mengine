@@ -18,12 +18,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        bool getValueBoolean( const ConstString & _key ) const override;
-        int64_t getValueInteger( const ConstString & _key ) const override;
-        double getValueDouble( const ConstString & _key ) const override;
-        ConstString getValueConstString( const ConstString & _key ) const override;
-        Params getValueJSON( const ConstString & _key ) const override;
-        
-        Params getValues() const override;
+        bool hasRemoteConfig( const ConstString & _key ) const override;
+        bool getRemoteConfigValue( const ConstString & _key, Params * const _params ) const override;
     };
 }

@@ -1,5 +1,7 @@
 #import "AppleFirebaseCrashlyticsANRMonitor.h"
 
+#import "Environment/iOS/iOSLog.h"
+
 #import <FirebaseCrashlytics/FirebaseCrashlytics.h>
 
 #import <mach/mach.h>
@@ -22,7 +24,7 @@ static void runLoopObserverCallBack(CFRunLoopObserverRef observer, CFRunLoopActi
             NSString * stackTrace = [stackTraceArray componentsJoinedByString:@"\n"];
             NSString * message = [NSString stringWithFormat:@"Application Not Responding %.2f seconfs (ANR)", elapsed];
             
-            NSLog(@"%@\n%@", message, stackTrace);
+            IOS_LOGGER_MESSAGE(@"%@\n%@", message, stackTrace);
 
             NSDictionary * userInfo = @{
                 NSLocalizedDescriptionKey:message,

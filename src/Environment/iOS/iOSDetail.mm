@@ -155,8 +155,16 @@
     
     [iOSDetail addMainQueueOperation:^{
         NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
-    
+        
         [delegate log:record];
+    }];
+}
+
++ (void) config:(NSDictionary * _Nonnull)config {
+    [iOSDetail addMainQueueOperation:^{
+        NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
+        
+        [delegate config:config];
     }];
 }
 

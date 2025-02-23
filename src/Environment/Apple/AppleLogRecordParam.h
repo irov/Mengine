@@ -15,8 +15,9 @@
 @property (nonatomic) uint32_t LOG_FLAG;
 @property (nonatomic) uint32_t LOG_FILTER;
 @property (nonatomic) uint32_t LOG_COLOR;
-@property (nonatomic, strong) NSString * _Nonnull LOG_FUNCTION;
+@property (nonatomic, strong) NSString * _Nullable LOG_FILE;
 @property (nonatomic) int32_t LOG_LINE;
+@property (nonatomic, strong) NSString * _Nullable LOG_FUNCTION;
 @property (nonatomic, strong) NSString * _Nonnull LOG_DATA;
 
 @end

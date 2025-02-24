@@ -21,6 +21,10 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
+        void setStatisticEnabled( StatisticId _id, bool _enable ) override;
+        bool isStatisticEnabled( StatisticId _id ) const override;
+
+    public:
         void addStatisticInteger( StatisticId _id, int64_t _value ) override;
         void delStatisticInteger( StatisticId _id, int64_t _value ) override;
         int64_t getStatisticInteger( StatisticId _id ) const override;
@@ -39,6 +43,7 @@ namespace Mengine
     protected:
         ThreadSharedMutexInterfacePtr m_mutex;
 
+        bool m_statisticEnabled[MENGINE_STATISTIC_MAX_COUNT] = {true};
         int64_t m_statisticIntegers[MENGINE_STATISTIC_MAX_COUNT] = {0LL};
         double m_statisticDoubles[MENGINE_STATISTIC_MAX_COUNT] = {0.0};
         ConstString m_statisticConstStrings[MENGINE_STATISTIC_MAX_COUNT];

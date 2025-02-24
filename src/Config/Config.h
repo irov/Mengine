@@ -252,6 +252,18 @@
 #   define MENGINE_ASSERTION_DEBUG_ENABLE
 #endif
 
+#ifndef MENGINE_STATISTIC
+#   if defined(MENGINE_BUILD_PUBLISH_ENABLE)
+#       define MENGINE_STATISTIC 0
+#   else
+#       define MENGINE_STATISTIC 1
+#   endif
+#endif
+
+#if MENGINE_STATISTIC == 1
+#   define MENGINE_STATISTIC_ENABLE
+#endif
+
 #ifndef MENGINE_DOCUMENT
 #   if defined(MENGINE_DEBUG)
 #       define MENGINE_DOCUMENT 1

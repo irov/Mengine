@@ -943,9 +943,6 @@ Core
     NotificationName.cpp
     NotificationName.h
 
-    StatisticName.cpp
-    StatisticName.h
-
     ExecutorHelper.h
     
     PrototypeHelper.cpp
@@ -961,6 +958,9 @@ Core
     CharacterHelper.h
     
     StatisticHelper.h
+    
+    StatisticDetail.cpp
+    StatisticDetail.h
     
     ReferenceCounterGuardScope.cpp
     ReferenceCounterGuardScope.h

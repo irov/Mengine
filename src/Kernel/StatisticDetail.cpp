@@ -1,4 +1,4 @@
-#include "StatisticName.h"
+#include "StatisticDetail.h"
 
 #include "Kernel/Array.h"
 
@@ -30,6 +30,26 @@ namespace Mengine
                 return Detail::createStatisticNameTable( std::make_index_sequence<Size>{} );
             }
             //////////////////////////////////////////////////////////////////////////
+            template<size_t Index>
+            constexpr bool createStatisticDefaultEnabledTableFunction()
+            {
+                bool defaultEnabled = Statistic<Index>::isDefaultEnabled();
+
+                return defaultEnabled;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            template<size_t ... Index>
+            constexpr auto createStatisticDefaultEnabledTable( std::index_sequence<Index ...> )
+            {
+                return Array<bool, sizeof ... (Index)>{{Detail::createStatisticDefaultEnabledTableFunction<Index>() ...}};
+            }
+            //////////////////////////////////////////////////////////////////////////
+            template<size_t Size>
+            constexpr auto createStatisticDefaultEnabledTable()
+            {
+                return Detail::createStatisticDefaultEnabledTable( std::make_index_sequence<Size>{} );
+            }
+            //////////////////////////////////////////////////////////////////////////
         }
         //////////////////////////////////////////////////////////////////////////
         const Char * getStatisticName( StatisticId _id )
@@ -37,6 +57,13 @@ namespace Mengine
             const Char * name = Detail::createStatisticNameTable<MENGINE_STATISTIC_MAX_COUNT>()[_id];
 
             return name;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool isStatisticDefaultEnabled( StatisticId _id )
+        {
+            bool defaultEnabled = Detail::createStatisticDefaultEnabledTable<MENGINE_STATISTIC_MAX_COUNT>()[_id];
+
+            return defaultEnabled;
         }
         //////////////////////////////////////////////////////////////////////////
     }

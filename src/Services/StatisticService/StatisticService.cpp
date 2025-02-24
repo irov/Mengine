@@ -4,6 +4,7 @@
 
 #include "Kernel/ThreadSharedMutexScope.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/StatisticDetail.h"
 
 #include "Config/Algorithm.h"
 
@@ -39,6 +40,11 @@ namespace Mengine
 
         m_mutex = mutex;
 
+        for( uint32_t index = 0; index != MENGINE_STATISTIC_MAX_COUNT; ++index )
+        {
+            m_statisticEnabled[index] = Helper::isStatisticDefaultEnabled( (StatisticId)index );
+        }
+
         Algorithm::fill_n( m_statisticIntegers, MENGINE_STATISTIC_MAX_COUNT, 0LL );
         Algorithm::fill_n( m_statisticDoubles, MENGINE_STATISTIC_MAX_COUNT, 0.0 );
 
@@ -48,6 +54,18 @@ namespace Mengine
     void StatisticService::_finalizeService()
     {
         m_mutex = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void StatisticService::setStatisticEnabled( StatisticId _id, bool _enable )
+    {
+        m_statisticEnabled[_id] = _enable;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool StatisticService::isStatisticEnabled( StatisticId _id ) const
+    {
+        bool value = m_statisticEnabled[_id];
+
+        return value;
     }
     //////////////////////////////////////////////////////////////////////////
     void StatisticService::addStatisticInteger( StatisticId _id, int64_t _value )

@@ -270,24 +270,27 @@ namespace Mengine
         RenderPass & renderPass = this->requestRenderPass_( _context, batch, vertexBuffer, indexBuffer, vertexAttribute, _programVariable );
 
 #if defined(MENGINE_DEBUG)
-        if( _debug == false )
+        if( STATISTIC_IS_ENABLED( STATISTIC_RENDER_PERFRAME_FILLRATE ) == true )
         {
-            EPrimitiveType primitiveType = _material->getPrimitiveType();
-
-            switch( primitiveType )
+            if( _debug == false )
             {
-            case PT_TRIANGLELIST:
-                {
-                    const RenderViewportInterface * viewport = renderPass.context.viewport;
-                    const Viewport & vp = viewport->getViewport();
+                EPrimitiveType primitiveType = _material->getPrimitiveType();
 
-                    double fillrate = Helper::calcRenderQuadSquare( _vertices, _vertexCount, vp );
-
-                    STATISTIC_ADD_DOUBLE( STATISTIC_RENDER_PERFRAME_FILLRATE, fillrate );
-                }break;
-            default:
+                switch( primitiveType )
                 {
-                }break;
+                case PT_TRIANGLELIST:
+                    {
+                        const RenderViewportInterface * viewport = renderPass.context.viewport;
+                        const Viewport & vp = viewport->getViewport();
+
+                        double fillrate = Helper::calcRenderQuadSquare( _vertices, _vertexCount, vp );
+
+                        STATISTIC_ADD_DOUBLE( STATISTIC_RENDER_PERFRAME_FILLRATE, fillrate );
+                    }break;
+                default:
+                    {
+                    }break;
+                }
             }
         }
 #endif

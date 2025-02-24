@@ -45,6 +45,7 @@
 #include "Kernel/PluginHelper.h"
 #include "Kernel/MixerValue.h"
 #include "Kernel/MixerBoolean.h"
+#include "Kernel/StatisticHelper.h"
 
 #include "Config/Path.h"
 

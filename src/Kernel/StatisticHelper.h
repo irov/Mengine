@@ -25,6 +25,8 @@
 #   define STATISTIC_GET_CONSTSTRING(ID) (SERVICE_IS_INITIALIZE(Mengine::StatisticServiceInterface) == true ? STATISTIC_SERVICE()->getStatisticConstString(ID) : ConstString::none())
 #   define STATISTIC_RESET_CONSTSTRING(ID) (SERVICE_IS_INITIALIZE(Mengine::StatisticServiceInterface) == true ? STATISTIC_SERVICE()->resetStatisticConstString(ID) : MENGINE_NOP)
 #else
+#   include "Interface/StatisticInterface.h"
+
 #   define STATISTIC_SET_ENABLED(ID, VALUE)
 #   define STATISTIC_IS_ENABLED(ID) (false)
 

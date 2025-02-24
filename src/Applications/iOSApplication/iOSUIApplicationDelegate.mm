@@ -143,7 +143,7 @@
 
 - (void)config:(NSDictionary *)config {
     @autoreleasepool {
-        for (NSObject<iOSPluginConfigDelegateInterface> * delegate in self.m_pluginLoggerDelegates) {
+        for (NSObject<iOSPluginConfigDelegateInterface> * delegate in self.m_pluginConfigDelegates) {
             [delegate onConfig:config];
         }
     }
@@ -216,6 +216,10 @@
     
     @autoreleasepool {
         for (id delegate in self.m_pluginApplicationDelegates) {
+            if ([delegate respondsToSelector:@selector(application: didPostLaunchingWithOptions:)] == NO) {
+                continue;
+            }
+            
             if ([delegate application:application didPostLaunchingWithOptions:launchOptions] == NO) {
                 [AppleLog withFormat:@"🔴 [ERROR] Mengine application didPostLaunchingWithOptions plugin %@ failed", NSStringFromClass([delegate class])];
                 
@@ -426,8 +430,6 @@
     
     application.finalize();
     
-    SDL_iPhoneSetEventPump( SDL_FALSE );
-    
     @autoreleasepool {
         for (id delegate in self.m_pluginApplicationDelegates) {
             if ([delegate respondsToSelector:@selector(endLoop:)] == NO) {
@@ -437,6 +439,8 @@
             [delegate endLoop];
         }
     }
+    
+    SDL_iPhoneSetEventPump( SDL_FALSE );
     
     [AppleLog withFormat:@"Mengine application finish"];
     

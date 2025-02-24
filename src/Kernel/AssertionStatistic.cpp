@@ -2,7 +2,7 @@
 
 #if defined(MENGINE_ASSERTION_DEBUG_ENABLE)
 #   include "Kernel/StatisticHelper.h"
-#   include "Kernel/StatisticName.h"
+#   include "Kernel/StatisticDetail.h"
 #   include "Kernel/Assertion.h"
 #   include "Kernel/Logger.h"
 

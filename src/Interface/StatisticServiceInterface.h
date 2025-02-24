@@ -14,6 +14,10 @@ namespace Mengine
         SERVICE_DECLARE( "StatisticService" )
 
     public:
+        virtual void setStatisticEnabled( StatisticId _id, bool _enable ) = 0;
+        virtual bool isStatisticEnabled( StatisticId _id ) const = 0;
+
+    public:
         virtual void addStatisticInteger( StatisticId _id, int64_t _value ) = 0;
         virtual void delStatisticInteger( StatisticId _id, int64_t _value ) = 0;
         virtual int64_t getStatisticInteger( StatisticId _id ) const = 0;

@@ -56,7 +56,9 @@ namespace Mengine
         StdString::strcat_safe( exception_msg, m_function, MENGINE_LOGGER_MAX_MESSAGE );
         StdString::strcat_safe( exception_msg, "\n", MENGINE_LOGGER_MAX_MESSAGE );
 
+#if defined(MENGINE_DEBUG)
         Helper::debuggerBreak();
+#endif
 
         throw StdException::runtime_error( exception_msg );
     }

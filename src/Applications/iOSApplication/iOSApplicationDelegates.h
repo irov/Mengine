@@ -2,7 +2,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface AppleApplicationDelegates : NSObject
+@interface iOSApplicationDelegates : NSObject
 
 + (NSArray *)getApplicationDelegates;
 

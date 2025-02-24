@@ -1,11 +1,11 @@
-#import "SDLUIApplicationDelegate.h"
+#import "iOSUIApplicationDelegate.h"
 
 #include "Interface/PlatformServiceInterface.h"
 
 #include "Environment/SDL/SDLIncluder.h"
 #include "Environment/SDL/SDLPlatformServiceExtensionInterface.h"
 
-#import "AppleApplicationDelegates.h"
+#import "iOSApplicationDelegates.h"
 
 #import "Environment/Apple/AppleUserDefaults.h"
 #import "Environment/Apple/AppleDetail.h"
@@ -14,58 +14,60 @@
 #import "Environment/iOS/iOSNetwork.h"
 #import "Environment/iOS/iOSDetail.h"
 
-#include "SDLApplication.h"
+#include "iOSApplication.h"
 
-@implementation SDLUIApplicationDelegate
+@implementation iOSUIApplicationDelegate
 
-- (id)init {
-    NSArray * proxysClassed = [AppleApplicationDelegates getApplicationDelegates];
-
-    self.m_pluginDelegates = [NSMutableArray<id> array];
-    self.m_pluginApplicationDelegates = [NSMutableArray<iOSPluginApplicationDelegateInterface> array];
-    self.m_pluginLoggerDelegates = [NSMutableArray<iOSPluginLoggerDelegateInterface> array];
-    self.m_pluginConfigDelegates = [NSMutableArray<iOSPluginConfigDelegateInterface> array];
-    self.m_pluginSessionIdDelegates = [NSMutableArray<iOSPluginSessionIdDelegateInterface> array];
-    self.m_pluginAdRevenueDelegates = [NSMutableArray<iOSPluginAdRevenueDelegateInterface> array];
-    self.m_pluginTransparencyConsentDelegates = [NSMutableArray<iOSPluginTransparencyConsentDelegateInterface> array];
-    
-    for (id className in proxysClassed) {
-        id c = NSClassFromString(className);
-
-        if (c == nil) {
-            continue;
-        }
+- (instancetype)init {
+    if (self = [super init]) {
+        NSArray * proxysClassed = [iOSApplicationDelegates getApplicationDelegates];
         
-        id delegate = [[c alloc] init];
+        self.m_pluginDelegates = [NSMutableArray<id> array];
+        self.m_pluginApplicationDelegates = [NSMutableArray<iOSPluginApplicationDelegateInterface> array];
+        self.m_pluginLoggerDelegates = [NSMutableArray<iOSPluginLoggerDelegateInterface> array];
+        self.m_pluginConfigDelegates = [NSMutableArray<iOSPluginConfigDelegateInterface> array];
+        self.m_pluginSessionIdDelegates = [NSMutableArray<iOSPluginSessionIdDelegateInterface> array];
+        self.m_pluginAdRevenueDelegates = [NSMutableArray<iOSPluginAdRevenueDelegateInterface> array];
+        self.m_pluginTransparencyConsentDelegates = [NSMutableArray<iOSPluginTransparencyConsentDelegateInterface> array];
         
-        [self.m_pluginDelegates addObject:delegate];
-
-        if ([delegate conformsToProtocol:@protocol(iOSPluginApplicationDelegateInterface)] == YES) {
-            [self.m_pluginApplicationDelegates addObject:delegate];
-        }
-        
-        if ([delegate conformsToProtocol:@protocol(iOSPluginLoggerDelegateInterface)] == YES) {
-            [self.m_pluginLoggerDelegates addObject:delegate];
-        }
-        
-        if ([delegate conformsToProtocol:@protocol(iOSPluginConfigDelegateInterface)] == YES) {
-            [self.m_pluginConfigDelegates addObject:delegate];
-        }
-        
-        if ([delegate conformsToProtocol:@protocol(iOSPluginSessionIdDelegateInterface)] == YES) {
-            [self.m_pluginSessionIdDelegates addObject:delegate];
-        }
-
-        if ([delegate conformsToProtocol:@protocol(iOSPluginAdRevenueDelegateInterface)] == YES) {
-            [self.m_pluginAdRevenueDelegates addObject:delegate];
-        }
-        
-        if ([delegate conformsToProtocol:@protocol(iOSPluginTransparencyConsentDelegateInterface)] == YES) {
-            [self.m_pluginTransparencyConsentDelegates addObject:delegate];
+        for (id className in proxysClassed) {
+            id c = NSClassFromString(className);
+            
+            if (c == nil) {
+                continue;
+            }
+            
+            id delegate = [[c alloc] init];
+            
+            [self.m_pluginDelegates addObject:delegate];
+            
+            if ([delegate conformsToProtocol:@protocol(iOSPluginApplicationDelegateInterface)] == YES) {
+                [self.m_pluginApplicationDelegates addObject:delegate];
+            }
+            
+            if ([delegate conformsToProtocol:@protocol(iOSPluginLoggerDelegateInterface)] == YES) {
+                [self.m_pluginLoggerDelegates addObject:delegate];
+            }
+            
+            if ([delegate conformsToProtocol:@protocol(iOSPluginConfigDelegateInterface)] == YES) {
+                [self.m_pluginConfigDelegates addObject:delegate];
+            }
+            
+            if ([delegate conformsToProtocol:@protocol(iOSPluginSessionIdDelegateInterface)] == YES) {
+                [self.m_pluginSessionIdDelegates addObject:delegate];
+            }
+            
+            if ([delegate conformsToProtocol:@protocol(iOSPluginAdRevenueDelegateInterface)] == YES) {
+                [self.m_pluginAdRevenueDelegates addObject:delegate];
+            }
+            
+            if ([delegate conformsToProtocol:@protocol(iOSPluginTransparencyConsentDelegateInterface)] == YES) {
+                [self.m_pluginTransparencyConsentDelegates addObject:delegate];
+            }
         }
     }
     
-    return [super init];
+    return self;
 }
 
 #pragma mark - iOSUIMainApplicationDelegateInterface Protocol
@@ -370,7 +372,7 @@
     
     SDL_iPhoneSetEventPump( SDL_TRUE );
     
-    Mengine::SDLApplication application;
+    Mengine::iOSApplication application;
     
     NSArray<NSString *> * arguments = [[NSProcessInfo processInfo] arguments];
     
@@ -381,7 +383,7 @@
     {
         argv[argc++] = (Mengine::Char *)[arg UTF8String];
     }
-        
+    
     if( application.bootstrap( argc, argv ) == false ) {
         [AppleLog withFormat:@"🔴 [ERROR] Mengine application bootstrap [Failed]"];
         

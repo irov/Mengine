@@ -1,4 +1,4 @@
-#import "SDLUIApplicationDelegate.h"
+#import "iOSUIApplicationDelegate.h"
 
 #import <UIKit/UIKit.h>
 
@@ -9,7 +9,7 @@ int main( int argc, char * argv[] ) {
     
     @autoreleasepool {
         @try {
-            result = UIApplicationMain(argc, argv, nil, NSStringFromClass([SDLUIApplicationDelegate class]));
+            result = UIApplicationMain(argc, argv, nil, NSStringFromClass([iOSUIApplicationDelegate class]));
         } @catch (NSException * ex) {
             result = EXIT_FAILURE;
             

@@ -6,11 +6,11 @@
 
 namespace Mengine
 {
-    class SDLApplication
+    class iOSApplication
     {
     public:
-        SDLApplication();
-        ~SDLApplication();
+        iOSApplication();
+        ~iOSApplication();
 
     public:
         bool bootstrap( int32_t _argc, Char ** const _argv );
@@ -32,9 +32,5 @@ namespace Mengine
     protected:
         LoggerInterfacePtr m_loggerMessageBox;
         LoggerInterfacePtr m_loggerStdio;
-
-#if defined(MENGINE_WINDOWS_DEBUG)
-        LoggerInterfacePtr m_loggerOutputDebug;
-#endif
     };
 }

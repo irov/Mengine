@@ -9,26 +9,15 @@ endforeach()
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/iOSApplicationDelegates.mm.in ${MENGINE_SOLUTIONS_CONFIG_DIR}/src/Configuration/iOSApplicationDelegates.mm @ONLY)
 
 ADD_FILTER(
-main
-    iOSMain.mm
-)
-
-ADD_FILTER(
 src
     iOSApplication.cpp
     iOSApplication.h
-    iOSMessageBoxLogger.cpp
-    iOSMessageBoxLogger.h
-)
 
-ADD_FILTER(
-apple
+	iOSMain.mm
+
     ${MENGINE_SOLUTIONS_CONFIG_DIR}/src/Configuration/iOSApplicationDelegates.mm
     iOSApplicationDelegates.h
-)
 
-ADD_FILTER(
-ios
     iOSUIApplicationDelegate.mm
     iOSUIApplicationDelegate.h
 		
@@ -244,6 +233,8 @@ set(CMAKE_XCODE_ATTRIBUTE_ONLY_ACTIVE_ARCH[variant=Debug] YES CACHE STRING "CMAK
 MENGINE_GENERATE_COCOAPODS()
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)
+
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} SDL)
 
 if(MENGINE_PLUGIN_MENGINE_STATIC)
     TARGET_LINK_LIBRARIES(${PROJECT_NAME} Mengine)

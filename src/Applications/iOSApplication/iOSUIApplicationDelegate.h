@@ -10,7 +10,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SDLUIApplicationDelegate : NSObject<UIApplicationDelegate, iOSUIMainApplicationDelegateInterface>
+@interface iOSUIApplicationDelegate : NSObject<UIApplicationDelegate, iOSUIMainApplicationDelegateInterface>
 
 @property (nonatomic, strong) UIWindow * m_window;
 

@@ -4,8 +4,6 @@
 
 #include "Kernel/DebugBreak.h"
 
-#include "Config/StdIO.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -22,7 +20,9 @@ namespace Mengine
         LoggerMessage message;
         _record->getMessage( &message );
 
+#if defined(MENGINE_DEBUG)
         Helper::debuggerBreak();
+#endif
 
         SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_ERROR, "Mengine fatal error", message.data, NULL );
     }

@@ -61,17 +61,19 @@ namespace Mengine
 
             NOTIFICATION_NOTIFY( NOTIFICATOR_ERROR, m_category, m_level, m_file, m_line, m_function, message_info );
 
+#if defined(MENGINE_DEBUG)
+            Helper::debuggerBreak();
+#endif
+            
             switch( m_level )
             {
-            case ERROR_LEVEL_MESSAGE:
-                {
-                    Helper::debuggerBreak();
-                }break;
             case ERROR_LEVEL_FATAL:
                 {
                     Helper::abort( message_info );
                 }break;
-            }            
+            default:
+                break;
+            }
         }
         //////////////////////////////////////////////////////////////////////////
     }

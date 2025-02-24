@@ -1,4 +1,4 @@
-#include "SDLApplication.h"
+#include "iOSApplication.h"
 
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/BootstrapperInterface.h"
@@ -11,19 +11,11 @@
 #include "Interface/FileServiceInterface.h"
 #include "Interface/PreferencesSystemInterface.h"
 
-#if defined(MENGINE_PLATFORM_IOS)
-#   include "iOSLogger.h"
-#else
-#   include "Kernel/StdioLogger.h"
-#endif
-
-#if defined(MENGINE_WINDOWS_DEBUG)
-#   include "Environment/Windows/Win32OutputDebugLogger.h"
-#endif
+#include "iOSLogger.h"
 
 #include "Mengine/MenginePlugin.h"
 
-#include "SDLMessageBoxLogger.h"
+#include "Environment/SDL/SDLMessageBoxLogger.h"
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/StringArguments.h"
@@ -39,15 +31,15 @@ SERVICE_PROVIDER_EXTERN( ServiceProvider );
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    SDLApplication::SDLApplication()
+    iOSApplication::iOSApplication()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    SDLApplication::~SDLApplication()
+    iOSApplication::~iOSApplication()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLApplication::initializeOptionsService_( int32_t _argc, Char ** const _argv )
+    bool iOSApplication::initializeOptionsService_( int32_t _argc, Char ** const _argv )
     {
         ArgumentsInterfacePtr arguments = Helper::makeFactorableUnique<StringArguments>( MENGINE_DOCUMENT_FUNCTION );
 
@@ -76,7 +68,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLApplication::initializeLoggerService_()
+    bool iOSApplication::initializeLoggerService_()
     {
         if( LOGGER_SERVICE()
             ->isSilent() == true )
@@ -84,11 +76,7 @@ namespace Mengine
             return true;
         }
 
-#if defined(MENGINE_PLATFORM_IOS)
         LoggerInterfacePtr loggerStdio = Helper::makeFactorableUnique<iOSLogger>( MENGINE_DOCUMENT_FUNCTION );
-#else
-        LoggerInterfacePtr loggerStdio = Helper::makeFactorableUnique<StdioLogger>( MENGINE_DOCUMENT_FUNCTION );
-#endif
 
         loggerStdio->setWriteHistory( true );
 
@@ -108,22 +96,10 @@ namespace Mengine
             m_loggerMessageBox = loggerMessageBox;
         }
 
-#if defined(MENGINE_WINDOWS_DEBUG)
-        Win32OutputDebugLoggerPtr loggerOutputDebug = Helper::makeFactorableUnique<Win32OutputDebugLogger>( MENGINE_DOCUMENT_FUNCTION );
-
-        loggerOutputDebug->setVerboseLevel( LM_MESSAGE );
-
-        if( LOGGER_SERVICE()
-            ->registerLogger( loggerOutputDebug ) == true )
-        {
-            m_loggerOutputDebug = loggerOutputDebug;
-        }
-#endif
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLApplication::finalizeLoggerService_()
+    void iOSApplication::finalizeLoggerService_()
     {
         if( m_loggerStdio != nullptr )
         {
@@ -140,34 +116,16 @@ namespace Mengine
 
             m_loggerMessageBox = nullptr;
         }
-
-#if defined(MENGINE_WINDOWS_DEBUG)
-        if( m_loggerOutputDebug != nullptr )
-        {
-            if( SERVICE_IS_INITIALIZE( LoggerServiceInterface ) == true )
-            {
-                LOGGER_SERVICE()
-                    ->unregisterLogger( m_loggerOutputDebug );
-            }
-
-            m_loggerOutputDebug = nullptr;
-        }
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLApplication::bootstrap( int32_t _argc, Char ** const _argv )
+    bool iOSApplication::bootstrap( int32_t _argc, Char ** const _argv )
     {
-#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
-#   error "MENGINE_PLUGIN_MENGINE_SHARED for SDL not implemented"
-#elif defined(MENGINE_PLUGIN_MENGINE_STATIC)
-        ServiceProviderInterface * serviceProvider = API_MengineCreate();
-#else
-        ServiceProviderInterface * serviceProvider = nullptr;
-#endif
+        ServiceProviderInterface * serviceProvider = ::API_MengineCreate();
 
         SERVICE_PROVIDER_SETUP( serviceProvider );
 
-        SERVICE_PROVIDER_GET()->waitService( "SDLApplication", SERVICE_ID( OptionsServiceInterface ), [this, _argc, _argv]()
+        SERVICE_PROVIDER_GET()
+            ->waitService( "iOSApplication", SERVICE_ID( OptionsServiceInterface ), [this, _argc, _argv]()
         {
             if( this->initializeOptionsService_( _argc, _argv ) == false )
             {
@@ -177,7 +135,7 @@ namespace Mengine
             return true;
         } );
 
-        UNKNOWN_SERVICE_WAIT( SDLApplication, LoggerServiceInterface, [this]()
+        UNKNOWN_SERVICE_WAIT( iOSApplication, LoggerServiceInterface, [this]()
         {
             if( this->initializeLoggerService_() == false )
             {
@@ -187,33 +145,25 @@ namespace Mengine
             return true;
         } );
 
-        UNKNOWN_SERVICE_LEAVE( SDLApplication, LoggerServiceInterface, [this]()
+        UNKNOWN_SERVICE_LEAVE( iOSApplication, LoggerServiceInterface, [this]()
         {
             this->finalizeLoggerService_();
         } );
 
-#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
-#error "MENGINE_PLUGIN_MENGINE_SHARED for SDL not implemented"
-#elif defined(MENGINE_PLUGIN_MENGINE_STATIC)
         if( ::API_MengineBootstrap() == false )
         {
             return false;
         }
-#endif
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLApplication::initialize()
+    bool iOSApplication::initialize()
     {
-#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
-#error "MENGINE_PLUGIN_MENGINE_SHARED for SDL not implemented"
-#elif defined(MENGINE_PLUGIN_MENGINE_STATIC)
         if( ::API_MengineRun() == false )
         {
             return false;
         }
-#endif
 
         LOGGER_INFO( "application", "creating render window..." );
 
@@ -244,7 +194,6 @@ namespace Mengine
             return true;
         }
 
-#if defined(MENGINE_PLATFORM_IOS)
         if( PLATFORM_SERVICE()
             ->createWindow( Resolution( 0, 0 ), true ) == false )
         {
@@ -252,34 +201,7 @@ namespace Mengine
 
             return false;
         }
-#else
-        bool fullscreen = APPLICATION_SERVICE()
-            ->getFullscreenMode();
-
-        Resolution windowResolution;
-        if( APPLICATION_SERVICE()
-            ->calcWindowResolution( fullscreen, &windowResolution ) == false )
-        {
-            LOGGER_FATAL( "invalid calculate window resolution for fullscreen: %s"
-                , fullscreen == true ? "YES" : "NO"
-            );
-
-            return false;
-        }
-
-        if( PLATFORM_SERVICE()
-            ->createWindow( windowResolution, fullscreen ) == false )
-        {
-            LOGGER_FATAL( "invalid create window: %u:%u fullscreen: %s"
-                , windowResolution.getWidth()
-                , windowResolution.getHeight()
-                , fullscreen == true ? "YES" : "NO"
-            );
-
-            return false;
-        }
-#endif
-
+        
         if( APPLICATION_SERVICE()
             ->createRenderWindow() == false )
         {
@@ -300,13 +222,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLApplication::loop()
+    void iOSApplication::loop()
     {
         PLATFORM_SERVICE()
             ->loopPlatform();
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLApplication::finalize()
+    void iOSApplication::finalize()
     {
         if( SERVICE_PROVIDER_EXIST() == false )
         {
@@ -325,11 +247,7 @@ namespace Mengine
                 ->stop();
         }
 
-#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
-#   error "MENGINE_PLUGIN_MENGINE_SHARED for SDL not implemented"
-#elif defined(MENGINE_PLUGIN_MENGINE_STATIC)
-        API_MengineFinalize();
-#endif
+        ::API_MengineFinalize();
     }
     //////////////////////////////////////////////////////////////////////////
 }

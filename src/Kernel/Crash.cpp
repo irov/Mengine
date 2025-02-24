@@ -17,7 +17,9 @@ namespace Mengine
         {
             NOTIFICATION_NOTIFY( NOTIFICATOR_CRASH, _doc );
 
+#if defined(MENGINE_DEBUG)
             Helper::debuggerBreak();
+#endif
 
 #if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
             ::MessageBoxA( NULL, _doc, "Mengine crash", MB_OK );

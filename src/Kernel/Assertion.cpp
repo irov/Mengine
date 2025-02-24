@@ -127,12 +127,14 @@ namespace Mengine
                 Helper::abort( assertion_info );
             }
 
+#if defined(MENGINE_DEBUG)
             if( Assertion_NotDebugBreak == true && _level >= ASSERTION_LEVEL_WARNING )
             {
                 return;
             }
 
             Helper::debuggerBreak();
+#endif
         }
         //////////////////////////////////////////////////////////////////////////
     }

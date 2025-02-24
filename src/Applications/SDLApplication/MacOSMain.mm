@@ -3,7 +3,7 @@
 #import "Environment/MacOS/MacOSProxyApplicationDelegateInterface.h"
 #import "Environment/MacOS/MacOSApplication.h"
 
-#import "MengineAppleApplicationDelegates.h"
+#import "MacOSApplicationDelegates.h"
 
 #import <Foundation/Foundation.h>
 
@@ -15,7 +15,7 @@ int main( int argc, char * argv[] )
     
     [MacOSApplication.sharedInstance initialize];
     
-    NSArray * proxysClassed = getMengineAppleApplicationDelegates();
+    NSArray * proxysClassed = [MacOSApplicationDelegates getApplicationDelegates];
 
     for( NSString * className in proxysClassed )
     {

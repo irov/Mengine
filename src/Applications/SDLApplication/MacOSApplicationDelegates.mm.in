@@ -1,6 +1,6 @@
-#import "AppleApplicationDelegates.h"
+#import "MacOSApplicationDelegates.h"
 
-@implementation AppleApplicationDelegates
+@implementation MacOSApplicationDelegates
 
 + (NSArray *)getApplicationDelegates {
     NSArray * proxysClassed = [[NSArray alloc] initWithObjects:@MENGINE_APPLE_APPLICATION_DELEGATE_STRING@ nil];

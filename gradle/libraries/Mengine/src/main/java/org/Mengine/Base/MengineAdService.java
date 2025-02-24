@@ -266,21 +266,37 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
 
     @Override
     public boolean hasBanner() {
+        if (m_adProvider == null) {
+            return false;
+        }
+
         return m_adProvider.hasBanner();
     }
 
     @Override
     public void showBanner() {
+        if (m_adProvider == null) {
+            return;
+        }
+
         m_adProvider.showBanner();
     }
 
     @Override
     public void hideBanner() {
+        if (m_adProvider == null) {
+            return;
+        }
+
         m_adProvider.hideBanner();
     }
 
     @Override
     public int getBannerHeight() {
+        if (m_adProvider == null) {
+            return 0;
+        }
+
         int height = m_adProvider.getBannerHeight();
 
         return height;
@@ -288,6 +304,10 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
 
     @Override
     public boolean hasInterstitial() {
+        if (m_adProvider == null) {
+            return false;
+        }
+
         if (m_adProvider.hasInterstitial() == false) {
             return false;
         }
@@ -300,6 +320,10 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         if (m_adInterstitialPoints.containsKey(placement) == false) {
             this.logError("ad interstitial point '%s' not found", placement);
 
+            return false;
+        }
+
+        if (m_adProvider == null) {
             return false;
         }
 
@@ -326,6 +350,10 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
             return false;
         }
 
+        if (m_adProvider == null) {
+            return false;
+        }
+
         if (m_adProvider.showInterstitial(placement) == false) {
             return false;
         }
@@ -342,6 +370,10 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
 
     @Override
     public boolean hasRewarded() {
+        if (m_adProvider == null) {
+            return false;
+        }
+
         if (m_adProvider.hasRewarded() == false) {
             return false;
         }
@@ -354,6 +386,10 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         if (m_adRewardedPoints.containsKey(placement) == false) {
             this.logError("ad rewarded point '%s' not found", placement);
 
+            return false;
+        }
+
+        if (m_adProvider == null) {
             return false;
         }
 
@@ -380,6 +416,10 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
             return false;
         }
 
+        if (m_adProvider == null) {
+            return false;
+        }
+
         if (m_adProvider.canYouShowRewarded(placement) == false) {
             return false;
         }
@@ -403,6 +443,10 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
             return false;
         }
 
+        if (m_adProvider == null) {
+            return false;
+        }
+
         if (m_adProvider.showRewarded(placement) == false) {
             return false;
         }
@@ -419,6 +463,10 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
 
     @Override
     public boolean hasAppOpen() {
+        if (m_adProvider == null) {
+            return false;
+        }
+
         return m_adProvider.hasAppOpen();
     }
 
@@ -427,6 +475,10 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         if (m_adAppOpenPoints.containsKey(placement) == false) {
             this.logError("ad appopen point '%s' not found", placement);
 
+            return false;
+        }
+
+        if (m_adProvider == null) {
             return false;
         }
 
@@ -450,6 +502,10 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         if (m_adAppOpenPoints.containsKey(placement) == false) {
             this.logError("ad appopen point '%s' not found", placement);
 
+            return false;
+        }
+
+        if (m_adProvider == null) {
             return false;
         }
 

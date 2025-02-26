@@ -19,7 +19,7 @@ namespace Mengine
             pybind::kernel_interface * kernel = SCRIPTPROVIDER_SERVICE()
                 ->getKernel();
 
-            kernel->get_statetrace( statetrace, MENGINE_LOGGER_MAX_MESSAGE );
+            kernel->get_statetrace( statetrace, MENGINE_LOGGER_MAX_MESSAGE, false );
 
             return statetrace;
         }
@@ -31,7 +31,7 @@ namespace Mengine
             pybind::kernel_interface * kernel = SCRIPTPROVIDER_SERVICE()
                 ->getKernel();
 
-            kernel->get_statetrace( traceback, MENGINE_LOGGER_MAX_MESSAGE );
+            kernel->get_statetrace( traceback, MENGINE_LOGGER_MAX_MESSAGE, false );
 
             DocumentInterfacePtr doc = DOCUMENT_SERVICE()
                 ->createDocument( nullptr, MENGINE_CODE_LIBRARY, _file, _line, _function, "traceback: %s", traceback );

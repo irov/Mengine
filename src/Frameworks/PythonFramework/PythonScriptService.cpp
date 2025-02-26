@@ -76,7 +76,7 @@ namespace Mengine
                 ->getKernel();
 
             Char traceback[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
-            kernel->get_statetrace( traceback, MENGINE_LOGGER_MAX_MESSAGE );
+            kernel->get_statetrace( traceback, MENGINE_LOGGER_MAX_MESSAGE, false );
 
             MENGINE_ERROR_FATAL( "invalid parameter detected in function %ls.\nFile: %ls Line: %u\nExpression: %ls\nTrackeback:\n%s"
                 , _function
@@ -247,7 +247,7 @@ namespace Mengine
                     );
 
                 Char traceback[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
-                _kernel->get_statetrace( traceback, MENGINE_LOGGER_MAX_MESSAGE );
+                _kernel->get_statetrace( traceback, MENGINE_LOGGER_MAX_MESSAGE, false );
 
                 LOGGER_VERBOSE_LEVEL( "script", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_RED, MENGINE_CODE_FILE, MENGINE_CODE_LINE, MENGINE_CODE_FUNCTION, LFLAG_SHORT )("traceback:\n%s"
                     , traceback
@@ -1232,7 +1232,7 @@ namespace Mengine
         }
 
         Char traceback[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
-        if( m_kernel->get_statetrace( traceback, MENGINE_LOGGER_MAX_MESSAGE ) == false )
+        if( m_kernel->get_statetrace( traceback, MENGINE_LOGGER_MAX_MESSAGE, false ) == false )
         {
             return;
         }
@@ -1319,7 +1319,7 @@ namespace Mengine
                 );
 
                 Char traceback[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
-                m_kernel->get_statetrace( traceback, MENGINE_LOGGER_MAX_MESSAGE );
+                m_kernel->get_statetrace( traceback, MENGINE_LOGGER_MAX_MESSAGE, false );
 
                 LOGGER_STATISTIC( "%s", traceback );
             }

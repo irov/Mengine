@@ -14,7 +14,7 @@ namespace Mengine
     protected:
         FactorablePtr m_factorable;
 
-        Char m_message[MENGINE_LOGGER_MAX_MESSAGE];
+        Char m_message[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
     };
 }
 

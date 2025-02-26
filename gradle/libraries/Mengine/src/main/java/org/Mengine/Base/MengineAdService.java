@@ -331,15 +331,15 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
             return false;
         }
 
-        if (m_adProvider.canYouShowInterstitial(placement) == false) {
-            return false;
-        }
-
         MengineApplication application = this.getMengineApplication();
 
         MengineAdInterstitialPoint adPoint = m_adInterstitialPoints.get(placement);
 
         if (adPoint.canYouShowAd(application) == false) {
+            return false;
+        }
+
+        if (m_adProvider.canYouShowInterstitial(placement) == false) {
             return false;
         }
 
@@ -409,15 +409,15 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
             return false;
         }
 
-        if (m_adProvider.canOfferRewarded(placement) == false) {
-            return false;
-        }
-
         MengineApplication application = this.getMengineApplication();
 
         MengineAdRewardedPoint adPoint = m_adRewardedPoints.get(placement);
 
         if (adPoint.canOfferAd(application) == false) {
+            return false;
+        }
+
+        if (m_adProvider.canOfferRewarded(placement) == false) {
             return false;
         }
 
@@ -436,15 +436,15 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
             return false;
         }
 
-        if (m_adProvider.canYouShowRewarded(placement) == false) {
-            return false;
-        }
-
         MengineApplication application = this.getMengineApplication();
 
         MengineAdRewardedPoint adPoint = m_adRewardedPoints.get(placement);
 
         if (adPoint.canYouShowAd(application) == false) {
+            return false;
+        }
+
+        if (m_adProvider.canYouShowRewarded(placement) == false) {
             return false;
         }
 
@@ -514,15 +514,15 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
             return false;
         }
 
-        if (m_adProvider.canYouShowAppOpen(placement, timeStop) == false) {
-            return false;
-        }
-
         MengineApplication application = this.getMengineApplication();
 
         MengineAdAppOpenPoint adPoint = m_adAppOpenPoints.get(placement);
 
         if (adPoint.canYouShowAd(application, timeStop) == false) {
+            return false;
+        }
+
+        if (m_adProvider.canYouShowAppOpen(placement, timeStop) == false) {
             return false;
         }
 

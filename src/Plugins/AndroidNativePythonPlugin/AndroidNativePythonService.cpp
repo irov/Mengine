@@ -46,6 +46,11 @@ extern "C"
         if( ANDROID_NATIVEPYTHON_SERVICE()
             ->hasPythonMethod( plugin, method ) == false )
         {
+            LOGGER_ERROR( "plugin '%s' method '%s' not found"
+                , plugin.c_str()
+                , method.c_str()
+            );
+
             return;
         }
 

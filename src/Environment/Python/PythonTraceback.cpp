@@ -19,21 +19,10 @@ namespace Mengine
                 return;
             }
 
-            PyObject * tbs[1024] = {nullptr};
-            uint32_t tb_count = 0;
+            PyObject * tb = _traceback;
 
-            PyObject * tb_iterator = _traceback;
-
-            while( tb_iterator != nullptr && tb_count < 1024 )
+            while( tb != nullptr )
             {
-                tbs[tb_count++] = tb_iterator;
-                tb_iterator = _kernel->traceback_next( tb_iterator );
-            }
-
-            for( uint32_t index = tb_count; index != 0; --index )
-            {
-                PyObject * tb = tbs[index - 1];
-                
                 StdString::strncat( _message, "\n", _capacity );
                 StdString::strncat( _message, "File: ", _capacity );
                 StdString::strncat( _message, _kernel->traceback_filename( tb ).c_str(), _capacity );
@@ -44,6 +33,8 @@ namespace Mengine
                 StdString::strncat( _message, lineno_str, _capacity );
                 StdString::strncat( _message, ", in ", _capacity );
                 StdString::strncat( _message, _kernel->traceback_function( tb ).c_str(), _capacity );
+
+                tb = _kernel->traceback_next( tb );
             }
         }
     }

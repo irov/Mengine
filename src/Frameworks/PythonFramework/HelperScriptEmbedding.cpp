@@ -1107,7 +1107,14 @@ namespace Mengine
                     ->logMessage( msg );
             }
             //////////////////////////////////////////////////////////////////////////
-            float filterpowf( const pybind::list & l, float _pow )
+            UniqueId s_enumerator()
+            {
+                UniqueId new_id = Helper::generateUniqueIdentity();
+
+                return new_id;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            float s_filterpowf( const pybind::list & l, float _pow )
             {
                 if( l.empty() == true )
                 {
@@ -1133,13 +1140,6 @@ namespace Mengine
                 s = StdMath::powf( s, _pow );
 
                 return s;
-            }
-            //////////////////////////////////////////////////////////////////////////
-            UniqueId s_enumerator()
-            {
-                UniqueId new_id = Helper::generateUniqueIdentity();
-
-                return new_id;
             }
             //////////////////////////////////////////////////////////////////////////
             uint32_t s_rand( uint32_t a )
@@ -1229,186 +1229,6 @@ namespace Mengine
                 float yr = y * rr2;
 
                 return mt::vec2f( xr, yr );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            uint32_t s_rounding( uint32_t _value, uint32_t _round )
-            {
-                uint32_t floor_value = _value / _round;
-                uint32_t round_value = floor_value * _round;
-
-                return round_value;
-            }
-            //////////////////////////////////////////////////////////////////////////
-            float s_roundingf( float _value, float _round )
-            {
-                float floor_value = StdMath::floorf( _value / _round );
-                float round_value = floor_value * _round;
-
-                return round_value;
-            }
-            //////////////////////////////////////////////////////////////////////////
-            float s_pi()
-            {
-                return mt::constant::pi;
-            }
-            //////////////////////////////////////////////////////////////////////////
-            float s_deg2rad( float _deg )
-            {
-                return _deg * mt::constant::deg2rad;
-            }
-            //////////////////////////////////////////////////////////////////////////
-            float s_rad2deg( float _rad )
-            {
-                return _rad * mt::constant::rad2deg;
-            }
-            //////////////////////////////////////////////////////////////////////////
-            float s_sqrtf( float a )
-            {
-                return StdMath::sqrtf( a );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            float s_powf( float a, float b )
-            {
-                return StdMath::powf( a, b );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            float s_fabsf( float a )
-            {
-                return StdMath::fabsf( a );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            float s_cosf( float a )
-            {
-                return StdMath::cosf( a );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            float s_sinf( float a )
-            {
-                return StdMath::sinf( a );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            float s_cosf_deg( float a )
-            {
-                return StdMath::cosf( a * mt::constant::deg2rad );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            float s_sinf_deg( float a )
-            {
-                return StdMath::sinf( a * mt::constant::deg2rad );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            float s_tanf( float a )
-            {
-                return StdMath::tanf( a );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            float s_acosf( float a )
-            {
-                return StdMath::acosf( a );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            float s_atanf( float _x )
-            {
-                return StdMath::atan( _x );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            float s_logf( float _x )
-            {
-                return StdMath::logf( _x );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            float s_log10f( float _x )
-            {
-                return StdMath::log10f( _x );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            double s_log10( double _x )
-            {
-                return StdMath::log10( _x );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            uint32_t s_fibo( uint32_t _n )
-            {
-                if( _n == 0 )
-                {
-                    return 0;
-                }
-                else if( _n == 1 )
-                {
-                    return 1;
-                }
-
-                uint32_t fn = s_fibo( _n - 1 ) + s_fibo( _n - 2 );
-
-                return fn;
-            }
-            //////////////////////////////////////////////////////////////////////////
-            uint64_t s_fibo_bine( uint64_t _n )
-            {
-                const double nf = (double)_n;
-                const double fplus = (1.0 + 2.2360679774997896964091736687313) * 0.5;
-                const double fplusn = StdMath::pow( fplus, nf );
-
-                const double fminus = (1.0 - 2.2360679774997896964091736687313) * 0.5;
-                const double fminusn = StdMath::pow( fminus, nf );
-
-                double fbine = (fplusn - fminusn) * 0.44721359549995793928183473374626;
-
-                uint64_t fbine64 = (uint64_t)fbine;
-
-                return fbine64;
-            }
-            //////////////////////////////////////////////////////////////////////////
-            float s_dot_v2_v2( const mt::vec2f & _a, const mt::vec2f & _b )
-            {
-                float d = mt::dot_v2_v2( _a, _b );
-
-                return d;
-            }
-            //////////////////////////////////////////////////////////////////////////
-            mt::vec2f s_direction_v2_v2( const mt::vec2f & _from, const mt::vec2f & _to )
-            {
-                mt::vec2f direction;
-                mt::dir_v2_v2( &direction, _to, _from );
-
-                return direction;
-            }
-            //////////////////////////////////////////////////////////////////////////
-            mt::vec3f s_direction_v3_v3( const mt::vec3f & _from, const mt::vec3f & _to )
-            {
-                mt::vec3f direction;
-                mt::dir_v3_v3( &direction, _from, _to );
-
-                return direction;
-            }
-            //////////////////////////////////////////////////////////////////////////
-            float s_angle_from_v2_v2( const mt::vec2f & _from, const mt::vec2f & _to )
-            {
-                mt::vec2f direction;
-                mt::sub_v2_v2( &direction, _from, _to );
-
-                mt::vec2f direction_n;
-                mt::norm_v2_v2( &direction_n, direction );
-
-                float angle = mt::signed_angle( direction_n );
-
-                return angle;
-            }
-            //////////////////////////////////////////////////////////////////////////
-            mt::vec2f s_norm_v2( const mt::vec2f & _vec )
-            {
-                mt::vec2f v_n;
-                mt::norm_v2_v2( &v_n, _vec );
-
-                return v_n;
-            }
-            //////////////////////////////////////////////////////////////////////////
-            mt::vec3f s_norm_v3( const mt::vec3f & _vec )
-            {
-                mt::vec3f v_n;
-                mt::norm_v3_v3( &v_n, _vec );
-
-                return v_n;
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_intersectsEllipseVsPoint( const mt::vec2f & _pos, float _radius, float _ellipse, const mt::vec2f & _point )
@@ -3884,10 +3704,8 @@ namespace Mengine
         namespace ScriptMethod
         {
             //////////////////////////////////////////////////////////////////////////
-            static bool Tags_convert( pybind::kernel_interface * _kernel, PyObject * _obj, Tags * _place, void * _user )
+            static bool Tags_convert( pybind::kernel_interface * _kernel, PyObject * _obj, Tags * const _place )
             {
-                MENGINE_UNUSED( _user );
-
                 if( _kernel->tuple_check( _obj ) == true )
                 {
                     uint32_t size = _kernel->tuple_size( _obj );
@@ -4165,7 +3983,7 @@ namespace Mengine
 
         pybind::struct_<Tags>( _kernel, "Tags" )
             .def_constructor( pybind::init<>() )
-            .def_convert( &ScriptMethod::Tags_convert, nullptr )
+            .def_convert( &ScriptMethod::Tags_convert )
             .def_repr( &ScriptMethod::Tags_repr )
             .def( "addTag", &Tags::addTag )
             .def( "removeTag", &Tags::removeTag )
@@ -4194,8 +4012,9 @@ namespace Mengine
         pybind::def_functor_kernel( _kernel, "logMessageRelease", helperScriptMethod, &HelperScriptMethod::s_logMessageRelease );
         pybind::def_functor_kernel( _kernel, "logFatal", helperScriptMethod, &HelperScriptMethod::s_logFatal );
 
-        pybind::def_functor( _kernel, "filterpowf", helperScriptMethod, &HelperScriptMethod::filterpowf );
         pybind::def_functor( _kernel, "enumerator", helperScriptMethod, &HelperScriptMethod::s_enumerator );
+        pybind::def_functor( _kernel, "filterpowf", helperScriptMethod, &HelperScriptMethod::s_filterpowf );
+
         pybind::def_functor( _kernel, "rand", helperScriptMethod, &HelperScriptMethod::s_rand );
         pybind::def_functor( _kernel, "randi", helperScriptMethod, &HelperScriptMethod::s_randi );
         pybind::def_functor( _kernel, "randf", helperScriptMethod, &HelperScriptMethod::s_randf );
@@ -4204,36 +4023,6 @@ namespace Mengine
         pybind::def_functor( _kernel, "range_randf", helperScriptMethod, &HelperScriptMethod::s_range_randf );
         pybind::def_functor( _kernel, "around_randf", helperScriptMethod, &HelperScriptMethod::s_around_randf );
         pybind::def_functor( _kernel, "radius_randf", helperScriptMethod, &HelperScriptMethod::s_radius_randf );
-
-        pybind::def_functor( _kernel, "rounding", helperScriptMethod, &HelperScriptMethod::s_rounding );
-        pybind::def_functor( _kernel, "roundingf", helperScriptMethod, &HelperScriptMethod::s_roundingf );
-
-        pybind::def_functor( _kernel, "pi", helperScriptMethod, &HelperScriptMethod::s_pi );
-        pybind::def_functor( _kernel, "deg2rad", helperScriptMethod, &HelperScriptMethod::s_deg2rad );
-        pybind::def_functor( _kernel, "rad2deg", helperScriptMethod, &HelperScriptMethod::s_rad2deg );
-
-        pybind::def_functor( _kernel, "sqrtf", helperScriptMethod, &HelperScriptMethod::s_sqrtf );
-        pybind::def_functor( _kernel, "powf", helperScriptMethod, &HelperScriptMethod::s_powf );
-        pybind::def_functor_deprecated( _kernel, "absf", helperScriptMethod, &HelperScriptMethod::s_fabsf, "use fabsf" );
-        pybind::def_functor( _kernel, "fabsf", helperScriptMethod, &HelperScriptMethod::s_fabsf );
-        pybind::def_functor( _kernel, "cosf", helperScriptMethod, &HelperScriptMethod::s_cosf );
-        pybind::def_functor( _kernel, "sinf", helperScriptMethod, &HelperScriptMethod::s_sinf );
-        pybind::def_functor( _kernel, "tanf", helperScriptMethod, &HelperScriptMethod::s_tanf );
-        pybind::def_functor( _kernel, "cosf_deg", helperScriptMethod, &HelperScriptMethod::s_cosf_deg );
-        pybind::def_functor( _kernel, "sinf_deg", helperScriptMethod, &HelperScriptMethod::s_sinf_deg );
-        pybind::def_functor( _kernel, "acosf", helperScriptMethod, &HelperScriptMethod::s_acosf );
-        pybind::def_functor( _kernel, "atanf", helperScriptMethod, &HelperScriptMethod::s_atanf );
-        pybind::def_functor( _kernel, "logf", helperScriptMethod, &HelperScriptMethod::s_logf );
-        pybind::def_functor( _kernel, "log10f", helperScriptMethod, &HelperScriptMethod::s_log10f );
-        pybind::def_functor( _kernel, "log10", helperScriptMethod, &HelperScriptMethod::s_log10 );
-        pybind::def_functor( _kernel, "fibo", helperScriptMethod, &HelperScriptMethod::s_fibo );
-        pybind::def_functor( _kernel, "fibo_bine", helperScriptMethod, &HelperScriptMethod::s_fibo_bine );
-        pybind::def_functor( _kernel, "dot_v2_v2", helperScriptMethod, &HelperScriptMethod::s_dot_v2_v2 );
-        pybind::def_functor( _kernel, "direction_v2_v2", helperScriptMethod, &HelperScriptMethod::s_direction_v2_v2 );
-        pybind::def_functor( _kernel, "direction_v3_v3", helperScriptMethod, &HelperScriptMethod::s_direction_v3_v3 );
-        pybind::def_functor( _kernel, "angle_from_v2_v2", helperScriptMethod, &HelperScriptMethod::s_angle_from_v2_v2 );
-        pybind::def_functor( _kernel, "norm_v2", helperScriptMethod, &HelperScriptMethod::s_norm_v2 );
-        pybind::def_functor( _kernel, "norm_v3", helperScriptMethod, &HelperScriptMethod::s_norm_v3 );
 
         pybind::def_functor_kernel( _kernel, "angle_correct_interpolate_from_to", helperScriptMethod, &HelperScriptMethod::s_angle_correct_interpolate_from_to );
         pybind::def_functor( _kernel, "angle_between_two_vectors", helperScriptMethod, &HelperScriptMethod::s_angle_between_two_vectors );
@@ -4395,26 +4184,6 @@ namespace Mengine
 
         pybind::def_functor( _kernel, "addGlobalModule", helperScriptMethod, &HelperScriptMethod::s_addGlobalModule );
         pybind::def_functor( _kernel, "removeGlobalModule", helperScriptMethod, &HelperScriptMethod::s_removeGlobalModule );
-
-        pybind::def_function( _kernel, "angle_norm", &mt::angle_norm );
-        pybind::def_function( _kernel, "angle_delta_deg", &mt::angle_delta_deg );
-
-        pybind::def_function( _kernel, "length_v2", &mt::length_v2 );
-
-        pybind::def_function( _kernel, "length_v2_v2", &mt::length_v2_v2 );
-        pybind::def_function( _kernel, "sqrlength_v2_v2", &mt::sqrlength_v2_v2 );
-
-        pybind::def_function( _kernel, "length_v3_v3", &mt::length_v3_v3 );
-        pybind::def_function( _kernel, "sqrlength_v3_v3", &mt::sqrlength_v3_v3 );
-
-        pybind::def_function( _kernel, "length_v3", &mt::length_v3 );
-        pybind::def_function( _kernel, "sqrlength_v3", &mt::sqrlength_v3 );
-
-        pybind::def_function( _kernel, "signed_angle", &mt::signed_angle );
-        pybind::def_function( _kernel, "angle_length", &mt::angle_length );
-        pybind::def_function( _kernel, "perp_v2", &mt::perp );
-        pybind::def_function_deprecate( _kernel, "perp", &mt::perp, "use perp_v2" );
-        pybind::def_function( _kernel, "perp_left", &mt::perp_left );
 
         pybind::def_functor_kernel( _kernel, "getrefcount", helperScriptMethod, &HelperScriptMethod::s_refcount );
         pybind::def_functor_kernel( _kernel, "is_class", helperScriptMethod, &HelperScriptMethod::s_is_class );

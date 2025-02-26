@@ -60,6 +60,7 @@
 #include "Kernel/StatisticHelper.h"
 #include "Kernel/ThreadMutexHelper.h"
 #include "Kernel/VocabularyHelper.h"
+#include "Kernel/MixinDebug.h"
 
 #include "Config/StdString.h"
 #include "Config/Algorithm.h"
@@ -794,7 +795,18 @@ namespace Mengine
         {
             pugi::xml_node xmlCamera = xmlRender.append_child( "Camera" );
 
-            MENGINE_UNUSED( xmlCamera );
+            Detail::serializeNodeProp( MENGINE_MIXIN_DEBUG_NAME( camera.get() ), "Name", xmlCamera );
+            Detail::serializeNodeProp( MENGINE_MIXIN_DEBUG_TYPE( camera.get() ), "Type", xmlCamera );
+        }
+
+        const RenderCameraInterface * renderCameraInheritance = Helper::getRenderCameraInheritance( _render );
+
+        if( renderCameraInheritance != nullptr )
+        {
+            pugi::xml_node xmlCamera = xmlRender.append_child( "Camera" );
+
+            Detail::serializeNodeProp( MENGINE_MIXIN_DEBUG_NAME( renderCameraInheritance ), "RelationName", xmlCamera );
+            Detail::serializeNodeProp( MENGINE_MIXIN_DEBUG_TYPE( renderCameraInheritance ), "RelationType", xmlCamera );
         }
 
         const RenderTransformationInterfacePtr & transformation = _render->getRenderTransformation();

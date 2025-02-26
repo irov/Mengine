@@ -1242,7 +1242,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptService::handleException_( PyTypeObject * _exctype, PyObject * _value, PyObject * _traceback )
     {
-        Char traceback_str[MENGINE_LOGGER_MAX_MESSAGE];
+        Char traceback_str[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
 
         Helper::getPythonTracebackMessage( traceback_str, MENGINE_LOGGER_MAX_MESSAGE, m_kernel, _traceback );
 

@@ -12,10 +12,8 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static bool StringView_convert( pybind::kernel_interface * _kernel, PyObject * _obj, void * _place, void * _user )
+        static bool StringView_convert( pybind::kernel_interface * _kernel, PyObject * _obj, void * const _place )
         {
-            MENGINE_UNUSED( _user );
-
             StringView * sv = (StringView *)_place;
 
             if( _kernel->string_check( _obj ) == true )
@@ -29,47 +27,6 @@ namespace Mengine
             }
 
             return false;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static bool ConstString_compare( pybind::kernel_interface * _kernel, PyObject * _obj, ConstString * _self, PyObject * _compare, pybind::PybindOperatorCompare _op, bool & _result )
-        {
-            MENGINE_UNUSED( _obj );
-
-            ConstString cs_compare;
-            if( pybind::extract_value( _kernel, _compare, cs_compare, false ) == false )
-            {
-                return false;
-            }
-
-            switch( _op )
-            {
-            case pybind::POC_Less:
-                {
-                    _result = *_self < cs_compare;
-                }break;
-            case pybind::POC_Lessequal:
-                {
-                    _result = *_self <= cs_compare;
-                }break;
-            case pybind::POC_Equal:
-                {
-                    _result = *_self == cs_compare;
-                }break;
-            case pybind::POC_Notequal:
-                {
-                    _result = *_self != cs_compare;
-                }break;
-            case pybind::POC_Great:
-                {
-                    _result = *_self > cs_compare;
-                }break;
-            case pybind::POC_Greatequal:
-                {
-                    _result = *_self >= cs_compare;
-                }break;
-            }
-
-            return true;
         }
         //////////////////////////////////////////////////////////////////////////
         static const Char * ConstString_repr( ConstString * _cs )
@@ -86,11 +43,8 @@ namespace Mengine
             return hash;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool ConstString_convert( pybind::kernel_interface * _kernel, PyObject * _obj, void * _place, void * _user )
+        static bool ConstString_convert( pybind::kernel_interface * _kernel, PyObject * _obj, void * const _place )
         {
-            MENGINE_UNUSED( _kernel );
-            MENGINE_UNUSED( _user );
-
             ConstString * cstr = (ConstString *)_place;
 
             if( _kernel->string_check( _obj ) == true )
@@ -110,47 +64,6 @@ namespace Mengine
             return false;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool FilePath_compare( pybind::kernel_interface * _kernel, PyObject * _obj, FilePath * _self, PyObject * _compare, pybind::PybindOperatorCompare _op, bool & _result )
-        {
-            MENGINE_UNUSED( _obj );
-
-            FilePath cs_compare;
-            if( pybind::extract_value( _kernel, _compare, cs_compare, false ) == false )
-            {
-                return false;
-            }
-
-            switch( _op )
-            {
-            case pybind::POC_Less:
-                {
-                    _result = *_self < cs_compare;
-                }break;
-            case pybind::POC_Lessequal:
-                {
-                    _result = *_self <= cs_compare;
-                }break;
-            case pybind::POC_Equal:
-                {
-                    _result = *_self == cs_compare;
-                }break;
-            case pybind::POC_Notequal:
-                {
-                    _result = *_self != cs_compare;
-                }break;
-            case pybind::POC_Great:
-                {
-                    _result = *_self > cs_compare;
-                }break;
-            case pybind::POC_Greatequal:
-                {
-                    _result = *_self >= cs_compare;
-                }break;
-            }
-
-            return true;
-        }
-        //////////////////////////////////////////////////////////////////////////
         static const Char * FilePath_repr( FilePath * _cs )
         {
             const Char * str_repr = _cs->c_str();
@@ -165,11 +78,8 @@ namespace Mengine
             return hash;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool FilePath_convert( pybind::kernel_interface * _kernel, PyObject * _obj, void * _place, void * _user )
+        static bool FilePath_convert( pybind::kernel_interface * _kernel, PyObject * _obj, void * const _place )
         {
-            MENGINE_UNUSED( _kernel );
-            MENGINE_UNUSED( _user );
-
             FilePath * cstr = (FilePath *)_place;
 
             if( _kernel->string_check( _obj ) == true )
@@ -202,19 +112,19 @@ namespace Mengine
     bool ConstsScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         pybind::structhash_<StringView>( _kernel, "StringView" )
-            .def_convert( &Detail::StringView_convert, nullptr )
+            .def_convert( &Detail::StringView_convert )
             ;
 
         pybind::structhash_<ConstString>( _kernel, "ConstString" )
-            .def_compare( &Detail::ConstString_compare )
-            .def_convert( &Detail::ConstString_convert, nullptr )
+            .def_compare_default()
+            .def_convert( &Detail::ConstString_convert )
             .def_repr( &Detail::ConstString_repr )
             .def_hash( &Detail::ConstString_hash )
             ;
 
         pybind::structhash_<FilePath>( _kernel, "FilePath" )
-            .def_compare( &Detail::FilePath_compare )
-            .def_convert( &Detail::FilePath_convert, nullptr )
+            .def_compare_default()
+            .def_convert( &Detail::FilePath_convert )
             .def_repr( &Detail::FilePath_repr )
             .def_hash( &Detail::FilePath_hash )
             ;

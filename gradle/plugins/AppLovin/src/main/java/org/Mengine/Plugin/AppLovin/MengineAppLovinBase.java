@@ -15,6 +15,7 @@ import com.applovin.mediation.MaxReward;
 import com.applovin.sdk.AppLovinSdkUtils;
 
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineAdService;
 import org.Mengine.Base.MengineAnalyticsEventBuilder;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineUtils;
@@ -29,6 +30,8 @@ public class MengineAppLovinBase {
     protected final String m_adUnitId;
     protected final MaxAdFormat m_adFormat;
 
+    protected final MengineAdService m_adService;
+
     protected int m_enumeratorRequest;
     protected int m_requestId;
     protected int m_requestAttempt;
@@ -38,6 +41,8 @@ public class MengineAppLovinBase {
         m_plugin = plugin;
         m_adUnitId = adUnitId;
         m_adFormat = adFormat;
+
+        m_adService = plugin.getService(MengineAdService.class);
 
         m_enumeratorRequest = 0;
         m_requestId = 0;
@@ -413,9 +418,5 @@ public class MengineAppLovinBase {
         if (error != null) {
             sb.append(String.format(Locale.US, "Error: %s ", error));
         }
-    }
-
-    protected void pythonCall(@NonNull String method, Object ... params) {
-        m_plugin.pythonCall(method, params);
     }
 }

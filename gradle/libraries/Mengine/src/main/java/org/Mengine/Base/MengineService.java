@@ -52,6 +52,13 @@ public class MengineService implements MengineServiceInterface {
         return m_serviceName;
     }
 
+    @SuppressWarnings("unchecked")
+    public <T> T getService(Class<T> cls) {
+        T plugin = m_application.getService(cls);
+
+        return plugin;
+    }
+
     public Object newInstance(String name, boolean exist, Object ... args) {
         Object instance = MengineUtils.newInstance(m_serviceName, name, exist, args);
 
@@ -111,9 +118,7 @@ public class MengineService implements MengineServiceInterface {
     }
 
     public void sendEvent(MengineEvent event, Object ... args) {
-        MengineApplication application = this.getMengineApplication();
-
-        application.sendEvent(event, args);
+        m_application.sendEvent(event, args);
     }
 
     public void runOnUiThread(Runnable action) {

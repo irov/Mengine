@@ -260,7 +260,7 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Max
 
         double revenue = ad.getRevenue();
 
-        this.pythonCall("onAndroidAppLovinAppOpenRevenuePaid", Map.of("placement", placement, "revenue", revenue));
+        m_adService.appOpenRevenuePaid(Map.of("placement", placement, "revenue", revenue));
     }
 
     @Override

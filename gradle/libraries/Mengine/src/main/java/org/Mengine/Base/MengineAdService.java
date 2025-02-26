@@ -302,6 +302,10 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         return height;
     }
 
+    public void bannerRevenuePaid(Map params) {
+        this.pythonCall("onAndroidAdServiceBannerRevenuePaid", params);
+    }
+
     @Override
     public boolean hasInterstitial() {
         if (m_adProvider == null) {
@@ -366,6 +370,18 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         adPoint.showAd();
 
         return true;
+    }
+
+    public void interstitialShowSuccessful(Map params) {
+        this.pythonCall("onAndroidAdServiceInterstitialShowSuccessful", params);
+    }
+
+    public void interstitialShowFailed(Map params) {
+        this.pythonCall("onAndroidAdServiceInterstitialShowFailed", params);
+    }
+
+    public void interstitialRevenuePaid(Map params) {
+        this.pythonCall("onAndroidAdServiceInterstitialRevenuePaid", params);
     }
 
     @Override
@@ -461,6 +477,22 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         return true;
     }
 
+    public void rewardedShowSuccessful(Map params) {
+        this.pythonCall("onAndroidAdServiceRewardedShowSuccessful", params);
+    }
+
+    public void rewardedShowFailed(Map params) {
+        this.pythonCall("onAndroidAdServiceRewardedShowFailed", params);
+    }
+
+    public void rewardedRevenuePaid(Map params) {
+        this.pythonCall("onAndroidAdServiceRewardedRevenuePaid", params);
+    }
+
+    public void rewardedUserRewarded(Map params) {
+        this.pythonCall("onAndroidAdServiceRewardedUserRewarded", params);
+    }
+
     @Override
     public boolean hasAppOpen() {
         if (m_adProvider == null) {
@@ -521,5 +553,9 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         adPoint.showAd();
 
         return true;
+    }
+
+    public void appOpenRevenuePaid(Map params) {
+        this.pythonCall("onAndroidAdServiceAppOpenRevenuePaid", params);
     }
 }

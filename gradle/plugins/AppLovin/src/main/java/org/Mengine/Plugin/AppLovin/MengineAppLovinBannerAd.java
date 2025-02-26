@@ -442,7 +442,7 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
 
         double revenue = ad.getRevenue();
 
-        this.pythonCall("onAndroidAppLovinBannerRevenuePaid", Map.of("placement", m_placement, "revenue", revenue));
+        m_adService.bannerRevenuePaid(Map.of("placement", m_placement, "revenue", revenue));
     }
 
     @Override

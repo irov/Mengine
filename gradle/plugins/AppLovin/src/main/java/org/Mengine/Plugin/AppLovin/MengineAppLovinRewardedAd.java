@@ -214,7 +214,7 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Ma
             .addParameterLong("reward_amount", amount)
             .log();
 
-        this.pythonCall("onAndroidAppLovinRewardedUserRewarded", Map.of("placement", placement, "label", label, "amount", amount));
+        m_adService.rewardedUserRewarded(Map.of("placement", placement, "label", label, "amount", amount));
     }
 
     @Override
@@ -258,7 +258,7 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Ma
         this.setState("applovin.rewarded.state." + m_adUnitId, "hidden." + placement + "." + ad.getNetworkName());
 
         MengineUtils.performOnMainThread(() -> {
-            this.pythonCall("onAndroidAppLovinRewardedShowSuccessful", Map.of("placement", placement));
+            m_adService.rewardedShowSuccessful(Map.of("placement", placement));
 
             this.loadAd();
         });
@@ -312,7 +312,7 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Ma
         this.setState("applovin.rewarded.state." + m_adUnitId, "display_failed." + placement + "." + ad.getNetworkName() + "." + errorCode);
 
         MengineUtils.performOnMainThread(() -> {
-            this.pythonCall("onAndroidAppLovinRewardedShowFailed", Map.of("placement", placement, "error_code", errorCode));
+            m_adService.rewardedShowFailed(Map.of("placement", placement, "error_code", errorCode));
 
             this.loadAd();
         });
@@ -335,7 +335,7 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Ma
 
         double revenue = ad.getRevenue();
 
-        this.pythonCall("onAndroidAppLovinRewardedRevenuePaid", Map.of("placement", placement, "revenue", revenue));
+        m_adService.rewardedRevenuePaid(Map.of("placement", placement, "revenue", revenue));
     }
 
     @Override

@@ -210,7 +210,7 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
         this.setState("applovin.interstitial.state." + m_adUnitId, "hidden." + placement + "." + ad.getNetworkName());
 
         MengineUtils.performOnMainThread(() -> {
-            this.pythonCall("onAndroidAppLovinInterstitialShowSuccessful", Map.of("placement", placement));
+            m_adService.interstitialShowSuccessful(Map.of("placement", placement));
 
             this.loadAd();
         });
@@ -264,7 +264,7 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
         this.setState("applovin.interstitial.state." + m_adUnitId, "display_failed." + placement + "." + ad.getNetworkName() + "." + errorCode);
 
         MengineUtils.performOnMainThread(() -> {
-            this.pythonCall("onAndroidAppLovinInterstitialShowFailed", Map.of("placement", placement, "error_code", errorCode));
+            m_adService.interstitialShowFailed(Map.of("placement", placement, "error_code", errorCode));
 
             this.loadAd();
         });
@@ -287,7 +287,7 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
 
 		double revenue = ad.getRevenue();
 
-        this.pythonCall("onAndroidAppLovinInterstitialRevenuePaid", Map.of("placement", placement, "revenue", revenue));
+        m_adService.interstitialRevenuePaid(Map.of("placement", placement, "revenue", revenue));
     }
 
     @Override

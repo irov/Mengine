@@ -1,5 +1,6 @@
-package org.Mengine.Plugin.LocalNotifications;
+package org.Mengine.Plugin.Vibrator;
 
+import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineListenerActivity;
@@ -17,8 +18,11 @@ import android.os.VibratorManager;
 public class MengineVibratorPlugin extends MengineService implements MengineListenerActivity {
     public static final String SERVICE_NAME = "Vibrator";
     public static final boolean SERVICE_EMBEDDING = true;
+    public static final int SAVE_VERSION = 1;
 
     protected Vibrator m_vibrator;
+
+    protected boolean m_mute;
 
     @Override
     public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) {
@@ -43,6 +47,23 @@ public class MengineVibratorPlugin extends MengineService implements MengineList
         });
     }
 
+    @Override
+    public Bundle onSave(@NonNull MengineApplication application) {
+        Bundle bundle = new Bundle();
+
+        bundle.putInt("version", SAVE_VERSION);
+        bundle.putBoolean("mute", m_mute);
+
+        return bundle;
+    }
+
+    @Override
+    public void onLoad(@NonNull MengineApplication application, @NonNull Bundle bundle) {
+        int version = bundle.getInt("version", 0);
+
+        m_mute = bundle.getBoolean("mute", false);
+    }
+
     public boolean vibrate(long milliseconds) {
         this.logMessage("vibrate milliseconds: %d"
             , milliseconds
@@ -52,6 +73,10 @@ public class MengineVibratorPlugin extends MengineService implements MengineList
             return false;
         }
 
+        if (m_mute == true) {
+            return true;
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             m_vibrator.vibrate(VibrationEffect.createOneShot(milliseconds, VibrationEffect.DEFAULT_AMPLITUDE));
         } else {
@@ -59,5 +84,27 @@ public class MengineVibratorPlugin extends MengineService implements MengineList
         }
 
         return true;
+    }
+
+    public void mute(boolean mute) {
+        this.logMessage("mute: %s"
+            , mute ? "true" : "false"
+        );
+
+        m_mute = mute;
+    }
+
+    public boolean isMute() {
+        return m_mute;
+    }
+
+    public void cancel() {
+        this.logMessage("cancel");
+
+        if (m_vibrator == null) {
+            return;
+        }
+
+        m_vibrator.cancel();
     }
 }

@@ -9,11 +9,6 @@ public class MengineAdAttempts {
 
     public int m_attempts = 0;
 
-    public void onLoad(@NonNull MengineApplication application, @NonNull Bundle bundle) {
-        int version = bundle.getInt("version", 0);
-        m_attempts = bundle.getInt("attempts", 0);
-    }
-
     public Bundle onSave(@NonNull MengineApplication application) {
         Bundle bundle = new Bundle();
 
@@ -21,6 +16,11 @@ public class MengineAdAttempts {
         bundle.putInt("attempts", m_attempts);
 
         return bundle;
+    }
+
+    public void onLoad(@NonNull MengineApplication application, @NonNull Bundle bundle) {
+        int version = bundle.getInt("version", 0);
+        m_attempts = bundle.getInt("attempts", 0);
     }
 
     public long getAttempts() {

@@ -13,12 +13,6 @@ public class MengineAdCooldown {
         m_timestamp = 0;
     }
 
-    public void onLoad(@NonNull MengineApplication application, @NonNull Bundle bundle) {
-        int version = bundle.getInt("version", 0);
-
-        m_timestamp = bundle.getLong("timestamp", 0);
-    }
-
     public Bundle onSave(@NonNull MengineApplication application) {
         Bundle bundle = new Bundle();
 
@@ -26,6 +20,12 @@ public class MengineAdCooldown {
         bundle.putLong("timestamp", m_timestamp);
 
         return bundle;
+    }
+
+    public void onLoad(@NonNull MengineApplication application, @NonNull Bundle bundle) {
+        int version = bundle.getInt("version", 0);
+
+        m_timestamp = bundle.getLong("timestamp", 0);
     }
 
     public long getLastShownTimestamp() {

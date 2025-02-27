@@ -42,15 +42,6 @@ public class MengineAdvertisingPlugin extends MengineService implements MengineL
     }
 
     @Override
-    public void onLoad(@NonNull MengineApplication application, @NonNull Bundle bundle) {
-        int version = bundle.getInt("version", 0);
-
-        m_advertisingId = bundle.getString("advertisingId", LIMIT_ADVERTISING_ID);
-        m_advertisingLimitTrackingEnabled = bundle.getBoolean("advertisingLimitTrackingEnabled", true);
-        m_advertisingLimitTrackingFetch = bundle.getBoolean("advertisingLimitTrackingFetch", false);
-    }
-
-    @Override
     public Bundle onSave(@NonNull MengineApplication application) {
         Bundle bundle = new Bundle();
 
@@ -63,6 +54,15 @@ public class MengineAdvertisingPlugin extends MengineService implements MengineL
         }
 
         return bundle;
+    }
+
+    @Override
+    public void onLoad(@NonNull MengineApplication application, @NonNull Bundle bundle) {
+        int version = bundle.getInt("version", 0);
+
+        m_advertisingId = bundle.getString("advertisingId", LIMIT_ADVERTISING_ID);
+        m_advertisingLimitTrackingEnabled = bundle.getBoolean("advertisingLimitTrackingEnabled", true);
+        m_advertisingLimitTrackingFetch = bundle.getBoolean("advertisingLimitTrackingFetch", false);
     }
 
     @Override

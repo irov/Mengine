@@ -173,39 +173,6 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
     }
 
     @Override
-    public void onLoad(@NonNull MengineApplication application, @NonNull Bundle bundle) {
-        int version = bundle.getInt("version", 0);
-
-        Bundle attemptsBundle = bundle.getBundle("attempts");
-
-        if (attemptsBundle != null) {
-            for (String key : attemptsBundle.keySet()) {
-                Bundle attemptsPointBundle = attemptsBundle.getBundle(key);
-
-                MengineAdAttempts attempts = new MengineAdAttempts();
-
-                attempts.onLoad(application, attemptsPointBundle);
-
-                m_adAttempts.put(key, attempts);
-            }
-        }
-
-        Bundle cooldownsBundle = bundle.getBundle("cooldowns");
-
-        if (cooldownsBundle != null) {
-            for (String key : cooldownsBundle.keySet()) {
-                Bundle cooldownBundle = cooldownsBundle.getBundle(key);
-
-                MengineAdCooldown cooldown = new MengineAdCooldown();
-
-                cooldown.onLoad(application, cooldownBundle);
-
-                m_adCooldowns.put(key, cooldown);
-            }
-        }
-    }
-
-    @Override
     public Bundle onSave(@NonNull MengineApplication application) {
         Bundle bundle = new Bundle();
 
@@ -238,6 +205,39 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         bundle.putBundle("cooldowns", cooldownsBundle);
 
         return bundle;
+    }
+
+    @Override
+    public void onLoad(@NonNull MengineApplication application, @NonNull Bundle bundle) {
+        int version = bundle.getInt("version", 0);
+
+        Bundle attemptsBundle = bundle.getBundle("attempts");
+
+        if (attemptsBundle != null) {
+            for (String key : attemptsBundle.keySet()) {
+                Bundle attemptsPointBundle = attemptsBundle.getBundle(key);
+
+                MengineAdAttempts attempts = new MengineAdAttempts();
+
+                attempts.onLoad(application, attemptsPointBundle);
+
+                m_adAttempts.put(key, attempts);
+            }
+        }
+
+        Bundle cooldownsBundle = bundle.getBundle("cooldowns");
+
+        if (cooldownsBundle != null) {
+            for (String key : cooldownsBundle.keySet()) {
+                Bundle cooldownBundle = cooldownsBundle.getBundle(key);
+
+                MengineAdCooldown cooldown = new MengineAdCooldown();
+
+                cooldown.onLoad(application, cooldownBundle);
+
+                m_adCooldowns.put(key, cooldown);
+            }
+        }
     }
 
     @Override

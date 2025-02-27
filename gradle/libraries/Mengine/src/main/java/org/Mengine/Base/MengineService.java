@@ -24,11 +24,11 @@ public class MengineService implements MengineServiceInterface {
         m_application = null;
     }
 
-    public void onLoad(@NonNull MengineApplication application, @NonNull Bundle bundle) {
-    }
-
     public Bundle onSave(@NonNull MengineApplication application) {
         return null;
+    }
+
+    public void onLoad(@NonNull MengineApplication application, @NonNull Bundle bundle) {
     }
 
     public MengineApplication getMengineApplication() {

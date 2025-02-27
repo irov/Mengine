@@ -355,6 +355,8 @@ namespace Mengine
         m_defaultViewport2D->setName( STRINGIZE_STRING_LOCAL( "DefaultViewport2D" ) );
 
         m_defaultViewport2D->setViewport( vp );
+        m_defaultViewport2D->setGameViewport( gameViewport );
+        m_defaultViewport2D->setContentResolution( contentResolution );
         m_defaultViewport2D->enableForce();
 
         this->setRenderViewport( m_defaultViewport2D );

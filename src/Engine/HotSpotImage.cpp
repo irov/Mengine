@@ -124,26 +124,30 @@ namespace Mengine
         HotSpot::_dispose();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool HotSpotImage::testPoint( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point ) const
+    bool HotSpotImage::testPoint( const RenderContext * _context, const mt::vec2f & _point ) const
     {
+        const RenderCameraInterface * camera = _context->camera;
+        const RenderViewportInterface * viewport = _context->viewport;
+
         if( m_global == true )
         {
             return !m_outward;
         }
 
         mt::box2f bb_screen;
-        this->getScreenBoundingBox( _context, _contentResolution, &bb_screen );
+        this->getScreenBoundingBox( _context, &bb_screen );
 
         if( mt::box2_intersect( bb_screen, _point ) == false )
         {
             return m_outward;
         }
 
-        const mt::mat4f & vpm_inv = _context->camera->getCameraViewProjectionMatrixInv();
-        const Viewport & vp = _context->viewport->getViewport();
+        const mt::mat4f & vpm_inv = camera->getCameraViewProjectionMatrixInv();
+        const Viewport & vp = viewport->getViewportWM();
+        const Resolution & contentResolution = viewport->getContentResolution();
 
         mt::vec2f contentResolutionSize;
-        _contentResolution.calcSize( &contentResolutionSize );
+        contentResolution.calcSize( &contentResolutionSize );
 
         mt::vec2f point_vp;
         point_vp = _point * contentResolutionSize;
@@ -179,29 +183,33 @@ namespace Mengine
         return result != m_outward;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool HotSpotImage::testRadius( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point, float _radius ) const
+    bool HotSpotImage::testRadius( const RenderContext * _context, const mt::vec2f & _point, float _radius ) const
     {
+        const RenderCameraInterface * camera = _context->camera;
+        const RenderViewportInterface * viewport = _context->viewport;
+
         if( m_global == true )
         {
             return !m_outward;
         }
 
         mt::vec2f rxy;
-        Helper::worldToScreenDelta( _context, _contentResolution, mt::vec2f( _radius, _radius ), &rxy );
+        Helper::worldToScreenDelta( _context, mt::vec2f( _radius, _radius ), &rxy );
 
         mt::box2f bb_screen;
-        this->getScreenBoundingBox( _context, _contentResolution, &bb_screen );
+        this->getScreenBoundingBox( _context, &bb_screen );
 
         if( mt::box2_intersect( bb_screen, _point, rxy.x, rxy.y ) == false )
         {
             return m_outward;
         }
 
-        const mt::mat4f & vpm_inv = _context->camera->getCameraViewProjectionMatrixInv();
-        const Viewport & vp = _context->viewport->getViewport();
+        const mt::mat4f & vpm_inv = camera->getCameraViewProjectionMatrixInv();
+        const Viewport & vp = viewport->getViewportWM();
+        const Resolution & contentResolution = viewport->getContentResolution();
 
         mt::vec2f contentResolutionSize;
-        _contentResolution.calcSize( &contentResolutionSize );
+        contentResolution.calcSize( &contentResolutionSize );
 
         mt::vec2f point_vp;
         point_vp = _point * contentResolutionSize;
@@ -237,7 +245,7 @@ namespace Mengine
         return result != m_outward;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool HotSpotImage::testPolygon( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point, const Polygon & _polygon ) const
+    bool HotSpotImage::testPolygon( const RenderContext * _context, const mt::vec2f & _point, const Polygon & _polygon ) const
     {
         if( m_global == true )
         {
@@ -250,13 +258,13 @@ namespace Mengine
         }
 
         mt::box2f bb_screen;
-        this->getScreenBoundingBox( _context, _contentResolution, &bb_screen );
+        this->getScreenBoundingBox( _context, &bb_screen );
 
         mt::box2f bb_polygon;
         _polygon.to_box2f( &bb_polygon );
 
         mt::box2f bb_polygon_screen;
-        Helper::worldToScreenBox( _context, _contentResolution, bb_polygon, &bb_polygon_screen );
+        Helper::worldToScreenBox( _context, bb_polygon, &bb_polygon_screen );
 
         mt::box2_transpose( &bb_polygon_screen, _point );
 
@@ -268,7 +276,7 @@ namespace Mengine
         return !m_outward;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool HotSpotImage::testBounds( const RenderContext * _context, const Resolution & _contentResolution, float _left, float _right, float _top, float _bottom ) const
+    bool HotSpotImage::testBounds( const RenderContext * _context, float _left, float _right, float _top, float _bottom ) const
     {
         if( m_global == true )
         {
@@ -276,7 +284,7 @@ namespace Mengine
         }
 
         mt::box2f bb;
-        this->getScreenBoundingBox( _context, _contentResolution, &bb );
+        this->getScreenBoundingBox( _context, &bb );
 
         if( bb.minimum.x < _left )
         {
@@ -323,13 +331,13 @@ namespace Mengine
         *_bb = bb;
     }
     //////////////////////////////////////////////////////////////////////////
-    void HotSpotImage::getScreenBoundingBox( const RenderContext * _context, const Resolution & _contentResolution, mt::box2f * const _bb ) const
+    void HotSpotImage::getScreenBoundingBox( const RenderContext * _context, mt::box2f * const _bb ) const
     {
         mt::box2f bb;
         this->getWorldBoundingBox( &bb );
 
         mt::box2f bb_screen;
-        Helper::worldToScreenBox( _context, _contentResolution, bb, &bb_screen );
+        Helper::worldToScreenBox( _context, bb, &bb_screen );
 
         *_bb = bb_screen;
     }

@@ -1,6 +1,7 @@
 #include "Layer2D.h"
 
 #include "Interface/RenderSystemInterface.h"
+#include "Interface/ApplicationInterface.h"
 
 #include "Layer2DRenderTarget.h"
 
@@ -137,6 +138,18 @@ namespace Mengine
 
             renderViewport->setName( name );
 
+            const Resolution & resolution = APPLICATION_SERVICE()
+                ->getContentResolution();
+
+            renderViewport->setContentResolution( resolution );
+
+            float gameViewportAspect;
+            Viewport gameViewport;
+            APPLICATION_SERVICE()
+                ->getGameViewport( &gameViewportAspect, &gameViewport );
+
+            renderViewport->setGameViewport( gameViewport );
+
             this->addChild( renderViewport );
 
             m_renderViewport = renderViewport;
@@ -144,6 +157,7 @@ namespace Mengine
 
         m_renderCamera->setProxyViewMatrix( true );
         m_renderCamera->setOrthogonalViewport( m_viewport );
+
         m_renderViewport->setViewport( m_viewport );
 
         RenderInterface * render = this->getRender();

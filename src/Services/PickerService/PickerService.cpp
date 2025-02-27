@@ -1,7 +1,6 @@
 #include "PickerService.h"
 
 #include "Interface/InputServiceInterface.h"
-#include "Interface/ApplicationInterface.h"
 #include "Interface/ArrowServiceInterface.h"
 
 #include "Kernel/EnumeratorHelper.h"
@@ -885,9 +884,6 @@ namespace Mengine
 
         this->fillStates_( _states );
 
-        const Resolution & contentResolution = APPLICATION_SERVICE()
-            ->getContentResolution();
-
         mt::vec2f adapt_screen_position;
         Helper::adaptScreenPosition( mt::vec2f( _x, _y ), &adapt_screen_position );
 
@@ -910,7 +906,7 @@ namespace Mengine
 
             if( handle == false || m_handleValue == false )
             {
-                bool picked = picker->pick( adapt_screen_position, &desc.context, contentResolution );
+                bool picked = picker->pick( adapt_screen_position, &desc.context );
 
                 if( m_block == false && picked == true )
                 {
@@ -1038,9 +1034,6 @@ namespace Mengine
         VectorPickerStates statesAux;
         this->fillStates_( &statesAux );
 
-        const Resolution & contentResolution = APPLICATION_SERVICE()
-            ->getContentResolution();
-
         mt::vec2f adapt_screen_position;
         Helper::adaptScreenPosition( mt::vec2f( _x, _y ), &adapt_screen_position );
 
@@ -1053,7 +1046,7 @@ namespace Mengine
                 continue;
             }
 
-            bool picked = picker->pick( adapt_screen_position, &desc.context, contentResolution );
+            bool picked = picker->pick( adapt_screen_position, &desc.context );
 
             if( picked == false )
             {

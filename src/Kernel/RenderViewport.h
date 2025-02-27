@@ -37,9 +37,21 @@ namespace Mengine
 
     public:
         void setViewport( const Viewport & _viewport );
+        const Viewport & getViewport() const;
 
     public:
-        const Viewport & getViewport() const override;
+        void setGameViewport( const Viewport & _gameViewport );
+        void setContentResolution( const Resolution & _contentResolution );
+
+    public:
+        const Viewport & getViewportWM() const override;
+
+    public:
+        const Viewport & getGameViewport() const override;
+        const Resolution & getContentResolution() const override;
+
+    public:
+        void fromScreenToViewportPosition( const mt::vec2f & _screenPosition, mt::vec2f * const _viewportPosition ) const override;
 
     protected:
         void _invalidateWorldMatrix() const override;
@@ -56,6 +68,16 @@ namespace Mengine
     protected:
         Viewport m_viewport;
 
+        Viewport m_gameViewport;
+
+        mt::vec2f m_gameViewportSize;
+        mt::vec2f m_gameViewportSizeInv;
+
+        Resolution m_contentResolution;
+
+        mt::vec2f m_contentResolutionSize;
+        mt::vec2f m_contentResolutionSizeInv;
+
         bool m_fixedViewport;
         mutable Viewport m_viewportWM;
         mutable bool m_invalidateViewport;
@@ -68,7 +90,7 @@ namespace Mengine
         m_invalidateViewport = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE const Viewport & RenderViewport::getViewport() const
+    MENGINE_INLINE const Viewport & RenderViewport::getViewportWM() const
     {
         if( m_invalidateViewport == true )
         {
@@ -76,6 +98,16 @@ namespace Mengine
         }
 
         return m_viewportWM;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE const Viewport & RenderViewport::getGameViewport() const
+    {
+        return m_gameViewport;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE const Resolution & RenderViewport::getContentResolution() const
+    {
+        return m_contentResolution;
     }
     //////////////////////////////////////////////////////////////////////////
 }

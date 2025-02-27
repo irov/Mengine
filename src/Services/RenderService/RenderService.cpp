@@ -927,7 +927,7 @@ namespace Mengine
         {
             if( m_currentRenderContext.viewport != viewport )
             {
-                const Viewport & v = viewport->getViewport();
+                const Viewport & v = viewport->getViewportWM();
 
                 Viewport rv;
                 this->calcRenderViewport_( v, &rv );
@@ -1022,7 +1022,7 @@ namespace Mengine
         {
             if( m_currentRenderContext.scissor != scissor )
             {
-                const Viewport & v = scissor->getScissorViewport();
+                const Viewport & v = scissor->getScissorViewportWM();
 
                 m_renderSystem->setScissor( v );
 

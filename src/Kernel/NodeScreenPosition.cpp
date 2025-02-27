@@ -28,7 +28,20 @@ namespace Mengine
 
             const mt::mat4f & wm = transformation->getWorldMatrix();
 
-            camera->fromWorldToScreenPosition( wm, _screenPosition );
+            mt::vec2f camera_position;
+            camera->fromWorldToScreenPosition( wm, &camera_position );
+
+            const RenderViewportInterface * viewport = Helper::getNodeRenderViewportInheritance( _node );
+
+            if( viewport == nullptr )
+            {
+                const RenderViewportInterfacePtr & player_viewport = PLAYER_SERVICE()
+                    ->getRenderViewport();
+
+                viewport = player_viewport.get();
+            }
+
+            viewport->fromScreenToViewportPosition( camera_position, _screenPosition );
         }
         //////////////////////////////////////////////////////////////////////////
         void setNodeScreenPosition( Node * _node, const mt::vec2f & _screenPosition, float _deep )

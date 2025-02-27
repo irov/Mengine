@@ -219,17 +219,13 @@ namespace Mengine
 
         if( m_proxyViewMatrix == false )
         {
-            mt::vec3f wm_position;
-            mt::mul_v3_v3_m4( &wm_position, m_cameraPosition, wm );
+            mt::mat4f lm;
+            mt::make_lookat_m4( &lm, m_cameraPosition, m_cameraDirection, m_cameraUp, m_cameraRightSign );
 
-            mt::vec3f wm_direction;
-            mt::mul_v3_v3_m4_r( &wm_direction, m_cameraDirection, wm );
+            mt::mat4f wm_inv;
+            mt::inv_m4_m4( &wm_inv, wm );
 
-            mt::vec3f wm_up;
-            mt::mul_v3_v3_m4_r( &wm_up, m_cameraUp, wm );
-
-            mt::make_lookat_m4( &m_viewMatrix, wm_position, wm_direction, wm_up, m_cameraRightSign );
-
+            mt::mul_m4_m4( &m_viewMatrix, lm, wm_inv );
             mt::inv_m4_m4( &m_viewMatrixInv, m_viewMatrix );
         }
         else
@@ -268,12 +264,10 @@ namespace Mengine
     {
         if( m_fixedOrthogonalViewport == false )
         {
-            Viewport renderViewportWM;
-
             const mt::mat4f & wm = this->getWorldMatrix();
 
-            mt::mul_v2_v2_m4( &renderViewportWM.begin, m_orthogonalViewport.begin, wm );
-            mt::mul_v2_v2_m4( &renderViewportWM.end, m_orthogonalViewport.end, wm );
+            Viewport renderViewportWM;
+            m_orthogonalViewport.multiply( &renderViewportWM, wm );
 
             if( m_clampViewport == true )
             {

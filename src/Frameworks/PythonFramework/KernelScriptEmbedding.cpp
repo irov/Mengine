@@ -2796,14 +2796,14 @@ namespace Mengine
             ;
 
         pybind::interface_<RenderViewportInterface, pybind::bases<Mixin>>( _kernel, "RenderViewportInterface" )
-            .def( "getViewport", &RenderViewportInterface::getViewport )
+            .def( "getViewportWM", &RenderViewportInterface::getViewportWM )
             ;
 
         pybind::interface_<RenderCameraInterface, pybind::bases<Mixin>>( _kernel, "RenderCameraInterface" )
             ;
 
         pybind::interface_<RenderScissorInterface, pybind::bases<Mixin>>( _kernel, "RenderScissorInterface", false )
-            .def( "getScissorViewport", &RenderScissorInterface::getScissorViewport )
+            .def( "getScissorViewportWM", &RenderScissorInterface::getScissorViewportWM )
             ;
 
         pybind::interface_<RenderTargetInterface, pybind::bases<Mixin>>( _kernel, "RenderTargetInterface", false )
@@ -2811,6 +2811,9 @@ namespace Mengine
             .def_deprecated( "getHeight", &RenderTargetInterface::getHWHeight, "use getHWHeight" )
             .def( "getHWWidth", &RenderTargetInterface::getHWWidth )
             .def( "getHWHeight", &RenderTargetInterface::getHWHeight )
+            .def( "getHWWidthInv", &RenderTargetInterface::getHWWidthInv )
+            .def( "getHWHeightInv", &RenderTargetInterface::getHWHeightInv )
+            .def( "getUpscalePow2", &RenderTargetInterface::getUpscalePow2 )
             ;
 
         pybind::interface_<SchedulerInterface, pybind::bases<Mixin>>( _kernel, "SchedulerInterface", true )

@@ -80,7 +80,7 @@ namespace Mengine
         virtual const RenderTargetInterfacePtr & getPickerTarget() const = 0;
 
     public:
-        virtual bool pick( const mt::vec2f & _point, const RenderContext * _context, const Resolution & _contentResolution ) const = 0;
+        virtual bool pick( const mt::vec2f & _point, const RenderContext * _context ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<PickerInterface> PickerInterfacePtr;

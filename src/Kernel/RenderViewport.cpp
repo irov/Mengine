@@ -1,7 +1,5 @@
 #include "RenderViewport.h"
 
-#include "Interface/ApplicationInterface.h"
-
 #include "Kernel/AssertionObservable.h"
 #include "Kernel/NotificationHelper.h"
 
@@ -59,6 +57,31 @@ namespace Mengine
         this->invalidateViewport_();
     }
     //////////////////////////////////////////////////////////////////////////
+    const Viewport & RenderViewport::getViewport() const
+    {
+        return m_viewport;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void RenderViewport::setGameViewport( const Viewport & _gameViewport )
+    {
+        m_gameViewport = _gameViewport;
+
+        m_gameViewport.calcSize( &m_gameViewportSize );
+        m_gameViewportSizeInv = 1.f / m_gameViewportSize;
+
+        this->invalidateViewport_();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void RenderViewport::setContentResolution( const Resolution & _contentResolution )
+    {
+        m_contentResolution = _contentResolution;
+
+        m_contentResolution.calcSize( &m_contentResolutionSize );
+        m_contentResolutionSizeInv = 1.f / m_contentResolutionSize;
+
+        this->invalidateViewport_();
+    }
+    //////////////////////////////////////////////////////////////////////////
     void RenderViewport::_invalidateWorldMatrix() const
     {
         this->invalidateViewport_();
@@ -68,22 +91,8 @@ namespace Mengine
     {
         m_invalidateViewport = false;
 
-        float gameViewportAspect;
-        Viewport gameViewport;
-        APPLICATION_SERVICE()
-            ->getGameViewport( &gameViewportAspect, &gameViewport );
-
-        const Resolution & contentResolution = APPLICATION_SERVICE()
-            ->getContentResolution();
-
-        mt::vec2f contentResolutionSize;
-        contentResolution.calcSize( &contentResolutionSize );
-
-        mt::vec2f gameViewportSize;
-        gameViewport.calcSize( &gameViewportSize );
-
-        mt::vec2f viewportMaskBegin = gameViewport.begin / contentResolutionSize;
-        mt::vec2f viewportMaskEnd = gameViewport.end / contentResolutionSize;
+        mt::vec2f viewportMaskBegin = m_gameViewport.begin * m_contentResolutionSizeInv;
+        mt::vec2f viewportMaskEnd = m_gameViewport.end * m_contentResolutionSizeInv;
 
         mt::vec2f viewportMaskSize = viewportMaskEnd - viewportMaskBegin;
 
@@ -93,14 +102,13 @@ namespace Mengine
         mt::mul_v2_v2_m4( &viewportWM.begin, m_viewport.begin, wm );
         mt::mul_v2_v2_m4( &viewportWM.end, m_viewport.end, wm );
 
-        viewportWM.begin /= contentResolutionSize;
-        viewportWM.end /= contentResolutionSize;
+        viewportWM.begin *= m_contentResolutionSizeInv;
+        viewportWM.end *= m_contentResolutionSizeInv;
 
-        m_viewportWM.begin = (viewportWM.begin - viewportMaskBegin) / viewportMaskSize * contentResolutionSize;
-        m_viewportWM.end = (viewportWM.end - viewportMaskBegin) / viewportMaskSize * contentResolutionSize;
+        m_viewportWM.begin = (viewportWM.begin - viewportMaskBegin) / viewportMaskSize * m_contentResolutionSize;
+        m_viewportWM.end = (viewportWM.end - viewportMaskBegin) / viewportMaskSize * m_contentResolutionSize;
 
-        Viewport contentResolutionViewport( mt::vec2f( 0.f, 0.f ), contentResolutionSize );
-        m_viewportWM.clamp( contentResolutionViewport );
+        m_viewportWM.clamp( m_contentResolutionSize );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderViewport::notifyChangeWindowResolution( bool _fullscreen, const Resolution & _resolution )
@@ -109,6 +117,16 @@ namespace Mengine
         MENGINE_UNUSED( _resolution );
 
         this->invalidateViewport_();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void RenderViewport::fromScreenToViewportPosition( const mt::vec2f & _screenPosition, mt::vec2f * const _viewportPosition ) const
+    {
+        const Viewport & vpwm = this->getViewportWM();
+
+        mt::vec2f wpwm_size;
+        vpwm.calcSize( &wpwm_size );
+
+        *_viewportPosition = (vpwm.begin + _screenPosition * wpwm_size) * m_contentResolutionSizeInv;
     }
     //////////////////////////////////////////////////////////////////////////
 }

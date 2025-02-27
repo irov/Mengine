@@ -42,6 +42,7 @@ namespace Mengine
         void scale( const mt::vec2f & _value );
         void inflate( const mt::vec2f & _value );
         void translate( const mt::vec2f & _value );
+        void clamp( const mt::vec2f & _size );
         void clamp( const mt::vec2f & _begin, const mt::vec2f & _right );
         void clamp( const Viewport & _vp );
         void multiply( Viewport * const _viewport, const mt::mat4f & _wm ) const;
@@ -57,7 +58,7 @@ namespace Mengine
 
     public:
         void calcSize( mt::vec2f * const _size ) const;
-        void calcInvSize( mt::vec2f * const _size ) const;
+        void calcSizeInv( mt::vec2f * const _size ) const;
         void centerize( const mt::vec2f & _center );
         void getCenter( mt::vec2f * const _point ) const;
 

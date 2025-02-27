@@ -74,6 +74,11 @@ namespace Mengine
         end += _value;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Viewport::clamp( const mt::vec2f & _size )
+    {
+        this->clamp( mt::vec2f( 0.f, 0.f ), _size );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Viewport::clamp( const mt::vec2f & _begin, const mt::vec2f & _end )
     {
         begin.x = mt::clamp( _begin.x, begin.x, _end.x );
@@ -113,7 +118,7 @@ namespace Mengine
         *_size = end - begin;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Viewport::calcInvSize( mt::vec2f * const _size ) const
+    void Viewport::calcSizeInv( mt::vec2f * const _size ) const
     {
         *_size = mt::vec2f( 1.f, 1.f ) / (end - begin);
     }

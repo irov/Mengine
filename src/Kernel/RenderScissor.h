@@ -31,11 +31,19 @@ namespace Mengine
         void _deactivate() override;
 
     public:
-        void setViewport( const Viewport & _viewport );
-        const Viewport & getViewport() const;
+        void setScissorViewport( const Viewport & _viewport );
+        const Viewport & getScissorViewport() const;
 
     public:
-        const Viewport & getScissorViewport() const override;
+        void setGameViewport( const Viewport & _viewport );
+        void setContentResolution( const Resolution & _resolution );
+
+    public:
+        const Viewport & getScissorViewportWM() const override;
+
+    public:
+        const Viewport & getGameViewport() const override;
+        const Resolution & getContentResolution() const override;
 
     protected:
         void _invalidateWorldMatrix() const override;
@@ -49,6 +57,13 @@ namespace Mengine
     protected:
         Viewport m_viewport;
 
+        Viewport m_gameViewport;
+
+        Resolution m_contentResolution;
+
+        mt::vec2f m_contentResolutionSize;
+        mt::vec2f m_contentResolutionSizeInv;
+
         mutable Viewport m_viewportWM;
         mutable bool m_invalidateViewport;
     };
@@ -60,7 +75,7 @@ namespace Mengine
         m_invalidateViewport = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE const Viewport & RenderScissor::getScissorViewport() const
+    MENGINE_INLINE const Viewport & RenderScissor::getScissorViewportWM() const
     {
         if( m_invalidateViewport == true )
         {
@@ -68,6 +83,16 @@ namespace Mengine
         }
 
         return m_viewportWM;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE const Viewport & RenderScissor::getGameViewport() const
+    {
+        return m_gameViewport;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE const Resolution & RenderScissor::getContentResolution() const
+    {
+        return m_contentResolution;
     }
     //////////////////////////////////////////////////////////////////////////
 }

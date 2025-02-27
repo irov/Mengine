@@ -350,9 +350,6 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             mt::vec2f s_HotSpotPolygon_getScreenPolygonCenter( HotSpotPolygon * _hs )
             {
-                const Resolution & contentResolution = APPLICATION_SERVICE()
-                    ->getContentResolution();
-
                 const RenderCameraInterface * camera = Helper::getNodeRenderCameraInheritance( _hs );
                 const RenderViewportInterface * viewport = Helper::getNodeRenderViewportInheritance( _hs );
 
@@ -371,7 +368,7 @@ namespace Mengine
                 context.viewport = viewport;
 
                 mt::box2f b1;
-                _hs->getScreenPolygon( &context, contentResolution, &b1, nullptr );
+                _hs->getScreenPolygon( &context, &b1, nullptr );
 
                 mt::vec2f c;
                 mt::box2_get_center( b1, &c );
@@ -708,11 +705,20 @@ namespace Mengine
             .def( "setFixedViewport", &RenderViewport::setFixedViewport )
             .def( "getFixedViewport", &RenderViewport::getFixedViewport )
             .def( "setViewport", &RenderViewport::setViewport )
+            .def( "getViewport", &RenderViewport::getViewport )
+            .def( "setGameViewport", &RenderViewport::setGameViewport )
+            .def( "getGameViewport", &RenderViewport::getGameViewport )
+            .def( "setContentResolution", &RenderViewport::setContentResolution )
+            .def( "getContentResolution", &RenderViewport::getContentResolution )            
             ;
 
         pybind::interface_<RenderScissor, pybind::bases<Node, RenderScissorInterface>>( _kernel, "RenderScissor", false )
-            .def( "setViewport", &RenderScissor::setViewport )
-            .def( "getViewport", &RenderScissor::getViewport )
+            .def( "setScissorViewport", &RenderScissor::setScissorViewport )
+            .def( "getScissorViewport", &RenderScissor::getScissorViewport )
+            .def( "setGameViewport", &RenderScissor::setGameViewport )
+            .def( "getGameViewport", &RenderScissor::getGameViewport )
+            .def( "setContentResolution", &RenderScissor::setContentResolution )
+            .def( "getContentResolution", &RenderScissor::getContentResolution )
             ;
 
         pybind::interface_<RenderCameraOrthogonal, pybind::bases<Node, RenderCameraInterface>>( _kernel, "RenderCameraOrthogonal", false )

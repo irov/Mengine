@@ -13,11 +13,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DummyPicker::pick( const mt::vec2f & _point, const RenderContext * _context, const Resolution & _contentResolution ) const
+    bool DummyPicker::pick( const mt::vec2f & _point, const RenderContext * _context ) const
     {
         MENGINE_UNUSED( _point );
         MENGINE_UNUSED( _context );
-        MENGINE_UNUSED( _contentResolution );
 
         //Empty
 

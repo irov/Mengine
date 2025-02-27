@@ -103,7 +103,7 @@ namespace Mengine
 
         const RenderViewportInterface * renderViewport = _context->viewport;
 
-        const Viewport & viewport = renderViewport->getViewport();
+        const Viewport & viewport = renderViewport->getViewportWM();
 
         const Resolution & contentResolution = APPLICATION_SERVICE()
             ->getContentResolution();
@@ -198,7 +198,7 @@ namespace Mengine
 
         const RenderViewportInterface * renderViewport = _context->viewport;
 
-        const Viewport & viewport = renderViewport->getViewport();
+        const Viewport & viewport = renderViewport->getViewportWM();
         p_vm += viewport.begin;
 
         const mt::mat4f & pm = renderCamera->getCameraProjectionMatrix();

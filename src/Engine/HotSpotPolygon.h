@@ -20,18 +20,18 @@ namespace Mengine
         const Polygon & getPolygon() const;
 
     public:
-        bool testPoint( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point ) const override;
-        bool testRadius( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point, float _radius ) const override;
-        bool testPolygon( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point, const Polygon & _polygon ) const override;
+        bool testPoint( const RenderContext * _context, const mt::vec2f & _point ) const override;
+        bool testRadius( const RenderContext * _context, const mt::vec2f & _point, float _radius ) const override;
+        bool testPolygon( const RenderContext * _context, const mt::vec2f & _point, const Polygon & _polygon ) const override;
 
     public:
-        bool testBounds( const RenderContext * _context, const Resolution & _contentResolution, float _left, float _right, float _top, float _bottom ) const override;
+        bool testBounds( const RenderContext * _context, float _left, float _right, float _top, float _bottom ) const override;
 
     public:
         void clearPoints();
 
     public:
-        void getScreenPolygon( const RenderContext * _context, const Resolution & _contentResolution, mt::box2f * const _bb, Polygon * const _screen ) const;
+        void getScreenPolygon( const RenderContext * _context, mt::box2f * const _bb, Polygon * const _screen ) const;
 
     protected:
         Polygon m_polygon;

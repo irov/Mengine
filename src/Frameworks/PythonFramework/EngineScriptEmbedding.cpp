@@ -986,7 +986,7 @@ namespace Mengine
                 const RenderViewportInterfacePtr & rv = PLAYER_SERVICE()
                     ->getRenderViewport();
 
-                const Viewport & vp = rv->getViewport();
+                const Viewport & vp = rv->getViewportWM();
 
                 return vp.begin;
             }
@@ -3175,7 +3175,7 @@ namespace Mengine
                 const RenderViewportInterfacePtr & renderViewport = PLAYER_SERVICE()
                     ->getRenderViewport();
 
-                const Viewport & vp = renderViewport->getViewport();
+                const Viewport & vp = renderViewport->getViewportWM();
 
                 bool test = vp.testPoint( _pos );
 

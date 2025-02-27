@@ -126,7 +126,7 @@ namespace Mengine
 
         double Statistic_PerFrame_Fillrate = STATISTIC_GET_DOUBLE( STATISTIC_RENDER_PERFRAME_FILLRATE );
 
-        const Viewport & viewport = _context->viewport->getViewport();
+        const Viewport & viewport = _context->viewport->getViewportWM();
 
         float viewportWidth = viewport.getWidth();
         float viewportHeight = viewport.getHeight();

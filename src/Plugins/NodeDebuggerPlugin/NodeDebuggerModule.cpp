@@ -783,7 +783,7 @@ namespace Mengine
         {
             pugi::xml_node xmlViewport = xmlRender.append_child( "Viewport" );
 
-            const Viewport & v = viewport->getViewport();
+            const Viewport & v = viewport->getViewportWM();
 
             Detail::serializeNodeProp( v.begin, "begin", xmlViewport );
             Detail::serializeNodeProp( v.end, "end", xmlViewport );
@@ -824,7 +824,7 @@ namespace Mengine
         {
             pugi::xml_node xmlScissor = xmlRender.append_child( "Scissor" );
 
-            const Viewport & v = scissor->getScissorViewport();
+            const Viewport & v = scissor->getScissorViewportWM();
 
             Detail::serializeNodeProp( v.begin, "begin", xmlScissor );
             Detail::serializeNodeProp( v.end, "end", xmlScissor );
@@ -2357,7 +2357,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::findChildRecursive( const NodePtr & _currentNode, const mt::vec2f & _point )
     {
-        bool result = _currentNode->foreachChildrenReverseBreak( [this, _point]( const NodePtr & _child ) -> bool
+        const RenderContext * renderContext = PLAYER_SERVICE()
+            ->getRenderContext();
+
+        bool result = _currentNode->foreachChildrenReverseBreak( [this, renderContext, _point]( const NodePtr & _child ) -> bool
         {
             if( m_selectedNode != nullptr )
             {
@@ -2380,13 +2383,7 @@ namespace Mengine
 
             if( picker != nullptr )
             {
-                const RenderContext * renderContext = PLAYER_SERVICE()
-                    ->getRenderContext();
-
-                const Resolution & contentResolution = APPLICATION_SERVICE()
-                    ->getContentResolution();
-
-                if( picker->pick( m_cursorAdaptScreenPosition, renderContext, contentResolution ) == true )
+                if( picker->pick( m_cursorAdaptScreenPosition, renderContext ) == true )
                 {
                     m_selectedNode = _child;
 
@@ -2548,7 +2545,7 @@ namespace Mengine
             ->getRenderViewport();
 
         const mt::mat4f & vpm_inv = renderCamera->getCameraViewProjectionMatrixInv();
-        const Viewport & vp = renderViewport->getViewport();
+        const Viewport & vp = renderViewport->getViewportWM();
 
         mt::vec2f contentResolutionSize;
         contentResolution.calcSize( &contentResolutionSize );
@@ -2632,11 +2629,8 @@ namespace Mengine
         RenderContext context;
         render->makeRenderContext( &context );
 
-        const Resolution & contentResolution = APPLICATION_SERVICE()
-            ->getContentResolution();
-
         mt::box2f bb_screen;
-        Helper::worldToScreenBox( &context, contentResolution, boundingBox, &bb_screen );
+        Helper::worldToScreenBox( &context, boundingBox, &bb_screen );
 
         *_bb = bb_screen;
     }

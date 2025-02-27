@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Kernel/Node.h"
+#include "Kernel/Resolution.h"
 
 namespace Mengine
 {

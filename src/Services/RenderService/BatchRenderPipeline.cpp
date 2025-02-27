@@ -281,7 +281,7 @@ namespace Mengine
                 case PT_TRIANGLELIST:
                     {
                         const RenderViewportInterface * viewport = renderPass.context.viewport;
-                        const Viewport & vp = viewport->getViewport();
+                        const Viewport & vp = viewport->getViewportWM();
 
                         double fillrate = Helper::calcRenderQuadSquare( _vertices, _vertexCount, vp );
 
@@ -376,7 +376,7 @@ namespace Mengine
             const mt::mat4f & vpm = camera->getCameraViewProjectionMatrix();
 
             const RenderViewportInterface * viewport = renderPass.context.viewport;
-            const Viewport & vp = viewport->getViewport();
+            const Viewport & vp = viewport->getViewportWM();
 
             mt::box2f bb_homogenize;
             mt::box2_homogenize( &bb_homogenize, bb.minimum, bb.maximum, vpm );

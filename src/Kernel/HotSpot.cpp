@@ -432,7 +432,7 @@ namespace Mengine
         Node::_dispose();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool HotSpot::pick( const mt::vec2f & _point, const RenderContext * _context, const Resolution & _contentResolution ) const
+    bool HotSpot::pick( const mt::vec2f & _point, const RenderContext * _context ) const
     {
         EArrowType arrowType = ARROW_SERVICE()
             ->getArrowType();
@@ -441,7 +441,7 @@ namespace Mengine
         {
         case EAT_POINT:
             {
-                bool result = this->testPoint( _context, _contentResolution, _point );
+                bool result = this->testPoint( _context, _point );
 
                 return result;
             }break;
@@ -450,7 +450,7 @@ namespace Mengine
                 float radius = ARROW_SERVICE()
                     ->getRadius();
 
-                bool result = this->testRadius( _context, _contentResolution, _point, radius );
+                bool result = this->testRadius( _context, _point, radius );
 
                 return result;
             }break;
@@ -459,7 +459,7 @@ namespace Mengine
                 const Polygon & polygon = ARROW_SERVICE()
                     ->getPolygon();
 
-                bool result = this->testPolygon( _context, _contentResolution, _point, polygon );
+                bool result = this->testPolygon( _context, _point, polygon );
 
                 return result;
             }break;

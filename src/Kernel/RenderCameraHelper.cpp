@@ -33,7 +33,7 @@ namespace Mengine
             *_worldDelta = worldDelta.to_vec2f();
         }
         //////////////////////////////////////////////////////////////////////////
-        void worldToScreenPosition( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _worldPosition, mt::vec2f * const _screenPosition )
+        void worldToScreenPosition( const RenderContext * _context, const mt::vec2f & _worldPosition, mt::vec2f * const _screenPosition )
         {
             MENGINE_ASSERTION_MEMORY_PANIC( _context, "invalid context" );
             MENGINE_ASSERTION_MEMORY_PANIC( _context->camera, "invalid camera" );
@@ -41,24 +41,16 @@ namespace Mengine
 
             const RenderCameraInterface * renderCamera = _context->camera;
             const RenderViewportInterface * renderViewport = _context->viewport;
-
-            const Viewport & vp = renderViewport->getViewport();
-
-            mt::vec2f vp_size;
-            vp.calcSize( &vp_size );
-
-            mt::vec2f contentResolutionInvSize;
-            _contentResolution.calcInvSize( &contentResolutionInvSize );
 
             const mt::mat4f & vpm = renderCamera->getCameraViewProjectionMatrix();
 
             mt::vec2f v_screen;
             mt::mul_v2_v2_m4_homogenize( &v_screen, _worldPosition, vpm );
 
-            *_screenPosition = (vp.begin + v_screen * vp_size) * contentResolutionInvSize;
+            renderViewport->fromScreenToViewportPosition( v_screen, _screenPosition );
         }
         //////////////////////////////////////////////////////////////////////////
-        void worldToScreenDelta( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _worldDelta, mt::vec2f * const _screenDelta )
+        void worldToScreenDelta( const RenderContext * _context, const mt::vec2f & _worldDelta, mt::vec2f * const _screenDelta )
         {
             MENGINE_ASSERTION_MEMORY_PANIC( _context, "invalid context" );
             MENGINE_ASSERTION_MEMORY_PANIC( _context->camera, "invalid camera" );
@@ -67,13 +59,15 @@ namespace Mengine
             const RenderCameraInterface * renderCamera = _context->camera;
             const RenderViewportInterface * renderViewport = _context->viewport;
 
-            const Viewport & vp = renderViewport->getViewport();
+            const Viewport & vp = renderViewport->getViewportWM();
 
             mt::vec2f vp_size;
             vp.calcSize( &vp_size );
 
+            const Resolution & contentResolution = renderViewport->getContentResolution();
+
             mt::vec2f contentResolutionInvSize;
-            _contentResolution.calcInvSize( &contentResolutionInvSize );
+            contentResolution.calcInvSize( &contentResolutionInvSize );
 
             const mt::mat4f & vpm = renderCamera->getCameraViewProjectionMatrix();
 
@@ -94,7 +88,7 @@ namespace Mengine
             *_screenDelta = (v_screen1n - v_screen0n) * vp_size * contentResolutionInvSize;
         }
         //////////////////////////////////////////////////////////////////////////
-        void worldToScreenBox( const RenderContext * _context, const Resolution & _contentResolution, const mt::box2f & _worldBox, mt::box2f * const _screenBox )
+        void worldToScreenBox( const RenderContext * _context, const mt::box2f & _worldBox, mt::box2f * const _screenBox )
         {
             MENGINE_ASSERTION_MEMORY_PANIC( _context, "invalid context" );
             MENGINE_ASSERTION_MEMORY_PANIC( _context->camera, "invalid camera" );
@@ -103,13 +97,15 @@ namespace Mengine
             const RenderCameraInterface * renderCamera = _context->camera;
             const RenderViewportInterface * renderViewport = _context->viewport;
 
-            const Viewport & vp = renderViewport->getViewport();
+            const Viewport & vp = renderViewport->getViewportWM();
 
             mt::vec2f vp_size;
             vp.calcSize( &vp_size );
 
+            const Resolution & contentResolution = renderViewport->getContentResolution();
+
             mt::vec2f contentResolutionInvSize;
-            _contentResolution.calcInvSize( &contentResolutionInvSize );
+            contentResolution.calcInvSize( &contentResolutionInvSize );
 
             const mt::mat4f & vpm = renderCamera->getCameraViewProjectionMatrix();
 

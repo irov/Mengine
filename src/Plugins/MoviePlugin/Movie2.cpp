@@ -3,6 +3,7 @@
 #include "Interface/TimelineServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
+#include "Interface/ApplicationInterface.h"
 
 #include "Plugins/AstralaxPlugin/AstralaxInterface.h"
 #include "Plugins/VideoPlugin/VideoInterface.h"
@@ -1036,7 +1037,19 @@ namespace Mengine
             {
                 scissor = Helper::makeFactorableUnique<Movie2Scissor>( MENGINE_DOCUMENT_FACTORABLE );
 
-                scissor->setViewport( wm, mesh.viewport );
+                scissor->setScissorViewport( wm, mesh.viewport );
+
+                const Resolution & resolution = APPLICATION_SERVICE()
+                    ->getContentResolution();
+
+                scissor->setContentResolution( resolution );
+
+                float gameViewportAspect;
+                Viewport gameViewport;
+                APPLICATION_SERVICE()
+                    ->getGameViewport( &gameViewportAspect, &gameViewport );
+
+                scissor->setGameViewport( gameViewport );
 
                 context.scissor = scissor.get();
             }
@@ -1236,6 +1249,18 @@ namespace Mengine
         vp.end.y = _callbackData->height;
 
         renderViewport->setViewport( vp );
+
+        const Resolution & resolution = APPLICATION_SERVICE()
+            ->getContentResolution();
+
+        renderViewport->setContentResolution( resolution );
+
+        float gameViewportAspect;
+        Viewport gameViewport;
+        APPLICATION_SERVICE()
+            ->getGameViewport( &gameViewportAspect, &gameViewport );
+
+        renderViewport->setGameViewport( gameViewport );
 
         Movie2::Camera * new_camera = movie2->addCamera_( c_name, renderCameraProjection, renderViewport );
 
@@ -2793,7 +2818,19 @@ namespace Mengine
             {
                 scissor = Helper::makeFactorableUnique<Movie2Scissor>( MENGINE_DOCUMENT_FORWARD );
 
-                scissor->setViewport( wm, mesh.viewport );
+                scissor->setScissorViewport( wm, mesh.viewport );
+
+                const Resolution & resolution = APPLICATION_SERVICE()
+                    ->getContentResolution();
+
+                scissor->setContentResolution( resolution );
+
+                float gameViewportAspect;
+                Viewport gameViewport;
+                APPLICATION_SERVICE()
+                    ->getGameViewport( &gameViewportAspect, &gameViewport );
+
+                scissor->setGameViewport( gameViewport );
 
                 context.scissor = scissor.get();
             }

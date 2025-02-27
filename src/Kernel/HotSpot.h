@@ -54,12 +54,12 @@ namespace Mengine
         void removePickerInputHandler( const PickerInputHandlerInterfacePtr & _inputHandler );
 
     public:
-        virtual bool testPoint( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point ) const = 0;
-        virtual bool testRadius( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point, float _radius ) const = 0;
-        virtual bool testPolygon( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point, const Polygon & _polygon ) const = 0;
+        virtual bool testPoint( const RenderContext * _context, const mt::vec2f & _point ) const = 0;
+        virtual bool testRadius( const RenderContext * _context, const mt::vec2f & _point, float _radius ) const = 0;
+        virtual bool testPolygon( const RenderContext * _context, const mt::vec2f & _point, const Polygon & _polygon ) const = 0;
 
     public:
-        virtual bool testBounds( const RenderContext * _context, const Resolution & _contentResolution, float _left, float _right, float _up, float _bottom ) const = 0;
+        virtual bool testBounds( const RenderContext * _context, float _left, float _right, float _up, float _bottom ) const = 0;
 
     protected:
         bool _activate() override;
@@ -73,7 +73,7 @@ namespace Mengine
         void _freeze( bool _value ) override;
 
     protected:
-        bool pick( const mt::vec2f & _point, const RenderContext * _context, const Resolution & _contentResolution ) const override;
+        bool pick( const mt::vec2f & _point, const RenderContext * _context ) const override;
 
 #if defined(MENGINE_USE_SCRIPT_SERVICE)
     public:

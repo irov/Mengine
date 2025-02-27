@@ -56,6 +56,7 @@ def MENGINE_APP_PLUGIN_ONESIGNAL = Utils.existAppPlugin("MENGINE_APP_PLUGIN_ONES
 def MENGINE_APP_PLUGIN_LEANPLUM = Utils.existAppPlugin("MENGINE_APP_PLUGIN_LEANPLUM")
 def MENGINE_APP_PLUGIN_DATADOG = Utils.existAppPlugin("MENGINE_APP_PLUGIN_DATADOG")
 def MENGINE_APP_PLUGIN_DEVDEBUGGER = Utils.existAppPlugin("MENGINE_APP_PLUGIN_DEVDEBUGGER")
+def MENGINE_APP_PLUGIN_VIBRATOR = Utils.existAppPlugin("MENGINE_APP_PLUGIN_VIBRATOR")
 
 Utils.logString("ANDROID_APP_DELIVERY_PACKAGES", ANDROID_APP_DELIVERY_PACKAGES)
 Utils.logAvailable("ANDROID_APP_BUILD_PUBLISH", ANDROID_APP_BUILD_PUBLISH)
@@ -720,6 +721,16 @@ if (MENGINE_APP_PLUGIN_DEVDEBUGGER == true) {
 
     dependencies {
         implementation project(':plugins:DevDebugger')
+    }
+}
+
+Utils.logAvailable("MENGINE_APP_PLUGIN_VIBRATOR", MENGINE_APP_PLUGIN_VIBRATOR)
+
+if (MENGINE_APP_PLUGIN_VIBRATOR == true) {
+    android.ext.plugins += 'org.Mengine.Plugin.Vibrator.MengineVibratorPlugin'
+
+    dependencies {
+        implementation project(':plugins:Vibrator')
     }
 }
 

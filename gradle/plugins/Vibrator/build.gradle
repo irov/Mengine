@@ -1,0 +1,8 @@
+apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin.gradle'
+
+android {
+    namespace "org.Mengine.Plugin.Vibrator"
+}
+
+dependencies {
+}

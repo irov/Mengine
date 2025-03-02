@@ -8,6 +8,14 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
+        double getElapsedTime()
+        {
+            double time = TIME_SYSTEM()
+                ->getElapsedTime();
+
+            return time;
+        }
+        //////////////////////////////////////////////////////////////////////////
         Timestamp getSystemTimestamp()
         {
             Timestamp time = TIME_SYSTEM()

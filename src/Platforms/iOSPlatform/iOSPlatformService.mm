@@ -82,7 +82,7 @@ namespace Mengine
         , m_sdlWindow( nullptr )
         , m_sdlAccelerometer( nullptr )
         , m_sdlInput( nullptr )
-        , m_prevTime( 0 )
+        , m_prevTime( 0.0 )
         , m_pauseUpdatingTime( -1.f )
         , m_active( false )
         , m_sleepMode( true )
@@ -755,7 +755,7 @@ namespace Mengine
             return false;
         }
 
-        if( this->tickPlatform( 0, 0.f, false, false, false ) == false )
+        if( this->tickPlatform( 0.f, false, false, false ) == false )
         {
             return false;
         }
@@ -765,7 +765,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool iOSPlatformService::tickPlatform( Timestamp _frameTime, float _frameTimeF, bool _render, bool _flush, bool _pause )
+    bool iOSPlatformService::tickPlatform( float _frameTimeF, bool _render, bool _flush, bool _pause )
     {
         bool updating = APPLICATION_SERVICE()
             ->beginUpdate( _frameTime );
@@ -814,7 +814,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::loopPlatform()
     {
-        m_prevTime = Helper::getSystemTimestamp();
+        m_prevTime = Helper::getElapsedTime();
 
         for( ;; )
         {
@@ -823,15 +823,13 @@ namespace Mengine
                 break;
             }
 
-            Timestamp currentTime = Helper::getSystemTimestamp();
+            double currentTime = Helper::getElapsedTime();
 
-            Timestamp frameTime = currentTime - m_prevTime;
+            float frameTime = (float)(currentTime - m_prevTime);
             
             m_prevTime = currentTime;
-            
-            float frameTimeF = (float)frameTime;
 
-            if( this->tickPlatform( frameTime, frameTimeF, true, true, true ) == false )
+            if( this->tickPlatform( frameTime, true, true, true ) == false )
             {
                 break;
             }

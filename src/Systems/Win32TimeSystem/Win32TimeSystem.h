@@ -22,6 +22,9 @@ namespace Mengine
     public:
         Timestamp getSystemTimestamp() const override;
 
+    public:
+        double getElapsedTime() const override;
+
     protected:
         LARGE_INTEGER m_frequency;
         LARGE_INTEGER m_initialCounter;

@@ -6,6 +6,8 @@ namespace Mengine
 {
     namespace Helper
     {
+        double getElapsedTime();
+
         Timestamp getSystemTimestamp();
         Timestamp getLocalTimestamp();
 

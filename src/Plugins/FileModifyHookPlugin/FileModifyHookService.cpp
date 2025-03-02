@@ -45,7 +45,7 @@ namespace Mengine
 
         m_mutex = mutex;
 
-        uint32_t FileModifyHook_Time = CONFIG_VALUE_INTEGER( "FileModifyHookPlugin", "Time", 500 );
+        Timestamp FileModifyHook_Time = CONFIG_VALUE_INTEGER( "FileModifyHookPlugin", "Time", 500ULL );
 
         ThreadIdentityInterfacePtr thread = Helper::createThreadIdentity( MENGINE_THREAD_DESCRIPTION( "MNGFileModify" ), ETP_BELOW_NORMAL, [this]( const ThreadIdentityRunnerInterfacePtr & _runner )
         {
@@ -57,7 +57,7 @@ namespace Mengine
         m_thread = thread;
 
         UniqueId timerId = TIMER_SERVICE()
-            ->addTimer( FileModifyHook_Time, [this]( UniqueId _id )
+            ->addTimer( (float)FileModifyHook_Time, [this]( UniqueId _id )
         {
             MENGINE_UNUSED( _id );
 

@@ -1162,4 +1162,26 @@ public class MengineUtils {
 
         return object;
     }
+
+    public static long [] longArrayFromList(@NonNull List<Long> l) {
+        int s = l.size();
+        long[] a = new long[s];
+
+        for (int i = 0; i < s; i++) {
+            a[i] = l.get(i);
+        }
+
+        return a;
+    }
+
+    public static int [] intArrayFromList(@NonNull List<Integer> l) {
+        int s = l.size();
+        int[] a = new int[s];
+
+        for (int i = 0; i < s; i++) {
+            a[i] = l.get(i);
+        }
+
+        return a;
+    }
 }

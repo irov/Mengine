@@ -87,7 +87,7 @@ namespace Mengine
         , m_sdlWindow( nullptr )
         , m_sdlAccelerometer( nullptr )
         , m_sdlInput( nullptr )
-        , m_prevTime( 0 )
+        , m_prevTime( 0.0 )
         , m_pauseUpdatingTime( -1.f )
         , m_active( false )
         , m_sleepMode( true )
@@ -177,8 +177,8 @@ namespace Mengine
         }
 #endif
 
-        const Char * Project_Company = CONFIG_VALUE( "Project", "Company", "UNKNOWN" );
-        const Char * Project_Name = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );
+        const Char * Project_Company = CONFIG_VALUE_STRING( "Project", "Company", "UNKNOWN" );
+        const Char * Project_Name = CONFIG_VALUE_STRING( "Project", "Name", "UNKNOWN" );
 
         Char * sdl_prefPath = SDL_GetPrefPath( Project_Company, Project_Name );
 
@@ -212,7 +212,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t SDLPlatformService::getExtraPreferencesFolderName( Char * const _folderName ) const
     {
-        const Char * Project_ExtraPreferencesFolderName = CONFIG_VALUE( "Project", "ExtraPreferencesFolderName", "" );
+        const Char * Project_ExtraPreferencesFolderName = CONFIG_VALUE_STRING( "Project", "ExtraPreferencesFolderName", "" );
 
         MENGINE_ASSERTION_FATAL( Helper::isCorrectFolderPathA( Project_ExtraPreferencesFolderName ) == true, "invalid extra preferences folder name '%s'"
             , Project_ExtraPreferencesFolderName
@@ -395,7 +395,7 @@ namespace Mengine
             ELoggerLevel level = Detail::SDL_GetLoggerLevel( priority );
             const Char * category_str = Detail::SDL_GetLoggerCategoryString( category );
 
-            LOGGER_VERBOSE_LEVEL( "sdl", level, LFILTER_NONE, LCOLOR_RED, nullptr, 0, LFLAG_SHORT )("[%s] %s"
+            LOGGER_VERBOSE_LEVEL( "sdl", level, LFILTER_NONE, LCOLOR_RED, nullptr, 0, nullptr, LFLAG_SHORT )("[%s] %s"
                 , category_str
                 , message
             );
@@ -845,7 +845,7 @@ namespace Mengine
             return false;
         }
 
-        if( this->tickPlatform( 0, 0.f, false, false, false ) == false )
+        if( this->tickPlatform( 0.f, false, false, false ) == false )
         {
             return false;
         }
@@ -855,7 +855,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::tickPlatform( Timestamp _frameTime, float _frameTimeF, bool _render, bool _flush, bool _pause )
+    bool SDLPlatformService::tickPlatform( float _frameTime, bool _render, bool _flush, bool _pause )
     {
         bool updating = APPLICATION_SERVICE()
             ->beginUpdate( _frameTime );
@@ -864,12 +864,12 @@ namespace Mengine
         {
             if( m_pauseUpdatingTime >= 0.f )
             {
-                _frameTimeF = m_pauseUpdatingTime;
+                _frameTime = m_pauseUpdatingTime;
                 m_pauseUpdatingTime = -1.f;
             }
 
             APPLICATION_SERVICE()
-                ->tick( _frameTimeF );
+                ->tick( _frameTime );
         }
 
         if( this->isNeedWindowRender() == true && _render == true )
@@ -906,7 +906,7 @@ namespace Mengine
             {
                 if( m_pauseUpdatingTime < 0.f )
                 {
-                    m_pauseUpdatingTime = _frameTimeF;
+                    m_pauseUpdatingTime = _frameTime;
                 }
 
                 if( m_sleepMode == true )
@@ -936,7 +936,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatformService::loopPlatform()
     {
-        m_prevTime = Helper::getSystemTimestamp();
+        m_prevTime = Helper::getElapsedTime();
 
         for( ;; )
         {
@@ -945,15 +945,13 @@ namespace Mengine
                 break;
             }
 
-            Timestamp currentTime = Helper::getSystemTimestamp();
+            double currentTime = Helper::getElapsedTime();
             
-            Timestamp frameTime = currentTime - m_prevTime;
+            float frameTime = (float)(currentTime - m_prevTime);
 
             m_prevTime = currentTime;
-            
-            float frameTimeF = (float)frameTime;
 
-            if( this->tickPlatform( frameTime, frameTimeF, true, true, true ) == false )
+            if( this->tickPlatform( frameTime, true, true, true ) == false )
             {
                 break;
             }
@@ -2030,7 +2028,7 @@ namespace Mengine
     {
 #if defined(MENGINE_PLATFORM_UWP)
 #else
-        uint32_t Engine_SDL_GL_RED_SIZE = CONFIG_VALUE( "SDL", "SDL_GL_RED_SIZE", 8 );
+        uint32_t Engine_SDL_GL_RED_SIZE = CONFIG_VALUE_INTEGER( "SDL", "SDL_GL_RED_SIZE", 8U );
 
         if( SDL_GL_SetAttribute( SDL_GL_RED_SIZE, Engine_SDL_GL_RED_SIZE ) != 0 )
         {
@@ -2040,7 +2038,7 @@ namespace Mengine
             );
         }
 
-        uint32_t Engine_SDL_GL_GREEN_SIZE = CONFIG_VALUE( "SDL", "SDL_GL_GREEN_SIZE", 8 );
+        uint32_t Engine_SDL_GL_GREEN_SIZE = CONFIG_VALUE_INTEGER( "SDL", "SDL_GL_GREEN_SIZE", 8U );
 
         if( SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, Engine_SDL_GL_GREEN_SIZE ) != 0 )
         {
@@ -2050,7 +2048,7 @@ namespace Mengine
             );
         }
 
-        uint32_t Engine_SDL_GL_BLUE_SIZE = CONFIG_VALUE( "SDL", "SDL_GL_BLUE_SIZE", 8 );
+        uint32_t Engine_SDL_GL_BLUE_SIZE = CONFIG_VALUE_INTEGER( "SDL", "SDL_GL_BLUE_SIZE", 8U );
 
         if( SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, Engine_SDL_GL_BLUE_SIZE ) != 0 )
         {
@@ -2060,7 +2058,7 @@ namespace Mengine
             );
         }
 
-        uint32_t Engine_SDL_GL_ALPHA_SIZE = CONFIG_VALUE( "SDL", "SDL_GL_ALPHA_SIZE", 0 );
+        uint32_t Engine_SDL_GL_ALPHA_SIZE = CONFIG_VALUE_INTEGER( "SDL", "SDL_GL_ALPHA_SIZE", 0U );
 
         if( SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, Engine_SDL_GL_ALPHA_SIZE ) != 0 )
         {
@@ -2070,7 +2068,7 @@ namespace Mengine
             );
         }
 
-        uint32_t Engine_SDL_GL_DEPTH_SIZE = CONFIG_VALUE( "SDL", "SDL_GL_DEPTH_SIZE", 24 );
+        uint32_t Engine_SDL_GL_DEPTH_SIZE = CONFIG_VALUE_INTEGER( "SDL", "SDL_GL_DEPTH_SIZE", 24U );
 
         if( SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, Engine_SDL_GL_DEPTH_SIZE ) != 0 )
         {
@@ -2080,7 +2078,7 @@ namespace Mengine
             );
         }
 
-        uint32_t Engine_SDL_GL_DOUBLEBUFFER = CONFIG_VALUE( "SDL", "SDL_GL_DOUBLEBUFFER", 1 );
+        uint32_t Engine_SDL_GL_DOUBLEBUFFER = CONFIG_VALUE_INTEGER( "SDL", "SDL_GL_DOUBLEBUFFER", 1U );
 
         if( SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, Engine_SDL_GL_DOUBLEBUFFER ) != 0 )
         {
@@ -2097,7 +2095,7 @@ namespace Mengine
 #else
         SDL_SetHint( SDL_HINT_RENDER_DRIVER, "opengl" );
 
-        uint32_t Engine_SDL_GL_CONTEXT_PROFILE_MASK = CONFIG_VALUE( "SDL", "SDL_GL_CONTEXT_PROFILE_MASK", (uint32_t)SDL_GL_CONTEXT_PROFILE_CORE );
+        uint32_t Engine_SDL_GL_CONTEXT_PROFILE_MASK = CONFIG_VALUE_INTEGER( "SDL", "SDL_GL_CONTEXT_PROFILE_MASK", (uint32_t)SDL_GL_CONTEXT_PROFILE_CORE );
 
         if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, Engine_SDL_GL_CONTEXT_PROFILE_MASK ) != 0 )
         {
@@ -2107,7 +2105,7 @@ namespace Mengine
             );
         }
 
-        uint32_t Engine_SDL_GL_CONTEXT_MAJOR_VERSION = CONFIG_VALUE( "SDL", "SDL_GL_CONTEXT_MAJOR_VERSION", 3 );
+        uint32_t Engine_SDL_GL_CONTEXT_MAJOR_VERSION = CONFIG_VALUE_INTEGER( "SDL", "SDL_GL_CONTEXT_MAJOR_VERSION", 3U );
 
         if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, Engine_SDL_GL_CONTEXT_MAJOR_VERSION ) != 0 )
         {
@@ -2117,7 +2115,7 @@ namespace Mengine
             );
         }
 
-        uint32_t Engine_SDL_GL_CONTEXT_MINOR_VERSION = CONFIG_VALUE( "SDL", "SDL_GL_CONTEXT_MINOR_VERSION", 2 );
+        uint32_t Engine_SDL_GL_CONTEXT_MINOR_VERSION = CONFIG_VALUE_INTEGER( "SDL", "SDL_GL_CONTEXT_MINOR_VERSION", 2U );
 
         if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, Engine_SDL_GL_CONTEXT_MINOR_VERSION ) != 0 )
         {
@@ -2127,7 +2125,7 @@ namespace Mengine
             );
         }
 
-        const Char * Engine_SDL_HINT_RENDER_SCALE_QUALITY = CONFIG_VALUE( "SDL", "SDL_HINT_RENDER_SCALE_QUALITY", "linear" );
+        const Char * Engine_SDL_HINT_RENDER_SCALE_QUALITY = CONFIG_VALUE_STRING( "SDL", "SDL_HINT_RENDER_SCALE_QUALITY", "linear" );
 
         if( SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, Engine_SDL_HINT_RENDER_SCALE_QUALITY ) != SDL_TRUE )
         {

@@ -4,6 +4,7 @@ import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineListenerActivity;
+import org.Mengine.Base.MengineUtils;
 
 import androidx.annotation.NonNull;
 
@@ -14,6 +15,9 @@ import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.os.VibratorManager;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class MengineVibratorPlugin extends MengineService implements MengineListenerActivity {
     public static final String SERVICE_NAME = "Vibrator";
@@ -64,8 +68,8 @@ public class MengineVibratorPlugin extends MengineService implements MengineList
         m_mute = bundle.getBoolean("mute", false);
     }
 
-    public boolean vibrate(long milliseconds) {
-        this.logMessage("vibrate milliseconds: %d"
+    public boolean vibrateOneShot(long milliseconds) {
+        this.logMessage("vibrate OneShot milliseconds: %d"
             , milliseconds
         );
 
@@ -81,6 +85,58 @@ public class MengineVibratorPlugin extends MengineService implements MengineList
             m_vibrator.vibrate(VibrationEffect.createOneShot(milliseconds, VibrationEffect.DEFAULT_AMPLITUDE));
         } else {
             m_vibrator.vibrate(milliseconds);
+        }
+
+        return true;
+    }
+
+    public boolean vibrateWaveform(List<Long> timings, int repeat) {
+        this.logMessage("vibrate Waveform timings: %s repeat: %d"
+            , timings
+            , repeat
+        );
+
+        if (m_vibrator == null) {
+            return false;
+        }
+
+        if (m_mute == true) {
+            return false;
+        }
+
+        long[] timmingsArray = MengineUtils.longArrayFromList(timings);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            m_vibrator.vibrate(VibrationEffect.createWaveform(timmingsArray, repeat));
+        } else {
+            m_vibrator.vibrate(timmingsArray, repeat);
+        }
+
+        return true;
+    }
+
+    public boolean vibrateWaveformAmplitudes(List<Long> timings, List<Integer> amplitudes, int repeat) {
+        this.logMessage("vibrate Waveform timings: %s amplitudes: %s repeat: %d"
+            , timings
+            , amplitudes
+            , repeat
+        );
+
+        if (m_vibrator == null) {
+            return false;
+        }
+
+        if (m_mute == true) {
+            return false;
+        }
+
+        long[] timmingsArray = MengineUtils.longArrayFromList(timings);
+        int[] amplitudesArray = MengineUtils.intArrayFromList(amplitudes);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            m_vibrator.vibrate(VibrationEffect.createWaveform(timmingsArray, amplitudesArray, repeat));
+        } else {
+            m_vibrator.vibrate(timmingsArray, repeat);
         }
 
         return true;

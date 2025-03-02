@@ -18,9 +18,7 @@ namespace Mengine
         virtual void endOffset() = 0;
 
     public:
-        virtual uint32_t getCurrentRevision() const = 0;
-        virtual float getCurrentTime() const = 0;
-        virtual float getCurrentDelta() const = 0;
+        virtual const UpdateContext * getCurrentContext() const = 0;
 
     public:
         virtual float getTotalTime() const = 0;

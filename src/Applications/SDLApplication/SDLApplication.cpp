@@ -23,7 +23,7 @@
 
 #include "Mengine/MenginePlugin.h"
 
-#include "SDLMessageBoxLogger.h"
+#include "Environment/SDL/SDLMessageBoxLogger.h"
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/StringArguments.h"

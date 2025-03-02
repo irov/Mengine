@@ -397,7 +397,7 @@ namespace Mengine
         , m_eglDisplay( EGL_NO_DISPLAY )
         , m_eglSurface( EGL_NO_SURFACE )
         , m_eglContext( EGL_NO_CONTEXT )
-        , m_prevTime( 0 )
+        , m_prevTime( 0.0 )
         , m_pauseUpdatingTime( -1.f )
         , m_active( false )
         , m_desktop( false )
@@ -693,7 +693,7 @@ namespace Mengine
             return false;
         }
 
-        if( this->tickPlatform( 0, 0.f, false, false, false ) == false )
+        if( this->tickPlatform( 0.f, false, false, false ) == false )
         {
             return false;
         }
@@ -712,7 +712,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidPlatformService::tickPlatform( Timestamp _frameTime, float _frameTimeF, bool _render, bool _flush, bool _pause )
+    bool AndroidPlatformService::tickPlatform( float _frameTime, bool _render, bool _flush, bool _pause )
     {
         MENGINE_UNUSED( _pause );
         MENGINE_UNUSED( _flush );
@@ -734,12 +734,12 @@ namespace Mengine
         {
             if( m_pauseUpdatingTime >= 0.f )
             {
-                _frameTimeF = m_pauseUpdatingTime;
+                _frameTime = m_pauseUpdatingTime;
                 m_pauseUpdatingTime = -1.f;
             }
 
             APPLICATION_SERVICE()
-                ->tick( _frameTimeF );
+                ->tick( _frameTime );
         }
 
         if( _render == true )
@@ -772,24 +772,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::loopPlatform()
     {
-        m_prevTime = Helper::getSystemTimestamp();
+        m_prevTime = Helper::getElapsedTime();
 
         for( ;; )
         {
-            Timestamp currentTime = Helper::getSystemTimestamp();
+            double currentTime = Helper::getElapsedTime();
 
             if( this->updatePlatform() == false )
             {
                 break;
             }
 
-            Timestamp frameTime = currentTime - m_prevTime;
-
-            float frameTimeF = (float)frameTime;
+            float frameTime = (float)(currentTime - m_prevTime);
 
             m_prevTime = currentTime;
 
-            if( this->tickPlatform( frameTime, frameTimeF, true, true, true ) == false )
+            if( this->tickPlatform( frameTime, true, true, true ) == false )
             {
                 break;
             }

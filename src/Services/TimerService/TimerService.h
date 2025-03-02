@@ -20,18 +20,18 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        UniqueId addTimer( Timestamp _delay, const LambdaTimer & _lambda, const DocumentInterfacePtr & _doc ) override;
+        UniqueId addTimer( float _delay, const LambdaTimer & _lambda, const DocumentInterfacePtr & _doc ) override;
         void removeTimer( UniqueId _id ) override;
 
     public:
-        void update( Timestamp _frameTime ) override;
-        
+        void update( float _frameTime ) override;
+         
     protected:
         struct TimerDesc
         {
             UniqueId id;
-            Timestamp milliseconds;
-            int64_t time;
+            float delay;
+            float time;
             LambdaTimer lambda;
 
 #if defined(MENGINE_DOCUMENT_ENABLE)

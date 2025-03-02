@@ -46,4 +46,14 @@ namespace Mengine
         return timestamp;
     }
     //////////////////////////////////////////////////////////////////////////
+    double Win32TimeSystem::getElapsedTime() const
+    {
+        LARGE_INTEGER currentCounter;
+        ::QueryPerformanceCounter( &currentCounter );
+
+        double elapsedTime = (currentCounter.QuadPart * 1000.0) / m_frequency.QuadPart;
+
+        return elapsedTime;
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

@@ -19,5 +19,8 @@ namespace Mengine
 
     public:
         Timestamp getSystemTimestamp() const override;
+
+    public:
+        double getElapsedTime() const override;
     };
 };

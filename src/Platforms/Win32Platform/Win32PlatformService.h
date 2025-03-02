@@ -47,7 +47,7 @@ namespace Mengine
         bool runPlatform() override;
         void loopPlatform() override;
         bool updatePlatform() override;
-        bool tickPlatform( Timestamp _frameTime, float _frameTimeF, bool _render, bool _flush, bool _pause ) override;
+        bool tickPlatform( float _frameTime, bool _render, bool _flush, bool _pause ) override;
         void stopPlatform() override;
 
     public:
@@ -221,7 +221,7 @@ namespace Mengine
         HICON m_hIcon;
         StaticWString<MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME> m_projectTitle;
 
-        Timestamp m_prevTime;
+        double m_prevTime;
 
         Tags m_platformTags;
         Resolution m_windowResolution;

@@ -1701,7 +1701,7 @@ namespace Mengine
             ->minimizeWindow();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Application::beginUpdate( Timestamp _frameTime )
+    bool Application::beginUpdate( float _frameTime )
     {
         MENGINE_PROFILER_CATEGORY();
 

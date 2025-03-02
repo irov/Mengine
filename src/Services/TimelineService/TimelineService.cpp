@@ -1,6 +1,7 @@
 #include "TimelineService.h"
 
 #include "Kernel/Assertion.h"
+#include "Kernel/AssertionContainer.h"
 #include "Kernel/Logger.h"
 #include "Kernel/NotificationHelper.h"
 
@@ -11,9 +12,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     TimelineService::TimelineService()
-        : m_revision( ~0U )
-        , m_current( 0.f )
-        , m_time( 0.f )
+        : m_context{~0U, -1.f, -1.f}
         , m_total( 0.f )
         , m_timeFactorBase( 1.f )
         , m_timeFactorCoefficient( 0.0625f )
@@ -34,6 +33,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TimelineService::_finalizeService()
     {
+        MENGINE_ASSERTION_CONTAINER_EMPTY( m_offsets );
+
         m_offsets.clear();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -41,10 +42,10 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        MENGINE_ASSERTION_FATAL( m_time >= _offset, "time %f < %f revision (%u) [doc: %s]"
-            , m_time
+        MENGINE_ASSERTION_FATAL( m_context.time >= _offset, "time %f < %f revision (%u) [doc: %s]"
+            , m_context.time
             , _offset
-            , m_revision
+            , m_context.revision
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
@@ -68,19 +69,9 @@ namespace Mengine
         m_offsets.pop_back();
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t TimelineService::getCurrentRevision() const
+    const UpdateContext * TimelineService::getCurrentContext() const
     {
-        return m_revision;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    float TimelineService::getCurrentTime() const
-    {
-        return m_current;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    float TimelineService::getCurrentDelta() const
-    {
-        return m_time;
+        return &m_context;
     }
     //////////////////////////////////////////////////////////////////////////
     float TimelineService::getTotalTime() const
@@ -92,8 +83,8 @@ namespace Mengine
 
         float offset = m_offsets.back();
 
-        MENGINE_ASSERTION_FATAL( m_time >= offset, "time %f < %f"
-            , m_time
+        MENGINE_ASSERTION_FATAL( m_context.time >= offset, "time %f < %f"
+            , m_context.time
             , offset
         );
 
@@ -104,22 +95,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TimelineService::begin( const UpdateContext * _context )
     {
-        MENGINE_ASSERTION_FATAL( m_revision == ~0U, "double begin" );
+        MENGINE_ASSERTION_MEMORY_PANIC( _context, "invalid context" );
+        MENGINE_ASSERTION_FATAL( m_context.revision == ~0U, "double begin" );
 
-        m_revision = _context->revision;
-        m_current = _context->current;
-        m_time = _context->time;
+        m_context = *_context;
 
         MENGINE_ASSERTION_FATAL( m_offsets.empty() == true, "invalid complete times" );
     }
     //////////////////////////////////////////////////////////////////////////
     void TimelineService::end()
     {
-        m_total += m_time;
+        m_total += m_context.time;
 
-        m_revision = ~0U;
-        m_current = -1.f;
-        m_time = -1.f;
+        m_context.revision = ~0U;
+        m_context.current = -1.f;
+        m_context.time = -1.f;
     }
     //////////////////////////////////////////////////////////////////////////
     float TimelineService::calcTimeFactor() const

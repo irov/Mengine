@@ -2,6 +2,8 @@
 
 #include "SDLApplication.h"
 
+#include "Config/StdLib.h"
+
 int main( int argc, char * argv[] )
 {
     Mengine::SDLApplication application;

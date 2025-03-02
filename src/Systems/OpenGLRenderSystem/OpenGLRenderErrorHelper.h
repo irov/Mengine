@@ -3,6 +3,7 @@
 #include "Environment/OpenGL/OpenGLRenderIncluder.h"
 
 #include "Config/Char.h"
+#include "Config/StdInt.h"
 
 #if !defined(MENGINE_OPENGL_RENDER_CHECK_ERROR)
 #   if defined(MENGINE_DEBUG)

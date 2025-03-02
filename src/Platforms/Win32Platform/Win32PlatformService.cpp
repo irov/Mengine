@@ -108,7 +108,7 @@ namespace Mengine
         , m_sleepMode( true )
         , m_windowExposed( false )
         , m_pauseUpdatingTime( -1.f )
-        , m_prevTime( 0 )
+        , m_prevTime( 0.0 )
         , m_cursorInArea( false )
         , m_cursorMode( false )
         , m_cursor( NULL )
@@ -648,7 +648,7 @@ namespace Mengine
             return false;
         }
 
-        if( this->tickPlatform( 0, 0.f, false, false, false ) == false )
+        if( this->tickPlatform( 0.f, false, false, false ) == false )
         {
             return false;
         }
@@ -674,7 +674,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32PlatformService::tickPlatform( Timestamp _frameTime, float _frameTimeF, bool _render, bool _flush, bool _pause )
+    bool Win32PlatformService::tickPlatform( float _frameTime, bool _render, bool _flush, bool _pause )
     {
         MENGINE_UNUSED( _frameTime );
 
@@ -694,12 +694,12 @@ namespace Mengine
         {
             if( m_pauseUpdatingTime >= 0.f )
             {
-                _frameTimeF = m_pauseUpdatingTime;
+                _frameTime = m_pauseUpdatingTime;
                 m_pauseUpdatingTime = -1.f;
             }
 
             APPLICATION_SERVICE()
-                ->tick( _frameTimeF );
+                ->tick( _frameTime );
         }
 
         APPLICATION_SERVICE()
@@ -725,7 +725,7 @@ namespace Mengine
             {
                 if( m_pauseUpdatingTime < 0.f )
                 {
-                    m_pauseUpdatingTime = _frameTimeF;
+                    m_pauseUpdatingTime = _frameTime;
                 }
 
                 if( m_sleepMode == true )
@@ -754,7 +754,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32PlatformService::loopPlatform()
     {
-        m_prevTime = Helper::getSystemTimestamp();
+        m_prevTime = Helper::getElapsedTime();
 
         while( m_close == false )
         {
@@ -767,15 +767,13 @@ namespace Mengine
                 break;
             }
 
-            Timestamp currentTime = Helper::getSystemTimestamp();
+            double currentTime = Helper::getElapsedTime();
 
-            Timestamp frameTime = currentTime - m_prevTime;
+            float frameTime = (float)(currentTime - m_prevTime);
 
             m_prevTime = currentTime;
 
-            float frameTimeF = (float)frameTime;
-
-            if( this->tickPlatform( frameTime, frameTimeF, true, true, true ) == false )
+            if( this->tickPlatform( frameTime, true, true, true ) == false )
             {
                 break;
             }

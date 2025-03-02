@@ -24,9 +24,7 @@ namespace Mengine
         void endOffset() override;
 
     public:
-        uint32_t getCurrentRevision() const override;
-        float getCurrentTime() const override;
-        float getCurrentDelta() const override;
+        const UpdateContext * getCurrentContext() const override;
 
     public:
         float getTotalTime() const override;
@@ -47,9 +45,7 @@ namespace Mengine
         int32_t getTimeFactorCount() const override;
 
     protected:
-        uint32_t m_revision;
-        float m_current;
-        float m_time;
+        UpdateContext m_context;
 
         float m_total;
 

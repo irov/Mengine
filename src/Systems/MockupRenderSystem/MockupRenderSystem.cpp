@@ -30,7 +30,7 @@
 #include "Kernel/OptionHelper.h"
 #include "Kernel/NotificationHelper.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 #include "math/uv4.h"
 
@@ -54,7 +54,7 @@ namespace Mengine
         mt::ident_m4( &m_worldMatrix );
         mt::ident_m4( &m_totalWVPInvMatrix );
 
-        Algorithm::fill_n( m_textureEnable, MENGINE_MAX_TEXTURE_STAGES, false );
+        StdAlgorithm::fill_n( m_textureEnable, MENGINE_MAX_TEXTURE_STAGES, false );
     }
     //////////////////////////////////////////////////////////////////////////
     MockupRenderSystem::~MockupRenderSystem()

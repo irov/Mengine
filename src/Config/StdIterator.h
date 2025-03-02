@@ -6,7 +6,7 @@
 
 namespace Mengine
 {
-    namespace Iterator
+    namespace StdIterator
     {
         using std::distance;
         using std::advance;

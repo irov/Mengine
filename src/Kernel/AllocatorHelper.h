@@ -3,7 +3,7 @@
 #include "Config/Char.h"
 #include "Config/StdInt.h"
 #include "Config/StdDef.h"
-#include "Config/Utility.h"
+#include "Config/StdUtility.h"
 
 #include <new>
 

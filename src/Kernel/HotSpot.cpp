@@ -9,7 +9,7 @@
 
 #include "Kernel/Logger.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 namespace Mengine
 {
@@ -94,7 +94,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void HotSpot::removePickerInputHandler( const PickerInputHandlerInterfacePtr & _inputHandler )
     {
-        VectorPickerInputHandlers::iterator it_found = Algorithm::find_if( m_pickerInputHandlers.begin(), m_pickerInputHandlers.end(), [_inputHandler]( const PickerInputHandlerDesc & _desc )
+        VectorPickerInputHandlers::iterator it_found = StdAlgorithm::find_if( m_pickerInputHandlers.begin(), m_pickerInputHandlers.end(), [_inputHandler]( const PickerInputHandlerDesc & _desc )
         {
             return _desc.handler == _inputHandler;
         } );

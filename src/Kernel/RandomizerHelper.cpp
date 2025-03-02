@@ -1,6 +1,6 @@
 #include "RandomizerHelper.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 namespace Mengine
 {
@@ -9,7 +9,7 @@ namespace Mengine
         void randomizerShuffle( const RandomizerInterfacePtr & _randomizer, uint32_t * const _indices, uint32_t _count )
         {
             uint32_t enumerator = 0;
-            Algorithm::for_each( _indices, _indices + _count, [&enumerator]( uint32_t & _value )
+            StdAlgorithm::for_each( _indices, _indices + _count, [&enumerator]( uint32_t & _value )
             {
                 _value = enumerator++;
             } );
@@ -18,7 +18,7 @@ namespace Mengine
             {
                 uint32_t rnd_index = _randomizer->getRandom( _count );
 
-                Algorithm::swap( _indices[index], _indices[rnd_index] );
+                StdAlgorithm::swap( _indices[index], _indices[rnd_index] );
             }
         }
     }

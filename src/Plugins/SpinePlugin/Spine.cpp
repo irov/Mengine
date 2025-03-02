@@ -10,7 +10,7 @@
 #include "Kernel/ColorHelper.h"
 #include "Kernel/MemoryCopy.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 #ifndef MENGINE_SPINE_MAX_VERTICES
 #define MENGINE_SPINE_MAX_VERTICES 512
@@ -90,7 +90,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Spine::removeAnimationSampler( const ConstString & _samplerName )
     {
-        VectorSamplerAnimations::iterator it_found = Algorithm::find_if( m_samplers.begin(), m_samplers.end()
+        VectorSamplerAnimations::iterator it_found = StdAlgorithm::find_if( m_samplers.begin(), m_samplers.end()
             , [_samplerName]( const SamplerSpineAnimationPtr & _sampler )
         {
             return _sampler->getName() == _samplerName;

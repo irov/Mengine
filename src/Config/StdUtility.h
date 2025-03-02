@@ -6,8 +6,9 @@
 
 namespace Mengine
 {
-    namespace Utility
+    namespace StdUtility
     {
+        using std::pair;
         using std::make_pair;
     }
 }

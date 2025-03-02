@@ -34,7 +34,7 @@
 #include "Kernel/PrototypeHelper.h"
 
 #include "Config/StdString.h"
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 #include "math/quat.h"
 
@@ -3437,7 +3437,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::addSurface_( const SurfacePtr & _surface, bool _compile )
     {
-        MENGINE_ASSERTION_FATAL( Algorithm::find( m_surfaces.begin(), m_surfaces.end(), _surface ) == m_surfaces.end(), "surface '%s' already attach"
+        MENGINE_ASSERTION_FATAL( StdAlgorithm::find( m_surfaces.begin(), m_surfaces.end(), _surface ) == m_surfaces.end(), "surface '%s' already attach"
             , _surface->getName().c_str()
         );
 
@@ -3453,7 +3453,7 @@ namespace Mengine
     {
         _surface->release();
 
-        VectorSurfaces::iterator it_found = Algorithm::find( m_surfaces.begin(), m_surfaces.end(), _surface );
+        VectorSurfaces::iterator it_found = StdAlgorithm::find( m_surfaces.begin(), m_surfaces.end(), _surface );
 
         m_surfaces.erase( it_found );
     }

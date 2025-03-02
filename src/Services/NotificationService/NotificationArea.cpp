@@ -10,7 +10,7 @@
 #include "Kernel/MixinDebug.h"
 #include "Kernel/NotificationName.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 namespace Mengine
 {
@@ -248,7 +248,7 @@ namespace Mengine
         {
             ++m_visiting;
 
-            m_observers.erase( Algorithm::remove_if( m_observers.begin(), m_observers.end(), []( const ObserverDesc & _desc )
+            m_observers.erase( StdAlgorithm::remove_if( m_observers.begin(), m_observers.end(), []( const ObserverDesc & _desc )
             {
                 return _desc.observer == nullptr;
             } ), m_observers.end() );

@@ -3,7 +3,7 @@
 #include "Kernel/EnumeratorHelper.h"
 #include "Kernel/Logger.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( TimepipeService, Mengine::TimepipeService );
@@ -28,7 +28,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TimepipeService::_finalizeService()
     {
-        m_timepipe.erase( Algorithm::remove_if( m_timepipe.begin(), m_timepipe.end(), []( const TimepipeDesc & _desc )
+        m_timepipe.erase( StdAlgorithm::remove_if( m_timepipe.begin(), m_timepipe.end(), []( const TimepipeDesc & _desc )
         {
             return _desc.timepipe == nullptr;
         } ), m_timepipe.end() );
@@ -50,14 +50,14 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        MENGINE_ASSERTION_FATAL( Algorithm::find_if( m_timepipeAdd.begin(), m_timepipeAdd.end(), [_timepipe]( const TimepipeDesc & _desc )
+        MENGINE_ASSERTION_FATAL( StdAlgorithm::find_if( m_timepipeAdd.begin(), m_timepipeAdd.end(), [_timepipe]( const TimepipeDesc & _desc )
         {
             return _desc.timepipe == _timepipe;
         } ) == m_timepipeAdd.end(), "timepipe '%s' already added"
             , MENGINE_DOCUMENT_STR( _doc )
             );
 
-        MENGINE_ASSERTION_FATAL( Algorithm::find_if( m_timepipe.begin(), m_timepipe.end(), [_timepipe]( const TimepipeDesc & _desc )
+        MENGINE_ASSERTION_FATAL( StdAlgorithm::find_if( m_timepipe.begin(), m_timepipe.end(), [_timepipe]( const TimepipeDesc & _desc )
         {
             return _desc.timepipe == _timepipe;
         } ) == m_timepipe.end(), "timepipe '%s' already added"
@@ -76,7 +76,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TimepipeService::removeTimepipe( const TimepipeInterfacePtr & _timepipe )
     {
-        VectorTimepipe::iterator it_found = Algorithm::find_if( m_timepipe.begin(), m_timepipe.end(), [_timepipe]( const TimepipeDesc & _desc )
+        VectorTimepipe::iterator it_found = StdAlgorithm::find_if( m_timepipe.begin(), m_timepipe.end(), [_timepipe]( const TimepipeDesc & _desc )
         {
             return _desc.timepipe == _timepipe;
         } );
@@ -91,7 +91,7 @@ namespace Mengine
             return;
         }
 
-        VectorTimepipe::iterator it_add_found = Algorithm::find_if( m_timepipeAdd.begin(), m_timepipeAdd.end(), [_timepipe]( const TimepipeDesc & _desc )
+        VectorTimepipe::iterator it_add_found = StdAlgorithm::find_if( m_timepipeAdd.begin(), m_timepipeAdd.end(), [_timepipe]( const TimepipeDesc & _desc )
         {
             return _desc.timepipe == _timepipe;
         } );
@@ -119,7 +119,7 @@ namespace Mengine
             desc.timepipe->onTimepipe( _context );
         }
 
-        m_timepipe.erase( Algorithm::remove_if( m_timepipe.begin(), m_timepipe.end(), []( const TimepipeDesc & _desc )
+        m_timepipe.erase( StdAlgorithm::remove_if( m_timepipe.begin(), m_timepipe.end(), []( const TimepipeDesc & _desc )
         {
             return _desc.timepipe == nullptr;
         } ), m_timepipe.end() );

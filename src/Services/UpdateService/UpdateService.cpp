@@ -9,7 +9,7 @@
 #include "Kernel/ProfilerHelper.h"
 #include "Kernel/ConfigHelper.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( UpdateService, Mengine::UpdateService );
@@ -123,7 +123,7 @@ namespace Mengine
             leaf_indeciesAdd.clear();
         }
 
-        leaf_indecies.erase( Algorithm::remove_if( leaf_indecies.begin(), leaf_indecies.end(), [_deep]( const UpdationInterfacePtr & _updation )
+        leaf_indecies.erase( StdAlgorithm::remove_if( leaf_indecies.begin(), leaf_indecies.end(), [_deep]( const UpdationInterfacePtr & _updation )
         {
             uint32_t updation_deep = _updation->getDeep();
 

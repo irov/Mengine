@@ -11,7 +11,7 @@
 #include "Kernel/ThreadGuardScope.h"
 #include "Kernel/PrototypeHelper.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 namespace Mengine
 {

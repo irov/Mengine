@@ -4,7 +4,7 @@
 #include "Kernel/AssertionObservable.h"
 #include "Kernel/NotificationHelper.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 namespace Mengine
 {
@@ -78,7 +78,7 @@ namespace Mengine
     void ResourceUselessCompileChecker::notifyResourceRelease( Resource * _resource )
     {
         VectorResourceDesc::iterator it_remove =
-            Algorithm::find( m_resources.begin(), m_resources.end(), _resource );
+            StdAlgorithm::find( m_resources.begin(), m_resources.end(), _resource );
 
         if( it_remove == m_resources.end() )
         {

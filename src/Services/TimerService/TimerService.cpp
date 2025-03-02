@@ -3,7 +3,7 @@
 #include "Kernel/EnumeratorHelper.h"
 #include "Kernel/Logger.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( TimerService, Mengine::TimerService );
@@ -68,7 +68,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TimerService::removeTimer( UniqueId _id )
     {
-        VectorTimers::iterator it_found = Algorithm::find_if( m_timers.begin(), m_timers.end(), [_id]( const TimerDesc & _desc )
+        VectorTimers::iterator it_found = StdAlgorithm::find_if( m_timers.begin(), m_timers.end(), [_id]( const TimerDesc & _desc )
         {
             return _desc.id == _id;
         } );
@@ -104,7 +104,7 @@ namespace Mengine
             desc.lambda( desc.id );
         }
 
-        VectorTimers::iterator it_erase = Algorithm::remove_if( m_timers.begin(), m_timers.end(), []( const TimerDesc & _desc )
+        VectorTimers::iterator it_erase = StdAlgorithm::remove_if( m_timers.begin(), m_timers.end(), []( const TimerDesc & _desc )
         {
             return _desc.id == INVALID_UNIQUE_ID;
         } );

@@ -54,7 +54,7 @@
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 #include "Config/Switch.h"
 #include "Config/Path.h"
 
@@ -1973,7 +1973,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatformService::removeSDLEventHandler( UniqueId _handlerId )
     {
-        VectorSDLEventHandlers::iterator it_found = Algorithm::find_if( m_sdlEventHandlers.begin(), m_sdlEventHandlers.end(), [_handlerId]( const SDLEventHandlerDesc & _desc )
+        VectorSDLEventHandlers::iterator it_found = StdAlgorithm::find_if( m_sdlEventHandlers.begin(), m_sdlEventHandlers.end(), [_handlerId]( const SDLEventHandlerDesc & _desc )
         {
             return _desc.id == _handlerId;
         } );

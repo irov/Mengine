@@ -6,7 +6,7 @@
 
 namespace Mengine
 {
-    namespace Numeric
+    namespace StdNumeric
     {
         using std::accumulate;
     }

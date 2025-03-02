@@ -17,7 +17,7 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 namespace Mengine
 {
@@ -93,7 +93,7 @@ namespace Mengine
     {
         AreaOfInterestZonePtr zone = _zone;
 
-        VectorAreaOfInterestZones::iterator it_found = Algorithm::find( m_zones.begin(), m_zones.end(), zone );
+        VectorAreaOfInterestZones::iterator it_found = StdAlgorithm::find( m_zones.begin(), m_zones.end(), zone );
 
         MENGINE_ASSERTION_FATAL( it_found != m_zones.end(), "zone not found" );
 

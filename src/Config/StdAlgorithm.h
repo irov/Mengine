@@ -6,7 +6,7 @@
 
 namespace Mengine
 {
-    namespace Algorithm
+    namespace StdAlgorithm
     {
         using std::find;
         using std::find_if;

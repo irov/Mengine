@@ -15,7 +15,7 @@
 #include "Kernel/ProfilerHelper.h"
 #include "Kernel/ResolutionHelper.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PickerService, Mengine::PickerService );

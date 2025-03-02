@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 #include "Config/StdDef.h"
 
 namespace Mengine

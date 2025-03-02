@@ -1,6 +1,6 @@
 #include "MockupRenderProgramVariable.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 namespace Mengine
 {
@@ -65,7 +65,7 @@ namespace Mengine
         const ProgramVariableDesc & v = m_pixelVariables[_index];
 
         float * values = &m_dataFloats[v.offset];
-        Algorithm::copy( _values, _values + _size * _count, values );
+        StdAlgorithm::copy( _values, _values + _size * _count, values );
     }
     //////////////////////////////////////////////////////////////////////////
 }

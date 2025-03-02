@@ -7,7 +7,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/FactoryPool.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ChronometerService, Mengine::ChronometerService );
@@ -61,7 +61,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ChronometerService::removeChronometer( const ChronometerInterfacePtr & _chronometer )
     {
-        VectorChronometers::iterator it_found = Algorithm::find( m_chronometers.begin(), m_chronometers.end(), _chronometer );
+        VectorChronometers::iterator it_found = StdAlgorithm::find( m_chronometers.begin(), m_chronometers.end(), _chronometer );
 
         if( it_found == m_chronometers.end() )
         {

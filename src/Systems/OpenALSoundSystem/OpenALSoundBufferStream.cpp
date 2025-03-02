@@ -11,7 +11,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ThreadMutexHelper.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 namespace Mengine
 {
@@ -21,7 +21,7 @@ namespace Mengine
         , m_looped( false )
         , m_updating( false )
     {
-        Algorithm::fill_n( m_alBuffersId, MENGINE_OPENAL_STREAM_BUFFER_COUNT, 0u );
+        StdAlgorithm::fill_n( m_alBuffersId, MENGINE_OPENAL_STREAM_BUFFER_COUNT, 0u );
     }
     //////////////////////////////////////////////////////////////////////////
     OpenALSoundBufferStream::~OpenALSoundBufferStream()

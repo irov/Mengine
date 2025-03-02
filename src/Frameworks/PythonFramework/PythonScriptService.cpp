@@ -48,7 +48,7 @@
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 #include "Config/Path.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -756,7 +756,7 @@ namespace Mengine
         for( const ScriptModulePackage & pack : _modules )
         {
             m_bootstrapperModules.erase(
-                Algorithm::remove_if( m_bootstrapperModules.begin(), m_bootstrapperModules.end(), [&pack]( const ScriptModulePackage & _pack )
+                StdAlgorithm::remove_if( m_bootstrapperModules.begin(), m_bootstrapperModules.end(), [&pack]( const ScriptModulePackage & _pack )
             {
                 if( _pack.module < pack.module )
                 {
@@ -784,7 +784,7 @@ namespace Mengine
             , _name.c_str()
         );
 
-        MENGINE_ASSERTION_FATAL( Algorithm::find_if( m_embeddings.begin(), m_embeddings.end(), [&_name]( const ScriptEmbeddingDesc & _desc )
+        MENGINE_ASSERTION_FATAL( StdAlgorithm::find_if( m_embeddings.begin(), m_embeddings.end(), [&_name]( const ScriptEmbeddingDesc & _desc )
         {
             return _desc.name == _name;
         } ) == m_embeddings.end(), "embedding '%s' already exist"
@@ -807,7 +807,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptService::removeScriptEmbedding( const ConstString & _name )
     {
-        VectorEmbeddings::const_iterator it_found = Algorithm::find_if( m_embeddings.begin(), m_embeddings.end(), [&_name]( const ScriptEmbeddingDesc & _desc )
+        VectorEmbeddings::const_iterator it_found = StdAlgorithm::find_if( m_embeddings.begin(), m_embeddings.end(), [&_name]( const ScriptEmbeddingDesc & _desc )
         {
             return _desc.name == _name;
         } );
@@ -1266,7 +1266,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptService::removeDebugLogFunction( const ConstString & _className, const ConstString & _functionName )
     {
-        VectorDebugCallFunctions::iterator it_found = Algorithm::find_if( m_debugCallFunctions.begin(), m_debugCallFunctions.end(), [&_className, &_functionName]( const DebugCallDesc & _desc )
+        VectorDebugCallFunctions::iterator it_found = StdAlgorithm::find_if( m_debugCallFunctions.begin(), m_debugCallFunctions.end(), [&_className, &_functionName]( const DebugCallDesc & _desc )
         {
             if( _desc.className != _className )
             {

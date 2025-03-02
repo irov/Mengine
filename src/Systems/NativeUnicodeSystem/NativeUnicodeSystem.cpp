@@ -4,7 +4,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 
 #include "Config/StdString.h"
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( UnicodeSystem, Mengine::NativeUnicodeSystem );

@@ -47,7 +47,7 @@
 
 #include "math/uv4.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 #ifndef MENGINE_D3D9_DLL_NAME
 #define MENGINE_D3D9_DLL_NAME "d3d9.dll"
@@ -86,7 +86,7 @@ namespace Mengine
         mt::ident_m4( &m_worldMatrix );
         mt::ident_m4( &m_totalWVPInvMatrix );
 
-        Algorithm::fill_n( m_textureEnable, MENGINE_MAX_TEXTURE_STAGES, false );
+        StdAlgorithm::fill_n( m_textureEnable, MENGINE_MAX_TEXTURE_STAGES, false );
     }
     //////////////////////////////////////////////////////////////////////////
     DX9RenderSystem::~DX9RenderSystem()

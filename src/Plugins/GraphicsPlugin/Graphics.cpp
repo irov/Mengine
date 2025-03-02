@@ -7,9 +7,9 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/MemoryAllocator.h"
 
-#include "math/line2.h"
+#include "Config/StdAlgorithm.h"
 
-#include "Config/Algorithm.h"
+#include "math/line2.h"
 
 //////////////////////////////////////////////////////////////////////////
 static void * gp_malloc( gp_size_t _size, void * _ud )

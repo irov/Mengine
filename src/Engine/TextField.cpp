@@ -18,8 +18,8 @@
 
 #include "Config/StdIntTypes.h"
 #include "Config/StdIO.h"
-#include "Config/Algorithm.h"
-#include "Config/Iterator.h"
+#include "Config/StdAlgorithm.h"
+#include "Config/StdIterator.h"
 #include "Config/StdMath.h"
 
 #include "math/box2.h"
@@ -884,7 +884,7 @@ namespace Mengine
                         GlyphCode glyphChar = (GlyphCode)c;
 
                         U32String::const_iterator it_kerning = it;
-                        Iterator::advance( it_kerning, 1 );
+                        StdIterator::advance( it_kerning, 1 );
 
                         GlyphCode glyphCharNext = (it_kerning != word.end()) ? *it_kerning : 0;
 
@@ -977,12 +977,12 @@ namespace Mengine
                 chunk.value = chunk.value.substr( 0, m_maxCharCount - charIterator );
 
                 VectorTextLineChunks::iterator it_chars_erase = it_chars;
-                Iterator::advance( it_chars_erase, 1 );
+                StdIterator::advance( it_chars_erase, 1 );
 
                 chars.erase( it_chars_erase, chars.end() );
 
                 VectorTextLineChunks2::iterator it_lines_erase = it_lines;
-                Iterator::advance( it_lines_erase, 1 );
+                StdIterator::advance( it_lines_erase, 1 );
 
                 _textLines->erase( it_lines_erase, _textLines->end() );
 

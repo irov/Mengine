@@ -16,7 +16,7 @@
 #include "Kernel/MemoryCopy.h"
 #include "Kernel/DebugFileHelper.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 #include "Config/Path.h"
 
 namespace Mengine

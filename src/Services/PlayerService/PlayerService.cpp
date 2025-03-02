@@ -49,7 +49,7 @@
 #include "Kernel/PrototypeHelper.h"
 #include "Kernel/DocumentableHelper.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 #include "math/mat3.h"
 
@@ -275,7 +275,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PlayerService::destroyScheduler( const SchedulerInterfacePtr & _scheduler )
     {
-        VectorUserScheduler::iterator it_found = Algorithm::find( m_schedulers.begin(), m_schedulers.end(), _scheduler );
+        VectorUserScheduler::iterator it_found = StdAlgorithm::find( m_schedulers.begin(), m_schedulers.end(), _scheduler );
 
         if( it_found == m_schedulers.end() )
         {

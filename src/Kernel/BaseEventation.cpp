@@ -3,7 +3,7 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionContainer.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 namespace Mengine
 {
@@ -46,7 +46,7 @@ namespace Mengine
 
         if( flag != 0 )
         {
-            VectorEventReceivers::iterator it_found = Algorithm::find_if( m_receivers.begin(), m_receivers.end(), [_event]( const EventReceiverDesc & _desc )
+            VectorEventReceivers::iterator it_found = StdAlgorithm::find_if( m_receivers.begin(), m_receivers.end(), [_event]( const EventReceiverDesc & _desc )
             {
                 return _desc.event == _event;
             } );
@@ -85,7 +85,7 @@ namespace Mengine
             , _event
         );
 
-        VectorEventReceivers::iterator it_found = Algorithm::find_if( m_receivers.begin(), m_receivers.end(), [_event]( const EventReceiverDesc & _desc )
+        VectorEventReceivers::iterator it_found = StdAlgorithm::find_if( m_receivers.begin(), m_receivers.end(), [_event]( const EventReceiverDesc & _desc )
         {
             return _desc.event == _event;
         } );
@@ -118,7 +118,7 @@ namespace Mengine
             return m_receiver;
         }
 
-        VectorEventReceivers::const_iterator it_found = Algorithm::find_if( m_receivers.begin(), m_receivers.end(), [_event]( const EventReceiverDesc & _desc )
+        VectorEventReceivers::const_iterator it_found = StdAlgorithm::find_if( m_receivers.begin(), m_receivers.end(), [_event]( const EventReceiverDesc & _desc )
         {
             return _desc.event == _event;
         } );

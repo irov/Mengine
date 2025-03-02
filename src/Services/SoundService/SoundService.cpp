@@ -23,7 +23,7 @@
 #include "Kernel/MixerBoolean.h"
 #include "Kernel/MixerValue.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 #include "math/utils.h"
 
@@ -181,7 +181,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::removeSoundVolumeProvider( const SoundVolumeProviderInterfacePtr & _soundVolumeProvider )
     {
-        VectorSoundVolumeProviders::iterator it_found = Algorithm::find( m_soundVolumeProviders.begin(), m_soundVolumeProviders.end(), _soundVolumeProvider );
+        VectorSoundVolumeProviders::iterator it_found = StdAlgorithm::find( m_soundVolumeProviders.begin(), m_soundVolumeProviders.end(), _soundVolumeProvider );
 
         if( it_found == m_soundVolumeProviders.end() )
         {
@@ -519,7 +519,7 @@ namespace Mengine
 
         uint32_t id = _identity->getId();
 
-        VectorSoundIdentity::iterator it_found = Algorithm::find_if( m_soundIdentities.begin(), m_soundIdentities.end(), [id]( const SoundIdentityPtr & _identity )
+        VectorSoundIdentity::iterator it_found = StdAlgorithm::find_if( m_soundIdentities.begin(), m_soundIdentities.end(), [id]( const SoundIdentityPtr & _identity )
         {
             return _identity->getId() == id;
         } );
@@ -1446,7 +1446,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::checkMaxSoundPlay_() const
     {
-        uint32_t playCount = (uint32_t)Algorithm::count_if( m_soundIdentities.begin(), m_soundIdentities.end(), []( const SoundIdentityPtr & _Identity )
+        uint32_t playCount = (uint32_t)StdAlgorithm::count_if( m_soundIdentities.begin(), m_soundIdentities.end(), []( const SoundIdentityPtr & _Identity )
         {
             return _Identity->getState() == ESS_PLAY;
         } );

@@ -4,7 +4,7 @@
 
 #include <random>
 #include <functional>
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 namespace Mengine
 {
@@ -42,7 +42,7 @@ namespace Mengine
 
             std::uniform_int_distribution<uint32_t> dist( 0, MENGINE_STATIC_STRING_LENGTH( char_array ) );
 
-            Algorithm::generate_n( _uid, _length, [&dist, &rng]()
+            StdAlgorithm::generate_n( _uid, _length, [&dist, &rng]()
             {
                 uint32_t e = dist( rng );
 

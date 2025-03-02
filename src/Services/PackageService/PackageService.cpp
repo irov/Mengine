@@ -19,7 +19,7 @@
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/ConfigHelper.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PackageService, Mengine::PackageService );
@@ -392,7 +392,7 @@ namespace Mengine
                 continue;
             }
 
-            if( Algorithm::find( desc.locales.begin(), desc.locales.end(), _locale ) == desc.locales.end() )
+            if( StdAlgorithm::find( desc.locales.begin(), desc.locales.end(), _locale ) == desc.locales.end() )
             {
                 continue;
             }
@@ -424,7 +424,7 @@ namespace Mengine
                 continue;
             }
 
-            if( Algorithm::find( desc.locales.begin(), desc.locales.end(), _locale ) == desc.locales.end() )
+            if( StdAlgorithm::find( desc.locales.begin(), desc.locales.end(), _locale ) == desc.locales.end() )
             {
                 continue;
             }
@@ -538,7 +538,7 @@ namespace Mengine
                 continue;
             }
 
-            if( Algorithm::find( desc.locales.begin(), desc.locales.end(), _locale ) == desc.locales.end() )
+            if( StdAlgorithm::find( desc.locales.begin(), desc.locales.end(), _locale ) == desc.locales.end() )
             {
                 continue;
             }
@@ -570,7 +570,7 @@ namespace Mengine
                 continue;
             }
 
-            if( Algorithm::find( desc.locales.begin(), desc.locales.end(), _locale ) == desc.locales.end() )
+            if( StdAlgorithm::find( desc.locales.begin(), desc.locales.end(), _locale ) == desc.locales.end() )
             {
                 continue;
             }

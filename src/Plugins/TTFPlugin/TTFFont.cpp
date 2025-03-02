@@ -20,7 +20,7 @@
 #include "Kernel/ProfilerHelper.h"
 #include "Kernel/NotificationHelper.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 #define MENGINE_FT_FLOOR(X) (((X) & -64) / 64)
 #define MENGINE_FT_CEIL(X) MENGINE_FT_FLOOR((X) + 63)
@@ -189,7 +189,7 @@ namespace Mengine
         uint32_t code_hash = _code % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
         VectorTTFGlyphs & glyphs = m_glyphsHash[code_hash];
 
-        VectorTTFGlyphs::const_iterator it_found = Algorithm::find_if( glyphs.begin(), glyphs.end(), [_code]( const TTFGlyph & _glyph )
+        VectorTTFGlyphs::const_iterator it_found = StdAlgorithm::find_if( glyphs.begin(), glyphs.end(), [_code]( const TTFGlyph & _glyph )
         {
             return _glyph.ch == _code;
         } );
@@ -480,7 +480,7 @@ namespace Mengine
         uint32_t code_hash = _code % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
         const VectorTTFGlyphs & glyphs = m_glyphsHash[code_hash];
 
-        VectorTTFGlyphs::const_iterator it_found = Algorithm::find_if( glyphs.begin(), glyphs.end(), [_code]( const TTFGlyph & _glyph )
+        VectorTTFGlyphs::const_iterator it_found = StdAlgorithm::find_if( glyphs.begin(), glyphs.end(), [_code]( const TTFGlyph & _glyph )
         {
             return _glyph.ch == _code;
         } );
@@ -498,7 +498,7 @@ namespace Mengine
         uint32_t code_hash = _code % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
         const VectorTTFGlyphs & glyphs = m_glyphsHash[code_hash];
 
-        VectorTTFGlyphs::const_iterator it_found = Algorithm::find_if( glyphs.begin(), glyphs.end(), [_code]( const TTFGlyph & _glyph )
+        VectorTTFGlyphs::const_iterator it_found = StdAlgorithm::find_if( glyphs.begin(), glyphs.end(), [_code]( const TTFGlyph & _glyph )
         {
             return _glyph.ch == _code;
         } );

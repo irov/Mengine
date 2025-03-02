@@ -2,7 +2,7 @@
 
 #include "Kernel/Assertion.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 #include "math/angle.h"
 #include "math/quat.h"
@@ -79,7 +79,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseTransformation::removeRelationTransformationChild_( BaseTransformation * _childTransformation )
     {
-        VectorTransformation::iterator it_erase = Algorithm::find( m_relationChildren.begin(), m_relationChildren.end(), _childTransformation );
+        VectorTransformation::iterator it_erase = StdAlgorithm::find( m_relationChildren.begin(), m_relationChildren.end(), _childTransformation );
 
         MENGINE_ASSERTION_FATAL( it_erase != m_relationChildren.end(), "remove relation transformation not found" );
 

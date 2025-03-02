@@ -16,7 +16,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/ContentHelper.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 #include "Config/Path.h"
 
 namespace Mengine
@@ -86,7 +86,7 @@ namespace Mengine
     void PythonScriptModuleFinder::removeModulePath( const FileGroupInterfacePtr & _fileGroup )
     {
         m_modulePaths.erase(
-            Algorithm::find_if( m_modulePaths.begin(), m_modulePaths.end(), [&_fileGroup]( const ModulePathes & _pathes )
+            StdAlgorithm::find_if( m_modulePaths.begin(), m_modulePaths.end(), [&_fileGroup]( const ModulePathes & _pathes )
         {
             return _pathes.fileGroup == _fileGroup;
         } )

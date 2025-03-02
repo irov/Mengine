@@ -3,7 +3,7 @@
 #include "Kernel/Vector.h"
 
 #include "Config/Lambda.h"
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 #include "Config/UniqueId.h"
 
 namespace Mengine
@@ -44,7 +44,7 @@ namespace Mengine
 
         UniqueId remove( const LambdaEvent & _lambda )
         {
-            typename VectorEvents::iterator it_found = Algorithm::find_if( m_events.begin(), m_events.end(), [&_lambda]( const EventDesc & _desc )
+            typename VectorEvents::iterator it_found = StdAlgorithm::find_if( m_events.begin(), m_events.end(), [&_lambda]( const EventDesc & _desc )
             {
                 return _desc.lambda == _lambda;
             } );
@@ -62,7 +62,7 @@ namespace Mengine
 
         LambdaEvent remove( UniqueId _id )
         {
-            typename VectorEvents::iterator it_found = Algorithm::find_if( m_events.begin(), m_events.end(), [_id]( const EventDesc & _desc )
+            typename VectorEvents::iterator it_found = StdAlgorithm::find_if( m_events.begin(), m_events.end(), [_id]( const EventDesc & _desc )
             {
                 return _desc.id == _id;
             } );

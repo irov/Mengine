@@ -2,7 +2,7 @@
 
 #include "Kernel/Vector.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 namespace Mengine
 {
@@ -95,7 +95,7 @@ namespace Mengine
     template<class T>
     void ResourceCacher<T>::unlock()
     {
-        m_cachers.erase( Algorithm::remove_if( m_cachers.begin(), m_cachers.end(), []( ResourceCacher<T>::ResourceCacherDesc & _desc )
+        m_cachers.erase( StdAlgorithm::remove_if( m_cachers.begin(), m_cachers.end(), []( ResourceCacher<T>::ResourceCacherDesc & _desc )
         {
             _desc.lock = false;
 

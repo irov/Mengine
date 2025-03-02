@@ -14,8 +14,8 @@
 #include "Kernel/ContentHelper.h"
 
 #include "Config/StdString.h"
-#include "Config/Algorithm.h"
-#include "Config/Iterator.h"
+#include "Config/StdAlgorithm.h"
+#include "Config/StdIterator.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( AstralaxService, Mengine::AstralaxService );
@@ -27,7 +27,7 @@ namespace Mengine
         : m_maxParticlesNum( 0 )
         , m_stageCount( 0 )
     {
-        Algorithm::fill_n( m_stages, 256, nullptr );
+        StdAlgorithm::fill_n( m_stages, 256, nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     AstralaxService::~AstralaxService()
@@ -250,13 +250,13 @@ namespace Mengine
             case MAGIC_CHANGE_ATLAS_DELETE:
                 {
                     VectorAtlasDesc::iterator it_remove = m_atlases.begin();
-                    Iterator::advance( it_remove, c.index );
+                    StdIterator::advance( it_remove, c.index );
 
                     const ResourceImagePtr & resourceImage = *it_remove;
 
                     resourceImage->release();
 
-                    m_materials.erase( Algorithm::remove_if( m_materials.begin(), m_materials.end(), [resourceImage]( const MagicMaterialDesc & _desc )
+                    m_materials.erase( StdAlgorithm::remove_if( m_materials.begin(), m_materials.end(), [resourceImage]( const MagicMaterialDesc & _desc )
                     {
                         for( uint32_t index = 0; index != _desc.imageCount; ++index )
                         {

@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Config/Utility.h"
+#include "Config/StdUtility.h"
 
 namespace Mengine
 {
     template<class V1, class V2>
-    using Pair = std::pair<V1, V2>;
+    using Pair = StdUtility::pair<V1, V2>;
 }

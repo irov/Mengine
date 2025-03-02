@@ -29,7 +29,7 @@
 
 #include "Config/StdIO.h"
 #include "Config/StdString.h"
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 #ifndef MENGINE_LOGGER_LEVEL_FORCE_VERBOSE
 #define MENGINE_LOGGER_LEVEL_FORCE_VERBOSE 0
@@ -674,7 +674,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoggerService::registerLogger( const LoggerInterfacePtr & _logger )
     {
-        MENGINE_ASSERTION_FATAL( Algorithm::find( m_loggers.begin(), m_loggers.end(), _logger ) == m_loggers.end(), "already register logger" );
+        MENGINE_ASSERTION_FATAL( StdAlgorithm::find( m_loggers.begin(), m_loggers.end(), _logger ) == m_loggers.end(), "already register logger" );
 
         if( _logger->initializeLogger() == false )
         {
@@ -685,7 +685,7 @@ namespace Mengine
 
         m_loggers.emplace_back( _logger );
 
-        Algorithm::sort( m_loggers.begin(), m_loggers.end(), []( const LoggerInterfacePtr & _l, const LoggerInterfacePtr & _r )
+        StdAlgorithm::sort( m_loggers.begin(), m_loggers.end(), []( const LoggerInterfacePtr & _l, const LoggerInterfacePtr & _r )
         {
             return _l->getVerboseLevel() > _r->getVerboseLevel();
         } );
@@ -695,7 +695,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void LoggerService::unregisterLogger( const LoggerInterfacePtr & _logger )
     {
-        MENGINE_ASSERTION_FATAL( Algorithm::find( m_loggers.begin(), m_loggers.end(), _logger ) != m_loggers.end(), "not found logger" );
+        MENGINE_ASSERTION_FATAL( StdAlgorithm::find( m_loggers.begin(), m_loggers.end(), _logger ) != m_loggers.end(), "not found logger" );
 
         _logger->flush();
 
@@ -704,7 +704,7 @@ namespace Mengine
         MENGINE_THREAD_MUTEX_SCOPE( m_mutexLogger );
 
         VectorLoggers::iterator it_find =
-            Algorithm::find( m_loggers.begin(), m_loggers.end(), _logger );
+            StdAlgorithm::find( m_loggers.begin(), m_loggers.end(), _logger );
 
         m_loggers.erase( it_find );
     }

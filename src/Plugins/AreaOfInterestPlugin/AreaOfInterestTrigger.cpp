@@ -1,7 +1,7 @@
 #include "AreaOfInterestTrigger.h"
 #include "AreaOfInterestActor.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 namespace Mengine
 {
@@ -40,7 +40,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AreaOfInterestTrigger::updateActors()
     {
-        VectorAreaOfInterestActors::iterator it_m_actors_erase = Algorithm::remove_if( m_actors.begin(), m_actors.end(), []( const AreaOfInterestActorDesc & _desc )
+        VectorAreaOfInterestActors::iterator it_m_actors_erase = StdAlgorithm::remove_if( m_actors.begin(), m_actors.end(), []( const AreaOfInterestActorDesc & _desc )
         {
             return _desc.dead;
         } );
@@ -59,7 +59,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AreaOfInterestTrigger::addActor( const AreaOfInterestActorPtr & _actor )
     {
-        VectorAreaOfInterestActors::iterator it_found = Algorithm::find_if( m_actors.begin(), m_actors.end(), [_actor]( const AreaOfInterestActorDesc & _desc )
+        VectorAreaOfInterestActors::iterator it_found = StdAlgorithm::find_if( m_actors.begin(), m_actors.end(), [_actor]( const AreaOfInterestActorDesc & _desc )
         {
             return _desc.actor == _actor;
         } );
@@ -91,7 +91,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AreaOfInterestTrigger::removeActor( const AreaOfInterestActorPtr & _actor )
     {
-        VectorAreaOfInterestActors::iterator it_found = Algorithm::find_if( m_actors.begin(), m_actors.end(), [_actor]( const AreaOfInterestActorDesc & _desc )
+        VectorAreaOfInterestActors::iterator it_found = StdAlgorithm::find_if( m_actors.begin(), m_actors.end(), [_actor]( const AreaOfInterestActorDesc & _desc )
         {
             return _desc.actor == _actor;
         } );
@@ -117,7 +117,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AreaOfInterestTrigger::hasActor( const AreaOfInterestActorPtr & _actor ) const
     {
-        VectorAreaOfInterestActors::const_iterator it_found = Algorithm::find_if( m_actors.begin(), m_actors.end(), [_actor]( const AreaOfInterestActorDesc & _desc )
+        VectorAreaOfInterestActors::const_iterator it_found = StdAlgorithm::find_if( m_actors.begin(), m_actors.end(), [_actor]( const AreaOfInterestActorDesc & _desc )
         {
             return _desc.actor == _actor;
         } );

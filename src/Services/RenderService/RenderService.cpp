@@ -24,7 +24,7 @@
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/StatisticHelper.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 #include "Config/StdMath.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -54,7 +54,7 @@ namespace Mengine
         , m_currentDepthBufferTestEnable( false )
         , m_currentDepthBufferWriteEnable( false )
     {
-        Algorithm::fill_n( m_currentTexturesId, MENGINE_MAX_TEXTURE_STAGES, 0u );
+        StdAlgorithm::fill_n( m_currentTexturesId, MENGINE_MAX_TEXTURE_STAGES, 0u );
     }
     //////////////////////////////////////////////////////////////////////////
     RenderService::~RenderService()
@@ -808,7 +808,7 @@ namespace Mengine
             this->restoreTextureStage_( i );
         }
 
-        Algorithm::fill_n( m_currentTexturesId, MENGINE_MAX_TEXTURE_STAGES, 0 );
+        StdAlgorithm::fill_n( m_currentTexturesId, MENGINE_MAX_TEXTURE_STAGES, 0 );
 
         m_currentRenderVertexBuffer = nullptr;
         m_currentRenderIndexBuffer = nullptr;

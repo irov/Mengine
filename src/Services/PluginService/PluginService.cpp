@@ -10,7 +10,7 @@
 #include "Kernel/PluginHelper.h"
 
 #include "Config/StdString.h"
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PluginService, Mengine::PluginService );
@@ -126,7 +126,7 @@ namespace Mengine
         VectorPlugins reverse_plugins;
         std::swap( reverse_plugins, m_plugins );
         
-        Algorithm::reverse( reverse_plugins.begin(), reverse_plugins.end() );
+        StdAlgorithm::reverse( reverse_plugins.begin(), reverse_plugins.end() );
 
         for( PluginDesc & desc : reverse_plugins )
         {

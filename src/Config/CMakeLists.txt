@@ -150,20 +150,20 @@ src
     StdMath.h
     StdSetJMP.h
     StdException.h
+    StdAlgorithm.h
+    StdNumeric.h
+    StdIterator.h
+    StdUtility.h
     Limits.h
     UInt32ToPointer.h
     Metaprogramming.h
     UniqueId.h
     NotificatorId.h
     StatisticId.h
-    Algorithm.h
-    Numeric.h
-    Iterator.h
     InitializerList.h
     Timestamp.h
     Thread.h
     Switch.h
-    Utility.h
     Variant.h
     Version.h
     TypeTraits.h

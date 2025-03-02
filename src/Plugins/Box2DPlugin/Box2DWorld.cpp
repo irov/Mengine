@@ -9,7 +9,7 @@
 #include "Kernel/MemoryAllocator.h"
 #include "Kernel/PrototypeHelper.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine

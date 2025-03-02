@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 namespace Mengine
 {
@@ -11,7 +11,7 @@ namespace Mengine
         Histogram()
             : m_size( 0 )
         {
-            Algorithm::fill_n( m_values, Count, T() );
+            StdAlgorithm::fill_n( m_values, Count, T() );
         }
 
         ~Histogram()
@@ -56,14 +56,14 @@ namespace Mengine
 
         T getMinValue() const
         {
-            const T * value = Algorithm::min_element( m_values, m_values + Count );
+            const T * value = StdAlgorithm::min_element( m_values, m_values + Count );
 
             return *value;
         }
 
         T getMaxValue() const
         {
-            const T * value = Algorithm::max_element( m_values, m_values + Count );
+            const T * value = StdAlgorithm::max_element( m_values, m_values + Count );
 
             return *value;
         }

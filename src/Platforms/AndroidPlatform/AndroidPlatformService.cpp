@@ -56,7 +56,7 @@
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 #include "Config/Switch.h"
 #include "Config/Path.h"
 
@@ -403,11 +403,11 @@ namespace Mengine
         , m_desktop( false )
         , m_touchpad( false )
     {
-        Algorithm::fill_n( m_fingers, MENGINE_INPUT_MAX_TOUCH, -1 );
+        StdAlgorithm::fill_n( m_fingers, MENGINE_INPUT_MAX_TOUCH, -1 );
 
-        Algorithm::fill_n( m_currentFingersX, MENGINE_INPUT_MAX_TOUCH, 0.f );
-        Algorithm::fill_n( m_currentFingersY, MENGINE_INPUT_MAX_TOUCH, 0.f );
-        Algorithm::fill_n( m_currentFingersPressure, MENGINE_INPUT_MAX_TOUCH, 0.f );
+        StdAlgorithm::fill_n( m_currentFingersX, MENGINE_INPUT_MAX_TOUCH, 0.f );
+        StdAlgorithm::fill_n( m_currentFingersY, MENGINE_INPUT_MAX_TOUCH, 0.f );
+        StdAlgorithm::fill_n( m_currentFingersPressure, MENGINE_INPUT_MAX_TOUCH, 0.f );
     }
     //////////////////////////////////////////////////////////////////////////
     AndroidPlatformService::~AndroidPlatformService()

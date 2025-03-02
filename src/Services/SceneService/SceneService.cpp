@@ -13,7 +13,7 @@
 #include "Kernel/VectorResources.h"
 #include "Kernel/PrototypeHelper.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( SceneService, Mengine::SceneService );

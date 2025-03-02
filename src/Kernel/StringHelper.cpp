@@ -11,7 +11,7 @@
 #include "Config/StdString.h"
 #include "Config/StdCType.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 namespace Mengine
 {
@@ -343,7 +343,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void toupper( const String & _in, String * const _upper )
         {
-            Algorithm::transform( _in.begin(), _in.end(), _upper->begin(),
+            StdAlgorithm::transform( _in.begin(), _in.end(), _upper->begin(),
                 []( Char c )
             {
                 return (Char)StdCType::toupper( c );
@@ -375,7 +375,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void tolower( const String & _str, String * const _lower )
         {
-            Algorithm::transform( _str.begin(), _str.end(), _lower->begin(),
+            StdAlgorithm::transform( _str.begin(), _str.end(), _lower->begin(),
                 []( Char c )
             {
                 return (Char)StdCType::tolower( c );

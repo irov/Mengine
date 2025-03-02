@@ -18,8 +18,8 @@
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/ThreadMutexHelper.h"
 
-#include "Config/Algorithm.h"
-#include "Config/Utility.h"
+#include "Config/StdAlgorithm.h"
+#include "Config/StdUtility.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ResourceService, Mengine::ResourceService );
@@ -132,7 +132,7 @@ namespace Mengine
 
                 if( it_cache_found == m_resourcesCache.end() )
                 {
-                    it_cache_found = m_resourcesCache.insert( it_cache_found, Utility::make_pair( _cook.groupName, VectorResources() ) );
+                    it_cache_found = m_resourcesCache.insert( it_cache_found, StdUtility::make_pair( _cook.groupName, VectorResources() ) );
                 }
 
                 VectorResources & cahce_resources = it_cache_found->second;
@@ -152,7 +152,7 @@ namespace Mengine
 
                     VectorResources & cache_resources = it_remove_cache_found->second;
 
-                    VectorResources::iterator it_remove_found = Algorithm::remove( cache_resources.begin(), cache_resources.end(), prev_resource );
+                    VectorResources::iterator it_remove_found = StdAlgorithm::remove( cache_resources.begin(), cache_resources.end(), prev_resource );
                     cache_resources.erase( it_remove_found, cache_resources.end() );
                 }
             }
@@ -178,7 +178,7 @@ namespace Mengine
 
             VectorResources & cache_resources = it_remove_cache_found->second;
 
-            VectorResources::iterator it_found = Algorithm::remove( cache_resources.begin(), cache_resources.end(), _resource );
+            VectorResources::iterator it_found = StdAlgorithm::remove( cache_resources.begin(), cache_resources.end(), _resource );
             cache_resources.erase( it_found, cache_resources.end() );
         }
 

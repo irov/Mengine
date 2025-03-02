@@ -14,7 +14,7 @@
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
 #include "Config/StdIntTypes.h"
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( FactoryService, Mengine::FactoryService );
@@ -191,7 +191,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FactoryService::unregisterFactory( const FactoryInterface * _factory )
     {
-        VectorFactories::iterator it_found = Algorithm::find_if( m_factories.begin(), m_factories.end(), [_factory]( const FactoryDesc & _desc )
+        VectorFactories::iterator it_found = StdAlgorithm::find_if( m_factories.begin(), m_factories.end(), [_factory]( const FactoryDesc & _desc )
         {
             return _desc.factory == _factory;
         } );

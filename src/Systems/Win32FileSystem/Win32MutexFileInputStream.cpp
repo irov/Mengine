@@ -14,7 +14,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/MemoryCopy.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 namespace Mengine
 {

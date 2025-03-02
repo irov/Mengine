@@ -28,7 +28,7 @@
 #include "Kernel/ThreadHelper.h"
 
 #include "Config/StdString.h"
-#include "Config/Utility.h"
+#include "Config/StdUtility.h"
 
 #ifndef MENGINE_ANDROID_METHOD_MAX_ARGS
 #define MENGINE_ANDROID_METHOD_MAX_ARGS 32
@@ -161,7 +161,7 @@ namespace Mengine
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_callbacksMutex );
 
-        MapAndroidCallbacks::const_iterator it_found = m_callbacks.find( Utility::make_pair( _plugin, _method ) );
+        MapAndroidPythonCallbacks::const_iterator it_found = m_callbacks.find( StdUtility::make_pair( _plugin, _method ) );
 
         if( it_found == m_callbacks.end() )
         {
@@ -184,7 +184,7 @@ namespace Mengine
 
         MENGINE_THREAD_MUTEX_SCOPE( m_callbacksMutex );
 
-        MapAndroidCallbacks::const_iterator it_found = m_callbacks.find( Utility::make_pair( _plugin, _method ) );
+        MapAndroidPythonCallbacks::const_iterator it_found = m_callbacks.find( StdUtility::make_pair( _plugin, _method ) );
 
         if( it_found == m_callbacks.end() )
         {
@@ -281,13 +281,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     pybind::object AndroidNativePythonService::addAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb, const pybind::args & _args )
     {
-        MapAndroidCallbacks::iterator it_found = m_callbacks.find( Utility::make_pair( _plugin, _method ) );
+        MapAndroidPythonCallbacks::iterator it_found = m_callbacks.find( StdUtility::make_pair( _plugin, _method ) );
 
         if( it_found == m_callbacks.end() )
         {
             VectorAndroidPythonCallbacks new_callbacks;
 
-            it_found = m_callbacks.emplace( Utility::make_pair( Utility::make_pair( _plugin, _method ), new_callbacks ) ).first;
+            it_found = m_callbacks.emplace( StdUtility::make_pair( StdUtility::make_pair( _plugin, _method ), new_callbacks ) ).first;
         }
 
         VectorAndroidPythonCallbacks & callbacks = it_found->second;
@@ -303,7 +303,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonService::removeAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb )
     {
-        MapAndroidCallbacks::iterator it_found = m_callbacks.find( Utility::make_pair( _plugin, _method ) );
+        MapAndroidPythonCallbacks::iterator it_found = m_callbacks.find( StdUtility::make_pair( _plugin, _method ) );
 
         if( it_found == m_callbacks.end() )
         {
@@ -317,7 +317,7 @@ namespace Mengine
 
         VectorAndroidPythonCallbacks & callbacks = it_found->second;
 
-        VectorAndroidPythonCallbacks::iterator it_callback_found = Algorithm::find_if( callbacks.begin(), callbacks.end(), [_cb](const AndroidPythonCallbackDesc & desc) {
+        VectorAndroidPythonCallbacks::iterator it_callback_found = StdAlgorithm::find_if( callbacks.begin(), callbacks.end(), [_cb](const AndroidPythonCallbackDesc & desc) {
             return desc.cb.ptr() == _cb.ptr();
         } );
 

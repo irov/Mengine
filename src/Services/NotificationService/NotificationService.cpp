@@ -8,7 +8,7 @@
 #include "Kernel/MixinDebug.h"
 #include "Kernel/ThreadMutexHelper.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( NotificationService, Mengine::NotificationService );

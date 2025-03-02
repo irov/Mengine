@@ -8,7 +8,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/EventableHelper.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 #ifndef MENGINE_SPINE_MAX_VERTICES
 #define MENGINE_SPINE_MAX_VERTICES 512

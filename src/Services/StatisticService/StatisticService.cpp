@@ -6,7 +6,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/StatisticDetail.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( StatisticService, Mengine::StatisticService );
@@ -45,8 +45,8 @@ namespace Mengine
             m_statisticEnabled[index] = Helper::isStatisticDefaultEnabled( (StatisticId)index );
         }
 
-        Algorithm::fill_n( m_statisticIntegers, MENGINE_STATISTIC_MAX_COUNT, 0LL );
-        Algorithm::fill_n( m_statisticDoubles, MENGINE_STATISTIC_MAX_COUNT, 0.0 );
+        StdAlgorithm::fill_n( m_statisticIntegers, MENGINE_STATISTIC_MAX_COUNT, 0LL );
+        StdAlgorithm::fill_n( m_statisticDoubles, MENGINE_STATISTIC_MAX_COUNT, 0.0 );
 
         return true;
     }

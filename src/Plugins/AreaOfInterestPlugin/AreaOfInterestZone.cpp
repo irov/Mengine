@@ -3,7 +3,7 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 namespace Mengine
 {
@@ -53,7 +53,7 @@ namespace Mengine
     {
         AreaOfInterestTriggerPtr trigger = _trigger;
 
-        VectorAreaOfInterestTriggers::iterator it_add_found = Algorithm::find_if( m_triggersAdd.begin(), m_triggersAdd.end(), [trigger]( const AreaOfInterestTriggerDesc & _desc )
+        VectorAreaOfInterestTriggers::iterator it_add_found = StdAlgorithm::find_if( m_triggersAdd.begin(), m_triggersAdd.end(), [trigger]( const AreaOfInterestTriggerDesc & _desc )
         {
             return _desc.trigger == trigger;
         } );
@@ -65,7 +65,7 @@ namespace Mengine
             return;
         }
 
-        VectorAreaOfInterestTriggers::iterator it_found = Algorithm::find_if( m_triggers.begin(), m_triggers.end(), [trigger]( const AreaOfInterestTriggerDesc & _desc )
+        VectorAreaOfInterestTriggers::iterator it_found = StdAlgorithm::find_if( m_triggers.begin(), m_triggers.end(), [trigger]( const AreaOfInterestTriggerDesc & _desc )
         {
             return _desc.trigger == trigger;
         } );
@@ -103,7 +103,7 @@ namespace Mengine
     {
         AreaOfInterestActorPtr actor = _actor;
 
-        VectorAreaOfInterestActors::iterator it_add_found = Algorithm::find_if( m_actorsAdd.begin(), m_actorsAdd.end(), [actor]( const AreaOfInterestActorDesc & _desc )
+        VectorAreaOfInterestActors::iterator it_add_found = StdAlgorithm::find_if( m_actorsAdd.begin(), m_actorsAdd.end(), [actor]( const AreaOfInterestActorDesc & _desc )
         {
             return _desc.actor == actor;
         } );
@@ -113,7 +113,7 @@ namespace Mengine
             m_actorsAdd.erase( it_add_found );
         }
 
-        VectorAreaOfInterestActors::iterator it_found = Algorithm::find_if( m_actors.begin(), m_actors.end(), [actor]( const AreaOfInterestActorDesc & _desc )
+        VectorAreaOfInterestActors::iterator it_found = StdAlgorithm::find_if( m_actors.begin(), m_actors.end(), [actor]( const AreaOfInterestActorDesc & _desc )
         {
             return _desc.actor == actor;
         } );
@@ -192,14 +192,14 @@ namespace Mengine
             }
         }
 
-        VectorAreaOfInterestActors::iterator it_actors_erase = Algorithm::remove_if( m_actors.begin(), m_actors.end(), []( const AreaOfInterestActorDesc & _desc )
+        VectorAreaOfInterestActors::iterator it_actors_erase = StdAlgorithm::remove_if( m_actors.begin(), m_actors.end(), []( const AreaOfInterestActorDesc & _desc )
         {
             return _desc.dead;
         } );
 
         m_actors.erase( it_actors_erase, m_actors.end() );
 
-        VectorAreaOfInterestTriggers::iterator it_triggers_erase = Algorithm::remove_if( m_triggers.begin(), m_triggers.end(), []( const AreaOfInterestTriggerDesc & _desc )
+        VectorAreaOfInterestTriggers::iterator it_triggers_erase = StdAlgorithm::remove_if( m_triggers.begin(), m_triggers.end(), []( const AreaOfInterestTriggerDesc & _desc )
         {
             return _desc.dead;
         } );

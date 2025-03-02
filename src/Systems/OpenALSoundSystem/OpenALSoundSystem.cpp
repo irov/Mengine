@@ -13,7 +13,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/StatisticHelper.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( SoundSystem, Mengine::OpenALSoundSystem );

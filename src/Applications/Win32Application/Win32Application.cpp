@@ -28,7 +28,7 @@
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Logger.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 #include "Config/StdIO.h"
 #include "Config/StdIntTypes.h"
 

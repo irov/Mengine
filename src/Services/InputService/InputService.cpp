@@ -10,7 +10,7 @@
 #include "Kernel/EnumeratorHelper.h"
 #include "Kernel/ThreadMutexHelper.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( InputService, Mengine::InputService );
@@ -20,10 +20,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     InputService::InputService()
     {
-        Algorithm::fill_n( m_cursorPosition, MENGINE_INPUT_MAX_TOUCH, mt::vec2f( 0.f, 0.f ) );
-        Algorithm::fill_n( m_cursorPressure, MENGINE_INPUT_MAX_TOUCH, 0.f );
-        Algorithm::fill_n( m_keyBuffer, MENGINE_INPUT_MAX_KEY_CODE, false );
-        Algorithm::fill_n( m_mouseBuffer, MENGINE_INPUT_MAX_MOUSE_BUTTON_CODE, false );
+        StdAlgorithm::fill_n( m_cursorPosition, MENGINE_INPUT_MAX_TOUCH, mt::vec2f( 0.f, 0.f ) );
+        StdAlgorithm::fill_n( m_cursorPressure, MENGINE_INPUT_MAX_TOUCH, 0.f );
+        StdAlgorithm::fill_n( m_keyBuffer, MENGINE_INPUT_MAX_KEY_CODE, false );
+        StdAlgorithm::fill_n( m_mouseBuffer, MENGINE_INPUT_MAX_MOUSE_BUTTON_CODE, false );
     }
     //////////////////////////////////////////////////////////////////////////
     InputService::~InputService()
@@ -214,7 +214,7 @@ namespace Mengine
             return false;
         }
 
-        std::ptrdiff_t keyDownCount = Algorithm::count( m_keyBuffer, m_keyBuffer + MENGINE_INPUT_MAX_KEY_CODE, true );
+        std::ptrdiff_t keyDownCount = StdAlgorithm::count( m_keyBuffer, m_keyBuffer + MENGINE_INPUT_MAX_KEY_CODE, true );
 
         if( keyDownCount != 1 )
         {
@@ -226,14 +226,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool InputService::isAnyKeyDown() const
     {
-        std::ptrdiff_t keyDownCount = Algorithm::count( m_keyBuffer, m_keyBuffer + MENGINE_INPUT_MAX_KEY_CODE, true );
+        std::ptrdiff_t keyDownCount = StdAlgorithm::count( m_keyBuffer, m_keyBuffer + MENGINE_INPUT_MAX_KEY_CODE, true );
 
         return keyDownCount != 0;
     }
     //////////////////////////////////////////////////////////////////////////
     bool InputService::isAnyMouseButtonDown() const
     {
-        std::ptrdiff_t mouseDownCount = Algorithm::count( m_mouseBuffer, m_mouseBuffer + MENGINE_INPUT_MAX_MOUSE_BUTTON_CODE, true );
+        std::ptrdiff_t mouseDownCount = StdAlgorithm::count( m_mouseBuffer, m_mouseBuffer + MENGINE_INPUT_MAX_MOUSE_BUTTON_CODE, true );
 
         return mouseDownCount != 0;
     }
@@ -371,7 +371,7 @@ namespace Mengine
     void InputService::removeMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider )
     {
         VectorMousePositionProviders::iterator it_found =
-            Algorithm::find_if( m_mousePositionProviders.begin(), m_mousePositionProviders.end(), [_provider]( const InputService::InputMousePositionProviderDesc & _desc )
+            StdAlgorithm::find_if( m_mousePositionProviders.begin(), m_mousePositionProviders.end(), [_provider]( const InputService::InputMousePositionProviderDesc & _desc )
         {
             return _desc.provider == _provider;
         } );
@@ -390,7 +390,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _focus );
 
-        Algorithm::fill( m_keyBuffer, m_keyBuffer + MENGINE_INPUT_MAX_KEY_CODE, false );
+        StdAlgorithm::fill( m_keyBuffer, m_keyBuffer + MENGINE_INPUT_MAX_KEY_CODE, false );
     }
     //////////////////////////////////////////////////////////////////////////
     void InputService::pushEvent( const InputUnionEvent & _event )

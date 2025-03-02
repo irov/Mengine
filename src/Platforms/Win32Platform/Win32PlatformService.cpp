@@ -58,7 +58,7 @@
 #include "Config/StdIO.h"
 #include "Config/StdIntTypes.h"
 #include "Config/Utf8.h"
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 #include "Config/Path.h"
 
 #include <clocale>
@@ -123,8 +123,8 @@ namespace Mengine
         , m_sessionLock( false )
 #endif
     {
-        Algorithm::fill_n( m_clickOutArea, MENGINE_INPUT_MAX_MOUSE_BUTTON_CODE, false );
-        Algorithm::fill_n( m_isDoubleClick, MENGINE_INPUT_MAX_MOUSE_BUTTON_CODE, false );
+        StdAlgorithm::fill_n( m_clickOutArea, MENGINE_INPUT_MAX_MOUSE_BUTTON_CODE, false );
+        StdAlgorithm::fill_n( m_isDoubleClick, MENGINE_INPUT_MAX_MOUSE_BUTTON_CODE, false );
     }
     //////////////////////////////////////////////////////////////////////////
     Win32PlatformService::~Win32PlatformService()
@@ -3628,7 +3628,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32PlatformService::removeWin32ProcessHandler( UniqueId _id )
     {
-        VectorWin32ProcessHandler::iterator it_found = Algorithm::find_if( m_win32ProcessHandlers.begin(), m_win32ProcessHandlers.end(), [_id]( const Win32ProcessDesc & _desc )
+        VectorWin32ProcessHandler::iterator it_found = StdAlgorithm::find_if( m_win32ProcessHandlers.begin(), m_win32ProcessHandlers.end(), [_id]( const Win32ProcessDesc & _desc )
         {
             return _desc.id == _id;
         } );

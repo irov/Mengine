@@ -10,7 +10,7 @@
 
 #include "Config/StdString.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( OptionsService, Mengine::OptionsService );

@@ -5,8 +5,8 @@
 #include "Kernel/Vector.h"
 #include "Kernel/String.h"
 
-#include "Config/Algorithm.h"
-#include "Config/Utility.h"
+#include "Config/StdAlgorithm.h"
+#include "Config/StdUtility.h"
 
 namespace Mengine
 {
@@ -62,7 +62,7 @@ namespace Mengine
             {
                 uint32_t random_index = _randomizer->getRandom( size );
 
-                Algorithm::swap( _vector[index], _vector[random_index] );
+                StdAlgorithm::swap( _vector[index], _vector[random_index] );
             }
         }
         //////////////////////////////////////////////////////////////////////////

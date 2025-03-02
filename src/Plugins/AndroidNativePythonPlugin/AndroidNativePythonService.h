@@ -65,8 +65,8 @@ namespace Mengine
 
         typedef Vector<AndroidPythonCallbackDesc> VectorAndroidPythonCallbacks;
 
-        typedef Map<Pair<ConstString, ConstString>, VectorAndroidPythonCallbacks> MapAndroidCallbacks;
-        MapAndroidCallbacks m_callbacks;
+        typedef Map<Pair<ConstString, ConstString>, VectorAndroidPythonCallbacks> MapAndroidPythonCallbacks;
+        MapAndroidPythonCallbacks m_callbacks;
 
         typedef Vector<AndroidSemaphoreListenerInterfacePtr> VectorAndroidSemaphoreListeners;
 

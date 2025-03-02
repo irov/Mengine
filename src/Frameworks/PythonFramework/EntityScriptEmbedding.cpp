@@ -20,7 +20,7 @@
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/PrototypeHelper.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 namespace Mengine
 {
@@ -129,7 +129,7 @@ namespace Mengine
                     , _prototype.c_str()
                 );
 
-                VectorEntityPrototypeGenerators::iterator it_found = Algorithm::find( m_entityPrototypeGenerators.begin(), m_entityPrototypeGenerators.end(), generator );
+                VectorEntityPrototypeGenerators::iterator it_found = StdAlgorithm::find( m_entityPrototypeGenerators.begin(), m_entityPrototypeGenerators.end(), generator );
 
                 MENGINE_ASSERTION_FATAL( it_found != m_entityPrototypeGenerators.end(), "remove generator category '%s' prototype '%s' not add from script"
                     , _category.c_str()

@@ -11,7 +11,7 @@
 #include "Kernel/Logger.h"
 
 #include "Config/StdString.h"
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 #include "OzzDetail.h"
 
@@ -138,7 +138,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeOzzAnimation::removeOzzAnimationSampler( const ConstString & _name )
     {
-        VectorSamplerOzzAnimations::iterator it_found = Algorithm::find_if( m_samplers.begin(), m_samplers.end()
+        VectorSamplerOzzAnimations::iterator it_found = StdAlgorithm::find_if( m_samplers.begin(), m_samplers.end()
             , [_name]( const SamplerOzzAnimationPtr & _sampler )
         {
             return _sampler->getName() == _name;

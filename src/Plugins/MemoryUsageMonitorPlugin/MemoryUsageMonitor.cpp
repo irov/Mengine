@@ -17,7 +17,7 @@
 #include "Kernel/LoggerHelper.h"
 #include "Kernel/StatisticHelper.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 #define MEMORYUSAGEMONITOR_THREAD_NAME "MemoryUsageMonitor"
 
@@ -134,14 +134,14 @@ namespace Mengine
                 m_prevUsagesAux.emplace_back( MemoryUsageDesc{reportName, reportCount} );
             }
 
-            Algorithm::sort( m_prevUsagesAux.begin(), m_prevUsagesAux.end(), []( const MemoryUsageDesc & _l, const MemoryUsageDesc & _r )
+            StdAlgorithm::sort( m_prevUsagesAux.begin(), m_prevUsagesAux.end(), []( const MemoryUsageDesc & _l, const MemoryUsageDesc & _r )
             {
                 return _l.count > _r.count;
             } );
 
             for( const MemoryUsageDesc & desc : m_prevUsagesAux )
             {
-                VectorMemoryUsages::const_iterator it_found = Algorithm::find_if( m_prevUsages.begin(), m_prevUsages.end(), [desc]( const MemoryUsageDesc & _desc )
+                VectorMemoryUsages::const_iterator it_found = StdAlgorithm::find_if( m_prevUsages.begin(), m_prevUsages.end(), [desc]( const MemoryUsageDesc & _desc )
                 {
                     return _desc.name == desc.name;
                 } );

@@ -1,6 +1,6 @@
 #include "Tags.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 namespace Mengine
 {
@@ -20,7 +20,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Tags::removeTag( const ConstString & _tag )
     {
-        VectorConstString::iterator it_found = Algorithm::find( m_values.begin(), m_values.end(), _tag );
+        VectorConstString::iterator it_found = StdAlgorithm::find( m_values.begin(), m_values.end(), _tag );
 
         if( it_found == m_values.end() )
         {
@@ -32,7 +32,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Tags::hasTag( const ConstString & _tag ) const
     {
-        VectorConstString::const_iterator it_found = Algorithm::find( m_values.begin(), m_values.end(), _tag );
+        VectorConstString::const_iterator it_found = StdAlgorithm::find( m_values.begin(), m_values.end(), _tag );
 
         return it_found != m_values.end();
     }

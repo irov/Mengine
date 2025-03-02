@@ -2,7 +2,7 @@
 
 #include "Kernel/Logger.h"
 
-#include "Config/Iterator.h"
+#include "Config/StdIterator.h"
 
 namespace Mengine
 {
@@ -35,7 +35,7 @@ namespace Mengine
             GlyphCode glyphChar = (GlyphCode)c;
 
             U32String::const_iterator it_kerning = it;
-            Iterator::advance( it_kerning, 1 );
+            StdIterator::advance( it_kerning, 1 );
 
             GlyphCode glyphCharNext = (it_kerning != _text.end()) ? *it_kerning : 0;
 

@@ -63,8 +63,8 @@
 #include "Kernel/MixinDebug.h"
 
 #include "Config/StdString.h"
-#include "Config/Algorithm.h"
-#include "Config/Iterator.h"
+#include "Config/StdAlgorithm.h"
+#include "Config/StdIterator.h"
 #include "Config/DynamicCast.h"
 #include "Config/Path.h"
 
@@ -2273,7 +2273,7 @@ namespace Mengine
     void NodeDebuggerModule::pathToString( const VectorNodePath & _path, String * const _outStr ) const
     {
         Stringstream stream;
-        Algorithm::copy( _path.begin(), _path.end(), std::ostream_iterator<UniqueId>( stream, "/" ) );
+        StdAlgorithm::copy( _path.begin(), _path.end(), std::ostream_iterator<UniqueId>( stream, "/" ) );
 
         *_outStr = stream.str();
     }

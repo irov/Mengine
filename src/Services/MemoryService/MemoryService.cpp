@@ -9,7 +9,7 @@
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/ThreadMutexHelper.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( MemoryService, Mengine::MemoryService );
@@ -206,7 +206,7 @@ namespace Mengine
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_memoryCacheMutex );
 
-        m_buffers.erase( Algorithm::remove_if( m_buffers.begin(), m_buffers.end(), []( const CacheBufferMemory & _buffer )
+        m_buffers.erase( StdAlgorithm::remove_if( m_buffers.begin(), m_buffers.end(), []( const CacheBufferMemory & _buffer )
         {
             if( _buffer.lock == true )
             {

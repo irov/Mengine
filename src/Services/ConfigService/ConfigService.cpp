@@ -15,7 +15,7 @@
 #include "Kernel/ThreadMutexHelper.h"
 #include "Kernel/PrototypeHelper.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ConfigService, Mengine::ConfigService );

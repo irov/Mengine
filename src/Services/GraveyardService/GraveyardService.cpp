@@ -8,7 +8,7 @@
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/NotificationHelper.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( GraveyardService, Mengine::GraveyardService );
@@ -63,7 +63,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void GraveyardService::onTimepipe( const UpdateContext * _context )
     {
-        VectorTextureGrave::iterator it_erase = Algorithm::remove_if( m_textures.begin(), m_textures.end(), [_context]( RenderTextureGraveEntry & _entry )
+        VectorTextureGrave::iterator it_erase = StdAlgorithm::remove_if( m_textures.begin(), m_textures.end(), [_context]( RenderTextureGraveEntry & _entry )
         {
             _entry.time -= _context->time;
 
@@ -138,7 +138,7 @@ namespace Mengine
             return nullptr;
         }
 
-        VectorTextureGrave::iterator it_found = Algorithm::find_if( m_textures.begin(), m_textures.end(), [_content]( const RenderTextureGraveEntry & _entry )
+        VectorTextureGrave::iterator it_found = StdAlgorithm::find_if( m_textures.begin(), m_textures.end(), [_content]( const RenderTextureGraveEntry & _entry )
         {
             return _entry.content == _content;
         } );

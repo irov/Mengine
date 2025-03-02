@@ -14,7 +14,7 @@
 #include "Kernel/ContentHelper.h"
 
 #include "Config/StdMath.h"
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 namespace Mengine
 {

@@ -12,7 +12,7 @@
 
 #include "Kernel/Logger.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ThreadSystem, Mengine::Win32ThreadSystem );

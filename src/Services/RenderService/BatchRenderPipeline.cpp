@@ -10,7 +10,7 @@
 #include "Kernel/MemoryCopy.h"
 #include "Kernel/ContentHelper.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 namespace Mengine
 {
@@ -693,7 +693,7 @@ namespace Mengine
     {
         MENGINE_PROFILER_CATEGORY();
 
-        Algorithm::stable_sort( m_renderPasses.begin(), m_renderPasses.end(), []( const RenderPass & _l, const RenderPass & _r )
+        StdAlgorithm::stable_sort( m_renderPasses.begin(), m_renderPasses.end(), []( const RenderPass & _l, const RenderPass & _r )
         {
             if( _l.zGroup < _r.zGroup )
             {

@@ -6,7 +6,7 @@
 
 #include "Config/StdArg.h"
 #include "Config/StdIO.h"
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 namespace Mengine
 {
@@ -93,7 +93,7 @@ namespace Mengine
             size_t size = _value.size();
             const Char * str_end = str + size;
 
-            if( Algorithm::find( str, str_end, _symbol ) == str_end )
+            if( StdAlgorithm::find( str, str_end, _symbol ) == str_end )
             {
                 return false;
             }

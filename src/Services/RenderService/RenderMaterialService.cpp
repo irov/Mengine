@@ -15,7 +15,7 @@
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/ContentHelper.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( RenderMaterialService, Mengine::RenderMaterialService );
@@ -98,7 +98,7 @@ namespace Mengine
         , m_defaultTextureFilterMinification( TF_LINEAR )
         , m_stageCount( 0 )
     {
-        Algorithm::fill_n( m_defaultStages, EM_MATERIAL_COUNT, nullptr );
+        StdAlgorithm::fill_n( m_defaultStages, EM_MATERIAL_COUNT, nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialService::~RenderMaterialService()

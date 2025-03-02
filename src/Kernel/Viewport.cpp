@@ -2,7 +2,7 @@
 
 #include "math/utils.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 namespace Mengine
 {
@@ -222,10 +222,10 @@ namespace Mengine
         }
 
         float sx[4] = {_bbox.minimum.x, _bbox.maximum.x, this->begin.x, this->end.x};
-        Algorithm::sort( sx, sx + 4 );
+        StdAlgorithm::sort( sx, sx + 4 );
 
         float sy[4] = {_bbox.minimum.y, _bbox.maximum.y, this->begin.y, this->end.y};
-        Algorithm::sort( sy, sy + 4 );
+        StdAlgorithm::sort( sy, sy + 4 );
 
         float s = (sx[2] - sx[1]) * (sy[2] - sy[1]);
 

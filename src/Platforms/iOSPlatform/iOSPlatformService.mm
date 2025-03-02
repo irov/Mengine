@@ -765,7 +765,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool iOSPlatformService::tickPlatform( float _frameTimeF, bool _render, bool _flush, bool _pause )
+    bool iOSPlatformService::tickPlatform( float _frameTime, bool _render, bool _flush, bool _pause )
     {
         bool updating = APPLICATION_SERVICE()
             ->beginUpdate( _frameTime );
@@ -774,12 +774,12 @@ namespace Mengine
         {
             if( m_pauseUpdatingTime >= 0.f )
             {
-                _frameTimeF = m_pauseUpdatingTime;
+                _frameTime = m_pauseUpdatingTime;
                 m_pauseUpdatingTime = -1.f;
             }
 
             APPLICATION_SERVICE()
-                ->tick( _frameTimeF );
+                ->tick( _frameTime );
         }
 
         if( this->isNeedWindowRender() == true && _render == true )

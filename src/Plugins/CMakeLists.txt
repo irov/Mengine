@@ -242,6 +242,10 @@ if(MENGINE_PLUGIN_CACHALOT)
     ADD_SUBDIRECTORY(CachalotPlugin)
 endif()
 
+if(MENGINE_PLUGIN_APPLE_ADVERTISEMENT)
+    ADD_SUBDIRECTORY(AppleAdvertisementPlugin)
+endif()
+
 if(MENGINE_PLUGIN_APPLE_NATIVE_PYTHON)
     ADD_SUBDIRECTORY(AppleNativePythonPlugin)
 endif()

@@ -10,6 +10,8 @@ namespace Mengine
         : public ScriptEmbeddingInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( TexturepackerScriptEmbedding );
+
     public:
         TexturepackerScriptEmbedding();
         ~TexturepackerScriptEmbedding() override;

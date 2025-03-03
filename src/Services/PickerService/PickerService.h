@@ -38,6 +38,7 @@ namespace Mengine
         void setScene( const ScenePtr & _scene ) override;
 
     public:
+        void setRenderResolution( const RenderResolutionInterfacePtr & _resolution ) override;
         void setRenderViewport( const RenderViewportInterfacePtr & _viewport ) override;
         void setRenderCamera( const RenderCameraInterfacePtr & _camera ) override;
         void setRenderTransformation( const RenderTransformationInterfacePtr & _transformation ) override;
@@ -83,6 +84,7 @@ namespace Mengine
     protected:
         ScenePtr m_scene;
 
+        RenderResolutionInterfacePtr m_resolution;
         RenderViewportInterfacePtr m_viewport;
         RenderCameraInterfacePtr m_camera;
         RenderTransformationInterfacePtr m_transformation;

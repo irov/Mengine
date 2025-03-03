@@ -26,7 +26,7 @@ namespace Mengine
         float getAspectRatio() const;
 
         void calcSize( mt::vec2f * const _size ) const;
-        void calcInvSize( mt::vec2f * const _size ) const;
+        void calcSizeInv( mt::vec2f * const _size ) const;
         void calcScale( const Resolution & _resolution, mt::vec2f * const _scale ) const;
         void scaleTo( const mt::vec2f & _scale, Resolution * const _resolution ) const;
         void adaptiveHeight( uint32_t _availableHeight, Resolution * const _adaptiveResolution ) const;

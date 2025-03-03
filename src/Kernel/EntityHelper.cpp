@@ -12,9 +12,10 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         EntityPtr generateEntity( const EntityEventReceiverInterfacePtr & _eventReceiver, const DocumentInterfacePtr & _doc )
         {
-            EntityPtr entity = Helper::generatePrototype( Entity::getFactorableType(), ConstString::none(), _doc );
+            EntityPtr entity = Helper::generatePrototype<Entity>( ConstString::none(), _doc );
 
-            EntityEventablePtr eventable = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "EntityEventable" ), ConstString::none(), _doc );
+            EntityEventablePtr eventable = PROTOTYPE_SERVICE()
+                ->generatePrototype( ConstString::none(), STRINGIZE_STRING_LOCAL( "EntityEventable" ), _doc );
 
             EventationInterface * eventation = eventable->getEventation();
 

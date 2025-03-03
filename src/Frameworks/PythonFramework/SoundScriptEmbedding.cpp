@@ -159,7 +159,7 @@ namespace Mengine
 
                 const ConstString & resourceType = resource->getType();
 
-                if( resourceType != STRINGIZE_STRING_LOCAL( "ResourceSound" ) )
+                if( resourceType != ResourceSound::getFactorableType() )
                 {
                     return false;
                 }

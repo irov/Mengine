@@ -57,16 +57,16 @@ namespace Mengine
         String url;
     };
     //////////////////////////////////////////////////////////////////////////
-    class NodeDebuggerModule
+    class ModuleNodeDebugger
         : public ModuleBase
         , public ThreadWorkerInterface
         , public SceneDataProviderInterface
     {
-        DECLARE_FACTORABLE( NodeDebuggerModule );
+        DECLARE_FACTORABLE( ModuleNodeDebugger );
 
     public:
-        NodeDebuggerModule();
-        ~NodeDebuggerModule() override;
+        ModuleNodeDebugger();
+        ~ModuleNodeDebugger() override;
 
     protected:
         bool _initializeModule() override;
@@ -126,6 +126,7 @@ namespace Mengine
         void processPacket( NodeDebuggerPacket & _packet );
         void receiveChangedNode( const pugi::xml_node & _xmlNode );
         void receiveGameControlCommand( const String & _command );
+        void receiveResolutins( uint32_t _width, uint32_t _height );
         void receiveSetting( const Char * _setting, const Char * _key, const Char * _value );
         void stringToPath( const String & _str, VectorNodePath * const _path ) const;
         void pathToString( const VectorNodePath & _path, String * const _outStr ) const;

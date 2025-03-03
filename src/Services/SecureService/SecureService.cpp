@@ -1,7 +1,5 @@
 #include "SecureService.h"
 
-#include "Interface/PrototypeServiceInterface.h"
-
 #include "SecureUnsignedValue.h"
 #include "SecureStringValue.h"
 
@@ -10,6 +8,7 @@
 #include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/Ravingcode.h"
+#include "Kernel/PrototypeHelper.h"
 
 #include "Config/StdString.h"
 
@@ -38,13 +37,13 @@ namespace Mengine
         Helper::makeSHA1( secure, secure_len, reinterpret_cast<uint8_t *>(m_secureHash), sizeof( m_secureHash ) );
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "SecureUnsignedValue" ), ConstString::none(), Helper::makeDefaultPrototypeGenerator<SecureUnsignedValue, 64>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addPrototype( ConstString::none(), SecureUnsignedValue::getFactorableType(), Helper::makeDefaultPrototypeGenerator<SecureUnsignedValue, 64>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "SecureStringValue" ), ConstString::none(), Helper::makeDefaultPrototypeGenerator<SecureStringValue, 64>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addPrototype( ConstString::none(), SecureStringValue::getFactorableType(), Helper::makeDefaultPrototypeGenerator<SecureStringValue, 64>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
@@ -54,11 +53,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SecureService::_finalizeService()
     {
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "SecureUnsignedValue" ), ConstString::none(), nullptr );
-
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "SecureStringValue" ), ConstString::none(), nullptr );
+        Helper::removePrototype<SecureUnsignedValue>( ConstString::none() );
+        Helper::removePrototype<SecureStringValue>( ConstString::none() );
     }
     //////////////////////////////////////////////////////////////////////////
     void SecureService::protectData( uint32_t _complexity, const void * _in, size_t _size, void * const _out ) const

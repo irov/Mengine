@@ -59,6 +59,10 @@ namespace Mengine
         virtual bool isLocalHide() const = 0;
 
     public:
+        virtual void setRenderResolution( const RenderResolutionInterfacePtr & _resolution ) = 0;
+        virtual const RenderResolutionInterfacePtr & getRenderResolution() const = 0;
+
+    public:
         virtual void setRenderViewport( const RenderViewportInterfacePtr & _viewport ) = 0;
         virtual const RenderViewportInterfacePtr & getRenderViewport() const = 0;
 

@@ -3,6 +3,7 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/PrototypeHelper.h"
+#include "Kernel/BaseAffectorHub.h"
 
 namespace Mengine
 {
@@ -31,7 +32,7 @@ namespace Mengine
     {
         if( m_affectorHub == nullptr )
         {
-            AffectorHubInterfacePtr affectorHub = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "BaseAffectorHub" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+            AffectorHubInterfacePtr affectorHub = Helper::generatePrototype<BaseAffectorHub>( ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
             AffectorHubProviderInterface * provider = const_cast<Affectorable *>(this)->getAffectorHubProvider();
 

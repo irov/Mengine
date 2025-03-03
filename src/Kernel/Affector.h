@@ -28,6 +28,7 @@ namespace Mengine
         , public Updatable
         , protected BaseUpdation
     {
+        DECLARE_FACTORABLE( Affector );
         DECLARE_UPDATABLE();
 
     public:

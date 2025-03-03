@@ -8,6 +8,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/AssertionAllocator.h"
 #include "Kernel/PluginHelper.h"
+#include "Kernel/PrototypeHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Graphics, Mengine::GraphicsPlugin );
@@ -25,8 +26,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool GraphicsPlugin::_initializePlugin()
     {
-        if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Graphics" ), Helper::makeFactorableUnique<NodePrototypeGenerator<Graphics, 128>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        if( Helper::addNodePrototype<Graphics, 128>( MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
@@ -36,8 +36,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void GraphicsPlugin::_finalizePlugin()
     {
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Graphics" ), nullptr );
+        Helper::removeNodePrototype<Graphics>();
     }
     //////////////////////////////////////////////////////////////////////////
     void GraphicsPlugin::_destroyPlugin()

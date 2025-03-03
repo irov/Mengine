@@ -23,6 +23,7 @@
 #include "Kernel/AssertionAllocator.h"
 #include "Kernel/ConverterFactory.h"
 #include "Kernel/PluginHelper.h"
+#include "Kernel/PrototypeHelper.h"
 
 #include "Config/StdMath.h"
 
@@ -121,13 +122,12 @@ namespace Mengine
         prototypeGenerator->setDazzleService( m_service );
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "DazzleEffect" ), prototypeGenerator ) == false )
+            ->addPrototype( Node::getFactorableType(), DazzleEffect::getFactorableType(), prototypeGenerator ) == false )
         {
             return false;
         }
 
-        if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceDazzleEffect" ), Helper::makeFactorableUnique<ResourcePrototypeGenerator<ResourceDazzleEffect, 128>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        if( Helper::addResourcePrototype<ResourceDazzleEffect, 128>( MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
@@ -178,11 +178,8 @@ namespace Mengine
         CODEC_SERVICE()
             ->removeCodecExt( STRINGIZE_STRING_LOCAL( "dzz" ) );
 
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "DazzleEffect" ), nullptr );
-
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceDazzleEffect" ), nullptr );
+        Helper::removeNodePrototype<DazzleEffect>();
+        Helper::removeResourcePrototype<ResourceDazzleEffect>();
     }
     //////////////////////////////////////////////////////////////////////////
     void DazzlePlugin::_destroyPlugin()

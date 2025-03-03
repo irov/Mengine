@@ -29,13 +29,13 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
         {
             SCRIPT_SERVICE()
-                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "PathfinderScriptEmbedding" ), Helper::makeFactorableUnique<PathfinderScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
+                ->addScriptEmbedding( PathfinderScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<PathfinderScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
         }, MENGINE_DOCUMENT_FACTORABLE );
 
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
         {
             SCRIPT_SERVICE()
-                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "PathfinderScriptEmbedding" ) );
+                ->removeScriptEmbedding( PathfinderScriptEmbedding::getFactorableType() );
         }, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 

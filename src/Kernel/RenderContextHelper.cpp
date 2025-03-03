@@ -17,6 +17,11 @@ namespace Mengine
                 return false;
             }
 
+            if( _left->resolution != _right->resolution )
+            {
+                return false;
+            }
+
             if( _left->viewport != _right->viewport )
             {
                 return false;
@@ -47,6 +52,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void clearRenderContext( RenderContext * const _renderContext )
         {
+            _renderContext->resolution = nullptr;
             _renderContext->viewport = nullptr;
             _renderContext->camera = nullptr;
             _renderContext->transformation = nullptr;

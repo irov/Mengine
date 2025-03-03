@@ -33,6 +33,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/ConverterFactory.h"
 #include "Kernel/PluginHelper.h"
+#include "Kernel/PrototypeHelper.h"
 
 #include "Config/StdString.h"
 
@@ -88,43 +89,41 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EMBEDDING, this, [this]()
         {
             SCRIPT_SERVICE()
-                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "AstralaxScriptEmbedding" ), Helper::makeFactorableUnique<AstralaxScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
+                ->addScriptEmbedding( AstralaxScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<AstralaxScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
         }, MENGINE_DOCUMENT_FACTORABLE );
 
         NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EJECTING, this, []()
         {
             SCRIPT_SERVICE()
-                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "AstralaxScriptEmbedding" ) );
+                ->removeScriptEmbedding( AstralaxScriptEmbedding::getFactorableType() );
         }, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), Helper::makeFactorableUnique<NodePrototypeGenerator<AstralaxEmitter, 128>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addPrototype( Node::getFactorableType(), STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), Helper::makeFactorableUnique<NodePrototypeGenerator<AstralaxEmitter, 128>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        {
+            return false;
+        }
+
+        if( Helper::addNodePrototype<AstralaxEmitter, 128>( MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "AstralaxEmitter" ), Helper::makeFactorableUnique<NodePrototypeGenerator<AstralaxEmitter, 128>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addPrototype( Resource::getFactorableType(), STRINGIZE_STRING_LOCAL( "ResourceParticle" ), Helper::makeFactorableUnique<ResourcePrototypeGenerator<ResourceAstralax, 128>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
 
-        if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ), Helper::makeFactorableUnique<ResourcePrototypeGenerator<ResourceAstralax, 128>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
-        {
-            return false;
-        }
-
-        if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceAstralax" ), Helper::makeFactorableUnique<ResourcePrototypeGenerator<ResourceAstralax, 128>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        if( Helper::addResourcePrototype<ResourceAstralax, 128>( MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
         PLUGIN_SERVICE_WAIT( ResourceValidateServiceInterface, [this]()
         {
-            VOCABULARY_SET( ValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceAstralax" ), Helper::makeFactorableUnique<ResourceAstralaxValidator>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+            VOCABULARY_SET( ValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), ResourceAstralax::getFactorableType(), Helper::makeFactorableUnique<ResourceAstralaxValidator>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
             VOCABULARY_SET( ValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ), Helper::makeFactorableUnique<ResourceAstralaxValidator>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
             return true;
@@ -132,7 +131,7 @@ namespace Mengine
 
         PLUGIN_SERVICE_LEAVE( ResourceValidateServiceInterface, [this]()
         {
-            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceAstralax" ) );
+            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), ResourceAstralax::getFactorableType() );
             VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );
         } );
 
@@ -141,7 +140,7 @@ namespace Mengine
             ResourcePrefetcherInterfacePtr archivePrefetcherLZ4 = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "ResourcePrefetcherType" ), STRINGIZE_STRING_LOCAL( "ArchiveLZ4" ) );
 
             VOCABULARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ), archivePrefetcherLZ4, MENGINE_DOCUMENT_FACTORABLE );
-            VOCABULARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ResourceAstralax" ), archivePrefetcherLZ4, MENGINE_DOCUMENT_FACTORABLE );
+            VOCABULARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), ResourceAstralax::getFactorableType(), archivePrefetcherLZ4, MENGINE_DOCUMENT_FACTORABLE );
 
             return true;
         } );
@@ -149,10 +148,10 @@ namespace Mengine
         PLUGIN_SERVICE_LEAVE( ResourcePrefetcherServiceInterface, [this]()
         {
             VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );
-            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ResourceAstralax" ) );
+            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), ResourceAstralax::getFactorableType() );
         } );
 
-        VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), STRINGIZE_STRING_LOCAL( "ResourceAstralax" ), Helper::makeFactorableUnique<MetabufLoaderResourceAstralax>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+        VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceAstralax::getFactorableType(), Helper::makeFactorableUnique<MetabufLoaderResourceAstralax>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
         VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ), Helper::makeFactorableUnique<MetabufLoaderResourceAstralax>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
         Helper::registerConverter<ParticleConverterPTCToPTZ>( STRINGIZE_STRING_LOCAL( "ptc2ptz" ), MENGINE_DOCUMENT_FACTORABLE );
@@ -168,18 +167,16 @@ namespace Mengine
 #endif
 
         PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), nullptr );
+            ->removePrototype( Node::getFactorableType(), STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), nullptr );
+
+        Helper::removeNodePrototype<AstralaxEmitter>();
 
         PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "AstralaxEmitter" ), nullptr );
+            ->removePrototype( Resource::getFactorableType(), STRINGIZE_STRING_LOCAL( "ResourceParticle" ), nullptr );
 
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ), nullptr );
+        Helper::removeResourcePrototype<ResourceAstralax>();
 
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceAstralax" ), nullptr );
-
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), STRINGIZE_STRING_LOCAL( "ResourceAstralax" ) );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceAstralax::getFactorableType() );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );
 
         Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "ptc2ptz" ) );

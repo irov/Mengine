@@ -74,6 +74,13 @@ namespace Mengine
         return event;
     }
     //////////////////////////////////////////////////////////////////////////
+    const RenderResolutionInterfacePtr & Entity::getPickerResolution() const
+    {
+        const RenderResolutionInterfacePtr & resolution = this->getRenderResolution();
+
+        return resolution;
+    }        
+    //////////////////////////////////////////////////////////////////////////
     const RenderViewportInterfacePtr & Entity::getPickerViewport() const
     {
         const RenderViewportInterfacePtr & viewport = this->getRenderViewport();
@@ -93,6 +100,20 @@ namespace Mengine
         const RenderScissorInterfacePtr & scissor = this->getRenderScissor();
 
         return scissor;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderTransformationInterfacePtr & Entity::getPickerTransformation() const
+    {
+        const RenderTransformationInterfacePtr & transformation = this->getRenderTransformation();
+
+        return transformation;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderTargetInterfacePtr & Entity::getPickerTarget() const
+    {
+        const RenderTargetInterfacePtr & target = this->getRenderTarget();
+
+        return target;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Entity::_activate()

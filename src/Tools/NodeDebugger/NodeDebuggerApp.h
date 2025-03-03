@@ -83,6 +83,12 @@ namespace Mengine
     {
         bool exist;
 
+        String Name;
+        String Type;
+
+        String RelationName;
+        String RelationType;
+
         void serialize( pugi::xml_node & _xmlNode ) const
         {
             MENGINE_UNUSED( _xmlNode );
@@ -91,6 +97,12 @@ namespace Mengine
         void deserialize( const pugi::xml_node & _xmlNode )
         {
             MENGINE_UNUSED( _xmlNode );
+
+            DESERIALIZE_PROP( Name );
+            DESERIALIZE_PROP( Type );
+
+            DESERIALIZE_PROP( RelationName );
+            DESERIALIZE_PROP( RelationType );
         }
     };
 
@@ -699,6 +711,7 @@ namespace Mengine
         void DoUIObjectsLeakTab();
         void DoUINetwork();
         void DoUISettingsTab();
+        void DoUIResolutionsTab();
         String DoIPInput( const String & _title, const String & _inIP );
         void DoNodeElement( DebuggerNode * _node, const Char * _filter, DebuggerNode ** _selectedNode, const String & _tag );
         void DoNodeProperties( DebuggerNode * _node );
@@ -722,6 +735,7 @@ namespace Mengine
         void SendSceneRequest();
         void SendPauseRequest();
         void SendMuteRequest();
+        void SendResolutionRequest( uint32_t _width, uint32_t _height );
         void SendSetting( const String & _setting, const String & _key, const Char * _value );
 
         void ShowResponseDataForId( uint32_t _id );

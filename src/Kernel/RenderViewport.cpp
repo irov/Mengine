@@ -1,5 +1,7 @@
 #include "RenderViewport.h"
 
+#include "Interface/ApplicationInterface.h"
+
 #include "Kernel/AssertionObservable.h"
 #include "Kernel/NotificationHelper.h"
 
@@ -62,26 +64,6 @@ namespace Mengine
         return m_viewport;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderViewport::setGameViewport( const Viewport & _gameViewport )
-    {
-        m_gameViewport = _gameViewport;
-
-        m_gameViewport.calcSize( &m_gameViewportSize );
-        m_gameViewportSizeInv = 1.f / m_gameViewportSize;
-
-        this->invalidateViewport_();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void RenderViewport::setContentResolution( const Resolution & _contentResolution )
-    {
-        m_contentResolution = _contentResolution;
-
-        m_contentResolution.calcSize( &m_contentResolutionSize );
-        m_contentResolutionSizeInv = 1.f / m_contentResolutionSize;
-
-        this->invalidateViewport_();
-    }
-    //////////////////////////////////////////////////////////////////////////
     void RenderViewport::_invalidateWorldMatrix() const
     {
         this->invalidateViewport_();
@@ -91,8 +73,22 @@ namespace Mengine
     {
         m_invalidateViewport = false;
 
-        mt::vec2f viewportMaskBegin = m_gameViewport.begin * m_contentResolutionSizeInv;
-        mt::vec2f viewportMaskEnd = m_gameViewport.end * m_contentResolutionSizeInv;
+        float gameViewportAspect;
+        Viewport gameViewport;
+        APPLICATION_SERVICE()
+            ->getGameViewport( &gameViewportAspect, &gameViewport );
+
+        const Resolution & contentResolution = APPLICATION_SERVICE()
+            ->getContentResolution();
+
+        mt::vec2f contentResolutionSize;
+        contentResolution.calcSize( &contentResolutionSize );
+
+        mt::vec2f contentResolutionSizeInv;
+        contentResolution.calcSizeInv( &contentResolutionSizeInv );
+
+        mt::vec2f viewportMaskBegin = gameViewport.begin * contentResolutionSizeInv;
+        mt::vec2f viewportMaskEnd = gameViewport.end * contentResolutionSizeInv;
 
         mt::vec2f viewportMaskSize = viewportMaskEnd - viewportMaskBegin;
 
@@ -102,13 +98,13 @@ namespace Mengine
         mt::mul_v2_v2_m4( &viewportWM.begin, m_viewport.begin, wm );
         mt::mul_v2_v2_m4( &viewportWM.end, m_viewport.end, wm );
 
-        viewportWM.begin *= m_contentResolutionSizeInv;
-        viewportWM.end *= m_contentResolutionSizeInv;
+        viewportWM.begin *= contentResolutionSizeInv;
+        viewportWM.end *= contentResolutionSizeInv;
 
-        m_viewportWM.begin = (viewportWM.begin - viewportMaskBegin) / viewportMaskSize * m_contentResolutionSize;
-        m_viewportWM.end = (viewportWM.end - viewportMaskBegin) / viewportMaskSize * m_contentResolutionSize;
+        m_viewportWM.begin = (viewportWM.begin - viewportMaskBegin) / viewportMaskSize * contentResolutionSize;
+        m_viewportWM.end = (viewportWM.end - viewportMaskBegin) / viewportMaskSize * contentResolutionSize;
 
-        m_viewportWM.clamp( m_contentResolutionSize );
+        m_viewportWM.clamp( contentResolutionSize );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderViewport::notifyChangeWindowResolution( bool _fullscreen, const Resolution & _resolution )
@@ -119,14 +115,14 @@ namespace Mengine
         this->invalidateViewport_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderViewport::fromScreenToViewportPosition( const mt::vec2f & _screenPosition, mt::vec2f * const _viewportPosition ) const
+    void RenderViewport::fromCameraToContentPosition( const mt::vec2f & _cameraPosition, mt::vec2f * const _contentPosition ) const
     {
         const Viewport & vpwm = this->getViewportWM();
 
         mt::vec2f wpwm_size;
         vpwm.calcSize( &wpwm_size );
 
-        *_viewportPosition = (vpwm.begin + _screenPosition * wpwm_size) * m_contentResolutionSizeInv;
+        *_contentPosition = vpwm.begin + _cameraPosition * wpwm_size;
     }
     //////////////////////////////////////////////////////////////////////////
 }

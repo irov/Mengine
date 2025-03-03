@@ -126,6 +126,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool HotSpotImage::testPoint( const RenderContext * _context, const mt::vec2f & _point ) const
     {
+        const RenderResolutionInterface * resolution = _context->resolution;
         const RenderCameraInterface * camera = _context->camera;
         const RenderViewportInterface * viewport = _context->viewport;
 
@@ -144,13 +145,10 @@ namespace Mengine
 
         const mt::mat4f & vpm_inv = camera->getCameraViewProjectionMatrixInv();
         const Viewport & vp = viewport->getViewportWM();
-        const Resolution & contentResolution = viewport->getContentResolution();
-
-        mt::vec2f contentResolutionSize;
-        contentResolution.calcSize( &contentResolutionSize );
+        
 
         mt::vec2f point_vp;
-        point_vp = _point * contentResolutionSize;
+        resolution->fromScreenToContentPosition( _point, &point_vp );
 
         point_vp -= vp.begin;
 
@@ -185,6 +183,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool HotSpotImage::testRadius( const RenderContext * _context, const mt::vec2f & _point, float _radius ) const
     {
+        const RenderResolutionInterface * resolution = _context->resolution;
         const RenderCameraInterface * camera = _context->camera;
         const RenderViewportInterface * viewport = _context->viewport;
 
@@ -206,13 +205,9 @@ namespace Mengine
 
         const mt::mat4f & vpm_inv = camera->getCameraViewProjectionMatrixInv();
         const Viewport & vp = viewport->getViewportWM();
-        const Resolution & contentResolution = viewport->getContentResolution();
-
-        mt::vec2f contentResolutionSize;
-        contentResolution.calcSize( &contentResolutionSize );
 
         mt::vec2f point_vp;
-        point_vp = _point * contentResolutionSize;
+        resolution->fromScreenToContentPosition( _point, &point_vp );
 
         point_vp -= vp.begin;
 

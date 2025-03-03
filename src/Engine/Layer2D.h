@@ -77,6 +77,7 @@ namespace Mengine
         void _invalidateWorldMatrix() const override;
 
     protected:
+        const RenderResolutionInterfacePtr & getPickerResolution() const override;
         const RenderViewportInterfacePtr & getPickerViewport() const override;
         const RenderCameraInterfacePtr & getPickerCamera() const override;
         const RenderScissorInterfacePtr & getPickerScissor() const override;

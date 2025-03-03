@@ -1,7 +1,5 @@
 #include "MetabufLoaderResourceShape.h"
 
-#include "Engine/ResourceShape.h"
-
 #include "Metacode/Metacode.h"
 
 namespace Mengine

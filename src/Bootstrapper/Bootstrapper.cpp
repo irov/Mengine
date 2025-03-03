@@ -916,7 +916,7 @@ namespace Mengine
         LOGGER_INFO( "bootstrapper", "register base generator..." );
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "EntityEventable" ), ConstString::none(), Helper::makeDefaultPrototypeGenerator<EntityEventable, 128>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addPrototype( ConstString::none(), STRINGIZE_STRING_LOCAL( "EntityEventable" ), Helper::makeDefaultPrototypeGenerator<EntityEventable, 128>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
@@ -928,13 +928,13 @@ namespace Mengine
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "MixerValue" ), ConstString::none(), Helper::makeDefaultPrototypeGenerator<MixerValue, 32>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addPrototype( ConstString::none(), STRINGIZE_STRING_LOCAL( "MixerValue" ), Helper::makeDefaultPrototypeGenerator<MixerValue, 32>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "MixerBoolean" ), ConstString::none(), Helper::makeDefaultPrototypeGenerator<MixerBoolean, 32>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addPrototype( ConstString::none(), STRINGIZE_STRING_LOCAL( "MixerBoolean" ), Helper::makeDefaultPrototypeGenerator<MixerBoolean, 32>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
@@ -947,16 +947,16 @@ namespace Mengine
         LOGGER_INFO( "bootstrapper", "unregister base generator..." );
 
         PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "EntityEventable" ), ConstString::none(), nullptr );
+            ->removePrototype( ConstString::none(), STRINGIZE_STRING_LOCAL( "EntityEventable" ), nullptr );
 
         PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), STRINGIZE_STRING_LOCAL( "MT19937Randomizer" ), nullptr );
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), MT19937Randomizer::getFactorableType(), nullptr );
 
         PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "MixerValue" ), ConstString::none(), nullptr );
+            ->removePrototype( ConstString::none(), STRINGIZE_STRING_LOCAL( "MixerValue" ), nullptr );
 
         PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "MixerBoolean" ), ConstString::none(), nullptr );
+            ->removePrototype( ConstString::none(), STRINGIZE_STRING_LOCAL( "MixerBoolean" ), nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
 #define MENGINE_ADD_FRAMEWORK( Name, Info, Doc )\

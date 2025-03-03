@@ -35,14 +35,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool CameraDebugGizmoPlugin::_initializePlugin()
     {
-        this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleCameraDebugGizmo" ), Helper::makeModuleFactory<ModuleCameraDebugGizmo>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+        this->addModuleFactory( ModuleCameraDebugGizmo::getFactorableType(), Helper::makeModuleFactory<ModuleCameraDebugGizmo>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void CameraDebugGizmoPlugin::_finalizePlugin()
     {
-        this->removeModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleCameraDebugGizmo" ) );
+        this->removeModuleFactory( ModuleCameraDebugGizmo::getFactorableType() );
     }
     //////////////////////////////////////////////////////////////////////////
 }

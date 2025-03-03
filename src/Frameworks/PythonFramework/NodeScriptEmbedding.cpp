@@ -705,20 +705,12 @@ namespace Mengine
             .def( "setFixedViewport", &RenderViewport::setFixedViewport )
             .def( "getFixedViewport", &RenderViewport::getFixedViewport )
             .def( "setViewport", &RenderViewport::setViewport )
-            .def( "getViewport", &RenderViewport::getViewport )
-            .def( "setGameViewport", &RenderViewport::setGameViewport )
-            .def( "getGameViewport", &RenderViewport::getGameViewport )
-            .def( "setContentResolution", &RenderViewport::setContentResolution )
-            .def( "getContentResolution", &RenderViewport::getContentResolution )            
+            .def( "getViewport", &RenderViewport::getViewport )         
             ;
 
         pybind::interface_<RenderScissor, pybind::bases<Node, RenderScissorInterface>>( _kernel, "RenderScissor", false )
             .def( "setScissorViewport", &RenderScissor::setScissorViewport )
             .def( "getScissorViewport", &RenderScissor::getScissorViewport )
-            .def( "setGameViewport", &RenderScissor::setGameViewport )
-            .def( "getGameViewport", &RenderScissor::getGameViewport )
-            .def( "setContentResolution", &RenderScissor::setContentResolution )
-            .def( "getContentResolution", &RenderScissor::getContentResolution )
             ;
 
         pybind::interface_<RenderCameraOrthogonal, pybind::bases<Node, RenderCameraInterface>>( _kernel, "RenderCameraOrthogonal", false )
@@ -1072,10 +1064,10 @@ namespace Mengine
                 ;
         }
 
-        Helper::registerScriptWrappingEx<Node>( _kernel, STRINGIZE_STRING_LOCAL( "Node" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrappingEx<Layer>( _kernel, STRINGIZE_STRING_LOCAL( "Layer" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrappingEx<HotSpot>( _kernel, STRINGIZE_STRING_LOCAL( "HotSpot" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrappingEx<Surface>( _kernel, STRINGIZE_STRING_LOCAL( "Surface" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrappingEx<Node>( _kernel, Node::getFactorableType(), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrappingEx<Layer>( _kernel, Layer::getFactorableType(), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrappingEx<HotSpot>( _kernel, HotSpot::getFactorableType(), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrappingEx<Surface>( _kernel, Surface::getFactorableType(), MENGINE_DOCUMENT_FACTORABLE );
 
 #define SCRIPT_CLASS_WRAPPING( Class )\
     Helper::registerScriptWrapping<Class>(_kernel, MENGINE_DOCUMENT_FACTORABLE)
@@ -1134,11 +1126,11 @@ namespace Mengine
     {
         MENGINE_UNUSED( _kernel );
 
-        Helper::unregisterScriptWrappingEx( STRINGIZE_STRING_LOCAL( "Node" ) );
-        Helper::unregisterScriptWrappingEx( STRINGIZE_STRING_LOCAL( "Resource" ) );
-        Helper::unregisterScriptWrappingEx( STRINGIZE_STRING_LOCAL( "Layer" ) );
-        Helper::unregisterScriptWrappingEx( STRINGIZE_STRING_LOCAL( "HotSpot" ) );
-        Helper::unregisterScriptWrappingEx( STRINGIZE_STRING_LOCAL( "Surface" ) );
+        Helper::unregisterScriptWrappingEx( Node::getFactorableType() );
+        Helper::unregisterScriptWrappingEx( Resource::getFactorableType() );
+        Helper::unregisterScriptWrappingEx( Layer::getFactorableType() );
+        Helper::unregisterScriptWrappingEx( HotSpot::getFactorableType() );
+        Helper::unregisterScriptWrappingEx( Surface::getFactorableType() );
 
 #define UNSCRIPT_CLASS_WRAPPING( Class )\
     Helper::unregisterScriptWrapping<Class>()

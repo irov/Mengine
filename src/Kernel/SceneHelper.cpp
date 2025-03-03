@@ -13,13 +13,13 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         ScenePtr makeScene( const SceneEventReceiverInterfacePtr & _eventReceiver, const DocumentInterfacePtr & _doc )
         {
-            ScenePtr scene = Helper::generatePrototype( Scene::getFactorableType(), ConstString::none(), _doc );
+            ScenePtr scene = Helper::generatePrototype<Scene>( ConstString::none(), _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( scene, "invalid create scene (doc %s)"
                 , MENGINE_DOCUMENT_STR( _doc )
             );
 
-            EntityEventablePtr eventable = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "EntityEventable" ), ConstString::none(), _doc );
+            EntityEventablePtr eventable = Helper::generatePrototype<EntityEventable>( ConstString::none(), _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( eventable, "invalid create eventable (doc %s)"
                 , MENGINE_DOCUMENT_STR( _doc )

@@ -2,8 +2,6 @@
 
 #include "Interface/CodecServiceInterface.h"
 
-#include "Kernel/ResourceImageDefault.h"
-
 #include "Metacode/Metacode.h"
 
 namespace Mengine

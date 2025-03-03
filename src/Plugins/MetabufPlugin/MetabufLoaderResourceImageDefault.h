@@ -2,6 +2,8 @@
 
 #include "Interface/MetabufLoaderInterface.h"
 
+#include "Kernel/ResourceImageDefault.h"
+
 #include "Kernel/Factorable.h"
 
 namespace Mengine

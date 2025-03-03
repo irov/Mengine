@@ -29,6 +29,7 @@
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/VocabularyHelper.h"
 #include "Kernel/PluginHelper.h"
+#include "Kernel/PrototypeHelper.h"
 
 #ifndef MENGINE_PLUGIN_JSON_SEED
 #define MENGINE_PLUGIN_JSON_SEED 1
@@ -89,18 +90,17 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
         {
             SCRIPT_SERVICE()
-                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "JSONScriptEmbedding" ), Helper::makeFactorableUnique<JSONScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
+                ->addScriptEmbedding( JSONScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<JSONScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
         }, MENGINE_DOCUMENT_FACTORABLE );
 
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
         {
             SCRIPT_SERVICE()
-                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "JSONScriptEmbedding" ) );
+                ->removeScriptEmbedding( JSONScriptEmbedding::getFactorableType() );
         }, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
-        if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceJSON" ), Helper::makeFactorableUnique<ResourcePrototypeGenerator<ResourceJSON, 64>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        if( Helper::addResourcePrototype<ResourceJSON, 64>( MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
@@ -113,28 +113,28 @@ namespace Mengine
 
         PLUGIN_SERVICE_WAIT( LoaderServiceInterface, [this]()
         {
-            VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), STRINGIZE_STRING_LOCAL( "ResourceJSON" ), Helper::makeFactorableUnique<MetabufLoaderResourceJSON>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+            VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceJSON::getFactorableType(), Helper::makeFactorableUnique<MetabufLoaderResourceJSON>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
             return true;
         } );
 
         PLUGIN_SERVICE_LEAVE( LoaderServiceInterface, []()
         {
-            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), STRINGIZE_STRING_LOCAL( "ResourceJSON" ) );
+            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceJSON::getFactorableType() );
         } );
 
         PLUGIN_SERVICE_WAIT( ResourcePrefetcherServiceInterface, [this]()
         {
             ResourcePrefetcherInterfacePtr resourcePrefetcherDefault = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "ResourcePrefetcherType" ), STRINGIZE_STRING_LOCAL( "Default" ) );
 
-            VOCABULARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ResourceJSON" ), resourcePrefetcherDefault, MENGINE_DOCUMENT_FACTORABLE );
+            VOCABULARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), ResourceJSON::getFactorableType(), resourcePrefetcherDefault, MENGINE_DOCUMENT_FACTORABLE );
 
             return true;
         } );
 
         PLUGIN_SERVICE_LEAVE( ResourcePrefetcherServiceInterface, []()
         {
-            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ResourceJSON" ) );
+            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), ResourceJSON::getFactorableType() );
         } );
 
         if( PROTOTYPE_SERVICE()
@@ -158,8 +158,7 @@ namespace Mengine
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Config" ), STRINGIZE_STRING_LOCAL( "json" ), nullptr );
 
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceJSON" ), nullptr );
+        Helper::removeResourcePrototype<ResourceJSON>();
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Setting" ), STRINGIZE_STRING_LOCAL( "json" ), nullptr );

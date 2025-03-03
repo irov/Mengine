@@ -10,6 +10,8 @@ namespace Mengine
         : public ScriptEmbeddingInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( OzzScriptEmbedding );
+
     public:
         OzzScriptEmbedding();
         ~OzzScriptEmbedding() override;

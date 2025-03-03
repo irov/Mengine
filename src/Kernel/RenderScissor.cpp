@@ -1,5 +1,7 @@
 #include "RenderScissor.h"
 
+#include "Interface/ApplicationInterface.h"
+
 #include "Kernel/AssertionObservable.h"
 #include "Kernel/NotificationHelper.h"
 
@@ -51,23 +53,6 @@ namespace Mengine
         return m_viewport;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderScissor::setGameViewport( const Viewport & _viewport )
-    {
-        m_gameViewport = _viewport;
-
-        this->invalidateViewport_();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void RenderScissor::setContentResolution( const Resolution & _resolution )
-    {
-        m_contentResolution = _resolution;
-
-        m_contentResolution.calcSize( &m_contentResolutionSize );
-        m_contentResolutionSizeInv = 1.f / m_contentResolutionSize;
-
-        this->invalidateViewport_();
-    }
-    //////////////////////////////////////////////////////////////////////////
     void RenderScissor::_invalidateWorldMatrix() const
     {
         this->invalidateViewport_();
@@ -77,8 +62,22 @@ namespace Mengine
     {
         m_invalidateViewport = false;
 
-        mt::vec2f viewportMaskBegin = m_gameViewport.begin * m_contentResolutionSizeInv;
-        mt::vec2f viewportMaskEnd = m_gameViewport.end * m_contentResolutionSizeInv;
+        float gameViewportAspect;
+        Viewport gameViewport;
+        APPLICATION_SERVICE()
+            ->getGameViewport( &gameViewportAspect, &gameViewport );
+
+        const Resolution & contentResolution = APPLICATION_SERVICE()
+            ->getContentResolution();
+
+        mt::vec2f contentResolutionSize;
+        contentResolution.calcSize( &contentResolutionSize );
+
+        mt::vec2f contentResolutionSizeInv;
+        contentResolution.calcSizeInv( &contentResolutionSizeInv );
+
+        mt::vec2f viewportMaskBegin = gameViewport.begin * contentResolutionSizeInv;
+        mt::vec2f viewportMaskEnd = gameViewport.end * contentResolutionSizeInv;
 
         mt::vec2f viewportMaskSize = viewportMaskEnd - viewportMaskBegin;
 
@@ -88,13 +87,13 @@ namespace Mengine
         mt::mul_v2_v2_m4( &viewportWM.begin, m_viewport.begin, wm );
         mt::mul_v2_v2_m4( &viewportWM.end, m_viewport.end, wm );
 
-        viewportWM.begin *= m_contentResolutionSizeInv;
-        viewportWM.end *= m_contentResolutionSizeInv;
+        viewportWM.begin *= contentResolutionSizeInv;
+        viewportWM.end *= contentResolutionSizeInv;
 
-        m_viewportWM.begin = (viewportWM.begin - viewportMaskBegin) / viewportMaskSize * m_contentResolutionSize;
-        m_viewportWM.end = (viewportWM.end - viewportMaskBegin) / viewportMaskSize * m_contentResolutionSize;
+        m_viewportWM.begin = (viewportWM.begin - viewportMaskBegin) / viewportMaskSize * contentResolutionSize;
+        m_viewportWM.end = (viewportWM.end - viewportMaskBegin) / viewportMaskSize * contentResolutionSize;
 
-        m_viewportWM.clamp( m_contentResolutionSize );
+        m_viewportWM.clamp( contentResolutionSize );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderScissor::notifyChangeWindowResolution( bool _fullscreen, const Resolution & _resolution )

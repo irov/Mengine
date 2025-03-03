@@ -9,6 +9,7 @@ namespace Mengine
         : public Node
     {
         DECLARE_VISITABLE( Node );
+        DECLARE_FACTORABLE( Layer );
 
     public:
         Layer();

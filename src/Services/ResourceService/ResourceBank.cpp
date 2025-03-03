@@ -155,9 +155,11 @@ namespace Mengine
             , (_cook.keep == true ? "true" : "false")
         );
 
-        const ConstString & factorableType = Resource::getFactorableType();
+        const ConstString & categoryType = Resource::getFactorableType();
+        const ConstString & factorableType = _cook.type;
 
-        ResourcePtr resource = Helper::generatePrototype( factorableType, _cook.type, _doc );
+        ResourcePtr resource = PROTOTYPE_SERVICE()
+            ->generatePrototype( categoryType, factorableType, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC_SAFE( resource, nullptr, "invalid generate resource name '%s' type '%s' group '%s' doc '%s'"
             , _cook.name.c_str()

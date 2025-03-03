@@ -111,7 +111,7 @@ namespace Mengine
     {
         if( m_renderCamera == nullptr )
         {
-            RenderCameraOrthogonalPtr renderCamera = Helper::generateFactorable<Node, RenderCameraOrthogonal>( MENGINE_DOCUMENT_FACTORABLE );
+            RenderCameraOrthogonalPtr renderCamera = Helper::generateNodeFactorable<RenderCameraOrthogonal>( MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( renderCamera, "name '%s' invalid create RenderCameraOrthogonal"
                 , this->getName().c_str()
@@ -128,7 +128,7 @@ namespace Mengine
 
         if( m_renderViewport == nullptr )
         {
-            RenderViewportPtr renderViewport = Helper::generateFactorable<Node, RenderViewport>( MENGINE_DOCUMENT_FACTORABLE );
+            RenderViewportPtr renderViewport = Helper::generateNodeFactorable<RenderViewport>( MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( renderViewport, "name '%s' invalid create RenderViewport"
                 , this->getName().c_str()
@@ -137,18 +137,6 @@ namespace Mengine
             const ConstString & name = this->getName();
 
             renderViewport->setName( name );
-
-            const Resolution & resolution = APPLICATION_SERVICE()
-                ->getContentResolution();
-
-            renderViewport->setContentResolution( resolution );
-
-            float gameViewportAspect;
-            Viewport gameViewport;
-            APPLICATION_SERVICE()
-                ->getGameViewport( &gameViewportAspect, &gameViewport );
-
-            renderViewport->setGameViewport( gameViewport );
 
             this->addChild( renderViewport );
 
@@ -361,6 +349,13 @@ namespace Mengine
     void Layer2D::_invalidateWorldMatrix() const
     {
         m_invalidateVerticesImageMaskWM = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderResolutionInterfacePtr & Layer2D::getPickerResolution() const
+    {
+        const RenderResolutionInterfacePtr & resolution = this->getRenderResolution();
+
+        return resolution;
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderViewportInterfacePtr & Layer2D::getPickerViewport() const

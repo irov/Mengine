@@ -56,6 +56,17 @@ namespace Mengine
                 desc.context.target = nullptr;
                 desc.context.transformation = nullptr;
 
+                const RenderResolutionInterfacePtr & pickerResolution = _picker->getPickerResolution();
+
+                if( pickerResolution != nullptr )
+                {
+                    desc.context.resolution = pickerResolution.get();
+                }
+                else
+                {
+                    desc.context.resolution = _context.resolution;
+                }
+
                 const RenderViewportInterfacePtr & pickerViewport = _picker->getPickerViewport();
 
                 if( pickerViewport != nullptr )
@@ -195,6 +206,18 @@ namespace Mengine
         }
 
         m_scene = _scene;
+
+        this->invalidateTraps();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PickerService::setRenderResolution( const RenderResolutionInterfacePtr & _resolution )
+    {
+        if( m_resolution == _resolution )
+        {
+            return;
+        }
+
+        m_resolution = _resolution;
 
         this->invalidateTraps();
     }
@@ -859,6 +882,7 @@ namespace Mengine
         RenderContext context;
         Helper::clearRenderContext( &context );
 
+        context.resolution = m_resolution.get();
         context.viewport = m_viewport.get();
         context.camera = m_camera.get();
         context.scissor = m_scissor.get();

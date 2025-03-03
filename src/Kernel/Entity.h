@@ -46,9 +46,12 @@ namespace Mengine
         const EventationInterface * getEventation() const override;
 
     protected:
+        const RenderResolutionInterfacePtr & getPickerResolution() const override;
         const RenderViewportInterfacePtr & getPickerViewport() const override;
         const RenderCameraInterfacePtr & getPickerCamera() const override;
         const RenderScissorInterfacePtr & getPickerScissor() const override;
+        const RenderTransformationInterfacePtr & getPickerTransformation() const override;
+        const RenderTargetInterfacePtr & getPickerTarget() const override;
 
     public:
         bool create();

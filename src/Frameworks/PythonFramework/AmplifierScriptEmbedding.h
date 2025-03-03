@@ -10,6 +10,8 @@ namespace Mengine
         : public ScriptEmbeddingInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( AmplifierScriptEmbedding );
+
     public:
         AmplifierScriptEmbedding();
         ~AmplifierScriptEmbedding() override;

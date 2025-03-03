@@ -177,6 +177,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( _context->camera, "invalid camera nullptr" );
         MENGINE_ASSERTION_MEMORY_PANIC( _context->viewport, "invalid viewport nullptr" );
 
+        const RenderResolutionInterface * resolution = _context->resolution;
         const RenderCameraInterface * camera = _context->camera;
         const RenderViewportInterface * viewport = _context->viewport;
 
@@ -210,8 +211,11 @@ namespace Mengine
             v_wvpn.x = (1.f + v_wvp.x) * 0.5f;
             v_wvpn.y = (1.f - v_wvp.y) * 0.5f;
 
+            mt::vec2f v_content;
+            viewport->fromCameraToContentPosition( v_wvpn, &v_content );
+
             mt::vec2f v_screen;
-            viewport->fromScreenToViewportPosition( v_wvpn, &v_screen );
+            resolution->fromContentToScreenPosition( v_content, &v_screen );
 
             if( _bb != nullptr )
             {

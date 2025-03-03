@@ -57,12 +57,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::_initializeService()
     {
-        m_muted = Helper::generatePrototype( MixerBoolean::getFactorableType(), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+        m_muted = PROTOTYPE_SERVICE()
+            ->generatePrototype( ConstString::none(), MixerBoolean::getFactorableType(), MENGINE_DOCUMENT_FACTORABLE );
 
-        m_commonVolume = Helper::generatePrototype( MixerValue::getFactorableType(), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
-        m_soundVolume = Helper::generatePrototype( MixerValue::getFactorableType(), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
-        m_musicVolume = Helper::generatePrototype( MixerValue::getFactorableType(), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
-        m_voiceVolume = Helper::generatePrototype( MixerValue::getFactorableType(), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+        m_commonVolume = PROTOTYPE_SERVICE()
+            ->generatePrototype( ConstString::none(), MixerValue::getFactorableType(), MENGINE_DOCUMENT_FACTORABLE );
+
+        m_soundVolume = PROTOTYPE_SERVICE()
+            ->generatePrototype( ConstString::none(), MixerValue::getFactorableType(), MENGINE_DOCUMENT_FACTORABLE );
+
+        m_musicVolume = PROTOTYPE_SERVICE()
+            ->generatePrototype( ConstString::none(), MixerValue::getFactorableType(), MENGINE_DOCUMENT_FACTORABLE );
+
+        m_voiceVolume = PROTOTYPE_SERVICE()
+            ->generatePrototype( ConstString::none(), MixerValue::getFactorableType(), MENGINE_DOCUMENT_FACTORABLE );
 
         m_supportStream = THREAD_SERVICE()
             ->isAvailableService();

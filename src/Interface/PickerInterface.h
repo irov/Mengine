@@ -19,8 +19,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class Pickerable;
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class ArrowInterface> ArrowInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
     class PickerInterface
         : public Mixin
     {
@@ -73,6 +71,7 @@ namespace Mengine
         virtual PickerInputHandlerInterface * getPickerInputHandler() = 0;
 
     public:
+        virtual const RenderResolutionInterfacePtr & getPickerResolution() const = 0;
         virtual const RenderViewportInterfacePtr & getPickerViewport() const = 0;
         virtual const RenderCameraInterfacePtr & getPickerCamera() const = 0;
         virtual const RenderScissorInterfacePtr & getPickerScissor() const = 0;

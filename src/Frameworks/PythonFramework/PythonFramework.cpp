@@ -37,73 +37,73 @@ namespace Mengine
     bool PythonFramework::_initializeFramework()
     {
         if( SCRIPT_SERVICE()
-            ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "ConstsScriptEmbedding" ), Helper::makeFactorableUnique<ConstsScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addScriptEmbedding( ConstsScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<ConstsScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
 
         if( SCRIPT_SERVICE()
-            ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "MathScriptEmbedding" ), Helper::makeFactorableUnique<MathScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addScriptEmbedding( MathScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<MathScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
 
         if( SCRIPT_SERVICE()
-            ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "HelperScriptEmbedding" ), Helper::makeFactorableUnique<HelperScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addScriptEmbedding( HelperScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<HelperScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
 
         if( SCRIPT_SERVICE()
-            ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "KernelScriptEmbedding" ), Helper::makeFactorableUnique<KernelScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addScriptEmbedding( KernelScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<KernelScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
 
         if( SCRIPT_SERVICE()
-            ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "HttpScriptEmbedding" ), Helper::makeFactorableUnique<HttpScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addScriptEmbedding( HttpScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<HttpScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
 
         if( SCRIPT_SERVICE()
-            ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "EnvironmentScriptEmbedding" ), Helper::makeFactorableUnique<EnvironmentScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addScriptEmbedding( EnvironmentScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<EnvironmentScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
 
         if( SCRIPT_SERVICE()
-            ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "NodeScriptEmbedding" ), Helper::makeFactorableUnique<NodeScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addScriptEmbedding( NodeScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<NodeScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
 
         if( SCRIPT_SERVICE()
-            ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "ResourceScriptEmbedding" ), Helper::makeFactorableUnique<ResourceScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addScriptEmbedding( ResourceScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<ResourceScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
 
         if( SCRIPT_SERVICE()
-            ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "EntityScriptEmbedding" ), Helper::makeFactorableUnique<EntityScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addScriptEmbedding( EntityScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<EntityScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
 
         if( SCRIPT_SERVICE()
-            ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "SoundScriptEmbedding" ), Helper::makeFactorableUnique<SoundScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addScriptEmbedding( SoundScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<SoundScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
         
         if( SCRIPT_SERVICE()
-            ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "AmplifierScriptEmbedding" ), Helper::makeFactorableUnique<AmplifierScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addScriptEmbedding( AmplifierScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<AmplifierScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
 
         if( SCRIPT_SERVICE()
-            ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "EngineScriptEmbedding" ), Helper::makeFactorableUnique<EngineScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addScriptEmbedding( EngineScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<EngineScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
@@ -125,40 +125,40 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ENGINE_STOP_SERVICES );
 
         SCRIPT_SERVICE()
-            ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "ConstsScriptEmbedding" ) );
+            ->removeScriptEmbedding( ConstsScriptEmbedding::getFactorableType() );
 
         SCRIPT_SERVICE()
-            ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "MathScriptEmbedding" ) );
+            ->removeScriptEmbedding( MathScriptEmbedding::getFactorableType() );
 
         SCRIPT_SERVICE()
-            ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "HelperScriptEmbedding" ) );
+            ->removeScriptEmbedding( HelperScriptEmbedding::getFactorableType() );
 
         SCRIPT_SERVICE()
-            ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "KernelScriptEmbedding" ) );
+            ->removeScriptEmbedding( KernelScriptEmbedding::getFactorableType() );
 
         SCRIPT_SERVICE()
-            ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "HttpScriptEmbedding" ) );
+            ->removeScriptEmbedding( HttpScriptEmbedding::getFactorableType() );
 
         SCRIPT_SERVICE()
-            ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "EnvironmentScriptEmbedding" ) );
+            ->removeScriptEmbedding( EnvironmentScriptEmbedding::getFactorableType() );
 
         SCRIPT_SERVICE()
-            ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "NodeScriptEmbedding" ) );
+            ->removeScriptEmbedding( NodeScriptEmbedding::getFactorableType() );
 
         SCRIPT_SERVICE()
-            ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "ResourceScriptEmbedding" ) );        
+            ->removeScriptEmbedding( ResourceScriptEmbedding::getFactorableType() );
 
         SCRIPT_SERVICE()
-            ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "EntityScriptEmbedding" ) );
+            ->removeScriptEmbedding( EntityScriptEmbedding::getFactorableType() );
 
         SCRIPT_SERVICE()
-            ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "SoundScriptEmbedding" ) );
+            ->removeScriptEmbedding( SoundScriptEmbedding::getFactorableType() );
 
         SCRIPT_SERVICE()
-            ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "AmplifierScriptEmbedding" ) );
+            ->removeScriptEmbedding( AmplifierScriptEmbedding::getFactorableType() );
 
         SCRIPT_SERVICE()
-            ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "EngineScriptEmbedding" ) );
+            ->removeScriptEmbedding( EngineScriptEmbedding::getFactorableType() );
     }
     //////////////////////////////////////////////////////////////////////////
     bool PythonFramework::_runFramework()
@@ -177,13 +177,13 @@ namespace Mengine
     void PythonFramework::notifyBootstrapperInitializeGame()
     {
         SCRIPT_SERVICE()
-            ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "GameScriptEmbedding" ), Helper::makeFactorableUnique<GameScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
+            ->addScriptEmbedding( GameScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<GameScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonFramework::notifyBootstrapperFinalizeGame()
     {
         SCRIPT_SERVICE()
-            ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "GameScriptEmbedding" ) );
+            ->removeScriptEmbedding( GameScriptEmbedding::getFactorableType() );
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonFramework::notifyEngineStopServices()

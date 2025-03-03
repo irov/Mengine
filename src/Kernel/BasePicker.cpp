@@ -148,6 +148,11 @@ namespace Mengine
         m_pickerExclusive = _exclusive;
     }
     //////////////////////////////////////////////////////////////////////////
+    const RenderResolutionInterfacePtr & BasePicker::getPickerResolution() const
+    {
+        return RenderResolutionInterfacePtr::none();
+    }
+    //////////////////////////////////////////////////////////////////////////
     const RenderViewportInterfacePtr & BasePicker::getPickerViewport() const
     {
         return RenderViewportInterfacePtr::none();

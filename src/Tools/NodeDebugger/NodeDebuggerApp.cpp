@@ -195,6 +195,22 @@ namespace Mengine
             this->DoUISceneDebuggerTab();
         }} );
         m_tabs.push_back( {
+            "resolutions",
+            "Resolutions",
+            true,
+            [this]()
+        {
+            this->DoUIResolutionsTab();
+        }} );
+        m_tabs.push_back( {
+            "settings",
+            "Settings",
+            true,
+            [this]()
+        {
+            this->DoUISettingsTab();
+        }} );
+        m_tabs.push_back( {
             "memory",
             "Memory",
             true,
@@ -217,14 +233,6 @@ namespace Mengine
             [this]()
         {
             this->DoUINetwork();
-        }} );
-        m_tabs.push_back( {
-            "settings",
-            "Settings",
-            true,
-            [this]()
-        {
-            this->DoUISettingsTab();
         }} );
 
         // if requested to auto-connect, then do so
@@ -1307,14 +1315,14 @@ namespace Mengine
 
         if( ImGui::CollapsingHeader( "Game controls:" ) )
         {
-            ImGui::PushItemFlag( ImGuiItemFlags_ReadOnly, m_updateSceneOnChange );
+            ImGui::BeginDisabled( m_updateSceneOnChange );
             int hz = m_sceneUpdateFreq;
             if( ImGui::InputInt( "Update freq (hz):", &hz ) )
             {
                 m_sceneUpdateFreq = std::clamp( hz, 0, 30 );
                 m_sceneUpdateTimer = 0.0;
             }
-            ImGui::PopItemFlag();
+            ImGui::EndDisabled();
 
             if( ImGui::Checkbox( "Update scene on change", &m_updateSceneOnChange ) )
             {
@@ -1571,8 +1579,8 @@ namespace Mengine
                         , leak.function.c_str()
                     );
 
-                    char label_text[16];
-                    sprintf( label_text, "##text_%u"
+                    char label_text[32 + 1];
+                    MENGINE_SNPRINTF( label_text, 32, "##text_%u"
                         , index
                     );
 
@@ -1585,8 +1593,8 @@ namespace Mengine
 
                     ImGui::PushStyleColor( ImGuiCol_Text, ImVec4( 0.f, 0.f, 1.f, 1.f ) );
 
-                    char label_parent_node[32];
-                    sprintf( label_parent_node, "##tree_parent_node_%u"
+                    char label_parent_node[32 + 1];
+                    MENGINE_SNPRINTF( label_parent_node, 32, "##tree_parent_node_%u"
                         , index
                     );
 
@@ -1973,7 +1981,7 @@ namespace Mengine
                 ImGui::Text( "%s", key.name.c_str() );
                 ImGui::SameLine( 100.f );
 
-                Char key_lable[256] = {'\0'};
+                Char key_lable[256 + 1] = {'\0'};
                 MENGINE_SNPRINTF( key_lable, 256, "##%s", key.name.c_str() );
 
                 switch( type )
@@ -2074,6 +2082,146 @@ namespace Mengine
                 }
             }
         }
+
+        ImGui::EndColumns();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::DoUIResolutionsTab()
+    {
+        ImGui::Columns( 2, nullptr, true );
+        //ImGui::SetColumnWidth( 0, leftPanelWidth );
+
+        struct ResolutionDesc
+        {
+            char label[256];
+            uint32_t width;
+            uint32_t height;
+            float aspect;
+        };
+
+        ResolutionDesc resolutions_iPhone[] =
+        {
+            {"iPhone SE (1st Gen) 640x1136 [16:9]", 640, 1136, 640.f / 1136.f},
+            {"iPhone 6/7/8 750x1334 [16:9]", 750, 1334, 750.f / 1334.f},
+            {"iPhone 6+/7+/8+ 1080x1920 [16:9]", 1080, 1920, 1080.f / 1920.f},
+            {"iPhone X/XS/11 Pro 1125x2436 [19.5:9]", 1125, 2436, 1125.f / 2436.f},
+            {"iPhone XR/11 828x1792 [19.5:9]", 828, 1792, 828.f / 1792.f},
+            {"iPhone XS Max/11 Pro Max 1242x2688 [19.5:9]", 1242, 2688, 1242.f / 2688.f},
+            {"iPhone 12 mini 1080x2340 [19.5:9]", 1080, 2340, 1080.f / 2340.f},
+            {"iPhone 12/12 Pro 1170x2532 [19.5:9]", 1170, 2532, 1170.f / 2532.f},
+            {"iPhone 12 Pro Max 1284x2778 [19.5:9]", 1284, 2778, 1284.f / 2778.f},
+            {"iPhone 13 mini 1080x2340 [19.5:9]", 1080, 2340, 1080.f / 2340.f},
+            {"iPhone 13/13 Pro 1170x2532 [19.5:9]", 1170, 2532, 1170.f / 2532.f},
+            {"iPhone 13 Pro Max 1284x2778 [19.5:9]", 1284, 2778, 1284.f / 2778.f},
+            {"iPhone 14/14 Pro 1179x2556 [19.5:9]", 1179, 2556, 1179.f / 2556.f},
+            {"iPhone 14 Plus 1284x2778 [19.5:9]", 1284, 2778, 1284.f / 2778.f},
+            {"iPhone 14 Pro Max 1290x2796 [19.5:9]", 1290, 2796, 1290.f / 2796.f},
+            {"iPhone 15/15 Pro 1179x2556 [19.5:9]", 1179, 2556, 1179.f / 2556.f},
+            {"iPhone 15 Plus 1290x2796 [19.5:9]", 1290, 2796, 1290.f / 2796.f},
+            {"iPhone 15 Pro Max 1290x2796 [19.5:9]", 1290, 2796, 1290.f / 2796.f},
+            {"iPhone 16 1179x2556 [~19.5:9]", 1179, 2556, 1179.f / 2556.f},
+            {"iPhone 16 Plus 1290x2796 [~19.5:9]", 1290, 2796, 1290.f / 2796.f},
+            {"iPhone 16 Pro 1206x2622 [~19.5:9]", 1206, 2622, 1206.f / 2622.f},
+            {"iPhone 16 Pro Max 1320x2868 [~19.5:9]", 1320, 2868, 1320.f / 2868.f},
+        };
+
+        ResolutionDesc resolutions_iPad[] =
+        {
+            {"iPad (1st-4th Gen) 1024x768 [4:3]", 1024, 768, 1024.f / 768.f},
+            {"iPad Air (1st Gen) 2048x1536 [4:3]", 2048, 1536, 2048.f / 1536.f},
+            {"iPad Air 2 2048x1536 [4:3]", 2048, 1536, 2048.f / 1536.f},
+            {"iPad Pro 9.7\" 2048x1536 [4:3]", 2048, 1536, 2048.f / 1536.f},
+            {"iPad Pro 10.5\" 2224x1668 [4:3]", 2224, 1668, 2224.f / 1668.f},
+            {"iPad Pro 11\" (1st Gen) 2388x1668 [4:3]", 2388, 1668, 2388.f / 1668.f},
+            {"iPad Pro 11\" (2nd-4th Gen) 2388x1668 [4:3]", 2388, 1668, 2388.f / 1668.f},
+            {"iPad Pro 12.9\" (1st Gen) 2732x2048 [4:3]", 2732, 2048, 2732.f / 2048.f},
+            {"iPad Pro 12.9\" (2nd-6th Gen) 2732x2048 [4:3]", 2732, 2048, 2732.f / 2048.f},
+            {"iPad Mini (1st Gen) 1024x768 [4:3]", 1024, 768, 1024.f / 768.f},
+            {"iPad Mini (2nd-5th Gen) 2048x1536 [4:3]", 2048, 1536, 2048.f / 1536.f},
+            {"iPad Mini (6th Gen) 2266x1488 [4:3]", 2266, 1488, 2266.f / 1488.f},
+            {"iPad (5th-9th Gen) 2048x1536 [4:3]", 2048, 1536, 2048.f / 1536.f},
+            {"iPad (10th Gen) 2360x1640 [4:3]", 2360, 1640, 2360.f / 1640.f},
+            {"iPad Pro 11\" (2022) 2388x1668 [~4:3]", 2388, 1668, 2388.f / 1668.f},
+        };
+
+        static const ResolutionDesc * select_resolution = nullptr;
+        static const ResolutionDesc * apply_resolution = nullptr;
+
+        if( ImGui::CollapsingHeader( "Resolutions:", ImGuiTreeNodeFlags_DefaultOpen ) )
+        {
+            if( ImGui::BeginChild( "ResoulutionTree", ImVec2( 0, 0 ), false, ImGuiWindowFlags_HorizontalScrollbar ) )
+            {
+                ImGui::TextDisabled( "iOS:" );
+
+                for( const ResolutionDesc & res : resolutions_iPhone )
+                {
+                    if( apply_resolution == &res )
+                    {
+                        ImGui::PushStyleColor( ImGuiCol_Header, ImVec4( 1.0f, 0.5f, 0.0f, 1.0f ) );
+                        ImGui::PushStyleColor( ImGuiCol_HeaderHovered, ImVec4( 1.0f, 0.7f, 0.3f, 1.0f ) );
+                        ImGui::PushStyleColor( ImGuiCol_HeaderActive, ImVec4( 1.0f, 0.3f, 0.0f, 1.0f ) );
+                    }
+
+                    if( ImGui::Selectable( res.label, select_resolution == &res || apply_resolution == &res ) == true )
+                    {
+                        select_resolution = &res;
+                    }
+
+                    if( apply_resolution == &res )
+                    {
+                        ImGui::PopStyleColor( 3 );
+                    }
+                }
+
+                ImGui::Spacing();
+
+                ImGui::TextDisabled( "Android:" );
+
+                for( const ResolutionDesc & res : resolutions_iPad )
+                {
+                    if( apply_resolution == &res )
+                    {
+                        ImGui::PushStyleColor( ImGuiCol_Header, ImVec4( 1.0f, 0.5f, 0.0f, 1.0f ) );
+                        ImGui::PushStyleColor( ImGuiCol_HeaderHovered, ImVec4( 1.0f, 0.7f, 0.3f, 1.0f ) );
+                        ImGui::PushStyleColor( ImGuiCol_HeaderActive, ImVec4( 1.0f, 0.3f, 0.0f, 1.0f ) );
+                    }
+
+                    if( ImGui::Selectable( res.label, select_resolution == &res || apply_resolution == &res ) == true )
+                    {
+                        select_resolution = &res;
+                    }
+
+                    if( apply_resolution == &res )
+                    {
+                        ImGui::PopStyleColor( 3 );
+                    }
+                }
+            }
+
+            ImGui::EndChild();
+        }
+
+        ImGui::NextColumn();        
+
+        if( select_resolution != nullptr )
+        {
+            if( ImGui::Button( "Apply" ) == true )
+            {
+                apply_resolution = select_resolution;
+
+                uint32_t width = apply_resolution->width;
+                uint32_t height = apply_resolution->height;
+
+                this->SendResolutionRequest( width, height );
+            }
+
+            if( apply_resolution != nullptr )
+            {
+                ImGui::Text( "Apply resolution: %s", apply_resolution->label );
+            }
+        }
+
+        ImGui::EndColumns();
     }
     //////////////////////////////////////////////////////////////////////////
     String NodeDebuggerApp::DoIPInput( const String & _title, const String & _inIP )
@@ -2496,8 +2644,8 @@ namespace Mengine
             ImGui::SameLine();
             ImGui::Dummy( ImVec2( 20.0f, 5.0f ) );
 
-            Char uid_text[64];
-            MENGINE_SPRINTF( uid_text, "%u", _node->uid );
+            Char uid_text[64 + 1];
+            MENGINE_SNPRINTF( uid_text, 64, "%u", _node->uid );
 
             ImGui::SameLine();
             ImGui::Text( "UID:" );
@@ -2533,7 +2681,7 @@ namespace Mengine
             ImGui::Spacing();
         }
 
-        if( _node->hasRender && ImGui::CollapsingHeader( "Render:", ImGuiTreeNodeFlags_DefaultOpen ) )
+        if( _node->hasRender == true && ImGui::CollapsingHeader( "Render:", ImGuiTreeNodeFlags_DefaultOpen ) )
         {
             uiReadOnlyBool( "Enable", _node->render.enable );
             uiEditorBool( "Hide", _node->render.hide );
@@ -2574,6 +2722,11 @@ namespace Mengine
 
             if( _node->render.camera.exist == true && ImGui::CollapsingHeader( "Render Camera:", ImGuiTreeNodeFlags_DefaultOpen ) )
             {
+                uiReadOnlyString( "Camera Name", _node->render.camera.Name );
+                uiReadOnlyString( "Camera Type", _node->render.camera.Type );
+
+                uiReadOnlyString( "Relelation Camera Name", _node->render.camera.RelationName );
+                uiReadOnlyString( "Relelation Camera Type", _node->render.camera.RelationType );
             }
 
             if( _node->render.viewport.exist == true && ImGui::CollapsingHeader( "Render Viewport:", ImGuiTreeNodeFlags_DefaultOpen ) )
@@ -2597,7 +2750,7 @@ namespace Mengine
             }
         }
 
-        if( _node->hasAnimation && ImGui::CollapsingHeader( "Animation:", ImGuiTreeNodeFlags_DefaultOpen ) )
+        if( _node->hasAnimation == true && ImGui::CollapsingHeader( "Animation:", ImGuiTreeNodeFlags_DefaultOpen ) )
         {
             uiEditorBool( "loop", _node->animation.loop );
             uiReadOnlyBool( "play", _node->animation.play );
@@ -2606,7 +2759,7 @@ namespace Mengine
             uiReadOnlyVec1f( "duration", _node->animation.duration );
         }
 
-        if( _node->hasComponentSurface && ImGui::CollapsingHeader( "Component Surface:", ImGuiTreeNodeFlags_DefaultOpen ) )
+        if( _node->hasComponentSurface == true && ImGui::CollapsingHeader( "Component Surface:", ImGuiTreeNodeFlags_DefaultOpen ) )
         {
             uiReadOnlyString( "name", _node->componentSurface.Name );
             uiReadOnlyString( "type", _node->componentSurface.Type );
@@ -2618,7 +2771,7 @@ namespace Mengine
                 uiReadOnlyVec2f( "offset", _node->componentSurface.Offset );
             }
 
-            if( _node->componentSurface.hasAnimation && ImGui::CollapsingHeader( "Surface Animation:", ImGuiTreeNodeFlags_DefaultOpen ) )
+            if( _node->componentSurface.hasAnimation == true && ImGui::CollapsingHeader( "Surface Animation:", ImGuiTreeNodeFlags_DefaultOpen ) )
             {
                 uiEditorBool( "loop", _node->componentSurface.animation.loop );
                 uiReadOnlyBool( "play", _node->componentSurface.animation.play );
@@ -2627,13 +2780,13 @@ namespace Mengine
                 uiReadOnlyVec1f( "duration", _node->componentSurface.animation.duration );
             }
 
-            if( _node->componentSurface.isTypeSurfaceImage && ImGui::CollapsingHeader( "Surface Image:", ImGuiTreeNodeFlags_DefaultOpen ) )
+            if( _node->componentSurface.isTypeSurfaceImage == true && ImGui::CollapsingHeader( "Surface Image:", ImGuiTreeNodeFlags_DefaultOpen ) )
             {
                 uiReadOnlyString( "resource name", _node->componentSurface.surfaceImage.ResourceName );
                 uiReadOnlyString( "resource type", _node->componentSurface.surfaceImage.ResourceType );
                 uiReadOnlyUV4( "UV image", _node->componentSurface.surfaceImage.UVImage );
 
-                if( _node->componentSurface.surfaceImage.isContent && ImGui::CollapsingHeader( "Surface Image Content:", ImGuiTreeNodeFlags_DefaultOpen ) )
+                if( _node->componentSurface.surfaceImage.isContent == true && ImGui::CollapsingHeader( "Surface Image Content:", ImGuiTreeNodeFlags_DefaultOpen ) )
                 {
                     uiReadOnlyString( "file group", _node->componentSurface.surfaceImage.content.FileGroup );
                     uiReadOnlyString( "file path", _node->componentSurface.surfaceImage.content.FilePath );
@@ -2642,12 +2795,12 @@ namespace Mengine
                 }
             }
 
-            if( _node->componentSurface.hasAtlas && ImGui::CollapsingHeader( "Atlas:", ImGuiTreeNodeFlags_DefaultOpen ) )
+            if( _node->componentSurface.hasAtlas == true && ImGui::CollapsingHeader( "Atlas:", ImGuiTreeNodeFlags_DefaultOpen ) )
             {
                 uiReadOnlyString( "resource name", _node->componentSurface.atlas.ResourceName );
                 uiReadOnlyString( "resource type", _node->componentSurface.atlas.ResourceType );
 
-                if( _node->componentSurface.atlas.isContent && ImGui::CollapsingHeader( "Atlas Content:", ImGuiTreeNodeFlags_DefaultOpen ) )
+                if( _node->componentSurface.atlas.isContent == true && ImGui::CollapsingHeader( "Atlas Content:", ImGuiTreeNodeFlags_DefaultOpen ) )
                 {
                     uiReadOnlyString( "file group", _node->componentSurface.atlas.content.FileGroup );
                     uiReadOnlyString( "file path", _node->componentSurface.atlas.content.FilePath );
@@ -2657,7 +2810,7 @@ namespace Mengine
             }
         }
 
-        if( _node->isTypeTextField && ImGui::CollapsingHeader( "TextField:", ImGuiTreeNodeFlags_DefaultOpen ) )
+        if( _node->isTypeTextField == true && ImGui::CollapsingHeader( "TextField:", ImGuiTreeNodeFlags_DefaultOpen ) )
         {
             uiEditorVec1f( "Max Length", _node->textField.MaxLength );
             uiEditorBool( "Wrap", _node->textField.Wrap );
@@ -3104,6 +3257,23 @@ namespace Mengine
     void NodeDebuggerApp::SendMuteRequest()
     {
         this->SendGameControlCommand( "mute" );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::SendResolutionRequest( uint32_t _width, uint32_t _height )
+    {
+        pugi::xml_document doc;
+
+        pugi::xml_node packetNode = doc.append_child( "Packet" );
+        packetNode.append_attribute( "type" ).set_value( "Resolutions" );
+
+        pugi::xml_node payloadNode = packetNode.append_child( "Payload" );
+
+        pugi::xml_node xmlNode = payloadNode.append_child( "Resolution" );
+
+        xmlNode.append_attribute( "width" ).set_value( _width );
+        xmlNode.append_attribute( "height" ).set_value( _height );
+
+        this->SendXML( doc );
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::SendSetting( const String & _setting, const String & _key, const Char * _value )

@@ -107,13 +107,13 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
         {
             SCRIPT_SERVICE()
-                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "SteamScriptEmbedding" ), Helper::makeFactorableUnique<SteamScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
+                ->addScriptEmbedding( SteamScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<SteamScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
         }, MENGINE_DOCUMENT_FACTORABLE );
 
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
         {
             SCRIPT_SERVICE()
-                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "SteamScriptEmbedding" ) );
+                ->removeScriptEmbedding( SteamScriptEmbedding::getFactorableType() );
         }, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 

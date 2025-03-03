@@ -7,8 +7,6 @@ Engine
 
 ADD_FILTER(
 Generators
-    NodeGenerators.h
-    NodeGenerators.cpp
     SurfaceGenerators.h
     SurfaceGenerators.cpp
 )

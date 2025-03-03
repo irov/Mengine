@@ -155,7 +155,8 @@ namespace Mengine
         bodyDef.fixedRotation = _fixedRotation;
         bodyDef.type = _static == true ? b2_staticBody : b2_dynamicBody;
 
-        Box2DBodyPtr body = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "Box2D" ), STRINGIZE_STRING_LOCAL( "Box2DBody" ), _doc );
+        Box2DBodyPtr body = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Box2D" ), Box2DBody::getFactorableType(), _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( body, "invalid create body" );
 
@@ -454,7 +455,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Box2DJointInterfacePtr Box2DWorld::createJoint_( b2JointId jointId, const DocumentInterfacePtr & _doc )
     {
-        Box2DJointPtr join = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "Box2D" ), STRINGIZE_STRING_LOCAL( "Box2DJoint" ), _doc );
+        Box2DJointPtr join = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Box2D" ), Box2DJoint::getFactorableType(), _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( join, "invalid create joint" );
 

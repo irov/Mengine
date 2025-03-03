@@ -18,7 +18,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     FactorablePointer EntityPrototypeGenerator::generate( const DocumentInterfacePtr & _doc )
     {
-        EntityPtr entity = Helper::generateFactorable<Node, Entity>( _doc );
+        EntityPtr entity = Helper::generateNodeFactorable<Entity>( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( entity, "can't create category '%s' prototype '%s' doc '%s'"
             , m_category.c_str()

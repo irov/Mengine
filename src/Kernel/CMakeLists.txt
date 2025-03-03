@@ -294,6 +294,8 @@ RenderCamera
     RenderViewport.cpp
     RenderScissor.h
     RenderScissor.cpp
+    RenderResolution.h
+    RenderResolution.cpp
 )
 
 ADD_FILTER(
@@ -945,7 +947,6 @@ Core
 
     ExecutorHelper.h
     
-    PrototypeHelper.cpp
     PrototypeHelper.h
     
     TimestampHelper.cpp

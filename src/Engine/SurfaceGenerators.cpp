@@ -13,7 +13,7 @@
 #define MENGINE_SURFACE_GENERATE(X)\
 namespace Mengine::Helper{\
         X ## Ptr generate ## X( const DocumentInterfacePtr & _doc ){\
-            X ## Ptr text = Helper::generateFactorable<Surface, X>( _doc );\
+            X ## Ptr text = Helper::generateSurfaceFactorable<X>( _doc );\
             return text;\
         }}
 //////////////////////////////////////////////////////////////////////////

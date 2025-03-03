@@ -2,8 +2,6 @@
 
 #include "Interface/ResourceBankInterface.h"
 
-#include "Engine/ResourceWindow.h"
-
 #include "Kernel/AssertionMemoryPanic.h"
 
 #include "Metacode/Metacode.h"

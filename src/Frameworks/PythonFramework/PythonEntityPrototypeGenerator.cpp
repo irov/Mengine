@@ -133,7 +133,8 @@ namespace Mengine
             return nullptr;
         }
 
-        EntityPtr entity = Helper::generatePrototype( Node::getFactorableType(), m_category, _doc );
+        EntityPtr entity = PROTOTYPE_SERVICE()
+            ->generatePrototype( Node::getFactorableType(), m_category, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( entity, "can't generate '%s' '%s' doc '%s'"
             , m_category.c_str()

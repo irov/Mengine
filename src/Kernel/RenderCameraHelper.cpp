@@ -36,18 +36,23 @@ namespace Mengine
         void worldToScreenPosition( const RenderContext * _context, const mt::vec2f & _worldPosition, mt::vec2f * const _screenPosition )
         {
             MENGINE_ASSERTION_MEMORY_PANIC( _context, "invalid context" );
+            MENGINE_ASSERTION_MEMORY_PANIC( _context->resolution, "invalid resolution" );
             MENGINE_ASSERTION_MEMORY_PANIC( _context->camera, "invalid camera" );
             MENGINE_ASSERTION_MEMORY_PANIC( _context->viewport, "invalid viewport" );
 
+            const RenderResolutionInterface * renderResolution = _context->resolution;
             const RenderCameraInterface * renderCamera = _context->camera;
             const RenderViewportInterface * renderViewport = _context->viewport;
 
             const mt::mat4f & vpm = renderCamera->getCameraViewProjectionMatrix();
 
-            mt::vec2f v_screen;
-            mt::mul_v2_v2_m4_homogenize( &v_screen, _worldPosition, vpm );
+            mt::vec2f cameraPosition;
+            mt::mul_v2_v2_m4_homogenize( &cameraPosition, _worldPosition, vpm );
 
-            renderViewport->fromScreenToViewportPosition( v_screen, _screenPosition );
+            mt::vec2f contentPosition;
+            renderViewport->fromCameraToContentPosition( cameraPosition, &contentPosition );
+
+            renderResolution->fromContentToScreenPosition( contentPosition, _screenPosition );
         }
         //////////////////////////////////////////////////////////////////////////
         void worldToScreenDelta( const RenderContext * _context, const mt::vec2f & _worldDelta, mt::vec2f * const _screenDelta )
@@ -56,6 +61,7 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC( _context->camera, "invalid camera" );
             MENGINE_ASSERTION_MEMORY_PANIC( _context->viewport, "invalid viewport" );
 
+            const RenderResolutionInterface * renderResolution = _context->resolution;
             const RenderCameraInterface * renderCamera = _context->camera;
             const RenderViewportInterface * renderViewport = _context->viewport;
 
@@ -63,11 +69,6 @@ namespace Mengine
 
             mt::vec2f vp_size;
             vp.calcSize( &vp_size );
-
-            const Resolution & contentResolution = renderViewport->getContentResolution();
-
-            mt::vec2f contentResolutionInvSize;
-            contentResolution.calcInvSize( &contentResolutionInvSize );
 
             const mt::mat4f & vpm = renderCamera->getCameraViewProjectionMatrix();
 
@@ -85,7 +86,9 @@ namespace Mengine
             v_screen1n.x = (1.f + v_screen1.x) * 0.5f;
             v_screen1n.y = (1.f - v_screen1.y) * 0.5f;
 
-            *_screenDelta = (v_screen1n - v_screen0n) * vp_size * contentResolutionInvSize;
+            mt::vec2f v_content = (v_screen1n - v_screen0n) * vp_size;
+
+            renderResolution->fromContentToScreenPosition( v_content, _screenDelta );
         }
         //////////////////////////////////////////////////////////////////////////
         void worldToScreenBox( const RenderContext * _context, const mt::box2f & _worldBox, mt::box2f * const _screenBox )
@@ -94,6 +97,7 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC( _context->camera, "invalid camera" );
             MENGINE_ASSERTION_MEMORY_PANIC( _context->viewport, "invalid viewport" );
 
+            const RenderResolutionInterface * renderResolution = _context->resolution;
             const RenderCameraInterface * renderCamera = _context->camera;
             const RenderViewportInterface * renderViewport = _context->viewport;
 
@@ -102,19 +106,17 @@ namespace Mengine
             mt::vec2f vp_size;
             vp.calcSize( &vp_size );
 
-            const Resolution & contentResolution = renderViewport->getContentResolution();
-
-            mt::vec2f contentResolutionInvSize;
-            contentResolution.calcInvSize( &contentResolutionInvSize );
-
             const mt::mat4f & vpm = renderCamera->getCameraViewProjectionMatrix();
 
-            mt::box2f bb_screen;
-            mt::box2_homogenize( &bb_screen, _worldBox.minimum, _worldBox.maximum, vpm );
+            mt::box2f bb_content;
+            mt::box2_homogenize( &bb_content, _worldBox.minimum, _worldBox.maximum, vpm );
 
-            mt::box2_scale( &bb_screen, vp_size );
-            mt::box2_transpose( &bb_screen, vp.begin );
-            mt::box2_scale( &bb_screen, contentResolutionInvSize );
+            mt::box2_scale( &bb_content, vp_size );
+            mt::box2_transpose( &bb_content, vp.begin );
+
+            mt::box2f bb_screen;
+            renderResolution->fromContentToScreenPosition( bb_content.minimum, &bb_screen.minimum );
+            renderResolution->fromContentToScreenPosition( bb_content.maximum, &bb_screen.maximum );
 
             *_screenBox = bb_screen;
         }

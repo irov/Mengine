@@ -16,6 +16,7 @@
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/PrototypeHelper.h"
 
 #include "Config/StdAlgorithm.h"
 
@@ -32,23 +33,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AreaOfInterestService::_initializeService()
     {
-        PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "NodeAreaOfInterestTrigger" ), Helper::makeFactorableUnique<NodePrototypeGenerator<NodeAreaOfInterestTrigger, 32>>( MENGINE_DOCUMENT_FACTORABLE ) );
-
-        PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "NodeAreaOfInterestActor" ), Helper::makeFactorableUnique<NodePrototypeGenerator<NodeAreaOfInterestActor, 32>>( MENGINE_DOCUMENT_FACTORABLE ) );
+        Helper::addNodePrototype<NodeAreaOfInterestTrigger, 32>( MENGINE_DOCUMENT_FACTORABLE );
+        Helper::addNodePrototype<NodeAreaOfInterestActor, 32>( MENGINE_DOCUMENT_FACTORABLE );
 
 #if defined(MENGINE_USE_SCRIPT_SERVICE)
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
         {
             SCRIPT_SERVICE()
-                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "AreaOfInterestScriptEmbedding" ), Helper::makeFactorableUnique<AreaOfInterestScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
+                ->addScriptEmbedding( AreaOfInterestScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<AreaOfInterestScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
         }, MENGINE_DOCUMENT_FACTORABLE );
 
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
         {
             SCRIPT_SERVICE()
-                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "Movie2ScriptEmbedding" ) );
+                ->removeScriptEmbedding( AreaOfInterestScriptEmbedding::getFactorableType() );
         }, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
@@ -67,11 +65,8 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif
 
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "NodeAreaOfInterestTrigger" ), nullptr );
-
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "NodeAreaOfInterestTrigger" ), nullptr );
+        Helper::removeNodePrototype<NodeAreaOfInterestTrigger>();
+        Helper::removeNodePrototype<NodeAreaOfInterestTrigger>();
 
         m_zones.clear();
 

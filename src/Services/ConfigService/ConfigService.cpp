@@ -148,7 +148,8 @@ namespace Mengine
             configType = Helper::getFilePathExt( filePath );
         }
 
-        ConfigInterfacePtr config = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "Config" ), configType, _doc );
+        ConfigInterfacePtr config = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Config" ), configType, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( config, "invalid generate config '%s' (doc: %s)"
             , Helper::getContentFullPath( _content ).c_str()

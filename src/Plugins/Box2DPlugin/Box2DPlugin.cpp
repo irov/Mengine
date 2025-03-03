@@ -6,6 +6,7 @@
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/PluginHelper.h"
+#include "Kernel/PrototypeHelper.h"
 
 #include "PhysicalPlaceholder.h"
 
@@ -35,20 +36,17 @@ namespace Mengine
             return false;
         }
 
-        if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "PhysicalPlaceholder" ), Helper::makeFactorableUnique<NodePrototypeGenerator<PhysicalPlaceholder, 128>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        if( Helper::addNodePrototype<PhysicalPlaceholder, 128>( MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
-        if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Box2D" ), STRINGIZE_STRING_LOCAL( "Box2DBody" ), Helper::makeDefaultPrototypeGenerator<Box2DBody, 128>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        if( Helper::addDefaultPrototype<Box2DBody, 128>( STRINGIZE_STRING_LOCAL( "Box2D" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
-        if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Box2D" ), STRINGIZE_STRING_LOCAL( "Box2DJoint" ), Helper::makeDefaultPrototypeGenerator<Box2DJoint, 128>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        if( Helper::addDefaultPrototype<Box2DJoint, 128>( STRINGIZE_STRING_LOCAL( "Box2D" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
@@ -60,14 +58,10 @@ namespace Mengine
     {
         SERVICE_FINALIZE( Box2DService );
 
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "PhysicalPlaceholder" ), nullptr );
+        Helper::removeNodePrototype<PhysicalPlaceholder>();
 
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Box2D" ), STRINGIZE_STRING_LOCAL( "Box2DBody" ), nullptr );
-
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Box2D" ), STRINGIZE_STRING_LOCAL( "Box2DJoint" ), nullptr );
+        Helper::removePrototype<Box2DBody>( STRINGIZE_STRING_LOCAL( "Box2D" ) );
+        Helper::removePrototype<Box2DJoint>( STRINGIZE_STRING_LOCAL( "Box2D" ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void Box2DPlugin::_destroyPlugin()

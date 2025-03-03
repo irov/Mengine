@@ -1,9 +1,6 @@
 #include "MetabufLoaderResourceImageSolid.h"
 
-#include "Kernel/ResourceImageSolid.h"
-
 #include "Metacode/Metacode.h"
-
 
 namespace Mengine
 {

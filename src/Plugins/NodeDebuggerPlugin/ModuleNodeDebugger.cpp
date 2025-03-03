@@ -1,4 +1,4 @@
-#include "NodeDebuggerModule.h"
+#include "ModuleNodeDebugger.h"
 
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/AllocatorSystemInterface.h"
@@ -35,6 +35,10 @@
 
 #include "HotSpotPolygonDebuggerBoundingBox.h"
 #include "TextFieldDebuggerBoundingBox.h"
+
+#include "Engine/HotSpotPolygon.h"
+#include "Engine/HotSpotSurface.h"
+#include "Engine/TextField.h"
 
 #include "Kernel/Assertion.h"
 #include "Kernel/ThreadTask.h"
@@ -73,7 +77,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    NodeDebuggerModule::NodeDebuggerModule()
+    ModuleNodeDebugger::ModuleNodeDebugger()
         : m_serverState( ENodeDebuggerServerState::Invalid )
         , m_shouldRecreateServer( false )
         , m_shouldUpdateScene( false )
@@ -83,22 +87,22 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    NodeDebuggerModule::~NodeDebuggerModule()
+    ModuleNodeDebugger::~ModuleNodeDebugger()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool NodeDebuggerModule::_initializeModule()
+    bool ModuleNodeDebugger::_initializeModule()
     {
-        VOCABULARY_SET( DebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ), Helper::makeFactorableUnique<HotSpotPolygonDebuggerBoundingBox>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
-        VOCABULARY_SET( DebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "HotSpotSurface" ), Helper::makeFactorableUnique<HotSpotPolygonDebuggerBoundingBox>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
-        VOCABULARY_SET( DebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "TextField" ), Helper::makeFactorableUnique<TextFieldDebuggerBoundingBox>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+        VOCABULARY_SET( DebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), HotSpotPolygon::getFactorableType(), Helper::makeFactorableUnique<HotSpotPolygonDebuggerBoundingBox>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+        VOCABULARY_SET( DebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), HotSpotSurface::getFactorableType(), Helper::makeFactorableUnique<HotSpotPolygonDebuggerBoundingBox>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+        VOCABULARY_SET( DebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), TextField::getFactorableType(), Helper::makeFactorableUnique<TextFieldDebuggerBoundingBox>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_SCENE_DESTROY, &NodeDebuggerModule::notifyChangeSceneDestroy, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_SCENE_COMPLETE, &NodeDebuggerModule::notifyChangeSceneComplete, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_REMOVE_SCENE_DESTROY, &NodeDebuggerModule::notifyRemoveSceneDestroy, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_INCREF_FACTORY_GENERATION, &NodeDebuggerModule::notifyIncrefFactoryGeneration, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_HTTP_REQUEST, &NodeDebuggerModule::notifyHttpRequest, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_HTTP_RESPONSE, &NodeDebuggerModule::notifyHttpResponse, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_SCENE_DESTROY, &ModuleNodeDebugger::notifyChangeSceneDestroy, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_SCENE_COMPLETE, &ModuleNodeDebugger::notifyChangeSceneComplete, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_REMOVE_SCENE_DESTROY, &ModuleNodeDebugger::notifyRemoveSceneDestroy, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_INCREF_FACTORY_GENERATION, &ModuleNodeDebugger::notifyIncrefFactoryGeneration, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_HTTP_REQUEST, &ModuleNodeDebugger::notifyHttpRequest, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_HTTP_RESPONSE, &ModuleNodeDebugger::notifyHttpResponse, MENGINE_DOCUMENT_FACTORABLE );
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
         UniqueId globalKeyHandlerF2 = Helper::addGlobalKeyHandler( KC_F2, true, []( const InputKeyEvent & )
@@ -147,11 +151,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::_finalizeModule()
+    void ModuleNodeDebugger::_finalizeModule()
     {
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ) );
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "HotSpotSurface" ) );
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "TextField" ) );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), HotSpotPolygon::getFactorableType() );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), HotSpotSurface::getFactorableType() );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), TextField::getFactorableType() );
 
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_SCENE_DESTROY );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_SCENE_COMPLETE );
@@ -199,7 +203,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool NodeDebuggerModule::_availableModule() const
+    bool ModuleNodeDebugger::_availableModule() const
     {
         if( SERVICE_IS_INITIALIZE( SocketSystemInterface ) == false )
         {
@@ -209,12 +213,12 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::onThreadWorkerUpdate( UniqueId _id )
+    void ModuleNodeDebugger::onThreadWorkerUpdate( UniqueId _id )
     {
         MENGINE_UNUSED( _id );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool NodeDebuggerModule::onThreadWorkerWork( UniqueId )
+    bool ModuleNodeDebugger::onThreadWorkerWork( UniqueId )
     {
         switch( m_serverState )
         {
@@ -350,14 +354,14 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::onThreadWorkerDone( UniqueId _id )
+    void ModuleNodeDebugger::onThreadWorkerDone( UniqueId _id )
     {
         MENGINE_UNUSED( _id );
 
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::setScene( const ScenePtr & _scene )
+    void ModuleNodeDebugger::setScene( const ScenePtr & _scene )
     {
         if( m_scene != _scene )
         {
@@ -367,7 +371,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::updateScene()
+    void ModuleNodeDebugger::updateScene()
     {
         if( m_serverState == ENodeDebuggerServerState::Connected )
         {
@@ -402,7 +406,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::_beginUpdate( bool _focus )
+    void ModuleNodeDebugger::_beginUpdate( bool _focus )
     {
         MENGINE_UNUSED( _focus );
 
@@ -497,7 +501,7 @@ namespace Mengine
         return successul;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context )
+    void ModuleNodeDebugger::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context )
     {
         if( m_selectedNodePath.empty() == true )
         {
@@ -609,7 +613,7 @@ namespace Mengine
             , false, MENGINE_DOCUMENT_FORWARD );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool NodeDebuggerModule::privateInit()
+    bool ModuleNodeDebugger::privateInit()
     {
         m_shouldRecreateServer = true;
 
@@ -645,7 +649,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::recreateServer()
+    void ModuleNodeDebugger::recreateServer()
     {
         m_socket = SOCKET_SYSTEM()
             ->createSocket( MENGINE_DOCUMENT_FACTORABLE );
@@ -662,7 +666,7 @@ namespace Mengine
         m_shouldRecreateServer = false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::compressPacket( NodeDebuggerPacket & _packet, PacketHeader & _hdr )
+    void ModuleNodeDebugger::compressPacket( NodeDebuggerPacket & _packet, PacketHeader & _hdr )
     {
         const size_t payloadSize = _packet.payload.size();
 
@@ -693,7 +697,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::uncompressPacket( NodeDebuggerPacket & _packet, PacketHeader & _hdr, const uint8_t * _receivedData )
+    void ModuleNodeDebugger::uncompressPacket( NodeDebuggerPacket & _packet, PacketHeader & _hdr, const uint8_t * _receivedData )
     {
         if( _hdr.uncompressedSize == 0 )
         {
@@ -711,7 +715,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::sendPacket( NodeDebuggerPacket & _packet )
+    void ModuleNodeDebugger::sendPacket( NodeDebuggerPacket & _packet )
     {
         if( _packet.payload.empty() == true )
         {
@@ -729,7 +733,7 @@ namespace Mengine
         m_outgoingPackets.emplace_back( _packet );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::serializeTransformation( const TransformablePtr & _transformable, pugi::xml_node & _xmlParentNode )
+    void ModuleNodeDebugger::serializeTransformation( const TransformablePtr & _transformable, pugi::xml_node & _xmlParentNode )
     {
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Transformation" );
 
@@ -745,7 +749,7 @@ namespace Mengine
         Detail::serializeNodeProp( transformation->getWorldOrientation(), "worldOrientation", xmlNode );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::serializeRender( const RenderInterface * _render, pugi::xml_node & _xmlParentNode )
+    void ModuleNodeDebugger::serializeRender( const RenderInterface * _render, pugi::xml_node & _xmlParentNode )
     {
         pugi::xml_node xmlRender = _xmlParentNode.append_child( "Render" );
 
@@ -841,7 +845,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::serializeAnimation( const Compilable * _compilable, const AnimationInterface * _animation, pugi::xml_node & _xmlParentNode )
+    void ModuleNodeDebugger::serializeAnimation( const Compilable * _compilable, const AnimationInterface * _animation, pugi::xml_node & _xmlParentNode )
     {
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Animation" );
 
@@ -861,7 +865,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::serializeTextField( const TextFieldPtr & _textField, pugi::xml_node & _xmlParentNode )
+    void ModuleNodeDebugger::serializeTextField( const TextFieldPtr & _textField, pugi::xml_node & _xmlParentNode )
     {
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Type:TextField" );
 
@@ -1002,7 +1006,7 @@ namespace Mengine
         Detail::serializeNodeProp( _textField->getPixelsnap(), "Pixelsnap", xmlNode );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::serializeMovie2( const Compilable * _compilable, const UnknownMovie2Interface * _unknownMovie2, pugi::xml_node & _xmlParentNode )
+    void ModuleNodeDebugger::serializeMovie2( const Compilable * _compilable, const UnknownMovie2Interface * _unknownMovie2, pugi::xml_node & _xmlParentNode )
     {
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Type:Movie2" );
 
@@ -1027,7 +1031,7 @@ namespace Mengine
         } );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::serializeSpine( const UnknownSpineInterface * _unknownSpine, pugi::xml_node & _xmlParentNode )
+    void ModuleNodeDebugger::serializeSpine( const UnknownSpineInterface * _unknownSpine, pugi::xml_node & _xmlParentNode )
     {
         const ResourcePtr & resourceSpineSkeleton = _unknownSpine->getResourceSpineSkeleton();
 
@@ -1049,7 +1053,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::serializeShape( const ShapePtr & _shape, pugi::xml_node & _xmlParentNode )
+    void ModuleNodeDebugger::serializeShape( const ShapePtr & _shape, pugi::xml_node & _xmlParentNode )
     {
         const SurfacePtr & surface = _shape->getSurface();
 
@@ -1102,7 +1106,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::serializeSurfaceImage( const SurfaceImagePtr & _surfaceImage, pugi::xml_node & _xmlParentNode )
+    void ModuleNodeDebugger::serializeSurfaceImage( const SurfaceImagePtr & _surfaceImage, pugi::xml_node & _xmlParentNode )
     {
         const ResourceImagePtr & resourceImage = _surfaceImage->getResourceImage();
 
@@ -1144,7 +1148,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::serializeSurfaceImageSequence( const SurfaceImageSequencePtr & _surfaceImageSequence, pugi::xml_node & _xmlParentNode )
+    void ModuleNodeDebugger::serializeSurfaceImageSequence( const SurfaceImageSequencePtr & _surfaceImageSequence, pugi::xml_node & _xmlParentNode )
     {
         const ResourceImageSequencePtr & resourceImageSequence = _surfaceImageSequence->getResourceImageSequence();
 
@@ -1174,7 +1178,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::serializeContent( const ContentInterfacePtr & _content, pugi::xml_node & _xmlParentNode )
+    void ModuleNodeDebugger::serializeContent( const ContentInterfacePtr & _content, pugi::xml_node & _xmlParentNode )
     {
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Content" );
 
@@ -1192,7 +1196,7 @@ namespace Mengine
         Detail::serializeNodeProp( _content->getConverterType(), "ConverterType", xmlNode );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::serializeNode( const NodePtr & _node, pugi::xml_node & _xmlParentNode )
+    void ModuleNodeDebugger::serializeNode( const NodePtr & _node, pugi::xml_node & _xmlParentNode )
     {
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Node" );
 
@@ -1209,7 +1213,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::serializeNodeSingle( const NodePtr & _node, pugi::xml_node & _xmlNode )
+    void ModuleNodeDebugger::serializeNodeSingle( const NodePtr & _node, pugi::xml_node & _xmlNode )
     {
         Detail::serializeNodeProp( _node->getUniqueIdentity(), "uid", _xmlNode );
         Detail::serializeNodeProp( _node->getName(), "name", _xmlNode );
@@ -1261,7 +1265,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::serializePickerable( PickerInterface * _picker, pugi::xml_node & _xmlParentNode )
+    void ModuleNodeDebugger::serializePickerable( PickerInterface * _picker, pugi::xml_node & _xmlParentNode )
     {
         Pickerable * pickerable = _picker->getPickerable();
 
@@ -1285,7 +1289,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::serializeRenderable( RenderInterface * _render, pugi::xml_node & _xmlParentNode )
+    void ModuleNodeDebugger::serializeRenderable( RenderInterface * _render, pugi::xml_node & _xmlParentNode )
     {
         Renderable * renderable = _render->getRenderable();
 
@@ -1309,7 +1313,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::sendScene( const ScenePtr & _scene )
+    void ModuleNodeDebugger::sendScene( const ScenePtr & _scene )
     {
         pugi::xml_document doc;
 
@@ -1337,7 +1341,7 @@ namespace Mengine
         this->sendPacket( packet );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::sendPickerable( const ScenePtr & _scene )
+    void ModuleNodeDebugger::sendPickerable( const ScenePtr & _scene )
     {
         pugi::xml_document doc;
 
@@ -1367,7 +1371,7 @@ namespace Mengine
         this->sendPacket( packet );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::sendRenderable( const ScenePtr & _scene )
+    void ModuleNodeDebugger::sendRenderable( const ScenePtr & _scene )
     {
         pugi::xml_document doc;
 
@@ -1397,7 +1401,7 @@ namespace Mengine
         this->sendPacket( packet );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::sendSettings()
+    void ModuleNodeDebugger::sendSettings()
     {
         pugi::xml_document doc;
 
@@ -1516,7 +1520,7 @@ namespace Mengine
         this->sendPacket( packet );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::sendMemory()
+    void ModuleNodeDebugger::sendMemory()
     {
         pugi::xml_document xml_doc;
 
@@ -1590,7 +1594,7 @@ namespace Mengine
         this->sendPacket( packet );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::sendObjectsLeak()
+    void ModuleNodeDebugger::sendObjectsLeak()
     {
 #if defined(MENGINE_DEBUG_FACTORY_ENABLE)
         uint32_t generation = FACTORY_SERVICE()
@@ -1681,7 +1685,7 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::sendNetwork()
+    void ModuleNodeDebugger::sendNetwork()
     {
         pugi::xml_document xml_doc;
 
@@ -1715,7 +1719,7 @@ namespace Mengine
         this->sendPacket( packet );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::sendSelectedNode()
+    void ModuleNodeDebugger::sendSelectedNode()
     {
         pugi::xml_document xml_doc;
         pugi::xml_node packetNode = xml_doc.append_child( "Packet" );
@@ -1758,7 +1762,7 @@ namespace Mengine
         this->sendPacket( packet );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::processPacket( NodeDebuggerPacket & _packet )
+    void ModuleNodeDebugger::processPacket( NodeDebuggerPacket & _packet )
     {
         pugi::xml_document doc;
         pugi::xml_parse_result result = doc.load_buffer( _packet.payload.data(), _packet.payload.size() );
@@ -1834,6 +1838,23 @@ namespace Mengine
                 }
             }
         }
+        else if( typeStr == "Resolutions" )
+        {
+            pugi::xml_node xmlNode = payloadNode.child( "Resolution" );
+            if( xmlNode )
+            {
+                pugi::xml_attribute widthAttr = xmlNode.attribute( "width" );
+                pugi::xml_attribute heightAttr = xmlNode.attribute( "height" );
+
+                uint32_t width = widthAttr.as_uint();
+                uint32_t height = heightAttr.as_uint();
+
+                if( widthAttr )
+                {
+                    this->receiveResolutins( width, height );
+                }
+            }
+        }
         else if( typeStr == "Settings" )
         {
             pugi::xml_node xmlNode = payloadNode.child( "Setting" );
@@ -1848,7 +1869,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::receiveChangedNode( const pugi::xml_node & _xmlNode )
+    void ModuleNodeDebugger::receiveChangedNode( const pugi::xml_node & _xmlNode )
     {
         String pathStr = _xmlNode.attribute( "path" ).value();
 
@@ -2151,7 +2172,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::receiveGameControlCommand( const String & _command )
+    void ModuleNodeDebugger::receiveGameControlCommand( const String & _command )
     {
         if( _command == "pause" )
         {
@@ -2175,7 +2196,18 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::receiveSetting( const Char * _setting, const Char * _key, const Char * _value )
+    void ModuleNodeDebugger::receiveResolutins( uint32_t _width, uint32_t _height )
+    {
+        MENGINE_UNUSED( _width );
+        MENGINE_UNUSED( _height );
+
+        Resolution resolution( 640, 480 );
+
+        APPLICATION_SERVICE()
+            ->setWindowResolution( resolution );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ModuleNodeDebugger::receiveSetting( const Char * _setting, const Char * _key, const Char * _value )
     {
         ConstString setting_cstr = Helper::stringizeString( _setting );
 
@@ -2245,7 +2277,7 @@ namespace Mengine
         NOTIFICATION_NOTIFY( NOTIFICATOR_SETTING_CHANGE, setting, _key );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::stringToPath( const String & _str, VectorNodePath * const _path ) const
+    void ModuleNodeDebugger::stringToPath( const String & _str, VectorNodePath * const _path ) const
     {
         if( _str.empty() == false && _str[0] != '-' )
         {
@@ -2270,7 +2302,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::pathToString( const VectorNodePath & _path, String * const _outStr ) const
+    void ModuleNodeDebugger::pathToString( const VectorNodePath & _path, String * const _outStr ) const
     {
         Stringstream stream;
         StdAlgorithm::copy( _path.begin(), _path.end(), std::ostream_iterator<UniqueId>( stream, "/" ) );
@@ -2278,31 +2310,31 @@ namespace Mengine
         *_outStr = stream.str();
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::notifyChangeSceneComplete( const ScenePtr & _scene )
+    void ModuleNodeDebugger::notifyChangeSceneComplete( const ScenePtr & _scene )
     {
         this->setScene( _scene );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::notifyChangeSceneDestroy( const ScenePtr & _scene )
+    void ModuleNodeDebugger::notifyChangeSceneDestroy( const ScenePtr & _scene )
     {
         MENGINE_UNUSED( _scene );
 
         this->setScene( nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::notifyRemoveSceneDestroy()
+    void ModuleNodeDebugger::notifyRemoveSceneDestroy()
     {
         this->setScene( nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::notifyIncrefFactoryGeneration( uint32_t _generator )
+    void ModuleNodeDebugger::notifyIncrefFactoryGeneration( uint32_t _generator )
     {
         MENGINE_UNUSED( _generator );
 
         m_shouldUpdateScene = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::notifyHttpRequest( HttpRequestId _id, const String & _url )
+    void ModuleNodeDebugger::notifyHttpRequest( HttpRequestId _id, const String & _url )
     {
         NodeDebuggerRequestData requestData;
 
@@ -2317,7 +2349,7 @@ namespace Mengine
         this->clearRequestDatas_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::notifyHttpResponse( const HttpResponseInterfacePtr & _response )
+    void ModuleNodeDebugger::notifyHttpResponse( const HttpResponseInterfacePtr & _response )
     {
         NodeDebuggerRequestData responseData;
 
@@ -2332,7 +2364,7 @@ namespace Mengine
         this->clearRequestDatas_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::foreachRequestData( const LambdaNodeDebuggerRequestData & _lambda )
+    void ModuleNodeDebugger::foreachRequestData( const LambdaNodeDebuggerRequestData & _lambda )
     {
         for( const NodeDebuggerRequestData & data : m_requestDatas )
         {
@@ -2340,7 +2372,7 @@ namespace Mengine
         };
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::clearRequestDatas_()
+    void ModuleNodeDebugger::clearRequestDatas_()
     {
         if( m_requestDatas.size() <= 128 )
         {
@@ -2350,12 +2382,12 @@ namespace Mengine
         m_requestDatas.pop_front();
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::setUpdateSceneFlag( bool _flag )
+    void ModuleNodeDebugger::setUpdateSceneFlag( bool _flag )
     {
         m_shouldUpdateScene = _flag;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::findChildRecursive( const NodePtr & _currentNode, const mt::vec2f & _point )
+    void ModuleNodeDebugger::findChildRecursive( const NodePtr & _currentNode, const mt::vec2f & _point )
     {
         const RenderContext * renderContext = PLAYER_SERVICE()
             ->getRenderContext();
@@ -2470,7 +2502,7 @@ namespace Mengine
         MENGINE_UNUSED( result );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool NodeDebuggerModule::checkHit( const ShapePtr & _currentNode, const mt::vec2f & _point )
+    bool ModuleNodeDebugger::checkHit( const ShapePtr & _currentNode, const mt::vec2f & _point )
     {
         const SurfacePtr & surface = _currentNode->getSurface();
 
@@ -2526,7 +2558,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool NodeDebuggerModule::checkIsTransparencePoint( const ShapePtr & _currentNode
+    bool ModuleNodeDebugger::checkIsTransparencePoint( const ShapePtr & _currentNode
         , const mt::vec2f & _point
         , const RenderImageLoaderInterfacePtr & _imageLoader
         , const RenderTextureInterfacePtr & _renderTexture
@@ -2535,8 +2567,8 @@ namespace Mengine
     {
         MENGINE_UNUSED( _renderTexture );
 
-        const Resolution & contentResolution = APPLICATION_SERVICE()
-            ->getContentResolution();
+        const RenderResolutionInterfacePtr & renderResolution = PLAYER_SERVICE()
+            ->getRenderResolution();
 
         const RenderCameraInterfacePtr & renderCamera = PLAYER_SERVICE()
             ->getRenderCamera();
@@ -2547,11 +2579,8 @@ namespace Mengine
         const mt::mat4f & vpm_inv = renderCamera->getCameraViewProjectionMatrixInv();
         const Viewport & vp = renderViewport->getViewportWM();
 
-        mt::vec2f contentResolutionSize;
-        contentResolution.calcSize( &contentResolutionSize );
-
         mt::vec2f point_vp;
-        point_vp = _point * contentResolutionSize;
+        renderResolution->fromScreenToContentPosition( _point, &point_vp );
 
         point_vp -= vp.begin;
 
@@ -2616,7 +2645,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::getScreenBoundingBox( const ShapePtr & _node, const RenderImageDesc & _imageDesc, mt::box2f * const _bb ) const
+    void ModuleNodeDebugger::getScreenBoundingBox( const ShapePtr & _node, const RenderImageDesc & _imageDesc, mt::box2f * const _bb ) const
     {
         mt::box2f boundingBox;
         this->getWorldBoundingBox( _node, _imageDesc, &boundingBox );
@@ -2635,7 +2664,7 @@ namespace Mengine
         *_bb = bb_screen;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::getWorldBoundingBox( const ShapePtr & _node, const RenderImageDesc & _imageDesc, mt::box2f * const _bb ) const
+    void ModuleNodeDebugger::getWorldBoundingBox( const ShapePtr & _node, const RenderImageDesc & _imageDesc, mt::box2f * const _bb ) const
     {
         TransformationInterface * currentNodeTransformation = _node->getTransformation();
         const mt::mat4f & worldMatrix = currentNodeTransformation->getWorldMatrix();

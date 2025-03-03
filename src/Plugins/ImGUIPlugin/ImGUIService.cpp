@@ -1,6 +1,5 @@
 #include "ImGUIService.h"
 
-#include "Interface/PrototypeServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/PlatformServiceInterface.h"
 
@@ -31,6 +30,7 @@
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/PrototypeHelper.h"
 
 #include "imgui.h"
 
@@ -123,7 +123,7 @@ namespace Mengine
         imGUIRenderPrototypeGenerator->setImGUIRenderProvider( m_renderProvider );
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ImGUIRender" ), imGUIRenderPrototypeGenerator ) == false )
+            ->addPrototype( Node::getFactorableType(), ImGUIRender::getFactorableType(), imGUIRenderPrototypeGenerator ) == false )
         {
             return false;
         }
@@ -201,8 +201,7 @@ namespace Mengine
 
         ImGui::DestroyContext();
 
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ImGUIRender" ), nullptr );
+        Helper::removeNodePrototype<ImGUIRender>();
 
         m_renderProvider = nullptr;
     }

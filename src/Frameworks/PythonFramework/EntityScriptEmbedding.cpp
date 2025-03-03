@@ -78,14 +78,14 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             bool s_hasEntityPrototypeFinder( const ConstString & _prototype )
             {
-                bool result = s_hasPrototypeFinder( STRINGIZE_STRING_LOCAL( "Entity" ), _prototype );
+                bool result = s_hasPrototypeFinder( Entity::getFactorableType(), _prototype );
 
                 return result;
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_hasScenePrototypeFinder( const ConstString & _prototype )
             {
-                bool result = s_hasPrototypeFinder( STRINGIZE_STRING_LOCAL( "Scene" ), _prototype );
+                bool result = s_hasPrototypeFinder( Scene::getFactorableType(), _prototype );
 
                 return result;
             }
@@ -106,14 +106,14 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             bool s_addEntityPrototypeFinder( const ConstString & _prototype, const pybind::object & _module )
             {
-                bool result = s_addPrototypeFinder( STRINGIZE_STRING_LOCAL( "Entity" ), _prototype, _module );
+                bool result = s_addPrototypeFinder( Entity::getFactorableType(), _prototype, _module );
 
                 return result;
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_addScenePrototypeFinder( const ConstString & _prototype, const pybind::object & _module )
             {
-                bool result = s_addPrototypeFinder( STRINGIZE_STRING_LOCAL( "Scene" ), _prototype, _module );
+                bool result = s_addPrototypeFinder( Scene::getFactorableType(), _prototype, _module );
 
                 return result;
             }
@@ -142,17 +142,18 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_removeEntityPrototypeFinder( const ConstString & _prototype )
             {
-                s_removePrototypeFinder( STRINGIZE_STRING_LOCAL( "Entity" ), _prototype );
+                s_removePrototypeFinder( Entity::getFactorableType(), _prototype );
             }
             //////////////////////////////////////////////////////////////////////////
             void s_removeScenePrototypeFinder( const ConstString & _prototype )
             {
-                s_removePrototypeFinder( STRINGIZE_STRING_LOCAL( "Scene" ), _prototype );
+                s_removePrototypeFinder( Scene::getFactorableType(), _prototype );
             }
             //////////////////////////////////////////////////////////////////////////
             pybind::object s_createEntity( const ConstString & _prototype )
             {
-                EntityPtr entity = Helper::generatePrototype( Entity::getFactorableType(), _prototype, MENGINE_DOCUMENT_PYBIND );
+                EntityPtr entity = PROTOTYPE_SERVICE()
+                    ->generatePrototype( Entity::getFactorableType(), _prototype, MENGINE_DOCUMENT_PYBIND );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( entity, "can't create entity '%s'"
                     , _prototype.c_str()
@@ -174,7 +175,7 @@ namespace Mengine
                 MENGINE_UNUSED( _kernel );
 
                 const PrototypeGeneratorInterfacePtr & generator = PROTOTYPE_SERVICE()
-                    ->getGenerator( STRINGIZE_STRING_LOCAL( "Entity" ), _prototype );
+                    ->getGenerator( Entity::getFactorableType(), _prototype );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( generator, "importEntity: can't import 'Entity' '%s'"
                     , _prototype.c_str()
@@ -206,7 +207,7 @@ namespace Mengine
                 MENGINE_UNUSED( _args );
                 MENGINE_UNUSED( _kwds );
 
-                EntityPtr entity = Helper::generateFactorable<Node, Entity>( MENGINE_DOCUMENT_PYBIND );
+                EntityPtr entity = Helper::generateNodeFactorable<Entity>( MENGINE_DOCUMENT_PYBIND );
 
                 entity->setEmbed( _kernel, _obj );
 
@@ -245,7 +246,7 @@ namespace Mengine
                 MENGINE_UNUSED( _args );
                 MENGINE_UNUSED( _kwds );
 
-                ScenePtr scene = Helper::generateFactorable<Node, Scene>( MENGINE_DOCUMENT_PYBIND );
+                ScenePtr scene = Helper::generateNodeFactorable<Scene>( MENGINE_DOCUMENT_PYBIND );
 
                 scene->setEmbed( _kernel, _obj );
 

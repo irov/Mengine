@@ -47,6 +47,6 @@ namespace Mengine
         float m_horizont;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusiveNodePtr<RenderCameraOrthogonalTarget> RenderCameraOrthogonalTargetPtr;
+    typedef IntrusivePtr<RenderCameraOrthogonalTarget, RenderCameraInterface> RenderCameraOrthogonalTargetPtr;
     //////////////////////////////////////////////////////////////////////////
 }

@@ -64,6 +64,10 @@ namespace Mengine
         void removeRelationRenderChildren_( BaseRender * _childRender );
 
     public:
+        void setRenderResolution( const RenderResolutionInterfacePtr & _resolution ) override final;
+        const RenderResolutionInterfacePtr & getRenderResolution() const override final;
+
+    public:
         void setRenderViewport( const RenderViewportInterfacePtr & _renderViewport ) override final;
         const RenderViewportInterfacePtr & getRenderViewport() const override final;
 
@@ -135,6 +139,7 @@ namespace Mengine
         typedef Vector<BaseRender *> VectorBaseRender;
         VectorBaseRender m_renderChildren;
 
+        RenderResolutionInterfacePtr m_renderResolution;
         RenderViewportInterfacePtr m_renderViewport;
         RenderCameraInterfacePtr m_renderCamera;
         RenderTransformationInterfacePtr m_renderTransformation;

@@ -22,6 +22,7 @@ namespace Mengine
         , protected BaseTransformation
     {
         DECLARE_VISITABLE( Node );
+        DECLARE_FACTORABLE( HotSpot );
         DECLARE_EVENTABLE();
         DECLARE_PICKERABLE();
         DECLARE_TRANSFORMABLE();

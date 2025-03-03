@@ -1,7 +1,5 @@
 #include "MetabufLoaderResourceCursorICO.h"
 
-#include "Engine/ResourceCursorICO.h"
-
 #include "Metacode/Metacode.h"
 
 namespace Mengine

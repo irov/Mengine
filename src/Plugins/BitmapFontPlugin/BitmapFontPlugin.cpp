@@ -2,6 +2,7 @@
 
 #include "Interface/PrototypeServiceInterface.h"
 
+#include "BitmapFont.h"
 #include "BitmapFontService.h"
 #include "BitmapFontConfigLoader.h"
 #include "BitmapFontGlyphConfigLoader.h"
@@ -52,8 +53,8 @@ namespace Mengine
         VOCABULARY_SET( ConfigLoaderInterface, STRINGIZE_STRING_LOCAL( "FontConfigLoader" ), STRINGIZE_STRING_LOCAL( "Bitmap" ), Helper::makeFactorableUnique<BitmapFontConfigLoader>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
         VOCABULARY_SET( ConfigLoaderInterface, STRINGIZE_STRING_LOCAL( "FontGlyphConfigLoader" ), STRINGIZE_STRING_LOCAL( "Bitmap" ), Helper::makeFactorableUnique<BitmapFontGlyphConfigLoader>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
-        VOCABULARY_SET( ValidatorInterface, STRINGIZE_STRING_LOCAL( "FontValidator" ), STRINGIZE_STRING_LOCAL( "BitmapFont" ), Helper::makeFactorableUnique<BitmapFontValidator>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
-        VOCABULARY_SET( ValidatorInterface, STRINGIZE_STRING_LOCAL( "FontGlyphValidator" ), STRINGIZE_STRING_LOCAL( "BitmapFont" ), Helper::makeFactorableUnique<BitmapFontGlyphValidator>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+        VOCABULARY_SET( ValidatorInterface, STRINGIZE_STRING_LOCAL( "FontValidator" ), BitmapFont::getFactorableType(), Helper::makeFactorableUnique<BitmapFontValidator>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+        VOCABULARY_SET( ValidatorInterface, STRINGIZE_STRING_LOCAL( "FontGlyphValidator" ), BitmapFont::getFactorableType(), Helper::makeFactorableUnique<BitmapFontGlyphValidator>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
         
         return true;
     }
@@ -69,8 +70,8 @@ namespace Mengine
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FontConfigLoader" ), STRINGIZE_STRING_LOCAL( "Bitmap" ) );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FontGlyphConfigLoader" ), STRINGIZE_STRING_LOCAL( "Bitmap" ) );
 
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FontValidator" ), STRINGIZE_STRING_LOCAL( "BitmapFont" ) );
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FontGlyphValidator" ), STRINGIZE_STRING_LOCAL( "BitmapFont" ) );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FontValidator" ), BitmapFont::getFactorableType() );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FontGlyphValidator" ), BitmapFont::getFactorableType() );
 
         SERVICE_FINALIZE( BitmapFontService );
     }

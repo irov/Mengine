@@ -18,6 +18,7 @@ namespace Mengine
         bool hasNodeRenderInheritance( const Node * _node );
         RenderInterface * getNodeRenderInheritance( Node * _node, Node ** const _nodeRender );
         //////////////////////////////////////////////////////////////////////////
+        const RenderResolutionInterface * getRenderResolutionInheritance( const RenderInterface * _render );
         const RenderViewportInterface * getRenderViewportInheritance( const RenderInterface * _render );
         const RenderCameraInterface * getRenderCameraInheritance( const RenderInterface * _render );
         const RenderTransformationInterface * getRenderTransformationInheritance( const RenderInterface * _render );
@@ -26,6 +27,7 @@ namespace Mengine
         ZGroupType getRenderZGroupInheritance( const RenderInterface * _render );
         ZIndexType getRenderZIndexInheritance( const RenderInterface * _render );
         //////////////////////////////////////////////////////////////////////////
+        const RenderResolutionInterface * getNodeRenderResolutionInheritance( const Node * _node );
         const RenderViewportInterface * getNodeRenderViewportInheritance( const Node * _node );
         const RenderCameraInterface * getNodeRenderCameraInheritance( const Node * _node );
         const RenderTransformationInterface * getNodeRenderTransformationInheritance( const Node * _node );

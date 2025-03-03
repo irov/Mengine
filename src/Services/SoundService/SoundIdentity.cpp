@@ -62,7 +62,8 @@ namespace Mengine
             return false;
         }
 
-        m_mixerVolume = Helper::generatePrototype( MixerValue::getFactorableType(), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+        m_mixerVolume = PROTOTYPE_SERVICE()
+            ->generatePrototype( ConstString::none(), MixerValue::getFactorableType(), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

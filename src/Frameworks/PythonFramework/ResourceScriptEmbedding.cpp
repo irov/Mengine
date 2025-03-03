@@ -61,6 +61,8 @@
 #include "Kernel/ResourceImageSubstractRGBAndAlpha.h"
 #include "Kernel/ResourceImageSubstract.h"
 #include "Kernel/Shape.h"
+#include "Kernel/Layer.h"
+#include "Kernel/HotSpot.h"
 #include "Kernel/Entity.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Identity.h"
@@ -183,7 +185,7 @@ namespace Mengine
         pybind::interface_<ResourceHIT, pybind::bases<ResourceTestPick>>( _kernel, "ResourceHIT", false )
             ;
 
-        Helper::registerScriptWrappingEx<Resource>( _kernel, STRINGIZE_STRING_LOCAL( "Resource" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrappingEx<Resource>( _kernel, Resource::getFactorableType(), MENGINE_DOCUMENT_FACTORABLE );
 
 #define SCRIPT_CLASS_WRAPPING( Class )\
     Helper::registerScriptWrapping<Class>(_kernel, MENGINE_DOCUMENT_FACTORABLE)
@@ -216,11 +218,11 @@ namespace Mengine
     {
         MENGINE_UNUSED( _kernel );
 
-        Helper::unregisterScriptWrappingEx( STRINGIZE_STRING_LOCAL( "Node" ) );
-        Helper::unregisterScriptWrappingEx( STRINGIZE_STRING_LOCAL( "Resource" ) );
-        Helper::unregisterScriptWrappingEx( STRINGIZE_STRING_LOCAL( "Layer" ) );
-        Helper::unregisterScriptWrappingEx( STRINGIZE_STRING_LOCAL( "HotSpot" ) );
-        Helper::unregisterScriptWrappingEx( STRINGIZE_STRING_LOCAL( "Surface" ) );
+        Helper::unregisterScriptWrappingEx( Node::getFactorableType() );
+        Helper::unregisterScriptWrappingEx( Resource::getFactorableType() );
+        Helper::unregisterScriptWrappingEx( Layer::getFactorableType() );
+        Helper::unregisterScriptWrappingEx( HotSpot::getFactorableType() );
+        Helper::unregisterScriptWrappingEx( Surface::getFactorableType() );
 
 #define UNSCRIPT_CLASS_WRAPPING( Class )\
     Helper::unregisterScriptWrapping<Class>()

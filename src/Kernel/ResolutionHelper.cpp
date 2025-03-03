@@ -18,10 +18,8 @@ namespace Mengine
             mt::vec2f renderViewportSize;
             renderViewport.calcSize( &renderViewportSize );
 
-            mt::vec2f currentResolutionSize;
-            currentResolution.calcSize( &currentResolutionSize );
-
-            mt::vec2f currentResolutionSizeInv = 1.f / currentResolutionSize;
+            mt::vec2f currentResolutionSizeInv;
+            currentResolution.calcSizeInv( &currentResolutionSizeInv );
 
             mt::vec2f windowScale = renderViewportSize * currentResolutionSizeInv;
             mt::vec2f windowOffset = renderViewport.begin * currentResolutionSizeInv;
@@ -40,10 +38,10 @@ namespace Mengine
             mt::vec2f renderViewportSize;
             renderViewport.calcSize( &renderViewportSize );
 
-            mt::vec2f currentResolutionSize;
-            currentResolution.calcSize( &currentResolutionSize );
+            mt::vec2f currentResolutionSizeInv;
+            currentResolution.calcSizeInv( &currentResolutionSizeInv );
 
-            mt::vec2f windowScale = renderViewportSize / currentResolutionSize;
+            mt::vec2f windowScale = renderViewportSize * currentResolutionSizeInv;
 
             *_adaptScreenDelta = _screenDelta / windowScale;
         }
@@ -59,10 +57,8 @@ namespace Mengine
             mt::vec2f renderViewportSize;
             renderViewport.calcSize( &renderViewportSize );
 
-            mt::vec2f currentResolutionSize;
-            currentResolution.calcSize( &currentResolutionSize );
-
-            mt::vec2f currentResolutionSizeInv = 1.f / currentResolutionSize;
+            mt::vec2f currentResolutionSizeInv;
+            currentResolution.calcSizeInv( &currentResolutionSizeInv );
 
             mt::vec2f windowScale = renderViewportSize * currentResolutionSizeInv;
             mt::vec2f windowOffset = renderViewport.begin * currentResolutionSizeInv;

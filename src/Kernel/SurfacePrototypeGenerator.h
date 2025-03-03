@@ -1,9 +1,9 @@
 #pragma once
 
 #if defined(MENGINE_USE_SCRIPT_SERVICE)
-#include "Kernel/ScriptablePrototypeGenerator.h"
+#   include "Kernel/ScriptablePrototypeGenerator.h"
 #else
-#include "Kernel/DefaultPrototypeGenerator.h"
+#   include "Kernel/DefaultPrototypeGenerator.h"
 #endif
 
 #include "Kernel/Surface.h"
@@ -67,4 +67,16 @@ namespace Mengine
             return surface;
         }
     };
+    //////////////////////////////////////////////////////////////////////////
+    namespace Helper
+    {
+        template<class Type, uint32_t Count>
+        FactoryPrototypeGeneratorPtr makeSurfacePrototypeGenerator( const DocumentInterfacePtr & _doc )
+        {
+            FactoryPrototypeGeneratorPtr generator = Helper::makeFactorableUnique<SurfacePrototypeGenerator<Type, Count>>( _doc );
+
+            return generator;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

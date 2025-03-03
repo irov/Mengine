@@ -20,24 +20,4 @@ namespace Mengine
         m_viewport.multiply( &m_viewportWM, _wm );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2Scissor::setGameViewport( const Viewport & _viewport )
-    {
-        m_gameViewport = _viewport;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const Viewport & Movie2Scissor::getGameViewport() const
-    {
-        return m_gameViewport;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Movie2Scissor::setContentResolution( const Resolution & _resolution )
-    {
-        m_contentResolution = _resolution;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const Resolution & Movie2Scissor::getContentResolution() const
-    {
-        return m_contentResolution;
-    }
-    //////////////////////////////////////////////////////////////////////////
 }

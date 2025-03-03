@@ -73,7 +73,7 @@ namespace Mengine
         mutable bool m_invalidateViewProjectionMatrix;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusiveNodePtr<RenderCamera> RenderCameraPtr;
+    typedef IntrusivePtr<RenderCamera, RenderCameraInterface> RenderCameraPtr;
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE const mt::mat4f & RenderCamera::getCameraProjectionMatrix() const
     {

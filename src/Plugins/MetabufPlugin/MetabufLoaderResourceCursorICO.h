@@ -2,6 +2,8 @@
 
 #include "Interface/MetabufLoaderInterface.h"
 
+#include "Engine/ResourceCursorICO.h"
+
 #include "Kernel/Factorable.h"
 
 namespace Mengine
@@ -10,6 +12,8 @@ namespace Mengine
         : public MetabufLoaderInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( MetabufLoaderResourceCursorICO );
+
     public:
         MetabufLoaderResourceCursorICO();
         ~MetabufLoaderResourceCursorICO() override;

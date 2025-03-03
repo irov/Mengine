@@ -13,6 +13,8 @@ namespace Mengine
         : public ScriptEmbeddingInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( EnvironmentScriptEmbedding );
+
     public:
         EnvironmentScriptEmbedding();
         ~EnvironmentScriptEmbedding() override;

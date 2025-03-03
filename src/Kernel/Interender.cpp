@@ -19,6 +19,13 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
+    const RenderResolutionInterfacePtr & Interender::getPickerResolution() const
+    {
+        const RenderResolutionInterfacePtr & resolution = this->getRenderResolution();
+
+        return resolution;
+    }
+    //////////////////////////////////////////////////////////////////////////
     const RenderViewportInterfacePtr & Interender::getPickerViewport() const
     {
         const RenderViewportInterfacePtr & viewport = this->getRenderViewport();

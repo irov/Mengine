@@ -15,6 +15,7 @@
 #include "Kernel/PathHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/ResourceImageSubstract.h"
+#include "Kernel/ResourceImageDefault.h"
 #include "Kernel/TextureHelper.h"
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/ContentHelper.h"
@@ -238,7 +239,7 @@ namespace Mengine
 
             ResourceCook cook;
             cook.locales = locales;
-            cook.type = STRINGIZE_STRING_LOCAL( "ResourceImageDefault" );
+            cook.type = ResourceImageDefault::getFactorableType();
 
             ResourceImagePtr resourceImage = resourceBank->createResource( cook, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -388,7 +389,7 @@ namespace Mengine
 
             ResourceCook cook;
             cook.groupName = groupName;
-            cook.type = STRINGIZE_STRING_LOCAL( "ResourceImageSubstract" );
+            cook.type = ResourceImageSubstract::getFactorableType();
 
             ResourceImageSubstractPtr resourceImage = resourceBank->createResource( cook, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 

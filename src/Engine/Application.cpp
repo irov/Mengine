@@ -87,6 +87,7 @@
 #include "Kernel/Interender.h"
 #include "Kernel/MatrixProxy.h"
 #include "Kernel/FileContent.h"
+#include "Kernel/RenderResolution.h"
 #include "Kernel/RenderViewport.h"
 #include "Kernel/RenderScissor.h"
 #include "Kernel/RenderCameraOrthogonal.h"
@@ -399,7 +400,8 @@ namespace Mengine
 
         ConstString Engine_RenderPipeline = CONFIG_VALUE_CONSTSTRING( "Engine", "RenderPipeline", STRINGIZE_STRING_LOCAL( "Batch" ) );
 
-        RenderPipelineInterfacePtr renderPipeline = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "RenderPipeline" ), Engine_RenderPipeline, MENGINE_DOCUMENT_FACTORABLE );
+        RenderPipelineInterfacePtr renderPipeline = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "RenderPipeline" ), Engine_RenderPipeline, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( renderPipeline, "invalid create render pipeline '%s'"
             , Engine_RenderPipeline.c_str()
@@ -484,8 +486,7 @@ namespace Mengine
     {
         LOGGER_INFO( "system", "register base generator..." );
 
-        if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "BaseAffectorHub" ), ConstString::none(), Helper::makeDefaultPrototypeGenerator<BaseAffectorHub, 128>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        if( Helper::addDefaultPrototype<BaseAffectorHub, 128>( ConstString::none(), MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
@@ -497,8 +498,7 @@ namespace Mengine
     {
         LOGGER_INFO( "system", "unregister base generator..." );
 
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "BaseAffectorHub" ), ConstString::none(), nullptr );
+        Helper::removePrototype<BaseAffectorHub>( ConstString::none() );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::registerBaseNodeTypes_()
@@ -506,8 +506,7 @@ namespace Mengine
         LOGGER_INFO( "system", "register node generator..." );
 
 #define NODE_FACTORY( Type )\
-        if( PROTOTYPE_SERVICE()\
-            ->addPrototype( STRINGIZE_STRING_LOCAL("Node"), STRINGIZE_STRING_LOCAL(#Type), Helper::makeFactorableUnique<NodePrototypeGenerator<Type, 128>>(MENGINE_DOCUMENT_FACTORABLE) ) == false )\
+        if( Helper::addNodePrototype<Type, 128>( MENGINE_DOCUMENT_FACTORABLE ) == false )\
         {\
             return false;\
         }
@@ -546,9 +545,13 @@ namespace Mengine
 
 #undef NODE_FACTORY
 
+        if( Helper::addDefaultPrototype<RenderResolution, 8>( ConstString::none(), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
+
 #define SURFACE_FACTORY(Type)\
-        if( PROTOTYPE_SERVICE()\
-            ->addPrototype( STRINGIZE_STRING_LOCAL("Surface"), STRINGIZE_STRING_LOCAL(#Type), Helper::makeFactorableUnique<SurfacePrototypeGenerator<Type, 128>>(MENGINE_DOCUMENT_FACTORABLE) ) == false )\
+        if( Helper::addSurfacePrototype<Type, 128>( MENGINE_DOCUMENT_FACTORABLE ) == false )\
         {\
             return false;\
         }
@@ -569,8 +572,7 @@ namespace Mengine
         LOGGER_INFO( "system", "unregister node generator..." );
 
 #define NODE_FACTORY( Type )\
-        PROTOTYPE_SERVICE()\
-            ->removePrototype( STRINGIZE_STRING_LOCAL("Node"), STRINGIZE_STRING_LOCAL(#Type), nullptr )
+        Helper::removeNodePrototype<Type>()
 
         NODE_FACTORY( Entity );
         NODE_FACTORY( Scene );
@@ -606,9 +608,11 @@ namespace Mengine
 
 #undef NODE_FACTORY
 
+        Helper::removePrototype<RenderResolution>( ConstString::none() );
+
+
 #define SURFACE_FACTORY(Type)\
-        PROTOTYPE_SERVICE()\
-            ->removePrototype( STRINGIZE_STRING_LOCAL("Surface"), STRINGIZE_STRING_LOCAL(#Type), nullptr )
+        Helper::removeSurfacePrototype<Type>()
 
         SURFACE_FACTORY( SurfaceSound );
         SURFACE_FACTORY( SurfaceImage );
@@ -626,7 +630,7 @@ namespace Mengine
         EntityPrototypeGeneratorPtr generator = Helper::makeFactorableUnique<EntityPrototypeGenerator>( MENGINE_DOCUMENT_FACTORABLE );
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Entity" ), ConstString::none(), generator ) == false )
+            ->addPrototype( ConstString::none(), Entity::getFactorableType(), generator ) == false )
         {
             return false;
         }
@@ -641,7 +645,7 @@ namespace Mengine
         PrototypeGeneratorInterfacePtr generator = Helper::makeFactorableUnique<ScenePrototypeGenerator>( MENGINE_DOCUMENT_FACTORABLE );
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Scene" ), ConstString::none(), generator ) == false )
+            ->addPrototype( ConstString::none(), Scene::getFactorableType(), generator ) == false )
         {
             return false;
         }
@@ -653,16 +657,14 @@ namespace Mengine
     {
         LOGGER_INFO( "system", "unregister entity generator..." );
 
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Entity" ), ConstString::none(), nullptr );
+        Helper::removePrototype<Entity>( ConstString::none() );
     }
     //////////////////////////////////////////////////////////////////////////
     void Application::unregisterSceneGenerator_()
     {
         LOGGER_INFO( "system", "unregister scene generator..." );
 
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Scene" ), ConstString::none(), nullptr );
+        Helper::removePrototype<Scene>( ConstString::none() );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::registerBaseResourceTypes_()
@@ -671,7 +673,7 @@ namespace Mengine
 
 #define ADD_PROTOTYPE( Type )\
         if( PROTOTYPE_SERVICE()\
-            ->addPrototype( STRINGIZE_STRING_LOCAL("Resource"), STRINGIZE_STRING_LOCAL(#Type), Helper::makeFactorableUnique<ResourcePrototypeGenerator<Type, 128>>(MENGINE_DOCUMENT_FACTORABLE) ) == false )\
+            ->addPrototype( Resource::getFactorableType(), Type::getFactorableType(), Helper::makeFactorableUnique<ResourcePrototypeGenerator<Type, 128>>(MENGINE_DOCUMENT_FACTORABLE) ) == false )\
         {\
             return false;\
         }
@@ -704,7 +706,7 @@ namespace Mengine
 
 #define REMOVE_PROTOTYPE( Type )\
         PROTOTYPE_SERVICE()\
-            ->removePrototype( STRINGIZE_STRING_LOCAL("Resource"), STRINGIZE_STRING_LOCAL(#Type), nullptr )
+            ->removePrototype( Resource::getFactorableType(), Type::getFactorableType(), nullptr )
 
         REMOVE_PROTOTYPE( ResourceMusic );
         REMOVE_PROTOTYPE( ResourceImage );
@@ -802,7 +804,7 @@ namespace Mengine
 
         ResourceCook resourceWhitePixelCook;
         resourceWhitePixelCook.name = STRINGIZE_STRING_LOCAL( "WhitePixel" );
-        resourceWhitePixelCook.type = STRINGIZE_STRING_LOCAL( "ResourceImage" );
+        resourceWhitePixelCook.type = ResourceImage::getFactorableType();
         resourceWhitePixelCook.groupCache = false;
         resourceWhitePixelCook.keep = false;
 

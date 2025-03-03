@@ -40,14 +40,14 @@ namespace Mengine
             return false;
         }
 
-        VOCABULARY_SET( FrameworkFactoryInterface, STRINGIZE_STRING_LOCAL( "Framework" ), STRINGIZE_STRING_LOCAL( "PythonFramework" ), Helper::makeFrameworkFactory<PythonFramework>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+        VOCABULARY_SET( FrameworkFactoryInterface, STRINGIZE_STRING_LOCAL( "Framework" ), PythonFramework::getFactorableType(), Helper::makeFrameworkFactory<PythonFramework>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonFrameworkPlugin::_finalizePlugin()
     {
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Framework" ), STRINGIZE_STRING_LOCAL( "PythonFramework" ) );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Framework" ), PythonFramework::getFactorableType() );
 
         SERVICE_FINALIZE( ScriptService );
         SERVICE_FINALIZE( ScriptProviderService );

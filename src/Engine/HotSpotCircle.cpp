@@ -42,8 +42,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool HotSpotCircle::testPoint( const RenderContext * _context, const mt::vec2f & _point ) const
     {
+        const RenderResolutionInterface * resolution = _context->resolution;
         const RenderCameraInterface * camera = _context->camera;
-        const RenderViewportInterface * viewport = _context->viewport;
 
         if( m_global == true )
         {
@@ -64,16 +64,14 @@ namespace Mengine
         v_wvpn.x = (1.f + v_wvp.x) * 0.5f;
         v_wvpn.y = (1.f - v_wvp.y) * 0.5f;
 
-        const Resolution & contentResolution = viewport->getContentResolution();
+        mt::vec2f v_screen = (_point - v_wvpn);
+        
+        mt::vec2f v_content;
+        resolution->fromScreenToContentPosition( v_screen, &v_content );
 
-        mt::vec2f contentResolutionSize;
-        contentResolution.calcSize( &contentResolutionSize );
+        v_content.y /= m_ellipse;
 
-        mt::vec2f v = (_point - v_wvpn) * contentResolutionSize;
-
-        v.y /= m_ellipse;
-
-        float v_sqrlength = v.sqrlength();
+        float v_sqrlength = v_content.sqrlength();
 
         mt::vec2f r;
         mt::mul_v2_v2_m4_r( &r, mt::vec2f( m_radius, m_radius ), wm );
@@ -90,8 +88,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool HotSpotCircle::testRadius( const RenderContext * _context, const mt::vec2f & _point, float _radius ) const
     {
+        const RenderResolutionInterface * resolution = _context->resolution;
         const RenderCameraInterface * camera = _context->camera;
-        const RenderViewportInterface * viewport = _context->viewport;
 
         if( m_global == true )
         {
@@ -112,16 +110,14 @@ namespace Mengine
         v_wvpn.x = (1.f + v_wvp.x) * 0.5f;
         v_wvpn.y = (1.f - v_wvp.y) * 0.5f;
 
-        const Resolution & contentResolution = viewport->getContentResolution();
+        mt::vec2f v_screen = (_point - v_wvpn);
 
-        mt::vec2f contentResolutionSize;
-        contentResolution.calcSize( &contentResolutionSize );
+        mt::vec2f v_content;
+        resolution->fromScreenToContentPosition( v_screen, &v_content );
 
-        mt::vec2f v = (_point - v_wvpn) * contentResolutionSize;
+        v_content.y /= m_ellipse;
 
-        v.y /= m_ellipse;
-
-        float v_sqrlength = v.sqrlength();
+        float v_sqrlength = v_content.sqrlength();
 
         mt::vec2f r;
         mt::mul_v2_v2_m4_r( &r, mt::vec2f( m_radius, m_radius ), wm );
@@ -187,6 +183,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( _context->camera, "invalid camera nullptr" );
         MENGINE_ASSERTION_MEMORY_PANIC( _context->viewport, "invalid viewport nullptr" );
 
+        const RenderResolutionInterface * resolution = _context->resolution;
         const RenderCameraInterface * camera = _context->camera;
         const RenderViewportInterface * viewport = _context->viewport;
 
@@ -216,8 +213,11 @@ namespace Mengine
             v_wvpn.x = (1.f + v_wvp.x) * 0.5f;
             v_wvpn.y = (1.f - v_wvp.y) * 0.5f;
 
+            mt::vec2f v_content;
+            viewport->fromCameraToContentPosition( v_wvpn, &v_content );
+
             mt::vec2f v_screen;
-            viewport->fromScreenToViewportPosition( v_wvpn, &v_screen );
+            resolution->fromContentToScreenPosition( v_content, &v_screen );
 
             if( _bb != nullptr )
             {

@@ -101,22 +101,22 @@ namespace Mengine
         mt::vec2f adaptScreenPoint;
         Helper::adaptScreenPosition( _screenPoint, &adaptScreenPoint );
 
+        const RenderResolutionInterface * renderResolution = _context->resolution;
         const RenderViewportInterface * renderViewport = _context->viewport;
 
         const Viewport & viewport = renderViewport->getViewportWM();
 
-        const Resolution & contentResolution = APPLICATION_SERVICE()
-            ->getContentResolution();
+        const Resolution & contentResolution = renderResolution->getContentResolution();
 
-        mt::vec2f contentResolutionSize;
-        contentResolution.calcSize( &contentResolutionSize );
+        mt::vec2f contentResolutionSizeInv;
+        contentResolution.calcSizeInv( &contentResolutionSizeInv );
 
         mt::vec2f viewportSize;
         viewport.calcSize( &viewportSize );
 
-        mt::vec2f vp_begin = viewport.begin / contentResolutionSize;
-        //mt::vec2f vp_end = viewport.end / contentResolutionSize;
-        mt::vec2f vp_size = viewportSize / contentResolutionSize;
+        mt::vec2f vp_begin = viewport.begin * contentResolutionSizeInv;
+        //mt::vec2f vp_end = viewport.end * contentResolutionSizeInv;
+        mt::vec2f vp_size = viewportSize * contentResolutionSizeInv;
 
         mt::vec2f sp = (adaptScreenPoint - vp_begin) / vp_size;
 
@@ -187,6 +187,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ArrowService::calcMouseScreenPosition( const RenderContext * _context, const mt::vec2f & _worldPoint, mt::vec2f * const _screenPoint ) const
     {
+        const RenderResolutionInterface * renderResolution = _context->resolution;
         const RenderCameraInterface * renderCamera = _context->camera;
 
         const mt::mat4f & vm = renderCamera->getCameraViewMatrix();
@@ -210,23 +211,14 @@ namespace Mengine
 
         mt::vec2f p_screen = (p_vm_pm + mt::vec2f( 1.f, 1.f )) / 2.f;
 
-        const Resolution & contentResolution = APPLICATION_SERVICE()
-            ->getContentResolution();
+        mt::vec2f sp_content;
+        renderViewport->fromCameraToContentPosition( p_screen, &sp_content );
 
-        mt::vec2f contentResolutionSize;
-        contentResolution.calcSize( &contentResolutionSize );
-
-        mt::vec2f viewportSize;
-        viewport.calcSize( &viewportSize );
-
-        mt::vec2f vp_begin = viewport.begin / contentResolutionSize;
-        //mt::vec2f vp_end = viewport.end / contentResolutionSize;
-        mt::vec2f vp_size = viewportSize / contentResolutionSize;
-
-        mt::vec2f sp = vp_begin + p_screen * vp_size;
+        mt::vec2f sp_screen;
+        renderResolution->fromContentToScreenPosition( sp_content, &sp_screen );
 
         mt::vec2f adapt_sp;
-        Helper::adaptWorldPosition( sp, &adapt_sp );
+        Helper::adaptWorldPosition( sp_screen, &adapt_sp );
 
         *_screenPoint = adapt_sp;
     }
@@ -264,7 +256,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ArrowService::notifyInitializeComplete_()
     {
-        NodePtr node = Helper::generateFactorable<Node, Interender>( MENGINE_DOCUMENT_FACTORABLE );
+        NodePtr node = Helper::generateNodeFactorable<Interender>( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( node, "failed create Interender for arrow" );
 

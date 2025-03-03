@@ -14,6 +14,8 @@ namespace Mengine
         : public ScriptEmbeddingInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( PathfinderScriptEmbedding );
+
     public:
         PathfinderScriptEmbedding();
         ~PathfinderScriptEmbedding() override;

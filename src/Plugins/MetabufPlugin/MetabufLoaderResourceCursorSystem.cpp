@@ -2,8 +2,6 @@
 
 #include "Interface/ContentInterface.h"
 
-#include "Engine/ResourceCursorSystem.h"
-
 #include "Metacode/Metacode.h"
 
 namespace Mengine

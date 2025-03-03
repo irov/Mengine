@@ -18,6 +18,7 @@
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/VocabularyHelper.h"
 #include "Kernel/PluginHelper.h"
+#include "Kernel/PrototypeHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Texturepacker, Mengine::TexturepackerPlugin );
@@ -39,38 +40,36 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
         {
             SCRIPT_SERVICE()
-                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "TexturepackerScriptEmbedding" ), Helper::makeFactorableUnique<TexturepackerScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
+                ->addScriptEmbedding( TexturepackerScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<TexturepackerScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
         }, MENGINE_DOCUMENT_FACTORABLE );
 
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
         {
             SCRIPT_SERVICE()
-                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "TexturepackerScriptEmbedding" ) );
+                ->removeScriptEmbedding( TexturepackerScriptEmbedding::getFactorableType() );
         }, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
-        if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceTexturepacker" ), Helper::makeFactorableUnique<ResourcePrototypeGenerator<ResourceTexturepacker, 64>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        if( Helper::addResourcePrototype<ResourceTexturepacker, 64>( MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
-        if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMultiTexturepacker" ), Helper::makeFactorableUnique<ResourcePrototypeGenerator<ResourceMultiTexturepacker, 64>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        if( Helper::addResourcePrototype<ResourceMultiTexturepacker, 64>( MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
         PLUGIN_SERVICE_WAIT( LoaderServiceInterface, [this]()
         {
-            VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), STRINGIZE_STRING_LOCAL( "ResourceTexturepacker" ), Helper::makeFactorableUnique<LoaderResourceTexturepacker>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+            VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceTexturepacker::getFactorableType(), Helper::makeFactorableUnique<LoaderResourceTexturepacker>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
             return true;
         } );
 
         PLUGIN_SERVICE_LEAVE( LoaderServiceInterface, []()
         {
-            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), STRINGIZE_STRING_LOCAL( "ResourceTexturepacker" ) );
+            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceTexturepacker::getFactorableType() );
         } );
 
         return true;
@@ -83,11 +82,8 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif
 
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceTexturepacker" ), nullptr );
-
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMultiTexturepacker" ), nullptr );
+        Helper::removeResourcePrototype<ResourceTexturepacker>();
+        Helper::removeResourcePrototype<ResourceMultiTexturepacker>();
     }
     //////////////////////////////////////////////////////////////////////////
 }

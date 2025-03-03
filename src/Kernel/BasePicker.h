@@ -52,6 +52,7 @@ namespace Mengine
         MENGINE_INLINE bool isPickerExclusive() const override final;
 
     protected:
+        const RenderResolutionInterfacePtr & getPickerResolution() const override;
         const RenderViewportInterfacePtr & getPickerViewport() const override;
         const RenderCameraInterfacePtr & getPickerCamera() const override;
         const RenderScissorInterfacePtr & getPickerScissor() const override;

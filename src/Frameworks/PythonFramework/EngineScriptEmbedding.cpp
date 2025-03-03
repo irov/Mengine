@@ -111,6 +111,7 @@
 #include "Kernel/Layer.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Identity.h"
+#include "Kernel/Interender.h"
 #include "Kernel/Affector.h"
 #include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/ScriptablePrototypeGenerator.h"
@@ -731,7 +732,8 @@ namespace Mengine
                 }
                 else
                 {
-                    ScenePtr scene = Helper::generatePrototype( Scene::getFactorableType(), _prototype, MENGINE_DOCUMENT_PYBIND );
+                    ScenePtr scene = PROTOTYPE_SERVICE()
+                        ->generatePrototype( Scene::getFactorableType(), _prototype, MENGINE_DOCUMENT_PYBIND );
 
                     MENGINE_ASSERTION_MEMORY_PANIC( scene, "invalid create scene '%s'"
                         , _name.c_str()
@@ -818,7 +820,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             ScenePtr s_createScene( const ConstString & _name, const pybind::object & _type )
             {
-                ScenePtr scene = Helper::generateFactorable<Node, Scene>( MENGINE_DOCUMENT_PYBIND );
+                ScenePtr scene = Helper::generateNodeFactorable<Scene>( MENGINE_DOCUMENT_PYBIND );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( scene, "invalid create scene '%s'"
                     , _name.c_str()
@@ -1002,16 +1004,17 @@ namespace Mengine
             {
                 ConstString correct_type = _type;
 
-                if( correct_type == STRINGIZE_STRING_LOCAL( "Node" ) )
+                if( correct_type == Node::getFactorableType() )
                 {
                     LOGGER_WARNING( "type 'Node' is old deprecated type, use 'Interender' or other\ntraceback:\n%s"
                         , MENGINE_PYBIND_STATETRACE()
                     );
 
-                    correct_type = STRINGIZE_STRING_LOCAL( "Interender" );
+                    correct_type = Interender::getFactorableType();
                 }
 
-                NodePtr node = Helper::generatePrototype( Node::getFactorableType(), correct_type, MENGINE_DOCUMENT_PYBIND );
+                NodePtr node = PROTOTYPE_SERVICE()
+                    ->generatePrototype( Node::getFactorableType(), correct_type, MENGINE_DOCUMENT_PYBIND );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( node, "invalid create node '%s'"
                     , correct_type.c_str()
@@ -1022,7 +1025,8 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             SurfacePtr s_createSurface( const ConstString & _type )
             {
-                SurfacePtr surface = Helper::generatePrototype( Surface::getFactorableType(), _type, MENGINE_DOCUMENT_PYBIND );
+                SurfacePtr surface = PROTOTYPE_SERVICE()
+                    ->generatePrototype( Surface::getFactorableType(), _type, MENGINE_DOCUMENT_PYBIND );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( surface, "invalid create surface '%s'"
                     , _type.c_str()
@@ -1052,7 +1056,8 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             RandomizerInterfacePtr s_generateRandomizer( const ConstString & _prototype )
             {
-                RandomizerInterfacePtr randomizer = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), _prototype, MENGINE_DOCUMENT_PYBIND );
+                RandomizerInterfacePtr randomizer = PROTOTYPE_SERVICE()
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), _prototype, MENGINE_DOCUMENT_PYBIND );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( randomizer, "invalid create randomizer '%s'"
                     , _prototype.c_str()
@@ -1067,7 +1072,7 @@ namespace Mengine
                     , _name.c_str()
                 );
 
-                SurfaceImagePtr surface = Helper::generateFactorable<Surface, SurfaceImage>( MENGINE_DOCUMENT_PYBIND );
+                SurfaceImagePtr surface = Helper::generateSurfaceFactorable<SurfaceImage>( MENGINE_DOCUMENT_PYBIND );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( surface, "invalid create surface '%s'"
                     , _name.c_str()
@@ -1076,7 +1081,7 @@ namespace Mengine
                 surface->setName( _name );
                 surface->setResourceImage( _resource );
 
-                ShapeQuadFixedPtr shape = Helper::generateFactorable<Node, ShapeQuadFixed>( MENGINE_DOCUMENT_PYBIND );
+                ShapeQuadFixedPtr shape = Helper::generateNodeFactorable<ShapeQuadFixed>( MENGINE_DOCUMENT_PYBIND );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( shape, "invalid create shape '%s'"
                     , _name.c_str()
@@ -1466,7 +1471,7 @@ namespace Mengine
                 }
 
                 ResourceCook cook;
-                cook.type = STRINGIZE_STRING_LOCAL( "ResourceImageDefault" );
+                cook.type = ResourceImageDefault::getFactorableType();
 
                 ResourceImageDefaultPtr resource = RESOURCE_SERVICE()
                     ->createResource( cook, MENGINE_DOCUMENT_PYBIND );
@@ -1512,7 +1517,7 @@ namespace Mengine
             ResourceImageSolidPtr s_createImageSolidResource( const ConstString & _resourceName, const Color & _color, const mt::vec2f & _maxSize )
             {
                 ResourceCook cook;
-                cook.type = STRINGIZE_STRING_LOCAL( "ResourceImageSolid" );
+                cook.type = ResourceImageSolid::getFactorableType();
 
                 ResourceImageSolidPtr resource = RESOURCE_SERVICE()
                     ->createResource( cook, MENGINE_DOCUMENT_PYBIND );
@@ -2885,7 +2890,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             PythonValueFollowerLinearPtr s_createValueFollowerLinear( float _value, float _speed, const pybind::object & _cb, const pybind::args & _args )
             {
-                PythonValueFollowerLinearPtr follower = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ), MENGINE_DOCUMENT_PYBIND );
+                PythonValueFollowerLinearPtr follower = Helper::generateAffectorFactorable<PythonValueFollowerLinear>( MENGINE_DOCUMENT_PYBIND );
 
                 follower->initialize( _value, _speed, _cb, _args );
 
@@ -2899,7 +2904,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             PythonValueFollowerAccelerationPtr s_createValueFollowerAcceleration( float _value, float _speed, float _acceleration, const pybind::object & _cb, const pybind::args & _args )
             {
-                PythonValueFollowerAccelerationPtr follower = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ), MENGINE_DOCUMENT_PYBIND );
+                PythonValueFollowerAccelerationPtr follower = Helper::generateAffectorFactorable<PythonValueFollowerAcceleration>( MENGINE_DOCUMENT_PYBIND );
 
                 follower->initialize( _value, _speed, _acceleration, _cb, _args );
 
@@ -2960,7 +2965,8 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             SecureUnsignedValuePtr s_makeSecureUnsignedValue( uint32_t _value )
             {
-                SecureUnsignedValuePtr secureValue = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "SecureUnsignedValue" ), ConstString::none(), MENGINE_DOCUMENT_PYBIND );
+                SecureUnsignedValuePtr secureValue = PROTOTYPE_SERVICE()
+                    ->generatePrototype( ConstString::none(), SecureUnsignedValue::getFactorableType(), MENGINE_DOCUMENT_PYBIND );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( secureValue, "invalid create secure value" );
 
@@ -2993,7 +2999,8 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             SecureStringValuePtr s_makeSecureStringValue( const String & _value )
             {
-                SecureStringValuePtr secureValue = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "SecureStringValue" ), ConstString::none(), MENGINE_DOCUMENT_PYBIND );
+                SecureStringValuePtr secureValue = PROTOTYPE_SERVICE()
+                    ->generatePrototype( ConstString::none(), SecureStringValue::getFactorableType(), MENGINE_DOCUMENT_PYBIND );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( secureValue, "invalid create secure value" );
 
@@ -4631,13 +4638,13 @@ namespace Mengine
         Helper::registerScriptWrapping<PythonValueFollowerAcceleration>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ), Helper::makeFactorableUnique<ScriptablePrototypeGenerator<PythonValueFollowerLinear, 32>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addPrototype( Affector::getFactorableType(), PythonValueFollowerLinear::getFactorableType(), Helper::makeFactorableUnique<ScriptablePrototypeGenerator<PythonValueFollowerLinear, 32>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ), Helper::makeFactorableUnique<ScriptablePrototypeGenerator<PythonValueFollowerAcceleration, 32>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addPrototype( Affector::getFactorableType(), PythonValueFollowerAcceleration::getFactorableType(), Helper::makeFactorableUnique<ScriptablePrototypeGenerator<PythonValueFollowerAcceleration, 32>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
@@ -4709,11 +4716,8 @@ namespace Mengine
         Helper::unregisterScriptWrapping<PythonValueFollowerLinear>();
         Helper::unregisterScriptWrapping<PythonValueFollowerAcceleration>();
 
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ), nullptr );
-
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ), nullptr );
+        Helper::removeAffectorPrototype<PythonValueFollowerLinear>();
+        Helper::removeAffectorPrototype<PythonValueFollowerAcceleration>();
     }
     //////////////////////////////////////////////////////////////////////////
 }

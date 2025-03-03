@@ -183,6 +183,7 @@ namespace Mengine
         arrowNode->disable();
         arrowNode->dispose();
 
+        m_renderResolution = nullptr;
         m_renderViewport = nullptr;
         m_renderCamera = nullptr;
         m_renderTransformation = nullptr;
@@ -341,7 +342,14 @@ namespace Mengine
         APPLICATION_SERVICE()
             ->getGameViewport( &gameViewportAspect, &gameViewport );
 
-        m_defaultCamera2D = Helper::generateFactorable<Node, RenderCameraOrthogonal>( MENGINE_DOCUMENT_FACTORABLE );
+        m_defaultResolution = Helper::generateFactorable<RenderResolution>( MENGINE_DOCUMENT_FACTORABLE );
+
+        m_defaultResolution->setContentResolution( contentResolution );
+        m_defaultResolution->setGameViewport( gameViewport );
+
+        this->setRenderResolution( m_defaultResolution );
+
+        m_defaultCamera2D = Helper::generateNodeFactorable<RenderCameraOrthogonal>( MENGINE_DOCUMENT_FACTORABLE );
 
         m_defaultCamera2D->setName( STRINGIZE_STRING_LOCAL( "DefaultCamera2D" ) );
 
@@ -350,18 +358,16 @@ namespace Mengine
 
         this->setRenderCamera( m_defaultCamera2D );
 
-        m_defaultViewport2D = Helper::generateFactorable<Node, RenderViewport>( MENGINE_DOCUMENT_FACTORABLE );
+        m_defaultViewport2D = Helper::generateNodeFactorable<RenderViewport>( MENGINE_DOCUMENT_FACTORABLE );
 
         m_defaultViewport2D->setName( STRINGIZE_STRING_LOCAL( "DefaultViewport2D" ) );
 
         m_defaultViewport2D->setViewport( vp );
-        m_defaultViewport2D->setGameViewport( gameViewport );
-        m_defaultViewport2D->setContentResolution( contentResolution );
         m_defaultViewport2D->enableForce();
 
         this->setRenderViewport( m_defaultViewport2D );
 
-        m_defaultArrowCamera2D = Helper::generateFactorable<Node, RenderCameraOrthogonal>( MENGINE_DOCUMENT_FACTORABLE );
+        m_defaultArrowCamera2D = Helper::generateNodeFactorable<RenderCameraOrthogonal>( MENGINE_DOCUMENT_FACTORABLE );
 
         m_defaultArrowCamera2D->setName( STRINGIZE_STRING_LOCAL( "DefaultArrowCamera2D" ) );
 
@@ -373,16 +379,22 @@ namespace Mengine
 
         RenderInterface * render = node->getRender();
 
-        render->setRenderCamera( m_defaultArrowCamera2D );
+        render->setRenderResolution( m_renderResolution );
         render->setRenderViewport( m_renderViewport );
+        render->setRenderCamera( m_defaultArrowCamera2D );
         render->setRenderScissor( m_renderScissor );
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::finalizeRenderResources()
     {
+        this->setRenderResolution( nullptr );
         this->setRenderCamera( nullptr );
+        this->setRenderTransformation( nullptr );
         this->setRenderViewport( nullptr );
         this->setRenderScissor( nullptr );
+        this->setRenderTarget( nullptr );
+
+        m_defaultResolution = nullptr;
 
         if( m_defaultCamera2D != nullptr )
         {
@@ -563,6 +575,21 @@ namespace Mengine
     const RenderCameraOrthogonalPtr & PlayerService::getDefaultArrowRenderCamera2D() const
     {
         return m_defaultArrowCamera2D;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PlayerService::setRenderResolution( const RenderResolutionInterfacePtr & _resolution )
+    {
+        m_renderResolution = _resolution;
+
+        m_renderContext.resolution = m_renderResolution.get();
+
+        PICKER_SERVICE()
+            ->setRenderResolution( m_renderResolution );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderResolutionInterfacePtr & PlayerService::getRenderResolution() const
+    {
+        return m_renderResolution;
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::setRenderViewport( const RenderViewportInterfacePtr & _viewport )

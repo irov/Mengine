@@ -21,6 +21,7 @@
 #include "Kernel/AssertionAllocator.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/PluginHelper.h"
+#include "Kernel/PrototypeHelper.h"
 
 #include "Config/StdString.h"
 
@@ -107,42 +108,38 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EMBEDDING, this, [this]()
         {
             SCRIPT_SERVICE()
-                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "OzzScriptEmbedding" ), Helper::makeFactorableUnique<OzzScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
+                ->addScriptEmbedding( OzzScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<OzzScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
         }, MENGINE_DOCUMENT_FACTORABLE );
 
         NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EJECTING, this, []()
         {
             SCRIPT_SERVICE()
-                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "OzzScriptEmbedding" ) );
+                ->removeScriptEmbedding( OzzScriptEmbedding::getFactorableType() );
         }, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
-        if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceOzzSkeleton" ), Helper::makeFactorableUnique<ResourcePrototypeGenerator<ResourceOzzSkeleton, 16>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        if( Helper::addResourcePrototype<ResourceOzzSkeleton, 16>( MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
+
+        if( Helper::addResourcePrototype<ResourceOzzMesh, 16>( MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
+
+        if( Helper::addResourcePrototype<ResourceOzzAnimation, 16>( MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceOzzMesh" ), Helper::makeFactorableUnique<ResourcePrototypeGenerator<ResourceOzzMesh, 16>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Sampler" ), SamplerOzzAnimation::getFactorableType(), Helper::makeFactorableUnique<ObjectPrototypeGenerator<SamplerOzzAnimation, 16>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
 
-        if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceOzzAnimation" ), Helper::makeFactorableUnique<ResourcePrototypeGenerator<ResourceOzzAnimation, 16>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
-        {
-            return false;
-        }
-
-        if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Sampler" ), STRINGIZE_STRING_LOCAL( "SamplerOzzAnimation" ), Helper::makeFactorableUnique<ObjectPrototypeGenerator<SamplerOzzAnimation, 16>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
-        {
-            return false;
-        }
-
-        if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "NodeOzzAnimation" ), Helper::makeFactorableUnique<NodePrototypeGenerator<NodeOzzAnimation, 16>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        if( Helper::addNodePrototype<NodeOzzAnimation, 16>( MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
@@ -157,20 +154,11 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif
 
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceOzzSkeleton" ), nullptr );
-
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceOzzMesh" ), nullptr );
-
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceOzzAnimation" ), nullptr );
-
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Sampler" ), STRINGIZE_STRING_LOCAL( "SamplerOzzAnimation" ), nullptr );
-
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "NodeOzzAnimation" ), nullptr );
+        Helper::removeResourcePrototype<ResourceOzzSkeleton>();
+        Helper::removeResourcePrototype<ResourceOzzMesh>();
+        Helper::removeResourcePrototype<ResourceOzzAnimation>();
+        Helper::removePrototype<SamplerOzzAnimation>( STRINGIZE_STRING_LOCAL( "Sampler" ) );
+        Helper::removeNodePrototype<NodeOzzAnimation>();
 
         OzzAllocator * allocator = static_cast<OzzAllocator *>(ozz::memory::default_allocator());
 

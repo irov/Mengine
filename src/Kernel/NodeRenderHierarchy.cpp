@@ -98,6 +98,27 @@ namespace Mengine
             return relation_zIndex;
         }
         //////////////////////////////////////////////////////////////////////////
+        const RenderResolutionInterface * getRenderResolutionInheritance( const RenderInterface * _render )
+        {
+            const RenderResolutionInterfacePtr & resolution = _render->getRenderResolution();
+
+            if( resolution != nullptr )
+            {
+                return resolution.get();
+            }
+
+            const RenderInterface * relationRender = _render->getTotalRelationRender();
+
+            if( relationRender == nullptr )
+            {
+                return nullptr;
+            }
+
+            const RenderResolutionInterface * relation_resolution = Helper::getRenderResolutionInheritance( relationRender );
+
+            return relation_resolution;
+        }
+        //////////////////////////////////////////////////////////////////////////
         const RenderViewportInterface * getRenderViewportInheritance( const RenderInterface * _render )
         {
             const RenderViewportInterfacePtr & viewport = _render->getRenderViewport();
@@ -221,6 +242,13 @@ namespace Mengine
                 _context->zIndex = zIndex;
             }
 
+            const RenderResolutionInterface * resolution = Helper::getNodeRenderResolutionInheritance( node_ptr );
+
+            if( resolution != nullptr )
+            {
+                _context->resolution = resolution;
+            }
+
             const RenderViewportInterface * viewport = Helper::getNodeRenderViewportInheritance( node_ptr );
 
             if( viewport != nullptr )
@@ -301,6 +329,29 @@ namespace Mengine
             ZIndexType order_zIndex = Helper::getNodeRenderZIndexInheritance( parent );
 
             return order_zIndex;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const RenderResolutionInterface * getNodeRenderResolutionInheritance( const Node * _node )
+        {
+            const RenderInterface * render = _node->getRender();
+
+            if( render != nullptr )
+            {
+                const RenderResolutionInterface * resolution = Helper::getRenderResolutionInheritance( render );
+
+                return resolution;
+            }
+
+            Node * parent = _node->getParent();
+
+            if( parent == nullptr )
+            {
+                return nullptr;
+            }
+
+            const RenderResolutionInterface * resolution_parent = Helper::getNodeRenderResolutionInheritance( parent );
+
+            return resolution_parent;
         }
         //////////////////////////////////////////////////////////////////////////
         const RenderViewportInterface * getNodeRenderViewportInheritance( const Node * _node )

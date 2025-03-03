@@ -27,6 +27,7 @@ namespace Mengine
         virtual void setScene( const ScenePtr & _scene ) = 0;
 
     public:
+        virtual void setRenderResolution( const RenderResolutionInterfacePtr & _resolution ) = 0;
         virtual void setRenderViewport( const RenderViewportInterfacePtr & _viewport ) = 0;
         virtual void setRenderTransformation( const RenderTransformationInterfacePtr & _transformation ) = 0;
         virtual void setRenderCamera( const RenderCameraInterfacePtr & _camera ) = 0;

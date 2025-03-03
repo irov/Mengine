@@ -33,6 +33,7 @@
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/PrefetcherHelper.h"
 #include "Kernel/GlobalInputHandlerHelper.h"
+#include "Kernel/Surface.h"
 
 #include <iomanip>
 
@@ -424,7 +425,6 @@ namespace Mengine
                             {
                                 break;
                             }
-
                         }
 
                         return ss.str();
@@ -432,11 +432,12 @@ namespace Mengine
 
                 protected:
                     ConstString m_category;
+
                     typedef Map<uint32_t, VectorConstString> MapPybindScope;
                     MapPybindScope m_scopes;
                 };
 
-                VisitorPlayerFactoryManager pfmv_node( STRINGIZE_STRING_LOCAL( "Node" ) );
+                VisitorPlayerFactoryManager pfmv_node( Node::getFactorableType() );
 
                 PROTOTYPE_SERVICE()
                     ->foreachGenerators( [&pfmv_node]( const PrototypeGeneratorInterfacePtr & _generator )
@@ -446,7 +447,7 @@ namespace Mengine
 
                 ss << pfmv_node.getMsg() << std::endl;
 
-                VisitorPlayerFactoryManager pfmv_surface( STRINGIZE_STRING_LOCAL( "Surface" ) );
+                VisitorPlayerFactoryManager pfmv_surface( Surface::getFactorableType() );
 
                 PROTOTYPE_SERVICE()
                     ->foreachGenerators( [&pfmv_surface]( const PrototypeGeneratorInterfacePtr & _generator )

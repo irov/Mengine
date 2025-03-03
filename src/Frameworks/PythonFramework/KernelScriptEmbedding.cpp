@@ -508,7 +508,8 @@ namespace Mengine
                     correct_type = Interender::getFactorableType();
                 }
 
-                NodePtr node = Helper::generatePrototype( Node::getFactorableType(), correct_type, MENGINE_DOCUMENT_PYBIND );
+                NodePtr node = PROTOTYPE_SERVICE()
+                    ->generatePrototype( Node::getFactorableType(), correct_type, MENGINE_DOCUMENT_PYBIND );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( node, "can't create child node '%s'"
                     , correct_type.c_str()
@@ -2793,6 +2794,11 @@ namespace Mengine
             ;
 
         pybind::interface_<ThreadTask, pybind::bases<Visitable>>( _kernel, "Task" )
+            ;
+
+        pybind::interface_<RenderResolutionInterface, pybind::bases<Mixin>>( _kernel, "RenderResolutionInterface" )
+            .def( "getContentResolution", &RenderResolutionInterface::getContentResolution )
+            .def( "getGameViewport", &RenderResolutionInterface::getGameViewport )
             ;
 
         pybind::interface_<RenderViewportInterface, pybind::bases<Mixin>>( _kernel, "RenderViewportInterface" )

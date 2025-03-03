@@ -6,19 +6,17 @@
 #include "Interface/GlobalInputHandlerInterface.h"
 #include "Interface/UpdationInterface.h"
 #include "Interface/RandomizerInterface.h"
+#include "Interface/RenderResolutionInterface.h"
+#include "Interface/RenderViewportInterface.h"
+#include "Interface/RenderCameraInterface.h"
+#include "Interface/RenderScissorInterface.h"
 
 #include "Kernel/RenderCameraOrthogonal.h"
 #include "Kernel/RenderViewport.h"
+#include "Kernel/Affectorable.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class Affectorable> AffectorablePtr;
-    typedef IntrusivePtr<class ArrowInterface> ArrowInterfacePtr;
-    typedef IntrusivePtr<class RenderViewportInterface> RenderViewportInterfacePtr;
-    typedef IntrusivePtr<class RenderCameraInterface> RenderCameraInterfacePtr;
-    typedef IntrusivePtr<class RenderScissorInterface> RenderScissorInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
     class PlayerServiceInterface
         : public ServiceInterface
         , public InputHandlerInterface
@@ -51,6 +49,10 @@ namespace Mengine
         virtual const RenderCameraOrthogonalPtr & getDefaultSceneRenderCamera2D() const = 0;
         virtual const RenderViewportPtr & getDefaultRenderViewport2D() const = 0;
         virtual const RenderCameraOrthogonalPtr & getDefaultArrowRenderCamera2D() const = 0;
+
+    public:
+        virtual void setRenderResolution( const RenderResolutionInterfacePtr & _resolution ) = 0;
+        virtual const RenderResolutionInterfacePtr & getRenderResolution() const = 0;
 
     public:
         virtual void setRenderViewport( const RenderViewportInterfacePtr & _renderViewport ) = 0;
@@ -92,7 +94,6 @@ namespace Mengine
         virtual const AffectorHubInterfacePtr & getAffectorHub() const = 0;
         virtual const AffectorHubInterfacePtr & getGlobalAffectorHub() const = 0;
     };
-    //////////////////////////////////////////////////////////////////////////
 }
 //////////////////////////////////////////////////////////////////////////
 #define PLAYER_SERVICE()\

@@ -226,6 +226,7 @@ Render
     RenderImageLoaderInterface.h
     RenderImageProviderInterface.h
     RenderTextureInterface.h
+    RenderResolutionInterface.h
     RenderViewportInterface.h
     RenderCameraInterface.h
     RenderTransformationInterface.h

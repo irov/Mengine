@@ -15,6 +15,8 @@
 #include "SoundDecoderResourcePrefetcher.h"
 #include "DefaultResourcePrefetcher.h"
 
+#include "Engine/ResourceHIT.h"
+
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionVocabulary.h"
 #include "Kernel/Logger.h"
@@ -42,13 +44,13 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [MENGINE_DEBUG_ARGUMENTS( this )]()
         {
             SCRIPT_SERVICE()
-                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "ResourcePrefetcherScriptEmbedding" ), Helper::makeFactorableUnique<ResourcePrefetcherScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
+                ->addScriptEmbedding( ResourcePrefetcherScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<ResourcePrefetcherScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
         }, MENGINE_DOCUMENT_FACTORABLE );
 
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
         {
             SCRIPT_SERVICE()
-                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "ResourcePrefetcherScriptEmbedding" ) );
+                ->removeScriptEmbedding( ResourcePrefetcherScriptEmbedding::getFactorableType() );
         }, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
@@ -72,9 +74,9 @@ namespace Mengine
         ResourcePrefetcherInterfacePtr prefetcherSoundDecoder = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "ResourcePrefetcherType" ), STRINGIZE_STRING_LOCAL( "SoundDecoder" ) );
         ResourcePrefetcherInterfacePtr prefetcherDefault = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "ResourcePrefetcherType" ), STRINGIZE_STRING_LOCAL( "Default" ) );
 
-        VOCABULARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), prefetcherImageDecoder, MENGINE_DOCUMENT_FACTORABLE );
-        VOCABULARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ResourceSound" ), prefetcherSoundDecoder, MENGINE_DOCUMENT_FACTORABLE );
-        VOCABULARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ResourceHIT" ), prefetcherDefault, MENGINE_DOCUMENT_FACTORABLE );
+        VOCABULARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), ResourceImageDefault::getFactorableType(), prefetcherImageDecoder, MENGINE_DOCUMENT_FACTORABLE );
+        VOCABULARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), ResourceSound::getFactorableType(), prefetcherSoundDecoder, MENGINE_DOCUMENT_FACTORABLE );
+        VOCABULARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), ResourceHIT::getFactorableType(), prefetcherDefault, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -86,9 +88,9 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif
 
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ) );
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ResourceSound" ) );
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ResourceHIT" ) );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), ResourceImageDefault::getFactorableType() );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), ResourceSound::getFactorableType() );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), ResourceHIT::getFactorableType() );
 
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcherType" ), STRINGIZE_STRING_LOCAL( "Default" ) );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcherType" ), STRINGIZE_STRING_LOCAL( "Dataflow" ) );

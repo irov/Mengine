@@ -253,6 +253,16 @@ namespace Mengine
         m_renderChildren.erase( it_erase );
     }
     //////////////////////////////////////////////////////////////////////////
+    void BaseRender::setRenderResolution( const RenderResolutionInterfacePtr & _resolution )
+    {
+        m_renderResolution = _resolution;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderResolutionInterfacePtr & BaseRender::getRenderResolution() const
+    {
+        return m_renderResolution;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void BaseRender::setRenderViewport( const RenderViewportInterfacePtr & _renderViewport )
     {
         m_renderViewport = _renderViewport;
@@ -325,6 +335,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::mergeRenderContext( const RenderContext * _in, RenderContext * const _out ) const
     {
+        _out->resolution = m_renderResolution != nullptr ? m_renderResolution.get() : _in->resolution;
         _out->viewport = m_renderViewport != nullptr ? m_renderViewport.get() : _in->viewport;
         _out->camera = m_renderCamera != nullptr ? m_renderCamera.get() : _in->camera;
         _out->transformation = m_renderTransformation != nullptr ? m_renderTransformation.get() : _in->transformation;
@@ -336,6 +347,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::makeRenderContext( RenderContext * const _renderContext ) const
     {
+        _renderContext->resolution = m_renderResolution.get();
         _renderContext->viewport = m_renderViewport.get();
         _renderContext->camera = m_renderCamera.get();
         _renderContext->transformation = m_renderTransformation.get();

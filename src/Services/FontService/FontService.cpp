@@ -89,7 +89,8 @@ namespace Mengine
             , _glyphName.c_str()
         );
 
-        FontGlyphInterfacePtr glyph = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "FontGlyph" ), _glyphType, _doc );
+        FontGlyphInterfacePtr glyph = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "FontGlyph" ), _glyphType, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( glyph, "invalid create font glyph '%s' type '%s' (doc: %s)"
             , _glyphName.c_str()
@@ -168,7 +169,8 @@ namespace Mengine
             , _fontName.c_str()
         );
 
-        FontInterfacePtr font = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "Font" ), _fontType, _doc );
+        FontInterfacePtr font = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Font" ), _fontType, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( font, "invalid create font '%s' type '%s' (doc: %s)"
             , _fontName.c_str()

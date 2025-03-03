@@ -42,22 +42,22 @@ namespace Mengine
         }
 
         NODEDEBUGRENDER_SERVICE()
-            ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "Point" ), Helper::makeFactorableUnique<PointDebugRender>( MENGINE_DOCUMENT_FACTORABLE ) );
+            ->addNodeDebugRender( Point::getFactorableType(), Helper::makeFactorableUnique<PointDebugRender>( MENGINE_DOCUMENT_FACTORABLE ) );
 
         NODEDEBUGRENDER_SERVICE()
-            ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "HotSpotCircle" ), Helper::makeFactorableUnique<HotSpotCircleDebugRender>( MENGINE_DOCUMENT_FACTORABLE ) );
+            ->addNodeDebugRender( HotSpotCircle::getFactorableType(), Helper::makeFactorableUnique<HotSpotCircleDebugRender>( MENGINE_DOCUMENT_FACTORABLE ) );
 
         NODEDEBUGRENDER_SERVICE()
-            ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "HotSpotImage" ), Helper::makeFactorableUnique<HotSpotImageDebugRender>( MENGINE_DOCUMENT_FACTORABLE ) );
+            ->addNodeDebugRender( HotSpotImage::getFactorableType(), Helper::makeFactorableUnique<HotSpotImageDebugRender>( MENGINE_DOCUMENT_FACTORABLE ) );
 
         NODEDEBUGRENDER_SERVICE()
-            ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ), Helper::makeFactorableUnique<HotSpotPolygonDebugRender>( MENGINE_DOCUMENT_FACTORABLE ) );
+            ->addNodeDebugRender( HotSpotPolygon::getFactorableType(), Helper::makeFactorableUnique<HotSpotPolygonDebugRender>( MENGINE_DOCUMENT_FACTORABLE ) );
 
         NODEDEBUGRENDER_SERVICE()
-            ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "HotSpotSurface" ), Helper::makeFactorableUnique<HotSpotSurfaceDebugRender>( MENGINE_DOCUMENT_FACTORABLE ) );        
+            ->addNodeDebugRender( HotSpotSurface::getFactorableType(), Helper::makeFactorableUnique<HotSpotSurfaceDebugRender>( MENGINE_DOCUMENT_FACTORABLE ) );
 
         NODEDEBUGRENDER_SERVICE()
-            ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "TextField" ), Helper::makeFactorableUnique<TextFieldDebugRender>( MENGINE_DOCUMENT_FACTORABLE ) );
+            ->addNodeDebugRender( TextField::getFactorableType(), Helper::makeFactorableUnique<TextFieldDebugRender>( MENGINE_DOCUMENT_FACTORABLE ) );
 
         return true;
     }
@@ -70,22 +70,22 @@ namespace Mengine
         }
 
         NODEDEBUGRENDER_SERVICE()
-            ->removeNodeDebugRender( STRINGIZE_STRING_LOCAL( "Point" ) );
+            ->removeNodeDebugRender( Point::getFactorableType() );
 
         NODEDEBUGRENDER_SERVICE()
-            ->removeNodeDebugRender( STRINGIZE_STRING_LOCAL( "HotSpotCircle" ) );
+            ->removeNodeDebugRender( HotSpotCircle::getFactorableType() );
 
         NODEDEBUGRENDER_SERVICE()
-            ->removeNodeDebugRender( STRINGIZE_STRING_LOCAL( "HotSpotImage" ) );
+            ->removeNodeDebugRender( HotSpotImage::getFactorableType() );
 
         NODEDEBUGRENDER_SERVICE()
-            ->removeNodeDebugRender( STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ) );
+            ->removeNodeDebugRender( HotSpotPolygon::getFactorableType() );
 
         NODEDEBUGRENDER_SERVICE()
-            ->removeNodeDebugRender( STRINGIZE_STRING_LOCAL( "HotSpotSurface" ) );
+            ->removeNodeDebugRender( HotSpotSurface::getFactorableType() );
 
         NODEDEBUGRENDER_SERVICE()
-            ->removeNodeDebugRender( STRINGIZE_STRING_LOCAL( "TextField" ) );
+            ->removeNodeDebugRender( TextField::getFactorableType() );
 
         SERVICE_FINALIZE( NodeDebugRenderService );
     }

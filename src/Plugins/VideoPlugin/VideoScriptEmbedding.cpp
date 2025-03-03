@@ -57,7 +57,7 @@ namespace Mengine
                 , _name.c_str()
             );
 
-            SurfaceVideoPtr surface = Helper::generateFactorable<Surface, SurfaceVideo>( MENGINE_DOCUMENT_PYBIND );
+            SurfaceVideoPtr surface = Helper::generateSurfaceFactorable<SurfaceVideo>( MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_MEMORY_PANIC( surface, "create video '%s' invalid create surface"
                 , _name.c_str()
@@ -66,7 +66,8 @@ namespace Mengine
             surface->setName( _name );
             surface->setResourceVideo( _resource );
 
-            ShapePtr shape = Helper::generatePrototype( Node::getFactorableType(), _shapeType, MENGINE_DOCUMENT_PYBIND );
+            ShapePtr shape = PROTOTYPE_SERVICE()
+                ->generatePrototype( Node::getFactorableType(), _shapeType, MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_MEMORY_PANIC( shape, "create video '%s' invalid create shape '%s'"
                 , _name.c_str()

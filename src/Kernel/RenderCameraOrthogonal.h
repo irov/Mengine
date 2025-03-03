@@ -83,6 +83,6 @@ namespace Mengine
         bool m_clampViewport;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusiveNodePtr<RenderCameraOrthogonal> RenderCameraOrthogonalPtr;
+    typedef IntrusivePtr<RenderCameraOrthogonal, RenderCameraInterface> RenderCameraOrthogonalPtr;
     //////////////////////////////////////////////////////////////////////////
 }

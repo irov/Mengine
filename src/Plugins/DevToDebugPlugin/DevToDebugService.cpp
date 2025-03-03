@@ -45,6 +45,7 @@
 #include "Kernel/ThreadHelper.h"
 #include "Kernel/Fingerprint.h"
 #include "Kernel/DataHelper.h"
+#include "Kernel/PrototypeHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -68,7 +69,7 @@ extern "C"
             return JNI_FALSE;
         }
 
-        Mengine::DevToDebugTabInterfacePtr t = Mengine::Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugTab" ), MENGINE_DOCUMENT_FUNCTION );
+        Mengine::DevToDebugTabInterfacePtr t = Mengine::Helper::generatePrototype<Mengine::DevToDebugTab>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_FUNCTION );
 
         DEVTODEBUG_SERVICE()
             ->addTab( STRINGIZE_STRING_LOCAL( "Platform" ), t );
@@ -85,11 +86,11 @@ extern "C"
         const Mengine::DevToDebugTabInterfacePtr & t = DEVTODEBUG_SERVICE()
             ->getTab( tab );
 
-        Mengine::DevToDebugWidgetInterfacePtr button = Mengine::Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetButton" ), MENGINE_DOCUMENT_FUNCTION );
+        Mengine::DevToDebugWidgetInterfacePtr button = Mengine::Helper::generatePrototype<Mengine::DevToDebugWidgetButton>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_FUNCTION );
 
         button->setId( id );
 
-        Mengine::DevToDebugPropertyInterfacePtr button_title = Mengine::Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyConstString" ), MENGINE_DOCUMENT_FUNCTION );
+        Mengine::DevToDebugPropertyInterfacePtr button_title = Mengine::Helper::generatePrototype<Mengine::DevToDebugPropertyConstString>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_FUNCTION );
 
         Mengine::UnknownDevToDebugPropertyConstStringInterfacePtr unknown_button_title = button_title->getUnknown();
         unknown_button_title->setValue( "Change" );
@@ -162,72 +163,72 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_RUN_COMPLETE, &DevToDebugService::notifyBootstrapperRunComplete_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_FINALIZE_GAME, &DevToDebugService::notifyBootstrapperFinalizeGame_, MENGINE_DOCUMENT_FACTORABLE );
 
-        if( Helper::addObjectPrototype<DevToDebugTab, 16>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugTab" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( Helper::addObjectPrototype<DevToDebugTab, 16>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
-        if( Helper::addDefaultPrototype<DevToDebugPropertyConstBoolean, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyConstBoolean" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( Helper::addDefaultPrototype<DevToDebugPropertyConstBoolean, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
-        if( Helper::addDefaultPrototype<DevToDebugPropertyGetterBoolean, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyGetterBoolean" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( Helper::addDefaultPrototype<DevToDebugPropertyGetterBoolean, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
-        if( Helper::addDefaultPrototype<DevToDebugPropertyConstString, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyConstString" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( Helper::addDefaultPrototype<DevToDebugPropertyConstString, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
-        if( Helper::addDefaultPrototype<DevToDebugPropertyGetterString, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyGetterString" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( Helper::addDefaultPrototype<DevToDebugPropertyGetterString, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
-        if( Helper::addDefaultPrototype<DevToDebugPropertyConstColor, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyConstColor" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( Helper::addDefaultPrototype<DevToDebugPropertyConstColor, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
-        if( Helper::addDefaultPrototype<DevToDebugPropertyGetterColor, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyGetterColor" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( Helper::addDefaultPrototype<DevToDebugPropertyGetterColor, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
-        if( Helper::addDefaultPrototype<DevToDebugPropertyContent, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyContent" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( Helper::addDefaultPrototype<DevToDebugPropertyContent, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
-        if( Helper::addObjectPrototype<DevToDebugWidgetButton, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetButton" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( Helper::addObjectPrototype<DevToDebugWidgetButton, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
-        if( Helper::addObjectPrototype<DevToDebugWidgetText, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetText" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( Helper::addObjectPrototype<DevToDebugWidgetText, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
-        if( Helper::addObjectPrototype<DevToDebugWidgetCheckbox, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetCheckbox" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( Helper::addObjectPrototype<DevToDebugWidgetCheckbox, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
-        if( Helper::addObjectPrototype<DevToDebugWidgetCommandLine, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetCommandLine" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( Helper::addObjectPrototype<DevToDebugWidgetCommandLine, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
-        if( Helper::addObjectPrototype<DevToDebugWidgetRadioButton, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetRadioButton" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( Helper::addObjectPrototype<DevToDebugWidgetRadioButton, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
-        if( Helper::addObjectPrototype<DevToDebugWidgetSelector, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetSelector" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( Helper::addObjectPrototype<DevToDebugWidgetSelector, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
@@ -279,13 +280,13 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
         {
             SCRIPT_SERVICE()
-                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "DevToDebugScriptEmbedding" ), Helper::makeFactorableUnique<DevToDebugScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
+                ->addScriptEmbedding( DevToDebugScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<DevToDebugScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
         }, MENGINE_DOCUMENT_FACTORABLE );
 
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
         {
             SCRIPT_SERVICE()
-                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "DevToDebugScriptEmbedding" ) );
+                ->removeScriptEmbedding( DevToDebugScriptEmbedding::getFactorableType() );
         }, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
@@ -307,47 +308,21 @@ namespace Mengine
             m_logger = nullptr;
         }
 
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugTab" ), nullptr );
+        Helper::removePrototype<DevToDebugTab>( STRINGIZE_STRING_LOCAL( "DevToDebug" ) );
 
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyConstBoolean" ), nullptr );
-
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyConstString" ), nullptr );
-
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyConstColor" ), nullptr );
-
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyGetterBoolean" ), nullptr );
-
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyGetterString" ), nullptr );
-
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyGetterColor" ), nullptr );
-
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyContent" ), nullptr );
-
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetButton" ), nullptr );
-
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetText" ), nullptr );
-
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetCheckbox" ), nullptr );
-
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetCommandLine" ), nullptr );
-
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetRadioButton" ), nullptr );
-
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetSelector" ), nullptr );
+        Helper::removePrototype<DevToDebugPropertyConstBoolean>( STRINGIZE_STRING_LOCAL( "DevToDebug" ) );
+        Helper::removePrototype<DevToDebugPropertyConstString>( STRINGIZE_STRING_LOCAL( "DevToDebug" ) );
+        Helper::removePrototype<DevToDebugPropertyConstColor>( STRINGIZE_STRING_LOCAL( "DevToDebug" ) );
+        Helper::removePrototype<DevToDebugPropertyGetterBoolean>( STRINGIZE_STRING_LOCAL( "DevToDebug" ) );
+        Helper::removePrototype<DevToDebugPropertyGetterString>( STRINGIZE_STRING_LOCAL( "DevToDebug" ) );
+        Helper::removePrototype<DevToDebugPropertyGetterColor>( STRINGIZE_STRING_LOCAL( "DevToDebug" ) );
+        Helper::removePrototype<DevToDebugPropertyContent>( STRINGIZE_STRING_LOCAL( "DevToDebug" ) );
+        Helper::removePrototype<DevToDebugWidgetButton>( STRINGIZE_STRING_LOCAL( "DevToDebug" ) );
+        Helper::removePrototype<DevToDebugWidgetText>( STRINGIZE_STRING_LOCAL( "DevToDebug" ) );
+        Helper::removePrototype<DevToDebugWidgetCheckbox>( STRINGIZE_STRING_LOCAL( "DevToDebug" ) );
+        Helper::removePrototype<DevToDebugWidgetCommandLine>( STRINGIZE_STRING_LOCAL( "DevToDebug" ) );
+        Helper::removePrototype<DevToDebugWidgetRadioButton>( STRINGIZE_STRING_LOCAL( "DevToDebug" ) );
+        Helper::removePrototype<DevToDebugWidgetSelector>( STRINGIZE_STRING_LOCAL( "DevToDebug" ) );
 
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_RUN_COMPLETE );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_FINALIZE_GAME );

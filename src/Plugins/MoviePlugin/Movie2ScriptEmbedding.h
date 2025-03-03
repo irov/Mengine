@@ -10,6 +10,8 @@ namespace Mengine
         : public ScriptEmbeddingInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( Movie2ScriptEmbedding );
+
     public:
         Movie2ScriptEmbedding();
         ~Movie2ScriptEmbedding() override;

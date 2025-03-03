@@ -41,7 +41,20 @@ namespace Mengine
                 viewport = player_viewport.get();
             }
 
-            viewport->fromScreenToViewportPosition( camera_position, _screenPosition );
+            mt::vec2f contentPosition;
+            viewport->fromCameraToContentPosition( camera_position, &contentPosition );
+
+            const RenderResolutionInterface * resolution = Helper::getNodeRenderResolutionInheritance( _node );
+
+            if( resolution == nullptr )
+            {
+                const RenderResolutionInterfacePtr & player_resolution = PLAYER_SERVICE()
+                    ->getRenderResolution();
+
+                resolution = player_resolution.get();
+            }   
+            
+            resolution->fromContentToScreenPosition( contentPosition, _screenPosition );
         }
         //////////////////////////////////////////////////////////////////////////
         void setNodeScreenPosition( Node * _node, const mt::vec2f & _screenPosition, float _deep )

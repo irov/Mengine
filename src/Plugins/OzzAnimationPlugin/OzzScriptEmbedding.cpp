@@ -29,14 +29,14 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static SamplerOzzAnimationPtr createOzzSampler()
         {
-            SamplerOzzAnimationPtr sampler = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "Sampler" ), STRINGIZE_STRING_LOCAL( "SamplerOzzAnimation" ), MENGINE_DOCUMENT_PYBIND );
+            SamplerOzzAnimationPtr sampler = Helper::generatePrototype<SamplerOzzAnimation>( STRINGIZE_STRING_LOCAL( "Sampler" ), MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_MEMORY_PANIC( sampler, "invalid create sampler" );
 
             return sampler;
         }
         //////////////////////////////////////////////////////////////////////////
-        static PyObject * SamplerOzzAnimationInterface_setEventListener(pybind::kernel_interface * _kernel, SamplerOzzAnimationInterface * _sampler, PyObject * _args, PyObject * _kwds )
+        static PyObject * SamplerOzzAnimationInterface_setEventListener( pybind::kernel_interface * _kernel, SamplerOzzAnimationInterface * _sampler, PyObject * _args, PyObject * _kwds )
         {
             MENGINE_UNUSED( _args );
 
@@ -62,7 +62,7 @@ namespace Mengine
     bool OzzScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         SCRIPT_SERVICE()
-            ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("Ozz"), true );
+            ->setAvailablePlugin( STRINGIZE_STRING_LOCAL( "Ozz" ), true );
 
         pybind::def_function( _kernel, "createOzzSampler", &Detail::createOzzSampler );
 

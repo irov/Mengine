@@ -31,7 +31,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class Resource> ResourcePtr;    
     typedef IntrusivePtr<class Scene, class Node> ScenePtr;
-    typedef IntrusivePtr<class ArrowInterface> ArrowInterfacePtr;
     typedef IntrusivePtr<class RenderPipelineInterface> RenderPipelineInterfacePtr;
     typedef IntrusivePtr<class HttpResponseInterface> HttpResponseInterfacePtr;
     typedef IntrusivePtr<class SettingInterface> SettingInterfacePtr;

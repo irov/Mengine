@@ -1,7 +1,5 @@
 #include "MetabufLoaderResourceSound.h"
 
-#include "Kernel/ResourceSound.h"
-
 #include "Metacode/Metacode.h"
 
 namespace Mengine

@@ -146,27 +146,27 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EMBEDDING, this, [MENGINE_DEBUG_ARGUMENTS( this )]()
         {
             SCRIPT_SERVICE()
-                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "Movie2ScriptEmbedding" ), Helper::makeFactorableUnique<Movie2ScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
+                ->addScriptEmbedding( Movie2ScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<Movie2ScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
         }, MENGINE_DOCUMENT_FACTORABLE );
 
         NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EJECTING, this, []()
         {
             SCRIPT_SERVICE()
-                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "Movie2ScriptEmbedding" ) );
+                ->removeScriptEmbedding( Movie2ScriptEmbedding::getFactorableType() );
         }, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
-        if( Helper::addNodePrototype<Movie2, 128>( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( Helper::addNodePrototype<Movie2, 128>( MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
-        if( Helper::addNodePrototype<Movie2Slot, 128>( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2Slot" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( Helper::addNodePrototype<Movie2Slot, 128>( MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
-        if( Helper::addIdentityPrototype<Movie2SubComposition, 128>( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( Helper::addIdentityPrototype<Movie2SubComposition, 128>( Node::getFactorableType(), MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
@@ -200,7 +200,7 @@ namespace Mengine
             dataflow->finalize();
         } );
 
-        if( Helper::addResourcePrototype<ResourceMovie2, 128>( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( Helper::addResourcePrototype<ResourceMovie2, 128>( MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
@@ -209,20 +209,20 @@ namespace Mengine
         {
             ResourcePrefetcherInterfacePtr resourcePrefetcherDataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "ResourcePrefetcherType" ), STRINGIZE_STRING_LOCAL( "Dataflow" ) );
 
-            VOCABULARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), resourcePrefetcherDataflow, MENGINE_DOCUMENT_FACTORABLE );
+            VOCABULARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), ResourceMovie2::getFactorableType(), resourcePrefetcherDataflow, MENGINE_DOCUMENT_FACTORABLE );
 
             return true;
         } );
 
         PLUGIN_SERVICE_LEAVE( ResourcePrefetcherServiceInterface, []()
         {
-            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
+            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), ResourceMovie2::getFactorableType() );
         } );
 
         PLUGIN_SERVICE_WAIT( NodeDebugRenderServiceInterface, [MENGINE_DOCUMENT_ARGUMENTS( this )]()
         {
             NODEDEBUGRENDER_SERVICE()
-                ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "Movie2" ), Helper::makeFactorableUnique<Movie2DebugRender>( MENGINE_DOCUMENT_FACTORABLE ) );
+                ->addNodeDebugRender( Movie2::getFactorableType(), Helper::makeFactorableUnique<Movie2DebugRender>( MENGINE_DOCUMENT_FACTORABLE ) );
 
             return true;
         } );
@@ -230,7 +230,7 @@ namespace Mengine
         PLUGIN_SERVICE_LEAVE( NodeDebugRenderServiceInterface, []()
         {
             NODEDEBUGRENDER_SERVICE()
-                ->removeNodeDebugRender( STRINGIZE_STRING_LOCAL( "Movie2" ) );
+                ->removeNodeDebugRender( Movie2::getFactorableType() );
         } );
 
         PLUGIN_SERVICE_WAIT( ResourceValidateServiceInterface, [this]()
@@ -246,29 +246,29 @@ namespace Mengine
             movie2Validator->setMovieInstance( m_movieInstance );
             movie2Validator->setArchivator( archivator );
 
-            VOCABULARY_SET( ValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), movie2Validator, MENGINE_DOCUMENT_FACTORABLE );
+            VOCABULARY_SET( ValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), ResourceMovie2::getFactorableType(), movie2Validator, MENGINE_DOCUMENT_FACTORABLE );
 
             return true;
         } );
 
         PLUGIN_SERVICE_LEAVE( ResourceValidateServiceInterface, []()
         {
-            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
+            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), ResourceMovie2::getFactorableType() );
         } );
 
         PLUGIN_SERVICE_WAIT( LoaderServiceInterface, [MENGINE_DEBUG_ARGUMENTS( this )]()
         {
-            VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), Helper::makeFactorableUnique<LoaderResourceMovie2>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+            VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceMovie2::getFactorableType(), Helper::makeFactorableUnique<LoaderResourceMovie2>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
             return true;
         } );
 
         PLUGIN_SERVICE_LEAVE( LoaderServiceInterface, []()
         {
-            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
+            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceMovie2::getFactorableType() );
         } );
 
-        VOCABULARY_SET( DebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "Movie2" ), Helper::makeFactorableUnique<Movie2DebuggerBoundingBox>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+        VOCABULARY_SET( DebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), Movie2::getFactorableType(), Helper::makeFactorableUnique<Movie2DebuggerBoundingBox>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -283,19 +283,12 @@ namespace Mengine
         ae_delete_movie_instance( m_movieInstance );
         m_movieInstance = nullptr;
 
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2" ), nullptr );
+        Helper::removeNodePrototype<Movie2>();
+        Helper::removeNodePrototype<Movie2Slot>();
+        Helper::removeNodePrototype<Movie2SubComposition>();
+        Helper::removeResourcePrototype<ResourceMovie2>();
 
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2Slot" ), nullptr );
-
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), nullptr );
-
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), nullptr );
-
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "Movie2" ) );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), Movie2::getFactorableType() );
 
         MENGINE_ASSERTION_ALLOCATOR( "movie" );
     }

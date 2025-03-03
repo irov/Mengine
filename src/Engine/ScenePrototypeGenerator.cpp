@@ -18,7 +18,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     FactorablePointer ScenePrototypeGenerator::generate( const DocumentInterfacePtr & _doc )
     {
-        ScenePtr scene = Helper::generateFactorable<Node, Scene>( _doc );
+        ScenePtr scene = Helper::generateNodeFactorable<Scene>( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( scene, "can't create '%s' '%s' doc '%s'"
             , m_category.c_str()

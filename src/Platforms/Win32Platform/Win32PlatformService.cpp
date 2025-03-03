@@ -3279,7 +3279,7 @@ namespace Mengine
 
         if( locale_len < MENGINE_LOCALE_LANGUAGE_SIZE )
         {
-            LOGGER_ERROR( "invalid locale '%s' len %d < %d"
+            LOGGER_ERROR( "invalid locale '%s' len %zu < %d"
                 , utf8_userLocaleISO639
                 , locale_len
                 , MENGINE_LOCALE_LANGUAGE_SIZE

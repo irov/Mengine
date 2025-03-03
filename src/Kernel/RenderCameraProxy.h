@@ -42,7 +42,7 @@ namespace Mengine
         mt::mat4f m_viewProjectionMatrixInv;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<RenderCameraProxy> RenderCameraProxyPtr;
+    typedef IntrusivePtr<RenderCameraProxy, RenderCameraInterface> RenderCameraProxyPtr;
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE const mt::mat4f & RenderCameraProxy::getCameraViewMatrixInv() const
     {

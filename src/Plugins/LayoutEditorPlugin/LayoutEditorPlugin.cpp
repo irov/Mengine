@@ -35,14 +35,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LayoutEditorPlugin::_initializePlugin()
     {
-        this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleLayoutEditor" ), Helper::makeModuleFactory<ModuleLayoutEditor>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+        this->addModuleFactory( ModuleLayoutEditor::getFactorableType(), Helper::makeModuleFactory<ModuleLayoutEditor>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void LayoutEditorPlugin::_finalizePlugin()
     {
-        this->removeModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleLayoutEditor" ) );
+        this->removeModuleFactory( ModuleLayoutEditor::getFactorableType() );
     }
     //////////////////////////////////////////////////////////////////////////
 }

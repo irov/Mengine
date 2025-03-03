@@ -26,29 +26,11 @@ namespace Mengine
         const Viewport & getScissorViewport() const;
 
     public:
-        void setGameViewport( const Viewport & _viewport );
-        void setContentResolution( const Resolution & _resolution );
-
-    public:
         const Viewport & getScissorViewportWM() const override;
-
-    public:
-        const Viewport & getGameViewport() const override;
-        const Resolution & getContentResolution() const override;
 
     protected:
         Viewport m_viewport;
         Viewport m_viewportWM;
-
-        Viewport m_gameViewport;
-
-        mt::vec2f m_gameViewportSize;
-        mt::vec2f m_gameViewportSizeInv;
-
-        Resolution m_contentResolution;
-
-        mt::vec2f m_contentResolutionSize;
-        mt::vec2f m_contentResolutionSizeInv;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Movie2Scissor> Movie2ScissorPtr;

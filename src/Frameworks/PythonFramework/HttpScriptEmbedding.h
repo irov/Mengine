@@ -15,6 +15,8 @@ namespace Mengine
         : public ScriptEmbeddingInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( HttpScriptEmbedding );
+
     public:
         HttpScriptEmbedding();
         ~HttpScriptEmbedding() override;

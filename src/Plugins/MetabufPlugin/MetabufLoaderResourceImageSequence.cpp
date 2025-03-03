@@ -2,7 +2,6 @@
 
 #include "Interface/ResourceBankInterface.h"
 
-#include "Kernel/ResourceImageSequence.h"
 #include "Kernel/AssertionResourceType.h"
 #include "Kernel/AssertionMemoryPanic.h"
 

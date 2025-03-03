@@ -2,7 +2,6 @@
 
 #include "Interface/ResourceBankInterface.h"
 
-#include "Kernel/ResourceImageSubstractRGBAndAlpha.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
 #include "Metacode/Metacode.h"

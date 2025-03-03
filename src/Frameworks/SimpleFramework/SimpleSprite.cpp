@@ -15,7 +15,7 @@ namespace Mengine
     {
         ShapeQuadSizePtr createSimpleSprite( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const mt::vec2f & _textureSize, const mt::vec2f & _size, const DocumentInterfacePtr & _doc )
         {
-            ResourceImageDefaultPtr resource = Helper::generateFactorable<Resource, ResourceImageDefault>( _doc );
+            ResourceImageDefaultPtr resource = Helper::generateResourceFactorable<ResourceImageDefault>( _doc );
 
             ContentInterfacePtr content = Helper::makeFileContent( _fileGroup, _filePath, _doc );
 
@@ -38,7 +38,7 @@ namespace Mengine
                 return nullptr;
             }
 
-            SurfaceImagePtr surface = Helper::generateFactorable<Surface, SurfaceImage>( _doc );
+            SurfaceImagePtr surface = Helper::generateSurfaceFactorable<SurfaceImage>( _doc );
 
             surface->setResourceImage( resource );
 
@@ -47,7 +47,7 @@ namespace Mengine
                 return nullptr;
             }
 
-            ShapeQuadSizePtr shape = Helper::generateFactorable<Node, ShapeQuadSize>( _doc );
+            ShapeQuadSizePtr shape = Helper::generateNodeFactorable<ShapeQuadSize>( _doc );
 
             shape->setSurface( surface );
             shape->setSize( _size );

@@ -602,11 +602,6 @@ namespace Mengine
 
             String text = ss.str();
 
-            float gameViewportAspect;
-            Viewport gameViewport;
-            APPLICATION_SERVICE()
-                ->getGameViewport( &gameViewportAspect, &gameViewport );
-
             const Resolution & resolution = APPLICATION_SERVICE()
                 ->getCurrentWindowResolution();
 

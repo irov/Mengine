@@ -124,19 +124,16 @@ namespace Mengine
         this->restoreRenderSystemStates_();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderService::createRenderWindow( const Resolution & _windowResolution, const Resolution & _contentResolution, const Viewport & _renderViewport, bool _vsync, uint32_t _bits, bool _fullscreen, int32_t _FSAAType, int32_t _FSAAQuality )
+    bool RenderService::createRenderWindow( const Resolution & _windowResolution, const Viewport & _renderViewport, bool _vsync, uint32_t _bits, bool _fullscreen, int32_t _FSAAType, int32_t _FSAAQuality )
     {
         m_windowResolution = _windowResolution;
-        m_contentResolution = _contentResolution;
         m_renderViewport = _renderViewport;
         m_vsync = _vsync;
         m_fullscreen = _fullscreen;
 
-        LOGGER_INFO( "render", "window resolution [%u, %u]\ncontent resolution [%u, %u]\nvsync %u\nfullscreen %u"
+        LOGGER_INFO( "render", "window resolution [%u, %u]\nvsync %u\nfullscreen %u"
             , m_windowResolution.getWidth()
             , m_windowResolution.getHeight()
-            , m_contentResolution.getWidth()
-            , m_contentResolution.getHeight()
             , m_vsync
             , m_fullscreen
         );
@@ -356,19 +353,16 @@ namespace Mengine
         return m_whiteTexture;
     }
     ////////////////////////////////////////////////////////////////////////////
-    void RenderService::changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, bool _fullscreen )
+    void RenderService::changeWindowMode( const Resolution & _resolution, const Viewport & _renderViewport, bool _fullscreen )
     {
         m_windowResolution = _resolution;
-        m_contentResolution = _contentResolution;
         m_renderViewport = _renderViewport;
 
         m_fullscreen = _fullscreen;
 
-        LOGGER_INFO( "render", "window resolution [%u, %u]\ncontent resolution [%u, %u]\nrender viewport [%f %f %f %f]\nfullscreen %u"
+        LOGGER_INFO( "render", "window resolution [%u, %u]\nrender viewport [%f %f %f %f]\nfullscreen %u"
             , m_windowResolution.getWidth()
             , m_windowResolution.getHeight()
-            , m_contentResolution.getWidth()
-            , m_contentResolution.getHeight()
             , m_renderViewport.begin.x
             , m_renderViewport.begin.y
             , m_renderViewport.end.x
@@ -828,15 +822,17 @@ namespace Mengine
         m_renderSystem->setBlendFactor( m_currentBlendSrc, m_currentBlendDst, m_currentBlendOp, m_currentSeparateAlphaBlendSrc, m_currentSeparateAlphaBlendDst, m_currentSeparateAlphaBlendOp, m_currentSeparateAlphaBlendEnable );
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderService::calcRenderViewport_( const Viewport & _viewport, Viewport * const _renderViewport ) const
+    void RenderService::calcRenderViewport_( const RenderResolutionInterface * _resolution, const Viewport & _viewport, Viewport * const _renderViewport ) const
     {
         const Viewport & renderViewport = this->getRenderViewport();
 
         float renderWidth = renderViewport.getWidth();
         float renderHeight = renderViewport.getHeight();
 
-        uint32_t contentWidth = m_contentResolution.getWidth();
-        uint32_t contentHeight = m_contentResolution.getHeight();
+        const Resolution & contentResolution = _resolution->getContentResolution();
+
+        uint32_t contentWidth = contentResolution.getWidth();
+        uint32_t contentHeight = contentResolution.getHeight();
 
         float scale_width = renderWidth / float( contentWidth );
         float scale_height = renderHeight / float( contentHeight );
@@ -921,6 +917,7 @@ namespace Mengine
             m_renderSystem->setIndexBuffer( m_currentRenderIndexBuffer );
         }
 
+        const RenderResolutionInterface * resolution = _context->resolution;
         const RenderViewportInterface * viewport = _context->viewport;
 
         if( viewport != nullptr )
@@ -930,7 +927,7 @@ namespace Mengine
                 const Viewport & v = viewport->getViewportWM();
 
                 Viewport rv;
-                this->calcRenderViewport_( v, &rv );
+                this->calcRenderViewport_( resolution, v, &rv );
 
                 m_renderSystem->setViewport( rv );
 
@@ -941,16 +938,7 @@ namespace Mengine
         {
             if( m_currentRenderContext.viewport != nullptr )
             {
-                uint32_t width = m_contentResolution.getWidth();
-                uint32_t height = m_contentResolution.getHeight();
-
-                Viewport rv;
-                rv.begin.x = 0.f;
-                rv.begin.y = 0.f;
-                rv.end.x = (float)width;
-                rv.end.y = (float)height;
-
-                m_renderSystem->setViewport( rv );
+                m_renderSystem->setViewport( m_renderViewport );
 
                 m_currentRenderContext.viewport = nullptr;
             }

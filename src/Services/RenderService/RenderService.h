@@ -37,7 +37,7 @@ namespace Mengine
         void _stopService() override;
 
     public:
-        bool createRenderWindow( const Resolution & _windowResolution, const Resolution & _contentResolution, const Viewport & _renderViewport, bool _vsync, uint32_t _bits, bool _fullscreen, int32_t _FSAAType, int32_t _FSAAQuality ) override;
+        bool createRenderWindow( const Resolution & _windowResolution, const Viewport & _renderViewport, bool _vsync, uint32_t _bits, bool _fullscreen, int32_t _FSAAType, int32_t _FSAAQuality ) override;
         void destroyRenderWindow() override;
 
     public:
@@ -45,7 +45,7 @@ namespace Mengine
         const RenderTextureInterfacePtr & getWhiteTexture() const override;
 
     public:
-        void changeWindowMode( const Resolution & _windowResolution, const Resolution & _contentResolution, const Viewport & _renderViewport, bool _fullscreen ) override;
+        void changeWindowMode( const Resolution & _windowResolution, const Viewport & _renderViewport, bool _fullscreen ) override;
 
     public:
         const RenderBatchInterfacePtr & requestRenderBatch( const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _vertexCount, uint32_t _indexCount, const DocumentInterfacePtr & _doc ) override;
@@ -97,7 +97,7 @@ namespace Mengine
         void drawPrimitive_( const RenderPrimitive * _primitive );
 
     protected:
-        void calcRenderViewport_( const Viewport & _viewport, Viewport * const _renderViewport ) const;
+        void calcRenderViewport_( const RenderResolutionInterface * _resolution, const Viewport & _viewport, Viewport * const _renderViewport ) const;
 
     protected:
         bool makeBatches_( const RenderPipelineInterfacePtr & _pipeline );
@@ -120,7 +120,6 @@ namespace Mengine
         bool m_fullscreen;
 
         Resolution m_windowResolution;
-        Resolution m_contentResolution;
 
         RenderTextureInterfacePtr m_nullTexture;
         RenderTextureInterfacePtr m_whiteTexture;

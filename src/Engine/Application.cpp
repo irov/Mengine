@@ -764,7 +764,6 @@ namespace Mengine
 
         bool result = RENDER_SERVICE()
             ->createRenderWindow( m_currentWindowResolution
-                , m_contentResolution
                 , m_renderViewport
                 , vsync
                 , m_bits
@@ -2160,7 +2159,7 @@ namespace Mengine
         m_renderViewport = renderViewport;
 
         RENDER_SERVICE()
-            ->changeWindowMode( m_currentWindowResolution, m_contentResolution, m_renderViewport, fullscreen );
+            ->changeWindowMode( m_currentWindowResolution, m_renderViewport, fullscreen );
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, fullscreen, m_currentWindowResolution );
 

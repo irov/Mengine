@@ -2,7 +2,7 @@
 
 #include "Kernel/AllocatorHelper.h"
 
-#include <new>
+#include "Config/New.h"
 
 namespace Mengine
 {

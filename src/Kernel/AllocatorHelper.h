@@ -4,8 +4,7 @@
 #include "Config/StdInt.h"
 #include "Config/StdDef.h"
 #include "Config/StdUtility.h"
-
-#include <new>
+#include "Config/New.h"
 
 namespace Mengine
 {

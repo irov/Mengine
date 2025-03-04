@@ -9,7 +9,6 @@
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/PluginServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
-#include "Interface/PreferencesSystemInterface.h"
 
 #if defined(MENGINE_PLATFORM_IOS)
 #   include "iOSLogger.h"
@@ -50,15 +49,6 @@ namespace Mengine
     bool SDLApplication::initializeOptionsService_( int32_t _argc, Char ** const _argv )
     {
         ArgumentsInterfacePtr arguments = Helper::makeFactorableUnique<StringArguments>( MENGINE_DOCUMENT_FUNCTION );
-
-#if !defined(MENGINE_BUILD_PUBLISH)
-        Char MengineApplePersistentArguments[1024 + 1] = {'\0'};
-        if( PREFERENCES_SYSTEM()
-            ->getPreferenceString( "persistent_arguments", MengineApplePersistentArguments, 1024, nullptr ) == true )
-        {
-            arguments->addArguments( MengineApplePersistentArguments );
-        }
-#endif
 
         for( int32_t i = 1; i < _argc; ++i )
         {

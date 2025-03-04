@@ -27,14 +27,6 @@ public class MengineLog {
 
     private static final Set<String> m_singles = new HashSet<>();
 
-    static class HistoryRecord {
-        public int level;
-        public int filter;
-        public String tag;
-        public String message;
-        public MengineApplication application;
-    }
-
     public static boolean isFilter(int filter, int flag) {
         return (filter & flag) == flag;
     }

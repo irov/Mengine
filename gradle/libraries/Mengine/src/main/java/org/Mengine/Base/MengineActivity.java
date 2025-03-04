@@ -757,6 +757,8 @@ public class MengineActivity extends AppCompatActivity {
 
         application.onServicesSave();
 
+        MengineStatistic.save(application);
+
         if (m_surfaceView != null) {
             m_surfaceView.handlePause();
         }

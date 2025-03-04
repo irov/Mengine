@@ -214,7 +214,7 @@ namespace Mengine
             }
             else
             {
-                LOGGER_MESSAGE( "error '%s' invalid version read [%u] need [%u] or protocol [%u] need [%u] (Update you protocol file)"
+                LOGGER_INFO( "loader", "error '%s' invalid version read [%u] need [%u] or protocol [%u] need [%u] (Update you protocol file)"
                     , Metacode::getHeaderErrorMessage( result )
                     , readVersion
                     , needVersion

@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineEvent;
+import org.Mengine.Base.MenginePreferences;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
@@ -18,7 +19,7 @@ public class MengineGeneralDataProtectionRegulationPlugin extends MengineService
 
     @Override
     public void onAppPrepare(@NonNull MengineApplication application, @NonNull Map<String, String> pluginVersions) throws MengineServiceInvalidInitializeException {
-        boolean GDPRPass = application.getPreferenceBoolean("gdpr_pass", false);
+        boolean GDPRPass = this.getPreferenceBoolean("gdpr_pass", false);
 
         m_passGDPR = GDPRPass;
 
@@ -32,7 +33,7 @@ public class MengineGeneralDataProtectionRegulationPlugin extends MengineService
 
         MengineApplication application = this.getMengineApplication();
 
-        application.setPreferenceBoolean("gdpr_pass", passGDPR);
+        MenginePreferences.setPreferenceBoolean(application, SERVICE_NAME, "gdpr_pass", passGDPR);
 
         m_passGDPR = passGDPR;
 

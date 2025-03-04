@@ -1,6 +1,6 @@
-#include "AppleAppLovinScriptEmbedding.h"
+#include "AppleAdvertisementScriptEmbedding.h"
 
-#include "AppleAppLovinInterface.h"
+#include "AppleAdvertisementInterface.h"
 
 #include "Interface/ScriptServiceInterface.h"
 

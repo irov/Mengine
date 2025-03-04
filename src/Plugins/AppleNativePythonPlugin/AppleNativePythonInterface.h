@@ -14,6 +14,12 @@ namespace Mengine
         SERVICE_DECLARE( "AppleNativePythonService" )
 
     public:
+        virtual pybind::object addAppleCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb, const pybind::args & _args ) = 0;
+        virtual void removeAppleCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb ) = 0;
+
+        
+    public:
+        virtual void activateSemaphore( const ConstString & _name ) = 0;
         virtual void waitSemaphore( const ConstString & _name, const AppleSemaphoreListenerInterfacePtr & _listener ) = 0;
     };
 }

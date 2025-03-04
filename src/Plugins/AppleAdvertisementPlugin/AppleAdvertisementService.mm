@@ -1,4 +1,4 @@
-#include "AppleAppLovinService.h"
+#include "AppleAdvertisementService.h"
 
 #import "Environment/Apple/AppleString.h"
 #import "Environment/Apple/AppleDetail.h"
@@ -6,13 +6,7 @@
 #import "Environment/iOS/iOSDetail.h"
 #import "Environment/iOS/iOSNetwork.h"
 
-#include "Configuration/Configurations.h"
-
-#if defined(MENGINE_PLUGIN_APPLE_APPTRACKING)
-#   include "Plugins/AppleAppTrackingPlugin/AppleAppTrackingInterface.h"
-#endif
-
-#import "AppleAppLovinApplicationDelegate.h"
+#import "AppleAdvertisementApplicationDelegate.h"
 
 #include "Kernel/Assertion.h"
 #include "Kernel/ConfigHelper.h"
@@ -23,44 +17,37 @@
 #include "Config/StdString.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( AppleAppLovinService, Mengine::AppleAppLovinService );
+SERVICE_FACTORY( AppleAdvertisementService, Mengine::AppleAdvertisementService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    AppleAppLovinService::AppleAppLovinService()
-#if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON)
-        : m_amazonService( nil )
-#endif
+    AppleAdvertisementService::AppleAdvertisementService()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    AppleAppLovinService::~AppleAppLovinService()
+    AppleAdvertisementService::~AppleAdvertisementService()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleAppLovinService::_initializeService()
+    bool AppleAdvertisementService::_initializeService()
     {
-#if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON)
-        m_amazonService = [[AppleAppLovinAmazonService alloc] init];
-#endif
+        //Empty
         
         return true;
     }
     ////////////////////////////////////////////////////////////////////////
-    void AppleAppLovinService::_finalizeService()
+    void AppleAdvertisementService::_finalizeService()
     {
-#if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON)
-        m_amazonService = nil;
-#endif
+        //Empty
     }
     /////////////////////////////////////////////////////////////////////////
-    void AppleAppLovinService::setBannerProvider( const AppleAppLovinBannerProviderInterfacePtr & _bannerProvider )
+    void AppleAdvertisementService::setBannerProvider( const AppleAdvertisementBannerProviderInterfacePtr & _bannerProvider )
     {
         [[AppleAppLovinApplicationDelegate sharedInstance] setBannerProvider:_bannerProvider];
     }
     ////////////////////////////////////////////////////////////////////////
-    bool AppleAppLovinService::showBanner()
+    bool AppleAdvertisementService::showBanner()
     {
         AppleAppLovinBannerDelegate * banner = [[AppleAppLovinApplicationDelegate sharedInstance] getBanner];
         
@@ -74,7 +61,7 @@ namespace Mengine
         return true;
     }
     ////////////////////////////////////////////////////////////////////////
-    bool AppleAppLovinService::hideBanner()
+    bool AppleAdvertisementService::hideBanner()
     {
         AppleAppLovinBannerDelegate * banner = [[AppleAppLovinApplicationDelegate sharedInstance] getBanner];
         
@@ -88,7 +75,7 @@ namespace Mengine
         return true;
     }
     /////////////////////////////////////////////////////////////////////////
-    bool AppleAppLovinService::getBannerHeight( uint32_t * const _height ) const
+    bool AppleAdvertisementService::getBannerHeight( uint32_t * const _height ) const
     {
         AppleAppLovinBannerDelegate * banner = [[AppleAppLovinApplicationDelegate sharedInstance] getBanner];
         
@@ -104,12 +91,12 @@ namespace Mengine
         return true;
     }
     /////////////////////////////////////////////////////////////////////////
-    void AppleAppLovinService::setInterstitialProvider( const AppleAppLovinInterstitialProviderInterfacePtr & _interstitialProvider )
+    void AppleAdvertisementService::setInterstitialProvider( const AppleAdvertisementInterstitialProviderInterfacePtr & _interstitialProvider )
     {
         [[AppleAppLovinApplicationDelegate sharedInstance] setInterstitialProvider:_interstitialProvider];
     }
     /////////////////////////////////////////////////////////////////////////
-    bool AppleAppLovinService::canYouShowInterstitial( const ConstString & _placement ) const
+    bool AppleAdvertisementService::canYouShowInterstitial( const ConstString & _placement ) const
     {
         AppleAppLovinInterstitialDelegate * interstitial = [[AppleAppLovinApplicationDelegate sharedInstance] getInterstitial];
         
@@ -133,7 +120,7 @@ namespace Mengine
         return true;
     }
     ////////////////////////////////////////////////////////////////////////
-    bool AppleAppLovinService::showInterstitial( const ConstString & _placement )
+    bool AppleAdvertisementService::showInterstitial( const ConstString & _placement )
     {
         AppleAppLovinInterstitialDelegate * interstitial = [[AppleAppLovinApplicationDelegate sharedInstance] getInterstitial];
         
@@ -157,7 +144,7 @@ namespace Mengine
         return true;
     }
     ////////////////////////////////////////////////////////////////////////
-    bool AppleAppLovinService::canOfferRewarded( const ConstString & _placement ) const
+    bool AppleAdvertisementService::canOfferRewarded( const ConstString & _placement ) const
     {
         AppleAppLovinRewardedDelegate * rewarded = [[AppleAppLovinApplicationDelegate sharedInstance] getRewarded];
         
@@ -181,7 +168,7 @@ namespace Mengine
         return true;
     }
     ////////////////////////////////////////////////////////////////////////
-    bool AppleAppLovinService::canYouShowRewarded( const ConstString & _placement ) const
+    bool AppleAdvertisementService::canYouShowRewarded( const ConstString & _placement ) const
     {
         AppleAppLovinRewardedDelegate * rewarded = [[AppleAppLovinApplicationDelegate sharedInstance] getRewarded];
         
@@ -205,12 +192,12 @@ namespace Mengine
         return true;
     }
     /////////////////////////////////////////////////////////////////////////
-    void AppleAppLovinService::setRewardedProvider( const AppleAppLovinRewardedProviderInterfacePtr & _rewardedProvider )
+    void AppleAdvertisementService::setRewardedProvider( const AppleAdvertisementRewardedProviderInterfacePtr & _rewardedProvider )
     {
         [[AppleAppLovinApplicationDelegate sharedInstance] setRewardedProvider:_rewardedProvider];
     }
     ////////////////////////////////////////////////////////////////////////
-    bool AppleAppLovinService::showRewarded( const ConstString & _placement )
+    bool AppleAdvertisementService::showRewarded( const ConstString & _placement )
     {
         AppleAppLovinRewardedDelegate * rewarded = [[AppleAppLovinApplicationDelegate sharedInstance] getRewarded];
         
@@ -232,64 +219,6 @@ namespace Mengine
         }
         
         return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool AppleAppLovinService::hasSupportedCMP() const
-    {
-        ALCMPService * cmpService = [ALSdk shared].cmpService;
-        
-        if( [cmpService hasSupportedCMP] == NO )
-        {
-            return false;
-        }
-        
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool AppleAppLovinService::isConsentFlowUserGeographyGDPR() const
-    {
-        ALSdkConfiguration * configuration = [ALSdk shared].configuration;
-        
-        if( configuration.consentFlowUserGeography != ALConsentFlowUserGeographyGDPR )
-        {
-            return false;
-        }
-        
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AppleAppLovinService::loadAndShowCMPFlow( const AppleAppLovinConsentFlowProviderInterfacePtr & _provider )
-    {
-        ALCMPService * cmpService = [ALSdk shared].cmpService;
-        
-        AppleAppLovinConsentFlowProviderInterfacePtr copy_provider = _provider;
-
-        [cmpService showCMPForExistingUserWithCompletion:^(ALCMPError * _Nullable error) {
-            if (error != nil) {
-                LOGGER_ERROR( "AppLovin CMP show failed: %s [%ld] message: %s"
-                    , [error.message UTF8String]
-                    , error.code
-                    , [error.cmpMessage UTF8String]
-                );
-                
-                Mengine::Helper::dispatchMainThreadEvent([copy_provider]() {
-                    copy_provider->onAppleAppLovinConsentFlowShowFailed();
-                });
-                
-                return;
-            }
-            
-            LOGGER_MESSAGE( "AppLovin CMP show successful" );
-            
-            Mengine::Helper::dispatchMainThreadEvent([copy_provider]() {
-                copy_provider->onAppleAppLovinConsentFlowShowSuccessful();
-            });
-        }];
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AppleAppLovinService::showMediationDebugger()
-    {
-        [[ALSdk shared] showMediationDebugger];
     }
     //////////////////////////////////////////////////////////////////////////
 }

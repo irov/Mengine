@@ -1,9 +1,9 @@
-#include "AppleAppLovinPlugin.h"
+#include "AppleAdvertisementPlugin.h"
 
 #if defined(MENGINE_USE_SCRIPT_SERVICE)
 #   include "Interface/ScriptServiceInterface.h"
 
-#   include "AppleAppLovinScriptEmbedding.h"
+#   include "AppleAdvertisementScriptEmbedding.h"
 #endif
 
 #include "Kernel/ConfigHelper.h"
@@ -13,36 +13,36 @@
 #include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN( AppleAppLovinService );
+SERVICE_EXTERN( AppleAdvertisementService );
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( AppleAppLovin, Mengine::AppleAppLovinPlugin );
+PLUGIN_FACTORY( AppleAdvertisement, Mengine::AppleAdvertisementPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    AppleAppLovinPlugin::AppleAppLovinPlugin()
+    AppleAdvertisementPlugin::AppleAdvertisementPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    AppleAppLovinPlugin::~AppleAppLovinPlugin()
+    AppleAdvertisementPlugin::~AppleAdvertisementPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleAppLovinPlugin::_availablePlugin() const
+    bool AppleAdvertisementPlugin::_availablePlugin() const
     {
-        if( HAS_OPTION( "appleapplovin" ) == true )
+        if( HAS_OPTION( "appleadvertisement" ) == true )
         {
             return true;
         }
 
-        if( HAS_OPTION( "noappleapplovin" ) == true )
+        if( HAS_OPTION( "noappleadvertisement" ) == true )
         {
             return false;
         }
         
-        bool AppleAppLovinPlugin_Available = CONFIG_VALUE_BOOLEAN( "AppleAppLovinPlugin", "Available", true );
+        bool AppleAdvertisementPlugin_Available = CONFIG_VALUE_BOOLEAN( "AppleAdvertisementPlugin", "Available", true );
 
-        if( AppleAppLovinPlugin_Available == false )
+        if( AppleAdvertisementPlugin_Available == false )
         {
             return false;
         }
@@ -50,9 +50,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleAppLovinPlugin::_initializePlugin()
+    bool AppleAdvertisementPlugin::_initializePlugin()
     {
-        if( SERVICE_CREATE( AppleAppLovinService, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( SERVICE_CREATE( AppleAdvertisementService, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
@@ -61,32 +61,32 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
         {
             SCRIPT_SERVICE()
-                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "AppleAppLovinScriptEmbedding" ), Helper::makeFactorableUnique<AppleAppLovinScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
+                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "AppleAdvertisementScriptEmbedding" ), Helper::makeFactorableUnique<AppleAdvertisementScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
         }, MENGINE_DOCUMENT_FACTORABLE );
 
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
         {
             SCRIPT_SERVICE()
-                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "AppleAppLovinScriptEmbedding" ) );
+                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "AppleAdvertisementScriptEmbedding" ) );
         }, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleAppLovinPlugin::_finalizePlugin()
+    void AppleAdvertisementPlugin::_finalizePlugin()
     {
 #if defined(MENGINE_USE_SCRIPT_SERVICE)
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif
 
-        SERVICE_FINALIZE( AppleAppLovinService );
+        SERVICE_FINALIZE( AppleAdvertisementService );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleAppLovinPlugin::_destroyPlugin()
+    void AppleAdvertisementPlugin::_destroyPlugin()
     {
-        SERVICE_DESTROY( AppleAppLovinService );
+        SERVICE_DESTROY( AppleAdvertisementService );
     }
     //////////////////////////////////////////////////////////////////////////
 }

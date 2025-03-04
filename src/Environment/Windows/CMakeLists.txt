@@ -22,6 +22,9 @@ src
     Win32OutputDebugLogger.h
     Win32OutputDebugLogger.cpp
     
+    Win32ConsoleLogger.h
+    Win32ConsoleLogger.cpp
+    
     Win32Register.h
     Win32Register.cpp
     

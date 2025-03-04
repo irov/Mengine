@@ -44,7 +44,6 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
         long installRND = application.getInstallRND();
         long sessionIndex = application.getSessionIndex();
         long sessionTimestamp = application.getSessionTimestamp();
-        long purchasesTimestamp = application.getPurchasesTimestamp();
 
         firebaseAnalytics.setUserProperty("is_dev", String.valueOf(BuildConfig.DEBUG));
         firebaseAnalytics.setUserProperty("install_key", installKey);

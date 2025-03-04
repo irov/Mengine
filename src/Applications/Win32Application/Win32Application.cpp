@@ -12,6 +12,7 @@
 
 #include "Environment/Windows/Win32Helper.h"
 #include "Environment/Windows/Win32MessageBoxLogger.h"
+#include "Environment/Windows/Win32ConsoleLogger.h"
 #include "Environment/Windows/Win32PlatformServiceExtensionInterface.h"
 
 #if defined(MENGINE_WINDOWS_DEBUG)
@@ -127,6 +128,22 @@ namespace Mengine
             return true;
         }
 
+        bool OPTION_console = HAS_OPTION( "console" );
+
+        if( OPTION_console == true )
+        {
+            Win32ConsoleLoggerPtr loggerConsole = Helper::makeFactorableUnique<Win32ConsoleLogger>( MENGINE_DOCUMENT_FUNCTION );
+
+            loggerConsole->setVerboseLevel( LM_INFO );
+            loggerConsole->setWriteHistory( true );
+
+            if( LOGGER_SERVICE()
+                ->registerLogger( loggerConsole ) == true )
+            {
+                m_loggerConsole = loggerConsole;
+            }
+        }
+
         Win32MessageBoxLoggerPtr loggerMessageBox = Helper::makeFactorableUnique<Win32MessageBoxLogger>( MENGINE_DOCUMENT_FUNCTION );
 
         loggerMessageBox->setVerboseLevel( LM_FATAL );
@@ -141,6 +158,7 @@ namespace Mengine
         Win32OutputDebugLoggerPtr loggerOutputDebug = Helper::makeFactorableUnique<Win32OutputDebugLogger>( MENGINE_DOCUMENT_FUNCTION );
 
         loggerOutputDebug->setVerboseLevel( LM_MESSAGE );
+        loggerOutputDebug->setWriteHistory( true );
 
         if( LOGGER_SERVICE()
             ->registerLogger( loggerOutputDebug ) == true )
@@ -154,6 +172,7 @@ namespace Mengine
             Win32ExtraFileLoggerPtr extraFileLogger = Helper::makeFactorableUnique<Win32ExtraFileLogger>( MENGINE_DOCUMENT_FUNCTION );
 
             extraFileLogger->setVerboseLevel( LM_VERBOSE );
+            extraFileLogger->setWriteHistory( true );
 
             if( LOGGER_SERVICE()
                 ->registerLogger( extraFileLogger ) == true )
@@ -167,6 +186,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32Application::finalizeLoggerService_()
     {
+        if( m_loggerConsole != nullptr )
+        {
+            if( SERVICE_IS_INITIALIZE( LoggerServiceInterface ) == true )
+            {
+                LOGGER_SERVICE()
+                    ->unregisterLogger( m_loggerConsole );
+            }
+
+            m_loggerConsole = nullptr;
+        }
+
         if( m_loggerMessageBox != nullptr )
         {
             if( SERVICE_IS_INITIALIZE( LoggerServiceInterface ) == true )

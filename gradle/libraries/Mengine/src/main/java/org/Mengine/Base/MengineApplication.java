@@ -534,10 +534,6 @@ public class MengineApplication extends Application {
         return m_sessionTimestamp;
     }
 
-    public long getPurchasesTimestamp() {
-        return m_purchasesTimestamp;
-    }
-
     public String getDeviceModel() {
         String deviceName = android.os.Build.MODEL;
 

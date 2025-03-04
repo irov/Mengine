@@ -36,6 +36,7 @@ namespace Mengine
         HINSTANCE m_hInstance;
 #endif
 
+        LoggerInterfacePtr m_loggerConsole;
         LoggerInterfacePtr m_loggerMessageBox;
 
 #if defined(MENGINE_WINDOWS_DEBUG)

@@ -303,7 +303,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         return height;
     }
 
-    public void bannerRevenuePaid(Map params) {
+    public void bannerRevenuePaid(Map<String, Object> params) {
         double revenue = MengineUtils.getMapDouble(params, "revenue");
         this.increaseStatisticDouble("ad.banner.revenue", revenue);
         this.increaseStatisticDouble("ad.total.revenue", revenue);
@@ -377,17 +377,17 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         return true;
     }
 
-    public void interstitialShowSuccessful(Map params) {
+    public void interstitialShowSuccessful(Map<String, Object> params) {
         this.increaseStatisticInteger("ad.interstitial.show", 1);
 
         this.pythonCall("onAndroidAdServiceInterstitialShowSuccessful", params);
     }
 
-    public void interstitialShowFailed(Map params) {
+    public void interstitialShowFailed(Map<String, Object> params) {
         this.pythonCall("onAndroidAdServiceInterstitialShowFailed", params);
     }
 
-    public void interstitialRevenuePaid(Map params) {
+    public void interstitialRevenuePaid(Map<String, Object> params) {
         double revenue = MengineUtils.getMapDouble(params, "revenue");
         this.increaseStatisticDouble("ad.interstitial.revenue", revenue);
         this.increaseStatisticDouble("ad.total.revenue", revenue);
@@ -488,17 +488,17 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         return true;
     }
 
-    public void rewardedShowSuccessful(Map params) {
+    public void rewardedShowSuccessful(Map<String, Object> params) {
         this.increaseStatisticInteger("ad.rewarded.show", 1);
 
         this.pythonCall("onAndroidAdServiceRewardedShowSuccessful", params);
     }
 
-    public void rewardedShowFailed(Map params) {
+    public void rewardedShowFailed(Map<String, Object> params) {
         this.pythonCall("onAndroidAdServiceRewardedShowFailed", params);
     }
 
-    public void rewardedRevenuePaid(Map params) {
+    public void rewardedRevenuePaid(Map<String, Object> params) {
         double revenue = MengineUtils.getMapDouble(params, "revenue");
         this.increaseStatisticDouble("ad.rewarded.revenue", revenue);
         this.increaseStatisticDouble("ad.total.revenue", revenue);
@@ -506,7 +506,9 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         this.pythonCall("onAndroidAdServiceRewardedRevenuePaid", params);
     }
 
-    public void rewardedUserRewarded(Map params) {
+    public void rewardedUserRewarded(Map<String, Object> params) {
+        this.increaseStatisticInteger("ad.rewarded.rewarded", 1);
+
         this.pythonCall("onAndroidAdServiceRewardedUserRewarded", params);
     }
 
@@ -572,17 +574,17 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         return true;
     }
 
-    public void appOpenShowSuccessful(Map params) {
+    public void appOpenShowSuccessful(Map<String, Object> params) {
         this.increaseStatisticInteger("ad.appopen.show", 1);
 
         this.pythonCall("onAndroidAdServiceAppOpenShowSuccessful", params);
     }
 
-    public void appOpenShowFailed(Map params) {
+    public void appOpenShowFailed(Map<String, Object> params) {
         this.pythonCall("onAndroidAdServiceAppOpenShowFailed", params);
     }
 
-    public void appOpenRevenuePaid(Map params) {
+    public void appOpenRevenuePaid(Map<String, Object> params) {
         double revenue = MengineUtils.getMapDouble(params, "revenue");
         this.increaseStatisticDouble("ad.appopen.revenue", revenue);
         this.increaseStatisticDouble("ad.total.revenue", revenue);

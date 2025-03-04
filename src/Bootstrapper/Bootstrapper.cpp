@@ -1446,10 +1446,6 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( MemoryUsageMonitor, "plugin MemoryUsageMonitor...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
-#if defined(MENGINE_PLUGIN_WIN32_CONSOLELOGGER_STATIC)
-        MENGINE_ADD_PLUGIN( Win32ConsoleLogger, "plugin Win32ConsoleLogger...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
 #if defined(MENGINE_PLUGIN_WIN32_ANTIFREEZEMONITOR_STATIC)
         MENGINE_ADD_PLUGIN( Win32AntifreezeMonitor, "plugin Win32AntifreezeMonitor...", MENGINE_DOCUMENT_FACTORABLE );
 #endif

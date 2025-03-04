@@ -53,7 +53,6 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
         firebaseAnalytics.setUserProperty("install_rnd", String.valueOf(installRND));
         firebaseAnalytics.setUserProperty("session_index", String.valueOf(sessionIndex));
         firebaseAnalytics.setUserProperty("session_timestamp", String.valueOf(sessionTimestamp));
-        firebaseAnalytics.setUserProperty("purchases_timestamp", String.valueOf(purchasesTimestamp));
 
         long currentTimestamp = MengineUtils.getTimestamp();
         long lifeTime = currentTimestamp - installTimestamp;

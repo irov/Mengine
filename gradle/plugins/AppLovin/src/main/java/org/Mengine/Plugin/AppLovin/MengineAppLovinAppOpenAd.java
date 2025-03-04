@@ -187,6 +187,8 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Max
         this.setState("applovin.appopen.state." + m_adUnitId, "hidden." + placement + "." + ad.getNetworkName());
 
         MengineUtils.performOnMainThread(() -> {
+            m_adService.appOpenShowSuccessful(Map.of("placement", placement));
+
             this.loadAd();
         });
     }
@@ -239,6 +241,8 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Max
         this.setState("applovin.appopen.state." + m_adUnitId, "display_failed." + placement + "." + ad.getNetworkName() + "." + errorCode);
 
         MengineUtils.performOnMainThread(() -> {
+            m_adService.appOpenShowFailed(Map.of("placement", placement, "error_code", errorCode));
+
             this.loadAd();
         });
     }

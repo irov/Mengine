@@ -28,7 +28,6 @@
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/AnalyticsServiceInterface.h"
 #include "Interface/TimerServiceInterface.h"
-#include "Interface/PreferencesSystemInterface.h"
 #include "Interface/ArrowServiceInterface.h"
 #include "Interface/SettingsServiceInterface.h"
 
@@ -3030,33 +3029,6 @@ namespace Mengine
                 return logger;
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_setPersistentArguments( const Char * _arguments )
-            {
-                PREFERENCES_SYSTEM()
-                    ->setPreferenceString( "persistent_arguments", _arguments );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            PyObject * s_getPersistentArguments( pybind::kernel_interface * _kernel )
-            {
-                Char persistentArguments[1024 + 1] = {'\0'};
-                size_t persistentArgumentsLen = 0;
-                if( PREFERENCES_SYSTEM()
-                    ->getPreferenceString( "persistent_arguments", persistentArguments, 1024, &persistentArgumentsLen ) == false )
-                {
-                    return _kernel->ret_none();
-                }
-
-                PyObject * py_persistentArguments = _kernel->string_from_char_size( persistentArguments, persistentArgumentsLen );
-
-                return py_persistentArguments;
-            }
-            //////////////////////////////////////////////////////////////////////////
-            void s_removePersistentArguments()
-            {
-                PREFERENCES_SYSTEM()
-                    ->removePreference( "persistent_arguments" );
-            }
-            //////////////////////////////////////////////////////////////////////////
             pybind::dict s_getSettings( pybind::kernel_interface * _kernel )
             {
                 pybind::dict py_settings( _kernel );
@@ -4690,10 +4662,6 @@ namespace Mengine
             ;
 
         pybind::def_functor( _kernel, "makeFileLogger", nodeScriptMethod, &EngineScriptMethod::s_makeFileLogger );
-
-        pybind::def_functor( _kernel, "setPersistentArguments", nodeScriptMethod, &EngineScriptMethod::s_setPersistentArguments );
-        pybind::def_functor_kernel( _kernel, "getPersistentArguments", nodeScriptMethod, &EngineScriptMethod::s_getPersistentArguments );
-        pybind::def_functor( _kernel, "removePersistentArguments", nodeScriptMethod, &EngineScriptMethod::s_removePersistentArguments );
 
         pybind::interface_<SettingInterface, pybind::bases<Mixin>>( _kernel, "SettingInterface" )
             .def( "getName", &SettingInterface::getName )

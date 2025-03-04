@@ -333,7 +333,7 @@ namespace Mengine
 
         LoggerInterfacePtr m_proxyLogger;
 
-        ThreadMutexInterfacePtr m_nativeMutex;
+        ThreadMutexInterfacePtr m_nativeWindowMutex;
 
         ANativeWindow * m_nativeWindow;
 

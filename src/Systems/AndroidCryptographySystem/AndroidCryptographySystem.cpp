@@ -1,13 +1,8 @@
 #include "AndroidCryptographySystem.h"
 
-#include "Environment/Android/AndroidEnv.h"
-#include "Environment/Android/AndroidHelper.h"
-#include "Environment/Android/AndroidApplicationHelper.h"
-
-#include "Kernel/AssertionMemoryPanic.h"
-#include "Kernel/StringLowercase.h"
-
 #include "Config/StdString.h"
+
+#include <stdlib.h>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( CryptographySystem, Mengine::AndroidCryptographySystem );
@@ -37,45 +32,42 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidCryptographySystem::generateRandomSeed( uint64_t * const _seed ) const
     {
-        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
-        {
-            return false;
-        }
+        uint64_t rnd;
+        ::arc4random_buf( &rnd, sizeof(rnd) );
 
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
-
-        jlong jseed = Helper::AndroidCallLongApplicationMethod( jenv, "getSecureRandomNumber", "()J" );
-
-        *_seed = (uint64_t)jseed;
+        *_seed = rnd;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidCryptographySystem::generateRandomHexadecimal( uint32_t _length, Char * const _hexadecimal, bool _lowercase ) const
     {
-        MENGINE_UNUSED( _lowercase );
+        uint32_t bytes_needed = (_length + 1) / 2;
+        uint8_t random_bytes[bytes_needed];
 
-        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
-        {
-            return false;
-        }
-
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
-
-        jstring jhex = (jstring)Helper::AndroidCallObjectApplicationMethod( jenv, "getSecureRandomHexString", "(I)Ljava/lang/String;", _length );
-
-        Helper::AndroidCopyStringFromJString( jenv, jhex, _hexadecimal, _length + 1 );
-
-        jenv->DeleteLocalRef( jhex );
+        ::arc4random_buf( random_bytes, bytes_needed );
 
         if( _lowercase == false )
         {
-            Helper::stringUppercase( _hexadecimal, _hexadecimal );
+            for( uint32_t i = 0; i != _length; ++i )
+            {
+                uint8_t b = random_bytes[i];
+
+                ::sprintf( _hexadecimal + i * 2, "%02x", b );
+            }
         }
+        else
+        {
+            for( uint32_t i = 0; i != _length; ++i )
+            {
+                uint8_t b = random_bytes[i];
+
+                ::sprintf( _hexadecimal + i * 2, "%02X", b );
+            }
+        }
+
+
+        _hexadecimal[_length] = '\0';
 
         return true;
     }

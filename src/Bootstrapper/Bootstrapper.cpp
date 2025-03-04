@@ -146,10 +146,6 @@ SERVICE_EXTERN( ThreadSystem );
 SERVICE_EXTERN( UnicodeSystem );
 #endif
 //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_SYSTEM_PREFERENCES)
-SERVICE_EXTERN( PreferencesSystem );
-#endif
-//////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_SYSTEM_CRYPTOGRAPHY)
 SERVICE_EXTERN( CryptographySystem );
 #endif
@@ -1017,7 +1013,6 @@ namespace Mengine
         MENGINE_ADD_SERVICE( UnicodeSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( TimeSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( DateTimeSystem, MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ADD_SERVICE( PreferencesSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( CryptographySystem, MENGINE_DOCUMENT_FACTORABLE );
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
@@ -2281,7 +2276,6 @@ namespace Mengine
         SERVICE_FINALIZE( DateTimeSystem );
         SERVICE_FINALIZE( UnicodeSystem );
         SERVICE_FINALIZE( ThreadSystem );
-        SERVICE_FINALIZE( PreferencesSystem );
         SERVICE_FINALIZE( CryptographySystem );
         SERVICE_FINALIZE( PlatformSystem );
 
@@ -2375,7 +2369,6 @@ namespace Mengine
         SERVICE_DESTROY( FactoryService );
         SERVICE_DESTROY( OptionsService );
         SERVICE_DESTROY( CryptographySystem );
-        SERVICE_DESTROY( PreferencesSystem );
         SERVICE_DESTROY( PlatformSystem );
     }
     //////////////////////////////////////////////////////////////////////////

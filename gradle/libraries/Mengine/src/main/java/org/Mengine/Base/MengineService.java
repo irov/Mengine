@@ -101,6 +101,26 @@ public class MengineService implements MengineServiceInterface {
         return value;
     }
 
+    public void setStatisticInteger(@Size(min = 1L,max = 40L) String key, long value) {
+        MengineStatistic.setInteger(m_application, key, value);
+    }
+
+    public void increaseStatisticInteger(@Size(min = 1L,max = 40L) String key, long value) {
+        MengineStatistic.increaseInteger(m_application, key, value);
+    }
+
+    public void decreaseStatisticInteger(@Size(min = 1L,max = 40L) String key, long value) {
+        MengineStatistic.decreaseInteger(m_application, key, value);
+    }
+
+    public void increaseStatisticDouble(@Size(min = 1L,max = 40L) String key, double value) {
+        MengineStatistic.increaseDouble(m_application, key, value);
+    }
+
+    public void decreaseStatisticDouble(@Size(min = 1L,max = 40L) String key, double value) {
+        MengineStatistic.decreaseDouble(m_application, key, value);
+    }
+
     protected void invalidInitialize(String format, Object ... args) throws MengineServiceInvalidInitializeException {
         String message = MengineLog.buildTotalMsg(format, args);
 
@@ -255,5 +275,15 @@ public class MengineService implements MengineServiceInterface {
         }
 
         return null;
+    }
+
+    protected boolean getPreferenceBoolean(@NonNull String name, boolean defaultValue) {
+        boolean value = MenginePreferences.getPreferenceBoolean(m_application, m_serviceName, name, defaultValue);
+
+        return value;
+    }
+
+    protected void setPreferenceBoolean(@NonNull String name, boolean value) {
+        MenginePreferences.setPreferenceBoolean(m_application, m_serviceName, name, value);
     }
 }

@@ -131,7 +131,6 @@ Common
     TimerServiceInterface.h
     MixerValueInterface.h
     MixerBooleanInterface.h
-    PreferencesSystemInterface.h
     CryptographySystemInterface.h
     HttpResponseInterface.h
     HttpRequestInterface.h

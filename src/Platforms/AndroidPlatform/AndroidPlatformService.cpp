@@ -510,7 +510,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::getMaxClientResolution( Resolution * const _resolution ) const
     {
-        MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
+        MENGINE_THREAD_MUTEX_SCOPE( m_nativeWindowMutex );
 
         if( m_nativeWindow == nullptr )
         {
@@ -583,7 +583,7 @@ namespace Mengine
             m_proxyLogger = proxyLogger;
         }
 
-        m_nativeMutex = Helper::createThreadMutex(MENGINE_DOCUMENT_FACTORABLE );
+        m_nativeWindowMutex = Helper::createThreadMutex(MENGINE_DOCUMENT_FACTORABLE );
         m_eventsMutex = Helper::createThreadMutex(MENGINE_DOCUMENT_FACTORABLE );
 
         EGLDisplay eglDisplay = ::eglGetDisplay( EGL_DEFAULT_DISPLAY );
@@ -672,8 +672,6 @@ namespace Mengine
 
         this->destroyWindow_();
 
-        m_nativeMutex = nullptr;
-
         m_platformTags.clear();
 
         m_eventsMutex->lock();
@@ -682,6 +680,7 @@ namespace Mengine
         m_eventsMutex->unlock();
 
         m_eventsMutex = nullptr;
+        m_nativeWindowMutex = nullptr;
 
         m_platformTags.clear();
     }
@@ -1057,7 +1056,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::getDesktopResolution( Resolution * const _resolution ) const
     {
-        MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
+        MENGINE_THREAD_MUTEX_SCOPE( m_nativeWindowMutex );
 
         if( m_nativeWindow == nullptr )
         {
@@ -1584,7 +1583,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeSurfaceCreatedEvent( ANativeWindow * _nativeWindow )
     {
-        MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
+        MENGINE_THREAD_MUTEX_SCOPE( m_nativeWindowMutex );
 
         m_nativeWindow = _nativeWindow;
 
@@ -1599,7 +1598,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeSurfaceDestroyedEvent( ANativeWindow * _nativeWindow )
     {
-        MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
+        MENGINE_THREAD_MUTEX_SCOPE( m_nativeWindowMutex );
 
         m_nativeWindow = _nativeWindow;
 
@@ -1614,7 +1613,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeSurfaceChangedEvent( ANativeWindow * _nativeWindow, jint surfaceWidth, jint surfaceHeight, jint deviceWidth, jint deviceHeight, jfloat rate )
     {
-        MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
+        MENGINE_THREAD_MUTEX_SCOPE( m_nativeWindowMutex );
 
         m_nativeWindow = _nativeWindow;
 
@@ -1688,8 +1687,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeTouchEvent( jint _action, jint _pointerId, jfloat _x, jfloat _y, jfloat _pressure )
     {
-        MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
-
         switch( _action )
         {
         case 0: //ACTION_DOWN
@@ -1763,15 +1760,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeAccelerationEvent( jfloat _dx, jfloat _dy, jfloat _dz )
     {
-        MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
-
         Helper::pushAccelerometerEvent( _dx, _dy, _dz );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeKeyEvent( jboolean _isDown, jint _keyCode, jint _repeatCount )
     {
-        MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
-
         static EKeyCode Android_Keycodes[] = {
             KC_UNASSIGNED,          /* AKEYCODE_UNKNOWN */
             KC_UNASSIGNED,         /* AKEYCODE_SOFT_LEFT */
@@ -2082,8 +2075,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeTextEvent( jint _unicode )
     {
-        MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
-
         jfloat x = m_currentFingersX[0];
         jfloat y = m_currentFingersY[0];
         jfloat pressure = m_currentFingersPressure[0];
@@ -2099,8 +2090,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativePauseEvent()
     {
-        MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
-
         float x = m_currentFingersX[0];
         float y = m_currentFingersY[0];
 
@@ -2120,8 +2109,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeResumeEvent()
     {
-        MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
-
         float x = m_currentFingersX[0];
         float y = m_currentFingersY[0];
 
@@ -2141,8 +2128,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeStopEvent()
     {
-        MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
-
         PlatformUnionEvent event;
         event.type = PlatformUnionEvent::PET_STOP;
 
@@ -2153,8 +2138,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeStartEvent()
     {
-        MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
-
         PlatformUnionEvent event;
         event.type = PlatformUnionEvent::PET_START;
 
@@ -2165,8 +2148,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeClipboardChangedEvent()
     {
-        MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
-
         PlatformUnionEvent event;
         event.type = PlatformUnionEvent::PET_CLIPBOARD_CHANGED;
 
@@ -2177,8 +2158,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeWindowFocusChangedEvent( jboolean _focus )
     {
-        MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
-
         PlatformUnionEvent event;
         event.type = PlatformUnionEvent::PET_WINDOW_FOCUS_CHANGED;
 
@@ -2193,8 +2172,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeQuitEvent()
     {
-        MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
-
         LOGGER_INFO( "platform", "quit event" );
 
         this->pushQuitEvent_();
@@ -2202,8 +2179,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeLowMemoryEvent()
     {
-        MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
-
         PlatformUnionEvent event;
         event.type = PlatformUnionEvent::PET_LOW_MEMORY;
 
@@ -2214,8 +2189,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeTrimMemoryEvent(jint _level)
     {
-        MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
-
         PlatformUnionEvent event;
         event.type = PlatformUnionEvent::PET_TRIM_MEMORY;
 
@@ -2230,14 +2203,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeChangeLocale( const Mengine::Char * _language )
     {
-        MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
-
         PlatformUnionEvent event;
         event.type = PlatformUnionEvent::PET_CHANGE_LOCALE;
 
         StdString::strncpy( event.data.changeLocale.language, _language, MENGINE_LOCALE_LANGUAGE_SIZE );
 
-        LOGGER_INFO( "platform", "change locale event: %s", _language );
+        LOGGER_INFO( "platform", "change locale event: %s"
+             , _language
+         );
 
         this->pushEvent( event );
     }
@@ -2281,6 +2254,8 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( m_eglDisplay != nullptr, "display not created" );
         MENGINE_ASSERTION_FATAL( m_eglSurface == nullptr, "already created egl surface" );
         MENGINE_ASSERTION_FATAL( m_eglContext == nullptr, "already created egl context" );
+
+        MENGINE_THREAD_MUTEX_SCOPE( m_nativeWindowMutex );
 
         int32_t format_got = ANativeWindow_getFormat( m_nativeWindow );
 
@@ -2494,9 +2469,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::pushEvent( const PlatformUnionEvent & _event )
     {
-        m_eventsMutex->lock();
+        MENGINE_THREAD_MUTEX_SCOPE( m_eventsMutex );
+
         m_eventsAux.emplace_back( _event );
-        m_eventsMutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::hasEvent( PlatformUnionEvent::EPlatformEventType _type ) const

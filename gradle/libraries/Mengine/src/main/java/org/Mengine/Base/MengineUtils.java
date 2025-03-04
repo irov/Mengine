@@ -1184,4 +1184,14 @@ public class MengineUtils {
 
         return a;
     }
+
+    public static double getMapDouble(@NonNull Map<String, Object> params, @NonNull String name) {
+        Object value = params.get(name);
+
+        if (value instanceof Double) {
+            return (Double) value;
+        }
+
+        return 0.0;
+    }
 }

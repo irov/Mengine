@@ -45,7 +45,6 @@ public class MengineApplication extends Application {
     private long m_sessionIndex = -1;
     private String m_sessionId;
     private long m_sessionTimestamp = -1;
-    private long m_purchasesTimestamp = -1;
 
     private boolean m_invalidInitialize = false;
     private String m_invalidInitializeReason = null;
@@ -255,18 +254,6 @@ public class MengineApplication extends Application {
         long value = bundle.getLong(name);
 
         return value;
-    }
-
-    public long getSecureRandomNumber() {
-        long rnd = MengineUtils.getSecureRandomNumber();
-
-        return rnd;
-    }
-
-    public String getSecureRandomHexString(int length) {
-        String hex = MengineUtils.getSecureRandomHexString(length);
-
-        return hex;
     }
 
     public boolean hasOption(String option) {
@@ -510,7 +497,7 @@ public class MengineApplication extends Application {
 
         m_sessionId = sessionId;
 
-        this.setPreferenceString("session_id", m_sessionId);
+        MenginePreferences.setPreferenceString(this, TAG, "session_id", m_sessionId);
 
         this.setState("user.session_id", m_sessionId);
 
@@ -526,7 +513,7 @@ public class MengineApplication extends Application {
     }
 
     public void removeSessionData() {
-        this.clearPreferences();
+        MenginePreferences.clearPreferences(this, TAG);
 
         List<MengineListenerSessionId> listeners = this.getSessionIdListeners();
 
@@ -693,39 +680,6 @@ public class MengineApplication extends Application {
         return m_remoteConfigListeners;
     }
 
-    public MengineService findService(String name) {
-        MengineService service = m_dictionaryServices.get(name);
-
-        return service;
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T> T getService(Class<T> cls) {
-        String name;
-
-        try {
-            Field SERVICE_NAME = cls.getField("SERVICE_NAME");
-
-            name = (String)SERVICE_NAME.get(null);
-        } catch (final NoSuchFieldException ex) {
-            MengineLog.logError(TAG, "[ERROR] service not found field SERVICE_NAME: %s"
-                , cls.getName()
-            );
-
-            return null;
-        } catch (final IllegalAccessException ex) {
-            MengineLog.logError(TAG, "[ERROR] service invalid field SERVICE_NAME: %s"
-                , cls.getName()
-            );
-
-            return null;
-        }
-
-        MengineService service = this.findService(name);
-
-        return (T)service;
-    }
-
     protected void explainServiceListeners(MengineServiceInterface service) {
         if (service instanceof MengineListenerAnalytics listener) {
             m_analyticsListeners.add(listener);
@@ -788,38 +742,32 @@ public class MengineApplication extends Application {
         }
     }
 
-    static protected String getServiceClassName(MengineService service, String type, Class<?> cls) {
+    static protected String getServiceClassName(Class<?> cls) {
         String name;
 
         try {
             Field SERVICE_NAME = cls.getField("SERVICE_NAME");
 
-            name = (String)SERVICE_NAME.get(service);
+            name = (String)SERVICE_NAME.get(null);
         } catch (final NoSuchFieldException ex) {
-            MengineLog.logError(TAG, "[ERROR] service [%s] not found field SERVICE_NAME"
-                , type
-            );
+            MengineLog.logError(TAG, "[ERROR] service [%s] not found field SERVICE_NAME" );
 
             return null;
         } catch (IllegalAccessException ex) {
-            MengineLog.logError(TAG, "[ERROR] service [%s] invalid field SERVICE_NAME"
-                    , type
-            );
+            MengineLog.logError(TAG, "[ERROR] service [%s] invalid field SERVICE_NAME" );
 
             return null;
         }
 
         if (name == null) {
-            MengineLog.logError(TAG, "[ERROR] service [%s] invalid name"
-                    , type
-            );
+            MengineLog.logError(TAG, "[ERROR] service [%s] invalid name" );
 
             return null;
         }
 
         if (name.length() > 23) {
-            MengineLog.logError(TAG, "[ERROR] service [%s] invalid name length > 23"
-                    , type
+            MengineLog.logError(TAG, "[ERROR] service [%s] invalid name: %s [length > 23]"
+                , name
             );
 
             return null;
@@ -844,6 +792,25 @@ public class MengineApplication extends Application {
         return true;
     }
 
+    public MengineService findService(String name) {
+        MengineService service = m_dictionaryServices.get(name);
+
+        return service;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T getService(Class<T> cls) {
+        String name = MengineApplication.getServiceClassName(cls);
+
+        if (name == null) {
+            return null;
+        }
+
+        MengineService service = this.findService(name);
+
+        return (T)service;
+    }
+
     protected boolean createService(String type) {
         MengineService service = (MengineService)MengineUtils.newInstance(TAG, type, true);
 
@@ -857,7 +824,7 @@ public class MengineApplication extends Application {
 
         Class<?> cls = service.getClass();
 
-        String name = MengineApplication.getServiceClassName(service, type, cls);
+        String name = MengineApplication.getServiceClassName(cls);
 
         if (name == null) {
             return false;
@@ -902,154 +869,6 @@ public class MengineApplication extends Application {
 
             l.onMengineCaughtException(this, throwable);
         }
-    }
-
-    public SharedPreferences getPrivateSharedPreferences(@NonNull String tag) {
-        Context context = this.getApplicationContext();
-
-        String packageName = context.getPackageName();
-
-        SharedPreferences settings = context.getSharedPreferences(packageName + "." + tag, MODE_PRIVATE);
-
-        return settings;
-    }
-
-    public boolean hasPreference(@NonNull String name) {
-        SharedPreferences settings = this.getPrivateSharedPreferences(TAG);
-
-        boolean has = settings.contains(name);
-
-        return has;
-    }
-
-    public boolean getPreferenceBoolean(@NonNull String name, boolean defaultValue) {
-        SharedPreferences settings = this.getPrivateSharedPreferences(TAG);
-
-        boolean value = settings.getBoolean(name, defaultValue);
-
-        return value;
-    }
-
-    public void setPreferenceBoolean(@NonNull String name, boolean value) {
-        SharedPreferences settings = this.getPrivateSharedPreferences(TAG);
-
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putBoolean(name, value);
-        editor.apply();
-    }
-
-    public long getPreferenceInteger(@NonNull String name, long defaultValue) {
-        SharedPreferences settings = this.getPrivateSharedPreferences(TAG);
-
-        long value = settings.getLong(name, defaultValue);
-
-        return value;
-    }
-
-    public void setPreferenceInteger(@NonNull String name, long value) {
-        SharedPreferences settings = this.getPrivateSharedPreferences(TAG);
-
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putLong(name, value);
-        editor.apply();
-    }
-
-    public String getPreferenceString(@NonNull String name, String defaultValue) {
-        SharedPreferences settings = this.getPrivateSharedPreferences(TAG);
-
-        String value = settings.getString(name, defaultValue);
-
-        return value;
-    }
-
-    public void setPreferenceString(@NonNull String name, String value) {
-        SharedPreferences settings = this.getPrivateSharedPreferences(TAG);
-
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString(name, value);
-        editor.apply();
-    }
-
-    public Bundle getPreferenceBundle(@NonNull String name) {
-        SharedPreferences settings = this.getPrivateSharedPreferences(TAG);
-
-        String value = settings.getString(name, null);
-
-        if (value == null) {
-            return null;
-        }
-
-        try {
-            JSONObject json = new JSONObject(value);
-
-            Bundle bundle = MengineUtils.bundleFromJSONObject(json);
-
-            return bundle;
-        } catch (final org.json.JSONException e) {
-            MengineLog.logError(TAG, "invalid get preference bundle: %s e: %s"
-                , name
-                , e.getMessage()
-            );
-
-            return null;
-        }
-    }
-
-    public void setPreferenceBundle(@NonNull String name, Bundle value) {
-        SharedPreferences settings = this.getPrivateSharedPreferences(TAG);
-
-        JSONObject json = MengineUtils.jsonObjectFromBundle(value);
-
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString(name, json.toString());
-        editor.apply();
-    }
-
-    public JSONObject getPreferenceJSON(@NonNull String name) {
-        SharedPreferences settings = this.getPrivateSharedPreferences(TAG);
-
-        String value = settings.getString(name, null);
-
-        if (value == null) {
-            return null;
-        }
-
-        try {
-            JSONObject json = new JSONObject(value);
-
-            return json;
-        } catch (final org.json.JSONException e) {
-            MengineLog.logError(TAG, "invalid get preference json: %s e: %s"
-                , name
-                , e.getMessage()
-            );
-
-            return null;
-        }
-    }
-
-    public void setPreferenceJSON(@NonNull String name, JSONObject value) {
-        SharedPreferences settings = this.getPrivateSharedPreferences(TAG);
-
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString(name, value.toString());
-        editor.apply();
-    }
-
-    public void removePreference(@NonNull String name) {
-        SharedPreferences settings = this.getPrivateSharedPreferences(TAG);
-
-        SharedPreferences.Editor editor = settings.edit();
-        editor.remove(name);
-        editor.apply();
-    }
-
-    public void clearPreferences() {
-        SharedPreferences settings = this.getPrivateSharedPreferences(TAG);
-
-        SharedPreferences.Editor editor = settings.edit();
-        editor.clear();
-        editor.apply();
     }
 
     public void sendEvent(MengineEvent event, Object ... args) {
@@ -1111,7 +930,38 @@ public class MengineApplication extends Application {
         return installKey;
     }
 
-    public Object getNativeApplication() {
+    protected Object createNativeApplication() {
+        ApplicationInfo applicationInfo = this.getApplicationInfo();
+        String nativeLibraryDir = applicationInfo.nativeLibraryDir;
+        String options = this.getApplicationOptions();
+
+        String[] optionsArgs = options.split(" ");
+
+        Object nativeApplication = MengineNative.AndroidMain_bootstrap(nativeLibraryDir, optionsArgs);
+
+        if (nativeApplication == null) {
+            MengineAnalytics.buildEvent("mng_app_create_failed")
+                    .addParameterString("reason", "bootstrap failed")
+                    .logAndFlush();
+
+            this.invalidInitialize("bootstrap failed");
+
+            return null;
+        }
+
+        return nativeApplication;
+    }
+
+    protected void destroyNativeApplication() {
+        if (m_nativeApplication == null) {
+            return;
+        }
+
+        MengineNative.AndroidMain_destroy(m_nativeApplication);
+        m_nativeApplication = null;
+    }
+
+    protected Object getNativeApplication() {
         return m_nativeApplication;
     }
 
@@ -1163,7 +1013,7 @@ public class MengineApplication extends Application {
 
         this.setState("application.init", "load_preferences");
 
-        SharedPreferences settings = this.getPrivateSharedPreferences(TAG);
+        SharedPreferences settings = MenginePreferences.getPrivateSharedPreferences(this, TAG);
 
         long MENGINE_APPLICATION_SAVE_VERSION = 1L;
 
@@ -1174,7 +1024,6 @@ public class MengineApplication extends Application {
         long installRND = settings.getLong("install_rnd", -1);
         long sessionIndex = settings.getLong("session_index", 0);
         String sessionId = settings.getString("session_id", null);
-        long purchasesTimestamp = settings.getLong("purchases_timestamp", 0);
 
         SharedPreferences.Editor editor = settings.edit();
 
@@ -1217,7 +1066,8 @@ public class MengineApplication extends Application {
         m_sessionIndex = sessionIndex;
         m_sessionId = sessionId;
         m_sessionTimestamp = MengineUtils.getTimestamp();
-        m_purchasesTimestamp = purchasesTimestamp;
+
+        MengineStatistic.load(this);
 
         this.setState("user.save_version", m_saveVersion);
         this.setState("user.install_key", m_installKey);
@@ -1227,7 +1077,6 @@ public class MengineApplication extends Application {
         this.setState("user.session_index", m_sessionIndex);
         this.setState("user.session_id", m_sessionId);
         this.setState("user.session_timestamp", m_sessionTimestamp);
-        this.setState("user.purchases_timestamp", m_purchasesTimestamp);
 
         MengineAnalytics.addContextParameterBoolean("is_dev", BuildConfig.DEBUG);
         MengineAnalytics.addContextParameterString("install_key", m_installKey);
@@ -1236,7 +1085,6 @@ public class MengineApplication extends Application {
         MengineAnalytics.addContextParameterLong("install_rnd", m_installRND);
         MengineAnalytics.addContextParameterLong("session_index", m_sessionIndex);
         MengineAnalytics.addContextParameterLong("session_timestamp", m_sessionTimestamp);
-        MengineAnalytics.addContextParameterLong("purchases_timestamp", m_purchasesTimestamp);
 
         MengineAnalytics.addContextGetterParameterLong("connection", () -> {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
@@ -1404,21 +1252,9 @@ public class MengineApplication extends Application {
             }
         }
 
-        ApplicationInfo applicationInfo = this.getApplicationInfo();
-        String nativeLibraryDir = applicationInfo.nativeLibraryDir;
-        String options = this.getApplicationOptions();
-
-        String[] optionsArgs = options.split(" ");
-
-        Object nativeApplication = MengineNative.AndroidMain_bootstrap(nativeLibraryDir, optionsArgs);
+        Object nativeApplication = this.createNativeApplication();
 
         if (nativeApplication == null) {
-            MengineAnalytics.buildEvent("mng_app_create_failed")
-                .addParameterString("reason", "bootstrap failed")
-                .logAndFlush();
-
-            this.invalidInitialize("bootstrap failed");
-
             return;
         }
 
@@ -1456,7 +1292,7 @@ public class MengineApplication extends Application {
         for (MengineService s : services) {
             String serviceName = s.getServiceName();
 
-            Bundle bundle = this.getPreferenceBundle("service." + serviceName);
+            Bundle bundle = MenginePreferences.getPreferenceBundle(this, TAG, "service." + serviceName);
 
             if (bundle == null) {
                 continue;
@@ -1518,7 +1354,7 @@ public class MengineApplication extends Application {
             , bundle
         );
 
-        this.setPreferenceBundle("service." + serviceName, bundle);
+        MenginePreferences.setPreferenceBundle(this, TAG, "service." + serviceName, bundle);
     }
 
     @Override
@@ -1560,8 +1396,7 @@ public class MengineApplication extends Application {
         m_main.stop();
         m_main = null;
 
-        MengineNative.AndroidMain_destroy(m_nativeApplication);
-        m_nativeApplication = null;
+        this.destroyNativeApplication();
 
         MengineNative.AndroidEnv_removeMengineAndroidApplicationJNI();
 
@@ -1783,9 +1618,9 @@ public class MengineApplication extends Application {
     }
 
     public void onMengineInAppPurchase(MengineInAppPurchaseParam purchase) {
-        m_purchasesTimestamp = MengineUtils.getTimestamp();
+        long purchase_timestamp = MengineUtils.getTimestamp();
 
-        this.setPreferenceInteger("purchases_timestamp", m_purchasesTimestamp);
+        MengineStatistic.setInteger(this, "purchase.timestamp", purchase_timestamp);
 
         List<MengineListenerInAppPurchase> listeners = this.getInAppAnalyticsListeners();
 

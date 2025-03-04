@@ -16,7 +16,6 @@ import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.os.VibratorManager;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class MengineVibratorPlugin extends MengineService implements MengineListenerActivity {

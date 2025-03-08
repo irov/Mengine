@@ -6,6 +6,7 @@ public interface MengineAdProviderInterface {
     void showBanner();
     void hideBanner();
 
+    int getBannerWidth();
     int getBannerHeight();
 
     boolean hasInterstitial();
@@ -24,4 +25,12 @@ public interface MengineAdProviderInterface {
 
     boolean canYouShowAppOpen(String placement, long timeStop);
     boolean showAppOpen(String placement);
+
+    boolean hasMREC();
+
+    void showMREC(int leftMargin, int bottomMargin);
+    void hideMREC();
+
+    int getMRECWidth();
+    int getMRECHeight();
 }

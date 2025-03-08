@@ -54,7 +54,7 @@ public class MengineFirebaseMessagingPlugin extends MengineService implements Me
                     // Get new FCM registration token
                     String token = task.getResult();
 
-                    MengineFirebaseMessagingPlugin.this.logInfo("fetching FCM registration token successful: %s"
+                    MengineFirebaseMessagingPlugin.this.logInfo("fetching FCM registration token success: %s"
                         , token
                     );
 

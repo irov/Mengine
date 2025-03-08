@@ -50,6 +50,8 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
     public static final String METADATA_REWARDED_ADUNITID = "mengine.applovin.rewarded.adunitid";
     public static final String METADATA_APPOPEN_PLACEMENT = "mengine.applovin.appopen.placement";
     public static final String METADATA_APPOPEN_ADUNITID = "mengine.applovin.appopen.adunitid";
+    public static final String METADATA_MREC_PLACEMENT = "mengine.applovin.mrec.placement";
+    public static final String METADATA_MREC_ADUNITID = "mengine.applovin.mrec.adunitid";
 
     private AppLovinSdk m_appLovinSdk;
 
@@ -59,6 +61,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
     private MengineAppLovinInterstitialAd m_interstitialAd;
     private MengineAppLovinRewardedAd m_rewardedAd;
     private MengineAppLovinAppOpenAd m_appOpenAd;
+    private MengineAppLovinMRECAd m_MRECAd;
 
     private MengineAppLovinMediationInterface m_mediationAmazon;
     private MengineAppLovinNonetBannersInterface m_nonetBanners;
@@ -72,42 +75,38 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
 
     @Override
     public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
-        String MengineAppLovinPlugin_Banner_AdUnitId = this.getMetaDataString(METADATA_BANNER_ADUNITID);
+        if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_BANNERAD == true) {
+            String MengineAppLovinPlugin_Banner_AdUnitId = this.getMetaDataString(METADATA_BANNER_ADUNITID);
 
-        if (MengineAppLovinPlugin_Banner_AdUnitId.isEmpty() == false) {
-            String MengineAppLovinPlugin_Banner_Placement = this.getMetaDataString(METADATA_BANNER_PLACEMENT);
+            if (MengineAppLovinPlugin_Banner_AdUnitId.isEmpty() == false) {
+                String MengineAppLovinPlugin_Banner_Placement = this.getMetaDataString(METADATA_BANNER_PLACEMENT);
 
-            this.logMessage("%s: %s"
-                , METADATA_BANNER_PLACEMENT
-                , MengineAppLovinPlugin_Banner_Placement
-            );
+                boolean MengineAppLovinPlugin_BannerAdaptive = this.getMetaDataBoolean(METADATA_BANNER_ADAPTIVE);
 
-            boolean MengineAppLovinPlugin_BannerAdaptive = this.getMetaDataBoolean(METADATA_BANNER_ADAPTIVE);
+                MengineAppLovinBannerAd bannerAd = new MengineAppLovinBannerAd(this, MengineAppLovinPlugin_Banner_AdUnitId, MengineAppLovinPlugin_Banner_Placement, MengineAppLovinPlugin_BannerAdaptive);
 
-            this.logMessage("%s: %b"
-                , METADATA_BANNER_ADAPTIVE
-                , MengineAppLovinPlugin_BannerAdaptive
-            );
-
-            MengineAppLovinBannerAd bannerAd = new MengineAppLovinBannerAd(this, MengineAppLovinPlugin_Banner_AdUnitId, MengineAppLovinPlugin_Banner_Placement, MengineAppLovinPlugin_BannerAdaptive);
-
-            m_bannerAd = bannerAd;
+                m_bannerAd = bannerAd;
+            }
         }
 
-        String MengineAppLovinPlugin_Interstitial_AdUnitId = this.getMetaDataString(METADATA_INTERSTITIAL_ADUNITID);
+        if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_INTERSTITIALAD == true) {
+            String MengineAppLovinPlugin_Interstitial_AdUnitId = this.getMetaDataString(METADATA_INTERSTITIAL_ADUNITID);
 
-        if (MengineAppLovinPlugin_Interstitial_AdUnitId.isEmpty() == false) {
-            MengineAppLovinInterstitialAd interstitialAd = new MengineAppLovinInterstitialAd(this, MengineAppLovinPlugin_Interstitial_AdUnitId);
+            if (MengineAppLovinPlugin_Interstitial_AdUnitId.isEmpty() == false) {
+                MengineAppLovinInterstitialAd interstitialAd = new MengineAppLovinInterstitialAd(this, MengineAppLovinPlugin_Interstitial_AdUnitId);
 
-            m_interstitialAd = interstitialAd;
+                m_interstitialAd = interstitialAd;
+            }
         }
 
-        String MengineAppLovinPlugin_Rewarded_AdUnitId = this.getMetaDataString(METADATA_REWARDED_ADUNITID);
+        if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_REWARDEDAD == true) {
+            String MengineAppLovinPlugin_Rewarded_AdUnitId = this.getMetaDataString(METADATA_REWARDED_ADUNITID);
 
-        if (MengineAppLovinPlugin_Rewarded_AdUnitId.isEmpty() == false) {
-            MengineAppLovinRewardedAd rewardedAd = new MengineAppLovinRewardedAd(this, MengineAppLovinPlugin_Rewarded_AdUnitId);
+            if (MengineAppLovinPlugin_Rewarded_AdUnitId.isEmpty() == false) {
+                MengineAppLovinRewardedAd rewardedAd = new MengineAppLovinRewardedAd(this, MengineAppLovinPlugin_Rewarded_AdUnitId);
 
-            m_rewardedAd = rewardedAd;
+                m_rewardedAd = rewardedAd;
+            }
         }
 
         if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_APPOPENAD == true) {
@@ -116,14 +115,21 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             if (MengineAppLovinPlugin_AppOpen_AdUnitId.isEmpty() == false) {
                 String MengineAppLovinPlugin_AppOpen_Placement = this.getMetaDataString(METADATA_APPOPEN_PLACEMENT);
 
-                this.logMessage("%s: %s"
-                    , METADATA_APPOPEN_PLACEMENT
-                    , MengineAppLovinPlugin_AppOpen_Placement
-                );
-
                 MengineAppLovinAppOpenAd appOpenAd = new MengineAppLovinAppOpenAd(this, MengineAppLovinPlugin_AppOpen_AdUnitId, MengineAppLovinPlugin_AppOpen_Placement);
 
                 m_appOpenAd = appOpenAd;
+            }
+        }
+
+        if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_MRECAD == true) {
+            String MengineAppLovinPlugin_MREC_AdUnitId = this.getMetaDataString(METADATA_MREC_ADUNITID);
+
+            if (MengineAppLovinPlugin_MREC_AdUnitId.isEmpty() == false) {
+                String MengineAppLovinPlugin_MREC_Placement = this.getMetaDataString(METADATA_MREC_PLACEMENT);
+
+                MengineAppLovinMRECAd mrecAd = new MengineAppLovinMRECAd(this, MengineAppLovinPlugin_MREC_AdUnitId, MengineAppLovinPlugin_MREC_Placement);
+
+                m_MRECAd = mrecAd;
             }
         }
 
@@ -260,6 +266,10 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
                 m_appOpenAd.initialize(application);
             }
 
+            if (m_MRECAd != null) {
+                m_MRECAd.initialize(application);
+            }
+
             MengineActivity activity = this.getMengineActivity();
 
             if (activity != null) {
@@ -277,6 +287,10 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
 
                 if (m_appOpenAd != null) {
                     m_appOpenAd.onActivityCreate(activity);
+                }
+
+                if (m_MRECAd != null) {
+                    m_MRECAd.onActivityCreate(activity);
                 }
             }
 
@@ -341,6 +355,11 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             m_appOpenAd = null;
         }
 
+        if (m_MRECAd != null) {
+            m_MRECAd.finalize(application);
+            m_MRECAd = null;
+        }
+
         if (m_nonetBanners != null) {
             m_nonetBanners.onAppTerminate(application, this);
             m_nonetBanners = null;
@@ -353,20 +372,24 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             m_nonetBanners.onActivityCreate(activity);
         }
 
-        if (m_bannerAd != null && m_bannerAd.isInitialize() == true) {
+        if (m_bannerAd != null && m_bannerAd.isInitialized() == true) {
             m_bannerAd.onActivityCreate(activity);
         }
 
-        if (m_interstitialAd != null && m_interstitialAd.isInitialize() == true) {
+        if (m_interstitialAd != null && m_interstitialAd.isInitialized() == true) {
             m_interstitialAd.onActivityCreate(activity);
         }
 
-        if (m_rewardedAd != null && m_rewardedAd.isInitialize() == true) {
+        if (m_rewardedAd != null && m_rewardedAd.isInitialized() == true) {
             m_rewardedAd.onActivityCreate(activity);
         }
 
-        if (m_appOpenAd != null && m_appOpenAd.isInitialize() == true) {
+        if (m_appOpenAd != null && m_appOpenAd.isInitialized() == true) {
             m_appOpenAd.onActivityCreate(activity);
+        }
+
+        if (m_MRECAd != null && m_MRECAd.isInitialized() == true) {
+            m_MRECAd.onActivityCreate(activity);
         }
     }
 
@@ -376,20 +399,24 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             m_nonetBanners.onActivityDestroy(activity);
         }
 
-        if (m_bannerAd != null && m_bannerAd.isInitialize() == true) {
+        if (m_bannerAd != null && m_bannerAd.isInitialized() == true) {
             m_bannerAd.onActivityDestroy(activity);
         }
 
-        if (m_interstitialAd != null && m_interstitialAd.isInitialize() == true) {
+        if (m_interstitialAd != null && m_interstitialAd.isInitialized() == true) {
             m_interstitialAd.onActivityDestroy(activity);
         }
 
-        if (m_rewardedAd != null && m_rewardedAd.isInitialize() == true) {
+        if (m_rewardedAd != null && m_rewardedAd.isInitialized() == true) {
             m_rewardedAd.onActivityDestroy(activity);
         }
 
-        if (m_appOpenAd != null && m_appOpenAd.isInitialize() == true) {
+        if (m_appOpenAd != null && m_appOpenAd.isInitialized() == true) {
             m_appOpenAd.onActivityDestroy(activity);
+        }
+
+        if (m_MRECAd != null && m_MRECAd.isInitialized() == true) {
+            m_MRECAd.onActivityDestroy(activity);
         }
     }
 
@@ -401,6 +428,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
         return m_nonetBanners;
     }
 
+    @Override
     public boolean hasBanner() {
         if (m_bannerAd == null) {
             return false;
@@ -419,7 +447,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
 
         this.logMessage("banner show");
 
-        m_bannerAd.bannerShow();
+        m_bannerAd.show();
     }
 
     @Override
@@ -432,7 +460,20 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
 
         this.logMessage("banner hide");
 
-        m_bannerAd.bannerHide();
+        m_bannerAd.hide();
+    }
+
+    @Override
+    public int getBannerWidth() {
+        if (m_bannerAd == null) {
+            this.assertionError("not found banner");
+
+            return 0;
+        }
+
+        int widthPx = m_bannerAd.getWidthPx();
+
+        return widthPx;
     }
 
     @Override
@@ -443,9 +484,9 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             return 0;
         }
 
-        int height = m_bannerAd.getHeight();
+        int heightPx = m_bannerAd.getHeightPx();
 
-        return height;
+        return heightPx;
     }
 
     @Override
@@ -594,6 +635,68 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
         return true;
     }
 
+    @Override
+    public boolean hasMREC() {
+        if (m_MRECAd == null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public void showMREC(int leftMargin, int bottomMargin) {
+        if (m_MRECAd == null) {
+            this.assertionError("not found MREC");
+
+            return;
+        }
+
+        this.logMessage("MREC show");
+
+        m_MRECAd.show(leftMargin, bottomMargin);
+    }
+
+    @Override
+    public void hideMREC() {
+        if (m_MRECAd == null) {
+            this.assertionError("not found MREC");
+
+            return;
+        }
+
+        this.logMessage("MREC hide");
+
+        m_MRECAd.hide();
+    }
+
+    @Override
+    public int getMRECWidth() {
+        if (m_MRECAd == null) {
+            this.assertionError("not found MREC");
+
+            return 0;
+        }
+
+        int widthPx = m_MRECAd.getWidthPx();
+
+        return widthPx;
+    }
+
+    @Override
+    public int getMRECHeight() {
+        if (m_MRECAd == null) {
+            this.assertionError("not found MREC");
+
+            return 0;
+        }
+
+        int heightPx = m_MRECAd.getHeightPx();
+
+        return heightPx;
+    }
+
+
     private static MengineAdFormat getAdFormat(MaxAdFormat format) {
         if (format == MaxAdFormat.BANNER) {
             return MengineAdFormat.ADFORMAT_BANNER;
@@ -604,7 +707,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
         } else if (format == MaxAdFormat.INTERSTITIAL) {
             return MengineAdFormat.ADFORMAT_INTERSTITIAL;
         } else if (format == MaxAdFormat.APP_OPEN) {
-            return MengineAdFormat.ADFORMAT_APP_OPEN;
+            return MengineAdFormat.ADFORMAT_APPOPEN;
         } else if (format == MaxAdFormat.REWARDED) {
             return MengineAdFormat.ADFORMAT_REWARDED;
         } else if (format == MaxAdFormat.NATIVE) {

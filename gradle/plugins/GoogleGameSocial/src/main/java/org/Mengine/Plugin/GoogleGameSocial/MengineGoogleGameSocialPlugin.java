@@ -75,7 +75,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                 return;
             }
 
-            this.logMessageRelease("google game social isAuthenticated successful");
+            this.logMessageRelease("google game social isAuthenticated success");
 
             this.pythonCall("onGoogleGameSocialOnAuthenticatedSuccess", "authenticated");
         });
@@ -133,7 +133,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
 
         achievementsClient.getAchievementsIntent()
             .addOnSuccessListener(intent -> {
-                this.logMessageRelease("get achievements successful");
+                this.logMessageRelease("get achievements success");
 
                 this.pythonCall("onGoogleGameSocialShowAchievementSuccess");
 

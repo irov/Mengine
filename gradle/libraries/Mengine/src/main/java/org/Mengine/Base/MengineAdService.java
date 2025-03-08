@@ -12,7 +12,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MengineAdService extends MengineService implements DefaultLifecycleObserver, MengineAdProviderInterface, MengineListenerActivity, MengineListenerRemoteConfig {
+public class MengineAdService extends MengineService implements DefaultLifecycleObserver, MengineAdProviderInterface, MengineAdResponseInterface, MengineListenerActivity, MengineListenerRemoteConfig {
     public static final String SERVICE_NAME = "AdService";
     public static final boolean SERVICE_EMBEDDING = true;
     public static final int SAVE_VERSION = 1;
@@ -41,6 +41,10 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
 
     public MengineAdProviderInterface getAdProvider() {
         return m_adProvider;
+    }
+
+    public MengineAdResponseInterface getAdResponse() {
+        return this;
     }
 
     @Override
@@ -293,6 +297,17 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
     }
 
     @Override
+    public int getBannerWidth() {
+        if (m_adProvider == null) {
+            return 0;
+        }
+
+        int width = m_adProvider.getBannerWidth();
+
+        return width;
+    }
+
+    @Override
     public int getBannerHeight() {
         if (m_adProvider == null) {
             return 0;
@@ -301,14 +316,6 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         int height = m_adProvider.getBannerHeight();
 
         return height;
-    }
-
-    public void bannerRevenuePaid(Map<String, Object> params) {
-        double revenue = MengineUtils.getMapDouble(params, "revenue");
-        this.increaseStatisticDouble("ad.banner.revenue", revenue);
-        this.increaseStatisticDouble("ad.total.revenue", revenue);
-
-        this.pythonCall("onAndroidAdServiceBannerRevenuePaid", params);
     }
 
     @Override
@@ -375,24 +382,6 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         adPoint.showAd();
 
         return true;
-    }
-
-    public void interstitialShowSuccessful(Map<String, Object> params) {
-        this.increaseStatisticInteger("ad.interstitial.show", 1);
-
-        this.pythonCall("onAndroidAdServiceInterstitialShowSuccessful", params);
-    }
-
-    public void interstitialShowFailed(Map<String, Object> params) {
-        this.pythonCall("onAndroidAdServiceInterstitialShowFailed", params);
-    }
-
-    public void interstitialRevenuePaid(Map<String, Object> params) {
-        double revenue = MengineUtils.getMapDouble(params, "revenue");
-        this.increaseStatisticDouble("ad.interstitial.revenue", revenue);
-        this.increaseStatisticDouble("ad.total.revenue", revenue);
-
-        this.pythonCall("onAndroidAdServiceInterstitialRevenuePaid", params);
     }
 
     @Override
@@ -488,30 +477,6 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         return true;
     }
 
-    public void rewardedShowSuccessful(Map<String, Object> params) {
-        this.increaseStatisticInteger("ad.rewarded.show", 1);
-
-        this.pythonCall("onAndroidAdServiceRewardedShowSuccessful", params);
-    }
-
-    public void rewardedShowFailed(Map<String, Object> params) {
-        this.pythonCall("onAndroidAdServiceRewardedShowFailed", params);
-    }
-
-    public void rewardedRevenuePaid(Map<String, Object> params) {
-        double revenue = MengineUtils.getMapDouble(params, "revenue");
-        this.increaseStatisticDouble("ad.rewarded.revenue", revenue);
-        this.increaseStatisticDouble("ad.total.revenue", revenue);
-
-        this.pythonCall("onAndroidAdServiceRewardedRevenuePaid", params);
-    }
-
-    public void rewardedUserRewarded(Map<String, Object> params) {
-        this.increaseStatisticInteger("ad.rewarded.rewarded", 1);
-
-        this.pythonCall("onAndroidAdServiceRewardedUserRewarded", params);
-    }
-
     @Override
     public boolean hasAppOpen() {
         if (m_adProvider == null) {
@@ -574,21 +539,141 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         return true;
     }
 
-    public void appOpenShowSuccessful(Map<String, Object> params) {
-        this.increaseStatisticInteger("ad.appopen.show", 1);
+    @Override
+    public boolean hasMREC() {
+        if (m_adProvider == null) {
+            return false;
+        }
 
-        this.pythonCall("onAndroidAdServiceAppOpenShowSuccessful", params);
+        return m_adProvider.hasMREC();
     }
 
-    public void appOpenShowFailed(Map<String, Object> params) {
-        this.pythonCall("onAndroidAdServiceAppOpenShowFailed", params);
+    @Override
+    public void showMREC(int leftMargin, int bottomMargin) {
+        if (m_adProvider == null) {
+            return;
+        }
+
+        m_adProvider.showMREC(leftMargin, bottomMargin);
     }
 
-    public void appOpenRevenuePaid(Map<String, Object> params) {
-        double revenue = MengineUtils.getMapDouble(params, "revenue");
-        this.increaseStatisticDouble("ad.appopen.revenue", revenue);
+    @Override
+    public void hideMREC() {
+        if (m_adProvider == null) {
+            return;
+        }
+
+        m_adProvider.hideMREC();
+    }
+
+    @Override
+    public int getMRECWidth() {
+        if (m_adProvider == null) {
+            return 0;
+        }
+
+        int width = m_adProvider.getMRECWidth();
+
+        return width;
+    }
+
+    @Override
+    public int getMRECHeight() {
+        if (m_adProvider == null) {
+            return 0;
+        }
+
+        int height = m_adProvider.getMRECHeight();
+
+        return height;
+    }
+
+    @Override
+    public void onAdRevenuePaid(@NonNull MengineAdMediation mediation, @NonNull MengineAdFormat format, String placement, double revenue) {
+        Map<String, Object> params = Map.of("placement", placement, "revenue", revenue);
+
         this.increaseStatisticDouble("ad.total.revenue", revenue);
+        this.increaseStatisticDouble("ad.total.revenue." + placement, revenue);
 
-        this.pythonCall("onAndroidAdServiceAppOpenRevenuePaid", params);
+        if (format == MengineAdFormat.ADFORMAT_BANNER) {
+            this.increaseStatisticDouble("ad.banner.revenue", revenue);
+            this.increaseStatisticDouble("ad.banner.revenue." + placement, revenue);
+
+            this.pythonCall("onAndroidAdServiceBannerRevenuePaid", params);
+        } else if (format == MengineAdFormat.ADFORMAT_INTERSTITIAL) {
+            this.increaseStatisticDouble("ad.interstitial.revenue", revenue);
+            this.increaseStatisticDouble("ad.interstitial.revenue." + placement, revenue);
+
+            this.pythonCall("onAndroidAdServiceInterstitialRevenuePaid", params);
+        } else if (format == MengineAdFormat.ADFORMAT_REWARDED) {
+            this.increaseStatisticDouble("ad.rewarded.revenue", revenue);
+            this.increaseStatisticDouble("ad.rewarded.revenue." + placement, revenue);
+
+            this.pythonCall("onAndroidAdServiceRewardedRevenuePaid", params);
+        } else if (format == MengineAdFormat.ADFORMAT_APPOPEN) {
+            this.increaseStatisticDouble("ad.appopen.revenue", revenue);
+            this.increaseStatisticDouble("ad.appopen.revenue." + placement, revenue);
+
+            this.pythonCall("onAndroidAdServiceAppOpenRevenuePaid", params);
+        } else if (format == MengineAdFormat.ADFORMAT_MREC) {
+            this.increaseStatisticDouble("ad.mrec.revenue", revenue);
+            this.increaseStatisticDouble("ad.mrec.revenue." + placement, revenue);
+
+            this.pythonCall("onAndroidAdServiceMRECRevenuePaid", params);
+        }
+    }
+
+    @Override
+    public void onAdShowSuccess(@NonNull MengineAdMediation mediation, @NonNull MengineAdFormat format, String placement) {
+        Map<String, Object> params = Map.of("placement", placement);
+
+        if (format == MengineAdFormat.ADFORMAT_INTERSTITIAL) {
+            this.increaseStatisticInteger("ad.interstitial.show", 1);
+            this.increaseStatisticInteger("ad.interstitial.show." + placement, 1);
+
+            this.pythonCall("onAndroidAdServiceInterstitialShowSuccess", params);
+        } else if (format == MengineAdFormat.ADFORMAT_REWARDED) {
+            this.increaseStatisticInteger("ad.rewarded.show", 1);
+            this.increaseStatisticInteger("ad.rewarded.show." + placement, 1);
+
+            this.pythonCall("onAndroidAdServiceRewardedShowSuccess", params);
+        } else if (format == MengineAdFormat.ADFORMAT_APPOPEN) {
+            this.increaseStatisticInteger("ad.appopen.show", 1);
+            this.increaseStatisticInteger("ad.appopen.show." + placement, 1);
+
+            this.pythonCall("onAndroidAdServiceAppOpenShowSuccess", params);
+        } else if (format == MengineAdFormat.ADFORMAT_MREC) {
+            this.increaseStatisticInteger("ad.mrec.show", 1);
+            this.increaseStatisticInteger("ad.mrec.show." + placement, 1);
+
+            this.pythonCall("onAndroidAdServiceMRECShowSuccess", params);
+        }
+    }
+
+    @Override
+    public void onAdShowFailed(@NonNull MengineAdMediation mediation, @NonNull MengineAdFormat format, String placement, int errorCode) {
+        Map<String, Object> params = Map.of("placement", placement, "error_code", errorCode);
+
+        if (format == MengineAdFormat.ADFORMAT_INTERSTITIAL) {
+            this.pythonCall("onAndroidAdServiceInterstitialShowFailed", params);
+        } else if (format == MengineAdFormat.ADFORMAT_REWARDED) {
+            this.pythonCall("onAndroidAdServiceRewardedShowFailed", params);
+        } else if (format == MengineAdFormat.ADFORMAT_APPOPEN) {
+            this.pythonCall("onAndroidAdServiceAppOpenShowFailed", params);
+        } else if (format == MengineAdFormat.ADFORMAT_MREC) {
+            this.pythonCall("onAndroidAdServiceMRECShowFailed", params);
+        }
+    }
+
+    @Override
+    public void onAdUserRewarded(@NonNull MengineAdMediation mediation, @NonNull MengineAdFormat format, String placement, String label, int amount) {
+        Map<String, Object> params = Map.of("placement", placement, "label", label, "amount", amount);
+
+        if (format == MengineAdFormat.ADFORMAT_REWARDED) {
+            this.increaseStatisticInteger("ad.rewarded.user_rewarded", 1);
+            this.increaseStatisticInteger("ad.rewarded.user_rewarded." + placement, 1);
+
+            this.pythonCall("onAndroidAdServiceRewardedUserRewarded", params);
+        }
     }
 }

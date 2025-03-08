@@ -1,6 +1,7 @@
 package org.Mengine.Plugin.AppLovin;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Size;
 
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdExpirationListener;
@@ -14,6 +15,9 @@ import com.applovin.mediation.MaxRewardedAdListener;
 import com.applovin.mediation.ads.MaxRewardedAd;
 
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineAdFormat;
+import org.Mengine.Base.MengineAdMediation;
+import org.Mengine.Base.MengineAnalyticsEventBuilder;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineNetwork;
 import org.Mengine.Base.MengineUtils;
@@ -29,8 +33,19 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Ma
         //Empty
     }
 
+    protected MengineAnalyticsEventBuilder buildRewardedAdEvent(@Size(min = 1L,max = 40L) String event) {
+        MengineAnalyticsEventBuilder builder = this.buildAdEvent("mng_ad_rewarded_" + event)
+            ;
+
+        return builder;
+    }
+
+    protected void setRewardedState(@NonNull String state) {
+        this.setState("applovin.rewarded.state." + m_adUnitId, state);
+    }
+
     @Override
-    public boolean isInitialize() {
+    public boolean isInitialized() {
         return m_rewardedAd != null;
     }
 
@@ -50,7 +65,7 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Ma
 
         this.log("create");
 
-        this.setState("applovin.rewarded.state." + m_adUnitId, "init");
+        this.setRewardedState("init");
 
         MengineAppLovinMediationInterface mediationAmazon = m_plugin.getMediationAmazon();
 
@@ -93,17 +108,17 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Ma
 
         this.increaseRequestId();
 
-        this.buildAdEvent("mng_ad_rewarded_load")
+        this.buildRewardedAdEvent("load")
             .log();
 
-        this.setState("applovin.rewarded.state." + m_adUnitId, "load");
+        this.setRewardedState("load");
 
         try {
             m_rewardedAd.loadAd();
         } catch (final Exception e) {
             this.logError("loadAd", e);
 
-            this.buildAdEvent("mng_ad_rewarded_load_exception")
+            this.buildRewardedAdEvent("load_exception")
                 .addParameterException("exception", e)
                 .log();
 
@@ -124,7 +139,7 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Ma
 
         this.log("canOfferRewarded", Map.of("placement", placement, "ready", ready));
 
-        this.buildAdEvent("mng_ad_rewarded_offer")
+        this.buildRewardedAdEvent("offer")
             .addParameterString("placement", placement)
             .addParameterBoolean("ready", ready)
             .log();
@@ -150,7 +165,7 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Ma
         this.log("canYouShowRewarded", Map.of("placement", placement, "ready", ready));
 
         if (ready == false) {
-            this.buildAdEvent("mng_ad_rewarded_show")
+            this.buildRewardedAdEvent("show")
                 .addParameterString("placement", placement)
                 .addParameterBoolean("ready", false)
                 .log();
@@ -174,7 +189,7 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Ma
 
         this.log("showRewarded", Map.of("placement", placement, "ready", ready));
 
-        this.buildAdEvent("mng_ad_rewarded_show")
+        this.buildRewardedAdEvent("show")
             .addParameterString("placement", placement)
             .addParameterBoolean("ready", ready)
             .log();
@@ -192,10 +207,10 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Ma
     public void onAdRequestStarted(@NonNull String adUnitId) {
         this.log("onAdRequestStarted");
 
-        this.buildAdEvent("mng_ad_rewarded_request_started")
+        this.buildRewardedAdEvent("request_started")
             .log();
 
-        this.setState("applovin.rewarded.state." + m_adUnitId, "request_started");
+        this.setRewardedState("request_started");
     }
 
     @Override
@@ -207,25 +222,25 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Ma
         String label = reward.getLabel();
         int amount = reward.getAmount();
 
-        this.buildAdEvent("mng_ad_rewarded_user_rewarded")
+        this.buildRewardedAdEvent("user_rewarded")
             .addParameterString("placement", placement)
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .addParameterString("reward_label", label)
             .addParameterLong("reward_amount", amount)
             .log();
 
-        m_adService.rewardedUserRewarded(Map.of("placement", placement, "label", label, "amount", amount));
+        m_adResponse.onAdUserRewarded(MengineAdMediation.ADMEDIATION_APPLOVINMAX, MengineAdFormat.ADFORMAT_REWARDED, placement, label, amount);
     }
 
     @Override
     public void onAdLoaded(@NonNull MaxAd ad) {
         this.logMaxAd("onAdLoaded", ad);
 
-        this.buildAdEvent("mng_ad_rewarded_loaded")
+        this.buildRewardedAdEvent("loaded")
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .log();
 
-        this.setState("applovin.rewarded.state." + m_adUnitId, "loaded." + ad.getNetworkName());
+        this.setRewardedState("loaded." + ad.getNetworkName());
 
         m_requestAttempt = 0;
     }
@@ -236,12 +251,12 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Ma
 
         String placement = ad.getPlacement();
 
-        this.buildAdEvent("mng_ad_rewarded_displayed")
+        this.buildRewardedAdEvent("displayed")
             .addParameterString("placement", placement)
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .log();
 
-        this.setState("applovin.rewarded.state." + m_adUnitId, "displayed." + placement + "." + ad.getNetworkName());
+        this.setRewardedState("displayed." + placement + "." + ad.getNetworkName());
     }
 
     @Override
@@ -250,15 +265,15 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Ma
 
         String placement = ad.getPlacement();
 
-        this.buildAdEvent("mng_ad_rewarded_hidden")
+        this.buildRewardedAdEvent("hidden")
             .addParameterString("placement", placement)
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .log();
 
-        this.setState("applovin.rewarded.state." + m_adUnitId, "hidden." + placement + "." + ad.getNetworkName());
+        this.setRewardedState("hidden." + placement + "." + ad.getNetworkName());
 
         MengineUtils.performOnMainThread(() -> {
-            m_adService.rewardedShowSuccessful(Map.of("placement", placement));
+            m_adResponse.onAdShowSuccess(MengineAdMediation.ADMEDIATION_APPLOVINMAX, MengineAdFormat.ADFORMAT_REWARDED, placement);
 
             this.loadAd();
         });
@@ -270,12 +285,12 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Ma
 
         String placement = ad.getPlacement();
 
-        this.buildAdEvent("mng_ad_rewarded_clicked")
+        this.buildRewardedAdEvent("clicked")
             .addParameterString("placement", placement)
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .log();
 
-        this.setState("applovin.rewarded.state." + m_adUnitId, "clicked." + placement + "." + ad.getNetworkName());
+        this.setRewardedState("clicked." + placement + "." + ad.getNetworkName());
     }
 
     @Override
@@ -284,12 +299,12 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Ma
 
         int errorCode = error.getCode();
 
-        this.buildAdEvent("mng_ad_rewarded_load_failed")
+        this.buildRewardedAdEvent("load_failed")
             .addParameterJSON("error", this.getMaxErrorParams(error))
             .addParameterLong("error_code", errorCode)
             .log();
 
-        this.setState("applovin.rewarded.state." + m_adUnitId, "load_failed." + errorCode);
+        this.setRewardedState("load_failed." + errorCode);
 
         this.retryLoadAd();
     }
@@ -302,17 +317,17 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Ma
 
         int errorCode = error.getCode();
 
-        this.buildAdEvent("mng_ad_rewarded_display_failed")
+        this.buildRewardedAdEvent("display_failed")
             .addParameterString("placement", placement)
             .addParameterLong("error_code", errorCode)
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .addParameterJSON("error", this.getMaxErrorParams(error))
             .log();
 
-        this.setState("applovin.rewarded.state." + m_adUnitId, "display_failed." + placement + "." + ad.getNetworkName() + "." + errorCode);
+        this.setRewardedState("display_failed." + placement + "." + ad.getNetworkName() + "." + errorCode);
 
         MengineUtils.performOnMainThread(() -> {
-            m_adService.rewardedShowFailed(Map.of("placement", placement, "error_code", errorCode));
+            m_adResponse.onAdShowFailed(MengineAdMediation.ADMEDIATION_APPLOVINMAX, MengineAdFormat.ADFORMAT_REWARDED, placement, errorCode);
 
             this.loadAd();
         });
@@ -324,7 +339,7 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Ma
 
         String placement = ad.getPlacement();
 
-        this.buildAdEvent("mng_ad_rewarded_revenue_paid")
+        this.buildRewardedAdEvent("revenue_paid")
             .addParameterString("placement", placement)
             .addParameterDouble("revenue", ad.getRevenue())
             .addParameterString("revenue_precision", ad.getRevenuePrecision())
@@ -335,14 +350,14 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Ma
 
         double revenue = ad.getRevenue();
 
-        m_adService.rewardedRevenuePaid(Map.of("placement", placement, "revenue", revenue));
+        m_adResponse.onAdRevenuePaid(MengineAdMediation.ADMEDIATION_APPLOVINMAX, MengineAdFormat.ADFORMAT_REWARDED, placement, revenue);
     }
 
     @Override
     public void onExpiredAdReloaded(@NonNull MaxAd adOld, @NonNull MaxAd adNew) {
         this.logMaxAd("onExpiredAdReloaded", adOld);
 
-        this.buildAdEvent("mng_ad_rewarded_expired_reloaded")
+        this.buildRewardedAdEvent("expired_reloaded")
             .addParameterJSON("old_ad", this.getMAAdParams(adOld))
             .addParameterJSON("new_ad", this.getMAAdParams(adNew))
             .log();

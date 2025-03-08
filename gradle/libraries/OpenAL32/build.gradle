@@ -15,7 +15,7 @@ android {
         cmake_arguments.add("-DANDROID_STL=c++_shared")
         cmake_arguments.add("-DANDROID_TOOLCHAIN=clang")
         cmake_arguments.add("-DCMAKE_SYSTEM_NAME=Android")
-        cmake_arguments.add("-DCMAKE_SYSTEM_VERSION=" + project.minSdkVersion)
+        cmake_arguments.add("-DCMAKE_SYSTEM_VERSION=${project.minSdkVersion}")
 
         debug {
             externalNativeBuild {

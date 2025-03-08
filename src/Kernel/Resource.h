@@ -83,7 +83,7 @@ namespace Mengine
         virtual void _finalize();
 
     public:
-        MENGINE_INLINE bool isInitialize() const;
+        MENGINE_INLINE bool isInitialized() const;
 
     public:
         bool compile() override;
@@ -175,7 +175,7 @@ namespace Mengine
         return m_precompile;
     }
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE bool Resource::isInitialize() const
+    MENGINE_INLINE bool Resource::isInitialized() const
     {
         return m_initialize;
     }

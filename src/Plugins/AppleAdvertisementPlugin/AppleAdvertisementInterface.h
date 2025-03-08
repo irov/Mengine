@@ -51,8 +51,8 @@ namespace Mengine
     public:
         virtual bool showBanner() = 0;
         virtual bool hideBanner() = 0;
-        
-        virtual bool getBannerHeight( uint32_t * const _height ) const = 0;
+
+        virtual bool getBannerSize( uint32_t * const _width, uint32_t * const _height ) const = 0;
         
     public:
         virtual void setInterstitialProvider( const AppleAdvertisementInterstitialProviderInterfacePtr & _interstitialProvider ) = 0;

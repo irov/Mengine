@@ -62,7 +62,7 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
 
         remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)
             .addOnSuccessListener(aVoid -> {
-                this.buildEvent("mng_fb_rc_defaults_successful")
+                this.buildEvent("mng_fb_rc_defaults_success")
                     .log();
 
                 this.fetchRemoteConfigValues(remoteConfig);
@@ -98,7 +98,7 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
 
         remoteConfig.fetchAndActivate()
             .addOnSuccessListener(activity, updated -> {
-                this.buildEvent("mng_fb_rc_fetch_successful")
+                this.buildEvent("mng_fb_rc_fetch_success")
                     .addParameterBoolean("updated", updated)
                     .log();
 
@@ -113,7 +113,7 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
                     allValueString.put(key, valueString);
                 }
 
-                this.logMessage("remote config successful fetch and activate updated: %b"
+                this.logMessage("remote config success fetch and activate updated: %b"
                     , updated
                 );
 

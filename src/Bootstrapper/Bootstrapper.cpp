@@ -2207,7 +2207,7 @@ namespace Mengine
 
         if( m_loggerFile != nullptr )
         {
-            LOGGER_MESSAGE( "finish log successful" );
+            LOGGER_MESSAGE( "finish log success" );
 
             LOGGER_SERVICE()
                 ->unregisterLogger( m_loggerFile );

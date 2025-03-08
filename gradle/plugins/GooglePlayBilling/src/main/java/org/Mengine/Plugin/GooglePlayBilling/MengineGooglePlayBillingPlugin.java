@@ -66,7 +66,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
                     this.pythonCall("onGooglePlayBillingPurchasesUpdatedServiceDisconnected");
                 }break;
                 case BillingClient.BillingResponseCode.OK: {
-                    this.logMessage("onPurchasesUpdated [User successful the purchase]");
+                    this.logMessage("onPurchasesUpdated [User success the purchase]");
 
                     if (purchases != null) {
                         for (Purchase purchase : purchases) {
@@ -201,7 +201,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
 
                 MengineGooglePlayBillingPlugin.this.logMessage("billing setup finished");
 
-                MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingConnectSetupFinishedSuccessful");
+                MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingConnectSetupFinishedSuccess");
             }
         });
     }
@@ -335,7 +335,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
                 , desc_products
             );
 
-            this.pythonCall("onGooglePlayBillingQueryProductSuccessful", desc_products);
+            this.pythonCall("onGooglePlayBillingQueryProductSuccess", desc_products);
         });
     }
 
@@ -373,19 +373,19 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
                 return;
             }
 
-            this.logMessage("billing successful query message: %s purchases: %s"
+            this.logMessage("billing success query message: %s purchases: %s"
                 , billingResult.getDebugMessage()
                 , purchases
             );
 
-            this.buildEvent("mng_billing_purchases_successful")
+            this.buildEvent("mng_billing_purchases_success")
                 .log();
 
             for (Purchase purchase : purchases) {
                 this.handlePurchase(purchase);
             }
 
-            this.pythonCall("onGooglePlayBillingQueryPurchasesSuccessful");
+            this.pythonCall("onGooglePlayBillingQueryPurchasesSuccess");
         });
     }
 
@@ -462,15 +462,15 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
             return true;
         }
 
-        this.logMessage("buy InApp successful productId: %s"
+        this.logMessage("buy InApp success productId: %s"
             , productId
         );
 
-        this.buildEvent("mng_billing_buy_successful")
+        this.buildEvent("mng_billing_buy_success")
             .addParameterString("product_id", productId)
             .log();
 
-        this.pythonCall("onGooglePlayBillingBuyInAppSuccessful", productId);
+        this.pythonCall("onGooglePlayBillingBuyInAppSuccess", productId);
 
         return true;
     }
@@ -510,7 +510,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
                 , billingResult.getDebugMessage()
             );
 
-            this.pythonCall("onGooglePlayBillingPurchasesAcknowledgeSuccessful", products);
+            this.pythonCall("onGooglePlayBillingPurchasesAcknowledgeSuccess", products);
         });
     }
 
@@ -541,7 +541,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
                 return;
             }
 
-            this.logMessage("billing successful consume: %s"
+            this.logMessage("billing success consume: %s"
                 , billingResult.getDebugMessage()
             );
 
@@ -561,7 +561,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
             MengineApplication application = this.getMengineApplication();
             application.onMengineInAppPurchase(purchase1);
 
-            this.pythonCall("onGooglePlayBillingPurchasesOnConsumeSuccessful", products);
+            this.pythonCall("onGooglePlayBillingPurchasesOnConsumeSuccess", products);
         });
     }
 

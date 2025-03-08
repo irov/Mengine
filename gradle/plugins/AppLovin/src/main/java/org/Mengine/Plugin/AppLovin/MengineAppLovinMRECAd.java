@@ -2,7 +2,7 @@ package org.Mengine.Plugin.AppLovin;
 
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
+import android.widget.FrameLayout;
 import android.graphics.Color;
 
 import androidx.annotation.NonNull;
@@ -27,46 +27,35 @@ import org.Mengine.Base.MengineUtils;
 
 import java.util.Map;
 
-public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxAdRequestListener, MaxAdViewAdListener, MaxAdRevenueListener, MaxAdReviewListener {
+public class MengineAppLovinMRECAd extends MengineAppLovinBase implements MaxAdRequestListener, MaxAdViewAdListener, MaxAdRevenueListener, MaxAdReviewListener {
     protected final String m_placement;
-    protected final boolean m_adaptive;
 
     protected MaxAdView m_adView;
 
-    protected volatile boolean m_visible = false;
+    protected volatile boolean m_visible = true;
     protected volatile boolean m_loaded = false;
 
-    public MengineAppLovinBannerAd(MengineAppLovinPlugin plugin, String adUnitId, String placement, boolean adaptive) {
-        super(plugin, adUnitId, MaxAdFormat.BANNER);
+    public MengineAppLovinMRECAd(MengineAppLovinPlugin plugin, String adUnitId, String placement) {
+        super(plugin, adUnitId, MaxAdFormat.MREC);
 
         m_placement = placement;
-        m_adaptive = adaptive;
     }
 
-    protected AppLovinSdkUtils.Size getBannerSize(@NonNull MengineApplication application) {
-        AppLovinSdkUtils.Size size;
-
-        if (m_adaptive == true) {
-            size = MaxAdFormat.BANNER.getAdaptiveSize(application);
-        } else {
-            boolean isTablet = AppLovinSdkUtils.isTablet(application);
-
-            size = (isTablet == true) ? MaxAdFormat.LEADER.getSize() : MaxAdFormat.BANNER.getSize();
-        }
-
-        return size;
-    }
-
-    protected MengineAnalyticsEventBuilder buildBannerAdEvent(@Size(min = 1L,max = 40L) String event) {
-        MengineAnalyticsEventBuilder builder = this.buildAdEvent("mng_ad_banner_" + event)
-            .addParameterString("placement", m_placement)
-            .addParameterBoolean("adaptive", m_adaptive);
+    protected MengineAnalyticsEventBuilder buildMRECAdEvent(@Size(min = 1L,max = 40L) String event) {
+        MengineAnalyticsEventBuilder builder = this.buildAdEvent("mng_ad_mrec_" + event)
+            .addParameterString("placement", m_placement);
 
         return builder;
     }
 
-    protected void setBannerState(@NonNull String state) {
-        this.setState("applovin.banner.state." + m_adUnitId, state);
+    protected void setMRECState(@NonNull String state) {
+        this.setState("applovin.mrec.state." + m_adUnitId, state);
+    }
+
+    protected AppLovinSdkUtils.Size getMRECSize() {
+        AppLovinSdkUtils.Size size = MaxAdFormat.MREC.getSize();
+
+        return size;
     }
 
     @Override
@@ -78,7 +67,7 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
     public void initialize(@NonNull MengineApplication application) {
         super.initialize(application);
 
-        MaxAdView adView = new MaxAdView(m_adUnitId, application);
+        MaxAdView adView = new MaxAdView(m_adUnitId, MaxAdFormat.MREC, application);
 
         adView.setPlacement(m_placement);
 
@@ -87,21 +76,16 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
         adView.setRevenueListener(this);
         adView.setAdReviewListener(this);
 
-        AppLovinSdkUtils.Size size = this.getBannerSize(application);
+        AppLovinSdkUtils.Size size = this.getMRECSize();
 
         int widthDp = size.getWidth();
         int heightDp = size.getHeight();
         int widthPx = AppLovinSdkUtils.dpToPx(application, widthDp);
         int heightPx = AppLovinSdkUtils.dpToPx(application, heightDp);
 
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, heightPx);
-        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(widthPx, heightPx);
 
-        adView.setLayoutParams(params);
-
-        if (m_adaptive == true) {
-            adView.setExtraParameter("adaptive_banner", "true");
-        }
+        m_adView.setLayoutParams(params);
 
         adView.setBackgroundColor(Color.TRANSPARENT);
 
@@ -120,20 +104,11 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
 
         this.log("create", Map.of("placement", m_placement, "width", widthDp, "height", heightDp));
 
-        this.setBannerState("init." + m_placement);
+        this.setMRECState("init." + m_placement);
 
-        MengineAppLovinMediationInterface mediationAmazon = m_plugin.getMediationAmazon();
-
-        if (mediationAmazon != null) {
-            mediationAmazon.initializeMediatorBanner(application, adView, () -> {
-                this.loadAd();
-            });
-        } else {
-            // Load the ad
-            MengineUtils.performOnMainThread(() -> {
-                this.loadAd();
-            });
-        }
+        MengineUtils.performOnMainThread(() -> {
+            this.loadAd();
+        });
     }
 
     @Override
@@ -154,7 +129,7 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
     public int getWidthPx() {
         MengineApplication application = m_plugin.getMengineApplication();
 
-        AppLovinSdkUtils.Size size = this.getBannerSize(application);
+        AppLovinSdkUtils.Size size = this.getMRECSize();
 
         int widthDp = size.getWidth();
         int widthPx = AppLovinSdkUtils.dpToPx(application, widthDp);
@@ -165,7 +140,7 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
     public int getHeightPx() {
         MengineApplication application = m_plugin.getMengineApplication();
 
-        AppLovinSdkUtils.Size size = this.getBannerSize(application);
+        AppLovinSdkUtils.Size size = this.getMRECSize();
 
         int heightDp = size.getHeight();
         int heightPx = AppLovinSdkUtils.dpToPx(application, heightDp);
@@ -195,7 +170,7 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
             return;
         }
 
-        if (m_plugin.hasOption("applovin.banner.no_load") == true || m_plugin.hasOption("applovin.ad.no_load") == true) {
+        if (m_plugin.hasOption("applovin.mrec.no_load") == true || m_plugin.hasOption("applovin.ad.no_load") == true) {
             return;
         }
 
@@ -203,10 +178,10 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
 
         this.log("loadAd");
 
-        this.buildBannerAdEvent("load")
+        this.buildMRECAdEvent("load")
             .log();
 
-        this.setBannerState("load");
+        this.setMRECState("load");
 
         try {
             m_adView.loadAd();
@@ -216,11 +191,11 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
                 , e.getMessage()
             );
 
-            this.buildBannerAdEvent("load_exception")
+            this.buildMRECAdEvent("load_exception")
                 .addParameterException("exception", e)
                 .log();
 
-            this.setBannerState("load_exception");
+            this.setMRECState("load_exception");
         }
     }
 
@@ -231,7 +206,7 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
 
         adView.setVisibility(View.VISIBLE);
 
-        if (m_plugin.hasOption("applovin.banner.no_load") == true || m_plugin.hasOption("applovin.ad.no_load") == true) {
+        if (m_plugin.hasOption("applovin.mrec.no_load") == true || m_plugin.hasOption("applovin.ad.no_load") == true) {
             return;
         }
 
@@ -245,7 +220,7 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
 
         adView.setVisibility(View.GONE);
 
-        if (m_plugin.hasOption("applovin.banner.no_load") == true || m_plugin.hasOption("applovin.ad.no_load") == true) {
+        if (m_plugin.hasOption("applovin.mrec.no_load") == true || m_plugin.hasOption("applovin.ad.no_load") == true) {
             return;
         }
 
@@ -256,42 +231,31 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
     private void updateVisible() {
         this.log("updateVisible", Map.of("show", m_visible));
 
-        MengineAppLovinNonetBannersInterface nonetBanners = m_plugin.getNonetBanners();
-
         if (m_visible == true) {
-            if (nonetBanners != null) {
-                if (m_loaded == true) {
-                    nonetBanners.hide();
-
-                    if (m_adView != null) {
-                        this.enableAdView(m_adView);
-                    }
-                } else {
-                    nonetBanners.show();
-                }
-            } else {
-                if (m_adView != null) {
-                    this.enableAdView(m_adView);
-                }
+            if (m_adView != null) {
+                this.enableAdView(m_adView);
             }
         } else {
             if (m_adView != null) {
                 this.disableAdView(m_adView);
             }
-
-            if (nonetBanners != null) {
-                nonetBanners.hide();
-            }
         }
     }
 
-    public void show() {
+    public void show(int leftMargin, int bottomMargin) {
         m_plugin.runOnUiThread(() -> {
             if (m_visible == true) {
                 return;
             }
 
             m_visible = true;
+
+            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)m_adView.getLayoutParams();
+            params.leftMargin = leftMargin;
+            params.bottomMargin = bottomMargin;
+
+            m_adView.setLayoutParams(params);
+            m_adView.requestLayout();
 
             this.updateVisible();
         });
@@ -315,10 +279,10 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
 
         this.log("onAdRequestStarted");
 
-        this.buildBannerAdEvent("request_started")
+        this.buildMRECAdEvent("request_started")
             .log();
 
-        this.setBannerState("request_started." + m_placement);
+        this.setMRECState("request_started." + m_placement);
     }
 
     @Override
@@ -327,56 +291,46 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
 
         this.logMaxAd("onAdLoaded", ad);
 
-        this.buildBannerAdEvent("loaded")
+        this.buildMRECAdEvent("loaded")
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .log();
 
         m_requestAttempt = 0;
 
-        this.setBannerState("loaded." + m_placement + "." + ad.getNetworkName());
-
-        MengineAppLovinNonetBannersInterface nonetBanners = m_plugin.getNonetBanners();
-
-        if (m_visible == true) {
-            if (nonetBanners != null) {
-                this.enableAdView(m_adView);
-
-                nonetBanners.hide();
-            }
-        }
+        this.setMRECState("loaded." + m_placement + "." + ad.getNetworkName());
     }
 
     @Override
     public void onAdDisplayed(@NonNull MaxAd ad) {
         this.logMaxAd("onAdDisplayed", ad);
 
-        this.buildBannerAdEvent("displayed")
+        this.buildMRECAdEvent("displayed")
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .log();
 
-        this.setBannerState("displayed." + m_placement + "." + ad.getNetworkName());
+        this.setMRECState("displayed." + m_placement + "." + ad.getNetworkName());
     }
 
     @Override
     public void onAdHidden(@NonNull MaxAd ad) {
         this.logMaxAd("onAdHidden", ad);
 
-        this.buildBannerAdEvent("hidden")
+        this.buildMRECAdEvent("hidden")
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .log();
 
-        this.setBannerState("hidden." + m_placement + "." + ad.getNetworkName());
+        this.setMRECState("hidden." + m_placement + "." + ad.getNetworkName());
     }
 
     @Override
     public void onAdClicked(@NonNull MaxAd ad) {
         this.logMaxAd("onAdClicked", ad);
 
-        this.buildBannerAdEvent("clicked")
+        this.buildMRECAdEvent("clicked")
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .log();
 
-        this.setBannerState("clicked." + m_placement + "." + ad.getNetworkName());
+        this.setMRECState("clicked." + m_placement + "." + ad.getNetworkName());
     }
 
     @Override
@@ -387,24 +341,14 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
 
         int errorCode = error.getCode();
 
-        this.buildBannerAdEvent("load_failed")
+        this.buildMRECAdEvent("load_failed")
             .addParameterLong("error_code", errorCode)
             .addParameterJSON("error", this.getMaxErrorParams(error))
             .log();
 
         m_requestAttempt++;
 
-        this.setBannerState("load_failed." + m_placement + "." + errorCode);
-
-        MengineAppLovinNonetBannersInterface nonetBanners = m_plugin.getNonetBanners();
-
-        if (m_visible == true) {
-            if (nonetBanners != null) {
-                this.disableAdView(m_adView);
-
-                nonetBanners.show();
-            }
-        }
+        this.setMRECState("load_failed." + m_placement + "." + errorCode);
     }
 
     @Override
@@ -413,42 +357,42 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
 
         int errorCode = error.getCode();
 
-        this.buildBannerAdEvent("display_failed")
+        this.buildMRECAdEvent("display_failed")
             .addParameterLong("error_code", errorCode)
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .addParameterJSON("error", this.getMaxErrorParams(error))
             .log();
 
-        this.setBannerState("display_failed." + m_placement + "." + ad.getNetworkName() + "." + errorCode);
+        this.setMRECState("display_failed." + m_placement + "." + ad.getNetworkName() + "." + errorCode);
     }
 
     @Override
     public void onAdExpanded(@NonNull MaxAd ad) {
         this.logMaxAd("onAdExpanded", ad);
 
-        this.buildBannerAdEvent("expanded")
+        this.buildMRECAdEvent("expanded")
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .log();
 
-        this.setBannerState("expanded." + m_placement + "." + ad.getNetworkName());
+        this.setMRECState("expanded." + m_placement + "." + ad.getNetworkName());
     }
 
     @Override
     public void onAdCollapsed(@NonNull MaxAd ad) {
         this.logMaxAd("onAdCollapsed", ad);
 
-        this.buildBannerAdEvent("collapsed")
+        this.buildMRECAdEvent("collapsed")
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .log();
 
-        this.setBannerState("collapsed." + m_placement + "." + ad.getNetworkName());
+        this.setMRECState("collapsed." + m_placement + "." + ad.getNetworkName());
     }
 
     @Override
     public void onAdRevenuePaid(@NonNull MaxAd ad) {
         this.logMaxAd("onAdRevenuePaid", ad);
 
-        this.buildBannerAdEvent("revenue_paid")
+        this.buildMRECAdEvent("revenue_paid")
             .addParameterDouble("revenue", ad.getRevenue())
             .addParameterString("revenue_precision", ad.getRevenuePrecision())
             .addParameterJSON("ad", this.getMAAdParams(ad))
@@ -458,7 +402,7 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
 
         double revenue = ad.getRevenue();
 
-        m_adResponse.onAdRevenuePaid(MengineAdMediation.ADMEDIATION_APPLOVINMAX, MengineAdFormat.ADFORMAT_BANNER, m_placement, revenue);
+        m_adResponse.onAdRevenuePaid(MengineAdMediation.ADMEDIATION_APPLOVINMAX, MengineAdFormat.ADFORMAT_MREC, m_placement, revenue);
     }
 
     @Override

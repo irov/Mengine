@@ -1,6 +1,7 @@
 package org.Mengine.Plugin.AppLovin;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Size;
 
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdExpirationListener;
@@ -12,6 +13,9 @@ import com.applovin.mediation.MaxAdReviewListener;
 import com.applovin.mediation.MaxError;
 import com.applovin.mediation.ads.MaxAppOpenAd;
 
+import org.Mengine.Base.MengineAdFormat;
+import org.Mengine.Base.MengineAdMediation;
+import org.Mengine.Base.MengineAnalyticsEventBuilder;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineNetwork;
 import org.Mengine.Base.MengineUtils;
@@ -27,6 +31,23 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Max
         super(plugin, adUnitId, MaxAdFormat.APP_OPEN);
 
         m_placement = placement;
+    }
+
+    protected MengineAnalyticsEventBuilder buildAppOpenAdEvent(@Size(min = 1L,max = 40L) String event) {
+        MengineAnalyticsEventBuilder builder = this.buildAdEvent("mng_ad_appopen_" + event)
+            .addParameterString("placement", m_placement)
+            ;
+
+        return builder;
+    }
+
+    protected void setAppOpenState(@NonNull String state) {
+        this.setState("applovin.appopen.state." + m_adUnitId, state);
+    }
+
+    @Override
+    public boolean isInitialized() {
+        return m_appOpenAd != null;
     }
 
     @Override
@@ -64,8 +85,7 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Max
         this.log("canYouShowAppOpen", Map.of("placement", placement, "ready", ready));
 
         if (ready == false) {
-            this.buildAdEvent("mng_ad_appopen_show")
-                .addParameterString("placement", placement)
+            this.buildAppOpenAdEvent("show")
                 .addParameterBoolean("ready", false)
                 .log();
 
@@ -88,8 +108,7 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Max
 
         this.log("showAppOpen", Map.of("placement", placement, "ready", ready));
 
-        this.buildAdEvent("mng_ad_appopen_show")
-            .addParameterString("placement", placement)
+        this.buildAppOpenAdEvent("show")
             .addParameterBoolean("ready", ready)
             .log();
 
@@ -116,21 +135,21 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Max
 
         this.log("loadAd");
 
-        this.buildAdEvent("mng_ad_appopen_load")
+        this.buildAppOpenAdEvent("load")
             .log();
 
-        this.setState("applovin.appopen.state." + m_adUnitId, "load");
+        this.setAppOpenState("load");
 
         try {
             m_appOpenAd.loadAd();
         } catch (final Exception e) {
             this.logError("loadAd", e);
 
-            this.buildAdEvent("mng_ad_appopen_load_exception")
+            this.buildAppOpenAdEvent("load_exception")
                 .addParameterException("exception", e)
                 .log();
 
-            this.setState("applovin.appopen.state." + m_adUnitId, "load_exception");
+            this.setAppOpenState("load_exception");
 
             this.retryLoadAd();
         }
@@ -140,21 +159,21 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Max
     public void onAdRequestStarted(@NonNull String adUnitId) {
         this.log("onAdRequestStarted");
 
-        this.buildAdEvent("mng_ad_appopen_request_started")
+        this.buildAppOpenAdEvent("started")
             .log();
 
-        this.setState("applovin.appopen.state." + m_adUnitId, "request_started");
+        this.setAppOpenState("request_started");
     }
 
     @Override
     public void onAdLoaded(@NonNull MaxAd ad) {
         this.logMaxAd("onAdLoaded", ad);
 
-        this.buildAdEvent("mng_ad_appopen_loaded")
+        this.buildAppOpenAdEvent("loaded")
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .log();
 
-        this.setState("applovin.appopen.state." + m_adUnitId, "loaded." + ad.getNetworkName());
+        this.setAppOpenState("loaded." + ad.getNetworkName());
 
         m_requestAttempt = 0;
     }
@@ -165,12 +184,11 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Max
 
         String placement = ad.getPlacement();
 
-        this.buildAdEvent("mng_ad_appopen_displayed")
-            .addParameterString("placement", placement)
+        this.buildAppOpenAdEvent("displayed")
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .log();
 
-        this.setState("applovin.appopen.state." + m_adUnitId, "displayed." + placement + "." + ad.getNetworkName());
+        this.setAppOpenState("displayed." + placement + "." + ad.getNetworkName());
     }
 
     @Override
@@ -179,15 +197,14 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Max
 
         String placement = ad.getPlacement();
 
-        this.buildAdEvent("mng_ad_appopen_hidden")
-            .addParameterString("placement", placement)
+        this.buildAppOpenAdEvent("hidden")
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .log();
 
-        this.setState("applovin.appopen.state." + m_adUnitId, "hidden." + placement + "." + ad.getNetworkName());
+        this.setAppOpenState("hidden." + placement + "." + ad.getNetworkName());
 
         MengineUtils.performOnMainThread(() -> {
-            m_adService.appOpenShowSuccessful(Map.of("placement", placement));
+            m_adResponse.onAdShowSuccess(MengineAdMediation.ADMEDIATION_APPLOVINMAX, MengineAdFormat.ADFORMAT_APPOPEN, placement);
 
             this.loadAd();
         });
@@ -199,12 +216,11 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Max
 
         String placement = ad.getPlacement();
 
-        this.buildAdEvent("mng_ad_appopen_clicked")
-            .addParameterString("placement", placement)
+        this.buildAppOpenAdEvent("clicked")
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .log();
 
-        this.setState("applovin.appopen.state." + m_adUnitId, "clicked." + placement + "." + ad.getNetworkName());
+        this.setAppOpenState("clicked." + placement + "." + ad.getNetworkName());
     }
 
     @Override
@@ -213,12 +229,12 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Max
 
         int errorCode = error.getCode();
 
-        this.buildAdEvent("mng_ad_appopen_load_failed")
+        this.buildAppOpenAdEvent("load_failed")
             .addParameterLong("error_code", errorCode)
             .addParameterJSON("error", this.getMaxErrorParams(error))
             .log();
 
-        this.setState("applovin.appopen.state." + m_adUnitId, "load_failed." + errorCode);
+        this.setAppOpenState("load_failed." + errorCode);
 
         this.retryLoadAd();
     }
@@ -231,17 +247,16 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Max
 
         int errorCode = error.getCode();
 
-        this.buildAdEvent("mng_ad_appopen_display_failed")
-            .addParameterString("placement", placement)
+        this.buildAppOpenAdEvent("display_failed")
             .addParameterLong("error_code", errorCode)
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .addParameterJSON("error", this.getMaxErrorParams(error))
             .log();
 
-        this.setState("applovin.appopen.state." + m_adUnitId, "display_failed." + placement + "." + ad.getNetworkName() + "." + errorCode);
+        this.setAppOpenState("display_failed." + placement + "." + ad.getNetworkName() + "." + errorCode);
 
         MengineUtils.performOnMainThread(() -> {
-            m_adService.appOpenShowFailed(Map.of("placement", placement, "error_code", errorCode));
+            m_adResponse.onAdShowFailed(MengineAdMediation.ADMEDIATION_APPLOVINMAX, MengineAdFormat.ADFORMAT_APPOPEN, placement, errorCode);
 
             this.loadAd();
         });
@@ -253,8 +268,7 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Max
 
         String placement = ad.getPlacement();
 
-        this.buildAdEvent("mng_ad_appopen_revenue_paid")
-            .addParameterString("placement", placement)
+        this.buildAppOpenAdEvent("revenue_paid")
             .addParameterDouble("revenue", ad.getRevenue())
             .addParameterString("revenue_precision", ad.getRevenuePrecision())
             .addParameterJSON("ad", this.getMAAdParams(ad))
@@ -264,14 +278,14 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Max
 
         double revenue = ad.getRevenue();
 
-        m_adService.appOpenRevenuePaid(Map.of("placement", placement, "revenue", revenue));
+        m_adResponse.onAdRevenuePaid(MengineAdMediation.ADMEDIATION_APPLOVINMAX, MengineAdFormat.ADFORMAT_APPOPEN, placement, revenue);
     }
 
     @Override
     public void onExpiredAdReloaded(@NonNull MaxAd adOld, @NonNull MaxAd adNew) {
         this.logMaxAd("onExpiredAdReloaded", adOld);
 
-        this.buildAdEvent("mng_ad_appopen_expired_reloaded")
+        this.buildAppOpenAdEvent("expired_reloaded")
             .addParameterJSON("old_ad", this.getMAAdParams(adOld))
             .addParameterJSON("new_ad", this.getMAAdParams(adNew))
             .log();

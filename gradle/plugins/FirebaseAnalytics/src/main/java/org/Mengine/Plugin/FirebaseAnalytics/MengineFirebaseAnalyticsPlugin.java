@@ -152,8 +152,8 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
             return "LEADER";
         } else if (adType == MengineAdFormat.ADFORMAT_INTERSTITIAL) {
             return "INTERSTITIAL";
-        } else if (adType == MengineAdFormat.ADFORMAT_APP_OPEN) {
-            return "APP_OPEN";
+        } else if (adType == MengineAdFormat.ADFORMAT_APPOPEN) {
+            return "APPOPEN";
         } else if (adType == MengineAdFormat.ADFORMAT_REWARDED) {
             return "REWARDED";
         } else if (adType == MengineAdFormat.ADFORMAT_NATIVE) {

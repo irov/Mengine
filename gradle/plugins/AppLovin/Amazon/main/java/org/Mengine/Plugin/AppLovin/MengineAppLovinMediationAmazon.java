@@ -90,7 +90,7 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
 
                 m_loadBannerStatus = ELoadAdStatus.ADLOAD_SUCCESSFUL;
 
-                plugin.logMessage("Amazon successful load banner slotId: %s"
+                plugin.logMessage("Amazon success load banner slotId: %s"
                     , MengineAppLovinPlugin_AmazonBannerSlotId
                 );
 
@@ -142,7 +142,7 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
 
                         m_loadInterstitialStatus = ELoadAdStatus.ADLOAD_SUCCESSFUL;
 
-                        plugin.logMessage("Amazon successful load interstitial slotId: %s"
+                        plugin.logMessage("Amazon success load interstitial slotId: %s"
                             , MengineAppLovinPlugin_AmazonInterstitialSlotId
                         );
 
@@ -207,7 +207,7 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
 
                         m_loadRewardedStatus = ELoadAdStatus.ADLOAD_SUCCESSFUL;
 
-                        plugin.logMessage("Amazon successful load rewarded slotId: %s"
+                        plugin.logMessage("Amazon success load rewarded slotId: %s"
                             , MengineAppLovinPlugin_AmazonRewardedSlotId
                         );
 

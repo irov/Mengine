@@ -18,5 +18,7 @@
         <meta-data android:name="mengine.applovin.rewarded.adunitid" android:value="@string/mengine_applovin_rewarded_adunitid" />
         <meta-data android:name="mengine.applovin.appopen.placement" android:value="@string/mengine_applovin_appopen_placement" />
         <meta-data android:name="mengine.applovin.appopen.adunitid" android:value="@string/mengine_applovin_appopen_adunitid" />
+        <meta-data android:name="mengine.applovin.mrec.placement" android:value="@string/mengine_applovin_mrec_placement" />
+        <meta-data android:name="mengine.applovin.mrec.adunitid" android:value="@string/mengine_applovin_mrec_adunitid" />
     </application>
 </manifest>

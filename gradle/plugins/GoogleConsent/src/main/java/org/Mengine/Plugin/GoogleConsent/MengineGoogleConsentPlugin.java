@@ -44,7 +44,7 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
                 int consentStatus = consentInformation.getConsentStatus();
                 ConsentInformation.PrivacyOptionsRequirementStatus privacyOptionsRequirementStatus = consentInformation.getPrivacyOptionsRequirementStatus();
 
-                this.logMessage("updated consent info update successful status: %d formAvailable: %b privacyOptionsRequirementStatus: %s"
+                this.logMessage("updated consent info update success status: %d formAvailable: %b privacyOptionsRequirementStatus: %s"
                     , consentStatus
                     , formAvailable
                     , privacyOptionsRequirementStatus
@@ -88,7 +88,7 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
                     return;
                 }
 
-                this.logMessage("consent form load and show successful");
+                this.logMessage("consent form load and show success");
 
                 MengineTransparencyConsentParam consent = activity.makeTransparencyConsentParam();
 

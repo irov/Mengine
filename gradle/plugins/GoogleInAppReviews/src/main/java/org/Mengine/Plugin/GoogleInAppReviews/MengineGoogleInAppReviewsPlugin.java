@@ -40,7 +40,7 @@ public class MengineGoogleInAppReviewsPlugin extends MengineService implements M
                 return;
             }
 
-            this.logMessage("requestReviewFlow successful");
+            this.logMessage("requestReviewFlow success");
 
             m_reviewInfo = task.getResult();
 

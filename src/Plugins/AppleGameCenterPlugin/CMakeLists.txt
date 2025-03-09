@@ -12,6 +12,9 @@ src
     
     AppleGameCenterDelegate.h
     AppleGameCenterDelegate.mm
+    
+    AppleGameCenterApplicationDelegate.h
+    AppleGameCenterApplicationDelegate.mm
 )
 
 if(MENGINE_USE_SCRIPT_SERVICE)
@@ -25,6 +28,8 @@ if(MENGINE_USE_SCRIPT_SERVICE)
 endif()
 
 ADD_MENGINE_APPLE_PLUGIN(MENGINE_PLUGIN_APPLE_GAMECENTER)
+
+ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleGameCenterApplicationDelegate")
 
 ADD_MENGINE_APPLE_FRAMEWORK(GameKit)
 

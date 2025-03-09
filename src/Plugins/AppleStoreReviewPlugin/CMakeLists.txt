@@ -8,6 +8,9 @@ src
 
     AppleStoreReviewPlugin.h
     AppleStoreReviewPlugin.mm
+    
+    AppleStoreReviewApplicationDelegate.h
+    AppleStoreReviewApplicationDelegate.mm
 )
 
 if(MENGINE_USE_SCRIPT_SERVICE)
@@ -21,6 +24,8 @@ if(MENGINE_USE_SCRIPT_SERVICE)
 endif()
 
 ADD_MENGINE_APPLE_PLUGIN(MENGINE_PLUGIN_APPLE_STOREREVIEW)
+
+ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleStoreReviewApplicationDelegate")
 
 ADD_MENGINE_APPLE_FRAMEWORK(StoreKit)
 

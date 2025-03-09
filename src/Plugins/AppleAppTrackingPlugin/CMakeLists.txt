@@ -7,6 +7,9 @@ src
     AppleAppTrackingPlugin.h
     AppleAppTrackingPlugin.mm
     
+    AppleAppTrackingApplicationDelegate.h
+    AppleAppTrackingApplicationDelegate.mm
+    
     AppleAppTrackingService.h
     AppleAppTrackingService.mm
 )
@@ -22,6 +25,8 @@ if(MENGINE_USE_SCRIPT_SERVICE)
 endif()
 
 ADD_MENGINE_APPLE_PLUGIN(MENGINE_PLUGIN_APPLE_APPTRACKING)
+
+ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleAppTrackingApplicationDelegate")
 
 ADD_MENGINE_APPLE_FRAMEWORK(AppTrackingTransparency)
 ADD_MENGINE_APPLE_FRAMEWORK(AdSupport)

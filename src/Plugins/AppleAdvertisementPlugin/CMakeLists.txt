@@ -2,14 +2,6 @@ MENGINE_PROJECT(AppleAdvertisementPlugin)
 
 ADD_FILTER(
 src
-    AppleAdvertisementPlugin.h
-    AppleAdvertisementPlugin.mm
-
-    AppleAdvertisementInterface.h
-
-    AppleAdvertisementService.h
-    AppleAdvertisementService.mm
-    
     AppleAdvertisementApplicationDelegate.h
     AppleAdvertisementApplicationDelegate.mm
 )

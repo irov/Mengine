@@ -139,6 +139,7 @@ Common
     AndroidKernelServiceInterface.h
     AndroidAssetServiceInterface.h
     AppleKernelServiceInterface.h
+    AppleAdvertisementInterface.h
     iOSKernelServiceInterface.h
     Win32KernelServiceInterface.h
     ArrowServiceInterface.h

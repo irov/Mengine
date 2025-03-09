@@ -108,6 +108,18 @@
     return nil;
 }
 
+- (id _Nullable)getPluginDelegateOfProtocol:(Protocol *)protocol {
+    for (id delegate in self.m_pluginDelegates) {
+        if ([delegate conformsToProtocol:protocol] == NO) {
+            continue;
+        }
+        
+        return delegate;
+    }
+    
+    return nil;
+}
+
 - (void)notify:(AppleEvent *)event args:(id)firstArg, ... NS_REQUIRES_NIL_TERMINATION {
     va_list args;
     va_start(args, firstArg);

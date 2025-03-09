@@ -227,7 +227,7 @@ namespace Mengine
     {
         LOGGER_MESSAGE( "try reset achievemnts" );
         
-        BOOL result = [m_gameCenterDelegate resetAchievements : ^ (NSError * _Nullable _error) {
+        BOOL result = [m_gameCenterDelegate resetAchievements:^(NSError * _Nullable _error) {
             if( _error != nil )
             {
                 LOGGER_ERROR( "reset achievemnts error: '%s'"

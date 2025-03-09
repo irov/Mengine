@@ -170,13 +170,10 @@
         @"ad": [self getMAAdParams:ad]
     }];
     
-    Mengine::AppleAppLovinInterstitialProviderInterfacePtr interstitialProvider = [[AppleAppLovinApplicationDelegate sharedInstance] getInterstitialProvider];
+    id<AppleAdvertisementResponseInterface> response = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementResponse];
     
-    if (interstitialProvider != nullptr) {
-        Mengine::Params params;
-        [AppleDetail getParamsFromNSDictionary:@{@"placement":ad.placement} outParams:&params];
-        
-        interstitialProvider->onAppleAppLovinInterstitialShowSuccessful( params );
+    if (response != nil) {
+        [response onAppleAdvertisementShowSuccessful:[iOSAdFormat ADFORMAT_INTERSTITIAL] withPlacement:ad.placement];
     }
     
     [self loadAd];
@@ -192,15 +189,12 @@
         @"ad": [self getMAAdParams:ad]
     }];
     
-    Mengine::AppleAppLovinInterstitialProviderInterfacePtr interstitialProvider = [[AppleAppLovinApplicationDelegate sharedInstance] getInterstitialProvider];
+    id<AppleAdvertisementResponseInterface> response = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementResponse];
     
-    if (interstitialProvider != nullptr) {
-        Mengine::Params params;
-        [AppleDetail getParamsFromNSDictionary:@{@"placement":ad.placement, @"error_code":@(error.code)} outParams:&params];
-        
-        interstitialProvider->onAppleAppLovinInterstitialShowFailed( params );
+    if (response != nil) {
+        [response onAppleAdvertisementShowFailed:[iOSAdFormat ADFORMAT_INTERSTITIAL] withPlacement:ad.placement withError:error.code];
     }
-            
+    
     [self loadAd];
 }
 
@@ -218,13 +212,10 @@
     
     [self eventRevenue:ad];
     
-    Mengine::AppleAppLovinInterstitialProviderInterfacePtr interstitialProvider = [[AppleAppLovinApplicationDelegate sharedInstance] getInterstitialProvider];
+    id<AppleAdvertisementResponseInterface> response = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementResponse];
     
-    if (interstitialProvider != nullptr) {
-        Mengine::Params params;
-        [AppleDetail getParamsFromNSDictionary:@{@"placement":ad.placement, @"revenue":@(ad.revenue)} outParams:&params];
-        
-        interstitialProvider->onAppleAppLovinInterstitialRevenuePaid( params );
+    if (response != nil) {
+        [response onAppleAdvertisementRevenuePaid:[iOSAdFormat ADFORMAT_INTERSTITIAL] withPlacement:ad.placement withRevenue:ad.revenue];
     }
 }
 

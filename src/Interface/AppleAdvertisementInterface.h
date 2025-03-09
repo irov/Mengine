@@ -3,10 +3,10 @@
 #import "Environment/iOS/iOSAdFormat.h"
 
 @protocol AppleAdvertisementResponseInterface <NSObject>
-- (void)onAppleAdvertisementInterstitialShowSuccessful:(iOSAdFormat *)format withPlacement:(NSString *)placement;
-- (void)onAppleAdvertisementInterstitialShowFailed:(iOSAdFormat *)format withPlacement:(NSString *)placement withError:(int)code;
-- (void)onAppleAdvertisementInterstitialRevenuePaid:(iOSAdFormat *)format withPlacement:(NSString *)placement withRevenue:(double)revenue;
-- (void)onAppleAdvertisementRewardedUserRewarded:(iOSAdFormat *)format withPlacement:(NSString *)placement withLabel:(NSString *)label withAmount:(int)amount;
+- (void)onAppleAdvertisementShowSuccess:(iOSAdFormat *)format withPlacement:(NSString *)placement;
+- (void)onAppleAdvertisementShowFailed:(iOSAdFormat *)format withPlacement:(NSString *)placement withError:(NSInteger)code;
+- (void)onAppleAdvertisementRevenuePaid:(iOSAdFormat *)format withPlacement:(NSString *)placement withRevenue:(double)revenue;
+- (void)onAppleAdvertisementUserRewarded:(iOSAdFormat *)format withPlacement:(NSString *)placement withLabel:(NSString *)label withAmount:(NSInteger)amount;
 @end
 
 @protocol AppleAdvertisementProviderInterface <NSObject>
@@ -26,8 +26,11 @@
 @end
 
 @protocol AppleAdvertisementInterface <AppleAdvertisementProviderInterface>
-+ (id<AppleAdvertisementInterface>)sharedInstance;
++ (instancetype)sharedInstance;
 
 - (void)setAdvertisementProvider:(id<AppleAdvertisementProviderInterface>)provider;
 - (id<AppleAdvertisementProviderInterface>)getAdvertisementProvider;
+
+- (void)setAdvertisementResponse:(id<AppleAdvertisementResponseInterface>)response;
+- (id<AppleAdvertisementResponseInterface>)getAdvertisementResponse;
 @end

@@ -6,6 +6,7 @@
 
 #import "Environment/iOS/iOSApplication.h"
 #import "Environment/iOS/iOSDetail.h"
+#import "Environment/iOS/iOSNetwork.h"
 #import "Environment/iOS/iOSLog.h"
 #import "Environment/iOS/iOSTransparencyConsentParam.h"
 
@@ -20,8 +21,30 @@
 
 @implementation AppleAppLovinApplicationDelegate
 
-+ (AppleAppLovinApplicationDelegate *) sharedInstance {
-    static AppleAppLovinApplicationDelegate *sharedInstance = nil;
+- (id<AppleAdvertisementResponseInterface>)getAdvertisementResponse {
+    id<AppleAdvertisementInterface> advertisement = [iOSDetail getPluginDelegateOfProtocol:@protocol(AppleAdvertisementInterface)];
+    
+    id<AppleAdvertisementResponseInterface> response = [advertisement getAdvertisementResponse];
+    
+    return response;
+}
+
+- (AppleAppLovinBannerDelegate *)getBanner {
+    return self.m_bannerAd;
+}
+
+- (AppleAppLovinInterstitialDelegate *)getInterstitial {
+    return self.m_interstitialAd;
+}
+
+- (AppleAppLovinRewardedDelegate *)getRewarded {
+    return self.m_rewardedAd;
+}
+
+#pragma mark - AppleAppLovinInterface
+
++ (instancetype)sharedInstance {
+    static AppleAppLovinApplicationDelegate * sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         sharedInstance = [iOSDetail getPluginDelegateOfClass:[AppleAppLovinApplicationDelegate class]];
@@ -29,40 +52,54 @@
     return sharedInstance;
 }
 
-- (void)setBannerProvider:(const Mengine::AppleAppLovinBannerProviderInterfacePtr &)bannerProvider {
-    self.m_bannerProvider = bannerProvider;
+- (BOOL)hasSupportedCMP {
+    ALCMPService * cmpService = [ALSdk shared].cmpService;
+    
+    if ([cmpService hasSupportedCMP] == NO) {
+        return NO;
+    }
+    
+    return YES;
 }
 
-- (Mengine::AppleAppLovinBannerProviderInterfacePtr) getBannerProvider {
-    return self.m_bannerProvider;
+- (BOOL)isConsentFlowUserGeographyGDPR {
+    ALSdkConfiguration * configuration = [ALSdk shared].configuration;
+    
+    if (configuration.consentFlowUserGeography != ALConsentFlowUserGeographyGDPR) {
+        return NO;
+    }
+    
+    return YES;
 }
 
-- (void)setInterstitialProvider:(const Mengine::AppleAppLovinInterstitialProviderInterfacePtr &)interstitialProvider {
-    self.m_interstitialProvider = interstitialProvider;
+- (BOOL)loadAndShowCMPFlow:(id<AppleAppLovinConsentFlowProviderInterface>)provider {
+    ALCMPService * cmpService = [ALSdk shared].cmpService;
+
+    [cmpService showCMPForExistingUserWithCompletion:^(ALCMPError * _Nullable error) {
+        if (error != nil) {
+            IOS_LOGGER_ERROR( @"AppLovin CMP show failed: %@ [%ld] message: %@"
+                , error.message
+                , error.code
+                , error.cmpMessage
+            );
+            
+            Mengine::Helper::dispatchMainThreadEvent([provider]() {
+                [provider onAppleAppLovinConsentFlowShowFailed];
+            });
+            
+            return;
+        }
+        
+        IOS_LOGGER_MESSAGE( @"AppLovin CMP show successful" );
+        
+        Mengine::Helper::dispatchMainThreadEvent([provider]() {
+            [provider onAppleAppLovinConsentFlowShowSuccess];
+        });
+    }];
 }
 
-- (Mengine::AppleAppLovinInterstitialProviderInterfacePtr) getInterstitialProvider {
-    return self.m_interstitialProvider;
-}
-
-- (void)setRewardedProvider:(const Mengine::AppleAppLovinRewardedProviderInterfacePtr &)rewardedProvider {
-    self.m_rewardedProvider = rewardedProvider;
-}
-
-- (Mengine::AppleAppLovinRewardedProviderInterfacePtr) getRewardedProvider {
-    return self.m_rewardedProvider;
-}
-
-- (AppleAppLovinBannerDelegate *) getBanner {
-    return self.m_bannerAd;
-}
-
-- (AppleAppLovinInterstitialDelegate *) getInterstitial {
-    return self.m_interstitialAd;
-}
-
-- (AppleAppLovinRewardedDelegate *) getRewarded {
-    return self.m_rewardedAd;
+- (void)showMediationDebugger {
+    [[ALSdk shared] showMediationDebugger];
 }
 
 #pragma mark - iOSPluginApplicationDelegateInterface
@@ -197,12 +234,153 @@
             self.m_rewardedAd = rewardedAd;
         }
         
+        id<AppleAdvertisementInterface> advertisement = [iOSDetail getPluginDelegateOfProtocol:@protocol(AppleAdvertisementInterface)];
+        
+        [advertisement setAdvertisementProvider:self];
+        
         if ([AppleDetail hasOption:@"applovin.show_mediation_debugger"] == YES) {
             [[ALSdk shared] showMediationDebugger];
         }
         
         [AppleSemaphoreService.sharedInstance activateSemaphore:@"AppLovinSdkInitialized"];
     }];
+    
+    return YES;
+}
+
+#pragma mark - AppleAdvertisementProviderInterface
+
+- (BOOL)hasBanner {
+    if (self.m_bannerAd == nil) {
+        return NO;
+    }
+    
+    return YES;
+}
+
+- (BOOL)showBanner {
+    if (self.m_bannerAd == nil) {
+        return NO;
+    }
+    
+    [self.m_bannerAd show];
+    
+    return YES;
+}
+
+- (BOOL)hideBanner {
+    if (self.m_bannerAd == nil) {
+        return NO;
+    }
+    
+    [self.m_bannerAd hide];
+    
+    return YES;
+}
+
+- (BOOL)getBannerSize:(uint32_t *)width height:(uint32_t *)height {
+    if (self.m_bannerAd == nil) {
+        return NO;
+    }
+    
+    *width = [self.m_bannerAd getWidthPx];
+    *height = [self.m_bannerAd getHeightPx];
+    
+    return YES;
+}
+
+- (BOOL)hasInterstitial {
+    if (self.m_interstitialAd == nil) {
+        return NO;
+    }
+    
+    return YES;
+}
+
+- (BOOL)canYouShowInterstitial:(NSString *)placement {
+    if (self.m_interstitialAd == nil) {
+        return NO;
+    }
+    
+    if ([[iOSNetwork sharedInstance] isNetworkAvailable] == NO) {
+        return NO;
+    }
+    
+    if ([self.m_interstitialAd canYouShow:placement] == NO) {
+        return NO;
+    }
+    
+    return YES;
+}
+
+- (BOOL)showInterstitial:(NSString *)placement {
+    if (self.m_interstitialAd == nil) {
+        return NO;
+    }
+    
+    if ([[iOSNetwork sharedInstance] isNetworkAvailable] == NO) {
+        return NO;
+    }
+    
+    if ([self.m_interstitialAd show:placement] == NO) {
+        return NO;
+    }
+    
+    return YES;
+}
+
+- (BOOL)hasRewarded {
+    if (self.m_rewardedAd == nil) {
+        return NO;
+    }
+    
+    return YES;
+}
+
+- (BOOL)canOfferRewarded:(NSString *)placement {
+    if (self.m_rewardedAd == nil) {
+        return NO;
+    }
+    
+    if ([[iOSNetwork sharedInstance] isNetworkAvailable] == NO) {
+        return NO;
+    }
+    
+    if ([self.m_rewardedAd canOffer:placement] == NO) {
+        return NO;
+    }
+    
+    return YES;
+}
+
+- (BOOL)canYouShowRewarded:(NSString *)placement {
+    if (self.m_rewardedAd == nil) {
+        return NO;
+    }
+    
+    if ([[iOSNetwork sharedInstance] isNetworkAvailable] == NO) {
+        return NO;
+    }
+    
+    if ([self.m_rewardedAd canYouShow:placement] == NO) {
+        return NO;
+    }
+    
+    return YES;
+}
+
+- (BOOL)showRewarded:(NSString *)placement {
+    if (self.m_rewardedAd == nil) {
+        return NO;
+    }
+    
+    if ([[iOSNetwork sharedInstance] isNetworkAvailable] == NO) {
+        return NO;
+    }
+    
+    if ([self.m_rewardedAd show:placement] == NO) {
+        return NO;
+    }
     
     return YES;
 }

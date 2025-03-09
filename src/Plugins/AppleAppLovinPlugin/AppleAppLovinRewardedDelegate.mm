@@ -191,13 +191,10 @@
         @"ad": [self getMAAdParams:ad]
     }];
 
-    Mengine::AppleAppLovinRewardedProviderInterfacePtr rewardedProvider = [[AppleAppLovinApplicationDelegate sharedInstance] getRewardedProvider];
+    id<AppleAdvertisementResponseInterface> response = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementResponse];
     
-    if (rewardedProvider != nullptr) {
-        Mengine::Params params;
-        [AppleDetail getParamsFromNSDictionary:@{@"placement":ad.placement} outParams:&params];
-        
-        rewardedProvider->onAppleAppLovinRewardedShowSuccessful( params );
+    if (response != nil) {
+        [response onAppleAdvertisementShowSuccess:[iOSAdFormat ADFORMAT_REWARDED] withPlacement:ad.placement];
     }
 
     [self loadAd];
@@ -213,13 +210,10 @@
         @"ad": [self getMAAdParams:ad]
     }];
 
-    Mengine::AppleAppLovinRewardedProviderInterfacePtr rewardedProvider = [[AppleAppLovinApplicationDelegate sharedInstance] getRewardedProvider];
+    id<AppleAdvertisementResponseInterface> response = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementResponse];
     
-    if (rewardedProvider != nullptr) {
-        Mengine::Params params;
-        [AppleDetail getParamsFromNSDictionary:@{@"placement":ad.placement, @"error_code":@(error.code)} outParams:&params];
-        
-        rewardedProvider->onAppleAppLovinRewardedShowFailed( params );
+    if (response != nil) {
+        [response onAppleAdvertisementShowFailed:[iOSAdFormat ADFORMAT_REWARDED] withPlacement:ad.placement withError:error.code];
     }
     
     [self loadAd];
@@ -245,13 +239,10 @@
         @"ad": [self getMAAdParams:ad]
     }];
     
-    Mengine::AppleAppLovinRewardedProviderInterfacePtr rewardedProvider = [[AppleAppLovinApplicationDelegate sharedInstance] getRewardedProvider];
+    id<AppleAdvertisementResponseInterface> response = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementResponse];
     
-    if (rewardedProvider != nullptr) {
-        Mengine::Params params;
-        [AppleDetail getParamsFromNSDictionary:@{@"placement":ad.placement, @"label":reward.label, @"amount":@(reward.amount)} outParams:&params];
-        
-        rewardedProvider->onAppleAppLovinRewardedRevenuePaid( params );
+    if (response != nil) {
+        [response onAppleAdvertisementUserRewarded:[iOSAdFormat ADFORMAT_REWARDED] withPlacement:ad.placement withLabel:reward.label withAmount:reward.amount];
     }
 }
 
@@ -269,13 +260,10 @@
     
     [self eventRevenue:ad];
 
-    Mengine::AppleAppLovinRewardedProviderInterfacePtr rewardedProvider = [[AppleAppLovinApplicationDelegate sharedInstance] getRewardedProvider];
+    id<AppleAdvertisementResponseInterface> response = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementResponse];
     
-    if (rewardedProvider != nullptr) {
-        Mengine::Params params;
-        [AppleDetail getParamsFromNSDictionary:@{@"placement": ad.placement, @"revenue":@(ad.revenue)} outParams:&params];
-        
-        rewardedProvider->onAppleAppLovinRewardedRevenuePaid( params );
+    if (response != nil) {
+        [response onAppleAdvertisementRevenuePaid:[iOSAdFormat ADFORMAT_REWARDED] withPlacement:ad.placement withRevenue:ad.revenue];
     }
 }
 

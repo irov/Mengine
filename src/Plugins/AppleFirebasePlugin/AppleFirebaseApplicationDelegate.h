@@ -4,6 +4,6 @@
 
 @interface AppleFirebaseApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface>
 
-+ (AppleFirebaseApplicationDelegate *) sharedInstance;
++ (instancetype)sharedInstance;
 
 @end

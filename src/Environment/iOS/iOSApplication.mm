@@ -9,10 +9,10 @@
 @implementation iOSApplication
 
 + (instancetype)sharedInstance {
-    static iOSApplication *sharedInstance = nil;
+    static iOSApplication * sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        sharedInstance = [[self alloc] init];
+        sharedInstance = [[iOSApplication alloc] init];
     });
     return sharedInstance;
 }

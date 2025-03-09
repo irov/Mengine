@@ -6,8 +6,8 @@
 
 #pragma mark - AppleAdvertisementInterface
 
-+ (id<AppleAdvertisementInterface>) sharedInstance {
-    static id<AppleAdvertisementInterface> sharedInstance = nil;
++ (instancetype) sharedInstance {
+    static AppleAdvertisementApplicationDelegate * sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         sharedInstance = [iOSDetail getPluginDelegateOfClass:[AppleAdvertisementApplicationDelegate class]];
@@ -22,6 +22,8 @@
 - (id<AppleAdvertisementProviderInterface>)getAdvertisementProvider {
     return self.m_provider;
 }
+
+#pragma mark - AppleAdvertisementProviderInterface
 
 - (BOOL)hasBanner {
     return [self.m_provider hasBanner];

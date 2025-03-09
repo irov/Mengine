@@ -13,8 +13,6 @@
 #include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN( AppleAppLovinService );
-//////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( AppleAppLovin, Mengine::AppleAppLovinPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
@@ -28,35 +26,8 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleAppLovinPlugin::_availablePlugin() const
-    {
-        if( HAS_OPTION( "appleapplovin" ) == true )
-        {
-            return true;
-        }
-
-        if( HAS_OPTION( "noappleapplovin" ) == true )
-        {
-            return false;
-        }
-        
-        bool AppleAppLovinPlugin_Available = CONFIG_VALUE_BOOLEAN( "AppleAppLovinPlugin", "Available", true );
-
-        if( AppleAppLovinPlugin_Available == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool AppleAppLovinPlugin::_initializePlugin()
     {
-        if( SERVICE_CREATE( AppleAppLovinService, MENGINE_DOCUMENT_FACTORABLE ) == false )
-        {
-            return false;
-        }
-
 #if defined(MENGINE_USE_SCRIPT_SERVICE)
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
         {
@@ -80,13 +51,6 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif
-
-        SERVICE_FINALIZE( AppleAppLovinService );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AppleAppLovinPlugin::_destroyPlugin()
-    {
-        SERVICE_DESTROY( AppleAppLovinService );
     }
     //////////////////////////////////////////////////////////////////////////
 }

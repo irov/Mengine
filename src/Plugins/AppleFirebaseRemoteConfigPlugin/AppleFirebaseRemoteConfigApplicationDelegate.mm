@@ -12,7 +12,7 @@
 
 @implementation AppleFirebaseRemoteConfigApplicationDelegate
 
-+ (AppleFirebaseRemoteConfigApplicationDelegate *) sharedInstance {
++ (instancetype) sharedInstance {
     static AppleFirebaseRemoteConfigApplicationDelegate *sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{

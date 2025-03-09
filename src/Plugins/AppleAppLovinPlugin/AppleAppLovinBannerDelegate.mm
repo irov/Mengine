@@ -141,7 +141,7 @@
     return frame;
 }
 
-- (CGFloat) getHeight {
+- (CGFloat) getHeightPx {
     CGSize banner_size = [self getSize];
     
     CGFloat banner_heightDp = banner_size.height;
@@ -150,6 +150,17 @@
     CGFloat banner_heightPx = banner_heightDp * banner_scale;
 
     return banner_heightPx;
+}
+
+- (CGFloat) getWidthPx {
+    CGSize banner_size = [self getSize];
+    
+    CGFloat banner_widthDp = banner_size.width;
+    CGFloat banner_scale = UIScreen.mainScreen.scale;
+
+    CGFloat banner_widthPx = banner_widthDp * banner_scale;
+
+    return banner_widthPx;
 }
 
 #pragma mark - MAAdRequestDelegate Protocol
@@ -251,13 +262,10 @@
     
     [self eventRevenue:ad];
     
-    Mengine::AppleAppLovinBannerProviderInterfacePtr bannerProvider = [[AppleAppLovinApplicationDelegate sharedInstance] getBannerProvider];
+    id<AppleAdvertisementResponseInterface> response = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementResponse];
     
-    if (bannerProvider != nullptr) {
-        Mengine::Params params;
-        [AppleDetail getParamsFromNSDictionary:@{@"revenue":@(ad.revenue)} outParams:&params];
-        
-        bannerProvider->onAppleAppLovinBannerRevenuePaid( params );
+    if (response != nil) {
+        [response onAppleAdvertisementRevenuePaid:[iOSAdFormat ADFORMAT_BANNER] withPlacement:ad.placement withRevenue:ad.revenue];
     }
 }
 

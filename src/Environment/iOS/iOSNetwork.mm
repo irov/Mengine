@@ -8,7 +8,7 @@
     static iOSNetwork *sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        sharedInstance = [[self alloc] init];
+        sharedInstance = [[iOSNetwork alloc] init];
     });
     return sharedInstance;
 }

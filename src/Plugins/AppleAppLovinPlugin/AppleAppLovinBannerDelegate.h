@@ -24,7 +24,9 @@
 
 - (CGSize) getSize;
 - (CGRect) getRect;
-- (CGFloat) getHeight;
+
+- (CGFloat) getHeightPx;
+- (CGFloat) getWidthPx;
 
 @property (nonatomic, strong) MAAdView * _Nullable m_adView;
 

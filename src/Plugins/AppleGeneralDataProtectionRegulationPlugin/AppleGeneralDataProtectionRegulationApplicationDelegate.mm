@@ -5,7 +5,7 @@
 
 @implementation AppleGeneralDataProtectionRegulationApplicationDelegate
 
-+ (AppleGeneralDataProtectionRegulationApplicationDelegate *)sharedInstance {
++ (instancetype)sharedInstance {
     static AppleGeneralDataProtectionRegulationApplicationDelegate *sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{

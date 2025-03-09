@@ -6,6 +6,6 @@
 
 @interface AppleFirebaseCrashlyticsApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface, iOSPluginLoggerDelegateInterface, iOSPluginSessionIdDelegateInterface>
 
-+ (AppleFirebaseCrashlyticsApplicationDelegate *) sharedInstance;
++ (instancetype) sharedInstance;
 
 @end

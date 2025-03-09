@@ -110,6 +110,13 @@
     return pluginDelegate;
 }
 
++ (id _Nullable) getPluginDelegateOfProtocol:(Protocol *)protocol {
+    NSObject<iOSUIMainApplicationDelegateInterface> * mainDelegate = [iOSDetail getUIMainApplicationDelegate];
+    id pluginDelegate = [mainDelegate getPluginDelegateOfProtocol:protocol];
+    
+    return pluginDelegate;
+}
+
 + (void) eventNotify:(AppleEvent *)event args:(NSArray<id> *)args {
     [iOSDetail addMainQueueOperation:^{
         NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];

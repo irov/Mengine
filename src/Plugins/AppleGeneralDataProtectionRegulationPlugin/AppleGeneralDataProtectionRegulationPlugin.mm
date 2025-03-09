@@ -6,16 +6,12 @@
 #   include "AppleGeneralDataProtectionRegulationScriptEmbedding.h"
 #endif
 
-#include "AppleGeneralDataProtectionRegulationInterface.h"
-
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/PluginHelper.h"
 
-//////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN( AppleGeneralDataProtectionRegulationService );
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( AppleGeneralDataProtectionRegulation, Mengine::AppleGeneralDataProtectionRegulationPlugin );
 //////////////////////////////////////////////////////////////////////////
@@ -30,35 +26,8 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleGeneralDataProtectionRegulationPlugin::_availablePlugin() const
-    {
-        if( HAS_OPTION( "applegeneraldataprotectionregulation" ) == true )
-        {
-            return true;
-        }
-            
-        if( HAS_OPTION( "noapplegeneraldataprotectionregulation" ) == true )
-        {
-            return false;
-        }
-        
-        bool AppleGeneralDataProtectionRegulationPlugin_Available = CONFIG_VALUE_BOOLEAN( "AppleGeneralDataProtectionRegulationPlugin", "Available", true );
-        
-        if( AppleGeneralDataProtectionRegulationPlugin_Available == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool AppleGeneralDataProtectionRegulationPlugin::_initializePlugin()
     {
-        if( SERVICE_CREATE( AppleGeneralDataProtectionRegulationService, MENGINE_DOCUMENT_FACTORABLE ) == false )
-        {
-            return false;
-        }
-        
 #if defined(MENGINE_USE_SCRIPT_SERVICE)
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
         {
@@ -82,13 +51,6 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif
-        
-        SERVICE_FINALIZE( AppleGeneralDataProtectionRegulationService );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AppleGeneralDataProtectionRegulationPlugin::_destroyPlugin()
-    {
-        SERVICE_DESTROY( AppleGeneralDataProtectionRegulationService );
     }
     //////////////////////////////////////////////////////////////////////////
 }

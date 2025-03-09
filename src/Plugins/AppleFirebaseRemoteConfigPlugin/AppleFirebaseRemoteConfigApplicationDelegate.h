@@ -4,7 +4,7 @@
 
 @interface AppleFirebaseRemoteConfigApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface>
 
-+ (AppleFirebaseRemoteConfigApplicationDelegate *) sharedInstance;
++ (instancetype) sharedInstance;
 
 - (BOOL)existRemoteConfigValue:(NSString *)key;
 - (NSDictionary *)getRemoteConfigValue:(NSString *)key;

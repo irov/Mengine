@@ -1,6 +1,10 @@
 #pragma once
 
+#import "Interface/AppleAdvertisementInterface.h"
+
 #import "Environment/iOS/iOSPluginApplicationDelegateInterface.h"
+
+#import "AppleAppLovinInterface.h"
 
 #import "AppleAppLovinBannerDelegate.h"
 #import "AppleAppLovinInterstitialDelegate.h"
@@ -10,26 +14,13 @@
 
 #define PLUGIN_BUNDLE_NAME "MengineAppleAppLovinPlugin"
 
-@interface AppleAppLovinApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface>
+@interface AppleAppLovinApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface, AppleAppLovinInterface, AppleAdvertisementProviderInterface>
 
-+ (AppleAppLovinApplicationDelegate *) sharedInstance;
+- (id<AppleAdvertisementResponseInterface>)getAdvertisementResponse;
 
-- (void) setBannerProvider:(const Mengine::AppleAppLovinBannerProviderInterfacePtr &)bannerProvider;
-- (Mengine::AppleAppLovinBannerProviderInterfacePtr) getBannerProvider;
-
-- (void) setInterstitialProvider:(const Mengine::AppleAppLovinInterstitialProviderInterfacePtr &)interstitialProvider;
-- (Mengine::AppleAppLovinInterstitialProviderInterfacePtr) getInterstitialProvider;
-
-- (void) setRewardedProvider:(const Mengine::AppleAppLovinRewardedProviderInterfacePtr &)rewardedProvider;
-- (Mengine::AppleAppLovinRewardedProviderInterfacePtr) getRewardedProvider;
-
-- (AppleAppLovinBannerDelegate *) getBanner;
-- (AppleAppLovinInterstitialDelegate *) getInterstitial;
-- (AppleAppLovinRewardedDelegate *) getRewarded;
-
-@property (nonatomic) Mengine::AppleAppLovinBannerProviderInterfacePtr m_bannerProvider;
-@property (nonatomic) Mengine::AppleAppLovinInterstitialProviderInterfacePtr m_interstitialProvider;
-@property (nonatomic) Mengine::AppleAppLovinRewardedProviderInterfacePtr m_rewardedProvider;
+- (AppleAppLovinBannerDelegate *)getBanner;
+- (AppleAppLovinInterstitialDelegate *)getInterstitial;
+- (AppleAppLovinRewardedDelegate *)getRewarded;
 
 @property (nonatomic, strong) AppleAppLovinBannerDelegate * m_bannerAd;
 @property (nonatomic, strong) AppleAppLovinInterstitialDelegate * m_interstitialAd;

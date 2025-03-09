@@ -42,9 +42,6 @@ src
 
     AppleAppLovinBannerDelegate.h
     AppleAppLovinBannerDelegate.mm
-
-    AppleAppLovinService.h
-    AppleAppLovinService.mm
     
     AppleAppLovinApplicationDelegate.h
     AppleAppLovinApplicationDelegate.mm

@@ -1,4 +1,4 @@
-#include "AppleFirebaseAnalyticsService.h"
+#include "AppleFirebaseAnalyticsEventProvider.h"
 
 #import "Environment/Apple/AppleString.h"
 
@@ -9,41 +9,25 @@
 #import <Firebase/Firebase.h>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( AppleFirebaseAnalyticsService, Mengine::AppleFirebaseAnalyticsService );
-//////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    AppleFirebaseAnalyticsService::AppleFirebaseAnalyticsService()
+    AppleFirebaseAnalyticsEventProvider::AppleFirebaseAnalyticsEventProvider()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    AppleFirebaseAnalyticsService::~AppleFirebaseAnalyticsService()
+    AppleFirebaseAnalyticsEventProvider::~AppleFirebaseAnalyticsService()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleFirebaseAnalyticsService::_initializeService()
-    {
-        ANALYTICS_SERVICE()
-            ->addEventProvider( AnalyticsEventProviderInterfacePtr::from( this ) );
-        
-        return true;
-    }
-    ////////////////////////////////////////////////////////////////////////
-    void AppleFirebaseAnalyticsService::_finalizeService()
-    {
-        ANALYTICS_SERVICE()
-            ->removeEventProvider( AnalyticsEventProviderInterfacePtr::from( this ) );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AppleFirebaseAnalyticsService::onAnalyticsScreenView( const ConstString & _screenType, const ConstString & _screenName )
+    void AppleFirebaseAnalyticsEventProvider::onAnalyticsScreenView( const ConstString & _screenType, const ConstString & _screenName )
     {
         [FIRAnalytics logEventWithName:kFIREventScreenView
                             parameters:@{kFIRParameterScreenClass: [AppleString NSStringFromConstString:_screenType],
                                          kFIRParameterScreenName: [AppleString NSStringFromConstString:_screenName]}];
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleFirebaseAnalyticsService::onAnalyticsEvent( const AnalyticsEventInterfacePtr & _event )
+    void AppleFirebaseAnalyticsEventProvider::onAnalyticsEvent( const AnalyticsEventInterfacePtr & _event )
     {
         const ConstString & eventName = _event->getName();
         const Char * eventName_str = eventName.c_str();
@@ -132,7 +116,7 @@ namespace Mengine
                             parameters:firebase_parameters];
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleFirebaseAnalyticsService::onAnalyticsFlush()
+    void AppleFirebaseAnalyticsEventProvider::onAnalyticsFlush()
     {
         //ToDo
     }

@@ -2,13 +2,11 @@ MENGINE_PROJECT(AppleFirebaseAnalyticsPlugin)
 
 ADD_FILTER(
 src
-    AppleFirebaseAnalyticsInterface.h
-
     AppleFirebaseAnalyticsPlugin.h
     AppleFirebaseAnalyticsPlugin.mm
     
-    AppleFirebaseAnalyticsService.h
-    AppleFirebaseAnalyticsService.mm
+    AppleFirebaseAnalyticsEventProvider.h
+    AppleFirebaseAnalyticsEventProvider.mm
 
     AppleFirebaseAnalyticsApplicationDelegate.h
     AppleFirebaseAnalyticsApplicationDelegate.mm

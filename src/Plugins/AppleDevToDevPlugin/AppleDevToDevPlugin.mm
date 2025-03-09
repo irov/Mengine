@@ -6,8 +6,6 @@
 #include "Kernel/NotificationHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN( AppleDevToDevService );
-//////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( AppleDevToDev, Mengine::AppleDevToDevPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
@@ -21,46 +19,27 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleDevToDevPlugin::_availablePlugin() const
-    {
-        if( HAS_OPTION( "appledevtodev" ) == true )
-        {
-            return true;
-        }
-            
-        if( HAS_OPTION( "noappledevtodev" ) == true )
-        {
-            return false;
-        }
-        
-        bool AppleDevToDevPlugin_Available = CONFIG_VALUE( "AppleDevToDevPlugin", "Available", true );
-        
-        if( AppleDevToDevPlugin_Available == false )
-        {
-            return false;
-        }
-  
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool AppleDevToDevPlugin::_initializePlugin()
     {
-        if( SERVICE_CREATE( AppleDevToDevService, MENGINE_DOCUMENT_FACTORABLE ) == false )
-        {
-            return false;
-        }
+        AnalyticsEventProviderInterfacePtr provider = Helper::makeFactorableUnique<AppleDevToDevAnalyticsEventProvider>( MENGINE_DOCUMENT_FACTORABLE );
+        
+        ANALYTICS_SERVICE()
+            ->addEventProvider( provider );
+        
+        m_provider = provider;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleDevToDevPlugin::_finalizePlugin()
     {
-        SERVICE_FINALIZE( AppleDevToDevService );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AppleDevToDevPlugin::_destroyPlugin()
-    {
-        SERVICE_DESTROY( AppleDevToDevService );
+        if( m_provider != nullptr )
+        {
+            ANALYTICS_SERVICE()
+                ->removeEventProvider( m_provider );
+            
+            m_provider = nullptr;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
 }

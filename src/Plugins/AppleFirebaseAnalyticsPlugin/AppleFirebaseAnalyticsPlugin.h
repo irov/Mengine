@@ -14,9 +14,10 @@ namespace Mengine
         ~AppleFirebaseAnalyticsPlugin() override;
 
     protected:
-        bool _availablePlugin() const override;
         bool _initializePlugin() override;
         void _finalizePlugin() override;
-        void _destroyPlugin() override;
+
+    protected:
+        AnalyticsEventProviderInterfacePtr m_provider;
     };
 }

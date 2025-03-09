@@ -1,13 +1,13 @@
 #include "AppleFirebaseAnalyticsPlugin.h"
 
+#import "AppleFirebaseAnalyticsEventProvider.h"
+
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/PluginHelper.h"
 
-//////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN( AppleFirebaseAnalyticsService );
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( AppleFirebaseAnalytics, Mengine::AppleFirebaseAnalyticsPlugin );
 //////////////////////////////////////////////////////////////////////////
@@ -22,46 +22,27 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleFirebaseAnalyticsPlugin::_availablePlugin() const
-    {
-        if( HAS_OPTION( "applefirebaseanalytics" ) == true )
-        {
-            return true;
-        }
-
-        if( HAS_OPTION( "noapplefirebaseanalytics" ) == true )
-        {
-            return false;
-        }
-        
-        bool AppleFirebaseAnalyticsPlugin_Available = CONFIG_VALUE_BOOLEAN( "AppleFirebaseAnalyticsPlugin", "Available", true );
-
-        if( AppleFirebaseAnalyticsPlugin_Available == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool AppleFirebaseAnalyticsPlugin::_initializePlugin()
     {
-        if( SERVICE_CREATE( AppleFirebaseAnalyticsService, MENGINE_DOCUMENT_FACTORABLE ) == false )
-        {
-            return false;
-        }
+        AnalyticsEventProviderInterfacePtr provider = Helper::makeFactorableUnique<AppleFirebaseAnalyticsEventProvider>( MENGINE_DOCUMENT_FACTORABLE );
+        
+        ANALYTICS_SERVICE()
+            ->addEventProvider( provider );
+        
+        m_provider = provider;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleFirebaseAnalyticsPlugin::_finalizePlugin()
     {
-        SERVICE_FINALIZE( AppleFirebaseAnalyticsService );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AppleFirebaseAnalyticsPlugin::_destroyPlugin()
-    {
-        SERVICE_DESTROY( AppleFirebaseAnalyticsService );
+        if( m_provider != nullptr )
+        {
+            ANALYTICS_SERVICE()
+                ->removeEventProvider( m_provider );
+            
+            m_provider = nullptr;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
 }

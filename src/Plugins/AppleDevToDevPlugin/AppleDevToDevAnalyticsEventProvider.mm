@@ -1,4 +1,4 @@
-#include "AppleDevToDevService.h"
+#include "AppleDevToDevAnalyticsEventProvider.h"
 
 #include "Environment/iOS/iOSUtils.h"
 
@@ -10,64 +10,18 @@
 #import <DTDAnalytics/DTDAnalytics-Swift.h>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( AppleDevToDevService, Mengine::AppleDevToDevService );
-//////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    AppleDevToDevService::AppleDevToDevService()
+    AppleDevToDevAnalyticsEventProvider::AppleDevToDevAnalyticsEventProvider()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    AppleDevToDevService::~AppleDevToDevService()
+    AppleDevToDevAnalyticsEventProvider::~AppleDevToDevAnalyticsEventProvider()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleDevToDevService::_initializeService()
-    {
-        [DTDAnalytics trackingAvailabilityHandler:^(BOOL value) {
-            LOGGER_MESSAGE( "initialized has been finished [%s]"
-                , (value == TRUE ? "SUCCESSFUL" : "FAILED")
-            );
-            
-            //Empty
-        }];
-        
-        ANALYTICS_SERVICE()
-            ->addEventProvider( AnalyticsEventProviderInterfacePtr::from( this ) );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AppleDevToDevService::_finalizeService()
-    {
-        ANALYTICS_SERVICE()
-            ->removeEventProvider( AnalyticsEventProviderInterfacePtr::from( this ) );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AppleDevToDevService::sendEvent( NSString * _eventName, NSDictionary<NSString *, id> * _parameters )
-    {
-        LOGGER_MESSAGE( "sendEvent name: %s parameters: %s"
-            , [ _eventName UTF8String]
-            , [[NSString stringWithFormat:@"%@", _parameters] UTF8String]
-        );
-
-        DTDCustomEventParameters * devtodev_parameters = [[DTDCustomEventParameters alloc] init];
-
-        for (NSString * key in _parameters)
-        {
-            id value = _parameters[key];
-            
-            //NSString * s = [NSString stringWithFormat:@"%@", [value class]];
-            
-            //TODO!!!
-            [devtodev_parameters addString:key value:@"TODO"];
-        }
-
-        [DTDAnalytics customEvent:_eventName withParameters:devtodev_parameters];
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AppleDevToDevService::onAnalyticsEvent( const AnalyticsEventInterfacePtr & _event )
+    void AppleDevToDevAnalyticsEventProvider::onAnalyticsEvent( const AnalyticsEventInterfacePtr & _event )
     {        
         const ConstString & eventName = _event->getName();
         const Char * eventName_str = eventName.c_str();
@@ -127,7 +81,7 @@ namespace Mengine
         [DTDAnalytics customEvent:@(eventName_str) withParameters:devtodev_parameters];
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleDevToDevService::onAnalyticsFlush()
+    void AppleDevToDevAnalyticsEventProvider::onAnalyticsFlush()
     {
         //ToDo
     }

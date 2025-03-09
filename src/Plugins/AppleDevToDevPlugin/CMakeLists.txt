@@ -2,8 +2,6 @@ MENGINE_PROJECT(AppleDevToDevPlugin)
 
 ADD_FILTER(
 src
-    AppleDevToDevInterface.h
-
     AppleDevToDevPlugin.h
     AppleDevToDevPlugin.mm
     

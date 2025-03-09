@@ -2,10 +2,6 @@ MENGINE_PROJECT(AppleGeneralDataProtectionRegulationPlugin)
 
 ADD_FILTER(
 src
-    AppleGeneralDataProtectionRegulationInterface.h
-    AppleGeneralDataProtectionRegulationService.h
-    AppleGeneralDataProtectionRegulationService.mm
-
     AppleGeneralDataProtectionRegulationPlugin.h
     AppleGeneralDataProtectionRegulationPlugin.mm
 )

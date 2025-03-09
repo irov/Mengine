@@ -13,8 +13,6 @@
 #include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN( AppleFirebaseRemoteConfigService );
-//////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( AppleFirebaseRemoteConfig, Mengine::AppleFirebaseRemoteConfigPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
@@ -28,35 +26,8 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleFirebaseRemoteConfigPlugin::_availablePlugin() const
-    {
-        if( HAS_OPTION( "applefirebaseremoteconfig" ) == true )
-        {
-            return true;
-        }
-
-        if( HAS_OPTION( "noapplefirebaseremoteconfig" ) == true )
-        {
-            return false;
-        }
-        
-        bool AppleFirebaseRemoteConfigPlugin_Available = CONFIG_VALUE_BOOLEAN( "AppleFirebaseRemoteConfigPlugin", "Available", true );
-
-        if( AppleFirebaseRemoteConfigPlugin_Available == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool AppleFirebaseRemoteConfigPlugin::_initializePlugin()
     {
-        if( SERVICE_CREATE( AppleFirebaseRemoteConfigService, MENGINE_DOCUMENT_FACTORABLE ) == false )
-        {
-            return false;
-        }
-        
 #if defined(MENGINE_USE_SCRIPT_SERVICE)
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
         {
@@ -80,13 +51,6 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif
-        
-        SERVICE_FINALIZE( AppleFirebaseRemoteConfigService );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AppleFirebaseRemoteConfigPlugin::_destroyPlugin()
-    {
-        SERVICE_DESTROY( AppleFirebaseRemoteConfigService );
     }
     //////////////////////////////////////////////////////////////////////////
 }

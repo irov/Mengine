@@ -2,13 +2,8 @@ MENGINE_PROJECT(AppleFirebasePerformanceMonitoringPlugin)
 
 ADD_FILTER(
 src
-    AppleFirebasePerformanceMonitoringInterface.h
-
     AppleFirebasePerformanceMonitoringPlugin.h
     AppleFirebasePerformanceMonitoringPlugin.mm
-    
-    AppleFirebasePerformanceMonitoringService.h
-    AppleFirebasePerformanceMonitoringService.mm
     
     AppleFirebasePerformanceMonitoringApplicationDelegate.h
     AppleFirebasePerformanceMonitoringApplicationDelegate.mm

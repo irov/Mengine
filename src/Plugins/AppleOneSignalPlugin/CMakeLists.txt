@@ -4,11 +4,6 @@ ADD_FILTER(
 src
     AppleOneSignalPlugin.h
     AppleOneSignalPlugin.mm
-
-    AppleOneSignalInterface.h
-
-    AppleOneSignalService.h
-    AppleOneSignalService.mm
     
     AppleOneSignalApplicationDelegate.h
     AppleOneSignalApplicationDelegate.mm

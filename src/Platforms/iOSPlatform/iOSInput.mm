@@ -6,17 +6,17 @@
 #include "Kernel/InputServiceHelper.h"
 #include "Kernel/String.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     iOSInput::iOSInput()
     {
-        Algorithm::fill_n( m_keyDown, MENGINE_INPUT_MAX_KEY_CODE, false );
-        Algorithm::fill_n( m_keys, SDL_NUM_SCANCODES, KC_UNASSIGNED );
-        Algorithm::fill_n( m_codes, MENGINE_INPUT_MAX_KEY_CODE, SDL_SCANCODE_UNKNOWN );
-        Algorithm::fill_n( m_fingers, MENGINE_INPUT_MAX_TOUCH, -1 );
+        StdAlgorithm::fill_n( m_keyDown, MENGINE_INPUT_MAX_KEY_CODE, false );
+        StdAlgorithm::fill_n( m_keys, SDL_NUM_SCANCODES, KC_UNASSIGNED );
+        StdAlgorithm::fill_n( m_codes, MENGINE_INPUT_MAX_KEY_CODE, SDL_SCANCODE_UNKNOWN );
+        StdAlgorithm::fill_n( m_fingers, MENGINE_INPUT_MAX_TOUCH, -1 );
     }
     //////////////////////////////////////////////////////////////////////////
     iOSInput::~iOSInput()

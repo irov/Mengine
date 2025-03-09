@@ -2,10 +2,12 @@
 
 #import "Environment/iOS/iOSPluginApplicationDelegateInterface.h"
 
+#import "AppleAdvertisementInterface.h"
+
 #define PLUGIN_BUNDLE_NAME "MengineAppleAdvertisementPlugin"
 
-@interface AppleAdvertisementApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface>
+@interface AppleAdvertisementApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface, AppleAdvertisementInterface>
 
-+ (AppleAdvertisementApplicationDelegate *) sharedInstance;
+@property (nonatomic, strong) id<AppleAdvertisementProviderInterface> m_provider;
 
 @end

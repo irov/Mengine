@@ -28,6 +28,9 @@ src
     iOSAdRevenueParam.h
     iOSAdRevenueParam.mm
     
+    iOSAdFormat.h
+    iOSAdFormat.mm
+    
     iOSNetwork.h
     iOSNetwork.mm
     

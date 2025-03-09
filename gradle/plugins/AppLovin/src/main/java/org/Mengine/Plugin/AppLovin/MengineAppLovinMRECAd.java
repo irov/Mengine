@@ -32,7 +32,7 @@ public class MengineAppLovinMRECAd extends MengineAppLovinBase implements MaxAdR
 
     protected MaxAdView m_adView;
 
-    protected volatile boolean m_visible = true;
+    protected volatile boolean m_visible = false;
     protected volatile boolean m_loaded = false;
 
     public MengineAppLovinMRECAd(MengineAppLovinPlugin plugin, String adUnitId, String placement) {

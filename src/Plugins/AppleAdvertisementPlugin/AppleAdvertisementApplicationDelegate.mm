@@ -23,6 +23,14 @@
     return self.m_provider;
 }
 
+- (void)setAdvertisementResponse:(id<AppleAdvertisementResponseInterface>)response {
+    self.m_response = response;
+}
+
+- (id<AppleAdvertisementResponseInterface>)getAdvertisementResponse {
+    return self.m_response;
+}
+
 #pragma mark - AppleAdvertisementProviderInterface
 
 - (BOOL)hasBanner {

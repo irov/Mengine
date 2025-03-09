@@ -1,9 +1,11 @@
 #import "AppleFirebaseCrashlyticsApplicationDelegate.h"
 
 #import "Environment/Apple/AppleString.h"
+#import "Environment/Apple/AppleDetail.h"
 
 #import "Environment/iOS/iOSDetail.h"
 #import "Environment/iOS/iOSApplication.h"
+#import "Environment/iOS/iOSLog.h"
 
 #import <FirebaseCrashlytics/FirebaseCrashlytics.h>
 
@@ -18,6 +20,43 @@
         sharedInstance = [iOSDetail getPluginDelegateOfClass:[AppleFirebaseCrashlyticsApplicationDelegate class]];
     });
     return sharedInstance;
+}
+
+- (void)log:(NSString *)message {
+    [[FIRCrashlytics crashlytics] log:message];
+}
+
+- (void)setCustomValue:(NSString *)value forKey:(NSString *)key {
+    [[FIRCrashlytics crashlytics] setCustomValue:value forKey:key];
+}
+
+- (void)setCustomKeysAndValues:(NSDictionary *)keysAndValues {
+    [[FIRCrashlytics crashlytics] setCustomKeysAndValues:keysAndValues];
+}
+- (void)recordError:(NSString *)name errorCode:(NSInteger)code {
+    IOS_LOGGER_MESSAGE( @"record error name: %@ code: %lu"
+        , name
+        , code
+    );
+
+    NSDictionary *userInfo = @{
+      NSLocalizedDescriptionKey:name
+    };
+    
+    NSError * error = [NSError errorWithDomain:@("com.mengine.firebase")
+                                         code:code
+                                     userInfo:userInfo];
+
+    [[FIRCrashlytics crashlytics] recordError:error];
+                                          
+}
+
+- (void)recordError:(NSError *)error {
+    IOS_LOGGER_MESSAGE( @"record error: %@"
+        , [AppleDetail getMessageFromNSError:error]
+    );
+    
+    [[FIRCrashlytics crashlytics] recordError:error];
 }
 
 #pragma mark - iOSPluginApplicationDelegateInterface

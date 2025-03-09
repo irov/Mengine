@@ -7,8 +7,6 @@
 #include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN( AppleFirebaseCrashlyticsService );
-//////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( AppleFirebaseCrashlytics, Mengine::AppleFirebaseCrashlyticsPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
@@ -22,46 +20,16 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleFirebaseCrashlyticsPlugin::_availablePlugin() const
-    {
-        if( HAS_OPTION( "applefirebasecrashlytics" ) == true )
-        {
-            return true;
-        }
-
-        if( HAS_OPTION( "noapplefirebasecrashlytics" ) == true )
-        {
-            return false;
-        }
-        
-        bool AppleFirebaseCrashlyticsPlugin_Available = CONFIG_VALUE_BOOLEAN( "AppleFirebaseCrashlyticsPlugin", "Available", true );
-
-        if( AppleFirebaseCrashlyticsPlugin_Available == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool AppleFirebaseCrashlyticsPlugin::_initializePlugin()
     {
-        if( SERVICE_CREATE( AppleFirebaseCrashlyticsService, MENGINE_DOCUMENT_FACTORABLE ) == false )
-        {
-            return false;
-        }
-
+        //ToDo
+        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleFirebaseCrashlyticsPlugin::_finalizePlugin()
     {
-        SERVICE_FINALIZE( AppleFirebaseCrashlyticsService );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AppleFirebaseCrashlyticsPlugin::_destroyPlugin()
-    {
-        SERVICE_DESTROY( AppleFirebaseCrashlyticsService );
+        //ToDo
     }
     //////////////////////////////////////////////////////////////////////////
 }

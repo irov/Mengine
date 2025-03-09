@@ -9,6 +9,8 @@
 
 + (instancetype)sharedInstance;
 
+- (void)sendEvent:(NSString *)name parameters:(NSDictionary<NSString *, id> *)parameters;
+
 @end
 
 

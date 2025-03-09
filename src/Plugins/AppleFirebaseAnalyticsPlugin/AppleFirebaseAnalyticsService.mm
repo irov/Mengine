@@ -35,12 +35,6 @@ namespace Mengine
         ANALYTICS_SERVICE()
             ->removeEventProvider( AnalyticsEventProviderInterfacePtr::from( this ) );
     }
-    //////////////////////////////////////////////////////////////////////
-    void AppleFirebaseAnalyticsService::sendEvent( NSString * _name, NSDictionary<NSString *, id> * _parameters )
-    {
-        [FIRAnalytics logEventWithName:_name
-                            parameters:_parameters];
-    }
     //////////////////////////////////////////////////////////////////////////
     void AppleFirebaseAnalyticsService::onAnalyticsScreenView( const ConstString & _screenType, const ConstString & _screenName )
     {

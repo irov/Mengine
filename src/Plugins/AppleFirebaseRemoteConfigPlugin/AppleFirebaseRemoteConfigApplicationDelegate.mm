@@ -125,7 +125,7 @@
     [iOSDetail config:configs];
 }
 
-- (BOOL)existRemoteConfigValue:(NSString *)key {
+- (BOOL)hasRemoteConfig:(NSString *)key {
     @synchronized (self) {
         BOOL exist = [self.m_configs objectForKey:key] != nil;
         

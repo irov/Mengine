@@ -19,6 +19,11 @@
     return sharedInstance;
 }
 
+- (void)sendEvent:(NSString *)eventName parameters:(NSDictionary<NSString *, id> *)parameters {
+    [FIRAnalytics logEventWithName:eventName parameters:parameters];
+}
+
+
 #pragma mark - iOSPluginApplicationDelegateInterface
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {

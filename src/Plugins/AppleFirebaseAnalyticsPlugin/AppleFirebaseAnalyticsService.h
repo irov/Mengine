@@ -21,9 +21,6 @@ namespace Mengine
     protected:
         bool _initializeService() override;
         void _finalizeService() override;
-
-    public:
-        void sendEvent( NSString * _name, NSDictionary<NSString *, id> * parameters ) override;
         
     protected:
         void onAnalyticsEvent( const AnalyticsEventInterfacePtr & _event ) override;

@@ -5,6 +5,8 @@ src
     AppleStoreReviewPlugin.h
     AppleStoreReviewPlugin.mm
     
+    AppleStoreReviewInterface.h
+    
     AppleStoreReviewApplicationDelegate.h
     AppleStoreReviewApplicationDelegate.mm
 )

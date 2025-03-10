@@ -5,6 +5,8 @@ src
     AppleAdvertisementPlugin.h
     AppleAdvertisementPlugin.mm
     
+    AppleAdvertisementInterface.h
+    
     AppleAdvertisementApplicationDelegate.h
     AppleAdvertisementApplicationDelegate.mm
 )

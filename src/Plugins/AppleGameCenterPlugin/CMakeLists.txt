@@ -5,8 +5,7 @@ src
     AppleGameCenterPlugin.h
     AppleGameCenterPlugin.mm
     
-    AppleGameCenterService.h
-    AppleGameCenterService.mm
+    AppleGameCenterInterface.h
     
     AppleGameCenterApplicationDelegate.h
     AppleGameCenterApplicationDelegate.mm

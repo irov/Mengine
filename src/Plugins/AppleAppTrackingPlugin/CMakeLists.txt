@@ -9,9 +9,6 @@ src
     
     AppleAppTrackingApplicationDelegate.h
     AppleAppTrackingApplicationDelegate.mm
-    
-    AppleAppTrackingService.h
-    AppleAppTrackingService.mm
 )
 
 if(MENGINE_USE_SCRIPT_SERVICE)

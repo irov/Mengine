@@ -1,9 +1,9 @@
-#include "AppleAppLovinPlugin.h"
+#include "AppleAdvertisementPlugin.h"
 
 #if defined(MENGINE_USE_SCRIPT_SERVICE)
 #   include "Interface/ScriptServiceInterface.h"
 
-#   include "AppleAppLovinScriptEmbedding.h"
+#   include "AppleAdvertisementScriptEmbedding.h"
 #endif
 
 #include "Kernel/ConfigHelper.h"
@@ -13,39 +13,39 @@
 #include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( AppleAppLovin, Mengine::AppleAppLovinPlugin );
+PLUGIN_FACTORY( AppleAdvertisement, Mengine::AppleAdvertisementPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    AppleAppLovinPlugin::AppleAppLovinPlugin()
+    AppleAdvertisementPlugin::AppleAdvertisementPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    AppleAppLovinPlugin::~AppleAppLovinPlugin()
+    AppleAdvertisementPlugin::~AppleAdvertisementPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleAppLovinPlugin::_initializePlugin()
+    bool AppleAdvertisementPlugin::_initializePlugin()
     {
 #if defined(MENGINE_USE_SCRIPT_SERVICE)
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
         {
             SCRIPT_SERVICE()
-                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "AppleAppLovinScriptEmbedding" ), Helper::makeFactorableUnique<AppleAppLovinScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
+                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "AppleAdvertisementScriptEmbedding" ), Helper::makeFactorableUnique<AppleAdvertisementScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
         }, MENGINE_DOCUMENT_FACTORABLE );
 
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
         {
             SCRIPT_SERVICE()
-                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "AppleAppLovinScriptEmbedding" ) );
+                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "AppleAdvertisementScriptEmbedding" ) );
         }, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleAppLovinPlugin::_finalizePlugin()
+    void AppleAdvertisementPlugin::_finalizePlugin()
     {
 #if defined(MENGINE_USE_SCRIPT_SERVICE)
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );

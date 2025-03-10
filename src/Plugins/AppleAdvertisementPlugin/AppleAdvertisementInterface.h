@@ -2,6 +2,8 @@
 
 #import "Environment/iOS/iOSAdFormat.h"
 
+#import <Foundation/Foundation.h>
+
 @protocol AppleAdvertisementResponseInterface <NSObject>
 - (void)onAppleAdvertisementShowSuccess:(iOSAdFormat *)format withPlacement:(NSString *)placement;
 - (void)onAppleAdvertisementShowFailed:(iOSAdFormat *)format withPlacement:(NSString *)placement withError:(NSInteger)code;

@@ -4,14 +4,14 @@
 
 namespace Mengine
 {    
-    class AppleAppLovinPlugin
+    class AppleAdvertisementPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "AppleAppLovin" )
+        PLUGIN_DECLARE( "AppleAdvertisement" )
 
     public:
-        AppleAppLovinPlugin();
-        ~AppleAppLovinPlugin() override;
+        AppleAdvertisementPlugin();
+        ~AppleAdvertisementPlugin() override;
 
     protected:
         bool _initializePlugin() override;

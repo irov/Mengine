@@ -3408,7 +3408,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         typedef IntrusivePtr<HelperScriptMethod> HelperScriptMethodPtr;
         //////////////////////////////////////////////////////////////////////////
-        struct extract_Blobject_type
+        struct extract_Data_type
             : public pybind::type_cast_result<Data>
         {
             bool apply( pybind::kernel_interface * _kernel, PyObject * _obj, value_type & _value, bool _nothrow ) override
@@ -3416,17 +3416,29 @@ namespace Mengine
                 MENGINE_UNUSED( _kernel );
                 MENGINE_UNUSED( _nothrow );
 
-                if( _kernel->string_check( _obj ) == true )
+                if( _kernel->bytearray_check( _obj ) == true )
                 {
-                    size_t size = 0;
-                    const Char * value_char = _kernel->string_to_char_and_size( _obj, &size );
+                    size_t size = _kernel->bytearray_size( _obj );
+                    const uint8_t * value_byte = (const uint8_t *)_kernel->bytearray_to_data( _obj );
 
-                    if( value_char == 0 )
+                    if( value_byte == nullptr )
                     {
                         return false;
                     }
 
-                    _value.assign( value_char, value_char + size );
+                    _value.assign( value_byte, value_byte + size );
+                }
+                else if( _kernel->string_check( _obj ) == true )
+                {
+                    size_t size = 0;
+                    const uint8_t * value_byte = (const uint8_t *)_kernel->string_to_char_and_size( _obj, &size );
+
+                    if( value_byte == nullptr )
+                    {
+                        return false;
+                    }
+
+                    _value.assign( value_byte, value_byte + size );
                 }
                 else
                 {
@@ -3440,10 +3452,10 @@ namespace Mengine
             {
                 MENGINE_UNUSED( _kernel );
 
-                const Char * value_str = reinterpret_cast<const char *>(_value.data());
+                const uint8_t * value_byte = reinterpret_cast<const uint8_t *>(_value.data());
                 value_type::size_type value_size = _value.size();
 
-                PyObject * py_value = _kernel->string_from_char_size( value_str, (uint32_t)value_size );
+                PyObject * py_value = _kernel->bytearray_from_data( value_byte, (size_t)value_size );
 
                 return py_value;
             }
@@ -3959,7 +3971,7 @@ namespace Mengine
 
         pybind::registration_stl_optional_type_cast<Optional<mt::box2f>>(_kernel);
 
-        pybind::registration_type_cast<Data>(_kernel, pybind::make_type_cast<extract_Blobject_type>(_kernel));
+        pybind::registration_type_cast<Data>(_kernel, pybind::make_type_cast<extract_Data_type>(_kernel));
         pybind::registration_type_cast<Tags>(_kernel, pybind::make_type_cast<extract_Tags_type>(_kernel));
 
         pybind::registration_stl_vector_type_cast<VectorResourceImages>(_kernel);

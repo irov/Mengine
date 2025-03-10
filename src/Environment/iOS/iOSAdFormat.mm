@@ -5,9 +5,9 @@
         static iOSAdFormat * format = nil;\
         static dispatch_once_t onceToken;\
         dispatch_once(&onceToken, ^{\
-            event = [[iOSAdFormat alloc] initWithName:@(#NAME)];\
+            format = [[iOSAdFormat alloc] initWithName:@(#NAME)];\
         });\
-        return event;\
+        return format;\
     }
 
 @implementation iOSAdFormat

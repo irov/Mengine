@@ -2,10 +2,6 @@ MENGINE_PROJECT(AppleStoreReviewPlugin)
 
 ADD_FILTER(
 src
-    AppleStoreReviewInterface.h
-    AppleStoreReviewService.h
-    AppleStoreReviewService.mm
-
     AppleStoreReviewPlugin.h
     AppleStoreReviewPlugin.mm
     

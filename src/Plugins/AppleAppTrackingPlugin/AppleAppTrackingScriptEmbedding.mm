@@ -1,6 +1,6 @@
 #include "AppleAppTrackingScriptEmbedding.h"
 
-#include "AppleAppTrackingInterface.h"
+#include "AppleAppTrackingApplicationDelegate.h"
 
 #include "Interface/ScriptServiceInterface.h"
 
@@ -17,13 +17,13 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static void AppleAppTracking_authorization(const pybind::object & _cb, const pybind::args & _args )
+        static void AppleAppTracking_authorization( const pybind::object & _cb, const pybind::args & _args )
         {
-            APPLE_APPTRACKING_SERVICE()
-                ->authorization( [_cb, _args]( EAppleAppTrackingAuthorization _status, const Char * _idfa )
-            {
-                _cb.call_args( _status, _idfa, _args );
-            } );
+            [[AppleAppTrackingApplicationDelegate sharedInstance] authorization:^(EAppleAppTrackingAuthorization status, NSString * idfa) {
+                const Char * idfa_str = [idfa UTF8String];
+                
+                _cb.call_args( status, idfa_str, _args );
+            }];
         };
         //////////////////////////////////////////////////////////////////////////
     }
@@ -42,7 +42,6 @@ namespace Mengine
             ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("AppleAppTracking"), true );
 
         pybind::enum_<EAppleAppTrackingAuthorization>( _kernel, "AppleAppTrackingAuthorization" )
-            .def( "EAATA_NONE", EAATA_NONE )
             .def( "EAATA_AUTHORIZED", EAATA_AUTHORIZED )
             .def( "EAATA_DENIED", EAATA_DENIED )
             .def( "EAATA_RESTRICTED", EAATA_RESTRICTED )

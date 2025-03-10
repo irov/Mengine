@@ -1,6 +1,6 @@
 #import "AppleFirebasePerformanceMonitoringApplicationDelegate.h"
 
-#import <Firebase/Firebase.h>
+#import <FirebasePerformance/FirebasePerformance.h>
 
 @implementation AppleFirebasePerformanceMonitoringApplicationDelegate
 

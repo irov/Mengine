@@ -4,13 +4,13 @@
 
 @implementation AppleDetail
 
-+ (NSString * _Nonnull) NSIdToString:(id _Nonnull)value {
++ (NSString * _Nonnull)NSIdToString:(id _Nonnull)value {
     NSString * value_string = [NSString stringWithFormat:@"%@", value];
     
     return value_string;
 }
 
-+ (NSString * _Nonnull) getMessageFromNSError:(NSError * _Nonnull)error {
++ (NSString * _Nonnull)getMessageFromNSError:(NSError * _Nonnull)error {
     NSString * message = [NSString stringWithFormat:@"[Error %ld Description: %@ Failure reason: %@ Recovery suggestion: %@"
         , [error code]
         , [error description]
@@ -21,7 +21,7 @@
     return message;
 }
 
-+ (NSInteger) getCurrentTimeMillis {
++ (NSInteger)getCurrentTimeMillis {
     NSTimeInterval time = [[NSDate date] timeIntervalSince1970];
     
     NSInteger millis = (NSInteger)(time * 1000.0);
@@ -29,7 +29,7 @@
     return millis;
 }
 
-+ (NSInteger) getSecureRandomInteger {
++ (NSInteger)getSecureRandomInteger {
     NSInteger randomNumber;
     size_t size = sizeof(randomNumber);
     
@@ -40,7 +40,7 @@
     return randomNumber;
 }
 
-+ (NSString * _Nonnull) getRandomHexString:(NSInteger)length {
++ (NSString * _Nonnull)getRandomHexString:(NSInteger)length {
     NSInteger lengthBytes = (length + 1) / 2;
     uint8_t randomBytes[lengthBytes];
     if (SecRandomCopyBytes(kSecRandomDefault, lengthBytes, randomBytes) != 0) {
@@ -58,7 +58,19 @@
     return randomHexStringTrim;
 }
 
-+ (BOOL) hasOption:(NSString *)value {
+
++ (void)addMainQueueOperation:(dispatch_block_t)block {
+    NSBlockOperation * operation = [NSBlockOperation blockOperationWithBlock:block];
+    
+    [[NSOperationQueue mainQueue] addOperation:operation];
+}
+
+
++ (void)dispatchMainQueue:(dispatch_block_t _Nonnull)block {
+    dispatch_async(dispatch_get_main_queue(), block);
+}
+
++ (BOOL)hasOption:(NSString *)value {
     NSString * hyphen_value = [NSString stringWithFormat:@"-%@", value];
     
     if ([[[NSProcessInfo processInfo] arguments] containsObject:hyphen_value] == YES) {
@@ -74,7 +86,7 @@
     return NO;
 }
 
-+ (BOOL) isValidJSONString:(NSString *)value {
++ (BOOL)isValidJSONString:(NSString *)value {
     if (value == nil) {
         return NO;
     }
@@ -91,7 +103,7 @@
     return YES;
 }
 
-+ (BOOL) getParamsFromJSON:(NSString * _Nonnull)_in outParams:(Mengine::Params * const _Nonnull)_out {
++ (BOOL)getParamsFromJSON:(NSString * _Nonnull)_in outParams:(Mengine::Params * const _Nonnull)_out {
     if ([_in length] == 0) {
         return NO;
     }

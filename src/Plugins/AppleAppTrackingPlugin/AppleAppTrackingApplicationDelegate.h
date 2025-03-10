@@ -1,13 +1,14 @@
 #pragma once
 
-#import "Interface/AppleAdvertisementInterface.h"
-
 #import "Environment/iOS/iOSPluginApplicationDelegateInterface.h"
+
+#import "AppleAppTrackingInterface.h"
 
 #define PLUGIN_BUNDLE_NAME "MengineAppleAdvertisementPlugin"
 
-@interface AppleAdvertisementApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface, AppleAdvertisementInterface>
+@interface AppleAppTrackingApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface, AppleAppTrackingInterface>
 
-@property (nonatomic, strong) id<AppleAdvertisementProviderInterface> m_provider;
+@property (nonatomic, assign) EAppleAppTrackingAuthorization m_status;
+@property (nonatomic, strong) NSString * m_idfa;
 
 @end

@@ -1,39 +1,23 @@
 #pragma once
 
-#include "Interface/ServiceInterface.h"
+#include "Config/Config.h"
 
-#include "Config/Char.h"
+#import <Foundation/Foundation.h>
 
-namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
-    enum EAppleAppTrackingAuthorization
-    {
-        EAATA_NONE,
-        EAATA_AUTHORIZED,
-        EAATA_DENIED,
-        EAATA_RESTRICTED,
-        EAATA_NOT_DETERMINED
-    };
-    //////////////////////////////////////////////////////////////////////////
-    class AppleAppTrackingServiceInterface
-        : public ServiceInterface
-    {
-        SERVICE_DECLARE( "AppleAppTrackingService" )
+typedef NS_ENUM(NSInteger, EAppleAppTrackingAuthorization) {
+    EAATA_AUTHORIZED,
+    EAATA_DENIED,
+    EAATA_RESTRICTED,
+    EAATA_NOT_DETERMINED
+};
 
-    public:
-        typedef Lambda<void(EAppleAppTrackingAuthorization _status, const Char * _idfa)> LambdaAuthorizationResponse;
-        virtual void authorization( const LambdaAuthorizationResponse & _response ) = 0;
-        
-    public:
-        virtual void getIDFA( EAppleAppTrackingAuthorization * const _status, Char * const _idfa ) const = 0;
+@protocol AppleAppTrackingInterface <NSObject>
 
-    public:
-        virtual bool isTrackingAllowed() const = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-}
-//////////////////////////////////////////////////////////////////////////
-#define APPLE_APPTRACKING_SERVICE()\
-    ((Mengine::AppleAppTrackingServiceInterface *)SERVICE_GET(Mengine::AppleAppTrackingServiceInterface))
-//////////////////////////////////////////////////////////////////////////
++ (instancetype)sharedInstance;
+
+- (void)authorization:(void (^)(EAppleAppTrackingAuthorization status, NSString *idfa))response;
+- (EAppleAppTrackingAuthorization)getAuthorizationStatus;
+- (NSString *)getIDFA;
+- (BOOL)isTrackingAllowed;
+
+@end

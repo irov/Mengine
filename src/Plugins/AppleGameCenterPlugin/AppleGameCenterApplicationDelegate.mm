@@ -1,146 +1,360 @@
-#import "AppleFirebaseRemoteConfigApplicationDelegate.h"
+#import "AppleGameCenterApplicationDelegate.h"
 
-#import "Environment/iOS/iOSNetwork.h"
+#import "Environment/Apple/AppleDetail.h"
+
 #import "Environment/iOS/iOSDetail.h"
 #import "Environment/iOS/iOSLog.h"
 
-#include "AppleFirebaseRemoteConfigInterface.h"
+@implementation AppleGameCenterApplicationDelegate
 
-#include "Kernel/Logger.h"
-
-#import <FirebaseRemoteConfig/FirebaseRemoteConfig.h>
-
-@implementation AppleFirebaseRemoteConfigApplicationDelegate
-
-+ (instancetype) sharedInstance {
-    static AppleFirebaseRemoteConfigApplicationDelegate *sharedInstance = nil;
++ (instancetype _Nonnull) sharedInstance {
+    static AppleGameCenterApplicationDelegate * sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        sharedInstance = [iOSDetail getPluginDelegateOfClass:[AppleFirebaseRemoteConfigApplicationDelegate class]];
+        sharedInstance = [iOSDetail getPluginDelegateOfClass:[AppleGameCenterApplicationDelegate class]];
     });
     return sharedInstance;
+}
+
+- (instancetype _Nonnull)init {
+    self = [super init];
+    
+    self.m_gameCenterAuthenticate = NO;
+    self.m_authenticateSuccess = NO;
+    
+    self.m_achievementsSynchronization = NO;
+    self.m_achievementsComplete = [[NSMutableArray alloc] init];
+    
+    return self;
+}
+
+- (void)connect:(id<AppleGameCenterConnectProviderInterface> _Nonnull)provider {
+    [self login:^(NSError * _Nullable _error) {
+        if (_error != nil) {
+            self.m_gameCenterAuthenticate = false;
+            
+            [self.m_achievementsComplete removeAllObjects];
+            
+            IOS_LOGGER_ERROR( @"login error: '%@'"
+                , [AppleDetail getMessageFromNSError:_error]
+            );
+            
+            [AppleDetail dispatchMainQueue:^{
+                [provider onAppleGameCenterAuthenticate:NO];
+            }];
+            
+            return;
+        }
+        
+        IOS_LOGGER_MESSAGE( @"connect successful" );
+        
+        if (self.m_gameCenterAuthenticate == false) {
+            self.m_gameCenterAuthenticate = true;
+            
+            [AppleDetail dispatchMainQueue:^{
+                [provider onAppleGameCenterAuthenticate:YES];
+            }];
+        }
+        
+        self.m_achievementsSynchronization = false;
+        
+        [self.m_achievementsComplete removeAllObjects];
+        
+        [AppleDetail dispatchMainQueue:^{
+            [provider onAppleGameCenterSynchronizate:NO];
+        }];
+        
+        [self loadCompletedAchievements:^(NSError * _Nullable _error, NSArray * _Nullable _completedAchievements) {
+            if (_error != nil) {
+                self.m_achievementsSynchronization = false;
+                
+                IOS_LOGGER_ERROR( @"load completed achievements error: '%@'"
+                    , [AppleDetail getMessageFromNSError:_error]
+                );
+                
+                [AppleDetail dispatchMainQueue:^{
+                    [provider onAppleGameCenterSynchronizate:NO];
+                }];
+                
+                return;
+            }
+            
+            if (_completedAchievements != nil) {
+                for (NSString * ach in _completedAchievements) {
+                    IOS_LOGGER_MESSAGE( @"completed achievement: '%@'"
+                        , ach
+                    );
+                    
+                    [self.m_achievementsComplete addObject:ach];
+                }
+            }
+            
+            self.m_achievementsSynchronization = true;
+            
+            if (provider != nullptr) {
+                [AppleDetail dispatchMainQueue:^{
+                    [provider onAppleGameCenterSynchronizate:YES];
+                }];
+            }
+        }] ;
+    }];
+}
+
+- (BOOL)isConnect {
+    return self.m_gameCenterAuthenticate;
+}
+
+- (BOOL)isSynchronized {
+    return self.m_achievementsSynchronization;
+}
+
+- (BOOL)reportAchievement:(NSString * _Nonnull)identifier percent:(double)percent response:(void(^ _Nonnull)(BOOL))handler {
+    IOS_LOGGER_MESSAGE( @"report achievement: '%@' [%lf]"
+        , identifier
+        , percent
+    );
+
+    BOOL result = [self reportAchievementIdentifier:identifier percentComplete:percent withBanner:YES response:^(NSError * _Nullable _error) {
+        if (_error != nil) {
+            IOS_LOGGER_ERROR( @"response achievement '%@' percent: %lf error: %@"
+               , identifier
+               , percent
+               , [AppleDetail getMessageFromNSError:_error]
+            );
+            
+            [AppleDetail dispatchMainQueue:^{
+                handler( NO );
+            }];
+            
+            return;
+        }
+        
+        IOS_LOGGER_MESSAGE( @"response achievement '%@' percent: %lf successful"
+            , identifier
+            , percent
+        );
+        
+        if (percent >= 100.0) {
+            [self.m_achievementsComplete addObject:identifier];
+        }
+        
+        [AppleDetail dispatchMainQueue:^{
+            handler( YES );
+        }];
+    }];
+    
+    if (result == NO) {
+        IOS_LOGGER_ERROR( @"invalid report achievement '%@' percent: %lf"
+           , identifier
+           , percent
+        );
+        
+        return NO;
+    }
+    
+    return YES;
+}
+
+- (BOOL)checkAchievement:(NSString * _Nonnull)identifier {
+    if ([self.m_achievementsComplete containsObject:identifier] == NO) {
+        return NO;
+    }
+    
+    return YES;
+}
+
+- (BOOL)resetAchievements {
+    BOOL result = [self resetAchievements:^(NSError * _Nullable _error) {
+        if (_error != nil) {
+            IOS_LOGGER_ERROR( @"reset achievemnts error: '%s'"
+                , [[AppleDetail getMessageFromNSError:_error] UTF8String]
+            );
+            
+            return;
+        }
+        
+        IOS_LOGGER_MESSAGE( @"reset achievement successful" );
+    }] ;
+    
+    return YES;
+}
+
+- (BOOL)login:(void(^)(NSError* _Nullable))handler {
+    GKLocalPlayer * localPlayer = [GKLocalPlayer localPlayer];
+    
+    [localPlayer setAuthenticateHandler:^(UIViewController* v, NSError * error) {
+        if (error != nil) {
+            self.m_authenticateSuccess = NO;
+            
+            [AppleDetail dispatchMainQueue:^{
+                handler( error );
+            }];
+            
+            return;
+        }
+        
+        self.m_authenticateSuccess = YES;
+        
+        [AppleDetail dispatchMainQueue:^{
+            handler( nil );
+        }];
+    }];
+    
+    return YES;
+}
+
+- (BOOL) loadCompletedAchievements:(void(^)(NSError * _Nullable, NSArray * _Nullable))handler {
+    if (self.m_authenticateSuccess == NO) {
+        return NO;
+    }
+    
+    [GKAchievement loadAchievementsWithCompletionHandler:^(NSArray<GKAchievement *> * _Nullable achievements, NSError * _Nullable error) {
+        if (error != nil) {
+            [AppleDetail dispatchMainQueue:^{
+                handler( error, nil );
+            }];
+            
+            return;
+        }
+        
+        if (achievements != nil) {
+            [AppleDetail dispatchMainQueue:^{
+                handler( nil, nil );
+            }];
+            
+            return;
+        }
+        
+        NSMutableArray * cmpAch = [[NSMutableArray alloc] init];
+        
+        for (GKAchievement * ach in achievements) {
+            if ([ach isCompleted] == YES) {
+                [cmpAch addObject:[ach identifier]];
+            }
+        }
+        
+        [AppleDetail dispatchMainQueue:^{
+            handler( nil, cmpAch );
+        }];
+    }];
+    
+    return YES;
+}
+
+- (BOOL)resetAchievements:(void(^ _Nonnull)(NSError * __nullable error))handler {
+    IOS_LOGGER_MESSAGE( @"try reset achievemnts" );
+    
+    if (self.m_authenticateSuccess == NO) {
+        IOS_LOGGER_ERROR( @"invalid reset achievements" );
+        
+        return NO;
+    }
+    
+    [GKAchievement resetAchievementsWithCompletionHandler:^(NSError * _Nullable error) {
+        if (error != nil) {
+            IOS_LOGGER_ERROR( @"reset achievemnts error: '%@'"
+                , [AppleDetail getMessageFromNSError:error]
+            );
+            
+            [AppleDetail dispatchMainQueue:^{
+                handler( error );
+            }];
+            
+            return;
+        }
+        
+        IOS_LOGGER_MESSAGE( @"reset achievement successful" );
+        
+        [AppleDetail dispatchMainQueue:^{
+            handler( nil );
+        }];
+    }];
+    
+    return YES;
+}
+
+- (BOOL)reportScore:(NSString *)identifier score:(int64_t)score response:(void(^)(NSError * _Nullable))handler {
+    IOS_LOGGER_MESSAGE( @"report score: '%@' value: %lld"
+        , identifier
+        , score
+    );
+    
+	if (self.m_authenticateSuccess == NO) {
+        IOS_LOGGER_ERROR( @"invalid report score '%@' value: %lld"
+           , identifier
+           , score
+        );
+        
+        return NO;
+    }
+    
+	GKScore * scoreReporter = [[GKScore alloc] initWithLeaderboardIdentifier:identifier];
+	scoreReporter.value = score;
+    scoreReporter.context = 0;
+    
+    NSArray * scores = @[scoreReporter];
+    [GKScore reportScores:scores withCompletionHandler:^(NSError * error) {
+        if (error != nil) {
+            IOS_LOGGER_ERROR( @"response score '%@' value: %lld error: %@"
+                , identifier
+                , score
+                , [AppleDetail getMessageFromNSError:error]
+            );
+            
+            [AppleDetail dispatchMainQueue:^{
+                handler(error);
+            }];
+            
+            return;
+        }
+        
+        IOS_LOGGER_MESSAGE( @"response score '%@' value: %lld successful"
+            , identifier
+            , score
+        );
+        
+        [AppleDetail dispatchMainQueue:^{
+            handler(nil);
+        }];
+	}];
+    
+    return YES;
+}
+
+- (BOOL) reportAchievementIdentifier:(NSString *)identifier percentComplete:(double)percent withBanner:(BOOL)banner response:(void(^)(NSError * _Nullable))handler {
+    if (self.m_authenticateSuccess == NO) {
+        return NO;
+    }
+    
+    GKAchievement * achievement = [[GKAchievement alloc] initWithIdentifier:identifier];
+    [achievement setShowsCompletionBanner:banner];
+    [achievement setPercentComplete: percent];
+    
+    [GKAchievement reportAchievements:@[achievement] withCompletionHandler:^(NSError * _Nullable error) {
+        [AppleDetail dispatchMainQueue:^{
+            handler(error);
+        }];
+    }];
+    
+    return YES;
 }
 
 #pragma mark - iOSPluginApplicationDelegateInterface
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    self.m_configs = [NSMutableDictionary dictionary];
-    
-    FIRRemoteConfigSettings *remoteConfigSettings = [[FIRRemoteConfigSettings alloc] init];
-    remoteConfigSettings.minimumFetchInterval = MENGINE_DEBUG_VALUE(0, 3600);
-    
-    FIRRemoteConfig * remoteConfig = [FIRRemoteConfig remoteConfig];
-    
-    [remoteConfig setConfigSettings:remoteConfigSettings];
-    
-    [remoteConfig setDefaultsFromPlistFileName:@MENGINE_FIREBASE_REMOTECONFIG_PLIST_NAME];
+    //ToDo
     
     return YES;
 }
 
-- (BOOL)application:(UIApplication *)application didPostLaunchingWithOptions:(NSDictionary *)launchOptions {
-    FIRRemoteConfig * remoteConfig = [FIRRemoteConfig remoteConfig];
-    
-    [self updateRemoteConfigValues:remoteConfig];
-    [self fetchRemoteConfigValues:remoteConfig];
-    
-    return YES;
-}
+#pragma mark GKGameCenterControllerDelegate
 
-- (void)fetchRemoteConfigValues:(FIRRemoteConfig *)remoteConfig {
-    if ([[iOSNetwork sharedInstance] isNetworkAvailable] == NO) {
-        return;
-    }
-     
-    [remoteConfig fetchWithCompletionHandler:^(FIRRemoteConfigFetchStatus status, NSError *error) {
-        switch (status) {
-            case FIRRemoteConfigFetchStatusNoFetchYet: {
-                IOS_LOGGER_MESSAGE(@"FIRRemoteConfigFetchStatusNoFetchYet: %@"
-                                   , [error description]
-                                   );
-                
-            } break;
-            case FIRRemoteConfigFetchStatusSuccess: {
-                IOS_LOGGER_MESSAGE(@"FIRRemoteConfigFetchStatusSuccess");
-                
-                [[FIRRemoteConfig remoteConfig] activateWithCompletion:^(BOOL changed, NSError * _Nullable error) {
-                    if (error != nil) {
-                        IOS_LOGGER_ERROR(@"FIRRemoteConfigFetchStatusSuccess activate error: %@"
-                              , [error description]
-                              );
-                        
-                        return;
-                    }
-                    
-                    IOS_LOGGER_MESSAGE(@"FIRRemoteConfigFetchStatusSuccess activate changed: %d"
-                          , changed
-                          );
-                    
-                    if (changed == YES) {
-                        [self updateRemoteConfigValues:remoteConfig];
-                    }
-                }];
-            } break;
-            case FIRRemoteConfigFetchStatusFailure: {
-                IOS_LOGGER_ERROR(@"FIRRemoteConfigFetchStatusFailure: %@"
-                                   , [error description]
-                                   );
-                
-            } break;
-            case FIRRemoteConfigFetchStatusThrottled: {
-                IOS_LOGGER_MESSAGE(@"FIRRemoteConfigFetchStatusThrottled: %@"
-                                   , [error description]
-                                   );
-                
-            } break;
-            default:
-                break;
-        }
+- (void) gameCenterViewControllerDidFinish:(GKGameCenterViewController *)gameCenterViewController {
+    [gameCenterViewController dismissViewControllerAnimated:YES completion:^{
+        IOS_LOGGER_MESSAGE( @"game center view controller dismissed" );
+        
+        //ToDo
     }];
 }
-
-- (void)updateRemoteConfigValues:(FIRRemoteConfig *)remoteConfig {
-    NSArray<NSString *> * remoteKeys = [remoteConfig allKeysFromSource:FIRRemoteConfigSourceDefault];
-    
-    NSMutableDictionary * configs = [NSMutableDictionary dictionary];
-    
-    for( NSString * key in remoteKeys ) {
-        FIRRemoteConfigValue * value = [remoteConfig configValueForKey:key];
-        
-        NSDictionary * json = [value JSONValue];
-        
-        if (json == nil) {
-            IOS_LOGGER_MESSAGE(@"🔴 [ERROR] Apple firebase remote config not JSON: %@", key);
-            
-            continue;
-        }
-        
-        [configs setObject:json forKey:key];
-    }
-    
-    @synchronized (self) {
-        self.m_configs = configs;
-    }
-    
-    [iOSDetail config:configs];
-}
-
-- (BOOL)existRemoteConfigValue:(NSString *)key {
-    @synchronized (self) {
-        BOOL exist = [self.m_configs objectForKey:key] != nil;
-        
-        return exist;
-    }
-}    
-
-- (NSDictionary *)getRemoteConfigValue:(NSString *)key {
-    @synchronized (self) {
-        NSDictionary * value = [self.m_configs objectForKey:key];
-        
-        return value;
-    }
-}
-
-    
 
 @end

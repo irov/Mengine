@@ -1,11 +1,10 @@
 #include "AppleStoreReviewScriptEmbedding.h"
 
-#include "AppleStoreReviewInterface.h"
-
 #include "Interface/ScriptServiceInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
-#include "Environment/Python/PythonDocumentTraceback.h"
+
+#import "AppleStoreReviewApplicationDelegate.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/ConstStringHelper.h"
@@ -14,6 +13,16 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        static void AppleStoreReviewApplicationDelegate_launchTheInAppReview()
+        {
+            [[AppleStoreReviewApplicationDelegate sharedInstance] launchTheInAppReview];
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
     //////////////////////////////////////////////////////////////////////////
     AppleStoreReviewScriptEmbedding::AppleStoreReviewScriptEmbedding()
     {
@@ -28,9 +37,7 @@ namespace Mengine
         SCRIPT_SERVICE()
             ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("AppleStoreReview"), true );
         
-        AppleStoreReviewServiceInterface * service = APPLE_STOREREVIEW_SERVICE();
-
-        pybind::def_functor( _kernel, "appleStoreReviewLaunchTheInAppReview", service, &AppleStoreReviewServiceInterface::launchTheInAppReview );
+        pybind::def_function( _kernel, "appleStoreReviewLaunchTheInAppReview", &Detail::AppleStoreReviewApplicationDelegate_launchTheInAppReview );
 
         return true;
     }

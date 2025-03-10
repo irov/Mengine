@@ -13,8 +13,6 @@
 #include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN( AppleAppTrackingService );
-//////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( AppleAppTracking, Mengine::AppleAppTrackingPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
@@ -28,35 +26,8 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleAppTrackingPlugin::_availablePlugin() const
-    {
-        if( HAS_OPTION( "appleapptracking" ) == true )
-        {
-            return true;
-        }
-            
-        if( HAS_OPTION( "noappleapptracking" ) == true )
-        {
-            return false;
-        }
-        
-        bool AppleAppTrackingPlugin_Available = CONFIG_VALUE_BOOLEAN( "AppleAppTrackingPlugin", "Available", true );
-        
-        if( AppleAppTrackingPlugin_Available == false )
-        {
-            return false;
-        }
-  
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool AppleAppTrackingPlugin::_initializePlugin()
     {
-        if( SERVICE_CREATE( AppleAppTrackingService, MENGINE_DOCUMENT_FACTORABLE ) == false )
-        {
-            return false;
-        }
-
 #if defined(MENGINE_USE_SCRIPT_SERVICE)
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
         {
@@ -80,13 +51,6 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif
-
-        SERVICE_FINALIZE( AppleAppTrackingService );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AppleAppTrackingPlugin::_destroyPlugin()
-    {
-        SERVICE_DESTROY( AppleAppTrackingService );
     }
     //////////////////////////////////////////////////////////////////////////
 }

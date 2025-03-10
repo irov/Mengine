@@ -173,7 +173,7 @@
     id<AppleAdvertisementResponseInterface> response = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementResponse];
     
     if (response != nil) {
-        [response onAppleAdvertisementShowSuccessful:[iOSAdFormat ADFORMAT_INTERSTITIAL] withPlacement:ad.placement];
+        [response onAppleAdvertisementShowSuccess:[iOSAdFormat ADFORMAT_INTERSTITIAL] withPlacement:ad.placement];
     }
     
     [self loadAd];

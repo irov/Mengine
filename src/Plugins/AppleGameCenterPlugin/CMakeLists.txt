@@ -2,16 +2,11 @@ MENGINE_PROJECT(AppleGameCenterPlugin)
 
 ADD_FILTER(
 src
-    AppleGameCenterInterface.h
-
     AppleGameCenterPlugin.h
     AppleGameCenterPlugin.mm
     
     AppleGameCenterService.h
     AppleGameCenterService.mm
-    
-    AppleGameCenterDelegate.h
-    AppleGameCenterDelegate.mm
     
     AppleGameCenterApplicationDelegate.h
     AppleGameCenterApplicationDelegate.mm

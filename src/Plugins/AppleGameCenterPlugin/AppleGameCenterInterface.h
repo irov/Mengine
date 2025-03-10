@@ -2,9 +2,7 @@
 
 #include "Interface/ServiceInterface.h"
 
-#include "Kernel/ConstString.h"
-
-#include "Config/Lambda.h"
+#import <Foundation/Foundation.h>
 
 namespace Mengine
 {

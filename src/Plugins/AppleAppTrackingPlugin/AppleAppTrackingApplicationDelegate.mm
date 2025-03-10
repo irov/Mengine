@@ -1,72 +1,113 @@
-#import "AppleAdvertisementApplicationDelegate.h"
+#import "AppleAppTrackingApplicationDelegate.h"
 
+#import "Environment/Apple/AppleDetail.h"
 #import "Environment/iOS/iOSDetail.h"
 
-@implementation AppleAdvertisementApplicationDelegate
+#import <AppTrackingTransparency/AppTrackingTransparency.h>
+#import <AdSupport/AdSupport.h>
 
-#pragma mark - AppleAdvertisementInterface
+@implementation AppleAppTrackingApplicationDelegate
+
+#pragma mark - AppleAppTrackingInterface
 
 + (instancetype) sharedInstance {
-    static AppleAdvertisementApplicationDelegate * sharedInstance = nil;
+    static AppleAppTrackingApplicationDelegate * sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        sharedInstance = [iOSDetail getPluginDelegateOfClass:[AppleAdvertisementApplicationDelegate class]];
+        sharedInstance = [iOSDetail getPluginDelegateOfClass:[AppleAppTrackingApplicationDelegate class]];
     });
     return sharedInstance;
 }
 
-- (void)setAdvertisementProvider:(id<AppleAdvertisementProviderInterface>)provider {
-    self.m_provider = provider;
+- (instancetype)init {
+    self = [super init];
+    
+    self.m_status = EAATA_NOT_DETERMINED;
+    self.m_idfa = @"00000000-0000-0000-0000-000000000000";
+    
+    return self;
 }
 
-- (id<AppleAdvertisementProviderInterface>)getAdvertisementProvider {
-    return self.m_provider;
+- (void)makeIDFA {
+    NSUUID * idfa_uuid = [iOSDetail getAdIdentifier];
+
+    if (idfa_uuid == nil) {
+        return;
+    }
+
+    NSString * idfa = [idfa_uuid UUIDString];
+    
+    self.m_idfa = idfa;
 }
 
-#pragma mark - AppleAdvertisementProviderInterface
+- (void)authorization:(void (^)(EAppleAppTrackingAuthorization status, NSString *idfa))response {
+    if (@available(iOS 14.0, *)) {
+        [ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
+            switch( status ) {
+                case ATTrackingManagerAuthorizationStatusAuthorized: {
+                    self.m_status = EAATA_AUTHORIZED;
+                    
+                    [self makeIDFA];
+                }break;
+                case ATTrackingManagerAuthorizationStatusDenied: {
+                    self.m_status = EAATA_DENIED;
+                }break;
+                case ATTrackingManagerAuthorizationStatusNotDetermined: {
+                    self.m_status = EAATA_NOT_DETERMINED;
+                }break;
+                case ATTrackingManagerAuthorizationStatusRestricted: {
+                    self.m_status = EAATA_RESTRICTED;
+                }break;
+            }
+            
+            [AppleDetail dispatchMainQueue:^{
+                response( self.m_status, self.m_idfa );
+            }];
+        }];
+        
+        return;
+    }
+    
+    self.m_status = EAATA_AUTHORIZED;
 
-- (BOOL)hasBanner {
-    return [self.m_provider hasBanner];
+    [self makeIDFA];
+
+    response( self.m_status, self.m_idfa );
 }
 
-- (BOOL)showBanner {
-    return [self.m_provider showBanner];
+- (EAppleAppTrackingAuthorization)getAuthorizationStatus {
+    return self.m_status;
 }
 
-- (BOOL)hideBanner {
-    return [self.m_provider hideBanner];
+- (NSString *)getIDFA {
+    return self.m_idfa;
 }
 
-- (BOOL)getBannerSize:(uint32_t *)width height:(uint32_t *)height {
-    return [self.m_provider getBannerSize:width height:height];
-}
+- (BOOL)isTrackingAllowed {
+    if (@available(iOS 14.0, *)) {
+        switch( ATTrackingManager.trackingAuthorizationStatus ) {
+            case ATTrackingManagerAuthorizationStatusAuthorized: {
+                return YES;
+            }break;
+            case ATTrackingManagerAuthorizationStatusDenied: {
+                return NO;
+            }break;
+            case ATTrackingManagerAuthorizationStatusNotDetermined: {
+                return NO;
+            }break;
+            case ATTrackingManagerAuthorizationStatusRestricted: {
+                return NO;
+            }break;
+        }
+        
+        return NO;
+    }
 
-- (BOOL)hasInterstitial {
-    return [self.m_provider hasInterstitial];
-}
-
-- (BOOL)canYouShowInterstitial:(NSString *)placement {
-    return [self.m_provider canYouShowInterstitial:placement];
-}
-
-- (BOOL)showInterstitial:(NSString *)placement {
-    return [self.m_provider showInterstitial:placement];
-}
-
-- (BOOL)hasRewarded {
-    return [self.m_provider hasRewarded];
-}
-
-- (BOOL)canOfferRewarded:(NSString *)placement {
-    return [self.m_provider canOfferRewarded:placement];
-}
-
-- (BOOL)canYouShowRewarded:(NSString *)placement {
-    return [self.m_provider canYouShowRewarded:placement];
-}
-
-- (BOOL)showRewarded:(NSString *)placement {
-    return [self.m_provider showRewarded:placement];
+    if ([iOSDetail isValidIDFA] == NO) {
+        return NO;
+    }
+    
+    return YES;
 }
 
 #pragma mark - iOSPluginApplicationDelegateInterface

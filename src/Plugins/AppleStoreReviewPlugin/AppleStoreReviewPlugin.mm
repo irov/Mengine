@@ -15,8 +15,6 @@
 #include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN( AppleStoreReviewService );
-//////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( AppleStoreReview, Mengine::AppleStoreReviewPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
@@ -30,35 +28,8 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleStoreReviewPlugin::_availablePlugin() const
-    {
-        if( HAS_OPTION( "applestorereview" ) == true )
-        {
-            return true;
-        }
-            
-        if( HAS_OPTION( "noapplestorereview" ) == true )
-        {
-            return false;
-        }
-        
-        bool AppleStoreReviewPlugin_Available = CONFIG_VALUE_BOOLEAN( "AppleStoreReviewPlugin", "Available", true );
-        
-        if( AppleStoreReviewPlugin_Available == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool AppleStoreReviewPlugin::_initializePlugin()
     {
-        if( SERVICE_CREATE( AppleStoreReviewService, MENGINE_DOCUMENT_FACTORABLE ) == false )
-        {
-            return false;
-        }
-        
 #if defined(MENGINE_USE_SCRIPT_SERVICE)
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
         {
@@ -82,13 +53,6 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif
-        
-        SERVICE_FINALIZE( AppleStoreReviewService );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AppleStoreReviewPlugin::_destroyPlugin()
-    {
-        SERVICE_DESTROY( AppleStoreReviewService );
     }
     //////////////////////////////////////////////////////////////////////////
 }

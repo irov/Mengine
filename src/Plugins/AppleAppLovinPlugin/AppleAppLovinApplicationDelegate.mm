@@ -10,9 +10,6 @@
 #import "Environment/iOS/iOSLog.h"
 #import "Environment/iOS/iOSTransparencyConsentParam.h"
 
-#include "Kernel/ThreadHelper.h"
-#include "Kernel/ConstStringHelper.h"
-
 #include "Configuration/Configurations.h"
 
 #if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_META)
@@ -83,18 +80,18 @@
                 , error.cmpMessage
             );
             
-            Mengine::Helper::dispatchMainThreadEvent([provider]() {
+            [AppleDetail dispatchMainQueue:^{
                 [provider onAppleAppLovinConsentFlowShowFailed];
-            });
+            }];
             
             return;
         }
         
         IOS_LOGGER_MESSAGE( @"AppLovin CMP show successful" );
         
-        Mengine::Helper::dispatchMainThreadEvent([provider]() {
+        [AppleDetail dispatchMainQueue:^{
             [provider onAppleAppLovinConsentFlowShowSuccess];
-        });
+        }];
     }];
 }
 

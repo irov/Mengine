@@ -1,11 +1,11 @@
 #include "AppleGeneralDataProtectionRegulationScriptEmbedding.h"
 
-#include "AppleGeneralDataProtectionRegulationInterface.h"
-
 #include "Interface/ScriptServiceInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonDocumentTraceback.h"
+
+#import "AppleGeneralDataProtectionRegulationApplicationDelegate.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/ConstStringHelper.h"
@@ -14,6 +14,25 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        static void AppleGeneralDataProtectionRegulationApplicationDelegate_setGDPRPass( bool _gdpr )
+        {
+            [[AppleGeneralDataProtectionRegulationApplicationDelegate sharedInstance] setGDPRPass:_gdpr];
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool AppleGeneralDataProtectionRegulationApplicationDelegate_isGDPRPass()
+        {
+            if ([[AppleGeneralDataProtectionRegulationApplicationDelegate sharedInstance] isGDPRPass] == NO) {
+                return false;
+            }
+            
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
     //////////////////////////////////////////////////////////////////////////
     AppleGeneralDataProtectionRegulationScriptEmbedding::AppleGeneralDataProtectionRegulationScriptEmbedding()
     {
@@ -28,10 +47,8 @@ namespace Mengine
         SCRIPT_SERVICE()
             ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("AppleGeneralDataProtectionRegulation"), true );
         
-        AppleGeneralDataProtectionRegulationServiceInterface * service = APPLE_GENERALDATAPROTECTIONREGULATION_SERVICE();
-
-        pybind::def_functor( _kernel, "appleSetGDPRPass", service, &AppleGeneralDataProtectionRegulationServiceInterface::setGDPRPass );
-        pybind::def_functor( _kernel, "appleIsGDPRPass", service, &AppleGeneralDataProtectionRegulationServiceInterface::isGDPRPass );
+        pybind::def_function( _kernel, "appleSetGDPRPass", &Detail::AppleGeneralDataProtectionRegulationApplicationDelegate_setGDPRPass );
+        pybind::def_function( _kernel, "appleIsGDPRPass", &Detail::AppleGeneralDataProtectionRegulationApplicationDelegate_isGDPRPass );
 
         return true;
     }

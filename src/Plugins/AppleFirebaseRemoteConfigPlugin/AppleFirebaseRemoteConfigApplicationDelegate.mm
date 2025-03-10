@@ -4,8 +4,6 @@
 #import "Environment/iOS/iOSDetail.h"
 #import "Environment/iOS/iOSLog.h"
 
-#include "AppleFirebaseRemoteConfigInterface.h"
-
 #include "Kernel/Logger.h"
 
 #import <FirebaseRemoteConfig/FirebaseRemoteConfig.h>

@@ -1,8 +1,7 @@
 #import "iOSDetail.h"
 
 #import "Environment/Apple/AppleLog.h"
-
-#include "Kernel/ThreadHelper.h"
+#import "Environment/Apple/AppleDetail.h"
 
 #import <AdSupport/ASIdentifierManager.h>
 #import <AppTrackingTransparency/AppTrackingTransparency.h>
@@ -91,12 +90,6 @@
     return idfa_uuid;
 }
 
-+ (void) addMainQueueOperation:(dispatch_block_t)block {
-    NSBlockOperation * operation = [NSBlockOperation blockOperationWithBlock:block];
-    
-    [[NSOperationQueue mainQueue] addOperation:operation];
-}
-
 + (NSObject<iOSUIMainApplicationDelegateInterface> *) getUIMainApplicationDelegate {
     NSObject<iOSUIMainApplicationDelegateInterface> *delegate = (NSObject<iOSUIMainApplicationDelegateInterface> *)[[UIApplication sharedApplication] delegate];
     
@@ -118,7 +111,7 @@
 }
 
 + (void) eventNotify:(AppleEvent *)event args:(NSArray<id> *)args {
-    [iOSDetail addMainQueueOperation:^{
+    [AppleDetail addMainQueueOperation:^{
         NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
         
         [delegate notify:event arrayArgs:args];
@@ -126,7 +119,7 @@
 }
 
 + (void) setSessionId:(iOSSessionIdParam *)sessionId {
-    [iOSDetail addMainQueueOperation:^{
+    [AppleDetail addMainQueueOperation:^{
         NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
     
         [delegate setSessionId:sessionId];
@@ -134,7 +127,7 @@
 }
 
 + (void) removeSessionData {
-    [iOSDetail addMainQueueOperation:^{
+    [AppleDetail addMainQueueOperation:^{
         NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
     
         [delegate removeSessionData];
@@ -142,7 +135,7 @@
 }
 
 + (void) adRevenue:(iOSAdRevenueParam *)revenue {
-    [iOSDetail addMainQueueOperation:^{
+    [AppleDetail addMainQueueOperation:^{
         NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
     
         [delegate eventAdRevenue:revenue];
@@ -150,7 +143,7 @@
 }
 
 + (void) transparencyConsent:(iOSTransparencyConsentParam *)consent {
-    [iOSDetail addMainQueueOperation:^{
+    [AppleDetail addMainQueueOperation:^{
         NSObject<iOSUIMainApplicationDelegateInterface> * delegate = [iOSDetail getUIMainApplicationDelegate];
     
         [delegate eventTransparencyConsent:consent];
@@ -160,7 +153,7 @@
 + (void) log:(AppleLogRecordParam *)record {
     [AppleLog withRecord:record];
     
-    [iOSDetail addMainQueueOperation:^{
+    [AppleDetail addMainQueueOperation:^{
         NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
         
         [delegate log:record];
@@ -168,7 +161,7 @@
 }
 
 + (void) config:(NSDictionary * _Nonnull)config {
-    [iOSDetail addMainQueueOperation:^{
+    [AppleDetail addMainQueueOperation:^{
         NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
         
         [delegate config:config];
@@ -207,9 +200,9 @@
 
     UIAlertController * alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction * okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        Mengine::Helper::dispatchMainThreadEvent([ok]() {
+        [AppleDetail dispatchMainQueue:^{
             ok();
-        });
+        }];
     }];
 
     [alertController addAction:okAction];
@@ -250,17 +243,17 @@
     UIAlertAction * yesAction = [UIAlertAction actionWithTitle:@"YES"
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction * _Nonnull action) {
-        Mengine::Helper::dispatchMainThreadEvent([yes]() {
+        [AppleDetail dispatchMainQueue:^{
             yes();
-        });
+        }];
     }];
     
     UIAlertAction * cancelAction = [UIAlertAction actionWithTitle:@"CANCEL"
                                                            style:UIAlertActionStyleCancel
                                                          handler:^(UIAlertAction * _Nonnull action) {
-        Mengine::Helper::dispatchMainThreadEvent([cancel]() {
+        [AppleDetail dispatchMainQueue:^{
             cancel();
-        });
+        }];
     }];
     
     [alert addAction:cancelAction];

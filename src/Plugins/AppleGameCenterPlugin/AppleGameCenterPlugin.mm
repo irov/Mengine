@@ -14,8 +14,6 @@
 #include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN( AppleGameCenterService );
-//////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( AppleGameCenter, Mengine::AppleGameCenterPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
@@ -29,35 +27,8 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleGameCenterPlugin::_availablePlugin() const
-    {
-        if( HAS_OPTION( "applegamecenter" ) == true )
-        {
-            return true;
-        }
-        
-        if( HAS_OPTION( "noapplegamecenter" ) == true )
-        {
-            return false;
-        }
-
-        bool AppleGameCenterPlugin_Available = CONFIG_VALUE_BOOLEAN( "AppleGameCenterPlugin", "Available", true );
-        
-        if( AppleGameCenterPlugin_Available == false )
-        {
-            return false;
-        }
-  
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool AppleGameCenterPlugin::_initializePlugin()
     {
-        if( SERVICE_CREATE( AppleGameCenterService, MENGINE_DOCUMENT_FACTORABLE ) == false )
-        {
-            return false;
-        }
-
 #if defined(MENGINE_USE_SCRIPT_SERVICE)
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
         {
@@ -81,13 +52,6 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif
-
-        SERVICE_FINALIZE( AppleGameCenterService );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AppleGameCenterPlugin::_destroyPlugin()
-    {
-        SERVICE_DESTROY( AppleGameCenterService );
     }
     //////////////////////////////////////////////////////////////////////////
 }

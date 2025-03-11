@@ -24,7 +24,7 @@ namespace Mengine
             {
                 str.append( value.c_str(), value.size() );
 
-                str += ' ';
+                str += ", ";
             }
 
             str += ']';

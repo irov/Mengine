@@ -685,6 +685,7 @@ Core
     Wrapper.h
     VectorBool.h
     VectorResources.h
+    VectorTextArguments.h
     
     VectorHelper.h
 

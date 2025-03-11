@@ -51,6 +51,7 @@ namespace Mengine
     {
         m_factoryTextEntry = Helper::makeFactoryPool<TextEntry, 128>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryTextLocalePackage = Helper::makeFactoryPool<TextLocalePackage, 4>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryTextArgument = Helper::makeFactoryPool<TextArgument, 128>( MENGINE_DOCUMENT_FACTORABLE );
 
         uint32_t Engine_TextServiceReserveTexts = CONFIG_VALUE_INTEGER( "Engine", "TextServiceReserveTexts", 1024U );
 
@@ -81,9 +82,11 @@ namespace Mengine
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTextEntry );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTextLocalePackage );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTextArgument );
 
         m_factoryTextEntry = nullptr;
         m_factoryTextLocalePackage = nullptr;
+        m_factoryTextArgument = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     class TextService::TextManagerLoadSaxCallback
@@ -711,6 +714,15 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    TextArgumentInterfacePtr TextService::createTextArgument( const DocumentInterfacePtr & _doc )
+    {
+        TextArgumentPtr textArgument = m_factoryTextArgument->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( textArgument, "invalid create text argument" );
+
+        return textArgument;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool TextService::hasTextEntry( const ConstString & _textId, TextEntryInterfacePtr * const _entry ) const
     {
         const TextEntryInterfacePtr & textEntry = m_texts.find( _textId );
@@ -822,23 +834,16 @@ namespace Mengine
         return textId;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextService::setTextAliasArguments( const ConstString & _environment, const ConstString & _alias, const VectorString & _arguments )
+    void TextService::setTextAliasArguments( const ConstString & _environment, const ConstString & _alias, const VectorTextArguments & _arguments )
     {
         PairAliasKey key = StdUtility::make_pair( _environment, _alias );
 
-        m_aliasesArguments[key] = _arguments;
+        m_aliasesArguments.insert_or_assign( key, _arguments );
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_TEXT_ALIAS, _environment, _alias );
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextService::removeTextAliasArguments( const ConstString & _environment, const ConstString & _alias )
-    {
-        PairAliasKey key = StdUtility::make_pair( _environment, _alias );
-
-        m_aliasesArguments.erase( key );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool TextService::getTextAliasArguments( const ConstString & _environment, const ConstString & _alias, VectorString * const _arguments ) const
+    bool TextService::getTextAliasArguments( const ConstString & _environment, const ConstString & _alias, VectorTextArguments * const _arguments ) const
     {
         PairAliasKey key = StdUtility::make_pair( _environment, _alias );
 
@@ -849,11 +854,32 @@ namespace Mengine
             return false;
         }
 
-        const VectorString & arguments = it_found->second;
+        const VectorTextArguments & arguments = it_found->second;
 
         *_arguments = arguments;
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TextService::hasTextAliasArguments( const ConstString & _environment, const ConstString & _alias ) const
+    {
+        PairAliasKey key = StdUtility::make_pair( _environment, _alias );
+
+        MapTextAliasesArguments::const_iterator it_found = m_aliasesArguments.find( key );
+
+        if( it_found == m_aliasesArguments.end() )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextService::removeTextAliasArguments( const ConstString & _environment, const ConstString & _alias )
+    {
+        PairAliasKey key = StdUtility::make_pair( _environment, _alias );
+
+        m_aliasesArguments.erase( key );
     }
     //////////////////////////////////////////////////////////////////////////
     const VectorU32String & TextService::getLineDelims() const

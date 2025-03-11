@@ -914,7 +914,7 @@ namespace Mengine
 
                 Detail::serializeNodeProp( String( textValue, textSize ), "Format", xmlNode );
 
-                const VectorString & textFormatArgs = _textField->getTextFormatArgs();
+                const VectorTextArguments & textFormatArgs = _textField->getTextFormatArgs();
 
                 String fmt;
                 Helper::fillStringFormat( textValue, textSize, textFormatArgs, &fmt );
@@ -956,7 +956,7 @@ namespace Mengine
 
                 Detail::serializeNodeProp( String( textValue, textSize ), "Format", xmlNode );
 
-                VectorString textFormatArgs;
+                VectorTextArguments textFormatArgs;
 
                 if( TEXT_SERVICE()
                     ->getTextAliasArguments( textAliasEnvironment, textId, &textFormatArgs ) == false )

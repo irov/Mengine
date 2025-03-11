@@ -147,7 +147,7 @@ namespace Mengine
 
         public:
             //////////////////////////////////////////////////////////////////////////
-            VectorString cache_args;
+            
             //////////////////////////////////////////////////////////////////////////
             PyObject * s_TextField_setTextFormatArgs( pybind::kernel_interface * _kernel, TextField * _textField, PyObject * _args, PyObject * _kwds )
             {
@@ -155,55 +155,99 @@ namespace Mengine
 
                 size_t args_count = _kernel->tuple_size( _args );
 
-                cache_args.clear();
-                cache_args.reserve( args_count );
+                VectorTextArguments arguments;
+                arguments.reserve( args_count );
 
                 for( uint32_t it = 0; it != args_count; ++it )
                 {
-                    PyObject * py_string = _kernel->tuple_getitem( _args, it );
+                    PyObject * py_obj = _kernel->tuple_getitem( _args, it );
 
-                    if( _kernel->string_check( py_string ) == true )
+                    if( _kernel->string_check( py_obj ) == true )
                     {
-                        String key;
-                        if( pybind::extract_value( _kernel, py_string, key, false ) == false )
+                        String value;
+                        if( pybind::extract_value( _kernel, py_obj, value, false ) == false )
                         {
                             LOGGER_ERROR( "text field '%s' invalid get str '%s'"
                                 , _textField->getName().c_str()
-                                , _kernel->object_repr( py_string ).c_str()
+                                , _kernel->object_repr( py_obj ).c_str()
                             );
 
                             return _kernel->ret_false();
                         }
 
-                        cache_args.emplace_back( key );
+                        TextArgumentInterfacePtr argument = TEXT_SERVICE()
+                            ->createTextArgument( MENGINE_DOCUMENT_PYBIND );
+
+                        argument->setValue( value );
+
+                        arguments.emplace_back( argument );
                     }
-                    else if( _kernel->unicode_check( py_string ) == true )
+                    else if( _kernel->unicode_check( py_obj ) == true )
                     {
-                        WString key;
-                        if( pybind::extract_value( _kernel, py_string, key, false ) == false )
+                        WString value;
+                        if( pybind::extract_value( _kernel, py_obj, value, false ) == false )
                         {
                             LOGGER_ERROR( "text field '%s' invalid get unicode '%s'"
                                 , _textField->getName().c_str()
-                                , _kernel->object_repr( py_string ).c_str()
+                                , _kernel->object_repr( py_obj ).c_str()
                             );
 
                             return _kernel->ret_false();
                         }
 
-                        String utf8_arg;
-                        Helper::unicodeToUtf8( key, &utf8_arg );
+                        String utf8_value;
+                        Helper::unicodeToUtf8( value, &utf8_value );
 
-                        cache_args.emplace_back( utf8_arg );
+                        TextArgumentInterfacePtr argument = TEXT_SERVICE()
+                            ->createTextArgument( MENGINE_DOCUMENT_PYBIND );
+
+                        argument->setValue( utf8_value );
+
+                        arguments.emplace_back( argument );
+                    }
+                    else if( _kernel->is_callable( py_obj ) == true )
+                    {
+                        TextArgumentInterfacePtr argument = TEXT_SERVICE()
+                            ->createTextArgument( MENGINE_DOCUMENT_PYBIND );
+
+                        argument->setContext( [_textField, _kernel, py_obj]( String * _value )
+                        {
+                            PyObject * py_result = _kernel->ask_native( py_obj, nullptr );
+
+                            String value;
+                            if( pybind::extract_value( _kernel, py_result, value, false ) == false )
+                            {
+                                LOGGER_ERROR( "call context '%s' for text field '%s' invalid get str '%s' type '%s'"
+                                    , _kernel->object_repr( py_obj ).c_str()
+                                    , _textField->getName().c_str()
+                                    , _kernel->object_repr( py_result ).c_str()
+                                    , _kernel->object_repr_type( py_result ).c_str()
+                                );
+
+                                return false;
+                            }
+
+                            if( *_value == value )
+                            {
+                                return false;
+                            }
+
+                            *_value = std::move( value );
+
+                            return true;
+                        } );
+
+                        arguments.emplace_back( argument );
                     }
                     else
                     {
-                        pybind::string_view py_value_str = _kernel->object_str( py_string );
+                        pybind::string_view py_value_str = _kernel->object_str( py_obj );
 
                         if( py_value_str.is_invalid() == true )
                         {
                             LOGGER_ERROR( "text field '%s' not suport arg '%s'"
                                 , _textField->getName().c_str()
-                                , _kernel->object_repr( py_string ).c_str()
+                                , _kernel->object_repr( py_obj ).c_str()
                             );
 
                             return _kernel->ret_false();
@@ -211,11 +255,16 @@ namespace Mengine
 
                         const Char * value_str = py_value_str.c_str();
 
-                        cache_args.emplace_back( value_str );
+                        TextArgumentInterfacePtr argument = TEXT_SERVICE()
+                            ->createTextArgument( MENGINE_DOCUMENT_PYBIND );
+
+                        argument->setValue( value_str );
+
+                        arguments.emplace_back( argument );
                     }
                 }
 
-                _textField->setTextFormatArgs( cache_args );
+                _textField->setTextFormatArgs( arguments );
 
                 return _kernel->ret_true();
             }
@@ -224,17 +273,21 @@ namespace Mengine
             {
                 VectorWString ws_args;
 
-                const VectorString & str_args = _textField->getTextFormatArgs();
+                const VectorTextArguments & _args = _textField->getTextFormatArgs();
 
-                size_t args_count = str_args.size();
+                size_t args_count = _args.size();
                 ws_args.reserve( args_count );
 
-                for( const String & str_arg : str_args )
+                for( const TextArgumentInterfacePtr & arg : _args )
                 {
-                    WString unicode;
-                    Helper::utf8ToUnicode( str_arg, &unicode );
+                    arg->updateContext();
 
-                    ws_args.emplace_back( unicode );
+                    const String & arg_str = arg->getValue();
+
+                    WString arg_unicode;
+                    Helper::utf8ToUnicode( arg_str, &arg_unicode );
+
+                    ws_args.emplace_back( arg_unicode );
                 }
 
                 return ws_args;
@@ -792,6 +845,9 @@ namespace Mengine
                 .def_deprecated( "getTextEntryId", &TextField::getTotalTextId, "use getTotalTextId" )
                 .def( "getTotalTextId", &TextField::getTotalTextId )
                 .def( "getTextExpectedArgument", &TextField::getTextExpectedArgument )
+
+                .def( "setTextAliasEnvironment", &TextField::setTextAliasEnvironment )
+                .def( "getTextAliasEnvironment", &TextField::getTextAliasEnvironment )
 
                 .def_deprecated( "getHeight", &TextField::getFontHeight, "use getFontHeight" )
                 .def_deprecated( "getAlphaHeight", &TextField::getFontHeight, "use getFontHeight" )

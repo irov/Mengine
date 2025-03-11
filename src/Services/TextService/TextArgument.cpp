@@ -1,0 +1,49 @@
+#include "TextArgument.h"
+
+namespace Mengine
+{
+    //////////////////////////////////////////////////////////////////////////
+    TextArgument::TextArgument()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    TextArgument::~TextArgument()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextArgument::setValue( const String & _value )
+    {
+        m_value = _value;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const String & TextArgument::getValue() const
+    {
+        return m_value;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextArgument::setContext( const LambdaTextArgumentContext & _context )
+    {
+        m_context = _context;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const LambdaTextArgumentContext & TextArgument::getContext() const
+    {
+        return m_context;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TextArgument::updateContext() const
+    {
+        if( m_context == nullptr )
+        {
+            return false;
+        }
+
+        if( m_context( &m_value ) == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+}

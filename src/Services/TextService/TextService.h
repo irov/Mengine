@@ -3,8 +3,9 @@
 #include "Interface/TextServiceInterface.h"
 #include "Interface/FactoryInterface.h"
 
-#include "TextLocalePackage.h"
 #include "TextEntry.h"
+#include "TextLocalePackage.h"
+#include "TextArgument.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Hashtable.h"
@@ -51,9 +52,10 @@ namespace Mengine
         const ConstString & getTextAlias( const ConstString & _environment, const ConstString & _alias ) const override;
 
     public:
-        void setTextAliasArguments( const ConstString & _environment, const ConstString & _alias, const VectorString & _arguments ) override;
+        void setTextAliasArguments( const ConstString & _environment, const ConstString & _alias, const VectorTextArguments & _arguments ) override;
+        bool getTextAliasArguments( const ConstString & _environment, const ConstString & _alias, VectorTextArguments * const _arguments ) const override;
+        bool hasTextAliasArguments( const ConstString & _environment, const ConstString & _alias ) const override;
         void removeTextAliasArguments( const ConstString & _environment, const ConstString & _alias ) override;
-        bool getTextAliasArguments( const ConstString & _environment, const ConstString & _alias, VectorString * const _arguments ) const override;
 
     public:
         TextEntryInterfacePtr createTextEntry( const ConstString & _textId
@@ -93,17 +95,20 @@ namespace Mengine
         void removeTextEntries( const Tags & _tag ) override;
 
     protected:
+        TextArgumentInterfacePtr createTextArgument( const DocumentInterfacePtr & _doc ) override;
+
+    protected:
         const VectorU32String & getLineDelims() const override;
 
     protected:
-        typedef Hashtable<ConstString, TextEntryPtr> HashtableTextEntry;
+        typedef Hashtable<ConstString, TextEntryInterfacePtr> HashtableTextEntry;
         HashtableTextEntry m_texts;
 
         typedef Pair<ConstString, ConstString> PairAliasKey;
         typedef Map<PairAliasKey, ConstString> MapTextAliases;
         MapTextAliases m_aliases;
 
-        typedef Map<PairAliasKey, VectorString> MapTextAliasesArguments;
+        typedef Map<PairAliasKey, VectorTextArguments> MapTextAliasesArguments;
         MapTextAliasesArguments m_aliasesArguments;
 
         typedef Vector<TextLocalePackagePtr> VectorTextLocalePackages;
@@ -113,6 +118,7 @@ namespace Mengine
 
         FactoryInterfacePtr m_factoryTextEntry;
         FactoryInterfacePtr m_factoryTextLocalePackage;
+        FactoryInterfacePtr m_factoryTextArgument;
 
         VectorU32String m_lineDelims;
 

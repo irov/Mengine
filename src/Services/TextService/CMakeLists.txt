@@ -4,8 +4,13 @@ ADD_FILTER(
 src
     TextService.cpp
     TextService.h
+    
     TextEntry.cpp
     TextEntry.h
+    
+    TextArgument.cpp
+    TextArgument.h
+    
     TextLocalePackage.cpp
     TextLocalePackage.h
 )

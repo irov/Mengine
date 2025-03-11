@@ -5,6 +5,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ThreadGuardScope.h"
 
 #include "Config/StdString.h"
 #include "Config/StdAlgorithm.h"
@@ -58,6 +59,8 @@ namespace Mengine
     bool ServiceProvider::createService( FServiceProviderGenerator _generator, bool _safe, const DocumentInterfacePtr & _doc )
     {
         MENGINE_RELEASE_UNUSED( _safe );
+
+        MENGINE_THREAD_GUARD_SCOPE( ServiceProvider, this );
 
         MENGINE_ASSERTION_EXCEPTION( m_servicesCount != MENGINE_SERVICE_PROVIDER_COUNT, "overflow service count (doc: %s)"
             , MENGINE_DOCUMENT_STR( _doc )

@@ -34,6 +34,7 @@ Common
     FontInterface.h
     FontGlyphInterface.h
     FontEffectInterface.h
+    TextArgumentInterface.h
     TextEntryInterface.h
     TextServiceInterface.h
     ValidatorInterface.h

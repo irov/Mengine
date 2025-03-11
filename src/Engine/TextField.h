@@ -17,6 +17,7 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/VectorRenderVertex2D.h"
 #include "Kernel/Vector.h"
+#include "Kernel/VectorTextArguments.h"
 
 #include "math/vec4.h"
 
@@ -85,13 +86,9 @@ namespace Mengine
         void setTextAliasEnvironment( const ConstString & _aliasEnvironment );
         const ConstString & getTextAliasEnvironment() const;
 
-        void setTextFormatArgs( const VectorString & _args );
-        void removeTextFormatArgs();
-        const VectorString & getTextFormatArgs() const;
-
-        typedef Lambda<bool( String * )> LambdaFormatArgsContext;
-        void setTextFormatArgsContext( uint32_t _index, const LambdaFormatArgsContext & _context );
-        void removeTextFormatArgsContexts();
+        void setTextFormatArgs( const VectorTextArguments & _args );
+        const VectorTextArguments & getTextFormatArgs() const;
+        void removeTextFormatArgs();        
 
     public:
         uint32_t getTextExpectedArgument() const;
@@ -260,10 +257,7 @@ namespace Mengine
         String m_text;
 
         mutable TextEntryInterfacePtr m_totalTextEntry;
-        mutable VectorString m_textFormatArgs;
-
-        typedef Vector<LambdaFormatArgsContext> VectorFormatArgsContext;
-        VectorFormatArgsContext m_textFormatArgContexts;
+        mutable VectorTextArguments m_textFormatArgs;
 
         ETextHorizontAlign m_horizontAlign;
         ETextVerticalAlign m_verticalAlign;

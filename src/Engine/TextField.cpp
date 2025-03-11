@@ -400,16 +400,10 @@ namespace Mengine
     void TextField::updateContext_() const
     {
         bool context_invalidate = false;
-        uint32_t enumerate = 0;
-        for( const LambdaFormatArgsContext & context : m_textFormatArgContexts )
-        {
-            if( context != nullptr )
-            {
-                String & arg = m_textFormatArgs[enumerate];
-                context_invalidate |= context( &arg );
-            }
 
-            ++enumerate;
+        for( const TextArgumentInterfacePtr & argument : m_textFormatArgs )
+        {
+            context_invalidate |= argument->updateContext();
         }
 
         if( context_invalidate == true )
@@ -1720,7 +1714,6 @@ namespace Mengine
     void TextField::_dispose()
     {
         m_textFormatArgs.clear();
-        m_textFormatArgContexts.clear();
 
         m_font = nullptr;
 
@@ -1877,7 +1870,7 @@ namespace Mengine
         size_t textSize;
         const Char * textValue;
 
-        VectorString textFormatArgs;
+        VectorTextArguments textFormatArgs;
 
         if( textEntry == nullptr )
         {
@@ -1909,7 +1902,7 @@ namespace Mengine
 
             LOGGER_ERROR( "text field '%s' args '%s'"
                 , this->getName().c_str()
-                , Helper::vectorToString( m_textFormatArgs ).c_str()
+                , Helper::vectorTextArgumentsToString( m_textFormatArgs ).c_str()
             );
 
             return false;
@@ -1990,7 +1983,7 @@ namespace Mengine
         return m_aliasEnvironment;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::setTextFormatArgs( const VectorString & _args )
+    void TextField::setTextFormatArgs( const VectorTextArguments & _args )
     {
         if( m_textFormatArgs == _args )
         {
@@ -1999,39 +1992,26 @@ namespace Mengine
 
         m_textFormatArgs = _args;
 
-        VectorString::size_type textFormatArgsSize = m_textFormatArgs.size();
-
-        m_textFormatArgContexts.resize( textFormatArgsSize );
-
         this->invalidateFont();
         this->invalidateTextLines();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const VectorTextArguments & TextField::getTextFormatArgs() const
+    {
+        return m_textFormatArgs;
     }
     //////////////////////////////////////////////////////////////////////////
     void TextField::removeTextFormatArgs()
     {
+        if( m_textFormatArgs.empty() == true )
+        {
+            return;
+        }
+
         m_textFormatArgs.clear();
 
         this->invalidateFont();
         this->invalidateTextLines();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const VectorString & TextField::getTextFormatArgs() const
-    {
-        return m_textFormatArgs;
-    }
-    //////////////////////////////////////////////////////////////////////////    
-    void TextField::setTextFormatArgsContext( uint32_t _index, const LambdaFormatArgsContext & _context )
-    {
-        m_textFormatArgContexts[_index] = _context;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void TextField::removeTextFormatArgsContexts()
-    {
-        m_textFormatArgContexts.clear();
-
-        VectorString::size_type textFormatArgsSize = m_textFormatArgs.size();
-
-        m_textFormatArgContexts.resize( textFormatArgsSize );
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t TextField::getTextExpectedArgument() const

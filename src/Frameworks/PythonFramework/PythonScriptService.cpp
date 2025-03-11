@@ -1146,7 +1146,7 @@ namespace Mengine
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_pluginsMutex );
 
-        m_availablePlugins.emplace( _name, _available );
+        m_availablePlugins.insert_or_assign( _name, _available );
     }
     //////////////////////////////////////////////////////////////////////////
     bool PythonScriptService::isAvailablePlugin( const ConstString & _name ) const

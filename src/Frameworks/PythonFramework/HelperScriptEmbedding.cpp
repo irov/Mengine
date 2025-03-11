@@ -573,25 +573,56 @@ namespace Mengine
             {
                 size_t args_count = _args.size();
 
-                VectorString arguments;
+                VectorTextArguments arguments;
                 arguments.reserve( args_count );
 
                 for( const pybind::object & py_obj : _args )
                 {
                     if( py_obj.is_string() == true )
                     {
-                        String key = py_obj.extract();
+                        String value = py_obj.extract();
 
-                        arguments.emplace_back( key );
+                        TextArgumentInterfacePtr argument = TEXT_SERVICE()
+                            ->createTextArgument( MENGINE_DOCUMENT_PYBIND );
+
+                        argument->setValue( value );
+
+                        arguments.emplace_back( argument );
                     }
                     else if( py_obj.is_unicode() == true )
                     {
-                        WString key = py_obj.extract();
+                        WString value = py_obj.extract();
 
-                        String utf8_arg;
-                        Helper::unicodeToUtf8( key, &utf8_arg );
+                        String utf8_value;
+                        Helper::unicodeToUtf8( value, &utf8_value );
 
-                        arguments.emplace_back( utf8_arg );
+                        TextArgumentInterfacePtr argument = TEXT_SERVICE()
+                            ->createTextArgument( MENGINE_DOCUMENT_PYBIND );
+
+                        argument->setValue( utf8_value );
+
+                        arguments.emplace_back( argument );
+                    }
+                    else if( py_obj.is_callable() == true )
+                    {
+                        TextArgumentInterfacePtr argument = TEXT_SERVICE()
+                            ->createTextArgument( MENGINE_DOCUMENT_PYBIND );
+
+                        argument->setContext( [py_obj]( String * _value )
+                        {
+                            String new_value = py_obj.call();
+
+                            if( *_value == new_value )
+                            {
+                                return false;
+                            }
+
+                            *_value = std::move( new_value );
+
+                            return true;
+                        } );
+
+                        arguments.emplace_back( argument );
                     }
                     else
                     {
@@ -600,11 +631,16 @@ namespace Mengine
                             , _args.repr().c_str()
                         );
 
-                        pybind::string_view sv = py_obj.str();
+                        pybind::string_view value = py_obj.str();
 
-                        const Char * str = sv.c_str();
+                        const Char * value_str = value.c_str();
 
-                        arguments.emplace_back( str );
+                        TextArgumentInterfacePtr argument = TEXT_SERVICE()
+                            ->createTextArgument( MENGINE_DOCUMENT_PYBIND );
+
+                        argument->setValue( value_str );
+
+                        arguments.emplace_back( argument );
                     }
                 }
 

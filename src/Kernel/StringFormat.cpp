@@ -51,7 +51,7 @@ namespace Mengine
             return num_argumetns;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool fillStringFormat( const Char * _format, size_t _size, const VectorString & _arguments, String * const _out )
+        bool fillStringFormat( const Char * _format, size_t _size, const VectorTextArguments & _arguments, String * const _out )
         {
             uint32_t num_argumetns = 0;
 
@@ -81,7 +81,11 @@ namespace Mengine
                                     return false;
                                 }
 
-                                *_out += _arguments[num_argumetns++];
+                                const TextArgumentInterfacePtr & argument = _arguments[num_argumetns++];
+
+                                const String & value = argument->getValue();
+
+                                *_out += value;
                             }break;
                         default:
                             {
@@ -102,6 +106,24 @@ namespace Mengine
             }
 
             return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        String vectorTextArgumentsToString( const VectorTextArguments & _arguments )
+        {
+            String str;
+
+            str += '[';
+
+            for( const TextArgumentInterfacePtr & argument : _arguments )
+            {
+                str += argument->getValue();
+
+                str += ", ";
+            }
+
+            str += ']';
+
+            return str;
         }
         //////////////////////////////////////////////////////////////////////////
         bool fillStringTag( const String & _text, const Char * _tag, const LambdaStringTag & _lambda, String * const _out, bool * const _matched )

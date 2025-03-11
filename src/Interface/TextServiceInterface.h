@@ -3,6 +3,7 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/TextEntryInterface.h"
 
+#include "Kernel/VectorTextArguments.h"
 #include "Kernel/Tags.h"
 
 namespace Mengine
@@ -54,6 +55,9 @@ namespace Mengine
         virtual void removeTextEntries( const Tags & _tag ) = 0;
 
     public:
+        virtual TextArgumentInterfacePtr createTextArgument( const DocumentInterfacePtr & _doc ) = 0;
+
+    public:
         virtual bool hasTextEntry( const ConstString & _key, TextEntryInterfacePtr * const _entry ) const = 0;
         virtual const TextEntryInterfacePtr & getTextEntry( const ConstString & _key ) const = 0;
 
@@ -69,9 +73,10 @@ namespace Mengine
         virtual const ConstString & getTextAlias( const ConstString & _environment, const ConstString & _alias ) const = 0;
 
     public:
-        virtual void setTextAliasArguments( const ConstString & _environment, const ConstString & _alias, const VectorString & _arguments ) = 0;
+        virtual void setTextAliasArguments( const ConstString & _environment, const ConstString & _alias, const VectorTextArguments & _arguments ) = 0;
+        virtual bool getTextAliasArguments( const ConstString & _environment, const ConstString & _alias, VectorTextArguments * const _arguments ) const = 0;
+        virtual bool hasTextAliasArguments( const ConstString & _environment, const ConstString & _alias ) const = 0;
         virtual void removeTextAliasArguments( const ConstString & _environment, const ConstString & _alias ) = 0;
-        virtual bool getTextAliasArguments( const ConstString & _environment, const ConstString & _alias, VectorString * const _arguments ) const = 0;
 
     public:
         virtual const VectorU32String & getLineDelims() const = 0;

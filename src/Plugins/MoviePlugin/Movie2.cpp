@@ -137,20 +137,11 @@ namespace Mengine
             return;
         }
 
-        ConstString old_aliasEnvironment = m_aliasEnvironment;
-
         m_aliasEnvironment = _aliasEnvironment;
 
         for( const HashtableTexts::value_type & value : m_texts )
         {
             const TextFieldPtr & text = value.element;
-
-            const ConstString & text_aliasEnvironment = text->getTextAliasEnvironment();
-
-            if( text_aliasEnvironment != old_aliasEnvironment )
-            {
-                continue;
-            }
 
             text->setTextAliasEnvironment( m_aliasEnvironment );
         }

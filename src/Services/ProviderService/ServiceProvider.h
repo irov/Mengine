@@ -3,6 +3,7 @@
 #include "Interface/ServiceProviderInterface.h"
 
 #include "Kernel/StaticString.h"
+#include "Kernel/ThreadGuard.h"
 
 #ifndef MENGINE_SERVICE_PROVIDER_MAX_REQUIRED
 #define MENGINE_SERVICE_PROVIDER_MAX_REQUIRED 16
@@ -126,5 +127,8 @@ namespace Mengine
         bool isRequired_( const ServiceDesc & _desc );
         void initializeService_( ServiceDesc * const _desc, const DocumentInterfacePtr & _doc, bool * const _result );
         void deferredRequiredInitialize_( const DocumentInterfacePtr & _doc, bool * const _result );
+
+    protected:
+        MENGINE_THREAD_GUARD_INIT( ServiceProvider );
     };
 }

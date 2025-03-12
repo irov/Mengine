@@ -45,17 +45,17 @@ namespace Mengine
         void foreachTextEntry( const LambdaTextEntry & _lambda ) const override;
 
     public:
-        void setTextAlias( const ConstString & _environment, const ConstString & _alias, const ConstString & _key ) override;
-        void removeTextAlias( const ConstString & _environment, const ConstString & _alias ) override;
-        bool isTextAlias( const ConstString & _alias ) const override;
-        bool hasTextAlias( const ConstString & _environment, const ConstString & _alias ) const override;
-        const ConstString & getTextAlias( const ConstString & _environment, const ConstString & _alias ) const override;
+        void setTextAlias( const ConstString & _environment, const ConstString & _textId, const ConstString & _key ) override;
+        void removeTextAlias( const ConstString & _environment, const ConstString & _textId ) override;
+        bool isTextAlias( const ConstString & _textId ) const override;
+        bool hasTextAlias( const ConstString & _environment, const ConstString & _textId ) const override;
+        const ConstString & getTextAlias( const ConstString & _environment, const ConstString & _textId ) const override;
 
     public:
-        void setTextAliasArguments( const ConstString & _environment, const ConstString & _alias, const VectorTextArguments & _arguments ) override;
-        bool getTextAliasArguments( const ConstString & _environment, const ConstString & _alias, VectorTextArguments * const _arguments ) const override;
-        bool hasTextAliasArguments( const ConstString & _environment, const ConstString & _alias ) const override;
-        void removeTextAliasArguments( const ConstString & _environment, const ConstString & _alias ) override;
+        void setTextAliasArguments( const ConstString & _environment, const ConstString & _textId, const VectorTextArguments & _arguments ) override;
+        bool getTextAliasArguments( const ConstString & _environment, const ConstString & _textId, VectorTextArguments * const _arguments ) const override;
+        bool hasTextAliasArguments( const ConstString & _environment, const ConstString & _textId ) const override;
+        void removeTextAliasArguments( const ConstString & _environment, const ConstString & _textId ) override;
 
     public:
         TextEntryInterfacePtr createTextEntry( const ConstString & _textId

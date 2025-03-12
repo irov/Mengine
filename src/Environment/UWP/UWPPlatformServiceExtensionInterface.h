@@ -8,7 +8,7 @@
 
 #include "Config/Typedef.h"
 #include "Config/Lambda.h"
-#include "Config/Thread.h"
+#include "Config/ThreadId.h"
 #include "Config/UniqueId.h"
 
 namespace Mengine

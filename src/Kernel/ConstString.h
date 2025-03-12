@@ -127,6 +127,16 @@ namespace Mengine
         }
 
     public:
+        MENGINE_CONSTEXPR value_type operator [] ( size_type _index ) const
+        {
+            const value_type * holder_str = m_holder->c_str();
+
+            value_type ch = holder_str[_index];
+
+            return ch;
+        }
+
+    public:
         struct less_type
         {
             MENGINE_CONSTEXPR bool operator () ( const ConstString & _left, const ConstString & _right ) const noexcept

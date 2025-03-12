@@ -15,7 +15,10 @@ namespace Mengine
     {
         void crash( const Char * _doc )
         {
-            NOTIFICATION_NOTIFY( NOTIFICATOR_CRASH, _doc );
+            if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
+            {
+                NOTIFICATION_NOTIFY( NOTIFICATOR_CRASH, _doc );
+            }
 
 #if defined(MENGINE_DEBUG)
             Helper::debuggerBreak();

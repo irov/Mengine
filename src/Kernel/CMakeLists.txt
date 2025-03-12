@@ -701,6 +701,12 @@ Core
     
     VectorResourceImages.h
     
+    Futex.h
+    Futex.cpp
+
+    FutexScope.h
+    FutexScope.cpp
+    
     UID.h
     UID.cpp
     

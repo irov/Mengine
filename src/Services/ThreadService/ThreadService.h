@@ -11,7 +11,7 @@
 #include "Kernel/String.h"
 #include "Kernel/Vector.h"
 
-#include "Config/Thread.h"
+#include "Config/ThreadId.h"
 
 namespace Mengine
 {

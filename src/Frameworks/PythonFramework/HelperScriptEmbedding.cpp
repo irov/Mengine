@@ -610,14 +610,16 @@ namespace Mengine
 
                         argument->setContext( [py_obj]( String * _value )
                         {
-                            String new_value = py_obj.call();
+                            pybind::object new_value = py_obj.call();
 
-                            if( *_value == new_value )
+                            pybind::string_view new_value_str = new_value.str();
+
+                            if( *_value == new_value_str.c_str() )
                             {
                                 return false;
                             }
 
-                            *_value = std::move( new_value );
+                            _value->assign( new_value_str.c_str(), new_value_str.size() );
 
                             return true;
                         } );

@@ -9,7 +9,7 @@
 #include "Kernel/ThreadDescription.h"
 
 #include "Config/Lambda.h"
-#include "Config/Thread.h"
+#include "Config/ThreadId.h"
 #include "Config/Timestamp.h"
 
 namespace Mengine

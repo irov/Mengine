@@ -5,7 +5,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
-#include "Kernel/ThreadGuardScope.h"
+#include "Kernel/FutexScope.h"
 
 #include "Config/StdString.h"
 #include "Config/StdAlgorithm.h"
@@ -60,11 +60,11 @@ namespace Mengine
     {
         MENGINE_RELEASE_UNUSED( _safe );
 
-        MENGINE_THREAD_GUARD_SCOPE( ServiceProvider, this );
-
         MENGINE_ASSERTION_EXCEPTION( m_servicesCount != MENGINE_SERVICE_PROVIDER_COUNT, "overflow service count (doc: %s)"
             , MENGINE_DOCUMENT_STR( _doc )
         );
+
+        MENGINE_FUTEX_SCOPE( m_futexServices );
 
         ServiceInterfacePtr service = this->generateService_( _generator, _doc );
 
@@ -237,7 +237,7 @@ namespace Mengine
     {
         for( uint32_t index = 0; index != m_leaveCount; ++index )
         {
-            LeaveDesc & desc = m_leaving[index];
+            LeaveDesc & desc = m_leaves[index];
 
             if( desc.name.compare( _name ) != 0 )
             {
@@ -342,6 +342,8 @@ namespace Mengine
             , MENGINE_SERVICE_PROVIDER_NAME_SIZE
         );
 
+        MENGINE_FUTEX_SCOPE( m_futexDependencies );
+
         uint32_t id = m_dependenciesCount++;
 
         DependencyDesc & desc = m_dependencies[id];
@@ -358,6 +360,8 @@ namespace Mengine
             , StdString::strlen( _name )
             , MENGINE_SERVICE_PROVIDER_NAME_SIZE
         );
+
+        MENGINE_FUTEX_SCOPE( m_futexWaits );
 
         for( uint32_t index = 0; index != m_servicesCount; ++index )
         {
@@ -401,9 +405,11 @@ namespace Mengine
             , MENGINE_SERVICE_PROVIDER_NAME_SIZE
         );
 
+        MENGINE_FUTEX_SCOPE( m_futexLeaves );
+
         uint32_t id = m_leaveCount++;
 
-        LeaveDesc & desc = m_leaving[id];
+        LeaveDesc & desc = m_leaves[id];
 
         desc.owner.assign( _owner );
         desc.name.assign( _name );
@@ -430,7 +436,7 @@ namespace Mengine
 
         for( uint32_t index = 0; index != m_leaveCount; ++index )
         {
-            LeaveDesc & desc = m_leaving[index];
+            LeaveDesc & desc = m_leaves[index];
 
             if( desc.owner.compare( _owner ) != 0 )
             {
@@ -463,6 +469,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ServiceProvider::removeDependency_( const ServiceInterfacePtr & _service )
     {
+        MENGINE_FUTEX_SCOPE( m_futexDependencies );
+
         const Char * name = _service->getServiceId();
 
         for( uint32_t index = 0; index != m_dependenciesCount; )
@@ -492,6 +500,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ServiceProvider::checkWaits_( const ServiceInterfacePtr & _service )
     {
+        MENGINE_FUTEX_SCOPE( m_futexWaits );
+
         const Char * name = _service->getServiceId();
 
         for( uint32_t index = 0; index != m_waitsCount; )
@@ -590,6 +600,8 @@ namespace Mengine
         );
 #endif
 
+        MENGINE_FUTEX_SCOPE( m_futexServices );
+
         for( uint32_t index = 0; index != m_servicesCount; ++index )
         {
             const ServiceDesc & desc = m_services[index];
@@ -627,6 +639,8 @@ namespace Mengine
         );
 #endif
 
+        MENGINE_FUTEX_SCOPE( m_futexServices );
+
         for( uint32_t index = 0; index != m_servicesCount; ++index )
         {
             const ServiceDesc & desc = m_services[index];
@@ -663,6 +677,8 @@ namespace Mengine
             , _name
         );
 #endif
+
+        MENGINE_FUTEX_SCOPE( m_futexServices );
 
         for( uint32_t index = 0; index != m_servicesCount; ++index )
         {
@@ -762,7 +778,7 @@ namespace Mengine
 
         for( uint32_t index = 0; index != m_leaveCount; ++index )
         {
-            LeaveDesc & desc = m_leaving[index];
+            LeaveDesc & desc = m_leaves[index];
 
             if( desc.lambda == nullptr )
             {

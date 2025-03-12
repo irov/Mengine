@@ -2,7 +2,7 @@
 
 #include "Interface/ServiceInterface.h"
 
-#include "Config/Thread.h"
+#include "Config/ThreadId.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace pybind

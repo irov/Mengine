@@ -154,6 +154,7 @@ src
     StdNumeric.h
     StdIterator.h
     StdUtility.h
+    StdThread.h
     Limits.h
     UInt32ToPointer.h
     Metaprogramming.h
@@ -162,7 +163,7 @@ src
     StatisticId.h
     InitializerList.h
     Timestamp.h
-    Thread.h
+    ThreadId.h
     Switch.h
     Variant.h
     Version.h

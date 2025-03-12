@@ -69,8 +69,6 @@ namespace Mengine
         const ConstString & getTextId() const;
         void removeTextId();
 
-        const ConstString & getTotalTextId() const;
-
     public:
         void setText( const String & _text );
         const String & getText() const;
@@ -86,9 +84,9 @@ namespace Mengine
         void setTextAliasEnvironment( const ConstString & _aliasEnvironment );
         const ConstString & getTextAliasEnvironment() const;
 
-        void setTextFormatArgs( const VectorTextArguments & _args );
-        const VectorTextArguments & getTextFormatArgs() const;
-        void removeTextFormatArgs();        
+        void setTextArguments( const VectorTextArguments & _arguments );
+        const VectorTextArguments & getTextArguments() const;
+        void removeTextArguments();        
 
     public:
         uint32_t getTextExpectedArgument() const;
@@ -209,9 +207,12 @@ namespace Mengine
         void updateVertexData_( const FontInterfacePtr & _font, const Color & _color, VectorRenderVertex2D * const _vertexData ) const;
 
     protected:
+        void invalidateFont() const;
         void invalidateTextLines() const;
         void invalidateTextEntry() const;
-        MENGINE_INLINE bool isInvalidateTextLines() const;
+        void invalidateTextId() const;
+        void invalidateTextArguments() const;
+        
 
         bool updateTextLines_() const;
         void updateTextLinesWrap_( VectorTextLineChunks2 * const _textLines ) const;
@@ -219,13 +220,16 @@ namespace Mengine
         bool updateTextLinesDimension_( const FontInterfacePtr & _font, const VectorTextLineChunks2 & _textLines ) const;
 
     public:
+        MENGINE_INLINE const ConstString & getTotalTextId() const;
         MENGINE_INLINE const TextEntryInterfacePtr & getTotalTextEntry() const;
+        MENGINE_INLINE const VectorTextArguments & getTotalTextArguments() const;
         MENGINE_INLINE const FontInterfacePtr & getTotalFont() const;
 
     protected:
-        MENGINE_INLINE void invalidateFont() const;
         bool updateFont_() const;
+        void updateTextId_() const;
         void updateTextEntry_() const;
+        void updateTextArguments_() const;
 
     public:
         uint32_t getTextFieldParams() const;
@@ -251,19 +255,20 @@ namespace Mengine
         void updateContext_() const;
 
     protected:
-        ConstString m_textId;
-        ConstString m_aliasEnvironment;
-
         String m_text;
 
+        ConstString m_textId;
+        mutable ConstString m_totalTextId;
+
+        ConstString m_aliasEnvironment;
+
         mutable TextEntryInterfacePtr m_totalTextEntry;
-        mutable VectorTextArguments m_textFormatArgs;
+
+        VectorTextArguments m_textArguments;
+        mutable VectorTextArguments m_totalTextArguments;
 
         ETextHorizontAlign m_horizontAlign;
         ETextVerticalAlign m_verticalAlign;
-
-        mutable FontInterfacePtr m_totalFont;
-        mutable bool m_invalidateFont;
 
         float m_extraThickness;
 
@@ -273,6 +278,7 @@ namespace Mengine
         mutable float m_autoScaleFactor;
 
         FontInterfacePtr m_font;
+        mutable FontInterfacePtr m_totalFont;
 
         float m_lineOffset;
         float m_charOffset;
@@ -318,8 +324,12 @@ namespace Mengine
         mutable bool m_invalidateVertices;
         mutable bool m_invalidateVerticesWM;
 
+        mutable bool m_invalidateFont;
+
         mutable bool m_invalidateTextLines;
         mutable bool m_invalidateTextEntry;
+        mutable bool m_invalidateTextId;
+        mutable bool m_invalidateTextArguments;
 
     protected:
         const VectorTextLinesLayout & getTextLayots() const;
@@ -348,11 +358,6 @@ namespace Mengine
         return m_vertexDataTextWM;
     }
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE bool TextField::isInvalidateTextLines() const
-    {
-        return m_invalidateTextLines;
-    }
-    //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE const FontInterfacePtr & TextField::getTotalFont() const
     {
         if( m_invalidateFont == true )
@@ -366,6 +371,16 @@ namespace Mengine
         return m_totalFont;
     }
     //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE const ConstString & TextField::getTotalTextId() const
+    {
+        if( m_invalidateTextId == true )
+        {
+            this->updateTextId_();
+        }
+
+        return m_totalTextId;
+    }
+    //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE const TextEntryInterfacePtr & TextField::getTotalTextEntry() const
     {
         if( m_invalidateTextEntry == true )
@@ -376,11 +391,14 @@ namespace Mengine
         return m_totalTextEntry;
     }
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE void TextField::invalidateFont() const
+    MENGINE_INLINE const VectorTextArguments & TextField::getTotalTextArguments() const
     {
-        m_invalidateFont = true;
+        if( m_invalidateTextArguments == true )
+        {
+            this->updateTextArguments_();
+        }
 
-        this->invalidateTextLines();
+        return m_totalTextArguments;
     }
     //////////////////////////////////////////////////////////////////////////
 }

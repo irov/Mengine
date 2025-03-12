@@ -766,30 +766,30 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextService::setTextAlias( const ConstString & _environment, const ConstString & _alias, const ConstString & _key )
+    void TextService::setTextAlias( const ConstString & _environment, const ConstString & _textId, const ConstString & _key )
     {
-        PairAliasKey key = StdUtility::make_pair( _environment, _alias );
+        PairAliasKey key = StdUtility::make_pair( _environment, _textId );
 
         m_aliases[key] = _key;
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_TEXT_ALIAS, _environment, _alias );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_TEXT_ALIAS, _environment, _textId );
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextService::removeTextAlias( const ConstString & _environment, const ConstString & _alias )
+    void TextService::removeTextAlias( const ConstString & _environment, const ConstString & _textId )
     {
-        PairAliasKey key = StdUtility::make_pair( _environment, _alias );
+        PairAliasKey key = StdUtility::make_pair( _environment, _textId );
 
         m_aliases.erase( key );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextService::isTextAlias( const ConstString & _alias ) const
+    bool TextService::isTextAlias( const ConstString & _textId ) const
     {
-        if( _alias.empty() == true )
+        if( _textId.empty() == true )
         {
             return false;
         }
 
-        const Char * alias_str = _alias.c_str();
+        const Char * alias_str = _textId.c_str();
 
         if( alias_str[0] != '$' )
         {
@@ -799,9 +799,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextService::hasTextAlias( const ConstString & _environment, const ConstString & _alias ) const
+    bool TextService::hasTextAlias( const ConstString & _environment, const ConstString & _textId ) const
     {
-        PairAliasKey key = StdUtility::make_pair( _environment, _alias );
+        PairAliasKey key = StdUtility::make_pair( _environment, _textId );
 
         MapTextAliases::const_iterator it_found = m_aliases.find( key );
 
@@ -813,20 +813,20 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & TextService::getTextAlias( const ConstString & _environment, const ConstString & _alias ) const
+    const ConstString & TextService::getTextAlias( const ConstString & _environment, const ConstString & _textId ) const
     {
-        PairAliasKey key = StdUtility::make_pair( _environment, _alias );
+        PairAliasKey key = StdUtility::make_pair( _environment, _textId );
 
         MapTextAliases::const_iterator it_found = m_aliases.find( key );
 
         if( it_found == m_aliases.end() )
         {
-            MENGINE_ASSERTION_FATAL( !(_alias.empty() == false && _alias.c_str()[0] == '$'), "environment '%s' not found alias '%s'"
+            MENGINE_ASSERTION_FATAL( !(_textId.empty() == false && _textId.c_str()[0] == '$'), "environment '%s' not found alias '%s'"
                 , _environment.c_str()
-                , _alias.c_str()
+                , _textId.c_str()
             );
 
-            return _alias;
+            return _textId;
         }
 
         const ConstString & textId = it_found->second;
@@ -834,18 +834,18 @@ namespace Mengine
         return textId;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextService::setTextAliasArguments( const ConstString & _environment, const ConstString & _alias, const VectorTextArguments & _arguments )
+    void TextService::setTextAliasArguments( const ConstString & _environment, const ConstString & _textId, const VectorTextArguments & _arguments )
     {
-        PairAliasKey key = StdUtility::make_pair( _environment, _alias );
+        PairAliasKey key = StdUtility::make_pair( _environment, _textId );
 
         m_aliasesArguments.insert_or_assign( key, _arguments );
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_TEXT_ALIAS, _environment, _alias );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_TEXT_ALIAS, _environment, _textId );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextService::getTextAliasArguments( const ConstString & _environment, const ConstString & _alias, VectorTextArguments * const _arguments ) const
+    bool TextService::getTextAliasArguments( const ConstString & _environment, const ConstString & _textId, VectorTextArguments * const _arguments ) const
     {
-        PairAliasKey key = StdUtility::make_pair( _environment, _alias );
+        PairAliasKey key = StdUtility::make_pair( _environment, _textId );
 
         MapTextAliasesArguments::const_iterator it_found = m_aliasesArguments.find( key );
 
@@ -861,9 +861,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextService::hasTextAliasArguments( const ConstString & _environment, const ConstString & _alias ) const
+    bool TextService::hasTextAliasArguments( const ConstString & _environment, const ConstString & _textId ) const
     {
-        PairAliasKey key = StdUtility::make_pair( _environment, _alias );
+        PairAliasKey key = StdUtility::make_pair( _environment, _textId );
 
         MapTextAliasesArguments::const_iterator it_found = m_aliasesArguments.find( key );
 
@@ -875,9 +875,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextService::removeTextAliasArguments( const ConstString & _environment, const ConstString & _alias )
+    void TextService::removeTextAliasArguments( const ConstString & _environment, const ConstString & _textId )
     {
-        PairAliasKey key = StdUtility::make_pair( _environment, _alias );
+        PairAliasKey key = StdUtility::make_pair( _environment, _textId );
 
         m_aliasesArguments.erase( key );
     }

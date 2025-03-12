@@ -3,7 +3,7 @@
 #include "Interface/ServiceProviderInterface.h"
 
 #include "Kernel/StaticString.h"
-#include "Kernel/ThreadGuard.h"
+#include "Kernel/Futex.h"
 
 #ifndef MENGINE_SERVICE_PROVIDER_MAX_REQUIRED
 #define MENGINE_SERVICE_PROVIDER_MAX_REQUIRED 16
@@ -104,7 +104,7 @@ namespace Mengine
             LambdaLeaveService lambda;
         };
 
-        LeaveDesc m_leaving[MENGINE_SERVICE_PROVIDER_LEAVE_COUNT];
+        LeaveDesc m_leaves[MENGINE_SERVICE_PROVIDER_LEAVE_COUNT];
 
         uint32_t m_leaveCount;
 
@@ -119,6 +119,11 @@ namespace Mengine
 
         uint32_t m_waitsCount;
 
+        Futex m_futexServices;
+        Futex m_futexDependencies;
+        Futex m_futexLeaves;
+        Futex m_futexWaits;
+
 #if defined(MENGINE_DEBUG)
         const Char * m_initializeServiceName;
 #endif
@@ -127,8 +132,5 @@ namespace Mengine
         bool isRequired_( const ServiceDesc & _desc );
         void initializeService_( ServiceDesc * const _desc, const DocumentInterfacePtr & _doc, bool * const _result );
         void deferredRequiredInitialize_( const DocumentInterfacePtr & _doc, bool * const _result );
-
-    protected:
-        MENGINE_THREAD_GUARD_INIT( ServiceProvider );
     };
 }

@@ -35,12 +35,15 @@ namespace Mengine
         template<class C>
         C exciseVector( C & _vector, uint32_t _count )
         {
-            if( _vector.size() <= _count )
+            typename C::size_type size = _vector.size();
+
+            if( size <= _count )
             {
                 return std::move( _vector );
             }
 
-            typename C::const_iterator it_last = _vector.begin() + _count;
+            typename C::const_iterator it_begin = _vector.begin();
+            typename C::const_iterator it_last = it_begin + _count;
             typename C::const_iterator it_end = _vector.end();
 
             C tail( it_last, it_end );
@@ -62,7 +65,10 @@ namespace Mengine
             {
                 uint32_t random_index = _randomizer->getRandom( size );
 
-                StdAlgorithm::swap( _vector[index], _vector[random_index] );
+                typename C::value_type & a = _vector[index];
+                typename C::value_type & b = _vector[random_index];
+
+                StdAlgorithm::swap( a, b );
             }
         }
         //////////////////////////////////////////////////////////////////////////

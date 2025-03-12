@@ -5,7 +5,7 @@
 #include "Kernel/Unknowable.h"
 
 #include "Config/Char.h"
-#include "Config/Thread.h"
+#include "Config/ThreadId.h"
 
 namespace Mengine
 {

@@ -264,7 +264,7 @@ namespace Mengine
                     }
                 }
 
-                _textField->setTextFormatArgs( arguments );
+                _textField->setTextArguments( arguments );
 
                 return _kernel->ret_true();
             }
@@ -273,7 +273,7 @@ namespace Mengine
             {
                 VectorWString ws_args;
 
-                const VectorTextArguments & _args = _textField->getTextFormatArgs();
+                const VectorTextArguments & _args = _textField->getTextArguments();
 
                 size_t args_count = _args.size();
                 ws_args.reserve( args_count );
@@ -839,7 +839,7 @@ namespace Mengine
                 .def( "removeTextId", &TextField::removeTextId )
                 .def_proxy_native_kernel( "setTextFormatArgs", nodeScriptMethod, &NodeScriptMethod::s_TextField_setTextFormatArgs )
                 .def_proxy_static( "getTextFormatArgs", nodeScriptMethod, &NodeScriptMethod::s_TextField_getTextFormatArgs )
-                .def( "removeTextFormatArgs", &TextField::removeTextFormatArgs )
+                .def( "removeTextFormatArgs", &TextField::removeTextArguments )
                 .def_deprecated( "getTextKey", &TextField::getTotalTextId, "use getTextId" )
                 .def( "getTextId", &TextField::getTextId )
                 .def_deprecated( "getTextEntryId", &TextField::getTotalTextId, "use getTotalTextId" )

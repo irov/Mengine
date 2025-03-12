@@ -34,7 +34,6 @@ namespace Mengine
     TextField::TextField()
         : m_horizontAlign( ETFHA_NONE )
         , m_verticalAlign( ETFVA_NONE )
-        , m_invalidateFont( true )
         , m_extraThickness( 0.f )
         , m_charScale( 1.f )
         , m_maxLength( 2048.f )
@@ -56,8 +55,11 @@ namespace Mengine
         , m_debugMode( false )
         , m_invalidateVertices( true )
         , m_invalidateVerticesWM( true )
+        , m_invalidateFont( true )
         , m_invalidateTextLines( true )
         , m_invalidateTextEntry( true )
+        , m_invalidateTextId( true )
+        , m_invalidateTextArguments( true )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -164,7 +166,7 @@ namespace Mengine
         MENGINE_UNUSED( _prevLocale );
         MENGINE_UNUSED( _currentlocale );
 
-        this->invalidateTextEntry();
+        this->invalidateTextId();
     }
     //////////////////////////////////////////////////////////////////////////
     void TextField::notifyDebugMode_( bool _debugMode )
@@ -181,7 +183,7 @@ namespace Mengine
             return;
         }
 
-        this->invalidateTextEntry();
+        this->invalidateTextArguments();
     }
     //////////////////////////////////////////////////////////////////////////
     void TextField::notifyRenderDeviceLostPrepare_()
@@ -191,7 +193,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const TextField::VectorTextLinesLayout & TextField::getTextLayots() const
     {
-        if( this->isInvalidateTextLines() == true )
+        if( m_invalidateTextLines == true )
         {
             this->updateTextLines_();
         }
@@ -217,7 +219,6 @@ namespace Mengine
         }
 
         float fontAscent = _font->getFontHeight();
-        //float fontAscent = _font->getFontAscent();
 
         EMaterial materialId = EM_DEBUG;
 
@@ -401,7 +402,9 @@ namespace Mengine
     {
         bool context_invalidate = false;
 
-        for( const TextArgumentInterfacePtr & argument : m_textFormatArgs )
+        const VectorTextArguments & textArguments = this->getTotalTextArguments();
+
+        for( const TextArgumentInterfacePtr & argument : textArguments )
         {
             context_invalidate |= argument->updateContext();
         }
@@ -414,7 +417,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const
     {
-        if( m_textId.empty() == true && m_text.empty() == true )
+        const ConstString & textId = this->getTotalTextId();
+
+        if( textId.empty() == true && m_text.empty() == true )
         {
             return;
         }
@@ -469,7 +474,7 @@ namespace Mengine
             return 0;
         }
 
-        if( this->isInvalidateTextLines() == true )
+        if( m_invalidateTextLines == true )
         {
             this->updateTextLines_();
         }
@@ -766,7 +771,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const mt::vec2f & TextField::getTextSize() const
     {
-        if( this->isInvalidateTextLines() == true )
+        if( m_invalidateTextLines == true )
         {
             this->updateTextLines_();
         }
@@ -776,7 +781,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const mt::vec2f & TextField::getTextOffset() const
     {
-        if( this->isInvalidateTextLines() == true )
+        if( m_invalidateTextLines == true )
         {
             this->updateTextLines_();
         }
@@ -1110,7 +1115,9 @@ namespace Mengine
         m_textOffset.y = 0.f;
         m_charCount = 0;
 
-        if( m_textId.empty() == true && m_text.empty() == true )
+        const ConstString & totalTextId = this->getTotalTextId();
+
+        if( totalTextId.empty() == true && m_text.empty() == true )
         {
             return true;
         }
@@ -1128,7 +1135,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "text field '%s' invalid update text cache id '%s' text '%s'"
                 , this->getName().c_str()
-                , m_textId.c_str()
+                , totalTextId.c_str()
                 , m_text.c_str()
             );
 
@@ -1243,7 +1250,7 @@ namespace Mengine
                     {
                         LOGGER_ERROR( "text field '%s' textId '%s' text '%s' invalid setup line"
                             , this->getName().c_str()
-                            , m_textId.c_str()
+                            , totalTextId.c_str()
                             , m_text.c_str()
                         );
 
@@ -1305,30 +1312,43 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void TextField::updateTextId_() const
+    {
+        m_invalidateTextId = false;
+
+        const ConstString & textId = TEXT_SERVICE()
+            ->getTextAlias( m_aliasEnvironment, m_textId );
+
+        m_totalTextId = textId;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void TextField::updateTextEntry_() const
     {
         m_invalidateTextEntry = false;
 
-        const ConstString & aliasTestId = TEXT_SERVICE()
-            ->getTextAlias( m_aliasEnvironment, m_textId );
-
-        if( aliasTestId.empty() == true )
-        {
-            m_totalTextEntry = nullptr;
-
-            return;
-        }
+        const ConstString & totalTextId = this->getTotalTextId();
 
         const TextEntryInterfacePtr & textEntry = TEXT_SERVICE()
-            ->getTextEntry( aliasTestId );
+            ->getTextEntry( totalTextId );
 
         MENGINE_ASSERTION_MEMORY_PANIC( textEntry, "text field '%s' can't find textId '%s' (doc: %s)"
             , this->getName().c_str()
-            , aliasTestId.c_str()
+            , totalTextId.c_str()
             , MENGINE_DOCUMENTABLE_STR( this, "TextField" )
         );
 
         m_totalTextEntry = textEntry;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::updateTextArguments_() const
+    {
+        m_invalidateTextArguments = false;
+
+        if( TEXT_SERVICE()
+            ->getTextAliasArguments( m_aliasEnvironment, m_textId, &m_totalTextArguments ) == false )
+        {
+            m_totalTextArguments = m_textArguments;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t TextField::getTextFieldParams() const
@@ -1713,9 +1733,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::_dispose()
     {
-        m_textFormatArgs.clear();
+        m_textArguments.clear();
+        m_totalTextArguments.clear();
+
+        m_totalTextEntry = nullptr;
 
         m_font = nullptr;
+        m_totalFont = nullptr;
 
         m_layouts.clear();
         m_chunks.clear();
@@ -1763,6 +1787,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::setTextId( const ConstString & _textId )
     {
+        MENGINE_ASSERTION_FATAL( _textId.empty() == false, "text id is empty" );
+
         if( m_textId == _textId )
         {
             return;
@@ -1771,9 +1797,9 @@ namespace Mengine
         m_textId = _textId;
 
         m_text.clear();
-        m_textFormatArgs.clear();
+        m_textArguments.clear();
 
-        this->invalidateTextEntry();
+        this->invalidateTextId();
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & TextField::getTextId() const
@@ -1785,24 +1811,7 @@ namespace Mengine
     {
         m_textId.clear();
 
-        m_totalTextEntry = nullptr;
-        m_textFormatArgs.clear();
-
-        this->invalidateTextEntry();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ConstString & TextField::getTotalTextId() const
-    {
-        const TextEntryInterfacePtr & textEntry = this->getTotalTextEntry();
-
-        if( textEntry == nullptr )
-        {
-            return ConstString::none();
-        }
-
-        const ConstString & key = textEntry->getKey();
-
-        return key;
+        this->invalidateTextId();
     }
     //////////////////////////////////////////////////////////////////////////
     void TextField::setText( const String & _text )
@@ -1813,11 +1822,11 @@ namespace Mengine
         }
 
         m_text = _text;
+        m_textArguments.clear();
 
-        m_textId = ConstString::none();
-        m_textFormatArgs.clear();
+        m_textId.clear();
 
-        this->invalidateTextEntry();
+        this->invalidateTextId();
     }
     //////////////////////////////////////////////////////////////////////////
     const String & TextField::getText() const
@@ -1856,9 +1865,7 @@ namespace Mengine
         }
 
         m_text.clear();
-
-        m_textId = ConstString::none();
-        m_textFormatArgs.clear();
+        m_textArguments.clear();
 
         this->invalidateTextEntry();
     }
@@ -1870,8 +1877,6 @@ namespace Mengine
         size_t textSize;
         const Char * textValue;
 
-        VectorTextArguments textFormatArgs;
-
         if( textEntry == nullptr )
         {
             textSize = m_text.size();
@@ -1880,29 +1885,25 @@ namespace Mengine
         else
         {
             textValue = textEntry->getValue( &textSize );
-
-            if( TEXT_SERVICE()
-                ->getTextAliasArguments( m_aliasEnvironment, m_textId, &textFormatArgs ) == false )
-            {
-                textFormatArgs = m_textFormatArgs;
-            }
         }
 
+        const VectorTextArguments & textArguments = this->getTotalTextArguments();
+
         String fmt;
-        if( Helper::fillStringFormat( textValue, textSize, textFormatArgs, &fmt ) == false )
+        if( Helper::fillStringFormat( textValue, textSize, textArguments, &fmt ) == false )
         {
             LOGGER_ERROR( "text field '%s' textId '%s' (base '%s') invalid formating string text '%s' format with args %" MENGINE_PRIuPTR " [alias env '%s']"
                 , this->getName().c_str()
                 , this->getTotalTextId().c_str()
                 , m_textId.c_str()
                 , textValue
-                , textFormatArgs.size()
+                , textArguments.size()
                 , m_aliasEnvironment.c_str()
             );
 
             LOGGER_ERROR( "text field '%s' args '%s'"
                 , this->getName().c_str()
-                , Helper::vectorTextArgumentsToString( m_textFormatArgs ).c_str()
+                , Helper::vectorTextArgumentsToString( textArguments ).c_str()
             );
 
             return false;
@@ -1975,7 +1976,7 @@ namespace Mengine
 
         m_aliasEnvironment = _aliasEnvironment;
 
-        this->invalidateTextEntry();
+        this->invalidateTextId();
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & TextField::getTextAliasEnvironment() const
@@ -1983,35 +1984,33 @@ namespace Mengine
         return m_aliasEnvironment;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::setTextFormatArgs( const VectorTextArguments & _args )
+    void TextField::setTextArguments( const VectorTextArguments & _arguments )
     {
-        if( m_textFormatArgs == _args )
+        if( m_textArguments == _arguments )
         {
             return;
         }
 
-        m_textFormatArgs = _args;
+        m_textArguments = _arguments;
 
-        this->invalidateFont();
-        this->invalidateTextLines();
+        this->invalidateTextArguments();
     }
     //////////////////////////////////////////////////////////////////////////
-    const VectorTextArguments & TextField::getTextFormatArgs() const
+    const VectorTextArguments & TextField::getTextArguments() const
     {
-        return m_textFormatArgs;
+        return m_textArguments;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::removeTextFormatArgs()
+    void TextField::removeTextArguments()
     {
-        if( m_textFormatArgs.empty() == true )
+        if( m_textArguments.empty() == true )
         {
             return;
         }
 
-        m_textFormatArgs.clear();
+        m_textArguments.clear();
 
-        this->invalidateFont();
-        this->invalidateTextLines();
+        this->invalidateTextArguments();
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t TextField::getTextExpectedArgument() const
@@ -2321,6 +2320,13 @@ namespace Mengine
         this->invalidateBoundingBox();
     }
     //////////////////////////////////////////////////////////////////////////
+    void TextField::invalidateFont() const
+    {
+        m_invalidateFont = true;
+
+        this->invalidateTextLines();
+    }
+    //////////////////////////////////////////////////////////////////////////
     void TextField::invalidateTextLines() const
     {
         m_invalidateTextLines = true;
@@ -2331,6 +2337,22 @@ namespace Mengine
     void TextField::invalidateTextEntry() const
     {
         m_invalidateTextEntry = true;
+
+        this->invalidateFont();
+        this->invalidateTextLines();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::invalidateTextId() const
+    {
+        m_invalidateTextId = true;
+
+        this->invalidateTextArguments();
+        this->invalidateTextEntry();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::invalidateTextArguments() const
+    {
+        m_invalidateTextArguments = true;
 
         this->invalidateFont();
         this->invalidateTextLines();

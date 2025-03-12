@@ -7,7 +7,7 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/ThreadDescription.h"
 
-#include "Config/Thread.h"
+#include "Config/ThreadId.h"
 
 namespace Mengine
 {

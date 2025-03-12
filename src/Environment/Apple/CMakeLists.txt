@@ -41,4 +41,16 @@ src
     AppleFactorablePtr.mm
 )
 
+if(MENGINE_USE_SCRIPT_SERVICE)
+ADD_FILTER(
+    python
+    ApplePythonProvider.h
+    ApplePythonProvider.mm
+)
+endif()
+
 ADD_MENGINE_APPLE_LIBRARY(Environment)
+
+if(MENGINE_USE_SCRIPT_SERVICE)
+    TARGET_LINK_LIBRARIES(${PROJECT_NAME} Python)
+endif()

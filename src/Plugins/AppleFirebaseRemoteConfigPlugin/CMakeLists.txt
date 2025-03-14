@@ -16,6 +16,8 @@ src
     
     AppleFirebaseRemoteConfigApplicationDelegate.h
     AppleFirebaseRemoteConfigApplicationDelegate.mm
+    
+    AppleFirebaseRemoteConfigInterface.h
 )
 
 if(MENGINE_USE_SCRIPT_SERVICE)

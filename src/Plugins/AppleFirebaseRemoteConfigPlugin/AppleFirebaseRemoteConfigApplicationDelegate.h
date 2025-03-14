@@ -2,12 +2,9 @@
 
 #import "Environment/iOS/iOSPluginApplicationDelegateInterface.h"
 
-@interface AppleFirebaseRemoteConfigApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface>
+#import "AppleFirebaseRemoteConfigInterface.h"
 
-+ (instancetype) sharedInstance;
-
-- (BOOL)hasRemoteConfig:(NSString *)key;
-- (NSDictionary *)getRemoteConfigValue:(NSString *)key;
+@interface AppleFirebaseRemoteConfigApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface, AppleFirebaseRemoteConfigInterface>
 
 @property (nonatomic) NSDictionary * m_configs;
 

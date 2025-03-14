@@ -16,6 +16,14 @@ src
     PythonTraceback.cpp
 )
 
+if(MENGINE_TARGET_APPLE)
+    ADD_FILTER(
+    apple
+        ApplePythonProvider.h
+        ApplePythonProvider.mm
+    )
+endif()
+
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
 
 ADD_MENGINE_LIBRARY(Environment)

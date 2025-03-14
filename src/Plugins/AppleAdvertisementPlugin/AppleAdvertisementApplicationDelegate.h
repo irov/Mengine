@@ -9,6 +9,6 @@
 @interface AppleAdvertisementApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface, AppleAdvertisementInterface>
 
 @property (nonatomic, strong) id<AppleAdvertisementProviderInterface> m_provider;
-@property (nonatomic, strong) id<AppleAdvertisementResponseInterface> m_response;
+@property (nonatomic, strong) id<AppleAdvertisementCallbackInterface> m_response;
 
 @end

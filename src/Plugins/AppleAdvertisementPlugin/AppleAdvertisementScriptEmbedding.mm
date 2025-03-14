@@ -2,6 +2,8 @@
 
 #include "Interface/ScriptServiceInterface.h"
 
+#include "Environment/Apple/ApplePythonProvider.h"
+
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonDocumentTraceback.h"
 #include "Environment/Python/PythonCallbackProvider.h"
@@ -14,23 +16,10 @@
 #include "Kernel/Logger.h"
 
 
-@interface PythonAppleAdvertisementResponse : NSObject<AppleAdvertisementResponseInterface>
-- (instancetype)initWithCbs:(const pybind::dict &)cbs args:(const pybind::args &)args;
-
-@property (nonatomic, assign) pybind::dict m_cbs;
-@property (nonatomic, assign) pybind::args m_args;
+@interface PythonAppleAdvertisementCallback : ApplePythonProvider<AppleAdvertisementCallbackInterface>
 @end
 
-@implementation PythonAppleAdvertisementResponse
-
-- (instancetype)initWithCbs:(const pybind::dict &)cbs args:(const pybind::args &)args {
-    self = [super init];
-    
-    self.m_cbs = cbs;
-    self.m_args = args;
-    
-    return self;
-}
+@implementation PythonAppleAdvertisementCallback
 
 - (void)onAppleAdvertisementShowSuccess:(iOSAdFormat *)format withPlacement:(NSString *)placement {
     NSDictionary * params = @{
@@ -38,7 +27,7 @@
     };
     
     if (format == iOSAdFormat.ADFORMAT_INTERSTITIAL) {
-        pybind::object py_cb = self.m_cbs["onAppleAppLovinInterstitialShowSuccess"];
+        pybind::object py_cb = [self getMethod:@"onAppleAppLovinInterstitialShowSuccess"];
         
         if( py_cb.is_callable() == false )
         {
@@ -47,7 +36,7 @@
         
         py_cb.call_args( params, self.m_args );
     } else if (format == iOSAdFormat.ADFORMAT_REWARDED) {
-        pybind::object py_cb = self.m_cbs["onAppleAppLovinRewardedShowSuccess"];
+        pybind::object py_cb = [self getMethod:@"onAppleAppLovinRewardedShowSuccess"];
         
         if( py_cb.is_callable() == false )
         {
@@ -65,7 +54,7 @@
     };
     
     if (format == iOSAdFormat.ADFORMAT_INTERSTITIAL) {
-        pybind::object py_cb = self.m_cbs["onAppleAppLovinInterstitialShowFailed"];
+        pybind::object py_cb = [self getMethod:@"onAppleAppLovinInterstitialShowFailed"];
         
         if( py_cb.is_callable() == false )
         {
@@ -74,7 +63,7 @@
         
         py_cb.call_args( params, self.m_args );
     } else if (format == iOSAdFormat.ADFORMAT_REWARDED) {
-        pybind::object py_cb = self.m_cbs["onAppleAppLovinRewardedShowFailed"];
+        pybind::object py_cb = [self getMethod:@"onAppleAppLovinRewardedShowFailed"];
         
         if( py_cb.is_callable() == false )
         {
@@ -92,7 +81,7 @@
     };
     
     if (format == iOSAdFormat.ADFORMAT_BANNER) {
-        pybind::object py_cb = pybind::dict( self.m_cbs )["onAppleAppLovinBannerRevenuePaid"];
+        pybind::object py_cb = [self getMethod:@"onAppleAppLovinBannerRevenuePaid"];
         
         if( py_cb.is_callable() == false )
         {
@@ -101,7 +90,7 @@
         
         py_cb.call_args( params, self.m_args );
     } else if (format == iOSAdFormat.ADFORMAT_INTERSTITIAL) {
-        pybind::object py_cb = pybind::dict( self.m_cbs )["onAppleAppLovinInterstitialRevenuePaid"];
+        pybind::object py_cb = [self getMethod:@"onAppleAppLovinInterstitialRevenuePaid"];
         
         if( py_cb.is_callable() == false )
         {
@@ -110,7 +99,7 @@
         
         py_cb.call_args( params, self.m_args );
     } else if (format == iOSAdFormat.ADFORMAT_REWARDED) {
-        pybind::object py_cb = pybind::dict( self.m_cbs )["onAppleAppLovinRewardedRevenuePaid"];
+        pybind::object py_cb = [self getMethod:@"onAppleAppLovinRewardedRevenuePaid"];
         
         if( py_cb.is_callable() == false )
         {
@@ -129,7 +118,7 @@
     };
     
     if (format == iOSAdFormat.ADFORMAT_REWARDED) {
-        pybind::object py_cb = pybind::dict( self.m_cbs )["onAppleAppLovinRewardedUserRewarded"];
+        pybind::object py_cb = [self getMethod:@"onAppleAppLovinRewardedUserRewarded"];
         
         if( py_cb.is_callable() == false )
         {
@@ -148,24 +137,95 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static void appleAppLovin_setAdvertisementResponse( const pybind::dict & _cbs, const pybind::args & _args )
+        static void appleAdvertisement_setAdvertisementCallback( const pybind::dict & _cbs, const pybind::args & _args )
         {
-            PythonAppleAdvertisementResponse * response = [[PythonAppleAdvertisementResponse alloc] initWithCbs:_cbs args:_args];
+            PythonAppleAdvertisementCallback * response = [[PythonAppleAdvertisementCallback alloc] initWithCbs:_cbs args:_args];
             
-            [[AppleAdvertisementApplicationDelegate sharedInstance] setAdvertisementResponse:response];
+            [[AppleAdvertisementApplicationDelegate sharedInstance] setAdvertisementCallback:response];
         }
         //////////////////////////////////////////////////////////////////////////
-        static PyObject * appleAppLovin_getBannerHeight( pybind::kernel_interface * _kernel )
+        static bool appleAdvertisement_showBanner()
+        {
+            if ([[AppleAdvertisementApplicationDelegate sharedInstance] showBanner] == NO) {
+                return false;
+            }
+            
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool appleAdvertisement_hideBanner()
+        {
+            if ([[AppleAdvertisementApplicationDelegate sharedInstance] hideBanner] == NO) {
+                return false;
+            }
+            
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static PyObject * appleAdvertisement_getBannerWidth( pybind::kernel_interface * _kernel )
         {
             uint32_t width;
             uint32_t height;
-            if ([[AppleAdvertisementApplicationDelegate sharedInstance] getBannerSize:&width height:&height] == NO) {
+            if ([[AppleAdvertisementApplicationDelegate sharedInstance] getBannerWidth:&width height:&height] == NO) {
                 return _kernel->ret_none();
             }
             
-            PyObject * py_viewport = pybind::ptr( _kernel, height );
+            PyObject * py_width = pybind::ptr( _kernel, width );
             
-            return py_viewport;
+            return py_width;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static PyObject * appleAdvertisement_getBannerHeight( pybind::kernel_interface * _kernel )
+        {
+            uint32_t width;
+            uint32_t height;
+            if ([[AppleAdvertisementApplicationDelegate sharedInstance] getBannerWidth:&width height:&height] == NO) {
+                return _kernel->ret_none();
+            }
+            
+            PyObject * py_height = pybind::ptr( _kernel, height );
+            
+            return py_height;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool appleAdvertisement_canYouShowInterstitial( NSString * _placement ) {
+            if ([[AppleAdvertisementApplicationDelegate sharedInstance] canYouShowInterstitial:_placement] == NO) {
+                return false;
+            }
+            
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool appleAdvertisement_showInterstitial( NSString * _placement ) {
+            if ([[AppleAdvertisementApplicationDelegate sharedInstance] showInterstitial:_placement] == NO) {
+                return false;
+            }
+            
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool appleAdvertisement_canOfferRewarded( NSString * _placement ) {
+            if ([[AppleAdvertisementApplicationDelegate sharedInstance] canOfferRewarded:_placement] == NO) {
+                return false;
+            }
+            
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool appleAdvertisement_canYouShowRewarded( NSString * _placement ) {
+            if ([[AppleAdvertisementApplicationDelegate sharedInstance] canYouShowRewarded:_placement] == NO) {
+                return false;
+            }
+            
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool appleAdvertisement_showRewarded( NSString * _placement ) {
+            if ([[AppleAdvertisementApplicationDelegate sharedInstance] showRewarded:_placement] == NO) {
+                return false;
+            }
+            
+            return true;
         }
         //////////////////////////////////////////////////////////////////////////
     }
@@ -183,46 +243,35 @@ namespace Mengine
         SCRIPT_SERVICE()
             ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("AppleAdvertisement"), true );
         
-        AppleAppLovinServiceInterface * service = APPLE_APPLOVIN_SERVICE();
+        pybind::def_function_args( _kernel, "appleAdvertisementSetAdvertisementCallback", &Detail::appleAdvertisement_setAdvertisementCallback );
         
-        pybind::def_function_args( _kernel, "appleAppLovinSetBannerProvider", &Detail::appleAppLovin_setBannerProvider );
-        pybind::def_function_args( _kernel, "appleAppLovinSetInterstitialProvider", &Detail::appleAppLovin_setInterstitialProvider );
-        pybind::def_function_args( _kernel, "appleAppLovinSetRewardedProvider", &Detail::appleAppLovin_setRewardedProvider );
+        pybind::def_function( _kernel, "appleAdvertisementShowBanner", &Detail::appleAdvertisement_showBanner );
+        pybind::def_function( _kernel, "appleAdvertisementHideBanner", &Detail::appleAdvertisement_hideBanner );
+        pybind::def_function_kernel( _kernel, "appleAdvertisementGetBannerWidth", &Detail::appleAdvertisement_getBannerWidth );
+        pybind::def_function_kernel( _kernel, "appleAdvertisementGetBannerHeight", &Detail::appleAdvertisement_getBannerHeight );
         
-        pybind::def_functor( _kernel, "appleAppLovinShowBanner", service, &AppleAppLovinServiceInterface::showBanner );
-        pybind::def_functor( _kernel, "appleAppLovinHideBanner", service, &AppleAppLovinServiceInterface::hideBanner );
-        pybind::def_function_kernel( _kernel, "appleAppLovinGetBannerHeight", &Detail::appleAppLovin_getBannerHeight );
+        pybind::def_function( _kernel, "appleAdvertisementCanYouShowInterstitial", &Detail::appleAdvertisement_canYouShowInterstitial );
+        pybind::def_function( _kernel, "appleAdvertisementShowInterstitial", &Detail::appleAdvertisement_showInterstitial );
         
-        pybind::def_functor( _kernel, "appleAppLovinCanYouShowInterstitial", service,  &AppleAppLovinServiceInterface::canYouShowInterstitial );
-        pybind::def_functor( _kernel, "appleAppLovinShowInterstitial", service, &AppleAppLovinServiceInterface::showInterstitial );
-        
-        pybind::def_functor( _kernel, "appleAppLovinCanOfferRewarded", service, &AppleAppLovinServiceInterface::canOfferRewarded );
-        pybind::def_functor( _kernel, "appleAppLovinCanYouShowRewarded", service, &AppleAppLovinServiceInterface::canYouShowRewarded );
-        pybind::def_functor( _kernel, "appleAppLovinShowRewarded", service, &AppleAppLovinServiceInterface::showRewarded );
-        
-        pybind::def_functor( _kernel, "appleAppLovinHasSupportedCMP", service, &AppleAppLovinServiceInterface::hasSupportedCMP );
-        pybind::def_functor( _kernel, "appleAppLovinIsConsentFlowUserGeographyGDPR", service, &AppleAppLovinServiceInterface::isConsentFlowUserGeographyGDPR );
-        pybind::def_function_args( _kernel, "appleAppLovinLoadAndShowCMPFlow", &Detail::appleAppLovin_loadAndShowCMPFlow );
-        pybind::def_functor( _kernel, "appleAppLovinShowMediationDebugger", service, &AppleAppLovinServiceInterface::showMediationDebugger );
+        pybind::def_function( _kernel, "appleAdvertisementCanOfferRewarded", &Detail::appleAdvertisement_canOfferRewarded );
+        pybind::def_function( _kernel, "appleAdvertisementCanYouShowRewarded", &Detail::appleAdvertisement_canYouShowRewarded );
+        pybind::def_function( _kernel, "appleAdvertisementShowRewarded", &Detail::appleAdvertisement_showRewarded );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleAppLovinScriptEmbedding::eject( pybind::kernel_interface * _kernel )
+    void AppleAdvertisementScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
-        _kernel->remove_from_module( "appleAppLovinSetProvider", nullptr );
-        _kernel->remove_from_module( "appleAppLovinShowBanner", nullptr );
-        _kernel->remove_from_module( "appleAppLovinHideBanner", nullptr );
-        _kernel->remove_from_module( "appleAppLovinGetBannerViewport", nullptr );
-        _kernel->remove_from_module( "appleAppLovinCanYouShowInterstitial", nullptr );
-        _kernel->remove_from_module( "appleAppLovinShowInterstitial", nullptr );
-        _kernel->remove_from_module( "appleAppLovinCanOfferRewarded", nullptr );
-        _kernel->remove_from_module( "appleAppLovinCanYouShowRewarded", nullptr );
-        _kernel->remove_from_module( "appleAppLovinShowRewarded", nullptr );
-        _kernel->remove_from_module( "appleAppLovinHasSupportedCMP", nullptr );
-        _kernel->remove_from_module( "appleAppLovinIsConsentFlowUserGeographyGDPR", nullptr );
-        _kernel->remove_from_module( "appleAppLovinLoadAndShowCMPFlow", nullptr );
-        _kernel->remove_from_module( "appleAppLovinShowMediationDebugger", nullptr );
+        _kernel->remove_from_module( "appleAdvertisementSetAdvertisementCallback", nullptr );
+        _kernel->remove_from_module( "appleAdvertisementShowBanner", nullptr );
+        _kernel->remove_from_module( "appleAdvertisementHideBanner", nullptr );
+        _kernel->remove_from_module( "appleAdvertisementGetBannerWidth", nullptr );
+        _kernel->remove_from_module( "appleAdvertisementGetBannerHeight", nullptr );
+        _kernel->remove_from_module( "appleAdvertisementCanYouShowInterstitial", nullptr );
+        _kernel->remove_from_module( "appleAdvertisementShowInterstitial", nullptr );
+        _kernel->remove_from_module( "appleAdvertisementCanOfferRewarded", nullptr );
+        _kernel->remove_from_module( "appleAdvertisementCanYouShowRewarded", nullptr );
+        _kernel->remove_from_module( "appleAdvertisementShowRewarded", nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
 }

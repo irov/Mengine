@@ -22,7 +22,7 @@
 - (void)launchTheInAppReview {
     IOS_LOGGER_MESSAGE( @"launch the InAppReview" );
     
-    if (@available(iOS 14.0, *)) {
+    if (@available(iOS 14.5, *)) {
         UIWindowScene * foregroundScene = nil;
         
         for (UIWindowScene * scene in UIApplication.sharedApplication.connectedScenes) {

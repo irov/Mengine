@@ -3511,7 +3511,7 @@ namespace Mengine
                 {
                     pybind::list l( _kernel, _obj, pybind::borrowed );
 
-                    uint32_t tags_size = l.size();
+                    size_t tags_size = l.size();
 
                     for( uint32_t i = 0; i != tags_size; ++i )
                     {
@@ -3758,7 +3758,7 @@ namespace Mengine
             {
                 if( _kernel->tuple_check( _obj ) == true )
                 {
-                    uint32_t size = _kernel->tuple_size( _obj );
+                    size_t size = _kernel->tuple_size( _obj );
 
                     for( uint32_t index = 0; index != size; ++index )
                     {
@@ -3771,7 +3771,7 @@ namespace Mengine
                 }
                 else if( _kernel->list_check( _obj ) == true )
                 {
-                    uint32_t size = _kernel->list_size( _obj );
+                    size_t size = _kernel->list_size( _obj );
 
                     for( uint32_t index = 0; index != size; ++index )
                     {

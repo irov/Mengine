@@ -4,7 +4,7 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol AppleGameCenterConnectProviderInterface <NSObject>
+@protocol AppleGameCenterConnectCallbackInterface <NSObject>
 - (void)onAppleGameCenterAuthenticate:(BOOL)successful;
 - (void)onAppleGameCenterSynchronizate:(BOOL)successful;
 @end
@@ -13,7 +13,7 @@
 
 + (instancetype _Nonnull)sharedInstance;
 
-- (void)connect:(id<AppleGameCenterConnectProviderInterface> _Nonnull)provider;
+- (void)connect:(id<AppleGameCenterConnectCallbackInterface> _Nonnull)callback;
 - (BOOL)isConnect;
 - (BOOL)isSynchronized;
 

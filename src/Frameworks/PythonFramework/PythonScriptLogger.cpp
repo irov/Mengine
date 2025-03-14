@@ -61,7 +61,7 @@ namespace Mengine
             return _kernel->ret_none();
         }
 
-        uint32_t tuple_size = _kernel->tuple_size( _args );
+        size_t tuple_size = _kernel->tuple_size( _args );
 
         if( tuple_size == 0 )
         {

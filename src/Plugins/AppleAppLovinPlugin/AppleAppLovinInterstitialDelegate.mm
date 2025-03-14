@@ -170,7 +170,7 @@
         @"ad": [self getMAAdParams:ad]
     }];
     
-    id<AppleAdvertisementResponseInterface> response = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementResponse];
+    id<AppleAdvertisementCallbackInterface> response = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementResponse];
     
     if (response != nil) {
         [response onAppleAdvertisementShowSuccess:[iOSAdFormat ADFORMAT_INTERSTITIAL] withPlacement:ad.placement];
@@ -189,7 +189,7 @@
         @"ad": [self getMAAdParams:ad]
     }];
     
-    id<AppleAdvertisementResponseInterface> response = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementResponse];
+    id<AppleAdvertisementCallbackInterface> response = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementResponse];
     
     if (response != nil) {
         [response onAppleAdvertisementShowFailed:[iOSAdFormat ADFORMAT_INTERSTITIAL] withPlacement:ad.placement withError:error.code];
@@ -212,7 +212,7 @@
     
     [self eventRevenue:ad];
     
-    id<AppleAdvertisementResponseInterface> response = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementResponse];
+    id<AppleAdvertisementCallbackInterface> response = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementResponse];
     
     if (response != nil) {
         [response onAppleAdvertisementRevenuePaid:[iOSAdFormat ADFORMAT_INTERSTITIAL] withPlacement:ad.placement withRevenue:ad.revenue];

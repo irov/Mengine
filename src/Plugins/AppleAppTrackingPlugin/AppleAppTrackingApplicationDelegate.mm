@@ -2,6 +2,7 @@
 
 #import "Environment/Apple/AppleDetail.h"
 #import "Environment/iOS/iOSDetail.h"
+#import "Environment/iOS/iOSLog.h"
 
 #import <AppTrackingTransparency/AppTrackingTransparency.h>
 #import <AdSupport/AdSupport.h>
@@ -41,7 +42,9 @@
 }
 
 - (void)authorization:(void (^)(EAppleAppTrackingAuthorization status, NSString *idfa))response {
-    if (@available(iOS 14.0, *)) {
+    if (@available(iOS 14.5, *)) {
+        IOS_LOGGER_MESSAGE( @"request app tracking authorization" );
+        
         [ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
             switch( status ) {
                 case ATTrackingManagerAuthorizationStatusAuthorized: {
@@ -60,6 +63,8 @@
                 }break;
             }
             
+            IOS_LOGGER_MESSAGE( @"app tracking authorization status: %lu", self.m_status );
+            
             [AppleDetail dispatchMainQueue:^{
                 response( self.m_status, self.m_idfa );
             }];
@@ -71,6 +76,8 @@
     self.m_status = EAATA_AUTHORIZED;
 
     [self makeIDFA];
+    
+    IOS_LOGGER_MESSAGE( @"app tracking authorization status: %lu", self.m_status );
 
     response( self.m_status, self.m_idfa );
 }
@@ -84,7 +91,7 @@
 }
 
 - (BOOL)isTrackingAllowed {
-    if (@available(iOS 14.0, *)) {
+    if (@available(iOS 14.5, *)) {
         switch( ATTrackingManager.trackingAuthorizationStatus ) {
             case ATTrackingManagerAuthorizationStatusAuthorized: {
                 return YES;

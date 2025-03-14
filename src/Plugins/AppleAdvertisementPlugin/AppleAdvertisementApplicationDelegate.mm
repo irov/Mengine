@@ -23,11 +23,11 @@
     return self.m_provider;
 }
 
-- (void)setAdvertisementResponse:(id<AppleAdvertisementResponseInterface>)response {
+- (void)setAdvertisementCallback:(id<AppleAdvertisementCallbackInterface>)response {
     self.m_response = response;
 }
 
-- (id<AppleAdvertisementResponseInterface>)getAdvertisementResponse {
+- (id<AppleAdvertisementCallbackInterface>)getAdvertisementCallback {
     return self.m_response;
 }
 
@@ -45,8 +45,8 @@
     return [self.m_provider hideBanner];
 }
 
-- (BOOL)getBannerSize:(uint32_t *)width height:(uint32_t *)height {
-    return [self.m_provider getBannerSize:width height:height];
+- (BOOL)getBannerWidth:(uint32_t *)width height:(uint32_t *)height {
+    return [self.m_provider getBannerWidth:width height:height];
 }
 
 - (BOOL)hasInterstitial {

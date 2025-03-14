@@ -28,7 +28,7 @@
     return self;
 }
 
-- (void)connect:(id<AppleGameCenterConnectProviderInterface> _Nonnull)provider {
+- (void)connect:(id<AppleGameCenterConnectCallbackInterface> _Nonnull)callback {
     [self login:^(NSError * _Nullable _error) {
         if (_error != nil) {
             self.m_gameCenterAuthenticate = false;
@@ -40,7 +40,7 @@
             );
             
             [AppleDetail dispatchMainQueue:^{
-                [provider onAppleGameCenterAuthenticate:NO];
+                [callback onAppleGameCenterAuthenticate:NO];
             }];
             
             return;
@@ -52,7 +52,7 @@
             self.m_gameCenterAuthenticate = true;
             
             [AppleDetail dispatchMainQueue:^{
-                [provider onAppleGameCenterAuthenticate:YES];
+                [callback onAppleGameCenterAuthenticate:YES];
             }];
         }
         
@@ -61,7 +61,7 @@
         [self.m_achievementsComplete removeAllObjects];
         
         [AppleDetail dispatchMainQueue:^{
-            [provider onAppleGameCenterSynchronizate:NO];
+            [callback onAppleGameCenterSynchronizate:NO];
         }];
         
         [self loadCompletedAchievements:^(NSError * _Nullable _error, NSArray * _Nullable _completedAchievements) {
@@ -73,7 +73,7 @@
                 );
                 
                 [AppleDetail dispatchMainQueue:^{
-                    [provider onAppleGameCenterSynchronizate:NO];
+                    [callback onAppleGameCenterSynchronizate:NO];
                 }];
                 
                 return;
@@ -91,9 +91,9 @@
             
             self.m_achievementsSynchronization = true;
             
-            if (provider != nullptr) {
+            if (callback != nullptr) {
                 [AppleDetail dispatchMainQueue:^{
-                    [provider onAppleGameCenterSynchronizate:YES];
+                    [callback onAppleGameCenterSynchronizate:YES];
                 }];
             }
         }] ;

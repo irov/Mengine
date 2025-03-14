@@ -191,7 +191,7 @@
         @"ad": [self getMAAdParams:ad]
     }];
 
-    id<AppleAdvertisementResponseInterface> response = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementResponse];
+    id<AppleAdvertisementCallbackInterface> response = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementResponse];
     
     if (response != nil) {
         [response onAppleAdvertisementShowSuccess:[iOSAdFormat ADFORMAT_REWARDED] withPlacement:ad.placement];
@@ -210,7 +210,7 @@
         @"ad": [self getMAAdParams:ad]
     }];
 
-    id<AppleAdvertisementResponseInterface> response = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementResponse];
+    id<AppleAdvertisementCallbackInterface> response = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementResponse];
     
     if (response != nil) {
         [response onAppleAdvertisementShowFailed:[iOSAdFormat ADFORMAT_REWARDED] withPlacement:ad.placement withError:error.code];
@@ -239,7 +239,7 @@
         @"ad": [self getMAAdParams:ad]
     }];
     
-    id<AppleAdvertisementResponseInterface> response = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementResponse];
+    id<AppleAdvertisementCallbackInterface> response = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementResponse];
     
     if (response != nil) {
         [response onAppleAdvertisementUserRewarded:[iOSAdFormat ADFORMAT_REWARDED] withPlacement:ad.placement withLabel:reward.label withAmount:reward.amount];
@@ -260,7 +260,7 @@
     
     [self eventRevenue:ad];
 
-    id<AppleAdvertisementResponseInterface> response = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementResponse];
+    id<AppleAdvertisementCallbackInterface> response = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementResponse];
     
     if (response != nil) {
         [response onAppleAdvertisementRevenuePaid:[iOSAdFormat ADFORMAT_REWARDED] withPlacement:ad.placement withRevenue:ad.revenue];

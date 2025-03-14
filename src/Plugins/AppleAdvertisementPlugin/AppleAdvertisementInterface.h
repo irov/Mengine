@@ -4,7 +4,7 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol AppleAdvertisementResponseInterface <NSObject>
+@protocol AppleAdvertisementCallbackInterface <NSObject>
 - (void)onAppleAdvertisementShowSuccess:(iOSAdFormat *)format withPlacement:(NSString *)placement;
 - (void)onAppleAdvertisementShowFailed:(iOSAdFormat *)format withPlacement:(NSString *)placement withError:(NSInteger)code;
 - (void)onAppleAdvertisementRevenuePaid:(iOSAdFormat *)format withPlacement:(NSString *)placement withRevenue:(double)revenue;
@@ -15,7 +15,7 @@
 - (BOOL)hasBanner;
 - (BOOL)showBanner;
 - (BOOL)hideBanner;
-- (BOOL)getBannerSize:(uint32_t *)width height:(uint32_t *)height;
+- (BOOL)getBannerWidth:(uint32_t *)width height:(uint32_t *)height;
 
 - (BOOL)hasInterstitial;
 - (BOOL)canYouShowInterstitial:(NSString *)placement;
@@ -33,6 +33,6 @@
 - (void)setAdvertisementProvider:(id<AppleAdvertisementProviderInterface>)provider;
 - (id<AppleAdvertisementProviderInterface>)getAdvertisementProvider;
 
-- (void)setAdvertisementResponse:(id<AppleAdvertisementResponseInterface>)response;
-- (id<AppleAdvertisementResponseInterface>)getAdvertisementResponse;
+- (void)setAdvertisementCallback:(id<AppleAdvertisementCallbackInterface>)callback;
+- (id<AppleAdvertisementCallbackInterface>)getAdvertisementCallback;
 @end

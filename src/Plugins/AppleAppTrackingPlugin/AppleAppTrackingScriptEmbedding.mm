@@ -1,11 +1,11 @@
 #include "AppleAppTrackingScriptEmbedding.h"
 
-#include "AppleAppTrackingApplicationDelegate.h"
-
 #include "Interface/ScriptServiceInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonDocumentTraceback.h"
+
+#import "AppleAppTrackingApplicationDelegate.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/ConstStringHelper.h"

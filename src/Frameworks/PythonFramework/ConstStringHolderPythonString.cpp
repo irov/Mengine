@@ -33,7 +33,7 @@ namespace Mengine
             m_kernel->incref( m_value );
 
             const char * data = m_kernel->string_to_char( m_value );
-            uint32_t size = m_kernel->string_size( m_value );
+            size_t size = m_kernel->string_size( m_value );
             int64_t hash = m_kernel->string_hash( m_value );
 
             this->setup( data, (ConstStringHolder::size_type)size, (ConstStringHolder::hash_type)hash );

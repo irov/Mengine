@@ -10,6 +10,8 @@
 #import "Environment/iOS/iOSLog.h"
 #import "Environment/iOS/iOSTransparencyConsentParam.h"
 
+#import "Plugins/AppleAdvertisement/AppleAdvertisementInterface.h"
+
 #include "Configuration/Configurations.h"
 
 #if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_META)
@@ -18,10 +20,10 @@
 
 @implementation AppleAppLovinApplicationDelegate
 
-- (id<AppleAdvertisementResponseInterface>)getAdvertisementResponse {
+- (id<AppleAdvertisementCallbackInterface>)getAdvertisementResponse {
     id<AppleAdvertisementInterface> advertisement = [iOSDetail getPluginDelegateOfProtocol:@protocol(AppleAdvertisementInterface)];
     
-    id<AppleAdvertisementResponseInterface> response = [advertisement getAdvertisementResponse];
+    id<AppleAdvertisementCallbackInterface> response = [advertisement getAdvertisementCallback];
     
     return response;
 }
@@ -275,7 +277,7 @@
     return YES;
 }
 
-- (BOOL)getBannerSize:(uint32_t *)width height:(uint32_t *)height {
+- (BOOL)getBannerWidth:(uint32_t *)width height:(uint32_t *)height {
     if (self.m_bannerAd == nil) {
         return NO;
     }

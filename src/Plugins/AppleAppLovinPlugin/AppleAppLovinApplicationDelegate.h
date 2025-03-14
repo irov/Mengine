@@ -1,8 +1,8 @@
 #pragma once
 
-#import "Interface/AppleAdvertisementInterface.h"
-
 #import "Environment/iOS/iOSPluginApplicationDelegateInterface.h"
+
+#import "Plugins/AppleAdvertisementPlugin/AppleAdvertisementInterface.h"
 
 #import "AppleAppLovinInterface.h"
 
@@ -16,7 +16,7 @@
 
 @interface AppleAppLovinApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface, AppleAppLovinInterface, AppleAdvertisementProviderInterface>
 
-- (id<AppleAdvertisementResponseInterface>)getAdvertisementResponse;
+- (id<AppleAdvertisementCallbackInterface>)getAdvertisementResponse;
 
 - (AppleAppLovinBannerDelegate *)getBanner;
 - (AppleAppLovinInterstitialDelegate *)getInterstitial;

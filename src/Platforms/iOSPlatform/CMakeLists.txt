@@ -11,6 +11,9 @@ src
     
     iOSMailComposeDelegate.h
     iOSMailComposeDelegate.mm
+    
+    iOSAnalyticsEventProvider.h
+    iOSAnalyticsEventProvider.mm
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_CONFIG_DIR}/SDL/include/include-config-$<LOWER_CASE:$<CONFIG>>)

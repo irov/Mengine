@@ -7,7 +7,9 @@
 #pragma mark - UIApplicationDelegate Protocol
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-
+    //ToDo
+    
+    return YES;
 }
 
 @end

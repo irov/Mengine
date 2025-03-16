@@ -1,9 +1,9 @@
 #import "AppleAppLovinBaseDelegate.h"
 
 #import "Environment/Apple/AppleDetail.h"
-#import "Environment/Apple/AppleAnalytics.h"
 
 #import "Environment/iOS/iOSDetail.h"
+#import "Environment/iOS/iOSAnalytics.h"
 #import "Environment/iOS/iOSLog.h"
 
 @implementation AppleAppLovinBaseDelegate
@@ -182,7 +182,7 @@
     
     [total_params addEntriesFromDictionary:params];
     
-    [AppleAnalytics event:name params:total_params];
+    [iOSAnalytics event:name params:total_params];
 }
 
 - (void) eventRevenue:(MAAd * _Nonnull) ad {

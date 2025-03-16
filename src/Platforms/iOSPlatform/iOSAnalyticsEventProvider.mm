@@ -1,6 +1,6 @@
 #include "iOSAnalyticsEventProvider.h"
 
-#include "Environment/iOS/iOSDetail.h"
+#import "Environment/iOS/iOSAnalytics.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
 
@@ -81,7 +81,7 @@ namespace Mengine
             }
         } );
         
-        [iOSDetail analyticEvent:@(eventName_str) params:parameters];
+        [iOSAnalytics event:@(eventName_str) params:parameters];
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSAnalyticsEventProvider::onAnalyticsScreenView( const ConstString & _screenType, const ConstString & _screenName )
@@ -89,12 +89,12 @@ namespace Mengine
         const Char * screenType_str = _screenType.c_str();
         const Char * screenName_str = _screenName.c_str();
 
-        [iOSDetail analyticScreen:@(screenName_str) type:@(screenType_str)];
+        [iOSAnalytics screen:@(screenName_str) type:@(screenType_str)];
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSAnalyticsEventProvider::onAnalyticsFlush()
     {
-        [iOSDetail analyticFlush];
+        [iOSAnalytics flush];
     }
     //////////////////////////////////////////////////////////////////////////
 }

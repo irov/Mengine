@@ -6,7 +6,7 @@
 
 @implementation iOSAnalytics
 
-+ (void)analyticEvent:(NSString * _Nonnull)event params:(NSDictionary * _Nonnull)params {
++ (void)event:(NSString * _Nonnull)event params:(NSDictionary * _Nonnull)params {
     [AppleDetail addMainQueueOperation:^{
         NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
         
@@ -14,7 +14,7 @@
     }];
 }
 
-+ (void)analyticScreen:(NSString * _Nonnull)name type:(NSString * _Nonnull)type {
++ (void)screen:(NSString * _Nonnull)name type:(NSString * _Nonnull)type {
     [AppleDetail addMainQueueOperation:^{
         NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
         
@@ -22,7 +22,7 @@
     }];
 }
 
-+ (void)analyticFlush {
++ (void)flush {
     [AppleDetail addMainQueueOperation:^{
         NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
         

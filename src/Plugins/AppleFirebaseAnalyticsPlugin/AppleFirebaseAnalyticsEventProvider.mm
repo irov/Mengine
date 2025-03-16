@@ -4,7 +4,7 @@
 
 #include "Kernel/Logger.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 #import <Firebase/Firebase.h>
 
@@ -16,7 +16,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    AppleFirebaseAnalyticsEventProvider::~AppleFirebaseAnalyticsService()
+    AppleFirebaseAnalyticsEventProvider::~AppleFirebaseAnalyticsEventProvider()
     {
     }
     //////////////////////////////////////////////////////////////////////////

@@ -11,7 +11,7 @@
     return self;
 }
 
-- (const pybind::object &)getMethod:(NSString *)method {
+- (pybind::object)getMethod:(NSString *)method {
     const char * method_str = [method UTF8String];
     
     pybind::object py_cb = self.m_cbs[method_str];

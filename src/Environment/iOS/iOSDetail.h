@@ -37,6 +37,10 @@
 + (void)transparencyConsent:(iOSTransparencyConsentParam * _Nonnull)consent;
 + (void)log:(AppleLogRecordParam * _Nonnull)record;
 + (void)config:(NSDictionary * _Nonnull)config;
++ (void)analyticEvent:(NSString * _Nonnull)event params:(NSDictionary * _Nonnull)params;
++ (void)analyticScreen:(NSString * _Nonnull)name type:(NSString * _Nonnull)type;
++ (void)analyticFlush;
+
 + (NSString * _Nonnull)pathForTemporaryFileWithPrefix:(NSString * _Nonnull)prefix ext:(NSString * _Nonnull)ext;
 
 + (void)showOkAlertWithTitle:(NSString * _Nonnull)title

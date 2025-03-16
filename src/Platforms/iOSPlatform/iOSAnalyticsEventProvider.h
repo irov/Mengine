@@ -7,13 +7,13 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class AndroidAnalyticsEventProvider
+    class iOSAnalyticsEventProvider
         : public AnalyticsEventProviderInterface
         , public Factorable
     {
     public:
-        AndroidAnalyticsEventProvider();
-        ~AndroidAnalyticsEventProvider() override;
+        iOSAnalyticsEventProvider();
+        ~iOSAnalyticsEventProvider() override;
 
     protected:
         void onAnalyticsEvent( const AnalyticsEventInterfacePtr & _event ) override;
@@ -23,6 +23,6 @@ namespace Mengine
         void onAnalyticsFlush() override;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<AndroidAnalyticsEventProvider> AndroidAnalyticsEventProviderPtr;
+    typedef IntrusivePtr<iOSAnalyticsEventProvider> iOSAnalyticsEventProviderPtr;
     //////////////////////////////////////////////////////////////////////////
 }

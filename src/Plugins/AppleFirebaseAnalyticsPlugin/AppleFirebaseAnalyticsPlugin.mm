@@ -1,5 +1,7 @@
 #include "AppleFirebaseAnalyticsPlugin.h"
 
+#include "Interface/AnalyticsServiceInterface.h"
+
 #import "AppleFirebaseAnalyticsEventProvider.h"
 
 #include "Kernel/ConfigHelper.h"

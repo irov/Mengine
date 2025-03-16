@@ -6,7 +6,8 @@
 
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonDocumentTraceback.h"
-#include "Environment/Python/PythonCallbackProvider.h"
+
+#import "AppleFirebaseRemoteConfigApplicationDelegate.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/ConstStringHelper.h"
@@ -19,18 +20,21 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static PyObject * AppleFirebaseRemoteConfigService_GetValue( pybind::kernel_interface * _kernel, const ConstString & _key )
+        static bool AppleFirebaseRemoteConfigService_hasRemoteConfig( NSString * _key )
         {
-            Params params;
-            if( APPLE_FIREBASE_REMOTECONFIG_SERVICE()
-               ->getRemoteConfigValue( _key, &params ) == false )
+            if( [[AppleFirebaseRemoteConfigApplicationDelegate sharedInstance] hasRemoteConfig:_key] == NO )
             {
-                return _kernel->ret_none();
+                return false;
             }
             
-            PyObject * py_params = pybind::ptr( _kernel, params );
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static NSDictionary * AppleFirebaseRemoteConfigService_getRemoteConfigValue( NSString * _key )
+        {
+            NSDictionary * params = [[AppleFirebaseRemoteConfigApplicationDelegate sharedInstance] getRemoteConfigValue:_key];
             
-            return py_params;
+            return params;
         }
         //////////////////////////////////////////////////////////////////////////
     }
@@ -48,10 +52,8 @@ namespace Mengine
         SCRIPT_SERVICE()
             ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("AppleFirebaseRemoteConfig"), true );
         
-        AppleFirebaseRemoteConfigServiceInterface * service = APPLE_FIREBASE_REMOTECONFIG_SERVICE();
-
-        pybind::def_functor( _kernel, "appleFirebaseRemoteConfigHasValue", service, &AppleFirebaseRemoteConfigServiceInterface::hasRemoteConfig );
-        pybind::def_function_kernel( _kernel, "appleFirebaseRemoteConfigGetValue", &Detail::AppleFirebaseRemoteConfigService_GetValue );
+        pybind::def_function( _kernel, "appleFirebaseRemoteConfigHasValue", &Detail::AppleFirebaseRemoteConfigService_hasRemoteConfig );
+        pybind::def_function( _kernel, "appleFirebaseRemoteConfigGetValue", &Detail::AppleFirebaseRemoteConfigService_getRemoteConfigValue );
         
         return true;
     }

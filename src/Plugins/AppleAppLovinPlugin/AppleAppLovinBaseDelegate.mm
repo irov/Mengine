@@ -147,7 +147,7 @@
     
     NSTimeInterval delaySec = pow(2, MIN(6, self.m_requestAttempt));
     
-    [iOSDetail addMainQueueOperation:^{
+    [AppleDetail addMainQueueOperation:^{
         [NSThread sleepForTimeInterval:delaySec];
         
         [self loadAd];

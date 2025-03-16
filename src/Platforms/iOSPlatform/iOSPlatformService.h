@@ -17,6 +17,7 @@
 #include "Interface/MemoryInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/FactoryInterface.h"
+#include "Interface/AnalyticsEventProviderInterface.h"
 
 #include "Environment/SDL/SDLPlatformServiceExtensionInterface.h"
 
@@ -203,6 +204,8 @@ namespace Mengine
         iOSInputPtr m_sdlInput;
 
         StaticString<MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME> m_projectTitle;
+        
+        AnalyticsEventProviderInterfacePtr m_analyticsEventProvider;
 
         double m_prevTime;
 

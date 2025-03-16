@@ -11,6 +11,8 @@ namespace Mengine
         : public AnalyticsEventProviderInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( AppleFirebaseAnalyticsEventProvider );
+        
     public:
         AppleFirebaseAnalyticsEventProvider();
         ~AppleFirebaseAnalyticsEventProvider() override;

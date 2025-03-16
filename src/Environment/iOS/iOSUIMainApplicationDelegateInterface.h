@@ -28,6 +28,10 @@
 
 - (void)config:(NSDictionary * _Nonnull)config;
 
+- (void)analyticEvent:(NSString * _Nonnull)event params:(NSDictionary * _Nonnull)params;
+- (void)analyticScreen:(NSString * _Nonnull)name type:(NSString * _Nonnull)type;
+- (void)analyticFlush;
+
 - (void)setSessionId:(iOSSessionIdParam * _Nonnull)sessionId;
 - (void)removeSessionData;
 - (void)eventAdRevenue:(iOSAdRevenueParam * _Nonnull)revenue;

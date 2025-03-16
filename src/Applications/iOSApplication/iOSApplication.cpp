@@ -22,7 +22,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Error.h"
 
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider );

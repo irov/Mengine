@@ -8,7 +8,7 @@
 
 + (instancetype) sharedInstance;
 
-- (BOOL)hasRemoteConfig:(NSString *)key
+- (BOOL)hasRemoteConfig:(NSString *)key;
 - (NSDictionary *)getRemoteConfigValue:(NSString *)key;
 
 @end

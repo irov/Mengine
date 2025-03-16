@@ -14,10 +14,13 @@
 #include "Interface/EnvironmentServiceInterface.h"
 #include "Interface/iOSKernelServiceInterface.h"
 #include "Interface/AccountServiceInterface.h"
+#include "Interface/AnalyticsServiceInterface.h"
 
 #import "Environment/Apple/AppleDetail.h"
 #import "Environment/iOS/iOSApplication.h"
 #import "Environment/iOS/iOSDetail.h"
+
+#include "iOSAnalyticsEventProvider.h"
 
 #include "Kernel/FilePath.h"
 #include "Kernel/PathHelper.h"
@@ -574,6 +577,11 @@ namespace Mengine
         LOGGER_INFO_PROTECTED( "plarform", "Device Seed: %u"
             , deviceSeed
         );
+        
+        m_analyticsEventProvider = Helper::makeFactorableUnique<iOSAnalyticsEventProvider>( MENGINE_DOCUMENT_FACTORABLE );
+
+        ANALYTICS_SERVICE()
+            ->addEventProvider( m_analyticsEventProvider );
 
         return true;
     }
@@ -733,6 +741,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::_finalizeService()
     {
+        if( m_analyticsEventProvider != nullptr )
+        {
+            ANALYTICS_SERVICE()
+                ->removeEventProvider( m_analyticsEventProvider );
+
+            m_analyticsEventProvider = nullptr;
+        }
+        
         m_active = false;
 
         this->destroyWindow_();

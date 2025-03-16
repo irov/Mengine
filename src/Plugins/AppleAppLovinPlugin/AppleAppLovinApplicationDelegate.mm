@@ -10,7 +10,7 @@
 #import "Environment/iOS/iOSLog.h"
 #import "Environment/iOS/iOSTransparencyConsentParam.h"
 
-#import "Plugins/AppleAdvertisement/AppleAdvertisementInterface.h"
+#import "Plugins/AppleAdvertisementPlugin/AppleAdvertisementInterface.h"
 
 #include "Configuration/Configurations.h"
 

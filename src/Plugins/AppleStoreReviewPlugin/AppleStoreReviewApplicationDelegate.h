@@ -2,10 +2,8 @@
 
 #import "Environment/iOS/iOSPluginApplicationDelegateInterface.h"
 
-@interface AppleStoreReviewApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface>
+#import "AppleStoreReviewInterface.h"
 
-+ (instancetype) sharedInstance;
-
-- (void)launchTheInAppReview;
+@interface AppleStoreReviewApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface, AppleStoreReviewInterface>
 
 @end

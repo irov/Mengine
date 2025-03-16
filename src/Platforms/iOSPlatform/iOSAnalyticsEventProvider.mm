@@ -1,136 +1,100 @@
-#include "AndroidAnalyticsEventProvider.h"
+#include "iOSAnalyticsEventProvider.h"
 
-#include "Environment/Android/AndroidEnv.h"
-#include "Environment/Android/AndroidHelper.h"
-#include "Environment/Android/AndroidApplicationHelper.h"
+#include "Environment/iOS/iOSDetail.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
+
+#import <Foundation/Foundation.h>
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    AndroidAnalyticsEventProvider::AndroidAnalyticsEventProvider()
+    iOSAnalyticsEventProvider::iOSAnalyticsEventProvider()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    AndroidAnalyticsEventProvider::~AndroidAnalyticsEventProvider()
+    iOSAnalyticsEventProvider::~iOSAnalyticsEventProvider()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidAnalyticsEventProvider::onAnalyticsEvent( const AnalyticsEventInterfacePtr & _event )
+    void iOSAnalyticsEventProvider::onAnalyticsEvent( const AnalyticsEventInterfacePtr & _event )
     {
-        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
-        {
-            return;
-        }
-
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
-
         const ConstString & eventName = _event->getName();
-
-        jobject eventName_jobject = Helper::AndroidMakeJObjectString( jenv, eventName );
-
-        Timestamp eventTimestamp = _event->getTimestamp();
-
-        jobject bases_jobject = Helper::AndroidMakeJObjectHashMap( jenv, 0 );
-
+        const Char * eventName_str = eventName.c_str();
+        
         uint32_t countParameters = _event->getCountParameters();
+        
+        NSMutableDictionary<NSString *, id> * parameters = [[NSMutableDictionary alloc] init];
+        
+        _event->foreachParameters( [parameters]( const ConstString & _name, const AnalyticsEventParameterInterfacePtr & _parameter )
+        {
+            const Char * name_str = _name.c_str();
+            ConstString::size_type name_size = _name.size();
+            
+            EAnalyticsEventParameterType parameterType = _parameter->getType();
 
-        jobject parameters_jobject = Helper::AndroidMakeJObjectHashMap( jenv, countParameters );
-
-        _event->foreachParameters( [parameters_jobject, jenv]( const ConstString & _name, const AnalyticsEventParameterInterfacePtr & _parameter )
+            switch( parameterType )
             {
-                jobject name_jvalue = Helper::AndroidMakeJObjectString(jenv, _name);
-
-                EAnalyticsEventParameterType parameterType = _parameter->getType();
-
-                jobject parameter_jobject = nullptr;
-
-                switch( parameterType )
+            case EAEPT_BOOLEAN:
                 {
-                    case EAEPT_BOOLEAN:
-                    {
-                        AnalyticsEventParameterBooleanInterfacePtr parameter_boolean = AnalyticsEventParameterBooleanInterfacePtr::from( _parameter );
-                        bool parameter_value = parameter_boolean->resolveValue();
+                    AnalyticsEventParameterBooleanInterfacePtr parameter_boolean = AnalyticsEventParameterBooleanInterfacePtr::from( _parameter );
+                    bool parameter_value = parameter_boolean->resolveValue();
 
-                        parameter_jobject = Helper::AndroidMakeJObjectBoolean( jenv, parameter_value );
-                    }break;
-                    case EAEPT_INTEGER:
-                    {
-                        AnalyticsEventParameterIntegerInterfacePtr parameter_integer = AnalyticsEventParameterIntegerInterfacePtr::from( _parameter );
-                        int64_t parameter_value = parameter_integer->resolveValue();
+                    [parameters setValue:@(parameter_value) forKey:@(name_str)];
+                }break;
+            case EAEPT_INTEGER:
+                {
+                    AnalyticsEventParameterIntegerInterfacePtr parameter_integer = AnalyticsEventParameterIntegerInterfacePtr::from( _parameter );
+                    int64_t parameter_value = parameter_integer->resolveValue();
 
-                        parameter_jobject = Helper::AndroidMakeJObjectLong( jenv, parameter_value );
-                    }break;
-                    case EAEPT_DOUBLE:
-                    {
-                        AnalyticsEventParameterDoubleInterfacePtr parameter_double = AnalyticsEventParameterDoubleInterfacePtr::from( _parameter );
-                        double parameter_value = parameter_double->resolveValue();
+                    [parameters setValue:@(parameter_value) forKey:@(name_str)];
+                }break;
+            case EAEPT_DOUBLE:
+                {
+                    AnalyticsEventParameterDoubleInterfacePtr parameter_double = AnalyticsEventParameterDoubleInterfacePtr::from( _parameter );
+                    double parameter_value = parameter_double->resolveValue();
 
-                        parameter_jobject = Helper::AndroidMakeJObjectDouble( jenv, parameter_value );
-                    }break;
-                    case EAEPT_STRING:
-                    {
-                        AnalyticsEventParameterStringInterfacePtr parameter_string = AnalyticsEventParameterStringInterfacePtr::from( _parameter );
-                        const String & parameter_value = parameter_string->resolveValue();
+                    [parameters setValue:@(parameter_value) forKey:@(name_str)];
+                }break;
+            case EAEPT_STRING:
+                {
+                    AnalyticsEventParameterStringInterfacePtr parameter_string = AnalyticsEventParameterStringInterfacePtr::from( _parameter );
+                    const String & parameter_value = parameter_string->resolveValue();
+                    
+                    String::size_type parameter_value_size = parameter_value.size();
+                                        
+                    const Char * parameter_value_str = parameter_value.c_str();
 
-                        parameter_jobject = Helper::AndroidMakeJObjectString( jenv, parameter_value );
-                    }break;
-                    case EAEPT_CONSTSTRING:
-                    {
-                        AnalyticsEventParameterConstStringInterfacePtr parameter_conststring = AnalyticsEventParameterConstStringInterfacePtr::from( _parameter );
-                        const ConstString & parameter_value = parameter_conststring->resolveValue();
+                    [parameters setValue:@(parameter_value_str) forKey:@(name_str)];
+                }break;
+            case EAEPT_CONSTSTRING:
+                {
+                    AnalyticsEventParameterConstStringInterfacePtr parameter_string = AnalyticsEventParameterConstStringInterfacePtr::from( _parameter );
+                    const ConstString & parameter_value = parameter_string->resolveValue();
+                    
+                    ConstString::size_type parameter_value_size = parameter_value.size();
+                                        
+                    const Char * parameter_value_str = parameter_value.c_str();
 
-                        parameter_jobject = Helper::AndroidMakeJObjectString( jenv, parameter_value );
-                    }break;
-                }
-
-                Helper::AndroidPutJObjectMap( jenv, parameters_jobject, name_jvalue, parameter_jobject );
-
-                jenv->DeleteLocalRef( parameter_jobject );
-            });
-
-        Helper::AndroidCallVoidApplicationMethod( jenv, "onMengineAnalyticsEvent", "(Ljava/lang/String;JLjava/util/Map;Ljava/util/Map;)V", eventName_jobject, (jlong)eventTimestamp, bases_jobject, parameters_jobject );
-
-        jenv->DeleteLocalRef( eventName_jobject );
-        jenv->DeleteLocalRef( bases_jobject );
-        jenv->DeleteLocalRef( parameters_jobject );
+                    [parameters setValue:@(parameter_value_str) forKey:@(name_str)];
+                }break;
+            }
+        } );
+        
+        [iOSDetail analyticEvent:@(eventName_str) params:parameters];
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidAnalyticsEventProvider::onAnalyticsScreenView( const ConstString & _screenType, const ConstString & _screenName )
+    void iOSAnalyticsEventProvider::onAnalyticsScreenView( const ConstString & _screenType, const ConstString & _screenName )
     {
-        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
-        {
-            return;
-        }
+        const Char * screenType_str = _screenType.c_str();
+        const Char * screenName_str = _screenName.c_str();
 
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
-
-        jobject screenType_jobject = Helper::AndroidMakeJObjectString( jenv, _screenType );
-        jobject screenName_jobject = Helper::AndroidMakeJObjectString( jenv, _screenName );
-
-        Helper::AndroidCallVoidApplicationMethod( jenv, "onMengineAnalyticsScreenView", "(Ljava/lang/String;Ljava/lang/String;)V", screenType_jobject, screenName_jobject );
-
-        jenv->DeleteLocalRef( screenType_jobject );
-        jenv->DeleteLocalRef( screenName_jobject );
+        [iOSDetail analyticScreen:@(screenName_str) type:@(screenType_str)];
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidAnalyticsEventProvider::onAnalyticsFlush()
+    void iOSAnalyticsEventProvider::onAnalyticsFlush()
     {
-        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
-        {
-            return;
-        }
-
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
-
-        Helper::AndroidCallVoidApplicationMethod( jenv, "onMengineAnalyticsFlush", "()V" );
+        [iOSDetail analyticFlush];
     }
     //////////////////////////////////////////////////////////////////////////
 }

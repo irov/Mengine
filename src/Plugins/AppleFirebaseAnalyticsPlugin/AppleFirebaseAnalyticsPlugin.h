@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Interface/AnalyticsEventProviderInterface.h"
+
 #include "Kernel/PluginBase.h"
 
 namespace Mengine

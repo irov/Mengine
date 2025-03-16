@@ -2,10 +2,9 @@
 
 #include "Interface/ScriptServiceInterface.h"
 
-#import "Environment/Apple/ApplePythonProvider.h"
-
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonDocumentTraceback.h"
+#import "Environment/Python/ApplePythonProvider.h"
 
 #include "AppleAppLovinApplicationDelegate.h"
 

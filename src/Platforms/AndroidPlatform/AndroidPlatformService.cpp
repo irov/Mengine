@@ -570,10 +570,10 @@ namespace Mengine
             , deviceSeed
         );
 
-        m_androidAnalyticsEventProvider = Helper::makeFactorableUnique<AndroidAnalyticsEventProvider>( MENGINE_DOCUMENT_FACTORABLE );
+        m_analyticsEventProvider = Helper::makeFactorableUnique<AndroidAnalyticsEventProvider>( MENGINE_DOCUMENT_FACTORABLE );
 
         ANALYTICS_SERVICE()
-            ->addEventProvider( m_androidAnalyticsEventProvider );
+            ->addEventProvider( m_analyticsEventProvider );
 
         AndroidProxyLoggerPtr proxyLogger = Helper::makeFactorableUnique<AndroidProxyLogger>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -656,12 +656,12 @@ namespace Mengine
             m_proxyLogger = nullptr;
         }
 
-        if( m_androidAnalyticsEventProvider != nullptr )
+        if( m_analyticsEventProvider != nullptr )
         {
             ANALYTICS_SERVICE()
-                ->removeEventProvider( m_androidAnalyticsEventProvider );
+                ->removeEventProvider( m_analyticsEventProvider );
 
-            m_androidAnalyticsEventProvider = nullptr;
+            m_analyticsEventProvider = nullptr;
         }
 
         m_active = false;

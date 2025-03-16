@@ -168,30 +168,6 @@
     }];
 }
 
-+ (void)analyticEvent:(NSString * _Nonnull)event params:(NSDictionary * _Nonnull)params {
-    [AppleDetail addMainQueueOperation:^{
-        NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
-        
-        [delegate analyticEvent:event params:params];
-    }];
-}
-
-+ (void)analyticScreen:(NSString * _Nonnull)name type:(NSString * _Nonnull)type {
-    [AppleDetail addMainQueueOperation:^{
-        NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
-        
-        [delegate analyticScreen:name type:type];
-    }];
-}
-
-+ (void)analyticFlush {
-    [AppleDetail addMainQueueOperation:^{
-        NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
-        
-        [delegate analyticFlush];
-    }];
-}
-
 + (NSString *) pathForTemporaryFileWithPrefix:(NSString *)prefix ext:(NSString *)ext {
     NSString * result;
     CFUUIDRef uuid = CFUUIDCreate(NULL);

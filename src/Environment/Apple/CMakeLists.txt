@@ -21,9 +21,6 @@ src
 
     AppleKeyChain.h
     AppleKeyChain.mm
-    
-    AppleAnalytics.h
-    AppleAnalytics.mm
 
     AppleSemaphore.h
     AppleSemaphore.mm

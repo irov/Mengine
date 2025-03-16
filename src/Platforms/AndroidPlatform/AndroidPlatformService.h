@@ -327,7 +327,7 @@ namespace Mengine
 
         Tags m_platformTags;
 
-        AnalyticsEventProviderInterfacePtr m_androidAnalyticsEventProvider;
+        AnalyticsEventProviderInterfacePtr m_analyticsEventProvider;
 
         FactoryInterfacePtr m_factoryDynamicLibraries;
 

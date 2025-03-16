@@ -31,6 +31,9 @@ src
     iOSAdFormat.h
     iOSAdFormat.mm
     
+    iOSAnalytics.h
+    iOSAnalytics.mm
+    
     iOSNetwork.h
     iOSNetwork.mm
     

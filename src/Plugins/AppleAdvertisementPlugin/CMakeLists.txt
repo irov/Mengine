@@ -10,6 +10,12 @@ src
     AppleAdvertisementApplicationDelegate.h
     AppleAdvertisementApplicationDelegate.mm
     
+    AppleAdvertisementAttempts.h
+    AppleAdvertisementAttempts.mm
+    
+    AppleAdvertisementCooldoown.h
+    AppleAdvertisementCooldoown.mm
+    
     AppleAdvertisementBasePoint.h
     AppleAdvertisementBasePoint.mm
     

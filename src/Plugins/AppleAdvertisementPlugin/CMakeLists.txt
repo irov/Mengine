@@ -9,6 +9,12 @@ src
     
     AppleAdvertisementApplicationDelegate.h
     AppleAdvertisementApplicationDelegate.mm
+    
+    AppleAdvertisementInterstitialPoint.h
+    AppleAdvertisementInterstitialPoint.mm
+    
+    AppleAdvertisementRewardedPoint.h
+    AppleAdvertisementRewardedPoint.mm
 )
 
 if(MENGINE_USE_SCRIPT_SERVICE)

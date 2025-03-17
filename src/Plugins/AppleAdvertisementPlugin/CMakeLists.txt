@@ -13,8 +13,8 @@ src
     AppleAdvertisementAttempts.h
     AppleAdvertisementAttempts.mm
     
-    AppleAdvertisementCooldoown.h
-    AppleAdvertisementCooldoown.mm
+    AppleAdvertisementCooldown.h
+    AppleAdvertisementCooldown.mm
     
     AppleAdvertisementBasePoint.h
     AppleAdvertisementBasePoint.mm

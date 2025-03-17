@@ -21,8 +21,14 @@
     return message;
 }
 
-+ (NSInteger)getCurrentTimeMillis {
++ (NSTimeInterval)getTimestamp {
     NSTimeInterval time = [[NSDate date] timeIntervalSince1970];
+    
+    return time;
+}
+
++ (NSInteger)getCurrentTimeMillis {
+    NSTimeInterval time = [AppleDetail getTimestamp];
     
     NSInteger millis = (NSInteger)(time * 1000.0);
     

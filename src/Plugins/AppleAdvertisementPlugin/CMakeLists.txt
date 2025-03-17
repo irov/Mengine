@@ -10,6 +10,9 @@ src
     AppleAdvertisementApplicationDelegate.h
     AppleAdvertisementApplicationDelegate.mm
     
+    AppleAdvertisementBasePoint.h
+    AppleAdvertisementBasePoint.mm
+    
     AppleAdvertisementInterstitialPoint.h
     AppleAdvertisementInterstitialPoint.mm
     

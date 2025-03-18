@@ -127,6 +127,7 @@
 #include "Kernel/ResourcePacket.h"
 #include "Kernel/ContentHelper.h"
 #include "Kernel/PrototypeHelper.h"
+#include "Kernel/NodeScreenPosition.h"
 
 #include "Config/StdString.h"
 #include "Config/Lambda.h"
@@ -171,6 +172,7 @@ namespace Mengine
                 m_factoryDelaySchedulePipe = Helper::makeFactoryPool<DelaySchedulePipe, 8>( MENGINE_DOCUMENT_FACTORABLE );
                 m_factoryPythonScheduleEvent = Helper::makeFactoryPool<PythonScheduleEvent, 8>( MENGINE_DOCUMENT_FACTORABLE );
                 m_factoryPythonSceneChangeCallback = Helper::makeFactoryPool<PythonSceneChangeCallback, 8>( MENGINE_DOCUMENT_FACTORABLE );
+                m_factoryAffectorUIWheelOfFortune = Helper::makeFactoryPool<AffectorUIWheelOfFortune, 8>( MENGINE_DOCUMENT_FACTORABLE );
                 m_factoryAffectorGridBurnTransparency = Helper::makeFactoryPool<AffectorGridBurnTransparency, 4>( MENGINE_DOCUMENT_FACTORABLE );
                 m_factoryAffectorUser = Helper::makeFactoryPool<AffectorUser, 4>( MENGINE_DOCUMENT_FACTORABLE );
                 m_factoryPyGlobalMouseLeaveHandlers = Helper::makeFactoryPool<PyGlobalMouseLeaveHandler, 32>( MENGINE_DOCUMENT_FACTORABLE );
@@ -212,6 +214,7 @@ namespace Mengine
                 MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDelaySchedulePipe );
                 MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonScheduleEvent );
                 MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonSceneChangeCallback );
+                MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAffectorUIWheelOfFortune );
                 MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAffectorGridBurnTransparency );
                 MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAffectorUser );
                 MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPyGlobalMouseLeaveHandlers );
@@ -229,6 +232,7 @@ namespace Mengine
                 m_factoryDelaySchedulePipe = nullptr;
                 m_factoryPythonScheduleEvent = nullptr;
                 m_factoryPythonSceneChangeCallback = nullptr;
+                m_factoryAffectorUIWheelOfFortune = nullptr;
                 m_factoryAffectorGridBurnTransparency = nullptr;
                 m_factoryAffectorUser = nullptr;
                 m_factoryPyGlobalMouseLeaveHandlers = nullptr;
@@ -2419,6 +2423,80 @@ namespace Mengine
 
                 return wp;
             }
+
+            //////////////////////////////////////////////////////////////////////////
+            class AffectorUIWheelOfFortune
+                : public Affector
+            {
+                DECLARE_FACTORABLE( AffectorUIWheelOfFortune );
+
+            public:
+                AffectorUIWheelOfFortune()
+                    : m_coeff( 1.f )
+                {
+                }
+
+            public:
+                void initialize( const NodePtr & _node, const NodePtr & _target, float _coeff )
+                {
+                    m_node = _node;
+                    m_target = _target;
+
+                    m_coeff = _coeff;
+                }
+
+            protected:
+                bool _affect( const UpdateContext * _context, float * const _used ) override
+                {
+                    *_used = _context->time;
+
+                    mt::vec2f sp_node;
+                    Helper::getNodeScreenPosition( m_node.get(), &sp_node );
+
+                    mt::vec2f sp_target;
+                    Helper::getNodeScreenPosition( m_target.get(), &sp_target );
+
+                    float distance = mt::length_v2_v2( sp_target, sp_node );
+
+                    float scale = (1.f - distance) * m_coeff;
+
+                    if( scale <= 0.0 )
+                    {
+                        scale = 0.0;
+                    }
+
+                    TransformationInterface * transformation = m_node->getTransformation();
+
+                    transformation->setLocalScale( mt::vec3f( scale, scale, 1.f ) );
+
+                    return false;
+                }
+
+            protected:
+                NodePtr m_node;
+                NodePtr m_target;
+
+                float m_coeff;
+            };
+            //////////////////////////////////////////////////////////////////////////
+            typedef IntrusivePtr<AffectorUIWheelOfFortune, Affector> AffectorUIWheelOfFortunePtr;
+            //////////////////////////////////////////////////////////////////////////
+            FactoryInterfacePtr m_factoryAffectorUIWheelOfFortune;
+            //////////////////////////////////////////////////////////////////////////
+            uint32_t s_affectorUIWheelOfFortune( const NodePtr & _node, const NodePtr & _targer, float _coeff )
+            {
+                AffectorUIWheelOfFortunePtr affector = m_factoryAffectorUIWheelOfFortune->createObject( MENGINE_DOCUMENT_PYBIND );
+
+                affector->setAffectorType( EAFFECTORTYPE_SCALE );
+
+                affector->initialize( _node, _targer, _coeff );
+
+                const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
+
+                uint32_t id = affectorHub->addAffector( affector );
+
+                return id;
+            }
             //////////////////////////////////////////////////////////////////////////
             class AffectorGridBurnTransparency
                 : public Affector
@@ -4479,6 +4557,8 @@ namespace Mengine
         pybind::def_functor( _kernel, "removeMousePositionProvider", nodeScriptMethod, &EngineScriptMethod::s_removeMousePositionProvider );
 
         pybind::def_functor( _kernel, "gridBurnTransparency", nodeScriptMethod, &EngineScriptMethod::s_gridBurnTransparency );
+
+        pybind::def_functor( _kernel, "affectorUIWheelOfFortune", nodeScriptMethod, &EngineScriptMethod::s_affectorUIWheelOfFortune );
 
         pybind::def_functor_args( _kernel, "createAffector", nodeScriptMethod, &EngineScriptMethod::s_createAffector );
         pybind::def_functor_args( _kernel, "addAffector", nodeScriptMethod, &EngineScriptMethod::s_addAffector );

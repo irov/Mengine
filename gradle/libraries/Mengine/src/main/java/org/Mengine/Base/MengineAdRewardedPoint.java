@@ -37,7 +37,7 @@ public class MengineAdRewardedPoint extends MengineAdBasePoint {
             return false;
         }
 
-        m_attempts.attempt();
+        m_attempts.incrementAttempts();
 
         return true;
     }

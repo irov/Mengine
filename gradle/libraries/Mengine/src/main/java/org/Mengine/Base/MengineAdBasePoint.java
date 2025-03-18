@@ -26,6 +26,8 @@ public class MengineAdBasePoint {
         m_enabled = this.parseAdPointBoolean(values, "enable", true, false);
 
         m_cooldownGroupName = this.parseAdPointString(values, "trigger_cooldown_group", false, null);
+
+        m_lastShowTime = 0;
     }
 
     public String getName() {
@@ -103,15 +105,6 @@ public class MengineAdBasePoint {
             return defaultValue;
         }
 
-        if ((int)value < -1) {
-            MengineLog.logError(TAG, "%s attribute %s must be greater than or equal to -1"
-                , m_name
-                , key
-            );
-
-            return defaultValue;
-        }
-
         return (int)value;
     }
 
@@ -132,27 +125,9 @@ public class MengineAdBasePoint {
         if (value instanceof Integer == true) {
             int int_value = (int)value;
 
-            if (int_value < -1) {
-                MengineLog.logError(TAG, "%s attribute %s must be greater than or equal to -1"
-                    , m_name
-                    , key
-                );
-
-                return defaultValue;
-            }
-
             return int_value;
         } else if (value instanceof Long == true) {
-            long long_value = (long) value;
-
-            if (long_value < -1) {
-                MengineLog.logError(TAG, "%s attribute %s must be greater than or equal to -1"
-                    , m_name
-                    , key
-                );
-
-                return defaultValue;
-            }
+            long long_value = (long)value;
 
             return long_value;
         }

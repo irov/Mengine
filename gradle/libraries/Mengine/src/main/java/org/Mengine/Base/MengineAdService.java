@@ -35,6 +35,8 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
     protected long m_countShowRewarded = 0;
     protected long m_countShowAppOpen = 0;
 
+    protected boolean m_noAds = false;
+
     public void setAdProvider(MengineAdProviderInterface adProvider) {
         m_adProvider = adProvider;
     }
@@ -183,6 +185,8 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
 
         bundle.putInt("version", SAVE_VERSION);
 
+        bundle.putBoolean("no_ads", m_noAds);
+
         Bundle attemptsBundle = new Bundle();
 
         for (Map.Entry<String, MengineAdAttempts> entry : m_adAttempts.entrySet()) {
@@ -215,6 +219,8 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
     @Override
     public void onLoad(@NonNull MengineApplication application, @NonNull Bundle bundle) {
         int version = bundle.getInt("version", 0);
+
+        m_noAds = bundle.getBoolean("no_ads", false);
 
         Bundle attemptsBundle = bundle.getBundle("attempts");
 
@@ -251,6 +257,10 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
             return;
         }
 
+        if (m_noAds == true) {
+            return;
+        }
+
         String placement = "start";
 
         long timeStop = MengineUtils.getTimestamp() - m_timestampStop;
@@ -269,6 +279,26 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         m_timestampStop = MengineUtils.getTimestamp();
     }
 
+    public void setNoAds(boolean noAds) {
+        if (m_noAds == noAds) {
+            return;
+        }
+
+        m_noAds = noAds;
+
+        if (m_adProvider != null) {
+            m_adProvider.hideBanner();
+        }
+    }
+
+    public boolean getNoAds() {
+        if (this.hasOption("ad.no_ads") == true) {
+            return true;
+        }
+
+        return m_noAds;
+    }
+
     @Override
     public boolean hasBanner() {
         if (m_adProvider == null) {
@@ -284,12 +314,24 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
             return;
         }
 
+        boolean noAds = this.getNoAds();
+
+        if (noAds == true) {
+            return;
+        }
+
         m_adProvider.showBanner();
     }
 
     @Override
     public void hideBanner() {
         if (m_adProvider == null) {
+            return;
+        }
+
+        boolean noAds = this.getNoAds();
+
+        if (noAds == true) {
             return;
         }
 
@@ -324,6 +366,12 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
             return false;
         }
 
+        boolean noAds = this.getNoAds();
+
+        if (noAds == true) {
+            return false;
+        }
+
         if (m_adProvider.hasInterstitial() == false) {
             return false;
         }
@@ -340,6 +388,12 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         }
 
         if (m_adProvider == null) {
+            return false;
+        }
+
+        boolean noAds = this.getNoAds();
+
+        if (noAds == true) {
             return false;
         }
 
@@ -367,6 +421,12 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         }
 
         if (m_adProvider == null) {
+            return false;
+        }
+
+        boolean noAds = this.getNoAds();
+
+        if (noAds == true) {
             return false;
         }
 
@@ -525,6 +585,12 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
             return false;
         }
 
+        boolean noAds = this.getNoAds();
+
+        if (noAds == true) {
+            return false;
+        }
+
         if (m_adProvider.showAppOpen(placement) == false) {
             return false;
         }
@@ -545,6 +611,12 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
             return false;
         }
 
+        boolean noAds = this.getNoAds();
+
+        if (noAds == true) {
+            return false;
+        }
+
         return m_adProvider.hasMREC();
     }
 
@@ -554,12 +626,24 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
             return;
         }
 
+        boolean noAds = this.getNoAds();
+
+        if (noAds == true) {
+            return;
+        }
+
         m_adProvider.showMREC(leftMargin, bottomMargin);
     }
 
     @Override
     public void hideMREC() {
         if (m_adProvider == null) {
+            return;
+        }
+
+        boolean noAds = this.getNoAds();
+
+        if (noAds == true) {
             return;
         }
 

@@ -20,14 +20,15 @@ public class MengineAdAttempts {
 
     public void onLoad(@NonNull MengineApplication application, @NonNull Bundle bundle) {
         int version = bundle.getInt("version", 0);
+
         m_attempts = bundle.getInt("attempts", 0);
     }
 
-    public long getAttempts() {
+    public int getAttempts() {
         return m_attempts;
     }
 
-    public int attempt() {
+    public int incrementAttempts() {
         m_attempts += 1;
 
         return m_attempts;

@@ -46,7 +46,7 @@ public class MengineAdAppOpenPoint extends MengineAdBasePoint {
             }
         }
 
-        int attempt = m_attempts.attempt();
+        int attempt = m_attempts.incrementAttempts();
 
         if (m_actionOffset >= 0 && attempt < m_actionOffset) {
             return false;

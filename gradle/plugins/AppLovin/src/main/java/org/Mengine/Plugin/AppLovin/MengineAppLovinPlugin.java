@@ -75,7 +75,11 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
 
     @Override
     public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
-        if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_BANNERAD == true) {
+        MengineAdService adService = application.getService(MengineAdService.class);
+
+        boolean noAds = adService.getNoAds();
+
+        if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_BANNERAD == true && noAds == false) {
             String MengineAppLovinPlugin_Banner_AdUnitId = this.getMetaDataString(METADATA_BANNER_ADUNITID);
 
             if (MengineAppLovinPlugin_Banner_AdUnitId.isEmpty() == false) {
@@ -89,7 +93,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             }
         }
 
-        if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_INTERSTITIALAD == true) {
+        if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_INTERSTITIALAD == true && noAds == false) {
             String MengineAppLovinPlugin_Interstitial_AdUnitId = this.getMetaDataString(METADATA_INTERSTITIAL_ADUNITID);
 
             if (MengineAppLovinPlugin_Interstitial_AdUnitId.isEmpty() == false) {
@@ -109,7 +113,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             }
         }
 
-        if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_APPOPENAD == true) {
+        if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_APPOPENAD == true && noAds == false) {
             String MengineAppLovinPlugin_AppOpen_AdUnitId = this.getMetaDataString(METADATA_APPOPEN_ADUNITID);
 
             if (MengineAppLovinPlugin_AppOpen_AdUnitId.isEmpty() == false) {
@@ -121,7 +125,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             }
         }
 
-        if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_MRECAD == true) {
+        if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_MRECAD == true && noAds == false) {
             String MengineAppLovinPlugin_MREC_AdUnitId = this.getMetaDataString(METADATA_MREC_ADUNITID);
 
             if (MengineAppLovinPlugin_MREC_AdUnitId.isEmpty() == false) {
@@ -202,7 +206,6 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
         String sessionId = application.getSessionId();
         settings.setUserIdentifier(sessionId);
 
-        MengineAdService adService = application.getService(MengineAdService.class);
         adService.setAdProvider(this);
 
         String MengineAppLovinPlugin_SdkKey = this.getMetaDataString(METADATA_SDK_KEY);

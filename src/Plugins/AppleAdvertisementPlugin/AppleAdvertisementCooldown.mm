@@ -12,12 +12,12 @@
     return self;
 }
 
-- (NSTimeInterval)getLastShownTimestamp {
+- (NSInteger)getLastShownTimestamp {
     return self.m_timestamp;
 }
 
 - (void)resetShownTimestamp {
-    NSTimeInterval timestamp = [AppleDetail getTimestamp];
+    NSInteger timestamp = [AppleDetail getTimestamp];
     
     self.m_timestamp = timestamp;
 }

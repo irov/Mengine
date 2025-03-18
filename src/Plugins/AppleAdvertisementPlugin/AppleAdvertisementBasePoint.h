@@ -9,7 +9,7 @@
 
 @interface AppleAdvertisementBasePoint : NSObject
 
-- (instancetype)init:(NSString *)name withJson:(NSDictionary *)json;
+- (instancetype)initWithName:(NSString *)name withJson:(NSDictionary *)json;
 
 - (NSString *)getName;
 - (NSInteger)getId;
@@ -23,7 +23,7 @@
 
 - (BOOL)parseAdPointBoolean:(NSDictionary *)json key:(NSString *)key required:(BOOL)required defaultValue:(BOOL)defaultValue;
 - (NSInteger)parseAdPointInteger:(NSDictionary *)json key:(NSString *)key required:(BOOL)required defaultValue:(NSInteger)defaultValue;
-- (NSTimeInterval)parseAdPointTimeInterval:(NSDictionary *)json key:(NSString *)key required:(BOOL)required defaultValue:(NSTimeInterval)defaultValue;
+- (NSInteger)parseAdPointTimeInterval:(NSDictionary *)json key:(NSString *)key required:(BOOL)required defaultValue:(NSInteger)defaultValue;
 - (NSString *)parseAdPointString:(NSDictionary *)json key:(NSString *)key required:(BOOL)required defaultValue:(NSString *)defaultValue;
 
 - (void)showAd;
@@ -38,6 +38,6 @@
 @property (nonatomic, strong) AppleAdvertisementAttempts * m_attempts;
 @property (nonatomic, strong) AppleAdvertisementCooldown * m_cooldown;
 
-@property (nonatomic) NSTimeInterval m_lastShowTime;
+@property (nonatomic) NSInteger m_lastShowTime;
 
 @end

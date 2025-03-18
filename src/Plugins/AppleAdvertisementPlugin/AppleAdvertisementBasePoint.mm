@@ -6,18 +6,18 @@
 
 @implementation AppleAdvertisementBasePoint
 
-- (instancetype)init:(NSString *)name withJson:(NSDictionary *)json {
+- (instancetype)initWithName:(NSString *)name withJson:(NSDictionary *)json {
     self = [super init];
     
     if (self != nil) {
         self.m_name = name;
         
-        self.m_id = [self parseAdPointInteger:json key:@"id" required:false defaultValue:1];
-        self.m_enabled = [self parseAdPointBoolean:json key:@"enabled" required:true defaultValue:false];
+        self.m_id = [self parseAdPointInteger:json key:@"id" required:NO defaultValue:1];
+        self.m_enabled = [self parseAdPointBoolean:json key:@"enabled" required:YES defaultValue:NO];
         
-        self.m_cooldownGroupName = [self parseAdPointString:json key:@"trigger_cooldown_group" required:false defaultValue:nil];
+        self.m_cooldownGroupName = [self parseAdPointString:json key:@"trigger_cooldown_group" required:NO defaultValue:nil];
         
-        self.m_lastShowTime = 0.0;
+        self.m_lastShowTime = 0;
     }
     
     return self;
@@ -95,7 +95,7 @@
     return result;
 }
 
-- (NSTimeInterval)parseAdPointTimeInterval:(NSDictionary *)json key:(NSString *)key required:(BOOL)required defaultValue:(NSTimeInterval)defaultValue {
+- (NSInteger)parseAdPointTimeInterval:(NSDictionary *)json key:(NSString *)key required:(BOOL)required defaultValue:(NSInteger)defaultValue {
     id value = [json objectForKey:key];
     
     if (value == nil) {
@@ -112,9 +112,11 @@
         return defaultValue;
     }
 
-    NSTimeInterval result = [value doubleValue];
+    NSInteger resultSec = [value integerValue];
     
-    return result;
+    NSInteger resultMillisec = resultSec * 1000;
+    
+    return resultMillisec;
 }
 
 - (NSString *)parseAdPointString:(NSDictionary *)json key:(NSString *)key required:(BOOL)required defaultValue:(NSString *)defaultValue {

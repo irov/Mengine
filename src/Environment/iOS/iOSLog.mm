@@ -27,7 +27,7 @@
         
     AppleLogRecordParam * record = [AppleLogRecordParam alloc];
     
-    record.LOG_TIMESTAMP = [AppleDetail getCurrentTimeMillis];
+    record.LOG_TIMESTAMP = [AppleDetail getTimestamp];
     record.LOG_CATEGORY = category;
     record.LOG_THREADNAME = [NSThread isMainThread] ? @"Main" : [[NSThread currentThread] name];
     record.LOG_LEVEL = level;

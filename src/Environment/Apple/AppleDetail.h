@@ -20,8 +20,7 @@
 + (NSString * _Nonnull)NSIdToString:(id _Nonnull)value;
 + (NSString * _Nonnull)getMessageFromNSError:(NSError * _Nonnull)error;
 
-+ (NSTimeInterval)getTimestamp;
-+ (NSInteger)getCurrentTimeMillis;
++ (NSInteger)getTimestamp;
 + (NSInteger)getSecureRandomInteger;
 + (NSString * _Nonnull)getRandomHexString:(NSInteger)length;
 

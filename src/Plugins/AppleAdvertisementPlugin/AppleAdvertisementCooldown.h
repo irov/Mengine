@@ -6,11 +6,11 @@
 
 @interface AppleAdvertisementCooldown : NSObject
 
-@property (nonatomic) NSTimeInterval m_timestamp;
+@property (nonatomic) NSInteger m_timestamp;
 
 - (instancetype)init;
 
-- (NSTimeInterval)getLastShownTimestamp;
+- (NSInteger)getLastShownTimestamp;
 - (void)resetShownTimestamp;
 
 @end

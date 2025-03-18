@@ -300,7 +300,7 @@ namespace Mengine
         
         NSTimeInterval time = [modificationDate timeIntervalSince1970];
         
-        return time;
+        return (uint64_t)time;
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -35,6 +35,6 @@
 @property (nonatomic, assign) NSInteger m_enumeratorRequest;
 @property (nonatomic, assign) NSInteger m_requestId;
 @property (nonatomic, assign) NSInteger m_requestAttempt;
-@property (nonatomic, assign) NSTimeInterval m_requestTimestamp;
+@property (nonatomic, assign) NSInteger m_requestTimestamp;
 
 @end

@@ -58,7 +58,7 @@
         install_key = [@"MRIK" stringByAppendingString:randomHex];
 #endif
         
-        install_timestamp = [AppleDetail getCurrentTimeMillis];
+        install_timestamp = [AppleDetail getTimestamp];
         install_version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
         install_rnd = [AppleDetail getSecureRandomInteger];
         
@@ -90,6 +90,7 @@
     self.m_installRND = install_rnd;
     self.m_sessionIndex = session_index;
     self.m_sessionId = session_id;
+    self.m_sessionTimestamp = [AppleDetail getTimestamp];
     
     return YES;
 }
@@ -138,6 +139,10 @@
 
 - (NSString * _Nonnull)getSessionId {
     return self.m_sessionId;
+}
+
+- (NSInteger)getSessionTimestamp {
+    return self.m_sessionTimestamp;
 }
 
 @end

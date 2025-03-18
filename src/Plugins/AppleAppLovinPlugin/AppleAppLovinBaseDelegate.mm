@@ -165,7 +165,7 @@
     NSTimeInterval timestamp = [[NSDate date] timeIntervalSince1970];
     NSTimeInterval requestTime = timestamp - self.m_requestTimestamp;
     
-    NSInteger requestTimeMillisec = requestTime * 1000.0;
+    NSInteger requestTimeMillisec = (NSInteger)(requestTime * 1000.0);
     
     return requestTimeMillisec;
 }

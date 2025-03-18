@@ -2423,7 +2423,6 @@ namespace Mengine
 
                 return wp;
             }
-
             //////////////////////////////////////////////////////////////////////////
             class AffectorUIWheelOfFortune
                 : public Affector
@@ -2616,7 +2615,7 @@ namespace Mengine
                 float m_time;
             };
             //////////////////////////////////////////////////////////////////////////
-            typedef IntrusivePtr<AffectorGridBurnTransparency> AffectorGridBurnTransparencyPtr;
+            typedef IntrusivePtr<AffectorGridBurnTransparency, Affector> AffectorGridBurnTransparencyPtr;
             //////////////////////////////////////////////////////////////////////////
             FactoryInterfacePtr m_factoryAffectorGridBurnTransparency;
             //////////////////////////////////////////////////////////////////////////
@@ -2652,7 +2651,7 @@ namespace Mengine
                 }
             };
             //////////////////////////////////////////////////////////////////////////
-            typedef IntrusivePtr<AffectorUser> AffectorUserPtr;
+            typedef IntrusivePtr<AffectorUser, Affector> AffectorUserPtr;
             //////////////////////////////////////////////////////////////////////////
             FactoryInterfacePtr m_factoryAffectorUser;
             //////////////////////////////////////////////////////////////////////////
@@ -2704,7 +2703,7 @@ namespace Mengine
                 }
             };
             //////////////////////////////////////////////////////////////////////////
-            typedef IntrusivePtr<AffectorFollower> AffectorFollowerPtr;
+            typedef IntrusivePtr<AffectorFollower, Affector> AffectorFollowerPtr;
             //////////////////////////////////////////////////////////////////////////
             class AffectorNodeFollower
                 : public AffectorFollower

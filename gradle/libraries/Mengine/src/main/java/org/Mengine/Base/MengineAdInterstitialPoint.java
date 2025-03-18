@@ -80,9 +80,9 @@ public class MengineAdInterstitialPoint extends MengineAdBasePoint {
             }
         }
 
-        long cooldownTimestamp = m_cooldown.getLastShownTimestamp();
-
         if (m_timeCooldown > 0) {
+            long cooldownTimestamp = m_cooldown.getLastShownTimestamp();
+
             if (currentTimestamp - cooldownTimestamp < m_timeCooldown) {
                 return false;
             }

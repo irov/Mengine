@@ -20,12 +20,28 @@
 
 @implementation AppleAppLovinApplicationDelegate
 
-- (id<AppleAdvertisementCallbackInterface>)getAdvertisementResponse {
+- (id<AppleAdvertisementCallbackInterface>)getAdvertisementBannerCallback {
     id<AppleAdvertisementInterface> advertisement = [iOSDetail getPluginDelegateOfProtocol:@protocol(AppleAdvertisementInterface)];
     
-    id<AppleAdvertisementCallbackInterface> response = [advertisement getAdvertisementCallback];
+    id<AppleAdvertisementCallbackInterface> callback = [advertisement getBannerCallback];
     
-    return response;
+    return callback;
+}
+
+- (id<AppleAdvertisementCallbackInterface>)getAdvertisementInterstitialCallback {
+    id<AppleAdvertisementInterface> advertisement = [iOSDetail getPluginDelegateOfProtocol:@protocol(AppleAdvertisementInterface)];
+    
+    id<AppleAdvertisementCallbackInterface> callback = [advertisement getInterstitialCallback];
+    
+    return callback;
+}
+
+- (id<AppleAdvertisementCallbackInterface>)getAdvertisementRewardedCallback {
+    id<AppleAdvertisementInterface> advertisement = [iOSDetail getPluginDelegateOfProtocol:@protocol(AppleAdvertisementInterface)];
+    
+    id<AppleAdvertisementCallbackInterface> callback = [advertisement getRewardedCallback];
+    
+    return callback;
 }
 
 - (AppleAppLovinBannerDelegate *)getBanner {
@@ -235,7 +251,7 @@
         
         id<AppleAdvertisementInterface> advertisement = [iOSDetail getPluginDelegateOfProtocol:@protocol(AppleAdvertisementInterface)];
         
-        [advertisement setAdvertisementProvider:self];
+        [advertisement setProvider:self];
         
         if ([AppleDetail hasOption:@"applovin.show_mediation_debugger"] == YES) {
             [[ALSdk shared] showMediationDebugger];

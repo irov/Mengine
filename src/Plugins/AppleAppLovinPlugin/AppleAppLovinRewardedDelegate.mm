@@ -191,10 +191,10 @@
         @"ad": [self getMAAdParams:ad]
     }];
 
-    id<AppleAdvertisementCallbackInterface> response = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementResponse];
+    id<AppleAdvertisementCallbackInterface> callback = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementRewardedCallback];
     
-    if (response != nil) {
-        [response onAppleAdvertisementShowSuccess:[iOSAdFormat ADFORMAT_REWARDED] withPlacement:ad.placement];
+    if (callback != nil) {
+        [callback onAppleAdvertisementShowSuccess:ad.placement];
     }
 
     [self loadAd];
@@ -210,10 +210,10 @@
         @"ad": [self getMAAdParams:ad]
     }];
 
-    id<AppleAdvertisementCallbackInterface> response = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementResponse];
+    id<AppleAdvertisementCallbackInterface> callback = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementRewardedCallback];
     
-    if (response != nil) {
-        [response onAppleAdvertisementShowFailed:[iOSAdFormat ADFORMAT_REWARDED] withPlacement:ad.placement withError:error.code];
+    if (callback != nil) {
+        [callback onAppleAdvertisementShowFailed:ad.placement withError:error.code];
     }
     
     [self loadAd];
@@ -239,10 +239,10 @@
         @"ad": [self getMAAdParams:ad]
     }];
     
-    id<AppleAdvertisementCallbackInterface> response = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementResponse];
+    id<AppleAdvertisementCallbackInterface> callback = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementRewardedCallback];
     
-    if (response != nil) {
-        [response onAppleAdvertisementUserRewarded:[iOSAdFormat ADFORMAT_REWARDED] withPlacement:ad.placement withLabel:reward.label withAmount:reward.amount];
+    if (callback != nil) {
+        [callback onAppleAdvertisementUserRewarded:ad.placement withLabel:reward.label withAmount:reward.amount];
     }
 }
 
@@ -260,10 +260,10 @@
     
     [self eventRevenue:ad];
 
-    id<AppleAdvertisementCallbackInterface> response = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementResponse];
+    id<AppleAdvertisementCallbackInterface> callback = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementRewardedCallback];
     
-    if (response != nil) {
-        [response onAppleAdvertisementRevenuePaid:[iOSAdFormat ADFORMAT_REWARDED] withPlacement:ad.placement withRevenue:ad.revenue];
+    if (callback != nil) {
+        [callback onAppleAdvertisementRevenuePaid:ad.placement withRevenue:ad.revenue];
     }
 }
 

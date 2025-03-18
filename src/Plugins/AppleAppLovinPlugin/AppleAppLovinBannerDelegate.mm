@@ -262,10 +262,10 @@
     
     [self eventRevenue:ad];
     
-    id<AppleAdvertisementCallbackInterface> response = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementResponse];
+    id<AppleAdvertisementCallbackInterface> callback = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementBannerCallback];
     
-    if (response != nil) {
-        [response onAppleAdvertisementRevenuePaid:[iOSAdFormat ADFORMAT_BANNER] withPlacement:ad.placement withRevenue:ad.revenue];
+    if (callback != nil) {
+        [callback onAppleAdvertisementRevenuePaid:ad.placement withRevenue:ad.revenue];
     }
 }
 

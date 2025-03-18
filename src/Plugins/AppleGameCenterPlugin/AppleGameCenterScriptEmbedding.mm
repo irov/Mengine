@@ -65,10 +65,13 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool AppleGameCenter_reportAchievement( NSString * _identifier, double _percent, const pybind::object & _cb, const pybind::args & _args )
         {
+            pybind::object copy_cb = _cb;
+            pybind::args copy_args = _args;
+            
             BOOL result = [[AppleGameCenterApplicationDelegate sharedInstance] reportAchievement:_identifier
                                                                                          percent:_percent
                                                                                         response:^(BOOL successful) {
-                _cb.call_args( successful == YES, _args );
+                copy_cb.call_args( successful == YES, copy_args );
             }];
 
             return result;
@@ -83,11 +86,14 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool AppleGameCenter_resetAchievements( const pybind::object & _cb, const pybind::args & _args )
         {
+            pybind::object copy_cb = _cb;
+            pybind::args copy_args = _args;
+            
             BOOL result = [[AppleGameCenterApplicationDelegate sharedInstance] resetAchievements:^(NSError * error) {
                 if (error != nil) {
-                    _cb.call_args( false, _args );
+                    copy_cb.call_args( false, copy_args );
                 } else {
-                    _cb.call_args( true, _args );
+                    copy_cb.call_args( true, copy_args );
                 }
             }];
 
@@ -96,11 +102,14 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool AppleGameCenter_reportScore( NSString * _identifier, int64_t _score, const pybind::object & _cb, const pybind::args & _args )
         {
+            pybind::object copy_cb = _cb;
+            pybind::args copy_args = _args;
+            
             BOOL result = [[AppleGameCenterApplicationDelegate sharedInstance] reportScore:_identifier score:_score response:^(NSError * error) {
                 if (error != nil) {
-                    _cb.call_args( false, _args );
+                    copy_cb.call_args( false, copy_args );
                 } else {
-                    _cb.call_args( true, _args );
+                    copy_cb.call_args( true, copy_args );
                 }
             }];
 

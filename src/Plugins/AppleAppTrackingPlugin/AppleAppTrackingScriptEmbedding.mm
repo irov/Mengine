@@ -19,10 +19,13 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void AppleAppTracking_authorization( const pybind::object & _cb, const pybind::args & _args )
         {
+            pybind::object copy_cb = _cb;
+            pybind::args copy_args = _args;
+            
             [[AppleAppTrackingApplicationDelegate sharedInstance] authorization:^(EAppleAppTrackingAuthorization status, NSString * idfa) {
                 const Char * idfa_str = [idfa UTF8String];
                 
-                _cb.call_args( status, idfa_str, _args );
+                copy_cb.call_args( status, idfa_str, copy_args );
             }];
         };
         //////////////////////////////////////////////////////////////////////////

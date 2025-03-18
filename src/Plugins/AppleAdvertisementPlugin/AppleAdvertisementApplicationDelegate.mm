@@ -15,20 +15,36 @@
     return sharedInstance;
 }
 
-- (void)setAdvertisementProvider:(id<AppleAdvertisementProviderInterface>)provider {
+- (void)setProvider:(id<AppleAdvertisementProviderInterface>)provider {
     self.m_provider = provider;
 }
 
-- (id<AppleAdvertisementProviderInterface>)getAdvertisementProvider {
+- (id<AppleAdvertisementProviderInterface>)getProvider {
     return self.m_provider;
 }
 
-- (void)setAdvertisementCallback:(id<AppleAdvertisementCallbackInterface>)response {
-    self.m_response = response;
+- (void)setBannerCallback:(id<AppleAdvertisementCallbackInterface>)callback {
+    self.m_bannerCallback = callback;
 }
 
-- (id<AppleAdvertisementCallbackInterface>)getAdvertisementCallback {
-    return self.m_response;
+- (id<AppleAdvertisementCallbackInterface>)getBannerCallback {
+    return self.m_bannerCallback;
+}
+
+- (void)setInterstitialCallback:(id<AppleAdvertisementCallbackInterface>)callback {
+    self.m_interstitialCallback = callback;
+}
+
+- (id<AppleAdvertisementCallbackInterface>)getInterstitialCallback {
+    return self.m_interstitialCallback;
+}
+
+- (void)setRewardedCallback:(id<AppleAdvertisementCallbackInterface>)callback {
+    self.m_rewardedCallback = callback;
+}
+
+- (id<AppleAdvertisementCallbackInterface>)getRewardedCallback {
+    return self.m_rewardedCallback;
 }
 
 #pragma mark - AppleAdvertisementProviderInterface
@@ -75,6 +91,12 @@
 
 - (BOOL)showRewarded:(NSString *)placement {
     return [self.m_provider showRewarded:placement];
+}
+
+#pragma mark - iOSPluginConfigDelegateInterface
+
+- (void)onConfig:(NSDictionary * _Nonnull)config {
+    
 }
 
 #pragma mark - iOSPluginApplicationDelegateInterface

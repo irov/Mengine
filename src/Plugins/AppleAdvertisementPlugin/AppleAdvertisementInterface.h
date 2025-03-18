@@ -5,10 +5,10 @@
 #import <Foundation/Foundation.h>
 
 @protocol AppleAdvertisementCallbackInterface <NSObject>
-- (void)onAppleAdvertisementShowSuccess:(iOSAdFormat *)format withPlacement:(NSString *)placement;
-- (void)onAppleAdvertisementShowFailed:(iOSAdFormat *)format withPlacement:(NSString *)placement withError:(NSInteger)code;
-- (void)onAppleAdvertisementRevenuePaid:(iOSAdFormat *)format withPlacement:(NSString *)placement withRevenue:(double)revenue;
-- (void)onAppleAdvertisementUserRewarded:(iOSAdFormat *)format withPlacement:(NSString *)placement withLabel:(NSString *)label withAmount:(NSInteger)amount;
+- (void)onAppleAdvertisementShowSuccess:(NSString *)placement;
+- (void)onAppleAdvertisementShowFailed:(NSString *)placement withError:(NSInteger)code;
+- (void)onAppleAdvertisementRevenuePaid:(NSString *)placement withRevenue:(double)revenue;
+- (void)onAppleAdvertisementUserRewarded:(NSString *)placement withLabel:(NSString *)label withAmount:(NSInteger)amount;
 @end
 
 @protocol AppleAdvertisementProviderInterface <NSObject>
@@ -30,9 +30,15 @@
 @protocol AppleAdvertisementInterface <AppleAdvertisementProviderInterface>
 + (instancetype)sharedInstance;
 
-- (void)setAdvertisementProvider:(id<AppleAdvertisementProviderInterface>)provider;
-- (id<AppleAdvertisementProviderInterface>)getAdvertisementProvider;
+- (void)setProvider:(id<AppleAdvertisementProviderInterface>)provider;
+- (id<AppleAdvertisementProviderInterface>)getProvider;
 
-- (void)setAdvertisementCallback:(id<AppleAdvertisementCallbackInterface>)callback;
-- (id<AppleAdvertisementCallbackInterface>)getAdvertisementCallback;
+- (void)setBannerCallback:(id<AppleAdvertisementCallbackInterface>)callback;
+- (id<AppleAdvertisementCallbackInterface>)getBannerCallback;
+
+- (void)setInterstitialCallback:(id<AppleAdvertisementCallbackInterface>)callback;
+- (id<AppleAdvertisementCallbackInterface>)getInterstitialCallback;
+
+- (void)setRewardedCallback:(id<AppleAdvertisementCallbackInterface>)callback;
+- (id<AppleAdvertisementCallbackInterface>)getRewardedCallback;
 @end

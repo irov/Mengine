@@ -15,117 +15,166 @@
 #include "Kernel/Logger.h"
 
 
-@interface PythonAppleAdvertisementCallback : ApplePythonProvider<AppleAdvertisementCallbackInterface>
+@interface PythonAppleAdvertisementBannerCallback : ApplePythonProvider<AppleAdvertisementCallbackInterface>
 @end
 
-@implementation PythonAppleAdvertisementCallback
+@implementation PythonAppleAdvertisementBannerCallback
 
-- (void)onAppleAdvertisementShowSuccess:(iOSAdFormat *)format withPlacement:(NSString *)placement {
+- (void)onAppleAdvertisementShowSuccess:(NSString *)placement {
+    //Empty
+}
+
+- (void)onAppleAdvertisementShowFailed:(NSString *)placement withError:(NSInteger)code {
+    //Empty
+}
+
+- (void)onAppleAdvertisementRevenuePaid:(NSString *)placement withRevenue:(double)revenue {
+    NSDictionary * params = @{
+        @"placement": placement,
+        @"revenue": @(revenue)
+    };
+
+    pybind::object py_cb = [self getMethod:@"onAppleAdvertisementRevenuePaid"];
+    
+    if( py_cb.is_callable() == false )
+    {
+        return;
+    }
+    
+    py_cb.call_args( params, self.m_args );
+}
+
+- (void)onAppleAdvertisementUserRewarded:(NSString *)placement withLabel:(NSString *)label withAmount:(NSInteger)amount {
+    //Empty
+}
+
+@end
+
+@interface PythonAppleAdvertisementInterstitialCallback : ApplePythonProvider<AppleAdvertisementCallbackInterface>
+@end
+
+@implementation PythonAppleAdvertisementInterstitialCallback
+
+- (void)onAppleAdvertisementShowSuccess:(NSString *)placement {
     NSDictionary * params = @{
         @"placement": placement
     };
-    
-    if (format == iOSAdFormat.ADFORMAT_INTERSTITIAL) {
-        pybind::object py_cb = [self getMethod:@"onAppleAppLovinInterstitialShowSuccess"];
         
-        if( py_cb.is_callable() == false )
-        {
-            return;
-        }
+    pybind::object py_cb = [self getMethod:@"onAppleAdvertisementShowSuccess"];
         
-        py_cb.call_args( params, self.m_args );
-    } else if (format == iOSAdFormat.ADFORMAT_REWARDED) {
-        pybind::object py_cb = [self getMethod:@"onAppleAppLovinRewardedShowSuccess"];
-        
-        if( py_cb.is_callable() == false )
-        {
-            return;
-        }
-        
-        py_cb.call_args( params, self.m_args );
+    if( py_cb.is_callable() == false )
+    {
+        return;
     }
+        
+    py_cb.call_args( params, self.m_args );
 }
 
-- (void)onAppleAdvertisementShowFailed:(iOSAdFormat *)format withPlacement:(NSString *)placement withError:(NSInteger)code {
+- (void)onAppleAdvertisementShowFailed:(NSString *)placement withError:(NSInteger)code {
     NSDictionary * params = @{
         @"placement": placement,
         @"errorCode": @(code)
     };
     
-    if (format == iOSAdFormat.ADFORMAT_INTERSTITIAL) {
-        pybind::object py_cb = [self getMethod:@"onAppleAppLovinInterstitialShowFailed"];
+    pybind::object py_cb = [self getMethod:@"onAppleAdvertisementShowFailed"];
         
-        if( py_cb.is_callable() == false )
-        {
-            return;
-        }
-        
-        py_cb.call_args( params, self.m_args );
-    } else if (format == iOSAdFormat.ADFORMAT_REWARDED) {
-        pybind::object py_cb = [self getMethod:@"onAppleAppLovinRewardedShowFailed"];
-        
-        if( py_cb.is_callable() == false )
-        {
-            return;
-        }
-        
-        py_cb.call_args( params, self.m_args );
+    if( py_cb.is_callable() == false )
+    {
+        return;
     }
+        
+    py_cb.call_args( params, self.m_args );
 }
 
-- (void)onAppleAdvertisementRevenuePaid:(iOSAdFormat *)format withPlacement:(NSString *)placement withRevenue:(double)revenue {
+- (void)onAppleAdvertisementRevenuePaid:(NSString *)placement withRevenue:(double)revenue {
     NSDictionary * params = @{
         @"placement": placement,
         @"revenue": @(revenue)
     };
     
-    if (format == iOSAdFormat.ADFORMAT_BANNER) {
-        pybind::object py_cb = [self getMethod:@"onAppleAppLovinBannerRevenuePaid"];
-        
-        if( py_cb.is_callable() == false )
-        {
-            return;
-        }
-        
-        py_cb.call_args( params, self.m_args );
-    } else if (format == iOSAdFormat.ADFORMAT_INTERSTITIAL) {
-        pybind::object py_cb = [self getMethod:@"onAppleAppLovinInterstitialRevenuePaid"];
-        
-        if( py_cb.is_callable() == false )
-        {
-            return;
-        }
-        
-        py_cb.call_args( params, self.m_args );
-    } else if (format == iOSAdFormat.ADFORMAT_REWARDED) {
-        pybind::object py_cb = [self getMethod:@"onAppleAppLovinRewardedRevenuePaid"];
-        
-        if( py_cb.is_callable() == false )
-        {
-            return;
-        }
-        
-        py_cb.call_args( params, self.m_args );
+    pybind::object py_cb = [self getMethod:@"onAppleAdvertisementRevenuePaid"];
+    
+    if( py_cb.is_callable() == false )
+    {
+        return;
     }
+    
+    py_cb.call_args( params, self.m_args );
 }
 
-- (void)onAppleAdvertisementUserRewarded:(iOSAdFormat *)format withPlacement:(NSString *)placement withLabel:(NSString *)label withAmount:(NSInteger)amount {
+- (void)onAppleAdvertisementUserRewarded:(NSString *)placement withLabel:(NSString *)label withAmount:(NSInteger)amount {
+    //Empty
+}
+
+@end
+
+@interface PythonAppleAdvertisementRewardedCallback : ApplePythonProvider<AppleAdvertisementCallbackInterface>
+@end
+
+@implementation PythonAppleAdvertisementRewardedCallback
+
+- (void)onAppleAdvertisementShowSuccess:(NSString *)placement {
+    NSDictionary * params = @{
+        @"placement": placement
+    };
+    
+    pybind::object py_cb = [self getMethod:@"onAppleAdvertisementShowSuccess"];
+    
+    if( py_cb.is_callable() == false )
+    {
+        return;
+    }
+    
+    py_cb.call_args( params, self.m_args );
+}
+
+- (void)onAppleAdvertisementShowFailed:(NSString *)placement withError:(NSInteger)code {
+    NSDictionary * params = @{
+        @"placement": placement,
+        @"errorCode": @(code)
+    };
+    
+    pybind::object py_cb = [self getMethod:@"onAppleAdvertisementShowFailed"];
+    
+    if( py_cb.is_callable() == false )
+    {
+        return;
+    }
+    
+    py_cb.call_args( params, self.m_args );
+}
+
+- (void)onAppleAdvertisementRevenuePaid:(NSString *)placement withRevenue:(double)revenue {
+    NSDictionary * params = @{
+        @"placement": placement,
+        @"revenue": @(revenue)
+    };
+    
+    pybind::object py_cb = [self getMethod:@"onAppleAdvertisementRevenuePaid"];
+    
+    if( py_cb.is_callable() == false )
+    {
+        return;
+    }
+    
+    py_cb.call_args( params, self.m_args );
+}
+
+- (void)onAppleAdvertisementUserRewarded:(NSString *)placement withLabel:(NSString *)label withAmount:(NSInteger)amount {
     NSDictionary * params = @{
         @"placement": placement,
         @"label": label,
         @"amount": @(amount)
     };
     
-    if (format == iOSAdFormat.ADFORMAT_REWARDED) {
-        pybind::object py_cb = [self getMethod:@"onAppleAppLovinRewardedUserRewarded"];
-        
-        if( py_cb.is_callable() == false )
-        {
-            return;
-        }
-        
-        py_cb.call_args( params, self.m_args );
+    pybind::object py_cb = [self getMethod:@"onAppleAdvertisementUserRewarded"];
+    
+    if( py_cb.is_callable() == false )
+    {
+        return;
     }
+    
+    py_cb.call_args( params, self.m_args );
 }
 
 @end
@@ -136,11 +185,34 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static void appleAdvertisement_setAdvertisementCallback( const pybind::dict & _cbs, const pybind::args & _args )
+        static void appleAdvertisement_setBannerCallback( const pybind::dict & _cbs, const pybind::args & _args )
         {
-            PythonAppleAdvertisementCallback * response = [[PythonAppleAdvertisementCallback alloc] initWithCbs:_cbs args:_args];
+            id<AppleAdvertisementCallbackInterface> callback = [[PythonAppleAdvertisementBannerCallback alloc] initWithCbs:_cbs args:_args];
             
-            [[AppleAdvertisementApplicationDelegate sharedInstance] setAdvertisementCallback:response];
+            [[AppleAdvertisementApplicationDelegate sharedInstance] setBannerCallback:callback];
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void appleAdvertisement_setInterstitialCallback( const pybind::dict & _cbs, const pybind::args & _args )
+        {
+            id<AppleAdvertisementCallbackInterface> callback = [[PythonAppleAdvertisementInterstitialCallback alloc] initWithCbs:_cbs args:_args];
+            
+            [[AppleAdvertisementApplicationDelegate sharedInstance] setInterstitialCallback:callback];
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void appleAdvertisement_setRewardedCallback( const pybind::dict & _cbs, const pybind::args & _args )
+        {
+            id<AppleAdvertisementCallbackInterface> callback = [[PythonAppleAdvertisementRewardedCallback alloc] initWithCbs:_cbs args:_args];
+            
+            [[AppleAdvertisementApplicationDelegate sharedInstance] setRewardedCallback:callback];
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool appleAdvertisement_hasBanner()
+        {
+            if ([[AppleAdvertisementApplicationDelegate sharedInstance] hasBanner] == NO) {
+                return false;
+            }
+            
+            return true;
         }
         //////////////////////////////////////////////////////////////////////////
         static bool appleAdvertisement_showBanner()
@@ -187,6 +259,14 @@ namespace Mengine
             return py_height;
         }
         //////////////////////////////////////////////////////////////////////////
+        static bool appleAdvertisement_hasInterstitial() {
+            if ([[AppleAdvertisementApplicationDelegate sharedInstance] hasInterstitial] == NO) {
+                return false;
+            }
+            
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
         static bool appleAdvertisement_canYouShowInterstitial( NSString * _placement ) {
             if ([[AppleAdvertisementApplicationDelegate sharedInstance] canYouShowInterstitial:_placement] == NO) {
                 return false;
@@ -197,6 +277,14 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool appleAdvertisement_showInterstitial( NSString * _placement ) {
             if ([[AppleAdvertisementApplicationDelegate sharedInstance] showInterstitial:_placement] == NO) {
+                return false;
+            }
+            
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool appleAdvertisement_hasRewarded() {
+            if ([[AppleAdvertisementApplicationDelegate sharedInstance] hasRewarded] == NO) {
                 return false;
             }
             
@@ -242,16 +330,21 @@ namespace Mengine
         SCRIPT_SERVICE()
             ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("AppleAdvertisement"), true );
         
-        pybind::def_function_args( _kernel, "appleAdvertisementSetAdvertisementCallback", &Detail::appleAdvertisement_setAdvertisementCallback );
+        pybind::def_function_args( _kernel, "appleAdvertisementSetBannerCallback", &Detail::appleAdvertisement_setBannerCallback );
+        pybind::def_function_args( _kernel, "appleAdvertisementSetInterstitialCallback", &Detail::appleAdvertisement_setInterstitialCallback );
+        pybind::def_function_args( _kernel, "appleAdvertisementSetRewardedCallback", &Detail::appleAdvertisement_setRewardedCallback );
         
+        pybind::def_function( _kernel, "appleAdvertisementHasBanner", &Detail::appleAdvertisement_hasBanner );
         pybind::def_function( _kernel, "appleAdvertisementShowBanner", &Detail::appleAdvertisement_showBanner );
         pybind::def_function( _kernel, "appleAdvertisementHideBanner", &Detail::appleAdvertisement_hideBanner );
         pybind::def_function_kernel( _kernel, "appleAdvertisementGetBannerWidth", &Detail::appleAdvertisement_getBannerWidth );
         pybind::def_function_kernel( _kernel, "appleAdvertisementGetBannerHeight", &Detail::appleAdvertisement_getBannerHeight );
         
+        pybind::def_function( _kernel, "appleAdvertisementHasInterstitial", &Detail::appleAdvertisement_hasInterstitial );
         pybind::def_function( _kernel, "appleAdvertisementCanYouShowInterstitial", &Detail::appleAdvertisement_canYouShowInterstitial );
         pybind::def_function( _kernel, "appleAdvertisementShowInterstitial", &Detail::appleAdvertisement_showInterstitial );
         
+        pybind::def_function( _kernel, "appleAdvertisementHasRewarded", &Detail::appleAdvertisement_hasRewarded );
         pybind::def_function( _kernel, "appleAdvertisementCanOfferRewarded", &Detail::appleAdvertisement_canOfferRewarded );
         pybind::def_function( _kernel, "appleAdvertisementCanYouShowRewarded", &Detail::appleAdvertisement_canYouShowRewarded );
         pybind::def_function( _kernel, "appleAdvertisementShowRewarded", &Detail::appleAdvertisement_showRewarded );
@@ -261,7 +354,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleAdvertisementScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
-        _kernel->remove_from_module( "appleAdvertisementSetAdvertisementCallback", nullptr );
+        _kernel->remove_from_module( "appleAdvertisementSetBannerCallback", nullptr );
+        _kernel->remove_from_module( "appleAdvertisementSetInterstitialCallback", nullptr );
+        _kernel->remove_from_module( "appleAdvertisementSetRewardedCallback", nullptr );
         _kernel->remove_from_module( "appleAdvertisementShowBanner", nullptr );
         _kernel->remove_from_module( "appleAdvertisementHideBanner", nullptr );
         _kernel->remove_from_module( "appleAdvertisementGetBannerWidth", nullptr );

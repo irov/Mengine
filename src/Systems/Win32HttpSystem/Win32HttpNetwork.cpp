@@ -52,7 +52,7 @@ namespace Mengine
                     const Char * header_str = header.c_str();
                     String::size_type header_size = header.size();
 
-                    if( ::HttpAddRequestHeadersA( _hRequest, header_str, header_size, HTTP_ADDREQ_FLAG_ADD | HTTP_ADDREQ_FLAG_REPLACE ) == FALSE )
+                    if( ::HttpAddRequestHeadersA( _hRequest, header_str, (DWORD)header_size, HTTP_ADDREQ_FLAG_ADD | HTTP_ADDREQ_FLAG_REPLACE ) == FALSE )
                     {
                         return false;
                     }
@@ -134,10 +134,10 @@ namespace Mengine
 
                 const String & HTTP_URL = _request->getURL();
 
-                const Char * HTTP_URL_str = HTTP_URL.c_str();
-                size_t HTTP_URL_size = HTTP_URL.size();
+                const String::value_type * HTTP_URL_str = HTTP_URL.c_str();
+                String::size_type HTTP_URL_size = HTTP_URL.size();
 
-                if( ::InternetCrackUrlA( HTTP_URL_str, HTTP_URL_size, 0, &urlComponents ) == FALSE )
+                if( ::InternetCrackUrlA( HTTP_URL_str, (DWORD)HTTP_URL_size, 0, &urlComponents ) == FALSE )
                 {
                     Detail::errorRequest( _response );
 

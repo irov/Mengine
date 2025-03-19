@@ -3513,7 +3513,7 @@ namespace Mengine
 
                     size_t tags_size = l.size();
 
-                    for( uint32_t i = 0; i != tags_size; ++i )
+                    for( size_t i = 0; i != tags_size; ++i )
                     {
                         ConstString tag = l[i];
 
@@ -3760,7 +3760,7 @@ namespace Mengine
                 {
                     size_t size = _kernel->tuple_size( _obj );
 
-                    for( uint32_t index = 0; index != size; ++index )
+                    for( size_t index = 0; index != size; ++index )
                     {
                         ConstString tag = pybind::tuple_getitem_t( _kernel, _obj, index );
 
@@ -3773,7 +3773,7 @@ namespace Mengine
                 {
                     size_t size = _kernel->list_size( _obj );
 
-                    for( uint32_t index = 0; index != size; ++index )
+                    for( size_t index = 0; index != size; ++index )
                     {
                         ConstString tag = pybind::list_getitem_t( _kernel, _obj, index );
 

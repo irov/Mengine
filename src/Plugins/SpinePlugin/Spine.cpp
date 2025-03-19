@@ -444,10 +444,10 @@ namespace Mengine
 
             uint32_t slotIndex = (uint32_t)slot->data->index;
 
-            MENGINE_ASSERTION_FATAL( slotIndex < m_attachmentMeshes.size(), "spine '%s' slotIndex %d >= m_attachmentMeshes.size() %d"
+            MENGINE_ASSERTION_FATAL( slotIndex < m_attachmentMeshes.size(), "spine '%s' slotIndex %d >= %zu"
                 , this->getName().c_str()
                 , slotIndex
-                , m_attachmentMeshes.size()
+                , (size_t)m_attachmentMeshes.size()
             );
 
             AttachmentMeshDesc & mesh = m_attachmentMeshes[slotIndex];

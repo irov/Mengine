@@ -50,6 +50,10 @@
 #include "imgui_impl_opengl2.h"
 #endif
 
+#ifndef MENGINE_IMGUI_INI_FILE
+#define MENGINE_IMGUI_INI_FILE "imgui.ini"
+#endif
+
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
 extern LRESULT ImGui_ImplWin32_WndProcHandler( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam );
 #endif
@@ -106,14 +110,17 @@ namespace Mengine
         const FileGroupInterfacePtr & userFileGroup = FILE_SERVICE()
             ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
 
-        if( userFileGroup->existFile( STRINGIZE_FILEPATH_LOCAL( "imgui.ini" ), false ) == true )
+        if( userFileGroup->existFile( STRINGIZE_FILEPATH_LOCAL_I( MENGINE_IMGUI_INI_FILE ), false ) == true )
         {
-            MemoryInterfacePtr memory = Helper::createMemoryFile( userFileGroup, STRINGIZE_FILEPATH_LOCAL( "imgui.ini" ), false, false, MENGINE_DOCUMENT_FACTORABLE );
+            MemoryInterfacePtr memory = Helper::createMemoryFile( userFileGroup, STRINGIZE_FILEPATH_LOCAL_I( MENGINE_IMGUI_INI_FILE ), false, false, MENGINE_DOCUMENT_FACTORABLE );
 
             const Char * buffer = memory->getBuffer();
             size_t size = memory->getSize();
 
-            ImGui::LoadIniSettingsFromMemory( buffer, size );
+            if( size != 0 )
+            {
+                ImGui::LoadIniSettingsFromMemory( buffer, size );
+            }
         }
 
         m_renderProvider = Helper::makeFactorableUnique<ImGUIRenderProvider>( MENGINE_DOCUMENT_FACTORABLE );

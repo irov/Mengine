@@ -398,7 +398,7 @@ namespace Mengine
         {
             m_layouts.push_back( layout );
 
-            m_selectedLayoutIndex = m_layouts.size() - 1;
+            m_selectedLayoutIndex = (int32_t)m_layouts.size() - 1;
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -409,7 +409,10 @@ namespace Mengine
             return;
         }
 
-        MENGINE_ASSERTION_FATAL( (int32_t)m_layouts.size() >= m_selectedLayoutIndex, "selected index %u more layouts count %u", m_selectedLayoutIndex, m_layouts.size() );
+        MENGINE_ASSERTION_FATAL( (int32_t)m_layouts.size() >= m_selectedLayoutIndex, "selected index %d more layouts count %zu"
+            , m_selectedLayoutIndex
+            , (size_t)m_layouts.size() 
+        );
 
         m_layouts.erase( m_layouts.begin() + m_selectedLayoutIndex );
 
@@ -419,7 +422,7 @@ namespace Mengine
         }
         else if( m_selectedLayoutIndex >= (int32_t)m_layouts.size() )
         {
-            int32_t newSelected = m_layouts.size() - 1;
+            int32_t newSelected = (int32_t)m_layouts.size() - 1;
 
             m_selectedLayoutIndex = newSelected;
         }

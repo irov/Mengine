@@ -149,9 +149,18 @@ namespace Mengine
 
                     if( successful == TRUE )
                     {
-                        LOGGER_INFO( "platform", "%s"
-                            , tempFileBuffer
-                        );
+                        if( exitCode == 0 )
+                        {
+                            LOGGER_INFO( "platform", "%s"
+                                , tempFileBuffer
+                            );
+                        }
+                        else
+                        {
+                            LOGGER_ERROR( "%s"
+                                , tempFileBuffer
+                            );
+                        }
                     }
                     else
                     {

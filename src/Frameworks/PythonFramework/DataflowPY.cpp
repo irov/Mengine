@@ -87,7 +87,9 @@ namespace Mengine
 
         Char * source_buffer = _memory->getBuffer();
 
-        PyObject * py_code = m_kernel->code_compile_file( source_buffer, _context->filePath.c_str() );
+        const Char * source_filepath = _context->filePath.c_str();
+
+        PyObject * py_code = m_kernel->code_compile_file( source_buffer, source_filepath );
 
         if( py_code == nullptr )
         {

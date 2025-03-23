@@ -2,12 +2,11 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
 
 SET(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_LIST_DIR}/../uwp_toolchains.cmake")
 
-OPTION(MENGINE_USE_PRECOMPILED_HEADER "Mengine use precompiled header" OFF)
-
 PROJECT(Depends_UWP)
 
 SET(MENGINE_REPOSITORY ${CMAKE_CURRENT_LIST_DIR}/../..)
 
+INCLUDE(${MENGINE_REPOSITORY}/cmake/build_options_template.cmake)
 INCLUDE(${MENGINE_REPOSITORY}/cmake/base_template.cmake)
 INCLUDE(${MENGINE_REPOSITORY}/cmake/macro_template.cmake)
 INCLUDE(${MENGINE_REPOSITORY}/cmake/uwp_template.cmake)

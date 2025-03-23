@@ -515,10 +515,6 @@ Py_Finalize(void)
     _PyGILState_Fini();
 #endif /* WITH_THREAD */
 
-    /* Delete current thread */
-    PyThreadState_Swap(NULL);
-    PyInterpreterState_Delete(interp);
-
     /* Sundry finalizers */
     PyMethod_Fini();
     PyFrame_Fini();
@@ -544,6 +540,10 @@ Py_Finalize(void)
     */
 
     PyGrammar_RemoveAccelerators(&_PyParser_Grammar);
+
+    /* Delete current thread */
+    PyThreadState_Swap( NULL );
+    PyInterpreterState_Delete( interp );
 
 #ifdef Py_TRACE_REFS
     /* Display addresses (& refcnts) of all objects still alive.

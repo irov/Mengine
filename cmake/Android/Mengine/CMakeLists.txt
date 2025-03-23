@@ -1,13 +1,12 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
 
-OPTION(MENGINE_USE_PRECOMPILED_HEADER "Mengine use precompiled header" OFF)
-
 SET(MENGINE_PROJECT_NAME "Mengine_Android" CACHE STRING "Mengine project name")
 
 PROJECT(${MENGINE_PROJECT_NAME})
 
 SET(MENGINE_REPOSITORY ${CMAKE_CURRENT_LIST_DIR}/../../..)
 
+INCLUDE(${MENGINE_REPOSITORY}/cmake/build_options_template.cmake)
 INCLUDE(${MENGINE_REPOSITORY}/cmake/master_options_template.cmake)
 INCLUDE(${MENGINE_REPOSITORY}/cmake/base_template.cmake)
 INCLUDE(${MENGINE_REPOSITORY}/cmake/macro_template.cmake)

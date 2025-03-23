@@ -122,7 +122,7 @@ if %errorlevel% NEQ 0 (
 if defined BUILD (
     if %BUILD% NEQ 0 (
         @pushd "%SOLUTION_DIR%"
-        CMake --build .\ -j 8 --config %CONFIGURATION% %CMAKE_VERBOSITY%
+        CMake --build .\ --parallel 8 --config %CONFIGURATION% %CMAKE_VERBOSITY%
 
         if %errorlevel% NEQ 0 (
             @echo %ESC%[91m*****************************************%ESC%[0m

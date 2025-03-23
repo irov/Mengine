@@ -2165,8 +2165,6 @@ namespace Mengine
                 ->unloadPlugins();
         }
 
-        SERVICE_FINALIZE( FileSystem );
-
         SERVICE_FINALIZE( LoaderService );
         SERVICE_FINALIZE( TimerService );
         SERVICE_FINALIZE( TimelineService );
@@ -2221,6 +2219,7 @@ namespace Mengine
         SERVICE_FINALIZE( FileService );
         SERVICE_FINALIZE( RenderSystem );
         SERVICE_FINALIZE( SoundSystem );
+        SERVICE_FINALIZE( FileSystem );
 
 #if defined(MENGINE_SYSTEM_HTTP)
         SERVICE_FINALIZE( HttpSystem );

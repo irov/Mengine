@@ -85,7 +85,7 @@ public class MengineAppLovinMRECAd extends MengineAppLovinBase implements MaxAdR
 
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(widthPx, heightPx);
 
-        m_adView.setLayoutParams(params);
+        adView.setLayoutParams(params);
 
         adView.setBackgroundColor(Color.TRANSPARENT);
 

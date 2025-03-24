@@ -69,7 +69,7 @@ allprojects {
         if (ANDROID_APP_MIN_SDK_VERSION != null) {
             minSdkVersion = ANDROID_APP_MIN_SDK_VERSION
         } else {
-            minSdkVersion = 21
+            minSdkVersion = 23
         }
 
         if (ANDROID_APP_TARGET_SDK_VERSION != null) {

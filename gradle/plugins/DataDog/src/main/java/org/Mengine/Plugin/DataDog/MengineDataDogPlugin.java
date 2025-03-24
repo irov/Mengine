@@ -1,40 +1,44 @@
 package org.Mengine.Plugin.DataDog;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import com.datadog.android.Datadog;
 import com.datadog.android.DatadogSite;
 import com.datadog.android.core.configuration.Configuration;
-import com.datadog.android.core.configuration.Credentials;
 import com.datadog.android.log.Logger;
+import com.datadog.android.log.Logs;
+import com.datadog.android.log.LogsConfiguration;
 import com.datadog.android.privacy.TrackingConsent;
 
+import org.Mengine.Base.BuildConfig;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MengineEvent;
+import org.Mengine.Base.MengineListenerActivity;
+import org.Mengine.Base.MengineListenerApplication;
+import org.Mengine.Base.MengineListenerLogger;
+import org.Mengine.Base.MengineListenerSessionId;
 import org.Mengine.Base.MengineLog;
-import org.Mengine.Base.MenginePlugin;
-import org.Mengine.Base.MenginePluginActivityListener;
-import org.Mengine.Base.MenginePluginApplicationListener;
-import org.Mengine.Base.MenginePluginInvalidInitializeException;
-import org.Mengine.Base.MenginePluginLoggerListener;
+import org.Mengine.Base.MengineService;
+import org.Mengine.Base.MengineServiceInvalidInitializeException;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Map;
 
-public class MengineDataDogPlugin extends MenginePlugin implements MenginePluginLoggerListener, MenginePluginApplicationListener, MenginePluginActivityListener, MenginePluginSessionIdListener {
+public class MengineDataDogPlugin extends MengineService implements MengineListenerLogger, MengineListenerApplication, MengineListenerActivity, MengineListenerSessionId {
     public static final String SERVICE_NAME = "DataDog";
     public static final boolean SERVICE_EMBEDDING = true;
 
     public static final String METADATA_SITE = "mengine.datadog.site";
     public static final String METADATA_CLIENT_TOKEN = "mengine.datadog.client_token";
-    public static final String METADATA_SERVICE_NAME = "mengine.datadog.service_name";
 
     private Logger m_loggerDataDog;
 
     @Override
-    public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
+    public void onAppPrepare(@NonNull MengineApplication application, @NonNull Map<String, String> pluginVersions) throws MengineServiceInvalidInitializeException {
         String MengineDataDogPlugin_Site = this.getMetaDataString(METADATA_SITE);
 
         this.logInfo("%s: %s"
@@ -69,100 +73,121 @@ public class MengineDataDogPlugin extends MenginePlugin implements MenginePlugin
             , MengineDataDogPlugin_ClientToken
         );
 
-        boolean logsEnabled = true;
-        boolean tracesEnabled = true;
-        boolean crashReportsEnabled = true;
-        boolean rumEnabled = false;
-
-        Configuration config = new Configuration.Builder(logsEnabled, tracesEnabled, crashReportsEnabled, rumEnabled)
-            .useSite(site)
-            .build();
-
-        String MengineDataDogPlugin_ServiceName = this.getMetaDataString(METADATA_SERVICE_NAME);
-
-        this.logInfo("%s: %s"
-            , METADATA_SERVICE_NAME
-            , MengineDataDogPlugin_ServiceName
-        );
+        boolean crashReportsEnabled = false;
 
         String clientToken = MengineDataDogPlugin_ClientToken;
-        String envName = "production";
-        String variant = Credentials.NO_VARIANT;
-        String rumApplicationId = "";
-        String serviceName = MengineDataDogPlugin_ServiceName;
+        String envName = "prod";
+        String variant = "";
 
-        Credentials credentials = new Credentials(clientToken, envName, variant, rumApplicationId, serviceName);
+        Configuration config = new Configuration.Builder(clientToken, envName, variant)
+            .useSite(site)
+            .setCrashReportsEnabled(crashReportsEnabled)
+            .build();
 
         Context context = application.getApplicationContext();
 
-        Datadog.initialize(context, credentials, config, TrackingConsent.GRANTED);
+        if (Datadog.initialize(context, config, TrackingConsent.GRANTED) == null) {
+            this.invalidInitialize("initialize failed");
 
-        if (BuildConfig.DEBUG == true) {
-            Datadog.setVerbosity(Log.VERBOSE);
+            return;
         }
 
-        Logger loggerDataDog = new Logger.Builder()
-            .setNetworkInfoEnabled(true)
-            .setLogcatLogsEnabled(false)
-            .setDatadogLogsEnabled(true)
-            .setLoggerName("MengineDataDog")
-            .build();
+        if (BuildConfig.DEBUG == true) {
+            Datadog.setVerbosity(Log.INFO);
+        }
 
         String installKey = application.getInstallKey();
-        loggerDataDog.addAttribute("install_key", installKey);
-
-        long installTimestamp = application.getInstallTimestamp();
-        loggerDataDog.addAttribute("install_timestamp", installTimestamp);
-
-        String installVersion = application.getInstallVersion();
-        loggerDataDog.addAttribute("install_version", installVersion);
-
-        long installRND = application.getInstallRND();
-        loggerDataDog.addAttribute("install_rnd", installRND);
-
-        long sessionIndex = application.getSessionIndex();
-        loggerDataDog.addAttribute("session_index", sessionIndex);
-
-        long sessionTimestamp = application.getSessionTimestamp();
-        loggerDataDog.addAttribute("session_timestamp", sessionTimestamp);
-
         String sessionId = application.getSessionId();
-        loggerDataDog.addAttribute("session_id", sessionId);
+
+        Datadog.setUserInfo(sessionId, null, null, Map.of("install_key", installKey));
+
+        LogsConfiguration logsConfig = new LogsConfiguration.Builder()
+            .build();
+        Logs.enable(logsConfig);
+
+        Logger loggerDataDog = new Logger.Builder()
+            .setNetworkInfoEnabled(false)
+            .setLogcatLogsEnabled(false)
+            .build();
+
+        try {
+            JSONObject version_attribute = new JSONObject();
+
+            int versionCode = application.getVersionCode();
+            version_attribute.put("code", versionCode);
+
+            String versionName = application.getVersionName();
+            version_attribute.put("name", versionName);
+
+            loggerDataDog.addAttribute("version", version_attribute);
+
+            JSONObject install_attribute = new JSONObject();
+
+            install_attribute.put("key", installKey);
+
+            long installTimestamp = application.getInstallTimestamp();
+            install_attribute.put("timestamp", installTimestamp);
+
+            String installVersion = application.getInstallVersion();
+            install_attribute.put("version", installVersion);
+
+            long installRND = application.getInstallRND();
+            install_attribute.put("rnd", installRND);
+
+            loggerDataDog.addAttribute("install", install_attribute);
+
+            JSONObject session_attribute = new JSONObject();
+
+            long sessionIndex = application.getSessionIndex();
+            session_attribute.put("index", sessionIndex);
+
+            long sessionTimestamp = application.getSessionTimestamp();
+            session_attribute.put("timestamp", sessionTimestamp);
+
+            loggerDataDog.addAttribute("session", session_attribute);
+        } catch (JSONException e) {
+            this.logError("initialize attribute exception: %s"
+                , e.getMessage()
+            );
+        }
 
         m_loggerDataDog = loggerDataDog;
     }
 
     @Override
-    public void onDestroy(MengineActivity activity) {
+    public void onDestroy(@NonNull MengineActivity activity) {
         m_loggerDataDog = null;
     }
 
     @Override
-    void onMengineSessionId(MengineApplication application, String sessionId) {
-        if (m_loggerDataDog == null) {
-            return;
-        }
+    public void onMengineSetSessionId(@NonNull MengineApplication application, String sessionId) {
+        String installKey = application.getInstallKey();
 
-        m_loggerDataDog.addAttribute("session_id", sessionId);
+        Datadog.setUserInfo(sessionId, null, null, Map.of("install_key", installKey));
     }
 
     @Override
-    public void onMengineLogger(MengineApplication application, int level, int filter, String tag, String msg) {
+    public void onMengineRemoveSessionData(@NonNull MengineApplication application) {
+        Datadog.setUserInfo(null, null, null, null);
+    }
+
+    @Override
+    public void onMengineLogger(@NonNull MengineApplication application, int level, int filter, String tag, String msg) {
         if (m_loggerDataDog == null) {
             return;
         }
 
         switch (level) {
             case MengineLog.LM_VERBOSE:
-                m_loggerDataDog.v(msg, null, Map.of("tag", tag));
-                break;
+                return;
             case MengineLog.LM_DEBUG:
-                m_loggerDataDog.d(msg, null, Map.of("tag", tag));
-                break;
+                return;
             case MengineLog.LM_INFO:
             case MengineLog.LM_MESSAGE:
             case MengineLog.LM_MESSAGE_RELEASE:
-                m_loggerDataDog.i(msg, null, Map.of("tag", tag));
+                if (BuildConfig.DEBUG == true) {
+                    m_loggerDataDog.i(msg, null, Map.of("tag", tag));
+                }
                 break;
             case MengineLog.LM_WARNING:
                 m_loggerDataDog.w(msg, null, Map.of("tag", tag));

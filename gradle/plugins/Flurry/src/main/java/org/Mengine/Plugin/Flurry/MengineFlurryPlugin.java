@@ -29,6 +29,11 @@ public class MengineFlurryPlugin extends MenginePlugin implements MenginePluginA
     public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
         String MengineFlurryPlugin_ApiKey = this.getMetaDataString(METADATA_API_KEY);
 
+        this.logInfo("%s: %s"
+            , METADATA_API_KEY
+            , MengineUtils.getRedactedValue(MengineFlurryPlugin_ApiKey)
+        );
+
         String sessionId = application.getSessionId();
         FlurryAgent.setUserId(sessionId);
 

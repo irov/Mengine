@@ -23,6 +23,7 @@ import org.Mengine.Base.MengineListenerSessionId;
 import org.Mengine.Base.MengineLog;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
+import org.Mengine.Base.MengineUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -43,7 +44,7 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
 
         this.logInfo("%s: %s"
             , METADATA_SITE
-            , MengineDataDogPlugin_Site
+            , MengineUtils.getRedactedValue(MengineDataDogPlugin_Site)
         );
 
         DatadogSite site;
@@ -70,7 +71,7 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
 
         this.logInfo("%s: %s"
             , METADATA_CLIENT_TOKEN
-            , MengineDataDogPlugin_ClientToken
+            , MengineUtils.getRedactedValue(MengineDataDogPlugin_ClientToken)
         );
 
         boolean crashReportsEnabled = false;

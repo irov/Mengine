@@ -42,6 +42,11 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
     public void onAppInit(MengineApplication application, boolean isMainProcess) throws MenginePluginInvalidInitializeException {
         String MengineAppMetricaPlugin_ApiKey = this.getMetaDataString(METADATA_API_KEY);
 
+        this.logInfo("%s: %s"
+            , METADATA_API_KEY
+            , MengineUtils.getRedactedValue(MengineAppMetricaPlugin_ApiKey)
+        );
+
         String AppVersion = application.getVersionName();
 
         boolean MengineAppMetricaPlugin_CrashReporting = this.getMetaDataBoolean(METADATA_CRASH_REPORTING);

@@ -27,14 +27,13 @@ public class MengineAmazonPlugin extends MenginePlugin implements MenginePluginA
 
         this.logInfo("%s: %s"
             , METADATA_APP_ID
-            , MengineAmazonPlugin_AppId
+            , MengineUtils.getRedactedValue(MengineAmazonPlugin_AppId)
         );
 
         try {
             AdRegistration.getInstance(MengineAmazonPlugin_AppId, application);
         } catch (final IllegalArgumentException e) {
             this.invalidInitialize("AdRegistration get instance failed: %s"
-                , MengineAmazonPlugin_AppId
                 , e.getMessage()
             );
 

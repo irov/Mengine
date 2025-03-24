@@ -50,14 +50,14 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
 
         this.logInfo("%s: %s"
             , METADATA_PLATFORM_ID
-            , MengineHelpshiftPlugin_PlatformId
+            , MengineUtils.getRedactedValue(MengineHelpshiftPlugin_PlatformId)
         );
 
         String MengineHelpshiftPlugin_Domain = this.getMetaDataString(METADATA_DOMAIN);
 
         this.logInfo("%s: %s"
             , METADATA_DOMAIN
-            , MengineHelpshiftPlugin_Domain
+            , MengineUtils.getRedactedValue(MengineHelpshiftPlugin_Domain)
         );
 
         try {

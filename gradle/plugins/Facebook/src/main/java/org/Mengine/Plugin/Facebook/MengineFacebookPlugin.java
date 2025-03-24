@@ -88,7 +88,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
                 MengineFacebookPlugin.this.logMessage("retrieve login [onCompleted] application: %s user: %s token: %s"
                     , accessToken.getApplicationId()
                     , accessToken.getUserId()
-                    , MengineUtils.getDebugValue(accessToken.getToken(), "[REDACTED]")
+                    , MengineUtils.getRedactedValue(accessToken.getToken())
                 );
 
                 MengineFacebookPlugin.this.activateSemaphore("FacebookRetrieveLoginCompleted");
@@ -111,8 +111,8 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
             @Override
             protected void onCurrentAccessTokenChanged(AccessToken oldToken, AccessToken newToken) {
                 MengineFacebookPlugin.this.logMessage("onCurrentAccessTokenChanged old token: %s new token: %s"
-                    , MengineUtils.getDebugValue(oldToken, "[REDACTED]")
-                    , MengineUtils.getDebugValue(newToken, "[REDACTED]")
+                    , MengineUtils.getRedactedValue(oldToken)
+                    , MengineUtils.getRedactedValue(newToken)
                 );
 
                 String oldTokenString = oldToken != null ? oldToken.getToken() : "";
@@ -154,7 +154,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
                 MengineFacebookPlugin.this.logMessage("login [onSuccess] application: %s user: %s token: %s"
                     , applicationId
                     , userId
-                    , MengineUtils.getDebugValue(token, "[REDACTED]")
+                    , MengineUtils.getRedactedValue(token)
                 );
 
                 MengineFacebookPlugin.this.pythonCall("onFacebookLoginSuccess", token);

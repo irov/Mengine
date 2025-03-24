@@ -242,6 +242,14 @@ public class MengineUtils {
         }
     }
 
+    public static Object getRedactedValue(Object d) {
+        if (BuildConfig.DEBUG == true) {
+            return d;
+        } else {
+            return "[REDACTED]";
+        }
+    }
+
     public static long getTimestamp() {
         long timestamp = System.currentTimeMillis();
 

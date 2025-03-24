@@ -26,6 +26,7 @@ public class MengineLog {
     public final static int LFILTER_EXCEPTION = 1 << 3;
 
     private static final Set<String> m_singles = new HashSet<>();
+    private static final Object m_singlesLock = new Object();
 
     public static boolean isFilter(int filter, int flag) {
         return (filter & flag) == flag;
@@ -118,6 +119,18 @@ public class MengineLog {
         return m;
     }
 
+    public static String logMessageProtected(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
+        String m = MengineLog.log(LM_MESSAGE, tag, MengineLog.LFILTER_PROTECTED, format, args);
+
+        return m;
+    }
+
+    public static String logMessageRelease(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
+        String m = MengineLog.log(LM_MESSAGE_RELEASE, tag, MengineLog.LFILTER_NONE, format, args);
+
+        return m;
+    }
+
     public static String logWarning(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
         String m = MengineLog.log(LM_WARNING, tag, MengineLog.LFILTER_NONE, format, args);
 
@@ -136,12 +149,6 @@ public class MengineLog {
         return m;
     }
 
-    public static String logMessageRelease(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
-        String m = MengineLog.log(LM_MESSAGE_RELEASE, tag, MengineLog.LFILTER_NONE, format, args);
-
-        return m;
-    }
-
     public static String logFatal(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
         String m = MengineLog.log(LM_FATAL, tag, MengineLog.LFILTER_NONE, format, args);
 
@@ -151,8 +158,12 @@ public class MengineLog {
     public static String logSingleMessage(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
         String m = MengineLog.buildTotalMsg(format, args);
 
-        if (MengineLog.m_singles.contains(m) == true) {
-            return m;
+        synchronized (MengineLog.m_singlesLock) {
+            if (MengineLog.m_singles.contains(m) == true) {
+                return m;
+            }
+
+            MengineLog.m_singles.add(m);
         }
 
         MengineLog.logString(LM_MESSAGE, tag, MengineLog.LFILTER_NONE, m);
@@ -163,8 +174,12 @@ public class MengineLog {
     public static String logSingleWarning(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
         String m = MengineLog.buildTotalMsg(format, args);
 
-        if (MengineLog.m_singles.contains(m) == true) {
-            return m;
+        synchronized (MengineLog.m_singlesLock) {
+            if (MengineLog.m_singles.contains(m) == true) {
+                return m;
+            }
+
+            MengineLog.m_singles.add(m);
         }
 
         MengineLog.logString(LM_WARNING, tag, MengineLog.LFILTER_NONE, m);
@@ -175,8 +190,12 @@ public class MengineLog {
     public static String logSingleError(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
         String m = MengineLog.buildTotalMsg(format, args);
 
-        if (MengineLog.m_singles.contains(m) == true) {
-            return m;
+        synchronized (MengineLog.m_singlesLock) {
+            if (MengineLog.m_singles.contains(m) == true) {
+                return m;
+            }
+
+            MengineLog.m_singles.add(m);
         }
 
         MengineLog.logString(LM_ERROR, tag, MengineLog.LFILTER_NONE, m);

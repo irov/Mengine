@@ -36,6 +36,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
     protected long m_countShowRewarded = 0;
     protected long m_countShowAppOpen = 0;
 
+    protected boolean m_optionNoAds = false;
     protected boolean m_noAds = false;
 
     public void setAdProvider(MengineAdProviderInterface adProvider) {
@@ -52,6 +53,8 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
 
     @Override
     public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
+        m_optionNoAds = this.hasOption("ad.no_ads");
+
         if (this.hasAppOpen() == true) {
             ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
         }
@@ -276,7 +279,9 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
             return;
         }
 
-        if (m_noAds == true) {
+        boolean noAds = this.getNoAds();
+
+        if (noAds == true) {
             return;
         }
 
@@ -311,11 +316,15 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
     }
 
     public boolean getNoAds() {
-        if (this.hasOption("ad.no_ads") == true) {
+        if (m_optionNoAds == true) {
             return true;
         }
 
-        return m_noAds;
+        if (m_noAds == true) {
+            return true;
+        }
+
+        return false;
     }
 
     @Override

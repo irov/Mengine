@@ -42,7 +42,7 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginA
 
         this.logInfo("%s: %s"
             , METADATA_DSN
-            , MengineSentryPlugin_DSN
+            , MengineUtils.getRedactedValue(MengineSentryPlugin_DSN)
         );
 
         boolean MengineSentryPlugin_EnableUncaughtExceptionHandler = this.getMetaDataBoolean(METADATA_ENABLE_UNCAUGHT_EXCEPTION_HANDLER);

@@ -22,7 +22,6 @@ import com.android.billingclient.api.QueryPurchasesParams;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineCallback;
-import org.Mengine.Base.MengineFunctorBoolean;
 import org.Mengine.Base.MengineInAppProductParam;
 import org.Mengine.Base.MengineInAppPurchaseParam;
 import org.Mengine.Base.MengineListenerActivity;
@@ -220,7 +219,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
         BillingResult billingResult = m_billingClient.isFeatureSupported(BillingClient.FeatureType.PRODUCT_DETAILS);
 
         if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.FEATURE_NOT_SUPPORTED) {
-            this.makeToastLong("GooglePlay billing asks you to update the PlayStore app", 10000L);
+            this.makeToastLong(10000L, "GooglePlay billing asks you to update the PlayStore app");
 
             return;
         }

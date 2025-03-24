@@ -36,6 +36,11 @@ public class MengineAppsFlyerPlugin extends MenginePlugin implements MenginePlug
     public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
         String MengineAppsFlyerPlugin_ApiKey = this.getMetaDataString(METADATA_API_KEY);
 
+        this.logInfo("%s: %s"
+            , METADATA_API_KEY
+            , MengineUtils.getRedactedValue(MengineAppsFlyerPlugin_ApiKey)
+        );
+
         Context context = application.getApplicationContext();
 
         AppsFlyerLib appsFlyer = AppsFlyerLib.getInstance();

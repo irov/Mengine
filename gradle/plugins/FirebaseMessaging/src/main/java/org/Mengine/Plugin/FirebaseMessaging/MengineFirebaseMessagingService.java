@@ -42,22 +42,6 @@ public class MengineFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     @Override
-    public void onMessageSent(@NonNull String messageId) {
-        super.onMessageSent(messageId);
-
-        MengineApplication application = (MengineApplication)this.getApplication();
-        application.onMengineRemoteMessageSent(messageId);
-    }
-
-    @Override
-    public void onSendError(@NonNull String messageId, @NonNull Exception exception) {
-        super.onSendError(messageId, exception);
-
-        MengineApplication application = (MengineApplication)this.getApplication();
-        application.onMengineRemoteMessageSentError(messageId, exception);
-    }
-
-    @Override
     public void onNewToken(@NonNull String token) {
         super.onNewToken(token);
 

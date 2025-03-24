@@ -28,18 +28,18 @@ public class MengineLeanplumPlugin extends MenginePlugin implements MenginePlugi
 
         this.logInfo("%s: %s"
             , METADATA_APP_ID
-            , AppId
+            , MengineUtils.getRedactedValue(AppId)
         );
 
         if (BuildConfig.DEBUG == true) {
             this.logInfo("%s: %s"
                 , METADATA_DEV_KEY
-                , DevKey
+                , MengineUtils.getRedactedValue(DevKey)
             );
         } else {
             this.logInfo("%s: %s"
                 , METADATA_PROD_KEY
-                , ProdKey
+                , MengineUtils.getRedactedValue(ProdKey)
             );
         }
 

@@ -83,7 +83,7 @@ public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginA
 
         this.logInfo("%s: %s"
             , METADATA_APP_TOKEN
-            , MengineAdjustPlugin_AppToken
+            , MengineUtils.getRedactedValue(MengineAdjustPlugin_AppToken)
         );
 
         AdjustConfig config = new AdjustConfig(application, MengineAdjustPlugin_AppToken, environment);

@@ -177,6 +177,12 @@ public class MengineService implements MengineServiceInterface {
         return m;
     }
 
+    public String logMessageProtected(String format, Object ... args) {
+        String m = MengineLog.logMessageProtected("Mengine" + m_serviceName, format, args);
+
+        return m;
+    }
+
     public String logMessageRelease(String format, Object ... args) {
         String m = MengineLog.logMessageRelease("Mengine" + m_serviceName, format, args);
 

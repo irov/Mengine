@@ -347,10 +347,6 @@ if (MENGINE_APP_SERVICE_AD == true) {
     android.ext.plugins += 'org.Mengine.Base.MengineAdService'
 }
 
-if (MENGINE_APP_SERVICE_MONITORPERFORMANCE == true) {
-    android.ext.plugins += 'org.Mengine.Base.MengineMonitorPerformanceService'
-}
-
 if (MENGINE_APP_SERVICE_MONITORCONNECTIVITYSTATUS == true) {
     android.ext.plugins += 'org.Mengine.Base.MengineMonitorConnectivityStatusService'
 }

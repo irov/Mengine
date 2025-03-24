@@ -210,9 +210,9 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
 
         String MengineAppLovinPlugin_SdkKey = this.getMetaDataString(METADATA_SDK_KEY);
 
-        this.logMessage("%s: %s"
+        this.logMessageProtected("%s: %s"
             , METADATA_SDK_KEY
-            , MengineUtils.getDebugValue(MengineAppLovinPlugin_SdkKey, "[REDACTED]")
+            , MengineUtils.getRedactedValue(MengineAppLovinPlugin_SdkKey)
         );
 
         AppLovinSdkInitializationConfiguration config = AppLovinSdkInitializationConfiguration.builder(MengineAppLovinPlugin_SdkKey, application)

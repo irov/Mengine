@@ -1655,30 +1655,6 @@ public class MengineApplication extends Application {
         }
     }
 
-    public void onMengineRemoteMessageSent(String messageId) {
-        List<MengineListenerRemoteMessage> listeners = this.getRemoteMessageListeners();
-
-        for (MengineListenerRemoteMessage l : listeners) {
-            if (l.onAvailable(this) == false) {
-                continue;
-            }
-
-            l.onMengineRemoteMessageSent(this, messageId);
-        }
-    }
-
-    public void onMengineRemoteMessageSentError(String messageId, Exception exception) {
-        List<MengineListenerRemoteMessage> listeners = this.getRemoteMessageListeners();
-
-        for (MengineListenerRemoteMessage l : listeners) {
-            if (l.onAvailable(this) == false) {
-                continue;
-            }
-
-            l.onMengineRemoteMessageSentError(this, messageId, exception);
-        }
-    }
-
     public void onMengineRemoteMessageNewToken(String token) {
         List<MengineListenerRemoteMessage> listeners = this.getRemoteMessageListeners();
 

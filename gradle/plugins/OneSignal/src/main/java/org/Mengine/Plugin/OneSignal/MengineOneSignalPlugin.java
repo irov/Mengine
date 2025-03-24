@@ -18,7 +18,7 @@ public class MengineOneSignalPlugin extends MenginePlugin implements MenginePlug
 
         this.logInfo("%s: %s"
             , METADATA_APP_ID
-            , MengineOneSignalPlugin_AppId
+            , MengineUtils.getRedactedValue(MengineOneSignalPlugin_AppId)
         );
 
         OneSignal.setLogLevel(OneSignal.LOG_LEVEL.VERBOSE, OneSignal.LOG_LEVEL.NONE);

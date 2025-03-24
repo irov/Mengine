@@ -13,14 +13,6 @@ public interface MengineListenerRemoteMessage extends MengineServiceInterface {
         //Empty
     }
 
-    default void onMengineRemoteMessageSent(@NonNull MengineApplication application, String messageId) {
-        //Empty
-    }
-
-    default void onMengineRemoteMessageSentError(@NonNull MengineApplication application, String messageId, Exception exception) {
-        //Empty
-    }
-
     default void onMengineRemoteMessageNewToken(@NonNull MengineApplication application, String token) {
         //Empty
     }

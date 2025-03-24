@@ -36,7 +36,7 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
 
         this.logInfo("%s: %s"
             , METADATA_APP_ID
-            , MengineDevToDevPlugin_AppId
+            , MengineUtils.getRedactedValue(MengineDevToDevPlugin_AppId)
         );
 
         String sessionId = application.getSessionId();

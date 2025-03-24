@@ -52,10 +52,10 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
 
         m_loadBannerStatus = ELoadAdStatus.ADLOAD_PROCESS;
 
-        plugin.logMessage("Amazon try load banner: %d:%d slotId: %s"
+        plugin.logInfo("Amazon try load banner: %d:%d slotId: %s"
             , width
             , height
-            , MengineAppLovinPlugin_AmazonBannerSlotId
+            , MengineUtils.getRedactedValue(MengineAppLovinPlugin_AmazonBannerSlotId)
         );
 
         DTBAdSize size = new DTBAdSize(width, height, MengineAppLovinPlugin_AmazonBannerSlotId);
@@ -108,8 +108,8 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
 
                 m_loadInterstitialStatus = ELoadAdStatus.ADLOAD_PROCESS;
 
-                plugin.logMessage("Amazon try load interstitial slotId: %s"
-                    , MengineAppLovinPlugin_AmazonInterstitialSlotId
+                plugin.logInfo("Amazon try load interstitial slotId: %s"
+                    , MengineUtils.getRedactedValue(MengineAppLovinPlugin_AmazonInterstitialSlotId)
                 );
 
                 DTBAdRequest adLoader = new DTBAdRequest();
@@ -168,8 +168,8 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
 
                 m_loadRewardedStatus = ELoadAdStatus.ADLOAD_PROCESS;
 
-                plugin.logMessage("Amazon try load rewarded slotId: %s"
-                    , MengineAppLovinPlugin_AmazonRewardedSlotId
+                plugin.logInfo("Amazon try load rewarded slotId: %s"
+                    , MengineUtils.getRedactedValue(MengineAppLovinPlugin_AmazonRewardedSlotId)
                 );
 
                 DTBAdRequest loader = new DTBAdRequest();

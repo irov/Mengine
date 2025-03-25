@@ -24,11 +24,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool iOSEnvironmentService::_initializeService()
     {
-        NSString * deviceName = [[UIDevice currentDevice] name];
+        NSString * deviceName = [iOSDetail getDeviceName];
         
         m_userName.assign( [deviceName UTF8String] );
         
-        NSString * deviceModel = [[UIDevice currentDevice] model];
+        NSString * deviceModel = [iOSDetail getDeviceModel];
+        
         m_deviceModel.assign( [deviceModel UTF8String] );
         
         NSString * language = [[NSLocale preferredLanguages] firstObject];
@@ -37,11 +38,11 @@ namespace Mengine
         
         m_osFamily.assign( "iOS" );
         
-        NSString * systemVersion = [[UIDevice currentDevice] systemVersion];
+        NSString * systemVersion = [iOSDetail getSystemVersion];
         
         m_osVersion.assign( [systemVersion UTF8String] );
         
-        NSString * bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
+        NSString * bundleIdentifier = [AppleBundle getIdentifier];
         
         m_bundleId.assign( [bundleIdentifier UTF8String] );
         

@@ -123,7 +123,7 @@
         return NO;
     }
 
-    NSString * appDomain = [[NSBundle mainBundle] bundleIdentifier];
+    NSString * appDomain = [AppleBundle getIdentifier];
     
     [defaults removePersistentDomainForName:appDomain];
     [defaults synchronize];

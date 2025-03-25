@@ -32,6 +32,18 @@
     return deviceName;
 }
 
++ (NSString *) getDeviceModel {
+    NSString * deviceModel = [[UIDevice currentDevice] model];
+    
+    return deviceModel;
+}
+
++ (NSString * _Nonnull)getSystemVersion {
+    NSString * systemVersion = [[UIDevice currentDevice] systemVersion];
+    
+    return systemVersion;
+}
+
 + (BOOL) isAppTrackingTransparencyAllowed {
     if (@available(iOS 14.5, *)) {
         if (ATTrackingManager.trackingAuthorizationStatus == ATTrackingManagerAuthorizationStatusAuthorized) {

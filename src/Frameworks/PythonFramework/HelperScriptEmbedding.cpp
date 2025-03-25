@@ -992,9 +992,9 @@ namespace Mengine
             void s_logInfo( pybind::kernel_interface * _kernel, const StringView & _message )
             {
                 Path filename = {'\0'};
-                Path function = {'\0'};
+                Char function[MENGINE_CODE_MAX_FUNCTION_NAME + 1] = {'\0'};
                 uint32_t lineno = 0;
-                _kernel->get_statetrace_top( filename, MENGINE_MAX_PATH, function, MENGINE_MAX_PATH, &lineno );
+                _kernel->get_statetrace_top( filename, MENGINE_MAX_PATH, function, MENGINE_CODE_MAX_FUNCTION_NAME, &lineno );
 
                 LoggerMessage msg;
                 msg.timestamp = Helper::getLocalTimestamp();
@@ -1018,9 +1018,9 @@ namespace Mengine
             void s_logMessage( pybind::kernel_interface * _kernel, const StringView & _message )
             {
                 Path filename = {'\0'};
-                Path function = {'\0'};
+                Char function[MENGINE_CODE_MAX_FUNCTION_NAME + 1] = {'\0'};
                 uint32_t lineno = 0;
-                _kernel->get_statetrace_top( filename, MENGINE_MAX_PATH, function, MENGINE_MAX_PATH, &lineno );
+                _kernel->get_statetrace_top( filename, MENGINE_MAX_PATH, function, MENGINE_CODE_MAX_FUNCTION_NAME, &lineno );
 
                 LoggerMessage msg;
                 msg.timestamp = Helper::getLocalTimestamp();
@@ -1044,9 +1044,9 @@ namespace Mengine
             void s_logWarning( pybind::kernel_interface * _kernel, const StringView & _message )
             {
                 Path filename = {'\0'};
-                Path function = {'\0'};
+                Char function[MENGINE_CODE_MAX_FUNCTION_NAME + 1] = {'\0'};
                 uint32_t lineno = 0;
-                _kernel->get_statetrace_top( filename, MENGINE_MAX_PATH, function, MENGINE_MAX_PATH, &lineno );
+                _kernel->get_statetrace_top( filename, MENGINE_MAX_PATH, function, MENGINE_CODE_MAX_FUNCTION_NAME, &lineno );
 
                 LoggerMessage msg;
                 msg.timestamp = Helper::getLocalTimestamp();
@@ -1070,9 +1070,9 @@ namespace Mengine
             void s_logError( pybind::kernel_interface * _kernel, const StringView & _message )
             {
                 Path filename = {'\0'};
-                Path function = {'\0'};
+                Char function[MENGINE_CODE_MAX_FUNCTION_NAME + 1] = {'\0'};
                 uint32_t lineno = 0;
-                _kernel->get_statetrace_top( filename, MENGINE_MAX_PATH, function, MENGINE_MAX_PATH, &lineno );
+                _kernel->get_statetrace_top( filename, MENGINE_MAX_PATH, function, MENGINE_CODE_MAX_FUNCTION_NAME, &lineno );
 
                 LoggerMessage msg;
                 msg.timestamp = Helper::getLocalTimestamp();
@@ -1096,9 +1096,9 @@ namespace Mengine
             void s_logMessageRelease( pybind::kernel_interface * _kernel, const StringView & _message )
             {
                 Path filename = {'\0'};
-                Path function = {'\0'};
+                Char function[MENGINE_CODE_MAX_FUNCTION_NAME + 1] = {'\0'};
                 uint32_t lineno = 0;
-                _kernel->get_statetrace_top( filename, MENGINE_MAX_PATH, function, MENGINE_MAX_PATH, &lineno );
+                _kernel->get_statetrace_top( filename, MENGINE_MAX_PATH, function, MENGINE_CODE_MAX_FUNCTION_NAME, &lineno );
 
                 LoggerMessage msg;
                 msg.timestamp = Helper::getLocalTimestamp();
@@ -1122,9 +1122,9 @@ namespace Mengine
             void s_logFatal( pybind::kernel_interface * _kernel, const StringView & _message )
             {
                 Path filename = {'\0'};
-                Path function = {'\0'};
+                Char function[MENGINE_CODE_MAX_FUNCTION_NAME + 1] = {'\0'};
                 uint32_t lineno = 0;
-                _kernel->get_statetrace_top( filename, MENGINE_MAX_PATH, function, MENGINE_MAX_PATH, &lineno );
+                _kernel->get_statetrace_top( filename, MENGINE_MAX_PATH, function, MENGINE_CODE_MAX_FUNCTION_NAME, &lineno );
 
                 LoggerMessage msg;
                 msg.timestamp = Helper::getLocalTimestamp();

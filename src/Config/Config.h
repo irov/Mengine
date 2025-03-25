@@ -182,6 +182,10 @@
 #   endif
 #endif
 
+#ifndef MENGINE_CODE_MAX_FUNCTION_NAME
+#define MENGINE_CODE_MAX_FUNCTION_NAME 2048
+#endif
+
 #ifndef MENGINE_UNUSED
 #define MENGINE_UNUSED(X) ((void)(X))
 #endif

@@ -30,7 +30,7 @@ namespace Mengine
         uint32_t m_filter;
         uint32_t m_color;
         Path m_file = {'\0'};
-        Path m_function = {'\0'};
+        Char m_function[MENGINE_CODE_MAX_FUNCTION_NAME + 1] = {'\0'};
         int32_t m_line;
         Char m_data[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
         size_t m_size;

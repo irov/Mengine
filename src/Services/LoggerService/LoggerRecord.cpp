@@ -46,7 +46,7 @@ namespace Mengine
 
         if( _message.function != nullptr )
         {
-            StdString::strcpy_safe( m_function, _message.function, MENGINE_MAX_PATH );
+            StdString::strcpy_safe( m_function, _message.function, MENGINE_CODE_MAX_FUNCTION_NAME );
         }
         else
         {

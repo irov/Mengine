@@ -9,6 +9,7 @@ import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineListenerActivity;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
+import org.Mengine.Base.MengineUtils;
 
 import android.Manifest;
 import android.content.Context;
@@ -40,26 +41,12 @@ public class MengineFirebaseMessagingPlugin extends MengineService implements Me
     }
 
     public void askNotificationPermission(@NonNull MengineActivity activity) {
-        ActivityResultLauncher<String> requestPermissionLauncher =
-            activity.registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-                if (isGranted) {
-                    // FCM SDK (and your app) can post notifications.
-                } else {
-                    // TODO: Inform user that that your app will not show notifications.
-                }
-            });
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(activity, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-            } else if (activity.shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
-                // TODO: display an educational UI explaining to the user the features that will be enabled
-                //       by them granting the POST_NOTIFICATION permission. This UI should provide the user
-                //       "OK" and "No thanks" buttons. If the user selects "OK," directly request the permission.
-                //       If the user selects "No thanks," allow the user to continue without notifications.
-            } else {
-                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
-            }
-        }
+        activity.checkPermission(Manifest.permission.POST_NOTIFICATIONS
+            , () -> {}
+            , () -> {}
+            , "Allow Notifications"
+            , "This app would like to send you notifications about important updates and messages."
+        );
     }
 
     @Override

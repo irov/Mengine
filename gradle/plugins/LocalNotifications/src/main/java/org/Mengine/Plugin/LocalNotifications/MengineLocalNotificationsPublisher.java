@@ -14,7 +14,7 @@ public class MengineLocalNotificationsPublisher extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        NotificationManager notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
 
         if (notificationManager == null) {
             return;

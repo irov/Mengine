@@ -35,7 +35,7 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
 
         m_display = MengineUtils.getDefaultDisplay(context);
 
-        m_sensorManager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
+        m_sensorManager = context.getSystemService(SensorManager.class);
 
         if (m_sensorManager != null) {
             m_accelerometer = m_sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);

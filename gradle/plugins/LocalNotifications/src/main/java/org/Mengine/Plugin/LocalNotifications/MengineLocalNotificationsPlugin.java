@@ -54,11 +54,14 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
 
     @Override
     public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) {
-        activity.checkPermission(Manifest.permission.POST_NOTIFICATIONS, () -> {
-            this.startLocalNotifications(activity);
-        }, () -> {
-            this.logMessage("[POST_NOTIFICATIONS] permission denied");
-        });
+        activity.checkPermission(Manifest.permission.POST_NOTIFICATIONS
+            , () -> {
+                this.startLocalNotifications(activity);
+            }
+            , () -> {}
+            , "Allow Notifications"
+            , "This app would like to send you notifications about important updates and messages."
+        );
     }
 
     @Override
@@ -146,12 +149,13 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(activity, 0, notificationIntent, pendingFlags);
 
-        long futureInMillis = SystemClock.elapsedRealtime() + delay;
-        AlarmManager alarmManager = (AlarmManager)activity.getSystemService(Context.ALARM_SERVICE);
+        AlarmManager alarmManager = activity.getSystemService(AlarmManager.class);
 
         if (alarmManager == null) {
             return;
         }
+
+        long futureInMillis = SystemClock.elapsedRealtime() + delay;
 
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
     }
@@ -167,7 +171,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
 
         MengineActivity activity = this.getMengineActivity();
         
-        NotificationManager notificationManager = (NotificationManager)activity.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = activity.getSystemService(NotificationManager.class);
 
         if (notificationManager == null) {
             return;
@@ -182,7 +186,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
         m_notificationPermissionGranted = true;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationManager notificationManager = (NotificationManager)activity.getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationManager notificationManager = activity.getSystemService(NotificationManager.class);
 
             if (notificationManager == null) {
                 return;
@@ -217,13 +221,14 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
 
         MengineActivity activity = this.getMengineActivity();
         
-        NotificationManager notificationManager = (NotificationManager)activity.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = activity.getSystemService(NotificationManager.class);
 
         if (notificationManager != null) {
             notificationManager.cancelAll();
         }
 
-        JobScheduler jobScheduler = (JobScheduler)activity.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        JobScheduler jobScheduler = activity.getSystemService(JobScheduler.class);
+
         if (jobScheduler != null) {
             jobScheduler.cancelAll();
         }
@@ -385,7 +390,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
             .setExtras(bundle)
             .build();
 
-        JobScheduler jobScheduler = (JobScheduler)activity.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        JobScheduler jobScheduler = activity.getSystemService(JobScheduler.class);
 
         if (jobScheduler == null) {
             return;

@@ -13,7 +13,7 @@ public class MengineClipboard extends View implements ClipboardManager.OnPrimary
     public MengineClipboard(Context context) {
         super(context);
 
-        ClipboardManager cm = (ClipboardManager)context.getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipboardManager cm = context.getSystemService(ClipboardManager.class);
 
         m_cm = cm;
 

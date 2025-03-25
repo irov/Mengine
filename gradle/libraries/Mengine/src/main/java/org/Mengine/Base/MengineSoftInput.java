@@ -20,7 +20,7 @@ public class MengineSoftInput extends View implements View.OnKeyListener {
     public MengineSoftInput(Context context, View prevView) {
         super(context);
 
-        InputMethodManager imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = context.getSystemService(InputMethodManager.class);
 
         m_imm = imm;
 

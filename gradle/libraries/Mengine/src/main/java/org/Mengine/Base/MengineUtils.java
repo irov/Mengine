@@ -301,7 +301,7 @@ public class MengineUtils {
     }
 
     public static int getBatteryLevel(Context context) {
-        BatteryManager bm = (BatteryManager)context.getSystemService(Context.BATTERY_SERVICE);
+        BatteryManager bm = context.getSystemService(BatteryManager.class);
 
         if (bm == null) {
             return Integer.MIN_VALUE;
@@ -317,7 +317,7 @@ public class MengineUtils {
             return BatteryManager.BATTERY_STATUS_UNKNOWN;
         }
 
-        BatteryManager bm = (BatteryManager)context.getSystemService(Context.BATTERY_SERVICE);
+        BatteryManager bm = context.getSystemService(BatteryManager.class);
 
         if (bm == null) {
             return BatteryManager.BATTERY_STATUS_UNKNOWN;
@@ -369,7 +369,7 @@ public class MengineUtils {
     }
 
     public static long getRamTotal(Context context) {
-        ActivityManager activityManager = (ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager activityManager = context.getSystemService(ActivityManager.class);
 
         if (activityManager == null) {
             return 0;
@@ -384,7 +384,7 @@ public class MengineUtils {
     }
 
     public static long getRamUsage(Context context) {
-        ActivityManager activityManager = (ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager activityManager = context.getSystemService(ActivityManager.class);
 
         if (activityManager == null) {
             return 0;
@@ -563,7 +563,7 @@ public class MengineUtils {
     public static String getProcessNameBeforeVersionP(Context context) {
         int mypid = android.os.Process.myPid();
 
-        ActivityManager manager = (ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager manager = context.getSystemService(ActivityManager.class);
 
         if (manager == null) {
             return null;
@@ -638,7 +638,7 @@ public class MengineUtils {
         activity.runOnUiThread(() -> {
             String message = MengineLog.buildTotalMsg(format, args);
 
-            MengineLog.logMessage(TAG, "show OK alert dialog title: %s message: %s"
+            MengineLog.logMessage(TAG, "show [OK] alert dialog title: %s message: %s"
                 , title
                 , message
             );
@@ -649,9 +649,41 @@ public class MengineUtils {
             builder.setMessage(message);
             builder.setCancelable(false);
             builder.setPositiveButton("OK", (dialog, which) -> {
-                MengineLog.logMessage(TAG, "show OK alert dialog OK clicked");
+                MengineLog.logMessage(TAG, "select [OK] alert dialog OK clicked");
 
                 ok.run();
+                dialog.dismiss();
+            });
+
+            AlertDialog alert = builder.create();
+
+            alert.show();
+        });
+    }
+
+    public static void showAllowPermissionAlertDialog(@NonNull Activity activity, Runnable allow, String title, String format, Object ... args) {
+        activity.runOnUiThread(() -> {
+            String message = MengineLog.buildTotalMsg(format, args);
+
+            MengineLog.logMessage(TAG, "show [ALLOW PERMISSION] alert dialog title: %s message: %s"
+                , title
+                , message
+            );
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+
+            builder.setTitle(title);
+            builder.setMessage(message);
+            builder.setCancelable(false);
+            builder.setPositiveButton("ALLOW", (dialog, which) -> {
+                MengineLog.logMessage(TAG, "select [ALLOW PERMISSION] alert dialog ALLOW clicked");
+
+                allow.run();
+                dialog.dismiss();
+            });
+            builder.setNegativeButton("NO THANKS", (dialog, id) -> {
+                MengineLog.logMessage(TAG, "select [ALLOW PERMISSION] alert dialog NO clicked");
+
                 dialog.dismiss();
             });
 
@@ -665,7 +697,7 @@ public class MengineUtils {
         activity.runOnUiThread(() -> {
             String message = MengineLog.buildTotalMsg(format, args);
 
-            MengineLog.logMessage(TAG, "show YES|CANCEL alert dialog title: %s message: %s"
+            MengineLog.logMessage(TAG, "show [ARE YOU SURE] alert dialog title: %s message: %s"
                 , title
                 , message
             );
@@ -683,13 +715,13 @@ public class MengineUtils {
             builder.setMessage(spannableMessage);
             builder.setCancelable(false);
             builder.setPositiveButton("YES", (dialog, which) -> {
-                MengineLog.logMessage(TAG, "show YES|CANCEL alert dialog YES clicked");
+                MengineLog.logMessage(TAG, "select [ARE YOU SURE] alert dialog YES clicked");
 
                 yes.run();
                 dialog.dismiss();
             });
             builder.setNegativeButton("CANCEL", (dialog, id) -> {
-                MengineLog.logMessage(TAG, "show YES|CANCEL alert dialog CANCEL clicked");
+                MengineLog.logMessage(TAG, "select [ARE YOU SURE] alert dialog CANCEL clicked");
 
                 cancel.run();
                 dialog.dismiss();
@@ -924,7 +956,7 @@ public class MengineUtils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             return context.getDisplay();
         } else {
-            WindowManager windowManager = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+            WindowManager windowManager = context.getSystemService(WindowManager.class);
 
             if (windowManager == null) {
                 return null;
@@ -948,7 +980,7 @@ public class MengineUtils {
     public static Rect getDeviceWindowRect(Context context, Display display)
     {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
-            WindowManager windowManager = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+            WindowManager windowManager = context.getSystemService(WindowManager.class);
 
             if (windowManager == null) {
                 return MengineUtils.getDeviceWindowRectQ(context, display);
@@ -997,7 +1029,7 @@ public class MengineUtils {
     }
 
     public static boolean isAppInForeground(Context context) {
-        ActivityManager activityManager = (ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager activityManager = context.getSystemService(ActivityManager.class);
 
         if (activityManager == null) {
             return false;

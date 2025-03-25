@@ -8,6 +8,18 @@
 
 @implementation iOSDetail
 
++ (NSString * _Nonnull)getBuildNumber {
+    NSString * number = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
+    
+    return number;
+}
+
++ (NSString * _Nonnull)getBuildVersion {
+    NSString * version = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+    
+    return version;
+}
+
 + (NSString *) getDeviceId {
     NSString * deviceId = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
 

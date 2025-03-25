@@ -4,6 +4,19 @@
 
 @implementation AppleDetail
 
++ (NSString * _Nonnull)getBuildNumber {
+    NSString * number = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
+    
+    return number;
+}
+
++ (NSString * _Nonnull)getBuildVersion {
+    NSString * version = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+    
+    return version;
+}
+
+
 + (NSString * _Nonnull)NSIdToString:(id _Nonnull)value {
     NSString * value_string = [NSString stringWithFormat:@"%@", value];
     

@@ -77,7 +77,7 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
         boolean crashReportsEnabled = false;
 
         String clientToken = MengineDataDogPlugin_ClientToken;
-        String envName = "prod";
+        String envName = (BuildConfig.DEBUG == true) ? "dev" : "prod";
         String variant = "";
 
         Configuration config = new Configuration.Builder(clientToken, envName, variant)

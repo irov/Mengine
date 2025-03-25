@@ -106,7 +106,7 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
             .build();
         Logs.enable(logsConfig);
 
-        Logger loggerDataDog = new Logger.Builder()
+        Logger logger = new Logger.Builder()
             .setNetworkInfoEnabled(false)
             .setLogcatLogsEnabled(false)
             .build();
@@ -120,7 +120,7 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
             String versionName = application.getVersionName();
             version_attribute.put("name", versionName);
 
-            loggerDataDog.addAttribute("version", version_attribute);
+            logger.addAttribute("version", version_attribute);
 
             JSONObject install_attribute = new JSONObject();
 
@@ -135,7 +135,7 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
             long installRND = application.getInstallRND();
             install_attribute.put("rnd", installRND);
 
-            loggerDataDog.addAttribute("install", install_attribute);
+            logger.addAttribute("install", install_attribute);
 
             JSONObject session_attribute = new JSONObject();
 
@@ -145,14 +145,31 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
             long sessionTimestamp = application.getSessionTimestamp();
             session_attribute.put("timestamp", sessionTimestamp);
 
-            loggerDataDog.addAttribute("session", session_attribute);
+            logger.addAttribute("session", session_attribute);
+
+            JSONObject device_attribute = new JSONObject();
+
+            String deviceModel = application.getDeviceModel();
+
+            device_attribute.put("model", deviceModel);
+
+            logger.addAttribute( "device", device_attribute );
+
+            JSONObject os_attribute = new JSONObject();
+
+            String osVersion = application.getOSVersion();
+
+            os_attribute.put("family", "Android");
+            os_attribute.put("version", osVersion);
+
+            logger.addAttribute( "os", os_attribute );
         } catch (JSONException e) {
             this.logError("initialize attribute exception: %s"
                 , e.getMessage()
             );
         }
 
-        m_loggerDataDog = loggerDataDog;
+        m_loggerDataDog = logger;
     }
 
     @Override

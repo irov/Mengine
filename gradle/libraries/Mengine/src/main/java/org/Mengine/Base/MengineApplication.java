@@ -772,11 +772,11 @@ public class MengineApplication extends Application {
         return name;
     }
 
-    static protected boolean getServiceClassNameEmbedding(MengineService service, Class<?> cls) {
+    static protected boolean getServiceClassEmbedding(Class<?> cls) {
         try {
             Field SERVICE_EMBEDDING = cls.getField("SERVICE_EMBEDDING");
 
-            if (SERVICE_EMBEDDING.getBoolean(service) == false) {
+            if (SERVICE_EMBEDDING.getBoolean(null) == false) {
                 return false;
             }
         } catch (final NoSuchFieldException e) {
@@ -826,7 +826,7 @@ public class MengineApplication extends Application {
             return false;
         }
 
-        boolean embedding = MengineApplication.getServiceClassNameEmbedding(service, cls);
+        boolean embedding = MengineApplication.getServiceClassEmbedding(cls);
 
         if (service.onInitialize(this, name, embedding) == false) {
             MengineLog.logError(TAG, "[ERROR] service [%s] invalid initialize"

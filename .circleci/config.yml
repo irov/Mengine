@@ -17,7 +17,7 @@ jobs:
       - android/accept-licenses
       
       - android/install-ndk:
-          version: 27.2.12479018
+          version: 29.0.13113456
           
       - run:
           name: install OpenJDK 17
@@ -48,7 +48,7 @@ jobs:
       - run:
           name: sdkmanager cmake
           command: |
-            yes | sdkmanager "cmake;3.30.5"
+            yes | sdkmanager "cmake;3.31.6"
           shell: /bin/bash -e
           
       - run:
@@ -74,5 +74,5 @@ jobs:
             cp gradle.properties.ci gradle.properties
             sudo chmod +x gradlew
             ./gradlew --version
-            ./gradlew assembleDebug -Dorg.gradle.java.home=/usr/lib/jvm/java-17-openjdk-amd64 -PANDROID_APP_MANIFEST_CI=1 -PANDROID_APP_ASSETS_RES_CI=1
+            ./gradlew assembleDebug -Dorg.gradle.java.home=/usr/lib/jvm/java-17-openjdk-amd64
             popd

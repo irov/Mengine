@@ -120,6 +120,8 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
             String versionName = application.getVersionName();
             version_attribute.put("name", versionName);
 
+            version_attribute.put("debug", BuildConfig.DEBUG);
+
             logger.addAttribute("version", version_attribute);
 
             JSONObject install_attribute = new JSONObject();

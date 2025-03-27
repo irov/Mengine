@@ -47,14 +47,9 @@ public class MengineTransparencyConsentParam {
         TRANSPARENCYCONSENT_PUBLISHERLEGITIMATEINTERESTS = preferences.getString("IABTCF_PublisherLegitimateInterests", "");
         TRANSPARENCYCONSENT_PUBLISHERCUSTOMPURPOSESCONSENTS = preferences.getString("IABTCF_PublisherCustomPurposesConsents", "");
         TRANSPARENCYCONSENT_PUBLISHERCUSTOMPURPOSESLEGITIMATEINTERESTS = preferences.getString("IABTCF_PublisherCustomPurposesLegitimateInterests", "");
-
     }
 
     public boolean getPurposeConsentArgument(int index) {
-        if (TRANSPARENCYCONSENT_GDPRAPPLIES == 0) {
-            return true;
-        }
-
         if (TRANSPARENCYCONSENT_PURPOSECONSENTS.length() <= index) {
             return false;
         }

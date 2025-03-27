@@ -221,7 +221,7 @@ public class MengineActivity extends AppCompatActivity {
 
     public void checkPermission(String permission, Runnable onSuccess, Runnable onFailure, String title, String format, Object ... args) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            MengineLog.logMessage(TAG, "checkPermission: %s not required for this version"
+            MengineLog.logInfo(TAG, "checkPermission: %s not required for this version"
                 , permission
             );
 
@@ -231,7 +231,7 @@ public class MengineActivity extends AppCompatActivity {
         }
 
         if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED) {
-            MengineLog.logMessage(TAG, "checkPermission: %s already granted"
+            MengineLog.logDebug(TAG, "checkPermission: %s already granted"
                 , permission
             );
 
@@ -275,7 +275,7 @@ public class MengineActivity extends AppCompatActivity {
                 , args
             );
         } else {
-            MengineLog.logMessage(TAG, "checkPermission: %s request"
+            MengineLog.logInfo(TAG, "checkPermission: %s request"
                 , permission
             );
 
@@ -295,7 +295,9 @@ public class MengineActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        MengineLog.logMessageRelease(TAG, "onCreate: %s", savedInstanceState);
+        long activity_timestamp = MengineUtils.getTimestamp();
+
+        MengineLog.logInfo(TAG, "onCreate: %s", savedInstanceState);
 
         try {
             Thread.currentThread().setName("MengineActivity");
@@ -381,9 +383,7 @@ public class MengineActivity extends AppCompatActivity {
                 continue;
             }
 
-            MengineLog.logDebug(TAG, "onCreate plugin: %s"
-                , l.getServiceName()
-            );
+            long service_timestamp = MengineUtils.getTimestamp();
 
             try {
                 l.onCreate(this, savedInstanceState);
@@ -401,11 +401,20 @@ public class MengineActivity extends AppCompatActivity {
 
                 return;
             }
+
+            MengineLog.logDebug(TAG, "onCreate plugin: %s time: %d"
+                , l.getServiceName()
+                , MengineUtils.getTimestamp() - service_timestamp
+            );
         }
 
         this.setState("activity.init", "end");
 
         this.setState("activity.lifecycle", "created");
+
+        MengineLog.logInfo(TAG, "onCreate completed time: %d"
+            , MengineUtils.getTimestamp() - activity_timestamp
+        );
     }
 
     @Override
@@ -422,7 +431,7 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("activity.lifecycle", "post_create");
 
-        MengineLog.logMessage(TAG, "onPostCreate");
+        MengineLog.logInfo(TAG, "onPostCreate");
 
         List<MengineListenerActivity> listeners = this.getActivityListeners();
 
@@ -528,7 +537,7 @@ public class MengineActivity extends AppCompatActivity {
             return;
         }
 
-        MengineLog.logMessage(TAG, "sync fullscreen mode");
+        MengineLog.logInfo(TAG, "sync fullscreen mode");
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             window.setDecorFitsSystemWindows(false);
@@ -566,7 +575,7 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("activity.lifecycle", "window_focus_changed:" + (hasFocus == true ? "true" : "false"));
 
-        MengineLog.logMessage(TAG, "onWindowFocusChanged focus: %s"
+        MengineLog.logInfo(TAG, "onWindowFocusChanged focus: %s"
             , hasFocus
         );
 
@@ -593,7 +602,7 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("activity.lifecycle", "attached_to_window");
 
-        MengineLog.logMessage(TAG, "onAttachedToWindow");
+        MengineLog.logInfo(TAG, "onAttachedToWindow");
 
         Window window = this.getWindow();
 
@@ -616,7 +625,7 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("activity.lifecycle", "detached_from_window");
 
-        MengineLog.logMessage(TAG, "onDetachedFromWindow");
+        MengineLog.logInfo(TAG, "onDetachedFromWindow");
 
         Window window = this.getWindow();
 
@@ -637,7 +646,7 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("activity.lifecycle", "save_instance_state");
 
-        MengineLog.logMessage(TAG, "onSaveInstanceState");
+        MengineLog.logInfo(TAG, "onSaveInstanceState");
     }
 
     @Override
@@ -654,7 +663,7 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("activity.lifecycle", "restore_instance_state");
 
-        MengineLog.logMessage(TAG, "onRestoreInstanceState: %s"
+        MengineLog.logInfo(TAG, "onRestoreInstanceState: %s"
             , savedInstanceState
         );
     }
@@ -671,7 +680,7 @@ public class MengineActivity extends AppCompatActivity {
             return;
         }
 
-        MengineLog.logMessageRelease(TAG, "onActivityResult request: %d result: %d"
+        MengineLog.logInfo(TAG, "onActivityResult request: %d result: %d"
             , requestCode
             , resultCode
         );
@@ -723,7 +732,7 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("activity.lifecycle", "start");
 
-        MengineLog.logMessageRelease(TAG, "onStart");
+        MengineLog.logInfo(TAG, "onStart");
 
         List<MengineListenerActivity> listeners = this.getActivityListeners();
 
@@ -758,7 +767,7 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("activity.lifecycle", "stop");
 
-        MengineLog.logMessageRelease(TAG, "onStop");
+        MengineLog.logInfo(TAG, "onStop");
 
         List<MengineListenerActivity> listeners = this.getActivityListeners();
 
@@ -793,7 +802,7 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("activity.lifecycle", "pause");
 
-        MengineLog.logMessageRelease(TAG, "onPause");
+        MengineLog.logInfo(TAG, "onPause");
 
         application.onServicesSave();
 
@@ -836,7 +845,7 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("activity.lifecycle", "resume");
 
-        MengineLog.logMessageRelease(TAG, "onResume");
+        MengineLog.logInfo(TAG, "onResume");
 
         if (m_surfaceView != null) {
             m_surfaceView.handleResume();
@@ -875,7 +884,7 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("activity.intent_action", intent.getAction() );
 
-        MengineLog.logMessageRelease(TAG, "onNewIntent intent: %s", intent);
+        MengineLog.logInfo(TAG, "onNewIntent intent: %s", intent);
 
         List<MengineListenerActivity> listeners = this.getActivityListeners();
 
@@ -906,7 +915,7 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("activity.lifecycle", "destroy");
 
-        MengineLog.logMessageRelease(TAG, "onDestroy");
+        MengineLog.logInfo(TAG, "onDestroy");
 
         List<MengineListenerActivity> listeners = this.getActivityListeners();
 
@@ -974,7 +983,7 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("activity.lifecycle", "restart");
 
-        MengineLog.logMessage(TAG, "onRestart");
+        MengineLog.logInfo(TAG, "onRestart");
 
         List<MengineListenerActivity> listeners = this.getActivityListeners();
 
@@ -1007,7 +1016,7 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("activity.low_memory", true);
 
-        MengineLog.logMessage(TAG, "onLowMemory");
+        MengineLog.logInfo(TAG, "onLowMemory");
 
         MengineNative.AndroidPlatform_lowMemory();
     }
@@ -1026,7 +1035,7 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("activity.trim_memory", level);
 
-        MengineLog.logMessage(TAG, "onTrimMemory level: %d"
+        MengineLog.logInfo(TAG, "onTrimMemory level: %d"
             , level
         );
 
@@ -1047,7 +1056,7 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("configuration.orientation", newConfig.orientation);
 
-        MengineLog.logMessage(TAG, "onConfigurationChanged config: %s"
+        MengineLog.logInfo(TAG, "onConfigurationChanged config: %s"
             , newConfig.toString()
         );
 
@@ -1088,7 +1097,7 @@ public class MengineActivity extends AppCompatActivity {
             return;
         }
 
-        MengineLog.logMessage(TAG, "onRequestPermissionsResult request: %d permissions: %s grantResults: %s"
+        MengineLog.logInfo(TAG, "onRequestPermissionsResult request: %d permissions: %s grantResults: %s"
             , requestCode
             , Arrays.toString(permissions)
             , Arrays.toString(grantResults)
@@ -1164,7 +1173,7 @@ public class MengineActivity extends AppCompatActivity {
      **********************************************************************************************/
 
     public void activateSemaphore(String name) {
-        MengineLog.logMessage(TAG, "activateSemaphore semaphore: %s"
+        MengineLog.logInfo(TAG, "activateSemaphore semaphore: %s"
             , name
         );
 
@@ -1190,7 +1199,7 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     public void deactivateSemaphore(String name) {
-        MengineLog.logMessage(TAG, "deactivateSemaphore semaphore: %s"
+        MengineLog.logInfo(TAG, "deactivateSemaphore semaphore: %s"
             , name
         );
 
@@ -1223,7 +1232,7 @@ public class MengineActivity extends AppCompatActivity {
      **********************************************************************************************/
 
     public void showKeyboard() {
-        MengineLog.logMessage(TAG, "showKeyboard");
+        MengineLog.logInfo(TAG, "showKeyboard");
 
         m_commandHandler.post(() -> {
             m_softInput.showKeyboard();
@@ -1231,7 +1240,7 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     public void hideKeyboard() {
-        MengineLog.logMessage(TAG, "hideKeyboard");
+        MengineLog.logInfo(TAG, "hideKeyboard");
 
         m_commandHandler.post(() -> {
             m_softInput.hideKeyboard();
@@ -1267,7 +1276,7 @@ public class MengineActivity extends AppCompatActivity {
      **********************************************************************************************/
 
     public boolean linkingOpenURL(String url) {
-        MengineLog.logMessage(TAG, "linkingOpenURL url: %s"
+        MengineLog.logInfo(TAG, "linkingOpenURL url: %s"
             , url
         );
 
@@ -1285,7 +1294,7 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     public boolean linkingOpenMail(String email, String subject, String body) {
-        MengineLog.logMessage(TAG, "linkingOpenMail mail: %s subject: %s body: %s"
+        MengineLog.logInfo(TAG, "linkingOpenMail mail: %s subject: %s body: %s"
             , email
             , subject
             , body
@@ -1505,11 +1514,11 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     public boolean linkingOpenDeleteAccount() {
-        MengineLog.logMessage(TAG, "request delete account");
+        MengineLog.logInfo(TAG, "request delete account");
 
         MengineUtils.showAreYouSureAlertDialog(this
             , () -> { //Yes
-                MengineLog.logMessage(TAG, "delete account [YES]");
+                MengineLog.logInfo(TAG, "delete account [YES]");
 
                 MengineApplication application = (MengineApplication)this.getApplication();
 
@@ -1522,7 +1531,7 @@ public class MengineActivity extends AppCompatActivity {
                 }, "Account Deleted", "Account data has been deleted. The application will now close.");
             }
             , () -> { //Cancel
-                MengineLog.logMessage(TAG, "delete account [CANCEL]");
+                MengineLog.logInfo(TAG, "delete account [CANCEL]");
             }
             , 3000
             , "Delete Account"

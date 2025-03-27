@@ -77,6 +77,38 @@ public class MenginePreferences {
         editor.apply();
     }
 
+    static public <T extends Enum<T>> T getPreferenceEnum(@NonNull MengineApplication application, @NonNull String tag, @NonNull String name, Class<T> enumType, T defaultValue) {
+        SharedPreferences settings = MenginePreferences.getPrivateSharedPreferences(application, tag);
+
+        String value = settings.getString(name, null);
+
+        if (value == null) {
+            return defaultValue;
+        }
+
+        try {
+            T enumValue = Enum.valueOf(enumType, value);
+
+            return enumValue;
+        } catch (final IllegalArgumentException e) {
+            MengineLog.logError(TAG, "invalid get preference '%s' enum: %s e: %s"
+                , tag
+                , name
+                , e.getMessage()
+            );
+
+            return defaultValue;
+        }
+    }
+
+    static public void setPreferenceEnum(@NonNull MengineApplication application, @NonNull String tag, @NonNull String name, Enum<?> value) {
+        SharedPreferences settings = MenginePreferences.getPrivateSharedPreferences(application, tag);
+
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString(name, value.name());
+        editor.apply();
+    }
+
     static public Bundle getPreferenceBundle(@NonNull MengineApplication application, @NonNull String tag, @NonNull String name) {
         SharedPreferences settings = MenginePreferences.getPrivateSharedPreferences(application, tag);
 

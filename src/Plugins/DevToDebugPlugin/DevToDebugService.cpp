@@ -260,22 +260,6 @@ namespace Mengine
 
         m_timerId = timerId;
 
-        DevToDebugLoggerPtr logger = Helper::makeFactorableUnique<DevToDebugLogger>( MENGINE_DOCUMENT_FACTORABLE );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( logger, "invalid create logger" );
-
-        uint32_t loggerFilter = MAKE_LOGGER_FILTER( LFILTER_PROTECTED | LFILTER_HTTP );
-        logger->setVerboseFilter( loggerFilter );
-
-        logger->setVerboseLevel( LM_MESSAGE );
-        logger->setWriteHistory( true );
-
-        if( LOGGER_SERVICE()
-            ->registerLogger( logger ) == true )
-        {
-            m_logger = logger;
-        }
-
 #if defined(MENGINE_USE_SCRIPT_SERVICE)
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
         {
@@ -299,14 +283,6 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif
-
-        if( m_logger != nullptr )
-        {
-            LOGGER_SERVICE()
-                ->unregisterLogger( m_logger );
-
-            m_logger = nullptr;
-        }
 
         Helper::removePrototype<DevToDebugTab>( STRINGIZE_STRING_LOCAL( "DevToDebug" ) );
 
@@ -640,11 +616,6 @@ namespace Mengine
                     , m_workerURL.c_str()
                     , requestId
                 );
-
-                if( m_logger != nullptr )
-                {
-                    m_logger->setWorkerURL( m_workerURL );
-                }
 
                 m_status = EDTDS_CONNECT;
             }break;

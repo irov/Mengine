@@ -19,7 +19,6 @@ namespace Mengine
         HINTERNET getHInternet() const;
 
     protected:
-        void _onThreadTaskPreparation() override;
         bool _onThreadTaskRun() override;
         bool _onThreadTaskProcess() override;
 
@@ -30,8 +29,6 @@ namespace Mengine
         void _onThreadTaskComplete( bool _successful ) override;
 
     protected:
-        ThreadMutexInterfacePtr m_mutex;
-
         HINTERNET m_hInternet;
     };
     //////////////////////////////////////////////////////////////////////////

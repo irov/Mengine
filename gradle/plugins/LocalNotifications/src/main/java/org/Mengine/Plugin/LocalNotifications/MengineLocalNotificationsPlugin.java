@@ -59,8 +59,6 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
                 this.startLocalNotifications(activity);
             }
             , () -> {}
-            , "Allow Notifications"
-            , "This app would like to send you notifications about important updates and messages."
         );
     }
 

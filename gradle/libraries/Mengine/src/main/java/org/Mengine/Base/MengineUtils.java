@@ -661,7 +661,7 @@ public class MengineUtils {
         });
     }
 
-    public static void showAllowPermissionAlertDialog(@NonNull Activity activity, Runnable allow, String title, String format, Object ... args) {
+    public static void showAllowPermissionAlertDialog(@NonNull Activity activity, Runnable allow, Runnable denied, String title, String format, Object ... args) {
         activity.runOnUiThread(() -> {
             String message = MengineLog.buildTotalMsg(format, args);
 
@@ -679,10 +679,13 @@ public class MengineUtils {
                 MengineLog.logMessage(TAG, "select [ALLOW PERMISSION] alert dialog ALLOW clicked");
 
                 allow.run();
+
                 dialog.dismiss();
             });
             builder.setNegativeButton("NO THANKS", (dialog, id) -> {
                 MengineLog.logMessage(TAG, "select [ALLOW PERMISSION] alert dialog NO clicked");
+
+                denied.run();
 
                 dialog.dismiss();
             });

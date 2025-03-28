@@ -218,9 +218,66 @@ public class MengineActivity extends AppCompatActivity {
         application.onMengineTransparencyConsent(tcParam);
     }
 
-    public void checkPermission(String permission, Runnable onSuccess, Runnable onFailure, String title, String format, Object ... args) {
+    public void checkPermission(String permission) {
+        this.checkPermission(permission, null, null);
+    }
+
+    public void checkPermission(String permission, Runnable onSuccess, Runnable onFailure) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            MengineLog.logInfo(TAG, "checkPermission: %s not required for this version"
+            MengineLog.logDebug(TAG, "checkPermission: %s not required for this version"
+                , permission
+            );
+
+            if (onSuccess != null) {
+                onSuccess.run();
+            }
+
+            return;
+        }
+
+        if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED) {
+            MengineLog.logDebug(TAG, "checkPermission: %s already granted"
+                , permission
+            );
+
+            if (onSuccess != null) {
+                onSuccess.run();
+            }
+
+            return;
+        }
+
+        ActivityResultLauncher<String> requestPermissionLauncher =
+            this.registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted == true) {
+                    MengineLog.logInfo(TAG, "checkPermission: %s granted"
+                        , permission
+                    );
+
+                    if (onSuccess != null) {
+                        onSuccess.run();
+                    }
+                } else {
+                    MengineLog.logInfo(TAG, "checkPermission: %s denied"
+                        , permission
+                    );
+
+                    if (onFailure != null) {
+                        onFailure.run();
+                    }
+                }
+            });
+
+        MengineLog.logInfo(TAG, "checkPermission: %s request"
+            , permission
+        );
+
+        requestPermissionLauncher.launch(permission);
+    }
+
+    public void checkPermissionRationale(String permission, Runnable onSuccess, Runnable onFailure, String title, String format, Object ... args) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            MengineLog.logDebug(TAG, "checkPermission: %s not required for this version"
                 , permission
             );
 
@@ -242,13 +299,13 @@ public class MengineActivity extends AppCompatActivity {
         ActivityResultLauncher<String> requestPermissionLauncher =
             this.registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted == true) {
-                    MengineLog.logMessage(TAG, "checkPermission: %s granted"
+                    MengineLog.logInfo(TAG, "checkPermission: %s granted"
                         , permission
                     );
 
                     onSuccess.run();
                 } else {
-                    MengineLog.logMessage(TAG, "checkPermission: %s denied"
+                    MengineLog.logInfo(TAG, "checkPermission: %s denied"
                         , permission
                     );
 
@@ -256,18 +313,25 @@ public class MengineActivity extends AppCompatActivity {
                 }
             });
 
-        if (this.shouldShowRequestPermissionRationale(permission)) {
-            MengineLog.logMessage(TAG, "checkPermission: %s show rationale"
+        if (this.shouldShowRequestPermissionRationale(permission) == true) {
+            MengineLog.logInfo(TAG, "checkPermission: %s show rationale"
                 , permission
             );
 
             MengineUtils.showAllowPermissionAlertDialog(this
                 , () -> {
-                    MengineLog.logMessage(TAG, "checkPermission: %s show rationale [granted]"
+                    MengineLog.logInfo(TAG, "checkPermission: %s show rationale [granted]"
                         , permission
                     );
 
                     requestPermissionLauncher.launch(permission);
+                }
+                , () -> {
+                    MengineLog.logInfo(TAG, "checkPermission: %s show rationale [denied]"
+                        , permission
+                    );
+
+                    onFailure.run();
                 }
                 , title
                 , format

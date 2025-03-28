@@ -39,10 +39,7 @@ public class MengineVibratorPlugin extends MengineService implements MengineList
             }
 
             m_vibrator = vibrator;
-        }, () -> {
-            this.logMessage("[VIBRATOR] permission denied");
-        }, "Vibrator"
-        , "This app would like to use the vibrator."
+        }, () -> {}
         );
     }
 

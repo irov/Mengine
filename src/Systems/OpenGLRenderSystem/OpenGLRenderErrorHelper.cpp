@@ -31,7 +31,7 @@ namespace Mengine
             return "GL_UNKNOWN";
         }
         //////////////////////////////////////////////////////////////////////////
-        bool OpenGLRenderErrorCheck( const Char * _file, uint32_t _line, const Char * _function )
+        bool OpenGLRenderErrorCheck( const Char * _file, int32_t _line, const Char * _function )
         {
             GLenum err = glGetError();  
 

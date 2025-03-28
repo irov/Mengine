@@ -1,5 +1,7 @@
 #import "AppleUserDefaults.h"
 
+#import "AppleBundle.h"
+
 @implementation AppleUserDefaults
 
 + (BOOL)setStringForKey:(NSString *)key value:(NSString *)value {

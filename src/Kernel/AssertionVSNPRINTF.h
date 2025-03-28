@@ -12,7 +12,7 @@ namespace Mengine
 {
     namespace Detail
     {
-        void assertionVSNPRINTF( const Char * _category, size_t _capacity, const Char * _format, MENGINE_VA_LIST_TYPE _args, const Char * _file, uint32_t _line, const Char * _function );
+        void assertionVSNPRINTF( const Char * _category, size_t _capacity, const Char * _format, MENGINE_VA_LIST_TYPE _args, const Char * _file, int32_t _line, const Char * _function );
     }
 }
 

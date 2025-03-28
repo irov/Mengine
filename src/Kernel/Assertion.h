@@ -29,7 +29,7 @@ namespace Mengine
         class AssertionOperator
         {
         public:
-            AssertionOperator( const Char * _category, EAssertionLevel _level, const Char * _test, const Char * _file, uint32_t _line, const Char * _function );
+            AssertionOperator( const Char * _category, EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line, const Char * _function );
             ~AssertionOperator();
 
         public:
@@ -45,7 +45,7 @@ namespace Mengine
             EAssertionLevel m_level;
             const Char * m_test;
             const Char * m_file;
-            uint32_t m_line;
+            int32_t m_line;
             const Char * m_function;
         };
         //////////////////////////////////////////////////////////////////////////

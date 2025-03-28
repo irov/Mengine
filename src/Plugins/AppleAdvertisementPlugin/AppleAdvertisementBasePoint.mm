@@ -51,6 +51,10 @@
     return self.m_cooldown;
 }
 
+- (NSString *)getCooldownGroupName {
+    return self.m_cooldownGroupName;
+}
+
 - (BOOL)parseAdPointBoolean:(NSDictionary *)json key:(NSString *)key required:(BOOL)required defaultValue:(BOOL)defaultValue {
     id value = [json objectForKey:key];
     

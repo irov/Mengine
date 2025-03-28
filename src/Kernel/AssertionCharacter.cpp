@@ -13,7 +13,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        void assertionStandardCharacterSet( const Char * _category, const Char * _value, size_t _len, const Char * _file, uint32_t _line, const Char * _function )
+        void assertionStandardCharacterSet( const Char * _category, const Char * _value, size_t _len, const Char * _file, int32_t _line, const Char * _function )
         {
             for( const Char * ch_iterator = _value; ch_iterator != _value + _len; ++ch_iterator )
             {
@@ -46,7 +46,7 @@ namespace Mengine
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        void assertionLowerCharacterSet( const Char * _category, const Char * _value, size_t _len, const Char * _file, uint32_t _line, const Char * _function )
+        void assertionLowerCharacterSet( const Char * _category, const Char * _value, size_t _len, const Char * _file, int32_t _line, const Char * _function )
         {
             for( const Char * ch_iterator = _value; ch_iterator != _value + _len; ++ch_iterator )
             {
@@ -79,7 +79,7 @@ namespace Mengine
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        void assertionUpperCharacterSet( const Char * _category, const Char * _value, size_t _len, const Char * _file, uint32_t _line, const Char * _function )
+        void assertionUpperCharacterSet( const Char * _category, const Char * _value, size_t _len, const Char * _file, int32_t _line, const Char * _function )
         {
             for( const Char * ch_iterator = _value; ch_iterator != _value + _len; ++ch_iterator )
             {

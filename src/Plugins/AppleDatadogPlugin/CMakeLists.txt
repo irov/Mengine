@@ -1,4 +1,4 @@
-MENGINE_PROJECT(AppleDatadogPlugin)
+MENGINE_PROJECT_EXTRA_LANGUAGE(AppleDatadogPlugin Swift)
 
 ADD_FILTER(
 src
@@ -12,3 +12,5 @@ ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleDatadogApplicationDelegate")
 
 ADD_MENGINE_COCOAPOD_GOOGLE_UTILITIES()
 ADD_MENGINE_COCOAPOD("DatadogObjc" "NO-GIT" "2.24.0")
+
+target_compile_options(${PROJECT_NAME} PRIVATE -fcxx-modules)

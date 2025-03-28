@@ -10,7 +10,7 @@ namespace Mengine
 {
     namespace Detail
     {
-        void assertionValidateFilePath( const Char * _category, const FilePath & _filePath, const Char * _file, uint32_t _line, const Char * _function )
+        void assertionValidateFilePath( const Char * _category, const FilePath & _filePath, const Char * _file, int32_t _line, const Char * _function )
         {
             const Char * filePath_str = _filePath.c_str();
 

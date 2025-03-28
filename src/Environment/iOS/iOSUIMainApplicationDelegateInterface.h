@@ -24,16 +24,17 @@
 - (void)notify:(AppleEvent * _Nonnull)event args:(id _Nonnull)firstArg, ... NS_REQUIRES_NIL_TERMINATION;
 - (void)notify:(AppleEvent * _Nonnull)event arrayArgs:(NSArray<id> * _Nonnull)args;
 
-- (void)log:(AppleLogRecordParam * _Nonnull)record;
+- (void)eventLog:(AppleLogRecordParam * _Nonnull)record;
 
-- (void)config:(NSDictionary * _Nonnull)config;
+- (void)eventConfig:(NSDictionary * _Nonnull)config;
 
-- (void)analyticEvent:(NSString * _Nonnull)event params:(NSDictionary * _Nonnull)params;
-- (void)analyticScreen:(NSString * _Nonnull)name type:(NSString * _Nonnull)type;
-- (void)analyticFlush;
+- (void)eventAnalytic:(NSString * _Nonnull)event params:(NSDictionary * _Nonnull)params;
+- (void)eventAnalyticScreen:(NSString * _Nonnull)name type:(NSString * _Nonnull)type;
+- (void)eventAnalyticFlush;
 
-- (void)setSessionId:(iOSSessionIdParam * _Nonnull)sessionId;
-- (void)removeSessionData;
+- (void)eventSetSessionId:(iOSSessionIdParam * _Nonnull)sessionId;
+- (void)eventRemoveSessionData;
+
 - (void)eventAdRevenue:(iOSAdRevenueParam * _Nonnull)revenue;
 - (void)eventTransparencyConsent:(iOSTransparencyConsentParam * _Nonnull)consent;
 

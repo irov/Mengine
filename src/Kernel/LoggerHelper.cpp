@@ -74,7 +74,7 @@ namespace Mengine
             return (size_t)size;
         }
         //////////////////////////////////////////////////////////////////////////
-        size_t makeLoggerFunctionStamp( const Char * _function, uint32_t _line, const Char * _format, Char * const _buffer, size_t _offset, size_t _capacity )
+        size_t makeLoggerFunctionStamp( const Char * _function, int32_t _line, const Char * _format, Char * const _buffer, size_t _offset, size_t _capacity )
         {
             if( _function == nullptr )
             {

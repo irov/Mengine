@@ -17,7 +17,7 @@
 - (void)setGDPRPass:(BOOL)passGDPR {
     [AppleUserDefaults setBooleanForKey:@("mengine.gdpr.pass") value:passGDPR];
     
-    [iOSDetail eventNotify:AppleEvent.EVENT_GDPR_PASS args:@[@(passGDPR)]];
+    [iOSDetail notify:AppleEvent.EVENT_GDPR_PASS args:@[@(passGDPR)]];
 }
 
 - (BOOL)isGDPRPass {
@@ -31,7 +31,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     BOOL passGDPR = [AppleUserDefaults getBooleanForKey:@("mengine.gdpr.pass") defaultValue:NO];
     
-    [iOSDetail eventNotify:AppleEvent.EVENT_GDPR_PASS args:@[@(passGDPR)]];
+    [iOSDetail notify:AppleEvent.EVENT_GDPR_PASS args:@[@(passGDPR)]];
     
     return YES;
 }

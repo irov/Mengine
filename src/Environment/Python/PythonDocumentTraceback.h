@@ -10,7 +10,7 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         const Char * getStatetracePybind();
-        DocumentInterfacePtr createDocumentPybind( const Char * _file, uint32_t _line, const Char * _function );
+        DocumentInterfacePtr createDocumentPybind( const Char * _file, int32_t _line, const Char * _function );
         //////////////////////////////////////////////////////////////////////////
     }
 }

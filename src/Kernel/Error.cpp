@@ -18,7 +18,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        ErrorOperator::ErrorOperator( const Char * _category, EErrorLevel _level, const Char * _file, uint32_t _line, const Char * _function )
+        ErrorOperator::ErrorOperator( const Char * _category, EErrorLevel _level, const Char * _file, int32_t _line, const Char * _function )
             : m_category( _category )
             , m_level( _level )
             , m_file( _file )

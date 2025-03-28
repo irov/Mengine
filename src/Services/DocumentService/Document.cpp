@@ -58,12 +58,12 @@ namespace Mengine
         return m_function;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Document::setLine( uint32_t _line )
+    void Document::setLine( int32_t _line )
     {
         m_line = _line;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t Document::getLine() const
+    int32_t Document::getLine() const
     {
         return m_line;
     }

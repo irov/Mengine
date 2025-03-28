@@ -9,7 +9,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        bool OpenALErrorCheck( const Char * _method, const Char * _file, uint32_t _line, const Char * _function )
+        bool OpenALErrorCheck( const Char * _method, const Char * _file, int32_t _line, const Char * _function )
         {
             ALenum error = alGetError();
 

@@ -8,6 +8,7 @@
 #   include "Kernel/BufferHelper.h"
 
 #   include "Config/DynamicCast.h"
+#   include "Config/StdInt.h"
 
 namespace Mengine
 {
@@ -98,28 +99,28 @@ namespace Mengine
 #   define MENGINE_DOCUMENT_FORWARD (this->getDocument())
 #   define MENGINE_DOCUMENT_FORWARD_PTR(Ptr) (Ptr->getDocument())
     //////////////////////////////////////////////////////////////////////////
-#   define MENGINE_DOCUMENT_FUNCTION [](const Mengine::Char * _file, uint32_t _line, const Mengine::Char * _function) { \
-        Mengine::DocumentInterfacePtr doc = DOCUMENT_SERVICE()->createDocument( nullptr, MENGINE_CODE_LIBRARY, _file, _line, _function, "%s[%u]", _function, _line ); \
+#   define MENGINE_DOCUMENT_FUNCTION [](const Mengine::Char * _file, int32_t _line, const Mengine::Char * _function) { \
+        Mengine::DocumentInterfacePtr doc = DOCUMENT_SERVICE()->createDocument( nullptr, MENGINE_CODE_LIBRARY, _file, _line, _function, "%s[%d]", _function, _line ); \
         return doc; \
     }(MENGINE_CODE_FILE, MENGINE_CODE_LINE, MENGINE_CODE_FUNCTION)
     //////////////////////////////////////////////////////////////////////////
-#   define MENGINE_DOCUMENT_MESSAGE(Format, ...) [=](const Mengine::Char * _file, uint32_t _line, const Mengine::Char * _function) { \
-        Mengine::DocumentInterfacePtr doc = DOCUMENT_SERVICE()->createDocument( nullptr, MENGINE_CODE_LIBRARY, _file, _line, _function, "%s[%u]: " Format, _function, _line, ##__VA_ARGS__ ); \
+#   define MENGINE_DOCUMENT_MESSAGE(Format, ...) [=](const Mengine::Char * _file, int32_t _line, const Mengine::Char * _function) { \
+        Mengine::DocumentInterfacePtr doc = DOCUMENT_SERVICE()->createDocument( nullptr, MENGINE_CODE_LIBRARY, _file, _line, _function, "%s[%d]: " Format, _function, _line, ##__VA_ARGS__ ); \
         return doc; \
     }(MENGINE_CODE_FILE, MENGINE_CODE_LINE, MENGINE_CODE_FUNCTION)
     //////////////////////////////////////////////////////////////////////////
-#   define MENGINE_DOCUMENT_FACTORABLE [this](const Mengine::Char * _file, uint32_t _line, const Mengine::Char * _function) { \
-        Mengine::DocumentInterfacePtr doc = DOCUMENT_SERVICE()->createDocument( Detail::getDocumentableFromPtr(this), MENGINE_CODE_LIBRARY, _file, _line, _function, "%s [==>] %s[%u]", Detail::getDocumentableMessageFromPtr(this), _function, _line ); \
+#   define MENGINE_DOCUMENT_FACTORABLE [this](const Mengine::Char * _file, int32_t _line, const Mengine::Char * _function) { \
+        Mengine::DocumentInterfacePtr doc = DOCUMENT_SERVICE()->createDocument( Detail::getDocumentableFromPtr(this), MENGINE_CODE_LIBRARY, _file, _line, _function, "%s [==>] %s[%d]", Detail::getDocumentableMessageFromPtr(this), _function, _line ); \
         return doc; \
     }(MENGINE_CODE_FILE, MENGINE_CODE_LINE, MENGINE_CODE_FUNCTION)
     //////////////////////////////////////////////////////////////////////////
-#   define MENGINE_DOCUMENT_FACTORABLE_PTR(Ptr) [Ptr](const Mengine::Char * _file, uint32_t _line, const Mengine::Char * _function) { \
-        Mengine::DocumentInterfacePtr doc = DOCUMENT_SERVICE()->createDocument( Detail::getDocumentableFromPtr(Ptr), MENGINE_CODE_LIBRARY, _file, _line, _function, "%s [==>] %s[%u]", Detail::getDocumentableMessageFromPtr(Ptr), _function, _line ); \
+#   define MENGINE_DOCUMENT_FACTORABLE_PTR(Ptr) [Ptr](const Mengine::Char * _file, int32_t _line, const Mengine::Char * _function) { \
+        Mengine::DocumentInterfacePtr doc = DOCUMENT_SERVICE()->createDocument( Detail::getDocumentableFromPtr(Ptr), MENGINE_CODE_LIBRARY, _file, _line, _function, "%s [==>] %s[%d]", Detail::getDocumentableMessageFromPtr(Ptr), _function, _line ); \
         return doc; \
     }(MENGINE_CODE_FILE, MENGINE_CODE_LINE, MENGINE_CODE_FUNCTION)
     //////////////////////////////////////////////////////////////////////////
-#   define MENGINE_DOCUMENT_FACTORABLE_MEMBER(Ptr) [this](const Mengine::Char * _file, uint32_t _line, const Mengine::Char * _function) { \
-        Mengine::DocumentInterfacePtr doc = DOCUMENT_SERVICE()->createDocument( Detail::getDocumentableFromPtr(Ptr), MENGINE_CODE_LIBRARY, _file, _line, _function, "%s [==>] %s[%u]", Detail::getDocumentableMessageFromPtr(Ptr), _function, _line ); \
+#   define MENGINE_DOCUMENT_FACTORABLE_MEMBER(Ptr) [Ptr](const Mengine::Char * _file, int32_t _line, const Mengine::Char * _function) { \
+        Mengine::DocumentInterfacePtr doc = DOCUMENT_SERVICE()->createDocument( Detail::getDocumentableFromPtr(Ptr), MENGINE_CODE_LIBRARY, _file, _line, _function, "%s [==>] %s[%d]", Detail::getDocumentableMessageFromPtr(Ptr), _function, _line ); \
         return doc; \
     }(MENGINE_CODE_FILE, MENGINE_CODE_LINE, MENGINE_CODE_FUNCTION)
     //////////////////////////////////////////////////////////////////////////

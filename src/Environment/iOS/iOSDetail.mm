@@ -134,7 +134,7 @@
     return pluginDelegate;
 }
 
-+ (void) eventNotify:(AppleEvent *)event args:(NSArray<id> *)args {
++ (void) notify:(AppleEvent *)event args:(NSArray<id> *)args {
     [AppleDetail addMainQueueOperation:^{
         NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
         
@@ -146,7 +146,7 @@
     [AppleDetail addMainQueueOperation:^{
         NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
     
-        [delegate setSessionId:sessionId];
+        [delegate eventSetSessionId:sessionId];
     }];
 }
 
@@ -154,7 +154,7 @@
     [AppleDetail addMainQueueOperation:^{
         NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
     
-        [delegate removeSessionData];
+        [delegate eventRemoveSessionData];
     }];
 }
 
@@ -180,7 +180,7 @@
     [AppleDetail addMainQueueOperation:^{
         NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
         
-        [delegate log:record];
+        [delegate eventLog:record];
     }];
 }
 
@@ -188,7 +188,7 @@
     [AppleDetail addMainQueueOperation:^{
         NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
         
-        [delegate config:config];
+        [delegate eventConfig:config];
     }];
 }
 

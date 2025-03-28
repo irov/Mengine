@@ -59,7 +59,7 @@
 #endif
         
         install_timestamp = [AppleDetail getTimestamp];
-        install_version = [AppleDetail getBuildVersion];
+        install_version = [iOSDetail getBuildVersion];
         install_rnd = [AppleDetail getSecureRandomInteger];
         
         if (install_rnd == 0) {

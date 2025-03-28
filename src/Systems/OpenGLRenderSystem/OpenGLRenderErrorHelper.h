@@ -23,7 +23,7 @@ namespace Mengine
     namespace Helper
     {
         const Char * glGetErrorString( GLenum _err );
-        bool OpenGLRenderErrorCheck( const Char * _file, uint32_t _line, const Char * _function );
+        bool OpenGLRenderErrorCheck( const Char * _file, int32_t _line, const Char * _function );
     }
 }
 //////////////////////////////////////////////////////////////////////////

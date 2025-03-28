@@ -3,6 +3,8 @@
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 
+#import "Environment/Apple/AppleBundle.h"
+
 #import "Environment/iOS/iOSApplication.h"
 #import "Environment/iOS/iOSDetail.h"
 

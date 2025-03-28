@@ -29,7 +29,7 @@
     
     record.LOG_TIMESTAMP = [AppleDetail getTimestamp];
     record.LOG_CATEGORY = category;
-    record.LOG_THREADNAME = [NSThread isMainThread] ? @"Main" : [[NSThread currentThread] name];
+    record.LOG_THREAD = [NSThread isMainThread] ? @"Main" : [[NSThread currentThread] name];
     record.LOG_LEVEL = level;
     record.LOG_FLAG = flag;
     record.LOG_FILTER = filter;

@@ -23,7 +23,7 @@ namespace Mengine
         virtual ProfilerInterfacePtr addCategory( const ProfilerDescriptionInterface * _description ) = 0;
 
     public:
-        virtual const ProfilerDescriptionInterface * createDescription( const Char * _name, const Char * _file, uint32_t _line ) = 0;
+        virtual const ProfilerDescriptionInterface * createDescription( const Char * _name, const Char * _file, int32_t _line ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

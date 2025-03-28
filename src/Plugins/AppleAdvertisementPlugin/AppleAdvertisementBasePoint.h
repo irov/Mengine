@@ -21,6 +21,8 @@
 - (void)setCooldown:(AppleAdvertisementCooldown *)cooldown;
 - (AppleAdvertisementCooldown *)getCooldown;
 
+- (NSString *)getCooldownGroupName;
+
 - (BOOL)parseAdPointBoolean:(NSDictionary *)json key:(NSString *)key required:(BOOL)required defaultValue:(BOOL)defaultValue;
 - (NSInteger)parseAdPointInteger:(NSDictionary *)json key:(NSString *)key required:(BOOL)required defaultValue:(NSInteger)defaultValue;
 - (NSInteger)parseAdPointTimeInterval:(NSDictionary *)json key:(NSString *)key required:(BOOL)required defaultValue:(NSInteger)defaultValue;

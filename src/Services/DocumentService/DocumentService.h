@@ -19,7 +19,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        DocumentInterfacePtr createDocument( const DocumentInterfacePtr & _parent, const Char * _modulePath, const Char * _file, uint32_t _line, const Char * _function, const Char * _format, ... ) override;
+        DocumentInterfacePtr createDocument( const DocumentInterfacePtr & _parent, const Char * _modulePath, const Char * _file, int32_t _line, const Char * _function, const Char * _format, ... ) override;
 
     protected:
         FactoryInterfacePtr m_factoryDocument;

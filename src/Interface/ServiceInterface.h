@@ -49,7 +49,7 @@ namespace Mengine
         {
             //////////////////////////////////////////////////////////////////////////
             template<class T>
-            T * getService2( MENGINE_DEBUG_ARGUMENTS( const Char * _file, uint32_t _line, const Char * _function ) )
+            T * getService2( MENGINE_DEBUG_ARGUMENTS( const Char * _file, int32_t _line, const Char * _function ) )
             {
                 const Char * serviceName = T::getStaticServiceId();
 
@@ -102,7 +102,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        T * getService( MENGINE_DEBUG_ARGUMENTS( const Char * _file, uint32_t _line, const Char * _function ) )
+        T * getService( MENGINE_DEBUG_ARGUMENTS( const Char * _file, int32_t _line, const Char * _function ) )
         {
             static T * s_service = Detail::getService2<T>( MENGINE_DEBUG_ARGUMENTS( _file, _line, _function ) );
 

@@ -16,7 +16,7 @@ namespace Mengine
         class ErrorOperator
         {
         public:
-            ErrorOperator( const Char * _category, EErrorLevel _level, const Char * _file, uint32_t _line, const Char * _function );
+            ErrorOperator( const Char * _category, EErrorLevel _level, const Char * _file, int32_t _line, const Char * _function );
             ~ErrorOperator();
 
         public:
@@ -27,7 +27,7 @@ namespace Mengine
             EErrorLevel m_level;
             const Char * m_file;
             const Char * m_function;
-            uint32_t m_line;
+            int32_t m_line;
         };
     }
 }

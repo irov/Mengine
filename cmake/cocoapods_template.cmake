@@ -16,7 +16,8 @@ MACRO(MENGINE_GENERATE_COCOAPODS)
     if(MENGINE_TARGET_IOS OR MENGINE_TARGET_IOS_SIMULATOR)
         STRING(APPEND PODFILE_BUFFER "platform :ios, '${CMAKE_OSX_DEPLOYMENT_TARGET}'\n")
     endif()
-    
+
+    STRING(APPEND PODFILE_BUFFER "use_frameworks!\n")    
     STRING(APPEND PODFILE_BUFFER "inhibit_all_warnings!\n")
     STRING(APPEND PODFILE_BUFFER "\n")
 
@@ -99,6 +100,7 @@ MACRO(MENGINE_GENERATE_COCOAPODS)
             list(GET ${APPLICATION_APPLE_COCOAPODS_PROJECT} 0 COCOAPOD_PROJECT_NAME_0)
             
             STRING(APPEND PODFILE_BUFFER "target '" ${COCOAPOD_PROJECT_NAME_0} "' do\n")
+			STRING(APPEND PODFILE_BUFFER "	use_frameworks!\n")
             
             foreach(INDEX RANGE 0 ${LENGTH_APPLICATION_APPLE_COCOAPODS_PROJECT} 5)
                 SET(COCOAPOD_PROJECT_NAME)
@@ -146,13 +148,13 @@ MACRO(MENGINE_GENERATE_COCOAPODS)
                 STRING(APPEND PODFILE_BUFFER "\n")
             endforeach()
             
-            STRING(APPEND PODFILE_BUFFER "  use_frameworks!\n")
             STRING(APPEND PODFILE_BUFFER "end\n")
             STRING(APPEND PODFILE_BUFFER "\n")
         endforeach()
     endif()
 
     STRING(APPEND PODFILE_BUFFER "target '" ${PROJECT_NAME} "' do\n")
+	STRING(APPEND PODFILE_BUFFER "	use_frameworks!\n")
 
     if(NOT ${LENGTH_APPLICATION_APPLE_GLOBAL_COCOAPODS} EQUAL -1)
         foreach(INDEX RANGE 0 ${LENGTH_APPLICATION_APPLE_GLOBAL_COCOAPODS} 5)
@@ -285,7 +287,6 @@ MACRO(MENGINE_GENERATE_COCOAPODS)
         endforeach()
     endif()
     
-    STRING(APPEND PODFILE_BUFFER "  use_frameworks!\n")
     STRING(APPEND PODFILE_BUFFER "end\n")
     STRING(APPEND PODFILE_BUFFER "\n")
     
@@ -295,9 +296,9 @@ MACRO(MENGINE_GENERATE_COCOAPODS)
     SET(PODS_END_PATCH)
     
     if(APPLE AND IOS)
-        configure_file("iOSPods.patch.in" "${MENGINE_SOLUTIONS_CONFIG_DIR}/include/Configuration/iOSPods.patch" @ONLY)
+        #configure_file("iOSPods.patch.in" "${MENGINE_SOLUTIONS_CONFIG_DIR}/include/Configuration/iOSPods.patch" @ONLY)
         
-        file(STRINGS "${MENGINE_SOLUTIONS_CONFIG_DIR}/include/Configuration/iOSPods.patch" PODS_END_PATCH NEWLINE_CONSUME)
+        #file(STRINGS "${MENGINE_SOLUTIONS_CONFIG_DIR}/include/Configuration/iOSPods.patch" PODS_END_PATCH NEWLINE_CONSUME)
     endif()
     
     if(APPLE AND NOT IOS)

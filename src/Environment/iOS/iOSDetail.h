@@ -37,7 +37,7 @@
 + (id _Nullable)getPluginDelegateOfClass:(Class _Nonnull)delegateClass;
 + (id _Nullable)getPluginDelegateOfProtocol:(Protocol * _Nonnull)delegateProtocol;
 
-+ (void)eventNotify:(AppleEvent * _Nonnull)event args:(NSArray<id> * _Nonnull)args;
++ (void)notify:(AppleEvent * _Nonnull)event args:(NSArray<id> * _Nonnull)args;
 + (void)setSessionId:(iOSSessionIdParam * _Nonnull)sessionId;
 + (void)removeSessionData;
 + (void)adRevenue:(iOSAdRevenueParam * _Nonnull)revenue;

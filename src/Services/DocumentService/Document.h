@@ -30,8 +30,8 @@ namespace Mengine
         void setFile( const Char * _file ) override;
         const Char * getFile() const override;
 
-        void setLine( uint32_t _line ) override;
-        uint32_t getLine() const override;
+        void setLine( int32_t _line ) override;
+        int32_t getLine() const override;
 
         void setFunction( const Char * _function ) override;
         const Char * getFunction() const override;
@@ -48,7 +48,7 @@ namespace Mengine
 
         const Char * m_file;
         const Char * m_function;
-        uint32_t m_line;
+        int32_t m_line;
 
         String m_message;
     };

@@ -12,7 +12,7 @@ namespace Mengine
 {
     namespace Detail
     {
-        void assertionVocabularyEmpty( const Char * _category, const ConstString & _key, const Char * _file, uint32_t _line, const Char * _function );
+        void assertionVocabularyEmpty( const Char * _category, const ConstString & _key, const Char * _file, int32_t _line, const Char * _function );
     }
 }
 

@@ -32,7 +32,7 @@ namespace Mengine
         
         record.LOG_TIMESTAMP = message.timestamp;
         record.LOG_CATEGORY = [NSString stringWithUTF8String:message.category];
-        record.LOG_THREADNAME = [AppleString NSStringFromConstString:message.threadName];
+        record.LOG_THREAD = [AppleString NSStringFromConstString:message.threadName];
         record.LOG_LEVEL = message.level;
         record.LOG_FLAG = message.flag;
         record.LOG_FILTER = message.filter;

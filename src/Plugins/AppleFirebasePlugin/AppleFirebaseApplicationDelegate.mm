@@ -2,7 +2,7 @@
 
 #import "Environment/iOS/iOSDetail.h"
 
-#import <Firebase/Firebase.h>
+#import <FirebaseCore/FirebaseCore.h>
 
 @implementation AppleFirebaseApplicationDelegate
 

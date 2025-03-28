@@ -10,7 +10,7 @@ namespace Mengine
 {
     namespace Detail
     {
-        void assertionFactoryEmpty( const Char * _category, const FactoryInterfacePtr & _factory, const Char * _file, uint32_t _line, const Char * _function );
+        void assertionFactoryEmpty( const Char * _category, const FactoryInterfacePtr & _factory, const Char * _file, int32_t _line, const Char * _function );
     }
 }
 //////////////////////////////////////////////////////////////////////////

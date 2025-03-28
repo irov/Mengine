@@ -20,8 +20,6 @@
 
 - (instancetype)init {
     if (self = [super init]) {
-        NSArray * proxysClassed = [iOSApplicationDelegates getApplicationDelegates];
-        
         self.m_pluginDelegates = [NSMutableArray<id> array];
         self.m_pluginApplicationDelegates = [NSMutableArray<iOSPluginApplicationDelegateInterface> array];
         self.m_pluginLoggerDelegates = [NSMutableArray<iOSPluginLoggerDelegateInterface> array];
@@ -30,6 +28,8 @@
         self.m_pluginSessionIdDelegates = [NSMutableArray<iOSPluginSessionIdDelegateInterface> array];
         self.m_pluginAdRevenueDelegates = [NSMutableArray<iOSPluginAdRevenueDelegateInterface> array];
         self.m_pluginTransparencyConsentDelegates = [NSMutableArray<iOSPluginTransparencyConsentDelegateInterface> array];
+        
+        NSArray * proxysClassed = [iOSApplicationDelegates getApplicationDelegates];
         
         for (id className in proxysClassed) {
             id c = NSClassFromString(className);
@@ -154,7 +154,7 @@
     }
 }
 
-- (void)log:(AppleLogRecordParam *)record {
+- (void)eventLog:(AppleLogRecordParam *)record {
     @autoreleasepool {
         for (NSObject<iOSPluginLoggerDelegateInterface> * delegate in self.m_pluginLoggerDelegates) {
             [delegate onLogger:record];
@@ -162,7 +162,7 @@
     }
 }
 
-- (void)config:(NSDictionary *)config {
+- (void)eventConfig:(NSDictionary *)config {
     @autoreleasepool {
         for (NSObject<iOSPluginConfigDelegateInterface> * delegate in self.m_pluginConfigDelegates) {
             [delegate onConfig:config];
@@ -170,7 +170,7 @@
     }
 }
 
-- (void)analyticEvent:(NSString * _Nonnull)event params:(NSDictionary * _Nonnull)params {
+- (void)eventAnalytic:(NSString * _Nonnull)event params:(NSDictionary * _Nonnull)params {
     @autoreleasepool {
         for (NSObject<iOSPluginAnalyticDelegateInterface> * delegate in self.m_pluginAnalyticDelegates) {
             [delegate onAnalyticEvent:event params:params];
@@ -178,7 +178,7 @@
     }
 }
 
-- (void)analyticScreen:(NSString *)name type:(NSString *)type {
+- (void)eventAnalyticScreen:(NSString *)name type:(NSString *)type {
     @autoreleasepool {
         for (NSObject<iOSPluginAnalyticDelegateInterface> * delegate in self.m_pluginAnalyticDelegates) {
             [delegate onAnalyticScreen:name type:type];
@@ -186,7 +186,7 @@
     }
 }
 
-- (void)analyticFlush {
+- (void)eventAnalyticFlush {
     @autoreleasepool {
         for (NSObject<iOSPluginAnalyticDelegateInterface> * delegate in self.m_pluginAnalyticDelegates) {
             [delegate onAnalyticFlush];
@@ -194,7 +194,7 @@
     }
 }
 
-- (void)setSessionId:(iOSSessionIdParam *)sessionId {
+- (void)eventSetSessionId:(iOSSessionIdParam *)sessionId {
     @autoreleasepool {
         for (NSObject<iOSPluginSessionIdDelegateInterface> * delegate in self.m_pluginSessionIdDelegates) {
             [delegate onSessionId:sessionId];
@@ -202,7 +202,7 @@
     }
 }
 
-- (void)removeSessionData {
+- (void)eventRemoveSessionData {
     @autoreleasepool {
         for (NSObject<iOSPluginSessionIdDelegateInterface> * delegate in self.m_pluginSessionIdDelegates) {
             [delegate onRemoveSessionData];

@@ -55,7 +55,7 @@ namespace Mengine
         m_factoryDocument = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    DocumentInterfacePtr DocumentService::createDocument( const DocumentInterfacePtr & _parent, const Char * _modulePath, const Char * _file, uint32_t _line, const Char * _function, const Char * _format, ... )
+    DocumentInterfacePtr DocumentService::createDocument( const DocumentInterfacePtr & _parent, const Char * _modulePath, const Char * _file, int32_t _line, const Char * _function, const Char * _format, ... )
     {
         DocumentPtr document = m_factoryDocument->createObject( nullptr );
 

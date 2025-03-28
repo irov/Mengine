@@ -10,7 +10,7 @@
 
 @property (nonatomic) Mengine::Timestamp LOG_TIMESTAMP;
 @property (nonatomic, strong) NSString * _Nonnull LOG_CATEGORY;
-@property (nonatomic, strong) NSString * _Nonnull LOG_THREADNAME;
+@property (nonatomic, strong) NSString * _Nonnull LOG_THREAD;
 @property (nonatomic) Mengine::ELoggerLevel LOG_LEVEL;
 @property (nonatomic) uint32_t LOG_FLAG;
 @property (nonatomic) uint32_t LOG_FILTER;

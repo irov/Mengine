@@ -74,7 +74,7 @@
     
     if( record.LOG_FLAG & Mengine::LFLAG_THREADSTAMP )
     {
-        NSString * threadName = record.LOG_THREADNAME;
+        NSString * threadName = record.LOG_THREAD;
         
         [buffer appendFormat:@"|%@| ", threadName];
     }

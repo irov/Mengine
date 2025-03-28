@@ -6,7 +6,7 @@
 
 #include "Config/StdAlgorithm.h"
 
-#import <Firebase/Firebase.h>
+#import <FirebaseAnalytics/FirebaseAnalytics.h>
 
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine

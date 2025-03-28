@@ -24,7 +24,7 @@ namespace Mengine
             return statetrace;
         }
         //////////////////////////////////////////////////////////////////////////
-        DocumentInterfacePtr createDocumentPybind( const Char * _file, uint32_t _line, const Char * _function )
+        DocumentInterfacePtr createDocumentPybind( const Char * _file, int32_t _line, const Char * _function )
         {
             Char traceback[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
 

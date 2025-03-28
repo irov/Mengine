@@ -13,7 +13,7 @@ namespace Mengine
 {
     namespace Detail
     {
-        void assertionIdentity( const Char * _category, const Identity * _identity, const Char * _file, uint32_t _line, const Char * _function );
+        void assertionIdentity( const Char * _category, const Identity * _identity, const Char * _file, int32_t _line, const Char * _function );
     }
 }
 

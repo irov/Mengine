@@ -32,7 +32,7 @@ namespace Mengine
             return Assertion_NotDebugBreak;
         }
         //////////////////////////////////////////////////////////////////////////
-        AssertionOperator::AssertionOperator( const Char * _category, EAssertionLevel _level, const Char * _test, const Char * _file, uint32_t _line, const Char * _function )
+        AssertionOperator::AssertionOperator( const Char * _category, EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line, const Char * _function )
             : m_category( _category )
             , m_level( _level )
             , m_test( _test )

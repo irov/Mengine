@@ -11,7 +11,7 @@ namespace Mengine
 {
     namespace Detail
     {
-        void assertionStatisticEmpty( const Char * _category, StatisticId _id, const Char * _file, uint32_t _line, const Char * _function );
+        void assertionStatisticEmpty( const Char * _category, StatisticId _id, const Char * _file, int32_t _line, const Char * _function );
     }
 }
 

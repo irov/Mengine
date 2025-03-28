@@ -361,7 +361,7 @@ namespace Mengine
 
             HINTERNET hConnect = NULL;
             HINTERNET hRequest = NULL;
-            if( Detail::openRequest( _request, _response, "GET", &hConnect, &hRequest ) == false )
+            if( Detail::openRequest( _request, _response, "HEAD", &hConnect, &hRequest ) == false )
             {
                 return false;
             }
@@ -582,7 +582,7 @@ namespace Mengine
 
             HINTERNET hConnect = NULL;
             HINTERNET hRequest = NULL;
-            if( Detail::openRequest( _request, _response, "HEAD", &hConnect, &hRequest ) == false )
+            if( Detail::openRequest( _request, _response, "GET", &hConnect, &hRequest ) == false )
             {
                 return false;
             }

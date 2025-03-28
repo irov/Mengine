@@ -147,7 +147,7 @@ public class MengineApplication extends Application {
         String versionName = this.getVersionName();
         int versionCode = this.getVersionCode();
 
-        MengineLog.logMessageRelease(TAG, "MengineApplication id: %s version: %s [%d]"
+        MengineLog.logInfo(TAG, "MengineApplication id: %s version: %s [%d]"
             , applicationId
             , versionName
             , versionCode
@@ -1003,6 +1003,8 @@ public class MengineApplication extends Application {
             return;
         }
 
+        long application_timestamp = MengineUtils.getTimestamp();
+
         this.setState("build.debug", BuildConfig.DEBUG);
 
         this.setState("application.init", "started");
@@ -1175,11 +1177,14 @@ public class MengineApplication extends Application {
 
         for (MengineListenerApplication l : applicationListeners) {
             try {
-                MengineLog.logInfo(TAG, "onAppPrepare service: %s"
-                    , l.getServiceName()
-                );
+                long service_timestamp = MengineUtils.getTimestamp();
 
                 l.onAppPrepare(this, pluginVersions);
+
+                MengineLog.logInfo(TAG, "onAppPrepare service: %s time: %d"
+                    , l.getServiceName()
+                    , MengineUtils.getTimestamp() - service_timestamp
+                );
             } catch (final MengineServiceInvalidInitializeException e) {
                 MengineAnalytics.buildEvent("mng_app_create_failed")
                     .addParameterException("exception", e)
@@ -1204,11 +1209,14 @@ public class MengineApplication extends Application {
             try {
                 String serviceName = l.getServiceName();
 
-                MengineLog.logInfo(TAG, "onAppCreate service: %s"
-                    , serviceName
-                );
+                long service_timestamp = MengineUtils.getTimestamp();
 
                 l.onAppCreate(this);
+
+                MengineLog.logInfo(TAG, "onAppCreate service: %s time: %d"
+                    , serviceName
+                    , MengineUtils.getTimestamp() - service_timestamp
+                );
             } catch (MengineServiceInvalidInitializeException e) {
                 MengineAnalytics.buildEvent("mng_app_create_failed")
                     .addParameterException("exception", e)
@@ -1229,11 +1237,14 @@ public class MengineApplication extends Application {
             try {
                 String serviceName = l.getServiceName();
 
-                MengineLog.logInfo(TAG, "onAppPost service: %s"
-                    , serviceName
-                );
+                long service_timestamp = MengineUtils.getTimestamp();
 
                 l.onAppPost(this);
+
+                MengineLog.logInfo(TAG, "onAppPost service: %s time: %d"
+                    , serviceName
+                    , MengineUtils.getTimestamp() - service_timestamp
+                );
             } catch (MengineServiceInvalidInitializeException e) {
                 MengineAnalytics.buildEvent("mng_app_create_failed")
                     .addParameterException("exception", e)
@@ -1278,6 +1289,8 @@ public class MengineApplication extends Application {
         m_main.start();
 
         this.setState("application.init", "completed");
+
+        MengineLog.logInfo(TAG, "onCreate completed time: %d", MengineUtils.getTimestamp() - application_timestamp);
     }
 
     public void onServicesLoad() {
@@ -1355,7 +1368,7 @@ public class MengineApplication extends Application {
 
     @Override
     public void onTerminate() {
-        MengineLog.logMessage(TAG, "onTerminate");
+        MengineLog.logInfo(TAG, "onTerminate");
 
         this.onServicesSave();
 
@@ -1403,7 +1416,7 @@ public class MengineApplication extends Application {
     public void attachBaseContext(Context base) {
         super.attachBaseContext(base);
 
-        MengineLog.logMessage(TAG, "attachBaseContext");
+        MengineLog.logInfo(TAG, "attachBaseContext");
 
         List<MengineListenerApplication> applicationListeners = this.getApplicationListeners();
 
@@ -1416,7 +1429,7 @@ public class MengineApplication extends Application {
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
-        MengineLog.logMessage(TAG, "onConfigurationChanged config: %s"
+        MengineLog.logInfo(TAG, "onConfigurationChanged config: %s"
             , newConfig.toString()
         );
 

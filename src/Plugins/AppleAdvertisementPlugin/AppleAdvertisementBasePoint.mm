@@ -13,7 +13,7 @@
         self.m_name = name;
         
         self.m_id = [self parseAdPointInteger:json key:@"id" required:NO defaultValue:1];
-        self.m_enabled = [self parseAdPointBoolean:json key:@"enabled" required:YES defaultValue:NO];
+        self.m_enabled = [self parseAdPointBoolean:json key:@"enable" required:YES defaultValue:NO];
         
         self.m_cooldownGroupName = [self parseAdPointString:json key:@"trigger_cooldown_group" required:NO defaultValue:nil];
         

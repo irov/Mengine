@@ -19,24 +19,54 @@ import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineListenerActivity;
 import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineListenerLogger;
+import org.Mengine.Base.MengineListenerRemoteConfig;
 import org.Mengine.Base.MengineListenerSessionId;
+import org.Mengine.Base.MengineListenerTransparencyConsent;
 import org.Mengine.Base.MengineLog;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
+import org.Mengine.Base.MengineTransparencyConsentParam;
 import org.Mengine.Base.MengineUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Map;
 
-public class MengineDataDogPlugin extends MengineService implements MengineListenerLogger, MengineListenerApplication, MengineListenerActivity, MengineListenerSessionId {
+public class MengineDataDogPlugin extends MengineService implements MengineListenerLogger, MengineListenerApplication, MengineListenerActivity, MengineListenerSessionId, MengineListenerRemoteConfig, MengineListenerTransparencyConsent {
     public static final String SERVICE_NAME = "DataDog";
     public static final boolean SERVICE_EMBEDDING = true;
 
     public static final String METADATA_SITE = "mengine.datadog.site";
     public static final String METADATA_CLIENT_TOKEN = "mengine.datadog.client_token";
 
+    private boolean m_enableDebugMessage = false;
+    private boolean m_enableInfoMessage = false;
+
     private Logger m_loggerDataDog;
+
+    protected boolean getEnableDebugMessage() {
+        synchronized (this) {
+            return m_enableDebugMessage;
+        }
+    }
+
+    protected boolean getEnableInfoMessage() {
+        synchronized (this) {
+            return m_enableInfoMessage;
+        }
+    }
+
+    protected TrackingConsent getTrackingConsent(@NonNull MengineTransparencyConsentParam consentParam) {
+        if (consentParam == null) {
+            return TrackingConsent.GRANTED;
+        }
+
+        if (consentParam.getConsentAdStorage() == true) {
+            return TrackingConsent.GRANTED;
+        }
+
+        return TrackingConsent.NOT_GRANTED;
+    }
 
     @Override
     public void onAppPrepare(@NonNull MengineApplication application, @NonNull Map<String, String> pluginVersions) throws MengineServiceInvalidInitializeException {
@@ -87,8 +117,12 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
 
         Context context = application.getApplicationContext();
 
-        if (Datadog.initialize(context, config, TrackingConsent.GRANTED) == null) {
-            this.invalidInitialize("initialize failed");
+        MengineTransparencyConsentParam consentParam = application.makeTransparencyConsentParam();
+
+        TrackingConsent consent = this.getTrackingConsent(consentParam);
+
+        if (Datadog.initialize(context, config, consent) == null) {
+            this.logError("Datadog initialize failed");
 
             return;
         }
@@ -119,8 +153,6 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
 
             String versionName = application.getVersionName();
             version_attribute.put("name", versionName);
-
-            version_attribute.put("debug", BuildConfig.DEBUG);
 
             logger.addAttribute("version", version_attribute);
 
@@ -199,13 +231,20 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
 
         switch (level) {
             case MengineLog.LM_VERBOSE:
-                return;
             case MengineLog.LM_DEBUG:
                 return;
             case MengineLog.LM_INFO:
+                boolean enableInfoMessage = this.getEnableInfoMessage();
+
+                if (enableInfoMessage == true) {
+                    m_loggerDataDog.i(msg, null, Map.of("tag", tag));
+                }
+                return;
             case MengineLog.LM_MESSAGE:
             case MengineLog.LM_MESSAGE_RELEASE:
-                if (BuildConfig.DEBUG == true) {
+                boolean enableDebugMessage = this.getEnableDebugMessage();
+
+                if (enableDebugMessage == true || BuildConfig.DEBUG == true) {
                     m_loggerDataDog.i(msg, null, Map.of("tag", tag));
                 }
                 break;
@@ -219,5 +258,33 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
                 m_loggerDataDog.wtf(msg, null, Map.of("tag", tag));
                 break;
         }
+    }
+
+    @Override
+    public void onMengineRemoteConfigFetch(@NonNull MengineApplication application, @NonNull Map<String, JSONObject> configs) {
+        synchronized (this) {
+            JSONObject datadog_debug_message = configs.getOrDefault("datadog_debug_message", null);
+
+            if (datadog_debug_message != null) {
+                boolean enable = datadog_debug_message.optBoolean("enable", false);
+
+                m_enableDebugMessage = enable;
+            }
+
+            JSONObject datadog_info_message = configs.getOrDefault("datadog_info_message", null);
+
+            if (datadog_info_message != null) {
+                boolean enable = datadog_info_message.optBoolean("enable", false);
+
+                m_enableInfoMessage = enable;
+            }
+        }
+    }
+
+    @Override
+    public void onMengineTransparencyConsent(@NonNull MengineApplication application, MengineTransparencyConsentParam tcParam) {
+        TrackingConsent consent = this.getTrackingConsent(tcParam);
+
+        Datadog.setTrackingConsent(consent);
     }
 }

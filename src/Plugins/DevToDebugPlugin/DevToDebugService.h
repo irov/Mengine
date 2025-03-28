@@ -8,8 +8,6 @@
 
 #include "Plugins/JSONPlugin/JSONInterface.h"
 
-#include "DevToDebugLogger.h"
-
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Hashtable.h"
 
@@ -69,8 +67,6 @@ namespace Mengine
         HashtableDevToDebugTabs m_tabsSync;
 
         VectorDevToDebugWidgetCommands m_tabsCommands;
-
-        DevToDebugLoggerPtr m_logger;
 
         AtomicBool m_invalidateTabs;
 

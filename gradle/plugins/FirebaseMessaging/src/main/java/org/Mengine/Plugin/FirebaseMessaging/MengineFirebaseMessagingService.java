@@ -18,14 +18,12 @@ public class MengineFirebaseMessagingService extends FirebaseMessagingService {
 
         String messageId = remoteMessage.getMessageId();
         String from = remoteMessage.getFrom();
-        String to = remoteMessage.getTo();
         String collapseKey = remoteMessage.getCollapseKey();
         Map<String, String> data = remoteMessage.getData();
 
         MengineRemoteMessageParam message = new MengineRemoteMessageParam();
         message.REMOTEMESSAGE_ID = messageId;
         message.REMOTEMESSAGE_FROM = from;
-        message.REMOTEMESSAGE_TO = to;
         message.REMOTEMESSAGE_COLLAPSE_KEY = collapseKey;
         message.REMOTEMESSAGE_DATA = data;
 

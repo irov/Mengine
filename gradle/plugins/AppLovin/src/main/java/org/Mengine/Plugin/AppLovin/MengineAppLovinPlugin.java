@@ -24,6 +24,7 @@ import org.Mengine.Base.MengineAdProviderInterface;
 import org.Mengine.Base.MengineAdRevenueParam;
 import org.Mengine.Base.MengineAdService;
 import org.Mengine.Base.MengineListenerApplication;
+import org.Mengine.Base.MengineListenerRemoteConfig;
 import org.Mengine.Base.MengineTransparencyConsentParam;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineService;
@@ -31,10 +32,12 @@ import org.Mengine.Base.MengineListenerActivity;
 import org.Mengine.Base.MengineListenerEngine;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineUtils;
+import org.json.JSONObject;
 
 import java.util.List;
+import java.util.Map;
 
-public class MengineAppLovinPlugin extends MengineService implements MengineAdProviderInterface, MengineListenerApplication, MengineListenerActivity, MengineListenerEngine {
+public class MengineAppLovinPlugin extends MengineService implements MengineAdProviderInterface, MengineListenerApplication, MengineListenerActivity, MengineListenerEngine, MengineListenerRemoteConfig {
     public static final String SERVICE_NAME = "AppLovin";
     public static final boolean SERVICE_EMBEDDING = true;
 
@@ -55,6 +58,8 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
 
     private AppLovinSdk m_appLovinSdk;
 
+    private boolean m_enableShowMediationDebugger = false;
+
     private String m_countryCode;
 
     private MengineAppLovinBannerAd m_bannerAd;
@@ -65,6 +70,12 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
 
     private MengineAppLovinMediationInterface m_mediationAmazon;
     private MengineAppLovinNonetBannersInterface m_nonetBanners;
+
+    public boolean getEnableShowMediationDebugger() {
+        synchronized (this) {
+            return m_enableShowMediationDebugger;
+        }
+    }
 
     @Override
     public String onAppVersion(@NonNull MengineApplication application) {
@@ -297,7 +308,9 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
                 }
             }
 
-            if (this.hasOption("applovin.show_mediation_debugger") == true) {
+            boolean enableShowMediationDebugger = this.getEnableShowMediationDebugger();
+
+            if (enableShowMediationDebugger == true || this.hasOption("applovin.show_mediation_debugger") == true) {
                 this.showMediationDebugger();
             }
 
@@ -420,6 +433,19 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
 
         if (m_MRECAd != null && m_MRECAd.isInitialized() == true) {
             m_MRECAd.onActivityDestroy(activity);
+        }
+    }
+
+    @Override
+    public void onMengineRemoteConfigFetch(@NonNull MengineApplication application, @NonNull Map<String, JSONObject> configs) {
+        synchronized (this) {
+            JSONObject applovin_show_mediation_debugger = configs.getOrDefault("applovin_show_mediation_debugger", null);
+
+            if (applovin_show_mediation_debugger != null) {
+                boolean enable = applovin_show_mediation_debugger.optBoolean("enable", false);
+
+                m_enableShowMediationDebugger = enable;
+            }
         }
     }
 

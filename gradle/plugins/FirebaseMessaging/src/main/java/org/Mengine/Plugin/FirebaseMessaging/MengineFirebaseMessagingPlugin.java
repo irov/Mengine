@@ -41,12 +41,7 @@ public class MengineFirebaseMessagingPlugin extends MengineService implements Me
     }
 
     public void askNotificationPermission(@NonNull MengineActivity activity) {
-        activity.checkPermission(Manifest.permission.POST_NOTIFICATIONS
-            , () -> {}
-            , () -> {}
-            , "Allow Notifications"
-            , "This app would like to send you notifications about important updates and messages."
-        );
+        activity.checkPermission(Manifest.permission.POST_NOTIFICATIONS);
     }
 
     @Override

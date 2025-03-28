@@ -31,15 +31,6 @@ namespace Mengine
         return m_hInternet;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32HttpRequest::_onThreadTaskPreparation()
-    {
-        ThreadMutexInterfacePtr mutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FUNCTION );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( mutex, "invalid create mutex" );
-
-        m_mutex = mutex;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool Win32HttpRequest::_onThreadTaskRun()
     {
         //Empty
@@ -63,13 +54,9 @@ namespace Mengine
     {
         m_response->setSuccessful( _successful );
 
-        m_mutex->lock();
-
         HttpResponseInterfacePtr response = std::move( m_response );
         HttpReceiverInterfacePtr receiver = std::move( m_receiver );
         receiver->onHttpRequestComplete( response );
-
-        m_mutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
 }

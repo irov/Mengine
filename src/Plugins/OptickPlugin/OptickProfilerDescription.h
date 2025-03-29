@@ -19,10 +19,10 @@ namespace Mengine
     public:
         const Char * getName() const;
         const Char * getFile() const;
-        uint32_t getLine() const;
+        int32_t getLine() const;
 
     public:
-        bool initialize( const Char * _name, const Char * _file, uint32_t _line );
+        bool initialize( const Char * _name, const Char * _file, int32_t _line );
 
     public:
         Optick::EventDescription * getOptickDescription() const;

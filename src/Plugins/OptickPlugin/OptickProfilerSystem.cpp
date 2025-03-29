@@ -164,7 +164,7 @@ namespace Mengine
         return profiler;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ProfilerDescriptionInterface * OptickProfilerSystem::createDescription( const Char * _name, const Char * _file, uint32_t _line )
+    const ProfilerDescriptionInterface * OptickProfilerSystem::createDescription( const Char * _name, const Char * _file, int32_t _line )
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 

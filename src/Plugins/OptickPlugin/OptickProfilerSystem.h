@@ -34,7 +34,7 @@ namespace Mengine
         ProfilerInterfacePtr addCategory( const ProfilerDescriptionInterface * _description ) override;
 
     public:
-        const ProfilerDescriptionInterface * createDescription( const Char * _name, const Char * _file, uint32_t _line ) override;
+        const ProfilerDescriptionInterface * createDescription( const Char * _name, const Char * _file, int32_t _line ) override;
 
     protected:
         AtomicBool m_process;

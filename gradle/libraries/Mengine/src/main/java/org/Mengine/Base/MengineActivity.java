@@ -22,6 +22,7 @@ import android.widget.RelativeLayout;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.ActivityResultRegistry;
 import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -223,69 +224,10 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     public void checkPermission(String permission, Runnable onSuccess, Runnable onFailure) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            MengineLog.logDebug(TAG, "checkPermission: %s not required for this version"
-                , permission
-            );
-
-            if (onSuccess != null) {
-                onSuccess.run();
-            }
-
-            return;
-        }
-
-        if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED) {
-            MengineLog.logDebug(TAG, "checkPermission: %s already granted"
-                , permission
-            );
-
-            if (onSuccess != null) {
-                onSuccess.run();
-            }
-
-            return;
-        }
-
-        ActivityResultLauncher<String> requestPermissionLauncher =
-            this.registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-                if (isGranted == true) {
-                    MengineLog.logInfo(TAG, "checkPermission: %s granted"
-                        , permission
-                    );
-
-                    if (onSuccess != null) {
-                        onSuccess.run();
-                    }
-                } else {
-                    MengineLog.logInfo(TAG, "checkPermission: %s denied"
-                        , permission
-                    );
-
-                    if (onFailure != null) {
-                        onFailure.run();
-                    }
-                }
-            });
-
-        MengineLog.logInfo(TAG, "checkPermission: %s request"
-            , permission
-        );
-
-        requestPermissionLauncher.launch(permission);
+        this.checkPermissionRationale(permission, onSuccess, onFailure, null, null);
     }
 
     public void checkPermissionRationale(String permission, Runnable onSuccess, Runnable onFailure, String title, String format, Object ... args) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            MengineLog.logDebug(TAG, "checkPermission: %s not required for this version"
-                , permission
-            );
-
-            onSuccess.run();
-
-            return;
-        }
-
         if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED) {
             MengineLog.logDebug(TAG, "checkPermission: %s already granted"
                 , permission
@@ -296,12 +238,22 @@ public class MengineActivity extends AppCompatActivity {
             return;
         }
 
-        ActivityResultLauncher<String> requestPermissionLauncher =
-            this.registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+        ActivityResultRegistry registry = this.getActivityResultRegistry();
+
+        final String name = permission + MengineUtils.getRandomUUIDString();
+
+        ActivityResultLauncher<String>[] launcher = new ActivityResultLauncher[1];
+
+        launcher[0] = registry.register(name
+            , this
+            , new ActivityResultContracts.RequestPermission()
+            , isGranted -> {
                 if (isGranted == true) {
                     MengineLog.logInfo(TAG, "checkPermission: %s granted"
                         , permission
                     );
+
+                    launcher[0].unregister();
 
                     onSuccess.run();
                 } else {
@@ -309,11 +261,13 @@ public class MengineActivity extends AppCompatActivity {
                         , permission
                     );
 
+                    launcher[0].unregister();
+
                     onFailure.run();
                 }
             });
 
-        if (this.shouldShowRequestPermissionRationale(permission) == true) {
+        if (title != null && format != null && this.shouldShowRequestPermissionRationale(permission) == true) {
             MengineLog.logInfo(TAG, "checkPermission: %s show rationale"
                 , permission
             );
@@ -324,7 +278,7 @@ public class MengineActivity extends AppCompatActivity {
                         , permission
                     );
 
-                    requestPermissionLauncher.launch(permission);
+                    launcher[0].launch(permission);
                 }
                 , () -> {
                     MengineLog.logInfo(TAG, "checkPermission: %s show rationale [denied]"
@@ -342,7 +296,7 @@ public class MengineActivity extends AppCompatActivity {
                 , permission
             );
 
-            requestPermissionLauncher.launch(permission);
+            launcher[0].launch(permission);
         }
     }
 

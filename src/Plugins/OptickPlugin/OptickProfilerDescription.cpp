@@ -22,12 +22,12 @@ namespace Mengine
         return m_description->file;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t OptickProfilerDescription::getLine() const
+    int32_t OptickProfilerDescription::getLine() const
     {
         return m_description->line;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OptickProfilerDescription::initialize( const Char * _name, const Char * _file, uint32_t _line )
+    bool OptickProfilerDescription::initialize( const Char * _name, const Char * _file, int32_t _line )
     {
         uint8_t flags = 0;
 

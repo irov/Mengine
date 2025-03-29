@@ -1147,7 +1147,7 @@ public class MengineUtils {
         return bundle;
     }
 
-    public static JSONArray jsonArrayFromArrayList(ArrayList list) {
+    public static JSONArray jsonArrayFromArrayList(List list) {
         JSONArray array = new JSONArray();
         for (Object object : list) {
             if (object instanceof String) {
@@ -1163,8 +1163,8 @@ public class MengineUtils {
             } else if (object instanceof Bundle) {
                 JSONObject subObject = MengineUtils.jsonObjectFromBundle((Bundle) object);
                 array.put(subObject);
-            } else if (object instanceof ArrayList) {
-                JSONArray subArray = MengineUtils.jsonArrayFromArrayList((ArrayList) object);
+            } else if (object instanceof List) {
+                JSONArray subArray = MengineUtils.jsonArrayFromArrayList((List) object);
                 array.put(subArray);
             }
         }
@@ -1191,8 +1191,8 @@ public class MengineUtils {
                     JSONObject subObject = MengineUtils.jsonObjectFromBundle((Bundle) value);
 
                     object.put(key, subObject);
-                } else if (value instanceof ArrayList) {
-                    JSONArray array = MengineUtils.jsonArrayFromArrayList((ArrayList) value);
+                } else if (value instanceof List) {
+                    JSONArray array = MengineUtils.jsonArrayFromArrayList((List) value);
 
                     object.put(key, array);
                 }

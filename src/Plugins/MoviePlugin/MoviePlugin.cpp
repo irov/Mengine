@@ -13,7 +13,7 @@
 #include "Plugins/ResourcePrefetcherPlugin/ResourcePrefetcherServiceInterface.h"
 #include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
 
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 #include "Movie2ScriptEmbedding.h"
 #endif
 
@@ -142,7 +142,7 @@ namespace Mengine
 
         m_movieInstance = ae_create_movie_instance( m_hashkey.c_str(), &Detail::stdex_movie_alloc, &Detail::stdex_movie_alloc_n, &Detail::stdex_movie_free, &Detail::stdex_movie_free_n, 0, &Detail::stdex_movie_logerror, this );
 
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
         NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EMBEDDING, this, [MENGINE_DEBUG_ARGUMENTS( this )]()
         {
             SCRIPT_SERVICE()
@@ -275,7 +275,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MoviePlugin::_finalizePlugin()
     {
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif

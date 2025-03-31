@@ -1,6 +1,6 @@
 #include "AppleFacebookPlugin.h"
 
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#ifdef MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED
 #   include "Interface/ScriptServiceInterface.h"
 
 #   include "AppleFacebookScriptEmbedding.h"
@@ -57,7 +57,7 @@ namespace Mengine
             return false;
         }
 
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#ifdef MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
         {
             SCRIPT_SERVICE()
@@ -76,7 +76,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleFacebookPlugin::_finalizePlugin()
     {
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#ifdef MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif

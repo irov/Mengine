@@ -10,7 +10,7 @@
 
 #include "NodeOzzAnimation.h"
 
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 #include "OzzScriptEmbedding.h"
 #endif
 
@@ -104,7 +104,7 @@ namespace Mengine
 
         ozz::memory::SetDefaulAllocator( new_allocator );
 
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
         NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EMBEDDING, this, [this]()
         {
             SCRIPT_SERVICE()
@@ -149,7 +149,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OzzAnimationPlugin::_finalizePlugin()
     {
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif

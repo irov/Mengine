@@ -1,6 +1,5 @@
 #include "Win32ConsoleLogger.h"
 
-#include "Environment/Windows/WindowsIncluder.h"
 #include "Environment/Windows/Win32Helper.h"
 
 #include "Kernel/Logger.h"
@@ -67,6 +66,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Win32ConsoleLogger::Win32ConsoleLogger()
         : m_createConsole( false )
+        , m_originalStdOut( INVALID_HANDLE_VALUE )
+        , m_originalStdErr( INVALID_HANDLE_VALUE )
         , m_CONOUT( nullptr )
         , m_CONERR( nullptr )
     {
@@ -100,6 +101,9 @@ namespace Mengine
             return false;
         }
 
+        m_originalStdOut = GetStdHandle( STD_OUTPUT_HANDLE );
+        m_originalStdErr = GetStdHandle( STD_ERROR_HANDLE );
+
         if( ::SetConsoleCtrlHandler( &Detail::ConsoleHandlerRoutine, TRUE ) == FALSE )
         {
             LOGGER_ERROR( "invalid set console ctrl handler: %ls"
@@ -130,12 +134,12 @@ namespace Mengine
         coninfo.dwSize.Y = 1000;
         ::SetConsoleScreenBufferSize( output_handle, coninfo.dwSize );
 
+        std::ios::sync_with_stdio();
+
         std::wcout.clear();
         std::cout.clear();
         std::wcerr.clear();
         std::cerr.clear();
-
-        std::ios::sync_with_stdio();
 
         return true;
     }
@@ -146,14 +150,48 @@ namespace Mengine
         {
             return;
         }
+        
+        std::wcout.clear();
+        std::cout.clear();
+        std::wcerr.clear();
+        std::cerr.clear();
 
-        ::fclose( m_CONOUT );
-        m_CONOUT = nullptr;
+        if( m_CONOUT != nullptr )
+        {
+            ::fclose( m_CONOUT );
+            m_CONOUT = nullptr;
+        }
 
-        ::fclose( m_CONERR );
-        m_CONERR = nullptr;
+        if( m_CONERR != nullptr )
+        {
+            ::fclose( m_CONERR );
+            m_CONERR = nullptr;
+        }
 
-        ::FreeConsole();
+        if( m_originalStdOut != INVALID_HANDLE_VALUE )
+        {
+            ::SetStdHandle( STD_OUTPUT_HANDLE, m_originalStdOut );
+            m_originalStdOut = INVALID_HANDLE_VALUE;
+        }
+
+        if( m_originalStdErr != INVALID_HANDLE_VALUE )
+        {
+            ::SetStdHandle( STD_ERROR_HANDLE, m_originalStdErr );
+            m_originalStdErr = INVALID_HANDLE_VALUE;
+        }
+
+        if( ::FreeConsole() == FALSE )
+        {
+            ::OutputDebugStringA( "Invalid free console" );
+
+            DWORD error = ::GetLastError();
+            const Char * errorMessage = Helper::Win32GetErrorMessageA( error );
+
+            ::OutputDebugStringA( errorMessage );
+        }
+
+        (void)::freopen( "NUL:", "w", stdout );
+        (void)::freopen( "NUL:", "w", stderr );
 
         m_createConsole = false;
     }

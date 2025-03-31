@@ -30,7 +30,7 @@ src
     ParticleConverterPTCToPTZ.h
 )
 
-if(MENGINE_USE_SCRIPT_SERVICE)
+if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
     ADD_FILTER(
     embedding
         AstralaxScriptEmbedding.cpp
@@ -109,7 +109,7 @@ endif()
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)
 
-if(MENGINE_USE_SCRIPT_SERVICE)
+if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
     TARGET_LINK_LIBRARIES(${PROJECT_NAME} Python)
 endif()
 

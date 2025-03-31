@@ -10,7 +10,7 @@
 #include "SurfaceMockupVideo.h"
 #include "ResourceVideoValidator.h"
 
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 #include "VideoScriptEmbedding.h"
 #endif
 
@@ -59,7 +59,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool VideoPlugin::_initializePlugin()
     {
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
         NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EMBEDDING, this, [this]()
         {
             SCRIPT_SERVICE()
@@ -104,7 +104,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void VideoPlugin::_finalizePlugin()
     {
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif

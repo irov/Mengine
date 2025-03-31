@@ -27,7 +27,7 @@ src
     SoundDecoderResourcePrefetcher.cpp
 )
 
-if(MENGINE_USE_SCRIPT_SERVICE)
+if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
     ADD_FILTER(
     embedding
         ResourcePrefetcherScriptEmbedding.cpp
@@ -39,7 +39,7 @@ endif()
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_RESOURCEPREFETCHER)
 
-if(MENGINE_USE_SCRIPT_SERVICE)
+if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
     TARGET_LINK_LIBRARIES(${PROJECT_NAME} Python)
 endif()
 

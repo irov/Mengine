@@ -40,7 +40,7 @@ namespace Mengine
         this->removeChildren( []( const NodePtr & )
         {} );
 
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
         this->unwrap();
 #endif
     }
@@ -81,7 +81,7 @@ namespace Mengine
         this->removeChildren( []( const NodePtr & )
         {} );
 
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
         this->unwrap();
 #endif
     }

@@ -32,7 +32,7 @@
 #include "DevToDebugWidgetRadioButton.h"
 #include "DevToDebugWidgetSelector.h"
 
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 #   include "DevToDebugScriptEmbedding.h"
 #endif
 
@@ -260,7 +260,7 @@ namespace Mengine
 
         m_timerId = timerId;
 
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
         {
             SCRIPT_SERVICE()
@@ -279,7 +279,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugService::_finalizeService()
     {
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif

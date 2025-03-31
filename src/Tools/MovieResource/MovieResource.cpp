@@ -527,7 +527,7 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
         {
             __add_node_layer_data( np, "HotSpotPolygon", _callbackData );
         }break;
-    case AE_MOVIE_LAYER_TYPE_SHAPE:
+    case AE_MOVIE_LAYER_TYPE_SHAPE_POLYGON:
         {
             __add_node_layer_data( np, "Shape", _callbackData );
         }break;

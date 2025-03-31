@@ -8,7 +8,7 @@
 #include "Kernel/RenderContext.h"
 #include "Kernel/Eventable.h"
 
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 #   include "Kernel/Scriptable.h"
 #endif
 
@@ -60,7 +60,7 @@ namespace Mengine
         virtual void setPickerExclusive( bool _picked ) = 0;
         virtual bool isPickerExclusive() const = 0;
 
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
     public:
         virtual Scriptable * getPickerScriptable() = 0;
 #endif

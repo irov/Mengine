@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Environment/Windows/WindowsIncluder.h"
+
 #include "Kernel/LoggerBase.h"
 
 #include "Config/StdIO.h"
@@ -28,6 +30,9 @@ namespace Mengine
 
     protected:
         bool m_createConsole;
+
+        HANDLE m_originalStdOut;
+        HANDLE m_originalStdErr;
 
         FILE * m_CONOUT;
         FILE * m_CONERR;

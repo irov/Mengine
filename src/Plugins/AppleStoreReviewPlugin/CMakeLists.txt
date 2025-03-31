@@ -11,7 +11,7 @@ src
     AppleStoreReviewApplicationDelegate.mm
 )
 
-if(MENGINE_USE_SCRIPT_SERVICE)
+if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
     ADD_FILTER(
     embedding
         AppleStoreReviewScriptEmbedding.h
@@ -27,6 +27,6 @@ ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleStoreReviewApplicationDelegate")
 
 ADD_MENGINE_APPLE_FRAMEWORK(StoreKit)
 
-if(MENGINE_USE_SCRIPT_SERVICE)
+if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
     TARGET_LINK_LIBRARIES(${PROJECT_NAME} Python)
 endif()

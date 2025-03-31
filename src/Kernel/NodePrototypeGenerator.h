@@ -2,7 +2,7 @@
 
 #include "Interface/DocumentInterface.h"
 
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 #   include "Kernel/ScriptablePrototypeGenerator.h"
 #else
 #   include "Kernel/DefaultPrototypeGenerator.h"
@@ -18,7 +18,7 @@ namespace Mengine
 {
     template<class Type, uint32_t Count>
     class NodePrototypeGenerator
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
         : public ScriptablePrototypeGenerator<Type, Count>
 #else
         : public DefaultPrototypeGenerator<Type, Count>
@@ -61,7 +61,7 @@ namespace Mengine
             node->setDocument( doc );
 #endif
 
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
             this->setupScriptable( node );
 #endif
 

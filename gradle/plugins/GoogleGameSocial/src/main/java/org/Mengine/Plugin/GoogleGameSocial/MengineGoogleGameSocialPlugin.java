@@ -81,30 +81,30 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
         });
 
         ActivityResultLauncher<Intent> achievementLauncher = activity.registerForActivityResult(result -> {
-                if (result.getResultCode() == Activity.RESULT_OK) {
-                    Intent data = result.getData();
+            if (result.getResultCode() == Activity.RESULT_OK) {
+                Intent data = result.getData();
 
-                    this.logMessage("achievementLauncher onActivityResult intent: %s"
-                        , data
-                    );
+                this.logMessage("achievementLauncher onActivityResult intent: %s"
+                    , data
+                );
 
-                    //ToDo
-                }
-            });
+                //ToDo
+            }
+        });
 
         m_achievementLauncher = achievementLauncher;
 
         ActivityResultLauncher<Intent> leaderboardLauncher = activity.registerForActivityResult(result -> {
-                if (result.getResultCode() == Activity.RESULT_OK) {
-                    Intent data = result.getData();
+            if (result.getResultCode() == Activity.RESULT_OK) {
+                Intent data = result.getData();
 
-                    this.logMessage("leaderboardLauncher onActivityResult intent: %s"
-                        , data
-                    );
+                this.logMessage("leaderboardLauncher onActivityResult intent: %s"
+                    , data
+                );
 
-                    //ToDo
-                }
-            });
+                //ToDo
+            }
+        });
 
         m_leaderboardLauncher = leaderboardLauncher;
     }

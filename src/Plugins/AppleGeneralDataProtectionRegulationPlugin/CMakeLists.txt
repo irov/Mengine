@@ -12,7 +12,7 @@ delegate
     AppleGeneralDataProtectionRegulationApplicationDelegate.mm
 )
 
-if(MENGINE_USE_SCRIPT_SERVICE)
+if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
     ADD_FILTER(
     embedding
         AppleGeneralDataProtectionRegulationScriptEmbedding.h
@@ -26,6 +26,6 @@ ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_APPLE_GENERALDATAPROTECTIONREGULATION)
 
 ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleGeneralDataProtectionRegulationApplicationDelegate")
 
-if(MENGINE_USE_SCRIPT_SERVICE)
+if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
     TARGET_LINK_LIBRARIES(${PROJECT_NAME} Python)
 endif()

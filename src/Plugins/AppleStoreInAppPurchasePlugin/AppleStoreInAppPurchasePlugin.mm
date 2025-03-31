@@ -1,6 +1,6 @@
 #include "AppleStoreInAppPurchasePlugin.h"
 
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 #   include "Interface/ScriptServiceInterface.h"
 
 #   include "AppleStoreInAppPurchaseScriptEmbedding.h"
@@ -59,7 +59,7 @@ namespace Mengine
             return false;
         }
         
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
         {
             SCRIPT_SERVICE()
@@ -78,7 +78,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleStoreInAppPurchasePlugin::_finalizePlugin()
     {
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif

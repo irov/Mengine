@@ -7,7 +7,7 @@
 #include "Kernel/Vector.h"
 #include "Kernel/Identity.h"
 
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 #   include "Kernel/Scriptable.h"
 #endif
 
@@ -16,7 +16,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class DevToDebugTab
         : public DevToDebugTabInterface
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
         , public Scriptable
 #endif
     {

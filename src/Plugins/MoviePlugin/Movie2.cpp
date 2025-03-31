@@ -312,7 +312,7 @@ namespace Mengine
                         //    mt::merge_box( bb, *bb );
                         //}
                     }break;
-                case AE_MOVIE_LAYER_TYPE_SHAPE:
+                case AE_MOVIE_LAYER_TYPE_SHAPE_POLYGON:
                 case AE_MOVIE_LAYER_TYPE_SOLID:
                 case AE_MOVIE_LAYER_TYPE_SEQUENCE:
                 case AE_MOVIE_LAYER_TYPE_IMAGE:
@@ -2825,7 +2825,7 @@ namespace Mengine
 
                         Helper::nodeRenderChildren( node, _renderPipeline, &context, true );
                     }break;
-                case AE_MOVIE_LAYER_TYPE_SHAPE:
+                case AE_MOVIE_LAYER_TYPE_SHAPE_POLYGON:
                     {
                         if( mesh.vertexCount == 0 )
                         {

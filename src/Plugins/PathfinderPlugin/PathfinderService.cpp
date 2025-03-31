@@ -2,7 +2,7 @@
 
 #include "PathfinderMap.h"
 
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 #   include "Interface/ScriptServiceInterface.h"
 
 #   include "PathfinderScriptEmbedding.h"
@@ -25,7 +25,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PathfinderService::_initializeService()
     {
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
         {
             SCRIPT_SERVICE()
@@ -46,7 +46,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PathfinderService::_finalizeService()
     {
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif

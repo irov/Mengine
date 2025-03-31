@@ -5,7 +5,7 @@
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/DebuggerBoundingBoxInterface.h"
 
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 #include "SpineScriptEmbedding.h"
 #endif
 
@@ -83,7 +83,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SpinePlugin::_initializePlugin()
     {
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
         {
             SCRIPT_SERVICE()
@@ -150,7 +150,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SpinePlugin::_finalizePlugin()
     {
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif

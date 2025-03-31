@@ -17,7 +17,7 @@ src
     AppleFacebookShareDelegate.mm
 )
 
-if(MENGINE_USE_SCRIPT_SERVICE)
+if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
     ADD_FILTER(
     embedding
         AppleFacebookScriptEmbedding.h
@@ -35,6 +35,6 @@ ADD_MENGINE_COCOAPOD("FBSDKShareKit" "NO-GIT" "17.4.0")
 
 ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleFacebookApplicationDelegate")
 
-if(MENGINE_USE_SCRIPT_SERVICE)
+if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
     TARGET_LINK_LIBRARIES(${PROJECT_NAME} Python)
 endif()

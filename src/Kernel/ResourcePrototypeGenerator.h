@@ -1,6 +1,6 @@
 #pragma once
 
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 #   include "Kernel/ScriptablePrototypeGenerator.h"
 #else
 #   include "Kernel/DefaultPrototypeGenerator.h"
@@ -15,7 +15,7 @@ namespace Mengine
 {
     template<class Type, uint32_t Count>
     class ResourcePrototypeGenerator
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
         : public ScriptablePrototypeGenerator<Type, Count>
 #else
         : public DefaultPrototypeGenerator<Type, Count>
@@ -57,7 +57,7 @@ namespace Mengine
             resource->setDocument( doc );
 #endif
 
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
             this->setupScriptable( resource );
 #endif
 

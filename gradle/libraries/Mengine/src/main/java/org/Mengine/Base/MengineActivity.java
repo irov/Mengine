@@ -255,7 +255,9 @@ public class MengineActivity extends AppCompatActivity {
 
                     launcher[0].unregister();
 
-                    onSuccess.run();
+                    if (onSuccess != null) {
+                        onSuccess.run();
+                    }
                 } else {
                     MengineLog.logInfo(TAG, "checkPermission: %s denied"
                         , permission
@@ -263,7 +265,9 @@ public class MengineActivity extends AppCompatActivity {
 
                     launcher[0].unregister();
 
-                    onFailure.run();
+                    if (onFailure != null) {
+                        onFailure.run();
+                    }
                 }
             });
 
@@ -285,7 +289,9 @@ public class MengineActivity extends AppCompatActivity {
                         , permission
                     );
 
-                    onFailure.run();
+                    if (onFailure != null) {
+                        onFailure.run();
+                    }
                 }
                 , title
                 , format

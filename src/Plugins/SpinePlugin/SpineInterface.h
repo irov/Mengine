@@ -9,7 +9,7 @@
 #include "Kernel/Animatable.h"
 #include "Kernel/Eventable.h"
 
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 #   include "Kernel/Scriptable.h"
 #endif
 
@@ -61,7 +61,7 @@ namespace Mengine
         , public Updatable
         , public Animatable
         , public Eventable
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
         , public Scriptable
 #endif
     {

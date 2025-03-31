@@ -76,7 +76,7 @@ namespace Mengine
     protected:
         bool pick( const mt::vec2f & _point, const RenderContext * _context ) const override;
 
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
     public:
         Scriptable * getPickerScriptable() override;
 #endif

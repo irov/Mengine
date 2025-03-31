@@ -34,7 +34,7 @@ src
     SpineDebuggerBoundingBox.cpp
 )
 
-if(MENGINE_USE_SCRIPT_SERVICE)
+if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
     ADD_FILTER(
     embedding    
         SpineScriptEmbedding.h
@@ -51,7 +51,7 @@ INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/spine/spine-c/spine-c/include)
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_SPINE)
 
-if(MENGINE_USE_SCRIPT_SERVICE)
+if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
     TARGET_LINK_LIBRARIES(${PROJECT_NAME} Python)
 endif()
 

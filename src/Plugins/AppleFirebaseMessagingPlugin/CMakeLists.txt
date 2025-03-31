@@ -2,9 +2,6 @@ MENGINE_PROJECT(AppleFirebaseMessagingPlugin)
 
 ADD_FILTER(
 src
-    AppleFirebaseMessagingPlugin.h
-    AppleFirebaseMessagingPlugin.mm
-    
     AppleFirebaseMessagingApplicationDelegate.h
     AppleFirebaseMessagingApplicationDelegate.mm
 )

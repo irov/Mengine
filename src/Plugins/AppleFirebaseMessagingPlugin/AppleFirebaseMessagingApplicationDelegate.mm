@@ -10,6 +10,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [[FIRMessaging messaging] setDelegate:self];
+    
+    return YES;
 }
 
 #pragma mark - FIRMessagingDelegate Protocol

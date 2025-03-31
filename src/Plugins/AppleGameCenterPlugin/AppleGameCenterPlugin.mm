@@ -1,7 +1,7 @@
 #include "AppleGameCenterPlugin.h"
 #include "AppleGameCenterInterface.h"
 
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 #   include "Interface/ScriptServiceInterface.h"
 
 #   include "AppleGameCenterScriptEmbedding.h"
@@ -29,7 +29,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleGameCenterPlugin::_initializePlugin()
     {
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
         {
             SCRIPT_SERVICE()
@@ -48,7 +48,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleGameCenterPlugin::_finalizePlugin()
     {
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif

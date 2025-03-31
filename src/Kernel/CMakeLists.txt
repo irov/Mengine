@@ -54,7 +54,7 @@ Mixin\\\\Eventable
     BaseEventation.cpp
 )
 
-if(MENGINE_USE_SCRIPT_SERVICE)
+if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
     ADD_FILTER(
     Mixin\\\\Scriptable
         Scriptable.cpp
@@ -229,7 +229,7 @@ PrototypeGenerator
     IdentityPrototypeGenerator.h
 )
 
-if(MENGINE_USE_SCRIPT_SERVICE)
+if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
     ADD_FILTER(
     PrototypeGenerator
         BaseScriptablePrototypeGenerator.cpp

@@ -11,7 +11,7 @@ src
     AppleAppTrackingApplicationDelegate.mm
 )
 
-if(MENGINE_USE_SCRIPT_SERVICE)
+if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
     ADD_FILTER(
     embedding
         AppleAppTrackingScriptEmbedding.h
@@ -28,6 +28,6 @@ ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleAppTrackingApplicationDelegate")
 ADD_MENGINE_APPLE_FRAMEWORK(AppTrackingTransparency)
 ADD_MENGINE_APPLE_FRAMEWORK(AdSupport)
 
-if(MENGINE_USE_SCRIPT_SERVICE)
+if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
     TARGET_LINK_LIBRARIES(${PROJECT_NAME} Python)
 endif()

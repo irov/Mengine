@@ -11,7 +11,7 @@
 #include "ResourceAstralax.h"
 #include "MetabufLoaderResourceAstralax.h"
 
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 #include "AstralaxScriptEmbedding.h"
 #endif
 
@@ -85,7 +85,7 @@ namespace Mengine
             return false;
         }
 
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
         NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EMBEDDING, this, [this]()
         {
             SCRIPT_SERVICE()
@@ -161,7 +161,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AstralaxPlugin::_finalizePlugin()
     {
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif

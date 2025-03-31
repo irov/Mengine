@@ -1,6 +1,6 @@
 #include "AppleMARSDKPlugin.h"
 
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#ifdef MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED
 #   include "Interface/ScriptServiceInterface.h"
 
 #   include "AppleMARSDKScriptEmbedding.h"
@@ -56,7 +56,7 @@ namespace Mengine
             return false;
         }
 
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#ifdef MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
         {
             SCRIPT_SERVICE()
@@ -75,7 +75,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleMARSDKPlugin::_finalizePlugin()
     {
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#ifdef MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif

@@ -23,7 +23,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
     //////////////////////////////////////////////////////////////////////////
     Scriptable * DummyPicker::getPickerScriptable()
     {

@@ -5,7 +5,7 @@
 
 #include "SteamService.h"
 
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 #   include "Interface/ScriptServiceInterface.h"
 #   include "SteamScriptEmbedding.h"
 #endif
@@ -103,7 +103,7 @@ namespace Mengine
         m_iso639_1["turkish"] = STRINGIZE_STRING_LOCAL( "tr" );
         m_iso639_1["ukrainian"] = STRINGIZE_STRING_LOCAL( "ua" );
 
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
         {
             SCRIPT_SERVICE()
@@ -223,7 +223,7 @@ namespace Mengine
             return;
         }
 
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif

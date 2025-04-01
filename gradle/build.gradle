@@ -79,13 +79,13 @@ allprojects {
         if (ANDROID_APP_TARGET_SDK_VERSION != null) {
             targetSdkVersion = ANDROID_APP_TARGET_SDK_VERSION
         } else {
-            targetSdkVersion = 36
+            targetSdkVersion = 35
         }
 
         if (ANDROID_APP_COMPILE_SDK_VERSION != null) {
             compileSdkVersion = ANDROID_APP_COMPILE_SDK_VERSION
         } else {
-            compileSdkVersion = 36
+            compileSdkVersion = 35
         }
 
         javaVersion = JavaVersion.VERSION_17

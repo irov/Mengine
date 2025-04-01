@@ -1028,7 +1028,7 @@ namespace Mengine
                 msg.threadName = Helper::getCurrentThreadName();
                 msg.level = LM_MESSAGE;
                 msg.filter = LFILTER_NONE;
-                msg.color = LCOLOR_RED | LCOLOR_BLUE;
+                msg.color = LCOLOR_GREEN;
                 msg.flag = LFLAG_SHORT;
                 msg.file = filename;
                 msg.line = lineno;

@@ -377,25 +377,25 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderMaterialStage * RenderMaterialService::removeMaterialStage( const ConstString & _name )
+    const RenderMaterialStage * RenderMaterialService::removeMaterialStage( const ConstString & _materialName )
     {
-        MENGINE_ASSERTION_FATAL( m_materialStageIndexer.exist( _name ) == true, "absent material stage '%s'"
-            , _name.c_str()
+        MENGINE_ASSERTION_FATAL( m_materialStageIndexer.exist( _materialName ) == true, "absent material stage '%s'"
+            , _materialName.c_str()
         );
 
-        const RenderMaterialStage * stage = m_materialStageIndexer.erase( _name );
+        const RenderMaterialStage * stage = m_materialStageIndexer.erase( _materialName );
 
         return stage;
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderMaterialStage * RenderMaterialService::getMaterialStage( const ConstString & _name ) const
+    const RenderMaterialStage * RenderMaterialService::getMaterialStage( const ConstString & _materialName ) const
     {
-        const RenderMaterialStage * stage = m_materialStageIndexer.find( _name );
+        const RenderMaterialStage * stage = m_materialStageIndexer.find( _materialName );
 
         if( stage == nullptr )
         {
             LOGGER_ERROR( "stage '%s' not found"
-                , _name.c_str()
+                , _materialName.c_str()
             );
 
             return nullptr;
@@ -647,21 +647,21 @@ namespace Mengine
         m_materialEnumerators.emplace_back( materialId );
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderMaterialStage * RenderMaterialService::createMaterialStage( const ConstString & _name, const RenderMaterialStage & _stage, const DocumentInterfacePtr & _doc )
+    const RenderMaterialStage * RenderMaterialService::createMaterialStage( const ConstString & _materialName, const RenderMaterialStage & _stage, const DocumentInterfacePtr & _doc )
     {
-        MENGINE_ASSERTION_FATAL( m_materialStageIndexer.find( _name ) == nullptr, "'%s' is already created"
-            , _name.c_str()
+        MENGINE_ASSERTION_FATAL( m_materialStageIndexer.find( _materialName ) == nullptr, "'%s' is already created"
+            , _materialName.c_str()
         );
 
         const RenderMaterialStage * cache_stage = this->cacheMaterialStage( _stage, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( cache_stage, "'%s' invalid cache"
-            , _name.c_str()
+            , _materialName.c_str()
         );
 
-        m_materialStageIndexer.emplace( _name, cache_stage );
+        m_materialStageIndexer.emplace( _materialName, cache_stage );
 
-        MapDefaultStagesName::const_iterator it_stage_found = m_defaultStagesEnum.find( _name );
+        MapDefaultStagesName::const_iterator it_stage_found = m_defaultStagesEnum.find( _materialName );
 
         if( it_stage_found != m_defaultStagesEnum.end() )
         {

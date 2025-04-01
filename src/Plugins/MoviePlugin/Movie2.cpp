@@ -2024,6 +2024,8 @@ namespace Mengine
     {
         RenderMaterialInterfacePtr materials[4][2];
         RenderProgramVariableInterfacePtr programVariable;
+
+        ae_uint32_t flags;
         ae_uint32_t indexOffset;
     };
     //////////////////////////////////////////////////////////////////////////
@@ -2065,13 +2067,19 @@ namespace Mengine
         desc->materials[EMB_NORMAL][0] = Helper::makeImageMaterial( resourceImage, materialNameBlend_s, EMB_NORMAL, false, false, MENGINE_DOCUMENT_FORWARD_PTR( movie2 ) );
         desc->materials[EMB_NORMAL][1] = Helper::makeImageMaterial( resourceImage, materialNameBlendExternalAlpha_s, EMB_NORMAL, false, false, MENGINE_DOCUMENT_FORWARD_PTR( movie2 ) );
 
-        desc->indexOffset = 1;
+        desc->flags = _callbackData->flags;
+        desc->indexOffset = 0;
 
         RenderProgramVariableInterfacePtr programVariable = RENDER_SYSTEM()
             ->createProgramVariable( 0, desc->indexOffset + _callbackData->parameter_count, MENGINE_DOCUMENT_FACTORABLE_PTR( movie2 ) );
 
-        float shader_uvsl[4] = {0.f, 0.f, 1.f, 1.f};
-        programVariable->setPixelVariables( "uvsl", 0, shader_uvsl, 4, 1 );
+        if( (_callbackData->flags & AE_MOVIE_EXTENSION_SHADER_FLAG_UVSL) == AE_MOVIE_EXTENSION_SHADER_FLAG_UVSL )
+        {
+            float shader_uvsl[4] = {0.f, 0.f, 1.f, 1.f};
+            programVariable->setPixelVariables( "uvsl", desc->indexOffset + 0, shader_uvsl, 4, 1 );
+
+            desc->indexOffset += 1;
+        }
 
         for( ae_uint32_t index = 0; index != _callbackData->parameter_count; ++index )
         {
@@ -3013,32 +3021,35 @@ namespace Mengine
                         {
                             Movie2ShaderDesc * shader_desc = reinterpret_cast<Movie2ShaderDesc *>(mesh.shader_userdata);
 
-                            const RenderProgramVariableInterfacePtr & programVariable = shader_desc->programVariable;
+                            if( (shader_desc->flags & AE_MOVIE_EXTENSION_SHADER_FLAG_UVSL) == AE_MOVIE_EXTENSION_SHADER_FLAG_UVSL )
+                            {
+                                const RenderProgramVariableInterfacePtr & programVariable = shader_desc->programVariable;
 
-                            mt::vec2f uv_zero;
-                            mt::vec2f uv_one;
-                            resourceImage->correctUVImage( mt::vec2f( 0.f, 0.f ), &uv_zero );
-                            resourceImage->correctUVImage( mt::vec2f( 1.f, 1.f ), &uv_one );
+                                mt::vec2f uv_zero;
+                                mt::vec2f uv_one;
+                                resourceImage->correctUVImage( mt::vec2f( 0.f, 0.f ), &uv_zero );
+                                resourceImage->correctUVImage( mt::vec2f( 1.f, 1.f ), &uv_one );
 
-                            const RenderTextureInterfacePtr & texture = resourceImage->getTexture();
+                                const RenderTextureInterfacePtr & texture = resourceImage->getTexture();
 
-                            const RenderImageInterfacePtr & image = texture->getImage();
+                                const RenderImageInterfacePtr & image = texture->getImage();
 
-                            float textureWidthInv = image->getHWWidthInv();
-                            float textureHeightInv = image->getHWHeightInv();
+                                float textureWidthInv = image->getHWWidthInv();
+                                float textureHeightInv = image->getHWHeightInv();
 
-                            float u = uv_one.x - uv_zero.x;
+                                float u = uv_one.x - uv_zero.x;
 
-                            float ou = uv_zero.x - resource_image->offset_x * textureWidthInv;
-                            float du = resource_image->base_width / resource_image->trim_width * u;
+                                float ou = uv_zero.x - resource_image->offset_x * textureWidthInv;
+                                float du = resource_image->base_width / resource_image->trim_width * u;
 
-                            float v = uv_one.y - uv_zero.y;
+                                float v = uv_one.y - uv_zero.y;
 
-                            float ov = uv_zero.y - resource_image->offset_y * textureHeightInv;
-                            float dv = resource_image->base_height / resource_image->trim_height * v;
+                                float ov = uv_zero.y - resource_image->offset_y * textureHeightInv;
+                                float dv = resource_image->base_height / resource_image->trim_height * v;
 
-                            float uvsl[4] = {-ou, -ov, 1.f / du, 1.f / dv};
-                            programVariable->setPixelVariables( "uvsl", 0, uvsl, 4, 1 );
+                                float uvsl[4] = {-ou, -ov, 1.f / du, 1.f / dv};
+                                programVariable->setPixelVariables( "uvsl", 0, uvsl, 4, 1 );
+                            }
                         }
 
                         RenderIndex * indices = indices_buffer + index_iterator;

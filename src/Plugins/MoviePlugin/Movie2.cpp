@@ -2022,8 +2022,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct Movie2ShaderDesc
     {
-        ConstString materialNameBlend;
-        ConstString materialNameBlendExternalAlpha;
+        RenderMaterialInterfacePtr materials[4][2];
         RenderProgramVariableInterfacePtr programVariable;
         ae_uint32_t indexOffset;
     };
@@ -2035,17 +2034,36 @@ namespace Mengine
 
         Movie2ShaderDesc * desc = Helper::newMemoryT<Movie2ShaderDesc>( "movie" );
 
+        if( StdString::strlen( _callbackData->description ) == 0 )
+        {
+            LOGGER_ERROR( "movie '%s' invalid shader '%s' not setup [description]"
+                , movie2->getName().c_str()
+                , _callbackData->name
+            );
+
+            return AE_FALSE;
+        }
+
         ArrayString<64> materialNameBlend;
         materialNameBlend.append( _callbackData->description );
         materialNameBlend.append( "_Blend" );
 
-        desc->materialNameBlend = Helper::stringizeString( materialNameBlend.c_str() );
+        ConstString materialNameBlend_s = Helper::stringizeString( materialNameBlend.c_str() );
 
         ArrayString<64> materialNameBlendExternalAlpha;
         materialNameBlendExternalAlpha.append( _callbackData->description );
         materialNameBlendExternalAlpha.append( "_Blend_ExternalAlpha" );
 
-        desc->materialNameBlendExternalAlpha = Helper::stringizeString( materialNameBlendExternalAlpha.c_str() );
+        ConstString materialNameBlendExternalAlpha_s = Helper::stringizeString( materialNameBlendExternalAlpha.c_str() );
+
+        ae_userdata_t resource_userdata = ae_get_movie_layer_data_resource_userdata( _callbackData->layer_data );
+
+        Movie2Data::ImageDesc * image_desc = reinterpret_cast<Movie2Data::ImageDesc *>(resource_userdata);
+
+        ResourceImage * resourceImage = image_desc->resourceImage;
+
+        desc->materials[EMB_NORMAL][0] = Helper::makeImageMaterial( resourceImage, materialNameBlend_s, EMB_NORMAL, false, false, MENGINE_DOCUMENT_FORWARD_PTR( movie2 ) );
+        desc->materials[EMB_NORMAL][1] = Helper::makeImageMaterial( resourceImage, materialNameBlendExternalAlpha_s, EMB_NORMAL, false, false, MENGINE_DOCUMENT_FORWARD_PTR( movie2 ) );
 
         desc->indexOffset = 1;
 
@@ -2112,6 +2130,9 @@ namespace Mengine
         AE_UNUSED( _ud );
 
         Movie2ShaderDesc * desc = reinterpret_cast<Movie2ShaderDesc *>(_callbackData->element_userdata);
+
+        desc->materials[EMB_NORMAL][0] = nullptr;
+        desc->materials[EMB_NORMAL][1] = nullptr;
 
         desc->programVariable = nullptr;
 
@@ -3039,46 +3060,12 @@ namespace Mengine
 
                             ConstString materialName;
 
-                            if( resourceImage->getTextureAlpha() == nullptr )
-                            {
-                                switch( blend_mode )
-                                {
-                                case EMB_NORMAL:
-                                    {
-                                        materialName = shader_desc->materialNameBlend;
-                                    }break;
-                                default:
-                                    {
-                                        LOGGER_ERROR( "movie2 '%s' invalid support shader material blend mode [%u] (Normal)"
-                                            , this->getName().c_str()
-                                            , blend_mode
-                                        );
+                            MENGINE_ASSERTION_FATAL( blend_mode == EMB_NORMAL, "movie2 '%s' invalid support shader material blend mode [%u] (Normal)"
+                                , this->getName().c_str()
+                                , blend_mode
+                            );
 
-                                        continue;
-                                    }break;
-                                }
-                            }
-                            else
-                            {
-                                switch( blend_mode )
-                                {
-                                case EMB_NORMAL:
-                                    {
-                                        materialName = shader_desc->materialNameBlendExternalAlpha;
-                                    }break;
-                                default:
-                                    {
-                                        LOGGER_ERROR( "movie2 '%s' invalid support shader material blend mode [%u] (ExternalAlpha)"
-                                            , this->getName().c_str()
-                                            , blend_mode
-                                        );
-
-                                        continue;
-                                    }break;
-                                }
-                            }
-
-                            RenderMaterialInterfacePtr material = Helper::makeImageMaterial( ResourceImagePtr::from( resourceImage ), materialName, blend_mode, false, false, MENGINE_DOCUMENT_FORWARD );
+                            RenderMaterialInterfacePtr material = shader_desc->materials[EMB_NORMAL][resourceImage->getTextureAlpha() == nullptr ? 0 : 1];
 
                             const RenderProgramVariableInterfacePtr & programVariable = shader_desc->programVariable;
 

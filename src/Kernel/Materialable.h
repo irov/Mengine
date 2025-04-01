@@ -6,17 +6,18 @@
 #include "Interface/RenderTextureInterface.h"
 
 #include "Kernel/ConstString.h"
+#include "Kernel/IntrusivePtrView.h"
 #include "Kernel/Mixin.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class ResourceImage, class Resource> ResourceImagePtr;
+    typedef IntrusivePtrView<class ResourceImage, class Resource> ResourceImagePtrView;
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
         RenderMaterialInterfacePtr makeSolidMaterial( const ConstString & _materialName, EMaterialBlendMode _blendMode, bool _solid, const DocumentInterfacePtr & _doc );
-        RenderMaterialInterfacePtr makeImageMaterial( const ResourceImagePtr & _resourceImage, const ConstString & _materialName, EMaterialBlendMode _blendMode, bool _disableTextureColor, bool _solid, const DocumentInterfacePtr & _doc );
+        RenderMaterialInterfacePtr makeImageMaterial( const ResourceImagePtrView & _resourceImage, const ConstString & _materialName, EMaterialBlendMode _blendMode, bool _disableTextureColor, bool _solid, const DocumentInterfacePtr & _doc );
         RenderMaterialInterfacePtr makeTextureMaterial( const ConstString & _materialName, uint32_t _textureCount, const RenderTextureInterfacePtr * _textures, EMaterialBlendMode _blendMode, bool _premultiply, bool _disableTextureColor, bool _solid, const DocumentInterfacePtr & _doc );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -50,7 +51,7 @@ namespace Mengine
 
     protected:
         RenderMaterialInterfacePtr makeSolidMaterial( bool _solid, const DocumentInterfacePtr & _doc ) const;
-        RenderMaterialInterfacePtr makeImageMaterial( const ResourceImagePtr & _resourceImage, bool _solid, const DocumentInterfacePtr & _doc ) const;
+        RenderMaterialInterfacePtr makeImageMaterial( const ResourceImagePtrView & _resourceImage, bool _solid, const DocumentInterfacePtr & _doc ) const;
         RenderMaterialInterfacePtr makeTextureMaterial( uint32_t _textureCount, const RenderTextureInterfacePtr * _textures, bool _premultiply, bool _solid, const DocumentInterfacePtr & _doc ) const;
 
     public:

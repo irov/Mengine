@@ -374,7 +374,7 @@ namespace Mengine
             break;
         }
 
-        RenderMaterialInterfacePtr material = Helper::makeImageMaterial( ResourceImagePtr::from( _resourceImage ), ConstString::none(), blendMode, false, false, MENGINE_DOCUMENT_FORWARD );
+        RenderMaterialInterfacePtr material = Helper::makeImageMaterial( _resourceImage, ConstString::none(), blendMode, false, false, MENGINE_DOCUMENT_FORWARD );
 
         MENGINE_ASSERTION_MEMORY_PANIC( material, "'%s' resource '%s' image '%s' m_material is NULL"
             , this->getName().c_str()

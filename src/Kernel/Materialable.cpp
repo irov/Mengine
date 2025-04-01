@@ -55,7 +55,7 @@ namespace Mengine
             return material;
         }
         //////////////////////////////////////////////////////////////////////////
-        RenderMaterialInterfacePtr makeImageMaterial( const ResourceImagePtr & _resourceImage, const ConstString & _materialName, EMaterialBlendMode _blendMode, bool _disableTextureColor, bool _solid, const DocumentInterfacePtr & _doc )
+        RenderMaterialInterfacePtr makeImageMaterial( const ResourceImagePtrView & _resourceImage, const ConstString & _materialName, EMaterialBlendMode _blendMode, bool _disableTextureColor, bool _solid, const DocumentInterfacePtr & _doc )
         {
             MENGINE_ASSERTION_FATAL( _resourceImage->isCompile() == true, "resource '%s' not compile"
                 , _resourceImage->getName().c_str()
@@ -572,7 +572,7 @@ namespace Mengine
         return material;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderMaterialInterfacePtr Materialable::makeImageMaterial( const ResourceImagePtr & _resourceImage, bool _solid, const DocumentInterfacePtr & _doc ) const
+    RenderMaterialInterfacePtr Materialable::makeImageMaterial( const ResourceImagePtrView & _resourceImage, bool _solid, const DocumentInterfacePtr & _doc ) const
     {
         RenderMaterialInterfacePtr material = Helper::makeImageMaterial( _resourceImage, m_materialName, m_blendMode, m_disableTextureColor, _solid, _doc );
 

@@ -34,6 +34,7 @@ import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineUtils;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -90,12 +91,15 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
 
         boolean noAds = adService.getNoAds();
 
+        List<String> adUnitIds = new ArrayList<>();
+
         if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_BANNERAD == true && noAds == false) {
             String MengineAppLovinPlugin_Banner_AdUnitId = this.getMetaDataString(METADATA_BANNER_ADUNITID);
 
             if (MengineAppLovinPlugin_Banner_AdUnitId.isEmpty() == false) {
-                String MengineAppLovinPlugin_Banner_Placement = this.getMetaDataString(METADATA_BANNER_PLACEMENT);
+                adUnitIds.add(MengineAppLovinPlugin_Banner_AdUnitId);
 
+                String MengineAppLovinPlugin_Banner_Placement = this.getMetaDataString(METADATA_BANNER_PLACEMENT);
                 boolean MengineAppLovinPlugin_BannerAdaptive = this.getMetaDataBoolean(METADATA_BANNER_ADAPTIVE);
 
                 MengineAppLovinBannerAd bannerAd = new MengineAppLovinBannerAd(this, MengineAppLovinPlugin_Banner_AdUnitId, MengineAppLovinPlugin_Banner_Placement, MengineAppLovinPlugin_BannerAdaptive);
@@ -108,6 +112,8 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             String MengineAppLovinPlugin_Interstitial_AdUnitId = this.getMetaDataString(METADATA_INTERSTITIAL_ADUNITID);
 
             if (MengineAppLovinPlugin_Interstitial_AdUnitId.isEmpty() == false) {
+                adUnitIds.add(MengineAppLovinPlugin_Interstitial_AdUnitId);
+
                 MengineAppLovinInterstitialAd interstitialAd = new MengineAppLovinInterstitialAd(this, MengineAppLovinPlugin_Interstitial_AdUnitId);
 
                 m_interstitialAd = interstitialAd;
@@ -118,6 +124,8 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             String MengineAppLovinPlugin_Rewarded_AdUnitId = this.getMetaDataString(METADATA_REWARDED_ADUNITID);
 
             if (MengineAppLovinPlugin_Rewarded_AdUnitId.isEmpty() == false) {
+                adUnitIds.add(MengineAppLovinPlugin_Rewarded_AdUnitId);
+
                 MengineAppLovinRewardedAd rewardedAd = new MengineAppLovinRewardedAd(this, MengineAppLovinPlugin_Rewarded_AdUnitId);
 
                 m_rewardedAd = rewardedAd;
@@ -128,6 +136,8 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             String MengineAppLovinPlugin_AppOpen_AdUnitId = this.getMetaDataString(METADATA_APPOPEN_ADUNITID);
 
             if (MengineAppLovinPlugin_AppOpen_AdUnitId.isEmpty() == false) {
+                adUnitIds.add(MengineAppLovinPlugin_AppOpen_AdUnitId);
+
                 String MengineAppLovinPlugin_AppOpen_Placement = this.getMetaDataString(METADATA_APPOPEN_PLACEMENT);
 
                 MengineAppLovinAppOpenAd appOpenAd = new MengineAppLovinAppOpenAd(this, MengineAppLovinPlugin_AppOpen_AdUnitId, MengineAppLovinPlugin_AppOpen_Placement);
@@ -140,6 +150,8 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             String MengineAppLovinPlugin_MREC_AdUnitId = this.getMetaDataString(METADATA_MREC_ADUNITID);
 
             if (MengineAppLovinPlugin_MREC_AdUnitId.isEmpty() == false) {
+                adUnitIds.add(MengineAppLovinPlugin_MREC_AdUnitId);
+
                 String MengineAppLovinPlugin_MREC_Placement = this.getMetaDataString(METADATA_MREC_PLACEMENT);
 
                 MengineAppLovinMRECAd mrecAd = new MengineAppLovinMRECAd(this, MengineAppLovinPlugin_MREC_AdUnitId, MengineAppLovinPlugin_MREC_Placement);
@@ -228,6 +240,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
 
         AppLovinSdkInitializationConfiguration config = AppLovinSdkInitializationConfiguration.builder(MengineAppLovinPlugin_SdkKey, application)
             .setMediationProvider(AppLovinMediationProvider.MAX)
+            .setAdUnitIds(adUnitIds)
             .build();
 
         appLovinSdk.initialize(config, configuration -> {

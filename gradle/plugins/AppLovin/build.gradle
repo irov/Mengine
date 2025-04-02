@@ -117,7 +117,7 @@ android {
 }
 
 dependencies {
-    implementation 'com.applovin:applovin-sdk:13.1.0'
+    implementation 'com.applovin:applovin-sdk:13.2.0'
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_CONSENT_FLOW) {
         implementation 'com.google.android.ump:user-messaging-platform:3.1.0'
@@ -144,7 +144,7 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_DTEXCHANGE == true) {
-        implementation 'com.applovin.mediation:fyber-adapter:8.3.6.0'
+        implementation 'com.applovin.mediation:fyber-adapter:8.3.6.1'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_GOOGLEADMANAGER == true) {
@@ -182,7 +182,7 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MINTEGRAL == true) {
-        implementation 'com.applovin.mediation:mintegral-adapter:16.9.51.0'
+        implementation 'com.applovin.mediation:mintegral-adapter:16.9.61.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MOBILEFUSE == true) {
@@ -198,7 +198,7 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_PANGLE == true) {
-        implementation 'com.applovin.mediation:bytedance-adapter:6.5.0.6.0'
+        implementation 'com.applovin.mediation:bytedance-adapter:6.5.0.8.1'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_PUBMATIC == true) {

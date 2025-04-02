@@ -168,26 +168,6 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
 
         AppLovinSdkSettings settings = appLovinSdk.getSettings();
 
-        String MengineAppLovinPlugin_CCPA = this.getMetaDataString(METADATA_CCPA);
-
-        this.logMessage("%s: %s"
-            , METADATA_CCPA
-            , MengineAppLovinPlugin_CCPA
-        );
-
-        if (MengineAppLovinPlugin_CCPA.equalsIgnoreCase("YES") == true) {
-            AppLovinPrivacySettings.setDoNotSell(true, application);
-        } else if (MengineAppLovinPlugin_CCPA.equalsIgnoreCase("NO") == true) {
-            AppLovinPrivacySettings.setDoNotSell(false, application);
-        } else if (MengineAppLovinPlugin_CCPA.equalsIgnoreCase("UNKNOWN") == true) {
-            // Nothing
-        } else {
-            this.invalidInitialize("invalid %s: %s [YES|NO|UNKNOWN]"
-                , METADATA_CCPA
-                , MengineAppLovinPlugin_CCPA
-            );
-        }
-
         boolean MengineAppLovinPlugin_EnablePrivacyPolicyFlow = this.getMetaDataBoolean(METADATA_ENABLE_PRIVACY_POLICY_FLOW);
 
         if (MengineAppLovinPlugin_EnablePrivacyPolicyFlow == true) {

@@ -52,7 +52,7 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Max
 
     @Override
     public void initialize(@NonNull MengineApplication application) {
-        MaxAppOpenAd appOpenAd = new MaxAppOpenAd(m_adUnitId, application);
+        MaxAppOpenAd appOpenAd = new MaxAppOpenAd(m_adUnitId);
 
         appOpenAd.setListener( this );
         appOpenAd.setRequestListener( this );

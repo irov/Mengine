@@ -30,7 +30,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DocumentService::_initializeService()
     {
-        m_factoryDocument = Helper::makeFactoryPoolWithoutMutex<Document, 1024>( nullptr );
+        m_factoryDocument = Helper::makeFactoryPool<Document, 1024>( nullptr );
 
         SERVICE_WAIT( ThreadSystemInterface, [this]()
         {

@@ -67,7 +67,7 @@ public class MengineAppLovinMRECAd extends MengineAppLovinBase implements MaxAdR
     public void initialize(@NonNull MengineApplication application) {
         super.initialize(application);
 
-        MaxAdView adView = new MaxAdView(m_adUnitId, MaxAdFormat.MREC, application);
+        MaxAdView adView = new MaxAdView(m_adUnitId, MaxAdFormat.MREC);
 
         adView.setPlacement(m_placement);
 

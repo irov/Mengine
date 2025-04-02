@@ -110,7 +110,9 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void __ae_movie_resource_image_release( const aeMovieResourceImage * _resource )
         {
-            Movie2Data::ImageDesc * image_desc = reinterpret_cast<Movie2Data::ImageDesc *>(ae_get_movie_resource_userdata( (const aeMovieResource *)_resource ));
+            ae_userdata_t ud = ae_get_movie_resource_userdata( (const aeMovieResource *)_resource );
+
+            Movie2Data::ImageDesc * image_desc = reinterpret_cast<Movie2Data::ImageDesc *>(ud);
 
             ResourceImage * resourceImage = image_desc->resourceImage;
 

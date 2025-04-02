@@ -47,7 +47,7 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         template<class Type, uint32_t Count, class F = FactoryWithMutex>
-        FactoryInterfacePtr makeFactoryPoolWithoutMutex( const DocumentInterfacePtr & _doc )
+        FactoryInterfacePtr makeFactoryPool( const DocumentInterfacePtr & _doc )
         {
             FactoryInterfacePtr factory = Helper::makeFactorableUnique<FactoryPool<Type, Count, F>>( _doc );
 
@@ -66,7 +66,7 @@ namespace Mengine
         template<class Type, uint32_t Count, class F = FactoryWithMutex>
         FactoryInterfacePtr makeFactoryPoolWithMutex( const ThreadMutexInterfacePtr & _mutex, const DocumentInterfacePtr & _doc )
         {
-            FactoryInterfacePtr factory = Helper::makeFactoryPoolWithoutMutex<Type, Count, F>( _doc );
+            FactoryInterfacePtr factory = Helper::makeFactoryPool<Type, Count, F>( _doc );
 
             factory->setMutex( _mutex );
 
@@ -74,7 +74,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class Type, uint32_t Count, class F = FactoryWithMutex>
-        FactoryInterfacePtr makeFactoryPool( const DocumentInterfacePtr & _doc )
+        FactoryInterfacePtr makeFactoryPoolWithMutex( const DocumentInterfacePtr & _doc )
         {
             ThreadMutexInterfacePtr mutex = Helper::createThreadMutex( _doc );
 

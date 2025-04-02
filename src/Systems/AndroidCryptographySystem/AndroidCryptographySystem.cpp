@@ -49,7 +49,7 @@ namespace Mengine
 
         if( _lowercase == false )
         {
-            for( uint32_t i = 0; i != _length; ++i )
+            for( uint32_t i = 0; i != bytes_needed; ++i )
             {
                 uint8_t b = random_bytes[i];
 
@@ -58,7 +58,7 @@ namespace Mengine
         }
         else
         {
-            for( uint32_t i = 0; i != _length; ++i )
+            for( uint32_t i = 0; i != bytes_needed; ++i )
             {
                 uint8_t b = random_bytes[i];
 

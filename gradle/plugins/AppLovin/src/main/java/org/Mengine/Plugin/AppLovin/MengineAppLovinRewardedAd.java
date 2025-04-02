@@ -53,7 +53,7 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Ma
     public void initialize(@NonNull MengineApplication application) {
         super.initialize(application);
 
-        MaxRewardedAd rewardedAd = MaxRewardedAd.getInstance(m_adUnitId, application);
+        MaxRewardedAd rewardedAd = MaxRewardedAd.getInstance(m_adUnitId);
 
         rewardedAd.setListener(this);
         rewardedAd.setRequestListener(this);

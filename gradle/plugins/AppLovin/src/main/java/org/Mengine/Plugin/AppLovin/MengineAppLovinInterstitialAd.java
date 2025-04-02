@@ -47,7 +47,7 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
     public void initialize(@NonNull MengineApplication application) {
         super.initialize(application);
 
-        MaxInterstitialAd interstitialAd = new MaxInterstitialAd(m_adUnitId, application);
+        MaxInterstitialAd interstitialAd = new MaxInterstitialAd(m_adUnitId);
 
         interstitialAd.setListener(this);
         interstitialAd.setRequestListener(this);

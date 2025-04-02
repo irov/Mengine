@@ -233,7 +233,9 @@ public class MengineActivity extends AppCompatActivity {
                 , permission
             );
 
-            onSuccess.run();
+            if (onSuccess != null) {
+                onSuccess.run();
+            }
 
             return;
         }

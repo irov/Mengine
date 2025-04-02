@@ -2060,12 +2060,42 @@ namespace Mengine
 
         ae_userdata_t resource_userdata = ae_get_movie_layer_data_resource_userdata( _callbackData->layer_data );
 
-        Movie2Data::ImageDesc * image_desc = reinterpret_cast<Movie2Data::ImageDesc *>(resource_userdata);
+        aeMovieLayerTypeEnum layer_type = ae_get_movie_layer_data_type( _callbackData->layer_data );
 
-        ResourceImage * resourceImage = image_desc->resourceImage;
+        switch( layer_type )
+        {
+        case AE_MOVIE_LAYER_TYPE_SOLID:
+            {
+                desc->materials[EMB_NORMAL][0] = Helper::makeSolidMaterial( materialNameBlend_s, EMB_NORMAL, false, MENGINE_DOCUMENT_FORWARD_PTR( movie2 ) );
+                desc->materials[EMB_NORMAL][1] = Helper::makeSolidMaterial( materialNameBlendExternalAlpha_s, EMB_NORMAL, false, MENGINE_DOCUMENT_FORWARD_PTR( movie2 ) );
+            } break;
+        case AE_MOVIE_LAYER_TYPE_IMAGE:
+            {
+                Movie2Data::ImageDesc * image_desc = reinterpret_cast<Movie2Data::ImageDesc *>(resource_userdata);
 
-        desc->materials[EMB_NORMAL][0] = Helper::makeImageMaterial( resourceImage, materialNameBlend_s, EMB_NORMAL, false, false, MENGINE_DOCUMENT_FORWARD_PTR( movie2 ) );
-        desc->materials[EMB_NORMAL][1] = Helper::makeImageMaterial( resourceImage, materialNameBlendExternalAlpha_s, EMB_NORMAL, false, false, MENGINE_DOCUMENT_FORWARD_PTR( movie2 ) );
+                ResourceImage * resourceImage = image_desc->resourceImage;
+
+                desc->materials[EMB_NORMAL][0] = Helper::makeImageMaterial( resourceImage, materialNameBlend_s, EMB_NORMAL, false, false, MENGINE_DOCUMENT_FORWARD_PTR( movie2 ) );
+                desc->materials[EMB_NORMAL][1] = Helper::makeImageMaterial( resourceImage, materialNameBlendExternalAlpha_s, EMB_NORMAL, false, false, MENGINE_DOCUMENT_FORWARD_PTR( movie2 ) );
+            } break;
+        case AE_MOVIE_LAYER_TYPE_VIDEO:
+            {
+                ResourceImage * resourceImage = reinterpret_cast<ResourceImage *>(resource_userdata);
+
+                desc->materials[EMB_NORMAL][0] = Helper::makeImageMaterial( resourceImage, materialNameBlend_s, EMB_NORMAL, false, false, MENGINE_DOCUMENT_FORWARD_PTR( movie2 ) );
+                desc->materials[EMB_NORMAL][1] = Helper::makeImageMaterial( resourceImage, materialNameBlendExternalAlpha_s, EMB_NORMAL, false, false, MENGINE_DOCUMENT_FORWARD_PTR( movie2 ) );
+            } break;
+        default:
+            {
+                LOGGER_ERROR( "movie '%s' invalid shader '%s' not support layer type %d"
+                    , movie2->getName().c_str()
+                    , _callbackData->name
+                    , layer_type
+                );
+
+                return AE_FALSE;
+            }break;
+        }
 
         desc->flags = _callbackData->flags;
         desc->indexOffset = 0;

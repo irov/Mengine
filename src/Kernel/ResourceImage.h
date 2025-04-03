@@ -9,6 +9,10 @@
 #include "math/vec4.h"
 #include "math/uv4.h"
 
+#ifndef MENGINE_RESOURCEIMAGE_MAX_TEXTURE
+#define MENGINE_RESOURCEIMAGE_MAX_TEXTURE 2
+#endif
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -34,23 +38,16 @@ namespace Mengine
         MENGINE_INLINE void setOffset( const mt::vec2f & _size );
         MENGINE_INLINE const mt::vec2f & getOffset() const;
 
-        MENGINE_INLINE void setUVImage( const mt::uv4f & _uv );
-        MENGINE_INLINE const mt::uv4f & getUVImage() const;
+        MENGINE_INLINE void setUV( size_t _index, const mt::uv4f & _uv );
+        MENGINE_INLINE const mt::uv4f & getUV( size_t _index ) const;
 
-        MENGINE_INLINE void setUVAlpha( const mt::uv4f & _uv );
-        MENGINE_INLINE const mt::uv4f & getUVAlpha() const;
+        MENGINE_INLINE void setUVTexture( size_t _index, const mt::uv4f & _uv );
+        MENGINE_INLINE const mt::uv4f & getUVTexture( size_t _index ) const;
 
-        MENGINE_INLINE void setUVTextureImage( const mt::uv4f & _uv );
-        MENGINE_INLINE const mt::uv4f & getUVTextureImage() const;
+        MENGINE_INLINE bool isUVIdentity( size_t _index ) const;
 
-        MENGINE_INLINE void setUVTextureAlpha( const mt::uv4f & _uv );
-        MENGINE_INLINE const mt::uv4f & getUVTextureAlpha() const;
-
-        MENGINE_INLINE void setUVImageRotate( bool _rotate );
-        MENGINE_INLINE bool isUVImageRotate() const;
-
-        MENGINE_INLINE void setUVAlphaRotate( bool _rotate );
-        MENGINE_INLINE bool isUVAlphaRotate() const;
+        MENGINE_INLINE void setUVRotate( size_t _index, bool _rotate );
+        MENGINE_INLINE bool isUVRotate( size_t _index ) const;
 
         MENGINE_INLINE void setAlpha( bool _alpha );
         MENGINE_INLINE bool hasAlpha() const;
@@ -65,26 +62,21 @@ namespace Mengine
         MENGINE_INLINE bool isPow2() const;
 
     public:
-        void setTexture( const RenderTextureInterfacePtr & _texture );
-        MENGINE_INLINE const RenderTextureInterfacePtr & getTexture() const;
-
-        void setTextureAlpha( const RenderTextureInterfacePtr & _textureAlpha );
-        MENGINE_INLINE const RenderTextureInterfacePtr & getTextureAlpha() const;
+        void setTexture( size_t _index, const RenderTextureInterfacePtr & _texture );
+        MENGINE_INLINE const RenderTextureInterfacePtr & getTexture( size_t _index ) const;
 
         MENGINE_INLINE void setColor( const Color & _color );
         MENGINE_INLINE const Color & getColor() const;
 
     public:
-        void correctUVImage( const mt::vec2f & _in, mt::vec2f * const _out ) const;
-        void correctUVAlpha( const mt::vec2f & _in, mt::vec2f * const _out ) const;
+        void correctUV( size_t _index, const mt::vec2f & _in, mt::vec2f * const _out ) const;
 
     protected:
         bool _compile() override;
         void _release() override;
 
     private:
-        RenderTextureInterfacePtr m_texture;
-        RenderTextureInterfacePtr m_textureAlpha;
+        RenderTextureInterfacePtr m_texture[MENGINE_RESOURCEIMAGE_MAX_TEXTURE];
 
         Color m_color;
 
@@ -92,20 +84,15 @@ namespace Mengine
         mt::vec2f m_size;
         mt::vec2f m_offset;
 
-        mt::uv4f m_uvImage;
-        mt::uv4f m_uvAlpha;
+        mt::uv4f m_uv[MENGINE_RESOURCEIMAGE_MAX_TEXTURE];
+        mt::uv4f m_uvTexture[MENGINE_RESOURCEIMAGE_MAX_TEXTURE];
+        bool m_uvRotate[MENGINE_RESOURCEIMAGE_MAX_TEXTURE];
+        bool m_uvIdentity[MENGINE_RESOURCEIMAGE_MAX_TEXTURE];
 
-        mt::uv4f m_uvTextureImage;
-        mt::uv4f m_uvTextureAlpha;
-
-        bool m_uvImageRotate;
-        bool m_uvAlphaRotate;
         bool m_hasAlpha;
         bool m_isPremultiply;
         bool m_trimAtlas;
         bool m_isPow2;
-        bool m_isUVImageIdentity;
-        bool m_isUVAlphaIdentity;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveResourcePtr<ResourceImage> ResourceImagePtr;
@@ -140,58 +127,56 @@ namespace Mengine
         return m_offset;
     }
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE void ResourceImage::setUVImage( const mt::uv4f & _uv )
+    MENGINE_INLINE void ResourceImage::setUV( size_t _index, const mt::uv4f & _uv )
     {
-        m_uvImage = _uv;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE const mt::uv4f & ResourceImage::getUVImage() const
-    {
-        return m_uvImage;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE void ResourceImage::setUVAlpha( const mt::uv4f & _uv )
-    {
-        m_uvAlpha = _uv;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE const mt::uv4f & ResourceImage::getUVAlpha() const
-    {
-        return m_uvAlpha;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE void ResourceImage::setUVTextureImage( const mt::uv4f & _uv )
-    {
-        m_uvTextureImage = _uv;
+        MENGINE_ASSERTION_FATAL( _index < MENGINE_RESOURCEIMAGE_MAX_TEXTURE, "resource image '%s' index %zu out of range"
+            , this->getName().c_str()
+            , _index
+        );
 
-        m_isUVImageIdentity = mt::uv4_is_identity( m_uvTextureImage );
+        m_uv[_index] = _uv;
     }
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE const mt::uv4f & ResourceImage::getUVTextureImage() const
+    MENGINE_INLINE const mt::uv4f & ResourceImage::getUV( size_t _index ) const
     {
-        return m_uvTextureImage;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE void ResourceImage::setUVTextureAlpha( const mt::uv4f & _uv )
-    {
-        m_uvTextureAlpha = _uv;
+        MENGINE_ASSERTION_FATAL( _index < MENGINE_RESOURCEIMAGE_MAX_TEXTURE, "resource image '%s' index %zu out of range"
+            , this->getName().c_str()
+            , _index
+        );
 
-        m_isUVAlphaIdentity = mt::uv4_is_identity( m_uvTextureAlpha );
+        return m_uv[_index];
     }
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE const mt::uv4f & ResourceImage::getUVTextureAlpha() const
+    MENGINE_INLINE void ResourceImage::setUVTexture( size_t _index, const mt::uv4f & _uv )
     {
-        return m_uvTextureAlpha;
+        MENGINE_ASSERTION_FATAL( _index < MENGINE_RESOURCEIMAGE_MAX_TEXTURE, "resource image '%s' index %zu out of range"
+            , this->getName().c_str()
+            , _index
+        );
+
+        m_uvTexture[_index] = _uv;
+
+        m_uvIdentity[_index] = mt::uv4_is_identity( _uv );
     }
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE const RenderTextureInterfacePtr & ResourceImage::getTexture() const
+    MENGINE_INLINE const mt::uv4f & ResourceImage::getUVTexture( size_t _index ) const
     {
-        return m_texture;
+        MENGINE_ASSERTION_FATAL( _index < MENGINE_RESOURCEIMAGE_MAX_TEXTURE, "resource image '%s' index %zu out of range"
+            , this->getName().c_str()
+            , _index 
+        );
+
+        return m_uvTexture[_index];
     }
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE const RenderTextureInterfacePtr & ResourceImage::getTextureAlpha() const
+    MENGINE_INLINE const RenderTextureInterfacePtr & ResourceImage::getTexture( size_t _index ) const
     {
-        return m_textureAlpha;
+        MENGINE_ASSERTION_FATAL( _index < MENGINE_RESOURCEIMAGE_MAX_TEXTURE, "resource image '%s' index %zu out of range"
+            , this->getName().c_str()
+            , _index
+        );
+
+        return m_texture[_index];
     }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE void ResourceImage::setColor( const Color & _color )
@@ -204,24 +189,34 @@ namespace Mengine
         return m_color;
     }
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE void ResourceImage::setUVImageRotate( bool _rotate )
+    MENGINE_INLINE bool ResourceImage::isUVIdentity( size_t _index ) const
     {
-        m_uvImageRotate = _rotate;
+        MENGINE_ASSERTION_FATAL( _index < MENGINE_RESOURCEIMAGE_MAX_TEXTURE, "resource image '%s' index %zu out of range"
+            , this->getName().c_str()
+            , _index
+        );
+
+        return m_uvIdentity[_index];
     }
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE bool ResourceImage::isUVImageRotate() const
+    MENGINE_INLINE void ResourceImage::setUVRotate( size_t _index, bool _rotate )
     {
-        return m_uvImageRotate;
+        MENGINE_ASSERTION_FATAL( _index < MENGINE_RESOURCEIMAGE_MAX_TEXTURE, "resource image '%s' index %zu out of range"
+            , this->getName().c_str()
+            , _index
+        );
+
+        m_uvRotate[_index] = _rotate;
     }
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE void ResourceImage::setUVAlphaRotate( bool _rotate )
+    MENGINE_INLINE bool ResourceImage::isUVRotate( size_t _index ) const
     {
-        m_uvAlphaRotate = _rotate;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE bool ResourceImage::isUVAlphaRotate() const
-    {
-        return m_uvAlphaRotate;
+        MENGINE_ASSERTION_FATAL( _index < MENGINE_RESOURCEIMAGE_MAX_TEXTURE, "resource image '%s' index %zu out of range"
+            , this->getName().c_str()
+            , _index
+        );
+
+        return m_uvRotate[_index];
     }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE void ResourceImage::setAlpha( bool _alpha )

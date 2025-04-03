@@ -373,14 +373,14 @@ namespace Mengine
 
         const ResourceImagePtr & resourceImage = m_resourceImageSequence->getSequenceResource( m_currentFrame );
 
-        const RenderTextureInterfacePtr & texture = resourceImage->getTexture();
+        const RenderTextureInterfacePtr & texture = resourceImage->getTexture( 0 );
 
         if( texture == nullptr )
         {
             return 0;
         }
 
-        const RenderTextureInterfacePtr & textureAlpha = resourceImage->getTextureAlpha();
+        const RenderTextureInterfacePtr & textureAlpha = resourceImage->getTexture( 1 );
 
         if( textureAlpha == nullptr )
         {
@@ -398,26 +398,9 @@ namespace Mengine
 
         const ResourceImagePtr & resourceImage = m_resourceImageSequence->getSequenceResource( m_currentFrame );
 
-        switch( _index )
-        {
-        case 0:
-            {
-                const mt::uv4f & uv = resourceImage->getUVTextureImage();
+        const mt::uv4f & uv = resourceImage->getUVTexture( _index );
 
-                return uv;
-            } break;
-        case 1:
-            {
-                const mt::uv4f & uv = resourceImage->getUVTextureAlpha();
-
-                return uv;
-            } break;
-        default:
-            {
-            }break;
-        }
-
-        return mt::uv4f::identity();
+        return uv;
     }
     //////////////////////////////////////////////////////////////////////////
     void SurfaceImageSequence::correctUV( uint32_t _index, const mt::vec2f & _in, mt::vec2f * const _out ) const
@@ -428,20 +411,7 @@ namespace Mengine
 
         const ResourceImagePtr & resourceImage = m_resourceImageSequence->getSequenceResource( m_currentFrame );
 
-        switch( _index )
-        {
-        case 0:
-            {
-                resourceImage->correctUVImage( _in, _out );
-            } break;
-        case 1:
-            {
-                resourceImage->correctUVAlpha( _in, _out );
-            } break;
-        default:
-            {
-            }break;
-        }
+        resourceImage->correctUV( _index, _in, _out );
     }
     //////////////////////////////////////////////////////////////////////////
     const Color & SurfaceImageSequence::getColor() const

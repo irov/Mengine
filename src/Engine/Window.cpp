@@ -89,25 +89,22 @@ namespace Mengine
             const mt::vec2f & size = image->getSize();
             edge.initialSize = size;
 
-            const RenderTextureInterfacePtr & texture = image->getTexture();
-            const RenderTextureInterfacePtr & textureAlpha = image->getTextureAlpha();
+            RenderTextureInterfacePtr textures[2];
+            textures[0] = image->getTexture( 0 );
+            textures[1] = image->getTexture( 1 );
 
             uint32_t textureCount = 0;
 
             mt::uv4f uvs[2];
-            uvs[0] = image->getUVTextureImage();
-            uvs[1] = image->getUVTextureAlpha();
-
-            RenderTextureInterfacePtr textures[2];
-            textures[0] = texture;
-            textures[1] = textureAlpha;
-
+            uvs[0] = image->getUVTexture( 0 );
+            uvs[1] = image->getUVTexture( 1 );
+            
             EMaterial materialId = EM_DEBUG;
 
             bool wrapU = c_WindowWrapU[i];
             bool wrapV = c_WindowWrapV[i];
 
-            if( textureAlpha != nullptr )
+            if( textures[1] != nullptr )
             {
                 if( wrapU == false && wrapV == false )
                 {
@@ -128,7 +125,7 @@ namespace Mengine
 
                 textureCount = 2;
             }
-            else if( texture != nullptr )
+            else if( textures[0] != nullptr )
             {
                 if( wrapU == false && wrapV == false )
                 {
@@ -380,8 +377,8 @@ namespace Mengine
 
             if( image != nullptr )
             {
-                const mt::uv4f & uv_image = image->getUVTextureImage();
-                const mt::uv4f & uv_alpha = image->getUVTextureAlpha();
+                const mt::uv4f & uv_image = image->getUVTexture( 0 );
+                const mt::uv4f & uv_alpha = image->getUVTexture( 1 );
 
                 mt::uv4_scale( &uv1, uv_image, uvs[i] );
                 mt::uv4_scale( &uv2, uv_alpha, uvs[i] );
@@ -400,7 +397,6 @@ namespace Mengine
 
             v1.uv[0] = uv1[1];
             v1.uv[1] = uv2[1];
-
 
             RenderVertex2D & v2 = _vertices[i * 4 + 2];
             mt::mul_v3_v3_m4( &v2.position, mt::vec3f( quad.c, 0.f ), worldMatrix );

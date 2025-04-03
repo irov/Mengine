@@ -80,11 +80,11 @@ namespace Mengine
             return false;
         }
 
-        const RenderTextureInterfacePtr & texture = m_resourceImageRGB->getTexture();
-        this->setTexture( texture );
+        const RenderTextureInterfacePtr & texture = m_resourceImageRGB->getTexture( 0 );
+        this->setTexture( 0, texture );
 
-        const RenderTextureInterfacePtr & textureAlpha = m_resourceImageAlpha->getTexture();
-        this->setTextureAlpha( textureAlpha );
+        const RenderTextureInterfacePtr & textureAlpha = m_resourceImageAlpha->getTexture( 0 );
+        this->setTexture( 1, textureAlpha );
 
         bool pow2 = texture->isPow2();
         this->setPow2( pow2 );
@@ -99,8 +99,8 @@ namespace Mengine
     {
         ResourceImage::_release();
 
-        this->setTexture( nullptr );
-        this->setTextureAlpha( nullptr );
+        this->setTexture( 0, nullptr );
+        this->setTexture( 1, nullptr );
 
         m_resourceImageRGB->release();
         m_resourceImageAlpha->release();
@@ -121,11 +121,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceImageSubstractRGBAndAlpha::correctUVTexture()
     {
-        const mt::uv4f & uvImage = this->getUVImage();
-        this->setUVTextureImage( uvImage );
+        const mt::uv4f & uvImage = this->getUV( 0 );
+        this->setUVTexture( 0, uvImage );
 
-        const mt::uv4f & uvAlpha = this->getUVAlpha();
-        this->setUVTextureAlpha( uvAlpha );
+        const mt::uv4f & uvAlpha = this->getUV( 1 );
+        this->setUVTexture( 1, uvAlpha );
     }
     /////////////////////////////////////////////////////////////////////////
 }

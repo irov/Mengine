@@ -55,11 +55,16 @@ namespace Mengine
         const mt::uv4f & uvImage = metadata->get_Image_UVRGB();
         const mt::uv4f & uvAlpha = metadata->get_Image_UVAlpha();
 
-        resource->setUVImage( uvImage );
-        resource->setUVAlpha( uvAlpha );
+        resource->setUV( 0, uvImage );
+        resource->setUV( 1, uvAlpha );
 
-        metadata->getm_Image_UVRGBRotate( resource, &ResourceImageSubstractRGBAndAlpha::setUVImageRotate );
-        metadata->getm_Image_UVAlphaRotate( resource, &ResourceImageSubstractRGBAndAlpha::setUVAlphaRotate );
+        bool uvImageRotate = false;
+        metadata->get_Image_UVRGBRotate( &uvImageRotate );
+        resource->setUVRotate( 0, uvImageRotate );
+
+        bool uvAlphaRotate = false;
+        metadata->get_Image_UVAlphaRotate( &uvAlphaRotate );
+        resource->setUVRotate( 1, uvAlphaRotate );
 
         const mt::vec2f & maxSize = metadata->get_Image_MaxSize();
 

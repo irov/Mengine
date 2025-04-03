@@ -132,25 +132,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const mt::uv4f & SurfaceTrackMatte::getUV( uint32_t _index ) const
     {
-        switch( _index )
-        {
-        case 0:
-            {
-                const mt::uv4f & uv = m_resourceImage->getUVTextureImage();
+        const mt::uv4f & uv = m_resourceImage->getUVTexture( _index );
 
-                return uv;
-            }break;
-        case 1:
-            {
-                const mt::uv4f & uv = m_resourceTrackMatteImage->getUVTextureImage();
-
-                return uv;
-            }break;
-        default:
-            break;
-        }
-
-        return mt::uv4f::identity();
+        return uv;
     }
     //////////////////////////////////////////////////////////////////////////
     const Color & SurfaceTrackMatte::getColor() const
@@ -212,18 +196,18 @@ namespace Mengine
     {
         RenderMaterialInterfacePtr material = nullptr;
 
-        const RenderTextureInterfacePtr & textureAlpha = m_resourceImage->getTextureAlpha();
+        const RenderTextureInterfacePtr & textureAlpha = m_resourceImage->getTexture( 1 );
 
         if( textureAlpha == nullptr )
         {
             RenderTextureInterfacePtr textures[2];
-            textures[0] = m_resourceImage->getTexture();
+            textures[0] = m_resourceImage->getTexture( 0 );
 
-            const RenderTextureInterfacePtr & trackMatteTextureAlpha = m_resourceTrackMatteImage->getTextureAlpha();
+            const RenderTextureInterfacePtr & trackMatteTextureAlpha = m_resourceTrackMatteImage->getTexture( 1 );
 
             if( trackMatteTextureAlpha == nullptr )
             {
-                textures[1] = m_resourceTrackMatteImage->getTexture();
+                textures[1] = m_resourceTrackMatteImage->getTexture( 0 );
             }
             else
             {
@@ -325,14 +309,14 @@ namespace Mengine
         else
         {
             RenderTextureInterfacePtr textures[3];
-            textures[0] = m_resourceImage->getTexture();
+            textures[0] = m_resourceImage->getTexture( 0 );
             textures[1] = textureAlpha;
 
-            const RenderTextureInterfacePtr & trackMatteTextureAlpha = m_resourceTrackMatteImage->getTextureAlpha();
+            const RenderTextureInterfacePtr & trackMatteTextureAlpha = m_resourceTrackMatteImage->getTexture( 1 );
 
             if( trackMatteTextureAlpha == nullptr )
             {
-                textures[2] = m_resourceTrackMatteImage->getTexture();
+                textures[2] = m_resourceTrackMatteImage->getTexture( 0 );
             }
             else
             {

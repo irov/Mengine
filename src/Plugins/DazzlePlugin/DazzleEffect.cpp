@@ -432,7 +432,7 @@ namespace Mengine
         {
             RenderVertex2D & r = _vertices[it];
 
-            m_resourceImage->correctUVImage( r.uv[0], &(r.uv[0]) );
+            m_resourceImage->correctUV( 0, r.uv[0], &(r.uv[0]) );
         }
     }
     //////////////////////////////////////////////////////////////////////////

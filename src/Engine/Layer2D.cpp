@@ -264,7 +264,7 @@ namespace Mengine
             return false;
         }
 
-        const RenderTextureInterfacePtr & renderTargetTextureMask = m_resourceImageMask->getTexture();
+        const RenderTextureInterfacePtr & renderTargetTextureMask = m_resourceImageMask->getTexture( 0 );
 
         RenderTextureInterfacePtr texures[2];
         texures[0] = renderTargetTexture;

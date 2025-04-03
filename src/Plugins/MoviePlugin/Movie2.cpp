@@ -2046,17 +2046,26 @@ namespace Mengine
             return AE_FALSE;
         }
 
-        ArrayString<64> materialNameBlend;
-        materialNameBlend.append( _callbackData->description );
-        materialNameBlend.append( "_Blend" );
+        ArrayString<64> materialNameColorBlend;
+        materialNameColorBlend.append( "Color_" );
+        materialNameColorBlend.append( _callbackData->description );
+        materialNameColorBlend.append( "_Blend" );
 
-        ConstString materialNameBlend_s = Helper::stringizeString( materialNameBlend.c_str() );
+        ConstString materialNameColorBlend_s = Helper::stringizeString( materialNameColorBlend.c_str() );
 
-        ArrayString<64> materialNameBlendExternalAlpha;
-        materialNameBlendExternalAlpha.append( _callbackData->description );
-        materialNameBlendExternalAlpha.append( "_Blend_ExternalAlpha" );
+        ArrayString<64> materialNameTextureBlend;
+        materialNameTextureBlend.append( "Texture_" );
+        materialNameTextureBlend.append( _callbackData->description );
+        materialNameTextureBlend.append( "_Blend" );
 
-        ConstString materialNameBlendExternalAlpha_s = Helper::stringizeString( materialNameBlendExternalAlpha.c_str() );
+        ConstString materialNameTextureBlend_s = Helper::stringizeString( materialNameTextureBlend.c_str() );
+
+        ArrayString<64> materialNameTextureBlendExternalAlpha;
+        materialNameTextureBlendExternalAlpha.append( "Texture_" );
+        materialNameTextureBlendExternalAlpha.append( _callbackData->description );
+        materialNameTextureBlendExternalAlpha.append( "_Blend_ExternalAlpha" );
+
+        ConstString materialNameTextureBlendExternalAlpha_s = Helper::stringizeString( materialNameTextureBlendExternalAlpha.c_str() );
 
         ae_userdata_t resource_userdata = ae_get_movie_layer_data_resource_userdata( _callbackData->layer_data );
 
@@ -2066,8 +2075,8 @@ namespace Mengine
         {
         case AE_MOVIE_LAYER_TYPE_SOLID:
             {
-                desc->materials[EMB_NORMAL][0] = Helper::makeSolidMaterial( materialNameBlend_s, EMB_NORMAL, false, MENGINE_DOCUMENT_FORWARD_PTR( movie2 ) );
-                desc->materials[EMB_NORMAL][1] = Helper::makeSolidMaterial( materialNameBlendExternalAlpha_s, EMB_NORMAL, false, MENGINE_DOCUMENT_FORWARD_PTR( movie2 ) );
+                desc->materials[EMB_NORMAL][0] = Helper::makeSolidMaterial( materialNameColorBlend_s, EMB_NORMAL, false, MENGINE_DOCUMENT_FORWARD_PTR( movie2 ) );
+                desc->materials[EMB_NORMAL][1] = nullptr;
             } break;
         case AE_MOVIE_LAYER_TYPE_IMAGE:
             {
@@ -2075,15 +2084,15 @@ namespace Mengine
 
                 ResourceImage * resourceImage = image_desc->resourceImage;
 
-                desc->materials[EMB_NORMAL][0] = Helper::makeImageMaterial( resourceImage, materialNameBlend_s, EMB_NORMAL, false, false, MENGINE_DOCUMENT_FORWARD_PTR( movie2 ) );
-                desc->materials[EMB_NORMAL][1] = Helper::makeImageMaterial( resourceImage, materialNameBlendExternalAlpha_s, EMB_NORMAL, false, false, MENGINE_DOCUMENT_FORWARD_PTR( movie2 ) );
+                desc->materials[EMB_NORMAL][0] = Helper::makeImageMaterial( resourceImage, materialNameTextureBlend_s, EMB_NORMAL, false, false, MENGINE_DOCUMENT_FORWARD_PTR( movie2 ) );
+                desc->materials[EMB_NORMAL][1] = Helper::makeImageMaterial( resourceImage, materialNameTextureBlendExternalAlpha_s, EMB_NORMAL, false, false, MENGINE_DOCUMENT_FORWARD_PTR( movie2 ) );
             } break;
         case AE_MOVIE_LAYER_TYPE_VIDEO:
             {
                 ResourceImage * resourceImage = reinterpret_cast<ResourceImage *>(resource_userdata);
 
-                desc->materials[EMB_NORMAL][0] = Helper::makeImageMaterial( resourceImage, materialNameBlend_s, EMB_NORMAL, false, false, MENGINE_DOCUMENT_FORWARD_PTR( movie2 ) );
-                desc->materials[EMB_NORMAL][1] = Helper::makeImageMaterial( resourceImage, materialNameBlendExternalAlpha_s, EMB_NORMAL, false, false, MENGINE_DOCUMENT_FORWARD_PTR( movie2 ) );
+                desc->materials[EMB_NORMAL][0] = Helper::makeImageMaterial( resourceImage, materialNameTextureBlend_s, EMB_NORMAL, false, false, MENGINE_DOCUMENT_FORWARD_PTR( movie2 ) );
+                desc->materials[EMB_NORMAL][1] = Helper::makeImageMaterial( resourceImage, materialNameTextureBlendExternalAlpha_s, EMB_NORMAL, false, false, MENGINE_DOCUMENT_FORWARD_PTR( movie2 ) );
             } break;
         default:
             {
@@ -2965,10 +2974,21 @@ namespace Mengine
 
                         EMaterialBlendMode blend_mode = Detail::getMovieBlendMode( mesh.blend_mode );
 
-                        const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
-                            ->getSolidMaterial( blend_mode, false );
+                        if( mesh.shader_userdata == AE_NULLPTR )
+                        {
+                            const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
+                                ->getSolidMaterial( blend_mode, false );
 
-                        _renderPipeline->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FORWARD );
+                            _renderPipeline->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FORWARD );
+                        }
+                        else
+                        {
+                            Movie2ShaderDesc * shader_desc = reinterpret_cast<Movie2ShaderDesc *>(mesh.shader_userdata);
+
+                            const RenderMaterialInterfacePtr & material = shader_desc->materials[blend_mode][0];
+
+                            _renderPipeline->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FORWARD );
+                        }
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SEQUENCE:
                 case AE_MOVIE_LAYER_TYPE_IMAGE:
@@ -3028,8 +3048,8 @@ namespace Mengine
                                 mt::vec2f vuv;
                                 vuv.from_f2( uv );
 
-                                resourceImage->correctUVImage( vuv, v.uv + 0 );
-                                resourceImage->correctUVAlpha( vuv, v.uv + 1 );
+                                resourceImage->correctUV( 0, vuv, v.uv + 0 );
+                                resourceImage->correctUV( 1, vuv, v.uv + 1 );
                             }
                         }
                         else
@@ -3057,10 +3077,10 @@ namespace Mengine
 
                                 mt::vec2f uv_zero;
                                 mt::vec2f uv_one;
-                                resourceImage->correctUVImage( mt::vec2f( 0.f, 0.f ), &uv_zero );
-                                resourceImage->correctUVImage( mt::vec2f( 1.f, 1.f ), &uv_one );
+                                resourceImage->correctUV( 0, mt::vec2f( 0.f, 0.f ), &uv_zero );
+                                resourceImage->correctUV( 0, mt::vec2f( 1.f, 1.f ), &uv_one );
 
-                                const RenderTextureInterfacePtr & texture = resourceImage->getTexture();
+                                const RenderTextureInterfacePtr & texture = resourceImage->getTexture( 0 );
 
                                 const RenderImageInterfacePtr & image = texture->getImage();
 
@@ -3106,7 +3126,7 @@ namespace Mengine
                                 , blend_mode
                             );
 
-                            RenderMaterialInterfacePtr material = shader_desc->materials[EMB_NORMAL][resourceImage->getTextureAlpha() == nullptr ? 0 : 1];
+                            RenderMaterialInterfacePtr material = shader_desc->materials[EMB_NORMAL][resourceImage->getTexture( 1 ) == nullptr ? 0 : 1];
 
                             const RenderProgramVariableInterfacePtr & programVariable = shader_desc->programVariable;
 
@@ -3153,10 +3173,37 @@ namespace Mengine
                             mt::vec2f uv;
                             uv.from_f2( &mesh.uv[index][0] );
 
-                            surface->correctUV( 0, uv, v.uv + 0 );
-                            surface->correctUV( 1, uv, v.uv + 1 );
-
                             v.color = total_mesh_color;
+                        }
+
+                        if( mesh.uv_cache_userdata == AE_NULLPTR )
+                        {
+                            for( ae_uint32_t index = 0; index != mesh.vertexCount; ++index )
+                            {
+                                RenderVertex2D & v = vertices[index];
+
+                                const float * uv = mesh.uv[index];
+
+                                mt::vec2f vuv;
+                                vuv.from_f2( uv );
+
+                                surface->correctUV( 0, vuv, v.uv + 0 );
+                                surface->correctUV( 1, vuv, v.uv + 1 );
+                            }
+                        }
+                        else
+                        {
+                            const mt::vec2f * uvs = reinterpret_cast<const mt::vec2f *>(mesh.uv_cache_userdata);
+
+                            for( ae_uint32_t index = 0; index != mesh.vertexCount; ++index )
+                            {
+                                RenderVertex2D & v = vertices[index];
+
+                                const mt::vec2f & uv = uvs[index];
+
+                                v.uv[0] = uv;
+                                v.uv[1] = uv;
+                            }
                         }
 
                         RenderIndex * indices = indices_buffer + index_iterator;
@@ -3220,7 +3267,7 @@ namespace Mengine
                             mt::vec2f vuv;
                             vuv.from_f2( uv );
 
-                            resourceImage->correctUVImage( vuv, v.uv + 0 );
+                            resourceImage->correctUV( 0, vuv, v.uv + 0 );
 
                             mt::vec2f uv_track_matte;
                             mt::uv4_calc_point(
@@ -3234,7 +3281,7 @@ namespace Mengine
                                 &uv_track_matte
                             );
 
-                            resourceTrackMatteImage->correctUVAlpha( uv_track_matte, v.uv + 1 );
+                            resourceTrackMatteImage->correctUV( 1, uv_track_matte, v.uv + 1 );
 
                             v.color = total_mesh_color;
                         }
@@ -3260,7 +3307,7 @@ namespace Mengine
                             vuv.from_f2( uv );
 
                             mt::vec2f uv_correct;
-                            resourceTrackMatteImage->correctUVAlpha( vuv, &uv_correct );
+                            resourceTrackMatteImage->correctUV( 1, vuv, &uv_correct );
 
                             if( uvbb[0] > uv_correct.x )
                             {
@@ -3345,7 +3392,7 @@ namespace Mengine
                             mt::vec2f vuv;
                             vuv.from_f2( uv );
 
-                            resourceImage->correctUVImage( vuv, v.uv + 0 );
+                            resourceImage->correctUV( 0, vuv, v.uv + 0 );
 
                             mt::vec2f uv_track_matte;
                             mt::uv4_calc_point(
@@ -3359,7 +3406,7 @@ namespace Mengine
                                 &uv_track_matte
                             );
 
-                            resourceTrackMatteImage->correctUVAlpha( uv_track_matte, v.uv + 1 );
+                            resourceTrackMatteImage->correctUV( 1, uv_track_matte, v.uv + 1 );
 
                             v.color = total_mesh_color;
                         }
@@ -3385,7 +3432,7 @@ namespace Mengine
                             vuv.from_f2( uv );
 
                             mt::vec2f uv_correct;
-                            resourceTrackMatteImage->correctUVAlpha( vuv, &uv_correct );
+                            resourceTrackMatteImage->correctUV( 1, vuv, &uv_correct );
 
                             if( uvbb[0] > uv_correct.x )
                             {

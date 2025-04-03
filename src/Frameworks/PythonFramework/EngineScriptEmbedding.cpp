@@ -1335,7 +1335,7 @@ namespace Mengine
                 const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
                     ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
 
-                const RenderTextureInterfacePtr & texture = resource->getTexture();
+                const RenderTextureInterfacePtr & texture = resource->getTexture( 0 );
 
                 ContentInterfacePtr content = Helper::makeFileContent( fileGroup, _filePath, MENGINE_DOCUMENT_PYBIND );
 

@@ -26,8 +26,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ResourceImageDefault::~ResourceImageDefault()
     {
-        MENGINE_ASSERTION_FATAL( this->getTexture() == nullptr, "texture is not nullptr" );
-        MENGINE_ASSERTION_FATAL( this->getTextureAlpha() == nullptr, "texture alpha is not nullptr" );
+        MENGINE_ASSERTION_FATAL( this->getTexture( 0 ) == nullptr, "texture is not nullptr" );
+        MENGINE_ASSERTION_FATAL( this->getTexture( 1 ) == nullptr, "texture alpha is not nullptr" );
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageDefault::_compile()
@@ -83,7 +83,7 @@ namespace Mengine
             , Helper::getContentFullPath( this->getContent() ).c_str()
         );
 
-        this->setTexture( texture );
+        this->setTexture( 0, texture );
 
         this->prepareImageFrame_();
 
@@ -92,7 +92,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceImageDefault::_release()
     {
-        this->setTexture( nullptr );
+        this->setTexture( 0, nullptr );
 
 #if defined(MENGINE_MASTER_RELEASE_DISABLE)
         if( m_forcePremultiply == true )
@@ -120,7 +120,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceImageDefault::prepareImageFrame_()
     {
-        const RenderTextureInterfacePtr & texture = this->getTexture();
+        const RenderTextureInterfacePtr & texture = this->getTexture( 0 );
 
         const RenderImageInterfacePtr & image = texture->getImage();
 
@@ -151,34 +151,38 @@ namespace Mengine
         uint32_t width = (uint32_t)(size.x + 0.5f);
         uint32_t height = (uint32_t)(size.y + 0.5f);
 
-        mt::uv4f uvTextureImage;
-        mt::uv4f uvTextureAlpha;
-
-        bool trimAtlas = this->isTrimAtlas();
-
-        const mt::uv4f & uvImage = this->getUVImage();
-        const mt::uv4f & uvAlpha = this->getUVAlpha();
+        bool trimAtlas = this->isTrimAtlas();        
 
         if( trimAtlas == false )
         {
+            mt::uv4f uvTexture[MENGINE_RESOURCEIMAGE_MAX_TEXTURE];
+
             if( Helper::isTexturePow2( width ) == false )
             {
                 uint32_t width_pow2 = Helper::getTexturePow2( width );
 
                 float scale = size.x / float( width_pow2 );
 
-                for( uint32_t i = 0; i != 4; ++i )
+                for( size_t index = 0; index != MENGINE_RESOURCEIMAGE_MAX_TEXTURE; ++index )
                 {
-                    uvTextureImage[i].x = uvImage[i].x * scale;
-                    uvTextureAlpha[i].x = uvAlpha[i].x * scale;
+                    const mt::uv4f & uv = this->getUV( index );
+
+                    for( uint32_t i = 0; i != 4; ++i )
+                    {
+                        uvTexture[index][i].x = uv[i].x * scale;
+                    }
                 }
             }
             else
             {
-                for( uint32_t i = 0; i != 4; ++i )
+                for( size_t index = 0; index != MENGINE_RESOURCEIMAGE_MAX_TEXTURE; ++index )
                 {
-                    uvTextureImage[i].x = uvImage[i].x;
-                    uvTextureAlpha[i].x = uvAlpha[i].x;
+                    const mt::uv4f & uv = this->getUV( index );
+
+                    for( uint32_t i = 0; i != 4; ++i )
+                    {
+                        uvTexture[index][i].x = uv[i].x;
+                    }
                 }
             }
 
@@ -188,35 +192,45 @@ namespace Mengine
 
                 float scale = size.y / float( height_pow2 );
 
-                for( uint32_t i = 0; i != 4; ++i )
+                for( size_t index = 0; index != MENGINE_RESOURCEIMAGE_MAX_TEXTURE; ++index )
                 {
-                    uvTextureImage[i].y = uvImage[i].y * scale;
-                    uvTextureAlpha[i].y = uvAlpha[i].y * scale;
+                    const mt::uv4f & uv = this->getUV( index );
+
+                    for( uint32_t i = 0; i != 4; ++i )
+                    {
+                        uvTexture[index][i].y = uv[i].y * scale;
+                    }
                 }
             }
             else
             {
-                for( uint32_t i = 0; i != 4; ++i )
+                for( size_t index = 0; index != MENGINE_RESOURCEIMAGE_MAX_TEXTURE; ++index )
                 {
-                    uvTextureImage[i].y = uvImage[i].y;
-                    uvTextureAlpha[i].y = uvAlpha[i].y;
+                    const mt::uv4f & uv = this->getUV( index );
+
+                    for( uint32_t i = 0; i != 4; ++i )
+                    {
+                        uvTexture[index][i].y = uv[i].y;
+                    }
                 }
+            }
+
+            for( size_t index = 0; index != MENGINE_RESOURCEIMAGE_MAX_TEXTURE; ++index )
+            {
+                const mt::uv4f & uv = uvTexture[index];
+
+                this->setUVTexture( index, uv );
             }
         }
         else
         {
-            for( uint32_t i = 0; i != 4; ++i )
+            for( size_t index = 0; index != MENGINE_RESOURCEIMAGE_MAX_TEXTURE; ++index )
             {
-                uvTextureImage[i].x = uvImage[i].x;
-                uvTextureImage[i].y = uvImage[i].y;
+                const mt::uv4f & uv = this->getUV( index );
 
-                uvTextureAlpha[i].x = uvAlpha[i].x;
-                uvTextureAlpha[i].y = uvAlpha[i].y;
+                this->setUVTexture( index, uv );
             }
         }
-
-        this->setUVTextureImage( uvTextureImage );
-        this->setUVTextureAlpha( uvTextureAlpha );
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -484,7 +484,7 @@ namespace Mengine
 
             desc.images[index] = image;
 
-            const RenderTextureInterfacePtr & texture = image->getTexture();
+            const RenderTextureInterfacePtr & texture = image->getTexture( 0 );
 
             MENGINE_ASSERTION_MEMORY_PANIC( texture, "invalid get texture" );
 

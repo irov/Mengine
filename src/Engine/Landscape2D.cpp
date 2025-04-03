@@ -236,8 +236,8 @@ namespace Mengine
 
         for( const Landscape2DElement & el : m_elements )
         {
-            const mt::uv4f & uv_image = el.image->getUVTextureImage();
-            const mt::uv4f & uv_alpha = el.image->getUVTextureAlpha();
+            const mt::uv4f & uv_image = el.image->getUVTexture( 0 );
+            const mt::uv4f & uv_alpha = el.image->getUVTexture( 1 );
 
             for( uint32_t i = 0; i != 4; ++i )
             {

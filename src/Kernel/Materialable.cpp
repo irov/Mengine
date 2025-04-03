@@ -69,11 +69,11 @@ namespace Mengine
 
             if( _resourceImage != nullptr )
             {
-                uvs[0] = _resourceImage->getUVTextureImage();
-                uvs[1] = _resourceImage->getUVTextureAlpha();
+                uvs[0] = _resourceImage->getUVTexture( 0 );
+                uvs[1] = _resourceImage->getUVTexture( 1 );
 
-                textures[0] = _resourceImage->getTexture();
-                textures[1] = _resourceImage->getTextureAlpha();
+                textures[0] = _resourceImage->getTexture( 0 );
+                textures[1] = _resourceImage->getTexture( 1 );
 
                 premultiply = _resourceImage->isPremultiply();
             }

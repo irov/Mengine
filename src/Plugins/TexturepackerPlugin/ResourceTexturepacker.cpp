@@ -434,13 +434,13 @@ namespace Mengine
             mt::uv4f uv;
             mt::uv4_from_mask( &uv, uv_mask );
 
-            resourceImage->setUVImage( uv );
-            resourceImage->setUVAlpha( uv );
-            resourceImage->setUVTextureImage( uv );
-            resourceImage->setUVTextureAlpha( uv );
+            resourceImage->setUV( 0, uv );
+            resourceImage->setUV( 1, uv );
+            resourceImage->setUVTexture( 0, uv );
+            resourceImage->setUVTexture( 1, uv );
 
-            resourceImage->setUVImageRotate( rotated );
-            resourceImage->setUVAlphaRotate( rotated );
+            resourceImage->setUVRotate( 0, rotated );
+            resourceImage->setUVRotate( 1, rotated );
 
             resourceImage->setAlpha( atlasHasAlpha );
             resourceImage->setPremultiply( atlasIsPremultiply );

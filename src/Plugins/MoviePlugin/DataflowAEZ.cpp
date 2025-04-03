@@ -179,7 +179,7 @@ namespace Mengine
                         const float * uv2 = *it;
                         uv.from_f2( uv2 );
 
-                        resourceImage->correctUVImage( uv, uvs_iterator );
+                        resourceImage->correctUV( 0, uv, uvs_iterator );
                     }
 
                     *_rd = uvs;

@@ -294,7 +294,7 @@ namespace Mengine
             m_renderMeshes.push_back( desc );
         }
 
-        const RenderTextureInterfacePtr & texture = m_resourceImage->getTexture();
+        const RenderTextureInterfacePtr & texture = m_resourceImage->getTexture( 0 );
 
         const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
             ->getMaterial( STRINGIZE_STRING_LOCAL( "Ozz_Texture_Blend" ), PT_TRIANGLELIST, &texture, 1, MENGINE_DOCUMENT_FACTORABLE );

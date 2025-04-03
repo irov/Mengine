@@ -41,14 +41,14 @@ namespace Mengine
 
         const mt::uv4f & uvImage = metadata->get_Image_UV();
 
-        resource->setUVImage( uvImage );
-        resource->setUVAlpha( uvImage );
+        resource->setUV( 0, uvImage );
+        resource->setUV( 1, uvImage );
 
         bool uvImageRotate = false;
         metadata->get_Image_UVRotate( &uvImageRotate );
 
-        resource->setUVImageRotate( uvImageRotate );
-        resource->setUVAlphaRotate( uvImageRotate );
+        resource->setUVRotate( 0, uvImageRotate );
+        resource->setUVRotate( 1, uvImageRotate );
 
         metadata->getm_Image_Alpha( resource, &ResourceImageSubstract::setAlpha );
 

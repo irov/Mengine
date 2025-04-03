@@ -102,11 +102,11 @@ namespace Mengine
 
                 region->name = region_name;
 
-                bool uvImageRotate = _frame->isUVImageRotate();
+                bool uvImageRotate = _frame->isUVRotate( 0 );
 
                 region->super.degrees = uvImageRotate == true ? 90 : 0;
 
-                const mt::uv4f & uv = _frame->getUVImage();
+                const mt::uv4f & uv = _frame->getUV( 0 );
 
                 region->x = (int)(uv.p0.x * atlasWidthF + 0.5f);
                 region->y = (int)(uv.p0.y * atlasHeightF + 0.5f);

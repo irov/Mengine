@@ -108,14 +108,14 @@ namespace Mengine
             , this->getName().c_str()
         );
 
-        const RenderTextureInterfacePtr & texture = m_resourceImage->getTexture();
+        const RenderTextureInterfacePtr & texture = m_resourceImage->getTexture( 0 );
 
         if( texture == nullptr )
         {
             return 0;
         }
 
-        const RenderTextureInterfacePtr & textureAlpha = m_resourceImage->getTextureAlpha();
+        const RenderTextureInterfacePtr & textureAlpha = m_resourceImage->getTexture( 1 );
 
         if( textureAlpha == nullptr )
         {
@@ -131,26 +131,9 @@ namespace Mengine
             , this->getName().c_str()
         );
 
-        switch( _index )
-        {
-        case 0:
-            {
-                const mt::uv4f & uv = m_resourceImage->getUVTextureImage();
+        const mt::uv4f & uv = m_resourceImage->getUVTexture( _index );
 
-                return uv;
-            } break;
-        case 1:
-            {
-                const mt::uv4f & uv = m_resourceImage->getUVTextureAlpha();
-
-                return uv;
-            } break;
-        default:
-            {
-            }break;
-        }
-
-        return mt::uv4f::identity();
+        return uv;
     }
     //////////////////////////////////////////////////////////////////////////
     const Color & SurfaceImage::getColor() const
@@ -170,20 +153,7 @@ namespace Mengine
             , this->getName().c_str()
         );
 
-        switch( _index )
-        {
-        case 0:
-            {
-                m_resourceImage->correctUVImage( _in, _out );
-            } break;
-        case 1:
-            {
-                m_resourceImage->correctUVAlpha( _in, _out );
-            } break;
-        default:
-            {
-            }break;
-        }
+        m_resourceImage->correctUV( _index, _in, _out );
     }
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr SurfaceImage::_updateMaterial() const

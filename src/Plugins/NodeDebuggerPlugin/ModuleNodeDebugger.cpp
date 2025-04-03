@@ -1119,7 +1119,7 @@ namespace Mengine
 
         Detail::serializeNodeProp( resourceImage->getName(), "ResourceName", xmlNode );
         Detail::serializeNodeProp( resourceImage->getType(), "ResourceType", xmlNode );
-        Detail::serializeNodeProp( resourceImage->getUVImage(), "UVImage", xmlNode );
+        Detail::serializeNodeProp( resourceImage->getUV( 0 ), "UVImage", xmlNode );
 
         const ContentInterfacePtr & content = resourceImage->getContent();
 

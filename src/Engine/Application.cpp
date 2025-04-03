@@ -467,7 +467,7 @@ namespace Mengine
     {
         if( m_resourceWhitePixel != nullptr )
         {
-            m_resourceWhitePixel->setTexture( nullptr );
+            m_resourceWhitePixel->setTexture( 0, nullptr );
 
             RESOURCE_SERVICE()
                 ->removeResource( m_resourceWhitePixel );
@@ -817,7 +817,7 @@ namespace Mengine
         const RenderTextureInterfacePtr & whiteTexture = RENDER_SERVICE()
             ->getWhiteTexture();
 
-        resourceWhitePixel->setTexture( whiteTexture );
+        resourceWhitePixel->setTexture( 0, whiteTexture );
 
         if( resourceWhitePixel->initialize() == false )
         {

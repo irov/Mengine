@@ -188,6 +188,10 @@ public class MengineUtils {
     }
 
     public static Code getCurrentThreadCode(int index) {
+        if (BuildConfig.DEBUG == false) {
+            return new Code("", 0, "");
+        }
+
         StackTraceElement[] trace = Thread.currentThread().getStackTrace();
 
         if (trace.length < index) {

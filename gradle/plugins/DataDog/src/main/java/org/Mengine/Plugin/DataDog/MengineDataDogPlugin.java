@@ -230,12 +230,16 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
             return;
         }
 
-        Map attributes = Map.of("code", Map.of(
+        Map attributes = BuildConfig.DEBUG == true ? Map.of("code", Map.of(
             "category", message.MESSAGE_CATEGORY,
             "thread", message.MESSAGE_THREAD,
             "file", message.MESSAGE_FILE != null ? message.MESSAGE_FILE : "empty",
             "line", message.MESSAGE_LINE,
             "function", message.MESSAGE_FUNCTION != null ? message.MESSAGE_FUNCTION : "empty"
+            )
+        ) : Map.of("code", Map.of(
+            "category", message.MESSAGE_CATEGORY,
+            "thread", message.MESSAGE_THREAD
             )
         );
 

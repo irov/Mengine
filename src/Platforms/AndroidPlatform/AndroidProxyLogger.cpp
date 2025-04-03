@@ -64,9 +64,15 @@ namespace Mengine
         jint jlevel = message.level;
         jint jfilter = message.filter;
 
+#ifdef MENGINE_DEBUG
         jstring jfile = jenv->NewStringUTF( message.file );
         jint jline = message.line;
         jstring jfunction = jenv->NewStringUTF( message.function );
+#else
+        jstring jfile = nullptr;
+        jint jline = 0;
+        jstring jfunction = nullptr;
+#endif
 
         jstring jdata = jenv->NewStringUTF( message.data );
 
@@ -85,8 +91,10 @@ namespace Mengine
 
         jenv->DeleteLocalRef( jcategory );
         jenv->DeleteLocalRef( jthread );
+#ifdef MENGINE_DEBUG
         jenv->DeleteLocalRef( jfile );
         jenv->DeleteLocalRef( jfunction );
+#endif
         jenv->DeleteLocalRef( jdata );
 
         Helper::AndroidCallVoidApplicationMethod( jenv, "onMengineLogger", "(Lorg/Mengine/Base/MengineLoggerMessageParam;)V", jmessage );

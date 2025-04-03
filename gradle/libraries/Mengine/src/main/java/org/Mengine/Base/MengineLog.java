@@ -74,14 +74,8 @@ public class MengineLog {
     private static void logString(int level, @Size(min = 1L,max = 23L) String category, int filter, String data) {
         MengineLog.logNativeLevel(level, category, data);
 
-        if (BuildConfig.DEBUG == true) {
-            if (level >= LM_INFO) {
-                return;
-            }
-        } else {
-            if (level >= LM_WARNING) {
-                return;
-            }
+        if (level >= LM_INFO) {
+            return;
         }
 
         MengineApplication application = MengineApplication.getSharedInstance();

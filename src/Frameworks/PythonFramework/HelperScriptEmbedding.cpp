@@ -999,7 +999,7 @@ namespace Mengine
                 LoggerMessage msg;
                 msg.timestamp = Helper::getLocalTimestamp();
                 msg.category = "python";
-                msg.threadName = Helper::getCurrentThreadName();
+                msg.thread = Helper::getCurrentThreadName();
                 msg.level = LM_INFO;
                 msg.filter = LFILTER_NONE;
                 msg.color = LCOLOR_GREEN | LCOLOR_BLUE;
@@ -1025,7 +1025,7 @@ namespace Mengine
                 LoggerMessage msg;
                 msg.timestamp = Helper::getLocalTimestamp();
                 msg.category = "python";
-                msg.threadName = Helper::getCurrentThreadName();
+                msg.thread = Helper::getCurrentThreadName();
                 msg.level = LM_MESSAGE;
                 msg.filter = LFILTER_NONE;
                 msg.color = LCOLOR_GREEN;
@@ -1051,7 +1051,7 @@ namespace Mengine
                 LoggerMessage msg;
                 msg.timestamp = Helper::getLocalTimestamp();
                 msg.category = "python";
-                msg.threadName = Helper::getCurrentThreadName();
+                msg.thread = Helper::getCurrentThreadName();
                 msg.level = LM_WARNING;
                 msg.filter = LFILTER_NONE;
                 msg.color = LCOLOR_RED | LCOLOR_GREEN;
@@ -1077,7 +1077,7 @@ namespace Mengine
                 LoggerMessage msg;
                 msg.timestamp = Helper::getLocalTimestamp();
                 msg.category = "python";
-                msg.threadName = Helper::getCurrentThreadName();
+                msg.thread = Helper::getCurrentThreadName();
                 msg.level = LM_ERROR;
                 msg.filter = LFILTER_NONE;
                 msg.color = LCOLOR_RED;
@@ -1103,7 +1103,7 @@ namespace Mengine
                 LoggerMessage msg;
                 msg.timestamp = Helper::getLocalTimestamp();
                 msg.category = "python";
-                msg.threadName = Helper::getCurrentThreadName();
+                msg.thread = Helper::getCurrentThreadName();
                 msg.level = LM_MESSAGE_RELEASE;
                 msg.filter = LFILTER_NONE;
                 msg.color = LCOLOR_RED | LCOLOR_BLUE;
@@ -1129,7 +1129,7 @@ namespace Mengine
                 LoggerMessage msg;
                 msg.timestamp = Helper::getLocalTimestamp();
                 msg.category = "python";
-                msg.threadName = Helper::getCurrentThreadName();
+                msg.thread = Helper::getCurrentThreadName();
                 msg.level = LM_FATAL;
                 msg.filter = LFILTER_NONE;
                 msg.color = LCOLOR_RED;

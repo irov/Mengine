@@ -24,7 +24,7 @@ namespace Mengine
     protected:
         Timestamp m_timestamp;
         Char m_category[MENGINE_LOGGER_MAX_CATEGORY + 1] = {'\0'};
-        ConstString m_threadName;
+        ConstString m_thread;
         ELoggerLevel m_level;
         uint32_t m_flag;
         uint32_t m_filter;

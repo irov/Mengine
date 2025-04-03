@@ -52,7 +52,7 @@ namespace Mengine
         if( message.flag & LFLAG_THREADSTAMP )
         {
             Char threadstamp[256 + 1] = {'\0'};
-            Helper::makeLoggerThreadStamp( message.threadName, "|%s|", threadstamp, 0, 256 );
+            Helper::makeLoggerThreadStamp( message.thread, "|%s|", threadstamp, 0, 256 );
             ::OutputDebugStringA( threadstamp );
             ::OutputDebugStringA( " " );
         }

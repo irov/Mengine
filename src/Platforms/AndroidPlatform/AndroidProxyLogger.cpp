@@ -1,6 +1,7 @@
 #include "AndroidProxyLogger.h"
 
 #include "Environment/Android/AndroidEnv.h"
+#include "Environment/Android/AndroidHelper.h"
 #include "Environment/Android/AndroidApplicationHelper.h"
 
 #include "Kernel/AssertionUtf8.h"
@@ -51,17 +52,46 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        jstring category_jstring = jenv->NewStringUTF( message.category );
+        jclass jclass_MengineLoggerMessageParam = Mengine::Mengine_JNI_FindClass( jenv, "org/Mengine/Base/MengineLoggerMessageParam" );
 
-        ELoggerLevel level = message.level;
-        uint32_t filter = message.filter;
+        Helper::AndroidEnvExceptionCheck( jenv );
 
-        jstring data_jstring = jenv->NewStringUTF( message.data );
+        jmethodID jmethod_MengineLoggerMessageParam_constructor = jenv->GetMethodID( jclass_MengineLoggerMessageParam, "<init>", "(Ljava/lang/String;Ljava/lang/String;IILjava/lang/String;ILjava/lang/String;Ljava/lang/String;)V" );
 
-        Helper::AndroidCallVoidApplicationMethod( jenv, "onMengineLogger", "(IILjava/lang/String;Ljava/lang/String;)V", level, filter, category_jstring, data_jstring );
+        jstring jcategory = jenv->NewStringUTF( message.category );
+        jstring jthread = jenv->NewStringUTF( message.thread.c_str() );
 
-        jenv->DeleteLocalRef( category_jstring );
-        jenv->DeleteLocalRef( data_jstring );
+        jint jlevel = message.level;
+        jint jfilter = message.filter;
+
+        jstring jfile = jenv->NewStringUTF( message.file );
+        jint jline = message.line;
+        jstring jfunction = jenv->NewStringUTF( message.function );
+
+        jstring jdata = jenv->NewStringUTF( message.data );
+
+        jobject jmessage = jenv->NewObject( jclass_MengineLoggerMessageParam, jmethod_MengineLoggerMessageParam_constructor
+            , jcategory
+            , jthread
+            , jlevel
+            , jfilter
+            , jfile
+            , jline
+            , jfunction
+            , jdata
+        );
+
+        jenv->DeleteLocalRef( jclass_MengineLoggerMessageParam );
+
+        jenv->DeleteLocalRef( jcategory );
+        jenv->DeleteLocalRef( jthread );
+        jenv->DeleteLocalRef( jfile );
+        jenv->DeleteLocalRef( jfunction );
+        jenv->DeleteLocalRef( jdata );
+
+        Helper::AndroidCallVoidApplicationMethod( jenv, "onMengineLogger", "(Lorg/Mengine/Base/MengineLoggerMessageParam;)V", jmessage );
+
+        jenv->DeleteLocalRef( jmessage );
     }
     //////////////////////////////////////////////////////////////////////////
 }

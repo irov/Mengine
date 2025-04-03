@@ -32,130 +32,142 @@ public class MengineLog {
         return (filter & flag) == flag;
     }
 
-    public static void logNativeLevel(int level, @Size(min = 1L,max = 23L) String tag, String msg) {
+    public static void logNativeLevel(int level, @Size(min = 1L,max = 23L) String category, String msg) {
         switch (level) {
             case LM_SILENT:
                 break;
             case LM_FATAL:
-                Log.wtf(tag, "\uD83D\uDFE5 " + msg);
+                Log.wtf(category, "\uD83D\uDFE5 " + msg);
                 break;
             case LM_MESSAGE_RELEASE:
-                Log.w(tag, msg);
+                Log.w(category, msg);
                 break;
             case LM_ERROR:
-                Log.e(tag, "\uD83D\uDD34 " + msg);
+                Log.e(category, "\uD83D\uDD34 " + msg);
                 break;
             case LM_WARNING:
-                Log.w(tag, "\uD83D\uDFE1 " + msg);
+                Log.w(category, "\uD83D\uDFE1 " + msg);
                 break;
             case LM_MESSAGE:
-                Log.i(tag, "\uD83D\uDCDD " + msg);
+                Log.i(category, "\uD83D\uDCDD " + msg);
                 break;
             case LM_INFO:
-                Log.i(tag, "\uD83D\uDFE2 " + msg);
+                Log.i(category, "\uD83D\uDFE2 " + msg);
                 break;
             case LM_DEBUG:
-                Log.d(tag, "\uD83D\uDD0D " + msg);
+                Log.d(category, "\uD83D\uDD0D " + msg);
                 break;
             case LM_VERBOSE:
-                Log.v(tag, msg);
+                Log.v(category, msg);
                 break;
         }
     }
 
-    private static String log(int level, @Size(min = 1L,max = 23L) String tag, int filter, String format, Object ... args) {
+    private static String log(int level, @Size(min = 1L,max = 23L) String category, int filter, String format, Object ... args) {
         String message = MengineLog.buildTotalMsg(format, args);
 
-        MengineLog.logString(level, tag, filter, message);
+        MengineLog.logString(level, category, filter, message);
 
         return message;
     }
 
-    private static void logString(int level, @Size(min = 1L,max = 23L) String tag, int filter, String message) {
-        MengineLog.logNativeLevel(level, tag, message);
+    private static void logString(int level, @Size(min = 1L,max = 23L) String category, int filter, String data) {
+        MengineLog.logNativeLevel(level, category, data);
 
-        if (level >= LM_INFO) {
-            return;
+        if (BuildConfig.DEBUG == true) {
+            if (level >= LM_INFO) {
+                return;
+            }
+        } else {
+            if (level >= LM_WARNING) {
+                return;
+            }
         }
 
         MengineApplication application = MengineApplication.getSharedInstance();
 
-        application.onMengineLogger(level, filter, tag, message);
+        String thread = MengineUtils.getCurrentThreadName();
+
+        MengineUtils.Code code = MengineUtils.getCurrentThreadCode(6);
+
+        MengineLoggerMessageParam message = new MengineLoggerMessageParam(category, thread, level, filter, code.file, code.line, code.method, data);
+
+        application.onMengineLogger(message);
     }
 
-    public static String logVerbose(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
+    public static String logVerbose(@Size(min = 1L,max = 23L) String category, String format, Object ... args) {
         if (BuildConfig.DEBUG == false) {
             return "";
         }
 
-        String m = MengineLog.log(LM_VERBOSE, tag, MengineLog.LFILTER_NONE, format, args);
+        String m = MengineLog.log(LM_VERBOSE, category, MengineLog.LFILTER_NONE, format, args);
 
         return m;
     }
 
-    public static String logDebug(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
+    public static String logDebug(@Size(min = 1L,max = 23L) String category, String format, Object ... args) {
         if (BuildConfig.DEBUG == false) {
             return "";
         }
 
-        String m = MengineLog.log(LM_DEBUG, tag, MengineLog.LFILTER_NONE, format, args);
+        String m = MengineLog.log(LM_DEBUG, category, MengineLog.LFILTER_NONE, format, args);
 
         return m;
     }
 
-    public static String logInfo(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
+    public static String logInfo(@Size(min = 1L,max = 23L) String category, String format, Object ... args) {
         if (BuildConfig.DEBUG == false) {
             return "";
         }
 
-        String m = MengineLog.log(LM_INFO, tag, MengineLog.LFILTER_NONE, format, args);
+        String m = MengineLog.log(LM_INFO, category, MengineLog.LFILTER_NONE, format, args);
 
         return m;
     }
 
-    public static String logMessage(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
-        String m = MengineLog.log(LM_MESSAGE, tag, MengineLog.LFILTER_NONE, format, args);
+    public static String logMessage(@Size(min = 1L,max = 23L) String category, String format, Object ... args) {
+        String m = MengineLog.log(LM_MESSAGE, category, MengineLog.LFILTER_NONE, format, args);
 
         return m;
     }
 
-    public static String logMessageProtected(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
-        String m = MengineLog.log(LM_MESSAGE, tag, MengineLog.LFILTER_PROTECTED, format, args);
+    public static String logMessageProtected(@Size(min = 1L,max = 23L) String category, String format, Object ... args) {
+        String m = MengineLog.log(LM_MESSAGE, category, MengineLog.LFILTER_PROTECTED, format, args);
 
         return m;
     }
 
-    public static String logMessageRelease(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
-        String m = MengineLog.log(LM_MESSAGE_RELEASE, tag, MengineLog.LFILTER_NONE, format, args);
+    public static String logMessageRelease(@Size(min = 1L,max = 23L) String category, String format, Object ... args) {
+        String m = MengineLog.log(LM_MESSAGE_RELEASE, category, MengineLog.LFILTER_NONE, format, args);
 
         return m;
     }
 
-    public static String logWarning(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
-        String m = MengineLog.log(LM_WARNING, tag, MengineLog.LFILTER_NONE, format, args);
+    public static String logWarning(@Size(min = 1L,max = 23L) String category, String format, Object ... args) {
+        String m = MengineLog.log(LM_WARNING, category, MengineLog.LFILTER_NONE, format, args);
 
         return m;
     }
 
-    public static String logError(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
-        String m = MengineLog.log(LM_ERROR, tag, MengineLog.LFILTER_NONE, format, args);
+    public static String logError(@Size(min = 1L,max = 23L) String category, String format, Object ... args) {
+        String m = MengineLog.log(LM_ERROR, category, MengineLog.LFILTER_NONE, format, args);
 
         return m;
     }
 
-    public static String logErrorException(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
-        String m = MengineLog.log(LM_ERROR, tag, MengineLog.LFILTER_EXCEPTION, format, args);
+    public static String logErrorException(@Size(min = 1L,max = 23L) String category, String format, Object ... args) {
+        String m = MengineLog.log(LM_ERROR, category, MengineLog.LFILTER_EXCEPTION, format, args);
 
         return m;
     }
 
-    public static String logFatal(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
-        String m = MengineLog.log(LM_FATAL, tag, MengineLog.LFILTER_NONE, format, args);
+    public static String logFatal(@Size(min = 1L,max = 23L) String category, String format, Object ... args) {
+        String m = MengineLog.log(LM_FATAL, category, MengineLog.LFILTER_NONE, format, args);
 
         return m;
     }
 
-    public static String logSingleMessage(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
+    public static String logSingleMessage(@Size(min = 1L,max = 23L) String category, String format, Object ... args) {
         String m = MengineLog.buildTotalMsg(format, args);
 
         synchronized (MengineLog.m_singlesLock) {
@@ -166,12 +178,12 @@ public class MengineLog {
             MengineLog.m_singles.add(m);
         }
 
-        MengineLog.logString(LM_MESSAGE, tag, MengineLog.LFILTER_NONE, m);
+        MengineLog.logString(LM_MESSAGE, category, MengineLog.LFILTER_NONE, m);
 
         return m;
     }
 
-    public static String logSingleWarning(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
+    public static String logSingleWarning(@Size(min = 1L,max = 23L) String category, String format, Object ... args) {
         String m = MengineLog.buildTotalMsg(format, args);
 
         synchronized (MengineLog.m_singlesLock) {
@@ -182,12 +194,12 @@ public class MengineLog {
             MengineLog.m_singles.add(m);
         }
 
-        MengineLog.logString(LM_WARNING, tag, MengineLog.LFILTER_NONE, m);
+        MengineLog.logString(LM_WARNING, category, MengineLog.LFILTER_NONE, m);
 
         return m;
     }
 
-    public static String logSingleError(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
+    public static String logSingleError(@Size(min = 1L,max = 23L) String category, String format, Object ... args) {
         String m = MengineLog.buildTotalMsg(format, args);
 
         synchronized (MengineLog.m_singlesLock) {
@@ -198,7 +210,7 @@ public class MengineLog {
             MengineLog.m_singles.add(m);
         }
 
-        MengineLog.logString(LM_ERROR, tag, MengineLog.LFILTER_NONE, m);
+        MengineLog.logString(LM_ERROR, category, MengineLog.LFILTER_NONE, m);
 
         return m;
     }

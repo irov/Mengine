@@ -29,7 +29,7 @@ namespace Mengine
 
         m_timestamp = _message.timestamp;
         StdString::strcpy_safe( m_category, _message.category, MENGINE_LOGGER_MAX_CATEGORY );
-        m_threadName = _message.threadName;
+        m_thread = _message.thread;
         m_level = _message.level;
         m_flag = _message.flag;
         m_filter = _message.filter;
@@ -64,7 +64,7 @@ namespace Mengine
     {
         _message->timestamp = m_timestamp;
         _message->category = m_category;
-        _message->threadName = m_threadName;
+        _message->thread = m_thread;
         _message->level = m_level;
         _message->flag = m_flag;
         _message->filter = m_filter;

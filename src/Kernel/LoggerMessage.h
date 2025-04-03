@@ -21,7 +21,7 @@ namespace Mengine
     {
         Timestamp timestamp;
         const Char * category;
-        ConstString threadName;
+        ConstString thread;
         ELoggerLevel level;
         uint32_t flag;
         uint32_t filter;

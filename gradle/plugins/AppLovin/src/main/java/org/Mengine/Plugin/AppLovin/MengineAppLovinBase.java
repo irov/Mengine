@@ -213,7 +213,7 @@ public class MengineAppLovinBase {
 
         String message = sb.toString();
 
-        m_plugin.logMessage("%s", message);
+        m_plugin.logInfo("%s", message);
     }
 
     protected void logError(String callback, Exception e) {
@@ -229,7 +229,7 @@ public class MengineAppLovinBase {
 
         String message = sb.toString();
 
-        m_plugin.logMessage("%s", message);
+        m_plugin.logError("%s", message);
     }
 
     protected void logMaxAd(String callback, @NonNull MaxAd ad) {
@@ -255,7 +255,7 @@ public class MengineAppLovinBase {
 
         String message = sb.toString();
 
-        m_plugin.logMessage("%s", message);
+        m_plugin.logInfo("%s", message);
     }
 
     protected void logMaxAdReward(String callback, @NonNull MaxAd ad, MaxReward reward) {
@@ -283,7 +283,7 @@ public class MengineAppLovinBase {
 
         String message = sb.toString();
 
-        m_plugin.logMessage("%s", message);
+        m_plugin.logInfo("%s", message);
     }
 
     protected void logMaxError(String callback, @NonNull MaxError error) {
@@ -316,7 +316,7 @@ public class MengineAppLovinBase {
 
         String message = sb.toString();
 
-        m_plugin.logMessage("%s", message);
+        m_plugin.logInfo("%s", message);
     }
 
     protected void writeParams(StringBuilder sb, Map<String, Object> params) {

@@ -48,38 +48,6 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
 
     @Override
     public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
-        GamesSignInClient gamesSignInClient = PlayGames.getGamesSignInClient(activity);
-
-        gamesSignInClient.isAuthenticated().addOnCompleteListener(isAuthenticatedTask -> {
-            boolean isAuthenticated = isAuthenticatedTask.isSuccessful();
-
-            if (isAuthenticated == false) {
-                Exception e = isAuthenticatedTask.getException();
-
-                this.logError("[ERROR] google game social isAuthenticated failed: %s"
-                    , e.getMessage()
-                );
-
-                this.pythonCall("onGoogleGameSocialOnAuthenticatedError");
-
-                return;
-            }
-
-            AuthenticationResult result = isAuthenticatedTask.getResult();
-
-            if (result.isAuthenticated() == false) {
-                this.logMessageRelease("google game social isAuthenticated failed");
-
-                this.pythonCall("onGoogleGameSocialOnAuthenticatedError");
-
-                return;
-            }
-
-            this.logMessageRelease("google game social isAuthenticated success");
-
-            this.pythonCall("onGoogleGameSocialOnAuthenticatedSuccess", "authenticated");
-        });
-
         ActivityResultLauncher<Intent> achievementLauncher = activity.registerForActivityResult(result -> {
             if (result.getResultCode() == Activity.RESULT_OK) {
                 Intent data = result.getData();
@@ -122,6 +90,45 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
 
             m_leaderboardLauncher = null;
         }
+    }
+
+    private void signInSilently(@NonNull MengineActivity activity) {
+        GamesSignInClient gamesSignInClient = PlayGames.getGamesSignInClient(activity);
+
+        gamesSignInClient.isAuthenticated().addOnCompleteListener(isAuthenticatedTask -> {
+            boolean isAuthenticated = isAuthenticatedTask.isSuccessful();
+
+            if (isAuthenticated == false) {
+                Exception e = isAuthenticatedTask.getException();
+
+                this.logError("[ERROR] google game social isAuthenticated failed: %s"
+                    , e.getMessage()
+                );
+
+                this.pythonCall("onGoogleGameSocialOnAuthenticatedError");
+
+                return;
+            }
+
+            AuthenticationResult result = isAuthenticatedTask.getResult();
+
+            if (result.isAuthenticated() == false) {
+                this.logMessageRelease("google game social isAuthenticated failed");
+
+                this.pythonCall("onGoogleGameSocialOnAuthenticatedError");
+
+                return;
+            }
+
+            this.logMessageRelease("google game social isAuthenticated success");
+
+            this.pythonCall("onGoogleGameSocialOnAuthenticatedSuccess", "authenticated");
+        });
+    }
+
+    @Override
+    public void onResume(@NonNull MengineActivity activity) {
+        this.signInSilently(activity);
     }
 
     public boolean showAchievements() {
@@ -254,6 +261,8 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                     , leaderboardId
                     , value
                 );
+
+                this.pythonCall("onGoogleGameSocialLeaderboardScoreSuccess", leaderboardId);
             })
             .addOnFailureListener(e -> {
                 this.logError("[ERROR] submitLeaderboardScore leaderboardId: %s value: %d error: %s"
@@ -261,6 +270,8 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                     , value
                     , e.getMessage()
                 );
+
+                this.pythonCall("onGoogleGameSocialLeaderboardScoreError", leaderboardId);
             });
     }
 

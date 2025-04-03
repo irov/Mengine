@@ -194,7 +194,7 @@ namespace Mengine
         LoggerMessage msg;
         msg.category = MENGINE_CODE_LIBRARY;
         msg.timestamp = Helper::getLocalTimestamp();
-        msg.threadName = Helper::getCurrentThreadName();
+        msg.thread = Helper::getCurrentThreadName();
         msg.level = LM_MESSAGE;
         msg.flag = LFLAG_SHORT;
         msg.filter = LFILTER_NONE;

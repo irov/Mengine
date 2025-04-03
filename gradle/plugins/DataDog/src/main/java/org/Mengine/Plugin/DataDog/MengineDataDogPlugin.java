@@ -23,6 +23,7 @@ import org.Mengine.Base.MengineListenerRemoteConfig;
 import org.Mengine.Base.MengineListenerSessionId;
 import org.Mengine.Base.MengineListenerTransparencyConsent;
 import org.Mengine.Base.MengineLog;
+import org.Mengine.Base.MengineLoggerMessageParam;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineTransparencyConsentParam;
@@ -224,12 +225,21 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
     }
 
     @Override
-    public void onMengineLogger(@NonNull MengineApplication application, int level, int filter, String tag, String msg) {
+    public void onMengineLogger(@NonNull MengineApplication application, @NonNull MengineLoggerMessageParam message) {
         if (m_loggerDataDog == null) {
             return;
         }
 
-        switch (level) {
+        Map attributes = Map.of("code", Map.of(
+            "category", message.MESSAGE_CATEGORY,
+            "thread", message.MESSAGE_THREAD,
+            "file", message.MESSAGE_FILE != null ? message.MESSAGE_FILE : "empty",
+            "line", message.MESSAGE_LINE,
+            "function", message.MESSAGE_FUNCTION != null ? message.MESSAGE_FUNCTION : "empty"
+            )
+        );
+
+        switch (message.MESSAGE_LEVEL) {
             case MengineLog.LM_VERBOSE:
             case MengineLog.LM_DEBUG:
                 return;
@@ -237,7 +247,7 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
                 boolean enableInfoMessage = this.getEnableInfoMessage();
 
                 if (enableInfoMessage == true) {
-                    m_loggerDataDog.i(msg, null, Map.of("tag", tag));
+                    m_loggerDataDog.i(message.MESSAGE_DATA, null, attributes);
                 }
                 return;
             case MengineLog.LM_MESSAGE:
@@ -245,17 +255,17 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
                 boolean enableDebugMessage = this.getEnableDebugMessage();
 
                 if (enableDebugMessage == true || BuildConfig.DEBUG == true) {
-                    m_loggerDataDog.i(msg, null, Map.of("tag", tag));
+                    m_loggerDataDog.i(message.MESSAGE_DATA, null, attributes);
                 }
                 break;
             case MengineLog.LM_WARNING:
-                m_loggerDataDog.w(msg, null, Map.of("tag", tag));
+                m_loggerDataDog.w(message.MESSAGE_DATA, null, attributes);
                 break;
             case MengineLog.LM_ERROR:
-                m_loggerDataDog.e(msg, null, Map.of("tag", tag));
+                m_loggerDataDog.e(message.MESSAGE_DATA, null, attributes);
                 break;
             case MengineLog.LM_FATAL:
-                m_loggerDataDog.wtf(msg, null, Map.of("tag", tag));
+                m_loggerDataDog.wtf(message.MESSAGE_DATA, null, attributes);
                 break;
         }
     }

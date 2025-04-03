@@ -167,6 +167,44 @@ public class MengineUtils {
         return null;
     }
 
+    public static String getCurrentThreadName() {
+        Thread thread = Thread.currentThread();
+
+        String threadName = thread.getName();
+
+        return threadName;
+    }
+
+    public static class Code {
+        Code(String file, int line, String function) {
+            this.file = file;
+            this.line = line;
+            this.method = function;
+        }
+
+        public final String file;
+        public final int line;
+        public final String method;
+    }
+
+    public static Code getCurrentThreadCode(int index) {
+        StackTraceElement[] trace = Thread.currentThread().getStackTrace();
+
+        if (trace.length < index) {
+            return new Code("", 0, "");
+        }
+
+        StackTraceElement top = trace[index];
+
+        String file = top.getFileName();
+        int line = top.getLineNumber();
+        String method = top.getMethodName();
+
+        Code code = new Code(file, line, method);
+
+        return code;
+    }
+
     public static Handler performOnMainThread(Runnable runnable) {
         Looper mainLooper = Looper.getMainLooper();
 

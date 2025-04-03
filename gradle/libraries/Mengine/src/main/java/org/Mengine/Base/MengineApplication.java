@@ -1508,7 +1508,7 @@ public class MengineApplication extends Application {
         }
     }
 
-    public void onMengineLogger(int level, int filter, String category, String msg) {
+    public void onMengineLogger(MengineLoggerMessageParam message) {
         List<MengineListenerLogger> listeners = this.getLoggerListeners();
 
         for(MengineListenerLogger l : listeners) {
@@ -1516,19 +1516,19 @@ public class MengineApplication extends Application {
                 continue;
             }
 
-            l.onMengineLogger(this, level, filter, category, msg);
+            l.onMengineLogger(this, message);
         }
 
         if (BuildConfig.DEBUG == true) {
             if (m_activity != null) {
-                switch (level) {
+                switch (message.MESSAGE_LEVEL) {
                     case MengineLog.LM_FATAL:
                         MengineUtils.showOkAlertDialog(m_activity, () -> {
                             System.exit(0);
-                        }, "Fatal", "%s", msg);
+                        }, "Fatal", "%s", message.MESSAGE_DATA);
                         break;
                     case MengineLog.LM_ERROR:
-                        MengineUtils.showToast(m_activity, "%s", msg);
+                        MengineUtils.showToast(m_activity, "%s", message.MESSAGE_DATA);
                         break;
                 }
             }

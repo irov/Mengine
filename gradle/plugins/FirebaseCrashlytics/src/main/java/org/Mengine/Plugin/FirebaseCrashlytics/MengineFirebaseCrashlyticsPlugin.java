@@ -12,6 +12,7 @@ import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineFatalErrorException;
 import org.Mengine.Base.MengineLog;
+import org.Mengine.Base.MengineLoggerMessageParam;
 import org.Mengine.Base.MengineNative;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineListenerActivity;
@@ -146,24 +147,24 @@ public class MengineFirebaseCrashlyticsPlugin extends MengineService implements 
     }
 
     @Override
-    public void onMengineLogger(@NonNull MengineApplication application, int level, int filter, String category, String msg) {
+    public void onMengineLogger(@NonNull MengineApplication application, @NonNull MengineLoggerMessageParam message) {
         if (BuildConfig.DEBUG == true) {
             return;
         }
 
-        switch (level) {
+        switch (message.MESSAGE_LEVEL) {
             case MengineLog.LM_MESSAGE_RELEASE: {
-                FirebaseCrashlytics.getInstance().log("[" + category + "] R " + msg);
+                FirebaseCrashlytics.getInstance().log("[" + message.MESSAGE_CATEGORY + "] R " + message.MESSAGE_DATA);
             }break;
             case MengineLog.LM_ERROR: {
-                if (MengineLog.isFilter(filter, MengineLog.LFILTER_EXCEPTION) == true) {
-                    FirebaseCrashlytics.getInstance().recordException(new MengineFatalErrorException(msg));
+                if (MengineLog.isFilter(message.MESSAGE_FILTER, MengineLog.LFILTER_EXCEPTION) == true) {
+                    FirebaseCrashlytics.getInstance().recordException(new MengineFatalErrorException("[" + message.MESSAGE_CATEGORY + "] E " + message.MESSAGE_DATA));
                 } else {
-                    FirebaseCrashlytics.getInstance().log("[" + category + "] E " + msg);
+                    FirebaseCrashlytics.getInstance().log("[" + message.MESSAGE_CATEGORY + "] E " + message.MESSAGE_DATA);
                 }
             }break;
             case MengineLog.LM_FATAL: {
-                FirebaseCrashlytics.getInstance().recordException(new MengineFatalErrorException(msg));
+                FirebaseCrashlytics.getInstance().recordException(new MengineFatalErrorException(message.MESSAGE_DATA));
             }break;
         }
     }

@@ -89,15 +89,10 @@ namespace Mengine
                 GLint location;
                 MENGINE_GLCALLR( location, glGetUniformLocation, (programId, v.uniform) );
 
-                if( location == -1 )
-                {
-                    LOGGER_ASSERTION( "program '%s' not found uniform sampler '%s'"
-                        , openglProgram->getName().c_str()
-                        , v.uniform
-                    );
-
-                    return false;
-                }
+                MENGINE_ASSERTION_FATAL( location != -1, "program '%s' not found uniform sampler '%s'"
+                    , openglProgram->getName().c_str()
+                    , v.uniform
+                );
 
                 v.location = location;
             }
@@ -149,15 +144,10 @@ namespace Mengine
                 GLint location;
                 MENGINE_GLCALLR( location, glGetUniformLocation, (programId, v.uniform) );
 
-                if( location == -1 )
-                {
-                    LOGGER_ASSERTION( "program '%s' not found uniform sampler '%s'"
-                        , openglProgram->getName().c_str()
-                        , v.uniform
-                    );
-
-                    return false;
-                }
+                MENGINE_ASSERTION_FATAL( location != -1, "program '%s' not found uniform sampler '%s'"
+                    , openglProgram->getName().c_str()
+                    , v.uniform
+                );
 
                 v.location = location;
             }

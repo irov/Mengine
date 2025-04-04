@@ -3,7 +3,7 @@
 #include "Interface/ImageCodecInterface.h"
 
 #include "Kernel/Resource.h"
-
+#include "Kernel/Assertion.h"
 #include "Kernel/Color.h"
 
 #include "math/vec4.h"

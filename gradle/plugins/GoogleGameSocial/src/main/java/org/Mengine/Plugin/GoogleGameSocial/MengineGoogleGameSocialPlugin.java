@@ -17,6 +17,7 @@ import com.google.android.gms.games.PlayGamesSdk;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineNetwork;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineListenerActivity;
 import org.Mengine.Base.MengineListenerApplication;
@@ -31,6 +32,8 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
 
     private ActivityResultLauncher<Intent> m_achievementLauncher;
     private ActivityResultLauncher<Intent> m_leaderboardLauncher;
+
+    private boolean m_isAuthenticated = false;
 
     @Override
     public boolean onAvailable(@NonNull MengineApplication application) {
@@ -105,6 +108,8 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                     , e.getMessage()
                 );
 
+                m_isAuthenticated = false;
+
                 this.pythonCall("onGoogleGameSocialOnAuthenticatedError");
 
                 return;
@@ -115,14 +120,18 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
             if (result.isAuthenticated() == false) {
                 this.logMessageRelease("google game social isAuthenticated failed");
 
-                this.pythonCall("onGoogleGameSocialOnAuthenticatedError");
+                m_isAuthenticated = false;
+
+                this.pythonCall("onGoogleGameSocialOnAuthenticatedFailed");
 
                 return;
             }
 
             this.logMessageRelease("google game social isAuthenticated success");
 
-            this.pythonCall("onGoogleGameSocialOnAuthenticatedSuccess", "authenticated");
+            m_isAuthenticated = true;
+
+            this.pythonCall("onGoogleGameSocialOnAuthenticatedSuccess");
         });
     }
 
@@ -158,7 +167,23 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
     }
 
     public boolean unlockAchievement(String achievementId) {
-        this.logMessage("unlockAchievement: %s"
+        if (MengineNetwork.isNetworkAvailable() == false) {
+            this.logInfo("unlockAchievement achievementId: %s network not available"
+                    , achievementId
+            );
+
+            return false;
+        }
+
+        if (m_isAuthenticated == false) {
+            this.logInfo("unlockAchievement achievementId: %s not authenticated"
+                , achievementId
+            );
+
+            return false;
+        }
+
+        this.logMessage("unlockAchievement achievementId: %s"
             , achievementId
         );
 
@@ -173,7 +198,6 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                 );
 
                 this.pythonCall("onGoogleGameSocialUnlockAchievementSuccess", achievementId);
-
             }).addOnFailureListener(e -> {
                 this.logError("[ERROR] unlockAchievement achievementId: %s error: %s"
                     , achievementId
@@ -187,6 +211,24 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
     }
 
     public boolean incrementAchievement(String achievementId, int numSteps) {
+        if (MengineNetwork.isNetworkAvailable() == false) {
+            this.logInfo("incrementAchievement achievementId: %s numSteps: %d network not available"
+                , achievementId
+                , numSteps
+            );
+
+            return false;
+        }
+
+        if (m_isAuthenticated == false) {
+            this.logInfo("incrementAchievement achievementId: %s numSteps: %d not authenticated"
+                , achievementId
+                , numSteps
+            );
+
+            return false;
+        }
+
         this.logMessage("incrementAchievement achievementId: %s numSteps: %d"
             , achievementId
             , numSteps
@@ -218,6 +260,22 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
     }
 
     public boolean revealAchievement(String achievementId) {
+        if (MengineNetwork.isNetworkAvailable() == false) {
+            this.logInfo("revealAchievement achievementId: %s network not available"
+                , achievementId
+            );
+
+            return false;
+        }
+
+        if (m_isAuthenticated == false) {
+            this.logInfo("revealAchievement achievementId: %s not authenticated"
+                , achievementId
+            );
+
+            return false;
+        }
+
         this.logMessage("revealAchievement achievementId: %s "
             , achievementId
         );
@@ -245,8 +303,26 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
         return true;
     }
 
-    public void submitLeaderboardScore(String leaderboardId, long value) {
-        this.logMessage("updateLeaderboards: %s value: %d"
+    public boolean submitLeaderboardScore(String leaderboardId, long value) {
+        if (MengineNetwork.isNetworkAvailable() == false) {
+            this.logInfo("submitLeaderboardScore leaderboardId: %s value: %d network not available"
+                , leaderboardId
+                , value
+            );
+
+            return false;
+        }
+
+        if (m_isAuthenticated == false) {
+            this.logInfo("submitLeaderboardScore leaderboardId: %s value: %d not authenticated"
+                , leaderboardId
+                , value
+            );
+
+            return false;
+        }
+
+        this.logMessage("submitLeaderboardScore leaderboardId: %s value: %d"
             , leaderboardId
             , value
         );
@@ -273,6 +349,8 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
 
                 this.pythonCall("onGoogleGameSocialLeaderboardScoreError", leaderboardId);
             });
+
+        return true;
     }
 
     public void showLeaderboard(String leaderboardId) {
@@ -300,7 +378,25 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
             });
     }
 
-    public void incrementEvent(String eventId, int value) {
+    public boolean incrementEvent(String eventId, int value) {
+        if (MengineNetwork.isNetworkAvailable() == false) {
+            this.logInfo("incrementEvent eventId: %s value: %d network not available"
+                , eventId
+                , value
+            );
+
+            return false;
+        }
+
+        if (m_isAuthenticated == false) {
+            this.logInfo("incrementEvent eventId: %s value: %d not authenticated"
+                , eventId
+                , value
+            );
+
+            return false;
+        }
+
         this.logMessage("incrementEvent: %s value: %d"
             , eventId
             , value
@@ -311,5 +407,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
         EventsClient eventsClient = PlayGames.getEventsClient(activity);
 
         eventsClient.increment(eventId, value);
+
+        return true;
     }
 }

@@ -69,12 +69,33 @@ public class MengineGoogleInAppReviewsPlugin extends MengineService implements M
         MengineActivity activity = this.getMengineActivity();
 
         m_manager.launchReviewFlow(activity, m_reviewInfo).addOnCompleteListener(task -> {
-            this.logMessage("Launching the review completed");
+            if (task.isSuccessful() == false) {
+                Exception exception = task.getException();
 
-            this.buildEvent("mng_inapp_review_completed")
+                if (exception != null) {
+                    this.logWarning("launchReviewFlow error message: %s trace: %s"
+                        , exception.getMessage()
+                        , exception.fillInStackTrace()
+                    );
+                } else {
+                    this.logWarning("launchReviewFlow unknown error");
+                }
+
+                this.buildEvent("mng_inapp_review_error")
+                    .addParameterException("exception", exception)
+                    .log();
+
+                this.pythonCall("onGoogleInAppReviewsLaunchingTheReviewError");
+
+                return;
+            }
+
+            this.logMessage("Launching the review success");
+
+            this.buildEvent("mng_inapp_review_success")
                 .log();
 
-            this.pythonCall("onGoogleInAppReviewsLaunchingTheReviewCompleted");
+            this.pythonCall("onGoogleInAppReviewsLaunchingTheReviewSuccess");
         });
     }
 }

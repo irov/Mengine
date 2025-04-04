@@ -1,6 +1,7 @@
 package org.Mengine.Base;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.Size;
 
 import java.util.Map;
@@ -70,8 +71,8 @@ public class MengineAnalyticsEventBuilder {
         return this;
     }
 
-    public MengineAnalyticsEventBuilder addParameterException(@NonNull @Size(min = 1L,max = 40L) String key, @NonNull Exception e) {
-        String message = e.getMessage();
+    public MengineAnalyticsEventBuilder addParameterException(@NonNull @Size(min = 1L,max = 40L) String key, @Nullable Exception e) {
+        String message = e != null ? e.getMessage() : null;
 
         this.addParameterString(key, message != null ? message : "null");
 

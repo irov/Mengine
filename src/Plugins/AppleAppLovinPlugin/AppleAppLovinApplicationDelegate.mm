@@ -155,7 +155,6 @@
     }
     
     ALSdkInitializationConfiguration * configuration = [ALSdkInitializationConfiguration configurationWithSdkKey:MengineAppleAppLovinPlugin_SdkKey builderBlock:^(ALSdkInitializationConfigurationBuilder * _Nonnull builder) {
-        
         builder.mediationProvider = ALMediationProviderMAX;
     }];
     

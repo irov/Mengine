@@ -126,7 +126,7 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
                     .addParameterException("exception", e)
                     .log();
 
-                this.logError("[ERROR] remote config invalid fetch and activate params: %s"
+                this.logWarning("[WARNING] remote config invalid fetch and activate params: %s"
                     , e.getMessage()
                 );
             });
@@ -166,7 +166,7 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
             String value_string;
 
             if (value == null) {
-                this.logError("remote config invalid key: %s not found in configs: %s"
+                this.logInfo("remote config invalid key: %s not found in configs: %s"
                     , key
                     , remoteValues.keySet()
                 );

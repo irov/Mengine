@@ -15,6 +15,9 @@
 #define GET_OPTION_VALUE( Key, Default )\
     ([=](){static const Mengine::Char * value = OPTIONS_SERVICE()->getOptionValue( Key, Default ); return value;}())
 //////////////////////////////////////////////////////////////////////////
+#define GET_OPTION_VALUE_INT32( Key, Default )\
+    ([=](){static int32_t value = OPTIONS_SERVICE()->getOptionInt32( Key, Default ); return value;}())
+//////////////////////////////////////////////////////////////////////////
 #define GET_OPTION_VALUE_UINT32( Key, Default )\
     ([=](){static uint32_t value = OPTIONS_SERVICE()->getOptionUInt32( Key, Default ); return value;}())
 //////////////////////////////////////////////////////////////////////////

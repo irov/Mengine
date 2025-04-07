@@ -73,7 +73,7 @@ GIT_CLONE(emsdk https://github.com/emscripten-core/emsdk.git "4.0.0")
 
 IF(WIN32)
     GIT_CLONE(openssl https://github.com/janbar/openssl-cmake.git "1.1.1w-20231130")
-    GIT_CLONE(sentry https://github.com/getsentry/sentry-native.git "0.7.0")
+    GIT_CLONE(sentry https://github.com/getsentry/sentry-native.git "0.8.3")
     GIT_CLONE(optick https://github.com/bombomby/optick.git "1.4.0.0")
     GIT_CLONE(renderdoc https://github.com/baldurk/renderdoc.git "v1.35")
 endif()

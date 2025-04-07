@@ -28,9 +28,9 @@ namespace Mengine
     /////////////////////////////////////////////////////////////////////////////
     bool AppleStoreInAppPurchaseService::_initializeService()
     {
-        m_factoryPaymentTransaction = Helper::makeFactoryPool<AppleStoreInAppPurchasePaymentTransaction, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryProduct = Helper::makeFactoryPool<AppleStoreInAppPurchaseProduct, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryProductsRequest = Helper::makeFactoryPool<AppleStoreInAppPurchaseProductsRequest, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryPaymentTransaction = Helper::makeFactoryPoolWithMutex<AppleStoreInAppPurchasePaymentTransaction, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryProduct = Helper::makeFactoryPoolWithMutex<AppleStoreInAppPurchaseProduct, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryProductsRequest = Helper::makeFactoryPoolWithMutex<AppleStoreInAppPurchaseProductsRequest, 16>( MENGINE_DOCUMENT_FACTORABLE );
         
         if (@available(iOS 13.0, *)) {
             m_paymentQueueDelegate = [[AppleStoreInAppPurchasePaymentQueueDelegate alloc] initWithFactory:this service:this];

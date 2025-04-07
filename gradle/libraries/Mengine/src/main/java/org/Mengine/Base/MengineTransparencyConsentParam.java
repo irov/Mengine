@@ -7,6 +7,11 @@ import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
 public class MengineTransparencyConsentParam {
+    private static final String TAG = "MengineTransparencyConsentParam";
+
+    public static MengineConsentFlowUserGeography TRANSPARENCYCONSENT_USERGEOGRAPHY = MengineConsentFlowUserGeography.MengineConsentFlowUserGeography_Unknown;
+
+    public boolean TRANSPARENCYCONSENT_PENDING;
     public int TRANSPARENCYCONSENT_CMPSDKID;
     public int TRANSPARENCYCONSENT_CMPSDKVERSION;
     public int TRANSPARENCYCONSENT_POLICYVERSION;
@@ -26,8 +31,45 @@ public class MengineTransparencyConsentParam {
     public String TRANSPARENCYCONSENT_PUBLISHERCUSTOMPURPOSESCONSENTS;
     public String TRANSPARENCYCONSENT_PUBLISHERCUSTOMPURPOSESLEGITIMATEINTERESTS;
 
+    public static void setConsentFlowUserGeography(@NonNull Context context, MengineConsentFlowUserGeography userGeography) {
+        if (MengineTransparencyConsentParam.TRANSPARENCYCONSENT_USERGEOGRAPHY == userGeography) {
+            return;
+        }
+
+        MengineTransparencyConsentParam.TRANSPARENCYCONSENT_USERGEOGRAPHY = userGeography;
+
+        MenginePreferences.setPreferenceEnum(context, TAG, "mengine.consent.user_geography", userGeography);
+    }
+
+    public static MengineConsentFlowUserGeography getTransparencyconsentUsergeography() {
+        return MengineTransparencyConsentParam.TRANSPARENCYCONSENT_USERGEOGRAPHY;
+    }
+
+    private boolean isTransparencyConsentPending(@NonNull SharedPreferences preferences) {
+        String tcString = preferences.getString("IABTCF_TCString", "");
+        String purposeConsents = preferences.getString("IABTCF_PurposeConsents", "");
+
+        if (tcString == null || tcString.isEmpty() == true) {
+            return true;
+        }
+
+        if (purposeConsents == null || purposeConsents.isEmpty() == true) {
+            return true;
+        }
+
+        if (preferences.contains("IABTCF_gdprApplies") == false) {
+            return true;
+        }
+
+        return false;
+    }
+
     public void initFromDefaultSharedPreferences(@NonNull Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+        MengineTransparencyConsentParam.TRANSPARENCYCONSENT_USERGEOGRAPHY = MenginePreferences.getPreferenceEnum(context, TAG, "mengine.consent.user_geography", MengineConsentFlowUserGeography.class, MengineConsentFlowUserGeography.MengineConsentFlowUserGeography_Unknown);
+
+        TRANSPARENCYCONSENT_PENDING = this.isTransparencyConsentPending(preferences);
 
         TRANSPARENCYCONSENT_CMPSDKID = preferences.getInt("IABTCF_CmpSdkID", 0);
         TRANSPARENCYCONSENT_CMPSDKVERSION = preferences.getInt("IABTCF_CmpSdkVersion", 0);
@@ -49,20 +91,36 @@ public class MengineTransparencyConsentParam {
         TRANSPARENCYCONSENT_PUBLISHERCUSTOMPURPOSESLEGITIMATEINTERESTS = preferences.getString("IABTCF_PublisherCustomPurposesLegitimateInterests", "");
     }
 
-    public boolean getPurposeConsentArgument(int index) {
-        if (TRANSPARENCYCONSENT_PURPOSECONSENTS.length() <= index) {
+    public boolean isPending() {
+        if (MengineTransparencyConsentParam.getTransparencyconsentUsergeography() == MengineConsentFlowUserGeography.MengineConsentFlowUserGeography_NonEEA) {
             return false;
         }
 
-        if (TRANSPARENCYCONSENT_PURPOSECONSENTS.charAt(index) == '0') {
+        return TRANSPARENCYCONSENT_PENDING;
+    }
+
+    public boolean isEEA() {
+        if (MengineTransparencyConsentParam.getTransparencyconsentUsergeography() == MengineConsentFlowUserGeography.MengineConsentFlowUserGeography_NonEEA) {
+            return false;
+        }
+
+        if (TRANSPARENCYCONSENT_GDPRAPPLIES == 0) {
             return false;
         }
 
         return true;
     }
 
-    public boolean isEEA() {
-        if (TRANSPARENCYCONSENT_GDPRAPPLIES == 0) {
+    public boolean getPurposeConsentArgument(int index) {
+        if (this.isEEA() == false) {
+            return true;
+        }
+
+        if (TRANSPARENCYCONSENT_PURPOSECONSENTS.length() <= index) {
+            return false;
+        }
+
+        if (TRANSPARENCYCONSENT_PURPOSECONSENTS.charAt(index) == '0') {
             return false;
         }
 

@@ -66,5 +66,15 @@ namespace Mengine
             return factory;
         }
         //////////////////////////////////////////////////////////////////////////
+        template<class Type, uint32_t Count, class C, class M>
+        FactoryInterfacePtr makeFactoryPoolWithMutexAndListener( C * _self, M _method, const DocumentInterfacePtr & _doc )
+        {
+            FactoryWithListenerPtr factory = Helper::makeFactoryPoolWithMutex<Type, Count, FactoryWithListener>( _doc );
+
+            Helper::setupFactoryDestroyListener<Type>( factory, _self, _method, _doc );
+
+            return factory;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

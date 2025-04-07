@@ -222,7 +222,7 @@ namespace Mengine
         pybind::def_functor_args( _kernel, "downloadAsset", this, &HttpScriptEmbedding::downloadAsset );
         pybind::def_functor( _kernel, "cancelRequest", this, &HttpScriptEmbedding::cancelRequest );
 
-        m_factoryPyHttpReceiver = Helper::makeFactoryPool<PyHttpReceiver, 32>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryPyHttpReceiver = Helper::makeFactoryPoolWithMutex<PyHttpReceiver, 32>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

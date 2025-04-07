@@ -44,7 +44,7 @@ namespace Mengine
             return false;
         }
 
-        m_factorySocket = Helper::makeFactoryPool<SDLSocket, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factorySocket = Helper::makeFactoryPoolWithMutex<SDLSocket, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

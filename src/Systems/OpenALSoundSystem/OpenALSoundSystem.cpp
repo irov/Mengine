@@ -129,9 +129,9 @@ namespace Mengine
         ALfloat lorient[] = { 0.f, 0.f, -1.f, 0.f, 1.f, 0.f };
         MENGINE_OPENAL_CALL( alListenerfv, (AL_ORIENTATION, lorient) );
         
-        m_factoryOpenALSoundBuffer = Helper::makeFactoryPool<OpenALSoundBufferMemory, 32>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryOpenALSoundBufferStream = Helper::makeFactoryPool<OpenALSoundBufferStream, 32>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryOpenALSoundSource = Helper::makeFactoryPoolWithListener<OpenALSoundSource, 32>( this, &OpenALSoundSystem::onDestroyOpenALSoundSource_, MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryOpenALSoundBuffer = Helper::makeFactoryPoolWithMutex<OpenALSoundBufferMemory, 32>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryOpenALSoundBufferStream = Helper::makeFactoryPoolWithMutex<OpenALSoundBufferStream, 32>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryOpenALSoundSource = Helper::makeFactoryPoolWithMutexAndListener<OpenALSoundSource, 32>( this, &OpenALSoundSystem::onDestroyOpenALSoundSource_, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

@@ -30,12 +30,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleHttpSystem::_initializeService()
     {
-        m_factoryRequestPing = Helper::makeFactoryPool<AppleHttpRequestPing, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryRequestGetMessage = Helper::makeFactoryPool<AppleHttpRequestGetMessage, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryRequestPostMessage = Helper::makeFactoryPool<AppleHttpRequestPostMessage, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryRequestDeleteMessage = Helper::makeFactoryPool<AppleHttpRequestDeleteMessage, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryRequestHeaderData = Helper::makeFactoryPool<AppleHttpRequestHeaderData, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryRequestGetAsset = Helper::makeFactoryPool<AppleHttpRequestGetAsset, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRequestPing = Helper::makeFactoryPoolWithMutex<AppleHttpRequestPing, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRequestGetMessage = Helper::makeFactoryPoolWithMutex<AppleHttpRequestGetMessage, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRequestPostMessage = Helper::makeFactoryPoolWithMutex<AppleHttpRequestPostMessage, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRequestDeleteMessage = Helper::makeFactoryPoolWithMutex<AppleHttpRequestDeleteMessage, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRequestHeaderData = Helper::makeFactoryPoolWithMutex<AppleHttpRequestHeaderData, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRequestGetAsset = Helper::makeFactoryPoolWithMutex<AppleHttpRequestGetAsset, 16>( MENGINE_DOCUMENT_FACTORABLE );
         
         NSInteger MengineAppleHttpSystem_CacheMemoryCapacity = [AppleBundle getPluginConfigInteger:@"MengineAppleHttpSystem" withKey:@"CacheMemoryCapacity" withDefault:4*1024*1024];
         

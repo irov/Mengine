@@ -33,8 +33,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ThreadService::_initializeService()
     {
-        m_factoryThreadQueue = Helper::makeFactoryPool<ThreadQueue, 4>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryThreadJob = Helper::makeFactoryPool<ThreadJob, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryThreadQueue = Helper::makeFactoryPoolWithMutex<ThreadQueue, 4>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryThreadJob = Helper::makeFactoryPoolWithMutex<ThreadJob, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         m_mutexTasks = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
         m_mutexThreads = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );

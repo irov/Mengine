@@ -62,6 +62,10 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
             return TrackingConsent.GRANTED;
         }
 
+        if (consentParam.isPending() == true) {
+            return TrackingConsent.PENDING;
+        }
+
         if (consentParam.getConsentAdStorage() == true) {
             return TrackingConsent.GRANTED;
         }

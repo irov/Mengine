@@ -37,7 +37,7 @@ namespace Mengine
             return false;
         }
 
-        m_factoryWin32Socket = Helper::makeFactoryPool<Win32Socket, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryWin32Socket = Helper::makeFactoryPoolWithMutex<Win32Socket, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

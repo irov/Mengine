@@ -34,7 +34,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DataflowPY::initialize()
     {
-        m_factoryScriptCodeData = Helper::makeFactoryPool<PythonScriptCodeData, 128>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryScriptCodeData = Helper::makeFactoryPoolWithMutex<PythonScriptCodeData, 128>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

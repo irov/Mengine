@@ -33,22 +33,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AnalyticsFactory::initialize()
     {
-        m_factoryAnalyticsEventBuilder = Helper::makeFactoryPool<AnalyticsEventBuilder, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryAnalyticsEvent = Helper::makeFactoryPool<AnalyticsEvent, 256>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryAnalyticsEventBuilder = Helper::makeFactoryPoolWithMutex<AnalyticsEventBuilder, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryAnalyticsEvent = Helper::makeFactoryPoolWithMutex<AnalyticsEvent, 256>( MENGINE_DOCUMENT_FACTORABLE );
 
-        m_factoryAnalyticsEventConstParameterBoolean = Helper::makeFactoryPool<AnalyticsEventConstParameterBoolean, 1024>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryAnalyticsEventConstParameterConstString = Helper::makeFactoryPool<AnalyticsEventConstParameterConstString, 1024>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryAnalyticsEventConstParameterString = Helper::makeFactoryPool<AnalyticsEventConstParameterString, 1024>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryAnalyticsEventConstParameterInteger = Helper::makeFactoryPool<AnalyticsEventConstParameterInteger, 1024>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryAnalyticsEventConstParameterDouble = Helper::makeFactoryPool<AnalyticsEventConstParameterDouble, 1024>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryAnalyticsEventConstParameterBoolean = Helper::makeFactoryPoolWithMutex<AnalyticsEventConstParameterBoolean, 1024>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryAnalyticsEventConstParameterConstString = Helper::makeFactoryPoolWithMutex<AnalyticsEventConstParameterConstString, 1024>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryAnalyticsEventConstParameterString = Helper::makeFactoryPoolWithMutex<AnalyticsEventConstParameterString, 1024>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryAnalyticsEventConstParameterInteger = Helper::makeFactoryPoolWithMutex<AnalyticsEventConstParameterInteger, 1024>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryAnalyticsEventConstParameterDouble = Helper::makeFactoryPoolWithMutex<AnalyticsEventConstParameterDouble, 1024>( MENGINE_DOCUMENT_FACTORABLE );
 
-        m_factoryAnalyticsEventGetterParameterBoolean = Helper::makeFactoryPool<AnalyticsEventGetterParameterBoolean, 1024>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryAnalyticsEventGetterParameterConstString = Helper::makeFactoryPool<AnalyticsEventGetterParameterConstString, 1024>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryAnalyticsEventGetterParameterString = Helper::makeFactoryPool<AnalyticsEventGetterParameterString, 1024>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryAnalyticsEventGetterParameterInteger = Helper::makeFactoryPool<AnalyticsEventGetterParameterInteger, 1024>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryAnalyticsEventGetterParameterDouble = Helper::makeFactoryPool<AnalyticsEventGetterParameterDouble, 1024>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryAnalyticsEventGetterParameterBoolean = Helper::makeFactoryPoolWithMutex<AnalyticsEventGetterParameterBoolean, 1024>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryAnalyticsEventGetterParameterConstString = Helper::makeFactoryPoolWithMutex<AnalyticsEventGetterParameterConstString, 1024>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryAnalyticsEventGetterParameterString = Helper::makeFactoryPoolWithMutex<AnalyticsEventGetterParameterString, 1024>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryAnalyticsEventGetterParameterInteger = Helper::makeFactoryPoolWithMutex<AnalyticsEventGetterParameterInteger, 1024>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryAnalyticsEventGetterParameterDouble = Helper::makeFactoryPoolWithMutex<AnalyticsEventGetterParameterDouble, 1024>( MENGINE_DOCUMENT_FACTORABLE );
 
-        m_factoryAnalyticsContext = Helper::makeFactoryPool<AnalyticsContext, 256>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryAnalyticsContext = Helper::makeFactoryPoolWithMutex<AnalyticsContext, 256>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

@@ -43,8 +43,8 @@ namespace Mengine
     {
         m_factoryRenderTexture = Helper::makeFactoryPoolWithListener<RenderTexture, 128>( this, &RenderTextureService::onRenderTextureDestroy_, MENGINE_DOCUMENT_FACTORABLE );
 
-        m_factoryDecoderRenderImageProvider = Helper::makeFactoryPool<DecoderRenderImageProvider, 128>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryDecoderRenderImageLoader = Helper::makeFactoryPool<DecoderRenderImageLoader, 128>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryDecoderRenderImageProvider = Helper::makeFactoryPoolWithMutex<DecoderRenderImageProvider, 128>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryDecoderRenderImageLoader = Helper::makeFactoryPoolWithMutex<DecoderRenderImageLoader, 128>( MENGINE_DOCUMENT_FACTORABLE );
 
         uint32_t Engine_TextureHashTableSize = CONFIG_VALUE_INTEGER( "Engine", "TextureHashTableSize", 1024 * 8 );
 

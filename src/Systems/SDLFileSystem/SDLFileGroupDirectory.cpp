@@ -34,9 +34,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileGroupDirectory::_initialize()
     {
-        m_factoryInputStreamFile = Helper::makeFactoryPool<SDLFileInputStream, 8>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryInputStreamMutexFile = Helper::makeFactoryPool<SDLMutexFileInputStream, 8>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryOutputStreamFile = Helper::makeFactoryPool<SDLFileOutputStream, 4>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryInputStreamFile = Helper::makeFactoryPoolWithMutex<SDLFileInputStream, 8>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryInputStreamMutexFile = Helper::makeFactoryPoolWithMutex<SDLMutexFileInputStream, 8>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryOutputStreamFile = Helper::makeFactoryPoolWithMutex<SDLFileOutputStream, 4>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

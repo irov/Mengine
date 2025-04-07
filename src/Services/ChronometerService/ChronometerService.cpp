@@ -25,7 +25,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ChronometerService::_initializeService()
     {
-        m_factoryChronometer = Helper::makeFactoryPool<Chronometer, 8>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryChronometer = Helper::makeFactoryPoolWithMutex<Chronometer, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

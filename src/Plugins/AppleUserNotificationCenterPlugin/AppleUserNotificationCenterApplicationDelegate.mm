@@ -7,7 +7,7 @@
 
 @implementation AppleUserNotificationCenterApplicationDelegate
 
-+ (instancetype) sharedInstance {
++ (instancetype)sharedInstance {
     static AppleUserNotificationCenterApplicationDelegate *sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{

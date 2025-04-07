@@ -6,17 +6,6 @@
 
 @implementation AppleAdvertisementApplicationDelegate
 
-#pragma mark - AppleAdvertisementInterface
-
-+ (instancetype) sharedInstance {
-    static AppleAdvertisementApplicationDelegate * sharedInstance = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        sharedInstance = [iOSDetail getPluginDelegateOfClass:[AppleAdvertisementApplicationDelegate class]];
-    });
-    return sharedInstance;
-}
-
 - (instancetype)init {
     self = [super init];
     
@@ -32,7 +21,21 @@
     self.m_attempts = [NSMutableDictionary dictionary];
     self.m_cooldowns = [NSMutableDictionary dictionary];
     
+    self.m_interstitialPoints = nil;
+    self.m_rewardedPoints = nil;
+    
     return self;
+}
+
+#pragma mark - AppleAdvertisementInterface
+
++ (instancetype) sharedInstance {
+    static AppleAdvertisementApplicationDelegate * sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [iOSDetail getPluginDelegateOfClass:[AppleAdvertisementApplicationDelegate class]];
+    });
+    return sharedInstance;
 }
 
 - (BOOL)getNoAds {

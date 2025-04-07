@@ -1458,10 +1458,6 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( AppleGeneralDataProtectionRegulation, "plugin AppleGeneralDataProtectionRegulation...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
-#if defined(MENGINE_PLUGIN_APPLE_USERNOTIFICATIONCENTER_STATIC)
-        MENGINE_ADD_PLUGIN( AppleUserNotificationCenter, "plugin AppleUserNotificationCenter...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
 #if defined(MENGINE_PLUGIN_APPLE_SKADNETWORK_STATIC)
         MENGINE_ADD_PLUGIN( AppleSKAdNetwork, "plugin AppleSKAdNetwork...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
@@ -1486,20 +1482,12 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( AppleFirebaseAnalytics, "plugin AppleFirebaseAnalytics...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
-#if defined(MENGINE_PLUGIN_APPLE_FIREBASE_CRASHLYTICS_STATIC)
-        MENGINE_ADD_PLUGIN( AppleFirebaseCrashlytics, "plugin AppleFirebaseCrashlytics...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
 #if defined(MENGINE_PLUGIN_APPLE_FIREBASE_MESSAGING_STATIC)
         MENGINE_ADD_PLUGIN( AppleFirebaseMessaging, "plugin AppleFirebaseMessaging...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #if defined(MENGINE_PLUGIN_APPLE_FIREBASE_REMOTECONFIG_STATIC)
         MENGINE_ADD_PLUGIN( AppleFirebaseRemoteConfig, "plugin AppleFirebaseRemoteConfig...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-#if defined(MENGINE_PLUGIN_APPLE_FIREBASE_PERFORMANCEMONITORING_STATIC)
-        MENGINE_ADD_PLUGIN( AppleFirebasePerformanceMonitoring, "plugin AppleFirebasePerformanceMonitoring...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #if defined(MENGINE_PLUGIN_APPLE_FACEBOOK_STATIC)

@@ -2,6 +2,8 @@
 #import "AppleString.h"
 #import "AppleFactorablePtr.h"
 
+#include "Kernel/Assertion.h"
+
 @implementation AppleDetail
 
 + (NSString * _Nonnull)NSIdToString:(id _Nonnull)value {
@@ -40,16 +42,20 @@
     return randomNumber;
 }
 
-+ (NSString * _Nonnull)getRandomHexString:(NSInteger)length {
-    NSInteger lengthBytes = (length + 1) / 2;
-    uint8_t randomBytes[lengthBytes];
++ (NSString * _Nonnull)getRandomHexString:(NSUInteger)length {
+    MENGINE_ASSERTION_FATAL(length < 2048, "length must be less than 2048");
+    
+    NSUInteger lengthBytes = (length + 1) / 2;
+    uint8_t randomBytes[1028];
     if (SecRandomCopyBytes(kSecRandomDefault, lengthBytes, randomBytes) != 0) {
         return @"";
     }
     
-    NSMutableString * randomHexString = [NSMutableString stringWithCapacity:(length + 1) / 2 * 2];
+    NSUInteger capacity = (length + 1) / 2 * 2;
     
-    for (NSInteger i = 0; i != lengthBytes; ++i) {
+    NSMutableString * randomHexString = [NSMutableString stringWithCapacity:capacity];
+    
+    for (NSUInteger i = 0; i != lengthBytes; ++i) {
         [randomHexString appendFormat:@"%02X", randomBytes[i]];
     }
     

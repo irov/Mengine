@@ -12,6 +12,8 @@
 
 #import "Plugins/AppleAdvertisementPlugin/AppleAdvertisementInterface.h"
 
+#include "Config/Version.h"
+
 #include "Configuration/Configurations.h"
 
 #if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_META)
@@ -19,6 +21,22 @@
 #endif
 
 @implementation AppleAppLovinApplicationDelegate
+
+- (instancetype)init {
+    self = [super init];
+    
+    if (self) {
+        self.m_bannerAd = nil;
+        self.m_interstitialAd = nil;
+        self.m_rewardedAd = nil;
+        
+#if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON)
+        self.m_amazonService = nil;
+#endif
+    }
+    
+    return self;
+}
 
 - (id<AppleAdvertisementCallbackInterface>)getAdvertisementBannerCallback {
     id<AppleAdvertisementInterface> advertisement = [iOSDetail getPluginDelegateOfProtocol:@protocol(AppleAdvertisementInterface)];
@@ -154,7 +172,8 @@
         return NO;
     }
     
-    ALSdkInitializationConfiguration * configuration = [ALSdkInitializationConfiguration configurationWithSdkKey:MengineAppleAppLovinPlugin_SdkKey builderBlock:^(ALSdkInitializationConfigurationBuilder * _Nonnull builder) {
+    ALSdkInitializationConfiguration * initializationConfiguration = [ALSdkInitializationConfiguration configurationWithSdkKey:MengineAppleAppLovinPlugin_SdkKey builderBlock:^(ALSdkInitializationConfigurationBuilder * _Nonnull builder) {
+        builder.pluginVersion = [@"Mengine-" stringByAppendingString:@MENGINE_ENGINE_VERSION_STRING];
         builder.mediationProvider = ALMediationProviderMAX;
     }];
     
@@ -197,7 +216,7 @@
         settings.termsAndPrivacyPolicyFlowSettings.enabled = NO;
     }
     
-    [[ALSdk shared] initializeWithConfiguration:configuration completionHandler:^(ALSdkConfiguration *configuration) {
+    [[ALSdk shared] initializeWithConfiguration:initializationConfiguration completionHandler:^(ALSdkConfiguration *configuration) {
         ALConsentFlowUserGeography consentFlowUserGeography = configuration.consentFlowUserGeography;
         NSString * countryCode = configuration.countryCode;
         ALAppTrackingTransparencyStatus appTrackingTransparencyStatus = configuration.appTrackingTransparencyStatus;
@@ -208,6 +227,17 @@
         IOS_LOGGER_MESSAGE(@"[AppLovin] country code: %@", countryCode);
         IOS_LOGGER_MESSAGE(@"[AppLovin] app tracking transparency status: %ld", appTrackingTransparencyStatus);
         IOS_LOGGER_MESSAGE(@"[AppLovin] test mode enabled: %d", testModeEnabled);
+        
+        switch (consentFlowUserGeography) {
+            case ALConsentFlowUserGeographyGDPR:
+                [iOSTransparencyConsentParam setConsentFlowUserGeography:iOSConsentFlowUserGeographyGDPR];
+                break;
+            case ALConsentFlowUserGeographyOther:
+                [iOSTransparencyConsentParam setConsentFlowUserGeography:iOSConsentFlowUserGeographyOther];
+                break;
+            default:
+                break;
+        }
         
         iOSTransparencyConsentParam * consent = [[iOSTransparencyConsentParam alloc] initFromUserDefaults];
         
@@ -220,6 +250,7 @@
         IOS_LOGGER_MESSAGE(@"FBAdSettings setAdvertiserTrackingEnabled:%d", ATTAllowed);
 #endif
         
+#if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_BANNER)
         NSString * MengineAppleAppLovinPlugin_BannerAdUnitId = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"BannerAdUnitId" withDefault:nil];
         
         if (MengineAppleAppLovinPlugin_BannerAdUnitId != nil) {
@@ -231,7 +262,9 @@
             
             self.m_bannerAd = bannerAd;
         }
+#endif
         
+#if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_INTERSTITIAL)
         NSString * MengineAppleAppLovinPlugin_InterstitialAdUnitId = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"InterstitialAdUnitId" withDefault:nil];
         
         if (MengineAppleAppLovinPlugin_InterstitialAdUnitId != nil) {
@@ -239,7 +272,9 @@
             
             self.m_interstitialAd = interstitialAd;
         }
+#endif
         
+#if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_REWARDED)
         NSString * MengineAppleAppLovinPlugin_RewardedAdUnitId = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"RewardedAdUnitId" withDefault:nil];
         
         if (MengineAppleAppLovinPlugin_RewardedAdUnitId != nil) {
@@ -247,6 +282,7 @@
             
             self.m_rewardedAd = rewardedAd;
         }
+#endif
         
         id<AppleAdvertisementInterface> advertisement = [iOSDetail getPluginDelegateOfProtocol:@protocol(AppleAdvertisementInterface)];
         

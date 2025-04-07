@@ -5,7 +5,7 @@
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonDocumentTraceback.h"
 
-#import "AppleGeneralDataProtectionRegulationApplicationDelegate.h"
+#include "AppleGeneralDataProtectionRegulationApplicationDelegate.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/ConstStringHelper.h"

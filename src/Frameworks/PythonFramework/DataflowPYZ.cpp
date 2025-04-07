@@ -70,13 +70,6 @@ namespace Mengine
         return data;
     }
     //////////////////////////////////////////////////////////////////////////
-    static int32_t s_get_int( const uint8_t * _buff )
-    {
-        int32_t x = MENGINE_FOURCC( (int32_t)_buff[0], (int32_t)_buff[1], (int32_t)_buff[2], (int32_t)_buff[3] );
-
-        return x;
-    }
-    //////////////////////////////////////////////////////////////////////////
     MemoryInterfacePtr DataflowPYZ::load( const InputStreamInterfacePtr & _stream, const DocumentInterfacePtr & _doc )
     {
         MemoryInterfacePtr memory = Helper::readStreamCacheArchiveMemory( _stream, m_archivator, _doc );
@@ -100,7 +93,7 @@ namespace Mengine
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
-        long file_magic = s_get_int( source_buffer );
+        long file_magic = MENGINE_FOURCC_BUF( source_buffer );
         long py_magic = m_kernel->marshal_magic_number();
 
         if( file_magic != py_magic )

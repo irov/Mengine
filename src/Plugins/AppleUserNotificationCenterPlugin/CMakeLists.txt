@@ -1,10 +1,7 @@
 MENGINE_PROJECT(AppleUserNotificationCenterPlugin)
 
 ADD_FILTER(
-src
-    AppleUserNotificationCenterPlugin.h
-    AppleUserNotificationCenterPlugin.mm
-    
+src    
     AppleUserNotificationCenterApplicationDelegate.h
     AppleUserNotificationCenterApplicationDelegate.mm
 )

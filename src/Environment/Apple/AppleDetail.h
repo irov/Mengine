@@ -22,7 +22,7 @@
 
 + (NSInteger)getTimestamp;
 + (NSInteger)getSecureRandomInteger;
-+ (NSString * _Nonnull)getRandomHexString:(NSInteger)length;
++ (NSString * _Nonnull)getRandomHexString:(NSUInteger)length;
 
 + (void)addMainQueueOperation:(dispatch_block_t _Nonnull)block;
 + (void)dispatchMainQueue:(dispatch_block_t _Nonnull)block;

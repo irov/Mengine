@@ -12,6 +12,6 @@
 @property (assign) BOOL m_authenticateSuccess;
 @property (assign) BOOL m_gameCenterAuthenticate;
 @property (assign) BOOL m_achievementsSynchronization;
-@property (strong) NSMutableArray<NSString *> * _Nonnull m_achievementsComplete;
+@property (strong) NSMutableArray<NSString *> * m_achievementsComplete;
 
 @end

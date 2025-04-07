@@ -4,10 +4,11 @@
 #import "Environment/iOS/iOSPluginSessionIdDelegateInterface.h"
 #import "Environment/iOS/iOSPluginConfigDelegateInterface.h"
 #import "Environment/iOS/iOSPluginLoggerDelegateInterface.h"
+#import "Environment/iOS/iOSPluginTransparencyConsentDelegateInterface.h"
 
 @import DatadogObjc;
 
-@interface AppleDatadogApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface, iOSPluginSessionIdDelegateInterface, iOSPluginConfigDelegateInterface, iOSPluginLoggerDelegateInterface>
+@interface AppleDatadogApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface, iOSPluginSessionIdDelegateInterface, iOSPluginConfigDelegateInterface, iOSPluginLoggerDelegateInterface, iOSPluginTransparencyConsentDelegateInterface>
 
 @property (atomic) BOOL m_enableDebugMessage;
 @property (atomic) BOOL m_enableInfoMessage;

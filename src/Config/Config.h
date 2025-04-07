@@ -443,7 +443,11 @@
 #endif
 
 #ifndef MENGINE_FOURCC
-#define MENGINE_FOURCC(c0, c1, c2, c3) (((c0) << 0) | ((c1) << 8) | ((c2) << 16) | ((c3) << 24))
+#define MENGINE_FOURCC(c0, c1, c2, c3) (((unsigned int)(c0) << 0) | ((unsigned int)(c1) << 8) | ((unsigned int)(c2) << 16) | ((unsigned int)(c3) << 24))
+#endif
+
+#ifndef MENGINE_FOURCC_BUF
+#define MENGINE_FOURCC_BUF(b) MENGINE_FOURCC(b[0], b[1], b[2], b[3])
 #endif
 
 #ifndef MENGINE_POWER2

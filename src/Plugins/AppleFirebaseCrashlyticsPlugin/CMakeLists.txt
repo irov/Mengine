@@ -4,8 +4,7 @@ OPTION(MENGINE_FIREBASE_CRASHLYTICS_UPLOAD_SYMBOLS "Enable uploading symbols to 
 
 ADD_FILTER(
 src
-    AppleFirebaseCrashlyticsPlugin.h
-    AppleFirebaseCrashlyticsPlugin.mm
+    AppleFirebaseCrashlyticsInterface.h
 
     AppleFirebaseCrashlyticsApplicationDelegate.h
     AppleFirebaseCrashlyticsApplicationDelegate.mm
@@ -16,7 +15,7 @@ ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_APPLE_FIREBASE_CRASHLYTICS)
 ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleFirebaseCrashlyticsApplicationDelegate")
 
 ADD_MENGINE_COCOAPOD_GOOGLE_UTILITIES()
-ADD_MENGINE_COCOAPOD("FirebaseCrashlytics" "NO-GIT" "11.10.0")
+ADD_MENGINE_COCOAPOD("FirebaseCrashlytics" "NO-GIT" "11.11.0")
 
 ADD_MENGINE_SCRIPT_PHASE("Run Firebase Crashlytics" "($){PODS_ROOT}/FirebaseCrashlytics/run" "['($){DWARF_DSYM_FOLDER_PATH}/($){DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/($){TARGET_NAME}', '$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)']")
 

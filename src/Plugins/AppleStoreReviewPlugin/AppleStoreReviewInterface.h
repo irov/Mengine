@@ -6,7 +6,7 @@
 
 @protocol AppleStoreReviewInterface <NSObject>
 
-+ (instancetype) sharedInstance;
++ (instancetype)sharedInstance;
 
 - (void)launchTheInAppReview;
 

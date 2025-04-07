@@ -19,6 +19,8 @@ src
     iOSEnvironmentService.h
     iOSEnvironmentService.mm
 
+    iOSConsentFlowUserGeography.h
+
     iOSTransparencyConsentParam.h
     iOSTransparencyConsentParam.mm
 

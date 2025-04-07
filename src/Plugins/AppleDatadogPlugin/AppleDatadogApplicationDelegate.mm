@@ -32,6 +32,26 @@
     return self;
 }
 
+- (DDTrackingConsent *)getTrackingConsent:(iOSTransparencyConsentParam *)consent {
+    if ([iOSTransparencyConsentParam getConsentFlowUserGeography] == iOSConsentFlowUserGeographyOther) {
+        return [DDTrackingConsent granted];
+    }
+    
+    if (consent == nil) {
+        return [DDTrackingConsent granted];
+    }
+    
+    if ([consent isPending] == YES) {
+        return [DDTrackingConsent pending];
+    }
+    
+    if ([consent getConsentAdStorage] == YES) {
+        return [DDTrackingConsent granted];
+    }
+    
+    return [DDTrackingConsent notGranted];
+}
+
 #pragma mark - iOSPluginApplicationDelegateInterface
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
@@ -65,8 +85,12 @@
         return NO;
     }
     
+    iOSTransparencyConsentParam * consent = [[iOSTransparencyConsentParam alloc] initFromUserDefaults];
+    
+    DDTrackingConsent * trackingConsent = [self getTrackingConsent:consent];
+        
     [DDDatadog initializeWithConfiguration:configuration
-                           trackingConsent:[DDTrackingConsent granted]];
+                           trackingConsent:trackingConsent];
     
     NSString * sessionId = [[iOSApplication sharedInstance] getSessionId];
     NSString * installKey = [[iOSApplication sharedInstance] getInstallKey];
@@ -90,8 +114,8 @@
     DDLogger * logger = [DDLogger createWith:loggerConfiguration];
         
     [logger addAttributeForKey:@"version" value:@{
-        @"number": [iOSDetail getBuildNumber],
-        @"version": [iOSDetail getBuildVersion]
+        @"code": [iOSDetail getBuildNumber],
+        @"name": [iOSDetail getBuildVersion]
     }];
         
     [logger addAttributeForKey:@"install" value:@{
@@ -120,6 +144,8 @@
     return YES;
 }
 
+#pragma mark - iOSPluginSessionIdDelegateInterface
+
 - (void)onSessionId:(iOSSessionIdParam *)session {
     NSString * installKey = [[iOSApplication sharedInstance] getInstallKey];
     
@@ -127,22 +153,33 @@
 }
 - (void)onRemoveSessionData {
     [DDDatadog setUserInfoWithUserId:@"" name:nil email:nil extraInfo:@{}];
+    
+    [DDDatadog clearAllData];
 }
+
+#pragma mark - iOSPluginLoggerDelegateInterface
 
 - (void)onLogger:(AppleLogRecordParam * _Nonnull)record {
     if (self.m_logger == nil) {
         return;
     }
     
-    NSDictionary * attributes = @{
-        @"category": record.LOG_CATEGORY,
-        @"thread": record.LOG_THREAD,
-        @"code": @{
+#ifdef MENGINE_DEBUG
+    NSDictionary * attributes = @{ @"code": @{
+            @"category": record.LOG_CATEGORY,
+            @"thread": record.LOG_THREAD,
             @"file": record.LOG_FILE,
             @"line": @(record.LOG_LINE),
             @"function": record.LOG_FUNCTION
         }
     };
+#else
+    NSDictionary * attributes = @{ @"code": @{
+            @"category": record.LOG_CATEGORY,
+            @"thread": record.LOG_THREAD,
+        }
+    };
+#endif
     
     switch (record.LOG_LEVEL) {
         case Mengine::LM_SILENT:
@@ -183,12 +220,22 @@
     }
 }
 
+#pragma mark - iOSPluginConfigDelegateInterface
+
 - (void)onConfig:(NSDictionary * _Nonnull)config {
 #ifdef MENGINE_RELEASE
     self.m_enableDebugMessage = [[config objectForKey:@"datadog_debug_message"] boolValue];
 #endif
     
     self.m_enableInfoMessage = [[config objectForKey:@"datadog_info_message"] boolValue];
+}
+
+#pragma mark - iOSPluginTransparencyConsentDelegateInterface
+
+- (void)onTransparencyConsent:(iOSTransparencyConsentParam *)consent {
+    DDTrackingConsent * trackingConsent = [self getTrackingConsent:consent];
+    
+    [DDDatadog setTrackingConsentWithConsent:trackingConsent];
 }
 
 @end

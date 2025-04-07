@@ -6,7 +6,7 @@
 
 @protocol AppleFirebaseRemoteConfigInterface <NSObject>
 
-+ (instancetype) sharedInstance;
++ (instancetype)sharedInstance;
 
 - (BOOL)hasRemoteConfig:(NSString *)key;
 - (NSDictionary *)getRemoteConfigValue:(NSString *)key;

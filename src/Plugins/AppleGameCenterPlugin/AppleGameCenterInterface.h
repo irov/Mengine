@@ -11,20 +11,20 @@
 
 @protocol AppleGameCenterInterface <NSObject>
 
-+ (instancetype _Nonnull)sharedInstance;
++ (instancetype)sharedInstance;
 
-- (void)connect:(id<AppleGameCenterConnectCallbackInterface> _Nonnull)callback;
+- (void)connect:(id<AppleGameCenterConnectCallbackInterface>)callback;
 - (BOOL)isConnect;
 - (BOOL)isSynchronized;
 
-- (BOOL)reportAchievement:(NSString * _Nonnull)identifier percent:(double)percent response:(void(^ _Nonnull)(BOOL))handler;
-- (BOOL)checkAchievement:(NSString * _Nonnull)identifier;
+- (BOOL)reportAchievement:(NSString *)identifier percent:(double)percent response:(void(^)(BOOL))handler;
+- (BOOL)checkAchievement:(NSString *)identifier;
 
-- (BOOL)login:(void(^ _Nonnull)(NSError* _Nullable))handler;
-- (BOOL)loadCompletedAchievements:(void(^ _Nonnull)(NSError * _Nullable, NSArray* _Nullable))handler;
-- (BOOL)resetAchievements:(void(^ _Nonnull)(NSError * __nullable error))handler;
+- (BOOL)login:(void(^)(NSError *))handler;
+- (BOOL)loadCompletedAchievements:(void(^)(NSError *, NSArray*))handler;
+- (BOOL)resetAchievements:(void(^)(NSError * error))handler;
 
-- (BOOL)reportScore:(NSString * _Nonnull)identifier score:(int64_t)score response:(void(^ _Nonnull)(NSError * _Nullable))handler;
-- (BOOL)reportAchievementIdentifier:(NSString * _Nonnull)identifier percentComplete:(double)percent withBanner:(BOOL)banner response:(void(^ _Nonnull)(NSError * _Nullable))handler;
+- (BOOL)reportScore:(NSString *)identifier score:(int64_t)score response:(void(^)(NSError *))handler;
+- (BOOL)reportAchievementIdentifier:(NSString *)identifier percentComplete:(double)percent withBanner:(BOOL)banner response:(void(^)(NSError *))handler;
 
 @end

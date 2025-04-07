@@ -17,6 +17,11 @@
     return sharedInstance;
 }
 
++ (void)setPersistentStringForKey:(NSString * _Nonnull)key value:(NSString * _Nullable)value {
+    [AppleKeyChain setStringForKey:key value:value];
+    [AppleUserDefaults setStringForKey:key value:value];
+}
+
 + (NSString *)getPersistentStringForKey:(NSString *)key defaultValue:(NSString *)d {
     NSString * keychain_value = [AppleKeyChain getStringForKey:key defaultValue:nil];
     
@@ -27,6 +32,11 @@
     NSString * userdefault_value = [AppleUserDefaults getStringForKey:key defaultValue:d];
     
     return userdefault_value;
+}
+
++ (void)setPersistentIntegerForKey:(NSString *)key value:(NSInteger)value {
+    [AppleKeyChain setIntegerForKey:key value:value];
+    [AppleUserDefaults setIntegerForKey:key value:value];
 }
 
 + (NSInteger)getPersistentIntegerForKey:(NSString *)key defaultValue:(NSInteger)d {

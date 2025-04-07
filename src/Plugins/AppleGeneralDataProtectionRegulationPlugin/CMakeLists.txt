@@ -4,10 +4,9 @@ ADD_FILTER(
 src
     AppleGeneralDataProtectionRegulationPlugin.h
     AppleGeneralDataProtectionRegulationPlugin.mm
-)
 
-ADD_FILTER(
-delegate
+    AppleGeneralDataProtectionRegulationInterface.h
+		
     AppleGeneralDataProtectionRegulationApplicationDelegate.h
     AppleGeneralDataProtectionRegulationApplicationDelegate.mm
 )

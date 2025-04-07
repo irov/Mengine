@@ -9,6 +9,15 @@
 
 @implementation AppleAppTrackingApplicationDelegate
 
+- (instancetype)init {
+    self = [super init];
+    
+    self.m_status = EAATA_NOT_DETERMINED;
+    self.m_idfa = @"00000000-0000-0000-0000-000000000000";
+    
+    return self;
+}
+
 #pragma mark - AppleAppTrackingInterface
 
 + (instancetype) sharedInstance {
@@ -18,15 +27,6 @@
         sharedInstance = [iOSDetail getPluginDelegateOfClass:[AppleAppTrackingApplicationDelegate class]];
     });
     return sharedInstance;
-}
-
-- (instancetype)init {
-    self = [super init];
-    
-    self.m_status = EAATA_NOT_DETERMINED;
-    self.m_idfa = @"00000000-0000-0000-0000-000000000000";
-    
-    return self;
 }
 
 - (void)makeIDFA {

@@ -10,7 +10,17 @@
 
 @implementation AppleFirebaseRemoteConfigApplicationDelegate
 
-+ (instancetype) sharedInstance {
+- (instancetype)init {
+    self = [super init];
+    
+    if (self) {
+        self.m_configs = nil;
+    }
+    
+    return self;
+}
+
++ (instancetype)sharedInstance {
     static AppleFirebaseRemoteConfigApplicationDelegate *sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{

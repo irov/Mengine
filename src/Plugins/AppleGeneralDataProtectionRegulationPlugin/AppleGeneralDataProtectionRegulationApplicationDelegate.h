@@ -2,11 +2,8 @@
 
 #import "Environment/iOS/iOSPluginApplicationDelegateInterface.h"
 
-@interface AppleGeneralDataProtectionRegulationApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface>
+#import "AppleGeneralDataProtectionRegulationInterface.h"
 
-+ (instancetype)sharedInstance;
-
-- (void)setGDPRPass:(BOOL) passGDPR;
-- (BOOL)isGDPRPass;
+@interface AppleGeneralDataProtectionRegulationApplicationDelegate : NSObject<AppleGeneralDataProtectionRegulationInterface, iOSPluginApplicationDelegateInterface>
 
 @end

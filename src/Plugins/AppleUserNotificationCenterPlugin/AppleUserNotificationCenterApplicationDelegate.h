@@ -6,7 +6,7 @@
 
 @interface AppleUserNotificationCenterApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface, UNUserNotificationCenterDelegate>
 
-+ (instancetype) sharedInstance;
++ (instancetype)sharedInstance;
 
 - (void)scheduleNotification:(NSNumber *)badge withTitle:(NSString *)title withBody:(NSString *)body withDelay:(NSTimeInterval)delay;
 

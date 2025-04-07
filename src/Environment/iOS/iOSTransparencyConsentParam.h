@@ -1,13 +1,15 @@
 #pragma once
 
-#include "Config/Config.h"
-
-#import <Foundation/Foundation.h>
+#import "Environment/iOS/iOSConsentFlowUserGeography.h"
 
 @interface iOSTransparencyConsentParam : NSObject
 
++ (void)setConsentFlowUserGeography:(iOSConsentFlowUserGeography)userGeography;
++ (iOSConsentFlowUserGeography)getConsentFlowUserGeography;
+
 - (instancetype _Nonnull)initFromUserDefaults;
 
+- (BOOL)isPending;
 - (BOOL)getPurposeConsentArgument:(NSInteger)index;
 - (BOOL)isEEA;
 - (BOOL)getConsentAdStorage;
@@ -15,6 +17,7 @@
 - (BOOL)getConsentAdPersonalization;
 - (BOOL)getConsentAdUserData;
 
+@property (nonatomic) BOOL TRANSPARENCYCONSENT_PENDING;
 @property (nonatomic) NSInteger TRANSPARENCYCONSENT_CMPSDKID;
 @property (nonatomic) NSInteger TRANSPARENCYCONSENT_CMPSDKVERSION;
 @property (nonatomic) NSInteger TRANSPARENCYCONSENT_POLICYVERSION;

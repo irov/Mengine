@@ -33,6 +33,7 @@
 - (void)setCustomKeysAndValues:(NSDictionary *)keysAndValues {
     [[FIRCrashlytics crashlytics] setCustomKeysAndValues:keysAndValues];
 }
+
 - (void)recordError:(NSString *)name errorCode:(NSInteger)code {
     IOS_LOGGER_MESSAGE( @"record error name: %@ code: %lu"
         , name
@@ -40,15 +41,14 @@
     );
 
     NSDictionary *userInfo = @{
-      NSLocalizedDescriptionKey:name
+        NSLocalizedDescriptionKey:name
     };
     
     NSError * error = [NSError errorWithDomain:@("com.mengine.firebase")
-                                         code:code
-                                     userInfo:userInfo];
+                                          code:code
+                                      userInfo:userInfo];
 
     [[FIRCrashlytics crashlytics] recordError:error];
-                                          
 }
 
 - (void)recordError:(NSError *)error {

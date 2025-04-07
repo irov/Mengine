@@ -7,16 +7,8 @@
 
 @implementation AppleGameCenterApplicationDelegate
 
-+ (instancetype _Nonnull) sharedInstance {
-    static AppleGameCenterApplicationDelegate * sharedInstance = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        sharedInstance = [iOSDetail getPluginDelegateOfClass:[AppleGameCenterApplicationDelegate class]];
-    });
-    return sharedInstance;
-}
 
-- (instancetype _Nonnull)init {
+- (instancetype)init {
     self = [super init];
     
     self.m_gameCenterAuthenticate = NO;
@@ -28,8 +20,19 @@
     return self;
 }
 
-- (void)connect:(id<AppleGameCenterConnectCallbackInterface> _Nonnull)callback {
-    [self login:^(NSError * _Nullable _error) {
+#pragma mark - AppleGameCenterInterface
+
++ (instancetype)sharedInstance {
+    static AppleGameCenterApplicationDelegate * sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [iOSDetail getPluginDelegateOfClass:[AppleGameCenterApplicationDelegate class]];
+    });
+    return sharedInstance;
+}
+
+- (void)connect:(id<AppleGameCenterConnectCallbackInterface>)callback {
+    [self login:^(NSError * _error) {
         if (_error != nil) {
             self.m_gameCenterAuthenticate = false;
             
@@ -64,7 +67,7 @@
             [callback onAppleGameCenterSynchronizate:NO];
         }];
         
-        [self loadCompletedAchievements:^(NSError * _Nullable _error, NSArray * _Nullable _completedAchievements) {
+        [self loadCompletedAchievements:^(NSError * _error, NSArray * _completedAchievements) {
             if (_error != nil) {
                 self.m_achievementsSynchronization = false;
                 
@@ -91,7 +94,7 @@
             
             self.m_achievementsSynchronization = true;
             
-            if (callback != nullptr) {
+            if (callback != nil) {
                 [AppleDetail dispatchMainQueue:^{
                     [callback onAppleGameCenterSynchronizate:YES];
                 }];
@@ -108,13 +111,13 @@
     return self.m_achievementsSynchronization;
 }
 
-- (BOOL)reportAchievement:(NSString * _Nonnull)identifier percent:(double)percent response:(void(^ _Nonnull)(BOOL))handler {
+- (BOOL)reportAchievement:(NSString *)identifier percent:(double)percent response:(void(^)(BOOL))handler {
     IOS_LOGGER_MESSAGE( @"report achievement: '%@' [%lf]"
         , identifier
         , percent
     );
 
-    BOOL result = [self reportAchievementIdentifier:identifier percentComplete:percent withBanner:YES response:^(NSError * _Nullable _error) {
+    BOOL result = [self reportAchievementIdentifier:identifier percentComplete:percent withBanner:YES response:^(NSError * _error) {
         if (_error != nil) {
             IOS_LOGGER_ERROR( @"response achievement '%@' percent: %lf error: %@"
                , identifier
@@ -155,7 +158,7 @@
     return YES;
 }
 
-- (BOOL)checkAchievement:(NSString * _Nonnull)identifier {
+- (BOOL)checkAchievement:(NSString *)identifier {
     if ([self.m_achievementsComplete containsObject:identifier] == NO) {
         return NO;
     }
@@ -164,7 +167,7 @@
 }
 
 - (BOOL)resetAchievements {
-    BOOL result = [self resetAchievements:^(NSError * _Nullable _error) {
+    BOOL result = [self resetAchievements:^(NSError * _error) {
         if (_error != nil) {
             IOS_LOGGER_ERROR( @"reset achievemnts error: '%s'"
                 , [[AppleDetail getMessageFromNSError:_error] UTF8String]
@@ -179,7 +182,7 @@
     return YES;
 }
 
-- (BOOL)login:(void(^)(NSError* _Nullable))handler {
+- (BOOL)login:(void(^)(NSError *))handler {
     GKLocalPlayer * localPlayer = [GKLocalPlayer localPlayer];
     
     [localPlayer setAuthenticateHandler:^(UIViewController* v, NSError * error) {
@@ -203,12 +206,12 @@
     return YES;
 }
 
-- (BOOL) loadCompletedAchievements:(void(^)(NSError * _Nullable, NSArray * _Nullable))handler {
+- (BOOL)loadCompletedAchievements:(void(^)(NSError *, NSArray *))handler {
     if (self.m_authenticateSuccess == NO) {
         return NO;
     }
     
-    [GKAchievement loadAchievementsWithCompletionHandler:^(NSArray<GKAchievement *> * _Nullable achievements, NSError * _Nullable error) {
+    [GKAchievement loadAchievementsWithCompletionHandler:^(NSArray<GKAchievement *> * achievements, NSError * error) {
         if (error != nil) {
             [AppleDetail dispatchMainQueue:^{
                 handler( error, nil );
@@ -241,7 +244,7 @@
     return YES;
 }
 
-- (BOOL)resetAchievements:(void(^ _Nonnull)(NSError * __nullable error))handler {
+- (BOOL)resetAchievements:(void(^)(NSError * error))handler {
     IOS_LOGGER_MESSAGE( @"try reset achievemnts" );
     
     if (self.m_authenticateSuccess == NO) {
@@ -250,7 +253,7 @@
         return NO;
     }
     
-    [GKAchievement resetAchievementsWithCompletionHandler:^(NSError * _Nullable error) {
+    [GKAchievement resetAchievementsWithCompletionHandler:^(NSError * error) {
         if (error != nil) {
             IOS_LOGGER_ERROR( @"reset achievemnts error: '%@'"
                 , [AppleDetail getMessageFromNSError:error]
@@ -273,7 +276,7 @@
     return YES;
 }
 
-- (BOOL)reportScore:(NSString *)identifier score:(int64_t)score response:(void(^)(NSError * _Nullable))handler {
+- (BOOL)reportScore:(NSString *)identifier score:(int64_t)score response:(void(^)(NSError *))handler {
     IOS_LOGGER_MESSAGE( @"report score: '%@' value: %lld"
         , identifier
         , score
@@ -321,7 +324,7 @@
     return YES;
 }
 
-- (BOOL) reportAchievementIdentifier:(NSString *)identifier percentComplete:(double)percent withBanner:(BOOL)banner response:(void(^)(NSError * _Nullable))handler {
+- (BOOL)reportAchievementIdentifier:(NSString *)identifier percentComplete:(double)percent withBanner:(BOOL)banner response:(void(^)(NSError *))handler {
     if (self.m_authenticateSuccess == NO) {
         return NO;
     }
@@ -330,7 +333,7 @@
     [achievement setShowsCompletionBanner:banner];
     [achievement setPercentComplete: percent];
     
-    [GKAchievement reportAchievements:@[achievement] withCompletionHandler:^(NSError * _Nullable error) {
+    [GKAchievement reportAchievements:@[achievement] withCompletionHandler:^(NSError * error) {
         [AppleDetail dispatchMainQueue:^{
             handler(error);
         }];
@@ -349,7 +352,7 @@
 
 #pragma mark GKGameCenterControllerDelegate
 
-- (void) gameCenterViewControllerDidFinish:(GKGameCenterViewController *)gameCenterViewController {
+- (void)gameCenterViewControllerDidFinish:(GKGameCenterViewController *)gameCenterViewController {
     [gameCenterViewController dismissViewControllerAnimated:YES completion:^{
         IOS_LOGGER_MESSAGE( @"game center view controller dismissed" );
         

@@ -10,7 +10,7 @@
 
 @implementation AppleFirebaseAnalyticsApplicationDelegate
 
-+ (instancetype) sharedInstance {
++ (instancetype)sharedInstance {
     static AppleFirebaseAnalyticsApplicationDelegate *sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -22,7 +22,6 @@
 - (void)sendEvent:(NSString *)eventName parameters:(NSDictionary<NSString *, id> *)parameters {
     [FIRAnalytics logEventWithName:eventName parameters:parameters];
 }
-
 
 #pragma mark - iOSPluginApplicationDelegateInterface
 

@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
 public class MengineTransparencyConsentParam {
+    public boolean TRANSPARENCYCONSENT_PENDING;
     public int TRANSPARENCYCONSENT_CMPSDKID;
     public int TRANSPARENCYCONSENT_CMPSDKVERSION;
     public int TRANSPARENCYCONSENT_POLICYVERSION;
@@ -29,6 +30,7 @@ public class MengineTransparencyConsentParam {
     public void initFromDefaultSharedPreferences(@NonNull Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
+        TRANSPARENCYCONSENT_PENDING = preferences.contains("IABTCF_gdprApplies") == false;
         TRANSPARENCYCONSENT_CMPSDKID = preferences.getInt("IABTCF_CmpSdkID", 0);
         TRANSPARENCYCONSENT_CMPSDKVERSION = preferences.getInt("IABTCF_CmpSdkVersion", 0);
         TRANSPARENCYCONSENT_POLICYVERSION = preferences.getInt("IABTCF_PolicyVersion", 0);
@@ -47,6 +49,10 @@ public class MengineTransparencyConsentParam {
         TRANSPARENCYCONSENT_PUBLISHERLEGITIMATEINTERESTS = preferences.getString("IABTCF_PublisherLegitimateInterests", "");
         TRANSPARENCYCONSENT_PUBLISHERCUSTOMPURPOSESCONSENTS = preferences.getString("IABTCF_PublisherCustomPurposesConsents", "");
         TRANSPARENCYCONSENT_PUBLISHERCUSTOMPURPOSESLEGITIMATEINTERESTS = preferences.getString("IABTCF_PublisherCustomPurposesLegitimateInterests", "");
+    }
+
+    public boolean isPending() {
+        return TRANSPARENCYCONSENT_PENDING;
     }
 
     public boolean getPurposeConsentArgument(int index) {

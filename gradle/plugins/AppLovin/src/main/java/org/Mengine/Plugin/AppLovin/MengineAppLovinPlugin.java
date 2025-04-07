@@ -221,6 +221,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
         AppLovinSdkInitializationConfiguration config = AppLovinSdkInitializationConfiguration.builder(MengineAppLovinPlugin_SdkKey, application)
             .setMediationProvider(AppLovinMediationProvider.MAX)
             .setAdUnitIds(adUnitIds)
+            .setPluginVersion("Mengine-v" + application.getEngineVersion())
             .build();
 
         appLovinSdk.initialize(config, configuration -> {

@@ -106,7 +106,7 @@ namespace Mengine
 
         m_dwAllocationGranularity = si.dwAllocationGranularity;
 
-        m_factoryFileMappedInputStream = Helper::makeFactoryPool<Win32FileMappedInputStream, 128>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryFileMappedInputStream = Helper::makeFactoryPoolWithMutex<Win32FileMappedInputStream, 128>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

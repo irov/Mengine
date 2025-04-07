@@ -71,12 +71,12 @@ namespace Mengine
 
         m_hInternet = hInternet;
 
-        m_factoryTaskPing = Helper::makeFactoryPool<Win32HttpRequestPing, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryTaskGetMessage = Helper::makeFactoryPool<Win32HttpRequestGetMessage, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryTaskPostMessage = Helper::makeFactoryPool<Win32HttpRequestPostMessage, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryTaskDeleteMessage = Helper::makeFactoryPool<Win32HttpRequestDeleteMessage, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryTaskHeaderData = Helper::makeFactoryPool<Win32HttpRequestHeaderData, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryTaskGetAsset = Helper::makeFactoryPool<Win32HttpRequestGetAsset, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryTaskPing = Helper::makeFactoryPoolWithMutex<Win32HttpRequestPing, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryTaskGetMessage = Helper::makeFactoryPoolWithMutex<Win32HttpRequestGetMessage, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryTaskPostMessage = Helper::makeFactoryPoolWithMutex<Win32HttpRequestPostMessage, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryTaskDeleteMessage = Helper::makeFactoryPoolWithMutex<Win32HttpRequestDeleteMessage, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryTaskHeaderData = Helper::makeFactoryPoolWithMutex<Win32HttpRequestHeaderData, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryTaskGetAsset = Helper::makeFactoryPoolWithMutex<Win32HttpRequestGetAsset, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

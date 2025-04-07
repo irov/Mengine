@@ -17,7 +17,7 @@ namespace Mengine
         template<class T>
         MENGINE_INLINE FactoryInterfacePtr registerDecoder( const ConstString & _type, const DocumentInterfacePtr & _doc )
         {
-            FactoryInterfacePtr factory = Helper::makeFactoryPool<T, 8>( _doc );
+            FactoryInterfacePtr factory = Helper::makeFactoryPoolWithMutex<T, 8>( _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( factory, "invalid register decoder '%s'"
                 , _type.c_str()

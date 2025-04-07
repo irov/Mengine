@@ -116,8 +116,8 @@ namespace Mengine
             this->setMusicVolume( STRINGIZE_STRING_LOCAL( "__MusicOFF__" ), 0.f, 0.f, MENGINE_MIXER_VALUE_DEFAULT_SPEED );
         }
 
-        m_factoryWorkerTaskSoundBufferUpdate = Helper::makeFactoryPool<ThreadWorkerSoundBufferUpdate, 32>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factorySoundIdentity = Helper::makeFactoryPool<SoundIdentity, 32>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryWorkerTaskSoundBufferUpdate = Helper::makeFactoryPoolWithMutex<ThreadWorkerSoundBufferUpdate, 32>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factorySoundIdentity = Helper::makeFactoryPoolWithMutex<SoundIdentity, 32>( MENGINE_DOCUMENT_FACTORABLE );
 
         TIMEPIPE_SERVICE()
             ->addTimepipe( TimepipeInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );

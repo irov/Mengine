@@ -25,7 +25,7 @@ namespace Mengine
         m_threadTasksMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
         m_currentThreadTasksMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-        m_factoryPoolTaskPacket = Helper::makeFactoryPool<ThreadTaskPacket, 4>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryPoolTaskPacket = Helper::makeFactoryPoolWithMutex<ThreadTaskPacket, 4>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

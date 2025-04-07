@@ -79,7 +79,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoggerService::_initializeService()
     {
-        m_factoryLoggerRecord = Helper::makeFactoryPool<LoggerRecord, 32>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryLoggerRecord = Helper::makeFactoryPoolWithMutex<LoggerRecord, 32>( MENGINE_DOCUMENT_FACTORABLE );
 
         bool OPTION_nologs = HAS_OPTION( "nologs" );
 

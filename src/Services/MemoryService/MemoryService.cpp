@@ -27,12 +27,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MemoryService::_initializeService()
     {
-        m_factoryMemoryCacheBuffer = Helper::makeFactoryPool<MemoryCacheBuffer, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryMemoryCacheInput = Helper::makeFactoryPool<MemoryCacheInput, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryMemoryProxyInput = Helper::makeFactoryPool<MemoryProxyInput, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryMemoryInput = Helper::makeFactoryPool<MemoryInput, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryMemoryBuffer = Helper::makeFactoryPool<MemoryBuffer, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryMemoryProxy = Helper::makeFactoryPool<MemoryProxy, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryMemoryCacheBuffer = Helper::makeFactoryPoolWithMutex<MemoryCacheBuffer, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryMemoryCacheInput = Helper::makeFactoryPoolWithMutex<MemoryCacheInput, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryMemoryProxyInput = Helper::makeFactoryPoolWithMutex<MemoryProxyInput, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryMemoryInput = Helper::makeFactoryPoolWithMutex<MemoryInput, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryMemoryBuffer = Helper::makeFactoryPoolWithMutex<MemoryBuffer, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryMemoryProxy = Helper::makeFactoryPoolWithMutex<MemoryProxy, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         ThreadMutexInterfacePtr memoryCacheMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 

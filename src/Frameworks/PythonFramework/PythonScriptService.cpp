@@ -469,8 +469,8 @@ namespace Mengine
 
         kernel->set_module_finder( py_moduleFinder.ptr() );
 
-        m_factoryScriptModule = Helper::makeFactoryPool<PythonScriptModule, 8>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryEntityEventable = Helper::makeFactoryPool<EntityEventable, 64>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryScriptModule = Helper::makeFactoryPoolWithMutex<PythonScriptModule, 8>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryEntityEventable = Helper::makeFactoryPoolWithMutex<EntityEventable, 64>( MENGINE_DOCUMENT_FACTORABLE );
 
 #if defined(MENGINE_DEBUG)
         pybind::def_functor( m_kernel, "addDebugLogFunction", this, &PythonScriptService::addDebugLogFunction );

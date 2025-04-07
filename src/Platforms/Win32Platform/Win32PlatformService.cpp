@@ -307,18 +307,6 @@ namespace Mengine
 
         Helper::utf8ToUnicode( Window_ClassName, m_windowClassName.data(), MENGINE_MAX_PATH );
 
-//#if defined(MENGINE_PLUGIN_DEVTODEBUG)
-//        SERVICE_WAIT( DevToDebugServiceInterface, [this]()
-//        {
-//            if( Helper::execute<Win32PlatformDevToDebug>( MENGINE_DOCUMENT_FACTORABLE ) == false )
-//            {
-//                return false;
-//            }
-//
-//            return true;
-//        } );
-//#endif
-
 #if defined(MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA)
         if( HAS_OPTION( "workdir" ) == true )
         {

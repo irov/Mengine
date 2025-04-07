@@ -35,8 +35,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidAssetGroupDirectory::_initialize()
     {
-        m_factoryInputStreamFile = Helper::makeFactoryPool<AndroidAssetInputStream, 8>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryInputStreamMutexFile = Helper::makeFactoryPool<AndroidMutexAssetInputStream, 8>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryInputStreamFile = Helper::makeFactoryPoolWithMutex<AndroidAssetInputStream, 8>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryInputStreamMutexFile = Helper::makeFactoryPoolWithMutex<AndroidMutexAssetInputStream, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

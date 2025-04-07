@@ -32,9 +32,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleFileGroupDirectory::_initialize()
     {
-        m_factoryInputStreamFile = Helper::makeFactoryPool<AppleFileInputStream, 8>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryInputStreamMutexFile = Helper::makeFactoryPool<AppleMutexFileInputStream, 8>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryOutputStreamFile = Helper::makeFactoryPool<AppleFileOutputStream, 4>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryInputStreamFile = Helper::makeFactoryPoolWithMutex<AppleFileInputStream, 8>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryInputStreamMutexFile = Helper::makeFactoryPoolWithMutex<AppleMutexFileInputStream, 8>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryOutputStreamFile = Helper::makeFactoryPoolWithMutex<AppleFileOutputStream, 4>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

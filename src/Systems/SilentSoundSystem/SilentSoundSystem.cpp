@@ -24,8 +24,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SilentSoundSystem::_initializeService()
     {
-        m_factorySilentSoundBuffer = Helper::makeFactoryPool<SilentSoundBuffer, 32>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factorySilentSoundSource = Helper::makeFactoryPool<SilentSoundSource, 32>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factorySilentSoundBuffer = Helper::makeFactoryPoolWithMutex<SilentSoundBuffer, 32>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factorySilentSoundSource = Helper::makeFactoryPoolWithMutex<SilentSoundSource, 32>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

@@ -26,12 +26,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidHttpSystem::_initializeService()
     {
-        m_factoryRequestPing = Helper::makeFactoryPool<AndroidHttpRequestPing, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryRequestGetMessage = Helper::makeFactoryPool<AndroidHttpRequestGetMessage, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryRequestPostMessage = Helper::makeFactoryPool<AndroidHttpRequestPostMessage, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryRequestDeleteMessage = Helper::makeFactoryPool<AndroidHttpRequestDeleteMessage, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryRequestHeaderData = Helper::makeFactoryPool<AndroidHttpRequestHeaderData, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryRequestGetAsset = Helper::makeFactoryPool<AndroidHttpRequestGetAsset, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRequestPing = Helper::makeFactoryPoolWithMutex<AndroidHttpRequestPing, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRequestGetMessage = Helper::makeFactoryPoolWithMutex<AndroidHttpRequestGetMessage, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRequestPostMessage = Helper::makeFactoryPoolWithMutex<AndroidHttpRequestPostMessage, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRequestDeleteMessage = Helper::makeFactoryPoolWithMutex<AndroidHttpRequestDeleteMessage, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRequestHeaderData = Helper::makeFactoryPoolWithMutex<AndroidHttpRequestHeaderData, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRequestGetAsset = Helper::makeFactoryPoolWithMutex<AndroidHttpRequestGetAsset, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

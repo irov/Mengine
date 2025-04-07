@@ -130,8 +130,8 @@ namespace Mengine
 
         m_applicationJSONHeaders = applicationJSONHeaders;
 
-        m_factoryResponse = Helper::makeFactoryPool<HttpResponse, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryReceiverPing = Helper::makeFactoryPool<HttpReceiverPing, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryResponse = Helper::makeFactoryPoolWithMutex<HttpResponse, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryReceiverPing = Helper::makeFactoryPoolWithMutex<HttpReceiverPing, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ENGINE_PREPARE_FINALIZE, &HttpService::notifyEnginePrepareFinalize_, MENGINE_DOCUMENT_FACTORABLE );
 

@@ -35,10 +35,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileGroupDirectory::_initialize()
     {
-        m_factoryInputStreamFile = Helper::makeFactoryPool<Win32FileInputStream, 8>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryInputStreamMutexFile = Helper::makeFactoryPool<Win32MutexFileInputStream, 8>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryOutputStreamFile = Helper::makeFactoryPool<Win32FileOutputStream, 4>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryMappedFile = Helper::makeFactoryPool<Win32FileMapped, 4>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryInputStreamFile = Helper::makeFactoryPoolWithMutex<Win32FileInputStream, 8>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryInputStreamMutexFile = Helper::makeFactoryPoolWithMutex<Win32MutexFileInputStream, 8>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryOutputStreamFile = Helper::makeFactoryPoolWithMutex<Win32FileOutputStream, 4>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryMappedFile = Helper::makeFactoryPoolWithMutex<Win32FileMapped, 4>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

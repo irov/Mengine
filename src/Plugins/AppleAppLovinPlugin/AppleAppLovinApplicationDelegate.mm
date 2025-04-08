@@ -123,7 +123,7 @@
             return;
         }
         
-        IOS_LOGGER_MESSAGE( @"AppLovin CMP show successful" );
+        IOS_LOGGER_MESSAGE( @"AppLovin CMP show success" );
         
         [AppleDetail dispatchMainQueue:^{
             [provider onAppleAppLovinConsentFlowShowSuccess];
@@ -139,7 +139,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     if ([AppleBundle hasPluginConfig:@PLUGIN_BUNDLE_NAME] == NO) {
-        IOS_LOGGER_MESSAGE(@"🔴 [ERROR] AppLovin plugin not found bundle config [%@]", @PLUGIN_BUNDLE_NAME);
+        IOS_LOGGER_ERROR(@"[ERROR] AppLovin plugin not found bundle config [%@]", @PLUGIN_BUNDLE_NAME);
         
         return NO;
     }
@@ -159,7 +159,7 @@
     } else if ([MengineAppleAppLovinPlugin_CCPA caseInsensitiveCompare:@"UNKNOWN"] == NSOrderedSame) {
         //Nothing
     } else {
-        IOS_LOGGER_MESSAGE(@"🔴 [ERROR] AppLovin plugin invalid config [%@.CCPA] value %@ [YES|NO|UNKNOWN]", @PLUGIN_BUNDLE_NAME, MengineAppleAppLovinPlugin_CCPA);
+        IOS_LOGGER_ERROR(@"[ERROR] AppLovin plugin invalid config [%@.CCPA] value %@ [YES|NO|UNKNOWN]", @PLUGIN_BUNDLE_NAME, MengineAppleAppLovinPlugin_CCPA);
         
         return NO;
     }
@@ -167,13 +167,13 @@
     NSString * MengineAppleAppLovinPlugin_SdkKey = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"SdkKey" withDefault:nil];
     
     if (MengineAppleAppLovinPlugin_SdkKey == nil) {
-        IOS_LOGGER_MESSAGE(@"🔴 [ERROR] AppLovin plugin missed required config [%@.SdkKey]", @PLUGIN_BUNDLE_NAME);
+        IOS_LOGGER_ERROR(@"[ERROR] AppLovin plugin missed required config [%@.SdkKey]", @PLUGIN_BUNDLE_NAME);
         
         return NO;
     }
     
     ALSdkInitializationConfiguration * initializationConfiguration = [ALSdkInitializationConfiguration configurationWithSdkKey:MengineAppleAppLovinPlugin_SdkKey builderBlock:^(ALSdkInitializationConfigurationBuilder * _Nonnull builder) {
-        builder.pluginVersion = [@"Mengine-" stringByAppendingString:@MENGINE_ENGINE_VERSION_STRING];
+        builder.pluginVersion = [@"Mengine-v" stringByAppendingString:@MENGINE_ENGINE_VERSION_STRING];
         builder.mediationProvider = ALMediationProviderMAX;
     }];
     
@@ -198,13 +198,13 @@
         NSString * MengineAppleAppLovinPlugin_TermsOfServiceURL = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"TermsOfServiceURL" withDefault:nil];
         
         if (MengineAppleAppLovinPlugin_PrivacyPolicyURL == nil) {
-            IOS_LOGGER_MESSAGE(@"🔴 [ERROR] AppLovin plugin missed required config [%@.PrivacyPolicyURL]", @PLUGIN_BUNDLE_NAME);
+            IOS_LOGGER_ERROR(@"[ERROR] AppLovin plugin missed required config [%@.PrivacyPolicyURL]", @PLUGIN_BUNDLE_NAME);
             
             return NO;
         }
         
         if (MengineAppleAppLovinPlugin_TermsOfServiceURL == nil) {
-            IOS_LOGGER_MESSAGE(@"🔴 [ERROR] AppLovin plugin missed required config [%@.TermsOfServiceURL]", @PLUGIN_BUNDLE_NAME);
+            IOS_LOGGER_ERROR(@"[ERROR] AppLovin plugin missed required config [%@.TermsOfServiceURL]", @PLUGIN_BUNDLE_NAME);
             
             return NO;
         }

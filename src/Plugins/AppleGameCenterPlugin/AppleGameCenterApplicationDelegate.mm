@@ -49,7 +49,7 @@
             return;
         }
         
-        IOS_LOGGER_MESSAGE( @"connect successful" );
+        IOS_LOGGER_MESSAGE( @"connect success" );
         
         if (self.m_gameCenterAuthenticate == false) {
             self.m_gameCenterAuthenticate = true;
@@ -132,7 +132,7 @@
             return;
         }
         
-        IOS_LOGGER_MESSAGE( @"response achievement '%@' percent: %lf successful"
+        IOS_LOGGER_MESSAGE( @"response achievement '%@' percent: %lf success"
             , identifier
             , percent
         );
@@ -176,7 +176,7 @@
             return;
         }
         
-        IOS_LOGGER_MESSAGE( @"reset achievement successful" );
+        IOS_LOGGER_MESSAGE( @"reset achievement success" );
     }] ;
     
     return YES;
@@ -266,7 +266,7 @@
             return;
         }
         
-        IOS_LOGGER_MESSAGE( @"reset achievement successful" );
+        IOS_LOGGER_MESSAGE( @"reset achievement success" );
         
         [AppleDetail dispatchMainQueue:^{
             handler( nil );

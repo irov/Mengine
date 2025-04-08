@@ -23,7 +23,7 @@
     @try {
         adView = [[MAAdView alloc] initWithAdUnitIdentifier:adUnitId];
     } @catch (NSException * ex) {
-        IOS_LOGGER_MESSAGE(@"[Error] AppleAppLovinBannerDelegate invalid create MAAdView adUnitId: %@ exception: %@ [%@]"
+        IOS_LOGGER_ERROR(@"[Error] AppleAppLovinBannerDelegate invalid create MAAdView adUnitId: %@ exception: %@ [%@]"
             , adUnitId
             , ex.reason
             , ex.name

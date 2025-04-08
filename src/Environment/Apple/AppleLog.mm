@@ -34,7 +34,6 @@
     
     NSMutableString * buffer = [[NSMutableString alloc] initWithCapacity:512];
 
-
 #if defined(MENGINE_DEBUG)
     if( record.LOG_LEVEL == Mengine::LM_ERROR )
     {

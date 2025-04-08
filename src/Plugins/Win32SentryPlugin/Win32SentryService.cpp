@@ -251,9 +251,9 @@ namespace Mengine
         {
             sentry_clear_crashed_last_run();
 
-#if defined(MENGINE_WINDOWS_DEBUG)
-            Helper::Win32Toast( L"application has crashed on the last run" );
-#endif
+            LOGGER_MESSAGE( "engine crashed last run, check crash report in: %s"
+                , sentryDatabasePath.c_str()
+            );
         }
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, &Win32SentryService::notifyBootstrapperCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );

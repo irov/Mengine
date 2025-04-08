@@ -20,7 +20,9 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     @try {
 #if defined(MENGINE_DEBUG)
-        [[FIRConfiguration sharedInstance] setLoggerLevel:FIRLoggerLevelInfo];
+        [[FIRConfiguration sharedInstance] setLoggerLevel:FIRLoggerLevelWarning];
+#else
+        [[FIRConfiguration sharedInstance] setLoggerLevel:FIRLoggerLevelError];
 #endif
         
         [FIRApp configure];

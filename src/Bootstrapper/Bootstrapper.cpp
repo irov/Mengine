@@ -1063,12 +1063,6 @@ namespace Mengine
         LOGGER_INFO( "bootstrapper", "enable assertion debug [OFF]" );
 #endif
 
-#if defined(MENGINE_LOGGER_ANALYZE_ENABLE)
-        LOGGER_INFO( "bootstrapper", "enable logger analyze: ON" );
-#else
-        LOGGER_INFO( "bootstrapper", "enable logger analyze [OFF]" );
-#endif
-
 #if defined(MENGINE_ALLOCATOR_DEBUG_ENABLE)
         LOGGER_INFO( "bootstrapper", "enable allocator debug [ON]" );
 #else

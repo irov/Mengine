@@ -103,7 +103,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool prefetchResources( const ConstString & _groupName, const pybind::object & _cb, const pybind::args & _args )
         {
-            LOGGER_STATISTIC( "prefetch resources group '%s'"
+            LOGGER_INFO( "prefetch", "prefetch resources group '%s'"
                 , _groupName.c_str()
             );
 
@@ -123,7 +123,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void unfetchResources( const ConstString & _groupName )
         {
-            LOGGER_STATISTIC( "unfetch resources category group '%s'"
+            LOGGER_INFO( "prefetch", "unfetch resources category group '%s'"
                 , _groupName.c_str()
             );
 

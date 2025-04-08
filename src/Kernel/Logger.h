@@ -34,10 +34,6 @@
 #   endif
 #endif
 //////////////////////////////////////////////////////////////////////////
-#if MENGINE_LOGGER_ANALYZE == 1
-#   define MENGINE_LOGGER_ANALYZE_ENABLE
-#endif
-//////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -110,13 +106,5 @@ namespace Mengine
 #   define LOGGER_INFO_PROTECTED( Category, ... )
 #   define LOGGER_DEBUG( Category, ... )
 #   define LOGGER_VERBOSE( Category, ... )
-#endif
-//////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_LOGGER_ANALYZE_ENABLE)
-#   define LOGGER_PERFORMANCE( ... ) LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_INFO, Mengine::LFILTER_NONE, Mengine::LCOLOR_BLUE, Mengine::LFLAG_SHORT ) LOGGER_CALL_MESSAGE_FORMAT( __VA_ARGS__ )
-#   define LOGGER_STATISTIC( ... ) LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_INFO, Mengine::LFILTER_NONE, Mengine::LCOLOR_GREEN, Mengine::LFLAG_SHORT ) LOGGER_CALL_MESSAGE_FORMAT( __VA_ARGS__ )
-#else
-#   define LOGGER_PERFORMANCE( ... )
-#   define LOGGER_STATISTIC( ... )
 #endif
 //////////////////////////////////////////////////////////////////////////

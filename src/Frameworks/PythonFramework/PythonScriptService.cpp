@@ -1312,16 +1312,15 @@ namespace Mengine
 
             if( _desc.className.empty() == true )
             {
-                LOGGER_STATISTIC( "Debug call '%s' args '%s' kwds '%s':"
-                    , _functionName
-                    , m_kernel->object_repr( _args ).c_str()
-                    , m_kernel->object_repr( _kwds ).c_str()
-                );
-
                 Char traceback[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
                 m_kernel->get_statetrace( traceback, MENGINE_LOGGER_MAX_MESSAGE, false );
 
-                LOGGER_STATISTIC( "%s", traceback );
+                LOGGER_INFO( "python", "debug call '%s' args '%s' kwds '%s':\n%s"
+                    , _functionName
+                    , m_kernel->object_repr( _args ).c_str()
+                    , m_kernel->object_repr( _kwds ).c_str()
+                    , traceback
+                );
             }
         }
     }

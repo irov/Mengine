@@ -169,11 +169,9 @@ namespace Mengine
             container->finalize();
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
-            const AstralaxEmitterContainerDesc & old_desc = it_found->second;
-
-            LOGGER_PERFORMANCE( "useless load container '%s' original is '%s'"
+            LOGGER_INFO( "performance", "useless load container '%s' original is '%s'"
                 , MENGINE_DOCUMENT_STR( _doc )
-                , MENGINE_DOCUMENT_STR( old_desc.doc )
+                , MENGINE_DOCUMENT_STR( it_found->second.doc )
             );
 #endif
         }

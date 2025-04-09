@@ -85,7 +85,7 @@ namespace Mengine
             return;
         }
 
-        LOGGER_PERFORMANCE( "Useless Compile '%s' '%s' '%s'"
+        LOGGER_INFO( "performance", "useless compile '%s' '%s' '%s'"
             , _resource->getType().c_str()
             , _resource->getGroupName().c_str()
             , _resource->getName().c_str()

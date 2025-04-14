@@ -17,6 +17,8 @@ namespace Mengine
         {
             jmethodID jmethodId = Mengine_JNI_GetMethodActivity( _jenv, _name, _signature );
 
+            Helper::AndroidEnvExceptionCheck( _jenv );
+
             MENGINE_ASSERTION_FATAL( jmethodId != nullptr, "invalid get method '%s' signature '%s' activity"
                 , _name
                 , _signature
@@ -43,6 +45,8 @@ namespace Mengine
         jobject AndroidCallObjectActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... )
         {
             jmethodID jmethodId = Mengine_JNI_GetMethodActivity( _jenv, _name, _signature );
+
+            Helper::AndroidEnvExceptionCheck( _jenv );
 
             MENGINE_ASSERTION_FATAL( jmethodId != nullptr, "invalid get method '%s' signature '%s' activity"
                 , _name
@@ -73,6 +77,8 @@ namespace Mengine
         {
             jmethodID jmethodId = Mengine_JNI_GetMethodActivity( _jenv, _name, _signature );
 
+            Helper::AndroidEnvExceptionCheck( _jenv );
+
             MENGINE_ASSERTION_FATAL( jmethodId != nullptr, "invalid get method '%s' signature '%s' activity"
                 , _name
                 , _signature
@@ -101,6 +107,8 @@ namespace Mengine
         jint AndroidCallIntActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... )
         {
             jmethodID jmethodId = Mengine_JNI_GetMethodActivity( _jenv, _name, _signature );
+
+            Helper::AndroidEnvExceptionCheck( _jenv );
 
             MENGINE_ASSERTION_FATAL( jmethodId != nullptr, "invalid get method '%s' signature '%s' activity"
                 , _name
@@ -131,6 +139,8 @@ namespace Mengine
         {
             jmethodID jmethodId = Mengine_JNI_GetMethodActivity( _jenv, _name, _signature );
 
+            Helper::AndroidEnvExceptionCheck( _jenv );
+
             MENGINE_ASSERTION_FATAL( jmethodId != nullptr, "invalid get method '%s' signature '%s' activity"
                 , _name
                 , _signature
@@ -160,6 +170,8 @@ namespace Mengine
         {
             jmethodID jmethodId = Mengine_JNI_GetMethodActivity( _jenv, _name, _signature );
 
+            Helper::AndroidEnvExceptionCheck( _jenv );
+
             MENGINE_ASSERTION_FATAL( jmethodId != nullptr, "invalid get method '%s' signature '%s' activity"
                 , _name
                 , _signature
@@ -186,6 +198,8 @@ namespace Mengine
         jobject AndroidCallObjectActivityStaticMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... )
         {
             jmethodID jmethodId = Mengine_JNI_GetMethodActivity( _jenv, _name, _signature );
+
+            Helper::AndroidEnvExceptionCheck( _jenv );
 
             MENGINE_ASSERTION_FATAL( jmethodId != nullptr, "invalid get method '%s' signature '%s' activity"
                 , _name
@@ -216,6 +230,8 @@ namespace Mengine
         {
             jmethodID jmethodId = Mengine_JNI_GetMethodActivity( _jenv, _name, _signature );
 
+            Helper::AndroidEnvExceptionCheck( _jenv );
+
             MENGINE_ASSERTION_FATAL( jmethodId != nullptr, "invalid get method '%s' signature '%s' activity"
                 , _name
                 , _signature
@@ -245,6 +261,8 @@ namespace Mengine
         {
             jmethodID jmethodId = Mengine_JNI_GetMethodActivity( _jenv, _name, _signature );
 
+            Helper::AndroidEnvExceptionCheck( _jenv );
+
             MENGINE_ASSERTION_FATAL( jmethodId != nullptr, "invalid get method '%s' signature '%s' activity"
                 , _name
                 , _signature
@@ -273,6 +291,8 @@ namespace Mengine
         jlong AndroidCallLongActivityStaticMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... )
         {
             jmethodID jmethodId = Mengine_JNI_GetMethodActivity( _jenv, _name, _signature );
+
+            Helper::AndroidEnvExceptionCheck( _jenv );
 
             MENGINE_ASSERTION_FATAL( jmethodId != nullptr, "invalid get method '%s' signature '%s' activity"
                 , _name

@@ -29,6 +29,7 @@ namespace Mengine
             jclass jclass_Float = _jenv->FindClass( "java/lang/Float" );
             jclass jclass_Double = _jenv->FindClass( "java/lang/Double" );
             jclass jclass_String = _jenv->FindClass( "java/lang/String" );
+            jclass jclass_Exception = _jenv->FindClass( "java/lang/Exception" );
             jclass jclass_List = _jenv->FindClass( "java/util/List" );
             jclass jclass_Map = _jenv->FindClass( "java/util/Map" );
             jclass jclass_Set = _jenv->FindClass( "java/util/Set" );
@@ -88,6 +89,18 @@ namespace Mengine
                 py_value = _kernel->string_from_char_size( obj_str, obj_size );
 
                 _jenv->ReleaseStringUTFChars( jobj_string, obj_str );
+            }
+            else if( _jenv->IsInstanceOf( _obj, jclass_Exception ) == JNI_TRUE )
+            {
+                jmethodID jmethodID_getMessage = _jenv->GetMethodID( jclass_Exception, "getMessage", "()Ljava/lang/String;" );
+
+                jstring jstring_message = (jstring)_jenv->CallObjectMethod( _obj, jmethodID_getMessage );
+
+                const Char * obj_str = _jenv->GetStringUTFChars( jstring_message, nullptr );
+
+                py_value = _kernel->exception_new( obj_str );
+
+                _jenv->ReleaseStringUTFChars( jstring_message, obj_str );
             }
             else if( _jenv->IsInstanceOf( _obj, jclass_List ) == JNI_TRUE )
             {
@@ -190,6 +203,7 @@ namespace Mengine
             _jenv->DeleteLocalRef( jclass_Float );
             _jenv->DeleteLocalRef( jclass_Double );
             _jenv->DeleteLocalRef( jclass_String );
+            _jenv->DeleteLocalRef( jclass_Exception );
             _jenv->DeleteLocalRef( jclass_List );
             _jenv->DeleteLocalRef( jclass_Map );
             _jenv->DeleteLocalRef( jclass_Set );

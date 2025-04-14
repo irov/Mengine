@@ -110,7 +110,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
 
                 m_isAuthenticated = false;
 
-                this.pythonCall("onGoogleGameSocialOnAuthenticatedError");
+                this.pythonCall("onGoogleGameSocialOnAuthenticatedError", e);
 
                 return;
             }
@@ -160,7 +160,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                     , e.getMessage()
                 );
 
-                this.pythonCall("onGoogleGameSocialShowAchievementError");
+                this.pythonCall("onGoogleGameSocialShowAchievementError", e);
             });
 
         return true;
@@ -206,7 +206,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                     , e.getMessage()
                 );
 
-                this.pythonCall("onGoogleGameSocialUnlockAchievementError", achievementId);
+                this.pythonCall("onGoogleGameSocialUnlockAchievementError", achievementId, e);
             });
 
         return true;
@@ -249,7 +249,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
 
                 MengineFragmentGame.INSTANCE.incrementAchievement(achievementId, numSteps);
 
-                this.pythonCall("onGoogleGameSocialIncrementAchievementSuccess", achievementId);
+                this.pythonCall("onGoogleGameSocialIncrementAchievementSuccess", achievementId, numSteps);
             }).addOnFailureListener(e -> {
                 this.logError("[ERROR] incrementAchievement achievementId: %s numSteps: %d error: %s"
                     , achievementId
@@ -257,7 +257,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                     , e.getMessage()
                 );
 
-                this.pythonCall("onGoogleGameSocialIncrementAchievementError", achievementId);
+                this.pythonCall("onGoogleGameSocialIncrementAchievementError", achievementId, numSteps, e);
             });
 
         return true;
@@ -296,14 +296,14 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
 
                 MengineFragmentGame.INSTANCE.revealAchievement(achievementId);
 
-                this.pythonCall("onGoogleGameSocialAchievementRevealSuccess", achievementId);
+                this.pythonCall("onGoogleGameSocialRevealAchievementSuccess", achievementId);
             }).addOnFailureListener(e -> {
                 this.logError("[ERROR] revealAchievement achievementId: %s error: %s"
                     , achievementId
                     , e.getMessage()
                 );
 
-                this.pythonCall("onGoogleGameSocialAchievementRevealError", achievementId);
+                this.pythonCall("onGoogleGameSocialRevealAchievementError", achievementId, e);
             });
 
         return true;
@@ -346,7 +346,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
 
                 MengineFragmentGame.INSTANCE.submitLeaderboardScore(leaderboardId, score);
 
-                this.pythonCall("onGoogleGameSocialLeaderboardScoreSuccess", leaderboardId);
+                this.pythonCall("onGoogleGameSocialLeaderboardScoreSuccess", leaderboardId, score);
             })
             .addOnFailureListener(e -> {
                 this.logError("[ERROR] submitLeaderboardScore leaderboardId: %s score: %d error: %s"
@@ -355,7 +355,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                     , e.getMessage()
                 );
 
-                this.pythonCall("onGoogleGameSocialLeaderboardScoreError", leaderboardId);
+                this.pythonCall("onGoogleGameSocialLeaderboardScoreError", leaderboardId, score, e);
             });
 
         return true;

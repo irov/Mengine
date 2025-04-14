@@ -784,6 +784,9 @@ Core
     CryptographyHelper.h
     CryptographyHelper.cpp
     
+    FourCCHelper.h
+    FourCCHelper.cpp
+    
     AspectRatioViewport.h
     VectorAspectRatioViewports.h
     

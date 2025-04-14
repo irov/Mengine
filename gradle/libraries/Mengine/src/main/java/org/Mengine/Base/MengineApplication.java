@@ -510,7 +510,7 @@ public class MengineApplication extends Application {
         return m_sessionTimestamp;
     }
 
-    public String getSessionId2() {
+    public String getSessionId() {
         return m_sessionId;
     }
 

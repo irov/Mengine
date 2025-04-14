@@ -37,6 +37,8 @@ public class MengineGoogleInAppReviewsPlugin extends MengineService implements M
                     this.logWarning("requestReviewFlow unknown error");
                 }
 
+                this.pythonCall("onGoogleInAppReviewsRequestReviewError", exception);
+
                 return;
             }
 
@@ -85,7 +87,7 @@ public class MengineGoogleInAppReviewsPlugin extends MengineService implements M
                     .addParameterException("exception", exception)
                     .log();
 
-                this.pythonCall("onGoogleInAppReviewsLaunchingTheReviewError");
+                this.pythonCall("onGoogleInAppReviewsLaunchingTheReviewError", exception);
 
                 return;
             }

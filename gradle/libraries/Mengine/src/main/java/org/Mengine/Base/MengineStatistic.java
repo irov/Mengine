@@ -68,11 +68,11 @@ public class MengineStatistic {
         editor.apply();
     }
 
-    static public void setInteger(@NonNull MengineApplication application, @Size(min = 1L, max = 40L) String key, long value) {
+    static public void setInteger(@Size(min = 1L, max = 40L) String key, long value) {
         m_statistics.put(key, value);
     }
 
-    static public void increaseInteger(@NonNull MengineApplication application, @Size(min = 1L, max = 40L) String key, long value) {
+    static public void increaseInteger(@Size(min = 1L, max = 40L) String key, long value) {
         Object obj = m_statistics.get(key);
 
         if (obj == null) {
@@ -96,7 +96,7 @@ public class MengineStatistic {
         );
     }
 
-    static public void decreaseInteger(@NonNull MengineApplication application, @Size(min = 1L, max = 40L) String key, long value) {
+    static public void decreaseInteger(@Size(min = 1L, max = 40L) String key, long value) {
         Object obj = m_statistics.get(key);
 
         if (obj == null) {
@@ -118,7 +118,7 @@ public class MengineStatistic {
         );
     }
 
-    static public void increaseDouble(@NonNull MengineApplication application, @Size(min = 1L, max = 40L) String key, double value) {
+    static public void increaseDouble(@Size(min = 1L, max = 40L) String key, double value) {
         Object obj = m_statistics.get(key);
 
         if (obj == null) {
@@ -142,7 +142,7 @@ public class MengineStatistic {
         );
     }
 
-    static public void decreaseDouble(@NonNull MengineApplication application, @Size(min = 1L, max = 40L) String key, double value) {
+    static public void decreaseDouble(@Size(min = 1L, max = 40L) String key, double value) {
         Object obj = m_statistics.get(key);
 
         if (obj == null) {

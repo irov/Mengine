@@ -21,6 +21,7 @@
 #include "Environment/Android/AndroidHelper.h"
 #include "Environment/Android/AndroidApplicationHelper.h"
 #include "Environment/Android/AndroidActivityHelper.h"
+#include "Environment/Android/AndroidFragmentHelper.h"
 #include "Environment/Android/AndroidSemaphoreListenerInterface.h"
 
 #include "AndroidAnalyticsEventProvider.h"
@@ -423,13 +424,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t AndroidPlatformService::getUserPath( Char * const _userPath ) const
     {
-        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
-        {
-            LOGGER_ERROR( "invalid get user path [not exist application]" );
-
-            return 0;
-        }
-
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         if( Helper::AndroidGetApplicationFilesDirCanonicalPath( jenv, _userPath ) == false )
@@ -469,13 +463,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::getUserLocaleLanguage( Char * const _userLocale ) const
     {
-        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
-        {
-            LOGGER_ERROR( "invalid get user locale language [not exist application]" );
-
-            return false;
-        }
-
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         jstring jlocale = (jstring)Helper::AndroidCallObjectApplicationMethod( jenv, "getDeviceLanguage", "()Ljava/lang/String;" );
@@ -699,14 +686,11 @@ namespace Mengine
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_RUN );
 
-        if( Mengine_JNI_ExistMengineApplication() == JNI_TRUE )
-        {
-            JNIEnv * jenv = Mengine_JNI_GetEnv();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-            MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-            Helper::AndroidCallVoidApplicationMethod( jenv, "onMenginePlatformRun", "()V" );
-        }
+        Helper::AndroidCallVoidFragmentMethod( jenv, "MengineFragmentEngine", "platformRun", "()V" );
         
         return true;
     }
@@ -811,11 +795,6 @@ namespace Mengine
             , _url
         );
 
-        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
-        {
-            return false;
-        }
-
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
@@ -836,11 +815,6 @@ namespace Mengine
             , _subject
             , _body
         );
-
-        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
-        {
-            return false;
-        }
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
@@ -865,11 +839,6 @@ namespace Mengine
     {
         LOGGER_MESSAGE( "open delete account" );
 
-        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
-        {
-            return false;
-        }
-
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
@@ -883,44 +852,31 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::notifyBootstrapperInitializeBaseServices_()
     {
-        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
-        {
-            return;
-        }
-
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        Helper::AndroidCallVoidApplicationMethod( jenv, "onMengineInitializeBaseServices", "()V" );
+        Helper::AndroidCallVoidFragmentMethod( jenv, "MengineFragmentEngine", "initializeBaseServices", "()V" );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::notifyBootstrapperCreateApplication_()
     {
-        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
-        {
-            return;
-        }
-
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        Helper::AndroidCallVoidApplicationMethod( jenv, "onMengineCreateApplication", "()V" );
+        Helper::AndroidCallVoidFragmentMethod( jenv, "MengineFragmentEngine", "createApplication", "()V" );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::stopPlatform()
     {
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_STOP );
 
-        if( Mengine_JNI_ExistMengineApplication() == JNI_TRUE )
-        {
-            JNIEnv * jenv = Mengine_JNI_GetEnv();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-            MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-            Helper::AndroidCallVoidApplicationMethod( jenv, "onMenginePlatformStop", "()V" );
-        }
+        Helper::AndroidCallVoidFragmentMethod( jenv, "MengineFragmentEngine", "platformStop", "()V" );
 
         this->pushQuitEvent_();
     }
@@ -1165,27 +1121,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::showKeyboard()
     {
-        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
-        {
-            LOGGER_ERROR( "invalid show keyboard [not exist activity]" );
-
-            return;
-        }
-
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        Helper::AndroidCallVoidActivityMethod( jenv, "showKeyboard", "()V" );
+        Helper::AndroidCallVoidActivityMethod( jenv,  "showKeyboard", "()V" );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::hideKeyboard()
     {
-        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
-        {
-            LOGGER_ERROR( "invalid hide keyboard [not exist activity]" );
-
-            return;
-        }
-
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         Helper::AndroidCallVoidActivityMethod( jenv, "hideKeyboard", "()V" );
@@ -1193,13 +1135,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::isShowKeyboard() const
     {
-        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
-        {
-            LOGGER_ERROR( "invalid check is show keyboard [not exist activity]" );
-
-            return false;
-        }
-
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         bool result = Helper::AndroidCallBooleanActivityMethod( jenv, "isShowKeyboard", "()Z" );
@@ -1279,13 +1214,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::messageBox( const Char * _caption, const Char * _format, ... ) const
     {
-        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
-        {
-            LOGGER_ERROR( "invalid message box [not exist activity]" );
-
-            return;
-        }
-
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         Char str[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
@@ -1317,13 +1245,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::setClipboardText( const Char * _value ) const
     {
-        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
-        {
-            LOGGER_ERROR( "invalid set clipboard text [not exist activity]" );
-
-            return false;
-        }
-
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         jstring j_text = jenv->NewStringUTF( _value );
@@ -1337,13 +1258,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::getClipboardText( Char * _value, size_t _capacity ) const
     {
-        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
-        {
-            LOGGER_ERROR( "invalid get clipboard text [not exist activity]" );
-
-            return false;
-        }
-
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         jstring j_text = (jstring)Helper::AndroidCallObjectActivityMethod( jenv, "getClipboardText", "()Ljava/lang/String;" );
@@ -1563,11 +1477,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t AndroidPlatformService::androidNativeGetAndroidId( Char * _androidId, size_t _capacity ) const
     {
-        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
-        {
-            return 0;
-        }
-
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );

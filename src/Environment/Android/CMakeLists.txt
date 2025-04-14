@@ -19,6 +19,9 @@ src
     AndroidEnvironmentService.h
     AndroidEnvironmentService.cpp
     
+    AndroidFragmentHelper.h
+    AndroidFragmentHelper.cpp
+    
     AndroidAssetService.h
     AndroidAssetService.cpp
 

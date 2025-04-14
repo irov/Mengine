@@ -20,7 +20,8 @@
     NSString * install_version = Mengine::Helper::AppleGetUserDefaultsString(@"mengine.install_version", nil);
     NSInteger install_rnd = Mengine::Helper::AppleGetUserDefaultsInteger(@"mengine.install_rnd", -1);
     NSInteger session_index = Mengine::Helper::AppleGetUserDefaultsInteger(@"mengine.session_index", 0);
-    NSString * session_id = Mengine::Helper::AppleGetUserDefaultsString(@"mengine.session_id", nil);
+    NSString * old_user_id = Mengine::Helper::AppleGetUserDefaultsString(@"mengine.session_id", nil);
+    NSString * user_id = Mengine::Helper::AppleGetUserDefaultsString(@"mengine.user_id", old_user_id);
     
     if (install_key == nil) {
         install_key = [@"MNIK" stringByAppendingString:Mengine::Helper::AppleGetRandomHexString(16)];
@@ -40,10 +41,10 @@
         Mengine::Helper::AppleSetUserDefaultsInteger(@"mengine.install_rnd", install_rnd);
     }
     
-    if (session_id == nil) {
-        session_id = install_key;
+    if (user_id == nil) {
+        user_id = install_key;
         
-        Mengine::Helper::AppleSetUserDefaultsString(@"mengine.session_id", session_id);
+        Mengine::Helper::AppleSetUserDefaultsString(@"mengine.user_id", user_id);
     }
     
     Mengine::Helper::AppleSetUserDefaultsInteger(@"mengine.session_index", session_index + 1);
@@ -53,7 +54,7 @@
     self.m_installVersion = install_version;
     self.m_installRND = install_rnd;
     self.m_sessionIndex = session_index;
-    self.m_sessionId = session_id;
+    self.m_userId = user_id;
 }
 
 - (NSString * _Nonnull)getInstallKey {

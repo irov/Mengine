@@ -41,9 +41,14 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.List;
+import java.util.Objects;
 
 public class MengineActivity extends AppCompatActivity {
     public static final String TAG = "MengineActivity";
+
+    public static MengineActivity INSTANCE = null;
+
+    private final List<MengineListenerActivity> m_activityListeners = new ArrayList<>();
 
     private Locale m_currentLocale;
 
@@ -102,20 +107,8 @@ public class MengineActivity extends AppCompatActivity {
         return plugins;
     }
 
-    protected List<MengineListenerKeyEvent> getKeyListeners() {
-        MengineApplication application = this.getMengineApplication();
-
-        List<MengineListenerKeyEvent> listeners = application.getKeyListeners();
-
-        return listeners;
-    }
-
     protected List<MengineListenerActivity> getActivityListeners() {
-        MengineApplication application = this.getMengineApplication();
-
-        List<MengineListenerActivity> listeners = application.getActivityListeners();
-
-        return listeners;
+        return m_activityListeners;
     }
 
     @SuppressWarnings("unchecked")
@@ -125,22 +118,6 @@ public class MengineActivity extends AppCompatActivity {
         T plugin = application.getService(cls);
 
         return plugin;
-    }
-
-    public String getSessionId() {
-        MengineApplication application = this.getMengineApplication();
-
-        String sessionId = application.getSessionId();
-
-        return sessionId;
-    }
-
-    public String getVersionName() {
-        MengineApplication application = this.getMengineApplication();
-
-        String versionName = application.getVersionName();
-
-        return versionName;
     }
 
     public void setState(String name, Object value) {
@@ -213,12 +190,6 @@ public class MengineActivity extends AppCompatActivity {
         return tcParam;
     }
 
-    public void onMengineTransparencyConsent(MengineTransparencyConsentParam tcParam) {
-        MengineApplication application = this.getMengineApplication();
-
-        application.onMengineTransparencyConsent(tcParam);
-    }
-
     public void checkPermission(String permission) {
         this.checkPermission(permission, null, null);
     }
@@ -244,7 +215,7 @@ public class MengineActivity extends AppCompatActivity {
 
         final String name = permission + MengineUtils.getRandomUUIDString();
 
-        ActivityResultLauncher<String>[] launcher = new ActivityResultLauncher[1];
+        ActivityResultLauncher[] launcher = new ActivityResultLauncher[1];
 
         launcher[0] = registry.register(name
             , this
@@ -346,7 +317,15 @@ public class MengineActivity extends AppCompatActivity {
             return;
         }
 
-        application.setMengineActivity(this);
+        INSTANCE = this;
+
+        List<MengineService> services = application.getServices();
+
+        for (MengineService s : services) {
+            if (s instanceof MengineListenerActivity) {
+                m_activityListeners.add((MengineListenerActivity)s);
+            }
+        }
 
         this.setState("activity.lifecycle", "create");
         this.setState("activity.init", "begin");
@@ -388,8 +367,6 @@ public class MengineActivity extends AppCompatActivity {
         m_clipboard = clipboard;
 
         this.setState("activity.init", "bootstrap");
-
-        MengineNative.AndroidEnv_setMengineAndroidActivityJNI(this);
 
         MengineNative.AndroidNativePython_addPlugin("Activity", this);
 
@@ -987,9 +964,9 @@ public class MengineActivity extends AppCompatActivity {
 
         MengineNative.AndroidNativePython_removePlugin("Activity");
 
-        MengineNative.AndroidEnv_removeMengineAndroidActivityJNI();
+        m_activityListeners.clear();
 
-        application.setMengineActivity(null);
+        INSTANCE = null;
 
         super.onDestroy();
     }
@@ -1101,7 +1078,7 @@ public class MengineActivity extends AppCompatActivity {
 
         Locale newLocale = MengineUtils.getConfigurationLocale(newConfig);
 
-        if (m_currentLocale == null || m_currentLocale.equals(newLocale) == false) {
+        if (Objects.equals(m_currentLocale, newLocale) == false) {
             m_currentLocale = newLocale;
 
             String language = m_currentLocale.getLanguage();
@@ -1160,16 +1137,8 @@ public class MengineActivity extends AppCompatActivity {
             , event.getScanCode()
         );
 
-        List<MengineListenerKeyEvent> listeners = this.getKeyListeners();
-
-        for (MengineListenerKeyEvent l : listeners) {
-            if (l.onAvailable(application) == false) {
-                continue;
-            }
-
-            if (l.dispatchKeyEvent(this, event) == true) {
-                return true;
-            }
+        if (MengineFragmentKeyEvent.INSTANCE.dispatchKeyEvent(event) == true) {
+            return true;
         }
 
         return super.dispatchKeyEvent(event);
@@ -1545,9 +1514,7 @@ public class MengineActivity extends AppCompatActivity {
             , () -> { //Yes
                 MengineLog.logInfo(TAG, "delete account [YES]");
 
-                MengineApplication application = (MengineApplication)this.getApplication();
-
-                application.removeSessionData();
+                MengineFragmentUser.INSTANCE.removeUserData();
 
                 MengineNative.AndroidEnvironmentService_deleteCurrentAccount();
 

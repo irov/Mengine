@@ -11,6 +11,7 @@ import com.google.firebase.remoteconfig.internal.DefaultsXmlParser;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineFragmentRemoteConfig;
 import org.Mengine.Base.MengineNetwork;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineListenerActivity;
@@ -201,9 +202,7 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
             this.m_configs = configs;
         }
 
-        MengineApplication application = this.getMengineApplication();
-
-        application.onMengineRemoteConfigFetch(configs);
+        MengineFragmentRemoteConfig.INSTANCE.remoteConfigFetch(configs);
     }
 
     public Map<String, JSONObject> getRemoteConfigs() {

@@ -2,7 +2,7 @@
 
 #include "Environment/Android/AndroidEnv.h"
 #include "Environment/Android/AndroidHelper.h"
-#include "Environment/Android/AndroidApplicationHelper.h"
+#include "Environment/Android/AndroidFragmentHelper.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
 
@@ -19,11 +19,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidAnalyticsEventProvider::onAnalyticsEvent( const AnalyticsEventInterfacePtr & _event )
     {
-        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
-        {
-            return;
-        }
-
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
@@ -92,7 +87,7 @@ namespace Mengine
                 jenv->DeleteLocalRef( parameter_jobject );
             });
 
-        Helper::AndroidCallVoidApplicationMethod( jenv, "onMengineAnalyticsEvent", "(Ljava/lang/String;JLjava/util/Map;Ljava/util/Map;)V", eventName_jobject, (jlong)eventTimestamp, bases_jobject, parameters_jobject );
+        Helper::AndroidCallVoidFragmentMethod( jenv, "MengineFragmentAnalytics", "analyticsEvent", "(Ljava/lang/String;JLjava/util/Map;Ljava/util/Map;)V", eventName_jobject, (jlong)eventTimestamp, bases_jobject, parameters_jobject );
 
         jenv->DeleteLocalRef( eventName_jobject );
         jenv->DeleteLocalRef( bases_jobject );
@@ -101,11 +96,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidAnalyticsEventProvider::onAnalyticsScreenView( const ConstString & _screenType, const ConstString & _screenName )
     {
-        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
-        {
-            return;
-        }
-
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
@@ -113,7 +103,7 @@ namespace Mengine
         jobject screenType_jobject = Helper::AndroidMakeJObjectString( jenv, _screenType );
         jobject screenName_jobject = Helper::AndroidMakeJObjectString( jenv, _screenName );
 
-        Helper::AndroidCallVoidApplicationMethod( jenv, "onMengineAnalyticsScreenView", "(Ljava/lang/String;Ljava/lang/String;)V", screenType_jobject, screenName_jobject );
+        Helper::AndroidCallVoidFragmentMethod( jenv, "MengineFragmentAnalytics", "analyticsScreenView", "(Ljava/lang/String;Ljava/lang/String;)V", screenType_jobject, screenName_jobject );
 
         jenv->DeleteLocalRef( screenType_jobject );
         jenv->DeleteLocalRef( screenName_jobject );
@@ -121,16 +111,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidAnalyticsEventProvider::onAnalyticsFlush()
     {
-        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
-        {
-            return;
-        }
-
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        Helper::AndroidCallVoidApplicationMethod( jenv, "onMengineAnalyticsFlush", "()V" );
+        Helper::AndroidCallVoidFragmentMethod( jenv, "MengineFragmentAnalytics", "analyticsFlush", "()V" );
     }
     //////////////////////////////////////////////////////////////////////////
 }

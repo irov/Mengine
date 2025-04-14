@@ -23,6 +23,8 @@ import org.Mengine.Base.MengineAdMediation;
 import org.Mengine.Base.MengineAdProviderInterface;
 import org.Mengine.Base.MengineAdRevenueParam;
 import org.Mengine.Base.MengineAdService;
+import org.Mengine.Base.MengineFragmentAdRevenue;
+import org.Mengine.Base.MengineFragmentTransparencyConsent;
 import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineListenerRemoteConfig;
 import org.Mengine.Base.MengineTransparencyConsentParam;
@@ -168,6 +170,26 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
 
         AppLovinSdkSettings settings = appLovinSdk.getSettings();
 
+        String MengineAppLovinPlugin_CCPA = this.getMetaDataString(METADATA_CCPA);
+
+        this.logMessage("%s: %s"
+            , METADATA_CCPA
+            , MengineAppLovinPlugin_CCPA
+        );
+
+        if (MengineAppLovinPlugin_CCPA.equalsIgnoreCase("YES") == true) {
+            AppLovinPrivacySettings.setDoNotSell(true);
+        } else if (MengineAppLovinPlugin_CCPA.equalsIgnoreCase("NO") == true) {
+            AppLovinPrivacySettings.setDoNotSell(false);
+        } else if (MengineAppLovinPlugin_CCPA.equalsIgnoreCase("UNKNOWN") == true) {
+            // Nothing
+        } else {
+            this.invalidInitialize("invalid %s: %s [YES|NO|UNKNOWN]"
+                    , METADATA_CCPA
+                    , MengineAppLovinPlugin_CCPA
+            );
+        }
+
         boolean MengineAppLovinPlugin_EnablePrivacyPolicyFlow = this.getMetaDataBoolean(METADATA_ENABLE_PRIVACY_POLICY_FLOW);
 
         if (MengineAppLovinPlugin_EnablePrivacyPolicyFlow == true) {
@@ -206,8 +228,8 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             settings.setCreativeDebuggerEnabled(false);
         }
 
-        String sessionId = application.getSessionId();
-        settings.setUserIdentifier(sessionId);
+        String userId = application.getUserId();
+        settings.setUserIdentifier(userId);
 
         adService.setAdProvider(this);
 
@@ -218,7 +240,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             , MengineUtils.getRedactedValue(MengineAppLovinPlugin_SdkKey)
         );
 
-        AppLovinSdkInitializationConfiguration config = AppLovinSdkInitializationConfiguration.builder(MengineAppLovinPlugin_SdkKey, application)
+        AppLovinSdkInitializationConfiguration config = AppLovinSdkInitializationConfiguration.builder(MengineAppLovinPlugin_SdkKey)
             .setMediationProvider(AppLovinMediationProvider.MAX)
             .setAdUnitIds(adUnitIds)
             .setPluginVersion("Mengine-v" + application.getEngineVersion())
@@ -255,8 +277,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             }
 
             MengineTransparencyConsentParam tcParam = application.makeTransparencyConsentParam();
-
-            application.onMengineTransparencyConsent(tcParam);
+            MengineFragmentTransparencyConsent.INSTANCE.transparencyConsent(tcParam);
 
             if (m_bannerAd != null) {
                 m_bannerAd.initialize(application);
@@ -749,8 +770,6 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
         double revenueValue = ad.getRevenue();
         String revenuePrecision = ad.getRevenuePrecision();
 
-        MengineApplication application = this.getMengineApplication();
-
         MengineAdRevenueParam revenue = new MengineAdRevenueParam();
         revenue.ADREVENUE_MEDIATION = MengineAdMediation.ADMEDIATION_APPLOVINMAX;
         revenue.ADREVENUE_FORMAT = adFormat;
@@ -761,7 +780,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
         revenue.ADREVENUE_REVENUE_VALUE = revenueValue;
         revenue.ADREVENUE_REVENUE_CURRENCY = "USD";
 
-        application.onMengineAdRevenue(revenue);
+        MengineFragmentAdRevenue.INSTANCE.adRevenue(revenue);
     }
 
     public boolean isConsentFlowUserGeographyGDPR() {

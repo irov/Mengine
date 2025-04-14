@@ -392,7 +392,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
         for (ProductDetails product : m_productsDetails) {
             String currentProductId = product.getProductId();
 
-            if (currentProductId.equals(productId) == false) {
+            if (Objects.equals(currentProductId, productId) == false) {
                 continue;
             }
 

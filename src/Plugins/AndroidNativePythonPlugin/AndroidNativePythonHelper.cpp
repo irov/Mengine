@@ -37,8 +37,6 @@ namespace Mengine
             jclass jclass_JSONArray = _jenv->FindClass( "org/json/JSONArray" );
             jclass jclass_MengineCallback = Mengine_JNI_FindClass( _jenv, "org/Mengine/Base/MengineCallback" );
 
-            Helper::AndroidEnvExceptionCheck( _jenv );
-
             if( _obj == nullptr )
             {
                 py_value = _kernel->ret_none();
@@ -209,8 +207,6 @@ namespace Mengine
 
             jmethodID jmethodID_List_constructor = _jenv->GetMethodID( jclass_ArrayList, "<init>", "(I)V" );
 
-            MENGINE_ASSERTION_FATAL( jmethodID_List_constructor != nullptr, "invalid get android method 'java/lang/ArrayList [<init>] (I)V'" );
-
             jobject jlist = _jenv->NewObject( jclass_ArrayList, jmethodID_List_constructor, (jsize)s );
 
             for( const pybind::object & o : _list )
@@ -234,8 +230,6 @@ namespace Mengine
             jclass jclass_HashMap = _jenv->FindClass( "java/util/HashMap" );
 
             jmethodID jmethodID_HashMap_constructor = _jenv->GetMethodID( jclass_HashMap, "<init>", "()V" );
-
-            MENGINE_ASSERTION_FATAL( jmethodID_HashMap_constructor != nullptr, "invalid get android method 'java/util/HashMap [<init>] ()V'" );
 
             jobject jmap = _jenv->NewObject( jclass_HashMap, jmethodID_HashMap_constructor );
 

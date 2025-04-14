@@ -119,9 +119,8 @@ namespace Mengine
             return;
         }
 
-        Char session_id[MENGINE_ENVIRONMENT_SESSIONID_MAXNAME + 1] = {'\0'};
-        ENVIRONMENT_SERVICE()
-            ->getSessionId( session_id );
+        //ToDo: setup user id
+        //Char user_id[256] = {'\0'};
 
         Char install_key[MENGINE_ENVIRONMENT_INSTALLKEY_MAXNAME + 1] = {'\0'};
         ENVIRONMENT_SERVICE()
@@ -183,7 +182,8 @@ namespace Mengine
                 return;
             }
 
-            js_object_add_field_string( j, jrecord, JS_CONST_STRING( "user.id" ), session_id );
+            //ToDo: setup user id
+            //js_object_add_field_string( j, jrecord, JS_CONST_STRING( "user.id" ), user_id );
 
             switch( message.level )
             {

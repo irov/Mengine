@@ -33,6 +33,7 @@ import android.os.Bundle;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MengineLocalNotificationsPlugin extends MengineService implements MengineListenerActivity {
     public static final String SERVICE_NAME = "LNotifications";
@@ -246,7 +247,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
 
                 String name = parser.getName();
 
-                if (name.equals("notification") == false) {
+                if (Objects.equals(name, "notification") == false) {
                     continue;
                 }
 

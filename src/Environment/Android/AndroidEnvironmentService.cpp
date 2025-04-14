@@ -21,20 +21,27 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         template<size_t N>
-        static void getAndroidInfo( JNIEnv * _jenv, const Char * _method, StaticString<N> * const _info )
+        static void getAndroidInfo( JNIEnv * _jenv, const Char * _method, StaticString<N> * const _value )
         {
             jstring jinfo = (jstring)Helper::AndroidCallObjectApplicationMethod( _jenv, _method, "()Ljava/lang/String;" );
 
-            Helper::AndroidCopyStringFromJString( _jenv, jinfo, _info );
+            Helper::AndroidCopyStringFromJString( _jenv, jinfo, _value );
 
             _jenv->DeleteLocalRef( jinfo );
         }
         //////////////////////////////////////////////////////////////////////////
-        static void getAndroidInfo( JNIEnv * _jenv, const Char * _method, int64_t * const _info )
+        static void getAndroidInfo( JNIEnv * _jenv, const Char * _method, Timestamp * const _value )
         {
             jlong jinfo = Helper::AndroidCallLongApplicationMethod( _jenv, _method, "()J" );
 
-            *_info = (int64_t)jinfo;
+            *_value = (Timestamp)jinfo;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void getAndroidInfo( JNIEnv * _jenv, const Char * _method, int64_t * const _value )
+        {
+            jlong jinfo = Helper::AndroidCallLongApplicationMethod( _jenv, _method, "()J" );
+
+            *_value = (int64_t)jinfo;
         }
         //////////////////////////////////////////////////////////////////////////
     }
@@ -43,6 +50,7 @@ namespace Mengine
         : m_installTimestamp( 0 )
         , m_installRND( 0 )
         , m_sessionIndex( 0 )
+        , m_sessionTimestamp( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -52,11 +60,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidEnvironmentService::_initializeService()
     {
-        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
-        {
-            return false;
-        }
-
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
@@ -65,13 +68,14 @@ namespace Mengine
         Detail::getAndroidInfo( jenv, "getDeviceLanguage", &m_deviceLanguage );
         Detail::getAndroidInfo( jenv, "getOSVersion", &m_osVersion );
         Detail::getAndroidInfo( jenv, "getPackageName", &m_bundleId );
-        Detail::getAndroidInfo( jenv, "getSessionId", &m_sessionId );
         Detail::getAndroidInfo( jenv, "getInstallKey", &m_installKey );
         Detail::getAndroidInfo( jenv, "getInstallVersion", &m_installVersion );
 
         Detail::getAndroidInfo( jenv, "getInstallTimestamp", &m_installTimestamp );
         Detail::getAndroidInfo( jenv, "getInstallRND", &m_installRND );
         Detail::getAndroidInfo( jenv, "getSessionIndex", &m_sessionIndex );
+        Detail::getAndroidInfo( jenv, "getSessionTimestamp", &m_sessionTimestamp );
+        Detail::getAndroidInfo( jenv, "getSessionId", &m_sessionId );
 
         m_osVersion.assign( "Android" );
 
@@ -133,17 +137,12 @@ namespace Mengine
         m_bundleId.copy( _bundleId );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidEnvironmentService::getSessionId( Char * const _sessionId ) const
-    {
-        m_sessionId.copy( _sessionId );
-    }
-    //////////////////////////////////////////////////////////////////////////
     void AndroidEnvironmentService::getInstallKey( Char * const _installKey ) const
     {
         m_installKey.copy( _installKey );
     }
     //////////////////////////////////////////////////////////////////////////
-    int64_t AndroidEnvironmentService::getInstallTimestamp() const
+    Timestamp AndroidEnvironmentService::getInstallTimestamp() const
     {
         return m_installTimestamp;
     }
@@ -161,6 +160,16 @@ namespace Mengine
     int64_t AndroidEnvironmentService::getSessionIndex() const
     {
         return m_sessionIndex;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Timestamp AndroidEnvironmentService::getSessionTimestamp() const
+    {
+        return m_sessionTimestamp;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidEnvironmentService::getSessionId( Char * const _sessionId ) const
+    {
+        m_sessionId.copy( _sessionId );
     }
     //////////////////////////////////////////////////////////////////////////
 }

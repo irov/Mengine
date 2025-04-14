@@ -5,6 +5,8 @@
 #include "Kernel/Logger.h"
 #include "Kernel/SHA1.h"
 #include "Kernel/Stringalized.h"
+#include "Kernel/TimestampHelper.h"
+#include "Kernel/CryptographyHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -220,8 +222,11 @@ namespace Mengine
         StaticString<MENGINE_SHA1_HEX_COUNT + 1> fingerprint;
         Helper::makeSHA1HEX( fingerprintGarbage.data(), fingerprintGarbage.size(), fingerprint.data(), true );
 
-        m_sessionId.assign( fingerprint );
         m_installKey.assign( fingerprint );
+
+        m_sessionTimestamp = Helper::getSystemTimestamp();
+        
+        Helper::generateRandomHexadecimal( m_sessionId.capacity(), m_sessionId.data(), false );
 
         return true;
     }
@@ -261,17 +266,12 @@ namespace Mengine
         m_bundleId.copy( _bundleId );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32EnvironmentService::getSessionId( Char * const _sessionId ) const
-    {
-        m_sessionId.copy( _sessionId );
-    }
-    //////////////////////////////////////////////////////////////////////////
     void Win32EnvironmentService::getInstallKey( Char * const _installKey ) const
     {
         m_installKey.copy( _installKey );
     }
     //////////////////////////////////////////////////////////////////////////
-    int64_t Win32EnvironmentService::getInstallTimestamp() const
+    Timestamp Win32EnvironmentService::getInstallTimestamp() const
     {
         return m_installTimestamp;
     }
@@ -289,6 +289,16 @@ namespace Mengine
     int64_t Win32EnvironmentService::getSessionIndex() const
     {        
         return m_sessionIndex;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Timestamp Win32EnvironmentService::getSessionTimestamp() const
+    {
+        return m_sessionTimestamp;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32EnvironmentService::getSessionId( Char * const _sessionId ) const
+    {
+        m_sessionId.copy( _sessionId );
     }
     //////////////////////////////////////////////////////////////////////////
 }

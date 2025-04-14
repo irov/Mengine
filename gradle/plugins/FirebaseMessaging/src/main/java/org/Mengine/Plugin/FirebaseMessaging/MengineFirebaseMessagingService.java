@@ -6,6 +6,8 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineFragment;
+import org.Mengine.Base.MengineFragmentRemoteMessage;
 import org.Mengine.Base.MengineRemoteMessageParam;
 
 import java.util.HashMap;
@@ -27,23 +29,20 @@ public class MengineFirebaseMessagingService extends FirebaseMessagingService {
         message.REMOTEMESSAGE_COLLAPSE_KEY = collapseKey;
         message.REMOTEMESSAGE_DATA = data;
 
-        MengineApplication application = (MengineApplication)this.getApplication();
-        application.onMengineRemoteMessageReceived(message);
+        MengineFragmentRemoteMessage.INSTANCE.remoteMessageReceived(message);
     }
 
     @Override
     public void onDeletedMessages() {
         super.onDeletedMessages();
 
-        MengineApplication application = (MengineApplication)this.getApplication();
-        application.onMengineRemoteMessageDeleted();
+        MengineFragmentRemoteMessage.INSTANCE.remoteMessageDeleted();
     }
 
     @Override
     public void onNewToken(@NonNull String token) {
         super.onNewToken(token);
 
-        MengineApplication application = (MengineApplication)this.getApplication();
-        application.onMengineRemoteMessageNewToken(token);
+        MengineFragmentRemoteMessage.INSTANCE.remoteMessageNewToken(token);
     }
 }

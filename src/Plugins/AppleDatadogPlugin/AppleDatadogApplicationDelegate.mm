@@ -149,7 +149,7 @@
 - (void)onSessionId:(iOSSessionIdParam *)session {
     NSString * installKey = [[iOSApplication sharedInstance] getInstallKey];
     
-    [DDDatadog setUserInfoWithUserId:session.SESSION_ID name:nil email:nil extraInfo:@{@"install_key":installKey}];
+    [DDDatadog setUserInfoWithUserId:session.USER_ID name:nil email:nil extraInfo:@{@"install_key":installKey}];
 }
 - (void)onRemoveSessionData {
     [DDDatadog setUserInfoWithUserId:@"" name:nil email:nil extraInfo:@{}];

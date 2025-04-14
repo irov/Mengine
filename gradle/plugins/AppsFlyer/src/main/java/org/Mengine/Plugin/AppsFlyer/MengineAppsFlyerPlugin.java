@@ -49,8 +49,8 @@ public class MengineAppsFlyerPlugin extends MenginePlugin implements MenginePlug
             appsFlyer.setDebugLog(true);
         }
 
-        String sessionId = application.getSessionId();
-        appsFlyer.setCustomerUserId(sessionId);
+        String userId = application.getUserId();
+        appsFlyer.setCustomerUserId(userId);
 
         appsFlyer.init(MengineAppsFlyerPlugin_ApiKey, null, context);
         appsFlyer.start(context);

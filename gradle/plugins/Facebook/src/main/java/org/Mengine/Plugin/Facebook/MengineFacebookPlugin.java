@@ -35,7 +35,7 @@ import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineListenerPushToken;
 import org.Mengine.Base.MengineListenerRemoteMessage;
-import org.Mengine.Base.MengineListenerSessionId;
+import org.Mengine.Base.MengineListenerUser;
 import org.Mengine.Base.MengineUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,7 +43,7 @@ import org.json.JSONObject;
 import java.util.List;
 import java.util.Map;
 
-public class MengineFacebookPlugin extends MengineService implements MengineListenerAnalytics, MengineListenerApplication, MengineListenerRemoteMessage, MengineListenerPushToken, MengineListenerSessionId {
+public class MengineFacebookPlugin extends MengineService implements MengineListenerAnalytics, MengineListenerApplication, MengineListenerRemoteMessage, MengineListenerPushToken, MengineListenerUser {
     public static final String SERVICE_NAME = "Facebook";
     public static final boolean SERVICE_EMBEDDING = true;
 
@@ -183,8 +183,8 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
             }
         });
 
-        String sessionId = application.getSessionId();
-        AppEventsLogger.setUserID(sessionId);
+        String userId = application.getUserId();
+        AppEventsLogger.setUserID(userId);
 
         AppEventsLogger logger = AppEventsLogger.newLogger(application);
         m_logger = logger;
@@ -214,12 +214,12 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
     }
 
     @Override
-    public void onMengineSetSessionId(@NonNull MengineApplication application, String sessionId) {
-        AppEventsLogger.setUserID(sessionId);
+    public void onMengineChangeUserId(@NonNull MengineApplication application, String userId) {
+        AppEventsLogger.setUserID(userId);
     }
 
     @Override
-    public void onMengineRemoveSessionData(@NonNull MengineApplication application) {
+    public void onMengineRemoveUserData(@NonNull MengineApplication application) {
         LoginManager.getInstance().logOut();
 
         AccessToken.setCurrentAccessToken(null);
@@ -230,7 +230,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
     }
 
     @Override
-    public void onMenginePushToken(@NonNull MengineApplication application, String token) {
+    public void onMengineSetPushToken(@NonNull MengineApplication application, String token) {
         AppEventsLogger.setPushNotificationsRegistrationId(token);
     }
 

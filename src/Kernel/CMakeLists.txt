@@ -781,6 +781,9 @@ Core
     LoggerHelper.h
     LoggerHelper.cpp
     
+    CryptographyHelper.h
+    CryptographyHelper.cpp
+    
     AspectRatioViewport.h
     VectorAspectRatioViewports.h
     

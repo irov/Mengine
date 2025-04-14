@@ -26,7 +26,7 @@ import io.appmetrica.analytics.AdType;
 import io.appmetrica.analytics.AppMetrica;
 import io.appmetrica.analytics.AppMetricaConfig;
 
-public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePluginLoggerListener, MenginePluginAnalyticsListener, MenginePluginAdRevenueListener, MenginePluginApplicationListener, MenginePluginEngineListener, MenginePluginSessionIdListener {
+public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePluginLoggerListener, MenginePluginAnalyticsListener, MenginePluginAdRevenueListener, MenginePluginApplicationListener, MenginePluginEngineListener, MenginePluginUserListener {
     public static final String SERVICE_NAME = "AppMetrica";
     public static final boolean SERVICE_EMBEDDING = true;
 
@@ -81,13 +81,13 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
 
     @Override
     public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
-        String sessionId = application.getSessionId();
-        AppMetrica.setUserProfileID(sessionId);
+        String userId = application.getUserId();
+        AppMetrica.setUserProfileID(userId);
     }
 
     @Override
-    void onMengineSessionId(MengineApplication application, String sessionId) {
-        AppMetrica.setUserProfileID(sessionId);
+    void onMengineUserId(MengineApplication application, String userId) {
+        AppMetrica.setUserProfileID(userId);
     }
 
     @Override

@@ -78,15 +78,13 @@ public class MengineLog {
             return;
         }
 
-        MengineApplication application = MengineApplication.getSharedInstance();
-
         String thread = MengineUtils.getCurrentThreadName();
 
         MengineUtils.Code code = MengineUtils.getCurrentThreadCode(6);
 
         MengineLoggerMessageParam message = new MengineLoggerMessageParam(category, thread, level, filter, code.file, code.line, code.method, data);
 
-        application.onMengineLogger(message);
+        MengineFragmentLogger.INSTANCE.log(message);
     }
 
     public static String logVerbose(@Size(min = 1L,max = 23L) String category, String format, Object ... args) {

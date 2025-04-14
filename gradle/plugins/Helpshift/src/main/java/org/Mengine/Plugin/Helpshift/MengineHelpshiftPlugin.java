@@ -94,7 +94,7 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
         Map<String, String> data = message.REMOTEMESSAGE_DATA;
 
         String origin = data.get("origin");
-        if (origin != null && origin.equals("helpshift")) {
+        if (Objects.equals(origin, "helpshift") == true) {
             Helpshift.handlePush(data);
 
             return true;

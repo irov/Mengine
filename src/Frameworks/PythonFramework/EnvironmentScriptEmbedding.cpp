@@ -77,17 +77,6 @@ namespace Mengine
             return py_bundleId;
         }
         //////////////////////////////////////////////////////////////////////////
-        static PyObject * getEnvironmentSessionId( pybind::kernel_interface * _kernel )
-        {
-            Char sessionId[MENGINE_ENVIRONMENT_SESSIONID_MAXNAME + 1] = {'\0'};
-            ENVIRONMENT_SERVICE()
-                ->getSessionId( sessionId );
-
-            PyObject * py_sessionId = _kernel->string_from_char( sessionId );
-
-            return py_sessionId;
-        }
-        //////////////////////////////////////////////////////////////////////////
         static PyObject * getEnvironmentInstallKey( pybind::kernel_interface * _kernel )
         {
             Char installKey[MENGINE_ENVIRONMENT_INSTALLKEY_MAXNAME + 1] = {'\0'};
@@ -158,7 +147,6 @@ namespace Mengine
         pybind::def_function_kernel( _kernel, "getEnvironmentOSFamily", &Detail::getEnvironmentOSFamily );
         pybind::def_function_kernel( _kernel, "getEnvironmentOSVersion", &Detail::getEnvironmentOSVersion );
         pybind::def_function_kernel( _kernel, "getEnvironmentBundleId", &Detail::getEnvironmentBundleId );
-        pybind::def_function_kernel( _kernel, "getEnvironmentSessionId", &Detail::getEnvironmentSessionId );
         pybind::def_function_kernel( _kernel, "getEnvironmentInstallKey", &Detail::getEnvironmentInstallKey );
         pybind::def_function_kernel( _kernel, "getEnvironmentInstallVersion", &Detail::getEnvironmentInstallVersion );
         pybind::def_function_kernel( _kernel, "getEnvironmentInstallTimestamp", &Detail::getEnvironmentInstallTimestamp );

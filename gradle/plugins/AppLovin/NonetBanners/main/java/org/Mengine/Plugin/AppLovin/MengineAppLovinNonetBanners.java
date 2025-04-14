@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Timer;
 
 public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersInterface {
@@ -71,7 +72,7 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
 
                 String name = parser.getName();
 
-                if (name.equals("banner") == false) {
+                if (Objects.equals(name, "banner") == false) {
                     continue;
                 }
 

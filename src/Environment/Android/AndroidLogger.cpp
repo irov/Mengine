@@ -76,29 +76,22 @@ namespace Mengine
         }
 
         const Char * data = message.data;
-        size_t data_size = StdString::strlen( data );
+        size_t data_size = message.size;
 
-        size_t message_stamplen = StdString::strlen( buffer );
+        size_t buffer_len = StdString::strlen( buffer );
 
-        if( data_size + message_stamplen >= MENGINE_LOGGER_MAX_MESSAGE )
+        if( data_size + buffer_len >= MENGINE_LOGGER_MAX_MESSAGE )
         {
-            data_size = MENGINE_LOGGER_MAX_MESSAGE - message_stamplen - 1;
+            data_size = MENGINE_LOGGER_MAX_MESSAGE - buffer_len - 1;
         }
 
         StdString::strncat( buffer, data, data_size );
-
-        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
-        {
-            return;
-        }
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        Helper::AndroidEnvExceptionCheck( jenv );
-
-        jclass jclass_UtilLog = jenv->FindClass("android/util/Log" );
+        jclass jclass_UtilLog = jenv->FindClass( "android/util/Log" );
 
         if( jclass_UtilLog == nullptr )
         {

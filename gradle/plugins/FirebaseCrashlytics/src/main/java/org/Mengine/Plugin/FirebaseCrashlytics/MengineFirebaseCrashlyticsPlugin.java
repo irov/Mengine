@@ -20,12 +20,12 @@ import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineListenerEngine;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineListenerLogger;
-import org.Mengine.Base.MengineListenerSessionId;
+import org.Mengine.Base.MengineListenerUser;
 import org.Mengine.Base.MengineUtils;
 
 import java.util.Map;
 
-public class MengineFirebaseCrashlyticsPlugin extends MengineService implements MengineListenerLogger, MengineListenerApplication, MengineListenerActivity, MengineListenerEngine, MengineListenerSessionId {
+public class MengineFirebaseCrashlyticsPlugin extends MengineService implements MengineListenerLogger, MengineListenerApplication, MengineListenerActivity, MengineListenerEngine, MengineListenerUser {
     public static final String SERVICE_NAME = "FBCrashlytics";
     public static final boolean SERVICE_EMBEDDING = true;
 
@@ -43,8 +43,8 @@ public class MengineFirebaseCrashlyticsPlugin extends MengineService implements 
 
     @Override
     public void onAppPrepare(@NonNull MengineApplication application, @NonNull Map<String, String> pluginVersions) throws MengineServiceInvalidInitializeException {
-        String sessionId = application.getSessionId();
-        FirebaseCrashlytics.getInstance().setUserId(sessionId);
+        String userId = application.getUserId();
+        FirebaseCrashlytics.getInstance().setUserId(userId);
 
         String pluginVersionsString = String.valueOf(pluginVersions);
 
@@ -83,12 +83,12 @@ public class MengineFirebaseCrashlyticsPlugin extends MengineService implements 
     }
 
     @Override
-    public void onMengineSetSessionId(@NonNull MengineApplication application, String sessionId) {
-        FirebaseCrashlytics.getInstance().setUserId(sessionId);
+    public void onMengineChangeUserId(@NonNull MengineApplication application, String userId) {
+        FirebaseCrashlytics.getInstance().setUserId(userId);
     }
 
     @Override
-    public void onMengineRemoveSessionData(@NonNull MengineApplication application) {
+    public void onMengineRemoveUserData(@NonNull MengineApplication application) {
         FirebaseCrashlytics.getInstance().setUserId("");
     }
 
@@ -147,7 +147,7 @@ public class MengineFirebaseCrashlyticsPlugin extends MengineService implements 
     }
 
     @Override
-    public void onMengineLogger(@NonNull MengineApplication application, @NonNull MengineLoggerMessageParam message) {
+    public void onMengineLog(@NonNull MengineApplication application, @NonNull MengineLoggerMessageParam message) {
         if (BuildConfig.DEBUG == true) {
             return;
         }

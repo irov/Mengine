@@ -78,7 +78,7 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
     public void initialize(@NonNull MengineApplication application) {
         super.initialize(application);
 
-        MaxAdView adView = new MaxAdView(m_adUnitId, application);
+        MaxAdView adView = new MaxAdView(m_adUnitId);
 
         adView.setPlacement(m_placement);
 

@@ -1,7 +1,6 @@
 package org.Mengine.Plugin.DevToDev;
 
 import android.content.Context;
-import android.os.Bundle;
 import androidx.annotation.NonNull;
 
 import com.devtodev.analytics.external.DTDLogLevel;
@@ -11,16 +10,18 @@ import com.devtodev.analytics.external.analytics.DTDCustomEventParameters;
 
 import org.Mengine.Base.MengineAdRevenueParam;
 import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MengineEvent;
-import org.Mengine.Base.MenginePluginAdRevenueListener;
-import org.Mengine.Base.MenginePluginAnalyticsListener;
-import org.Mengine.Base.MenginePlugin;
-import org.Mengine.Base.MenginePluginApplicationListener;
-import org.Mengine.Base.MenginePluginInvalidInitializeException;
+import org.Mengine.Base.MengineListenerAdRevenue;
+import org.Mengine.Base.MengineListenerAnalytics;
+import org.Mengine.Base.MengineListenerApplication;
+import org.Mengine.Base.MengineListenerGame;
+import org.Mengine.Base.MengineListenerUser;
+import org.Mengine.Base.MengineService;
+import org.Mengine.Base.MengineServiceInvalidInitializeException;
+import org.Mengine.Base.MengineUtils;
 
 import java.util.Map;
 
-public class MengineDevToDevPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginAdRevenueListener, MenginePluginApplicationListener, MenginePluginSessionIdListener {
+public class MengineDevToDevPlugin extends MengineService implements MengineListenerAnalytics, MengineListenerAdRevenue, MengineListenerApplication, MengineListenerUser, MengineListenerGame {
     public static final String SERVICE_NAME = "DevToDev";
     public static final boolean SERVICE_EMBEDDING = true;
 
@@ -28,8 +29,16 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
 
     private boolean m_initializeSuccessful;
 
+    public void logEvent(@NonNull String eventName, @NonNull DTDCustomEventParameters params) {
+        if (m_initializeSuccessful == false) {
+            return;
+        }
+
+        DTDAnalytics.INSTANCE.customEvent(eventName, params);
+    }
+
     @Override
-    public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
+    public void onAppPrepare(@NonNull MengineApplication application, @NonNull Map<String, String> pluginVersions) throws MengineServiceInvalidInitializeException {
         m_initializeSuccessful = false;
 
         String MengineDevToDevPlugin_AppId = this.getMetaDataString(METADATA_APP_ID);
@@ -38,9 +47,6 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
             , METADATA_APP_ID
             , MengineUtils.getRedactedValue(MengineDevToDevPlugin_AppId)
         );
-
-        String sessionId = application.getSessionId();
-        DTDAnalytics.INSTANCE.setUserId(sessionId);
 
         DTDAnalytics.INSTANCE.setInitializationCompleteCallback(() -> {
             this.logMessage("Initialized DevToDev has been finished");
@@ -60,71 +66,64 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
             configuration.setLogLevel(DTDLogLevel.Error);
         }
 
+        String userId = application.getUserId();
+        configuration.setUserId(userId);
+
         Context context = application.getApplicationContext();
 
         DTDAnalytics.INSTANCE.initialize(MengineDevToDevPlugin_AppId, configuration, context);
     }
 
     @Override
-    void onMengineSessionId(MengineApplication application, String sessionId) {
+    public void onMengineChangeUserId(@NonNull MengineApplication application, String userId) {
         if (m_initializeSuccessful == false) {
             return;
         }
 
-        DTDAnalytics.INSTANCE.setUserId(sessionId);
+        DTDAnalytics.INSTANCE.setUserId(userId);
     }
 
     @Override
-    public void onMengineAnalyticsEvent(MengineApplication application, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
+    public void onMengineRemoveUserData(@NonNull MengineApplication application) {
+        if (m_initializeSuccessful == false) {
+            return;
+        }
+
+        DTDAnalytics.INSTANCE.setUserId(null);
+    }
+
+    private void updateEventParameters(@NonNull DTDCustomEventParameters dtd, Map<String, Object> parameters) {
+        for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+            String name = entry.getKey();
+            Object parameter = entry.getValue();
+
+            if (parameter instanceof Boolean) {
+                dtd.add(name, (Boolean)parameter);
+            } else if (parameter instanceof Long) {
+                dtd.add(name, (Long)parameter);
+            } else if (parameter instanceof Double) {
+                dtd.add(name, (Double)parameter);
+            } else if (parameter instanceof String) {
+                dtd.add(name, (String)parameter);
+            } else {
+                this.logError("[ERROR] customEvent unsupported parameter: %s class: %s"
+                        , parameter
+                        , parameter.getClass()
+                );
+            }
+        }
+    }
+
+    @Override
+    public void onMengineAnalyticsEvent(@NonNull MengineApplication application, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
         if (m_initializeSuccessful == false) {
             return;
         }
 
         DTDCustomEventParameters params = new DTDCustomEventParameters();
 
-        for (Map.Entry<String, Object> entry : bases.entrySet()) {
-            String name = entry.getKey();
-            Object parameter = entry.getValue();
-
-            if (parameter instanceof Boolean) {
-                params.add(name, (Boolean)parameter);
-            } else if (parameter instanceof Long) {
-                params.add(name, (Long)parameter);
-            } else if (parameter instanceof Double) {
-                params.add(name, (Double)parameter);
-            } else if (parameter instanceof String) {
-                params.add(name, (String)parameter);
-            } else {
-                this.logError("[ERROR] customEvent unsupported parameter: %s class: %s"
-                    , parameter
-                    , parameter.getClass()
-                );
-
-                return;
-            }
-        }
-
-        for (Map.Entry<String, Object> entry : parameters.entrySet()) {
-            String name = entry.getKey();
-            Object parameter = entry.getValue();
-
-            if (parameter instanceof Boolean) {
-                params.add(name, (Boolean)parameter);
-            } else if (parameter instanceof Long) {
-                params.add(name, (Long)parameter);
-            } else if (parameter instanceof Double) {
-                params.add(name, (Double)parameter);
-            } else if (parameter instanceof String) {
-                params.add(name, (String)parameter);
-            } else {
-                this.logError("[ERROR] customEvent unsupported parameter: %s class: %s"
-                    , parameter
-                    , parameter.getClass()
-                );
-
-                return;
-            }
-        }
+        this.updateEventParameters(params, bases);
+        this.updateEventParameters(params, parameters);
 
         DTDAnalytics.INSTANCE.customEvent(eventName, params);
     }
@@ -152,11 +151,39 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
         DTDAnalytics.INSTANCE.adImpression(network, revenueValue, placement, adUnitId);
     }
 
-    public void logEvent(@NonNull String eventName, @NonNull DTDCustomEventParameters params) {
+    @Override
+    public void onMengineUnlockAchievement(@NonNull MengineApplication application, String achievementId) {
         if (m_initializeSuccessful == false) {
             return;
         }
 
-        DTDAnalytics.INSTANCE.customEvent(eventName, params);
+        //Todo: implement unlock achievement
+    }
+
+    @Override
+    public void onMengineIncrementAchievement(@NonNull MengineApplication application, String achievementId, int numSteps) {
+        if (m_initializeSuccessful == false) {
+            return;
+        }
+
+        //Todo: implement increment achievement
+    }
+
+    @Override
+    public void onMengineRevealAchievement(@NonNull MengineApplication application, String achievementId) {
+        if (m_initializeSuccessful == false) {
+            return;
+        }
+
+        //Todo: implement reveal achievement
+    }
+
+    @Override
+    public void onMengineSubmitLeaderboardScore(@NonNull MengineApplication application, String leaderboardId, long score) {
+        if (m_initializeSuccessful == false) {
+            return;
+        }
+
+        //Todo: implement submit leaderboard score
     }
 }

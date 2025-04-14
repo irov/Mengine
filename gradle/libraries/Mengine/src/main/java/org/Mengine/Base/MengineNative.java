@@ -2,6 +2,7 @@ package org.Mengine.Base;
 
 import android.view.Surface;
 
+import java.io.File;
 import java.io.Writer;
 
 public class MengineNative {
@@ -48,10 +49,8 @@ public class MengineNative {
     public static native void AndroidPlatform_changeLocale(String locale);
 
     public static native void AndroidEnv_nativeDebugBreak();
-    public static native void AndroidEnv_setMengineAndroidApplicationJNI(Object activity, ClassLoader cl);
-    public static native void AndroidEnv_removeMengineAndroidApplicationJNI();
-    public static native void AndroidEnv_setMengineAndroidActivityJNI(Object activity);
-    public static native void AndroidEnv_removeMengineAndroidActivityJNI();
+    public static native void AndroidEnv_setMengineAndroidClassLoaderJNI(ClassLoader cl);
+    public static native void AndroidEnv_removeMengineAndroidClassLoaderJNI();
     public static native boolean AndroidEnv_isMasterRelease();
     public static native String AndroidEnv_getEngineGITSHA1();
     public static native String AndroidEnv_getEngineVersion();

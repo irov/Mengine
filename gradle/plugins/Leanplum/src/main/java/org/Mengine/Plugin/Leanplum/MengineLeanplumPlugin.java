@@ -48,8 +48,8 @@ public class MengineLeanplumPlugin extends MenginePlugin implements MenginePlugi
             , Environment
         );
 
-        String sessionId = application.getSessionId();
-        Leanplum.setUserId(sessionId);
+        String userId = application.getUserId();
+        Leanplum.setUserId(userId);
 
         Leanplum.setApplicationContext(application);
         Parser.parseVariables(application);

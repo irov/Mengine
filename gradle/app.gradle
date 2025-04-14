@@ -24,8 +24,7 @@ def MENGINE_APP_SERVICE_MONITORCONNECTIVITYSTATUS = Utils.existAppService("MENGI
 
 def MENGINE_APP_PLUGIN_SPLASHSCREEN = Utils.existAppPlugin("MENGINE_APP_PLUGIN_SPLASHSCREEN")
 def MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS = Utils.existAppPlugin("MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS")
-def MENGINE_APP_PLUGIN_ADVERTISING = Utils.existAppPlugin("MENGINE_APP_PLUGIN_ADVERTISING")
-def MENGINE_APP_PLUGIN_GDPR = Utils.existAppPlugin("MENGINE_APP_PLUGIN_GDPR")
+def MENGINE_APP_PLUGIN_GOOGLE_ADVERTISING = Utils.existAppPlugin("MENGINE_APP_PLUGIN_GOOGLE_ADVERTISING")
 def MENGINE_APP_PLUGIN_GOOGLE_SERVICE = Utils.existAppPlugin("MENGINE_APP_PLUGIN_GOOGLE_SERVICE")
 def MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL = Utils.existAppPlugin("MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL")
 def MENGINE_APP_PLUGIN_GOOGLE_PLAY_BILLING = Utils.existAppPlugin("MENGINE_APP_PLUGIN_GOOGLE_PLAY_BILLING")
@@ -374,27 +373,17 @@ if (MENGINE_APP_PLUGIN_GOOGLE_SERVICE == true) {
     }
 }
 
-Utils.logAvailable("MENGINE_APP_PLUGIN_ADVERTISING", MENGINE_APP_PLUGIN_ADVERTISING)
+Utils.logAvailable("MENGINE_APP_PLUGIN_GOOGLE_ADVERTISING", MENGINE_APP_PLUGIN_GOOGLE_ADVERTISING)
 
-if (MENGINE_APP_PLUGIN_ADVERTISING == true) {
+if (MENGINE_APP_PLUGIN_GOOGLE_ADVERTISING == true) {
     if (MENGINE_APP_PLUGIN_GOOGLE_SERVICE == false) {
-        throw new GradleException("MENGINE_APP_PLUGIN_ADVERTISING required enable MENGINE_APP_PLUGIN_GOOGLE_SERVICE")
+        throw new GradleException("MENGINE_APP_PLUGIN_GOOGLE_ADVERTISING required enable MENGINE_APP_PLUGIN_GOOGLE_SERVICE")
     }
 
-    android.ext.plugins += 'org.Mengine.Plugin.Advertising.MengineAdvertisingPlugin'
+    android.ext.plugins += 'org.Mengine.Plugin.GoogleAdvertising.MengineGoogleAdvertisingPlugin'
 
     dependencies {
-        implementation project(':plugins:Advertising')
-    }
-}
-
-Utils.logAvailable("MENGINE_APP_PLUGIN_GDPR", MENGINE_APP_PLUGIN_GDPR)
-
-if (MENGINE_APP_PLUGIN_GDPR == true) {
-    android.ext.plugins += 'org.Mengine.Plugin.GeneralDataProtectionRegulation.MengineGeneralDataProtectionRegulationPlugin'
-
-    dependencies {
-        implementation project(':plugins:GeneralDataProtectionRegulation')
+        implementation project(':plugins:GoogleAdvertising')
     }
 }
 

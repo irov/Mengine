@@ -58,6 +58,7 @@
     NSInteger install_rnd = [iOSApplication getPersistentIntegerForKey:@"mengine.install_rnd" defaultValue:-1];
     NSInteger session_index = [iOSApplication getPersistentIntegerForKey:@"mengine.session_index" defaultValue:0];
     NSString * session_id = [iOSApplication getPersistentStringForKey:@"mengine.session_id" defaultValue:nil];
+    NSString * user_id = [iOSApplication getPersistentStringForKey:@"mengine.user_id" defaultValue:session_id];
     
     if (install_key == nil) {
         NSString * randomHex = [AppleDetail getRandomHexString:16];
@@ -84,10 +85,10 @@
         [AppleKeyChain setIntegerForKey:@"mengine.install_rnd" value:install_rnd];
     }
     
-    if (session_id == nil) {
-        session_id = install_key;
+    if (user_id == nil) {
+        user_id = install_key;
         
-        [AppleKeyChain setStringForKey:@"mengine.session_id" value:session_id];
+        [AppleKeyChain setStringForKey:@"mengine.user_id" value:user_id];
     }
     
     NSInteger next_session_index = session_index + 1;
@@ -99,23 +100,23 @@
     self.m_installVersion = install_version;
     self.m_installRND = install_rnd;
     self.m_sessionIndex = session_index;
-    self.m_sessionId = session_id;
+    self.m_sessionId = user_id;
     self.m_sessionTimestamp = [AppleDetail getTimestamp];
     
     return YES;
 }
 
-- (void)setSessionId:(NSString * _Nonnull)sessionId {
-    if ([self.m_sessionId isEqualToString:sessionId] == YES) {
+- (void)setSessionId:(NSString * _Nonnull)userId {
+    if ([self.m_userId isEqualToString:sessionId] == YES) {
         return;
     }
     
-    self.m_sessionId = sessionId;
+    self.m_userId = userId;
     
-    [AppleKeyChain setStringForKey:@"mengine.session_id" value:self.m_sessionId];
+    [AppleKeyChain setStringForKey:@"mengine.user_id" value:self.m_userId];
     
     iOSSessionIdParam * param = [iOSSessionIdParam alloc];
-    param.SESSION_ID = self.m_sessionId;
+    param.USER_ID = self.m_userId;
     
     [iOSDetail setSessionId:param];
 }

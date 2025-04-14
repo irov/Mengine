@@ -13,25 +13,20 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        jmethodID AndroidGetActivityMethodID( JNIEnv * _jenv, const Char * _name, const Char * _signature )
+        void AndroidCallVoidActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... )
         {
-            jclass jclassMengineActivity = Mengine_JNI_GetJClassMengineActivity( _jenv );
+            jmethodID jmethodId = Mengine_JNI_GetMethodActivity( _jenv, _name, _signature );
 
-            jmethodID jmethodID_function = _jenv->GetMethodID( jclassMengineActivity, _name, _signature );
-
-            MENGINE_ASSERTION_FATAL( jmethodID_function != nullptr, "invalid get android activity method '%s' with signature '%s'"
+            MENGINE_ASSERTION_FATAL( jmethodId != nullptr, "invalid get method '%s' signature '%s' activity"
                 , _name
                 , _signature
             );
 
-            return jmethodID_function;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void AndroidCallVoidActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... )
-        {
-            jmethodID jmethodId = Helper::AndroidGetActivityMethodID( _jenv, _name, _signature );
+            jobject jobjectMengineActivity = Mengine_JNI_GetObjectActivity( _jenv );
 
-            jobject jobjectMengineActivity = Mengine_JNI_GetJObjectMengineActivity();
+            MENGINE_ASSERTION_FATAL( jobjectMengineActivity != nullptr, "invalid get object activity '%s'"
+                , _name
+            );
 
             MENGINE_VA_LIST_TYPE args;
             MENGINE_VA_LIST_START( args, _signature );
@@ -41,13 +36,24 @@ namespace Mengine
             MENGINE_VA_LIST_END( args );
 
             Helper::AndroidEnvExceptionCheck( _jenv );
+
+            _jenv->DeleteLocalRef( jobjectMengineActivity );
         }
         //////////////////////////////////////////////////////////////////////////
         jobject AndroidCallObjectActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... )
         {
-            jmethodID jmethodId = Helper::AndroidGetActivityMethodID( _jenv, _name, _signature );
+            jmethodID jmethodId = Mengine_JNI_GetMethodActivity( _jenv, _name, _signature );
 
-            jobject jobjectMengineActivity = Mengine_JNI_GetJObjectMengineActivity();
+            MENGINE_ASSERTION_FATAL( jmethodId != nullptr, "invalid get method '%s' signature '%s' activity"
+                , _name
+                , _signature
+            );
+
+            jobject jobjectMengineActivity = Mengine_JNI_GetObjectActivity( _jenv );
+
+            MENGINE_ASSERTION_FATAL( jobjectMengineActivity != nullptr, "invalid get object activity '%s'"
+                , _name
+            );
 
             MENGINE_VA_LIST_TYPE args;
             MENGINE_VA_LIST_START( args, _signature );
@@ -58,14 +64,25 @@ namespace Mengine
 
             Helper::AndroidEnvExceptionCheck( _jenv );
 
+            _jenv->DeleteLocalRef( jobjectMengineActivity );
+
             return jresult;
         }
         //////////////////////////////////////////////////////////////////////////
         jboolean AndroidCallBooleanActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... )
         {
-            jmethodID jmethodId = Helper::AndroidGetActivityMethodID( _jenv, _name, _signature );
+            jmethodID jmethodId = Mengine_JNI_GetMethodActivity( _jenv, _name, _signature );
 
-            jobject jobjectMengineActivity = Mengine_JNI_GetJObjectMengineActivity();
+            MENGINE_ASSERTION_FATAL( jmethodId != nullptr, "invalid get method '%s' signature '%s' activity"
+                , _name
+                , _signature
+            );
+
+            jobject jobjectMengineActivity = Mengine_JNI_GetObjectActivity( _jenv );
+
+            MENGINE_ASSERTION_FATAL( jobjectMengineActivity != nullptr, "invalid get object activity '%s'"
+                , _name
+            );
 
             MENGINE_VA_LIST_TYPE args;
             MENGINE_VA_LIST_START( args, _signature );
@@ -76,14 +93,25 @@ namespace Mengine
 
             Helper::AndroidEnvExceptionCheck( _jenv );
 
+            _jenv->DeleteLocalRef( jobjectMengineActivity );
+
             return jresult;
         }
         //////////////////////////////////////////////////////////////////////////
         jint AndroidCallIntActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... )
         {
-            jmethodID jmethodId = Helper::AndroidGetActivityMethodID( _jenv, _name, _signature );
+            jmethodID jmethodId = Mengine_JNI_GetMethodActivity( _jenv, _name, _signature );
 
-            jobject jobjectMengineActivity = Mengine_JNI_GetJObjectMengineActivity();
+            MENGINE_ASSERTION_FATAL( jmethodId != nullptr, "invalid get method '%s' signature '%s' activity"
+                , _name
+                , _signature
+            );
+
+            jobject jobjectMengineActivity = Mengine_JNI_GetObjectActivity( _jenv );
+
+            MENGINE_ASSERTION_FATAL( jobjectMengineActivity != nullptr, "invalid get object activity '%s'"
+                , _name
+            );
 
             MENGINE_VA_LIST_TYPE args;
             MENGINE_VA_LIST_START( args, _signature );
@@ -94,14 +122,25 @@ namespace Mengine
 
             Helper::AndroidEnvExceptionCheck( _jenv );
 
+            _jenv->DeleteLocalRef( jobjectMengineActivity );
+
             return jresult;
         }
         //////////////////////////////////////////////////////////////////////////
         jlong AndroidCallLongActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... )
         {
-            jmethodID jmethodId = Helper::AndroidGetActivityMethodID( _jenv, _name, _signature );
+            jmethodID jmethodId = Mengine_JNI_GetMethodActivity( _jenv, _name, _signature );
 
-            jobject jobjectMengineActivity = Mengine_JNI_GetJObjectMengineActivity();
+            MENGINE_ASSERTION_FATAL( jmethodId != nullptr, "invalid get method '%s' signature '%s' activity"
+                , _name
+                , _signature
+            );
+
+            jobject jobjectMengineActivity = Mengine_JNI_GetObjectActivity( _jenv );
+
+            MENGINE_ASSERTION_FATAL( jobjectMengineActivity != nullptr, "invalid get object activity '%s'"
+                , _name
+            );
 
             MENGINE_VA_LIST_TYPE args;
             MENGINE_VA_LIST_START( args, _signature );
@@ -112,14 +151,25 @@ namespace Mengine
 
             Helper::AndroidEnvExceptionCheck( _jenv );
 
+            _jenv->DeleteLocalRef( jobjectMengineActivity );
+
             return jresult;
         }
         //////////////////////////////////////////////////////////////////////////
         void AndroidCallVoidActivityStaticMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... )
         {
-            jmethodID jmethodId = Helper::AndroidGetActivityMethodID( _jenv, _name, _signature );
+            jmethodID jmethodId = Mengine_JNI_GetMethodActivity( _jenv, _name, _signature );
 
-            jclass jclassMengineActivity = Mengine_JNI_GetJClassMengineActivity( _jenv );
+            MENGINE_ASSERTION_FATAL( jmethodId != nullptr, "invalid get method '%s' signature '%s' activity"
+                , _name
+                , _signature
+            );
+
+            jclass jclassMengineActivity = Mengine_JNI_GetClassActivity( _jenv );
+
+            MENGINE_ASSERTION_FATAL( jclassMengineActivity != nullptr, "invalid get class activity '%s'"
+                , _name
+            );
 
             MENGINE_VA_LIST_TYPE args;
             MENGINE_VA_LIST_START( args, _signature );
@@ -129,13 +179,24 @@ namespace Mengine
             MENGINE_VA_LIST_END( args );
 
             Helper::AndroidEnvExceptionCheck( _jenv );
+
+            _jenv->DeleteLocalRef( jclassMengineActivity );
         }
         //////////////////////////////////////////////////////////////////////////
         jobject AndroidCallObjectActivityStaticMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... )
         {
-            jmethodID jmethodId = Helper::AndroidGetActivityMethodID( _jenv, _name, _signature );
+            jmethodID jmethodId = Mengine_JNI_GetMethodActivity( _jenv, _name, _signature );
 
-            jclass jclassMengineActivity = Mengine_JNI_GetJClassMengineActivity( _jenv );
+            MENGINE_ASSERTION_FATAL( jmethodId != nullptr, "invalid get method '%s' signature '%s' activity"
+                , _name
+                , _signature
+            );
+
+            jclass jclassMengineActivity = Mengine_JNI_GetClassActivity( _jenv );
+
+            MENGINE_ASSERTION_FATAL( jclassMengineActivity != nullptr, "invalid get class activity '%s'"
+                , _name
+            );
 
             MENGINE_VA_LIST_TYPE args;
             MENGINE_VA_LIST_START( args, _signature );
@@ -146,14 +207,25 @@ namespace Mengine
 
             Helper::AndroidEnvExceptionCheck( _jenv );
 
+            _jenv->DeleteLocalRef( jclassMengineActivity );
+
             return jresult;
         }
         //////////////////////////////////////////////////////////////////////////
         jboolean AndroidCallBooleanActivityStaticMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... )
         {
-            jmethodID jmethodId = Helper::AndroidGetActivityMethodID( _jenv, _name, _signature );
+            jmethodID jmethodId = Mengine_JNI_GetMethodActivity( _jenv, _name, _signature );
 
-            jclass jclassMengineActivity = Mengine_JNI_GetJClassMengineActivity( _jenv );
+            MENGINE_ASSERTION_FATAL( jmethodId != nullptr, "invalid get method '%s' signature '%s' activity"
+                , _name
+                , _signature
+            );
+
+            jclass jclassMengineActivity = Mengine_JNI_GetClassActivity( _jenv );
+
+            MENGINE_ASSERTION_FATAL( jclassMengineActivity != nullptr, "invalid get class activity '%s'"
+                , _name
+            );
 
             MENGINE_VA_LIST_TYPE args;
             MENGINE_VA_LIST_START( args, _signature );
@@ -164,14 +236,25 @@ namespace Mengine
 
             Helper::AndroidEnvExceptionCheck( _jenv );
 
+            _jenv->DeleteLocalRef( jclassMengineActivity );
+
             return jresult;
         }
         //////////////////////////////////////////////////////////////////////////
         jint AndroidCallIntActivityStaticMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... )
         {
-            jmethodID jmethodId = Helper::AndroidGetActivityMethodID( _jenv, _name, _signature );
+            jmethodID jmethodId = Mengine_JNI_GetMethodActivity( _jenv, _name, _signature );
 
-            jclass jclassMengineActivity = Mengine_JNI_GetJClassMengineActivity( _jenv );
+            MENGINE_ASSERTION_FATAL( jmethodId != nullptr, "invalid get method '%s' signature '%s' activity"
+                , _name
+                , _signature
+            );
+
+            jclass jclassMengineActivity = Mengine_JNI_GetClassActivity( _jenv );
+
+            MENGINE_ASSERTION_FATAL( jclassMengineActivity != nullptr, "invalid get class activity '%s'"
+                , _name
+            );
 
             MENGINE_VA_LIST_TYPE args;
             MENGINE_VA_LIST_START( args, _signature );
@@ -182,14 +265,25 @@ namespace Mengine
 
             Helper::AndroidEnvExceptionCheck( _jenv );
 
+            _jenv->DeleteLocalRef( jclassMengineActivity );
+
             return jresult;
         }
         //////////////////////////////////////////////////////////////////////////
         jlong AndroidCallLongActivityStaticMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... )
         {
-            jmethodID jmethodId = Helper::AndroidGetActivityMethodID( _jenv, _name, _signature );
+            jmethodID jmethodId = Mengine_JNI_GetMethodActivity( _jenv, _name, _signature );
 
-            jclass jclassMengineActivity = Mengine_JNI_GetJClassMengineActivity( _jenv );
+            MENGINE_ASSERTION_FATAL( jmethodId != nullptr, "invalid get method '%s' signature '%s' activity"
+                , _name
+                , _signature
+            );
+
+            jclass jclassMengineActivity = Mengine_JNI_GetClassActivity( _jenv );
+
+            MENGINE_ASSERTION_FATAL( jclassMengineActivity != nullptr, "invalid get class activity '%s'"
+                , _name
+            );
 
             MENGINE_VA_LIST_TYPE args;
             MENGINE_VA_LIST_START( args, _signature );
@@ -199,6 +293,8 @@ namespace Mengine
             MENGINE_VA_LIST_END( args );
 
             Helper::AndroidEnvExceptionCheck( _jenv );
+
+            _jenv->DeleteLocalRef( jclassMengineActivity );
 
             return jresult;
         }

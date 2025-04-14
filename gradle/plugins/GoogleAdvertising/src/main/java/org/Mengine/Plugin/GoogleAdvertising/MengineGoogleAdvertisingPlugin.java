@@ -1,4 +1,4 @@
-package org.Mengine.Plugin.Advertising;
+package org.Mengine.Plugin.GoogleAdvertising;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -10,17 +10,19 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 
 import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineFragmentAdvertisingId;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Plugin.GoogleService.MengineGoogleServicePlugin;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-public class MengineAdvertisingPlugin extends MengineService implements MengineListenerApplication {
+public class MengineGoogleAdvertisingPlugin extends MengineService implements MengineListenerApplication {
     public static final String SERVICE_NAME = "Advertising";
     public static final int SAVE_VERSION = 1;
 
@@ -60,9 +62,11 @@ public class MengineAdvertisingPlugin extends MengineService implements MengineL
     public void onLoad(@NonNull MengineApplication application, @NonNull Bundle bundle) {
         int version = bundle.getInt("version", 0);
 
-        m_advertisingId = bundle.getString("advertisingId", LIMIT_ADVERTISING_ID);
-        m_advertisingLimitTrackingEnabled = bundle.getBoolean("advertisingLimitTrackingEnabled", true);
-        m_advertisingLimitTrackingFetch = bundle.getBoolean("advertisingLimitTrackingFetch", false);
+        synchronized (this) {
+            m_advertisingId = bundle.getString("advertisingId", LIMIT_ADVERTISING_ID);
+            m_advertisingLimitTrackingEnabled = bundle.getBoolean("advertisingLimitTrackingEnabled", true);
+            m_advertisingLimitTrackingFetch = bundle.getBoolean("advertisingLimitTrackingFetch", false);
+        }
     }
 
     @Override
@@ -94,7 +98,7 @@ public class MengineAdvertisingPlugin extends MengineService implements MengineL
                 );
             }
 
-            this.postAdInfo(application, adInfo);
+            this.postAdInfo(adInfo);
 
             return adInfo;
         });
@@ -110,7 +114,7 @@ public class MengineAdvertisingPlugin extends MengineService implements MengineL
         }
     }
 
-    private void postAdInfo(MengineApplication application, AdvertisingIdClient.Info adInfo) {
+    private void postAdInfo(AdvertisingIdClient.Info adInfo) {
         synchronized (this) {
             if (adInfo == null) {
                 m_advertisingId = LIMIT_ADVERTISING_ID;
@@ -121,7 +125,7 @@ public class MengineAdvertisingPlugin extends MengineService implements MengineL
             } else {
                 String adInfoAdvertisingId = adInfo.getId();
 
-                if (adInfoAdvertisingId == null || adInfoAdvertisingId.equals(LIMIT_ADVERTISING_ID) == true) {
+                if (Objects.equals(adInfoAdvertisingId, LIMIT_ADVERTISING_ID) == true) {
                     m_advertisingId = LIMIT_ADVERTISING_ID;
                     m_advertisingLimitTrackingEnabled = true;
                 } else {
@@ -138,6 +142,6 @@ public class MengineAdvertisingPlugin extends MengineService implements MengineL
             , m_advertisingLimitTrackingEnabled == true ? "true" : "false"
         );
 
-        application.onMengineAdvertisingId(m_advertisingId, m_advertisingLimitTrackingEnabled);
+        MengineFragmentAdvertisingId.INSTANCE.setAdvertisingId(m_advertisingId, m_advertisingLimitTrackingEnabled);
     }
 }

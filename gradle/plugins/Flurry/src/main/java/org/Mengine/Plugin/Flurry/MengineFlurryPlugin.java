@@ -34,8 +34,8 @@ public class MengineFlurryPlugin extends MenginePlugin implements MenginePluginA
             , MengineUtils.getRedactedValue(MengineFlurryPlugin_ApiKey)
         );
 
-        String sessionId = application.getSessionId();
-        FlurryAgent.setUserId(sessionId);
+        String userId = application.getUserId();
+        FlurryAgent.setUserId(userId);
 
         Context context = application.getApplicationContext();
 
@@ -61,8 +61,8 @@ public class MengineFlurryPlugin extends MenginePlugin implements MenginePluginA
     }
 
     @Override
-    void onMengineSessionId(MengineApplication application, String sessionId) {
-        FlurryAgent.setUserId(sessionId);
+    void onMengineSessionId(MengineApplication application, String userId) {
+        FlurryAgent.setUserId(userId);
     }
 
     private void updateParams(Map<String, String> params, Map<String, Object> bases) {

@@ -17,13 +17,13 @@ import com.google.android.gms.games.PlayGamesSdk;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineFragmentGame;
 import org.Mengine.Base.MengineNetwork;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineListenerActivity;
 import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 
-import org.Mengine.Base.MengineUtils;
 import org.Mengine.Plugin.GoogleService.MengineGoogleServicePlugin;
 
 public class MengineGoogleGameSocialPlugin extends MengineService implements MengineListenerApplication, MengineListenerActivity {
@@ -169,7 +169,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
     public boolean unlockAchievement(String achievementId) {
         if (MengineNetwork.isNetworkAvailable() == false) {
             this.logInfo("unlockAchievement achievementId: %s network not available"
-                    , achievementId
+                , achievementId
             );
 
             return false;
@@ -196,6 +196,8 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                 this.logMessage("unlockAchievement complete achievementId: %s"
                     , achievementId
                 );
+
+                MengineFragmentGame.INSTANCE.unlockAchievement(achievementId);
 
                 this.pythonCall("onGoogleGameSocialUnlockAchievementSuccess", achievementId);
             }).addOnFailureListener(e -> {
@@ -245,6 +247,8 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                     , numSteps
                 );
 
+                MengineFragmentGame.INSTANCE.incrementAchievement(achievementId, numSteps);
+
                 this.pythonCall("onGoogleGameSocialIncrementAchievementSuccess", achievementId);
             }).addOnFailureListener(e -> {
                 this.logError("[ERROR] incrementAchievement achievementId: %s numSteps: %d error: %s"
@@ -290,6 +294,8 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                     , achievementId
                 );
 
+                MengineFragmentGame.INSTANCE.revealAchievement(achievementId);
+
                 this.pythonCall("onGoogleGameSocialAchievementRevealSuccess", achievementId);
             }).addOnFailureListener(e -> {
                 this.logError("[ERROR] revealAchievement achievementId: %s error: %s"
@@ -303,47 +309,49 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
         return true;
     }
 
-    public boolean submitLeaderboardScore(String leaderboardId, long value) {
+    public boolean submitLeaderboardScore(String leaderboardId, long score) {
         if (MengineNetwork.isNetworkAvailable() == false) {
-            this.logInfo("submitLeaderboardScore leaderboardId: %s value: %d network not available"
+            this.logInfo("submitLeaderboardScore leaderboardId: %s score: %d network not available"
                 , leaderboardId
-                , value
+                , score
             );
 
             return false;
         }
 
         if (m_isAuthenticated == false) {
-            this.logInfo("submitLeaderboardScore leaderboardId: %s value: %d not authenticated"
+            this.logInfo("submitLeaderboardScore leaderboardId: %s score: %d not authenticated"
                 , leaderboardId
-                , value
+                , score
             );
 
             return false;
         }
 
-        this.logMessage("submitLeaderboardScore leaderboardId: %s value: %d"
+        this.logMessage("submitLeaderboardScore leaderboardId: %s score: %d"
             , leaderboardId
-            , value
+            , score
         );
 
         MengineActivity activity = this.getMengineActivity();
 
         LeaderboardsClient leaderboardsClient = PlayGames.getLeaderboardsClient(activity);
 
-        leaderboardsClient.submitScoreImmediate(leaderboardId, value)
+        leaderboardsClient.submitScoreImmediate(leaderboardId, score)
             .addOnSuccessListener(result -> {
-                this.logMessage("submitLeaderboardScore complete leaderboardId: %s value: %d"
+                this.logMessage("submitLeaderboardScore complete leaderboardId: %s score: %d"
                     , leaderboardId
-                    , value
+                    , score
                 );
+
+                MengineFragmentGame.INSTANCE.submitLeaderboardScore(leaderboardId, score);
 
                 this.pythonCall("onGoogleGameSocialLeaderboardScoreSuccess", leaderboardId);
             })
             .addOnFailureListener(e -> {
-                this.logError("[ERROR] submitLeaderboardScore leaderboardId: %s value: %d error: %s"
+                this.logError("[ERROR] submitLeaderboardScore leaderboardId: %s score: %d error: %s"
                     , leaderboardId
-                    , value
+                    , score
                     , e.getMessage()
                 );
 

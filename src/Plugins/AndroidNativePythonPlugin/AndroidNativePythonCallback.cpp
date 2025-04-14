@@ -66,10 +66,9 @@ namespace Mengine
 
         jenv->CallVoidMethod( jfunctor, jmethodID_FunctorBoolean_call, _result, jparams );
 
-        jenv->DeleteLocalRef( jparams );
-
         Helper::AndroidEnvExceptionCheck( jenv );
 
+        jenv->DeleteLocalRef( jparams );
         jenv->DeleteLocalRef( jclass_Functor );
     }
     //////////////////////////////////////////////////////////////////////////

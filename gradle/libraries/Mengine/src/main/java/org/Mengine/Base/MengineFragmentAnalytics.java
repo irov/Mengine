@@ -1,6 +1,6 @@
 package org.Mengine.Base;
 
-import java.util.Map;
+import androidx.annotation.NonNull;
 
 public class MengineFragmentAnalytics extends MengineFragment<MengineListenerAnalytics> {
     static public MengineFragmentAnalytics INSTANCE = null;
@@ -11,8 +11,8 @@ public class MengineFragmentAnalytics extends MengineFragment<MengineListenerAna
         INSTANCE = this;
     }
 
-    public void analyticsEvent(String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
-        this.propagate(MengineListenerAnalytics::onMengineAnalyticsEvent, eventName, timestamp, bases, parameters);
+    public void analyticsEvent(@NonNull MengineAnalyticsEventParam param) {
+        this.propagate(MengineListenerAnalytics::onMengineAnalyticsEvent, param);
     }
 
     public void analyticsScreenView(String screenType, String screenName) {

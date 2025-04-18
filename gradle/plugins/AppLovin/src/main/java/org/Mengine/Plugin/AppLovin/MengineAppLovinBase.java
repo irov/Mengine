@@ -53,6 +53,11 @@ public class MengineAppLovinBase {
         m_requestTimestamp = 0;
     }
 
+    @NonNull
+    public MengineAppLovinPlugin getPlugin() {
+        return m_plugin;
+    }
+
     public boolean isInitialized() {
         return false;
     }

@@ -17,6 +17,8 @@ namespace Mengine
         {
             jmethodID jmethodFragment = Mengine_JNI_GetMethodFragment( _jenv, _fragmentName, _methodName, _methodSignature );
 
+            Helper::AndroidEnvExceptionCheck( _jenv );
+
             MENGINE_ASSERTION_FATAL( jmethodFragment != nullptr, "invalid get method '%s' signature '%s' fragment '%s'"
                 , _methodName
                 , _methodSignature
@@ -44,6 +46,8 @@ namespace Mengine
         jobject AndroidCallObjectFragmentMethod( JNIEnv * _jenv, const Char * _fragmentName, const Char * _methodName, const Char * _methodSignature, ... )
         {
             jmethodID jmethodFragment = Mengine_JNI_GetMethodFragment( _jenv, _fragmentName, _methodName, _methodSignature );
+
+            Helper::AndroidEnvExceptionCheck( _jenv );
 
             MENGINE_ASSERTION_FATAL( jmethodFragment != nullptr, "invalid get method '%s' signature '%s' fragment '%s'"
                 , _methodName
@@ -75,6 +79,8 @@ namespace Mengine
         {
             jmethodID jmethodFragment = Mengine_JNI_GetMethodFragment( _jenv, _fragmentName, _methodName, _methodSignature );
 
+            Helper::AndroidEnvExceptionCheck( _jenv );
+
             MENGINE_ASSERTION_FATAL( jmethodFragment != nullptr, "invalid get method '%s' signature '%s' fragment '%s'"
                 , _methodName
                 , _methodSignature
@@ -105,6 +111,8 @@ namespace Mengine
         {
             jmethodID jmethodFragment = Mengine_JNI_GetMethodFragment( _jenv, _fragmentName, _methodName, _methodSignature );
 
+            Helper::AndroidEnvExceptionCheck( _jenv );
+
             MENGINE_ASSERTION_FATAL( jmethodFragment != nullptr, "invalid get method '%s' signature '%s' fragment '%s'"
                 , _methodName
                 , _methodSignature
@@ -134,6 +142,8 @@ namespace Mengine
         jlong AndroidCallLongFragmentMethod( JNIEnv * _jenv, const Char * _fragmentName, const Char * _methodName, const Char * _methodSignature, ... )
         {
             jmethodID jmethodFragment = Mengine_JNI_GetMethodFragment( _jenv, _fragmentName, _methodName, _methodSignature );
+
+            Helper::AndroidEnvExceptionCheck( _jenv );
 
             MENGINE_ASSERTION_FATAL( jmethodFragment != nullptr, "invalid get method '%s' signature '%s' fragment '%s'"
                 , _methodName

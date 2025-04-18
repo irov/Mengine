@@ -697,20 +697,6 @@ public class MengineApplication extends Application {
         return true;
     }
 
-    public void sendEvent(MengineEvent event, Object ... args) {
-        List<MengineListenerApplication> applicationListeners = this.getApplicationListeners();
-
-        synchronized (m_syncEvent) {
-            for (MengineListenerApplication listener : applicationListeners) {
-                if (listener.onAvailable(this) == false) {
-                    continue;
-                }
-
-                listener.onAppEvent(this, event, args);
-            }
-        }
-    }
-
     private boolean isMainProcess() {
         String packageName = this.getPackageName();
 

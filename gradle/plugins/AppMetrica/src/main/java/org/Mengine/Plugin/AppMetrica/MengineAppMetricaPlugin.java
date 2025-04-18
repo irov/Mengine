@@ -2,20 +2,26 @@ package org.Mengine.Plugin.AppMetrica;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import org.Mengine.Base.BuildConfig;
 import org.Mengine.Base.MengineAdFormat;
 import org.Mengine.Base.MengineAdMediation;
 import org.Mengine.Base.MengineAdRevenueParam;
+import org.Mengine.Base.MengineAnalyticsEventCategory;
+import org.Mengine.Base.MengineAnalyticsEventParam;
 import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MengineEvent;
+import org.Mengine.Base.MengineListenerAdRevenue;
+import org.Mengine.Base.MengineListenerAnalytics;
+import org.Mengine.Base.MengineListenerApplication;
+import org.Mengine.Base.MengineListenerEngine;
+import org.Mengine.Base.MengineListenerLogger;
+import org.Mengine.Base.MengineListenerUser;
 import org.Mengine.Base.MengineLog;
-import org.Mengine.Base.MenginePlugin;
-import org.Mengine.Base.MenginePluginAdRevenueListener;
-import org.Mengine.Base.MenginePluginAnalyticsListener;
-import org.Mengine.Base.MenginePluginApplicationListener;
-import org.Mengine.Base.MenginePluginEngineListener;
-import org.Mengine.Base.MenginePluginInvalidInitializeException;
-import org.Mengine.Base.MenginePluginLoggerListener;
+import org.Mengine.Base.MengineLoggerMessageParam;
+import org.Mengine.Base.MengineService;
+import org.Mengine.Base.MengineServiceInvalidInitializeException;
+import org.Mengine.Base.MengineUtils;
 
 import java.util.Currency;
 import java.util.HashMap;
@@ -26,7 +32,7 @@ import io.appmetrica.analytics.AdType;
 import io.appmetrica.analytics.AppMetrica;
 import io.appmetrica.analytics.AppMetricaConfig;
 
-public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePluginLoggerListener, MenginePluginAnalyticsListener, MenginePluginAdRevenueListener, MenginePluginApplicationListener, MenginePluginEngineListener, MenginePluginUserListener {
+public class MengineAppMetricaPlugin extends MengineService implements MengineListenerLogger, MengineListenerAnalytics, MengineListenerAdRevenue, MengineListenerApplication, MengineListenerEngine, MengineListenerUser {
     public static final String SERVICE_NAME = "AppMetrica";
     public static final boolean SERVICE_EMBEDDING = true;
 
@@ -39,7 +45,7 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
     public static final String METADATA_HANDLE_FIRST_ACTIVATION_AS_UPDATE = "mengine.appmetrica.handle_first_activation_as_update";
 
     @Override
-    public void onAppInit(MengineApplication application, boolean isMainProcess) throws MenginePluginInvalidInitializeException {
+    public void onAppInit(@NonNull MengineApplication application, boolean isMainProcess) throws MengineServiceInvalidInitializeException {
         String MengineAppMetricaPlugin_ApiKey = this.getMetaDataString(METADATA_API_KEY);
 
         this.logInfo("%s: %s"
@@ -80,28 +86,38 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
     }
 
     @Override
-    public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
+    public void onAppPrepare(@NonNull MengineApplication application, @NonNull Map<String, String> pluginVersions) throws MengineServiceInvalidInitializeException {
         String userId = application.getUserId();
         AppMetrica.setUserProfileID(userId);
     }
 
     @Override
-    void onMengineUserId(MengineApplication application, String userId) {
+    public void onMengineChangeUserId(@NonNull MengineApplication application, String userId) {
         AppMetrica.setUserProfileID(userId);
     }
 
     @Override
-    public void onMengineAnalyticsEvent(MengineApplication application, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
-        Map<String, Object> params = new HashMap<>();
-
-        params.putAll(bases);
-        params.putAll(parameters);
-
-        AppMetrica.reportEvent(eventName, params);
+    public void onMengineRemoveUserData(@NonNull MengineApplication application) {
+        AppMetrica.setUserProfileID(null);
+        AppMetrica.clearAppEnvironment();
     }
 
     @Override
-    public void onMengineAnalyticsFlush(MengineApplication application) {
+    public void onMengineAnalyticsEvent(@NonNull MengineApplication application, @NonNull MengineAnalyticsEventParam param) {
+        if (param.ANALYTICS_CATEGORY == MengineAnalyticsEventCategory.MengineAnalyticsEventCategory_System) {
+            return;
+        }
+
+        Map<String, Object> params = new HashMap<>();
+
+        params.putAll(param.ANALYTICS_BASES);
+        params.putAll(param.ANALYTICS_PARAMETERS);
+
+        AppMetrica.reportEvent(param.ANALYTICS_NAME, params);
+    }
+
+    @Override
+    public void onMengineAnalyticsFlush(@NonNull MengineApplication application) {
         AppMetrica.sendEventsBuffer();
     }
 
@@ -124,7 +140,7 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
     }
 
     @Override
-    public void onMengineAdRevenue(MengineApplication application, MengineAdRevenueParam revenue) {
+    public void onMengineAdRevenue(@NonNull MengineApplication application, MengineAdRevenueParam revenue) {
         MengineAdMediation mediation = revenue.ADREVENUE_MEDIATION;
         String networkName = revenue.ADREVENUE_NETWORK;
         MengineAdFormat adFormat = revenue.ADREVENUE_FORMAT;
@@ -149,7 +165,7 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
     }
 
     @Override
-    public void onMengineCaughtException(MengineApplication application, Throwable throwable) {
+    public void onMengineCaughtException(@NonNull MengineApplication application, Throwable throwable) {
         if (BuildConfig.DEBUG == true) {
             return;
         }
@@ -158,17 +174,17 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
     }
 
     @Override
-    public void onMengineLogger(@NonNull MengineApplication application, int level, int filter, String category, String msg) {
+    public void onMengineLog(@NonNull MengineApplication application, @NonNull MengineLoggerMessageParam message) {
         if (BuildConfig.DEBUG == true) {
             return;
         }
 
-        switch (level) {
+        switch (message.MESSAGE_LEVEL) {
             case MengineLog.LM_ERROR:
-                AppMetrica.reportError(category, msg);
+                AppMetrica.reportError(message.MESSAGE_CATEGORY, message.MESSAGE_DATA);
                 break;
             case MengineLog.LM_FATAL:
-                AppMetrica.reportError(category, msg);
+                AppMetrica.reportError(message.MESSAGE_CATEGORY, message.MESSAGE_DATA);
                 break;
         }
     }

@@ -14,6 +14,7 @@ import org.Mengine.Base.MengineFragmentAdvertisingId;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
+import org.Mengine.Base.MengineUtils;
 import org.Mengine.Plugin.GoogleService.MengineGoogleServicePlugin;
 
 import java.io.IOException;
@@ -138,7 +139,7 @@ public class MengineGoogleAdvertisingPlugin extends MengineService implements Me
         }
 
         this.logInfo("AdvertisingId: %s limit: %s"
-            , m_advertisingId
+            , MengineUtils.getRedactedValue(m_advertisingId)
             , m_advertisingLimitTrackingEnabled == true ? "true" : "false"
         );
 

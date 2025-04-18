@@ -9,7 +9,7 @@ public class MengineFragmentPushToken extends MengineFragment<MengineListenerPus
         INSTANCE = this;
     }
 
-    public void setPushToken(String token) {
-        this.propagate(MengineListenerPushToken::onMengineSetPushToken, token);
+    public void changePushToken(String token) {
+        this.propagate(MengineListenerPushToken::onMengineChangePushToken, token);
     }
 }

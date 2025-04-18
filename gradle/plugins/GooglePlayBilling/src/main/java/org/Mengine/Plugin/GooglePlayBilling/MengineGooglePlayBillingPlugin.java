@@ -22,6 +22,8 @@ import com.android.billingclient.api.QueryPurchasesParams;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineCallback;
+import org.Mengine.Base.MengineFragment;
+import org.Mengine.Base.MengineFragmentInAppPurchase;
 import org.Mengine.Base.MengineInAppProductParam;
 import org.Mengine.Base.MengineInAppPurchaseParam;
 import org.Mengine.Base.MengineListenerActivity;
@@ -33,6 +35,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class MengineGooglePlayBillingPlugin extends MengineService implements MengineListenerApplication, MengineListenerActivity {
     public static final String SERVICE_NAME = "GPlayBilling";
@@ -295,8 +298,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
                 products1.add(product);
             }
 
-            MengineApplication application = getMengineApplication();
-            application.onMengineInAppProducts(products1);
+            MengineFragmentInAppPurchase.INSTANCE.setInAppProducts(products1);
 
             List<Map<String, Object>> desc_products = new ArrayList<>();
 
@@ -557,8 +559,8 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
             purchase1.INAPPPURCHASE_TOKEN = purchaseToken;
             purchase1.INAPPPURCHASE_DATA = originalJson;
 
-            MengineApplication application = this.getMengineApplication();
-            application.onMengineInAppPurchase(purchase1);
+
+            MengineFragmentInAppPurchase.INSTANCE.purchaseInAppProduct(purchase1);
 
             this.pythonCall("onGooglePlayBillingPurchasesOnConsumeSuccess", products);
         });

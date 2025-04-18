@@ -1,44 +1,37 @@
 package org.Mengine.Plugin.OneSignal;
 
-import android.content.Context;
-import android.graphics.Color;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
+import androidx.annotation.NonNull;
+
+import com.onesignal.notifications.IDisplayableMutableNotification;
+import com.onesignal.notifications.INotificationReceivedEvent;
+import com.onesignal.notifications.INotificationServiceExtension;
+
+import org.Mengine.Base.MengineFragmentRemoteMessage;
+import org.Mengine.Base.MengineRemoteMessageParam;
+import org.Mengine.Base.MengineUtils;
 import org.json.JSONObject;
-import java.math.BigInteger;
 
-import com.onesignal.OSNotification;
-import com.onesignal.OSMutableNotification;
-import com.onesignal.OSNotificationReceivedEvent;
-import com.onesignal.OneSignal.OSRemoteNotificationReceivedHandler;
+import java.util.Map;
 
-public class MengineOneSignalNotificationServiceExtension implements OSRemoteNotificationReceivedHandler  {
+public class MengineOneSignalNotificationServiceExtension implements INotificationServiceExtension {
     @Override
-    public void remoteNotificationReceived(Context context, OSNotificationReceivedEvent notificationReceivedEvent) {
-        OSNotification notification = notificationReceivedEvent.getNotification();
+    public void onNotificationReceived(@NonNull INotificationReceivedEvent event) {
 
-        JSONObject data = notification.getAdditionalData();
+        IDisplayableMutableNotification notification = event.getNotification();
 
-        OSMutableNotification mutableNotification = notification.mutableCopy();
-        mutableNotification.setExtender(builder -> {
-            builder.setColor(new BigInteger("FF00FF00", 16).intValue());
+        String notificationId = notification.getNotificationId();
+        String collapseId = notification.getCollapseId();
 
-            String title = notification.getTitle();
-            Spannable spannableTitle = new SpannableString(title);
-            spannableTitle.setSpan(new ForegroundColorSpan(Color.RED),0,title.length(),0);
-            builder.setContentTitle(spannableTitle);
+        JSONObject additionalData = notification.getAdditionalData();
 
-            String body = notification.getBody();
-            Spannable spannableBody = new SpannableString(body);
-            spannableBody.setSpan(new ForegroundColorSpan(Color.BLUE),0, body.length(),0);
-            builder.setContentText(spannableBody);
+        Map<String, Object> data = MengineUtils.jsonObjectToMap(additionalData);
 
-            builder.setTimeoutAfter(30000);
+        MengineRemoteMessageParam message = new MengineRemoteMessageParam();
+        message.REMOTEMESSAGE_ID = notificationId;
+        message.REMOTEMESSAGE_FROM = "OneSignal";
+        message.REMOTEMESSAGE_COLLAPSE_KEY = collapseId;
+        message.REMOTEMESSAGE_DATA = data;
 
-            return builder;
-        });
-
-        notificationReceivedEvent.complete(mutableNotification);
+        MengineFragmentRemoteMessage.INSTANCE.remoteMessageReceived(message);
     }
 }

@@ -10,6 +10,8 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.KeyEvent;
 
+import androidx.annotation.NonNull;
+
 import com.mar.sdk.MARCloudCallBack;
 import com.mar.sdk.MARCode;
 import com.mar.sdk.MARSDK;
@@ -25,25 +27,25 @@ import com.mar.sdk.verify.UToken;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MenginePlugin;
-import org.Mengine.Base.MenginePluginActivityListener;
-import org.Mengine.Base.MenginePluginApplicationListener;
-import org.Mengine.Base.MenginePluginInvalidInitializeException;
-import org.Mengine.Base.MenginePluginKeyListener;
-import org.Mengine.Base.MenginePluginEngineListener;
 
+import org.Mengine.Base.MengineListenerActivity;
+import org.Mengine.Base.MengineListenerApplication;
+import org.Mengine.Base.MengineListenerEngine;
+import org.Mengine.Base.MengineListenerKeyEvent;
+import org.Mengine.Base.MengineService;
+import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Calendar;
 import java.util.TimeZone;
 
-public class MengineMARPlugin extends MenginePlugin implements MARInitListener, MenginePluginApplicationListener, MenginePluginKeyListener, MenginePluginEngineListener, MenginePluginActivityListener {
+public class MengineMARPlugin extends MengineService implements MARInitListener, MengineListenerApplication, MengineListenerKeyEvent, MengineListenerEngine, MengineListenerActivity {
     public static final String SERVICE_NAME = "MAR";
     public static final boolean SERVICE_EMBEDDING = true;
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
         MARPlatform.getInstance().init(activity, this);
     }
 
@@ -256,34 +258,19 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
         try {
             String code = "";
 
-            Context context = MengineActivity.getContext();
+            MengineActivity activity = this.getMengineActivity();
 
-            ClipboardManager clipboard = context.getSystemService(ClipboardManager.class);
+            boolean hasClipboardText = activity.hasClipboardText();
 
-            if (clipboard == null) {
-                this.logError("[ERROR] pasteCode clipboard is null");
-
-                return false;
-            }
-
-            boolean hasPrimaryClip = clipboard.hasPrimaryClip();
-
-            if (hasPrimaryClip == true) {
-                ClipData clip = clipboard.getPrimaryClip();
-                ClipData.Item item = clip.getItemAt(0);
-
-                Object data = item.getText();
-
-                if (data != null) {
-                    code = data.toString();
-                }
+            if (hasClipboardText == true) {
+                code = activity.getClipboardText();
             }
 
             this.logMessage("try to paste code: %s"
                 , code
             );
 
-            this.pythonCall("onMarSDKSaveClipboard", hasPrimaryClip, code);
+            this.pythonCall("onMarSDKSaveClipboard", hasClipboardText, code);
         } catch (final Exception e) {
             this.logError("[ERROR] pasteCode exception: %s"
                 , e.getMessage()
@@ -391,68 +378,68 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
     }
 
     @Override
-    public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
+    public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
         MARSDK.getInstance().onAppCreateAll(application);
         MARSDK.getInstance().onAppCreate(application);
     }
 
     @Override
-    public void onAppTerminate(MengineApplication application) {
+    public void onAppTerminate(@NonNull MengineApplication application) {
         MARSDK.getInstance().onTerminate();
     }
 
     @Override
-    public void onAppAttachBaseContext(MengineApplication application, Context base) {
+    public void onAppAttachBaseContext(@NonNull MengineApplication application, Context base) {
         MARSDK.getInstance().onAppAttachBaseContext(application, base);
     }
 
     @Override
-    public void onAppConfigurationChanged(MengineApplication application, Configuration newConfig) {
+    public void onAppConfigurationChanged(@NonNull MengineApplication application, Configuration newConfig) {
         MARSDK.getInstance().onAppConfigurationChanged(application, newConfig);
     }
 
     @Override
-    public void onActivityResultBefore(MengineActivity activity, int requestCode, int resultCode, Intent data) {
+    public void onActivityResultBefore(@NonNull MengineActivity activity, int requestCode, int resultCode, Intent data) {
         MARSDK.getInstance().onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
-    public void onStart(MengineActivity activity) {
+    public void onStart(@NonNull MengineActivity activity) {
         MARSDK.getInstance().onStart();
     }
 
     @Override
-    public void onPause(MengineActivity activity) {
+    public void onPause(@NonNull MengineActivity activity) {
         MARSDK.getInstance().onPause();
     }
 
     @Override
-    public void onResume(MengineActivity activity) {
+    public void onResume(@NonNull MengineActivity activity) {
         MARSDK.getInstance().onResume();
     }
 
     @Override
-    public void onNewIntent(MengineActivity activity, Intent intent) {
+    public void onNewIntent(@NonNull MengineActivity activity, Intent intent) {
         MARSDK.getInstance().onNewIntent(intent);
     }
 
     @Override
-    public void onDestroy(MengineActivity activity) {
+    public void onDestroy(@NonNull MengineActivity activity) {
         MARSDK.getInstance().onDestroy();
     }
 
     @Override
-    public void onRestart(MengineActivity activity) {
+    public void onRestart(@NonNull MengineActivity activity) {
         MARSDK.getInstance().onRestart();
     }
 
     @Override
-    public void onConfigurationChanged(MengineActivity activity, Configuration newConfig){
+    public void onConfigurationChanged(@NonNull MengineActivity activity, Configuration newConfig){
         MARSDK.getInstance().onConfigurationChanged(newConfig);
     }
 
     @Override
-    public boolean dispatchKeyEvent(MengineActivity activity, KeyEvent event) {
+    public boolean onMengineKeyEvent(@NonNull MengineApplication application, @NonNull MengineActivity activity, KeyEvent event) {
         int action = event.getAction();
         int keyCode = event.getKeyCode();
 
@@ -496,7 +483,7 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
     }
 
     @Override
-    public void onRequestPermissionsResult(MengineActivity activity, int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(@NonNull MengineActivity activity, int requestCode, String[] permissions, int[] grantResults) {
         MARSDK.getInstance().onRequestPermissionResult(requestCode, permissions, grantResults);
     }
 

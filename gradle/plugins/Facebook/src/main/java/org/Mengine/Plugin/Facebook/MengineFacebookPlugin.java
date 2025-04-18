@@ -28,6 +28,8 @@ import com.facebook.share.widget.ShareDialog;
 
 import org.Mengine.Base.BuildConfig;
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineAnalyticsEventCategory;
+import org.Mengine.Base.MengineAnalyticsEventParam;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineListenerAnalytics;
@@ -230,7 +232,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
     }
 
     @Override
-    public void onMengineSetPushToken(@NonNull MengineApplication application, String token) {
+    public void onMengineChangePushToken(@NonNull MengineApplication application, String token) {
         AppEventsLogger.setPushNotificationsRegistrationId(token);
     }
 
@@ -265,17 +267,21 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
     }
 
     @Override
-    public void onMengineAnalyticsEvent(@NonNull MengineApplication application, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
+    public void onMengineAnalyticsEvent(@NonNull MengineApplication application, @NonNull MengineAnalyticsEventParam param) {
         if (m_logger == null) {
+            return;
+        }
+
+        if (param.ANALYTICS_CATEGORY == MengineAnalyticsEventCategory.MengineAnalyticsEventCategory_System) {
             return;
         }
 
         Bundle bundle = new Bundle();
 
-        this.updateBundle(bundle, bases);
-        this.updateBundle(bundle, parameters);
+        this.updateBundle(bundle, param.ANALYTICS_BASES);
+        this.updateBundle(bundle, param.ANALYTICS_PARAMETERS);
 
-        m_logger.logEvent(eventName, bundle);
+        m_logger.logEvent(param.ANALYTICS_NAME, bundle);
     }
 
     @Override
@@ -399,7 +405,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
 
             this.pythonCall("onFacebookUserFetchSuccess", objectString, responseString);
         });
-                
+
         Bundle parameters = new Bundle();
         parameters.putString("fields", "id, name, picture");
         request.setParameters(parameters);

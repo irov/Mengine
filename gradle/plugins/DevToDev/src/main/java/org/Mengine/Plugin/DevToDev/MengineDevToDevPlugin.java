@@ -9,6 +9,8 @@ import com.devtodev.analytics.external.analytics.DTDAnalyticsConfiguration;
 import com.devtodev.analytics.external.analytics.DTDCustomEventParameters;
 
 import org.Mengine.Base.MengineAdRevenueParam;
+import org.Mengine.Base.MengineAnalyticsEventCategory;
+import org.Mengine.Base.MengineAnalyticsEventParam;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineListenerAdRevenue;
 import org.Mengine.Base.MengineListenerAnalytics;
@@ -107,25 +109,29 @@ public class MengineDevToDevPlugin extends MengineService implements MengineList
                 dtd.add(name, (String)parameter);
             } else {
                 this.logError("[ERROR] customEvent unsupported parameter: %s class: %s"
-                        , parameter
-                        , parameter.getClass()
+                    , parameter
+                    , parameter.getClass()
                 );
             }
         }
     }
 
     @Override
-    public void onMengineAnalyticsEvent(@NonNull MengineApplication application, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
+    public void onMengineAnalyticsEvent(@NonNull MengineApplication application, @NonNull MengineAnalyticsEventParam param) {
         if (m_initializeSuccessful == false) {
+            return;
+        }
+
+        if (param.ANALYTICS_CATEGORY == MengineAnalyticsEventCategory.MengineAnalyticsEventCategory_System) {
             return;
         }
 
         DTDCustomEventParameters params = new DTDCustomEventParameters();
 
-        this.updateEventParameters(params, bases);
-        this.updateEventParameters(params, parameters);
+        this.updateEventParameters(params, param.ANALYTICS_BASES);
+        this.updateEventParameters(params, param.ANALYTICS_PARAMETERS);
 
-        DTDAnalytics.INSTANCE.customEvent(eventName, params);
+        DTDAnalytics.INSTANCE.customEvent(param.ANALYTICS_NAME, params);
     }
 
     @Override

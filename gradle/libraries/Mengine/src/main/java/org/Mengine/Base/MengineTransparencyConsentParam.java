@@ -6,6 +6,9 @@ import android.content.SharedPreferences;
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
+import java.util.List;
+import java.util.Objects;
+
 public class MengineTransparencyConsentParam {
     private static final String TAG = "MengineTransparencyConsentParam";
 
@@ -179,5 +182,84 @@ public class MengineTransparencyConsentParam {
         }
 
         return true;
+    }
+
+    public boolean getConsentMeasurement() {
+        if (this.isEEA() == false) {
+            return true;
+        }
+
+        if (this.getPurposeConsentArgument(8) == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean getPurposeConsentArguments(List<Integer> arguments) {
+        if (this.isEEA() == false) {
+            return true;
+        }
+
+        for (Integer argument : arguments) {
+            if (this.getPurposeConsentArgument(argument) == false) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        MengineTransparencyConsentParam dst = (MengineTransparencyConsentParam) o;
+
+        return TRANSPARENCYCONSENT_PENDING == dst.TRANSPARENCYCONSENT_PENDING &&
+                TRANSPARENCYCONSENT_CMPSDKID == dst.TRANSPARENCYCONSENT_CMPSDKID &&
+                TRANSPARENCYCONSENT_CMPSDKVERSION == dst.TRANSPARENCYCONSENT_CMPSDKVERSION &&
+                TRANSPARENCYCONSENT_POLICYVERSION == dst.TRANSPARENCYCONSENT_POLICYVERSION &&
+                TRANSPARENCYCONSENT_GDPRAPPLIES == dst.TRANSPARENCYCONSENT_GDPRAPPLIES &&
+                TRANSPARENCYCONSENT_PURPOSEONETREATMENT == dst.TRANSPARENCYCONSENT_PURPOSEONETREATMENT &&
+                TRANSPARENCYCONSENT_USENONSTANDARTTEXTS == dst.TRANSPARENCYCONSENT_USENONSTANDARTTEXTS &&
+                Objects.equals(TRANSPARENCYCONSENT_PUBLISHERCC, dst.TRANSPARENCYCONSENT_PUBLISHERCC) &&
+                Objects.equals(TRANSPARENCYCONSENT_TCSTRING, dst.TRANSPARENCYCONSENT_TCSTRING) &&
+                Objects.equals(TRANSPARENCYCONSENT_VENDORCONSENTS, dst.TRANSPARENCYCONSENT_VENDORCONSENTS) &&
+                Objects.equals(TRANSPARENCYCONSENT_VEMDORLEGITIMATEINTERESTS, dst.TRANSPARENCYCONSENT_VEMDORLEGITIMATEINTERESTS) &&
+                Objects.equals(TRANSPARENCYCONSENT_PURPOSECONSENTS, dst.TRANSPARENCYCONSENT_PURPOSECONSENTS) &&
+                Objects.equals(TRANSPARENCYCONSENT_PURPOSELEGITIMATEINTERESTS, dst.TRANSPARENCYCONSENT_PURPOSELEGITIMATEINTERESTS) &&
+                Objects.equals(TRANSPARENCYCONSENT_SPECIALFEATURESOPTINS, dst.TRANSPARENCYCONSENT_SPECIALFEATURESOPTINS) &&
+                Objects.equals(TRANSPARENCYCONSENT_PUBLISHERRESTRICTIONS, dst.TRANSPARENCYCONSENT_PUBLISHERRESTRICTIONS) &&
+                Objects.equals(TRANSPARENCYCONSENT_PUBLISHERCONSENTS, dst.TRANSPARENCYCONSENT_PUBLISHERCONSENTS) &&
+                Objects.equals(TRANSPARENCYCONSENT_PUBLISHERLEGITIMATEINTERESTS, dst.TRANSPARENCYCONSENT_PUBLISHERLEGITIMATEINTERESTS) &&
+                Objects.equals(TRANSPARENCYCONSENT_PUBLISHERCUSTOMPURPOSESCONSENTS, dst.TRANSPARENCYCONSENT_PUBLISHERCUSTOMPURPOSESCONSENTS) &&
+                Objects.equals(TRANSPARENCYCONSENT_PUBLISHERCUSTOMPURPOSESLEGITIMATEINTERESTS, dst.TRANSPARENCYCONSENT_PUBLISHERCUSTOMPURPOSESLEGITIMATEINTERESTS);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+                TRANSPARENCYCONSENT_PENDING,
+                TRANSPARENCYCONSENT_CMPSDKID,
+                TRANSPARENCYCONSENT_CMPSDKVERSION,
+                TRANSPARENCYCONSENT_POLICYVERSION,
+                TRANSPARENCYCONSENT_GDPRAPPLIES,
+                TRANSPARENCYCONSENT_PUBLISHERCC,
+                TRANSPARENCYCONSENT_PURPOSEONETREATMENT,
+                TRANSPARENCYCONSENT_USENONSTANDARTTEXTS,
+                TRANSPARENCYCONSENT_TCSTRING,
+                TRANSPARENCYCONSENT_VENDORCONSENTS,
+                TRANSPARENCYCONSENT_VEMDORLEGITIMATEINTERESTS,
+                TRANSPARENCYCONSENT_PURPOSECONSENTS,
+                TRANSPARENCYCONSENT_PURPOSELEGITIMATEINTERESTS,
+                TRANSPARENCYCONSENT_SPECIALFEATURESOPTINS,
+                TRANSPARENCYCONSENT_PUBLISHERRESTRICTIONS,
+                TRANSPARENCYCONSENT_PUBLISHERCONSENTS,
+                TRANSPARENCYCONSENT_PUBLISHERLEGITIMATEINTERESTS,
+                TRANSPARENCYCONSENT_PUBLISHERCUSTOMPURPOSESCONSENTS,
+                TRANSPARENCYCONSENT_PUBLISHERCUSTOMPURPOSESLEGITIMATEINTERESTS
+        );
     }
 }

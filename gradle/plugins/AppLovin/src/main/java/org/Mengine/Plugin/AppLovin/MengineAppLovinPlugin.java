@@ -49,7 +49,6 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
     public static final String METADATA_ENABLE_PRIVACY_POLICY_FLOW = "mengine.applovin.enable_privacy_policy_flow";
     public static final String METADATA_PRIVACY_POLICY_URL = "mengine.applovin.privacy_policy_url";
     public static final String METADATA_TERMS_OF_SERVICE_URL = "mengine.applovin.terms_of_service_url";
-    public static final String METADATA_BANNER_ADAPTIVE = "mengine.applovin.banner.adaptive";
     public static final String METADATA_BANNER_PLACEMENT = "mengine.applovin.banner.placement";
     public static final String METADATA_BANNER_ADUNITID = "mengine.applovin.banner.adunitid";
     public static final String METADATA_INTERSTITIAL_ADUNITID = "mengine.applovin.interstitial.adunitid";
@@ -102,9 +101,8 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
                 adUnitIds.add(MengineAppLovinPlugin_Banner_AdUnitId);
 
                 String MengineAppLovinPlugin_Banner_Placement = this.getMetaDataString(METADATA_BANNER_PLACEMENT);
-                boolean MengineAppLovinPlugin_BannerAdaptive = this.getMetaDataBoolean(METADATA_BANNER_ADAPTIVE);
 
-                MengineAppLovinBannerAd bannerAd = new MengineAppLovinBannerAd(this, MengineAppLovinPlugin_Banner_AdUnitId, MengineAppLovinPlugin_Banner_Placement, MengineAppLovinPlugin_BannerAdaptive);
+                MengineAppLovinBannerAd bannerAd = new MengineAppLovinBannerAd(this, MengineAppLovinPlugin_Banner_AdUnitId, MengineAppLovinPlugin_Banner_Placement);
 
                 m_bannerAd = bannerAd;
             }
@@ -185,8 +183,8 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             // Nothing
         } else {
             this.invalidInitialize("invalid %s: %s [YES|NO|UNKNOWN]"
-                    , METADATA_CCPA
-                    , MengineAppLovinPlugin_CCPA
+                , METADATA_CCPA
+                , MengineAppLovinPlugin_CCPA
             );
         }
 
@@ -482,6 +480,19 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
     }
 
     @Override
+    public boolean canYouShowBanner() {
+        if (m_bannerAd == null) {
+            return false;
+        }
+
+        if (m_bannerAd.canYouShow() == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
     public void showBanner() {
         if (m_bannerAd == null) {
             this.assertionError("not found banner");
@@ -682,6 +693,19 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
     @Override
     public boolean hasMREC() {
         if (m_MRECAd == null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean canYouShowMREC() {
+        if (m_MRECAd == null) {
+            return false;
+        }
+
+        if (m_MRECAd.canYouShow() == false) {
             return false;
         }
 

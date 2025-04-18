@@ -1137,7 +1137,7 @@ public class MengineActivity extends AppCompatActivity {
             , event.getScanCode()
         );
 
-        if (MengineFragmentKeyEvent.INSTANCE.dispatchKeyEvent(event) == true) {
+        if (MengineFragmentKeyEvent.INSTANCE.dispatchKeyEvent(this, event) == true) {
             return true;
         }
 

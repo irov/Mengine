@@ -53,7 +53,6 @@ def MENGINE_APP_PLUGIN_HELPSHIFT = Utils.existAppPlugin("MENGINE_APP_PLUGIN_HELP
 def MENGINE_APP_PLUGIN_ONESIGNAL = Utils.existAppPlugin("MENGINE_APP_PLUGIN_ONESIGNAL")
 def MENGINE_APP_PLUGIN_LEANPLUM = Utils.existAppPlugin("MENGINE_APP_PLUGIN_LEANPLUM")
 def MENGINE_APP_PLUGIN_DATADOG = Utils.existAppPlugin("MENGINE_APP_PLUGIN_DATADOG")
-def MENGINE_APP_PLUGIN_DEVDEBUGGER = Utils.existAppPlugin("MENGINE_APP_PLUGIN_DEVDEBUGGER")
 def MENGINE_APP_PLUGIN_VIBRATOR = Utils.existAppPlugin("MENGINE_APP_PLUGIN_VIBRATOR")
 
 Utils.logString("ANDROID_APP_DELIVERY_PACKAGES", ANDROID_APP_DELIVERY_PACKAGES)
@@ -699,16 +698,6 @@ if (MENGINE_APP_PLUGIN_LEANPLUM == true) {
 
     dependencies {
         implementation project(':plugins:Leanplum')
-    }
-}
-
-Utils.logAvailable("MENGINE_APP_PLUGIN_DEVDEBUGGER", MENGINE_APP_PLUGIN_DEVDEBUGGER)
-
-if (MENGINE_APP_PLUGIN_DEVDEBUGGER == true) {
-    android.ext.plugins += 'org.Mengine.Plugin.DevDebugger.MengineDevDebuggerPlugin'
-
-    dependencies {
-        implementation project(':plugins:DevDebugger')
     }
 }
 

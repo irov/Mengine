@@ -5,5 +5,5 @@ android {
 }
 
 dependencies {
-    implementation 'com.helpshift:helpshift-sdkx:10.3.0'
+    implementation 'com.helpshift:helpshift-sdkx:10.4.0'
 }

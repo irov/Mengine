@@ -300,6 +300,24 @@ namespace Mengine
             return jmap;
         }
         //////////////////////////////////////////////////////////////////////////
+        jobject AndroidGetJObjectEnum( JNIEnv * _jenv, const Char * _className, const Char * _enumName )
+        {
+            jclass jclass_enum = _jenv->FindClass( _className );
+
+            Char signature[256] = { '\0' };
+            StdString::strcpy( signature, "L" );
+            StdString::strcat( signature, _className );
+            StdString::strcat( signature, ";" );
+
+            jfieldID jfield_enum = _jenv->GetStaticFieldID( jclass_enum, _enumName, signature );
+
+            jobject jobject_enum = _jenv->GetStaticObjectField( jclass_enum, jfield_enum );
+
+            _jenv->DeleteLocalRef( jclass_enum );
+
+            return jobject_enum;
+        }
+        //////////////////////////////////////////////////////////////////////////
         void * AndroidGetJObjectPointer( JNIEnv * _jenv, jobject _pointer )
         {
             jlong jvalue = Helper::AndroidGetJavaObjectValueLong( _jenv, _pointer );

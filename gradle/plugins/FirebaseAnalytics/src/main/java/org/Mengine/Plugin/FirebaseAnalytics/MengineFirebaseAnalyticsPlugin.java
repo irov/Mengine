@@ -11,6 +11,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import org.Mengine.Base.MengineAdFormat;
 import org.Mengine.Base.MengineAdMediation;
 import org.Mengine.Base.MengineAdRevenueParam;
+import org.Mengine.Base.MengineAnalyticsEventParam;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineListenerGame;
 import org.Mengine.Base.MengineService;
@@ -117,17 +118,17 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
     }
 
     @Override
-    public void onMengineAnalyticsEvent(@NonNull MengineApplication application, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
+    public void onMengineAnalyticsEvent(@NonNull MengineApplication application, @NonNull MengineAnalyticsEventParam param) {
         if (m_firebaseAnalytics == null) {
             return;
         }
 
         Bundle bundle = new Bundle();
 
-        this.updateBundle(bundle, bases);
-        this.updateBundle(bundle, parameters);
+        this.updateBundle(bundle, param.ANALYTICS_BASES);
+        this.updateBundle(bundle, param.ANALYTICS_PARAMETERS);
 
-        m_firebaseAnalytics.logEvent(eventName, bundle);
+        m_firebaseAnalytics.logEvent(param.ANALYTICS_NAME, bundle);
     }
 
     @Override
@@ -262,7 +263,7 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
 
         Bundle params = new Bundle();
         params.putLong(FirebaseAnalytics.Param.SCORE, score);
-        params.putString(FirebaseAnalytics.Param.CHARACTER, leaderboardId);
+        params.putString(FirebaseAnalytics.Param.CHARACTER, "LEADERBOARD_" + leaderboardId);
 
         m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.POST_SCORE, params);
     }

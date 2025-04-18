@@ -64,7 +64,7 @@ public class MengineFirebaseMessagingPlugin extends MengineService implements Me
                     , token
                 );
 
-                MengineFragmentPushToken.INSTANCE.setPushToken(token);
+                MengineFragmentPushToken.INSTANCE.changePushToken(token);
             });
     }
 }

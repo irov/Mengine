@@ -6,5 +6,5 @@ public class MengineRemoteMessageParam {
     public String REMOTEMESSAGE_ID;
     public String REMOTEMESSAGE_FROM;
     public String REMOTEMESSAGE_COLLAPSE_KEY;
-    public Map<String, String> REMOTEMESSAGE_DATA;
+    public Map<String, Object> REMOTEMESSAGE_DATA;
 }

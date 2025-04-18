@@ -13,8 +13,8 @@ public class MengineFragmentKeyEvent extends MengineFragment<MengineListenerKeyE
         INSTANCE = this;
     }
 
-    public boolean dispatchKeyEvent(@NonNull KeyEvent event) {
-        if (this.propagateB(MengineListenerKeyEvent::onMengineKeyEvent, event) == true) {
+    public boolean dispatchKeyEvent(@NonNull MengineActivity activity, @NonNull KeyEvent event) {
+        if (this.propagateB(MengineListenerKeyEvent::onMengineKeyEvent, activity, event) == true) {
             return true;
         }
 

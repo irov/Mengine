@@ -2,38 +2,35 @@ package org.Mengine.Plugin.Sentry;
 
 import android.content.Context;
 
-import org.Mengine.Base.MengineActivity;
+import androidx.annotation.NonNull;
+
 import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MengineEvent;
-import org.Mengine.Base.MenginePlugin;
-import org.Mengine.Base.MenginePluginApplicationListener;
-import org.Mengine.Base.MenginePluginEngineListener;
-import org.Mengine.Base.MenginePluginInvalidInitializeException;
+import org.Mengine.Base.MengineListenerApplication;
+import org.Mengine.Base.MengineListenerEngine;
+import org.Mengine.Base.MengineListenerTransparencyConsent;
+import org.Mengine.Base.MengineListenerUser;
+import org.Mengine.Base.MengineService;
+import org.Mengine.Base.MengineServiceInvalidInitializeException;
+import org.Mengine.Base.MengineTransparencyConsentParam;
+import org.Mengine.Base.MengineUtils;
+
+import java.util.Map;
 
 import io.sentry.Sentry;
 import io.sentry.android.core.SentryAndroid;
 import io.sentry.protocol.User;
 
-public class MengineSentryPlugin extends MenginePlugin implements MenginePluginApplicationListener, MenginePluginEngineListener, MenginePluginSessionIdListener {
+public class MengineSentryPlugin extends MengineService implements MengineListenerApplication, MengineListenerEngine, MengineListenerTransparencyConsent, MengineListenerUser {
     public static final String SERVICE_NAME = "Sentry";
     public static final boolean SERVICE_EMBEDDING = true;
 
     public static final String METADATA_DSN = "mengine.sentry.dsn";
     public static final String METADATA_ENABLE_UNCAUGHT_EXCEPTION_HANDLER = "mengine.sentry.enable_uncaught_exception_handler";
 
-    public static boolean m_passGDPR = false;
+    public static boolean m_passMeasurementGDPR = false;
 
     @Override
-    public void onAppEvent(MengineApplication application, MengineEvent event, Object ... args) {
-        if (event == MengineEvent.EVENT_GDPR_PASS) {
-            boolean passGDPR = (boolean)args[0];
-
-            m_passGDPR = passGDPR;
-        }
-    }
-
-    @Override
-    public void onAppInit(MengineApplication application, boolean isMainProcess) throws MenginePluginInvalidInitializeException {
+    public void onAppInit(MengineApplication application, boolean isMainProcess) throws MengineServiceInvalidInitializeException {
         if (isMainProcess == false) {
             return;
         }
@@ -52,13 +49,23 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginA
             , MengineSentryPlugin_EnableUncaughtExceptionHandler
         );
 
+        MengineTransparencyConsentParam tcParam = application.makeTransparencyConsentParam();
+
+        m_passMeasurementGDPR = tcParam.getConsentMeasurement();
+
+        this.logInfo("GDPR measurement: %s"
+            , m_passMeasurementGDPR
+        );
+
+        tcParam.getConsentAnalyticsStorage();
+
         Context context = application.getApplicationContext();
 
         SentryAndroid.init(context, options -> {
             options.setDsn(MengineSentryPlugin_DSN);
 
             if (application.isBuildPublish() == true) {
-                options.setEnvironment("production");
+                options.setEnvironment("prod");
             } else {
                 options.setEnvironment("debug");
             }
@@ -75,7 +82,7 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginA
             options.setEnableUncaughtExceptionHandler(MengineSentryPlugin_EnableUncaughtExceptionHandler);
 
             options.setBeforeSend((event, hint) -> {
-                if (m_passGDPR == false) {
+                if (m_passMeasurementGDPR == false) {
                     return null;
                 }
 
@@ -83,7 +90,7 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginA
             });
 
             options.setBeforeSendTransaction((transaction, hint) -> {
-                if (m_passGDPR == false) {
+                if (m_passMeasurementGDPR == false) {
                     return null;
                 }
 
@@ -93,7 +100,7 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginA
     }
 
     @Override
-    public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
+    public void onAppPrepare(MengineApplication application, @NonNull Map<String, String> pluginVersions) throws MengineServiceInvalidInitializeException {
         Sentry.configureScope(scope -> {
             boolean isMasterRelease = application.isMasterRelease();
             boolean isBuildPublish = application.isBuildPublish();
@@ -117,27 +124,12 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginA
     }
 
     @Override
-    public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
+    public void onAppCreate(MengineApplication application) throws MengineServiceInvalidInitializeException {
         //Empty
     }
 
     @Override
-    public void onMengineCreateApplication(MengineActivity activity) {
-        Sentry.configureScope(scope -> {
-            boolean isDevelopmentMode = activity.isDevelopmentMode();
-            String companyName = activity.getCompanyName();
-            String projectName = activity.getProjectName();
-            int projectVersion = activity.getProjectVersion();
-
-            scope.setExtra("Development", String.valueOf(isDevelopmentMode));
-            scope.setExtra("Company", companyName);
-            scope.setExtra("Project", projectName);
-            scope.setExtra("Version", String.valueOf(projectVersion));
-        });
-    }
-
-    @Override
-    void onMengineSessionId(MengineApplication application, String sessionId) {
+    public void onMengineChangeUserId(@NonNull MengineApplication application, String sessionId) {
         User user = new User();
         user.setId(sessionId);
 
@@ -145,12 +137,26 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginA
     }
 
     @Override
-    public void onMengineCaughtException(MengineApplication application, Throwable throwable) {
+    public void onMengineTransparencyConsent(@NonNull MengineApplication application, MengineTransparencyConsentParam tcParam) {
+        m_passMeasurementGDPR = tcParam.getConsentMeasurement();
+
+        this.logInfo("GDPR measurement: %s"
+            , m_passMeasurementGDPR
+        );
+    }
+
+    @Override
+    public void onMengineRemoveUserData(@NonNull MengineApplication application) {
+        Sentry.setUser(null);
+    }
+
+    @Override
+    public void onMengineCaughtException(@NonNull MengineApplication application, Throwable throwable) {
         this.recordException(throwable);
     }
 
     @Override
-    public void onAppState(MengineApplication application, String name, Object value) {
+    public void onAppState(@NonNull MengineApplication application, String name, Object value) {
         this.setCustomKey("." + name, value);
     }
 

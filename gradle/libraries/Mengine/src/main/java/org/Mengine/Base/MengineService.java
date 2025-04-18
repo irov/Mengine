@@ -137,10 +137,6 @@ public class MengineService implements MengineServiceInterface {
         MengineUtils.makeToastDelayed(m_activity, message, delayed);
     }
 
-    public void sendEvent(MengineEvent event, Object ... args) {
-        m_application.sendEvent(event, args);
-    }
-
     public void runOnUiThread(Runnable action) {
         if (m_activity == null) {
             return;

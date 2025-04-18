@@ -6,12 +6,13 @@ import com.leanplum.annotations.Parser;
 import com.leanplum.internal.Log;
 
 import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MengineEvent;
-import org.Mengine.Base.MenginePlugin;
-import org.Mengine.Base.MenginePluginApplicationListener;
-import org.Mengine.Base.MenginePluginInvalidInitializeException;
+import org.Mengine.Base.MengineListenerApplication;
+import org.Mengine.Base.MengineListenerUser;
+import org.Mengine.Base.MengineService;
+import org.Mengine.Base.MengineServiceInvalidInitializeException;
+import org.Mengine.Base.MengineUtils;
 
-public class MengineLeanplumPlugin extends MenginePlugin implements MenginePluginApplicationListener, MenginePluginSessionIdListener {
+public class MengineLeanplumPlugin extends MengineService implements MengineListenerApplication, MengineListenerUser {
     public static final String SERVICE_NAME = "Leanplum";
 
     public static final String METADATA_APP_ID = "mengine.leanplum.app_id";
@@ -20,7 +21,7 @@ public class MengineLeanplumPlugin extends MenginePlugin implements MenginePlugi
     public static final String METADATA_ENVIRONMENT = "mengine.leanplum.environment";
 
     @Override
-    public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
+    public void onAppCreate(MengineApplication application) throws MengineServiceInvalidInitializeException {
         String AppId = this.getMetaDataString(METADATA_APP_ID);
         String DevKey = this.getMetaDataString(METADATA_DEV_KEY);
         String ProdKey = this.getMetaDataString(METADATA_PROD_KEY);
@@ -67,7 +68,13 @@ public class MengineLeanplumPlugin extends MenginePlugin implements MenginePlugi
     }
 
     @Override
-    void onMengineSessionId(MengineApplication application, String sessionId) {
+    public void onMengineChangeUserId(MengineApplication application, String sessionId) {
         Leanplum.setUserId(sessionId);
+    }
+
+    @Override
+    public void onMengineRemoveUserData(MengineApplication application) {
+        Leanplum.setUserId(null);
+        Leanplum.clearUserContent();
     }
 }

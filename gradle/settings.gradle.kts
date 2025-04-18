@@ -174,7 +174,6 @@ includePlugin("MENGINE_APP_PLUGIN_ADJUST", ":plugins:Adjust")
 includePlugin("MENGINE_APP_PLUGIN_HELPSHIFT", ":plugins:Helpshift")
 includePlugin("MENGINE_APP_PLUGIN_ONESIGNAL", ":plugins:OneSignal")
 includePlugin("MENGINE_APP_PLUGIN_LEANPLUM", ":plugins:Leanplum")
-includePlugin("MENGINE_APP_PLUGIN_DEVDEBUGGER", ":plugins:DevDebugger")
 includePlugin("MENGINE_APP_PLUGIN_DATADOG", ":plugins:DataDog")
 includePlugin("MENGINE_APP_PLUGIN_VIBRATOR", ":plugins:Vibrator")
 

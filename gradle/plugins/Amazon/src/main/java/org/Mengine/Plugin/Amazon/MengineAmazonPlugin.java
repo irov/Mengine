@@ -1,20 +1,17 @@
 package org.Mengine.Plugin.Amazon;
 
-import android.content.Context;
-import android.content.res.Configuration;
-
 import com.amazon.device.ads.AdRegistration;
 import com.amazon.device.ads.DTBAdNetwork;
 import com.amazon.device.ads.DTBAdNetworkInfo;
 import com.amazon.device.ads.MRAIDPolicy;
 
-import org.Mengine.Base.BuildConfig;
 import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MenginePlugin;
-import org.Mengine.Base.MenginePluginApplicationListener;
-import org.Mengine.Base.MenginePluginInvalidInitializeException;
+import org.Mengine.Base.MengineListenerApplication;
+import org.Mengine.Base.MengineService;
+import org.Mengine.Base.MengineServiceInvalidInitializeException;
+import org.Mengine.Base.MengineUtils;
 
-public class MengineAmazonPlugin extends MenginePlugin implements MenginePluginApplicationListener {
+public class MengineAmazonPlugin extends MengineService implements MengineListenerApplication {
     public static final String SERVICE_NAME = "Amazon";
 
     public static final String METADATA_APP_ID = "mengine.amazon.app_id";
@@ -22,7 +19,7 @@ public class MengineAmazonPlugin extends MenginePlugin implements MenginePluginA
     public static final String METADATA_ENABLE_LOGGING = "mengine.amazon.enable_logging";
 
     @Override
-    public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
+    public void onAppCreate(MengineApplication application) throws MengineServiceInvalidInitializeException {
         String MengineAmazonPlugin_AppId = this.getMetaDataString(METADATA_APP_ID);
 
         this.logInfo("%s: %s"
@@ -40,7 +37,6 @@ public class MengineAmazonPlugin extends MenginePlugin implements MenginePluginA
             return;
         }
 
-        AdRegistration.setAdNetworkInfo(new DTBAdNetworkInfo(DTBAdNetwork.MAX));
         AdRegistration.setMRAIDSupportedVersions(new String[]{"1.0", "2.0", "3.0"});
         AdRegistration.setMRAIDPolicy(MRAIDPolicy.CUSTOM);
 

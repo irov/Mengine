@@ -27,7 +27,9 @@ public class MengineFirebaseMessagingService extends FirebaseMessagingService {
         message.REMOTEMESSAGE_ID = messageId;
         message.REMOTEMESSAGE_FROM = from;
         message.REMOTEMESSAGE_COLLAPSE_KEY = collapseKey;
-        message.REMOTEMESSAGE_DATA = data;
+
+        message.REMOTEMESSAGE_DATA = new HashMap<>();
+        message.REMOTEMESSAGE_DATA.putAll(data);
 
         MengineFragmentRemoteMessage.INSTANCE.remoteMessageReceived(message);
     }

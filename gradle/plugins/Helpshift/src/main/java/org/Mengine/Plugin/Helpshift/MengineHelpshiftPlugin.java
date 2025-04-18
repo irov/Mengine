@@ -1,16 +1,15 @@
 package org.Mengine.Plugin.Helpshift;
 
-import android.os.Bundle;
-
 import org.Mengine.Base.BuildConfig;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MenginePlugin;
-import org.Mengine.Base.MenginePluginActivityListener;
-import org.Mengine.Base.MenginePluginInvalidInitializeException;
-import org.Mengine.Base.MenginePluginPushTokenListener;
-import org.Mengine.Base.MenginePluginRemoteMessageListener;
+import org.Mengine.Base.MengineListenerApplication;
+import org.Mengine.Base.MengineListenerPushToken;
+import org.Mengine.Base.MengineListenerRemoteMessage;
 import org.Mengine.Base.MengineRemoteMessageParam;
+import org.Mengine.Base.MengineService;
+import org.Mengine.Base.MengineServiceInvalidInitializeException;
+import org.Mengine.Base.MengineUtils;
 
 import com.helpshift.Helpshift;
 import com.helpshift.HelpshiftAuthenticationFailureReason;
@@ -21,10 +20,11 @@ import com.helpshift.HelpshiftInstallException;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 
-public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEventsListener, MenginePluginRemoteMessageListener, MenginePluginActivityListener, MenginePluginPushTokenListener {
+public class MengineHelpshiftPlugin extends MengineService implements HelpshiftEventsListener, MengineListenerRemoteMessage, MengineListenerApplication, MengineListenerPushToken {
     public static final String SERVICE_NAME = "Helpshift";
     public static final boolean SERVICE_EMBEDDING = true;
 
@@ -32,7 +32,7 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
     public static final String METADATA_DOMAIN = "mengine.helpshift.domain";
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
+    public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
         Map<String, Object> config = new HashMap<>();
 
         if (BuildConfig.DEBUG == true) {
@@ -41,10 +41,7 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
             config.put("enableLogging", false);
         }
 
-        int screenOrientation = activity.getRequestedOrientation();
-
-        config.put("screenOrientation", screenOrientation);
-        config.put("notificationIcon", R.drawable.mengine_helpshift_notification_icon);
+        config.put("enableInAppNotification", true);
 
         String MengineHelpshiftPlugin_PlatformId = this.getMetaDataString(METADATA_PLATFORM_ID);
 
@@ -61,8 +58,6 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
         );
 
         try {
-            MengineApplication application = this.getMengineApplication();
-
             Helpshift.install(application, MengineHelpshiftPlugin_PlatformId, MengineHelpshiftPlugin_Domain, config);
         } catch (final UnsupportedOSVersionException e) {
             this.invalidInitialize("Android OS versions prior to Lollipop (< SDK 21) are not supported.");
@@ -80,22 +75,24 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
     }
 
     @Override
-    public void onDestroy(MengineActivity activity) {
+    public void onAppTerminate(@NonNull MengineApplication activity) {
         Helpshift.setHelpshiftEventsListener(null);
     }
 
     @Override
-    public void onMenginePushToken(MengineApplication application, String token) {
+    public void onMengineChangePushToken(@NonNull MengineApplication application, String token) {
         Helpshift.registerPushToken(token);
     }
 
     @Override
-    public boolean onMengineRemoteMessageReceived(MengineApplication application, MengineRemoteMessageParam message) {
-        Map<String, String> data = message.REMOTEMESSAGE_DATA;
+    public boolean onMengineRemoteMessageReceived(@NonNull MengineApplication application, MengineRemoteMessageParam message) {
+        Map<String, Object> data = message.REMOTEMESSAGE_DATA;
 
-        String origin = data.get("origin");
+        String origin = (String)data.get("origin");
         if (Objects.equals(origin, "helpshift") == true) {
-            Helpshift.handlePush(data);
+            Map<String, String> helpshifData = new HashMap<>();
+            data.putAll(message.REMOTEMESSAGE_DATA);
+            Helpshift.handlePush(helpshifData);
 
             return true;
         }

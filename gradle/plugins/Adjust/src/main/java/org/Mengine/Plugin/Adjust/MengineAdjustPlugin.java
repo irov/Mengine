@@ -7,32 +7,36 @@ import android.os.Bundle;
 
 import com.adjust.sdk.Adjust;
 import com.adjust.sdk.AdjustAdRevenue;
+import com.adjust.sdk.AdjustAttribution;
 import com.adjust.sdk.AdjustConfig;
 import com.adjust.sdk.AdjustEvent;
 import com.adjust.sdk.AdjustThirdPartySharing;
-import com.adjust.sdk.BuildConfig;
 import com.adjust.sdk.LogLevel;
+import com.adjust.sdk.OnAdidReadListener;
+import com.adjust.sdk.OnAttributionChangedListener;
 
 import org.Mengine.Base.MengineAdFormat;
 import org.Mengine.Base.MengineAdMediation;
 import org.Mengine.Base.MengineAdRevenueParam;
 import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MengineEvent;
-import org.Mengine.Base.MenginePlugin;
-import org.Mengine.Base.MenginePluginActivityListener;
-import org.Mengine.Base.MenginePluginAdRevenueListener;
-import org.Mengine.Base.MenginePluginPushTokenListener;
-import org.Mengine.Base.MenginePluginTransparencyConsentListener;
-import org.Mengine.Base.MenginePluginApplicationListener;
-import org.Mengine.Base.MenginePluginInvalidInitializeException;
-import org.Mengine.Base.MenginePluginRemoteMessageListener;
+import org.Mengine.Base.MengineListenerActivity;
+import org.Mengine.Base.MengineListenerAdRevenue;
+import org.Mengine.Base.MengineListenerApplication;
+import org.Mengine.Base.MengineListenerPushToken;
+import org.Mengine.Base.MengineListenerRemoteMessage;
+import org.Mengine.Base.MengineListenerTransparencyConsent;
+import org.Mengine.Base.MengineService;
+import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineTransparencyConsentParam;
+import org.Mengine.Base.MengineUtils;
 
-public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginApplicationListener, MenginePluginActivityListener, MenginePluginAdRevenueListener, MenginePluginTransparencyConsentListener, MenginePluginRemoteMessageListener, MenginePluginPushTokenListener {
+public class MengineAdjustPlugin extends MengineService implements MengineListenerApplication, MengineListenerActivity, MengineListenerAdRevenue, MengineListenerTransparencyConsent, MengineListenerRemoteMessage, MengineListenerPushToken {
     public static final String SERVICE_NAME = "Adjust";
     public static final boolean SERVICE_EMBEDDING = true;
 
     public static final String METADATA_APP_TOKEN = "mengine.adjust.app_token";
+
+    protected String m_adid;
 
     private static final class AdjustLifecycleCallbacks implements Application.ActivityLifecycleCallbacks {
         @Override
@@ -72,7 +76,7 @@ public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginA
     }
 
     @Override
-    public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
+    public void onAppCreate(MengineApplication application) throws MengineServiceInvalidInitializeException {
         String environment = AdjustConfig.ENVIRONMENT_PRODUCTION;
 
         if (BuildConfig.DEBUG == true) {
@@ -92,26 +96,43 @@ public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginA
             config.setLogLevel(LogLevel.INFO);
         }
 
-        config.setPreinstallTrackingEnabled(true);
-        Adjust.onCreate(config);
+        Adjust.getAdid(new OnAdidReadListener() {
+            @Override
+            public void onAdidRead(String adid) {
+                MengineAdjustPlugin.this.logInfo("Adjust adid: %s"
+                    , MengineUtils.getRedactedValue(adid)
+                );
 
-        this.logMessage("Adjust Adid: %s"
-            , Adjust.getAdid()
-        );
+                MengineAdjustPlugin.this.m_adid = adid;
+            }
+        });
+
+        config.setOnAttributionChangedListener(new OnAttributionChangedListener() {
+            @Override
+            public void onAttributionChanged(AdjustAttribution attribution) {
+                MengineAdjustPlugin.this.logInfo("Adjust attribution: %s"
+                    , attribution.toString()
+                );
+
+                //ToDo Acquisition
+            }
+        });
+
+        Adjust.initSdk(config);
 
         application.registerActivityLifecycleCallbacks(new MengineAdjustPlugin.AdjustLifecycleCallbacks());
     }
 
     private static String getAdjustMediation(MengineAdMediation adMediation) {
         if (adMediation == MengineAdMediation.ADMEDIATION_APPLOVINMAX) {
-            return AdjustConfig.AD_REVENUE_APPLOVIN_MAX;
+            return "applovin_max_sdk";
         }
 
-        return AdjustConfig.AD_REVENUE_SOURCE_PUBLISHER;
+        return "publisher_sdk";
     }
 
     @Override
-    public void onMenginePushToken(MengineApplication application, String token) {
+    public void onMengineChangePushToken(MengineApplication application, String token) {
         final Context context = application.getApplicationContext();
 
         Adjust.setPushToken(token, context);

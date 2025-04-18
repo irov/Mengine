@@ -1,6 +1,7 @@
 package org.Mengine.Plugin.GoogleConsent;
 
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineFragmentTransparencyConsent;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineListenerActivity;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
@@ -8,6 +9,8 @@ import org.Mengine.Base.MengineTransparencyConsentParam;
 
 import android.content.Context;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 
 import com.google.android.ump.ConsentDebugSettings;
 import com.google.android.ump.ConsentInformation;
@@ -18,7 +21,7 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
     public static final String SERVICE_NAME = "GConsent";
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
+    public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
         ConsentRequestParameters.Builder builder = new ConsentRequestParameters.Builder();
 
         if (BuildConfig.DEBUG == true) {
@@ -57,7 +60,7 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
                 if (privacyOptionsRequirementStatus == ConsentInformation.PrivacyOptionsRequirementStatus.NOT_REQUIRED) {
                     MengineTransparencyConsentParam tcParam = activity.makeTransparencyConsentParam();
 
-                    activity.onMengineTransparencyConsent(tcParam);
+                    MengineFragmentTransparencyConsent.INSTANCE.transparencyConsent(tcParam);
 
                     return;
                 }
@@ -76,7 +79,7 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
             });
     }
 
-    public void loadForm(MengineActivity activity) {
+    public void loadForm(@NonNull MengineActivity activity) {
         UserMessagingPlatform.loadAndShowConsentFormIfRequired(activity
             , (loadAndShowError) -> {
                 if (loadAndShowError != null) {
@@ -92,7 +95,7 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
 
                 MengineTransparencyConsentParam consent = activity.makeTransparencyConsentParam();
 
-                activity.onMengineTransparencyConsent(consent);
+                MengineFragmentTransparencyConsent.INSTANCE.transparencyConsent(consent);
             });
     }
 

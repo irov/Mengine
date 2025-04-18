@@ -14,6 +14,7 @@ import com.applovin.mediation.MaxAdRequestListener;
 import com.applovin.mediation.MaxAdRevenueListener;
 import com.applovin.mediation.MaxAdReviewListener;
 import com.applovin.mediation.MaxAdViewAdListener;
+import com.applovin.mediation.MaxAdViewConfiguration;
 import com.applovin.mediation.MaxError;
 import com.applovin.mediation.ads.MaxAdView;
 import com.applovin.sdk.AppLovinSdkUtils;
@@ -23,44 +24,34 @@ import org.Mengine.Base.MengineAdFormat;
 import org.Mengine.Base.MengineAdMediation;
 import org.Mengine.Base.MengineAnalyticsEventBuilder;
 import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineUtils;
 
 import java.util.Map;
 
 public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxAdRequestListener, MaxAdViewAdListener, MaxAdRevenueListener, MaxAdReviewListener {
     protected final String m_placement;
-    protected final boolean m_adaptive;
 
     protected MaxAdView m_adView;
 
     protected volatile boolean m_visible = false;
     protected volatile boolean m_loaded = false;
 
-    public MengineAppLovinBannerAd(MengineAppLovinPlugin plugin, String adUnitId, String placement, boolean adaptive) {
+    public MengineAppLovinBannerAd(MengineAppLovinPlugin plugin, String adUnitId, String placement) {
         super(plugin, adUnitId, MaxAdFormat.BANNER);
 
         m_placement = placement;
-        m_adaptive = adaptive;
     }
 
     protected AppLovinSdkUtils.Size getBannerSize(@NonNull MengineApplication application) {
-        AppLovinSdkUtils.Size size;
-
-        if (m_adaptive == true) {
-            size = MaxAdFormat.BANNER.getAdaptiveSize(application);
-        } else {
-            boolean isTablet = AppLovinSdkUtils.isTablet(application);
-
-            size = (isTablet == true) ? MaxAdFormat.LEADER.getSize() : MaxAdFormat.BANNER.getSize();
-        }
+        AppLovinSdkUtils.Size size = MaxAdFormat.BANNER.getAdaptiveSize(application);
 
         return size;
     }
 
     protected MengineAnalyticsEventBuilder buildBannerAdEvent(@Size(min = 1L,max = 40L) String event) {
         MengineAnalyticsEventBuilder builder = this.buildAdEvent("mng_ad_banner_" + event)
-            .addParameterString("placement", m_placement)
-            .addParameterBoolean("adaptive", m_adaptive);
+            .addParameterString("placement", m_placement);
 
         return builder;
     }
@@ -78,7 +69,11 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
     public void initialize(@NonNull MengineApplication application) {
         super.initialize(application);
 
-        MaxAdView adView = new MaxAdView(m_adUnitId);
+        MaxAdViewConfiguration adConfig = MaxAdViewConfiguration.builder()
+            .setAdaptiveType(MaxAdViewConfiguration.AdaptiveType.ANCHORED)
+            .build();
+
+        MaxAdView adView = new MaxAdView(m_adUnitId, adConfig);
 
         adView.setPlacement(m_placement);
 
@@ -91,6 +86,7 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
 
         int widthDp = size.getWidth();
         int heightDp = size.getHeight();
+
         int widthPx = AppLovinSdkUtils.dpToPx(application, widthDp);
         int heightPx = AppLovinSdkUtils.dpToPx(application, heightDp);
 
@@ -98,10 +94,6 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
         params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 
         adView.setLayoutParams(params);
-
-        if (m_adaptive == true) {
-            adView.setExtraParameter("adaptive_banner", "true");
-        }
 
         adView.setBackgroundColor(Color.TRANSPARENT);
 
@@ -125,9 +117,19 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
         MengineAppLovinMediationInterface mediationAmazon = m_plugin.getMediationAmazon();
 
         if (mediationAmazon != null) {
-            mediationAmazon.initializeMediatorBanner(application, adView, () -> {
-                this.loadAd();
-            });
+            try {
+                mediationAmazon.initializeMediatorBanner(application, m_plugin, adView, () -> {
+                    this.loadAd();
+                });
+            } catch (final MengineServiceInvalidInitializeException e) {
+                m_plugin.logError("initializeMediatorBanner exception: %s"
+                    , e.getMessage()
+                );
+
+                MengineUtils.performOnMainThread(() -> {
+                    this.loadAd();
+                });
+            }
         } else {
             // Load the ad
             MengineUtils.performOnMainThread(() -> {
@@ -285,6 +287,10 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
         }
     }
 
+    public boolean canYouShow() {
+        return m_loaded;
+    }
+
     public void show() {
         m_plugin.runOnUiThread(() -> {
             if (m_visible == true) {
@@ -381,8 +387,6 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
 
     @Override
     public void onAdLoadFailed(@NonNull String adUnitId, @NonNull MaxError error) {
-        m_loaded = false;
-
         this.logMaxError("onAdLoadFailed", error);
 
         int errorCode = error.getCode();

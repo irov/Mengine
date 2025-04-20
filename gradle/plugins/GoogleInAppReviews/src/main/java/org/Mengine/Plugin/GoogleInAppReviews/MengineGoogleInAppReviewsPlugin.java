@@ -42,7 +42,7 @@ public class MengineGoogleInAppReviewsPlugin extends MengineService implements M
                 return;
             }
 
-            this.logMessage("requestReviewFlow success");
+            this.logInfo("requestReviewFlow success");
 
             m_reviewInfo = task.getResult();
 
@@ -63,7 +63,7 @@ public class MengineGoogleInAppReviewsPlugin extends MengineService implements M
             return;
         }
 
-        this.logMessage("launchTheInAppReview");
+        this.logInfo("launchTheInAppReview");
 
         this.buildEvent("mng_inapp_review")
             .log();
@@ -92,7 +92,7 @@ public class MengineGoogleInAppReviewsPlugin extends MengineService implements M
                 return;
             }
 
-            this.logMessage("Launching the review success");
+            this.logInfo("launching the review success");
 
             this.buildEvent("mng_inapp_review_success")
                 .log();

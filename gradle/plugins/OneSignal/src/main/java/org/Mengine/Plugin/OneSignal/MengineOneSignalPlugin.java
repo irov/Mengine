@@ -53,11 +53,13 @@ public class MengineOneSignalPlugin extends MengineService implements MengineLis
     }
 
     @Override
-    public void onMengineTransparencyConsent(@NonNull MengineApplication application, MengineTransparencyConsentParam tcParam) {
-        if (tcParam.getPurposeConsentArguments(List.of(0, 3, 4)) == true) {
-            OneSignal.setConsentGiven(true);
-
-            OneSignal.getNotifications().requestPermission(false, Continue.none());
+    public void onMengineTransparencyConsent(@NonNull MengineApplication application, @NonNull MengineTransparencyConsentParam tcParam) {
+        if (tcParam.isEEA() == true) {
+            if (tcParam.getPurposeConsentArguments(List.of(0, 3, 4)) == true) {
+                OneSignal.setConsentGiven(true);
+            }
         }
+
+        OneSignal.getNotifications().requestPermission(false, Continue.none());
     }
 }

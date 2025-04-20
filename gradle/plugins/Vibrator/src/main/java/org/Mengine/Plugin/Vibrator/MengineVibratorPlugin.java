@@ -61,7 +61,7 @@ public class MengineVibratorPlugin extends MengineService implements MengineList
     }
 
     public boolean vibrateOneShot(long milliseconds) {
-        this.logMessage("vibrate OneShot milliseconds: %d"
+        this.logInfo("vibrate OneShot milliseconds: %d"
             , milliseconds
         );
 
@@ -83,7 +83,7 @@ public class MengineVibratorPlugin extends MengineService implements MengineList
     }
 
     public boolean vibrateWaveform(List<Long> timings, int repeat) {
-        this.logMessage("vibrate Waveform timings: %s repeat: %d"
+        this.logInfo("vibrate Waveform timings: %s repeat: %d"
             , timings
             , repeat
         );
@@ -108,7 +108,7 @@ public class MengineVibratorPlugin extends MengineService implements MengineList
     }
 
     public boolean vibrateWaveformAmplitudes(List<Long> timings, List<Integer> amplitudes, int repeat) {
-        this.logMessage("vibrate Waveform timings: %s amplitudes: %s repeat: %d"
+        this.logInfo("vibrate Waveform timings: %s amplitudes: %s repeat: %d"
             , timings
             , amplitudes
             , repeat
@@ -135,7 +135,7 @@ public class MengineVibratorPlugin extends MengineService implements MengineList
     }
 
     public void mute(boolean mute) {
-        this.logMessage("mute: %s"
+        this.logInfo("mute: %s"
             , mute ? "true" : "false"
         );
 
@@ -147,7 +147,7 @@ public class MengineVibratorPlugin extends MengineService implements MengineList
     }
 
     public void cancel() {
-        this.logMessage("cancel");
+        this.logInfo("cancel");
 
         if (m_vibrator == null) {
             return;

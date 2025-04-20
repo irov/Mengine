@@ -301,7 +301,7 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
     }
 
     @Override
-    public void onMengineTransparencyConsent(@NonNull MengineApplication application, MengineTransparencyConsentParam tcParam) {
+    public void onMengineTransparencyConsent(@NonNull MengineApplication application, @NonNull MengineTransparencyConsentParam tcParam) {
         TrackingConsent consent = this.getTrackingConsent(tcParam);
 
         Datadog.setTrackingConsent(consent);

@@ -68,7 +68,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
                     this.pythonCall("onGooglePlayBillingPurchasesUpdatedServiceDisconnected");
                 }break;
                 case BillingClient.BillingResponseCode.OK: {
-                    this.logMessage("onPurchasesUpdated [User success the purchase]");
+                    this.logInfo("onPurchasesUpdated [User success the purchase]");
 
                     if (purchases != null) {
                         for (Purchase purchase : purchases) {
@@ -176,12 +176,12 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
             return;
         }
 
-        this.logMessage("billingConnect");
+        this.logInfo("billingConnect");
 
         m_billingClient.startConnection(new BillingClientStateListener() {
             @Override
             public void onBillingServiceDisconnected() {
-                MengineGooglePlayBillingPlugin.this.logMessage("Billing disconnected");
+                MengineGooglePlayBillingPlugin.this.logInfo("Billing disconnected");
 
                 MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingConnectServiceDisconnected");
             }
@@ -201,7 +201,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
                     return;
                 }
 
-                MengineGooglePlayBillingPlugin.this.logMessage("billing setup finished");
+                MengineGooglePlayBillingPlugin.this.logInfo("billing setup finished");
 
                 MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingConnectSetupFinishedSuccess");
             }
@@ -215,7 +215,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
             return;
         }
 
-        this.logMessage("queryProducts products: %s"
+        this.logInfo("queryProducts products: %s"
             , products
         );
 
@@ -255,7 +255,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
                 return;
             }
 
-            this.logMessage("Billing query products details: %s"
+            this.logInfo("billing query products details: %s"
                 , productsDetails
             );
 
@@ -332,7 +332,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
                 desc_products.add(desc_product);
             }
 
-            this.logMessage("Billing response skuResponse: %s"
+            this.logInfo("billing response skuResponse: %s"
                 , desc_products
             );
 
@@ -347,7 +347,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
             return;
         }
 
-        this.logMessage("queryPurchases");
+        this.logInfo("queryPurchases");
 
         this.buildEvent("mng_billing_query_purchases")
             .log();
@@ -374,7 +374,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
                 return;
             }
 
-            this.logMessage("billing success query message: %s purchases: %s"
+            this.logInfo("billing success query message: %s purchases: %s"
                 , billingResult.getDebugMessage()
                 , purchases
             );
@@ -421,7 +421,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
             return false;
         }
 
-        this.logMessage("buyInApp productId: %s"
+        this.logInfo("buyInApp productId: %s"
             , productId
         );
 
@@ -463,7 +463,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
             return true;
         }
 
-        this.logMessage("buy InApp success productId: %s"
+        this.logInfo("buy InApp success productId: %s"
             , productId
         );
 
@@ -478,7 +478,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
 
     @AnyThread
     private void handleNonConsumablePurchase(@NonNull Purchase purchase) {
-        this.logMessage("handleNonConsumablePurchase purchase: %s"
+        this.logInfo("handleNonConsumablePurchase purchase: %s"
             , purchase
         );
 
@@ -489,7 +489,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
             .setPurchaseToken(token);
 
         m_billingClient.acknowledgePurchase(acknowledgePurchaseParams.build(), billingResult -> {
-            this.logMessage("acknowledgePurchase responseCode: %d debugMessage: %s"
+            this.logInfo("acknowledgePurchase responseCode: %d debugMessage: %s"
                 , billingResult.getResponseCode()
                 , billingResult.getDebugMessage()
             );
@@ -507,7 +507,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
                 return;
             }
 
-            this.logMessage("billing success acknowledge purchase: %s"
+            this.logInfo("billing success acknowledge purchase: %s"
                 , billingResult.getDebugMessage()
             );
 
@@ -517,7 +517,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
 
     @AnyThread
     private void handleConsumablePurchase(@NonNull Purchase purchase) {
-        this.logMessage("handleConsumablePurchase purchase: %s"
+        this.logInfo("handleConsumablePurchase purchase: %s"
             , purchase
         );
 
@@ -542,7 +542,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
                 return;
             }
 
-            this.logMessage("billing success consume: %s"
+            this.logInfo("billing success consume: %s"
                 , billingResult.getDebugMessage()
             );
 
@@ -568,7 +568,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
 
     @AnyThread
     private void handlePurchase(@NonNull Purchase purchase) {
-        this.logMessage("handlePurchase purchase: %s"
+        this.logInfo("handlePurchase purchase: %s"
             , purchase
         );
 
@@ -591,7 +591,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
 
             boolean acknowledged = purchase.isAcknowledged();
 
-            this.logMessage("handlePurchase Acknowledged: %s product: %s consumable: %s"
+            this.logInfo("handlePurchase Acknowledged: %s product: %s consumable: %s"
                 , acknowledged
                 , products
                 , isConsumable

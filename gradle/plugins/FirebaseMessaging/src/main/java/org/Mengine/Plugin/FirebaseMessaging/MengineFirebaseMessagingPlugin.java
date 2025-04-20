@@ -1,7 +1,5 @@
 package org.Mengine.Plugin.FirebaseMessaging;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.Mengine.Base.MengineActivity;
@@ -12,10 +10,11 @@ import org.Mengine.Base.MengineListenerActivity;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 
 import android.Manifest;
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+
+import org.Mengine.Plugin.GoogleService.MengineGoogleServicePlugin;
 
 public class MengineFirebaseMessagingPlugin extends MengineService implements MengineListenerActivity {
     public static final String SERVICE_NAME = "FBMessaging";
@@ -23,12 +22,7 @@ public class MengineFirebaseMessagingPlugin extends MengineService implements Me
 
     @Override
     public boolean onAvailable(@NonNull MengineApplication application) {
-        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
-
-        Context context = application.getApplicationContext();
-        int resultCode = apiAvailability.isGooglePlayServicesAvailable(context);
-
-        if (resultCode != ConnectionResult.SUCCESS) {
+        if (MengineGoogleServicePlugin.isGooglePlayServicesAvailable(application) == false) {
             return false;
         }
 

@@ -51,7 +51,7 @@ public class MengineDevToDevPlugin extends MengineService implements MengineList
         );
 
         DTDAnalytics.INSTANCE.setInitializationCompleteCallback(() -> {
-            this.logMessage("Initialized DevToDev has been finished");
+            this.logInfo("Initialized DevToDev has been finished");
 
             m_initializeSuccessful = true;
 
@@ -135,7 +135,7 @@ public class MengineDevToDevPlugin extends MengineService implements MengineList
     }
 
     @Override
-    public void onMengineAnalyticsFlush(MengineApplication application) {
+    public void onMengineAnalyticsFlush(@NonNull MengineApplication application) {
         if (m_initializeSuccessful == false) {
             return;
         }
@@ -144,7 +144,7 @@ public class MengineDevToDevPlugin extends MengineService implements MengineList
     }
 
     @Override
-    public void onMengineAdRevenue(MengineApplication application, MengineAdRevenueParam revenue) {
+    public void onMengineAdRevenue(@NonNull MengineApplication application, @NonNull MengineAdRevenueParam revenue) {
         if (m_initializeSuccessful == false) {
             return;
         }

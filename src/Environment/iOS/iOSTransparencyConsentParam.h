@@ -24,10 +24,10 @@
 @property (nonatomic) NSInteger TRANSPARENCYCONSENT_GDPRAPPLIES;
 @property (nonatomic, strong) NSString * _Nonnull TRANSPARENCYCONSENT_PUBLISHERCC;
 @property (nonatomic) NSInteger TRANSPARENCYCONSENT_PURPOSEONETREATMENT;
-@property (nonatomic) NSInteger TRANSPARENCYCONSENT_USENONSTANDARTTEXTS;
+@property (nonatomic) NSInteger TRANSPARENCYCONSENT_USENONSTANDARDSTACKS;
 @property (nonatomic, strong) NSString * _Nonnull TRANSPARENCYCONSENT_TCSTRING;
 @property (nonatomic, strong) NSString * _Nonnull TRANSPARENCYCONSENT_VENDORCONSENTS;
-@property (nonatomic, strong) NSString * _Nonnull TRANSPARENCYCONSENT_VEMDORLEGITIMATEINTERESTS;
+@property (nonatomic, strong) NSString * _Nonnull TRANSPARENCYCONSENT_VENDORLEGITIMATEINTERESTS;
 @property (nonatomic, strong) NSString * _Nonnull TRANSPARENCYCONSENT_PURPOSECONSENTS;
 @property (nonatomic, strong) NSString * _Nonnull TRANSPARENCYCONSENT_PURPOSELEGITIMATEINTERESTS;
 @property (nonatomic, strong) NSString * _Nonnull TRANSPARENCYCONSENT_SPECIALFEATURESOPTINS;

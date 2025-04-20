@@ -99,7 +99,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
 
         int id = intent.getIntExtra(MengineLocalNotificationsPublisher.NOTIFICATION_ID, 0);
 
-        this.logMessage("onNewIntent has notification: %d"
+        this.logInfo("onNewIntent has notification: %d"
             , id
         );
 
@@ -107,7 +107,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
     }
 
     public void scheduleJobServiceNotification(int id, String title, String content, long delay) {
-        this.logMessage("scheduleJobServiceNotification id: %d title: %s content: %s delay: %d"
+        this.logInfo("scheduleJobServiceNotification id: %d title: %s content: %s delay: %d"
             , id
             , title
             , content
@@ -124,7 +124,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
     }
 
     public void scheduleNotification(Notification notification, int id, long delay) {
-        this.logMessage("scheduleNotification id: %d delay: %d"
+        this.logInfo("scheduleNotification id: %d delay: %d"
             , id
             , delay
         );
@@ -160,7 +160,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
     }
 
     public void instantlyPresentNotification(Notification notification, int id) {
-        this.logMessage("instantlyPresentNotification id: %d"
+        this.logInfo("instantlyPresentNotification id: %d"
             , id
         );
 
@@ -205,7 +205,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
         if (intent.hasExtra(MengineLocalNotificationsPublisher.NOTIFICATION_ID)) {
             int id = intent.getIntExtra(MengineLocalNotificationsPublisher.NOTIFICATION_ID, 0);
 
-            this.logMessage("start with notification: %d"
+            this.logInfo("start with notification: %d"
                 , id
             );
 
@@ -216,7 +216,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
     }
     
     public void cancelAll() {
-        this.logMessage("cancelAll");
+        this.logInfo("cancelAll");
 
         MengineActivity activity = this.getMengineActivity();
         
@@ -371,7 +371,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
     }
 
     private void scheduleJobNotification(long delayMillis, PersistableBundle bundle){
-        this.logMessage("schedule notification with delay: %d", delayMillis);
+        this.logInfo("schedule notification with delay: %d", delayMillis);
 
         if (m_notificationPermissionGranted == false) {
             return;

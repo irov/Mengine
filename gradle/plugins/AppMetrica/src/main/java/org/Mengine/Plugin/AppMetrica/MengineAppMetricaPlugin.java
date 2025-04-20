@@ -140,7 +140,7 @@ public class MengineAppMetricaPlugin extends MengineService implements MengineLi
     }
 
     @Override
-    public void onMengineAdRevenue(@NonNull MengineApplication application, MengineAdRevenueParam revenue) {
+    public void onMengineAdRevenue(@NonNull MengineApplication application, @NonNull MengineAdRevenueParam revenue) {
         MengineAdMediation mediation = revenue.ADREVENUE_MEDIATION;
         String networkName = revenue.ADREVENUE_NETWORK;
         MengineAdFormat adFormat = revenue.ADREVENUE_FORMAT;

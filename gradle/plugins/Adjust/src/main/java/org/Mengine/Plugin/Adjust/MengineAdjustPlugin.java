@@ -76,7 +76,7 @@ public class MengineAdjustPlugin extends MengineService implements MengineListen
     }
 
     @Override
-    public void onAppCreate(MengineApplication application) throws MengineServiceInvalidInitializeException {
+    public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
         String environment = AdjustConfig.ENVIRONMENT_PRODUCTION;
 
         if (BuildConfig.DEBUG == true) {
@@ -123,7 +123,7 @@ public class MengineAdjustPlugin extends MengineService implements MengineListen
         application.registerActivityLifecycleCallbacks(new MengineAdjustPlugin.AdjustLifecycleCallbacks());
     }
 
-    private static String getAdjustMediation(MengineAdMediation adMediation) {
+    private static String getAdjustMediation(@NonNull MengineAdMediation adMediation) {
         if (adMediation == MengineAdMediation.ADMEDIATION_APPLOVINMAX) {
             return "applovin_max_sdk";
         }
@@ -132,14 +132,14 @@ public class MengineAdjustPlugin extends MengineService implements MengineListen
     }
 
     @Override
-    public void onMengineChangePushToken(MengineApplication application, String token) {
+    public void onMengineChangePushToken(@NonNull MengineApplication application, String token) {
         final Context context = application.getApplicationContext();
 
         Adjust.setPushToken(token, context);
     }
 
     @Override
-    public void onMengineAdRevenue(MengineApplication application, MengineAdRevenueParam revenue) {
+    public void onMengineAdRevenue(@NonNull MengineApplication application, @NonNull MengineAdRevenueParam revenue) {
         MengineAdMediation mediation = revenue.ADREVENUE_MEDIATION;
         String AdjustMediation = MengineAdjustPlugin.getAdjustMediation(mediation);
         String network = revenue.ADREVENUE_NETWORK;
@@ -160,7 +160,7 @@ public class MengineAdjustPlugin extends MengineService implements MengineListen
     }
 
     @Override
-    public void onMengineTransparencyConsent(MengineApplication application, MengineTransparencyConsentParam tcParam) {
+    public void onMengineTransparencyConsent(@NonNull MengineApplication application, @NonNull MengineTransparencyConsentParam tcParam) {
         boolean EEA = tcParam.isEEA();
         boolean AD_PERSONALIZATION = tcParam.getConsentAdPersonalization();
         boolean AD_USER_DATA = tcParam.getConsentAdUserData();
@@ -170,7 +170,7 @@ public class MengineAdjustPlugin extends MengineService implements MengineListen
         adjustThirdPartySharing.addGranularOption("google_dma", "ad_personalization", AD_PERSONALIZATION ? "1" : "0");
         adjustThirdPartySharing.addGranularOption("google_dma", "ad_user_data", AD_USER_DATA ? "1" : "0");
 
-        this.logMessage("AdjustThirdPartySharing: %s"
+        this.logInfo("AdjustThirdPartySharing: %s"
             , adjustThirdPartySharing.getGranularOptions()
         );
 
@@ -178,14 +178,14 @@ public class MengineAdjustPlugin extends MengineService implements MengineListen
     }
 
     @Override
-    public void onMengineRemoteMessageNewToken(MengineApplication application, String token) {
+    public void onMengineRemoteMessageNewToken(@NonNull MengineApplication application, String token) {
         final Context context = application.getApplicationContext();
 
         Adjust.setPushToken(token, context);
     }
 
     public void eventTracking(String token) {
-        this.logMessage("eventTracking token: %s"
+        this.logInfo("eventTracking token: %s"
             , token
         );
 
@@ -194,7 +194,7 @@ public class MengineAdjustPlugin extends MengineService implements MengineListen
     }
 
     public void revenueTracking(String token, double amount, String currency) {
-        this.logMessage("revenueTracking token: %s amount: %f currency: %s"
+        this.logInfo("revenueTracking token: %s amount: %f currency: %s"
             , token
             , amount
             , currency

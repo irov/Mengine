@@ -93,7 +93,7 @@ public class MengineFirebaseCrashlyticsPlugin extends MengineService implements 
     }
 
     public void recordException(Throwable throwable) {
-        this.logMessage("recordException throwable: %s"
+        this.logInfo("recordException throwable: %s"
             , throwable.getMessage()
         );
 
@@ -131,7 +131,7 @@ public class MengineFirebaseCrashlyticsPlugin extends MengineService implements 
     }
 
     public void recordLog(String msg) {
-        this.logMessage("recordLog msg: %s"
+        this.logInfo("recordLog msg: %s"
             , msg
         );
 

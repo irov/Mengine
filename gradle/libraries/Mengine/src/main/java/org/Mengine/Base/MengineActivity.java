@@ -182,14 +182,6 @@ public class MengineActivity extends AppCompatActivity {
         MengineUtils.finishActivityWithAlertDialog(this, "MengineActivity", format, args);
     }
 
-    public MengineTransparencyConsentParam makeTransparencyConsentParam() {
-        MengineApplication application = this.getMengineApplication();
-
-        MengineTransparencyConsentParam tcParam = application.makeTransparencyConsentParam();
-
-        return tcParam;
-    }
-
     public void checkPermission(String permission) {
         this.checkPermission(permission, null, null);
     }

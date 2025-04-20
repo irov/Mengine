@@ -166,7 +166,7 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
         showAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-                MengineSplashScreenPlugin.this.logMessage("show splash screen");
+                MengineSplashScreenPlugin.this.logInfo("show splash screen");
 
                 m_image.setVisibility(View.VISIBLE);
 
@@ -177,7 +177,7 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                MengineSplashScreenPlugin.this.logMessage("shown splash screen");
+                MengineSplashScreenPlugin.this.logInfo("shown splash screen");
             }
 
             @Override
@@ -217,12 +217,12 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
         hideAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-                MengineSplashScreenPlugin.this.logMessage("hide splash screen");
+                MengineSplashScreenPlugin.this.logInfo("hide splash screen");
             }
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                MengineSplashScreenPlugin.this.logMessage("hided splash screen");
+                MengineSplashScreenPlugin.this.logInfo("hided splash screen");
 
                 m_image.setVisibility(View.GONE);
 

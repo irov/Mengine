@@ -33,7 +33,7 @@ public class MengineGoogleAdvertisingPlugin extends MengineService implements Me
     protected boolean m_advertisingLimitTrackingEnabled = false;
     protected boolean m_advertisingLimitTrackingFetch = false;
 
-    private Future<AdvertisingIdClient.Info> m_advertisingFuture;
+    private Thread m_advertisingThread;
 
     @Override
     public boolean onAvailable(@NonNull MengineApplication application) {
@@ -74,7 +74,7 @@ public class MengineGoogleAdvertisingPlugin extends MengineService implements Me
     public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
         ExecutorService executor = Executors.newSingleThreadExecutor();
 
-        Future<AdvertisingIdClient.Info> future = executor.submit(() -> {
+        Runnable task = () -> {
             Context context = application.getApplicationContext();
 
             AdvertisingIdClient.Info adInfo = null;
@@ -83,35 +83,38 @@ public class MengineGoogleAdvertisingPlugin extends MengineService implements Me
                 adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
             } catch (final IOException e) {
                 this.logError("[ERROR] invalid get advertising id info IOException: %s"
-                    , e.getMessage()
+                        , e.getMessage()
                 );
             } catch (final IllegalStateException e) {
                 this.logError("[ERROR] invalid get advertising id info IllegalStateException: %s"
-                    , e.getMessage()
+                        , e.getMessage()
                 );
             } catch (final GooglePlayServicesNotAvailableException e) {
                 this.logError("[ERROR] invalid get advertising id info GooglePlayServicesNotAvailableException: %s"
-                    , e.getMessage()
+                        , e.getMessage()
                 );
             } catch (final GooglePlayServicesRepairableException e) {
                 this.logError("[ERROR] invalid get advertising id info GooglePlayServicesRepairableException: %s"
-                    , e.getMessage()
+                        , e.getMessage()
                 );
             }
 
             this.postAdInfo(adInfo);
+        };
 
-            return adInfo;
-        });
+        Thread thread = new Thread(task);
 
-        m_advertisingFuture = future;
+        thread.setName("MengineGAID");
+        thread.start();
+
+        m_advertisingThread = thread;
     }
 
     @Override
     public void onAppTerminate(@NonNull MengineApplication application) {
-        if (m_advertisingFuture != null) {
-            m_advertisingFuture.cancel(true);
-            m_advertisingFuture = null;
+        if (m_advertisingThread != null) {
+            m_advertisingThread.interrupt();
+            m_advertisingThread = null;
         }
     }
 
@@ -143,6 +146,8 @@ public class MengineGoogleAdvertisingPlugin extends MengineService implements Me
             , m_advertisingLimitTrackingEnabled == true ? "true" : "false"
         );
 
-        MengineFragmentAdvertisingId.INSTANCE.setAdvertisingId(m_advertisingId, m_advertisingLimitTrackingEnabled);
+        MengineUtils.performOnMainThread(() -> {
+            MengineFragmentAdvertisingId.INSTANCE.setAdvertisingId(m_advertisingId, m_advertisingLimitTrackingEnabled);
+        });
     }
 }

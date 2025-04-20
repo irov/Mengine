@@ -730,7 +730,7 @@ namespace Mengine
             return config;
         }
 
-        LOGGER_WARNING( "not exist accounts '%s' or '%s'"
+        LOGGER_MESSAGE( "not exist accounts '%s' or '%s'"
             , settingsJSONPath.c_str()
             , settingsINIPath.c_str()
         );

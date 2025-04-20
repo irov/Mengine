@@ -24,7 +24,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AV1Plugin::_initializePlugin()
     {
-        LOGGER_MESSAGE_RELEASE( "Video AV1 Version: %u"
+        LOGGER_MESSAGE( "Video AV1 Version: %u"
             , AOM_DECODER_ABI_VERSION
         );
 

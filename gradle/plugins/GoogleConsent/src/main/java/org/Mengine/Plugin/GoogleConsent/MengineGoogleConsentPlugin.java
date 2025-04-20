@@ -47,7 +47,7 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
                 int consentStatus = consentInformation.getConsentStatus();
                 ConsentInformation.PrivacyOptionsRequirementStatus privacyOptionsRequirementStatus = consentInformation.getPrivacyOptionsRequirementStatus();
 
-                this.logMessage("updated consent info update success status: %d formAvailable: %b privacyOptionsRequirementStatus: %s"
+                this.logInfo("updated consent info update success status: %d formAvailable: %b privacyOptionsRequirementStatus: %s"
                     , consentStatus
                     , formAvailable
                     , privacyOptionsRequirementStatus
@@ -58,9 +58,9 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
                 }
 
                 if (privacyOptionsRequirementStatus == ConsentInformation.PrivacyOptionsRequirementStatus.NOT_REQUIRED) {
-                    MengineTransparencyConsentParam tcParam = activity.makeTransparencyConsentParam();
+                    MengineApplication application = this.getMengineApplication();
 
-                    MengineFragmentTransparencyConsent.INSTANCE.transparencyConsent(tcParam);
+                    MengineTransparencyConsentParam tcParam = application.checkTransparencyConsentServices();
 
                     return;
                 }
@@ -91,11 +91,11 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
                     return;
                 }
 
-                this.logMessage("consent form load and show success");
+                this.logInfo("consent form load and show success");
 
-                MengineTransparencyConsentParam consent = activity.makeTransparencyConsentParam();
+                MengineApplication application = this.getMengineApplication();
 
-                MengineFragmentTransparencyConsent.INSTANCE.transparencyConsent(consent);
+                MengineTransparencyConsentParam tcParam = application.checkTransparencyConsentServices();
             });
     }
 

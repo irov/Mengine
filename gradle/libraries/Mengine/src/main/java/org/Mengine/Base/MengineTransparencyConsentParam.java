@@ -14,6 +14,27 @@ public class MengineTransparencyConsentParam {
 
     public static MengineConsentFlowUserGeography TRANSPARENCYCONSENT_USERGEOGRAPHY = MengineConsentFlowUserGeography.MengineConsentFlowUserGeography_Unknown;
 
+    //  Purposes
+    // 1 - Store and/or access information on a device
+    // 2 - Select basic ads
+    // 3 - Create a personalised ads profile
+    // 4 - Select personalised ads
+    // 5 - Create a personalised content profile
+    // 6 - Select personalised content
+    // 7 - Measure ad performance
+    // 8 - Measure content performance
+    // 9 - Apply market research to generate audience insights
+    // 10 - Develop and improve products
+
+    //  Special Purposes
+    // 1 - Ensure security, prevent fraud, and debug
+    // 2 - Technically deliver ads or content
+
+    // Features
+    // 1 - Match and combine offline data sources
+    // 2 - Link different devices
+    // 3 - Receive and use automatically-sent device characteristics for identification
+
     public boolean TRANSPARENCYCONSENT_PENDING;
     public int TRANSPARENCYCONSENT_CMPSDKID;
     public int TRANSPARENCYCONSENT_CMPSDKVERSION;
@@ -21,10 +42,10 @@ public class MengineTransparencyConsentParam {
     public int TRANSPARENCYCONSENT_GDPRAPPLIES;
     public String TRANSPARENCYCONSENT_PUBLISHERCC;
     public int TRANSPARENCYCONSENT_PURPOSEONETREATMENT;
-    public int TRANSPARENCYCONSENT_USENONSTANDARTTEXTS;
+    public int TRANSPARENCYCONSENT_USENONSTANDARDSTACKS;
     public String TRANSPARENCYCONSENT_TCSTRING;
     public String TRANSPARENCYCONSENT_VENDORCONSENTS;
-    public String TRANSPARENCYCONSENT_VEMDORLEGITIMATEINTERESTS;
+    public String TRANSPARENCYCONSENT_VENDORLEGITIMATEINTERESTS;
     public String TRANSPARENCYCONSENT_PURPOSECONSENTS;
     public String TRANSPARENCYCONSENT_PURPOSELEGITIMATEINTERESTS;
     public String TRANSPARENCYCONSENT_SPECIALFEATURESOPTINS;
@@ -80,10 +101,10 @@ public class MengineTransparencyConsentParam {
         TRANSPARENCYCONSENT_GDPRAPPLIES = preferences.getInt("IABTCF_gdprApplies", 0);
         TRANSPARENCYCONSENT_PUBLISHERCC = preferences.getString("IABTCF_PublisherCC", "AA");
         TRANSPARENCYCONSENT_PURPOSEONETREATMENT = preferences.getInt("IABTCF_PurposeOneTreatment", 0);
-        TRANSPARENCYCONSENT_USENONSTANDARTTEXTS = preferences.getInt("IABTCF_UseNonStandardStacks", 0);
+        TRANSPARENCYCONSENT_USENONSTANDARDSTACKS = preferences.getInt("IABTCF_UseNonStandardStacks", 0);
         TRANSPARENCYCONSENT_TCSTRING = preferences.getString("IABTCF_TCString", "");
         TRANSPARENCYCONSENT_VENDORCONSENTS = preferences.getString("IABTCF_VendorConsents", "");
-        TRANSPARENCYCONSENT_VEMDORLEGITIMATEINTERESTS = preferences.getString("IABTCF_VendorLegitimateInterests", "");
+        TRANSPARENCYCONSENT_VENDORLEGITIMATEINTERESTS = preferences.getString("IABTCF_VendorLegitimateInterests", "");
         TRANSPARENCYCONSENT_PURPOSECONSENTS = preferences.getString("IABTCF_PurposeConsents", "");
         TRANSPARENCYCONSENT_PURPOSELEGITIMATEINTERESTS = preferences.getString("IABTCF_PurposeLegitimateInterests", "");
         TRANSPARENCYCONSENT_SPECIALFEATURESOPTINS = preferences.getString("IABTCF_SpecialFeaturesOptins", "");
@@ -130,6 +151,20 @@ public class MengineTransparencyConsentParam {
         return true;
     }
 
+    public boolean getPurposeConsentArguments(List<Integer> arguments) {
+        if (this.isEEA() == false) {
+            return true;
+        }
+
+        for (Integer argument : arguments) {
+            if (this.getPurposeConsentArgument(argument) == false) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public boolean getConsentAdStorage() {
         if (this.isEEA() == false) {
             return true;
@@ -147,7 +182,13 @@ public class MengineTransparencyConsentParam {
             return true;
         }
 
-        //ToDo
+        if (this.getPurposeConsentArgument(6) == false) {
+            return false;
+        }
+
+        if (this.getPurposeConsentArgument(9) == false) {
+            return false;
+        }
 
         return true;
     }
@@ -196,20 +237,6 @@ public class MengineTransparencyConsentParam {
         return true;
     }
 
-    public boolean getPurposeConsentArguments(List<Integer> arguments) {
-        if (this.isEEA() == false) {
-            return true;
-        }
-
-        for (Integer argument : arguments) {
-            if (this.getPurposeConsentArgument(argument) == false) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -223,11 +250,11 @@ public class MengineTransparencyConsentParam {
                 TRANSPARENCYCONSENT_POLICYVERSION == dst.TRANSPARENCYCONSENT_POLICYVERSION &&
                 TRANSPARENCYCONSENT_GDPRAPPLIES == dst.TRANSPARENCYCONSENT_GDPRAPPLIES &&
                 TRANSPARENCYCONSENT_PURPOSEONETREATMENT == dst.TRANSPARENCYCONSENT_PURPOSEONETREATMENT &&
-                TRANSPARENCYCONSENT_USENONSTANDARTTEXTS == dst.TRANSPARENCYCONSENT_USENONSTANDARTTEXTS &&
+                TRANSPARENCYCONSENT_USENONSTANDARDSTACKS == dst.TRANSPARENCYCONSENT_USENONSTANDARDSTACKS &&
                 Objects.equals(TRANSPARENCYCONSENT_PUBLISHERCC, dst.TRANSPARENCYCONSENT_PUBLISHERCC) &&
                 Objects.equals(TRANSPARENCYCONSENT_TCSTRING, dst.TRANSPARENCYCONSENT_TCSTRING) &&
                 Objects.equals(TRANSPARENCYCONSENT_VENDORCONSENTS, dst.TRANSPARENCYCONSENT_VENDORCONSENTS) &&
-                Objects.equals(TRANSPARENCYCONSENT_VEMDORLEGITIMATEINTERESTS, dst.TRANSPARENCYCONSENT_VEMDORLEGITIMATEINTERESTS) &&
+                Objects.equals(TRANSPARENCYCONSENT_VENDORLEGITIMATEINTERESTS, dst.TRANSPARENCYCONSENT_VENDORLEGITIMATEINTERESTS) &&
                 Objects.equals(TRANSPARENCYCONSENT_PURPOSECONSENTS, dst.TRANSPARENCYCONSENT_PURPOSECONSENTS) &&
                 Objects.equals(TRANSPARENCYCONSENT_PURPOSELEGITIMATEINTERESTS, dst.TRANSPARENCYCONSENT_PURPOSELEGITIMATEINTERESTS) &&
                 Objects.equals(TRANSPARENCYCONSENT_SPECIALFEATURESOPTINS, dst.TRANSPARENCYCONSENT_SPECIALFEATURESOPTINS) &&
@@ -248,10 +275,10 @@ public class MengineTransparencyConsentParam {
                 TRANSPARENCYCONSENT_GDPRAPPLIES,
                 TRANSPARENCYCONSENT_PUBLISHERCC,
                 TRANSPARENCYCONSENT_PURPOSEONETREATMENT,
-                TRANSPARENCYCONSENT_USENONSTANDARTTEXTS,
+                TRANSPARENCYCONSENT_USENONSTANDARDSTACKS,
                 TRANSPARENCYCONSENT_TCSTRING,
                 TRANSPARENCYCONSENT_VENDORCONSENTS,
-                TRANSPARENCYCONSENT_VEMDORLEGITIMATEINTERESTS,
+                TRANSPARENCYCONSENT_VENDORLEGITIMATEINTERESTS,
                 TRANSPARENCYCONSENT_PURPOSECONSENTS,
                 TRANSPARENCYCONSENT_PURPOSELEGITIMATEINTERESTS,
                 TRANSPARENCYCONSENT_SPECIALFEATURESOPTINS,

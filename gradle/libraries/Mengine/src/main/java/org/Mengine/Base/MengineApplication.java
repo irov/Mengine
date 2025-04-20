@@ -728,6 +728,11 @@ public class MengineApplication extends Application {
         return tcParam;
     }
 
+    public void checkTransparencyConsentServices() {
+        MengineTransparencyConsentParam tcParam = this.makeTransparencyConsentParam();
+        MengineFragmentTransparencyConsent.INSTANCE.transparencyConsent(tcParam);
+    }
+
     public boolean isInvalidInitialize() {
         return m_invalidInitialize;
     }
@@ -809,7 +814,7 @@ public class MengineApplication extends Application {
 
         boolean isMainProcess = this.isMainProcess();
 
-        MengineLog.logMessageRelease(TAG, "onCreate isMainProcess: %b "
+        MengineLog.logInfo(TAG, "onCreate isMainProcess: %b "
             , isMainProcess
         );
 

@@ -18,6 +18,7 @@ public class MengineAdFormat {
         m_name = name;
     }
 
+    @NonNull
     public String getName() {
         return m_name;
     }

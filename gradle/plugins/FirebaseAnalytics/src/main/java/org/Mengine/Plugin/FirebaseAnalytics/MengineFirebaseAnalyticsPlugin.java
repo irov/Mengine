@@ -199,7 +199,7 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
     }
 
     @Override
-    public void onMengineTransparencyConsent(@NonNull MengineApplication application, MengineTransparencyConsentParam tcParam) {
+    public void onMengineTransparencyConsent(@NonNull MengineApplication application, @NonNull MengineTransparencyConsentParam tcParam) {
         if (m_firebaseAnalytics == null) {
             return;
         }
@@ -215,7 +215,7 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
         consentMap.put(FirebaseAnalytics.ConsentType.AD_USER_DATA, AD_USER_DATA ? FirebaseAnalytics.ConsentStatus.GRANTED : FirebaseAnalytics.ConsentStatus.DENIED);
         consentMap.put(FirebaseAnalytics.ConsentType.AD_PERSONALIZATION, AD_PERSONALIZATION ? FirebaseAnalytics.ConsentStatus.GRANTED : FirebaseAnalytics.ConsentStatus.DENIED);
 
-        this.logMessage("setConsent AD_STORAGE: %s ANALYTICS_STORAGE: %s AD_USER_DATA: %s AD_PERSONALIZATION: %s"
+        this.logInfo("setConsent AD_STORAGE: %s ANALYTICS_STORAGE: %s AD_USER_DATA: %s AD_PERSONALIZATION: %s"
             , AD_STORAGE
             , ANALYTICS_STORAGE
             , AD_USER_DATA
@@ -273,7 +273,7 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
             return;
         }
 
-        this.logMessage("setUserProperty name: %s value: %s"
+        this.logInfo("setUserProperty name: %s value: %s"
             , name
             , value
         );

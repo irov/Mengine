@@ -137,7 +137,7 @@ public class MengineSentryPlugin extends MengineService implements MengineListen
     }
 
     @Override
-    public void onMengineTransparencyConsent(@NonNull MengineApplication application, MengineTransparencyConsentParam tcParam) {
+    public void onMengineTransparencyConsent(@NonNull MengineApplication application, @NonNull MengineTransparencyConsentParam tcParam) {
         m_passMeasurementGDPR = tcParam.getConsentMeasurement();
 
         this.logInfo("GDPR measurement: %s"
@@ -169,7 +169,7 @@ public class MengineSentryPlugin extends MengineService implements MengineListen
     }
 
     public void recordException(Throwable throwable) {
-        this.logMessage("recordException throwable: %s"
+        this.logInfo("recordException throwable: %s"
             , throwable.getMessage()
         );
 

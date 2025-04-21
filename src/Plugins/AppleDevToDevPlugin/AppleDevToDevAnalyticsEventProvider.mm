@@ -1,7 +1,5 @@
 #include "AppleDevToDevAnalyticsEventProvider.h"
 
-#include "Environment/iOS/iOSUtils.h"
-
 #include "Kernel/Logger.h"
 #include "Kernel/ConfigHelper.h"
 
@@ -79,6 +77,14 @@ namespace Mengine
         } );
         
         [DTDAnalytics customEvent:@(eventName_str) withParameters:devtodev_parameters];
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AppleDevToDevAnalyticsEventProvider::onAnalyticsScreenView( const ConstString & _screenType, const ConstString & _screenName )
+    {
+        MENGINE_UNUSED( _screenType );
+        MENGINE_UNUSED( _screenName );
+        
+        //ToDo
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleDevToDevAnalyticsEventProvider::onAnalyticsFlush()

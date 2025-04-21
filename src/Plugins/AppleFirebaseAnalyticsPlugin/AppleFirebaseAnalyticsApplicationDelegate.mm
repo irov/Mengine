@@ -1,5 +1,7 @@
 #import "AppleFirebaseAnalyticsApplicationDelegate.h"
 
+#import "Environment/Apple/AppleDetail.h"
+
 #import "Environment/iOS/iOSApplication.h"
 #import "Environment/iOS/iOSDetail.h"
 #import "Environment/iOS/iOSAdRevenueParam.h"
@@ -29,6 +31,26 @@
     NSString * sessionId = [iOSApplication.sharedInstance getSessionId];
     
     [FIRAnalytics setUserID:sessionId];
+    
+    NSString * installKey = [iOSApplication.sharedInstance getInstallKey];
+    NSInteger installTimestamp = [iOSApplication.sharedInstance getInstallTimestamp];
+    NSString * intstallVersion = [iOSApplication.sharedInstance getInstallVersion];
+    NSInteger installRND = [iOSApplication.sharedInstance getInstallRND];
+    NSInteger sessionIndex = [iOSApplication.sharedInstance getSessionIndex];
+    NSInteger sessionTimestamp = [iOSApplication.sharedInstance getSessionTimestamp];
+    
+    [FIRAnalytics setUserPropertyString:MENGINE_DEBUG_VALUE(@"true", @"false") forName:@"is_dev"];
+    [FIRAnalytics setUserPropertyString:installKey forName:@"install_key"];
+    [FIRAnalytics setUserPropertyString:[NSString stringWithFormat:@"%ld", (long)installTimestamp] forName:@"install_timestamp"];
+    [FIRAnalytics setUserPropertyString:intstallVersion forName:@"install_version"];
+    [FIRAnalytics setUserPropertyString:[NSString stringWithFormat:@"%ld", (long)installRND] forName:@"install_rnd"];
+    [FIRAnalytics setUserPropertyString:[NSString stringWithFormat:@"%ld", (long)sessionIndex] forName:@"session_index"];
+    [FIRAnalytics setUserPropertyString:[NSString stringWithFormat:@"%ld", (long)sessionTimestamp] forName:@"session_timestamp"];
+    
+    NSInteger currentTimestamp = [AppleDetail getTimestamp];
+    NSInteger lifeTime = currentTimestamp - installTimestamp;
+    
+    [FIRAnalytics setUserPropertyString:[NSString stringWithFormat:@"%ld", (long)lifeTime] forName:@"life_time"];
     
     return YES;
 }

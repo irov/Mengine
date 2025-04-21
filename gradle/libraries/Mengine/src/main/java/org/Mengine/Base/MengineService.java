@@ -102,23 +102,23 @@ public class MengineService implements MengineServiceInterface {
     }
 
     public void setStatisticInteger(@Size(min = 1L,max = 40L) String key, long value) {
-        MengineStatistic.setInteger(m_application, key, value);
+        MengineStatistic.setInteger(key, value);
     }
 
     public void increaseStatisticInteger(@Size(min = 1L,max = 40L) String key, long value) {
-        MengineStatistic.increaseInteger(m_application, key, value);
+        MengineStatistic.increaseInteger(key, value);
     }
 
     public void decreaseStatisticInteger(@Size(min = 1L,max = 40L) String key, long value) {
-        MengineStatistic.decreaseInteger(m_application, key, value);
+        MengineStatistic.decreaseInteger(key, value);
     }
 
     public void increaseStatisticDouble(@Size(min = 1L,max = 40L) String key, double value) {
-        MengineStatistic.increaseDouble(m_application, key, value);
+        MengineStatistic.increaseDouble(key, value);
     }
 
     public void decreaseStatisticDouble(@Size(min = 1L,max = 40L) String key, double value) {
-        MengineStatistic.decreaseDouble(m_application, key, value);
+        MengineStatistic.decreaseDouble(key, value);
     }
 
     protected void invalidInitialize(String format, Object ... args) throws MengineServiceInvalidInitializeException {
@@ -135,10 +135,6 @@ public class MengineService implements MengineServiceInterface {
         String message = MengineLog.buildTotalMsg(format, args);
 
         MengineUtils.makeToastDelayed(m_activity, message, delayed);
-    }
-
-    public void sendEvent(MengineEvent event, Object ... args) {
-        m_application.sendEvent(event, args);
     }
 
     public void runOnUiThread(Runnable action) {

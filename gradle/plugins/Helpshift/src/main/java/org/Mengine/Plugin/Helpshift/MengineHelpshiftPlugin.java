@@ -1,16 +1,15 @@
 package org.Mengine.Plugin.Helpshift;
 
-import android.os.Bundle;
-
 import org.Mengine.Base.BuildConfig;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MenginePlugin;
-import org.Mengine.Base.MenginePluginActivityListener;
-import org.Mengine.Base.MenginePluginInvalidInitializeException;
-import org.Mengine.Base.MenginePluginPushTokenListener;
-import org.Mengine.Base.MenginePluginRemoteMessageListener;
+import org.Mengine.Base.MengineListenerApplication;
+import org.Mengine.Base.MengineListenerPushToken;
+import org.Mengine.Base.MengineListenerRemoteMessage;
 import org.Mengine.Base.MengineRemoteMessageParam;
+import org.Mengine.Base.MengineService;
+import org.Mengine.Base.MengineServiceInvalidInitializeException;
+import org.Mengine.Base.MengineUtils;
 
 import com.helpshift.Helpshift;
 import com.helpshift.HelpshiftAuthenticationFailureReason;
@@ -21,10 +20,11 @@ import com.helpshift.HelpshiftInstallException;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 
-public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEventsListener, MenginePluginRemoteMessageListener, MenginePluginActivityListener, MenginePluginPushTokenListener {
+public class MengineHelpshiftPlugin extends MengineService implements HelpshiftEventsListener, MengineListenerRemoteMessage, MengineListenerApplication, MengineListenerPushToken {
     public static final String SERVICE_NAME = "Helpshift";
     public static final boolean SERVICE_EMBEDDING = true;
 
@@ -32,7 +32,7 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
     public static final String METADATA_DOMAIN = "mengine.helpshift.domain";
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
+    public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
         Map<String, Object> config = new HashMap<>();
 
         if (BuildConfig.DEBUG == true) {
@@ -41,10 +41,7 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
             config.put("enableLogging", false);
         }
 
-        int screenOrientation = activity.getRequestedOrientation();
-
-        config.put("screenOrientation", screenOrientation);
-        config.put("notificationIcon", R.drawable.mengine_helpshift_notification_icon);
+        config.put("enableInAppNotification", true);
 
         String MengineHelpshiftPlugin_PlatformId = this.getMetaDataString(METADATA_PLATFORM_ID);
 
@@ -61,8 +58,6 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
         );
 
         try {
-            MengineApplication application = this.getMengineApplication();
-
             Helpshift.install(application, MengineHelpshiftPlugin_PlatformId, MengineHelpshiftPlugin_Domain, config);
         } catch (final UnsupportedOSVersionException e) {
             this.invalidInitialize("Android OS versions prior to Lollipop (< SDK 21) are not supported.");
@@ -80,22 +75,24 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
     }
 
     @Override
-    public void onDestroy(MengineActivity activity) {
+    public void onAppTerminate(@NonNull MengineApplication activity) {
         Helpshift.setHelpshiftEventsListener(null);
     }
 
     @Override
-    public void onMenginePushToken(MengineApplication application, String token) {
+    public void onMengineChangePushToken(@NonNull MengineApplication application, String token) {
         Helpshift.registerPushToken(token);
     }
 
     @Override
-    public boolean onMengineRemoteMessageReceived(MengineApplication application, MengineRemoteMessageParam message) {
-        Map<String, String> data = message.REMOTEMESSAGE_DATA;
+    public boolean onMengineRemoteMessageReceived(@NonNull MengineApplication application, @NonNull MengineRemoteMessageParam message) {
+        Map<String, Object> data = message.REMOTEMESSAGE_DATA;
 
-        String origin = data.get("origin");
-        if (origin != null && origin.equals("helpshift")) {
-            Helpshift.handlePush(data);
+        String origin = (String)data.get("origin");
+        if (Objects.equals(origin, "helpshift") == true) {
+            Map<String, String> helpshifData = new HashMap<>();
+            data.putAll(message.REMOTEMESSAGE_DATA);
+            Helpshift.handlePush(helpshifData);
 
             return true;
         }
@@ -112,12 +109,12 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
     public void onEventOccurred(@NonNull String eventName, Map<String, Object> data) {
         switch (eventName) {
             case HelpshiftEvent.SDK_SESSION_STARTED:
-                this.logMessage("onEventOccurred SDK_SESSION_STARTED");
+                this.logInfo("onEventOccurred SDK_SESSION_STARTED");
 
                 this.pythonCall("onHelpshiftSessionStarted");
                 break;
             case HelpshiftEvent.SDK_SESSION_ENDED:
-                this.logMessage("onEventOccurred SDK_SESSION_ENDED");
+                this.logInfo("onEventOccurred SDK_SESSION_ENDED");
 
                 this.pythonCall("onHelpshiftSessionEnded");
                 break;
@@ -125,7 +122,7 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
                 Object DATA_MESSAGE_COUNT = data.get(HelpshiftEvent.DATA_MESSAGE_COUNT);
                 Object DATA_MESSAGE_COUNT_FROM_CACHE = data.get(HelpshiftEvent.DATA_MESSAGE_COUNT_FROM_CACHE);
 
-                this.logMessage("onEventOccurred RECEIVED_UNREAD_MESSAGE_COUNT DATA_MESSAGE_COUNT: %s DATA_MESSAGE_COUNT_FROM_CACHE: %s"
+                this.logInfo("onEventOccurred RECEIVED_UNREAD_MESSAGE_COUNT DATA_MESSAGE_COUNT: %s DATA_MESSAGE_COUNT_FROM_CACHE: %s"
                     , DATA_MESSAGE_COUNT
                     , DATA_MESSAGE_COUNT_FROM_CACHE
                 );
@@ -137,7 +134,7 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
                 Object DATA_LATEST_ISSUE_PUBLISH_ID = data.get(HelpshiftEvent.DATA_LATEST_ISSUE_PUBLISH_ID);
                 Object DATA_IS_ISSUE_OPEN = data.get(HelpshiftEvent.DATA_IS_ISSUE_OPEN);
 
-                this.logMessage("onEventOccurred CONVERSATION_STATUS DATA_LATEST_ISSUE_ID: %s DATA_LATEST_ISSUE_PUBLISH_ID: %s DATA_IS_ISSUE_OPEN: %s"
+                this.logInfo("onEventOccurred CONVERSATION_STATUS DATA_LATEST_ISSUE_ID: %s DATA_LATEST_ISSUE_PUBLISH_ID: %s DATA_IS_ISSUE_OPEN: %s"
                     , DATA_LATEST_ISSUE_ID
                     , DATA_LATEST_ISSUE_PUBLISH_ID
                     , DATA_IS_ISSUE_OPEN
@@ -148,7 +145,7 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
             case HelpshiftEvent.WIDGET_TOGGLE:
                 Object DATA_SDK_VISIBLE = data.get(HelpshiftEvent.DATA_SDK_VISIBLE);
 
-                this.logMessage("onEventOccurred WIDGET_TOGGLE DATA_SDK_VISIBLE: %s"
+                this.logInfo("onEventOccurred WIDGET_TOGGLE DATA_SDK_VISIBLE: %s"
                     , DATA_SDK_VISIBLE
                 );
 
@@ -157,7 +154,7 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
             case HelpshiftEvent.CONVERSATION_START:
                 Object DATA_MESSAGE = data.get(HelpshiftEvent.DATA_MESSAGE);
 
-                this.logMessage("onEventOccurred CONVERSATION_START DATA_MESSAGE: %s"
+                this.logInfo("onEventOccurred CONVERSATION_START DATA_MESSAGE: %s"
                     , DATA_MESSAGE
                 );
 
@@ -169,7 +166,7 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
                 Object DATA_MESSAGE_TYPE_ATTACHMENT = data.get(HelpshiftEvent.DATA_MESSAGE_TYPE_ATTACHMENT);
                 Object DATA_MESSAGE_TYPE_TEXT = data.get(HelpshiftEvent.DATA_MESSAGE_TYPE_TEXT);
 
-                this.logMessage("onEventOccurred MESSAGE_ADD DATA_MESSAGE_TYPE: %s DATA_MESSAGE_BODY: %s DATA_MESSAGE_TYPE_ATTACHMENT: %s DATA_MESSAGE_TYPE_TEXT: %s"
+                this.logInfo("onEventOccurred MESSAGE_ADD DATA_MESSAGE_TYPE: %s DATA_MESSAGE_BODY: %s DATA_MESSAGE_TYPE_ATTACHMENT: %s DATA_MESSAGE_TYPE_TEXT: %s"
                     , DATA_MESSAGE_TYPE
                     , DATA_MESSAGE_BODY
                     , DATA_MESSAGE_TYPE_ATTACHMENT
@@ -182,7 +179,7 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
                 Object DATA_CSAT_RATING = data.get(HelpshiftEvent.DATA_CSAT_RATING);
                 Object DATA_ADDITIONAL_FEEDBACK = data.get(HelpshiftEvent.DATA_ADDITIONAL_FEEDBACK);
 
-                this.logMessage("onEventOccurred CSAT_SUBMIT DATA_CSAT_RATING: %s DATA_ADDITIONAL_FEEDBACK: %s"
+                this.logInfo("onEventOccurred CSAT_SUBMIT DATA_CSAT_RATING: %s DATA_ADDITIONAL_FEEDBACK: %s"
                     , DATA_CSAT_RATING
                     , DATA_ADDITIONAL_FEEDBACK
                 );
@@ -190,22 +187,22 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
                 this.pythonCall("onHelpshiftCSATSubmit", DATA_CSAT_RATING, DATA_ADDITIONAL_FEEDBACK);
                 break;
             case HelpshiftEvent.CONVERSATION_END:
-                this.logMessage("onEventOccurred CONVERSATION_END");
+                this.logInfo("onEventOccurred CONVERSATION_END");
 
                 this.pythonCall("onHelpshiftConversationEnd");
                 break;
             case HelpshiftEvent.CONVERSATION_REJECTED:
-                this.logMessage("onEventOccurred CONVERSATION_REJECTED");
+                this.logInfo("onEventOccurred CONVERSATION_REJECTED");
 
                 this.pythonCall("onHelpshiftConversationReject");
                 break;
             case HelpshiftEvent.CONVERSATION_RESOLVED:
-                this.logMessage("onEventOccurred CONVERSATION_RESOLVED");
+                this.logInfo("onEventOccurred CONVERSATION_RESOLVED");
 
                 this.pythonCall("onHelpshiftConversationResolved");
                 break;
             case HelpshiftEvent.CONVERSATION_REOPENED:
-                this.logMessage("onEventOccurred CONVERSATION_REOPENED");
+                this.logInfo("onEventOccurred CONVERSATION_REOPENED");
 
                 this.pythonCall("onHelpshiftConversationReopened");
                 break;
@@ -238,7 +235,7 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
     }
 
     public void showFAQs() {
-        this.logMessage("showFAQs");
+        this.logInfo("showFAQs");
 
         MengineActivity activity = this.getMengineActivity();
 
@@ -247,7 +244,7 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
     }
 
     public void showConversation() {
-        this.logMessage("showConversation");
+        this.logInfo("showConversation");
 
         MengineActivity activity = this.getMengineActivity();
 
@@ -256,7 +253,7 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
     }
 
     public void showFAQSection(final String sectionPublishId) {
-        this.logMessage("showFAQSection sectionPublishId: %s"
+        this.logInfo("showFAQSection sectionPublishId: %s"
             , sectionPublishId
         );
 
@@ -267,7 +264,7 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
     }
 
     public void showSingleFAQ(final String publishId) {
-        this.logMessage("showSingleFAQ publishId: %s"
+        this.logInfo("showSingleFAQ publishId: %s"
             , publishId
         );
 
@@ -278,7 +275,7 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
     }
 
     public void setLanguage(final String language) {
-        this.logMessage("setLanguage language: %s"
+        this.logInfo("setLanguage language: %s"
             , language
         );
 

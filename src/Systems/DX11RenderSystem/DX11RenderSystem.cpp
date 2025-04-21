@@ -197,12 +197,12 @@ namespace Mengine
 
         m_invalidateRasterizerState = true;
 
-        LOGGER_MESSAGE_RELEASE( "D3D Adapter Description: %ls", AdapterDesc.Description );
+        LOGGER_MESSAGE( "D3D Adapter Description: %ls", AdapterDesc.Description );
 
-        LOGGER_MESSAGE_RELEASE( "D3D Adapter VendorId: %lu", AdapterDesc.VendorId );
-        LOGGER_MESSAGE_RELEASE( "D3D Adapter DeviceId: %lu", AdapterDesc.DeviceId );
-        LOGGER_MESSAGE_RELEASE( "D3D Adapter SubSysId: %lu", AdapterDesc.SubSysId );
-        LOGGER_MESSAGE_RELEASE( "D3D Adapter Revision: %lu", AdapterDesc.Revision );
+        LOGGER_MESSAGE( "D3D Adapter VendorId: %lu", AdapterDesc.VendorId );
+        LOGGER_MESSAGE( "D3D Adapter DeviceId: %lu", AdapterDesc.DeviceId );
+        LOGGER_MESSAGE( "D3D Adapter SubSysId: %lu", AdapterDesc.SubSysId );
+        LOGGER_MESSAGE( "D3D Adapter Revision: %lu", AdapterDesc.Revision );
 
         m_renderSystemName = STRINGIZE_STRING_LOCAL( "DX11" );
 
@@ -366,7 +366,7 @@ namespace Mengine
 
         m_deferredCompilePrograms.clear();
 
-        LOGGER_MESSAGE_RELEASE( "DirectX11 create render window successfully!" );
+        LOGGER_MESSAGE( "DirectX11 create render window successfully!" );
 
         return true;
     }

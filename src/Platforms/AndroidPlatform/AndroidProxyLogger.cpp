@@ -2,7 +2,7 @@
 
 #include "Environment/Android/AndroidEnv.h"
 #include "Environment/Android/AndroidHelper.h"
-#include "Environment/Android/AndroidApplicationHelper.h"
+#include "Environment/Android/AndroidFragmentHelper.h"
 
 #include "Kernel/AssertionUtf8.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -42,11 +42,6 @@ namespace Mengine
 
         MENGINE_ASSERTION_VALIDATE_UTF8( message.category, MENGINE_UNKNOWN_SIZE );
         MENGINE_ASSERTION_VALIDATE_UTF8( message.data, message.size );
-
-        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
-        {
-            return;
-        }
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
@@ -97,7 +92,7 @@ namespace Mengine
 #endif
         jenv->DeleteLocalRef( jdata );
 
-        Helper::AndroidCallVoidApplicationMethod( jenv, "onMengineLogger", "(Lorg/Mengine/Base/MengineLoggerMessageParam;)V", jmessage );
+        Helper::AndroidCallVoidFragmentMethod( jenv, "MengineFragmentLogger", "log", "(Lorg/Mengine/Base/MengineLoggerMessageParam;)V", jmessage );
 
         jenv->DeleteLocalRef( jmessage );
     }

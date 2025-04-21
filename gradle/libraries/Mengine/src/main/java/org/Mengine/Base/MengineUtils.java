@@ -69,6 +69,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
@@ -127,40 +128,46 @@ public class MengineUtils {
             return null;
         }
 
+        Object ob = MengineUtils.newInstance(TAG, clazz, required, args);
+
+        return ob;
+    }
+
+    public static Object newInstance(String TAG, Class<?> cls, boolean required, Object ... args) {
         try {
             Class<?>[] parameterTypes = Arrays.stream(args)
-                .map(Object::getClass)
-                .toArray(Class<?>[]::new);
+                    .map(Object::getClass)
+                    .toArray(Class<?>[]::new);
 
-            Constructor<?> ctr = clazz.getDeclaredConstructor(parameterTypes);
+            Constructor<?> ctr = cls.getDeclaredConstructor(parameterTypes);
 
             Object ob = ctr.newInstance(args);
 
             return ob;
         } catch (final NoSuchMethodException e) {
             MengineLog.logError(TAG, "[ERROR] invalid create new instance: %s NoSuchMethodException: %s"
-                , name
-                , e.getMessage()
+                    , cls.getName()
+                    , e.getMessage()
             );
         } catch (final IllegalAccessException e) {
             MengineLog.logError(TAG, "[ERROR] invalid create new instance: %s IllegalAccessException: %s"
-                , name
-                , e.getMessage()
+                    , cls.getName()
+                    , e.getMessage()
             );
         } catch (final InstantiationException e) {
             MengineLog.logError(TAG, "[ERROR] invalid create new instance: %s InstantiationException: %s"
-                , name
-                , e.getMessage()
+                    , cls.getName()
+                    , e.getMessage()
             );
         } catch (final InvocationTargetException e) {
             MengineLog.logError(TAG, "[ERROR] invalid create new instance: %s InvocationTargetException: %s"
-                , name
-                , e.getMessage()
+                    , cls.getName()
+                    , e.getMessage()
             );
         } catch (final NullPointerException e) {
             MengineLog.logError(TAG, "[ERROR] invalid create new instance: %s NullPointerException: %s"
-                , name
-                , e.getMessage()
+                    , cls.getName()
+                    , e.getMessage()
             );
         }
 
@@ -870,35 +877,48 @@ public class MengineUtils {
         return true;
     }
 
-    public static Map<String, Object> jsonObjectToMap(JSONObject obj)  throws JSONException {
+    public static Map<String, Object> jsonObjectToMap(JSONObject obj) {
         Map<String, Object> map = new HashMap<>();
+
+        if (obj == null) {
+            return map;
+        }
 
         Iterator<String> keys = obj.keys();
         while (keys.hasNext() == true) {
             String key = keys.next();
-            Object value = obj.get(key);
-            Object parsedValue = MengineUtils.parseJsonValue(value);
-            map.put(key, parsedValue);
+
+            try {
+                Object value = obj.get(key);
+                Object parsedValue = MengineUtils.parseJsonValue(value);
+                map.put(key, parsedValue);
+            } catch (final JSONException e) {
+                MengineLog.logError(TAG, "[ERROR] jsonObjectToMap exception: %s", e.getMessage());
+            }
         }
 
         return map;
     }
 
-    private static List<Object> jsonArrayToList(JSONArray array) throws JSONException {
+    private static List<Object> jsonArrayToList(JSONArray array) {
         List<Object> list = new ArrayList<>();
 
         int array_length = array.length();
 
         for (int index = 0; index != array_length; index++) {
-            Object value = array.get(index);
-            Object parsedValue = MengineUtils.parseJsonValue(value);
-            list.add(parsedValue);
+            try {
+                Object value = array.get(index);
+                Object parsedValue = MengineUtils.parseJsonValue(value);
+                list.add(parsedValue);
+            } catch (final JSONException e) {
+                MengineLog.logError(TAG, "[ERROR] jsonArrayToList exception: %s", e.getMessage());
+            }
         }
 
         return list;
     }
 
-    private static Object parseJsonValue(Object value) throws JSONException {
+    private static Object parseJsonValue(Object value) {
         if (value instanceof JSONArray) {
             return MengineUtils.jsonArrayToList((JSONArray) value);
         } else if (value instanceof JSONObject) {
@@ -1093,7 +1113,7 @@ public class MengineUtils {
                 continue;
             }
 
-            if (appProcess.processName.equals(packageName) == false) {
+            if (Objects.equals(appProcess.processName, packageName) == false) {
                 continue;
             }
 
@@ -1124,15 +1144,13 @@ public class MengineUtils {
     public static void throwAssertionError(String title, Throwable throwable, String format, Object ... args) {
         String message = MengineLog.buildTotalMsg(format, args);
 
-        MengineApplication application = MengineApplication.getSharedInstance();
-
-        MengineActivity activity = application.getMengineActivity();
-
-        if (activity == null) {
+        if (MengineActivity.INSTANCE == null) {
             MengineUtils.throwRuntimeException(message, throwable);
+
+            return;
         }
 
-        MengineUtils.finishActivityWithAlertDialog(activity, "AssertionError", "%s", message);
+        MengineUtils.finishActivityWithAlertDialog(MengineActivity.INSTANCE, "AssertionError", "%s", message);
     }
 
     public static ArrayList<Bundle> parcelableArrayListFromJSON(@NonNull JSONArray value) {

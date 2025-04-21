@@ -11,13 +11,15 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import org.Mengine.Base.MengineAdFormat;
 import org.Mengine.Base.MengineAdMediation;
 import org.Mengine.Base.MengineAdRevenueParam;
+import org.Mengine.Base.MengineAnalyticsEventParam;
 import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineListenerGame;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineListenerAdRevenue;
 import org.Mengine.Base.MengineListenerAnalytics;
 import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
-import org.Mengine.Base.MengineListenerSessionId;
+import org.Mengine.Base.MengineListenerUser;
 import org.Mengine.Base.MengineListenerTransparencyConsent;
 import org.Mengine.Base.MengineTransparencyConsentParam;
 import org.Mengine.Base.MengineUtils;
@@ -25,7 +27,7 @@ import org.Mengine.Base.MengineUtils;
 import java.util.EnumMap;
 import java.util.Map;
 
-public class MengineFirebaseAnalyticsPlugin extends MengineService implements MengineListenerAnalytics, MengineListenerAdRevenue, MengineListenerTransparencyConsent, MengineListenerApplication, MengineListenerSessionId {
+public class MengineFirebaseAnalyticsPlugin extends MengineService implements MengineListenerAnalytics, MengineListenerAdRevenue, MengineListenerTransparencyConsent, MengineListenerApplication, MengineListenerUser, MengineListenerGame {
     public static final String SERVICE_NAME = "FBAnalytics";
     public static final boolean SERVICE_EMBEDDING = true;
 
@@ -35,8 +37,8 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
     public void onAppPrepare(@NonNull MengineApplication application, @NonNull Map<String, String> pluginVersions) throws MengineServiceInvalidInitializeException {
         FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(application);
 
-        String sessionId = application.getSessionId();
-        firebaseAnalytics.setUserId(sessionId);
+        String userId = application.getUserId();
+        firebaseAnalytics.setUserId(userId);
 
         String installKey = application.getInstallKey();
         long installTimestamp = application.getInstallTimestamp();
@@ -62,16 +64,16 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
     }
 
     @Override
-    public void onMengineSetSessionId(@NonNull MengineApplication application, String sessionId) {
+    public void onMengineChangeUserId(@NonNull MengineApplication application, String userId) {
         if (m_firebaseAnalytics == null) {
             return;
         }
 
-        m_firebaseAnalytics.setUserId(sessionId);
+        m_firebaseAnalytics.setUserId(userId);
     }
 
     @Override
-    public void onMengineRemoveSessionData(@NonNull MengineApplication application) {
+    public void onMengineRemoveUserData(@NonNull MengineApplication application) {
         if (m_firebaseAnalytics == null) {
             return;
         }
@@ -116,17 +118,17 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
     }
 
     @Override
-    public void onMengineAnalyticsEvent(@NonNull MengineApplication application, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
+    public void onMengineAnalyticsEvent(@NonNull MengineApplication application, @NonNull MengineAnalyticsEventParam param) {
         if (m_firebaseAnalytics == null) {
             return;
         }
 
         Bundle bundle = new Bundle();
 
-        this.updateBundle(bundle, bases);
-        this.updateBundle(bundle, parameters);
+        this.updateBundle(bundle, param.ANALYTICS_BASES);
+        this.updateBundle(bundle, param.ANALYTICS_PARAMETERS);
 
-        m_firebaseAnalytics.logEvent(eventName, bundle);
+        m_firebaseAnalytics.logEvent(param.ANALYTICS_NAME, bundle);
     }
 
     @Override
@@ -197,7 +199,7 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
     }
 
     @Override
-    public void onMengineTransparencyConsent(@NonNull MengineApplication application, MengineTransparencyConsentParam tcParam) {
+    public void onMengineTransparencyConsent(@NonNull MengineApplication application, @NonNull MengineTransparencyConsentParam tcParam) {
         if (m_firebaseAnalytics == null) {
             return;
         }
@@ -213,7 +215,7 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
         consentMap.put(FirebaseAnalytics.ConsentType.AD_USER_DATA, AD_USER_DATA ? FirebaseAnalytics.ConsentStatus.GRANTED : FirebaseAnalytics.ConsentStatus.DENIED);
         consentMap.put(FirebaseAnalytics.ConsentType.AD_PERSONALIZATION, AD_PERSONALIZATION ? FirebaseAnalytics.ConsentStatus.GRANTED : FirebaseAnalytics.ConsentStatus.DENIED);
 
-        this.logMessage("setConsent AD_STORAGE: %s ANALYTICS_STORAGE: %s AD_USER_DATA: %s AD_PERSONALIZATION: %s"
+        this.logInfo("setConsent AD_STORAGE: %s ANALYTICS_STORAGE: %s AD_USER_DATA: %s AD_PERSONALIZATION: %s"
             , AD_STORAGE
             , ANALYTICS_STORAGE
             , AD_USER_DATA
@@ -223,12 +225,55 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
         m_firebaseAnalytics.setConsent(consentMap);
     }
 
+    @Override
+    public void onMengineUnlockAchievement(@NonNull MengineApplication application, String achievementId) {
+        if (m_firebaseAnalytics == null) {
+            return;
+        }
+
+        Bundle params = new Bundle();
+        params.putString(FirebaseAnalytics.Param.ACHIEVEMENT_ID, achievementId);
+
+        m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.UNLOCK_ACHIEVEMENT, params);
+    }
+
+    @Override
+    public void onMengineIncrementAchievement(@NonNull MengineApplication application, String achievementId, int numSteps) {
+        if (m_firebaseAnalytics == null) {
+            return;
+        }
+
+        //Todo: implement increment achievement
+    }
+
+    @Override
+    public void onMengineRevealAchievement(@NonNull MengineApplication application, String achievementId) {
+        if (m_firebaseAnalytics == null) {
+            return;
+        }
+
+        //Todo: implement reveal achievement
+    }
+
+    @Override
+    public void onMengineSubmitLeaderboardScore(@NonNull MengineApplication application, String leaderboardId, long score) {
+        if (m_firebaseAnalytics == null) {
+            return;
+        }
+
+        Bundle params = new Bundle();
+        params.putLong(FirebaseAnalytics.Param.SCORE, score);
+        params.putString(FirebaseAnalytics.Param.CHARACTER, "LEADERBOARD_" + leaderboardId);
+
+        m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.POST_SCORE, params);
+    }
+
     public void setUserProperty(@NonNull @Size(min = 1L,max = 24L) String name, @NonNull @Size(min = 1L,max = 36L) String value) {
         if (m_firebaseAnalytics == null) {
             return;
         }
 
-        this.logMessage("setUserProperty name: %s value: %s"
+        this.logInfo("setUserProperty name: %s value: %s"
             , name
             , value
         );

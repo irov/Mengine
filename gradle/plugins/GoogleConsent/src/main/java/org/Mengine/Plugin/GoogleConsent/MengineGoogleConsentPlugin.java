@@ -1,13 +1,15 @@
 package org.Mengine.Plugin.GoogleConsent;
 
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineListenerActivity;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineTransparencyConsentParam;
 
-import android.content.Context;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 
 import com.google.android.ump.ConsentDebugSettings;
 import com.google.android.ump.ConsentInformation;
@@ -18,18 +20,20 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
     public static final String SERVICE_NAME = "GConsent";
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
+    public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
         ConsentRequestParameters.Builder builder = new ConsentRequestParameters.Builder();
 
         if (BuildConfig.DEBUG == true) {
-            ConsentDebugSettings debugSettings = new ConsentDebugSettings.Builder(activity)
-                .setDebugGeography(ConsentDebugSettings
-                    .DebugGeography
-                    .DEBUG_GEOGRAPHY_EEA)
-                .addTestDeviceHashedId("9203703DF2B7213315680FD6966D3CDB")
-                .build();
+            if (BuildConfig.MENGINE_APP_PLUGIN_GOOGLE_CONSENT_TEST_DEVICE_HASHED_ID != null) {
+                ConsentDebugSettings debugSettings = new ConsentDebugSettings.Builder(activity)
+                    .setDebugGeography(ConsentDebugSettings
+                        .DebugGeography
+                        .DEBUG_GEOGRAPHY_EEA)
+                    .addTestDeviceHashedId(BuildConfig.MENGINE_APP_PLUGIN_GOOGLE_CONSENT_TEST_DEVICE_HASHED_ID)
+                    .build();
 
-            builder.setConsentDebugSettings(debugSettings);
+                builder.setConsentDebugSettings(debugSettings);
+            }
         }
 
         builder.setTagForUnderAgeOfConsent(false);
@@ -44,7 +48,7 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
                 int consentStatus = consentInformation.getConsentStatus();
                 ConsentInformation.PrivacyOptionsRequirementStatus privacyOptionsRequirementStatus = consentInformation.getPrivacyOptionsRequirementStatus();
 
-                this.logMessage("updated consent info update success status: %d formAvailable: %b privacyOptionsRequirementStatus: %s"
+                this.logInfo("updated consent info update success status: %d formAvailable: %b privacyOptionsRequirementStatus: %s"
                     , consentStatus
                     , formAvailable
                     , privacyOptionsRequirementStatus
@@ -55,9 +59,9 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
                 }
 
                 if (privacyOptionsRequirementStatus == ConsentInformation.PrivacyOptionsRequirementStatus.NOT_REQUIRED) {
-                    MengineTransparencyConsentParam tcParam = activity.makeTransparencyConsentParam();
+                    MengineApplication application = this.getMengineApplication();
 
-                    activity.onMengineTransparencyConsent(tcParam);
+                    application.checkTransparencyConsentServices();
 
                     return;
                 }
@@ -76,7 +80,7 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
             });
     }
 
-    public void loadForm(MengineActivity activity) {
+    public void loadForm(@NonNull MengineActivity activity) {
         UserMessagingPlatform.loadAndShowConsentFormIfRequired(activity
             , (loadAndShowError) -> {
                 if (loadAndShowError != null) {
@@ -88,11 +92,11 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
                     return;
                 }
 
-                this.logMessage("consent form load and show success");
+                this.logInfo("consent form load and show success");
 
-                MengineTransparencyConsentParam consent = activity.makeTransparencyConsentParam();
+                MengineApplication application = this.getMengineApplication();
 
-                activity.onMengineTransparencyConsent(consent);
+                application.checkTransparencyConsentServices();
             });
     }
 

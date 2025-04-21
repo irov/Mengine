@@ -3,6 +3,7 @@ package org.Mengine.Base;
 public interface MengineAdProviderInterface {
     boolean hasBanner();
 
+    boolean canYouShowBanner();
     void showBanner();
     void hideBanner();
 
@@ -28,6 +29,7 @@ public interface MengineAdProviderInterface {
 
     boolean hasMREC();
 
+    boolean canYouShowMREC();
     void showMREC(int leftMargin, int bottomMargin);
     void hideMREC();
 

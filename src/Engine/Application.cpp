@@ -318,10 +318,10 @@ namespace Mengine
                 );
         }
 
-        LOGGER_MESSAGE_RELEASE( "mengine URL '%s'", engineGitURL );
-        LOGGER_MESSAGE_RELEASE( "mengine commit '%s'", engineGitSHA1 );
-        LOGGER_MESSAGE_RELEASE( "mengine branch '%s'", engineGitBranch );
-        LOGGER_MESSAGE_RELEASE( "mengine date '%s'", engineGitDate );
+        LOGGER_MESSAGE( "mengine URL '%s'", engineGitURL );
+        LOGGER_MESSAGE( "mengine commit '%s'", engineGitSHA1 );
+        LOGGER_MESSAGE( "mengine branch '%s'", engineGitBranch );
+        LOGGER_MESSAGE( "mengine date '%s'", engineGitDate );
 
         const Char * contentCommit = Helper::getContentCommit();
 
@@ -331,7 +331,7 @@ namespace Mengine
                 ->messageBox( "Mengine", "Content Commit '%s'", contentCommit );
         }
 
-        LOGGER_MESSAGE_RELEASE( "content commit '%s'", contentCommit );
+        LOGGER_MESSAGE( "content commit '%s'", contentCommit );
 
         const Char * buildVersion = Helper::getBuildVersion();
         uint32_t buildVersionNumber = Helper::getBuildVersionNumber();
@@ -353,7 +353,7 @@ namespace Mengine
                 );
         }
 
-        LOGGER_MESSAGE_RELEASE( "build version '%s' [0x%08x] user '%s' timestamp '%s' project '%s' build number %" MENGINE_PRIu64 ""
+        LOGGER_MESSAGE( "build version '%s' [0x%08x] user '%s' timestamp '%s' project '%s' build number %" MENGINE_PRIu64 ""
             , buildVersion
             , buildVersionNumber
             , buildUserName

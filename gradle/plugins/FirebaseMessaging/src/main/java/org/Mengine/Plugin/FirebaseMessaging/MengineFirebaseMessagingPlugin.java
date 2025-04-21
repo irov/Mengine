@@ -1,26 +1,20 @@
 package org.Mengine.Plugin.FirebaseMessaging;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineFragmentPushToken;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineListenerActivity;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
-import org.Mengine.Base.MengineUtils;
 
 import android.Manifest;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
+
+import org.Mengine.Plugin.GoogleService.MengineGoogleServicePlugin;
 
 public class MengineFirebaseMessagingPlugin extends MengineService implements MengineListenerActivity {
     public static final String SERVICE_NAME = "FBMessaging";
@@ -28,12 +22,7 @@ public class MengineFirebaseMessagingPlugin extends MengineService implements Me
 
     @Override
     public boolean onAvailable(@NonNull MengineApplication application) {
-        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
-
-        Context context = application.getApplicationContext();
-        int resultCode = apiAvailability.isGooglePlayServicesAvailable(context);
-
-        if (resultCode != ConnectionResult.SUCCESS) {
+        if (MengineGoogleServicePlugin.isGooglePlayServicesAvailable(application) == false) {
             return false;
         }
 
@@ -69,9 +58,7 @@ public class MengineFirebaseMessagingPlugin extends MengineService implements Me
                     , token
                 );
 
-                MengineApplication application = activity.getMengineApplication();
-
-                application.onMenginePushToken(token);
+                MengineFragmentPushToken.INSTANCE.changePushToken(token);
             });
     }
 }

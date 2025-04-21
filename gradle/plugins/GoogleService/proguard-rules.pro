@@ -9,3 +9,4 @@
     boolean isLimitAdTrackingEnabled();
 }
 -keep public class com.android.installreferrer.** { *; }
+-keep public class com.google.android.gms.** { public protected *; }

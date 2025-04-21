@@ -14,6 +14,7 @@ import com.applovin.mediation.MaxAdRequestListener;
 import com.applovin.mediation.MaxAdRevenueListener;
 import com.applovin.mediation.MaxAdReviewListener;
 import com.applovin.mediation.MaxAdViewAdListener;
+import com.applovin.mediation.MaxAdViewConfiguration;
 import com.applovin.mediation.MaxError;
 import com.applovin.mediation.ads.MaxAdView;
 import com.applovin.sdk.AppLovinSdkUtils;
@@ -67,7 +68,11 @@ public class MengineAppLovinMRECAd extends MengineAppLovinBase implements MaxAdR
     public void initialize(@NonNull MengineApplication application) {
         super.initialize(application);
 
-        MaxAdView adView = new MaxAdView(m_adUnitId, MaxAdFormat.MREC);
+        MaxAdViewConfiguration config = MaxAdViewConfiguration.builder()
+            .setAdaptiveType(MaxAdViewConfiguration.AdaptiveType.NONE)
+            .build();
+
+        MaxAdView adView = new MaxAdView(m_adUnitId, MaxAdFormat.MREC, config);
 
         adView.setPlacement(m_placement);
 
@@ -80,6 +85,7 @@ public class MengineAppLovinMRECAd extends MengineAppLovinBase implements MaxAdR
 
         int widthDp = size.getWidth();
         int heightDp = size.getHeight();
+
         int widthPx = AppLovinSdkUtils.dpToPx(application, widthDp);
         int heightPx = AppLovinSdkUtils.dpToPx(application, heightDp);
 
@@ -242,6 +248,10 @@ public class MengineAppLovinMRECAd extends MengineAppLovinBase implements MaxAdR
         }
     }
 
+    public boolean canYouShow() {
+        return m_loaded;
+    }
+
     public void show(int leftMargin, int bottomMargin) {
         m_plugin.runOnUiThread(() -> {
             if (m_visible == true) {
@@ -335,8 +345,6 @@ public class MengineAppLovinMRECAd extends MengineAppLovinBase implements MaxAdR
 
     @Override
     public void onAdLoadFailed(@NonNull String adUnitId, @NonNull MaxError error) {
-        m_loaded = false;
-
         this.logMaxError("onAdLoadFailed", error);
 
         int errorCode = error.getCode();

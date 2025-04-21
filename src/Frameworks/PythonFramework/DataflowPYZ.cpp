@@ -93,18 +93,21 @@ namespace Mengine
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
+        MENGINE_ASSERTION_FATAL( source_size > 8, "module invalid buffer size [doc: %s]"
+            , MENGINE_DOCUMENT_STR( _doc )
+        );
+
         long file_magic = MENGINE_FOURCC_BUF( source_buffer );
         long py_magic = m_kernel->marshal_magic_number();
 
-        if( file_magic != py_magic )
-        {
-            LOGGER_ERROR( "module invalid magic '%ld' need '%ld'"
-                , file_magic
-                , py_magic
-            );
+        MENGINE_UNUSED( file_magic );
+        MENGINE_UNUSED( py_magic );
 
-            return false;
-        }
+        MENGINE_ASSERTION_FATAL( file_magic == py_magic, "module invalid magic '%ld' need '%ld'' [doc: %s]"
+            , file_magic
+            , py_magic
+            , MENGINE_DOCUMENT_STR( _doc )
+        );
 
         PyObject * py_code = m_kernel->marshal_get_object( (char *)source_buffer + 8, source_size - 8 );
 
@@ -112,14 +115,9 @@ namespace Mengine
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
-#if defined(MENGINE_DEBUG)
-        if( m_kernel->code_check( py_code ) == false )
-        {
-            LOGGER_ERROR( "module marshal get object not code" );
-
-            return false;
-        }
-#endif
+        MENGINE_ASSERTION_FATAL( m_kernel->code_check( py_code ) == true, "module marshal get object not code [doc: %s]"
+            , MENGINE_DOCUMENT_STR( _doc )
+        );
 
         data->setScriptCode( pybind::make_borrowed_t( m_kernel, py_code ) );
 

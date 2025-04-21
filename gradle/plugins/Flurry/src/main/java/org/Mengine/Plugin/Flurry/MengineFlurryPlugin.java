@@ -3,30 +3,35 @@ package org.Mengine.Plugin.Flurry;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.flurry.android.FlurryAgent;
 import com.flurry.android.FlurryAgentListener;
 import com.flurry.android.FlurryEventRecordStatus;
 import com.flurry.android.FlurryPerformance;
 
 import org.Mengine.Base.BuildConfig;
+import org.Mengine.Base.MengineAnalyticsEventCategory;
+import org.Mengine.Base.MengineAnalyticsEventParam;
 import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MengineEvent;
-import org.Mengine.Base.MenginePlugin;
-import org.Mengine.Base.MenginePluginAnalyticsListener;
-import org.Mengine.Base.MenginePluginApplicationListener;
-import org.Mengine.Base.MenginePluginInvalidInitializeException;
+import org.Mengine.Base.MengineListenerAnalytics;
+import org.Mengine.Base.MengineListenerApplication;
+import org.Mengine.Base.MengineListenerUser;
+import org.Mengine.Base.MengineService;
+import org.Mengine.Base.MengineServiceInvalidInitializeException;
+import org.Mengine.Base.MengineUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class MengineFlurryPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginApplicationListener, MenginePluginSessionIdListener, FlurryAgentListener {
+public class MengineFlurryPlugin extends MengineService implements MengineListenerAnalytics, MengineListenerApplication, MengineListenerUser, FlurryAgentListener {
     public static final String SERVICE_NAME = "Flurry";
     public static final boolean SERVICE_EMBEDDING = true;
 
     public static final String METADATA_API_KEY = "mengine.flurry.api_key";
 
     @Override
-    public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
+    public void onAppPrepare(MengineApplication application, @NonNull Map<String, String> pluginVersions) throws MengineServiceInvalidInitializeException {
         String MengineFlurryPlugin_ApiKey = this.getMetaDataString(METADATA_API_KEY);
 
         this.logInfo("%s: %s"
@@ -34,8 +39,8 @@ public class MengineFlurryPlugin extends MenginePlugin implements MenginePluginA
             , MengineUtils.getRedactedValue(MengineFlurryPlugin_ApiKey)
         );
 
-        String sessionId = application.getSessionId();
-        FlurryAgent.setUserId(sessionId);
+        String userId = application.getUserId();
+        FlurryAgent.setUserId(userId);
 
         Context context = application.getApplicationContext();
 
@@ -61,12 +66,17 @@ public class MengineFlurryPlugin extends MenginePlugin implements MenginePluginA
     }
 
     @Override
-    void onMengineSessionId(MengineApplication application, String sessionId) {
-        FlurryAgent.setUserId(sessionId);
+    public void onMengineChangeUserId(@NonNull MengineApplication application, String userId) {
+        FlurryAgent.setUserId(userId);
+    }
+
+    @Override
+    public void onMengineRemoveUserData(@NonNull MengineApplication application) {
+        FlurryAgent.deleteData();
     }
 
     private void updateParams(Map<String, String> params, Map<String, Object> bases) {
-        for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+        for (Map.Entry<String, Object> entry : bases.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
 
@@ -90,19 +100,57 @@ public class MengineFlurryPlugin extends MenginePlugin implements MenginePluginA
     }
 
     @Override
-    public void onMengineAnalyticsEvent(MengineApplication application, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
+    public void onMengineAnalyticsEvent(@NonNull MengineApplication application, @NonNull MengineAnalyticsEventParam param) {
+        if (param.ANALYTICS_CATEGORY == MengineAnalyticsEventCategory.MengineAnalyticsEventCategory_System) {
+            return;
+        }
+
         Map<String, String> params = new HashMap<>();
 
-        this.updateParams(params, bases);
-        this.updateParams(params, parameters);
+        this.updateParams(params, param.ANALYTICS_BASES);
+        this.updateParams(params, param.ANALYTICS_PARAMETERS);
 
-        FlurryEventRecordStatus status = FlurryAgent.logEvent(eventName, params);
+        FlurryEventRecordStatus status = FlurryAgent.logEvent(param.ANALYTICS_NAME, params);
 
-        if (status != FlurryEventRecordStatus.kFlurryEventRecorded) {
-            this.logError("[ERROR] failed to log event: %s status: %s"
-                , eventName
-                , status
-            );
+        switch (status) {
+            case kFlurryEventFailed:
+                this.logError("[ERROR] failed to log event: %s"
+                    , param.ANALYTICS_NAME
+                );
+                break;
+            case kFlurryEventRecorded:
+                //Empty
+                break;
+            case kFlurryEventUniqueCountExceeded:
+                this.logWarning("[ERROR] failed to log event: %s unique count exceeded"
+                    , param.ANALYTICS_NAME
+                );
+                break;
+            case kFlurryEventParamsCountExceeded:
+                this.logWarning("[ERROR] failed to log event: %s params count exceeded"
+                    , param.ANALYTICS_NAME
+                );
+                break;
+            case kFlurryEventLogCountExceeded:
+                this.logInfo("failed to log event: %s log count exceeded"
+                    , param.ANALYTICS_NAME
+                );
+                break;
+            case kFlurryEventLoggingDelayed:
+                this.logInfo("failed to log event: %s logging delayed"
+                    , param.ANALYTICS_NAME
+                );
+                break;
+            case kFlurryEventAnalyticsDisabled:
+                this.logDebug("failed to log event: %s analytics disabled"
+                    , param.ANALYTICS_NAME
+                );
+                break;
+            case kFlurryEventParamsMismatched:
+                this.logError("failed to log event: %s params mismatched"
+                    , param.ANALYTICS_NAME
+                );
+                break;
         }
     }
 }

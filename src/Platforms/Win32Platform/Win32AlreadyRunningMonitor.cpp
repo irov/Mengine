@@ -59,7 +59,7 @@ namespace Mengine
                 HWND otherHwnd = ::FindWindow( _windowClassName, _projectTitle );
                 ::SetForegroundWindow( otherHwnd );
 
-                LOGGER_MESSAGE_RELEASE( "FOCUS to other instance of application [%ls]"
+                LOGGER_MESSAGE( "FOCUS to other instance of application [%ls]"
                     , _projectTitle
                 );
 

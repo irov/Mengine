@@ -11,7 +11,6 @@
         <meta-data android:name="mengine.applovin.privacy_policy_url" android:value="@string/privacy_policy_url" />
         <meta-data android:name="mengine.applovin.terms_of_service_url" android:value="@string/terms_of_service_url" />
 
-        <meta-data android:name="mengine.applovin.banner.adaptive" android:value="@bool/mengine_applovin_banner_adaptive" />
         <meta-data android:name="mengine.applovin.banner.placement" android:value="@string/mengine_applovin_banner_placement" />
         <meta-data android:name="mengine.applovin.banner.adunitid" android:value="@string/mengine_applovin_banner_adunitid" />
         <meta-data android:name="mengine.applovin.interstitial.adunitid" android:value="@string/mengine_applovin_interstitial_adunitid" />

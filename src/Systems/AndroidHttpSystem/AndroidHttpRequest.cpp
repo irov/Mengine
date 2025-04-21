@@ -72,8 +72,6 @@ namespace Mengine
 
         jclass jclass_MengineHttpRequestParam = Mengine::Mengine_JNI_FindClass( jenv, "org/Mengine/Base/MengineHttpRequestParam" );
 
-        Helper::AndroidEnvExceptionCheck( jenv );
-
         jmethodID jmethod_MengineHttpRequestParam_constructor = jenv->GetMethodID( jclass_MengineHttpRequestParam, "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;I)V" );
 
         jobject jrequest = jenv->NewObject( jclass_MengineHttpRequestParam, jmethod_MengineHttpRequestParam_constructor
@@ -110,8 +108,6 @@ namespace Mengine
         }
 
         jclass jclass_MengineHttpResponseParam = Mengine::Mengine_JNI_FindClass( jenv, "org/Mengine/Base/MengineHttpResponseParam" );
-
-        Helper::AndroidEnvExceptionCheck( jenv );
 
         jfieldID jfieldiD_HTTP_RESPONSE_CODE = jenv->GetFieldID( jclass_MengineHttpResponseParam, "HTTP_RESPONSE_CODE", "I" );
         jfieldID jfieldiD_HTTP_CONTENT_LENGTH = jenv->GetFieldID( jclass_MengineHttpResponseParam, "HTTP_CONTENT_LENGTH", "I" );

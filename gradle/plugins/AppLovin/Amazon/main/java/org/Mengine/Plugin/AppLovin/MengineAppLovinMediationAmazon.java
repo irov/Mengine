@@ -1,18 +1,26 @@
 package org.Mengine.Plugin.AppLovin;
 
+import android.content.res.Resources;
+import android.util.DisplayMetrics;
+
 import androidx.annotation.NonNull;
 
 import com.amazon.device.ads.AdError;
 import com.amazon.device.ads.DTBAdCallback;
+import com.amazon.device.ads.DTBAdNetwork;
+import com.amazon.device.ads.DTBAdNetworkInfo;
 import com.amazon.device.ads.DTBAdRequest;
 import com.amazon.device.ads.DTBAdResponse;
 import com.amazon.device.ads.DTBAdSize;
+import com.applovin.mediation.MaxAdFormat;
 import com.applovin.mediation.ads.MaxAdView;
 import com.applovin.mediation.ads.MaxInterstitialAd;
 import com.applovin.mediation.ads.MaxRewardedAd;
+import com.applovin.sdk.AppLovinSdkUtils;
 
-import org.Mengine.Base.MengineActivity;
-import org.Mengine.Base.MengineLog;
+import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineServiceInvalidInitializeException;
+import org.Mengine.Base.MengineUtils;
 
 public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationInterface {
     public static final String MEDIATION_METADATA_BANNER_SLOT_ID = "mengine.applovin.amazon.banner_slot_id";
@@ -32,25 +40,29 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
     private ELoadAdStatus m_loadRewardedStatus = ELoadAdStatus.ADLOAD_NONE;
 
     @Override
-    public void initializeMediator(MengineActivity activity, MengineAppLovinPlugin plugin) {
+    public void initializeMediator(@NonNull MengineApplication application, @NonNull MengineAppLovinPlugin plugin) {
         //Empty
     }
 
     @Override
-    public void finalizeMediator(MengineActivity activity, MengineAppLovinPlugin plugin) {
+    public void finalizeMediator(@NonNull MengineApplication application, @NonNull MengineAppLovinPlugin plugin) {
         m_loadBannerStatus = ELoadAdStatus.ADLOAD_CANCEL;
         m_loadInterstitialStatus = ELoadAdStatus.ADLOAD_CANCEL;
         m_loadRewardedStatus = ELoadAdStatus.ADLOAD_CANCEL;
     }
 
     @Override
-    public void initializeMediatorBanner(MengineActivity activity, MengineAppLovinPlugin plugin, MaxAdView adView, MengineAppLovinMediationLoadAdCallback loadAdCallback) {
-        String MengineAppLovinPlugin_AmazonBannerSlotId = activity.getMetaDataString(MEDIATION_METADATA_BANNER_SLOT_ID);
-
-        int width = activity.getWindow().getDecorView().getWidth();
-        int height = activity.getWindow().getDecorView().getHeight();
+    public void initializeMediatorBanner(@NonNull MengineApplication application, @NonNull MengineAppLovinPlugin plugin, @NonNull MaxAdView adView, MengineAppLovinMediationLoadAdCallback loadAdCallback) throws MengineServiceInvalidInitializeException {
+        String MengineAppLovinPlugin_AmazonBannerSlotId = plugin.getMetaDataString(MEDIATION_METADATA_BANNER_SLOT_ID);
 
         m_loadBannerStatus = ELoadAdStatus.ADLOAD_PROCESS;
+
+        MaxAdFormat adFormat = MaxAdFormat.BANNER;
+
+        AppLovinSdkUtils.Size adSize = adFormat.getSize();
+
+        int width = adSize.getWidth();
+        int height = adSize.getHeight();
 
         plugin.logInfo("Amazon try load banner: %d:%d slotId: %s"
             , width
@@ -60,8 +72,11 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
 
         DTBAdSize size = new DTBAdSize(width, height, MengineAppLovinPlugin_AmazonBannerSlotId);
 
-        DTBAdRequest adLoader = new DTBAdRequest();
+        DTBAdNetworkInfo adNetworkInfo = new DTBAdNetworkInfo(DTBAdNetwork.MAX);
+        DTBAdRequest adLoader = new DTBAdRequest(adNetworkInfo);
+
         adLoader.setSizes(size);
+
         adLoader.loadAd(new DTBAdCallback() {
             @Override
             public void onFailure(@NonNull AdError adError) {
@@ -71,10 +86,13 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
 
                 m_loadBannerStatus = ELoadAdStatus.ADLOAD_FAILURE;
 
+                AdError.ErrorCode adErrorCode = adError.getCode();
+                String adErrorMessage = adError.getMessage();
+
                 plugin.logError("[ERROR] Amazon failure load banner slotId: %s code: %s message: %s"
                     , MengineAppLovinPlugin_AmazonBannerSlotId
-                    , adError.getCode()
-                    , adError.getMessage()
+                    , adErrorCode.ordinal()
+                    , adErrorMessage
                 );
 
                 adView.setLocalExtraParameter("amazon_ad_error", adError);
@@ -101,10 +119,10 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
         });
     }
 
-    public void loadMediatorInterstitial(MengineActivity activity, MengineAppLovinPlugin plugin, MaxInterstitialAd interstitialAd, MengineAppLovinMediationLoadAdCallback loadAdCallback)  {
+    public void loadMediatorInterstitial(@NonNull MengineApplication application, @NonNull MengineAppLovinPlugin plugin, @NonNull MaxInterstitialAd interstitialAd, MengineAppLovinMediationLoadAdCallback loadAdCallback) throws MengineServiceInvalidInitializeException {
         switch (m_loadInterstitialStatus) {
             case ADLOAD_NONE:
-                String MengineAppLovinPlugin_AmazonInterstitialSlotId = activity.getMetaDataString(MEDIATION_METADATA_INTERSTITIAL_SLOT_ID);
+                String MengineAppLovinPlugin_AmazonInterstitialSlotId = plugin.getMetaDataString(MEDIATION_METADATA_INTERSTITIAL_SLOT_ID);
 
                 m_loadInterstitialStatus = ELoadAdStatus.ADLOAD_PROCESS;
 
@@ -112,8 +130,13 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
                     , MengineUtils.getRedactedValue(MengineAppLovinPlugin_AmazonInterstitialSlotId)
                 );
 
-                DTBAdRequest adLoader = new DTBAdRequest();
-                adLoader.setSizes(new DTBAdSize.DTBInterstitialAdSize(MengineAppLovinPlugin_AmazonInterstitialSlotId));
+                DTBAdNetworkInfo adNetworkInfo = new DTBAdNetworkInfo(DTBAdNetwork.MAX);
+                DTBAdRequest adLoader = new DTBAdRequest(adNetworkInfo);
+
+                DTBAdSize.DTBInterstitialAdSize adSizes = new DTBAdSize.DTBInterstitialAdSize(MengineAppLovinPlugin_AmazonInterstitialSlotId);
+
+                adLoader.setSizes(adSizes);
+
                 adLoader.loadAd(new DTBAdCallback() {
                     @Override
                     public void onFailure(@NonNull final AdError adError) {
@@ -123,10 +146,13 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
 
                         m_loadInterstitialStatus = ELoadAdStatus.ADLOAD_FAILURE;
 
+                        AdError.ErrorCode adErrorCode = adError.getCode();
+                        String adErrorMessage = adError.getMessage();
+
                         plugin.logError("[ERROR] Amazon failure load interstitial slotId: %s code: %s message: %s"
                             , MengineAppLovinPlugin_AmazonInterstitialSlotId
-                            , adError.getCode()
-                            , adError.getMessage()
+                            , adErrorCode.ordinal()
+                            , adErrorMessage
                         );
 
                         interstitialAd.setLocalExtraParameter("amazon_ad_error", adError);
@@ -161,10 +187,10 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
         }
     }
 
-    public void loadMediatorRewarded(MengineActivity activity, MengineAppLovinPlugin plugin, MaxRewardedAd rewardedAd, MengineAppLovinMediationLoadAdCallback loadAdCallback) {
+    public void loadMediatorRewarded(@NonNull MengineApplication application, @NonNull MengineAppLovinPlugin plugin, @NonNull MaxRewardedAd rewardedAd, MengineAppLovinMediationLoadAdCallback loadAdCallback) throws MengineServiceInvalidInitializeException {
         switch (m_loadRewardedStatus) {
             case ADLOAD_NONE:
-                String MengineAppLovinPlugin_AmazonRewardedSlotId = activity.getMetaDataString(MEDIATION_METADATA_REWARDED_SLOT_ID);
+                String MengineAppLovinPlugin_AmazonRewardedSlotId = plugin.getMetaDataString(MEDIATION_METADATA_REWARDED_SLOT_ID);
 
                 m_loadRewardedStatus = ELoadAdStatus.ADLOAD_PROCESS;
 
@@ -172,13 +198,18 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
                     , MengineUtils.getRedactedValue(MengineAppLovinPlugin_AmazonRewardedSlotId)
                 );
 
-                DTBAdRequest loader = new DTBAdRequest();
+                DTBAdNetworkInfo adNetworkInfo = new DTBAdNetworkInfo(DTBAdNetwork.MAX);
+                DTBAdRequest loader = new DTBAdRequest(adNetworkInfo);
 
                 // Switch video player width and height values(320, 480) depending on device orientation
-                int width = activity.getWindow().getDecorView().getWidth();
-                int height = activity.getWindow().getDecorView().getHeight();
+                Resources resources = application.getResources();
+                DisplayMetrics metrics = resources.getDisplayMetrics();
+
+                int width = metrics.widthPixels;
+                int height = metrics.heightPixels;
 
                 loader.setSizes(new DTBAdSize.DTBVideo(width, height, MengineAppLovinPlugin_AmazonRewardedSlotId));
+
                 loader.loadAd(new DTBAdCallback() {
                     @Override
                     public void onFailure(@NonNull final AdError adError) {
@@ -188,10 +219,13 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
 
                         m_loadRewardedStatus = ELoadAdStatus.ADLOAD_FAILURE;
 
+                        AdError.ErrorCode adErrorCode = adError.getCode();
+                        String adErrorMessage = adError.getMessage();
+
                         plugin.logError("[ERROR] Amazon failure load rewarded slotId: %s code: %s message: %s"
                             , MengineAppLovinPlugin_AmazonRewardedSlotId
-                            , adError.getCode()
-                            , adError.getMessage()
+                            , adErrorCode.ordinal()
+                            , adErrorMessage
                         );
 
                         rewardedAd.setLocalExtraParameter("amazon_ad_error", adError);

@@ -5,54 +5,40 @@
 #include "Kernel/BuildMode.h"
 #include "Kernel/Assertion.h"
 
+#include "Config/StdString.h"
+
 #include <signal.h>
 #include <pthread.h>
 
 static JavaVM * g_androidEnvJavaVM;
 
-static jobject g_jobject_MengineApplication;
 static jobject g_jobject_MengineClassLoader;
-static jobject g_jobject_MengineActivity;
 
 extern "C" 
 {
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1nativeDebugBreak )( JNIEnv * env, jclass cls )
     {
-        jclass jclassMengineUtils = env->FindClass("org/Mengine/Base/MengineUtils");
-        jmethodID jmethodIdPrintCurrentStackTrace = env->GetStaticMethodID(jclassMengineUtils, "printCurrentStackTrace", "()V");
+        jclass jclassMengineUtils = env->FindClass( "org/Mengine/Base/MengineUtils" );
 
-        env->CallStaticVoidMethod(jclassMengineUtils, jmethodIdPrintCurrentStackTrace);
+        jmethodID jmethodIdPrintCurrentStackTrace = env->GetStaticMethodID( jclassMengineUtils, "printCurrentStackTrace", "()V" );
 
-        env->DeleteLocalRef(jclassMengineUtils);
+        env->CallStaticVoidMethod( jclassMengineUtils, jmethodIdPrintCurrentStackTrace );
+
+        env->DeleteLocalRef( jclassMengineUtils );
 
         ::raise( SIGTRAP );
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1setMengineAndroidApplicationJNI )( JNIEnv * env, jclass cls, jobject obj, jobject cl )
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1setMengineAndroidClassLoaderJNI )( JNIEnv * env, jclass cls, jobject cl )
     {
-        g_jobject_MengineApplication = (jobject)env->NewGlobalRef( obj );
         g_jobject_MengineClassLoader = (jobject)env->NewGlobalRef( cl );
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1removeMengineAndroidApplicationJNI )( JNIEnv * env, jclass cls )
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1removeMengineAndroidClassLoaderJNI )( JNIEnv * env, jclass cls )
     {
-        env->DeleteGlobalRef( g_jobject_MengineApplication );
-        g_jobject_MengineApplication = nullptr;
-
         env->DeleteLocalRef( g_jobject_MengineClassLoader );
         g_jobject_MengineClassLoader = nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1setMengineAndroidActivityJNI )( JNIEnv * env, jclass cls, jobject obj )
-    {
-        g_jobject_MengineActivity = (jobject)env->NewGlobalRef( obj );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1removeMengineAndroidActivityJNI )( JNIEnv * env, jclass cls )
-    {
-        env->DeleteGlobalRef( g_jobject_MengineActivity );
-        g_jobject_MengineActivity = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT jboolean JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1isMasterRelease )( JNIEnv * env, jclass cls )
@@ -123,50 +109,6 @@ extern "C"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    jboolean Mengine_JNI_ExistMengineApplication()
-    {
-        if( g_jobject_MengineApplication == nullptr )
-        {
-            return JNI_FALSE;
-        }
-
-        return JNI_TRUE;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    jclass Mengine_JNI_GetJClassMengineApplication( JNIEnv * _jenv )
-    {
-        jclass jclass_MengineApplication = _jenv->GetObjectClass( g_jobject_MengineApplication );
-
-        return jclass_MengineApplication;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    jobject Mengine_JNI_GetJObjectMengineApplication()
-    {
-        return g_jobject_MengineApplication;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    jboolean Mengine_JNI_ExistMengineActivity()
-    {
-        if( g_jobject_MengineActivity == nullptr )
-        {
-            return JNI_FALSE;
-        }
-
-        return JNI_TRUE;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    jclass Mengine_JNI_GetJClassMengineActivity( JNIEnv * _jenv )
-    {
-        jclass jclass_MengineActivity = _jenv->GetObjectClass( g_jobject_MengineActivity );
-
-        return jclass_MengineActivity;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    jobject Mengine_JNI_GetJObjectMengineActivity()
-    {
-        return g_jobject_MengineActivity;
-    }
     //////////////////////////////////////////////////////////////////////////
     static pthread_key_t g_androidEnvThreadKey = 0;
     //////////////////////////////////////////////////////////////////////////
@@ -283,6 +225,159 @@ namespace Mengine
         }
 
         return JNI_TRUE;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    jclass Mengine_JNI_GetClassApplication( JNIEnv * _jenv )
+    {
+        jclass jclassMengineApplication = _jenv->FindClass( "org/Mengine/Base/MengineApplication" );
+
+        return jclassMengineApplication;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    jobject Mengine_JNI_GetObjectApplication( JNIEnv * _jenv )
+    {
+        jclass jclassMengineApplication = Mengine_JNI_GetClassApplication( _jenv );
+
+        if( jclassMengineApplication == nullptr )
+        {
+            return nullptr;
+        }
+
+        jfieldID jfieldINSTANCE = _jenv->GetStaticFieldID( jclassMengineApplication, "INSTANCE", "Lorg/Mengine/Base/MengineApplication;" );
+
+        if( jfieldINSTANCE == nullptr )
+        {
+            _jenv->DeleteLocalRef( jclassMengineApplication );
+
+            return nullptr;
+        }
+
+        jobject jobjectMengineApplication = _jenv->GetStaticObjectField( jclassMengineApplication, jfieldINSTANCE );
+
+        _jenv->DeleteLocalRef( jclassMengineApplication );
+
+        return jobjectMengineApplication;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    jmethodID Mengine_JNI_GetMethodApplication( JNIEnv * _jenv, const char * _methodName, const char * _signature )
+    {
+        jclass jclassMengineApplication = Mengine_JNI_GetClassApplication( _jenv );
+
+        if( jclassMengineApplication == nullptr )
+        {
+            return nullptr;
+        }
+
+        jmethodID midMengineApplication = _jenv->GetMethodID( jclassMengineApplication, _methodName, _signature );
+
+        _jenv->DeleteLocalRef( jclassMengineApplication );
+
+        return midMengineApplication;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    jclass Mengine_JNI_GetClassActivity( JNIEnv * _jenv )
+    {
+        jclass jclassMengineActivity = _jenv->FindClass( "org/Mengine/Base/MengineActivity" );
+
+        return jclassMengineActivity;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    jobject Mengine_JNI_GetObjectActivity( JNIEnv * _jenv )
+    {
+        jclass jclassMengineActivity = Mengine_JNI_GetClassActivity( _jenv );
+
+        if( jclassMengineActivity == nullptr )
+        {
+            return nullptr;
+        }
+
+        jfieldID jfieldINSTANCE = _jenv->GetStaticFieldID( jclassMengineActivity, "INSTANCE", "Lorg/Mengine/Base/MengineActivity;" );
+
+        if( jfieldINSTANCE == nullptr )
+        {
+            _jenv->DeleteLocalRef( jclassMengineActivity );
+
+            return nullptr;
+        }
+
+        jobject jobjectMengineActivity = _jenv->GetStaticObjectField( jclassMengineActivity, jfieldINSTANCE );
+
+        _jenv->DeleteLocalRef( jclassMengineActivity );
+
+        return jobjectMengineActivity;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    jmethodID Mengine_JNI_GetMethodActivity( JNIEnv * _jenv, const char * _methodName, const char * _signature )
+    {
+        jclass jclassMengineActivity = Mengine_JNI_GetClassActivity( _jenv );
+
+        if( jclassMengineActivity == nullptr )
+        {
+            return nullptr;
+        }
+
+        jmethodID midMengineActivity = _jenv->GetMethodID( jclassMengineActivity, _methodName, _signature );
+
+        _jenv->DeleteLocalRef( jclassMengineActivity );
+
+        return midMengineActivity;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    jclass Mengine_JNI_GetClassFragment( JNIEnv * _jenv, const char * _fragmentName )
+    {
+        Char fragmentClassName[256] = { '\0' };
+        StdString::strcpy( fragmentClassName, "org/Mengine/Base/" );
+        StdString::strcat( fragmentClassName, _fragmentName );
+
+        jclass fragmentClass = _jenv->FindClass( fragmentClassName );
+
+        return fragmentClass;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    jobject Mengine_JNI_GetObjectFragment( JNIEnv * _jenv, const char * _fragmentName )
+    {
+        jclass fragmentClass = Mengine_JNI_GetClassFragment( _jenv, _fragmentName );
+
+        if( fragmentClass == nullptr )
+        {
+            return nullptr;
+        }
+
+        Char fragmentSignature[256] = { '\0' };
+        StdString::strcpy( fragmentSignature, "Lorg/Mengine/Base/" );
+        StdString::strcat( fragmentSignature, _fragmentName );
+        StdString::strcat( fragmentSignature, ";" );
+
+        jfieldID instanceField = _jenv->GetStaticFieldID( fragmentClass, "INSTANCE", fragmentSignature );
+
+        if( instanceField == nullptr )
+        {
+            _jenv->DeleteLocalRef( fragmentClass );
+
+            return nullptr;
+        }
+
+        jobject applicationInstance = _jenv->GetStaticObjectField( fragmentClass, instanceField );
+
+        _jenv->DeleteLocalRef( fragmentClass );
+
+        return applicationInstance;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    jmethodID Mengine_JNI_GetMethodFragment( JNIEnv * _jenv, const char * _fragmentName, const char * _methodName, const char * _signature )
+    {
+        jclass fragmentClass = Mengine_JNI_GetClassFragment( _jenv, _fragmentName );
+
+        if( fragmentClass == nullptr )
+        {
+            return nullptr;
+        }
+
+        jmethodID methodId = _jenv->GetMethodID( fragmentClass, _methodName, _signature );
+
+        _jenv->DeleteLocalRef( fragmentClass );
+
+        return methodId;
     }
     //////////////////////////////////////////////////////////////////////////
     jclass Mengine_JNI_FindClass( JNIEnv * _jenv, const char * _className )

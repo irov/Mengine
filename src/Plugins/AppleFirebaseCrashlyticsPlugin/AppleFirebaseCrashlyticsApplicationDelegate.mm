@@ -72,7 +72,7 @@
 }
 
 - (void)onSessionId:(iOSSessionIdParam *)session {
-    [[FIRCrashlytics crashlytics] setUserID:session.SESSION_ID];
+    [[FIRCrashlytics crashlytics] setUserID:session.USER_ID];
 }
 
 - (void)onRemoveSessionData {

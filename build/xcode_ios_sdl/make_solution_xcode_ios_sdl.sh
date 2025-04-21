@@ -56,6 +56,8 @@ if test -f "Podfile"; then
         echo "please fix Cocoapods"
         exit 1
     fi
+    
+    pod outdated
 fi
 popd
 

@@ -11,6 +11,7 @@ import com.google.firebase.remoteconfig.internal.DefaultsXmlParser;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineFragmentRemoteConfig;
 import org.Mengine.Base.MengineNetwork;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineListenerActivity;
@@ -36,7 +37,7 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
     public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
         long MengineFirebaseRemoteConfigPlugin_MinimumFetchInterval = this.getMetaDataLong(METADATA_MINIMUM_FETCH_INTERVAL);
 
-        this.logMessage("%s: %d"
+        this.logInfo("%s: %d"
             , METADATA_MINIMUM_FETCH_INTERVAL
             , MengineFirebaseRemoteConfigPlugin_MinimumFetchInterval
         );
@@ -113,7 +114,7 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
                     allValueString.put(key, valueString);
                 }
 
-                this.logMessage("remote config success fetch and activate updated: %b"
+                this.logInfo("remote config success fetch and activate updated: %b"
                     , updated
                 );
 
@@ -193,7 +194,7 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
             configs.put(key, value_json);
         }
 
-        this.logMessage("remote config values: %s"
+        this.logInfo("remote config values: %s"
             , configs
         );
 
@@ -201,9 +202,7 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
             this.m_configs = configs;
         }
 
-        MengineApplication application = this.getMengineApplication();
-
-        application.onMengineRemoteConfigFetch(configs);
+        MengineFragmentRemoteConfig.INSTANCE.remoteConfigFetch(configs);
     }
 
     public Map<String, JSONObject> getRemoteConfigs() {

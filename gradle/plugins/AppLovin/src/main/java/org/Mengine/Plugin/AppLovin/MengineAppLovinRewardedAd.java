@@ -20,6 +20,7 @@ import org.Mengine.Base.MengineAdMediation;
 import org.Mengine.Base.MengineAnalyticsEventBuilder;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineNetwork;
+import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineUtils;
 
 import java.util.Map;
@@ -70,9 +71,15 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Ma
         MengineAppLovinMediationInterface mediationAmazon = m_plugin.getMediationAmazon();
 
         if (mediationAmazon != null) {
-            mediationAmazon.loadMediatorRewarded(application, m_rewardedAd, () -> {
+            try {
+                mediationAmazon.loadMediatorRewarded(application, m_plugin, m_rewardedAd, () -> {
+                    this.loadAd();
+                });
+            } catch (final MengineServiceInvalidInitializeException e) {
+                m_plugin.logError("loadMediatorRewarded exception: %s", e);
+
                 this.loadAd();
-            });
+            }
         } else {
             this.loadAd();
         }

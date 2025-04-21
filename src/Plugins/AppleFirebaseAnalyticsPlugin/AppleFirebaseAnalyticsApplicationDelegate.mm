@@ -56,7 +56,7 @@
 }
 
 - (void)onSessionId:(iOSSessionIdParam *)session {
-    [FIRAnalytics setUserID:session.SESSION_ID];
+    [FIRAnalytics setUserID:session.USER_ID];
 }
 
 - (void)onRemoveSessionData {

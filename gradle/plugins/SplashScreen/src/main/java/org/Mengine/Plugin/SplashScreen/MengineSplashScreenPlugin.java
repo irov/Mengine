@@ -19,6 +19,7 @@ import androidx.core.content.res.ResourcesCompat;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineFragmentEngine;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineListenerEngine;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
@@ -59,7 +60,8 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
         return image;
     }
 
-    private TextView createTextSessionId(Context context, String message) {
+    @NonNull
+    private TextView createTextUserId(Context context, String message) {
         TextView text = new TextView(context);
         text.setText(message);
         int mengine_splashscreen_text_color = ContextCompat.getColor(context, R.color.mengine_splashscreen_text_color);
@@ -86,7 +88,7 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
     public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
         MengineApplication application = activity.getMengineApplication();
 
-        if (application.isMenginePlatformRun() == true) {
+        if (MengineFragmentEngine.INSTANCE.isMenginePlatformRun() == true) {
             this.setState("splashscreen.state", "skip");
 
             return;
@@ -113,12 +115,12 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
         boolean mengine_splashscreen_text_enable = resources.getBoolean(R.bool.mengine_splashscreen_text_enable);
 
         if (mengine_splashscreen_text_enable == true) {
-            String sessionId = activity.getSessionId();
-            String versionName = activity.getVersionName();
+            String userId = application.getUserId();
+            String versionName = application.getVersionName();
 
-            String message = String.format("ID: %s | %s", sessionId, versionName);
+            String message = String.format("ID: %s | %s", userId, versionName);
 
-            TextView text = this.createTextSessionId(activity, message);
+            TextView text = this.createTextUserId(activity, message);
 
             viewGroup.addView(text);
 
@@ -144,13 +146,11 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
     @Override
     public void onMenginePlatformRun(@NonNull MengineApplication application) {
         MengineUtils.performOnMainThread(() -> {
-            MengineActivity activity = application.getMengineActivity();
-
-            if (activity == null) {
+            if (MengineActivity.INSTANCE == null) {
                 return;
             }
 
-            this.hideSplash(activity);
+            this.hideSplash(MengineActivity.INSTANCE);
         });
     }
 
@@ -166,7 +166,7 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
         showAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-                MengineSplashScreenPlugin.this.logMessage("show splash screen");
+                MengineSplashScreenPlugin.this.logInfo("show splash screen");
 
                 m_image.setVisibility(View.VISIBLE);
 
@@ -177,7 +177,7 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                MengineSplashScreenPlugin.this.logMessage("shown splash screen");
+                MengineSplashScreenPlugin.this.logInfo("shown splash screen");
             }
 
             @Override
@@ -217,12 +217,12 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
         hideAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-                MengineSplashScreenPlugin.this.logMessage("hide splash screen");
+                MengineSplashScreenPlugin.this.logInfo("hide splash screen");
             }
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                MengineSplashScreenPlugin.this.logMessage("hided splash screen");
+                MengineSplashScreenPlugin.this.logInfo("hided splash screen");
 
                 m_image.setVisibility(View.GONE);
 

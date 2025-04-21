@@ -6,6 +6,6 @@
 
 @interface iOSSessionIdParam : NSObject
 
-@property (nonatomic, strong) NSString * _Nonnull SESSION_ID;
+@property (nonatomic, strong) NSString * _Nonnull USER_ID;
 
 @end

@@ -1,10 +1,18 @@
 apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/gms.gradle'
 
+def MENGINE_APP_PLUGIN_GOOGLE_CONSENT_TEST_DEVICE_HASHED_ID = Utils.getStringProperty("MENGINE_APP_PLUGIN_GOOGLE_CONSENT_TEST_DEVICE_HASHED_ID", null)
+
 android {
     namespace "org.Mengine.Plugin.GoogleConsent"
 }
 
 dependencies {
-    implementation 'com.google.android.ump:user-messaging-platform:3.1.0'
+    implementation 'com.google.android.ump:user-messaging-platform:3.2.0'
+}
+
+android {
+    defaultConfig {
+        buildConfigField "String", "MENGINE_APP_PLUGIN_GOOGLE_CONSENT_TEST_DEVICE_HASHED_ID", "${MENGINE_APP_PLUGIN_GOOGLE_CONSENT_TEST_DEVICE_HASHED_ID}"
+    }
 }

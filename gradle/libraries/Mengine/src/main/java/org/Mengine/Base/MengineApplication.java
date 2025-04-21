@@ -16,14 +16,13 @@ import androidx.annotation.Size;
 
 import com.google.common.base.Splitter;
 
-import org.json.JSONObject;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class MengineApplication extends Application {
@@ -33,7 +32,7 @@ public class MengineApplication extends Application {
         System.loadLibrary("AndroidApplication");
     }
 
-    private static MengineApplication m_sharedInstance;
+    public static MengineApplication INSTANCE = null;
 
     private String m_androidId;
 
@@ -43,48 +42,28 @@ public class MengineApplication extends Application {
     private String m_installVersion;
     private long m_installRND = -1;
     private long m_sessionIndex = -1;
-    private String m_sessionId;
     private long m_sessionTimestamp = -1;
+    private String m_sessionId;
+
+    protected String m_userId;
 
     private boolean m_invalidInitialize = false;
     private String m_invalidInitializeReason = null;
-
-    private MengineActivity m_activity;
 
     private MengineMain m_main;
 
     private Object m_nativeApplication;
 
-    private boolean m_isMengineInitializeBaseServices = false;
-    private boolean m_isMengineCreateApplication = false;
-    private boolean m_isMenginePlatformRun = false;
-
     private final List<MengineService> m_services = new ArrayList<>();
     private final Map<String, MengineService> m_dictionaryServices = new HashMap<>();
     private final Map<String, Object> m_states = new ConcurrentHashMap<>();
 
-    private final List<MengineListenerLogger> m_loggerListeners = new ArrayList<>();
-    private final List<MengineListenerAnalytics> m_analyticsListeners = new ArrayList<>();
-    private final List<MengineListenerAdRevenue> m_adRevenueListeners = new ArrayList<>();
-    private final List<MengineListenerTransparencyConsent> m_transparencyConsentListeners = new ArrayList<>();
-    private final List<MengineListenerInAppPurchase> m_inAppPurchaseListeners = new ArrayList<>();
-    private final List<MengineListenerRemoteMessage> m_removeMessageListeners = new ArrayList<>();
-    private final List<MengineListenerKeyEvent> m_keyListeners = new ArrayList<>();
+    private final List<MengineFragmentInterface> m_fragments = new ArrayList<>();
+
     private final List<MengineListenerApplication> m_applicationListeners = new ArrayList<>();
-    private final List<MengineListenerActivity> m_activityListeners = new ArrayList<>();
-    private final List<MengineListenerEngine> m_engineListeners = new ArrayList<>();
-    private final List<MengineListenerPushToken> m_pushTokenListeners = new ArrayList<>();
-    private final List<MengineListenerAdvertisingId> m_advertisingIdListeners = new ArrayList<>();
-    private final List<MengineListenerSessionId> m_sessionIdListeners = new ArrayList<>();
-    private final List<MengineListenerPerformance> m_performanceListeners = new ArrayList<>();
-    private final List<MengineListenerRemoteConfig> m_remoteConfigListeners = new ArrayList<>();
 
     private final Object m_syncEvent = new Object();
     private final Object m_syncState = new Object();
-
-    public static MengineApplication getSharedInstance() {
-        return m_sharedInstance;
-    }
 
     public boolean isMasterRelease() {
         return MengineNative.AndroidEnv_isMasterRelease();
@@ -138,10 +117,39 @@ public class MengineApplication extends Application {
         return "";
     }
 
+    public void createFragment(Class<?> cls) {
+        MengineFragmentInterface fragment = (MengineFragmentInterface) MengineUtils.newInstance(TAG, cls, true);
+
+        if (fragment == null) {
+            MengineLog.logError(TAG, "invalid create instance fragment: %s"
+                , cls.getName()
+            );
+
+            return;
+        }
+
+        m_fragments.add(fragment);
+    }
+
     public MengineApplication() {
         super();
 
-        m_sharedInstance = this;
+        MengineApplication.INSTANCE = this;
+
+        this.createFragment(MengineFragmentAdRevenue.class);
+        this.createFragment(MengineFragmentAdvertisingId.class);
+        this.createFragment(MengineFragmentAnalytics.class);
+        this.createFragment(MengineFragmentEngine.class);
+        this.createFragment(MengineFragmentGame.class);
+        this.createFragment(MengineFragmentInAppPurchase.class);
+        this.createFragment(MengineFragmentKeyEvent.class);
+        this.createFragment(MengineFragmentLogger.class);
+        this.createFragment(MengineFragmentPerformance.class);
+        this.createFragment(MengineFragmentPushToken.class);
+        this.createFragment(MengineFragmentRemoteConfig.class);
+        this.createFragment(MengineFragmentRemoteMessage.class);
+        this.createFragment(MengineFragmentUser.class);
+        this.createFragment(MengineFragmentTransparencyConsent.class);
 
         String applicationId = this.getApplicationId();
         String versionName = this.getVersionName();
@@ -462,6 +470,14 @@ public class MengineApplication extends Application {
         return defaultValue;
     }
 
+    public void setPreferenceString(String name, String value) {
+        MenginePreferences.setPreferenceString(this, TAG, name, value);
+    }
+
+    public void clearPreferences() {
+        MenginePreferences.clearPreferences(this, TAG);
+    }
+
     public String getAndroidId() {
         return m_androidId;
     }
@@ -490,48 +506,12 @@ public class MengineApplication extends Application {
         return m_sessionIndex;
     }
 
-    public void setSessionId(String sessionId) {
-        if (m_sessionId.equals(sessionId) == true) {
-            return;
-        }
-
-        m_sessionId = sessionId;
-
-        MenginePreferences.setPreferenceString(this, TAG, "session_id", m_sessionId);
-
-        this.setState("user.session_id", m_sessionId);
-
-        List<MengineListenerSessionId> listeners = this.getSessionIdListeners();
-
-        for (MengineListenerSessionId l : listeners) {
-            if (l.onAvailable(this) == false) {
-                continue;
-            }
-
-            l.onMengineSetSessionId(this, m_sessionId);
-        }
-    }
-
-    public void removeSessionData() {
-        MenginePreferences.clearPreferences(this, TAG);
-
-        List<MengineListenerSessionId> listeners = this.getSessionIdListeners();
-
-        for (MengineListenerSessionId l : listeners) {
-            if (l.onAvailable(this) == false) {
-                continue;
-            }
-
-            l.onMengineRemoveSessionData(this);
-        }
+    public long getSessionTimestamp() {
+        return m_sessionTimestamp;
     }
 
     public String getSessionId() {
         return m_sessionId;
-    }
-
-    public long getSessionTimestamp() {
-        return m_sessionTimestamp;
     }
 
     public String getDeviceModel() {
@@ -572,26 +552,6 @@ public class MengineApplication extends Application {
         return androidId;
     }
 
-    public void setMengineActivity(MengineActivity activity) {
-        m_activity = activity;
-    }
-
-    public MengineActivity getMengineActivity() {
-        return m_activity;
-    }
-
-    public boolean isMengineInitializeBaseServices() {
-        return m_isMengineInitializeBaseServices;
-    }
-
-    public boolean isMengineCreateApplication() {
-        return m_isMengineCreateApplication;
-    }
-
-    public boolean isMenginePlatformRun() {
-        return m_isMenginePlatformRun;
-    }
-
     public void setState(@NonNull @Size(min = 1L,max = 1024L) String name, Object value) {
         m_states.put(name, value);
 
@@ -616,126 +576,8 @@ public class MengineApplication extends Application {
         return m_services;
     }
 
-    public List<MengineListenerLogger> getLoggerListeners() {
-        return m_loggerListeners;
-    }
-
-    public List<MengineListenerAnalytics> getAnalyticsListeners() {
-        return m_analyticsListeners;
-    }
-
-    public List<MengineListenerAdRevenue> getAdRevenueListeners() {
-        return m_adRevenueListeners;
-    }
-
-    public List<MengineListenerTransparencyConsent> getTransparencyConsentListeners() {
-        return m_transparencyConsentListeners;
-    }
-
-    public List<MengineListenerInAppPurchase> getInAppAnalyticsListeners() {
-        return m_inAppPurchaseListeners;
-    }
-
-    public List<MengineListenerRemoteMessage> getRemoteMessageListeners() {
-        return m_removeMessageListeners;
-    }
-
-    public List<MengineListenerKeyEvent> getKeyListeners() {
-        return m_keyListeners;
-    }
-
     public List<MengineListenerApplication> getApplicationListeners() {
         return m_applicationListeners;
-    }
-
-    public List<MengineListenerActivity> getActivityListeners() {
-        return m_activityListeners;
-    }
-
-    public List<MengineListenerEngine> getEngineListeners() {
-        return m_engineListeners;
-    }
-
-    public List<MengineListenerPushToken> getPushTokenListeners() {
-        return m_pushTokenListeners;
-    }
-
-    public List<MengineListenerAdvertisingId> getAdvertisingIdListeners() {
-        return m_advertisingIdListeners;
-    }
-
-    public List<MengineListenerSessionId> getSessionIdListeners() {
-        return m_sessionIdListeners;
-    }
-
-    public List<MengineListenerPerformance> getPerformanceListeners() {
-        return m_performanceListeners;
-    }
-
-    public List<MengineListenerRemoteConfig> getRemoteConfigListeners() {
-        return m_remoteConfigListeners;
-    }
-
-    protected void explainServiceListeners(MengineServiceInterface service) {
-        if (service instanceof MengineListenerAnalytics listener) {
-            m_analyticsListeners.add(listener);
-        }
-
-        if (service instanceof MengineListenerAdRevenue listener) {
-            m_adRevenueListeners.add(listener);
-        }
-
-        if (service instanceof MengineListenerTransparencyConsent listener) {
-            m_transparencyConsentListeners.add(listener);
-        }
-
-        if (service instanceof MengineListenerInAppPurchase listener) {
-            m_inAppPurchaseListeners.add(listener);
-        }
-
-        if (service instanceof MengineListenerRemoteMessage listener) {
-            m_removeMessageListeners.add(listener);
-        }
-
-        if (service instanceof MengineListenerLogger listener) {
-            m_loggerListeners.add(listener);
-        }
-
-        if (service instanceof MengineListenerKeyEvent listener) {
-            m_keyListeners.add(listener);
-        }
-
-        if (service instanceof MengineListenerApplication listener) {
-            m_applicationListeners.add(listener);
-        }
-
-        if (service instanceof MengineListenerActivity listener) {
-            m_activityListeners.add(listener);
-        }
-
-        if (service instanceof MengineListenerEngine listener) {
-            m_engineListeners.add(listener);
-        }
-
-        if (service instanceof MengineListenerPushToken listener) {
-            m_pushTokenListeners.add(listener);
-        }
-
-        if (service instanceof MengineListenerAdvertisingId listener) {
-            m_advertisingIdListeners.add(listener);
-        }
-
-        if (service instanceof MengineListenerSessionId listener) {
-            m_sessionIdListeners.add(listener);
-        }
-
-        if (service instanceof MengineListenerPerformance listener) {
-            m_performanceListeners.add(listener);
-        }
-
-        if (service instanceof MengineListenerRemoteConfig listener) {
-            m_remoteConfigListeners.add(listener);
-        }
     }
 
     static protected String getServiceClassName(Class<?> cls) {
@@ -836,7 +678,13 @@ public class MengineApplication extends Application {
             return false;
         }
 
-        this.explainServiceListeners(service);
+        for (MengineFragmentInterface fragment : m_fragments) {
+            fragment.explainServiceListeners(service);
+        }
+
+        if (service instanceof MengineListenerApplication) {
+            m_applicationListeners.add((MengineListenerApplication) service);
+        }
 
         m_services.add(service);
         m_dictionaryServices.put(name, service);
@@ -847,38 +695,6 @@ public class MengineApplication extends Application {
         );
 
         return true;
-    }
-
-    public void onMengineCaughtException(Throwable throwable) {
-        String message = throwable.getMessage();
-        this.setState("exception.message", message);
-
-        String stacktrace = MengineUtils.getThrowableStackTrace(throwable);
-        this.setState("exception.stacktrace", stacktrace);
-
-        List<MengineListenerEngine> listeners = this.getEngineListeners();
-
-        for (MengineListenerEngine l : listeners) {
-            if (l.onAvailable(this) == false) {
-                continue;
-            }
-
-            l.onMengineCaughtException(this, throwable);
-        }
-    }
-
-    public void sendEvent(MengineEvent event, Object ... args) {
-        List<MengineListenerApplication> applicationListeners = this.getApplicationListeners();
-
-        synchronized (m_syncEvent) {
-            for (MengineListenerApplication listener : applicationListeners) {
-                if (listener.onAvailable(this) == false) {
-                    continue;
-                }
-
-                listener.onAppEvent(this, event, args);
-            }
-        }
     }
 
     private boolean isMainProcess() {
@@ -896,7 +712,7 @@ public class MengineApplication extends Application {
             return false;
         }
 
-        if (packageName.equals(processName) == false) {
+        if (Objects.equals(packageName, processName) == false) {
             return false;
         }
 
@@ -910,6 +726,11 @@ public class MengineApplication extends Application {
         tcParam.initFromDefaultSharedPreferences(context);
 
         return tcParam;
+    }
+
+    public void checkTransparencyConsentServices() {
+        MengineTransparencyConsentParam tcParam = this.makeTransparencyConsentParam();
+        MengineFragmentTransparencyConsent.INSTANCE.transparencyConsent(tcParam);
     }
 
     public boolean isInvalidInitialize() {
@@ -961,6 +782,28 @@ public class MengineApplication extends Application {
         return m_nativeApplication;
     }
 
+    public void setUserId(String userId) {
+        if (Objects.equals(m_userId, userId) == true) {
+            return;
+        }
+
+        m_userId = userId;
+
+        this.setPreferenceString("user_id", m_userId);
+
+        MengineFragmentUser.INSTANCE.changeUserId(userId);
+    }
+
+    public String getUserId() {
+        return m_userId;
+    }
+
+    public void removeSessionData() {
+        this.clearPreferences();
+
+        MengineFragmentUser.INSTANCE.removeUserData();
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -971,7 +814,7 @@ public class MengineApplication extends Application {
 
         boolean isMainProcess = this.isMainProcess();
 
-        MengineLog.logMessageRelease(TAG, "onCreate isMainProcess: %b "
+        MengineLog.logInfo(TAG, "onCreate isMainProcess: %b "
             , isMainProcess
         );
 
@@ -1003,7 +846,7 @@ public class MengineApplication extends Application {
             return;
         }
 
-        long application_timestamp = MengineUtils.getTimestamp();
+        long sessionTimestamp = MengineUtils.getTimestamp();
 
         this.setState("build.debug", BuildConfig.DEBUG);
 
@@ -1021,7 +864,9 @@ public class MengineApplication extends Application {
         String installVersion = settings.getString("install_version", "");
         long installRND = settings.getLong("install_rnd", -1);
         long sessionIndex = settings.getLong("session_index", 0);
-        String sessionId = settings.getString("session_id", null);
+
+        String old_userId = settings.getString("session_id", null); //Deprecated
+        String userId = settings.getString("user_id", old_userId);
 
         SharedPreferences.Editor editor = settings.edit();
 
@@ -1047,10 +892,10 @@ public class MengineApplication extends Application {
             editor.putLong("install_rnd", installRND);
         }
 
-        if (sessionId == null) {
-            sessionId = installKey;
+        if (userId == null) {
+            userId = installKey;
 
-            editor.putString("session_id", sessionId);
+            editor.putString("user_id", userId);
         }
 
         editor.putLong("session_index", sessionIndex + 1);
@@ -1062,8 +907,10 @@ public class MengineApplication extends Application {
         m_installVersion = installVersion;
         m_installRND = installRND;
         m_sessionIndex = sessionIndex;
-        m_sessionId = sessionId;
-        m_sessionTimestamp = MengineUtils.getTimestamp();
+        m_sessionTimestamp = sessionTimestamp;
+        m_sessionId = MengineUtils.getSecureRandomHexString(32);
+
+        m_userId = userId;
 
         MengineStatistic.load(this);
 
@@ -1073,8 +920,8 @@ public class MengineApplication extends Application {
         this.setState("user.install_version", m_installVersion);
         this.setState("user.install_rnd", m_installRND);
         this.setState("user.session_index", m_sessionIndex);
-        this.setState("user.session_id", m_sessionId);
         this.setState("user.session_timestamp", m_sessionTimestamp);
+        this.setState("user.session_id", m_sessionId);
 
         MengineAnalytics.addContextParameterBoolean("is_dev", BuildConfig.DEBUG);
         MengineAnalytics.addContextParameterString("install_key", m_installKey);
@@ -1083,6 +930,7 @@ public class MengineApplication extends Application {
         MengineAnalytics.addContextParameterLong("install_rnd", m_installRND);
         MengineAnalytics.addContextParameterLong("session_index", m_sessionIndex);
         MengineAnalytics.addContextParameterLong("session_timestamp", m_sessionTimestamp);
+        MengineAnalytics.addContextParameterString("session_id", m_sessionId);
 
         MengineAnalytics.addContextGetterParameterLong("connection", () -> {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
@@ -1142,7 +990,7 @@ public class MengineApplication extends Application {
 
         ClassLoader cl = MengineApplication.class.getClassLoader();
 
-        MengineNative.AndroidEnv_setMengineAndroidApplicationJNI(this, cl);
+        MengineNative.AndroidEnv_setMengineAndroidClassLoaderJNI(cl);
 
         String engine_gitsha1 = this.getEngineGITSHA1();
         this.setState("engine.gitsha1", engine_gitsha1);
@@ -1290,7 +1138,7 @@ public class MengineApplication extends Application {
 
         this.setState("application.init", "completed");
 
-        MengineLog.logInfo(TAG, "onCreate completed time: %d", MengineUtils.getTimestamp() - application_timestamp);
+        MengineLog.logInfo(TAG, "onCreate completed time: %d", MengineUtils.getTimestamp() - sessionTimestamp);
     }
 
     public void onServicesLoad() {
@@ -1407,7 +1255,7 @@ public class MengineApplication extends Application {
 
         this.destroyNativeApplication();
 
-        MengineNative.AndroidEnv_removeMengineAndroidApplicationJNI();
+        MengineNative.AndroidEnv_removeMengineAndroidClassLoaderJNI();
 
         super.onTerminate();
     }
@@ -1444,81 +1292,8 @@ public class MengineApplication extends Application {
         }
     }
 
-    public void onMengineInitializeBaseServices() {
-        MengineLog.logInfo(TAG, "onMengineInitializeBaseServices");
-
-        m_isMengineInitializeBaseServices = true;
-
-        List<MengineListenerEngine> listeners = this.getEngineListeners();
-
-        for (MengineListenerEngine l : listeners) {
-            if (l.onAvailable(this) == false) {
-                continue;
-            }
-
-            l.onMengineInitializeBaseServices(this);
-        }
-    }
-
-    public void onMengineCreateApplication() {
-        MengineLog.logInfo(TAG, "onMengineCreateApplication");
-
-        m_isMengineCreateApplication = true;
-
-        List<MengineListenerEngine> listeners = this.getEngineListeners();
-
-        for (MengineListenerEngine l : listeners) {
-            if (l.onAvailable(this) == false) {
-                continue;
-            }
-
-            l.onMengineCreateApplication(this);
-        }
-    }
-
-    public void onMenginePlatformRun() {
-        MengineLog.logInfo(TAG, "onMenginePlatformRun");
-
-        m_isMenginePlatformRun = true;
-
-        List<MengineListenerEngine> listeners = this.getEngineListeners();
-
-        for (MengineListenerEngine l : listeners) {
-            if (l.onAvailable(this) == false) {
-                continue;
-            }
-
-            l.onMenginePlatformRun(this);
-        }
-    }
-
-    public void onMenginePlatformStop() {
-        MengineLog.logInfo(TAG, "onMenginePlatformStop");
-
-        m_isMenginePlatformRun = false;
-
-        List<MengineListenerEngine> listeners = this.getEngineListeners();
-
-        for (MengineListenerEngine l : listeners) {
-            if (l.onAvailable(this) == false) {
-                continue;
-            }
-
-            l.onMenginePlatformStop(this);
-        }
-    }
-
-    public void onMengineLogger(MengineLoggerMessageParam message) {
-        List<MengineListenerLogger> listeners = this.getLoggerListeners();
-
-        for(MengineListenerLogger l : listeners) {
-            if (l.onAvailable(this) == false) {
-                continue;
-            }
-
-            l.onMengineLogger(this, message);
-        }
-
+    /*ToDo:
+    public void onMengineLogger(@NonNull MengineLoggerMessageParam message) {
         if (BuildConfig.DEBUG == true) {
             if (m_activity != null) {
                 switch (message.MESSAGE_LEVEL) {
@@ -1534,193 +1309,7 @@ public class MengineApplication extends Application {
             }
         }
     }
-
-    public void onMengineAnalyticsEvent(@NonNull @Size(min = 1L,max = 40L) String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
-        List<MengineListenerAnalytics> listeners = this.getAnalyticsListeners();
-
-        for (MengineListenerAnalytics l : listeners) {
-            if (l.onAvailable(this) == false) {
-                continue;
-            }
-
-            l.onMengineAnalyticsEvent(this, eventName, timestamp, bases, parameters);
-        }
-    }
-
-    public void onMengineAnalyticsScreenView(@NonNull @Size(min = 1L,max = 40L) String screenType, @NonNull @Size(min = 0L,max = 100L) String screenName) {
-        MengineLog.logInfo(TAG, "onMengineAnalyticsScreenView screenType: %s screenName: %s"
-            , screenType
-            , screenName
-        );
-
-        this.setState("current.screen", screenType + "." + screenName);
-
-        List<MengineListenerAnalytics> listeners = this.getAnalyticsListeners();
-
-        for (MengineListenerAnalytics l : listeners) {
-            if (l.onAvailable(this) == false) {
-                continue;
-            }
-
-            l.onMengineAnalyticsScreenView(this, screenType, screenName);
-        }
-    }
-
-    public void onMengineAnalyticsFlush() {
-        List<MengineListenerAnalytics> listeners = this.getAnalyticsListeners();
-
-        for (MengineListenerAnalytics l : listeners) {
-            if (l.onAvailable(this) == false) {
-                continue;
-            }
-
-            l.onMengineAnalyticsFlush(this);
-        }
-    }
-
-    public void onMengineRemoteConfigFetch(@NonNull Map<String, JSONObject> configs) {
-        List<MengineListenerRemoteConfig> listeners = this.getRemoteConfigListeners();
-
-        for (MengineListenerRemoteConfig l : listeners) {
-            if (l.onAvailable(this) == false) {
-                continue;
-            }
-
-            l.onMengineRemoteConfigFetch(this, configs);
-        }
-    }
-
-    public void onMengineAdRevenue(MengineAdRevenueParam revenue) {
-        List<MengineListenerAdRevenue> listeners = this.getAdRevenueListeners();
-
-        for (MengineListenerAdRevenue l : listeners) {
-            if (l.onAvailable(this) == false) {
-                continue;
-            }
-
-            l.onMengineAdRevenue(this, revenue);
-        }
-    }
-
-    public void onMengineTransparencyConsent(MengineTransparencyConsentParam tcParam) {
-        List<MengineListenerTransparencyConsent> listeners = this.getTransparencyConsentListeners();
-
-        for (MengineListenerTransparencyConsent l : listeners) {
-            if (l.onAvailable(this) == false) {
-                continue;
-            }
-
-            l.onMengineTransparencyConsent(this, tcParam);
-        }
-    }
-
-    public void onMengineInAppProducts(List<MengineInAppProductParam> products) {
-        List<MengineListenerInAppPurchase> listeners = this.getInAppAnalyticsListeners();
-
-        for (MengineListenerInAppPurchase l : listeners) {
-            if (l.onAvailable(this) == false) {
-                continue;
-            }
-
-            l.onMengineInAppProduct(this, products);
-        }
-    }
-
-    public void onMengineInAppPurchase(MengineInAppPurchaseParam purchase) {
-        long purchase_timestamp = MengineUtils.getTimestamp();
-
-        MengineStatistic.setInteger(this, "purchase.timestamp", purchase_timestamp);
-
-        List<MengineListenerInAppPurchase> listeners = this.getInAppAnalyticsListeners();
-
-        for (MengineListenerInAppPurchase l : listeners) {
-            if (l.onAvailable(this) == false) {
-                continue;
-            }
-
-            l.onMengineInAppPurchase(this, purchase);
-        }
-    }
-
-    public void onMengineRemoteMessageReceived(MengineRemoteMessageParam message) {
-        List<MengineListenerRemoteMessage> listeners = this.getRemoteMessageListeners();
-
-        for (MengineListenerRemoteMessage l : listeners) {
-            if (l.onAvailable(this) == false) {
-                continue;
-            }
-
-            if (l.onMengineRemoteMessageReceived(this, message) == true) {
-                break;
-            }
-        }
-    }
-
-    public void onMengineRemoteMessageDeleted() {
-        List<MengineListenerRemoteMessage> listeners = this.getRemoteMessageListeners();
-
-        for (MengineListenerRemoteMessage l : listeners) {
-            if (l.onAvailable(this) == false) {
-                continue;
-            }
-
-            l.onMengineRemoteMessageDeleted(this);
-        }
-    }
-
-    public void onMengineRemoteMessageNewToken(String token) {
-        List<MengineListenerRemoteMessage> listeners = this.getRemoteMessageListeners();
-
-        for (MengineListenerRemoteMessage l : listeners) {
-            if (l.onAvailable(this) == false) {
-                continue;
-            }
-
-            l.onMengineRemoteMessageNewToken(this, token);
-        }
-    }
-
-    public void onMenginePushToken(String token) {
-        List<MengineListenerPushToken> listeners = this.getPushTokenListeners();
-
-        for (MengineListenerPushToken l : listeners) {
-            if (l.onAvailable(this) == false) {
-                continue;
-            }
-
-            l.onMenginePushToken(this, token);
-        }
-    }
-
-    public void onMengineAdvertisingId(String advertisingId, boolean limitAdTracking) {
-        this.setState("user.limit_ad_tracking", limitAdTracking);
-
-        List<MengineListenerAdvertisingId> listeners = this.getAdvertisingIdListeners();
-
-        for (MengineListenerAdvertisingId l : listeners) {
-            if (l.onAvailable(this) == false) {
-                continue;
-            }
-
-            l.onMengineAdvertisingId(this, advertisingId, limitAdTracking);
-        }
-    }
-
-    public MenginePerformanceTrace startPerformanceTrace(String name, Map<String, String> attributes) {
-        MenginePerformanceTrace trace = new MenginePerformanceTrace();
-
-        List<MengineListenerPerformance> listeners = this.getPerformanceListeners();
-
-        for (MengineListenerPerformance l : listeners) {
-            if (l.onAvailable(this) == false) {
-                continue;
-            }
-
-            l.onMenginePerformanceTraceStart(this, trace, name, attributes);
-        }
-
-        return trace;
-    }
+     */
 
     private void invalidInitialize(String format, Object ... args) {
         String msg = MengineLog.logErrorException(TAG, format, args);

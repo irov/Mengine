@@ -116,9 +116,7 @@ public class MengineAnalyticsEventBuilder {
     public long logAndFlush() {
         long timestamp = this.log();
 
-        MengineApplication application = MengineApplication.getSharedInstance();
-
-        application.onMengineAnalyticsFlush();
+        MengineFragmentAnalytics.INSTANCE.analyticsFlush();
 
         return timestamp;
     }
@@ -126,9 +124,14 @@ public class MengineAnalyticsEventBuilder {
     public long log() {
         long timestamp = MengineUtils.getTimestamp();
 
-        MengineApplication application = MengineApplication.getSharedInstance();
+        MengineAnalyticsEventParam param = new MengineAnalyticsEventParam(MengineAnalyticsEventCategory.MengineAnalyticsEventCategory_System
+            , m_name
+            , timestamp
+            , m_bases
+            , m_parameters
+        );
 
-        application.onMengineAnalyticsEvent(m_name, timestamp, m_bases, m_parameters);
+        MengineFragmentAnalytics.INSTANCE.analyticsEvent(param);
 
         return timestamp;
     }

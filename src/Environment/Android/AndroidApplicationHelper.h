@@ -9,8 +9,6 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        jmethodID AndroidGetApplicationMethodID( JNIEnv * _jenv, const Char * _name, const Char * _signature );
-        //////////////////////////////////////////////////////////////////////////
         void AndroidCallVoidApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... );
         MENGINE_NODISCARD jobject AndroidCallObjectApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... );
         jboolean AndroidCallBooleanApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... );

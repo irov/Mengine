@@ -44,6 +44,8 @@ namespace Mengine
         MENGINE_NODISCARD jobject AndroidMakeJObjectHashMap( JNIEnv * _jenv, int32_t _count );
         MENGINE_NODISCARD jobject AndroidMakeJObjectHashMap( JNIEnv * _jenv, const Params & _params );
         //////////////////////////////////////////////////////////////////////////
+        jobject AndroidGetJObjectEnum( JNIEnv * _jenv, const Char * _className, const Char * _enumName );
+        //////////////////////////////////////////////////////////////////////////
         void * AndroidGetJObjectPointer( JNIEnv * _jenv, jobject _pointer );
         jboolean AndroidAddJObjectList( JNIEnv * _jenv, jobject _list, jobject _value );
         void AndroidPutJObjectMap( JNIEnv * _jenv, jobject _map, jobject _key, jobject _value );

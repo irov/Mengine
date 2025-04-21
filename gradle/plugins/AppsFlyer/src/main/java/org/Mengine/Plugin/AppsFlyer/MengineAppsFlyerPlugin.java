@@ -2,6 +2,8 @@ package org.Mengine.Plugin.AppsFlyer;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import com.appsflyer.AppsFlyerLib;
 import com.appsflyer.adrevenue.adnetworks.AppsFlyerAdNetworkEventType;
 import com.appsflyer.adrevenue.adnetworks.generic.MediationNetwork;
@@ -13,28 +15,30 @@ import org.Mengine.Base.BuildConfig;
 import org.Mengine.Base.MengineAdFormat;
 import org.Mengine.Base.MengineAdMediation;
 import org.Mengine.Base.MengineAdRevenueParam;
+import org.Mengine.Base.MengineAnalyticsEventCategory;
+import org.Mengine.Base.MengineAnalyticsEventParam;
 import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MengineEvent;
-import org.Mengine.Base.MengineInAppPurchaseParam;
-import org.Mengine.Base.MenginePlugin;
-import org.Mengine.Base.MenginePluginAdRevenueListener;
-import org.Mengine.Base.MenginePluginAnalyticsListener;
-import org.Mengine.Base.MenginePluginApplicationListener;
-import org.Mengine.Base.MenginePluginInvalidInitializeException;
+import org.Mengine.Base.MengineListenerAdRevenue;
+import org.Mengine.Base.MengineListenerAnalytics;
+import org.Mengine.Base.MengineListenerApplication;
+import org.Mengine.Base.MengineListenerUser;
+import org.Mengine.Base.MengineService;
+import org.Mengine.Base.MengineServiceInvalidInitializeException;
+import org.Mengine.Base.MengineUtils;
 
 import java.util.Currency;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MengineAppsFlyerPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginAdRevenueListener, MenginePluginApplicationListener, MenginePluginSessionIdListener {
+public class MengineAppsFlyerPlugin extends MengineService implements MengineListenerAnalytics, MengineListenerAdRevenue, MengineListenerApplication, MengineListenerUser {
     public static final String SERVICE_NAME = "AppsFlyer";
     public static final boolean SERVICE_EMBEDDING = true;
 
     public static final String METADATA_API_KEY = "mengine.appsflyer.api_key";
 
     @Override
-    public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
-        String MengineAppsFlyerPlugin_ApiKey = this.getMetaDataString(METADATA_API_KEY);
+    public void onAppPrepare(@NonNull MengineApplication application, @NonNull Map<String, String> pluginVersions) throws MengineServiceInvalidInitializeException {
+        String MengineAppsFlyerPlugin_ApiKey = application.getMetaDataString(METADATA_API_KEY);
 
         this.logInfo("%s: %s"
             , METADATA_API_KEY
@@ -49,8 +53,8 @@ public class MengineAppsFlyerPlugin extends MenginePlugin implements MenginePlug
             appsFlyer.setDebugLog(true);
         }
 
-        String sessionId = application.getSessionId();
-        appsFlyer.setCustomerUserId(sessionId);
+        String userId = application.getUserId();
+        appsFlyer.setCustomerUserId(userId);
 
         appsFlyer.init(MengineAppsFlyerPlugin_ApiKey, null, context);
         appsFlyer.start(context);
@@ -60,22 +64,32 @@ public class MengineAppsFlyerPlugin extends MenginePlugin implements MenginePlug
     }
 
     @Override
-    void onMengineSessionId(MengineApplication application, String sessionId) {
+    public void onMengineChangeUserId(@NonNull MengineApplication application, String userId) {
         AppsFlyerLib appsFlyer = AppsFlyerLib.getInstance();
-        appsFlyer.setCustomerUserId(sessionId);
+        appsFlyer.setCustomerUserId(userId);
     }
 
     @Override
-    public void onMengineAnalyticsEvent(MengineApplication application, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
+    public void onMengineRemoveUserData(@NonNull MengineApplication application) {
+        AppsFlyerLib appsFlyer = AppsFlyerLib.getInstance();
+        appsFlyer.setCustomerUserId(null);
+    }
+
+    @Override
+    public void onMengineAnalyticsEvent(@NonNull MengineApplication application, @NonNull MengineAnalyticsEventParam param) {
+        if (param.ANALYTICS_CATEGORY == MengineAnalyticsEventCategory.MengineAnalyticsEventCategory_System) {
+            return;
+        }
+
         Map<String, Object> params = new HashMap<>();
 
-        params.putAll(bases);
-        params.putAll(parameters);
+        params.putAll(param.ANALYTICS_BASES);
+        params.putAll(param.ANALYTICS_PARAMETERS);
 
         Context context = application.getApplicationContext();
 
         AppsFlyerLib appsFlyer = AppsFlyerLib.getInstance();
-        appsFlyer.logEvent(context, eventName, params, new AppsFlyerRequestListener() {
+        appsFlyer.logEvent(context, param.ANALYTICS_NAME, params, new AppsFlyerRequestListener() {
                 @Override
                 public void onSuccess() {
                     //Empty
@@ -84,7 +98,7 @@ public class MengineAppsFlyerPlugin extends MenginePlugin implements MenginePlug
                 @Override
                 public void onError(int errorCode, String errorMessage) {
                     MengineAppsFlyerPlugin.this.logInfo("logEvent [CUSTOM] eventName: %s params: %s [ERROR] code: %d description: %s"
-                        , eventName
+                        , param.ANALYTICS_NAME
                         , params
                         , errorCode
                         , errorMessage
@@ -120,7 +134,7 @@ public class MengineAppsFlyerPlugin extends MenginePlugin implements MenginePlug
     }
 
     @Override
-    public void onMengineAdRevenue(MengineApplication application, MengineAdRevenueParam revenue) {
+    public void onMengineAdRevenue(@NonNull MengineApplication application, @NonNull MengineAdRevenueParam revenue) {
         MengineAdMediation mediation = revenue.ADREVENUE_MEDIATION;
         MediationNetwork AppsFlyerSource = MengineAppsFlyerPlugin.getMediationNetwork(mediation);
         String network = revenue.ADREVENUE_NETWORK;

@@ -24,13 +24,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidAssetService::_initializeService()
     {
-        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
-        {
-            LOGGER_ERROR( "invalid get asset manager" );
-
-            return false;
-        }
-
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );

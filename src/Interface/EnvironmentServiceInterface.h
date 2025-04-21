@@ -2,6 +2,7 @@
 
 #include "Interface/ServiceInterface.h"
 
+#include "Config/Timestamp.h"
 #include "Config/Char.h"
 
 #ifndef MENGINE_ENVIRONMENT_USER_MAXNAME
@@ -28,16 +29,16 @@
 #define MENGINE_ENVIRONMENT_BUNDLEID_MAXNAME 256
 #endif
 
-#ifndef MENGINE_ENVIRONMENT_SESSIONID_MAXNAME
-#define MENGINE_ENVIRONMENT_SESSIONID_MAXNAME 128
-#endif
-
 #ifndef MENGINE_ENVIRONMENT_INSTALLKEY_MAXNAME
 #define MENGINE_ENVIRONMENT_INSTALLKEY_MAXNAME 128
 #endif
 
 #ifndef MENGINE_ENVIRONMENT_INSTALLVERSION_MAXNAME
 #define MENGINE_ENVIRONMENT_INSTALLVERSION_MAXNAME 64
+#endif
+
+#ifndef MENGINE_ENVIRONMENT_SESSIONID_MAXNAME
+#define MENGINE_ENVIRONMENT_SESSIONID_MAXNAME 32
 #endif
 
 namespace Mengine
@@ -58,9 +59,10 @@ namespace Mengine
     public:
         virtual void getSessionId( Char * const _sessionId ) const = 0;
         virtual void getInstallKey( Char * const _installKey ) const = 0;
-        virtual int64_t getInstallTimestamp() const = 0;
+        virtual Timestamp getInstallTimestamp() const = 0;
         virtual void getInstallVersion( Char * const _installVersion ) const = 0;
         virtual int64_t getInstallRND() const = 0;
+        virtual Timestamp getSessionTimestamp() const = 0;
         virtual int64_t getSessionIndex() const = 0;
     };
 }

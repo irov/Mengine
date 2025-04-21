@@ -24,7 +24,7 @@ public class MengineMonitorConnectivityStatusService extends MengineService impl
             public void onAvailable(@NonNull Network network) {
                 super.onAvailable(network);
 
-                MengineMonitorConnectivityStatusService.this.logMessage("network available");
+                MengineMonitorConnectivityStatusService.this.logInfo("network available");
 
                 MengineNetwork.setNetworkAvailable(true);
             }
@@ -33,7 +33,7 @@ public class MengineMonitorConnectivityStatusService extends MengineService impl
             public void onLost(@NonNull Network network) {
                 super.onLost(network);
 
-                MengineMonitorConnectivityStatusService.this.logMessage("network lost");
+                MengineMonitorConnectivityStatusService.this.logInfo("network lost");
 
                 MengineNetwork.setNetworkAvailable(false);
             }
@@ -92,7 +92,7 @@ public class MengineMonitorConnectivityStatusService extends MengineService impl
                     return;
                 }
 
-                MengineMonitorConnectivityStatusService.this.logMessage("network capabilities changed unmetered: %b transport: %s"
+                MengineMonitorConnectivityStatusService.this.logInfo("network capabilities changed unmetered: %b transport: %s"
                     , unmetered
                     , transport
                 );

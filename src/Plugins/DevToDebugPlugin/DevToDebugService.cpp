@@ -9,11 +9,6 @@
 #include "Interface/HttpServiceInterface.h"
 #include "Interface/HttpRequestInterface.h"
 
-#if defined(MENGINE_PLATFORM_ANDROID)
-#   include "Environment/Android/AndroidDeclaration.h"
-#   include "Environment/Android/AndroidHelper.h"
-#endif
-
 #include "DevToDebugTab.h"
 
 #include "DevToDebugPropertyConstBoolean.h"
@@ -50,74 +45,6 @@
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
 
-#if defined(MENGINE_PLATFORM_ANDROID)
-//////////////////////////////////////////////////////////////////////////
-extern "C"
-{
-    //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jboolean JNICALL MENGINE_JAVA_INTERFACE( AndroidDevDebuggerMengine_1createDevTab )(JNIEnv * env, jclass cls, jstring _tab)
-    {
-        Mengine::ConstString tab_cstr = Mengine::Helper::AndroidMakeConstStringFromJString( env, _tab );
-
-        if( DEVTODEBUG_SERVICE()
-            ->hasTab( tab_cstr ) == false )
-        {
-            LOGGER_ERROR( "invalid create dev tab has already exist '%s'"
-                , tab_cstr.c_str()
-            );
-
-            return JNI_FALSE;
-        }
-
-        Mengine::DevToDebugTabInterfacePtr t = Mengine::Helper::generatePrototype<Mengine::DevToDebugTab>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_FUNCTION );
-
-        DEVTODEBUG_SERVICE()
-            ->addTab( STRINGIZE_STRING_LOCAL( "Platform" ), t );
-
-        return JNI_TRUE;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidDevDebuggerMengine_1addDevButton )(JNIEnv * env, jclass cls, jstring _tab, jstring _id, jstring _title, jobject _cb)
-    {
-        Mengine::ConstString tab = Mengine::Helper::AndroidMakeConstStringFromJString( env, _tab );
-        Mengine::ConstString id = Mengine::Helper::AndroidMakeConstStringFromJString( env, _id );
-        Mengine::String title = Mengine::Helper::AndroidMakeStringFromJString( env, _title );
-
-        const Mengine::DevToDebugTabInterfacePtr & t = DEVTODEBUG_SERVICE()
-            ->getTab( tab );
-
-        Mengine::DevToDebugWidgetInterfacePtr button = Mengine::Helper::generatePrototype<Mengine::DevToDebugWidgetButton>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_FUNCTION );
-
-        button->setId( id );
-
-        Mengine::DevToDebugPropertyInterfacePtr button_title = Mengine::Helper::generatePrototype<Mengine::DevToDebugPropertyConstString>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_FUNCTION );
-
-        Mengine::UnknownDevToDebugPropertyConstStringInterfacePtr unknown_button_title = button_title->getUnknown();
-        unknown_button_title->setValue( "Change" );
-
-        button->setDataProperty( STRINGIZE_STRING_LOCAL( "title" ), button_title );
-
-        Mengine::UnknownDevToDebugWidgetButtonInterfacePtr unknown_button = button->getDynamicUnknown();
-
-        jclass cls_cb = env->GetObjectClass( _cb );
-
-        jmethodID jmethodId_callback = env->GetMethodID( cls_cb, "callback", "()V" );
-
-        jobject jcb = env->NewGlobalRef( _cb );
-
-        unknown_button->setClickEvent( [env, jcb, jmethodId_callback]()
-        {
-            env->CallVoidMethod( jcb, jmethodId_callback );
-        } );
-
-        env->DeleteLocalRef( cls_cb );
-
-        t->addWidget( button );
-    }
-    ///////////////////////////////////////////////////////////////////////
-}
-//////////////////////////////////////////////////////////////////////////
-#endif
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( DevToDebugService, Mengine::DevToDebugService );
 //////////////////////////////////////////////////////////////////////////

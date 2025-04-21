@@ -23,6 +23,8 @@ import org.Mengine.Base.MengineAdMediation;
 import org.Mengine.Base.MengineAdProviderInterface;
 import org.Mengine.Base.MengineAdRevenueParam;
 import org.Mengine.Base.MengineAdService;
+import org.Mengine.Base.MengineFragmentAdRevenue;
+import org.Mengine.Base.MengineFragmentTransparencyConsent;
 import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineListenerRemoteConfig;
 import org.Mengine.Base.MengineTransparencyConsentParam;
@@ -47,7 +49,6 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
     public static final String METADATA_ENABLE_PRIVACY_POLICY_FLOW = "mengine.applovin.enable_privacy_policy_flow";
     public static final String METADATA_PRIVACY_POLICY_URL = "mengine.applovin.privacy_policy_url";
     public static final String METADATA_TERMS_OF_SERVICE_URL = "mengine.applovin.terms_of_service_url";
-    public static final String METADATA_BANNER_ADAPTIVE = "mengine.applovin.banner.adaptive";
     public static final String METADATA_BANNER_PLACEMENT = "mengine.applovin.banner.placement";
     public static final String METADATA_BANNER_ADUNITID = "mengine.applovin.banner.adunitid";
     public static final String METADATA_INTERSTITIAL_ADUNITID = "mengine.applovin.interstitial.adunitid";
@@ -100,9 +101,8 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
                 adUnitIds.add(MengineAppLovinPlugin_Banner_AdUnitId);
 
                 String MengineAppLovinPlugin_Banner_Placement = this.getMetaDataString(METADATA_BANNER_PLACEMENT);
-                boolean MengineAppLovinPlugin_BannerAdaptive = this.getMetaDataBoolean(METADATA_BANNER_ADAPTIVE);
 
-                MengineAppLovinBannerAd bannerAd = new MengineAppLovinBannerAd(this, MengineAppLovinPlugin_Banner_AdUnitId, MengineAppLovinPlugin_Banner_Placement, MengineAppLovinPlugin_BannerAdaptive);
+                MengineAppLovinBannerAd bannerAd = new MengineAppLovinBannerAd(this, MengineAppLovinPlugin_Banner_AdUnitId, MengineAppLovinPlugin_Banner_Placement);
 
                 m_bannerAd = bannerAd;
             }
@@ -168,6 +168,26 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
 
         AppLovinSdkSettings settings = appLovinSdk.getSettings();
 
+        String MengineAppLovinPlugin_CCPA = this.getMetaDataString(METADATA_CCPA);
+
+        this.logInfo("%s: %s"
+            , METADATA_CCPA
+            , MengineAppLovinPlugin_CCPA
+        );
+
+        if (MengineAppLovinPlugin_CCPA.equalsIgnoreCase("YES") == true) {
+            AppLovinPrivacySettings.setDoNotSell(true);
+        } else if (MengineAppLovinPlugin_CCPA.equalsIgnoreCase("NO") == true) {
+            AppLovinPrivacySettings.setDoNotSell(false);
+        } else if (MengineAppLovinPlugin_CCPA.equalsIgnoreCase("UNKNOWN") == true) {
+            // Nothing
+        } else {
+            this.invalidInitialize("invalid %s: %s [YES|NO|UNKNOWN]"
+                , METADATA_CCPA
+                , MengineAppLovinPlugin_CCPA
+            );
+        }
+
         boolean MengineAppLovinPlugin_EnablePrivacyPolicyFlow = this.getMetaDataBoolean(METADATA_ENABLE_PRIVACY_POLICY_FLOW);
 
         if (MengineAppLovinPlugin_EnablePrivacyPolicyFlow == true) {
@@ -181,11 +201,11 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             String MengineAppLovinPlugin_TermsOfServiceUrl = this.getMetaDataString(METADATA_TERMS_OF_SERVICE_URL);
             termsAndPrivacyPolicyFlowSettings.setTermsOfServiceUri(Uri.parse(MengineAppLovinPlugin_TermsOfServiceUrl));
 
-            this.logMessage("privacy policy: %s"
+            this.logInfo("privacy policy: %s"
                 , MengineAppLovinPlugin_PrivacyPolicyUrl
             );
 
-            this.logMessage("term of service: %s"
+            this.logInfo("term of service: %s"
                 , MengineAppLovinPlugin_TermsOfServiceUrl
             );
 
@@ -206,19 +226,19 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             settings.setCreativeDebuggerEnabled(false);
         }
 
-        String sessionId = application.getSessionId();
-        settings.setUserIdentifier(sessionId);
+        String userId = application.getUserId();
+        settings.setUserIdentifier(userId);
 
         adService.setAdProvider(this);
 
         String MengineAppLovinPlugin_SdkKey = this.getMetaDataString(METADATA_SDK_KEY);
 
-        this.logMessageProtected("%s: %s"
+        this.logInfo("%s: %s"
             , METADATA_SDK_KEY
             , MengineUtils.getRedactedValue(MengineAppLovinPlugin_SdkKey)
         );
 
-        AppLovinSdkInitializationConfiguration config = AppLovinSdkInitializationConfiguration.builder(MengineAppLovinPlugin_SdkKey, application)
+        AppLovinSdkInitializationConfiguration config = AppLovinSdkInitializationConfiguration.builder(MengineAppLovinPlugin_SdkKey)
             .setMediationProvider(AppLovinMediationProvider.MAX)
             .setAdUnitIds(adUnitIds)
             .setPluginVersion("Mengine-v" + application.getEngineVersion())
@@ -232,7 +252,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             List<String> enabledAmazonAdUnitIds = configuration.getEnabledAmazonAdUnitIds();
             AppLovinSdkConfiguration.ConsentFlowUserGeography consentFlowUserGeography = configuration.getConsentFlowUserGeography();
 
-            this.logMessage("initialized CMP: %b TestMode: %b CountryCode: %s AmazonAdUnitIds: %s ConsentFlowUserGeography: %s"
+            this.logInfo("initialized CMP: %b TestMode: %b CountryCode: %s AmazonAdUnitIds: %s ConsentFlowUserGeography: %s"
                 , supportedCmp
                 , testModeEnabled
                 , countryCode
@@ -248,15 +268,13 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
                 String name = networkInfo.getName();
                 String adapterVersion = networkInfo.getAdapterVersion();
 
-                this.logMessage("available mediated network: %s adapter version: %s"
+                this.logInfo("available mediated network: %s adapter version: %s"
                     , name
                     , adapterVersion
                 );
             }
 
-            MengineTransparencyConsentParam tcParam = application.makeTransparencyConsentParam();
-
-            application.onMengineTransparencyConsent(tcParam);
+            application.checkTransparencyConsentServices();
 
             if (m_bannerAd != null) {
                 m_bannerAd.initialize(application);
@@ -461,6 +479,19 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
     }
 
     @Override
+    public boolean canYouShowBanner() {
+        if (m_bannerAd == null) {
+            return false;
+        }
+
+        if (m_bannerAd.canYouShow() == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
     public void showBanner() {
         if (m_bannerAd == null) {
             this.assertionError("not found banner");
@@ -468,7 +499,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             return;
         }
 
-        this.logMessage("banner show");
+        this.logInfo("banner show");
 
         m_bannerAd.show();
     }
@@ -481,7 +512,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             return;
         }
 
-        this.logMessage("banner hide");
+        this.logInfo("banner hide");
 
         m_bannerAd.hide();
     }
@@ -544,7 +575,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             return false;
         }
 
-        this.logMessage("showInterstitial placement: %s"
+        this.logInfo("showInterstitial placement: %s"
             , placement
         );
 
@@ -602,7 +633,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             return false;
         }
 
-        this.logMessage("showRewarded placement: %s"
+        this.logInfo("showRewarded placement: %s"
             , placement
         );
 
@@ -647,7 +678,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             return false;
         }
 
-        this.logMessage("showAppOpen placement: %s"
+        this.logInfo("showAppOpen placement: %s"
             , placement
         );
 
@@ -668,6 +699,19 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
     }
 
     @Override
+    public boolean canYouShowMREC() {
+        if (m_MRECAd == null) {
+            return false;
+        }
+
+        if (m_MRECAd.canYouShow() == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
     public void showMREC(int leftMargin, int bottomMargin) {
         if (m_MRECAd == null) {
             this.assertionError("not found MREC");
@@ -675,7 +719,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             return;
         }
 
-        this.logMessage("MREC show");
+        this.logInfo("MREC show");
 
         m_MRECAd.show(leftMargin, bottomMargin);
     }
@@ -688,7 +732,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             return;
         }
 
-        this.logMessage("MREC hide");
+        this.logInfo("MREC hide");
 
         m_MRECAd.hide();
     }
@@ -749,8 +793,6 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
         double revenueValue = ad.getRevenue();
         String revenuePrecision = ad.getRevenuePrecision();
 
-        MengineApplication application = this.getMengineApplication();
-
         MengineAdRevenueParam revenue = new MengineAdRevenueParam();
         revenue.ADREVENUE_MEDIATION = MengineAdMediation.ADMEDIATION_APPLOVINMAX;
         revenue.ADREVENUE_FORMAT = adFormat;
@@ -761,7 +803,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
         revenue.ADREVENUE_REVENUE_VALUE = revenueValue;
         revenue.ADREVENUE_REVENUE_CURRENCY = "USD";
 
-        application.onMengineAdRevenue(revenue);
+        MengineFragmentAdRevenue.INSTANCE.adRevenue(revenue);
     }
 
     public boolean isConsentFlowUserGeographyGDPR() {
@@ -803,7 +845,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
                 return;
             }
 
-            this.logMessage("Consent dialog was shown");
+            this.logInfo("Consent dialog was shown");
 
             this.pythonCall("onAndroidAppLovinConsentFlowCompleted");
         });

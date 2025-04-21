@@ -20,7 +20,7 @@ import org.Mengine.Base.MengineListenerActivity;
 import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineListenerLogger;
 import org.Mengine.Base.MengineListenerRemoteConfig;
-import org.Mengine.Base.MengineListenerSessionId;
+import org.Mengine.Base.MengineListenerUser;
 import org.Mengine.Base.MengineListenerTransparencyConsent;
 import org.Mengine.Base.MengineLog;
 import org.Mengine.Base.MengineLoggerMessageParam;
@@ -32,8 +32,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Map;
+import java.util.Objects;
 
-public class MengineDataDogPlugin extends MengineService implements MengineListenerLogger, MengineListenerApplication, MengineListenerActivity, MengineListenerSessionId, MengineListenerRemoteConfig, MengineListenerTransparencyConsent {
+public class MengineDataDogPlugin extends MengineService implements MengineListenerLogger, MengineListenerApplication, MengineListenerActivity, MengineListenerUser, MengineListenerRemoteConfig, MengineListenerTransparencyConsent {
     public static final String SERVICE_NAME = "DataDog";
     public static final boolean SERVICE_EMBEDDING = true;
 
@@ -84,15 +85,15 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
 
         DatadogSite site;
 
-        if (MengineDataDogPlugin_Site.equals("us1") == true) {
+        if (Objects.equals(MengineDataDogPlugin_Site, "us1") == true) {
             site = DatadogSite.US1;
-        } else if (MengineDataDogPlugin_Site.equals("us3") == true) {
+        } else if (Objects.equals(MengineDataDogPlugin_Site, "us3") == true) {
             site = DatadogSite.US3;
-        } else if (MengineDataDogPlugin_Site.equals("us5") == true) {
+        } else if (Objects.equals(MengineDataDogPlugin_Site, "us5") == true) {
             site = DatadogSite.US5;
-        } else if (MengineDataDogPlugin_Site.equals("us1_fed") == true) {
+        } else if (Objects.equals(MengineDataDogPlugin_Site, "us1_fed") == true) {
             site = DatadogSite.US1_FED;
-        } else if (MengineDataDogPlugin_Site.equals("eu1") == true) {
+        } else if (Objects.equals(MengineDataDogPlugin_Site, "eu1") == true) {
             site = DatadogSite.EU1;
         } else {
             this.invalidInitialize("initialize unknown site: %s"
@@ -137,9 +138,9 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
         }
 
         String installKey = application.getInstallKey();
-        String sessionId = application.getSessionId();
+        String userId = application.getUserId();
 
-        Datadog.setUserInfo(sessionId, null, null, Map.of("install_key", installKey));
+        Datadog.setUserInfo(userId, null, null, Map.of("install_key", installKey));
 
         LogsConfiguration logsConfig = new LogsConfiguration.Builder()
             .build();
@@ -217,24 +218,24 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
     }
 
     @Override
-    public void onMengineSetSessionId(@NonNull MengineApplication application, String sessionId) {
+    public void onMengineChangeUserId(@NonNull MengineApplication application, String userId) {
         String installKey = application.getInstallKey();
 
-        Datadog.setUserInfo(sessionId, null, null, Map.of("install_key", installKey));
+        Datadog.setUserInfo(userId, null, null, Map.of("install_key", installKey));
     }
 
     @Override
-    public void onMengineRemoveSessionData(@NonNull MengineApplication application) {
+    public void onMengineRemoveUserData(@NonNull MengineApplication application) {
         Datadog.setUserInfo(null, null, null, null);
     }
 
     @Override
-    public void onMengineLogger(@NonNull MengineApplication application, @NonNull MengineLoggerMessageParam message) {
+    public void onMengineLog(@NonNull MengineApplication application, @NonNull MengineLoggerMessageParam message) {
         if (m_loggerDataDog == null) {
             return;
         }
 
-        Map attributes = BuildConfig.DEBUG == true ? Map.of("code", Map.of(
+        Map<String, Object> attributes = BuildConfig.DEBUG == true ? Map.of("code", Map.of(
             "category", message.MESSAGE_CATEGORY,
             "thread", message.MESSAGE_THREAD,
             "file", message.MESSAGE_FILE != null ? message.MESSAGE_FILE : "empty",
@@ -300,7 +301,7 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
     }
 
     @Override
-    public void onMengineTransparencyConsent(@NonNull MengineApplication application, MengineTransparencyConsentParam tcParam) {
+    public void onMengineTransparencyConsent(@NonNull MengineApplication application, @NonNull MengineTransparencyConsentParam tcParam) {
         TrackingConsent consent = this.getTrackingConsent(tcParam);
 
         Datadog.setTrackingConsent(consent);

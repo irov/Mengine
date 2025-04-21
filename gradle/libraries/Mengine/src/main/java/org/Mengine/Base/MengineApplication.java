@@ -43,6 +43,7 @@ public class MengineApplication extends Application {
     private long m_installRND = -1;
     private long m_sessionIndex = -1;
     private long m_sessionTimestamp = -1;
+    private long m_sessionRND = -1;
     private String m_sessionId;
 
     protected String m_userId;
@@ -510,6 +511,10 @@ public class MengineApplication extends Application {
         return m_sessionTimestamp;
     }
 
+    public long getSessionRND() {
+        return m_sessionRND;
+    }
+
     public String getSessionId() {
         return m_sessionId;
     }
@@ -742,7 +747,7 @@ public class MengineApplication extends Application {
     }
 
     protected static String generateInstallKey() {
-        String installKey = "MNIK" + MengineUtils.getSecureRandomHexString(16).toUpperCase(Locale.US);
+        String installKey = (BuildConfig.DEBUG == true ? "MDIK" : "MRIK") + MengineUtils.getSecureRandomHexString(32).toUpperCase(Locale.US);
 
         return installKey;
     }
@@ -883,12 +888,6 @@ public class MengineApplication extends Application {
 
             installRND = MengineUtils.getSecureRandomNumber();
 
-            if (installRND == 0) {
-                installRND = 1;
-            } else if (installRND < 0) {
-                installRND = -installRND;
-            }
-
             editor.putLong("install_rnd", installRND);
         }
 
@@ -908,6 +907,7 @@ public class MengineApplication extends Application {
         m_installRND = installRND;
         m_sessionIndex = sessionIndex;
         m_sessionTimestamp = sessionTimestamp;
+        m_sessionRND = MengineUtils.getSecureRandomNumber();
         m_sessionId = MengineUtils.getSecureRandomHexString(32);
 
         m_userId = userId;
@@ -921,6 +921,7 @@ public class MengineApplication extends Application {
         this.setState("user.install_rnd", m_installRND);
         this.setState("user.session_index", m_sessionIndex);
         this.setState("user.session_timestamp", m_sessionTimestamp);
+        this.setState( "user.session_rnd", m_sessionRND);
         this.setState("user.session_id", m_sessionId);
 
         MengineAnalytics.addContextParameterBoolean("is_dev", BuildConfig.DEBUG);
@@ -930,6 +931,7 @@ public class MengineApplication extends Application {
         MengineAnalytics.addContextParameterLong("install_rnd", m_installRND);
         MengineAnalytics.addContextParameterLong("session_index", m_sessionIndex);
         MengineAnalytics.addContextParameterLong("session_timestamp", m_sessionTimestamp);
+        MengineAnalytics.addContextParameterLong("session_rnd", m_sessionRND);
         MengineAnalytics.addContextParameterString("session_id", m_sessionId);
 
         MengineAnalytics.addContextGetterParameterLong("connection", () -> {

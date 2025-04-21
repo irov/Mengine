@@ -20,6 +20,7 @@ extern "C"
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1nativeDebugBreak )( JNIEnv * env, jclass cls )
     {
         jclass jclassMengineUtils = env->FindClass( "org/Mengine/Base/MengineUtils" );
+
         jmethodID jmethodIdPrintCurrentStackTrace = env->GetStaticMethodID( jclassMengineUtils, "printCurrentStackTrace", "()V" );
 
         env->CallStaticVoidMethod( jclassMengineUtils, jmethodIdPrintCurrentStackTrace );

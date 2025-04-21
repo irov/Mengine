@@ -910,7 +910,7 @@ public class MengineApplication extends Application {
         m_sessionTimestamp = sessionTimestamp;
         m_sessionId = MengineUtils.getSecureRandomHexString(32);
 
-        this.setUserId(userId);
+        m_userId = userId;
 
         MengineStatistic.load(this);
 

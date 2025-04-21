@@ -238,6 +238,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
         AccessToken.setCurrentAccessToken(null);
         Profile.setCurrentProfile(null);
 
+        AppEventsLogger.setUserID(null);
         AppEventsLogger.clearUserData();
         AppEventsLogger.clearUserID();
     }
@@ -445,7 +446,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
         request.executeAsync();
     }
     
-    public boolean shareLink(String link, String hashtag, String quote) {
+    public void shareLink(String link, String hashtag, String quote) {
         this.logInfo("shareLink link: %s hashtag: %s quote: %s"
             , link
             , hashtag
@@ -455,7 +456,9 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
         if (ShareDialog.canShow(ShareLinkContent.class) == false) {
             this.logWarning("shareLink can't show");
 
-            return false;
+            MengineFacebookPlugin.this.pythonCall("onFacebookShareError", ERROR_CODE_UNKNOWN, new RuntimeException("can't show"));
+
+            return;
         }
 
         this.buildEvent("mng_fb_share_link")
@@ -531,24 +534,6 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
             .build();
 
         shareDialog.show(linkContent);
-
-        return true;
-    }
-    
-    public void getProfilePictureLink(final String typeParameter) {
-        this.logInfo("getProfilePictureLink typeParameter: %s"
-            , typeParameter
-        );
-
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-
-        if (this.checkValidAccessToken(accessToken, "onFacebookProfilePictureLinkGetError") == false) {
-            return;
-        }
-
-        String userId = accessToken.getUserId();
-        
-        this.getProfileUserPictureLinkWithAccessToken(accessToken, userId, typeParameter);
     }
 
     protected void getProfileUserPictureLinkWithAccessToken(AccessToken accessToken, final String user_id, final String typeParameter) {
@@ -610,6 +595,22 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
         parameters.putString("type", typeParameter);
         request.setParameters(parameters);
         request.executeAsync();
+    }
+
+    public void getProfilePictureLink(final String typeParameter) {
+        this.logInfo("getProfilePictureLink typeParameter: %s"
+            , typeParameter
+        );
+
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+
+        if (this.checkValidAccessToken(accessToken, "onFacebookProfilePictureLinkGetError") == false) {
+            return;
+        }
+
+        String userId = accessToken.getUserId();
+
+        this.getProfileUserPictureLinkWithAccessToken(accessToken, userId, typeParameter);
     }
     
     public void getProfileUserPictureLink(final String user_id, final String typeParameter) {

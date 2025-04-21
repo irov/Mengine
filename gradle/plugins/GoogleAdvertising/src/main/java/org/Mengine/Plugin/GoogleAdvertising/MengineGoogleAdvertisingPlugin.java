@@ -14,6 +14,7 @@ import org.Mengine.Base.MengineFragmentAdvertisingId;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
+import org.Mengine.Base.MengineTransparencyConsentParam;
 import org.Mengine.Base.MengineUtils;
 import org.Mengine.Plugin.GoogleService.MengineGoogleServicePlugin;
 
@@ -72,7 +73,21 @@ public class MengineGoogleAdvertisingPlugin extends MengineService implements Me
 
     @Override
     public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
+        MengineTransparencyConsentParam tcParam = application.makeTransparencyConsentParam();
+
+        if (tcParam.getConsentAdStorage() == false) {
+            this.logInfo("AdvertisingId disabled by consent ad storage");
+
+            m_advertisingId = LIMIT_ADVERTISING_ID;
+            m_advertisingLimitTrackingEnabled = true;
+            m_advertisingLimitTrackingFetch = true;
+
+            MengineUtils.performOnMainThreadDelayed(() -> {
+                MengineFragmentAdvertisingId.INSTANCE.setAdvertisingId(m_advertisingId, m_advertisingLimitTrackingEnabled);
+            }, 0L);
+
+            return;
+        }
 
         Runnable task = () -> {
             Context context = application.getApplicationContext();
@@ -83,19 +98,19 @@ public class MengineGoogleAdvertisingPlugin extends MengineService implements Me
                 adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
             } catch (final IOException e) {
                 this.logError("[ERROR] invalid get advertising id info IOException: %s"
-                        , e.getMessage()
+                    , e.getMessage()
                 );
             } catch (final IllegalStateException e) {
                 this.logError("[ERROR] invalid get advertising id info IllegalStateException: %s"
-                        , e.getMessage()
+                    , e.getMessage()
                 );
             } catch (final GooglePlayServicesNotAvailableException e) {
                 this.logError("[ERROR] invalid get advertising id info GooglePlayServicesNotAvailableException: %s"
-                        , e.getMessage()
+                    , e.getMessage()
                 );
             } catch (final GooglePlayServicesRepairableException e) {
                 this.logError("[ERROR] invalid get advertising id info GooglePlayServicesRepairableException: %s"
-                        , e.getMessage()
+                    , e.getMessage()
                 );
             }
 
@@ -107,14 +122,18 @@ public class MengineGoogleAdvertisingPlugin extends MengineService implements Me
         thread.setName("MengineGAID");
         thread.start();
 
-        m_advertisingThread = thread;
+        synchronized (this) {
+            m_advertisingThread = thread;
+        }
     }
 
     @Override
     public void onAppTerminate(@NonNull MengineApplication application) {
-        if (m_advertisingThread != null) {
-            m_advertisingThread.interrupt();
-            m_advertisingThread = null;
+        synchronized (this) {
+            if (m_advertisingThread != null) {
+                m_advertisingThread.interrupt();
+                m_advertisingThread = null;
+            }
         }
     }
 
@@ -149,5 +168,9 @@ public class MengineGoogleAdvertisingPlugin extends MengineService implements Me
         MengineUtils.performOnMainThread(() -> {
             MengineFragmentAdvertisingId.INSTANCE.setAdvertisingId(m_advertisingId, m_advertisingLimitTrackingEnabled);
         });
+
+        synchronized (this) {
+            m_advertisingThread = null;
+        }
     }
 }

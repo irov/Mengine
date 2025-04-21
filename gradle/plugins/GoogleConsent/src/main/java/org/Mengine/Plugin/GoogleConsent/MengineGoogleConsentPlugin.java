@@ -1,13 +1,12 @@
 package org.Mengine.Plugin.GoogleConsent;
 
 import org.Mengine.Base.MengineActivity;
-import org.Mengine.Base.MengineFragmentTransparencyConsent;
+import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineListenerActivity;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineTransparencyConsentParam;
 
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -25,14 +24,16 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
         ConsentRequestParameters.Builder builder = new ConsentRequestParameters.Builder();
 
         if (BuildConfig.DEBUG == true) {
-            ConsentDebugSettings debugSettings = new ConsentDebugSettings.Builder(activity)
-                .setDebugGeography(ConsentDebugSettings
-                    .DebugGeography
-                    .DEBUG_GEOGRAPHY_EEA)
-                .addTestDeviceHashedId("9203703DF2B7213315680FD6966D3CDB")
-                .build();
+            if (BuildConfig.MENGINE_APP_PLUGIN_GOOGLE_CONSENT_TEST_DEVICE_HASHED_ID != null) {
+                ConsentDebugSettings debugSettings = new ConsentDebugSettings.Builder(activity)
+                    .setDebugGeography(ConsentDebugSettings
+                        .DebugGeography
+                        .DEBUG_GEOGRAPHY_EEA)
+                    .addTestDeviceHashedId(BuildConfig.MENGINE_APP_PLUGIN_GOOGLE_CONSENT_TEST_DEVICE_HASHED_ID)
+                    .build();
 
-            builder.setConsentDebugSettings(debugSettings);
+                builder.setConsentDebugSettings(debugSettings);
+            }
         }
 
         builder.setTagForUnderAgeOfConsent(false);
@@ -60,7 +61,7 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
                 if (privacyOptionsRequirementStatus == ConsentInformation.PrivacyOptionsRequirementStatus.NOT_REQUIRED) {
                     MengineApplication application = this.getMengineApplication();
 
-                    MengineTransparencyConsentParam tcParam = application.checkTransparencyConsentServices();
+                    application.checkTransparencyConsentServices();
 
                     return;
                 }
@@ -95,7 +96,7 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
 
                 MengineApplication application = this.getMengineApplication();
 
-                MengineTransparencyConsentParam tcParam = application.checkTransparencyConsentServices();
+                application.checkTransparencyConsentServices();
             });
     }
 

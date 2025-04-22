@@ -744,8 +744,7 @@ namespace Mengine
                 return false;
             }
 
-            bool precompile = false;
-            meta_resource->get_Precompile( &precompile );
+            bool precompile = meta_resource->getd_Precompile( false );
 
             if( precompile == true )
             {

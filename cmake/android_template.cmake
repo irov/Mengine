@@ -25,8 +25,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_COMPILE_WARNING_AS_ERROR OFF)
 
-SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11" )
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -frtti -fexceptions -Wno-register" )
+SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -frtti -fexceptions -Wno-register")
 
 if (${ANDROID_ABI} STREQUAL "x86_64")
     SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -isystem ${ANDROID_SYSROOT}/usr/include/x86_64-linux-android")

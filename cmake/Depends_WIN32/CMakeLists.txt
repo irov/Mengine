@@ -5,7 +5,6 @@ PROJECT(Depends_WIN32)
 SET(MENGINE_REPOSITORY ${CMAKE_CURRENT_LIST_DIR}/../..)
 
 INCLUDE(${MENGINE_REPOSITORY}/cmake/build_options_template.cmake)
-INCLUDE(${MENGINE_REPOSITORY}/cmake/build_options_template.cmake)
 INCLUDE(${MENGINE_REPOSITORY}/cmake/base_template.cmake)
 INCLUDE(${MENGINE_REPOSITORY}/cmake/macro_template.cmake)
 INCLUDE(${MENGINE_REPOSITORY}/cmake/win32_template.cmake)

@@ -234,8 +234,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ThreadService::joinTask( const ThreadTaskInterfacePtr & _task )
     {
-        _task->cancel();
-
         MENGINE_THREAD_MUTEX_SCOPE( m_mutexTasks );
 
         for( VectorThreadTaskDesc::iterator

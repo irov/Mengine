@@ -2,6 +2,7 @@
 
 set "SOLUTION_NAME=solution_mingw64"
 set "SOURCE_DIRECTORY=%~dp0..\..\cmake\MinGW64"
+set "DEPENDENCIES_PROJECT=Depends_MINGW64"
 set "GENERATOR=Ninja"
 set "BUILD_PUBLISH=OFF"
 

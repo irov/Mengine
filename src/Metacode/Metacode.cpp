@@ -1232,8 +1232,7 @@ namespace Metacode
             if( (m_flagNoRequiredAttribute & EMETA_Unique) != 0 )
             {
                 Metabuf::read( _buff, _size, _read, _userData, this->m_Unique );
-            }
-        
+            }        
         }
         //////////////////////////////////////////////////////////////////////////
         // cppcheck-suppress duplInheritedMember

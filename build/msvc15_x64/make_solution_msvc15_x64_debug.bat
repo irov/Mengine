@@ -1,1 +1,0 @@
-@call make_solution_msvc15_x64.bat Debug

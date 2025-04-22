@@ -157,15 +157,16 @@ namespace Mengine
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
-        for( const ReceiverDesc & desc : m_receiverDescs )
+        VectorReceiverDesc receiverDescs = m_receiverDescs;
+        m_receiverDescs.clear();
+
+        for( const ReceiverDesc & desc : receiverDescs )
         {
             const ThreadTaskInterfacePtr & task = desc.task;
 
             THREAD_SERVICE()
                 ->joinTask( task );
         }
-
-        m_receiverDescs.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void HttpService::_stopService()

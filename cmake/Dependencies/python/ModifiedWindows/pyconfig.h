@@ -30,6 +30,17 @@ WIN32 is still required for the locale module.
 
 */
 
+#if defined(__has_feature)  /* Clang */
+#if __has_feature(address_sanitizer)  /* is ASAN enabled? */
+#define USE_ADDRESS_SANITIZER
+#endif
+#else
+#if defined(__SANITIZE_ADDRESS__)  /* GCC 4.8.x, is ASAN enabled? */
+#define USE_ADDRESS_SANITIZER
+#endif
+#endif
+
+
 #ifdef _WIN32_WCE
 #define MS_WINCE
 #endif
@@ -482,7 +493,9 @@ tzname.  */
 #define Py_UNICODE_SIZE 2
 
 /* Use Python's own small-block memory-allocator. */
-#define WITH_PYMALLOC 1
+#ifndef USE_ADDRESS_SANITIZER
+#	define WITH_PYMALLOC 1
+#endif
 
 /* Define if you have clock.  */
 /* #define HAVE_CLOCK */

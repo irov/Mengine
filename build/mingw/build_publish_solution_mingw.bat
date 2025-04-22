@@ -2,6 +2,7 @@
 
 set "SOLUTION_NAME=solution_mingw_publish"
 set "SOURCE_DIRECTORY=%~dp0..\..\cmake\MinGW"
+set "DEPENDENCIES_PROJECT=Depends_MINGW"
 set "GENERATOR=Ninja"
 set "BUILD_PUBLISH=ON"
 

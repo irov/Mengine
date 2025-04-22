@@ -3,9 +3,9 @@
 set "VERSION=17"
 set "YEAR=2022"
 
-set "SOLUTION_NAME=solution_msvc%VERSION%_sdl"
-set "SOURCE_DIRECTORY=%~dp0..\..\cmake\Win32_SDL"
-set "DEPENDENCIES_PROJECT=Depends_WIN32"
+set "SOLUTION_NAME=solution_msvc%VERSION%_asan_address"
+set "SOURCE_DIRECTORY=%~dp0..\..\cmake\Win32_ASAN_ADDRESS"
+set "DEPENDENCIES_PROJECT=Depends_WIN32_ASAN_ADDRESS"
 set "GENERATOR=Visual Studio %VERSION% %YEAR%"
 set "ARCHITECTURE=Win32"
 

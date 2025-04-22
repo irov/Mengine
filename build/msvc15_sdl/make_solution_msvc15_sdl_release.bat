@@ -1,1 +1,0 @@
-@call make_solution_msvc15_sdl.bat Release

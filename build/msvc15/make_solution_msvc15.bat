@@ -5,6 +5,7 @@ set "YEAR=2017"
 
 set "SOLUTION_NAME=solution_msvc%VERSION%"
 set "SOURCE_DIRECTORY=%~dp0..\..\cmake\Win32"
+set "DEPENDENCIES_PROJECT=Depends_WIN32"
 set "GENERATOR=Visual Studio %VERSION% %YEAR%"
 set "BUILD_PUBLISH=OFF"
 

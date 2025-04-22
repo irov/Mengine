@@ -5,6 +5,7 @@ set "YEAR=2022"
 
 set "SOLUTION_NAME=solution_msvc%VERSION%_x64"
 set "SOURCE_DIRECTORY=%~dp0..\..\cmake\Win64"
+set "DEPENDENCIES_PROJECT=Depends_WIN32"
 set "GENERATOR=Visual Studio %VERSION% %YEAR%"
 set "ARCHITECTURE=x64"
 

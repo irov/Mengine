@@ -302,7 +302,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         jobject AndroidGetJObjectEnum( JNIEnv * _jenv, const Char * _className, const Char * _enumName )
         {
-            jclass jclass_enum = _jenv->FindClass( _className );
+            jclass jclass_enum = Mengine::Mengine_JNI_FindClass( _jenv, _className );
 
             Char signature[256] = { '\0' };
             StdString::strcpy( signature, "L" );

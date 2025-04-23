@@ -89,7 +89,7 @@ namespace Mengine
 
         jobject jobject_category = Helper::AndroidGetJObjectEnum( jenv, "org/Mengine/Base/MengineAnalyticsEventCategory", "MengineAnalyticsEventCategory_Custom" );
 
-        jclass jclass_MengineAnalyticsEventParam = jenv->FindClass( "org/Mengine/Base/MengineAnalyticsEventParam" );
+        jclass jclass_MengineAnalyticsEventParam = Mengine::Mengine_JNI_FindClass( jenv, "org/Mengine/Base/MengineAnalyticsEventParam" );
 
         jmethodID jmethod_MengineAnalyticsEventParam = jenv->GetMethodID( jclass_MengineAnalyticsEventParam, "<init>", "(Lorg/Mengine/Base/MengineAnalyticsEventCategory;Ljava/lang/String;JLjava/util/Map;Ljava/util/Map;)V" );
 

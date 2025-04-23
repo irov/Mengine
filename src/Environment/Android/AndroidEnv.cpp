@@ -19,7 +19,7 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1nativeDebugBreak )( JNIEnv * env, jclass cls )
     {
-        jclass jclassMengineUtils = env->FindClass( "org/Mengine/Base/MengineUtils" );
+        jclass jclassMengineUtils = Mengine::Mengine_JNI_FindClass( env, "org/Mengine/Base/MengineUtils" );
 
         jmethodID jmethodIdPrintCurrentStackTrace = env->GetStaticMethodID( jclassMengineUtils, "printCurrentStackTrace", "()V" );
 
@@ -229,7 +229,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     jclass Mengine_JNI_GetClassApplication( JNIEnv * _jenv )
     {
-        jclass jclassMengineApplication = _jenv->FindClass( "org/Mengine/Base/MengineApplication" );
+        jclass jclassMengineApplication = Mengine::Mengine_JNI_FindClass( _jenv, "org/Mengine/Base/MengineApplication" );
 
         return jclassMengineApplication;
     }
@@ -277,7 +277,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     jclass Mengine_JNI_GetClassActivity( JNIEnv * _jenv )
     {
-        jclass jclassMengineActivity = _jenv->FindClass( "org/Mengine/Base/MengineActivity" );
+        jclass jclassMengineActivity = Mengine::Mengine_JNI_FindClass( _jenv, "org/Mengine/Base/MengineActivity" );
 
         return jclassMengineActivity;
     }
@@ -329,7 +329,7 @@ namespace Mengine
         StdString::strcpy( fragmentClassName, "org/Mengine/Base/" );
         StdString::strcat( fragmentClassName, _fragmentName );
 
-        jclass fragmentClass = _jenv->FindClass( fragmentClassName );
+        jclass fragmentClass = Mengine::Mengine_JNI_FindClass( _jenv, fragmentClassName );
 
         return fragmentClass;
     }

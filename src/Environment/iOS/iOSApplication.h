@@ -17,8 +17,8 @@
 
 - (BOOL)didFinishLaunchingWithOptions:(nullable NSDictionary<UIApplicationLaunchOptionsKey, id> *)launchOptions;
 
-- (void)setSessionId:(NSString * _Nonnull)sessionId;
-- (void)removeSessionData;
+- (void)setUserId:(NSString * _Nonnull)userId;
+- (void)removeUserData;
 
 - (NSString * _Nonnull)getInstallKey;
 - (NSInteger)getInstallTimestamp;
@@ -27,6 +27,9 @@
 - (NSInteger)getSessionIndex;
 - (NSString * _Nonnull)getSessionId;
 - (NSInteger)getSessionTimestamp;
+- (NSInteger)getSessionRND;
+
+- (NSString * _Nonnull)getUserId;
 
 @property (nonatomic, strong) NSString * _Nonnull m_installKey;
 @property (nonatomic) NSInteger m_installTimestamp;
@@ -35,5 +38,8 @@
 @property (nonatomic) NSInteger m_sessionIndex;
 @property (nonatomic, strong) NSString * _Nonnull m_sessionId;
 @property (nonatomic) NSInteger m_sessionTimestamp;
+@property (nonatomic) NSInteger m_sessionRND;
+
+@property (nonatomic, strong) NSString * _Nonnull m_userId;
 
 @end

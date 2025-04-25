@@ -64,14 +64,14 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [[FIRCrashlytics crashlytics] setCrashlyticsCollectionEnabled:MENGINE_DEBUG_VALUE(NO, YES)];
     
-    NSString * sessionId = [iOSApplication.sharedInstance getSessionId];
+    NSString * userId = [iOSApplication.sharedInstance getUserId];
     
-    [[FIRCrashlytics crashlytics] setUserID:sessionId];
+    [[FIRCrashlytics crashlytics] setUserID:userId];
     
     return YES;
 }
 
-- (void)onSessionId:(iOSSessionIdParam *)session {
+- (void)onSessionId:(iOSUserParam *)session {
     [[FIRCrashlytics crashlytics] setUserID:session.USER_ID];
 }
 

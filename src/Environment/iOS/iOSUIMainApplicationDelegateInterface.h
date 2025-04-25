@@ -32,8 +32,8 @@
 - (void)eventAnalyticScreen:(NSString * _Nonnull)name type:(NSString * _Nonnull)type;
 - (void)eventAnalyticFlush;
 
-- (void)eventSetSessionId:(iOSSessionIdParam * _Nonnull)sessionId;
-- (void)eventRemoveSessionData;
+- (void)eventSetUserId:(iOSUserParam * _Nonnull)userId;
+- (void)eventRemoveUserData;
 
 - (void)eventAdRevenue:(iOSAdRevenueParam * _Nonnull)revenue;
 - (void)eventTransparencyConsent:(iOSTransparencyConsentParam * _Nonnull)consent;

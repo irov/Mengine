@@ -28,12 +28,14 @@ namespace Mengine
         void getBundleId( Char * const _bundleId ) const override;
         
     public:
-        void getSessionId( Char * const _sessionId ) const override;
         void getInstallKey( Char * const _installKey ) const override;
-        int64_t getInstallTimestamp() const override;
+        Timestamp getInstallTimestamp() const override;
         void getInstallVersion( Char * const _installVersion ) const override;
         int64_t getInstallRND() const override;
+        Timestamp getSessionTimestamp() const override;
         int64_t getSessionIndex() const override;
+        int64_t getSessionRND() const override;
+        void getSessionId( Char * const _sessionId ) const override;
         
     protected:
         StaticString<MENGINE_ENVIRONMENT_USER_MAXNAME> m_userName;
@@ -45,9 +47,11 @@ namespace Mengine
 
         StaticString<MENGINE_ENVIRONMENT_SESSIONID_MAXNAME> m_sessionId;
         StaticString<MENGINE_ENVIRONMENT_INSTALLKEY_MAXNAME> m_installKey;
-        int64_t m_installTimestamp;
+        Timestamp m_installTimestamp;
         StaticString<MENGINE_ENVIRONMENT_INSTALLVERSION_MAXNAME> m_installVersion;
         int64_t m_installRND;
+        Timestamp m_sessionTimestamp;
         int64_t m_sessionIndex;
+        int64_t m_sessionRND;
     };
 }

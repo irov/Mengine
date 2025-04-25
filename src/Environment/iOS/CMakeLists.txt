@@ -24,8 +24,8 @@ src
     iOSTransparencyConsentParam.h
     iOSTransparencyConsentParam.mm
 
-    iOSSessionIdParam.h
-    iOSSessionIdParam.mm
+    iOSUserParam.h
+    iOSUserParam.mm
 
     iOSAdRevenueParam.h
     iOSAdRevenueParam.mm

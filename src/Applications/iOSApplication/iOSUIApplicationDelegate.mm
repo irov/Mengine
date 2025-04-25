@@ -194,7 +194,7 @@
     }
 }
 
-- (void)eventSetSessionId:(iOSSessionIdParam *)sessionId {
+- (void)eventSetUserId:(iOSUserParam *)sessionId {
     @autoreleasepool {
         for (NSObject<iOSPluginSessionIdDelegateInterface> * delegate in self.m_pluginSessionIdDelegates) {
             [delegate onSessionId:sessionId];
@@ -202,7 +202,7 @@
     }
 }
 
-- (void)eventRemoveSessionData {
+- (void)eventRemoveUserData {
     @autoreleasepool {
         for (NSObject<iOSPluginSessionIdDelegateInterface> * delegate in self.m_pluginSessionIdDelegates) {
             [delegate onRemoveSessionData];

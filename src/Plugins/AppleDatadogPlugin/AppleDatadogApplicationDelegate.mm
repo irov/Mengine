@@ -92,10 +92,10 @@
     [DDDatadog initializeWithConfiguration:configuration
                            trackingConsent:trackingConsent];
     
-    NSString * sessionId = [[iOSApplication sharedInstance] getSessionId];
+    NSString * userId = [[iOSApplication sharedInstance] getUserId];
     NSString * installKey = [[iOSApplication sharedInstance] getInstallKey];
     
-    [DDDatadog setUserInfoWithUserId:sessionId name:nil email:nil extraInfo:@{@"install_key":installKey}];
+    [DDDatadog setUserInfoWithUserId:userId name:nil email:nil extraInfo:@{@"install_key":installKey}];
     
     DDLogsConfiguration * logsConfiguration = [[DDLogsConfiguration alloc] initWithCustomEndpoint:nil];
     
@@ -146,7 +146,7 @@
 
 #pragma mark - iOSPluginSessionIdDelegateInterface
 
-- (void)onSessionId:(iOSSessionIdParam *)session {
+- (void)onSessionId:(iOSUserParam *)session {
     NSString * installKey = [[iOSApplication sharedInstance] getInstallKey];
     
     [DDDatadog setUserInfoWithUserId:session.USER_ID name:nil email:nil extraInfo:@{@"install_key":installKey}];

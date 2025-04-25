@@ -1,10 +1,10 @@
 #include "Config/Config.h"
 
-#import "Environment/iOS/iOSSessionIdParam.h"
+#import "Environment/iOS/iOSUserParam.h"
 
 @protocol iOSPluginSessionIdDelegateInterface <NSObject>
 
-- (void)onSessionId:(iOSSessionIdParam *)session;
+- (void)onSessionId:(iOSUserParam *)session;
 - (void)onRemoveSessionData;
 
 @end

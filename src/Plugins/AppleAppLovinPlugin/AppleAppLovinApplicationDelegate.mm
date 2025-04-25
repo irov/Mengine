@@ -148,7 +148,7 @@
     [FBAdSettings setDataProcessingOptions: @[]];
 #endif
     
-    IOS_LOGGER_MESSAGE(@"AppLovin: %@", ALSdk.version);
+    IOS_LOGGER_MESSAGE(@"AppLovin: %@ [%lu]", ALSdk.version, ALSdk.versionCode);
     
     NSString * MengineAppleAppLovinPlugin_CCPA = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"CCPA" withDefault:@"UNKNOWN"];
     
@@ -171,12 +171,7 @@
         
         return NO;
     }
-    
-    ALSdkInitializationConfiguration * initializationConfiguration = [ALSdkInitializationConfiguration configurationWithSdkKey:MengineAppleAppLovinPlugin_SdkKey builderBlock:^(ALSdkInitializationConfigurationBuilder * _Nonnull builder) {
-        builder.pluginVersion = [@"Mengine-v" stringByAppendingString:@MENGINE_ENGINE_VERSION_STRING];
-        builder.mediationProvider = ALMediationProviderMAX;
-    }];
-    
+   
     ALSdkSettings * settings = [ALSdk shared].settings;
     
     BOOL MengineAppleAppLovinPlugin_Verbose = [AppleBundle getPluginConfigBoolean:@PLUGIN_BUNDLE_NAME withKey:@"Verbose" withDefault:NO];
@@ -187,9 +182,9 @@
         settings.verboseLoggingEnabled = NO;
     }
     
-    NSString * sessionId = [iOSApplication.sharedInstance getSessionId];
+    NSString * userId = [iOSApplication.sharedInstance getUserId];
     
-    settings.userIdentifier = sessionId;
+    settings.userIdentifier = userId;
 
     BOOL MengineAppleAppLovinPlugin_TermsAndPrivacyPolicyFlow = [AppleBundle getPluginConfigBoolean:@PLUGIN_BUNDLE_NAME withKey:@"TermsAndPrivacyPolicyFlow" withDefault:NO];
 
@@ -215,6 +210,11 @@
     } else {
         settings.termsAndPrivacyPolicyFlowSettings.enabled = NO;
     }
+    
+    ALSdkInitializationConfiguration * initializationConfiguration = [ALSdkInitializationConfiguration configurationWithSdkKey:MengineAppleAppLovinPlugin_SdkKey builderBlock:^(ALSdkInitializationConfigurationBuilder * _Nonnull builder) {
+        builder.pluginVersion = [@"Mengine-v" stringByAppendingString:@MENGINE_ENGINE_VERSION_STRING];
+        builder.mediationProvider = ALMediationProviderMAX;
+    }];
     
     [[ALSdk shared] initializeWithConfiguration:initializationConfiguration completionHandler:^(ALSdkConfiguration *configuration) {
         ALConsentFlowUserGeography consentFlowUserGeography = configuration.consentFlowUserGeography;

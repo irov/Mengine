@@ -142,19 +142,19 @@
     }];
 }
 
-+ (void) setSessionId:(iOSSessionIdParam *)sessionId {
++ (void) setUserId:(iOSUserParam *)userId {
     [AppleDetail addMainQueueOperation:^{
         NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
     
-        [delegate eventSetSessionId:sessionId];
+        [delegate eventSetUserId:userId];
     }];
 }
 
-+ (void) removeSessionData {
++ (void) removeUserData {
     [AppleDetail addMainQueueOperation:^{
         NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
     
-        [delegate eventRemoveSessionData];
+        [delegate eventRemoveUserData];
     }];
 }
 

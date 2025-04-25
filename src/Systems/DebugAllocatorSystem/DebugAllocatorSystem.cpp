@@ -27,8 +27,12 @@
 #   define MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_ENABLE
 #endif
 
-#ifndef MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE
-#define MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE 128
+#if MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION == 1
+#   ifndef MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE
+#   define MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE 128
+#   endif
+#else
+#   define MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE 0
 #endif
 
 //////////////////////////////////////////////////////////////////////////
@@ -116,6 +120,8 @@ namespace Mengine
             , Helper::atomicLoad( m_memoryUsage )
             , _doc
         );
+        
+        StdString::memset( new_mem, 0xDB, _size );
 
 #if defined(MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_ENABLE)
         Detail::setMemoryOverrideCorruptionTrap( new_mem, _size );
@@ -211,19 +217,21 @@ namespace Mengine
 
         if( _mem == nullptr )
         {
-            void * mem = StdLib::malloc( total_size );
+            void * new_mem = StdLib::malloc( total_size );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( mem, "invalid realloc memory '%zu' total '%u' from nullptr [%s]"
+            MENGINE_ASSERTION_MEMORY_PANIC( new_mem, "invalid realloc memory '%zu' total '%u' from nullptr [%s]"
                 , total_size
                 , Helper::atomicLoad( m_memoryUsage )
                 , _doc
             );
+            
+            StdString::memset( new_mem, 0xDB, _size );
 
 #if defined(MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_ENABLE)
-            Detail::setMemoryOverrideCorruptionTrap( mem, _size );
+            Detail::setMemoryOverrideCorruptionTrap( new_mem, _size );
 #endif
 
-            size_t usage_size = MENGINE_MALLOC_SIZE( mem );
+            size_t usage_size = MENGINE_MALLOC_SIZE( new_mem );
 
             MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1, "invalid get memory size" );
 
@@ -232,7 +240,7 @@ namespace Mengine
             STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_NEW, usage_size );
             STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_SIZE, usage_size );
 
-            return mem;
+            return new_mem;
         }
  
         size_t old_size = MENGINE_MALLOC_SIZE( _mem );

@@ -939,7 +939,7 @@ namespace Mengine
                                                   yes:^() {
             LOGGER_MESSAGE("delete account [YES]");
             
-            [iOSApplication.sharedInstance removeSessionData];
+            [iOSApplication.sharedInstance removeUserData];
             
             ACCOUNT_SERVICE()
                 ->deleteCurrentAccount();

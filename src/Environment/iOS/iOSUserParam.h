@@ -4,7 +4,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface iOSSessionIdParam : NSObject
+@interface iOSUserParam : NSObject
 
 @property (nonatomic, strong) NSString * _Nonnull USER_ID;
 

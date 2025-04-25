@@ -38,8 +38,8 @@
 + (id _Nullable)getPluginDelegateOfProtocol:(Protocol * _Nonnull)delegateProtocol;
 
 + (void)notify:(AppleEvent * _Nonnull)event args:(NSArray<id> * _Nonnull)args;
-+ (void)setSessionId:(iOSSessionIdParam * _Nonnull)sessionId;
-+ (void)removeSessionData;
++ (void)setUserId:(iOSUserParam * _Nonnull)userId;
++ (void)removeUserData;
 + (void)adRevenue:(iOSAdRevenueParam * _Nonnull)revenue;
 + (void)transparencyConsent:(iOSTransparencyConsentParam * _Nonnull)consent;
 + (void)log:(AppleLogRecordParam * _Nonnull)record;

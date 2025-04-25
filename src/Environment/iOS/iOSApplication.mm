@@ -61,7 +61,7 @@
     NSString * user_id = [iOSApplication getPersistentStringForKey:@"mengine.user_id" defaultValue:session_id];
     
     if (install_key == nil) {
-        NSString * randomHex = [AppleDetail getRandomHexString:16];
+        NSString * randomHex = [AppleDetail getRandomHexString:32];
         
 #if defined(MENGINE_DEBUG)
         install_key = [@"MDIK" stringByAppendingString:randomHex];
@@ -72,13 +72,7 @@
         install_timestamp = [AppleDetail getTimestamp];
         install_version = [iOSDetail getBuildVersion];
         install_rnd = [AppleDetail getSecureRandomInteger];
-        
-        if (install_rnd == 0) {
-            install_rnd = 1;
-        } else if (install_rnd < 0) {
-            install_rnd = -install_rnd;
-        }
-        
+                
         [AppleKeyChain setStringForKey:@"mengine.install_key" value:install_key];
         [AppleKeyChain setIntegerForKey:@"mengine.install_timestamp" value:install_timestamp];
         [AppleKeyChain setStringForKey:@"mengine.install_version" value:install_version];
@@ -100,14 +94,17 @@
     self.m_installVersion = install_version;
     self.m_installRND = install_rnd;
     self.m_sessionIndex = session_index;
-    self.m_sessionId = user_id;
+    self.m_sessionId = [AppleDetail getRandomHexString:32];
     self.m_sessionTimestamp = [AppleDetail getTimestamp];
+    self.m_sessionRND = [AppleDetail getSecureRandomInteger];
+    
+    self.m_userId = user_id;
     
     return YES;
 }
 
-- (void)setSessionId:(NSString * _Nonnull)userId {
-    if ([self.m_userId isEqualToString:sessionId] == YES) {
+- (void)setUserId:(NSString * _Nonnull)userId {
+    if ([self.m_userId isEqualToString:userId] == YES) {
         return;
     }
     
@@ -115,17 +112,17 @@
     
     [AppleKeyChain setStringForKey:@"mengine.user_id" value:self.m_userId];
     
-    iOSSessionIdParam * param = [iOSSessionIdParam alloc];
+    iOSUserParam * param = [iOSUserParam alloc];
     param.USER_ID = self.m_userId;
     
-    [iOSDetail setSessionId:param];
+    [iOSDetail setUserId:param];
 }
 
-- (void)removeSessionData {
+- (void)removeUserData {
     [AppleKeyChain clear];
     [AppleUserDefaults clear];
     
-    [iOSDetail removeSessionData];
+    [iOSDetail removeUserData];
 }
 
 - (NSString * _Nonnull)getInstallKey {
@@ -154,6 +151,14 @@
 
 - (NSInteger)getSessionTimestamp {
     return self.m_sessionTimestamp;
+}
+
+- (NSInteger)getSessionRND {
+    return self.m_sessionRND;
+}
+
+- (NSString * _Nonnull)getUserId {
+    return self.m_userId;
 }
 
 @end

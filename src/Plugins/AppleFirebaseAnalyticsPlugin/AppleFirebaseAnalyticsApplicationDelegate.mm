@@ -28,9 +28,9 @@
 #pragma mark - iOSPluginApplicationDelegateInterface
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    NSString * sessionId = [iOSApplication.sharedInstance getSessionId];
+    NSString * userId = [iOSApplication.sharedInstance getUserId];
     
-    [FIRAnalytics setUserID:sessionId];
+    [FIRAnalytics setUserID:userId];
     
     NSString * installKey = [iOSApplication.sharedInstance getInstallKey];
     NSInteger installTimestamp = [iOSApplication.sharedInstance getInstallTimestamp];
@@ -55,7 +55,7 @@
     return YES;
 }
 
-- (void)onSessionId:(iOSSessionIdParam *)session {
+- (void)onSessionId:(iOSUserParam *)session {
     [FIRAnalytics setUserID:session.USER_ID];
 }
 

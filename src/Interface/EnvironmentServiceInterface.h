@@ -38,7 +38,7 @@
 #endif
 
 #ifndef MENGINE_ENVIRONMENT_SESSIONID_MAXNAME
-#define MENGINE_ENVIRONMENT_SESSIONID_MAXNAME 32
+#define MENGINE_ENVIRONMENT_SESSIONID_MAXNAME 64
 #endif
 
 namespace Mengine
@@ -57,13 +57,14 @@ namespace Mengine
         virtual void getBundleId( Char * const _bundleId ) const = 0;
 
     public:
-        virtual void getSessionId( Char * const _sessionId ) const = 0;
         virtual void getInstallKey( Char * const _installKey ) const = 0;
         virtual Timestamp getInstallTimestamp() const = 0;
         virtual void getInstallVersion( Char * const _installVersion ) const = 0;
         virtual int64_t getInstallRND() const = 0;
         virtual Timestamp getSessionTimestamp() const = 0;
         virtual int64_t getSessionIndex() const = 0;
+        virtual int64_t getSessionRND() const = 0;        
+        virtual void getSessionId( Char * const _sessionId ) const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

@@ -40,14 +40,14 @@
     DTDAnalyticsConfiguration * config = [[DTDAnalyticsConfiguration alloc] init];
 
 #ifdef MENGINE_DEBUG
-    config.logLevel = DTDLogLevelDebug;
+    config.logLevel = DTDLogLevelWarning;
 #else
     config.logLevel = DTDLogLevelError;
 #endif
     
-    NSString * sessionId = [iOSApplication.sharedInstance getSessionId];
+    NSString * userId = [iOSApplication.sharedInstance getUserId];
     
-    config.userId = sessionId;
+    config.userId = userId;
 
     [DTDAnalytics applicationKey:MengineAppleDevToDevPlugin_AppKey configuration:config];
     
@@ -64,8 +64,8 @@
 
 #pragma mark - iOSPluginSessionIdDelegateInterface
 
-- (void)onSessionId:(iOSSessionIdParam *)session {
-    [DTDAnalytics userId:session.SESSION_ID];
+- (void)onSessionId:(iOSUserParam *)session {
+    [DTDAnalytics userId:session.USER_ID];
 }
 
 - (void)onRemoveSessionData {

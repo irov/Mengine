@@ -17,6 +17,11 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     iOSEnvironmentService::iOSEnvironmentService()
+        : m_installTimestamp( -1 )
+        , m_installRND( -1 )
+        , m_sessionTimestamp( -1 )
+        , m_sessionIndex( -1 )
+        , m_sessionRND( -1 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -52,6 +57,10 @@ namespace Mengine
         
         m_sessionId.assign( [sessionId UTF8String] );
         
+        NSInteger installTimestamp = [iOSApplication.sharedInstance getInstallTimestamp];
+        
+        m_installTimestamp = (Timestamp)installTimestamp;
+        
         NSString * installKey = [iOSApplication.sharedInstance getInstallKey];
         
         m_installKey.assign( [installKey UTF8String] );
@@ -60,9 +69,17 @@ namespace Mengine
         
         m_installRND = (int64_t)installRND;
         
+        NSInteger sessionTimestamp = [iOSApplication.sharedInstance getSessionTimestamp];
+        
+        m_sessionTimestamp = (Timestamp)sessionTimestamp;
+        
         NSInteger sessionIndex = [iOSApplication.sharedInstance getSessionIndex];
         
         m_sessionIndex = (int64_t)sessionIndex;
+        
+        NSInteger sessionRND = [iOSApplication.sharedInstance getSessionRND];
+        
+        m_sessionRND = (int64_t)sessionRND;
         
         return true;
     }
@@ -112,7 +129,7 @@ namespace Mengine
         m_installKey.copy( _installKey );
     }
     //////////////////////////////////////////////////////////////////////////
-    int64_t iOSEnvironmentService::getInstallTimestamp() const
+    Timestamp iOSEnvironmentService::getInstallTimestamp() const
     {
         return m_installTimestamp;
     }
@@ -127,9 +144,19 @@ namespace Mengine
         return m_installRND;
     }
     //////////////////////////////////////////////////////////////////////////
+    Timestamp iOSEnvironmentService::getSessionTimestamp() const
+    {
+        return m_sessionTimestamp;
+    }
+    //////////////////////////////////////////////////////////////////////////
     int64_t iOSEnvironmentService::getSessionIndex() const
     {
         return m_sessionIndex;
+    }
+    ///////////////////////////////////////////////////////////////////////////
+    int64_t iOSEnvironmentService::getSessionRND() const
+    {
+        return m_sessionRND;
     }
     //////////////////////////////////////////////////////////////////////////
 }

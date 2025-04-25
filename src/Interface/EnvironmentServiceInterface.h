@@ -63,7 +63,7 @@ namespace Mengine
         virtual int64_t getInstallRND() const = 0;
         virtual Timestamp getSessionTimestamp() const = 0;
         virtual int64_t getSessionIndex() const = 0;
-        virtual int64_t getSessionRND() const = 0;        
+        virtual int64_t getSessionRND() const = 0;
         virtual void getSessionId( Char * const _sessionId ) const = 0;
     };
 }

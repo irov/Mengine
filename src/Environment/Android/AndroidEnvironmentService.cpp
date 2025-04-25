@@ -51,6 +51,7 @@ namespace Mengine
         , m_installRND( 0 )
         , m_sessionIndex( 0 )
         , m_sessionTimestamp( 0 )
+        , m_sessionRND( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -76,6 +77,7 @@ namespace Mengine
         Detail::getAndroidInfo( jenv, "getSessionIndex", &m_sessionIndex );
         Detail::getAndroidInfo( jenv, "getSessionTimestamp", &m_sessionTimestamp );
         Detail::getAndroidInfo( jenv, "getSessionId", &m_sessionId );
+        Detail::getAndroidInfo( jenv, "getSessionRND", &m_sessionRND );
 
         m_osVersion.assign( "Android" );
 
@@ -86,7 +88,7 @@ namespace Mengine
 
         fingerprintGarbage.assign( "FINGERPRINT" );
         fingerprintGarbage.append( '_' );
-        fingerprintGarbage.append( m_userName );
+        fingerprintGarbage.append( m_installKey );
         fingerprintGarbage.append( '_' );
         fingerprintGarbage.append( m_deviceModel );
         fingerprintGarbage.append( '_' );
@@ -165,6 +167,10 @@ namespace Mengine
     Timestamp AndroidEnvironmentService::getSessionTimestamp() const
     {
         return m_sessionTimestamp;
+    }
+    int64_t AndroidEnvironmentService::getSessionRND() const
+    {
+        return m_sessionRND;
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidEnvironmentService::getSessionId( Char * const _sessionId ) const

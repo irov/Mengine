@@ -33,6 +33,7 @@ namespace Mengine
         int64_t getInstallRND() const override;
         int64_t getSessionIndex() const override;
         Timestamp getSessionTimestamp() const override;
+        int64_t getSessionRND() const override;
         void getSessionId( Char * const _sessionId ) const override;
 
     protected:
@@ -49,6 +50,7 @@ namespace Mengine
         StaticString<MENGINE_ENVIRONMENT_INSTALLVERSION_MAXNAME> m_installVersion;
         int64_t m_installRND;
         Timestamp m_sessionTimestamp;
+        int64_t m_sessionRND;
         int64_t m_sessionIndex;
     };
 }

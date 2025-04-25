@@ -135,6 +135,7 @@ namespace Mengine
         : m_installTimestamp( 0 )
         , m_installRND( 0 )
         , m_sessionIndex( 0 )
+        , m_sessionRND( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -294,6 +295,11 @@ namespace Mengine
     Timestamp Win32EnvironmentService::getSessionTimestamp() const
     {
         return m_sessionTimestamp;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int64_t Win32EnvironmentService::getSessionRND() const
+    {
+        return m_sessionRND;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32EnvironmentService::getSessionId( Char * const _sessionId ) const

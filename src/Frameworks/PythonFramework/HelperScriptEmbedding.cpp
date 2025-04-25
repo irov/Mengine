@@ -503,7 +503,7 @@ namespace Mengine
                 const RandomizerInterfacePtr & randomizer = PLAYER_SERVICE()
                     ->getRandomizer();
 
-                uint32_t index = randomizer->getRandom( size );
+                uint32_t index = randomizer->getRandom32( size );
 
                 const mt::vec3f & vr = points[index];
 
@@ -1185,7 +1185,7 @@ namespace Mengine
                 const RandomizerInterfacePtr & randomizer = PLAYER_SERVICE()
                     ->getRandomizer();
 
-                uint32_t value = randomizer->getRandom( a );
+                uint32_t value = randomizer->getRandom32( a );
 
                 return value;
             }
@@ -1195,7 +1195,7 @@ namespace Mengine
                 const RandomizerInterfacePtr & randomizer = PLAYER_SERVICE()
                     ->getRandomizer();
 
-                uint32_t value = randomizer->getRandomi( a );
+                uint32_t value = randomizer->getRandom32i( a );
 
                 return value;
             }
@@ -1215,7 +1215,7 @@ namespace Mengine
                 const RandomizerInterfacePtr & randomizer = PLAYER_SERVICE()
                     ->getRandomizer();
 
-                uint32_t value = randomizer->getRandomRange( a, b );
+                uint32_t value = randomizer->getRandomRange32( a, b );
 
                 return value;
             }
@@ -1225,7 +1225,7 @@ namespace Mengine
                 const RandomizerInterfacePtr & randomizer = PLAYER_SERVICE()
                     ->getRandomizer();
 
-                int32_t value = randomizer->getRandomRangei( a, b );
+                int32_t value = randomizer->getRandomRange32i( a, b );
 
                 return value;
             }

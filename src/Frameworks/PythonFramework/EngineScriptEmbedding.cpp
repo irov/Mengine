@@ -4702,8 +4702,8 @@ namespace Mengine
 
         pybind::interface_<RandomizerInterface, pybind::bases<Mixin>>( _kernel, "Randomizer" )
             .def( "setSeed", &RandomizerInterface::setSeed )
-            .def( "getRandom", &RandomizerInterface::getRandom )
-            .def( "getRandomRange", &RandomizerInterface::getRandomRange )
+            .def( "getRandom", &RandomizerInterface::getRandom32 )
+            .def( "getRandomRange", &RandomizerInterface::getRandomRange32 )
             .def( "getRandomf", &RandomizerInterface::getRandomf )
             .def( "getRandomRangef", &RandomizerInterface::getRandomRangef )
             ;

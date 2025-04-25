@@ -6,7 +6,7 @@ namespace Mengine
 {
     namespace Helper
     {
-        uint32_t generateRandomLocaleSeed();
-        uint32_t generateRandomDeviceSeed();
+        uint64_t generateRandomLocaleSeed();
+        uint64_t generateRandomDeviceSeed();
     }
 }

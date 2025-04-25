@@ -6,6 +6,7 @@ namespace Mengine
 {
     namespace Helper
     {
+        //////////////////////////////////////////////////////////////////////////
         void randomizerShuffle( const RandomizerInterfacePtr & _randomizer, uint32_t * const _indices, uint32_t _count )
         {
             uint32_t enumerator = 0;
@@ -16,10 +17,11 @@ namespace Mengine
 
             for( uint32_t index = 0; index != _count; ++index )
             {
-                uint32_t rnd_index = _randomizer->getRandom( _count );
+                uint32_t rnd_index = _randomizer->getRandom32( _count );
 
                 StdAlgorithm::swap( _indices[index], _indices[rnd_index] );
             }
         }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

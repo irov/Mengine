@@ -393,10 +393,6 @@ PLUGIN_EXPORT( AppleNativePython );
 PLUGIN_EXPORT( Optick );
 #endif
 //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_APPLE_GENERALDATAPROTECTIONREGULATION_STATIC)
-PLUGIN_EXPORT( AppleGeneralDataProtectionRegulation );
-#endif
-//////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_APPLE_USERNOTIFICATIONCENTER_STATIC)
 PLUGIN_EXPORT( AppleUserNotificationCenter );
 #endif
@@ -1446,10 +1442,6 @@ namespace Mengine
 
 #if defined(MENGINE_PLUGIN_APPLE_NATIVE_PYTHON_STATIC)
         MENGINE_ADD_PLUGIN( AppleNativePython, "plugin AppleNativePython...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-#if defined(MENGINE_PLUGIN_APPLE_GENERALDATAPROTECTIONREGULATION_STATIC)
-        MENGINE_ADD_PLUGIN( AppleGeneralDataProtectionRegulation, "plugin AppleGeneralDataProtectionRegulation...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #if defined(MENGINE_PLUGIN_APPLE_SKADNETWORK_STATIC)

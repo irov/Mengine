@@ -141,8 +141,8 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
             @Override
             protected void onCurrentProfileChanged(Profile oldProfile, Profile newProfile) {
                 MengineFacebookPlugin.this.logInfo("onCurrentProfileChanged old profile: %s new profile: %s"
-                    , oldProfile.getId()
-                    , newProfile.getId()
+                    , oldProfile != null ? oldProfile.getId() : "null"
+                    , newProfile != null ? newProfile.getId() : "null"
                 );
 
                 MengineFacebookPlugin.this.pythonCall("onFacebookCurrentProfileChanged");

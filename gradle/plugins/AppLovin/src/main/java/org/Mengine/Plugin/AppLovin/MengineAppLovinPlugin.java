@@ -238,11 +238,19 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             , MengineUtils.getRedactedValue(MengineAppLovinPlugin_SdkKey)
         );
 
-        AppLovinSdkInitializationConfiguration config = AppLovinSdkInitializationConfiguration.builder(MengineAppLovinPlugin_SdkKey)
-            .setMediationProvider(AppLovinMediationProvider.MAX)
-            .setAdUnitIds(adUnitIds)
-            .setPluginVersion("Mengine-v" + application.getEngineVersion())
-            .build();
+        AppLovinSdkInitializationConfiguration.Builder builder = AppLovinSdkInitializationConfiguration.builder(MengineAppLovinPlugin_SdkKey);
+
+        builder.setMediationProvider(AppLovinMediationProvider.MAX);
+        builder.setAdUnitIds(adUnitIds);
+        builder.setPluginVersion("Mengine-v" + application.getEngineVersion());
+
+        if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_TEST_DEVICE_ADVERTISING_ID != null) {
+            List<String> testDeviceAdvertisingIds = List.of(BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_TEST_DEVICE_ADVERTISING_ID);
+
+            builder.setTestDeviceAdvertisingIds(testDeviceAdvertisingIds);
+        }
+
+        AppLovinSdkInitializationConfiguration config = builder.build();
 
         appLovinSdk.initialize(config, configuration -> {
             AppLovinCmpService cmpService = appLovinSdk.getCmpService();

@@ -63,7 +63,7 @@ namespace Mengine
 
             for( typename C::size_type index = 0; index != size; ++index )
             {
-                uint32_t random_index = _randomizer->getRandom( size );
+                uint32_t random_index = _randomizer->getRandom32( size );
 
                 typename C::value_type & a = _vector[index];
                 typename C::value_type & b = _vector[random_index];

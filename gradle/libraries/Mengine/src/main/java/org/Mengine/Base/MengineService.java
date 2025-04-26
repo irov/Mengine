@@ -122,6 +122,8 @@ public class MengineService implements MengineServiceInterface {
     }
 
     protected void invalidInitialize(String format, Object ... args) throws MengineServiceInvalidInitializeException {
+        this.setState("invalid.service", m_serviceName);
+
         String message = MengineLog.buildTotalMsg(format, args);
 
         throw new MengineServiceInvalidInitializeException(message);

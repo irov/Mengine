@@ -101,6 +101,8 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
         ImageView image = this.createBackground(activity);
 
         if (image == null) {
+            this.setState("splashscreen.state", "failed");
+
             this.invalidInitialize("splash screen image is null");
 
             return;
@@ -157,6 +159,10 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
     private void showSplash(@NonNull MengineActivity activity) {
         this.setState("splashscreen.state", "show");
 
+        if (m_image == null) {
+            return;
+        }
+
         AlphaAnimation showAnimation = new AlphaAnimation(0.f, 1.f);
         Resources resources = activity.getResources();
 
@@ -168,7 +174,9 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
             public void onAnimationStart(Animation animation) {
                 MengineSplashScreenPlugin.this.logInfo("show splash screen");
 
-                m_image.setVisibility(View.VISIBLE);
+                if (m_image != null) {
+                    m_image.setVisibility(View.VISIBLE);
+                }
 
                 if (m_text != null) {
                     m_text.setVisibility(View.VISIBLE);
@@ -186,6 +194,7 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
             }
         });
 
+        m_image.clearAnimation();
         m_image.startAnimation(showAnimation);
     }
 
@@ -224,7 +233,9 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
             public void onAnimationEnd(Animation animation) {
                 MengineSplashScreenPlugin.this.logInfo("hided splash screen");
 
-                m_image.setVisibility(View.GONE);
+                if (m_image != null) {
+                    m_image.setVisibility(View.GONE);
+                }
 
                 if (m_text != null) {
                     m_text.setVisibility(View.GONE);
@@ -246,20 +257,24 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
     }
 
     private void removeSpash(@NonNull MengineActivity activity) {
-        if (m_image == null) {
-            return;
-        }
+        this.setState("splashscreen.state", "removed");
 
         ViewGroup viewGroup = activity.getContentViewGroup();
 
-        viewGroup.removeView(m_image);
-        m_image = null;
-
-        if (m_text != null) {
-            viewGroup.removeView(m_text);
-            m_text = null;
+        if (m_image != null) {
+            m_image.clearAnimation();
+            if (viewGroup != null) {
+                viewGroup.removeView(m_image);
+            }
+            m_image = null;
         }
 
-        this.setState("splashscreen.state", "removed");
+        if (m_text != null) {
+            m_text.clearAnimation();
+            if (viewGroup != null) {
+                viewGroup.removeView(m_text);
+            }
+            m_text = null;
+        }
     }
 }

@@ -570,11 +570,11 @@ namespace Mengine
 
         m_sdlInput = sdlInput;
 
-        uint32_t deviceSeed = Helper::generateRandomDeviceSeed();
+        uint64_t deviceSeed = Helper::generateRandomDeviceSeed();
         
         MENGINE_UNUSED( deviceSeed );
 
-        LOGGER_INFO_PROTECTED( "plarform", "Device Seed: %u"
+        LOGGER_INFO_PROTECTED( "plarform", "Device Seed: %" MENGINE_PRIu64
             , deviceSeed
         );
         

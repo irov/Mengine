@@ -499,7 +499,9 @@ namespace Mengine
             this->addGlobalModuleT( "_DESKTOP", false );
             this->addGlobalModuleT( "_LINUX", false );
             this->addGlobalModuleT( "_ANDROID", false );
+            this->addGlobalModuleT( "_APPLE", false );
             this->addGlobalModuleT( "_IOS", false );
+            this->addGlobalModuleT( "_IOS_SIMULATOR", false );
             this->addGlobalModuleT( "_MOBILE", false );
             this->addGlobalModuleT( "_MASTER_RELEASE", false );
             this->addGlobalModuleT( "_BUILD_PUBLISH", false );

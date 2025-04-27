@@ -179,7 +179,8 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
             return;
         }
 
-        String adFirebaseMediation = MengineFirebaseAnalyticsPlugin.getAdMediation(revenue.ADREVENUE_MEDIATION);
+        MengineAdMediation adMediation = revenue.ADREVENUE_MEDIATION;
+        String adFirebaseMediation = MengineFirebaseAnalyticsPlugin.getAdMediation(adMediation);
         String networkName = revenue.ADREVENUE_NETWORK;
         MengineAdFormat adFormat = revenue.ADREVENUE_FORMAT;
         String format = MengineFirebaseAnalyticsPlugin.getAdFormat(adFormat);

@@ -397,10 +397,6 @@ PLUGIN_EXPORT( AppleNativePython );
 PLUGIN_EXPORT( AppleAdvertisement );
 #endif
 //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_APPLE_USERNOTIFICATIONCENTER_STATIC)
-PLUGIN_EXPORT( AppleUserNotificationCenter );
-#endif
-//////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_APPLE_SKADNETWORK_STATIC)
 PLUGIN_EXPORT( AppleSKAdNetwork );
 #endif
@@ -1450,10 +1446,6 @@ namespace Mengine
 
 #if defined(MENGINE_PLUGIN_APPLE_ADVERTISEMENT_STATIC)
         MENGINE_ADD_PLUGIN( AppleAdvertisement, "plugin AppleAdvertisement...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-        
-#if defined(MENGINE_PLUGIN_APPLE_USERNOTIFICATIONCENTER_STATIC)
-        MENGINE_ADD_PLUGIN( AppleUserNotificationCenter, "plugin AppleUserNotificationCenter...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #if defined(MENGINE_PLUGIN_APPLE_SKADNETWORK_STATIC)

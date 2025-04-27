@@ -33,6 +33,8 @@
 - (void)setProvider:(id<AppleAdvertisementProviderInterface>)provider;
 - (id<AppleAdvertisementProviderInterface>)getProvider;
 
+- (void)readyAdProvider;
+
 - (void)setBannerCallback:(id<AppleAdvertisementCallbackInterface>)callback;
 - (id<AppleAdvertisementCallbackInterface>)getBannerCallback;
 

@@ -13,20 +13,20 @@
 
 @interface AppleAppLovinBannerDelegate : AppleAppLovinBaseDelegate<MAAdRequestDelegate, MAAdViewAdDelegate, MAAdRevenueDelegate, MAAdReviewDelegate>
 
-- (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
+- (instancetype _Nullable)initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
                                           placement:(NSString * _Nonnull) placement
                                            adaptive:(BOOL) adaptive;
 
-- (void) show;
-- (void) hide;
+- (void)show;
+- (void)hide;
 
-- (void) loadAd;
+- (void)loadAd;
 
-- (CGSize) getSize;
-- (CGRect) getRect;
+- (CGSize)getSize;
+- (CGRect)getRect;
 
-- (CGFloat) getHeightPx;
-- (CGFloat) getWidthPx;
+- (CGFloat)getHeightPx;
+- (CGFloat)getWidthPx;
 
 @property (nonatomic, strong) MAAdView * _Nullable m_adView;
 

@@ -1,6 +1,8 @@
 #import "AppleAdvertisementApplicationDelegate.h"
 
 #import "Environment/Apple/AppleDetail.h"
+#import "Environment/Apple/AppleSemaphoreService.h"
+
 #import "Environment/iOS/iOSDetail.h"
 #import "Environment/iOS/iOSLog.h"
 
@@ -56,6 +58,10 @@
 
 - (id<AppleAdvertisementProviderInterface>)getProvider {
     return self.m_provider;
+}
+
+- (void)readyAdProvider {
+    [AppleSemaphoreService.sharedInstance activateSemaphore:@"AdServiceReady"];
 }
 
 - (void)setBannerCallback:(id<AppleAdvertisementCallbackInterface>)callback {

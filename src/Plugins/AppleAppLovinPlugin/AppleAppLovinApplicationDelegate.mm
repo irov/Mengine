@@ -211,6 +211,10 @@
         settings.termsAndPrivacyPolicyFlowSettings.enabled = NO;
     }
     
+    id<AppleAdvertisementInterface> advertisement = [iOSDetail getPluginDelegateOfProtocol:@protocol(AppleAdvertisementInterface)];
+    
+    [advertisement setProvider:self];
+    
     ALSdkInitializationConfiguration * initializationConfiguration = [ALSdkInitializationConfiguration configurationWithSdkKey:MengineAppleAppLovinPlugin_SdkKey builderBlock:^(ALSdkInitializationConfigurationBuilder * _Nonnull builder) {
         builder.pluginVersion = [@"Mengine-v" stringByAppendingString:@MENGINE_ENGINE_VERSION_STRING];
         builder.mediationProvider = ALMediationProviderMAX;
@@ -284,15 +288,11 @@
         }
 #endif
         
-        id<AppleAdvertisementInterface> advertisement = [iOSDetail getPluginDelegateOfProtocol:@protocol(AppleAdvertisementInterface)];
-        
-        [advertisement setProvider:self];
+        [advertisement readyAdProvider];
         
         if ([AppleDetail hasOption:@"applovin.show_mediation_debugger"] == YES) {
             [[ALSdk shared] showMediationDebugger];
         }
-        
-        [AppleSemaphoreService.sharedInstance activateSemaphore:@"AppLovinSdkInitialized"];
     }];
     
     return YES;

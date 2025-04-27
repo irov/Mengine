@@ -271,7 +271,6 @@ namespace Mengine
             if ([[AppleAdvertisementApplicationDelegate sharedInstance] canYouShowInterstitial:_placement] == NO) {
                 return false;
             }
-            
             return true;
         }
         //////////////////////////////////////////////////////////////////////////

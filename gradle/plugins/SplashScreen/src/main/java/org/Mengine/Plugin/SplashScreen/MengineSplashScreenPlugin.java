@@ -235,10 +235,12 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
 
                 if (m_image != null) {
                     m_image.setVisibility(View.GONE);
+                    m_image.requestLayout();
                 }
 
                 if (m_text != null) {
                     m_text.setVisibility(View.GONE);
+                    m_text.requestLayout();
                 }
 
                 activity.runOnUiThread(() -> {

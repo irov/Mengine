@@ -20,9 +20,6 @@ import org.Mengine.Plugin.GoogleService.MengineGoogleServicePlugin;
 
 import java.io.IOException;
 import java.util.Objects;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 public class MengineGoogleAdvertisingPlugin extends MengineService implements MengineListenerApplication {
     public static final String SERVICE_NAME = "Advertising";

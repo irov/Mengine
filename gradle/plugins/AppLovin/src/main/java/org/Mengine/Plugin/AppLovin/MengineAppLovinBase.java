@@ -26,7 +26,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class MengineAppLovinBase {
+class MengineAppLovinBase {
     protected final MengineAppLovinPlugin m_plugin;
     protected final String m_adUnitId;
     protected final MaxAdFormat m_adFormat;

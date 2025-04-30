@@ -24,7 +24,7 @@ import org.Mengine.Base.MengineUtils;
 
 import java.util.Map;
 
-public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implements MaxAdListener, MaxAdRequestListener, MaxAdRevenueListener, MaxAdExpirationListener, MaxAdReviewListener {
+class MengineAppLovinInterstitialAd extends MengineAppLovinBase implements MaxAdListener, MaxAdRequestListener, MaxAdRevenueListener, MaxAdExpirationListener, MaxAdReviewListener {
     private MaxInterstitialAd m_interstitialAd;
 
     public MengineAppLovinInterstitialAd(MengineAppLovinPlugin plugin, String adUnitId) {
@@ -67,17 +67,23 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
         if (mediationAmazon != null) {
             try {
                 mediationAmazon.loadMediatorInterstitial(application, m_plugin, m_interstitialAd, () -> {
-                    this.loadAd();
+                    MengineUtils.performOnMainThread(() -> {
+                        this.loadAd();
+                    });
                 });
             } catch (final MengineServiceInvalidInitializeException e) {
                 m_plugin.logError("loadMediatorInterstitial exception: %s"
                     , e.getMessage()
                 );
 
-                this.loadAd();
+                MengineUtils.performOnMainThread(() -> {
+                    this.loadAd();
+                });
             }
         } else {
-            this.loadAd();
+            MengineUtils.performOnMainThread(() -> {
+                this.loadAd();
+            });
         }
     }
 
@@ -103,7 +109,7 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
             return;
         }
 
-        if (m_plugin.hasOption("applovin.interstitial.no_load") == true || m_plugin.hasOption("applovin.ad.no_load") == true) {
+        if (m_plugin.hasOption("applovin.interstitial.disable") == true || m_plugin.hasOption("applovin.ad.disable") == true) {
             return;
         }
 

@@ -699,7 +699,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
     }
 
     @Override
-    public void showMREC(int leftMargin, int bottomMargin) {
+    public void showMREC(int leftMargin, int topMargin) {
         if (m_adProvider == null) {
             return;
         }
@@ -710,7 +710,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
             return;
         }
 
-        m_adProvider.showMREC(leftMargin, bottomMargin);
+        m_adProvider.showMREC(leftMargin, topMargin);
     }
 
     @Override
@@ -726,6 +726,28 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         }
 
         m_adProvider.hideMREC();
+    }
+
+    @Override
+    public int getMRECLeftMargin() {
+        if (m_adProvider == null) {
+            return 0;
+        }
+
+        int leftMargin = m_adProvider.getMRECLeftMargin();
+
+        return leftMargin;
+    }
+
+    @Override
+    public int getMRECTopMargin() {
+        if (m_adProvider == null) {
+            return 0;
+        }
+
+        int topMargin = m_adProvider.getMRECTopMargin();
+
+        return topMargin;
     }
 
     @Override
@@ -746,6 +768,108 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         }
 
         int height = m_adProvider.getMRECHeight();
+
+        return height;
+    }
+
+    @Override
+    public boolean hasNative() {
+        if (m_adProvider == null) {
+            return false;
+        }
+
+        return m_adProvider.hasNative();
+    }
+
+    @Override
+    public boolean canYouShowNative() {
+        if (m_adProvider == null) {
+            return false;
+        }
+
+        boolean noAds = this.getNoAds();
+
+        if (noAds == true) {
+            return false;
+        }
+
+        if (m_adProvider.canYouShowNative() == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public void showNative() {
+        if (m_adProvider == null) {
+            return;
+        }
+
+        boolean noAds = this.getNoAds();
+
+        if (noAds == true) {
+            return;
+        }
+
+        m_adProvider.showNative();
+    }
+
+    @Override
+    public void hideNative() {
+        if (m_adProvider == null) {
+            return;
+        }
+
+        boolean noAds = this.getNoAds();
+
+        if (noAds == true) {
+            return;
+        }
+
+        m_adProvider.hideNative();
+    }
+
+    @Override
+    public int getNativeLeftMargin() {
+        if (m_adProvider == null) {
+            return 0;
+        }
+
+        int leftMargin = m_adProvider.getNativeLeftMargin();
+
+        return leftMargin;
+    }
+
+    @Override
+    public int getNativeTopMargin() {
+        if (m_adProvider == null) {
+            return 0;
+        }
+
+        int topMargin = m_adProvider.getNativeTopMargin();
+
+        return topMargin;
+    }
+
+    @Override
+    public int getNativeWidth() {
+        if (m_adProvider == null) {
+            return 0;
+        }
+
+        int width = m_adProvider.getNativeWidth();
+
+        return width;
+    }
+
+    @Override
+    public int getNativeHeight() {
+        if (m_adProvider == null) {
+            return 0;
+        }
+
+        int height = m_adProvider.getNativeHeight();
 
         return height;
     }

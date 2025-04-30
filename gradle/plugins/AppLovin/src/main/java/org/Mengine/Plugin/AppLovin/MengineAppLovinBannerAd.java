@@ -29,7 +29,7 @@ import org.Mengine.Base.MengineUtils;
 
 import java.util.Map;
 
-public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxAdRequestListener, MaxAdViewAdListener, MaxAdRevenueListener, MaxAdReviewListener {
+class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxAdRequestListener, MaxAdViewAdListener, MaxAdRevenueListener, MaxAdReviewListener {
     protected final String m_placement;
 
     protected MaxAdView m_adView;
@@ -119,7 +119,9 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
         if (mediationAmazon != null) {
             try {
                 mediationAmazon.initializeMediatorBanner(application, m_plugin, adView, () -> {
-                    this.loadAd();
+                    MengineUtils.performOnMainThread(() -> {
+                        this.loadAd();
+                    });
                 });
             } catch (final MengineServiceInvalidInitializeException e) {
                 m_plugin.logError("initializeMediatorBanner exception: %s"
@@ -197,7 +199,7 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
             return;
         }
 
-        if (m_plugin.hasOption("applovin.banner.no_load") == true || m_plugin.hasOption("applovin.ad.no_load") == true) {
+        if (m_plugin.hasOption("applovin.banner.disable") == true || m_plugin.hasOption("applovin.ad.disable") == true) {
             return;
         }
 
@@ -223,6 +225,8 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
                 .log();
 
             this.setBannerState("load_exception");
+
+            this.retryLoadAd();
         }
     }
 
@@ -231,11 +235,12 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
             return;
         }
 
-        adView.setVisibility(View.VISIBLE);
-
-        if (m_plugin.hasOption("applovin.banner.no_load") == true || m_plugin.hasOption("applovin.ad.no_load") == true) {
+        if (m_plugin.hasOption("applovin.banner.disable") == true || m_plugin.hasOption("applovin.ad.disable") == true) {
             return;
         }
+
+        adView.setVisibility(View.VISIBLE);
+        adView.requestLayout();
 
         adView.startAutoRefresh();
     }
@@ -245,11 +250,12 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxA
             return;
         }
 
-        adView.setVisibility(View.GONE);
-
-        if (m_plugin.hasOption("applovin.banner.no_load") == true || m_plugin.hasOption("applovin.ad.no_load") == true) {
+        if (m_plugin.hasOption("applovin.banner.disable") == true || m_plugin.hasOption("applovin.ad.disable") == true) {
             return;
         }
+
+        adView.setVisibility(View.GONE);
+        adView.requestLayout();
 
         adView.setExtraParameter( "allow_pause_auto_refresh_immediately", "true" );
         adView.stopAutoRefresh();

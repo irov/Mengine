@@ -30,9 +30,22 @@ public interface MengineAdProviderInterface {
     boolean hasMREC();
 
     boolean canYouShowMREC();
-    void showMREC(int leftMargin, int bottomMargin);
+    void showMREC(int leftMargin, int topMargin);
     void hideMREC();
 
+    int getMRECLeftMargin();
+    int getMRECTopMargin();
     int getMRECWidth();
     int getMRECHeight();
+
+    boolean hasNative();
+
+    boolean canYouShowNative();
+    void showNative();
+    void hideNative();
+
+    int getNativeLeftMargin();
+    int getNativeTopMargin();
+    int getNativeWidth();
+    int getNativeHeight();
 }

@@ -24,10 +24,8 @@ import org.Mengine.Base.MengineAdProviderInterface;
 import org.Mengine.Base.MengineAdRevenueParam;
 import org.Mengine.Base.MengineAdService;
 import org.Mengine.Base.MengineFragmentAdRevenue;
-import org.Mengine.Base.MengineFragmentTransparencyConsent;
 import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineListenerRemoteConfig;
-import org.Mengine.Base.MengineTransparencyConsentParam;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineListenerActivity;
@@ -57,6 +55,8 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
     public static final String METADATA_APPOPEN_ADUNITID = "mengine.applovin.appopen.adunitid";
     public static final String METADATA_MREC_PLACEMENT = "mengine.applovin.mrec.placement";
     public static final String METADATA_MREC_ADUNITID = "mengine.applovin.mrec.adunitid";
+    public static final String METADATA_NATIVE_PLACEMENT = "mengine.applovin.native.placement";
+    public static final String METADATA_NATIVE_ADUNITID = "mengine.applovin.native.adunitid";
 
     private AppLovinSdk m_appLovinSdk;
 
@@ -69,6 +69,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
     private MengineAppLovinRewardedAd m_rewardedAd;
     private MengineAppLovinAppOpenAd m_appOpenAd;
     private MengineAppLovinMRECAd m_MRECAd;
+    private MengineAppLovinNativeAd m_nativeAd;
 
     private MengineAppLovinMediationInterface m_mediationAmazon;
     private MengineAppLovinNonetBannersInterface m_nonetBanners;
@@ -157,6 +158,20 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
                 MengineAppLovinMRECAd mrecAd = new MengineAppLovinMRECAd(this, MengineAppLovinPlugin_MREC_AdUnitId, MengineAppLovinPlugin_MREC_Placement);
 
                 m_MRECAd = mrecAd;
+            }
+        }
+
+        if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_NATIVEAD == true && noAds == false) {
+            String MengineAppLovinPlugin_Native_AdUnitId = this.getMetaDataString(METADATA_NATIVE_ADUNITID);
+
+            if (MengineAppLovinPlugin_Native_AdUnitId.isEmpty() == false) {
+                adUnitIds.add(MengineAppLovinPlugin_Native_AdUnitId);
+
+                String MengineAppLovinPlugin_Native_Placement = this.getMetaDataString(METADATA_NATIVE_PLACEMENT);
+
+                MengineAppLovinNativeAd nativeAd = new MengineAppLovinNativeAd(this, MengineAppLovinPlugin_Native_AdUnitId, MengineAppLovinPlugin_Native_Placement);
+
+                m_nativeAd = nativeAd;
             }
         }
 
@@ -304,6 +319,10 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
                 m_MRECAd.initialize(application);
             }
 
+            if (m_nativeAd != null) {
+                m_nativeAd.initialize(application);
+            }
+
             MengineActivity activity = this.getMengineActivity();
 
             if (activity != null) {
@@ -325,6 +344,10 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
 
                 if (m_MRECAd != null) {
                     m_MRECAd.onActivityCreate(activity);
+                }
+
+                if (m_nativeAd != null) {
+                    m_nativeAd.onActivityCreate(activity);
                 }
             }
 
@@ -396,6 +419,11 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             m_MRECAd = null;
         }
 
+        if (m_nativeAd != null) {
+            m_nativeAd.finalize(application);
+            m_nativeAd = null;
+        }
+
         if (m_nonetBanners != null) {
             m_nonetBanners.onAppTerminate(application, this);
             m_nonetBanners = null;
@@ -427,6 +455,10 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
         if (m_MRECAd != null && m_MRECAd.isInitialized() == true) {
             m_MRECAd.onActivityCreate(activity);
         }
+
+        if (m_nativeAd != null && m_nativeAd.isInitialized() == true) {
+            m_nativeAd.onActivityCreate(activity);
+        }
     }
 
     @Override
@@ -453,6 +485,10 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
 
         if (m_MRECAd != null && m_MRECAd.isInitialized() == true) {
             m_MRECAd.onActivityDestroy(activity);
+        }
+
+        if (m_nativeAd != null && m_nativeAd.isInitialized() == true) {
+            m_nativeAd.onActivityDestroy(activity);
         }
     }
 
@@ -720,7 +756,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
     }
 
     @Override
-    public void showMREC(int leftMargin, int bottomMargin) {
+    public void showMREC(int leftMargin, int topMargin) {
         if (m_MRECAd == null) {
             this.assertionError("not found MREC");
 
@@ -729,7 +765,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
 
         this.logInfo("MREC show");
 
-        m_MRECAd.show(leftMargin, bottomMargin);
+        m_MRECAd.show(leftMargin, topMargin);
     }
 
     @Override
@@ -743,6 +779,32 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
         this.logInfo("MREC hide");
 
         m_MRECAd.hide();
+    }
+
+    @Override
+    public int getMRECLeftMargin() {
+        if (m_MRECAd == null) {
+            this.assertionError("not found MREC");
+
+            return 0;
+        }
+
+        int leftMarginPx = m_MRECAd.getLeftMarginPx();
+
+        return leftMarginPx;
+    }
+
+    @Override
+    public int getMRECTopMargin() {
+        if (m_MRECAd == null) {
+            this.assertionError("not found MREC");
+
+            return 0;
+        }
+
+        int topMarginPx = m_MRECAd.getTopMarginPx();
+
+        return topMarginPx;
     }
 
     @Override
@@ -771,6 +833,105 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
         return heightPx;
     }
 
+    @Override
+    public boolean hasNative() {
+        if (m_nativeAd == null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean canYouShowNative() {
+        if (m_nativeAd == null) {
+            return false;
+        }
+
+        if (m_nativeAd.canYouShow() == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public void showNative() {
+        if (m_nativeAd == null) {
+            this.assertionError("not found native");
+
+            return;
+        }
+
+        this.logInfo("native show");
+
+        m_nativeAd.show();
+    }
+
+    @Override
+    public void hideNative() {
+        if (m_nativeAd == null) {
+            this.assertionError("not found native");
+
+            return;
+        }
+
+        this.logInfo("native hide");
+
+        m_nativeAd.hide();
+    }
+
+    @Override
+    public int getNativeLeftMargin() {
+        if (m_nativeAd == null) {
+            this.assertionError("not found native");
+
+            return 0;
+        }
+
+        int leftMarginPx = m_nativeAd.getLeftMarginPx();
+
+        return leftMarginPx;
+    }
+
+    @Override
+    public int getNativeTopMargin() {
+        if (m_nativeAd == null) {
+            this.assertionError("not found native");
+
+            return 0;
+        }
+
+        int topMarginPx = m_nativeAd.getTopMarginPx();
+
+        return topMarginPx;
+    }
+
+    @Override
+    public int getNativeWidth() {
+        if (m_nativeAd == null) {
+            this.assertionError("not found native");
+
+            return 0;
+        }
+
+        int widthPx = m_nativeAd.getWidthPx();
+
+        return widthPx;
+    }
+
+    @Override
+    public int getNativeHeight() {
+        if (m_nativeAd == null) {
+            this.assertionError("not found native");
+
+            return 0;
+        }
+
+        int heightPx = m_nativeAd.getHeightPx();
+
+        return heightPx;
+    }
 
     private static MengineAdFormat getAdFormat(MaxAdFormat format) {
         if (format == MaxAdFormat.BANNER) {

@@ -28,7 +28,7 @@ import org.Mengine.Base.MengineUtils;
 
 import java.util.Map;
 
-public class MengineAppLovinMRECAd extends MengineAppLovinBase implements MaxAdRequestListener, MaxAdViewAdListener, MaxAdRevenueListener, MaxAdReviewListener {
+class MengineAppLovinMRECAd extends MengineAppLovinBase implements MaxAdRequestListener, MaxAdViewAdListener, MaxAdRevenueListener, MaxAdReviewListener {
     protected final String m_placement;
 
     protected MaxAdView m_adView;
@@ -132,6 +132,30 @@ public class MengineAppLovinMRECAd extends MengineAppLovinBase implements MaxAdR
         }
     }
 
+    public int getLeftMarginPx() {
+        if (m_adView == null) {
+            return 0;
+        }
+
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)m_adView.getLayoutParams();
+
+        int leftMarginPx = params.leftMargin;
+
+        return leftMarginPx;
+    }
+
+    public int getTopMarginPx() {
+        if (m_adView == null) {
+            return 0;
+        }
+
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)m_adView.getLayoutParams();
+
+        int topMarginPx = params.topMargin;
+
+        return topMarginPx;
+    }
+
     public int getWidthPx() {
         MengineApplication application = m_plugin.getMengineApplication();
 
@@ -176,7 +200,7 @@ public class MengineAppLovinMRECAd extends MengineAppLovinBase implements MaxAdR
             return;
         }
 
-        if (m_plugin.hasOption("applovin.mrec.no_load") == true || m_plugin.hasOption("applovin.ad.no_load") == true) {
+        if (m_plugin.hasOption("applovin.mrec.disable") == true || m_plugin.hasOption("applovin.ad.disable") == true) {
             return;
         }
 
@@ -192,7 +216,7 @@ public class MengineAppLovinMRECAd extends MengineAppLovinBase implements MaxAdR
         try {
             m_adView.loadAd();
         } catch (final Exception e) {
-            m_plugin.logError("[Banner] loadAd adUnitId: %s exception: %s"
+            m_plugin.logError("[MREC] loadAd adUnitId: %s exception: %s"
                 , m_adUnitId
                 , e.getMessage()
             );
@@ -202,6 +226,8 @@ public class MengineAppLovinMRECAd extends MengineAppLovinBase implements MaxAdR
                 .log();
 
             this.setMRECState("load_exception");
+
+            this.retryLoadAd();
         }
     }
 
@@ -210,11 +236,12 @@ public class MengineAppLovinMRECAd extends MengineAppLovinBase implements MaxAdR
             return;
         }
 
-        adView.setVisibility(View.VISIBLE);
-
-        if (m_plugin.hasOption("applovin.mrec.no_load") == true || m_plugin.hasOption("applovin.ad.no_load") == true) {
+        if (m_plugin.hasOption("applovin.mrec.disable") == true || m_plugin.hasOption("applovin.ad.disable") == true) {
             return;
         }
+
+        adView.setVisibility(View.VISIBLE);
+        adView.requestLayout();
 
         adView.startAutoRefresh();
     }
@@ -224,11 +251,12 @@ public class MengineAppLovinMRECAd extends MengineAppLovinBase implements MaxAdR
             return;
         }
 
-        adView.setVisibility(View.GONE);
-
-        if (m_plugin.hasOption("applovin.mrec.no_load") == true || m_plugin.hasOption("applovin.ad.no_load") == true) {
+        if (m_plugin.hasOption("applovin.mrec.disable") == true || m_plugin.hasOption("applovin.ad.disable") == true) {
             return;
         }
+
+        adView.setVisibility(View.GONE);
+        adView.requestLayout();
 
         adView.setExtraParameter( "allow_pause_auto_refresh_immediately", "true" );
         adView.stopAutoRefresh();
@@ -252,7 +280,7 @@ public class MengineAppLovinMRECAd extends MengineAppLovinBase implements MaxAdR
         return m_loaded;
     }
 
-    public void show(int leftMargin, int bottomMargin) {
+    public void show(int leftMargin, int topMargin) {
         m_plugin.runOnUiThread(() -> {
             if (m_visible == true) {
                 return;
@@ -262,7 +290,7 @@ public class MengineAppLovinMRECAd extends MengineAppLovinBase implements MaxAdR
 
             FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)m_adView.getLayoutParams();
             params.leftMargin = leftMargin;
-            params.bottomMargin = bottomMargin;
+            params.topMargin = topMargin;
 
             m_adView.setLayoutParams(params);
             m_adView.requestLayout();

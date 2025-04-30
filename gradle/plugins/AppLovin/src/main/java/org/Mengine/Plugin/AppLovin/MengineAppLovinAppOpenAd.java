@@ -22,7 +22,7 @@ import org.Mengine.Base.MengineUtils;
 
 import java.util.Map;
 
-public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements MaxAdListener, MaxAdRequestListener, MaxAdExpirationListener, MaxAdRevenueListener, MaxAdReviewListener {
+class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements MaxAdListener, MaxAdRequestListener, MaxAdExpirationListener, MaxAdRevenueListener, MaxAdReviewListener {
     protected final String m_placement;
 
     protected MaxAppOpenAd m_appOpenAd;
@@ -127,7 +127,7 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Max
             return;
         }
 
-        if (m_plugin.hasOption("applovin.appopen.no_load") == true || m_plugin.hasOption("applovin.ad.no_load") == true) {
+        if (m_plugin.hasOption("applovin.appopen.disable") == true || m_plugin.hasOption("applovin.ad.disable") == true) {
             return;
         }
 

@@ -60,7 +60,9 @@ public class MengineService implements MengineServiceInterface {
     }
 
     public Object newInstance(String name, boolean exist, Object ... args) {
-        Object instance = MengineUtils.newInstance(m_serviceName, name, exist, args);
+        ClassLoader cl = this.getClass().getClassLoader();
+
+        Object instance = MengineUtils.newInstance(cl, m_serviceName, name, exist, args);
 
         return instance;
     }

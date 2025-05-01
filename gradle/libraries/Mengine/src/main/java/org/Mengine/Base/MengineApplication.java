@@ -655,7 +655,9 @@ public class MengineApplication extends Application {
     }
 
     protected boolean createService(String type) {
-        MengineService service = (MengineService)MengineUtils.newInstance(TAG, type, true);
+        ClassLoader cl = MengineApplication.class.getClassLoader();
+
+        MengineService service = (MengineService)MengineUtils.newInstance(cl, TAG, type, true);
 
         if (service == null) {
             MengineLog.logError(TAG, "invalid create instance service: %s"

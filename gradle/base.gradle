@@ -1,6 +1,5 @@
 android {
     ndkVersion project.ndkVersion
-    buildToolsVersion project.buildToolsVersion
     compileSdkVersion project.compileSdkVersion
 
     compileOptions {

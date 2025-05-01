@@ -42,7 +42,6 @@ buildscript {
 }
 
 def ANDROID_APP_NDK_VERSION = Utils.getStringProperty("ANDROID_APP_NDK_VERSION", null)
-def ANDROID_APP_BUILD_TOOLS_VERSION = Utils.getStringProperty("ANDROID_APP_BUILD_TOOLS_VERSION", null)
 def ANDROID_APP_CMAKE_VERSION = Utils.getStringProperty("ANDROID_APP_CMAKE_VERSION", null)
 def ANDROID_APP_MIN_SDK_VERSION = Utils.getIntegerProperty("ANDROID_APP_MIN_SDK_VERSION", null)
 def ANDROID_APP_TARGET_SDK_VERSION = Utils.getIntegerProperty("ANDROID_APP_TARGET_SDK_VERSION", null)
@@ -56,12 +55,6 @@ allprojects {
             ndkVersion = ANDROID_APP_NDK_VERSION
         } else {
             ndkVersion = "29.0.13113456"
-        }
-
-        if (ANDROID_APP_BUILD_TOOLS_VERSION != null) {
-            buildToolsVersion = ANDROID_APP_BUILD_TOOLS_VERSION
-        } else {
-            buildToolsVersion = "36.0.0"
         }
 
         if (ANDROID_APP_CMAKE_VERSION != null) {

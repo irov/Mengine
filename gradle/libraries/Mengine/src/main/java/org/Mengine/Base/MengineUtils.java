@@ -83,19 +83,7 @@ import javax.xml.parsers.ParserConfigurationException;
 public class MengineUtils {
     public static final String TAG = "MengineUtils";
 
-    public static Class<?> getClazz(String TAG, String name, boolean required) {
-        ClassLoader cl = MengineActivity.class.getClassLoader();
-
-        if (cl == null) {
-            if (required == true) {
-                MengineLog.logError(TAG, "[ERROR] invalid create new instance: %s ClassLoader is null"
-                    , name
-                );
-            }
-
-            return null;
-        }
-
+    public static Class<?> getClazz(ClassLoader cl, String TAG, String name, boolean required) {
         try {
             Class<?> clazz = cl.loadClass(name);
 
@@ -112,17 +100,17 @@ public class MengineUtils {
         return null;
     }
 
-    public static Class<?> getPackageBuildConfig(String TAG, Package p) {
+    public static Class<?> getPackageBuildConfig(ClassLoader cl, String TAG, Package p) {
         String packageName = p.getName();
         String buildConfigName = packageName + ".BuildConfig";
 
-        Class<?> clazz = MengineUtils.getClazz(TAG, buildConfigName, true);
+        Class<?> clazz = MengineUtils.getClazz(cl, TAG, buildConfigName, true);
 
         return clazz;
     }
 
-    public static Object newInstance(String TAG, String name, boolean required, Object ... args) {
-        Class<?> clazz = MengineUtils.getClazz(TAG, name, required);
+    public static Object newInstance(ClassLoader cl, String TAG, String name, boolean required, Object ... args) {
+        Class<?> clazz = MengineUtils.getClazz(cl, TAG, name, required);
 
         if (clazz == null) {
             return null;

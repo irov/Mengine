@@ -124,8 +124,8 @@ public class MengineUtils {
     public static Object newInstance(String TAG, Class<?> cls, boolean required, Object ... args) {
         try {
             Class<?>[] parameterTypes = Arrays.stream(args)
-                    .map(Object::getClass)
-                    .toArray(Class<?>[]::new);
+                .map(Object::getClass)
+                .toArray(Class<?>[]::new);
 
             Constructor<?> ctr = cls.getDeclaredConstructor(parameterTypes);
 
@@ -134,28 +134,28 @@ public class MengineUtils {
             return ob;
         } catch (final NoSuchMethodException e) {
             MengineLog.logError(TAG, "[ERROR] invalid create new instance: %s NoSuchMethodException: %s"
-                    , cls.getName()
-                    , e.getMessage()
+                , cls.getName()
+                , e.getMessage()
             );
         } catch (final IllegalAccessException e) {
             MengineLog.logError(TAG, "[ERROR] invalid create new instance: %s IllegalAccessException: %s"
-                    , cls.getName()
-                    , e.getMessage()
+                , cls.getName()
+                , e.getMessage()
             );
         } catch (final InstantiationException e) {
             MengineLog.logError(TAG, "[ERROR] invalid create new instance: %s InstantiationException: %s"
-                    , cls.getName()
-                    , e.getMessage()
+                , cls.getName()
+                , e.getMessage()
             );
         } catch (final InvocationTargetException e) {
             MengineLog.logError(TAG, "[ERROR] invalid create new instance: %s InvocationTargetException: %s"
-                    , cls.getName()
-                    , e.getMessage()
+                , cls.getName()
+                , e.getMessage()
             );
         } catch (final NullPointerException e) {
             MengineLog.logError(TAG, "[ERROR] invalid create new instance: %s NullPointerException: %s"
-                    , cls.getName()
-                    , e.getMessage()
+                , cls.getName()
+                , e.getMessage()
             );
         }
 

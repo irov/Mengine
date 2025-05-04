@@ -29,7 +29,8 @@ namespace Mengine
 
                 uint8_t xor_seed = seed[index] & 0xFF;
 
-                uint8_t out_data = *(u8_in++) ^ xor_seed;
+                uint8_t in_data = *(u8_in++);
+                uint8_t out_data = in_data ^ xor_seed;
 
                 *(u8_out++) = out_data;
             }

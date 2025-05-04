@@ -230,8 +230,8 @@ class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements MaxAdListe
         int errorCode = error.getCode();
 
         this.buildAppOpenAdEvent("load_failed")
-            .addParameterLong("error_code", errorCode)
             .addParameterJSON("error", this.getMaxErrorParams(error))
+            .addParameterLong("error_code", errorCode)
             .log();
 
         this.setAppOpenState("load_failed." + errorCode);
@@ -248,9 +248,9 @@ class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements MaxAdListe
         int errorCode = error.getCode();
 
         this.buildAppOpenAdEvent("display_failed")
-            .addParameterLong("error_code", errorCode)
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .addParameterJSON("error", this.getMaxErrorParams(error))
+            .addParameterLong("error_code", errorCode)
             .log();
 
         this.setAppOpenState("display_failed." + placement + "." + ad.getNetworkName() + "." + errorCode);

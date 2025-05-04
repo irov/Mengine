@@ -398,8 +398,8 @@ class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxAdReques
         int errorCode = error.getCode();
 
         this.buildBannerAdEvent("load_failed")
-            .addParameterLong("error_code", errorCode)
             .addParameterJSON("error", this.getMaxErrorParams(error))
+            .addParameterLong("error_code", errorCode)
             .log();
 
         m_requestAttempt++;
@@ -424,9 +424,9 @@ class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxAdReques
         int errorCode = error.getCode();
 
         this.buildBannerAdEvent("display_failed")
-            .addParameterLong("error_code", errorCode)
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .addParameterJSON("error", this.getMaxErrorParams(error))
+            .addParameterLong("error_code", errorCode)
             .log();
 
         this.setBannerState("display_failed." + m_placement + "." + ad.getNetworkName() + "." + errorCode);

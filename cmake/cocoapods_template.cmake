@@ -4,8 +4,8 @@ ENDMACRO()
 
 MACRO(MENGINE_GENERATE_COCOAPODS)
     SET(PODFILE_BUFFER "")
-	
-	STRING(APPEND PODFILE_BUFFER "source 'https://github.com/CocoaPods/Specs.git'\n")
+    
+    STRING(APPEND PODFILE_BUFFER "source 'https://github.com/CocoaPods/Specs.git'\n")
     
     STRING(APPEND PODFILE_BUFFER "project '${MENGINE_PROJECT_NAME}.xcodeproj'\n")
     
@@ -17,7 +17,7 @@ MACRO(MENGINE_GENERATE_COCOAPODS)
         STRING(APPEND PODFILE_BUFFER "platform :ios, '${CMAKE_OSX_DEPLOYMENT_TARGET}'\n")
     endif()
 
-    STRING(APPEND PODFILE_BUFFER "use_frameworks!\n")    
+    STRING(APPEND PODFILE_BUFFER "use_frameworks!\n")
     STRING(APPEND PODFILE_BUFFER "inhibit_all_warnings!\n")
     STRING(APPEND PODFILE_BUFFER "\n")
 
@@ -100,7 +100,7 @@ MACRO(MENGINE_GENERATE_COCOAPODS)
             list(GET ${APPLICATION_APPLE_COCOAPODS_PROJECT} 0 COCOAPOD_PROJECT_NAME_0)
             
             STRING(APPEND PODFILE_BUFFER "target '" ${COCOAPOD_PROJECT_NAME_0} "' do\n")
-			STRING(APPEND PODFILE_BUFFER "	use_frameworks!\n")
+            STRING(APPEND PODFILE_BUFFER "  use_frameworks!\n")
             
             foreach(INDEX RANGE 0 ${LENGTH_APPLICATION_APPLE_COCOAPODS_PROJECT} 5)
                 SET(COCOAPOD_PROJECT_NAME)
@@ -154,7 +154,7 @@ MACRO(MENGINE_GENERATE_COCOAPODS)
     endif()
 
     STRING(APPEND PODFILE_BUFFER "target '" ${PROJECT_NAME} "' do\n")
-	STRING(APPEND PODFILE_BUFFER "	use_frameworks!\n")
+    STRING(APPEND PODFILE_BUFFER "  use_frameworks!\n")
 
     if(NOT ${LENGTH_APPLICATION_APPLE_GLOBAL_COCOAPODS} EQUAL -1)
         foreach(INDEX RANGE 0 ${LENGTH_APPLICATION_APPLE_GLOBAL_COCOAPODS} 5)
@@ -271,18 +271,18 @@ MACRO(MENGINE_GENERATE_COCOAPODS)
             SET(SCRIPT_PHASES_INPUT_FILES)
             list(GET APPLICATION_APPLE_SCRIPT_PHASES ${INDEX} SCRIPT_PHASES_INPUT_FILES)
             math(EXPR INDEX "${INDEX}+1")
-			
+            
             string(COMPARE EQUAL ${SCRIPT_PHASES_INPUT_FILES} "NO-INPUT-FILES" SCRIPT_PHASES_NO_INPUT_FILES)
-			
-			string(REPLACE "($)" "$" SCRIPT_PHASES_SCRIPT_II ${SCRIPT_PHASES_SCRIPT})
-			string(REPLACE "($)" "$" SCRIPT_PHASES_INPUT_FILES_II ${SCRIPT_PHASES_INPUT_FILES})
+            
+            string(REPLACE "($)" "$" SCRIPT_PHASES_SCRIPT_II ${SCRIPT_PHASES_SCRIPT})
+            string(REPLACE "($)" "$" SCRIPT_PHASES_INPUT_FILES_II ${SCRIPT_PHASES_INPUT_FILES})
 
             STRING(APPEND PODFILE_BUFFER "  script_phase :name => '" ${SCRIPT_PHASES_NAME} "', :script => '" ${SCRIPT_PHASES_SCRIPT_II} "'")
-			
-			if(NOT SCRIPT_PHASES_NO_INPUT_FILES)
-				STRING(APPEND PODFILE_BUFFER ", :input_files => " ${SCRIPT_PHASES_INPUT_FILES_II} "")
-			endif()
-			
+            
+            if(NOT SCRIPT_PHASES_NO_INPUT_FILES)
+                STRING(APPEND PODFILE_BUFFER ", :input_files => " ${SCRIPT_PHASES_INPUT_FILES_II} "")
+            endif()
+            
             STRING(APPEND PODFILE_BUFFER "\n")
         endforeach()
     endif()

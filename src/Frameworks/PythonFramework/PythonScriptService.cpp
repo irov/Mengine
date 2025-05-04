@@ -1244,7 +1244,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptService::handleException_( PyTypeObject * _exctype, PyObject * _value, PyObject * _traceback )
     {
-        Char traceback_str[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
+        Char traceback_str[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
         Helper::getPythonTracebackMessage( traceback_str, MENGINE_LOGGER_MAX_MESSAGE, m_kernel, _traceback );
 
         LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_ERROR, Mengine::LFILTER_EXCEPTION, Mengine::LCOLOR_RED, Mengine::LFLAG_SHORT )("[Python] exception [%s] %s\n%s"

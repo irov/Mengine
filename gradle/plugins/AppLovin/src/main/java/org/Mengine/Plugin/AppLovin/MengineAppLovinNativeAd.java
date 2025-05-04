@@ -120,8 +120,8 @@ class MengineAppLovinNativeAd extends MengineAppLovinBase implements MaxAdRevenu
                 int errorCode = error.getCode();
 
                 MengineAppLovinNativeAd.this.buildNativeAdEvent("load_failed")
-                    .addParameterLong("error_code", errorCode)
                     .addParameterJSON("error", MengineAppLovinNativeAd.this.getMaxErrorParams(error))
+                    .addParameterLong("error_code", errorCode)
                     .log();
 
                 MengineAppLovinNativeAd.this.setNativeState("load_failed." + m_placement + "." + errorCode);

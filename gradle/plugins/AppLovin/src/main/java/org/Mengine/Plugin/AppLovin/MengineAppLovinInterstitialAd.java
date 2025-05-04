@@ -267,8 +267,8 @@ class MengineAppLovinInterstitialAd extends MengineAppLovinBase implements MaxAd
         int errorCode = error.getCode();
 
         this.buildInterstitialAdEvent("load_failed")
-            .addParameterLong("error_code", errorCode)
             .addParameterJSON("error", this.getMaxErrorParams(error))
+            .addParameterLong("error_code", errorCode)
             .log();
 
         this.setInterstitialState("load_failed." + errorCode);
@@ -286,8 +286,8 @@ class MengineAppLovinInterstitialAd extends MengineAppLovinBase implements MaxAd
 
         this.buildInterstitialAdEvent("display_failed")
             .addParameterString("placement", placement)
-            .addParameterLong("error_code", errorCode)
             .addParameterJSON("error", this.getMaxErrorParams(error))
+            .addParameterLong("error_code", errorCode)
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .log();
 

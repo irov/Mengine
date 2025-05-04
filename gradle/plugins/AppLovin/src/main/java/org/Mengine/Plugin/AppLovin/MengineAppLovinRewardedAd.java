@@ -332,9 +332,9 @@ class MengineAppLovinRewardedAd extends MengineAppLovinBase implements MaxAdRequ
 
         this.buildRewardedAdEvent("display_failed")
             .addParameterString("placement", placement)
-            .addParameterLong("error_code", errorCode)
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .addParameterJSON("error", this.getMaxErrorParams(error))
+            .addParameterLong("error_code", errorCode)
             .log();
 
         this.setRewardedState("display_failed." + placement + "." + ad.getNetworkName() + "." + errorCode);

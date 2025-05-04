@@ -23,16 +23,16 @@ namespace Mengine
 
             while( tb != nullptr )
             {
-                StdString::strncat( _message, "\n", _capacity );
-                StdString::strncat( _message, "File: ", _capacity );
-                StdString::strncat( _message, _kernel->traceback_filename( tb ).c_str(), _capacity );
-                StdString::strncat( _message, ", line ", _capacity );
+                StdString::strcat_safe( _message, "\n", _capacity );
+                StdString::strcat_safe( _message, "File: ", _capacity );
+                StdString::strcat_safe( _message, _kernel->traceback_filename( tb ).c_str(), _capacity );
+                StdString::strcat_safe( _message, ", line ", _capacity );
                 uint32_t lineno = _kernel->traceback_lineno( tb );
                 Char lineno_str[32 + 1] = {'\0'};
                 Helper::stringalized( lineno, lineno_str, 32 );
-                StdString::strncat( _message, lineno_str, _capacity );
-                StdString::strncat( _message, ", in ", _capacity );
-                StdString::strncat( _message, _kernel->traceback_function( tb ).c_str(), _capacity );
+                StdString::strcat_safe( _message, lineno_str, _capacity );
+                StdString::strcat_safe( _message, ", in ", _capacity );
+                StdString::strcat_safe( _message, _kernel->traceback_function( tb ).c_str(), _capacity );
 
                 tb = _kernel->traceback_next( tb );
             }

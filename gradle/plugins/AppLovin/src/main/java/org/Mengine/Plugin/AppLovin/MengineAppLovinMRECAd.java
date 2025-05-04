@@ -378,8 +378,8 @@ class MengineAppLovinMRECAd extends MengineAppLovinBase implements MaxAdRequestL
         int errorCode = error.getCode();
 
         this.buildMRECAdEvent("load_failed")
-            .addParameterLong("error_code", errorCode)
             .addParameterJSON("error", this.getMaxErrorParams(error))
+            .addParameterLong("error_code", errorCode)
             .log();
 
         m_requestAttempt++;
@@ -394,9 +394,9 @@ class MengineAppLovinMRECAd extends MengineAppLovinBase implements MaxAdRequestL
         int errorCode = error.getCode();
 
         this.buildMRECAdEvent("display_failed")
-            .addParameterLong("error_code", errorCode)
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .addParameterJSON("error", this.getMaxErrorParams(error))
+            .addParameterLong("error_code", errorCode)
             .log();
 
         this.setMRECState("display_failed." + m_placement + "." + ad.getNetworkName() + "." + errorCode);

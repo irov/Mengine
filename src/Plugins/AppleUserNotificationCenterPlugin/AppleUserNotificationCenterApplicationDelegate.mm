@@ -46,7 +46,7 @@
     }];
 }
 
-#pragma mark - UIApplicationDelegate Protocol
+#pragma mark - UIApplicationDelegate
 
 - (BOOL)application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     UNUserNotificationCenter * center = [UNUserNotificationCenter currentNotificationCenter];

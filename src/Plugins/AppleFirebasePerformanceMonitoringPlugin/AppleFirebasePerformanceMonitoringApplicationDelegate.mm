@@ -4,7 +4,7 @@
 
 @implementation AppleFirebasePerformanceMonitoringApplicationDelegate
 
-#pragma mark - UIApplicationDelegate Protocol
+#pragma mark - UIApplicationDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     //ToDo

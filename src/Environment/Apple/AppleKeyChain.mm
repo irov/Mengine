@@ -176,6 +176,56 @@
     return value;
 }
 
++ (BOOL)setDoubleForKey:(NSString *)key value:(double)value {
+    NSData * data = [NSData dataWithBytes:&value length:sizeof(double)];
+    
+    BOOL successful = [AppleKeyChain setDataForKey:key data:data];
+    
+    return successful;
+}
+
++ (double)getDoubleForKey:(NSString *)key defaultValue:(double)defaultValue {
+    NSData * data = [AppleKeyChain getDataForKey:key];
+    
+    if (data == nil) {
+        return defaultValue;
+    }
+    
+    if (data.length != sizeof(double)) {
+        return defaultValue;
+    }
+    
+    double value;
+    [data getBytes:&value length:sizeof(double)];
+
+    return value;
+}
+
++ (BOOL)setNSTimeIntervalForKey:(NSString *)key value:(NSTimeInterval)value {
+    NSData * data = [NSData dataWithBytes:&value length:sizeof(NSTimeInterval)];
+    
+    BOOL successful = [AppleKeyChain setDataForKey:key data:data];
+    
+    return successful;
+}
+
++ (NSTimeInterval)getNSTimeIntervalForKey:(NSString *)key defaultValue:(NSTimeInterval)defaultValue {
+    NSData * data = [AppleKeyChain getDataForKey:key];
+    
+    if (data == nil) {
+        return defaultValue;
+    }
+    
+    if (data.length != sizeof(NSTimeInterval)) {
+        return defaultValue;
+    }
+    
+    NSTimeInterval value;
+    [data getBytes:&value length:sizeof(NSTimeInterval)];
+
+    return value;
+}
+
 + (BOOL)hasKey:(NSString *)key {
     NSString * tag = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleIdentifier"];
     

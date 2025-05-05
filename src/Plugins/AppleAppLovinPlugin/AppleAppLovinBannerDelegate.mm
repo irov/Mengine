@@ -21,7 +21,11 @@
     MAAdView * adView;
     
     @try {
-        adView = [[MAAdView alloc] initWithAdUnitIdentifier:adUnitId];
+        MAAdViewConfiguration * configuration = [MAAdViewConfiguration configurationWithBuilderBlock:^(MAAdViewConfigurationBuilder *builder) {
+            builder.adaptiveType = MAAdViewAdaptiveTypeAnchored;
+          }];
+        
+        adView = [[MAAdView alloc] initWithAdUnitIdentifier:adUnitId configuration:configuration];
     } @catch (NSException * ex) {
         IOS_LOGGER_ERROR(@"[Error] AppleAppLovinBannerDelegate invalid create MAAdView adUnitId: %@ exception: %@ [%@]"
             , adUnitId
@@ -52,10 +56,6 @@
     
     adView.backgroundColor = UIColor.clearColor;
     
-    if (self.m_bannerAdaptive == YES) {
-        [adView setExtraParameterForKey:@"adaptive_banner" value:@"true"];
-    }
-
     UIViewController * viewController = [iOSDetail getRootViewController];
     [viewController.view addSubview:adView];
     adView.hidden = YES;
@@ -90,6 +90,10 @@
     }
 }
 
+- (void) eventBanner:(NSString * _Nonnull) eventName params:(NSDictionary<NSString *, id> * _Nullable) params {
+    [self event:[@"mng_ad_banner_" stringByAppendingString:eventName] params:params];
+}
+
 - (void) show {
     self.m_adView.hidden = NO;
 
@@ -112,7 +116,7 @@
     
     [self log:@"loadAd"];
     
-    [self event:@"mng_ad_banner_load" params:@{}];
+    [self eventBanner:@"load" params:@{}];
     
     [self.m_adView loadAd];
 }
@@ -163,22 +167,22 @@
     return banner_widthPx;
 }
 
-#pragma mark - MAAdRequestDelegate Protocol
+#pragma mark - MAAdRequestDelegate
 
 - (void) didStartAdRequestForAdUnitIdentifier:(NSString *)adUnitIdentifier {
     [self increaseRequestId];
     
     [self log:@"didStartAdRequestForAdUnitIdentifier"];
     
-    [self event:@"mng_ad_banner_request_started" params:@{}];
+    [self eventBanner:@"request_started" params:@{}];
 }
 
-#pragma mark - MAAdDelegate Protocol
+#pragma mark - MAAdDelegate
 
 - (void) didLoadAd:(MAAd *)ad {
     [self log:@"didLoadAd" withMAAd:ad];
     
-    [self event:@"mng_ad_banner_loaded" params:@{
+    [self eventBanner:@"loaded" params:@{
         @"ad": [self getMAAdParams:ad]
     }];
     
@@ -188,7 +192,7 @@
 - (void) didFailToLoadAdForAdUnitIdentifier:(NSString *)adUnitIdentifier withError:(MAError *)error {
     [self log:@"didFailToLoadAdForAdUnitIdentifier" withMAError:error];
     
-    [self event:@"mng_ad_banner_load_failed" params:@{
+    [self eventBanner:@"load_failed" params:@{
         @"error": [self getMAErrorParams:error],
         @"error_code": @(error.code)
     }];
@@ -199,7 +203,7 @@
 - (void) didDisplayAd:(MAAd *)ad {
     [self log:@"didDisplayAd" withMAAd:ad];
     
-    [self event:@"mng_ad_banner_displayed" params:@{
+    [self eventBanner:@"displayed" params:@{
         @"ad": [self getMAAdParams:ad]
     }];
 }
@@ -207,7 +211,7 @@
 - (void) didHideAd:(MAAd *)ad {
     [self log:@"didHideAd" withMAAd:ad];
     
-    [self event:@"mng_ad_banner_hidden" params:@{
+    [self eventBanner:@"hidden" params:@{
         @"ad": [self getMAAdParams:ad]
     }];
 }
@@ -215,7 +219,7 @@
 - (void) didClickAd:(MAAd *)ad {
     [self log:@"didClickAd" withMAAd:ad];
     
-    [self event:@"mng_ad_banner_clicked" params:@{
+    [self eventBanner:@"clicked" params:@{
         @"ad": [self getMAAdParams:ad]
     }];
 }
@@ -223,7 +227,7 @@
 - (void) didFailToDisplayAd:(MAAd *)ad withError:(MAError *)error {
     [self log:@"didFailToDisplayAd" withMAAd:ad withMAError:error];
     
-    [self event:@"mng_ad_banner_display_failed" params:@{
+    [self eventBanner:@"display_failed" params:@{
         @"error": [self getMAErrorParams:error],
         @"error_code": @(error.code),
         @"ad": [self getMAAdParams:ad]
@@ -231,12 +235,12 @@
 }
 
 
-#pragma mark - MAAdViewAdDelegate Protocol
+#pragma mark - MAAdViewAdDelegate
 
 - (void) didExpandAd:(MAAd *)ad {
     [self log:@"didExpandAd" withMAAd:ad];
     
-    [self event:@"mng_ad_banner_expand" params:@{
+    [self eventBanner:@"expand" params:@{
         @"ad": [self getMAAdParams:ad]
     }];
 }
@@ -244,17 +248,17 @@
 - (void) didCollapseAd:(MAAd *)ad {
     [self log:@"didCollapseAd" withMAAd:ad];
     
-    [self event:@"mng_ad_banner_collapse" params:@{
+    [self eventBanner:@"collapse" params:@{
         @"ad": [self getMAAdParams:ad]
     }];
 }
     
-#pragma mark - Revenue Callbacks
+#pragma mark - MAAdRevenueDelegate
 
 - (void) didPayRevenueForAd:(MAAd *)ad {
     [self log:@"didPayRevenueForAd" withMAAd:ad];
     
-    [self event:@"mng_ad_banner_revenue_paid" params:@{
+    [self eventBanner:@"revenue_paid" params:@{
         @"revenue_value": @(ad.revenue),
         @"revenue_precision": ad.revenuePrecision,
         @"ad": [self getMAAdParams:ad]
@@ -269,7 +273,7 @@
     }
 }
 
-#pragma mark - AdReview Callbacks
+#pragma mark - MAAdReviewDelegate
 
 - (void) didGenerateCreativeIdentifier:(NSString *)creativeIdentifier forAd:(MAAd *)ad {
     //ToDo

@@ -17,48 +17,15 @@
     return sharedInstance;
 }
 
-+ (void)setPersistentStringForKey:(NSString * _Nonnull)key value:(NSString * _Nullable)value {
-    [AppleKeyChain setStringForKey:key value:value];
-    [AppleUserDefaults setStringForKey:key value:value];
-}
-
-+ (NSString *)getPersistentStringForKey:(NSString *)key defaultValue:(NSString *)d {
-    NSString * keychain_value = [AppleKeyChain getStringForKey:key defaultValue:nil];
-    
-    if (keychain_value != nil) {
-        return keychain_value;
-    }
-    
-    NSString * userdefault_value = [AppleUserDefaults getStringForKey:key defaultValue:d];
-    
-    return userdefault_value;
-}
-
-+ (void)setPersistentIntegerForKey:(NSString *)key value:(NSInteger)value {
-    [AppleKeyChain setIntegerForKey:key value:value];
-    [AppleUserDefaults setIntegerForKey:key value:value];
-}
-
-+ (NSInteger)getPersistentIntegerForKey:(NSString *)key defaultValue:(NSInteger)d {
-    NSInteger keychain_value = [AppleKeyChain getIntegerForKey:key defaultValue:-1];
-    
-    if (keychain_value != -1) {
-        return keychain_value;
-    }
-    
-    NSInteger userdefault_value = [AppleUserDefaults getIntegerForKey:key defaultValue:d];
-    
-    return userdefault_value;
-}
-
 - (BOOL)didFinishLaunchingWithOptions:(nullable NSDictionary<UIApplicationLaunchOptionsKey, id> *)launchOptions {
-    NSString * install_key = [iOSApplication getPersistentStringForKey:@"mengine.install_key" defaultValue:nil];
-    NSInteger install_timestamp = [iOSApplication getPersistentIntegerForKey:@"mengine.install_timestamp" defaultValue:-1];
-    NSString * install_version = [iOSApplication getPersistentStringForKey:@"mengine.install_version" defaultValue:nil];
-    NSInteger install_rnd = [iOSApplication getPersistentIntegerForKey:@"mengine.install_rnd" defaultValue:-1];
-    NSInteger session_index = [iOSApplication getPersistentIntegerForKey:@"mengine.session_index" defaultValue:0];
-    NSString * session_id = [iOSApplication getPersistentStringForKey:@"mengine.session_id" defaultValue:nil];
-    NSString * user_id = [iOSApplication getPersistentStringForKey:@"mengine.user_id" defaultValue:session_id];
+    NSString * install_key = [AppleKeyChain getStringForKey:@"mengine.app.install_key" defaultValue:nil];
+    NSInteger install_timestamp = [AppleKeyChain getIntegerForKey:@"mengine.app.install_timestamp" defaultValue:-1];
+    NSString * install_version = [AppleKeyChain getStringForKey:@"mengine.app.install_version" defaultValue:nil];
+    NSInteger install_rnd = [AppleKeyChain getIntegerForKey:@"mengine.app.install_rnd" defaultValue:-1];
+    NSInteger session_index = [AppleKeyChain getIntegerForKey:@"mengine.app.session_index" defaultValue:0];
+    //ToDo remove session_id
+    NSString * session_id = [AppleKeyChain getStringForKey:@"mengine.session_id" defaultValue:nil];
+    NSString * user_id = [AppleKeyChain getStringForKey:@"mengine.app.user_id" defaultValue:session_id];
     
     if (install_key == nil) {
         NSString * randomHex = [AppleDetail getRandomHexString:32];
@@ -73,21 +40,21 @@
         install_version = [iOSDetail getBuildVersion];
         install_rnd = [AppleDetail getSecureRandomInteger];
                 
-        [AppleKeyChain setStringForKey:@"mengine.install_key" value:install_key];
-        [AppleKeyChain setIntegerForKey:@"mengine.install_timestamp" value:install_timestamp];
-        [AppleKeyChain setStringForKey:@"mengine.install_version" value:install_version];
-        [AppleKeyChain setIntegerForKey:@"mengine.install_rnd" value:install_rnd];
+        [AppleKeyChain setStringForKey:@"mengine.app.install_key" value:install_key];
+        [AppleKeyChain setIntegerForKey:@"mengine.app.install_timestamp" value:install_timestamp];
+        [AppleKeyChain setStringForKey:@"mengine.app.install_version" value:install_version];
+        [AppleKeyChain setIntegerForKey:@"mengine.app.install_rnd" value:install_rnd];
     }
     
     if (user_id == nil) {
         user_id = install_key;
         
-        [AppleKeyChain setStringForKey:@"mengine.user_id" value:user_id];
+        [AppleKeyChain setStringForKey:@"mengine.app.user_id" value:user_id];
     }
     
     NSInteger next_session_index = session_index + 1;
     
-    [AppleKeyChain setIntegerForKey:@"mengine.session_index" value:next_session_index];
+    [AppleKeyChain setIntegerForKey:@"mengine.app.session_index" value:next_session_index];
     
     self.m_installKey = install_key;
     self.m_installTimestamp = install_timestamp;
@@ -110,7 +77,7 @@
     
     self.m_userId = userId;
     
-    [AppleKeyChain setStringForKey:@"mengine.user_id" value:self.m_userId];
+    [AppleKeyChain setStringForKey:@"mengine.app.user_id" value:self.m_userId];
     
     iOSUserParam * param = [iOSUserParam alloc];
     param.USER_ID = self.m_userId;

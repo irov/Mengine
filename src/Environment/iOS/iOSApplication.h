@@ -9,12 +9,6 @@
 
 + (instancetype _Nonnull)sharedInstance;
 
-+ (void)setPersistentStringForKey:(NSString * _Nonnull)key value:(NSString * _Nullable)value;
-+ (NSString * _Nullable)getPersistentStringForKey:(NSString * _Nonnull)key defaultValue:(NSString * _Nullable)d;
-
-+ (void)setPersistentIntegerForKey:(NSString * _Nonnull)key value:(NSInteger)value;
-+ (NSInteger)getPersistentIntegerForKey:(NSString * _Nonnull)key defaultValue:(NSInteger)d;
-
 - (BOOL)didFinishLaunchingWithOptions:(nullable NSDictionary<UIApplicationLaunchOptionsKey, id> *)launchOptions;
 
 - (void)setUserId:(NSString * _Nonnull)userId;

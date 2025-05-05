@@ -6,7 +6,7 @@
 
 @protocol iOSPluginApplicationDelegateInterface <NSObject>
 
-#pragma mark - UIApplicationDelegate Protocol
+#pragma mark - UIApplicationDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions;
 
@@ -16,7 +16,7 @@
 
 - (void)onEvent:(AppleEvent *)event args:(NSArray *)args;
 
-#pragma mark - UISceneSession lifecycle
+#pragma mark - UISceneSession
 
 @optional
 - (BOOL)application:(UIApplication *)application didPostLaunchingWithOptions:(NSDictionary *)launchOptions;

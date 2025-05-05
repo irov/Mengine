@@ -226,7 +226,7 @@
     }
 }
 
-#pragma mark - UIApplicationDelegate Protocol
+#pragma mark - UIApplicationDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(nullable NSDictionary<UIApplicationLaunchOptionsKey, id> *)launchOptions API_AVAILABLE(ios(3.0)) {
     [AppleLog withFormat:@"Mengine application didFinishLaunchingWithOptions"];

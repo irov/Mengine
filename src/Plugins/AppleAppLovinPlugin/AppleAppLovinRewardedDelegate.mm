@@ -30,6 +30,7 @@
     rewardedAd.delegate = self;
     rewardedAd.requestDelegate = self;
     rewardedAd.revenueDelegate = self;
+    rewardedAd.expirationDelegate = self;
     rewardedAd.adReviewDelegate = self;
     
     self.m_rewardedAd = rewardedAd;
@@ -55,7 +56,19 @@
     }
 #endif
     
-    self.m_rewardedAd = nil;
+    if (self.m_rewardedAd != nil) {
+        self.m_rewardedAd.delegate = nil;
+        self.m_rewardedAd.requestDelegate = nil;
+        self.m_rewardedAd.revenueDelegate = nil;
+        self.m_rewardedAd.expirationDelegate = nil;
+        self.m_rewardedAd.adReviewDelegate = nil;
+        
+        self.m_rewardedAd = nil;
+    }
+}
+
+- (void) eventRewarded:(NSString * _Nonnull) eventName params:(NSDictionary<NSString *, id> * _Nullable) params {
+    [self event:[@"mng_ad_rewarded_" stringByAppendingString:eventName] params:params];
 }
 
 - (BOOL) canOffer:(NSString * _Nonnull)placement {
@@ -67,7 +80,7 @@
     
     [self log:@"canOffer" withParams:@{@"placement":placement, @"ready":@(ready)}];
     
-    [self event:@"mng_ad_rewarded_offer" params:@{
+    [self eventRewarded:@"offer" params:@{
         @"placement": placement,
         @"ready": @(ready)
     }];
@@ -85,7 +98,7 @@
     [self log:@"canYouShow" withParams:@{@"placement":placement, @"ready":@(ready)}];
 
     if( ready == NO ) {
-        [self event:@"mng_ad_rewarded_show" params:@{
+        [self eventRewarded:@"show" params:@{
             @"placement": placement,
             @"ready": @(NO)
         }];
@@ -105,7 +118,7 @@
        
     [self log:@"show" withParams:@{@"placement":placement, @"ready":@(ready)}];
     
-    [self event:@"mng_ad_rewarded_show" params:@{
+    [self eventRewarded:@"show" params:@{
         @"placement": placement,
         @"ready": @(ready)
     }];
@@ -128,26 +141,26 @@
     
     [self log:@"loadAd"];
     
-    [self event:@"mng_ad_rewarded_load" params:@{}];
+    [self eventRewarded:@"load" params:@{}];
     
     [self.m_rewardedAd loadAd];
 }
 
-#pragma mark - MAAdRequestDelegate Protocol
+#pragma mark - MAAdRequestDelegate
 
 - (void)didStartAdRequestForAdUnitIdentifier:(NSString *)adUnitIdentifier {
     [self log:@"didStartAdRequestForAdUnitIdentifier"];
     
-    [self event:@"mng_ad_rewarded_request_started" params:@{}];
+    [self eventRewarded:@"request_started" params:@{}];
 }
 
 
-#pragma mark - MAAdDelegate Protocol
+#pragma mark - MAAdDelegate
 
 - (void) didLoadAd:(MAAd *)ad {
     [self log:@"didLoadAd" withMAAd:ad];
     
-    [self event:@"mng_ad_interstitial_loaded" params:@{
+    [self eventRewarded:@"loaded" params:@{
         @"ad": [self getMAAdParams:ad]
     }];
     
@@ -157,7 +170,7 @@
 - (void) didFailToLoadAdForAdUnitIdentifier:(NSString *)adUnitIdentifier withError:(MAError *)error {
     [self log:@"didFailToLoadAdForAdUnitIdentifier" withMAError:error];
     
-    [self event:@"mng_ad_rewarded_load_failed" params:@{
+    [self eventRewarded:@"load_failed" params:@{
         @"error": [self getMAErrorParams:error],
         @"error_code": @(error.code)
     }];
@@ -168,7 +181,7 @@
 - (void) didDisplayAd:(MAAd *)ad {
     [self log:@"didDisplayAd" withMAAd:ad];
     
-    [self event:@"mng_ad_rewarded_displayed" params:@{
+    [self eventRewarded:@"displayed" params:@{
         @"placement": ad.placement,
         @"ad": [self getMAAdParams:ad]
     }];
@@ -177,7 +190,7 @@
 - (void) didClickAd:(MAAd *)ad {
     [self log:@"didClickAd" withMAAd:ad];
     
-    [self event:@"mng_ad_rewarded_clicked" params:@{
+    [self eventRewarded:@"clicked" params:@{
         @"placement": ad.placement,
         @"ad": [self getMAAdParams:ad]
     }];
@@ -186,7 +199,7 @@
 - (void) didHideAd:(MAAd *)ad {
     [self log:@"didHideAd" withMAAd:ad];
     
-    [self event:@"mng_ad_rewarded_hidden" params:@{
+    [self eventRewarded:@"hidden" params:@{
         @"placement": ad.placement,
         @"ad": [self getMAAdParams:ad]
     }];
@@ -203,7 +216,7 @@
 - (void) didFailToDisplayAd:(MAAd *)ad withError:(MAError *)error {
     [self log:@"didFailToDisplayAd" withMAAd:ad withMAError:error];
     
-    [self event:@"mng_ad_rewarded_display_failed" params:@{
+    [self eventRewarded:@"display_failed" params:@{
         @"placement": ad.placement,
         @"error": [self getMAErrorParams:error],
         @"error_code": @(error.code),
@@ -219,7 +232,7 @@
     [self loadAd];
 }
 
-#pragma mark - MARewardedAdDelegate Protocol
+#pragma mark - MARewardedAdDelegate
 
 - (void) didStartRewardedVideoForAd:(MAAd *)ad {
     [self log:@"didStartRewardedVideoForAd" withMAAd:ad];
@@ -232,7 +245,7 @@
 - (void) didRewardUserForAd:(MAAd *)ad withReward:(MAReward *)reward {
     [self log:@"didRewardUserForAd" withMAAd:ad withMAReward:reward];
     
-    [self event:@"mng_ad_rewarded_reward_user" params:@{
+    [self eventRewarded:@"reward_user" params:@{
         @"placement": ad.placement,
         @"label": reward.label,
         @"amount": @(reward.amount),
@@ -246,12 +259,12 @@
     }
 }
 
-#pragma mark - Revenue Callbacks
+#pragma mark - MAAdRevenueDelegate
 
 - (void)didPayRevenueForAd:(MAAd *)ad {
     [self log:@"didPayRevenueForAd" withMAAd:ad];
     
-    [self event:@"mng_ad_rewarded_revenue_paid" params:@{
+    [self eventRewarded:@"revenue_paid" params:@{
         @"placement": ad.placement,
         @"revenue_value": @(ad.revenue),
         @"revenue_precision": ad.revenuePrecision,
@@ -267,7 +280,19 @@
     }
 }
 
-#pragma mark - AdReview Callbacks
+#pragma mark - MAAdExpirationDelegate
+
+- (void)didReloadExpiredAd:(MAAd *)expiredAd withNewAd:(MAAd *)newAd {
+    [self log:@"didReloadExpiredAd" withMAAd:expiredAd];
+    
+    [self eventRewarded:@"expired" params:@{
+        @"placement": expiredAd.placement,
+        @"ad": [self getMAAdParams:expiredAd],
+        @"new_ad": [self getMAAdParams:newAd]
+    }];
+}
+
+#pragma mark - MAAdReviewDelegate
 
 - (void)didGenerateCreativeIdentifier:(NSString *)creativeIdentifier forAd:(MAAd *)ad {
     //ToDo

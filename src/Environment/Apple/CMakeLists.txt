@@ -15,6 +15,9 @@ src
     
     AppleEvent.h
     AppleEvent.mm
+	
+	AppleISO8601Date.h
+	AppleISO8601Date.mm
 
     AppleUserDefaults.h
     AppleUserDefaults.mm

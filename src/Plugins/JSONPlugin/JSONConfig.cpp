@@ -229,7 +229,7 @@ namespace Mengine
         _stream->read( memory_buffer, size );
         memory_buffer[size] = '\0';
 
-        if( memory_buffer[0] == 'R' && memory_buffer[1] == 'G' && memory_buffer[2] == 'C' && memory_buffer[3] == 'D' )
+        if( size >= 4 && memory_buffer[0] == 'R' && memory_buffer[1] == 'G' && memory_buffer[2] == 'C' && memory_buffer[3] == 'D' )
         {
             memory_buffer += 4;
             size -= 4;
@@ -242,6 +242,11 @@ namespace Mengine
 
         if( j.invalid() == true )
         {
+            LOGGER_ERROR( "invalid json config: %s data: %s"
+                , Helper::getDebugFullPath( _stream ).c_str()
+                , memory_buffer
+            );
+            
             return false;
         }
 

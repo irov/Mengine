@@ -11,7 +11,7 @@
 #import <AppLovinSDK/AppLovinSDK.h>
 #import <Foundation/Foundation.h>
 
-@interface AppleAppLovinRewardedDelegate : AppleAppLovinBaseDelegate<MAAdRequestDelegate, MARewardedAdDelegate, MAAdRevenueDelegate, MAAdReviewDelegate>
+@interface AppleAppLovinRewardedDelegate : AppleAppLovinBaseDelegate<MAAdRequestDelegate, MARewardedAdDelegate, MAAdRevenueDelegate, MAAdExpirationDelegate, MAAdReviewDelegate>
 
 - (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull)adUnitId;
 

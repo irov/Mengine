@@ -1,6 +1,6 @@
 #import "iOSTransparencyConsentParam.h"
 
-#import "Environment/iOS/iOSApplication.h"
+#import "Environment/Apple/AppleKeyChain.h"
 
 @implementation iOSTransparencyConsentParam
 
@@ -13,7 +13,7 @@ static iOSConsentFlowUserGeography TRANSPARENCYCONSENT_USERGEOGRAPHY = iOSConsen
     
     TRANSPARENCYCONSENT_USERGEOGRAPHY = userGeography;
     
-    [iOSApplication setPersistentIntegerForKey:@"mengine.consent.user_geography" value:userGeography];
+    [AppleKeyChain setIntegerForKey:@"mengine.consent.user_geography" value:userGeography];
 }
 
 + (iOSConsentFlowUserGeography)getConsentFlowUserGeography {
@@ -45,7 +45,7 @@ static iOSConsentFlowUserGeography TRANSPARENCYCONSENT_USERGEOGRAPHY = iOSConsen
     
     NSUserDefaults * defaults = NSUserDefaults.standardUserDefaults;
     
-    TRANSPARENCYCONSENT_USERGEOGRAPHY = (iOSConsentFlowUserGeography)[iOSApplication getPersistentIntegerForKey:@"mengine.consent.user_geography" defaultValue:iOSConsentFlowUserGeographyUnknown];
+    TRANSPARENCYCONSENT_USERGEOGRAPHY = (iOSConsentFlowUserGeography)[AppleKeyChain getIntegerForKey:@"mengine.consent.user_geography" defaultValue:iOSConsentFlowUserGeographyUnknown];
 
     self.TRANSPARENCYCONSENT_PENDING = [iOSTransparencyConsentParam computeTransparencyConsentPending];
     

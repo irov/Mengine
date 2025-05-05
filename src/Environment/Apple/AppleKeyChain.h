@@ -18,6 +18,12 @@
 + (BOOL)setIntegerForKey:(NSString *)key value:(NSInteger)value;
 + (NSInteger)getIntegerForKey:(NSString *)key defaultValue:(NSInteger)defaultValue;
 
++ (BOOL)setDoubleForKey:(NSString *)key value:(double)value;
++ (double)getDoubleForKey:(NSString *)key defaultValue:(double)defaultValue;
+
++ (BOOL)setNSTimeIntervalForKey:(NSString *)key value:(NSTimeInterval)value;
++ (NSTimeInterval)getNSTimeIntervalForKey:(NSString *)key defaultValue:(NSTimeInterval)defaultValue;
+
 + (BOOL)hasKey:(NSString *)key;
 + (BOOL)removeKey:(NSString *)key;
 

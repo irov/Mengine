@@ -13,7 +13,7 @@
 
 - (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull)adUnitId {
     self = [super initWithAdUnitIdentifier:adUnitId adFormat:MAAdFormat.interstitial];
-        
+    
     MAInterstitialAd * interstitialAd;
     
     @try {
@@ -29,8 +29,9 @@
     }
     
     interstitialAd.delegate = self;
-    interstitialAd.revenueDelegate = self;
     interstitialAd.requestDelegate = self;
+    interstitialAd.revenueDelegate = self;
+    interstitialAd.expirationDelegate = self;
     interstitialAd.adReviewDelegate = self;
     
     self.m_interstitialAd = interstitialAd;
@@ -52,7 +53,19 @@
     }
 #endif
     
-    self.m_interstitialAd = nil;
+    if (self.m_interstitialAd != nil) {
+        self.m_interstitialAd.delegate = nil;
+        self.m_interstitialAd.requestDelegate = nil;
+        self.m_interstitialAd.revenueDelegate = nil;
+        self.m_interstitialAd.expirationDelegate = nil;
+        self.m_interstitialAd.adReviewDelegate = nil;
+        
+        self.m_interstitialAd = nil;
+    }
+}
+
+- (void) eventInterstitial:(NSString * _Nonnull) eventName params:(NSDictionary<NSString *, id> * _Nullable) params {
+    [self event:[@"mng_ad_interstitial_" stringByAppendingString:eventName] params:params];
 }
 
 - (BOOL) canYouShow:(NSString * _Nonnull)placement {
@@ -65,7 +78,7 @@
     [self log:@"canYouShow" withParams:@{@"placement":placement, @"ready":@(ready)}];
     
     if (ready == NO) {
-        [self event:@"mng_ad_interstitial_show" params:@{
+        [self eventInterstitial:@"show" params:@{
             @"placement": placement,
             @"ready": @(NO)
         }];
@@ -85,7 +98,7 @@
        
     [self log:@"show" withParams:@{@"placement":placement, @"ready":@(ready)}];
     
-    [self event:@"mng_ad_interstitial_show" params:@{
+    [self eventInterstitial:@"show" params:@{
         @"placement": placement,
         @"ready": @(ready)
     }];
@@ -108,17 +121,17 @@
     
     [self log:@"loadAd"];
     
-    [self event:@"mng_ad_interstitial_load" params:@{}];
+    [self eventInterstitial:@"load" params:@{}];
     
     [self.m_interstitialAd loadAd];
 }
 
-#pragma mark - MAAdRequestDelegate Protocol
+#pragma mark - MAAdRequestDelegate
 
 - (void) didStartAdRequestForAdUnitIdentifier:(NSString *)adUnitIdentifier {
     [self log:@"didStartAdRequestForAdUnitIdentifier"];
     
-    [self event:@"mng_ad_interstitial_request_started" params:@{}];
+    [self eventInterstitial:@"request_started" params:@{}];
 }
 
 #pragma mark - MAAdDelegate Protocol
@@ -126,7 +139,7 @@
 - (void) didLoadAd:(MAAd *)ad {
     [self log:@"didLoadAd" withMAAd:ad];
     
-    [self event:@"mng_ad_interstitial_loaded" params:@{
+    [self eventInterstitial:@"loaded" params:@{
         @"ad": [self getMAAdParams:ad]
     }];
     
@@ -136,7 +149,7 @@
 - (void) didFailToLoadAdForAdUnitIdentifier:(NSString *)adUnitIdentifier withError:(MAError *)error {
     [self log:@"didFailToLoadAdForAdUnitIdentifier" withMAError:error];
     
-    [self event:@"mng_ad_interstitial_load_failed" params:@{
+    [self eventInterstitial:@"load_failed" params:@{
         @"error": [self getMAErrorParams:error],
         @"error_code": @(error.code)
     }];
@@ -147,7 +160,7 @@
 - (void) didDisplayAd:(MAAd *)ad {
     [self log:@"didDisplayAd" withMAAd:ad];
     
-    [self event:@"mng_ad_interstitial_displayed" params:@{
+    [self eventInterstitial:@"displayed" params:@{
         @"placement": ad.placement,
         @"ad": [self getMAAdParams:ad]
     }];
@@ -156,7 +169,7 @@
 - (void) didClickAd:(MAAd *)ad {
     [self log:@"didClickAd" withMAAd:ad];
     
-    [self event:@"mng_ad_interstitial_clicked" params:@{
+    [self eventInterstitial:@"clicked" params:@{
         @"placement": ad.placement,
         @"ad": [self getMAAdParams:ad]
     }];
@@ -165,7 +178,7 @@
 - (void) didHideAd:(MAAd *)ad {
     [self log:@"didHideAd" withMAAd:ad];
     
-    [self event:@"mng_ad_interstitial_hidden" params:@{
+    [self eventInterstitial:@"hidden" params:@{
         @"placement": ad.placement,
         @"ad": [self getMAAdParams:ad]
     }];
@@ -182,7 +195,7 @@
 - (void) didFailToDisplayAd:(MAAd *)ad withError:(MAError *)error {
     [self log:@"didFailToDisplayAd" withMAAd:ad withMAError:error];
         
-    [self event:@"mng_ad_interstitial_display_failed" params:@{
+    [self eventInterstitial:@"display_failed" params:@{
         @"placement": ad.placement,
         @"error": [self getMAErrorParams:error],
         @"error_code": @(error.code),
@@ -198,12 +211,12 @@
     [self loadAd];
 }
 
-#pragma mark - Revenue Callbacks
+#pragma mark - MAAdRevenueDelegate
 
 - (void)didPayRevenueForAd:(MAAd *) ad {
     [self log:@"didPayRevenueForAd" withMAAd:ad];
     
-    [self event:@"mng_ad_interstitial_revenue_paid" params:@{
+    [self eventInterstitial:@"revenue_paid" params:@{
         @"placement": ad.placement,
         @"revenue_value": @(ad.revenue),
         @"revenue_precision": ad.revenuePrecision,
@@ -219,7 +232,19 @@
     }
 }
 
-#pragma mark - AdReview Callbacks
+#pragma mark - MAAdExpirationDelegate
+
+- (void)didReloadExpiredAd:(MAAd *)expiredAd withNewAd:(MAAd *)newAd {
+    [self log:@"didReloadExpiredAd" withMAAd:expiredAd];
+    
+    [self eventInterstitial:@"expired" params:@{
+        @"placement": expiredAd.placement,
+        @"ad": [self getMAAdParams:expiredAd],
+        @"new_ad": [self getMAAdParams:newAd]
+    }];
+}
+
+#pragma mark - MAAdReviewDelegate
 
 - (void)didGenerateCreativeIdentifier:(NSString *)creativeIdentifier forAd:(MAAd *)ad {
     //ToDo

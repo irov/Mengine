@@ -82,7 +82,7 @@ public class MengineLog {
 
         MengineUtils.Code code = MengineUtils.getCurrentThreadCode(6);
 
-        MengineLoggerMessageParam message = new MengineLoggerMessageParam(category, thread, level, filter, code.file, code.line, code.method, data);
+        MengineParamLoggerMessage message = new MengineParamLoggerMessage(category, thread, level, filter, code.file, code.line, code.method, data);
 
         MengineFragmentLogger.INSTANCE.log(message);
     }

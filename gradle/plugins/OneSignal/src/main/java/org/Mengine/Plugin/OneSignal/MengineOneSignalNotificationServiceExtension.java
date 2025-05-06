@@ -7,7 +7,7 @@ import com.onesignal.notifications.INotificationReceivedEvent;
 import com.onesignal.notifications.INotificationServiceExtension;
 
 import org.Mengine.Base.MengineFragmentRemoteMessage;
-import org.Mengine.Base.MengineRemoteMessageParam;
+import org.Mengine.Base.MengineParamRemoteMessage;
 import org.Mengine.Base.MengineUtils;
 import org.json.JSONObject;
 
@@ -26,7 +26,7 @@ public class MengineOneSignalNotificationServiceExtension implements INotificati
 
         Map<String, Object> data = MengineUtils.jsonObjectToMap(additionalData);
 
-        MengineRemoteMessageParam message = new MengineRemoteMessageParam();
+        MengineParamRemoteMessage message = new MengineParamRemoteMessage();
         message.REMOTEMESSAGE_ID = notificationId;
         message.REMOTEMESSAGE_FROM = "OneSignal";
         message.REMOTEMESSAGE_COLLAPSE_KEY = collapseId;

@@ -4,8 +4,8 @@ import androidx.annotation.NonNull;
 
 import org.json.JSONObject;
 
-public class MengineAdInterstitialPoint extends MengineAdBasePoint {
-    public static final String TAG = "MengineAdInterstitialPoint";
+public class MengineAdPointInterstitial extends MengineAdPointBase {
+    public static final String TAG = "MengineAdPointInterstitial";
 
     protected int m_actionOffset;
     protected int m_actionCooldown;
@@ -14,7 +14,7 @@ public class MengineAdInterstitialPoint extends MengineAdBasePoint {
     protected long m_installTimeOffset;
     protected long m_sessionOffset;
 
-    MengineAdInterstitialPoint(@NonNull String name, @NonNull JSONObject values) {
+    MengineAdPointInterstitial(@NonNull String name, @NonNull JSONObject values) {
         super(name, values);
 
         m_actionOffset = this.parseAdPointInteger(values, "trigger_action_offset", false, -1);

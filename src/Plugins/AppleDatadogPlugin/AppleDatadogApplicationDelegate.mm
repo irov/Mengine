@@ -146,12 +146,12 @@
 
 #pragma mark - iOSPluginSessionIdDelegateInterface
 
-- (void)onSessionId:(iOSUserParam *)session {
+- (void)onUserId:(iOSUserParam *)user {
     NSString * installKey = [[iOSApplication sharedInstance] getInstallKey];
     
-    [DDDatadog setUserInfoWithUserId:session.USER_ID name:nil email:nil extraInfo:@{@"install_key":installKey}];
+    [DDDatadog setUserInfoWithUserId:user.USER_ID name:nil email:nil extraInfo:@{@"install_key":installKey}];
 }
-- (void)onRemoveSessionData {
+- (void)onUserSessionData {
     [DDDatadog setUserInfoWithUserId:@"" name:nil email:nil extraInfo:@{}];
     
     [DDDatadog clearAllData];

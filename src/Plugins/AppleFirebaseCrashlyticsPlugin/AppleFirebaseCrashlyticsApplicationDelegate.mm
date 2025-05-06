@@ -71,11 +71,11 @@
     return YES;
 }
 
-- (void)onSessionId:(iOSUserParam *)session {
-    [[FIRCrashlytics crashlytics] setUserID:session.USER_ID];
+- (void)onUserId:(iOSUserParam *)user {
+    [[FIRCrashlytics crashlytics] setUserID:user.USER_ID];
 }
 
-- (void)onRemoveSessionData {
+- (void)onRemoveUserData {
     [[FIRCrashlytics crashlytics] deleteUnsentReports];
     [[FIRCrashlytics crashlytics] setUserID:nil];
 }

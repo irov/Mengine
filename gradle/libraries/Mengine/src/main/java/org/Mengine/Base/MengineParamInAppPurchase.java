@@ -2,7 +2,7 @@ package org.Mengine.Base;
 
 import java.util.List;
 
-public class MengineInAppPurchaseParam {
+public class MengineParamInAppPurchase {
     public String INAPPPURCHASE_TRANSACTION;
     public List<String> INAPPPURCHASE_PRODUCTS;
     public int INAPPPURCHASE_QUANTITY;

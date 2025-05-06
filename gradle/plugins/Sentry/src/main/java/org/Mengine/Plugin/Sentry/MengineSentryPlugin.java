@@ -11,7 +11,7 @@ import org.Mengine.Base.MengineListenerTransparencyConsent;
 import org.Mengine.Base.MengineListenerUser;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
-import org.Mengine.Base.MengineTransparencyConsentParam;
+import org.Mengine.Base.MengineParamTransparencyConsent;
 import org.Mengine.Base.MengineUtils;
 
 import java.util.Map;
@@ -49,7 +49,7 @@ public class MengineSentryPlugin extends MengineService implements MengineListen
             , MengineSentryPlugin_EnableUncaughtExceptionHandler
         );
 
-        MengineTransparencyConsentParam tcParam = application.makeTransparencyConsentParam();
+        MengineParamTransparencyConsent tcParam = application.makeTransparencyConsentParam();
 
         m_passMeasurementGDPR = tcParam.getConsentMeasurement();
 
@@ -137,8 +137,8 @@ public class MengineSentryPlugin extends MengineService implements MengineListen
     }
 
     @Override
-    public void onMengineTransparencyConsent(@NonNull MengineApplication application, @NonNull MengineTransparencyConsentParam tcParam) {
-        m_passMeasurementGDPR = tcParam.getConsentMeasurement();
+    public void onMengineTransparencyConsent(@NonNull MengineApplication application, @NonNull MengineParamTransparencyConsent consent) {
+        m_passMeasurementGDPR = consent.getConsentMeasurement();
 
         this.logInfo("GDPR measurement: %s"
             , m_passMeasurementGDPR

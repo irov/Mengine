@@ -3,7 +3,7 @@ package org.Mengine.Base;
 import androidx.annotation.NonNull;
 
 public interface MengineListenerAnalytics extends MengineServiceInterface {
-    default void onMengineAnalyticsEvent(@NonNull MengineApplication application, @NonNull MengineAnalyticsEventParam param) {
+    default void onMengineAnalyticsEvent(@NonNull MengineApplication application, @NonNull MengineParamAnalyticsEvent param) {
         //Empty
     }
 

@@ -9,9 +9,11 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigValue;
 import com.google.firebase.remoteconfig.internal.DefaultsXmlParser;
 
+import org.Mengine.Base.MengineParamAcquisition;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineFragmentRemoteConfig;
+import org.Mengine.Base.MengineListenerAcquisition;
 import org.Mengine.Base.MengineNetwork;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineListenerActivity;
@@ -24,7 +26,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MengineFirebaseRemoteConfigPlugin extends MengineService implements MengineListenerApplication, MengineListenerActivity {
+public class MengineFirebaseRemoteConfigPlugin extends MengineService implements MengineListenerApplication, MengineListenerActivity, MengineListenerAcquisition {
     public static final String SERVICE_NAME = "FBRemoteConfig";
     public static final boolean SERVICE_EMBEDDING = true;
 
@@ -32,6 +34,8 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
 
     private Map<String, JSONObject> m_configs = new HashMap<>();
     private Map<String, String> m_defaults = new HashMap<>();
+
+    private volatile boolean m_prefetching = false;
 
     @Override
     public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
@@ -67,13 +71,17 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
                     .log();
 
                 this.fetchRemoteConfigValues(remoteConfig);
-            })
-            .addOnFailureListener(e -> {
+            }).addOnFailureListener(e -> {
                 this.buildEvent("mng_fb_rc_defaults_error")
                     .addParameterException("exception", e)
                     .log();
 
                 this.fetchRemoteConfigValues(remoteConfig);
+            }).addOnCanceledListener(() -> {
+                this.buildEvent("mng_fb_rc_defaults_cancel")
+                    .log();
+
+                this.logWarning("[WARNING] remote config invalid set defaults canceled");
             });
     }
 
@@ -86,51 +94,7 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
 
     @Override
     public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
-        if (MengineNetwork.isNetworkAvailable() == false) {
-            this.logInfo("remote config invalid network not available");
-
-            return;
-        }
-
-        FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
-
-        this.buildEvent("mng_fb_rc_fetch")
-            .log();
-
-        remoteConfig.fetchAndActivate()
-            .addOnSuccessListener(activity, updated -> {
-                this.buildEvent("mng_fb_rc_fetch_success")
-                    .addParameterBoolean("updated", updated)
-                    .log();
-
-                Map<String, FirebaseRemoteConfigValue> allValues = remoteConfig.getAll();
-
-                Map<String, String> allValueString = new HashMap<>();
-                for (Map.Entry<String, FirebaseRemoteConfigValue> entry : allValues.entrySet()) {
-                    String key = entry.getKey();
-                    FirebaseRemoteConfigValue value = entry.getValue();
-                    String valueString = value.asString();
-
-                    allValueString.put(key, valueString);
-                }
-
-                this.logInfo("remote config success fetch and activate updated: %b"
-                    , updated
-                );
-
-                if (updated == true) {
-                    this.fetchRemoteConfigValues(remoteConfig);
-                }
-            })
-            .addOnFailureListener(activity, e -> {
-                this.buildEvent("mng_fb_rc_fetch_error")
-                    .addParameterException("exception", e)
-                    .log();
-
-                this.logWarning("[WARNING] remote config invalid fetch and activate params: %s"
-                    , e.getMessage()
-                );
-            });
+        this.fetchAndActivate(activity);
     }
 
     protected void setRemoteConfigDefaults(Map<String, String> defaults) {
@@ -205,6 +169,70 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
         MengineFragmentRemoteConfig.INSTANCE.remoteConfigFetch(configs);
     }
 
+    protected void fetchAndActivate(@NonNull MengineActivity activity) {
+        if (MengineNetwork.isNetworkAvailable() == false) {
+            this.logInfo("remote config invalid network not available");
+
+            return;
+        }
+
+        if (m_prefetching == true) {
+            return;
+        }
+
+        FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
+
+        this.buildEvent("mng_fb_rc_fetch")
+            .log();
+
+        m_prefetching = true;
+
+        remoteConfig.fetchAndActivate()
+            .addOnSuccessListener(activity, updated -> {
+                m_prefetching = false;
+
+                this.buildEvent("mng_fb_rc_fetch_success")
+                    .addParameterBoolean("updated", updated)
+                    .log();
+
+                Map<String, FirebaseRemoteConfigValue> allValues = remoteConfig.getAll();
+
+                Map<String, String> allValueString = new HashMap<>();
+                for (Map.Entry<String, FirebaseRemoteConfigValue> entry : allValues.entrySet()) {
+                    String key = entry.getKey();
+                    FirebaseRemoteConfigValue value = entry.getValue();
+                    String valueString = value.asString();
+
+                    allValueString.put(key, valueString);
+                }
+
+                this.logInfo("remote config success fetch and activate updated: %b"
+                    , updated
+                );
+
+                if (updated == true) {
+                    this.fetchRemoteConfigValues(remoteConfig);
+                }
+            }).addOnFailureListener(activity, e -> {
+                m_prefetching = false;
+
+                this.buildEvent("mng_fb_rc_fetch_error")
+                    .addParameterException("exception", e)
+                    .log();
+
+                this.logWarning("[WARNING] remote config invalid fetch and activate params: %s"
+                    , e.getMessage()
+                );
+            }).addOnCanceledListener(activity, () -> {
+                m_prefetching = false;
+
+                this.buildEvent("mng_fb_rc_fetch_cancel")
+                    .log();
+
+                this.logWarning("[WARNING] remote config invalid fetch and activate canceled");
+            });
+    }
+
     public Map<String, JSONObject> getRemoteConfigs() {
         synchronized (this) {
             return this.m_configs;
@@ -217,5 +245,21 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
 
             return value;
         }
+    }
+
+    @Override
+    public void onADIDChange(@NonNull MengineApplication application, @NonNull String adid) {
+        //Empty
+    }
+
+    @Override
+    public void onAcquisitionChange(@NonNull MengineApplication application, @NonNull MengineParamAcquisition acquisition) {
+        if (MengineActivity.INSTANCE == null) {
+            this.logWarning("remote config invalid activity");
+
+            return;
+        }
+
+        this.fetchAndActivate(MengineActivity.INSTANCE);
     }
 }

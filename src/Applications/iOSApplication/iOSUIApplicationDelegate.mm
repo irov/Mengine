@@ -205,7 +205,7 @@
 - (void)eventRemoveUserData {
     @autoreleasepool {
         for (NSObject<iOSPluginSessionIdDelegateInterface> * delegate in self.m_pluginSessionIdDelegates) {
-            [delegate onRemoveSessionData];
+            [delegate onRemoveUserData];
         }
     }
 }

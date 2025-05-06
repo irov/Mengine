@@ -9,7 +9,7 @@ public class MengineFragmentRemoteMessage extends MengineFragment<MengineListene
         INSTANCE = this;
     }
 
-    public boolean remoteMessageReceived(MengineRemoteMessageParam message) {
+    public boolean remoteMessageReceived(MengineParamRemoteMessage message) {
         if( this.propagateB(MengineListenerRemoteMessage::onMengineRemoteMessageReceived, message) == true ) {
             return true;
         }

@@ -14,7 +14,7 @@ import org.Mengine.Base.MengineFragmentAdvertisingId;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
-import org.Mengine.Base.MengineTransparencyConsentParam;
+import org.Mengine.Base.MengineParamTransparencyConsent;
 import org.Mengine.Base.MengineUtils;
 import org.Mengine.Plugin.GoogleService.MengineGoogleServicePlugin;
 
@@ -70,7 +70,7 @@ public class MengineGoogleAdvertisingPlugin extends MengineService implements Me
 
     @Override
     public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
-        MengineTransparencyConsentParam tcParam = application.makeTransparencyConsentParam();
+        MengineParamTransparencyConsent tcParam = application.makeTransparencyConsentParam();
 
         if (tcParam.getConsentAdStorage() == false) {
             this.logInfo("AdvertisingId disabled by consent ad storage");
@@ -79,9 +79,7 @@ public class MengineGoogleAdvertisingPlugin extends MengineService implements Me
             m_advertisingLimitTrackingEnabled = true;
             m_advertisingLimitTrackingFetch = true;
 
-            MengineUtils.performOnMainThreadDelayed(() -> {
-                MengineFragmentAdvertisingId.INSTANCE.setAdvertisingId(m_advertisingId, m_advertisingLimitTrackingEnabled);
-            }, 0L);
+            MengineFragmentAdvertisingId.INSTANCE.setAdvertisingId(m_advertisingId, m_advertisingLimitTrackingEnabled);
 
             return;
         }

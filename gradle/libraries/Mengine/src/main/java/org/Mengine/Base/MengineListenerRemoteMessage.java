@@ -3,7 +3,7 @@ package org.Mengine.Base;
 import androidx.annotation.NonNull;
 
 public interface MengineListenerRemoteMessage extends MengineServiceInterface {
-    default boolean onMengineRemoteMessageReceived(@NonNull MengineApplication application, @NonNull MengineRemoteMessageParam message) {
+    default boolean onMengineRemoteMessageReceived(@NonNull MengineApplication application, @NonNull MengineParamRemoteMessage message) {
         //Empty
 
         return false;

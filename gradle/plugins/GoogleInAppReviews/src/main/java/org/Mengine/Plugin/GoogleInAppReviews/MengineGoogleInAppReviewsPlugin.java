@@ -9,6 +9,7 @@ import com.google.android.play.core.review.ReviewManager;
 import com.google.android.play.core.review.ReviewManagerFactory;
 
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineNetwork;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineListenerActivity;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
@@ -60,6 +61,24 @@ public class MengineGoogleInAppReviewsPlugin extends MengineService implements M
         if (m_reviewInfo == null) {
             this.logError("[ERROR] reviewInfo == null");
 
+            this.pythonCall("onGoogleInAppReviewsLaunchingTheReviewError", new RuntimeException("reviewInfo == null"));
+
+            return;
+        }
+
+        if (MengineNetwork.isNetworkAvailable() == false) {
+            this.logError("[ERROR] network is not available");
+
+            this.pythonCall("onGoogleInAppReviewsLaunchingTheReviewError", new RuntimeException("network is not available"));
+
+            return;
+        }
+
+        if (MengineActivity.INSTANCE == null) {
+            this.logError("[ERROR] invalid activity");
+
+            this.pythonCall("onGoogleInAppReviewsLaunchingTheReviewError", new RuntimeException("invalid activity"));
+
             return;
         }
 
@@ -68,9 +87,7 @@ public class MengineGoogleInAppReviewsPlugin extends MengineService implements M
         this.buildEvent("mng_inapp_review")
             .log();
 
-        MengineActivity activity = this.getMengineActivity();
-
-        m_manager.launchReviewFlow(activity, m_reviewInfo).addOnCompleteListener(task -> {
+        m_manager.launchReviewFlow(MengineActivity.INSTANCE, m_reviewInfo).addOnCompleteListener(task -> {
             if (task.isSuccessful() == false) {
                 Exception exception = task.getException();
 

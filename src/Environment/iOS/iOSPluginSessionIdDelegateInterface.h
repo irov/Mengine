@@ -2,9 +2,9 @@
 
 #import "Environment/iOS/iOSUserParam.h"
 
-@protocol iOSPluginSessionIdDelegateInterface <NSObject>
+@protocol iOSPluginUserIdDelegateInterface <NSObject>
 
-- (void)onSessionId:(iOSUserParam *)session;
-- (void)onRemoveSessionData;
+- (void)onUserId:(iOSUserParam *)user;
+- (void)onRemoveUserData;
 
 @end

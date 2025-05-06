@@ -5,19 +5,19 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+
 import com.adjust.sdk.Adjust;
 import com.adjust.sdk.AdjustAdRevenue;
-import com.adjust.sdk.AdjustAttribution;
 import com.adjust.sdk.AdjustConfig;
 import com.adjust.sdk.AdjustEvent;
 import com.adjust.sdk.AdjustThirdPartySharing;
 import com.adjust.sdk.LogLevel;
-import com.adjust.sdk.OnAdidReadListener;
-import com.adjust.sdk.OnAttributionChangedListener;
 
+import org.Mengine.Base.BuildConfig;
 import org.Mengine.Base.MengineAdFormat;
 import org.Mengine.Base.MengineAdMediation;
-import org.Mengine.Base.MengineAdRevenueParam;
+import org.Mengine.Base.MengineParamAdRevenue;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineListenerActivity;
 import org.Mengine.Base.MengineListenerAdRevenue;
@@ -27,61 +27,56 @@ import org.Mengine.Base.MengineListenerRemoteMessage;
 import org.Mengine.Base.MengineListenerTransparencyConsent;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
-import org.Mengine.Base.MengineTransparencyConsentParam;
+import org.Mengine.Base.MengineParamTransparencyConsent;
 import org.Mengine.Base.MengineUtils;
 
 public class MengineAdjustPlugin extends MengineService implements MengineListenerApplication, MengineListenerActivity, MengineListenerAdRevenue, MengineListenerTransparencyConsent, MengineListenerRemoteMessage, MengineListenerPushToken {
     public static final String SERVICE_NAME = "Adjust";
     public static final boolean SERVICE_EMBEDDING = true;
+    public static final int SAVE_VERSION = 1;
 
     public static final String METADATA_APP_TOKEN = "mengine.adjust.app_token";
 
-    protected String m_adid;
-
     private static final class AdjustLifecycleCallbacks implements Application.ActivityLifecycleCallbacks {
         @Override
-        public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+        public void onActivityCreated(@NonNull Activity activity, Bundle savedInstanceState) {
             //Empty
         }
 
         @Override
-        public void onActivityStarted(Activity activity) {
+        public void onActivityStarted(@NonNull Activity activity) {
             //Empty
         }
 
         @Override
-        public void onActivityResumed(Activity activity) {
+        public void onActivityResumed(@NonNull Activity activity) {
             Adjust.onResume();
         }
 
         @Override
-        public void onActivityPaused(Activity activity) {
+        public void onActivityPaused(@NonNull Activity activity) {
             Adjust.onPause();
         }
 
         @Override
-        public void onActivityStopped(Activity activity) {
+        public void onActivityStopped(@NonNull Activity activity) {
             //Empty
         }
 
         @Override
-        public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+        public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull Bundle outState) {
             //Empty
         }
 
         @Override
-        public void onActivityDestroyed(Activity activity) {
+        public void onActivityDestroyed(@NonNull Activity activity) {
             //Empty
         }
     }
 
     @Override
     public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
-        String environment = AdjustConfig.ENVIRONMENT_PRODUCTION;
-
-        if (BuildConfig.DEBUG == true) {
-            environment = AdjustConfig.ENVIRONMENT_SANDBOX;
-        }
+        String environment = (BuildConfig.DEBUG == true) ? AdjustConfig.ENVIRONMENT_SANDBOX : AdjustConfig.ENVIRONMENT_PRODUCTION;
 
         String MengineAdjustPlugin_AppToken = this.getMetaDataString(METADATA_APP_TOKEN);
 
@@ -96,26 +91,27 @@ public class MengineAdjustPlugin extends MengineService implements MengineListen
             config.setLogLevel(LogLevel.INFO);
         }
 
-        Adjust.getAdid(new OnAdidReadListener() {
-            @Override
-            public void onAdidRead(String adid) {
-                MengineAdjustPlugin.this.logInfo("Adjust adid: %s"
-                    , MengineUtils.getRedactedValue(adid)
-                );
+        Adjust.getAdid(adid -> {
+            this.logInfo("Adjust adid: %s"
+                , MengineUtils.getRedactedValue(adid)
+            );
 
-                MengineAdjustPlugin.this.m_adid = adid;
-            }
+            application.setADID(adid);
         });
 
-        config.setOnAttributionChangedListener(new OnAttributionChangedListener() {
-            @Override
-            public void onAttributionChanged(AdjustAttribution attribution) {
-                MengineAdjustPlugin.this.logInfo("Adjust attribution: %s"
-                    , attribution.toString()
-                );
+        config.setOnAttributionChangedListener(attribution -> {
+            this.logInfo("Adjust attribution changed: %s"
+                , attribution
+            );
 
-                //ToDo Acquisition
+            if (attribution == null) {
+                return;
             }
+
+            String network = attribution.network;
+            String campaign = attribution.campaign;
+
+            application.setAcquisitionCampaign(network, campaign);
         });
 
         Adjust.initSdk(config);
@@ -139,7 +135,7 @@ public class MengineAdjustPlugin extends MengineService implements MengineListen
     }
 
     @Override
-    public void onMengineAdRevenue(@NonNull MengineApplication application, @NonNull MengineAdRevenueParam revenue) {
+    public void onMengineAdRevenue(@NonNull MengineApplication application, @NonNull MengineParamAdRevenue revenue) {
         MengineAdMediation mediation = revenue.ADREVENUE_MEDIATION;
         String AdjustMediation = MengineAdjustPlugin.getAdjustMediation(mediation);
         String network = revenue.ADREVENUE_NETWORK;
@@ -160,7 +156,7 @@ public class MengineAdjustPlugin extends MengineService implements MengineListen
     }
 
     @Override
-    public void onMengineTransparencyConsent(@NonNull MengineApplication application, @NonNull MengineTransparencyConsentParam tcParam) {
+    public void onMengineTransparencyConsent(@NonNull MengineApplication application, @NonNull MengineParamTransparencyConsent tcParam) {
         boolean EEA = tcParam.isEEA();
         boolean AD_PERSONALIZATION = tcParam.getConsentAdPersonalization();
         boolean AD_USER_DATA = tcParam.getConsentAdUserData();

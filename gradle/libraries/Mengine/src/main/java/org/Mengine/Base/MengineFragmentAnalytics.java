@@ -11,7 +11,7 @@ public class MengineFragmentAnalytics extends MengineFragment<MengineListenerAna
         INSTANCE = this;
     }
 
-    public void analyticsEvent(@NonNull MengineAnalyticsEventParam param) {
+    public void analyticsEvent(@NonNull MengineParamAnalyticsEvent param) {
         this.propagate(MengineListenerAnalytics::onMengineAnalyticsEvent, param);
     }
 

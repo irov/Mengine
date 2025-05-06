@@ -13,11 +13,11 @@ public class MengineFragmentInAppPurchase extends MengineFragment<MengineListene
         INSTANCE = this;
     }
 
-    public void setInAppProducts(@NonNull List<MengineInAppProductParam> products) {
+    public void setInAppProducts(@NonNull List<MengineParamInAppProduct> products) {
         this.propagate(MengineListenerInAppPurchase::onMengineSetInAppProducts, products);
     }
 
-    public void purchaseInAppProduct(@NonNull MengineInAppPurchaseParam purchase) {
+    public void purchaseInAppProduct(@NonNull MengineParamInAppPurchase purchase) {
         long purchase_timestamp = MengineUtils.getTimestamp();
 
         MengineStatistic.setInteger("purchase.timestamp", purchase_timestamp);

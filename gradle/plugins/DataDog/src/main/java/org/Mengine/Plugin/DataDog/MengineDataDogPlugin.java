@@ -23,10 +23,10 @@ import org.Mengine.Base.MengineListenerRemoteConfig;
 import org.Mengine.Base.MengineListenerUser;
 import org.Mengine.Base.MengineListenerTransparencyConsent;
 import org.Mengine.Base.MengineLog;
-import org.Mengine.Base.MengineLoggerMessageParam;
+import org.Mengine.Base.MengineParamLoggerMessage;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
-import org.Mengine.Base.MengineTransparencyConsentParam;
+import org.Mengine.Base.MengineParamTransparencyConsent;
 import org.Mengine.Base.MengineUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,7 +58,7 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
         }
     }
 
-    protected TrackingConsent getTrackingConsent(@NonNull MengineTransparencyConsentParam consentParam) {
+    protected TrackingConsent getTrackingConsent(@NonNull MengineParamTransparencyConsent consentParam) {
         if (consentParam == null) {
             return TrackingConsent.GRANTED;
         }
@@ -123,7 +123,7 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
 
         Context context = application.getApplicationContext();
 
-        MengineTransparencyConsentParam consentParam = application.makeTransparencyConsentParam();
+        MengineParamTransparencyConsent consentParam = application.makeTransparencyConsentParam();
 
         TrackingConsent consent = this.getTrackingConsent(consentParam);
 
@@ -230,7 +230,7 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
     }
 
     @Override
-    public void onMengineLog(@NonNull MengineApplication application, @NonNull MengineLoggerMessageParam message) {
+    public void onMengineLog(@NonNull MengineApplication application, @NonNull MengineParamLoggerMessage message) {
         if (m_loggerDataDog == null) {
             return;
         }
@@ -301,7 +301,7 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
     }
 
     @Override
-    public void onMengineTransparencyConsent(@NonNull MengineApplication application, @NonNull MengineTransparencyConsentParam tcParam) {
+    public void onMengineTransparencyConsent(@NonNull MengineApplication application, @NonNull MengineParamTransparencyConsent tcParam) {
         TrackingConsent consent = this.getTrackingConsent(tcParam);
 
         Datadog.setTrackingConsent(consent);

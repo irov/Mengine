@@ -6,7 +6,7 @@ import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineListenerPushToken;
 import org.Mengine.Base.MengineListenerRemoteMessage;
-import org.Mengine.Base.MengineRemoteMessageParam;
+import org.Mengine.Base.MengineParamRemoteMessage;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineUtils;
@@ -85,7 +85,7 @@ public class MengineHelpshiftPlugin extends MengineService implements HelpshiftE
     }
 
     @Override
-    public boolean onMengineRemoteMessageReceived(@NonNull MengineApplication application, @NonNull MengineRemoteMessageParam message) {
+    public boolean onMengineRemoteMessageReceived(@NonNull MengineApplication application, @NonNull MengineParamRemoteMessage message) {
         Map<String, Object> data = message.REMOTEMESSAGE_DATA;
 
         String origin = (String)data.get("origin");
@@ -235,43 +235,59 @@ public class MengineHelpshiftPlugin extends MengineService implements HelpshiftE
     }
 
     public void showFAQs() {
+        if (MengineActivity.INSTANCE == null) {
+            this.logWarning("showFAQs invalid activity");
+
+            return;
+        }
+
         this.logInfo("showFAQs");
 
-        MengineActivity activity = this.getMengineActivity();
-
         Map<String, Object> config = new HashMap<>();
-        Helpshift.showFAQs(activity, config);
+        Helpshift.showFAQs(MengineActivity.INSTANCE, config);
     }
 
     public void showConversation() {
+        if (MengineActivity.INSTANCE == null) {
+            this.logWarning("showConversation invalid activity");
+
+            return;
+        }
+
         this.logInfo("showConversation");
 
-        MengineActivity activity = this.getMengineActivity();
-
         Map<String, Object> config = new HashMap<>();
-        Helpshift.showConversation(activity, config);
+        Helpshift.showConversation(MengineActivity.INSTANCE, config);
     }
 
     public void showFAQSection(final String sectionPublishId) {
+        if (MengineActivity.INSTANCE == null) {
+            this.logWarning("showFAQSection invalid activity");
+
+            return;
+        }
+
         this.logInfo("showFAQSection sectionPublishId: %s"
             , sectionPublishId
         );
 
-        MengineActivity activity = this.getMengineActivity();
-
         Map<String, Object> config = new HashMap<>();
-        Helpshift.showFAQSection(activity, sectionPublishId, config);
+        Helpshift.showFAQSection(MengineActivity.INSTANCE, sectionPublishId, config);
     }
 
     public void showSingleFAQ(final String publishId) {
+        if (MengineActivity.INSTANCE == null) {
+            this.logWarning("showSingleFAQ invalid activity");
+
+            return;
+        }
+
         this.logInfo("showSingleFAQ publishId: %s"
             , publishId
         );
 
-        MengineActivity activity = this.getMengineActivity();
-
         Map<String, Object> config = new HashMap<>();
-        Helpshift.showSingleFAQ(activity, publishId, config);
+        Helpshift.showSingleFAQ(MengineActivity.INSTANCE, publishId, config);
     }
 
     public void setLanguage(final String language) {

@@ -216,6 +216,12 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
         view.setLayoutParams(params);
 
         view.setOnClickListener(v -> {
+            if (MengineActivity.INSTANCE == null) {
+                m_plugin.logError("[NONET_BANNERS] click banner invalid activity");
+
+                return;
+            }
+
             m_plugin.logMessage("[NONET_BANNERS] click banner request: %d url: %s"
                 , m_requestId
                 , url
@@ -226,9 +232,7 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
                 .addParameterLong("request_id", m_requestId)
                 .log();
 
-            MengineActivity activity = m_plugin.getMengineActivity();
-
-            MengineUtils.openUrl(activity, url);
+            MengineUtils.openUrl(MengineActivity.INSTANCE, url);
         });
 
         m_plugin.logMessage("[NONET_BANNERS] add banner url: %s"
@@ -262,6 +266,12 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
             return;
         }
 
+        if (MengineActivity.INSTANCE == null) {
+            m_plugin.logError("[NONET_BANNERS] show banner invalid activity");
+
+            return;
+        }
+
         m_visible = true;
 
         int showRequestId;
@@ -276,9 +286,7 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
 
             NonetBanner banner = this.getCurrentBanner();
 
-            MengineActivity activity = m_plugin.getMengineActivity();
-
-            ViewGroup viewGroup = activity.getContentViewGroup();
+            ViewGroup viewGroup = MengineActivity.INSTANCE.getContentViewGroup();
             viewGroup.addView(banner.view);
 
             m_showBanner = banner;
@@ -308,6 +316,12 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
             return;
         }
 
+        if (MengineActivity.INSTANCE == null) {
+            m_plugin.logError("[NONET_BANNERS] hide banner invalid activity");
+
+            return;
+        }
+
         m_visible = false;
 
         int hideRequestId;
@@ -320,9 +334,7 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
 
             NonetBanner oldBanner = m_showBanner;
 
-            MengineActivity activity = m_plugin.getMengineActivity();
-
-            ViewGroup viewGroup = activity.getContentViewGroup();
+            ViewGroup viewGroup = MengineActivity.INSTANCE.getContentViewGroup();
             viewGroup.removeView(oldBanner.view);
 
             m_showBanner = null;

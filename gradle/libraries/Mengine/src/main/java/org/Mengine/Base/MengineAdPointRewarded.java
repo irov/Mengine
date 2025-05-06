@@ -4,10 +4,10 @@ import androidx.annotation.NonNull;
 
 import org.json.JSONObject;
 
-public class MengineAdRewardedPoint extends MengineAdBasePoint {
-    public static final String TAG = "MengineAdRewardedPoint";
+public class MengineAdPointRewarded extends MengineAdPointBase {
+    public static final String TAG = "MengineAdPointRewarded";
 
-    MengineAdRewardedPoint(@NonNull String name, @NonNull JSONObject values) {
+    MengineAdPointRewarded(@NonNull String name, @NonNull JSONObject values) {
         super(name, values);
 
     }

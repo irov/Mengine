@@ -91,10 +91,10 @@ public class MengineActivity extends AppCompatActivity {
         return application;
     }
 
-    protected List<MengineService> getPlugins() {
+    protected List<MengineServiceInterface> getPlugins() {
         MengineApplication application = this.getMengineApplication();
 
-        List<MengineService> plugins = application.getServices();
+        List<MengineServiceInterface> plugins = application.getServices();
 
         return plugins;
     }
@@ -265,11 +265,11 @@ public class MengineActivity extends AppCompatActivity {
 
         INSTANCE = this;
 
-        List<MengineService> services = application.getServices();
+        List<MengineServiceInterface> services = application.getServices();
 
-        for (MengineService s : services) {
-            if (s instanceof MengineListenerActivity) {
-                m_activityListeners.add((MengineListenerActivity)s);
+        for (MengineServiceInterface s : services) {
+            if (s instanceof MengineListenerActivity listener) {
+                m_activityListeners.add(listener);
             }
         }
 
@@ -317,12 +317,6 @@ public class MengineActivity extends AppCompatActivity {
         MengineNative.AndroidNativePython_addPlugin("Activity", this);
 
         application.setState("activity.init", "plugin_create");
-
-        List<MengineService> plugins = this.getPlugins();
-
-        for (MengineService p : plugins) {
-            p.setMengineActivity(this);
-        }
 
         List<MengineListenerActivity> listeners = this.getActivityListeners();
 
@@ -879,12 +873,6 @@ public class MengineActivity extends AppCompatActivity {
             l.onDestroy(this);
         }
 
-        List<MengineService> plugins = this.getPlugins();
-
-        for (MengineService p : plugins) {
-            p.removeMengineActivity();
-        }
-
         if (m_clipboard != null) {
             m_clipboard.handleDestroy();
             m_clipboard = null;
@@ -1088,26 +1076,6 @@ public class MengineActivity extends AppCompatActivity {
         }
 
         return super.dispatchKeyEvent(event);
-    }
-
-    /***********************************************************************************************
-     * Python Methods
-     **********************************************************************************************/
-
-    public void pythonCall(String plugin, String method, Object ... args) {
-        MengineApplication application = this.getMengineApplication();
-
-        if (BuildConfig.DEBUG == true) {
-            MengineLog.logInfo(TAG, "pythonCall plugin [%s] method [%s] args [%s]"
-                , plugin
-                , method
-                , Arrays.toString(args)
-            );
-        }
-
-        application.setState("python.call", plugin + "." + method);
-
-        MengineNative.AndroidNativePython_call(plugin, method, args);
     }
 
     /***********************************************************************************************
@@ -1468,9 +1436,8 @@ public class MengineActivity extends AppCompatActivity {
             , () -> { //Yes
                 MengineLog.logInfo(TAG, "delete account [YES]");
 
-                MengineFragmentUser.INSTANCE.removeUserData();
-
-                MengineNative.AndroidEnvironmentService_deleteCurrentAccount();
+                MengineApplication application = this.getMengineApplication();
+                application.removeUserData();
 
                 MengineUtils.showOkAlertDialog(this, () -> {
                     this.finishAndRemoveTask();

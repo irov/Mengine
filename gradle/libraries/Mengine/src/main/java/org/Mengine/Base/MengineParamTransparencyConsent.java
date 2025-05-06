@@ -9,8 +9,8 @@ import androidx.preference.PreferenceManager;
 import java.util.List;
 import java.util.Objects;
 
-public class MengineTransparencyConsentParam {
-    private static final String TAG = "MengineTransparencyConsentParam";
+public class MengineParamTransparencyConsent {
+    private static final String TAG = "MengineParamTransparencyConsent";
 
     public static MengineConsentFlowUserGeography TRANSPARENCYCONSENT_USERGEOGRAPHY = MengineConsentFlowUserGeography.MengineConsentFlowUserGeography_Unknown;
 
@@ -56,17 +56,17 @@ public class MengineTransparencyConsentParam {
     public String TRANSPARENCYCONSENT_PUBLISHERCUSTOMPURPOSESLEGITIMATEINTERESTS;
 
     public static void setConsentFlowUserGeography(@NonNull Context context, MengineConsentFlowUserGeography userGeography) {
-        if (MengineTransparencyConsentParam.TRANSPARENCYCONSENT_USERGEOGRAPHY == userGeography) {
+        if (MengineParamTransparencyConsent.TRANSPARENCYCONSENT_USERGEOGRAPHY == userGeography) {
             return;
         }
 
-        MengineTransparencyConsentParam.TRANSPARENCYCONSENT_USERGEOGRAPHY = userGeography;
+        MengineParamTransparencyConsent.TRANSPARENCYCONSENT_USERGEOGRAPHY = userGeography;
 
         MenginePreferences.setPreferenceEnum(context, TAG, "mengine.consent.user_geography", userGeography);
     }
 
     public static MengineConsentFlowUserGeography getTransparencyconsentUsergeography() {
-        return MengineTransparencyConsentParam.TRANSPARENCYCONSENT_USERGEOGRAPHY;
+        return MengineParamTransparencyConsent.TRANSPARENCYCONSENT_USERGEOGRAPHY;
     }
 
     private boolean isTransparencyConsentPending(@NonNull SharedPreferences preferences) {
@@ -91,7 +91,7 @@ public class MengineTransparencyConsentParam {
     public void initFromDefaultSharedPreferences(@NonNull Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
-        MengineTransparencyConsentParam.TRANSPARENCYCONSENT_USERGEOGRAPHY = MenginePreferences.getPreferenceEnum(context, TAG, "mengine.consent.user_geography", MengineConsentFlowUserGeography.class, MengineConsentFlowUserGeography.MengineConsentFlowUserGeography_Unknown);
+        MengineParamTransparencyConsent.TRANSPARENCYCONSENT_USERGEOGRAPHY = MenginePreferences.getPreferenceEnum(context, TAG, "mengine.consent.user_geography", MengineConsentFlowUserGeography.class, MengineConsentFlowUserGeography.MengineConsentFlowUserGeography_Unknown);
 
         TRANSPARENCYCONSENT_PENDING = this.isTransparencyConsentPending(preferences);
 
@@ -116,7 +116,7 @@ public class MengineTransparencyConsentParam {
     }
 
     public boolean isPending() {
-        if (MengineTransparencyConsentParam.getTransparencyconsentUsergeography() == MengineConsentFlowUserGeography.MengineConsentFlowUserGeography_NonEEA) {
+        if (MengineParamTransparencyConsent.getTransparencyconsentUsergeography() == MengineConsentFlowUserGeography.MengineConsentFlowUserGeography_NonEEA) {
             return false;
         }
 
@@ -124,7 +124,7 @@ public class MengineTransparencyConsentParam {
     }
 
     public boolean isEEA() {
-        if (MengineTransparencyConsentParam.getTransparencyconsentUsergeography() == MengineConsentFlowUserGeography.MengineConsentFlowUserGeography_NonEEA) {
+        if (MengineParamTransparencyConsent.getTransparencyconsentUsergeography() == MengineConsentFlowUserGeography.MengineConsentFlowUserGeography_NonEEA) {
             return false;
         }
 
@@ -242,7 +242,7 @@ public class MengineTransparencyConsentParam {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        MengineTransparencyConsentParam dst = (MengineTransparencyConsentParam) o;
+        MengineParamTransparencyConsent dst = (MengineParamTransparencyConsent) o;
 
         return TRANSPARENCYCONSENT_PENDING == dst.TRANSPARENCYCONSENT_PENDING &&
                 TRANSPARENCYCONSENT_CMPSDKID == dst.TRANSPARENCYCONSENT_CMPSDKID &&

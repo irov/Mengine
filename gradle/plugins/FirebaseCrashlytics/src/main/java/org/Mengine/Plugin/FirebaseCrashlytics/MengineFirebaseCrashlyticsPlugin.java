@@ -12,7 +12,7 @@ import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineFatalErrorException;
 import org.Mengine.Base.MengineLog;
-import org.Mengine.Base.MengineLoggerMessageParam;
+import org.Mengine.Base.MengineParamLoggerMessage;
 import org.Mengine.Base.MengineNative;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineListenerActivity;
@@ -147,7 +147,7 @@ public class MengineFirebaseCrashlyticsPlugin extends MengineService implements 
     }
 
     @Override
-    public void onMengineLog(@NonNull MengineApplication application, @NonNull MengineLoggerMessageParam message) {
+    public void onMengineLog(@NonNull MengineApplication application, @NonNull MengineParamLoggerMessage message) {
         if (BuildConfig.DEBUG == true) {
             return;
         }

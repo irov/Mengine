@@ -1,6 +1,6 @@
 package org.Mengine.Base;
 
-public class MengineInAppProductParam {
+public class MengineParamInAppProduct {
     public String INAPPPRODUCT_ID;
     public String INAPPPRODUCT_TYPE;
     public String INAPPPRODUCT_NAME;

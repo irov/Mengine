@@ -11,7 +11,7 @@ public class MengineFragmentTransparencyConsent extends MengineFragment<MengineL
         INSTANCE = this;
     }
 
-    public void transparencyConsent(@NonNull MengineTransparencyConsentParam tcParam) {
+    public void transparencyConsent(@NonNull MengineParamTransparencyConsent tcParam) {
         this.propagate(MengineListenerTransparencyConsent::onMengineTransparencyConsent, tcParam);
     }
 }

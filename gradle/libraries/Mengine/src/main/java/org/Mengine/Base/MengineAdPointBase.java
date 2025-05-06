@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 
 import org.json.JSONObject;
 
-public class MengineAdBasePoint {
+public class MengineAdPointBase {
     public static final String TAG = "MengineAdBasePoint";
 
     protected String m_name;
@@ -19,7 +19,7 @@ public class MengineAdBasePoint {
 
     protected long m_lastShowTime;
 
-    MengineAdBasePoint(@NonNull String name, @NonNull JSONObject values) {
+    MengineAdPointBase(@NonNull String name, @NonNull JSONObject values) {
         m_name = name;
 
         m_id = this.parseAdPointInteger(values, "id", false, 1);

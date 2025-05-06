@@ -7,9 +7,9 @@ import androidx.annotation.NonNull;
 import org.Mengine.Base.BuildConfig;
 import org.Mengine.Base.MengineAdFormat;
 import org.Mengine.Base.MengineAdMediation;
-import org.Mengine.Base.MengineAdRevenueParam;
+import org.Mengine.Base.MengineParamAdRevenue;
 import org.Mengine.Base.MengineAnalyticsEventCategory;
-import org.Mengine.Base.MengineAnalyticsEventParam;
+import org.Mengine.Base.MengineParamAnalyticsEvent;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineListenerAdRevenue;
 import org.Mengine.Base.MengineListenerAnalytics;
@@ -18,7 +18,7 @@ import org.Mengine.Base.MengineListenerEngine;
 import org.Mengine.Base.MengineListenerLogger;
 import org.Mengine.Base.MengineListenerUser;
 import org.Mengine.Base.MengineLog;
-import org.Mengine.Base.MengineLoggerMessageParam;
+import org.Mengine.Base.MengineParamLoggerMessage;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineUtils;
@@ -103,7 +103,7 @@ public class MengineAppMetricaPlugin extends MengineService implements MengineLi
     }
 
     @Override
-    public void onMengineAnalyticsEvent(@NonNull MengineApplication application, @NonNull MengineAnalyticsEventParam param) {
+    public void onMengineAnalyticsEvent(@NonNull MengineApplication application, @NonNull MengineParamAnalyticsEvent param) {
         if (param.ANALYTICS_CATEGORY == MengineAnalyticsEventCategory.MengineAnalyticsEventCategory_System) {
             return;
         }
@@ -140,7 +140,7 @@ public class MengineAppMetricaPlugin extends MengineService implements MengineLi
     }
 
     @Override
-    public void onMengineAdRevenue(@NonNull MengineApplication application, @NonNull MengineAdRevenueParam revenue) {
+    public void onMengineAdRevenue(@NonNull MengineApplication application, @NonNull MengineParamAdRevenue revenue) {
         MengineAdMediation mediation = revenue.ADREVENUE_MEDIATION;
         String networkName = revenue.ADREVENUE_NETWORK;
         MengineAdFormat adFormat = revenue.ADREVENUE_FORMAT;
@@ -174,7 +174,7 @@ public class MengineAppMetricaPlugin extends MengineService implements MengineLi
     }
 
     @Override
-    public void onMengineLog(@NonNull MengineApplication application, @NonNull MengineLoggerMessageParam message) {
+    public void onMengineLog(@NonNull MengineApplication application, @NonNull MengineParamLoggerMessage message) {
         if (BuildConfig.DEBUG == true) {
             return;
         }

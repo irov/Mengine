@@ -2,8 +2,8 @@ package org.Mengine.Base;
 
 import java.util.List;
 
-public class MengineHttpRequestParam {
-    public MengineHttpRequestParam(String url, String proxy, List<String> headers, String cookies, int timeout) {
+public class MengineParamHttpRequest {
+    public MengineParamHttpRequest(String url, String proxy, List<String> headers, String cookies, int timeout) {
         this.HTTP_URL = url;
         this.HTTP_PROXY = proxy;
         this.HTTP_HEADERS = headers;

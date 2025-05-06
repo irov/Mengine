@@ -124,7 +124,7 @@ public class MengineAnalyticsEventBuilder {
     public long log() {
         long timestamp = MengineUtils.getTimestamp();
 
-        MengineAnalyticsEventParam param = new MengineAnalyticsEventParam(MengineAnalyticsEventCategory.MengineAnalyticsEventCategory_System
+        MengineParamAnalyticsEvent param = new MengineParamAnalyticsEvent(MengineAnalyticsEventCategory.MengineAnalyticsEventCategory_System
             , m_name
             , timestamp
             , m_bases

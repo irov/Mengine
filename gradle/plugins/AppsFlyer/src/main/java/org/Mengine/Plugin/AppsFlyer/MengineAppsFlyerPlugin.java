@@ -14,9 +14,9 @@ import com.appsflyer.adrevenue.AppsFlyerAdRevenue;
 import org.Mengine.Base.BuildConfig;
 import org.Mengine.Base.MengineAdFormat;
 import org.Mengine.Base.MengineAdMediation;
-import org.Mengine.Base.MengineAdRevenueParam;
+import org.Mengine.Base.MengineParamAdRevenue;
 import org.Mengine.Base.MengineAnalyticsEventCategory;
-import org.Mengine.Base.MengineAnalyticsEventParam;
+import org.Mengine.Base.MengineParamAnalyticsEvent;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineListenerAdRevenue;
 import org.Mengine.Base.MengineListenerAnalytics;
@@ -76,7 +76,7 @@ public class MengineAppsFlyerPlugin extends MengineService implements MengineLis
     }
 
     @Override
-    public void onMengineAnalyticsEvent(@NonNull MengineApplication application, @NonNull MengineAnalyticsEventParam param) {
+    public void onMengineAnalyticsEvent(@NonNull MengineApplication application, @NonNull MengineParamAnalyticsEvent param) {
         if (param.ANALYTICS_CATEGORY == MengineAnalyticsEventCategory.MengineAnalyticsEventCategory_System) {
             return;
         }
@@ -134,7 +134,7 @@ public class MengineAppsFlyerPlugin extends MengineService implements MengineLis
     }
 
     @Override
-    public void onMengineAdRevenue(@NonNull MengineApplication application, @NonNull MengineAdRevenueParam revenue) {
+    public void onMengineAdRevenue(@NonNull MengineApplication application, @NonNull MengineParamAdRevenue revenue) {
         MengineAdMediation mediation = revenue.ADREVENUE_MEDIATION;
         MediationNetwork AppsFlyerSource = MengineAppsFlyerPlugin.getMediationNetwork(mediation);
         String network = revenue.ADREVENUE_NETWORK;

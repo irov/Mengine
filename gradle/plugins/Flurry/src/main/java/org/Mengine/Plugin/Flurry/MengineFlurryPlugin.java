@@ -12,7 +12,7 @@ import com.flurry.android.FlurryPerformance;
 
 import org.Mengine.Base.BuildConfig;
 import org.Mengine.Base.MengineAnalyticsEventCategory;
-import org.Mengine.Base.MengineAnalyticsEventParam;
+import org.Mengine.Base.MengineParamAnalyticsEvent;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineListenerAnalytics;
 import org.Mengine.Base.MengineListenerApplication;
@@ -100,7 +100,7 @@ public class MengineFlurryPlugin extends MengineService implements MengineListen
     }
 
     @Override
-    public void onMengineAnalyticsEvent(@NonNull MengineApplication application, @NonNull MengineAnalyticsEventParam param) {
+    public void onMengineAnalyticsEvent(@NonNull MengineApplication application, @NonNull MengineParamAnalyticsEvent param) {
         if (param.ANALYTICS_CATEGORY == MengineAnalyticsEventCategory.MengineAnalyticsEventCategory_System) {
             return;
         }

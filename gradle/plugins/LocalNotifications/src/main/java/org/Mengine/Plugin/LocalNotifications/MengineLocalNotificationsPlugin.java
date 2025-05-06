@@ -133,9 +133,13 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
             return;
         }
 
-        MengineActivity activity = this.getMengineActivity();
+        if (MengineActivity.INSTANCE == null) {
+            this.logWarning("scheduleNotification invalid activity");
+
+            return;
+        }
         
-        Intent notificationIntent = new Intent(activity, MengineLocalNotificationsPublisher.class);
+        Intent notificationIntent = new Intent(MengineActivity.INSTANCE, MengineLocalNotificationsPublisher.class);
 
         notificationIntent.putExtra(MengineLocalNotificationsPublisher.NOTIFICATION_ID, id);
         notificationIntent.putExtra(MengineLocalNotificationsPublisher.NOTIFICATION, notification);
@@ -146,9 +150,9 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
             pendingFlags |= PendingIntent.FLAG_IMMUTABLE;
         }
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(activity, 0, notificationIntent, pendingFlags);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(MengineActivity.INSTANCE, 0, notificationIntent, pendingFlags);
 
-        AlarmManager alarmManager = activity.getSystemService(AlarmManager.class);
+        AlarmManager alarmManager = MengineActivity.INSTANCE.getSystemService(AlarmManager.class);
 
         if (alarmManager == null) {
             return;
@@ -168,9 +172,13 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
             return;
         }
 
-        MengineActivity activity = this.getMengineActivity();
+        if (MengineActivity.INSTANCE == null) {
+            this.logWarning("instantlyPresentNotification invalid activity");
+
+            return;
+        }
         
-        NotificationManager notificationManager = activity.getSystemService(NotificationManager.class);
+        NotificationManager notificationManager = MengineActivity.INSTANCE.getSystemService(NotificationManager.class);
 
         if (notificationManager == null) {
             return;
@@ -218,15 +226,20 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
     public void cancelAll() {
         this.logInfo("cancelAll");
 
-        MengineActivity activity = this.getMengineActivity();
+        if (MengineActivity.INSTANCE == null) {
+            this.logWarning("cancelAll invalid activity");
+
+            return;
+        }
+
         
-        NotificationManager notificationManager = activity.getSystemService(NotificationManager.class);
+        NotificationManager notificationManager = MengineActivity.INSTANCE.getSystemService(NotificationManager.class);
 
         if (notificationManager != null) {
             notificationManager.cancelAll();
         }
 
-        JobScheduler jobScheduler = activity.getSystemService(JobScheduler.class);
+        JobScheduler jobScheduler = MengineActivity.INSTANCE.getSystemService(JobScheduler.class);
 
         if (jobScheduler != null) {
             jobScheduler.cancelAll();
@@ -376,11 +389,15 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
         if (m_notificationPermissionGranted == false) {
             return;
         }
-        
-        MengineActivity activity = this.getMengineActivity();
+
+        if (MengineActivity.INSTANCE == null) {
+            this.logWarning("scheduleJobNotification invalid activity");
+
+            return;
+        }
 
         int jobId = (int)SystemClock.elapsedRealtime();
-        ComponentName jobService = new ComponentName(activity, MengineLocalNotificationsJobService.class);
+        ComponentName jobService = new ComponentName(MengineActivity.INSTANCE, MengineLocalNotificationsJobService.class);
 
         JobInfo.Builder builder = new JobInfo.Builder(jobId, jobService);
         JobInfo jobInfo = builder
@@ -389,7 +406,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
             .setExtras(bundle)
             .build();
 
-        JobScheduler jobScheduler = activity.getSystemService(JobScheduler.class);
+        JobScheduler jobScheduler = MengineActivity.INSTANCE.getSystemService(JobScheduler.class);
 
         if (jobScheduler == null) {
             return;

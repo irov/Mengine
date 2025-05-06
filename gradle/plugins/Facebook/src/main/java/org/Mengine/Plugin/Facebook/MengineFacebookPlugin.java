@@ -29,9 +29,9 @@ import com.facebook.share.widget.ShareDialog;
 
 import org.Mengine.Base.BuildConfig;
 import org.Mengine.Base.MengineActivity;
-import org.Mengine.Base.MengineAdRevenueParam;
+import org.Mengine.Base.MengineParamAdRevenue;
 import org.Mengine.Base.MengineAnalyticsEventCategory;
-import org.Mengine.Base.MengineAnalyticsEventParam;
+import org.Mengine.Base.MengineParamAnalyticsEvent;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineListenerAdRevenue;
 import org.Mengine.Base.MengineListenerTransparencyConsent;
@@ -42,7 +42,7 @@ import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineListenerPushToken;
 import org.Mengine.Base.MengineListenerRemoteMessage;
 import org.Mengine.Base.MengineListenerUser;
-import org.Mengine.Base.MengineTransparencyConsentParam;
+import org.Mengine.Base.MengineParamTransparencyConsent;
 import org.Mengine.Base.MengineUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -74,7 +74,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
 
     @Override
     public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
-        MengineTransparencyConsentParam tcParam = application.makeTransparencyConsentParam();
+        MengineParamTransparencyConsent tcParam = application.makeTransparencyConsentParam();
         boolean AD_STORAGE = tcParam.getConsentAdStorage();
 
         FacebookSdk.setAdvertiserIDCollectionEnabled(AD_STORAGE);
@@ -279,7 +279,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
     }
 
     @Override
-    public void onMengineAnalyticsEvent(@NonNull MengineApplication application, @NonNull MengineAnalyticsEventParam param) {
+    public void onMengineAnalyticsEvent(@NonNull MengineApplication application, @NonNull MengineParamAnalyticsEvent param) {
         if (m_logger == null) {
             return;
         }
@@ -341,13 +341,19 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
     }
     
     public void performLogin(List<String> permissions) {
+        if (MengineActivity.INSTANCE == null) {
+            this.logWarning("performLogin invalid activity");
+
+            this.pythonCall("onFacebookLoginError", ERROR_CODE_UNKNOWN, new RuntimeException("invalid activity"));
+
+            return;
+        }
+
         this.logInfo("performLogin permissions: %s"
             , permissions
         );
 
-        MengineActivity activity = this.getMengineActivity();
-
-        LoginManager.getInstance().logInWithReadPermissions(activity, m_facebookCallbackManager, permissions);
+        LoginManager.getInstance().logInWithReadPermissions(MengineActivity.INSTANCE, m_facebookCallbackManager, permissions);
     }
 
     private boolean checkValidAccessToken(AccessToken accessToken, String errorMethod) {
@@ -453,6 +459,14 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
             , quote
         );
 
+        if (MengineActivity.INSTANCE == null) {
+            this.logWarning("shareLink invalid activity");
+
+            MengineFacebookPlugin.this.pythonCall("onFacebookShareError", ERROR_CODE_UNKNOWN, new RuntimeException("invalid activity"));
+
+            return;
+        }
+
         if (ShareDialog.canShow(ShareLinkContent.class) == false) {
             this.logWarning("shareLink can't show");
 
@@ -467,9 +481,8 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
             .addParameterString("quote", quote)
             .log();
 
-        MengineActivity activity = this.getMengineActivity();
+        ShareDialog shareDialog = new ShareDialog(MengineActivity.INSTANCE);
 
-        ShareDialog shareDialog = new ShareDialog(activity);
         shareDialog.registerCallback(m_facebookCallbackManager, new FacebookCallback<>() {
             @Override
             public void onSuccess(Sharer.Result result) {
@@ -637,7 +650,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
     }
 
     @Override
-    public void onMengineTransparencyConsent(@NonNull MengineApplication application, @NonNull MengineTransparencyConsentParam tcParam) {
+    public void onMengineTransparencyConsent(@NonNull MengineApplication application, @NonNull MengineParamTransparencyConsent tcParam) {
         boolean AD_STORAGE = tcParam.getConsentAdStorage();
 
         FacebookSdk.setAdvertiserIDCollectionEnabled(AD_STORAGE);
@@ -645,7 +658,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
     }
 
     @Override
-    public void onMengineAdRevenue(@NonNull MengineApplication application, @NonNull MengineAdRevenueParam revenue) {
+    public void onMengineAdRevenue(@NonNull MengineApplication application, @NonNull MengineParamAdRevenue revenue) {
         if (m_logger == null) {
             return;
         }

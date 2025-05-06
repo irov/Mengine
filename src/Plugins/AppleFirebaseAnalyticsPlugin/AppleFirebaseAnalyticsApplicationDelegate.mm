@@ -55,11 +55,11 @@
     return YES;
 }
 
-- (void)onSessionId:(iOSUserParam *)session {
-    [FIRAnalytics setUserID:session.USER_ID];
+- (void)onUserId:(iOSUserParam *)user {
+    [FIRAnalytics setUserID:user.USER_ID];
 }
 
-- (void)onRemoveSessionData {
+- (void)onRemoveUserData {
     [FIRAnalytics resetAnalyticsData];
     [FIRAnalytics setUserID:nil];
 }

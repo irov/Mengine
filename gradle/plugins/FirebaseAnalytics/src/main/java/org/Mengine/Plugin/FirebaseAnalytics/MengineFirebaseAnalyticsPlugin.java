@@ -8,11 +8,13 @@ import androidx.annotation.Size;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
+import org.Mengine.Base.MengineParamAcquisition;
 import org.Mengine.Base.MengineAdFormat;
 import org.Mengine.Base.MengineAdMediation;
-import org.Mengine.Base.MengineAdRevenueParam;
-import org.Mengine.Base.MengineAnalyticsEventParam;
+import org.Mengine.Base.MengineParamAdRevenue;
+import org.Mengine.Base.MengineParamAnalyticsEvent;
 import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineListenerAcquisition;
 import org.Mengine.Base.MengineListenerGame;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineListenerAdRevenue;
@@ -21,13 +23,13 @@ import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineListenerUser;
 import org.Mengine.Base.MengineListenerTransparencyConsent;
-import org.Mengine.Base.MengineTransparencyConsentParam;
+import org.Mengine.Base.MengineParamTransparencyConsent;
 import org.Mengine.Base.MengineUtils;
 
 import java.util.EnumMap;
 import java.util.Map;
 
-public class MengineFirebaseAnalyticsPlugin extends MengineService implements MengineListenerAnalytics, MengineListenerAdRevenue, MengineListenerTransparencyConsent, MengineListenerApplication, MengineListenerUser, MengineListenerGame {
+public class MengineFirebaseAnalyticsPlugin extends MengineService implements MengineListenerAnalytics, MengineListenerAdRevenue, MengineListenerTransparencyConsent, MengineListenerApplication, MengineListenerUser, MengineListenerGame, MengineListenerAcquisition {
     public static final String SERVICE_NAME = "FBAnalytics";
     public static final boolean SERVICE_EMBEDDING = true;
 
@@ -54,6 +56,12 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
         firebaseAnalytics.setUserProperty("install_rnd", String.valueOf(installRND));
         firebaseAnalytics.setUserProperty("session_index", String.valueOf(sessionIndex));
         firebaseAnalytics.setUserProperty("session_timestamp", String.valueOf(sessionTimestamp));
+
+        String acquisitionNetwork = application.getAcquisitionNetwork();
+        String acquisitionCampaign = application.getAcquisitionCampaign();
+
+        firebaseAnalytics.setUserProperty("acquisition_network", acquisitionNetwork);
+        firebaseAnalytics.setUserProperty("acquisition_campaign", acquisitionCampaign);
 
         long currentTimestamp = MengineUtils.getTimestamp();
         long lifeTime = currentTimestamp - installTimestamp;
@@ -118,7 +126,7 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
     }
 
     @Override
-    public void onMengineAnalyticsEvent(@NonNull MengineApplication application, @NonNull MengineAnalyticsEventParam param) {
+    public void onMengineAnalyticsEvent(@NonNull MengineApplication application, @NonNull MengineParamAnalyticsEvent param) {
         if (m_firebaseAnalytics == null) {
             return;
         }
@@ -174,7 +182,7 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
     }
 
     @Override
-    public void onMengineAdRevenue(@NonNull MengineApplication application, @NonNull MengineAdRevenueParam revenue) {
+    public void onMengineAdRevenue(@NonNull MengineApplication application, @NonNull MengineParamAdRevenue revenue) {
         if (m_firebaseAnalytics == null) {
             return;
         }
@@ -200,7 +208,7 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
     }
 
     @Override
-    public void onMengineTransparencyConsent(@NonNull MengineApplication application, @NonNull MengineTransparencyConsentParam tcParam) {
+    public void onMengineTransparencyConsent(@NonNull MengineApplication application, @NonNull MengineParamTransparencyConsent tcParam) {
         if (m_firebaseAnalytics == null) {
             return;
         }
@@ -288,5 +296,16 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
         }
 
         m_firebaseAnalytics.logEvent(eventName, params);
+    }
+
+    @Override
+    public void onADIDChange(@NonNull MengineApplication application, @NonNull String adid) {
+        //Empty
+    }
+
+    @Override
+    public void onAcquisitionChange(@NonNull MengineApplication application, @NonNull MengineParamAcquisition acquisition) {
+        m_firebaseAnalytics.setUserProperty("acquisition_network", acquisition.ACQUISITION_NETWORK);
+        m_firebaseAnalytics.setUserProperty("acquisition_campaign", acquisition.ACQUISITION_CAMPAIGN);
     }
 }

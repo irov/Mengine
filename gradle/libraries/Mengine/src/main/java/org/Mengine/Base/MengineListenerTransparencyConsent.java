@@ -3,5 +3,5 @@ package org.Mengine.Base;
 import androidx.annotation.NonNull;
 
 public interface MengineListenerTransparencyConsent extends MengineServiceInterface {
-    void onMengineTransparencyConsent(@NonNull MengineApplication application, @NonNull MengineTransparencyConsentParam tcParam);
+    void onMengineTransparencyConsent(@NonNull MengineApplication application, @NonNull MengineParamTransparencyConsent tcParam);
 }

@@ -64,11 +64,11 @@
 
 #pragma mark - iOSPluginSessionIdDelegateInterface
 
-- (void)onSessionId:(iOSUserParam *)session {
-    [DTDAnalytics userId:session.USER_ID];
+- (void)onUserId:(iOSUserParam *)user {
+    [DTDAnalytics userId:user.USER_ID];
 }
 
-- (void)onRemoveSessionData {
+- (void)onRemoveUserData {
     //Empty
 }
 

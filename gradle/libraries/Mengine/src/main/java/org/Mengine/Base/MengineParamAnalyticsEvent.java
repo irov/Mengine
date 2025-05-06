@@ -4,8 +4,8 @@ import androidx.annotation.NonNull;
 
 import java.util.Map;
 
-public class MengineAnalyticsEventParam {
-    public MengineAnalyticsEventParam(@NonNull MengineAnalyticsEventCategory category, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
+public class MengineParamAnalyticsEvent {
+    public MengineParamAnalyticsEvent(@NonNull MengineAnalyticsEventCategory category, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
         this.ANALYTICS_CATEGORY = category;
         this.ANALYTICS_NAME = eventName;
         this.ANALYTICS_TIMESTAMP = timestamp;

@@ -50,7 +50,7 @@ public class MengineNetwork {
         return m_networkTransport;
     }
 
-    protected static HttpURLConnection openConnection(@NonNull MengineHttpRequestParam request, String method, boolean output) throws IOException {
+    protected static HttpURLConnection openConnection(@NonNull MengineParamHttpRequest request, String method, boolean output) throws IOException {
         URL httpUrl = new URL(request.HTTP_URL);
 
         HttpURLConnection connection = (HttpURLConnection)httpUrl.openConnection();
@@ -84,10 +84,10 @@ public class MengineNetwork {
         return connection;
     }
 
-    protected static MengineHttpResponseParam processConnectionData(@NonNull HttpURLConnection connection) throws IOException {
+    protected static MengineParamHttpResponse processConnectionData(@NonNull HttpURLConnection connection) throws IOException {
         connection.connect();
 
-        MengineHttpResponseParam response = MengineNetwork.makeResponseData(connection);
+        MengineParamHttpResponse response = MengineNetwork.makeResponseData(connection);
 
         connection.disconnect();
 
@@ -95,7 +95,7 @@ public class MengineNetwork {
     }
 
     @Nullable
-    public static MengineHttpResponseParam httpRequestPing(@NonNull MengineHttpRequestParam request) {
+    public static MengineParamHttpResponse httpRequestPing(@NonNull MengineParamHttpRequest request) {
         if (m_networkAvailable == false) {
             return null;
         }
@@ -103,18 +103,18 @@ public class MengineNetwork {
         try {
             HttpURLConnection connection = MengineNetwork.openConnection(request, "HEAD", false);
 
-            MengineHttpResponseParam response = MengineNetwork.processConnectionData(connection);
+            MengineParamHttpResponse response = MengineNetwork.processConnectionData(connection);
 
             return response;
         } catch (final Exception e) {
-            MengineHttpResponseParam response = MengineNetwork.catchException(request, e);
+            MengineParamHttpResponse response = MengineNetwork.catchException(request, e);
 
             return response;
         }
     }
 
     @Nullable
-    public static MengineHttpResponseParam httpRequestPostMessage(@NonNull MengineHttpRequestParam request, Map<String, String> properties) {
+    public static MengineParamHttpResponse httpRequestPostMessage(@NonNull MengineParamHttpRequest request, Map<String, String> properties) {
         if (m_networkAvailable == false) {
             return null;
         }
@@ -124,18 +124,18 @@ public class MengineNetwork {
 
             MengineNetwork.setMultipartFormData(connection, properties);
 
-            MengineHttpResponseParam response = MengineNetwork.processConnectionData(connection);
+            MengineParamHttpResponse response = MengineNetwork.processConnectionData(connection);
 
             return response;
         } catch (final Exception e) {
-            MengineHttpResponseParam response = MengineNetwork.catchException(request, e);
+            MengineParamHttpResponse response = MengineNetwork.catchException(request, e);
 
             return response;
         }
     }
 
     @Nullable
-    public static MengineHttpResponseParam httpRequestHeaderData(@NonNull MengineHttpRequestParam request, byte[] data) {
+    public static MengineParamHttpResponse httpRequestHeaderData(@NonNull MengineParamHttpRequest request, byte[] data) {
         if (m_networkAvailable == false) {
             return null;
         }
@@ -145,18 +145,18 @@ public class MengineNetwork {
 
             MengineNetwork.setData(connection, data);
 
-            MengineHttpResponseParam response = MengineNetwork.processConnectionData(connection);
+            MengineParamHttpResponse response = MengineNetwork.processConnectionData(connection);
 
             return response;
         } catch (final Exception e) {
-            MengineHttpResponseParam response = MengineNetwork.catchException(request, e);
+            MengineParamHttpResponse response = MengineNetwork.catchException(request, e);
 
             return response;
         }
     }
 
     @Nullable
-    public static MengineHttpResponseParam httpRequestGetMessage(@NonNull MengineHttpRequestParam request) {
+    public static MengineParamHttpResponse httpRequestGetMessage(@NonNull MengineParamHttpRequest request) {
         if (m_networkAvailable == false) {
             return null;
         }
@@ -164,18 +164,18 @@ public class MengineNetwork {
         try {
             HttpURLConnection connection = MengineNetwork.openConnection(request, "GET", false);
 
-            MengineHttpResponseParam response = MengineNetwork.processConnectionData(connection);
+            MengineParamHttpResponse response = MengineNetwork.processConnectionData(connection);
 
             return response;
         } catch (final Exception e) {
-            MengineHttpResponseParam response = MengineNetwork.catchException(request, e);
+            MengineParamHttpResponse response = MengineNetwork.catchException(request, e);
 
             return response;
         }
     }
 
     @Nullable
-    public static MengineHttpResponseParam httpRequestDeleteMessage(@NonNull MengineHttpRequestParam request) {
+    public static MengineParamHttpResponse httpRequestDeleteMessage(@NonNull MengineParamHttpRequest request) {
         if (m_networkAvailable == false) {
             return null;
         }
@@ -183,18 +183,18 @@ public class MengineNetwork {
         try {
             HttpURLConnection connection = MengineNetwork.openConnection(request, "DELETE", false);
 
-            MengineHttpResponseParam response = MengineNetwork.processConnectionData(connection);
+            MengineParamHttpResponse response = MengineNetwork.processConnectionData(connection);
 
             return response;
         } catch (final Exception e) {
-            MengineHttpResponseParam response = MengineNetwork.catchException(request, e);
+            MengineParamHttpResponse response = MengineNetwork.catchException(request, e);
 
             return response;
         }
     }
 
     @Nullable
-    public static MengineHttpResponseParam httpRequestGetAsset(@NonNull MengineHttpRequestParam request, String login, String password) {
+    public static MengineParamHttpResponse httpRequestGetAsset(@NonNull MengineParamHttpRequest request, String login, String password) {
         if (m_networkAvailable == false) {
             return null;
         }
@@ -204,21 +204,21 @@ public class MengineNetwork {
 
             MengineNetwork.setBasicAuthorization(connection, login, password);
 
-            MengineHttpResponseParam response = MengineNetwork.processConnectionData(connection);
+            MengineParamHttpResponse response = MengineNetwork.processConnectionData(connection);
 
             return response;
         } catch (final Exception e) {
-            MengineHttpResponseParam response = MengineNetwork.catchException(request, e);
+            MengineParamHttpResponse response = MengineNetwork.catchException(request, e);
 
             return response;
         }
     }
 
-    protected static MengineHttpResponseParam catchException(@NonNull MengineHttpRequestParam request, @NonNull Exception exception) {
+    protected static MengineParamHttpResponse catchException(@NonNull MengineParamHttpRequest request, @NonNull Exception exception) {
         try {
             throw exception;
         } catch (final UnknownHostException e) {
-            MengineHttpResponseParam response = new MengineHttpResponseParam();
+            MengineParamHttpResponse response = new MengineParamHttpResponse();
 
             response.HTTP_RESPONSE_CODE = HttpURLConnection.HTTP_NOT_FOUND;
             response.HTTP_CONTENT_LENGTH = 0;
@@ -310,14 +310,14 @@ public class MengineNetwork {
         writer.flush();
     }
 
-    protected static void setResponseCode(@NonNull HttpURLConnection connection, @NonNull MengineHttpResponseParam response) throws IOException {
+    protected static void setResponseCode(@NonNull HttpURLConnection connection, @NonNull MengineParamHttpResponse response) throws IOException {
         int responseCode = connection.getResponseCode();
 
         response.HTTP_RESPONSE_CODE = responseCode;
     }
 
-    protected static MengineHttpResponseParam makeResponseData(@NonNull HttpURLConnection connection) throws IOException {
-        MengineHttpResponseParam response = new MengineHttpResponseParam();
+    protected static MengineParamHttpResponse makeResponseData(@NonNull HttpURLConnection connection) throws IOException {
+        MengineParamHttpResponse response = new MengineParamHttpResponse();
 
         MengineNetwork.setResponseCode(connection, response);
 
@@ -339,7 +339,7 @@ public class MengineNetwork {
         return response;
     }
 
-    protected static void getResponseContentData(@NonNull HttpURLConnection connection, @NonNull MengineHttpResponseParam response) throws IOException {
+    protected static void getResponseContentData(@NonNull HttpURLConnection connection, @NonNull MengineParamHttpResponse response) throws IOException {
         InputStream is = connection.getInputStream();
 
         int length = connection.getContentLength();
@@ -361,7 +361,7 @@ public class MengineNetwork {
         is.close();
     }
 
-    protected static void getResponseErrorMessage(@NonNull HttpURLConnection connection, @NonNull MengineHttpResponseParam response) throws IOException {
+    protected static void getResponseErrorMessage(@NonNull HttpURLConnection connection, @NonNull MengineParamHttpResponse response) throws IOException {
         InputStream is = connection.getErrorStream();
 
         String HTTP_ERROR_MESSAGE = MengineUtils.inputStreamToString(is);

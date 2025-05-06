@@ -5,7 +5,7 @@ import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineListenerActivity;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
-import org.Mengine.Base.MengineTransparencyConsentParam;
+import org.Mengine.Base.MengineParamTransparencyConsent;
 
 import android.os.Bundle;
 
@@ -101,9 +101,13 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
     }
 
     public void resetConsentInformation() {
-        MengineActivity activity = this.getMengineActivity();
+        if (MengineActivity.INSTANCE == null) {
+            this.logWarning("reset consent information invalid activity");
 
-        ConsentInformation consentInformation = UserMessagingPlatform.getConsentInformation(activity);
+            return;
+        }
+
+        ConsentInformation consentInformation = UserMessagingPlatform.getConsentInformation(MengineActivity.INSTANCE);
         consentInformation.reset();
     }
 }

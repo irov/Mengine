@@ -11,7 +11,7 @@ import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineListenerTransparencyConsent;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
-import org.Mengine.Base.MengineTransparencyConsentParam;
+import org.Mengine.Base.MengineParamTransparencyConsent;
 import org.Mengine.Base.MengineUtils;
 
 import java.util.List;
@@ -36,7 +36,7 @@ public class MengineOneSignalPlugin extends MengineService implements MengineLis
             OneSignal.getDebug().setLogLevel(LogLevel.ERROR);
         }
 
-        MengineTransparencyConsentParam tcParam = application.makeTransparencyConsentParam();
+        MengineParamTransparencyConsent tcParam = application.makeTransparencyConsentParam();
 
         if (tcParam.isEEA() == true) {
             OneSignal.setConsentRequired(true);
@@ -53,9 +53,9 @@ public class MengineOneSignalPlugin extends MengineService implements MengineLis
     }
 
     @Override
-    public void onMengineTransparencyConsent(@NonNull MengineApplication application, @NonNull MengineTransparencyConsentParam tcParam) {
-        if (tcParam.isEEA() == true) {
-            if (tcParam.getPurposeConsentArguments(List.of(0, 3, 4)) == true) {
+    public void onMengineTransparencyConsent(@NonNull MengineApplication application, @NonNull MengineParamTransparencyConsent consent) {
+        if (consent.isEEA() == true) {
+            if (consent.getPurposeConsentArguments(List.of(0, 3, 4)) == true) {
                 OneSignal.setConsentGiven(true);
             }
         }

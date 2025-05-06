@@ -17,9 +17,9 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
     public static final boolean SERVICE_EMBEDDING = true;
     public static final int SAVE_VERSION = 1;
 
-    private final Map<String, MengineAdInterstitialPoint> m_adInterstitialPoints = new HashMap<>();
-    private final Map<String, MengineAdRewardedPoint> m_adRewardedPoints = new HashMap<>();
-    private final Map<String, MengineAdAppOpenPoint> m_adAppOpenPoints = new HashMap<>();
+    private final Map<String, MengineAdPointInterstitial> m_adInterstitialPoints = new HashMap<>();
+    private final Map<String, MengineAdPointRewarded> m_adRewardedPoints = new HashMap<>();
+    private final Map<String, MengineAdPointAppOpen> m_adAppOpenPoints = new HashMap<>();
 
     private final Map<String, MengineAdCooldown> m_adCooldowns = new HashMap<>();
     private final Map<String, MengineAdAttempts> m_adAttempts = new HashMap<>();
@@ -71,7 +71,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         this.activateSemaphore("AdServiceReady");
     }
 
-    private void setupAdBasePointAttemts(MengineAdBasePoint adPoint) {
+    private void setupAdBasePointAttemts(MengineAdPointBase adPoint) {
         String adPointName = adPoint.getName();
 
         if (m_adAttempts.containsKey(adPointName) == false) {
@@ -85,7 +85,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         adPoint.setAttempts(attempts);
     }
 
-    private void setupAdBasePointCooldown(MengineAdBasePoint adPoint) {
+    private void setupAdBasePointCooldown(MengineAdPointBase adPoint) {
         String cooldownGroupName = adPoint.getCooldownGroupName();
 
         if (cooldownGroupName == null) {
@@ -105,19 +105,19 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         }
     }
 
-    private MengineAdInterstitialPoint getAdInterstitialPoint(String adPointName) {
+    private MengineAdPointInterstitial getAdInterstitialPoint(String adPointName) {
         synchronized (this) {
             return m_adInterstitialPoints.getOrDefault(adPointName, null);
         }
     }
 
-    private MengineAdRewardedPoint getAdRewardedPoint(String adPointName) {
+    private MengineAdPointRewarded getAdRewardedPoint(String adPointName) {
         synchronized (this) {
             return m_adRewardedPoints.getOrDefault(adPointName, null);
         }
     }
 
-    private MengineAdAppOpenPoint getAdAppOpenPoint(String adPointName) {
+    private MengineAdPointAppOpen getAdAppOpenPoint(String adPointName) {
         synchronized (this) {
             return m_adAppOpenPoints.getOrDefault(adPointName, null);
         }
@@ -130,7 +130,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
             return;
         }
 
-        MengineAdInterstitialPoint adPoint = new MengineAdInterstitialPoint(adPointName, adPointConfig);
+        MengineAdPointInterstitial adPoint = new MengineAdPointInterstitial(adPointName, adPointConfig);
 
         this.setupAdBasePointCooldown(adPoint);
         this.setupAdBasePointAttemts(adPoint);
@@ -145,7 +145,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
             return;
         }
 
-        MengineAdRewardedPoint adPoint = new MengineAdRewardedPoint(adPointName, adPointConfig);
+        MengineAdPointRewarded adPoint = new MengineAdPointRewarded(adPointName, adPointConfig);
 
         this.setupAdBasePointCooldown(adPoint);
         this.setupAdBasePointAttemts(adPoint);
@@ -160,7 +160,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
             return;
         }
 
-        MengineAdAppOpenPoint adPoint = new MengineAdAppOpenPoint(adPointName, adPointConfig);
+        MengineAdPointAppOpen adPoint = new MengineAdPointAppOpen(adPointName, adPointConfig);
 
         this.setupAdBasePointCooldown(adPoint);
         this.setupAdBasePointAttemts(adPoint);
@@ -422,7 +422,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
 
     @Override
     public boolean canYouShowInterstitial(String placement) {
-        MengineAdInterstitialPoint adPoint = this.getAdInterstitialPoint(placement);
+        MengineAdPointInterstitial adPoint = this.getAdInterstitialPoint(placement);
 
         if (adPoint == null) {
             this.logError("ad interstitial point '%s' not found", placement);
@@ -455,7 +455,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
 
     @Override
     public boolean showInterstitial(String placement) {
-        MengineAdInterstitialPoint adPoint = this.getAdInterstitialPoint(placement);
+        MengineAdPointInterstitial adPoint = this.getAdInterstitialPoint(placement);
 
         if (adPoint == null) {
             this.logError("ad interstitial point '%s' not found", placement);
@@ -500,7 +500,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
 
     @Override
     public boolean canOfferRewarded(String placement) {
-        MengineAdRewardedPoint adPoint = this.getAdRewardedPoint(placement);
+        MengineAdPointRewarded adPoint = this.getAdRewardedPoint(placement);
 
         if (adPoint == null) {
             this.logError("ad rewarded point '%s' not found", placement);
@@ -533,7 +533,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
 
     @Override
     public boolean canYouShowRewarded(String placement) {
-        MengineAdRewardedPoint adPoint = this.getAdRewardedPoint(placement);
+        MengineAdPointRewarded adPoint = this.getAdRewardedPoint(placement);
 
         if (adPoint == null) {
             this.logError("ad rewarded point '%s' not found", placement);
@@ -566,7 +566,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
 
     @Override
     public boolean showRewarded(String placement) {
-        MengineAdRewardedPoint adPoint = this.getAdRewardedPoint(placement);
+        MengineAdPointRewarded adPoint = this.getAdRewardedPoint(placement);
 
         if (adPoint == null) {
             this.logError("ad rewarded point '%s' not found", placement);
@@ -607,7 +607,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
 
     @Override
     public boolean canYouShowAppOpen(String placement, long timeStop) {
-        MengineAdAppOpenPoint adPoint = this.getAdAppOpenPoint(placement);
+        MengineAdPointAppOpen adPoint = this.getAdAppOpenPoint(placement);
 
         if (adPoint == null) {
             this.logError("ad appopen point '%s' not found", placement);
@@ -640,7 +640,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
 
     @Override
     public boolean showAppOpen(String placement) {
-        MengineAdAppOpenPoint adPoint = this.getAdAppOpenPoint(placement);
+        MengineAdPointAppOpen adPoint = this.getAdAppOpenPoint(placement);
 
         if (adPoint == null) {
             this.logError("ad appopen point '%s' not found", placement);

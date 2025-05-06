@@ -24,8 +24,8 @@ import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineCallback;
 import org.Mengine.Base.MengineFragment;
 import org.Mengine.Base.MengineFragmentInAppPurchase;
-import org.Mengine.Base.MengineInAppProductParam;
-import org.Mengine.Base.MengineInAppPurchaseParam;
+import org.Mengine.Base.MengineParamInAppProduct;
+import org.Mengine.Base.MengineParamInAppPurchase;
 import org.Mengine.Base.MengineListenerActivity;
 import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineService;
@@ -262,10 +262,10 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
             m_productsDetails.clear();
             m_productsDetails.addAll(productsDetails);
 
-            ArrayList<MengineInAppProductParam> products1 = new ArrayList<>();
+            ArrayList<MengineParamInAppProduct> products1 = new ArrayList<>();
 
             for(ProductDetails details : productsDetails) {
-                MengineInAppProductParam product = new MengineInAppProductParam();
+                MengineParamInAppProduct product = new MengineParamInAppProduct();
 
                 String productId = details.getProductId();
                 String productType = details.getProductType();
@@ -302,7 +302,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
 
             List<Map<String, Object>> desc_products = new ArrayList<>();
 
-            for (MengineInAppProductParam product : products1) {
+            for (MengineParamInAppProduct product : products1) {
                 Map<String, Object> desc_product = new HashMap<>();
 
                 Map<String, Object> desc_offer = new HashMap<>();
@@ -411,6 +411,12 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
             return false;
         }
 
+        if (MengineActivity.INSTANCE == null) {
+            this.logError("[ERROR] buyInApp invalid activity");
+
+            return false;
+        }
+
         ProductDetails product = this.getProductDetails(productId);
 
         if (product == null) {
@@ -441,9 +447,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
             .setProductDetailsParamsList(productDetailsParamsList)
             .build();
 
-        MengineActivity activity = this.getMengineActivity();
-
-        BillingResult billingResult = m_billingClient.launchBillingFlow(activity, flowParams);
+        BillingResult billingResult = m_billingClient.launchBillingFlow(MengineActivity.INSTANCE, flowParams);
 
         int responseCode = billingResult.getResponseCode();
 
@@ -551,14 +555,13 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
             boolean acknowledged = purchase.isAcknowledged();
             String originalJson = purchase.getOriginalJson();
 
-            MengineInAppPurchaseParam purchase1 = new MengineInAppPurchaseParam();
+            MengineParamInAppPurchase purchase1 = new MengineParamInAppPurchase();
             purchase1.INAPPPURCHASE_TRANSACTION = orderId;
             purchase1.INAPPPURCHASE_PRODUCTS = products;
             purchase1.INAPPPURCHASE_QUANTITY = quantity;
             purchase1.INAPPPURCHASE_ACKNOWLEDGED = acknowledged;
             purchase1.INAPPPURCHASE_TOKEN = purchaseToken;
             purchase1.INAPPPURCHASE_DATA = originalJson;
-
 
             MengineFragmentInAppPurchase.INSTANCE.purchaseInAppProduct(purchase1);
 

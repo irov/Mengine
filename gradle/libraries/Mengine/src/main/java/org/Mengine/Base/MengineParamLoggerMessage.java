@@ -3,8 +3,8 @@ package org.Mengine.Base;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class MengineLoggerMessageParam {
-    public MengineLoggerMessageParam(@NonNull String category, @NonNull String thread, int level, int filter, @Nullable String file, int line, @Nullable String function, @NonNull String data) {
+public class MengineParamLoggerMessage {
+    public MengineParamLoggerMessage(@NonNull String category, @NonNull String thread, int level, int filter, @Nullable String file, int line, @Nullable String function, @NonNull String data) {
         this.MESSAGE_CATEGORY = category;
         this.MESSAGE_THREAD = thread;
         this.MESSAGE_LEVEL = level;

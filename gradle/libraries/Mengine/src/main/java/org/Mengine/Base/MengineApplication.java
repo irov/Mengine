@@ -18,6 +18,7 @@ import com.google.common.base.Splitter;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -48,6 +49,11 @@ public class MengineApplication extends Application {
 
     protected String m_userId;
 
+    //ToDo sync acquisition
+    protected String m_adid;
+    protected String m_acquisitionNetwork;
+    protected String m_acquisitionCampaign;
+
     private boolean m_invalidInitialize = false;
     private String m_invalidInitializeReason = null;
 
@@ -55,7 +61,7 @@ public class MengineApplication extends Application {
 
     private Object m_nativeApplication;
 
-    private final List<MengineService> m_services = new ArrayList<>();
+    private final List<MengineServiceInterface> m_services = new ArrayList<>();
     private final Map<String, MengineService> m_dictionaryServices = new HashMap<>();
     private final Map<String, Object> m_states = new ConcurrentHashMap<>();
 
@@ -63,7 +69,6 @@ public class MengineApplication extends Application {
 
     private final List<MengineListenerApplication> m_applicationListeners = new ArrayList<>();
 
-    private final Object m_syncEvent = new Object();
     private final Object m_syncState = new Object();
 
     public boolean isMasterRelease() {
@@ -138,6 +143,7 @@ public class MengineApplication extends Application {
         MengineApplication.INSTANCE = this;
 
         this.createFragment(MengineFragmentAdRevenue.class);
+        this.createFragment(MengineFragmentAcquisition.class);
         this.createFragment(MengineFragmentAdvertisingId.class);
         this.createFragment(MengineFragmentAnalytics.class);
         this.createFragment(MengineFragmentEngine.class);
@@ -577,7 +583,7 @@ public class MengineApplication extends Application {
         return m_states;
     }
 
-    public List<MengineService> getServices() {
+    public List<MengineServiceInterface> getServices() {
         return m_services;
     }
 
@@ -689,8 +695,8 @@ public class MengineApplication extends Application {
             fragment.explainServiceListeners(service);
         }
 
-        if (service instanceof MengineListenerApplication) {
-            m_applicationListeners.add((MengineListenerApplication) service);
+        if (service instanceof MengineListenerApplication listener) {
+            m_applicationListeners.add(listener);
         }
 
         m_services.add(service);
@@ -726,8 +732,8 @@ public class MengineApplication extends Application {
         return true;
     }
 
-    public MengineTransparencyConsentParam makeTransparencyConsentParam() {
-        MengineTransparencyConsentParam tcParam = new MengineTransparencyConsentParam();
+    public MengineParamTransparencyConsent makeTransparencyConsentParam() {
+        MengineParamTransparencyConsent tcParam = new MengineParamTransparencyConsent();
 
         Context context = this.getApplicationContext();
         tcParam.initFromDefaultSharedPreferences(context);
@@ -736,7 +742,7 @@ public class MengineApplication extends Application {
     }
 
     public void checkTransparencyConsentServices() {
-        MengineTransparencyConsentParam tcParam = this.makeTransparencyConsentParam();
+        MengineParamTransparencyConsent tcParam = this.makeTransparencyConsentParam();
         MengineFragmentTransparencyConsent.INSTANCE.transparencyConsent(tcParam);
     }
 
@@ -805,10 +811,57 @@ public class MengineApplication extends Application {
         return m_userId;
     }
 
-    public void removeSessionData() {
+    public void removeUserData() {
         this.clearPreferences();
 
         MengineFragmentUser.INSTANCE.removeUserData();
+
+        MengineNative.AndroidEnvironmentService_deleteCurrentAccount();
+    }
+
+    public void setADID(String adid) {
+        if (Objects.equals(m_adid, adid) == true) {
+            return;
+        }
+
+        m_adid = adid;
+
+        this.setPreferenceString("adid", m_adid);
+
+        MengineFragmentAcquisition.INSTANCE.changeADID(m_adid);
+    }
+
+    public String getADID() {
+        return m_adid;
+    }
+
+    public void setAcquisitionCampaign(String network, String campaign) {
+        if (Objects.equals(m_acquisitionNetwork, network) == true && Objects.equals(m_acquisitionCampaign, campaign) == true) {
+            return;
+        }
+
+        m_acquisitionNetwork = network;
+        m_acquisitionCampaign = campaign;
+
+        this.setState("user.acquisition_network", m_acquisitionNetwork);
+        this.setState("user.acquisition_campaign", m_acquisitionCampaign);
+
+        this.setPreferenceString("acquisition_network", m_acquisitionNetwork);
+        this.setPreferenceString("acquisition_campaign", m_acquisitionCampaign);
+
+        MengineParamAcquisition acquisition = new MengineParamAcquisition();
+        acquisition.ACQUISITION_NETWORK = m_acquisitionNetwork;
+        acquisition.ACQUISITION_CAMPAIGN = m_acquisitionCampaign;
+
+        MengineFragmentAcquisition.INSTANCE.changeAcquisition(acquisition);
+    }
+
+    public String getAcquisitionNetwork() {
+        return m_acquisitionNetwork;
+    }
+
+    public String getAcquisitionCampaign() {
+        return m_acquisitionCampaign;
     }
 
     @Override
@@ -875,6 +928,10 @@ public class MengineApplication extends Application {
         String old_userId = settings.getString("session_id", null); //Deprecated
         String userId = settings.getString("user_id", old_userId);
 
+        String adid = settings.getString("adid", null);
+        String acquisitionNetwork = settings.getString("acquisition_network", null);
+        String acquisitionCampaign = settings.getString("acquisition_campaign", null);
+
         SharedPreferences.Editor editor = settings.edit();
 
         editor.putLong("save_version", MENGINE_APPLICATION_SAVE_VERSION);
@@ -914,6 +971,10 @@ public class MengineApplication extends Application {
 
         m_userId = userId;
 
+        m_adid = adid;
+        m_acquisitionNetwork = acquisitionNetwork;
+        m_acquisitionCampaign = acquisitionCampaign;
+
         MengineStatistic.load(this);
 
         this.setState("user.save_version", m_saveVersion);
@@ -923,8 +984,10 @@ public class MengineApplication extends Application {
         this.setState("user.install_rnd", m_installRND);
         this.setState("user.session_index", m_sessionIndex);
         this.setState("user.session_timestamp", m_sessionTimestamp);
-        this.setState( "user.session_rnd", m_sessionRND);
+        this.setState("user.session_rnd", m_sessionRND);
         this.setState("user.session_id", m_sessionId);
+        this.setState("user.acquisition_network", m_acquisitionNetwork);
+        this.setState("user.acquisition_campaign", m_acquisitionCampaign);
 
         MengineAnalytics.addContextParameterBoolean("is_dev", BuildConfig.DEBUG);
         MengineAnalytics.addContextParameterString("install_key", m_installKey);
@@ -935,6 +998,15 @@ public class MengineApplication extends Application {
         MengineAnalytics.addContextParameterLong("session_timestamp", m_sessionTimestamp);
         MengineAnalytics.addContextParameterLong("session_rnd", m_sessionRND);
         MengineAnalytics.addContextParameterString("session_id", m_sessionId);
+        MengineAnalytics.addContextGetterParameterString("adid", () -> {
+            return m_adid;
+        });
+        MengineAnalytics.addContextGetterParameterString("acquisition_network", () -> {
+            return m_acquisitionNetwork;
+        });
+        MengineAnalytics.addContextGetterParameterString("acquisition_campaign", () -> {
+            return m_acquisitionCampaign;
+        });
 
         MengineAnalytics.addContextGetterParameterLong("connection", () -> {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
@@ -1119,7 +1191,7 @@ public class MengineApplication extends Application {
 
         m_nativeApplication = nativeApplication;
 
-        for (MengineService p : m_services) {
+        for (MengineServiceInterface p : m_services) {
             if (p.onAvailable(this) == false) {
                 continue;
             }
@@ -1148,9 +1220,9 @@ public class MengineApplication extends Application {
     public void onServicesLoad() {
         MengineLog.logInfo(TAG, "onServicesLoad");
 
-        List<MengineService> services = this.getServices();
+        List<MengineServiceInterface> services = this.getServices();
 
-        for (MengineService s : services) {
+        for (MengineServiceInterface s : services) {
             String serviceName = s.getServiceName();
 
             Bundle bundle = MenginePreferences.getPreferenceBundle(this, TAG, "service." + serviceName);
@@ -1171,9 +1243,9 @@ public class MengineApplication extends Application {
     public void onServicesSave() {
         MengineLog.logInfo(TAG, "onServicesSave");
 
-        List<MengineService> services = this.getServices();
+        List<MengineServiceInterface> services = this.getServices();
 
-        for (MengineService s : services) {
+        for (MengineServiceInterface s : services) {
             String serviceName = s.getServiceName();
 
             Bundle bundle;
@@ -1197,7 +1269,7 @@ public class MengineApplication extends Application {
         }
     }
 
-    public void forceSaveService(@NonNull MengineService s, Bundle bundle) {
+    public void forceSaveService(@NonNull MengineServiceInterface s, Bundle bundle) {
         String serviceName = s.getServiceName();
 
         if (BuildConfig.DEBUG == true) {
@@ -1234,7 +1306,7 @@ public class MengineApplication extends Application {
             l.onAppTerminate(this);
         }
 
-        for (MengineService p : m_services) {
+        for (MengineServiceInterface p : m_services) {
             if (p.onAvailable(this) == false) {
                 continue;
             }
@@ -1248,7 +1320,7 @@ public class MengineApplication extends Application {
             MengineNative.AndroidNativePython_removePlugin("Mengine" + name);
         }
 
-        for (MengineService service : m_services) {
+        for (MengineServiceInterface service : m_services) {
             service.onFinalize(this);
         }
 
@@ -1294,6 +1366,20 @@ public class MengineApplication extends Application {
 
             l.onAppConfigurationChanged(this, newConfig);
         }
+    }
+
+    public void pythonCall(String plugin, String method, Object ... args) {
+        if (BuildConfig.DEBUG == true) {
+            MengineLog.logInfo(TAG, "pythonCall plugin [%s] method [%s] args [%s]"
+                , plugin
+                , method
+                , Arrays.toString(args)
+            );
+        }
+
+        this.setState("python.call", plugin + "." + method);
+
+        MengineNative.AndroidNativePython_call(plugin, method, args);
     }
 
     /*ToDo:

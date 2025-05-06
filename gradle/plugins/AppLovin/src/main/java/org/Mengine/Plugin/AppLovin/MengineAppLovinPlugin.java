@@ -21,7 +21,7 @@ import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineAdFormat;
 import org.Mengine.Base.MengineAdMediation;
 import org.Mengine.Base.MengineAdProviderInterface;
-import org.Mengine.Base.MengineAdRevenueParam;
+import org.Mengine.Base.MengineParamAdRevenue;
 import org.Mengine.Base.MengineAdService;
 import org.Mengine.Base.MengineFragmentAdRevenue;
 import org.Mengine.Base.MengineListenerApplication;
@@ -323,31 +323,29 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
                 m_nativeAd.initialize(application);
             }
 
-            MengineActivity activity = this.getMengineActivity();
-
-            if (activity != null) {
+            if (MengineActivity.INSTANCE != null) {
                 if (m_bannerAd != null) {
-                    m_bannerAd.onActivityCreate(activity);
+                    m_bannerAd.onActivityCreate(MengineActivity.INSTANCE);
                 }
 
                 if (m_interstitialAd != null) {
-                    m_interstitialAd.onActivityCreate(activity);
+                    m_interstitialAd.onActivityCreate(MengineActivity.INSTANCE);
                 }
 
                 if (m_rewardedAd != null) {
-                    m_rewardedAd.onActivityCreate(activity);
+                    m_rewardedAd.onActivityCreate(MengineActivity.INSTANCE);
                 }
 
                 if (m_appOpenAd != null) {
-                    m_appOpenAd.onActivityCreate(activity);
+                    m_appOpenAd.onActivityCreate(MengineActivity.INSTANCE);
                 }
 
                 if (m_MRECAd != null) {
-                    m_MRECAd.onActivityCreate(activity);
+                    m_MRECAd.onActivityCreate(MengineActivity.INSTANCE);
                 }
 
                 if (m_nativeAd != null) {
-                    m_nativeAd.onActivityCreate(activity);
+                    m_nativeAd.onActivityCreate(MengineActivity.INSTANCE);
                 }
             }
 
@@ -619,13 +617,17 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             return false;
         }
 
+        if (MengineActivity.INSTANCE == null) {
+            this.assertionError("invalid show interstitial activity is null");
+
+            return false;
+        }
+
         this.logInfo("showInterstitial placement: %s"
             , placement
         );
 
-        MengineActivity activity = this.getMengineActivity();
-
-        if (m_interstitialAd.showInterstitial(activity, placement) == false) {
+        if (m_interstitialAd.showInterstitial(MengineActivity.INSTANCE, placement) == false) {
             return false;
         }
 
@@ -677,13 +679,17 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             return false;
         }
 
+        if (MengineActivity.INSTANCE == null) {
+            this.assertionError("invalid show rewarded activity is null");
+
+            return false;
+        }
+
         this.logInfo("showRewarded placement: %s"
             , placement
         );
 
-        MengineActivity activity = this.getMengineActivity();
-
-        if (m_rewardedAd.showRewarded(activity, placement) == false) {
+        if (m_rewardedAd.showRewarded(MengineActivity.INSTANCE, placement) == false) {
             return false;
         }
 
@@ -962,7 +968,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
         double revenueValue = ad.getRevenue();
         String revenuePrecision = ad.getRevenuePrecision();
 
-        MengineAdRevenueParam revenue = new MengineAdRevenueParam();
+        MengineParamAdRevenue revenue = new MengineParamAdRevenue();
         revenue.ADREVENUE_MEDIATION = MengineAdMediation.ADMEDIATION_APPLOVINMAX;
         revenue.ADREVENUE_FORMAT = adFormat;
         revenue.ADREVENUE_ADUNITID = adUnitId;
@@ -996,11 +1002,15 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
     }
 
     public void showConsentFlow() {
-        MengineActivity activity = this.getMengineActivity();
+        if (MengineActivity.INSTANCE == null) {
+            this.assertionError("invalid show consent flow activity is null");
+
+            return;
+        }
 
         AppLovinCmpService cmpService = m_appLovinSdk.getCmpService();
 
-        cmpService.showCmpForExistingUser(activity, error -> {
+        cmpService.showCmpForExistingUser(MengineActivity.INSTANCE, error -> {
             if (error != null) {
                 this.logError("Failed to show consent dialog error: %s code: %s cmp message: %s code: %d"
                     , error.getMessage()

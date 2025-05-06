@@ -1,6 +1,6 @@
 package org.Mengine.Base;
 
-public class MengineAdRevenueParam {
+public class MengineParamAdRevenue {
     public MengineAdMediation ADREVENUE_MEDIATION;
     public MengineAdFormat ADREVENUE_FORMAT;
     public String ADREVENUE_ADUNITID;

@@ -11,7 +11,7 @@ public class MengineFragmentAdRevenue extends MengineFragment<MengineListenerAdR
         INSTANCE = this;
     }
 
-    public void adRevenue(@NonNull MengineAdRevenueParam revenue) {
+    public void adRevenue(@NonNull MengineParamAdRevenue revenue) {
         this.propagate(MengineListenerAdRevenue::onMengineAdRevenue, revenue);
     }
 }

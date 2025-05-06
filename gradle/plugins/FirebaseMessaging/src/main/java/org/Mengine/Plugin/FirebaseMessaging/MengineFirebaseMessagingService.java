@@ -6,7 +6,7 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import org.Mengine.Base.MengineFragmentRemoteMessage;
-import org.Mengine.Base.MengineRemoteMessageParam;
+import org.Mengine.Base.MengineParamRemoteMessage;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +21,7 @@ public class MengineFirebaseMessagingService extends FirebaseMessagingService {
         String collapseKey = remoteMessage.getCollapseKey();
         Map<String, String> data = remoteMessage.getData();
 
-        MengineRemoteMessageParam message = new MengineRemoteMessageParam();
+        MengineParamRemoteMessage message = new MengineParamRemoteMessage();
         message.REMOTEMESSAGE_ID = messageId;
         message.REMOTEMESSAGE_FROM = from;
         message.REMOTEMESSAGE_COLLAPSE_KEY = collapseKey;

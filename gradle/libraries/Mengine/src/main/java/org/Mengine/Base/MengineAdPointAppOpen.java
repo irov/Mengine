@@ -4,8 +4,8 @@ import androidx.annotation.NonNull;
 
 import org.json.JSONObject;
 
-public class MengineAdAppOpenPoint extends MengineAdBasePoint {
-    public static final String TAG = "MengineAdAppOpenPoint";
+public class MengineAdPointAppOpen extends MengineAdPointBase {
+    public static final String TAG = "MengineAdPointAppOpen";
 
     protected long m_timeSleep;
     protected int m_actionOffset;
@@ -15,7 +15,7 @@ public class MengineAdAppOpenPoint extends MengineAdBasePoint {
     protected long m_installTimeOffset;
     protected long m_sessionOffset;
 
-    MengineAdAppOpenPoint(@NonNull String name, @NonNull JSONObject values) {
+    MengineAdPointAppOpen(@NonNull String name, @NonNull JSONObject values) {
         super(name, values);
 
         m_timeSleep = this.parseAdPointTime(values, "time_sleep", false, -1);

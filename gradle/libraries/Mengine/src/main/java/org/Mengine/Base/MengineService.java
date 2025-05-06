@@ -7,11 +7,11 @@ import androidx.annotation.Size;
 
 public class MengineService implements MengineServiceInterface {
     private MengineApplication m_application;
-    private MengineActivity m_activity;
     private String m_serviceName;
     private boolean m_embedding;
     private Boolean m_availableStatus = null;
 
+    @Override
     public boolean onInitialize(@NonNull MengineApplication application, String serviceName, boolean embedding) {
         m_application = application;
         m_serviceName = serviceName;
@@ -20,31 +20,13 @@ public class MengineService implements MengineServiceInterface {
         return true;
     }
 
+    @Override
     public void onFinalize(@NonNull MengineApplication application) {
         m_application = null;
     }
 
-    public Bundle onSave(@NonNull MengineApplication application) {
-        return null;
-    }
-
-    public void onLoad(@NonNull MengineApplication application, @NonNull Bundle bundle) {
-    }
-
     public MengineApplication getMengineApplication() {
         return m_application;
-    }
-
-    public void setMengineActivity(@NonNull MengineActivity activity) {
-        m_activity = activity;
-    }
-
-    public void removeMengineActivity() {
-        m_activity = null;
-    }
-
-    public MengineActivity getMengineActivity() {
-        return m_activity;
     }
 
     @Override
@@ -75,6 +57,7 @@ public class MengineService implements MengineServiceInterface {
         return m_availableStatus;
     }
 
+    @Override
     public boolean isEmbedding() {
         return m_embedding;
     }
@@ -132,21 +115,21 @@ public class MengineService implements MengineServiceInterface {
     }
 
     public void makeToastLong(long delayed, String format, Object ... args) {
-        if (m_activity == null) {
+        if (MengineActivity.INSTANCE == null) {
             return;
         }
 
         String message = MengineLog.buildTotalMsg(format, args);
 
-        MengineUtils.makeToastDelayed(m_activity, message, delayed);
+        MengineUtils.makeToastDelayed(MengineActivity.INSTANCE, message, delayed);
     }
 
     public void runOnUiThread(Runnable action) {
-        if (m_activity == null) {
+        if (MengineActivity.INSTANCE == null) {
             return;
         }
 
-        m_activity.runOnUiThread(action);
+        MengineActivity.INSTANCE.runOnUiThread(action);
     }
 
     public void setState(@NonNull @Size(min = 1L,max = 1024L) String name, Object value) {
@@ -212,27 +195,23 @@ public class MengineService implements MengineServiceInterface {
     }
 
     public void pythonCall(String method, Object ... args) {
-        if (m_activity == null) {
-            return;
-        }
-
-        m_activity.pythonCall("Mengine" + m_serviceName, method, args);
+        m_application.pythonCall("Mengine" + m_serviceName, method, args);
     }
 
     public void activateSemaphore(String name) {
-        if (m_activity == null) {
+        if (MengineActivity.INSTANCE == null) {
             return;
         }
 
-        m_activity.activateSemaphore(name);
+        MengineActivity.INSTANCE.activateSemaphore(name);
     }
 
     public void deactivateSemaphore(String name) {
-        if (m_activity == null) {
+        if (MengineActivity.INSTANCE == null) {
             return;
         }
 
-        m_activity.deactivateSemaphore(name);
+        MengineActivity.INSTANCE.deactivateSemaphore(name);
     }
 
     public boolean getMetaDataBoolean(String name) throws MengineServiceInvalidInitializeException {

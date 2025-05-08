@@ -36,7 +36,7 @@ namespace Mengine
             jclass jclass_Rect = _jenv->FindClass( "android/graphics/Rect" );
             jclass jclass_JSONObject = _jenv->FindClass( "org/json/JSONObject" );
             jclass jclass_JSONArray = _jenv->FindClass( "org/json/JSONArray" );
-            jclass jclass_MengineCallback = Mengine_JNI_FindClass( _jenv, "org/Mengine/Base/MengineCallback" );
+            jclass jclass_MengineCallback = Helper::AndroidEnvFindClass( _jenv, "org/Mengine/Base/MengineCallback" );
 
             if( _obj == nullptr )
             {

@@ -37,7 +37,7 @@ namespace Mengine
 
         _jenv->SetByteArrayRegion( jdata, 0, data_size, (const jbyte *)data_buffer );
 
-        jobject jresponse = Helper::AndroidCallObjectStaticClassMethod( _jenv, "org/Mengine/Base/MengineNetwork", "httpRequestHeaderData", "(Lorg/Mengine/Base/MengineHttpRequestParam;[B)Lorg/Mengine/Base/MengineHttpResponseParam;"
+        jobject jresponse = Helper::AndroidCallObjectStaticClassMethod( _jenv, "org/Mengine/Base/MengineNetwork", "httpRequestHeaderData", "(Lorg/Mengine/Base/MengineParamHttpRequest;[B)Lorg/Mengine/Base/MengineParamHttpResponse;"
             , _jrequest
             , jdata
         );

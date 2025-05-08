@@ -83,7 +83,7 @@ namespace Mengine
         jobject jkey_login = Helper::AndroidMakeJObjectString( _jenv, m_login );
         jobject jkey_password = Helper::AndroidMakeJObjectString( _jenv, m_password );
 
-        jobject jresponse = Helper::AndroidCallObjectStaticClassMethod( _jenv, "org/Mengine/Base/MengineNetwork", "httpRequestGetAsset", "(Lorg/Mengine/Base/MengineHttpRequestParam;Ljava/lang/String;Ljava/lang/String;)Lorg/Mengine/Base/MengineHttpResponseParam;"
+        jobject jresponse = Helper::AndroidCallObjectStaticClassMethod( _jenv, "org/Mengine/Base/MengineNetwork", "httpRequestGetAsset", "(Lorg/Mengine/Base/MengineParamHttpRequest;Ljava/lang/String;Ljava/lang/String;)Lorg/Mengine/Base/MengineParamHttpResponse;"
             , _jrequest
             , jkey_login
             , jkey_password

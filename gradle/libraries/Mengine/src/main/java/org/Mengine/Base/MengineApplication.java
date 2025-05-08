@@ -65,6 +65,9 @@ public class MengineApplication extends Application {
     private final Map<String, MengineService> m_dictionaryServices = new HashMap<>();
     private final Map<String, Object> m_states = new ConcurrentHashMap<>();
 
+    private static final Object m_syncronizationSemaphores = new Object();
+    private final Map<String, MengineSemaphore> m_semaphores = new HashMap<>();
+
     private final List<MengineFragmentInterface> m_fragments = new ArrayList<>();
 
     private final List<MengineListenerApplication> m_applicationListeners = new ArrayList<>();
@@ -824,7 +827,7 @@ public class MengineApplication extends Application {
             return;
         }
 
-        m_adid = adid;
+        m_adid = Objects.requireNonNullElse(adid, "");
 
         this.setPreferenceString("adid", m_adid);
 
@@ -840,8 +843,8 @@ public class MengineApplication extends Application {
             return;
         }
 
-        m_acquisitionNetwork = network;
-        m_acquisitionCampaign = campaign;
+        m_acquisitionNetwork = Objects.requireNonNullElse(network, "");
+        m_acquisitionCampaign = Objects.requireNonNullElse(campaign, "");
 
         this.setState("user.acquisition_network", m_acquisitionNetwork);
         this.setState("user.acquisition_campaign", m_acquisitionCampaign);
@@ -928,9 +931,9 @@ public class MengineApplication extends Application {
         String old_userId = settings.getString("session_id", null); //Deprecated
         String userId = settings.getString("user_id", old_userId);
 
-        String adid = settings.getString("adid", null);
-        String acquisitionNetwork = settings.getString("acquisition_network", null);
-        String acquisitionCampaign = settings.getString("acquisition_campaign", null);
+        String adid = settings.getString("adid", "");
+        String acquisitionNetwork = settings.getString("acquisition_network", "");
+        String acquisitionCampaign = settings.getString("acquisition_campaign", "");
 
         SharedPreferences.Editor editor = settings.edit();
 
@@ -1366,6 +1369,62 @@ public class MengineApplication extends Application {
 
             l.onAppConfigurationChanged(this, newConfig);
         }
+    }
+
+    public void activateSemaphore(String name) {
+        MengineLog.logInfo(TAG, "activateSemaphore semaphore: %s"
+            , name
+        );
+
+        this.setState("python.semaphore", name);
+
+        synchronized (m_syncronizationSemaphores) {
+            MengineSemaphore semaphore = m_semaphores.get(name);
+
+            if (semaphore == null) {
+                semaphore = new MengineSemaphore(true);
+
+                m_semaphores.put(name, semaphore);
+
+                return;
+            }
+
+            if (semaphore.isActivated() == true) {
+                return;
+            }
+        }
+
+        MengineNative.AndroidNativePython_activateSemaphore(name);
+    }
+
+    public void deactivateSemaphore(String name) {
+        MengineLog.logInfo(TAG, "deactivateSemaphore semaphore: %s"
+            , name
+        );
+
+        synchronized (m_syncronizationSemaphores) {
+            m_semaphores.remove(name);
+        }
+    }
+
+    public boolean waitSemaphore(String name) {
+        synchronized (m_syncronizationSemaphores) {
+            MengineSemaphore semaphore = m_semaphores.get(name);
+
+            if (semaphore == null) {
+                semaphore = new MengineSemaphore(false);
+
+                m_semaphores.put(name, semaphore);
+
+                return false;
+            }
+
+            if (semaphore.isActivated() == false) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public void pythonCall(String plugin, String method, Object ... args) {

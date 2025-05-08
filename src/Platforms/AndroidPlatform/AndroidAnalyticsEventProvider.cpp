@@ -89,7 +89,7 @@ namespace Mengine
 
         jobject jobject_category = Helper::AndroidGetJObjectEnum( jenv, "org/Mengine/Base/MengineAnalyticsEventCategory", "MengineAnalyticsEventCategory_Custom" );
 
-        jclass jclass_MengineAnalyticsEventParam = Mengine::Mengine_JNI_FindClass( jenv, "org/Mengine/Base/MengineAnalyticsEventParam" );
+        jclass jclass_MengineAnalyticsEventParam = Helper::AndroidEnvFindClass( jenv, "org/Mengine/Base/MengineParamAnalyticsEvent" );
 
         jmethodID jmethod_MengineAnalyticsEventParam = jenv->GetMethodID( jclass_MengineAnalyticsEventParam, "<init>", "(Lorg/Mengine/Base/MengineAnalyticsEventCategory;Ljava/lang/String;JLjava/util/Map;Ljava/util/Map;)V" );
 
@@ -102,7 +102,7 @@ namespace Mengine
         jenv->DeleteLocalRef( jobject_bases );
         jenv->DeleteLocalRef( jobject_parameters );
 
-        Helper::AndroidCallVoidFragmentMethod( jenv, "MengineFragmentAnalytics", "analyticsEvent", "(Lorg/Mengine/Base/MengineAnalyticsEventParam;)V", jobject_event );
+        Helper::AndroidCallVoidFragmentMethod( jenv, "MengineFragmentAnalytics", "analyticsEvent", "(Lorg/Mengine/Base/MengineParamAnalyticsEvent;)V", jobject_event );
 
         jenv->DeleteLocalRef( jobject_event );
     }

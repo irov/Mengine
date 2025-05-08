@@ -259,14 +259,17 @@ public class MengineUtils {
         return timer;
     }
 
-    public static void makeToastDelayed(Context context, String text, long delayed) {
-        MengineLog.logMessage(TAG, "Toast show after %d milliseconds text: %s"
+    public static void makeToastDelayed(Context context, long delayed, String format, Object ... args) {
+        MengineLog.logMessage(TAG, "Toast show after %d milliseconds format: %s args: %s"
             , delayed
-            , text
+            , format
+            , Arrays.toString(args)
         );
 
+        String message = MengineLog.buildTotalMsg(format, args);
+
         MengineUtils.performOnMainThreadDelayed(() -> {
-            Toast toast = Toast.makeText(context, text, Toast.LENGTH_LONG);
+            Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
             toast.show();
         }, delayed);
     }

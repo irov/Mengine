@@ -281,7 +281,7 @@ class MengineAppLovinMRECAd extends MengineAppLovinBase implements MaxAdRequestL
     }
 
     public void show(int leftMargin, int topMargin) {
-        m_plugin.runOnUiThread(() -> {
+        m_plugin.runOnUiThread("show", () -> {
             if (m_visible == true) {
                 return;
             }
@@ -300,7 +300,7 @@ class MengineAppLovinMRECAd extends MengineAppLovinBase implements MaxAdRequestL
     }
 
     public void hide() {
-        m_plugin.runOnUiThread(() -> {
+        m_plugin.runOnUiThread("hide", () -> {
             if (m_visible == false) {
                 return;
             }

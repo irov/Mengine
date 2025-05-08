@@ -307,7 +307,7 @@ namespace Mengine
         return jobjectMengineActivity;
     }
     //////////////////////////////////////////////////////////////////////////
-    jmethodID Mengine_JNI_GetMethodActivity( JNIEnv * _jenv, const char * _methodName, const char * _signature )
+    jmethodID Mengine_JNI_GetMethodActivity( JNIEnv * _jenv, const Char * _methodName, const Char * _signature )
     {
         jclass jclassMengineActivity = Mengine_JNI_GetClassActivity( _jenv );
 
@@ -323,20 +323,20 @@ namespace Mengine
         return midMengineActivity;
     }
     //////////////////////////////////////////////////////////////////////////
-    jclass Mengine_JNI_GetClassFragment( JNIEnv * _jenv, const char * _fragmentName )
+    jclass Mengine_JNI_GetClassFragment( JNIEnv * _jenv, const Char * _fragmentName )
     {
         Char fragmentClassName[256] = { '\0' };
-        StdString::strcpy( fragmentClassName, "org/Mengine/Base/" );
-        StdString::strcat( fragmentClassName, _fragmentName );
+        StdString::strcpy_safe( fragmentClassName, "org/Mengine/Base/", 256 );
+        StdString::strcat_safe( fragmentClassName, _fragmentName, 256 );
 
         jclass fragmentClass = Mengine::Mengine_JNI_FindClass( _jenv, fragmentClassName );
 
         return fragmentClass;
     }
     //////////////////////////////////////////////////////////////////////////
-    jobject Mengine_JNI_GetObjectFragment( JNIEnv * _jenv, const char * _fragmentName )
+    jobject Mengine_JNI_GetObjectFragment( JNIEnv * _jenv, const Char * _fragmentName )
     {
-        jclass fragmentClass = Mengine_JNI_GetClassFragment( _jenv, _fragmentName );
+        jclass fragmentClass = Mengine::Mengine_JNI_GetClassFragment( _jenv, _fragmentName );
 
         if( fragmentClass == nullptr )
         {
@@ -344,9 +344,9 @@ namespace Mengine
         }
 
         Char fragmentSignature[256] = { '\0' };
-        StdString::strcpy( fragmentSignature, "Lorg/Mengine/Base/" );
-        StdString::strcat( fragmentSignature, _fragmentName );
-        StdString::strcat( fragmentSignature, ";" );
+        StdString::strcpy_safe( fragmentSignature, "Lorg/Mengine/Base/", 256 );
+        StdString::strcat_safe( fragmentSignature, _fragmentName, 256 );
+        StdString::strcat_safe( fragmentSignature, ";", 256 );
 
         jfieldID instanceField = _jenv->GetStaticFieldID( fragmentClass, "INSTANCE", fragmentSignature );
 
@@ -364,23 +364,23 @@ namespace Mengine
         return applicationInstance;
     }
     //////////////////////////////////////////////////////////////////////////
-    jmethodID Mengine_JNI_GetMethodFragment( JNIEnv * _jenv, const char * _fragmentName, const char * _methodName, const char * _signature )
+    jmethodID Mengine_JNI_GetMethodFragment( JNIEnv * _jenv, const Char * _fragment, const Char * _method, const Char * _signature )
     {
-        jclass fragmentClass = Mengine_JNI_GetClassFragment( _jenv, _fragmentName );
+        jclass jclass_Fragment = Mengine::Mengine_JNI_GetClassFragment( _jenv, _fragment );
 
-        if( fragmentClass == nullptr )
+        if( jclass_Fragment == nullptr )
         {
             return nullptr;
         }
 
-        jmethodID methodId = _jenv->GetMethodID( fragmentClass, _methodName, _signature );
+        jmethodID methodId = _jenv->GetMethodID( jclass_Fragment, _method, _signature );
 
-        _jenv->DeleteLocalRef( fragmentClass );
+        _jenv->DeleteLocalRef( jclass_Fragment );
 
         return methodId;
     }
     //////////////////////////////////////////////////////////////////////////
-    jclass Mengine_JNI_FindClass( JNIEnv * _jenv, const char * _className )
+    jclass Mengine_JNI_FindClass( JNIEnv * _jenv, const Char * _className )
     {
         jclass jclass_ClassLoader = _jenv->FindClass( "java/lang/ClassLoader" );
         jmethodID jmethodID_ClassLoader_loadClass = _jenv->GetMethodID( jclass_ClassLoader, "loadClass", "(Ljava/lang/String;)Ljava/lang/Class;" );

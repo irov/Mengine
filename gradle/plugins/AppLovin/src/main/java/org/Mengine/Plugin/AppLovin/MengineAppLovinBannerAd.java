@@ -298,7 +298,7 @@ class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxAdReques
     }
 
     public void show() {
-        m_plugin.runOnUiThread(() -> {
+        m_plugin.runOnUiThread("show", () -> {
             if (m_visible == true) {
                 return;
             }
@@ -310,7 +310,7 @@ class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxAdReques
     }
 
     public void hide() {
-        m_plugin.runOnUiThread(() -> {
+        m_plugin.runOnUiThread("hide", () -> {
             if (m_visible == false) {
                 return;
             }

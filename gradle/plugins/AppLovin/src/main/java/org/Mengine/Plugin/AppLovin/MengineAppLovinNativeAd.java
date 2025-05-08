@@ -313,7 +313,7 @@ class MengineAppLovinNativeAd extends MengineAppLovinBase implements MaxAdRevenu
     }
 
     public void show() {
-        m_plugin.runOnUiThread(() -> {
+        m_plugin.runOnUiThread("show", () -> {
             if (m_visible == true) {
                 return;
             }
@@ -325,7 +325,7 @@ class MengineAppLovinNativeAd extends MengineAppLovinBase implements MaxAdRevenu
     }
 
     public void hide() {
-        m_plugin.runOnUiThread(() -> {
+        m_plugin.runOnUiThread("hide", () -> {
             if (m_visible == false) {
                 return;
             }

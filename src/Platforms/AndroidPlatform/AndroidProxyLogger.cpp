@@ -47,9 +47,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        jclass jclass_MengineLoggerMessageParam = Mengine::Mengine_JNI_FindClass( jenv, "org/Mengine/Base/MengineLoggerMessageParam" );
-
-        Helper::AndroidEnvExceptionCheck( jenv );
+        jclass jclass_MengineLoggerMessageParam = Helper::AndroidEnvFindClass( jenv, "org/Mengine/Base/MengineParamLoggerMessage" );
 
         jmethodID jmethod_MengineLoggerMessageParam_constructor = jenv->GetMethodID( jclass_MengineLoggerMessageParam, "<init>", "(Ljava/lang/String;Ljava/lang/String;IILjava/lang/String;ILjava/lang/String;Ljava/lang/String;)V" );
 
@@ -92,7 +90,7 @@ namespace Mengine
 #endif
         jenv->DeleteLocalRef( jdata );
 
-        Helper::AndroidCallVoidFragmentMethod( jenv, "MengineFragmentLogger", "log", "(Lorg/Mengine/Base/MengineLoggerMessageParam;)V", jmessage );
+        Helper::AndroidCallVoidFragmentMethod( jenv, "MengineFragmentLogger", "log", "(Lorg/Mengine/Base/MengineParamLoggerMessage;)V", jmessage );
 
         jenv->DeleteLocalRef( jmessage );
     }

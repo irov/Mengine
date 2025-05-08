@@ -70,7 +70,7 @@ namespace Mengine
 
         jobject jcookies = Helper::AndroidMakeJObjectString( jenv, m_cookies );
 
-        jclass jclass_MengineHttpRequestParam = Mengine::Mengine_JNI_FindClass( jenv, "org/Mengine/Base/MengineHttpRequestParam" );
+        jclass jclass_MengineHttpRequestParam = Helper::AndroidEnvFindClass( jenv, "org/Mengine/Base/MengineParamHttpRequest" );
 
         jmethodID jmethod_MengineHttpRequestParam_constructor = jenv->GetMethodID( jclass_MengineHttpRequestParam, "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;I)V" );
 
@@ -107,7 +107,7 @@ namespace Mengine
             return true;
         }
 
-        jclass jclass_MengineHttpResponseParam = Mengine::Mengine_JNI_FindClass( jenv, "org/Mengine/Base/MengineHttpResponseParam" );
+        jclass jclass_MengineHttpResponseParam = Helper::AndroidEnvFindClass( jenv, "org/Mengine/Base/MengineParamHttpResponse" );
 
         jfieldID jfieldiD_HTTP_RESPONSE_CODE = jenv->GetFieldID( jclass_MengineHttpResponseParam, "HTTP_RESPONSE_CODE", "I" );
         jfieldID jfieldiD_HTTP_CONTENT_LENGTH = jenv->GetFieldID( jclass_MengineHttpResponseParam, "HTTP_CONTENT_LENGTH", "I" );

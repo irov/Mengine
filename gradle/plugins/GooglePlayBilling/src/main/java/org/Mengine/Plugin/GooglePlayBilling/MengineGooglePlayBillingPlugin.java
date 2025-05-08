@@ -30,6 +30,7 @@ import org.Mengine.Base.MengineListenerActivity;
 import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
+import org.Mengine.Base.MengineUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -222,7 +223,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
         BillingResult billingResult = m_billingClient.isFeatureSupported(BillingClient.FeatureType.PRODUCT_DETAILS);
 
         if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.FEATURE_NOT_SUPPORTED) {
-            this.makeToastLong(10000L, "GooglePlay billing asks you to update the PlayStore app");
+            this.makeToastDelayed(10000L, "GooglePlay billing asks you to update the PlayStore app");
 
             return;
         }

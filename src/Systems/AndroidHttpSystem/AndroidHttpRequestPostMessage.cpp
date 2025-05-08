@@ -45,7 +45,7 @@ namespace Mengine
             _jenv->DeleteLocalRef( jvalue );
         }
 
-        jobject jresponse = Helper::AndroidCallObjectStaticClassMethod( _jenv, "org/Mengine/Base/MengineNetwork", "httpRequestPostMessage", "(Lorg/Mengine/Base/MengineHttpRequestParam;Ljava/util/Map;)Lorg/Mengine/Base/MengineHttpResponseParam;"
+        jobject jresponse = Helper::AndroidCallObjectStaticClassMethod( _jenv, "org/Mengine/Base/MengineNetwork", "httpRequestPostMessage", "(Lorg/Mengine/Base/MengineParamHttpRequest;Ljava/util/Map;)Lorg/Mengine/Base/MengineParamHttpResponse;"
             , _jrequest
             , jproperties
         );

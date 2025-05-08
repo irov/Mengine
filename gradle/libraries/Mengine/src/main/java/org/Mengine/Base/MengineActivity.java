@@ -52,9 +52,6 @@ public class MengineActivity extends AppCompatActivity {
 
     private Locale m_currentLocale;
 
-    private static final Object m_syncronizationSemaphores = new Object();
-    private Map<String, MengineSemaphore> m_semaphores;
-
     private MengineCommandHandler m_commandHandler;
 
     private RelativeLayout m_contentView;
@@ -278,7 +275,6 @@ public class MengineActivity extends AppCompatActivity {
 
         Looper mainLooper = Looper.getMainLooper();
         m_commandHandler = new MengineCommandHandler(mainLooper, this);
-        m_semaphores = new HashMap<>();
 
         application.setState("activity.init", "setup_relativelayout");
 
@@ -893,7 +889,6 @@ public class MengineActivity extends AppCompatActivity {
             m_contentView = null;
         }
 
-        m_semaphores = null;
         m_commandHandler = null;
 
         MengineNative.AndroidNativePython_removePlugin("Activity");
@@ -1076,67 +1071,6 @@ public class MengineActivity extends AppCompatActivity {
         }
 
         return super.dispatchKeyEvent(event);
-    }
-
-    /***********************************************************************************************
-     * Semaphore Methods
-     **********************************************************************************************/
-
-    public void activateSemaphore(String name) {
-        MengineApplication application = this.getMengineApplication();
-
-        MengineLog.logInfo(TAG, "activateSemaphore semaphore: %s"
-            , name
-        );
-
-        application.setState("python.semaphore", name);
-
-        synchronized (m_syncronizationSemaphores) {
-            MengineSemaphore semaphore = m_semaphores.get(name);
-
-            if (semaphore == null) {
-                semaphore = new MengineSemaphore(true);
-
-                m_semaphores.put(name, semaphore);
-
-                return;
-            }
-
-            if (semaphore.isActivated() == true) {
-                return;
-            }
-        }
-
-        MengineNative.AndroidNativePython_activateSemaphore(name);
-    }
-
-    public void deactivateSemaphore(String name) {
-        MengineLog.logInfo(TAG, "deactivateSemaphore semaphore: %s"
-            , name
-        );
-
-        synchronized (m_syncronizationSemaphores) {
-            m_semaphores.remove(name);
-        }
-    }
-
-    public boolean waitSemaphore(String name) {
-        synchronized (m_syncronizationSemaphores) {
-            MengineSemaphore semaphore = m_semaphores.get(name);
-
-            if (semaphore == null) {
-                semaphore = new MengineSemaphore(false);
-
-                m_semaphores.put(name, semaphore);
-                return false;
-            }
-
-            if (semaphore.isActivated() == false) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     /***********************************************************************************************

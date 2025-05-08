@@ -43,17 +43,69 @@ namespace Mengine
             return value;
         }
         //////////////////////////////////////////////////////////////////////////
+        jclass AndroidEnvFindClass( JNIEnv * _jenv, const Char * _className )
+        {
+            jclass jclass_FindClass = Mengine::Mengine_JNI_FindClass( _jenv, _className );
+
+            if( jclass_FindClass == nullptr )
+            {
+                Helper::AndroidEnvExceptionCheck( _jenv );
+
+                MENGINE_ERROR_FATAL( "invalid find android class: %s"
+                    , _className
+                );
+
+                return nullptr;
+            }
+
+            return jclass_FindClass;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        jobject AndroidEnvGetObjectFragment( JNIEnv * _jenv, const Char * _fragment )
+        {
+            jobject jobject_Fragment = Mengine::Mengine_JNI_GetObjectFragment( _jenv, _fragment );
+
+            if( jobject_Fragment == nullptr )
+            {
+                Helper::AndroidEnvExceptionCheck( _jenv );
+
+                MENGINE_ERROR_FATAL( "invalid get object fragment: %s"
+                    , _fragment
+                );
+
+                return nullptr;
+            }
+
+            return jobject_Fragment;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        jmethodID AndroidEnvGetMethodFragment( JNIEnv * _jenv, const Char * _fragment, const Char * _method, const Char * _signature )
+        {
+            jmethodID jmethod_Fragment = Mengine::Mengine_JNI_GetMethodFragment( _jenv, _fragment, _method, _signature );
+
+            if( jmethod_Fragment == nullptr )
+            {
+                Helper::AndroidEnvExceptionCheck( _jenv );
+
+                MENGINE_ERROR_FATAL( "invalid fragment: %s get method: %s with signature: %s"
+                    , _fragment
+                    , _method
+                    , _signature
+                );
+
+                return nullptr;
+            }
+
+            return jmethod_Fragment;
+        }
+        //////////////////////////////////////////////////////////////////////////
         void AndroidCallVoidStaticClassMethod( JNIEnv * _jenv, const Char * _name, const Char * _method, const Char * _signature, ... )
         {
-            jclass jclass_name = Mengine::Mengine_JNI_FindClass( _jenv, _name );
-
-            MENGINE_ASSERTION_FATAL( jclass_name != nullptr, "invalid get android class '%s'"
-                , _name
-            );
+            jclass jclass_name = Helper::AndroidEnvFindClass( _jenv, _name );
 
             jmethodID jmethodID_method = _jenv->GetStaticMethodID( jclass_name, _method, _signature );
 
-            MENGINE_ASSERTION_FATAL( jmethodID_method != nullptr, "invalid get android method '%s::%s' with signature '%s'"
+            MENGINE_ASSERTION_FATAL( jmethodID_method != nullptr, "invalid get android method: %s::%s with signature: %s"
                 , _name
                 , _method
                 , _signature
@@ -73,15 +125,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         jobject AndroidCallObjectStaticClassMethod( JNIEnv * _jenv, const Char * _name, const Char * _method, const Char * _signature, ... )
         {
-            jclass jclass_name = Mengine::Mengine_JNI_FindClass( _jenv, _name );
-
-            MENGINE_ASSERTION_FATAL( jclass_name != nullptr, "invalid get android class '%s'"
-                , _name
-            );
+            jclass jclass_name = Helper::AndroidEnvFindClass( _jenv, _name );
 
             jmethodID jmethodID_method = _jenv->GetStaticMethodID( jclass_name, _method, _signature );
 
-            MENGINE_ASSERTION_FATAL( jmethodID_method != nullptr, "invalid get android method '%s::%s' with signature '%s'"
+            MENGINE_ASSERTION_FATAL( jmethodID_method != nullptr, "invalid get android method: %s::%s with signature: %s"
                 , _name
                 , _method
                 , _signature
@@ -279,7 +327,7 @@ namespace Mengine
                 }, [_jenv, jmap, jkey](const ParamWString &_element) {
                     MENGINE_UNUSED(_element);
 
-                    MENGINE_ASSERTION_FATAL(false, "not support ParamWString");
+                    MENGINE_ASSERTION_FATAL( false, "not support ParamWString" );
                 }, [_jenv, jmap, jkey](const ParamConstString &_element) {
                     jobject jvalue = Helper::AndroidMakeJObjectString(_jenv, _element);
                     Helper::AndroidPutJObjectMap(_jenv, jmap, jkey, jvalue);
@@ -291,7 +339,7 @@ namespace Mengine
                 }, [_jenv, jmap, jkey](const ParamFactorablePtr &_element) {
                     MENGINE_UNUSED(_element);
 
-                    MENGINE_ASSERTION_FATAL(false, "not support ParamFactorablePtr");
+                    MENGINE_ASSERTION_FATAL( false, "not support ParamFactorablePtr" );
                 });
 
                 _jenv->DeleteLocalRef(jkey);
@@ -302,7 +350,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         jobject AndroidGetJObjectEnum( JNIEnv * _jenv, const Char * _className, const Char * _enumName )
         {
-            jclass jclass_enum = Mengine::Mengine_JNI_FindClass( _jenv, _className );
+            jclass jclass_enum = Helper::AndroidEnvFindClass( _jenv, _className );
 
             Char signature[256] = { '\0' };
             StdString::strcpy( signature, "L" );
@@ -499,8 +547,9 @@ namespace Mengine
         String AndroidMakeStringFromJString( JNIEnv * _jenv, jstring _value )
         {
             const Char * value_str = _jenv->GetStringUTFChars( _value, nullptr );
+            jsize value_size = _jenv->GetStringLength( _value );
 
-            String value_string( value_str );
+            String value_string( value_str, value_size );
 
             _jenv->ReleaseStringUTFChars( _value, value_str );
 
@@ -818,7 +867,7 @@ namespace Mengine
 
             _jenv->ExceptionClear();
 
-            jmethodID jmethodMengineFragmentEngine_caughtException = Mengine_JNI_GetMethodFragment( _jenv, "MengineFragmentEngine", "caughtException", "(Ljava/lang/Throwable;)V" );
+            jmethodID jmethodMengineFragmentEngine_caughtException = Mengine::Mengine_JNI_GetMethodFragment( _jenv, "MengineFragmentEngine", "caughtException", "(Ljava/lang/Throwable;)V" );
 
             if( jmethodMengineFragmentEngine_caughtException == nullptr )
             {
@@ -827,7 +876,7 @@ namespace Mengine
                 return;
             }
 
-            jobject jobjectMengineFragmentEngine = Mengine_JNI_GetObjectFragment( _jenv, "MengineFragmentEngine" );
+            jobject jobjectMengineFragmentEngine = Mengine::Mengine_JNI_GetObjectFragment( _jenv, "MengineFragmentEngine" );
 
             if( jobjectMengineFragmentEngine == nullptr )
             {

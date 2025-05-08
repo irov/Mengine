@@ -20,6 +20,9 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         StaticString<1024> AndroidGetJavaClassName( JNIEnv * _jenv, jclass _jclass );
+        jclass AndroidEnvFindClass( JNIEnv * _jenv, const Char * _className );
+        jobject AndroidEnvGetObjectFragment( JNIEnv * _jenv, const Char * _fragment );
+        jmethodID AndroidEnvGetMethodFragment( JNIEnv * _jenv, const Char * _fragment, const Char * _method, const Char * _signature );
         //////////////////////////////////////////////////////////////////////////
         void AndroidCallVoidStaticClassMethod( JNIEnv * _jenv, const Char * _name, const Char * _method, const Char * _signature, ... );
         MENGINE_NODISCARD jobject AndroidCallObjectStaticClassMethod( JNIEnv * _jenv, const Char * _name, const Char * _method, const Char * _signature, ... );

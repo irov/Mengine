@@ -13,26 +13,14 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        void AndroidCallVoidFragmentMethod( JNIEnv * _jenv, const Char * _fragmentName, const Char * _methodName, const Char * _methodSignature, ... )
+        void AndroidCallVoidFragmentMethod( JNIEnv * _jenv, const Char * _fragment, const Char * _method, const Char * _signature, ... )
         {
-            jmethodID jmethodFragment = Mengine_JNI_GetMethodFragment( _jenv, _fragmentName, _methodName, _methodSignature );
+            jmethodID jmethodFragment = Helper::AndroidEnvGetMethodFragment( _jenv, _fragment, _method, _signature );
 
-            Helper::AndroidEnvExceptionCheck( _jenv );
-
-            MENGINE_ASSERTION_FATAL( jmethodFragment != nullptr, "invalid get method '%s' signature '%s' fragment '%s'"
-                , _methodName
-                , _methodSignature
-                , _fragmentName
-            );
-
-            jobject jobjectFragment = Mengine_JNI_GetObjectFragment( _jenv, _fragmentName );
-
-            MENGINE_ASSERTION_FATAL( jobjectFragment != nullptr, "invalid get object fragment '%s'"
-                , _fragmentName
-            );
+            jobject jobjectFragment = Helper::AndroidEnvGetObjectFragment( _jenv, _fragment );
 
             MENGINE_VA_LIST_TYPE args;
-            MENGINE_VA_LIST_START( args, _methodSignature );
+            MENGINE_VA_LIST_START( args, _signature );
 
             _jenv->CallVoidMethodV( jobjectFragment, jmethodFragment, args );
 
@@ -43,26 +31,14 @@ namespace Mengine
             _jenv->DeleteLocalRef( jobjectFragment );
         }
         //////////////////////////////////////////////////////////////////////////
-        jobject AndroidCallObjectFragmentMethod( JNIEnv * _jenv, const Char * _fragmentName, const Char * _methodName, const Char * _methodSignature, ... )
+        jobject AndroidCallObjectFragmentMethod( JNIEnv * _jenv, const Char * _fragment, const Char * _method, const Char * _signature, ... )
         {
-            jmethodID jmethodFragment = Mengine_JNI_GetMethodFragment( _jenv, _fragmentName, _methodName, _methodSignature );
+            jmethodID jmethodFragment = Helper::AndroidEnvGetMethodFragment( _jenv, _fragment, _method, _signature );
 
-            Helper::AndroidEnvExceptionCheck( _jenv );
-
-            MENGINE_ASSERTION_FATAL( jmethodFragment != nullptr, "invalid get method '%s' signature '%s' fragment '%s'"
-                , _methodName
-                , _methodSignature
-                , _fragmentName
-            );
-
-            jobject jobjectFragment = Mengine_JNI_GetObjectFragment( _jenv, _fragmentName );
-
-            MENGINE_ASSERTION_FATAL( jobjectFragment != nullptr, "invalid get object fragment '%s'"
-                , _fragmentName
-            );
+            jobject jobjectFragment = Helper::AndroidEnvGetObjectFragment( _jenv, _fragment );
 
             MENGINE_VA_LIST_TYPE args;
-            MENGINE_VA_LIST_START( args, _methodSignature );
+            MENGINE_VA_LIST_START( args, _signature );
 
             jobject jresult = _jenv->CallObjectMethodV( jobjectFragment, jmethodFragment, args );
 
@@ -75,26 +51,14 @@ namespace Mengine
             return jresult;
         }
         //////////////////////////////////////////////////////////////////////////
-        jboolean AndroidCallBooleanFragmentMethod( JNIEnv * _jenv, const Char * _fragmentName, const Char * _methodName, const Char * _methodSignature, ... )
+        jboolean AndroidCallBooleanFragmentMethod( JNIEnv * _jenv, const Char * _fragment, const Char * _method, const Char * _signature, ... )
         {
-            jmethodID jmethodFragment = Mengine_JNI_GetMethodFragment( _jenv, _fragmentName, _methodName, _methodSignature );
+            jmethodID jmethodFragment = Helper::AndroidEnvGetMethodFragment( _jenv, _fragment, _method, _signature );
 
-            Helper::AndroidEnvExceptionCheck( _jenv );
-
-            MENGINE_ASSERTION_FATAL( jmethodFragment != nullptr, "invalid get method '%s' signature '%s' fragment '%s'"
-                , _methodName
-                , _methodSignature
-                , _fragmentName
-            );
-
-            jobject jobjectFragment = Mengine_JNI_GetObjectFragment( _jenv, _fragmentName );
-
-            MENGINE_ASSERTION_FATAL( jobjectFragment != nullptr, "invalid get object fragment '%s'"
-                , _fragmentName
-            );
+            jobject jobjectFragment = Helper::AndroidEnvGetObjectFragment( _jenv, _fragment );
 
             MENGINE_VA_LIST_TYPE args;
-            MENGINE_VA_LIST_START( args, _methodSignature );
+            MENGINE_VA_LIST_START( args, _signature );
 
             jboolean jresult = _jenv->CallBooleanMethodV( jobjectFragment, jmethodFragment, args );
 
@@ -107,26 +71,14 @@ namespace Mengine
             return jresult;
         }
         //////////////////////////////////////////////////////////////////////////
-        jint AndroidCallIntApplicationMethod( JNIEnv * _jenv, const Char * _fragmentName, const Char * _methodName, const Char * _methodSignature, ... )
+        jint AndroidCallIntApplicationMethod( JNIEnv * _jenv, const Char * _fragment, const Char * _method, const Char * _signature, ... )
         {
-            jmethodID jmethodFragment = Mengine_JNI_GetMethodFragment( _jenv, _fragmentName, _methodName, _methodSignature );
+            jmethodID jmethodFragment = Helper::AndroidEnvGetMethodFragment( _jenv, _fragment, _method, _signature );
 
-            Helper::AndroidEnvExceptionCheck( _jenv );
-
-            MENGINE_ASSERTION_FATAL( jmethodFragment != nullptr, "invalid get method '%s' signature '%s' fragment '%s'"
-                , _methodName
-                , _methodSignature
-                , _fragmentName
-            );
-
-            jobject jobjectFragment = Mengine_JNI_GetObjectFragment( _jenv, _fragmentName );
-
-            MENGINE_ASSERTION_FATAL( jobjectFragment != nullptr, "invalid get object fragment '%s'"
-                , _fragmentName
-            );
+            jobject jobjectFragment = Helper::AndroidEnvGetObjectFragment( _jenv, _fragment );
 
             MENGINE_VA_LIST_TYPE args;
-            MENGINE_VA_LIST_START( args, _methodSignature );
+            MENGINE_VA_LIST_START( args, _signature );
 
             jint jresult = _jenv->CallIntMethodV( jobjectFragment, jmethodFragment, args );
 
@@ -139,26 +91,14 @@ namespace Mengine
             return jresult;
         }
         //////////////////////////////////////////////////////////////////////////
-        jlong AndroidCallLongFragmentMethod( JNIEnv * _jenv, const Char * _fragmentName, const Char * _methodName, const Char * _methodSignature, ... )
+        jlong AndroidCallLongFragmentMethod( JNIEnv * _jenv, const Char * _fragment, const Char * _method, const Char * _signature, ... )
         {
-            jmethodID jmethodFragment = Mengine_JNI_GetMethodFragment( _jenv, _fragmentName, _methodName, _methodSignature );
+            jmethodID jmethodFragment = Helper::AndroidEnvGetMethodFragment( _jenv, _fragment, _method, _signature );
 
-            Helper::AndroidEnvExceptionCheck( _jenv );
-
-            MENGINE_ASSERTION_FATAL( jmethodFragment != nullptr, "invalid get method '%s' signature '%s' fragment '%s'"
-                , _methodName
-                , _methodSignature
-                , _fragmentName
-            );
-
-            jobject jobjectFragment = Mengine_JNI_GetObjectFragment( _jenv, _fragmentName );
-
-            MENGINE_ASSERTION_FATAL( jobjectFragment != nullptr, "invalid get object fragment '%s'"
-                , _fragmentName
-            );
+            jobject jobjectFragment = Helper::AndroidEnvGetObjectFragment( _jenv, _fragment );
 
             MENGINE_VA_LIST_TYPE args;
-            MENGINE_VA_LIST_START( args, _methodSignature );
+            MENGINE_VA_LIST_START( args, _signature );
 
             jlong jresult = _jenv->CallLongMethodV( jobjectFragment, jmethodFragment, args );
 

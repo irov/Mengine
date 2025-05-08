@@ -5,6 +5,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Size;
 
+import java.util.Arrays;
+
 public class MengineService implements MengineServiceInterface {
     private MengineApplication m_application;
     private String m_serviceName;
@@ -114,22 +116,31 @@ public class MengineService implements MengineServiceInterface {
         throw new MengineServiceInvalidInitializeException(message);
     }
 
-    public void makeToastLong(long delayed, String format, Object ... args) {
+    public void makeToastDelayed(long delayed, String format, Object ... args) {
         if (MengineActivity.INSTANCE == null) {
+            this.logError("invalid make toast format: %s args: %s"
+                , format
+                , Arrays.toString(args)
+            );
+
             return;
         }
 
-        String message = MengineLog.buildTotalMsg(format, args);
-
-        MengineUtils.makeToastDelayed(MengineActivity.INSTANCE, message, delayed);
+        MengineUtils.makeToastDelayed(MengineActivity.INSTANCE, delayed, format, args);
     }
 
-    public void runOnUiThread(Runnable action) {
+    public boolean runOnUiThread(String doc, Runnable action) {
         if (MengineActivity.INSTANCE == null) {
-            return;
+            this.logError("invalid run [%s] on UI thread"
+                , doc
+            );
+
+            return false;
         }
 
         MengineActivity.INSTANCE.runOnUiThread(action);
+
+        return true;
     }
 
     public void setState(@NonNull @Size(min = 1L,max = 1024L) String name, Object value) {
@@ -199,19 +210,11 @@ public class MengineService implements MengineServiceInterface {
     }
 
     public void activateSemaphore(String name) {
-        if (MengineActivity.INSTANCE == null) {
-            return;
-        }
-
-        MengineActivity.INSTANCE.activateSemaphore(name);
+        m_application.activateSemaphore(name);
     }
 
     public void deactivateSemaphore(String name) {
-        if (MengineActivity.INSTANCE == null) {
-            return;
-        }
-
-        MengineActivity.INSTANCE.deactivateSemaphore(name);
+        m_application.deactivateSemaphore(name);
     }
 
     public boolean getMetaDataBoolean(String name) throws MengineServiceInvalidInitializeException {

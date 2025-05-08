@@ -727,7 +727,7 @@ namespace Mengine
 
         jstring jname = jenv->NewStringUTF( name_str );
 
-        jboolean jresult = Helper::AndroidCallBooleanActivityMethod( jenv, "waitSemaphore", "(Ljava/lang/String;)Z", jname );
+        jboolean jresult = Helper::AndroidCallBooleanApplicationMethod( jenv, "waitSemaphore", "(Ljava/lang/String;)Z", jname );
 
         jenv->DeleteLocalRef( jname );
 

@@ -49,7 +49,7 @@ public class MengineFragmentEngine extends MengineFragment<MengineListenerEngine
         this.propagate(MengineListenerEngine::onMenginePlatformStop);
     }
 
-    void caughtException(Throwable throwable) {
+    public void caughtException(Throwable throwable) {
         String message = throwable.getMessage();
         MengineApplication.INSTANCE.setState("exception.message", message);
 

@@ -2,8 +2,8 @@
 
 #include "Interface/RenderMaterialServiceInterface.h"
 
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
-#include "Environment/SDL/SDLPlatformServiceExtensionInterface.h"
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
+#include "Environment/SDL2/SDL2PlatformServiceExtensionInterface.h"
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)

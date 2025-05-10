@@ -5,6 +5,9 @@ src
     MacOSUtils.h
     MacOSUtils.mm
     
+    MacOSWorkspace.h
+    MacOSWorkspace.mm
+    
     MacOSApplication.h
     MacOSApplication.mm
     

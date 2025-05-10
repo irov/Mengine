@@ -8,7 +8,7 @@
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
-#include "Environment/SDL/SDLPlatformServiceExtensionInterface.h"
+#include "Environment/SDL2/SDL2PlatformServiceExtensionInterface.h"
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
@@ -144,7 +144,7 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_RESTORE, &ImGUIService::notifyRenderDeviceLostRestore_, MENGINE_DOCUMENT_FACTORABLE );
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
-        SDLPlatformServiceExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
+        SDL2PlatformServiceExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
             ->getDynamicUnknown();
 
         uint32_t handlerId = sdlPlatform->addSDLEventHandler( []( SDL_Event * _event )
@@ -181,7 +181,7 @@ namespace Mengine
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
         if( m_handlerId != INVALID_UNIQUE_ID )
         {
-            SDLPlatformServiceExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
+            SDL2PlatformServiceExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
                 ->getDynamicUnknown();
 
             sdlPlatform->removeSDLEventHandler( m_handlerId );
@@ -275,7 +275,7 @@ namespace Mengine
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
-        SDLPlatformServiceExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
+        SDL2PlatformServiceExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
             ->getDynamicUnknown();
 
         SDL_Window * window = sdlPlatform->getWindow();
@@ -310,7 +310,7 @@ namespace Mengine
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
         if( m_handlerId != INVALID_UNIQUE_ID )
         {
-            SDLPlatformServiceExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
+            SDL2PlatformServiceExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
                 ->getDynamicUnknown();
 
             sdlPlatform->removeSDLEventHandler( m_handlerId );

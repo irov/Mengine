@@ -18,6 +18,6 @@ namespace Mengine
         void _flush() override;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<StdioLogger, LoggerInterface> SDLStdioLoggerPtr;
+    typedef IntrusivePtr<StdioLogger, LoggerInterface> StdioLoggerPtr;
     //////////////////////////////////////////////////////////////////////////
 }

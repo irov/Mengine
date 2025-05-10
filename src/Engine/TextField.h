@@ -86,7 +86,7 @@ namespace Mengine
 
         void setTextArguments( const VectorTextArguments & _arguments );
         const VectorTextArguments & getTextArguments() const;
-        void removeTextArguments();        
+        void removeTextArguments();
 
     public:
         uint32_t getTextExpectedArgument() const;
@@ -212,7 +212,7 @@ namespace Mengine
         void invalidateTextEntry() const;
         void invalidateTextId() const;
         void invalidateTextArguments() const;
-        
+
 
         bool updateTextLines_() const;
         void updateTextLinesWrap_( VectorTextLineChunks2 * const _textLines ) const;

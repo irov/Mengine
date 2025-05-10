@@ -95,18 +95,8 @@ class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxAdReques
 
         adView.setLayoutParams(params);
 
+        adView.setVisibility(View.GONE);
         adView.setBackgroundColor(Color.TRANSPARENT);
-
-        if (m_visible == false) {
-            adView.setVisibility(View.GONE);
-
-            adView.setExtraParameter( "allow_pause_auto_refresh_immediately", "true" );
-            adView.stopAutoRefresh();
-        } else {
-            adView.setVisibility(View.VISIBLE);
-
-            adView.startAutoRefresh();
-        }
 
         m_adView = adView;
 
@@ -239,6 +229,8 @@ class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxAdReques
             return;
         }
 
+        m_plugin.logInfo("[Banner] show adView: %s", m_adUnitId);
+
         adView.setVisibility(View.VISIBLE);
         adView.requestLayout();
 
@@ -253,6 +245,8 @@ class MengineAppLovinBannerAd extends MengineAppLovinBase implements MaxAdReques
         if (m_plugin.hasOption("applovin.banner.disable") == true || m_plugin.hasOption("applovin.ad.disable") == true) {
             return;
         }
+
+        m_plugin.logInfo("[Banner] hide adView: %s", m_adUnitId);
 
         adView.setVisibility(View.GONE);
         adView.requestLayout();

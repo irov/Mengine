@@ -19,11 +19,11 @@
 #include "Interface/FactoryInterface.h"
 #include "Interface/AnalyticsEventProviderInterface.h"
 
-#include "Environment/SDL/SDLPlatformServiceExtensionInterface.h"
+#include "Environment/SDL2/SDL2PlatformServiceExtensionInterface.h"
 
 #import "iOSMailComposeDelegate.h"
 
-#include "Environment/SDL/SDLIncluder.h"
+#include "Environment/SDL2/SDL2Includer.h"
 
 #include "iOSInput.h"
 
@@ -37,7 +37,7 @@ namespace Mengine
 {
     class iOSPlatformService
         : public ServiceBase<PlatformServiceInterface>
-        , public SDLPlatformServiceExtensionInterface
+        , public SDL2PlatformServiceExtensionInterface
     {
         DECLARE_UNKNOWABLE();
 

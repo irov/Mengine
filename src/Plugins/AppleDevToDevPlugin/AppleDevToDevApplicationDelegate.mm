@@ -62,7 +62,7 @@
     return YES;
 }
 
-#pragma mark - iOSPluginSessionIdDelegateInterface
+#pragma mark - iOSPluginUserIdDelegateInterface
 
 - (void)onUserId:(iOSUserParam *)user {
     [DTDAnalytics userId:user.USER_ID];

@@ -41,7 +41,7 @@ src
     
     iOSUIMainApplicationDelegateInterface.h
     
-    iOSPluginSessionIdDelegateInterface.h
+    iOSPluginUserIdDelegateInterface.h
     iOSPluginAdRevenueDelegateInterface.h
     iOSPluginApplicationDelegateInterface.h
     iOSPluginTransparencyConsentDelegateInterface.h

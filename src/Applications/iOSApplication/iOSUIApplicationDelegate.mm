@@ -2,8 +2,8 @@
 
 #include "Interface/PlatformServiceInterface.h"
 
-#include "Environment/SDL/SDLIncluder.h"
-#include "Environment/SDL/SDLPlatformServiceExtensionInterface.h"
+#include "Environment/SDL2/SDL2Includer.h"
+#include "Environment/SDL2/SDL2PlatformServiceExtensionInterface.h"
 
 #import "iOSApplicationDelegates.h"
 
@@ -25,7 +25,7 @@
         self.m_pluginLoggerDelegates = [NSMutableArray<iOSPluginLoggerDelegateInterface> array];
         self.m_pluginConfigDelegates = [NSMutableArray<iOSPluginConfigDelegateInterface> array];
         self.m_pluginAnalyticDelegates = [NSMutableArray<iOSPluginAnalyticDelegateInterface> array];
-        self.m_pluginSessionIdDelegates = [NSMutableArray<iOSPluginSessionIdDelegateInterface> array];
+        self.m_pluginUserIdDelegates = [NSMutableArray<iOSPluginUserIdDelegateInterface> array];
         self.m_pluginAdRevenueDelegates = [NSMutableArray<iOSPluginAdRevenueDelegateInterface> array];
         self.m_pluginTransparencyConsentDelegates = [NSMutableArray<iOSPluginTransparencyConsentDelegateInterface> array];
         
@@ -58,8 +58,8 @@
                 [self.m_pluginAnalyticDelegates addObject:delegate];
             }
             
-            if ([delegate conformsToProtocol:@protocol(iOSPluginSessionIdDelegateInterface)] == YES) {
-                [self.m_pluginSessionIdDelegates addObject:delegate];
+            if ([delegate conformsToProtocol:@protocol(iOSPluginUserIdDelegateInterface)] == YES) {
+                [self.m_pluginUserIdDelegates addObject:delegate];
             }
             
             if ([delegate conformsToProtocol:@protocol(iOSPluginAdRevenueDelegateInterface)] == YES) {
@@ -93,8 +93,8 @@
     return self.m_pluginAnalyticDelegates;
 }
 
-- (NSArray<iOSPluginSessionIdDelegateInterface> *)getPluginSessionIdDelegates {
-    return self.m_pluginSessionIdDelegates;
+- (NSArray<iOSPluginUserIdDelegateInterface> *)getPluginUserIdDelegates {
+    return self.m_pluginUserIdDelegates;
 }
 
 - (NSArray<iOSPluginAdRevenueDelegateInterface> *)getPluginAdRevenueDelegates {
@@ -194,17 +194,17 @@
     }
 }
 
-- (void)eventSetUserId:(iOSUserParam *)sessionId {
+- (void)eventSetUserId:(iOSUserParam *)userId {
     @autoreleasepool {
-        for (NSObject<iOSPluginSessionIdDelegateInterface> * delegate in self.m_pluginSessionIdDelegates) {
-            [delegate onSessionId:sessionId];
+        for (NSObject<iOSPluginUserIdDelegateInterface> * delegate in self.m_pluginUserIdDelegates) {
+            [delegate onUserId:userId];
         }
     }
 }
 
 - (void)eventRemoveUserData {
     @autoreleasepool {
-        for (NSObject<iOSPluginSessionIdDelegateInterface> * delegate in self.m_pluginSessionIdDelegates) {
+        for (NSObject<iOSPluginUserIdDelegateInterface> * delegate in self.m_pluginUserIdDelegates) {
             [delegate onRemoveUserData];
         }
     }

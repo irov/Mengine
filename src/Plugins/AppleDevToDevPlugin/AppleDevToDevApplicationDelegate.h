@@ -1,7 +1,7 @@
 #import "Environment/iOS/iOSPluginApplicationDelegateInterface.h"
-#import "Environment/iOS/iOSPluginSessionIdDelegateInterface.h"
+#import "Environment/iOS/iOSPluginUserIdDelegateInterface.h"
 
-@interface AppleDevToDevApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface, iOSPluginSessionIdDelegateInterface>
+@interface AppleDevToDevApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface, iOSPluginUserIdDelegateInterface>
 
 - (void)sendEvent:(NSString *)eventName parameters:(NSDictionary<NSString *, id> *)parameters;
 

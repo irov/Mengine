@@ -3,7 +3,7 @@
 #import "Environment/iOS/iOSPluginApplicationDelegateInterface.h"
 #import "Environment/iOS/iOSPluginLoggerDelegateInterface.h"
 #import "Environment/iOS/iOSPluginConfigDelegateInterface.h"
-#import "Environment/iOS/iOSPluginSessionIdDelegateInterface.h"
+#import "Environment/iOS/iOSPluginUserIdDelegateInterface.h"
 #import "Environment/iOS/iOSPluginAdRevenueDelegateInterface.h"
 #import "Environment/iOS/iOSPluginTransparencyConsentDelegateInterface.h"
 
@@ -14,7 +14,7 @@
 - (NSArray<iOSPluginApplicationDelegateInterface> * _Nonnull)getPluginApplicationDelegates;
 - (NSArray<iOSPluginLoggerDelegateInterface> * _Nonnull)getPluginLoggerDelegates;
 - (NSArray<iOSPluginConfigDelegateInterface> * _Nonnull)getPluginConfigDelegates;
-- (NSArray<iOSPluginSessionIdDelegateInterface> * _Nonnull)getPluginSessionIdDelegates;
+- (NSArray<iOSPluginUserIdDelegateInterface> * _Nonnull)getPluginUserIdDelegates;
 - (NSArray<iOSPluginAdRevenueDelegateInterface> * _Nonnull)getPluginAdRevenueDelegates;
 - (NSArray<iOSPluginTransparencyConsentDelegateInterface> * _Nonnull)getPluginTransparencyConsentDelegates;
 

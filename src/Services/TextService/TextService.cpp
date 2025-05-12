@@ -128,8 +128,8 @@ namespace Mengine
             float lineOffset = 0.f;
             float maxLength = 0.f;
 
-            ETextHorizontAlign horizontAlign = ETFHA_LEFT;
-            ETextVerticalAlign verticalAlign = ETFVA_BOTTOM;
+            ETextHorizontAlign horizontAlign = ETFHA_NONE;
+            ETextVerticalAlign verticalAlign = ETFVA_NONE;
 
             float charScale = 1.f;
 
@@ -192,7 +192,7 @@ namespace Mengine
                     float value = 0.f;
                     if( Helper::stringalized( str_value, &value ) == false )
                     {
-                        LOGGER_ERROR( "text file '%s' invalid read for text '%s' charOffset '%s'"
+                        LOGGER_ERROR( "text file '%s' invalid read for text '%s' tag [CharOffset] '%s'"
                             , Helper::getContentFullPath( m_content ).c_str()
                             , textKey.c_str()
                             , str_value
@@ -210,7 +210,7 @@ namespace Mengine
                     float value = 0.f;
                     if( Helper::stringalized( str_value, &value ) == false )
                     {
-                        LOGGER_ERROR( "text file '%s' invalid read for text '%s' lineOffset '%s'"
+                        LOGGER_ERROR( "text file '%s' invalid read for text '%s' tag [LineOffset] '%s'"
                             , Helper::getContentFullPath( m_content ).c_str()
                             , textKey.c_str()
                             , str_value
@@ -231,7 +231,7 @@ namespace Mengine
                     float a = 1.f;
                     if( MENGINE_SSCANF( str_value, "%g %g %g %g", &r, &g, &b, &a ) != 4 )
                     {
-                        LOGGER_ERROR( "text file '%s' invalid read for text '%s' lineOffset '%s'"
+                        LOGGER_ERROR( "text file '%s' invalid read for text '%s' tag [Color] '%s'"
                             , Helper::getContentFullPath( m_content ).c_str()
                             , textKey.c_str()
                             , str_value
@@ -249,7 +249,7 @@ namespace Mengine
                     float value = 0.f;
                     if( Helper::stringalized( str_value, &value ) == false )
                     {
-                        LOGGER_ERROR( "text file '%s' invalid read for text '%s' Override '%s'"
+                        LOGGER_ERROR( "text file '%s' invalid read for text '%s' tag [MaxLength] '%s'"
                             , Helper::getContentFullPath( m_content ).c_str()
                             , textKey.c_str()
                             , str_value
@@ -267,7 +267,7 @@ namespace Mengine
                     uint32_t value = 0;
                     if( Helper::stringalized( str_value, &value ) == false )
                     {
-                        LOGGER_ERROR( "text file '%s' invalid read for text '%s' tag 'Override' '%s'"
+                        LOGGER_ERROR( "text file '%s' invalid read for text '%s' tag [Override] '%s'"
                             , Helper::getContentFullPath( m_content ).c_str()
                             , textKey.c_str()
                             , str_value
@@ -329,6 +329,12 @@ namespace Mengine
 
                         params |= EFP_HORIZONTAL_ALIGN;
                     }
+                    else if( StdString::strcmp( str_value, "Justify" ) == 0 )
+                    {
+                        horizontAlign = ETFHA_JUSTIFY;
+
+                        params |= EFP_HORIZONTAL_ALIGN;
+                    }
                     else
                     {
                         LOGGER_ERROR( "text file '%s' invalid read for text '%s' VerticalAlign '%s' [Left, Center, Right]"
@@ -345,7 +351,7 @@ namespace Mengine
                     float value = 0.f;
                     if( Helper::stringalized( str_value, &value ) == false )
                     {
-                        LOGGER_ERROR( "text file '%s' invalid read for text '%s' Scale '%s'"
+                        LOGGER_ERROR( "text file '%s' invalid read for text '%s' tag [CharScale] '%s'"
                             , Helper::getContentFullPath( m_content ).c_str()
                             , textKey.c_str()
                             , str_value
@@ -363,7 +369,7 @@ namespace Mengine
                     uint32_t value = 0;
                     if( Helper::stringalized( str_value, &value ) == false )
                     {
-                        LOGGER_ERROR( "text file '%s' invalid read for text '%s' tag 'Empty' '%s'"
+                        LOGGER_ERROR( "text file '%s' invalid read for text '%s' tag [Empty] '%s'"
                             , Helper::getContentFullPath( m_content ).c_str()
                             , textKey.c_str()
                             , str_value

@@ -15,18 +15,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     enum ETextHorizontAlign
     {
-        ETFHA_LEFT = 0,
-        ETFHA_CENTER = 1,
-        ETFHA_RIGHT = 2,
-        ETFHA_NONE = 3
+        ETFHA_NONE = 0,
+        ETFHA_LEFT = 1,
+        ETFHA_CENTER = 2,
+        ETFHA_RIGHT = 3,
+        ETFHA_JUSTIFY = 4,        
     };
     //////////////////////////////////////////////////////////////////////////
     enum ETextVerticalAlign
     {
-        ETFVA_BOTTOM = 0,
-        ETFVA_CENTER = 1,
-        ETFVA_TOP = 2,
-        ETFVA_NONE = 3,
+        ETFVA_NONE = 0,
+        ETFVA_BOTTOM = 1,
+        ETFVA_CENTER = 2,
+        ETFVA_TOP = 3,
     };
     //////////////////////////////////////////////////////////////////////////
     class TextEntryInterface

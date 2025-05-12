@@ -42,7 +42,9 @@ namespace Mengine
 
     public:
         void setMaxLength( float _maxLength );
+        void removeMaxLength();
         float getMaxLength() const;
+        bool hasMaxLength() const;
 
     public:
         void setAutoScale( bool _autoScale );
@@ -130,25 +132,6 @@ namespace Mengine
         ETextVerticalAlign getVerticalAlign() const;
 
     public:
-        void setHorizontalCenterAlign();
-        bool isHorizontalCenterAlign() const;
-
-        void setHorizontalRightAlign();
-        bool isHorizontalRightAlign() const;
-
-        void setHorizontalLeftAlign();
-        bool isHorizontalLeftAlign() const;
-
-        void setVerticalTopAlign();
-        bool isVerticalTopAlign() const;
-
-        void setVerticalCenterAlign();
-        bool isVerticalCenterAlign() const;
-
-        void setVerticalBottomAlign();
-        bool isVerticalBottomAlign() const;
-
-    public:
         void setExtraThickness( float _extraThickness );
         float getExtraThickness() const;
 
@@ -217,7 +200,7 @@ namespace Mengine
         bool updateTextLines_() const;
         void updateTextLinesWrap_( VectorTextLineChunks2 * const _textLines ) const;
         void updateTextLinesMaxCount_( VectorTextLineChunks2 * const _textLines ) const;
-        bool updateTextLinesDimension_( const FontInterfacePtr & _font, const VectorTextLineChunks2 & _textLines ) const;
+        bool updateTextLinesDimension_( const FontInterfacePtr & _font, const VectorTextLineChunks2 & _textLines, float _justifyLength ) const;
 
     public:
         MENGINE_INLINE const ConstString & getTotalTextId() const;

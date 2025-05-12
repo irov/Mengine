@@ -39,7 +39,7 @@ namespace Mengine
     class TextLine
     {
     public:
-        TextLine( uint32_t _layout, float _charOffset );
+        TextLine( uint32_t _layout, float _charOffset, float _justifyLength );
         ~TextLine();
 
     public:
@@ -53,14 +53,16 @@ namespace Mengine
         uint32_t getCharsDataSize() const;
 
     public:
-        void calcCharPosition( const TextCharData & _cd, const mt::vec2f & _offset, float _charScale, uint32_t _index, mt::vec3f * const _pos ) const;
+        static void calcCharPosition( const TextCharData & _cd, const mt::vec2f & _offset, float _charScale, uint32_t _index, mt::vec3f * const _pos );
         void advanceCharOffset( const TextCharData & _cd, float _charScale, mt::vec2f * const _offset ) const;
 
     protected:
         uint32_t m_layout;
         float m_length;
 
-        mutable float m_charOffset;
+        float m_charOffset;
+        float m_justifyLength;
+        float m_spaceAdvance;
 
         mutable VectorTextCharData m_charsData;
     };

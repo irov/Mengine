@@ -7,10 +7,12 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    TextLine::TextLine( uint32_t _layout, float _charOffset )
+    TextLine::TextLine( uint32_t _layout, float _charOffset, float _justifyLength )
         : m_layout( _layout )
         , m_length( 0.f )
         , m_charOffset( _charOffset )
+        , m_justifyLength( _justifyLength )
+        , m_spaceAdvance( 0.f )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -25,6 +27,8 @@ namespace Mengine
 
         bool successful = true;
 
+        float spaceCount = 0.f;
+
         for( U32String::const_iterator
             it = _text.begin(),
             it_end = _text.end();
@@ -32,6 +36,7 @@ namespace Mengine
             ++it )
         {
             Char32 c = *it;
+
             GlyphCode glyphChar = (GlyphCode)c;
 
             U32String::const_iterator it_kerning = it;
@@ -64,12 +69,34 @@ namespace Mengine
 
             m_charsData.emplace_back( charData );
 
-            m_length += charData.advance + m_charOffset;
+            m_length += charData.advance;
+            m_length += m_charOffset;
+
+            if( c == ' ' )
+            {
+                spaceCount += 1.f;
+            }
         }
 
         if( _text.empty() == false )
         {
             m_length -= m_charOffset;
+
+            if( m_justifyLength >= 0.f && m_justifyLength > m_length )
+            {
+                float advanceSpaceLength = m_justifyLength - m_length;
+                float advanceSpace = advanceSpaceLength / spaceCount;
+
+                for( TextCharData & charData : m_charsData )
+                {
+                    if( charData.code != ' ' )
+                    {
+                        continue;
+                    }
+
+                    charData.advance += advanceSpace;
+                }
+            }
         }
 
         return successful;
@@ -92,7 +119,7 @@ namespace Mengine
         return m_charsData;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextLine::calcCharPosition( const TextCharData & _cd, const mt::vec2f & _offset, float _charScale, uint32_t _index, mt::vec3f * const _pos ) const
+    void TextLine::calcCharPosition( const TextCharData & _cd, const mt::vec2f & _offset, float _charScale, uint32_t _index, mt::vec3f * const _pos )
     {
         mt::vec2f size = _cd.size * _charScale;
 

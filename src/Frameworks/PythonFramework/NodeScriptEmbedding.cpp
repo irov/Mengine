@@ -149,7 +149,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             
             //////////////////////////////////////////////////////////////////////////
-            PyObject * s_TextField_setTextFormatArgs( pybind::kernel_interface * _kernel, TextField * _textField, PyObject * _args, PyObject * _kwds )
+            PyObject * TextField_setTextFormatArgs( pybind::kernel_interface * _kernel, TextField * _textField, PyObject * _args, PyObject * _kwds )
             {
                 MENGINE_UNUSED( _kwds );
 
@@ -269,7 +269,7 @@ namespace Mengine
                 return _kernel->ret_true();
             }
             //////////////////////////////////////////////////////////////////////////
-            VectorWString s_TextField_getTextFormatArgs( TextField * _textField )
+            VectorWString TextField_getTextFormatArgs( TextField * _textField )
             {
                 VectorWString ws_args;
 
@@ -293,7 +293,7 @@ namespace Mengine
                 return ws_args;
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_TextField_setFontName( TextField * _textField, const ConstString & _fontName )
+            void TextField_setFontName( TextField * _textField, const ConstString & _fontName )
             {
                 const FontInterfacePtr & font = FONT_SERVICE()
                     ->getFont( _fontName );
@@ -301,7 +301,7 @@ namespace Mengine
                 _textField->setFont( font );
             }
             //////////////////////////////////////////////////////////////////////////
-            const ConstString & s_TextField_getFontName( TextField * _textField )
+            const ConstString & TextField_getFontName( TextField * _textField )
             {
                 const FontInterfacePtr & font = _textField->calcFont();
 
@@ -310,7 +310,97 @@ namespace Mengine
                 return fontName;
             }
             //////////////////////////////////////////////////////////////////////////
-            PyObject * s_TextField_calcTotalTextViewport( pybind::kernel_interface * _kernel, TextField * _textField )
+            void TextField_setHorizontalNoneAlign( TextField * _textField )
+            {
+                _textField->setHorizontAlign( ETFHA_NONE );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            bool TextField_isHorizontalNoneAlign( TextField * _textField )
+            {
+                return _textField->getHorizontAlign() == ETFHA_NONE;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void TextField_setHorizontalCenterAlign( TextField * _textField )
+            {
+                _textField->setHorizontAlign( ETFHA_CENTER );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            bool TextField_isHorizontalCenterAlign( TextField * _textField )
+            {
+                return _textField->getHorizontAlign() == ETFHA_CENTER;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void TextField_setHorizontalRightAlign( TextField * _textField )
+            {
+                _textField->setHorizontAlign( ETFHA_RIGHT );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            bool TextField_isHorizontalRightAlign( TextField * _textField )
+            {
+                return _textField->getHorizontAlign() == ETFHA_RIGHT;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void TextField_setHorizontalLeftAlign( TextField * _textField )
+            {
+                _textField->setHorizontAlign( ETFHA_LEFT );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            bool TextField_isHorizontalLeftAlign( TextField * _textField )
+            {
+                return _textField->getHorizontAlign() == ETFHA_LEFT;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void TextField_setHorizontalJustifyAlign( TextField * _textField )
+            {
+                _textField->setHorizontAlign( ETFHA_JUSTIFY );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            bool TextField_isHorizontalJustifyAlign( TextField * _textField )
+            {
+                return _textField->getHorizontAlign() == ETFHA_JUSTIFY;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void TextField_setVerticalNoneAlign( TextField * _textField )
+            {
+                _textField->setVerticalAlign( ETFVA_NONE );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            bool TextField_isVerticalNoneAlign( TextField * _textField )
+            {
+                return _textField->getVerticalAlign() == ETFVA_NONE;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void TextField_setVerticalTopAlign( TextField * _textField )
+            {
+                _textField->setVerticalAlign( ETFVA_TOP );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            bool TextField_isVerticalTopAlign( TextField * _textField )
+            {
+                return _textField->getVerticalAlign() == ETFVA_TOP;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void TextField_setVerticalBottomAlign( TextField * _textField )
+            {
+                _textField->setVerticalAlign( ETFVA_BOTTOM );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            bool TextField_isVerticalBottomAlign( TextField * _textField )
+            {
+                return _textField->getVerticalAlign() == ETFVA_BOTTOM;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void TextField_setVerticalCenterAlign( TextField * _textField )
+            {
+                _textField->setVerticalAlign( ETFVA_CENTER );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            bool TextField_isVerticalCenterAlign( TextField * _textField )
+            {
+                return _textField->getVerticalAlign() == ETFVA_CENTER;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            PyObject * TextField_calcTotalTextViewport( pybind::kernel_interface * _kernel, TextField * _textField )
             {
                 Viewport viewport;
                 if( _textField->calcTotalTextViewport( &viewport ) == false )
@@ -321,7 +411,7 @@ namespace Mengine
                 return pybind::ptr( _kernel, viewport );
             }
             //////////////////////////////////////////////////////////////////////////
-            mt::vec2f s_TextField_calcTotalTextSize( TextField * _textField )
+            mt::vec2f TextField_calcTotalTextSize( TextField * _textField )
             {
                 mt::vec2f size;
                 _textField->calcTotalTextSize( &size );
@@ -363,7 +453,7 @@ namespace Mengine
                 _transformation->translate( _coordinate );
             }
             //////////////////////////////////////////////////////////////////////////
-            mt::vec2f s_HotSpotPolygon_getLocalPolygonCenter( HotSpotPolygon * _hs )
+            mt::vec2f HotSpotPolygon_getLocalPolygonCenter( HotSpotPolygon * _hs )
             {
                 const Polygon & polygon = _hs->getPolygon();
 
@@ -376,7 +466,7 @@ namespace Mengine
                 return c;
             }
             //////////////////////////////////////////////////////////////////////////
-            mt::vec2f s_HotSpotPolygon_getWorldPolygonCenter( HotSpotPolygon * _hs )
+            mt::vec2f HotSpotPolygon_getWorldPolygonCenter( HotSpotPolygon * _hs )
             {
                 const Polygon & polygon = _hs->getPolygon();
 
@@ -401,7 +491,7 @@ namespace Mengine
                 return c;
             }
             //////////////////////////////////////////////////////////////////////////
-            mt::vec2f s_HotSpotPolygon_getScreenPolygonCenter( HotSpotPolygon * _hs )
+            mt::vec2f HotSpotPolygon_getScreenPolygonCenter( HotSpotPolygon * _hs )
             {
                 const RenderCameraInterface * camera = Helper::getNodeRenderCameraInheritance( _hs );
                 const RenderViewportInterface * viewport = Helper::getNodeRenderViewportInheritance( _hs );
@@ -429,7 +519,7 @@ namespace Mengine
                 return c;
             }
             //////////////////////////////////////////////////////////////////////////
-            Polygon s_HotSpotPolygon_getWorldPolygon( HotSpotPolygon * _hs )
+            Polygon HotSpotPolygon_getWorldPolygon( HotSpotPolygon * _hs )
             {
                 const Polygon & polygon = _hs->getPolygon();
 
@@ -443,7 +533,7 @@ namespace Mengine
                 return pwm;
             }
             //////////////////////////////////////////////////////////////////////////
-            const mt::vec2f & s_Shape_getSurfaceSize( Shape * _shape )
+            const mt::vec2f & Shape_getSurfaceSize( Shape * _shape )
             {
                 const SurfacePtr & surface = _shape->getSurface();
 
@@ -456,7 +546,7 @@ namespace Mengine
                 return size;
             }
             //////////////////////////////////////////////////////////////////////////
-            mt::vec2f s_Shape_getLocalImageCenter( Shape * _shape )
+            mt::vec2f Shape_getLocalImageCenter( Shape * _shape )
             {
                 const SurfacePtr & surface = _shape->getSurface();
 
@@ -472,9 +562,9 @@ namespace Mengine
                 return center;
             }
             //////////////////////////////////////////////////////////////////////////
-            mt::vec2f s_Shape_getWorldImageCenter( Shape * _shape )
+            mt::vec2f Shape_getWorldImageCenter( Shape * _shape )
             {
-                mt::vec2f imageCenter = s_Shape_getLocalImageCenter( _shape );
+                mt::vec2f imageCenter = Shape_getLocalImageCenter( _shape );
 
                 const TransformationInterface * transformation = _shape->getTransformation();
 
@@ -499,7 +589,7 @@ namespace Mengine
                 return callback;
             }
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_ShapeQuadFlex_setPercentVisibilityTo( ShapeQuadFlex * _shape, float _time, const mt::vec4f & _percent, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            uint32_t ShapeQuadFlex_setPercentVisibilityTo( ShapeQuadFlex * _shape, float _time, const mt::vec4f & _percent, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
                 if( _shape->isActivate() == false )
                 {
@@ -537,7 +627,7 @@ namespace Mengine
                 return id;
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_ShapeQuadFlex_setPercentVisibilityStop( ShapeQuadFlex * _shape )
+            void ShapeQuadFlex_setPercentVisibilityStop( ShapeQuadFlex * _shape )
             {
                 const AffectorHubInterfacePtr & affectorHub = _shape->getAffectorHub();
 
@@ -566,7 +656,7 @@ namespace Mengine
                 _animation->resume( time );
             }
             //////////////////////////////////////////////////////////////////////////
-            PyObject * s_SurfaceImageSequence_setEventListener( pybind::kernel_interface * _kernel, SurfaceImageSequence * _surface, PyObject * _args, PyObject * _kwds )
+            PyObject * SurfaceImageSequence_setEventListener( pybind::kernel_interface * _kernel, SurfaceImageSequence * _surface, PyObject * _args, PyObject * _kwds )
             {
                 MENGINE_UNUSED( _args );
 
@@ -580,7 +670,7 @@ namespace Mengine
                 return _kernel->ret_none();
             }
             //////////////////////////////////////////////////////////////////////////
-            PyObject * s_SurfaceSound_setEventListener( pybind::kernel_interface * _kernel, SurfaceSound * _surface, PyObject * _args, PyObject * _kwds )
+            PyObject * SurfaceSound_setEventListener( pybind::kernel_interface * _kernel, SurfaceSound * _surface, PyObject * _args, PyObject * _kwds )
             {
                 MENGINE_UNUSED( _args );
 
@@ -615,7 +705,7 @@ namespace Mengine
                 }
             };
             //////////////////////////////////////////////////////////////////////////
-            PyObject * s_Meshget_setEventListener( pybind::kernel_interface * _kernel, Meshget * _node, PyObject * _args, PyObject * _kwds )
+            PyObject * Meshget_setEventListener( pybind::kernel_interface * _kernel, Meshget * _node, PyObject * _args, PyObject * _kwds )
             {
                 MENGINE_UNUSED( _args );
 
@@ -655,7 +745,7 @@ namespace Mengine
                 }
             };
             //////////////////////////////////////////////////////////////////////////
-            PyObject * s_ScriptHolder_setEventListener( pybind::kernel_interface * _kernel, ScriptHolder * _node, PyObject * _args, PyObject * _kwds )
+            PyObject * ScriptHolder_setEventListener( pybind::kernel_interface * _kernel, ScriptHolder * _node, PyObject * _args, PyObject * _kwds )
             {
                 MENGINE_UNUSED( _args );
 
@@ -670,7 +760,7 @@ namespace Mengine
                 return _kernel->ret_none();
             }
             //////////////////////////////////////////////////////////////////////////
-            PyObject * s_HotSpot_setEventListener( pybind::kernel_interface * _kernel, HotSpot * _node, PyObject * _args, PyObject * _kwds )
+            PyObject * HotSpot_setEventListener( pybind::kernel_interface * _kernel, HotSpot * _node, PyObject * _args, PyObject * _kwds )
             {
                 MENGINE_UNUSED( _args );
 
@@ -720,7 +810,7 @@ namespace Mengine
         pybind::interface_<SurfaceSound, pybind::bases<Surface, Soundable>>( _kernel, "SurfaceSound", false )
             .def( "setResourceSound", &SurfaceSound::setResourceSound )
             .def( "getResourceSound", &SurfaceSound::getResourceSound )
-            .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_SurfaceSound_setEventListener )
+            .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::SurfaceSound_setEventListener )
             ;
 
         pybind::interface_<SurfaceImage, pybind::bases<Surface>>( _kernel, "SurfaceImage", false )
@@ -735,7 +825,7 @@ namespace Mengine
             .def( "getFrameDelay", &SurfaceImageSequence::getFrameDelay )
             .def( "setCurrentFrame", &SurfaceImageSequence::setCurrentFrame )
             .def( "getCurrentFrame", &SurfaceImageSequence::getCurrentFrame )
-            .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_SurfaceImageSequence_setEventListener )
+            .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::SurfaceImageSequence_setEventListener )
             ;
 
         pybind::interface_<SurfaceTrackMatte, pybind::bases<Surface>>( _kernel, "SurfaceTrackMatte", false )
@@ -821,8 +911,6 @@ namespace Mengine
                 .def( "getCharOffset", &FontInterface::getCharOffset )
                 .def( "initialize", &FontInterface::initialize )
                 .def( "finalize", &FontInterface::finalize )
-                .def_deprecated( "getFontAscent", &FontInterface::getFontAscender, "use getFontAscender" )
-                .def_deprecated( "getFontDescent", &FontInterface::getFontDescender, "use getFontDescender" )
                 .def( "getFontAscender", &FontInterface::getFontAscender )
                 .def( "getFontDescender", &FontInterface::getFontDescender )
                 .def( "getFontHeight", &FontInterface::getFontHeight )
@@ -831,31 +919,39 @@ namespace Mengine
                 .def( "getFontPremultiply", &FontInterface::getFontPremultiply )
                 ;
 
+            pybind::enum_<ETextHorizontAlign>( _kernel, "ETextHorizontAlign" )
+                .def( "ETFHA_NONE", ETFHA_NONE )
+                .def( "ETFHA_LEFT", ETFHA_LEFT )
+                .def( "ETFHA_CENTER", ETFHA_CENTER )
+                .def( "ETFHA_RIGHT", ETFHA_RIGHT )
+                .def( "ETFHA_JUSTIFY", ETFHA_JUSTIFY )                
+                ;
+
+            pybind::enum_<ETextVerticalAlign>( _kernel, "ETextVerticalAlign" )
+                .def( "ETFVA_NONE", ETFVA_NONE )
+                .def( "ETFVA_TOP", ETFVA_TOP )
+                .def( "ETFVA_BOTTOM", ETFVA_BOTTOM )
+                .def( "ETFVA_CENTER", ETFVA_CENTER )
+                ;
+
             pybind::interface_<TextField, pybind::bases<Node>>( _kernel, "TextField", false )
-                .def_deprecated( "setTextByKey", &TextField::setTextId, "use setTextId" )
-                .def_deprecated( "setTextID", &TextField::setTextId, "use setTextId" )
                 .def( "setTextId", &TextField::setTextId )
-                .def_deprecated( "removeTextID", &TextField::removeTextId, "use removeTextId" )
                 .def( "removeTextId", &TextField::removeTextId )
-                .def_proxy_native_kernel( "setTextFormatArgs", nodeScriptMethod, &NodeScriptMethod::s_TextField_setTextFormatArgs )
-                .def_proxy_static( "getTextFormatArgs", nodeScriptMethod, &NodeScriptMethod::s_TextField_getTextFormatArgs )
+                .def_proxy_native_kernel( "setTextFormatArgs", nodeScriptMethod, &NodeScriptMethod::TextField_setTextFormatArgs )
+                .def_proxy_static( "getTextFormatArgs", nodeScriptMethod, &NodeScriptMethod::TextField_getTextFormatArgs )
                 .def( "removeTextFormatArgs", &TextField::removeTextArguments )
-                .def_deprecated( "getTextKey", &TextField::getTotalTextId, "use getTextId" )
                 .def( "getTextId", &TextField::getTextId )
-                .def_deprecated( "getTextEntryId", &TextField::getTotalTextId, "use getTotalTextId" )
                 .def( "getTotalTextId", &TextField::getTotalTextId )
                 .def( "getTextExpectedArgument", &TextField::getTextExpectedArgument )
 
                 .def( "setTextAliasEnvironment", &TextField::setTextAliasEnvironment )
                 .def( "getTextAliasEnvironment", &TextField::getTextAliasEnvironment )
 
-                .def_deprecated( "getHeight", &TextField::getFontHeight, "use getFontHeight" )
-                .def_deprecated( "getAlphaHeight", &TextField::getFontHeight, "use getFontHeight" )
                 .def( "getFontHeight", &TextField::getFontHeight )
                 .def( "setFont", &TextField::setFont )
                 .def( "getFont", &TextField::getFont )
-                .def_proxy_static( "setFontName", nodeScriptMethod, &NodeScriptMethod::s_TextField_setFontName )
-                .def_proxy_static( "getFontName", nodeScriptMethod, &NodeScriptMethod::s_TextField_getFontName )
+                .def_proxy_static( "setFontName", nodeScriptMethod, &NodeScriptMethod::TextField_setFontName )
+                .def_proxy_static( "getFontName", nodeScriptMethod, &NodeScriptMethod::TextField_getFontName )
 
                 .def( "setWrap", &TextField::setWrap )
                 .def( "getWrap", &TextField::getWrap )
@@ -869,11 +965,15 @@ namespace Mengine
                 .def( "setCharOffset", &TextField::setCharOffset )
                 .def( "getCharOffset", &TextField::getCharOffset )
 
-                .def_deprecated( "getLength", &TextField::getTextSize, "use getTextSize" )
                 .def( "getTextSize", &TextField::getTextSize )
-                .def_deprecated( "setMaxLen", &TextField::setMaxLength, "use setMaxLength" )
+                
                 .def( "setMaxLength", &TextField::setMaxLength )
                 .def( "getMaxLength", &TextField::getMaxLength )
+                .def( "removeMaxLength", &TextField::removeMaxLength )
+                .def( "hasMaxLength", &TextField::hasMaxLength )
+
+                .def( "calcMaxLength", &TextField::calcMaxLength )
+
                 .def( "setAutoScale", &TextField::setAutoScale )
                 .def( "getAutoScale", &TextField::getAutoScale )
 
@@ -886,26 +986,30 @@ namespace Mengine
                 .def( "setAnchorPercent", &TextField::setAnchorPercent )
                 .def( "getAnchorPercent", &TextField::getAnchorPercent )
 
-                .def_deprecated( "setCenterAlign", &TextField::setHorizontalCenterAlign, "use setHorizontalCenterAlign" )
-                .def_deprecated( "isCenterAlign", &TextField::isHorizontalCenterAlign, "use isHorizontalCenterAlign" )
-                .def_deprecated( "setRightAlign", &TextField::setHorizontalRightAlign, "use setHorizontalRightAlign" )
-                .def_deprecated( "isRightAlign", &TextField::isHorizontalRightAlign, "use isHorizontalRightAlign" )
-                .def_deprecated( "setLeftAlign", &TextField::setHorizontalLeftAlign, "use setHorizontalLeftAlign" )
-                .def_deprecated( "isLeftAlign", &TextField::isHorizontalLeftAlign, "use isHorizontalLeftAlign" )
+                .def( "setHorizontAlign", &TextField::setHorizontAlign )
+                .def( "getHorizontAlign", &TextField::getHorizontAlign )
 
-                .def( "setHorizontalCenterAlign", &TextField::setHorizontalCenterAlign )
-                .def( "isHorizontalCenterAlign", &TextField::isHorizontalCenterAlign )
-                .def( "setHorizontalRightAlign", &TextField::setHorizontalRightAlign )
-                .def( "isHorizontalRightAlign", &TextField::isHorizontalRightAlign )
-                .def( "setHorizontalLeftAlign", &TextField::setHorizontalLeftAlign )
-                .def( "isHorizontalLeftAlign", &TextField::isHorizontalLeftAlign )
+                .def( "setVerticalAlign", &TextField::setVerticalAlign )
+                .def( "getVerticalAlign", &TextField::getVerticalAlign )
 
-                .def( "setVerticalTopAlign", &TextField::setVerticalTopAlign )
-                .def( "isVerticalTopAlign", &TextField::isVerticalTopAlign )
-                .def( "setVerticalBottomAlign", &TextField::setVerticalBottomAlign )
-                .def( "isVerticalBottomAlign", &TextField::isVerticalBottomAlign )
-                .def( "setVerticalCenterAlign", &TextField::setVerticalCenterAlign )
-                .def( "isVerticalCenterAlign", &TextField::isVerticalCenterAlign )
+                .def_proxy_static( "setHorizontalNoneAlign", nodeScriptMethod, &NodeScriptMethod::TextField_setHorizontalNoneAlign )
+                .def_proxy_static( "isHorizontalNoneAlign", nodeScriptMethod, &NodeScriptMethod::TextField_isHorizontalNoneAlign )
+                .def_proxy_static( "setHorizontalCenterAlign", nodeScriptMethod, &NodeScriptMethod::TextField_setHorizontalCenterAlign )
+                .def_proxy_static( "isHorizontalCenterAlign", nodeScriptMethod, &NodeScriptMethod::TextField_isHorizontalCenterAlign )
+                .def_proxy_static( "setHorizontalRightAlign", nodeScriptMethod, &NodeScriptMethod::TextField_setHorizontalRightAlign )
+                .def_proxy_static( "isHorizontalRightAlign", nodeScriptMethod, &NodeScriptMethod::TextField_isHorizontalRightAlign )
+                .def_proxy_static( "setHorizontalLeftAlign", nodeScriptMethod, &NodeScriptMethod::TextField_setHorizontalLeftAlign )                
+                .def_proxy_static( "isHorizontalLeftAlign", nodeScriptMethod, &NodeScriptMethod::TextField_isHorizontalLeftAlign )
+                .def_proxy_static( "setHorizontalJustifyAlign", nodeScriptMethod, &NodeScriptMethod::TextField_setHorizontalJustifyAlign )
+                .def_proxy_static( "isHorizontalJustifyAlign", nodeScriptMethod, &NodeScriptMethod::TextField_isHorizontalJustifyAlign )
+                .def_proxy_static( "setVerticalNoneAlign", nodeScriptMethod, &NodeScriptMethod::TextField_setVerticalNoneAlign )
+                .def_proxy_static( "isVerticalNoneAlign", nodeScriptMethod, &NodeScriptMethod::TextField_isVerticalNoneAlign )
+                .def_proxy_static( "setVerticalTopAlign", nodeScriptMethod, &NodeScriptMethod::TextField_setVerticalTopAlign )
+                .def_proxy_static( "isVerticalTopAlign", nodeScriptMethod, &NodeScriptMethod::TextField_isVerticalTopAlign )
+                .def_proxy_static( "setVerticalBottomAlign", nodeScriptMethod, &NodeScriptMethod::TextField_setVerticalBottomAlign )
+                .def_proxy_static( "isVerticalBottomAlign", nodeScriptMethod, &NodeScriptMethod::TextField_isVerticalBottomAlign )
+                .def_proxy_static( "setVerticalCenterAlign", nodeScriptMethod, &NodeScriptMethod::TextField_setVerticalCenterAlign )
+                .def_proxy_static( "isVerticalCenterAlign", nodeScriptMethod, &NodeScriptMethod::TextField_isVerticalCenterAlign )
 
                 .def( "setPixelsnap", &TextField::setPixelsnap )
                 .def( "getPixelsnap", &TextField::getPixelsnap )
@@ -914,12 +1018,12 @@ namespace Mengine
                 .def( "getMaxCharCount", &TextField::getMaxCharCount )
                 .def( "getCharCount", &TextField::getCharCount )
 
-                .def_proxy_static_kernel( "calcTotalTextViewport", nodeScriptMethod, &NodeScriptMethod::s_TextField_calcTotalTextViewport )
-                .def_proxy_static( "calcTotalTextSize", nodeScriptMethod, &NodeScriptMethod::s_TextField_calcTotalTextSize )
+                .def_proxy_static_kernel( "calcTotalTextViewport", nodeScriptMethod, &NodeScriptMethod::TextField_calcTotalTextViewport )
+                .def_proxy_static( "calcTotalTextSize", nodeScriptMethod, &NodeScriptMethod::TextField_calcTotalTextSize )
                 ;
 
             pybind::interface_<ScriptHolder, pybind::bases<Node>>( _kernel, "ScriptHolder", false )
-                .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_ScriptHolder_setEventListener )
+                .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::ScriptHolder_setEventListener )
                 ;
 
             pybind::interface_<Point, pybind::bases<Node>>( _kernel, "Point", false )
@@ -937,8 +1041,6 @@ namespace Mengine
                 .def( "getTo", &Line::getTo )
                 .def( "setWeight", &Line::setWeight )
                 .def( "getWeight", &Line::getWeight )
-                .def_deprecated( "setWidth", &Line::setWeight, "use setWeight" )
-                .def_deprecated( "getWidth", &Line::getWeight, "use getWeight" )
                 ;
 
             pybind::interface_<Layer, pybind::bases<Node>>( _kernel, "Layer", false )
@@ -972,7 +1074,7 @@ namespace Mengine
                 .def( "setDefaultHandle", &HotSpot::setDefaultHandle )
                 .def( "getDefaultHandle", &HotSpot::getDefaultHandle )
                 .def( "isMousePickerOver", &HotSpot::isMousePickerOver )
-                .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_HotSpot_setEventListener )
+                .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::HotSpot_setEventListener )
                 ;
 
             pybind::interface_<HotSpotGlobal, pybind::bases<HotSpot>>( _kernel, "HotSpotGlobal", false )
@@ -982,10 +1084,10 @@ namespace Mengine
                 .def( "setPolygon", &HotSpotPolygon::setPolygon )
                 .def( "getPolygon", &HotSpotPolygon::getPolygon )
                 .def( "clearPoints", &HotSpotPolygon::clearPoints )
-                .def_proxy_static( "getLocalPolygonCenter", nodeScriptMethod, &NodeScriptMethod::s_HotSpotPolygon_getLocalPolygonCenter )
-                .def_proxy_static( "getWorldPolygonCenter", nodeScriptMethod, &NodeScriptMethod::s_HotSpotPolygon_getWorldPolygonCenter )
-                .def_proxy_static( "getScreenPolygonCenter", nodeScriptMethod, &NodeScriptMethod::s_HotSpotPolygon_getScreenPolygonCenter )
-                .def_proxy_static( "getWorldPolygon", nodeScriptMethod, &NodeScriptMethod::s_HotSpotPolygon_getWorldPolygon )
+                .def_proxy_static( "getLocalPolygonCenter", nodeScriptMethod, &NodeScriptMethod::HotSpotPolygon_getLocalPolygonCenter )
+                .def_proxy_static( "getWorldPolygonCenter", nodeScriptMethod, &NodeScriptMethod::HotSpotPolygon_getWorldPolygonCenter )
+                .def_proxy_static( "getScreenPolygonCenter", nodeScriptMethod, &NodeScriptMethod::HotSpotPolygon_getScreenPolygonCenter )
+                .def_proxy_static( "getWorldPolygon", nodeScriptMethod, &NodeScriptMethod::HotSpotPolygon_getWorldPolygon )
                 ;
 
             pybind::interface_<HotSpotResourceShape, pybind::bases<HotSpotPolygon>>( _kernel, "HotSpotResourceShape", false )
@@ -999,8 +1101,6 @@ namespace Mengine
                 ;
 
             pybind::interface_<HotSpotImage, pybind::bases<HotSpot>>( _kernel, "HotSpotImage", false )
-                .def_deprecated( "setResourceHIT", &HotSpotImage::setResourceTestPick, "use setResourceTestPick" )
-                .def_deprecated( "getResourceHIT", &HotSpotImage::getResourceTestPick, "use getResourceTestPick" )
                 .def( "setResourceTestPick", &HotSpotImage::setResourceTestPick )
                 .def( "getResourceTestPick", &HotSpotImage::getResourceTestPick )
                 .def( "setAlphaTest", &HotSpotImage::setAlphaTest )
@@ -1019,9 +1119,9 @@ namespace Mengine
             pybind::interface_<Shape, pybind::bases<Node>>( _kernel, "Shape", false )
                 .def( "setSurface", &Shape::setSurface )
                 .def( "getSurface", &Shape::getSurface )
-                .def_proxy_static( "getSurfaceSize", nodeScriptMethod, &NodeScriptMethod::s_Shape_getSurfaceSize )
-                .def_proxy_static( "getLocalImageCenter", nodeScriptMethod, &NodeScriptMethod::s_Shape_getLocalImageCenter )
-                .def_proxy_static( "getWorldImageCenter", nodeScriptMethod, &NodeScriptMethod::s_Shape_getWorldImageCenter )
+                .def_proxy_static( "getSurfaceSize", nodeScriptMethod, &NodeScriptMethod::Shape_getSurfaceSize )
+                .def_proxy_static( "getLocalImageCenter", nodeScriptMethod, &NodeScriptMethod::Shape_getLocalImageCenter )
+                .def_proxy_static( "getWorldImageCenter", nodeScriptMethod, &NodeScriptMethod::Shape_getWorldImageCenter )
                 ;
 
             pybind::interface_<ShapeCircle, pybind::bases<Shape>>( _kernel, "ShapeCircle", false )
@@ -1057,8 +1157,8 @@ namespace Mengine
                 .def( "getCustomSize", &ShapeQuadFlex::getCustomSize )
                 .def( "removeCustomSize", &ShapeQuadFlex::removeCustomSize )
                 .def( "hasCustomSize", &ShapeQuadFlex::hasCustomSize )
-                .def_proxy_static_args( "setPercentVisibilityTo", nodeScriptMethod, &NodeScriptMethod::s_ShapeQuadFlex_setPercentVisibilityTo )
-                .def_proxy_static( "setPercentVisibilityStop", nodeScriptMethod, &NodeScriptMethod::s_ShapeQuadFlex_setPercentVisibilityStop )
+                .def_proxy_static_args( "setPercentVisibilityTo", nodeScriptMethod, &NodeScriptMethod::ShapeQuadFlex_setPercentVisibilityTo )
+                .def_proxy_static( "setPercentVisibilityStop", nodeScriptMethod, &NodeScriptMethod::ShapeQuadFlex_setPercentVisibilityStop )
                 .def( "setTextureUVOffset", &ShapeQuadFlex::setTextureUVOffset )
                 .def( "getTextureUVOffset", &ShapeQuadFlex::getTextureUVOffset )
                 .def( "setTextureUVScale", &ShapeQuadFlex::setTextureUVScale )
@@ -1105,7 +1205,7 @@ namespace Mengine
                 .def( "setSurface", &Meshget::setSurface )
                 .def( "getSurface", &Meshget::getSurface )
                 .def( "setVertices", &Meshget::setVertices )
-                .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_Meshget_setEventListener )
+                .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::Meshget_setEventListener )
                 ;
 
             pybind::interface_<Window, pybind::bases<Node>>( _kernel, "Window", false )

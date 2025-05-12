@@ -7,8 +7,8 @@ namespace Mengine
         : m_lineOffset( 0.f )
         , m_charOffset( 0.f )
         , m_maxLength( 0.f )
-        , m_horizontAlign( ETFHA_LEFT )
-        , m_verticalAlign( ETFVA_BOTTOM )
+        , m_horizontAlign( ETFHA_NONE )
+        , m_verticalAlign( ETFVA_NONE )
         , m_charScale( 1.f )
         , m_params( 0 )
     {

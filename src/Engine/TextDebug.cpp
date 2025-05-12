@@ -49,7 +49,7 @@ namespace Mengine
 
                 for( const U32String & text : drawTexts )
                 {
-                    TextLine tl( 0, 0.f );
+                    TextLine tl( 0, 0.f, 0.f );
                     tl.initialize( 0, _font, text );
 
                     uint32_t vertexCount = 0;

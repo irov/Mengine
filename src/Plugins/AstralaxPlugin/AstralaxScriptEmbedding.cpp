@@ -70,8 +70,6 @@ namespace Mengine
             ;
 
         pybind::interface_<AstralaxEmitter, pybind::bases<Node>>( _kernel, "AstralaxEmitter", false )
-            .def_deprecated( "setResourceParticle", &AstralaxEmitter::setResourceAstralax, "use setResourceAstralax" )
-            .def_deprecated( "getResourceParticle", &AstralaxEmitter::getResourceAstralax, "use getResourceAstralax" )
             .def( "setResourceAstralax", &AstralaxEmitter::setResourceAstralax )
             .def( "getResourceAstralax", &AstralaxEmitter::getResourceAstralax )
 

@@ -2504,7 +2504,6 @@ namespace Mengine
 
         pybind::interface_<FileGroupInterface, pybind::bases<Mixin>>( _kernel, "FileGroupInterface" )
             .def( "getName", &FileGroupInterface::getName )
-            .def_deprecated( "getCategory", &FileGroupInterface::getBaseFileGroup, "use getBaseFileGroup" )
             .def( "getBaseFileGroup", &FileGroupInterface::getBaseFileGroup )
             .def( "getParentFileGroup", &FileGroupInterface::getParentFileGroup )
             .def( "isPacked", &FileGroupInterface::isPacked )
@@ -2571,7 +2570,6 @@ namespace Mengine
             ;
 
         pybind::interface_<RenderInterface, pybind::bases<Colorable, BoundingBox>>( _kernel, "RenderInterface" )
-            .def_deprecated( "setRelationRender", &RenderInterface::setRelationRender, "use setRelationRenderBack" )
             .def( "setRelationRenderBack", &RenderInterface::setRelationRender )
             .def( "removeRelationRender", &RenderInterface::removeRelationRender )
             .def( "getRelationRender", &RenderInterface::getRelationRender )
@@ -2580,7 +2578,6 @@ namespace Mengine
             .def( "getExtraRelationRender", &RenderInterface::getExtraRelationRender )
             .def( "getTotalRelationRender", &RenderInterface::getTotalRelationRender )
             .def( "setHide", &RenderInterface::setHide )
-            .def_deprecated( "hide", &RenderInterface::setHide, "use setHide" )
             .def( "isHide", &RenderInterface::isHide )
             .def( "localHide", &RenderInterface::setLocalHide )
             .def( "isLocalHide", &RenderInterface::isLocalHide )
@@ -2641,10 +2638,8 @@ namespace Mengine
             .def( "getPlayCount", &AnimationInterface::getPlayCount )
             .def( "getPlayIterator", &AnimationInterface::getPlayIterator )
             .def( "setAutoPlay", &AnimationInterface::setAutoPlay )
-            .def_deprecated( "getAutoPlay", &AnimationInterface::isAutoPlay, "use isAutoPlay" )
             .def( "isAutoPlay", &AnimationInterface::isAutoPlay )
             .def( "setLoop", &AnimationInterface::setLoop )
-            .def_deprecated( "getLoop", &AnimationInterface::isLoop, "use isLoop" )
             .def( "isLoop", &AnimationInterface::isLoop )
             .def( "setInterval", &AnimationInterface::setInterval )
             .def( "getIntervalBegin", &AnimationInterface::getIntervalBegin )
@@ -2694,15 +2689,8 @@ namespace Mengine
             .def( "addChildFront", &Hierarchy::addChildFront )
             .def( "addChildAfter", &Hierarchy::addChildAfter )
             .def( "findChild", &Hierarchy::findChild )
-            .def_deprecated( "emptyChildren", &Hierarchy::isEmptyChildren, "use isEmptyChildren" )
             .def( "isEmptyChildren", &Hierarchy::isEmptyChildren )
             .def( "hasChild", &Hierarchy::hasChild )
-            .def_deprecated( "addChildren", &Hierarchy::addChild, "use addChild" )
-            .def_deprecated( "addChildrenFront", &Hierarchy::addChildFront, "use addChildFront" )
-            .def_deprecated( "addChildrenAfter", &Hierarchy::addChildAfter, "use addChildAfter" )
-            .def_deprecated( "findChildren", &Hierarchy::findChild, "use findChild" )
-            .def_deprecated( "emptyChild", &Hierarchy::isEmptyChildren, "use emptyChildren" )
-            .def_deprecated( "hasChildren", &Hierarchy::hasChild, "use hasChild" )
             .def( "getSiblingPrev", &Hierarchy::getSiblingPrev )
             .def( "getSiblingNext", &Hierarchy::getSiblingNext )
             .def( "getParent", &Hierarchy::getParent )
@@ -2787,7 +2775,6 @@ namespace Mengine
             .def( "getUVCount", &Surface::getUVCount )
             .def( "getUV", &Surface::getUV )
             .def( "getColor", &Surface::getColor )
-            .def_deprecated( "getColour", &Surface::getColor, "use getColor" )
             ;
 
         pybind::interface_<Visitable, pybind::bases<Mixin>>( _kernel, "Visitable" )
@@ -2813,8 +2800,6 @@ namespace Mengine
             ;
 
         pybind::interface_<RenderTargetInterface, pybind::bases<Mixin>>( _kernel, "RenderTargetInterface", false )
-            .def_deprecated( "getWidth", &RenderTargetInterface::getHWWidth, "use getHWWidth" )
-            .def_deprecated( "getHeight", &RenderTargetInterface::getHWHeight, "use getHWHeight" )
             .def( "getHWWidth", &RenderTargetInterface::getHWWidth )
             .def( "getHWHeight", &RenderTargetInterface::getHWHeight )
             .def( "getHWWidthInv", &RenderTargetInterface::getHWWidthInv )
@@ -2833,14 +2818,11 @@ namespace Mengine
             .def( "freeze", &SchedulerInterface::freeze )
             .def( "freezeAll", &SchedulerInterface::freezeAll )
             .def( "isFreeze", &SchedulerInterface::isFreeze )
-            .def_deprecated( "time", &SchedulerInterface::getTimePassed, "use getTimePassed" )
-            .def_deprecated( "left", &SchedulerInterface::getTimeLeft, "use getTimeLeft" )
             .def( "getTimePassed", &SchedulerInterface::getTimePassed )
             .def( "getTimeLeft", &SchedulerInterface::getTimeLeft )
             .def( "setSpeedFactor", &SchedulerInterface::setSpeedFactor )
             .def( "getSpeedFactor", &SchedulerInterface::getSpeedFactor )
             .def( "getTime", &SchedulerInterface::getTime )
-            .def_deprecated( "getTiming", &SchedulerInterface::getTime, "use getTime" )
             ;
 
         pybind::interface_<ChronometerInterface, pybind::bases<Mixin>>( _kernel, "ChronometerInterface", true )

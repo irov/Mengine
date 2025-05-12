@@ -15,39 +15,36 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextFieldDebugRender::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const TextField * _node, bool _hide )
+    void TextFieldDebugRender::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const TextField * _textField, bool _hide )
     {
         if( _hide == true )
         {
             return;
         }
 
-        const ConstString & textId = _node->getTextId();
-        const String & text = _node->getText();
+        const ConstString & textId = _textField->getTextId();
+        const String & text = _textField->getText();
 
         if( textId.empty() == true && text.empty() == true )
         {
             return;
         }
 
+        const TransformationInterface * transformation = _textField->getTransformation();
+
+        const mt::mat4f & wm = transformation->getWorldMatrix();
+
         {
-            const mt::vec2f & offset = _node->getTextOffset();
-
             mt::vec2f size;
-            _node->calcTotalTextSize( &size );
+            _textField->calcTotalTextSize( &size );
 
-            mt::vec2f b;
-            mt::vec2f e;
+            Viewport vp;
+            _textField->calcTotalTextViewport( &vp );
 
-            b.x = offset.x + 0.f;
-            b.y = offset.y - size.y;
-            e.x = offset.x + size.x;
-            e.y = offset.y + 0.f;
-
-            mt::vec2f v0( b.x, b.y );
-            mt::vec2f v1( e.x, b.y );
-            mt::vec2f v2( e.x, e.y );
-            mt::vec2f v3( b.x, e.y );
+            mt::vec2f v0( vp.begin.x, vp.begin.y );
+            mt::vec2f v1( vp.end.x, vp.begin.y );
+            mt::vec2f v2( vp.end.x, vp.end.y );
+            mt::vec2f v3( vp.begin.x, vp.end.y );
 
             Polygon polygon;
             polygon.append( v0 );
@@ -55,31 +52,60 @@ namespace Mengine
             polygon.append( v2 );
             polygon.append( v3 );
 
-            const TransformationInterface * transformation = _node->getTransformation();
-
-            const mt::mat4f & wm = transformation->getWorldMatrix();
-
             Helper::nodeDebugRenderPolygon( _renderPipeline, _context, wm, polygon, 0xFF0000FF, MENGINE_DOCUMENT_FORWARD );
         }
 
         {
-            const TransformationInterface * transformation = _node->getTransformation();
-
-            const mt::mat4f & wm = transformation->getWorldMatrix();
-
             ColorValue_ARGB color = Helper::makeRGBAF( 0.f, 1.f, 0.f, 1.f );
 
             Helper::nodeDebugRenderPoint( _renderPipeline, _context, wm, mt::vec2f( 0.f, 0.f ), color, 10.f, MENGINE_DOCUMENT_FORWARD );
         }
 
-        if( _node->getAutoScale() == true )
+        float maxLength = _textField->calcMaxLength();
+
+        if( maxLength != 1.f )
         {
-            const TransformationInterface * transformation = _node->getTransformation();
+            ETextHorizontAlign horizontAlign = _textField->getHorizontAlign();
 
-            const mt::mat4f & wm = transformation->getWorldMatrix();
+            float start_x = 0.f;
+            float finish_x = 0.f;
 
-            const mt::vec2f & anchor = _node->getAnchorPercent();
-            float maxLength = _node->getMaxLength();
+            switch( horizontAlign )
+            {
+            case ETFHA_NONE:
+            case ETFHA_LEFT:
+                {
+                    start_x = 0.f;
+                    finish_x = maxLength;
+                }break;
+            case ETFHA_CENTER:
+                {
+                    start_x = -maxLength * 0.5f;
+                    finish_x = maxLength * 0.5f;
+                }break;
+            case ETFHA_RIGHT:
+                {
+                    start_x = -maxLength;
+                    finish_x = 0.f;
+                }break;
+            case ETFHA_JUSTIFY:
+                {
+                    start_x = 0.f;
+                    finish_x = maxLength;
+                }break;
+            }
+
+            float halfLength = 20.f;
+
+            ColorValue_ARGB color = Helper::makeRGBAF( 0.f, 1.f, 1.f, 1.f );
+
+            Helper::nodeDebugRenderLineByToPoints( _renderPipeline, _context, wm, mt::vec2f( start_x, -halfLength ), mt::vec2f( start_x, halfLength ), color, MENGINE_DOCUMENT_FORWARD );
+            Helper::nodeDebugRenderLineByToPoints( _renderPipeline, _context, wm, mt::vec2f( finish_x, -halfLength ), mt::vec2f( finish_x, halfLength ), color, MENGINE_DOCUMENT_FORWARD );
+        }
+
+        if( _textField->getAutoScale() == true )
+        {
+            const mt::vec2f & anchor = _textField->getAnchorPercent();
 
             float start_x = -maxLength * anchor.x;
             float finish_x = start_x + maxLength;

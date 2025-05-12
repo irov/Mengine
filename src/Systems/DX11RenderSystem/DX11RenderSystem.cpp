@@ -7,7 +7,7 @@
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
 #   include "Environment/Windows/Win32PlatformServiceExtensionInterface.h"
-#elif defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
+#elif defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
 #   include "Environment/SDL/SDLPlatformServiceExtensionInterface.h"
 #endif
 
@@ -1533,7 +1533,7 @@ namespace Mengine
         {
             return false;
         }
-#elif defined(MENGINE_ENVIRONMENT_PLATFORM_SDL) && defined(MENGINE_PLATFORM_WINDOWS)
+#elif defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2) && defined(MENGINE_PLATFORM_WINDOWS)
         SDLPlatformServiceExtensionInterface * sdlExtension = PLATFORM_SERVICE()
             ->getDynamicUnknown();
 

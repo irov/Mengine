@@ -7,7 +7,7 @@
 #include "Environment/Windows/Win32PlatformServiceExtensionInterface.h"
 #endif
 
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
 #include "Environment/SDL2/SDL2PlatformServiceExtensionInterface.h"
 #endif
 
@@ -38,7 +38,7 @@
 #include "imgui_impl_win32.h"
 #endif
 
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
 #include "imgui_impl_sdl2.h"
 #endif
 
@@ -143,7 +143,7 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE, &ImGUIService::notifyRenderDeviceLostPrepare_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_RESTORE, &ImGUIService::notifyRenderDeviceLostRestore_, MENGINE_DOCUMENT_FACTORABLE );
 
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
         SDL2PlatformServiceExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
             ->getDynamicUnknown();
 
@@ -178,7 +178,7 @@ namespace Mengine
         }
 #endif
 
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
         if( m_handlerId != INVALID_UNIQUE_ID )
         {
             SDL2PlatformServiceExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
@@ -202,7 +202,7 @@ namespace Mengine
 
         Helper::closeOutputStreamFile( userFileGroup, stream );
 
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
         ImGui_ImplSDL2_Shutdown();
 #endif
 
@@ -274,7 +274,7 @@ namespace Mengine
         m_handlerId = handlerId;
 #endif
 
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
         SDL2PlatformServiceExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
             ->getDynamicUnknown();
 
@@ -307,7 +307,7 @@ namespace Mengine
         ImGui_ImplWin32_Shutdown();
 #endif
 
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
         if( m_handlerId != INVALID_UNIQUE_ID )
         {
             SDL2PlatformServiceExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
@@ -323,7 +323,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ImGUIService::notifyRenderDeviceCreate_()
     {
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL) && defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2) && defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
         ImGui_ImplOpenGL2_Init();
 #endif
 

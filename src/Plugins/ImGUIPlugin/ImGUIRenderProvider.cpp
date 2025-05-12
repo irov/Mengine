@@ -22,7 +22,7 @@
 #include "imgui_impl_win32.h"
 #endif
 
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
 #include "imgui_impl_sdl2.h"
 #endif
 
@@ -82,7 +82,7 @@ namespace Mengine
         ImGui_ImplWin32_NewFrame();
 #endif
 
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
         ImGui_ImplSDL2_NewFrame();
 #endif
 

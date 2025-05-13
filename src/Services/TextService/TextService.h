@@ -69,7 +69,8 @@ namespace Mengine
             , float _maxLength
             , ETextHorizontAlign _horizontAlign
             , ETextVerticalAlign _verticalAlign
-            , float _scale
+            , float _charScale
+            , bool _autoScale
             , uint32_t _params
             , const DocumentInterfacePtr & _doc ) override;
 
@@ -85,7 +86,8 @@ namespace Mengine
             , float _maxLength
             , ETextHorizontAlign _horizontAlign
             , ETextVerticalAlign _verticalAlign
-            , float _scale
+            , float _charScale
+            , bool _autoScale
             , uint32_t _params
             , bool _isOverride
             , bool * const _isDublicate

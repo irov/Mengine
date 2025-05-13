@@ -7,9 +7,10 @@ namespace Mengine
         : m_lineOffset( 0.f )
         , m_charOffset( 0.f )
         , m_maxLength( 0.f )
-        , m_horizontAlign( ETFHA_NONE )
-        , m_verticalAlign( ETFVA_NONE )
+        , m_horizontAlign( ETFHA_LEFT )
+        , m_verticalAlign( ETFVA_BOTTOM )
         , m_charScale( 1.f )
+        , m_autoScale( false )
         , m_params( 0 )
     {
     }
@@ -30,6 +31,7 @@ namespace Mengine
         , ETextHorizontAlign _horizontAlign
         , ETextVerticalAlign _verticalAlign
         , float _charScale
+        , bool _autoScale
         , uint32_t _params )
     {
         m_key = _key;
@@ -57,6 +59,7 @@ namespace Mengine
         m_verticalAlign = _verticalAlign;
 
         m_charScale = _charScale;
+        m_autoScale = _autoScale;
 
         m_params = _params;
 
@@ -120,6 +123,11 @@ namespace Mengine
     float TextEntry::getCharScale() const
     {
         return m_charScale;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TextEntry::getAutoScale() const
+    {
+        return m_autoScale;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t TextEntry::getFontParams() const

@@ -41,16 +41,6 @@ namespace Mengine
         ~TextField() override;
 
     public:
-        void setMaxLength( float _maxLength );
-        void removeMaxLength();
-        float getMaxLength() const;
-        bool hasMaxLength() const;
-
-    public:
-        void setAutoScale( bool _autoScale );
-        bool getAutoScale() const;
-
-    public:
         void setAnchorHorizontalAlign( bool _anchorHorizontalAlign );
         bool getAnchorHorizontalAlign() const;
 
@@ -73,10 +63,8 @@ namespace Mengine
 
     public:
         void setText( const String & _text );
-        const String & getText() const;
-
-    public:
         void setTextFormat( const Char * _format, ... ) MENGINE_ATTRIBUTE_FORMAT_STRING( 2, 3 );
+        const String & getText() const;
         void removeText();
 
     public:
@@ -102,8 +90,19 @@ namespace Mengine
     public:
         void setFont( const FontInterfacePtr & _font );
         const FontInterfacePtr & getFont() const;
+        bool hasFont() const;
+        void removeFont();
 
-    public:
+        void setMaxLength( float _maxLength );
+        float getMaxLength() const;
+        bool hasMaxLength() const;
+        void removeMaxLength();
+
+        void setAutoScale( bool _autoScale );
+        bool getAutoScale() const;
+        bool hasAutoScale() const;
+        void removeAutoScale();
+
         void setFontColor( const Color & _color );
         const Color & getFontColor() const;
         bool hasFontColor() const;
@@ -127,9 +126,13 @@ namespace Mengine
     public:
         void setHorizontAlign( ETextHorizontAlign _horizontAlign );
         ETextHorizontAlign getHorizontAlign() const;
+        bool hasHorizontAlign() const;
+        void removeHorizontAlign();
 
         void setVerticalAlign( ETextVerticalAlign _verticalAlign );
         ETextVerticalAlign getVerticalAlign() const;
+        bool hasVerticalAlign() const;
+        void removeVerticalAlign();
 
     public:
         void setExtraThickness( float _extraThickness );
@@ -222,13 +225,12 @@ namespace Mengine
         float calcLineOffset() const;
         float calcCharOffset() const;
         float calcMaxLength() const;
-
         const Color & calcFontColor() const;
-
         ETextHorizontAlign calcHorizontAlign() const;
         ETextVerticalAlign calcVerticalAlign() const;
-
         float calcCharScale() const;
+        bool calcAutoScale() const;
+
         float calcLinesOffset( float _lineOffset, const FontInterfacePtr & _font ) const;
 
     protected:

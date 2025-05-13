@@ -23,15 +23,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     enum EFontParams : uint32_t
     {
-        EFP_NONE = 0x00000000,
-        EFP_FONT = 0x00000001,
-        EFP_COLOR_FONT = 0x00000002,
-        EFP_LINE_OFFSET = 0x00000008,
-        EFP_CHAR_OFFSET = 0x00000010,
-        EFP_MAX_LENGTH = 0x00000020,
-        EFP_HORIZONTAL_ALIGN = 0x00000040,
-        EFP_VERTICAL_ALIGN = 0x00000080,
-        EFP_CHAR_SCALE = 0x00000100
+        EFP_NONE = 0,
+        EFP_FONT = 1 << 0,
+        EFP_COLOR_FONT = 1 << 1,
+        EFP_LINE_OFFSET = 1 << 2,
+        EFP_CHAR_OFFSET = 1 << 3,
+        EFP_MAX_LENGTH = 1 << 4,
+        EFP_HORIZONTAL_ALIGN = 1 << 5,
+        EFP_VERTICAL_ALIGN = 1 << 6,
+        EFP_CHAR_SCALE = 1 << 7,
+        EFP_AUTO_SCALE = 1 << 8,
     };
     //////////////////////////////////////////////////////////////////////////
     struct Glyph

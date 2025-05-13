@@ -32,8 +32,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     TextField::TextField()
-        : m_horizontAlign( ETFHA_NONE )
-        , m_verticalAlign( ETFVA_NONE )
+        : m_horizontAlign( ETFHA_LEFT )
+        , m_verticalAlign( ETFVA_BOTTOM )
         , m_extraThickness( 0.f )
         , m_charScale( 1.f )
         , m_maxLength( -1.f )
@@ -351,7 +351,6 @@ namespace Mengine
                         for( uint32_t i = 0; i != 4; ++i )
                         {
                             RenderVertex2D v;
-
                             TextLine::calcCharPosition( cd, offset2, charScaleTotal, i, &v.position );
 
                             v.color = argb;
@@ -484,7 +483,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::setMaxLength( float _maxLength )
     {
-        MENGINE_ASSERTION_FATAL( _maxLength >= 0.f, "max length '%f' must be >= 0.f"
+        MENGINE_ASSERTION_FATAL( _maxLength > 0.f, "text field '%s' max length '%f' must be >= 0.f"
+            , this->getName().c_str()
             , _maxLength
         );
 
@@ -498,6 +498,16 @@ namespace Mengine
         m_textParams |= EFP_MAX_LENGTH;
 
         this->invalidateTextLines();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float TextField::getMaxLength() const
+    {
+        return m_maxLength;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TextField::hasMaxLength() const
+    {
+        return (m_textParams & EFP_MAX_LENGTH) == EFP_MAX_LENGTH;
     }
     //////////////////////////////////////////////////////////////////////////
     void TextField::removeMaxLength()
@@ -514,16 +524,6 @@ namespace Mengine
         this->invalidateTextLines();
     }
     //////////////////////////////////////////////////////////////////////////
-    float TextField::getMaxLength() const
-    {
-        return m_maxLength;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool TextField::hasMaxLength() const
-    {
-        return (m_textParams & EFP_MAX_LENGTH) == EFP_MAX_LENGTH;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void TextField::setAutoScale( bool _autoScale )
     {
         if( m_autoScale == _autoScale )
@@ -533,12 +533,33 @@ namespace Mengine
 
         m_autoScale = _autoScale;
 
+        m_textParams |= EFP_AUTO_SCALE;
+
         this->invalidateTextLines();
     }
     //////////////////////////////////////////////////////////////////////////
     bool TextField::getAutoScale() const
     {
         return m_autoScale;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TextField::hasAutoScale() const
+    {
+        return (m_textParams & EFP_AUTO_SCALE) == EFP_AUTO_SCALE;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::removeAutoScale()
+    {
+        if( (m_textParams & EFP_AUTO_SCALE) != EFP_AUTO_SCALE )
+        {
+            return;
+        }
+
+        m_autoScale = false;
+
+        m_textParams &= ~EFP_AUTO_SCALE;
+
+        this->invalidateTextLines();
     }
     //////////////////////////////////////////////////////////////////////////
     void TextField::setAnchorHorizontalAlign( bool _anchorHorizontalAlign )
@@ -625,6 +646,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::setFont( const FontInterfacePtr & _font )
     {
+        MENGINE_ASSERTION_FATAL( _font != nullptr, "text field '%s' set font is nullptr"
+            , this->getName().c_str()
+        );
+
         if( m_font == _font )
         {
             return;
@@ -632,14 +657,7 @@ namespace Mengine
 
         m_font = _font;
 
-        if( m_font != nullptr )
-        {
-            m_textParams |= EFP_FONT;
-        }
-        else
-        {
-            m_textParams &= ~EFP_FONT;
-        }
+        m_textParams |= EFP_FONT;
 
         this->invalidateFont();
         this->invalidateTextLines();
@@ -648,6 +666,26 @@ namespace Mengine
     const FontInterfacePtr & TextField::getFont() const
     {
         return m_font;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TextField::hasFont() const
+    {
+        return (m_textParams & EFP_FONT) == EFP_FONT;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::removeFont()
+    {
+        if( (m_textParams & EFP_FONT) != EFP_FONT )
+        {
+            return;
+        }
+
+        m_font = nullptr;
+
+        m_textParams &= ~EFP_FONT;
+
+        this->invalidateFont();
+        this->invalidateTextLines();
     }
     //////////////////////////////////////////////////////////////////////////
     void TextField::setFontColor( const Color & _color )
@@ -676,10 +714,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::removeFontColor()
     {
-        if( (m_textParams & EFP_COLOR_FONT) == 0 )
+        if( (m_textParams & EFP_COLOR_FONT) != EFP_COLOR_FONT )
         {
             return;
         }
+
+        m_colorFont.clear();
 
         m_textParams &= ~EFP_COLOR_FONT;
 
@@ -712,10 +752,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::removeLineOffset()
     {
-        if( (m_textParams & EFP_LINE_OFFSET) == 0 )
+        if( (m_textParams & EFP_LINE_OFFSET) != EFP_LINE_OFFSET )
         {
             return;
         }
+
+        m_lineOffset = 0.f;
 
         m_textParams &= ~EFP_LINE_OFFSET;
 
@@ -748,10 +790,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::removeCharOffset()
     {
-        if( (m_textParams & EFP_CHAR_OFFSET) == 0 )
+        if( (m_textParams & EFP_CHAR_OFFSET) != EFP_CHAR_OFFSET )
         {
             return;
         }
+
+        m_charOffset = 0.f;
 
         m_textParams &= ~EFP_CHAR_OFFSET;
 
@@ -784,10 +828,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::removeCharScale()
     {
-        if( (m_textParams & EFP_CHAR_SCALE) == 0 )
+        if( (m_textParams & EFP_CHAR_SCALE) != EFP_CHAR_SCALE )
         {
             return;
         }
+
+        m_charScale = 1.f;
 
         m_textParams &= ~EFP_CHAR_SCALE;
 
@@ -888,6 +934,14 @@ namespace Mengine
 
                 const FontInterfacePtr & font = cache.font;
 
+                Glyph space_glyph;
+                if( font->getGlyph( 0, ' ', 0, &space_glyph ) == false )
+                {
+                    continue;
+                }
+
+                float space_length = (space_glyph.advance + charOffset) * charScale;
+
                 VectorU32String words;
                 Helper::u32split2( &words, text, false, space_delims );
 
@@ -923,9 +977,14 @@ namespace Mengine
                         word_length += char_length;
                     }
 
-                    if( length + word_length > maxLength && new_textChunk.value.empty() == false )
+                    if( word.empty() == false )
                     {
-                        length = word_length;
+                        word_length -= charOffset * charScale;
+                    }
+
+                    if( maxLength >= 0.f && length + word_length > maxLength && new_textChunk.value.empty() == false )
+                    {
+                        length = 0.f;
 
                         new_textChunks.emplace_back( new_textChunk );
                         new_textChunk.value.clear();
@@ -933,10 +992,9 @@ namespace Mengine
                         new_textLines.emplace_back( new_textChunks );
                         new_textChunks.clear();
                     }
-                    else
-                    {
-                        length += word_length;
-                    }
+
+                    length += word_length;
+                    length += space_length;
 
                     if( new_textChunk.value.empty() == true )
                     {
@@ -954,6 +1012,11 @@ namespace Mengine
                         new_textChunk.value.insert( new_textChunk.value.end(), space_delim.begin(), space_delim.end() );
                         new_textChunk.value.insert( new_textChunk.value.end(), word.begin(), word.end() );
                     }
+                }
+
+                if( words.empty() == false )
+                {
+                    length -= space_length;
                 }
 
                 new_textChunks.emplace_back( new_textChunk );
@@ -1214,7 +1277,9 @@ namespace Mengine
         m_cacheTextLines.clear();
         Helper::split( &m_cacheTextLines, m_cacheTextChars, lineDelims );
 
-        MENGINE_ASSERTION( !(m_autoScale == true && (m_wrap == true || m_maxCharCount != MENGINE_UNKNOWN_SIZE)), "text '%s' invalid enable together attributes 'wrap' and 'autoScale'"
+        bool autoScale = this->calcAutoScale();
+
+        MENGINE_ASSERTION( !(autoScale == true && (m_wrap == true || m_maxCharCount != MENGINE_UNKNOWN_SIZE)), "text '%s' invalid enable together attributes 'wrap' and 'autoScale'"
             , this->getName().c_str()
         );
 
@@ -1222,10 +1287,9 @@ namespace Mengine
 
         float maxLength = this->calcMaxLength();
 
-        MENGINE_ASSERTION( !(m_autoScale == true && maxLength != -1.f), "text '%s' invalid enable 'autoScale' and not setup 'maxLength'"
+        MENGINE_ASSERTION( !(autoScale == true && maxLength == -1.f), "text '%s' invalid enable 'autoScale' and not setup 'maxLength'"
             , this->getName().c_str()
         );
-
 
         ETextHorizontAlign horizontAlign = this->calcHorizontAlign();
         
@@ -1243,7 +1307,7 @@ namespace Mengine
 
         m_autoScaleFactor = 1.f;
 
-        if( m_autoScale == true )
+        if( autoScale == true )
         {
             if( m_textSize.x > maxLength )
             {
@@ -1583,7 +1647,7 @@ namespace Mengine
             return m_horizontAlign;
         }
 
-        return ETFHA_NONE;
+        return ETFHA_LEFT;
     }
     //////////////////////////////////////////////////////////////////////////
     ETextVerticalAlign TextField::calcVerticalAlign() const
@@ -1607,7 +1671,7 @@ namespace Mengine
             return m_verticalAlign;
         }
 
-        return ETFVA_NONE;
+        return ETFVA_BOTTOM;
     }
     //////////////////////////////////////////////////////////////////////////
     float TextField::calcCharScale() const
@@ -1634,6 +1698,30 @@ namespace Mengine
         return 1.f;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool TextField::calcAutoScale() const
+    {
+        const TextEntryInterfacePtr & textEntry = this->getTotalTextEntry();
+
+        if( textEntry != nullptr )
+        {
+            uint32_t params = textEntry->getFontParams();
+
+            if( (params & EFP_AUTO_SCALE) == EFP_AUTO_SCALE )
+            {
+                bool value = textEntry->getAutoScale();
+
+                return value;
+            }
+        }
+
+        if( (m_textParams & EFP_AUTO_SCALE) == EFP_AUTO_SCALE )
+        {
+            return m_autoScale;
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     float TextField::calcLinesOffset( float _lineOffset, const FontInterfacePtr & _font ) const
     {
         float fontAscender = _font->getFontAscender();
@@ -1649,7 +1737,6 @@ namespace Mengine
         {
             switch( verticalAlign )
             {
-            case ETFVA_NONE:
             case ETFVA_BOTTOM:
                 {
                     offset = fontAscender + m_extraThickness * 2.f;
@@ -1670,7 +1757,6 @@ namespace Mengine
 
             switch( verticalAlign )
             {
-            case ETFVA_NONE:
             case ETFVA_BOTTOM:
                 {
                     offset = fontAscender + m_extraThickness * 2.f;
@@ -1744,7 +1830,6 @@ namespace Mengine
 
         switch( horizontAlign )
         {
-        case ETFHA_NONE:
         case ETFHA_LEFT:
             {
                 offset = 0.f;
@@ -1837,7 +1922,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::setTextId( const ConstString & _textId )
     {
-        MENGINE_ASSERTION_FATAL( _textId.empty() == false, "text id is empty" );
+        MENGINE_ASSERTION_FATAL( _textId.empty() == false, "text field '%s' set text id is empty"
+            , this->getName().c_str()
+        );
 
         if( m_textId == _textId )
         {
@@ -1860,6 +1947,7 @@ namespace Mengine
     void TextField::removeTextId()
     {
         m_textId.clear();
+        m_textArguments.clear();
 
         this->invalidateTextId();
     }
@@ -1877,11 +1965,6 @@ namespace Mengine
         m_textId.clear();
 
         this->invalidateTextId();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const String & TextField::getText() const
-    {
-        return m_text;
     }
     //////////////////////////////////////////////////////////////////////////
     void TextField::setTextFormat( const Char * _format, ... )
@@ -1905,6 +1988,11 @@ namespace Mengine
         }
 
         this->setText( String( str, size_vsnprintf ) );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const String & TextField::getText() const
+    {
+        return m_text;
     }
     //////////////////////////////////////////////////////////////////////////
     void TextField::removeText()
@@ -2199,14 +2287,7 @@ namespace Mengine
 
         m_horizontAlign = _horizontAlign;
 
-        if( m_horizontAlign == ETFHA_NONE )
-        {
-            m_textParams &= ~(EFP_HORIZONTAL_ALIGN);
-        }
-        else
-        {
-            m_textParams |= EFP_HORIZONTAL_ALIGN;
-        }
+        m_textParams |= EFP_HORIZONTAL_ALIGN;
 
         this->invalidateTextLines();
     }
@@ -2214,6 +2295,25 @@ namespace Mengine
     ETextHorizontAlign TextField::getHorizontAlign() const
     {
         return m_horizontAlign;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TextField::hasHorizontAlign() const
+    {
+        return (m_textParams & EFP_HORIZONTAL_ALIGN) == EFP_HORIZONTAL_ALIGN;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::removeHorizontAlign()
+    {
+        if( (m_textParams & EFP_HORIZONTAL_ALIGN) != EFP_HORIZONTAL_ALIGN )
+        {
+            return;
+        }
+
+        m_horizontAlign = ETFHA_LEFT;
+
+        m_textParams &= ~EFP_HORIZONTAL_ALIGN;
+
+        this->invalidateTextLines();
     }
     //////////////////////////////////////////////////////////////////////////
     void TextField::setVerticalAlign( ETextVerticalAlign _verticalAlign )
@@ -2225,21 +2325,33 @@ namespace Mengine
 
         m_verticalAlign = _verticalAlign;
 
-        if( m_verticalAlign == ETFVA_NONE )
-        {
-            m_textParams &= ~(EFP_VERTICAL_ALIGN);
-        }
-        else
-        {
-            m_textParams |= EFP_VERTICAL_ALIGN;
-        }
-
+        m_textParams |= EFP_VERTICAL_ALIGN;
+        
         this->invalidateTextLines();
     }
     //////////////////////////////////////////////////////////////////////////
     ETextVerticalAlign TextField::getVerticalAlign() const
     {
         return m_verticalAlign;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TextField::hasVerticalAlign() const
+    {
+        return (m_textParams & EFP_VERTICAL_ALIGN) == EFP_VERTICAL_ALIGN;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::removeVerticalAlign()
+    {
+        if( (m_textParams & EFP_VERTICAL_ALIGN) != EFP_VERTICAL_ALIGN )
+        {
+            return;
+        }
+
+        m_verticalAlign = ETFVA_BOTTOM;
+
+        m_textParams &= ~EFP_VERTICAL_ALIGN;
+
+        this->invalidateTextLines();
     }
     //////////////////////////////////////////////////////////////////////////
     void TextField::invalidateVertices_() const

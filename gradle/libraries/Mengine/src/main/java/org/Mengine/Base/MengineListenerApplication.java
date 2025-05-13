@@ -8,6 +8,10 @@ import androidx.annotation.NonNull;
 import java.util.Map;
 
 public interface MengineListenerApplication extends MengineServiceInterface {
+    default void onAppPreInit(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
+        //Empty
+    }
+
     default void onAppInit(@NonNull MengineApplication application, boolean isMainProcess) throws MengineServiceInvalidInitializeException {
         //Empty
     }

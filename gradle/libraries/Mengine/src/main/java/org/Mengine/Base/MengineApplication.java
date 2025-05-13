@@ -869,6 +869,31 @@ public class MengineApplication extends Application {
 
     @Override
     public void onCreate() {
+        if (m_invalidInitialize == false) {
+            List<MengineListenerApplication> applicationListeners = this.getApplicationListeners();
+
+            for (MengineListenerApplication l : applicationListeners) {
+                try {
+                    if (l.onAvailable(this) == false) {
+                        continue;
+                    }
+
+                    MengineLog.logInfo(TAG, "onAppInit service: %s isMainProcess: %b"
+                        , l.getServiceName()
+                    );
+
+                    l.onAppPreInit(this);
+                } catch (final MengineServiceInvalidInitializeException e) {
+                    this.invalidInitialize("onAppInit service: %s exception: %s"
+                        , l.getServiceName()
+                        , e.getMessage()
+                    );
+
+                    return;
+                }
+            }
+        }
+
         super.onCreate();
 
         if (m_invalidInitialize == true) {

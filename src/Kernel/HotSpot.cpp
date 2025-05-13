@@ -99,7 +99,9 @@ namespace Mengine
             return _desc.handler == _inputHandler;
         } );
 
-        MENGINE_ASSERTION_FATAL( it_found != m_pickerInputHandlers.end(), "input handler not found" );
+        MENGINE_ASSERTION_FATAL( it_found != m_pickerInputHandlers.end(), "HotSpot '%s' input handler not found"
+            , this->getName().c_str()
+        );
 
         m_pickerInputHandlers.erase( it_found );
     }

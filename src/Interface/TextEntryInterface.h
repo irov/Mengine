@@ -15,19 +15,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     enum ETextHorizontAlign
     {
-        ETFHA_NONE = 0,
-        ETFHA_LEFT = 1,
-        ETFHA_CENTER = 2,
-        ETFHA_RIGHT = 3,
-        ETFHA_JUSTIFY = 4,        
+        ETFHA_LEFT = 0,
+        ETFHA_CENTER = 1,
+        ETFHA_RIGHT = 2,
+        ETFHA_JUSTIFY = 3,        
     };
     //////////////////////////////////////////////////////////////////////////
     enum ETextVerticalAlign
     {
-        ETFVA_NONE = 0,
-        ETFVA_BOTTOM = 1,
-        ETFVA_CENTER = 2,
-        ETFVA_TOP = 3,
+        ETFVA_BOTTOM = 0,
+        ETFVA_CENTER = 1,
+        ETFVA_TOP = 2,
     };
     //////////////////////////////////////////////////////////////////////////
     class TextEntryInterface
@@ -51,6 +49,7 @@ namespace Mengine
         virtual ETextVerticalAlign getVerticalAlign() const = 0;
 
         virtual float getCharScale() const = 0;
+        virtual bool getAutoScale() const = 0;
 
     public:
         virtual uint32_t getFontParams() const = 0;

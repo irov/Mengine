@@ -72,7 +72,6 @@ namespace Mengine
 
             switch( horizontAlign )
             {
-            case ETFHA_NONE:
             case ETFHA_LEFT:
                 {
                     start_x = 0.f;

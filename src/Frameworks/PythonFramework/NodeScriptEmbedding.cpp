@@ -310,16 +310,6 @@ namespace Mengine
                 return fontName;
             }
             //////////////////////////////////////////////////////////////////////////
-            void TextField_setHorizontalNoneAlign( TextField * _textField )
-            {
-                _textField->setHorizontAlign( ETFHA_NONE );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            bool TextField_isHorizontalNoneAlign( TextField * _textField )
-            {
-                return _textField->getHorizontAlign() == ETFHA_NONE;
-            }
-            //////////////////////////////////////////////////////////////////////////
             void TextField_setHorizontalCenterAlign( TextField * _textField )
             {
                 _textField->setHorizontAlign( ETFHA_CENTER );
@@ -358,16 +348,6 @@ namespace Mengine
             bool TextField_isHorizontalJustifyAlign( TextField * _textField )
             {
                 return _textField->getHorizontAlign() == ETFHA_JUSTIFY;
-            }
-            //////////////////////////////////////////////////////////////////////////
-            void TextField_setVerticalNoneAlign( TextField * _textField )
-            {
-                _textField->setVerticalAlign( ETFVA_NONE );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            bool TextField_isVerticalNoneAlign( TextField * _textField )
-            {
-                return _textField->getVerticalAlign() == ETFVA_NONE;
             }
             //////////////////////////////////////////////////////////////////////////
             void TextField_setVerticalTopAlign( TextField * _textField )
@@ -920,7 +900,6 @@ namespace Mengine
                 ;
 
             pybind::enum_<ETextHorizontAlign>( _kernel, "ETextHorizontAlign" )
-                .def( "ETFHA_NONE", ETFHA_NONE )
                 .def( "ETFHA_LEFT", ETFHA_LEFT )
                 .def( "ETFHA_CENTER", ETFHA_CENTER )
                 .def( "ETFHA_RIGHT", ETFHA_RIGHT )
@@ -928,7 +907,6 @@ namespace Mengine
                 ;
 
             pybind::enum_<ETextVerticalAlign>( _kernel, "ETextVerticalAlign" )
-                .def( "ETFVA_NONE", ETFVA_NONE )
                 .def( "ETFVA_TOP", ETFVA_TOP )
                 .def( "ETFVA_BOTTOM", ETFVA_BOTTOM )
                 .def( "ETFVA_CENTER", ETFVA_CENTER )
@@ -992,8 +970,6 @@ namespace Mengine
                 .def( "setVerticalAlign", &TextField::setVerticalAlign )
                 .def( "getVerticalAlign", &TextField::getVerticalAlign )
 
-                .def_proxy_static( "setHorizontalNoneAlign", nodeScriptMethod, &NodeScriptMethod::TextField_setHorizontalNoneAlign )
-                .def_proxy_static( "isHorizontalNoneAlign", nodeScriptMethod, &NodeScriptMethod::TextField_isHorizontalNoneAlign )
                 .def_proxy_static( "setHorizontalCenterAlign", nodeScriptMethod, &NodeScriptMethod::TextField_setHorizontalCenterAlign )
                 .def_proxy_static( "isHorizontalCenterAlign", nodeScriptMethod, &NodeScriptMethod::TextField_isHorizontalCenterAlign )
                 .def_proxy_static( "setHorizontalRightAlign", nodeScriptMethod, &NodeScriptMethod::TextField_setHorizontalRightAlign )
@@ -1002,8 +978,6 @@ namespace Mengine
                 .def_proxy_static( "isHorizontalLeftAlign", nodeScriptMethod, &NodeScriptMethod::TextField_isHorizontalLeftAlign )
                 .def_proxy_static( "setHorizontalJustifyAlign", nodeScriptMethod, &NodeScriptMethod::TextField_setHorizontalJustifyAlign )
                 .def_proxy_static( "isHorizontalJustifyAlign", nodeScriptMethod, &NodeScriptMethod::TextField_isHorizontalJustifyAlign )
-                .def_proxy_static( "setVerticalNoneAlign", nodeScriptMethod, &NodeScriptMethod::TextField_setVerticalNoneAlign )
-                .def_proxy_static( "isVerticalNoneAlign", nodeScriptMethod, &NodeScriptMethod::TextField_isVerticalNoneAlign )
                 .def_proxy_static( "setVerticalTopAlign", nodeScriptMethod, &NodeScriptMethod::TextField_setVerticalTopAlign )
                 .def_proxy_static( "isVerticalTopAlign", nodeScriptMethod, &NodeScriptMethod::TextField_isVerticalTopAlign )
                 .def_proxy_static( "setVerticalBottomAlign", nodeScriptMethod, &NodeScriptMethod::TextField_setVerticalBottomAlign )

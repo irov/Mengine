@@ -128,10 +128,11 @@ namespace Mengine
             float lineOffset = 0.f;
             float maxLength = 0.f;
 
-            ETextHorizontAlign horizontAlign = ETFHA_NONE;
-            ETextVerticalAlign verticalAlign = ETFVA_NONE;
+            ETextHorizontAlign horizontAlign = ETFHA_LEFT;
+            ETextVerticalAlign verticalAlign = ETFVA_BOTTOM;
 
             float charScale = 1.f;
+            bool autoScale = false;
 
             Color colorFont;
 
@@ -364,6 +365,24 @@ namespace Mengine
 
                     params |= EFP_CHAR_SCALE;
                 }
+                else if( StdString::strcmp( str_key, "AutoScale" ) == 0 )
+                {
+                    uint32_t value = 0;
+                    if( Helper::stringalized( str_value, &value ) == false )
+                    {
+                        LOGGER_ERROR( "text file '%s' invalid read for text '%s' tag [AutoScale] '%s'"
+                            , Helper::getContentFullPath( m_content ).c_str()
+                            , textKey.c_str()
+                            , str_value
+                        );
+
+                        this->setError();
+                    }
+
+                    autoScale = (value != 0);
+
+                    params |= EFP_CHAR_SCALE;
+                }
                 else if( StdString::strcmp( str_key, "Empty" ) == 0 )
                 {
                     uint32_t value = 0;
@@ -421,7 +440,7 @@ namespace Mengine
             bool isDublicate = false;
 
             Tags tags;
-            if( m_textService->addTextEntry( textKey, text_str_value.c_str(), text_str_size, tags, font, colorFont, lineOffset, charOffset, maxLength, horizontAlign, verticalAlign, charScale, params, isOverride, &isDublicate, MENGINE_DOCUMENT_VALUE( m_doc, nullptr ) ) == false )
+            if( m_textService->addTextEntry( textKey, text_str_value.c_str(), text_str_size, tags, font, colorFont, lineOffset, charOffset, maxLength, horizontAlign, verticalAlign, charScale, autoScale, params, isOverride, &isDublicate, MENGINE_DOCUMENT_VALUE( m_doc, nullptr ) ) == false )
             {
                 LOGGER_ERROR( "text file '%s' invalid add text key '%s'"
                     , Helper::getContentFullPath( m_content ).c_str()
@@ -606,7 +625,8 @@ namespace Mengine
         , float _maxLength
         , ETextHorizontAlign _horizontAlign
         , ETextVerticalAlign _verticalAlign
-        , float _scale
+        , float _charScale
+        , bool _autoScale
         , uint32_t _params
         , const DocumentInterfacePtr & _doc )
     {
@@ -614,7 +634,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( textEntry, "invalid create text entry" );
 
-        if( textEntry->initialize( _key, _text, _size, _tags, _font, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _scale, _params ) == false )
+        if( textEntry->initialize( _key, _text, _size, _tags, _font, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _charScale, _autoScale, _params ) == false )
         {
             LOGGER_ERROR( "invalid initialize text id '%s'"
                 , _key.c_str()
@@ -637,7 +657,8 @@ namespace Mengine
         , float _maxLength
         , ETextHorizontAlign _horizontAlign
         , ETextVerticalAlign _verticalAlign
-        , float _scale
+        , float _charScale
+        , bool _autoScale
         , uint32_t _params
         , bool _isOverride
         , bool * const _isDublicate
@@ -670,7 +691,7 @@ namespace Mengine
                 return false;
             }
 
-            if( textEntry_has->initialize( _key, _text, _size, _tags, _font, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _scale, _params ) == false )
+            if( textEntry_has->initialize( _key, _text, _size, _tags, _font, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _charScale, _autoScale, _params ) == false )
             {
                 LOGGER_ERROR( "invalid initialize text id '%s'"
                     , _key.c_str()
@@ -682,7 +703,7 @@ namespace Mengine
             return true;
         }
 
-        TextEntryInterfacePtr textEntry = this->createTextEntry( _key, _text, _size, _tags, _font, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _scale, _params, _doc );
+        TextEntryInterfacePtr textEntry = this->createTextEntry( _key, _text, _size, _tags, _font, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _charScale, _autoScale, _params, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( textEntry, "invalid create text entry" );
 

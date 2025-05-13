@@ -87,7 +87,6 @@ namespace Mengine
                         for( uint32_t i = 0; i != 4; ++i )
                         {
                             RenderVertex2D v;
-
                             tl.calcCharPosition( cd, offset, 1.f, i, &v.position );
 
                             v.position.x += _pos.x;

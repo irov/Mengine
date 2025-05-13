@@ -31,6 +31,7 @@ namespace Mengine
             , ETextHorizontAlign _horizontAlign
             , ETextVerticalAlign _verticalAlign
             , float _charScale
+            , bool _autoScale
             , uint32_t _params );
 
     public:
@@ -49,6 +50,7 @@ namespace Mengine
         ETextHorizontAlign getHorizontAlign() const override;
         ETextVerticalAlign getVerticalAlign() const override;
         float getCharScale() const override;
+        bool getAutoScale() const override;
 
     public:
         uint32_t getFontParams() const override;
@@ -71,6 +73,7 @@ namespace Mengine
         ETextVerticalAlign m_verticalAlign;
 
         float m_charScale;
+        bool m_autoScale;
 
         uint32_t m_params;
     };

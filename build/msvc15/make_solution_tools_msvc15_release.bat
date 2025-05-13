@@ -1,1 +1,0 @@
-@call %~dp0make_solution_tools_msvc15 Release

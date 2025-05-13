@@ -123,7 +123,6 @@ namespace Mengine
         bool hasCharScale() const;
         void removeCharScale();
 
-    public:
         void setHorizontAlign( ETextHorizontAlign _horizontAlign );
         ETextHorizontAlign getHorizontAlign() const;
         bool hasHorizontAlign() const;

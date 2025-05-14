@@ -51,6 +51,7 @@ namespace Mengine
         , m_anchorVerticalAlign( true )
         , m_wrap( true )
         , m_autoScale( false )
+        , m_justify( false )
         , m_pixelsnap( true )
         , m_debugMode( false )
         , m_invalidateVertices( true )
@@ -558,6 +559,44 @@ namespace Mengine
         m_autoScale = false;
 
         m_textParams &= ~EFP_AUTO_SCALE;
+
+        this->invalidateTextLines();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::setJustify( bool _justify )
+    {
+        if( m_justify == _justify )
+        {
+            return;
+        }
+
+        m_justify = _justify;
+
+        m_textParams |= EFP_JUSTIFY;
+
+        this->invalidateTextLines();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TextField::getJustify() const
+    {
+        return m_justify;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TextField::hasJustify() const
+    {
+        return (m_textParams & EFP_JUSTIFY) == EFP_JUSTIFY;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::removeJustify()
+    {
+        if( (m_textParams & EFP_JUSTIFY) != EFP_JUSTIFY )
+        {
+            return;
+        }
+
+        m_justify = false;
+
+        m_textParams &= ~EFP_JUSTIFY;
 
         this->invalidateTextLines();
     }
@@ -1291,11 +1330,11 @@ namespace Mengine
             , this->getName().c_str()
         );
 
-        ETextHorizontAlign horizontAlign = this->calcHorizontAlign();
-        
         float justifyLength = -1.f;
 
-        if( horizontAlign == ETFHA_JUSTIFY )
+        bool justify = this->calcJustify();
+
+        if( justify == true )
         {
             justifyLength = maxLength;
         }
@@ -1722,6 +1761,30 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool TextField::calcJustify() const
+    {
+        const TextEntryInterfacePtr & textEntry = this->getTotalTextEntry();
+
+        if( textEntry != nullptr )
+        {
+            uint32_t params = textEntry->getFontParams();
+
+            if( (params & EFP_JUSTIFY) == EFP_JUSTIFY )
+            {
+                bool value = textEntry->getJustify();
+
+                return value;
+            }
+        }
+
+        if( (m_textParams & EFP_JUSTIFY) == EFP_JUSTIFY )
+        {
+            return m_justify;
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     float TextField::calcLinesOffset( float _lineOffset, const FontInterfacePtr & _font ) const
     {
         float fontAscender = _font->getFontAscender();
@@ -1851,10 +1914,6 @@ namespace Mengine
                 {
                     offset += m_textSize.x;
                 }
-            }break;
-        case ETFHA_JUSTIFY:
-            {
-                offset = 0.f;
             }break;
         }
 

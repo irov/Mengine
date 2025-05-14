@@ -12,7 +12,6 @@ namespace Mengine
         , m_length( 0.f )
         , m_charOffset( _charOffset )
         , m_justifyLength( _justifyLength )
-        , m_spaceAdvance( 0.f )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -96,6 +95,8 @@ namespace Mengine
 
                     charData.advance += advanceSpace;
                 }
+
+                m_length = m_justifyLength;
             }
         }
 

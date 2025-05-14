@@ -31,6 +31,7 @@ namespace Mengine
             , ETextVerticalAlign _verticalAlign
             , float _charScale
             , bool _autoScale
+            , bool _justify
             , uint32_t _params
             , const DocumentInterfacePtr & _doc ) = 0;
 
@@ -48,6 +49,7 @@ namespace Mengine
             , ETextVerticalAlign _verticalAlign
             , float _charScale
             , bool _autoScale
+            , bool _justify
             , uint32_t _params
             , bool _isOverride
             , bool * const _isDublicate

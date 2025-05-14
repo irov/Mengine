@@ -62,7 +62,6 @@ namespace Mengine
 
         float m_charOffset;
         float m_justifyLength;
-        float m_spaceAdvance;
 
         mutable VectorTextCharData m_charsData;
     };

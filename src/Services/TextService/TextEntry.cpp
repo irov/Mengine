@@ -11,6 +11,7 @@ namespace Mengine
         , m_verticalAlign( ETFVA_BOTTOM )
         , m_charScale( 1.f )
         , m_autoScale( false )
+        , m_justify( false )
         , m_params( 0 )
     {
     }
@@ -32,6 +33,7 @@ namespace Mengine
         , ETextVerticalAlign _verticalAlign
         , float _charScale
         , bool _autoScale
+        , bool _justify
         , uint32_t _params )
     {
         m_key = _key;
@@ -60,6 +62,7 @@ namespace Mengine
 
         m_charScale = _charScale;
         m_autoScale = _autoScale;
+        m_justify = _justify;
 
         m_params = _params;
 
@@ -128,6 +131,11 @@ namespace Mengine
     bool TextEntry::getAutoScale() const
     {
         return m_autoScale;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TextEntry::getJustify() const
+    {
+        return m_justify;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t TextEntry::getFontParams() const

@@ -87,11 +87,6 @@ namespace Mengine
                     start_x = -maxLength;
                     finish_x = 0.f;
                 }break;
-            case ETFHA_JUSTIFY:
-                {
-                    start_x = 0.f;
-                    finish_x = maxLength;
-                }break;
             }
 
             float halfLength = 20.f;

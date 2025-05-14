@@ -33,6 +33,7 @@ namespace Mengine
         EFP_VERTICAL_ALIGN = 1 << 6,
         EFP_CHAR_SCALE = 1 << 7,
         EFP_AUTO_SCALE = 1 << 8,
+        EFP_JUSTIFY = 1 << 9,
     };
     //////////////////////////////////////////////////////////////////////////
     struct Glyph

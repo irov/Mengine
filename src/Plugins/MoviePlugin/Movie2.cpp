@@ -1405,11 +1405,6 @@ namespace Mengine
                     node->setHorizontAlign( ETFHA_LEFT );
                 }
 
-                if( ae_has_movie_layer_data_option( layer_data, AE_OPTION( '\0', '\0', 'h', 'j' ) ) == AE_TRUE )
-                {
-                    node->setHorizontAlign( ETFHA_JUSTIFY );
-                }
-
                 if( ae_has_movie_layer_data_option( layer_data, AE_OPTION( '\0', '\0', 'v', 't' ) ) == AE_TRUE )
                 {
                     node->setVerticalAlign( ETFVA_TOP );
@@ -1423,6 +1418,11 @@ namespace Mengine
                 if( ae_has_movie_layer_data_option( layer_data, AE_OPTION( '\0', '\0', 'v', 'b' ) ) == AE_TRUE )
                 {
                     node->setVerticalAlign( ETFVA_BOTTOM );
+                }
+
+                if( ae_has_movie_layer_data_option( layer_data, AE_OPTION( '\0', '\0', 'j', 'u' ) ) == AE_TRUE )
+                {
+                    node->setJustify( true );
                 }
 
                 if( ae_has_movie_layer_data_option( layer_data, AE_OPTION( '\0', '\0', 'a', 's' ) ) == AE_TRUE )

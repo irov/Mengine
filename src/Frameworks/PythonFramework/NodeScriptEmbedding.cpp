@@ -147,7 +147,7 @@ namespace Mengine
 
         public:
             //////////////////////////////////////////////////////////////////////////
-            
+
             //////////////////////////////////////////////////////////////////////////
             PyObject * TextField_setTextFormatArgs( pybind::kernel_interface * _kernel, TextField * _textField, PyObject * _args, PyObject * _kwds )
             {
@@ -338,16 +338,6 @@ namespace Mengine
             bool TextField_isHorizontalLeftAlign( TextField * _textField )
             {
                 return _textField->getHorizontAlign() == ETFHA_LEFT;
-            }
-            //////////////////////////////////////////////////////////////////////////
-            void TextField_setHorizontalJustifyAlign( TextField * _textField )
-            {
-                _textField->setHorizontAlign( ETFHA_JUSTIFY );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            bool TextField_isHorizontalJustifyAlign( TextField * _textField )
-            {
-                return _textField->getHorizontAlign() == ETFHA_JUSTIFY;
             }
             //////////////////////////////////////////////////////////////////////////
             void TextField_setVerticalTopAlign( TextField * _textField )
@@ -589,7 +579,7 @@ namespace Mengine
                 }
                     , _shape->getPercentVisibility(), _percent, _time
                     , MENGINE_DOCUMENT_PYBIND
-                    );
+                );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
 
@@ -828,7 +818,7 @@ namespace Mengine
             .def( "setFixedViewport", &RenderViewport::setFixedViewport )
             .def( "getFixedViewport", &RenderViewport::getFixedViewport )
             .def( "setViewport", &RenderViewport::setViewport )
-            .def( "getViewport", &RenderViewport::getViewport )         
+            .def( "getViewport", &RenderViewport::getViewport )
             ;
 
         pybind::interface_<RenderScissor, pybind::bases<Node, RenderScissorInterface>>( _kernel, "RenderScissor", false )
@@ -903,7 +893,6 @@ namespace Mengine
                 .def( "ETFHA_LEFT", ETFHA_LEFT )
                 .def( "ETFHA_CENTER", ETFHA_CENTER )
                 .def( "ETFHA_RIGHT", ETFHA_RIGHT )
-                .def( "ETFHA_JUSTIFY", ETFHA_JUSTIFY )                
                 ;
 
             pybind::enum_<ETextVerticalAlign>( _kernel, "ETextVerticalAlign" )
@@ -944,7 +933,7 @@ namespace Mengine
                 .def( "getCharOffset", &TextField::getCharOffset )
 
                 .def( "getTextSize", &TextField::getTextSize )
-                
+
                 .def( "setMaxLength", &TextField::setMaxLength )
                 .def( "getMaxLength", &TextField::getMaxLength )
                 .def( "removeMaxLength", &TextField::removeMaxLength )
@@ -954,6 +943,13 @@ namespace Mengine
 
                 .def( "setAutoScale", &TextField::setAutoScale )
                 .def( "getAutoScale", &TextField::getAutoScale )
+                .def( "hasAutoScale", &TextField::hasAutoScale )
+                .def( "removeAutoScale", &TextField::removeAutoScale )
+
+                .def( "setJustify", &TextField::setJustify )
+                .def( "getJustify", &TextField::getJustify )
+                .def( "hasJustify", &TextField::hasJustify )
+                .def( "removeJustify", &TextField::removeJustify )
 
                 .def( "setAnchorHorizontalAlign", &TextField::setAnchorHorizontalAlign )
                 .def( "getAnchorHorizontalAlign", &TextField::getAnchorHorizontalAlign )
@@ -974,10 +970,8 @@ namespace Mengine
                 .def_proxy_static( "isHorizontalCenterAlign", nodeScriptMethod, &NodeScriptMethod::TextField_isHorizontalCenterAlign )
                 .def_proxy_static( "setHorizontalRightAlign", nodeScriptMethod, &NodeScriptMethod::TextField_setHorizontalRightAlign )
                 .def_proxy_static( "isHorizontalRightAlign", nodeScriptMethod, &NodeScriptMethod::TextField_isHorizontalRightAlign )
-                .def_proxy_static( "setHorizontalLeftAlign", nodeScriptMethod, &NodeScriptMethod::TextField_setHorizontalLeftAlign )                
+                .def_proxy_static( "setHorizontalLeftAlign", nodeScriptMethod, &NodeScriptMethod::TextField_setHorizontalLeftAlign )
                 .def_proxy_static( "isHorizontalLeftAlign", nodeScriptMethod, &NodeScriptMethod::TextField_isHorizontalLeftAlign )
-                .def_proxy_static( "setHorizontalJustifyAlign", nodeScriptMethod, &NodeScriptMethod::TextField_setHorizontalJustifyAlign )
-                .def_proxy_static( "isHorizontalJustifyAlign", nodeScriptMethod, &NodeScriptMethod::TextField_isHorizontalJustifyAlign )
                 .def_proxy_static( "setVerticalTopAlign", nodeScriptMethod, &NodeScriptMethod::TextField_setVerticalTopAlign )
                 .def_proxy_static( "isVerticalTopAlign", nodeScriptMethod, &NodeScriptMethod::TextField_isVerticalTopAlign )
                 .def_proxy_static( "setVerticalBottomAlign", nodeScriptMethod, &NodeScriptMethod::TextField_setVerticalBottomAlign )
@@ -1203,7 +1197,7 @@ namespace Mengine
     Helper::registerScriptWrapping<Class>(_kernel, MENGINE_DOCUMENT_FACTORABLE)
 
         SCRIPT_CLASS_WRAPPING( Layer2D );
-        
+
         SCRIPT_CLASS_WRAPPING( HotSpotPolygon );
         SCRIPT_CLASS_WRAPPING( HotSpotGlobal );
         SCRIPT_CLASS_WRAPPING( HotSpotCircle );

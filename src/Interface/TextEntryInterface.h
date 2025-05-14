@@ -18,7 +18,6 @@ namespace Mengine
         ETFHA_LEFT = 0,
         ETFHA_CENTER = 1,
         ETFHA_RIGHT = 2,
-        ETFHA_JUSTIFY = 3,        
     };
     //////////////////////////////////////////////////////////////////////////
     enum ETextVerticalAlign
@@ -50,6 +49,7 @@ namespace Mengine
 
         virtual float getCharScale() const = 0;
         virtual bool getAutoScale() const = 0;
+        virtual bool getJustify() const = 0;
 
     public:
         virtual uint32_t getFontParams() const = 0;

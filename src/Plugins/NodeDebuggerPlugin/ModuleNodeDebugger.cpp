@@ -873,6 +873,7 @@ namespace Mengine
         Detail::serializeNodeProp( _textField->getWrap(), "Wrap", xmlNode );
 
         Detail::serializeNodeProp( _textField->getAutoScale(), "AutoScale", xmlNode );
+        Detail::serializeNodeProp( _textField->getJustify(), "Justify", xmlNode );
         Detail::serializeNodeProp( _textField->getAnchorPercent(), "AnchorPercent", xmlNode );
         Detail::serializeNodeProp( _textField->getAnchorVerticalAlign(), "AnchorVerticalAlign", xmlNode );
         Detail::serializeNodeProp( _textField->getAnchorHorizontalAlign(), "AnchorHorizontalAlign", xmlNode );
@@ -2003,6 +2004,11 @@ namespace Mengine
                 this->deserializeNodeProp<bool>( "AutoScale", typeNodeTextField, [textField]( bool _value )
                 {
                     textField->setAutoScale( _value );
+                } );
+
+                this->deserializeNodeProp<bool>( "Justify", typeNodeTextField, [textField]( bool _value )
+                {
+                    textField->setJustify( _value );
                 } );
 
                 this->deserializeNodeProp<mt::vec2f>( "AnchorPercent", typeNodeTextField, [textField]( const mt::vec2f & _value )

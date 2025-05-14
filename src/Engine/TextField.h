@@ -103,6 +103,11 @@ namespace Mengine
         bool hasAutoScale() const;
         void removeAutoScale();
 
+        void setJustify( bool _justify );
+        bool getJustify() const;
+        bool hasJustify() const;
+        void removeJustify();
+
         void setFontColor( const Color & _color );
         const Color & getFontColor() const;
         bool hasFontColor() const;
@@ -229,6 +234,7 @@ namespace Mengine
         ETextVerticalAlign calcVerticalAlign() const;
         float calcCharScale() const;
         bool calcAutoScale() const;
+        bool calcJustify() const;
 
         float calcLinesOffset( float _lineOffset, const FontInterfacePtr & _font ) const;
 
@@ -288,6 +294,7 @@ namespace Mengine
         bool m_anchorVerticalAlign;
         bool m_wrap;
         bool m_autoScale;
+        bool m_justify;
         bool m_pixelsnap;
 
         bool m_debugMode;

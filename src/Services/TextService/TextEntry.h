@@ -32,6 +32,7 @@ namespace Mengine
             , ETextVerticalAlign _verticalAlign
             , float _charScale
             , bool _autoScale
+            , bool _justify
             , uint32_t _params );
 
     public:
@@ -51,6 +52,7 @@ namespace Mengine
         ETextVerticalAlign getVerticalAlign() const override;
         float getCharScale() const override;
         bool getAutoScale() const override;
+        bool getJustify() const override;
 
     public:
         uint32_t getFontParams() const override;
@@ -74,6 +76,7 @@ namespace Mengine
 
         float m_charScale;
         bool m_autoScale;
+        bool m_justify;
 
         uint32_t m_params;
     };

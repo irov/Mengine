@@ -18,7 +18,7 @@ namespace Mengine
     };
 }
 //////////////////////////////////////////////////////////////////////////
-#define MENGINE_THREAD_MUTEX_SCOPE_II( Mutex, Line ) Mengine::ThreadMutexScope thread_mutex_scope_ ## Line ( Mutex )
-#define MENGINE_THREAD_MUTEX_SCOPE_I( Mutex, Line ) MENGINE_THREAD_MUTEX_SCOPE_II( Mutex, Line )
-#define MENGINE_THREAD_MUTEX_SCOPE( Mutex ) MENGINE_THREAD_MUTEX_SCOPE_I( Mutex, MENGINE_CODE_LINE )
+#define MENGINE_THREAD_MUTEX_SCOPE_II( Mutex, Index ) Mengine::ThreadMutexScope thread_mutex_scope_##Index ( Mutex )
+#define MENGINE_THREAD_MUTEX_SCOPE_I( Mutex, Index ) MENGINE_THREAD_MUTEX_SCOPE_II( Mutex, Index )
+#define MENGINE_THREAD_MUTEX_SCOPE( Mutex ) MENGINE_THREAD_MUTEX_SCOPE_I( Mutex, MENGINE_CODE_COUNTER )
 //////////////////////////////////////////////////////////////////////////

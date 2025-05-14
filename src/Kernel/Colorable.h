@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Kernel/Color.h"
 #include "Kernel/Mixin.h"
+#include "Kernel/Color.h"
 
 namespace Mengine
 {

@@ -49,9 +49,9 @@ namespace Mengine
     bool Win32XlsExportPlugin::_initializePlugin()
     {
         WIN32_FINDPYTHON3_SERVICE()
-            ->getPython3ExecutablePathA( m_python3Path );
+            ->getPython3ExecutablePathW( m_python3PathW );
 
-        if( StdString::strlen( m_python3Path ) == 0 )
+        if( StdString::wcslen( m_python3PathW ) == 0 )
         {
             LOGGER_ERROR( "not found python3" );
 
@@ -137,7 +137,7 @@ namespace Mengine
         );
 
         uint32_t exitCode;
-        if( Helper::Win32CreateProcess( m_python3Path, command, true, &exitCode ) == false )
+        if( Helper::Win32CreateProcessW( m_python3PathW, command, true, &exitCode ) == false )
         {
             LOGGER_ERROR( "invalid xlsx exporter: %ls"
                 , command

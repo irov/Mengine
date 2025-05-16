@@ -32,6 +32,6 @@ namespace Mengine
         bool findPython3Path_();
 
     protected:
-        Path m_python3Path = {'\0'};
+        WPath m_python3PathW = {'\0'};
     };
 }

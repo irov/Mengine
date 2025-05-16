@@ -5,6 +5,7 @@
 #include "Interface/PackageInterface.h"
 
 #include "Kernel/ConstString.h"
+#include "Kernel/VectorConstString.h"
 #include "Kernel/Tags.h"
 #include "Kernel/FilePath.h"
 
@@ -30,6 +31,9 @@ namespace Mengine
     public:
         typedef Lambda<void( const PackageInterfacePtr & )> LambdaPackage;
         virtual void foreachPackages( const LambdaPackage & _lambda ) const = 0;
+
+    public:
+        virtual void getLocales( const Tags & _platformTags, VectorConstString * const _locales ) const = 0;
 
     public:
         virtual bool enablePackages( const ConstString & _locale, const Tags & _platformTags ) = 0;

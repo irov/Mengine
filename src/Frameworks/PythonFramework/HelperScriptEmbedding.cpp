@@ -175,6 +175,18 @@ namespace Mengine
                 return true;
             }
             //////////////////////////////////////////////////////////////////////////
+            VectorConstString s_getLocales()
+            {
+                const Tags & platformTags = PLATFORM_SERVICE()
+                    ->getPlatformTags();
+
+                VectorConstString locales;
+                PACKAGE_SERVICE()
+                    ->getLocales( platformTags, &locales );
+
+                return locales;
+            }
+            //////////////////////////////////////////////////////////////////////////
             float s_isometric_length_v3_v3( const mt::vec3f & _v0, const mt::vec3f & _v1 )
             {
                 mt::vec3f iso_v0 = _v0;
@@ -4243,6 +4255,7 @@ namespace Mengine
         pybind::def_functor( _kernel, "setLocale", helperScriptMethod, &HelperScriptMethod::s_setLocale );
         pybind::def_functor( _kernel, "getLocale", helperScriptMethod, &HelperScriptMethod::s_getLocale );
         pybind::def_functor( _kernel, "hasLocale", helperScriptMethod, &HelperScriptMethod::s_hasLocale );
+        pybind::def_functor( _kernel, "getLocales", helperScriptMethod, &HelperScriptMethod::s_getLocales );
 
         pybind::def_functor( _kernel, "isometric_length_v3_v3", helperScriptMethod, &HelperScriptMethod::s_isometric_length_v3_v3 );
         pybind::def_functor( _kernel, "isometric_sqrlength_v3_v3", helperScriptMethod, &HelperScriptMethod::s_isometric_sqrlength_v3_v3 );

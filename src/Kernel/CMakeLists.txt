@@ -24,8 +24,10 @@ Containers
     Map.h
     Pair.h
     UnorderedMap.h
+    UnorderedSet.h
     UnorderedFilePathMap.h
     UnorderedConstStringMap.h
+    UnorderedConstStringSet.h
     List.h
     Tuple.h
     Regex.h
@@ -36,6 +38,12 @@ Containers
 ADD_FILTER(
 Mixin\\\\Unknowable
     Unknowable.h
+)
+
+ADD_FILTER(
+Mixin\\\\Invalidable
+    Invalidable.h
+    Invalidable.cpp
 )
 
 ADD_FILTER(

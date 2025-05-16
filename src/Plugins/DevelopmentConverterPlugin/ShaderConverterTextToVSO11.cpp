@@ -94,7 +94,7 @@ namespace Mengine
         );
 
         uint32_t exitCode;
-        if( Helper::Win32CreateProcess( fxcPath.c_str(), command, true, &exitCode ) == false )
+        if( Helper::Win32CreateProcessA( fxcPath.c_str(), command, true, &exitCode ) == false )
         {
             LOGGER_ERROR( "invalid convert:\n%ls"
                 , command

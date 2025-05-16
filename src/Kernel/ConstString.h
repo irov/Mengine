@@ -19,9 +19,15 @@ namespace Mengine
         {
         }
 
-        ConstString( const ConstString & _cstr ) noexcept
+        MENGINE_CONSTEXPR ConstString( const ConstString & _cstr ) noexcept
             : m_holder( _cstr.m_holder )
         {
+        }
+
+        MENGINE_CONSTEXPR ConstString( ConstString && _cstr ) noexcept
+            : m_holder( _cstr.m_holder )
+        {
+            _cstr.m_holder = nullptr;
         }
 
     public:

@@ -18,6 +18,7 @@
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/UnorderedConstStringSet.h"
 
 #include "Config/StdAlgorithm.h"
 
@@ -409,6 +410,27 @@ namespace Mengine
         {
             _lambda( package );
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PackageService::getLocales( const Tags & _platformTags, VectorConstString * const _locales ) const
+    {
+        UnorderedConstStringSet localesSet;
+
+        localesSet.insert( m_defaultLocale );
+
+        for( const PackagePtr & package : m_packages )
+        {
+            const PackageDesc & desc = package->getPackageDesc();
+
+            if( _platformTags.hasTags( desc.platform ) == false )
+            {
+                continue;
+            }
+
+            localesSet.insert( desc.locales.begin(), desc.locales.end() );
+        }
+
+        *_locales = {localesSet.begin(), localesSet.end()};
     }
     //////////////////////////////////////////////////////////////////////////
     bool PackageService::loadLocalePacksByName_( const ConstString & _locale, const Tags & _platformTags, VectorPackages * const _packs ) const

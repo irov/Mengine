@@ -14,7 +14,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        bool Win32CreateProcess( const Char * _process, const WChar * _command, bool _wait, uint32_t * const _exitCode )
+        bool Win32CreateProcessA( const Char * _process, const WChar * _command, bool _wait, uint32_t * const _exitCode )
         {
             LOGGER_INFO( "platform", "create process '%s' command: %ls"
                 , _process
@@ -24,6 +24,13 @@ namespace Mengine
             WPath unicode_process = {L'\0'};
             Helper::utf8ToUnicode( _process, unicode_process, MENGINE_MAX_PATH );
 
+            bool result = Win32CreateProcessW( unicode_process, _command, _wait, _exitCode );
+
+            return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool Win32CreateProcessW( const WChar * _process, const WChar * _command, bool _wait, uint32_t * const _exitCode )
+        {
             WChar unicode_command[MENGINE_MAX_COMMAND_LENGTH + 1] = {L'\0'};
             StdString::wcscpy( unicode_command, L" " );
             StdString::wcscat( unicode_command, _command );
@@ -76,7 +83,7 @@ namespace Mengine
                 PROCESS_INFORMATION processInfo;
                 ::ZeroMemory( &processInfo, sizeof( PROCESS_INFORMATION ) );
 
-                if( ::CreateProcessW( unicode_process, unicode_command
+                if( ::CreateProcessW( _process, unicode_command
                     , NULL
                     , NULL
                     , TRUE
@@ -85,7 +92,7 @@ namespace Mengine
                     , &startupInfo
                     , &processInfo ) == FALSE )
                 {
-                    LOGGER_ERROR( "CreateProcess '%s' return %ls"
+                    LOGGER_ERROR( "CreateProcess '%ls' return %ls"
                         , _process
                         , Helper::Win32GetLastErrorMessageW()
                     );
@@ -104,7 +111,7 @@ namespace Mengine
 
                 if( result == FALSE )
                 {
-                    LOGGER_ERROR( "CreateProcess execute invalid get exit code\nprocess '%s'\ncommand: %ls"
+                    LOGGER_ERROR( "CreateProcess execute invalid get exit code\nprocess '%ls'\ncommand: %ls"
                         , _process
                         , _command
                     );
@@ -112,7 +119,7 @@ namespace Mengine
                     return false;
                 }
 
-                LOGGER_INFO( "platform", "process result '%s' command '%ls' [%lu]"
+                LOGGER_INFO( "platform", "process result '%ls' command '%ls' [%lu]"
                     , _process
                     , _command
                     , exitCode
@@ -128,7 +135,9 @@ namespace Mengine
 
                 if( hReadTempFile == INVALID_HANDLE_VALUE )
                 {
-                    LOGGER_ERROR( "CreateFile '%ls' get error %ls"
+                    LOGGER_ERROR( "process '%ls' command '%ls' CreateFile '%ls' get error %ls"
+                        , _process
+                        , _command
                         , tempFileNameBuffer
                         , Helper::Win32GetLastErrorMessageW()
                     );
@@ -185,7 +194,7 @@ namespace Mengine
                 PROCESS_INFORMATION processInfo;
                 ::ZeroMemory( &processInfo, sizeof( PROCESS_INFORMATION ) );
 
-                if( ::CreateProcessW( unicode_process, unicode_command
+                if( ::CreateProcessW( _process, unicode_command
                     , NULL
                     , NULL
                     , FALSE
@@ -194,8 +203,9 @@ namespace Mengine
                     , &startupInfo
                     , &processInfo ) == FALSE )
                 {
-                    LOGGER_ERROR( "invalid CreateProcess '%s' %ls"
+                    LOGGER_ERROR( "invalid CreateProcess '%ls' command '%ls' error: %ls"
                         , _process
+                        , _command
                         , Helper::Win32GetLastErrorMessageW()
                     );
 

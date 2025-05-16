@@ -89,7 +89,7 @@ namespace Mengine
         String ffmpeg = Helper::getParam( m_options.params, STRINGIZE_STRING_LOCAL( "ffmpeg" ), "ffmpeg.exe" );
 
         uint32_t exitCode;
-        if( Helper::Win32CreateProcess( ffmpeg.c_str(), command, true, &exitCode ) == false )
+        if( Helper::Win32CreateProcessA( ffmpeg.c_str(), command, true, &exitCode ) == false )
         {
             LOGGER_ERROR( "invalid convert:\n%ls"
                 , command

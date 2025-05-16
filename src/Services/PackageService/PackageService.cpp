@@ -430,6 +430,8 @@ namespace Mengine
             localesSet.insert( desc.locales.begin(), desc.locales.end() );
         }
 
+        localesSet.erase( STRINGIZE_STRING_LOCAL( "all" ) );
+
         *_locales = {localesSet.begin(), localesSet.end()};
     }
     //////////////////////////////////////////////////////////////////////////

@@ -68,8 +68,6 @@ int main( int argc, char * argv[] )
 
     WCHAR outCanonicalize[MAX_PATH];
     PathCombine( outCanonicalize, tempPath, L"aemovie_temp_texturepacker_sheet.xml" );
-    //PathCanonicalize( outCanonicalize, L"%TEMP%/temp_texturepacker_sheet.xml" );
-    //PathUnquoteSpaces( outCanonicalize );
 
     system_cmd += L" --data ";
     system_cmd += outCanonicalize;

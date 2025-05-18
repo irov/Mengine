@@ -47,9 +47,9 @@ int main( int argc, char * argv[] )
         return EXIT_FAILURE;
     }
 
-    fseek( f_in, 0, SEEK_END );
-    long f_in_size = ftell( f_in );
-    rewind( f_in );
+    ::fseek( f_in, 0, SEEK_END );
+    long f_in_size = ::ftell( f_in );
+    ::rewind( f_in );
 
     if( f_in_size == 0 )
     {
@@ -63,6 +63,17 @@ int main( int argc, char * argv[] )
     }
 
     stbi_uc * memory_in = (stbi_uc *)malloc( f_in_size );
+
+    if( memory_in == nullptr )
+    {
+        fclose( f_in );
+
+        message_error( "invalid malloc size %ld"
+            , f_in_size
+        );
+
+        return EXIT_FAILURE;
+    }
 
     fread( memory_in, 1, f_in_size, f_in );
     fclose( f_in );

@@ -1993,7 +1993,14 @@ namespace Mengine
 
                 this->deserializeNodeProp<float>( "MaxLength", typeNodeTextField, [textField]( float _value )
                 {
-                    textField->setMaxLength( _value );
+                    if( _value > 0.f )
+                    {
+                        textField->setMaxLength( _value );
+                    }
+                    else
+                    {
+                        textField->removeMaxLength();
+                    }
                 } );
 
                 this->deserializeNodeProp<bool>( "Wrap", typeNodeTextField, [textField]( bool _value )
@@ -2026,7 +2033,7 @@ namespace Mengine
                     textField->setAnchorVerticalAlign( _value );
                 } );
 
-                this->deserializeNodeProp<ConstString>( "TextID", typeNodeTextField, [textField]( const ConstString & _value )
+                this->deserializeNodeProp<ConstString>( "TextId", typeNodeTextField, [textField]( const ConstString & _value )
                 {
                     textField->setTextId( _value );
                 } );

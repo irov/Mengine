@@ -903,11 +903,11 @@ namespace Mengine
 
             pybind::interface_<TextField, pybind::bases<Node>>( _kernel, "TextField", false )
                 .def( "setTextId", &TextField::setTextId )
+                .def( "getTextId", &TextField::getTextId )
                 .def( "removeTextId", &TextField::removeTextId )
                 .def_proxy_native_kernel( "setTextFormatArgs", nodeScriptMethod, &NodeScriptMethod::TextField_setTextFormatArgs )
                 .def_proxy_static( "getTextFormatArgs", nodeScriptMethod, &NodeScriptMethod::TextField_getTextFormatArgs )
                 .def( "removeTextFormatArgs", &TextField::removeTextArguments )
-                .def( "getTextId", &TextField::getTextId )
                 .def( "getTotalTextId", &TextField::getTotalTextId )
                 .def( "getTextExpectedArgument", &TextField::getTextExpectedArgument )
 
@@ -925,12 +925,18 @@ namespace Mengine
 
                 .def( "setFontColor", &TextField::setFontColor )
                 .def( "getFontColor", &TextField::getFontColor )
+                .def( "hasFontColor", &TextField::hasFontColor )
+                .def( "removeFontColor", &TextField::removeFontColor )
 
                 .def( "setLineOffset", &TextField::setLineOffset )
                 .def( "getLineOffset", &TextField::getLineOffset )
+                .def( "hasLineOffset", &TextField::hasLineOffset )
+                .def( "removeLineOffset", &TextField::removeLineOffset )
 
                 .def( "setCharOffset", &TextField::setCharOffset )
                 .def( "getCharOffset", &TextField::getCharOffset )
+                .def( "hasCharOffset", &TextField::hasCharOffset )
+                .def( "removeCharOffset", &TextField::removeCharOffset )
 
                 .def( "getTextSize", &TextField::getTextSize )
 
@@ -938,7 +944,6 @@ namespace Mengine
                 .def( "getMaxLength", &TextField::getMaxLength )
                 .def( "removeMaxLength", &TextField::removeMaxLength )
                 .def( "hasMaxLength", &TextField::hasMaxLength )
-
                 .def( "calcMaxLength", &TextField::calcMaxLength )
 
                 .def( "setAutoScale", &TextField::setAutoScale )
@@ -962,9 +967,13 @@ namespace Mengine
 
                 .def( "setHorizontAlign", &TextField::setHorizontAlign )
                 .def( "getHorizontAlign", &TextField::getHorizontAlign )
+                .def( "hasHorizontAlign", &TextField::hasHorizontAlign )
+                .def( "removeHorizontAlign", &TextField::removeHorizontAlign )
 
                 .def( "setVerticalAlign", &TextField::setVerticalAlign )
                 .def( "getVerticalAlign", &TextField::getVerticalAlign )
+                .def( "hasVerticalAlign", &TextField::hasVerticalAlign )
+                .def( "removeVerticalAlign", &TextField::removeVerticalAlign )
 
                 .def_proxy_static( "setHorizontalCenterAlign", nodeScriptMethod, &NodeScriptMethod::TextField_setHorizontalCenterAlign )
                 .def_proxy_static( "isHorizontalCenterAlign", nodeScriptMethod, &NodeScriptMethod::TextField_isHorizontalCenterAlign )

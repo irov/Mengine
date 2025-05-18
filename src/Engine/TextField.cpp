@@ -973,13 +973,13 @@ namespace Mengine
 
                 const FontInterfacePtr & font = cache.font;
 
-                Glyph space_glyph;
-                if( font->getGlyph( 0, ' ', 0, &space_glyph ) == false )
-                {
-                    continue;
-                }
+                float space_length = 0.f;
 
-                float space_length = (space_glyph.advance + charOffset) * charScale;
+                Glyph space_glyph;
+                if( font->getGlyph( 0, ' ', 0, &space_glyph ) == true )
+                {
+                    space_length = (space_glyph.advance + charOffset) * charScale;
+                }
 
                 VectorU32String words;
                 Helper::u32split2( &words, text, false, space_delims );

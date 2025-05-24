@@ -9,8 +9,8 @@ public class MengineFragmentUser extends MengineFragment<MengineListenerUser> {
         INSTANCE = this;
     }
 
-    public void changeUserId(String userId) {
-        this.propagate(MengineListenerUser::onMengineChangeUserId, userId);
+    public void changeUserId(String oldUserId, String newUserId) {
+        this.propagate(MengineListenerUser::onMengineChangeUserId, oldUserId, newUserId);
     }
 
     public void removeUserData() {

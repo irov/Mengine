@@ -11,6 +11,7 @@
 
 #include "Kernel/String.h"
 #include "Kernel/FontBase.h"
+#include "Kernel/Vector.h"
 
 #include "math/uv4.h"
 

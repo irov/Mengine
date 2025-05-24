@@ -19,25 +19,11 @@ namespace Mengine
         ~TextEntry() override;
 
     public:
-        bool initialize( const ConstString & _key
-            , const Char * _text
-            , size_t _size
-            , const Tags & _tags
-            , const FontInterfacePtr & _font
-            , const Color & _colorFont
-            , float _lineOffset
-            , float _charOffset
-            , float _maxLength
-            , ETextHorizontAlign _horizontAlign
-            , ETextVerticalAlign _verticalAlign
-            , float _charScale
-            , bool _autoScale
-            , bool _justify
-            , uint32_t _params );
+        bool initialize( const ConstString & _key, const TextEntryDesc & _desc );
 
     public:
         const ConstString & getKey() const override;
-        const Char * getValue( size_t * const _size ) const override;
+        const String & getValue() const override;
 
     public:
         const Tags & getTags() const override;
@@ -48,6 +34,7 @@ namespace Mengine
         float getLineOffset() const override;
         float getCharOffset() const override;
         float getMaxLength() const override;
+        float getMaxHeight() const override;
         ETextHorizontAlign getHorizontAlign() const override;
         ETextVerticalAlign getVerticalAlign() const override;
         float getCharScale() const override;
@@ -70,6 +57,7 @@ namespace Mengine
         float m_lineOffset;
         float m_charOffset;
         float m_maxLength;
+        float m_maxHeight;
 
         ETextHorizontAlign m_horizontAlign;
         ETextVerticalAlign m_verticalAlign;

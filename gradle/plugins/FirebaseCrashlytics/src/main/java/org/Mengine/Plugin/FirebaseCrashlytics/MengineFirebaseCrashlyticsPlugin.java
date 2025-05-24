@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Size;
 
+import com.google.firebase.crashlytics.CustomKeysAndValues;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import org.Mengine.Base.BuildConfig;
@@ -12,6 +13,7 @@ import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineFatalErrorException;
 import org.Mengine.Base.MengineLog;
+import org.Mengine.Base.MengineParamLoggerException;
 import org.Mengine.Base.MengineParamLoggerMessage;
 import org.Mengine.Base.MengineNative;
 import org.Mengine.Base.MengineService;
@@ -23,6 +25,7 @@ import org.Mengine.Base.MengineListenerLogger;
 import org.Mengine.Base.MengineListenerUser;
 import org.Mengine.Base.MengineUtils;
 
+import java.util.List;
 import java.util.Map;
 
 public class MengineFirebaseCrashlyticsPlugin extends MengineService implements MengineListenerLogger, MengineListenerApplication, MengineListenerActivity, MengineListenerEngine, MengineListenerUser {
@@ -83,8 +86,8 @@ public class MengineFirebaseCrashlyticsPlugin extends MengineService implements 
     }
 
     @Override
-    public void onMengineChangeUserId(@NonNull MengineApplication application, String userId) {
-        FirebaseCrashlytics.getInstance().setUserId(userId);
+    public void onMengineChangeUserId(@NonNull MengineApplication application, String oldUserId, String newUserId) {
+        FirebaseCrashlytics.getInstance().setUserId(newUserId);
     }
 
     @Override
@@ -130,14 +133,6 @@ public class MengineFirebaseCrashlyticsPlugin extends MengineService implements 
         }
     }
 
-    public void recordLog(String msg) {
-        this.logInfo("recordLog msg: %s"
-            , msg
-        );
-
-        FirebaseCrashlytics.getInstance().log(msg);
-    }
-
     public void testCrash() {
         this.logMessage("testCrash");
 
@@ -167,5 +162,42 @@ public class MengineFirebaseCrashlyticsPlugin extends MengineService implements 
                 FirebaseCrashlytics.getInstance().recordException(new MengineFatalErrorException(message.MESSAGE_DATA));
             }break;
         }
+    }
+
+    @Override
+    public void onMengineException(@NonNull MengineApplication application, @NonNull MengineParamLoggerException exception) {
+        CustomKeysAndValues.Builder builder = new CustomKeysAndValues.Builder();
+        builder.putString("category", exception.EXCEPTION_CATEGORY);
+
+        for (Map.Entry<String, Object> entry : exception.EXCEPTION_ATTRIBUTES.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+
+            if (value instanceof Boolean booleanValue) {
+                builder.putBoolean(key, booleanValue);
+            } else if (value instanceof Integer integerValue) {
+                builder.putInt(key, integerValue);
+            } else if (value instanceof Long longValue) {
+                builder.putLong(key, longValue);
+            } else if (value instanceof Float floatValue) {
+                builder.putFloat(key, floatValue);
+            } else if (value instanceof Double doubleValue) {
+                builder.putDouble(key, doubleValue);
+            } else if (value instanceof String stringValue) {
+                builder.putString(key, stringValue);
+            } else if (value instanceof List<?> listValue ) {
+
+            } else {
+                this.logError("[ERROR] unsupported custom key: %s value: %s class: %s"
+                    , key
+                    , value
+                    , value.getClass()
+                );
+            }
+        }
+
+        CustomKeysAndValues values = builder.build();
+
+        FirebaseCrashlytics.getInstance().recordException(exception.EXCEPTION_THROWABLE, values);
     }
 }

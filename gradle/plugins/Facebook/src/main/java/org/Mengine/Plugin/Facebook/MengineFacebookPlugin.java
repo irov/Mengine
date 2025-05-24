@@ -227,8 +227,8 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
     }
 
     @Override
-    public void onMengineChangeUserId(@NonNull MengineApplication application, String userId) {
-        AppEventsLogger.setUserID(userId);
+    public void onMengineChangeUserId(@NonNull MengineApplication application, String oldUserId, String newUserId) {
+        AppEventsLogger.setUserID(newUserId);
     }
 
     @Override

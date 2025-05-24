@@ -8,6 +8,7 @@ import com.devtodev.analytics.external.analytics.DTDAnalytics;
 import com.devtodev.analytics.external.analytics.DTDAnalyticsConfiguration;
 import com.devtodev.analytics.external.analytics.DTDCustomEventParameters;
 
+import org.Mengine.Base.MengineListenerTransparencyConsent;
 import org.Mengine.Base.MengineParamAdRevenue;
 import org.Mengine.Base.MengineAnalyticsEventCategory;
 import org.Mengine.Base.MengineParamAnalyticsEvent;
@@ -17,13 +18,14 @@ import org.Mengine.Base.MengineListenerAnalytics;
 import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineListenerGame;
 import org.Mengine.Base.MengineListenerUser;
+import org.Mengine.Base.MengineParamTransparencyConsent;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineUtils;
 
 import java.util.Map;
 
-public class MengineDevToDevPlugin extends MengineService implements MengineListenerAnalytics, MengineListenerAdRevenue, MengineListenerApplication, MengineListenerUser, MengineListenerGame {
+public class MengineDevToDevPlugin extends MengineService implements MengineListenerAnalytics, MengineListenerAdRevenue, MengineListenerApplication, MengineListenerUser, MengineListenerTransparencyConsent, MengineListenerGame {
     public static final String SERVICE_NAME = "DevToDev";
     public static final boolean SERVICE_EMBEDDING = true;
 
@@ -77,12 +79,16 @@ public class MengineDevToDevPlugin extends MengineService implements MengineList
     }
 
     @Override
-    public void onMengineChangeUserId(@NonNull MengineApplication application, String userId) {
+    public void onMengineChangeUserId(@NonNull MengineApplication application, String oldUserId, String newUserId) {
         if (m_initializeSuccessful == false) {
             return;
         }
 
-        DTDAnalytics.INSTANCE.setUserId(userId);
+        if (oldUserId == null) {
+            DTDAnalytics.INSTANCE.setUserId(newUserId);
+        } else {
+            DTDAnalytics.INSTANCE.replaceUserId(oldUserId, newUserId);
+        }
     }
 
     @Override
@@ -91,7 +97,24 @@ public class MengineDevToDevPlugin extends MengineService implements MengineList
             return;
         }
 
-        DTDAnalytics.INSTANCE.setUserId(null);
+        //ToDo
+    }
+
+    @Override
+    public void onMengineTransparencyConsent(@NonNull MengineApplication application, @NonNull MengineParamTransparencyConsent tcParam) {
+        if (m_initializeSuccessful == false) {
+            return;
+        }
+
+        boolean trackingAvailability = true;
+
+        if (tcParam.isPending() == true) {
+            trackingAvailability = false;
+        } else if (tcParam.getConsentAnalyticsStorage() == false) {
+            trackingAvailability = false;
+        }
+
+        DTDAnalytics.INSTANCE.setTrackingAvailability(trackingAvailability);
     }
 
     private void updateEventParameters(@NonNull DTDCustomEventParameters dtd, Map<String, Object> parameters) {

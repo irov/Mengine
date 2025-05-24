@@ -5,7 +5,9 @@
 
 #include "TextEntry.h"
 #include "TextLocalePackage.h"
-#include "TextArgument.h"
+#include "TextArgumentValue.h"
+#include "TextArgumentId.h"
+#include "TextArgumentContext.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Hashtable.h"
@@ -58,48 +60,17 @@ namespace Mengine
         void removeTextAliasArguments( const ConstString & _environment, const ConstString & _textId ) override;
 
     public:
-        TextEntryInterfacePtr createTextEntry( const ConstString & _textId
-            , const Char * _text
-            , size_t _size
-            , const Tags & _tags
-            , const FontInterfacePtr & _font
-            , const Color & _colorFont
-            , float _lineOffset
-            , float _charOffset
-            , float _maxLength
-            , ETextHorizontAlign _horizontAlign
-            , ETextVerticalAlign _verticalAlign
-            , float _charScale
-            , bool _autoScale
-            , bool _justify
-            , uint32_t _params
-            , const DocumentInterfacePtr & _doc ) override;
+        TextEntryInterfacePtr createTextEntry( const ConstString & _textId, const TextEntryDesc & _desc, const DocumentInterfacePtr & _doc ) override;
 
     public:
-        bool addTextEntry( const ConstString & _textId
-            , const Char * _text
-            , size_t _size
-            , const Tags & _tags
-            , const FontInterfacePtr & _font
-            , const Color & _colorFont
-            , float _lineOffset
-            , float _charOffset
-            , float _maxLength
-            , ETextHorizontAlign _horizontAlign
-            , ETextVerticalAlign _verticalAlign
-            , float _charScale
-            , bool _autoScale
-            , bool _justify
-            , uint32_t _params
-            , bool _isOverride
-            , bool * const _isDublicate
-            , const DocumentInterfacePtr & _doc ) override;
-
+        bool addTextEntry( const ConstString & _textId, const TextEntryDesc & _desc, bool _isOverride, bool * const _isDublicate, const DocumentInterfacePtr & _doc ) override;
         bool removeTextEntry( const ConstString & _textId ) override;
         void removeTextEntries( const Tags & _tag ) override;
 
     protected:
-        TextArgumentInterfacePtr createTextArgument( const DocumentInterfacePtr & _doc ) override;
+        TextArgumentInterfacePtr createTextArgumentValue( const String & _value, const DocumentInterfacePtr & _doc ) override;
+        TextArgumentInterfacePtr createTextArgumentId( const ConstString & _textId, const DocumentInterfacePtr & _doc ) override;
+        TextArgumentInterfacePtr createTextArgumentContext( const LambdaTextArgumentContext & _context, const DocumentInterfacePtr & _doc ) override;
 
     protected:
         const VectorU32String & getLineDelims() const override;
@@ -122,7 +93,9 @@ namespace Mengine
 
         FactoryInterfacePtr m_factoryTextEntry;
         FactoryInterfacePtr m_factoryTextLocalePackage;
-        FactoryInterfacePtr m_factoryTextArgument;
+        FactoryInterfacePtr m_factoryTextArgumentValue;
+        FactoryInterfacePtr m_factoryTextArgumentId;
+        FactoryInterfacePtr m_factoryTextArgumentContext;
 
         VectorU32String m_lineDelims;
 

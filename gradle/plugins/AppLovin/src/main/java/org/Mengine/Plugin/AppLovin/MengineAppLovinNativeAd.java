@@ -76,13 +76,8 @@ class MengineAppLovinNativeAd extends MengineAppLovinBase implements MaxAdRevenu
 
         MaxNativeAdView adView = new MaxNativeAdView(binder, application);
 
+        adView.setVisibility(View.GONE);
         adView.setBackgroundColor(Color.TRANSPARENT);
-
-        if (m_visible == false) {
-            adView.setVisibility(View.GONE);
-        } else {
-            adView.setVisibility(View.VISIBLE);
-        }
 
         m_adView = adView;
 

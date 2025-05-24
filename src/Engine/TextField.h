@@ -98,6 +98,11 @@ namespace Mengine
         bool hasMaxLength() const;
         void removeMaxLength();
 
+        void setMaxHeight( float _maxHeight );
+        float getMaxHeight() const;
+        bool hasMaxHeight() const;
+        void removeMaxHeight();
+
         void setAutoScale( bool _autoScale );
         bool getAutoScale() const;
         bool hasAutoScale() const;
@@ -229,6 +234,7 @@ namespace Mengine
         float calcLineOffset() const;
         float calcCharOffset() const;
         float calcMaxLength() const;
+        float calcMaxHeight() const;
         const Color & calcFontColor() const;
         ETextHorizontAlign calcHorizontAlign() const;
         ETextVerticalAlign calcVerticalAlign() const;
@@ -265,6 +271,7 @@ namespace Mengine
         float m_charScale;
 
         float m_maxLength;
+        float m_maxHeight;
         mutable float m_autoScaleFactor;
 
         FontInterfacePtr m_font;

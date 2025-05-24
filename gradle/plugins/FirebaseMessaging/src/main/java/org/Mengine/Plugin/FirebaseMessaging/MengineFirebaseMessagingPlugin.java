@@ -45,7 +45,7 @@ public class MengineFirebaseMessagingPlugin extends MengineService implements Me
                     Exception exception = task.getException();
 
                     this.logError("[ERROR] fetching FCM registration token failed: %s"
-                        , exception.getMessage()
+                        , exception != null ? exception.getMessage() : "null"
                     );
 
                     return;

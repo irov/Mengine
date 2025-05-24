@@ -129,9 +129,9 @@ public class MengineSentryPlugin extends MengineService implements MengineListen
     }
 
     @Override
-    public void onMengineChangeUserId(@NonNull MengineApplication application, String sessionId) {
+    public void onMengineChangeUserId(@NonNull MengineApplication application, String oldUserId, String newUserId) {
         User user = new User();
-        user.setId(sessionId);
+        user.setId(newUserId);
 
         Sentry.setUser(user);
     }

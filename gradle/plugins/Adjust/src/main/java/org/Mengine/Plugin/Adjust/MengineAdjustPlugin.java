@@ -3,6 +3,8 @@ package org.Mengine.Plugin.Adjust;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,11 +12,14 @@ import androidx.annotation.NonNull;
 import com.adjust.sdk.Adjust;
 import com.adjust.sdk.AdjustAdRevenue;
 import com.adjust.sdk.AdjustConfig;
+import com.adjust.sdk.AdjustDeeplink;
 import com.adjust.sdk.AdjustEvent;
 import com.adjust.sdk.AdjustThirdPartySharing;
 import com.adjust.sdk.LogLevel;
+import com.adjust.sdk.OnDeferredDeeplinkResponseListener;
 
 import org.Mengine.Base.BuildConfig;
+import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineAdFormat;
 import org.Mengine.Base.MengineAdMediation;
 import org.Mengine.Base.MengineParamAdRevenue;
@@ -114,9 +119,68 @@ public class MengineAdjustPlugin extends MengineService implements MengineListen
             application.setAcquisitionCampaign(network, campaign);
         });
 
+        config.setOnEventTrackingSucceededListener(eventSuccess -> {
+            this.logInfo("Adjust event tracking succeeded: %s"
+                , eventSuccess
+            );
+
+            //ToDo
+        });
+
+        config.setOnEventTrackingFailedListener(eventFailure -> {
+            this.logInfo("Adjust event tracking failed: %s"
+                , eventFailure
+            );
+
+            //ToDo
+        });
+
+        config.setOnSessionTrackingSucceededListener(sessionSuccess -> {
+            this.logInfo("Adjust session tracking succeeded: %s"
+                , sessionSuccess
+            );
+
+            //ToDo
+        });
+
+        config.setOnSessionTrackingFailedListener(sessionFailure -> {
+            this.logInfo("Adjust session tracking failed: %s"
+                , sessionFailure
+            );
+
+            //ToDo
+        });
+
+        config.setOnDeferredDeeplinkResponseListener(deeplink -> {
+            this.logInfo("Adjust deferred deep link callback called: %s"
+                , deeplink
+            );
+
+            return true;
+        });
+
         Adjust.initSdk(config);
 
         application.registerActivityLifecycleCallbacks(new MengineAdjustPlugin.AdjustLifecycleCallbacks());
+    }
+
+    @Override
+    public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
+        Intent intent = activity.getIntent();
+        if (intent != null) {
+            this.onNewIntent(activity, intent);
+        }
+    }
+
+    @Override
+    public void onNewIntent(@NonNull MengineActivity activity, Intent intent) {
+        Uri data = intent.getData();
+        if (data != null) {
+            AdjustDeeplink deeplink = new AdjustDeeplink(data);
+            Context context = activity.getApplicationContext();
+
+            Adjust.processDeeplink(deeplink, context);
+        }
     }
 
     private static String getAdjustMediation(@NonNull MengineAdMediation adMediation) {

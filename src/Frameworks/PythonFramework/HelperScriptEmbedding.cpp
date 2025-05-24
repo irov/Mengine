@@ -537,7 +537,7 @@ namespace Mengine
                 return String( uid, _length );
             }
             //////////////////////////////////////////////////////////////////////////
-            const Char * s_getTextFromId( const ConstString & _textId )
+            const String & s_getTextFromId( const ConstString & _textId )
             {
                 const TextEntryInterfacePtr & textEntry = TEXT_SERVICE()
                     ->getTextEntry( _textId );
@@ -547,8 +547,7 @@ namespace Mengine
                     , MENGINE_DOCUMENT_STR( MENGINE_DOCUMENT_PYBIND )
                 );
 
-                size_t value_size;
-                const Char * value = textEntry->getValue( &value_size );
+                const String & value = textEntry->getValue();
 
                 return value;
             }
@@ -595,9 +594,7 @@ namespace Mengine
                         String value = py_obj.extract();
 
                         TextArgumentInterfacePtr argument = TEXT_SERVICE()
-                            ->createTextArgument( MENGINE_DOCUMENT_PYBIND );
-
-                        argument->setValue( value );
+                            ->createTextArgumentValue( value, MENGINE_DOCUMENT_PYBIND );
 
                         arguments.emplace_back( argument );
                     }
@@ -609,18 +606,13 @@ namespace Mengine
                         Helper::unicodeToUtf8( value, &utf8_value );
 
                         TextArgumentInterfacePtr argument = TEXT_SERVICE()
-                            ->createTextArgument( MENGINE_DOCUMENT_PYBIND );
-
-                        argument->setValue( utf8_value );
+                            ->createTextArgumentValue( utf8_value, MENGINE_DOCUMENT_PYBIND );
 
                         arguments.emplace_back( argument );
                     }
                     else if( py_obj.is_callable() == true )
                     {
-                        TextArgumentInterfacePtr argument = TEXT_SERVICE()
-                            ->createTextArgument( MENGINE_DOCUMENT_PYBIND );
-
-                        argument->setContext( [py_obj]( String * _value )
+                        LambdaTextArgumentContext context = [py_obj]( String * _value )
                         {
                             pybind::object new_value = py_obj.call();
 
@@ -634,9 +626,34 @@ namespace Mengine
                             _value->assign( new_value_str.c_str(), new_value_str.size() );
 
                             return true;
-                        } );
+                        };
+
+                        TextArgumentInterfacePtr argument = TEXT_SERVICE()
+                            ->createTextArgumentContext( context, MENGINE_DOCUMENT_PYBIND );
 
                         arguments.emplace_back( argument );
+                    }
+                    else if( py_obj.is_dict() == true )
+                    {
+                        pybind::dict py_params = py_obj.extract();
+
+                        ConstString textId = py_params.get_default( "TextId", ConstString::none() );
+
+                        if( textId != ConstString::none() )
+                        {
+                            TextArgumentInterfacePtr argument = TEXT_SERVICE()
+                                ->createTextArgumentId( textId, MENGINE_DOCUMENT_PYBIND );
+
+                            arguments.emplace_back( argument );
+                        }
+                        else
+                        {
+                            LOGGER_ERROR( "textfield_setTextFormatArgs '%s' not support params"
+                                , py_params.repr().c_str()
+                            );
+
+                            return false;
+                        }
                     }
                     else
                     {
@@ -650,9 +667,7 @@ namespace Mengine
                         const Char * value_str = value.c_str();
 
                         TextArgumentInterfacePtr argument = TEXT_SERVICE()
-                            ->createTextArgument( MENGINE_DOCUMENT_PYBIND );
-
-                        argument->setValue( value_str );
+                            ->createTextArgumentValue( value_str, MENGINE_DOCUMENT_PYBIND );
 
                         arguments.emplace_back( argument );
                     }
@@ -3387,15 +3402,14 @@ namespace Mengine
                     );
                 }
 
-                size_t text_size;
-                const Char * text = entry->getValue( &text_size );
+                const String & text = entry->getValue();
 
                 WString unicode;
-                if( Helper::utf8ToUnicodeSize( text, text_size, &unicode ) == false )
+                if( Helper::utf8ToUnicode( text, &unicode ) == false )
                 {
                     pybind::throw_exception( "invalid text key '%s' convert '%s' to unicode"
                         , _key.c_str()
-                        , text
+                        , text.c_str()
                     );
                 }
 
@@ -3413,8 +3427,9 @@ namespace Mengine
                     );
                 }
 
-                size_t text_size;
-                entry->getValue( &text_size );
+                const String & text = entry->getValue();
+
+                size_t text_size = text.size();
 
                 return text_size;
             }

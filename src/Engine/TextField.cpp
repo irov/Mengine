@@ -37,6 +37,7 @@ namespace Mengine
         , m_extraThickness( 0.f )
         , m_charScale( 1.f )
         , m_maxLength( -1.f )
+        , m_maxHeight( -1.f )
         , m_autoScaleFactor( 1.f )
         , m_lineOffset( 0.f )
         , m_charOffset( 0.f )
@@ -521,6 +522,49 @@ namespace Mengine
         m_maxLength = -1.f;
 
         m_textParams &= ~EFP_MAX_LENGTH;
+
+        this->invalidateTextLines();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::setMaxHeight( float _maxHeight )
+    {
+        MENGINE_ASSERTION_FATAL( _maxHeight > 0.f, "text field '%s' max height '%f' must be >= 0.f"
+            , this->getName().c_str()
+            , _maxHeight
+        );
+
+        if( m_maxHeight == _maxHeight )
+        {
+            return;
+        }
+
+        m_maxHeight = _maxHeight;
+
+        m_textParams |= EFP_MAX_HEIGHT;
+
+        this->invalidateTextLines();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float TextField::getMaxHeight() const
+    {
+        return m_maxHeight;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TextField::hasMaxHeight() const
+    {
+        return (m_textParams & EFP_MAX_HEIGHT) == EFP_MAX_HEIGHT;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::removeMaxHeight()
+    {
+        if( (m_textParams & EFP_MAX_HEIGHT) != EFP_MAX_HEIGHT )
+        {
+            return;
+        }
+
+        m_maxHeight = -1.f;
+
+        m_textParams &= ~EFP_MAX_HEIGHT;
 
         this->invalidateTextLines();
     }
@@ -1330,6 +1374,12 @@ namespace Mengine
             , this->getName().c_str()
         );
 
+        float maxHeight = this->calcMaxHeight();
+
+        MENGINE_ASSERTION( !(maxLength == -1.f && maxHeight != -1.f), "text '%s' invalid enable 'maxHeight' and not setup 'maxLength'"
+            , this->getName().c_str()
+        );
+
         float justifyLength = -1.f;
 
         bool justify = this->calcJustify();
@@ -1622,6 +1672,30 @@ namespace Mengine
         if( (m_textParams & EFP_MAX_LENGTH) == EFP_MAX_LENGTH )
         {
             return m_maxLength;
+        }
+
+        return -1.f;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float TextField::calcMaxHeight() const
+    {
+        const TextEntryInterfacePtr & textEntry = this->getTotalTextEntry();
+
+        if( textEntry != nullptr )
+        {
+            uint32_t params = textEntry->getFontParams();
+
+            if( (params & EFP_MAX_HEIGHT) == EFP_MAX_HEIGHT )
+            {
+                float value = textEntry->getMaxHeight();
+
+                return value;
+            }
+        }
+
+        if( (m_textParams & EFP_MAX_HEIGHT) == EFP_MAX_HEIGHT )
+        {
+            return m_maxHeight;
         }
 
         return -1.f;
@@ -2071,23 +2145,26 @@ namespace Mengine
     {
         const TextEntryInterfacePtr & textEntry = this->getTotalTextEntry();
 
-        size_t textSize;
         const Char * textValue;
+        size_t textValueLen;
 
         if( textEntry == nullptr )
         {
-            textSize = m_text.size();
+            textValueLen = m_text.size();
             textValue = m_text.c_str();
         }
         else
         {
-            textValue = textEntry->getValue( &textSize );
+            const String & value = textEntry->getValue();
+
+            textValue = value.c_str();
+            textValueLen = value.size();
         }
 
         const VectorTextArguments & textArguments = this->getTotalTextArguments();
 
         String fmt;
-        if( Helper::fillStringFormat( textValue, textSize, textArguments, &fmt ) == false )
+        if( Helper::fillStringFormat( textValue, textValueLen, textArguments, &fmt ) == false )
         {
             LOGGER_ERROR( "text field '%s' textId '%s' (base '%s') invalid formating string text '%s' format with args %" MENGINE_PRIuPTR " [alias env '%s']"
                 , this->getName().c_str()
@@ -2133,10 +2210,9 @@ namespace Mengine
                 const TextEntryInterfacePtr & textEntry = TEXT_SERVICE()
                     ->getTextEntry( aliasTestId );
 
-                size_t textSize;
-                const Char * textValue = textEntry->getValue( &textSize );
+                const String & text = textEntry->getValue();
 
-                _out->assign( textValue, textSize );
+                *_out = text;
 
                 return true;
             }, _text, &fmtTagMatched ) == false )
@@ -2212,24 +2288,27 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t TextField::getTextExpectedArgument() const
     {
-        size_t textSize;
         const Char * textValue;
+        size_t textValueLen;
 
         const TextEntryInterfacePtr & textEntry = this->getTotalTextEntry();
 
         if( textEntry == nullptr )
         {
-            textSize = m_text.size();
             textValue = m_text.c_str();
+            textValueLen = m_text.size();            
         }
         else
         {
-            textValue = textEntry->getValue( &textSize );
+            const String & value  = textEntry->getValue();
+
+            textValue = value.c_str();
+            textValueLen = value.size();
         }
 
         try
         {
-            uint32_t expected_args = Helper::getStringFormatExpectedArgs( textValue, textSize );
+            uint32_t expected_args = Helper::getStringFormatExpectedArgs( textValue, textValueLen );
 
             return expected_args;
         }

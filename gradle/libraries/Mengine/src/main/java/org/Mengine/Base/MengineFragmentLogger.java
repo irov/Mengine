@@ -14,4 +14,8 @@ public class MengineFragmentLogger extends MengineFragment<MengineListenerLogger
     public void log(@NonNull MengineParamLoggerMessage message) {
         this.propagate(MengineListenerLogger::onMengineLog, message);
     }
+
+    public void exception(@NonNull MengineParamLoggerException exception) {
+        this.propagate(MengineListenerLogger::onMengineException, exception);
+    }
 }

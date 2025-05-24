@@ -10,6 +10,7 @@ import java.util.Arrays;
 public class MengineService implements MengineServiceInterface {
     private MengineApplication m_application;
     private String m_serviceName;
+    private String m_serviceTag;
     private boolean m_embedding;
     private Boolean m_availableStatus = null;
 
@@ -18,6 +19,8 @@ public class MengineService implements MengineServiceInterface {
         m_application = application;
         m_serviceName = serviceName;
         m_embedding = embedding;
+
+        m_serviceTag = "Mengine" + m_serviceName;
 
         return true;
     }
@@ -34,6 +37,11 @@ public class MengineService implements MengineServiceInterface {
     @Override
     public String getServiceName() {
         return m_serviceName;
+    }
+
+    @Override
+    public String getServiceTag() {
+        return m_serviceTag;
     }
 
     @SuppressWarnings("unchecked")
@@ -148,55 +156,64 @@ public class MengineService implements MengineServiceInterface {
     }
 
     public String logVerbose(String format, Object ... args) {
-        String m = MengineLog.logVerbose("Mengine" + m_serviceName, format, args);
+        String t = this.getServiceTag();
+        String m = MengineLog.logVerbose(t, format, args);
 
         return m;
     }
 
     public String logDebug(String format, Object ... args) {
-        String m = MengineLog.logDebug("Mengine" + m_serviceName, format, args);
+        String t = this.getServiceTag();
+        String m = MengineLog.logDebug(t, format, args);
 
         return m;
     }
 
     public String logInfo(String format, Object ... args) {
-        String m = MengineLog.logInfo("Mengine" + m_serviceName, format, args);
+        String t = this.getServiceTag();
+        String m = MengineLog.logInfo(t, format, args);
 
         return m;
     }
 
     public String logMessage(String format, Object ... args) {
-        String m = MengineLog.logMessage("Mengine" + m_serviceName, format, args);
+        String t = this.getServiceTag();
+        String m = MengineLog.logMessage(t, format, args);
 
         return m;
     }
 
     public String logMessageProtected(String format, Object ... args) {
-        String m = MengineLog.logMessageProtected("Mengine" + m_serviceName, format, args);
+        String t = this.getServiceTag();
+        String m = MengineLog.logMessageProtected(t, format, args);
 
         return m;
     }
 
     public String logMessageRelease(String format, Object ... args) {
-        String m = MengineLog.logMessageRelease("Mengine" + m_serviceName, format, args);
+        String t = this.getServiceTag();
+        String m = MengineLog.logMessageRelease(t, format, args);
 
         return m;
     }
 
     public String logWarning(String format, Object ... args) {
-        String m = MengineLog.logWarning("Mengine" + m_serviceName, format, args);
+        String t = this.getServiceTag();
+        String m = MengineLog.logWarning(t, format, args);
 
         return m;
     }
 
     public String logError(String format, Object ... args) {
-        String m = MengineLog.logError("Mengine" + m_serviceName, format, args);
+        String t = this.getServiceTag();
+        String m = MengineLog.logError(t, format, args);
 
         return m;
     }
 
     public void assertionError(String format, Object ... args) {
-        MengineUtils.throwAssertionError("Mengine" + m_serviceName, null, format, args);
+        String t = this.getServiceTag();
+        MengineUtils.throwAssertionError(t, null, format, args);
     }
 
     public MengineAnalyticsEventBuilder buildEvent(@Size(min = 1L,max = 40L) String name) {
@@ -206,7 +223,8 @@ public class MengineService implements MengineServiceInterface {
     }
 
     public void pythonCall(String method, Object ... args) {
-        m_application.pythonCall("Mengine" + m_serviceName, method, args);
+        String t = this.getServiceTag();
+        m_application.pythonCall(t, method, args);
     }
 
     public void activateSemaphore(String name) {

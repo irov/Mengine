@@ -51,7 +51,9 @@ namespace Mengine
     {
         m_factoryTextEntry = Helper::makeFactoryPool<TextEntry, 128>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryTextLocalePackage = Helper::makeFactoryPool<TextLocalePackage, 4>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryTextArgument = Helper::makeFactoryPool<TextArgument, 128>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryTextArgumentValue = Helper::makeFactoryPool<TextArgumentValue, 128>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryTextArgumentId = Helper::makeFactoryPool<TextArgumentId, 128>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryTextArgumentContext = Helper::makeFactoryPool<TextArgumentContext, 128>( MENGINE_DOCUMENT_FACTORABLE );
 
         uint32_t Engine_TextServiceReserveTexts = CONFIG_VALUE_INTEGER( "Engine", "TextServiceReserveTexts", 1024U );
 
@@ -82,11 +84,15 @@ namespace Mengine
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTextEntry );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTextLocalePackage );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTextArgument );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTextArgumentValue );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTextArgumentId );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTextArgumentContext );
 
         m_factoryTextEntry = nullptr;
         m_factoryTextLocalePackage = nullptr;
-        m_factoryTextArgument = nullptr;
+        m_factoryTextArgumentValue = nullptr;
+        m_factoryTextArgumentId = nullptr;
+        m_factoryTextArgumentContext = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     class TextService::TextManagerLoadSaxCallback
@@ -124,23 +130,12 @@ namespace Mengine
             ConstString textKey;
             ConstString fontName;
 
-            float charOffset = 0.f;
-            float lineOffset = 0.f;
-            float maxLength = 0.f;
+            TextEntryDesc desc;
 
-            ETextHorizontAlign horizontAlign = ETFHA_LEFT;
-            ETextVerticalAlign verticalAlign = ETFVA_BOTTOM;
-
-            float charScale = 1.f;
-            bool autoScale = false;
-            bool justify = false;
-
-            Color colorFont;
+            desc.params = EFP_NONE;
 
             bool isOverride = false;
             bool isEmpty = false;
-
-            uint32_t params = 0;
 
             for( uint32_t i = 0; i != _count; ++i )
             {
@@ -182,12 +177,15 @@ namespace Mengine
                         text_str_value.assign( str_value );
                         text_str_size = str_value_size;
                     }
+
+                    desc.text = text_str_value.c_str();
+                    desc.size = text_str_size;
                 }
                 else if( StdString::strcmp( str_key, "Font" ) == 0 )
                 {
                     fontName = Helper::stringizeString( str_value );
 
-                    params |= EFP_FONT;
+                    desc.params |= EFP_FONT;
                 }
                 else if( StdString::strcmp( str_key, "CharOffset" ) == 0 )
                 {
@@ -203,9 +201,9 @@ namespace Mengine
                         this->setError();
                     }
 
-                    charOffset = value;
+                    desc.charOffset = value;
 
-                    params |= EFP_CHAR_OFFSET;
+                    desc.params |= EFP_CHAR_OFFSET;
                 }
                 else if( StdString::strcmp( str_key, "LineOffset" ) == 0 )
                 {
@@ -221,9 +219,9 @@ namespace Mengine
                         this->setError();
                     }
 
-                    lineOffset = value;
+                    desc.lineOffset = value;
 
-                    params |= EFP_LINE_OFFSET;
+                    desc.params |= EFP_LINE_OFFSET;
                 }
                 else if( StdString::strcmp( str_key, "Color" ) == 0 )
                 {
@@ -242,9 +240,9 @@ namespace Mengine
                         this->setError();
                     }
 
-                    colorFont.setRGBA( r, g, b, a );
+                    desc.colorFont.setRGBA( r, g, b, a );
 
-                    params |= EFP_COLOR_FONT;
+                    desc.params |= EFP_COLOR_FONT;
                 }
                 else if( StdString::strcmp( str_key, "MaxLength" ) == 0 )
                 {
@@ -260,9 +258,27 @@ namespace Mengine
                         this->setError();
                     }
 
-                    maxLength = value;
+                    desc.maxLength = value;
 
-                    params |= EFP_MAX_LENGTH;
+                    desc.params |= EFP_MAX_LENGTH;
+                }
+                else if( StdString::strcmp( str_key, "MaxHeight" ) == 0 )
+                {
+                    float value = 0.f;
+                    if( Helper::stringalized( str_value, &value ) == false )
+                    {
+                        LOGGER_ERROR( "text file '%s' invalid read for text '%s' tag [MaxHeight] '%s'"
+                            , Helper::getContentFullPath( m_content ).c_str()
+                            , textKey.c_str()
+                            , str_value
+                        );
+
+                        this->setError();
+                    }
+
+                    desc.maxHeight = value;
+
+                    desc.params |= EFP_MAX_HEIGHT;
                 }
                 else if( StdString::strcmp( str_key, "Override" ) == 0 )
                 {
@@ -284,21 +300,21 @@ namespace Mengine
                 {
                     if( StdString::strcmp( str_value, "Bottom" ) == 0 )
                     {
-                        verticalAlign = ETFVA_BOTTOM;
+                        desc.verticalAlign = ETFVA_BOTTOM;
 
-                        params |= EFP_VERTICAL_ALIGN;
+                        desc.params |= EFP_VERTICAL_ALIGN;
                     }
                     else if( StdString::strcmp( str_value, "Center" ) == 0 )
                     {
-                        verticalAlign = ETFVA_CENTER;
+                        desc.verticalAlign = ETFVA_CENTER;
 
-                        params |= EFP_VERTICAL_ALIGN;
+                        desc.params |= EFP_VERTICAL_ALIGN;
                     }
                     else if( StdString::strcmp( str_value, "Top" ) == 0 )
                     {
-                        verticalAlign = ETFVA_TOP;
+                        desc.verticalAlign = ETFVA_TOP;
 
-                        params |= EFP_VERTICAL_ALIGN;
+                        desc.params |= EFP_VERTICAL_ALIGN;
                     }
                     else
                     {
@@ -315,21 +331,21 @@ namespace Mengine
                 {
                     if( StdString::strcmp( str_value, "Left" ) == 0 )
                     {
-                        horizontAlign = ETFHA_LEFT;
+                        desc.horizontAlign = ETFHA_LEFT;
 
-                        params |= EFP_HORIZONTAL_ALIGN;
+                        desc.params |= EFP_HORIZONTAL_ALIGN;
                     }
                     else if( StdString::strcmp( str_value, "Center" ) == 0 )
                     {
-                        horizontAlign = ETFHA_CENTER;
+                        desc.horizontAlign = ETFHA_CENTER;
 
-                        params |= EFP_HORIZONTAL_ALIGN;
+                        desc.params |= EFP_HORIZONTAL_ALIGN;
                     }
                     else if( StdString::strcmp( str_value, "Right" ) == 0 )
                     {
-                        horizontAlign = ETFHA_RIGHT;
+                        desc.horizontAlign = ETFHA_RIGHT;
 
-                        params |= EFP_HORIZONTAL_ALIGN;
+                        desc.params |= EFP_HORIZONTAL_ALIGN;
                     }
                     else
                     {
@@ -356,9 +372,9 @@ namespace Mengine
                         this->setError();
                     }
 
-                    charScale = value;
+                    desc.charScale = value;
 
-                    params |= EFP_CHAR_SCALE;
+                    desc.params |= EFP_CHAR_SCALE;
                 }
                 else if( StdString::strcmp( str_key, "AutoScale" ) == 0 )
                 {
@@ -374,9 +390,9 @@ namespace Mengine
                         this->setError();
                     }
 
-                    autoScale = (value != 0);
+                    desc.autoScale = (value != 0);
 
-                    params |= EFP_CHAR_SCALE;
+                    desc.params |= EFP_CHAR_SCALE;
                 }
                 else if( StdString::strcmp( str_key, "Justify" ) == 0 )
                 {
@@ -392,9 +408,9 @@ namespace Mengine
                         this->setError();
                     }
 
-                    justify = (value != 0);
+                    desc.justify = (value != 0);
 
-                    params |= EFP_JUSTIFY;
+                    desc.params |= EFP_JUSTIFY;
                 }
                 else if( StdString::strcmp( str_key, "Empty" ) == 0 )
                 {
@@ -448,12 +464,16 @@ namespace Mengine
 
                     this->setError();
                 }
+
+                desc.font = font;
+
+                desc.params |= EFP_FONT;
             }
 
             bool isDublicate = false;
 
             Tags tags;
-            if( m_textService->addTextEntry( textKey, text_str_value.c_str(), text_str_size, tags, font, colorFont, lineOffset, charOffset, maxLength, horizontAlign, verticalAlign, charScale, autoScale, justify, params, isOverride, &isDublicate, MENGINE_DOCUMENT_VALUE( m_doc, nullptr ) ) == false )
+            if( m_textService->addTextEntry( textKey, desc, isOverride, &isDublicate, MENGINE_DOCUMENT_VALUE( m_doc, nullptr ) ) == false )
             {
                 LOGGER_ERROR( "text file '%s' invalid add text key '%s'"
                     , Helper::getContentFullPath( m_content ).c_str()
@@ -627,28 +647,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    TextEntryInterfacePtr TextService::createTextEntry( const ConstString & _key
-        , const Char * _text
-        , size_t _size
-        , const Tags & _tags
-        , const FontInterfacePtr & _font
-        , const Color & _colorFont
-        , float _lineOffset
-        , float _charOffset
-        , float _maxLength
-        , ETextHorizontAlign _horizontAlign
-        , ETextVerticalAlign _verticalAlign
-        , float _charScale
-        , bool _autoScale
-        , bool _justify
-        , uint32_t _params
-        , const DocumentInterfacePtr & _doc )
+    TextEntryInterfacePtr TextService::createTextEntry( const ConstString & _key, const TextEntryDesc & _desc, const DocumentInterfacePtr & _doc )
     {
         TextEntryPtr textEntry = m_factoryTextEntry->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( textEntry, "invalid create text entry" );
 
-        if( textEntry->initialize( _key, _text, _size, _tags, _font, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _charScale, _autoScale, _justify, _params ) == false )
+        if( textEntry->initialize( _key, _desc ) == false )
         {
             LOGGER_ERROR( "invalid initialize text id '%s'"
                 , _key.c_str()
@@ -660,24 +665,7 @@ namespace Mengine
         return textEntry;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextService::addTextEntry( const ConstString & _key
-        , const Char * _text
-        , size_t _size
-        , const Tags & _tags
-        , const FontInterfacePtr & _font
-        , const Color & _colorFont
-        , float _lineOffset
-        , float _charOffset
-        , float _maxLength
-        , ETextHorizontAlign _horizontAlign
-        , ETextVerticalAlign _verticalAlign
-        , float _charScale
-        , bool _autoScale
-        , bool _justify
-        , uint32_t _params
-        , bool _isOverride
-        , bool * const _isDublicate
-        , const DocumentInterfacePtr & _doc )
+    bool TextService::addTextEntry( const ConstString & _key, const TextEntryDesc & _desc, bool _isOverride, bool * const _isDublicate, const DocumentInterfacePtr & _doc )
     {
         if( _isDublicate != nullptr )
         {
@@ -695,18 +683,17 @@ namespace Mengine
 
             if( _isOverride == false )
             {
-                size_t text_size;
-                const Char * text = textEntry_has->getValue( &text_size );
+                const String & text = textEntry_has->getValue();
 
                 LOGGER_ERROR( "duplicate key found '%s' with text: %s"
                     , _key.c_str()
-                    , text
+                    , text.c_str()
                 );
 
                 return false;
             }
 
-            if( textEntry_has->initialize( _key, _text, _size, _tags, _font, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _charScale, _autoScale, _justify, _params ) == false )
+            if( textEntry_has->initialize( _key, _desc ) == false )
             {
                 LOGGER_ERROR( "invalid initialize text id '%s'"
                     , _key.c_str()
@@ -718,7 +705,7 @@ namespace Mengine
             return true;
         }
 
-        TextEntryInterfacePtr textEntry = this->createTextEntry( _key, _text, _size, _tags, _font, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _charScale, _autoScale, _justify, _params, _doc );
+        TextEntryInterfacePtr textEntry = this->createTextEntry( _key, _desc, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( textEntry, "invalid create text entry" );
 
@@ -756,13 +743,37 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    TextArgumentInterfacePtr TextService::createTextArgument( const DocumentInterfacePtr & _doc )
+    TextArgumentInterfacePtr TextService::createTextArgumentValue( const String & _value, const DocumentInterfacePtr & _doc )
     {
-        TextArgumentPtr textArgument = m_factoryTextArgument->createObject( _doc );
+        TextArgumentValuePtr argument = m_factoryTextArgumentValue->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( textArgument, "invalid create text argument" );
+        MENGINE_ASSERTION_MEMORY_PANIC( argument, "invalid create text argument" );
 
-        return textArgument;
+        argument->setValue( _value );
+
+        return argument;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    TextArgumentInterfacePtr TextService::createTextArgumentId( const ConstString & _textId, const DocumentInterfacePtr & _doc )
+    {
+        TextArgumentIdPtr argument = m_factoryTextArgumentId->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( argument, "invalid create text argument" );
+
+        argument->setTextId( _textId );
+
+        return argument;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    TextArgumentInterfacePtr TextService::createTextArgumentContext( const LambdaTextArgumentContext & _context, const DocumentInterfacePtr & _doc )
+    {
+        TextArgumentContextPtr argument = m_factoryTextArgumentContext->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( argument, "invalid create text argument" );
+
+        argument->setContext( _context );
+
+        return argument;
     }
     //////////////////////////////////////////////////////////////////////////
     bool TextService::hasTextEntry( const ConstString & _textId, TextEntryInterfacePtr * const _entry ) const

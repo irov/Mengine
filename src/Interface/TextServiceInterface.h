@@ -4,6 +4,7 @@
 #include "Interface/TextEntryInterface.h"
 
 #include "Kernel/VectorTextArguments.h"
+#include "Kernel/VectorString.h"
 #include "Kernel/Tags.h"
 
 namespace Mengine
@@ -18,48 +19,17 @@ namespace Mengine
         virtual bool unloadTextEntry( const VectorConstString & _locales, const ContentInterfacePtr & _content ) = 0;
 
     public:
-        virtual TextEntryInterfacePtr createTextEntry( const ConstString & _key
-            , const Char * _text
-            , size_t _size
-            , const Tags & _tags
-            , const FontInterfacePtr & _font
-            , const Color & _colorFont
-            , float _lineOffset
-            , float _charOffset
-            , float _maxLength
-            , ETextHorizontAlign _horizontAlign
-            , ETextVerticalAlign _verticalAlign
-            , float _charScale
-            , bool _autoScale
-            , bool _justify
-            , uint32_t _params
-            , const DocumentInterfacePtr & _doc ) = 0;
+        virtual TextEntryInterfacePtr createTextEntry( const ConstString & _key, const TextEntryDesc & _desc, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
-        virtual bool addTextEntry( const ConstString & _key
-            , const Char * _text
-            , size_t _size
-            , const Tags & _tags
-            , const FontInterfacePtr & _font
-            , const Color & _colorFont
-            , float _lineOffset
-            , float _charOffset
-            , float _maxLength
-            , ETextHorizontAlign _horizontAlign
-            , ETextVerticalAlign _verticalAlign
-            , float _charScale
-            , bool _autoScale
-            , bool _justify
-            , uint32_t _params
-            , bool _isOverride
-            , bool * const _isDublicate
-            , const DocumentInterfacePtr & _doc ) = 0;
-
+        virtual bool addTextEntry( const ConstString & _key, const TextEntryDesc & _desc, bool _isOverride, bool * const _isDublicate, const DocumentInterfacePtr & _doc ) = 0;
         virtual bool removeTextEntry( const ConstString & _key ) = 0;
         virtual void removeTextEntries( const Tags & _tag ) = 0;
 
     public:
-        virtual TextArgumentInterfacePtr createTextArgument( const DocumentInterfacePtr & _doc ) = 0;
+        virtual TextArgumentInterfacePtr createTextArgumentValue( const String & _value, const DocumentInterfacePtr & _doc ) = 0;
+        virtual TextArgumentInterfacePtr createTextArgumentId( const ConstString & _textId, const DocumentInterfacePtr & _doc ) = 0;
+        virtual TextArgumentInterfacePtr createTextArgumentContext( const LambdaTextArgumentContext & _context, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
         virtual bool hasTextEntry( const ConstString & _key, TextEntryInterfacePtr * const _entry ) const = 0;

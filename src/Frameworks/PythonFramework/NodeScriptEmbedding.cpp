@@ -147,118 +147,94 @@ namespace Mengine
 
         public:
             //////////////////////////////////////////////////////////////////////////
-
-            //////////////////////////////////////////////////////////////////////////
-            PyObject * TextField_setTextFormatArgs( pybind::kernel_interface * _kernel, TextField * _textField, PyObject * _args, PyObject * _kwds )
+            bool TextField_setTextFormatArgs( TextField * _textField, const pybind::args & _args )
             {
-                MENGINE_UNUSED( _kwds );
-
-                size_t args_count = _kernel->tuple_size( _args );
+                size_t args_count = _args.size();
 
                 VectorTextArguments arguments;
                 arguments.reserve( args_count );
 
-                for( uint32_t it = 0; it != args_count; ++it )
+                for( const pybind::object & py_obj : _args )
                 {
-                    PyObject * py_obj = _kernel->tuple_getitem( _args, it );
-
-                    if( _kernel->string_check( py_obj ) == true )
+                    if( py_obj.is_string() == true )
                     {
-                        String value;
-                        if( pybind::extract_value( _kernel, py_obj, value, false ) == false )
-                        {
-                            LOGGER_ERROR( "text field '%s' invalid get str '%s'"
-                                , _textField->getName().c_str()
-                                , _kernel->object_repr( py_obj ).c_str()
-                            );
-
-                            return _kernel->ret_false();
-                        }
+                        String value = py_obj.extract();
 
                         TextArgumentInterfacePtr argument = TEXT_SERVICE()
-                            ->createTextArgument( MENGINE_DOCUMENT_PYBIND );
-
-                        argument->setValue( value );
+                            ->createTextArgumentValue( value, MENGINE_DOCUMENT_PYBIND );
 
                         arguments.emplace_back( argument );
                     }
-                    else if( _kernel->unicode_check( py_obj ) == true )
+                    else if( py_obj.is_unicode() == true )
                     {
-                        WString value;
-                        if( pybind::extract_value( _kernel, py_obj, value, false ) == false )
-                        {
-                            LOGGER_ERROR( "text field '%s' invalid get unicode '%s'"
-                                , _textField->getName().c_str()
-                                , _kernel->object_repr( py_obj ).c_str()
-                            );
-
-                            return _kernel->ret_false();
-                        }
+                        WString value = py_obj.extract();
 
                         String utf8_value;
                         Helper::unicodeToUtf8( value, &utf8_value );
 
                         TextArgumentInterfacePtr argument = TEXT_SERVICE()
-                            ->createTextArgument( MENGINE_DOCUMENT_PYBIND );
-
-                        argument->setValue( utf8_value );
+                            ->createTextArgumentValue( utf8_value, MENGINE_DOCUMENT_PYBIND );
 
                         arguments.emplace_back( argument );
                     }
-                    else if( _kernel->is_callable( py_obj ) == true )
+                    else if( py_obj.is_callable() == true )
                     {
-                        TextArgumentInterfacePtr argument = TEXT_SERVICE()
-                            ->createTextArgument( MENGINE_DOCUMENT_PYBIND );
-
-                        argument->setContext( [_textField, _kernel, py_obj]( String * _value )
+                        LambdaTextArgumentContext context = [py_obj]( String * _value )
                         {
-                            PyObject * py_result = _kernel->ask_native( py_obj, nullptr );
+                            pybind::object new_value = py_obj.call();
 
-                            String value;
-                            if( pybind::extract_value( _kernel, py_result, value, false ) == false )
-                            {
-                                LOGGER_ERROR( "call context '%s' for text field '%s' invalid get str '%s' type '%s'"
-                                    , _kernel->object_repr( py_obj ).c_str()
-                                    , _textField->getName().c_str()
-                                    , _kernel->object_repr( py_result ).c_str()
-                                    , _kernel->object_repr_type( py_result ).c_str()
-                                );
+                            pybind::string_view new_value_str = new_value.str();
 
-                                return false;
-                            }
-
-                            if( *_value == value )
+                            if( *_value == new_value_str.c_str() )
                             {
                                 return false;
                             }
 
-                            *_value = std::move( value );
+                            _value->assign( new_value_str.c_str(), new_value_str.size() );
 
                             return true;
-                        } );
+                        };
+
+                        TextArgumentInterfacePtr argument = TEXT_SERVICE()
+                            ->createTextArgumentContext( context, MENGINE_DOCUMENT_PYBIND );
 
                         arguments.emplace_back( argument );
+                    }
+                    else if( py_obj.is_dict() == true )
+                    {
+                        pybind::dict py_params = py_obj.extract();
+
+                        ConstString textId = py_params.get_default( "TextId", ConstString::none() );
+
+                        if( textId != ConstString::none() )
+                        {
+                            TextArgumentInterfacePtr argument = TEXT_SERVICE()
+                                ->createTextArgumentId( textId, MENGINE_DOCUMENT_PYBIND );
+
+                            arguments.emplace_back( argument );
+                        }
+                        else
+                        {
+                            LOGGER_ERROR( "textfield_setTextFormatArgs '%s' not support params"
+                                , py_params.repr().c_str()
+                            );
+
+                            return false;
+                        }
                     }
                     else
                     {
-                        pybind::string_view py_value_str = _kernel->object_str( py_obj );
+                        MENGINE_ASSERTION_FATAL( py_obj.is_invalid() == false, "textfield_setTextFormatArgs '%s' not suport arg '%s'"
+                            , py_obj.repr().c_str()
+                            , _args.repr().c_str()
+                        );
 
-                        if( py_value_str.is_invalid() == true )
-                        {
-                            LOGGER_ERROR( "text field '%s' not suport arg '%s'"
-                                , _textField->getName().c_str()
-                                , _kernel->object_repr( py_obj ).c_str()
-                            );
+                        pybind::string_view value = py_obj.str();
 
-                            return _kernel->ret_false();
-                        }
-
-                        const Char * value_str = py_value_str.c_str();
+                        const Char * value_str = value.c_str();
 
                         TextArgumentInterfacePtr argument = TEXT_SERVICE()
-                            ->createTextArgument( MENGINE_DOCUMENT_PYBIND );
-
-                        argument->setValue( value_str );
+                            ->createTextArgumentValue( value_str, MENGINE_DOCUMENT_PYBIND );
 
                         arguments.emplace_back( argument );
                     }
@@ -266,7 +242,7 @@ namespace Mengine
 
                 _textField->setTextArguments( arguments );
 
-                return _kernel->ret_true();
+                return true;
             }
             //////////////////////////////////////////////////////////////////////////
             VectorWString TextField_getTextFormatArgs( TextField * _textField )
@@ -905,7 +881,7 @@ namespace Mengine
                 .def( "setTextId", &TextField::setTextId )
                 .def( "getTextId", &TextField::getTextId )
                 .def( "removeTextId", &TextField::removeTextId )
-                .def_proxy_native_kernel( "setTextFormatArgs", nodeScriptMethod, &NodeScriptMethod::TextField_setTextFormatArgs )
+                .def_proxy_static_args( "setTextFormatArgs", nodeScriptMethod, &NodeScriptMethod::TextField_setTextFormatArgs )
                 .def_proxy_static( "getTextFormatArgs", nodeScriptMethod, &NodeScriptMethod::TextField_getTextFormatArgs )
                 .def( "removeTextFormatArgs", &TextField::removeTextArguments )
                 .def( "getTotalTextId", &TextField::getTotalTextId )
@@ -945,6 +921,12 @@ namespace Mengine
                 .def( "removeMaxLength", &TextField::removeMaxLength )
                 .def( "hasMaxLength", &TextField::hasMaxLength )
                 .def( "calcMaxLength", &TextField::calcMaxLength )
+
+                .def( "setMaxHeight", &TextField::setMaxHeight )
+                .def( "getMaxHeight", &TextField::getMaxHeight )
+                .def( "removeMaxHeight", &TextField::removeMaxHeight )
+                .def( "hasMaxHeight", &TextField::hasMaxHeight )
+                .def( "calcMaxHeight", &TextField::calcMaxHeight )
 
                 .def( "setAutoScale", &TextField::setAutoScale )
                 .def( "getAutoScale", &TextField::getAutoScale )

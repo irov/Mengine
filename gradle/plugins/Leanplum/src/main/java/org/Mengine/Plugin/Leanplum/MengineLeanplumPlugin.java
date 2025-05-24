@@ -68,8 +68,8 @@ public class MengineLeanplumPlugin extends MengineService implements MengineList
     }
 
     @Override
-    public void onMengineChangeUserId(MengineApplication application, String sessionId) {
-        Leanplum.setUserId(sessionId);
+    public void onMengineChangeUserId(MengineApplication application, String oldUserId, String newUserId) {
+        Leanplum.setUserId(newUserId);
     }
 
     @Override

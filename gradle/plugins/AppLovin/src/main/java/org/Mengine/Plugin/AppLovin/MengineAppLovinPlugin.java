@@ -58,8 +58,6 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
     public static final String METADATA_NATIVE_PLACEMENT = "mengine.applovin.native.placement";
     public static final String METADATA_NATIVE_ADUNITID = "mengine.applovin.native.adunitid";
 
-    private AppLovinSdk m_appLovinSdk;
-
     private boolean m_enableShowMediationDebugger = false;
 
     private String m_countryCode;
@@ -85,6 +83,14 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
         String sdkVersion = AppLovinSdk.VERSION;
 
         return sdkVersion;
+    }
+
+    protected AppLovinSdk getAppLovinSdkInstance() {
+        MengineApplication application = this.getMengineApplication();
+
+        AppLovinSdk appLovinSdk = AppLovinSdk.getInstance(application);
+
+        return appLovinSdk;
     }
 
     @Override
@@ -179,7 +185,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             com.facebook.ads.AdSettings.setDataProcessingOptions( new String[] {} );
         }
 
-        AppLovinSdk appLovinSdk = AppLovinSdk.getInstance(application);
+        AppLovinSdk appLovinSdk = this.getAppLovinSdkInstance();
 
         AppLovinSdkSettings settings = appLovinSdk.getSettings();
 
@@ -357,8 +363,6 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
 
             adService.readyAdProvider();
         });
-
-        m_appLovinSdk = appLovinSdk;
 
         if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON == true) {
             MengineAppLovinMediationInterface mediationAmazon = (MengineAppLovinMediationInterface)this.newInstance("org.Mengine.Plugin.AppLovin.MengineAppLovinMediationAmazon", false);
@@ -982,7 +986,9 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
     }
 
     public boolean isConsentFlowUserGeographyGDPR() {
-        AppLovinSdkConfiguration configuration = m_appLovinSdk.getConfiguration();
+        AppLovinSdk appLovinSdk = this.getAppLovinSdkInstance();
+
+        AppLovinSdkConfiguration configuration = appLovinSdk.getConfiguration();
 
         AppLovinSdkConfiguration.ConsentFlowUserGeography geography = configuration.getConsentFlowUserGeography();
 
@@ -994,7 +1000,9 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
     }
 
     public boolean hasSupportedCmp() {
-        AppLovinCmpService cmpService = m_appLovinSdk.getCmpService();
+        AppLovinSdk appLovinSdk = this.getAppLovinSdkInstance();
+
+        AppLovinCmpService cmpService = appLovinSdk.getCmpService();
 
         boolean supportedCmp = cmpService.hasSupportedCmp();
 
@@ -1008,7 +1016,9 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             return;
         }
 
-        AppLovinCmpService cmpService = m_appLovinSdk.getCmpService();
+        AppLovinSdk appLovinSdk = this.getAppLovinSdkInstance();
+
+        AppLovinCmpService cmpService = appLovinSdk.getCmpService();
 
         cmpService.showCmpForExistingUser(MengineActivity.INSTANCE, error -> {
             if (error != null) {
@@ -1031,18 +1041,14 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
     }
 
     public void showCreativeDebugger() {
-        if (m_appLovinSdk == null) {
-            return;
-        }
+        AppLovinSdk appLovinSdk = this.getAppLovinSdkInstance();
 
-        m_appLovinSdk.showCreativeDebugger();
+        appLovinSdk.showCreativeDebugger();
     }
 
     public void showMediationDebugger() {
-        if (m_appLovinSdk == null) {
-            return;
-        }
+        AppLovinSdk appLovinSdk = this.getAppLovinSdkInstance();
 
-        m_appLovinSdk.showMediationDebugger();
+        appLovinSdk.showMediationDebugger();
     }
 }

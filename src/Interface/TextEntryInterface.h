@@ -8,23 +8,28 @@
 #include "Kernel/FilePath.h"
 #include "Kernel/GlyphCode.h"
 #include "Kernel/Color.h"
-#include "Kernel/VectorString.h"
+#include "Kernel/TextParams.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    enum ETextHorizontAlign
+    struct TextEntryDesc
     {
-        ETFHA_LEFT = 0,
-        ETFHA_CENTER = 1,
-        ETFHA_RIGHT = 2,
-    };
-    //////////////////////////////////////////////////////////////////////////
-    enum ETextVerticalAlign
-    {
-        ETFVA_BOTTOM = 0,
-        ETFVA_CENTER = 1,
-        ETFVA_TOP = 2,
+        const Char * text;
+        size_t size;
+        Tags tags;
+        FontInterfacePtr font;
+        Color colorFont;
+        float lineOffset;
+        float charOffset;
+        float maxLength;
+        float maxHeight;
+        ETextHorizontAlign horizontAlign;
+        ETextVerticalAlign verticalAlign;
+        float charScale;
+        bool autoScale;
+        bool justify;
+        uint32_t params;
     };
     //////////////////////////////////////////////////////////////////////////
     class TextEntryInterface
@@ -32,7 +37,7 @@ namespace Mengine
     {
     public:
         virtual const ConstString & getKey() const = 0;
-        virtual const Char * getValue( size_t * const _size ) const = 0;
+        virtual const String & getValue() const = 0;
 
     public:
         virtual const Tags & getTags() const = 0;
@@ -43,6 +48,7 @@ namespace Mengine
         virtual float getLineOffset() const = 0;
         virtual float getCharOffset() const = 0;
         virtual float getMaxLength() const = 0;
+        virtual float getMaxHeight() const = 0;
 
         virtual ETextHorizontAlign getHorizontAlign() const = 0;
         virtual ETextVerticalAlign getVerticalAlign() const = 0;

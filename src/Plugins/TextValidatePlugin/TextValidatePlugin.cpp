@@ -72,10 +72,12 @@ namespace Mengine
                 return;
             }
 
-            size_t text_size;
-            const Char * text_value = _textEntry->getValue( &text_size );
+            const String & text_value = _textEntry->getValue();
 
-            if( font->validateText( textId, text_value, text_size ) == false )
+            const Char * text_value_str = text_value.c_str();
+            size_t text_value_size = text_value.size();
+
+            if( font->validateText( textId, text_value_str, text_value_size ) == false )
             {
                 LOGGER_ERROR( "text '%s' font name '%s' invalid"
                     , textId.c_str()

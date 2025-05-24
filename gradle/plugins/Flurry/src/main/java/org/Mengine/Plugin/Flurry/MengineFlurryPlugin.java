@@ -66,8 +66,8 @@ public class MengineFlurryPlugin extends MengineService implements MengineListen
     }
 
     @Override
-    public void onMengineChangeUserId(@NonNull MengineApplication application, String userId) {
-        FlurryAgent.setUserId(userId);
+    public void onMengineChangeUserId(@NonNull MengineApplication application, String oldUserId, String newUserId) {
+        FlurryAgent.setUserId(newUserId);
     }
 
     @Override

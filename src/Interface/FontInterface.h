@@ -13,28 +13,14 @@
 #include "Kernel/FilePath.h"
 #include "Kernel/GlyphCode.h"
 #include "Kernel/Color.h"
-#include "Kernel/VectorString.h"
+#include "Kernel/TextParams.h"
+#include "Kernel/String.h"
 
 #include "math/vec4.h"
 #include "math/uv4.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    enum EFontParams : uint32_t
-    {
-        EFP_NONE = 0,
-        EFP_FONT = 1 << 0,
-        EFP_COLOR_FONT = 1 << 1,
-        EFP_LINE_OFFSET = 1 << 2,
-        EFP_CHAR_OFFSET = 1 << 3,
-        EFP_MAX_LENGTH = 1 << 4,
-        EFP_HORIZONTAL_ALIGN = 1 << 5,
-        EFP_VERTICAL_ALIGN = 1 << 6,
-        EFP_CHAR_SCALE = 1 << 7,
-        EFP_AUTO_SCALE = 1 << 8,
-        EFP_JUSTIFY = 1 << 9,
-    };
     //////////////////////////////////////////////////////////////////////////
     struct Glyph
     {

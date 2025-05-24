@@ -15,7 +15,6 @@
             </intent-filter>
         </receiver>
 
-
         <receiver
             android:name="com.adjust.sdk.AdjustPreinstallReferrerReceiver"
             android:exported="true">
@@ -24,6 +23,23 @@
             </intent-filter>
         </receiver>
 
+        <activity-alias
+            android:name="org.Mengine.Base.MengineAdjustPlugin.DeepLinkAlias"
+            android:targetActivity="org.Mengine.Base.MengineActivity"
+            android:exported="true">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="http"
+                    android:host="@string/mengine_adjust_deeplink_host_http"
+                    /> <!--insights.go.link-->
+                <data
+                    android:scheme="https"
+                    android:host="@string/mengine_adjust_deeplink_host_https"
+                    /> <!--insights.go.link-->
+            </intent-filter>
+        </activity-alias>
     </application>
-
 </manifest>

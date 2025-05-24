@@ -55,7 +55,7 @@ public class MengineApplication extends Application {
     protected String m_acquisitionCampaign;
 
     private boolean m_invalidInitialize = false;
-    private String m_invalidInitializeReason = null;
+    private Throwable m_invalidInitializeException = null;
 
     private MengineMain m_main;
 
@@ -175,9 +175,7 @@ public class MengineApplication extends Application {
 
         for (String namePlugin : plugins) {
             if (this.createService(namePlugin) == false) {
-                this.invalidInitialize("invalid create plugin: %s"
-                    , namePlugin
-                );
+                this.invalidInitialize(new MengineServiceInvalidInitializeException("invalid create plugin"), Map.of("service", namePlugin));
 
                 return;
             }
@@ -753,8 +751,8 @@ public class MengineApplication extends Application {
         return m_invalidInitialize;
     }
 
-    public String getInvalidInitializeReason() {
-        return m_invalidInitializeReason;
+    public Throwable getInvalidInitializeException() {
+        return m_invalidInitializeException;
     }
 
     protected static String generateInstallKey() {
@@ -774,10 +772,10 @@ public class MengineApplication extends Application {
 
         if (nativeApplication == null) {
             MengineAnalytics.buildEvent("mng_app_create_failed")
-                    .addParameterString("reason", "bootstrap failed")
-                    .logAndFlush();
+                .addParameterString("reason", "bootstrap failed")
+                .logAndFlush();
 
-            this.invalidInitialize("bootstrap failed");
+            this.invalidInitialize(new MengineServiceInvalidInitializeException("bootstrap failed"), Map.of());
 
             return null;
         }
@@ -803,11 +801,13 @@ public class MengineApplication extends Application {
             return;
         }
 
+        String old_userId = m_userId;
+
         m_userId = userId;
 
         this.setPreferenceString("user_id", m_userId);
 
-        MengineFragmentUser.INSTANCE.changeUserId(userId);
+        MengineFragmentUser.INSTANCE.changeUserId(old_userId, userId);
     }
 
     public String getUserId() {
@@ -884,10 +884,7 @@ public class MengineApplication extends Application {
 
                     l.onAppPreInit(this);
                 } catch (final MengineServiceInvalidInitializeException e) {
-                    this.invalidInitialize("onAppInit service: %s exception: %s"
-                        , l.getServiceName()
-                        , e.getMessage()
-                    );
+                    this.invalidInitialize(e, Map.of("service", l.getServiceName()));
 
                     return;
                 }
@@ -921,10 +918,7 @@ public class MengineApplication extends Application {
 
                 l.onAppInit(this, isMainProcess);
             } catch (final MengineServiceInvalidInitializeException e) {
-                this.invalidInitialize("onAppInit service: %s exception: %s"
-                    , l.getServiceName()
-                    , e.getMessage()
-                );
+                this.invalidInitialize(e, Map.of("service", l.getServiceName()));
 
                 return;
             }
@@ -1142,10 +1136,7 @@ public class MengineApplication extends Application {
                     .addParameterException("exception", e)
                     .logAndFlush();
 
-                this.invalidInitialize("onAppPrepare service: %s exception: %s"
-                    , l.getServiceName()
-                    , e.getMessage()
-                );
+                this.invalidInitialize(e, Map.of("service", l.getServiceName()));
 
                 return;
             }
@@ -1174,10 +1165,7 @@ public class MengineApplication extends Application {
                     .addParameterException("exception", e)
                     .logAndFlush();
 
-                this.invalidInitialize("onAppCreate service: %s exception: %s"
-                    , l.getServiceName()
-                    , e.getMessage()
-                );
+                this.invalidInitialize(e, Map.of("service", l.getServiceName()));
 
                 return;
             }
@@ -1202,10 +1190,7 @@ public class MengineApplication extends Application {
                     .addParameterException("exception", e)
                     .logAndFlush();
 
-                this.invalidInitialize("onAppPost service: %s exception: %s"
-                    , l.getServiceName()
-                    , e.getMessage()
-                );
+                this.invalidInitialize(e, Map.of("service", l.getServiceName()));
 
                 return;
             }
@@ -1228,9 +1213,9 @@ public class MengineApplication extends Application {
                 continue;
             }
 
-            String name = p.getServiceName();
+            String tag = p.getServiceTag();
 
-            MengineNative.AndroidNativePython_addPlugin("Mengine" + name, p);
+            MengineNative.AndroidNativePython_addPlugin(tag, p);
         }
 
         this.setState("application.init", "run_main");
@@ -1343,9 +1328,9 @@ public class MengineApplication extends Application {
                 continue;
             }
 
-            String name = p.getServiceName();
+            String tag = p.getServiceTag();
 
-            MengineNative.AndroidNativePython_removePlugin("Mengine" + name);
+            MengineNative.AndroidNativePython_removePlugin(tag);
         }
 
         for (MengineServiceInterface service : m_services) {
@@ -1485,10 +1470,10 @@ public class MengineApplication extends Application {
     }
      */
 
-    private void invalidInitialize(String format, Object ... args) {
-        String msg = MengineLog.logErrorException(TAG, format, args);
+    private void invalidInitialize(@NonNull MengineServiceInvalidInitializeException e, @NonNull Map<String, Object> attributes) {
+        MengineLog.logException(TAG, e, attributes);
 
         m_invalidInitialize = true;
-        m_invalidInitializeReason = msg;
+        m_invalidInitializeException = e;
     }
 }

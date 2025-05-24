@@ -346,9 +346,6 @@ namespace Mengine
 
         ConstString Window_ApplicationTitleTextId = CONFIG_VALUE_CONSTSTRING( "Window", "ApplicationTitleTextId", STRINGIZE_STRING_LOCAL( "APPLICATION_TITLE" ) );
 
-        const Char * projectTitle = nullptr;
-        size_t projectTitleLen = 0;
-
         TextEntryInterfacePtr entry;
         if( TEXT_SERVICE()
             ->hasTextEntry( Window_ApplicationTitleTextId, &entry ) == false )
@@ -359,11 +356,13 @@ namespace Mengine
         }
         else
         {
-            projectTitle = entry->getValue( &projectTitleLen );
-        }
+            const String & projectTitle = entry->getValue();
 
-        PLATFORM_SERVICE()
-            ->setProjectTitle( projectTitle );
+            const Char * projectTitleStr = projectTitle.c_str();
+
+            PLATFORM_SERVICE()
+                ->setProjectTitle( projectTitleStr );
+        }
 
         if( PLATFORM_SERVICE()
             ->alreadyRunningMonitor() == false )

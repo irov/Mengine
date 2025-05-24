@@ -51,6 +51,16 @@ namespace Mengine
             return num_argumetns;
         }
         //////////////////////////////////////////////////////////////////////////
+        bool fillStringFormat( const String & _format, const VectorTextArguments & _arguments, String * const _out )
+        {
+            const Char * format_str = _format.c_str();
+            size_t format_size = _format.size();
+
+            bool result = Helper::fillStringFormat( format_str, format_size, _arguments, _out );
+
+            return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
         bool fillStringFormat( const Char * _format, size_t _size, const VectorTextArguments & _arguments, String * const _out )
         {
             uint32_t num_argumetns = 0;

@@ -146,9 +146,6 @@ namespace Mengine
 
         LOGGER_INFO( "application", "creating render window..." );
 
-        const Char * projectTitle = nullptr;
-        size_t projectTitleLen = 0;
-
         ConstString APPLICATION_TITLE = CONFIG_VALUE_CONSTSTRING( "Window", "ApplicationTitleTextId", STRINGIZE_STRING_LOCAL( "APPLICATION_TITLE" ) );
 
         TextEntryInterfacePtr entry;
@@ -161,11 +158,13 @@ namespace Mengine
         }
         else
         {
-            projectTitle = entry->getValue( &projectTitleLen );
-        }
+            const String & projectTitle = entry->getValue();
 
-        PLATFORM_SERVICE()
-            ->setProjectTitle( projectTitle );
+            const Char * projectTitleStr = projectTitle.c_str();
+
+            PLATFORM_SERVICE()
+                ->setProjectTitle( projectTitleStr );
+        }
 
         PLATFORM_SERVICE()
             ->updatePlatform();

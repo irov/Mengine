@@ -25,4 +25,5 @@ public interface MengineServiceInterface {
     }
 
     String getServiceName();
+    String getServiceTag();
 }

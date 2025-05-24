@@ -72,12 +72,12 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
     }
 
     @Override
-    public void onMengineChangeUserId(@NonNull MengineApplication application, String userId) {
+    public void onMengineChangeUserId(@NonNull MengineApplication application, String oldUserId, String newUserId) {
         if (m_firebaseAnalytics == null) {
             return;
         }
 
-        m_firebaseAnalytics.setUserId(userId);
+        m_firebaseAnalytics.setUserId(newUserId);
     }
 
     @Override
@@ -275,27 +275,6 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
         params.putString(FirebaseAnalytics.Param.CHARACTER, "LEADERBOARD_" + leaderboardId);
 
         m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.POST_SCORE, params);
-    }
-
-    public void setUserProperty(@NonNull @Size(min = 1L,max = 24L) String name, @NonNull @Size(min = 1L,max = 36L) String value) {
-        if (m_firebaseAnalytics == null) {
-            return;
-        }
-
-        this.logInfo("setUserProperty name: %s value: %s"
-            , name
-            , value
-        );
-
-        m_firebaseAnalytics.setUserProperty(name, value);
-    }
-
-    public void logEvent(@NonNull @Size(min = 1L,max = 40L) String eventName, @Nullable Bundle params) {
-        if (m_firebaseAnalytics == null) {
-            return;
-        }
-
-        m_firebaseAnalytics.logEvent(eventName, params);
     }
 
     @Override

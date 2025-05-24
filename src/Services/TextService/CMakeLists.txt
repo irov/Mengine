@@ -8,8 +8,14 @@ src
     TextEntry.cpp
     TextEntry.h
     
-    TextArgument.cpp
-    TextArgument.h
+    TextArgumentValue.cpp
+    TextArgumentValue.h
+    
+    TextArgumentId.cpp
+    TextArgumentId.h
+    
+    TextArgumentContext.cpp
+    TextArgumentContext.h
     
     TextLocalePackage.cpp
     TextLocalePackage.h

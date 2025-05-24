@@ -1,43 +1,33 @@
-#include "TextArgument.h"
+#include "TextArgumentContext.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    TextArgument::TextArgument()
+    TextArgumentContext::TextArgumentContext()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    TextArgument::~TextArgument()
+    TextArgumentContext::~TextArgumentContext()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextArgument::setValue( const String & _value )
-    {
-        m_value = _value;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const String & TextArgument::getValue() const
-    {
-        return m_value;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void TextArgument::setContext( const LambdaTextArgumentContext & _context )
+    void TextArgumentContext::setContext( const LambdaTextArgumentContext & _context )
     {
         m_context = _context;
     }
     //////////////////////////////////////////////////////////////////////////
-    const LambdaTextArgumentContext & TextArgument::getContext() const
+    const LambdaTextArgumentContext & TextArgumentContext::getContext() const
     {
         return m_context;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextArgument::updateContext() const
+    const String & TextArgumentContext::getValue() const
     {
-        if( m_context == nullptr )
-        {
-            return false;
-        }
-
+        return m_value;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TextArgumentContext::updateContext() const
+    {
         if( m_context( &m_value ) == false )
         {
             return false;

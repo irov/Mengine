@@ -674,6 +674,8 @@ Core
     StringFormat.h
     StringFormat.cpp
     
+    TextParams.h
+    
     Params.h
     
     ParamsHelper.h

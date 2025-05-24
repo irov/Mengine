@@ -30,9 +30,11 @@ import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
 import android.view.WindowMetrics;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
@@ -73,6 +75,7 @@ import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -414,7 +417,19 @@ public class MengineUtils {
         return true;
     }
 
-    public static long getRamTotal(Context context) {
+    public static int getMemoryClass(Context context) {
+        ActivityManager activityManager = context.getSystemService(ActivityManager.class);
+
+        if (activityManager == null) {
+            return 0;
+        }
+
+        int memoryClass = activityManager.getMemoryClass();
+
+        return memoryClass;
+    }
+
+    public static long getMemoryRamTotal(Context context) {
         ActivityManager activityManager = context.getSystemService(ActivityManager.class);
 
         if (activityManager == null) {
@@ -429,7 +444,7 @@ public class MengineUtils {
         return totalMemory;
     }
 
-    public static long getRamUsage(Context context) {
+    public static long getMemoryRamUsage(Context context) {
         ActivityManager activityManager = context.getSystemService(ActivityManager.class);
 
         if (activityManager == null) {
@@ -590,9 +605,9 @@ public class MengineUtils {
             .withLocale(Locale.US)
             .withZone(zone);
 
-        String formattedDate = formatter.format(instant);
+        String date = formatter.format(instant);
 
-        return formattedDate;
+        return date;
     }
 
     public static String getThrowableStackTrace(Throwable e) {
@@ -680,6 +695,12 @@ public class MengineUtils {
         });
     }
 
+    public static void showToastRes(@NonNull Activity activity, @StringRes int messageId, Object ... args) {
+        String message = activity.getString(messageId, args);
+
+        MengineUtils.showToast(activity, message);
+    }
+
     public static void showOkAlertDialog(@NonNull Activity activity, Runnable ok, String title, String format, Object ... args) {
         activity.runOnUiThread(() -> {
             String message = MengineLog.buildTotalMsg(format, args);
@@ -705,6 +726,13 @@ public class MengineUtils {
 
             alert.show();
         });
+    }
+
+    public static void showOkAlertDialogRes(@NonNull Activity activity, Runnable ok, @StringRes int titleId, @StringRes int messageId, Object ... args) {
+        String title = activity.getString(titleId);
+        String message = activity.getString(messageId, args);
+
+        MengineUtils.showOkAlertDialog(activity, ok, title, message);
     }
 
     public static void showAllowPermissionAlertDialog(@NonNull Activity activity, Runnable allow, Runnable denied, String title, String format, Object ... args) {
@@ -740,6 +768,13 @@ public class MengineUtils {
 
             alert.show();
         });
+    }
+
+    public static void showAllowPermissionAlertDialogRes(@NonNull Activity activity, Runnable allow, Runnable denied, @StringRes int titleId, @StringRes int messageId, Object ... args) {
+        String title = activity.getString(titleId);
+        String message = activity.getString(messageId, args);
+
+        MengineUtils.showAllowPermissionAlertDialog(activity, allow, denied, title, message);
     }
 
     public static void showAreYouSureAlertDialog(@NonNull Activity activity, Runnable yes, Runnable cancel, long delayMillis, String title, String format, Object ... args) {
@@ -797,14 +832,95 @@ public class MengineUtils {
         });
     }
 
+    public static void showAreYouSureAlertDialogRes(@NonNull Activity activity, Runnable yes, Runnable cancel, long delayMillis, @StringRes int titleId, @StringRes int messageId, Object ... args) {
+        String title = activity.getString(titleId);
+        String message = activity.getString(messageId, args);
+
+        MengineUtils.showAreYouSureAlertDialog(activity, yes, cancel, delayMillis, title, message);
+    }
+
+    public static void showChooseOptionDialog(@NonNull Activity activity, @NonNull Consumer<Integer> accept, @NonNull Runnable cancel, @NonNull List<String> options, @NonNull String title) {
+        activity.runOnUiThread(() -> {
+            MengineLog.logMessage(TAG, "show [CHOOSE OPTION] title: %s"
+                , title
+            );
+
+            int darker_gray = ContextCompat.getColor(activity, android.R.color.darker_gray);
+            int holo_red_light = ContextCompat.getColor(activity, android.R.color.holo_red_light);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder.setTitle(title);
+
+            CharSequence[] items = options.toArray(new CharSequence[0]);
+
+            final Integer [] selectedPos = { -1 };
+
+            builder.setSingleChoiceItems(items, selectedPos[0], (dialog, which) -> {
+                selectedPos[0] = which;
+
+                Button positive = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                positive.setEnabled(true);
+                positive.setTextColor(holo_red_light);
+            });
+
+            builder.setCancelable(false);
+
+            builder.setPositiveButton("ACCEPT", (dialog, which) -> {
+                int option = selectedPos[0];
+
+                MengineLog.logMessage(TAG,"click [CHOOSE OPTION] accept option: %d"
+                    , option
+                );
+
+                accept.accept(option);
+
+                dialog.dismiss();
+            });
+
+            builder.setNegativeButton("CANCEL", (dialog, id) -> {
+                MengineLog.logMessage(TAG, "click [CHOOSE OPTION] cancel");
+
+                cancel.run();
+
+                dialog.dismiss();
+            });
+
+            AlertDialog alert = builder.create();
+
+            alert.show();
+
+            alert.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(darker_gray);
+            alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+        });
+    }
+
+    public static void showChooseOptionDialogRes(@NonNull Activity activity, @NonNull Consumer<Integer> accept, @NonNull Runnable cancel, @NonNull List<Integer> optionIds, @StringRes int titleId) {
+        String title = activity.getString(titleId);
+
+        List<String> options = new ArrayList<>(optionIds.size());
+        for (@StringRes int optionId : optionIds) {
+            String option = activity.getString(optionId);
+            options.add(option);
+        }
+
+        MengineUtils.showChooseOptionDialog(activity, accept, cancel, options, title);
+    }
+
     public static void finishActivityWithAlertDialog(@NonNull Activity activity, String title, String format, Object ... args) {
-        MengineLog.logErrorException(TAG, format, args);
+        MengineLog.logError(TAG, format, args);
 
         MengineUtils.debugBreak();
 
         MengineUtils.showOkAlertDialog(activity, () -> {
             activity.finishAndRemoveTask();
         }, title, format, args);
+    }
+
+    public static void finishActivityWithAlertDialogRes(@NonNull Activity activity, @StringRes int titleId, @StringRes int messageId, Object ... args) {
+        String title = activity.getString(titleId);
+        String message = activity.getString(messageId, args);
+
+        MengineUtils.finishActivityWithAlertDialog(activity, title, message);
     }
 
     public static void sleep(long millis) {
@@ -1293,5 +1409,46 @@ public class MengineUtils {
         }
 
         return 0.0;
+    }
+
+    private static char escapeJsonHEX(int nibble) {
+        final char[] HEX = "0123456789ABCDEF".toCharArray();
+
+        return HEX[nibble & 0xF];
+    }
+
+    public static String escapeJsonString(String s) {
+        StringBuilder sb = new StringBuilder(s.length() + 16);
+
+        for (int i = 0; i < s.length(); ) {
+            int cp = s.codePointAt(i);
+
+            i += Character.charCount(cp);
+
+            switch (cp) {
+                case '"':  sb.append("\\\""); break;
+                case '\\': sb.append("\\\\"); break;
+                case '\b': sb.append("\\b");  break;
+                case '\f': sb.append("\\f");  break;
+                case '\n': sb.append("\\n");  break;
+                case '\r': sb.append("\\r");  break;
+                case '\t': sb.append("\\t");  break;
+                case '/':  sb.append("\\/");  break;
+                case 0x2028: sb.append("\\u2028"); break;
+                case 0x2029: sb.append("\\u2029"); break;
+                default:
+                    if (cp < 0x20 || cp > 0x7E) {
+                        sb.append("\\u")
+                                .append(MengineUtils.escapeJsonHEX(cp >> 12))
+                                .append(MengineUtils.escapeJsonHEX(cp >>  8))
+                                .append(MengineUtils.escapeJsonHEX(cp >>  4))
+                                .append(MengineUtils.escapeJsonHEX(cp));
+                    } else {
+                        sb.appendCodePoint(cp);
+                    }
+            }
+        }
+
+        return sb.toString();
     }
 }

@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class MengineFragment<L extends MengineServiceInterface> implements MengineFragmentInterface {
     protected final Class<L> m_listenerClass;
@@ -28,15 +29,65 @@ public class MengineFragment<L extends MengineServiceInterface> implements Mengi
         }
     }
 
+    private static String buildJsonArgs(List<?> args) {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("[");
+
+        for (int i = 0; i != args.size(); ++i) {
+            Object arg = args.get(i);
+
+            if (i != 0) {
+                sb.append(",");
+            }
+
+            if (arg == null) {
+                sb.append("null");
+            } else if (arg instanceof String) {
+                sb.append("\"");
+                sb.append(arg);
+                sb.append("\"");
+            } else if (arg instanceof Number) {
+                sb.append(arg);
+            } else if (arg instanceof Boolean) {
+                sb.append(arg);
+            } else {
+                sb.append("\"");
+                sb.append(arg);
+                sb.append("\"");
+            }
+        }
+
+        sb.append("]");
+
+        return sb.toString();
+    }
+
+    private void logException(Object propagate, L listener, Throwable t, List<?> args) {
+        String tag = listener.getServiceTag();
+
+        MengineLog.logException(tag, t
+            , Map.of(
+            "propagate", propagate.getClass().getSimpleName(),
+            "listener", listener.getServiceName(),
+            "args", MengineFragment.buildJsonArgs(args)
+            )
+        );
+    }
+
     protected void propagate(MenginePropagateV0<L> propagate) {
         List<L> listeners = this.getListeners();
 
         for (L listener : listeners) {
-            if (!listener.onAvailable(MengineApplication.INSTANCE)) {
+            if (listener.onAvailable(MengineApplication.INSTANCE) == false) {
                 continue;
             }
 
-            propagate.call(listener, MengineApplication.INSTANCE);
+            try {
+                propagate.call(listener, MengineApplication.INSTANCE);
+            } catch (Throwable exception) {
+                this.logException(propagate, listener, exception, List.of());
+            }
         }
     }
 
@@ -44,11 +95,15 @@ public class MengineFragment<L extends MengineServiceInterface> implements Mengi
         List<L> listeners = this.getListeners();
 
         for (L listener : listeners) {
-            if (!listener.onAvailable(MengineApplication.INSTANCE)) {
+            if (listener.onAvailable(MengineApplication.INSTANCE) == false) {
                 continue;
             }
 
-            propagate.call(listener, MengineApplication.INSTANCE, a1);
+            try {
+                propagate.call(listener, MengineApplication.INSTANCE, a1);
+            } catch (Throwable exception) {
+                this.logException(propagate, listener, exception, List.of(a1));
+            }
         }
     }
 
@@ -56,11 +111,15 @@ public class MengineFragment<L extends MengineServiceInterface> implements Mengi
         List<L> listeners = this.getListeners();
 
         for (L listener : listeners) {
-            if (!listener.onAvailable(MengineApplication.INSTANCE)) {
+            if (listener.onAvailable(MengineApplication.INSTANCE) == false) {
                 continue;
             }
 
-            propagate.call(listener, MengineApplication.INSTANCE, a1, a2);
+            try {
+                propagate.call(listener, MengineApplication.INSTANCE, a1, a2);
+            } catch (Throwable exception) {
+                this.logException(propagate, listener, exception, List.of(a1, a2));
+            }
         }
     }
 
@@ -68,11 +127,15 @@ public class MengineFragment<L extends MengineServiceInterface> implements Mengi
         List<L> listeners = this.getListeners();
 
         for (L listener : listeners) {
-            if (!listener.onAvailable(MengineApplication.INSTANCE)) {
+            if (listener.onAvailable(MengineApplication.INSTANCE) == false) {
                 continue;
             }
 
-            propagate.call(listener, MengineApplication.INSTANCE, a1, a2, a3);
+            try {
+                propagate.call(listener, MengineApplication.INSTANCE, a1, a2, a3);
+            } catch (Throwable exception) {
+                this.logException(propagate, listener, exception, List.of(a1, a2, a3));
+            }
         }
     }
 
@@ -80,11 +143,15 @@ public class MengineFragment<L extends MengineServiceInterface> implements Mengi
         List<L> listeners = this.getListeners();
 
         for (L listener : listeners) {
-            if (!listener.onAvailable(MengineApplication.INSTANCE)) {
+            if (listener.onAvailable(MengineApplication.INSTANCE) == false) {
                 continue;
             }
 
-            propagate.call(listener, MengineApplication.INSTANCE, a1, a2, a3, a4);
+            try {
+                propagate.call(listener, MengineApplication.INSTANCE, a1, a2, a3, a4);
+            } catch (Throwable exception) {
+                this.logException(propagate, listener, exception, List.of(a1, a2, a3, a4));
+            }
         }
     }
 
@@ -92,11 +159,15 @@ public class MengineFragment<L extends MengineServiceInterface> implements Mengi
         List<L> listeners = this.getListeners();
 
         for (L listener : listeners) {
-            if (!listener.onAvailable(MengineApplication.INSTANCE)) {
+            if (listener.onAvailable(MengineApplication.INSTANCE) == false) {
                 continue;
             }
 
-            propagate.call(listener, MengineApplication.INSTANCE, a1, a2, a3, a4, a5);
+            try {
+                propagate.call(listener, MengineApplication.INSTANCE, a1, a2, a3, a4, a5);
+            } catch (Throwable exception) {
+                this.logException(propagate, listener, exception, List.of(a1, a2, a3, a4, a5));
+            }
         }
     }
 
@@ -104,12 +175,16 @@ public class MengineFragment<L extends MengineServiceInterface> implements Mengi
         List<L> listeners = this.getListeners();
 
         for (L listener : listeners) {
-            if (!listener.onAvailable(MengineApplication.INSTANCE)) {
+            if (listener.onAvailable(MengineApplication.INSTANCE) == false) {
                 continue;
             }
 
-            if (propagate.call(listener, MengineApplication.INSTANCE) == true) {;
-                return true;
+            try {
+                if (propagate.call(listener, MengineApplication.INSTANCE) == true) {
+                    return true;
+                }
+            } catch (Throwable exception) {
+                this.logException(propagate, listener, exception, List.of());
             }
         }
 
@@ -120,12 +195,16 @@ public class MengineFragment<L extends MengineServiceInterface> implements Mengi
         List<L> listeners = this.getListeners();
 
         for (L listener : listeners) {
-            if (!listener.onAvailable(MengineApplication.INSTANCE)) {
+            if (listener.onAvailable(MengineApplication.INSTANCE) == false) {
                 continue;
             }
 
-            if (propagate.call(listener, MengineApplication.INSTANCE, a1) == true) {
-                return true;
+            try {
+                if (propagate.call(listener, MengineApplication.INSTANCE, a1) == true) {
+                    return true;
+                }
+            } catch (Throwable exception) {
+                this.logException(propagate, listener, exception, List.of(a1));
             }
         }
 
@@ -136,12 +215,16 @@ public class MengineFragment<L extends MengineServiceInterface> implements Mengi
         List<L> listeners = this.getListeners();
 
         for (L listener : listeners) {
-            if (!listener.onAvailable(MengineApplication.INSTANCE)) {
+            if (listener.onAvailable(MengineApplication.INSTANCE) == false) {
                 continue;
             }
 
-            if (propagate.call(listener, MengineApplication.INSTANCE, a1, a2) == true) {
-                return true;
+            try {
+                if (propagate.call(listener, MengineApplication.INSTANCE, a1, a2) == true) {
+                    return true;
+                }
+            } catch (Throwable exception) {
+                this.logException(propagate, listener, exception, List.of(a1, a2));
             }
         }
 
@@ -152,12 +235,16 @@ public class MengineFragment<L extends MengineServiceInterface> implements Mengi
         List<L> listeners = this.getListeners();
 
         for (L listener : listeners) {
-            if (!listener.onAvailable(MengineApplication.INSTANCE)) {
+            if (listener.onAvailable(MengineApplication.INSTANCE) == false) {
                 continue;
             }
 
-            if (propagate.call(listener, MengineApplication.INSTANCE, a1, a2, a3) == true) {
-                return true;
+            try {
+                if (propagate.call(listener, MengineApplication.INSTANCE, a1, a2, a3) == true) {
+                    return true;
+                }
+            } catch (Throwable exception) {
+                this.logException(propagate, listener, exception, List.of(a1, a2, a3));
             }
         }
 
@@ -168,12 +255,16 @@ public class MengineFragment<L extends MengineServiceInterface> implements Mengi
         List<L> listeners = this.getListeners();
 
         for (L listener : listeners) {
-            if (!listener.onAvailable(MengineApplication.INSTANCE)) {
+            if (listener.onAvailable(MengineApplication.INSTANCE) == false) {
                 continue;
             }
 
-            if (propagate.call(listener, MengineApplication.INSTANCE, a1, a2, a3, a4) == true) {
-                return true;
+            try {
+                if (propagate.call(listener, MengineApplication.INSTANCE, a1, a2, a3, a4) == true) {
+                    return true;
+                }
+            } catch (Throwable exception) {
+                this.logException(propagate, listener, exception, List.of(a1, a2, a3, a4));
             }
         }
 
@@ -184,12 +275,16 @@ public class MengineFragment<L extends MengineServiceInterface> implements Mengi
         List<L> listeners = this.getListeners();
 
         for (L listener : listeners) {
-            if (!listener.onAvailable(MengineApplication.INSTANCE)) {
+            if (listener.onAvailable(MengineApplication.INSTANCE) == false) {
                 continue;
             }
 
-            if (propagate.call(listener, MengineApplication.INSTANCE, a1, a2, a3, a4, a5) == true) {
-                return true;
+            try {
+                if (propagate.call(listener, MengineApplication.INSTANCE, a1, a2, a3, a4, a5) == true) {
+                    return true;
+                }
+            } catch (Throwable exception) {
+                this.logException(propagate, listener, exception, List.of(a1, a2, a3, a4, a5));
             }
         }
 

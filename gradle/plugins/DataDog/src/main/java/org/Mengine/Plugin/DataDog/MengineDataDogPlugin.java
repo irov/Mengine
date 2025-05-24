@@ -23,6 +23,7 @@ import org.Mengine.Base.MengineListenerRemoteConfig;
 import org.Mengine.Base.MengineListenerUser;
 import org.Mengine.Base.MengineListenerTransparencyConsent;
 import org.Mengine.Base.MengineLog;
+import org.Mengine.Base.MengineParamLoggerException;
 import org.Mengine.Base.MengineParamLoggerMessage;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
@@ -218,10 +219,10 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
     }
 
     @Override
-    public void onMengineChangeUserId(@NonNull MengineApplication application, String userId) {
+    public void onMengineChangeUserId(@NonNull MengineApplication application, String oldUserId, String newUserId) {
         String installKey = application.getInstallKey();
 
-        Datadog.setUserInfo(userId, null, null, Map.of("install_key", installKey));
+        Datadog.setUserInfo(newUserId, null, null, Map.of("install_key", installKey));
     }
 
     @Override
@@ -277,6 +278,15 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
                 m_loggerDataDog.wtf(message.MESSAGE_DATA, null, attributes);
                 break;
         }
+    }
+
+    @Override
+    public void onMengineException(@NonNull MengineApplication application, @NonNull MengineParamLoggerException exception) {
+        if (m_loggerDataDog == null) {
+            return;
+        }
+
+        m_loggerDataDog.wtf("MengineException", exception.EXCEPTION_THROWABLE, exception.EXCEPTION_ATTRIBUTES);
     }
 
     @Override

@@ -10,6 +10,7 @@ namespace Mengine
     namespace Helper
     {
         uint32_t getStringFormatExpectedArgs( const Char * _format, size_t _size );
+        bool fillStringFormat( const String & _format, const VectorTextArguments & _arguments, String * const _out );
         bool fillStringFormat( const Char * _format, size_t _size, const VectorTextArguments & _arguments, String * const _out );
         String vectorTextArgumentsToString( const VectorTextArguments & _arguments );
 

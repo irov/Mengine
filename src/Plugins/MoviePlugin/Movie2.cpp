@@ -1431,12 +1431,35 @@ namespace Mengine
                     node->setAutoScale( true );
                 }
 
+                bool box = false;
+                if( ae_has_movie_layer_data_option( layer_data, AE_OPTION( '\0', 'b', 'o', 'x' ) ) == AE_TRUE )
+                {
+                    box = true;
+                }
+
                 ae_aabb_t aabb;
                 if( ae_get_movie_layer_data_dimension( layer_data, &aabb ) == AE_TRUE )
                 {
                     float maxLength = aabb.maximal_x - aabb.minimal_x;
 
                     node->setMaxLength( maxLength );
+
+                    if( box == true )
+                    {
+                        float maxHeight = aabb.maximal_y - aabb.minimal_y;
+
+                        node->setMaxHeight( maxHeight );
+                    }
+                }
+                else if( box == true )
+                {
+                    LOGGER_ERROR( "Movie2 '%s' layer '%s' [%u] set |box| but no dimension data"
+                        , movie2->getName().c_str()
+                        , ae_get_movie_layer_data_name( layer_data )
+                        , ae_get_movie_layer_data_index( layer_data )
+                    );
+
+                    return AE_FALSE;
                 }
 
                 *_nd = node.get();

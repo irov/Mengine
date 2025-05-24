@@ -18,6 +18,7 @@ import org.Mengine.Base.MengineListenerEngine;
 import org.Mengine.Base.MengineListenerLogger;
 import org.Mengine.Base.MengineListenerUser;
 import org.Mengine.Base.MengineLog;
+import org.Mengine.Base.MengineParamLoggerException;
 import org.Mengine.Base.MengineParamLoggerMessage;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
@@ -92,8 +93,8 @@ public class MengineAppMetricaPlugin extends MengineService implements MengineLi
     }
 
     @Override
-    public void onMengineChangeUserId(@NonNull MengineApplication application, String userId) {
-        AppMetrica.setUserProfileID(userId);
+    public void onMengineChangeUserId(@NonNull MengineApplication application, String oldUserId, String newUserId) {
+        AppMetrica.setUserProfileID(newUserId);
     }
 
     @Override
@@ -187,5 +188,14 @@ public class MengineAppMetricaPlugin extends MengineService implements MengineLi
                 AppMetrica.reportError(message.MESSAGE_CATEGORY, message.MESSAGE_DATA);
                 break;
         }
+    }
+
+    @Override
+    public void onMengineException(@NonNull MengineApplication application, @NonNull MengineParamLoggerException exception) {
+        if (BuildConfig.DEBUG == true) {
+            return;
+        }
+
+        AppMetrica.reportUnhandledException(exception.EXCEPTION_THROWABLE);
     }
 }

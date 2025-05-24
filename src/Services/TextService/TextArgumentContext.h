@@ -5,21 +5,21 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class TextArgument
+    class TextArgumentContext
         : public TextArgumentInterface
     {
-        DECLARE_FACTORABLE( TextArgument );
+        DECLARE_FACTORABLE( TextArgumentContext );
 
     public:
-        TextArgument();
-        ~TextArgument() override;
+        TextArgumentContext();
+        ~TextArgumentContext() override;
 
     public:
-        void setValue( const String & _value ) override;
+        void setContext( const LambdaTextArgumentContext & _context );
+        const LambdaTextArgumentContext & getContext() const;
+
+    public:
         const String & getValue() const override;
-
-        void setContext( const LambdaTextArgumentContext & _context ) override;
-        const LambdaTextArgumentContext & getContext() const override;
 
     public:
         bool updateContext() const override;
@@ -30,6 +30,6 @@ namespace Mengine
         LambdaTextArgumentContext m_context;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<TextArgument, TextArgumentInterface> TextArgumentPtr;
+    typedef IntrusivePtr<TextArgumentContext, TextArgumentInterface> TextArgumentContextPtr;
     //////////////////////////////////////////////////////////////////////////
 }

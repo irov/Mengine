@@ -130,7 +130,13 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     protected void finishWithAlertDialog(String format, Object ... args) {
-        MengineUtils.finishActivityWithAlertDialog(this, "MengineActivity", format, args);
+        if (BuildConfig.DEBUG == true) {
+            MengineUtils.finishActivityWithAlertDialog(this, "MengineActivity", format, args);
+        } else {
+            MengineUtils.performOnMainThreadDelayed(()-> {
+                this.finishAndRemoveTask();
+            }, 0L);
+        }
     }
 
     public void checkPermission(String permission) {
@@ -249,13 +255,15 @@ public class MengineActivity extends AppCompatActivity {
         MengineApplication application = (MengineApplication)this.getApplication();
 
         if (application.isInvalidInitialize() == true) {
-            String invalidInitializeReason = application.getInvalidInitializeReason();
+            Throwable e = application.getInvalidInitializeException();
 
             MengineAnalytics.buildEvent("mng_activity_create_failed")
-                .addParameterString("reason", invalidInitializeReason)
+                .addParameterThrowable("reason", e)
                 .logAndFlush();
 
-            this.finishWithAlertDialog("Activity failed to initialize because the application encountered an error: %s", invalidInitializeReason);
+            MengineLog.logException(TAG, e, Map.of());
+
+            this.finishWithAlertDialog("Activity failed to initialize because the application encountered an error");
 
             return;
         }
@@ -332,9 +340,10 @@ public class MengineActivity extends AppCompatActivity {
                     .addParameterException("reason", e)
                     .logAndFlush();
 
-                this.finishWithAlertDialog("[ERROR] create plugin: %s exception: %s"
+                MengineLog.logException(TAG, e, Map.of("plugin", l.getServiceName()));
+
+                this.finishWithAlertDialog("Activity failed to initialize because the invalid create plugin %s"
                     , l.getServiceName()
-                    , e.getMessage()
                 );
 
                 return;
@@ -388,12 +397,13 @@ public class MengineActivity extends AppCompatActivity {
                 application.setState("activity.init", "plugin_create_exception." + l.getServiceName());
 
                 MengineAnalytics.buildEvent("mng_activity_create_failed")
-                        .addParameterException("reason", e)
-                        .logAndFlush();
+                    .addParameterException("reason", e)
+                    .logAndFlush();
 
-                this.finishWithAlertDialog("[ERROR] create plugin: %s exception: %s"
-                        , l.getServiceName()
-                        , e.getMessage()
+                MengineLog.logException(TAG, e, Map.of("plugin", l.getServiceName()));
+
+                this.finishWithAlertDialog("Activity failed to initialize because the invalid post create plugin %s"
+                    , l.getServiceName()
                 );
 
                 return;
@@ -1122,269 +1132,20 @@ public class MengineActivity extends AppCompatActivity {
      **********************************************************************************************/
 
     public boolean linkingOpenURL(String url) {
-        MengineApplication application = this.getMengineApplication();
+        boolean result = MengineProcedureManager.execute(this, "openUrl", url);
 
-        MengineLog.logInfo(TAG, "linkingOpenURL url: %s"
-            , url
-        );
-
-        application.setState("open.url", url);
-
-        MengineAnalytics.buildEvent("mng_open_url")
-            .addParameterString("url", url)
-            .log();
-
-        if (MengineUtils.openUrl(this, url) == false) {
-            return false;
-        }
-
-        return true;
+        return result;
     }
 
     public boolean linkingOpenMail(String email, String subject, String body) {
-        MengineApplication application = this.getMengineApplication();
+        boolean result = MengineProcedureManager.execute(this, "sendMail", email, subject, body);
 
-        MengineLog.logInfo(TAG, "linkingOpenMail mail: %s subject: %s body: %s"
-            , email
-            , subject
-            , body
-        );
-
-        application.setState("open.mail", email);
-
-        MengineAnalytics.buildEvent("mng_open_mail")
-            .addParameterString("mail", email)
-            .log();
-
-        Context context = this.getApplicationContext();
-
-        Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
-
-        intent.setType("application/zip");
-
-        try {
-            ArrayList<Parcelable> fileUris = new ArrayList<>();
-
-            boolean hasAccount = MengineNative.AndroidEnvironmentService_hasCurrentAccount();
-
-            if (hasAccount == true) {
-                String extraPreferencesFolderName = MengineNative.AndroidEnvironmentService_getExtraPreferencesFolderName();
-                String accountFolderName = MengineNative.AndroidEnvironmentService_getCurrentAccountFolderName();
-
-                File filesDir = context.getFilesDir();
-
-                File extraPreferencesFolder = new File(filesDir, extraPreferencesFolderName);
-                File accountFolder = new File(extraPreferencesFolder, accountFolderName);
-
-                File accountZipFile = MengineUtils.createTempFile(context, "mng_account_", ".zip");
-
-                if (accountZipFile == null) {
-                    MengineLog.logWarning(TAG, "linkingOpenMail invalid create temp file 'mng_account_***.zip' for mail: %s subject: %s"
-                        , email
-                        , subject
-                    );
-
-                    return false;
-                }
-
-                if (MengineUtils.zipFiles(accountFolder, accountZipFile) == true) {
-                    Uri accountZIPUri = MengineUtils.getUriForFile(context, accountZipFile);
-
-                    if (accountZIPUri == null) {
-                        return false;
-                    }
-
-                    MengineLog.logInfo(TAG, "linkingOpenMail attach file '%s' for mail: %s subject: %s"
-                        , accountZIPUri
-                        , email
-                        , subject
-                    );
-
-                    fileUris.add(accountZIPUri);
-                } else {
-                    body += "\n\n[ERROR] invalid zip account folder";
-
-                    MengineLog.logWarning(TAG, "linkingOpenMail invalid zip account folder for mail: %s subject: %s"
-                        , email
-                        , subject
-                    );
-                }
-            }
-
-            File logFile = MengineUtils.createTempFile(context, "mng_log_", ".log");
-
-            if (logFile == null) {
-                MengineLog.logWarning(TAG, "linkingOpenMail invalid create temp file 'mng_log_***.log' for mail: %s subject: %s"
-                    , email
-                    , subject
-                );
-
-                return false;
-            }
-
-            OutputStreamWriter logFileStream = new OutputStreamWriter(new FileOutputStream(logFile), StandardCharsets.UTF_8);
-
-            logFileStream.write("[BEGIN CURRENT LOG]\n\n");
-
-            if (MengineNative.AndroidEnvironmentService_writeCurrentLogToFile(logFileStream) == true) {
-                logFileStream.write("\n\n[END CURRENT LOG]");
-                logFileStream.flush();
-                logFileStream.close();
-
-                File logZipFile = MengineUtils.createTempFile(context, "mng_log_", ".zip");
-
-                if (logZipFile == null) {
-                    MengineLog.logWarning(TAG, "linkingOpenMail invalid create temp file 'mng_log_***.zip' for mail: %s subject: %s"
-                        , email
-                        , subject
-                    );
-
-                    return false;
-                }
-
-                if (MengineUtils.zipFiles(logFile, logZipFile) == true) {
-                    Uri logZipFileUri = MengineUtils.getUriForFile(context, logZipFile);
-
-                    if (logZipFileUri == null) {
-                        return false;
-                    }
-
-                    MengineLog.logInfo(TAG, "linkingOpenMail attach file '%s' for mail: %s subject: %s"
-                        , logZipFileUri
-                        , email
-                        , subject
-                    );
-
-                    fileUris.add(logZipFileUri);
-                } else {
-                    body += "\n\n[ERROR] invalid zip current log file";
-
-                    MengineLog.logMessage(TAG, "linkingOpenMail invalid zip current log file for mail: %s subject: %s"
-                        , email
-                        , subject
-                    );
-                }
-            } else {
-                body += "\n\n[ERROR] invalid write current log file";
-
-                MengineLog.logMessage(TAG, "linkingOpenMail invalid write current log file for mail: %s subject: %s"
-                    , email
-                    , subject
-                );
-            }
-
-            File oldLogFile = MengineUtils.createTempFile(context, "mng_old_log_", ".log");
-
-            if (oldLogFile == null) {
-                MengineLog.logWarning(TAG, "linkingOpenMail invalid create temp file 'mng_old_log_***.log' for mail: %s subject: %s"
-                    , email
-                    , subject
-                );
-
-                return false;
-            }
-
-            OutputStreamWriter oldLogFileStream = new OutputStreamWriter(new FileOutputStream(oldLogFile), StandardCharsets.UTF_8);
-
-            oldLogFileStream.write("[BEGIN OLD LOG]\n\n");
-
-            if (MengineNative.AndroidEnvironmentService_writeOldLogToFile(oldLogFileStream) == true) {
-                oldLogFileStream.write("\n\n[END OLD LOG]");
-                oldLogFileStream.flush();
-                oldLogFileStream.close();
-
-                File oldLogZipFile = MengineUtils.createTempFile(context, "mng_old_log_", ".zip");
-
-                if (oldLogZipFile != null && MengineUtils.zipFiles(oldLogFile, oldLogZipFile) == true) {
-                    Uri oldLogZipFileUri = MengineUtils.getUriForFile(context, oldLogZipFile);
-
-                    if (oldLogZipFileUri == null) {
-                        return false;
-                    }
-
-                    MengineLog.logInfo(TAG, "linkingOpenMail attach file '%s' for mail: %s subject: %s"
-                        , oldLogZipFileUri
-                        , email
-                        , subject
-                    );
-
-                    fileUris.add(oldLogZipFileUri);
-                } else {
-                    body += "\n\n[ERROR] invalid zip old log file";
-
-                    MengineLog.logMessage(TAG, "linkingOpenMail invalid zip old log file for mail: %s subject: %s"
-                        , email
-                        , subject
-                    );
-                }
-            } else {
-                body += "\n\nNOT_FOUND_OLD_LOG";
-
-                MengineLog.logMessage(TAG, "linkingOpenMail not found old log file for mail: %s subject: %s"
-                    , email
-                    , subject
-                );
-            }
-
-            intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, fileUris);
-        } catch (IOException e) {
-            body += "\n\n[ERROR] invalid attachs file";
-
-            MengineLog.logError(TAG, "[ERROR] linkingOpenMail failed attachs file mail: %s subject: %s exception: %s"
-                , email
-                , subject
-                , e.getMessage()
-            );
-        }
-
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[] { email });
-        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
-        intent.putExtra(Intent.EXTRA_TEXT, body);
-
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-
-        Intent chooser = Intent.createChooser(intent, "Send Email");
-
-        chooser.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-        try {
-            this.startActivity(chooser);
-        } catch (Exception e) {
-            MengineLog.logError(TAG, "[ERROR] linkingOpenMail failed start mail: %s subject: %s exception: %s"
-                , email
-                , subject
-                , e.getMessage()
-            );
-
-            return false;
-        }
-
-        return true;
+        return result;
     }
 
     public boolean linkingOpenDeleteAccount() {
-        MengineLog.logInfo(TAG, "request delete account");
+        boolean result = MengineProcedureManager.execute(this, "deleteAccount");
 
-        MengineUtils.showAreYouSureAlertDialog(this
-            , () -> { //Yes
-                MengineLog.logInfo(TAG, "delete account [YES]");
-
-                MengineApplication application = this.getMengineApplication();
-                application.removeUserData();
-
-                MengineUtils.showOkAlertDialog(this, () -> {
-                    this.finishAndRemoveTask();
-                }, "Account Deleted", "Account data has been deleted. The application will now close.");
-            }
-            , () -> { //Cancel
-                MengineLog.logInfo(TAG, "delete account [CANCEL]");
-            }
-            , 3000
-            , "Delete Account"
-            , "Click 'YES' will delete all account data. All game progress, virtual goods, and currency will be permanently removed and unrecoverable."
-        );
-
-        return true;
+        return result;
     }
 }

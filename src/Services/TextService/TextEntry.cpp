@@ -6,7 +6,8 @@ namespace Mengine
     TextEntry::TextEntry()
         : m_lineOffset( 0.f )
         , m_charOffset( 0.f )
-        , m_maxLength( 0.f )
+        , m_maxLength( -1.f )
+        , m_maxHeight( -1.f )
         , m_horizontAlign( ETFHA_LEFT )
         , m_verticalAlign( ETFVA_BOTTOM )
         , m_charScale( 1.f )
@@ -20,51 +21,38 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextEntry::initialize( const ConstString & _key
-        , const Char * _text
-        , size_t _size
-        , const Tags & _tags
-        , const FontInterfacePtr & _font
-        , const Color & _colorFont
-        , float _lineOffset
-        , float _charOffset
-        , float _maxLength
-        , ETextHorizontAlign _horizontAlign
-        , ETextVerticalAlign _verticalAlign
-        , float _charScale
-        , bool _autoScale
-        , bool _justify
-        , uint32_t _params )
+    bool TextEntry::initialize( const ConstString & _key, const TextEntryDesc & _desc )
     {
         m_key = _key;
 
-        if( _size != MENGINE_UNKNOWN_SIZE )
+        if( _desc.size != MENGINE_UNKNOWN_SIZE )
         {
-            m_text.assign( _text, _size );
+            m_text.assign( _desc.text, _desc.size );
         }
         else
         {
-            m_text.assign( _text );
+            m_text.assign( _desc.text );
         }
 
-        m_tags = _tags;
+        m_tags = _desc.tags;
 
-        m_font = _font;
+        m_font = _desc.font;
 
-        m_colorFont = _colorFont;
+        m_colorFont = _desc.colorFont;
 
-        m_lineOffset = _lineOffset;
-        m_charOffset = _charOffset;
-        m_maxLength = _maxLength;
+        m_lineOffset = _desc.lineOffset;
+        m_charOffset = _desc.charOffset;
+        m_maxLength = _desc.maxLength;
+        m_maxHeight = _desc.maxHeight;
 
-        m_horizontAlign = _horizontAlign;
-        m_verticalAlign = _verticalAlign;
+        m_horizontAlign = _desc.horizontAlign;
+        m_verticalAlign = _desc.verticalAlign;
 
-        m_charScale = _charScale;
-        m_autoScale = _autoScale;
-        m_justify = _justify;
+        m_charScale = _desc.charScale;
+        m_autoScale = _desc.autoScale;
+        m_justify = _desc.justify;
 
-        m_params = _params;
+        m_params = _desc.params;
 
         return true;
     }
@@ -74,13 +62,9 @@ namespace Mengine
         return m_key;
     }
     //////////////////////////////////////////////////////////////////////////
-    const Char * TextEntry::getValue( size_t * const _size ) const
+    const String & TextEntry::getValue() const
     {
-        *_size = (size_t)m_text.size();
-
-        const Char * text_str = m_text.c_str();
-
-        return text_str;
+        return m_text;
     }
     //////////////////////////////////////////////////////////////////////////
     const Tags & TextEntry::getTags() const
@@ -111,6 +95,11 @@ namespace Mengine
     float TextEntry::getMaxLength() const
     {
         return m_maxLength;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float TextEntry::getMaxHeight() const
+    {
+        return m_maxHeight;
     }
     //////////////////////////////////////////////////////////////////////////
     ETextHorizontAlign TextEntry::getHorizontAlign() const

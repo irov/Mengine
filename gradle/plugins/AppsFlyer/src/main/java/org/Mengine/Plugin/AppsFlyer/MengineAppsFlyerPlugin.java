@@ -64,9 +64,9 @@ public class MengineAppsFlyerPlugin extends MengineService implements MengineLis
     }
 
     @Override
-    public void onMengineChangeUserId(@NonNull MengineApplication application, String userId) {
+    public void onMengineChangeUserId(@NonNull MengineApplication application, String oldUserId, String newUserId) {
         AppsFlyerLib appsFlyer = AppsFlyerLib.getInstance();
-        appsFlyer.setCustomerUserId(userId);
+        appsFlyer.setCustomerUserId(newUserId);
     }
 
     @Override

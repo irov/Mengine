@@ -910,15 +910,14 @@ namespace Mengine
             {
                 Detail::serializeNodeProp( true, "HasText", xmlNode );
 
-                size_t textSize;
-                const Char * textValue = textEntry->getValue( &textSize );
+                const String & text = textEntry->getValue();
 
-                Detail::serializeNodeProp( String( textValue, textSize ), "Format", xmlNode );
+                Detail::serializeNodeProp( text, "Format", xmlNode );
 
                 const VectorTextArguments & textFormatArgs = _textField->getTextArguments();
 
                 String fmt;
-                Helper::fillStringFormat( textValue, textSize, textFormatArgs, &fmt );
+                Helper::fillStringFormat( text, textFormatArgs, &fmt );
 
                 Detail::serializeNodeProp( fmt, "Text", xmlNode );
             }
@@ -952,10 +951,9 @@ namespace Mengine
             {
                 Detail::serializeNodeProp( true, "HasText", xmlNode );
 
-                size_t textSize;
-                const Char * textValue = textEntry->getValue( &textSize );
+                const String & text = textEntry->getValue();
 
-                Detail::serializeNodeProp( String( textValue, textSize ), "Format", xmlNode );
+                Detail::serializeNodeProp( text, "Format", xmlNode );
 
                 VectorTextArguments textFormatArgs;
 
@@ -966,7 +964,7 @@ namespace Mengine
                 }
 
                 String fmt;
-                Helper::fillStringFormat( textValue, textSize, textFormatArgs, &fmt );
+                Helper::fillStringFormat( text, textFormatArgs, &fmt );
 
                 Detail::serializeNodeProp( fmt, "Text", xmlNode );
             }

@@ -117,10 +117,8 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
                 this.logError("[ERROR] unsupported parameter: %s value: %s class: %s"
                     , key
                     , value
-                    , value == null ? "null" : value.getClass()
+                    , value.getClass()
                 );
-
-                return;
             }
         }
     }

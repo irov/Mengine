@@ -344,9 +344,13 @@ if (MENGINE_APP_LIBRARY_MENGINE == true) {
     }
 }
 
+Utils.logAvailable("MENGINE_APP_SERVICE_AD", MENGINE_APP_SERVICE_AD)
+
 if (MENGINE_APP_SERVICE_AD == true) {
     android.ext.plugins += 'org.Mengine.Base.MengineAdService'
 }
+
+Utils.logAvailable("MENGINE_APP_SERVICE_MONITORCONNECTIVITYSTATUS", MENGINE_APP_SERVICE_MONITORCONNECTIVITYSTATUS)
 
 if (MENGINE_APP_SERVICE_MONITORCONNECTIVITYSTATUS == true) {
     android.ext.plugins += 'org.Mengine.Base.MengineMonitorConnectivityStatusService'

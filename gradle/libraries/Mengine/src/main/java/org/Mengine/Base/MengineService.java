@@ -6,32 +6,46 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Size;
 
 import java.util.Arrays;
+import java.util.Map;
 
 public class MengineService implements MengineServiceInterface {
     private MengineApplication m_application;
+    private MengineActivity m_activity;
     private String m_serviceName;
     private String m_serviceTag;
     private boolean m_embedding;
     private Boolean m_availableStatus = null;
 
     @Override
-    public boolean onInitialize(@NonNull MengineApplication application, String serviceName, boolean embedding) {
+    public void onAppInitialize(@NonNull MengineApplication application, String serviceName, boolean embedding) {
         m_application = application;
         m_serviceName = serviceName;
         m_embedding = embedding;
 
         m_serviceTag = "Mengine" + m_serviceName;
-
-        return true;
     }
 
     @Override
-    public void onFinalize(@NonNull MengineApplication application) {
+    public void onAppFinalize(@NonNull MengineApplication application) {
         m_application = null;
+    }
+
+    @Override
+    public void onActivityInitialize(@NonNull MengineActivity activity) {
+        m_activity = activity;
+    }
+
+    @Override
+    public void onActivityFinalize(@NonNull MengineActivity activity) {
+        m_activity = null;
     }
 
     public MengineApplication getMengineApplication() {
         return m_application;
+    }
+
+    public MengineActivity getMengineActivity() {
+        return m_activity;
     }
 
     @Override
@@ -125,7 +139,7 @@ public class MengineService implements MengineServiceInterface {
     }
 
     public void makeToastDelayed(long delayed, String format, Object ... args) {
-        if (MengineActivity.INSTANCE == null) {
+        if (m_activity == null) {
             this.logError("invalid make toast format: %s args: %s"
                 , format
                 , Arrays.toString(args)
@@ -134,11 +148,11 @@ public class MengineService implements MengineServiceInterface {
             return;
         }
 
-        MengineUtils.makeToastDelayed(MengineActivity.INSTANCE, delayed, format, args);
+        MengineUtils.makeToastDelayed(m_activity, delayed, format, args);
     }
 
     public boolean runOnUiThread(String doc, Runnable action) {
-        if (MengineActivity.INSTANCE == null) {
+        if (m_activity == null) {
             this.logError("invalid run [%s] on UI thread"
                 , doc
             );
@@ -146,7 +160,7 @@ public class MengineService implements MengineServiceInterface {
             return false;
         }
 
-        MengineActivity.INSTANCE.runOnUiThread(action);
+        m_activity.runOnUiThread(action);
 
         return true;
     }
@@ -209,6 +223,11 @@ public class MengineService implements MengineServiceInterface {
         String m = MengineLog.logError(t, format, args);
 
         return m;
+    }
+
+    public void logException(@NonNull Throwable e, @NonNull Map<String, Object> attributes) {
+        String t = this.getServiceTag();
+        MengineLog.logException(t, e, attributes);
     }
 
     public void assertionError(String format, Object ... args) {

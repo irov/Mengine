@@ -24,6 +24,7 @@ import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineListenerLogger;
 import org.Mengine.Base.MengineListenerUser;
 import org.Mengine.Base.MengineUtils;
+import org.json.JSONArray;
 
 import java.util.List;
 import java.util.Map;
@@ -173,7 +174,9 @@ public class MengineFirebaseCrashlyticsPlugin extends MengineService implements 
             String key = entry.getKey();
             Object value = entry.getValue();
 
-            if (value instanceof Boolean booleanValue) {
+            if (value == null) {
+                builder.putString(key, "null");
+            } else if (value instanceof Boolean booleanValue) {
                 builder.putBoolean(key, booleanValue);
             } else if (value instanceof Integer integerValue) {
                 builder.putInt(key, integerValue);
@@ -185,8 +188,10 @@ public class MengineFirebaseCrashlyticsPlugin extends MengineService implements 
                 builder.putDouble(key, doubleValue);
             } else if (value instanceof String stringValue) {
                 builder.putString(key, stringValue);
-            } else if (value instanceof List<?> listValue ) {
-
+            } else if (value instanceof List<?> listValue) {
+                JSONArray json = MengineUtils.jsonArrayFromArrayList(listValue);
+                String jsonString = json.toString();
+                builder.putString(key, jsonString);
             } else {
                 this.logError("[ERROR] unsupported custom key: %s value: %s class: %s"
                     , key

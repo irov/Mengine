@@ -80,7 +80,9 @@ public class MengineFlurryPlugin extends MengineService implements MengineListen
             String key = entry.getKey();
             Object value = entry.getValue();
 
-            if (value instanceof Boolean) {
+            if (value == null) {
+                params.put(key, "null");
+            } else if (value instanceof Boolean) {
                 params.put(key, String.valueOf(value));
             } else if (value instanceof Long) {
                 params.put(key, String.valueOf(value));
@@ -91,7 +93,7 @@ public class MengineFlurryPlugin extends MengineService implements MengineListen
             } else {
                 this.logError("[ERROR] unsupported parameter: %s class: %s"
                     , value
-                    , value == null ? "null" : value.getClass()
+                    , value.getClass()
                 );
 
                 return;

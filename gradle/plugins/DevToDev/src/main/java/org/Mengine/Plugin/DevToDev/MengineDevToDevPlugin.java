@@ -122,7 +122,9 @@ public class MengineDevToDevPlugin extends MengineService implements MengineList
             String name = entry.getKey();
             Object parameter = entry.getValue();
 
-            if (parameter instanceof Boolean) {
+            if (parameter == null) {
+                dtd.add(name, "null");
+            } else if (parameter instanceof Boolean) {
                 dtd.add(name, (Boolean)parameter);
             } else if (parameter instanceof Long) {
                 dtd.add(name, (Long)parameter);

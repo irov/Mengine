@@ -101,13 +101,15 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
     }
 
     public void resetConsentInformation() {
-        if (MengineActivity.INSTANCE == null) {
+        MengineActivity activity = this.getMengineActivity();
+
+        if (activity == null) {
             this.logWarning("reset consent information invalid activity");
 
             return;
         }
 
-        ConsentInformation consentInformation = UserMessagingPlatform.getConsentInformation(MengineActivity.INSTANCE);
+        ConsentInformation consentInformation = UserMessagingPlatform.getConsentInformation(activity);
         consentInformation.reset();
     }
 }

@@ -83,9 +83,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
         try {
             AppEventsLogger.activateApp(application);
         } catch (final Exception e) {
-            this.logError("[ERROR] AppEventsLogger activateApp caught exception: %s"
-                , e.getMessage()
-            );
+            this.logException(e, Map.of());
         }
 
         if (BuildConfig.DEBUG == true) {
@@ -114,9 +112,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
 
             @Override
             public void onError(@NonNull Exception e) {
-                MengineFacebookPlugin.this.logError("[ERROR] retrieve login [onError] exception: %s"
-                    , e.getMessage()
-                );
+                MengineFacebookPlugin.this.logException(e, Map.of());
             }
         });
 
@@ -184,11 +180,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
 
             @Override
             public void onError(@NonNull FacebookException e) {
-                String message = e.getMessage();
-
-                MengineFacebookPlugin.this.logError("[ERROR] login [onError] exception: %s"
-                    , message
-                );
+                MengineFacebookPlugin.this.logException(e, Map.of());
 
                 AccessToken.setCurrentAccessToken(null);
 
@@ -272,7 +264,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
             } else {
                 this.logError("[ERROR] unsupported parameter: %s class: %s"
                     , value
-                    , value == null ? "null" : value.getClass()
+                    , value.getClass()
                 );
             }
         }
@@ -341,7 +333,9 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
     }
     
     public void performLogin(List<String> permissions) {
-        if (MengineActivity.INSTANCE == null) {
+        MengineActivity activity = this.getMengineActivity();
+
+        if (activity == null) {
             this.logWarning("performLogin invalid activity");
 
             this.pythonCall("onFacebookLoginError", ERROR_CODE_UNKNOWN, new RuntimeException("invalid activity"));
@@ -353,7 +347,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
             , permissions
         );
 
-        LoginManager.getInstance().logInWithReadPermissions(MengineActivity.INSTANCE, m_facebookCallbackManager, permissions);
+        LoginManager.getInstance().logInWithReadPermissions(activity, m_facebookCallbackManager, permissions);
     }
 
     private boolean checkValidAccessToken(AccessToken accessToken, String errorMethod) {
@@ -459,7 +453,9 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
             , quote
         );
 
-        if (MengineActivity.INSTANCE == null) {
+        MengineActivity activity = this.getMengineActivity();
+
+        if (activity == null) {
             this.logWarning("shareLink invalid activity");
 
             MengineFacebookPlugin.this.pythonCall("onFacebookShareError", ERROR_CODE_UNKNOWN, new RuntimeException("invalid activity"));
@@ -481,7 +477,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
             .addParameterString("quote", quote)
             .log();
 
-        ShareDialog shareDialog = new ShareDialog(MengineActivity.INSTANCE);
+        ShareDialog shareDialog = new ShareDialog(activity);
 
         shareDialog.registerCallback(m_facebookCallbackManager, new FacebookCallback<>() {
             @Override
@@ -516,21 +512,21 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
             }
 
             @Override
-            public void onError(@NonNull FacebookException exception) {
-                String error_message = exception.getMessage();
-
-                MengineFacebookPlugin.this.logError("[ERROR] shareLink error: %s"
-                    , error_message
-                );
+            public void onError(@NonNull FacebookException e) {
+                MengineFacebookPlugin.this.logException(e, Map.of(
+                    "url", link,
+                    "hashtag", hashtag,
+                    "quote", quote
+                ));
 
                 MengineFacebookPlugin.this.buildEvent("mng_fb_share_link_error")
                     .addParameterString("url", link)
                     .addParameterString("hashtag", hashtag)
                     .addParameterString("quote", quote)
-                    .addParameterException("exception", exception)
+                    .addParameterException("exception", e)
                     .log();
 
-                MengineFacebookPlugin.this.pythonCall("onFacebookShareError", ERROR_CODE_UNKNOWN, exception);
+                MengineFacebookPlugin.this.pythonCall("onFacebookShareError", ERROR_CODE_UNKNOWN, e);
             }
         });
 
@@ -585,10 +581,10 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
             try {
                 pictureURL = responseObject.getJSONObject("data").getString("url");
             } catch (final JSONException e) {
-                this.logError("[ERROR] profile user picture link: %s catch JSONException: %s"
-                    , graphPath
-                    , e.getMessage()
-                );
+                this.logException(e, Map.of(
+                    "graphPath", graphPath,
+                    "response", responseObject.toString()
+                ));
 
                 this.pythonCall("onFacebookProfilePictureLinkGetError", ERROR_CODE_UNKNOWN, e);
 

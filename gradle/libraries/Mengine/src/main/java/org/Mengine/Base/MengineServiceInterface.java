@@ -11,8 +11,11 @@ public interface MengineServiceInterface {
         return true;
     }
 
-    boolean onInitialize(@NonNull MengineApplication application, String serviceName, boolean embedding);
-    void onFinalize(@NonNull MengineApplication application);
+    void onAppInitialize(@NonNull MengineApplication application, String serviceName, boolean embedding);
+    void onAppFinalize(@NonNull MengineApplication application);
+
+    void onActivityInitialize(@NonNull MengineActivity activity);
+    void onActivityFinalize(@NonNull MengineActivity activity);
 
     boolean isEmbedding();
 

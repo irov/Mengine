@@ -156,7 +156,9 @@ public class MengineLog {
     }
 
     public static void logException(@Size(min = 1L,max = 23L) String category, @NonNull Throwable e, @NonNull Map<String, Object> attributes) {
-        MengineLog.logError(category, "Exception: %s", e.getMessage());
+        String message = e.toString();
+        String trace = Log.getStackTraceString(e);
+        MengineLog.logError(category, "%s\n%s", message, trace);
 
         MengineParamLoggerException exception = new MengineParamLoggerException(category, e, attributes);
 

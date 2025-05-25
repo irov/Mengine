@@ -412,7 +412,9 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
             return false;
         }
 
-        if (MengineActivity.INSTANCE == null) {
+        MengineActivity activity = this.getMengineActivity();
+
+        if (activity == null) {
             this.logError("[ERROR] buyInApp invalid activity");
 
             return false;
@@ -448,7 +450,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
             .setProductDetailsParamsList(productDetailsParamsList)
             .build();
 
-        BillingResult billingResult = m_billingClient.launchBillingFlow(MengineActivity.INSTANCE, flowParams);
+        BillingResult billingResult = m_billingClient.launchBillingFlow(activity, flowParams);
 
         int responseCode = billingResult.getResponseCode();
 

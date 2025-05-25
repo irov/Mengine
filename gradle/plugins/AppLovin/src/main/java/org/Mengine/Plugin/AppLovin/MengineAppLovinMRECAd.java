@@ -211,7 +211,7 @@ class MengineAppLovinMRECAd extends MengineAppLovinBase implements MaxAdRequestL
         this.buildMRECAdEvent("load")
             .log();
 
-        this.setMRECState("load");
+        this.setMRECState("load." + m_placement);
 
         try {
             m_adView.loadAd();
@@ -225,7 +225,7 @@ class MengineAppLovinMRECAd extends MengineAppLovinBase implements MaxAdRequestL
                 .addParameterException("exception", e)
                 .log();
 
-            this.setMRECState("load_exception");
+            this.setMRECState("load_exception." + m_placement);
 
             this.retryLoadAd();
         }

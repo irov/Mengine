@@ -25,8 +25,10 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
 
     private Display m_display;
 
-    private int m_surfaceWidth;
-    private int m_surfaceHeight;
+    private float m_surfaceWidthF;
+    private float m_surfaceHeightF;
+
+    private boolean m_paused;
 
     public MengineSurfaceView(Context context) {
         super(context);
@@ -42,11 +44,34 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
             m_linearAccelerometer = m_sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         }
 
-        m_surfaceWidth = 1;
-        m_surfaceHeight = 1;
+        m_surfaceWidthF = 1.f;
+        m_surfaceHeightF = 1.f;
+        m_paused = true;
+    }
+
+    public void handleStart() {
+        if (m_paused == false) {
+            return;
+        }
+
+        this.handleResume();
+    }
+
+    public void handleStop() {
+        if (m_paused == true) {
+            return;
+        }
+
+        this.handlePause();
     }
 
     public void handlePause() {
+        if (m_paused == true) {
+            return;
+        }
+
+        m_paused = true;
+
         this.setFocusable(false);
         this.setFocusableInTouchMode(false);
         this.setOnKeyListener(null);
@@ -61,6 +86,12 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
     }
 
     public void handleResume() {
+        if (m_paused == false) {
+            return;
+        }
+
+        m_paused = false;
+
         this.setFocusable(true);
         this.setFocusableInTouchMode(true);
         this.requestFocus();
@@ -87,6 +118,8 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
 
         m_display = null;
         m_sensorManager = null;
+        m_accelerometer = null;
+        m_linearAccelerometer = null;
     }
 
     Surface getSurface() {
@@ -95,7 +128,7 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        MengineLog.logMessage(TAG, "surfaceCreated");
+        MengineLog.logInfo(TAG, "surfaceCreated");
 
         Surface surface = holder.getSurface();
 
@@ -110,7 +143,7 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        MengineLog.logMessage(TAG, "surfaceDestroyed");
+        MengineLog.logInfo(TAG, "surfaceDestroyed");
 
         Surface surface = holder.getSurface();
 
@@ -125,14 +158,14 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
 
     @Override
     public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
-        MengineLog.logMessage(TAG, "surfaceChanged format: %d width: %d height: %d"
+        MengineLog.logInfo(TAG, "surfaceChanged format: %d width: %d height: %d"
             , format
             , width
             , height
         );
 
-        m_surfaceWidth = width;
-        m_surfaceHeight = height;
+        m_surfaceWidthF = width > 0 ? (float)width : 1.f;
+        m_surfaceHeightF = height > 0 ? (float)height : 1.f;
 
         int deviceWidth = width;
         int deviceHeight = height;
@@ -172,31 +205,14 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
         return false;
     }
 
-    public static boolean isSystemKey(int keyCode) {
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_BACK:
-            case KeyEvent.KEYCODE_HOME:
-            case KeyEvent.KEYCODE_MENU:
-            case KeyEvent.KEYCODE_APP_SWITCH:
-            case KeyEvent.KEYCODE_VOLUME_UP:
-            case KeyEvent.KEYCODE_VOLUME_DOWN:
-            case KeyEvent.KEYCODE_CAMERA:
-            case KeyEvent.KEYCODE_POWER:
-            case KeyEvent.KEYCODE_SEARCH:
-                return true;
-            default:
-                return false;
-        }
-    }
-
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
-        int action = event.getAction();
-        int repeatCount = event.getRepeatCount();
-
-        if (MengineSurfaceView.isSystemKey(keyCode) == true) {
+        if (event.isSystem() == true) {
             return false;
         }
+
+        int action = event.getAction();
+        int repeatCount = event.getRepeatCount();
 
         if (action == KeyEvent.ACTION_DOWN) {
             MengineNative.AndroidPlatform_keyEvent(true, keyCode, repeatCount);
@@ -223,8 +239,12 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
         float y = event.getY(index);
         float p = event.getPressure(index);
 
-        float xn = x / m_surfaceWidth;
-        float yn = y / m_surfaceHeight;
+        this.nativeTouchEvent(pointerId, x, y, p, action);
+    }
+
+    protected void nativeTouchEvent(int pointerId, float x, float y, float p, int action) {
+        float xn = x / m_surfaceWidthF;
+        float yn = y / m_surfaceHeightF;
         float pn = Math.min(p, 1.f);
 
         MengineNative.AndroidPlatform_touchEvent(action, pointerId, xn, yn, pn);
@@ -237,16 +257,31 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
 
         switch (action) {
             case MotionEvent.ACTION_MOVE: {
-                for (int index = 0; index != pointerCount; ++index) {
-                    this.nativeTouchEvent(event, index, action);
+                final int historySize = event.getHistorySize();
+
+                for (int historyIndex = 0; historyIndex != historySize; ++historyIndex) {
+                    for (int pointerIndex = 0; pointerIndex != pointerCount; ++pointerIndex) {
+                        int pointerId = event.getPointerId(pointerIndex);
+                        float x  = event.getHistoricalX(pointerIndex, historyIndex);
+                        float y  = event.getHistoricalY(pointerIndex, historyIndex);
+                        float p = event.getHistoricalPressure(pointerIndex, historyIndex);
+
+                        this.nativeTouchEvent(pointerId, x, y, p, MotionEvent.ACTION_MOVE);
+                    }
+                }
+
+                for (int pointerIndex = 0; pointerIndex != pointerCount; ++pointerIndex) {
+                    this.nativeTouchEvent(event, pointerIndex, action);
                 }
             }break;
             case MotionEvent.ACTION_UP: {
-                this.nativeTouchEvent(event, 0, action);
+                int idx = event.getActionIndex();
+                this.nativeTouchEvent(event, idx, action);
                 v.performClick();
             }break;
             case MotionEvent.ACTION_DOWN: {
-                this.nativeTouchEvent(event, 0, action);
+                int idx = event.getActionIndex();
+                this.nativeTouchEvent(event, idx, action);
             }break;
             case MotionEvent.ACTION_POINTER_UP:
             case MotionEvent.ACTION_POINTER_DOWN: {

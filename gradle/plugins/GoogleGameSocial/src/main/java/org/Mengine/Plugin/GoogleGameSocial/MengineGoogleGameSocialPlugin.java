@@ -26,6 +26,8 @@ import org.Mengine.Base.MengineServiceInvalidInitializeException;
 
 import org.Mengine.Plugin.GoogleService.MengineGoogleServicePlugin;
 
+import java.util.Map;
+
 public class MengineGoogleGameSocialPlugin extends MengineService implements MengineListenerApplication, MengineListenerActivity {
     public static final String SERVICE_NAME = "GGameSocial";
     public static final boolean SERVICE_EMBEDDING = true;
@@ -120,6 +122,12 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
     }
 
     private void signInSilently() {
+        if (m_isAuthenticated == true) {
+            this.logInfo("signInSilently already authenticated");
+
+            return;
+        }
+
         if (MengineNetwork.isNetworkAvailable() == false) {
             this.logInfo("signInSilently network not available");
 
@@ -132,9 +140,11 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
             if (isSuccessful == false) {
                 Exception e = isAuthenticatedTask.getException();
 
-                this.logError("[ERROR] google game social isAuthenticated failed: %s"
-                    , e != null ? e.getMessage() : "null"
-                );
+                if (e != null) {
+                    this.logException(e, Map.of());
+                } else {
+                    this.logError("[ERROR] google game social isAuthenticated failed: null exception");
+                }
 
                 m_isAuthenticated = false;
 
@@ -172,9 +182,11 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
             if (task.isSuccessful() == false) {
                 Exception e = task.getException();
 
-                this.logError("[ERROR] signInIntent failed: %s"
-                    , e != null ? e.getMessage() : "null"
-                );
+                if (e != null) {
+                    this.logException(e, Map.of());
+                } else {
+                    this.logError("[ERROR] signInIntent failed: null exception");
+                }
 
                 this.pythonCall("onGoogleGameSocialSignInIntentError", e);
 
@@ -218,9 +230,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
 
                 m_achievementLauncher.launch(intent);
             }).addOnFailureListener(e -> {
-                this.logError("[ERROR] get achievements error: %s"
-                    , e.getMessage()
-                );
+                this.logException(e, Map.of());
 
                 this.pythonCall("onGoogleGameSocialShowAchievementError", e);
             }).addOnCanceledListener(() -> {
@@ -265,10 +275,9 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
 
                 this.pythonCall("onGoogleGameSocialUnlockAchievementSuccess", achievementId);
             }).addOnFailureListener(e -> {
-                this.logError("[ERROR] unlockAchievement achievementId: %s error: %s"
-                    , achievementId
-                    , e.getMessage()
-                );
+                this.logException(e, Map.of(
+                    "achievementId", achievementId
+                ));
 
                 this.pythonCall("onGoogleGameSocialUnlockAchievementError", achievementId, e);
             }).addOnCanceledListener(() -> {
@@ -319,11 +328,10 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
 
                 this.pythonCall("onGoogleGameSocialIncrementAchievementSuccess", achievementId, numSteps);
             }).addOnFailureListener(e -> {
-                this.logError("[ERROR] incrementAchievement achievementId: %s numSteps: %d error: %s"
-                    , achievementId
-                    , numSteps
-                    , e.getMessage()
-                );
+                this.logException(e, Map.of(
+                    "achievementId", achievementId,
+                    "numSteps", numSteps
+                ));
 
                 this.pythonCall("onGoogleGameSocialIncrementAchievementError", achievementId, numSteps, e);
             }).addOnCanceledListener(() -> {
@@ -371,10 +379,9 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
 
                 this.pythonCall("onGoogleGameSocialRevealAchievementSuccess", achievementId);
             }).addOnFailureListener(e -> {
-                this.logError("[ERROR] revealAchievement achievementId: %s error: %s"
-                    , achievementId
-                    , e.getMessage()
-                );
+                this.logException(e, Map.of(
+                    "achievementId", achievementId
+                ));
 
                 this.pythonCall("onGoogleGameSocialRevealAchievementError", achievementId, e);
             }).addOnCanceledListener(() -> {
@@ -425,11 +432,10 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
 
                 this.pythonCall("onGoogleGameSocialLeaderboardScoreSuccess", leaderboardId, score);
             }).addOnFailureListener(e -> {
-                this.logError("[ERROR] submitLeaderboardScore leaderboardId: %s score: %d error: %s"
-                    , leaderboardId
-                    , score
-                    , e.getMessage()
-                );
+                this.logException(e, Map.of(
+                    "leaderboardId", leaderboardId,
+                    "score", score
+                ));
 
                 this.pythonCall("onGoogleGameSocialLeaderboardScoreError", leaderboardId, score, e);
             }).addOnCanceledListener(() -> {
@@ -475,10 +481,9 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
 
                 m_leaderboardLauncher.launch(intent);
             }).addOnFailureListener(e -> {
-                this.logError("[ERROR] showLeaderboard leaderboardId: %s error: %s"
-                    , leaderboardId
-                    , e.getMessage()
-                );
+                this.logException(e, Map.of(
+                    "leaderboardId", leaderboardId
+                ));
 
                 this.pythonCall("onGoogleGameSocialShowLeaderboardError", leaderboardId, e);
             }).addOnCanceledListener(() -> {

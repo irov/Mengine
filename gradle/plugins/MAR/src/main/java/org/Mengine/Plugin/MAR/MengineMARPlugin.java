@@ -84,7 +84,9 @@ public class MengineMARPlugin extends MengineService implements MARInitListener,
     }
 
     public void login() {
-        if (MengineActivity.INSTANCE == null) {
+        MengineActivity activity = this.getMengineActivity();
+
+        if (activity == null) {
             this.logError("[ERROR] login activity is null");
 
             return;
@@ -92,11 +94,13 @@ public class MengineMARPlugin extends MengineService implements MARInitListener,
 
         this.logInfo("login");
 
-        MARPlatform.getInstance().login(MengineActivity.INSTANCE);
+        MARPlatform.getInstance().login(activity);
     }
 
     public void loginCustom(final String loginType) {
-        if (MengineActivity.INSTANCE == null) {
+        MengineActivity activity = this.getMengineActivity();
+
+        if (activity == null) {
             this.logError("[ERROR] login activity is null");
 
             return;
@@ -106,7 +110,7 @@ public class MengineMARPlugin extends MengineService implements MARInitListener,
             , loginType
         );
 
-        MARPlatform.getInstance().loginCustom(MengineActivity.INSTANCE, loginType);
+        MARPlatform.getInstance().loginCustom(activity, loginType);
     }
 
     private PayParams makePayParams(String jsonData) {
@@ -165,7 +169,9 @@ public class MengineMARPlugin extends MengineService implements MARInitListener,
     }
 
     public boolean pay(String jsonData) {
-        if (MengineActivity.INSTANCE == null) {
+        MengineActivity activity = this.getMengineActivity();
+
+        if (activity == null) {
             this.logError("[ERROR] pay activity is null");
 
             return false;
@@ -185,7 +191,7 @@ public class MengineMARPlugin extends MengineService implements MARInitListener,
             , params
         );
 
-        MARPlatform.getInstance().pay(MengineActivity.INSTANCE, params);
+        MARPlatform.getInstance().pay(activity, params);
 
         return true;
     }
@@ -268,7 +274,9 @@ public class MengineMARPlugin extends MengineService implements MARInitListener,
     public boolean pasteCode() {
         this.logInfo("pasteCode");
 
-        if (MengineActivity.INSTANCE == null) {
+        MengineActivity activity = this.getMengineActivity();
+
+        if (activity == null) {
             this.logError("[ERROR] pasteCode activity is null");
 
             return false;
@@ -277,10 +285,10 @@ public class MengineMARPlugin extends MengineService implements MARInitListener,
         try {
             String code = "";
 
-            boolean hasClipboardText = MengineActivity.INSTANCE.hasClipboardText();
+            boolean hasClipboardText = activity.hasClipboardText();
 
             if (hasClipboardText == true) {
-                code = MengineActivity.INSTANCE.getClipboardText();
+                code = activity.getClipboardText();
             }
 
             this.logInfo("try to paste code: %s"

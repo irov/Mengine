@@ -235,7 +235,9 @@ public class MengineHelpshiftPlugin extends MengineService implements HelpshiftE
     }
 
     public void showFAQs() {
-        if (MengineActivity.INSTANCE == null) {
+        MengineActivity activity = this.getMengineActivity();
+
+        if (activity == null) {
             this.logWarning("showFAQs invalid activity");
 
             return;
@@ -244,11 +246,13 @@ public class MengineHelpshiftPlugin extends MengineService implements HelpshiftE
         this.logInfo("showFAQs");
 
         Map<String, Object> config = new HashMap<>();
-        Helpshift.showFAQs(MengineActivity.INSTANCE, config);
+        Helpshift.showFAQs(activity, config);
     }
 
     public void showConversation() {
-        if (MengineActivity.INSTANCE == null) {
+        MengineActivity activity = this.getMengineActivity();
+
+        if (activity == null) {
             this.logWarning("showConversation invalid activity");
 
             return;
@@ -257,11 +261,13 @@ public class MengineHelpshiftPlugin extends MengineService implements HelpshiftE
         this.logInfo("showConversation");
 
         Map<String, Object> config = new HashMap<>();
-        Helpshift.showConversation(MengineActivity.INSTANCE, config);
+        Helpshift.showConversation(activity, config);
     }
 
     public void showFAQSection(final String sectionPublishId) {
-        if (MengineActivity.INSTANCE == null) {
+        MengineActivity activity = this.getMengineActivity();
+
+        if (activity == null) {
             this.logWarning("showFAQSection invalid activity");
 
             return;
@@ -272,11 +278,13 @@ public class MengineHelpshiftPlugin extends MengineService implements HelpshiftE
         );
 
         Map<String, Object> config = new HashMap<>();
-        Helpshift.showFAQSection(MengineActivity.INSTANCE, sectionPublishId, config);
+        Helpshift.showFAQSection(activity, sectionPublishId, config);
     }
 
     public void showSingleFAQ(final String publishId) {
-        if (MengineActivity.INSTANCE == null) {
+        MengineActivity activity = this.getMengineActivity();
+
+        if (activity == null) {
             this.logWarning("showSingleFAQ invalid activity");
 
             return;
@@ -287,7 +295,7 @@ public class MengineHelpshiftPlugin extends MengineService implements HelpshiftE
         );
 
         Map<String, Object> config = new HashMap<>();
-        Helpshift.showSingleFAQ(MengineActivity.INSTANCE, publishId, config);
+        Helpshift.showSingleFAQ(activity, publishId, config);
     }
 
     public void setLanguage(final String language) {

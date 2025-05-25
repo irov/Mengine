@@ -325,7 +325,7 @@ namespace Mengine
 
         if( this->isStopService() == true )
         {
-            LOGGER_ASSERTION( "service is stoped" );
+            LOGGER_ASSERTION( "service is stopped" );
 
             return nullptr;
         }
@@ -455,7 +455,7 @@ namespace Mengine
     {
         if( this->isStopService() == true )
         {
-            LOGGER_ASSERTION( "service is stoped" );
+            LOGGER_ASSERTION( "service is stopped" );
 
             return nullptr;
         }

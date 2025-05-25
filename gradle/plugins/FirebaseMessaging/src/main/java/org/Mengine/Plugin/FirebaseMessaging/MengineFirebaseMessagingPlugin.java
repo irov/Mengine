@@ -16,6 +16,8 @@ import androidx.annotation.NonNull;
 
 import org.Mengine.Plugin.GoogleService.MengineGoogleServicePlugin;
 
+import java.util.Map;
+
 public class MengineFirebaseMessagingPlugin extends MengineService implements MengineListenerActivity {
     public static final String SERVICE_NAME = "FBMessaging";
     public static final boolean SERVICE_EMBEDDING = true;
@@ -44,9 +46,11 @@ public class MengineFirebaseMessagingPlugin extends MengineService implements Me
                 if (task.isSuccessful() == false) {
                     Exception exception = task.getException();
 
-                    this.logError("[ERROR] fetching FCM registration token failed: %s"
-                        , exception != null ? exception.getMessage() : "null"
-                    );
+                    if (exception != null) {
+                        this.logException(exception, Map.of());
+                    } else {
+                        this.logError("fetching FCM registration token failed: unknown error");
+                    }
 
                     return;
                 }

@@ -146,11 +146,10 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
             try {
                 value_json = new JSONObject(value_string);
             } catch (final JSONException e) {
-                this.logError("remote config invalid json key: %s value: %s exception: %s"
-                    , key
-                    , value_string
-                    , e.getMessage()
-                );
+                this.logException(e, Map.of(
+                    "key", key,
+                    "value", value_string
+                ));
 
                 continue;
             }
@@ -254,12 +253,14 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
 
     @Override
     public void onAcquisitionChange(@NonNull MengineApplication application, @NonNull MengineParamAcquisition acquisition) {
-        if (MengineActivity.INSTANCE == null) {
+        if (acquisition == null) {
             this.logWarning("remote config invalid activity");
 
             return;
         }
 
-        this.fetchAndActivate(MengineActivity.INSTANCE);
+        MengineActivity activity = this.getMengineActivity();
+
+        this.fetchAndActivate(activity);
     }
 }

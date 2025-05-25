@@ -241,7 +241,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             }
         }
 
-        if (this.hasOption("applovin.creativedebugger.enabled") == true) {
+        if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_CREATIVE_DEBUGGER == true) {
             settings.setCreativeDebuggerEnabled(true);
         } else {
             settings.setCreativeDebuggerEnabled(false);
@@ -249,6 +249,10 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
 
         String userId = application.getUserId();
         settings.setUserIdentifier(userId);
+
+        if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_LOGGING_VERBOSE == true) {
+            settings.setVerboseLogging(true);
+        }
 
         adService.setAdProvider(this);
 
@@ -263,7 +267,9 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
 
         builder.setMediationProvider(AppLovinMediationProvider.MAX);
         builder.setAdUnitIds(adUnitIds);
-        builder.setPluginVersion("Mengine-v" + application.getEngineVersion());
+
+        String engineVersion = application.getEngineVersion();
+        builder.setPluginVersion("Mengine-v" + engineVersion);
 
         if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_TEST_DEVICE_ADVERTISING_ID != null) {
             List<String> testDeviceAdvertisingIds = List.of(BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_TEST_DEVICE_ADVERTISING_ID);
@@ -272,6 +278,8 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
         }
 
         AppLovinSdkInitializationConfiguration config = builder.build();
+
+        this.logInfo("initializing AppLovin SDK with config: %s", config.toString());
 
         appLovinSdk.initialize(config, configuration -> {
             AppLovinCmpService cmpService = appLovinSdk.getCmpService();
@@ -329,35 +337,37 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
                 m_nativeAd.initialize(application);
             }
 
-            if (MengineActivity.INSTANCE != null) {
+            MengineActivity activity = this.getMengineActivity();
+
+            if (activity != null) {
                 if (m_bannerAd != null) {
-                    m_bannerAd.onActivityCreate(MengineActivity.INSTANCE);
+                    m_bannerAd.onActivityCreate(activity);
                 }
 
                 if (m_interstitialAd != null) {
-                    m_interstitialAd.onActivityCreate(MengineActivity.INSTANCE);
+                    m_interstitialAd.onActivityCreate(activity);
                 }
 
                 if (m_rewardedAd != null) {
-                    m_rewardedAd.onActivityCreate(MengineActivity.INSTANCE);
+                    m_rewardedAd.onActivityCreate(activity);
                 }
 
                 if (m_appOpenAd != null) {
-                    m_appOpenAd.onActivityCreate(MengineActivity.INSTANCE);
+                    m_appOpenAd.onActivityCreate(activity);
                 }
 
                 if (m_MRECAd != null) {
-                    m_MRECAd.onActivityCreate(MengineActivity.INSTANCE);
+                    m_MRECAd.onActivityCreate(activity);
                 }
 
                 if (m_nativeAd != null) {
-                    m_nativeAd.onActivityCreate(MengineActivity.INSTANCE);
+                    m_nativeAd.onActivityCreate(activity);
                 }
             }
 
             boolean enableShowMediationDebugger = this.getEnableShowMediationDebugger();
 
-            if (enableShowMediationDebugger == true || this.hasOption("applovin.show_mediation_debugger") == true) {
+            if (enableShowMediationDebugger == true || BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_SHOW_MEDIATION_DEBUGGER == true) {
                 this.showMediationDebugger();
             }
 
@@ -368,7 +378,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             MengineAppLovinMediationInterface mediationAmazon = (MengineAppLovinMediationInterface)this.newInstance("org.Mengine.Plugin.AppLovin.MengineAppLovinMediationAmazon", false);
 
             if (mediationAmazon != null) {
-                mediationAmazon.initializeMediator(application, this);
+                mediationAmazon.onAppCreate(application, this);
 
                 m_mediationAmazon = mediationAmazon;
             } else {
@@ -392,7 +402,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
     @Override
     public void onAppTerminate(@NonNull MengineApplication application) {
         if (m_mediationAmazon != null) {
-            m_mediationAmazon.finalizeMediator(application, this);
+            m_mediationAmazon.onAppTerminate(application, this);
             m_mediationAmazon = null;
         }
 
@@ -621,7 +631,9 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             return false;
         }
 
-        if (MengineActivity.INSTANCE == null) {
+        MengineActivity activity = this.getMengineActivity();
+
+        if (activity == null) {
             this.assertionError("invalid show interstitial activity is null");
 
             return false;
@@ -631,7 +643,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             , placement
         );
 
-        if (m_interstitialAd.showInterstitial(MengineActivity.INSTANCE, placement) == false) {
+        if (m_interstitialAd.showInterstitial(activity, placement) == false) {
             return false;
         }
 
@@ -683,7 +695,9 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             return false;
         }
 
-        if (MengineActivity.INSTANCE == null) {
+        MengineActivity activity = this.getMengineActivity();
+
+        if (activity == null) {
             this.assertionError("invalid show rewarded activity is null");
 
             return false;
@@ -693,7 +707,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
             , placement
         );
 
-        if (m_rewardedAd.showRewarded(MengineActivity.INSTANCE, placement) == false) {
+        if (m_rewardedAd.showRewarded(activity, placement) == false) {
             return false;
         }
 
@@ -1010,7 +1024,9 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
     }
 
     public void showConsentFlow() {
-        if (MengineActivity.INSTANCE == null) {
+        MengineActivity activity = this.getMengineActivity();
+
+        if (activity == null) {
             this.assertionError("invalid show consent flow activity is null");
 
             return;
@@ -1020,7 +1036,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAdPr
 
         AppLovinCmpService cmpService = appLovinSdk.getCmpService();
 
-        cmpService.showCmpForExistingUser(MengineActivity.INSTANCE, error -> {
+        cmpService.showCmpForExistingUser(activity, error -> {
             if (error != null) {
                 this.logError("Failed to show consent dialog error: %s code: %s cmp message: %s code: %d"
                     , error.getMessage()

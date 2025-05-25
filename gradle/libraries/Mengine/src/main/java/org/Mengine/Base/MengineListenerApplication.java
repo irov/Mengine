@@ -46,6 +46,14 @@ public interface MengineListenerApplication extends MengineServiceInterface {
         //Empty
     }
 
+    default void onAppLowMemory(@NonNull MengineApplication application) {
+        //Empty
+    }
+
+    default void onAppTrimMemory(@NonNull MengineApplication application, int level) {
+        //Empty
+    }
+
     default void onAppState(@NonNull MengineApplication application, String name, Object value) {
         //Empty
     }

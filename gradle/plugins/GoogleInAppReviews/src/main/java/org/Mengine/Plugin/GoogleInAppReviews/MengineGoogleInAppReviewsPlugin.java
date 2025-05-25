@@ -74,7 +74,9 @@ public class MengineGoogleInAppReviewsPlugin extends MengineService implements M
             return;
         }
 
-        if (MengineActivity.INSTANCE == null) {
+        MengineActivity activity = this.getMengineActivity();
+
+        if (activity == null) {
             this.logError("[ERROR] invalid activity");
 
             this.pythonCall("onGoogleInAppReviewsLaunchingTheReviewError", new RuntimeException("invalid activity"));
@@ -87,7 +89,7 @@ public class MengineGoogleInAppReviewsPlugin extends MengineService implements M
         this.buildEvent("mng_inapp_review")
             .log();
 
-        m_manager.launchReviewFlow(MengineActivity.INSTANCE, m_reviewInfo).addOnCompleteListener(task -> {
+        m_manager.launchReviewFlow(activity, m_reviewInfo).addOnCompleteListener(task -> {
             if (task.isSuccessful() == false) {
                 Exception exception = task.getException();
 

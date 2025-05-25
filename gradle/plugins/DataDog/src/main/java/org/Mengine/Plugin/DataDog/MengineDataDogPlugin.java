@@ -205,9 +205,7 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
 
             logger.addAttribute( "os", os_attribute );
         } catch (JSONException e) {
-            this.logError("initialize attribute exception: %s"
-                , e.getMessage()
-            );
+            this.logException(e, Map.of());
         }
 
         m_loggerDataDog = logger;

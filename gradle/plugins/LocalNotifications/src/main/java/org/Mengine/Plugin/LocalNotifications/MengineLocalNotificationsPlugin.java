@@ -33,6 +33,7 @@ import android.os.Bundle;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class MengineLocalNotificationsPlugin extends MengineService implements MengineListenerActivity {
@@ -133,13 +134,15 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
             return;
         }
 
-        if (MengineActivity.INSTANCE == null) {
+        MengineActivity activity = this.getMengineActivity();
+
+        if (activity == null) {
             this.logWarning("scheduleNotification invalid activity");
 
             return;
         }
         
-        Intent notificationIntent = new Intent(MengineActivity.INSTANCE, MengineLocalNotificationsPublisher.class);
+        Intent notificationIntent = new Intent(activity, MengineLocalNotificationsPublisher.class);
 
         notificationIntent.putExtra(MengineLocalNotificationsPublisher.NOTIFICATION_ID, id);
         notificationIntent.putExtra(MengineLocalNotificationsPublisher.NOTIFICATION, notification);
@@ -150,9 +153,9 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
             pendingFlags |= PendingIntent.FLAG_IMMUTABLE;
         }
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(MengineActivity.INSTANCE, 0, notificationIntent, pendingFlags);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(activity, 0, notificationIntent, pendingFlags);
 
-        AlarmManager alarmManager = MengineActivity.INSTANCE.getSystemService(AlarmManager.class);
+        AlarmManager alarmManager = activity.getSystemService(AlarmManager.class);
 
         if (alarmManager == null) {
             return;
@@ -172,13 +175,15 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
             return;
         }
 
-        if (MengineActivity.INSTANCE == null) {
+        MengineActivity activity = this.getMengineActivity();
+
+        if (activity == null) {
             this.logWarning("instantlyPresentNotification invalid activity");
 
             return;
         }
         
-        NotificationManager notificationManager = MengineActivity.INSTANCE.getSystemService(NotificationManager.class);
+        NotificationManager notificationManager = activity.getSystemService(NotificationManager.class);
 
         if (notificationManager == null) {
             return;
@@ -226,27 +231,29 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
     public void cancelAll() {
         this.logInfo("cancelAll");
 
-        if (MengineActivity.INSTANCE == null) {
+        MengineActivity activity = this.getMengineActivity();
+
+        if (activity == null) {
             this.logWarning("cancelAll invalid activity");
 
             return;
         }
 
         
-        NotificationManager notificationManager = MengineActivity.INSTANCE.getSystemService(NotificationManager.class);
+        NotificationManager notificationManager = activity.getSystemService(NotificationManager.class);
 
         if (notificationManager != null) {
             notificationManager.cancelAll();
         }
 
-        JobScheduler jobScheduler = MengineActivity.INSTANCE.getSystemService(JobScheduler.class);
+        JobScheduler jobScheduler = activity.getSystemService(JobScheduler.class);
 
         if (jobScheduler != null) {
             jobScheduler.cancelAll();
         }
     }
 
-    protected void parseInternalLocalNotifications(MengineActivity activity) {
+    protected void parseInternalLocalNotifications(@NonNull MengineActivity activity) {
         String packageName = activity.getPackageName();
         Resources resources = activity.getResources();
 
@@ -340,17 +347,9 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
 
             parser.close();
         } catch (final XmlPullParserException e) {
-            this.logError("[LOCAL_NOTIFICATIOINS] XmlPullParserException: %s"
-                , e.getMessage()
-            );
-
-            return;
+            this.logException(e, Map.of());
         } catch (final IOException e) {
-            this.logError("[LOCAL_NOTIFICATIOINS] IOException: %s"
-                , e.getMessage()
-            );
-
-            return;
+            this.logException(e, Map.of());
         }
     }
 
@@ -390,14 +389,16 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
             return;
         }
 
-        if (MengineActivity.INSTANCE == null) {
+        MengineActivity activity = this.getMengineActivity();
+
+        if (activity == null) {
             this.logWarning("scheduleJobNotification invalid activity");
 
             return;
         }
 
         int jobId = (int)SystemClock.elapsedRealtime();
-        ComponentName jobService = new ComponentName(MengineActivity.INSTANCE, MengineLocalNotificationsJobService.class);
+        ComponentName jobService = new ComponentName(activity, MengineLocalNotificationsJobService.class);
 
         JobInfo.Builder builder = new JobInfo.Builder(jobId, jobService);
         JobInfo jobInfo = builder
@@ -406,7 +407,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
             .setExtras(bundle)
             .build();
 
-        JobScheduler jobScheduler = MengineActivity.INSTANCE.getSystemService(JobScheduler.class);
+        JobScheduler jobScheduler = activity.getSystemService(JobScheduler.class);
 
         if (jobScheduler == null) {
             return;

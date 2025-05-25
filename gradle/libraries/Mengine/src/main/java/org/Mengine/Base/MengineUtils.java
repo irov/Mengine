@@ -218,7 +218,13 @@ public class MengineUtils {
 
         Handler handler = new Handler(mainLooper);
 
-        handler.post(runnable);
+        if (handler.post(runnable) == false) {
+            MengineLog.logError(TAG, "[ERROR] performOnMainThread runnable: %s failed to post to main thread"
+                , runnable
+            );
+
+            return null;
+        }
 
         return handler;
     }
@@ -227,7 +233,14 @@ public class MengineUtils {
         Looper mainLooper = Looper.getMainLooper();
         Handler handler = new Handler(mainLooper);
 
-        handler.postDelayed(runnable, delayMillis);
+        if (handler.postDelayed(runnable, delayMillis) == false) {
+            MengineLog.logError(TAG, "[ERROR] performOnMainThreadDelayed runnable: %s failed to post to main thread with delay: %d"
+                , runnable
+                , delayMillis
+            );
+
+            return null;
+        }
 
         return handler;
     }
@@ -1277,9 +1290,10 @@ public class MengineUtils {
 
                 list.add(bundle);
             } catch (JSONException e) {
-                MengineLog.logError(TAG, "parcelableArrayListFromJSON catch JSONException: %s"
-                    , e.getMessage()
-                );
+                MengineLog.logException(TAG, e, Map.of(
+                    "index", i,
+                    "value", value.opt(i)
+                ));
             }
         }
 
@@ -1311,9 +1325,10 @@ public class MengineUtils {
                     bundle.putParcelableArrayList(key, bundles);
                 }
             } catch (JSONException e) {
-                MengineLog.logError(TAG, "bundleFromJSONObject catch JSONException: %s"
-                    , e.getMessage()
-                );
+                MengineLog.logException(TAG, e, Map.of(
+                    "key", key,
+                    "value", value.opt(key)
+                ));
             }
         }
 
@@ -1370,9 +1385,10 @@ public class MengineUtils {
                     object.put(key, array);
                 }
             } catch (JSONException e) {
-                MengineLog.logError(TAG, "jsonObjectFromBundle catch JSONException: %s"
-                    , e.getMessage()
-                );
+                MengineLog.logException(TAG, e, Map.of(
+                    "key", key,
+                    "value", value
+                ));
             }
         }
 

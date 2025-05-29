@@ -972,7 +972,7 @@ namespace Mengine
 
                     return position + _offset;
                 }
-                    , [_node, _follow, _offset]( mt::vec3f * _v )
+                    , [_node, _follow, _offset]( mt::vec3f * const _v )
                 {
                     TransformationInterface * node_transformation = _node->getTransformation();
 
@@ -1055,7 +1055,7 @@ namespace Mengine
 
                     return position + _offset;
                 }
-                    , [_node, _follow, _offset]( mt::vec3f * _v )
+                    , [_node, _follow, _offset]( mt::vec3f * const _v )
                 {
                     const TransformationInterface * node_transformation = _node->getTransformation();
 
@@ -1092,7 +1092,7 @@ namespace Mengine
             UniqueId s_Node_bezier2ScreenFollower( Node * _node
                 , float _time
                 , const NodePtr & _follow
-                , const mt::vec2f & _offset
+                , const mt::vec3f & _offset
                 , float _deep
                 , const ConstString & _easingType
                 , const pybind::object & _cb
@@ -1110,6 +1110,9 @@ namespace Mengine
                     return INVALID_UNIQUE_ID;
                 }
 
+                mt::mat4f offsetMatrix;
+                mt::make_translation_m4_v3( &offsetMatrix, _offset );
+
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
                 ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
@@ -1124,28 +1127,26 @@ namespace Mengine
                     , [_node]()
                 {
                     mt::vec2f node_pos;
-                    Helper::getNodeScreenPosition( _node, &node_pos );
+                    Helper::getNodeScreenPosition( _node, mt::mat4f::identity(), &node_pos );
 
                     return node_pos;
                 }
-                    , [_follow, _offset]()
+                    , [_follow, offsetMatrix]()
                 {
                     mt::vec2f follow_pos;
-                    Helper::getNodeScreenPosition( _follow.get(), &follow_pos );
+                    Helper::getNodeScreenPosition( _follow.get(), offsetMatrix, &follow_pos );
 
-                    return follow_pos + _offset;
+                    return follow_pos;
                 }
-                    , [_node, _follow, _offset]( mt::vec2f * _v )
+                    , [_node, _follow, offsetMatrix]( mt::vec2f * const _v )
                 {
                     mt::vec2f node_pos;
-                    Helper::getNodeScreenPosition( _node, &node_pos );
+                    Helper::getNodeScreenPosition( _node, mt::mat4f::identity(), &node_pos );
 
                     mt::vec2f follow_pos;
-                    Helper::getNodeScreenPosition( _follow.get(), &follow_pos );
+                    Helper::getNodeScreenPosition( _follow.get(), offsetMatrix, &follow_pos );
 
-                    float x = follow_pos.x + _offset.x;
-
-                    _v[0] = mt::vec2f( x, node_pos.y );
+                    _v[0] = mt::vec2f( follow_pos.x, node_pos.y );
                 }
                     , _time
                     , MENGINE_DOCUMENT_PYBIND
@@ -2209,7 +2210,7 @@ namespace Mengine
             mt::vec2f s_Node_getScreenPosition( Node * _node )
             {
                 mt::vec2f screenPosition;
-                Helper::getNodeScreenPosition( _node, &screenPosition );
+                Helper::getNodeScreenPosition( _node, mt::mat4f::identity(), &screenPosition );
 
                 return screenPosition;
             }

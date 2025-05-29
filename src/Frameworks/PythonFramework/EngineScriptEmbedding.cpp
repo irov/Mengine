@@ -2450,10 +2450,10 @@ namespace Mengine
                     *_used = _context->time;
 
                     mt::vec2f sp_node;
-                    Helper::getNodeScreenPosition( m_node.get(), &sp_node );
+                    Helper::getNodeScreenPosition( m_node.get(), mt::mat4f::identity(), &sp_node );
 
                     mt::vec2f sp_target;
-                    Helper::getNodeScreenPosition( m_target.get(), &sp_target );
+                    Helper::getNodeScreenPosition( m_target.get(), mt::mat4f::identity(), &sp_target );
 
                     float distance = mt::length_v2_v2( sp_target, sp_node );
 

@@ -87,6 +87,53 @@ namespace Mengine
         m_relationChildren.pop_back();
     }
     //////////////////////////////////////////////////////////////////////////
+    void BaseTransformation::getWorldMatrixOffset( const mt::mat4f & _offsetMatrix, mt::mat4f * const _worldMatrix ) const
+    {
+        bool identityLocalMatrix = this->isIdentityLocalMatrix();
+
+        if( m_relationTransformation == nullptr )
+        {
+            const mt::mat4f & localMatrix = this->getLocalMatrix();
+
+            mt::mul_m4_m4_r( _worldMatrix, localMatrix, _offsetMatrix );
+        }
+        else
+        {
+            bool identityRelationWorldMatrix = m_relationTransformation->isIdentityWorldMatrix();
+
+            if( identityRelationWorldMatrix == false )
+            {
+                const mt::mat4f & relationMatrix = m_relationTransformation->getWorldMatrix();
+
+                if( identityLocalMatrix == false )
+                {
+                    const mt::mat4f & localMatrix = this->getLocalMatrix();
+
+                    mt::mat4f localOffsetMatrix;
+                    mt::mul_m4_m4_r( &localOffsetMatrix, localMatrix, _offsetMatrix );
+                    mt::mul_m4_m4_r( _worldMatrix, localOffsetMatrix, relationMatrix );
+                }
+                else
+                {
+                    mt::mul_m4_m4_r( _worldMatrix, relationMatrix, _offsetMatrix );
+                }
+            }
+            else
+            {
+                if( identityLocalMatrix == false )
+                {
+                    const mt::mat4f & localMatrix = this->getLocalMatrix();
+
+                    mt::mul_m4_m4_r( _worldMatrix, localMatrix, _offsetMatrix );
+                }
+                else
+                {
+                    *_worldMatrix = _offsetMatrix;
+                }
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void BaseTransformation::invalidateWorldMatrix() const
     {
         if( m_invalidateWorldMatrix == true )

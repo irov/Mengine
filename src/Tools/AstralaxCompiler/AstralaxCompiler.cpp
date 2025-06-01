@@ -45,14 +45,12 @@ int main( int argc, char * argv[] )
     MENGINE_UNUSED( argc );
     MENGINE_UNUSED( argv );
 
-    PWSTR pwCmdLine = ::GetCommandLineW();
-
-    std::wstring astralax_path = parse_kwds( pwCmdLine, L"--astralax_path", std::wstring() );
-    std::wstring in_path = parse_kwds( pwCmdLine, L"--in_path", std::wstring() );
-    std::wstring out_path = parse_kwds( pwCmdLine, L"--out_path", std::wstring() );
-    std::wstring csa_path = parse_kwds( pwCmdLine, L"--csa_path", std::wstring() );
-    std::wstring result_path = parse_kwds( pwCmdLine, L"--result_path", std::wstring() );
-    std::wstring convert = parse_kwds( pwCmdLine, L"--convert", std::wstring() );
+    std::wstring astralax_path = parse_kwds( L"--astralax_path", std::wstring() );
+    std::wstring in_path = parse_kwds( L"--in_path", std::wstring() );
+    std::wstring out_path = parse_kwds( L"--out_path", std::wstring() );
+    std::wstring csa_path = parse_kwds( L"--csa_path", std::wstring() );
+    std::wstring result_path = parse_kwds( L"--result_path", std::wstring() );
+    std::wstring convert = parse_kwds( L"--convert", std::wstring() );
 
     if( in_path.empty() == true )
     {
@@ -275,7 +273,7 @@ int main( int argc, char * argv[] )
         PathUnquoteSpaces( infoCanonicalizeQuote );
 
         FILE * f_result;
-        errno_t err = _wfopen_s( &f_result, infoCanonicalizeQuote, L"wt" );
+        errno_t err = ::_wfopen_s( &f_result, infoCanonicalizeQuote, L"wt" );
 
         if( err != 0 )
         {

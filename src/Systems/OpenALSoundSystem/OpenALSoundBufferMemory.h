@@ -24,14 +24,14 @@ namespace Mengine
     public:
         bool load( const SoundDecoderInterfacePtr & _soundDecoder ) override;
 
-        bool playSource( ALuint _sourceId, bool _looped, float _pos ) override;
+        bool playSource( ALuint _sourceId, bool _looped, float _position ) override;
         bool resumeSource( ALuint _sourceId ) override;
         void pauseSource( ALuint _sourceId ) override;
         void stopSource( ALuint _sourceId ) override;
 
     public:
-        bool setTimePos( ALuint _sourceId, float _pos ) const override;
-        bool getTimePos( ALuint _sourceId, float * const _pos ) const override;
+        bool setTimePosition( ALuint _sourceId, float _position ) const override;
+        bool getTimePosition( ALuint _sourceId, float * const _position ) const override;
 
     protected:
         ALuint m_alBufferId;

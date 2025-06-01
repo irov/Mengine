@@ -11,14 +11,14 @@ namespace Mengine
         : public ValueAccumulator<T>
     {
     public:
-        void start( const T & _pos, const T & _acc, float _speed )
+        void start( const T & _position, const T & _accumulate, float _speed )
         {
             MENGINE_ASSERTION( _speed >= 0.f, "speed must be more or equal 0.f" );
 
             ValueAccumulator<T>::m_started = false;
 
-            ValueAccumulator<T>::m_pos = _pos;
-            ValueAccumulator<T>::m_delta = _acc * _speed;
+            ValueAccumulator<T>::m_value = _position;
+            ValueAccumulator<T>::m_delta = _accumulate * _speed;
             ValueAccumulator<T>::m_time = 0.f;
 
             ValueAccumulator<T>::m_started = true;
@@ -32,16 +32,16 @@ namespace Mengine
 
             if( ValueAccumulator<T>::m_started == false )
             {
-                *_out = ValueAccumulator<T>::m_pos;
+                *_out = ValueAccumulator<T>::m_value;
 
                 return true;
             }
 
             ValueAccumulator<T>::m_time += _context->time;
 
-            ValueAccumulator<T>::m_pos += ValueAccumulator<T>::m_delta * _context->time;
+            ValueAccumulator<T>::m_value += ValueAccumulator<T>::m_delta * _context->time;
 
-            *_out = ValueAccumulator<T>::m_pos;
+            *_out = ValueAccumulator<T>::m_value;
 
             return false;
         }

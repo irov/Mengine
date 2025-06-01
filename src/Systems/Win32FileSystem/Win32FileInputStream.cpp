@@ -309,11 +309,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileInputStream::seek( size_t _pos )
+    bool Win32FileInputStream::seek( size_t _carriage )
     {
         MENGINE_THREAD_GUARD_SCOPE( Win32FileInputStream, this );
 
-        bool successful = this->seek_( _pos );
+        bool successful = this->seek_( _carriage );
 
         return successful;
     }
@@ -325,32 +325,32 @@ namespace Mengine
         this->seek_( 0 );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileInputStream::rseek( size_t _pos )
+    bool Win32FileInputStream::rseek( size_t _carriage )
     {
         MENGINE_THREAD_GUARD_SCOPE( Win32FileInputStream, this );
 
-        bool successful = this->seek_( m_size - _pos );
+        bool successful = this->seek_( m_size - _carriage );
 
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileInputStream::seek_( size_t _pos )
+    bool Win32FileInputStream::seek_( size_t _carriage )
     {
-        if( _pos >= m_reading - m_capacity && _pos <= m_reading )
+        if( _carriage >= m_reading - m_capacity && _carriage <= m_reading )
         {
-            m_carriage = m_capacity - (m_reading - _pos);
+            m_carriage = m_capacity - (m_reading - _carriage);
         }
         else
         {
             LARGE_INTEGER liDistanceToMove;
-            liDistanceToMove.QuadPart = m_offset + _pos;
+            liDistanceToMove.QuadPart = m_offset + _carriage;
 
             LARGE_INTEGER dwPtr;
             if( ::SetFilePointerEx( m_hFile, liDistanceToMove, &dwPtr, FILE_BEGIN ) == FALSE )
             {
                 LOGGER_ERROR( "seek file '%s' %zu:%zu get error %ls"
                     , Helper::getDebugFullPath( this ).c_str()
-                    , _pos
+                    , _carriage
                     , m_size
                     , Helper::Win32GetLastErrorMessageW()
                 );
@@ -369,13 +369,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileInputStream::skip( size_t _pos )
+    bool Win32FileInputStream::skip( size_t _offset )
     {
         MENGINE_THREAD_GUARD_SCOPE( Win32FileInputStream, this );
 
         size_t current = m_reading - m_capacity + m_carriage;
 
-        size_t seek_pos = current + _pos;
+        size_t seek_pos = current + _offset;
 
         bool result = this->seek_( seek_pos );
 

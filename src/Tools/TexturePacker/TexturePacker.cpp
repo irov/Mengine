@@ -16,15 +16,13 @@ int main( int argc, char * argv[] )
     MENGINE_UNUSED( argc );
     MENGINE_UNUSED( argv );
 
-    PWSTR pwCmdLine = ::GetCommandLineW();
-
     //uint32_t image_count = parse_kwds( lpCmdLine, L"--image_count", 0U );
-    std::wstring in_path = parse_kwds( pwCmdLine, L"--in_path", std::wstring() );
-    std::wstring out_path = parse_kwds( pwCmdLine, L"--out_path", std::wstring() );
-    std::wstring result_path = parse_kwds( pwCmdLine, L"--result_path", std::wstring() );
-    std::wstring texturepacker_path = parse_kwds( pwCmdLine, L"--texturepacker_path", std::wstring() );
-    std::wstring log_path = parse_kwds( pwCmdLine, L"--log_path", std::wstring() );
-    std::wstring premultiply = parse_kwds( pwCmdLine, L"--premultiply", std::wstring() );
+    std::wstring in_path = parse_kwds( L"--in_path", std::wstring() );
+    std::wstring out_path = parse_kwds( L"--out_path", std::wstring() );
+    std::wstring result_path = parse_kwds( L"--result_path", std::wstring() );
+    std::wstring texturepacker_path = parse_kwds( L"--texturepacker_path", std::wstring() );
+    std::wstring log_path = parse_kwds( L"--log_path", std::wstring() );
+    std::wstring premultiply = parse_kwds( L"--premultiply", std::wstring() );
 
     std::vector<std::wstring> images_path;
 
@@ -280,6 +278,12 @@ int main( int argc, char * argv[] )
         rewind( f );
 
         void * buff = malloc( f_size );
+
+        if( buff == nullptr )
+        {
+            return EXIT_FAILURE;
+        }
+
         fread( buff, f_size, 1, f );
         fclose( f );
 
@@ -394,7 +398,7 @@ int main( int argc, char * argv[] )
     PathUnquoteSpaces( infoCanonicalizeQuote );
 
     FILE * f_result;
-    errno_t err = _wfopen_s( &f_result, infoCanonicalizeQuote, L"wt" );
+    errno_t err = ::_wfopen_s( &f_result, infoCanonicalizeQuote, L"wt" );
 
     if( err != 0 )
     {

@@ -52,8 +52,8 @@ namespace Mengine
         float area() const;
 
         void mul_wm( Polygon * const _out, const mt::mat4f & _wm ) const;
-        void mul_wm_and_transpose( Polygon * const _out, const mt::mat4f & _wm, const mt::vec2f & _pos ) const;
-        void transpose( Polygon * const _out, const mt::vec2f & _pos ) const;
+        void mul_wm_and_transpose( Polygon * const _out, const mt::mat4f & _wm, const mt::vec2f & _position ) const;
+        void transpose( Polygon * const _out, const mt::vec2f & _position ) const;
         void transpose_and_scale( Polygon * const _out, const mt::vec2f & _pos, const mt::vec2f & _scale ) const;
 
         void to_box2f( mt::box2f * const _box2f ) const;

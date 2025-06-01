@@ -95,7 +95,7 @@ namespace Mengine
         m_playing = false;
         m_pausing = true;
 
-        m_time = m_soundBuffer->getTimePos( m_sourceId );
+        m_time = m_soundBuffer->getTimePosition( m_sourceId );
 
         m_soundBuffer->pause( m_sourceId );
     }
@@ -188,7 +188,7 @@ namespace Mengine
             return 0.f;
         }
 
-        float ms = m_soundBuffer->getTimeTotal();
+        float ms = m_soundBuffer->getTimeDuration();
 
         return ms;
     }
@@ -212,25 +212,25 @@ namespace Mengine
             return m_time;
         }
 
-        float posms = m_soundBuffer->getTimePos( m_sourceId );
+        float position = m_soundBuffer->getTimePosition( m_sourceId );
 
         //timing dont assign to zero when m_soundBuffer is stopped!
-        if( StdMath::fabsf( posms ) < 0.0001f && StdMath::fabsf( m_time ) > 0.0001f )
+        if( mt::equal_f_z( position ) == true && mt::equal_f_z( m_time ) == false )
         {
-            posms = m_time;
+            position = m_time;
         }
 
-        return posms;
+        return position;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SilentSoundSource::setPosition( float _posMs )
+    bool SilentSoundSource::setPosition( float _position )
     {
         if( m_playing == true )
         {
             return false;
         }
 
-        m_time = _posMs;
+        m_time = _position;
 
         return true;
     }

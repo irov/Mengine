@@ -86,7 +86,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Polygon::mul_wm_and_transpose( Polygon * const _out, const mt::mat4f & _wm, const mt::vec2f & _pos ) const
+    void Polygon::mul_wm_and_transpose( Polygon * const _out, const mt::mat4f & _wm, const mt::vec2f & _position ) const
     {
         Polygon::size_type points_size = this->size();
 
@@ -96,13 +96,13 @@ namespace Mengine
         {
             mt::vec2f v_wm;
             mt::mul_v2_v2_m4( &v_wm, v, _wm );
-            v_wm += _pos;
+            v_wm += _position;
 
             _out->append( v_wm );
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Polygon::transpose( Polygon * const _out, const mt::vec2f & _pos ) const
+    void Polygon::transpose( Polygon * const _out, const mt::vec2f & _position ) const
     {
         Polygon::size_type points_size = this->size();
 
@@ -111,13 +111,13 @@ namespace Mengine
         for( const mt::vec2f & v : m_points )
         {
             mt::vec2f v_transpose;
-            mt::add_v2_v2( &v_transpose, v, _pos );
+            mt::add_v2_v2( &v_transpose, v, _position );
 
             _out->append( v_transpose );
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Polygon::transpose_and_scale( Polygon * const _out, const mt::vec2f & _pos, const mt::vec2f & _scale ) const
+    void Polygon::transpose_and_scale( Polygon * const _out, const mt::vec2f & _position, const mt::vec2f & _scale ) const
     {
         Polygon::size_type points_size = this->size();
 
@@ -126,7 +126,7 @@ namespace Mengine
         for( const mt::vec2f & v : m_points )
         {
             mt::vec2f v_transpose;
-            mt::add_v2_v2( &v_transpose, v, _pos );
+            mt::add_v2_v2( &v_transpose, v, _position );
 
             mt::vec2f v_transpose_scale;
             mt::mul_v2_v2( &v_transpose_scale, v_transpose, _scale );

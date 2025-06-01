@@ -58,9 +58,6 @@ namespace Mengine
         virtual const mt::mat4f & getWorldMatrix() const = 0;
 
     public:
-        virtual void getWorldMatrixOffset( const mt::mat4f & _offsetMatrix, mt::mat4f * const _worldMatrix ) const = 0;
-
-    public:
         virtual bool isIdentityLocalMatrix() const = 0;
         virtual bool isIdentityWorldMatrix() const = 0;
 
@@ -122,7 +119,7 @@ namespace Mengine
         virtual mt::vec3f getAxisUp() const = 0;
 
     public:
-        virtual void setWorldPosition( const mt::vec3f & _pos ) = 0;
+        virtual void setWorldPosition( const mt::vec3f & _worldPosition ) = 0;
 
     public:
         virtual mt::vec3f getWorldPosition() const = 0;

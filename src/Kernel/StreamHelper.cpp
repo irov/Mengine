@@ -312,7 +312,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool readStreamArchiveBufferSize( const InputStreamInterfacePtr & _stream, size_t * const _size )
         {
-            size_t pos = _stream->tell();
+            size_t carriage = _stream->tell();
 
             uint32_t crc32;
             if( _stream->read( &crc32, sizeof( crc32 ) ) != sizeof( crc32 ) )
@@ -335,7 +335,7 @@ namespace Mengine
                 return false;
             }
 
-            if( _stream->seek( pos ) == false )
+            if( _stream->seek( carriage ) == false )
             {
                 LOGGER_ERROR( "invalid stream '%s' rewind"
                     , Helper::getDebugFullPath( _stream ).c_str()

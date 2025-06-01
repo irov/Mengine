@@ -37,10 +37,10 @@ namespace Mengine
 
     public:
         size_t read( void * const _buf, size_t _count ) override;
-        bool seek( size_t _pos ) override;
+        bool seek( size_t _carriage ) override;
         void rewind() override;
-        bool rseek( size_t _pos ) override;
-        bool skip( size_t _pos ) override;
+        bool rseek( size_t _carriage ) override;
+        bool skip( size_t _offset ) override;
         size_t tell() const override;
         size_t size() const override;
         bool eof() const override;
@@ -53,7 +53,7 @@ namespace Mengine
 
     protected:
         bool read_( void * const _buf, size_t _offset, size_t _size, size_t * const _read );
-        bool seek_( size_t _pos );
+        bool seek_( size_t _carriage );
 
     protected:
         Win32FileInputStreamPtr m_stream;

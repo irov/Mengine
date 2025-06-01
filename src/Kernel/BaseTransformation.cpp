@@ -87,53 +87,6 @@ namespace Mengine
         m_relationChildren.pop_back();
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseTransformation::getWorldMatrixOffset( const mt::mat4f & _offsetMatrix, mt::mat4f * const _worldMatrix ) const
-    {
-        bool identityLocalMatrix = this->isIdentityLocalMatrix();
-
-        if( m_relationTransformation == nullptr )
-        {
-            const mt::mat4f & localMatrix = this->getLocalMatrix();
-
-            mt::mul_m4_m4_r( _worldMatrix, localMatrix, _offsetMatrix );
-        }
-        else
-        {
-            bool identityRelationWorldMatrix = m_relationTransformation->isIdentityWorldMatrix();
-
-            if( identityRelationWorldMatrix == false )
-            {
-                const mt::mat4f & relationMatrix = m_relationTransformation->getWorldMatrix();
-
-                if( identityLocalMatrix == false )
-                {
-                    const mt::mat4f & localMatrix = this->getLocalMatrix();
-
-                    mt::mat4f localOffsetMatrix;
-                    mt::mul_m4_m4_r( &localOffsetMatrix, localMatrix, _offsetMatrix );
-                    mt::mul_m4_m4_r( _worldMatrix, localOffsetMatrix, relationMatrix );
-                }
-                else
-                {
-                    mt::mul_m4_m4_r( _worldMatrix, relationMatrix, _offsetMatrix );
-                }
-            }
-            else
-            {
-                if( identityLocalMatrix == false )
-                {
-                    const mt::mat4f & localMatrix = this->getLocalMatrix();
-
-                    mt::mul_m4_m4_r( _worldMatrix, localMatrix, _offsetMatrix );
-                }
-                else
-                {
-                    *_worldMatrix = _offsetMatrix;
-                }
-            }
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
     void BaseTransformation::invalidateWorldMatrix() const
     {
         if( m_invalidateWorldMatrix == true )
@@ -266,9 +219,9 @@ namespace Mengine
     {
         const mt::vec3f & position = this->getLocalPosition();
 
-        mt::vec3f new_pos = position + _delta;
+        mt::vec3f new_position = position + _delta;
 
-        this->setLocalPosition( new_pos );
+        this->setLocalPosition( new_position );
     }
     //////////////////////////////////////////////////////////////////////////
     bool BaseTransformation::isIdentityPosition() const
@@ -503,9 +456,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseTransformation::translate( const mt::vec3f & _delta )
     {
-        mt::vec3f new_pos = m_position + _delta;
+        mt::vec3f new_position = m_position + _delta;
 
-        this->setLocalPosition( new_pos );
+        this->setLocalPosition( new_position );
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseTransformation::rotate( const mt::vec3f & _euler )
@@ -517,10 +470,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseTransformation::coordinate( const mt::vec3f & _delta )
     {
-        mt::vec3f new_pos = m_position + _delta;
+        mt::vec3f new_position = m_position + _delta;
         mt::vec3f new_origin = m_origin + _delta;
 
-        this->setLocalPosition( new_pos );
+        this->setLocalPosition( new_position );
         this->setLocalOrigin( new_origin );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -787,7 +740,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseTransformation::setWorldPosition( const mt::vec3f & _pos )
+    void BaseTransformation::setWorldPosition( const mt::vec3f & _worldPosition )
     {
         if( m_relationTransformation != nullptr )
         {
@@ -797,7 +750,7 @@ namespace Mengine
             mt::inv_m4_m4( &rwm_inv, rwm );
 
             mt::vec3f new_lp;
-            mt::mul_v3_v3_m4( &new_lp, _pos, rwm_inv );
+            mt::mul_v3_v3_m4( &new_lp, _worldPosition, rwm_inv );
 
             const mt::mat4f & lm = this->getLocalMatrix();
 
@@ -820,7 +773,7 @@ namespace Mengine
             mt::inv_m4_m4( &lm_inv, lm );
 
             mt::vec3f pp;
-            mt::mul_v3_v3_m4( &pp, _pos, lm_inv );
+            mt::mul_v3_v3_m4( &pp, _worldPosition, lm_inv );
 
             mt::vec3f pp2;
             mt::mul_v3_v3_m4_r( &pp2, pp, lm );

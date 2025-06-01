@@ -119,7 +119,7 @@ namespace Mengine
         m_dataInfo.frequency = header.SampleRate;
         m_dataInfo.bits = header.BitsPerSample / 8;
 
-        m_dataInfo.length = (float)(m_dataInfo.size * 1000 / (m_dataInfo.frequency * m_dataInfo.channels * m_dataInfo.bits));
+        m_dataInfo.duration = (float)(m_dataInfo.size * 1000 / (m_dataInfo.frequency * m_dataInfo.channels * m_dataInfo.bits));
 
         return true;
     }
@@ -166,21 +166,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundDecoderWAV::_seek( float _time )
     {
-        if( _time > m_dataInfo.length && mt::equal_f_f_e( _time, m_dataInfo.length, 0.01f ) == false )
+        if( _time > m_dataInfo.duration )
         {
             LOGGER_ERROR( "sound decoder WAV timing %f > total %f"
                 , _time
-                , m_dataInfo.length
+                , m_dataInfo.duration
             );
 
-            _time = m_dataInfo.length;
+            _time = m_dataInfo.duration;
         }
 
-        size_t wav_pos = ((size_t)(_time) * (m_dataInfo.frequency * m_dataInfo.channels * m_dataInfo.bits)) / 1000;
+        size_t wav_carriage = ((size_t)(_time) * (m_dataInfo.frequency * m_dataInfo.channels * m_dataInfo.bits)) / 1000;
 
         const InputStreamInterfacePtr & stream = this->getStream();
 
-        bool result = stream->seek( m_chunkDataPos + wav_pos );
+        bool result = stream->seek( m_chunkDataPos + wav_carriage );
 
         return result;
     }
@@ -189,9 +189,9 @@ namespace Mengine
     {
         const InputStreamInterfacePtr & stream = this->getStream();
 
-        size_t wav_pos = stream->tell();
+        size_t position = stream->tell();
 
-        float length = (float)((wav_pos - m_chunkDataPos) * 1000.f / float( m_dataInfo.frequency * m_dataInfo.channels * m_dataInfo.bits ));
+        float length = (float)((position - m_chunkDataPos) * 1000.f / float( m_dataInfo.frequency * m_dataInfo.channels * m_dataInfo.bits ));
 
         return length;
     }

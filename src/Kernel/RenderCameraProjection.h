@@ -15,16 +15,16 @@ namespace Mengine
         ~RenderCameraProjection() override;
 
     public:
-        void setCameraPosition( const mt::vec3f & _position );
-        void setCameraDirection( const mt::vec3f & _direction );
-        void setCameraUp( const mt::vec3f & _up );
-        void setCameraRightSign( float _rightSign );
+        void setCameraPosition( const mt::vec3f & _cameraPosition );
+        void setCameraDirection( const mt::vec3f & _cameraDirection );
+        void setCameraUp( const mt::vec3f & _cameraUp );
+        void setCameraRightSign( float _cameraRightSign );
 
     public:
-        void setCameraFOV( float _fov );
-        void setCameraAspect( float _aspect );
-        void setCameraNear( float _near );
-        void setCameraFar( float _far );
+        void setCameraFOV( float _cameraFOV );
+        void setCameraAspect( float _cameraAspect );
+        void setCameraNear( float _cameraNear );
+        void setCameraFar( float _cameraFar );
 
     protected:
         void fromWorldToScreenPosition( const mt::mat4f & _worldMatrix, mt::vec2f * const _screenPosition ) const override;
@@ -46,7 +46,7 @@ namespace Mengine
         mt::vec3f m_cameraUp;
         float m_cameraRightSign;
 
-        float m_cameraFov;
+        float m_cameraFOV;
         float m_cameraAspect;
         float m_cameraNear;
         float m_cameraFar;

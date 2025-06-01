@@ -12,7 +12,7 @@ namespace Mengine
         , m_cameraDirection( 1.f, 0.f, 0.f )
         , m_cameraUp( 0.f, 1.f, 0.f )
         , m_cameraRightSign( 1.f )
-        , m_cameraFov( 0.f )
+        , m_cameraFOV( 0.f )
         , m_cameraAspect( 0.f )
         , m_cameraNear( 1.f )
         , m_cameraFar( 10000.f )
@@ -23,98 +23,98 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderCameraProjection::setCameraPosition( const mt::vec3f & _position )
+    void RenderCameraProjection::setCameraPosition( const mt::vec3f & _cameraPosition )
     {
-        if( m_cameraPosition == _position )
+        if( m_cameraPosition == _cameraPosition )
         {
             return;
         }
 
-        m_cameraPosition = _position;
+        m_cameraPosition = _cameraPosition;
 
         this->invalidateViewMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderCameraProjection::setCameraDirection( const mt::vec3f & _direction )
+    void RenderCameraProjection::setCameraDirection( const mt::vec3f & _cameraDirection )
     {
-        if( m_cameraDirection == _direction )
+        if( m_cameraDirection == _cameraDirection )
         {
             return;
         }
 
-        m_cameraDirection = _direction;
+        m_cameraDirection = _cameraDirection;
 
         this->invalidateViewMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderCameraProjection::setCameraUp( const mt::vec3f & _up )
+    void RenderCameraProjection::setCameraUp( const mt::vec3f & _cameraUp )
     {
-        if( m_cameraUp == _up )
+        if( m_cameraUp == _cameraUp )
         {
             return;
         }
 
-        m_cameraUp = _up;
+        m_cameraUp = _cameraUp;
 
         this->invalidateViewMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderCameraProjection::setCameraRightSign( float _rightSign )
+    void RenderCameraProjection::setCameraRightSign( float _cameraRightSign )
     {
-        if( m_cameraRightSign == _rightSign )
+        if( m_cameraRightSign == _cameraRightSign )
         {
             return;
         }
 
-        m_cameraRightSign = _rightSign;
+        m_cameraRightSign = _cameraRightSign;
 
         this->invalidateViewMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderCameraProjection::setCameraFOV( float _fov )
+    void RenderCameraProjection::setCameraFOV( float _cameraFOV )
     {
-        if( m_cameraFov == _fov )
+        if( m_cameraFOV == _cameraFOV )
         {
             return;
         }
 
-        m_cameraFov = _fov;
+        m_cameraFOV = _cameraFOV;
 
         this->invalidateProjectionMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderCameraProjection::setCameraAspect( float _aspect )
+    void RenderCameraProjection::setCameraAspect( float _cameraAspect )
     {
-        if( m_cameraAspect == _aspect )
+        if( m_cameraAspect == _cameraAspect )
         {
             return;
         }
 
-        m_cameraAspect = _aspect;
+        m_cameraAspect = _cameraAspect;
 
         this->invalidateProjectionMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderCameraProjection::setCameraNear( float _near )
+    void RenderCameraProjection::setCameraNear( float _cameraNear )
     {
-        if( m_cameraNear == _near )
+        if( m_cameraNear == _cameraNear )
         {
             return;
         }
 
-        m_cameraNear = _near;
+        m_cameraNear = _cameraNear;
 
         this->invalidateProjectionMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderCameraProjection::setCameraFar( float _far )
+    void RenderCameraProjection::setCameraFar( float _cameraFar )
     {
-        if( m_cameraFar == _far )
+        if( m_cameraFar == _cameraFar )
         {
             return;
         }
 
-        m_cameraFar = _far;
+        m_cameraFar = _cameraFar;
 
         this->invalidateProjectionMatrix_();
     }
@@ -216,7 +216,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderCameraProjection::makeViewport_( Viewport * const _viewport ) const
     {
-        float tangent = StdMath::tanf( m_cameraFov * 0.5f );
+        float tangent = StdMath::tanf( m_cameraFOV * 0.5f );
         float height = 2.f * 1.f * tangent;
         float width = height * m_cameraAspect;
 

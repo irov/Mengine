@@ -11,8 +11,7 @@
 //////////////////////////////////////////////////////////////////////////
 void message_error( const char * _format, ... );
 //////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-void unicode_to_utf8( char * _utf8, size_t _capacity, const wchar_t * _unicode, size_t _size );
+size_t unicode_to_utf8( char * _utf8, size_t _capacity, const wchar_t * _unicode, size_t _size );
 //////////////////////////////////////////////////////////////////////////
 void parse_arg( const std::wstring & _str, bool & _value );
 void parse_arg( const std::wstring & _str, uint32_t & _value );
@@ -20,13 +19,15 @@ void parse_arg( const std::wstring & _str, float & _value );
 void parse_arg( const std::wstring & _str, double & _value );
 void parse_arg( const std::wstring & _str, std::wstring & _value );
 //////////////////////////////////////////////////////////////////////////
-bool has_args( PWSTR lpCmdLine, const wchar_t * _key );
+bool has_args( const wchar_t * _key );
 //////////////////////////////////////////////////////////////////////////
 template<class T>
-static T parse_args( PWSTR lpCmdLine, uint32_t _index )
+static T parse_args( uint32_t _index )
 {
+    PWSTR pwCmdLine = ::GetCommandLineW();
+
     int cmd_num;
-    LPWSTR * cmd_args = CommandLineToArgvW( lpCmdLine, &cmd_num );
+    LPWSTR * cmd_args = ::CommandLineToArgvW( pwCmdLine, &cmd_num );
 
     wchar_t * arg_value = cmd_args[_index];
 
@@ -44,10 +45,12 @@ static T parse_args( PWSTR lpCmdLine, uint32_t _index )
 }
 //////////////////////////////////////////////////////////////////////////
 template<class T>
-T parse_kwds( PWSTR lpCmdLine, const wchar_t * _key, const T & _default )
+T parse_kwds( const wchar_t * _key, const T & _default )
 {
+    PWSTR pwCmdLine = ::GetCommandLineW();
+
     int cmd_num;
-    LPWSTR * cmd_args = CommandLineToArgvW( lpCmdLine, &cmd_num );
+    LPWSTR * cmd_args = ::CommandLineToArgvW( pwCmdLine, &cmd_num );
 
     for( int i = 0; i != cmd_num; ++i )
     {
@@ -82,10 +85,12 @@ T parse_kwds( PWSTR lpCmdLine, const wchar_t * _key, const T & _default )
 }
 //////////////////////////////////////////////////////////////////////////
 template<class T>
-static bool parse_vector_kwds( PWSTR lpCmdLine, const wchar_t * _key, std::vector<T> & _values )
+static bool parse_vector_kwds( const wchar_t * _key, std::vector<T> & _values )
 {
+    PWSTR pwCmdLine = ::GetCommandLineW();
+
     int cmd_num;
-    LPWSTR * cmd_args = CommandLineToArgvW( lpCmdLine, &cmd_num );
+    LPWSTR * cmd_args = ::CommandLineToArgvW( pwCmdLine, &cmd_num );
 
     for( int i = 0; i != cmd_num; ++i )
     {
@@ -138,7 +143,10 @@ int ForceRemoveDirectory( LPCTSTR dir );
 typedef std::vector<std::wstring> Files;
 bool SelectFile( LPCTSTR dir, Files & _files );
 //////////////////////////////////////////////////////////////////////////
-bool read_file_memory( const wchar_t * _file, uint8_t ** _buffer, size_t * const _size );
-bool write_file_memory( const wchar_t * _file, const char * _magic, const uint8_t * _buffer, size_t _size, size_t * const _write );
-void free_file_memory( uint8_t * _buffer );
+bool read_file_to_memory( const wchar_t * _path, uint8_t * _buffer, size_t _capacity, size_t * const _size );
+bool read_file_memory( const wchar_t * _path, uint8_t ** _buffer, size_t * const _size );
+bool write_file_memory( const wchar_t * _path, const uint8_t * _buffer, size_t _size );
+bool move_file_memory( const wchar_t * _path, const uint8_t * _buffer, size_t _size );
+bool write_file_magic_memory( const wchar_t * _path, const char * _magic, const uint8_t * _buffer, size_t _size, size_t * const _write );
+bool move_file_magic_memory( const wchar_t * _path, const char * _magic, const uint8_t * _buffer, size_t _size, size_t * const _write );
 //////////////////////////////////////////////////////////////////////////

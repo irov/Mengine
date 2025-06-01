@@ -15,7 +15,7 @@ namespace Mengine
         , m_bufferId( 0 )
         , m_data( nullptr )
         , m_size( 0 )
-        , m_pos( nullptr )
+        , m_carriage( nullptr )
         , m_end( nullptr )
     {
     }
@@ -60,7 +60,7 @@ namespace Mengine
         m_data = reinterpret_cast<uint8_t *>(memory);
         m_size = _size;
 
-        m_pos = m_data;
+        m_carriage = m_data;
         m_end = m_data + m_size;
 
         return m_data;
@@ -80,35 +80,35 @@ namespace Mengine
     {
         MENGINE_THREAD_GUARD_SCOPE( MemoryCacheInput, this );
 
-        size_t cnt = _size;
+        size_t size = _size;
         // Read over end of memory?
-        if( m_pos + cnt > m_end )
+        if( m_carriage + size > m_end )
         {
-            cnt = m_end - m_pos;
+            size = m_end - m_carriage;
         }
 
-        if( cnt == 0 )
+        if( size == 0 )
         {
             return 0;
         }
 
-        Helper::memoryCopy( _buf, 0, m_pos, 0, cnt );
+        Helper::memoryCopy( _buf, 0, m_carriage, 0, size );
 
-        m_pos += cnt;
+        m_carriage += size;
 
-        return cnt;
+        return size;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MemoryCacheInput::seek( size_t _pos )
+    bool MemoryCacheInput::seek( size_t _carriage )
     {
         MENGINE_THREAD_GUARD_SCOPE( MemoryCacheInput, this );
 
-        if( _pos > m_size )
+        if( _carriage > m_size )
         {
-            _pos = m_size;
+            _carriage = m_size;
         }
 
-        m_pos = m_data + _pos;
+        m_carriage = m_data + _carriage;
 
         return true;
     }
@@ -117,33 +117,33 @@ namespace Mengine
     {
         MENGINE_THREAD_GUARD_SCOPE( MemoryCacheInput, this );
 
-        m_pos = m_data;
+        m_carriage = m_data;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MemoryCacheInput::rseek( size_t _pos )
+    bool MemoryCacheInput::rseek( size_t _carriage )
     {
         MENGINE_THREAD_GUARD_SCOPE( MemoryCacheInput, this );
 
-        if( _pos > m_size )
+        if( _carriage > m_size )
         {
-            _pos = m_size;
+            _carriage = m_size;
         }
 
-        m_pos = m_data + m_size - _pos;
+        m_carriage = m_data + m_size - _carriage;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MemoryCacheInput::skip( size_t _size )
+    bool MemoryCacheInput::skip( size_t _offset )
     {
         MENGINE_THREAD_GUARD_SCOPE( MemoryCacheInput, this );
 
-        if( m_pos + _size > m_end )
+        if( m_carriage + _offset > m_end )
         {
-            _size = 0;
+            _offset = 0;
         }
 
-        m_pos += _size;
+        m_carriage += _offset;
 
         return true;
     }
@@ -157,14 +157,14 @@ namespace Mengine
     {
         MENGINE_THREAD_GUARD_SCOPE( MemoryCacheInput, this );
 
-        return m_pos == m_end;
+        return m_carriage == m_end;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t MemoryCacheInput::tell() const
     {
         MENGINE_THREAD_GUARD_SCOPE( MemoryCacheInput, this );
 
-        size_t distance = m_pos - m_data;
+        size_t distance = m_carriage - m_data;
 
         return distance;
     }

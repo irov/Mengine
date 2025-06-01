@@ -71,12 +71,12 @@ namespace Mengine
 
         float Limit_MinimalStreamSoundDuration = CONFIG_VALUE_FLOAT( "Limit", "MinimalStreamSoundDuration", 2000.f ); //4kb
 
-        if( (dataInfo->length <= Limit_MinimalStreamSoundDuration && Limit_MinimalStreamSoundDuration != 0.f) && streamable == true )
+        if( (dataInfo->duration <= Limit_MinimalStreamSoundDuration && Limit_MinimalStreamSoundDuration != 0.f) && streamable == true )
         {
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' remove stream (time %.4f <= %.4f ms)\nfile - '%s'\nAdd <IsStreamable Value=\"0\"/>"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , dataInfo->length
+                , dataInfo->duration
                 , Limit_MinimalStreamSoundDuration
                 , Helper::getContentFullPath( _resource->getContent() ).c_str()
             );
@@ -86,12 +86,12 @@ namespace Mengine
 
         float limitNoStreamSoundDurationWarning = CONFIG_VALUE_FLOAT( "Limit", "NoStreamSoundDurationWarning", 2000.f ); //4kb
 
-        if( (dataInfo->length > limitNoStreamSoundDurationWarning && limitNoStreamSoundDurationWarning != 0.f) && streamable == false )
+        if( (dataInfo->duration > limitNoStreamSoundDurationWarning && limitNoStreamSoundDurationWarning != 0.f) && streamable == false )
         {
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' setup to stream (time %.4f > %.4f ms)\nfile - '%s'\nAdd <IsStreamable Value=\"1\"/>"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , dataInfo->length
+                , dataInfo->duration
                 , limitNoStreamSoundDurationWarning
                 , Helper::getContentFullPath( _resource->getContent() ).c_str()
             );
@@ -99,12 +99,12 @@ namespace Mengine
 
         float Limit_NoStreamSoundDurationError = CONFIG_VALUE_FLOAT( "Limit", "NoStreamSoundDurationError", 10000.f ); //4kb
 
-        if( (dataInfo->length > Limit_NoStreamSoundDurationError && Limit_NoStreamSoundDurationError != 0.f) && streamable == false )
+        if( (dataInfo->duration > Limit_NoStreamSoundDurationError && Limit_NoStreamSoundDurationError != 0.f) && streamable == false )
         {
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' setup to stream (time %.4f > %.4f ms)\nfile - '%s'\nAdd <IsStreamable Value=\"1\"/>"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , dataInfo->length
+                , dataInfo->duration
                 , Limit_NoStreamSoundDurationError
                 , Helper::getContentFullPath( _resource->getContent() ).c_str()
             );

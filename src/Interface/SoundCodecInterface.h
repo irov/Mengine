@@ -15,7 +15,7 @@ namespace Mengine
         uint32_t channels = 0;
         uint32_t bits = 0;
 
-        float length = 0.f;
+        float duration = 0.f;
     };
     //////////////////////////////////////////////////////////////////////////
     struct SoundDecoderData

@@ -3299,18 +3299,18 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32PlatformService::setCursorPosition( const mt::vec2f & _pos )
+    void Win32PlatformService::setCursorPosition( const mt::vec2f & _position )
     {
-        POINT cPos;
-        cPos.x = (int32_t)_pos.x;
-        cPos.y = (int32_t)_pos.y;
+        POINT cPosition;
+        cPosition.x = (int32_t)_position.x;
+        cPosition.y = (int32_t)_position.y;
 
-        if( ::ClientToScreen( m_hWnd, &cPos ) == FALSE )
+        if( ::ClientToScreen( m_hWnd, &cPosition ) == FALSE )
         {
             return;
         }
 
-        ::SetCursorPos( cPos.x, cPos.y );
+        ::SetCursorPos( cPosition.x, cPosition.y );
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32PlatformService::setCursorIcon( const ConstString & _icon )

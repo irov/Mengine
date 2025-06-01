@@ -35,7 +35,7 @@ namespace Mengine
         bool m_started;
         float m_time;
 
-        T m_pos;
+        T m_value;
         T m_delta;
     };
 }

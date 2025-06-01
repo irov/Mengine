@@ -1579,20 +1579,20 @@ namespace Mengine
                 return true;
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_pushMouseMove( ETouchCode _touchId, const mt::vec2f & _pos )
+            void s_pushMouseMove( ETouchCode _touchId, const mt::vec2f & _position )
             {
-                const mt::vec2f & cp = INPUT_SERVICE()
+                const mt::vec2f & cursorPosition = INPUT_SERVICE()
                     ->getCursorPosition( _touchId );
 
-                mt::vec2f pos_screen;
-                if( this->s_calcMouseScreenPosition( _pos, &pos_screen ) == false )
+                mt::vec2f screenPosition;
+                if( this->s_calcMouseScreenPosition( _position, &screenPosition ) == false )
                 {
                     return;
                 }
 
-                mt::vec2f mp = pos_screen - cp;
+                mt::vec2f mp = screenPosition - cursorPosition;
 
-                Helper::pushMouseMoveEvent( _touchId, cp.x, cp.y, mp.x, mp.y, 0.f, 0.f );
+                Helper::pushMouseMoveEvent( _touchId, cursorPosition.x, cursorPosition.y, mp.x, mp.y, 0.f, 0.f );
             }
             //////////////////////////////////////////////////////////////////////////
             void s_pushMouseButtonEvent( ETouchCode _touchId, const mt::vec2f & _pos, EMouseButtonCode _button, bool _isDown )
@@ -2450,18 +2450,18 @@ namespace Mengine
                     *_used = _context->time;
 
                     mt::vec2f sp_node;
-                    Helper::getNodeScreenPosition( m_node.get(), mt::mat4f::identity(), &sp_node );
+                    Helper::getNodeScreenPosition( m_node.get(), &sp_node );
 
                     mt::vec2f sp_target;
-                    Helper::getNodeScreenPosition( m_target.get(), mt::mat4f::identity(), &sp_target );
+                    Helper::getNodeScreenPosition( m_target.get(), &sp_target );
 
                     float distance = mt::length_v2_v2( sp_target, sp_node );
 
                     float scale = (1.f - distance) * m_coeff;
 
-                    if( scale <= 0.0 )
+                    if( scale <= 0.f )
                     {
-                        scale = 0.0;
+                        scale = 0.f;
                     }
 
                     TransformationInterface * transformation = m_node->getTransformation();
@@ -2504,7 +2504,7 @@ namespace Mengine
 
             public:
                 AffectorGridBurnTransparency()
-                    : m_pos( 0.f, 0.f )
+                    : m_position( 0.f, 0.f )
                     , m_duration( 0.f )
                     , m_radius( 0.f )
                     , m_ellipse( 0.f )
@@ -2514,10 +2514,10 @@ namespace Mengine
                 }
 
             public:
-                void initialize( const Grid2DPtr & _grid, const mt::vec2f & _pos, float _duration, float _radius, float _ellipse, float _penumbra, const pybind::object & _cb )
+                void initialize( const Grid2DPtr & _grid, const mt::vec2f & _position, float _duration, float _radius, float _ellipse, float _penumbra, const pybind::object & _cb )
                 {
                     m_grid = _grid;
-                    m_pos = _pos;
+                    m_position = _position;
                     m_duration = _duration;
                     m_radius = _radius;
                     m_ellipse = _ellipse;
@@ -2550,33 +2550,33 @@ namespace Mengine
                     uint32_t countX = m_grid->getCountX();
                     uint32_t countY = m_grid->getCountY();
 
-                    float pos_step_x = width / float( countX - 1 );
-                    float pos_step_y = height / float( countY - 1 );
+                    float position_step_x = width / float( countX - 1 );
+                    float position_step_y = height / float( countY - 1 );
 
                     for( uint32_t j = 0; j != countY; ++j )
                     {
                         for( uint32_t i = 0; i != countX; ++i )
                         {
-                            mt::vec2f grid_pos( pos_step_x * i, pos_step_y * j );
+                            mt::vec2f grid_position( position_step_x * i, position_step_y * j );
 
-                            mt::vec2f v = m_pos - grid_pos;
+                            mt::vec2f v = m_position - grid_position;
 
                             v.y /= m_ellipse;
 
-                            float pos_sqrdistance = v.sqrlength();
+                            float position_sqrdistance = v.sqrlength();
 
-                            if( pos_sqrdistance < radius * radius )
+                            if( position_sqrdistance < radius * radius )
                             {
                                 m_grid->setGridColor( i, j, Helper::makeColorARGB( 0x00FFFFFF ) );
                             }
-                            else if( pos_sqrdistance < (radius + penumbra) * (radius + penumbra) )
+                            else if( position_sqrdistance < (radius + penumbra) * (radius + penumbra) )
                             {
                                 Color cv;
                                 m_grid->getGridColor( i, j, &cv );
 
                                 float cv_a = cv.getA();
 
-                                float pos_distance = StdMath::sqrtf( pos_sqrdistance );
+                                float pos_distance = StdMath::sqrtf( position_sqrdistance );
 
                                 float a0 = (pos_distance - radius) / penumbra;
 
@@ -2604,7 +2604,7 @@ namespace Mengine
             protected:
                 Grid2DPtr m_grid;
 
-                mt::vec2f m_pos;
+                mt::vec2f m_position;
                 float m_duration;
                 float m_radius;
                 float m_ellipse;

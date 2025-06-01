@@ -43,8 +43,9 @@ namespace Mengine
 
         float getDuration() const override;
         float getPosition() const override;
-        bool setPosition( float _posMs ) override;
+        bool setPosition( float _position ) override;
 
+    public:
         void setSoundBuffer( const SoundBufferInterfacePtr & _soundBuffer ) override;
         const SoundBufferInterfacePtr & getSoundBuffer() const override;
 

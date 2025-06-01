@@ -657,11 +657,9 @@ int main( int argc, char * argv[] )
     MENGINE_UNUSED( argc );
     MENGINE_UNUSED( argv );
 
-    PWSTR pwCmdLine = ::GetCommandLineW();
-
-    std::wstring in_path = parse_kwds( pwCmdLine, L"--in_path", std::wstring() );
-    std::wstring out_path = parse_kwds( pwCmdLine, L"--out_path", std::wstring() );
-    std::wstring movie_name = parse_kwds( pwCmdLine, L"--movie_name", std::wstring() );
+    std::wstring in_path = parse_kwds( L"--in_path", std::wstring() );
+    std::wstring out_path = parse_kwds( L"--out_path", std::wstring() );
+    std::wstring movie_name = parse_kwds( L"--movie_name", std::wstring() );
 
     if( in_path.empty() == true )
     {

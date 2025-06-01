@@ -119,9 +119,9 @@ namespace Mengine
         m_subStepCount = _subStepCount;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t Box2DWorld::overlapCircle( const mt::vec2f & _pos, float _radius, uint32_t _categoryBits, uint32_t _maskBits, Box2DBodyInterface ** _bodies, uint32_t _capacity ) const
+    uint32_t Box2DWorld::overlapCircle( const mt::vec2f & _position, float _radius, uint32_t _categoryBits, uint32_t _maskBits, Box2DBodyInterface ** _bodies, uint32_t _capacity ) const
     {
-        b2Vec2 b2_position = m_scaler.toBox2DWorld( _pos );
+        b2Vec2 b2_position = m_scaler.toBox2DWorld( _position );
         float b2_radius = m_scaler.toBox2DWorld( _radius );
 
         b2Circle b2_circle = {{0.f, 0.f}, b2_radius};
@@ -142,11 +142,11 @@ namespace Mengine
         return desc.found;
     }
     //////////////////////////////////////////////////////////////////////////
-    Box2DBodyInterfacePtr Box2DWorld::createBody( bool _static, const mt::vec2f & _pos, float _angle, float _linearDamping, float _angularDamping, bool _allowSleep, bool _isBullet, bool _fixedRotation, const DocumentInterfacePtr & _doc )
+    Box2DBodyInterfacePtr Box2DWorld::createBody( bool _static, const mt::vec2f & _position, float _angle, float _linearDamping, float _angularDamping, bool _allowSleep, bool _isBullet, bool _fixedRotation, const DocumentInterfacePtr & _doc )
     {
         b2BodyDef bodyDef = ::b2DefaultBodyDef();
 
-        bodyDef.position = m_scaler.toBox2DWorld( _pos );
+        bodyDef.position = m_scaler.toBox2DWorld( _position );
         bodyDef.rotation = ::b2MakeRot( _angle );
         bodyDef.linearDamping = _linearDamping;
         bodyDef.angularDamping = _angularDamping;

@@ -1,13 +1,7 @@
 ﻿#include "Config/Config.h"
 
 #include "ToolUtils/ToolUtils.h"
-
-#define STBI_ONLY_PNG
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
-
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "stb_image_write.h"
+#include "ToolUtils/ToolPNG.h"
 
 #include <malloc.h>
 
@@ -17,12 +11,10 @@ int main( int argc, char * argv[] )
     MENGINE_UNUSED( argc );
     MENGINE_UNUSED( argv );
 
-    PWSTR pwCmdLine = ::GetCommandLineW();
+    std::wstring in_path = parse_kwds( L"--in", std::wstring() );
+    std::wstring out_path = parse_kwds( L"--out", std::wstring() );
 
-    std::wstring in_path = parse_kwds( pwCmdLine, L"--in", std::wstring() );
-    std::wstring out_path = parse_kwds( pwCmdLine, L"--out", std::wstring() );
-
-    bool premultiply = has_args( pwCmdLine, L"--premultiply" );
+    bool premultiply = has_args( L"--premultiply" );
 
     if( in_path.empty() == true )
     {
@@ -38,51 +30,27 @@ int main( int argc, char * argv[] )
         return EXIT_FAILURE;
     }
 
-    FILE * f_in = _wfopen( in_path.c_str(), L"rb" );
+    uint32_t width, height, bpp;
+    uint8_t * data_in = png_load_from_file( in_path.c_str(), &width, &height, &bpp );
 
-    if( f_in == NULL )
+    if( data_in == nullptr )
     {
-        message_error( "invalid _wfopen %ls"
+        message_error( "invalid read_file_memory %ls"
             , in_path.c_str()
         );
 
         return EXIT_FAILURE;
     }
-
-    fseek( f_in, 0, SEEK_END );
-    long f_in_size = ftell( f_in );
-    rewind( f_in );
-
-    if( f_in_size == 0 )
-    {
-        fclose( f_in );
-
-        message_error( "invalid size %ls"
-            , in_path.c_str()
-        );
-
-        return EXIT_FAILURE;
-    }
-
-    stbi_uc * memory_in = (stbi_uc *)malloc( f_in_size );
-
-    fread( memory_in, 1, f_in_size, f_in );
-    fclose( f_in );
-
-    int32_t width, height, bpp;
-    stbi_uc * data_in = stbi_load_from_memory( memory_in, f_in_size, &width, &height, &bpp, STBI_default );
-
-    free( memory_in );
 
     if( bpp == 4 )
     {
         if( premultiply == false )
         {
-            for( int32_t i = 0; i != height; ++i )
+            for( uint32_t i = 0; i != height; ++i )
             {
-                for( int32_t j = 0; j != width; ++j )
+                for( uint32_t j = 0; j != width; ++j )
                 {
-                    int32_t index = j + i * width;
+                    uint32_t index = j + i * width;
                     uint8_t alpha = data_in[index * 4 + 3];
 
                     if( alpha != 0 )
@@ -101,20 +69,10 @@ int main( int argc, char * argv[] )
 
                     for( uint32_t d = 0; d != 8; ++d )
                     {
-                        int32_t ni = i + di[d];
-                        int32_t nj = j + dj[d];
-
-                        if( ni < 0 )
-                        {
-                            continue;
-                        }
+                        uint32_t ni = i + di[d];
+                        uint32_t nj = j + dj[d];
 
                         if( ni >= height )
-                        {
-                            continue;
-                        }
-
-                        if( nj < 0 )
                         {
                             continue;
                         }
@@ -141,60 +99,46 @@ int main( int argc, char * argv[] )
                     {
                         float inv_count = 1.f / count;
 
-                        data_in[index * 4 + 0] = (stbi_uc)(r * inv_count);
-                        data_in[index * 4 + 1] = (stbi_uc)(g * inv_count);
-                        data_in[index * 4 + 2] = (stbi_uc)(b * inv_count);
+                        data_in[index * 4 + 0] = (uint8_t)(r * inv_count);
+                        data_in[index * 4 + 1] = (uint8_t)(g * inv_count);
+                        data_in[index * 4 + 2] = (uint8_t)(b * inv_count);
                     }
                 }
             }
         }
         else
         {
-            for( int32_t i = 0; i != height; ++i )
+            for( uint32_t i = 0; i != height; ++i )
             {
-                for( int32_t j = 0; j != width; ++j )
+                for( uint32_t j = 0; j != width; ++j )
                 {
-                    int32_t index = j + i * width;
+                    uint32_t index = j + i * width;
 
-                    uint8_t r = data_in[index * 4 + 0];
-                    uint8_t g = data_in[index * 4 + 1];
-                    uint8_t b = data_in[index * 4 + 2];
-                    uint8_t a = data_in[index * 4 + 3];
+                    uint32_t r = data_in[index * 4 + 0];
+                    uint32_t g = data_in[index * 4 + 1];
+                    uint32_t b = data_in[index * 4 + 2];
+                    uint32_t a = data_in[index * 4 + 3];
 
-                    data_in[index * 4 + 0] = (stbi_uc)((uint32_t)r * a / 255);
-                    data_in[index * 4 + 1] = (stbi_uc)((uint32_t)g * a / 255);
-                    data_in[index * 4 + 2] = (stbi_uc)((uint32_t)b * a / 255);
+                    uint32_t ra = r * a / 255;
+                    uint32_t rg = g * a / 255;
+                    uint32_t rb = b * a / 255;
+
+                    data_in[index * 4 + 0] = (uint8_t)ra;
+                    data_in[index * 4 + 1] = (uint8_t)rg;
+                    data_in[index * 4 + 2] = (uint8_t)rb;
                 }
             }
         }
     }
 
-    int len_out;
-    unsigned char * data_out = stbi_write_png_to_mem( data_in, width * bpp, width, height, bpp, &len_out );
-
-    if( data_out == NULL )
+    if( png_move_to_file( out_path.c_str(), data_in, width * bpp, width, height, bpp ) == false )
     {
-        message_error( "invalid write png to mem" );
-
-        return EXIT_FAILURE;
-    }
-
-    FILE * f_out = _wfopen( out_path.c_str(), L"wb" );
-
-    if( f_out == NULL )
-    {
-        message_error( "invalid _wfopen %ls"
+        message_error( "invalid write_file_memory %ls"
             , out_path.c_str()
         );
 
         return EXIT_FAILURE;
     }
-
-    fwrite( data_out, len_out, 1, f_out );
-    fclose( f_out );
-
-    STBI_FREE( data_in );
-    STBI_FREE( data_out );
 
     return EXIT_SUCCESS;
 }

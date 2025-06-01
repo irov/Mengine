@@ -52,11 +52,11 @@ namespace Mengine
         {
             InputStreamInterface * stream = static_cast<InputStreamInterface *>(_datasource);
 
-            size_t pos = stream->tell();
+            size_t positon = stream->tell();
 
-            long long_pos = (long)pos;
+            long long_position = (long)positon;
 
-            return long_pos;
+            return long_position;
         }
         //////////////////////////////////////////////////////////////////////////
         static int32_t closeOgg( void * _datasource )
@@ -162,7 +162,7 @@ namespace Mengine
         double al_total = ov_time_total( &m_oggVorbisFile, -1 );
         float total = (float)(al_total * 1000.0);
 
-        m_dataInfo.length = total;
+        m_dataInfo.duration = total;
 
         return true;
     }
@@ -244,11 +244,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundDecoderOGGVorbis::_seek( float _time )
     {
-        if( _time >= m_dataInfo.length )
+        if( _time >= m_dataInfo.duration )
         {
             LOGGER_ASSERTION( "time %f > total %f"
                 , _time
-                , m_dataInfo.length
+                , m_dataInfo.duration
             );
 
             _time = 0.f;
@@ -273,7 +273,7 @@ namespace Mengine
         {
             LOGGER_ASSERTION( "time %f is %f [error: %s (%d)]"
                 , _time
-                , m_dataInfo.length
+                , m_dataInfo.duration
                 , Detail::errorInfo( seek_err )
                 , seek_err
             );
@@ -286,16 +286,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float SoundDecoderOGGVorbis::_tell() const
     {
-        double al_pos = ov_time_tell( const_cast<OggVorbis_File *>(&m_oggVorbisFile) );
+        double al_position = ov_time_tell( const_cast<OggVorbis_File *>(&m_oggVorbisFile) );
 
-        float float_pos = (float)(al_pos * 1000.0);
+        float float_position = (float)(al_position * 1000.0);
 
-        if( float_pos > m_dataInfo.length )
+        if( float_position > m_dataInfo.duration )
         {
-            float_pos = m_dataInfo.length;
+            float_position = m_dataInfo.duration;
         }
 
-        return float_pos;
+        return float_position;
     }
     //////////////////////////////////////////////////////////////////////////
 }

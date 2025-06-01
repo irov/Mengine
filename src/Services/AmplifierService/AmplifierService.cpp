@@ -24,8 +24,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     AmplifierService::AmplifierService()
-        : m_play( false )
-        , m_pause( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -35,27 +33,45 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AmplifierService::_initializeService()
     {
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_TURN_SOUND, &AmplifierService::notifyTurnSound_, MENGINE_DOCUMENT_FACTORABLE );
+        //Empty
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AmplifierService::_finalizeService()
     {
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_TURN_SOUND );
-
         MENGINE_ASSERTION_FATAL( m_soundIdentity == nullptr, "amplifier invalid finalize" );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AmplifierService::playMusic( const ConstString & _resourceName, float _pos, bool _looped, const AmplifierMusicCallbackInterfacePtr & _callback )
+    bool AmplifierService::playMusic( const ConstString & _resourceName, float _position, bool _looped, const AmplifierMusicCallbackInterfacePtr & _callback )
     {
         MENGINE_ASSERTION_RESOURCE_TYPE_BY_NAME( _resourceName, ResourceMusicPtr, false, "resource '%s' type does not match 'ResourceMusic'"
             , _resourceName.c_str()
         );
 
-        if( m_play == true )
+        SoundIdentityInterfacePtr keep_soundIdentity = std::move( m_soundIdentity );
+
+        if( keep_soundIdentity != nullptr )
         {
-            this->stopMusic();
+            ESoundSourceState state = keep_soundIdentity->getState();
+
+            switch( state )
+            {
+            case ESS_STOP:
+                break;
+            case ESS_PAUSE:
+                break;
+            case ESS_PLAY:
+                {
+                    SOUND_SERVICE()
+                        ->stopEmitter( keep_soundIdentity );
+
+                    SOUND_SERVICE()
+                        ->releaseSoundSource( keep_soundIdentity );
+                }break;
+            default:
+                break;
+            }
         }
 
         ResourceMusicPtr resourceMusic = RESOURCE_SERVICE()
@@ -100,8 +116,7 @@ namespace Mengine
         }
 
         SoundIdentityInterfacePtr soundIdentity = SOUND_SERVICE()
-            ->createSoundIdentity( false, buffer, ES_SOURCE_CATEGORY_MUSIC, true
-                , MENGINE_DOCUMENT_MESSAGE( "resource '%s'", _resourceName.c_str() ) );
+            ->createSoundIdentity( false, buffer, ES_SOURCE_CATEGORY_MUSIC, true, MENGINE_DOCUMENT_MESSAGE( "resource '%s'", _resourceName.c_str() ) );
 
         MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, "can't create sound source '%s'"
             , filePath.c_str()
@@ -126,11 +141,11 @@ namespace Mengine
         }
 
         if( SOUND_SERVICE()
-            ->setPosMs( soundIdentity, _pos ) == false )
+            ->setPosition( soundIdentity, _position ) == false )
         {
             LOGGER_ASSERTION( "amplifier can't set sound '%s' pos '%f'"
                 , filePath.c_str()
-                , _pos
+                , _position
             );
 
             return false;
@@ -160,27 +175,28 @@ namespace Mengine
 
         m_soundIdentity = soundIdentity;
 
-        m_play = true;
-        m_pause = false;
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AmplifierService::stopMusic()
     {
-        m_play = false;
-        m_pause = false;
-
-        if( m_soundIdentity != nullptr )
+        if( m_soundIdentity == nullptr )
         {
-            SoundIdentityInterfacePtr keep_soundIdentity = std::move( m_soundIdentity );
+            return;
+        }
 
+        SoundIdentityInterfacePtr keep_soundIdentity = std::move( m_soundIdentity );
+
+        ESoundSourceState state = keep_soundIdentity->getState();
+
+        if( state != ESS_STOP )
+        {
             SOUND_SERVICE()
                 ->stopEmitter( keep_soundIdentity );
-
-            SOUND_SERVICE()
-                ->releaseSoundSource( keep_soundIdentity );
         }
+
+        SOUND_SERVICE()
+            ->releaseSoundSource( keep_soundIdentity );
     }
     //////////////////////////////////////////////////////////////////////////
     bool AmplifierService::pauseMusic()
@@ -190,18 +206,12 @@ namespace Mengine
             return false;
         }
 
-        if( m_play == false )
-        {
-            return true;
-        }
+        ESoundSourceState state = m_soundIdentity->getState();
 
-        if( m_pause == true )
+        if( state != ESS_PLAY )
         {
-            return true;
+            return false;
         }
-
-        m_play = true;
-        m_pause = true;
 
         SOUND_SERVICE()
             ->pauseEmitter( m_soundIdentity );
@@ -216,18 +226,12 @@ namespace Mengine
             return false;
         }
 
-        if( m_play == false )
-        {
-            return true;
-        }
+        ESoundSourceState state = m_soundIdentity->getState();
 
-        if( m_pause == false )
+        if( state != ESS_PAUSE )
         {
-            return true;
+            return false;
         }
-
-        m_play = true;
-        m_pause = false;
 
         SOUND_SERVICE()
             ->resumeEmitter( m_soundIdentity );
@@ -242,26 +246,26 @@ namespace Mengine
             return 0.f;
         }
 
-        float pos = SOUND_SERVICE()
+        float duration = SOUND_SERVICE()
             ->getDuration( m_soundIdentity );
 
-        return pos;
+        return duration;
     }
     //////////////////////////////////////////////////////////////////////////
-    float AmplifierService::getPosMs() const
+    float AmplifierService::getPosition() const
     {
         if( m_soundIdentity == nullptr )
         {
             return 0.f;
         }
 
-        float pos = SOUND_SERVICE()
-            ->getPosMs( m_soundIdentity );
+        float position = SOUND_SERVICE()
+            ->getPosition( m_soundIdentity );
 
-        return pos;
+        return position;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AmplifierService::setPosMs( float _posMs )
+    void AmplifierService::setPosition( float _position )
     {
         if( m_soundIdentity == nullptr )
         {
@@ -269,24 +273,12 @@ namespace Mengine
         }
 
         SOUND_SERVICE()
-            ->setPosMs( m_soundIdentity, _posMs );
+            ->setPosition( m_soundIdentity, _position );
     }
     //////////////////////////////////////////////////////////////////////////
     void AmplifierService::_stopService()
     {
         this->stopMusic();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AmplifierService::notifyTurnSound_( bool _turn )
-    {
-        if( _turn == true )
-        {
-            this->resumeMusic();
-        }
-        else
-        {
-            this->pauseMusic();
-        }
     }
     //////////////////////////////////////////////////////////////////////////
 }

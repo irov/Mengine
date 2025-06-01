@@ -90,7 +90,7 @@ namespace Mengine
 
         struct FileInfo
         {
-            size_t seek_pos;
+            size_t seek_carriage;
             size_t file_size;
             size_t unz_size;
             uint32_t compr_method;

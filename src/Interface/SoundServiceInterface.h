@@ -83,8 +83,8 @@ namespace Mengine
     public:
         virtual float getDuration( const SoundIdentityInterfacePtr & _identity ) const = 0;
 
-        virtual bool setPosMs( const SoundIdentityInterfacePtr & _identity, float _pos ) = 0;
-        virtual float getPosMs( const SoundIdentityInterfacePtr & _identity ) = 0;
+        virtual bool setPosition( const SoundIdentityInterfacePtr & _identity, float _position ) = 0;
+        virtual float getPosition( const SoundIdentityInterfacePtr & _identity ) = 0;
 
     public:
         virtual void setMute( const ConstString & _type, bool _mute ) = 0;

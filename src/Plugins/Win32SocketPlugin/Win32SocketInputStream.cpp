@@ -29,9 +29,9 @@ namespace Mengine
         return (size_t)result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32SocketInputStream::seek( size_t _pos )
+    bool Win32SocketInputStream::seek( size_t _carriage )
     {
-        MENGINE_UNUSED( _pos );
+        MENGINE_UNUSED( _carriage );
 
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
 
@@ -43,18 +43,18 @@ namespace Mengine
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32SocketInputStream::rseek( size_t _pos )
+    bool Win32SocketInputStream::rseek( size_t _carriage )
     {
-        MENGINE_UNUSED( _pos );
+        MENGINE_UNUSED( _carriage );
 
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
 
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32SocketInputStream::skip( size_t _size )
+    bool Win32SocketInputStream::skip( size_t _offset )
     {
-        MENGINE_UNUSED( _size );
+        MENGINE_UNUSED( _offset );
 
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
 
@@ -82,7 +82,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32SocketInputStream::time( uint64_t * _time ) const
+    bool Win32SocketInputStream::time( uint64_t * const _time ) const
     {
         MENGINE_UNUSED( _time );
 

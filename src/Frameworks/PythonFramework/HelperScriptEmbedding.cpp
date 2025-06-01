@@ -978,7 +978,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
 #endif
             //////////////////////////////////////////////////////////////////////////
-            void s_setCursorPosition( const mt::vec2f & _pos )
+            void s_setCursorPosition( const mt::vec2f & _cursorPosition )
             {
                 const Resolution & contentResolution = APPLICATION_SERVICE()
                     ->getContentResolution();
@@ -986,12 +986,12 @@ namespace Mengine
                 const Resolution & currentResolution = APPLICATION_SERVICE()
                     ->getCurrentWindowResolution();
 
-                mt::vec2f adapt_pos;
-                adapt_pos.x = _pos.x / contentResolution.getWidth() * currentResolution.getWidth();
-                adapt_pos.y = _pos.y / contentResolution.getHeight() * currentResolution.getHeight();
+                mt::vec2f adaptPosition;
+                adaptPosition.x = _cursorPosition.x / contentResolution.getWidth() * currentResolution.getWidth();
+                adaptPosition.y = _cursorPosition.y / contentResolution.getHeight() * currentResolution.getHeight();
 
                 PLATFORM_SERVICE()
-                    ->setCursorPosition( adapt_pos );
+                    ->setCursorPosition( adaptPosition );
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_isValidWindowMode()

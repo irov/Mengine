@@ -194,7 +194,7 @@ namespace Mengine
                 , const EasingInterfacePtr & _easing
                 , const AffectorCallbackInterfacePtr & _cb
                 , const LambdaType & _lambda
-                , const T & _pos, const T & _dir, float _speed
+                , const T & _value, const T & _dir, float _speed
                 , const DocumentInterfacePtr & _doc )
             {
                 AffectorTypePtr affector = m_factory->createObject( _doc );
@@ -203,9 +203,9 @@ namespace Mengine
                 affector->setEasing( _easing );
                 affector->setCallback( _cb );
 
-                affector->initialize( _lambda, _pos, _dir, _speed );
+                affector->initialize( _lambda, _value, _dir, _speed );
 
-                affector->callSettuper( _pos );
+                affector->callSettuper( _value );
 
                 return affector;
             }

@@ -863,7 +863,7 @@ namespace Mengine
                 {
                     if( source->resume() == false )
                     {
-                        LOGGER_ASSERTION( "invalid play %u"
+                        LOGGER_ASSERTION( "invalid resume %u"
                             , identity->getId()
                         );
 
@@ -984,7 +984,7 @@ namespace Mengine
                 {
                     if( source->resume() == false )
                     {
-                        LOGGER_ASSERTION( "invalid play %u"
+                        LOGGER_ASSERTION( "invalid resume %u"
                             , identity->getId()
                         );
 
@@ -1254,7 +1254,7 @@ namespace Mengine
         return ms;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SoundService::setPosMs( const SoundIdentityInterfacePtr & _identity, float _pos )
+    bool SoundService::setPosition( const SoundIdentityInterfacePtr & _identity, float _position )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid identity set pos ms" );
 
@@ -1273,18 +1273,18 @@ namespace Mengine
 
         float duration = source->getDuration();
 
-        if( _pos > duration )
+        if( _position > duration )
         {
             LOGGER_ASSERTION( "emitter %u invalid position %f because length %f"
                 , identity->getId()
-                , _pos
+                , _position
                 , duration
             );
 
-            _pos = duration;
+            _position = duration;
         }
 
-        float timeLeft = duration - _pos;
+        float timeLeft = duration - _position;
         identity->setTimeLeft( timeLeft );
 
         bool hasBufferUpdate = identity->getWorkerUpdateBuffer() != nullptr;
@@ -1294,9 +1294,9 @@ namespace Mengine
             this->pauseSoundBufferUpdate_( identity );
         }
 
-        float current_pos = source->getPosition();
+        float current_position = source->getPosition();
 
-        if( mt::equal_f_f( current_pos, _pos ) == true )
+        if( mt::equal_f_f( current_position, _position ) == true )
         {
             if( hasBufferUpdate == true )
             {
@@ -1314,7 +1314,7 @@ namespace Mengine
             source->pause();
         }
 
-        if( source->setPosition( _pos ) == false )
+        if( source->setPosition( _position ) == false )
         {
             return false;
         }
@@ -1323,7 +1323,9 @@ namespace Mengine
         {
             if( source->resume() == false )
             {
-                LOGGER_ASSERTION( "invalid play" );
+                LOGGER_ASSERTION( "invalid resume %u"
+                    , identity->getId()
+                );
 
                 return false;
             }
@@ -1488,7 +1490,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    float SoundService::getPosMs( const SoundIdentityInterfacePtr & _identity )
+    float SoundService::getPosition( const SoundIdentityInterfacePtr & _identity )
     {
         SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
 
@@ -1506,14 +1508,14 @@ namespace Mengine
             this->pauseSoundBufferUpdate_( identity );
         }
 
-        float pos = source->getPosition();
+        float position = source->getPosition();
 
         if( hasBufferUpdate == true )
         {
             this->resumeSoundBufferUpdate_( identity );
         }
 
-        return pos;
+        return position;
     }
     //////////////////////////////////////////////////////////////////////////
     void SoundService::_stopService()

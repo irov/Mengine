@@ -401,7 +401,7 @@ namespace Mengine
             );
 
             FileInfo fi;
-            fi.seek_pos = (size_t)relativeOffset + ZIP_LOCAL_HEADER_SIZE + header.fileNameLen + header.commentLen;
+            fi.seek_carriage = (size_t)relativeOffset + ZIP_LOCAL_HEADER_SIZE + header.fileNameLen + header.commentLen;
             fi.file_size = (size_t)compressedSize;
             fi.unz_size = (size_t)uncompressedSize;
             fi.compr_method = header.compressionMethod;
@@ -658,7 +658,7 @@ namespace Mengine
 
         const FileInfo & fi = it_found->second;
 
-        size_t file_offset = fi.seek_pos + _offset;
+        size_t file_offset = fi.seek_carriage + _offset;
         size_t file_size = _size == MENGINE_UNKNOWN_SIZE ? fi.file_size : _size;
 
         MENGINE_ASSERTION_FATAL( _offset + file_size <= fi.file_size, "zip '%s' file '%s' invalid open range %zu:%zu (file size is low %zu:%zu)"
@@ -666,7 +666,7 @@ namespace Mengine
             , _filePath.c_str()
             , _offset
             , _size
-            , fi.seek_pos
+            , fi.seek_carriage
             , fi.file_size
         );
 
@@ -692,7 +692,7 @@ namespace Mengine
                         , m_folderPath.c_str()
                         , fi.zip->folderPath.c_str()
                         , _filePath.c_str()
-                        , fi.seek_pos
+                        , fi.seek_carriage
                         , fi.file_size
                     );
 

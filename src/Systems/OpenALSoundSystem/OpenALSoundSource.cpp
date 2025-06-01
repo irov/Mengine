@@ -221,53 +221,53 @@ namespace Mengine
             return 0.f;
         }
 
-        float time_sound = m_soundBuffer->getTimeTotal();
+        float time_sound = m_soundBuffer->getTimeDuration();
 
         return time_sound;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenALSoundSource::setPosition( float _posMs )
+    bool OpenALSoundSource::setPosition( float _position )
     {
-        if( StdMath::fabsf( m_time - _posMs ) < 0.01f )
+        if( m_time == _position )
         {
             return true;
         }
 
-        m_time = _posMs;
+        m_time = _position;
 
         if( m_playing == false && m_pausing == false )
         {
             return true;
         }
 
-        float posmc = _posMs;
+        float position = _position;
 
-        float total = m_soundBuffer->getTimeTotal();
+        float total = m_soundBuffer->getTimeDuration();
 
-        if( posmc > total )
+        if( position > total )
         {
             LOGGER_ASSERTION( "pos %f total %f"
-                , posmc
+                , position
                 , total
             );
 
             return false;
         }
 
-        if( posmc < 0.f )
+        if( position < 0.f )
         {
             LOGGER_ASSERTION( "pos %f less zero"
-                , posmc
+                , position
             );
 
-            posmc = 0.f;
+            position = 0.f;
         }
 
-        if( m_soundBuffer->setTimePos( m_sourceId, posmc ) == false )
+        if( m_soundBuffer->setTimePosition( m_sourceId, position ) == false )
         {
             LOGGER_ASSERTION( "invalid set time pos [%u] time [%f] (play %u)"
                 , m_sourceId
-                , posmc
+                , position
                 , m_playing
             );
 
@@ -296,8 +296,8 @@ namespace Mengine
             return m_time;
         }
 
-        float posms = 0.f;
-        if( m_soundBuffer->getTimePos( m_sourceId, &posms ) == false )
+        float position = 0.f;
+        if( m_soundBuffer->getTimePosition( m_sourceId, &position ) == false )
         {
             LOGGER_ASSERTION( "invalid get time pos [%u] (play %u)"
                 , m_sourceId
@@ -308,12 +308,12 @@ namespace Mengine
         }
 
         //timing dont assign to zero when m_soundBuffer is stopped!
-        if( StdMath::fabsf( posms ) < 0.0001f && StdMath::fabsf( m_time ) > 0.0001f )
+        if( mt::equal_f_z( position ) == true && mt::equal_f_z( m_time ) == false )
         {
-            posms = m_time;
+            position = m_time;
         }
 
-        return posms;
+        return position;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundSource::setSoundBuffer( const SoundBufferInterfacePtr & _soundBuffer )

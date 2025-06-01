@@ -68,7 +68,7 @@ namespace Mengine
 
         m_frequency = dataInfo->frequency;
         m_channels = dataInfo->channels;
-        m_length = dataInfo->length;
+        m_duration = dataInfo->duration;
         size_t size = dataInfo->size;
 
         MemoryInterfacePtr binary_memory = Helper::createMemoryCacheBuffer( size, MENGINE_DOCUMENT_FACTORABLE );
@@ -147,7 +147,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenALSoundBufferMemory::playSource( ALuint _sourceId, bool _looped, float _pos )
+    bool OpenALSoundBufferMemory::playSource( ALuint _sourceId, bool _looped, float _position )
     {
         ALint state = 0;
         MENGINE_OPENAL_CALL( alGetSourcei, (_sourceId, AL_SOURCE_STATE, &state) );
@@ -180,9 +180,9 @@ namespace Mengine
 
         MENGINE_OPENAL_CALL( alSourcei, (_sourceId, AL_BUFFER, m_alBufferId) );
 
-        if( _pos > 0.f )
+        if( _position > 0.f )
         {
-            ALfloat al_pos = (ALfloat)(_pos * 0.001f);
+            ALfloat al_pos = (ALfloat)(_position * 0.001f);
 
             MENGINE_OPENAL_CALL( alSourcef, (_sourceId, AL_SEC_OFFSET, al_pos) );
         }
@@ -221,11 +221,11 @@ namespace Mengine
         MENGINE_OPENAL_CALL( alSourcei, (_sourceId, AL_BUFFER, 0) );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenALSoundBufferMemory::setTimePos( ALuint _sourceId, float _pos ) const
+    bool OpenALSoundBufferMemory::setTimePosition( ALuint _sourceId, float _position ) const
     {
-        ALfloat al_pos = (ALfloat)(_pos * 0.001f);
+        ALfloat al_position = (ALfloat)(_position * 0.001f);
 
-        MENGINE_IF_OPENAL_CALL( alSourcef, (_sourceId, AL_SEC_OFFSET, al_pos) )
+        MENGINE_IF_OPENAL_CALL( alSourcef, (_sourceId, AL_SEC_OFFSET, al_position) )
         {
             return false;
         }
@@ -233,24 +233,24 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenALSoundBufferMemory::getTimePos( ALuint _sourceId, float * const _pos ) const
+    bool OpenALSoundBufferMemory::getTimePosition( ALuint _sourceId, float * const _position ) const
     {
-        ALfloat al_pos = 0.f;
-        MENGINE_IF_OPENAL_CALL( alGetSourcef, (_sourceId, AL_SEC_OFFSET, &al_pos) )
+        ALfloat al_position = 0.f;
+        MENGINE_IF_OPENAL_CALL( alGetSourcef, (_sourceId, AL_SEC_OFFSET, &al_position) )
         {
             return false;
         }
 
-        float pos = (float)al_pos * 1000.f;
+        float position = (float)al_position * 1000.f;
 
-        float total = this->getTimeTotal();
+        float duration = this->getTimeDuration();
 
-        if( pos > total )
+        if( position > duration )
         {
-            pos = total;
+            position = duration;
         }
 
-        *_pos = pos;
+        *_position = position;
 
         return true;
     }

@@ -91,10 +91,14 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( png_ptr, "PNG encoder error: Can't create write structure" );
 
-        m_png_ptr = png_ptr;
+#ifdef PNG_WRITE_CUSTOMIZE_COMPRESSION_SUPPORTED
+        png_set_compression_level( png_ptr, 9 );
+#endif
 
         // init the IO
-        png_set_write_fn( m_png_ptr, m_stream.get(), &Detail::png_write_proc_ptr, &Detail::png_flush_proc_ptr );
+        png_set_write_fn( png_ptr, m_stream.get(), &Detail::png_write_proc_ptr, &Detail::png_flush_proc_ptr );
+
+        m_png_ptr = png_ptr;
 
         // allocate/initialize the image information data.
         png_infop info_ptr = png_create_info_struct( m_png_ptr );
@@ -168,7 +172,7 @@ namespace Mengine
         png_uint_32 height = (png_uint_32)dataInfo->height;
         int32_t pixel_depth = 8;
 
-        png_set_IHDR( m_png_ptr, m_info_ptr, width, height, pixel_depth, color_type, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE );
+        png_set_IHDR( m_png_ptr, m_info_ptr, width, height, pixel_depth, color_type, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT );
         png_set_bgr( m_png_ptr );
         png_write_info( m_png_ptr, m_info_ptr );
 

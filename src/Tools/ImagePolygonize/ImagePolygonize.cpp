@@ -14,16 +14,14 @@ int main( int argc, char * argv[] )
     MENGINE_UNUSED( argc );
     MENGINE_UNUSED( argv );
 
-    PWSTR pwCmdLine = ::GetCommandLineW();
-
-    std::wstring texturepacker_path = parse_kwds( pwCmdLine, L"--texturepacker", std::wstring() );
-    std::wstring in_path = parse_kwds( pwCmdLine, L"--in_path", std::wstring() );
-    std::wstring result_path = parse_kwds( pwCmdLine, L"--result_path", std::wstring() );
-    uint32_t offset_x = parse_kwds( pwCmdLine, L"--offset_x", 0U );
-    uint32_t offset_y = parse_kwds( pwCmdLine, L"--offset_y", 0U );
-    float width = parse_kwds( pwCmdLine, L"--width", -1.f );
-    float height = parse_kwds( pwCmdLine, L"--height", -1.f );
-    uint32_t tolerance = parse_kwds( pwCmdLine, L"--tolerance", 200U );
+    std::wstring texturepacker_path = parse_kwds( L"--texturepacker", std::wstring() );
+    std::wstring in_path = parse_kwds( L"--in_path", std::wstring() );
+    std::wstring result_path = parse_kwds( L"--result_path", std::wstring() );
+    uint32_t offset_x = parse_kwds( L"--offset_x", 0U );
+    uint32_t offset_y = parse_kwds( L"--offset_y", 0U );
+    float width = parse_kwds( L"--width", -1.f );
+    float height = parse_kwds( L"--height", -1.f );
+    uint32_t tolerance = parse_kwds( L"--tolerance", 200U );
 
     if( texturepacker_path.empty() == true )
     {
@@ -276,7 +274,7 @@ int main( int argc, char * argv[] )
     PathUnquoteSpaces( infoCanonicalizeQuote );
 
     FILE * f_result;
-    errno_t err = _wfopen_s( &f_result, infoCanonicalizeQuote, L"wt" );
+    errno_t err = ::_wfopen_s( &f_result, infoCanonicalizeQuote, L"wt" );
 
     if( err != 0 )
     {

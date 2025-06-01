@@ -1092,7 +1092,6 @@ namespace Mengine
             UniqueId s_Node_bezier2ScreenFollower( Node * _node
                 , float _time
                 , const NodePtr & _follow
-                , const mt::vec3f & _offset
                 , float _deep
                 , const ConstString & _easingType
                 , const pybind::object & _cb
@@ -1110,9 +1109,6 @@ namespace Mengine
                     return INVALID_UNIQUE_ID;
                 }
 
-                mt::mat4f offsetMatrix;
-                mt::make_translation_m4_v3( &offsetMatrix, _offset );
-
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
                 ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
@@ -1127,24 +1123,24 @@ namespace Mengine
                     , [_node]()
                 {
                     mt::vec2f node_pos;
-                    Helper::getNodeScreenPosition( _node, mt::mat4f::identity(), &node_pos );
+                    Helper::getNodeScreenPosition( _node, &node_pos );
 
                     return node_pos;
                 }
-                    , [_follow, offsetMatrix]()
+                    , [_follow]()
                 {
                     mt::vec2f follow_pos;
-                    Helper::getNodeScreenPosition( _follow.get(), offsetMatrix, &follow_pos );
+                    Helper::getNodeScreenPosition( _follow.get(), &follow_pos );
 
                     return follow_pos;
                 }
-                    , [_node, _follow, offsetMatrix]( mt::vec2f * const _v )
+                    , [_node, _follow]( mt::vec2f * const _v )
                 {
                     mt::vec2f node_pos;
-                    Helper::getNodeScreenPosition( _node, mt::mat4f::identity(), &node_pos );
+                    Helper::getNodeScreenPosition( _node, &node_pos );
 
                     mt::vec2f follow_pos;
-                    Helper::getNodeScreenPosition( _follow.get(), offsetMatrix, &follow_pos );
+                    Helper::getNodeScreenPosition( _follow.get(), &follow_pos );
 
                     _v[0] = mt::vec2f( follow_pos.x, node_pos.y );
                 }
@@ -2210,7 +2206,7 @@ namespace Mengine
             mt::vec2f s_Node_getScreenPosition( Node * _node )
             {
                 mt::vec2f screenPosition;
-                Helper::getNodeScreenPosition( _node, mt::mat4f::identity(), &screenPosition );
+                Helper::getNodeScreenPosition( _node, &screenPosition );
 
                 return screenPosition;
             }

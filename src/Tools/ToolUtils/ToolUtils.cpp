@@ -16,7 +16,7 @@ void message_error( const char * _format, ... )
     ::printf( "\n" );
 }
 //////////////////////////////////////////////////////////////////////////
-void unicode_to_utf8( char * _utf8, size_t _capacity, const wchar_t * _unicode, size_t _size )
+size_t unicode_to_utf8( char * _utf8, size_t _capacity, const wchar_t * _unicode, size_t _size )
 {
     DWORD dwConversionFlags = WC_ERR_INVALID_CHARS;
 
@@ -32,6 +32,8 @@ void unicode_to_utf8( char * _utf8, size_t _capacity, const wchar_t * _unicode, 
     );
 
     _utf8[utf8_size] = 0;
+
+    return utf8_size;
 }
 //////////////////////////////////////////////////////////////////////////
 void parse_arg( const std::wstring & _str, bool & _value )
@@ -71,10 +73,12 @@ void parse_arg( const std::wstring & _str, std::wstring & _value )
     _value = _str;
 }
 //////////////////////////////////////////////////////////////////////////
-bool has_args( PWSTR lpCmdLine, const wchar_t * _key )
+bool has_args( const wchar_t * _key )
 {
+    PWSTR pwCmdLine = ::GetCommandLineW();
+
     int cmd_num;
-    LPWSTR * cmd_args = ::CommandLineToArgvW( lpCmdLine, &cmd_num );
+    LPWSTR * cmd_args = ::CommandLineToArgvW( pwCmdLine, &cmd_num );
 
     for( int i = 0; i != cmd_num; ++i )
     {
@@ -176,9 +180,32 @@ bool SelectFile( LPCTSTR _dir, Files & _files )
     return true;
 }
 //////////////////////////////////////////////////////////////////////////
-bool read_file_memory( const wchar_t * _file, uint8_t ** _buffer, size_t * const _size )
+bool read_file_to_memory( const wchar_t * _path, uint8_t * _buffer, size_t _capacity, size_t * const _size )
 {
-    FILE * f = ::_wfopen( _file, L"rb" );
+    FILE * f = ::_wfopen( _path, L"rb" );
+
+    if( f == NULL )
+    {
+        return false;
+    }
+
+    ::fseek( f, 0, SEEK_END );
+    long size = ::ftell( f );
+    ::rewind( f );
+
+    long read = (size < _capacity) ? size : _capacity;
+
+    ::fread( _buffer, 1, read, f );
+    ::fclose( f );
+
+    *_size = read;
+
+    return true;
+}
+//////////////////////////////////////////////////////////////////////////
+bool read_file_memory( const wchar_t * _path, uint8_t ** _buffer, size_t * const _size )
+{
+    FILE * f = ::_wfopen( _path, L"rb" );
 
     if( f == NULL )
     {
@@ -199,9 +226,39 @@ bool read_file_memory( const wchar_t * _file, uint8_t ** _buffer, size_t * const
     return true;
 }
 //////////////////////////////////////////////////////////////////////////
-bool write_file_memory( const wchar_t * _file, const char * _magic, const uint8_t * _buffer, size_t _size, size_t * const _write )
+bool write_file_memory( const wchar_t * _path, const uint8_t * _buffer, size_t _size )
 {
-    FILE * f = ::_wfopen( _file, L"wb" );
+    FILE * f = ::_wfopen( _path, L"wb" );
+
+    if( f == NULL )
+    {
+        return false;
+    }
+
+    size_t write_size = ::fwrite( _buffer, 1, _size, f );
+
+    ::fclose( f );
+
+    if( write_size != _size )
+    {
+        return false;
+    }
+
+    return true;
+}
+//////////////////////////////////////////////////////////////////////////
+bool move_file_memory( const wchar_t * _path, const uint8_t * _buffer, size_t _size )
+{
+    bool result = write_file_memory( _path, _buffer, _size );
+
+    ::free( (void *)_buffer );
+
+    return result;
+}
+//////////////////////////////////////////////////////////////////////////
+bool write_file_magic_memory( const wchar_t * _path, const char * _magic, const uint8_t * _buffer, size_t _size, size_t * const _write )
+{
+    FILE * f = ::_wfopen( _path, L"wb" );
 
     if( f == NULL )
     {
@@ -226,8 +283,12 @@ bool write_file_memory( const wchar_t * _file, const char * _magic, const uint8_
     return true;
 }
 //////////////////////////////////////////////////////////////////////////
-void free_file_memory( uint8_t * _buffer )
+bool move_file_magic_memory( const wchar_t * _path, const char * _magic, const uint8_t * _buffer, size_t _size, size_t * const _write )
 {
-    ::free( _buffer );
+    bool result = write_file_magic_memory( _path, _magic, _buffer, _size, _write );
+
+    ::free( (void *)_path );
+
+    return result;
 }
 //////////////////////////////////////////////////////////////////////////

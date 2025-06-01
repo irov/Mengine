@@ -15,20 +15,20 @@ namespace Mengine
         ~RenderCameraOrthogonal() override;
 
     public:
-        void setCameraPosition( const mt::vec3f & _pos );
-        void setCameraDirection( const mt::vec3f & _dir );
-        void setCameraUp( const mt::vec3f & _up );
-        void setCameraRightSign( float _rightSign );
+        void setCameraPosition( const mt::vec3f & _cameraPosition );
+        void setCameraDirection( const mt::vec3f & _cameraDirection );
+        void setCameraUp( const mt::vec3f & _cameraUp );
+        void setCameraRightSign( float _cameraRightSign );
 
     public:
-        void setCameraNear( float _near );
-        void setCameraFar( float _far );
+        void setCameraNear( float _cameraNear );
+        void setCameraFar( float _cameraFar );
 
     public:
-        void setCameraScale( const mt::vec2f & _scale );
+        void setCameraScale( const mt::vec2f & _cameraScale );
         const mt::vec2f & getCameraScale() const;
 
-        void setCameraOffset( const mt::vec2f & _offset );
+        void setCameraOffset( const mt::vec2f & _cameraOffset );
         const mt::vec2f & getCameraOffset() const;
 
     public:
@@ -36,15 +36,15 @@ namespace Mengine
         const Viewport & getOrthogonalViewport() const;
 
     public:
-        void setFixedOrthogonalViewport( bool _value );
+        void setFixedOrthogonalViewport( bool _fixedOrthogonalViewport );
         bool getFixedOrthogonalViewport() const;
 
     public:
-        void setProxyViewMatrix( bool _value );
+        void setProxyViewMatrix( bool _proxyViewMatrix );
         bool getProxyViewMatrix() const;
 
     public:
-        void setClampViewport( bool _value );
+        void setClampViewport( bool _clampViewport );
         bool getClampViewport() const;
 
     protected:

@@ -123,40 +123,46 @@ namespace Mengine
             return pos;
         }
 
-        const linked_type * adapt_( const linked_type * _pos ) const
+        linked_type * adapt_( linked_type * _carriage )
         {
-            const linked_type * pos = _pos;
+            linked_type * carriage = _carriage;
 
-            while( pos->getIntrusiveTag() == stdex::EILT_SLUG )
+            while( carriage->getIntrusiveTag() == stdex::EILT_SLUG )
             {
-                pos = pos->right_get();
+                carriage = carriage->right_get();
             }
 
-            return pos;
+            return carriage;
+        }
+
+        const linked_type * adapt_( const linked_type * _carriage ) const
+        {
+            const linked_type * carriage = _carriage;
+
+            while( carriage->getIntrusiveTag() == stdex::EILT_SLUG )
+            {
+                carriage = carriage->right_get();
+            }
+
+            return carriage;
         }
 
         linked_type * adapt_right()
         {
-            linked_type * pos = m_slug.right_get();
+            linked_type * carriage = m_slug.right_get();
 
-            while( pos->getIntrusiveTag() == stdex::EILT_SLUG )
-            {
-                pos = pos->right_get();
-            }
+            linked_type * right = adapt_( carriage );
 
-            return pos;
+            return right;
         }
 
         const linked_type * adapt_right() const
         {
-            const linked_type * pos = m_slug.right_get();
+            const linked_type * carriage = m_slug.right_get();
 
-            while( pos->getIntrusiveTag() == stdex::EILT_SLUG )
-            {
-                pos = pos->right_get();
-            }
+            const linked_type * right = adapt_( carriage );
 
-            return pos;
+            return right;
         }
 
     protected:

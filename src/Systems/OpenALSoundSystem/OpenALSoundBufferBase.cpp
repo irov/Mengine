@@ -14,7 +14,7 @@ namespace Mengine
         : m_format( 0 )
         , m_frequency( 0 )
         , m_channels( 0 )
-        , m_length( 0.f )
+        , m_duration( 0.f )
         , m_isStereo( false )
     {
     }
@@ -70,9 +70,9 @@ namespace Mengine
         return m_isStereo;
     }
     //////////////////////////////////////////////////////////////////////////
-    float OpenALSoundBufferBase::getTimeTotal() const
+    float OpenALSoundBufferBase::getTimeDuration() const
     {
-        return m_length;
+        return m_duration;
     }
     //////////////////////////////////////////////////////////////////////////
     ALuint OpenALSoundBufferBase::genBufferId()

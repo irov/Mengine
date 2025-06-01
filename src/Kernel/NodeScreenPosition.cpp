@@ -10,7 +10,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        void getNodeScreenPosition( const Node * _node, const mt::mat4f & _offsetMatrix, mt::vec2f * const _screenPosition )
+        void getNodeScreenPosition( const Node * _node, mt::vec2f * const _screenPosition )
         {
             MENGINE_ASSERTION_MEMORY_PANIC( _node, "node is nullptr" );
 
@@ -26,8 +26,7 @@ namespace Mengine
 
             const TransformationInterface * transformation = _node->getTransformation();
 
-            mt::mat4f wm;
-            transformation->getWorldMatrixOffset( _offsetMatrix, &wm );
+            const mt::mat4f & wm = transformation->getWorldMatrix();
 
             mt::vec2f camera_position;
             camera->fromWorldToScreenPosition( wm, &camera_position );

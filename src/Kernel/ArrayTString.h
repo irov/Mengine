@@ -17,7 +17,7 @@ namespace Mengine
 
     public:
         ArrayTString()
-            : m_pos( 0 )
+            : m_carriage( 0 )
         {
         }
 
@@ -39,32 +39,32 @@ namespace Mengine
 
         size_type size() const
         {
-            return m_pos;
+            return m_carriage;
         }
 
         bool empty() const
         {
-            return m_pos == 0;
+            return m_carriage == 0;
         }
 
     public:
         void clear()
         {
-            m_pos = 0;
+            m_carriage = 0;
         }
 
     public:
         void append( const value_type * _value, size_type _size )
         {
-            if( m_pos + _size >= Size )
+            if( m_carriage + _size >= Size )
             {
                 return;
             }
 
-            Helper::memoryCopy( m_buffer, (size_t)m_pos * sizeof( value_type ), _value, 0, (size_t)_size * sizeof( value_type ) );
+            Helper::memoryCopy( m_buffer, (size_t)m_carriage * sizeof( value_type ), _value, 0, (size_t)_size * sizeof( value_type ) );
 
-            m_pos += _size;
-            m_buffer[m_pos] = Helper::stringTerminalChar<T>();
+            m_carriage += _size;
+            m_buffer[m_carriage] = Helper::stringTerminalChar<T>();
         }
 
         void append( value_type * _value )
@@ -83,14 +83,14 @@ namespace Mengine
 
         void append( value_type _ch )
         {
-            if( m_pos + 1 >= Size )
+            if( m_carriage + 1 >= Size )
             {
                 return;
             }
 
-            m_buffer[m_pos] = _ch;
-            m_pos += 1;
-            m_buffer[m_pos] = Helper::stringTerminalChar<T>();
+            m_buffer[m_carriage] = _ch;
+            m_carriage += 1;
+            m_buffer[m_carriage] = Helper::stringTerminalChar<T>();
         }
 
         template<class StringView>
@@ -112,8 +112,8 @@ namespace Mengine
 
             Helper::memoryCopy( m_buffer, 0, _value, 0, (size_t)_size * sizeof( value_type ) );
 
-            m_pos = _size;
-            m_buffer[m_pos] = Helper::stringTerminalChar<T>();
+            m_carriage = _size;
+            m_buffer[m_carriage] = Helper::stringTerminalChar<T>();
         }
 
         void assign( value_type * _value )
@@ -138,8 +138,8 @@ namespace Mengine
             }
 
             m_buffer[0] = _ch;
-            m_pos = 1;
-            m_buffer[m_pos] = Helper::stringTerminalChar<T>();
+            m_carriage = 1;
+            m_buffer[m_carriage] = Helper::stringTerminalChar<T>();
         }
 
         template<class StringView>
@@ -156,12 +156,12 @@ namespace Mengine
         {
             size_type size = (size_type)Helper::stringLength( _value );
 
-            if( size > m_pos )
+            if( size > m_carriage )
             {
                 return;
             }
 
-            Helper::memoryCopy( m_buffer, (size_t)(m_pos - size) * sizeof( value_type ), _value, 0, size * sizeof( value_type ) );
+            Helper::memoryCopy( m_buffer, (size_t)(m_carriage - size) * sizeof( value_type ), _value, 0, size * sizeof( value_type ) );
         }
 
         void cut_before_last_of( value_type _ch )
@@ -175,7 +175,7 @@ namespace Mengine
 
             ptrdiff_t d = ch_pos - m_buffer;
 
-            m_pos = (size_type)d;
+            m_carriage = (size_type)d;
         }
 
     public:
@@ -223,7 +223,7 @@ namespace Mengine
 
     protected:
         value_type m_buffer[Size] = {Helper::stringTerminalChar<T>()};
-        size_type m_pos;
+        size_type m_carriage;
     };
     //////////////////////////////////////////////////////////////////////////
     template<class T, uint32_t SizeL, uint32_t SizeR>

@@ -12,7 +12,7 @@ namespace Mengine
         , m_pauseTime( 0UL )
         , m_frequency( 0 )
         , m_channels( 0 )
-        , m_length( 0.f )
+        , m_duration( 0.f )
         , m_isStereo( false )
         , m_streamable( false )
     {
@@ -36,9 +36,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SilentSoundBuffer::updateSoundBuffer()
     {
-        float timePos = this->getTimePos( 0U );
+        float timePos = this->getTimePosition( 0U );
 
-        if( timePos >= m_length )
+        if( timePos >= m_duration )
         {
             return false;
         }
@@ -59,7 +59,7 @@ namespace Mengine
 
         m_frequency = dataInfo->frequency;
         m_channels = dataInfo->channels;
-        m_length = dataInfo->length;
+        m_duration = dataInfo->duration;
         //size_t size = dataInfo->size;
 
         if( m_channels == 1 )
@@ -76,11 +76,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SilentSoundBuffer::play( UniqueId _id, bool _looped, float _pos )
+    void SilentSoundBuffer::play( UniqueId _id, bool _looped, float _position )
     {
         MENGINE_UNUSED( _id );
         MENGINE_UNUSED( _looped );
-        MENGINE_UNUSED( _pos );
+        MENGINE_UNUSED( _position );
 
         Timestamp time = Helper::getSystemTimestamp();
 
@@ -119,27 +119,27 @@ namespace Mengine
         m_pauseTime = 0UL;
     }
     //////////////////////////////////////////////////////////////////////////
-    float SilentSoundBuffer::getTimePos( UniqueId _id ) const
+    float SilentSoundBuffer::getTimePosition( UniqueId _id ) const
     {
         MENGINE_UNUSED( _id );
 
         if( m_pauseTime > m_playTime )
         {
-            uint64_t timePos = m_pauseTime - m_playTime;
+            uint64_t timePosition = m_pauseTime - m_playTime;
 
-            return (float)timePos;
+            return (float)timePosition;
         }
 
         Timestamp time = Helper::getSystemTimestamp();
 
-        Timestamp timePos = time - m_playTime;
+        Timestamp timePosition = time - m_playTime;
 
-        return float( timePos );
+        return float( timePosition );
     }
     //////////////////////////////////////////////////////////////////////////
-    float SilentSoundBuffer::getTimeTotal() const
+    float SilentSoundBuffer::getTimeDuration() const
     {
-        return m_length;
+        return m_duration;
     }
     //////////////////////////////////////////////////////////////////////////
 }

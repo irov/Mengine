@@ -211,11 +211,11 @@ namespace Mengine
 
         for( VectorPositions::size_type i = 0; i != vertexCount; ++i )
         {
-            const mt::vec3f & pos = m_positions[i];
+            const mt::vec3f & position = m_positions[i];
             const mt::vec2f & uv = m_uvs[i];
 
-            mt::vec3f & wm_pos = m_verticesWM[i].position;
-            mt::mul_v3_v3_m4( &wm_pos, pos, wm );
+            mt::vec3f & wm_position = m_verticesWM[i].position;
+            mt::mul_v3_v3_m4( &wm_position, position, wm );
 
             m_surface->correctUV( 0, uv, m_verticesWM[i].uv + 0 );
             m_surface->correctUV( 1, uv, m_verticesWM[i].uv + 1 );

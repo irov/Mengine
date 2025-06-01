@@ -117,7 +117,7 @@ namespace Mengine
         );
 
         m_channels = dataInfo->channels;
-        m_length = dataInfo->length;
+        m_duration = dataInfo->duration;
 
         if( m_channels == 1 )
         {
@@ -167,17 +167,17 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenALSoundBufferStream::playSource( ALuint _sourceId, bool _looped, float _pos )
+    bool OpenALSoundBufferStream::playSource( ALuint _sourceId, bool _looped, float _position )
     {
         m_sourceId = _sourceId;
         m_looped = _looped;
 
-        if( _pos > m_length )
+        if( _position > m_duration )
         {
             LOGGER_ASSERTION( "source: %u pos %f > length %f"
                 , m_sourceId
-                , _pos
-                , m_length
+                , _position
+                , m_duration
             );
 
             return false;
@@ -212,10 +212,10 @@ namespace Mengine
         MENGINE_OPENAL_CALL( alSourcei, (m_sourceId, AL_BUFFER, 0) );
         MENGINE_OPENAL_CALL( alSourcei, (m_sourceId, AL_LOOPING, AL_FALSE) );
 
-        if( m_soundDecoder->seek( _pos ) == false )
+        if( m_soundDecoder->seek( _position ) == false )
         {
             LOGGER_ASSERTION( "invalid seek '%f'"
-                , _pos
+                , _position
             );
 
             return false;
@@ -298,7 +298,7 @@ namespace Mengine
         m_mutexUpdating->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenALSoundBufferStream::setTimePos( ALuint _sourceId, float _pos ) const
+    bool OpenALSoundBufferStream::setTimePosition( ALuint _sourceId, float _position ) const
     {
         MENGINE_UNUSED( _sourceId );
 
@@ -306,12 +306,12 @@ namespace Mengine
             , _sourceId
         );
 
-        bool result = m_soundDecoder->seek( _pos );
+        bool result = m_soundDecoder->seek( _position );
 
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenALSoundBufferStream::getTimePos( ALuint _sourceId, float * const _pos ) const
+    bool OpenALSoundBufferStream::getTimePosition( ALuint _sourceId, float * const _position ) const
     {
         MENGINE_UNUSED( _sourceId );
 
@@ -321,17 +321,17 @@ namespace Mengine
 
         float timeTell = m_soundDecoder->tell();
 
-        if( timeTell > m_length )
+        if( timeTell > m_duration )
         {
             LOGGER_ASSERTION( "get tell %f > length %f"
                 , timeTell
-                , m_length
+                , m_duration
             );
 
             return false;
         }
 
-        *_pos = timeTell;
+        *_position = timeTell;
 
         return true;
     }

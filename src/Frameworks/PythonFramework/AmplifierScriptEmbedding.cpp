@@ -170,24 +170,24 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             float musicGetDuration()
             {
-                float posMs = AMPLIFIER_SERVICE()
+                float duration = AMPLIFIER_SERVICE()
                     ->getDuration();
 
-                return posMs;
+                return duration;
             }
             //////////////////////////////////////////////////////////////////////////
-            float musicGetPosMs()
+            float musicGetPosition()
             {
-                float posMs = AMPLIFIER_SERVICE()
-                    ->getPosMs();
+                float position = AMPLIFIER_SERVICE()
+                    ->getPosition();
 
-                return posMs;
+                return position;
             }
             //////////////////////////////////////////////////////////////////////////
-            void musicSetPosMs( float _posMs )
+            void musicSetPosition( float _position )
             {
                 AMPLIFIER_SERVICE()
-                    ->setPosMs( _posMs );
+                    ->setPosition( _position );
             }
             //////////////////////////////////////////////////////////////////////////
             void ___musicFade( float _volume )
@@ -222,7 +222,7 @@ namespace Mengine
                 }
             };
             //////////////////////////////////////////////////////////////////////////
-            typedef IntrusivePtr<MusicAffectorCallback> MusicAffectorCallbackPtr;
+            typedef IntrusivePtr<MusicAffectorCallback, AffectorCallbackInterface> MusicAffectorCallbackPtr;
             //////////////////////////////////////////////////////////////////////////
             FactoryInterfacePtr m_factoryMusicAffectorCallback;
             //////////////////////////////////////////////////////////////////////////
@@ -377,8 +377,10 @@ namespace Mengine
         pybind::def_functor( _kernel, "musicResume", scriptMethod, &AmplifierScriptMethod::musicResume );
         pybind::def_functor( _kernel, "musicGetDuration", scriptMethod, &AmplifierScriptMethod::musicGetDuration );
         pybind::def_functor( _kernel, "musicGetLengthMs", scriptMethod, &AmplifierScriptMethod::musicGetDuration );
-        pybind::def_functor( _kernel, "musicGetPosMs", scriptMethod, &AmplifierScriptMethod::musicGetPosMs );
-        pybind::def_functor( _kernel, "musicSetPosMs", scriptMethod, &AmplifierScriptMethod::musicSetPosMs );
+        pybind::def_functor( _kernel, "musicGetPosition", scriptMethod, &AmplifierScriptMethod::musicGetPosition );
+        pybind::def_functor( _kernel, "musicSetPosition", scriptMethod, &AmplifierScriptMethod::musicSetPosition );
+        pybind::def_functor( _kernel, "musicGetPosMs", scriptMethod, &AmplifierScriptMethod::musicGetPosition );
+        pybind::def_functor( _kernel, "musicSetPosMs", scriptMethod, &AmplifierScriptMethod::musicSetPosition );
         pybind::def_functor_args( _kernel, "musicFadeIn", scriptMethod, &AmplifierScriptMethod::musicFadeIn );
         pybind::def_functor_args( _kernel, "musicFadeOut", scriptMethod, &AmplifierScriptMethod::musicFadeOut );
 

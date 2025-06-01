@@ -84,10 +84,10 @@ namespace Mengine
 
         for( uint32_t i = 0; i != vertexCount; ++i )
         {
-            const mt::vec2f & pos = m_positions[i];
+            const mt::vec2f & position = m_positions[i];
 
-            mt::vec3f & wm_pos = m_verticesWM[i].position;
-            mt::mul_v3_v2_m4( &wm_pos, pos, wm );
+            mt::vec3f & wm_position = m_verticesWM[i].position;
+            mt::mul_v3_v2_m4( &wm_position, position, wm );
         }
     }
     //////////////////////////////////////////////////////////////////////////

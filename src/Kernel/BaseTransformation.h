@@ -33,9 +33,6 @@ namespace Mengine
         MENGINE_INLINE const mt::mat4f & getWorldMatrix() const override;
 
     public:
-        void getWorldMatrixOffset( const mt::mat4f & _offsetMatrix, mt::mat4f * const _worldMatrix ) const override;
-
-    public:
         MENGINE_INLINE bool isIdentityLocalMatrix() const override;
         MENGINE_INLINE bool isIdentityWorldMatrix() const override;
 
@@ -97,7 +94,7 @@ namespace Mengine
         mt::vec3f getAxisUp() const override final;
 
     public:
-        void setWorldPosition( const mt::vec3f & _pos ) override final;
+        void setWorldPosition( const mt::vec3f & _worldPosition ) override final;
 
     public:
         mt::vec3f getWorldPosition() const override final;

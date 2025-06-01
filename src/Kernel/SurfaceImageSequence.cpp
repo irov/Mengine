@@ -254,7 +254,7 @@ namespace Mengine
         {
             _time -= StdMath::floorf( _time / duration ) * duration;
 
-            if( StdMath::fabsf( _time ) < 0.0001f )
+            if( mt::equal_f_z( _time ) == true )
             {
                 *_deltaTime = 0.f;
 

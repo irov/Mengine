@@ -32,14 +32,15 @@ namespace Mengine
     public:
         bool load( const SoundDecoderInterfacePtr & _soundDecoder, bool _streamable );
 
-        void play( UniqueId _id, bool _looped, float _pos );
+    public:
+        void play( UniqueId _id, bool _looped, float _position );
         bool resume( UniqueId _id );
         void pause( UniqueId _id );
         void stop( UniqueId _id );
 
     public:
-        float getTimePos( UniqueId _id ) const;
-        float getTimeTotal() const;
+        float getTimePosition( UniqueId _id ) const;
+        float getTimeDuration() const;
 
     public:
         SoundDecoderInterfacePtr m_soundDecoder;
@@ -49,7 +50,7 @@ namespace Mengine
 
         int32_t m_frequency;
         int32_t m_channels;
-        float m_length;
+        float m_duration;
         bool m_isStereo;
 
         bool m_streamable;

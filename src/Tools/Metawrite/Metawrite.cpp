@@ -140,11 +140,9 @@ int main( int argc, char * argv[] )
         return EXIT_FAILURE;
     }
 
-    PWSTR pwCmdLine = ::GetCommandLineW();
-
-    Mengine::WString protocol = parse_kwds( pwCmdLine, L"--protocol", Mengine::WString() );
-    Mengine::WString in = parse_kwds( pwCmdLine, L"--in", Mengine::WString() );
-    Mengine::WString out = parse_kwds( pwCmdLine, L"--out", Mengine::WString() );
+    Mengine::WString protocol = parse_kwds( L"--protocol", Mengine::WString() );
+    Mengine::WString in = parse_kwds( L"--in", Mengine::WString() );
+    Mengine::WString out = parse_kwds( L"--out", Mengine::WString() );
 
     if( in.empty() == true )
     {

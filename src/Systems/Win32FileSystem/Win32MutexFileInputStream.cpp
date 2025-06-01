@@ -222,9 +222,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32MutexFileInputStream::seek( size_t _pos )
+    bool Win32MutexFileInputStream::seek( size_t _carriage )
     {
-        size_t carriage = _pos;
+        size_t carriage = _carriage;
 
         bool successful = this->seek_( carriage );
 
@@ -236,38 +236,38 @@ namespace Mengine
         this->seek_( 0 );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32MutexFileInputStream::rseek( size_t _pos )
+    bool Win32MutexFileInputStream::rseek( size_t _carriage )
     {
-        size_t carriage = m_size - _pos;
+        size_t carriage = m_size - _carriage;
 
         bool successful = this->seek_( carriage );
 
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32MutexFileInputStream::skip( size_t _pos )
+    bool Win32MutexFileInputStream::skip( size_t _offset )
     {
         size_t current = m_reading - m_capacity + m_carriage;
 
-        size_t carriage = current + _pos;
+        size_t carriage = current + _offset;
 
         bool result = this->seek_( carriage );
 
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32MutexFileInputStream::seek_( size_t _pos )
+    bool Win32MutexFileInputStream::seek_( size_t _carriage )
     {
-        if( _pos >= m_reading - m_capacity && _pos <= m_reading )
+        if( _carriage >= m_reading - m_capacity && _carriage <= m_reading )
         {
-            m_carriage = m_capacity - (m_reading - _pos);
+            m_carriage = m_capacity - (m_reading - _carriage);
         }
         else
         {
             m_carriage = 0;
             m_capacity = 0;
 
-            m_reading = _pos;
+            m_reading = _carriage;
         }
 
         return true;

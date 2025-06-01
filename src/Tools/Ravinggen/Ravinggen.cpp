@@ -15,11 +15,9 @@ int main( int argc, char * argv[] )
     MENGINE_UNUSED( argc );
     MENGINE_UNUSED( argv );
 
-    PWSTR pwCmdLine = ::GetCommandLineW();
-
-    std::wstring in = parse_kwds( pwCmdLine, L"--in", std::wstring() );
-    std::wstring out = parse_kwds( pwCmdLine, L"--out", std::wstring() );
-    std::wstring secure = parse_kwds( pwCmdLine, L"--secure", std::wstring() );
+    std::wstring in = parse_kwds( L"--in", std::wstring() );
+    std::wstring out = parse_kwds( L"--out", std::wstring() );
+    std::wstring secure = parse_kwds( L"--secure", std::wstring() );
 
     if( in.empty() == true )
     {
@@ -53,10 +51,8 @@ int main( int argc, char * argv[] )
         return EXIT_FAILURE;
     }
 
-    std::string ansi_secure = std::string( secure.begin(), secure.end() );
-
-    const char * ansi_secure_str = ansi_secure.c_str();
-    size_t ansi_secure_size = ansi_secure.size();
+    char ansi_secure_str[2048 + 1];
+    size_t ansi_secure_size = unicode_to_utf8( ansi_secure_str, 2048, secure.c_str(), secure.size() );
 
     uint64_t sequreHash;
     Mengine::Helper::makeSHA1( ansi_secure_str, ansi_secure_size, reinterpret_cast<uint8_t *>(&sequreHash), sizeof( sequreHash ) );
@@ -64,9 +60,7 @@ int main( int argc, char * argv[] )
     Mengine::Helper::ravingcode( &sequreHash, 1, memory_buffer, memory_size, memory_buffer );
 
     size_t write_size;
-    bool result = write_file_memory( out.c_str(), "RGCD", memory_buffer, memory_size, &write_size );
-
-    free_file_memory( memory_buffer );
+    bool result = move_file_magic_memory( out.c_str(), "RGCD", memory_buffer, memory_size, &write_size );
 
     if( result == false )
     {

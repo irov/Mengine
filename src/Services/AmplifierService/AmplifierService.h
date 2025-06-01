@@ -36,16 +36,10 @@ namespace Mengine
     public:
         float getDuration() const override;
 
-        void setPosMs( float _posMs ) override;
-        float getPosMs() const override;
-
-    protected:
-        void notifyTurnSound_( bool _turn );
+        void setPosition( float _position ) override;
+        float getPosition() const override;
 
     protected:
         SoundIdentityInterfacePtr m_soundIdentity;
-
-        bool m_play;
-        bool m_pause;
     };
 }

@@ -1514,6 +1514,7 @@ namespace Mengine
 #else
         const uint32_t xmlFlags = pugi::format_raw;
 #endif
+
         doc.save( writer, "  ", xmlFlags, pugi::encoding_utf8 );
 
         this->sendPacket( packet );

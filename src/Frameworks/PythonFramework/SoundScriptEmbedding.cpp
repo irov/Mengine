@@ -344,7 +344,7 @@ namespace Mengine
                 }
 
                 if( SOUND_SERVICE()
-                    ->setPosMs( sourceEmitter, _position ) == false )
+                    ->setPosition( sourceEmitter, _position ) == false )
                 {
                     LOGGER_ERROR( "resource sound '%s' invalid set pos '%f'"
                         , _resourceName.c_str()
@@ -369,18 +369,18 @@ namespace Mengine
                 return sourceEmitter;
             }
             //////////////////////////////////////////////////////////////////////////
-            float soundGetPosMs( const SoundIdentityInterfacePtr & _identity )
+            float soundGetPosition( const SoundIdentityInterfacePtr & _identity )
             {
-                float pos = SOUND_SERVICE()
-                    ->getPosMs( _identity );
+                float position = SOUND_SERVICE()
+                    ->getPosition( _identity );
 
-                return pos;
+                return position;
             }
             //////////////////////////////////////////////////////////////////////////
-            void soundSetPosMs( const SoundIdentityInterfacePtr & _identity, float _pos )
+            void soundSetPosition( const SoundIdentityInterfacePtr & _identity, float _position )
             {
                 SOUND_SERVICE()
-                    ->setPosMs( _identity, _pos );
+                    ->setPosition( _identity, _position );
             }
             //////////////////////////////////////////////////////////////////////////
             class SoundAffectorCallback
@@ -786,8 +786,8 @@ namespace Mengine
         pybind::def_functor( _kernel, "soundSourceGetVolume", soundScriptMethod, &SoundScriptMethod::soundSourceGetVolume );
         pybind::def_functor( _kernel, "soundSetVolume", soundScriptMethod, &SoundScriptMethod::soundSetVolume );
         pybind::def_functor( _kernel, "soundGetVolume", soundScriptMethod, &SoundScriptMethod::soundGetVolume );
-        pybind::def_functor( _kernel, "soundGetPosition", soundScriptMethod, &SoundScriptMethod::soundGetPosMs );
-        pybind::def_functor( _kernel, "soundSetPosition", soundScriptMethod, &SoundScriptMethod::soundSetPosMs );
+        pybind::def_functor( _kernel, "soundGetPosition", soundScriptMethod, &SoundScriptMethod::soundGetPosition );
+        pybind::def_functor( _kernel, "soundSetPosition", soundScriptMethod, &SoundScriptMethod::soundSetPosition );
         pybind::def_functor_args( _kernel, "soundFadeIn", soundScriptMethod, &SoundScriptMethod::soundFadeIn );
         pybind::def_functor_args( _kernel, "soundFadeOut", soundScriptMethod, &SoundScriptMethod::soundFadeOut );
         pybind::def_functor_args( _kernel, "soundFadeInTo", soundScriptMethod, &SoundScriptMethod::soundFadeInTo );

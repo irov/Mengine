@@ -312,7 +312,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SurfaceSound::_setVolume( float _volume )
     {
-        if( StdMath::fabsf( m_volume - _volume ) < 0.00001f )
+        if( mt::equal_f_f( m_volume, _volume ) == true )
         {
             return;
         }
@@ -399,17 +399,18 @@ namespace Mengine
             return;
         }
 
-        float lengthMs = SOUND_SERVICE()
+        float duration = SOUND_SERVICE()
             ->getDuration( m_soundIdentity );
 
-        float pos = _time;
-        if( _time > lengthMs )
+        float position = _time;
+        
+        if( _time > duration )
         {
-            pos = lengthMs;
+            position = duration;
         }
 
         SOUND_SERVICE()
-            ->setPosMs( m_soundIdentity, pos );
+            ->setPosition( m_soundIdentity, position );
     }
     //////////////////////////////////////////////////////////////////////////
     float SurfaceSound::_getTime() const
@@ -423,10 +424,10 @@ namespace Mengine
             return 0.f;
         }
 
-        float pos = SOUND_SERVICE()
-            ->getPosMs( m_soundIdentity );
+        float position = SOUND_SERVICE()
+            ->getPosition( m_soundIdentity );
 
-        return pos;
+        return position;
     }
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr SurfaceSound::_updateMaterial() const

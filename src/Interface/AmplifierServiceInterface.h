@@ -36,8 +36,8 @@ namespace Mengine
     public:
         virtual float getDuration() const = 0;
 
-        virtual void setPosMs( float _posMs ) = 0;
-        virtual float getPosMs() const = 0;
+        virtual void setPosition( float _position ) = 0;
+        virtual float getPosition() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 }

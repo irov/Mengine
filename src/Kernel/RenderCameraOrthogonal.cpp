@@ -103,51 +103,51 @@ namespace Mengine
         *_worldDelta = wd;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderCameraOrthogonal::setCameraPosition( const mt::vec3f & _pos )
+    void RenderCameraOrthogonal::setCameraPosition( const mt::vec3f & _cameraPosition )
     {
-        m_cameraPosition = _pos;
+        m_cameraPosition = _cameraPosition;
 
         this->invalidateViewMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderCameraOrthogonal::setCameraDirection( const mt::vec3f & _dir )
+    void RenderCameraOrthogonal::setCameraDirection( const mt::vec3f & _cameraDirection )
     {
-        m_cameraDirection = _dir;
+        m_cameraDirection = _cameraDirection;
 
         this->invalidateViewMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderCameraOrthogonal::setCameraUp( const mt::vec3f & _up )
+    void RenderCameraOrthogonal::setCameraUp( const mt::vec3f & _cameraUp )
     {
-        m_cameraUp = _up;
+        m_cameraUp = _cameraUp;
 
         this->invalidateViewMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderCameraOrthogonal::setCameraRightSign( float _rightSign )
+    void RenderCameraOrthogonal::setCameraRightSign( float _cameraRightSign )
     {
-        m_cameraRightSign = _rightSign;
+        m_cameraRightSign = _cameraRightSign;
 
         this->invalidateViewMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderCameraOrthogonal::setCameraNear( float _near )
+    void RenderCameraOrthogonal::setCameraNear( float _cameraNear )
     {
-        m_cameraNear = _near;
+        m_cameraNear = _cameraNear;
 
         this->invalidateProjectionMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderCameraOrthogonal::setCameraFar( float _far )
+    void RenderCameraOrthogonal::setCameraFar( float _cameraFar )
     {
-        m_cameraFar = _far;
+        m_cameraFar = _cameraFar;
 
         this->invalidateProjectionMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderCameraOrthogonal::setCameraScale( const mt::vec2f & _scale )
+    void RenderCameraOrthogonal::setCameraScale( const mt::vec2f & _cameraScale )
     {
-        m_cameraScale = _scale;
+        m_cameraScale = _cameraScale;
 
         this->invalidateProjectionMatrix_();
     }
@@ -157,9 +157,9 @@ namespace Mengine
         return m_cameraScale;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderCameraOrthogonal::setCameraOffset( const mt::vec2f & _offset )
+    void RenderCameraOrthogonal::setCameraOffset( const mt::vec2f & _cameraOffset )
     {
-        m_cameraOffset = _offset;
+        m_cameraOffset = _cameraOffset;
 
         this->invalidateProjectionMatrix_();
     }
@@ -181,9 +181,9 @@ namespace Mengine
         return m_orthogonalViewport;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderCameraOrthogonal::setFixedOrthogonalViewport( bool _value )
+    void RenderCameraOrthogonal::setFixedOrthogonalViewport( bool _fixedOrthogonalViewport )
     {
-        m_fixedOrthogonalViewport = _value;
+        m_fixedOrthogonalViewport = _fixedOrthogonalViewport;
 
         this->invalidateProjectionMatrix_();
     }
@@ -193,9 +193,9 @@ namespace Mengine
         return m_fixedOrthogonalViewport;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderCameraOrthogonal::setProxyViewMatrix( bool _value )
+    void RenderCameraOrthogonal::setProxyViewMatrix( bool _proxyViewMatrix )
     {
-        m_proxyViewMatrix = _value;
+        m_proxyViewMatrix = _proxyViewMatrix;
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderCameraOrthogonal::getProxyViewMatrix() const
@@ -203,9 +203,9 @@ namespace Mengine
         return m_proxyViewMatrix;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderCameraOrthogonal::setClampViewport( bool _value )
+    void RenderCameraOrthogonal::setClampViewport( bool _clampViewport )
     {
-        m_clampViewport = _value;
+        m_clampViewport = _clampViewport;
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderCameraOrthogonal::getClampViewport() const

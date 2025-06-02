@@ -126,40 +126,36 @@ public class MengineUtils {
 
     public static Object newInstance(String TAG, Class<?> cls, boolean required, Object ... args) {
         try {
-            Class<?>[] parameterTypes = Arrays.stream(args)
-                .map(Object::getClass)
-                .toArray(Class<?>[]::new);
+            for (Constructor<?> constructor : cls.getDeclaredConstructors()) {
+                Class<?>[] paramTypes = constructor.getParameterTypes();
 
-            Constructor<?> ctr = cls.getDeclaredConstructor(parameterTypes);
+                if (paramTypes.length != args.length) {
+                    continue;
+                }
 
-            Object ob = ctr.newInstance(args);
+                boolean match = true;
+                for (int i = 0; i != paramTypes.length; ++i) {
+                    Class<?> paramType = paramTypes[i];
+                    Class<?> argType = args[i].getClass();
 
-            return ob;
-        } catch (final NoSuchMethodException e) {
-            MengineLog.logError(TAG, "[ERROR] invalid create new instance: %s NoSuchMethodException: %s"
-                , cls.getName()
-                , e.getMessage()
-            );
-        } catch (final IllegalAccessException e) {
-            MengineLog.logError(TAG, "[ERROR] invalid create new instance: %s IllegalAccessException: %s"
-                , cls.getName()
-                , e.getMessage()
-            );
-        } catch (final InstantiationException e) {
-            MengineLog.logError(TAG, "[ERROR] invalid create new instance: %s InstantiationException: %s"
-                , cls.getName()
-                , e.getMessage()
-            );
-        } catch (final InvocationTargetException e) {
-            MengineLog.logError(TAG, "[ERROR] invalid create new instance: %s InvocationTargetException: %s"
-                , cls.getName()
-                , e.getMessage()
-            );
-        } catch (final NullPointerException e) {
-            MengineLog.logError(TAG, "[ERROR] invalid create new instance: %s NullPointerException: %s"
-                , cls.getName()
-                , e.getMessage()
-            );
+                    if (paramType.isAssignableFrom(argType) == false) {
+                        match = false;
+                        break;
+                    }
+                }
+
+                if (match == false) {
+                    continue;
+                }
+
+                constructor.setAccessible(true);
+
+                Object ob = constructor.newInstance(args);
+
+                return ob;
+            }
+        } catch (final Exception e) {
+            MengineLog.logException(TAG, e, Map.of("cls", cls.getName()));
         }
 
         return null;

@@ -8,6 +8,8 @@ android {
 }
 
 dependencies {
+    implementation project(':plugins:GoogleService')
+
     implementation 'com.google.android.ump:user-messaging-platform:3.2.0'
 }
 

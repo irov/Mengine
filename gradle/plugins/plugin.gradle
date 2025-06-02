@@ -22,7 +22,7 @@ android {
 
                 res.srcDirs += [ANDROID_APP_ASSETS_RES_DIR]
             } else {
-                res.srcDirs += ["../../$ANDROID_APP_MAIN_PROJECT/res"]
+                res.srcDirs += [rootProject.projectDir.getAbsolutePath() + "/$ANDROID_APP_MAIN_PROJECT/res"]
             }
         }
     }

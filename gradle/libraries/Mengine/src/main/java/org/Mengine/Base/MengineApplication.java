@@ -1146,7 +1146,7 @@ public abstract class MengineApplication extends Application {
                     , serviceName
                     , MengineUtils.getTimestamp() - service_timestamp
                 );
-            } catch (MengineServiceInvalidInitializeException e) {
+            } catch (final MengineServiceInvalidInitializeException e) {
                 MengineAnalytics.buildEvent("mng_app_create_failed")
                     .addParameterException("exception", e)
                     .logAndFlush();
@@ -1171,7 +1171,7 @@ public abstract class MengineApplication extends Application {
                     , serviceName
                     , MengineUtils.getTimestamp() - service_timestamp
                 );
-            } catch (MengineServiceInvalidInitializeException e) {
+            } catch (final MengineServiceInvalidInitializeException e) {
                 MengineAnalytics.buildEvent("mng_app_create_failed")
                     .addParameterException("exception", e)
                     .logAndFlush();

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <meta-data android:name="mengine.applovin.native.placement" android:value="@string/mengine_applovin_native_placement" />
+        <meta-data android:name="mengine.applovin.native.adunitid" android:value="@string/mengine_applovin_native_adunitid" />
+    </application>
+</manifest>

@@ -49,6 +49,18 @@ fun includePlugin(name: String, path: String) {
     include(path)
 }
 
+fun includeSubPlugin(name: String, sub: String, path: String) {
+    if ((getBooleanProperty("MENGINE_APP_PLUGIN_ENABLE_ALL", false) == false && getBooleanProperty(name, false) == false) || getBooleanProperty(sub, false) == false) {
+        println("\u001b[31m" + "[-] Exclude sub plugin: $path" + "\u001b[0m")
+
+        return
+    }
+
+    println("\u001b[32m" + "[+] Include sub plugin: $path" + "\u001b[0m")
+
+    include(path)
+}
+
 println("\u001b[32m" + "=== Start configure ===" + "\u001b[0m")
 
 val ANDROID_APP_MAIN_PROJECT = getStringProperty("ANDROID_APP_MAIN_PROJECT", "app");
@@ -166,6 +178,15 @@ includePlugin("MENGINE_APP_PLUGIN_FLURRY", ":plugins:Flurry")
 includePlugin("MENGINE_APP_PLUGIN_ADMOB", ":plugins:AdMob")
 includePlugin("MENGINE_APP_PLUGIN_AMAZON", ":plugins:Amazon")
 includePlugin("MENGINE_APP_PLUGIN_APPLOVIN", ":plugins:AppLovin")
+includePlugin("MENGINE_APP_PLUGIN_APPLOVIN", ":plugins:AppLovin:Core")
+includeSubPlugin("MENGINE_APP_PLUGIN_APPLOVIN", "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON", ":plugins:AppLovin:MediationAmazon")
+includeSubPlugin("MENGINE_APP_PLUGIN_APPLOVIN", "MENGINE_APP_PLUGIN_APPLOVIN_NONET_BANNERS", ":plugins:AppLovin:NonetBanners")
+includeSubPlugin("MENGINE_APP_PLUGIN_APPLOVIN", "MENGINE_APP_PLUGIN_APPLOVIN_BANNERAD", ":plugins:AppLovin:BannerAd")
+includeSubPlugin("MENGINE_APP_PLUGIN_APPLOVIN", "MENGINE_APP_PLUGIN_APPLOVIN_INTERSTITIALAD", ":plugins:AppLovin:InterstitialAd")
+includeSubPlugin("MENGINE_APP_PLUGIN_APPLOVIN", "MENGINE_APP_PLUGIN_APPLOVIN_REWARDEDAD", ":plugins:AppLovin:RewardedAd")
+includeSubPlugin("MENGINE_APP_PLUGIN_APPLOVIN", "MENGINE_APP_PLUGIN_APPLOVIN_APPOPENAD", ":plugins:AppLovin:AppOpenAd")
+includeSubPlugin("MENGINE_APP_PLUGIN_APPLOVIN", "MENGINE_APP_PLUGIN_APPLOVIN_MRECAD", ":plugins:AppLovin:MRECAd")
+includeSubPlugin("MENGINE_APP_PLUGIN_APPLOVIN", "MENGINE_APP_PLUGIN_APPLOVIN_NATIVEAD", ":plugins:AppLovin:NativeAd")
 includePlugin("MENGINE_APP_PLUGIN_SENTRY", ":plugins:Sentry")
 includePlugin("MENGINE_APP_PLUGIN_FACEBOOK", ":plugins:Facebook")
 includePlugin("MENGINE_APP_PLUGIN_DEVTODEV", ":plugins:DevToDev")

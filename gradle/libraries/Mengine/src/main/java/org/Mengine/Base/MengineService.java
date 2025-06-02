@@ -40,10 +40,12 @@ public class MengineService implements MengineServiceInterface {
         m_activity = null;
     }
 
+    @Override
     public MengineApplication getMengineApplication() {
         return m_application;
     }
 
+    @Override
     public MengineActivity getMengineActivity() {
         return m_activity;
     }
@@ -59,20 +61,23 @@ public class MengineService implements MengineServiceInterface {
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public <T> T getService(Class<T> cls) {
         T plugin = m_application.getService(cls);
 
         return plugin;
     }
 
-    public Object newInstance(String name, boolean exist, Object ... args) {
+    @Override
+    public Object newInstance(String name, boolean required, Object ... args) {
         ClassLoader cl = this.getClass().getClassLoader();
 
-        Object instance = MengineUtils.newInstance(cl, m_serviceName, name, exist, args);
+        Object instance = MengineUtils.newInstance(cl, m_serviceName, name, required, args);
 
         return instance;
     }
 
+    @Override
     public boolean isAvailable() {
         if (m_availableStatus == null) {
             m_availableStatus = this.onAvailable(m_application);
@@ -86,58 +91,60 @@ public class MengineService implements MengineServiceInterface {
         return m_embedding;
     }
 
+    @Override
     public boolean hasOption(String option) {
         boolean value = m_application.hasOption(option);
 
         return value;
     }
 
+    @Override
     public int getOptionValueInteger(String option, int defaultValue) {
         int value = m_application.getOptionValueInteger(option, defaultValue);
 
         return value;
     }
 
+    @Override
     public long getOptionValueLong(String option, long defaultValue) {
         long value = m_application.getOptionValueLong(option, defaultValue);
 
         return value;
     }
 
+    @Override
     public String getOptionValueString(String option, String defaultValue) {
         String value = m_application.getOptionValueString(option, defaultValue);
 
         return value;
     }
 
+    @Override
     public void setStatisticInteger(@Size(min = 1L,max = 40L) String key, long value) {
         MengineStatistic.setInteger(key, value);
     }
 
+    @Override
     public void increaseStatisticInteger(@Size(min = 1L,max = 40L) String key, long value) {
         MengineStatistic.increaseInteger(key, value);
     }
 
+    @Override
     public void decreaseStatisticInteger(@Size(min = 1L,max = 40L) String key, long value) {
         MengineStatistic.decreaseInteger(key, value);
     }
 
+    @Override
     public void increaseStatisticDouble(@Size(min = 1L,max = 40L) String key, double value) {
         MengineStatistic.increaseDouble(key, value);
     }
 
+    @Override
     public void decreaseStatisticDouble(@Size(min = 1L,max = 40L) String key, double value) {
         MengineStatistic.decreaseDouble(key, value);
     }
 
-    protected void invalidInitialize(String format, Object ... args) throws MengineServiceInvalidInitializeException {
-        this.setState("invalid.service", m_serviceName);
-
-        String message = MengineLog.buildTotalMsg(format, args);
-
-        throw new MengineServiceInvalidInitializeException(message);
-    }
-
+    @Override
     public void makeToastDelayed(long delayed, String format, Object ... args) {
         if (m_activity == null) {
             this.logError("invalid make toast format: %s args: %s"
@@ -151,6 +158,7 @@ public class MengineService implements MengineServiceInterface {
         MengineUtils.makeToastDelayed(m_activity, delayed, format, args);
     }
 
+    @Override
     public boolean runOnUiThread(String doc, Runnable action) {
         if (m_activity == null) {
             this.logError("invalid run [%s] on UI thread"
@@ -165,10 +173,12 @@ public class MengineService implements MengineServiceInterface {
         return true;
     }
 
+    @Override
     public void setState(@NonNull @Size(min = 1L,max = 1024L) String name, Object value) {
         m_application.setState(name, value);
     }
 
+    @Override
     public String logVerbose(String format, Object ... args) {
         String t = this.getServiceTag();
         String m = MengineLog.logVerbose(t, format, args);
@@ -176,6 +186,7 @@ public class MengineService implements MengineServiceInterface {
         return m;
     }
 
+    @Override
     public String logDebug(String format, Object ... args) {
         String t = this.getServiceTag();
         String m = MengineLog.logDebug(t, format, args);
@@ -183,6 +194,7 @@ public class MengineService implements MengineServiceInterface {
         return m;
     }
 
+    @Override
     public String logInfo(String format, Object ... args) {
         String t = this.getServiceTag();
         String m = MengineLog.logInfo(t, format, args);
@@ -190,6 +202,7 @@ public class MengineService implements MengineServiceInterface {
         return m;
     }
 
+    @Override
     public String logMessage(String format, Object ... args) {
         String t = this.getServiceTag();
         String m = MengineLog.logMessage(t, format, args);
@@ -197,6 +210,7 @@ public class MengineService implements MengineServiceInterface {
         return m;
     }
 
+    @Override
     public String logMessageProtected(String format, Object ... args) {
         String t = this.getServiceTag();
         String m = MengineLog.logMessageProtected(t, format, args);
@@ -204,6 +218,7 @@ public class MengineService implements MengineServiceInterface {
         return m;
     }
 
+    @Override
     public String logMessageRelease(String format, Object ... args) {
         String t = this.getServiceTag();
         String m = MengineLog.logMessageRelease(t, format, args);
@@ -211,6 +226,7 @@ public class MengineService implements MengineServiceInterface {
         return m;
     }
 
+    @Override
     public String logWarning(String format, Object ... args) {
         String t = this.getServiceTag();
         String m = MengineLog.logWarning(t, format, args);
@@ -218,6 +234,7 @@ public class MengineService implements MengineServiceInterface {
         return m;
     }
 
+    @Override
     public String logError(String format, Object ... args) {
         String t = this.getServiceTag();
         String m = MengineLog.logError(t, format, args);
@@ -225,35 +242,42 @@ public class MengineService implements MengineServiceInterface {
         return m;
     }
 
+    @Override
     public void logException(@NonNull Throwable e, @NonNull Map<String, Object> attributes) {
         String t = this.getServiceTag();
         MengineLog.logException(t, e, attributes);
     }
 
+    @Override
     public void assertionError(String format, Object ... args) {
         String t = this.getServiceTag();
         MengineUtils.throwAssertionError(t, null, format, args);
     }
 
+    @Override
     public MengineAnalyticsEventBuilder buildEvent(@Size(min = 1L,max = 40L) String name) {
         MengineAnalyticsEventBuilder eventBuilder = MengineAnalytics.buildEvent(name);
 
         return eventBuilder;
     }
 
+    @Override
     public void pythonCall(String method, Object ... args) {
         String t = this.getServiceTag();
         m_application.pythonCall(t, method, args);
     }
 
+    @Override
     public void activateSemaphore(String name) {
         m_application.activateSemaphore(name);
     }
 
+    @Override
     public void deactivateSemaphore(String name) {
         m_application.deactivateSemaphore(name);
     }
 
+    @Override
     public boolean getMetaDataBoolean(String name) throws MengineServiceInvalidInitializeException {
         try {
             boolean value = m_application.getMetaDataBoolean(name);
@@ -266,6 +290,7 @@ public class MengineService implements MengineServiceInterface {
         return false;
     }
 
+    @Override
     public int getMetaDataInteger(String name) throws MengineServiceInvalidInitializeException {
         try {
             int value = m_application.getMetaDataInteger(name);
@@ -278,6 +303,7 @@ public class MengineService implements MengineServiceInterface {
         return 0;
     }
 
+    @Override
     public long getMetaDataLong(String name) throws MengineServiceInvalidInitializeException {
         try {
             long value = m_application.getMetaDataInteger(name);
@@ -290,6 +316,7 @@ public class MengineService implements MengineServiceInterface {
         return 0;
     }
 
+    @Override
     public String getMetaDataString(String name) throws MengineServiceInvalidInitializeException {
         try {
             String value = m_application.getMetaDataString(name);
@@ -302,13 +329,11 @@ public class MengineService implements MengineServiceInterface {
         return null;
     }
 
-    protected boolean getPreferenceBoolean(@NonNull String name, boolean defaultValue) {
-        boolean value = MenginePreferences.getPreferenceBoolean(m_application, m_serviceName, name, defaultValue);
+    protected void invalidInitialize(String format, Object ... args) throws MengineServiceInvalidInitializeException {
+        this.setState("invalid.service", m_serviceName);
 
-        return value;
-    }
+        String message = MengineLog.buildTotalMsg(format, args);
 
-    protected void setPreferenceBoolean(@NonNull String name, boolean value) {
-        MenginePreferences.setPreferenceBoolean(m_application, m_serviceName, name, value);
+        throw new MengineServiceInvalidInitializeException(message);
     }
 }

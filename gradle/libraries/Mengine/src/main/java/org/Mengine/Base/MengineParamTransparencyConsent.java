@@ -30,10 +30,32 @@ public class MengineParamTransparencyConsent {
     // 1 - Ensure security, prevent fraud, and debug
     // 2 - Technically deliver ads or content
 
-    // Features
+    //  Features
     // 1 - Match and combine offline data sources
     // 2 - Link different devices
     // 3 - Receive and use automatically-sent device characteristics for identification
+
+    // IABUSPrivacy_String format (version 1):
+    // Format: <Version><ExplicitNotice><OptOutSale><LSPA>
+    // Example: "1YNY"
+    //
+    // charAt(0) — Version:
+    //   Always '1' for the current version of the US Privacy string format.
+    //
+    // charAt(1) — Explicit Notice:
+    //   'Y' — User was given explicit notice about data collection and sale.
+    //   'N' — User was not given notice.
+    //   '-' — Not applicable or unknown.
+    //
+    // charAt(2) — OptOutSale:
+    //   'Y' — User has opted out of the sale of personal data ("Do Not Sell").
+    //   'N' — User has not opted out (sale is allowed).
+    //   '-' — Not applicable or unknown.
+    //
+    // charAt(3) — LSPA (Limited Service Provider Agreement):
+    //   'Y' — The publisher is covered under the LSPA for this transaction.
+    //   'N' — Not covered.
+    //   '-' — Not applicable or unknown.
 
     public boolean TRANSPARENCYCONSENT_PENDING;
     public int TRANSPARENCYCONSENT_CMPSDKID;
@@ -54,6 +76,8 @@ public class MengineParamTransparencyConsent {
     public String TRANSPARENCYCONSENT_PUBLISHERLEGITIMATEINTERESTS;
     public String TRANSPARENCYCONSENT_PUBLISHERCUSTOMPURPOSESCONSENTS;
     public String TRANSPARENCYCONSENT_PUBLISHERCUSTOMPURPOSESLEGITIMATEINTERESTS;
+
+    public String TRANSPARENCYCONSENT_USPRIVACYSTRING;
 
     public static void setConsentFlowUserGeography(@NonNull Context context, MengineConsentFlowUserGeography userGeography) {
         if (MengineParamTransparencyConsent.TRANSPARENCYCONSENT_USERGEOGRAPHY == userGeography) {
@@ -113,6 +137,8 @@ public class MengineParamTransparencyConsent {
         TRANSPARENCYCONSENT_PUBLISHERLEGITIMATEINTERESTS = preferences.getString("IABTCF_PublisherLegitimateInterests", "");
         TRANSPARENCYCONSENT_PUBLISHERCUSTOMPURPOSESCONSENTS = preferences.getString("IABTCF_PublisherCustomPurposesConsents", "");
         TRANSPARENCYCONSENT_PUBLISHERCUSTOMPURPOSESLEGITIMATEINTERESTS = preferences.getString("IABTCF_PublisherCustomPurposesLegitimateInterests", "");
+
+        TRANSPARENCYCONSENT_USPRIVACYSTRING = preferences.getString("IABUSPrivacy_String", "");
     }
 
     public boolean isPending() {
@@ -133,6 +159,14 @@ public class MengineParamTransparencyConsent {
         }
 
         return true;
+    }
+
+    public boolean isCCPADoNotSell() {
+        if (TRANSPARENCYCONSENT_USPRIVACYSTRING.length() < 3) {
+            return false;
+        }
+
+        return TRANSPARENCYCONSENT_USPRIVACYSTRING.charAt(2) == 'Y';
     }
 
     public boolean getPurposeConsentArgument(int index) {
@@ -262,7 +296,8 @@ public class MengineParamTransparencyConsent {
                 Objects.equals(TRANSPARENCYCONSENT_PUBLISHERCONSENTS, dst.TRANSPARENCYCONSENT_PUBLISHERCONSENTS) &&
                 Objects.equals(TRANSPARENCYCONSENT_PUBLISHERLEGITIMATEINTERESTS, dst.TRANSPARENCYCONSENT_PUBLISHERLEGITIMATEINTERESTS) &&
                 Objects.equals(TRANSPARENCYCONSENT_PUBLISHERCUSTOMPURPOSESCONSENTS, dst.TRANSPARENCYCONSENT_PUBLISHERCUSTOMPURPOSESCONSENTS) &&
-                Objects.equals(TRANSPARENCYCONSENT_PUBLISHERCUSTOMPURPOSESLEGITIMATEINTERESTS, dst.TRANSPARENCYCONSENT_PUBLISHERCUSTOMPURPOSESLEGITIMATEINTERESTS);
+                Objects.equals(TRANSPARENCYCONSENT_PUBLISHERCUSTOMPURPOSESLEGITIMATEINTERESTS, dst.TRANSPARENCYCONSENT_PUBLISHERCUSTOMPURPOSESLEGITIMATEINTERESTS) &&
+                Objects.equals(TRANSPARENCYCONSENT_USPRIVACYSTRING, dst.TRANSPARENCYCONSENT_USPRIVACYSTRING);
     }
 
     @Override
@@ -286,7 +321,8 @@ public class MengineParamTransparencyConsent {
                 TRANSPARENCYCONSENT_PUBLISHERCONSENTS,
                 TRANSPARENCYCONSENT_PUBLISHERLEGITIMATEINTERESTS,
                 TRANSPARENCYCONSENT_PUBLISHERCUSTOMPURPOSESCONSENTS,
-                TRANSPARENCYCONSENT_PUBLISHERCUSTOMPURPOSESLEGITIMATEINTERESTS
+                TRANSPARENCYCONSENT_PUBLISHERCUSTOMPURPOSESLEGITIMATEINTERESTS,
+                TRANSPARENCYCONSENT_USPRIVACYSTRING
         );
     }
 }

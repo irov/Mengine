@@ -1,5 +1,4 @@
 apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin.gradle'
-apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/Firebase/firebase.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/gms.gradle'
 
 android {
@@ -7,5 +6,7 @@ android {
 }
 
 dependencies {
+    implementation project(':plugins:Firebase')
+    
     implementation 'com.google.firebase:firebase-analytics:22.4.0'
 }

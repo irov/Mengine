@@ -1,5 +1,4 @@
 apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin.gradle'
-apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/Firebase/firebase.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/gms.gradle'
 
 android {
@@ -8,6 +7,7 @@ android {
 
 dependencies {
     implementation project(':plugins:GoogleService')
+    implementation project(':plugins:Firebase')
 
     implementation 'com.google.firebase:firebase-messaging:24.1.1'
 }

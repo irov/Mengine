@@ -36,58 +36,92 @@ Utils.getIntegerProperty = { String name, Integer d ->
     return v
 }
 
-Utils.existAppLibrary = { String name ->
-    def pall = project.findProperty("MENGINE_APP_LIBRARY_ALL")
+Utils.isEnableAllLibrary = { ->
+    def enableAll = project.findProperty("MENGINE_APP_LIBRARY_ENABLE_ALL")
 
-    if (pall != null && (pall as Integer) == 1) {
+    if (enableAll != null && (enableAll as Integer) == 1) {
         return true
     }
 
-    def p = project.findProperty(name)
-
-    if (p == null) {
-        return true
-    }
-
-    if (p as Integer == 0) {
-        return false
-    }
-
-    return true
+    return false;
 }
 
-Utils.existAppPlugin = { String name ->
+Utils.existAppLibrary = { String name ->
+    if (Utils.isEnableAllLibrary() == true) {
+        return true
+    }
+
+    boolean p = Utils.getBooleanProperty(name, true);
+
+    return p;
+}
+
+Utils.isEnableAllPlugins = { ->
     def enableAll = project.findProperty("MENGINE_APP_PLUGIN_ENABLE_ALL")
 
     if (enableAll != null && (enableAll as Integer) == 1) {
         return true
     }
 
-    def p = project.findProperty(name)
+    return false;
+}
 
-    if (p == null) {
+Utils.existAppPlugin = { String name ->
+    if (Utils.isEnableAllPlugins() == true) {
+        return true
+    }
+
+    boolean p = Utils.getBooleanProperty(name, false);
+
+    return p;
+}
+
+Utils.getBooleanAppPluginProperty = { String name, String property ->
+    if (Utils.isEnableAllPlugins() == true) {
+        return true
+    }
+
+    if (Utils.existAppPlugin(name) == false) {
         return false
     }
 
-    if (p as Integer == 0) {
+    boolean p = Utils.getBooleanProperty(property, false);
+
+    return p;
+}
+
+Utils.getStringAppPluginProperty = { String name, String property ->
+    if (Utils.isEnableAllPlugins() == true) {
+        return true
+    }
+
+    if (Utils.existAppPlugin(name) == false) {
         return false
     }
 
-    return true
+    String p = Utils.getStringProperty(property);
+
+    return p;
+}
+
+Utils.getIntegerAppPluginProperty = { String name, String property ->
+    if (Utils.isEnableAllPlugins() == true) {
+        return true
+    }
+
+    if (Utils.existAppPlugin(name) == false) {
+        return false
+    }
+
+    Integer p = Utils.getIntegerProperty(property);
+
+    return p;
 }
 
 Utils.existAppService = { String name ->
-    def p = project.findProperty(name)
+    boolean p = Utils.getBooleanProperty(name, true);
 
-    if (p == null) {
-        return true
-    }
-
-    if (p as Integer == 0) {
-        return true
-    }
-
-    return false
+    return p;
 }
 
 Utils.logAvailable = { String name, boolean value ->

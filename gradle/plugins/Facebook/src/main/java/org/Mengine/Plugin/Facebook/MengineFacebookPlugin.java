@@ -80,6 +80,14 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
         FacebookSdk.setAdvertiserIDCollectionEnabled(AD_STORAGE);
         FacebookSdk.setAutoLogAppEventsEnabled(AD_STORAGE);
 
+        boolean CCPADoNotSell = tcParam.isCCPADoNotSell();
+
+        if (CCPADoNotSell == true) {
+            FacebookSdk.setDataProcessingOptions(new String[] { "LDU" }, 0, 0);
+        } else {
+            FacebookSdk.setDataProcessingOptions(new String[] {});
+        }
+
         try {
             AppEventsLogger.activateApp(application);
         } catch (final Exception e) {
@@ -651,6 +659,14 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
 
         FacebookSdk.setAdvertiserIDCollectionEnabled(AD_STORAGE);
         FacebookSdk.setAutoLogAppEventsEnabled(AD_STORAGE);
+
+        boolean CCPADoNotSell = tcParam.isCCPADoNotSell();
+
+        if (CCPADoNotSell == true) {
+            FacebookSdk.setDataProcessingOptions(new String[] { "LDU" }, 0, 0);
+        } else {
+            FacebookSdk.setDataProcessingOptions(new String[] {});
+        }
     }
 
     @Override

@@ -547,6 +547,60 @@ namespace Mengine
                 affectorHub->stopAffectors( EAFFECTORTYPE_POSITION );
             }
             //////////////////////////////////////////////////////////////////////////
+            UniqueId s_Node_originTo( Node * _node, float _time, const mt::vec3f & _origin, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            {
+                if( _node->isActivate() == false )
+                {
+                    return INVALID_UNIQUE_ID;
+                }
+
+                if( _node->isAfterActive() == false )
+                {
+                    return INVALID_UNIQUE_ID;
+                }
+
+                EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
+                ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
+
+                TransformationInterface * transformation = _node->getTransformation();
+
+                AffectorPtr affector = m_nodeAffectorCreatorInterpolateLinear->create( EAFFECTORTYPE_ORIGIN
+                    , easing
+                    , callback
+                    , [transformation]( const mt::vec3f & _v )
+                {
+                    transformation->setLocalOrigin( _v );
+                }
+                    , transformation->getLocalOrigin(), _origin, _time
+                    , MENGINE_DOCUMENT_PYBIND
+                );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
+
+                s_Node_originStop( _node );
+
+                if( _node->isActivate() == false )
+                {
+                    return INVALID_UNIQUE_ID;
+                }
+
+                const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
+
+                UniqueId id = affectorHub->addAffector( affector );
+
+                return id;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_Node_originStop( Node * _node )
+            {
+                const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
+
+                MENGINE_ASSERTION_MEMORY_PANIC( affectorHub, "invalid get affector hub" );
+
+                affectorHub->stopAffectors( EAFFECTORTYPE_ORIGIN );
+            }
+            //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorAccumulateLinear<mt::vec3f>> m_nodeAffectorCreatorAccumulateLinear;
             //////////////////////////////////////////////////////////////////////////
             UniqueId s_Node_velocityTo( Node * _node, float _speed, const mt::vec3f & _dir, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
@@ -2741,6 +2795,9 @@ namespace Mengine
             .def_proxy_static_args( "bezier2WorldFollower", scriptMethod, &KernelScriptMethod::s_Node_bezier2WorldFollower )
             .def_proxy_static_args( "bezier2ScreenFollower", scriptMethod, &KernelScriptMethod::s_Node_bezier2ScreenFollower )
             .def_proxy_static( "moveStop", scriptMethod, &KernelScriptMethod::s_Node_moveStop )
+
+            .def_proxy_static_args( "originTo", scriptMethod, &KernelScriptMethod::s_Node_originTo )
+            .def_proxy_static( "originStop", scriptMethod, &KernelScriptMethod::s_Node_originStop )
 
             .def_proxy_static_args( "angleTo", scriptMethod, &KernelScriptMethod::s_Node_angleTo )
             .def_proxy_static( "angleStop", scriptMethod, &KernelScriptMethod::s_Node_angleStop )

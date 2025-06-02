@@ -7,6 +7,7 @@ namespace Mengine
     enum EAffectorType
     {
         EAFFECTORTYPE_POSITION,
+        EAFFECTORTYPE_ORIGIN,
         EAFFECTORTYPE_ANGLE,
         EAFFECTORTYPE_SCALE,
         EAFFECTORTYPE_COLOR,

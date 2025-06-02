@@ -553,6 +553,11 @@ public abstract class MengineApplication extends Application {
     }
 
     public void setState(@NonNull @Size(min = 1L,max = 1024L) String name, Object value) {
+        MengineLog.logDebug(TAG, "setState: %s = %s"
+            , name
+            , value
+        );
+
         m_states.put(name, value);
 
         List<MengineListenerApplication> applicationListeners = this.getApplicationListeners();

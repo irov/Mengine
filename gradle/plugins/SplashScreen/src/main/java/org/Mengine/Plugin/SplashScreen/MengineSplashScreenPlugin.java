@@ -159,11 +159,10 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
             return;
         }
 
-        activity.runOnUiThread(() -> {
-            this.logInfo("hide splash screen on Mengine platform run");
 
-            this.hideSplash(activity);
-        });
+        this.logInfo("hide splash screen on Mengine platform run");
+
+        this.hideSplash(activity);
     }
 
     private void showSplash(@NonNull MengineActivity activity) {
@@ -283,22 +282,24 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
 
         this.setState("splashscreen.state", "removed");
 
-        ViewGroup viewGroup = activity.getContentViewGroup();
+        activity.runOnUiThread(() -> {
+            ViewGroup viewGroup = activity.getContentViewGroup();
 
-        if (m_image != null) {
-            m_image.clearAnimation();
-            if (viewGroup != null) {
-                viewGroup.removeView(m_image);
+            if (m_image != null) {
+                m_image.clearAnimation();
+                if (viewGroup != null) {
+                    viewGroup.removeView(m_image);
+                }
+                m_image = null;
             }
-            m_image = null;
-        }
 
-        if (m_text != null) {
-            m_text.clearAnimation();
-            if (viewGroup != null) {
-                viewGroup.removeView(m_text);
+            if (m_text != null) {
+                m_text.clearAnimation();
+                if (viewGroup != null) {
+                    viewGroup.removeView(m_text);
+                }
+                m_text = null;
             }
-            m_text = null;
-        }
+        });
     }
 }

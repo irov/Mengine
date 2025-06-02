@@ -81,6 +81,10 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Men
 
         m_appOpenAd = appOpenAd;
 
+        this.log("create");
+
+        this.setAppOpenState("init");
+
         this.loadAd();
     }
 

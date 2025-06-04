@@ -24,7 +24,6 @@ import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineListenerEngine;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineListenerActivity;
-import org.Mengine.Base.MengineUtils;
 
 public class MengineSplashScreenPlugin extends MengineService implements MengineListenerEngine, MengineListenerActivity {
     public static final String SERVICE_NAME = "SplashScreen";
@@ -32,6 +31,8 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
 
     protected ImageView m_image;
     protected TextView m_text;
+
+    protected volatile boolean m_differedHideOnResume;
 
     private Drawable getDrawableSplashScreen(Context context) {
         Resources resources = context.getResources();
@@ -88,7 +89,7 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
 
     @Override
     public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
-        MengineApplication application = activity.getMengineApplication();
+        m_differedHideOnResume = false;
 
         if (MengineFragmentEngine.INSTANCE.isMenginePlatformRun() == true) {
             this.setState("splashscreen.state", "skip");
@@ -119,6 +120,8 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
         boolean mengine_splashscreen_text_enable = resources.getBoolean(R.bool.mengine_splashscreen_text_enable);
 
         if (mengine_splashscreen_text_enable == true) {
+            MengineApplication application = MengineApplication.INSTANCE;
+
             String userId = application.getUserId();
             String versionName = application.getVersionName();
 
@@ -148,6 +151,25 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
     }
 
     @Override
+    public void onPause(@NonNull MengineActivity activity) {
+        this.logInfo("onPause");
+
+    }
+
+    @Override
+    public void onResume(@NonNull MengineActivity activity) {
+        this.logInfo("onResume");
+
+        if (m_differedHideOnResume == true) {
+            this.logInfo("deferred hide splash screen on resume");
+
+            m_differedHideOnResume = false;
+
+            this.hideSplash(activity);
+        }
+    }
+
+    @Override
     public void onMenginePlatformRun(@NonNull MengineApplication application) {
         this.logInfo("Mengine platform run, skip splash screen");
 
@@ -159,6 +181,15 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
             return;
         }
 
+        MengineActivity.ELifecycleState lifecycleState = activity.getLifecycleState();
+
+        if (lifecycleState != MengineActivity.ELifecycleState.ACTIVITY_RESUME) {
+            this.logInfo("activity lifecycle state is not ACTIVITY_RESUME, defer hide splash screen");
+
+            m_differedHideOnResume = true;
+
+            return;
+        }
 
         this.logInfo("hide splash screen on Mengine platform run");
 
@@ -187,10 +218,12 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
 
                 if (m_image != null) {
                     m_image.setVisibility(View.VISIBLE);
+                    m_image.requestLayout();
                 }
 
                 if (m_text != null) {
                     m_text.setVisibility(View.VISIBLE);
+                    m_text.requestLayout();
                 }
             }
 
@@ -222,59 +255,61 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
             return;
         }
 
-        Animation showAnimation = m_image.getAnimation();
+        activity.runOnUiThread(() -> {
+            Animation showAnimation = m_image.getAnimation();
 
-        float alphaFrom = 1.f;
-        if (showAnimation != null) {
-            long drawTime = m_image.getDrawingTime();
-            Transformation transformation = new Transformation();
-            showAnimation.getTransformation(drawTime, transformation);
-            float imageAlpha = transformation.getAlpha();
-            alphaFrom = imageAlpha;
-        }
-
-        AlphaAnimation hideAnimation = new AlphaAnimation(alphaFrom, 0.f);
-
-        Resources resources = activity.getResources();
-
-        long durationMillis = resources.getInteger(R.integer.mengine_splashscreen_hide_duration);
-
-        hideAnimation.setDuration(durationMillis);
-        hideAnimation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-                MengineSplashScreenPlugin.this.logInfo("start hide splash screen");
+            float alphaFrom = 1.f;
+            if (showAnimation != null) {
+                long drawTime = m_image.getDrawingTime();
+                Transformation transformation = new Transformation();
+                showAnimation.getTransformation(drawTime, transformation);
+                float imageAlpha = transformation.getAlpha();
+                alphaFrom = imageAlpha;
             }
 
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                MengineSplashScreenPlugin.this.logInfo("hided splash screen");
+            AlphaAnimation hideAnimation = new AlphaAnimation(alphaFrom, 0.f);
 
-                if (m_image != null) {
-                    m_image.setVisibility(View.GONE);
-                    m_image.requestLayout();
+            Resources resources = activity.getResources();
+
+            long durationMillis = resources.getInteger(R.integer.mengine_splashscreen_hide_duration);
+
+            hideAnimation.setDuration(durationMillis);
+            hideAnimation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    MengineSplashScreenPlugin.this.logInfo("start hide splash screen");
                 }
 
-                if (m_text != null) {
-                    m_text.setVisibility(View.GONE);
-                    m_text.requestLayout();
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    MengineSplashScreenPlugin.this.logInfo("hided splash screen");
+
+                    if (m_image != null) {
+                        m_image.setVisibility(View.GONE);
+                        m_image.requestLayout();
+                    }
+
+                    if (m_text != null) {
+                        m_text.setVisibility(View.GONE);
+                        m_text.requestLayout();
+                    }
+
+                    MengineSplashScreenPlugin.this.removeSplash(activity);
                 }
 
-                MengineSplashScreenPlugin.this.removeSplash(activity);
-            }
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                    //Empty
+                }
+            });
 
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-                //Empty
-            }
+            this.logInfo("hide splash screen animation duration: %d ms"
+                , durationMillis
+            );
+
+            m_image.clearAnimation();
+            m_image.startAnimation(hideAnimation);
         });
-
-        this.logInfo("hide splash screen animation duration: %d ms"
-            , durationMillis
-        );
-
-        m_image.clearAnimation();
-        m_image.startAnimation(hideAnimation);
     }
 
     private void removeSplash(@NonNull MengineActivity activity) {
@@ -282,24 +317,22 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
 
         this.setState("splashscreen.state", "removed");
 
-        activity.runOnUiThread(() -> {
-            ViewGroup viewGroup = activity.getContentViewGroup();
+        ViewGroup viewGroup = activity.getContentViewGroup();
 
-            if (m_image != null) {
-                m_image.clearAnimation();
-                if (viewGroup != null) {
-                    viewGroup.removeView(m_image);
-                }
-                m_image = null;
+        if (m_image != null) {
+            m_image.clearAnimation();
+            if (viewGroup != null) {
+                viewGroup.removeView(m_image);
             }
+            m_image = null;
+        }
 
-            if (m_text != null) {
-                m_text.clearAnimation();
-                if (viewGroup != null) {
-                    viewGroup.removeView(m_text);
-                }
-                m_text = null;
+        if (m_text != null) {
+            m_text.clearAnimation();
+            if (viewGroup != null) {
+                viewGroup.removeView(m_text);
             }
-        });
+            m_text = null;
+        }
     }
 }

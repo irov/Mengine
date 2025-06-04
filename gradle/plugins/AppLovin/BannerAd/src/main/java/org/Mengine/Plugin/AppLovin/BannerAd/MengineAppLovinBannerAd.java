@@ -21,7 +21,6 @@ import com.applovin.sdk.AppLovinSdkUtils;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineAnalyticsEventBuilder;
-import org.Mengine.Base.MengineApplication;
 
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Plugin.AppLovin.Core.MengineAppLovinBannerAdInterface;
@@ -61,8 +60,8 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements Meng
         m_placement = MengineAppLovinPlugin_Banner_Placement;
     }
 
-    protected AppLovinSdkUtils.Size getBannerSize(@NonNull MengineApplication application) {
-        AppLovinSdkUtils.Size size = MaxAdFormat.BANNER.getAdaptiveSize(application);
+    protected AppLovinSdkUtils.Size getBannerSize(@NonNull MengineActivity activity) {
+        AppLovinSdkUtils.Size size = MaxAdFormat.BANNER.getAdaptiveSize(activity);
 
         return size;
     }
@@ -78,18 +77,35 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements Meng
         this.setState("applovin.banner.state." + m_adUnitId, state);
     }
 
-    @Override
-    public boolean isInitialized() {
-        return m_adView != null;
+    public int getWidthPx() {
+        MengineActivity activity = m_plugin.getMengineActivity();
+
+        AppLovinSdkUtils.Size size = this.getBannerSize(activity);
+
+        int widthDp = size.getWidth();
+        int widthPx = AppLovinSdkUtils.dpToPx(activity, widthDp);
+
+        return widthPx;
+    }
+
+    public int getHeightPx() {
+        MengineActivity activity = m_plugin.getMengineActivity();
+
+        AppLovinSdkUtils.Size size = this.getBannerSize(activity);
+
+        int heightDp = size.getHeight();
+        int heightPx = AppLovinSdkUtils.dpToPx(activity, heightDp);
+
+        return heightPx;
     }
 
     @Override
-    public void initialize(@NonNull MengineApplication application) {
-        super.initialize(application);
+    public void onActivityCreate(@NonNull MengineActivity activity) {
+        super.onActivityCreate(activity);
 
         MaxAdViewConfiguration adConfig = MaxAdViewConfiguration.builder()
-            .setAdaptiveType(MaxAdViewConfiguration.AdaptiveType.ANCHORED)
-            .build();
+                .setAdaptiveType(MaxAdViewConfiguration.AdaptiveType.ANCHORED)
+                .build();
 
         MaxAdView adView = new MaxAdView(m_adUnitId, adConfig);
 
@@ -100,13 +116,13 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements Meng
         adView.setRevenueListener(this);
         adView.setAdReviewListener(this);
 
-        AppLovinSdkUtils.Size size = this.getBannerSize(application);
+        AppLovinSdkUtils.Size size = this.getBannerSize(activity);
 
         int widthDp = size.getWidth();
         int heightDp = size.getHeight();
 
-        int widthPx = AppLovinSdkUtils.dpToPx(application, widthDp);
-        int heightPx = AppLovinSdkUtils.dpToPx(application, heightDp);
+        int widthPx = AppLovinSdkUtils.dpToPx(activity, widthDp);
+        int heightPx = AppLovinSdkUtils.dpToPx(activity, heightDp);
 
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, heightPx);
         params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
@@ -123,13 +139,17 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements Meng
         this.setBannerState("init." + m_placement);
 
         this.firstLoadAd((mediation, callback) -> {
-            mediation.initializeMediatorBanner(application, m_plugin, adView, callback);
+            mediation.loadMediatorBanner(activity, m_plugin, m_adView, callback);
         });
+
+        ViewGroup viewGroup = activity.getContentViewGroup();
+
+        viewGroup.addView(m_adView);
     }
 
     @Override
-    public void finalize(@NonNull MengineApplication application) {
-        super.finalize(application);
+    public void onActivityDestroy(@NonNull MengineActivity activity) {
+        super.onActivityDestroy(activity);
 
         if (m_adView != null) {
             m_adView.setListener(null);
@@ -137,46 +157,11 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements Meng
             m_adView.setRevenueListener(null);
             m_adView.setAdReviewListener(null);
 
+            ViewGroup viewGroup = activity.getContentViewGroup();
+            viewGroup.removeView(m_adView);
+
             m_adView.destroy();
             m_adView = null;
-        }
-    }
-
-    public int getWidthPx() {
-        MengineApplication application = m_plugin.getMengineApplication();
-
-        AppLovinSdkUtils.Size size = this.getBannerSize(application);
-
-        int widthDp = size.getWidth();
-        int widthPx = AppLovinSdkUtils.dpToPx(application, widthDp);
-
-        return widthPx;
-    }
-
-    public int getHeightPx() {
-        MengineApplication application = m_plugin.getMengineApplication();
-
-        AppLovinSdkUtils.Size size = this.getBannerSize(application);
-
-        int heightDp = size.getHeight();
-        int heightPx = AppLovinSdkUtils.dpToPx(application, heightDp);
-
-        return heightPx;
-    }
-
-    @Override
-    public void onActivityCreate(@NonNull MengineActivity activity) {
-        ViewGroup viewGroup = activity.getContentViewGroup();
-        if (viewGroup.indexOfChild(m_adView) == -1) {
-            viewGroup.addView(m_adView);
-        }
-    }
-
-    @Override
-    public void onActivityDestroy(@NonNull MengineActivity activity) {
-        ViewGroup viewGroup = activity.getContentViewGroup();
-        if (viewGroup.indexOfChild(m_adView) != -1) {
-            viewGroup.removeView(m_adView);
         }
     }
 

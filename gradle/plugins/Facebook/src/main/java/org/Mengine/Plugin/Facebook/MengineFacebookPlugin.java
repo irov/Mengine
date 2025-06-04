@@ -197,7 +197,9 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
         });
 
         String userId = application.getUserId();
-        AppEventsLogger.setUserID(userId);
+        if (userId != null) {
+            AppEventsLogger.setUserID(userId);
+        }
 
         AppEventsLogger logger = AppEventsLogger.newLogger(application);
         m_logger = logger;

@@ -60,13 +60,8 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Me
     }
 
     @Override
-    public boolean isInitialized() {
-        return m_rewardedAd != null;
-    }
-
-    @Override
-    public void initialize(@NonNull MengineApplication application) {
-        super.initialize(application);
+    public void onActivityCreate(@NonNull MengineActivity activity) {
+        super.onActivityCreate(activity);
 
         MaxRewardedAd rewardedAd = MaxRewardedAd.getInstance(m_adUnitId);
 
@@ -81,14 +76,15 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Me
         this.log("create");
 
         this.setRewardedState("init");
+
         this.firstLoadAd((mediation, callback) -> {
-            mediation.loadMediatorRewarded(application, m_plugin, m_rewardedAd, callback);
+            mediation.loadMediatorRewarded(activity, m_plugin, m_rewardedAd, callback);
         });
     }
 
     @Override
-    public void finalize(@NonNull MengineApplication application) {
-        super.finalize(application);
+    public void onActivityDestroy(@NonNull MengineActivity activity) {
+        super.onActivityDestroy(activity);
 
         if (m_rewardedAd != null) {
             m_rewardedAd.setListener(this);

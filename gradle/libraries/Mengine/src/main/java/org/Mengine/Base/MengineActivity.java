@@ -1,15 +1,12 @@
 package org.Mengine.Base;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
-import android.os.Parcelable;
 import android.view.KeyEvent;
 import android.view.Surface;
 import android.view.View;
@@ -31,14 +28,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.List;
@@ -47,7 +38,21 @@ import java.util.Objects;
 public class MengineActivity extends AppCompatActivity {
     public static final String TAG = "MengineActivity";
 
+    public enum ELifecycleState {
+        ACTIVITY_INITIALIZE,
+        ACTIVITY_CREATE,
+        ACTIVITY_POST_CREATE,
+        ACTIVITY_START,
+        ACTIVITY_RESUME,
+        ACTIVITY_PAUSE,
+        ACTIVITY_STOP,
+        ACTIVITY_DESTROY,
+        ACTIVITY_RESTART,
+    }
+
     public static MengineActivity INSTANCE = null;
+
+    private ELifecycleState m_lifecycleState = ELifecycleState.ACTIVITY_INITIALIZE;
 
     private final List<MengineListenerActivity> m_activityListeners = new ArrayList<>();
 
@@ -83,19 +88,13 @@ public class MengineActivity extends AppCompatActivity {
         return MengineNative.AndroidEnvironmentService_getProjectVersion();
     }
 
-    public MengineApplication getMengineApplication() {
-        MengineApplication application = (MengineApplication)this.getApplication();
-
-        return application;
-    }
-
     protected List<MengineListenerActivity> getActivityListeners() {
         return m_activityListeners;
     }
 
     @SuppressWarnings("unchecked")
     public <T> T getService(Class<T> cls) {
-        MengineApplication application = this.getMengineApplication();
+        MengineApplication application = MengineApplication.INSTANCE;
 
         T plugin = application.getService(cls);
 
@@ -229,9 +228,15 @@ public class MengineActivity extends AppCompatActivity {
         return launcher;
     }
 
+    public ELifecycleState getLifecycleState() {
+        return m_lifecycleState;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        m_lifecycleState = ELifecycleState.ACTIVITY_CREATE;
 
         MengineLog.logDebug(TAG, "[BEGIN] onCreate savedInstanceState: %s"
             , savedInstanceState
@@ -369,6 +374,8 @@ public class MengineActivity extends AppCompatActivity {
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+
+        m_lifecycleState = ELifecycleState.ACTIVITY_POST_CREATE;
 
         MengineLog.logDebug(TAG, "[BEGIN] onPostCreate savedInstanceState: %s"
             , savedInstanceState
@@ -692,6 +699,8 @@ public class MengineActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
 
+        m_lifecycleState = ELifecycleState.ACTIVITY_START;
+
         MengineLog.logDebug(TAG, "[BEGIN] onStart");
 
         MengineApplication application = (MengineApplication)this.getApplication();
@@ -733,6 +742,8 @@ public class MengineActivity extends AppCompatActivity {
     public void onStop() {
         super.onStop();
 
+        m_lifecycleState = ELifecycleState.ACTIVITY_STOP;
+
         MengineLog.logDebug(TAG, "[BEGIN] onStop");
 
         MengineApplication application = (MengineApplication)this.getApplication();
@@ -773,6 +784,8 @@ public class MengineActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
+
+        m_lifecycleState = ELifecycleState.ACTIVITY_PAUSE;
 
         MengineLog.logDebug(TAG, "[BEGIN] onPause");
 
@@ -818,6 +831,8 @@ public class MengineActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+
+        m_lifecycleState = ELifecycleState.ACTIVITY_RESUME;
 
         MengineLog.logDebug(TAG, "[BEGIN] onResume");
 
@@ -893,6 +908,8 @@ public class MengineActivity extends AppCompatActivity {
 
     @Override
     public void onDestroy() {
+        m_lifecycleState = ELifecycleState.ACTIVITY_DESTROY;
+
         MengineApplication application = (MengineApplication)this.getApplication();
 
         MengineLog.logDebug(TAG, "[BEGIN] onDestroy");
@@ -963,6 +980,8 @@ public class MengineActivity extends AppCompatActivity {
     @Override
     public void onRestart() {
         super.onRestart();
+
+        m_lifecycleState = ELifecycleState.ACTIVITY_RESTART;
 
         MengineLog.logDebug(TAG, "[BEGIN] onRestart");
 

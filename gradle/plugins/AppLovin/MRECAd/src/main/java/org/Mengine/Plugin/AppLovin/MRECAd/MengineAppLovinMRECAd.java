@@ -76,79 +76,6 @@ public class MengineAppLovinMRECAd extends MengineAppLovinBase implements Mengin
         return size;
     }
 
-    @Override
-    public boolean isInitialized() {
-        return m_adView != null;
-    }
-
-    @Override
-    public void initialize(@NonNull MengineApplication application) {
-        super.initialize(application);
-
-        MaxAdViewConfiguration config = MaxAdViewConfiguration.builder()
-            .setAdaptiveType(MaxAdViewConfiguration.AdaptiveType.NONE)
-            .build();
-
-        MaxAdView adView = new MaxAdView(m_adUnitId, MaxAdFormat.MREC, config);
-
-        adView.setPlacement(m_placement);
-
-        adView.setListener(this);
-        adView.setRequestListener(this);
-        adView.setRevenueListener(this);
-        adView.setAdReviewListener(this);
-
-        AppLovinSdkUtils.Size size = this.getMRECSize();
-
-        int widthDp = size.getWidth();
-        int heightDp = size.getHeight();
-
-        int widthPx = AppLovinSdkUtils.dpToPx(application, widthDp);
-        int heightPx = AppLovinSdkUtils.dpToPx(application, heightDp);
-
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(widthPx, heightPx);
-
-        adView.setLayoutParams(params);
-
-        adView.setBackgroundColor(Color.TRANSPARENT);
-
-        if (m_visible == false) {
-            adView.setVisibility(View.GONE);
-
-            adView.setExtraParameter( "allow_pause_auto_refresh_immediately", "true" );
-            adView.stopAutoRefresh();
-        } else {
-            adView.setVisibility(View.VISIBLE);
-
-            adView.startAutoRefresh();
-        }
-
-        m_adView = adView;
-
-        this.log("create", Map.of("placement", m_placement, "width", widthDp, "height", heightDp));
-
-        this.setMRECState("init." + m_placement);
-
-        MengineUtils.performOnMainThread(() -> {
-            this.loadAd();
-        });
-    }
-
-    @Override
-    public void finalize(@NonNull MengineApplication application) {
-        super.finalize(application);
-
-        if (m_adView != null) {
-            m_adView.setListener(null);
-            m_adView.setRequestListener(null);
-            m_adView.setRevenueListener(null);
-            m_adView.setAdReviewListener(null);
-
-            m_adView.destroy();
-            m_adView = null;
-        }
-    }
-
     public int getLeftMarginPx() {
         if (m_adView == null) {
             return 0;
@@ -197,17 +124,75 @@ public class MengineAppLovinMRECAd extends MengineAppLovinBase implements Mengin
 
     @Override
     public void onActivityCreate(@NonNull MengineActivity activity) {
-        ViewGroup viewGroup = activity.getContentViewGroup();
-        if (viewGroup.indexOfChild(m_adView) == -1) {
-            viewGroup.addView(m_adView);
+        super.onActivityCreate(activity);
+
+        MaxAdViewConfiguration config = MaxAdViewConfiguration.builder()
+            .setAdaptiveType(MaxAdViewConfiguration.AdaptiveType.NONE)
+            .build();
+
+        MaxAdView adView = new MaxAdView(m_adUnitId, MaxAdFormat.MREC, config);
+
+        adView.setPlacement(m_placement);
+
+        adView.setListener(this);
+        adView.setRequestListener(this);
+        adView.setRevenueListener(this);
+        adView.setAdReviewListener(this);
+
+        AppLovinSdkUtils.Size size = this.getMRECSize();
+
+        int widthDp = size.getWidth();
+        int heightDp = size.getHeight();
+
+        int widthPx = AppLovinSdkUtils.dpToPx(activity, widthDp);
+        int heightPx = AppLovinSdkUtils.dpToPx(activity, heightDp);
+
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(widthPx, heightPx);
+
+        adView.setLayoutParams(params);
+
+        adView.setBackgroundColor(Color.TRANSPARENT);
+
+        if (m_visible == false) {
+            adView.setVisibility(View.GONE);
+
+            adView.setExtraParameter( "allow_pause_auto_refresh_immediately", "true" );
+            adView.stopAutoRefresh();
+        } else {
+            adView.setVisibility(View.VISIBLE);
+
+            adView.startAutoRefresh();
         }
+
+        ViewGroup viewGroup = activity.getContentViewGroup();
+        viewGroup.addView(adView);
+
+        m_adView = adView;
+
+        this.log("create", Map.of("placement", m_placement, "width", widthDp, "height", heightDp));
+
+        this.setMRECState("init." + m_placement);
+
+        this.firstLoadAd((mediation, callback) -> {
+            mediation.loadMediatorMREC(activity, m_plugin, m_adView, callback);
+        });
     }
 
     @Override
     public void onActivityDestroy(@NonNull MengineActivity activity) {
-        ViewGroup viewGroup = activity.getContentViewGroup();
-        if (viewGroup.indexOfChild(m_adView) != -1) {
+        super.onActivityDestroy(activity);
+
+        if (m_adView != null) {
+            m_adView.setListener(null);
+            m_adView.setRequestListener(null);
+            m_adView.setRevenueListener(null);
+            m_adView.setAdReviewListener(null);
+
+            ViewGroup viewGroup = activity.getContentViewGroup();
             viewGroup.removeView(m_adView);
+
+            m_adView.destroy();
+            m_adView = null;
         }
     }
 

@@ -54,6 +54,8 @@ public interface MengineServiceInterface {
     void makeToastDelayed(long delayed, String format, Object ... args);
     boolean runOnUiThread(String doc, Runnable action);
 
+    String getUserId();
+
     void setState(@NonNull @Size(min = 1L,max = 1024L) String name, Object value);
 
     String logVerbose(String format, Object ... args);

@@ -14,8 +14,10 @@ import com.amazon.device.ads.DTBAdResponse;
 import com.amazon.device.ads.DTBAdSize;
 import com.applovin.mediation.MaxAdFormat;
 import com.applovin.mediation.ads.MaxAdView;
+import com.applovin.mediation.ads.MaxAppOpenAd;
 import com.applovin.mediation.ads.MaxInterstitialAd;
 import com.applovin.mediation.ads.MaxRewardedAd;
+import com.applovin.mediation.nativeAds.MaxNativeAdLoader;
 import com.applovin.sdk.AppLovinSdkUtils;
 
 import org.Mengine.Base.MengineActivity;
@@ -56,17 +58,7 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
     }
 
     @Override
-    public void onActivityCreate(@NonNull MengineActivity activity) throws MengineServiceInvalidInitializeException {
-        // Empty
-    }
-
-    @Override
-    public void onActivityDestroy(@NonNull MengineActivity activity) {
-
-    }
-
-    @Override
-    public void initializeMediatorBanner(@NonNull MengineApplication application, @NonNull MengineAppLovinPluginInterface plugin, @NonNull MaxAdView adView, MengineAppLovinMediationLoadedCallback loadedCallback) throws MengineServiceInvalidInitializeException {
+    public void loadMediatorBanner(@NonNull MengineActivity activity, @NonNull MengineAppLovinPluginInterface plugin, @NonNull MaxAdView adView, MengineAppLovinMediationLoadedCallback loadedCallback) throws MengineServiceInvalidInitializeException {
         String MengineAppLovinPlugin_AmazonBannerSlotId = plugin.getMetaDataString(MEDIATION_METADATA_BANNER_SLOTUUID);
 
         m_loadBannerStatus = ELoadAdStatus.ADLOAD_PROCESS;
@@ -133,7 +125,7 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
         });
     }
 
-    public void loadMediatorInterstitial(@NonNull MengineApplication application, @NonNull MengineAppLovinPluginInterface plugin, @NonNull MaxInterstitialAd interstitialAd, MengineAppLovinMediationLoadedCallback loadedCallback) throws MengineServiceInvalidInitializeException {
+    public void loadMediatorInterstitial(@NonNull MengineActivity activity, @NonNull MengineAppLovinPluginInterface plugin, @NonNull MaxInterstitialAd interstitialAd, MengineAppLovinMediationLoadedCallback loadedCallback) throws MengineServiceInvalidInitializeException {
         switch (m_loadInterstitialStatus) {
             case ADLOAD_NONE:
                 String MengineAppLovinPlugin_AmazonInterstitialSlotId = plugin.getMetaDataString(MEDIATION_METADATA_INTERSTITIAL_SLOTUUID);
@@ -201,7 +193,7 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
         }
     }
 
-    public void loadMediatorRewarded(@NonNull MengineApplication application, @NonNull MengineAppLovinPluginInterface plugin, @NonNull MaxRewardedAd rewardedAd, MengineAppLovinMediationLoadedCallback loadAdCallback) throws MengineServiceInvalidInitializeException {
+    public void loadMediatorRewarded(@NonNull MengineActivity activity, @NonNull MengineAppLovinPluginInterface plugin, @NonNull MaxRewardedAd rewardedAd, MengineAppLovinMediationLoadedCallback loadAdCallback) throws MengineServiceInvalidInitializeException {
         switch (m_loadRewardedStatus) {
             case ADLOAD_NONE:
                 String MengineAppLovinPlugin_AmazonRewardedSlotId = plugin.getMetaDataString(MEDIATION_METADATA_REWARDED_SLOTUUID);
@@ -216,7 +208,7 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
                 DTBAdRequest loader = new DTBAdRequest(adNetworkInfo);
 
                 // Switch video player width and height values(320, 480) depending on device orientation
-                Resources resources = application.getResources();
+                Resources resources = activity.getResources();
                 DisplayMetrics metrics = resources.getDisplayMetrics();
 
                 int width = metrics.widthPixels;
@@ -273,4 +265,20 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
                 break;
         }
     }
+
+    @Override
+    public void loadMediatorMREC(@NonNull MengineActivity activity, @NonNull MengineAppLovinPluginInterface plugin, @NonNull MaxAdView adView, MengineAppLovinMediationLoadedCallback loadAdCallback) throws MengineServiceInvalidInitializeException {
+        loadAdCallback.onAdLoaded(this);
+    }
+
+    @Override
+    public void loadMediatorNative(@NonNull MengineActivity activity, @NonNull MengineAppLovinPluginInterface plugin, @NonNull MaxNativeAdLoader adLoader, MengineAppLovinMediationLoadedCallback loadAdCallback) throws MengineServiceInvalidInitializeException {
+        loadAdCallback.onAdLoaded(this);
+    }
+
+    @Override
+    public void loadMediatorAppOpen(@NonNull MengineActivity activity, @NonNull MengineAppLovinPluginInterface plugin, @NonNull MaxAppOpenAd appOpenAd, MengineAppLovinMediationLoadedCallback loadAdCallback) throws MengineServiceInvalidInitializeException {
+        loadAdCallback.onAdLoaded(this);
+    }
+
 }

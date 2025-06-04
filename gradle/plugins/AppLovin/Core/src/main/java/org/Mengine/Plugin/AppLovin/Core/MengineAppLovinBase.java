@@ -20,7 +20,6 @@ import org.Mengine.Base.MengineAdMediation;
 import org.Mengine.Base.MengineAdResponseInterface;
 import org.Mengine.Base.MengineAdService;
 import org.Mengine.Base.MengineAnalyticsEventBuilder;
-import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineFragmentAdRevenue;
 import org.Mengine.Base.MengineLog;
 import org.Mengine.Base.MengineParamAdRevenue;
@@ -61,21 +60,6 @@ public class MengineAppLovinBase implements MengineAppLovinAdInterface {
     @NonNull
     public MengineAppLovinPluginInterface getPlugin() {
         return m_plugin;
-    }
-
-    @Override
-    public boolean isInitialized() {
-        return false;
-    }
-
-    @Override
-    public void initialize(@NonNull MengineApplication application) {
-        //Empty
-    }
-
-    @Override
-    public void finalize(@NonNull MengineApplication application) {
-        //Empty
     }
 
     protected void setAdUnitId(@NonNull String adUnitId) {

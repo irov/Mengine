@@ -76,44 +76,32 @@ Utils.existAppPlugin = { String name ->
     return p;
 }
 
-Utils.getBooleanAppPluginProperty = { String name, String property ->
+Utils.getBooleanAppPluginProperty = { String name ->
     if (Utils.isEnableAllPlugins() == true) {
         return true
     }
 
-    if (Utils.existAppPlugin(name) == false) {
-        return false
-    }
-
-    boolean p = Utils.getBooleanProperty(property, false);
+    boolean p = Utils.getBooleanProperty(name, false);
 
     return p;
 }
 
-Utils.getStringAppPluginProperty = { String name, String property ->
+Utils.getStringAppPluginProperty = { String name ->
     if (Utils.isEnableAllPlugins() == true) {
         return true
     }
 
-    if (Utils.existAppPlugin(name) == false) {
-        return false
-    }
-
-    String p = Utils.getStringProperty(property);
+    String p = Utils.getStringProperty(name);
 
     return p;
 }
 
-Utils.getIntegerAppPluginProperty = { String name, String property ->
+Utils.getIntegerAppPluginProperty = { String name ->
     if (Utils.isEnableAllPlugins() == true) {
         return true
     }
 
-    if (Utils.existAppPlugin(name) == false) {
-        return false
-    }
-
-    Integer p = Utils.getIntegerProperty(property);
+    Integer p = Utils.getIntegerProperty(name);
 
     return p;
 }

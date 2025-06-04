@@ -139,9 +139,11 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
         }
 
         String installKey = application.getInstallKey();
-        String userId = application.getUserId();
 
-        Datadog.setUserInfo(userId, null, null, Map.of("install_key", installKey));
+        String userId = application.getUserId();
+        if (userId != null) {
+            Datadog.setUserInfo(userId, null, null, Map.of("install_key", installKey));
+        }
 
         LogsConfiguration logsConfig = new LogsConfiguration.Builder()
             .build();

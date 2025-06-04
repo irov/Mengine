@@ -40,7 +40,9 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
         FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(application);
 
         String userId = application.getUserId();
-        firebaseAnalytics.setUserId(userId);
+        if (userId != null) {
+            firebaseAnalytics.setUserId(userId);
+        }
 
         String installKey = application.getInstallKey();
         long installTimestamp = application.getInstallTimestamp();

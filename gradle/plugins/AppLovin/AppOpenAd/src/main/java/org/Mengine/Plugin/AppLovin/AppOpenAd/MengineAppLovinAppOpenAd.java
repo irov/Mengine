@@ -13,6 +13,7 @@ import com.applovin.mediation.MaxAdReviewListener;
 import com.applovin.mediation.MaxError;
 import com.applovin.mediation.ads.MaxAppOpenAd;
 
+import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineAdFormat;
 import org.Mengine.Base.MengineAdMediation;
 import org.Mengine.Base.MengineAnalyticsEventBuilder;
@@ -65,12 +66,9 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Men
     }
 
     @Override
-    public boolean isInitialized() {
-        return m_appOpenAd != null;
-    }
+    public void onActivityCreate(@NonNull MengineActivity activity) {
+        super.onActivityCreate(activity);
 
-    @Override
-    public void initialize(@NonNull MengineApplication application) {
         MaxAppOpenAd appOpenAd = new MaxAppOpenAd(m_adUnitId);
 
         appOpenAd.setListener( this );
@@ -85,13 +83,19 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Men
 
         this.setAppOpenState("init");
 
-        this.loadAd();
+        this.firstLoadAd((mediation, callback) -> {
+            mediation.loadMediatorAppOpen(activity, m_plugin, m_appOpenAd, callback);
+        });
     }
 
     @Override
-    public void finalize(@NonNull MengineApplication application) {
-        m_appOpenAd.destroy();
-        m_appOpenAd = null;
+    public void onActivityDestroy(@NonNull MengineActivity activity) {
+        super.onActivityDestroy(activity);
+
+        if (m_appOpenAd != null) {
+            m_appOpenAd.destroy();
+            m_appOpenAd = null;
+        }
     }
 
     @Override

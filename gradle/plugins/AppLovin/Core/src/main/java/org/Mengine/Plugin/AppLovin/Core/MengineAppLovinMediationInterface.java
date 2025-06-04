@@ -7,17 +7,19 @@ import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 
 import com.applovin.mediation.ads.MaxAdView;
+import com.applovin.mediation.ads.MaxAppOpenAd;
 import com.applovin.mediation.ads.MaxInterstitialAd;
 import com.applovin.mediation.ads.MaxRewardedAd;
+import com.applovin.mediation.nativeAds.MaxNativeAdLoader;
 
 public interface MengineAppLovinMediationInterface {
     void onAppCreate(@NonNull MengineApplication application, @NonNull MengineAppLovinPluginInterface plugin);
     void onAppTerminate(@NonNull MengineApplication application, @NonNull MengineAppLovinPluginInterface plugin);
 
-    void onActivityCreate(@NonNull MengineActivity activity) throws MengineServiceInvalidInitializeException;
-    void onActivityDestroy(@NonNull MengineActivity activity);
-
-    void initializeMediatorBanner(@NonNull MengineApplication application, @NonNull MengineAppLovinPluginInterface plugin, @NonNull MaxAdView adView, MengineAppLovinMediationLoadedCallback loadAdCallback) throws MengineServiceInvalidInitializeException;
-    void loadMediatorInterstitial(@NonNull MengineApplication application, @NonNull MengineAppLovinPluginInterface plugin, @NonNull MaxInterstitialAd interstitialAd, MengineAppLovinMediationLoadedCallback loadAdCallback) throws MengineServiceInvalidInitializeException;
-    void loadMediatorRewarded(@NonNull MengineApplication application, @NonNull MengineAppLovinPluginInterface plugin, @NonNull MaxRewardedAd rewardedAd, MengineAppLovinMediationLoadedCallback loadAdCallback) throws MengineServiceInvalidInitializeException;
+    void loadMediatorBanner(@NonNull MengineActivity activity, @NonNull MengineAppLovinPluginInterface plugin, @NonNull MaxAdView adView, MengineAppLovinMediationLoadedCallback loadAdCallback) throws MengineServiceInvalidInitializeException;
+    void loadMediatorInterstitial(@NonNull MengineActivity activity, @NonNull MengineAppLovinPluginInterface plugin, @NonNull MaxInterstitialAd interstitialAd, MengineAppLovinMediationLoadedCallback loadAdCallback) throws MengineServiceInvalidInitializeException;
+    void loadMediatorRewarded(@NonNull MengineActivity activity, @NonNull MengineAppLovinPluginInterface plugin, @NonNull MaxRewardedAd rewardedAd, MengineAppLovinMediationLoadedCallback loadAdCallback) throws MengineServiceInvalidInitializeException;
+    void loadMediatorMREC(@NonNull MengineActivity activity, @NonNull MengineAppLovinPluginInterface plugin, @NonNull MaxAdView adView, MengineAppLovinMediationLoadedCallback loadAdCallback) throws MengineServiceInvalidInitializeException;
+    void loadMediatorNative(@NonNull MengineActivity activity, @NonNull MengineAppLovinPluginInterface plugin, @NonNull MaxNativeAdLoader adLoader, MengineAppLovinMediationLoadedCallback loadAdCallback) throws MengineServiceInvalidInitializeException;
+    void loadMediatorAppOpen(@NonNull MengineActivity activity, @NonNull MengineAppLovinPluginInterface plugin, @NonNull MaxAppOpenAd appOpenAd, MengineAppLovinMediationLoadedCallback loadAdCallback) throws MengineServiceInvalidInitializeException;
 }

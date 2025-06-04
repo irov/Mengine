@@ -1,6 +1,7 @@
 package org.Mengine.Plugin.DevToDev;
 
-import android.content.Context;
+import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 
 import com.devtodev.analytics.external.DTDLogLevel;
@@ -8,6 +9,8 @@ import com.devtodev.analytics.external.analytics.DTDAnalytics;
 import com.devtodev.analytics.external.analytics.DTDAnalyticsConfiguration;
 import com.devtodev.analytics.external.analytics.DTDCustomEventParameters;
 
+import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineListenerActivity;
 import org.Mengine.Base.MengineListenerTransparencyConsent;
 import org.Mengine.Base.MengineParamAdRevenue;
 import org.Mengine.Base.MengineAnalyticsEventCategory;
@@ -15,7 +18,6 @@ import org.Mengine.Base.MengineParamAnalyticsEvent;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineListenerAdRevenue;
 import org.Mengine.Base.MengineListenerAnalytics;
-import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineListenerGame;
 import org.Mengine.Base.MengineListenerUser;
 import org.Mengine.Base.MengineParamTransparencyConsent;
@@ -25,7 +27,7 @@ import org.Mengine.Base.MengineUtils;
 
 import java.util.Map;
 
-public class MengineDevToDevPlugin extends MengineService implements MengineListenerAnalytics, MengineListenerAdRevenue, MengineListenerApplication, MengineListenerUser, MengineListenerTransparencyConsent, MengineListenerGame {
+public class MengineDevToDevPlugin extends MengineService implements MengineListenerAnalytics, MengineListenerAdRevenue, MengineListenerActivity, MengineListenerUser, MengineListenerTransparencyConsent, MengineListenerGame {
     public static final String SERVICE_NAME = "DevToDev";
     public static final boolean SERVICE_EMBEDDING = true;
 
@@ -42,7 +44,7 @@ public class MengineDevToDevPlugin extends MengineService implements MengineList
     }
 
     @Override
-    public void onAppPrepare(@NonNull MengineApplication application, @NonNull Map<String, String> pluginVersions) throws MengineServiceInvalidInitializeException {
+    public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
         m_initializeSuccessful = false;
 
         String MengineDevToDevPlugin_AppId = this.getMetaDataString(METADATA_APP_ID);
@@ -70,12 +72,12 @@ public class MengineDevToDevPlugin extends MengineService implements MengineList
             configuration.setLogLevel(DTDLogLevel.Error);
         }
 
-        String userId = application.getUserId();
-        configuration.setUserId(userId);
+        String userId = this.getUserId();
+        if (userId != null) {
+            configuration.setUserId(userId);
+        }
 
-        Context context = application.getApplicationContext();
-
-        DTDAnalytics.INSTANCE.initialize(MengineDevToDevPlugin_AppId, configuration, context);
+        DTDAnalytics.INSTANCE.initialize(MengineDevToDevPlugin_AppId, configuration, activity);
     }
 
     @Override

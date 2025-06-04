@@ -72,14 +72,33 @@ public class MengineAppLovinNativeAd extends MengineAppLovinBase implements Meng
         this.setState("applovin.native.state." + m_adUnitId, state);
     }
 
-    @Override
-    public boolean isInitialized() {
-        return m_adView != null;
+    public int getLeftMarginPx() {
+        //ToDo
+
+        return 0;
+    }
+
+    public int getTopMarginPx() {
+        //ToDo
+
+        return 0;
+    }
+
+    public int getWidthPx() {
+        //ToDo
+
+        return 0;
+    }
+
+    public int getHeightPx() {
+        //ToDo
+
+        return 0;
     }
 
     @Override
-    public void initialize(@NonNull MengineApplication application) {
-        super.initialize(application);
+    public void onActivityCreate(@NonNull MengineActivity activity) {
+        super.onActivityCreate(activity);
 
         MaxNativeAdViewBinder binder = new MaxNativeAdViewBinder.Builder(R.layout.native_ad_view)
             .setTitleTextViewId(R.id.title_text_view)
@@ -92,10 +111,13 @@ public class MengineAppLovinNativeAd extends MengineAppLovinBase implements Meng
             .setCallToActionButtonId(R.id.cta_button)
             .build();
 
-        MaxNativeAdView adView = new MaxNativeAdView(binder, application);
+        MaxNativeAdView adView = new MaxNativeAdView(binder, activity);
 
         adView.setVisibility(View.GONE);
         adView.setBackgroundColor(Color.TRANSPARENT);
+
+        ViewGroup viewGroup = activity.getContentViewGroup();
+        viewGroup.addView(adView);
 
         m_adView = adView;
 
@@ -114,8 +136,8 @@ public class MengineAppLovinNativeAd extends MengineAppLovinBase implements Meng
                 MengineAppLovinNativeAd.this.logMaxAd("onNativeAdLoaded", nativeAd);
 
                 MengineAppLovinNativeAd.this.buildNativeAdEvent("loaded")
-                    .addParameterJSON("ad", MengineAppLovinNativeAd.this.getMAAdParams(nativeAd))
-                    .log();
+                        .addParameterJSON("ad", MengineAppLovinNativeAd.this.getMAAdParams(nativeAd))
+                        .log();
 
                 m_requestAttempt = 0;
 
@@ -178,14 +200,21 @@ public class MengineAppLovinNativeAd extends MengineAppLovinBase implements Meng
 
         this.setNativeState("init." + m_placement);
 
-        MengineUtils.performOnMainThread(() -> {
-            this.loadAd();
+        this.firstLoadAd((mediation, callback) -> {
+            mediation.loadMediatorNative(activity, m_plugin, m_adLoader, callback);
         });
     }
 
     @Override
-    public void finalize(@NonNull MengineApplication application) {
-        super.finalize(application);
+    public void onActivityDestroy(@NonNull MengineActivity activity) {
+        super.onActivityDestroy(activity);
+
+        if (m_adView != null) {
+            ViewGroup viewGroup = activity.getContentViewGroup();
+            viewGroup.removeView(m_adView);
+
+            m_adView = null;
+        }
 
         if (m_adLoader != null) {
             if (m_cachedAd != null) {
@@ -199,48 +228,6 @@ public class MengineAppLovinNativeAd extends MengineAppLovinBase implements Meng
 
             m_adLoader.destroy();
             m_adLoader = null;
-        }
-
-        m_adView = null;
-    }
-
-    public int getLeftMarginPx() {
-        //ToDo
-
-        return 0;
-    }
-
-    public int getTopMarginPx() {
-        //ToDo
-
-        return 0;
-    }
-
-    public int getWidthPx() {
-        //ToDo
-
-        return 0;
-    }
-
-    public int getHeightPx() {
-        //ToDo
-
-        return 0;
-    }
-
-    @Override
-    public void onActivityCreate(@NonNull MengineActivity activity) {
-        ViewGroup viewGroup = activity.getContentViewGroup();
-        if (viewGroup.indexOfChild(m_adView) == -1) {
-            viewGroup.addView(m_adView);
-        }
-    }
-
-    @Override
-    public void onActivityDestroy(@NonNull MengineActivity activity) {
-        ViewGroup viewGroup = activity.getContentViewGroup();
-        if (viewGroup.indexOfChild(m_adView) != -1) {
-            viewGroup.removeView(m_adView);
         }
     }
 

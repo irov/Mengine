@@ -35,7 +35,7 @@ public class MengineProcedureSendMail implements MengineProcedureInterface {
             , m_body
         );
 
-        MengineApplication application = activity.getMengineApplication();
+        MengineApplication application = MengineApplication.INSTANCE;
 
         application.setState("open.mail", m_email);
 

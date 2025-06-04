@@ -8,6 +8,7 @@ def MENGINE_APP_SECURE_VALUE = Utils.getStringProperty("MENGINE_APP_SECURE_VALUE
 def ANDROID_APP_MAIN_PROJECT = Utils.getStringProperty("ANDROID_APP_MAIN_PROJECT", "app")
 def MENGINE_APP_DEPLOY_PATH = Utils.getStringProperty("MENGINE_APP_DEPLOY_PATH", rootProject.projectDir.getAbsolutePath() + "/$ANDROID_APP_MAIN_PROJECT")
 def MENGINE_APP_BUILD_ASSERTION_DEBUG= Utils.getIntegerProperty("MENGINE_APP_BUILD_ASSERTION_DEBUG", -1)
+def MENGINE_APP_ENABLE_STRICT_MODE = Utils.getBooleanProperty("MENGINE_APP_ENABLE_STRICT_MODE", false)
 
 def ANDROID_APP_SCREEN_ORIENTATION = Utils.getStringProperty("ANDROID_APP_SCREEN_ORIENTATION", "sensorPortrait")
 def ANDROID_APP_REQUIRED_HARDWARE_TOUCHSCREEN = Utils.getBooleanProperty("ANDROID_APP_REQUIRED_HARDWARE_TOUCHSCREEN", false)
@@ -17,6 +18,8 @@ def MENGINE_APP_LIBRARY_OPENAL32 = Utils.existAppLibrary("MENGINE_APP_LIBRARY_OP
 
 println("MENGINE_APP_SECURE_VALUE: $MENGINE_APP_SECURE_VALUE")
 println("MENGINE_APP_DEPLOY_PATH: $MENGINE_APP_DEPLOY_PATH")
+
+println("MENGINE_APP_ENABLE_STRICT_MODE: $MENGINE_APP_ENABLE_STRICT_MODE")
 
 android {
     defaultConfig {
@@ -100,5 +103,11 @@ android {
 dependencies {
     if (MENGINE_APP_LIBRARY_OPENAL32 == true) {
         implementation project(':libraries:OpenAL32')
+    }
+}
+
+android {
+    defaultConfig {
+        buildConfigField "boolean", "MENGINE_APP_ENABLE_STRICT_MODE", "${MENGINE_APP_ENABLE_STRICT_MODE}"
     }
 }

@@ -9,6 +9,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.provider.Settings;
 
 import androidx.annotation.NonNull;
@@ -917,6 +918,20 @@ public abstract class MengineApplication extends Application {
 
         if (isMainProcess == false) {
             return;
+        }
+
+        if (BuildConfig.MENGINE_APP_ENABLE_STRICT_MODE == true) {
+            StrictMode.setThreadPolicy(
+                new StrictMode.ThreadPolicy.Builder()
+                    .detectAll()
+                    .penaltyLog()
+                    .build());
+
+            StrictMode.setVmPolicy(
+                new StrictMode.VmPolicy.Builder()
+                    .detectAll()
+                    .penaltyLog()
+                    .build());
         }
 
         long sessionTimestamp = MengineUtils.getTimestamp();

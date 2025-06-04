@@ -31,7 +31,7 @@ public class MengineProcedureDeleteAccount implements MengineProcedureInterface 
                             .addParameterLong("option", option)
                             .log();
 
-                        MengineApplication application = activity.getMengineApplication();
+                        MengineApplication application = MengineApplication.INSTANCE;
                         application.removeUserData();
 
                         MengineUtils.showOkAlertDialogRes(activity, () -> {

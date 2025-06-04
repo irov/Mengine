@@ -50,7 +50,7 @@ fun includePlugin(name: String, path: String) {
 }
 
 fun includeSubPlugin(name: String, sub: String, path: String) {
-    if ((getBooleanProperty("MENGINE_APP_PLUGIN_ENABLE_ALL", false) == false && getBooleanProperty(name, false) == false) || getBooleanProperty(sub, false) == false) {
+    if (getBooleanProperty("MENGINE_APP_PLUGIN_ENABLE_ALL", false) == false && (getBooleanProperty(name, false) == false || getBooleanProperty(sub, false) == false)) {
         println("\u001b[31m" + "[-] Exclude sub plugin: $path" + "\u001b[0m")
 
         return

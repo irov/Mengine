@@ -55,6 +55,8 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
 
     private boolean m_enableShowMediationDebugger = false;
 
+    private volatile boolean m_appLovinSdkInitialized = false;
+
     private String m_countryCode;
 
     private MengineAppLovinBannerAdInterface m_bannerAd;
@@ -64,7 +66,9 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
     private MengineAppLovinMRECAdInterface m_MRECAd;
     private MengineAppLovinNativeAdInterface m_nativeAd;
 
-    private List<MengineAppLovinMediationInterface> m_mediations = new ArrayList<>();
+    private final List<MengineAppLovinAdInterface> m_ads = new ArrayList<>();
+
+    private final List<MengineAppLovinMediationInterface> m_mediations = new ArrayList<>();
     private MengineAppLovinNonetBannersInterface m_nonetBanners;
 
     public boolean getEnableShowMediationDebugger() {
@@ -105,7 +109,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
         return ad;
     }
 
-    protected void createaMediation(@NonNull String className) throws MengineServiceInvalidInitializeException {
+    protected void createaMediation(@NonNull MengineApplication application, @NonNull String className) throws MengineServiceInvalidInitializeException {
         MengineAppLovinMediationInterface mediation = (MengineAppLovinMediationInterface)this.newInstance(className, true);
 
         if (mediation == null) {
@@ -113,6 +117,8 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
                 , className
             );
         }
+
+        mediation.onAppCreate(application, this);
 
         m_mediations.add(mediation);
     }
@@ -127,30 +133,42 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
 
         if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_BANNERAD == true && noAds == false) {
             m_bannerAd = this.createAd(adUnitIds, "org.Mengine.Plugin.AppLovin.BannerAd.MengineAppLovinBannerAd");
+
+            m_ads.add(m_bannerAd);
         }
 
         if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_INTERSTITIALAD == true && noAds == false) {
             m_interstitialAd = this.createAd(adUnitIds, "org.Mengine.Plugin.AppLovin.InterstitialAd.MengineAppLovinInterstitialAd");
+
+            m_ads.add(m_interstitialAd);
         }
 
         if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_REWARDEDAD == true) {
             m_rewardedAd = this.createAd(adUnitIds, "org.Mengine.Plugin.AppLovin.RewardedAd.MengineAppLovinRewardedAd");
+
+            m_ads.add(m_rewardedAd);
         }
 
         if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_APPOPENAD == true && noAds == false) {
             m_appOpenAd = this.createAd(adUnitIds, "org.Mengine.Plugin.AppLovin.AppOpenAd.MengineAppLovinAppOpenAd");
+
+            m_ads.add(m_appOpenAd);
         }
 
         if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_MRECAD == true && noAds == false) {
             m_MRECAd = this.createAd(adUnitIds, "org.Mengine.Plugin.AppLovin.MRECAd.MengineAppLovinMRECAd");
+
+            m_ads.add(m_MRECAd);
         }
 
         if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_NATIVEAD == true && noAds == false) {
             m_nativeAd = this.createAd(adUnitIds, "org.Mengine.Plugin.AppLovin.NativeAd.MengineAppLovinNativeAd");
+
+            m_ads.add(m_nativeAd);
         }
 
         if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON == true) {
-            this.createaMediation("org.Mengine.Plugin.AppLovin.MediationAmazon.MengineAppLovinMediationAmazon");
+            this.createaMediation(application, "org.Mengine.Plugin.AppLovin.MediationAmazon.MengineAppLovinMediationAmazon");
         }
 
         if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_NONET_BANNERS == true) {
@@ -163,10 +181,6 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
             nonetBanners.onAppCreate(application, this);
 
             m_nonetBanners = nonetBanners;
-        }
-
-        for (MengineAppLovinMediationInterface mediation : m_mediations) {
-            mediation.onAppCreate(application, this);
         }
 
         AppLovinSdk appLovinSdk = this.getAppLovinSdkInstance();
@@ -220,7 +234,9 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
         }
 
         String userId = application.getUserId();
-        settings.setUserIdentifier(userId);
+        if (userId != null) {
+            settings.setUserIdentifier(userId);
+        }
 
         if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_LOGGING_VERBOSE == true) {
             settings.setVerboseLogging(true);
@@ -285,57 +301,19 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
 
             application.checkTransparencyConsentServices();
 
-            if (m_bannerAd != null) {
-                m_bannerAd.initialize(application);
-            }
-
-            if (m_interstitialAd != null) {
-                m_interstitialAd.initialize(application);
-            }
-
-            if (m_rewardedAd != null) {
-                m_rewardedAd.initialize(application);
-            }
-
-            if (m_appOpenAd != null) {
-                m_appOpenAd.initialize(application);
-            }
-
-            if (m_MRECAd != null) {
-                m_MRECAd.initialize(application);
-            }
-
-            if (m_nativeAd != null) {
-                m_nativeAd.initialize(application);
-            }
-
             MengineActivity activity = this.getMengineActivity();
 
             if (activity != null) {
-                if (m_bannerAd != null) {
-                    m_bannerAd.onActivityCreate(activity);
+                if (m_nonetBanners != null) {
+                    m_nonetBanners.onActivityCreate(activity);
                 }
 
-                if (m_interstitialAd != null) {
-                    m_interstitialAd.onActivityCreate(activity);
-                }
-
-                if (m_rewardedAd != null) {
-                    m_rewardedAd.onActivityCreate(activity);
-                }
-
-                if (m_appOpenAd != null) {
-                    m_appOpenAd.onActivityCreate(activity);
-                }
-
-                if (m_MRECAd != null) {
-                    m_MRECAd.onActivityCreate(activity);
-                }
-
-                if (m_nativeAd != null) {
-                    m_nativeAd.onActivityCreate(activity);
+                for (MengineAppLovinAdInterface ad : m_ads) {
+                    ad.onActivityCreate(activity);
                 }
             }
+
+            m_appLovinSdkInitialized = true;
 
             boolean enableShowMediationDebugger = this.getEnableShowMediationDebugger();
 
@@ -349,35 +327,14 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
 
     @Override
     public void onAppTerminate(@NonNull MengineApplication application) {
-        if (m_bannerAd != null) {
-            m_bannerAd.finalize(application);
-            m_bannerAd = null;
-        }
+        m_bannerAd = null;
+        m_interstitialAd = null;
+        m_rewardedAd = null;
+        m_appOpenAd = null;
+        m_MRECAd = null;
+        m_nativeAd = null;
 
-        if (m_interstitialAd != null) {
-            m_interstitialAd.finalize(application);
-            m_interstitialAd = null;
-        }
-
-        if (m_rewardedAd != null) {
-            m_rewardedAd.finalize(application);
-            m_rewardedAd = null;
-        }
-
-        if (m_appOpenAd != null) {
-            m_appOpenAd.finalize(application);
-            m_appOpenAd = null;
-        }
-
-        if (m_MRECAd != null) {
-            m_MRECAd.finalize(application);
-            m_MRECAd = null;
-        }
-
-        if (m_nativeAd != null) {
-            m_nativeAd.finalize(application);
-            m_nativeAd = null;
-        }
+        m_ads.clear();
 
         if (m_nonetBanners != null) {
             m_nonetBanners.onAppTerminate(application, this);
@@ -388,68 +345,32 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
             mediation.onAppTerminate(application, this);
         }
 
-        m_mediations = null;
+        m_mediations.clear();
     }
 
     @Override
     public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
-        if (m_nonetBanners != null) {
-            m_nonetBanners.onActivityCreate(activity);
-        }
+        if (m_appLovinSdkInitialized == true) {
+            if (m_nonetBanners != null) {
+                m_nonetBanners.onActivityCreate(activity);
+            }
 
-        if (m_bannerAd != null && m_bannerAd.isInitialized() == true) {
-            m_bannerAd.onActivityCreate(activity);
-        }
-
-        if (m_interstitialAd != null && m_interstitialAd.isInitialized() == true) {
-            m_interstitialAd.onActivityCreate(activity);
-        }
-
-        if (m_rewardedAd != null && m_rewardedAd.isInitialized() == true) {
-            m_rewardedAd.onActivityCreate(activity);
-        }
-
-        if (m_appOpenAd != null && m_appOpenAd.isInitialized() == true) {
-            m_appOpenAd.onActivityCreate(activity);
-        }
-
-        if (m_MRECAd != null && m_MRECAd.isInitialized() == true) {
-            m_MRECAd.onActivityCreate(activity);
-        }
-
-        if (m_nativeAd != null && m_nativeAd.isInitialized() == true) {
-            m_nativeAd.onActivityCreate(activity);
+            for (MengineAppLovinAdInterface ad : m_ads) {
+                ad.onActivityCreate(activity);
+            }
         }
     }
 
     @Override
     public void onDestroy(@NonNull MengineActivity activity) {
-        if (m_nonetBanners != null) {
-            m_nonetBanners.onActivityDestroy(activity);
-        }
+        if (m_appLovinSdkInitialized == true) {
+            if (m_nonetBanners != null) {
+                m_nonetBanners.onActivityDestroy(activity);
+            }
 
-        if (m_bannerAd != null && m_bannerAd.isInitialized() == true) {
-            m_bannerAd.onActivityDestroy(activity);
-        }
-
-        if (m_interstitialAd != null && m_interstitialAd.isInitialized() == true) {
-            m_interstitialAd.onActivityDestroy(activity);
-        }
-
-        if (m_rewardedAd != null && m_rewardedAd.isInitialized() == true) {
-            m_rewardedAd.onActivityDestroy(activity);
-        }
-
-        if (m_appOpenAd != null && m_appOpenAd.isInitialized() == true) {
-            m_appOpenAd.onActivityDestroy(activity);
-        }
-
-        if (m_MRECAd != null && m_MRECAd.isInitialized() == true) {
-            m_MRECAd.onActivityDestroy(activity);
-        }
-
-        if (m_nativeAd != null && m_nativeAd.isInitialized() == true) {
-            m_nativeAd.onActivityDestroy(activity);
+            for (MengineAppLovinAdInterface ad : m_ads) {
+                ad.onActivityDestroy(activity);
+            }
         }
     }
 

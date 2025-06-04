@@ -174,6 +174,13 @@ public class MengineService implements MengineServiceInterface {
     }
 
     @Override
+    public String getUserId() {
+        String userId = m_application.getUserId();
+
+        return userId;
+    }
+
+    @Override
     public void setState(@NonNull @Size(min = 1L,max = 1024L) String name, Object value) {
         m_application.setState(name, value);
     }

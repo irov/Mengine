@@ -48,7 +48,10 @@ public class MengineFirebaseCrashlyticsPlugin extends MengineService implements 
     @Override
     public void onAppPrepare(@NonNull MengineApplication application, @NonNull Map<String, String> pluginVersions) throws MengineServiceInvalidInitializeException {
         String userId = application.getUserId();
-        FirebaseCrashlytics.getInstance().setUserId(userId);
+
+        if (userId != null) {
+            FirebaseCrashlytics.getInstance().setUserId(userId);
+        }
 
         String pluginVersionsString = String.valueOf(pluginVersions);
 

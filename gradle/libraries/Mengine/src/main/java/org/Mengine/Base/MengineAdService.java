@@ -440,7 +440,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
             return false;
         }
 
-        MengineApplication application = this.getMengineApplication();
+        MengineApplication application = MengineApplication.INSTANCE;
 
         if (adPoint.canYouShowAd(application) == false) {
             return false;
@@ -518,7 +518,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
             return false;
         }
 
-        MengineApplication application = this.getMengineApplication();
+        MengineApplication application = MengineApplication.INSTANCE;
 
         if (adPoint.canOfferAd(application) == false) {
             return false;
@@ -551,7 +551,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
             return false;
         }
 
-        MengineApplication application = this.getMengineApplication();
+        MengineApplication application = MengineApplication.INSTANCE;
 
         if (adPoint.canYouShowAd(application) == false) {
             return false;
@@ -625,7 +625,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
             return false;
         }
 
-        MengineApplication application = this.getMengineApplication();
+        MengineApplication application = MengineApplication.INSTANCE;
 
         if (adPoint.canYouShowAd(application, timeStop) == false) {
             return false;

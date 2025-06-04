@@ -59,8 +59,8 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
     }
 
     @Override
-    public void initialize(@NonNull MengineApplication application) {
-        super.initialize(application);
+    public void onActivityCreate(@NonNull MengineActivity activity) {
+        super.onActivityCreate(activity);
 
         MaxInterstitialAd interstitialAd = new MaxInterstitialAd(m_adUnitId);
 
@@ -77,13 +77,13 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
         this.setInterstitialState("init");
 
         this.firstLoadAd((mediation, callback) -> {
-            mediation.loadMediatorInterstitial(application, m_plugin, m_interstitialAd, callback);
+            mediation.loadMediatorInterstitial(activity, m_plugin, m_interstitialAd, callback);
         });
     }
 
     @Override
-    public void finalize(@NonNull MengineApplication application) {
-        super.finalize(application);
+    public void onActivityDestroy(@NonNull MengineActivity activity) {
+        super.onActivityDestroy(activity);
 
         if (m_interstitialAd != null) {
             m_interstitialAd.setListener(null);

@@ -2521,6 +2521,9 @@ namespace Mengine
             .def( "getWorldPosition", &TransformationInterface::getWorldPosition )
             .def( "setWorldPosition", &TransformationInterface::setWorldPosition )
 
+            .def( "getWorldScale", &TransformationInterface::getWorldScale )
+            .def( "getWorldOrientation", &TransformationInterface::getWorldOrientation )
+
             .def_proxy_static( "getWorldOffsetPosition", scriptMethod, &KernelScriptMethod::s_Transformation_getWorldOffsetPosition )
 
             .def( "setAngle", &TransformationInterface::setLocalOrientationX )

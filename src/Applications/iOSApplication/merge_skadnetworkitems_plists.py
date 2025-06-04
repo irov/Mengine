@@ -27,17 +27,20 @@ def merge_plists(base, patches, output_path):
         elif isinstance(plist_patch, list):
             plist_base['SKAdNetworkItems'] = plist_base.get('SKAdNetworkItems', []) + [item for item in plist_patch if item not in plist_base.get('SKAdNetworkItems', [])]
 
-    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    output_dir = os.path.dirname(output_path)
+    if output_dir:
+        os.makedirs(output_dir, exist_ok=True)
 
     with open(output_path, 'wb') as f:
         plistlib.dump(plist_base, f)
 
-if len(sys.argv) < 4:
-    print("Usage: merge_plists.py <base_plist> <patch_plists> <output_plist>")
-    sys.exit(1)
+if __name__ == "__main__":
+    if len(sys.argv) < 4:
+        print("Usage: merge_plists.py <base_plist> <patch_plists> <output_plist>")
+        sys.exit(1)
 
-base = sys.argv[1]
-patches = sys.argv[2:-1]
-total = sys.argv[-1]
+    base = sys.argv[1]
+    patches = sys.argv[2:-1]
+    total = sys.argv[-1]
 
-merge_plists(base, patches, total)
+    merge_plists(base, patches, total)

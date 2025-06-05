@@ -92,7 +92,7 @@ extern "C"
 
         g_androidEnvJavaVM = vm;
 
-        JNIEnv *env;
+        JNIEnv * env;
         int get_status = g_androidEnvJavaVM->GetEnv( (void **)&env, JNI_VERSION_1_6 );
 
         if( get_status != JNI_OK )
@@ -102,7 +102,22 @@ extern "C"
             return JNI_ERR;
         }
 
+        __android_log_print( ANDROID_LOG_INFO, "Mengine", "JNI_OnLoad" );
+
         return JNI_VERSION_1_6;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL JNI_OnUnload( JavaVM * vm, void * reserved )
+    {
+        JNIEnv * env;
+        if( vm->GetEnv( (void**)&env, JNI_VERSION_1_6 ) != JNI_OK )
+        {
+            return;
+        }
+
+        __android_log_print( ANDROID_LOG_INFO, "Mengine", "JNI_OnUnload" );
+
+        g_androidEnvJavaVM = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
 }

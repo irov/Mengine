@@ -24,11 +24,15 @@ public class MengineMain implements Runnable {
     }
 
     public void start() {
-        m_thread = new Thread(this);
+        MengineLog.logMessage(TAG, "main start");
+
+        m_thread = new Thread(this, "MengineMain");
         m_thread.start();
     }
 
     public void stop() {
+        MengineLog.logMessage(TAG, "main join");
+
         try {
             m_thread.join();
         } catch (final InterruptedException e) {
@@ -36,25 +40,13 @@ public class MengineMain implements Runnable {
                 , e.getMessage()
             );
         }
+
+        MengineLog.logMessage(TAG, "main stopped");
     }
 
     @Override
     public void run() {
-        try {
-            Thread.currentThread().setName("MengineMain");
-        } catch (final Exception e) {
-            MengineLog.logMessage(TAG, "modify main thread name exception: %s"
-                , e.getMessage()
-            );
-        }
-
-        try {
-            Process.setThreadPriority(Process.THREAD_PRIORITY_DISPLAY);
-        } catch (final Exception e) {
-            MengineLog.logMessage(TAG, "modify main thread priority exception: %s"
-                , e.getMessage()
-            );
-        }
+        MengineLog.logMessage(TAG, "main wait latch");
 
         try {
             m_runLatch.await();
@@ -64,6 +56,16 @@ public class MengineMain implements Runnable {
             );
 
             return;
+        }
+
+        MengineLog.logMessage(TAG, "main run");
+
+        try {
+            Process.setThreadPriority(Process.THREAD_PRIORITY_DISPLAY);
+        } catch (final Exception e) {
+            MengineLog.logMessage(TAG, "modify main thread priority exception: %s"
+                , e.getMessage()
+            );
         }
 
         if (MengineNative.AndroidMain_main(m_nativeApplication) == false) {

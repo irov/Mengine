@@ -7,11 +7,13 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.Settings;
 
+import androidx.annotation.BoolRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Size;
 
@@ -259,212 +261,6 @@ public abstract class MengineApplication extends Application {
         long value = bundle.getLong(name);
 
         return value;
-    }
-
-    public boolean hasOption(String option) {
-        if (BuildConfig.DEBUG == false) {
-            return false;
-        }
-
-        String options_str = this.getApplicationOptions();
-
-        List<String> options = Splitter.on(' ').splitToList(options_str);
-
-        if (options.isEmpty() == true) {
-            return false;
-        }
-
-        String hyphen_option = "-" + option;
-        String double_hyphen_option = "--" + option;
-
-        String hyphen_option_value = hyphen_option + ":";
-        String double_hyphen_option_value = double_hyphen_option + ":";
-
-        for(String o : options) {
-            if (o.equals(hyphen_option) == true) {
-                return true;
-            }
-
-            if (o.equals(double_hyphen_option) == true) {
-                return true;
-            }
-
-            if (o.startsWith(hyphen_option_value) == true) {
-                return true;
-            }
-
-            if (o.startsWith(double_hyphen_option_value) == true) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public int getOptionValueInteger(String option, int defaultValue) {
-        if (BuildConfig.DEBUG == false) {
-            return defaultValue;
-        }
-
-        String options_str = this.getApplicationOptions();
-
-        List<String> options = Splitter.on(' ').splitToList(options_str);
-
-        if (options.isEmpty() == true) {
-            return defaultValue;
-        }
-
-        String hyphen_option = "-" + option;
-        String double_hyphen_option = "--" + option;
-
-        String hyphen_option_value = hyphen_option + ":";
-        String double_hyphen_option_value = double_hyphen_option + ":";
-
-        for(String o : options) {
-            if (o.equals(hyphen_option) == true) {
-                MengineLog.logSingleWarning(TAG, "option [%s] has no value", option);
-
-                return defaultValue;
-            }
-
-            if (o.equals(double_hyphen_option) == true) {
-                MengineLog.logSingleWarning(TAG, "option [%s] has no value", option);
-
-                return defaultValue;
-            }
-
-            if (o.startsWith(hyphen_option_value) == true) {
-                String value = o.substring(hyphen_option_value.length());
-
-                try {
-                    return Integer.parseInt(value);
-                } catch (final NumberFormatException e) {
-                    MengineLog.logSingleWarning(TAG, "option [%s] invalid integer value [%s]", option, value);
-
-                    return defaultValue;
-                }
-            }
-
-            if (o.startsWith(double_hyphen_option_value) == true) {
-                String value = o.substring(double_hyphen_option_value.length());
-
-                try {
-                    return Integer.parseInt(value);
-                } catch (final NumberFormatException e) {
-                    MengineLog.logSingleWarning(TAG, "option [%s] invalid integer value [%s]", option, value);
-
-                    return defaultValue;
-                }
-            }
-        }
-
-        return defaultValue;
-    }
-
-    public long getOptionValueLong(String option, long defaultValue) {
-        if (BuildConfig.DEBUG == false) {
-            return defaultValue;
-        }
-
-        String options_str = this.getApplicationOptions();
-
-        List<String> options = Splitter.on(' ').splitToList(options_str);
-
-        if (options.isEmpty() == true) {
-            return defaultValue;
-        }
-
-        String hyphen_option = "-" + option;
-        String double_hyphen_option = "--" + option;
-
-        String hyphen_option_value = hyphen_option + ":";
-        String double_hyphen_option_value = double_hyphen_option + ":";
-
-        for(String o : options) {
-            if (o.equals(hyphen_option) == true) {
-                MengineLog.logSingleWarning(TAG, "option [%s] has no value", option);
-
-                return defaultValue;
-            }
-
-            if (o.equals(double_hyphen_option) == true) {
-                MengineLog.logSingleWarning(TAG, "option [%s] has no value", option);
-
-                return defaultValue;
-            }
-
-            if (o.startsWith(hyphen_option_value) == true) {
-                String value = o.substring(hyphen_option_value.length());
-
-                try {
-                    return Long.parseLong(value);
-                } catch (final NumberFormatException e) {
-                    MengineLog.logSingleWarning(TAG, "option [%s] invalid long value [%s]", option, value);
-
-                    return defaultValue;
-                }
-            }
-
-            if (o.startsWith(double_hyphen_option_value) == true) {
-                String value = o.substring(double_hyphen_option_value.length());
-
-                try {
-                    return Long.parseLong(value);
-                } catch (final NumberFormatException e) {
-                    MengineLog.logSingleWarning(TAG, "option [%s] invalid long value [%s]", option, value);
-
-                    return defaultValue;
-                }
-            }
-        }
-
-        return defaultValue;
-    }
-
-    public String getOptionValueString(String option, String defaultValue) {
-        if (BuildConfig.DEBUG == false) {
-            return defaultValue;
-        }
-
-        String options_str = this.getApplicationOptions();
-
-        List<String> options = Splitter.on(' ').splitToList(options_str);
-
-        if (options.isEmpty() == true) {
-            return defaultValue;
-        }
-
-        String hyphen_option = "-" + option;
-        String double_hyphen_option = "--" + option;
-
-        String hyphen_option_value = hyphen_option + ":";
-        String double_hyphen_option_value = double_hyphen_option + ":";
-
-        for(String o : options) {
-            if (o.equals(hyphen_option) == true) {
-                MengineLog.logSingleWarning(TAG, "option [%s] has no value", option);
-
-                return defaultValue;
-            }
-
-            if (o.equals(double_hyphen_option) == true) {
-                MengineLog.logSingleWarning(TAG, "option [%s] has no value", option);
-
-                return defaultValue;
-            }
-
-            if (o.startsWith(hyphen_option_value) == true) {
-                String value = o.substring(hyphen_option_value.length());
-                return value;
-            }
-
-            if (o.startsWith(double_hyphen_option_value) == true) {
-                String value = o.substring(double_hyphen_option_value.length());
-                return value;
-            }
-        }
-
-        return defaultValue;
     }
 
     public void setPreferenceString(String name, String value) {
@@ -750,6 +546,8 @@ public abstract class MengineApplication extends Application {
     }
 
     protected Object createNativeApplication() {
+        MengineLog.logInfo(TAG, "[BEGIN] bootstrap native application");
+
         ApplicationInfo applicationInfo = this.getApplicationInfo();
         String nativeLibraryDir = applicationInfo.nativeLibraryDir;
         String options = this.getApplicationOptions();
@@ -768,6 +566,8 @@ public abstract class MengineApplication extends Application {
             return null;
         }
 
+        MengineLog.logInfo(TAG, "[END] bootstrap native application");
+
         return nativeApplication;
     }
 
@@ -776,8 +576,12 @@ public abstract class MengineApplication extends Application {
             return;
         }
 
+        MengineLog.logInfo(TAG, "[BEGIN] destroy native application");
+
         MengineNative.AndroidMain_destroy(m_nativeApplication);
         m_nativeApplication = null;
+
+        MengineLog.logInfo(TAG, "[END] destroy native application");
     }
 
     protected Object getNativeApplication() {
@@ -853,6 +657,14 @@ public abstract class MengineApplication extends Application {
 
     public String getAcquisitionCampaign() {
         return m_acquisitionCampaign;
+    }
+
+    public boolean getResourceBoolean(@BoolRes int resId) {
+        Resources resources = this.getResources();
+
+        boolean value = resources.getBoolean(resId);
+
+        return value;
     }
 
     @Override
@@ -1413,6 +1225,10 @@ public abstract class MengineApplication extends Application {
             l.onAppLowMemory(this);
         }
 
+        this.setState("activity.low_memory", true);
+
+        MengineNative.AndroidPlatform_lowMemory();
+
         MengineLog.logInfo(TAG, "[END] onLowMemory");
     }
 
@@ -1431,6 +1247,10 @@ public abstract class MengineApplication extends Application {
 
             l.onAppTrimMemory(this, level);
         }
+
+        this.setState("activity.trim_memory", level);
+
+        MengineNative.AndroidPlatform_trimMemory(level);
 
         MengineLog.logInfo(TAG, "[END] onTrimMemory");
     }

@@ -176,7 +176,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
             return;
         }
 
-        logInfo("signInIntent");
+        this.logInfo("signInIntent");
 
         m_gamesSignInClient.signIn().addOnCompleteListener(task -> {
             if (task.isSuccessful() == false) {

@@ -71,11 +71,11 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Men
 
         MaxAppOpenAd appOpenAd = new MaxAppOpenAd(m_adUnitId);
 
-        appOpenAd.setListener( this );
-        appOpenAd.setRequestListener( this );
-        appOpenAd.setExpirationListener( this );
-        appOpenAd.setRevenueListener( this );
-        appOpenAd.setAdReviewListener( this );
+        appOpenAd.setListener(this);
+        appOpenAd.setRequestListener(this);
+        appOpenAd.setExpirationListener(this);
+        appOpenAd.setRevenueListener(this);
+        appOpenAd.setAdReviewListener(this);
 
         m_appOpenAd = appOpenAd;
 

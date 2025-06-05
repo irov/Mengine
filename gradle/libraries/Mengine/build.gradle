@@ -109,5 +109,8 @@ dependencies {
 android {
     defaultConfig {
         buildConfigField "boolean", "MENGINE_APP_ENABLE_STRICT_MODE", "${MENGINE_APP_ENABLE_STRICT_MODE}"
+
+        buildConfigField "boolean", "ANDROID_APP_REQUIRED_HARDWARE_TOUCHSCREEN", "${ANDROID_APP_REQUIRED_HARDWARE_TOUCHSCREEN}"
+        buildConfigField "boolean", "ANDROID_APP_REQUIRED_HARDWARE_SENSOR_ACCELEROMETER", "${ANDROID_APP_REQUIRED_HARDWARE_SENSOR_ACCELEROMETER}"
     }
 }

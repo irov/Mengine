@@ -14,7 +14,7 @@ namespace Mengine
 
     public:
         virtual void androidNativeSurfaceCreatedEvent( ANativeWindow * _nativeWindow ) = 0;
-        virtual void androidNativeSurfaceDestroyedEvent( ANativeWindow * _nativeWindow ) = 0;
+        virtual void androidNativeSurfaceDestroyedEvent() = 0;
         virtual void androidNativeSurfaceChangedEvent( ANativeWindow * _nativeWindow, jint surfaceWidth, jint surfaceHeight, jint deviceWidth, jint deviceHeight, jfloat rate ) = 0;
 
     public:
@@ -26,6 +26,8 @@ namespace Mengine
         virtual void androidNativeResumeEvent() = 0;
         virtual void androidNativeStopEvent() = 0;
         virtual void androidNativeStartEvent() = 0;
+        virtual void androidNativeRestartEvent() = 0;
+        virtual void androidNativeDestroyEvent() = 0;
         virtual void androidNativeClipboardChangedEvent() = 0;
         virtual void androidNativeWindowFocusChangedEvent( jboolean _focus ) = 0;
 

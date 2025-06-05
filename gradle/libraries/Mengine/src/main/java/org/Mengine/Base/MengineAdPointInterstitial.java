@@ -27,7 +27,7 @@ public class MengineAdPointInterstitial extends MengineAdPointBase {
 
     public boolean canYouShowAd(@NonNull MengineApplication application) {
         if (BuildConfig.DEBUG == true) {
-            if (application.hasOption("adservice.always_interstitial_point." + m_name) == true) {
+            if (MengineUtils.hasOption(application, "adservice.always_interstitial_point." + m_name) == true) {
                 return true;
             }
         }

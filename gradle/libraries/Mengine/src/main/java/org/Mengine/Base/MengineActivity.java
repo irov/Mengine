@@ -52,7 +52,7 @@ public class MengineActivity extends AppCompatActivity {
 
     public static MengineActivity INSTANCE = null;
 
-    private ELifecycleState m_lifecycleState = ELifecycleState.ACTIVITY_INITIALIZE;
+    private volatile ELifecycleState m_lifecycleState = ELifecycleState.ACTIVITY_INITIALIZE;
 
     private final List<MengineListenerActivity> m_activityListeners = new ArrayList<>();
 
@@ -910,9 +910,9 @@ public class MengineActivity extends AppCompatActivity {
     public void onDestroy() {
         m_lifecycleState = ELifecycleState.ACTIVITY_DESTROY;
 
-        MengineApplication application = (MengineApplication)this.getApplication();
-
         MengineLog.logDebug(TAG, "[BEGIN] onDestroy");
+
+        MengineApplication application = (MengineApplication)this.getApplication();
 
         if (application.isInvalidInitialize() == true) {
             MengineLog.logMessage(TAG, "onDestroy: application invalid initialize");
@@ -968,6 +968,8 @@ public class MengineActivity extends AppCompatActivity {
 
         MengineNative.AndroidNativePython_removePlugin("Activity");
 
+        MengineNative.AndroidPlatform_destroyEvent();
+
         m_activityListeners.clear();
 
         MengineLog.logDebug(TAG, "[END] onDestroy");
@@ -1011,51 +1013,9 @@ public class MengineActivity extends AppCompatActivity {
 
         application.setState("activity.lifecycle", "restarted");
 
+        MengineNative.AndroidPlatform_restartEvent();
+
         MengineLog.logDebug(TAG, "[END] onRestart");
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-
-        MengineLog.logDebug(TAG, "[BEGIN] onLowMemory");
-
-        MengineApplication application = (MengineApplication)this.getApplication();
-
-        if (application.isInvalidInitialize() == true) {
-            MengineLog.logMessage(TAG, "onLowMemory: application invalid initialize");
-
-            return;
-        }
-
-        application.setState("activity.low_memory", true);
-
-        MengineNative.AndroidPlatform_lowMemory();
-
-        MengineLog.logDebug(TAG, "[END] onLowMemory");
-    }
-
-    @Override
-    public void onTrimMemory(int level) {
-        super.onTrimMemory(level);
-
-        MengineLog.logDebug(TAG, "[BEGIN] onTrimMemory level: %d"
-            , level
-        );
-
-        MengineApplication application = (MengineApplication)this.getApplication();
-
-        if (application.isInvalidInitialize() == true) {
-            MengineLog.logMessage(TAG, "onTrimMemory: application invalid initialize");
-
-            return;
-        }
-
-        application.setState("activity.trim_memory", level);
-
-        MengineNative.AndroidPlatform_trimMemory(level);
-
-        MengineLog.logDebug(TAG, "[END] onTrimMemory");
     }
 
     @Override

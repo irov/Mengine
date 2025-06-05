@@ -93,28 +93,28 @@ public class MengineService implements MengineServiceInterface {
 
     @Override
     public boolean hasOption(String option) {
-        boolean value = m_application.hasOption(option);
+        boolean value = MengineUtils.hasOption(m_application, option);
 
         return value;
     }
 
     @Override
     public int getOptionValueInteger(String option, int defaultValue) {
-        int value = m_application.getOptionValueInteger(option, defaultValue);
+        int value = MengineUtils.getOptionValueInteger(m_application, option, defaultValue);
 
         return value;
     }
 
     @Override
     public long getOptionValueLong(String option, long defaultValue) {
-        long value = m_application.getOptionValueLong(option, defaultValue);
+        long value = MengineUtils.getOptionValueLong(m_application, option, defaultValue);
 
         return value;
     }
 
     @Override
     public String getOptionValueString(String option, String defaultValue) {
-        String value = m_application.getOptionValueString(option, defaultValue);
+        String value = MengineUtils.getOptionValueString(m_application, option, defaultValue);
 
         return value;
     }

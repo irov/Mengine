@@ -37,11 +37,13 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
 
         m_display = MengineUtils.getDefaultDisplay(context);
 
-        m_sensorManager = context.getSystemService(SensorManager.class);
+        if (BuildConfig.ANDROID_APP_REQUIRED_HARDWARE_SENSOR_ACCELEROMETER == true) {
+            m_sensorManager = context.getSystemService(SensorManager.class);
 
-        if (m_sensorManager != null) {
-            m_accelerometer = m_sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-            m_linearAccelerometer = m_sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+            if (m_sensorManager != null) {
+                m_accelerometer = m_sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+                m_linearAccelerometer = m_sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+            }
         }
 
         m_surfaceWidthF = 1.f;
@@ -54,6 +56,8 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
             return;
         }
 
+        MengineLog.logInfo(TAG, "handleStart");
+
         this.handleResume();
     }
 
@@ -62,33 +66,17 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
             return;
         }
 
+        MengineLog.logInfo(TAG, "handleStop");
+
         this.handlePause();
-    }
-
-    public void handlePause() {
-        if (m_paused == true) {
-            return;
-        }
-
-        m_paused = true;
-
-        this.setFocusable(false);
-        this.setFocusableInTouchMode(false);
-        this.setOnKeyListener(null);
-        this.setOnTouchListener(null);
-
-        if (m_sensorManager != null) {
-            m_sensorManager.unregisterListener(this, m_accelerometer);
-            m_sensorManager.unregisterListener(this, m_linearAccelerometer);
-        }
-
-        MengineNative.AndroidPlatform_pauseEvent();
     }
 
     public void handleResume() {
         if (m_paused == false) {
             return;
         }
+
+        MengineLog.logInfo(TAG, "handleResume");
 
         m_paused = false;
 
@@ -111,8 +99,37 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
         MengineNative.AndroidPlatform_resumeEvent();
     }
 
+    public void handlePause() {
+        if (m_paused == true) {
+            return;
+        }
+
+        MengineLog.logInfo(TAG, "handlePause");
+
+        m_paused = true;
+
+        this.setFocusable(false);
+        this.setFocusableInTouchMode(false);
+        this.setOnKeyListener(null);
+        this.setOnTouchListener(null);
+
+        if (m_sensorManager != null) {
+            if (m_accelerometer != null) {
+                m_sensorManager.unregisterListener(this, m_accelerometer);
+            }
+
+            if (m_linearAccelerometer != null) {
+                m_sensorManager.unregisterListener(this, m_linearAccelerometer);
+            }
+        }
+
+        MengineNative.AndroidPlatform_pauseEvent();
+    }
+
     public void handleDestroy() {
-        this.handlePause();
+        MengineLog.logInfo(TAG, "handleDestroy");
+
+        this.handleStop();
 
         this.getHolder().removeCallback(this);
 
@@ -145,15 +162,7 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
     public void surfaceDestroyed(SurfaceHolder holder) {
         MengineLog.logInfo(TAG, "surfaceDestroyed");
 
-        Surface surface = holder.getSurface();
-
-        if (surface == null) {
-            MengineLog.logError(TAG, "surfaceDestroyed invalid surface");
-
-            return;
-        }
-
-        MengineNative.AndroidPlatform_surfaceDestroyedEvent(surface);
+        MengineNative.AndroidPlatform_surfaceDestroyedEvent();
     }
 
     @Override

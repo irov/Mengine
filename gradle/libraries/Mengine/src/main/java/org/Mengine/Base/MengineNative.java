@@ -31,7 +31,7 @@ public class MengineNative {
     public static native void AndroidNativePython_activateSemaphore(String name);
 
     public static native void AndroidPlatform_surfaceCreatedEvent(Surface surface);
-    public static native void AndroidPlatform_surfaceDestroyedEvent(Surface surface);
+    public static native void AndroidPlatform_surfaceDestroyedEvent();
     public static native void AndroidPlatform_surfaceChangedEvent(Surface surface, int surfaceWidth, int surfaceHeight, int deviceWidth, int deviceHeight, float rate);
     public static native void AndroidPlatform_keyEvent(boolean isDown, int keyCode, int repeatCount);
     public static native void AndroidPlatform_textEvent(int unicode);
@@ -41,6 +41,8 @@ public class MengineNative {
     public static native void AndroidPlatform_resumeEvent();
     public static native void AndroidPlatform_stopEvent();
     public static native void AndroidPlatform_startEvent();
+    public static native void AndroidPlatform_restartEvent();
+    public static native void AndroidPlatform_destroyEvent();
     public static native void AndroidPlatform_clipboardChangedEvent();
     public static native void AndroidPlatform_windowFocusChangedEvent(boolean focus);
     public static native void AndroidPlatform_quitEvent();

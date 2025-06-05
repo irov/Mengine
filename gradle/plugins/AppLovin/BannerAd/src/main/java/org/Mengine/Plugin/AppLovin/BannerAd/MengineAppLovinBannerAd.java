@@ -107,7 +107,7 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements Meng
                 .setAdaptiveType(MaxAdViewConfiguration.AdaptiveType.ANCHORED)
                 .build();
 
-        MaxAdView adView = new MaxAdView(m_adUnitId, adConfig);
+        MaxAdView adView = new MaxAdView(m_adUnitId, MaxAdFormat.BANNER, adConfig);
 
         adView.setPlacement(m_placement);
 

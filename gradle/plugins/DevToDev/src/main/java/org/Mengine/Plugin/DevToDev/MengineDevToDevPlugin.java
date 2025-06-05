@@ -66,8 +66,10 @@ public class MengineDevToDevPlugin extends MengineService implements MengineList
 
         DTDAnalyticsConfiguration configuration = new DTDAnalyticsConfiguration();
 
-        if (BuildConfig.DEBUG == true) {
+        if (BuildConfig.MENGINE_APP_PLUGIN_DEVTODEV_DEBUG_LOG == true) {
             configuration.setLogLevel(DTDLogLevel.Debug);
+        } else if (BuildConfig.DEBUG == true) {
+            configuration.setLogLevel(DTDLogLevel.Warning);
         } else {
             configuration.setLogLevel(DTDLogLevel.Error);
         }

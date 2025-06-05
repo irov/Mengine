@@ -240,6 +240,8 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
 
         if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_LOGGING_VERBOSE == true) {
             settings.setVerboseLogging(true);
+        } else {
+            settings.setVerboseLogging(false);
         }
 
         adService.setAdProvider(this);

@@ -152,7 +152,7 @@ namespace Mengine
 
     protected:
         void androidNativeSurfaceCreatedEvent( ANativeWindow * _nativeWindow ) override;
-        void androidNativeSurfaceDestroyedEvent( ANativeWindow * _nativeWindow ) override;
+        void androidNativeSurfaceDestroyedEvent() override;
         void androidNativeSurfaceChangedEvent( ANativeWindow * _nativeWindow, jint surfaceWidth, jint surfaceHeight, jint deviceWidth, jint deviceHeight, jfloat rate ) override;
 
     protected:
@@ -173,6 +173,8 @@ namespace Mengine
         void androidNativeResumeEvent() override;
         void androidNativeStopEvent() override;
         void androidNativeStartEvent() override;
+        void androidNativeRestartEvent() override;
+        void androidNativeDestroyEvent() override;
         void androidNativeClipboardChangedEvent() override;
         void androidNativeWindowFocusChangedEvent( jboolean _focus ) override;
         void androidNativeQuitEvent() override;
@@ -204,6 +206,8 @@ namespace Mengine
                 PET_RESUME,
                 PET_STOP,
                 PET_START,
+                PET_RESTART,
+                PET_DESTROY,
                 PET_SURFACE_CREATE,
                 PET_SURFACE_DESTROY,
                 PET_SURFACE_CHANGED,
@@ -241,6 +245,16 @@ namespace Mengine
                 int32_t dummy;
             };
 
+            struct PlatformRestartEvent
+            {
+                int32_t dummy;
+            };
+
+            struct PlatformDestroyEvent
+            {
+                int32_t dummy;
+            };
+
             struct PlatformSurfaceCreateEvent
             {
                 ANativeWindow * nativeWindow;
@@ -248,7 +262,7 @@ namespace Mengine
 
             struct PlatformSurfaceDestroyEvent
             {
-                ANativeWindow * nativeWindow;
+                int32_t dummy;
             };
 
             struct PlatformSurfaceChangedEvent
@@ -293,6 +307,8 @@ namespace Mengine
                 PlatformResumeEvent resume;
                 PlatformStopEvent stop;
                 PlatformStartEvent start;
+                PlatformRestartEvent restart;
+                PlatformDestroyEvent destroy;
                 PlatformSurfaceCreateEvent surfaceCreate;
                 PlatformSurfaceDestroyEvent surfaceDestroy;
                 PlatformSurfaceChangedEvent surfaceChanged;
@@ -309,6 +325,8 @@ namespace Mengine
         void resumeEvent_( const PlatformUnionEvent::PlatformResumeEvent & _event );
         void stopEvent_( const PlatformUnionEvent::PlatformStopEvent & _event );
         void startEvent_( const PlatformUnionEvent::PlatformStartEvent & _event );
+        void restartEvent_( const PlatformUnionEvent::PlatformRestartEvent & _event );
+        void destroyEvent_( const PlatformUnionEvent::PlatformDestroyEvent & _event );
         void surfaceCreateEvent_( const PlatformUnionEvent::PlatformSurfaceCreateEvent & _event );
         void surfaceDestroyEvent_( const PlatformUnionEvent::PlatformSurfaceDestroyEvent & _event );
         void surfaceChangedEvent_( const PlatformUnionEvent::PlatformSurfaceChangedEvent & _event );
@@ -334,6 +352,20 @@ namespace Mengine
         LoggerInterfacePtr m_proxyLogger;
 
         ThreadMutexInterfacePtr m_nativeWindowMutex;
+        ThreadMutexInterfacePtr m_eglSurfaceMutex;
+
+        enum EActivityState
+        {
+            EAS_INITIALIZE,
+            EAS_RESUME,
+            EAS_START,
+            EAS_PAUSE,
+            EAS_STOP,
+            EAS_RESTART,
+            EAS_DESTROY
+        };
+
+        AtomicInt32 m_activityState;
 
         ANativeWindow * m_nativeWindow;
 

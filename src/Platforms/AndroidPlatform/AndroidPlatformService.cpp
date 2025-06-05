@@ -228,14 +228,12 @@ extern "C"
         platformExtension->androidNativeSurfaceCreatedEvent( nativeWindow );
     }
     ///////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1surfaceDestroyedEvent )(JNIEnv * env, jclass cls, jobject surface)
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1surfaceDestroyedEvent )(JNIEnv * env, jclass cls)
     {
-        ANativeWindow * nativeWindow = ANativeWindow_fromSurface( env, surface );
-
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
-        platformExtension->androidNativeSurfaceDestroyedEvent( nativeWindow );
+        platformExtension->androidNativeSurfaceDestroyedEvent();
     }
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1surfaceChangedEvent )(JNIEnv * env, jclass cls, jobject surface, jint surfaceWidth, jint surfaceHeight, jint deviceWidth, jint deviceHeight, jfloat rate)
@@ -310,6 +308,22 @@ extern "C"
             ->getUnknown();
 
         platformExtension->androidNativeStartEvent();
+    }
+    ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1restartEvent )(JNIEnv * env, jclass cls)
+    {
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        platformExtension->androidNativeRestartEvent();
+    }
+    ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1destroyEvent )(JNIEnv * env, jclass cls)
+    {
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        platformExtension->androidNativeDestroyEvent();
     }
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1clipboardChangedEvent )(JNIEnv * env, jclass cls)
@@ -394,6 +408,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AndroidPlatformService::AndroidPlatformService()
         : m_beginTime( 0 )
+        , m_activityState( EAS_INITIALIZE )
         , m_nativeWindow( nullptr )
         , m_eglDisplay( EGL_NO_DISPLAY )
         , m_eglSurface( EGL_NO_SURFACE )
@@ -571,6 +586,7 @@ namespace Mengine
         }
 
         m_nativeWindowMutex = Helper::createThreadMutex(MENGINE_DOCUMENT_FACTORABLE );
+        m_eglSurfaceMutex = Helper::createThreadMutex(MENGINE_DOCUMENT_FACTORABLE );
         m_eventsMutex = Helper::createThreadMutex(MENGINE_DOCUMENT_FACTORABLE );
 
         EGLDisplay eglDisplay = ::eglGetDisplay( EGL_DEFAULT_DISPLAY );
@@ -668,6 +684,7 @@ namespace Mengine
 
         m_eventsMutex = nullptr;
         m_nativeWindowMutex = nullptr;
+        m_eglSurfaceMutex = nullptr;
 
         m_platformTags.clear();
     }
@@ -700,16 +717,6 @@ namespace Mengine
         MENGINE_UNUSED( _pause );
         MENGINE_UNUSED( _flush );
 
-        if( this->hasEvent( PlatformUnionEvent::PET_SURFACE_DESTROY ) == true )
-        {
-            return true;
-        }
-
-        if( m_eglSurface == EGL_NO_SURFACE || m_eglContext == EGL_NO_CONTEXT )
-        {
-            return true;
-        }
-
         bool updating = APPLICATION_SERVICE()
             ->beginUpdate( _frameTime );
 
@@ -725,6 +732,21 @@ namespace Mengine
                 ->tick( _frameTime );
         }
 
+        APPLICATION_SERVICE()
+            ->endUpdate();
+
+        if( m_activityState != EAS_RESUME && m_activityState != EAS_START )
+        {
+            return true;
+        }
+
+        MENGINE_THREAD_MUTEX_SCOPE( m_eglSurfaceMutex );
+
+        if( m_nativeWindow == nullptr || m_eglSurface == EGL_NO_SURFACE || m_eglContext == EGL_NO_CONTEXT )
+        {
+            return true;
+        }
+
         if( _render == true )
         {
             bool sucessful = APPLICATION_SERVICE()
@@ -737,10 +759,7 @@ namespace Mengine
             }
         }
 
-        APPLICATION_SERVICE()
-            ->endUpdate();
-
-        if( m_eglDisplay != EGL_NO_DISPLAY && m_eglSurface != EGL_NO_SURFACE )
+        if( m_nativeWindow != nullptr && m_eglDisplay != EGL_NO_DISPLAY && m_eglSurface != EGL_NO_SURFACE )
         {
             if( ::eglSwapBuffers( m_eglDisplay, m_eglSurface ) == EGL_FALSE )
             {
@@ -831,8 +850,6 @@ namespace Mengine
         jenv->DeleteLocalRef( jbody );
 
         return jresult;
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::openDeleteAccount()
@@ -846,8 +863,6 @@ namespace Mengine
         jboolean jresult = Helper::AndroidCallBooleanActivityMethod( jenv, "linkingOpenDeleteAccount", "()Z" );
 
         return jresult;
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::notifyBootstrapperInitializeBaseServices_()
@@ -1288,7 +1303,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::destroyWindow_()
     {
+        LOGGER_INFO( "platform", "destroy window" );
+
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_DETACH_WINDOW );
+
+        MENGINE_THREAD_MUTEX_SCOPE( m_eglSurfaceMutex );
 
         if( ::eglTerminate( m_eglDisplay ) == EGL_FALSE )
         {
@@ -1330,6 +1349,14 @@ namespace Mengine
             case PlatformUnionEvent::PET_START:
                 {
                     this->startEvent_( ev.data.start );
+                }break;
+            case PlatformUnionEvent::PET_RESTART:
+                {
+                    this->restartEvent_( ev.data.restart );
+                }break;
+            case PlatformUnionEvent::PET_DESTROY:
+                {
+                    this->destroyEvent_( ev.data.destroy );
                 }break;
             case PlatformUnionEvent::PET_SURFACE_CREATE:
                 {
@@ -1494,6 +1521,8 @@ namespace Mengine
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_nativeWindowMutex );
 
+        MENGINE_ASSERTION_FATAL( m_nativeWindow == nullptr, "native window already created" );
+
         m_nativeWindow = _nativeWindow;
 
         PlatformUnionEvent ev;
@@ -1505,15 +1534,21 @@ namespace Mengine
         this->pushEvent( ev );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::androidNativeSurfaceDestroyedEvent( ANativeWindow * _nativeWindow )
+    void AndroidPlatformService::androidNativeSurfaceDestroyedEvent()
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_nativeWindowMutex );
 
-        m_nativeWindow = _nativeWindow;
+        MENGINE_ASSERTION_FATAL( m_nativeWindow != nullptr, "native window already destroyed" );
+
+        if( m_nativeWindow != nullptr )
+        {
+            ANativeWindow_release( m_nativeWindow );
+        }
+
+        m_nativeWindow = nullptr;
 
         PlatformUnionEvent ev;
         ev.type = PlatformUnionEvent::PET_SURFACE_DESTROY;
-        ev.data.surfaceDestroy.nativeWindow = _nativeWindow;
 
         LOGGER_INFO( "platform", "push surface destroy event" );
 
@@ -1523,6 +1558,11 @@ namespace Mengine
     void AndroidPlatformService::androidNativeSurfaceChangedEvent( ANativeWindow * _nativeWindow, jint surfaceWidth, jint surfaceHeight, jint deviceWidth, jint deviceHeight, jfloat rate )
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_nativeWindowMutex );
+
+        if( m_nativeWindow != nullptr )
+        {
+            ANativeWindow_release( m_nativeWindow );
+        }
 
         m_nativeWindow = _nativeWindow;
 
@@ -1999,6 +2039,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativePauseEvent()
     {
+        m_activityState = EAS_PAUSE;
+
         float x = m_currentFingersX[0];
         float y = m_currentFingersY[0];
 
@@ -2018,6 +2060,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeResumeEvent()
     {
+        m_activityState = EAS_RESUME;
+
         float x = m_currentFingersX[0];
         float y = m_currentFingersY[0];
 
@@ -2037,6 +2081,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeStopEvent()
     {
+        m_activityState = EAS_STOP;
+
         PlatformUnionEvent event;
         event.type = PlatformUnionEvent::PET_STOP;
 
@@ -2047,10 +2093,36 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeStartEvent()
     {
+        m_activityState = EAS_START;
+
         PlatformUnionEvent event;
         event.type = PlatformUnionEvent::PET_START;
 
         LOGGER_INFO( "platform", "start event" );
+
+        this->pushEvent( event );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::androidNativeRestartEvent()
+    {
+        m_activityState = EAS_RESTART;
+
+        PlatformUnionEvent event;
+        event.type = PlatformUnionEvent::PET_RESTART;
+
+        LOGGER_INFO( "platform", "restart event" );
+
+        this->pushEvent( event );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::androidNativeDestroyEvent()
+    {
+        m_activityState = EAS_DESTROY;
+
+        PlatformUnionEvent event;
+        event.type = PlatformUnionEvent::PET_DESTROY;
+
+        LOGGER_INFO( "platform", "destroy event" );
 
         this->pushEvent( event );
     }
@@ -2158,13 +2230,36 @@ namespace Mengine
         NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_ENTER_FOREGROUND );
     }
     //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::restartEvent_( const PlatformUnionEvent::PlatformRestartEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        //ToDo
+    }
+    void AndroidPlatformService::destroyEvent_( const PlatformUnionEvent::PlatformDestroyEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        //ToDo
+    }
+    //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::surfaceCreateEvent_( const PlatformUnionEvent::PlatformSurfaceCreateEvent & _event )
     {
         MENGINE_ASSERTION_FATAL( m_eglDisplay != nullptr, "display not created" );
         MENGINE_ASSERTION_FATAL( m_eglSurface == nullptr, "already created egl surface" );
         MENGINE_ASSERTION_FATAL( m_eglContext == nullptr, "already created egl context" );
 
+        LOGGER_INFO( "platform", "surface create event" );
+
         MENGINE_THREAD_MUTEX_SCOPE( m_nativeWindowMutex );
+        MENGINE_THREAD_MUTEX_SCOPE( m_eglSurfaceMutex );
+
+        if( m_nativeWindow == nullptr )
+        {
+            LOGGER_ERROR( "[egl] native window is null" );
+
+            return;
+        }
 
         int32_t format_got = ANativeWindow_getFormat( m_nativeWindow );
 
@@ -2251,13 +2346,6 @@ namespace Mengine
 
         m_eglContext = context;
 
-        if( ::eglBindAPI( EGL_OPENGL_ES_API ) == EGL_FALSE )
-        {
-            LOGGER_WARNING( "[egl] failed to bind ES api [%d]"
-                , ::eglGetError()
-            );
-        }
-
         if( ::eglMakeCurrent( m_eglDisplay, m_eglSurface, m_eglSurface, m_eglContext ) == EGL_FALSE )
         {
             LOGGER_ERROR( "[egl] failed to make current [%d]"
@@ -2283,6 +2371,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::surfaceDestroyEvent_( const PlatformUnionEvent::PlatformSurfaceDestroyEvent & _event )
     {
+        LOGGER_INFO( "platform", "surface destroy event" );
+
+        MENGINE_THREAD_MUTEX_SCOPE( m_eglSurfaceMutex );
+
         if( m_eglDisplay == EGL_NO_DISPLAY )
         {
             return;

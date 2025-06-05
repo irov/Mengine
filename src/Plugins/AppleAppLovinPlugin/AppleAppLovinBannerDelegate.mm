@@ -25,7 +25,7 @@
             builder.adaptiveType = MAAdViewAdaptiveTypeAnchored;
           }];
         
-        adView = [[MAAdView alloc] initWithAdUnitIdentifier:adUnitId configuration:configuration];
+        adView = [[MAAdView alloc] initWithAdUnitIdentifier:adUnitId adFormat:MAAdFormat.banner configuration:configuration];
     } @catch (NSException * ex) {
         IOS_LOGGER_ERROR(@"[Error] AppleAppLovinBannerDelegate invalid create MAAdView adUnitId: %@ exception: %@ [%@]"
             , adUnitId

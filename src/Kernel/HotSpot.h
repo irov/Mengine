@@ -125,7 +125,6 @@ namespace Mengine
 
         bool m_outward;
         bool m_global;
-        bool m_exclusive;
 
         bool m_defaultHandle;
     };

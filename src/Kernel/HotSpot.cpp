@@ -17,7 +17,6 @@ namespace Mengine
     HotSpot::HotSpot()
         : m_outward( false )
         , m_global( false )
-        , m_exclusive( false )
         , m_defaultHandle( true )
     {
     }
@@ -58,12 +57,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void HotSpot::setExclusive( bool _value )
     {
-        m_exclusive = _value;
+        this->setPickerExclusive( _value );
     }
     //////////////////////////////////////////////////////////////////////////
     bool HotSpot::getExclusive() const
     {
-        return m_exclusive;
+        bool exclusive = this->isPickerExclusive();
+
+        return exclusive;
     }
     //////////////////////////////////////////////////////////////////////////
     bool HotSpot::isMousePickerOver() const

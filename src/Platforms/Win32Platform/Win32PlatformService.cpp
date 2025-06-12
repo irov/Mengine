@@ -636,10 +636,7 @@ namespace Mengine
             return false;
         }
 
-        if( this->tickPlatform( 0.f, false, false, false ) == false )
-        {
-            return false;
-        }
+        this->tickPlatform( 0.f, false, false, false );
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_RUN );
 
@@ -662,7 +659,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32PlatformService::tickPlatform( float _frameTime, bool _render, bool _flush, bool _pause )
+    void Win32PlatformService::tickPlatform( float _frameTime, bool _render, bool _flush, bool _pause )
     {
         MENGINE_UNUSED( _frameTime );
 
@@ -759,10 +756,7 @@ namespace Mengine
 
             m_prevTime = currentTime;
 
-            if( this->tickPlatform( frameTime, true, true, true ) == false )
-            {
-                break;
-            }
+            this->tickPlatform( frameTime, true, true, true );
         }
     }
     //////////////////////////////////////////////////////////////////////////

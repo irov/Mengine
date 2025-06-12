@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Engine/ResourceCursor.h"
+#include "Kernel/ResourceCursor.h"
 
 namespace Mengine
 {

@@ -9,7 +9,7 @@ import java.util.concurrent.CountDownLatch;
 public class MengineMain implements Runnable {
     public static final String TAG = "MengineMain";
 
-    protected static CountDownLatch m_runLatch = new CountDownLatch(1);
+    protected static final CountDownLatch m_runLatch = new CountDownLatch(1);
 
     protected final Object m_nativeApplication;
 
@@ -33,6 +33,8 @@ public class MengineMain implements Runnable {
     public void stop() {
         MengineLog.logMessage(TAG, "main join");
 
+        m_thread.interrupt();
+
         try {
             m_thread.join();
         } catch (final InterruptedException e) {
@@ -40,6 +42,8 @@ public class MengineMain implements Runnable {
                 , e.getMessage()
             );
         }
+
+        m_thread = null;
 
         MengineLog.logMessage(TAG, "main stopped");
     }
@@ -74,6 +78,6 @@ public class MengineMain implements Runnable {
             return;
         }
 
-        MengineLog.logMessage(TAG, "main finish succesful");
+        MengineLog.logMessage(TAG, "main finish successful");
     }
 }

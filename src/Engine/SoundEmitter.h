@@ -2,13 +2,11 @@
 
 #include "Kernel/Node.h"
 #include "Kernel/BaseTransformation.h"
-#include "Kernel/Surface.h"
+#include "Kernel/SurfaceSound.h"
 #include "Kernel/Soundable.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusiveSurfacePtr<class SurfaceSound> SurfaceSoundPtr;
     //////////////////////////////////////////////////////////////////////////
     class SoundEmitter
         : public Node

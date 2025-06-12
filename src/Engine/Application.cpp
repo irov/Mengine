@@ -95,6 +95,7 @@
 #include "Kernel/RenderCameraOrthogonalTarget.h"
 #include "Kernel/BasePrototypeGenerator.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionUtf8.h"
 #include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/ResourcePrototypeGenerator.h"
@@ -216,6 +217,9 @@ namespace Mengine
 
         const Char * Project_Company = CONFIG_VALUE_STRING( "Project", "Company", "UNKNOWN" );
         const Char * Project_Name = CONFIG_VALUE_STRING( "Project", "Name", "UNKNOWN" );
+
+        MENGINE_ASSERTION_VALIDATE_UTF8( Project_Company, MENGINE_UNKNOWN_SIZE );
+        MENGINE_ASSERTION_VALIDATE_UTF8( Project_Name, MENGINE_UNKNOWN_SIZE );
 
         m_companyName.assign( Project_Company );
         m_projectName.assign( Project_Name );

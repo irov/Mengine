@@ -210,9 +210,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleMARSDKScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
-        SCRIPT_SERVICE()
-            ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("AppleMARSDK"), true );
-
         pybind::def_function_kernel_args( _kernel, "appleMARSDKSetProvider", &Detail::AppleMARSDK_setProvider );
         pybind::def_function( _kernel, "appleMARSDKLogin", &Detail::AppleMARSDK_login );
         pybind::def_function( _kernel, "appleMARSDKLogout", &Detail::AppleMARSDK_logout );

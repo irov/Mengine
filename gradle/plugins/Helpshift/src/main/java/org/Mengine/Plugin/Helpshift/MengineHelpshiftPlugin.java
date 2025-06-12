@@ -111,12 +111,12 @@ public class MengineHelpshiftPlugin extends MengineService implements HelpshiftE
             case HelpshiftEvent.SDK_SESSION_STARTED:
                 this.logInfo("onEventOccurred SDK_SESSION_STARTED");
 
-                this.pythonCall("onHelpshiftSessionStarted");
+                this.nativeCall("onHelpshiftSessionStarted");
                 break;
             case HelpshiftEvent.SDK_SESSION_ENDED:
                 this.logInfo("onEventOccurred SDK_SESSION_ENDED");
 
-                this.pythonCall("onHelpshiftSessionEnded");
+                this.nativeCall("onHelpshiftSessionEnded");
                 break;
             case HelpshiftEvent.RECEIVED_UNREAD_MESSAGE_COUNT:
                 Object DATA_MESSAGE_COUNT = data.get(HelpshiftEvent.DATA_MESSAGE_COUNT);
@@ -127,7 +127,7 @@ public class MengineHelpshiftPlugin extends MengineService implements HelpshiftE
                     , DATA_MESSAGE_COUNT_FROM_CACHE
                 );
 
-                this.pythonCall("onHelpshiftUnreadMessageCount", DATA_MESSAGE_COUNT, DATA_MESSAGE_COUNT_FROM_CACHE);
+                this.nativeCall("onHelpshiftUnreadMessageCount", DATA_MESSAGE_COUNT, DATA_MESSAGE_COUNT_FROM_CACHE);
                 break;
             case HelpshiftEvent.CONVERSATION_STATUS:
                 Object DATA_LATEST_ISSUE_ID = data.get(HelpshiftEvent.DATA_LATEST_ISSUE_ID);
@@ -140,7 +140,7 @@ public class MengineHelpshiftPlugin extends MengineService implements HelpshiftE
                     , DATA_IS_ISSUE_OPEN
                 );
 
-                this.pythonCall("onHelpshiftConversationStatus", DATA_LATEST_ISSUE_ID, DATA_LATEST_ISSUE_PUBLISH_ID, DATA_IS_ISSUE_OPEN);
+                this.nativeCall("onHelpshiftConversationStatus", DATA_LATEST_ISSUE_ID, DATA_LATEST_ISSUE_PUBLISH_ID, DATA_IS_ISSUE_OPEN);
                 break;
             case HelpshiftEvent.WIDGET_TOGGLE:
                 Object DATA_SDK_VISIBLE = data.get(HelpshiftEvent.DATA_SDK_VISIBLE);
@@ -149,7 +149,7 @@ public class MengineHelpshiftPlugin extends MengineService implements HelpshiftE
                     , DATA_SDK_VISIBLE
                 );
 
-                this.pythonCall("onHelpshiftWidgetToggle", DATA_SDK_VISIBLE);
+                this.nativeCall("onHelpshiftWidgetToggle", DATA_SDK_VISIBLE);
                 break;
             case HelpshiftEvent.CONVERSATION_START:
                 Object DATA_MESSAGE = data.get(HelpshiftEvent.DATA_MESSAGE);
@@ -158,7 +158,7 @@ public class MengineHelpshiftPlugin extends MengineService implements HelpshiftE
                     , DATA_MESSAGE
                 );
 
-                this.pythonCall("onHelpshiftConversationStart", DATA_MESSAGE);
+                this.nativeCall("onHelpshiftConversationStart", DATA_MESSAGE);
                 break;
             case HelpshiftEvent.MESSAGE_ADD:
                 Object DATA_MESSAGE_TYPE = data.get(HelpshiftEvent.DATA_MESSAGE_TYPE);
@@ -173,7 +173,7 @@ public class MengineHelpshiftPlugin extends MengineService implements HelpshiftE
                     , DATA_MESSAGE_TYPE_TEXT
                 );
 
-                this.pythonCall("onHelpshiftMessageAdd", DATA_MESSAGE_TYPE, DATA_MESSAGE_BODY, DATA_MESSAGE_TYPE_ATTACHMENT, DATA_MESSAGE_TYPE_TEXT);
+                this.nativeCall("onHelpshiftMessageAdd", DATA_MESSAGE_TYPE, DATA_MESSAGE_BODY, DATA_MESSAGE_TYPE_ATTACHMENT, DATA_MESSAGE_TYPE_TEXT);
                 break;
             case HelpshiftEvent.CSAT_SUBMIT:
                 Object DATA_CSAT_RATING = data.get(HelpshiftEvent.DATA_CSAT_RATING);
@@ -184,27 +184,27 @@ public class MengineHelpshiftPlugin extends MengineService implements HelpshiftE
                     , DATA_ADDITIONAL_FEEDBACK
                 );
 
-                this.pythonCall("onHelpshiftCSATSubmit", DATA_CSAT_RATING, DATA_ADDITIONAL_FEEDBACK);
+                this.nativeCall("onHelpshiftCSATSubmit", DATA_CSAT_RATING, DATA_ADDITIONAL_FEEDBACK);
                 break;
             case HelpshiftEvent.CONVERSATION_END:
                 this.logInfo("onEventOccurred CONVERSATION_END");
 
-                this.pythonCall("onHelpshiftConversationEnd");
+                this.nativeCall("onHelpshiftConversationEnd");
                 break;
             case HelpshiftEvent.CONVERSATION_REJECTED:
                 this.logInfo("onEventOccurred CONVERSATION_REJECTED");
 
-                this.pythonCall("onHelpshiftConversationReject");
+                this.nativeCall("onHelpshiftConversationReject");
                 break;
             case HelpshiftEvent.CONVERSATION_RESOLVED:
                 this.logInfo("onEventOccurred CONVERSATION_RESOLVED");
 
-                this.pythonCall("onHelpshiftConversationResolved");
+                this.nativeCall("onHelpshiftConversationResolved");
                 break;
             case HelpshiftEvent.CONVERSATION_REOPENED:
                 this.logInfo("onEventOccurred CONVERSATION_REOPENED");
 
-                this.pythonCall("onHelpshiftConversationReopened");
+                this.nativeCall("onHelpshiftConversationReopened");
                 break;
             default:
                 this.logError("[ERROR] onEventOccurred UNKNOWN: %s"
@@ -221,15 +221,17 @@ public class MengineHelpshiftPlugin extends MengineService implements HelpshiftE
             case REASON_AUTH_TOKEN_NOT_PROVIDED:
                 this.logError("[ERROR] onUserAuthenticationFailure REASON_AUTH_TOKEN_NOT_PROVIDED");
 
-                this.pythonCall("onHelpshiftAuthenticationFailureAuthTokenNotProvided");
+                this.nativeCall("onHelpshiftAuthenticationFailureAuthTokenNotProvided");
+                break;
             case REASON_INVALID_AUTH_TOKEN:
                 this.logError("[ERROR] onUserAuthenticationFailure REASON_INVALID_AUTH_TOKEN");
 
-                this.pythonCall("onHelpshiftAuthenticationFailureInvalidAuthToken");
+                this.nativeCall("onHelpshiftAuthenticationFailureInvalidAuthToken");
+                break;
             case UNKNOWN:
                 this.logError("[ERROR] onUserAuthenticationFailure UNKNOWN");
 
-                this.pythonCall("onHelpshiftAuthenticationFailureUnknown");
+                this.nativeCall("onHelpshiftAuthenticationFailureUnknown");
                 break;
         }
     }

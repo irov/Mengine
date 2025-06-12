@@ -326,9 +326,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleAdvertisementScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
-        SCRIPT_SERVICE()
-            ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("AppleAdvertisement"), true );
-        
         pybind::def_function_args( _kernel, "appleAdvertisementSetBannerCallback", &Detail::appleAdvertisement_setBannerCallback );
         pybind::def_function_args( _kernel, "appleAdvertisementSetInterstitialCallback", &Detail::appleAdvertisement_setInterstitialCallback );
         pybind::def_function_args( _kernel, "appleAdvertisementSetRewardedCallback", &Detail::appleAdvertisement_setRewardedCallback );

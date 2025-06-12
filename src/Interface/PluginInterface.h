@@ -3,8 +3,8 @@
 #include "Interface/ServantInterface.h"
 
 #include "Kernel/ServiceRequiredList.h"
+#include "Kernel/ConstString.h"
 
-#include "Config/Char.h"
 #include "Config/UniqueId.h"
 
 #ifndef MENGINE_PLUGIN_NAME_MAX
@@ -18,7 +18,7 @@ namespace Mengine
         : public ServantInterface
     {
     public:
-        virtual const Char * getPluginName() const = 0;
+        virtual const ConstString & getPluginName() const = 0;
 
     public:
         virtual void setUID( UniqueId _uid ) = 0;
@@ -47,6 +47,7 @@ namespace Mengine
 //////////////////////////////////////////////////////////////////////////
 #define PLUGIN_DECLARE( Name )\
     public:\
-        const Mengine::Char * getPluginName() const override { return Name; };\
+        static_assert(sizeof(#Name) - 1 <= MENGINE_PLUGIN_NAME_MAX, "Plugin name too long");\
+        const Mengine::ConstString & getPluginName() const override { return STRINGIZE_STRING_LOCAL_I(Name); };\
     protected:
 //////////////////////////////////////////////////////////////////////////

@@ -671,7 +671,7 @@ namespace Mengine
         {
             ::Sleep( 200 );
 
-            return true;
+            return;
         }
 #endif
 
@@ -736,8 +736,6 @@ namespace Mengine
                 }
             }
         }
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32PlatformService::loopPlatform()

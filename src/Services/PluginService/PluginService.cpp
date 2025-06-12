@@ -8,6 +8,8 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/PluginHelper.h"
+#include "Kernel/ThreadMutexHelper.h"
+#include "Kernel/ThreadMutexScope.h"
 
 #include "Config/StdString.h"
 #include "Config/StdAlgorithm.h"
@@ -28,7 +30,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PluginService::_initializeService()
     {
-        //Empty
+        m_pluginsMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -36,6 +38,10 @@ namespace Mengine
     void PluginService::_finalizeService()
     {
         this->unloadPlugins();
+
+        m_pluginsMutex = nullptr;
+
+        m_availablePlugins.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     bool PluginService::loadPlugin( const Char * _dynamicLibraryName, const DocumentInterfacePtr & _doc )
@@ -109,10 +115,10 @@ namespace Mengine
 
         PluginInterfacePtr plugin_ptr = PluginInterfacePtr::from( plugin );
 
-        if( this->addPlugin( _dynamicLibrary, plugin_ptr ) == false )
+        if( this->addPlugin( plugin_ptr, _dynamicLibrary ) == false )
         {
             LOGGER_ERROR( "invalid create plugin '%s'"
-                , plugin->getPluginName()
+                , plugin->getPluginName().c_str()
             );
 
             return false;
@@ -167,19 +173,19 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PluginService::addPlugin( const DynamicLibraryInterfacePtr & _dynamicLibrary, const PluginInterfacePtr & _plugin )
+    bool PluginService::addPlugin( const PluginInterfacePtr & _plugin, const DynamicLibraryInterfacePtr & _dynamicLibrary )
     {
         if( _plugin == nullptr )
         {
             return false;
         }
 
-        const Char * name = _plugin->getPluginName();
+        const ConstString & pluginName = _plugin->getPluginName();
 
-        if( this->hasPlugin( name ) == true )
+        if( this->hasPlugin( pluginName ) == true )
         {
             LOGGER_ERROR( "already exist plugin '%s'"
-                , _plugin->getPluginName()
+                , _plugin->getPluginName().c_str()
             );
 
             return false;
@@ -188,18 +194,15 @@ namespace Mengine
         if( _plugin->initializePlugin() == false )
         {
             LOGGER_ERROR( "invalid initialize plugin '%s'"
-                , _plugin->getPluginName()
+                , _plugin->getPluginName().c_str()
             );
 
             return false;
         }
 
-        MENGINE_ASSERTION_FATAL( StdString::strlen( name ) < MENGINE_PLUGIN_NAME_MAX, "plugin name '%s' too long"
-            , name
-        );
+        this->setAvailablePlugin( pluginName, true );
 
         PluginDesc desc;
-        desc.name.assign( name );
         desc.dynamicLibrary = _dynamicLibrary;
         desc.plugin = _plugin;
 
@@ -228,6 +231,10 @@ namespace Mengine
                 continue;
             }
 
+            const ConstString & pluginName = _plugin->getPluginName();
+
+            this->setAvailablePlugin( pluginName, false );
+
             desc.plugin->finalizePlugin();
             desc.plugin = nullptr;
 
@@ -241,7 +248,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PluginService::hasPlugin( const Char * _name ) const
+    bool PluginService::hasPlugin( const ConstString & _pluginName ) const
     {
         for( const PluginDesc & desc : m_plugins )
         {
@@ -250,7 +257,9 @@ namespace Mengine
                 continue;
             }
 
-            if( desc.name.compare( _name ) != 0 )
+            const ConstString & pluginName = desc.plugin->getPluginName();
+
+            if( pluginName != _pluginName )
             {
                 continue;
             }
@@ -261,7 +270,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    const PluginInterfacePtr & PluginService::getPlugin( const Char * _name ) const
+    const PluginInterfacePtr & PluginService::getPlugin( const ConstString & _pluginName ) const
     {
         for( const PluginDesc & desc : m_plugins )
         {
@@ -270,7 +279,9 @@ namespace Mengine
                 continue;
             }
 
-            if( desc.name.compare( _name ) != 0 )
+            const ConstString & pluginName = desc.plugin->getPluginName();
+
+            if( pluginName != _pluginName )
             {
                 continue;
             }
@@ -281,6 +292,29 @@ namespace Mengine
         }
 
         return PluginInterfacePtr::none();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PluginService::setAvailablePlugin( const ConstString & _pluginName, bool _available )
+    {
+        MENGINE_THREAD_MUTEX_SCOPE( m_pluginsMutex );
+
+        m_availablePlugins.insert_or_assign( _pluginName, _available );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PluginService::isAvailablePlugin( const ConstString & _pluginName ) const
+    {
+        MENGINE_THREAD_MUTEX_SCOPE( m_pluginsMutex );
+
+        MapAvailablePlugins::const_iterator it_found = m_availablePlugins.find( _pluginName );
+
+        if( it_found == m_availablePlugins.end() )
+        {
+            return false;
+        }
+
+        bool available = it_found->second;
+
+        return available;
     }
     //////////////////////////////////////////////////////////////////////////
 }

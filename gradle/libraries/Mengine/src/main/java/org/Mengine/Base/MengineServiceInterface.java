@@ -73,7 +73,7 @@ public interface MengineServiceInterface {
 
     MengineAnalyticsEventBuilder buildEvent(@Size(min = 1L,max = 40L) String name);
 
-    void pythonCall(String method, Object ... args);
+    void nativeCall(String method, Object ... args);
 
     void activateSemaphore(String name);
     void deactivateSemaphore(String name);

@@ -25,15 +25,12 @@
 #include "Interface/MemoryServiceInterface.h"
 #include "Interface/EnvironmentServiceInterface.h"
 
-#if defined(MENGINE_PLATFORM_ANDROID)
-#   include "Interface/AndroidKernelServiceInterface.h"
-#endif
-
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonDocumentTraceback.h"
 #include "Environment/Python/PythonCallbackProvider.h"
 
 #if defined(MENGINE_PLATFORM_ANDROID)
+#   include "Environment/Android/AndroidKernelServiceInterface.h"
 #   include "Environment/Android/AndroidPlatformServiceExtensionInterface.h"
 #endif
 

@@ -117,7 +117,7 @@ namespace Mengine
         [AppleSemaphoreService.sharedInstance activateSemaphore:ns_name];
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleNativePythonService::waitSemaphore( const ConstString & _name, const AppleSemaphoreListenerInterfacePtr & _listener )
+    AppleSemaphoreListenerInterfacePtr AppleNativePythonService::waitSemaphore( const ConstString & _name, const AppleSemaphoreListenerInterfacePtr & _listener )
     {
         LOGGER_INFO( "apple", "wait semaphore '%s'"
             , _name.c_str()
@@ -128,6 +128,8 @@ namespace Mengine
         AppleSemaphoreListenerNSProxy * proxy = [[AppleSemaphoreListenerNSProxy alloc] initWithListener:_listener];
         
         [AppleSemaphoreService.sharedInstance waitSemaphore:ns_name withListener:proxy];
+
+        return _listener;
     }
     //////////////////////////////////////////////////////////////////////////
 }

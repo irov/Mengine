@@ -176,9 +176,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleStoreInAppPurchaseScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
-        SCRIPT_SERVICE()
-            ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("AppleStoreInAppPurchase"), true );
-        
         AppleStoreInAppPurchaseServiceInterface * service = APPLE_STOREINAPPPURCHASE_SERVICE();
 
         pybind::def_function_args( _kernel, "appleStoreInAppPurchaseSetPaymentTransactionProvider", &Detail::AppleStoreInAppPurchase_setPaymentTransactionProvider );

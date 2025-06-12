@@ -19,6 +19,9 @@ src
     PythonAndroidSemaphoreListener.h
     PythonAndroidSemaphoreListener.cpp
     
+    PythonAndroidPluginCallback.h
+    PythonAndroidPluginCallback.cpp
+    
     AndroidNativePythonCallback.h
     AndroidNativePythonCallback.cpp
 )

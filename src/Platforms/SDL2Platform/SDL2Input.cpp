@@ -222,6 +222,13 @@ namespace Mengine
 
                 ETouchCode fingerIndex = this->getFingerIndex_( fingerId );
 
+                if( fingerIndex == TC_TOUCH_INVALID )
+                {
+                    LOGGER_INFO( "platform", "SDL_FINGERMOTION unknown touch" );
+
+                    return;
+                }
+
                 float x = _event.tfinger.x;
                 float y = _event.tfinger.y;
                 float dx = _event.tfinger.dx;
@@ -236,6 +243,13 @@ namespace Mengine
 
                 ETouchCode fingerIndex = this->acquireFingerIndex_( fingerId );
 
+                if( fingerIndex == TC_TOUCH_INVALID )
+                {
+                    LOGGER_INFO( "platform", "SDL_FINGERDOWN no free touch" );
+
+                    return;
+                }
+
                 float x = _event.tfinger.x;
                 float y = _event.tfinger.y;
                 float pressure = _event.tfinger.pressure;
@@ -247,6 +261,13 @@ namespace Mengine
                 SDL_FingerID fingerId = _event.tfinger.fingerId;
 
                 ETouchCode fingerIndex = this->releaseFingerIndex_( fingerId );
+
+                if( fingerIndex == TC_TOUCH_INVALID )
+                {
+                    LOGGER_INFO( "platform", "SDL_FINGERUP unknown touch" );
+
+                    return;
+                }
 
                 float x = _event.tfinger.x;
                 float y = _event.tfinger.y;

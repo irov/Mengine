@@ -1,6 +1,7 @@
 #include "TexturepackerScriptEmbedding.h"
 
 #include "Interface/PrototypeServiceInterface.h"
+#include "Interface/PluginServiceInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonScriptWrapper.h"
@@ -47,9 +48,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TexturepackerScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
-        SCRIPT_SERVICE()
-            ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("Texturepacker"), true );
-
         pybind::interface_<ResourceTexturepacker, pybind::bases<Resource>>( _kernel, "ResourceTexturepacker", false )
             .def_static( "getFrame", &Detail::ResourceTexturepacker_getFrame )
             ;

@@ -117,9 +117,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleFacebookScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
-        SCRIPT_SERVICE()
-            ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("AppleFacebook"), true );
-
         AppleFacebookServiceInterface * service = APPLE_FACEBOOK_SERVICE();
 
         pybind::def_function_args( _kernel, "appleFacebookSetProvider", &Detail::AppleFacebook_setProvider );

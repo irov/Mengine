@@ -12,7 +12,6 @@
 #include "Interface/DateTimeSystemInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/EnvironmentServiceInterface.h"
-#include "Interface/AndroidKernelServiceInterface.h"
 #include "Interface/AccountServiceInterface.h"
 #include "Interface/AnalyticsServiceInterface.h"
 
@@ -23,6 +22,7 @@
 #include "Environment/Android/AndroidActivityHelper.h"
 #include "Environment/Android/AndroidFragmentHelper.h"
 #include "Environment/Android/AndroidSemaphoreListenerInterface.h"
+#include "Environment/Android/AndroidKernelServiceInterface.h"
 
 #include "AndroidAnalyticsEventProvider.h"
 #include "AndroidProxyLogger.h"
@@ -83,6 +83,8 @@
 //////////////////////////////////////////////////////////////////////////
 extern "C"
 {
+    //////////////////////////////////////////////////////////////////////////
+    static volatile bool g_androidPlatformActived = true;
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT jstring JNICALL MENGINE_JAVA_INTERFACE( AndroidEnvironmentService_1getCompanyName )(JNIEnv * env, jclass cls)
     {
@@ -220,6 +222,11 @@ extern "C"
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1surfaceCreatedEvent )(JNIEnv * env, jclass cls, jobject surface)
     {
+        if( g_androidPlatformActived == false )
+        {
+            return;
+        }
+
         ANativeWindow * nativeWindow = ANativeWindow_fromSurface( env, surface );
 
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
@@ -230,6 +237,11 @@ extern "C"
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1surfaceDestroyedEvent )(JNIEnv * env, jclass cls)
     {
+        if( g_androidPlatformActived == false )
+        {
+            return;
+        }
+
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
@@ -238,6 +250,11 @@ extern "C"
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1surfaceChangedEvent )(JNIEnv * env, jclass cls, jobject surface, jint surfaceWidth, jint surfaceHeight, jint deviceWidth, jint deviceHeight, jfloat rate)
     {
+        if( g_androidPlatformActived == false )
+        {
+            return;
+        }
+
         ANativeWindow * nativeWindow = ANativeWindow_fromSurface( env, surface );
 
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
@@ -248,6 +265,11 @@ extern "C"
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1keyEvent )(JNIEnv * env, jclass cls, jboolean isDown, jint keyCode, jint repeatCount)
     {
+        if( g_androidPlatformActived == false )
+        {
+            return;
+        }
+
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
@@ -256,6 +278,11 @@ extern "C"
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1textEvent )(JNIEnv * env, jclass cls, jint unicode)
     {
+        if( g_androidPlatformActived == false )
+        {
+            return;
+        }
+
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
@@ -264,6 +291,11 @@ extern "C"
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1touchEvent )(JNIEnv * env, jclass cls, jint action, jint pointerId, jfloat x, jfloat y, jfloat pressure)
     {
+        if( g_androidPlatformActived == false )
+        {
+            return;
+        }
+
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
@@ -272,6 +304,11 @@ extern "C"
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1accelerationEvent )(JNIEnv * env, jclass cls, jfloat x, jfloat y, jfloat z)
     {
+        if( g_androidPlatformActived == false )
+        {
+            return;
+        }
+
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
@@ -280,6 +317,11 @@ extern "C"
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1pauseEvent )(JNIEnv * env, jclass cls)
     {
+        if( g_androidPlatformActived == false )
+        {
+            return;
+        }
+
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
@@ -288,6 +330,11 @@ extern "C"
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1resumeEvent )(JNIEnv * env, jclass cls)
     {
+        if( g_androidPlatformActived == false )
+        {
+            return;
+        }
+
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
@@ -296,6 +343,11 @@ extern "C"
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1stopEvent )(JNIEnv * env, jclass cls)
     {
+        if( g_androidPlatformActived == false )
+        {
+            return;
+        }
+
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
@@ -304,6 +356,11 @@ extern "C"
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1startEvent )(JNIEnv * env, jclass cls)
     {
+        if( g_androidPlatformActived == false )
+        {
+            return;
+        }
+
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
@@ -312,6 +369,11 @@ extern "C"
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1restartEvent )(JNIEnv * env, jclass cls)
     {
+        if( g_androidPlatformActived == false )
+        {
+            return;
+        }
+
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
@@ -320,6 +382,11 @@ extern "C"
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1destroyEvent )(JNIEnv * env, jclass cls)
     {
+        if( g_androidPlatformActived == false )
+        {
+            return;
+        }
+
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
@@ -328,6 +395,11 @@ extern "C"
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1clipboardChangedEvent )(JNIEnv * env, jclass cls)
     {
+        if( g_androidPlatformActived == false )
+        {
+            return;
+        }
+
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
@@ -336,6 +408,11 @@ extern "C"
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1windowFocusChangedEvent )(JNIEnv * env, jclass cls, jboolean _focus)
     {
+        if( g_androidPlatformActived == false )
+        {
+            return;
+        }
+
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
@@ -344,6 +421,13 @@ extern "C"
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1quitEvent )(JNIEnv * env, jclass cls)
     {
+        if( g_androidPlatformActived == false )
+        {
+            return;
+        }
+
+        g_androidPlatformActived = false;
+
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
@@ -352,6 +436,11 @@ extern "C"
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1lowMemory )(JNIEnv * env, jclass cls)
     {
+        if( g_androidPlatformActived == false )
+        {
+            return;
+        }
+
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
@@ -360,6 +449,11 @@ extern "C"
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1trimMemory )(JNIEnv * env, jclass cls, jint level)
     {
+        if( g_androidPlatformActived == false )
+        {
+            return;
+        }
+
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
@@ -368,6 +462,11 @@ extern "C"
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1changeLocale )(JNIEnv * env, jclass cls, jstring _language)
     {
+        if( g_androidPlatformActived == false )
+        {
+            return;
+        }
+
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
@@ -432,7 +531,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////    
     size_t AndroidPlatformService::getCurrentPath( Char * const _currentPath ) const
     {
-        _currentPath[0] = L'\0';
+        _currentPath[0] = '\0';
 
         return 0;
     }
@@ -487,14 +586,14 @@ namespace Mengine
 
         jenv->DeleteLocalRef( jlocale );
 
-        if( deviceLanguageLen < MENGINE_LOCALE_LANGUAGE_SIZE )
+        if( deviceLanguageLen != MENGINE_LOCALE_LANGUAGE_SIZE )
         {
             LOGGER_ERROR( "invalid get user locale language" );
 
             return false;
         }
 
-        StdString::strncpy( _userLocale, deviceLanguage, MENGINE_LOCALE_LANGUAGE_SIZE );
+        StdString::strcpy_safe( _userLocale, deviceLanguage, MENGINE_LOCALE_LANGUAGE_SIZE );
 
         return true;
     }
@@ -568,7 +667,7 @@ namespace Mengine
 
         uint32_t deviceSeed = Helper::generateRandomDeviceSeed();
 
-        LOGGER_INFO_PROTECTED( "plarform", "Device Seed: %u"
+        LOGGER_INFO_PROTECTED( "platform", "Device Seed: %u"
             , deviceSeed
         );
 
@@ -590,6 +689,15 @@ namespace Mengine
         m_eventsMutex = Helper::createThreadMutex(MENGINE_DOCUMENT_FACTORABLE );
 
         EGLDisplay eglDisplay = ::eglGetDisplay( EGL_DEFAULT_DISPLAY );
+
+        if( eglDisplay == EGL_NO_DISPLAY )
+        {
+            LOGGER_ERROR( "[egl] invalid get display [%d]"
+                , ::eglGetError()
+            );
+
+            return false;
+        }
 
         EGLint major;
         EGLint minor;
@@ -648,6 +756,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::_finalizeService()
     {
+        LOGGER_INFO( "platform", "finalize" );
+
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_BASE_SERVICES );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
 
@@ -696,10 +806,7 @@ namespace Mengine
             return false;
         }
 
-        if( this->tickPlatform( 0.f, false, false, false ) == false )
-        {
-            return false;
-        }
+        this->tickPlatform( 0.f, false, false, false );
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_RUN );
 
@@ -712,7 +819,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidPlatformService::tickPlatform( float _frameTime, bool _render, bool _flush, bool _pause )
+    void AndroidPlatformService::tickPlatform( float _frameTime, bool _render, bool _flush, bool _pause )
     {
         MENGINE_UNUSED( _pause );
         MENGINE_UNUSED( _flush );
@@ -735,41 +842,55 @@ namespace Mengine
         APPLICATION_SERVICE()
             ->endUpdate();
 
-        if( m_activityState != EAS_RESUME && m_activityState != EAS_START )
+        if( m_active == false )
         {
-            return true;
+            return;
         }
 
+        if( m_activityState != EAS_RESUME && m_activityState != EAS_START )
+        {
+            return;
+        }
+
+        if( _render == false )
+        {
+            return;
+        }
+
+        MENGINE_THREAD_MUTEX_SCOPE( m_nativeWindowMutex );
         MENGINE_THREAD_MUTEX_SCOPE( m_eglSurfaceMutex );
 
         if( m_nativeWindow == nullptr || m_eglSurface == EGL_NO_SURFACE || m_eglContext == EGL_NO_CONTEXT )
         {
-            return true;
+            return;
         }
 
-        if( _render == true )
+        bool sucessful = APPLICATION_SERVICE()
+            ->render();
+
+        if( sucessful == true && _flush == true )
         {
-            bool sucessful = APPLICATION_SERVICE()
-                ->render();
-
-            if( sucessful == true && _flush == true )
-            {
-                APPLICATION_SERVICE()
-                    ->flush();
-            }
+            APPLICATION_SERVICE()
+                ->flush();
         }
 
-        if( m_nativeWindow != nullptr && m_eglDisplay != EGL_NO_DISPLAY && m_eglSurface != EGL_NO_SURFACE )
+        if( ::eglMakeCurrent( m_eglDisplay, m_eglSurface, m_eglSurface, m_eglContext ) == EGL_FALSE )
         {
-            if( ::eglSwapBuffers( m_eglDisplay, m_eglSurface ) == EGL_FALSE )
-            {
-                LOGGER_WARNING( "[egl] invalid swap buffers [%d]"
-                    , ::eglGetError()
-                );
-            }
+            LOGGER_WARNING( "[egl] failed to make current [%d]"
+                , ::eglGetError()
+            );
+
+            return;
         }
 
-        return true;
+        if( ::eglSwapBuffers( m_eglDisplay, m_eglSurface ) == EGL_FALSE )
+        {
+            LOGGER_WARNING( "[egl] invalid swap buffers [%d]"
+                , ::eglGetError()
+            );
+
+            return;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::loopPlatform()
@@ -789,10 +910,7 @@ namespace Mengine
 
             m_prevTime = currentTime;
 
-            if( this->tickPlatform( frameTime, true, true, true ) == false )
-            {
-                break;
-            }
+            this->tickPlatform( frameTime, true, true, true );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1252,7 +1370,7 @@ namespace Mengine
         jstring j_caption = jenv->NewStringUTF( _caption );
         jstring j_message = jenv->NewStringUTF( str );
 
-        Helper::AndroidCallVoidActivityMethod( jenv, "showAlertDialog", "(Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;)V", j_caption, j_message, nullptr );
+        Helper::AndroidCallVoidActivityMethod( jenv, "showAlertDialog", "(Ljava/lang/String;Ljava/lang/String;)V", j_caption, j_message );
 
         jenv->DeleteLocalRef( j_caption );
         jenv->DeleteLocalRef( j_message );
@@ -1284,7 +1402,7 @@ namespace Mengine
 
         const Char * text_str = jenv->GetStringUTFChars( j_text, nullptr );
 
-        StdString::strncpy( _value, text_str, _capacity );
+        StdString::strcpy_safe( _value, text_str, _capacity );
 
         jenv->ReleaseStringUTFChars( j_text, text_str );
 
@@ -1643,6 +1761,15 @@ namespace Mengine
             {
                 ETouchCode fingerIndex = this->acquireFingerIndex_( _pointerId );
 
+                if( fingerIndex == TC_TOUCH_INVALID )
+                {
+                    LOGGER_INFO( "platform", "failed to acquire finger index for pointerId %d"
+                        , _pointerId
+                    );
+
+                    return;
+                }
+
                 m_currentFingersX[fingerIndex] = _x;
                 m_currentFingersY[fingerIndex] = _y;
                 m_currentFingersPressure[fingerIndex] = _pressure;
@@ -1661,6 +1788,15 @@ namespace Mengine
             {
                 ETouchCode fingerIndex = this->releaseFingerIndex_( _pointerId );
 
+                if( fingerIndex == TC_TOUCH_INVALID )
+                {
+                    LOGGER_INFO( "platform", "failed to release finger index for pointerId %d"
+                        , _pointerId
+                    );
+
+                    return;
+                }
+
                 m_currentFingersX[fingerIndex] = _x;
                 m_currentFingersY[fingerIndex] = _y;
                 m_currentFingersPressure[fingerIndex] = _pressure;
@@ -1677,6 +1813,15 @@ namespace Mengine
         case 2: //ACTION_MOVE
             {
                 ETouchCode fingerIndex = this->getFingerIndex_( _pointerId );
+
+                if( fingerIndex == TC_TOUCH_INVALID )
+                {
+                    LOGGER_INFO( "platform", "failed to get finger index for pointerId %d"
+                        , _pointerId
+                    );
+
+                    return;
+                }
 
                 jfloat previousX = m_currentFingersX[fingerIndex];
                 jfloat previousY = m_currentFingersY[fingerIndex];
@@ -1997,7 +2142,7 @@ namespace Mengine
             KC_UNASSIGNED,            /* AKEYCODE_PASTE */
         };
 
-        if( _keyCode >= sizeof(Android_Keycodes) )
+        if( _keyCode < 0 || _keyCode >= MENGINE_ARRAY_SIZE(Android_Keycodes) )
         {
             return;
         }
@@ -2187,7 +2332,7 @@ namespace Mengine
         PlatformUnionEvent event;
         event.type = PlatformUnionEvent::PET_CHANGE_LOCALE;
 
-        StdString::strncpy( event.data.changeLocale.language, _language, MENGINE_LOCALE_LANGUAGE_SIZE );
+        StdString::strcpy_safe( event.data.changeLocale.language, _language, MENGINE_LOCALE_LANGUAGE_SIZE );
 
         LOGGER_INFO( "platform", "change locale event: %s"
              , _language
@@ -2263,19 +2408,36 @@ namespace Mengine
 
         int32_t format_got = ANativeWindow_getFormat( m_nativeWindow );
 
+        LOGGER_INFO( "platform", "native window format: %d"
+            , format_got
+        );
+
+        if( ::eglBindAPI( EGL_OPENGL_ES_API ) == EGL_FALSE )
+        {
+            LOGGER_WARNING( "[egl] failed to bind ES api [%d]"
+                , ::eglGetError()
+            );
+        }
+
+        EGLint base_red_size = 8;
+        EGLint base_green_size = 8;
+        EGLint base_blue_size = 8;
+        EGLint base_alpha_size = 8;
+        EGLint base_depth_size = 24;
+
         const EGLint configAttribs[] = {
             EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
-            EGL_RED_SIZE, 8,
-            EGL_GREEN_SIZE, 8,
-            EGL_BLUE_SIZE, 8,
-            EGL_ALPHA_SIZE, 8,
-            EGL_DEPTH_SIZE, 24,
+            EGL_RED_SIZE, base_red_size,
+            EGL_GREEN_SIZE, base_green_size,
+            EGL_BLUE_SIZE, base_blue_size,
+            EGL_ALPHA_SIZE, base_alpha_size,
+            EGL_DEPTH_SIZE, base_depth_size,
             EGL_NONE
         };
 
-        EGLConfig config;
+        EGLConfig configs[128];
         EGLint numConfigs;
-        if( ::eglChooseConfig( m_eglDisplay, configAttribs, &config, 1, &numConfigs ) == EGL_FALSE )
+        if( ::eglChooseConfig( m_eglDisplay, configAttribs, configs, MENGINE_ARRAY_SIZE(configs), &numConfigs ) == EGL_FALSE )
         {
             LOGGER_ERROR( "[egl] failed to choose config [%d]"
                 , ::eglGetError()
@@ -2284,24 +2446,99 @@ namespace Mengine
             return;
         }
 
+        if( numConfigs == 0 )
+        {
+            LOGGER_ERROR( "[egl] no configs found" );
+
+            return;
+        }
+
+        EGLint best_config_index = -1;
+        EGLint best_config_score = -1;
+
+        for( EGLint index = 0; index != numConfigs; ++index )
+        {
+            EGLint red;
+            EGLint green;
+            EGLint blue;
+            EGLint alpha;
+            EGLint depth;
+            ::eglGetConfigAttrib( m_eglDisplay, configs[index], EGL_RED_SIZE, &red );
+            ::eglGetConfigAttrib( m_eglDisplay, configs[index], EGL_GREEN_SIZE, &green );
+            ::eglGetConfigAttrib( m_eglDisplay, configs[index], EGL_BLUE_SIZE, &blue );
+            ::eglGetConfigAttrib( m_eglDisplay, configs[index], EGL_ALPHA_SIZE, &alpha );
+            ::eglGetConfigAttrib( m_eglDisplay, configs[index], EGL_DEPTH_SIZE, &depth );
+
+            EGLint red_score = red - base_red_size;
+            EGLint green_score = green - base_green_size;
+            EGLint blue_score = blue - base_blue_size;
+            EGLint alpha_score = alpha - base_alpha_size;
+            EGLint depth_score = depth - base_depth_size;
+
+            EGLint total_score = red_score + green_score + blue_score + alpha_score + depth_score;
+
+            if( best_config_score == -1 )
+            {
+                best_config_index = index;
+                best_config_score = total_score;
+            }
+            else if( total_score < best_config_score )
+            {
+                best_config_index = index;
+                best_config_score = total_score;
+            }
+        }
+
+        if( best_config_index == -1 )
+        {
+            LOGGER_ERROR( "[egl] no suitable config found" );
+
+            return;
+        }
+
+        EGLConfig best_config = configs[best_config_index];
+
+        EGLint result_red;
+        EGLint result_green;
+        EGLint result_blue;
+        EGLint result_alpha;
+        EGLint result_depth;
+        ::eglGetConfigAttrib( m_eglDisplay, best_config, EGL_RED_SIZE, &result_red );
+        ::eglGetConfigAttrib( m_eglDisplay, best_config, EGL_GREEN_SIZE, &result_green );
+        ::eglGetConfigAttrib( m_eglDisplay, best_config, EGL_BLUE_SIZE, &result_blue );
+        ::eglGetConfigAttrib( m_eglDisplay, best_config, EGL_ALPHA_SIZE, &result_alpha );
+        ::eglGetConfigAttrib( m_eglDisplay, best_config, EGL_DEPTH_SIZE, &result_depth );
+
+        LOGGER_MESSAGE( "[egl] config red: %d green: %d blue: %d alpha: %d depth: %d"
+            , result_red
+            , result_green
+            , result_blue
+            , result_alpha
+            , result_depth
+        );
+
         EGLint format_wanted = 0;
-        if( ::eglGetConfigAttrib( m_eglDisplay, config, EGL_NATIVE_VISUAL_ID, &format_wanted ) == EGL_FALSE )
+        if( ::eglGetConfigAttrib( m_eglDisplay, best_config, EGL_NATIVE_VISUAL_ID, &format_wanted ) == EGL_FALSE )
         {
             LOGGER_ERROR( "[egl] failed to get config attrib [%d]"
                 , ::eglGetError()
             );
+
+            return;
         }
 
-        int errSetBuffersGemometry = ANativeWindow_setBuffersGeometry( m_nativeWindow, 0, 0, format_wanted );
+        int errSetBuffersGeometry = ANativeWindow_setBuffersGeometry( m_nativeWindow, 0, 0, format_wanted );
 
-        if( errSetBuffersGemometry != 0 )
+        if( errSetBuffersGeometry != 0 )
         {
-            LOGGER_WARNING( "[egl] failed to set buffers geometry: %d"
-                , errSetBuffersGemometry
+            LOGGER_ERROR("[egl] failed to set buffers geometry: %d"
+                , errSetBuffersGeometry
             );
+
+            return;
         }
 
-        EGLSurface eglSurface = ::eglCreateWindowSurface( m_eglDisplay, config, m_nativeWindow, nullptr );
+        EGLSurface eglSurface = ::eglCreateWindowSurface( m_eglDisplay, best_config, m_nativeWindow, nullptr );
 
         if( eglSurface == EGL_NO_SURFACE )
         {
@@ -2316,15 +2553,8 @@ namespace Mengine
 
         EGLint width;
         EGLint height;
-        eglQuerySurface( m_eglDisplay, m_eglSurface, EGL_WIDTH, &width );
-        eglQuerySurface( m_eglDisplay, m_eglSurface, EGL_HEIGHT, &height );
-
-        if( ::eglBindAPI( EGL_OPENGL_ES_API ) == EGL_FALSE )
-        {
-            LOGGER_WARNING( "[egl] failed to bind ES api [%d]"
-                , ::eglGetError()
-            );
-        }
+        ::eglQuerySurface( m_eglDisplay, m_eglSurface, EGL_WIDTH, &width );
+        ::eglQuerySurface( m_eglDisplay, m_eglSurface, EGL_HEIGHT, &height );
 
         const EGLint contextAttribs[] = {
             EGL_CONTEXT_CLIENT_VERSION, 2,
@@ -2333,7 +2563,7 @@ namespace Mengine
 
         EGLContext eglShareContext = EGL_NO_CONTEXT;
 
-        EGLContext context = ::eglCreateContext( m_eglDisplay, config, eglShareContext, contextAttribs );
+        EGLContext context = ::eglCreateContext( m_eglDisplay, best_config, eglShareContext, contextAttribs );
 
         if( context == EGL_NO_CONTEXT )
         {
@@ -2478,6 +2708,14 @@ namespace Mengine
     bool AndroidPlatformService::hasEvent( PlatformUnionEvent::EPlatformEventType _type ) const
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_eventsMutex );
+
+        for( const PlatformUnionEvent & event : m_eventsAux )
+        {
+            if( event.type == _type )
+            {
+                return true;
+            }
+        }
 
         for( const PlatformUnionEvent & event : m_events )
         {

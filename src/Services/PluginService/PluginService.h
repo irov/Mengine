@@ -1,10 +1,12 @@
 #pragma once
 
 #include "Interface/PluginServiceInterface.h"
+#include "Interface/ThreadMutexInterface.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/StaticString.h"
 #include "Kernel/Vector.h"
+#include "Kernel/Map.h"
 
 namespace Mengine
 {
@@ -25,20 +27,28 @@ namespace Mengine
         void unloadPlugins() override;
 
     public:
-        bool addPlugin( const DynamicLibraryInterfacePtr & _dynamicLibrary, const PluginInterfacePtr & _plugin ) override;
+        bool addPlugin( const PluginInterfacePtr & _plugin, const DynamicLibraryInterfacePtr & _dynamicLibrary ) override;
         bool removePlugin( const PluginInterfacePtr & _plugin ) override;
-        bool hasPlugin( const Char * _name ) const override;
-        const PluginInterfacePtr & getPlugin( const Char * _name ) const override;
+        bool hasPlugin( const ConstString & _pluginName ) const override;
+        const PluginInterfacePtr & getPlugin( const ConstString & _pluginName ) const override;
+
+    public:
+        void setAvailablePlugin( const ConstString & _pluginName, bool _available ) override;
+        bool isAvailablePlugin( const ConstString & _pluginName ) const override;
 
     protected:
         struct PluginDesc
         {
-            StaticString<MENGINE_PLUGIN_NAME_MAX> name;
             DynamicLibraryInterfacePtr dynamicLibrary;
             PluginInterfacePtr plugin;
         };
 
         typedef Vector<PluginDesc> VectorPlugins;
         VectorPlugins m_plugins;
+
+        ThreadMutexInterfacePtr m_pluginsMutex;
+
+        typedef Map<ConstString, bool> MapAvailablePlugins;
+        MapAvailablePlugins m_availablePlugins;
     };
 }

@@ -120,17 +120,17 @@ namespace Mengine
                 Char extraInfo[1024 + 1] = {'\0'};
 
                 urlComponents.lpszScheme = scheme;
-                urlComponents.dwSchemeLength = sizeof( scheme ) / sizeof( Char );
+                urlComponents.dwSchemeLength = MENGINE_STATIC_STRING_LENGTH( scheme );
                 urlComponents.lpszHostName = hostName;
-                urlComponents.dwHostNameLength = sizeof( hostName ) / sizeof( Char );
+                urlComponents.dwHostNameLength = MENGINE_STATIC_STRING_LENGTH( hostName );
                 urlComponents.lpszUserName = userName;
-                urlComponents.dwUserNameLength = sizeof( userName ) / sizeof( Char );
+                urlComponents.dwUserNameLength = MENGINE_STATIC_STRING_LENGTH( userName );
                 urlComponents.lpszPassword = password;
-                urlComponents.dwPasswordLength = sizeof( password ) / sizeof( Char );
+                urlComponents.dwPasswordLength = MENGINE_STATIC_STRING_LENGTH( password );
                 urlComponents.lpszUrlPath = urlPath;
-                urlComponents.dwUrlPathLength = sizeof( urlPath ) / sizeof( Char );
+                urlComponents.dwUrlPathLength = MENGINE_STATIC_STRING_LENGTH( urlPath );
                 urlComponents.lpszExtraInfo = extraInfo;
-                urlComponents.dwExtraInfoLength = sizeof( extraInfo ) / sizeof( Char );
+                urlComponents.dwExtraInfoLength = MENGINE_STATIC_STRING_LENGTH( extraInfo );
 
                 const String & HTTP_URL = _request->getURL();
 

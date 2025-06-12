@@ -5,13 +5,12 @@
 #include "Environment/DirectX9/DX9RenderIncluder.h"
 #include "Environment/DirectX9/DX9RenderImageExtensionInterface.h"
 
+#include "DX9RenderTargetTexture.h"
+
 #include "Kernel/Factorable.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class DX9RenderTargetTexture, class RenderTargetInterface> DX9RenderTargetTexturePtr;
-    //////////////////////////////////////////////////////////////////////////
     class DX9RenderImageTarget
         : public RenderImageInterface
         , public DX9RenderImageExtensionInterface

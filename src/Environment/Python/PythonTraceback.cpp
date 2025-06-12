@@ -10,11 +10,11 @@ namespace Mengine
     {
         void getPythonTracebackMessage( Char * const _message, size_t _capacity, pybind::kernel_interface * _kernel, PyObject * _traceback )
         {
-            StdString::strncpy( _message, "Traceback:", _capacity );
+            StdString::strcpy_safe( _message, "Traceback:", _capacity );
 
             if( _traceback == nullptr || _kernel->traceback_check( _traceback ) == false )
             {
-                StdString::strncpy( _message, "No traceback available.", _capacity );
+                StdString::strcpy_safe( _message, "No traceback available.", _capacity );
 
                 return;
             }

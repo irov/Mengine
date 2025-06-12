@@ -1,17 +1,17 @@
-#include "MixerValue.h"
+#include "MixerAveraging.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    MixerValue::MixerValue()
+    MixerAveraging::MixerAveraging()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    MixerValue::~MixerValue()
+    MixerAveraging::~MixerAveraging()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void MixerValue::setValue( const ConstString & _type, float _value, float _from, float _speed, bool _force )
+    void MixerAveraging::setValue( const ConstString & _type, float _value, float _weight, float _from, float _speed, bool _force )
     {
         for( Element & mixer : m_mixer )
         {
@@ -27,12 +27,8 @@ namespace Mengine
 
             mixer.follower.setFollow( _value );
             mixer.follower.setSpeed( _speed );
+            mixer.weight = _weight;
 
-            return;
-        }
-
-        if( _value == 1.f && _from == 1.f )
-        {
             return;
         }
 
@@ -41,11 +37,12 @@ namespace Mengine
         el.follower.setValue( _from );
         el.follower.setFollow( _value );
         el.follower.setSpeed( _speed );
+        el.weight = _weight;
 
         m_mixer.emplace_back( el );
     }
     //////////////////////////////////////////////////////////////////////////
-    float MixerValue::getValue( const ConstString & _type ) const
+    float MixerAveraging::getValue( const ConstString & _type ) const
     {
         for( const Element & mixer : m_mixer )
         {
@@ -59,24 +56,34 @@ namespace Mengine
             return value;
         }
 
-        return 1.f;
+        return 0.f;
     }
     //////////////////////////////////////////////////////////////////////////
-    float MixerValue::mixValue() const
+    float MixerAveraging::mixValue() const
     {
-        float mix = 1.f;
+        if( m_mixer.empty() == true )
+        {
+            return 0.f;
+        }
+
+        float mix = 0.f;
+        float total = 0.f;
 
         for( const Element & mixer : m_mixer )
         {
             float value = mixer.follower.getValue();
+            float weight = mixer.weight;
 
-            mix *= value;
+            mix += value;
+            total += weight;
         }
+
+        mix /= total;
 
         return mix;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MixerValue::update( const UpdateContext * _context )
+    bool MixerAveraging::update( const UpdateContext * _context )
     {
         bool process = false;
 

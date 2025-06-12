@@ -67,6 +67,7 @@ android {
                         arguments.add(argument)
                     }
 
+                    arguments.add("-DANDROID_SANITIZE=address")
                     arguments.add("-DCMAKE_BUILD_TYPE:STRING=Debug")
 
                     if (MENGINE_APP_BUILD_ASSERTION_DEBUG != -1) {
@@ -89,6 +90,14 @@ android {
                         cppFlags += ["-DMENGINE_ASSERTION_DEBUG=${MENGINE_APP_BUILD_ASSERTION_DEBUG}"]
                     }
                 }
+            }
+        }
+    }
+
+    buildTypes {
+        debug {
+            packagingOptions {
+                doNotStrip "**/libclang_rt.asan*.so"
             }
         }
     }

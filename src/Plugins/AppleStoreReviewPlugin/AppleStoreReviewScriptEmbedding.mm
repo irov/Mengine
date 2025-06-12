@@ -34,9 +34,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleStoreReviewScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
-        SCRIPT_SERVICE()
-            ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("AppleStoreReview"), true );
-        
         pybind::def_function( _kernel, "appleStoreReviewLaunchTheInAppReview", &Detail::AppleStoreReviewApplicationDelegate_launchTheInAppReview );
 
         return true;
@@ -44,9 +41,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleStoreReviewScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
-        SCRIPT_SERVICE()
-            ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("AppleStoreReview"), false );
-        
         _kernel->remove_from_module( "appleStoreReviewLaunchTheInAppReview", nullptr );
     }
     //////////////////////////////////////////////////////////////////////////

@@ -3,7 +3,7 @@
 #include "Kernel/EnumeratorHelper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/PrototypeHelper.h"
-#include "Kernel/MixerValue.h"
+#include "Kernel/MixerMultiplicative.h"
 
 namespace Mengine
 {
@@ -63,7 +63,7 @@ namespace Mengine
         }
 
         m_mixerVolume = PROTOTYPE_SERVICE()
-            ->generatePrototype( ConstString::none(), MixerValue::getFactorableType(), MENGINE_DOCUMENT_FACTORABLE );
+            ->generatePrototype( ConstString::none(), MixerMultiplicative::getFactorableType(), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -198,7 +198,7 @@ namespace Mengine
         return m_timeLeft;
     }
     //////////////////////////////////////////////////////////////////////////
-    const MixerValueInterfacePtr & SoundIdentity::getMixerVolume() const
+    const MixerMultiplicativeInterfacePtr & SoundIdentity::getMixerVolume() const
     {
         return m_mixerVolume;
     }

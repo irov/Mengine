@@ -52,10 +52,6 @@ namespace Mengine
         void removeGlobalModule( const Char * _name ) override;
 
     public:
-        void setAvailablePlugin( const ConstString & _name, bool _available ) override;
-        bool isAvailablePlugin( const ConstString & _name ) const override;
-
-    public:
         void addModulePath( const FileGroupInterfacePtr & _fileGroup, const VectorScriptModulePack & _modules ) override;
         void removeModulePath( const FileGroupInterfacePtr & _fileGroup, const VectorScriptModulePack & _modules ) override;
 
@@ -115,14 +111,9 @@ namespace Mengine
     protected:
         pybind::kernel_interface * m_kernel;
 
-        ThreadMutexInterfacePtr m_pluginsMutex;
-
         ScriptModuleFinderPtr m_moduleFinder;
 
         PyObject * m_moduleMengine;
-
-        typedef Map<ConstString, bool> MapAvailablePlugins;
-        MapAvailablePlugins m_availablePlugins;
 
         VectorScriptModulePack m_bootstrapperModules;
 

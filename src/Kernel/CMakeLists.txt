@@ -356,6 +356,11 @@ Resource\\\\Sound
 )
 
 ADD_FILTER(
+Resource\\\\Cursor
+    ResourceCursor.h
+)
+
+ADD_FILTER(
 Surface\\\\SurfaceSound
     SurfaceSound.cpp
     SurfaceSound.h
@@ -763,8 +768,11 @@ Core
     MixinPointer.h
     Magicable.h
         
-    MixerValue.h
-    MixerValue.cpp
+    MixerMultiplicative.h
+    MixerMultiplicative.cpp
+    
+    MixerAveraging.h
+    MixerAveraging.cpp
     
     MixerBoolean.h
     MixerBoolean.cpp

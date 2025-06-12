@@ -163,7 +163,7 @@ namespace Mengine
 
         for( ;; )
         {
-            StdString::strncpy( paths[paths_count++], correctDirectory, MENGINE_MAX_PATH );
+            StdString::strcpy_safe( paths[paths_count++], correctDirectory, MENGINE_MAX_PATH );
 
             if( Helper::pathRemoveFileSpecA( correctDirectory, MENGINE_PATH_DELIM_BACKSLASH ) == false )
             {

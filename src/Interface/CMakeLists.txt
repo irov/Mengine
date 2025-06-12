@@ -130,14 +130,14 @@ Common
     HttpSystemInterface.h
     DebugFileInterface.h
     TimerServiceInterface.h
-    MixerValueInterface.h
+    MixerMultiplicativeInterface.h
+    MixerAveragingInterface.h
     MixerBooleanInterface.h
     CryptographySystemInterface.h
     HttpResponseInterface.h
     HttpRequestInterface.h
     HttpReceiverInterface.h
     EnvironmentServiceInterface.h
-    AndroidKernelServiceInterface.h
     AndroidAssetServiceInterface.h
     AppleKernelServiceInterface.h
     iOSKernelServiceInterface.h

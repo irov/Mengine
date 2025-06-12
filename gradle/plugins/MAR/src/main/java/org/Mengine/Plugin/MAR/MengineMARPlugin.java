@@ -241,7 +241,7 @@ public class MengineMARPlugin extends MengineService implements MARInitListener,
                     , extraData
                 );
 
-                MengineMARPlugin.this.pythonCall("onMarSDKUpdateData", status, serialNumber, gameArchive, extraData);
+                MengineMARPlugin.this.nativeCall("onMarSDKUpdateData", status, serialNumber, gameArchive, extraData);
             }
         });
     }
@@ -266,7 +266,7 @@ public class MengineMARPlugin extends MengineService implements MARInitListener,
                     , extraData
                 );
 
-                MengineMARPlugin.this.pythonCall("onMarSDKGetData", status, serialNumber, gameArchive, extraData);
+                MengineMARPlugin.this.nativeCall("onMarSDKGetData", status, serialNumber, gameArchive, extraData);
             }
         });
     }
@@ -295,7 +295,7 @@ public class MengineMARPlugin extends MengineService implements MARInitListener,
                 , code
             );
 
-            this.pythonCall("onMarSDKSaveClipboard", hasClipboardText, code);
+            this.nativeCall("onMarSDKSaveClipboard", hasClipboardText, code);
         } catch (final Exception e) {
             this.logError("[ERROR] pasteCode exception: %s"
                 , e.getMessage()
@@ -564,7 +564,7 @@ public class MengineMARPlugin extends MengineService implements MARInitListener,
                     , isFreeFlag
                 );
 
-                this.pythonCall("onMarSDKLoginSuccess", gameType, isFreeFlag);
+                this.nativeCall("onMarSDKLoginSuccess", gameType, isFreeFlag);
             } break;
             case MARCode.CODE_LOGIN_FAIL: {
                 int gameType = MARSDK.getInstance().getGameType();
@@ -573,12 +573,12 @@ public class MengineMARPlugin extends MengineService implements MARInitListener,
                     , gameType
                 );
 
-                this.pythonCall("onMarSDKLoginFail", gameType);
+                this.nativeCall("onMarSDKLoginFail", gameType);
             } break;
             case MARCode.CODE_LOGIN_TIMEOUT: {
                 this.logWarning("login timeout");
 
-                this.pythonCall("onMarSDKLoginTimeout");
+                this.nativeCall("onMarSDKLoginTimeout");
             } break;
             default: {
                 this.logWarning("login undefined code: %d"
@@ -595,7 +595,7 @@ public class MengineMARPlugin extends MengineService implements MARInitListener,
         );
 
         if (uToken != null) {
-            this.pythonCall("onMarSDKSwitchAccount");
+            this.nativeCall("onMarSDKSwitchAccount");
         }
     }
     
@@ -603,7 +603,7 @@ public class MengineMARPlugin extends MengineService implements MARInitListener,
     public void onLogout() {
         this.logInfo("onLogout");
 
-        this.pythonCall("onMarSDKLogout");
+        this.nativeCall("onMarSDKLogout");
     }    
     
     @Override
@@ -627,14 +627,14 @@ public class MengineMARPlugin extends MengineService implements MARInitListener,
                     , orderId
                 );
 
-                this.pythonCall("onMarSDKPaySuccess", productId, orderId);
+                this.nativeCall("onMarSDKPaySuccess", productId, orderId);
             } else {
                 this.logError("[ERROR] pay fail productId: %s [result %d]"
                     , productId
                     , payResult
                 );
 
-                this.pythonCall("onMarSDKPayFail", productId);
+                this.nativeCall("onMarSDKPayFail", productId);
             }
         } catch (final JSONException e) {
             this.logError("[ERROR] pay msg: %s JSONException: %s"
@@ -644,7 +644,7 @@ public class MengineMARPlugin extends MengineService implements MARInitListener,
 
             String message = e.getMessage();
 
-            this.pythonCall("onMarSDKPayError", code, msg, message);
+            this.nativeCall("onMarSDKPayError", code, msg, message);
         }
     }
 
@@ -661,7 +661,7 @@ public class MengineMARPlugin extends MengineService implements MARInitListener,
             String propType = json.getString("propType");
             String message = json.getString("msg");
 
-            this.pythonCall("onMarSDKRedeemResult", propNumber, propType, message);
+            this.nativeCall("onMarSDKRedeemResult", propNumber, propType, message);
         } catch(final JSONException e) {
             this.logError("[ERROR] onRedeemResult msg: %s JSONException: %s"
                 , msg
@@ -670,7 +670,7 @@ public class MengineMARPlugin extends MengineService implements MARInitListener,
 
             String message = e.getMessage();
 
-            this.pythonCall("onMarSDKRedeemError", msg, message);
+            this.nativeCall("onMarSDKRedeemError", msg, message);
         }
     }
 
@@ -684,7 +684,7 @@ public class MengineMARPlugin extends MengineService implements MARInitListener,
 
                 String watchAdTime = this.getCurrentTime();
 
-                this.pythonCall("onMarSDKAdVideoCallback", msg, watchAdTime);
+                this.nativeCall("onMarSDKAdVideoCallback", msg, watchAdTime);
             } break;
             default: {
                 this.logInfo("onResult code: %d msg: %s"
@@ -692,7 +692,7 @@ public class MengineMARPlugin extends MengineService implements MARInitListener,
                     , msg
                 );
 
-                this.pythonCall("onMarSDKResult", code, msg);
+                this.nativeCall("onMarSDKResult", code, msg);
             } break;
         }
     }

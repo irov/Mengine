@@ -5,14 +5,12 @@
 #include "Interface/RenderMaterialInterface.h"
 #include "Interface/RenderTextureInterface.h"
 
+#include "Kernel/ResourceImage.h"
 #include "Kernel/ConstString.h"
-#include "Kernel/IntrusivePtrView.h"
 #include "Kernel/Mixin.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtrView<class ResourceImage, class Resource> ResourceImagePtrView;
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {

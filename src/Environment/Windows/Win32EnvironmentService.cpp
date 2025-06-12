@@ -202,12 +202,12 @@ namespace Mengine
 
         if( ::GetVolumeInformationA( NULL
             , VolumeNameBuffer
-            , sizeof( VolumeNameBuffer ) / sizeof( VolumeNameBuffer[0] )
+            , MENGINE_MAX_PATH
             , &VolumeSerialNumber
             , &VolumeMaxComponentLen
             , &VolumeFileSystemFlags
             , VolumeFileSystemNameBuffer
-            , sizeof( VolumeFileSystemNameBuffer ) / sizeof( VolumeFileSystemNameBuffer[0] ) ) == TRUE )
+            , MENGINE_MAX_PATH ) == TRUE )
         {
             LOGGER_INFO_PROTECTED( "environment", "system volume serial number: %u"
                 , VolumeSerialNumber

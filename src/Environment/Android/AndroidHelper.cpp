@@ -1,10 +1,11 @@
 #include "AndroidHelper.h"
 
-#include "Interface/AndroidKernelServiceInterface.h"
+#include "Environment/Android/AndroidKernelServiceInterface.h"
 
 #include "AndroidEnv.h"
 
 #include "Kernel/Assertion.h"
+#include "Kernel/AssertionUtf8.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Error.h"
 #include "Kernel/StringSlice.h"
@@ -237,6 +238,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         jobject AndroidMakeJObjectString( JNIEnv * _jenv, const Char * _value )
         {
+            MENGINE_ASSERTION_VALIDATE_UTF8( _value, MENGINE_UNKNOWN_SIZE );
+
             jclass jclass_String = _jenv->FindClass( "java/lang/String" );
 
             jmethodID String_constructor = _jenv->GetMethodID( jclass_String, "<init>", "(Ljava/lang/String;)V" );
@@ -255,7 +258,7 @@ namespace Mengine
         {
             const Char * value_str = _value.c_str();
 
-            jobject value_jobject = Helper::AndroidMakeJObjectString(_jenv, value_str);
+            jobject value_jobject = Helper::AndroidMakeJObjectString( _jenv, value_str );
 
             return value_jobject;
         }
@@ -264,7 +267,7 @@ namespace Mengine
         {
             const Char * value_str = _value.c_str();
 
-            jobject value_jobject = Helper::AndroidMakeJObjectString(_jenv, value_str);
+            jobject value_jobject = Helper::AndroidMakeJObjectString( _jenv, value_str );
 
             return value_jobject;
         }
@@ -770,6 +773,8 @@ namespace Mengine
 
             const Mengine::Char * data_value = _memory->getBuffer();
             size_t data_size = _memory->getSize();
+
+            MENGINE_ASSERTION_VALIDATE_UTF8( data_value, data_size );
 
             Mengine::Utf8 jvalue_str[1024 + 1] = {'\0'};
             bool result = Mengine::Helper::utf8Slice( data_value, data_size, jvalue_str, 1024, [_jenv, _writer, jmethodID_Writer_write_String]( const Mengine::Utf8 * _utf8 )

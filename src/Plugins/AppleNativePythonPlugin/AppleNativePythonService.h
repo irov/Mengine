@@ -27,7 +27,7 @@ namespace Mengine
 
     protected:
         void activateSemaphore( const ConstString & _name ) override;
-        void waitSemaphore( const ConstString & _name, const AppleSemaphoreListenerInterfacePtr & _listener ) override;
+        AppleSemaphoreListenerInterfacePtr waitSemaphore( const ConstString & _name, const AppleSemaphoreListenerInterfacePtr & _listener ) override;
         
     protected:
         struct ApplePythonCallbackDesc

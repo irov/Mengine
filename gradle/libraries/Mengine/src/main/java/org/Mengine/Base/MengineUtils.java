@@ -707,7 +707,10 @@ public class MengineUtils {
             builder.setPositiveButton("OK", (dialog, which) -> {
                 MengineLog.logMessage(TAG, "select [OK] alert dialog OK clicked");
 
-                ok.run();
+                if (ok != null) {
+                    ok.run();
+                }
+
                 dialog.dismiss();
             });
 
@@ -741,14 +744,18 @@ public class MengineUtils {
             builder.setPositiveButton("ALLOW", (dialog, which) -> {
                 MengineLog.logMessage(TAG, "select [ALLOW PERMISSION] alert dialog ALLOW clicked");
 
-                allow.run();
+                if (allow != null) {
+                    allow.run();
+                }
 
                 dialog.dismiss();
             });
             builder.setNegativeButton("NO THANKS", (dialog, id) -> {
                 MengineLog.logMessage(TAG, "select [ALLOW PERMISSION] alert dialog NO clicked");
 
-                denied.run();
+                if (denied != null) {
+                    denied.run();
+                }
 
                 dialog.dismiss();
             });
@@ -790,13 +797,19 @@ public class MengineUtils {
             builder.setPositiveButton("YES", (dialog, which) -> {
                 MengineLog.logMessage(TAG, "select [ARE YOU SURE] alert dialog YES clicked");
 
-                yes.run();
+                if (yes != null) {
+                    yes.run();
+                }
+
                 dialog.dismiss();
             });
             builder.setNegativeButton("CANCEL", (dialog, id) -> {
                 MengineLog.logMessage(TAG, "select [ARE YOU SURE] alert dialog CANCEL clicked");
 
-                cancel.run();
+                if (cancel != null) {
+                    cancel.run();
+                }
+
                 dialog.dismiss();
             });
 
@@ -861,7 +874,9 @@ public class MengineUtils {
                     , option
                 );
 
-                accept.accept(option);
+                if (accept != null) {
+                    accept.accept(option);
+                }
 
                 dialog.dismiss();
             });
@@ -869,7 +884,9 @@ public class MengineUtils {
             builder.setNegativeButton("CANCEL", (dialog, id) -> {
                 MengineLog.logMessage(TAG, "click [CHOOSE OPTION] cancel");
 
-                cancel.run();
+                if (cancel != null) {
+                    cancel.run();
+                }
 
                 dialog.dismiss();
             });

@@ -1,6 +1,7 @@
 #include "Movie2ScriptEmbedding.h"
 
 #include "Interface/ScriptServiceInterface.h"
+#include "Interface/PluginServiceInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
@@ -353,9 +354,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2ScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
-        SCRIPT_SERVICE()
-            ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("Movie2"), true );
-
         pybind::interface_<Movie2, pybind::bases<Node>>( _kernel, "Movie2", false )
             .def( "setResourceMovie2", &Movie2::setResourceMovie2 )
             .def( "getResourceMovie2", &Movie2::getResourceMovie2 )

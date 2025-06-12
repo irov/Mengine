@@ -3175,6 +3175,20 @@ namespace Mengine
                 return py_settings;
             }
             //////////////////////////////////////////////////////////////////////////
+            void s_setAvailablePlugin( const ConstString & _pluginName, bool _available )
+            {
+                PLUGIN_SERVICE()
+                    ->setAvailablePlugin( _pluginName, _available );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            bool s_isAvailablePlugin( const ConstString & _pluginName )
+            {
+                bool avalilable = PLUGIN_SERVICE()
+                    ->isAvailablePlugin( _pluginName );
+
+                return avalilable;
+            }
+            //////////////////////////////////////////////////////////////////////////
             Scene * s_findNodeScene( Node * _node )
             {
                 Node * node_iterator = _node;
@@ -4747,6 +4761,9 @@ namespace Mengine
             ;
 
         pybind::def_functor_kernel( _kernel, "getSettings", nodeScriptMethod, &EngineScriptMethod::s_getSettings );
+
+        pybind::def_functor( _kernel, "setAvailablePlugin", nodeScriptMethod, &EngineScriptMethod::s_setAvailablePlugin );
+        pybind::def_functor( _kernel, "isAvailablePlugin", nodeScriptMethod, &EngineScriptMethod::s_isAvailablePlugin );
 
         return true;
     }

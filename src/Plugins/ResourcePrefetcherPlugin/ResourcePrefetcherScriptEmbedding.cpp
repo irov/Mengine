@@ -5,6 +5,7 @@
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/TextServiceInterface.h"
 #include "Interface/FontServiceInterface.h"
+#include "Interface/PluginServiceInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonDocumentTraceback.h"
@@ -182,6 +183,7 @@ namespace Mengine
                 _font->unfetch();
             } );
         }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     ResourcePrefetcherScriptEmbedding::ResourcePrefetcherScriptEmbedding()
@@ -194,9 +196,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourcePrefetcherScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
-        SCRIPT_SERVICE()
-            ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("ResourcePrefetcher"), true );
-
         pybind::def_function_args( _kernel, "prefetchResources", &Detail::prefetchResources );
         pybind::def_function( _kernel, "unfetchResources", &Detail::unfetchResources );
         pybind::def_function_args( _kernel, "prefetchFonts", &Detail::prefetchFonts );

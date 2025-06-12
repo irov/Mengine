@@ -1,5 +1,7 @@
 #include "PathfinderScriptEmbedding.h"
 
+#include "Interface/PluginServiceInterface.h"
+
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonEventReceiver.h"
 #include "Environment/Python/PythonScriptWrapper.h"
@@ -24,9 +26,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PathfinderScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
-        SCRIPT_SERVICE()
-            ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("Pathfinder"), true );
-
         MENGINE_UNUSED( _kernel );
 
         return true;

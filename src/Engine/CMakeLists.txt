@@ -133,7 +133,6 @@ Resource\\\\ResourceMusic
 
 ADD_FILTER(
 Resource\\\\Cursor
-    ResourceCursor.h
     ResourceCursorICO.cpp
     ResourceCursorICO.h
     ResourceCursorSystem.cpp

@@ -1,6 +1,7 @@
 #include "VideoScriptEmbedding.h"
 
 #include "Interface/ScriptServiceInterface.h"
+#include "Interface/PluginServiceInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
@@ -92,9 +93,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool VideoScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
-        SCRIPT_SERVICE()
-            ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("Video"), true );
-
         pybind::interface_<ResourceVideo, pybind::bases<Resource>>( _kernel, "ResourceVideo", false )
             .def( "setFrameRate", &ResourceVideo::setFrameRate )
             .def( "getFrameRate", &ResourceVideo::getFrameRate )

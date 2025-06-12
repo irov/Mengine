@@ -1,7 +1,5 @@
 package org.Mengine.Base;
 
-import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Size;
 
@@ -269,9 +267,9 @@ public class MengineService implements MengineServiceInterface {
     }
 
     @Override
-    public void pythonCall(String method, Object ... args) {
+    public void nativeCall(String method, Object ... args) {
         String t = this.getServiceTag();
-        m_application.pythonCall(t, method, args);
+        m_application.nativeCall(t, method, args);
     }
 
     @Override

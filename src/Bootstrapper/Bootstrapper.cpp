@@ -43,7 +43,8 @@
 #include "Kernel/MT19937Randomizer.h"
 #include "Kernel/VocabularyHelper.h"
 #include "Kernel/PluginHelper.h"
-#include "Kernel/MixerValue.h"
+#include "Kernel/MixerMultiplicative.h"
+#include "Kernel/MixerAveraging.h"
 #include "Kernel/MixerBoolean.h"
 #include "Kernel/StatisticHelper.h"
 
@@ -912,7 +913,13 @@ namespace Mengine
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( ConstString::none(), STRINGIZE_STRING_LOCAL( "MixerValue" ), Helper::makeDefaultPrototypeGenerator<MixerValue, 32>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addPrototype( ConstString::none(), STRINGIZE_STRING_LOCAL( "MixerMultiplicative" ), Helper::makeDefaultPrototypeGenerator<MixerMultiplicative, 32>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        {
+            return false;
+        }
+
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( ConstString::none(), STRINGIZE_STRING_LOCAL( "MixerAveraging" ), Helper::makeDefaultPrototypeGenerator<MixerAveraging, 32>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
@@ -937,7 +944,10 @@ namespace Mengine
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), MT19937Randomizer::getFactorableType(), nullptr );
 
         PROTOTYPE_SERVICE()
-            ->removePrototype( ConstString::none(), STRINGIZE_STRING_LOCAL( "MixerValue" ), nullptr );
+            ->removePrototype( ConstString::none(), STRINGIZE_STRING_LOCAL( "MixerMultiplicative" ), nullptr );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( ConstString::none(), STRINGIZE_STRING_LOCAL( "MixerAveraging" ), nullptr );
 
         PROTOTYPE_SERVICE()
             ->removePrototype( ConstString::none(), STRINGIZE_STRING_LOCAL( "MixerBoolean" ), nullptr );

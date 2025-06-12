@@ -103,7 +103,7 @@ namespace Mengine
     {
         NSString * path = [[NSBundle mainBundle] resourcePath];
         
-        StdString::strncpy( _currentPath, [path UTF8String], MENGINE_MAX_PATH );
+        StdString::strcpy_safe( _currentPath, [path UTF8String], MENGINE_MAX_PATH );
         StdString::strnchrcat( _currentPath, MENGINE_PATH_DELIM_BACKSLASH, MENGINE_MAX_PATH );
 
         size_t path_length = [path length] + 1;
@@ -120,7 +120,7 @@ namespace Mengine
         
         if( [paths count] == 0 )
         {
-            StdString::strncpy( _userPath, "", MENGINE_MAX_PATH );
+            StdString::strcpy_safe( _userPath, "", MENGINE_MAX_PATH );
 
             return 0;
         }
@@ -150,14 +150,14 @@ namespace Mengine
                  , [[AppleDetail getMessageFromNSError:error] UTF8String]
             );
 
-            StdString::strncpy( _userPath, "", MENGINE_MAX_PATH );
+            StdString::strcpy_safe( _userPath, "", MENGINE_MAX_PATH );
 
             return 0;
         }
 
         const Char * userPathRepresentation = [userPath fileSystemRepresentation];
         
-        StdString::strncpy( _userPath, userPathRepresentation, MENGINE_MAX_PATH );
+        StdString::strcpy_safe( _userPath, userPathRepresentation, MENGINE_MAX_PATH );
         Helper::pathCorrectFolderPathA( _userPath, MENGINE_PATH_DELIM_BACKSLASH );
         Helper::pathCorrectBackslashA( _userPath );
 
@@ -192,7 +192,7 @@ namespace Mengine
         
         const Char * localeLanguage_str = [localeLanguage UTF8String];
         
-        StdString::strncpy( _userLocaleLanguage, localeLanguage_str, MENGINE_LOCALE_LANGUAGE_SIZE );
+        StdString::strcpy_safe( _userLocaleLanguage, localeLanguage_str, MENGINE_LOCALE_LANGUAGE_SIZE );
 
         return true;
     }
@@ -574,7 +574,7 @@ namespace Mengine
         
         MENGINE_UNUSED( deviceSeed );
 
-        LOGGER_INFO_PROTECTED( "plarform", "Device Seed: %" MENGINE_PRIu64
+        LOGGER_INFO_PROTECTED( "platform", "Device Seed: %" MENGINE_PRIu64
             , deviceSeed
         );
         
@@ -1609,7 +1609,7 @@ namespace Mengine
             return false;
         }
 
-        StdString::strncpy( _value, text, _capacity );
+        StdString::strcpy_safe( _value, text, _capacity );
 
         SDL_free( text );
 

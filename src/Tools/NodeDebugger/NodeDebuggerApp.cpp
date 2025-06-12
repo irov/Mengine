@@ -2561,7 +2561,7 @@ namespace Mengine
         auto uiEditorString = [_node]( const char * _caption, String & _prop )
         {
             Char testValue[2048 + 1] = {'\0'};
-            StdString::strncpy( testValue, _prop.c_str(), 2048 );
+            StdString::strcpy_safe( testValue, _prop.c_str(), 2048 );
 
             bool input = ImGui::InputText( _caption, testValue, 2048 );
 
@@ -2575,7 +2575,7 @@ namespace Mengine
         auto uiReadOnlyString = [_node]( const char * _caption, const String & _prop )
         {
             Char testValue[2048 + 1] = {'\0'};
-            StdString::strncpy( testValue, _prop.c_str(), 2048 );
+            StdString::strcpy_safe( testValue, _prop.c_str(), 2048 );
 
             ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
             ImGui::InputText( _caption, testValue, 2048, ImGuiInputTextFlags_ReadOnly );

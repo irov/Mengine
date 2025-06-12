@@ -135,7 +135,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
                 String oldTokenString = oldToken != null ? oldToken.getToken() : "";
                 String newTokenString = newToken != null ? newToken.getToken() : "";
 
-                MengineFacebookPlugin.this.pythonCall("onFacebookCurrentAccessTokenChanged", oldTokenString, newTokenString);
+                MengineFacebookPlugin.this.nativeCall("onFacebookCurrentAccessTokenChanged", oldTokenString, newTokenString);
             }
         };
 
@@ -149,7 +149,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
                     , newProfile != null ? newProfile.getId() : "null"
                 );
 
-                MengineFacebookPlugin.this.pythonCall("onFacebookCurrentProfileChanged");
+                MengineFacebookPlugin.this.nativeCall("onFacebookCurrentProfileChanged");
             }
         };
 
@@ -174,7 +174,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
                     , MengineUtils.getRedactedValue(token)
                 );
 
-                MengineFacebookPlugin.this.pythonCall("onFacebookLoginSuccess", token);
+                MengineFacebookPlugin.this.nativeCall("onFacebookLoginSuccess", token);
             }
 
             @Override
@@ -183,7 +183,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
 
                 AccessToken.setCurrentAccessToken(null);
 
-                MengineFacebookPlugin.this.pythonCall("onFacebookLoginCancel");
+                MengineFacebookPlugin.this.nativeCall("onFacebookLoginCancel");
             }
 
             @Override
@@ -192,7 +192,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
 
                 AccessToken.setCurrentAccessToken(null);
 
-                MengineFacebookPlugin.this.pythonCall("onFacebookLoginError", ERROR_CODE_UNKNOWN, e);
+                MengineFacebookPlugin.this.nativeCall("onFacebookLoginError", ERROR_CODE_UNKNOWN, e);
             }
         });
 
@@ -348,7 +348,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
         if (activity == null) {
             this.logWarning("performLogin invalid activity");
 
-            this.pythonCall("onFacebookLoginError", ERROR_CODE_UNKNOWN, new RuntimeException("invalid activity"));
+            this.nativeCall("onFacebookLoginError", ERROR_CODE_UNKNOWN, new RuntimeException("invalid activity"));
 
             return;
         }
@@ -364,7 +364,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
         if (accessToken == null) {
             this.logInfo("is not logged in");
 
-            this.pythonCall(errorMethod, ERROR_CODE_LOGGED_OUT, new RuntimeException("is not logged in"));
+            this.nativeCall(errorMethod, ERROR_CODE_LOGGED_OUT, new RuntimeException("is not logged in"));
 
             return false;
         }
@@ -372,7 +372,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
         if (accessToken.isExpired() == true) {
             this.logInfo("is expired");
 
-            this.pythonCall(errorMethod, ERROR_CODE_EXPIRED, new RuntimeException("is expired"));
+            this.nativeCall(errorMethod, ERROR_CODE_EXPIRED, new RuntimeException("is expired"));
 
             return false;
         }
@@ -397,7 +397,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
 
             LoginManager.getInstance().logOut();
 
-            this.pythonCall("onFacebookLogoutSuccess");
+            this.nativeCall("onFacebookLogoutSuccess");
         });
 
         request.executeAsync();
@@ -416,7 +416,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
             if (response == null) {
                 this.logError("[ERROR] GraphRequest newMeRequest returned null response");
 
-                this.pythonCall("onFacebookUserFetchError", ERROR_CODE_UNKNOWN, new RuntimeException("null response"));
+                this.nativeCall("onFacebookUserFetchError", ERROR_CODE_UNKNOWN, new RuntimeException("null response"));
 
                 return;
             }
@@ -439,7 +439,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
                     , errorMessage
                 );
 
-                this.pythonCall("onFacebookUserFetchError", ERROR_CODE_UNKNOWN, new RuntimeException(errorMessage));
+                this.nativeCall("onFacebookUserFetchError", ERROR_CODE_UNKNOWN, new RuntimeException(errorMessage));
 
                 return;
             }
@@ -447,7 +447,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
             String objectString = object != null ? object.toString() : "";
             String responseString = response.toString();
 
-            this.pythonCall("onFacebookUserFetchSuccess", objectString, responseString);
+            this.nativeCall("onFacebookUserFetchSuccess", objectString, responseString);
         });
 
         Bundle parameters = new Bundle();
@@ -468,7 +468,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
         if (activity == null) {
             this.logWarning("shareLink invalid activity");
 
-            MengineFacebookPlugin.this.pythonCall("onFacebookShareError", ERROR_CODE_UNKNOWN, new RuntimeException("invalid activity"));
+            MengineFacebookPlugin.this.nativeCall("onFacebookShareError", ERROR_CODE_UNKNOWN, new RuntimeException("invalid activity"));
 
             return;
         }
@@ -476,7 +476,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
         if (ShareDialog.canShow(ShareLinkContent.class) == false) {
             this.logWarning("shareLink can't show");
 
-            MengineFacebookPlugin.this.pythonCall("onFacebookShareError", ERROR_CODE_UNKNOWN, new RuntimeException("can't show"));
+            MengineFacebookPlugin.this.nativeCall("onFacebookShareError", ERROR_CODE_UNKNOWN, new RuntimeException("can't show"));
 
             return;
         }
@@ -505,7 +505,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
                     .addParameterString("postId", postId)
                     .log();
 
-                MengineFacebookPlugin.this.pythonCall("onFacebookShareSuccess", postId);
+                MengineFacebookPlugin.this.nativeCall("onFacebookShareSuccess", postId);
             }
 
             @Override
@@ -518,7 +518,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
                     .addParameterString("quote", quote)
                     .log();
 
-                MengineFacebookPlugin.this.pythonCall("onFacebookShareCancel");
+                MengineFacebookPlugin.this.nativeCall("onFacebookShareCancel");
             }
 
             @Override
@@ -536,7 +536,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
                     .addParameterException("exception", e)
                     .log();
 
-                MengineFacebookPlugin.this.pythonCall("onFacebookShareError", ERROR_CODE_UNKNOWN, e);
+                MengineFacebookPlugin.this.nativeCall("onFacebookShareError", ERROR_CODE_UNKNOWN, e);
             }
         });
 
@@ -569,7 +569,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
                     , errorMessage
                 );
 
-                this.pythonCall("onFacebookProfilePictureLinkGetError", ERROR_CODE_UNKNOWN, new RuntimeException(errorMessage));
+                this.nativeCall("onFacebookProfilePictureLinkGetError", ERROR_CODE_UNKNOWN, new RuntimeException(errorMessage));
 
                 return;
             }
@@ -582,7 +582,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
                     , response
                 );
 
-                this.pythonCall("onFacebookProfilePictureLinkGetError", ERROR_CODE_UNKNOWN, new RuntimeException("invalid response"));
+                this.nativeCall("onFacebookProfilePictureLinkGetError", ERROR_CODE_UNKNOWN, new RuntimeException("invalid response"));
 
                 return;
             }
@@ -596,7 +596,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
                     "response", responseObject.toString()
                 ));
 
-                this.pythonCall("onFacebookProfilePictureLinkGetError", ERROR_CODE_UNKNOWN, e);
+                this.nativeCall("onFacebookProfilePictureLinkGetError", ERROR_CODE_UNKNOWN, e);
 
                 return;
             }
@@ -606,7 +606,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
                 , pictureURL
             );
 
-            this.pythonCall("onFacebookProfilePictureLinkGetSuccess", user_id, pictureURL);
+            this.nativeCall("onFacebookProfilePictureLinkGetSuccess", user_id, pictureURL);
         });
 
         Bundle parameters = new Bundle();
@@ -641,7 +641,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
         if (user_id.isEmpty() == true) {
             this.logWarning("user_id is empty");
 
-            this.pythonCall("onFacebookProfilePictureLinkGetError", ERROR_CODE_INVALID_PARAMETER, new RuntimeException("user_id is empty"));
+            this.nativeCall("onFacebookProfilePictureLinkGetError", ERROR_CODE_INVALID_PARAMETER, new RuntimeException("user_id is empty"));
 
             return;
         }

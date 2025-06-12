@@ -41,9 +41,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleAdjustScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
-        SCRIPT_SERVICE()
-            ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("AppleAdjust"), true );
-
         pybind::def_function( _kernel, "appleAdjustEventTraking", &Detail::AppleAdjust_eventTraking );
         pybind::def_function( _kernel, "appleAdjustRevenueTracking",
                               &Detail::AppleAdjust_revenueTracking );

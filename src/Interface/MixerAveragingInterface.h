@@ -12,11 +12,11 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class MixerValueInterface
+    class MixerAveragingInterface
         : public ServantInterface
     {
     public:
-        virtual void setValue( const ConstString & _type, float _value, float _from, float _speed, bool _force ) = 0;
+        virtual void setValue( const ConstString & _type, float _value, float _weight, float _from, float _speed, bool _force ) = 0;
         virtual float getValue( const ConstString & _type ) const = 0;
 
     public:
@@ -26,6 +26,6 @@ namespace Mengine
         virtual bool update( const UpdateContext * _context ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<MixerValueInterface> MixerValueInterfacePtr;
+    typedef IntrusivePtr<MixerAveragingInterface> MixerAveragingInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 }

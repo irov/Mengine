@@ -885,27 +885,27 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
             this.increaseStatisticDouble("ad.banner.revenue", revenue);
             this.increaseStatisticDouble("ad.banner.revenue." + placement, revenue);
 
-            this.pythonCall("onAndroidAdServiceBannerRevenuePaid", params);
+            this.nativeCall("onAndroidAdServiceBannerRevenuePaid", params);
         } else if (format == MengineAdFormat.ADFORMAT_INTERSTITIAL) {
             this.increaseStatisticDouble("ad.interstitial.revenue", revenue);
             this.increaseStatisticDouble("ad.interstitial.revenue." + placement, revenue);
 
-            this.pythonCall("onAndroidAdServiceInterstitialRevenuePaid", params);
+            this.nativeCall("onAndroidAdServiceInterstitialRevenuePaid", params);
         } else if (format == MengineAdFormat.ADFORMAT_REWARDED) {
             this.increaseStatisticDouble("ad.rewarded.revenue", revenue);
             this.increaseStatisticDouble("ad.rewarded.revenue." + placement, revenue);
 
-            this.pythonCall("onAndroidAdServiceRewardedRevenuePaid", params);
+            this.nativeCall("onAndroidAdServiceRewardedRevenuePaid", params);
         } else if (format == MengineAdFormat.ADFORMAT_APPOPEN) {
             this.increaseStatisticDouble("ad.appopen.revenue", revenue);
             this.increaseStatisticDouble("ad.appopen.revenue." + placement, revenue);
 
-            this.pythonCall("onAndroidAdServiceAppOpenRevenuePaid", params);
+            this.nativeCall("onAndroidAdServiceAppOpenRevenuePaid", params);
         } else if (format == MengineAdFormat.ADFORMAT_MREC) {
             this.increaseStatisticDouble("ad.mrec.revenue", revenue);
             this.increaseStatisticDouble("ad.mrec.revenue." + placement, revenue);
 
-            this.pythonCall("onAndroidAdServiceMRECRevenuePaid", params);
+            this.nativeCall("onAndroidAdServiceMRECRevenuePaid", params);
         }
     }
 
@@ -917,22 +917,22 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
             this.increaseStatisticInteger("ad.interstitial.show", 1);
             this.increaseStatisticInteger("ad.interstitial.show." + placement, 1);
 
-            this.pythonCall("onAndroidAdServiceInterstitialShowSuccess", params);
+            this.nativeCall("onAndroidAdServiceInterstitialShowSuccess", params);
         } else if (format == MengineAdFormat.ADFORMAT_REWARDED) {
             this.increaseStatisticInteger("ad.rewarded.show", 1);
             this.increaseStatisticInteger("ad.rewarded.show." + placement, 1);
 
-            this.pythonCall("onAndroidAdServiceRewardedShowSuccess", params);
+            this.nativeCall("onAndroidAdServiceRewardedShowSuccess", params);
         } else if (format == MengineAdFormat.ADFORMAT_APPOPEN) {
             this.increaseStatisticInteger("ad.appopen.show", 1);
             this.increaseStatisticInteger("ad.appopen.show." + placement, 1);
 
-            this.pythonCall("onAndroidAdServiceAppOpenShowSuccess", params);
+            this.nativeCall("onAndroidAdServiceAppOpenShowSuccess", params);
         } else if (format == MengineAdFormat.ADFORMAT_MREC) {
             this.increaseStatisticInteger("ad.mrec.show", 1);
             this.increaseStatisticInteger("ad.mrec.show." + placement, 1);
 
-            this.pythonCall("onAndroidAdServiceMRECShowSuccess", params);
+            this.nativeCall("onAndroidAdServiceMRECShowSuccess", params);
         }
     }
 
@@ -941,13 +941,13 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         Map<String, Object> params = Map.of("placement", placement, "error_code", errorCode);
 
         if (format == MengineAdFormat.ADFORMAT_INTERSTITIAL) {
-            this.pythonCall("onAndroidAdServiceInterstitialShowFailed", params);
+            this.nativeCall("onAndroidAdServiceInterstitialShowFailed", params);
         } else if (format == MengineAdFormat.ADFORMAT_REWARDED) {
-            this.pythonCall("onAndroidAdServiceRewardedShowFailed", params);
+            this.nativeCall("onAndroidAdServiceRewardedShowFailed", params);
         } else if (format == MengineAdFormat.ADFORMAT_APPOPEN) {
-            this.pythonCall("onAndroidAdServiceAppOpenShowFailed", params);
+            this.nativeCall("onAndroidAdServiceAppOpenShowFailed", params);
         } else if (format == MengineAdFormat.ADFORMAT_MREC) {
-            this.pythonCall("onAndroidAdServiceMRECShowFailed", params);
+            this.nativeCall("onAndroidAdServiceMRECShowFailed", params);
         }
     }
 
@@ -959,7 +959,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
             this.increaseStatisticInteger("ad.rewarded.user_rewarded", 1);
             this.increaseStatisticInteger("ad.rewarded.user_rewarded." + placement, 1);
 
-            this.pythonCall("onAndroidAdServiceRewardedUserRewarded", params);
+            this.nativeCall("onAndroidAdServiceRewardedUserRewarded", params);
         }
     }
 }

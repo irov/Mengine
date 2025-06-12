@@ -104,7 +104,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
             , id
         );
 
-        this.pythonCall("onLocalNotificationsPress", id);
+        this.nativeCall("onLocalNotificationsPress", id);
     }
 
     public void scheduleJobServiceNotification(int id, String title, String content, long delay) {
@@ -222,7 +222,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
                 , id
             );
 
-            this.pythonCall("onLocalNotificationsPress", id);
+            this.nativeCall("onLocalNotificationsPress", id);
         }
 
         this.parseInternalLocalNotifications(activity);

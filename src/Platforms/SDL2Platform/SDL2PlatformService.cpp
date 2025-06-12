@@ -645,7 +645,7 @@ namespace Mengine
 
         uint64_t deviceSeed = Helper::generateRandomDeviceSeed();
 
-        LOGGER_INFO_PROTECTED( "plarform", "Device Seed: %" MENGINE_PRIu64
+        LOGGER_INFO_PROTECTED( "platform", "Device Seed: %" MENGINE_PRIu64
             , deviceSeed
         );
 
@@ -1851,7 +1851,7 @@ namespace Mengine
             return false;
         }
 
-        StdString::strncpy( _value, text, _capacity );
+        StdString::strcpy_safe( _value, text, _capacity );
 
         SDL_free( text );
 

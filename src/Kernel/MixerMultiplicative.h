@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/MixerValueInterface.h"
+#include "Interface/MixerMultiplicativeInterface.h"
 
 #include "Kernel/ValueFollowerLinear.h"
 #include "Kernel/Vector.h"
@@ -8,14 +8,14 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class MixerValue
-        : public MixerValueInterface
+    class MixerMultiplicative
+        : public MixerMultiplicativeInterface
     {
-        DECLARE_FACTORABLE( MixerValue );
+        DECLARE_FACTORABLE( MixerMultiplicative );
 
     public:
-        MixerValue();
-        ~MixerValue();
+        MixerMultiplicative();
+        ~MixerMultiplicative();
 
     public:
         void setValue( const ConstString & _type, float _value, float _from, float _speed, bool _force ) override;
@@ -38,6 +38,6 @@ namespace Mengine
         VectorElement m_mixer;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<MixerValue, MixerValueInterface> MixerValuePtr;
+    typedef IntrusivePtr<MixerMultiplicative, MixerMultiplicativeInterface> MixerMultiplicativePtr;
     //////////////////////////////////////////////////////////////////////////
 }

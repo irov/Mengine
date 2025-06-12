@@ -4,7 +4,7 @@
 #include "Interface/SoundCodecInterface.h"
 #include "Interface/FileGroupInterface.h"
 #include "Interface/UpdationInterface.h"
-#include "Interface/MixerValueInterface.h"
+#include "Interface/MixerMultiplicativeInterface.h"
 #include "Interface/SoundBufferInterface.h"
 
 #include "Kernel/Factorable.h"

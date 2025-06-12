@@ -13,6 +13,8 @@ src
     AndroidHelper.h
     AndroidHelper.cpp
     
+    AndroidKernelServiceInterface.h
+    
     AndroidKernelService.h
     AndroidKernelService.cpp
 
@@ -25,6 +27,7 @@ src
     AndroidAssetService.h
     AndroidAssetService.cpp
 
+    AndroidPluginCallbackInterface.h
     AndroidSemaphoreListenerInterface.h
     
     ConstStringHolderJString.h

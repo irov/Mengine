@@ -5,11 +5,10 @@
 #include "Kernel/BaseEventation.h"
 #include "Kernel/BaseAnimation.h"
 #include "Kernel/AnimationEventReceiver.h"
+#include "Kernel/ResourceImageSequence.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusiveResourcePtr<class ResourceImageSequence> ResourceImageSequencePtr;
     //////////////////////////////////////////////////////////////////////////
     enum ESurfaceImageSequenceEventFlag
     {

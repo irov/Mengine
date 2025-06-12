@@ -66,7 +66,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                     , data
                 );
 
-                this.pythonCall("onGoogleGameSocialShowAchievementSuccess");
+                this.nativeCall("onGoogleGameSocialShowAchievementSuccess");
             }
         });
 
@@ -80,7 +80,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                     , data
                 );
 
-                this.pythonCall("onGoogleGameSocialShowLeaderboardSuccess");
+                this.nativeCall("onGoogleGameSocialShowLeaderboardSuccess");
             }
         });
 
@@ -171,7 +171,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
         if (MengineNetwork.isNetworkAvailable() == false) {
             this.logInfo("signInIntent network not available");
 
-            this.pythonCall("onGoogleGameSocialSignInIntentError", new RuntimeException("network not available"));
+            this.nativeCall("onGoogleGameSocialSignInIntentError", new RuntimeException("network not available"));
 
             return;
         }
@@ -188,7 +188,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                     this.logError("[ERROR] signInIntent failed: null exception");
                 }
 
-                this.pythonCall("onGoogleGameSocialSignInIntentError", e);
+                this.nativeCall("onGoogleGameSocialSignInIntentError", e);
 
                 return;
             }
@@ -200,7 +200,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
 
                 m_isAuthenticated = false;
 
-                this.pythonCall("onGoogleGameSocialSignInIntentFailed");
+                this.nativeCall("onGoogleGameSocialSignInIntentFailed");
 
                 return;
             }
@@ -209,7 +209,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
 
             m_isAuthenticated = true;
 
-            this.pythonCall("onGoogleGameSocialSignInIntentSuccess");
+            this.nativeCall("onGoogleGameSocialSignInIntentSuccess");
         });
     }
 
@@ -217,7 +217,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
         if (MengineNetwork.isNetworkAvailable() == false) {
             this.logInfo("showAchievements network not available");
 
-            this.pythonCall("onGoogleGameSocialShowAchievementError", new RuntimeException("network not available"));
+            this.nativeCall("onGoogleGameSocialShowAchievementError", new RuntimeException("network not available"));
 
             return;
         }
@@ -232,11 +232,11 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
             }).addOnFailureListener(e -> {
                 this.logException(e, Map.of());
 
-                this.pythonCall("onGoogleGameSocialShowAchievementError", e);
+                this.nativeCall("onGoogleGameSocialShowAchievementError", e);
             }).addOnCanceledListener(() -> {
                 this.logInfo("get achievements canceled");
 
-                this.pythonCall("onGoogleGameSocialShowAchievementCanceled");
+                this.nativeCall("onGoogleGameSocialShowAchievementCanceled");
             });
     }
 
@@ -246,7 +246,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                 , achievementId
             );
 
-            this.pythonCall("onGoogleGameSocialUnlockAchievementError", achievementId, new RuntimeException("network not available"));
+            this.nativeCall("onGoogleGameSocialUnlockAchievementError", achievementId, new RuntimeException("network not available"));
 
             return;
         }
@@ -256,7 +256,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                 , achievementId
             );
 
-            this.pythonCall("onGoogleGameSocialUnlockAchievementError", achievementId, new RuntimeException("not authenticated"));
+            this.nativeCall("onGoogleGameSocialUnlockAchievementError", achievementId, new RuntimeException("not authenticated"));
 
             return;
         }
@@ -273,19 +273,19 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
 
                 MengineFragmentGame.INSTANCE.unlockAchievement(achievementId);
 
-                this.pythonCall("onGoogleGameSocialUnlockAchievementSuccess", achievementId);
+                this.nativeCall("onGoogleGameSocialUnlockAchievementSuccess", achievementId);
             }).addOnFailureListener(e -> {
                 this.logException(e, Map.of(
                     "achievementId", achievementId
                 ));
 
-                this.pythonCall("onGoogleGameSocialUnlockAchievementError", achievementId, e);
+                this.nativeCall("onGoogleGameSocialUnlockAchievementError", achievementId, e);
             }).addOnCanceledListener(() -> {
                 this.logInfo("unlockAchievement canceled achievementId: %s"
                     , achievementId
                 );
 
-                this.pythonCall("onGoogleGameSocialUnlockAchievementCanceled", achievementId);
+                this.nativeCall("onGoogleGameSocialUnlockAchievementCanceled", achievementId);
             });
     }
 
@@ -296,7 +296,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                 , numSteps
             );
 
-            this.pythonCall("onGoogleGameSocialIncrementAchievementError", achievementId, numSteps, new RuntimeException("network not available"));
+            this.nativeCall("onGoogleGameSocialIncrementAchievementError", achievementId, numSteps, new RuntimeException("network not available"));
 
             return;
         }
@@ -307,7 +307,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                 , numSteps
             );
 
-            this.pythonCall("onGoogleGameSocialIncrementAchievementError", achievementId, numSteps, new RuntimeException("not authenticated"));
+            this.nativeCall("onGoogleGameSocialIncrementAchievementError", achievementId, numSteps, new RuntimeException("not authenticated"));
 
             return;
         }
@@ -326,21 +326,21 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
 
                 MengineFragmentGame.INSTANCE.incrementAchievement(achievementId, numSteps);
 
-                this.pythonCall("onGoogleGameSocialIncrementAchievementSuccess", achievementId, numSteps);
+                this.nativeCall("onGoogleGameSocialIncrementAchievementSuccess", achievementId, numSteps);
             }).addOnFailureListener(e -> {
                 this.logException(e, Map.of(
                     "achievementId", achievementId,
                     "numSteps", numSteps
                 ));
 
-                this.pythonCall("onGoogleGameSocialIncrementAchievementError", achievementId, numSteps, e);
+                this.nativeCall("onGoogleGameSocialIncrementAchievementError", achievementId, numSteps, e);
             }).addOnCanceledListener(() -> {
                 this.logInfo("incrementAchievement canceled achievementId: %s numSteps: %d"
                     , achievementId
                     , numSteps
                 );
 
-                this.pythonCall("onGoogleGameSocialIncrementAchievementCanceled", achievementId, numSteps);
+                this.nativeCall("onGoogleGameSocialIncrementAchievementCanceled", achievementId, numSteps);
             });
     }
 
@@ -350,7 +350,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                 , achievementId
             );
 
-            this.pythonCall("onGoogleGameSocialRevealAchievementError", achievementId, new RuntimeException("network not available"));
+            this.nativeCall("onGoogleGameSocialRevealAchievementError", achievementId, new RuntimeException("network not available"));
 
             return;
         }
@@ -360,7 +360,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                 , achievementId
             );
 
-            this.pythonCall("onGoogleGameSocialRevealAchievementError", achievementId, new RuntimeException("not authenticated"));
+            this.nativeCall("onGoogleGameSocialRevealAchievementError", achievementId, new RuntimeException("not authenticated"));
 
             return;
         }
@@ -377,19 +377,19 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
 
                 MengineFragmentGame.INSTANCE.revealAchievement(achievementId);
 
-                this.pythonCall("onGoogleGameSocialRevealAchievementSuccess", achievementId);
+                this.nativeCall("onGoogleGameSocialRevealAchievementSuccess", achievementId);
             }).addOnFailureListener(e -> {
                 this.logException(e, Map.of(
                     "achievementId", achievementId
                 ));
 
-                this.pythonCall("onGoogleGameSocialRevealAchievementError", achievementId, e);
+                this.nativeCall("onGoogleGameSocialRevealAchievementError", achievementId, e);
             }).addOnCanceledListener(() -> {
                 this.logInfo("revealAchievement canceled achievementId: %s"
                     , achievementId
                 );
 
-                this.pythonCall("onGoogleGameSocialRevealAchievementCanceled", achievementId);
+                this.nativeCall("onGoogleGameSocialRevealAchievementCanceled", achievementId);
             });
     }
 
@@ -400,7 +400,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                 , score
             );
 
-            this.pythonCall("onGoogleGameSocialLeaderboardScoreError", leaderboardId, score, new RuntimeException("network not available"));
+            this.nativeCall("onGoogleGameSocialLeaderboardScoreError", leaderboardId, score, new RuntimeException("network not available"));
 
             return;
         }
@@ -411,7 +411,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                 , score
             );
 
-            this.pythonCall("onGoogleGameSocialLeaderboardScoreError", leaderboardId, score, new RuntimeException("not authenticated"));
+            this.nativeCall("onGoogleGameSocialLeaderboardScoreError", leaderboardId, score, new RuntimeException("not authenticated"));
 
             return;
         }
@@ -430,21 +430,21 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
 
                 MengineFragmentGame.INSTANCE.submitLeaderboardScore(leaderboardId, score);
 
-                this.pythonCall("onGoogleGameSocialLeaderboardScoreSuccess", leaderboardId, score);
+                this.nativeCall("onGoogleGameSocialLeaderboardScoreSuccess", leaderboardId, score);
             }).addOnFailureListener(e -> {
                 this.logException(e, Map.of(
                     "leaderboardId", leaderboardId,
                     "score", score
                 ));
 
-                this.pythonCall("onGoogleGameSocialLeaderboardScoreError", leaderboardId, score, e);
+                this.nativeCall("onGoogleGameSocialLeaderboardScoreError", leaderboardId, score, e);
             }).addOnCanceledListener(() -> {
                 this.logInfo("submitLeaderboardScore canceled leaderboardId: %s score: %d"
                     , leaderboardId
                     , score
                 );
 
-                this.pythonCall("onGoogleGameSocialLeaderboardScoreCanceled", leaderboardId, score);
+                this.nativeCall("onGoogleGameSocialLeaderboardScoreCanceled", leaderboardId, score);
             });
     }
 
@@ -454,7 +454,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                 , leaderboardId
             );
 
-            this.pythonCall("onGoogleGameSocialShowLeaderboardError", leaderboardId, new RuntimeException("network not available"));
+            this.nativeCall("onGoogleGameSocialShowLeaderboardError", leaderboardId, new RuntimeException("network not available"));
 
             return;
         }
@@ -464,7 +464,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                 , leaderboardId
             );
 
-            this.pythonCall("onGoogleGameSocialShowLeaderboardError", leaderboardId, new RuntimeException("not authenticated"));
+            this.nativeCall("onGoogleGameSocialShowLeaderboardError", leaderboardId, new RuntimeException("not authenticated"));
 
             return;
         }
@@ -485,13 +485,13 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                     "leaderboardId", leaderboardId
                 ));
 
-                this.pythonCall("onGoogleGameSocialShowLeaderboardError", leaderboardId, e);
+                this.nativeCall("onGoogleGameSocialShowLeaderboardError", leaderboardId, e);
             }).addOnCanceledListener(() -> {
                 this.logInfo("showLeaderboard canceled leaderboardId: %s"
                     , leaderboardId
                 );
 
-                this.pythonCall("onGoogleGameSocialShowLeaderboardCanceled", leaderboardId);
+                this.nativeCall("onGoogleGameSocialShowLeaderboardCanceled", leaderboardId);
             });
     }
 
@@ -502,7 +502,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                 , value
             );
 
-            this.pythonCall("onGoogleGameSocialIncrementEventError", eventId, value, new RuntimeException("network not available"));
+            this.nativeCall("onGoogleGameSocialIncrementEventError", eventId, value, new RuntimeException("network not available"));
 
             return;
         }
@@ -513,7 +513,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                 , value
             );
 
-            this.pythonCall("onGoogleGameSocialIncrementEventError", eventId, value, new RuntimeException("not authenticated"));
+            this.nativeCall("onGoogleGameSocialIncrementEventError", eventId, value, new RuntimeException("not authenticated"));
 
             return;
         }
@@ -525,6 +525,6 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
 
         m_eventsClient.increment(eventId, value);
 
-        this.pythonCall("onGoogleGameSocialIncrementEventSuccess", eventId, value);
+        this.nativeCall("onGoogleGameSocialIncrementEventSuccess", eventId, value);
     }
 }

@@ -61,10 +61,6 @@ namespace Mengine
         virtual void removeGlobalModule( const Char * _name ) = 0;
 
     public:
-        virtual void setAvailablePlugin( const ConstString & _name, bool _available ) = 0;
-        virtual bool isAvailablePlugin( const ConstString & _name ) const = 0;
-
-    public:
         virtual bool addScriptEmbedding( const ConstString & _name, const ScriptEmbeddingInterfacePtr & _embedding ) = 0;
         virtual void removeScriptEmbedding( const ConstString & _name ) = 0;
 

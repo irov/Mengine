@@ -2,7 +2,7 @@
 
 #include "Interface/SoundSourceInterface.h"
 #include "Interface/ThreadWorkerInterface.h"
-#include "Interface/MixerValueInterface.h"
+#include "Interface/MixerMultiplicativeInterface.h"
 
 #include "Kernel/Mixin.h"
 
@@ -85,7 +85,7 @@ namespace Mengine
         virtual float getTimeLeft() const = 0;
 
     public:
-        virtual const MixerValueInterfacePtr & getMixerVolume() const = 0;
+        virtual const MixerMultiplicativeInterfacePtr & getMixerVolume() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SoundIdentityInterface> SoundIdentityInterfacePtr;

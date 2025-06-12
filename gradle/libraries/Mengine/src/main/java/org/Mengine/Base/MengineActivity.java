@@ -325,7 +325,7 @@ public class MengineActivity extends AppCompatActivity {
 
         application.setState("activity.init", "bootstrap");
 
-        MengineNative.AndroidNativePython_addPlugin("Activity", this);
+        MengineNative.AndroidKernelService_addPlugin("Activity", this);
 
         application.setState("activity.init", "plugin_create");
 
@@ -966,7 +966,7 @@ public class MengineActivity extends AppCompatActivity {
 
         m_commandHandler = null;
 
-        MengineNative.AndroidNativePython_removePlugin("Activity");
+        MengineNative.AndroidKernelService_removePlugin("Activity");
 
         MengineNative.AndroidPlatform_destroyEvent();
 
@@ -1122,6 +1122,14 @@ public class MengineActivity extends AppCompatActivity {
         MengineLog.logDebug(TAG, "[END] dispatchKeyEvent");
 
         return super.dispatchKeyEvent(event);
+    }
+
+    /***********************************************************************************************
+     * Activity Listeners
+     **********************************************************************************************/
+
+    public void showAlertDialog(String caption, String message) {
+        MengineUtils.showOkAlertDialog(this, null, caption, message, null);
     }
 
     /***********************************************************************************************

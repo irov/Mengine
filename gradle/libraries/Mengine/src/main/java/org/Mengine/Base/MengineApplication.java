@@ -17,8 +17,6 @@ import androidx.annotation.BoolRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Size;
 
-import com.google.common.base.Splitter;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -1033,12 +1031,12 @@ public abstract class MengineApplication extends Application {
 
             String tag = p.getServiceTag();
 
-            MengineNative.AndroidNativePython_addPlugin(tag, p);
+            MengineNative.AndroidKernelService_addPlugin(tag, p);
         }
 
         this.setState("application.init", "run_main");
 
-        MengineNative.AndroidNativePython_addPlugin("Application", this);
+        MengineNative.AndroidKernelService_addPlugin("Application", this);
 
         m_main = new MengineMain(m_nativeApplication);
         m_main.start();
@@ -1152,14 +1150,16 @@ public abstract class MengineApplication extends Application {
 
             String tag = p.getServiceTag();
 
-            MengineNative.AndroidNativePython_removePlugin(tag);
+            MengineNative.AndroidKernelService_removePlugin(tag);
         }
 
         for (MengineServiceInterface service : m_services) {
             service.onAppFinalize(this);
         }
 
-        MengineNative.AndroidNativePython_removePlugin("Application");
+        MengineNative.AndroidKernelService_removePlugin("Application");
+
+        MengineNative.AndroidPlatform_quitEvent();
 
         m_main.stop();
         m_main = null;
@@ -1260,7 +1260,7 @@ public abstract class MengineApplication extends Application {
             , name
         );
 
-        this.setState("python.semaphore", name);
+        this.setState("native.semaphore", name);
 
         synchronized (m_syncronizationSemaphores) {
             MengineSemaphore semaphore = m_semaphores.get(name);
@@ -1278,7 +1278,7 @@ public abstract class MengineApplication extends Application {
             }
         }
 
-        MengineNative.AndroidNativePython_activateSemaphore(name);
+        MengineNative.AndroidKernelService_activateSemaphore(name);
     }
 
     public void deactivateSemaphore(String name) {
@@ -1311,18 +1311,18 @@ public abstract class MengineApplication extends Application {
         return true;
     }
 
-    public void pythonCall(String plugin, String method, Object ... args) {
+    public void nativeCall(String plugin, String method, Object ... args) {
         if (BuildConfig.DEBUG == true) {
-            MengineLog.logInfo(TAG, "pythonCall plugin [%s] method [%s] args [%s]"
+            MengineLog.logInfo(TAG, "nativeCall plugin [%s] method [%s] args [%s]"
                 , plugin
                 , method
                 , Arrays.toString(args)
             );
         }
 
-        this.setState("python.call", plugin + "." + method);
+        this.setState("native.call", plugin + "." + method);
 
-        MengineNative.AndroidNativePython_call(plugin, method, args);
+        MengineNative.AndroidKernelService_call(plugin, method, args);
     }
 
     /*ToDo:

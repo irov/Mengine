@@ -174,7 +174,7 @@ namespace Mengine
         
         const Char * token_str = authenticationToken.tokenString.UTF8String;
         
-        StdString::strncpy( _token, token_str, _capacity );
+        StdString::strcpy_safe( _token, token_str, _capacity );
         
         return true;
     }
@@ -192,7 +192,7 @@ namespace Mengine
         
         const Char * userId_str = userId.UTF8String;
         
-        StdString::strncpy( _userId, userId_str, _capacity );
+        StdString::strcpy_safe( _userId, userId_str, _capacity );
         
         return true;
     }

@@ -1,6 +1,7 @@
 #include "SpineScriptEmbedding.h"
 
 #include "Interface/StringizeServiceInterface.h"
+#include "Interface/PluginServiceInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonScriptWrapper.h"
@@ -67,9 +68,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SpineScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
-        SCRIPT_SERVICE()
-            ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("Spine"), true );
-
         pybind::interface_<Spine, pybind::bases<Node> >( _kernel, "Spine", false )
             .def( "setResourceSpineSkeleton", &Spine::setResourceSpineSkeleton )
             .def( "getResourceSpineSkeleton", &Spine::getResourceSpineSkeleton )

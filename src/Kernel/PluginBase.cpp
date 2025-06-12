@@ -94,7 +94,7 @@ namespace Mengine
             if( unimportantPlugin == true )
             {
                 LOGGER_MESSAGE( "plugin '%s' required service '%s' [unimportant]"
-                    , this->getPluginName()
+                    , this->getPluginName().c_str()
                     , serviceId
                 );
 
@@ -102,7 +102,7 @@ namespace Mengine
             }
 
             LOGGER_ERROR( "plugin '%s' required service '%s'"
-                , this->getPluginName()
+                , this->getPluginName().c_str()
                 , serviceId
             );
 
@@ -114,7 +114,7 @@ namespace Mengine
         if( m_availablePlugin == false )
         {
             LOGGER_INFO( "plugin", "plugin not available '%s'"
-                , this->getPluginName()
+                , this->getPluginName().c_str()
             );
 
             return true;
@@ -129,7 +129,7 @@ namespace Mengine
         catch( const std::exception & ex )
         {
             LOGGER_ERROR( "plugin '%s' initialize exception: %s"
-                , this->getPluginName()
+                , this->getPluginName().c_str()
                 , ex.what()
             );
         }
@@ -141,14 +141,14 @@ namespace Mengine
             if( unimportantPlugin == true )
             {
                 LOGGER_MESSAGE( "plugin '%s' not initialize [unimportant]"
-                    , this->getPluginName()
+                    , this->getPluginName().c_str()
                 );
 
                 return true;
             }
 
             LOGGER_ERROR( "plugin '%s' not initialize"
-                , this->getPluginName()
+                , this->getPluginName().c_str()
             );
 
             return false;
@@ -158,12 +158,12 @@ namespace Mengine
 
         m_systemPlugin = this->_systemPlugin();
 
-        const Char * pluginName = this->getPluginName();
+        const ConstString & pluginName = this->getPluginName();
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLUGIN_INITIALIZE, pluginName );
 
         LOGGER_INFO( "plugin", "plugin initialize '%s'"
-            , this->getPluginName()
+            , this->getPluginName().c_str()
         );
 
         return true;
@@ -171,10 +171,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PluginBase::finalizePlugin()
     {
-        const Char * pluginName = this->getPluginName();
+        const ConstString & pluginName = this->getPluginName();
 
         SERVICE_PROVIDER_GET()
-            ->unlinkService( pluginName );
+            ->unlinkService( pluginName.c_str() );
 
         if( m_initializePlugin == false )
         {
@@ -188,7 +188,7 @@ namespace Mengine
         this->_finalizePlugin();
 
         LOGGER_INFO( "plugin", "plugin finalize '%s'"
-            , this->getPluginName()
+            , this->getPluginName().c_str()
         );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -209,11 +209,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PluginBase::_destroy()
     {
-        const Char * pluginName = this->getPluginName();
-        MENGINE_UNUSED( pluginName );
-
         MENGINE_ASSERTION_OBSERVABLE( this, "plugin '%s'"
-            , this->getPluginName()
+            , this->getPluginName().c_str()
         );
 
         this->_destroyPlugin();
@@ -252,7 +249,7 @@ namespace Mengine
             if( leakObjects.empty() == false )
             {
                 LOGGER_MESSAGE_RELEASE( "plugin [%s] leak %zu objects"
-                    , pluginName
+                    , this->getPluginName().c_str()
                     , leakObjects.size()
                 );
 

@@ -1,6 +1,7 @@
 #include "SteamScriptEmbedding.h"
 
 #include "Interface/ScriptServiceInterface.h"
+#include "Interface/PluginServiceInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonScriptWrapper.h"
@@ -89,9 +90,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SteamScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
-        SCRIPT_SERVICE()
-            ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("Steam"), true );
-
         pybind::def_function( _kernel, "steamSetAchievement", &Detail::steamSetAchievement );
         pybind::def_function_kernel( _kernel, "steamGetAchievement", &Detail::steamGetAchievement );
         pybind::def_function( _kernel, "steamSetStateInteger", &Detail::steamSetStateInteger );

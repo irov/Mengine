@@ -1,6 +1,7 @@
 #include "OzzScriptEmbedding.h"
 
 #include "Interface/ScriptServiceInterface.h"
+#include "Interface/PluginServiceInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
@@ -61,9 +62,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OzzScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
-        SCRIPT_SERVICE()
-            ->setAvailablePlugin( STRINGIZE_STRING_LOCAL( "Ozz" ), true );
-
         pybind::def_function( _kernel, "createOzzSampler", &Detail::createOzzSampler );
 
         pybind::interface_<ResourceOzzAnimation, pybind::bases<Resource>>( _kernel, "ResourceOzzAnimation", false )

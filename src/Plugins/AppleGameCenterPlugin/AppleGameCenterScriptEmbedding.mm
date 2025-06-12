@@ -128,9 +128,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleGameCenterScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
-        SCRIPT_SERVICE()
-            ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("AppleGameCenter"), true );
-
         pybind::def_function_args( _kernel, "appleGameCenterConnect", &Detail::AppleGameCenter_connect );
         pybind::def_function( _kernel, "appleGameCenterIsConnect", &Detail::AppleGameCenter_isConnect );
         pybind::def_function_args( _kernel, "appleGameCenterReportAchievement", &Detail::AppleGameCenter_reportAchievement );
@@ -149,9 +146,6 @@ namespace Mengine
         _kernel->remove_from_module( "appleGameCenterCheckAchievement", nullptr );
         _kernel->remove_from_module( "appleGameCenterResetAchievements", nullptr );
         _kernel->remove_from_module( "appleGameCenterReportScore", nullptr );
-        
-        SCRIPT_SERVICE()
-            ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("AppleGameCenter"), false );
     }
     //////////////////////////////////////////////////////////////////////////
 }

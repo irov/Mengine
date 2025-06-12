@@ -374,9 +374,6 @@ namespace Mengine
         uint64_t buildNumber = Helper::getBuildNumber();
         this->addGlobalModuleT( "_BUILD_NUMBER", buildNumber );
 
-        pybind::def_functor( m_kernel, "setAvailablePlugin", this, &PythonScriptService::setAvailablePlugin );
-        pybind::def_functor( m_kernel, "isAvailablePlugin", this, &PythonScriptService::isAvailablePlugin );
-
         pybind::def_functor( m_kernel, "setTracebackOffset", this, &PythonScriptService::setTracebackOffset );
 
         pybind::interface_<PythonScriptLogger>( m_kernel, "PythonScriptLogger", true )
@@ -606,17 +603,11 @@ namespace Mengine
 #endif
         }
 
-        m_pluginsMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptService::_finalizeService()
     {
-        m_pluginsMutex = nullptr;
-
-        m_availablePlugins.clear();
-
 #if defined(MENGINE_DEBUG)
         pybind::observer_bind_call * observer = m_kernel->get_observer_bind_call();
 
@@ -1142,29 +1133,6 @@ namespace Mengine
         PyObject * dir_bltin = m_kernel->module_dict( builtins );
 
         pybind::dict_remove_t( m_kernel, dir_bltin, _name );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void PythonScriptService::setAvailablePlugin( const ConstString & _name, bool _available )
-    {
-        MENGINE_THREAD_MUTEX_SCOPE( m_pluginsMutex );
-
-        m_availablePlugins.insert_or_assign( _name, _available );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool PythonScriptService::isAvailablePlugin( const ConstString & _name ) const
-    {
-        MENGINE_THREAD_MUTEX_SCOPE( m_pluginsMutex );
-
-        MapAvailablePlugins::const_iterator it_found = m_availablePlugins.find( _name );
-
-        if( it_found == m_availablePlugins.end() )
-        {
-            return false;
-        }
-
-        bool available = it_found->second;
-
-        return available;
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptService::stringize( PyObject * _object, ConstString * const _cstr )

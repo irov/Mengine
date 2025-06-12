@@ -66,7 +66,7 @@ namespace Mengine
             for( DWORD index = 0;; ++index )
             {
                 WPath subKeyName = {L'\0'};
-                DWORD subKeyNameSize = sizeof( subKeyName ) / sizeof( TCHAR );
+                DWORD subKeyNameSize = MENGINE_MAX_PATH;
                 FILETIME lastWriteTime;
                 if( ::RegEnumKeyEx( hKey, index, subKeyName, &subKeyNameSize, NULL, NULL, NULL, &lastWriteTime ) != ERROR_SUCCESS )
                 {

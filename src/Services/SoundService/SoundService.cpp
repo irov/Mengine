@@ -21,7 +21,7 @@
 #include "Kernel/PrototypeHelper.h"
 #include "Kernel/PrefetcherHelper.h"
 #include "Kernel/MixerBoolean.h"
-#include "Kernel/MixerValue.h"
+#include "Kernel/MixerMultiplicative.h"
 
 #include "Config/StdAlgorithm.h"
 
@@ -61,16 +61,16 @@ namespace Mengine
             ->generatePrototype( ConstString::none(), MixerBoolean::getFactorableType(), MENGINE_DOCUMENT_FACTORABLE );
 
         m_commonVolume = PROTOTYPE_SERVICE()
-            ->generatePrototype( ConstString::none(), MixerValue::getFactorableType(), MENGINE_DOCUMENT_FACTORABLE );
+            ->generatePrototype( ConstString::none(), MixerMultiplicative::getFactorableType(), MENGINE_DOCUMENT_FACTORABLE );
 
         m_soundVolume = PROTOTYPE_SERVICE()
-            ->generatePrototype( ConstString::none(), MixerValue::getFactorableType(), MENGINE_DOCUMENT_FACTORABLE );
+            ->generatePrototype( ConstString::none(), MixerMultiplicative::getFactorableType(), MENGINE_DOCUMENT_FACTORABLE );
 
         m_musicVolume = PROTOTYPE_SERVICE()
-            ->generatePrototype( ConstString::none(), MixerValue::getFactorableType(), MENGINE_DOCUMENT_FACTORABLE );
+            ->generatePrototype( ConstString::none(), MixerMultiplicative::getFactorableType(), MENGINE_DOCUMENT_FACTORABLE );
 
         m_voiceVolume = PROTOTYPE_SERVICE()
-            ->generatePrototype( ConstString::none(), MixerValue::getFactorableType(), MENGINE_DOCUMENT_FACTORABLE );
+            ->generatePrototype( ConstString::none(), MixerMultiplicative::getFactorableType(), MENGINE_DOCUMENT_FACTORABLE );
 
         m_supportStream = THREAD_SERVICE()
             ->isAvailableService();
@@ -384,7 +384,7 @@ namespace Mengine
         }
         else
         {
-            const MixerValueInterfacePtr & emitterVolume = _identity->getMixerVolume();
+            const MixerMultiplicativeInterfacePtr & emitterVolume = _identity->getMixerVolume();
 
             float mixVolume = 1.f;
 
@@ -662,7 +662,7 @@ namespace Mengine
 
             bool source_process = process;
 
-            const MixerValueInterfacePtr & mixerVolume = identity->getMixerVolume();
+            const MixerMultiplicativeInterfacePtr & mixerVolume = identity->getMixerVolume();
 
             if( mixerVolume->update( _context ) == true )
             {
@@ -1188,7 +1188,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid identity set source volume" );
 
-        const MixerValueInterfacePtr & mixerVolume = _identity->getMixerVolume();
+        const MixerMultiplicativeInterfacePtr & mixerVolume = _identity->getMixerVolume();
 
         mixerVolume->setValue( STRINGIZE_STRING_LOCAL( "General" ), _volume, _from, _speed, _force );
 
@@ -1201,7 +1201,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid identity get source volume" );
 
-        const MixerValueInterfacePtr & mixerVolume = _identity->getMixerVolume();
+        const MixerMultiplicativeInterfacePtr & mixerVolume = _identity->getMixerVolume();
 
         float volume = mixerVolume->mixValue();
 
@@ -1212,7 +1212,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid identity set source mixer volume" );
 
-        const MixerValueInterfacePtr & mixerVolume = _identity->getMixerVolume();
+        const MixerMultiplicativeInterfacePtr & mixerVolume = _identity->getMixerVolume();
 
         mixerVolume->setValue( _mixer, _volume, _from, MENGINE_MIXER_VALUE_DEFAULT_SPEED, true );
 
@@ -1225,7 +1225,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid identity get source mixer volume" );
 
-        const MixerValueInterfacePtr & mixerVolume = _identity->getMixerVolume();
+        const MixerMultiplicativeInterfacePtr & mixerVolume = _identity->getMixerVolume();
 
         float volume = mixerVolume->getValue( _mixer );
 

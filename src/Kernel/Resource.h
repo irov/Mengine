@@ -12,6 +12,7 @@
 #include "Kernel/FilePath.h"
 #include "Kernel/Tags.h"
 #include "Kernel/ReferenceCounter.h"
+#include "Kernel/IntrusivePtrView.h"
 
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 #   include "Kernel/Scriptable.h"
@@ -201,5 +202,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     template<class T>
     using IntrusiveResourcePtr = IntrusivePtr<T, Resource>;
+    //////////////////////////////////////////////////////////////////////////
+    template<class T>
+    using IntrusiveResourcePtrView = IntrusivePtrView<T, Resource>;
     //////////////////////////////////////////////////////////////////////////
 }

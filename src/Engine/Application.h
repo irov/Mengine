@@ -9,14 +9,13 @@
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Resource.h"
 #include "Kernel/ResourceImage.h"
+#include "Kernel/ResourceCursor.h"
 #include "Kernel/MapAspectRatioViewports.h"
 
 #include "math/vec4.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusiveResourcePtr<class ResourceCursor> ResourceCursorPtr;
     //////////////////////////////////////////////////////////////////////////
     class Application
         : public ServiceBase<ApplicationInterface>

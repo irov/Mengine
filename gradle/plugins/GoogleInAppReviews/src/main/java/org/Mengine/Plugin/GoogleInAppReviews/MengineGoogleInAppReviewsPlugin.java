@@ -38,7 +38,7 @@ public class MengineGoogleInAppReviewsPlugin extends MengineService implements M
                     this.logWarning("requestReviewFlow unknown error");
                 }
 
-                this.pythonCall("onGoogleInAppReviewsRequestReviewError", exception);
+                this.nativeCall("onGoogleInAppReviewsRequestReviewError", exception);
 
                 return;
             }
@@ -61,7 +61,7 @@ public class MengineGoogleInAppReviewsPlugin extends MengineService implements M
         if (m_reviewInfo == null) {
             this.logError("[ERROR] reviewInfo == null");
 
-            this.pythonCall("onGoogleInAppReviewsLaunchingTheReviewError", new RuntimeException("reviewInfo == null"));
+            this.nativeCall("onGoogleInAppReviewsLaunchingTheReviewError", new RuntimeException("reviewInfo == null"));
 
             return;
         }
@@ -69,7 +69,7 @@ public class MengineGoogleInAppReviewsPlugin extends MengineService implements M
         if (MengineNetwork.isNetworkAvailable() == false) {
             this.logError("[ERROR] network is not available");
 
-            this.pythonCall("onGoogleInAppReviewsLaunchingTheReviewError", new RuntimeException("network is not available"));
+            this.nativeCall("onGoogleInAppReviewsLaunchingTheReviewError", new RuntimeException("network is not available"));
 
             return;
         }
@@ -79,7 +79,7 @@ public class MengineGoogleInAppReviewsPlugin extends MengineService implements M
         if (activity == null) {
             this.logError("[ERROR] invalid activity");
 
-            this.pythonCall("onGoogleInAppReviewsLaunchingTheReviewError", new RuntimeException("invalid activity"));
+            this.nativeCall("onGoogleInAppReviewsLaunchingTheReviewError", new RuntimeException("invalid activity"));
 
             return;
         }
@@ -106,7 +106,7 @@ public class MengineGoogleInAppReviewsPlugin extends MengineService implements M
                     .addParameterException("exception", exception)
                     .log();
 
-                this.pythonCall("onGoogleInAppReviewsLaunchingTheReviewError", exception);
+                this.nativeCall("onGoogleInAppReviewsLaunchingTheReviewError", exception);
 
                 return;
             }
@@ -116,7 +116,7 @@ public class MengineGoogleInAppReviewsPlugin extends MengineService implements M
             this.buildEvent("mng_inapp_review_success")
                 .log();
 
-            this.pythonCall("onGoogleInAppReviewsLaunchingTheReviewSuccess");
+            this.nativeCall("onGoogleInAppReviewsLaunchingTheReviewSuccess");
         });
     }
 }

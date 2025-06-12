@@ -96,6 +96,7 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveResourcePtr<ResourceImage> ResourceImagePtr;
+    typedef IntrusiveResourcePtrView<ResourceImage> ResourceImagePtrView;
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE void ResourceImage::setMaxSize( const mt::vec2f & _maxSize )
     {

@@ -136,10 +136,10 @@ namespace Mengine
     protected:
         MixerBooleanInterfacePtr m_muted;
 
-        MixerValueInterfacePtr m_commonVolume;
-        MixerValueInterfacePtr m_soundVolume;
-        MixerValueInterfacePtr m_musicVolume;
-        MixerValueInterfacePtr m_voiceVolume;
+        MixerMultiplicativeInterfacePtr m_commonVolume;
+        MixerMultiplicativeInterfacePtr m_soundVolume;
+        MixerMultiplicativeInterfacePtr m_musicVolume;
+        MixerMultiplicativeInterfacePtr m_voiceVolume;
 
         FactoryInterfacePtr m_factorySoundIdentity;
 

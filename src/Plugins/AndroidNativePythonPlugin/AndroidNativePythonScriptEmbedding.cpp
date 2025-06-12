@@ -2,9 +2,11 @@
 
 #include "Interface/PrototypeServiceInterface.h"
 
+#include "Environment/Android/AndroidKernelServiceInterface.h"
 #include "Environment/Python/PythonScriptWrapper.h"
 
 #include "PythonAndroidSemaphoreListener.h"
+#include "PythonAndroidPluginCallback.h"
 #include "AndroidNativePythonInterface.h"
 #include "AndroidNativePythonCallback.h"
 
@@ -16,18 +18,20 @@ namespace Mengine
     namespace Detail
     {
         ///////////////////////////////////////////////////////////////////////
-        static pybind::object AndroidNativePythonService_addAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb, const pybind::args & _args )
+        static AndroidPluginCallbackInterfacePtr AndroidNativePythonService_addAndroidCallback( pybind::kernel_interface * _kernel, const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb, const pybind::args & _args )
         {
-            pybind::object cb = ANDROID_NATIVEPYTHON_SERVICE()
-                ->addAndroidCallback( _plugin, _method, _cb, _args );
+            AndroidPluginCallbackInterfacePtr callback = Helper::makeFactorableUnique<PythonAndroidPluginCallback>( MENGINE_DOCUMENT_PYBIND, _kernel, _cb, _args );
 
-            return cb;
+            ANDROID_KERNEL_SERVICE()
+                ->addPluginCallback( _plugin, _method, callback );
+
+            return callback;
         }
         ///////////////////////////////////////////////////////////////////////
-        static void AndroidNativePythonService_removeAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb )
+        static void AndroidNativePythonService_removeAndroidCallback( const ConstString & _plugin, const ConstString & _method, const AndroidPluginCallbackInterfacePtr & _callback )
         {
-            ANDROID_NATIVEPYTHON_SERVICE()
-                ->removeAndroidCallback( _plugin, _method, _cb );
+            ANDROID_KERNEL_SERVICE()
+                ->removePluginCallback( _plugin, _method, _callback );
         }
         ///////////////////////////////////////////////////////////////////////
         static void AndroidNativePythonService_androidMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args )
@@ -84,12 +88,14 @@ namespace Mengine
                 ->androidJSONObjectMethod( _plugin, _method, _args );
         }
         //////////////////////////////////////////////////////////////////////////
-        void AndroidNativePythonService_waitSemaphore( const ConstString & _name, const pybind::object & _cb, const pybind::args & _args )
+        AndroidSemaphoreListenerInterfacePtr AndroidNativePythonService_waitSemaphore( const ConstString & _semaphore, const pybind::object & _cb, const pybind::args & _args )
         {
             AndroidSemaphoreListenerInterfacePtr listener = Helper::makeFactorableUnique<PythonAndroidSemaphoreListener>( MENGINE_DOCUMENT_PYBIND, _cb, _args );
 
-            ANDROID_NATIVEPYTHON_SERVICE()
-                ->waitSemaphore( _name, listener );
+            ANDROID_KERNEL_SERVICE()
+                ->waitSemaphore( _semaphore, listener );
+
+            return listener;
         }
         ///////////////////////////////////////////////////////////////////////
     }
@@ -104,8 +110,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativePythonScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
-        pybind::def_function_args( _kernel, "setAndroidCallback", &Detail::AndroidNativePythonService_addAndroidCallback );
-        pybind::def_function_args( _kernel, "addAndroidCallback", &Detail::AndroidNativePythonService_addAndroidCallback );
+        pybind::def_function_kernel_args( _kernel, "setAndroidCallback", &Detail::AndroidNativePythonService_addAndroidCallback );
+        pybind::def_function_kernel_args( _kernel, "addAndroidCallback", &Detail::AndroidNativePythonService_addAndroidCallback );
         pybind::def_function( _kernel, "removeAndroidCallback", &Detail::AndroidNativePythonService_removeAndroidCallback );
         pybind::def_function_args( _kernel, "androidMethod", &Detail::AndroidNativePythonService_androidMethod );
         pybind::def_function_args( _kernel, "androidBooleanMethod", &Detail::AndroidNativePythonService_androidBooleanMethod );
@@ -116,6 +122,12 @@ namespace Mengine
         pybind::def_function_args( _kernel, "androidStringMethod", &Detail::AndroidNativePythonService_androidStringMethod );
         pybind::def_function_args( _kernel, "androidObjectMethod", &Detail::AndroidNativePythonService_androidObjectMethod );
         pybind::def_function_args( _kernel, "androidJSONObjectMethod", &Detail::AndroidNativePythonService_androidJSONObjectMethod );
+
+        pybind::interface_<AndroidPluginCallbackInterface, pybind::bases<Mixin>>( _kernel, "AndroidPluginCallbackInterface" )
+            ;
+
+        pybind::interface_<AndroidSemaphoreListenerInterface, pybind::bases<Mixin>>( _kernel, "AndroidSemaphoreListenerInterface" )
+            ;
 
         pybind::interface_<AndroidNativePythonCallback, pybind::bases<Scriptable>>( _kernel, "AndroidNativePythonCallback" )
             .def_call( &AndroidNativePythonCallback::call )

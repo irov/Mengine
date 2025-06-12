@@ -92,9 +92,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleAppLovinScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
-        SCRIPT_SERVICE()
-            ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("AppleAppLovin"), true );
-        
         pybind::def_function( _kernel, "appleAppLovinHasSupportedCMP", &Detail::appleAppLovin_hasSupportedCMP );
         pybind::def_function( _kernel, "appleAppLovinIsConsentFlowUserGeographyGDPR", &Detail::appleAppLovin_isConsentFlowUserGeographyGDPR );
         pybind::def_function_args( _kernel, "appleAppLovinLoadAndShowCMPFlow", &Detail::appleAppLovin_loadAndShowCMPFlow );

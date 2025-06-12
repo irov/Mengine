@@ -59,14 +59,14 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
                         , debugMessage
                     );
 
-                    this.pythonCall("onGooglePlayBillingPurchasesUpdatedFeatureNotSupported");
+                    this.nativeCall("onGooglePlayBillingPurchasesUpdatedFeatureNotSupported");
                 }break;
                 case BillingClient.BillingResponseCode.SERVICE_DISCONNECTED: {
                     this.logWarning("onPurchasesUpdated [Service disconnected] message: %s"
                         , debugMessage
                     );
 
-                    this.pythonCall("onGooglePlayBillingPurchasesUpdatedServiceDisconnected");
+                    this.nativeCall("onGooglePlayBillingPurchasesUpdatedServiceDisconnected");
                 }break;
                 case BillingClient.BillingResponseCode.OK: {
                     this.logInfo("onPurchasesUpdated [User success the purchase]");
@@ -77,35 +77,35 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
                         }
                     }
 
-                    this.pythonCall("onGooglePlayBillingPurchasesUpdatedOk");
+                    this.nativeCall("onGooglePlayBillingPurchasesUpdatedOk");
                 }break;
                 case BillingClient.BillingResponseCode.USER_CANCELED: {
                     this.logWarning("onPurchasesUpdated [User canceled the purchase] message: %s"
                         , debugMessage
                     );
 
-                    this.pythonCall("onGooglePlayBillingPurchasesUpdatedUserCanceled");
+                    this.nativeCall("onGooglePlayBillingPurchasesUpdatedUserCanceled");
                 }break;
                 case BillingClient.BillingResponseCode.SERVICE_UNAVAILABLE: {
                     this.logWarning("onPurchasesUpdated [Service Unavailable] message: %s"
                         , debugMessage
                     );
 
-                    this.pythonCall("onGooglePlayBillingPurchasesUpdatedServiceUnavailable");
+                    this.nativeCall("onGooglePlayBillingPurchasesUpdatedServiceUnavailable");
                 }break;
                 case BillingClient.BillingResponseCode.BILLING_UNAVAILABLE: {
                     this.logWarning("onPurchasesUpdated [Billing Unavailable] message: %s"
                         , debugMessage
                     );
 
-                    this.pythonCall("onGooglePlayBillingPurchasesUpdatedBillingUnavailable");
+                    this.nativeCall("onGooglePlayBillingPurchasesUpdatedBillingUnavailable");
                 }break;
                 case BillingClient.BillingResponseCode.ITEM_UNAVAILABLE: {
                     this.logWarning("onPurchasesUpdated [The user item unavailable] message: %s"
                         , debugMessage
                     );
 
-                    this.pythonCall("onGooglePlayBillingPurchasesUpdatedItemUnavailable");
+                    this.nativeCall("onGooglePlayBillingPurchasesUpdatedItemUnavailable");
                 }break;
                 case BillingClient.BillingResponseCode.DEVELOPER_ERROR: {
                     this.logError(
@@ -116,28 +116,28 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
                             "are using must be signed with release keys."
                     );
 
-                    this.pythonCall("onGooglePlayBillingPurchasesUpdatedDeveloperError");
+                    this.nativeCall("onGooglePlayBillingPurchasesUpdatedDeveloperError");
                 }break;
                 case BillingClient.BillingResponseCode.ERROR: {
                     this.logWarning("onPurchasesUpdated [Error] message: %s"
                         , debugMessage
                     );
 
-                    this.pythonCall("onGooglePlayBillingPurchasesUpdatedError");
+                    this.nativeCall("onGooglePlayBillingPurchasesUpdatedError");
                 }break;
                 case BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED: {
                     this.logWarning("onPurchasesUpdated [The user already owns this item] message: %s"
                         , debugMessage
                     );
 
-                    this.pythonCall("onGooglePlayBillingPurchasesUpdatedItemAlreadyOwned");
+                    this.nativeCall("onGooglePlayBillingPurchasesUpdatedItemAlreadyOwned");
                 }break;
                 case BillingClient.BillingResponseCode.ITEM_NOT_OWNED: {
                     this.logWarning("onPurchasesUpdated [The user item not owned] message: %s"
                         , debugMessage
                     );
 
-                    this.pythonCall("onGooglePlayBillingPurchasesUpdatedItemNotOwned");
+                    this.nativeCall("onGooglePlayBillingPurchasesUpdatedItemNotOwned");
                 }break;
                 default: {
                     this.logWarning("onPurchasesUpdated [Unsupported response] code: %d message: %s"
@@ -145,7 +145,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
                         , debugMessage
                     );
 
-                    this.pythonCall("onGooglePlayBillingPurchasesUpdatedUnknown", responseCode);
+                    this.nativeCall("onGooglePlayBillingPurchasesUpdatedUnknown", responseCode);
                 }break;
             }
         };
@@ -184,7 +184,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
             public void onBillingServiceDisconnected() {
                 MengineGooglePlayBillingPlugin.this.logInfo("Billing disconnected");
 
-                MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingConnectServiceDisconnected");
+                MengineGooglePlayBillingPlugin.this.nativeCall("onGooglePlayBillingConnectServiceDisconnected");
             }
 
             @Override
@@ -197,14 +197,14 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
                         , billingResult.getDebugMessage()
                     );
 
-                    MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingConnectSetupFinishedFailed");
+                    MengineGooglePlayBillingPlugin.this.nativeCall("onGooglePlayBillingConnectSetupFinishedFailed");
 
                     return;
                 }
 
                 MengineGooglePlayBillingPlugin.this.logInfo("billing setup finished");
 
-                MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingConnectSetupFinishedSuccess");
+                MengineGooglePlayBillingPlugin.this.nativeCall("onGooglePlayBillingConnectSetupFinishedSuccess");
             }
         });
     }
@@ -251,7 +251,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
                     , billingResult1.getDebugMessage()
                 );
 
-                this.pythonCall("onGooglePlayBillingQueryProductFailed");
+                this.nativeCall("onGooglePlayBillingQueryProductFailed");
 
                 return;
             }
@@ -337,7 +337,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
                 , desc_products
             );
 
-            this.pythonCall("onGooglePlayBillingQueryProductSuccess", desc_products);
+            this.nativeCall("onGooglePlayBillingQueryProductSuccess", desc_products);
         });
     }
 
@@ -370,7 +370,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
                     .addParameterLong("error_code", responseCode)
                     .log();
 
-                this.pythonCall("onGooglePlayBillingQueryPurchasesFailed");
+                this.nativeCall("onGooglePlayBillingQueryPurchasesFailed");
 
                 return;
             }
@@ -387,7 +387,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
                 this.handlePurchase(purchase);
             }
 
-            this.pythonCall("onGooglePlayBillingQueryPurchasesSuccess");
+            this.nativeCall("onGooglePlayBillingQueryPurchasesSuccess");
         });
     }
 
@@ -465,7 +465,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
                 .addParameterLong("error_code", responseCode)
                 .log();
 
-            this.pythonCall("onGooglePlayBillingBuyInAppFailed", productId);
+            this.nativeCall("onGooglePlayBillingBuyInAppFailed", productId);
 
             return true;
         }
@@ -478,7 +478,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
             .addParameterString("product_id", productId)
             .log();
 
-        this.pythonCall("onGooglePlayBillingBuyInAppSuccess", productId);
+        this.nativeCall("onGooglePlayBillingBuyInAppSuccess", productId);
 
         return true;
     }
@@ -509,7 +509,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
                     , billingResult.getDebugMessage()
                 );
 
-                this.pythonCall("onGooglePlayBillingPurchasesAcknowledgeFailed", products);
+                this.nativeCall("onGooglePlayBillingPurchasesAcknowledgeFailed", products);
 
                 return;
             }
@@ -518,7 +518,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
                 , billingResult.getDebugMessage()
             );
 
-            this.pythonCall("onGooglePlayBillingPurchasesAcknowledgeSuccess", products);
+            this.nativeCall("onGooglePlayBillingPurchasesAcknowledgeSuccess", products);
         });
     }
 
@@ -544,7 +544,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
                     , billingResult.getDebugMessage()
                 );
 
-                this.pythonCall("onGooglePlayBillingPurchasesOnConsumeFailed", products);
+                this.nativeCall("onGooglePlayBillingPurchasesOnConsumeFailed", products);
 
                 return;
             }
@@ -568,7 +568,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
 
             MengineFragmentInAppPurchase.INSTANCE.purchaseInAppProduct(purchase1);
 
-            this.pythonCall("onGooglePlayBillingPurchasesOnConsumeSuccess", products);
+            this.nativeCall("onGooglePlayBillingPurchasesOnConsumeSuccess", products);
         });
     }
 
@@ -604,7 +604,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
             );
 
             if (acknowledged == true) {
-                this.pythonCall("onGooglePlayBillingPurchaseAcknowledged", products);
+                this.nativeCall("onGooglePlayBillingPurchaseAcknowledged", products);
 
                 return;
             }
@@ -616,6 +616,6 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
             }
         };
 
-        this.pythonCall("onGooglePlayBillingPurchaseIsConsumable", products, cb);
+        this.nativeCall("onGooglePlayBillingPurchaseIsConsumable", products, cb);
     }
 }

@@ -62,7 +62,7 @@ namespace Mengine
         float getTimeLeft() const override;
 
     public:
-        const MixerValueInterfacePtr & getMixerVolume() const override;
+        const MixerMultiplicativeInterfacePtr & getMixerVolume() const override;
 
     protected:
         UniqueId m_id;
@@ -74,7 +74,7 @@ namespace Mengine
         UniqueId m_workerId;
 
         float m_timeLeft;
-        MixerValueInterfacePtr m_mixerVolume;
+        MixerMultiplicativeInterfacePtr m_mixerVolume;
 
         ESoundSourceState m_state;
         ESoundSourceCategory m_category;

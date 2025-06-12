@@ -896,14 +896,14 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
                     , error.getCmpCode()
                 );
 
-                this.pythonCall("onAndroidAppLovinConsentFlowError");
+                this.nativeCall("onAndroidAppLovinConsentFlowError");
 
                 return;
             }
 
             this.logInfo("Consent dialog was shown");
 
-            this.pythonCall("onAndroidAppLovinConsentFlowCompleted");
+            this.nativeCall("onAndroidAppLovinConsentFlowCompleted");
         });
     }
 

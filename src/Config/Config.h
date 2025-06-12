@@ -428,8 +428,12 @@
 #   endif
 #endif
 
+#ifndef MENGINE_ARRAY_SIZE
+#define MENGINE_ARRAY_SIZE(A) (sizeof(A) / sizeof((A)[0]))
+#endif
+
 #ifndef MENGINE_STATIC_STRING_LENGTH
-#define MENGINE_STATIC_STRING_LENGTH(S) (sizeof( (S) ) - 1)
+#define MENGINE_STATIC_STRING_LENGTH(S) (MENGINE_ARRAY_SIZE(S) - 1)
 #endif
 
 #ifndef MENGINE_STRING_EMPTY

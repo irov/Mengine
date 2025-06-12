@@ -1,6 +1,7 @@
 #include "DevToDebugScriptEmbedding.h"
 
 #include "Interface/ScriptServiceInterface.h"
+#include "Interface/PluginServiceInterface.h"
 
 #include "Environment/Python/PythonDocumentTraceback.h"
 #include "Environment/Python/PythonScriptWrapper.h"
@@ -403,9 +404,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DevToDebugScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
-        SCRIPT_SERVICE()
-            ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("DevToDebug"), true );
-
         pybind::def_function( _kernel, "addDevToDebugTab", &Detail::addDevToDebugTab );
         pybind::def_function( _kernel, "getDevToDebugTab", &Detail::getDevToDebugTab );
         pybind::def_function( _kernel, "hasDevToDebugTab", &Detail::hasDevToDebugTab );

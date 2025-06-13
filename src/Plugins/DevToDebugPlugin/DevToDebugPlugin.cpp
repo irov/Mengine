@@ -2,12 +2,18 @@
 
 #include "Interface/HttpServiceInterface.h"
 #include "Interface/ThreadSystemInterface.h"
+#include "Interface/ScriptServiceInterface.h"
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/BuildMode.h"
 #include "Kernel/PluginHelper.h"
+#include "Kernel/NotificationHelper.h"
+
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+#   include "DevToDebugScriptEmbedding.h"
+#endif
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( DevToDebugService );
@@ -86,11 +92,30 @@ namespace Mengine
             return false;
         }
 
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
+        {
+            SCRIPT_SERVICE()
+                ->addScriptEmbedding( DevToDebugScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<DevToDebugScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
+        }, MENGINE_DOCUMENT_FACTORABLE );
+
+        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
+        {
+            SCRIPT_SERVICE()
+                ->removeScriptEmbedding( DevToDebugScriptEmbedding::getFactorableType() );
+        }, MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugPlugin::_finalizePlugin()
     {
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
+#endif
+
         SERVICE_FINALIZE( DevToDebugService );
     }
     //////////////////////////////////////////////////////////////////////////

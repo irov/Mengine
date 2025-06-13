@@ -2,7 +2,6 @@
 
 #include "Interface/EnvironmentServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
-#include "Interface/ScriptServiceInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/TimerServiceInterface.h"
@@ -26,10 +25,6 @@
 #include "DevToDebugWidgetCommandLine.h"
 #include "DevToDebugWidgetRadioButton.h"
 #include "DevToDebugWidgetSelector.h"
-
-#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-#   include "DevToDebugScriptEmbedding.h"
-#endif
 
 #include "Kernel/Logger.h"
 #include "Kernel/ConfigHelper.h"
@@ -187,30 +182,11 @@ namespace Mengine
 
         m_timerId = timerId;
 
-#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
-        {
-            SCRIPT_SERVICE()
-                ->addScriptEmbedding( DevToDebugScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<DevToDebugScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
-        }, MENGINE_DOCUMENT_FACTORABLE );
-
-        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
-        {
-            SCRIPT_SERVICE()
-                ->removeScriptEmbedding( DevToDebugScriptEmbedding::getFactorableType() );
-        }, MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugService::_finalizeService()
     {
-#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
-#endif
-
         Helper::removePrototype<DevToDebugTab>( STRINGIZE_STRING_LOCAL( "DevToDebug" ) );
 
         Helper::removePrototype<DevToDebugPropertyConstBoolean>( STRINGIZE_STRING_LOCAL( "DevToDebug" ) );

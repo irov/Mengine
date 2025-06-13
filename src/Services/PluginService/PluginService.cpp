@@ -200,7 +200,9 @@ namespace Mengine
             return false;
         }
 
-        this->setAvailablePlugin( pluginName, true );
+        bool available = _plugin->isAvailablePlugin();
+        
+        this->setAvailablePlugin( pluginName, available );
 
         PluginDesc desc;
         desc.dynamicLibrary = _dynamicLibrary;

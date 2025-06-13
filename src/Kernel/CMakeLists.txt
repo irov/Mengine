@@ -461,6 +461,12 @@ Scheduler
 )
 
 ADD_FILTER(
+Layout
+    Layout.cpp
+    Layout.h
+)
+
+ADD_FILTER(
 Randomizer
     MT19937Randomizer.cpp
     MT19937Randomizer.h

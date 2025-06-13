@@ -63,6 +63,10 @@ namespace Mengine
         void getCenter( mt::vec2f * const _point ) const;
 
     public:
+        bool operator == ( const Viewport & _viewport ) const;
+        bool operator != ( const Viewport & _viewport ) const;
+
+    public:
         mt::vec2f begin;
         mt::vec2f end;
     };

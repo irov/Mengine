@@ -27,16 +27,6 @@ namespace Mengine
         m_height = _height;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Resolution::operator == ( const Resolution & _resolution ) const
-    {
-        return m_width == _resolution.m_width && m_height == _resolution.m_height;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Resolution::operator != ( const Resolution & _resolution ) const
-    {
-        return m_width != _resolution.m_width || m_height != _resolution.m_height;
-    }
-    //////////////////////////////////////////////////////////////////////////
     float Resolution::getAspectRatio() const
     {
         float width = this->getWidthF();
@@ -127,6 +117,16 @@ namespace Mengine
         }
 
         *_adaptiveResolution = Resolution( (uint32_t)best_width, (uint32_t)best_height );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Resolution::operator == ( const Resolution & _resolution ) const
+    {
+        return m_width == _resolution.m_width && m_height == _resolution.m_height;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Resolution::operator != ( const Resolution & _resolution ) const
+    {
+        return !(*this == _resolution);
     }
     //////////////////////////////////////////////////////////////////////////
 }

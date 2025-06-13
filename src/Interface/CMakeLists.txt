@@ -60,6 +60,7 @@ Common
     GameServiceInterface.h
     PlayerServiceInterface.h
     SchedulerInterface.h
+    LayoutInterface.h
     PickerInterface.h
     PickerInputHandlerInterface.h
     PickerServiceInterface.h

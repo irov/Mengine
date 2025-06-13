@@ -1,0 +1,28 @@
+#include "PythonLayoutSizer.h"
+
+namespace Mengine
+{
+    //////////////////////////////////////////////////////////////////////////
+    PythonLayoutSizer::PythonLayoutSizer()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    PythonLayoutSizer::~PythonLayoutSizer()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PythonLayoutSizer::onGetLayoutSize( float * const _size ) const
+    {
+        float new_size = this->call_cb();
+
+        if( *_size == new_size )
+        {
+            return false;
+        }
+
+        *_size = new_size;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+}

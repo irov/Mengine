@@ -33,6 +33,7 @@
 #include "Kernel/ThreadTask.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Scheduler.h"
+#include "Kernel/Layout.h"
 #include "Kernel/FactoryDefault.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
@@ -73,8 +74,9 @@ namespace Mengine
         m_globalInputHandler = Helper::makeFactorableUnique<PlayerGlobalInputHandler>( MENGINE_DOCUMENT_FACTORABLE );
 
         m_factoryScheduler = Helper::makeFactoryPool<Scheduler, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryLayout = Helper::makeFactoryPool<Layout, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
-        SchedulerPtr scheduler = m_factoryScheduler->createObject( MENGINE_DOCUMENT_FACTORABLE );
+        SchedulerInterfacePtr scheduler = m_factoryScheduler->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
         if( scheduler->initialize() == false )
         {
@@ -83,7 +85,7 @@ namespace Mengine
 
         m_localScheduler = scheduler;
 
-        SchedulerPtr schedulerGlobal = m_factoryScheduler->createObject( MENGINE_DOCUMENT_FACTORABLE );
+        SchedulerInterfacePtr schedulerGlobal = m_factoryScheduler->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
         if( schedulerGlobal->initialize() == false )
         {
@@ -150,29 +152,16 @@ namespace Mengine
         m_localScheduler = nullptr;
         m_globalScheduler = nullptr;
 
-        for( const SchedulerInterfacePtr & scheduler : m_schedulers )
-        {
-#if defined(MENGINE_DEBUG)
-            const Char * doc = MENGINE_DOCUMENTABLE_STR( scheduler.get(), "forgotten scheduler" );
-
-            LOGGER_ASSERTION( "was forgotten finalize scheduler (doc: %s)"
-                , doc
-            );
-#endif
-
-            scheduler->finalize();
-        }
-
-        m_schedulers.clear();
-
         m_randomizer = nullptr;
 
         m_affectorable = nullptr;
         m_affectorableGlobal = nullptr;
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryScheduler );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryLayout );
 
         m_factoryScheduler = nullptr;
+        m_factoryLayout = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::_stopService()
@@ -260,7 +249,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     SchedulerInterfacePtr PlayerService::createScheduler( const DocumentInterfacePtr & _doc )
     {
-        SchedulerPtr sm = m_factoryScheduler->createObject( _doc );
+        SchedulerInterfacePtr sm = m_factoryScheduler->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( sm, "invalid create scheduler" );
 
@@ -269,29 +258,31 @@ namespace Mengine
             return nullptr;
         }
 
-        m_schedulers.emplace_back( sm );
-
         return sm;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PlayerService::destroyScheduler( const SchedulerInterfacePtr & _scheduler )
+    void PlayerService::destroyScheduler( const SchedulerInterfacePtr & _scheduler )
     {
-        VectorUserScheduler::iterator it_found = StdAlgorithm::find( m_schedulers.begin(), m_schedulers.end(), _scheduler );
+        _scheduler->finalize();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    LayoutInterfacePtr PlayerService::createLayout( const DocumentInterfacePtr & _doc )
+    {
+        LayoutInterfacePtr layout = m_factoryLayout->createObject( _doc );
 
-        if( it_found == m_schedulers.end() )
+        MENGINE_ASSERTION_MEMORY_PANIC( layout, "invalid create layout" );
+
+        if( layout->initialize() == false )
         {
-            LOGGER_ERROR( "scheduler not found (doc: %s)"
-                , MENGINE_DOCUMENT_STR( _scheduler->getDocument() )
-            );
-
-            return false;
+            return nullptr;
         }
 
-        _scheduler->finalize();
-
-        m_schedulers.erase( it_found );
-
-        return true;
+        return layout;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PlayerService::destroyLayout( const LayoutInterfacePtr & _layout )
+    {
+        _layout->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
     const GlobalInputHandlerInterfacePtr & PlayerService::getGlobalInputHandler() const

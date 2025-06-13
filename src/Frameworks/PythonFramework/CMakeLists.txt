@@ -65,6 +65,16 @@ PythonSchedule
 )
 
 ADD_FILTER(
+PythonLayout
+    PythonLayoutSizer.cpp
+    PythonLayoutSizer.h
+    PythonLayoutElementGetter.cpp
+    PythonLayoutElementGetter.h
+    PythonLayoutElementSetter.cpp
+    PythonLayoutElementSetter.h
+)
+
+ADD_FILTER(
 Wrapper
     HelperScriptEmbedding.h
     HelperScriptEmbedding.cpp

@@ -2,6 +2,7 @@
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/SchedulerInterface.h"
+#include "Interface/LayoutInterface.h"
 #include "Interface/PickerServiceInterface.h"
 #include "Interface/GlobalInputHandlerInterface.h"
 #include "Interface/UpdationInterface.h"
@@ -43,7 +44,11 @@ namespace Mengine
 
     public:
         virtual SchedulerInterfacePtr createScheduler( const DocumentInterfacePtr & _doc ) = 0;
-        virtual bool destroyScheduler( const SchedulerInterfacePtr & _scheduler ) = 0;
+        virtual void destroyScheduler( const SchedulerInterfacePtr & _scheduler ) = 0;
+
+    public:
+        virtual LayoutInterfacePtr createLayout( const DocumentInterfacePtr & _doc ) = 0;
+        virtual void destroyLayout( const LayoutInterfacePtr & _layout ) = 0;
 
     public:
         virtual const RenderCameraOrthogonalPtr & getDefaultSceneRenderCamera2D() const = 0;

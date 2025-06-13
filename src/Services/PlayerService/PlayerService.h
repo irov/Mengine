@@ -4,6 +4,7 @@
 #include "Interface/PickerServiceInterface.h"
 #include "Interface/GlobalInputHandlerInterface.h"
 #include "Interface/SchedulerInterface.h"
+#include "Interface/LayoutInterface.h"
 #include "Interface/RenderTargetInterface.h"
 #include "Interface/RenderPipelineInterface.h"
 #include "Interface/FactoryInterface.h"
@@ -40,7 +41,11 @@ namespace Mengine
 
     public:
         SchedulerInterfacePtr createScheduler( const DocumentInterfacePtr & _doc ) override;
-        bool destroyScheduler( const SchedulerInterfacePtr & _scheduler ) override;
+        void destroyScheduler( const SchedulerInterfacePtr & _scheduler ) override;
+
+    public:
+        LayoutInterfacePtr createLayout( const DocumentInterfacePtr & _doc ) override;
+        void destroyLayout( const LayoutInterfacePtr & _layout ) override;
 
     public:
         const GlobalInputHandlerInterfacePtr & getGlobalInputHandler() const override;
@@ -159,9 +164,7 @@ namespace Mengine
         RandomizerInterfacePtr m_randomizer;
 
         FactoryInterfacePtr m_factoryScheduler;
-
-        typedef Vector<SchedulerInterfacePtr> VectorUserScheduler;
-        VectorUserScheduler m_schedulers;
+        FactoryInterfacePtr m_factoryLayout;
 
         AffectorablePtr m_affectorable;
         AffectorablePtr m_affectorableGlobal;

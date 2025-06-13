@@ -33,6 +33,10 @@
 #include "PythonScheduleEvent.h"
 #include "DelaySchedulePipe.h"
 
+#include "PythonLayoutSizer.h"
+#include "PythonLayoutElementGetter.h"
+#include "PythonLayoutElementSetter.h"
+
 #include "Engine/ResourceFile.h"
 #include "Engine/ResourceMusic.h"
 #include "Engine/ResourceTestPick.h"
@@ -121,6 +125,9 @@ namespace Mengine
                 m_factoryPythonScheduleTiming = Helper::makeFactoryPool<PythonScheduleTiming, 16>( MENGINE_DOCUMENT_FACTORABLE );
                 m_factoryPythonSchedulePipe = Helper::makeFactoryPool<PythonSchedulePipe, 16>( MENGINE_DOCUMENT_FACTORABLE );
                 m_factoryNodeAffectorCallback = Helper::makeFactoryPool<ScriptableAffectorCallback, 4>( MENGINE_DOCUMENT_FACTORABLE );
+                m_factoryPythonLayourSizer = Helper::makeFactoryPool<PythonLayoutSizer, 4>( MENGINE_DOCUMENT_FACTORABLE );
+                m_factoryPythonLayoutElementGetter = Helper::makeFactoryPool<PythonLayoutElementGetter, 4>( MENGINE_DOCUMENT_FACTORABLE );
+                m_factoryPythonLayoutElementSetter = Helper::makeFactoryPool<PythonLayoutElementSetter, 4>( MENGINE_DOCUMENT_FACTORABLE );
 
                 m_factoryAffectorVelocity2 = Helper::makeFactorableUnique<FactoryAffectorVelocity2>( MENGINE_DOCUMENT_FACTORABLE );
                 m_factoryAffectorVelocity2->initialize();
@@ -222,12 +229,18 @@ namespace Mengine
                 MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonScheduleTiming );
                 MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonSchedulePipe );
                 MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryNodeAffectorCallback );
+                MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonLayourSizer );
+                MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonLayoutElementGetter );
+                MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonLayoutElementSetter );
 
                 m_factoryPythonScheduleEvent = nullptr;
                 m_factoryDelaySchedulePipe = nullptr;
                 m_factoryPythonScheduleTiming = nullptr;
                 m_factoryPythonSchedulePipe = nullptr;
                 m_factoryNodeAffectorCallback = nullptr;
+                m_factoryPythonLayourSizer = nullptr;
+                m_factoryPythonLayoutElementGetter = nullptr;
+                m_factoryPythonLayoutElementSetter = nullptr;
             }
 
         public:
@@ -333,6 +346,30 @@ namespace Mengine
                 uint32_t id = _scheduleManager->timing( py_pipe, py_timing, py_event, MENGINE_DOCUMENT_PYBIND );
 
                 return id;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            FactoryInterfacePtr m_factoryPythonLayourSizer;
+            //////////////////////////////////////////////////////////////////////////
+            void LayoutInterface_setLayoutSizer( LayoutInterface * _layout, const pybind::object & _sizer, const pybind::args & _args )
+            {
+                PythonLayoutSizerPtr py_sizer = m_factoryPythonLayourSizer->createObject( MENGINE_DOCUMENT_PYBIND );
+                py_sizer->initialize( _sizer, _args );
+
+                _layout->setLayoutSizer( py_sizer );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            FactoryInterfacePtr m_factoryPythonLayoutElementGetter;
+            FactoryInterfacePtr m_factoryPythonLayoutElementSetter;
+            //////////////////////////////////////////////////////////////////////////
+            void LayoutInterface_addLayoutElement( LayoutInterface * _layout, const ConstString & _name, bool _fixed, float _weight, bool _enable, const pybind::object & _getter, const pybind::object & _setter, const pybind::args & _args )
+            {
+                PythonLayoutElementGetterPtr py_getter = m_factoryPythonLayoutElementGetter->createObject( MENGINE_DOCUMENT_PYBIND );
+                py_getter->initialize( _getter, _args );
+
+                PythonLayoutElementSetterPtr py_setter = m_factoryPythonLayoutElementSetter->createObject( MENGINE_DOCUMENT_PYBIND );
+                py_setter->initialize( _setter, _args );
+
+                _layout->addLayoutElement( _name, py_getter, py_setter, _fixed, _weight, _enable, MENGINE_DOCUMENT_PYBIND );
             }
             //////////////////////////////////////////////////////////////////////////
             uint32_t s_Animation_play( AnimationInterface * _animation )
@@ -2887,6 +2924,15 @@ namespace Mengine
             .def( "resume", &ChronometerInterface::resume )
             .def( "isPause", &ChronometerInterface::isPause )
             .def( "getTime", &ChronometerInterface::getTime )
+            ;
+
+        pybind::interface_<LayoutInterface, pybind::bases<Mixin>>( _kernel, "LayoutInterface", true )
+            .def_proxy_static_args( "setLayoutSizer", scriptMethod, &KernelScriptMethod::LayoutInterface_setLayoutSizer )
+            .def_proxy_static_args( "addLayoutElement", scriptMethod, &KernelScriptMethod::LayoutInterface_addLayoutElement )
+            .def( "removeLayoutElement", &LayoutInterface::removeLayoutElement )
+            .def( "hasLayoutElement", &LayoutInterface::hasLayoutElement )
+            .def( "setLayoutElementEnable", &LayoutInterface::setLayoutElementEnable )
+            .def( "isLayoutElementEnable", &LayoutInterface::isLayoutElementEnable )
             ;
 
         pybind::enum_<EArrowType>( _kernel, "ArrowType" )

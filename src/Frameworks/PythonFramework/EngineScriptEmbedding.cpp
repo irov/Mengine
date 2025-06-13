@@ -376,14 +376,28 @@ namespace Mengine
                 return sm;
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_destroyScheduler( const SchedulerInterfacePtr & _sm )
+            void s_destroyScheduler( const SchedulerInterfacePtr & _sm )
             {
                 MENGINE_ASSERTION_MEMORY_PANIC( _sm, "destroy scheduler is nullptr" );
 
-                bool successful = PLAYER_SERVICE()
+                PLAYER_SERVICE()
                     ->destroyScheduler( _sm );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            LayoutInterfacePtr s_createLayout()
+            {
+                LayoutInterfacePtr layout = PLAYER_SERVICE()
+                    ->createLayout( MENGINE_DOCUMENT_PYBIND );
 
-                return successful;
+                return layout;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_destroyLayout( const LayoutInterfacePtr & _layout )
+            {
+                MENGINE_ASSERTION_MEMORY_PANIC( _layout, "destroy layout is nullptr" );
+
+                PLAYER_SERVICE()
+                    ->destroyLayout( _layout );
             }
             //////////////////////////////////////////////////////////////////////////
             uint32_t s_pipe( const pybind::object & _pipe, const pybind::object & _timing, const pybind::object & _event, const pybind::args & _args )
@@ -4332,6 +4346,9 @@ namespace Mengine
 
         pybind::def_functor( _kernel, "createScheduler", nodeScriptMethod, &EngineScriptMethod::s_createScheduler );
         pybind::def_functor( _kernel, "destroyScheduler", nodeScriptMethod, &EngineScriptMethod::s_destroyScheduler );
+
+        pybind::def_functor( _kernel, "createLayout", nodeScriptMethod, &EngineScriptMethod::s_createLayout );
+        pybind::def_functor( _kernel, "destroyLayout", nodeScriptMethod, &EngineScriptMethod::s_destroyLayout );
 
         pybind::def_functor_args( _kernel, "schedule", nodeScriptMethod, &EngineScriptMethod::s_schedule );
         pybind::def_functor_args( _kernel, "pipe", nodeScriptMethod, &EngineScriptMethod::s_pipe );

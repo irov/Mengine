@@ -27,7 +27,7 @@ namespace Mengine
 
     public:
         template<class ... Args>
-        pybind::detail::extract_operator_t call_cb( Args && ... _args )
+        pybind::detail::extract_operator_t call_cb( Args && ... _args ) const
         {
             if( m_cb.is_invalid() == true )
             {
@@ -43,7 +43,7 @@ namespace Mengine
         }
 
         template<class ... Args>
-        pybind::detail::extract_operator_t call_method( const Char * _method, Args && ... _args )
+        pybind::detail::extract_operator_t call_method( const Char * _method, Args && ... _args ) const
         {
             if( m_cb.is_invalid() == true )
             {

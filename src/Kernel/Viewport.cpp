@@ -239,4 +239,14 @@ namespace Mengine
         return s;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Viewport::operator == ( const Viewport & _viewport ) const
+    {
+        return begin == _viewport.begin && end == _viewport.end;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Viewport::operator != ( const Viewport & _viewport ) const
+    {
+        return !(*this == _viewport);
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

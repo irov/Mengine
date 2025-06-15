@@ -19,6 +19,8 @@ namespace Mengine
         using std::reverse;
         using std::count;
         using std::count_if;
+        using std::all_of;
+        using std::any_of;
         using std::remove;
         using std::copy;
         using std::fill;

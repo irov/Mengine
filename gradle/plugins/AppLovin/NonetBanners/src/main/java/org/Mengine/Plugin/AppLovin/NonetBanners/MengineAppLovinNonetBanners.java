@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.graphics.drawable.Drawable;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -21,6 +20,7 @@ import org.Mengine.Base.MengineUtils;
 import org.Mengine.Plugin.AppLovin.Core.MengineAppLovinNonetBannersInterface;
 import org.Mengine.Plugin.AppLovin.Core.MengineAppLovinPluginInterface;
 
+import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -34,6 +34,7 @@ import java.util.Objects;
 public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersInterface {
     protected MengineAppLovinPluginInterface m_plugin;
 
+    protected boolean m_showBannersEnabled;
     protected long m_showBannerDurationTime;
 
     protected boolean m_visible;
@@ -64,9 +65,7 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
 
         Resources resources = application.getResources();
 
-        long MengineAppLovinPlugin_NonetBannerDurationTime = resources.getInteger(R.integer.mengine_applovin_nonet_banners_duration_time);
-
-        m_showBannerDurationTime = MengineAppLovinPlugin_NonetBannerDurationTime;
+        m_showBannerDurationTime = 30000;
 
         try {
             XmlResourceParser parser = resources.getXml(R.xml.nonet_banners);
@@ -127,7 +126,26 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
     }
 
     @Override
+    public void onMengineRemoteConfigFetch(@NonNull MengineApplication application, @NonNull Map<String, JSONObject> configs) {
+        JSONObject applovin_nonetbanner = configs.getOrDefault("applovin_nonetbanner", null);
+
+        if (applovin_nonetbanner != null) {
+            boolean enable = applovin_nonetbanner.optBoolean("enable", false);
+
+            m_showBannersEnabled = enable;
+
+            long duration = applovin_nonetbanner.optLong("duration", 30000);
+
+            m_showBannerDurationTime = duration;
+        }
+    }
+
+    @Override
     public void onActivityCreate(@NonNull MengineActivity activity) {
+        if (m_showBannersEnabled == false) {
+            return;
+        }
+
         if (m_banners.isEmpty() == true) {
             return;
         }

@@ -279,7 +279,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
             List<String> enabledAmazonAdUnitIds = configuration.getEnabledAmazonAdUnitIds();
             AppLovinSdkConfiguration.ConsentFlowUserGeography consentFlowUserGeography = configuration.getConsentFlowUserGeography();
 
-            this.logInfo("initialized CMP: %b TestMode: %b CountryCode: %s AmazonAdUnitIds: %s ConsentFlowUserGeography: %s"
+            this.logInfo("initialized AppLovin SDK with CMP: %b TestMode: %b CountryCode: %s AmazonAdUnitIds: %s ConsentFlowUserGeography: %s"
                 , supportedCmp
                 , testModeEnabled
                 , countryCode
@@ -395,6 +395,14 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
                 boolean enable = applovin_show_mediation_debugger.optBoolean("enable", false);
 
                 m_enableShowMediationDebugger = enable;
+            }
+
+            for (MengineAppLovinMediationInterface mediation : m_mediations) {
+                mediation.onMengineRemoteConfigFetch(application, configs);
+            }
+
+            if (m_nonetBanners != null) {
+                m_nonetBanners.onMengineRemoteConfigFetch(application, configs);
             }
         }
     }

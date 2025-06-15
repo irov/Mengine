@@ -89,14 +89,14 @@ dependencies {
         implementation project(':plugins:AdMob')
     }
 
-    implementation api('com.applovin:applovin-sdk:13.3.0')
+    implementation api('com.applovin:applovin-sdk:13.3.1')
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_CONSENT_FLOW) {
         implementation 'com.google.android.ump:user-messaging-platform:3.2.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_ADMOB == true) {
-        implementation 'com.applovin.mediation:google-adapter:24.3.0.1'
+        implementation 'com.applovin.mediation:google-adapter:24.4.0.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON == true) {
@@ -120,7 +120,7 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_GOOGLEADMANAGER == true) {
-        implementation 'com.applovin.mediation:google-ad-manager-adapter:24.3.0.1'
+        implementation 'com.applovin.mediation:google-ad-manager-adapter:24.4.0.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_HYPRMX == true) {

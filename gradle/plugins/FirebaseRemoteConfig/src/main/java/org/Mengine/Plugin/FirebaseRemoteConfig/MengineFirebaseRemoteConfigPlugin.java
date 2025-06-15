@@ -32,7 +32,6 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
 
     private static final String METADATA_MINIMUM_FETCH_INTERVAL = "mengine.firebase_remote_config.minimum_fetch_interval";
 
-    private Map<String, JSONObject> m_configs = new HashMap<>();
     private Map<String, String> m_defaults = new HashMap<>();
 
     private volatile boolean m_prefetching = false;
@@ -62,26 +61,19 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
         Map<String, String> defaults = DefaultsXmlParser.getDefaultsFromXml(application, R.xml.remote_config_defaults);
         this.setRemoteConfigDefaults(defaults);
 
-        this.buildEvent("mng_fb_rc_defaults")
-            .log();
-
         remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)
-            .addOnSuccessListener(aVoid -> {
-                this.buildEvent("mng_fb_rc_defaults_success")
-                    .log();
+            .addOnCompleteListener(task -> {
+                boolean successful = task.isSuccessful();
 
-                this.fetchRemoteConfigValues(remoteConfig);
-            }).addOnFailureListener(e -> {
-                this.buildEvent("mng_fb_rc_defaults_error")
-                    .addParameterException("exception", e)
-                    .log();
+                if (successful == false) {
+                    Exception e = task.getException();
 
-                this.fetchRemoteConfigValues(remoteConfig);
-            }).addOnCanceledListener(() -> {
-                this.buildEvent("mng_fb_rc_defaults_cancel")
-                    .log();
-
-                this.logWarning("[WARNING] remote config invalid set defaults canceled");
+                    this.logWarning("[WARNING] remote config invalid set defaults params: %s"
+                        , e != null ? e.getMessage() : "unknown exception"
+                    );
+                } else {
+                    this.logInfo("remote config defaults set successfully");
+                }
             });
     }
 
@@ -161,10 +153,6 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
             , configs
         );
 
-        synchronized (this) {
-            this.m_configs = configs;
-        }
-
         MengineFragmentRemoteConfig.INSTANCE.remoteConfigFetch(configs);
     }
 
@@ -230,20 +218,6 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
 
                 this.logWarning("[WARNING] remote config invalid fetch and activate canceled");
             });
-    }
-
-    public Map<String, JSONObject> getRemoteConfigs() {
-        synchronized (this) {
-            return this.m_configs;
-        }
-    }
-
-    public JSONObject getRemoteConfigValue(String key) {
-        synchronized (this) {
-            JSONObject value = this.m_configs.get(key);
-
-            return value;
-        }
     }
 
     @Override

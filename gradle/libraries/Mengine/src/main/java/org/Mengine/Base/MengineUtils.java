@@ -1666,4 +1666,36 @@ public class MengineUtils {
 
         return defaultValue;
     }
+
+    static public String getPrintDeviceInfo() {
+        String manufacturer = Build.MANUFACTURER;
+        String model = Build.MODEL;
+        String brand = Build.BRAND;
+        String device = Build.DEVICE;
+        String hardware = Build.HARDWARE;
+        String product = Build.PRODUCT;
+        String board = Build.BOARD;
+        String androidVersion = Build.VERSION.RELEASE;
+        int sdkInt = Build.VERSION.SDK_INT;
+        String id = Build.ID;
+        String fingerprint = Build.FINGERPRINT;
+
+        StringBuilder deviceInfo = new StringBuilder();
+
+        deviceInfo.append("=== Device Info ===").append("\n");
+        deviceInfo.append("Manufacturer: ").append(manufacturer).append("\n");
+        deviceInfo.append("Model: ").append(model).append("\n");
+        deviceInfo.append("Brand: ").append(brand).append("\n");
+        deviceInfo.append("Device: ").append(device).append("\n");
+        deviceInfo.append("Hardware: ").append(hardware).append("\n");
+        deviceInfo.append("Product: ").append(product).append("\n");
+        deviceInfo.append("Board: ").append(board).append("\n");
+        deviceInfo.append("Android Version: ").append(androidVersion).append("\n");
+        deviceInfo.append("SDK Int: ").append(sdkInt).append("\n");
+        deviceInfo.append("ID: ").append(id).append("\n");
+        deviceInfo.append("Fingerprint: ").append(fingerprint).append("\n");
+        deviceInfo.append("===================");
+
+        return deviceInfo.toString();
+    }
 }

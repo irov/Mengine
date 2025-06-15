@@ -86,7 +86,7 @@ namespace Mengine
         }
 
         m_elements.erase( it_found );
-        
+
         m_invalidateLayout = true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -181,6 +181,21 @@ namespace Mengine
 
         m_invalidateLayout = false;
 
+        if( m_elements.empty() == true )
+        {
+            return;
+        }
+
+        bool anyEnabled = StdAlgorithm::any_of( m_elements.begin(), m_elements.end(), []( const LayoutElement & element )
+        {
+            return element.enable;
+        } );
+
+        if( anyEnabled == true )
+        {
+            return;
+        }
+
         float totalFixed = 0.f;
         float totalWeight = 0.f;
 
@@ -200,7 +215,7 @@ namespace Mengine
                 totalWeight += element.weight;
             }
         }
-                
+
         float totalAdjusted = m_cacheSize > totalFixed ? m_cacheSize - totalFixed : 0.f;
 
         float carriage = 0.f;

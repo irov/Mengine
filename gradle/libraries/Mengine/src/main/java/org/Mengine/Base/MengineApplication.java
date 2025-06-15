@@ -730,6 +730,12 @@ public abstract class MengineApplication extends Application {
             return;
         }
 
+        if (BuildConfig.DEBUG == true) {
+            String deviceInfo = MengineUtils.getPrintDeviceInfo();
+
+            MengineLog.logMessage(TAG, deviceInfo);
+        }
+
         if (BuildConfig.MENGINE_APP_ENABLE_STRICT_MODE == true) {
             StrictMode.setThreadPolicy(
                 new StrictMode.ThreadPolicy.Builder()

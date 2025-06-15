@@ -255,7 +255,7 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
             return;
         }
 
-        activity.runOnUiThread(() -> {
+        activity.postCommand(() -> {
             Animation showAnimation = m_image.getAnimation();
 
             float alphaFrom = 1.f;

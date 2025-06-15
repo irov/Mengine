@@ -1124,6 +1124,10 @@ public class MengineActivity extends AppCompatActivity {
         return super.dispatchKeyEvent(event);
     }
 
+    public void postCommand(Runnable command) {
+        m_commandHandler.post(command);
+    }
+
     /***********************************************************************************************
      * Activity Listeners
      **********************************************************************************************/
@@ -1139,7 +1143,7 @@ public class MengineActivity extends AppCompatActivity {
     public void showKeyboard() {
         MengineLog.logInfo(TAG, "showKeyboard");
 
-        m_commandHandler.post(() -> {
+        this.postCommand(() -> {
             m_softInput.showKeyboard();
         });
     }
@@ -1147,7 +1151,7 @@ public class MengineActivity extends AppCompatActivity {
     public void hideKeyboard() {
         MengineLog.logInfo(TAG, "hideKeyboard");
 
-        m_commandHandler.post(() -> {
+        this.postCommand(() -> {
             m_softInput.hideKeyboard();
         });
     }

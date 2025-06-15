@@ -131,7 +131,7 @@ namespace Mengine
     {
         VectorPlugins reverse_plugins;
         std::swap( reverse_plugins, m_plugins );
-        
+
         StdAlgorithm::reverse( reverse_plugins.begin(), reverse_plugins.end() );
 
         for( PluginDesc & desc : reverse_plugins )
@@ -201,7 +201,7 @@ namespace Mengine
         }
 
         bool available = _plugin->isAvailablePlugin();
-        
+
         this->setAvailablePlugin( pluginName, available );
 
         PluginDesc desc;

@@ -152,6 +152,21 @@ namespace Mengine
 
         MENGINE_ASSERTION_FATAL( m_sizer != nullptr, "layout sizer is not set" );
 
+        if( m_elements.empty() == true )
+        {
+            return;
+        }
+
+        bool anyEnabled = StdAlgorithm::any_of( m_elements.begin(), m_elements.end(), []( const LayoutElement & element )
+        {
+            return element.enable;
+        } );
+
+        if( anyEnabled == false )
+        {
+            return;
+        }
+
         if( m_sizer->onGetLayoutSize( &m_cacheSize ) == true )
         {
             m_invalidateLayout = true;
@@ -181,21 +196,6 @@ namespace Mengine
         }
 
         m_invalidateLayout = false;
-
-        if( m_elements.empty() == true )
-        {
-            return;
-        }
-
-        bool anyEnabled = StdAlgorithm::any_of( m_elements.begin(), m_elements.end(), []( const LayoutElement & element )
-        {
-            return element.enable;
-        } );
-
-        if( anyEnabled == false )
-        {
-            return;
-        }
 
         float totalFixed = 0.f;
         float totalWeight = 0.f;

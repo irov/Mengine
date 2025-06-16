@@ -145,7 +145,6 @@ endif()
 if(MENGINE_DEPENDENCE_OGG)
     message("================libogg================")
     configure_file(${CMAKE_CURRENT_LIST_DIR}/libogg/Modified/os_types.h ${THIRDPARTY_DIR}/libogg/include/ogg/os_types.h COPYONLY)
-    configure_file(${CMAKE_CURRENT_LIST_DIR}/libogg/CMakeLists.txt ${THIRDPARTY_DIR}/libogg/CMakeLists.txt COPYONLY)
 
     SET(BUILD_SHARED_LIBS OFF CACHE BOOL "BUILD_SHARED_LIBS" FORCE)
     SET(INSTALL_DOCS OFF CACHE BOOL "BUILD_SHARED_LIBS" FORCE)

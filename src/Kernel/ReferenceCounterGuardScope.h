@@ -19,7 +19,7 @@ namespace Mengine
 }
 
 #if defined(MENGINE_DEBUG)
-#   define REFERENCECOUNTER_GUARD_SCOPE( Timeout, ... ) Mengine::ReferenceCounterGuardScope rcgs__##__LINE__( Timeout, __VA_ARGS__ )
+#   define REFERENCECOUNTER_GUARD_SCOPE( Timeout, ... ) Mengine::ReferenceCounterGuardScope MENGINE_PP_CONCATENATE(rcgs__, MENGINE_CODE_COUNTER)( Timeout, __VA_ARGS__ )
 #else
 #   define REFERENCECOUNTER_GUARD_SCOPE( Timeout, ... )
 #endif

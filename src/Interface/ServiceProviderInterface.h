@@ -77,14 +77,14 @@ namespace Mengine
     SERVICE_PROVIDER_GET()->stopServices()
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_PROVIDER_NAME_CREATE(Name)\
-    __createMengineProvider##Name
+    MENGINE_PP_CONCATENATE(__createMengineProvider, Name)
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_PROVIDER_FACTORY( Name, Implement )\
     bool SERVICE_PROVIDER_NAME_CREATE(Name)(Mengine::ServiceProviderInterface**_serviceProvider){\
     if(_serviceProvider==nullptr){return false;}\
     try{*_serviceProvider=new Implement();}catch(...){return false;}\
     return true;}\
-    struct __mengine_dummy_factory##Name{}
+    struct MENGINE_PP_CONCATENATE(__mengine_dummy_factory, Name){}
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_PROVIDER_DESTROY( Implement )\
     delete Implement

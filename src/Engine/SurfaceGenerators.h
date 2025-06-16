@@ -4,8 +4,8 @@
 
 //////////////////////////////////////////////////////////////////////////
 #define MENGINE_SURFACE_GENERATE(X)\
-    namespace Mengine{typedef IntrusiveSurfacePtr<class X> X ## Ptr;}\
-    namespace Mengine::Helper{X ## Ptr generate ## X( const DocumentInterfacePtr & _doc );}
+    namespace Mengine{typedef IntrusiveSurfacePtr<class X> MENGINE_PP_CONCATENATE(X, Ptr);}\
+    namespace Mengine::Helper{MENGINE_PP_CONCATENATE(X, Ptr) generate ## X( const DocumentInterfacePtr & _doc );}
 //////////////////////////////////////////////////////////////////////////
 MENGINE_SURFACE_GENERATE( SurfaceImage )
 MENGINE_SURFACE_GENERATE( SurfaceImageSequence )

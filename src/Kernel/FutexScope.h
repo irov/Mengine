@@ -15,5 +15,5 @@ namespace Mengine
     };
 }
 
-#define MENGINE_FUTEX_SCOPE_I( Futex, Index ) FutexScope __futex_scope_##Index( Futex )
+#define MENGINE_FUTEX_SCOPE_I( Futex, Index ) FutexScope MENGINE_PP_CONCATENATE(__futex_scope_, Index)( Futex )
 #define MENGINE_FUTEX_SCOPE( Futex ) MENGINE_FUTEX_SCOPE_I( Futex, MENGINE_CODE_COUNTER )

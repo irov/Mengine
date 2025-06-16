@@ -56,7 +56,7 @@ namespace Mengine
     bool MetabufPlugin::_initializePlugin()
     {
 #define SET_LOADER(T)\
-        VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), T::getFactorableType(), Helper::makeFactorableUnique<MetabufLoader##T>(MENGINE_DOCUMENT_FACTORABLE), MENGINE_DOCUMENT_FACTORABLE )
+        VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), T::getFactorableType(), Helper::makeFactorableUnique<MENGINE_PP_CONCATENATE(MetabufLoader, T)>(MENGINE_DOCUMENT_FACTORABLE), MENGINE_DOCUMENT_FACTORABLE )
 
         SET_LOADER( ResourceCursorICO );
         SET_LOADER( ResourceCursorSystem );

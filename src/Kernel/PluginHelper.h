@@ -12,7 +12,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 #define PLUGIN_FUNCTION(Name)\
-    initMenginePlugin##Name
+    MENGINE_PP_CONCATENATE(initMenginePlugin, Name)
 //////////////////////////////////////////////////////////////////////////
 #define PLUGIN_FACTORY_STATIC(Name, Type)\
     extern "C"{bool PLUGIN_FUNCTION(Name)( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** const _plugin, Mengine::UniqueId _uid, bool _dynamic ){\
@@ -43,11 +43,11 @@
 #   define PLUGIN_FACTORY(Name, Type)\
     PLUGIN_FACTORY_STATIC(Name, Type)\
     PLUGIN_FACTORY_DYNAMIC(Name, Type)\
-    struct __mengine_dummy_factory##Name{}
+    struct MENGINE_PP_CONCATENATE(__mengine_dummy_factory, Name){}
 #else
 #   define PLUGIN_FACTORY(Name, Type)\
     PLUGIN_FACTORY_STATIC(Name, Type)\
-    struct __mengine_dummy_factory##Name{}
+    struct MENGINE_PP_CONCATENATE(__mengine_dummy_factory, Name){}
 #endif
 //////////////////////////////////////////////////////////////////////////
 #define PLUGIN_EXPORT(Name)\

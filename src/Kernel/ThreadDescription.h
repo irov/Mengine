@@ -22,4 +22,4 @@ namespace Mengine
     }
 }
 
-#define MENGINE_THREAD_DESCRIPTION( Name ) Mengine::Detail::validateThreadDescription( Name, L ## Name )
+#define MENGINE_THREAD_DESCRIPTION( Name ) Mengine::Detail::validateThreadDescription( Name, MENGINE_PP_CONCATENATE(L, Name) )

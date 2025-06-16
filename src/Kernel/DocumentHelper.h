@@ -105,7 +105,7 @@ namespace Mengine
     }(MENGINE_CODE_FILE, MENGINE_CODE_LINE, MENGINE_CODE_FUNCTION)
     //////////////////////////////////////////////////////////////////////////
 #   define MENGINE_DOCUMENT_MESSAGE(Format, ...) [=](const Mengine::Char * _file, int32_t _line, const Mengine::Char * _function) { \
-        Mengine::DocumentInterfacePtr doc = DOCUMENT_SERVICE()->createDocument( nullptr, MENGINE_CODE_LIBRARY, _file, _line, _function, "%s[%d]: " Format, _function, _line, ##__VA_ARGS__ ); \
+        Mengine::DocumentInterfacePtr doc = DOCUMENT_SERVICE()->createDocument( nullptr, MENGINE_CODE_LIBRARY, _file, _line, _function, "%s[%d]: " Format, _function, _line, __VA_ARGS__ ); \
         return doc; \
     }(MENGINE_CODE_FILE, MENGINE_CODE_LINE, MENGINE_CODE_FUNCTION)
     //////////////////////////////////////////////////////////////////////////

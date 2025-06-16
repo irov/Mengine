@@ -12,8 +12,8 @@
 //////////////////////////////////////////////////////////////////////////
 #define MENGINE_SURFACE_GENERATE(X)\
 namespace Mengine::Helper{\
-        X ## Ptr generate ## X( const DocumentInterfacePtr & _doc ){\
-            X ## Ptr text = Helper::generateSurfaceFactorable<X>( _doc );\
+        MENGINE_PP_CONCATENATE(X, Ptr) MENGINE_PP_CONCATENATE(generate, X)( const DocumentInterfacePtr & _doc ){\
+            MENGINE_PP_CONCATENATE(X, Ptr) text = Helper::generateSurfaceFactorable<X>( _doc );\
             return text;\
         }}
 //////////////////////////////////////////////////////////////////////////

@@ -70,7 +70,7 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define STRINGIZE_STRING_LOCAL( STRING )\
-    ([]() -> const Mengine::ConstString & { static const Mengine::ConstString cstr = Mengine::Helper::stringizeStringTemplate<STRING##_hash>( STRING, MENGINE_STATIC_STRING_LENGTH(STRING) ); return cstr; }())
+    ([]() -> const Mengine::ConstString & { static const Mengine::ConstString cstr = Mengine::Helper::stringizeStringTemplate<MENGINE_PP_CONCATENATE(STRING, _hash)>( STRING, MENGINE_STATIC_STRING_LENGTH(STRING) ); return cstr; }())
 //////////////////////////////////////////////////////////////////////////
 #define STRINGIZE_STRING_LOCAL_I( STRING )\
     STRINGIZE_STRING_LOCAL(STRING)

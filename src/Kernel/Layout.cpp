@@ -49,7 +49,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Layout::addLayoutElement( const ConstString & _name, const LayoutElementGetterInterfacePtr & _getter, const LayoutElementSetterInterfacePtr & _setter, bool _fixed, float _weight, bool _enable, const DocumentInterfacePtr & _doc )
     {
-        MENGINE_ASSERTION_FATAL( _fixed == false && _weight > 0.f, "flexible element '%s' must have weight > 0.f", _name.c_str() );
+        MENGINE_ASSERTION_FATAL( _fixed == true || _weight > 0.f, "element '%s' flexible weight must be greater than 0.0", _name.c_str() );
+        MENGINE_ASSERTION_FATAL( _fixed == false || _weight == 0.f, "element '%s' fixed weight must be 0.0", _name.c_str() );
         MENGINE_ASSERTION_FATAL( _name.empty() == true || this->hasLayoutElement( _name ) == false, "element '%s' already exists in layout", _name.c_str() );
 
         LayoutElement element;

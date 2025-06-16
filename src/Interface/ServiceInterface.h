@@ -155,10 +155,10 @@ namespace Mengine
     (Mengine::Helper::isInitializeService<Type>())
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_FUNCTION_CREATE(Name)\
-    __createMengineService##Name
+    MENGINE_PP_CONCATENATE(__createMengineService, Name)
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_FUNCTION_NOMINATION(Name)\
-    __nominationMengineService##Name
+    MENGINE_PP_CONCATENATE(__nominationMengineService, Name)
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_DECLARE( ID )\
     public:\
@@ -176,7 +176,7 @@ namespace Mengine
     return true;}\
     const Mengine::Char * SERVICE_FUNCTION_NOMINATION(Name)(){\
     return SERVICE_ID(Implement);}\
-    struct __mengine_dummy_factory##Name{}
+    struct MENGINE_PP_CONCATENATE(__mengine_dummy_factory, Name){}
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_DEPENDENCY( Type, Dependency )\
     SERVICE_PROVIDER_GET()->dependencyService(SERVICE_ID(Type), SERVICE_ID(Dependency))

@@ -192,7 +192,7 @@ namespace Mengine
             return element.enable;
         } );
 
-        if( anyEnabled == true )
+        if( anyEnabled == false )
         {
             return;
         }

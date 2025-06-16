@@ -95,4 +95,5 @@
 #include <wincrypt.h>
 #include <wininet.h>
 #include <process.h>
+#include <shellscalingapi.h>
 #pragma warning(pop) 

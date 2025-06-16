@@ -69,6 +69,13 @@ namespace Mengine
         virtual bool hasTouchpad() const = 0;
 
     public:
+        virtual int32_t dpToWidthPx( int32_t _dp ) const = 0;
+        virtual int32_t dpToHeightPx( int32_t _dp ) const = 0;
+
+        virtual int32_t pxToWidthDp( int32_t _px ) const = 0;
+        virtual int32_t pxToHeightDp( int32_t _px ) const = 0;
+
+    public:
         virtual DynamicLibraryInterfacePtr loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentInterfacePtr & _doc ) = 0;
 
     public:

@@ -66,6 +66,8 @@
 #include <functional>
 #include <cerrno>
 
+typedef HRESULT( WINAPI * FGetDpiForMonitor )(HMONITOR, MONITOR_DPI_TYPE, UINT *, UINT *);
+
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_SETLOCALE
 #define MENGINE_SETLOCALE 1
@@ -100,6 +102,8 @@ namespace Mengine
         : m_beginTime( 0 )
         , m_hInstance( NULL )
         , m_hWnd( NULL )
+        , m_xDpi( ~0U )
+        , m_yDpi( ~0U )
         , m_performanceFrequency{0}
         , m_performanceSupport( false )
         , m_active( false )
@@ -1006,6 +1010,26 @@ namespace Mengine
     bool Win32PlatformService::hasTouchpad() const
     {
         return m_touchpad;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int32_t Win32PlatformService::dpToWidthPx( int32_t _dp ) const
+    {
+        return ::MulDiv( _dp, m_xDpi, 96 );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int32_t Win32PlatformService::dpToHeightPx( int32_t _px ) const
+    {
+        return ::MulDiv( _px, m_yDpi, 96 );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int32_t Win32PlatformService::pxToWidthDp( int32_t _px ) const
+    {
+        return ::MulDiv( _px, 96, m_xDpi );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int32_t Win32PlatformService::pxToHeightDp( int32_t _px ) const
+    {
+        return ::MulDiv( _px, 96, m_yDpi );
     }
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
@@ -2259,6 +2283,52 @@ namespace Mengine
         ::SetForegroundWindow( m_hWnd );
         ::SetFocus( m_hWnd );
         ::UpdateWindow( m_hWnd );
+
+        HINSTANCE shcoreModule = ::LoadLibraryA( "shcore.dll" );
+
+        m_xDpi = ~0U;
+        m_yDpi = ~0U;
+
+        if( shcoreModule != NULL )
+        {
+            FGetDpiForMonitor GetDpiForMonitor = (FGetDpiForMonitor)::GetProcAddress( shcoreModule, "GetDpiForMonitor" );
+            if( GetDpiForMonitor != NULL )
+            {
+                HMONITOR monitor = ::MonitorFromWindow( (HWND)m_hWnd, MONITOR_DEFAULTTONEAREST );
+
+                UINT xDpi = ~0U;
+                UINT yDpi = ~0U;
+                HRESULT hr = GetDpiForMonitor( monitor, MDT_EFFECTIVE_DPI, &xDpi, &yDpi );
+
+                if( hr != S_OK )
+                {
+                    LOGGER_ERROR( "invalid hwnd [%p] get dpi for monitor %ls"
+                        , m_hWnd
+                        , Helper::Win32GetErrorMessageW( hr )
+                    );
+
+                    return false;
+                }
+
+                m_xDpi = xDpi;
+                m_yDpi = yDpi;
+            }
+
+            ::FreeLibrary( shcoreModule );
+        }
+
+#ifndef NOGDI
+        if( m_xDpi == ~0U || m_yDpi == ~0U )
+        {
+            HDC dc = ::GetDC( m_hWnd );
+            UINT xDpi = ::GetDeviceCaps( dc, LOGPIXELSX );
+            UINT yDpi = ::GetDeviceCaps( dc, LOGPIXELSY );
+            ::ReleaseDC( m_hWnd, dc );
+
+            m_xDpi = xDpi;
+            m_yDpi = yDpi;
+        }
+#endif
 
         m_mouseEvent.setHWND( m_hWnd );
 

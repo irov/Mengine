@@ -75,6 +75,13 @@ namespace Mengine
         bool hasTouchpad() const override;
 
     public:
+        int32_t dpToWidthPx( int32_t _dp ) const override;
+        int32_t dpToHeightPx( int32_t _dp ) const override;
+
+        int32_t pxToWidthDp( int32_t _px ) const override;
+        int32_t pxToHeightDp( int32_t _px ) const override;
+
+    public:
         DynamicLibraryInterfacePtr loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentInterfacePtr & _doc ) override;
 
     public:
@@ -195,6 +202,9 @@ namespace Mengine
         HINSTANCE m_hInstance;
 
         HWND m_hWnd;
+
+        UINT m_xDpi;
+        UINT m_yDpi;
 
         LARGE_INTEGER m_performanceFrequency;
         bool m_performanceSupport;

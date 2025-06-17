@@ -71,9 +71,6 @@ namespace Mengine
         void _dispose() override;
 
     protected:
-        void _freeze( bool _value ) override;
-
-    protected:
         bool pick( const mt::vec2f & _point, const RenderContext * _context ) const override;
 
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
@@ -99,10 +96,6 @@ namespace Mengine
     protected:
         bool handleMouseEnter( const RenderContext * _context, const InputMouseEnterEvent & _event ) override;
         void handleMouseLeave( const RenderContext * _context, const InputMouseLeaveEvent & _event ) override;
-
-    protected:
-        void activatePicker_();
-        void deactivatePicker_();
 
     protected:
         void _setPickerEnable( bool _enable ) override;

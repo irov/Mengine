@@ -35,8 +35,13 @@ namespace Mengine
         void setPickerEnable( bool _enable ) override final;
         MENGINE_INLINE bool isPickerEnable() const override final;
 
+    public:
+        void setPickerFreeze( bool _freeze ) override;
+        MENGINE_INLINE bool isPickerFreeze() const override;
+
     protected:
         virtual void _setPickerEnable( bool _enable );
+        virtual void _setPickerFreeze( bool _freeze );
 
     public:
         MENGINE_INLINE bool isPickerDummy() const override;
@@ -72,6 +77,7 @@ namespace Mengine
         VectorBasePicker m_pickerChildren;
 
         bool m_pickerEnable;
+        bool m_pickerFreeze;
 
         bool m_pickerPicked;
         bool m_pickerPressed;
@@ -87,6 +93,11 @@ namespace Mengine
     MENGINE_INLINE bool BasePicker::isPickerEnable() const
     {
         return m_pickerEnable;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE bool BasePicker::isPickerFreeze() const
+    {
+        return m_pickerFreeze;
     }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE bool BasePicker::isPickerDummy() const

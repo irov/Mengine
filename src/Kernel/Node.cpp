@@ -601,6 +601,13 @@ namespace Mengine
         {
             _child->freeze( _value );
         } );
+
+        PickerInterface * picker = this->getPicker();
+
+        if( picker != nullptr )
+        {
+            picker->setPickerFreeze( _value );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool Node::_activate()

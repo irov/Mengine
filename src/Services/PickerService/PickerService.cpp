@@ -390,6 +390,11 @@ namespace Mengine
                 continue;
             }
 
+            if( picker->isPickerFreeze() == true )
+            {
+                return m_handleValue;
+            }
+
             PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
             mt::vec2f wp;
@@ -443,6 +448,11 @@ namespace Mengine
             if( picker->isPickerEnable() == false )
             {
                 continue;
+            }
+
+            if( picker->isPickerFreeze() == true )
+            {
+                return m_handleValue;
             }
 
             PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
@@ -514,6 +524,11 @@ namespace Mengine
                 continue;
             }
 
+            if( picker->isPickerFreeze() == true )
+            {
+                return m_handleValue;
+            }
+
             mt::vec2f wp;
             ARROW_SERVICE()
                 ->calcPointClick( &desc.context, mt::vec2f( _event.x, _event.y ), &wp );
@@ -573,6 +588,11 @@ namespace Mengine
             if( picker->isPickerPicked() == false )
             {
                 continue;
+            }
+
+            if( picker->isPickerFreeze() == true )
+            {
+                return m_handleValue;
             }
 
             if( _event.isDown == true )
@@ -639,6 +659,11 @@ namespace Mengine
             if( picker->isPickerPicked() == false )
             {
                 continue;
+            }
+
+            if( picker->isPickerFreeze() == true )
+            {
+                return m_handleValue;
             }
 
             if( _event.isDown == false )
@@ -714,6 +739,11 @@ namespace Mengine
                 continue;
             }
 
+            if( picker->isPickerFreeze() == true )
+            {
+                return m_handleValue;
+            }
+
             mt::vec2f wp;
             ARROW_SERVICE()
                 ->calcPointClick( &desc.context, mt::vec2f( _event.x, _event.y ), &wp );
@@ -778,6 +808,11 @@ namespace Mengine
             if( picker->isPickerPicked() == false )
             {
                 continue;
+            }
+
+            if( picker->isPickerFreeze() == true )
+            {
+                return m_handleValue;
             }
 
             mt::vec2f wp;
@@ -850,6 +885,11 @@ namespace Mengine
             }
 
             picker->setPickerPicked( false );
+
+            if( picker->isPickerFreeze() == true )
+            {
+                return;
+            }
 
             PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 

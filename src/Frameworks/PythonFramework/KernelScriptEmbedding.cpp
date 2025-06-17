@@ -2698,6 +2698,7 @@ namespace Mengine
 
         pybind::interface_<PickerInterface, pybind::bases<Mixin>>( _kernel, "PickerInterface" )
             .def( "isPickerEnable", &PickerInterface::isPickerEnable )
+            .def( "isPickerFreeze", &PickerInterface::isPickerFreeze )
             .def( "isPickerPicked", &PickerInterface::isPickerPicked )
             .def( "isPickerPressed", &PickerInterface::isPickerPressed )
             .def( "isPickerHandle", &PickerInterface::isPickerHandle )

@@ -107,27 +107,6 @@ namespace Mengine
         m_pickerInputHandlers.erase( it_found );
     }
     //////////////////////////////////////////////////////////////////////////
-    void HotSpot::activatePicker_()
-    {
-        this->setPickerPicked( false );
-        this->setPickerPressed( false );
-        this->setPickerHandle( false );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void HotSpot::deactivatePicker_()
-    {
-        this->setPickerPressed( false );
-        this->setPickerHandle( false );
-
-        if( this->isPickerPicked() == true )
-        {
-            this->setPickerPicked( false );
-
-            EVENTABLE_METHOD( EVENT_HOTSPOT_MOUSE_OVER_DESTROY )
-                ->onHotSpotMouseOverDestroy();
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
     void HotSpot::_setPickerEnable( bool _enable )
     {
         if( _enable == true )
@@ -371,26 +350,6 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void HotSpot::_freeze( bool _value )
-    {
-        Node::_freeze( _value );
-
-        if( _value == true )
-        {
-            if( this->isAfterActive() == true )
-            {
-                this->deactivatePicker_();
-            }
-        }
-        else
-        {
-            if( this->isAfterActive() == true )
-            {
-                this->activatePicker_();
-            }
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool HotSpot::_activate()
     {
         if( Node::_activate() == false )
@@ -403,24 +362,29 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool HotSpot::_afterActivate()
     {
-        if( this->isFreeze() == false )
-        {
-            this->activatePicker_();
-        }
-
         if( Node::_afterActivate() == false )
         {
             return false;
         }
+
+        this->setPickerPicked( false );
+        this->setPickerPressed( false );
+        this->setPickerHandle( false );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void HotSpot::_deactivate()
     {
-        if( this->isFreeze() == false )
+        this->setPickerPressed( false );
+        this->setPickerHandle( false );
+
+        if( this->isPickerPicked() == true )
         {
-            this->deactivatePicker_();
+            this->setPickerPicked( false );
+
+            EVENTABLE_METHOD( EVENT_HOTSPOT_MOUSE_OVER_DESTROY )
+                ->onHotSpotMouseOverDestroy();
         }
 
         Node::_deactivate();

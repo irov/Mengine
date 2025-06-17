@@ -48,6 +48,10 @@ namespace Mengine
         virtual bool isPickerEnable() const = 0;
 
     public:
+        virtual void setPickerFreeze( bool _freeze ) = 0;
+        virtual bool isPickerFreeze() const = 0;
+
+    public:
         virtual bool isPickerDummy() const = 0;
 
     public:

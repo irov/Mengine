@@ -12,6 +12,7 @@ namespace Mengine
     BasePicker::BasePicker()
         : m_relationPicker( nullptr )
         , m_pickerEnable( false )
+        , m_pickerFreeze( false )
         , m_pickerPicked( false )
         , m_pickerPressed( false )
         , m_pickerHandle( false )
@@ -91,7 +92,7 @@ namespace Mengine
     {
         for( BasePicker * child : m_pickerChildren )
         {
-            if( child->m_pickerEnable == false )
+            if( child->isPickerEnable() == false )
             {
                 continue;
             }
@@ -121,6 +122,21 @@ namespace Mengine
         this->_setPickerEnable( _enable );
     }
     //////////////////////////////////////////////////////////////////////////
+    void BasePicker::setPickerFreeze( bool _freeze )
+    {
+        if( m_pickerFreeze == _freeze )
+        {
+            return;
+        }
+
+        m_pickerFreeze = _freeze;
+
+        PICKER_SERVICE()
+            ->invalidateTraps();
+
+        this->_setPickerFreeze( _freeze );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void BasePicker::setPickerPicked( bool _picked )
     {
         m_pickerPicked = _picked;
@@ -129,6 +145,13 @@ namespace Mengine
     void BasePicker::_setPickerEnable( bool _enable )
     {
         MENGINE_UNUSED( _enable );
+
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BasePicker::_setPickerFreeze( bool _freeze )
+    {
+        MENGINE_UNUSED( _freeze );
 
         //Empty
     }

@@ -771,18 +771,17 @@ namespace Mengine
             return false;
         }
 
-        if( this->tickPlatform( 0.f, false, false, false ) == false )
-        {
-            return false;
-        }
+        this->tickPlatform( 0.f, false, false, false );
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_RUN );
         
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool iOSPlatformService::tickPlatform( float _frameTime, bool _render, bool _flush, bool _pause )
+    void iOSPlatformService::tickPlatform( float _frameTime, bool _render, bool _flush, bool _pause )
     {
+        MENGINE_UNUSED( _pause );
+        
         bool updating = APPLICATION_SERVICE()
             ->beginUpdate( _frameTime );
 
@@ -822,10 +821,6 @@ namespace Mengine
 
         APPLICATION_SERVICE()
             ->endUpdate();
-
-        MENGINE_UNUSED( _pause );
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::loopPlatform()
@@ -845,10 +840,7 @@ namespace Mengine
             
             m_prevTime = currentTime;
 
-            if( this->tickPlatform( frameTime, true, true, true ) == false )
-            {
-                break;
-            }
+            this->tickPlatform( frameTime, true, true, true );
         }
     }
     //////////////////////////////////////////////////////////////////////////

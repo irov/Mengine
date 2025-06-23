@@ -20,7 +20,7 @@ namespace Mengine
         
     public:
         virtual void activateSemaphore( const ConstString & _name ) = 0;
-        virtual void waitSemaphore( const ConstString & _name, const AppleSemaphoreListenerInterfacePtr & _listener ) = 0;
+        virtual AppleSemaphoreListenerInterfacePtr waitSemaphore( const ConstString & _name, const AppleSemaphoreListenerInterfacePtr & _listener ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

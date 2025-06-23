@@ -54,6 +54,7 @@ def MENGINE_APP_PLUGIN_ONESIGNAL = Utils.existAppPlugin("MENGINE_APP_PLUGIN_ONES
 def MENGINE_APP_PLUGIN_LEANPLUM = Utils.existAppPlugin("MENGINE_APP_PLUGIN_LEANPLUM")
 def MENGINE_APP_PLUGIN_DATADOG = Utils.existAppPlugin("MENGINE_APP_PLUGIN_DATADOG")
 def MENGINE_APP_PLUGIN_VIBRATOR = Utils.existAppPlugin("MENGINE_APP_PLUGIN_VIBRATOR")
+def MENGINE_APP_PLUGIN_AMPLITUDE = Utils.existAppPlugin("MENGINE_APP_PLUGIN_AMPLITUDE")
 
 Utils.logString("ANDROID_APP_DELIVERY_PACKAGES", ANDROID_APP_DELIVERY_PACKAGES)
 Utils.logAvailable("ANDROID_APP_BUILD_PUBLISH", ANDROID_APP_BUILD_PUBLISH)
@@ -712,6 +713,16 @@ if (MENGINE_APP_PLUGIN_VIBRATOR == true) {
 
     dependencies {
         implementation project(':plugins:Vibrator')
+    }
+}
+
+Utils.logAvailable("MENGINE_APP_PLUGIN_AMPLITUDE", MENGINE_APP_PLUGIN_AMPLITUDE)
+
+if (MENGINE_APP_PLUGIN_AMPLITUDE == true) {
+    android.ext.plugins += 'org.Mengine.Plugin.Amplitude.MengineAmplitudePlugin'
+
+    dependencies {
+        implementation project(':plugins:Amplitude')
     }
 }
 

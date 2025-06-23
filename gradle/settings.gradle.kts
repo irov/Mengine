@@ -155,6 +155,7 @@ includeLibrary("MENGINE_APP_LIBRARY_OPENAL32", ":libraries:OpenAL32")
 / * - MENGINE_APP_PLUGIN_ONESIGNAL [https://onesignal.com]
 / * - MENGINE_APP_PLUGIN_LEANPLUM [https://www.leanplum.com]
 / * - MENGINE_APP_PLUGIN_DATADOG [https://www.datadoghq.com]
+/ * - MENGINE_APP_PLUGIN_AMPLITUDE [https://amplitude.com/]
 *****************************************************************************/
 
 includePlugin("MENGINE_APP_PLUGIN_SPLASHSCREEN", ":plugins:SplashScreen")
@@ -197,5 +198,6 @@ includePlugin("MENGINE_APP_PLUGIN_ONESIGNAL", ":plugins:OneSignal")
 includePlugin("MENGINE_APP_PLUGIN_LEANPLUM", ":plugins:Leanplum")
 includePlugin("MENGINE_APP_PLUGIN_DATADOG", ":plugins:DataDog")
 includePlugin("MENGINE_APP_PLUGIN_VIBRATOR", ":plugins:Vibrator")
+includePlugin("MENGINE_APP_PLUGIN_AMPLITUDE", ":plugins:Amplitude")
 
 println("Mengine complete settings")

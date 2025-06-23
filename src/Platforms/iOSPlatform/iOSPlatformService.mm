@@ -582,6 +582,8 @@ namespace Mengine
 
         ANALYTICS_SERVICE()
             ->addEventProvider( m_analyticsEventProvider );
+        
+        m_mainScreenScale = [UIScreen mainScreen].scale;
 
         return true;
     }
@@ -1315,6 +1317,26 @@ namespace Mengine
     bool iOSPlatformService::hasTouchpad() const
     {
         return m_touchpad;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int32_t iOSPlatformService::dpToWidthPx( int32_t _dp ) const
+    {
+        return static_cast<int32_t>(_dp * m_mainScreenScale + 0.5f);
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int32_t iOSPlatformService::dpToHeightPx( int32_t _dp ) const
+    {
+        return static_cast<int32_t>(_dp * m_mainScreenScale + 0.5f);
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int32_t iOSPlatformService::pxToWidthDp( int32_t _px ) const
+    {
+        return static_cast<int32_t>(_px / m_mainScreenScale + 0.5f);
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int32_t iOSPlatformService::pxToHeightDp( int32_t _px ) const
+    {
+        return static_cast<int32_t>(_px / m_mainScreenScale + 0.5f);
     }
     //////////////////////////////////////////////////////////////////////////
     DynamicLibraryInterfacePtr iOSPlatformService::loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentInterfacePtr & _doc )

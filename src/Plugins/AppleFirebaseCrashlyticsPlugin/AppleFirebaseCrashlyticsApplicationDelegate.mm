@@ -7,6 +7,8 @@
 #import "Environment/iOS/iOSApplication.h"
 #import "Environment/iOS/iOSLog.h"
 
+#import "AppleFirebaseCrashlyticsANRMonitor.h"
+
 #import <FirebaseCrashlytics/FirebaseCrashlytics.h>
 
 #define PLUGIN_BUNDLE_NAME "MengineAppleFirebaseAnalyticsPlugin"
@@ -67,6 +69,8 @@
     NSString * userId = [iOSApplication.sharedInstance getUserId];
     
     [[FIRCrashlytics crashlytics] setUserID:userId];
+    
+    [[AppleFirebaseCrashlyticsANRMonitor sharedInstance] runANRMainWatcher];
     
     return YES;
 }

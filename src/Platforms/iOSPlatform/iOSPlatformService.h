@@ -87,6 +87,13 @@ namespace Mengine
     public:
         bool isDesktop() const override;
         bool hasTouchpad() const override;
+        
+    public:
+        int32_t dpToWidthPx( int32_t _dp ) const override;
+        int32_t dpToHeightPx( int32_t _dp ) const override;
+
+        int32_t pxToWidthDp( int32_t _px ) const override;
+        int32_t pxToHeightDp( int32_t _px ) const override;
 
     public:
         DynamicLibraryInterfacePtr loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentInterfacePtr & _doc ) override;
@@ -206,6 +213,8 @@ namespace Mengine
         StaticString<MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME> m_projectTitle;
         
         AnalyticsEventProviderInterfacePtr m_analyticsEventProvider;
+        
+        float m_mainScreenScale;
 
         double m_prevTime;
 

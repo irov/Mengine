@@ -7,7 +7,7 @@ public interface MengineListenerAnalytics extends MengineServiceInterface {
         //Empty
     }
 
-    default void onMengineAnalyticsScreenView(@NonNull MengineApplication application, String screenType, String screenName) {
+    default void onMengineAnalyticsScreenView(@NonNull MengineApplication application, @NonNull String screenType, @NonNull String screenName) {
         //Empty
     }
 

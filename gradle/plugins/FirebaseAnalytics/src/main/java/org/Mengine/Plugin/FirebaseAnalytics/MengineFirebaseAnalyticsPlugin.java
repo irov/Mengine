@@ -140,7 +140,7 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
     }
 
     @Override
-    public void onMengineAnalyticsScreenView(@NonNull MengineApplication application, String screenType, String screenName) {
+    public void onMengineAnalyticsScreenView(@NonNull MengineApplication application, @NonNull String screenType, @NonNull String screenName) {
         if (m_firebaseAnalytics == null) {
             return;
         }

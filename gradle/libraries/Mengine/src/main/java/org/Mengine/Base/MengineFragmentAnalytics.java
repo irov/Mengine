@@ -15,7 +15,7 @@ public class MengineFragmentAnalytics extends MengineFragment<MengineListenerAna
         this.propagate(MengineListenerAnalytics::onMengineAnalyticsEvent, param);
     }
 
-    public void analyticsScreenView(String screenType, String screenName) {
+    public void analyticsScreenView(@NonNull String screenType, @NonNull String screenName) {
         MengineApplication.INSTANCE.setState("current.screen", screenType + "." + screenName);
 
         this.propagate(MengineListenerAnalytics::onMengineAnalyticsScreenView, screenType, screenName);

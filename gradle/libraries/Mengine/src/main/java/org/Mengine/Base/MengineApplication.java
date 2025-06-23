@@ -205,7 +205,7 @@ public abstract class MengineApplication extends Application {
         return true;
     }
 
-    private Bundle assertMetaDataBundle(String name) throws RuntimeException{
+    private Bundle assertMetaDataBundle(String name) throws RuntimeException {
         Bundle bundle = this.getMetaDataBundle();
 
         if (bundle == null) {
@@ -794,7 +794,9 @@ public abstract class MengineApplication extends Application {
             editor.putLong("install_rnd", installRND);
         }
 
-        if (userId == null) {
+        boolean mengine_session_use_install_key = this.getMetaDataBoolean("mengine_session_use_install_key");
+
+        if (userId == null && mengine_session_use_install_key == true) {
             userId = installKey;
 
             editor.putString("user_id", userId);

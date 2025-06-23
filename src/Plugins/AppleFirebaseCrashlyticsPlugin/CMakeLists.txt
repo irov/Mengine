@@ -5,6 +5,9 @@ OPTION(MENGINE_FIREBASE_CRASHLYTICS_UPLOAD_SYMBOLS "Enable uploading symbols to 
 ADD_FILTER(
 src
     AppleFirebaseCrashlyticsInterface.h
+    
+    AppleFirebaseCrashlyticsANRMonitor.h
+    AppleFirebaseCrashlyticsANRMonitor.mm
 
     AppleFirebaseCrashlyticsApplicationDelegate.h
     AppleFirebaseCrashlyticsApplicationDelegate.mm

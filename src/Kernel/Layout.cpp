@@ -47,20 +47,17 @@ namespace Mengine
         m_invalidateLayout = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Layout::addLayoutElement( const ConstString & _name, const LayoutElementGetterInterfacePtr & _getter, const LayoutElementSetterInterfacePtr & _setter, bool _fixed, float _weight, bool _enable, const DocumentInterfacePtr & _doc )
+    void Layout::addLayoutElement( const ConstString & _name, ELayoutElementType _type, const LayoutElementGetterInterfacePtr & _getter, const LayoutElementSetterInterfacePtr & _setter, const DocumentInterfacePtr & _doc )
     {
-        MENGINE_ASSERTION_FATAL( _fixed == true || _weight > 0.f, "element '%s' flexible weight must be greater than 0.0", _name.c_str() );
-        MENGINE_ASSERTION_FATAL( _fixed == false || _weight == 0.f, "element '%s' fixed weight must be 0.0", _name.c_str() );
+        MENGINE_ASSERTION_FATAL( _getter != nullptr, "element '%s' getter is nullptr", _name.c_str() );
         MENGINE_ASSERTION_FATAL( _name.empty() == true || this->hasLayoutElement( _name ) == false, "element '%s' already exists in layout", _name.c_str() );
 
         LayoutElement element;
         element.name = _name;
-        element.cacheSize = 0.f;
-        element.weight = _weight;
+        element.type = _type;
+        element.cacheValue = 0.f;
         element.getter = _getter;
         element.setter = _setter;
-        element.fixed = _fixed;
-        element.enable = _enable;
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
         element.doc = _doc;
@@ -106,44 +103,11 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Layout::setLayoutElementEnable( const ConstString & _name, bool _enable )
+    void Layout::clearLayoutElements()
     {
-        MENGINE_ASSERTION_FATAL( _name.empty() == false, "element name is empty" );
-        MENGINE_ASSERTION_FATAL( this->hasLayoutElement( _name ) == true, "element '%s' not found in layout", _name.c_str() );
+        m_elements.clear();
 
-        for( LayoutElement & element : m_elements )
-        {
-            if( element.name != _name )
-            {
-                continue;
-            }
-
-            element.enable = _enable;
-
-            m_invalidateLayout = true;
-
-            break;
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Layout::isLayoutElementEnable( const ConstString & _name ) const
-    {
-        MENGINE_ASSERTION_FATAL( _name.empty() == false, "element name is empty" );
-        MENGINE_ASSERTION_FATAL( this->hasLayoutElement( _name ) == true, "element '%s' not found in layout", _name.c_str() );
-
-        for( const LayoutElement & element : m_elements )
-        {
-            if( element.name != _name )
-            {
-                continue;
-            }
-
-            bool enable = element.enable;
-
-            return enable;
-        }
-
-        return false;
+        m_invalidateLayout = true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Layout::update( const UpdateContext * _context )
@@ -157,16 +121,6 @@ namespace Mengine
             return;
         }
 
-        bool anyEnabled = StdAlgorithm::any_of( m_elements.begin(), m_elements.end(), []( const LayoutElement & element )
-        {
-            return element.enable;
-        } );
-
-        if( anyEnabled == false )
-        {
-            return;
-        }
-
         if( m_sizer->onGetLayoutSize( &m_cacheSize ) == true )
         {
             m_invalidateLayout = true;
@@ -174,17 +128,12 @@ namespace Mengine
 
         for( LayoutElement & element : m_elements )
         {
-            if( element.enable == false )
-            {
-                continue;
-            }
-
             if( element.getter == nullptr )
             {
                 continue;
             }
 
-            if( element.getter->onGetLayoutElementSize( &element.cacheSize ) == true )
+            if( element.getter->onGetLayoutElementSize( &element.cacheValue ) == true )
             {
                 m_invalidateLayout = true;
             }
@@ -202,18 +151,16 @@ namespace Mengine
 
         for( const LayoutElement & element : m_elements )
         {
-            if( element.enable == false )
+            switch( element.type )
             {
-                continue;
-            }
-
-            if( element.fixed == true )
-            {
-                totalFixed += element.cacheSize;
-            }
-            else
-            {
-                totalWeight += element.weight;
+            case ELayoutElementType::LET_FIXED:
+                {
+                    totalFixed += element.cacheValue;
+                }break;
+            case ELayoutElementType::LET_PAD:
+                {
+                    totalWeight += element.cacheValue;
+                }break;
             }
         }
 
@@ -223,22 +170,23 @@ namespace Mengine
 
         for( const LayoutElement & element : m_elements )
         {
-            if( element.enable == false )
-            {
-                continue;
-            }
+            float elementSize = 0.f;
 
-            float elementSize = 0;
-
-            if( element.fixed == true )
+            switch( element.type )
             {
-                elementSize = element.cacheSize;
-            }
-            else if( totalWeight > 0.f )
-            {
-                float flexibleSize = totalAdjusted * element.weight / totalWeight;
+            case ELayoutElementType::LET_FIXED:
+                {
+                    elementSize = element.cacheValue;
+                }break;
+            case ELayoutElementType::LET_PAD:
+                {
+                    if( totalWeight > 0.f )
+                    {
+                        float flexibleSize = totalAdjusted * element.cacheValue / totalWeight;
 
-                elementSize = flexibleSize;
+                        elementSize = flexibleSize;
+                    }
+                }break;
             }
 
             if( element.setter != nullptr )

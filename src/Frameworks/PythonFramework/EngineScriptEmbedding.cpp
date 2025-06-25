@@ -54,6 +54,7 @@
 #include "PythonScheduleEvent.h"
 #include "DelaySchedulePipe.h"
 #include "PythonFileLogger.h"
+#include "PythonLayoutSizer.h"
 
 #include "Engine/ResourceFile.h"
 #include "Engine/ResourceTestPick.h"
@@ -185,6 +186,7 @@ namespace Mengine
                 m_factoryPyGlobalTextHandler = Helper::makeFactoryPool<PyGlobalTextHandler, 32>( MENGINE_DOCUMENT_FACTORABLE );
                 m_factoryPyGlobalAccelerometerHandler = Helper::makeFactoryPool<PyGlobalAccelerometerHandler, 8>( MENGINE_DOCUMENT_FACTORABLE );
                 m_factoryPyInputMousePositionProvider = Helper::makeFactoryPool<PyInputMousePositionProvider, 8>( MENGINE_DOCUMENT_FACTORABLE );
+                m_factoryPythonLayourSizer = Helper::makeFactoryPool<PythonLayoutSizer, 4>( MENGINE_DOCUMENT_FACTORABLE );
 
                 m_creatorAffectorNodeFollowerLocalAlpha = Helper::makeFactorableUnique<AffectorNodeFollowerCreator<Node, float>>( MENGINE_DOCUMENT_FACTORABLE );
                 m_creatorAffectorNodeFollowerLocalAlpha->initialize();
@@ -226,6 +228,7 @@ namespace Mengine
                 MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPyGlobalKeyHandler );
                 MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPyGlobalTextHandler );
                 MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPyInputMousePositionProvider );
+                MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonLayourSizer );
 
                 m_factoryPythonScheduleTiming = nullptr;
                 m_factoryPythonSchedulePipe = nullptr;
@@ -245,6 +248,7 @@ namespace Mengine
                 m_factoryPyGlobalTextHandler = nullptr;
                 m_factoryPyGlobalAccelerometerHandler = nullptr;
                 m_factoryPyInputMousePositionProvider = nullptr;
+                m_factoryPythonLayourSizer = nullptr;
             }
 
         public:
@@ -384,10 +388,17 @@ namespace Mengine
                     ->destroyScheduler( _sm );
             }
             //////////////////////////////////////////////////////////////////////////
-            LayoutInterfacePtr s_createLayout()
+            FactoryInterfacePtr m_factoryPythonLayourSizer;
+            //////////////////////////////////////////////////////////////////////////
+            LayoutInterfacePtr s_createLayout( const pybind::object & _sizer, const pybind::args & _args )
             {
                 LayoutInterfacePtr layout = PLAYER_SERVICE()
                     ->createLayout( MENGINE_DOCUMENT_PYBIND );
+
+                PythonLayoutSizerPtr py_sizer = m_factoryPythonLayourSizer->createObject( MENGINE_DOCUMENT_PYBIND );
+                py_sizer->initialize( _sizer, _args );
+
+                layout->setLayoutSizer( py_sizer );
 
                 return layout;
             }
@@ -4347,7 +4358,7 @@ namespace Mengine
         pybind::def_functor( _kernel, "createScheduler", nodeScriptMethod, &EngineScriptMethod::s_createScheduler );
         pybind::def_functor( _kernel, "destroyScheduler", nodeScriptMethod, &EngineScriptMethod::s_destroyScheduler );
 
-        pybind::def_functor( _kernel, "createLayout", nodeScriptMethod, &EngineScriptMethod::s_createLayout );
+        pybind::def_functor_args( _kernel, "createLayout", nodeScriptMethod, &EngineScriptMethod::s_createLayout );
         pybind::def_functor( _kernel, "destroyLayout", nodeScriptMethod, &EngineScriptMethod::s_destroyLayout );
 
         pybind::def_functor_args( _kernel, "schedule", nodeScriptMethod, &EngineScriptMethod::s_schedule );

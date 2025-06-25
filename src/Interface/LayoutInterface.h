@@ -9,6 +9,12 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    enum class ELayoutElementType
+    {
+        LET_FIXED,
+        LET_PAD,
+    };
+    //////////////////////////////////////////////////////////////////////////
     class LayoutSizerInterface
         : public Mixin
     {
@@ -47,13 +53,12 @@ namespace Mengine
         virtual void setLayoutSizer( const LayoutSizerInterfacePtr & _sizer ) = 0;
 
     public:
-        virtual void addLayoutElement( const ConstString & _name, const LayoutElementGetterInterfacePtr & _getter, const LayoutElementSetterInterfacePtr & _setter, bool _fixed, float _weight, bool _enable, const DocumentInterfacePtr & _doc ) = 0;
+        virtual void addLayoutElement( const ConstString & _name, ELayoutElementType _type, const LayoutElementGetterInterfacePtr & _getter, const LayoutElementSetterInterfacePtr & _setter, const DocumentInterfacePtr & _doc ) = 0;
         virtual void removeLayoutElement( const ConstString & _name ) = 0;
         virtual bool hasLayoutElement( const ConstString & _name ) const = 0;
 
     public:
-        virtual void setLayoutElementEnable( const ConstString & _name, bool _enable ) = 0;
-        virtual bool isLayoutElementEnable( const ConstString & _name ) const = 0;
+        virtual void clearLayoutElements() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<LayoutInterface> LayoutInterfacePtr;

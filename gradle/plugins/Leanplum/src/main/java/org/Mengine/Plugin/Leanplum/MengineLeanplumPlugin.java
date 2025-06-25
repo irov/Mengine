@@ -1,5 +1,7 @@
 package org.Mengine.Plugin.Leanplum;
 
+import androidx.annotation.StringRes;
+
 import com.leanplum.Leanplum;
 import com.leanplum.LeanplumActivityHelper;
 import com.leanplum.annotations.Parser;
@@ -15,17 +17,17 @@ import org.Mengine.Base.MengineUtils;
 public class MengineLeanplumPlugin extends MengineService implements MengineListenerApplication, MengineListenerUser {
     public static final String SERVICE_NAME = "Leanplum";
 
-    public static final String METADATA_APP_ID = "mengine.leanplum.app_id";
-    public static final String METADATA_DEV_KEY = "mengine.leanplum.dev_key";
-    public static final String METADATA_PROD_KEY = "mengine.leanplum.prod_key";
-    public static final String METADATA_ENVIRONMENT = "mengine.leanplum.environment";
+    public static final @StringRes int METADATA_APP_ID = R.string.mengine_leanplum_app_id;
+    public static final @StringRes int METADATA_DEV_KEY = R.string.mengine_leanplum_dev_key;
+    public static final @StringRes int METADATA_PROD_KEY = R.string.mengine_leanplum_prod_key;
+    public static final @StringRes int METADATA_ENVIRONMENT = R.string.mengine_leanplum_environment;
 
     @Override
     public void onAppCreate(MengineApplication application) throws MengineServiceInvalidInitializeException {
-        String AppId = this.getMetaDataString(METADATA_APP_ID);
-        String DevKey = this.getMetaDataString(METADATA_DEV_KEY);
-        String ProdKey = this.getMetaDataString(METADATA_PROD_KEY);
-        String Environment = this.getMetaDataString(METADATA_ENVIRONMENT);
+        String AppId = this.getResourceString(METADATA_APP_ID);
+        String DevKey = this.getResourceString(METADATA_DEV_KEY);
+        String ProdKey = this.getResourceString(METADATA_PROD_KEY);
+        String Environment = this.getResourceString(METADATA_ENVIRONMENT);
 
         this.logInfo("%s: %s"
             , METADATA_APP_ID

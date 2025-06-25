@@ -3,6 +3,7 @@ package org.Mengine.Plugin.DevToDev;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 
 import com.devtodev.analytics.external.DTDLogLevel;
 import com.devtodev.analytics.external.analytics.DTDAnalytics;
@@ -31,7 +32,7 @@ public class MengineDevToDevPlugin extends MengineService implements MengineList
     public static final String SERVICE_NAME = "DevToDev";
     public static final boolean SERVICE_EMBEDDING = true;
 
-    public static final String METADATA_APP_ID = "mengine.devtodev.app_id";
+    public static final @StringRes int METADATA_APP_ID = R.string.mengine_devtodev_app_id;
 
     private boolean m_initializeSuccessful;
 
@@ -47,7 +48,7 @@ public class MengineDevToDevPlugin extends MengineService implements MengineList
     public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
         m_initializeSuccessful = false;
 
-        String MengineDevToDevPlugin_AppId = this.getMetaDataString(METADATA_APP_ID);
+        String MengineDevToDevPlugin_AppId = this.getResourceString(METADATA_APP_ID);
 
         this.logInfo("%s: %s"
             , METADATA_APP_ID

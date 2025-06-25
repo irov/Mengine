@@ -2,6 +2,7 @@ package org.Mengine.Plugin.AppLovin.InterstitialAd;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Size;
+import androidx.annotation.StringRes;
 
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdExpirationListener;
@@ -16,8 +17,7 @@ import com.applovin.mediation.ads.MaxInterstitialAd;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineAdFormat;
 import org.Mengine.Base.MengineAdMediation;
-import org.Mengine.Base.MengineAnalyticsEventBuilder;
-import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineAnalyticsEventBuilderInterface;
 import org.Mengine.Base.MengineNetwork;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineUtils;
@@ -28,18 +28,18 @@ import org.Mengine.Plugin.AppLovin.Core.MengineAppLovinPluginInterface;
 import java.util.Map;
 
 public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implements MengineAppLovinInterstitialAdInterface, MaxAdListener, MaxAdRequestListener, MaxAdRevenueListener, MaxAdExpirationListener, MaxAdReviewListener {
-    public static final String METADATA_INTERSTITIAL_ADUNITID = "mengine.applovin.interstitial.adunitid";
+    public static final @StringRes int METADATA_INTERSTITIAL_ADUNITID = R.string.mengine_applovin_interstitial_adunitid;
 
     private MaxInterstitialAd m_interstitialAd;
 
     public MengineAppLovinInterstitialAd(@NonNull MengineAppLovinPluginInterface plugin) throws MengineServiceInvalidInitializeException {
         super(plugin, MaxAdFormat.INTERSTITIAL);
 
-        String MengineAppLovinPlugin_Interstitial_AdUnitId = plugin.getMetaDataString(METADATA_INTERSTITIAL_ADUNITID);
+        String MengineAppLovinPlugin_Interstitial_AdUnitId = plugin.getResourceString(METADATA_INTERSTITIAL_ADUNITID);
 
         if (MengineAppLovinPlugin_Interstitial_AdUnitId.isEmpty() == true) {
             this.invalidInitialize("meta %s is empty"
-                , METADATA_INTERSTITIAL_ADUNITID
+                , plugin.getResourceName(METADATA_INTERSTITIAL_ADUNITID)
                 , MengineAppLovinPlugin_Interstitial_AdUnitId
             );
         }
@@ -47,9 +47,8 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
         this.setAdUnitId(MengineAppLovinPlugin_Interstitial_AdUnitId);
     }
 
-    protected MengineAnalyticsEventBuilder buildInterstitialAdEvent(@Size(min = 1L,max = 40L) String event) {
-        MengineAnalyticsEventBuilder builder = this.buildAdEvent("mng_ad_interstitial_" + event)
-                ;
+    protected MengineAnalyticsEventBuilderInterface buildInterstitialAdEvent(@Size(min = 1L,max = 40L) String event) {
+        MengineAnalyticsEventBuilderInterface builder = this.buildAdEvent("mng_ad_interstitial_" + event);
 
         return builder;
     }
@@ -122,8 +121,8 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
             this.logError("loadAd", e);
 
             this.buildInterstitialAdEvent("load_exception")
-                    .addParameterException("exception", e)
-                    .log();
+                .addParameterException("exception", e)
+                .log();
 
             this.setInterstitialState("load_exception");
 
@@ -146,9 +145,9 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
 
         if (ready == false) {
             this.buildInterstitialAdEvent("show")
-                    .addParameterString("placement", placement)
-                    .addParameterBoolean("ready", false)
-                    .log();
+                .addParameterString("placement", placement)
+                .addParameterBoolean("ready", false)
+                .log();
 
             return false;
         }
@@ -170,9 +169,9 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
         this.log("showInterstitial", Map.of("placement", placement, "ready", ready));
 
         this.buildInterstitialAdEvent("show")
-                .addParameterString("placement", placement)
-                .addParameterBoolean("ready", ready)
-                .log();
+            .addParameterString("placement", placement)
+            .addParameterBoolean("ready", ready)
+            .log();
 
         if (ready == false) {
             return false;
@@ -188,7 +187,7 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
         this.log("onAdRequestStarted");
 
         this.buildInterstitialAdEvent("request_started")
-                .log();
+            .log();
 
         this.setInterstitialState("request_started");
     }
@@ -198,8 +197,8 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
         this.logMaxAd("onAdLoaded", ad);
 
         this.buildInterstitialAdEvent("loaded")
-                .addParameterJSON("ad", this.getMAAdParams(ad))
-                .log();
+            .addParameterJSON("ad", this.getMAAdParams(ad))
+            .log();
 
         this.setInterstitialState("loaded." + ad.getNetworkName());
 
@@ -213,9 +212,9 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
         String placement = ad.getPlacement();
 
         this.buildInterstitialAdEvent("displayed")
-                .addParameterString("placement", placement)
-                .addParameterJSON("ad", this.getMAAdParams(ad))
-                .log();
+            .addParameterString("placement", placement)
+            .addParameterJSON("ad", this.getMAAdParams(ad))
+            .log();
 
         this.setInterstitialState("displayed." + placement + "." + ad.getNetworkName());
     }
@@ -227,9 +226,9 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
         String placement = ad.getPlacement();
 
         this.buildInterstitialAdEvent("hidden")
-                .addParameterString("placement", placement)
-                .addParameterJSON("ad", this.getMAAdParams(ad))
-                .log();
+            .addParameterString("placement", placement)
+            .addParameterJSON("ad", this.getMAAdParams(ad))
+            .log();
 
         this.setInterstitialState("hidden." + placement + "." + ad.getNetworkName());
 
@@ -247,9 +246,9 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
         String placement = ad.getPlacement();
 
         this.buildInterstitialAdEvent("clicked")
-                .addParameterString("placement", placement)
-                .addParameterJSON("ad", this.getMAAdParams(ad))
-                .log();
+            .addParameterString("placement", placement)
+            .addParameterJSON("ad", this.getMAAdParams(ad))
+            .log();
 
         this.setInterstitialState("clicked." + placement + "." + ad.getNetworkName());
     }
@@ -261,9 +260,9 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
         int errorCode = error.getCode();
 
         this.buildInterstitialAdEvent("load_failed")
-                .addParameterJSON("error", this.getMaxErrorParams(error))
-                .addParameterLong("error_code", errorCode)
-                .log();
+            .addParameterJSON("error", this.getMaxErrorParams(error))
+            .addParameterLong("error_code", errorCode)
+            .log();
 
         this.setInterstitialState("load_failed." + errorCode);
 
@@ -279,11 +278,11 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
         int errorCode = error.getCode();
 
         this.buildInterstitialAdEvent("display_failed")
-                .addParameterString("placement", placement)
-                .addParameterJSON("error", this.getMaxErrorParams(error))
-                .addParameterLong("error_code", errorCode)
-                .addParameterJSON("ad", this.getMAAdParams(ad))
-                .log();
+            .addParameterString("placement", placement)
+            .addParameterJSON("error", this.getMaxErrorParams(error))
+            .addParameterLong("error_code", errorCode)
+            .addParameterJSON("ad", this.getMAAdParams(ad))
+            .log();
 
         this.setInterstitialState("display_failed." + placement + "." + ad.getNetworkName() + "." + errorCode);
 
@@ -298,15 +297,6 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
     public void onAdRevenuePaid(@NonNull MaxAd ad) {
         this.logMaxAd("onAdRevenuePaid", ad);
 
-        String placement = ad.getPlacement();
-
-        this.buildInterstitialAdEvent("revenue_paid")
-                .addParameterString("placement", placement)
-                .addParameterDouble("revenue", ad.getRevenue())
-                .addParameterString("revenue_precision", ad.getRevenuePrecision())
-                .addParameterJSON("ad", this.getMAAdParams(ad))
-                .log();
-
         this.revenuePaid(ad);
     }
 
@@ -315,9 +305,9 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
         this.logMaxAd("onExpiredAdReloaded", adOld);
 
         this.buildInterstitialAdEvent("expired_reloaded")
-                .addParameterJSON("old_ad", this.getMAAdParams(adOld))
-                .addParameterJSON("new_ad", this.getMAAdParams(adNew))
-                .log();
+            .addParameterJSON("old_ad", this.getMAAdParams(adOld))
+            .addParameterJSON("new_ad", this.getMAAdParams(adNew))
+            .log();
     }
 
     @Override

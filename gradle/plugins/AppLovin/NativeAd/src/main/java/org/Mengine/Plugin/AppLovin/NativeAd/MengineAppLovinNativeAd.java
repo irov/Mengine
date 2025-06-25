@@ -7,6 +7,7 @@ import android.graphics.Color;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.Size;
+import androidx.annotation.StringRes;
 
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdFormat;
@@ -19,10 +20,8 @@ import com.applovin.mediation.nativeAds.MaxNativeAdView;
 import com.applovin.mediation.nativeAds.MaxNativeAdViewBinder;
 
 import org.Mengine.Base.MengineActivity;
-import org.Mengine.Base.MengineAnalyticsEventBuilder;
-import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineAnalyticsEventBuilderInterface;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
-import org.Mengine.Base.MengineUtils;
 
 import org.Mengine.Plugin.AppLovin.Core.MengineAppLovinBase;
 import org.Mengine.Plugin.AppLovin.Core.MengineAppLovinNativeAdInterface;
@@ -31,8 +30,8 @@ import org.Mengine.Plugin.AppLovin.Core.MengineAppLovinPluginInterface;
 import java.util.Map;
 
 public class MengineAppLovinNativeAd extends MengineAppLovinBase implements MengineAppLovinNativeAdInterface, MaxAdRevenueListener, MaxAdReviewListener {
-    public static final String METADATA_NATIVE_PLACEMENT = "mengine.applovin.native.placement";
-    public static final String METADATA_NATIVE_ADUNITID = "mengine.applovin.native.adunitid";
+    public static final @StringRes int METADATA_NATIVE_PLACEMENT = R.string.mengine_applovin_native_placement;
+    public static final @StringRes int METADATA_NATIVE_ADUNITID = R.string.mengine_applovin_native_adunitid;
 
     protected final String m_placement;
 
@@ -46,7 +45,7 @@ public class MengineAppLovinNativeAd extends MengineAppLovinBase implements Meng
     public MengineAppLovinNativeAd(@NonNull MengineAppLovinPluginInterface plugin) throws MengineServiceInvalidInitializeException {
         super(plugin, MaxAdFormat.NATIVE);
 
-        String MengineAppLovinPlugin_Native_AdUnitId = plugin.getMetaDataString(METADATA_NATIVE_ADUNITID);
+        String MengineAppLovinPlugin_Native_AdUnitId = plugin.getResourceString(METADATA_NATIVE_ADUNITID);
 
         if (MengineAppLovinPlugin_Native_AdUnitId.isEmpty() == true) {
             this.invalidInitialize("meta %s is empty"
@@ -56,13 +55,13 @@ public class MengineAppLovinNativeAd extends MengineAppLovinBase implements Meng
 
         this.setAdUnitId(MengineAppLovinPlugin_Native_AdUnitId);
 
-        String MengineAppLovinPlugin_Native_Placement = plugin.getMetaDataString(METADATA_NATIVE_PLACEMENT);
+        String MengineAppLovinPlugin_Native_Placement = plugin.getResourceString(METADATA_NATIVE_PLACEMENT);
 
         m_placement = MengineAppLovinPlugin_Native_Placement;
     }
 
-    protected MengineAnalyticsEventBuilder buildNativeAdEvent(@Size(min = 1L,max = 40L) String event) {
-        MengineAnalyticsEventBuilder builder = this.buildAdEvent("mng_ad_native_" + event)
+    protected MengineAnalyticsEventBuilderInterface buildNativeAdEvent(@Size(min = 1L,max = 40L) String event) {
+        MengineAnalyticsEventBuilderInterface builder = this.buildAdEvent("mng_ad_native_" + event)
             .addParameterString("placement", m_placement);
 
         return builder;
@@ -339,12 +338,6 @@ public class MengineAppLovinNativeAd extends MengineAppLovinBase implements Meng
     @Override
     public void onAdRevenuePaid(@NonNull MaxAd ad) {
         this.logMaxAd("onAdRevenuePaid", ad);
-
-        this.buildNativeAdEvent("revenue_paid")
-            .addParameterDouble("revenue", ad.getRevenue())
-            .addParameterString("revenue_precision", ad.getRevenuePrecision())
-            .addParameterJSON("ad", this.getMAAdParams(ad))
-            .log();
 
         this.revenuePaid(ad);
     }

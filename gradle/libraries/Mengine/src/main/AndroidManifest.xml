@@ -29,9 +29,6 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:hardwareAccelerated="true">
 
-        <meta-data android:name="mengine.session.use_install_key" android:value="@bool/mengine_session_use_install_key"/>
-        <meta-data android:name="mengine.secure.allow_android_id" android:value="@bool/mengine_secure_allow_android_id"/>
-
         <activity
             android:name="org.Mengine.Base.MengineActivity"
             android:alwaysRetainTaskState="true"

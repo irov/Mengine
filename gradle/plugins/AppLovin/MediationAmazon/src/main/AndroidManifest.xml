@@ -3,8 +3,5 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application>
-        <meta-data android:name="mengine.applovin.amazon.banner_slotuuid" android:value="@string/mengine_applovin_amazon_banner_slotuuid" />
-        <meta-data android:name="mengine.applovin.amazon.interstitial_slotuuid" android:value="@string/mengine_applovin_amazon_interstitial_slotuuid" />
-        <meta-data android:name="mengine.applovin.amazon.rewarded_slotuuid" android:value="@string/mengine_applovin_amazon_rewarded_slotuuid" />
     </application>
 </manifest>

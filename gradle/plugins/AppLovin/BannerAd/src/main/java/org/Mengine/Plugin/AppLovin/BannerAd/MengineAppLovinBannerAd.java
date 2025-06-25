@@ -7,6 +7,7 @@ import android.graphics.Color;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Size;
+import androidx.annotation.StringRes;
 
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdFormat;
@@ -20,8 +21,7 @@ import com.applovin.mediation.ads.MaxAdView;
 import com.applovin.sdk.AppLovinSdkUtils;
 
 import org.Mengine.Base.MengineActivity;
-import org.Mengine.Base.MengineAnalyticsEventBuilder;
-
+import org.Mengine.Base.MengineAnalyticsEventBuilderInterface;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Plugin.AppLovin.Core.MengineAppLovinBannerAdInterface;
 import org.Mengine.Plugin.AppLovin.Core.MengineAppLovinBase;
@@ -31,8 +31,8 @@ import org.Mengine.Plugin.AppLovin.Core.MengineAppLovinPluginInterface;
 import java.util.Map;
 
 public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MengineAppLovinBannerAdInterface, MaxAdRequestListener, MaxAdViewAdListener, MaxAdRevenueListener, MaxAdReviewListener {
-    public static final String METADATA_BANNER_PLACEMENT = "mengine.applovin.banner.placement";
-    public static final String METADATA_BANNER_ADUNITID = "mengine.applovin.banner.adunitid";
+    public static final @StringRes int METADATA_BANNER_PLACEMENT = R.string.mengine_applovin_banner_placement;
+    public static final @StringRes int METADATA_BANNER_ADUNITID = R.string.mengine_applovin_banner_adunitid;
 
     protected final String m_placement;
 
@@ -44,18 +44,18 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements Meng
     public MengineAppLovinBannerAd(@NonNull MengineAppLovinPluginInterface plugin) throws MengineServiceInvalidInitializeException {
         super(plugin, MaxAdFormat.BANNER);
 
-        String MengineAppLovinPlugin_Banner_AdUnitId = plugin.getMetaDataString(METADATA_BANNER_ADUNITID);
+        String MengineAppLovinPlugin_Banner_AdUnitId = plugin.getResourceString(METADATA_BANNER_ADUNITID);
 
         if (MengineAppLovinPlugin_Banner_AdUnitId.isEmpty() == true) {
             this.invalidInitialize("meta %s is empty"
-                , METADATA_BANNER_ADUNITID
+                , plugin.getResourceName(METADATA_BANNER_ADUNITID)
                 , MengineAppLovinPlugin_Banner_AdUnitId
             );
         }
 
         this.setAdUnitId(MengineAppLovinPlugin_Banner_AdUnitId);
 
-        String MengineAppLovinPlugin_Banner_Placement = plugin.getMetaDataString(METADATA_BANNER_PLACEMENT);
+        String MengineAppLovinPlugin_Banner_Placement = plugin.getResourceString(METADATA_BANNER_PLACEMENT);
 
         m_placement = MengineAppLovinPlugin_Banner_Placement;
     }
@@ -66,8 +66,8 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements Meng
         return size;
     }
 
-    protected MengineAnalyticsEventBuilder buildBannerAdEvent(@Size(min = 1L,max = 40L) String event) {
-        MengineAnalyticsEventBuilder builder = this.buildAdEvent("mng_ad_banner_" + event)
+    protected MengineAnalyticsEventBuilderInterface buildBannerAdEvent(@Size(min = 1L,max = 40L) String event) {
+        MengineAnalyticsEventBuilderInterface builder = this.buildAdEvent("mng_ad_banner_" + event)
             .addParameterString("placement", m_placement);
 
         return builder;
@@ -433,12 +433,6 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements Meng
     @Override
     public void onAdRevenuePaid(@NonNull MaxAd ad) {
         this.logMaxAd("onAdRevenuePaid", ad);
-
-        this.buildBannerAdEvent("revenue_paid")
-            .addParameterDouble("revenue", ad.getRevenue())
-            .addParameterString("revenue_precision", ad.getRevenuePrecision())
-            .addParameterJSON("ad", this.getMAAdParams(ad))
-            .log();
 
         this.revenuePaid(ad);
     }

@@ -1,7 +1,13 @@
 package org.Mengine.Base;
 
+import androidx.annotation.AnyRes;
+import androidx.annotation.BoolRes;
+import androidx.annotation.IntegerRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Size;
+import androidx.annotation.StringRes;
+
+import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -259,9 +265,31 @@ public class MengineService implements MengineServiceInterface {
         MengineUtils.throwAssertionError(t, null, format, args);
     }
 
+    private boolean availableAnalytics() {
+        JSONObject config_analytics = MengineFragmentRemoteConfig.INSTANCE.getRemoteConfigValue("plugin_" + m_serviceName);
+
+        if (config_analytics == null) {
+            return false;
+        }
+
+        boolean enabled = config_analytics.optBoolean("enable_analytics", false);
+
+        if (enabled == false) {
+            return false;
+        }
+
+        return true;
+    }
+
     @Override
-    public MengineAnalyticsEventBuilder buildEvent(@Size(min = 1L,max = 40L) String name) {
-        MengineAnalyticsEventBuilder eventBuilder = MengineAnalytics.buildEvent(name);
+    public MengineAnalyticsEventBuilderInterface buildEvent(@Size(min = 1L,max = 40L) String name) {
+        if (this.availableAnalytics() == false) {
+            MengineAnalyticsEventBuilderInterface eventBuilderDummy = MengineAnalytics.buildEventDummy(name);
+
+            return eventBuilderDummy;
+        }
+
+        MengineAnalyticsEventBuilderInterface eventBuilder = MengineAnalytics.buildEvent(name);
 
         return eventBuilder;
     }
@@ -283,55 +311,31 @@ public class MengineService implements MengineServiceInterface {
     }
 
     @Override
-    public boolean getMetaDataBoolean(String name) throws MengineServiceInvalidInitializeException {
-        try {
-            boolean value = m_application.getMetaDataBoolean(name);
+    public String getResourceName(@AnyRes int id) {
+        String value = m_application.getResourceName(id);
 
-            return value;
-        } catch (final RuntimeException e) {
-            this.invalidInitialize("invalid get meta data: %s e: %s", name, e.getMessage());
-        }
-
-        return false;
+        return value;
     }
 
     @Override
-    public int getMetaDataInteger(String name) throws MengineServiceInvalidInitializeException {
-        try {
-            int value = m_application.getMetaDataInteger(name);
+    public boolean getResourceBoolean(@BoolRes int id) {
+        boolean value = m_application.getResourceBoolean(id);
 
-            return value;
-        } catch (final RuntimeException e) {
-            this.invalidInitialize("invalid get meta data: %s e: %s", name, e.getMessage());
-        }
-
-        return 0;
+        return value;
     }
 
     @Override
-    public long getMetaDataLong(String name) throws MengineServiceInvalidInitializeException {
-        try {
-            long value = m_application.getMetaDataInteger(name);
+    public int getResourceInteger(@IntegerRes int id) {
+        int value = m_application.getResourceInteger(id);
 
-            return value;
-        } catch (final RuntimeException e) {
-            this.invalidInitialize("invalid get meta data: %s e: %s", name, e.getMessage());
-        }
-
-        return 0;
+        return value;
     }
 
     @Override
-    public String getMetaDataString(String name) throws MengineServiceInvalidInitializeException {
-        try {
-            String value = m_application.getMetaDataString(name);
+    public String getResourceString(@StringRes int id) {
+        String value = m_application.getResourceString(id);
 
-            return value;
-        } catch (final RuntimeException e) {
-            this.invalidInitialize("invalid get meta data: %s e: %s", name, e.getMessage());
-        }
-
-        return null;
+        return value;
     }
 
     protected void invalidInitialize(String format, Object ... args) throws MengineServiceInvalidInitializeException {

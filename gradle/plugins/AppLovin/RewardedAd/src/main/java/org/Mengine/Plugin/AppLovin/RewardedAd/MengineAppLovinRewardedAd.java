@@ -2,6 +2,7 @@ package org.Mengine.Plugin.AppLovin.RewardedAd;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Size;
+import androidx.annotation.StringRes;
 
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdExpirationListener;
@@ -17,8 +18,7 @@ import com.applovin.mediation.ads.MaxRewardedAd;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineAdFormat;
 import org.Mengine.Base.MengineAdMediation;
-import org.Mengine.Base.MengineAnalyticsEventBuilder;
-import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineAnalyticsEventBuilderInterface;
 import org.Mengine.Base.MengineNetwork;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineUtils;
@@ -30,14 +30,14 @@ import org.Mengine.Plugin.AppLovin.Core.MengineAppLovinRewardedAdInterface;
 import java.util.Map;
 
 public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements MengineAppLovinRewardedAdInterface, MaxAdRequestListener, MaxRewardedAdListener, MaxAdRevenueListener, MaxAdExpirationListener, MaxAdReviewListener {
-    public static final String METADATA_REWARDED_ADUNITID = "mengine.applovin.rewarded.adunitid";
+    public static final @StringRes int METADATA_REWARDED_ADUNITID = R.string.mengine_applovin_rewarded_adunitid;
 
     private MaxRewardedAd m_rewardedAd;
 
     public MengineAppLovinRewardedAd(@NonNull MengineAppLovinPluginInterface plugin) throws MengineServiceInvalidInitializeException {
         super(plugin, MaxAdFormat.REWARDED);
 
-        String MengineAppLovinPlugin_Rewarded_AdUnitId = plugin.getMetaDataString(METADATA_REWARDED_ADUNITID);
+        String MengineAppLovinPlugin_Rewarded_AdUnitId = plugin.getResourceString(METADATA_REWARDED_ADUNITID);
 
         if (MengineAppLovinPlugin_Rewarded_AdUnitId.isEmpty() == true) {
             this.invalidInitialize("meta %s is empty"
@@ -48,9 +48,8 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Me
         this.setAdUnitId(MengineAppLovinPlugin_Rewarded_AdUnitId);
     }
 
-    protected MengineAnalyticsEventBuilder buildRewardedAdEvent(@Size(min = 1L,max = 40L) String event) {
-        MengineAnalyticsEventBuilder builder = this.buildAdEvent("mng_ad_rewarded_" + event)
-            ;
+    protected MengineAnalyticsEventBuilderInterface buildRewardedAdEvent(@Size(min = 1L,max = 40L) String event) {
+        MengineAnalyticsEventBuilderInterface builder = this.buildAdEvent("mng_ad_rewarded_" + event);
 
         return builder;
     }
@@ -340,15 +339,6 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Me
     @Override
     public void onAdRevenuePaid(@NonNull MaxAd ad) {
         this.logMaxAd("onAdRevenuePaid", ad);
-
-        String placement = ad.getPlacement();
-
-        this.buildRewardedAdEvent("revenue_paid")
-            .addParameterString("placement", placement)
-            .addParameterDouble("revenue", ad.getRevenue())
-            .addParameterString("revenue_precision", ad.getRevenuePrecision())
-            .addParameterJSON("ad", this.getMAAdParams(ad))
-            .log();
 
         this.revenuePaid(ad);
     }

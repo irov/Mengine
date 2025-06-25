@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 
 import com.adjust.sdk.Adjust;
 import com.adjust.sdk.AdjustAdRevenue;
@@ -40,7 +41,7 @@ public class MengineAdjustPlugin extends MengineService implements MengineListen
     public static final boolean SERVICE_EMBEDDING = true;
     public static final int SAVE_VERSION = 1;
 
-    public static final String METADATA_APP_TOKEN = "mengine.adjust.app_token";
+    public static final @StringRes int METADATA_APP_TOKEN = R.string.mengine_adjust_app_token;
 
     private static final class AdjustLifecycleCallbacks implements Application.ActivityLifecycleCallbacks {
         @Override
@@ -83,7 +84,7 @@ public class MengineAdjustPlugin extends MengineService implements MengineListen
     public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
         String environment = (BuildConfig.DEBUG == true) ? AdjustConfig.ENVIRONMENT_SANDBOX : AdjustConfig.ENVIRONMENT_PRODUCTION;
 
-        String MengineAdjustPlugin_AppToken = this.getMetaDataString(METADATA_APP_TOKEN);
+        String MengineAdjustPlugin_AppToken = this.getResourceString(METADATA_APP_TOKEN);
 
         this.logInfo("%s: %s"
             , METADATA_APP_TOKEN

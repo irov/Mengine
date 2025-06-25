@@ -19,7 +19,7 @@ import org.Mengine.Base.MengineAdFormat;
 import org.Mengine.Base.MengineAdMediation;
 import org.Mengine.Base.MengineAdResponseInterface;
 import org.Mengine.Base.MengineAdService;
-import org.Mengine.Base.MengineAnalyticsEventBuilder;
+import org.Mengine.Base.MengineAnalyticsEventBuilderInterface;
 import org.Mengine.Base.MengineFragmentAdRevenue;
 import org.Mengine.Base.MengineLog;
 import org.Mengine.Base.MengineParamAdRevenue;
@@ -234,10 +234,10 @@ public class MengineAppLovinBase implements MengineAppLovinAdInterface {
         m_plugin.setState(name, value);
     }
 
-    protected MengineAnalyticsEventBuilder buildAdEvent(@Size(min = 1L,max = 40L) String name) {
+    protected MengineAnalyticsEventBuilderInterface buildAdEvent(@Size(min = 1L,max = 40L) String name) {
         long requestTime = this.getRequestTime();
 
-        MengineAnalyticsEventBuilder eventBuilder = m_plugin.buildEvent(name);
+        MengineAnalyticsEventBuilderInterface eventBuilder = m_plugin.buildEvent(name);
 
         eventBuilder.addParameterString("ad_unit_id", m_adUnitId);
         eventBuilder.addParameterLong("request_id", m_requestId);

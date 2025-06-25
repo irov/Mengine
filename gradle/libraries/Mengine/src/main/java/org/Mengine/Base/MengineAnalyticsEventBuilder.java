@@ -6,7 +6,7 @@ import androidx.annotation.Size;
 
 import java.util.Map;
 
-public class MengineAnalyticsEventBuilder {
+public class MengineAnalyticsEventBuilder implements MengineAnalyticsEventBuilderInterface {
     private final String m_name;
     private final Map<String, Object> m_bases;
     private final Map<String, Object> m_parameters;
@@ -53,7 +53,8 @@ public class MengineAnalyticsEventBuilder {
         }
     }
 
-    public MengineAnalyticsEventBuilder addParameterBoolean(@NonNull @Size(min = 1L,max = 40L) String key, boolean value) {
+    @Override
+    public MengineAnalyticsEventBuilderInterface addParameterBoolean(@NonNull @Size(min = 1L,max = 40L) String key, boolean value) {
         this.assertBases(key);
         this.assertParameters(key);
 
@@ -62,7 +63,8 @@ public class MengineAnalyticsEventBuilder {
         return this;
     }
 
-    public MengineAnalyticsEventBuilder addParameterString(@NonNull @Size(min = 1L,max = 40L) String key, @NonNull @Size(min = 0L,max = 100L) String value) {
+    @Override
+    public MengineAnalyticsEventBuilderInterface addParameterString(@NonNull @Size(min = 1L,max = 40L) String key, @NonNull @Size(min = 0L,max = 100L) String value) {
         this.assertBases(key);
         this.assertParameters(key);
 
@@ -71,7 +73,8 @@ public class MengineAnalyticsEventBuilder {
         return this;
     }
 
-    public MengineAnalyticsEventBuilder addParameterException(@NonNull @Size(min = 1L,max = 40L) String key, @Nullable Exception e) {
+    @Override
+    public MengineAnalyticsEventBuilderInterface addParameterException(@NonNull @Size(min = 1L,max = 40L) String key, @Nullable Exception e) {
         String message = e != null ? e.getMessage() : null;
 
         this.addParameterString(key, message != null ? message : "null");
@@ -79,7 +82,8 @@ public class MengineAnalyticsEventBuilder {
         return this;
     }
 
-    public MengineAnalyticsEventBuilder addParameterThrowable(@NonNull @Size(min = 1L,max = 40L) String key, @NonNull Throwable e) {
+    @Override
+    public MengineAnalyticsEventBuilderInterface addParameterThrowable(@NonNull @Size(min = 1L,max = 40L) String key, @NonNull Throwable e) {
         String message = e.getMessage();
 
         this.addParameterString(key, message != null ? message : "null");
@@ -87,7 +91,8 @@ public class MengineAnalyticsEventBuilder {
         return this;
     }
 
-    public MengineAnalyticsEventBuilder addParameterJSON(@NonNull @Size(min = 1L,max = 40L) String key, @NonNull @Size(min = 0L,max = 100L) String value) {
+    @Override
+    public MengineAnalyticsEventBuilderInterface addParameterJSON(@NonNull @Size(min = 1L,max = 40L) String key, @NonNull @Size(min = 0L,max = 100L) String value) {
         this.assertJSON(key, value);
 
         this.addParameterString(key, value);
@@ -95,7 +100,8 @@ public class MengineAnalyticsEventBuilder {
         return this;
     }
 
-    public MengineAnalyticsEventBuilder addParameterLong(@NonNull @Size(min = 1L,max = 40L) String key, long value) {
+    @Override
+    public MengineAnalyticsEventBuilderInterface addParameterLong(@NonNull @Size(min = 1L,max = 40L) String key, long value) {
         this.assertBases(key);
         this.assertParameters(key);
 
@@ -104,7 +110,8 @@ public class MengineAnalyticsEventBuilder {
         return this;
     }
 
-    public MengineAnalyticsEventBuilder addParameterDouble(@NonNull @Size(min = 1L,max = 40L) String key, double value) {
+    @Override
+    public MengineAnalyticsEventBuilderInterface addParameterDouble(@NonNull @Size(min = 1L,max = 40L) String key, double value) {
         this.assertBases(key);
         this.assertParameters(key);
 
@@ -113,6 +120,7 @@ public class MengineAnalyticsEventBuilder {
         return this;
     }
 
+    @Override
     public long logAndFlush() {
         long timestamp = this.log();
 
@@ -121,6 +129,7 @@ public class MengineAnalyticsEventBuilder {
         return timestamp;
     }
 
+    @Override
     public long log() {
         long timestamp = MengineUtils.getTimestamp();
 

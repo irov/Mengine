@@ -257,13 +257,7 @@
 
 - (void) didPayRevenueForAd:(MAAd *)ad {
     [self log:@"didPayRevenueForAd" withMAAd:ad];
-    
-    [self eventBanner:@"revenue_paid" params:@{
-        @"revenue_value": @(ad.revenue),
-        @"revenue_precision": ad.revenuePrecision,
-        @"ad": [self getMAAdParams:ad]
-    }];
-    
+
     [self eventRevenue:ad];
     
     id<AppleAdvertisementCallbackInterface> callback = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementBannerCallback];

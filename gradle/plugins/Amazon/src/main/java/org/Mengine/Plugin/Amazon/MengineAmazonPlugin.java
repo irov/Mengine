@@ -1,5 +1,8 @@
 package org.Mengine.Plugin.Amazon;
 
+import androidx.annotation.BoolRes;
+import androidx.annotation.StringRes;
+
 import com.amazon.device.ads.AdRegistration;
 import com.amazon.device.ads.DTBAdNetwork;
 import com.amazon.device.ads.DTBAdNetworkInfo;
@@ -14,13 +17,13 @@ import org.Mengine.Base.MengineUtils;
 public class MengineAmazonPlugin extends MengineService implements MengineListenerApplication {
     public static final String SERVICE_NAME = "Amazon";
 
-    public static final String METADATA_APP_ID = "mengine.amazon.app_id";
-    public static final String METADATA_ENABLE_TESTING = "mengine.amazon.enable_testing";
-    public static final String METADATA_ENABLE_LOGGING = "mengine.amazon.enable_logging";
+    public static final @StringRes int METADATA_APP_ID = R.string.mengine_amazon_app_id;
+    public static final @BoolRes int METADATA_ENABLE_TESTING = R.bool.mengine_amazon_enable_testing;
+    public static final @BoolRes int METADATA_ENABLE_LOGGING = R.bool.mengine_amazon_enable_logging;
 
     @Override
     public void onAppCreate(MengineApplication application) throws MengineServiceInvalidInitializeException {
-        String MengineAmazonPlugin_AppId = this.getMetaDataString(METADATA_APP_ID);
+        String MengineAmazonPlugin_AppId = this.getResourceString(METADATA_APP_ID);
 
         this.logInfo("%s: %s"
             , METADATA_APP_ID
@@ -40,7 +43,7 @@ public class MengineAmazonPlugin extends MengineService implements MengineListen
         AdRegistration.setMRAIDSupportedVersions(new String[]{"1.0", "2.0", "3.0"});
         AdRegistration.setMRAIDPolicy(MRAIDPolicy.CUSTOM);
 
-        boolean MengineAmazonPlugin_EnableTesting = this.getMetaDataBoolean(METADATA_ENABLE_TESTING);
+        boolean MengineAmazonPlugin_EnableTesting = this.getResourceBoolean(METADATA_ENABLE_TESTING);
 
         if (MengineAmazonPlugin_EnableTesting == true) {
             AdRegistration.enableTesting(true);
@@ -51,7 +54,7 @@ public class MengineAmazonPlugin extends MengineService implements MengineListen
             , MengineAmazonPlugin_EnableTesting
         );
 
-        boolean MengineAmazonPlugin_EnableLogging = this.getMetaDataBoolean(METADATA_ENABLE_LOGGING);
+        boolean MengineAmazonPlugin_EnableLogging = this.getResourceBoolean(METADATA_ENABLE_LOGGING);
 
         if (MengineAmazonPlugin_EnableLogging == true) {
             AdRegistration.enableLogging(true);

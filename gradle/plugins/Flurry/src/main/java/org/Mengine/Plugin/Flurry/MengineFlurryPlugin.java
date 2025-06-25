@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 
 import com.flurry.android.FlurryAgent;
 import com.flurry.android.FlurryAgentListener;
@@ -28,11 +29,11 @@ public class MengineFlurryPlugin extends MengineService implements MengineListen
     public static final String SERVICE_NAME = "Flurry";
     public static final boolean SERVICE_EMBEDDING = true;
 
-    public static final String METADATA_API_KEY = "mengine.flurry.api_key";
+    public static final @StringRes int METADATA_API_KEY = R.string.mengine_flurry_api_key;
 
     @Override
     public void onAppPrepare(MengineApplication application, @NonNull Map<String, String> pluginVersions) throws MengineServiceInvalidInitializeException {
-        String MengineFlurryPlugin_ApiKey = this.getMetaDataString(METADATA_API_KEY);
+        String MengineFlurryPlugin_ApiKey = this.getResourceString(METADATA_API_KEY);
 
         this.logInfo("%s: %s"
             , METADATA_API_KEY

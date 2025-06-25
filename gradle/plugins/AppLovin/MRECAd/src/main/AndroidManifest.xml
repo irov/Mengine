@@ -3,7 +3,5 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application>
-        <meta-data android:name="mengine.applovin.mrec.placement" android:value="@string/mengine_applovin_mrec_placement" />
-        <meta-data android:name="mengine.applovin.mrec.adunitid" android:value="@string/mengine_applovin_mrec_adunitid" />
     </application>
 </manifest>

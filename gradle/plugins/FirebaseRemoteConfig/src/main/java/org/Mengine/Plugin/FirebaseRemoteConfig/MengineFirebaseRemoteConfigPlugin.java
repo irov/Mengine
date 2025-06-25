@@ -2,6 +2,7 @@ package org.Mengine.Plugin.FirebaseRemoteConfig;
 
 import android.os.Bundle;
 
+import androidx.annotation.IntegerRes;
 import androidx.annotation.NonNull;
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
@@ -30,7 +31,7 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
     public static final String SERVICE_NAME = "FBRemoteConfig";
     public static final boolean SERVICE_EMBEDDING = true;
 
-    private static final String METADATA_MINIMUM_FETCH_INTERVAL = "mengine.firebase_remote_config.minimum_fetch_interval";
+    private static final @IntegerRes int METADATA_MINIMUM_FETCH_INTERVAL = R.integer.mengine_firebase_remote_config_minimum_fetch_interval;
 
     private Map<String, String> m_defaults = new HashMap<>();
 
@@ -38,7 +39,7 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
 
     @Override
     public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
-        long MengineFirebaseRemoteConfigPlugin_MinimumFetchInterval = this.getMetaDataLong(METADATA_MINIMUM_FETCH_INTERVAL);
+        int MengineFirebaseRemoteConfigPlugin_MinimumFetchInterval = this.getResourceInteger(METADATA_MINIMUM_FETCH_INTERVAL);
 
         this.logInfo("%s: %d"
             , METADATA_MINIMUM_FETCH_INTERVAL

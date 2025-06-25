@@ -23,13 +23,14 @@ import java.util.Map;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 
 public class MengineHelpshiftPlugin extends MengineService implements HelpshiftEventsListener, MengineListenerRemoteMessage, MengineListenerApplication, MengineListenerPushToken {
     public static final String SERVICE_NAME = "Helpshift";
     public static final boolean SERVICE_EMBEDDING = true;
 
-    public static final String METADATA_PLATFORM_ID = "mengine.helpshift.platform_id";
-    public static final String METADATA_DOMAIN = "mengine.helpshift.domain";
+    public static final @StringRes int METADATA_PLATFORM_ID = R.string.mengine_helpshift_platform_id;
+    public static final @StringRes int METADATA_DOMAIN = R.string.mengine_helpshift_domain;
 
     @Override
     public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
@@ -43,14 +44,14 @@ public class MengineHelpshiftPlugin extends MengineService implements HelpshiftE
 
         config.put("enableInAppNotification", true);
 
-        String MengineHelpshiftPlugin_PlatformId = this.getMetaDataString(METADATA_PLATFORM_ID);
+        String MengineHelpshiftPlugin_PlatformId = this.getResourceString(METADATA_PLATFORM_ID);
 
         this.logInfo("%s: %s"
             , METADATA_PLATFORM_ID
             , MengineUtils.getRedactedValue(MengineHelpshiftPlugin_PlatformId)
         );
 
-        String MengineHelpshiftPlugin_Domain = this.getMetaDataString(METADATA_DOMAIN);
+        String MengineHelpshiftPlugin_Domain = this.getResourceString(METADATA_DOMAIN);
 
         this.logInfo("%s: %s"
             , METADATA_DOMAIN

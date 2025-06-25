@@ -1,6 +1,7 @@
 package org.Mengine.Plugin.OneSignal;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 
 import com.onesignal.Continue;
 import com.onesignal.OneSignal;
@@ -19,11 +20,11 @@ import java.util.List;
 public class MengineOneSignalPlugin extends MengineService implements MengineListenerApplication, MengineListenerTransparencyConsent {
     public static final String SERVICE_NAME = "OneSignal";
 
-    public static final String METADATA_APP_ID = "mengine.onesignal.app_id";
+    public static final @StringRes int METADATA_APP_ID = R.string.mengine_onesignal_app_id;
 
     @Override
     public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
-        String MengineOneSignalPlugin_AppId = this.getMetaDataString(METADATA_APP_ID);
+        String MengineOneSignalPlugin_AppId = this.getResourceString(METADATA_APP_ID);
 
         this.logInfo("%s: %s"
             , METADATA_APP_ID

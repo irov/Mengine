@@ -3,7 +3,9 @@ package org.Mengine.Plugin.AppLovin;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.BoolRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 
 import com.applovin.mediation.MaxMediatedNetworkInfo;
 import com.applovin.sdk.AppLovinCmpService;
@@ -43,15 +45,17 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+import java.util.Vector;
 
 public class MengineAppLovinPlugin extends MengineService implements MengineAppLovinPluginInterface, MengineAdProviderInterface, MengineListenerApplication, MengineListenerActivity, MengineListenerEngine, MengineListenerRemoteConfig, MengineListenerTransparencyConsent {
     public static final String SERVICE_NAME = "AppLovin";
     public static final boolean SERVICE_EMBEDDING = true;
 
-    public static final String METADATA_SDK_KEY = "mengine.applovin.sdk_key";
-    public static final String METADATA_ENABLE_PRIVACY_POLICY_FLOW = "mengine.applovin.enable_privacy_policy_flow";
-    public static final String METADATA_PRIVACY_POLICY_URL = "mengine.applovin.privacy_policy_url";
-    public static final String METADATA_TERMS_OF_SERVICE_URL = "mengine.applovin.terms_of_service_url";
+    public static final @StringRes int METADATA_SDK_KEY = R.string.mengine_applovin_sdk_key;
+    public static final @BoolRes int METADATA_ENABLE_PRIVACY_POLICY_FLOW = R.bool.mengine_applovin_enable_privacy_policy_flow;
+    public static final @StringRes int METADATA_PRIVACY_POLICY_URL = R.string.privacy_policy_url;
+    public static final @StringRes int METADATA_TERMS_OF_SERVICE_URL = R.string.terms_of_service_url;
 
     private boolean m_enableShowMediationDebugger = false;
 
@@ -187,17 +191,17 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
 
         AppLovinSdkSettings settings = appLovinSdk.getSettings();
 
-        boolean MengineAppLovinPlugin_EnablePrivacyPolicyFlow = this.getMetaDataBoolean(METADATA_ENABLE_PRIVACY_POLICY_FLOW);
+        boolean MengineAppLovinPlugin_EnablePrivacyPolicyFlow = this.getResourceBoolean(METADATA_ENABLE_PRIVACY_POLICY_FLOW);
 
         if (MengineAppLovinPlugin_EnablePrivacyPolicyFlow == true) {
             AppLovinTermsAndPrivacyPolicyFlowSettings termsAndPrivacyPolicyFlowSettings = settings.getTermsAndPrivacyPolicyFlowSettings();
 
             termsAndPrivacyPolicyFlowSettings.setEnabled(true);
 
-            String MengineAppLovinPlugin_PrivacyPolicyUrl = this.getMetaDataString(METADATA_PRIVACY_POLICY_URL);
+            String MengineAppLovinPlugin_PrivacyPolicyUrl = this.getResourceString(METADATA_PRIVACY_POLICY_URL);
             termsAndPrivacyPolicyFlowSettings.setPrivacyPolicyUri(Uri.parse(MengineAppLovinPlugin_PrivacyPolicyUrl));
 
-            String MengineAppLovinPlugin_TermsOfServiceUrl = this.getMetaDataString(METADATA_TERMS_OF_SERVICE_URL);
+            String MengineAppLovinPlugin_TermsOfServiceUrl = this.getResourceString(METADATA_TERMS_OF_SERVICE_URL);
             termsAndPrivacyPolicyFlowSettings.setTermsOfServiceUri(Uri.parse(MengineAppLovinPlugin_TermsOfServiceUrl));
 
             this.logInfo("privacy policy: %s"
@@ -246,10 +250,10 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
 
         adService.setAdProvider(this);
 
-        String MengineAppLovinPlugin_SdkKey = this.getMetaDataString(METADATA_SDK_KEY);
+        String MengineAppLovinPlugin_SdkKey = this.getResourceString(METADATA_SDK_KEY);
 
         this.logInfo("%s: %s"
-            , METADATA_SDK_KEY
+            , this.getResourceName(METADATA_SDK_KEY)
             , MengineUtils.getRedactedValue(MengineAppLovinPlugin_SdkKey)
         );
 

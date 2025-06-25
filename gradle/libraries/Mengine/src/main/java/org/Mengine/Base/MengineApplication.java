@@ -13,9 +13,12 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.Settings;
 
+import androidx.annotation.AnyRes;
 import androidx.annotation.BoolRes;
+import androidx.annotation.IntegerRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Size;
+import androidx.annotation.StringRes;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -169,96 +172,6 @@ public abstract class MengineApplication extends Application {
                 return;
             }
         }
-    }
-
-    public Bundle getMetaDataBundle() {
-        Context context = this.getApplicationContext();
-        String packageName = context.getPackageName();
-        PackageManager packageManager = context.getPackageManager();
-
-        try {
-            ApplicationInfo ai = MengineUtils.getPackageApplicationInfo(packageManager, packageName);
-
-            Bundle bundle = ai.metaData;
-
-            return bundle;
-        } catch (final PackageManager.NameNotFoundException e) {
-            MengineLog.logError(TAG, "[ERROR] Unable to load meta-data: %s"
-                , e.getMessage()
-            );
-        }
-
-        return null;
-    }
-
-    public boolean hasMetaData(String name) {
-        Bundle bundle = this.getMetaDataBundle();
-
-        if (bundle == null) {
-            return false;
-        }
-
-        if (bundle.containsKey(name) == false) {
-            return false;
-        }
-
-        return true;
-    }
-
-    private Bundle assertMetaDataBundle(String name) throws RuntimeException {
-        Bundle bundle = this.getMetaDataBundle();
-
-        if (bundle == null) {
-            String msg = String.format(Locale.US, "invalid get meta data bundle for [%s]", name);
-
-            MengineUtils.throwRuntimeException(msg, null);
-        }
-
-        if (bundle.containsKey(name) == false) {
-            String msg = String.format(Locale.US, "invalid setup meta data [%s]", name);
-
-            MengineUtils.throwRuntimeException(msg, null);
-        }
-
-        return bundle;
-    }
-
-    public String getMetaDataString(String name) {
-        Bundle bundle = this.assertMetaDataBundle(name);
-
-        String value = bundle.getString(name);
-
-        if (value == null) {
-            String msg = String.format(Locale.US, "invalid setup meta data [%s]", name);
-
-            MengineUtils.throwRuntimeException(msg, null);
-        }
-
-        return value;
-    }
-
-    public boolean getMetaDataBoolean(String name) {
-        Bundle bundle = this.assertMetaDataBundle(name);
-
-        boolean value = bundle.getBoolean(name);
-
-        return value;
-    }
-
-    public int getMetaDataInteger(String name) {
-        Bundle bundle = this.assertMetaDataBundle(name);
-
-        int value = bundle.getInt(name);
-
-        return value;
-    }
-
-    public long getMetaDataLong(String name) {
-        Bundle bundle = this.assertMetaDataBundle(name);
-
-        long value = bundle.getLong(name);
-
-        return value;
     }
 
     public void setPreferenceString(String name, String value) {
@@ -657,10 +570,34 @@ public abstract class MengineApplication extends Application {
         return m_acquisitionCampaign;
     }
 
+    public String getResourceName(@AnyRes int resId) {
+        Resources resources = this.getResources();
+
+        String name = resources.getResourceEntryName(resId);
+
+        return name;
+    }
+
     public boolean getResourceBoolean(@BoolRes int resId) {
         Resources resources = this.getResources();
 
         boolean value = resources.getBoolean(resId);
+
+        return value;
+    }
+
+    public int getResourceInteger(@IntegerRes int resId) {
+        Resources resources = this.getResources();
+
+        int value = resources.getInteger(resId);
+
+        return value;
+    }
+
+    public String getResourceString(@StringRes int resId) {
+        Resources resources = this.getResources();
+
+        String value = resources.getString(resId);
 
         return value;
     }
@@ -794,7 +731,7 @@ public abstract class MengineApplication extends Application {
             editor.putLong("install_rnd", installRND);
         }
 
-        boolean mengine_session_use_install_key = this.getMetaDataBoolean("mengine_session_use_install_key");
+        boolean mengine_session_use_install_key = this.getResourceBoolean(R.bool.mengine_session_use_install_key);
 
         if (userId == null && mengine_session_use_install_key == true) {
             userId = installKey;
@@ -904,7 +841,7 @@ public abstract class MengineApplication extends Application {
 
         this.setState("application.init", "get_android_id");
 
-        if (this.getMetaDataBoolean("mengine.secure.allow_android_id") == true) {
+        if (this.getResourceBoolean(R.bool.mengine_secure_allow_android_id) == true) {
             m_androidId = this.getSecureAndroidId();
         } else {
             m_androidId = "0000000000000000";

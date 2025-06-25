@@ -1117,6 +1117,34 @@ namespace Mengine
         return m_touchpad;
     }
     //////////////////////////////////////////////////////////////////////////
+    int32_t AndroidPlatformService::dpToWidthPx( int32_t _dp ) const
+    {
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return 0;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int32_t AndroidPlatformService::dpToHeightPx( int32_t _dp ) const
+    {
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return 0;
+    }
+//////////////////////////////////////////////////////////////////////////
+    int32_t AndroidPlatformService::pxToWidthDp( int32_t _px ) const
+    {
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return 0;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int32_t AndroidPlatformService::pxToHeightDp( int32_t _px ) const
+    {
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return 0;
+    }
+    //////////////////////////////////////////////////////////////////////////
     DynamicLibraryInterfacePtr AndroidPlatformService::loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentInterfacePtr & _doc )
     {
         LOGGER_INFO( "platform", "load dynamic library '%s'"

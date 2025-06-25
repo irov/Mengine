@@ -2,7 +2,10 @@ package org.Mengine.Plugin.AppMetrica;
 
 import android.content.Context;
 
+import androidx.annotation.BoolRes;
+import androidx.annotation.IntegerRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 
 import org.Mengine.Base.BuildConfig;
 import org.Mengine.Base.MengineAdFormat;
@@ -37,17 +40,17 @@ public class MengineAppMetricaPlugin extends MengineService implements MengineLi
     public static final String SERVICE_NAME = "AppMetrica";
     public static final boolean SERVICE_EMBEDDING = true;
 
-    public static final String METADATA_API_KEY = "mengine.appmetrica.api_key";
-    public static final String METADATA_CRASH_REPORTING = "mengine.appmetrica.crash_reporting";
-    public static final String METADATA_NATIVE_CRASH_REPORTING = "mengine.appmetrica.native_crash_reporting";
-    public static final String METADATA_LOCATION_TRACKING = "mengine.appmetrica.location_tracking";
-    public static final String METADATA_SESSION_TIMEOUT = "mengine.appmetrica.session_timeout";
-    public static final String METADATA_LOGS = "mengine.appmetrica.logs";
-    public static final String METADATA_HANDLE_FIRST_ACTIVATION_AS_UPDATE = "mengine.appmetrica.handle_first_activation_as_update";
+    public static final @StringRes int METADATA_API_KEY = R.string.mengine_appmetrica_api_key;
+    public static final @BoolRes int METADATA_CRASH_REPORTING = R.bool.mengine_appmetrica_crash_reporting;
+    public static final @BoolRes int METADATA_NATIVE_CRASH_REPORTING = R.bool.mengine_appmetrica_native_crash_reporting;
+    public static final @BoolRes int METADATA_LOCATION_TRACKING = R.bool.mengine_appmetrica_location_tracking;
+    public static final @IntegerRes int METADATA_SESSION_TIMEOUT = R.integer.mengine_appmetrica_session_timeout;
+    public static final @BoolRes int METADATA_LOGS = R.bool.mengine_appmetrica_logs;
+    public static final @BoolRes int METADATA_HANDLE_FIRST_ACTIVATION_AS_UPDATE = R.bool.mengine_appmetrica_handle_first_activation_as_update;
 
     @Override
     public void onAppInit(@NonNull MengineApplication application, boolean isMainProcess) throws MengineServiceInvalidInitializeException {
-        String MengineAppMetricaPlugin_ApiKey = this.getMetaDataString(METADATA_API_KEY);
+        String MengineAppMetricaPlugin_ApiKey = this.getResourceString(METADATA_API_KEY);
 
         this.logInfo("%s: %s"
             , METADATA_API_KEY
@@ -56,12 +59,12 @@ public class MengineAppMetricaPlugin extends MengineService implements MengineLi
 
         String AppVersion = application.getVersionName();
 
-        boolean MengineAppMetricaPlugin_CrashReporting = this.getMetaDataBoolean(METADATA_CRASH_REPORTING);
-        boolean MengineAppMetricaPlugin_NativeCrashReporting = this.getMetaDataBoolean(METADATA_NATIVE_CRASH_REPORTING);
-        int MengineAppMetricaPlugin_SessionTimeout = this.getMetaDataInteger(METADATA_SESSION_TIMEOUT);
-        boolean MengineAppMetricaPlugin_LocationTracking = this.getMetaDataBoolean(METADATA_LOCATION_TRACKING);
-        boolean MengineAppMetricaPlugin_Logs = this.getMetaDataBoolean(METADATA_LOGS);
-        boolean MengineAppMetricaPlugin_HandleFirstActivationAsUpdate = this.getMetaDataBoolean(METADATA_HANDLE_FIRST_ACTIVATION_AS_UPDATE);
+        boolean MengineAppMetricaPlugin_CrashReporting = this.getResourceBoolean(METADATA_CRASH_REPORTING);
+        boolean MengineAppMetricaPlugin_NativeCrashReporting = this.getResourceBoolean(METADATA_NATIVE_CRASH_REPORTING);
+        int MengineAppMetricaPlugin_SessionTimeout = this.getResourceInteger(METADATA_SESSION_TIMEOUT);
+        boolean MengineAppMetricaPlugin_LocationTracking = this.getResourceBoolean(METADATA_LOCATION_TRACKING);
+        boolean MengineAppMetricaPlugin_Logs = this.getResourceBoolean(METADATA_LOGS);
+        boolean MengineAppMetricaPlugin_HandleFirstActivationAsUpdate = this.getResourceBoolean(METADATA_HANDLE_FIRST_ACTIVATION_AS_UPDATE);
 
         AppMetricaConfig.Builder builder = AppMetricaConfig
             .newConfigBuilder(MengineAppMetricaPlugin_ApiKey)

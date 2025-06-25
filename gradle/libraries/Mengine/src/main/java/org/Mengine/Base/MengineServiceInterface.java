@@ -2,8 +2,12 @@ package org.Mengine.Base;
 
 import android.os.Bundle;
 
+import androidx.annotation.AnyRes;
+import androidx.annotation.BoolRes;
+import androidx.annotation.IntegerRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Size;
+import androidx.annotation.StringRes;
 
 import java.util.Map;
 
@@ -71,15 +75,15 @@ public interface MengineServiceInterface {
 
     void assertionError(String format, Object ... args);
 
-    MengineAnalyticsEventBuilder buildEvent(@Size(min = 1L,max = 40L) String name);
+    MengineAnalyticsEventBuilderInterface buildEvent(@Size(min = 1L,max = 40L) String name);
 
     void nativeCall(String method, Object ... args);
 
     void activateSemaphore(String name);
     void deactivateSemaphore(String name);
 
-    boolean getMetaDataBoolean(String name) throws MengineServiceInvalidInitializeException;
-    int getMetaDataInteger(String name) throws MengineServiceInvalidInitializeException;
-    long getMetaDataLong(String name) throws MengineServiceInvalidInitializeException;
-    String getMetaDataString(String name) throws MengineServiceInvalidInitializeException;
+    String getResourceName(@AnyRes int id);
+    boolean getResourceBoolean(@BoolRes int id);
+    int getResourceInteger(@IntegerRes int id);
+    String getResourceString(@StringRes int id);
 }

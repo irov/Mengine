@@ -3,6 +3,7 @@ package org.Mengine.Plugin.AppsFlyer;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 
 import com.appsflyer.AppsFlyerLib;
 import com.appsflyer.adrevenue.adnetworks.AppsFlyerAdNetworkEventType;
@@ -34,11 +35,11 @@ public class MengineAppsFlyerPlugin extends MengineService implements MengineLis
     public static final String SERVICE_NAME = "AppsFlyer";
     public static final boolean SERVICE_EMBEDDING = true;
 
-    public static final String METADATA_API_KEY = "mengine.appsflyer.api_key";
+    public static final @StringRes int METADATA_API_KEY = R.string.mengine_appsflyer_api_key;
 
     @Override
     public void onAppPrepare(@NonNull MengineApplication application, @NonNull Map<String, String> pluginVersions) throws MengineServiceInvalidInitializeException {
-        String MengineAppsFlyerPlugin_ApiKey = application.getMetaDataString(METADATA_API_KEY);
+        String MengineAppsFlyerPlugin_ApiKey = application.getResourceString(METADATA_API_KEY);
 
         this.logInfo("%s: %s"
             , METADATA_API_KEY

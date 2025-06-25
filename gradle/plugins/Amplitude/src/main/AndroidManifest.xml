@@ -2,7 +2,5 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application>
-        <meta-data android:name="mengine.amplitude.api_key" android:value="@string/mengine_amplitude_api_key" />
-
     </application>
 </manifest>

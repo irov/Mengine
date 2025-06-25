@@ -53,12 +53,7 @@ namespace Mengine
             sharedMode |= FILE_SHARE_WRITE | FILE_SHARE_DELETE;
         }
 
-        HANDLE hFile = Helper::Win32CreateFile(
-            fullPath, // file to open
-            GENERIC_READ, // open for reading
-            FILE_SHARE_READ, // share for reading, exclusive for mapping
-            OPEN_EXISTING // existing file only
-        );
+        HANDLE hFile = Helper::Win32CreateFile( fullPath, GENERIC_READ, FILE_SHARE_READ, OPEN_EXISTING );
 
         if( hFile == INVALID_HANDLE_VALUE )
         {

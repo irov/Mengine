@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 
 import com.datadog.android.Datadog;
 import com.datadog.android.DatadogSite;
@@ -39,8 +40,8 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
     public static final String SERVICE_NAME = "DataDog";
     public static final boolean SERVICE_EMBEDDING = true;
 
-    public static final String METADATA_SITE = "mengine.datadog.site";
-    public static final String METADATA_CLIENT_TOKEN = "mengine.datadog.client_token";
+    public static final @StringRes int METADATA_SITE = R.string.mengine_datadog_site;
+    public static final @StringRes int METADATA_CLIENT_TOKEN = R.string.mengine_datadog_client_token;
 
     private boolean m_enableDebugMessage = false;
     private boolean m_enableInfoMessage = false;
@@ -77,7 +78,7 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
 
     @Override
     public void onAppPrepare(@NonNull MengineApplication application, @NonNull Map<String, String> pluginVersions) throws MengineServiceInvalidInitializeException {
-        String MengineDataDogPlugin_Site = this.getMetaDataString(METADATA_SITE);
+        String MengineDataDogPlugin_Site = this.getResourceString(METADATA_SITE);
 
         this.logInfo("%s: %s"
             , METADATA_SITE
@@ -104,7 +105,7 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
             return;
         }
 
-        String MengineDataDogPlugin_ClientToken = this.getMetaDataString(METADATA_CLIENT_TOKEN);
+        String MengineDataDogPlugin_ClientToken = this.getResourceString(METADATA_CLIENT_TOKEN);
 
         this.logInfo("%s: %s"
             , METADATA_CLIENT_TOKEN

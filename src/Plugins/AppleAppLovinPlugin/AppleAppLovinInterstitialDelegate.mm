@@ -215,14 +215,7 @@
 
 - (void)didPayRevenueForAd:(MAAd *) ad {
     [self log:@"didPayRevenueForAd" withMAAd:ad];
-    
-    [self eventInterstitial:@"revenue_paid" params:@{
-        @"placement": ad.placement,
-        @"revenue_value": @(ad.revenue),
-        @"revenue_precision": ad.revenuePrecision,
-        @"ad": [self getMAAdParams:ad]
-    }];
-    
+
     [self eventRevenue:ad];
     
     id<AppleAdvertisementCallbackInterface> callback = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementInterstitialCallback];

@@ -1,6 +1,7 @@
 package org.Mengine.Plugin.Amplitude;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 
 import com.amplitude.android.Amplitude;
 import com.amplitude.android.AutocaptureOption;
@@ -30,13 +31,13 @@ public class MengineAmplitudePlugin extends MengineService implements MengineLis
     public static final boolean SERVICE_EMBEDDING = true;
     public static final int SAVE_VERSION = 1;
 
-    protected static final String METADATA_API_KEY = "mengine.amplitude.api_key";
+    protected static final @StringRes int METADATA_API_KEY = R.string.mengine_amplitude_api_key;
 
     protected Amplitude m_amplitude;
 
     @Override
     public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
-        String MengineAmplitudePlugin_ApiKey = this.getMetaDataString(METADATA_API_KEY);
+        String MengineAmplitudePlugin_ApiKey = this.getResourceString(METADATA_API_KEY);
 
         Configuration configuration = new Configuration(MengineAmplitudePlugin_ApiKey, application);
         configuration.getAutocapture().add(AutocaptureOption.SESSIONS);

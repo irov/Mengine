@@ -1,7 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application>
-        <meta-data android:name="mengine.onesignal.app_id" android:value="@string/mengine_onesignal_app_id" />
-
         <meta-data android:name="com.onesignal.NotificationServiceExtension"
             android:value="org.Mengine.Plugin.OneSignal.MengineOneSignalNotificationServiceExtension" />
     </application>

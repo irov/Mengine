@@ -2,7 +2,9 @@ package org.Mengine.Plugin.Sentry;
 
 import android.content.Context;
 
+import androidx.annotation.BoolRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineListenerApplication;
@@ -24,8 +26,8 @@ public class MengineSentryPlugin extends MengineService implements MengineListen
     public static final String SERVICE_NAME = "Sentry";
     public static final boolean SERVICE_EMBEDDING = true;
 
-    public static final String METADATA_DSN = "mengine.sentry.dsn";
-    public static final String METADATA_ENABLE_UNCAUGHT_EXCEPTION_HANDLER = "mengine.sentry.enable_uncaught_exception_handler";
+    public static final @StringRes int METADATA_DSN = R.string.mengine_sentry_dsn;
+    public static final @BoolRes int METADATA_ENABLE_UNCAUGHT_EXCEPTION_HANDLER = R.bool.mengine_sentry_enable_uncaught_exception_handler;
 
     public static boolean m_passMeasurementGDPR = false;
 
@@ -35,14 +37,14 @@ public class MengineSentryPlugin extends MengineService implements MengineListen
             return;
         }
 
-        String MengineSentryPlugin_DSN = this.getMetaDataString(METADATA_DSN);
+        String MengineSentryPlugin_DSN = this.getResourceString(METADATA_DSN);
 
         this.logInfo("%s: %s"
             , METADATA_DSN
             , MengineUtils.getRedactedValue(MengineSentryPlugin_DSN)
         );
 
-        boolean MengineSentryPlugin_EnableUncaughtExceptionHandler = this.getMetaDataBoolean(METADATA_ENABLE_UNCAUGHT_EXCEPTION_HANDLER);
+        boolean MengineSentryPlugin_EnableUncaughtExceptionHandler = this.getResourceBoolean(METADATA_ENABLE_UNCAUGHT_EXCEPTION_HANDLER);
 
         this.logInfo("%s: %b"
             , METADATA_ENABLE_UNCAUGHT_EXCEPTION_HANDLER

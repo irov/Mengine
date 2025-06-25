@@ -2,6 +2,7 @@ package org.Mengine.Plugin.AppLovin.AppOpenAd;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Size;
+import androidx.annotation.StringRes;
 
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdExpirationListener;
@@ -16,8 +17,7 @@ import com.applovin.mediation.ads.MaxAppOpenAd;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineAdFormat;
 import org.Mengine.Base.MengineAdMediation;
-import org.Mengine.Base.MengineAnalyticsEventBuilder;
-import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineAnalyticsEventBuilderInterface;
 import org.Mengine.Base.MengineNetwork;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineUtils;
@@ -28,8 +28,8 @@ import org.Mengine.Plugin.AppLovin.Core.MengineAppLovinPluginInterface;
 import java.util.Map;
 
 public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements MengineAppLovinAppOpenAdInterface, MaxAdListener, MaxAdRequestListener, MaxAdExpirationListener, MaxAdRevenueListener, MaxAdReviewListener {
-    public static final String METADATA_APPOPEN_PLACEMENT = "mengine.applovin.appopen.placement";
-    public static final String METADATA_APPOPEN_ADUNITID = "mengine.applovin.appopen.adunitid";
+    public static final @StringRes int METADATA_APPOPEN_PLACEMENT = R.string.mengine_applovin_appopen_placement;
+    public static final @StringRes int METADATA_APPOPEN_ADUNITID = R.string.mengine_applovin_appopen_adunitid;
 
     protected final String m_placement;
 
@@ -38,7 +38,7 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Men
     public MengineAppLovinAppOpenAd(@NonNull MengineAppLovinPluginInterface plugin) throws MengineServiceInvalidInitializeException {
         super(plugin, MaxAdFormat.APP_OPEN);
 
-        String MengineAppLovinPlugin_AppOpen_AdUnitId = plugin.getMetaDataString(METADATA_APPOPEN_ADUNITID);
+        String MengineAppLovinPlugin_AppOpen_AdUnitId = plugin.getResourceString(METADATA_APPOPEN_ADUNITID);
 
         if (MengineAppLovinPlugin_AppOpen_AdUnitId.isEmpty() == true) {
             this.invalidInitialize("meta %s is empty"
@@ -48,13 +48,13 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Men
 
         this.setAdUnitId(MengineAppLovinPlugin_AppOpen_AdUnitId);
 
-        String MengineAppLovinPlugin_AppOpen_Placement = plugin.getMetaDataString(METADATA_APPOPEN_PLACEMENT);
+        String MengineAppLovinPlugin_AppOpen_Placement = plugin.getResourceString(METADATA_APPOPEN_PLACEMENT);
 
         m_placement = MengineAppLovinPlugin_AppOpen_Placement;
     }
 
-    protected MengineAnalyticsEventBuilder buildAppOpenAdEvent(@Size(min = 1L,max = 40L) String event) {
-        MengineAnalyticsEventBuilder builder = this.buildAdEvent("mng_ad_appopen_" + event)
+    protected MengineAnalyticsEventBuilderInterface buildAppOpenAdEvent(@Size(min = 1L,max = 40L) String event) {
+        MengineAnalyticsEventBuilderInterface builder = this.buildAdEvent("mng_ad_appopen_" + event)
             .addParameterString("placement", m_placement)
             ;
 
@@ -294,12 +294,6 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Men
     @Override
     public void onAdRevenuePaid(@NonNull MaxAd ad) {
         this.logMaxAd("onAdRevenuePaid", ad);
-
-        this.buildAppOpenAdEvent("revenue_paid")
-            .addParameterDouble("revenue", ad.getRevenue())
-            .addParameterString("revenue_precision", ad.getRevenuePrecision())
-            .addParameterJSON("ad", this.getMAAdParams(ad))
-            .log();
 
         this.revenuePaid(ad);
     }

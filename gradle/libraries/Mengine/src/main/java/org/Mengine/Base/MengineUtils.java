@@ -1698,4 +1698,97 @@ public class MengineUtils {
 
         return deviceInfo.toString();
     }
+
+
+
+    static public Bundle getMetaDataBundle(@NonNull MengineApplication application) {
+        Context context = application.getApplicationContext();
+
+        String packageName = context.getPackageName();
+        PackageManager packageManager = context.getPackageManager();
+
+        try {
+            ApplicationInfo ai = MengineUtils.getPackageApplicationInfo(packageManager, packageName);
+
+            Bundle bundle = ai.metaData;
+
+            return bundle;
+        } catch (final PackageManager.NameNotFoundException e) {
+            MengineLog.logError(TAG, "[ERROR] Unable to load meta-data: %s"
+                , e.getMessage()
+            );
+        }
+
+        return null;
+    }
+
+    static public boolean hasMetaData(@NonNull MengineApplication application, String name) {
+        Bundle bundle = MengineUtils.getMetaDataBundle(application);
+
+        if (bundle == null) {
+            return false;
+        }
+
+        if (bundle.containsKey(name) == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    static private Bundle assertMetaDataBundle(@NonNull MengineApplication application, String name) throws RuntimeException {
+        Bundle bundle = MengineUtils.getMetaDataBundle(application);
+
+        if (bundle == null) {
+            String msg = String.format(Locale.US, "invalid get meta data bundle for [%s]", name);
+
+            MengineUtils.throwRuntimeException(msg, null);
+        }
+
+        if (bundle.containsKey(name) == false) {
+            String msg = String.format(Locale.US, "invalid setup meta data [%s]", name);
+
+            MengineUtils.throwRuntimeException(msg, null);
+        }
+
+        return bundle;
+    }
+
+    static public String getMetaDataString(@NonNull MengineApplication application, String name) {
+        Bundle bundle = MengineUtils.assertMetaDataBundle(application, name);
+
+        String value = bundle.getString(name);
+
+        if (value == null) {
+            String msg = String.format(Locale.US, "invalid setup meta data [%s]", name);
+
+            MengineUtils.throwRuntimeException(msg, null);
+        }
+
+        return value;
+    }
+
+    static public boolean getMetaDataBoolean(@NonNull MengineApplication application, String name) {
+        Bundle bundle = MengineUtils.assertMetaDataBundle(application, name);
+
+        boolean value = bundle.getBoolean(name);
+
+        return value;
+    }
+
+    static public int getMetaDataInteger(@NonNull MengineApplication application, String name) {
+        Bundle bundle = MengineUtils.assertMetaDataBundle(application, name);
+
+        int value = bundle.getInt(name);
+
+        return value;
+    }
+
+    static public long getMetaDataLong(@NonNull MengineApplication application, String name) {
+        Bundle bundle = MengineUtils.assertMetaDataBundle(application, name);
+
+        long value = bundle.getLong(name);
+
+        return value;
+    }
 }

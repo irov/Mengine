@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import android.util.DisplayMetrics;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 
 import com.amazon.device.ads.AdError;
 import com.amazon.device.ads.DTBAdCallback;
@@ -27,11 +28,14 @@ import org.Mengine.Base.MengineUtils;
 import org.Mengine.Plugin.AppLovin.Core.MengineAppLovinMediationInterface;
 import org.Mengine.Plugin.AppLovin.Core.MengineAppLovinMediationLoadedCallback;
 import org.Mengine.Plugin.AppLovin.Core.MengineAppLovinPluginInterface;
+import org.json.JSONObject;
+
+import java.util.Map;
 
 public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationInterface {
-    public static final String MEDIATION_METADATA_BANNER_SLOTUUID = "mengine.applovin.amazon.banner_slotuuid";
-    public static final String MEDIATION_METADATA_INTERSTITIAL_SLOTUUID = "mengine.applovin.amazon.interstitial_slotuuid";
-    public static final String MEDIATION_METADATA_REWARDED_SLOTUUID = "mengine.applovin.amazon.rewarded_slotuuid";
+    public static final @StringRes int MEDIATION_METADATA_BANNER_SLOTUUID = R.string.mengine_applovin_amazon_banner_slotuuid;
+    public static final @StringRes int MEDIATION_METADATA_INTERSTITIAL_SLOTUUID = R.string.mengine_applovin_amazon_interstitial_slotuuid;
+    public static final @StringRes int MEDIATION_METADATA_REWARDED_SLOTUUID = R.string.mengine_applovin_amazon_rewarded_slotuuid;
 
     enum ELoadAdStatus {
         ADLOAD_NONE,
@@ -58,8 +62,13 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
     }
 
     @Override
+    public void onMengineRemoteConfigFetch(@NonNull MengineApplication application, @NonNull Map<String, JSONObject> configs) {
+        // ToDo
+    }
+
+    @Override
     public void loadMediatorBanner(@NonNull MengineActivity activity, @NonNull MengineAppLovinPluginInterface plugin, @NonNull MaxAdView adView, MengineAppLovinMediationLoadedCallback loadedCallback) throws MengineServiceInvalidInitializeException {
-        String MengineAppLovinPlugin_AmazonBannerSlotId = plugin.getMetaDataString(MEDIATION_METADATA_BANNER_SLOTUUID);
+        String MengineAppLovinPlugin_AmazonBannerSlotId = plugin.getResourceString(MEDIATION_METADATA_BANNER_SLOTUUID);
 
         m_loadBannerStatus = ELoadAdStatus.ADLOAD_PROCESS;
 
@@ -128,7 +137,7 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
     public void loadMediatorInterstitial(@NonNull MengineActivity activity, @NonNull MengineAppLovinPluginInterface plugin, @NonNull MaxInterstitialAd interstitialAd, MengineAppLovinMediationLoadedCallback loadedCallback) throws MengineServiceInvalidInitializeException {
         switch (m_loadInterstitialStatus) {
             case ADLOAD_NONE:
-                String MengineAppLovinPlugin_AmazonInterstitialSlotId = plugin.getMetaDataString(MEDIATION_METADATA_INTERSTITIAL_SLOTUUID);
+                String MengineAppLovinPlugin_AmazonInterstitialSlotId = plugin.getResourceString(MEDIATION_METADATA_INTERSTITIAL_SLOTUUID);
 
                 m_loadInterstitialStatus = ELoadAdStatus.ADLOAD_PROCESS;
 
@@ -196,7 +205,7 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
     public void loadMediatorRewarded(@NonNull MengineActivity activity, @NonNull MengineAppLovinPluginInterface plugin, @NonNull MaxRewardedAd rewardedAd, MengineAppLovinMediationLoadedCallback loadAdCallback) throws MengineServiceInvalidInitializeException {
         switch (m_loadRewardedStatus) {
             case ADLOAD_NONE:
-                String MengineAppLovinPlugin_AmazonRewardedSlotId = plugin.getMetaDataString(MEDIATION_METADATA_REWARDED_SLOTUUID);
+                String MengineAppLovinPlugin_AmazonRewardedSlotId = plugin.getResourceString(MEDIATION_METADATA_REWARDED_SLOTUUID);
 
                 m_loadRewardedStatus = ELoadAdStatus.ADLOAD_PROCESS;
 

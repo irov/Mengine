@@ -3,7 +3,5 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application>
-        <meta-data android:name="mengine.applovin.banner.placement" android:value="@string/mengine_applovin_banner_placement" />
-        <meta-data android:name="mengine.applovin.banner.adunitid" android:value="@string/mengine_applovin_banner_adunitid" />
     </application>
 </manifest>

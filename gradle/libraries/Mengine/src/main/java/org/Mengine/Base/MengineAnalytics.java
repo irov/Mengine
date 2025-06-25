@@ -95,12 +95,18 @@ public class MengineAnalytics {
         }
     }
 
-    static public MengineAnalyticsEventBuilder buildEvent(@Size(min = 1L,max = 40L) String name) {
+    static public MengineAnalyticsEventBuilderInterface buildEvent(@Size(min = 1L,max = 40L) String name) {
         Map<String, Object> parameters = new HashMap<>();
 
         MengineAnalytics.collapseGetter(parameters);
 
-        MengineAnalyticsEventBuilder eventBuilder = new MengineAnalyticsEventBuilder(MengineAnalytics.m_bases, parameters, name);
+        MengineAnalyticsEventBuilderInterface eventBuilder = new MengineAnalyticsEventBuilder(MengineAnalytics.m_bases, parameters, name);
+
+        return eventBuilder;
+    }
+
+    static public MengineAnalyticsEventBuilderInterface buildEventDummy(@Size(min = 1L,max = 40L) String name) {
+        MengineAnalyticsEventBuilderInterface eventBuilder = new MengineAnalyticsEventBuilderDummy(name);
 
         return eventBuilder;
     }

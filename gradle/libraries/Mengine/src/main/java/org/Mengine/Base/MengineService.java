@@ -285,11 +285,13 @@ public class MengineService implements MengineServiceInterface {
     public MengineAnalyticsEventBuilderInterface buildEvent(@Size(min = 1L,max = 40L) String name) {
         if (this.availableAnalytics() == false) {
             MengineAnalyticsEventBuilderInterface eventBuilderDummy = MengineAnalytics.buildEventDummy(name);
+            eventBuilderDummy.addParameterString("service", m_serviceName);
 
             return eventBuilderDummy;
         }
 
         MengineAnalyticsEventBuilderInterface eventBuilder = MengineAnalytics.buildEvent(name);
+        eventBuilder.addParameterString("service", m_serviceName);
 
         return eventBuilder;
     }

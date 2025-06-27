@@ -36,6 +36,7 @@ namespace Mengine
         MENGINE_INLINE Char * strchrcat( Char * const _out, Char _ch )
         {
             size_t len = StdString::strlen( _out );
+
             _out[len] = _ch;
             _out[len + 1] = '\0';
 

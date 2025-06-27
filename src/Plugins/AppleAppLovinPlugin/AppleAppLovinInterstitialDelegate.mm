@@ -65,7 +65,7 @@
 }
 
 - (void) eventInterstitial:(NSString * _Nonnull) eventName params:(NSDictionary<NSString *, id> * _Nullable) params {
-    [self event:[@"mng_ad_interstitial_" stringByAppendingString:eventName] params:params];
+    [self event:[@"mng_applovin_interstitial_" stringByAppendingString:eventName] params:params];
 }
 
 - (BOOL) canYouShow:(NSString * _Nonnull)placement {

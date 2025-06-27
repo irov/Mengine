@@ -67,7 +67,7 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements Meng
     }
 
     protected MengineAnalyticsEventBuilderInterface buildBannerAdEvent(@Size(min = 1L,max = 40L) String event) {
-        MengineAnalyticsEventBuilderInterface builder = this.buildAdEvent("mng_ad_banner_" + event)
+        MengineAnalyticsEventBuilderInterface builder = this.buildAdEvent("mng_applovin_banner_" + event)
             .addParameterString("placement", m_placement);
 
         return builder;

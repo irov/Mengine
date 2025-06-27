@@ -48,7 +48,7 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
     }
 
     protected MengineAnalyticsEventBuilderInterface buildInterstitialAdEvent(@Size(min = 1L,max = 40L) String event) {
-        MengineAnalyticsEventBuilderInterface builder = this.buildAdEvent("mng_ad_interstitial_" + event);
+        MengineAnalyticsEventBuilderInterface builder = this.buildAdEvent("mng_applovin_interstitial_" + event);
 
         return builder;
     }

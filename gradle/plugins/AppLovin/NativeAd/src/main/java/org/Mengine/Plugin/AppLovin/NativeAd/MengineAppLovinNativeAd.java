@@ -61,7 +61,7 @@ public class MengineAppLovinNativeAd extends MengineAppLovinBase implements Meng
     }
 
     protected MengineAnalyticsEventBuilderInterface buildNativeAdEvent(@Size(min = 1L,max = 40L) String event) {
-        MengineAnalyticsEventBuilderInterface builder = this.buildAdEvent("mng_ad_native_" + event)
+        MengineAnalyticsEventBuilderInterface builder = this.buildAdEvent("mng_applovin_native_" + event)
             .addParameterString("placement", m_placement);
 
         return builder;

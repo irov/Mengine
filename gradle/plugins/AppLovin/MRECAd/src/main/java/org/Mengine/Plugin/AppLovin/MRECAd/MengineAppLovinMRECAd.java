@@ -60,7 +60,7 @@ public class MengineAppLovinMRECAd extends MengineAppLovinBase implements Mengin
     }
 
     protected MengineAnalyticsEventBuilderInterface buildMRECAdEvent(@Size(min = 1L,max = 40L) String event) {
-        MengineAnalyticsEventBuilderInterface builder = this.buildAdEvent("mng_ad_mrec_" + event)
+        MengineAnalyticsEventBuilderInterface builder = this.buildAdEvent("mng_applovin_mrec_" + event)
             .addParameterString("placement", m_placement);
 
         return builder;

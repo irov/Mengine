@@ -9,9 +9,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Size;
 import androidx.core.content.res.ResourcesCompat;
 
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineAnalyticsEventBuilderInterface;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineRunnablePeriodically;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
@@ -51,6 +53,12 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
     protected ImageView m_showBannerView;
 
     protected MengineRunnablePeriodically m_refreshTimer;
+
+    protected MengineAnalyticsEventBuilderInterface buildNonetBannersEvent(@Size(min = 1L,max = 40L) String event) {
+        MengineAnalyticsEventBuilderInterface builder = m_plugin.buildEvent("mng_applovin_nonet_banners_" + event);
+
+        return builder;
+    }
 
     @Override
     public void onAppCreate(@NonNull MengineApplication application, @NonNull MengineAppLovinPluginInterface plugin) throws MengineServiceInvalidInitializeException {
@@ -195,7 +203,7 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
                 , newBannerUrl
             );
 
-            m_plugin.buildEvent("mng_ad_nonet_banners_displayed")
+            this.buildNonetBannersEvent("displayed")
                 .addParameterString("url", newBannerUrl)
                 .addParameterLong("request_id", refreshRequestId)
                 .log();
@@ -262,7 +270,7 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
                 , url
             );
 
-            m_plugin.buildEvent("mng_ad_nonet_banners_clicked")
+            this.buildNonetBannersEvent("clicked")
                 .addParameterString("url", url)
                 .addParameterLong("request_id", m_requestId)
                 .log();
@@ -337,7 +345,7 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
             , showUrl
         );
 
-        m_plugin.buildEvent("mng_ad_nonet_banners_displayed")
+        this.buildNonetBannersEvent("displayed")
             .addParameterString("url", showUrl)
             .addParameterLong("request_id", showRequestId)
             .log();

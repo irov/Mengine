@@ -49,7 +49,7 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Me
     }
 
     protected MengineAnalyticsEventBuilderInterface buildRewardedAdEvent(@Size(min = 1L,max = 40L) String event) {
-        MengineAnalyticsEventBuilderInterface builder = this.buildAdEvent("mng_ad_rewarded_" + event);
+        MengineAnalyticsEventBuilderInterface builder = this.buildAdEvent("mng_applovin_rewarded_" + event);
 
         return builder;
     }

@@ -54,7 +54,7 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Men
     }
 
     protected MengineAnalyticsEventBuilderInterface buildAppOpenAdEvent(@Size(min = 1L,max = 40L) String event) {
-        MengineAnalyticsEventBuilderInterface builder = this.buildAdEvent("mng_ad_appopen_" + event)
+        MengineAnalyticsEventBuilderInterface builder = this.buildAdEvent("mng_applovin_appopen_" + event)
             .addParameterString("placement", m_placement)
             ;
 

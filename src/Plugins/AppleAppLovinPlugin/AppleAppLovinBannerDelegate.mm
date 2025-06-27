@@ -91,7 +91,7 @@
 }
 
 - (void) eventBanner:(NSString * _Nonnull) eventName params:(NSDictionary<NSString *, id> * _Nullable) params {
-    [self event:[@"mng_ad_banner_" stringByAppendingString:eventName] params:params];
+    [self event:[@"mng_applovin_banner_" stringByAppendingString:eventName] params:params];
 }
 
 - (void) show {

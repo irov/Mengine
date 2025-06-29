@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -42,7 +41,7 @@ public abstract class MengineApplication extends Application {
     private String m_androidId;
 
     private long m_saveVersion = -1;
-    private String m_installKey;
+    private String m_installId;
     private long m_installTimestamp = -1;
     private String m_installVersion;
     private long m_installRND = -1;
@@ -190,8 +189,8 @@ public abstract class MengineApplication extends Application {
         return m_saveVersion;
     }
 
-    public String getInstallKey() {
-        return m_installKey;
+    public String getInstallId() {
+        return m_installId;
     }
 
     public long getInstallTimestamp() {
@@ -450,12 +449,6 @@ public abstract class MengineApplication extends Application {
         return m_invalidInitializeException;
     }
 
-    protected static String generateInstallKey() {
-        String installKey = (BuildConfig.DEBUG == true ? "MDIK" : "MRIK") + MengineUtils.getSecureRandomHexString(32).toUpperCase(Locale.US);
-
-        return installKey;
-    }
-
     protected Object createNativeApplication() {
         MengineLog.logInfo(TAG, "[BEGIN] bootstrap native application");
 
@@ -700,7 +693,8 @@ public abstract class MengineApplication extends Application {
         long MENGINE_APPLICATION_SAVE_VERSION = 1L;
 
         long saveVersion = settings.getLong("save_version", MENGINE_APPLICATION_SAVE_VERSION);
-        String installKey = settings.getString("install_key", null);
+        String old_installId = settings.getString("install_id", null); //Deprecated
+        String installId = settings.getString("install_id", old_installId);
         long installTimestamp = settings.getLong("install_timestamp", -1);
         String installVersion = settings.getString("install_version", "");
         long installRND = settings.getLong("install_rnd", -1);
@@ -717,12 +711,12 @@ public abstract class MengineApplication extends Application {
 
         editor.putLong("save_version", MENGINE_APPLICATION_SAVE_VERSION);
 
-        if (installKey == null) {
-            installKey = MengineApplication.generateInstallKey();
+        if (installId == null) {
+            installId = (BuildConfig.DEBUG == true ? "MDID" : "MRID") + MengineUtils.getSecureRandomHexString(32).toUpperCase(Locale.US);
             installTimestamp = MengineUtils.getTimestamp();
             installVersion = this.getVersionName();
 
-            editor.putString("install_key", installKey);
+            editor.putString("install_id", installId);
             editor.putLong("install_timestamp", installTimestamp);
             editor.putString("install_version", installVersion);
 
@@ -731,10 +725,10 @@ public abstract class MengineApplication extends Application {
             editor.putLong("install_rnd", installRND);
         }
 
-        boolean mengine_session_use_install_key = this.getResourceBoolean(R.bool.mengine_session_use_install_key);
+        boolean mengine_session_use_install_id = this.getResourceBoolean(R.bool.mengine_session_use_install_id);
 
-        if (userId == null && mengine_session_use_install_key == true) {
-            userId = installKey;
+        if (userId == null && mengine_session_use_install_id == true) {
+            userId = installId;
 
             editor.putString("user_id", userId);
         }
@@ -743,7 +737,7 @@ public abstract class MengineApplication extends Application {
         editor.apply();
 
         m_saveVersion = saveVersion;
-        m_installKey = installKey;
+        m_installId = installId;
         m_installTimestamp = installTimestamp;
         m_installVersion = installVersion;
         m_installRND = installRND;
@@ -761,7 +755,7 @@ public abstract class MengineApplication extends Application {
         MengineStatistic.load(this);
 
         this.setState("user.save_version", m_saveVersion);
-        this.setState("user.install_key", m_installKey);
+        this.setState("user.install_id", m_installId);
         this.setState("user.install_timestamp", m_installTimestamp);
         this.setState("user.install_version", m_installVersion);
         this.setState("user.install_rnd", m_installRND);
@@ -773,7 +767,7 @@ public abstract class MengineApplication extends Application {
         this.setState("user.acquisition_campaign", m_acquisitionCampaign);
 
         MengineAnalytics.addContextParameterBoolean("is_dev", BuildConfig.DEBUG);
-        MengineAnalytics.addContextParameterString("install_key", m_installKey);
+        MengineAnalytics.addContextParameterString("install_id", m_installId);
         MengineAnalytics.addContextParameterLong("install_timestamp", m_installTimestamp);
         MengineAnalytics.addContextParameterString("install_version", m_installVersion);
         MengineAnalytics.addContextParameterLong("install_rnd", m_installRND);

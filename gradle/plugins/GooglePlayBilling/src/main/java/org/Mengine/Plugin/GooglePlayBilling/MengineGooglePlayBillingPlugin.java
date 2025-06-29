@@ -1,8 +1,5 @@
 package org.Mengine.Plugin.GooglePlayBilling;
 
-import android.content.Context;
-import android.os.Bundle;
-
 import androidx.annotation.AnyThread;
 import androidx.annotation.NonNull;
 
@@ -22,7 +19,6 @@ import com.android.billingclient.api.QueryPurchasesParams;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineCallback;
-import org.Mengine.Base.MengineFragment;
 import org.Mengine.Base.MengineFragmentInAppPurchase;
 import org.Mengine.Base.MengineParamInAppProduct;
 import org.Mengine.Base.MengineParamInAppPurchase;
@@ -41,6 +37,12 @@ import java.util.Objects;
 public class MengineGooglePlayBillingPlugin extends MengineService implements MengineListenerApplication, MengineListenerActivity {
     public static final String SERVICE_NAME = "GPlayBilling";
     public static final boolean SERVICE_EMBEDDING = true;
+
+    private static final int ERROR_CODE_UNKNOWN = 0;
+    private static final int ERROR_CODE_NOT_FOUND = 1;
+    private static final int ERROR_CODE_NOT_SUPPORTED = 2;
+    private static final int ERROR_CODE_NOT_INITIALIZED = 3;
+    private static final int ERROR_CODE_NOT_READY = 4;
 
     private List<ProductDetails> m_productsDetails;
     private BillingClient m_billingClient;
@@ -171,13 +173,15 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
     }
 
     public void billingConnect() {
+        this.logInfo("billingConnect");
+
         if (m_billingClient == null) {
             this.logError("[ERROR] billingConnect billing client not created");
 
+            this.nativeCall("onGooglePlayBillingConnectSetupFinishedError", ERROR_CODE_NOT_INITIALIZED, new RuntimeException("Billing client not initialized"));
+
             return;
         }
-
-        this.logInfo("billingConnect");
 
         m_billingClient.startConnection(new BillingClientStateListener() {
             @Override
@@ -185,6 +189,10 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
                 MengineGooglePlayBillingPlugin.this.logInfo("Billing disconnected");
 
                 MengineGooglePlayBillingPlugin.this.nativeCall("onGooglePlayBillingConnectServiceDisconnected");
+
+                MengineUtils.performOnMainThreadDelayed(() -> {
+                    MengineGooglePlayBillingPlugin.this.billingConnect();
+                },5000L);
             }
 
             @Override
@@ -210,20 +218,24 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
     }
 
     public void queryProducts(List<String> products) {
-        if (m_billingClient == null) {
-            this.logError("[ERROR] queryProducts billing client not created");
-
-            return;
-        }
-
         this.logInfo("queryProducts products: %s"
             , products
         );
+
+        if (m_billingClient == null) {
+            this.logError("[ERROR] queryProducts billing client not created");
+
+            this.nativeCall("onGooglePlayBillingQueryProductError", ERROR_CODE_NOT_INITIALIZED, new RuntimeException("Billing client not initialized"));
+
+            return;
+        }
 
         BillingResult billingResult = m_billingClient.isFeatureSupported(BillingClient.FeatureType.PRODUCT_DETAILS);
 
         if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.FEATURE_NOT_SUPPORTED) {
             this.makeToastDelayed(10000L, "GooglePlay billing asks you to update the PlayStore app");
+
+            this.nativeCall("onGooglePlayBillingQueryProductError", ERROR_CODE_NOT_SUPPORTED, new RuntimeException("Feature PRODUCT_DETAILS is not supported"));
 
             return;
         }
@@ -342,13 +354,13 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
     }
 
     public void queryPurchases() {
+        this.logInfo("queryPurchases");
+
         if (m_billingClient == null) {
             this.logError("[ERROR] queryPurchases billing client not created");
 
             return;
         }
-
-        this.logInfo("queryPurchases");
 
         this.buildEvent("mng_billing_query_purchases")
             .log();
@@ -405,11 +417,17 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
         return null;
     }
 
-    public boolean buyInApp(String productId) {
+    public void buyInApp(String productId) {
+        this.logInfo("buyInApp productId: %s"
+            , productId
+        );
+
         if (m_billingClient == null) {
             this.logError("[ERROR] buyInApp billing client not created");
 
-            return false;
+            this.nativeCall("onGooglePlayBillingBuyInAppError", productId, ERROR_CODE_NOT_INITIALIZED, new RuntimeException("Billing client not initialized"));
+
+            return;
         }
 
         MengineActivity activity = this.getMengineActivity();
@@ -417,7 +435,9 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
         if (activity == null) {
             this.logError("[ERROR] buyInApp invalid activity");
 
-            return false;
+            this.nativeCall("onGooglePlayBillingBuyInAppError", productId, ERROR_CODE_NOT_READY, new RuntimeException("Activity not ready"));
+
+            return;
         }
 
         ProductDetails product = this.getProductDetails(productId);
@@ -427,12 +447,10 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
                 , productId
             );
 
-            return false;
-        }
+            this.nativeCall("onGooglePlayBillingBuyInAppError", productId, ERROR_CODE_NOT_FOUND, new RuntimeException("Product not found"));
 
-        this.logInfo("buyInApp productId: %s"
-            , productId
-        );
+            return;
+        }
 
         this.buildEvent("mng_billing_buy_launch_flow")
             .addParameterString("product_id", productId)
@@ -465,9 +483,9 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
                 .addParameterLong("error_code", responseCode)
                 .log();
 
-            this.nativeCall("onGooglePlayBillingBuyInAppFailed", productId);
+            this.nativeCall("onGooglePlayBillingBuyInAppFailed", productId, responseCode);
 
-            return true;
+            return;
         }
 
         this.logInfo("buy InApp success productId: %s"
@@ -479,8 +497,6 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
             .log();
 
         this.nativeCall("onGooglePlayBillingBuyInAppSuccess", productId);
-
-        return true;
     }
 
     @AnyThread

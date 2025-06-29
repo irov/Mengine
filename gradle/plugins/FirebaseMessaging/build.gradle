@@ -9,5 +9,5 @@ dependencies {
     implementation project(':plugins:GoogleService')
     implementation project(':plugins:Firebase')
 
-    implementation 'com.google.firebase:firebase-messaging:24.1.1'
+    implementation 'com.google.firebase:firebase-messaging:24.1.2'
 }

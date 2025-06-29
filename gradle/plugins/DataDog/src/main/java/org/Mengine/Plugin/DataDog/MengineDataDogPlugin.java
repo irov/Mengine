@@ -139,11 +139,11 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
             Datadog.setVerbosity(Log.INFO);
         }
 
-        String installKey = application.getInstallKey();
+        String installId = application.getInstallId();
 
         String userId = application.getUserId();
         if (userId != null) {
-            Datadog.setUserInfo(userId, null, null, Map.of("install_key", installKey));
+            Datadog.setUserInfo(userId, null, null, Map.of("install_id", installId));
         }
 
         LogsConfiguration logsConfig = new LogsConfiguration.Builder()
@@ -168,7 +168,7 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
 
             JSONObject install_attribute = new JSONObject();
 
-            install_attribute.put("key", installKey);
+            install_attribute.put("id", installId);
 
             long installTimestamp = application.getInstallTimestamp();
             install_attribute.put("timestamp", installTimestamp);
@@ -221,9 +221,9 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
 
     @Override
     public void onMengineChangeUserId(@NonNull MengineApplication application, String oldUserId, String newUserId) {
-        String installKey = application.getInstallKey();
+        String installId = application.getInstallId();
 
-        Datadog.setUserInfo(newUserId, null, null, Map.of("install_key", installKey));
+        Datadog.setUserInfo(newUserId, null, null, Map.of("install_id", installId));
     }
 
     @Override

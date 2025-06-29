@@ -10,12 +10,25 @@ import java.util.Map;
 public class MengineFragmentRemoteConfig extends MengineFragment<MengineListenerRemoteConfig> {
     public static MengineFragmentRemoteConfig INSTANCE = null;
 
+    private String m_installationId;
     private Map<String, JSONObject> m_configs = new HashMap<>();
 
     MengineFragmentRemoteConfig() {
         super(MengineListenerRemoteConfig.class);
 
         INSTANCE = this;
+    }
+
+    public void setInstallationId(@NonNull String installationId) {
+        synchronized (this) {
+            m_installationId = installationId;
+        }
+    }
+
+    public String getInstallationId() {
+        synchronized (this) {
+            return m_installationId;
+        }
     }
 
     public Map<String, JSONObject> getRemoteConfigs() {

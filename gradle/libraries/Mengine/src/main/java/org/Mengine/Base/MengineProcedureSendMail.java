@@ -51,6 +51,18 @@ public class MengineProcedureSendMail implements MengineProcedureInterface {
 
         StringBuilder body_builder = new StringBuilder(m_body);
 
+        String installId = application.getInstallId();
+        String userId = application.getUserId();
+        String sessionId = application.getSessionId();
+        String installationId = MengineFragmentRemoteConfig.INSTANCE.getInstallationId();
+
+        body_builder.append("\n\n");
+        body_builder.append("        Account Info:" + "\n");
+        body_builder.append("        * install id: " + installId + "\n");
+        body_builder.append("        * user id: " + userId + "\n");
+        body_builder.append("        * session id: " + sessionId + "\n");
+        body_builder.append("        * installation id: " + installationId + "\n");
+
         try {
             ArrayList<Parcelable> fileUris = new ArrayList<>();
 
@@ -217,9 +229,9 @@ public class MengineProcedureSendMail implements MengineProcedureInterface {
 
             intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, fileUris);
         } catch (IOException e) {
-            body_builder.append("\n\n[ERROR] invalid attachs file");
+            body_builder.append("\n\n[ERROR] invalid attaches file");
 
-            MengineLog.logError(TAG, "[ERROR] linkingOpenMail failed attachs file mail: %s subject: %s exception: %s"
+            MengineLog.logError(TAG, "[ERROR] linkingOpenMail failed attaches file mail: %s subject: %s exception: %s"
                 , m_email
                 , m_subject
                 , e.getMessage()

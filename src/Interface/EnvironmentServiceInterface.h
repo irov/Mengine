@@ -29,8 +29,8 @@
 #define MENGINE_ENVIRONMENT_BUNDLEID_MAXNAME 256
 #endif
 
-#ifndef MENGINE_ENVIRONMENT_INSTALLKEY_MAXNAME
-#define MENGINE_ENVIRONMENT_INSTALLKEY_MAXNAME 128
+#ifndef MENGINE_ENVIRONMENT_INSTALLID_MAXNAME
+#define MENGINE_ENVIRONMENT_INSTALLID_MAXNAME 128
 #endif
 
 #ifndef MENGINE_ENVIRONMENT_INSTALLVERSION_MAXNAME
@@ -57,7 +57,7 @@ namespace Mengine
         virtual void getBundleId( Char * const _bundleId ) const = 0;
 
     public:
-        virtual void getInstallKey( Char * const _installKey ) const = 0;
+        virtual void getInstallId( Char * const _installId ) const = 0;
         virtual Timestamp getInstallTimestamp() const = 0;
         virtual void getInstallVersion( Char * const _installVersion ) const = 0;
         virtual int64_t getInstallRND() const = 0;

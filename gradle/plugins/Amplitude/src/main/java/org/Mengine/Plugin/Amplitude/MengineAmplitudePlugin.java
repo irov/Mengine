@@ -49,7 +49,7 @@ public class MengineAmplitudePlugin extends MengineService implements MengineLis
 
         Identify identify = new Identify();
 
-        String installKey = application.getInstallKey();
+        String installId = application.getInstallId();
         long installTimestamp = application.getInstallTimestamp();
         String installVersion = application.getInstallVersion();
         long installRND = application.getInstallRND();
@@ -57,6 +57,7 @@ public class MengineAmplitudePlugin extends MengineService implements MengineLis
         long sessionTimestamp = application.getSessionTimestamp();
 
         identify.set("is_dev", String.valueOf(BuildConfig.DEBUG));
+        identify.set("install_id", installId);
         identify.set("install_timestamp", String.valueOf(installTimestamp));
         identify.set("install_version", installVersion);
         identify.set("install_rnd", String.valueOf(installRND));
@@ -82,7 +83,7 @@ public class MengineAmplitudePlugin extends MengineService implements MengineLis
             amplitude.setUserId(userId);
         }
 
-        amplitude.setDeviceId(installKey);
+        amplitude.setDeviceId(installId);
 
         NetworkTrackingPlugin networkTrackingPlugin = new NetworkTrackingPlugin();
 

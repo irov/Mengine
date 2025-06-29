@@ -3,8 +3,6 @@ package org.Mengine.Plugin.FirebaseAnalytics;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.Size;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
@@ -44,7 +42,7 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
             firebaseAnalytics.setUserId(userId);
         }
 
-        String installKey = application.getInstallKey();
+        String installId = application.getInstallId();
         long installTimestamp = application.getInstallTimestamp();
         String installVersion = application.getInstallVersion();
         long installRND = application.getInstallRND();
@@ -52,7 +50,7 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
         long sessionTimestamp = application.getSessionTimestamp();
 
         firebaseAnalytics.setUserProperty("is_dev", String.valueOf(BuildConfig.DEBUG));
-        firebaseAnalytics.setUserProperty("install_key", installKey);
+        firebaseAnalytics.setUserProperty("install_id", installId);
         firebaseAnalytics.setUserProperty("install_timestamp", String.valueOf(installTimestamp));
         firebaseAnalytics.setUserProperty("install_version", installVersion);
         firebaseAnalytics.setUserProperty("install_rnd", String.valueOf(installRND));

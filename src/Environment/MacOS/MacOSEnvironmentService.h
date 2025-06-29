@@ -27,7 +27,7 @@ namespace Mengine
         
     public:
         size_t getSessionId( Char * _sessionId, size_t _capacity ) const override;
-        size_t getInstallKey( Char * const _installKey, size_t _capacity ) const override;
+        size_t getInstallId( Char * const _installId, size_t _capacity ) const override;
         int64_t getInstallTimestamp() const override;
         size_t getInstallVersion( Char * const _installVersion, size_t _capacity ) const override;
         int64_t getInstallRND() const override;

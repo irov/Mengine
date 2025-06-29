@@ -213,7 +213,7 @@ namespace Mengine
         Helper::makeSHA1HEX( fingerprintGarbage.data(), fingerprintGarbage.size(), fingerprint.data(), true );
 
         m_sessionId.assign( fingerprint );
-        m_installKey.assign( fingerprint );
+        m_installId.assign( fingerprint );
 
         return true;
     }
@@ -258,9 +258,9 @@ namespace Mengine
         m_sessionId.copy( _sessionId );
     }
     //////////////////////////////////////////////////////////////////////////
-    void UWPEnvironmentService::getInstallKey( Char * const _installKey ) const
+    void UWPEnvironmentService::getInstallId( Char * const _installId ) const
     {
-        m_installKey.copy( _installKey );
+        m_installId.copy( _installId );
     }
     //////////////////////////////////////////////////////////////////////////
     int64_t UWPEnvironmentService::getInstallTimestamp() const

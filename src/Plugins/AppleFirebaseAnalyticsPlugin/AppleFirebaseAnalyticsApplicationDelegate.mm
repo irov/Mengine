@@ -32,7 +32,7 @@
     
     [FIRAnalytics setUserID:userId];
     
-    NSString * installKey = [iOSApplication.sharedInstance getInstallKey];
+    NSString * installId = [iOSApplication.sharedInstance getInstallId];
     NSInteger installTimestamp = [iOSApplication.sharedInstance getInstallTimestamp];
     NSString * intstallVersion = [iOSApplication.sharedInstance getInstallVersion];
     NSInteger installRND = [iOSApplication.sharedInstance getInstallRND];
@@ -40,7 +40,7 @@
     NSInteger sessionTimestamp = [iOSApplication.sharedInstance getSessionTimestamp];
     
     [FIRAnalytics setUserPropertyString:MENGINE_DEBUG_VALUE(@"true", @"false") forName:@"is_dev"];
-    [FIRAnalytics setUserPropertyString:installKey forName:@"install_key"];
+    [FIRAnalytics setUserPropertyString:installId forName:@"install_id"];
     [FIRAnalytics setUserPropertyString:[NSString stringWithFormat:@"%ld", (long)installTimestamp] forName:@"install_timestamp"];
     [FIRAnalytics setUserPropertyString:intstallVersion forName:@"install_version"];
     [FIRAnalytics setUserPropertyString:[NSString stringWithFormat:@"%ld", (long)installRND] forName:@"install_rnd"];

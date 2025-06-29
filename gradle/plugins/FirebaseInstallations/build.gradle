@@ -1,0 +1,11 @@
+apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin.gradle'
+
+android {
+    namespace "org.Mengine.Plugin.FirebaseInstallations"
+}
+
+dependencies {
+    implementation project(':plugins:Firebase')
+    
+    implementation 'com.google.firebase:firebase-installations:18.0.0'
+}

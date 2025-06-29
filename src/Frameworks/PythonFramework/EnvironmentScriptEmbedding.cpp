@@ -77,15 +77,15 @@ namespace Mengine
             return py_bundleId;
         }
         //////////////////////////////////////////////////////////////////////////
-        static PyObject * getEnvironmentInstallKey( pybind::kernel_interface * _kernel )
+        static PyObject * getEnvironmentInstallId( pybind::kernel_interface * _kernel )
         {
-            Char installKey[MENGINE_ENVIRONMENT_INSTALLKEY_MAXNAME + 1] = {'\0'};
+            Char installId[MENGINE_ENVIRONMENT_INSTALLID_MAXNAME + 1] = {'\0'};
             ENVIRONMENT_SERVICE()
-                ->getInstallKey( installKey );
+                ->getInstallId( installId );
 
-            PyObject * py_installKey = _kernel->string_from_char( installKey );
+            PyObject * py_installId = _kernel->string_from_char( installId );
 
-            return py_installKey;
+            return py_installId;
         }
         //////////////////////////////////////////////////////////////////////////
         static PyObject * getEnvironmentInstallVersion( pybind::kernel_interface * _kernel )
@@ -147,7 +147,7 @@ namespace Mengine
         pybind::def_function_kernel( _kernel, "getEnvironmentOSFamily", &Detail::getEnvironmentOSFamily );
         pybind::def_function_kernel( _kernel, "getEnvironmentOSVersion", &Detail::getEnvironmentOSVersion );
         pybind::def_function_kernel( _kernel, "getEnvironmentBundleId", &Detail::getEnvironmentBundleId );
-        pybind::def_function_kernel( _kernel, "getEnvironmentInstallKey", &Detail::getEnvironmentInstallKey );
+        pybind::def_function_kernel( _kernel, "getEnvironmentInstallId", &Detail::getEnvironmentInstallId );
         pybind::def_function_kernel( _kernel, "getEnvironmentInstallVersion", &Detail::getEnvironmentInstallVersion );
         pybind::def_function_kernel( _kernel, "getEnvironmentInstallTimestamp", &Detail::getEnvironmentInstallTimestamp );
         pybind::def_function_kernel( _kernel, "getEnvironmentInstallRND", &Detail::getEnvironmentInstallRND );
@@ -165,7 +165,7 @@ namespace Mengine
         _kernel->remove_from_module( "getEnvironmentOSVersion", nullptr );
         _kernel->remove_from_module( "getEnvironmentBundleId", nullptr );
         _kernel->remove_from_module( "getEnvironmentSessionId", nullptr );
-        _kernel->remove_from_module( "getEnvironmentInstallKey", nullptr );
+        _kernel->remove_from_module( "getEnvironmentInstallId", nullptr );
         _kernel->remove_from_module( "getEnvironmentInstallVersion", nullptr );
         _kernel->remove_from_module( "getEnvironmentInstallTimestamp", nullptr );
         _kernel->remove_from_module( "getEnvironmentInstallRND", nullptr );

@@ -93,9 +93,9 @@
                            trackingConsent:trackingConsent];
     
     NSString * userId = [[iOSApplication sharedInstance] getUserId];
-    NSString * installKey = [[iOSApplication sharedInstance] getInstallKey];
+    NSString * installId = [[iOSApplication sharedInstance] getInstallId];
     
-    [DDDatadog setUserInfoWithUserId:userId name:nil email:nil extraInfo:@{@"install_key":installKey}];
+    [DDDatadog setUserInfoWithUserId:userId name:nil email:nil extraInfo:@{@"install_id": installId}];
     
     DDLogsConfiguration * logsConfiguration = [[DDLogsConfiguration alloc] initWithCustomEndpoint:nil];
     
@@ -119,7 +119,7 @@
     }];
         
     [logger addAttributeForKey:@"install" value:@{
-        @"key": [[iOSApplication sharedInstance] getInstallKey],
+        @"id": [[iOSApplication sharedInstance] getInstallId],
         @"timestamp": @([[iOSApplication sharedInstance] getInstallTimestamp]),
         @"version": [[iOSApplication sharedInstance] getInstallVersion],
         @"rnd": @([[iOSApplication sharedInstance] getInstallRND])
@@ -147,9 +147,9 @@
 #pragma mark - iOSPluginUserIdDelegateInterface
 
 - (void)onUserId:(iOSUserParam *)user {
-    NSString * installKey = [[iOSApplication sharedInstance] getInstallKey];
+    NSString * installId = [[iOSApplication sharedInstance] getInstallId];
     
-    [DDDatadog setUserInfoWithUserId:user.USER_ID name:nil email:nil extraInfo:@{@"install_key":installKey}];
+    [DDDatadog setUserInfoWithUserId:user.USER_ID name:nil email:nil extraInfo:@{@"install_id": installId}];
 }
 - (void)onRemoveUserData {
     [DDDatadog setUserInfoWithUserId:@"" name:nil email:nil extraInfo:@{}];

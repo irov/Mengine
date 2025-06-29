@@ -61,9 +61,9 @@ namespace Mengine
         
         m_installTimestamp = (Timestamp)installTimestamp;
         
-        NSString * installKey = [iOSApplication.sharedInstance getInstallKey];
+        NSString * installId = [iOSApplication.sharedInstance getInstallId];
         
-        m_installKey.assign( [installKey UTF8String] );
+        m_installId.assign( [installId UTF8String] );
         
         NSInteger installRND = [iOSApplication.sharedInstance getInstallRND];
         
@@ -124,9 +124,9 @@ namespace Mengine
         m_sessionId.copy( _sessionId );
     }
     //////////////////////////////////////////////////////////////////////////
-    void iOSEnvironmentService::getInstallKey( Char * const _installKey ) const
+    void iOSEnvironmentService::getInstallId(Char * const _installId ) const
     {
-        m_installKey.copy( _installKey );
+        m_installId.copy( _installId );
     }
     //////////////////////////////////////////////////////////////////////////
     Timestamp iOSEnvironmentService::getInstallTimestamp() const

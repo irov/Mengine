@@ -107,13 +107,13 @@ namespace Mengine
         return sessionId.length;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t MacOSEnvironmentService::getInstallKey( Char * const _installKey, size_t _capacity ) const
+    size_t MacOSEnvironmentService::getInstallId( Char * const _installId, size_t _capacity ) const
     {
-        NSString * installKey = [MacOSApplication.sharedInstance getInstallKey];
+        NSString * installId = [MacOSApplication.sharedInstance getInstallId];
         
-        MENGINE_STRNCPY( _installKey, [installKey UTF8String], _capacity );
+        MENGINE_STRNCPY( _installId, [installId UTF8String], _capacity );
 
-        return installKey.length;
+        return installId.length;
     }
     //////////////////////////////////////////////////////////////////////////
     int64_t MacOSEnvironmentService::getInstallTimestamp() const

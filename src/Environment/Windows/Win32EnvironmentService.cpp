@@ -223,7 +223,7 @@ namespace Mengine
         StaticString<MENGINE_SHA1_HEX_COUNT + 1> fingerprint;
         Helper::makeSHA1HEX( fingerprintGarbage.data(), fingerprintGarbage.size(), fingerprint.data(), true );
 
-        m_installKey.assign( fingerprint );
+        m_installId.assign( fingerprint );
 
         m_sessionTimestamp = Helper::getSystemTimestamp();
         
@@ -267,9 +267,9 @@ namespace Mengine
         m_bundleId.copy( _bundleId );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32EnvironmentService::getInstallKey( Char * const _installKey ) const
+    void Win32EnvironmentService::getInstallId( Char * const _installId ) const
     {
-        m_installKey.copy( _installKey );
+        m_installId.copy( _installId );
     }
     //////////////////////////////////////////////////////////////////////////
     Timestamp Win32EnvironmentService::getInstallTimestamp() const

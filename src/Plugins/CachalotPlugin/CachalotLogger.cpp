@@ -122,9 +122,9 @@ namespace Mengine
         //ToDo: setup user id
         //Char user_id[256] = {'\0'};
 
-        Char install_key[MENGINE_ENVIRONMENT_INSTALLKEY_MAXNAME + 1] = {'\0'};
+        Char install_id[MENGINE_ENVIRONMENT_INSTALLID_MAXNAME + 1] = {'\0'};
         ENVIRONMENT_SERVICE()
-            ->getInstallKey( install_key );
+            ->getInstallId( install_id );
 
         int64_t install_timestamp = ENVIRONMENT_SERVICE()
             ->getInstallTimestamp();
@@ -248,7 +248,7 @@ namespace Mengine
                 return;
             }
 
-            js_object_add_field_string( j, jattributes, JS_CONST_STRING( "install.key" ), install_key );
+            js_object_add_field_string( j, jattributes, JS_CONST_STRING( "install.key" ), install_id );
             js_object_add_field_integer( j, jattributes, JS_CONST_STRING( "install.timestamp" ), install_timestamp );
             js_object_add_field_string( j, jattributes, JS_CONST_STRING( "install.version" ), install_version );
             js_object_add_field_integer( j, jattributes, JS_CONST_STRING( "install.rnd" ), install_rnd );

@@ -69,7 +69,7 @@ namespace Mengine
         Detail::getAndroidInfo( jenv, "getDeviceLanguage", &m_deviceLanguage );
         Detail::getAndroidInfo( jenv, "getOSVersion", &m_osVersion );
         Detail::getAndroidInfo( jenv, "getPackageName", &m_bundleId );
-        Detail::getAndroidInfo( jenv, "getInstallKey", &m_installKey );
+        Detail::getAndroidInfo( jenv, "getInstallId", &m_installId );
         Detail::getAndroidInfo( jenv, "getInstallVersion", &m_installVersion );
 
         Detail::getAndroidInfo( jenv, "getInstallTimestamp", &m_installTimestamp );
@@ -88,7 +88,7 @@ namespace Mengine
 
         fingerprintGarbage.assign( "FINGERPRINT" );
         fingerprintGarbage.append( '_' );
-        fingerprintGarbage.append( m_installKey );
+        fingerprintGarbage.append( m_installId );
         fingerprintGarbage.append( '_' );
         fingerprintGarbage.append( m_deviceModel );
         fingerprintGarbage.append( '_' );
@@ -139,9 +139,9 @@ namespace Mengine
         m_bundleId.copy( _bundleId );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidEnvironmentService::getInstallKey( Char * const _installKey ) const
+    void AndroidEnvironmentService::getInstallId( Char * const _installId ) const
     {
-        m_installKey.copy( _installKey );
+        m_installId.copy( _installId );
     }
     //////////////////////////////////////////////////////////////////////////
     Timestamp AndroidEnvironmentService::getInstallTimestamp() const

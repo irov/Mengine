@@ -10,14 +10,14 @@
 
 - (void)initialize;
 
-- (NSString * _Nonnull)getInstallKey;
+- (NSString * _Nonnull)getInstallId;
 - (NSInteger)getInstallTimestamp;
 - (NSString * _Nonnull)getInstallVersion;
 - (NSInteger)getInstallRND;
 - (NSInteger)getSessionIndex;
 - (NSString * _Nonnull)getSessionId;
 
-@property (nonatomic, strong) NSString * _Nonnull m_installKey;
+@property (nonatomic, strong) NSString * _Nonnull m_installId;
 @property (nonatomic) NSInteger m_installTimestamp;
 @property (nonatomic, strong) NSString * _Nonnull m_installVersion;
 @property (nonatomic) NSInteger m_installRND;

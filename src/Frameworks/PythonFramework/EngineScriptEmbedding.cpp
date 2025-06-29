@@ -398,7 +398,7 @@ namespace Mengine
                 PythonLayoutSizerPtr py_sizer = m_factoryPythonLayourSizer->createObject( MENGINE_DOCUMENT_PYBIND );
                 py_sizer->initialize( _sizer, _args );
 
-                layout->setLayoutSizer( py_sizer );
+                layout->setSizer( py_sizer );
 
                 return layout;
             }

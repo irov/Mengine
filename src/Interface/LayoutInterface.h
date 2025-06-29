@@ -42,6 +42,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<LayoutElementSetterInterface> LayoutElementSetterInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<class LayoutInterface> LayoutInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
     class LayoutInterface
         : public ServantInterface
     {
@@ -50,15 +52,19 @@ namespace Mengine
         virtual void finalize() = 0;
 
     public:
-        virtual void setLayoutSizer( const LayoutSizerInterfacePtr & _sizer ) = 0;
+        virtual void setSizer( const LayoutSizerInterfacePtr & _sizer ) = 0;
 
     public:
-        virtual void addLayoutElement( const ConstString & _name, ELayoutElementType _type, const LayoutElementGetterInterfacePtr & _getter, const LayoutElementSetterInterfacePtr & _setter, const DocumentInterfacePtr & _doc ) = 0;
-        virtual void removeLayoutElement( const ConstString & _name ) = 0;
-        virtual bool hasLayoutElement( const ConstString & _name ) const = 0;
+        virtual void addElement( const ConstString & _name, ELayoutElementType _type, const LayoutElementGetterInterfacePtr & _getter, const LayoutElementSetterInterfacePtr & _setter, const DocumentInterfacePtr & _doc ) = 0;
+        virtual void addSubLayout( const ConstString & _name, ELayoutElementType _type, const LayoutInterfacePtr & _subLayout, const LayoutElementGetterInterfacePtr & _getter, const LayoutElementSetterInterfacePtr & _setter, const DocumentInterfacePtr & _doc ) = 0;
+        virtual void removeElement( const ConstString & _name ) = 0;
+        virtual bool hasElement( const ConstString & _name ) const = 0;
 
     public:
-        virtual void clearLayoutElements() = 0;
+        virtual void clearElements() = 0;
+
+    public:
+        virtual void invalidate() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<LayoutInterface> LayoutInterfacePtr;

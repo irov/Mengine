@@ -9,6 +9,12 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    enum class ELayoutElementType
+    {
+        LET_FIXED,
+        LET_PAD,
+    };
+    //////////////////////////////////////////////////////////////////////////
     class LayoutSizerInterface
         : public Mixin
     {
@@ -36,6 +42,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<LayoutElementSetterInterface> LayoutElementSetterInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<class LayoutInterface> LayoutInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
     class LayoutInterface
         : public ServantInterface
     {
@@ -44,16 +52,14 @@ namespace Mengine
         virtual void finalize() = 0;
 
     public:
-        virtual void setLayoutSizer( const LayoutSizerInterfacePtr & _sizer ) = 0;
+        virtual void setSizer( const LayoutSizerInterfacePtr & _sizer ) = 0;
 
     public:
-        virtual void addLayoutElement( const ConstString & _name, const LayoutElementGetterInterfacePtr & _getter, const LayoutElementSetterInterfacePtr & _setter, bool _fixed, float _weight, bool _enable, const DocumentInterfacePtr & _doc ) = 0;
-        virtual void removeLayoutElement( const ConstString & _name ) = 0;
-        virtual bool hasLayoutElement( const ConstString & _name ) const = 0;
+        virtual void addElement( ELayoutElementType _type, const LayoutElementGetterInterfacePtr & _getter, const LayoutElementSetterInterfacePtr & _setter, const DocumentInterfacePtr & _doc ) = 0;
+        virtual void addSubLayout( ELayoutElementType _type, const LayoutInterfacePtr & _subLayout, const LayoutElementGetterInterfacePtr & _getter, const LayoutElementSetterInterfacePtr & _setter, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
-        virtual void setLayoutElementEnable( const ConstString & _name, bool _enable ) = 0;
-        virtual bool isLayoutElementEnable( const ConstString & _name ) const = 0;
+        virtual void invalidate() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<LayoutInterface> LayoutInterfacePtr;

@@ -347,7 +347,7 @@ namespace Mengine
             FactoryInterfacePtr m_factoryPythonLayoutElementGetter;
             FactoryInterfacePtr m_factoryPythonLayoutElementSetter;
             //////////////////////////////////////////////////////////////////////////
-            void LayoutInterface_addElement( LayoutInterface * _layout, const ConstString & _name, ELayoutElementType _type, const pybind::object & _getter, const pybind::object & _setter, const pybind::args & _args )
+            void LayoutInterface_addElement( LayoutInterface * _layout, ELayoutElementType _type, const pybind::object & _getter, const pybind::object & _setter, const pybind::args & _args )
             {
                 PythonLayoutElementGetterPtr py_getter = m_factoryPythonLayoutElementGetter->createObject( MENGINE_DOCUMENT_PYBIND );
                 py_getter->initialize( _getter, _args );
@@ -355,10 +355,10 @@ namespace Mengine
                 PythonLayoutElementSetterPtr py_setter = m_factoryPythonLayoutElementSetter->createObject( MENGINE_DOCUMENT_PYBIND );
                 py_setter->initialize( _setter, _args );
 
-                _layout->addElement( _name, _type, py_getter, py_setter, MENGINE_DOCUMENT_PYBIND );
+                _layout->addElement( _type, py_getter, py_setter, MENGINE_DOCUMENT_PYBIND );
             }
             //////////////////////////////////////////////////////////////////////////
-            void LayoutInterface_addSubLayout( LayoutInterface * _layout, const ConstString & _name, ELayoutElementType _type, const LayoutInterfacePtr & _subLayout, const pybind::object & _getter, const pybind::object & _setter, const pybind::args & _args )
+            void LayoutInterface_addSubLayout( LayoutInterface * _layout, ELayoutElementType _type, const LayoutInterfacePtr & _subLayout, const pybind::object & _getter, const pybind::object & _setter, const pybind::args & _args )
             {
                 PythonLayoutElementGetterPtr py_getter = m_factoryPythonLayoutElementGetter->createObject( MENGINE_DOCUMENT_PYBIND );
                 py_getter->initialize( _getter, _args );
@@ -366,7 +366,7 @@ namespace Mengine
                 PythonLayoutElementSetterPtr py_setter = m_factoryPythonLayoutElementSetter->createObject( MENGINE_DOCUMENT_PYBIND );
                 py_setter->initialize( _setter, _args );
 
-                _layout->addSubLayout( _name, _type, _subLayout, py_getter, py_setter, MENGINE_DOCUMENT_PYBIND );
+                _layout->addSubLayout( _type, _subLayout, py_getter, py_setter, MENGINE_DOCUMENT_PYBIND );
             }
             //////////////////////////////////////////////////////////////////////////
             uint32_t s_Animation_play( AnimationInterface * _animation )
@@ -2932,9 +2932,6 @@ namespace Mengine
         pybind::interface_<LayoutInterface, pybind::bases<Mixin>>( _kernel, "LayoutInterface", true )
             .def_proxy_static_args( "addElement", scriptMethod, &KernelScriptMethod::LayoutInterface_addElement )
             .def_proxy_static_args( "addSubLayout", scriptMethod, &KernelScriptMethod::LayoutInterface_addSubLayout )
-            .def( "removeElement", &LayoutInterface::removeElement )
-            .def( "hasElement", &LayoutInterface::hasElement )
-            .def( "clearElements", &LayoutInterface::clearElements )
             ;
 
         pybind::enum_<EArrowType>( _kernel, "ArrowType" )

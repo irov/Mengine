@@ -47,13 +47,11 @@ namespace Mengine
         m_invalidateLayout = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Layout::addElement( const ConstString & _name, ELayoutElementType _type, const LayoutElementGetterInterfacePtr & _getter, const LayoutElementSetterInterfacePtr & _setter, const DocumentInterfacePtr & _doc )
+    void Layout::addElement( ELayoutElementType _type, const LayoutElementGetterInterfacePtr & _getter, const LayoutElementSetterInterfacePtr & _setter, const DocumentInterfacePtr & _doc )
     {
-        MENGINE_ASSERTION_FATAL( _getter != nullptr, "element '%s' getter is nullptr", _name.c_str() );
-        MENGINE_ASSERTION_FATAL( _name.empty() == true || this->hasElement( _name ) == false, "element '%s' already exists in layout", _name.c_str() );
+        MENGINE_ASSERTION_FATAL( _getter != nullptr, "element getter is nullptr" );
 
         LayoutElement element;
-        element.name = _name;
         element.subLayout = nullptr;
         element.type = _type;
         element.cacheValue = 0.f;
@@ -69,14 +67,12 @@ namespace Mengine
         m_invalidateLayout = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Layout::addSubLayout( const ConstString & _name, ELayoutElementType _type, const LayoutInterfacePtr & _subLayout, const LayoutElementGetterInterfacePtr & _getter, const LayoutElementSetterInterfacePtr & _setter, const DocumentInterfacePtr & _doc )
+    void Layout::addSubLayout( ELayoutElementType _type, const LayoutInterfacePtr & _subLayout, const LayoutElementGetterInterfacePtr & _getter, const LayoutElementSetterInterfacePtr & _setter, const DocumentInterfacePtr & _doc )
     {
         MENGINE_ASSERTION_FATAL( _subLayout != nullptr, "sub layout is nullptr" );
-        MENGINE_ASSERTION_FATAL( _getter != nullptr, "element '%s' getter is nullptr", _name.c_str() );
-        MENGINE_ASSERTION_FATAL( _name.empty() == true || this->hasElement( _name ) == false, "element '%s' already exists in layout", _name.c_str() );
+        MENGINE_ASSERTION_FATAL( _getter != nullptr, "element getter is nullptr" );
 
         LayoutElement element;
-        element.name = _name;
         element.subLayout = _subLayout;
         element.type = _type;
         element.cacheValue = 0.f;
@@ -88,48 +84,6 @@ namespace Mengine
 #endif
 
         m_elements.push_back( element );
-
-        m_invalidateLayout = true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Layout::removeElement( const ConstString & _name )
-    {
-        MENGINE_ASSERTION_FATAL( _name.empty() == false, "element name is empty" );
-        MENGINE_ASSERTION_FATAL( this->hasElement( _name ) == true, "element '%s' not found in layout", _name.c_str() );
-
-        VectorLayoutElements::iterator it_found = StdAlgorithm::find_if( m_elements.begin(), m_elements.end(), [_name]( const LayoutElement & element )
-        {
-            return element.name == _name;
-        } );
-
-        if( it_found == m_elements.end() )
-        {
-            return;
-        }
-
-        m_elements.erase( it_found );
-
-        m_invalidateLayout = true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Layout::hasElement( const ConstString & _name ) const
-    {
-        for( const LayoutElement & element : m_elements )
-        {
-            if( element.name != _name )
-            {
-                continue;
-            }
-
-            return true;
-        }
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Layout::clearElements()
-    {
-        m_elements.clear();
 
         m_invalidateLayout = true;
     }

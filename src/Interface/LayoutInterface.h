@@ -55,13 +55,8 @@ namespace Mengine
         virtual void setSizer( const LayoutSizerInterfacePtr & _sizer ) = 0;
 
     public:
-        virtual void addElement( const ConstString & _name, ELayoutElementType _type, const LayoutElementGetterInterfacePtr & _getter, const LayoutElementSetterInterfacePtr & _setter, const DocumentInterfacePtr & _doc ) = 0;
-        virtual void addSubLayout( const ConstString & _name, ELayoutElementType _type, const LayoutInterfacePtr & _subLayout, const LayoutElementGetterInterfacePtr & _getter, const LayoutElementSetterInterfacePtr & _setter, const DocumentInterfacePtr & _doc ) = 0;
-        virtual void removeElement( const ConstString & _name ) = 0;
-        virtual bool hasElement( const ConstString & _name ) const = 0;
-
-    public:
-        virtual void clearElements() = 0;
+        virtual void addElement( ELayoutElementType _type, const LayoutElementGetterInterfacePtr & _getter, const LayoutElementSetterInterfacePtr & _setter, const DocumentInterfacePtr & _doc ) = 0;
+        virtual void addSubLayout( ELayoutElementType _type, const LayoutInterfacePtr & _subLayout, const LayoutElementGetterInterfacePtr & _getter, const LayoutElementSetterInterfacePtr & _setter, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
         virtual void invalidate() = 0;

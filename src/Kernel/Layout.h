@@ -31,13 +31,8 @@ namespace Mengine
         void setSizer( const LayoutSizerInterfacePtr & _sizer ) override;
 
     public:
-        void addElement( const ConstString & _name, ELayoutElementType _type, const LayoutElementGetterInterfacePtr & _getter, const LayoutElementSetterInterfacePtr & _setter, const DocumentInterfacePtr & _doc ) override;
-        void addSubLayout( const ConstString & _name, ELayoutElementType _type, const LayoutInterfacePtr & _subLayout, const LayoutElementGetterInterfacePtr & _getter, const LayoutElementSetterInterfacePtr & _setter, const DocumentInterfacePtr & _doc ) override;
-        void removeElement( const ConstString & _name ) override;
-        bool hasElement( const ConstString & _name ) const override;
-
-    public:
-        void clearElements() override;
+        void addElement( ELayoutElementType _type, const LayoutElementGetterInterfacePtr & _getter, const LayoutElementSetterInterfacePtr & _setter, const DocumentInterfacePtr & _doc ) override;
+        void addSubLayout( ELayoutElementType _type, const LayoutInterfacePtr & _subLayout, const LayoutElementGetterInterfacePtr & _getter, const LayoutElementSetterInterfacePtr & _setter, const DocumentInterfacePtr & _doc ) override;
 
     protected:
         void invalidate() override;
@@ -51,7 +46,6 @@ namespace Mengine
 
         struct LayoutElement
         {
-            ConstString name;
             LayoutInterfacePtr subLayout;
             ELayoutElementType type;
             float cacheValue;

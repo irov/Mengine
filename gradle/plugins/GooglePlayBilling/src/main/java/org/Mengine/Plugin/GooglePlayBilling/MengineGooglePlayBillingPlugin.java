@@ -15,6 +15,7 @@ import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.QueryProductDetailsParams;
 import com.android.billingclient.api.QueryPurchasesParams;
+import com.android.billingclient.api.UnfetchedProduct;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
@@ -141,6 +142,13 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
 
                     this.nativeCall("onGooglePlayBillingPurchasesUpdatedItemNotOwned");
                 }break;
+                case BillingClient.BillingResponseCode.NETWORK_ERROR: {
+                    this.logWarning("onPurchasesUpdated [Network error] message: %s"
+                        , debugMessage
+                    );
+
+                    this.nativeCall("onGooglePlayBillingPurchasesUpdatedNetworkError");
+                }break;
                 default: {
                     this.logWarning("onPurchasesUpdated [Unsupported response] code: %d message: %s"
                         , responseCode
@@ -159,6 +167,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
         m_billingClient = BillingClient.newBuilder(application)
             .setListener(purchasesUpdatedListener)
             .enablePendingPurchases(pendingPurchasesParams)
+            .enableAutoServiceReconnection()
             .build();
     }
 
@@ -230,9 +239,9 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
             return;
         }
 
-        BillingResult billingResult = m_billingClient.isFeatureSupported(BillingClient.FeatureType.PRODUCT_DETAILS);
+        BillingResult supportedProductDetails = m_billingClient.isFeatureSupported(BillingClient.FeatureType.PRODUCT_DETAILS);
 
-        if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.FEATURE_NOT_SUPPORTED) {
+        if (supportedProductDetails.getResponseCode() == BillingClient.BillingResponseCode.FEATURE_NOT_SUPPORTED) {
             this.makeToastDelayed(10000L, "GooglePlay billing asks you to update the PlayStore app");
 
             this.nativeCall("onGooglePlayBillingQueryProductError", ERROR_CODE_NOT_SUPPORTED, new RuntimeException("Feature PRODUCT_DETAILS is not supported"));
@@ -254,13 +263,13 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
         QueryProductDetailsParams.Builder params = QueryProductDetailsParams.newBuilder();
         params.setProductList(productList);
 
-        m_billingClient.queryProductDetailsAsync(params.build(), (billingResult1, productsDetails) -> {
-            int responseCode = billingResult1.getResponseCode();
+        m_billingClient.queryProductDetailsAsync(params.build(), (billingResult, productDetailsResult) -> {
+            int responseCode = billingResult.getResponseCode();
 
             if (responseCode != BillingClient.BillingResponseCode.OK) {
                 this.logError("[ERROR] billing invalid query product details code: %d message: %s"
                     , responseCode
-                    , billingResult1.getDebugMessage()
+                    , billingResult.getDebugMessage()
                 );
 
                 this.nativeCall("onGooglePlayBillingQueryProductFailed");
@@ -268,8 +277,16 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
                 return;
             }
 
+            List<ProductDetails> productsDetails = productDetailsResult.getProductDetailsList();
+
             this.logInfo("billing query products details: %s"
                 , productsDetails
+            );
+
+            List<UnfetchedProduct> unfetchedProducts = productDetailsResult.getUnfetchedProductList();
+
+            this.logInfo("billing query products unfetched: %s"
+                , unfetchedProducts
             );
 
             m_productsDetails.clear();
@@ -473,17 +490,21 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
         int responseCode = billingResult.getResponseCode();
 
         if (responseCode != BillingClient.BillingResponseCode.OK) {
-            this.logError("[ERROR] billing invalid launch billing flow code: %d message: %s"
+            int subResponseCode = billingResult.getOnPurchasesUpdatedSubResponseCode();
+
+            this.logError("[ERROR] billing invalid launch billing flow code: %d sub: %d message: %s"
                 , responseCode
+                , subResponseCode
                 , billingResult.getDebugMessage()
             );
 
             this.buildEvent("mng_billing_buy_failed")
                 .addParameterString("product_id", productId)
                 .addParameterLong("error_code", responseCode)
+                .addParameterLong("sub_code", subResponseCode)
                 .log();
 
-            this.nativeCall("onGooglePlayBillingBuyInAppFailed", productId, responseCode);
+            this.nativeCall("onGooglePlayBillingBuyInAppFailed", productId, responseCode, subResponseCode);
 
             return;
         }

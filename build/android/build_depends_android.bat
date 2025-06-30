@@ -11,8 +11,7 @@ call :setESC
 set CONFIGURATION=%1
 
 @echo Starting android dependencies build %CONFIGURATION% configuration...
-
-set ANDROID_NDK_VERSION=29.0.13113456
+set ANDROID_NDK_VERSION=28.1.13356709
 set ANDROID_CMAKE_VERSION=3.31.6
 
 set ANDROID_PLATFORM_VERSION=23

@@ -1133,7 +1133,7 @@ public class MengineActivity extends AppCompatActivity {
      **********************************************************************************************/
 
     public void showAlertDialog(String caption, String message) {
-        MengineUtils.showOkAlertDialog(this, null, caption, message, null);
+        MengineUtils.showOkAlertDialog(this, null, caption, message);
     }
 
     /***********************************************************************************************

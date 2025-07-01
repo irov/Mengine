@@ -17,7 +17,7 @@ jobs:
       - android/accept-licenses
       
       - android/install-ndk:
-          version: 29.0.13113456
+          version: 28.1.13356709
           
       - run:
           name: install OpenJDK 17

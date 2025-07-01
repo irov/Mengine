@@ -142,7 +142,9 @@ public class MengineParamTransparencyConsent {
     }
 
     public boolean isPending() {
-        if (MengineParamTransparencyConsent.getTransparencyconsentUsergeography() == MengineConsentFlowUserGeography.MengineConsentFlowUserGeography_NonEEA) {
+        MengineConsentFlowUserGeography geography = MengineParamTransparencyConsent.getTransparencyconsentUsergeography();
+
+        if (geography == MengineConsentFlowUserGeography.MengineConsentFlowUserGeography_NonEEA) {
             return false;
         }
 
@@ -150,7 +152,9 @@ public class MengineParamTransparencyConsent {
     }
 
     public boolean isEEA() {
-        if (MengineParamTransparencyConsent.getTransparencyconsentUsergeography() == MengineConsentFlowUserGeography.MengineConsentFlowUserGeography_NonEEA) {
+        MengineConsentFlowUserGeography geography = MengineParamTransparencyConsent.getTransparencyconsentUsergeography();
+
+        if (geography == MengineConsentFlowUserGeography.MengineConsentFlowUserGeography_NonEEA) {
             return false;
         }
 

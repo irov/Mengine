@@ -20,6 +20,7 @@ import com.applovin.sdk.AppLovinTermsAndPrivacyPolicyFlowSettings;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineAdProviderInterface;
 import org.Mengine.Base.MengineAdService;
+import org.Mengine.Base.MengineConsentFlowUserGeography;
 import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineListenerRemoteConfig;
 import org.Mengine.Base.MengineApplication;
@@ -290,6 +291,18 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
             );
 
             m_countryCode = countryCode;
+
+            switch (consentFlowUserGeography) {
+                case UNKNOWN:
+                    MengineParamTransparencyConsent.setConsentFlowUserGeography(application, MengineConsentFlowUserGeography.MengineConsentFlowUserGeography_Unknown);
+                    break;
+                case GDPR:
+                    MengineParamTransparencyConsent.setConsentFlowUserGeography(application, MengineConsentFlowUserGeography.MengineConsentFlowUserGeography_EEA);
+                    break;
+                case OTHER:
+                    MengineParamTransparencyConsent.setConsentFlowUserGeography(application, MengineConsentFlowUserGeography.MengineConsentFlowUserGeography_NonEEA);
+                    break;
+            }
 
             List<MaxMediatedNetworkInfo> availableMediatedNetworks = appLovinSdk.getAvailableMediatedNetworks();
 

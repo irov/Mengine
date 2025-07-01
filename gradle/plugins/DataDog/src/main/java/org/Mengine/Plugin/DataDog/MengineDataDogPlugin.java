@@ -156,57 +156,41 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
             .build();
 
         try {
-            JSONObject version_attribute = new JSONObject();
+            JSONObject attributes = new JSONObject();
 
             int versionCode = application.getVersionCode();
-            version_attribute.put("code", versionCode);
+            attributes.put("version.code", versionCode);
 
             String versionName = application.getVersionName();
-            version_attribute.put("name", versionName);
+            attributes.put("version.name", versionName);
 
-            logger.addAttribute("version", version_attribute);
-
-            JSONObject install_attribute = new JSONObject();
-
-            install_attribute.put("id", installId);
+            attributes.put("install.id", installId);
 
             long installTimestamp = application.getInstallTimestamp();
-            install_attribute.put("timestamp", installTimestamp);
+            attributes.put("install.timestamp", installTimestamp);
 
             String installVersion = application.getInstallVersion();
-            install_attribute.put("version", installVersion);
+            attributes.put("install.version", installVersion);
 
             long installRND = application.getInstallRND();
-            install_attribute.put("rnd", installRND);
+            attributes.put("install.rnd", installRND);
 
-            logger.addAttribute("install", install_attribute);
-
-            JSONObject session_attribute = new JSONObject();
+            String sessionId = application.getSessionId();
+            attributes.put("session.id", sessionId);
 
             long sessionIndex = application.getSessionIndex();
-            session_attribute.put("index", sessionIndex);
+            attributes.put("session.index", sessionIndex);
 
             long sessionTimestamp = application.getSessionTimestamp();
-            session_attribute.put("timestamp", sessionTimestamp);
+            attributes.put("session.timestamp", sessionTimestamp);
 
-            logger.addAttribute("session", session_attribute);
-
-            JSONObject device_attribute = new JSONObject();
+            long sessionRND = application.getSessionRND();
+            attributes.put("session.rnd", sessionRND);
 
             String deviceModel = application.getDeviceModel();
+            attributes.put("device.model", deviceModel);
 
-            device_attribute.put("model", deviceModel);
-
-            logger.addAttribute( "device", device_attribute );
-
-            JSONObject os_attribute = new JSONObject();
-
-            String osVersion = application.getOSVersion();
-
-            os_attribute.put("family", "Android");
-            os_attribute.put("version", osVersion);
-
-            logger.addAttribute( "os", os_attribute );
+            logger.addAttribute("mng_base", attributes);
         } catch (JSONException e) {
             this.logException(e, Map.of());
         }
@@ -237,16 +221,16 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
             return;
         }
 
-        Map<String, Object> attributes = BuildConfig.DEBUG == true ? Map.of("code", Map.of(
-            "category", message.MESSAGE_CATEGORY,
-            "thread", message.MESSAGE_THREAD,
-            "file", message.MESSAGE_FILE != null ? message.MESSAGE_FILE : "empty",
-            "line", message.MESSAGE_LINE,
-            "function", message.MESSAGE_FUNCTION != null ? message.MESSAGE_FUNCTION : "empty"
+        Map<String, Object> attributes = BuildConfig.DEBUG == true ? Map.of("mng_record", Map.of(
+            "code.category", message.MESSAGE_CATEGORY,
+            "code.thread", message.MESSAGE_THREAD,
+            "code.file", message.MESSAGE_FILE != null ? message.MESSAGE_FILE : "empty",
+            "code.line", message.MESSAGE_LINE,
+            "code.function", message.MESSAGE_FUNCTION != null ? message.MESSAGE_FUNCTION : "empty"
             )
-        ) : Map.of("code", Map.of(
-            "category", message.MESSAGE_CATEGORY,
-            "thread", message.MESSAGE_THREAD
+        ) : Map.of("mng_record", Map.of(
+            "code.category", message.MESSAGE_CATEGORY,
+            "code.thread", message.MESSAGE_THREAD
             )
         );
 

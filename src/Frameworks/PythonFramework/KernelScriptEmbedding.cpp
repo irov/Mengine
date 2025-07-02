@@ -2932,6 +2932,7 @@ namespace Mengine
         pybind::interface_<LayoutInterface, pybind::bases<Mixin>>( _kernel, "LayoutInterface", true )
             .def_proxy_static_args( "addElement", scriptMethod, &KernelScriptMethod::LayoutInterface_addElement )
             .def_proxy_static_args( "addSubLayout", scriptMethod, &KernelScriptMethod::LayoutInterface_addSubLayout )
+            .def( "flush", &LayoutInterface::flush )
             ;
 
         pybind::enum_<EArrowType>( _kernel, "ArrowType" )

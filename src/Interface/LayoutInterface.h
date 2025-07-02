@@ -60,6 +60,7 @@ namespace Mengine
 
     public:
         virtual void invalidate() = 0;
+        virtual void flush() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<LayoutInterface> LayoutInterfacePtr;

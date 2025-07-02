@@ -36,6 +36,7 @@ namespace Mengine
 
     protected:
         void invalidate() override;
+        void flush() override;
 
     protected:
         void update( const UpdateContext * _context ) override;

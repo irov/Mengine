@@ -93,10 +93,8 @@ namespace Mengine
         m_invalidateLayout = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Layout::update( const UpdateContext * _context )
+    void Layout::flush()
     {
-        MENGINE_UNUSED( _context );
-
         MENGINE_ASSERTION_FATAL( m_sizer != nullptr, "layout sizer is not set" );
 
         if( m_elements.empty() == true )
@@ -184,6 +182,13 @@ namespace Mengine
 
             carriage += elementSize;
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Layout::update( const UpdateContext * _context )
+    {
+        MENGINE_UNUSED( _context );
+
+        this->flush();
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -80,13 +80,6 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
         }
     }
 
-    @Override
-    public String onAppVersion(@NonNull MengineApplication application) {
-        String sdkVersion = AppLovinSdk.VERSION;
-
-        return sdkVersion;
-    }
-
     protected AppLovinSdk getAppLovinSdkInstance() {
         MengineApplication application = this.getMengineApplication();
 
@@ -128,6 +121,8 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
 
     @Override
     public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
+        this.logInfo("AppLovin SDK version: %s", AppLovinSdk.VERSION);
+
         MengineAdService adService = application.getService(MengineAdService.class);
 
         boolean noAds = adService.getNoAds();

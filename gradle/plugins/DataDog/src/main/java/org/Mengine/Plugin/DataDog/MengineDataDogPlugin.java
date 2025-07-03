@@ -77,7 +77,7 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
     }
 
     @Override
-    public void onAppPrepare(@NonNull MengineApplication application, @NonNull Map<String, String> pluginVersions) throws MengineServiceInvalidInitializeException {
+    public void onAppPrepare(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
         String MengineDataDogPlugin_Site = this.getResourceString(METADATA_SITE);
 
         this.logInfo("%s: %s"

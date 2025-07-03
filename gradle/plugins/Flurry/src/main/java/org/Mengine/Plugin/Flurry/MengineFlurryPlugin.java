@@ -32,7 +32,7 @@ public class MengineFlurryPlugin extends MengineService implements MengineListen
     public static final @StringRes int METADATA_API_KEY = R.string.mengine_flurry_api_key;
 
     @Override
-    public void onAppPrepare(MengineApplication application, @NonNull Map<String, String> pluginVersions) throws MengineServiceInvalidInitializeException {
+    public void onAppPrepare(MengineApplication application) throws MengineServiceInvalidInitializeException {
         String MengineFlurryPlugin_ApiKey = this.getResourceString(METADATA_API_KEY);
 
         this.logInfo("%s: %s"

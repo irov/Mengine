@@ -20,7 +20,7 @@ public class MengineFirebaseAppCheckPlugin extends MengineService implements Men
     FirebaseAppCheck m_firebaseAppCheck;
 
     @Override
-    public void onAppPrepare(@NonNull MengineApplication application, @NonNull Map<String, String> pluginVersions) throws MengineServiceInvalidInitializeException {
+    public void onAppPrepare(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
         FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.getInstance();
 
         PlayIntegrityAppCheckProviderFactory factory = PlayIntegrityAppCheckProviderFactory.getInstance();

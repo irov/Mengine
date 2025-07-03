@@ -34,7 +34,7 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
     FirebaseAnalytics m_firebaseAnalytics;
 
     @Override
-    public void onAppPrepare(@NonNull MengineApplication application, @NonNull Map<String, String> pluginVersions) throws MengineServiceInvalidInitializeException {
+    public void onAppPrepare(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
         FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(application);
 
         String userId = application.getUserId();

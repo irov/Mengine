@@ -90,7 +90,7 @@ public class MengineAppMetricaPlugin extends MengineService implements MengineLi
     }
 
     @Override
-    public void onAppPrepare(@NonNull MengineApplication application, @NonNull Map<String, String> pluginVersions) throws MengineServiceInvalidInitializeException {
+    public void onAppPrepare(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
         String userId = application.getUserId();
         AppMetrica.setUserProfileID(userId);
     }

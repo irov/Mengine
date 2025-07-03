@@ -102,7 +102,7 @@ public class MengineSentryPlugin extends MengineService implements MengineListen
     }
 
     @Override
-    public void onAppPrepare(MengineApplication application, @NonNull Map<String, String> pluginVersions) throws MengineServiceInvalidInitializeException {
+    public void onAppPrepare(MengineApplication application) throws MengineServiceInvalidInitializeException {
         Sentry.configureScope(scope -> {
             boolean isMasterRelease = application.isMasterRelease();
             boolean isBuildPublish = application.isBuildPublish();

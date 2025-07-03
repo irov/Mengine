@@ -1,5 +1,6 @@
 package org.Mengine.Plugin.Facebook;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -29,6 +30,7 @@ import com.facebook.share.widget.ShareDialog;
 
 import org.Mengine.Base.BuildConfig;
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineListenerActivity;
 import org.Mengine.Base.MengineParamAdRevenue;
 import org.Mengine.Base.MengineAnalyticsEventCategory;
 import org.Mengine.Base.MengineParamAnalyticsEvent;
@@ -50,7 +52,7 @@ import org.json.JSONObject;
 import java.util.List;
 import java.util.Map;
 
-public class MengineFacebookPlugin extends MengineService implements MengineListenerAnalytics, MengineListenerApplication, MengineListenerRemoteMessage, MengineListenerPushToken, MengineListenerUser, MengineListenerAdRevenue, MengineListenerTransparencyConsent {
+public class MengineFacebookPlugin extends MengineService implements MengineListenerAnalytics, MengineListenerApplication, MengineListenerActivity, MengineListenerRemoteMessage, MengineListenerPushToken, MengineListenerUser, MengineListenerAdRevenue, MengineListenerTransparencyConsent {
     public static final String SERVICE_NAME = "Facebook";
     public static final boolean SERVICE_EMBEDDING = true;
 
@@ -59,21 +61,15 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
     private static final int ERROR_CODE_EXPIRED = 2;
     private static final int ERROR_CODE_INVALID_PARAMETER = 3;
 
-
     private CallbackManager m_facebookCallbackManager;
     private AccessTokenTracker m_accessTokenTracker;
     private ProfileTracker m_profileTracker;
     private AppEventsLogger m_logger;
 
     @Override
-    public String onAppVersion(@NonNull MengineApplication application) {
-        String fbSdkVersion = FacebookSdk.getSdkVersion();
-
-        return fbSdkVersion;
-    }
-
-    @Override
     public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
+        this.logInfo("Facebook SDK version: %s", FacebookSdk.getSdkVersion());
+
         MengineParamTransparencyConsent tcParam = application.makeTransparencyConsentParam();
         boolean AD_STORAGE = tcParam.getConsentAdStorage();
 
@@ -101,7 +97,26 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
             FacebookSdk.addLoggingBehavior(LoggingBehavior.DEVELOPER_ERRORS);
         }
 
-        LoginManager.getInstance().retrieveLoginStatus(application, new LoginStatusCallback() {
+        String userId = application.getUserId();
+        if (userId != null) {
+            AppEventsLogger.setUserID(userId);
+        }
+
+        AppEventsLogger logger = AppEventsLogger.newLogger(application);
+        m_logger = logger;
+    }
+
+    @Override
+    public void onAppTerminate(@NonNull MengineApplication application) {
+        if (m_logger != null) {
+            m_logger.flush();
+            m_logger = null;
+        }
+    }
+
+    @Override
+    public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
+        LoginManager.getInstance().retrieveLoginStatus(activity, new LoginStatusCallback() {
             @Override
             public void onCompleted(@NonNull AccessToken accessToken) {
                 MengineFacebookPlugin.this.logInfo("retrieve login [onCompleted] application: %s user: %s token: %s"
@@ -128,8 +143,8 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
             @Override
             protected void onCurrentAccessTokenChanged(AccessToken oldToken, AccessToken newToken) {
                 MengineFacebookPlugin.this.logInfo("onCurrentAccessTokenChanged old token: %s new token: %s"
-                    , MengineUtils.getRedactedValue(oldToken)
-                    , MengineUtils.getRedactedValue(newToken)
+                    , MengineUtils.getRedactedValue(oldToken.getToken())
+                    , MengineUtils.getRedactedValue(newToken.getToken())
                 );
 
                 String oldTokenString = oldToken != null ? oldToken.getToken() : "";
@@ -164,17 +179,13 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
 
                 AccessToken accessToken = loginResult.getAccessToken();
 
-                String applicationId = accessToken.getApplicationId();
-                String userId = accessToken.getUserId();
-                String token = accessToken.getToken();
-
                 MengineFacebookPlugin.this.logInfo("login [onSuccess] application: %s user: %s token: %s"
-                    , applicationId
-                    , userId
-                    , MengineUtils.getRedactedValue(token)
+                    , accessToken.getApplicationId()
+                    , accessToken.getUserId()
+                    , MengineUtils.getRedactedValue(accessToken.getToken())
                 );
 
-                MengineFacebookPlugin.this.nativeCall("onFacebookLoginSuccess", token);
+                MengineFacebookPlugin.this.nativeCall("onFacebookLoginSuccess");
             }
 
             @Override
@@ -195,23 +206,10 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
                 MengineFacebookPlugin.this.nativeCall("onFacebookLoginError", ERROR_CODE_UNKNOWN, e);
             }
         });
-
-        String userId = application.getUserId();
-        if (userId != null) {
-            AppEventsLogger.setUserID(userId);
-        }
-
-        AppEventsLogger logger = AppEventsLogger.newLogger(application);
-        m_logger = logger;
     }
 
     @Override
-    public void onAppTerminate(@NonNull MengineApplication application) {
-        if (m_logger != null) {
-            m_logger.flush();
-            m_logger = null;
-        }
-
+    public void onDestroy(@NonNull MengineActivity activity) {
         if (m_accessTokenTracker != null) {
             m_accessTokenTracker.stopTracking();
             m_accessTokenTracker = null;
@@ -225,6 +223,13 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
         if (m_facebookCallbackManager != null) {
             LoginManager.getInstance().unregisterCallback(m_facebookCallbackManager);
             m_facebookCallbackManager = null;
+        }
+    }
+
+    @Override
+    public void onActivityResultBefore(@NonNull MengineActivity activity, int requestCode, int resultCode, Intent data) {
+        if (m_facebookCallbackManager != null) {
+            m_facebookCallbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
 

@@ -38,7 +38,7 @@ public class MengineAppsFlyerPlugin extends MengineService implements MengineLis
     public static final @StringRes int METADATA_API_KEY = R.string.mengine_appsflyer_api_key;
 
     @Override
-    public void onAppPrepare(@NonNull MengineApplication application, @NonNull Map<String, String> pluginVersions) throws MengineServiceInvalidInitializeException {
+    public void onAppPrepare(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
         String MengineAppsFlyerPlugin_ApiKey = application.getResourceString(METADATA_API_KEY);
 
         this.logInfo("%s: %s"

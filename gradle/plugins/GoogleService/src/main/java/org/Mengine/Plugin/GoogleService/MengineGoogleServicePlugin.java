@@ -10,6 +10,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineService;
+import org.Mengine.Base.MengineServiceInvalidInitializeException;
 
 public class MengineGoogleServicePlugin extends MengineService implements MengineListenerApplication {
     public static final String SERVICE_NAME = "GService";
@@ -39,12 +40,12 @@ public class MengineGoogleServicePlugin extends MengineService implements Mengin
     }
 
     @Override
-    public String onAppVersion(@NonNull MengineApplication application) {
+    public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
         GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
 
         Context context = application.getApplicationContext();
         int clientVersion = apiAvailability.getClientVersion(context);
 
-        return String.valueOf(clientVersion);
+        this.logInfo("Google Play Services client version: %s", String.valueOf(clientVersion));
     }
 }

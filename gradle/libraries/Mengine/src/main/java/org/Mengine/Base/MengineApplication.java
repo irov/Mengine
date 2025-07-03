@@ -850,37 +850,13 @@ public abstract class MengineApplication extends Application {
 
         this.setState("application.init", "services_version");
 
-        Map<String, String> pluginVersions = new HashMap<>();
-
-        for (MengineListenerApplication l : applicationListeners) {
-            String version = l.onAppVersion(this);
-
-            if (version == null) {
-                continue;
-            }
-
-            String serviceName = l.getServiceName();
-
-            pluginVersions.put(serviceName, version);
-        }
-
-        for (Map.Entry<String, String> entry: pluginVersions.entrySet()) {
-            String name = entry.getKey();
-            String version = entry.getValue();
-
-            MengineLog.logMessage(TAG, "plugin: %s version: %s"
-                , name
-                , version
-            );
-        }
-
         this.setState("application.init", "services_prepare");
 
         for (MengineListenerApplication l : applicationListeners) {
             try {
                 long service_timestamp = MengineUtils.getTimestamp();
 
-                l.onAppPrepare(this, pluginVersions);
+                l.onAppPrepare(this);
 
                 MengineLog.logInfo(TAG, "onAppPrepare service: %s time: %d"
                     , l.getServiceName()

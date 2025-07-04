@@ -173,14 +173,6 @@ public abstract class MengineApplication extends Application {
         }
     }
 
-    public void setPreferenceString(String name, String value) {
-        MenginePreferences.setPreferenceString(this, TAG, name, value);
-    }
-
-    public void clearPreferences() {
-        MenginePreferences.clearPreferences(this, TAG);
-    }
-
     public String getAndroidId() {
         return m_androidId;
     }
@@ -501,7 +493,7 @@ public abstract class MengineApplication extends Application {
 
         m_userId = userId;
 
-        this.setPreferenceString("user_id", m_userId);
+        MenginePreferences.setPreferenceString("user_id", m_userId);
 
         MengineFragmentUser.INSTANCE.changeUserId(old_userId, userId);
     }
@@ -511,7 +503,7 @@ public abstract class MengineApplication extends Application {
     }
 
     public void removeUserData() {
-        this.clearPreferences();
+        MenginePreferences.clearPreferences();
 
         MengineFragmentUser.INSTANCE.removeUserData();
 
@@ -525,7 +517,7 @@ public abstract class MengineApplication extends Application {
 
         m_adid = Objects.requireNonNullElse(adid, "");
 
-        this.setPreferenceString("adid", m_adid);
+        MenginePreferences.setPreferenceString("adid", m_adid);
 
         MengineFragmentAcquisition.INSTANCE.changeADID(m_adid);
     }
@@ -545,8 +537,8 @@ public abstract class MengineApplication extends Application {
         this.setState("user.acquisition_network", m_acquisitionNetwork);
         this.setState("user.acquisition_campaign", m_acquisitionCampaign);
 
-        this.setPreferenceString("acquisition_network", m_acquisitionNetwork);
-        this.setPreferenceString("acquisition_campaign", m_acquisitionCampaign);
+        MenginePreferences.setPreferenceString("acquisition_network", m_acquisitionNetwork);
+        MenginePreferences.setPreferenceString("acquisition_campaign", m_acquisitionCampaign);
 
         MengineParamAcquisition acquisition = new MengineParamAcquisition();
         acquisition.ACQUISITION_NETWORK = m_acquisitionNetwork;
@@ -688,41 +680,41 @@ public abstract class MengineApplication extends Application {
 
         this.setState("application.init", "load_preferences");
 
-        SharedPreferences settings = MenginePreferences.getPrivateSharedPreferences(this, TAG);
+        MenginePreferences.initialize(this, TAG);
 
         long MENGINE_APPLICATION_SAVE_VERSION = 1L;
 
-        long saveVersion = settings.getLong("save_version", MENGINE_APPLICATION_SAVE_VERSION);
-        String old_installId = settings.getString("install_id", null); //Deprecated
-        String installId = settings.getString("install_id", old_installId);
-        long installTimestamp = settings.getLong("install_timestamp", -1);
-        String installVersion = settings.getString("install_version", "");
-        long installRND = settings.getLong("install_rnd", -1);
-        long sessionIndex = settings.getLong("session_index", 0);
+        long saveVersion = MenginePreferences.getPreferenceLong("save_version", MENGINE_APPLICATION_SAVE_VERSION);
+        String old_installId = MenginePreferences.getPreferenceString("install_id", null); //Deprecated
+        String installId = MenginePreferences.getPreferenceString("install_id", old_installId);
+        long installTimestamp = MenginePreferences.getPreferenceLong("install_timestamp", -1);
+        String installVersion = MenginePreferences.getPreferenceString("install_version", "");
+        long installRND = MenginePreferences.getPreferenceLong("install_rnd", -1);
+        long sessionIndex = MenginePreferences.getPreferenceLong("session_index", 0);
 
-        String old_userId = settings.getString("session_id", null); //Deprecated
-        String userId = settings.getString("user_id", old_userId);
+        String old_userId = MenginePreferences.getPreferenceString("session_id", null); //Deprecated
+        String userId = MenginePreferences.getPreferenceString("user_id", old_userId);
 
-        String adid = settings.getString("adid", "");
-        String acquisitionNetwork = settings.getString("acquisition_network", "");
-        String acquisitionCampaign = settings.getString("acquisition_campaign", "");
+        String adid = MenginePreferences.getPreferenceString("adid", "");
+        String acquisitionNetwork = MenginePreferences.getPreferenceString("acquisition_network", "");
+        String acquisitionCampaign = MenginePreferences.getPreferenceString("acquisition_campaign", "");
 
-        SharedPreferences.Editor editor = settings.edit();
+        Bundle preferences = new Bundle();
 
-        editor.putLong("save_version", MENGINE_APPLICATION_SAVE_VERSION);
+        preferences.putLong("save_version", MENGINE_APPLICATION_SAVE_VERSION);
 
         if (installId == null) {
             installId = (BuildConfig.DEBUG == true ? "MDID" : "MRID") + MengineUtils.getSecureRandomHexString(32).toUpperCase(Locale.US);
             installTimestamp = MengineUtils.getTimestamp();
             installVersion = this.getVersionName();
 
-            editor.putString("install_id", installId);
-            editor.putLong("install_timestamp", installTimestamp);
-            editor.putString("install_version", installVersion);
+            preferences.putString("install_id", installId);
+            preferences.putLong("install_timestamp", installTimestamp);
+            preferences.putString("install_version", installVersion);
 
             installRND = MengineUtils.getSecureRandomNumber();
 
-            editor.putLong("install_rnd", installRND);
+            preferences.putLong("install_rnd", installRND);
         }
 
         boolean mengine_session_use_install_id = this.getResourceBoolean(R.bool.mengine_session_use_install_id);
@@ -730,11 +722,12 @@ public abstract class MengineApplication extends Application {
         if (userId == null && mengine_session_use_install_id == true) {
             userId = installId;
 
-            editor.putString("user_id", userId);
+            preferences.putString("user_id", userId);
         }
 
-        editor.putLong("session_index", sessionIndex + 1);
-        editor.apply();
+        preferences.putLong("session_index", sessionIndex + 1);
+
+        MenginePreferences.setPreferences(preferences);
 
         m_saveVersion = saveVersion;
         m_installId = installId;
@@ -969,7 +962,7 @@ public abstract class MengineApplication extends Application {
         for (MengineServiceInterface s : services) {
             String serviceName = s.getServiceName();
 
-            Bundle bundle = MenginePreferences.getPreferenceBundle(this, TAG, "service." + serviceName);
+            Bundle bundle = MenginePreferences.getPreferenceBundle("service." + serviceName, null);
 
             if (bundle == null) {
                 continue;
@@ -1035,7 +1028,7 @@ public abstract class MengineApplication extends Application {
             , bundle
         );
 
-        MenginePreferences.setPreferenceBundle(this, TAG, "service." + serviceName, bundle);
+        MenginePreferences.setPreferenceBundle("service." + serviceName, bundle);
     }
 
     @Override

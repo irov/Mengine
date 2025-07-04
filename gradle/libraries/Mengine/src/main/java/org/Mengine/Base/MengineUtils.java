@@ -1295,6 +1295,12 @@ public class MengineUtils {
 
     public static Bundle bundleFromJSONObject(@NonNull JSONObject value) {
         Bundle bundle = new Bundle();
+        MengineUtils.copyBundleFromJSONObject(bundle, value);
+
+        return bundle;
+    }
+
+    public static void copyBundleFromJSONObject(@NonNull Bundle bundle, @NonNull JSONObject value) {
         Iterator<String> keys = value.keys();
         while (keys.hasNext()) {
             String key = keys.next();
@@ -1324,8 +1330,6 @@ public class MengineUtils {
                 ));
             }
         }
-
-        return bundle;
     }
 
     public static JSONArray jsonArrayFromArrayList(List list) {

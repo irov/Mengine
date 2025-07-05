@@ -32,6 +32,14 @@ namespace Mengine
 
         updation->deactivate();
 
+        for( LayoutElement & el : m_elements )
+        {
+            if( el.subLayout != nullptr )
+            {
+                el.subLayout->finalize();
+            }
+        }
+
         m_elements.clear();
     }
     //////////////////////////////////////////////////////////////////////////

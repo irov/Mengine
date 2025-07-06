@@ -1,6 +1,7 @@
 android {
     ndkVersion project.ndkVersion
-    compileSdkVersion project.compileSdkVersion
+    compileSdk project.compileSdkVersion
+    buildToolsVersion project.buildToolsVersion
 
     compileOptions {
         coreLibraryDesugaringEnabled true
@@ -10,8 +11,8 @@ android {
 
     defaultConfig {
         multiDexEnabled true
-        minSdkVersion project.minSdkVersion
-        targetSdkVersion project.targetSdkVersion
+        minSdk project.minSdkVersion
+        targetSdk project.targetSdkVersion
     }
 
     buildFeatures {
@@ -22,6 +23,6 @@ android {
 dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
 
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib:2.1.20'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:2.2.0'
     implementation("com.google.guava:guava:33.4.8-android")
 }

@@ -43,6 +43,7 @@ buildscript {
 
 def ANDROID_APP_NDK_VERSION = Utils.getStringProperty("ANDROID_APP_NDK_VERSION", null)
 def ANDROID_APP_CMAKE_VERSION = Utils.getStringProperty("ANDROID_APP_CMAKE_VERSION", null)
+def ANDROID_APP_BUILD_TOOLS_VERSION = Utils.getStringProperty("ANDROID_APP_BUILD_TOOLS_VERSION", null)
 def ANDROID_APP_MIN_SDK_VERSION = Utils.getIntegerProperty("ANDROID_APP_MIN_SDK_VERSION", null)
 def ANDROID_APP_TARGET_SDK_VERSION = Utils.getIntegerProperty("ANDROID_APP_TARGET_SDK_VERSION", null)
 def ANDROID_APP_COMPILE_SDK_VERSION = Utils.getIntegerProperty("ANDROID_APP_COMPILE_SDK_VERSION", null)
@@ -63,6 +64,12 @@ allprojects {
             cmakeVersion = "3.31.6"
         }
 
+        if (ANDROID_APP_BUILD_TOOLS_VERSION != null) {
+            buildToolsVersion = ANDROID_APP_BUILD_TOOLS_VERSION
+        } else {
+            buildToolsVersion = "36.0.0"
+        }
+
         if (ANDROID_APP_MIN_SDK_VERSION != null) {
             minSdkVersion = ANDROID_APP_MIN_SDK_VERSION
         } else {
@@ -72,13 +79,13 @@ allprojects {
         if (ANDROID_APP_TARGET_SDK_VERSION != null) {
             targetSdkVersion = ANDROID_APP_TARGET_SDK_VERSION
         } else {
-            targetSdkVersion = 35
+            targetSdkVersion = 36
         }
 
         if (ANDROID_APP_COMPILE_SDK_VERSION != null) {
             compileSdkVersion = ANDROID_APP_COMPILE_SDK_VERSION
         } else {
-            compileSdkVersion = 35
+            compileSdkVersion = 36
         }
 
         javaVersion = JavaVersion.VERSION_17

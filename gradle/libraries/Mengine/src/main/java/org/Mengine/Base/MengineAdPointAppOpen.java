@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 import org.json.JSONObject;
 
 public class MengineAdPointAppOpen extends MengineAdPointBase {
-    public static final String TAG = "MengineAdPointAppOpen";
+    public static final MengineTag TAG = MengineTag.of("MengineAdPointAppOpen");
 
     protected long m_timeSleep;
     protected int m_actionOffset;

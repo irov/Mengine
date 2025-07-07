@@ -169,7 +169,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
     }
 
     @Override
-    public void onMengineRemoteConfigFetch(@NonNull MengineApplication application, @NonNull Map<String, JSONObject> remoteConfig) {
+    public void onMengineRemoteConfigFetch(@NonNull MengineApplication application, boolean updated, @NonNull Map<String, JSONObject> remoteConfig) {
         synchronized (this) {
             m_adInterstitialPoints.clear();
             m_adRewardedPoints.clear();

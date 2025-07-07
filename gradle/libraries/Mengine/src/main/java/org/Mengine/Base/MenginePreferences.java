@@ -14,14 +14,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MenginePreferences {
-    public static final String TAG = "MenginePreferences";
+    public static final MengineTag TAG = MengineTag.of("MenginePreferences");
 
     protected static String NAME;
     protected static SharedPreferences PREFERENCES;
     protected static final Map<String, Object> SETTINGS = new HashMap<>();
     protected static final Object SETTINGS_SYNC = new Object();
 
-    static public void initialize(@NonNull Context context, @NonNull String tag) {
+    static public void initialize(@NonNull Context context, @NonNull MengineTag tag) {
         String packageName = context.getPackageName();
 
         MenginePreferences.NAME = packageName + "." + tag;

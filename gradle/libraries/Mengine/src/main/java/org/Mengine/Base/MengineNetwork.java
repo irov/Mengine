@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MengineNetwork {
-    public static final String TAG = "MengineNetwork";
+    public static final MengineTag TAG = MengineTag.of("MengineNetwork");
 
     public static boolean m_networkAvailable = true;
     public static boolean m_networkUnmetered = true;

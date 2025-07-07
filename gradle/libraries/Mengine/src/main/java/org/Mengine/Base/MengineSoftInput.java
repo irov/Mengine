@@ -12,7 +12,7 @@ import android.view.inputmethod.InputMethodManager;
 import androidx.annotation.NonNull;
 
 public class MengineSoftInput extends View implements View.OnKeyListener {
-    public static final String TAG = "MengineSoftInput";
+    public static final MengineTag TAG = MengineTag.of("MengineSoftInput");
 
     protected InputMethodManager m_imm;
     protected View m_prevView;

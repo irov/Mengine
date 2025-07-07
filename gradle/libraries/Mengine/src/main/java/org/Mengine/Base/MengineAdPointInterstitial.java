@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 import org.json.JSONObject;
 
 public class MengineAdPointInterstitial extends MengineAdPointBase {
-    public static final String TAG = "MengineAdPointInterstitial";
+    public static final MengineTag TAG = MengineTag.of("MengineAdPointInterstitial");
 
     protected int m_actionOffset;
     protected int m_actionCooldown;

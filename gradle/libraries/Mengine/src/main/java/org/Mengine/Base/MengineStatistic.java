@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Size;
 
 public class MengineStatistic {
-    public static final String TAG = "MengineStatistic";
+    public static final MengineTag TAG = MengineTag.of("MengineStatistic");
 
     private static final Bundle STATISTICS = new Bundle();
     private static final Object STATISTICS_LOCK = new Object();

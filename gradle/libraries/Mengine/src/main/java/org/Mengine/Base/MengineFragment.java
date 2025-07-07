@@ -64,7 +64,7 @@ public class MengineFragment<L extends MengineServiceInterface> implements Mengi
     }
 
     private void logException(Object propagate, L listener, Throwable t, List<?> args) {
-        String tag = listener.getServiceTag();
+        MengineTag tag = listener.getServiceTag();
 
         MengineLog.logException(tag, t
             , Map.of(

@@ -2,6 +2,7 @@ package org.Mengine.Plugin.AppLovin;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.webkit.WebView;
 
 import androidx.annotation.BoolRes;
 import androidx.annotation.NonNull;
@@ -117,6 +118,22 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
         mediation.onAppCreate(application, this);
 
         m_mediations.add(mediation);
+    }
+
+    @Override
+    public void onAppInit(@NonNull MengineApplication application, boolean isMainProcess) throws MengineServiceInvalidInitializeException {
+        if (isMainProcess == false) {
+            return;
+        }
+
+        new Thread(() -> {
+            try {
+                // Creating an instance forces WebView to load its native libs.
+                // We use the application context so we don't leak an Activity.
+                new WebView(application);
+            } catch (Throwable ignore) {
+            }
+        }, "WebViewInit").start();
     }
 
     @Override
@@ -397,7 +414,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
     }
 
     @Override
-    public void onMengineRemoteConfigFetch(@NonNull MengineApplication application, @NonNull Map<String, JSONObject> configs) {
+    public void onMengineRemoteConfigFetch(@NonNull MengineApplication application, boolean updated, @NonNull Map<String, JSONObject> configs) {
         synchronized (this) {
             JSONObject applovin_show_mediation_debugger = configs.getOrDefault("applovin_show_mediation_debugger", null);
 
@@ -408,11 +425,11 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
             }
 
             for (MengineAppLovinMediationInterface mediation : m_mediations) {
-                mediation.onMengineRemoteConfigFetch(application, configs);
+                mediation.onMengineRemoteConfigFetch(application, updated, configs);
             }
 
             if (m_nonetBanners != null) {
-                m_nonetBanners.onMengineRemoteConfigFetch(application, configs);
+                m_nonetBanners.onMengineRemoteConfigFetch(application, updated, configs);
             }
         }
     }

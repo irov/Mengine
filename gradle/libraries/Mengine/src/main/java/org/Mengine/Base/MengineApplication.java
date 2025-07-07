@@ -3,7 +3,6 @@ package org.Mengine.Base;
 import android.app.Application;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -30,7 +29,7 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class MengineApplication extends Application {
-    private static final String TAG = "MengineApplication";
+    private static final MengineTag TAG = MengineTag.of("MengineApplication");
 
     static {
         System.loadLibrary("AndroidApplication");
@@ -937,9 +936,9 @@ public abstract class MengineApplication extends Application {
                 continue;
             }
 
-            String tag = p.getServiceTag();
+            MengineTag tag = p.getServiceTag();
 
-            MengineNative.AndroidKernelService_addPlugin(tag, p);
+            MengineNative.AndroidKernelService_addPlugin(tag.toString(), p);
         }
 
         this.setState("application.init", "run_main");
@@ -1056,9 +1055,9 @@ public abstract class MengineApplication extends Application {
                 continue;
             }
 
-            String tag = p.getServiceTag();
+            MengineTag tag = p.getServiceTag();
 
-            MengineNative.AndroidKernelService_removePlugin(tag);
+            MengineNative.AndroidKernelService_removePlugin(tag.toString());
         }
 
         for (MengineServiceInterface service : m_services) {
@@ -1219,7 +1218,7 @@ public abstract class MengineApplication extends Application {
         return true;
     }
 
-    public void nativeCall(String plugin, String method, Object ... args) {
+    public void nativeCall(@NonNull String plugin, String method, Object ... args) {
         if (BuildConfig.DEBUG == true) {
             MengineLog.logInfo(TAG, "nativeCall plugin [%s] method [%s] args [%s]"
                 , plugin

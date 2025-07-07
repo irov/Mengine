@@ -527,7 +527,9 @@ namespace Mengine
 
         jclass plugin_class = _jenv->GetObjectClass( jplugin );
 
-        jmethodID jmethodId = _jenv->GetMethodID( plugin_class, _method.c_str(), signature );
+        const Char * method_str = _method.c_str();
+
+        jmethodID jmethodId = _jenv->GetMethodID( plugin_class, method_str, signature );
 
         if( jmethodId == nullptr )
         {

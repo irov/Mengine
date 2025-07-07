@@ -15,7 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class MengineProcedureSendMail implements MengineProcedureInterface {
-    private static final String TAG = "MenginePSendMail";
+    private static final MengineTag TAG = MengineTag.of("MenginePSendMail");
 
     private final String m_email;
     private final String m_subject;

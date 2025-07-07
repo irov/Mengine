@@ -57,7 +57,6 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
@@ -72,8 +71,6 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
@@ -84,9 +81,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 public class MengineUtils {
-    public static final String TAG = "MengineUtils";
+    public static final MengineTag TAG = MengineTag.of("MengineUtils");
 
-    public static Class<?> getClazz(ClassLoader cl, String TAG, String name, boolean required) {
+    public static Class<?> getClazz(@NonNull ClassLoader cl, @NonNull MengineTag TAG, String name, boolean required) {
         try {
             Class<?> clazz = cl.loadClass(name);
 
@@ -103,7 +100,7 @@ public class MengineUtils {
         return null;
     }
 
-    public static Class<?> getPackageBuildConfig(ClassLoader cl, String TAG, Package p) {
+    public static Class<?> getPackageBuildConfig(@NonNull ClassLoader cl, @NonNull MengineTag TAG, Package p) {
         String packageName = p.getName();
         String buildConfigName = packageName + ".BuildConfig";
 
@@ -112,7 +109,7 @@ public class MengineUtils {
         return clazz;
     }
 
-    public static Object newInstance(ClassLoader cl, String TAG, String name, boolean required, Object ... args) {
+    public static Object newInstance(@NonNull ClassLoader cl, @NonNull MengineTag TAG, @NonNull String name, boolean required, Object ... args) {
         Class<?> clazz = MengineUtils.getClazz(cl, TAG, name, required);
 
         if (clazz == null) {
@@ -124,7 +121,7 @@ public class MengineUtils {
         return ob;
     }
 
-    public static Object newInstance(String TAG, Class<?> cls, boolean required, Object ... args) {
+    public static Object newInstance(@NonNull MengineTag TAG, Class<?> cls, boolean required, Object ... args) {
         try {
             for (Constructor<?> constructor : cls.getDeclaredConstructors()) {
                 Class<?>[] paramTypes = constructor.getParameterTypes();
@@ -203,8 +200,8 @@ public class MengineUtils {
         return code;
     }
 
-    public static Handler performOnMainThread(Runnable runnable) {
-        Looper mainLooper = Looper.getMainLooper();
+    public static Handler performOnMainThread(@NonNull Runnable runnable) {
+        final Looper mainLooper = Looper.getMainLooper();
 
         if (Looper.myLooper() == mainLooper) {
             runnable.run();
@@ -225,9 +222,9 @@ public class MengineUtils {
         return handler;
     }
 
-    public static Handler performOnMainThreadDelayed(Runnable runnable, long delayMillis) {
-        Looper mainLooper = Looper.getMainLooper();
-        Handler handler = new Handler(mainLooper);
+    public static Handler performOnMainThreadDelayed(@NonNull Runnable runnable, long delayMillis) {
+        final Looper mainLooper = Looper.getMainLooper();
+        final Handler handler = new Handler(mainLooper);
 
         if (handler.postDelayed(runnable, delayMillis) == false) {
             MengineLog.logError(TAG, "[ERROR] performOnMainThreadDelayed runnable: %s failed to post to main thread with delay: %d"
@@ -241,14 +238,57 @@ public class MengineUtils {
         return handler;
     }
 
-    public static MengineRunnablePeriodically scheduleOnUiAtFixedRate(long delay, long period, Runnable runnable) {
-        final Handler handler = new Handler(Looper.getMainLooper());
+    public static MengineRunnablePeriodically scheduleOnMainThreadFixedRate(long delay, long period, @NonNull Runnable runnable) {
+        final Looper mainLooper = Looper.getMainLooper();
+        final Handler handler = new Handler(mainLooper);
 
         MengineRunnablePeriodically runnablePeriodically = new MengineRunnablePeriodically(handler, runnable, period);
 
         runnablePeriodically.start(delay);
 
         return runnablePeriodically;
+    }
+
+    public static Thread performOnNewThread(@NonNull Runnable runnable, String name) {
+        Thread thread = new Thread(runnable, name);
+
+        try {
+            thread.start();
+        } catch (final Exception e) {
+            MengineLog.logError(TAG, "[ERROR] performOnNewThread runnable: %s failed to start thread exception: %s"
+                , runnable
+                , e.getMessage()
+            );
+
+            return null;
+        }
+
+        return thread;
+    }
+
+    public static Thread performOnNewThreadDelay(long delay, @NonNull Runnable runnable, String name) {
+        Thread thread = new Thread(() -> {
+            try {
+                Thread.sleep(delay);
+            } catch (final InterruptedException e) {
+                return;
+            }
+
+            runnable.run();
+        }, name);
+
+        try {
+            thread.start();
+        } catch (final Exception e) {
+            MengineLog.logError(TAG, "[ERROR] performOnNewThreadDelay runnable: %s failed to start thread exception: %s"
+                , runnable
+                , e.getMessage()
+            );
+
+            return null;
+        }
+
+        return thread;
     }
 
     public static void makeToastDelayed(Context context, long delayed, String format, Object ... args) {
@@ -1260,7 +1300,7 @@ public class MengineUtils {
         throw new RuntimeException(message, throwable);
     }
 
-    public static void throwAssertionError(String title, Throwable throwable, String format, Object ... args) {
+    public static void throwAssertionError(@NonNull MengineTag tag, Throwable throwable, String format, Object ... args) {
         String message = MengineLog.buildTotalMsg(format, args);
 
         if (MengineActivity.INSTANCE == null) {
@@ -1269,7 +1309,7 @@ public class MengineUtils {
             return;
         }
 
-        MengineUtils.finishActivityWithAlertDialog(MengineActivity.INSTANCE, "AssertionError", "%s", message);
+        MengineUtils.finishActivityWithAlertDialog(MengineActivity.INSTANCE, "AssertionError", "[%s] %s", tag, message);
     }
 
     public static ArrayList<Bundle> parcelableArrayListFromJSON(@NonNull JSONArray value) {

@@ -49,7 +49,11 @@ public class MengineFragmentRemoteConfig extends MengineFragment<MengineListener
         synchronized (this) {
             m_configs = configs;
         }
+    }
 
-        this.propagate(MengineListenerRemoteConfig::onMengineRemoteConfigFetch, configs);
+    public void remoteConfigPropagate(boolean updated) {
+        Map<String, JSONObject> configs = this.getRemoteConfigs();
+
+        this.propagate(MengineListenerRemoteConfig::onMengineRemoteConfigFetch, updated, configs);
     }
 }

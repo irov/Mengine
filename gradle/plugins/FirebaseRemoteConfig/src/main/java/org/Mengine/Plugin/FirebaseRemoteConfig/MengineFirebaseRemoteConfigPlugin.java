@@ -76,13 +76,13 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
                     this.logInfo("remote config defaults set successfully");
                 }
             });
+
+        this.fetchRemoteConfigValues(remoteConfig);
     }
 
     @Override
     public void onAppPost(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
-        FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
-
-        this.fetchRemoteConfigValues(remoteConfig);
+        this.propagateRemoteConfigValues(false);
     }
 
     @Override
@@ -111,7 +111,7 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
         }
     }
 
-    protected void fetchRemoteConfigValues(FirebaseRemoteConfig remoteConfig) {
+    protected void fetchRemoteConfigValues(@NonNull FirebaseRemoteConfig remoteConfig) {
         Map<String, FirebaseRemoteConfigValue> remoteValues = remoteConfig.getAll();
 
         Map<String, JSONObject> configs = new HashMap<>();
@@ -157,6 +157,10 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
         MengineFragmentRemoteConfig.INSTANCE.remoteConfigFetch(configs);
     }
 
+    protected void propagateRemoteConfigValues(boolean updated) {
+        MengineFragmentRemoteConfig.INSTANCE.remoteConfigPropagate(updated);
+    }
+
     protected void fetchAndActivate(@NonNull MengineActivity activity) {
         if (MengineNetwork.isNetworkAvailable() == false) {
             this.logInfo("remote config invalid network not available");
@@ -198,9 +202,12 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
                     , updated
                 );
 
-                if (updated == true) {
-                    this.fetchRemoteConfigValues(remoteConfig);
+                if (updated == false) {
+                    return;
                 }
+
+                this.fetchRemoteConfigValues(remoteConfig);
+                this.propagateRemoteConfigValues(true);
             }).addOnFailureListener(activity, e -> {
                 m_prefetching = false;
 

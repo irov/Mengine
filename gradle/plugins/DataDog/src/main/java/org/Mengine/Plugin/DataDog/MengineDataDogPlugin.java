@@ -275,7 +275,7 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
     }
 
     @Override
-    public void onMengineRemoteConfigFetch(@NonNull MengineApplication application, @NonNull Map<String, JSONObject> configs) {
+    public void onMengineRemoteConfigFetch(@NonNull MengineApplication application, boolean updated, @NonNull Map<String, JSONObject> configs) {
         synchronized (this) {
             JSONObject datadog_debug_message = configs.getOrDefault("datadog_debug_message", null);
 

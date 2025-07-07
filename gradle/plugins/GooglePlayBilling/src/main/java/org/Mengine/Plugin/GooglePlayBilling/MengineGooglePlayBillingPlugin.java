@@ -23,6 +23,7 @@ import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineCallback;
 import org.Mengine.Base.MengineFragmentInAppPurchase;
+import org.Mengine.Base.MengineListenerRemoteConfig;
 import org.Mengine.Base.MengineParamInAppProduct;
 import org.Mengine.Base.MengineParamInAppPurchase;
 import org.Mengine.Base.MengineListenerActivity;
@@ -30,6 +31,8 @@ import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class MengineGooglePlayBillingPlugin extends MengineService implements MengineListenerApplication, MengineListenerActivity {
+public class MengineGooglePlayBillingPlugin extends MengineService implements MengineListenerApplication, MengineListenerActivity, MengineListenerRemoteConfig {
     public static final String SERVICE_NAME = "GPlayBilling";
     public static final boolean SERVICE_EMBEDDING = true;
 
@@ -47,6 +50,8 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
     private static final int ERROR_CODE_NOT_INITIALIZED = 3;
     private static final int ERROR_CODE_NOT_READY = 4;
 
+    private List<String> m_products;
+    private final Object m_productsLock = new Object();
     private List<ProductDetails> m_productsDetails;
     private BillingClient m_billingClient;
 
@@ -206,6 +211,10 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
                 MengineGooglePlayBillingPlugin.this.logInfo("billing setup finished");
 
                 MengineGooglePlayBillingPlugin.this.queryPurchases();
+
+                synchronized (m_productsLock) {
+                    MengineGooglePlayBillingPlugin.this.queryProducts(m_products);
+                }
             }
         });
     }
@@ -219,6 +228,49 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
     public void onDestroy(@NonNull MengineActivity activity) {
         if (m_billingClient != null) {
             m_billingClient.endConnection();
+        }
+    }
+
+    @Override
+    public void onMengineRemoteConfigFetch(@NonNull MengineApplication application, boolean updated, @NonNull Map<String, JSONObject> configs) {
+        synchronized (m_productsLock) {
+            List<String> products = new ArrayList<>();
+
+            JSONObject productsConfig = configs.get("google_billing");
+
+            if (productsConfig == null) {
+                this.logWarning("google_billing not found in configs: %s"
+                    , configs.keySet()
+                );
+
+                return;
+            }
+
+            JSONArray productsArray = productsConfig.optJSONArray("products");
+
+            if (productsArray == null) {
+                this.logWarning("google_billing products not found in config: %s"
+                    , productsConfig
+                );
+
+                return;
+            }
+
+            for (int i = 0; i < productsArray.length(); ++i) {
+                String productId = productsArray.optString(i, null);
+
+                if (productId == null) {
+                    this.logWarning("google_billing products invalid product id at index: %d"
+                        , i
+                    );
+
+                    continue;
+                }
+
+                products.add(productId);
+            }
+
+            m_products = products;
         }
     }
 

@@ -134,7 +134,7 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
     }
 
     @Override
-    public void onMengineRemoteConfigFetch(@NonNull MengineApplication application, @NonNull Map<String, JSONObject> configs) {
+    public void onMengineRemoteConfigFetch(@NonNull MengineApplication application, boolean updated, @NonNull Map<String, JSONObject> configs) {
         JSONObject applovin_nonetbanner = configs.getOrDefault("applovin_nonetbanner", null);
 
         if (applovin_nonetbanner != null) {
@@ -158,7 +158,7 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
             return;
         }
 
-        MengineRunnablePeriodically refreshTimer = MengineUtils.scheduleOnUiAtFixedRate(0, m_showBannerDurationTime, () -> {
+        MengineRunnablePeriodically refreshTimer = MengineUtils.scheduleOnMainThreadFixedRate(0, m_showBannerDurationTime, () -> {
             int refreshRequestId;
             String oldBanenrUrl;
             String newBannerUrl;

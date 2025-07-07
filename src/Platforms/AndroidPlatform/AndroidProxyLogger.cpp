@@ -49,9 +49,15 @@ namespace Mengine
 
         jclass jclass_MengineLoggerMessageParam = Helper::AndroidEnvFindClass( jenv, "org/Mengine/Base/MengineParamLoggerMessage" );
 
-        jmethodID jmethod_MengineLoggerMessageParam_constructor = jenv->GetMethodID( jclass_MengineLoggerMessageParam, "<init>", "(Ljava/lang/String;Ljava/lang/String;IILjava/lang/String;ILjava/lang/String;Ljava/lang/String;)V" );
+        jmethodID jmethod_MengineLoggerMessageParam_constructor = jenv->GetMethodID( jclass_MengineLoggerMessageParam, "<init>", "(Lorg/Mengine/Base/MengineTag;Ljava/lang/String;IILjava/lang/String;ILjava/lang/String;Ljava/lang/String;)V" );
 
         jstring jcategory = jenv->NewStringUTF( message.category );
+
+        jclass jclass_MengineTag = jenv->FindClass( "org/Mengine/Base/MengineTag" );
+        jmethodID mid_MengineTag_of = jenv->GetStaticMethodID( jclass_MengineTag, "of", "(Ljava/lang/String;)Lorg/Mengine/Base/MengineTag;" );
+
+        jobject jcategoryTag = jenv->CallStaticObjectMethod( jclass_MengineTag, mid_MengineTag_of, jcategory );
+
         jstring jthread = jenv->NewStringUTF( message.thread.c_str() );
 
         jint jlevel = message.level;
@@ -70,7 +76,7 @@ namespace Mengine
         jstring jdata = jenv->NewStringUTF( message.data );
 
         jobject jmessage = jenv->NewObject( jclass_MengineLoggerMessageParam, jmethod_MengineLoggerMessageParam_constructor
-            , jcategory
+            , jcategoryTag
             , jthread
             , jlevel
             , jfilter
@@ -81,7 +87,9 @@ namespace Mengine
         );
 
         jenv->DeleteLocalRef( jclass_MengineLoggerMessageParam );
+        jenv->DeleteLocalRef( jclass_MengineTag );
 
+        jenv->DeleteLocalRef( jcategoryTag );
         jenv->DeleteLocalRef( jcategory );
         jenv->DeleteLocalRef( jthread );
 #ifdef MENGINE_DEBUG

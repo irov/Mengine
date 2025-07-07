@@ -74,6 +74,16 @@ public class MengineFirebaseCrashlyticsPlugin extends MengineService implements 
     }
 
     @Override
+    public void onResume(@NonNull MengineActivity activity) {
+        MengineFirebaseCrashlyticsANRMonitor.start();
+    }
+
+    @Override
+    public void onPause(@NonNull MengineActivity activity) {
+        MengineFirebaseCrashlyticsANRMonitor.stop();
+    }
+
+    @Override
     public void onMengineCaughtException(@NonNull MengineApplication application, Throwable throwable) {
         throwable.printStackTrace(System.err);
 
@@ -167,7 +177,7 @@ public class MengineFirebaseCrashlyticsPlugin extends MengineService implements 
     @Override
     public void onMengineException(@NonNull MengineApplication application, @NonNull MengineParamLoggerException exception) {
         CustomKeysAndValues.Builder builder = new CustomKeysAndValues.Builder();
-        builder.putString("category", exception.EXCEPTION_CATEGORY);
+        builder.putString("category", exception.EXCEPTION_CATEGORY.toString());
 
         for (Map.Entry<String, Object> entry : exception.EXCEPTION_ATTRIBUTES.entrySet()) {
             String key = entry.getKey();

@@ -16,9 +16,10 @@ public class MengineService implements MengineServiceInterface {
     private MengineApplication m_application;
     private MengineActivity m_activity;
     private String m_serviceName;
-    private String m_serviceTag;
+    private MengineTag m_serviceTag;
     private boolean m_embedding;
     private Boolean m_availableStatus = null;
+    private Boolean m_availableAnalytics = null;
 
     @Override
     public void onAppInitialize(@NonNull MengineApplication application, String serviceName, boolean embedding) {
@@ -26,7 +27,7 @@ public class MengineService implements MengineServiceInterface {
         m_serviceName = serviceName;
         m_embedding = embedding;
 
-        m_serviceTag = "Mengine" + m_serviceName;
+        m_serviceTag = MengineTag.of("Mengine" + m_serviceName);
     }
 
     @Override
@@ -60,7 +61,7 @@ public class MengineService implements MengineServiceInterface {
     }
 
     @Override
-    public String getServiceTag() {
+    public MengineTag getServiceTag() {
         return m_serviceTag;
     }
 
@@ -76,7 +77,7 @@ public class MengineService implements MengineServiceInterface {
     public Object newInstance(String name, boolean required, Object ... args) {
         ClassLoader cl = this.getClass().getClassLoader();
 
-        Object instance = MengineUtils.newInstance(cl, m_serviceName, name, required, args);
+        Object instance = MengineUtils.newInstance(cl, m_serviceTag, name, required, args);
 
         return instance;
     }
@@ -191,7 +192,7 @@ public class MengineService implements MengineServiceInterface {
 
     @Override
     public String logVerbose(String format, Object ... args) {
-        String t = this.getServiceTag();
+        MengineTag t = this.getServiceTag();
         String m = MengineLog.logVerbose(t, format, args);
 
         return m;
@@ -199,7 +200,7 @@ public class MengineService implements MengineServiceInterface {
 
     @Override
     public String logDebug(String format, Object ... args) {
-        String t = this.getServiceTag();
+        MengineTag t = this.getServiceTag();
         String m = MengineLog.logDebug(t, format, args);
 
         return m;
@@ -207,7 +208,7 @@ public class MengineService implements MengineServiceInterface {
 
     @Override
     public String logInfo(String format, Object ... args) {
-        String t = this.getServiceTag();
+        MengineTag t = this.getServiceTag();
         String m = MengineLog.logInfo(t, format, args);
 
         return m;
@@ -215,7 +216,7 @@ public class MengineService implements MengineServiceInterface {
 
     @Override
     public String logMessage(String format, Object ... args) {
-        String t = this.getServiceTag();
+        MengineTag t = this.getServiceTag();
         String m = MengineLog.logMessage(t, format, args);
 
         return m;
@@ -223,7 +224,7 @@ public class MengineService implements MengineServiceInterface {
 
     @Override
     public String logMessageProtected(String format, Object ... args) {
-        String t = this.getServiceTag();
+        MengineTag t = this.getServiceTag();
         String m = MengineLog.logMessageProtected(t, format, args);
 
         return m;
@@ -231,7 +232,7 @@ public class MengineService implements MengineServiceInterface {
 
     @Override
     public String logMessageRelease(String format, Object ... args) {
-        String t = this.getServiceTag();
+        MengineTag t = this.getServiceTag();
         String m = MengineLog.logMessageRelease(t, format, args);
 
         return m;
@@ -239,7 +240,7 @@ public class MengineService implements MengineServiceInterface {
 
     @Override
     public String logWarning(String format, Object ... args) {
-        String t = this.getServiceTag();
+        MengineTag t = this.getServiceTag();
         String m = MengineLog.logWarning(t, format, args);
 
         return m;
@@ -247,7 +248,7 @@ public class MengineService implements MengineServiceInterface {
 
     @Override
     public String logError(String format, Object ... args) {
-        String t = this.getServiceTag();
+        MengineTag t = this.getServiceTag();
         String m = MengineLog.logError(t, format, args);
 
         return m;
@@ -255,30 +256,30 @@ public class MengineService implements MengineServiceInterface {
 
     @Override
     public void logException(@NonNull Throwable e, @NonNull Map<String, Object> attributes) {
-        String t = this.getServiceTag();
+        MengineTag t = this.getServiceTag();
         MengineLog.logException(t, e, attributes);
     }
 
     @Override
     public void assertionError(String format, Object ... args) {
-        String t = this.getServiceTag();
+        MengineTag t = this.getServiceTag();
         MengineUtils.throwAssertionError(t, null, format, args);
     }
 
     private boolean availableAnalytics() {
-        JSONObject config_analytics = MengineFragmentRemoteConfig.INSTANCE.getRemoteConfigValue("plugin_" + m_serviceName);
+        if (m_availableAnalytics == null) {
+            JSONObject config_analytics = MengineFragmentRemoteConfig.INSTANCE.getRemoteConfigValue("plugin_" + m_serviceName);
 
-        if (config_analytics == null) {
-            return false;
+            if (config_analytics == null) {
+                m_availableAnalytics = false;
+            } else {
+                boolean enabled = config_analytics.optBoolean("enable_analytics", false);
+
+                m_availableAnalytics = enabled;
+            }
         }
 
-        boolean enabled = config_analytics.optBoolean("enable_analytics", false);
-
-        if (enabled == false) {
-            return false;
-        }
-
-        return true;
+        return m_availableAnalytics;
     }
 
     @Override
@@ -298,8 +299,8 @@ public class MengineService implements MengineServiceInterface {
 
     @Override
     public void nativeCall(String method, Object ... args) {
-        String t = this.getServiceTag();
-        m_application.nativeCall(t, method, args);
+        MengineTag t = this.getServiceTag();
+        m_application.nativeCall(t.toString(), method, args);
     }
 
     @Override

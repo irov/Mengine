@@ -36,7 +36,7 @@ public interface MengineServiceInterface {
     }
 
     String getServiceName();
-    String getServiceTag();
+    MengineTag getServiceTag();
 
     <T> T getService(Class<T> cls);
     Object newInstance(String name, boolean required, Object ... args);

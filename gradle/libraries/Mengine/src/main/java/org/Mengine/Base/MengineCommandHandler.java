@@ -7,7 +7,7 @@ import android.os.Message;
 import androidx.annotation.NonNull;
 
 public class MengineCommandHandler extends Handler {
-    public static final String TAG = "MengineCommandHandler";
+    public static final MengineTag TAG = MengineTag.of("MengineCommandHandler");
 
     protected final MengineActivity m_activity;
 

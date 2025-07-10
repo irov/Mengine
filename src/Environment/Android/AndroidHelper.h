@@ -84,6 +84,9 @@ namespace Mengine
         typedef Lambda<void( jint index, jobject value )> LambdaJavaJSONArrayForeach;
         void AndroidForeachJavaJSONArray( JNIEnv * _jenv, jobject _jarray, const LambdaJavaJSONArrayForeach & _lambda );
         //////////////////////////////////////////////////////////////////////////
+        typedef Lambda<void( jobject value )> LambdaJavaSetForeach;
+        void AndroidForeachJavaSet( JNIEnv * _jenv, jobject _jset, const LambdaJavaSetForeach & _lambda );
+        //////////////////////////////////////////////////////////////////////////
         typedef Lambda<void( jobject key, jobject value )> LambdaJavaMapForeach;
         void AndroidForeachJavaMap( JNIEnv * _jenv, jobject _jmap, const LambdaJavaMapForeach & _lambda );
         //////////////////////////////////////////////////////////////////////////

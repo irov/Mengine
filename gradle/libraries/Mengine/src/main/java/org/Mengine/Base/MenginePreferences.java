@@ -9,6 +9,9 @@ import androidx.annotation.NonNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Supplier;
 import java.util.HashMap;
 import java.util.Map;
@@ -96,6 +99,43 @@ public class MenginePreferences {
 
         SharedPreferences.Editor editor = MenginePreferences.PREFERENCES.edit();
         editor.putString(name, value);
+        editor.apply();
+    }
+
+    static public Set<String> getPreferenceStrings(@NonNull String name, Set<String> defaultValue) {
+        synchronized (MenginePreferences.SETTINGS_SYNC) {
+            Set<String> value = (Set<String>) MenginePreferences.SETTINGS.getOrDefault(name, defaultValue);
+
+            return value;
+        }
+    }
+
+    static public void setPreferenceStrings(@NonNull String name, Set<String> value) {
+        synchronized (MenginePreferences.SETTINGS_SYNC) {
+            MenginePreferences.SETTINGS.put(name, value);
+        }
+
+        SharedPreferences.Editor editor = MenginePreferences.PREFERENCES.edit();
+        editor.putStringSet(name, value);
+        editor.apply();
+    }
+
+    static public void addPreferenceStrings(@NonNull String name, Collection<String> value) {
+        synchronized (MenginePreferences.SETTINGS_SYNC) {
+            Set<String> currentValue = (Set<String>) MenginePreferences.SETTINGS.getOrDefault(name, null);
+
+            if (currentValue == null) {
+                currentValue = new HashSet<>();
+                MenginePreferences.SETTINGS.put(name, currentValue);
+            }
+
+            currentValue.addAll(value);
+        }
+
+        Set<String> values = MenginePreferences.getPreferenceStrings(name, null);
+
+        SharedPreferences.Editor editor = MenginePreferences.PREFERENCES.edit();
+        editor.putStringSet(name, values);
         editor.apply();
     }
 

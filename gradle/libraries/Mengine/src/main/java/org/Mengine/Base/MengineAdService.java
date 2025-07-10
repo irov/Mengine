@@ -11,11 +11,14 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
-public class MengineAdService extends MengineService implements DefaultLifecycleObserver, MengineAdProviderInterface, MengineAdResponseInterface, MengineListenerActivity, MengineListenerRemoteConfig {
+public class MengineAdService extends MengineService implements DefaultLifecycleObserver, MengineAdProviderInterface, MengineAdResponseInterface, MengineListenerActivity, MengineListenerRemoteConfig, MengineListenerInAppPurchase {
     public static final String SERVICE_NAME = "AdService";
     public static final boolean SERVICE_EMBEDDING = true;
     public static final int SAVE_VERSION = 1;
+
+    public static final String INAPPURCHASE_DISABLE_ADS = "disable_ads";
 
     private final Map<String, MengineAdPointInterstitial> m_adInterstitialPoints = new HashMap<>();
     private final Map<String, MengineAdPointRewarded> m_adRewardedPoints = new HashMap<>();
@@ -54,6 +57,8 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
     @Override
     public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
         m_optionNoAds = this.hasOption("ad.no_ads");
+
+        m_noAds = MengineFragmentInAppPurchase.INSTANCE.isOwnedInAppProduct(INAPPURCHASE_DISABLE_ADS);
 
         if (this.hasAppOpen() == true) {
             ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
@@ -207,8 +212,6 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
 
         bundle.putInt("version", SAVE_VERSION);
 
-        bundle.putBoolean("no_ads", m_noAds);
-
         Bundle attemptsBundle = new Bundle();
 
         for (Map.Entry<String, MengineAdAttempts> entry : m_adAttempts.entrySet()) {
@@ -241,8 +244,6 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
     @Override
     public void onLoad(@NonNull MengineApplication application, @NonNull Bundle bundle) {
         int version = bundle.getInt("version", 0);
-
-        m_noAds = bundle.getBoolean("no_ads", false);
 
         Bundle attemptsBundle = bundle.getBundle("attempts");
 
@@ -961,5 +962,24 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
 
             this.nativeCall("onAndroidAdServiceRewardedUserRewarded", params);
         }
+    }
+
+    @Override
+    public void onMenginePurchaseInAppProduct(@NonNull MengineApplication application, @NonNull MengineParamInAppPurchase purchase) {
+        for (String product : purchase.INAPPPURCHASE_PRODUCTS) {
+            if (product != INAPPURCHASE_DISABLE_ADS) {
+                continue;
+            }
+
+            this.logInfo("purchase in app product '%s' for disable ads", product);
+
+            this.setNoAds(true);
+        }
+    }
+
+    public void onMengineOwnedInAppProducts(@NonNull MengineApplication application, @NonNull Set<String> products) {
+        boolean noAds = products.contains(INAPPURCHASE_DISABLE_ADS);
+
+        this.setNoAds(noAds);
     }
 }

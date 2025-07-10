@@ -23,6 +23,7 @@ import org.Mengine.Base.MengineListenerEngine;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineListenerLogger;
 import org.Mengine.Base.MengineListenerUser;
+import org.Mengine.Base.MengineUI;
 import org.Mengine.Base.MengineUtils;
 import org.json.JSONArray;
 
@@ -58,7 +59,9 @@ public class MengineFirebaseCrashlyticsPlugin extends MengineService implements 
     public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
         if (BuildConfig.DEBUG == true) {
             if (FirebaseCrashlytics.getInstance().didCrashOnPreviousExecution() == true) {
-                MengineUtils.makeToastDelayed(activity, 10000L, "Last launch ended in a crash");
+                MengineUtils.performOnMainThreadDelayed(() -> {
+                    MengineUI.showToast(activity, "Last launch ended in a crash");
+                }, 10000L);
             }
         }
 

@@ -2,7 +2,6 @@ package org.Mengine.Plugin.AppLovin;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.webkit.WebView;
 
 import androidx.annotation.BoolRes;
 import androidx.annotation.NonNull;
@@ -118,22 +117,6 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
         mediation.onAppCreate(application, this);
 
         m_mediations.add(mediation);
-    }
-
-    @Override
-    public void onAppInit(@NonNull MengineApplication application, boolean isMainProcess) throws MengineServiceInvalidInitializeException {
-        if (isMainProcess == false) {
-            return;
-        }
-
-        new Thread(() -> {
-            try {
-                // Creating an instance forces WebView to load its native libs.
-                // We use the application context so we don't leak an Activity.
-                new WebView(application);
-            } catch (Throwable ignore) {
-            }
-        }, "WebViewInit").start();
     }
 
     @Override

@@ -1,8 +1,6 @@
 package org.Mengine.Base;
 
-import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.AlertDialog;
 import android.app.Notification;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -13,7 +11,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Rect;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Build;
@@ -21,21 +18,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.LocaleList;
 import android.os.Looper;
-import android.text.Layout;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.AlignmentSpan;
-import android.text.style.StyleSpan;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
 import android.view.WindowMetrics;
-import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.StringRes;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import com.google.common.base.Splitter;
@@ -63,7 +51,6 @@ import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -72,7 +59,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -289,21 +275,6 @@ public class MengineUtils {
         }
 
         return thread;
-    }
-
-    public static void makeToastDelayed(Context context, long delayed, String format, Object ... args) {
-        MengineLog.logMessage(TAG, "Toast show after %d milliseconds format: %s args: %s"
-            , delayed
-            , format
-            , Arrays.toString(args)
-        );
-
-        String message = MengineLog.buildTotalMsg(format, args);
-
-        MengineUtils.performOnMainThreadDelayed(() -> {
-            Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
-            toast.show();
-        }, delayed);
     }
 
     public static Object getDebugValue(Object d, Object r) {
@@ -676,7 +647,7 @@ public class MengineUtils {
         return null;
     }
 
-    public static Document parseDocument(InputStream stream) {
+    public static Document parseDocument(@NonNull InputStream stream) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -695,7 +666,7 @@ public class MengineUtils {
         return null;
     }
 
-    public static boolean openUrl(Context context, String url) {
+    public static boolean openUrl(@NonNull Context context, String url) {
         Uri uri = Uri.parse(url);
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         intent.addCategory(Intent.CATEGORY_BROWSABLE);
@@ -712,261 +683,6 @@ public class MengineUtils {
         }
 
         return true;
-    }
-
-    public static void showToast(@NonNull Activity activity, String format, Object ... args) {
-        activity.runOnUiThread(() -> {
-            String message = MengineLog.buildTotalMsg(format, args);
-
-            Toast toast = Toast.makeText(activity, message, Toast.LENGTH_SHORT);
-
-            toast.show();
-        });
-    }
-
-    public static void showToastRes(@NonNull Activity activity, @StringRes int messageId, Object ... args) {
-        String message = activity.getString(messageId, args);
-
-        MengineUtils.showToast(activity, message);
-    }
-
-    public static void showOkAlertDialog(@NonNull Activity activity, Runnable ok, String title, String format, Object ... args) {
-        activity.runOnUiThread(() -> {
-            String message = MengineLog.buildTotalMsg(format, args);
-
-            MengineLog.logMessage(TAG, "show [OK] alert dialog title: %s message: %s"
-                , title
-                , message
-            );
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-
-            builder.setTitle(title);
-            builder.setMessage(message);
-            builder.setCancelable(false);
-            builder.setPositiveButton("OK", (dialog, which) -> {
-                MengineLog.logMessage(TAG, "select [OK] alert dialog OK clicked");
-
-                if (ok != null) {
-                    ok.run();
-                }
-
-                dialog.dismiss();
-            });
-
-            AlertDialog alert = builder.create();
-
-            alert.show();
-        });
-    }
-
-    public static void showOkAlertDialogRes(@NonNull Activity activity, Runnable ok, @StringRes int titleId, @StringRes int messageId, Object ... args) {
-        String title = activity.getString(titleId);
-        String message = activity.getString(messageId, args);
-
-        MengineUtils.showOkAlertDialog(activity, ok, title, message);
-    }
-
-    public static void showAllowPermissionAlertDialog(@NonNull Activity activity, Runnable allow, Runnable denied, String title, String format, Object ... args) {
-        activity.runOnUiThread(() -> {
-            String message = MengineLog.buildTotalMsg(format, args);
-
-            MengineLog.logMessage(TAG, "show [ALLOW PERMISSION] alert dialog title: %s message: %s"
-                , title
-                , message
-            );
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-
-            builder.setTitle(title);
-            builder.setMessage(message);
-            builder.setCancelable(false);
-            builder.setPositiveButton("ALLOW", (dialog, which) -> {
-                MengineLog.logMessage(TAG, "select [ALLOW PERMISSION] alert dialog ALLOW clicked");
-
-                if (allow != null) {
-                    allow.run();
-                }
-
-                dialog.dismiss();
-            });
-            builder.setNegativeButton("NO THANKS", (dialog, id) -> {
-                MengineLog.logMessage(TAG, "select [ALLOW PERMISSION] alert dialog NO clicked");
-
-                if (denied != null) {
-                    denied.run();
-                }
-
-                dialog.dismiss();
-            });
-
-            AlertDialog alert = builder.create();
-
-            alert.show();
-        });
-    }
-
-    public static void showAllowPermissionAlertDialogRes(@NonNull Activity activity, Runnable allow, Runnable denied, @StringRes int titleId, @StringRes int messageId, Object ... args) {
-        String title = activity.getString(titleId);
-        String message = activity.getString(messageId, args);
-
-        MengineUtils.showAllowPermissionAlertDialog(activity, allow, denied, title, message);
-    }
-
-    public static void showAreYouSureAlertDialog(@NonNull Activity activity, Runnable yes, Runnable cancel, long delayMillis, String title, String format, Object ... args) {
-        activity.runOnUiThread(() -> {
-            String message = MengineLog.buildTotalMsg(format, args);
-
-            MengineLog.logMessage(TAG, "show [ARE YOU SURE] alert dialog title: %s message: %s"
-                , title
-                , message
-            );
-
-            String AreYouSureText = "\n\nAre you sure?";
-
-            SpannableString spannableMessage = new SpannableString(message + AreYouSureText);
-
-            spannableMessage.setSpan(new StyleSpan(Typeface.BOLD), message.length(), (message + AreYouSureText).length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            spannableMessage.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_OPPOSITE), message.length(), spannableMessage.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-
-            builder.setTitle(title);
-            builder.setMessage(spannableMessage);
-            builder.setCancelable(false);
-            builder.setPositiveButton("YES", (dialog, which) -> {
-                MengineLog.logMessage(TAG, "select [ARE YOU SURE] alert dialog YES clicked");
-
-                if (yes != null) {
-                    yes.run();
-                }
-
-                dialog.dismiss();
-            });
-            builder.setNegativeButton("CANCEL", (dialog, id) -> {
-                MengineLog.logMessage(TAG, "select [ARE YOU SURE] alert dialog CANCEL clicked");
-
-                if (cancel != null) {
-                    cancel.run();
-                }
-
-                dialog.dismiss();
-            });
-
-            AlertDialog alert = builder.create();
-
-            alert.show();
-
-            int darker_gray = ContextCompat.getColor(activity, android.R.color.darker_gray);
-            int holo_red_light = ContextCompat.getColor(activity, android.R.color.holo_red_light);
-
-            if (delayMillis > 0) {
-                alert.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(darker_gray);
-                alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
-
-                MengineUtils.performOnMainThreadDelayed(() -> {
-                    alert.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(holo_red_light);
-                    alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
-                }, delayMillis);
-            } else {
-                alert.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(holo_red_light);
-            }
-        });
-    }
-
-    public static void showAreYouSureAlertDialogRes(@NonNull Activity activity, Runnable yes, Runnable cancel, long delayMillis, @StringRes int titleId, @StringRes int messageId, Object ... args) {
-        String title = activity.getString(titleId);
-        String message = activity.getString(messageId, args);
-
-        MengineUtils.showAreYouSureAlertDialog(activity, yes, cancel, delayMillis, title, message);
-    }
-
-    public static void showChooseOptionDialog(@NonNull Activity activity, @NonNull Consumer<Integer> accept, @NonNull Runnable cancel, @NonNull List<String> options, @NonNull String title) {
-        activity.runOnUiThread(() -> {
-            MengineLog.logMessage(TAG, "show [CHOOSE OPTION] title: %s"
-                , title
-            );
-
-            int darker_gray = ContextCompat.getColor(activity, android.R.color.darker_gray);
-            int holo_red_light = ContextCompat.getColor(activity, android.R.color.holo_red_light);
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder.setTitle(title);
-
-            CharSequence[] items = options.toArray(new CharSequence[0]);
-
-            final Integer [] selectedPos = { -1 };
-
-            builder.setSingleChoiceItems(items, selectedPos[0], (dialog, which) -> {
-                selectedPos[0] = which;
-
-                Button positive = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
-                positive.setEnabled(true);
-                positive.setTextColor(holo_red_light);
-            });
-
-            builder.setCancelable(false);
-
-            builder.setPositiveButton("ACCEPT", (dialog, which) -> {
-                int option = selectedPos[0];
-
-                MengineLog.logMessage(TAG,"click [CHOOSE OPTION] accept option: %d"
-                    , option
-                );
-
-                if (accept != null) {
-                    accept.accept(option);
-                }
-
-                dialog.dismiss();
-            });
-
-            builder.setNegativeButton("CANCEL", (dialog, id) -> {
-                MengineLog.logMessage(TAG, "click [CHOOSE OPTION] cancel");
-
-                if (cancel != null) {
-                    cancel.run();
-                }
-
-                dialog.dismiss();
-            });
-
-            AlertDialog alert = builder.create();
-
-            alert.show();
-
-            alert.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(darker_gray);
-            alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
-        });
-    }
-
-    public static void showChooseOptionDialogRes(@NonNull Activity activity, @NonNull Consumer<Integer> accept, @NonNull Runnable cancel, @NonNull List<Integer> optionIds, @StringRes int titleId) {
-        String title = activity.getString(titleId);
-
-        List<String> options = new ArrayList<>(optionIds.size());
-        for (@StringRes int optionId : optionIds) {
-            String option = activity.getString(optionId);
-            options.add(option);
-        }
-
-        MengineUtils.showChooseOptionDialog(activity, accept, cancel, options, title);
-    }
-
-    public static void finishActivityWithAlertDialog(@NonNull Activity activity, String title, String format, Object ... args) {
-        MengineLog.logError(TAG, format, args);
-
-        MengineUtils.debugBreak();
-
-        MengineUtils.showOkAlertDialog(activity, () -> {
-            activity.finishAndRemoveTask();
-        }, title, format, args);
-    }
-
-    public static void finishActivityWithAlertDialogRes(@NonNull Activity activity, @StringRes int titleId, @StringRes int messageId, Object ... args) {
-        String title = activity.getString(titleId);
-        String message = activity.getString(messageId, args);
-
-        MengineUtils.finishActivityWithAlertDialog(activity, title, message);
     }
 
     public static void sleep(long millis) {
@@ -1303,13 +1019,15 @@ public class MengineUtils {
     public static void throwAssertionError(@NonNull MengineTag tag, Throwable throwable, String format, Object ... args) {
         String message = MengineLog.buildTotalMsg(format, args);
 
-        if (MengineActivity.INSTANCE == null) {
+        if (MengineActivity.INSTANCE == null ||
+            MengineActivity.INSTANCE.isFinishing() == true ||
+            MengineActivity.INSTANCE.isDestroyed() == true) {
             MengineUtils.throwRuntimeException(message, throwable);
 
             return;
         }
 
-        MengineUtils.finishActivityWithAlertDialog(MengineActivity.INSTANCE, "AssertionError", "[%s] %s", tag, message);
+        MengineUI.finishActivityWithAlertDialog(MengineActivity.INSTANCE, "AssertionError", "[%s] %s", tag, message);
     }
 
     public static ArrayList<Bundle> parcelableArrayListFromJSON(@NonNull JSONArray value) {

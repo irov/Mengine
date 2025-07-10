@@ -55,7 +55,6 @@ public interface MengineServiceInterface {
     void increaseStatisticDouble(@Size(min = 1L,max = 40L) String key, double value);
     void decreaseStatisticDouble(@Size(min = 1L,max = 40L) String key, double value);
 
-    void makeToastDelayed(long delayed, String format, Object ... args);
     boolean runOnUiThread(String doc, Runnable action);
 
     String getUserId();

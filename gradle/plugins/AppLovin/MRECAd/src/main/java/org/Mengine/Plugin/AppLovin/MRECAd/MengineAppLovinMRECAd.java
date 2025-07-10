@@ -283,7 +283,7 @@ public class MengineAppLovinMRECAd extends MengineAppLovinBase implements Mengin
     }
 
     public void show(int leftMargin, int topMargin) {
-        m_plugin.runOnUiThread("show", () -> {
+        MengineUtils.performOnMainThread("show", () -> {
             if (m_visible == true) {
                 return;
             }
@@ -302,7 +302,7 @@ public class MengineAppLovinMRECAd extends MengineAppLovinBase implements Mengin
     }
 
     public void hide() {
-        m_plugin.runOnUiThread("hide", () -> {
+        MengineUtils.performOnMainThread("hide", () -> {
             if (m_visible == false) {
                 return;
             }

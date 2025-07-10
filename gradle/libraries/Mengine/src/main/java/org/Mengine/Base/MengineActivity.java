@@ -123,7 +123,7 @@ public class MengineActivity extends AppCompatActivity {
 
     protected void finishWithAlertDialog(String format, Object ... args) {
         if (BuildConfig.DEBUG == true) {
-            MengineUtils.finishActivityWithAlertDialog(this, "MengineActivity", format, args);
+            MengineUI.finishActivityWithAlertDialog(this, "MengineActivity", format, args);
         } else {
             MengineUtils.performOnMainThreadDelayed(()-> {
                 this.finishAndRemoveTask();
@@ -190,7 +190,7 @@ public class MengineActivity extends AppCompatActivity {
                 , permission
             );
 
-            MengineUtils.showAllowPermissionAlertDialog(this
+            MengineUI.showAllowPermissionAlertDialog(this
                 , () -> {
                     MengineLog.logInfo(TAG, "checkPermission: %s show rationale [granted]"
                         , permission
@@ -1133,7 +1133,7 @@ public class MengineActivity extends AppCompatActivity {
      **********************************************************************************************/
 
     public void showAlertDialog(String caption, String message) {
-        MengineUtils.showOkAlertDialog(this, null, caption, message);
+        MengineUI.showOkAlertDialog(this, null, caption, message);
     }
 
     /***********************************************************************************************

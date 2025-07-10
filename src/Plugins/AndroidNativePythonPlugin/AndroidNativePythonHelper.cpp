@@ -134,6 +134,20 @@ namespace Mengine
 
                 py_value = py_dict;
             }
+            else if( _jenv->IsInstanceOf( _obj, jclass_Set ) == JNI_TRUE )
+            {
+                PyObject * py_set = _kernel->set_new();
+
+                Helper::AndroidForeachJavaSet( _jenv, _obj, [_kernel, _jenv, _doc, py_set](jobject _jvalue) {
+                    PyObject * py_value = Helper::androidNativePythonMakePyObject( _kernel, _jenv, _jvalue, _doc );
+
+                    _kernel->set_set( py_set, py_value );
+
+                    _kernel->decref( py_value );
+                });
+
+                py_value = py_set;
+            }
             else if( _jenv->IsInstanceOf( _obj, jclass_Rect ) == JNI_TRUE )
             {
                 Viewport viewport;

@@ -643,6 +643,43 @@ namespace Mengine
             _jenv->DeleteLocalRef( jclass_JSONArray );
         }
         //////////////////////////////////////////////////////////////////////////
+        void AndroidForeachJavaSet( JNIEnv * _jenv, jobject _jset, const LambdaJavaSetForeach & _lambda )
+        {
+            jclass jclass_Set      = _jenv->FindClass( "java/util/Set" );
+            jclass jclass_Iterator = _jenv->FindClass( "java/util/Iterator" );
+
+            jmethodID jmethodID_Set_iterator      = _jenv->GetMethodID( jclass_Set, "iterator", "()Ljava/util/Iterator;" );
+            jmethodID jmethodID_Iterator_hasNext  = _jenv->GetMethodID( jclass_Iterator, "hasNext", "()Z" );
+            jmethodID jmethodID_Iterator_next     = _jenv->GetMethodID( jclass_Iterator, "next", "()Ljava/lang/Object;" );
+
+            jobject jiterator = _jenv->CallObjectMethod( _jset, jmethodID_Set_iterator );
+
+            Helper::AndroidEnvExceptionCheck( _jenv );
+
+            jboolean hasNext = _jenv->CallBooleanMethod( jiterator, jmethodID_Iterator_hasNext );
+
+            Helper::AndroidEnvExceptionCheck( _jenv );
+
+            while( hasNext == JNI_TRUE )
+            {
+                jobject jelement = _jenv->CallObjectMethod( jiterator, jmethodID_Iterator_next );
+
+                Helper::AndroidEnvExceptionCheck( _jenv );
+
+                _lambda( jelement );
+
+                _jenv->DeleteLocalRef( jelement );
+
+                hasNext = _jenv->CallBooleanMethod( jiterator, jmethodID_Iterator_hasNext );
+
+                Helper::AndroidEnvExceptionCheck( _jenv );
+            }
+
+            _jenv->DeleteLocalRef( jiterator );
+            _jenv->DeleteLocalRef( jclass_Set );
+            _jenv->DeleteLocalRef( jclass_Iterator );
+        }
+        //////////////////////////////////////////////////////////////////////////
         void AndroidForeachJavaMap( JNIEnv * _jenv, jobject _jmap, const LambdaJavaMapForeach & _lambda )
         {
             jclass jclass_Map = _jenv->FindClass( "java/util/Map" );

@@ -150,20 +150,6 @@ public class MengineService implements MengineServiceInterface {
     }
 
     @Override
-    public void makeToastDelayed(long delayed, String format, Object ... args) {
-        if (m_activity == null) {
-            this.logError("invalid make toast format: %s args: %s"
-                , format
-                , Arrays.toString(args)
-            );
-
-            return;
-        }
-
-        MengineUtils.makeToastDelayed(m_activity, delayed, format, args);
-    }
-
-    @Override
     public boolean runOnUiThread(String doc, Runnable action) {
         if (m_activity == null) {
             this.logError("invalid run [%s] on UI thread"

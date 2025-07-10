@@ -312,7 +312,7 @@ public class MengineAppLovinNativeAd extends MengineAppLovinBase implements Meng
     }
 
     public void show() {
-        m_plugin.runOnUiThread("show", () -> {
+        MengineUtils.performOnMainThread("show", () -> {
             if (m_visible == true) {
                 return;
             }
@@ -324,7 +324,7 @@ public class MengineAppLovinNativeAd extends MengineAppLovinBase implements Meng
     }
 
     public void hide() {
-        m_plugin.runOnUiThread("hide", () -> {
+        MengineUtils.performOnMainThread("hide", () -> {
             if (m_visible == false) {
                 return;
             }

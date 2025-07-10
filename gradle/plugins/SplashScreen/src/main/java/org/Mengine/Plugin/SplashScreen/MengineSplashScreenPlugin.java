@@ -24,6 +24,7 @@ import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineListenerEngine;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineListenerActivity;
+import org.Mengine.Base.MengineUtils;
 
 public class MengineSplashScreenPlugin extends MengineService implements MengineListenerEngine, MengineListenerActivity {
     public static final String SERVICE_NAME = "SplashScreen";
@@ -255,7 +256,13 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
             return;
         }
 
-        activity.postCommand(() -> {
+        MengineUtils.performOnMainThread(() -> {
+            if (activity.isFinishing() == true || activity.isDestroyed() == true) {
+                MengineSplashScreenPlugin.this.logInfo("activity is finishing, skip hide splash screen");
+
+                return;
+            }
+
             Animation showAnimation = m_image.getAnimation();
 
             float alphaFrom = 1.f;

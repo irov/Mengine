@@ -14,14 +14,14 @@ public class MengineProcedureDeleteAccount implements MengineProcedureInterface 
     public boolean execute(@NonNull MengineActivity activity) {
         MengineLog.logInfo(TAG, "request delete account");
 
-        MengineUtils.showAreYouSureAlertDialogRes(activity
+        MengineUI.showAreYouSureAlertDialogRes(activity
             , () -> { //Yes
                 MengineLog.logInfo(TAG, "delete account [YES]");
 
                 MengineAnalytics.buildEvent("mng_try_delete_account")
                     .log();
 
-                MengineUtils.showChooseOptionDialogRes(activity
+                MengineUI.showChooseOptionDialogRes(activity
                     , (option) -> {
                         MengineLog.logInfo(TAG, "select delete account [YES] option: %d"
                             , option
@@ -34,7 +34,7 @@ public class MengineProcedureDeleteAccount implements MengineProcedureInterface 
                         MengineApplication application = MengineApplication.INSTANCE;
                         application.removeUserData();
 
-                        MengineUtils.showOkAlertDialogRes(activity, () -> {
+                        MengineUI.showOkAlertDialogRes(activity, () -> {
                             MengineLog.logInfo(TAG, "finish delete account");
 
                             activity.finishAndRemoveTask();

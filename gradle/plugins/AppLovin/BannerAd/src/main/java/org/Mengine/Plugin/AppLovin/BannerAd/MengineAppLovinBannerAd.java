@@ -23,6 +23,7 @@ import com.applovin.sdk.AppLovinSdkUtils;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineAnalyticsEventBuilderInterface;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
+import org.Mengine.Base.MengineUtils;
 import org.Mengine.Plugin.AppLovin.Core.MengineAppLovinBannerAdInterface;
 import org.Mengine.Plugin.AppLovin.Core.MengineAppLovinBase;
 import org.Mengine.Plugin.AppLovin.Core.MengineAppLovinNonetBannersInterface;
@@ -274,7 +275,7 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements Meng
     }
 
     public void show() {
-        MengineUtils.performOnMainThread("show", () -> {
+        MengineUtils.performOnMainThread(() -> {
             if (m_visible == true) {
                 return;
             }
@@ -286,7 +287,7 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements Meng
     }
 
     public void hide() {
-        MengineUtils.performOnMainThread("hide", () -> {
+        MengineUtils.performOnMainThread(() -> {
             if (m_visible == false) {
                 return;
             }

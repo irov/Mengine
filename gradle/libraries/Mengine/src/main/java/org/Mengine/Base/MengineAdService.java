@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 public class MengineAdService extends MengineService implements DefaultLifecycleObserver, MengineAdProviderInterface, MengineAdResponseInterface, MengineListenerActivity, MengineListenerRemoteConfig, MengineListenerInAppPurchase {
@@ -967,7 +968,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
     @Override
     public void onMenginePurchaseInAppProduct(@NonNull MengineApplication application, @NonNull MengineParamInAppPurchase purchase) {
         for (String product : purchase.INAPPPURCHASE_PRODUCTS) {
-            if (product != INAPPURCHASE_DISABLE_ADS) {
+            if (Objects.equals(product, INAPPURCHASE_DISABLE_ADS) == false) {
                 continue;
             }
 

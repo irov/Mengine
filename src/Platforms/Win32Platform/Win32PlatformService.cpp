@@ -2110,13 +2110,13 @@ namespace Mengine
             return false;
         }
 
-        WChar unicode_code[MENGINE_INPUTTEXTEVENT_TEXT_MAX_SIZE + 1] = {L'\0'};
-        if( Helper::utf8ToUnicode( utf8_code, unicode_code, 8 ) == false )
+        WChar unicode_text[MENGINE_INPUTTEXTEVENT_TEXT_MAX_SIZE + 1] = {L'\0'};
+        if( Helper::utf8ToUnicode( utf8_code, unicode_text, 8 ) == false )
         {
             return false;
         }
 
-        Helper::pushTextEvent( point.x, point.y, 0.f, unicode_code );
+        Helper::pushTextEvent( point.x, point.y, 0.f, unicode_text );
 
         return true;
     }

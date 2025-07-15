@@ -2899,6 +2899,17 @@ namespace Mengine
             .def( "getUpscalePow2", &RenderTargetInterface::getUpscalePow2 )
             ;
 
+        pybind::struct_<RenderContext>( _kernel, "RenderContext" )
+            .def_member( "resolution", &RenderContext::resolution )
+            .def_member( "viewport", &RenderContext::viewport )
+            .def_member( "camera", &RenderContext::camera )
+            .def_member( "transformation", &RenderContext::transformation )
+            .def_member( "scissor", &RenderContext::scissor )
+            .def_member( "target", &RenderContext::target )
+            .def_member( "zGroup", &RenderContext::zGroup )
+            .def_member( "zIndex", &RenderContext::zIndex )
+            ;            
+
         pybind::interface_<SchedulerInterface, pybind::bases<Mixin>>( _kernel, "SchedulerInterface", true )
             .def_proxy_static_args( "timing", scriptMethod, &KernelScriptMethod::ScheduleInterface_timing )
             .def_proxy_static_args( "schedule", scriptMethod, &KernelScriptMethod::ScheduleInterface_schedule )

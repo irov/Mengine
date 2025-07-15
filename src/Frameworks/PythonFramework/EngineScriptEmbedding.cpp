@@ -2977,7 +2977,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             static WChar s_InputTextEvent_getSymbol( InputTextEvent * _event )
             {
-                WChar symbol = _event->text[0];
+                WChar symbol = _event->symbol;
 
                 return symbol;
             }
@@ -4641,7 +4641,7 @@ namespace Mengine
             .def_member( "x", &InputTextEvent::x )
             .def_member( "y", &InputTextEvent::y )
             .def_member( "pressure", &InputTextEvent::pressure )
-            .def_property_static( "symbol", &EngineScriptMethod::s_InputTextEvent_getSymbol, nullptr )
+            .def_member( "symbol", &InputTextEvent::symbol )
             .def_property_static( "text", &EngineScriptMethod::s_InputTextEvent_getText, nullptr )
             ;
 

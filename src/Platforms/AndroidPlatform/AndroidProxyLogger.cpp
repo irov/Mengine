@@ -93,6 +93,7 @@ namespace Mengine
         jenv->DeleteLocalRef( jcategoryTag );
         jenv->DeleteLocalRef( jcategory );
         jenv->DeleteLocalRef( jthread );
+
 #ifdef MENGINE_DEBUG
         jenv->DeleteLocalRef( jfile );
         jenv->DeleteLocalRef( jfunction );

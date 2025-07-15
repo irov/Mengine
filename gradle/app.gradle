@@ -212,35 +212,53 @@ android {
         }
     }
 
-    if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true && MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS_NATIVE_SYMBOL_UPLOAD_ENABLE == true) {
-        buildTypes {
-            var buildDirectory = getLayout().getBuildDirectory();
+    if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true) {
+        if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS_NATIVE_SYMBOL_UPLOAD_ENABLE == true) {
+            buildTypes {
+                var buildDirectory = getLayout().getBuildDirectory();
 
-            debug {
-                firebaseCrashlytics {
-                    mappingFileUploadEnabled true
+                debug {
+                    firebaseCrashlytics {
+                        mappingFileUploadEnabled true
+                        nativeSymbolUploadEnabled true
 
-                    nativeSymbolUploadEnabled true
+                        unstrippedNativeLibsDir buildDirectory.dir("intermediates/merged_native_libs/debug/mergeDebugNativeLibs/out/lib")
+                    }
 
-                    unstrippedNativeLibsDir buildDirectory.dir("intermediates/merged_native_libs/debug/mergeDebugNativeLibs/out/lib")
+                    ndk {
+                        debugSymbolLevel 'FULL'
+                    }
                 }
 
-                ndk {
-                    debugSymbolLevel 'FULL'
+                release {
+                    firebaseCrashlytics {
+                        mappingFileUploadEnabled true
+                        nativeSymbolUploadEnabled true
+
+                        unstrippedNativeLibsDir buildDirectory.dir("intermediates/merged_native_libs/release/mergeReleaseNativeLibs/out/lib")
+                    }
+
+                    ndk {
+                        debugSymbolLevel 'SYMBOL_TABLE'
+                    }
                 }
             }
-
-            release {
-                firebaseCrashlytics {
-                    mappingFileUploadEnabled true
-
-                    nativeSymbolUploadEnabled true
-
-                    unstrippedNativeLibsDir buildDirectory.dir("intermediates/merged_native_libs/release/mergeReleaseNativeLibs/out/lib")
+        }
+        else
+        {
+            buildTypes {
+                debug {
+                    firebaseCrashlytics {
+                        mappingFileUploadEnabled false
+                        nativeSymbolUploadEnabled false
+                    }
                 }
 
-                ndk {
-                    debugSymbolLevel 'SYMBOL_TABLE'
+                release {
+                    firebaseCrashlytics {
+                        mappingFileUploadEnabled false
+                        nativeSymbolUploadEnabled false
+                    }
                 }
             }
         }

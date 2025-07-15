@@ -55,7 +55,7 @@ uint8_t * png_load_from_memory( const uint8_t * _buffer, size_t _size, uint32_t 
     ::memset( &image, 0, sizeof( image ) );
     image.version = PNG_IMAGE_VERSION;
 
-    if( !png_image_begin_read_from_memory( &image, _buffer, _size ) )
+    if( png_image_begin_read_from_memory( &image, _buffer, _size ) == 0 )
     {
         return nullptr;
     }

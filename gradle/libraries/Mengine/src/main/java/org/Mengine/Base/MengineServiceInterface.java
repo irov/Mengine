@@ -52,6 +52,7 @@ public interface MengineServiceInterface {
     void setStatisticInteger(@Size(min = 1L,max = 40L) String key, long value);
     void increaseStatisticInteger(@Size(min = 1L,max = 40L) String key, long value);
     void decreaseStatisticInteger(@Size(min = 1L,max = 40L) String key, long value);
+    void setStatisticDouble(@Size(min = 1L,max = 40L) String key, double value);
     void increaseStatisticDouble(@Size(min = 1L,max = 40L) String key, double value);
     void decreaseStatisticDouble(@Size(min = 1L,max = 40L) String key, double value);
 

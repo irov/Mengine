@@ -5,7 +5,7 @@
 
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonScriptWrapper.h"
-#include "Environment/Python/PythonDocumentTraceback.h"
+#include "Environment/Python/PythonDocument.h"
 
 #include "PythonEntityBehavior.h"
 #include "PythonEntityPrototypeGenerator.h"
@@ -92,7 +92,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             bool s_addPrototypeFinder( const ConstString & _category, const ConstString & _prototype, const pybind::object & _generator )
             {
-                PythonEntityPrototypeGeneratorPtr generator = m_factoryEntityPrototypeGenerator->createObject( MENGINE_DOCUMENT_PYBIND );
+                PythonEntityPrototypeGeneratorPtr generator = m_factoryEntityPrototypeGenerator->createObject( MENGINE_DOCUMENT_PYTHON );
 
                 generator->setGenerator( _generator );
 
@@ -153,7 +153,7 @@ namespace Mengine
             pybind::object s_createEntity( const ConstString & _prototype )
             {
                 EntityPtr entity = PROTOTYPE_SERVICE()
-                    ->generatePrototype( Entity::getFactorableType(), _prototype, MENGINE_DOCUMENT_PYBIND );
+                    ->generatePrototype( Entity::getFactorableType(), _prototype, MENGINE_DOCUMENT_PYTHON );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( entity, "can't create entity '%s'"
                     , _prototype.c_str()
@@ -207,7 +207,7 @@ namespace Mengine
                 MENGINE_UNUSED( _args );
                 MENGINE_UNUSED( _kwds );
 
-                EntityPtr entity = Helper::generateNodeFactorable<Entity>( MENGINE_DOCUMENT_PYBIND );
+                EntityPtr entity = Helper::generateNodeFactorable<Entity>( MENGINE_DOCUMENT_PYTHON );
 
                 entity->setEmbed( _kernel, _obj );
 
@@ -246,7 +246,7 @@ namespace Mengine
                 MENGINE_UNUSED( _args );
                 MENGINE_UNUSED( _kwds );
 
-                ScenePtr scene = Helper::generateNodeFactorable<Scene>( MENGINE_DOCUMENT_PYBIND );
+                ScenePtr scene = Helper::generateNodeFactorable<Scene>( MENGINE_DOCUMENT_PYTHON );
 
                 scene->setEmbed( _kernel, _obj );
 

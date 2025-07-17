@@ -130,7 +130,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void AppleMARSDK_setProvider(pybind::kernel_interface * _kernel, const pybind::dict & _cbs, const pybind::args & _args )
         {
-            AppleMARSDKProviderInterfacePtr provider = Helper::makeFactorableUnique<PythonAppleMARSDKProvider>( MENGINE_DOCUMENT_PYBIND, _cbs, _args );
+            AppleMARSDKProviderInterfacePtr provider = Helper::makeFactorableUnique<PythonAppleMARSDKProvider>( MENGINE_DOCUMENT_PYTHON, _cbs, _args );
 
             APPLE_MARSDK_SERVICE()
                 ->setProvider( provider );

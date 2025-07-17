@@ -6,7 +6,7 @@
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
 #include "Environment/Python/PythonScriptWrapper.h"
-#include "Environment/Python/PythonDocumentTraceback.h"
+#include "Environment/Python/PythonDocument.h"
 
 #include "ResourceVideo.h"
 #include "SurfaceVideo.h"
@@ -31,7 +31,7 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC( _kwds, "kwds is nullptr" );
 
             pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _surface, MENGINE_DOCUMENT_PYBIND );
+            Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _surface, MENGINE_DOCUMENT_PYTHON );
 
             MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _surface, py_kwds );
 
@@ -45,7 +45,7 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC( _kwds, "kwds is nullptr" );
 
             pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _surface, MENGINE_DOCUMENT_PYBIND );
+            Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _surface, MENGINE_DOCUMENT_PYTHON );
 
             MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _surface, py_kwds );
 
@@ -58,7 +58,7 @@ namespace Mengine
                 , _name.c_str()
             );
 
-            SurfaceVideoPtr surface = Helper::generateSurfaceFactorable<SurfaceVideo>( MENGINE_DOCUMENT_PYBIND );
+            SurfaceVideoPtr surface = Helper::generateSurfaceFactorable<SurfaceVideo>( MENGINE_DOCUMENT_PYTHON );
 
             MENGINE_ASSERTION_MEMORY_PANIC( surface, "create video '%s' invalid create surface"
                 , _name.c_str()
@@ -68,7 +68,7 @@ namespace Mengine
             surface->setResourceVideo( _resource );
 
             ShapePtr shape = PROTOTYPE_SERVICE()
-                ->generatePrototype( Node::getFactorableType(), _shapeType, MENGINE_DOCUMENT_PYBIND );
+                ->generatePrototype( Node::getFactorableType(), _shapeType, MENGINE_DOCUMENT_PYTHON );
 
             MENGINE_ASSERTION_MEMORY_PANIC( shape, "create video '%s' invalid create shape '%s'"
                 , _name.c_str()

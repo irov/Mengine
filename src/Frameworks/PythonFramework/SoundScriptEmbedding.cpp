@@ -8,7 +8,7 @@
 #include "Interface/DocumentInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
-#include "Environment/Python/PythonDocumentTraceback.h"
+#include "Environment/Python/PythonDocument.h"
 #include "Environment/Python/PythonCallbackProvider.h"
 
 #include "Kernel/FactoryPool.h"
@@ -251,7 +251,7 @@ namespace Mengine
                     , Helper::getResourceFilePathByName( _resourceName ).c_str()
                 );
 
-                SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cbs, _args, MENGINE_DOCUMENT_PYBIND );
+                SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cbs, _args, MENGINE_DOCUMENT_PYTHON );
 
                 if( soundIdentity == nullptr )
                 {
@@ -283,7 +283,7 @@ namespace Mengine
                     , Helper::getResourceFilePathByName( _resourceName ).c_str()
                 );
 
-                SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_VOICE, _cbs, _args, MENGINE_DOCUMENT_PYBIND );
+                SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_VOICE, _cbs, _args, MENGINE_DOCUMENT_PYTHON );
 
                 if( soundIdentity == nullptr )
                 {
@@ -332,7 +332,7 @@ namespace Mengine
                     , _position
                 );
 
-                SoundIdentityInterfacePtr sourceEmitter = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cbs, _args, MENGINE_DOCUMENT_PYBIND );
+                SoundIdentityInterfacePtr sourceEmitter = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cbs, _args, MENGINE_DOCUMENT_PYTHON );
 
                 if( sourceEmitter == nullptr )
                 {
@@ -429,7 +429,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             SoundAffectorCallbackPtr createSoundAffectorCallback( const SoundIdentityInterfacePtr & _identity, const pybind::object & _cb, const pybind::args & _args )
             {
-                SoundAffectorCallbackPtr callback = m_factorySoundAffectorCallback->createObject( MENGINE_DOCUMENT_PYBIND );
+                SoundAffectorCallbackPtr callback = m_factorySoundAffectorCallback->createObject( MENGINE_DOCUMENT_PYTHON );
 
                 callback->initialize( _identity, _cb, _args );
 
@@ -464,7 +464,7 @@ namespace Mengine
                     this->___soundFade( _identity, _volume );
                 }
                     , 1.f, 0.f, _time
-                    , MENGINE_DOCUMENT_PYBIND
+                    , MENGINE_DOCUMENT_PYTHON
                     );
 
                 const AffectorHubInterfacePtr & affectorHub = PLAYER_SERVICE()
@@ -480,7 +480,7 @@ namespace Mengine
                     , Helper::getResourceFilePathByName( _resourceName ).c_str()
                 );
 
-                SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cbs, _args, MENGINE_DOCUMENT_PYBIND );
+                SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cbs, _args, MENGINE_DOCUMENT_PYTHON );
 
                 if( soundIdentity == nullptr )
                 {
@@ -514,7 +514,7 @@ namespace Mengine
                     this->___soundFade( soundIdentity, _value );
                 }
                     , 0.f, 1.f, _time
-                    , MENGINE_DOCUMENT_PYBIND
+                    , MENGINE_DOCUMENT_PYTHON
                     );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
@@ -550,7 +550,7 @@ namespace Mengine
                     this->___soundFade( _identity, _volume );
                 }
                     , volume, _to, _time
-                    , MENGINE_DOCUMENT_PYBIND
+                    , MENGINE_DOCUMENT_PYTHON
                     );
 
                 const AffectorHubInterfacePtr & affectorHub = PLAYER_SERVICE()
@@ -566,7 +566,7 @@ namespace Mengine
                     , Helper::getResourceFilePathByName( _resourceName ).c_str()
                 );
 
-                SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cbs, _args, MENGINE_DOCUMENT_PYBIND );
+                SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cbs, _args, MENGINE_DOCUMENT_PYTHON );
 
                 if( soundIdentity == nullptr )
                 {
@@ -603,7 +603,7 @@ namespace Mengine
                     this->___soundFade( soundIdentity, _value );
                 }
                     , volume, _to, _time
-                    , MENGINE_DOCUMENT_PYBIND
+                    , MENGINE_DOCUMENT_PYTHON
                     );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );

@@ -28,6 +28,8 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
     private final Map<String, MengineAdCooldown> m_adCooldowns = new HashMap<>();
     private final Map<String, MengineAdAttempts> m_adAttempts = new HashMap<>();
 
+    private final Object m_syncronizationAdPoints = new Object();
+
     private MengineAdProviderInterface m_adProvider;
 
     protected long m_timestampStop = -1;
@@ -112,19 +114,19 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
     }
 
     private MengineAdPointInterstitial getAdInterstitialPoint(String adPointName) {
-        synchronized (this) {
+        synchronized (m_syncronizationAdPoints) {
             return m_adInterstitialPoints.getOrDefault(adPointName, null);
         }
     }
 
     private MengineAdPointRewarded getAdRewardedPoint(String adPointName) {
-        synchronized (this) {
+        synchronized (m_syncronizationAdPoints) {
             return m_adRewardedPoints.getOrDefault(adPointName, null);
         }
     }
 
     private MengineAdPointAppOpen getAdAppOpenPoint(String adPointName) {
-        synchronized (this) {
+        synchronized (m_syncronizationAdPoints) {
             return m_adAppOpenPoints.getOrDefault(adPointName, null);
         }
     }
@@ -176,7 +178,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
 
     @Override
     public void onMengineRemoteConfigFetch(@NonNull MengineApplication application, boolean updated, @NonNull Map<String, JSONObject> remoteConfig) {
-        synchronized (this) {
+        synchronized (m_syncronizationAdPoints) {
             m_adInterstitialPoints.clear();
             m_adRewardedPoints.clear();
             m_adAppOpenPoints.clear();

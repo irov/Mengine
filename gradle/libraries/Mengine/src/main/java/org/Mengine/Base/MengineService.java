@@ -131,21 +131,42 @@ public class MengineService implements MengineServiceInterface {
 
     @Override
     public void increaseStatisticInteger(@Size(min = 1L,max = 40L) String key, long value) {
+        if (value == 0L) {
+            return;
+        }
+
         MengineStatistic.increaseInteger(key, value);
     }
 
     @Override
     public void decreaseStatisticInteger(@Size(min = 1L,max = 40L) String key, long value) {
+        if (value == 0L) {
+            return;
+        }
+
         MengineStatistic.decreaseInteger(key, value);
     }
 
     @Override
+    public void setStatisticDouble(@Size(min = 1L,max = 40L) String key, double value) {
+        MengineStatistic.setDouble(key, value);
+    }
+
+    @Override
     public void increaseStatisticDouble(@Size(min = 1L,max = 40L) String key, double value) {
+        if (value == 0.0) {
+            return;
+        }
+
         MengineStatistic.increaseDouble(key, value);
     }
 
     @Override
     public void decreaseStatisticDouble(@Size(min = 1L,max = 40L) String key, double value) {
+        if (value == 0.0) {
+            return;
+        }
+
         MengineStatistic.decreaseDouble(key, value);
     }
 

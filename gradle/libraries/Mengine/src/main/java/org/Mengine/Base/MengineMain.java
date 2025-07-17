@@ -24,60 +24,57 @@ public class MengineMain implements Runnable {
     }
 
     public void start() {
-        MengineLog.logMessage(TAG, "main start");
+        MengineLog.logInfo(TAG, "main start");
 
         m_thread = new Thread(this, "MengineMain");
         m_thread.start();
     }
 
     public void stop() {
-        MengineLog.logMessage(TAG, "main join");
+        MengineLog.logInfo(TAG, "main join");
 
         m_thread.interrupt();
 
         try {
             m_thread.join();
         } catch (final InterruptedException e) {
-            MengineLog.logError(TAG, "thread main join exception: %s"
+            MengineLog.logInfo(TAG, "main join interrupted: %s"
                 , e.getMessage()
             );
         }
 
         m_thread = null;
 
-        MengineLog.logMessage(TAG, "main stopped");
+        MengineLog.logInfo(TAG, "main stopped");
     }
 
     @Override
     public void run() {
-        MengineLog.logMessage(TAG, "main wait latch");
+        MengineLog.logInfo(TAG, "main wait latch");
 
         try {
             m_runLatch.await();
         } catch (final InterruptedException e) {
-            MengineLog.logMessage(TAG, "wait runLatch exception: %s"
-                , e.getMessage()
-            );
-
+            Thread.currentThread().interrupt();
             return;
         }
 
-        MengineLog.logMessage(TAG, "main run");
+        MengineLog.logInfo(TAG, "main run");
 
         try {
             Process.setThreadPriority(Process.THREAD_PRIORITY_DISPLAY);
         } catch (final Exception e) {
-            MengineLog.logMessage(TAG, "modify main thread priority exception: %s"
+            MengineLog.logInfo(TAG, "modify main thread priority exception: %s"
                 , e.getMessage()
             );
         }
 
         if (MengineNative.AndroidMain_main(m_nativeApplication) == false) {
-            MengineLog.logMessage(TAG, "main finish with failed" );
+            MengineLog.logInfo(TAG, "main finish with failed" );
 
             return;
         }
 
-        MengineLog.logMessage(TAG, "main finish successful");
+        MengineLog.logInfo(TAG, "main finish successful");
     }
 }

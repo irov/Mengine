@@ -7,8 +7,8 @@ src
     PythonEventReceiver.h
     PythonEventReceiver.cpp
     PythonAnimatableEventReceiver.h
-    PythonDocumentTraceback.h
-    PythonDocumentTraceback.cpp
+    PythonDocument.h
+    PythonDocument.cpp
     PythonForwardDeclaration.h
     PythonCallbackProvider.h
     PythonCallbackProvider.cpp

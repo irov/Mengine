@@ -24,5 +24,4 @@ dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
 
     implementation 'org.jetbrains.kotlin:kotlin-stdlib:2.2.0'
-    implementation("com.google.guava:guava:33.4.8-android")
 }

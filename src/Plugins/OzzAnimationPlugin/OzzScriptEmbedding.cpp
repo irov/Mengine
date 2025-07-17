@@ -6,7 +6,7 @@
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
 #include "Environment/Python/PythonScriptWrapper.h"
-#include "Environment/Python/PythonDocumentTraceback.h"
+#include "Environment/Python/PythonDocument.h"
 
 #include "ResourceOzzAnimation.h"
 #include "ResourceOzzMesh.h"
@@ -30,7 +30,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static SamplerOzzAnimationPtr createOzzSampler()
         {
-            SamplerOzzAnimationPtr sampler = Helper::generatePrototype<SamplerOzzAnimation>( STRINGIZE_STRING_LOCAL( "Sampler" ), MENGINE_DOCUMENT_PYBIND );
+            SamplerOzzAnimationPtr sampler = Helper::generatePrototype<SamplerOzzAnimation>( STRINGIZE_STRING_LOCAL( "Sampler" ), MENGINE_DOCUMENT_PYTHON );
 
             MENGINE_ASSERTION_MEMORY_PANIC( sampler, "invalid create sampler" );
 
@@ -44,7 +44,7 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC( _kwds, "invalid set event listener" );
 
             pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _sampler, MENGINE_DOCUMENT_PYBIND );
+            Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _sampler, MENGINE_DOCUMENT_PYTHON );
 
             MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _sampler, py_kwds );
 

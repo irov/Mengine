@@ -34,7 +34,8 @@
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonEventReceiver.h"
 #include "Environment/Python/PythonScriptWrapper.h"
-#include "Environment/Python/PythonDocumentTraceback.h"
+#include "Environment/Python/PythonDocument.h"
+#include "Environment/Python/PythonTraceback.h"
 
 #include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
 
@@ -306,7 +307,7 @@ namespace Mengine
                 }
 
                 bool successful = PLUGIN_SERVICE()
-                    ->loadPlugin( utf8_pluginName, MENGINE_DOCUMENT_PYBIND );
+                    ->loadPlugin( utf8_pluginName, MENGINE_DOCUMENT_PYTHON );
 
                 return successful;
             }
@@ -348,16 +349,16 @@ namespace Mengine
                 const SchedulerInterfacePtr & tm = PLAYER_SERVICE()
                     ->getLocalScheduler();
 
-                DelaySchedulePipePtr py_pipe = m_factoryDelaySchedulePipe->createObject( MENGINE_DOCUMENT_PYBIND );
+                DelaySchedulePipePtr py_pipe = m_factoryDelaySchedulePipe->createObject( MENGINE_DOCUMENT_PYTHON );
                 py_pipe->initialize( _delay );
 
-                PythonScheduleTimingPtr py_timing = m_factoryPythonScheduleTiming->createObject( MENGINE_DOCUMENT_PYBIND );
+                PythonScheduleTimingPtr py_timing = m_factoryPythonScheduleTiming->createObject( MENGINE_DOCUMENT_PYTHON );
                 py_timing->initialize( _timing, _args );
 
-                PythonScheduleEventPtr py_event = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYBIND );
+                PythonScheduleEventPtr py_event = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYTHON );
                 py_event->initialize( _event, _args );
 
-                uint32_t id = tm->timing( py_pipe, py_timing, py_event, MENGINE_DOCUMENT_PYBIND );
+                uint32_t id = tm->timing( py_pipe, py_timing, py_event, MENGINE_DOCUMENT_PYTHON );
 
                 return id;
             }
@@ -375,7 +376,7 @@ namespace Mengine
             SchedulerInterfacePtr s_createScheduler()
             {
                 SchedulerInterfacePtr sm = PLAYER_SERVICE()
-                    ->createScheduler( MENGINE_DOCUMENT_PYBIND );
+                    ->createScheduler( MENGINE_DOCUMENT_PYTHON );
 
                 return sm;
             }
@@ -393,9 +394,9 @@ namespace Mengine
             LayoutInterfacePtr s_createLayout( const pybind::object & _sizer, const pybind::args & _args )
             {
                 LayoutInterfacePtr layout = PLAYER_SERVICE()
-                    ->createLayout( MENGINE_DOCUMENT_PYBIND );
+                    ->createLayout( MENGINE_DOCUMENT_PYTHON );
 
-                PythonLayoutSizerPtr py_sizer = m_factoryPythonLayourSizer->createObject( MENGINE_DOCUMENT_PYBIND );
+                PythonLayoutSizerPtr py_sizer = m_factoryPythonLayourSizer->createObject( MENGINE_DOCUMENT_PYTHON );
                 py_sizer->initialize( _sizer, _args );
 
                 layout->setSizer( py_sizer );
@@ -413,24 +414,24 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             uint32_t s_pipe( const pybind::object & _pipe, const pybind::object & _timing, const pybind::object & _event, const pybind::args & _args )
             {
-                PythonSchedulePipePtr py_pipe = m_factoryPythonSchedulePipe->createObject( MENGINE_DOCUMENT_PYBIND );
+                PythonSchedulePipePtr py_pipe = m_factoryPythonSchedulePipe->createObject( MENGINE_DOCUMENT_PYTHON );
                 py_pipe->initialize( _pipe, _args );
 
-                PythonScheduleTimingPtr py_timing = m_factoryPythonScheduleTiming->createObject( MENGINE_DOCUMENT_PYBIND );
+                PythonScheduleTimingPtr py_timing = m_factoryPythonScheduleTiming->createObject( MENGINE_DOCUMENT_PYTHON );
                 py_timing->initialize( _timing, _args );
 
                 PythonScheduleEventPtr py_event;
 
                 if( _event.is_none() == false )
                 {
-                    py_event = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYBIND );
+                    py_event = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYTHON );
                     py_event->initialize( _event, _args );
                 }
 
                 const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                     ->getLocalScheduler();
 
-                uint32_t id = sm->timing( py_pipe, py_timing, py_event, MENGINE_DOCUMENT_PYBIND );
+                uint32_t id = sm->timing( py_pipe, py_timing, py_event, MENGINE_DOCUMENT_PYTHON );
 
                 return id;
             }
@@ -440,10 +441,10 @@ namespace Mengine
                 const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                     ->getLocalScheduler();
 
-                PythonScheduleEventPtr sl = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYBIND );
+                PythonScheduleEventPtr sl = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYTHON );
                 sl->initialize( _script, _args );
 
-                uint32_t id = sm->event( _timing, sl, MENGINE_DOCUMENT_PYBIND );
+                uint32_t id = sm->event( _timing, sl, MENGINE_DOCUMENT_PYTHON );
 
                 return id;
             }
@@ -554,10 +555,10 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( sm, "scheduler global is nullptr" );
 
-                PythonScheduleEventPtr sl = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYBIND );
+                PythonScheduleEventPtr sl = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYTHON );
                 sl->initialize( _cb, _args );
 
-                uint32_t id = sm->event( _timing, sl, MENGINE_DOCUMENT_PYBIND );
+                uint32_t id = sm->event( _timing, sl, MENGINE_DOCUMENT_PYTHON );
 
                 return id;
             }
@@ -744,7 +745,7 @@ namespace Mengine
                     return false;
                 }
 
-                PythonSceneChangeCallbackPtr py_cb = m_factoryPythonSceneChangeCallback->createObject( MENGINE_DOCUMENT_PYBIND );
+                PythonSceneChangeCallbackPtr py_cb = m_factoryPythonSceneChangeCallback->createObject( MENGINE_DOCUMENT_PYTHON );
                 py_cb->initialize( _cb, _args );
 
                 ScenePtr currentScene = SCENE_SERVICE()
@@ -761,7 +762,7 @@ namespace Mengine
                 else
                 {
                     ScenePtr scene = PROTOTYPE_SERVICE()
-                        ->generatePrototype( Scene::getFactorableType(), _prototype, MENGINE_DOCUMENT_PYBIND );
+                        ->generatePrototype( Scene::getFactorableType(), _prototype, MENGINE_DOCUMENT_PYTHON );
 
                     MENGINE_ASSERTION_MEMORY_PANIC( scene, "invalid create scene '%s'"
                         , _name.c_str()
@@ -788,7 +789,7 @@ namespace Mengine
                     return false;
                 }
 
-                PythonSceneChangeCallbackPtr py_cb = m_factoryPythonSceneChangeCallback->createObject( MENGINE_DOCUMENT_PYBIND );
+                PythonSceneChangeCallbackPtr py_cb = m_factoryPythonSceneChangeCallback->createObject( MENGINE_DOCUMENT_PYTHON );
                 py_cb->initialize( _cb, _args );
 
                 ScenePtr currentScene = SCENE_SERVICE()
@@ -821,7 +822,7 @@ namespace Mengine
                     return false;
                 }
 
-                PythonSceneChangeCallbackPtr py_cb = m_factoryPythonSceneChangeCallback->createObject( MENGINE_DOCUMENT_PYBIND );
+                PythonSceneChangeCallbackPtr py_cb = m_factoryPythonSceneChangeCallback->createObject( MENGINE_DOCUMENT_PYTHON );
                 py_cb->initialize( _cb, _args );
 
                 if( SCENE_SERVICE()
@@ -848,7 +849,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             ScenePtr s_createScene( const ConstString & _name, const pybind::object & _type )
             {
-                ScenePtr scene = Helper::generateNodeFactorable<Scene>( MENGINE_DOCUMENT_PYBIND );
+                ScenePtr scene = Helper::generateNodeFactorable<Scene>( MENGINE_DOCUMENT_PYTHON );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( scene, "invalid create scene '%s'"
                     , _name.c_str()
@@ -880,7 +881,7 @@ namespace Mengine
                         return nullptr;
                     }
 
-                    PythonEntityBehaviorPtr behavior = Helper::makeFactorableUnique<PythonEntityBehavior>( MENGINE_DOCUMENT_PYBIND );
+                    PythonEntityBehaviorPtr behavior = Helper::makeFactorableUnique<PythonEntityBehavior>( MENGINE_DOCUMENT_PYTHON );
                     behavior->setScriptObject( py_scene );
 
                     scene->setBehavior( behavior );
@@ -1035,14 +1036,14 @@ namespace Mengine
                 if( correct_type == Node::getFactorableType() )
                 {
                     LOGGER_WARNING( "type 'Node' is old deprecated type, use 'Interender' or other\ntraceback:\n%s"
-                        , MENGINE_PYBIND_STATETRACE()
+                        , Helper::getPythonStatetrace()
                     );
 
                     correct_type = Interender::getFactorableType();
                 }
 
                 NodePtr node = PROTOTYPE_SERVICE()
-                    ->generatePrototype( Node::getFactorableType(), correct_type, MENGINE_DOCUMENT_PYBIND );
+                    ->generatePrototype( Node::getFactorableType(), correct_type, MENGINE_DOCUMENT_PYTHON );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( node, "invalid create node '%s'"
                     , correct_type.c_str()
@@ -1054,7 +1055,7 @@ namespace Mengine
             SurfacePtr s_createSurface( const ConstString & _type )
             {
                 SurfacePtr surface = PROTOTYPE_SERVICE()
-                    ->generatePrototype( Surface::getFactorableType(), _type, MENGINE_DOCUMENT_PYBIND );
+                    ->generatePrototype( Surface::getFactorableType(), _type, MENGINE_DOCUMENT_PYTHON );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( surface, "invalid create surface '%s'"
                     , _type.c_str()
@@ -1071,7 +1072,7 @@ namespace Mengine
                     MENGINE_UNUSED( _id );
 
                     _timer.call_args( _id, _args );
-                }, MENGINE_DOCUMENT_PYBIND );
+                }, MENGINE_DOCUMENT_PYTHON );
 
                 return id;
             }
@@ -1085,7 +1086,7 @@ namespace Mengine
             RandomizerInterfacePtr s_generateRandomizer( const ConstString & _prototype )
             {
                 RandomizerInterfacePtr randomizer = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), _prototype, MENGINE_DOCUMENT_PYBIND );
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), _prototype, MENGINE_DOCUMENT_PYTHON );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( randomizer, "invalid create randomizer '%s'"
                     , _prototype.c_str()
@@ -1100,7 +1101,7 @@ namespace Mengine
                     , _name.c_str()
                 );
 
-                SurfaceImagePtr surface = Helper::generateSurfaceFactorable<SurfaceImage>( MENGINE_DOCUMENT_PYBIND );
+                SurfaceImagePtr surface = Helper::generateSurfaceFactorable<SurfaceImage>( MENGINE_DOCUMENT_PYTHON );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( surface, "invalid create surface '%s'"
                     , _name.c_str()
@@ -1109,7 +1110,7 @@ namespace Mengine
                 surface->setName( _name );
                 surface->setResourceImage( _resource );
 
-                ShapeQuadFixedPtr shape = Helper::generateNodeFactorable<ShapeQuadFixed>( MENGINE_DOCUMENT_PYBIND );
+                ShapeQuadFixedPtr shape = Helper::generateNodeFactorable<ShapeQuadFixed>( MENGINE_DOCUMENT_PYTHON );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( shape, "invalid create shape '%s'"
                     , _name.c_str()
@@ -1133,7 +1134,7 @@ namespace Mengine
                 cook.type = _type;
 
                 ResourcePtr resource = RESOURCE_SERVICE()
-                    ->createResource( cook, MENGINE_DOCUMENT_PYBIND );
+                    ->createResource( cook, MENGINE_DOCUMENT_PYTHON );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( resource, "invalid create resource '%s'"
                     , _type.c_str()
@@ -1324,7 +1325,7 @@ namespace Mengine
 
                 typedef IntrusivePtr<HotSpotVisitor> HotSpotVisitorPtr;
 
-                HotSpotVisitorPtr visitor = Helper::makeFactorableUnique<HotSpotVisitor>( MENGINE_DOCUMENT_PYBIND, _cb, _args );
+                HotSpotVisitorPtr visitor = Helper::makeFactorableUnique<HotSpotVisitor>( MENGINE_DOCUMENT_PYTHON, _cb, _args );
 
                 _scene->visitThree( visitor );
             }
@@ -1362,7 +1363,7 @@ namespace Mengine
 
                 const RenderTextureInterfacePtr & texture = resource->getTexture( 0 );
 
-                ContentInterfacePtr content = Helper::makeFileContent( fileGroup, _filePath, MENGINE_DOCUMENT_PYBIND );
+                ContentInterfacePtr content = Helper::makeFileContent( fileGroup, _filePath, MENGINE_DOCUMENT_PYTHON );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( content, "invalid create content '%s'"
                     , _filePath.c_str()
@@ -1389,7 +1390,7 @@ namespace Mengine
 
 #if defined(MENGINE_DEBUG)
                 {
-                    InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, _filePath, false, false, MENGINE_DOCUMENT_PYBIND );
+                    InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, _filePath, false, false, MENGINE_DOCUMENT_PYTHON );
 
                     MENGINE_ASSERTION_MEMORY_PANIC( stream, "image file '%s' was not found"
                         , Helper::getFileGroupFullPath( fileGroup, _filePath ).c_str()
@@ -1462,7 +1463,7 @@ namespace Mengine
 
                 if( _maxSize.x < 0.f || _maxSize.y < 0.f )
                 {
-                    InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, _filePath, false, false, MENGINE_DOCUMENT_PYBIND );
+                    InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, _filePath, false, false, MENGINE_DOCUMENT_PYTHON );
 
                     MENGINE_ASSERTION_MEMORY_PANIC( stream, "image file '%s' was not found"
                         , Helper::getFileGroupFullPath( fileGroup, _filePath ).c_str()
@@ -1476,7 +1477,7 @@ namespace Mengine
                         ->findCodecType( _filePath );
 
                     ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
-                        ->createDecoder( codecType, MENGINE_DOCUMENT_PYBIND );
+                        ->createDecoder( codecType, MENGINE_DOCUMENT_PYTHON );
 
                     MENGINE_ASSERTION_MEMORY_PANIC( imageDecoder, "invalid create decoder '%s' for '%s'"
                         , codecType.c_str()
@@ -1502,7 +1503,7 @@ namespace Mengine
                 cook.type = ResourceImageDefault::getFactorableType();
 
                 ResourceImageDefaultPtr resource = RESOURCE_SERVICE()
-                    ->createResource( cook, MENGINE_DOCUMENT_PYBIND );
+                    ->createResource( cook, MENGINE_DOCUMENT_PYTHON );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( resource, "invalid create resource '%s'"
                     , _resourceName.c_str()
@@ -1518,7 +1519,7 @@ namespace Mengine
                     return nullptr;
                 }
 
-                ContentInterfacePtr content = Helper::makeFileContent( fileGroup, _filePath, MENGINE_DOCUMENT_PYBIND );
+                ContentInterfacePtr content = Helper::makeFileContent( fileGroup, _filePath, MENGINE_DOCUMENT_PYTHON );
 
                 content->setCodecType( newCodecType );
 
@@ -1548,7 +1549,7 @@ namespace Mengine
                 cook.type = ResourceImageSolid::getFactorableType();
 
                 ResourceImageSolidPtr resource = RESOURCE_SERVICE()
-                    ->createResource( cook, MENGINE_DOCUMENT_PYBIND );
+                    ->createResource( cook, MENGINE_DOCUMENT_PYTHON );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( resource, "invalid create resource '%s'"
                     , _resourceName.c_str()
@@ -1698,22 +1699,22 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_AnalyticsContext_addParameterBoolean( AnalyticsContextInterface * _context, const ConstString & _name, bool _value )
             {
-                _context->addParameterBoolean( _name, _value, MENGINE_DOCUMENT_PYBIND );
+                _context->addParameterBoolean( _name, _value, MENGINE_DOCUMENT_PYTHON );
             }
             //////////////////////////////////////////////////////////////////////////
             void s_AnalyticsContext_addParameterInteger( AnalyticsContextInterface * _context, const ConstString & _name, int64_t _value )
             {
-                _context->addParameterInteger( _name, _value, MENGINE_DOCUMENT_PYBIND );
+                _context->addParameterInteger( _name, _value, MENGINE_DOCUMENT_PYTHON );
             }
             //////////////////////////////////////////////////////////////////////////
             void s_AnalyticsContext_addParameterDouble( AnalyticsContextInterface * _context, const ConstString & _name, double _value )
             {
-                _context->addParameterDouble( _name, _value, MENGINE_DOCUMENT_PYBIND );
+                _context->addParameterDouble( _name, _value, MENGINE_DOCUMENT_PYTHON );
             }
             //////////////////////////////////////////////////////////////////////////
             void s_AnalyticsContext_addParameterString( AnalyticsContextInterface * _context, const ConstString & _name, const ConstString & _value )
             {
-                _context->addParameterConstString( _name, _value, MENGINE_DOCUMENT_PYBIND );
+                _context->addParameterConstString( _name, _value, MENGINE_DOCUMENT_PYTHON );
             }
             //////////////////////////////////////////////////////////////////////////
             void s_AnalyticsContext_addParameterGetterBoolean( AnalyticsContextInterface * _context, const ConstString & _name, const pybind::object & _cb, const pybind::args & _args )
@@ -1723,7 +1724,7 @@ namespace Mengine
                     bool value = _cb.call( _args );
 
                     return value;
-                }, MENGINE_DOCUMENT_PYBIND );
+                }, MENGINE_DOCUMENT_PYTHON );
             }
             //////////////////////////////////////////////////////////////////////////
             void s_AnalyticsContext_addParameterGetterInteger( AnalyticsContextInterface * _context, const ConstString & _name, const pybind::object & _cb, const pybind::args & _args )
@@ -1733,7 +1734,7 @@ namespace Mengine
                     int64_t value = _cb.call( _args );
 
                     return value;
-                }, MENGINE_DOCUMENT_PYBIND );
+                }, MENGINE_DOCUMENT_PYTHON );
             }
             //////////////////////////////////////////////////////////////////////////
             void s_AnalyticsContext_addParameterGetterDouble( AnalyticsContextInterface * _context, const ConstString & _name, const pybind::object & _cb, const pybind::args & _args )
@@ -1743,7 +1744,7 @@ namespace Mengine
                     double value = _cb.call( _args );
 
                     return value;
-                }, MENGINE_DOCUMENT_PYBIND );
+                }, MENGINE_DOCUMENT_PYTHON );
             }
             //////////////////////////////////////////////////////////////////////////
             void s_AnalyticsContext_addParameterGetterString( AnalyticsContextInterface * _context, const ConstString & _name, const pybind::object & _cb, const pybind::args & _args )
@@ -1753,13 +1754,13 @@ namespace Mengine
                     ConstString value = _cb.call( _args );
 
                     return value;
-                }, MENGINE_DOCUMENT_PYBIND );
+                }, MENGINE_DOCUMENT_PYTHON );
             }
             //////////////////////////////////////////////////////////////////////////
             AnalyticsContextInterfacePtr s_analyticsMakeContext()
             {
                 AnalyticsContextInterfacePtr context = ANALYTICS_SERVICE()
-                    ->makeContext( MENGINE_DOCUMENT_PYBIND );
+                    ->makeContext( MENGINE_DOCUMENT_PYTHON );
 
                 return context;
             }
@@ -1769,7 +1770,7 @@ namespace Mengine
                 const AnalyticsContextInterfacePtr & analyticsGlobalContext = ANALYTICS_SERVICE()
                     ->getGlobalContext();
 
-                analyticsGlobalContext->addParameterBoolean( _name, _value, MENGINE_DOCUMENT_PYBIND );
+                analyticsGlobalContext->addParameterBoolean( _name, _value, MENGINE_DOCUMENT_PYTHON );
             }
             //////////////////////////////////////////////////////////////////////////
             void s_addAnalyticsGlobalContextParameterString( const ConstString & _name, const ConstString & _value )
@@ -1777,7 +1778,7 @@ namespace Mengine
                 const AnalyticsContextInterfacePtr & analyticsGlobalContext = ANALYTICS_SERVICE()
                     ->getGlobalContext();
 
-                analyticsGlobalContext->addParameterConstString( _name, _value, MENGINE_DOCUMENT_PYBIND );
+                analyticsGlobalContext->addParameterConstString( _name, _value, MENGINE_DOCUMENT_PYTHON );
             }
             //////////////////////////////////////////////////////////////////////////
             void s_addAnalyticsGlobalContextParameterInteger( const ConstString & _name, int64_t _value )
@@ -1785,7 +1786,7 @@ namespace Mengine
                 const AnalyticsContextInterfacePtr & analyticsGlobalContext = ANALYTICS_SERVICE()
                     ->getGlobalContext();
 
-                analyticsGlobalContext->addParameterInteger( _name, _value, MENGINE_DOCUMENT_PYBIND );
+                analyticsGlobalContext->addParameterInteger( _name, _value, MENGINE_DOCUMENT_PYTHON );
             }
             //////////////////////////////////////////////////////////////////////////
             void s_addAnalyticsGlobalContextParameterDouble( const ConstString & _name, double _value )
@@ -1793,13 +1794,13 @@ namespace Mengine
                 const AnalyticsContextInterfacePtr & analyticsGlobalContext = ANALYTICS_SERVICE()
                     ->getGlobalContext();
 
-                analyticsGlobalContext->addParameterDouble( _name, _value, MENGINE_DOCUMENT_PYBIND );
+                analyticsGlobalContext->addParameterDouble( _name, _value, MENGINE_DOCUMENT_PYTHON );
             }
             //////////////////////////////////////////////////////////////////////////
             void s_analyticsEvent( const ConstString & _eventName, const AnalyticsContextInterfacePtr & _context, const pybind::dict & _parameters )
             {
                 AnalyticsEventBuilderInterfacePtr builder = ANALYTICS_SERVICE()
-                    ->buildEvent( _eventName, MENGINE_DOCUMENT_PYBIND );
+                    ->buildEvent( _eventName, MENGINE_DOCUMENT_PYTHON );
 
                 builder->setLocalContext( _context );
 
@@ -1930,7 +1931,7 @@ namespace Mengine
                 desc.descriptionPath = _descriptionPath;
 
                 bool result = PACKAGE_SERVICE()
-                    ->addPackage( desc, MENGINE_DOCUMENT_PYBIND );
+                    ->addPackage( desc, MENGINE_DOCUMENT_PYTHON );
 
                 return result;
             }
@@ -2035,7 +2036,7 @@ namespace Mengine
                     , _fileGroupName.c_str()
                 );
 
-                MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheFileString( fileGroup, _filePath, false, false, MENGINE_DOCUMENT_PYBIND );
+                MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheFileString( fileGroup, _filePath, false, false, MENGINE_DOCUMENT_PYTHON );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( binary_buffer, "not found file '%s'"
                     , _filePath.c_str()
@@ -2114,7 +2115,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             ResourcePacketPtr s_cacheResources( const ConstString & _groupName )
             {
-                ResourcePacketPtr resourcePacket = Helper::makeFactorableUnique<ResourcePacket>( MENGINE_DOCUMENT_PYBIND );
+                ResourcePacketPtr resourcePacket = Helper::makeFactorableUnique<ResourcePacket>( MENGINE_DOCUMENT_PYTHON );
 
                 RESOURCE_SERVICE()
                     ->foreachGroupResources( _groupName, [resourcePacket]( const ResourcePtr & _resource )
@@ -2205,7 +2206,7 @@ namespace Mengine
 
                 const ContentInterfacePtr & content = resource->getContent();
 
-                InputStreamInterfacePtr stream = content->openInputStreamFile( false, false, MENGINE_DOCUMENT_PYBIND );
+                InputStreamInterfacePtr stream = content->openInputStreamFile( false, false, MENGINE_DOCUMENT_PYTHON );
 
                 if( stream == nullptr )
                 {
@@ -2250,7 +2251,7 @@ namespace Mengine
             bool s_copyUserPicture( const ConstString & _resourceFilePath, const String & _filePath )
             {
                 MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
-                    ->createMemoryBuffer( MENGINE_DOCUMENT_PYBIND );
+                    ->createMemoryBuffer( MENGINE_DOCUMENT_PYTHON );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid create memory buffer" );
 
@@ -2280,7 +2281,7 @@ namespace Mengine
             bool s_copyUserMusic( const ConstString & _resourceFilePath, const String & _filePath )
             {
                 MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
-                    ->createMemoryBuffer( MENGINE_DOCUMENT_PYBIND );
+                    ->createMemoryBuffer( MENGINE_DOCUMENT_PYTHON );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid create memory buffer" );
 
@@ -2375,11 +2376,11 @@ namespace Mengine
                         ->getRenderViewport();
                 }
 
-                PyInputMousePositionProviderPtr provider = m_factoryPyInputMousePositionProvider->createObject( MENGINE_DOCUMENT_PYBIND );
+                PyInputMousePositionProviderPtr provider = m_factoryPyInputMousePositionProvider->createObject( MENGINE_DOCUMENT_PYTHON );
                 provider->initialize( camera, viewport, _cb, _args );
 
                 INPUT_SERVICE()
-                    ->addMousePositionProvider( provider, MENGINE_DOCUMENT_PYBIND );
+                    ->addMousePositionProvider( provider, MENGINE_DOCUMENT_PYTHON );
 
                 return provider;
             }
@@ -2509,7 +2510,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             uint32_t s_affectorUIWheelOfFortune( const NodePtr & _node, const NodePtr & _targer, float _coeff )
             {
-                AffectorUIWheelOfFortunePtr affector = m_factoryAffectorUIWheelOfFortune->createObject( MENGINE_DOCUMENT_PYBIND );
+                AffectorUIWheelOfFortunePtr affector = m_factoryAffectorUIWheelOfFortune->createObject( MENGINE_DOCUMENT_PYTHON );
 
                 affector->setAffectorType( EAFFECTORTYPE_SCALE );
 
@@ -2646,7 +2647,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             uint32_t s_gridBurnTransparency( const Grid2DPtr & _grid, const mt::vec2f & _pos, float _time, float _radius, float _ellipse, float _penumbra, const pybind::object & _cb )
             {
-                AffectorGridBurnTransparencyPtr affector = m_factoryAffectorGridBurnTransparency->createObject( MENGINE_DOCUMENT_PYBIND );
+                AffectorGridBurnTransparencyPtr affector = m_factoryAffectorGridBurnTransparency->createObject( MENGINE_DOCUMENT_PYTHON );
 
                 affector->setAffectorType( EAFFECTORTYPE_USER );
 
@@ -2682,7 +2683,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             AffectorPtr s_createAffector( const pybind::object & _cb, const pybind::args & _args )
             {
-                AffectorUserPtr affector = m_factoryAffectorUser->createObject( MENGINE_DOCUMENT_PYBIND );
+                AffectorUserPtr affector = m_factoryAffectorUser->createObject( MENGINE_DOCUMENT_PYTHON );
 
                 affector->initialize( _cb, _args );
 
@@ -2691,7 +2692,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             UniqueId s_addAffector( const pybind::object & _cb, const pybind::args & _args )
             {
-                AffectorUserPtr affector = m_factoryAffectorUser->createObject( MENGINE_DOCUMENT_PYBIND );
+                AffectorUserPtr affector = m_factoryAffectorUser->createObject( MENGINE_DOCUMENT_PYTHON );
 
                 affector->initialize( _cb, _args );
 
@@ -2911,7 +2912,7 @@ namespace Mengine
                     return render->getLocalAlpha();
                 }
                     , _value, _target, _speed
-                    , MENGINE_DOCUMENT_PYBIND );
+                    , MENGINE_DOCUMENT_PYTHON );
 
                 return affector;
             }
@@ -2930,7 +2931,7 @@ namespace Mengine
                     return _node->getCustomSize();
                 }
                     , _value, _target, _speed
-                    , MENGINE_DOCUMENT_PYBIND );
+                    , MENGINE_DOCUMENT_PYTHON );
 
                 return affector;
             }
@@ -2949,7 +2950,7 @@ namespace Mengine
                     return _node->getTextureUVScale();
                 }
                     , _value, _target, _speed
-                    , MENGINE_DOCUMENT_PYBIND );
+                    , MENGINE_DOCUMENT_PYTHON );
 
                 return affector;
             }
@@ -2991,7 +2992,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             PythonValueFollowerLinearPtr s_createValueFollowerLinear( float _value, float _speed, const pybind::object & _cb, const pybind::args & _args )
             {
-                PythonValueFollowerLinearPtr follower = Helper::generateAffectorFactorable<PythonValueFollowerLinear>( MENGINE_DOCUMENT_PYBIND );
+                PythonValueFollowerLinearPtr follower = Helper::generateAffectorFactorable<PythonValueFollowerLinear>( MENGINE_DOCUMENT_PYTHON );
 
                 follower->initialize( _value, _speed, _cb, _args );
 
@@ -3005,7 +3006,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             PythonValueFollowerAccelerationPtr s_createValueFollowerAcceleration( float _value, float _speed, float _acceleration, const pybind::object & _cb, const pybind::args & _args )
             {
-                PythonValueFollowerAccelerationPtr follower = Helper::generateAffectorFactorable<PythonValueFollowerAcceleration>( MENGINE_DOCUMENT_PYBIND );
+                PythonValueFollowerAccelerationPtr follower = Helper::generateAffectorFactorable<PythonValueFollowerAcceleration>( MENGINE_DOCUMENT_PYTHON );
 
                 follower->initialize( _value, _speed, _acceleration, _cb, _args );
 
@@ -3067,7 +3068,7 @@ namespace Mengine
             SecureUnsignedValuePtr s_makeSecureUnsignedValue( uint32_t _value )
             {
                 SecureUnsignedValuePtr secureValue = PROTOTYPE_SERVICE()
-                    ->generatePrototype( ConstString::none(), SecureUnsignedValue::getFactorableType(), MENGINE_DOCUMENT_PYBIND );
+                    ->generatePrototype( ConstString::none(), SecureUnsignedValue::getFactorableType(), MENGINE_DOCUMENT_PYTHON );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( secureValue, "invalid create secure value" );
 
@@ -3101,7 +3102,7 @@ namespace Mengine
             SecureStringValuePtr s_makeSecureStringValue( const String & _value )
             {
                 SecureStringValuePtr secureValue = PROTOTYPE_SERVICE()
-                    ->generatePrototype( ConstString::none(), SecureStringValue::getFactorableType(), MENGINE_DOCUMENT_PYBIND );
+                    ->generatePrototype( ConstString::none(), SecureStringValue::getFactorableType(), MENGINE_DOCUMENT_PYTHON );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( secureValue, "invalid create secure value" );
 
@@ -3112,14 +3113,14 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             PythonFileLoggerPtr s_makeFileLogger( const FilePath & _filePath )
             {
-                PythonFileLoggerPtr logger = Helper::makeFactorableUnique<PythonFileLogger>( MENGINE_DOCUMENT_PYBIND );
+                PythonFileLoggerPtr logger = Helper::makeFactorableUnique<PythonFileLogger>( MENGINE_DOCUMENT_PYTHON );
 
                 const FileGroupInterfacePtr & userFileGroup = FILE_SERVICE()
                     ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( userFileGroup, "invalid get user file group" );
 
-                ContentInterfacePtr content = Helper::makeFileContent( userFileGroup, _filePath, MENGINE_DOCUMENT_PYBIND );
+                ContentInterfacePtr content = Helper::makeFileContent( userFileGroup, _filePath, MENGINE_DOCUMENT_PYTHON );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( content, "invalid make file content" );
 
@@ -3433,7 +3434,7 @@ namespace Mengine
                 }
 
                 PythonSceneChangeCallbackPtr py_cb = m_factoryPythonSceneChangeCallback
-                    ->createObject( MENGINE_DOCUMENT_PYBIND );
+                    ->createObject( MENGINE_DOCUMENT_PYTHON );
 
                 py_cb->initialize( _cb, _args );
 
@@ -3596,11 +3597,11 @@ namespace Mengine
                     ->getGlobalInputHandler();
 
                 PyGlobalMouseLeaveHandlerPtr handler = m_factoryPyGlobalMouseLeaveHandlers
-                    ->createObject( MENGINE_DOCUMENT_PYBIND );
+                    ->createObject( MENGINE_DOCUMENT_PYTHON );
 
                 handler->initialize( _cb, _args );
 
-                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYTHON );
 
                 return id;
             }
@@ -3656,11 +3657,11 @@ namespace Mengine
                     ->getGlobalInputHandler();
 
                 PyGlobalMouseMoveHandlerPtr handler = m_factoryPyGlobalMouseMoveHandlers
-                    ->createObject( MENGINE_DOCUMENT_PYBIND );
+                    ->createObject( MENGINE_DOCUMENT_PYTHON );
 
                 handler->initialize( _cb, _args );
 
-                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYTHON );
 
                 return id;
             }
@@ -3709,11 +3710,11 @@ namespace Mengine
                     ->getGlobalInputHandler();
 
                 PyGlobalMouseHandlerButtonPtr handler = m_factoryPyGlobalMouseHandlerButtons
-                    ->createObject( MENGINE_DOCUMENT_PYBIND );
+                    ->createObject( MENGINE_DOCUMENT_PYTHON );
 
                 handler->initialize( _cb, _args );
 
-                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYTHON );
 
                 return id;
             }
@@ -3763,11 +3764,11 @@ namespace Mengine
                     ->getGlobalInputHandler();
 
                 PyGlobalMouseHandlerButtonEndPtr handler = m_factoryPyGlobalMouseHandlerButtonEnds
-                    ->createObject( MENGINE_DOCUMENT_PYBIND );
+                    ->createObject( MENGINE_DOCUMENT_PYTHON );
 
                 handler->initialize( _cb, _args );
 
-                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYTHON );
 
                 return id;
             }
@@ -3819,11 +3820,11 @@ namespace Mengine
                 MENGINE_ASSERTION_MEMORY_PANIC( globalHandleSystem, "invalid get global input handler" );
 
                 PyGlobalMouseHandlerButtonBeginPtr handler = m_factoryPyGlobalMouseHandlerButtonBegins
-                    ->createObject( MENGINE_DOCUMENT_PYBIND );
+                    ->createObject( MENGINE_DOCUMENT_PYTHON );
 
                 handler->initialize( _cb, _args );
 
-                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYTHON );
 
                 return id;
             }
@@ -3865,11 +3866,11 @@ namespace Mengine
                 MENGINE_ASSERTION_MEMORY_PANIC( globalHandleSystem, "invalid get global input handler" );
 
                 const PyGlobalMouseHandlerWheelPtr & handler = m_factoryPyGlobalMouseHandlerWheels
-                    ->createObject( MENGINE_DOCUMENT_PYBIND );
+                    ->createObject( MENGINE_DOCUMENT_PYTHON );
 
                 handler->initialize( _cb, _args );
 
-                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYTHON );
 
                 return id;
             }
@@ -3910,11 +3911,11 @@ namespace Mengine
                 MENGINE_ASSERTION_MEMORY_PANIC( globalHandleSystem, "invalid get global input handler" );
 
                 PyGlobalKeyHandlerPtr handler = m_factoryPyGlobalKeyHandler
-                    ->createObject( MENGINE_DOCUMENT_PYBIND );
+                    ->createObject( MENGINE_DOCUMENT_PYTHON );
 
                 handler->initialize( _cb, _args );
 
-                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYTHON );
 
                 return id;
             }
@@ -3953,11 +3954,11 @@ namespace Mengine
                 MENGINE_ASSERTION_MEMORY_PANIC( globalHandleSystem, "invalid get global input handler" );
 
                 PyGlobalBaseHandlerPtr handler = m_factoryPyGlobalTextHandler
-                    ->createObject( MENGINE_DOCUMENT_PYBIND );
+                    ->createObject( MENGINE_DOCUMENT_PYTHON );
 
                 handler->initialize( _cb, _args );
 
-                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYTHON );
 
                 return id;
             }
@@ -3996,11 +3997,11 @@ namespace Mengine
                 MENGINE_ASSERTION_MEMORY_PANIC( globalHandleSystem, "invalid get global input handler" );
 
                 PyGlobalBaseHandlerPtr handler = m_factoryPyGlobalAccelerometerHandler
-                    ->createObject( MENGINE_DOCUMENT_PYBIND );
+                    ->createObject( MENGINE_DOCUMENT_PYTHON );
 
                 handler->initialize( _cb, _args );
 
-                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYTHON );
 
                 return id;
             }

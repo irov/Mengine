@@ -48,7 +48,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void s_AppleStoreInAppPurchase_setPaymentQueueProvider( const pybind::dict & _cbs, const pybind::args & _args )
         {
-            AppleStoreInAppPurchasePaymentQueueProviderInterfacePtr provider = Helper::makeFactorableUnique<PythonAppleStoreInAppPurchasePaymentQueueProvider>( MENGINE_DOCUMENT_PYBIND, _cbs, _args );
+            AppleStoreInAppPurchasePaymentQueueProviderInterfacePtr provider = Helper::makeFactorableUnique<PythonAppleStoreInAppPurchasePaymentQueueProvider>( MENGINE_DOCUMENT_PYTHON, _cbs, _args );
 
             APPLE_STOREINAPPPURCHASE_SERVICE()
                 ->setPaymentQueueProvider( provider );
@@ -93,7 +93,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void AppleStoreInAppPurchase_setPaymentTransactionProvider(const pybind::dict & _cbs, const pybind::args & _args )
         {
-            AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr provider = Helper::makeFactorableUnique<PythonAppleStoreInAppPurchasePaymentTransactionProvider>( MENGINE_DOCUMENT_PYBIND, _cbs, _args );
+            AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr provider = Helper::makeFactorableUnique<PythonAppleStoreInAppPurchasePaymentTransactionProvider>( MENGINE_DOCUMENT_PYTHON, _cbs, _args );
 
             APPLE_STOREINAPPPURCHASE_SERVICE()
                 ->setPaymentTransactionProvider( provider );
@@ -142,7 +142,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static AppleStoreInAppPurchaseProductsRequestInterfacePtr AppleStoreInAppPurchase_requestProducts(const VectorConstString & _productIdentifiers, const pybind::dict & _cbs, const pybind::args & _args )
         {
-            AppleStoreInAppPurchaseProductsResponseInterfacePtr response = Helper::makeFactorableUnique<PythonAppleStoreInAppPurchaseProductsResponse>( MENGINE_DOCUMENT_PYBIND, _cbs, _args );
+            AppleStoreInAppPurchaseProductsResponseInterfacePtr response = Helper::makeFactorableUnique<PythonAppleStoreInAppPurchaseProductsResponse>( MENGINE_DOCUMENT_PYTHON, _cbs, _args );
             
             AppleStoreInAppPurchaseProductsRequestInterfacePtr request = APPLE_STOREINAPPPURCHASE_SERVICE()
                 ->requestProducts( _productIdentifiers, response );

@@ -26,8 +26,6 @@ import android.view.WindowMetrics;
 import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 
-import com.google.common.base.Splitter;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,6 +49,7 @@ import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -59,6 +58,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -257,6 +257,7 @@ public class MengineUtils {
             try {
                 Thread.sleep(delay);
             } catch (final InterruptedException e) {
+                Thread.currentThread().interrupt();
                 return;
             }
 
@@ -541,8 +542,14 @@ public class MengineUtils {
         return true;
     }
 
+    public static List<String> splitToList(String value, String separator) {
+        return Arrays.stream(value.split(separator))
+            .filter(s -> !s.isEmpty())
+            .collect(Collectors.toList());
+    }
+
     public static String getLastPathComponent(String filePath) {
-        List<String> segments = Splitter.on('/').splitToList(filePath);
+        List<String> segments = MengineUtils.splitToList(filePath, "/");
 
         if (segments.isEmpty() == true) {
             return "";
@@ -1230,7 +1237,7 @@ public class MengineUtils {
 
         String options_str = application.getApplicationOptions();
 
-        List<String> options = Splitter.on(' ').splitToList(options_str);
+        List<String> options = MengineUtils.splitToList(options_str, " ");
 
         if (options.isEmpty() == true) {
             return false;
@@ -1270,7 +1277,7 @@ public class MengineUtils {
 
         String options_str = application.getApplicationOptions();
 
-        List<String> options = Splitter.on(' ').splitToList(options_str);
+        List<String> options = MengineUtils.splitToList(options_str, " ");
 
         if (options.isEmpty() == true) {
             return defaultValue;
@@ -1330,7 +1337,7 @@ public class MengineUtils {
 
         String options_str = application.getApplicationOptions();
 
-        List<String> options = Splitter.on(' ').splitToList(options_str);
+        List<String> options = MengineUtils.splitToList(options_str, " ");
 
         if (options.isEmpty() == true) {
             return defaultValue;
@@ -1390,7 +1397,7 @@ public class MengineUtils {
 
         String options_str = application.getApplicationOptions();
 
-        List<String> options = Splitter.on(' ').splitToList(options_str);
+        List<String> options = MengineUtils.splitToList(options_str, " ");
 
         if (options.isEmpty() == true) {
             return defaultValue;

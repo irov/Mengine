@@ -4,7 +4,7 @@
 #include "Interface/ScriptServiceInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
-#include "Environment/Python/PythonDocumentTraceback.h"
+#include "Environment/Python/PythonDocument.h"
 
 #include "Kernel/Node.h"
 #include "Kernel/Factorable.h"
@@ -85,7 +85,7 @@ namespace Mengine
 
             MENGINE_ASSERTION_TYPE( _scriptable, T *, "invalid wrap type '%s' (doc %s)"
                 , MENGINE_TYPEINFO_NAME( T )
-                , MENGINE_DOCUMENT_STR( MENGINE_DOCUMENT_PYBIND )
+                , MENGINE_DOCUMENT_STR( MENGINE_DOCUMENT_PYTHON )
             );
             
             T * obj = static_cast<T *>(_scriptable);

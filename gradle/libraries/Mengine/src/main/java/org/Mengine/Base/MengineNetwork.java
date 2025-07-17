@@ -5,8 +5,6 @@ import android.util.Base64;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.google.common.base.Splitter;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -268,7 +266,7 @@ public class MengineNetwork {
         }
 
         for (String header : headers) {
-            List<String> parts = Splitter.on(':').splitToList(header);
+            List<String> parts = MengineUtils.splitToList(header, ":");
 
             if (parts.size() != 2) {
                 continue;

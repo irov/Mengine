@@ -20,7 +20,7 @@ namespace Mengine
         ///////////////////////////////////////////////////////////////////////
         static AndroidPluginCallbackInterfacePtr AndroidNativePythonService_addAndroidCallback( pybind::kernel_interface * _kernel, const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb, const pybind::args & _args )
         {
-            AndroidPluginCallbackInterfacePtr callback = Helper::makeFactorableUnique<PythonAndroidPluginCallback>( MENGINE_DOCUMENT_PYBIND, _kernel, _cb, _args );
+            AndroidPluginCallbackInterfacePtr callback = Helper::makeFactorableUnique<PythonAndroidPluginCallback>( MENGINE_DOCUMENT_PYTHON, _kernel, _cb, _args );
 
             ANDROID_KERNEL_SERVICE()
                 ->addPluginCallback( _plugin, _method, callback );
@@ -90,7 +90,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         AndroidSemaphoreListenerInterfacePtr AndroidNativePythonService_waitSemaphore( const ConstString & _semaphore, const pybind::object & _cb, const pybind::args & _args )
         {
-            AndroidSemaphoreListenerInterfacePtr listener = Helper::makeFactorableUnique<PythonAndroidSemaphoreListener>( MENGINE_DOCUMENT_PYBIND, _cb, _args );
+            AndroidSemaphoreListenerInterfacePtr listener = Helper::makeFactorableUnique<PythonAndroidSemaphoreListener>( MENGINE_DOCUMENT_PYTHON, _cb, _args );
 
             ANDROID_KERNEL_SERVICE()
                 ->waitSemaphore( _semaphore, listener );

@@ -37,26 +37,14 @@ fun includeLibrary(name: String, path: String) {
     include(path)
 }
 
-fun includePlugin(name: String, path: String) {
-    if (getBooleanProperty("MENGINE_APP_PLUGIN_ENABLE_ALL", false) == false && getBooleanProperty(name, false) == false) {
+fun includePlugin(name: String, path: String, required: List<String> = emptyList()) {
+    if (getBooleanProperty("MENGINE_APP_PLUGIN_ENABLE_ALL", false) == false && (getBooleanProperty(name, false) == false || required.all { getBooleanProperty(it, false) } == false)) {
         println("\u001b[31m" + "[-] Exclude plugin: $path" + "\u001b[0m")
 
         return
     }
 
     println("\u001b[32m" + "[+] Include plugin: $path" + "\u001b[0m")
-
-    include(path)
-}
-
-fun includeSubPlugin(name: String, sub: String, path: String) {
-    if (getBooleanProperty("MENGINE_APP_PLUGIN_ENABLE_ALL", false) == false && (getBooleanProperty(name, false) == false || getBooleanProperty(sub, false) == false)) {
-        println("\u001b[31m" + "[-] Exclude sub plugin: $path" + "\u001b[0m")
-
-        return
-    }
-
-    println("\u001b[32m" + "[+] Include sub plugin: $path" + "\u001b[0m")
 
     include(path)
 }
@@ -160,35 +148,35 @@ includeLibrary("MENGINE_APP_LIBRARY_OPENAL32", ":libraries:OpenAL32")
 
 includePlugin("MENGINE_APP_PLUGIN_SPLASHSCREEN", ":plugins:SplashScreen")
 includePlugin("MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS", ":plugins:LocalNotifications")
-includePlugin("MENGINE_APP_PLUGIN_GOOGLE_ADVERTISING", ":plugins:GoogleAdvertising")
 includePlugin("MENGINE_APP_PLUGIN_GOOGLE_SERVICE", ":plugins:GoogleService")
-includePlugin("MENGINE_APP_PLUGIN_GOOGLE_PLAY_BILLING", ":plugins:GooglePlayBilling")
-includePlugin("MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL", ":plugins:GoogleGameSocial")
-includePlugin("MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS", ":plugins:GoogleInAppReviews")
-includePlugin("MENGINE_APP_PLUGIN_GOOGLE_CONSENT", ":plugins:GoogleConsent")
-includePlugin("MENGINE_APP_PLUGIN_FIREBASE", ":plugins:Firebase")
-includePlugin("MENGINE_APP_PLUGIN_FIREBASE_INSTALLATIONS", ":plugins:FirebaseInstallations")
-includePlugin("MENGINE_APP_PLUGIN_FIREBASE_APPCHECK", ":plugins:FirebaseAppCheck")
-includePlugin("MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS", ":plugins:FirebaseAnalytics")
-includePlugin("MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS", ":plugins:FirebaseCrashlytics")
-includePlugin("MENGINE_APP_PLUGIN_FIREBASE_MESSAGING", ":plugins:FirebaseMessaging")
-includePlugin("MENGINE_APP_PLUGIN_FIREBASE_REMOTECONFIG", ":plugins:FirebaseRemoteConfig")
-includePlugin("MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING", ":plugins:FirebasePerformanceMonitoring")
+includePlugin("MENGINE_APP_PLUGIN_GOOGLE_ADVERTISING", ":plugins:GoogleAdvertising", listOf("MENGINE_APP_PLUGIN_GOOGLE_SERVICE"))
+includePlugin("MENGINE_APP_PLUGIN_GOOGLE_PLAY_BILLING", ":plugins:GooglePlayBilling", listOf("MENGINE_APP_PLUGIN_GOOGLE_SERVICE"))
+includePlugin("MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL", ":plugins:GoogleGameSocial", listOf("MENGINE_APP_PLUGIN_GOOGLE_SERVICE"))
+includePlugin("MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS", ":plugins:GoogleInAppReviews", listOf("MENGINE_APP_PLUGIN_GOOGLE_SERVICE"))
+includePlugin("MENGINE_APP_PLUGIN_GOOGLE_CONSENT", ":plugins:GoogleConsent", listOf("MENGINE_APP_PLUGIN_GOOGLE_SERVICE"))
+includePlugin("MENGINE_APP_PLUGIN_FIREBASE", ":plugins:Firebase", listOf("MENGINE_APP_PLUGIN_GOOGLE_SERVICE"))
+includePlugin("MENGINE_APP_PLUGIN_FIREBASE_INSTALLATIONS", ":plugins:FirebaseInstallations", listOf("MENGINE_APP_PLUGIN_FIREBASE"))
+includePlugin("MENGINE_APP_PLUGIN_FIREBASE_APPCHECK", ":plugins:FirebaseAppCheck", listOf("MENGINE_APP_PLUGIN_FIREBASE"))
+includePlugin("MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS", ":plugins:FirebaseAnalytics", listOf("MENGINE_APP_PLUGIN_FIREBASE"))
+includePlugin("MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS", ":plugins:FirebaseCrashlytics", listOf("MENGINE_APP_PLUGIN_FIREBASE"))
+includePlugin("MENGINE_APP_PLUGIN_FIREBASE_MESSAGING", ":plugins:FirebaseMessaging", listOf("MENGINE_APP_PLUGIN_FIREBASE"))
+includePlugin("MENGINE_APP_PLUGIN_FIREBASE_REMOTECONFIG", ":plugins:FirebaseRemoteConfig", listOf("MENGINE_APP_PLUGIN_FIREBASE"))
+includePlugin("MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING", ":plugins:FirebasePerformanceMonitoring", listOf("MENGINE_APP_PLUGIN_FIREBASE"))
 includePlugin("MENGINE_APP_PLUGIN_APPMETRICA", ":plugins:AppMetrica")
 includePlugin("MENGINE_APP_PLUGIN_APPSFLYER", ":plugins:AppsFlyer")
 includePlugin("MENGINE_APP_PLUGIN_FLURRY", ":plugins:Flurry")
-includePlugin("MENGINE_APP_PLUGIN_ADMOB", ":plugins:AdMob")
+includePlugin("MENGINE_APP_PLUGIN_ADMOB", ":plugins:AdMob", listOf("MENGINE_APP_PLUGIN_GOOGLE_SERVICE"))
 includePlugin("MENGINE_APP_PLUGIN_AMAZON", ":plugins:Amazon")
 includePlugin("MENGINE_APP_PLUGIN_APPLOVIN", ":plugins:AppLovin")
 includePlugin("MENGINE_APP_PLUGIN_APPLOVIN", ":plugins:AppLovin:Core")
-includeSubPlugin("MENGINE_APP_PLUGIN_APPLOVIN", "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON", ":plugins:AppLovin:MediationAmazon")
-includeSubPlugin("MENGINE_APP_PLUGIN_APPLOVIN", "MENGINE_APP_PLUGIN_APPLOVIN_NONET_BANNERS", ":plugins:AppLovin:NonetBanners")
-includeSubPlugin("MENGINE_APP_PLUGIN_APPLOVIN", "MENGINE_APP_PLUGIN_APPLOVIN_BANNERAD", ":plugins:AppLovin:BannerAd")
-includeSubPlugin("MENGINE_APP_PLUGIN_APPLOVIN", "MENGINE_APP_PLUGIN_APPLOVIN_INTERSTITIALAD", ":plugins:AppLovin:InterstitialAd")
-includeSubPlugin("MENGINE_APP_PLUGIN_APPLOVIN", "MENGINE_APP_PLUGIN_APPLOVIN_REWARDEDAD", ":plugins:AppLovin:RewardedAd")
-includeSubPlugin("MENGINE_APP_PLUGIN_APPLOVIN", "MENGINE_APP_PLUGIN_APPLOVIN_APPOPENAD", ":plugins:AppLovin:AppOpenAd")
-includeSubPlugin("MENGINE_APP_PLUGIN_APPLOVIN", "MENGINE_APP_PLUGIN_APPLOVIN_MRECAD", ":plugins:AppLovin:MRECAd")
-includeSubPlugin("MENGINE_APP_PLUGIN_APPLOVIN", "MENGINE_APP_PLUGIN_APPLOVIN_NATIVEAD", ":plugins:AppLovin:NativeAd")
+includePlugin("MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON", ":plugins:AppLovin:MediationAmazon", listOf("MENGINE_APP_PLUGIN_APPLOVIN", "MENGINE_APP_PLUGIN_AMAZON"))
+includePlugin("MENGINE_APP_PLUGIN_APPLOVIN_NONET_BANNERS", ":plugins:AppLovin:NonetBanners", listOf("MENGINE_APP_PLUGIN_APPLOVIN"))
+includePlugin("MENGINE_APP_PLUGIN_APPLOVIN_BANNERAD", ":plugins:AppLovin:BannerAd", listOf("MENGINE_APP_PLUGIN_APPLOVIN"))
+includePlugin("MENGINE_APP_PLUGIN_APPLOVIN_INTERSTITIALAD", ":plugins:AppLovin:InterstitialAd", listOf("MENGINE_APP_PLUGIN_APPLOVIN"))
+includePlugin("MENGINE_APP_PLUGIN_APPLOVIN_REWARDEDAD", ":plugins:AppLovin:RewardedAd", listOf("MENGINE_APP_PLUGIN_APPLOVIN"))
+includePlugin("MENGINE_APP_PLUGIN_APPLOVIN_APPOPENAD", ":plugins:AppLovin:AppOpenAd", listOf("MENGINE_APP_PLUGIN_APPLOVIN"))
+includePlugin("MENGINE_APP_PLUGIN_APPLOVIN_MRECAD", ":plugins:AppLovin:MRECAd", listOf("MENGINE_APP_PLUGIN_APPLOVIN"))
+includePlugin("MENGINE_APP_PLUGIN_APPLOVIN_NATIVEAD", ":plugins:AppLovin:NativeAd", listOf("MENGINE_APP_PLUGIN_APPLOVIN"))
 includePlugin("MENGINE_APP_PLUGIN_SENTRY", ":plugins:Sentry")
 includePlugin("MENGINE_APP_PLUGIN_FACEBOOK", ":plugins:Facebook")
 includePlugin("MENGINE_APP_PLUGIN_DEVTODEV", ":plugins:DevToDev")

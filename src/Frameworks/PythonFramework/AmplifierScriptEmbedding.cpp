@@ -9,7 +9,7 @@
 #include "Interface/FactoryInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
-#include "Environment/Python/PythonDocumentTraceback.h"
+#include "Environment/Python/PythonDocument.h"
 #include "Environment/Python/PythonCallbackProvider.h"
 
 #include "Kernel/FactorableUnique.h"
@@ -111,7 +111,7 @@ namespace Mengine
                     return false;
                 }
 
-                AmplifierMusicCallbackInterfacePtr cb = Helper::makeFactorableUnique<PythonAmplifierMusicCallback>( MENGINE_DOCUMENT_PYBIND, _cbs, _args );
+                AmplifierMusicCallbackInterfacePtr cb = Helper::makeFactorableUnique<PythonAmplifierMusicCallback>( MENGINE_DOCUMENT_PYTHON, _cbs, _args );
 
                 AMPLIFIER_SERVICE()
                     ->playMusic( _resourceMusic, _pos, _isLooped, cb );
@@ -229,7 +229,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             MusicAffectorCallbackPtr createMusicAffectorCallback( const pybind::object & _cb, const pybind::args & _args )
             {
-                MusicAffectorCallbackPtr callback = m_factoryMusicAffectorCallback->createObject( MENGINE_DOCUMENT_PYBIND );
+                MusicAffectorCallbackPtr callback = m_factoryMusicAffectorCallback->createObject( MENGINE_DOCUMENT_PYTHON );
 
                 callback->initialize( _cb, _args );
 
@@ -264,7 +264,7 @@ namespace Mengine
                     this->___musicFade( _value );
                 }
                     , 1.f, 0.f, _time
-                    , MENGINE_DOCUMENT_PYBIND
+                    , MENGINE_DOCUMENT_PYTHON
                     );
 
                 const AffectorHubInterfacePtr & affectorHub = PLAYER_SERVICE()
@@ -300,7 +300,7 @@ namespace Mengine
                     return INVALID_UNIQUE_ID;
                 }
 
-                AmplifierMusicCallbackInterfacePtr cb = Helper::makeFactorableUnique<PythonAmplifierMusicCallback>( MENGINE_DOCUMENT_PYBIND, _cbs, _args );
+                AmplifierMusicCallbackInterfacePtr cb = Helper::makeFactorableUnique<PythonAmplifierMusicCallback>( MENGINE_DOCUMENT_PYTHON, _cbs, _args );
 
                 if( AMPLIFIER_SERVICE()
                     ->playMusic( _resourceMusic, _pos, _isLooped, cb ) == false )
@@ -322,7 +322,7 @@ namespace Mengine
                     this->___musicFade( _value );
                 }
                     , 0.f, 1.f, _time
-                    , MENGINE_DOCUMENT_PYBIND
+                    , MENGINE_DOCUMENT_PYTHON
                     );
 
                 const AffectorHubInterfacePtr & affectorHub = PLAYER_SERVICE()

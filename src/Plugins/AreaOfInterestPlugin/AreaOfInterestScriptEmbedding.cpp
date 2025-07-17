@@ -5,7 +5,7 @@
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonEventReceiver.h"
 #include "Environment/Python/PythonScriptWrapper.h"
-#include "Environment/Python/PythonDocumentTraceback.h"
+#include "Environment/Python/PythonDocument.h"
 
 #include "AreaOfInterestZone.h"
 #include "NodeAreaOfInterestTrigger.h"
@@ -61,8 +61,8 @@ namespace Mengine
 
             pybind::dict py_kwds( _kernel, _kwds );
 
-            Helper::registerPythonEventReceiver<Detail::PythonNodeAreaOfInterestTriggerEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onTriggerEnter" ), EVENT_AREAOFINTEREST_TRIGGER_ENTER, MENGINE_DOCUMENT_PYBIND );
-            Helper::registerPythonEventReceiver<Detail::PythonNodeAreaOfInterestTriggerEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onTriggerLeave" ), EVENT_AREAOFINTEREST_TRIGGER_LEAVE, MENGINE_DOCUMENT_PYBIND );
+            Helper::registerPythonEventReceiver<Detail::PythonNodeAreaOfInterestTriggerEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onTriggerEnter" ), EVENT_AREAOFINTEREST_TRIGGER_ENTER, MENGINE_DOCUMENT_PYTHON );
+            Helper::registerPythonEventReceiver<Detail::PythonNodeAreaOfInterestTriggerEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onTriggerLeave" ), EVENT_AREAOFINTEREST_TRIGGER_LEAVE, MENGINE_DOCUMENT_PYTHON );
 
             MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _node, py_kwds );
 
@@ -72,7 +72,7 @@ namespace Mengine
         static AreaOfInterestZoneInterfacePtr createAreaOfInterestZone()
         {
             AreaOfInterestZoneInterfacePtr zone = AREAOFINTEREST_SERVICE()
-                ->createZone( MENGINE_DOCUMENT_PYBIND );
+                ->createZone( MENGINE_DOCUMENT_PYTHON );
 
             return zone;
         }

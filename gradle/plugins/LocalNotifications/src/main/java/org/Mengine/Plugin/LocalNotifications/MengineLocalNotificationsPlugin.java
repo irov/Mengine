@@ -239,7 +239,6 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
             return;
         }
 
-        
         NotificationManager notificationManager = activity.getSystemService(NotificationManager.class);
 
         if (notificationManager != null) {

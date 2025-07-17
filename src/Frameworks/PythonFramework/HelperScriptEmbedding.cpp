@@ -26,7 +26,7 @@
 #include "Interface/EnvironmentServiceInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
-#include "Environment/Python/PythonDocumentTraceback.h"
+#include "Environment/Python/PythonDocument.h"
 #include "Environment/Python/PythonCallbackProvider.h"
 
 #if defined(MENGINE_PLATFORM_ANDROID)
@@ -277,7 +277,7 @@ namespace Mengine
                 size_t size;
                 pybind::pickle( _kernel, _data, _pickleTypes, nullptr, 0, size );
 
-                MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( size, MENGINE_DOCUMENT_PYBIND );
+                MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( size, MENGINE_DOCUMENT_PYTHON );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( buffer, "data '%s' invalid create buffer"
                     , _name.c_str()
@@ -311,7 +311,7 @@ namespace Mengine
             PyObject * s_loadGameData( pybind::kernel_interface * _kernel, const ConstString & _name, PyObject * _pickleTypes )
             {
                 MemoryInterfacePtr binaryBuffer = USERDATA_SERVICE()
-                    ->loadUserdata( _name, MENGINE_DOCUMENT_PYBIND );
+                    ->loadUserdata( _name, MENGINE_DOCUMENT_PYTHON );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( binaryBuffer, "data '%s' invalid load"
                     , _name.c_str()
@@ -541,7 +541,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( textEntry, "text entry '%s' not found (doc: %s)"
                     , _textId.c_str()
-                    , MENGINE_DOCUMENT_STR( MENGINE_DOCUMENT_PYBIND )
+                    , MENGINE_DOCUMENT_STR( MENGINE_DOCUMENT_PYTHON )
                 );
 
                 const String & value = textEntry->getValue();
@@ -591,7 +591,7 @@ namespace Mengine
                         String value = py_obj.extract();
 
                         TextArgumentInterfacePtr argument = TEXT_SERVICE()
-                            ->createTextArgumentValue( value, MENGINE_DOCUMENT_PYBIND );
+                            ->createTextArgumentValue( value, MENGINE_DOCUMENT_PYTHON );
 
                         arguments.emplace_back( argument );
                     }
@@ -603,7 +603,7 @@ namespace Mengine
                         Helper::unicodeToUtf8( value, &utf8_value );
 
                         TextArgumentInterfacePtr argument = TEXT_SERVICE()
-                            ->createTextArgumentValue( utf8_value, MENGINE_DOCUMENT_PYBIND );
+                            ->createTextArgumentValue( utf8_value, MENGINE_DOCUMENT_PYTHON );
 
                         arguments.emplace_back( argument );
                     }
@@ -626,7 +626,7 @@ namespace Mengine
                         };
 
                         TextArgumentInterfacePtr argument = TEXT_SERVICE()
-                            ->createTextArgumentContext( context, MENGINE_DOCUMENT_PYBIND );
+                            ->createTextArgumentContext( context, MENGINE_DOCUMENT_PYTHON );
 
                         arguments.emplace_back( argument );
                     }
@@ -639,7 +639,7 @@ namespace Mengine
                         if( textId != ConstString::none() )
                         {
                             TextArgumentInterfacePtr argument = TEXT_SERVICE()
-                                ->createTextArgumentId( textId, MENGINE_DOCUMENT_PYBIND );
+                                ->createTextArgumentId( textId, MENGINE_DOCUMENT_PYTHON );
 
                             arguments.emplace_back( argument );
                         }
@@ -664,7 +664,7 @@ namespace Mengine
                         const Char * value_str = value.c_str();
 
                         TextArgumentInterfacePtr argument = TEXT_SERVICE()
-                            ->createTextArgumentValue( value_str, MENGINE_DOCUMENT_PYBIND );
+                            ->createTextArgumentValue( value_str, MENGINE_DOCUMENT_PYTHON );
 
                         arguments.emplace_back( argument );
                     }
@@ -688,7 +688,7 @@ namespace Mengine
                     ->addChronometer( [_cb, _args]( Timestamp _time )
                 {
                     _cb.call_args( _time, _args );
-                }, MENGINE_DOCUMENT_PYBIND );
+                }, MENGINE_DOCUMENT_PYTHON );
 
                 return chronometer;
             }
@@ -877,7 +877,7 @@ namespace Mengine
 
                 size_t base64Size = Helper::getBase64EncodeSize( memorySize );
 
-                MemoryInterfacePtr base64Memory = Helper::createMemoryCacheBuffer( base64Size, MENGINE_DOCUMENT_PYBIND );
+                MemoryInterfacePtr base64Memory = Helper::createMemoryCacheBuffer( base64Size, MENGINE_DOCUMENT_PYTHON );
 
                 Char * base64MemoryBuffer = base64Memory->getBuffer();
                 size_t base64MemorySize = base64Memory->getSize();
@@ -896,7 +896,7 @@ namespace Mengine
 
                 size_t size = Helper::getBase64DecodeSize( base64String, base64Size );
 
-                MemoryInterfacePtr dataMemory = Helper::createMemoryCacheBuffer( size, MENGINE_DOCUMENT_PYBIND );
+                MemoryInterfacePtr dataMemory = Helper::createMemoryCacheBuffer( size, MENGINE_DOCUMENT_PYTHON );
 
                 void * dataMemoryBuffer = dataMemory->getBuffer();
                 size_t dataMemorySize = dataMemory->getSize();
@@ -923,7 +923,7 @@ namespace Mengine
                 ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), _archivatorType );
 
                 MemoryBufferInterfacePtr decompressMemory = MEMORY_SERVICE()
-                    ->createMemoryCacheBuffer( MENGINE_DOCUMENT_PYBIND );
+                    ->createMemoryCacheBuffer( MENGINE_DOCUMENT_PYTHON );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( decompressMemory, "invalid create memory cache" );
 
@@ -1759,7 +1759,7 @@ namespace Mengine
                     return false;
                 }
 
-                PyAccountSettingProviderPtr provider = Helper::makeFactorableUnique<PythonAccountSettingProvider>( MENGINE_DOCUMENT_PYBIND, _kernel, _accountId, _cb, _args );
+                PyAccountSettingProviderPtr provider = Helper::makeFactorableUnique<PythonAccountSettingProvider>( MENGINE_DOCUMENT_PYTHON, _kernel, _accountId, _cb, _args );
 
                 const Char * utf8_defaultValue = _kernel->unicode_to_utf8( _defaultValue );
 
@@ -2875,7 +2875,7 @@ namespace Mengine
             PyObject * s_createAccount( pybind::kernel_interface * _kernel )
             {
                 AccountInterfacePtr account = ACCOUNT_SERVICE()
-                    ->createAccount( MENGINE_DOCUMENT_PYBIND );
+                    ->createAccount( MENGINE_DOCUMENT_PYTHON );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( account, "invalid create account" );
 
@@ -2889,7 +2889,7 @@ namespace Mengine
             PyObject * s_createGlobalAccount( pybind::kernel_interface * _kernel )
             {
                 AccountInterfacePtr account = ACCOUNT_SERVICE()
-                    ->createGlobalAccount( MENGINE_DOCUMENT_PYBIND );
+                    ->createGlobalAccount( MENGINE_DOCUMENT_PYTHON );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( account, "invalid create account" );
 
@@ -3008,7 +3008,7 @@ namespace Mengine
                     return false;
                 }
 
-                MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( size, MENGINE_DOCUMENT_PYBIND );
+                MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( size, MENGINE_DOCUMENT_PYTHON );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( buffer, "invalid get memory for '%zu' size"
                     , size
@@ -3185,7 +3185,7 @@ namespace Mengine
                     return false;
                 }
 
-                MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( size, MENGINE_DOCUMENT_PYBIND );
+                MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( size, MENGINE_DOCUMENT_PYTHON );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( buffer, "'%s' invalid get memory for '%zu' size"
                     , _accountId.c_str()

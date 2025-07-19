@@ -239,7 +239,7 @@ namespace Mengine
                     }
                 }
 
-                LOGGER_VERBOSE_LEVEL( "script", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_RED, MENGINE_CODE_FILE, MENGINE_CODE_LINE, MENGINE_CODE_FUNCTION, LFLAG_SHORT )("script call '%s::%s' args [(%s)] kwds [(%s)] and get error!"
+                LOGGER_VERBOSE_LEVEL( "python", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_RED, MENGINE_CODE_FILE, MENGINE_CODE_LINE, MENGINE_CODE_FUNCTION, LFLAG_SHORT )("script call '%s::%s' args [(%s)] kwds [(%s)] and get error!"
                     , _className
                     , _functionName
                     , ss_args.str().c_str()
@@ -249,7 +249,7 @@ namespace Mengine
                 Char traceback[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
                 _kernel->get_statetrace( traceback, MENGINE_LOGGER_MAX_MESSAGE, false );
 
-                LOGGER_VERBOSE_LEVEL( "script", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_RED, MENGINE_CODE_FILE, MENGINE_CODE_LINE, MENGINE_CODE_FUNCTION, LFLAG_SHORT )("traceback:\n%s"
+                LOGGER_VERBOSE_LEVEL( "python", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_RED, MENGINE_CODE_FILE, MENGINE_CODE_LINE, MENGINE_CODE_FUNCTION, LFLAG_SHORT )("traceback:\n%s"
                     , traceback
                     );
             }
@@ -723,7 +723,7 @@ namespace Mengine
 #if defined(MENGINE_LOGGER_INFO_ENABLE)
         for( const FilePath & filePath : pathes )
         {
-            LOGGER_INFO( "script", "add module path '%s'"
+            LOGGER_INFO( "python", "add module path '%s'"
                 , Helper::getFileGroupFullPath( _fileGroup, filePath ).c_str()
             );
         }
@@ -773,7 +773,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonScriptService::addScriptEmbedding( const ConstString & _name, const ScriptEmbeddingInterfacePtr & _embedding )
     {
-        LOGGER_INFO( "script", "add script embedding '%s'"
+        LOGGER_INFO( "python", "add script embedding '%s'"
             , _name.c_str()
         );
 
@@ -1040,7 +1040,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PyObject * PythonScriptService::initModule( const Char * _name )
     {
-        LOGGER_INFO( "script", "init module '%s'"
+        LOGGER_INFO( "python", "init module '%s'"
             , _name
         );
 
@@ -1051,7 +1051,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ScriptModuleInterfacePtr PythonScriptService::importModule( const ConstString & _name )
     {
-        LOGGER_INFO( "script", "import module '%s'"
+        LOGGER_INFO( "python", "import module '%s'"
             , _name.c_str()
         );
 
@@ -1103,7 +1103,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptService::addGlobalModule( const Char * _name, PyObject * _module )
     {
-        LOGGER_INFO( "script", "add global module '%s' object '%s'"
+        LOGGER_INFO( "python", "add global module '%s' object '%s'"
             , _name
             , m_kernel->object_repr( _module ).c_str()
         );

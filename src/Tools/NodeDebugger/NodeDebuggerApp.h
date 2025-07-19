@@ -656,7 +656,7 @@ namespace Mengine
 
         ESettingType type;
         
-        Char value[256];
+        Char value[256 + 1];
     };
 
     struct SettingDesc

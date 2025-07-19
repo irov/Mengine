@@ -81,8 +81,8 @@ namespace Mengine
         PLATFORM_SERVICE()
             ->getCurrentPath( utf8_currentPath );
         
-        StdString::strncat( utf8_currentPath, "Data", MENGINE_MAX_PATH );
-        StdString::strnchrcat( utf8_currentPath, MENGINE_PATH_DELIM_BACKSLASH, MENGINE_MAX_PATH );
+        StdString::strcat_safe( utf8_currentPath, "Data", MENGINE_MAX_PATH );
+        StdString::strchrcat_safe( utf8_currentPath, MENGINE_PATH_DELIM_BACKSLASH, MENGINE_MAX_PATH );
         
         size_t utf8_currentPathLen = StdString::strlen( utf8_currentPath );
 

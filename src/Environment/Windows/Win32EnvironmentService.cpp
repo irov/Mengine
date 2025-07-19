@@ -33,7 +33,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void getDeviceModel( Char * const _deviceModel )
         {
-            MENGINE_STRNCPY_STATIC( _deviceModel, "PC", MENGINE_ENVIRONMENT_DEVICE_MODEL_MAXNAME );
+            MENGINE_STRCPY_STATIC( _deviceModel, "PC", MENGINE_ENVIRONMENT_DEVICE_MODEL_MAXNAME );
 
             LOGGER_INFO_PROTECTED( "environment", "device model '%s'"
                 , _deviceModel
@@ -53,7 +53,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void getOSFamily( Char * const _osFamily )
         {
-            MENGINE_STRNCPY_STATIC( _osFamily, "Windows", MENGINE_ENVIRONMENT_OS_FAMILY_MAXNAME );
+            MENGINE_STRCPY_STATIC( _osFamily, "Windows", MENGINE_ENVIRONMENT_OS_FAMILY_MAXNAME );
 
             LOGGER_INFO_PROTECTED( "environment", "os family '%s'"
                 , _osFamily
@@ -74,20 +74,20 @@ namespace Mengine
                             {
                                 if( _osInfo->dwBuildNumber >= 22000 )
                                 {
-                                    MENGINE_STRNCPY_STATIC( _osVersion, "11", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
+                                    MENGINE_STRCPY_STATIC( _osVersion, "11", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
                                 }
                                 else
                                 {
-                                    MENGINE_STRNCPY_STATIC( _osVersion, "10", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
+                                    MENGINE_STRCPY_STATIC( _osVersion, "10", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
                                 }
                             }
                             else
                             {
-                                MENGINE_STRNCPY_STATIC( _osVersion, "Server 2016", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
+                                MENGINE_STRCPY_STATIC( _osVersion, "Server 2016", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
                             }
                         }break;
                     default:
-                        MENGINE_STRNCPY_STATIC( _osVersion, "Unknown", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
+                        MENGINE_STRCPY_STATIC( _osVersion, "Unknown", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
                     }
                 }break;
             case 6:
@@ -95,15 +95,20 @@ namespace Mengine
                     switch( _osInfo->dwMinorVersion )
                     {
                     case 3:
-                        MENGINE_STRNCPY_STATIC( _osVersion, "8.1", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
+                        MENGINE_STRCPY_STATIC( _osVersion, "8.1", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
+                        break;
                     case 2:
-                        MENGINE_STRNCPY_STATIC( _osVersion, "8", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
+                        MENGINE_STRCPY_STATIC( _osVersion, "8", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
+                        break;
                     case 1:
-                        MENGINE_STRNCPY_STATIC( _osVersion, "7", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
+                        MENGINE_STRCPY_STATIC( _osVersion, "7", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
+                        break;
                     case 0:
-                        MENGINE_STRNCPY_STATIC( _osVersion, "Vista", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
+                        MENGINE_STRCPY_STATIC( _osVersion, "Vista", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
+                        break;
                     default:
-                        MENGINE_STRNCPY_STATIC( _osVersion, "Unknown", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
+                        MENGINE_STRCPY_STATIC( _osVersion, "Unknown", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
+                        break;
                     }
                 }break;
             case 5:
@@ -111,16 +116,19 @@ namespace Mengine
                     switch( _osInfo->dwMinorVersion )
                     {
                     case 2:
-                        MENGINE_STRNCPY_STATIC( _osVersion, "XP64", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
+                        MENGINE_STRCPY_STATIC( _osVersion, "XP64", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
+                        break;
                     case 1:
-                        MENGINE_STRNCPY_STATIC( _osVersion, "XP", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
+                        MENGINE_STRCPY_STATIC( _osVersion, "XP", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
+                        break;
                     default:
-                        MENGINE_STRNCPY_STATIC( _osVersion, "Unknown", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
+                        MENGINE_STRCPY_STATIC( _osVersion, "Unknown", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
+                        break;
                     }
                 }break;
             default:
                 {
-                    MENGINE_STRNCPY_STATIC( _osVersion, "Unknown", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
+                    MENGINE_STRCPY_STATIC( _osVersion, "Unknown", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
                 }break;
             }
 

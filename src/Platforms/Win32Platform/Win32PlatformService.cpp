@@ -279,8 +279,8 @@ namespace Mengine
 
         for( const ConstString & tag : m_platformTags.getValues() )
         {
-            StdString::strcat( platformTagsInfo, tag.c_str() );
-            StdString::strcat( platformTagsInfo, "-" );
+            StdString::strcat_safe( platformTagsInfo, tag.c_str(), 1024 );
+            StdString::strcat_safe( platformTagsInfo, "-", 1024 );
         }
 
         LOGGER_INFO( "platform", "platform tags: %s"

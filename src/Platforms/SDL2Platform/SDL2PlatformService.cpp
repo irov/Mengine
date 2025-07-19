@@ -114,7 +114,7 @@ namespace Mengine
 
         if( unicode_currentPathLen == 0 )
         {
-            StdString::strcpy( _currentPath, "" );
+            StdString::strcpy_safe( _currentPath, "", MENGINE_MAX_PATH );
 
             return 0;
         }
@@ -127,7 +127,7 @@ namespace Mengine
         size_t pathLen;
         if( Helper::unicodeToUtf8( unicode_currentPath, _currentPath, MENGINE_MAX_PATH, &pathLen ) == false )
         {
-            StdString::strcpy( _currentPath, "" );
+            StdString::strcpy_safe( _currentPath, "", MENGINE_MAX_PATH );
 
             return 0;
         }
@@ -136,13 +136,13 @@ namespace Mengine
 #elif defined(MENGINE_PLATFORM_MACOS)
         char * basePath = SDL_GetBasePath();
 
-        StdString::strcpy( _currentPath, basePath );
+        StdString::strcpy_safe( _currentPath, basePath, MENGINE_MAX_PATH );
 
         SDL_free( basePath );
 
         return StdString::strlen( _currentPath );
 #else
-        StdString::strcpy( _currentPath, "" );
+        StdString::strcpy_safe( _currentPath, "", MENGINE_MAX_PATH );
 
         return 0;
 #endif
@@ -162,7 +162,7 @@ namespace Mengine
 
             if( MENGINE_MAX_PATH <= currentPathLen + 5 )
             {
-                StdString::strcpy( _userPath, "" );
+                StdString::strcpy_safe( _userPath, "", MENGINE_MAX_PATH );
 
                 return 0;
             }
@@ -188,7 +188,7 @@ namespace Mengine
         {
             SDL_free( sdl_prefPath );
 
-            StdString::strcpy( _userPath, "" );
+            StdString::strcpy_safe( _userPath, "", MENGINE_MAX_PATH );
 
             return 0;
         }
@@ -218,7 +218,7 @@ namespace Mengine
             , Project_ExtraPreferencesFolderName
         );
 
-        StdString::strcpy( _folderName, Project_ExtraPreferencesFolderName );
+        StdString::strcpy_safe( _folderName, Project_ExtraPreferencesFolderName, MENGINE_MAX_PATH );
         
         size_t Project_ExtraPreferencesFolderNameLen = StdString::strlen( Project_ExtraPreferencesFolderName );
 

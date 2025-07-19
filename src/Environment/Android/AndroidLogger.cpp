@@ -38,16 +38,16 @@ namespace Mengine
             size_t dateSize = Helper::makeLoggerShortDate( message.timestamp, "[%02u:%02u:%02u:%04u]", date, 0, 256 );
             MENGINE_UNUSED( dateSize );
 
-            StdString::strcat( buffer, date );
-            StdString::strcat( buffer, " " );
+            StdString::strcat_safe( buffer, date, MENGINE_LOGGER_MAX_MESSAGE );
+            StdString::strcat_safe( buffer, " ", MENGINE_LOGGER_MAX_MESSAGE );
         }
 
         if( message.flag & LFLAG_CATEGORYSTAMP )
         {
-            StdString::strcat( buffer, "[" );
-            StdString::strcat( buffer, message.category );
-            StdString::strcat( buffer, "]" );
-            StdString::strcat( buffer, " " );
+            StdString::strcat_safe( buffer, "[", MENGINE_LOGGER_MAX_MESSAGE );
+            StdString::strcat_safe( buffer, message.category, MENGINE_LOGGER_MAX_MESSAGE );
+            StdString::strcat_safe( buffer, "]", MENGINE_LOGGER_MAX_MESSAGE );
+            StdString::strcat_safe( buffer, " ", MENGINE_LOGGER_MAX_MESSAGE );
         }
 
         if( message.flag & LFLAG_THREADSTAMP )
@@ -56,8 +56,8 @@ namespace Mengine
             size_t threadstampSize = Helper::makeLoggerThreadStamp( message.thread, "|%s|", threadstamp, 0, 256 );
             MENGINE_UNUSED( threadstampSize );
 
-            StdString::strcat( buffer, threadstamp );
-            StdString::strcat( buffer, " " );
+            StdString::strcat_safe( buffer, threadstamp, MENGINE_LOGGER_MAX_MESSAGE );
+            StdString::strcat_safe( buffer, " ", MENGINE_LOGGER_MAX_MESSAGE );
         }
 
         if( message.flag & ELoggerFlag::LFLAG_FILESTAMP )
@@ -65,14 +65,14 @@ namespace Mengine
             Path functionstamp = {'\0'};
             Helper::makeLoggerFunctionStamp( message.file, message.line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH );
 
-            StdString::strcat( buffer, functionstamp );
-            StdString::strcat( buffer, " " );
+            StdString::strcat_safe( buffer, functionstamp, MENGINE_LOGGER_MAX_MESSAGE );
+            StdString::strcat_safe( buffer, " ", MENGINE_LOGGER_MAX_MESSAGE );
         }
 
         if( message.flag & ELoggerFlag::LFLAG_FUNCTIONSTAMP )
         {
-            StdString::strcat( buffer, message.function );
-            StdString::strcat( buffer, " " );
+            StdString::strcat_safe( buffer, message.function, MENGINE_LOGGER_MAX_MESSAGE );
+            StdString::strcat_safe( buffer, " ", MENGINE_LOGGER_MAX_MESSAGE );
         }
 
         const Char * data = message.data;
@@ -85,7 +85,7 @@ namespace Mengine
             data_size = MENGINE_LOGGER_MAX_MESSAGE - buffer_len - 1;
         }
 
-        StdString::strncat( buffer, data, data_size );
+        StdString::strncat_safe( buffer, data, data_size, strcat_safe );
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 

@@ -568,7 +568,7 @@ namespace Mengine
             , Project_ExtraPreferencesFolderName
         );
 
-        StdString::strcpy( _folderName, Project_ExtraPreferencesFolderName );
+        StdString::strcpy_safe( _folderName, Project_ExtraPreferencesFolderName, MENGINE_MAX_PATH );
         
         size_t Project_ExtraPreferencesFolderNameLen = StdString::strlen( Project_ExtraPreferencesFolderName );
 
@@ -649,8 +649,8 @@ namespace Mengine
         {
             const Char * tag_str = tag.c_str();
 
-            StdString::strcat( platformTags, tag_str );
-            StdString::strcat( platformTags, "-" );
+            StdString::strcat_safe( platformTags, tag_str, 1024 );
+            StdString::strcat_safe( platformTags, "-", 1024 );
         }
 
         LOGGER_INFO( "platform", "platform tags: %s"
@@ -2566,7 +2566,9 @@ namespace Mengine
             return;
         }
 
-        EGLSurface eglSurface = ::eglCreateWindowSurface( m_eglDisplay, best_config, m_nativeWindow, nullptr );
+        EGLint attribs[64] = {EGL_NONE};
+
+        EGLSurface eglSurface = ::eglCreateWindowSurface( m_eglDisplay, best_config, m_nativeWindow, attribs );
 
         if( eglSurface == EGL_NO_SURFACE )
         {

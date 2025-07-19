@@ -72,7 +72,7 @@ namespace Mengine
             {
                 if( Detail::__Win32GetCurrentDllPath( dllPath ) == false )
                 {
-                    StdString::strcpy( dllPath, "Unsupport" );
+                    StdString::strcpy_safe( dllPath, "Unsupport", MENGINE_MAX_PATH );
                 }
             }
 

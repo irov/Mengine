@@ -208,7 +208,7 @@ namespace Mengine
 
                 Layout & layout = m_layouts[m_selectedLayoutIndex];
 
-                StdString::strcpy( m_editedBufferNameLayout, layout.name.c_str() );
+                StdString::strcpy_safe( m_editedBufferNameLayout, layout.name.c_str(), 256 );
             }
 
             if( ImGui::IsKeyPressed( ImGuiKey_Equal, false ) == true )
@@ -281,7 +281,7 @@ namespace Mengine
                 {
                     m_editedNameLayoutIndex = index;
 
-                    StdString::strcpy( m_editedBufferNameLayout, layout.name.c_str() );
+                    StdString::strcpy_safe( m_editedBufferNameLayout, layout.name.c_str(), 256 );
                 }
             }
             else
@@ -356,7 +356,7 @@ namespace Mengine
                     m_selectedWidgetIndex = index;
                     m_editedNameWidgetIndex = index;
 
-                    StdString::strcpy( m_editedBufferNameWidget, widget.name.c_str() );
+                    StdString::strcpy_safe( m_editedBufferNameWidget, widget.name.c_str(), 256 );
                 }
             }
             else

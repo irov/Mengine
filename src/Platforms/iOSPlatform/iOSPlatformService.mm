@@ -174,7 +174,7 @@ namespace Mengine
             , Project_ExtraPreferencesFolderName
         );
 
-        StdString::strcpy( _folderName, Project_ExtraPreferencesFolderName );
+        StdString::strcpy_safe( _folderName, Project_ExtraPreferencesFolderName, MENGINE_MAX_PATH );
         
         size_t Project_ExtraPreferencesFolderNameLen = StdString::strlen( Project_ExtraPreferencesFolderName );
 
@@ -535,8 +535,8 @@ namespace Mengine
 
         for( const ConstString & tag : m_platformTags.getValues() )
         {
-            StdString::strcat( platformTags, tag.c_str() );
-            StdString::strcat( platformTags, "-" );
+            StdString::strcat_safe( platformTags, tag.c_str(), 1024 );
+            StdString::strcat_safe( platformTags, "-", 1024 );
         }
 
         LOGGER_INFO( "platform", "platform tags: %s"

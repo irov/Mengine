@@ -85,7 +85,7 @@ namespace Mengine
             data_size = MENGINE_LOGGER_MAX_MESSAGE - buffer_len - 1;
         }
 
-        StdString::strncat_safe( buffer, data, data_size, strcat_safe );
+        StdString::strzcat_safe( buffer, data, data_size, MENGINE_LOGGER_MAX_MESSAGE );
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 

@@ -43,21 +43,17 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
     public static final @StringRes int METADATA_SITE = R.string.mengine_datadog_site;
     public static final @StringRes int METADATA_CLIENT_TOKEN = R.string.mengine_datadog_client_token;
 
-    private boolean m_enableDebugMessage = false;
-    private boolean m_enableInfoMessage = false;
+    private volatile boolean m_enableDebugMessage = false;
+    private volatile boolean m_enableInfoMessage = false;
 
     private Logger m_loggerDataDog;
 
     protected boolean getEnableDebugMessage() {
-        synchronized (this) {
-            return m_enableDebugMessage;
-        }
+        return m_enableDebugMessage;
     }
 
     protected boolean getEnableInfoMessage() {
-        synchronized (this) {
-            return m_enableInfoMessage;
-        }
+        return m_enableInfoMessage;
     }
 
     protected TrackingConsent getTrackingConsent(@NonNull MengineParamTransparencyConsent consentParam) {
@@ -276,22 +272,20 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
 
     @Override
     public void onMengineRemoteConfigFetch(@NonNull MengineApplication application, boolean updated, @NonNull Map<String, JSONObject> configs) {
-        synchronized (this) {
-            JSONObject datadog_debug_message = configs.getOrDefault("datadog_debug_message", null);
+        JSONObject datadog_debug_message = configs.getOrDefault("datadog_debug_message", null);
 
-            if (datadog_debug_message != null) {
-                boolean enable = datadog_debug_message.optBoolean("enable", false);
+        if (datadog_debug_message != null) {
+            boolean enable = datadog_debug_message.optBoolean("enable", false);
 
-                m_enableDebugMessage = enable;
-            }
+            m_enableDebugMessage = enable;
+        }
 
-            JSONObject datadog_info_message = configs.getOrDefault("datadog_info_message", null);
+        JSONObject datadog_info_message = configs.getOrDefault("datadog_info_message", null);
 
-            if (datadog_info_message != null) {
-                boolean enable = datadog_info_message.optBoolean("enable", false);
+        if (datadog_info_message != null) {
+            boolean enable = datadog_info_message.optBoolean("enable", false);
 
-                m_enableInfoMessage = enable;
-            }
+            m_enableInfoMessage = enable;
         }
     }
 

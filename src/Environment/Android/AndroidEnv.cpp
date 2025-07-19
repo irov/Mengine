@@ -219,7 +219,7 @@ namespace Mengine
     {
         if( g_androidEnvJavaVM == nullptr )
         {
-            __android_log_print(ANDROID_LOG_ERROR, "Mengine", "[ERROR] JNI_SetupThread failed to get JavaVM");
+            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "[ERROR] JNI_SetupThread failed to get JavaVM" );
 
             return JNI_FALSE;
         }
@@ -229,7 +229,7 @@ namespace Mengine
 
         if( attach_status != JNI_OK )
         {
-            __android_log_print(ANDROID_LOG_ERROR, "Mengine", "[ERROR] JNI_SetupThread failed to attach current thread");
+            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "[ERROR] JNI_SetupThread failed to attach current thread" );
 
             return JNI_FALSE;
         }

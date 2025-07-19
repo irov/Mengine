@@ -177,8 +177,8 @@ namespace Mengine
 }
 
 //////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_STRNCPY_STATIC
-#define MENGINE_STRNCPY_STATIC(a, b, n) (Mengine::StdString::strcpy_safe((a), (b), (n)), MENGINE_STATIC_STRING_LENGTH(b))
+#ifndef MENGINE_STRCPY_STATIC
+#define MENGINE_STRCPY_STATIC(a, b, n) (Mengine::StdString::strcpy_safe((a), (b), (n)), MENGINE_STATIC_STRING_LENGTH(b))
 #endif
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_WCSICMP

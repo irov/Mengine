@@ -121,19 +121,6 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void HotSpot::_invalidateWorldMatrix() const
-    {
-        /*
-        if( this->isPickerEnable() == false )
-        {
-            return;
-        }
-
-        PICKER_SERVICE()
-            ->invalidateTraps();
-            */
-    }
-    //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
     //////////////////////////////////////////////////////////////////////////
     Scriptable * HotSpot::getPickerScriptable()

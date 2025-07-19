@@ -24,21 +24,21 @@ def MENGINE_APP_SERVICE_MONITORCONNECTIVITYSTATUS = Utils.existAppService("MENGI
 
 def MENGINE_APP_PLUGIN_SPLASHSCREEN = Utils.existAppPlugin("MENGINE_APP_PLUGIN_SPLASHSCREEN")
 def MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS = Utils.existAppPlugin("MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS")
-def MENGINE_APP_PLUGIN_GOOGLE_ADVERTISING = Utils.existAppPlugin("MENGINE_APP_PLUGIN_GOOGLE_ADVERTISING")
 def MENGINE_APP_PLUGIN_GOOGLE_SERVICE = Utils.existAppPlugin("MENGINE_APP_PLUGIN_GOOGLE_SERVICE")
-def MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL = Utils.existAppPlugin("MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL")
-def MENGINE_APP_PLUGIN_GOOGLE_PLAY_BILLING = Utils.existAppPlugin("MENGINE_APP_PLUGIN_GOOGLE_PLAY_BILLING")
-def MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS = Utils.existAppPlugin("MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS")
-def MENGINE_APP_PLUGIN_GOOGLE_CONSENT = Utils.existAppPlugin("MENGINE_APP_PLUGIN_GOOGLE_CONSENT")
-def MENGINE_APP_PLUGIN_FIREBASE = Utils.existAppPlugin("MENGINE_APP_PLUGIN_FIREBASE")
-def MENGINE_APP_PLUGIN_FIREBASE_INSTALLATIONS = Utils.existAppPlugin("MENGINE_APP_PLUGIN_FIREBASE_INSTALLATIONS")
-def MENGINE_APP_PLUGIN_FIREBASE_APPCHECK = Utils.existAppPlugin("MENGINE_APP_PLUGIN_FIREBASE_APPCHECK")
-def MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS = Utils.existAppPlugin("MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS")
+def MENGINE_APP_PLUGIN_GOOGLE_ADVERTISING = Utils.existAppPlugin("MENGINE_APP_PLUGIN_GOOGLE_ADVERTISING", ["MENGINE_APP_PLUGIN_GOOGLE_SERVICE"])
+def MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL = Utils.existAppPlugin("MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL", ["MENGINE_APP_PLUGIN_GOOGLE_SERVICE"])
+def MENGINE_APP_PLUGIN_GOOGLE_PLAY_BILLING = Utils.existAppPlugin("MENGINE_APP_PLUGIN_GOOGLE_PLAY_BILLING", ["MENGINE_APP_PLUGIN_GOOGLE_SERVICE"])
+def MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS = Utils.existAppPlugin("MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS", ["MENGINE_APP_PLUGIN_GOOGLE_SERVICE"])
+def MENGINE_APP_PLUGIN_GOOGLE_CONSENT = Utils.existAppPlugin("MENGINE_APP_PLUGIN_GOOGLE_CONSENT", ["MENGINE_APP_PLUGIN_GOOGLE_SERVICE"])
+def MENGINE_APP_PLUGIN_FIREBASE = Utils.existAppPlugin("MENGINE_APP_PLUGIN_FIREBASE", ["MENGINE_APP_PLUGIN_GOOGLE_SERVICE"])
+def MENGINE_APP_PLUGIN_FIREBASE_INSTALLATIONS = Utils.existAppPlugin("MENGINE_APP_PLUGIN_FIREBASE_INSTALLATIONS", ["MENGINE_APP_PLUGIN_FIREBASE"])
+def MENGINE_APP_PLUGIN_FIREBASE_APPCHECK = Utils.existAppPlugin("MENGINE_APP_PLUGIN_FIREBASE_APPCHECK", ["MENGINE_APP_PLUGIN_FIREBASE"])
+def MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS = Utils.existAppPlugin("MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS", ["MENGINE_APP_PLUGIN_FIREBASE"])
 def MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS_NATIVE_SYMBOL_UPLOAD_ENABLE = Utils.getBooleanProperty("MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS_NATIVE_SYMBOL_UPLOAD_ENABLE", false)
-def MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS = Utils.existAppPlugin("MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS")
-def MENGINE_APP_PLUGIN_FIREBASE_MESSAGING = Utils.existAppPlugin("MENGINE_APP_PLUGIN_FIREBASE_MESSAGING")
-def MENGINE_APP_PLUGIN_FIREBASE_REMOTECONFIG = Utils.existAppPlugin("MENGINE_APP_PLUGIN_FIREBASE_REMOTECONFIG")
-def MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING = Utils.existAppPlugin("MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING")
+def MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS = Utils.existAppPlugin("MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS", ["MENGINE_APP_PLUGIN_FIREBASE"])
+def MENGINE_APP_PLUGIN_FIREBASE_MESSAGING = Utils.existAppPlugin("MENGINE_APP_PLUGIN_FIREBASE_MESSAGING", ["MENGINE_APP_PLUGIN_FIREBASE"])
+def MENGINE_APP_PLUGIN_FIREBASE_REMOTECONFIG = Utils.existAppPlugin("MENGINE_APP_PLUGIN_FIREBASE_REMOTECONFIG", ["MENGINE_APP_PLUGIN_FIREBASE"])
+def MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING = Utils.existAppPlugin("MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING", ["MENGINE_APP_PLUGIN_FIREBASE"])
 def MENGINE_APP_PLUGIN_FLURRY = Utils.existAppPlugin("MENGINE_APP_PLUGIN_FLURRY")
 def MENGINE_APP_PLUGIN_APPMETRICA = Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPMETRICA")
 def MENGINE_APP_PLUGIN_APPSFLYER = Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPSFLYER")
@@ -46,7 +46,7 @@ def MENGINE_APP_PLUGIN_DEVTODEV = Utils.existAppPlugin("MENGINE_APP_PLUGIN_DEVTO
 def MENGINE_APP_PLUGIN_FACEBOOK = Utils.existAppPlugin("MENGINE_APP_PLUGIN_FACEBOOK")
 def MENGINE_APP_PLUGIN_SENTRY = Utils.existAppPlugin("MENGINE_APP_PLUGIN_SENTRY")
 def MENGINE_APP_PLUGIN_MAR = Utils.existAppPlugin("MENGINE_APP_PLUGIN_MAR")
-def MENGINE_APP_PLUGIN_ADMOB = Utils.existAppPlugin("MENGINE_APP_PLUGIN_ADMOB")
+def MENGINE_APP_PLUGIN_ADMOB = Utils.existAppPlugin("MENGINE_APP_PLUGIN_ADMOB", ["MENGINE_APP_PLUGIN_GOOGLE_SERVICE"])
 def MENGINE_APP_PLUGIN_AMAZON = Utils.existAppPlugin("MENGINE_APP_PLUGIN_AMAZON")
 def MENGINE_APP_PLUGIN_APPLOVIN = Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN")
 def MENGINE_APP_PLUGIN_ADJUST = Utils.existAppPlugin("MENGINE_APP_PLUGIN_ADJUST")
@@ -212,35 +212,53 @@ android {
         }
     }
 
-    if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true && MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS_NATIVE_SYMBOL_UPLOAD_ENABLE == true) {
-        buildTypes {
-            var buildDirectory = getLayout().getBuildDirectory();
+    if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true) {
+        if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS_NATIVE_SYMBOL_UPLOAD_ENABLE == true) {
+            buildTypes {
+                var buildDirectory = getLayout().getBuildDirectory();
 
-            debug {
-                firebaseCrashlytics {
-                    mappingFileUploadEnabled true
+                debug {
+                    firebaseCrashlytics {
+                        mappingFileUploadEnabled true
+                        nativeSymbolUploadEnabled true
 
-                    nativeSymbolUploadEnabled true
+                        unstrippedNativeLibsDir buildDirectory.dir("intermediates/merged_native_libs/debug/mergeDebugNativeLibs/out/lib")
+                    }
 
-                    unstrippedNativeLibsDir buildDirectory.dir("intermediates/merged_native_libs/debug/mergeDebugNativeLibs/out/lib")
+                    ndk {
+                        debugSymbolLevel 'FULL'
+                    }
                 }
 
-                ndk {
-                    debugSymbolLevel 'FULL'
+                release {
+                    firebaseCrashlytics {
+                        mappingFileUploadEnabled true
+                        nativeSymbolUploadEnabled true
+
+                        unstrippedNativeLibsDir buildDirectory.dir("intermediates/merged_native_libs/release/mergeReleaseNativeLibs/out/lib")
+                    }
+
+                    ndk {
+                        debugSymbolLevel 'SYMBOL_TABLE'
+                    }
                 }
             }
-
-            release {
-                firebaseCrashlytics {
-                    mappingFileUploadEnabled true
-
-                    nativeSymbolUploadEnabled true
-
-                    unstrippedNativeLibsDir buildDirectory.dir("intermediates/merged_native_libs/release/mergeReleaseNativeLibs/out/lib")
+        }
+        else
+        {
+            buildTypes {
+                debug {
+                    firebaseCrashlytics {
+                        mappingFileUploadEnabled false
+                        nativeSymbolUploadEnabled false
+                    }
                 }
 
-                ndk {
-                    debugSymbolLevel 'SYMBOL_TABLE'
+                release {
+                    firebaseCrashlytics {
+                        mappingFileUploadEnabled false
+                        nativeSymbolUploadEnabled false
+                    }
                 }
             }
         }
@@ -381,10 +399,6 @@ if (MENGINE_APP_PLUGIN_GOOGLE_SERVICE == true) {
 Utils.logAvailable("MENGINE_APP_PLUGIN_GOOGLE_ADVERTISING", MENGINE_APP_PLUGIN_GOOGLE_ADVERTISING)
 
 if (MENGINE_APP_PLUGIN_GOOGLE_ADVERTISING == true) {
-    if (MENGINE_APP_PLUGIN_GOOGLE_SERVICE == false) {
-        throw new GradleException("MENGINE_APP_PLUGIN_GOOGLE_ADVERTISING required enable MENGINE_APP_PLUGIN_GOOGLE_SERVICE")
-    }
-
     android.ext.plugins += 'org.Mengine.Plugin.GoogleAdvertising.MengineGoogleAdvertisingPlugin'
 
     dependencies {
@@ -395,10 +409,6 @@ if (MENGINE_APP_PLUGIN_GOOGLE_ADVERTISING == true) {
 Utils.logAvailable("MENGINE_APP_PLUGIN_FIREBASE", MENGINE_APP_PLUGIN_FIREBASE)
 
 if (MENGINE_APP_PLUGIN_FIREBASE == true) {
-    if (MENGINE_APP_PLUGIN_GOOGLE_SERVICE == false) {
-        throw new GradleException("MENGINE_APP_PLUGIN_FIREBASE required enable MENGINE_APP_PLUGIN_GOOGLE_SERVICE")
-    }
-
     android.ext.plugins += 'org.Mengine.Plugin.Firebase.MengineFirebasePlugin'
 
     dependencies {
@@ -409,10 +419,6 @@ if (MENGINE_APP_PLUGIN_FIREBASE == true) {
 Utils.logAvailable("MENGINE_APP_PLUGIN_FIREBASE_INSTALLATIONS", MENGINE_APP_PLUGIN_FIREBASE_INSTALLATIONS)
 
 if (MENGINE_APP_PLUGIN_FIREBASE_INSTALLATIONS == true) {
-    if (MENGINE_APP_PLUGIN_FIREBASE == false) {
-        throw new GradleException("MENGINE_APP_PLUGIN_FIREBASE_INSTALLATIONS required enable MENGINE_APP_PLUGIN_FIREBASE")
-    }
-
     android.ext.plugins += 'org.Mengine.Plugin.FirebaseInstallations.MengineFirebaseInstallationsPlugin'
 
     dependencies {
@@ -423,10 +429,6 @@ if (MENGINE_APP_PLUGIN_FIREBASE_INSTALLATIONS == true) {
 Utils.logAvailable("MENGINE_APP_PLUGIN_FIREBASE_APPCHECK", MENGINE_APP_PLUGIN_FIREBASE_APPCHECK)
 
 if (MENGINE_APP_PLUGIN_FIREBASE_APPCHECK == true) {
-    if (MENGINE_APP_PLUGIN_FIREBASE == false) {
-        throw new GradleException("MENGINE_APP_PLUGIN_FIREBASE_APPCHECK required enable MENGINE_APP_PLUGIN_FIREBASE")
-    }
-
     android.ext.plugins += 'org.Mengine.Plugin.FirebaseAppCheck.MengineFirebaseAppCheckPlugin'
 
     dependencies {
@@ -438,10 +440,6 @@ Utils.logAvailable("MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS", MENGINE_APP_PLUGIN
 Utils.logAvailable("MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS_NATIVE_SYMBOL_UPLOAD_ENABLE", MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS_NATIVE_SYMBOL_UPLOAD_ENABLE)
 
 if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true) {
-    if (MENGINE_APP_PLUGIN_FIREBASE == false) {
-        throw new GradleException("MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS required enable MENGINE_APP_PLUGIN_FIREBASE")
-    }
-
     android.ext.plugins += 'org.Mengine.Plugin.FirebaseCrashlytics.MengineFirebaseCrashlyticsPlugin'
 
     dependencies {
@@ -452,10 +450,6 @@ if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true) {
 Utils.logAvailable("MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS", MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS)
 
 if (MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS == true) {
-    if (MENGINE_APP_PLUGIN_FIREBASE == false) {
-        throw new GradleException("MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS required enable MENGINE_APP_PLUGIN_FIREBASE")
-    }
-
     android.ext.plugins += 'org.Mengine.Plugin.FirebaseAnalytics.MengineFirebaseAnalyticsPlugin'
 
     dependencies {
@@ -466,10 +460,6 @@ if (MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS == true) {
 Utils.logAvailable("MENGINE_APP_PLUGIN_FIREBASE_MESSAGING", MENGINE_APP_PLUGIN_FIREBASE_MESSAGING)
 
 if (MENGINE_APP_PLUGIN_FIREBASE_MESSAGING == true) {
-    if (MENGINE_APP_PLUGIN_FIREBASE == false) {
-        throw new GradleException("MENGINE_APP_PLUGIN_FIREBASE_MESSAGING required enable MENGINE_APP_PLUGIN_FIREBASE")
-    }
-
     android.ext.plugins += 'org.Mengine.Plugin.FirebaseMessaging.MengineFirebaseMessagingPlugin'
 
     dependencies {
@@ -480,10 +470,6 @@ if (MENGINE_APP_PLUGIN_FIREBASE_MESSAGING == true) {
 Utils.logAvailable("MENGINE_APP_PLUGIN_FIREBASE_REMOTECONFIG", MENGINE_APP_PLUGIN_FIREBASE_REMOTECONFIG)
 
 if (MENGINE_APP_PLUGIN_FIREBASE_REMOTECONFIG == true) {
-    if (MENGINE_APP_PLUGIN_FIREBASE == false) {
-        throw new GradleException("MENGINE_APP_PLUGIN_FIREBASE_REMOTECONFIG required enable MENGINE_APP_PLUGIN_FIREBASE")
-    }
-
     android.ext.plugins += 'org.Mengine.Plugin.FirebaseRemoteConfig.MengineFirebaseRemoteConfigPlugin'
 
     dependencies {
@@ -494,10 +480,6 @@ if (MENGINE_APP_PLUGIN_FIREBASE_REMOTECONFIG == true) {
 Utils.logAvailable("MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING", MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING)
 
 if (MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING == true) {
-    if (MENGINE_APP_PLUGIN_FIREBASE == false) {
-        throw new GradleException("MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING required enable MENGINE_APP_PLUGIN_FIREBASE")
-    }
-
     android.ext.plugins += 'org.Mengine.Plugin.FirebasePerformanceMonitoring.MengineFirebasePerformanceMonitoringPlugin'
 
     dependencies {

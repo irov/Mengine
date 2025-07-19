@@ -52,6 +52,8 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
     protected NonetBanner m_showBanner;
     protected ImageView m_showBannerView;
 
+    protected final Object m_showBannerLock = new Object();
+
     protected MengineRunnablePeriodically m_refreshTimer;
 
     protected MengineAnalyticsEventBuilderInterface buildNonetBannersEvent(@Size(min = 1L,max = 40L) String event) {
@@ -167,7 +169,7 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
                 return;
             }
 
-            synchronized (this) {
+            synchronized (m_showBannerLock) {
                 if (m_showBanner == null) {
                     return;
                 }
@@ -223,7 +225,7 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
             m_refreshTimer = null;
         }
 
-        synchronized (this) {
+        synchronized (m_showBannerLock) {
             if (m_showBannerView != null) {
                 ViewGroup viewGroup = activity.getContentViewGroup();
                 viewGroup.removeView(m_showBannerView);
@@ -318,7 +320,7 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
         int showRequestId;
         String showUrl;
 
-        synchronized (this) {
+        synchronized (m_showBannerLock) {
             if (m_showBanner != null) {
                 return;
             }
@@ -374,7 +376,7 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
         int hideRequestId;
         String hideUrl;
 
-        synchronized (this) {
+        synchronized (m_showBannerLock) {
             if (m_showBanner == null) {
                 return;
             }

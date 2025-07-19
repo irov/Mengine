@@ -19,7 +19,7 @@
 
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
 #include "Environment/Python/PythonEventReceiver.h"
-#include "Environment/Python/PythonDocumentTraceback.h"
+#include "Environment/Python/PythonDocument.h"
 #include "Environment/Python/PythonScriptWrapper.h"
 
 #include "Plugins/MoviePlugin/ResourceMovie2.h"
@@ -161,7 +161,7 @@ namespace Mengine
                         String value = py_obj.extract();
 
                         TextArgumentInterfacePtr argument = TEXT_SERVICE()
-                            ->createTextArgumentValue( value, MENGINE_DOCUMENT_PYBIND );
+                            ->createTextArgumentValue( value, MENGINE_DOCUMENT_PYTHON );
 
                         arguments.emplace_back( argument );
                     }
@@ -173,7 +173,7 @@ namespace Mengine
                         Helper::unicodeToUtf8( value, &utf8_value );
 
                         TextArgumentInterfacePtr argument = TEXT_SERVICE()
-                            ->createTextArgumentValue( utf8_value, MENGINE_DOCUMENT_PYBIND );
+                            ->createTextArgumentValue( utf8_value, MENGINE_DOCUMENT_PYTHON );
 
                         arguments.emplace_back( argument );
                     }
@@ -196,7 +196,7 @@ namespace Mengine
                         };
 
                         TextArgumentInterfacePtr argument = TEXT_SERVICE()
-                            ->createTextArgumentContext( context, MENGINE_DOCUMENT_PYBIND );
+                            ->createTextArgumentContext( context, MENGINE_DOCUMENT_PYTHON );
 
                         arguments.emplace_back( argument );
                     }
@@ -209,7 +209,7 @@ namespace Mengine
                         if( textId != ConstString::none() )
                         {
                             TextArgumentInterfacePtr argument = TEXT_SERVICE()
-                                ->createTextArgumentId( textId, MENGINE_DOCUMENT_PYBIND );
+                                ->createTextArgumentId( textId, MENGINE_DOCUMENT_PYTHON );
 
                             arguments.emplace_back( argument );
                         }
@@ -234,7 +234,7 @@ namespace Mengine
                         const Char * value_str = value.c_str();
 
                         TextArgumentInterfacePtr argument = TEXT_SERVICE()
-                            ->createTextArgumentValue( value_str, MENGINE_DOCUMENT_PYBIND );
+                            ->createTextArgumentValue( value_str, MENGINE_DOCUMENT_PYTHON );
 
                         arguments.emplace_back( argument );
                     }
@@ -528,7 +528,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             ScriptableAffectorCallbackPtr createNodeAffectorCallback( Scriptable * _scriptable, const pybind::object & _cb, const pybind::args & _args )
             {
-                ScriptableAffectorCallbackPtr callback = m_factoryNodeAffectorCallback->createObject( MENGINE_DOCUMENT_PYBIND );
+                ScriptableAffectorCallbackPtr callback = m_factoryNodeAffectorCallback->createObject( MENGINE_DOCUMENT_PYTHON );
 
                 callback->initialize( ScriptablePtr( _scriptable ), _cb, _args );
 
@@ -554,7 +554,7 @@ namespace Mengine
                     _shape->setPercentVisibility( _v );
                 }
                     , _shape->getPercentVisibility(), _percent, _time
-                    , MENGINE_DOCUMENT_PYBIND
+                    , MENGINE_DOCUMENT_PYTHON
                 );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
@@ -609,7 +609,7 @@ namespace Mengine
                 MENGINE_ASSERTION_MEMORY_PANIC( _kwds, "invalid set event listener" );
 
                 pybind::dict py_kwds( _kernel, _kwds );
-                Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _surface, MENGINE_DOCUMENT_PYBIND );
+                Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _surface, MENGINE_DOCUMENT_PYTHON );
 
                 MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _surface, py_kwds );
 
@@ -623,7 +623,7 @@ namespace Mengine
                 MENGINE_ASSERTION_MEMORY_PANIC( _kwds, "invalid set event listener" );
 
                 pybind::dict py_kwds( _kernel, _kwds );
-                Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _surface, MENGINE_DOCUMENT_PYBIND );
+                Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _surface, MENGINE_DOCUMENT_PYTHON );
 
                 MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _surface, py_kwds );
 
@@ -658,7 +658,7 @@ namespace Mengine
                 MENGINE_ASSERTION_MEMORY_PANIC( _kwds, "invalid set event listener" );
 
                 pybind::dict py_kwds( _kernel, _kwds );
-                Helper::registerPythonEventReceiver<PythonMeshEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onMeshgetUpdate" ), EVENT_MESHGET_UPDATE, MENGINE_DOCUMENT_PYBIND );
+                Helper::registerPythonEventReceiver<PythonMeshEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onMeshgetUpdate" ), EVENT_MESHGET_UPDATE, MENGINE_DOCUMENT_PYTHON );
 
                 MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _node, py_kwds );
 
@@ -698,8 +698,8 @@ namespace Mengine
                 MENGINE_ASSERTION_MEMORY_PANIC( _kwds, "invalid set event listener" );
 
                 pybind::dict py_kwds( _kernel, _kwds );
-                Helper::registerPythonEventReceiver<PythonScriptHolderEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onKeepScript" ), EVENT_SCRIPT_HOLDER_KEEP, MENGINE_DOCUMENT_PYBIND );
-                Helper::registerPythonEventReceiver<PythonScriptHolderEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onReleaseScript" ), EVENT_SCRIPT_HOLDER_RELEASE, MENGINE_DOCUMENT_PYBIND );
+                Helper::registerPythonEventReceiver<PythonScriptHolderEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onKeepScript" ), EVENT_SCRIPT_HOLDER_KEEP, MENGINE_DOCUMENT_PYTHON );
+                Helper::registerPythonEventReceiver<PythonScriptHolderEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onReleaseScript" ), EVENT_SCRIPT_HOLDER_RELEASE, MENGINE_DOCUMENT_PYTHON );
 
                 MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _node, py_kwds );
 
@@ -714,17 +714,17 @@ namespace Mengine
 
                 pybind::dict py_kwds( _kernel, _kwds );
 
-                Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onHandleKeyEvent" ), EVENT_HOTSPOT_KEY, MENGINE_DOCUMENT_PYBIND );
-                Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onHandleMouseButtonEvent" ), EVENT_HOTSPOT_MOUSE_BUTTON, MENGINE_DOCUMENT_PYBIND );
-                Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onHandleMouseButtonEventBegin" ), EVENT_HOTSPOT_MOUSE_BUTTON_BEGIN, MENGINE_DOCUMENT_PYBIND );
-                Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onHandleMouseButtonEventEnd" ), EVENT_HOTSPOT_MOUSE_BUTTON_END, MENGINE_DOCUMENT_PYBIND );
-                Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onHandleMouseMove" ), EVENT_HOTSPOT_MOUSE_MOVE, MENGINE_DOCUMENT_PYBIND );
-                Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onHandleMouseWheel" ), EVENT_HOTSPOT_MOUSE_WHEEL, MENGINE_DOCUMENT_PYBIND );
-                Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onHandleMouseEnter" ), EVENT_HOTSPOT_MOUSE_ENTER, MENGINE_DOCUMENT_PYBIND );
-                Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onHandleMouseLeave" ), EVENT_HOTSPOT_MOUSE_LEAVE, MENGINE_DOCUMENT_PYBIND );
-                Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onHandleMouseOverDestroy" ), EVENT_HOTSPOT_MOUSE_OVER_DESTROY, MENGINE_DOCUMENT_PYBIND );
-                Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onHandleActivate" ), EVENT_HOTSPOT_ACTIVATE, MENGINE_DOCUMENT_PYBIND );
-                Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onHandleDeactivate" ), EVENT_HOTSPOT_DEACTIVATE, MENGINE_DOCUMENT_PYBIND );
+                Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onHandleKeyEvent" ), EVENT_HOTSPOT_KEY, MENGINE_DOCUMENT_PYTHON );
+                Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onHandleMouseButtonEvent" ), EVENT_HOTSPOT_MOUSE_BUTTON, MENGINE_DOCUMENT_PYTHON );
+                Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onHandleMouseButtonEventBegin" ), EVENT_HOTSPOT_MOUSE_BUTTON_BEGIN, MENGINE_DOCUMENT_PYTHON );
+                Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onHandleMouseButtonEventEnd" ), EVENT_HOTSPOT_MOUSE_BUTTON_END, MENGINE_DOCUMENT_PYTHON );
+                Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onHandleMouseMove" ), EVENT_HOTSPOT_MOUSE_MOVE, MENGINE_DOCUMENT_PYTHON );
+                Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onHandleMouseWheel" ), EVENT_HOTSPOT_MOUSE_WHEEL, MENGINE_DOCUMENT_PYTHON );
+                Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onHandleMouseEnter" ), EVENT_HOTSPOT_MOUSE_ENTER, MENGINE_DOCUMENT_PYTHON );
+                Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onHandleMouseLeave" ), EVENT_HOTSPOT_MOUSE_LEAVE, MENGINE_DOCUMENT_PYTHON );
+                Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onHandleMouseOverDestroy" ), EVENT_HOTSPOT_MOUSE_OVER_DESTROY, MENGINE_DOCUMENT_PYTHON );
+                Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onHandleActivate" ), EVENT_HOTSPOT_ACTIVATE, MENGINE_DOCUMENT_PYTHON );
+                Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onHandleDeactivate" ), EVENT_HOTSPOT_DEACTIVATE, MENGINE_DOCUMENT_PYTHON );
 
                 MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _node, py_kwds );
 

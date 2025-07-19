@@ -71,7 +71,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void AppleFacebook_setProvider(const pybind::dict & _cbs, const pybind::args & _args )
         {
-            AppleFacebookProviderInterfacePtr provider = Helper::makeFactorableUnique<PythonAppleFacebookProvider>( MENGINE_DOCUMENT_PYBIND, _cbs, _args );
+            AppleFacebookProviderInterfacePtr provider = Helper::makeFactorableUnique<PythonAppleFacebookProvider>( MENGINE_DOCUMENT_PYTHON, _cbs, _args );
 
             APPLE_FACEBOOK_SERVICE()
                 ->setProvider( provider );

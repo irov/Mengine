@@ -186,14 +186,14 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
         m_billingClient = null;
     }
 
-    protected void billingConnect() {
+    protected void billingConnect(@NonNull MengineActivity activity) {
         m_billingClient.startConnection(new BillingClientStateListener() {
             @Override
             public void onBillingServiceDisconnected() {
                 MengineGooglePlayBillingPlugin.this.logInfo("Billing disconnected");
 
                 MengineUtils.performOnMainThreadDelayed(() -> {
-                    MengineGooglePlayBillingPlugin.this.billingConnect();
+                    MengineGooglePlayBillingPlugin.this.billingConnect(activity);
                 },5000L);
             }
 
@@ -211,13 +211,21 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
                 }
 
                 MengineGooglePlayBillingPlugin.this.logInfo("billing setup finished");
+
+                BillingResult supportedProductDetails = m_billingClient.isFeatureSupported(BillingClient.FeatureType.PRODUCT_DETAILS);
+
+                if (supportedProductDetails.getResponseCode() == BillingClient.BillingResponseCode.FEATURE_NOT_SUPPORTED) {
+                    MengineGooglePlayBillingPlugin.this.logError("[ERROR] queryProducts billing client feature PRODUCT_DETAILS is not supported");
+
+                    MengineUI.showToastRes(activity, R.string.mengine_googleplaybilling_asks_update_playstore);
+                }
             }
         });
     }
 
     @Override
     public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
-        this.billingConnect();
+        this.billingConnect(activity);
     }
 
     @Override
@@ -348,18 +356,6 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
             this.logError("[ERROR] queryProducts billing client not ready");
 
             this.nativeCall("onGooglePlayBillingQueryProductError", ERROR_CODE_NOT_READY, new RuntimeException("Billing client not ready"));
-
-            return;
-        }
-
-        BillingResult supportedProductDetails = m_billingClient.isFeatureSupported(BillingClient.FeatureType.PRODUCT_DETAILS);
-
-        if (supportedProductDetails.getResponseCode() == BillingClient.BillingResponseCode.FEATURE_NOT_SUPPORTED) {
-            MengineActivity activity = this.getMengineActivity();
-
-            MengineUI.showToastRes(activity, R.string.mengine_googleplaybilling_asks_update_playstore);
-
-            this.nativeCall("onGooglePlayBillingQueryProductError", ERROR_CODE_NOT_SUPPORTED, new RuntimeException("Feature PRODUCT_DETAILS is not supported"));
 
             return;
         }

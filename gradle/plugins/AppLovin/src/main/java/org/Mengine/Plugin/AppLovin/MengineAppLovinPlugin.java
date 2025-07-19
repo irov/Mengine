@@ -56,11 +56,9 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
     public static final @StringRes int METADATA_PRIVACY_POLICY_URL = R.string.privacy_policy_url;
     public static final @StringRes int METADATA_TERMS_OF_SERVICE_URL = R.string.terms_of_service_url;
 
-    private boolean m_enableShowMediationDebugger = false;
+    private volatile boolean m_enableShowMediationDebugger = false;
 
     private volatile boolean m_appLovinSdkInitialized = false;
-
-    private String m_countryCode;
 
     private MengineAppLovinBannerAdInterface m_bannerAd;
     private MengineAppLovinInterstitialAdInterface m_interstitialAd;
@@ -75,9 +73,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
     private MengineAppLovinNonetBannersInterface m_nonetBanners;
 
     public boolean getEnableShowMediationDebugger() {
-        synchronized (this) {
-            return m_enableShowMediationDebugger;
-        }
+       return m_enableShowMediationDebugger;
     }
 
     protected AppLovinSdk getAppLovinSdkInstance() {
@@ -121,7 +117,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
 
     @Override
     public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
-        this.logInfo("AppLovin SDK version: %s", AppLovinSdk.VERSION);
+        this.logInfo("[AppLovin SDK] version: %s", AppLovinSdk.VERSION);
 
         MengineAdService adService = application.getService(MengineAdService.class);
 
@@ -267,51 +263,52 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
 
         AppLovinSdkInitializationConfiguration config = builder.build();
 
-        this.logInfo("initializing AppLovin SDK with config: %s", config.toString());
+        this.logInfo("[AppLovin SDK] initializing with config: %s", config.toString());
+
+        List<MaxMediatedNetworkInfo> availableMediatedNetworks = appLovinSdk.getAvailableMediatedNetworks();
+
+        for (MaxMediatedNetworkInfo networkInfo : availableMediatedNetworks) {
+            String name = networkInfo.getName();
+            String adapterVersion = networkInfo.getAdapterVersion();
+
+            this.logInfo("[AppLovin SDK] available mediated network: %s adapter version: %s"
+                , name
+                , adapterVersion
+            );
+        }
 
         appLovinSdk.initialize(config, configuration -> {
-            AppLovinCmpService cmpService = appLovinSdk.getCmpService();
-            boolean supportedCmp = cmpService.hasSupportedCmp();
             boolean testModeEnabled = configuration.isTestModeEnabled();
-            String countryCode = configuration.getCountryCode();
-            List<String> enabledAmazonAdUnitIds = configuration.getEnabledAmazonAdUnitIds();
-            AppLovinSdkConfiguration.ConsentFlowUserGeography consentFlowUserGeography = configuration.getConsentFlowUserGeography();
 
-            this.logInfo("initialized AppLovin SDK with CMP: %b TestMode: %b CountryCode: %s AmazonAdUnitIds: %s ConsentFlowUserGeography: %s"
-                , supportedCmp
-                , testModeEnabled
-                , countryCode
-                , enabledAmazonAdUnitIds
-                , consentFlowUserGeography.toString()
-            );
+            this.logInfo("[AppLovin SDK] initialized TestMode: %b", testModeEnabled);
 
-            m_countryCode = countryCode;
+            if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_CONSENT_FLOW == true) {
+                AppLovinCmpService cmpService = appLovinSdk.getCmpService();
+                boolean supportedCmp = cmpService.hasSupportedCmp();
+                String countryCode = configuration.getCountryCode();
 
-            switch (consentFlowUserGeography) {
-                case UNKNOWN:
-                    MengineParamTransparencyConsent.setConsentFlowUserGeography(application, MengineConsentFlowUserGeography.MengineConsentFlowUserGeography_Unknown);
-                    break;
-                case GDPR:
-                    MengineParamTransparencyConsent.setConsentFlowUserGeography(application, MengineConsentFlowUserGeography.MengineConsentFlowUserGeography_EEA);
-                    break;
-                case OTHER:
-                    MengineParamTransparencyConsent.setConsentFlowUserGeography(application, MengineConsentFlowUserGeography.MengineConsentFlowUserGeography_NonEEA);
-                    break;
-            }
+                AppLovinSdkConfiguration.ConsentFlowUserGeography consentFlowUserGeography = configuration.getConsentFlowUserGeography();
 
-            List<MaxMediatedNetworkInfo> availableMediatedNetworks = appLovinSdk.getAvailableMediatedNetworks();
-
-            for (MaxMediatedNetworkInfo networkInfo : availableMediatedNetworks) {
-                String name = networkInfo.getName();
-                String adapterVersion = networkInfo.getAdapterVersion();
-
-                this.logInfo("available mediated network: %s adapter version: %s"
-                    , name
-                    , adapterVersion
+                this.logInfo("[AppLovin SDK] supportedCmp: %b countryCode: %s consentFlowUserGeography: %s"
+                    , supportedCmp
+                    , countryCode
+                    , consentFlowUserGeography.toString()
                 );
-            }
 
-            application.checkTransparencyConsentServices();
+                switch (consentFlowUserGeography) {
+                    case UNKNOWN:
+                        MengineParamTransparencyConsent.setConsentFlowUserGeography(application, MengineConsentFlowUserGeography.MengineConsentFlowUserGeography_Unknown);
+                        break;
+                    case GDPR:
+                        MengineParamTransparencyConsent.setConsentFlowUserGeography(application, MengineConsentFlowUserGeography.MengineConsentFlowUserGeography_EEA);
+                        break;
+                    case OTHER:
+                        MengineParamTransparencyConsent.setConsentFlowUserGeography(application, MengineConsentFlowUserGeography.MengineConsentFlowUserGeography_NonEEA);
+                        break;
+                }
+
+                application.checkTransparencyConsentServices();
+            }
 
             MengineActivity activity = this.getMengineActivity();
 
@@ -398,22 +395,20 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
 
     @Override
     public void onMengineRemoteConfigFetch(@NonNull MengineApplication application, boolean updated, @NonNull Map<String, JSONObject> configs) {
-        synchronized (this) {
-            JSONObject applovin_show_mediation_debugger = configs.getOrDefault("applovin_show_mediation_debugger", null);
+        JSONObject applovin_show_mediation_debugger = configs.getOrDefault("applovin_show_mediation_debugger", null);
 
-            if (applovin_show_mediation_debugger != null) {
-                boolean enable = applovin_show_mediation_debugger.optBoolean("enable", false);
+        if (applovin_show_mediation_debugger != null) {
+            boolean enable = applovin_show_mediation_debugger.optBoolean("enable", false);
 
-                m_enableShowMediationDebugger = enable;
-            }
+            m_enableShowMediationDebugger = enable;
+        }
 
-            for (MengineAppLovinMediationInterface mediation : m_mediations) {
-                mediation.onMengineRemoteConfigFetch(application, updated, configs);
-            }
+        for (MengineAppLovinMediationInterface mediation : m_mediations) {
+            mediation.onMengineRemoteConfigFetch(application, updated, configs);
+        }
 
-            if (m_nonetBanners != null) {
-                m_nonetBanners.onMengineRemoteConfigFetch(application, updated, configs);
-            }
+        if (m_nonetBanners != null) {
+            m_nonetBanners.onMengineRemoteConfigFetch(application, updated, configs);
         }
     }
 

@@ -43,7 +43,7 @@ Utils.isEnableAllLibrary = { ->
         return true
     }
 
-    return false;
+    return false
 }
 
 Utils.existAppLibrary = { String name ->
@@ -51,9 +51,9 @@ Utils.existAppLibrary = { String name ->
         return true
     }
 
-    boolean p = Utils.getBooleanProperty(name, true);
+    boolean p = Utils.getBooleanProperty(name, true)
 
-    return p;
+    return p
 }
 
 Utils.isEnableAllPlugins = { ->
@@ -63,27 +63,39 @@ Utils.isEnableAllPlugins = { ->
         return true
     }
 
-    return false;
+    return false
 }
 
-Utils.existAppPlugin = { String name ->
+Utils.existAppPlugin = { String name, List<String> required = [] ->
     if (Utils.isEnableAllPlugins() == true) {
         return true
     }
 
-    boolean p = Utils.getBooleanProperty(name, false);
+    for (String r : required) {
+        if (Utils.existAppPlugin(r) == false) {
+            return false;
+        }
+    }
+
+    boolean p = Utils.getBooleanProperty(name, false)
 
     return p;
 }
 
-Utils.getBooleanAppPluginProperty = { String name ->
+Utils.getBooleanAppPluginProperty = { String name, List<String> required = [] ->
     if (Utils.isEnableAllPlugins() == true) {
         return true
     }
 
-    boolean p = Utils.getBooleanProperty(name, false);
+    for (String r : required) {
+        if (Utils.existAppPlugin(r) == false) {
+            return false;
+        }
+    }
 
-    return p;
+    boolean p = Utils.getBooleanProperty(name, false)
+
+    return p
 }
 
 Utils.getStringAppPluginProperty = { String name ->
@@ -91,9 +103,9 @@ Utils.getStringAppPluginProperty = { String name ->
         return true
     }
 
-    String p = Utils.getStringProperty(name);
+    String p = Utils.getStringProperty(name)
 
-    return p;
+    return p
 }
 
 Utils.getIntegerAppPluginProperty = { String name ->
@@ -101,15 +113,15 @@ Utils.getIntegerAppPluginProperty = { String name ->
         return true
     }
 
-    Integer p = Utils.getIntegerProperty(name);
+    Integer p = Utils.getIntegerProperty(name)
 
-    return p;
+    return p
 }
 
 Utils.existAppService = { String name ->
-    boolean p = Utils.getBooleanProperty(name, true);
+    boolean p = Utils.getBooleanProperty(name, true)
 
-    return p;
+    return p
 }
 
 Utils.logAvailable = { String name, boolean value ->

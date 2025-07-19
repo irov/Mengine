@@ -106,20 +106,4 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseHotSpotEventReceiver::onHotSpotMouseButtonBegin( UniqueId _enumerator, bool _isEnd )
-    {
-        MENGINE_UNUSED( _enumerator );
-        MENGINE_UNUSED( _isEnd );
-
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void BaseHotSpotEventReceiver::onHotSpotMouseButtonEnd( UniqueId _enumerator, bool _isEnd )
-    {
-        MENGINE_UNUSED( _enumerator );
-        MENGINE_UNUSED( _isEnd );
-
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
 }

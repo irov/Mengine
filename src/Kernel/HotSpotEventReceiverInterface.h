@@ -42,8 +42,6 @@ namespace Mengine
         virtual bool onHotSpotMouseMove( const RenderContext * _context, const InputMouseMoveEvent & _event ) = 0;
         virtual bool onHotSpotMouseWheel( const RenderContext * _context, const InputMouseWheelEvent & _event ) = 0;
         virtual void onHotSpotMouseOverDestroy() = 0;
-        virtual void onHotSpotMouseButtonBegin( UniqueId _enumerator, bool _isEnd ) = 0;
-        virtual void onHotSpotMouseButtonEnd( UniqueId _enumerator, bool _isEnd ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<HotSpotEventReceiverInterface> HotSpotEventReceiverInterfacePtr;

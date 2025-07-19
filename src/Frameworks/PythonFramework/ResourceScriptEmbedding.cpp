@@ -19,7 +19,7 @@
 
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
 #include "Environment/Python/PythonEventReceiver.h"
-#include "Environment/Python/PythonDocumentTraceback.h"
+#include "Environment/Python/PythonDocument.h"
 #include "Environment/Python/PythonScriptWrapper.h"
 
 #include "Plugins/MoviePlugin/ResourceMovie2.h"

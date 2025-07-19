@@ -33,7 +33,7 @@ buildscript {
             classpath 'com.google.firebase:perf-plugin:1.4.2'
         }
 
-        if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN") == true) {
+        if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN") == true && project.hasProperty("MENGINE_APP_PLUGIN_APPLOVIN_AD_REVIEW_KEY")) {
             classpath 'com.applovin.quality:AppLovinQualityServiceGradlePlugin:5.9.1'
         }
 

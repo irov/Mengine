@@ -356,9 +356,9 @@ namespace Mengine
             jclass jclass_enum = Helper::AndroidEnvFindClass( _jenv, _className );
 
             Char signature[256] = { '\0' };
-            StdString::strcpy( signature, "L" );
-            StdString::strcat( signature, _className );
-            StdString::strcat( signature, ";" );
+            StdString::strcpy_safe( signature, "L", 256 );
+            StdString::strcat_safe( signature, _className, 256 );
+            StdString::strcat_safe( signature, ";", 256 );
 
             jfieldID jfield_enum = _jenv->GetStaticFieldID( jclass_enum, _enumName, signature );
 
@@ -869,12 +869,12 @@ namespace Mengine
             }
 
             const Char * canonicalPath_str = _jenv->GetStringUTFChars( canonicalPath, NULL );
-            StdString::strcpy( _path, canonicalPath_str );
+            StdString::strcpy_safe( _path, canonicalPath_str, MENGINE_MAX_PATH );
             _jenv->ReleaseStringUTFChars( canonicalPath, canonicalPath_str );
 
             _jenv->DeleteLocalRef( canonicalPath );
 
-            Helper::pathCorrectFolderPathA( _path, MENGINE_PATH_DELIM_BACKSLASH );
+            Helper::pathCorrectFolderPathA( _path, MENGINE_PATH_FORWARDSLASH );
 
             return true;
         }

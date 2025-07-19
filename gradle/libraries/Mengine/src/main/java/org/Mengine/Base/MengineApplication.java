@@ -1232,25 +1232,6 @@ public abstract class MengineApplication extends Application {
         MengineNative.AndroidKernelService_call(plugin, method, args);
     }
 
-    /*ToDo:
-    public void onMengineLogger(@NonNull MengineLoggerMessageParam message) {
-        if (BuildConfig.DEBUG == true) {
-            if (m_activity != null) {
-                switch (message.MESSAGE_LEVEL) {
-                    case MengineLog.LM_FATAL:
-                        MengineUtils.showOkAlertDialog(m_activity, () -> {
-                            System.exit(0);
-                        }, "Fatal", "%s", message.MESSAGE_DATA);
-                        break;
-                    case MengineLog.LM_ERROR:
-                        MengineUtils.showToast(m_activity, "%s", message.MESSAGE_DATA);
-                        break;
-                }
-            }
-        }
-    }
-     */
-
     private void invalidInitialize(@NonNull MengineServiceInvalidInitializeException e, @NonNull Map<String, Object> attributes) {
         MengineLog.logException(TAG, e, attributes);
 

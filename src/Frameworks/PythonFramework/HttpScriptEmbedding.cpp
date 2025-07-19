@@ -5,7 +5,7 @@
 #include "Interface/HttpServiceInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
-#include "Environment/Python/PythonDocumentTraceback.h"
+#include "Environment/Python/PythonDocument.h"
 
 #include "PyHttpReceiver.h"
 
@@ -45,18 +45,18 @@ namespace Mengine
             , _filePath.c_str()
         );
 
-        PyHttpReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_PYBIND );
+        PyHttpReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_PYTHON );
 
         MENGINE_ASSERTION_MEMORY_PANIC( receiver, "invalid create receiver" );
 
         receiver->initialize( _cb, _args );
 
-        ContentInterfacePtr content = Helper::makeFileContent( fileGroup, _filePath, MENGINE_DOCUMENT_PYBIND );
+        ContentInterfacePtr content = Helper::makeFileContent( fileGroup, _filePath, MENGINE_DOCUMENT_PYTHON );
 
         MENGINE_ASSERTION_MEMORY_PANIC( content, "invalid make file content" );
 
         uint32_t id = HTTP_SERVICE()
-            ->getAsset( _url, _login, _password, content, _timeout, EHRF_NONE, receiver, MENGINE_DOCUMENT_PYBIND );
+            ->getAsset( _url, _login, _password, content, _timeout, EHRF_NONE, receiver, MENGINE_DOCUMENT_PYTHON );
 
         return id;
     }
@@ -68,7 +68,7 @@ namespace Mengine
             return MENGINE_HTTP_REQUEST_INVALID;
         }
 
-        PyHttpReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_PYBIND );
+        PyHttpReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_PYTHON );
 
         MENGINE_ASSERTION_MEMORY_PANIC( receiver, "invalid create receiver" );
 
@@ -84,7 +84,7 @@ namespace Mengine
         }
 
         HttpRequestId id = HTTP_SERVICE()
-            ->postMessage( _url, {}, _timeout, EHRF_NONE, params, receiver, MENGINE_DOCUMENT_PYBIND );
+            ->postMessage( _url, {}, _timeout, EHRF_NONE, params, receiver, MENGINE_DOCUMENT_PYTHON );
 
         return id;
     }
@@ -96,14 +96,14 @@ namespace Mengine
             return MENGINE_HTTP_REQUEST_INVALID;
         }
 
-        PyHttpReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_PYBIND );
+        PyHttpReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_PYTHON );
 
         MENGINE_ASSERTION_MEMORY_PANIC( receiver, "invalid create receiver" );
 
         receiver->initialize( _cb, _args );
 
         HttpRequestId id = HTTP_SERVICE()
-            ->headerData( _url, _headers, _data, _timeout, EHRF_NONE, receiver, MENGINE_DOCUMENT_PYBIND );
+            ->headerData( _url, _headers, _data, _timeout, EHRF_NONE, receiver, MENGINE_DOCUMENT_PYTHON );
 
         return id;
     }
@@ -115,14 +115,14 @@ namespace Mengine
             return MENGINE_HTTP_REQUEST_INVALID;
         }
 
-        PyHttpReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_PYBIND );
+        PyHttpReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_PYTHON );
 
         MENGINE_ASSERTION_MEMORY_PANIC( receiver, "invalid create receiver" );
 
         receiver->initialize( _cb, _args );
 
         HttpRequestId id = HTTP_SERVICE()
-            ->getMessage( _url, {}, _timeout, EHRF_NONE, receiver, MENGINE_DOCUMENT_PYBIND );
+            ->getMessage( _url, {}, _timeout, EHRF_NONE, receiver, MENGINE_DOCUMENT_PYTHON );
 
         return id;
     }

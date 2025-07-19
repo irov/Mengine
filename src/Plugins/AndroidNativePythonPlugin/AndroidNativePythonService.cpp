@@ -432,7 +432,7 @@ namespace Mengine
 
         Char signature[1024 + 1] = {'\0'};
 
-        StdString::strcat( signature, "(" );
+        StdString::strcat_safe( signature, "(", 1024 );
 
         StdString::memset( _jargs, 0, sizeof( jvalue ) * MENGINE_ANDROID_METHOD_MAX_ARGS );
         StdString::memset( _jfree, 0, sizeof( jstring ) * MENGINE_ANDROID_METHOD_MAX_ARGS );
@@ -446,35 +446,35 @@ namespace Mengine
             {
                 _jargs[index_args++].l = nullptr;
 
-                StdString::strcat( signature, "L" );
+                StdString::strcat_safe( signature, "L", 1024 );
             }
             else if( arg.is_bool() == true )
             {
                 jboolean jvalue = (bool)arg.extract();
                 _jargs[index_args++].z = jvalue;
 
-                StdString::strcat( signature, "Z" );
+                StdString::strcat_safe( signature, "Z", 1024 );
             }
             else if( arg.is_integer() == true )
             {
                 jint jvalue = (int32_t)arg.extract();
                 _jargs[index_args++].i = jvalue;
 
-                StdString::strcat( signature, "I" );
+                StdString::strcat_safe( signature, "I", 1024 );
             }
             else if( arg.is_long() == true )
             {
                 jlong jvalue = (int64_t)arg.extract();
                 _jargs[index_args++].j = jvalue;
 
-                StdString::strcat( signature, "J" );
+                StdString::strcat_safe( signature, "J", 1024 );
             }
             else if( arg.is_float() == true )
             {
                 jfloat jvalue = (float)arg.extract();
                 _jargs[index_args++].f = jvalue;
 
-                StdString::strcat( signature, "F" );
+                StdString::strcat_safe( signature, "F", 1024 );
             }
             else if( arg.is_string() == true )
             {
@@ -485,7 +485,7 @@ namespace Mengine
                 _jargs[index_args++].l = jvalue;
                 _jfree[index_free++] = jvalue;
 
-                StdString::strcat( signature, "Ljava/lang/String;" );
+                StdString::strcat_safe( signature, "Ljava/lang/String;", 1024 );
             }
             else if( arg.is_list() == true )
             {
@@ -496,7 +496,7 @@ namespace Mengine
                 _jargs[index_args++].l = jlist;
                 _jfree[index_free++] = jlist;
 
-                StdString::strcat( signature, "Ljava/util/List;" );
+                StdString::strcat_safe( signature, "Ljava/util/List;", 1024 );
             }
             else if( arg.is_dict() == true )
             {
@@ -507,7 +507,7 @@ namespace Mengine
                 _jargs[index_args++].l = jmap;
                 _jfree[index_free++] = jmap;
 
-                StdString::strcat( signature, "Ljava/util/Map;" );
+                StdString::strcat_safe( signature, "Ljava/util/Map;", 1024 );
             }
             else
             {
@@ -522,8 +522,8 @@ namespace Mengine
             }
         }
 
-        StdString::strcat( signature, ")" );
-        StdString::strcat( signature, _retType );
+        StdString::strcat_safe( signature, ")", 1024 );
+        StdString::strcat_safe( signature, _retType, 1024 );
 
         jclass plugin_class = _jenv->GetObjectClass( jplugin );
 

@@ -213,7 +213,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void AppleNativePythonService_waitSemaphore( const ConstString & _name, const pybind::object & _cb, const pybind::args & _args )
         {
-            AppleSemaphoreListenerInterfacePtr listener = Helper::makeFactorableUnique<PythonAppleSemaphoreListener>( MENGINE_DOCUMENT_PYBIND, _cb, _args );
+            AppleSemaphoreListenerInterfacePtr listener = Helper::makeFactorableUnique<PythonAppleSemaphoreListener>( MENGINE_DOCUMENT_PYTHON, _cb, _args );
 
             APPLE_NATIVEPYTHON_SERVICE()
                 ->waitSemaphore( _name, listener );

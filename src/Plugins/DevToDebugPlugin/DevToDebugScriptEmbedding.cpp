@@ -3,7 +3,7 @@
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/PluginServiceInterface.h"
 
-#include "Environment/Python/PythonDocumentTraceback.h"
+#include "Environment/Python/PythonDocument.h"
 #include "Environment/Python/PythonScriptWrapper.h"
 
 #include "DevToDebugTab.h"
@@ -40,7 +40,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static DevToDebugTabPtr addDevToDebugTab( const ConstString & _name )
         {
-            DevToDebugTabInterfacePtr tab = Helper::generatePrototype<DevToDebugTab>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_PYBIND );
+            DevToDebugTabInterfacePtr tab = Helper::generatePrototype<DevToDebugTab>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_PYTHON );
 
             if( tab->initialize() == false )
             {
@@ -96,7 +96,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static DevToDebugWidgetTextPtr createDevToDebugWidgetText( const ConstString & _id )
         {
-            DevToDebugWidgetInterfacePtr widget = Helper::generatePrototype<DevToDebugWidgetText>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_PYBIND );
+            DevToDebugWidgetInterfacePtr widget = Helper::generatePrototype<DevToDebugWidgetText>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_PYTHON );
 
             widget->setId( _id );
 
@@ -105,7 +105,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static DevToDebugWidgetButtonPtr createDevToDebugWidgetButton( const ConstString & _id )
         {
-            DevToDebugWidgetInterfacePtr widget = Helper::generatePrototype<DevToDebugWidgetButton>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_PYBIND );
+            DevToDebugWidgetInterfacePtr widget = Helper::generatePrototype<DevToDebugWidgetButton>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_PYTHON );
 
             widget->setId( _id );
 
@@ -114,7 +114,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static DevToDebugWidgetCheckboxPtr createDevToDebugWidgetCheckbox( const ConstString & _id )
         {
-            DevToDebugWidgetInterfacePtr widget = Helper::generatePrototype<DevToDebugWidgetCheckbox>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_PYBIND );
+            DevToDebugWidgetInterfacePtr widget = Helper::generatePrototype<DevToDebugWidgetCheckbox>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_PYTHON );
 
             widget->setId( _id );
 
@@ -123,7 +123,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static DevToDebugWidgetCommandLinePtr createDevToDebugWidgetCommandLine( const ConstString & _id )
         {
-            DevToDebugWidgetInterfacePtr widget = Helper::generatePrototype<DevToDebugWidgetCommandLine>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_PYBIND );
+            DevToDebugWidgetInterfacePtr widget = Helper::generatePrototype<DevToDebugWidgetCommandLine>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_PYTHON );
 
             widget->setId( _id );
 
@@ -132,11 +132,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static DevToDebugWidgetRadioButtonPtr createDevToDebugWidgetRadioButton( const ConstString & _id )
         {
-            DevToDebugWidgetInterfacePtr widget = Helper::generatePrototype<DevToDebugWidgetRadioButton>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_PYBIND );
+            DevToDebugWidgetInterfacePtr widget = Helper::generatePrototype<DevToDebugWidgetRadioButton>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_PYTHON );
 
             widget->setId( _id );
 
-            DevToDebugPropertyContentPtr property_content = Helper::generatePrototype<DevToDebugPropertyContent>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_PYBIND );
+            DevToDebugPropertyContentPtr property_content = Helper::generatePrototype<DevToDebugPropertyContent>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_PYTHON );
 
             widget->setDataProperty( STRINGIZE_STRING_LOCAL( "content" ), property_content );
 
@@ -145,11 +145,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static DevToDebugWidgetSelectorPtr createDevToDebugWidgetSelector( const ConstString & _id )
         {
-            DevToDebugWidgetInterfacePtr widget = Helper::generatePrototype<DevToDebugWidgetSelector>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_PYBIND );
+            DevToDebugWidgetInterfacePtr widget = Helper::generatePrototype<DevToDebugWidgetSelector>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_PYTHON );
 
             widget->setId( _id );
 
-            DevToDebugPropertyContentPtr property_content = Helper::generatePrototype<DevToDebugPropertyContent>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_PYBIND );
+            DevToDebugPropertyContentPtr property_content = Helper::generatePrototype<DevToDebugPropertyContent>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_PYTHON );
 
             widget->setDataProperty( STRINGIZE_STRING_LOCAL( "content" ), property_content );
 
@@ -162,7 +162,7 @@ namespace Mengine
 
             if( _cb.is_callable() == false )
             {
-                DevToDebugPropertyConstBooleanPtr property_const = Helper::generatePrototype<DevToDebugPropertyConstBoolean>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_PYBIND );
+                DevToDebugPropertyConstBooleanPtr property_const = Helper::generatePrototype<DevToDebugPropertyConstBoolean>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_PYTHON );
 
                 bool value = _cb.extract();
 
@@ -172,7 +172,7 @@ namespace Mengine
             }
             else
             {
-                DevToDebugPropertyGetterBooleanPtr property_getter = Helper::generatePrototype<DevToDebugPropertyGetterBoolean>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_PYBIND );
+                DevToDebugPropertyGetterBooleanPtr property_getter = Helper::generatePrototype<DevToDebugPropertyGetterBoolean>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_PYTHON );
 
                 if( property_getter->initialize() == false )
                 {
@@ -198,7 +198,7 @@ namespace Mengine
 
             if( _cb.is_callable() == false )
             {
-                DevToDebugPropertyConstStringPtr property_const = Helper::generatePrototype<DevToDebugPropertyConstString>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_PYBIND );
+                DevToDebugPropertyConstStringPtr property_const = Helper::generatePrototype<DevToDebugPropertyConstString>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_PYTHON );
 
                 String value = _cb.extract();
 
@@ -208,7 +208,7 @@ namespace Mengine
             }
             else
             {
-                DevToDebugPropertyGetterStringPtr property_getter = Helper::generatePrototype<DevToDebugPropertyGetterString>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_PYBIND );
+                DevToDebugPropertyGetterStringPtr property_getter = Helper::generatePrototype<DevToDebugPropertyGetterString>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_PYTHON );
 
                 if( property_getter->initialize() == false )
                 {
@@ -234,7 +234,7 @@ namespace Mengine
 
             if( _cb.is_callable() == false )
             {
-                DevToDebugPropertyConstColorPtr property_const = Helper::generatePrototype<DevToDebugPropertyConstColor>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_PYBIND );
+                DevToDebugPropertyConstColorPtr property_const = Helper::generatePrototype<DevToDebugPropertyConstColor>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_PYTHON );
 
                 Color value = _cb.extract();
 
@@ -244,7 +244,7 @@ namespace Mengine
             }
             else
             {
-                DevToDebugPropertyGetterColorPtr property_getter = Helper::generatePrototype<DevToDebugPropertyGetterColor>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_PYBIND );
+                DevToDebugPropertyGetterColorPtr property_getter = Helper::generatePrototype<DevToDebugPropertyGetterColor>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_PYTHON );
 
                 if( property_getter->initialize() == false )
                 {

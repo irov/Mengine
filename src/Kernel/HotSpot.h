@@ -101,9 +101,6 @@ namespace Mengine
         void _setPickerEnable( bool _enable ) override;
 
     protected:
-        void _invalidateWorldMatrix() const override;
-
-    protected:
         struct PickerInputHandlerDesc
         {
             PickerInputHandlerInterfacePtr handler;

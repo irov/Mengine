@@ -783,7 +783,7 @@ namespace Mengine
                     key_desc.type = EST_NONE;
                 }
 
-                StdString::strcpy( key_desc.value, key_value );
+                StdString::strcpy_safe( key_desc.value, key_value, 256 );
 
                 desc.keys.emplace_back( key_desc );
             }
@@ -1813,14 +1813,14 @@ namespace Mengine
                                 desc->end = true;
                             }
 
-                            StdString::strncat( desc->buffer, _buffer, _size );
+                            StdString::strncat_safe( desc->buffer, _buffer, _size, 256 );
 
                             return 0;
                         }, &desc );
 
                         if( desc.end == true )
                         {
-                            StdString::strcat( desc.buffer, "..." );
+                            StdString::strcat_safe( desc.buffer, "...", 256 );
                         }
 
                         ImGui::TextColored( ImVec4( 1.0f, 1.0f, 1.0f, 0.5f ), "%s", buffer_value );

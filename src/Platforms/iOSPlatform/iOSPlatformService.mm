@@ -104,7 +104,7 @@ namespace Mengine
         NSString * path = [[NSBundle mainBundle] resourcePath];
         
         StdString::strcpy_safe( _currentPath, [path UTF8String], MENGINE_MAX_PATH );
-        StdString::strnchrcat( _currentPath, MENGINE_PATH_DELIM_BACKSLASH, MENGINE_MAX_PATH );
+        StdString::strnchrcat( _currentPath, MENGINE_PATH_FORWARDSLASH, MENGINE_MAX_PATH );
 
         size_t path_length = [path length] + 1;
         
@@ -158,7 +158,7 @@ namespace Mengine
         const Char * userPathRepresentation = [userPath fileSystemRepresentation];
         
         StdString::strcpy_safe( _userPath, userPathRepresentation, MENGINE_MAX_PATH );
-        Helper::pathCorrectFolderPathA( _userPath, MENGINE_PATH_DELIM_BACKSLASH );
+        Helper::pathCorrectFolderPathA( _userPath, MENGINE_PATH_FORWARDSLASH );
         Helper::pathCorrectBackslashA( _userPath );
 
         size_t userPathLen = StdString::strlen( _userPath );
@@ -174,7 +174,7 @@ namespace Mengine
             , Project_ExtraPreferencesFolderName
         );
 
-        StdString::strcpy( _folderName, Project_ExtraPreferencesFolderName );
+        StdString::strcpy_safe( _folderName, Project_ExtraPreferencesFolderName, MENGINE_MAX_PATH );
         
         size_t Project_ExtraPreferencesFolderNameLen = StdString::strlen( Project_ExtraPreferencesFolderName );
 
@@ -535,8 +535,8 @@ namespace Mengine
 
         for( const ConstString & tag : m_platformTags.getValues() )
         {
-            StdString::strcat( platformTags, tag.c_str() );
-            StdString::strcat( platformTags, "-" );
+            StdString::strcat_safe( platformTags, tag.c_str(), 1024 );
+            StdString::strcat_safe( platformTags, "-", 1024 );
         }
 
         LOGGER_INFO( "platform", "platform tags: %s"

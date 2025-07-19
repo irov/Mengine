@@ -40,25 +40,25 @@ namespace Mengine
             , _filePath.c_str()
         );
 
-        PyHttpReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_PYBIND );
+        PyHttpReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_PYTHON );
 
         MENGINE_ASSERTION_MEMORY_PANIC( receiver );
 
         receiver->initialize( _cb, _args );
 
-        ContentInterfacePtr content = Helper::makeFileContent( fileGroup, _filePath, MENGINE_DOCUMENT_PYBIND );
+        ContentInterfacePtr content = Helper::makeFileContent( fileGroup, _filePath, MENGINE_DOCUMENT_PYTHON );
 
         MENGINE_ASSERTION_MEMORY_PANIC( content );
 
         uint32_t id = HTTP_SERVICE()
-            ->downloadAsset( _url, _login, _password, content, _timeout, receiver, MENGINE_DOCUMENT_PYBIND );
+            ->downloadAsset( _url, _login, _password, content, _timeout, receiver, MENGINE_DOCUMENT_PYTHON );
 
         return id;
     }
     //////////////////////////////////////////////////////////////////////////
     HttpRequestId HttpServiceScriptEmbedding::postMessage( const String & _url, const Params & _params, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args )
     {
-        PyHttpReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_PYBIND );
+        PyHttpReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_PYTHON );
 
         MENGINE_ASSERTION_MEMORY_PANIC( receiver );
 
@@ -74,35 +74,35 @@ namespace Mengine
         }
 
         HttpRequestId id = HTTP_SERVICE()
-            ->postMessage( _url, {}, _timeout, false, params, receiver, MENGINE_DOCUMENT_PYBIND );
+            ->postMessage( _url, {}, _timeout, false, params, receiver, MENGINE_DOCUMENT_PYTHON );
 
         return id;
     }
     //////////////////////////////////////////////////////////////////////////
     HttpRequestId HttpServiceScriptEmbedding::headerData( const String & _url, const VectorString & _headers, const Data & _data, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args )
     {
-        PyHttpReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_PYBIND );
+        PyHttpReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_PYTHON );
 
         MENGINE_ASSERTION_MEMORY_PANIC( receiver );
 
         receiver->initialize( _cb, _args );
 
         HttpRequestId id = HTTP_SERVICE()
-            ->headerData( _url, _headers, _timeout, false, _data, receiver, MENGINE_DOCUMENT_PYBIND );
+            ->headerData( _url, _headers, _timeout, false, _data, receiver, MENGINE_DOCUMENT_PYTHON );
 
         return id;
     }
     //////////////////////////////////////////////////////////////////////////
     HttpRequestId HttpServiceScriptEmbedding::getMessage( const String & _url, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args )
     {
-        PyHttpReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_PYBIND );
+        PyHttpReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_PYTHON );
 
         MENGINE_ASSERTION_MEMORY_PANIC( receiver );
 
         receiver->initialize( _cb, _args );
 
         HttpRequestId id = HTTP_SERVICE()
-            ->getMessage( _url, {}, _timeout, false, receiver, MENGINE_DOCUMENT_PYBIND );
+            ->getMessage( _url, {}, _timeout, false, receiver, MENGINE_DOCUMENT_PYTHON );
 
         return id;
     }

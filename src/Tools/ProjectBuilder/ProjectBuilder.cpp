@@ -1099,7 +1099,7 @@ static PyObject * py_log( PyObject * _self, PyObject * _args )
 
     if( Mengine::StdString::strcmp( message, "\n" ) != 0 )
     {
-        Mengine::StdString::strcpy( g_message, message );
+        Mengine::StdString::strcpy_safe( g_message, message, MENGINE_LOGGER_MAX_MESSAGE );
 
         return Py_None;
     }
@@ -1108,7 +1108,7 @@ static PyObject * py_log( PyObject * _self, PyObject * _args )
         , g_message
     );
 
-    Mengine::StdString::strcpy( g_message, "" );
+    Mengine::StdString::strcpy_safe( g_message, "", MENGINE_LOGGER_MAX_MESSAGE );
 
     return Py_None;
 }
@@ -1213,7 +1213,7 @@ static bool run()
         , currentPath
     );
 
-    currentPath[len + 0] = MENGINE_PATH_DELIM_FORWARDSLASH;
+    currentPath[len + 0] = MENGINE_PATH_BACKSLASH;
     currentPath[len + 1] = L'\0';
 
     WCHAR python3LibPath[MENGINE_MAX_PATH + 1] = {L'\0'};

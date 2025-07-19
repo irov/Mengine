@@ -279,8 +279,8 @@ namespace Mengine
 
         for( const ConstString & tag : m_platformTags.getValues() )
         {
-            StdString::strcat( platformTagsInfo, tag.c_str() );
-            StdString::strcat( platformTagsInfo, "-" );
+            StdString::strcat_safe( platformTagsInfo, tag.c_str(), 1024 );
+            StdString::strcat_safe( platformTagsInfo, "-", 1024 );
         }
 
         LOGGER_INFO( "platform", "platform tags: %s"
@@ -2110,13 +2110,13 @@ namespace Mengine
             return false;
         }
 
-        WChar unicode_code[MENGINE_INPUTTEXTEVENT_TEXT_MAX_SIZE + 1] = {L'\0'};
-        if( Helper::utf8ToUnicode( utf8_code, unicode_code, 8 ) == false )
+        WChar unicode_text[MENGINE_INPUTTEXTEVENT_TEXT_MAX_SIZE + 1] = {L'\0'};
+        if( Helper::utf8ToUnicode( utf8_code, unicode_text, 8 ) == false )
         {
             return false;
         }
 
-        Helper::pushTextEvent( point.x, point.y, 0.f, unicode_code );
+        Helper::pushTextEvent( point.x, point.y, 0.f, unicode_text );
 
         return true;
     }
@@ -2486,7 +2486,7 @@ namespace Mengine
 
         PathString icoFile;
         icoFile += MENGINE_WINDOW_ICON_CACHE;
-        icoFile += MENGINE_PATH_DELIM_BACKSLASH;
+        icoFile += MENGINE_PATH_FORWARDSLASH;
         icoFile += _filePath;
         icoFile += ".ico";
 

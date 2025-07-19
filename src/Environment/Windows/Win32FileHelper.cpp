@@ -228,7 +228,7 @@ namespace Mengine
                 return true;
             }
 
-            Helper::pathRemoveFileSpecW( correctDirectory, MENGINE_PATH_DELIM_FORWARDSLASH );
+            Helper::pathRemoveFileSpecW( correctDirectory, MENGINE_PATH_BACKSLASH );
 
             WPath pathTestDirectory = {L'\0'};
             ::PathCombineW( pathTestDirectory, correctBasePath, correctDirectory );            
@@ -238,7 +238,7 @@ namespace Mengine
                 return true;
             }
 
-            Helper::pathRemoveSlashW( correctDirectory, MENGINE_PATH_DELIM_FORWARDSLASH );
+            Helper::pathRemoveSlashW( correctDirectory, MENGINE_PATH_BACKSLASH );
 
             uint32_t paths_count = 0;
             WPath paths[16];
@@ -247,12 +247,12 @@ namespace Mengine
             {
                 StdString::wcsncpy( paths[paths_count++], correctDirectory, MENGINE_MAX_PATH );
 
-                if( Helper::pathRemoveFileSpecW( correctDirectory, MENGINE_PATH_DELIM_FORWARDSLASH ) == false )
+                if( Helper::pathRemoveFileSpecW( correctDirectory, MENGINE_PATH_BACKSLASH ) == false )
                 {
                     break;
                 }
 
-                Helper::pathRemoveSlashW( correctDirectory, MENGINE_PATH_DELIM_FORWARDSLASH );
+                Helper::pathRemoveSlashW( correctDirectory, MENGINE_PATH_BACKSLASH );
 
                 ::PathCombineW( pathTestDirectory, correctBasePath, correctDirectory );
 

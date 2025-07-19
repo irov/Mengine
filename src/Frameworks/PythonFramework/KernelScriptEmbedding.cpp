@@ -20,8 +20,9 @@
 
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
 #include "Environment/Python/PythonEventReceiver.h"
-#include "Environment/Python/PythonDocumentTraceback.h"
+#include "Environment/Python/PythonDocument.h"
 #include "Environment/Python/PythonScriptWrapper.h"
+#include "Environment/Python/PythonTraceback.h"
 
 #include "ScriptHolder.h"
 
@@ -282,7 +283,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             ScriptableAffectorCallbackPtr createNodeAffectorCallback( Scriptable * _scriptable, const pybind::object & _cb, const pybind::args & _args )
             {
-                ScriptableAffectorCallbackPtr callback = m_factoryNodeAffectorCallback->createObject( MENGINE_DOCUMENT_PYBIND );
+                ScriptableAffectorCallbackPtr callback = m_factoryNodeAffectorCallback->createObject( MENGINE_DOCUMENT_PYTHON );
 
                 callback->initialize( ScriptablePtr::from( _scriptable ), _cb, _args );
 
@@ -293,11 +294,10 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             uint32_t ScheduleInterface_schedule( SchedulerInterface * _scheduleManager, float _timing, const pybind::object & _script, const pybind::args & _args )
             {
-                PythonScheduleEventPtr sl = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYBIND );
-
+                PythonScheduleEventPtr sl = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYTHON );
                 sl->initialize( _script, _args );
 
-                uint32_t id = _scheduleManager->event( _timing, sl, MENGINE_DOCUMENT_PYBIND );
+                uint32_t id = _scheduleManager->event( _timing, sl, MENGINE_DOCUMENT_PYTHON );
 
                 return id;
             }
@@ -307,16 +307,16 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             uint32_t ScheduleInterface_timing( SchedulerInterface * _scheduleManager, float _delay, const pybind::object & _timing, const pybind::object & _event, const pybind::args & _args )
             {
-                DelaySchedulePipePtr pipe = m_factoryDelaySchedulePipe->createObject( MENGINE_DOCUMENT_PYBIND );
+                DelaySchedulePipePtr pipe = m_factoryDelaySchedulePipe->createObject( MENGINE_DOCUMENT_PYTHON );
                 pipe->initialize( _delay );
 
-                PythonScheduleTimingPtr py_timing = m_factoryPythonScheduleTiming->createObject( MENGINE_DOCUMENT_PYBIND );
+                PythonScheduleTimingPtr py_timing = m_factoryPythonScheduleTiming->createObject( MENGINE_DOCUMENT_PYTHON );
                 py_timing->initialize( _timing, _args );
 
-                PythonScheduleEventPtr py_event = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYBIND );
+                PythonScheduleEventPtr py_event = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYTHON );
                 py_event->initialize( _event, _args );
 
-                uint32_t id = _scheduleManager->timing( pipe, py_timing, py_event, MENGINE_DOCUMENT_PYBIND );
+                uint32_t id = _scheduleManager->timing( pipe, py_timing, py_event, MENGINE_DOCUMENT_PYTHON );
 
                 return id;
             }
@@ -325,21 +325,21 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             uint32_t ScheduleInterface_pipe( SchedulerInterface * _scheduleManager, const pybind::object & _pipe, const pybind::object & _timing, const pybind::object & _event, const pybind::args & _args )
             {
-                PythonSchedulePipePtr py_pipe = m_factoryPythonSchedulePipe->createObject( MENGINE_DOCUMENT_PYBIND );
+                PythonSchedulePipePtr py_pipe = m_factoryPythonSchedulePipe->createObject( MENGINE_DOCUMENT_PYTHON );
                 py_pipe->initialize( _pipe, _args );
 
-                PythonScheduleTimingPtr py_timing = m_factoryPythonScheduleTiming->createObject( MENGINE_DOCUMENT_PYBIND );
+                PythonScheduleTimingPtr py_timing = m_factoryPythonScheduleTiming->createObject( MENGINE_DOCUMENT_PYTHON );
                 py_timing->initialize( _timing, _args );
 
                 PythonScheduleEventPtr py_event;
 
                 if( _event.is_none() == false )
                 {
-                    py_event = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYBIND );
+                    py_event = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYTHON );
                     py_event->initialize( _event, _args );
                 }
 
-                uint32_t id = _scheduleManager->timing( py_pipe, py_timing, py_event, MENGINE_DOCUMENT_PYBIND );
+                uint32_t id = _scheduleManager->timing( py_pipe, py_timing, py_event, MENGINE_DOCUMENT_PYTHON );
 
                 return id;
             }
@@ -349,24 +349,34 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void LayoutInterface_addElement( LayoutInterface * _layout, ELayoutElementType _type, const pybind::object & _getter, const pybind::object & _setter, const pybind::args & _args )
             {
-                PythonLayoutElementGetterPtr py_getter = m_factoryPythonLayoutElementGetter->createObject( MENGINE_DOCUMENT_PYBIND );
+                PythonLayoutElementGetterPtr py_getter = m_factoryPythonLayoutElementGetter->createObject( MENGINE_DOCUMENT_PYTHON );
                 py_getter->initialize( _getter, _args );
 
-                PythonLayoutElementSetterPtr py_setter = m_factoryPythonLayoutElementSetter->createObject( MENGINE_DOCUMENT_PYBIND );
-                py_setter->initialize( _setter, _args );
+                PythonLayoutElementSetterPtr py_setter;
 
-                _layout->addElement( _type, py_getter, py_setter, MENGINE_DOCUMENT_PYBIND );
+                if( _setter.is_none() == false )
+                {
+                    py_setter = m_factoryPythonLayoutElementSetter->createObject( MENGINE_DOCUMENT_PYTHON );
+                    py_setter->initialize( _setter, _args );
+                }
+
+                _layout->addElement( _type, py_getter, py_setter, MENGINE_DOCUMENT_PYTHON );
             }
             //////////////////////////////////////////////////////////////////////////
             void LayoutInterface_addSubLayout( LayoutInterface * _layout, ELayoutElementType _type, const LayoutInterfacePtr & _subLayout, const pybind::object & _getter, const pybind::object & _setter, const pybind::args & _args )
             {
-                PythonLayoutElementGetterPtr py_getter = m_factoryPythonLayoutElementGetter->createObject( MENGINE_DOCUMENT_PYBIND );
+                PythonLayoutElementGetterPtr py_getter = m_factoryPythonLayoutElementGetter->createObject( MENGINE_DOCUMENT_PYTHON );
                 py_getter->initialize( _getter, _args );
 
-                PythonLayoutElementSetterPtr py_setter = m_factoryPythonLayoutElementSetter->createObject( MENGINE_DOCUMENT_PYBIND );
-                py_setter->initialize( _setter, _args );
+                PythonLayoutElementSetterPtr py_setter;
+                
+                if( _setter.is_none() == false ) 
+                {
+                    py_setter = m_factoryPythonLayoutElementSetter->createObject( MENGINE_DOCUMENT_PYTHON );
+                    py_setter->initialize( _setter, _args );
+                }
 
-                _layout->addSubLayout( _type, _subLayout, py_getter, py_setter, MENGINE_DOCUMENT_PYBIND );
+                _layout->addSubLayout( _type, _subLayout, py_getter, py_setter, MENGINE_DOCUMENT_PYTHON );
             }
             //////////////////////////////////////////////////////////////////////////
             uint32_t s_Animation_play( AnimationInterface * _animation )
@@ -536,14 +546,14 @@ namespace Mengine
                 if( correct_type == Node::getFactorableType() )
                 {
                     LOGGER_WARNING( "type 'Node' is old deprecated type, use 'Interender' or other\ntraceback:\n%s"
-                        , MENGINE_PYBIND_STATETRACE()
+                        , Helper::getPythonStatetrace()
                     );
 
                     correct_type = Interender::getFactorableType();
                 }
 
                 NodePtr node = PROTOTYPE_SERVICE()
-                    ->generatePrototype( Node::getFactorableType(), correct_type, MENGINE_DOCUMENT_PYBIND );
+                    ->generatePrototype( Node::getFactorableType(), correct_type, MENGINE_DOCUMENT_PYTHON );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( node, "can't create child node '%s'"
                     , correct_type.c_str()
@@ -607,7 +617,7 @@ namespace Mengine
                     transformation->setLocalOrigin( _v );
                 }
                     , transformation->getLocalOrigin(), _origin, _time
-                    , MENGINE_DOCUMENT_PYBIND
+                    , MENGINE_DOCUMENT_PYTHON
                 );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
@@ -663,7 +673,7 @@ namespace Mengine
                     transformation->setLocalPosition( _v );
                 }
                     , transformation->getLocalPosition(), _dir, _speed
-                    , MENGINE_DOCUMENT_PYBIND
+                    , MENGINE_DOCUMENT_PYTHON
                 );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
@@ -820,7 +830,7 @@ namespace Mengine
                 AffectorPtr affector = m_factoryAffectorVelocity2->create( EAFFECTORTYPE_POSITION
                     , easing
                     , callback
-                    , NodePtr( _node ), _velocity, _time, MENGINE_DOCUMENT_PYBIND
+                    , NodePtr( _node ), _velocity, _time, MENGINE_DOCUMENT_PYTHON
                 );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
@@ -869,7 +879,7 @@ namespace Mengine
                     transformation->setLocalPosition( _v );
                 }
                     , transformation->getLocalPosition(), _point, _time
-                    , MENGINE_DOCUMENT_PYBIND
+                    , MENGINE_DOCUMENT_PYTHON
                 );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
@@ -926,7 +936,7 @@ namespace Mengine
                     transformation->setLocalPosition( _v );
                 }
                     , transformation->getLocalPosition(), _point, linearSpeed, _time
-                    , MENGINE_DOCUMENT_PYBIND
+                    , MENGINE_DOCUMENT_PYTHON
                 );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
@@ -992,7 +1002,7 @@ namespace Mengine
                     _v[0] = _v0;
                 }
                     , _time
-                    , MENGINE_DOCUMENT_PYBIND
+                    , MENGINE_DOCUMENT_PYTHON
                 );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
@@ -1075,7 +1085,7 @@ namespace Mengine
                     _v[0] = mt::vec3f( x, node_pos.y, 0.f );
                 }
                     , _time
-                    , MENGINE_DOCUMENT_PYBIND
+                    , MENGINE_DOCUMENT_PYTHON
                 );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
@@ -1158,7 +1168,7 @@ namespace Mengine
                     _v[0] = mt::vec3f( x, node_pos.y, 0.f );
                 }
                     , _time
-                    , MENGINE_DOCUMENT_PYBIND
+                    , MENGINE_DOCUMENT_PYTHON
                 );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
@@ -1233,7 +1243,7 @@ namespace Mengine
                     _v[0] = mt::vec2f( follow_pos.x, node_pos.y );
                 }
                     , _time
-                    , MENGINE_DOCUMENT_PYBIND
+                    , MENGINE_DOCUMENT_PYTHON
                 );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
@@ -1299,7 +1309,7 @@ namespace Mengine
                     _v[0] = _v0; _v[1] = _v1;
                 }
                     , _time
-                    , MENGINE_DOCUMENT_PYBIND
+                    , MENGINE_DOCUMENT_PYTHON
                 );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
@@ -1366,7 +1376,7 @@ namespace Mengine
                     _v[0] = _v0; _v[1] = _v1; _v[2] = _v2;
                 }
                     , _time
-                    , MENGINE_DOCUMENT_PYBIND
+                    , MENGINE_DOCUMENT_PYTHON
                 );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
@@ -1593,7 +1603,7 @@ namespace Mengine
                     , easing
                     , callback
                     , NodePtr( _node ), _end, _v0, _time
-                    , MENGINE_DOCUMENT_PYBIND
+                    , MENGINE_DOCUMENT_PYTHON
                 );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
@@ -1860,7 +1870,7 @@ namespace Mengine
                     , _moveSpeed, _moveAcceleration, _moveLimit
                     , _rotate
                     , _rotationSpeed, _rotationAcceleration, _rotationLimit
-                    , MENGINE_DOCUMENT_PYBIND
+                    , MENGINE_DOCUMENT_PYTHON
                 );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
@@ -2069,7 +2079,7 @@ namespace Mengine
                     , callback
                     , NodePtr( _node ), _target, _offset, _distance
                     , _moveSpeed, _moveAcceleration, _moveLimit
-                    , MENGINE_DOCUMENT_PYBIND
+                    , MENGINE_DOCUMENT_PYTHON
                 );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
@@ -2132,7 +2142,7 @@ namespace Mengine
                     transformation->setLocalOrientationX( _v );
                 }
                     , correct_angle_from, correct_angle_to, _time
-                    , MENGINE_DOCUMENT_PYBIND
+                    , MENGINE_DOCUMENT_PYTHON
                 );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
@@ -2193,7 +2203,7 @@ namespace Mengine
                     transformation->setLocalOrientationX( _v );
                 }
                         , correct_angle_from, correct_angle_to, angularSpeed, _time
-                        , MENGINE_DOCUMENT_PYBIND
+                        , MENGINE_DOCUMENT_PYTHON
                     );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
@@ -2259,7 +2269,7 @@ namespace Mengine
                     transformation->setLocalScale( _v );
                 }
                     , transformation->getLocalScale(), _scale, _time
-                    , MENGINE_DOCUMENT_PYBIND
+                    , MENGINE_DOCUMENT_PYTHON
                 );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
@@ -2350,7 +2360,7 @@ namespace Mengine
                     render->setLocalColor( _v );
                 }
                         , render->getLocalColor(), _color, _time
-                        , MENGINE_DOCUMENT_PYBIND
+                        , MENGINE_DOCUMENT_PYTHON
                     );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "node '%s' invalid create affector"
@@ -2432,7 +2442,7 @@ namespace Mengine
                     render->setLocalAlpha( _v );
                 }
                         , render->getLocalAlpha(), _alpha, _time
-                        , MENGINE_DOCUMENT_PYBIND
+                        , MENGINE_DOCUMENT_PYTHON
                     );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "node '%s' invalid create affector"
@@ -2898,6 +2908,17 @@ namespace Mengine
             .def( "getHWHeightInv", &RenderTargetInterface::getHWHeightInv )
             .def( "getUpscalePow2", &RenderTargetInterface::getUpscalePow2 )
             ;
+
+        pybind::struct_<RenderContext>( _kernel, "RenderContext" )
+            .def_member( "resolution", &RenderContext::resolution )
+            .def_member( "viewport", &RenderContext::viewport )
+            .def_member( "camera", &RenderContext::camera )
+            .def_member( "transformation", &RenderContext::transformation )
+            .def_member( "scissor", &RenderContext::scissor )
+            .def_member( "target", &RenderContext::target )
+            .def_member( "zGroup", &RenderContext::zGroup )
+            .def_member( "zIndex", &RenderContext::zIndex )
+            ;            
 
         pybind::interface_<SchedulerInterface, pybind::bases<Mixin>>( _kernel, "SchedulerInterface", true )
             .def_proxy_static_args( "timing", scriptMethod, &KernelScriptMethod::ScheduleInterface_timing )

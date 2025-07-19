@@ -99,12 +99,18 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT jboolean JNICALL MENGINE_JAVA_INTERFACE( AndroidMain_1main )( JNIEnv * _env, jclass _cls, jobject _application)
     {
+        __android_log_print( ANDROID_LOG_INFO, "Mengine", "Android main started" );
+
         if( Mengine::Mengine_JNI_SetupThread() == JNI_FALSE )
         {
             __android_log_print( ANDROID_LOG_ERROR, "Mengine", "[ERROR] Android main JNI setup thread failed" );
 
             return false;
         }
+
+        __android_log_print( ANDROID_LOG_INFO, "Mengine", "Android main JNI setup thread succeeded" );
+
+        __android_log_print( ANDROID_LOG_INFO, "Mengine", "Android main initializing application" );
 
         Mengine::AndroidApplication * application = (Mengine::AndroidApplication *)_env->GetDirectBufferAddress( _application );
 
@@ -115,9 +121,19 @@ extern "C"
             return false;
         }
 
+        __android_log_print( ANDROID_LOG_INFO, "Mengine", "Android main application initialized" );
+
+        __android_log_print( ANDROID_LOG_INFO, "Mengine", "Android main starting application loop" );
+
         application->loop();
 
+        __android_log_print( ANDROID_LOG_INFO, "Mengine", "Android main application loop finished" );
+
+        __android_log_print( ANDROID_LOG_INFO, "Mengine", "Android main finalizing application" );
+
         application->finalize();
+
+        __android_log_print( ANDROID_LOG_INFO, "Mengine", "Android main application finalized" );
 
         return true;
     }

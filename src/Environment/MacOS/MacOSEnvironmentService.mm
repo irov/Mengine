@@ -75,7 +75,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t MacOSEnvironmentService::getOSFamily( Char * _osFamily, size_t _capacity ) const
     {
-        size_t len = MENGINE_STRNCPY_STATIC( _osFamily, "MacOS", _capacity );
+        size_t len = MENGINE_STRCPY_STATIC( _osFamily, "MacOS", _capacity );
 
         return len;
     }

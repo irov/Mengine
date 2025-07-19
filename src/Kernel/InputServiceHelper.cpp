@@ -148,8 +148,10 @@ namespace Mengine
                 ->pushEvent( ev );
         }
         //////////////////////////////////////////////////////////////////////////
-        void pushTextEvent( float _x, float _y, float _pressure, const WChar * _key )
+        void pushTextEvent( float _x, float _y, float _pressure, const WChar * _text )
         {
+            MENGINE_ASSERTION_FATAL( StdString::wcslen( _text ) >= 1, "text event must have at least one character" );
+
             float vx;
             float vy;
             INPUT_SERVICE()
@@ -165,8 +167,10 @@ namespace Mengine
             ev.data.text.x = vx;
             ev.data.text.y = vy;
             ev.data.text.pressure = _pressure;
+            
+            ev.data.text.symbol = _text[0];
 
-            StdString::wcsncpy( ev.data.text.text, _key, MENGINE_INPUTTEXTEVENT_TEXT_MAX_SIZE );
+            StdString::wcsncpy( ev.data.text.text, _text, MENGINE_INPUTTEXTEVENT_TEXT_MAX_SIZE );
 
             INPUT_SERVICE()
                 ->pushEvent( ev );

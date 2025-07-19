@@ -31,6 +31,8 @@ public class MengineGoogleAdvertisingPlugin extends MengineService implements Me
     protected boolean m_advertisingLimitTrackingEnabled = false;
     protected boolean m_advertisingLimitTrackingFetch = false;
 
+    protected final Object m_syncronizationAdvertising = new Object();
+
     private Thread m_advertisingThread;
 
     @Override
@@ -48,7 +50,7 @@ public class MengineGoogleAdvertisingPlugin extends MengineService implements Me
 
         bundle.putInt("version", SAVE_VERSION);
 
-        synchronized (this) {
+        synchronized (m_syncronizationAdvertising) {
             bundle.putString("advertisingId", m_advertisingId);
             bundle.putBoolean("advertisingLimitTrackingEnabled", m_advertisingLimitTrackingEnabled);
             bundle.putBoolean("advertisingLimitTrackingFetch", m_advertisingLimitTrackingFetch);
@@ -61,7 +63,7 @@ public class MengineGoogleAdvertisingPlugin extends MengineService implements Me
     public void onLoad(@NonNull MengineApplication application, @NonNull Bundle bundle) {
         int version = bundle.getInt("version", 0);
 
-        synchronized (this) {
+        synchronized (m_syncronizationAdvertising) {
             m_advertisingId = bundle.getString("advertisingId", LIMIT_ADVERTISING_ID);
             m_advertisingLimitTrackingEnabled = bundle.getBoolean("advertisingLimitTrackingEnabled", true);
             m_advertisingLimitTrackingFetch = bundle.getBoolean("advertisingLimitTrackingFetch", false);
@@ -112,7 +114,7 @@ public class MengineGoogleAdvertisingPlugin extends MengineService implements Me
             this.postAdInfo(adInfo);
         };
 
-        synchronized (this) {
+        synchronized (m_syncronizationAdvertising) {
             m_advertisingThread = new Thread(task, "MengineGAID");
             m_advertisingThread.start();
         }
@@ -120,7 +122,7 @@ public class MengineGoogleAdvertisingPlugin extends MengineService implements Me
 
     @Override
     public void onAppTerminate(@NonNull MengineApplication application) {
-        synchronized (this) {
+        synchronized (m_syncronizationAdvertising) {
             if (m_advertisingThread != null) {
                 m_advertisingThread.interrupt();
                 m_advertisingThread = null;
@@ -129,7 +131,7 @@ public class MengineGoogleAdvertisingPlugin extends MengineService implements Me
     }
 
     private void postAdInfo(AdvertisingIdClient.Info adInfo) {
-        synchronized (this) {
+        synchronized (m_syncronizationAdvertising) {
             if (adInfo == null) {
                 m_advertisingId = LIMIT_ADVERTISING_ID;
                 m_advertisingLimitTrackingEnabled = true;
@@ -160,7 +162,7 @@ public class MengineGoogleAdvertisingPlugin extends MengineService implements Me
             MengineFragmentAdvertisingId.INSTANCE.setAdvertisingId(m_advertisingId, m_advertisingLimitTrackingEnabled);
         });
 
-        synchronized (this) {
+        synchronized (m_syncronizationAdvertising) {
             m_advertisingThread = null;
         }
     }

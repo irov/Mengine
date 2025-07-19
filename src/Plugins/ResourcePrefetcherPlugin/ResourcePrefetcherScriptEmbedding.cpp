@@ -8,7 +8,7 @@
 #include "Interface/PluginServiceInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
-#include "Environment/Python/PythonDocumentTraceback.h"
+#include "Environment/Python/PythonDocument.h"
 #include "Environment/Python/PythonCallbackProvider.h"
 
 #include "ResourcePrefetcherServiceInterface.h"
@@ -108,7 +108,7 @@ namespace Mengine
                 , _groupName.c_str()
             );
 
-            PyPrefetcherObserverPtr observer = Helper::makeFactorableUnique<PyPrefetcherObserver>( MENGINE_DOCUMENT_PYBIND, _groupName, _cb, _args );
+            PyPrefetcherObserverPtr observer = Helper::makeFactorableUnique<PyPrefetcherObserver>( MENGINE_DOCUMENT_PYTHON, _groupName, _cb, _args );
 
             RESOURCE_SERVICE()
                 ->foreachGroupResources( _groupName, [&observer]( const ResourcePtr & _resource )
@@ -138,7 +138,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool prefetchFonts( const pybind::object & _cb, const pybind::args & _args )
         {
-            PyPrefetcherObserverPtr observer = Helper::makeFactorableUnique<PyPrefetcherObserver>( MENGINE_DOCUMENT_PYBIND, ConstString::none(), _cb, _args );
+            PyPrefetcherObserverPtr observer = Helper::makeFactorableUnique<PyPrefetcherObserver>( MENGINE_DOCUMENT_PYTHON, ConstString::none(), _cb, _args );
 
             FONT_SERVICE()
                 ->foreachGlyphs( [&observer]( const FontGlyphInterfacePtr & _glyph )
@@ -159,10 +159,10 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool prefetchScripts( const pybind::object & _cb, const pybind::args & _args )
         {
-            PyPrefetcherObserverPtr observer = Helper::makeFactorableUnique<PyPrefetcherObserver>( MENGINE_DOCUMENT_PYBIND, ConstString::none(), _cb, _args );
+            PyPrefetcherObserverPtr observer = Helper::makeFactorableUnique<PyPrefetcherObserver>( MENGINE_DOCUMENT_PYTHON, ConstString::none(), _cb, _args );
 
             SCRIPT_SERVICE()
-                ->prefetchModules( observer, MENGINE_DOCUMENT_PYBIND );
+                ->prefetchModules( observer, MENGINE_DOCUMENT_PYTHON );
 
             uint32_t count = observer->getCount();
 

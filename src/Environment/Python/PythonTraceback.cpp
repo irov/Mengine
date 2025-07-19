@@ -1,5 +1,7 @@
 #include "PythonTraceback.h"
 
+#include "Interface/ScriptProviderServiceInterface.h"
+
 #include "Kernel/Stringalized.h"
 
 #include "Config/StdString.h"
@@ -8,6 +10,19 @@ namespace Mengine
 {
     namespace Helper
     {
+        //////////////////////////////////////////////////////////////////////////
+        const Char * getPythonStatetrace()
+        {
+            static MENGINE_THREAD_LOCAL Char statetrace[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
+
+            pybind::kernel_interface * kernel = SCRIPTPROVIDER_SERVICE()
+                ->getKernel();
+
+            kernel->get_statetrace( statetrace, MENGINE_LOGGER_MAX_MESSAGE, false );
+
+            return statetrace;
+        }
+        //////////////////////////////////////////////////////////////////////////
         void getPythonTracebackMessage( Char * const _message, size_t _capacity, pybind::kernel_interface * _kernel, PyObject * _traceback )
         {
             StdString::strcpy_safe( _message, "Traceback:", _capacity );
@@ -37,5 +52,6 @@ namespace Mengine
                 tb = _kernel->traceback_next( tb );
             }
         }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

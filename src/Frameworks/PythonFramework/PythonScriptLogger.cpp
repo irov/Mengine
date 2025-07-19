@@ -88,7 +88,7 @@ namespace Mengine
 
         if( StdString::strcmp( arg_str, "\n" ) != 0 )
         {
-            StdString::strncat( m_message, arg_str, arg_str_size );
+            StdString::strzcat_safe( m_message, arg_str, arg_str_size, MENGINE_LOGGER_MAX_MESSAGE );
 
             return _kernel->ret_none();
         }

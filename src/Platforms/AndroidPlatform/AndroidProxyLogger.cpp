@@ -53,7 +53,8 @@ namespace Mengine
 
         jstring jcategory = jenv->NewStringUTF( message.category );
 
-        jclass jclass_MengineTag = jenv->FindClass( "org/Mengine/Base/MengineTag" );
+        jclass jclass_MengineTag = Helper::AndroidEnvFindClass( jenv, "org/Mengine/Base/MengineTag" );
+
         jmethodID mid_MengineTag_of = jenv->GetStaticMethodID( jclass_MengineTag, "of", "(Ljava/lang/String;)Lorg/Mengine/Base/MengineTag;" );
 
         jobject jcategoryTag = jenv->CallStaticObjectMethod( jclass_MengineTag, mid_MengineTag_of, jcategory );
@@ -92,6 +93,7 @@ namespace Mengine
         jenv->DeleteLocalRef( jcategoryTag );
         jenv->DeleteLocalRef( jcategory );
         jenv->DeleteLocalRef( jthread );
+
 #ifdef MENGINE_DEBUG
         jenv->DeleteLocalRef( jfile );
         jenv->DeleteLocalRef( jfunction );

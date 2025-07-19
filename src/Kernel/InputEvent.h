@@ -41,6 +41,7 @@ namespace Mengine
         float y;
         float pressure;
 
+        WChar symbol;
         WChar text[MENGINE_INPUTTEXTEVENT_TEXT_MAX_SIZE];
     };
     //////////////////////////////////////////////////////////////////////////

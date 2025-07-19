@@ -188,7 +188,7 @@ namespace Mengine
         {
             if( *it == '.' )
             {
-                *it = MENGINE_PATH_DELIM_BACKSLASH;
+                *it = MENGINE_PATH_FORWARDSLASH;
             }
         }
 
@@ -228,7 +228,7 @@ namespace Mengine
 
         if( this->findModule_( modulePathCache, modulePathCacheLen + _extN, _loader ) == false )
         {
-            modulePathCache[modulePathCacheLen] = MENGINE_PATH_DELIM_BACKSLASH;
+            modulePathCache[modulePathCacheLen] = MENGINE_PATH_FORWARDSLASH;
             if( Helper::memoryCopySafe( modulePathCache, modulePathCacheLen + 1, MENGINE_MAX_PATH, _init, 0, _extI ) == false )
             {
                 return false;

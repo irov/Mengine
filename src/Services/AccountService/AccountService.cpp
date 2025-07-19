@@ -243,7 +243,7 @@ namespace Mengine
     {
         PathString accountString;
         accountString.append( _accountId.c_str(), _accountId.size() );
-        accountString.append( MENGINE_PATH_DELIM_BACKSLASH );
+        accountString.append( MENGINE_PATH_FORWARDSLASH );
 
         FilePath accountPath = Helper::stringizeFilePath( accountString );
 

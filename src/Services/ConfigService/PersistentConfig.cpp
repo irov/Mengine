@@ -25,7 +25,7 @@ namespace Mengine
         {
             PathString propertyPath;
             propertyPath += "persistentconfig";
-            propertyPath += MENGINE_PATH_DELIM_BACKSLASH;
+            propertyPath += MENGINE_PATH_FORWARDSLASH;
             propertyPath += _section;
             propertyPath += '.';
             propertyPath += _key;

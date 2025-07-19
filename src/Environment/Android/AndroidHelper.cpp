@@ -874,7 +874,7 @@ namespace Mengine
 
             _jenv->DeleteLocalRef( canonicalPath );
 
-            Helper::pathCorrectFolderPathA( _path, MENGINE_PATH_DELIM_BACKSLASH );
+            Helper::pathCorrectFolderPathA( _path, MENGINE_PATH_FORWARDSLASH );
 
             return true;
         }

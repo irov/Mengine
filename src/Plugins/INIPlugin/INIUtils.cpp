@@ -137,7 +137,7 @@ namespace Mengine
             }
 
 #if defined(MENGINE_DEBUG)
-            if( StdString::strchr( ini_value, MENGINE_PATH_DELIM_FORWARDSLASH ) != nullptr )
+            if( StdString::strchr( ini_value, MENGINE_PATH_BACKSLASH ) != nullptr )
             {
                 LOGGER_ERROR( "get ini '%s' filepath section '%s' key '%s' has invalid slash '%s'"
                     , Helper::getContentFullPath( _ini.content ).c_str()

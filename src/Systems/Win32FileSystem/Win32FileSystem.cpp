@@ -64,16 +64,16 @@ namespace Mengine
     bool Win32FileSystem::existDirectory( const Char * _basePath, const Char * _directory ) const
     {
         MENGINE_ASSERTION_FATAL( StdString::strlen( _basePath ) == 0
-            || (StdString::strrchr( _basePath, '.' ) > StdString::strrchr( _basePath, MENGINE_PATH_DELIM_BACKSLASH )
-                || _basePath[StdString::strlen( _basePath ) - 1] == MENGINE_PATH_DELIM_BACKSLASH
-                || _basePath[StdString::strlen( _basePath ) - 1] == MENGINE_PATH_DELIM_FORWARDSLASH)
+            || (StdString::strrchr( _basePath, '.' ) > StdString::strrchr( _basePath, MENGINE_PATH_FORWARDSLASH )
+                || _basePath[StdString::strlen( _basePath ) - 1] == MENGINE_PATH_FORWARDSLASH
+                || _basePath[StdString::strlen( _basePath ) - 1] == MENGINE_PATH_BACKSLASH)
             , "invalid path '%s'", _basePath
         );
 
         MENGINE_ASSERTION_FATAL( StdString::strlen( _directory ) == 0
-            || (StdString::strrchr( _directory, '.' ) > StdString::strrchr( _directory, MENGINE_PATH_DELIM_BACKSLASH )
-                || _directory[StdString::strlen( _directory ) - 1] == MENGINE_PATH_DELIM_BACKSLASH
-                || _directory[StdString::strlen( _directory ) - 1] == MENGINE_PATH_DELIM_FORWARDSLASH)
+            || (StdString::strrchr( _directory, '.' ) > StdString::strrchr( _directory, MENGINE_PATH_FORWARDSLASH )
+                || _directory[StdString::strlen( _directory ) - 1] == MENGINE_PATH_FORWARDSLASH
+                || _directory[StdString::strlen( _directory ) - 1] == MENGINE_PATH_BACKSLASH)
             , "invalid directory '%s'", _directory
         );
 
@@ -102,16 +102,16 @@ namespace Mengine
         );
 
         MENGINE_ASSERTION_FATAL( StdString::strlen( _basePath ) == 0
-            || (StdString::strrchr( _basePath, '.' ) > StdString::strrchr( _basePath, MENGINE_PATH_DELIM_BACKSLASH )
-                || _basePath[StdString::strlen( _basePath ) - 1] == MENGINE_PATH_DELIM_BACKSLASH
-                || _basePath[StdString::strlen( _basePath ) - 1] == MENGINE_PATH_DELIM_FORWARDSLASH)
+            || (StdString::strrchr( _basePath, '.' ) > StdString::strrchr( _basePath, MENGINE_PATH_FORWARDSLASH )
+                || _basePath[StdString::strlen( _basePath ) - 1] == MENGINE_PATH_FORWARDSLASH
+                || _basePath[StdString::strlen( _basePath ) - 1] == MENGINE_PATH_BACKSLASH)
             , "invalid path '%s'", _basePath
         );
 
         MENGINE_ASSERTION_FATAL( StdString::strlen( _directory ) == 0
-            || (StdString::strrchr( _directory, '.' ) > StdString::strrchr( _directory, MENGINE_PATH_DELIM_BACKSLASH )
-                || _directory[StdString::strlen( _directory ) - 1] == MENGINE_PATH_DELIM_BACKSLASH
-                || _directory[StdString::strlen( _directory ) - 1] == MENGINE_PATH_DELIM_FORWARDSLASH)
+            || (StdString::strrchr( _directory, '.' ) > StdString::strrchr( _directory, MENGINE_PATH_FORWARDSLASH )
+                || _directory[StdString::strlen( _directory ) - 1] == MENGINE_PATH_FORWARDSLASH
+                || _directory[StdString::strlen( _directory ) - 1] == MENGINE_PATH_BACKSLASH)
             , "invalid directory '%s'", _directory
         );
 

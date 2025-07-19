@@ -82,7 +82,7 @@ namespace Mengine
             ->getCurrentPath( utf8_currentPath );
         
         StdString::strcat_safe( utf8_currentPath, "Data", MENGINE_MAX_PATH );
-        StdString::strchrcat_safe( utf8_currentPath, MENGINE_PATH_DELIM_BACKSLASH, MENGINE_MAX_PATH );
+        StdString::strchrcat_safe( utf8_currentPath, MENGINE_PATH_FORWARDSLASH, MENGINE_MAX_PATH );
         
         size_t utf8_currentPathLen = StdString::strlen( utf8_currentPath );
 
@@ -117,7 +117,7 @@ namespace Mengine
         }
 
         Path pathFull = {'\0'};
-        Helper::pathCombineA( pathFull, correctBasePath, correctDirectory, MENGINE_PATH_DELIM_BACKSLASH );
+        Helper::pathCombineA( pathFull, correctBasePath, correctDirectory, MENGINE_PATH_FORWARDSLASH );
 
         size_t pathFullLen = StdString::strlen( pathFull );
         
@@ -139,7 +139,7 @@ namespace Mengine
         Path correctDirectory = {'\0'};
         Helper::pathCorrectBackslashToA( correctDirectory, _directory );
 
-        Helper::pathRemoveFileSpecA( correctDirectory, MENGINE_PATH_DELIM_BACKSLASH );
+        Helper::pathRemoveFileSpecA( correctDirectory, MENGINE_PATH_FORWARDSLASH );
         
         size_t correctDirectoryLen = StdString::strlen( correctDirectory );
 
@@ -149,14 +149,14 @@ namespace Mengine
         }
 
         Path pathTestDirectory = {'\0'};
-        Helper::pathCombineA( pathTestDirectory, correctBasePath, correctDirectory, MENGINE_PATH_DELIM_BACKSLASH );
+        Helper::pathCombineA( pathTestDirectory, correctBasePath, correctDirectory, MENGINE_PATH_FORWARDSLASH );
 
         if( Detail::isDirectoryFullpath( pathTestDirectory ) == true )
         {
             return true;
         }
         
-        Helper::pathRemoveSlashA( correctDirectory, MENGINE_PATH_DELIM_BACKSLASH );
+        Helper::pathRemoveSlashA( correctDirectory, MENGINE_PATH_FORWARDSLASH );
 
         uint32_t paths_count = 0;
         Path paths[16];
@@ -165,14 +165,14 @@ namespace Mengine
         {
             StdString::strcpy_safe( paths[paths_count++], correctDirectory, MENGINE_MAX_PATH );
 
-            if( Helper::pathRemoveFileSpecA( correctDirectory, MENGINE_PATH_DELIM_BACKSLASH ) == false )
+            if( Helper::pathRemoveFileSpecA( correctDirectory, MENGINE_PATH_FORWARDSLASH ) == false )
             {
                 break;
             }
 
-            Helper::pathRemoveSlashA( correctDirectory, MENGINE_PATH_DELIM_BACKSLASH );
+            Helper::pathRemoveSlashA( correctDirectory, MENGINE_PATH_FORWARDSLASH );
 
-            Helper::pathCombineA( pathTestDirectory, correctBasePath, correctDirectory, MENGINE_PATH_DELIM_BACKSLASH );
+            Helper::pathCombineA( pathTestDirectory, correctBasePath, correctDirectory, MENGINE_PATH_FORWARDSLASH );
 
             if( Detail::isDirectoryFullpath( pathTestDirectory ) == true )
             {
@@ -185,7 +185,7 @@ namespace Mengine
             const Char * path = paths[index - 1];
 
             Path pathCreateDirectory = {'\0'};
-            Helper::pathCombineA( pathCreateDirectory, correctBasePath, path, MENGINE_PATH_DELIM_BACKSLASH );
+            Helper::pathCombineA( pathCreateDirectory, correctBasePath, path, MENGINE_PATH_FORWARDSLASH );
 
             if( Detail::createDirectoryFullpath( pathCreateDirectory ) == false )
             {

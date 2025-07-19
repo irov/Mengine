@@ -169,7 +169,7 @@ namespace Mengine
 
             StdString::strcpy_safe( _userPath, currentPath, MENGINE_MAX_PATH );
             StdString::strcat_safe( _userPath, MENGINE_DEVELOPMENT_USER_FOLDER_NAME, MENGINE_MAX_PATH );
-            StdString::strchrcat_safe( _userPath, MENGINE_PATH_DELIM_BACKSLASH, MENGINE_MAX_PATH );
+            StdString::strchrcat_safe( _userPath, MENGINE_PATH_FORWARDSLASH, MENGINE_MAX_PATH );
 
             size_t pathLen = StdString::strlen( _userPath );
 
@@ -202,7 +202,7 @@ namespace Mengine
 
         if( ExtraPreferencesFolderNameLen != 0 )
         {
-            Helper::pathAppendA( _userPath, extraPreferencesFolderName, MENGINE_PATH_DELIM_BACKSLASH );
+            Helper::pathAppendA( _userPath, extraPreferencesFolderName, MENGINE_PATH_FORWARDSLASH );
         }
 
         size_t userPathLen = StdString::strlen( _userPath );

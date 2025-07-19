@@ -142,7 +142,7 @@ namespace Mengine
             std::string::size_type lastPos = 0;
             for( size_t i = 0; i < _numFloats; ++i )
             {
-                std::string::size_type endPos = strValue.find( MENGINE_PATH_DELIM_BACKSLASH, lastPos );
+                std::string::size_type endPos = strValue.find( MENGINE_PATH_FORWARDSLASH, lastPos );
                 if( endPos == std::string::npos )
                 {
                     endPos = strValue.length();

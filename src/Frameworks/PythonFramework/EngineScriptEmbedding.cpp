@@ -2237,7 +2237,7 @@ namespace Mengine
                 APPLICATION_SERVICE()
                     ->getProjectName( projectName );
 
-                StdString::strchrcat( projectName, MENGINE_PATH_DELIM_BACKSLASH );
+                StdString::strchrcat( projectName, MENGINE_PATH_FORWARDSLASH );
 
                 if( PLATFORM_SERVICE()
                     ->updateDesktopWallpaper( projectName, _filePath.c_str() ) == false )
@@ -2264,7 +2264,7 @@ namespace Mengine
                 APPLICATION_SERVICE()
                     ->getProjectName( projectName );
 
-                StdString::strchrcat( projectName, MENGINE_PATH_DELIM_BACKSLASH );
+                StdString::strchrcat( projectName, MENGINE_PATH_FORWARDSLASH );
 
                 const void * memoryBuffer = memory->getBuffer();
                 size_t memorySize = memory->getSize();
@@ -2294,7 +2294,7 @@ namespace Mengine
                 APPLICATION_SERVICE()
                     ->getProjectName( projectName );
 
-                StdString::strchrcat( projectName, MENGINE_PATH_DELIM_BACKSLASH );
+                StdString::strchrcat( projectName, MENGINE_PATH_FORWARDSLASH );
 
                 const void * memoryBuffer = memory->getBuffer();
                 size_t memorySize = memory->getSize();

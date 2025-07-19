@@ -552,7 +552,7 @@ namespace Mengine
 
         if( ExtraPreferencesFolderNameLen != 0 )
         {
-            Helper::pathAppendA( _userPath, extraPreferencesFolderName, MENGINE_PATH_DELIM_BACKSLASH );
+            Helper::pathAppendA( _userPath, extraPreferencesFolderName, MENGINE_PATH_FORWARDSLASH );
         }
 
         size_t userPathLen = StdString::strlen( _userPath );

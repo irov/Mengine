@@ -2486,7 +2486,7 @@ namespace Mengine
 
         PathString icoFile;
         icoFile += MENGINE_WINDOW_ICON_CACHE;
-        icoFile += MENGINE_PATH_DELIM_BACKSLASH;
+        icoFile += MENGINE_PATH_FORWARDSLASH;
         icoFile += _filePath;
         icoFile += ".ico";
 

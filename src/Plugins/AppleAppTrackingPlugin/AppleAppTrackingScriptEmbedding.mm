@@ -3,7 +3,7 @@
 #include "Interface/ScriptServiceInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
-#include "Environment/Python/PythonDocumentTraceback.h"
+#include "Environment/Python/PythonDocument.h"
 
 #import "AppleAppTrackingApplicationDelegate.h"
 

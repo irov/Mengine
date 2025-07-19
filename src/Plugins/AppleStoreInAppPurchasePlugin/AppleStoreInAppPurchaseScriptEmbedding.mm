@@ -10,7 +10,7 @@
 
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonScriptWrapper.h"
-#include "Environment/Python/PythonDocumentTraceback.h"
+#include "Environment/Python/PythonDocument.h"
 #include "Environment/Python/PythonCallbackProvider.h"
 
 #include "Kernel/FactorableUnique.h"
@@ -25,7 +25,8 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         class PythonAppleStoreInAppPurchasePaymentQueueProvider
-            : public PythonCallbackProvider
+            : public AppleStoreInAppPurchasePaymentQueueProviderInterface
+            , public PythonCallbackProvider
             , public Factorable
         {
         public:
@@ -37,12 +38,12 @@ namespace Mengine
         protected:
             void onPaymentQueueShouldContinueTransaction( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) override
             {
-                this->call_cbs( "onPaymentQueueShouldContinueTransaction", _transaction );
+                this->call_method( "onPaymentQueueShouldContinueTransaction", _transaction );
             }
             
             void onPaymentQueueShouldShowPriceConsent() override
             {
-                this->call_cbs( "onPaymentQueueShouldShowPriceConsent" );
+                this->call_method( "onPaymentQueueShouldShowPriceConsent" );
             }
         };
         //////////////////////////////////////////////////////////////////////////
@@ -55,7 +56,8 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonAppleStoreInAppPurchasePaymentTransactionProvider
-            : public PythonCallbackProvider
+            : public AppleStoreInAppPurchasePaymentTransactionProviderInterface
+            , public PythonCallbackProvider
             , public Factorable
         {
         public:
@@ -67,27 +69,27 @@ namespace Mengine
         protected:
             void onPaymentQueueUpdatedTransactionPurchasing( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) override
             {
-                this->call_cbs( "onPaymentQueueUpdatedTransactionPurchasing", _transaction );
+                this->call_method( "onPaymentQueueUpdatedTransactionPurchasing", _transaction );
             }
             
             void onPaymentQueueUpdatedTransactionPurchased( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) override
             {
-                this->call_cbs( "onPaymentQueueUpdatedTransactionPurchased", _transaction );
+                this->call_method( "onPaymentQueueUpdatedTransactionPurchased", _transaction );
             }
             
             void onPaymentQueueUpdatedTransactionFailed( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) override
             {
-                this->call_cbs( "onPaymentQueueUpdatedTransactionFailed", _transaction );
+                this->call_method( "onPaymentQueueUpdatedTransactionFailed", _transaction );
             }
             
             void onPaymentQueueUpdatedTransactionRestored( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) override
             {
-                this->call_cbs( "onPaymentQueueUpdatedTransactionRestored", _transaction );
+                this->call_method( "onPaymentQueueUpdatedTransactionRestored", _transaction );
             }
             
             void onPaymentQueueUpdatedTransactionDeferred( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) override
             {
-                this->call_cbs( "onPaymentQueueUpdatedTransactionDeferred", _transaction );
+                this->call_method( "onPaymentQueueUpdatedTransactionDeferred", _transaction );
             }
         };
         //////////////////////////////////////////////////////////////////////////
@@ -114,7 +116,8 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonAppleStoreInAppPurchaseProductsResponse
-            : public PythonCallbackProvider
+            : public AppleStoreInAppPurchaseProductsResponseInterface
+            , public PythonCallbackProvider
             , public Factorable
         {
         public:
@@ -126,17 +129,17 @@ namespace Mengine
         protected:
             void onProductResponse( const AppleStoreInAppPurchaseProductsRequestInterfacePtr & _request, const VectorAppleStoreInAppPurchaseProducts & _products ) override
             {
-                this->call_cbs( "onProductResponse", _request, _products );
+                this->call_method( "onProductResponse", _request, _products );
             }
             
             void onProductFinish( const AppleStoreInAppPurchaseProductsRequestInterfacePtr & _request ) override
             {
-                this->call_cbs( "onProductFinish", _request );
+                this->call_method( "onProductFinish", _request );
             }
             
             void onProductFail( const AppleStoreInAppPurchaseProductsRequestInterfacePtr & _request ) override
             {
-                this->call_cbs( "onProductFail", _request );
+                this->call_method( "onProductFail", _request );
             }
         };
         //////////////////////////////////////////////////////////////////////////

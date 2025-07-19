@@ -3,10 +3,10 @@
 #include "Interface/ScriptServiceInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
-#include "Environment/Python/PythonDocumentTraceback.h"
+#include "Environment/Python/PythonDocument.h"
 #import "Environment/Python/ApplePythonProvider.h"
 
-#include "AppleAppLovinApplicationDelegate.h"
+#import "AppleAppLovinApplicationDelegate.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/ConstStringHelper.h"

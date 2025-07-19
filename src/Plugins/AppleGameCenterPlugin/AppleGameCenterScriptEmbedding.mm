@@ -4,7 +4,7 @@
 
 
 #include "Environment/Python/PythonIncluder.h"
-#include "Environment/Python/PythonDocumentTraceback.h"
+#include "Environment/Python/PythonTraceback.h"
 #import "Environment/Python/ApplePythonProvider.h"
 
 #import "AppleGameCenterApplicationDelegate.h"

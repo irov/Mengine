@@ -58,7 +58,7 @@ namespace Mengine
     typedef IntrusivePtr<AppleStoreInAppPurchaseProductsResponseInterface> AppleStoreInAppPurchaseProductsResponseInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class AppleStoreInAppPurchasePaymentTransactionProviderInterface
-        : public Interface
+        : public Mixin
     {
     public:
         virtual void onPaymentQueueUpdatedTransactionPurchasing( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) = 0;

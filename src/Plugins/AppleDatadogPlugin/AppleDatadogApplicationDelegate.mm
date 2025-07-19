@@ -64,7 +64,7 @@
     }
     
     DDConfiguration * configuration = [[DDConfiguration alloc] initWithClientToken:AppleDatadogApplicationDelegate_ClientToken
-#ifdef DEBUG
+#if defined(MENGINE_DEBUG)
                                                                                env:@"dev"
 #else
                                                                                env:@"prod"
@@ -112,31 +112,19 @@
                                                    printLogsToConsole:NO];
     
     DDLogger * logger = [DDLogger createWith:loggerConfiguration];
-        
-    [logger addAttributeForKey:@"version" value:@{
-        @"code": [iOSDetail getBuildNumber],
-        @"name": [iOSDetail getBuildVersion]
-    }];
-        
-    [logger addAttributeForKey:@"install" value:@{
-        @"id": [[iOSApplication sharedInstance] getInstallId],
-        @"timestamp": @([[iOSApplication sharedInstance] getInstallTimestamp]),
-        @"version": [[iOSApplication sharedInstance] getInstallVersion],
-        @"rnd": @([[iOSApplication sharedInstance] getInstallRND])
-    }];
-    
-    [logger addAttributeForKey:@"session" value:@{
-        @"index": @([[iOSApplication sharedInstance] getSessionIndex]),
-        @"timestamp": @([[iOSApplication sharedInstance] getSessionTimestamp]),
-    }];
-        
-    [logger addAttributeForKey:@"device" value:@{
-        @"model": [iOSDetail getDeviceModel]
-    }];
-    
-    [logger addAttributeForKey:@"os" value:@{
-        @"family": @"iOS",
-        @"version": [iOSDetail getSystemVersion]
+       
+    [logger addAttributeForKey:@"mng_base" value:@{
+        @"build.debug": MENGINE_DEBUG_VALUE(@(YES), @(NO)),
+        @"version.code": [iOSDetail getBuildNumber],
+        @"version.name": [iOSDetail getBuildVersion],
+        @"install.id": [[iOSApplication sharedInstance] getInstallId],
+        @"install.timestamp": @([[iOSApplication sharedInstance] getInstallTimestamp]),
+        @"install.version": [[iOSApplication sharedInstance] getInstallVersion],
+        @"install.rnd": @([[iOSApplication sharedInstance] getInstallRND]),
+        @"session.index": @([[iOSApplication sharedInstance] getSessionIndex]),
+        @"session.timestamp": @([[iOSApplication sharedInstance] getSessionTimestamp]),
+        @"session.rnd": @([[iOSApplication sharedInstance] getSessionRND]),
+        @"device.model": [iOSDetail getDeviceModel],
     }];
     
     self.m_logger = logger;
@@ -151,6 +139,7 @@
     
     [DDDatadog setUserInfoWithUserId:user.USER_ID name:nil email:nil extraInfo:@{@"install_id": installId}];
 }
+
 - (void)onRemoveUserData {
     [DDDatadog setUserInfoWithUserId:@"" name:nil email:nil extraInfo:@{}];
     
@@ -165,18 +154,18 @@
     }
     
 #ifdef MENGINE_DEBUG
-    NSDictionary * attributes = @{ @"code": @{
-            @"category": record.LOG_CATEGORY,
-            @"thread": record.LOG_THREAD,
-            @"file": record.LOG_FILE,
-            @"line": @(record.LOG_LINE),
-            @"function": record.LOG_FUNCTION
+    NSDictionary * attributes = @{ @"mng_record": @{
+            @"code.category": record.LOG_CATEGORY,
+            @"code.thread": record.LOG_THREAD,
+            @"code.file": record.LOG_FILE,
+            @"code.line": @(record.LOG_LINE),
+            @"code.function": record.LOG_FUNCTION
         }
     };
 #else
-    NSDictionary * attributes = @{ @"code": @{
-            @"category": record.LOG_CATEGORY,
-            @"thread": record.LOG_THREAD,
+    NSDictionary * attributes = @{ @"mng_record": @{
+            @"code.category": record.LOG_CATEGORY,
+            @"code.thread": record.LOG_THREAD,
         }
     };
 #endif

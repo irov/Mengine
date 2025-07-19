@@ -66,7 +66,7 @@ namespace Mengine
                     PyObject * key;
                     PyObject * value;
 
-                    while( _kernel->dict_next( _obj, pos, &key, &value ) == true )
+                    while( _kernel->dict_next( _obj, &pos, &key, &value ) == true )
                     {
                         NSString * key_str = pybind::extract_t( _kernel, key );
                         

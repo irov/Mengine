@@ -1,3 +1,5 @@
+#pragma once
+
 #import "Environment/iOS/iOSPluginApplicationDelegateInterface.h"
 #import "Environment/iOS/iOSPluginUserIdDelegateInterface.h"
 

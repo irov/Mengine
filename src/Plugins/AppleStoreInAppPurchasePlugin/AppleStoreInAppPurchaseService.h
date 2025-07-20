@@ -3,6 +3,8 @@
 #include "AppleStoreInAppPurchaseInterface.h"
 #include "AppleStoreInAppPurchaseFactoryInterface.h"
 
+#import "Environment/Apple/AppleIncluder.h"
+
 #include "Interface/FactoryInterface.h"
 
 #include "Kernel/ServiceBase.h"
@@ -11,7 +13,6 @@
 #import "AppleStoreInAppPurchaseProductsRequestDelegate.h"
 #import "AppleStoreInAppPurchasePaymentTransactionObserver.h"
 
-#import <Foundation/Foundation.h>
 #import <StoreKit/StoreKit.h>
 
 namespace Mengine
@@ -29,16 +30,13 @@ namespace Mengine
         void _finalizeService() override;
         
     public:
-        void setPaymentQueueProvider( const AppleStoreInAppPurchasePaymentQueueProviderInterfacePtr & _paymentQueueProvider ) override;
-        const AppleStoreInAppPurchasePaymentQueueProviderInterfacePtr & getPaymentQueueProvider() const override;
-        
-    public:
         void setPaymentTransactionProvider( const AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr & _paymentTransactionProvider ) override;
         const AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr & getPaymentTransactionProvider() const override;
         
     public:
         bool canMakePayments() const override;
-        AppleStoreInAppPurchaseProductsRequestInterfacePtr requestProducts( const VectorConstString & _productIdentifiers, const AppleStoreInAppPurchaseProductsResponseInterfacePtr & _cb ) override;
+        AppleStoreInAppPurchaseProductsRequestInterfacePtr requestProducts( NSSet * _productIdentifiers, const AppleStoreInAppPurchaseProductsResponseInterfacePtr & _cb ) override;
+        bool isOwnedProduct( NSString * _productIdentifier ) const override;
         bool purchaseProduct( const AppleStoreInAppPurchaseProductInterfacePtr & _product ) override;
         void restoreCompletedTransactions() override;
         
@@ -47,7 +45,6 @@ namespace Mengine
         AppleStoreInAppPurchasePaymentTransactionInterfacePtr makePaymentTransaction( SKPaymentTransaction * _skPaymentTransaction, SKPaymentQueue * _skPaymentQueue ) override;
         
     protected:
-        AppleStoreInAppPurchasePaymentQueueProviderInterfacePtr m_paymentQueueProvider;
         AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr m_paymentTransactionProvider;
         
         FactoryInterfacePtr m_factoryPaymentTransaction;

@@ -1,8 +1,6 @@
 #pragma once
 
-#include "Config/Config.h"
-
-#import <Foundation/Foundation.h>
+#import "Environment/Apple/AppleIncluder.h"
 
 @protocol AppleGameCenterConnectCallbackInterface <NSObject>
 - (void)onAppleGameCenterAuthenticate:(BOOL)successful;

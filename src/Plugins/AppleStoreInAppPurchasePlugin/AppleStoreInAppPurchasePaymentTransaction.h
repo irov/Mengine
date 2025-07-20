@@ -2,11 +2,12 @@
 
 #include "AppleStoreInAppPurchaseInterface.h"
 
+#import "Environment/Apple/AppleIncluder.h"
+
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 #   include "Kernel/Scriptable.h"
 #endif
 
-#import <Foundation/Foundation.h>
 #import <StoreKit/StoreKit.h>
 
 namespace Mengine
@@ -32,7 +33,7 @@ namespace Mengine
         SKPaymentQueue * getSKPaymentQueue() const;
         
     public:
-        const ConstString & getProductIdentifier() const override;
+        NSString * getProductIdentifier() const override;
         
     public:
         void finish() override;
@@ -40,8 +41,6 @@ namespace Mengine
     protected:
         SKPaymentTransaction * m_skPaymentTransaction;
         SKPaymentQueue * m_skPaymentQueue;
-        
-        ConstString m_productIdentifier;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AppleStoreInAppPurchasePaymentTransaction, AppleStoreInAppPurchasePaymentTransactionInterface> AppleStoreInAppPurchasePaymentTransactionPtr;

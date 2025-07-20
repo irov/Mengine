@@ -1,6 +1,6 @@
-#include "Config/Config.h"
+#pragma once
 
-#import <Foundation/Foundation.h>
+#import "Environment/Apple/AppleIncluder.h"
 
 @protocol iOSPluginAnalyticDelegateInterface <NSObject>
 

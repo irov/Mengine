@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Kernel/LoggerLevel.h"
+#import "Environment/Apple/AppleIncluder.h"
 
-#import <Foundation/Foundation.h>
+#include "Kernel/LoggerLevel.h"
 
 @interface iOSLog : NSObject
 

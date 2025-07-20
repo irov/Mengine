@@ -3,6 +3,8 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/ServantInterface.h"
 
+#import "Environment/Apple/AppleIncluder.h"
+
 #include "Kernel/VectorConstString.h"
 #include "Kernel/String.h"
 
@@ -13,11 +15,11 @@ namespace Mengine
         : public ServantInterface
     {
     public:
-        virtual const ConstString & getProductIdentifier() const = 0;
-        virtual const String & getProductTitle() const = 0;
-        virtual const String & getProductDescription() const = 0;
-        virtual const String & getProductCurrencyCode() const = 0;
-        virtual const String & getProductPriceFormatted() const = 0;
+        virtual NSString * getProductIdentifier() const = 0;
+        virtual NSString * getProductTitle() const = 0;
+        virtual NSString * getProductDescription() const = 0;
+        virtual NSString * getProductCurrencyCode() const = 0;
+        virtual NSString * getProductPriceFormatted() const = 0;
         virtual double getProductPrice() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
@@ -27,7 +29,7 @@ namespace Mengine
         : public ServantInterface
     {
     public:
-        virtual const ConstString & getProductIdentifier() const = 0;
+        virtual NSString * getProductIdentifier() const = 0;
         
     public:
         virtual void finish() = 0;
@@ -70,24 +72,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AppleStoreInAppPurchasePaymentTransactionProviderInterface> AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
-    class AppleStoreInAppPurchasePaymentQueueProviderInterface
-        : public Mixin
-    {
-    public:
-        virtual void onPaymentQueueShouldContinueTransaction( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) = 0;
-        virtual void onPaymentQueueShouldShowPriceConsent() = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<AppleStoreInAppPurchasePaymentQueueProviderInterface> AppleStoreInAppPurchasePaymentQueueProviderInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
     class AppleStoreInAppPurchaseServiceInterface
         : public ServiceInterface
     {
         SERVICE_DECLARE( "AppleStoreInAppPurchaseService" )
-        
-    public:
-        virtual void setPaymentQueueProvider( const AppleStoreInAppPurchasePaymentQueueProviderInterfacePtr & _paymentQueueProvider ) = 0;
-        virtual const AppleStoreInAppPurchasePaymentQueueProviderInterfacePtr & getPaymentQueueProvider() const = 0;
         
     public:
         virtual void setPaymentTransactionProvider( const AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr & _paymentTransactionProvider ) = 0;
@@ -95,7 +83,8 @@ namespace Mengine
         
     public:
         virtual bool canMakePayments() const = 0;
-        virtual AppleStoreInAppPurchaseProductsRequestInterfacePtr requestProducts( const VectorConstString & _productIdentifiers, const AppleStoreInAppPurchaseProductsResponseInterfacePtr & _cb ) = 0;
+        virtual AppleStoreInAppPurchaseProductsRequestInterfacePtr requestProducts( NSSet * _productIdentifiers, const AppleStoreInAppPurchaseProductsResponseInterfacePtr & _cb ) = 0;
+        virtual bool isOwnedProduct( NSString * _productIdentifier ) const = 0;
         virtual bool purchaseProduct( const AppleStoreInAppPurchaseProductInterfacePtr & _product ) = 0;
         virtual void restoreCompletedTransactions() = 0;
     };

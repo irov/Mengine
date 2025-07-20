@@ -1,10 +1,8 @@
 #pragma once
 
-#include "Config/Config.h"
+#import "Environment/Apple/AppleIncluder.h"
 
 #import "AppleAdvertisementBasePoint.h"
-
-#import <Foundation/Foundation.h>
 
 @interface AppleAdvertisementRewardedPoint : AppleAdvertisementBasePoint
 

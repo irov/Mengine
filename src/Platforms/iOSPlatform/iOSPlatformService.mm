@@ -19,6 +19,7 @@
 #import "Environment/Apple/AppleDetail.h"
 #import "Environment/iOS/iOSApplication.h"
 #import "Environment/iOS/iOSDetail.h"
+#import "Environment/iOS/iOSLog.h"
 
 #include "iOSAnalyticsEventProvider.h"
 
@@ -146,8 +147,8 @@ namespace Mengine
 
         if( error != nil )
         {
-            LOGGER_ERROR( "Error creating directory: %s"
-                 , [[AppleDetail getMessageFromNSError:error] UTF8String]
+            IOS_LOGGER_ERROR( @"Error creating directory: %@"
+                 , [AppleDetail getMessageFromNSError:error]
             );
 
             StdString::strcpy_safe( _userPath, "", MENGINE_MAX_PATH );

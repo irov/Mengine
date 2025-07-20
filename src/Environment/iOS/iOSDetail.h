@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Config/Config.h"
-
+#import "Environment/Apple/AppleIncluder.h"
 #import "Environment/Apple/AppleEvent.h"
 #import "Environment/Apple/AppleLogRecordParam.h"
 
@@ -9,7 +8,6 @@
 #import "Environment/iOS/iOSTransparencyConsentParam.h"
 #import "Environment/iOS/iOSUIMainApplicationDelegateInterface.h"
 
-#import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
 @interface iOSDetail : NSObject

@@ -1,8 +1,7 @@
-#include "Config/Config.h"
+#pragma once
 
+#import "Environment/Apple/AppleIncluder.h"
 #import "Environment/Apple/AppleLogRecordParam.h"
-
-#import <Foundation/Foundation.h>
 
 @protocol iOSPluginLoggerDelegateInterface <NSObject>
 

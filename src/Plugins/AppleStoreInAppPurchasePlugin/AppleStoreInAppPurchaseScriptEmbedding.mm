@@ -24,37 +24,6 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        class PythonAppleStoreInAppPurchasePaymentQueueProvider
-            : public AppleStoreInAppPurchasePaymentQueueProviderInterface
-            , public PythonCallbackProvider
-            , public Factorable
-        {
-        public:
-            PythonAppleStoreInAppPurchasePaymentQueueProvider( const pybind::dict & _cbs, const pybind::args & _args )
-                : PythonCallbackProvider( _cbs, _args )
-            {
-            }
-
-        protected:
-            void onPaymentQueueShouldContinueTransaction( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) override
-            {
-                this->call_method( "onPaymentQueueShouldContinueTransaction", _transaction );
-            }
-            
-            void onPaymentQueueShouldShowPriceConsent() override
-            {
-                this->call_method( "onPaymentQueueShouldShowPriceConsent" );
-            }
-        };
-        //////////////////////////////////////////////////////////////////////////
-        static void s_AppleStoreInAppPurchase_setPaymentQueueProvider( const pybind::dict & _cbs, const pybind::args & _args )
-        {
-            AppleStoreInAppPurchasePaymentQueueProviderInterfacePtr provider = Helper::makeFactorableUnique<PythonAppleStoreInAppPurchasePaymentQueueProvider>( MENGINE_DOCUMENT_PYTHON, _cbs, _args );
-
-            APPLE_STOREINAPPPURCHASE_SERVICE()
-                ->setPaymentQueueProvider( provider );
-        }
-        //////////////////////////////////////////////////////////////////////////
         class PythonAppleStoreInAppPurchasePaymentTransactionProvider
             : public AppleStoreInAppPurchasePaymentTransactionProviderInterface
             , public PythonCallbackProvider
@@ -143,7 +112,7 @@ namespace Mengine
             }
         };
         //////////////////////////////////////////////////////////////////////////
-        static AppleStoreInAppPurchaseProductsRequestInterfacePtr AppleStoreInAppPurchase_requestProducts(const VectorConstString & _productIdentifiers, const pybind::dict & _cbs, const pybind::args & _args )
+        static AppleStoreInAppPurchaseProductsRequestInterfacePtr AppleStoreInAppPurchase_requestProducts( NSSet * _productIdentifiers, const pybind::dict & _cbs, const pybind::args & _args )
         {
             AppleStoreInAppPurchaseProductsResponseInterfacePtr response = Helper::makeFactorableUnique<PythonAppleStoreInAppPurchaseProductsResponse>( MENGINE_DOCUMENT_PYTHON, _cbs, _args );
             
@@ -186,6 +155,7 @@ namespace Mengine
         
         pybind::def_functor( _kernel, "appleStoreInAppPurchaseCanMakePayments", service, &AppleStoreInAppPurchaseServiceInterface::canMakePayments );
         pybind::def_function_args( _kernel, "appleStoreInAppPurchaseRequestProducts", &Detail::AppleStoreInAppPurchase_requestProducts );
+        pybind::def_functor( _kernel, "appleStoreInAppPurchaseIsOwnedProduct", service, &AppleStoreInAppPurchaseServiceInterface::isOwnedProduct );
         pybind::def_functor( _kernel, "appleStoreInAppPurchasePurchaseProduct", service, &AppleStoreInAppPurchaseServiceInterface::purchaseProduct );
         pybind::def_functor( _kernel, "appleStoreInAppPurchaseRestoreCompletedTransactions", service, &AppleStoreInAppPurchaseServiceInterface::restoreCompletedTransactions );
 

@@ -1,10 +1,10 @@
 #pragma once
 
+#import "Environment/Apple/AppleIncluder.h"
+
 #include "Kernel/LoggerLevel.h"
 
 #include "Config/Timestamp.h"
-
-#import <Foundation/Foundation.h>
 
 @interface AppleLogRecordParam : NSObject
 

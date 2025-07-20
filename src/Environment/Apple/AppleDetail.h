@@ -1,11 +1,11 @@
 #pragma once
 
+#import "Environment/Apple/AppleIncluder.h"
+
 #include "Kernel/Params.h"
 #include "Kernel/Data.h"
 #include "Kernel/VectorString.h"
 #include "Kernel/VectorConstString.h"
-
-#import <Foundation/Foundation.h>
 
 #ifndef MENGINE_APPLE_MESSAGE_NSID
 #define MENGINE_APPLE_MESSAGE_NSID 1024

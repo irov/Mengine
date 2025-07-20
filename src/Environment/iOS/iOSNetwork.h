@@ -1,8 +1,9 @@
 #pragma once
 
+#import "Environment/Apple/AppleIncluder.h"
+
 #include "Kernel/LoggerLevel.h"
 
-#import <Foundation/Foundation.h>
 #import <Network/Network.h>
 
 @interface iOSNetwork : NSObject

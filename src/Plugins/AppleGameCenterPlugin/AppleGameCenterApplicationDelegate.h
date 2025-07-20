@@ -1,10 +1,10 @@
 #pragma once
 
+#import "Environment/Apple/AppleIncluder.h"
 #import "Environment/iOS/iOSPluginApplicationDelegateInterface.h"
 
 #import "AppleGameCenterInterface.h"
 
-#import <Foundation/Foundation.h>
 #import <GameKit/GameKit.h>
 
 @interface AppleGameCenterApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface, AppleGameCenterInterface, GKGameCenterControllerDelegate>

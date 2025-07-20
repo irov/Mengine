@@ -1,8 +1,7 @@
 #pragma once
 
+#import "Environment/Apple/AppleIncluder.h"
 #import "Environment/Apple/AppleSemaphoreListenerNSProxy.h"
-
-#import <Foundation/Foundation.h>
 
 @interface AppleSemaphore : NSObject
 

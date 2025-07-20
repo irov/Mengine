@@ -1,13 +1,12 @@
 #include "AppleNativePythonScriptEmbedding.h"
 
+#import "Environment/Apple/AppleIncluder.h"
 #import "Environment/Apple/AppleSemaphoreListenerInterface.h"
 #import "Environment/Apple/AppleDetail.h"
 #import "Environment/Python/PythonScriptWrapper.h"
 #import "Environment/Python/PythonCallbackProvider.h"
 
 #include "AppleNativePythonInterface.h"
-
-#import <Foundation/Foundation.h>
 
 namespace Mengine
 {
@@ -186,6 +185,133 @@ namespace Mengine
             }
         };
         //////////////////////////////////////////////////////////////////////////
+        struct extract_NSSet_type
+            : public pybind::type_cast_result<NSSet *>
+        {
+            bool apply( pybind::kernel_interface * _kernel, PyObject * _obj, value_type & _value, bool _nothrow ) override
+            {
+                MENGINE_UNUSED( _nothrow );
+
+                NSMutableSet * set = [NSMutableSet set];
+                
+                PyObject * it;
+                if( _kernel->iterator_get( _obj, &it ) == false )
+                {
+                    return false;
+                }
+                
+                PyObject * value;
+                while( _kernel->iterator_next( it, &value ) )
+                {
+                    PyTypeObject * type = _kernel->get_object_type( value );
+                        
+                    if( _kernel->bool_check( value ) == true )
+                    {
+                        bool value_bool = pybind::extract_t( _kernel, value );
+                        
+                        [set addObject:@(value_bool)];
+                    }
+                    else if ( _kernel->int_check( value ) == true )
+                    {
+                        int32_t value_int = pybind::extract_t( _kernel, value );
+                        
+                        [set addObject:@(value_int)];
+                    }
+                    else if ( _kernel->long_check( value ) == true )
+                    {
+                        int64_t value_long = pybind::extract_t( _kernel, value );
+                        
+                        [set addObject:@(value_long)];
+                    }
+                    else if ( _kernel->float_check( value ) == true )
+                    {
+                        float value_float = pybind::extract_t( _kernel, value );
+                        
+                        [set addObject:@(value_float)];
+                    }
+                    else if ( _kernel->string_check( value ) == true )
+                    {
+                        NSString * value_str = pybind::extract_t( _kernel, value );
+                        
+                        [set addObject:value_str];
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                
+                _kernel->iterator_end( it );
+                    
+                _value = set;
+
+                return true;
+            }
+
+            PyObject * wrap( pybind::kernel_interface * _kernel, pybind::type_cast_result<value_type>::TCastRef _value ) override
+            {
+                PyObject * py_set = _kernel->set_new();
+                
+                CFTypeID boolenTypeId = CFBooleanGetTypeID();
+                CFTypeID numberTypeId = CFNumberGetTypeID();
+                
+                for (id value in _value) {
+                    if ([value isKindOfClass:[NSNumber class]] == YES) {
+                        CFTypeID valueTypeId = CFGetTypeID((__bridge CFTypeRef)(value));
+                        
+                        if (valueTypeId == boolenTypeId) {
+                            bool b = [value boolValue];
+                            
+                            pybind::set_set_t( _kernel, py_set, b );
+                        } else if (valueTypeId == numberTypeId) {
+                            CFNumberType numberType = CFNumberGetType((__bridge CFNumberRef)value);
+                            
+                            switch (numberType) {
+                                case kCFNumberSInt8Type:
+                                case kCFNumberSInt16Type:
+                                case kCFNumberSInt32Type:
+                                case kCFNumberSInt64Type:
+                                case kCFNumberCharType:
+                                case kCFNumberShortType:
+                                case kCFNumberIntType:
+                                case kCFNumberLongType:
+                                case kCFNumberLongLongType: {
+                                    int64_t n = [value longLongValue];
+                                    
+                                    pybind::set_set_t( _kernel, py_set, n );
+                                }break;
+                                    
+                                case kCFNumberFloat32Type:
+                                case kCFNumberFloat64Type:
+                                case kCFNumberFloatType:
+                                case kCFNumberDoubleType: {
+                                    double d = [value doubleValue];
+                                    
+                                    pybind::set_set_t( _kernel, py_set, d );
+                                }break;
+                                
+                                case kCFNumberCFIndexType:
+                                case kCFNumberNSIntegerType:
+                                case kCFNumberCGFloatType: {
+                                    
+                                }break;
+                            }
+                        }
+                    } else if ([value isKindOfClass:[NSString class]] == YES) {
+                        NSString * s = (NSString *)value;
+                        
+                        pybind::set_set_t( _kernel, py_set, s );
+                    } else if ([value isKindOfClass:[NSNull class]]) {
+                        //Empty (???)
+                    } else {
+                        return nullptr;
+                    }
+                }
+
+                return py_set;
+            }
+        };
+        //////////////////////////////////////////////////////////////////////////
         class PythonAppleSemaphoreListener
             : public AppleSemaphoreListenerInterface
             , public PythonCallbackProvider
@@ -233,6 +359,7 @@ namespace Mengine
     {
         pybind::registration_type_cast<NSString *>(_kernel, pybind::make_type_cast<Detail::extract_NSString_type>(_kernel));
         pybind::registration_type_cast<NSDictionary *>(_kernel, pybind::make_type_cast<Detail::extract_NSDictionary_type>(_kernel));
+        pybind::registration_type_cast<NSSet *>(_kernel, pybind::make_type_cast<Detail::extract_NSSet_type>(_kernel));
         
         pybind::def_function_args( _kernel, "waitSemaphore", &Detail::AppleNativePythonService_waitSemaphore );
 
@@ -241,9 +368,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleNativePythonScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
-        MENGINE_UNUSED( _kernel );
-
-        //Empty
+        pybind::unregistration_type_cast<NSString *>( _kernel );
+        pybind::unregistration_type_cast<NSDictionary *>( _kernel );
+        pybind::unregistration_type_cast<NSSet *>( _kernel );
     }
     //////////////////////////////////////////////////////////////////////////
 }

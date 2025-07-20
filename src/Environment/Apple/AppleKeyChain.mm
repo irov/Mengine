@@ -201,15 +201,19 @@
     return value;
 }
 
-+ (BOOL)setNSTimeIntervalForKey:(NSString *)key value:(NSTimeInterval)value {
++ (BOOL)setTimeIntervalForKey:(NSString *)key value:(NSTimeInterval)value {
     NSData * data = [NSData dataWithBytes:&value length:sizeof(NSTimeInterval)];
+    
+    if (data == nil) {
+        return NO;
+    }
     
     BOOL successful = [AppleKeyChain setDataForKey:key data:data];
     
     return successful;
 }
 
-+ (NSTimeInterval)getNSTimeIntervalForKey:(NSString *)key defaultValue:(NSTimeInterval)defaultValue {
++ (NSTimeInterval)getTimeIntervalForKey:(NSString *)key defaultValue:(NSTimeInterval)defaultValue {
     NSData * data = [AppleKeyChain getDataForKey:key];
     
     if (data == nil) {
@@ -224,6 +228,44 @@
     [data getBytes:&value length:sizeof(NSTimeInterval)];
 
     return value;
+}
+
++ (BOOL)setSetForKey:(NSString *)key value:(NSSet *)value {
+    NSError * error = nil;
+    NSData * data = [NSKeyedArchiver archivedDataWithRootObject:value
+                                          requiringSecureCoding:NO
+                                                          error:&error];
+    
+    if (data == nil) {
+        [AppleLog withFormat:@"AppleKeyChain setSetForKey: %@ value: %@ archive failed: %@", key, value, error];
+        
+        return NO;
+    }
+    
+    BOOL successful = [AppleKeyChain setDataForKey:key data:data];
+    
+    return successful;
+}
+
++ (NSSet *)getSetForKey:(NSString *)key {
+    NSData *data = [AppleKeyChain getDataForKey:key];
+    
+    if (data == nil) {
+        return nil;
+    }
+    
+    NSError * error = nil;
+    NSSet * result = [NSKeyedUnarchiver unarchivedObjectOfClass:[NSSet class]
+                                                       fromData:data
+                                                          error:&error];
+    
+    if (result == nil) {
+        [AppleLog withFormat:@"AppleKeyChain getSetForKey: %@ unarchive failed: %@", key, error];
+        
+        return nil;
+    }
+    
+    return result;
 }
 
 + (BOOL)hasKey:(NSString *)key {

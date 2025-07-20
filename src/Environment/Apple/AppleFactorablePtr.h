@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Kernel/Factorable.h"
+#import "Environment/Apple/AppleIncluder.h"
 
-#import <Foundation/Foundation.h>
+#include "Kernel/Factorable.h"
 
 @interface AppleFactorablePtr : NSObject
 

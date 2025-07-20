@@ -2,8 +2,9 @@
 
 #import "AppleAppLovinInterface.h"
 
+#import "Environment/Apple/AppleIncluder.h"
+
 #import <AppLovinSDK/AppLovinSDK.h>
-#import <Foundation/Foundation.h>
 
 @interface AppleAppLovinBaseDelegate : NSObject
 

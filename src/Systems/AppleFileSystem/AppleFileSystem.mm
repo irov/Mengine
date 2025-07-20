@@ -2,6 +2,7 @@
 
 #include "Interface/PlatformServiceInterface.h"
 
+#import "Environment/Apple/AppleIncluder.h"
 #import "Environment/Apple/AppleDetail.h"
 
 #include "AppleFileGroupDirectory.h"
@@ -16,8 +17,6 @@
 
 #include "Config/StdString.h"
 #include "Config/Path.h"
-
-#import <Foundation/Foundation.h>
 
 #include <sys/stat.h>
 #include <dlfcn.h>

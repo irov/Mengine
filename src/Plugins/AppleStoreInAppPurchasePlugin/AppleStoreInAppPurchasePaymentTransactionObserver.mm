@@ -2,6 +2,9 @@
 
 #import "Environment/Apple/AppleDetail.h"
 #import "Environment/Apple/AppleString.h"
+#import "Environment/iOS/iOSLog.h"
+
+#import "AppleStoreInAppPurchaseEntitlements.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Logger.h"
@@ -31,7 +34,7 @@
     return self;
 }
 
-- (void)setupWithFactory: (Mengine::AppleStoreInAppPurchaseFactoryInterface * _Nonnull)_factory service: (Mengine::AppleStoreInAppPurchaseServiceInterface * _Nonnull)_service {
+- (void)activateWithFactory: (Mengine::AppleStoreInAppPurchaseFactoryInterface * _Nonnull)_factory service: (Mengine::AppleStoreInAppPurchaseServiceInterface * _Nonnull)_service {
     m_factory = _factory;
     m_service = _service;
     
@@ -41,6 +44,13 @@
         
         [self paymentQueue:queue updatedTransactions:transactions];
     }
+}
+
+- (void)deactivate {
+    m_factory = nullptr;
+    m_service = nullptr;
+    
+    [self.m_cacheSKPaymentTransactions removeAllObjects];
 }
 
 #pragma mark - SKPaymentTransactionObserver
@@ -54,7 +64,7 @@
         return;
     }
     
-    LOGGER_MESSAGE( "SKPaymentTransactionObserver paymentQueue updatedTransactions" );
+    IOS_LOGGER_MESSAGE( @"SKPaymentTransactionObserver paymentQueue updatedTransactions" );
     
     Mengine::AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr copy_provider = m_service->getPaymentTransactionProvider();
     
@@ -68,8 +78,8 @@
         {
             case SKPaymentTransactionStatePurchasing:
             {
-                LOGGER_MESSAGE( "SKPaymentTransactionObserver SKPaymentTransactionStatePurchasing: %s"
-                    , [skPaymentTransaction.payment.productIdentifier UTF8String]
+                IOS_LOGGER_MESSAGE( @"SKPaymentTransactionObserver SKPaymentTransactionStatePurchasing: %@"
+                    , skPaymentTransaction.payment.productIdentifier
                 );
                 
                 Mengine::Helper::dispatchMainThreadEvent([copy_provider, paymentTransaction]() {
@@ -79,17 +89,25 @@
             case SKPaymentTransactionStatePurchased:
             {
                 if (skPaymentTransaction.originalTransaction != nil) {
-                    LOGGER_MESSAGE( "SKPaymentTransactionObserver SKPaymentTransactionStatePurchased: %s [originalTransaction]"
-                        , [skPaymentTransaction.payment.productIdentifier UTF8String]
+                    IOS_LOGGER_MESSAGE( @"SKPaymentTransactionObserver SKPaymentTransactionStatePurchased: %@ [originalTransaction]"
+                        , skPaymentTransaction.payment.productIdentifier
                     );
+                    
+                    if ([skPaymentTransaction.payment.productIdentifier rangeOfString:@".nonconsumable."].location != NSNotFound) {
+                        [[AppleStoreInAppPurchaseEntitlements sharedInstance] add:skPaymentTransaction.payment.productIdentifier];
+                    }
                     
                     Mengine::Helper::dispatchMainThreadEvent([copy_provider, paymentTransaction]() {
                         copy_provider->onPaymentQueueUpdatedTransactionRestored( paymentTransaction );
                     });
                 } else {
-                    LOGGER_MESSAGE( "SKPaymentTransactionObserver SKPaymentTransactionStatePurchased: %s"
-                        , [skPaymentTransaction.payment.productIdentifier UTF8String]
+                    IOS_LOGGER_MESSAGE( @"SKPaymentTransactionObserver SKPaymentTransactionStatePurchased: %@"
+                        , skPaymentTransaction.payment.productIdentifier
                     );
+                    
+                    if ([skPaymentTransaction.payment.productIdentifier rangeOfString:@".nonconsumable."].location != NSNotFound) {
+                        [[AppleStoreInAppPurchaseEntitlements sharedInstance] add:skPaymentTransaction.payment.productIdentifier];
+                    }
                     
                     Mengine::Helper::dispatchMainThreadEvent([copy_provider, paymentTransaction]() {
                         copy_provider->onPaymentQueueUpdatedTransactionPurchased( paymentTransaction );
@@ -98,8 +116,8 @@
             } break;
             case SKPaymentTransactionStateFailed:
             {
-                LOGGER_MESSAGE( "SKPaymentTransactionObserver SKPaymentTransactionStateFailed: %s"
-                    , [skPaymentTransaction.payment.productIdentifier UTF8String]
+                IOS_LOGGER_MESSAGE( @"SKPaymentTransactionObserver SKPaymentTransactionStateFailed: %@"
+                    , skPaymentTransaction.payment.productIdentifier
                 );
                 
                 Mengine::Helper::dispatchMainThreadEvent([copy_provider, paymentTransaction]() {
@@ -108,9 +126,13 @@
             } break;
             case SKPaymentTransactionStateRestored:
             {
-                LOGGER_MESSAGE( "SKPaymentTransactionObserver SKPaymentTransactionStateRestored: %s"
-                    , [skPaymentTransaction.payment.productIdentifier UTF8String]
+                IOS_LOGGER_MESSAGE( @"SKPaymentTransactionObserver SKPaymentTransactionStateRestored: %@"
+                    , skPaymentTransaction.payment.productIdentifier
                 );
+                
+                if ([skPaymentTransaction.payment.productIdentifier rangeOfString:@".nonconsumable."].location != NSNotFound) {
+                    [[AppleStoreInAppPurchaseEntitlements sharedInstance] add:skPaymentTransaction.payment.productIdentifier];
+                }
                 
                 Mengine::Helper::dispatchMainThreadEvent([copy_provider, paymentTransaction]() {
                     copy_provider->onPaymentQueueUpdatedTransactionRestored( paymentTransaction );
@@ -118,8 +140,8 @@
             } break;
             case SKPaymentTransactionStateDeferred:
             {
-                LOGGER_MESSAGE( "SKPaymentTransactionObserver SKPaymentTransactionStateDeferred: %s"
-                    , [skPaymentTransaction.payment.productIdentifier UTF8String]
+                IOS_LOGGER_MESSAGE( @"SKPaymentTransactionObserver SKPaymentTransactionStateDeferred: %@"
+                    , skPaymentTransaction.payment.productIdentifier
                 );
                 
                 Mengine::Helper::dispatchMainThreadEvent([copy_provider, paymentTransaction]() {
@@ -136,7 +158,10 @@
         return;
     }
     
-    LOGGER_MESSAGE( "SKPaymentTransactionObserver paymentQueue removedTransactions" );
+    IOS_LOGGER_MESSAGE( @"SKPaymentTransactionObserver paymentQueue: %@ removedTransactions: %@"
+        , queue
+        , transactions
+    );
     
     //ToDo
 }
@@ -147,8 +172,9 @@
         return;
     }
     
-    LOGGER_MESSAGE( "SKPaymentTransactionObserver paymentQueue restoreCompletedTransactionsFailedWithError: %s"
-        , [[AppleDetail getMessageFromNSError:error] UTF8String]
+    IOS_LOGGER_MESSAGE( @"SKPaymentTransactionObserver paymentQueue: %@ restoreCompletedTransactionsFailedWithError: %@"
+        , queue
+        , [AppleDetail getMessageFromNSError:error]
     );
     
     //ToDo
@@ -160,7 +186,9 @@
         return;
     }
     
-    LOGGER_MESSAGE( "SKPaymentTransactionObserver paymentQueueRestoreCompletedTransactionsFinished" );
+    IOS_LOGGER_MESSAGE( @"SKPaymentTransactionObserver paymentQueueRestoreCompletedTransactionsFinished: %@"
+        , queue
+    );
     
     //ToDo
 }
@@ -171,7 +199,11 @@
         return;
     }
     
-    LOGGER_MESSAGE( "SKPaymentTransactionObserver shouldAddStorePayment" );
+    IOS_LOGGER_MESSAGE( @"SKPaymentTransactionObserver paymentQueue: %@ shouldAddStorePayment: %@ forProduct: %@"
+        , queue
+        , payment
+        , product
+    );
     
     //ToDo
     
@@ -183,7 +215,9 @@
         return;
     }
     
-    LOGGER_MESSAGE( "SKPaymentTransactionObserver paymentQueueDidChangeStorefront" );
+    IOS_LOGGER_MESSAGE( @"SKPaymentTransactionObserver paymentQueueDidChangeStorefront: %@"
+        , queue
+    );
     
     //ToDo
 }
@@ -194,9 +228,16 @@
         return;
     }
     
-    LOGGER_MESSAGE( "SKPaymentTransactionObserver didRevokeEntitlementsForProductIdentifiers: %s"
-        , [[AppleDetail NSIdToString:productIdentifiers] UTF8String]
+    IOS_LOGGER_MESSAGE( @"SKPaymentTransactionObserver paymentQueue: %@ didRevokeEntitlementsForProductIdentifiers: %@"
+        , queue
+        , productIdentifiers
     );
+    
+    for (NSString * productIdentifier in productIdentifiers) {
+        if ([productIdentifier rangeOfString:@".nonconsumable."].location != NSNotFound) {
+            [[AppleStoreInAppPurchaseEntitlements sharedInstance] remove:productIdentifier];
+        }
+    }
     
     //ToDo
 }

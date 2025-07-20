@@ -21,16 +21,40 @@ namespace Mengine
     void AppleStoreInAppPurchaseProduct::setSKProduct( SKProduct * _skProduct )
     {
         m_skProduct = _skProduct;
-        
-        m_productIdentifier = [AppleString NSStringToConstString:m_skProduct.productIdentifier];
-        m_productTitle = [AppleString NSStringToString:m_skProduct.localizedTitle];
-        m_productDescription = [AppleString NSStringToString:m_skProduct.localizedDescription];
-        
+    }
+    /////////////////////////////////////////////////////////////////////////////
+    SKProduct * AppleStoreInAppPurchaseProduct::getSKProduct() const
+    {
+        return m_skProduct;
+    }
+    /////////////////////////////////////////////////////////////////////////////
+    NSString * AppleStoreInAppPurchaseProduct::getProductIdentifier() const
+    {
+        return m_skProduct.productIdentifier;
+    }
+    /////////////////////////////////////////////////////////////////////////////
+    NSString * AppleStoreInAppPurchaseProduct::getProductTitle() const
+    {
+        return m_skProduct.localizedTitle;
+    }
+    /////////////////////////////////////////////////////////////////////////////
+    NSString * AppleStoreInAppPurchaseProduct::getProductDescription() const
+    {
+        return m_skProduct.localizedDescription;
+    }
+    /////////////////////////////////////////////////////////////////////////////
+    NSString * AppleStoreInAppPurchaseProduct::getProductCurrencyCode() const
+    {
         NSLocale * priceLocale = m_skProduct.priceLocale;
         
         NSString * currencyCode = [priceLocale currencyCode];
         
-        m_productCurrencyCode = [AppleString NSStringToString:currencyCode];
+        return currencyCode;
+    }
+    /////////////////////////////////////////////////////////////////////////////
+    NSString * AppleStoreInAppPurchaseProduct::getProductPriceFormatted() const
+    {
+        NSLocale * priceLocale = m_skProduct.priceLocale;
         
         NSNumberFormatter * formatter = [[NSNumberFormatter alloc] init];
         [formatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
@@ -41,44 +65,14 @@ namespace Mengine
         
         NSString * priceFormatted = [formatter stringFromNumber:price];
         
-        m_productPriceFormatted = [AppleString NSStringToString:priceFormatted];
-        
-        m_productPrice = [price doubleValue];
-    }
-    /////////////////////////////////////////////////////////////////////////////
-    SKProduct * AppleStoreInAppPurchaseProduct::getSKProduct() const
-    {
-        return m_skProduct;
-    }
-    /////////////////////////////////////////////////////////////////////////////
-    const ConstString & AppleStoreInAppPurchaseProduct::getProductIdentifier() const
-    {
-        return m_productIdentifier;
-    }
-    /////////////////////////////////////////////////////////////////////////////
-    const String & AppleStoreInAppPurchaseProduct::getProductTitle() const
-    {
-        return m_productTitle;
-    }
-    /////////////////////////////////////////////////////////////////////////////
-    const String & AppleStoreInAppPurchaseProduct::getProductDescription() const
-    {
-        return m_productDescription;
-    }
-    /////////////////////////////////////////////////////////////////////////////
-    const String & AppleStoreInAppPurchaseProduct::getProductCurrencyCode() const
-    {
-        return m_productCurrencyCode;
-    }
-    /////////////////////////////////////////////////////////////////////////////
-    const String & AppleStoreInAppPurchaseProduct::getProductPriceFormatted() const
-    {
-        return m_productPriceFormatted;
+        return priceFormatted;
     }
     /////////////////////////////////////////////////////////////////////////////
     double AppleStoreInAppPurchaseProduct::getProductPrice() const
     {
-        return m_productPrice;
+        NSDecimalNumber * price = m_skProduct.price;
+        
+        return [price doubleValue];
     }
     /////////////////////////////////////////////////////////////////////////////
 }

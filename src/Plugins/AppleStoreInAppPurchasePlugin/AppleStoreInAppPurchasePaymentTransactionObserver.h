@@ -1,7 +1,10 @@
+#pragma once
+
 #include "AppleStoreInAppPurchaseInterface.h"
 #include "AppleStoreInAppPurchaseFactoryInterface.h"
 
-#import <Foundation/Foundation.h>
+#import "Environment/Apple/AppleIncluder.h"
+
 #import <StoreKit/StoreKit.h>
 
 @interface AppleStoreInAppPurchasePaymentTransactionObserver : NSObject <SKPaymentTransactionObserver>
@@ -15,6 +18,8 @@
 
 - (instancetype _Nonnull) init;
 
-- (void)setupWithFactory: (Mengine::AppleStoreInAppPurchaseFactoryInterface * _Nonnull)_factory service: (Mengine::AppleStoreInAppPurchaseServiceInterface * _Nonnull)_service;
+- (void)activateWithFactory: (Mengine::AppleStoreInAppPurchaseFactoryInterface * _Nonnull)_factory service: (Mengine::AppleStoreInAppPurchaseServiceInterface * _Nonnull)_service;
+
+- (void)deactivate;
 
 @end

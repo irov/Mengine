@@ -1,13 +1,12 @@
-#include "Config/Config.h"
+#pragma once
 
+#import "Environment/Apple/AppleIncluder.h"
 #import "Environment/iOS/iOSPluginApplicationDelegateInterface.h"
 #import "Environment/iOS/iOSPluginLoggerDelegateInterface.h"
 #import "Environment/iOS/iOSPluginConfigDelegateInterface.h"
 #import "Environment/iOS/iOSPluginUserIdDelegateInterface.h"
 #import "Environment/iOS/iOSPluginAdRevenueDelegateInterface.h"
 #import "Environment/iOS/iOSPluginTransparencyConsentDelegateInterface.h"
-
-#import <Foundation/Foundation.h>
 
 @protocol iOSUIMainApplicationDelegateInterface <NSObject>
 

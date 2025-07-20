@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Config/Config.h"
 
 #import "Environment/Apple/AppleEvent.h"

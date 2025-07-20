@@ -1,8 +1,6 @@
 #pragma once
 
-#include "Config/Config.h"
-
-#import <Foundation/Foundation.h>
+#import "Environment/Apple/AppleIncluder.h"
 
 @interface AppleBundle : NSObject
 

@@ -2,13 +2,14 @@
 
 #import "AppleAppLovinBaseDelegate.h"
 
+#import "Environment/Apple/AppleIncluder.h"
+
 #include "Configuration/Configurations.h"
 
 #if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON)
 #import "AppleAppLovinInterstitialAmazonLoader.h"
 #endif
 
-#import <Foundation/Foundation.h>
 #import <AppLovinSDK/AppLovinSDK.h>
 
 @interface AppleAppLovinInterstitialDelegate : AppleAppLovinBaseDelegate<MAAdRequestDelegate, MAAdDelegate, MAAdRevenueDelegate, MAAdExpirationDelegate, MAAdReviewDelegate>

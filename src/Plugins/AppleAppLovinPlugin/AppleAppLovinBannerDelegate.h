@@ -1,5 +1,7 @@
 #pragma once
 
+#import "Environment/Apple/AppleIncluder.h"
+
 #import "AppleAppLovinBaseDelegate.h"
 
 #include "Configuration/Configurations.h"
@@ -8,7 +10,6 @@
 #import "AppleAppLovinBannerAmazonLoader.h"
 #endif
 
-#import <Foundation/Foundation.h>
 #import <AppLovinSDK/AppLovinSDK.h>
 
 @interface AppleAppLovinBannerDelegate : AppleAppLovinBaseDelegate<MAAdRequestDelegate, MAAdViewAdDelegate, MAAdRevenueDelegate, MAAdReviewDelegate>

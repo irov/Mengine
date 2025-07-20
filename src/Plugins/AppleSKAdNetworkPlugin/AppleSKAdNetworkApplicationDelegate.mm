@@ -69,7 +69,7 @@
     NSInteger version = [AppleKeyChain getIntegerForKey:@"mengine.skadnetwork.version" defaultValue:1];
     BOOL closed = [AppleKeyChain getBooleanForKey:@"mengine.skadnetwork.closed" defaultValue:NO];
     NSInteger fine = [AppleKeyChain getIntegerForKey:@"mengine.skadnetwork.fine" defaultValue:-1];
-    NSTimeInterval time = [AppleKeyChain getNSTimeIntervalForKey:@"mengine.skadnetwork.time" defaultValue:0.0];
+    NSTimeInterval time = [AppleKeyChain getTimeIntervalForKey:@"mengine.skadnetwork.time" defaultValue:0.0];
     double adRevenue = [AppleKeyChain getDoubleForKey:@"mengine.skadnetwork.adrevenue" defaultValue:0.0];
     
     self.m_closed = closed;
@@ -253,7 +253,7 @@
             self.m_acceptFine = 0;
         }
         
-        [AppleKeyChain setNSTimeIntervalForKey:@"mengine.skadnetwork.time" value:self.m_time];
+        [AppleKeyChain setTimeIntervalForKey:@"mengine.skadnetwork.time" value:self.m_time];
         [AppleKeyChain setIntegerForKey:@"mengine.skadnetwork.fine" value:0];
             
         [iOSAnalytics event:@"mng_skadnetwork_installation" params:@{}];

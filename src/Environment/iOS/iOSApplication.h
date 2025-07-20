@@ -1,9 +1,8 @@
 #pragma once
 
-#include "Config/Config.h"
+#import "Environment/Apple/AppleIncluder.h"
 
 #import <UIKit/UIKit.h>
-#import <Foundation/Foundation.h>
 
 @interface iOSApplication : NSObject
 

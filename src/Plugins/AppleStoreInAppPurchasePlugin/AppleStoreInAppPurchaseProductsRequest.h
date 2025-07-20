@@ -2,11 +2,12 @@
 
 #include "AppleStoreInAppPurchaseInterface.h"
 
+#import "Environment/Apple/AppleIncluder.h"
+
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 #   include "Kernel/Scriptable.h"
 #endif
 
-#import <Foundation/Foundation.h>
 #import <StoreKit/StoreKit.h>
 
 namespace Mengine

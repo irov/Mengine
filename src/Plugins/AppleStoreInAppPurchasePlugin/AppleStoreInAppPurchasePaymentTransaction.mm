@@ -1,6 +1,7 @@
 #include "AppleStoreInAppPurchasePaymentTransaction.h"
 
 #import "Environment/Apple/AppleString.h"
+#import "Environment/iOS/iOSLog.h"
 
 #include "Kernel/Logger.h"
 
@@ -23,10 +24,6 @@ namespace Mengine
     void AppleStoreInAppPurchasePaymentTransaction::setSKPaymentTransaction( SKPaymentTransaction * _skPaymentTransaction )
     {
         m_skPaymentTransaction = _skPaymentTransaction;
-        
-        SKPayment * payment = m_skPaymentTransaction.payment;
-        
-        m_productIdentifier = [AppleString NSStringToConstString:payment.productIdentifier];
     }
     //////////////////////////////////////////////////////////////////////////
     SKPaymentTransaction * AppleStoreInAppPurchasePaymentTransaction::getSKPaymentTransaction() const
@@ -44,15 +41,17 @@ namespace Mengine
         return m_skPaymentQueue;
     }
     /////////////////////////////////////////////////////////////////////////////
-    const ConstString & AppleStoreInAppPurchasePaymentTransaction::getProductIdentifier() const
+    NSString * AppleStoreInAppPurchasePaymentTransaction::getProductIdentifier() const
     {
-        return m_productIdentifier;
+        SKPayment * payment = m_skPaymentTransaction.payment;
+        
+        return payment.productIdentifier;
     }
     /////////////////////////////////////////////////////////////////////////////
     void AppleStoreInAppPurchasePaymentTransaction::finish()
     {
-        LOGGER_MESSAGE( "payment transaction finish product: %s"
-            , m_productIdentifier.c_str()
+        IOS_LOGGER_MESSAGE( @"payment transaction finish product: %@"
+            , this->getProductIdentifier()
         );
         
         [m_skPaymentQueue finishTransaction:m_skPaymentTransaction];

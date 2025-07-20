@@ -1,10 +1,9 @@
 #include "iOSAnalyticsEventProvider.h"
 
+#import "Environment/Apple/AppleIncluder.h"
 #import "Environment/iOS/iOSAnalytics.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
-
-#import <Foundation/Foundation.h>
 
 namespace Mengine
 {

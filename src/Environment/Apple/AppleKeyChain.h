@@ -1,8 +1,6 @@
 #pragma once
 
-#include "Config/Config.h"
-
-#import <Foundation/Foundation.h>
+#import "Environment/Apple/AppleIncluder.h"
 
 @interface AppleKeyChain : NSObject
 
@@ -21,8 +19,11 @@
 + (BOOL)setDoubleForKey:(NSString *)key value:(double)value;
 + (double)getDoubleForKey:(NSString *)key defaultValue:(double)defaultValue;
 
-+ (BOOL)setNSTimeIntervalForKey:(NSString *)key value:(NSTimeInterval)value;
-+ (NSTimeInterval)getNSTimeIntervalForKey:(NSString *)key defaultValue:(NSTimeInterval)defaultValue;
++ (BOOL)setTimeIntervalForKey:(NSString *)key value:(NSTimeInterval)value;
++ (NSTimeInterval)getTimeIntervalForKey:(NSString *)key defaultValue:(NSTimeInterval)defaultValue;
+
++ (BOOL)setSetForKey:(NSString *)key value:(NSSet *)value;
++ (NSSet *)getSetForKey:(NSString *)key;
 
 + (BOOL)hasKey:(NSString *)key;
 + (BOOL)removeKey:(NSString *)key;

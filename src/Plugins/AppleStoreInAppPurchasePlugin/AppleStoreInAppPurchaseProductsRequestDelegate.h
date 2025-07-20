@@ -1,7 +1,10 @@
+#pragma once
+
 #include "AppleStoreInAppPurchaseInterface.h"
 #include "AppleStoreInAppPurchaseFactoryInterface.h"
 
-#import <Foundation/Foundation.h>
+#import "Environment/Apple/AppleIncluder.h"
+
 #import <StoreKit/StoreKit.h>
 
 @interface AppleStoreInAppPurchaseProductsRequestDelegate : NSObject <SKProductsRequestDelegate>

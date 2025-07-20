@@ -1,8 +1,7 @@
 #pragma once
 
+#import "Environment/Apple/AppleIncluder.h"
 #include "Environment/Python/PythonIncluder.h"
-
-#import <Foundation/Foundation.h>
 
 @interface ApplePythonProvider : NSObject
 

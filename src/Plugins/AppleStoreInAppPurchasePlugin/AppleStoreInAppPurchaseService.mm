@@ -1,6 +1,9 @@
 #include "AppleStoreInAppPurchaseService.h"
 
 #import "Environment/Apple/AppleString.h"
+#import "Environment/iOS/iOSLog.h"
+
+#import "AppleStoreInAppPurchaseEntitlements.h"
 
 #include "AppleStoreInAppPurchasePaymentTransaction.h"
 #include "AppleStoreInAppPurchaseProduct.h"
@@ -33,24 +36,25 @@ namespace Mengine
         m_factoryProductsRequest = Helper::makeFactoryPoolWithMutex<AppleStoreInAppPurchaseProductsRequest, 16>( MENGINE_DOCUMENT_FACTORABLE );
         
         if (@available(iOS 13.0, *)) {
-            m_paymentQueueDelegate = [[AppleStoreInAppPurchasePaymentQueueDelegate alloc] initWithFactory:this service:this];
+            m_paymentQueueDelegate = [[AppleStoreInAppPurchasePaymentQueueDelegate alloc] init];
             
             [[SKPaymentQueue defaultQueue] setDelegate:m_paymentQueueDelegate];
         }
         
-        [[AppleStoreInAppPurchasePaymentTransactionObserver sharedInstance] setupWithFactory:this service:this];
+        [[AppleStoreInAppPurchasePaymentTransactionObserver sharedInstance] activateWithFactory:this service:this];
                 
         return true;
     }
     ////////////////////////////////////////////////////////////////////////
     void AppleStoreInAppPurchaseService::_finalizeService()
     {
+        [[AppleStoreInAppPurchasePaymentTransactionObserver sharedInstance] deactivate];
+        
         if (@available(iOS 13.0, *)) {
             [[SKPaymentQueue defaultQueue] setDelegate:nil];
             m_paymentQueueDelegate = nil;
         }
         
-        m_paymentQueueProvider = nullptr;
         m_paymentTransactionProvider = nullptr;
         
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPaymentTransaction );
@@ -60,16 +64,6 @@ namespace Mengine
         m_factoryPaymentTransaction = nullptr;
         m_factoryProduct = nullptr;
         m_factoryProductsRequest = nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AppleStoreInAppPurchaseService::setPaymentQueueProvider( const AppleStoreInAppPurchasePaymentQueueProviderInterfacePtr & _paymentQueueProvider )
-    {
-        m_paymentQueueProvider = _paymentQueueProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const AppleStoreInAppPurchasePaymentQueueProviderInterfacePtr & AppleStoreInAppPurchaseService::getPaymentQueueProvider() const
-    {
-        return m_paymentQueueProvider;
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleStoreInAppPurchaseService::setPaymentTransactionProvider( const AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr & _paymentTransactionProvider )
@@ -92,31 +86,18 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    AppleStoreInAppPurchaseProductsRequestInterfacePtr AppleStoreInAppPurchaseService::requestProducts( const VectorConstString & _productIdentifiers, const AppleStoreInAppPurchaseProductsResponseInterfacePtr & _cb )
+    AppleStoreInAppPurchaseProductsRequestInterfacePtr AppleStoreInAppPurchaseService::requestProducts( NSSet * _productIdentifiers, const AppleStoreInAppPurchaseProductsResponseInterfacePtr & _cb )
     {
         if( [SKPaymentQueue canMakePayments] == NO )
         {
             return nullptr;
         }
         
-        LOGGER_MESSAGE( "requestProducts:" );
-        
-        NSMutableSet<NSString *> * products = [[NSMutableSet<NSString *> alloc] init];
-        
-        for( const ConstString & productIdentifier : _productIdentifiers )
-        {
-            const Char * productIdentifier_str = productIdentifier.c_str();
-            
-            LOGGER_MESSAGE( "productIdentitier: %s"
-                , productIdentifier_str
-            );
-            
-            [products addObject:@(productIdentifier_str)];
-        }
+        IOS_LOGGER_MESSAGE( @"requestProducts: identifiers: %@", _productIdentifiers );
         
         AppleStoreInAppPurchaseProductsRequestPtr request = m_factoryProductsRequest->createObject( MENGINE_DOCUMENT_FACTORABLE );
         
-        SKProductsRequest * skrequest = [[SKProductsRequest alloc] initWithProductIdentifiers:products];
+        SKProductsRequest * skrequest = [[SKProductsRequest alloc] initWithProductIdentifiers:_productIdentifiers];
         
         id<SKProductsRequestDelegate> delegate = [[AppleStoreInAppPurchaseProductsRequestDelegate alloc] initWithFactory:this request:request cb:_cb];
         skrequest.delegate = delegate;
@@ -128,6 +109,16 @@ namespace Mengine
         return request;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool AppleStoreInAppPurchaseService::isOwnedProduct( NSString * _productIdentifier ) const
+    {
+        if( [[AppleStoreInAppPurchaseEntitlements sharedInstance] isPurchased:_productIdentifier] == NO )
+        {
+            return false;
+        }
+        
+        return true;            
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool AppleStoreInAppPurchaseService::purchaseProduct( const AppleStoreInAppPurchaseProductInterfacePtr & _product )
     {
         if( [SKPaymentQueue canMakePayments] == NO )
@@ -135,7 +126,7 @@ namespace Mengine
             return false;
         }
         
-        LOGGER_MESSAGE( "purchaseProduct" );
+        IOS_LOGGER_MESSAGE( @"purchaseProduct: %@", _product->getProductIdentifier() );
         
         AppleStoreInAppPurchaseProductPtr product = AppleStoreInAppPurchaseProductPtr::from( _product );
         

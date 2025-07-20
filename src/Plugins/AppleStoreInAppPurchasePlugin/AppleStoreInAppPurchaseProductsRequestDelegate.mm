@@ -1,6 +1,7 @@
 #import "AppleStoreInAppPurchaseProductsRequestDelegate.h"
 
 #import "Environment/Apple/AppleDetail.h"
+#import "Environment/iOS/iOSLog.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/ThreadHelper.h"
@@ -43,8 +44,8 @@
         products.emplace_back( product );
     }
     
-    LOGGER_MESSAGE( "[SKProductsRequestDelegate] productsRequest didReceiveResponse: %s"
-        , [skProductsLog UTF8String]
+    IOS_LOGGER_MESSAGE( @"[SKProductsRequestDelegate] productsRequest didReceiveResponse: %@"
+        , skProductsLog
     );
     
     Mengine::AppleStoreInAppPurchaseProductsResponseInterfacePtr cb_copy = self.m_cb;
@@ -56,7 +57,7 @@
 }
 //////////////////////////////////////////////////////////////////////////
 - (void)requestDidFinish:(SKRequest *)request {
-    LOGGER_MESSAGE( "[SKProductsRequestDelegate] requestDidFinish" );
+    IOS_LOGGER_MESSAGE( @"[SKProductsRequestDelegate] requestDidFinish" );
     
     Mengine::AppleStoreInAppPurchaseProductsResponseInterfacePtr cb_copy = self.m_cb;
     Mengine::AppleStoreInAppPurchaseProductsRequestInterfacePtr request_copy = self.m_request;
@@ -70,8 +71,8 @@
 }
 //////////////////////////////////////////////////////////////////////////
 - (void)request:(SKRequest *)request didFailWithError:(NSError *)error {
-    LOGGER_MESSAGE( "[SKProductsRequestDelegate] request didFailWithError: %s"
-        , [[AppleDetail getMessageFromNSError:error] UTF8String]
+    IOS_LOGGER_MESSAGE( @"[SKProductsRequestDelegate] request didFailWithError: %@"
+        , [AppleDetail getMessageFromNSError:error]
     );
     
     Mengine::AppleStoreInAppPurchaseProductsResponseInterfacePtr cb_copy = self.m_cb;

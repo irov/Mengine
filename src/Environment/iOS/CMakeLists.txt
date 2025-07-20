@@ -8,8 +8,6 @@ src
 	iOSLog.h
 	iOSLog.mm
     
-    iOSIncluder.h
-    
     iOSApplication.h
     iOSApplication.mm
 

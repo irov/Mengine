@@ -1,8 +1,7 @@
 #pragma once
 
+#import "Environment/Apple/AppleIncluder.h"
 #import "Environment/iOS/iOSAdFormat.h"
-
-#import <Foundation/Foundation.h>
 
 @protocol AppleAdvertisementCallbackInterface <NSObject>
 - (void)onAppleAdvertisementShowSuccess:(NSString *)placement;

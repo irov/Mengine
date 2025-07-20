@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Config/Config.h"
 
 #import "Environment/iOS/iOSAdRevenueParam.h"

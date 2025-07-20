@@ -1,9 +1,9 @@
 #pragma once
 
+#import "Environment/Apple/AppleIncluder.h"
+
 #include "Kernel/String.h"
 #include "Kernel/ConstString.h"
-
-#import <Foundation/Foundation.h>
 
 @interface AppleString : NSObject
 

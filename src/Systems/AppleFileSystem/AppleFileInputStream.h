@@ -2,11 +2,11 @@
 
 #include "Interface/FileInputStreamInterface.h"
 
+#import "Environment/Apple/AppleIncluder.h"
+
 #include "Kernel/Factorable.h"
 #include "Kernel/ThreadGuard.h"
 #include "Kernel/BaseDebugFile.h"
-
-#import <Foundation/Foundation.h>
 
 #ifndef MENGINE_FILE_STREAM_BUFFER_SIZE
 #define MENGINE_FILE_STREAM_BUFFER_SIZE 4096

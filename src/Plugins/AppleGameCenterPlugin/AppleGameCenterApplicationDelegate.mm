@@ -169,8 +169,8 @@
 - (BOOL)resetAchievements {
     BOOL result = [self resetAchievements:^(NSError * _error) {
         if (_error != nil) {
-            IOS_LOGGER_ERROR( @"reset achievemnts error: '%s'"
-                , [[AppleDetail getMessageFromNSError:_error] UTF8String]
+            IOS_LOGGER_ERROR( @"reset achievemnts error: %@"
+                , [AppleDetail getMessageFromNSError:_error]
             );
             
             return;

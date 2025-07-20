@@ -1,5 +1,6 @@
 #include "iOSLogger.h"
 
+#import "Environment/Apple/AppleIncluder.h"
 #import "Environment/Apple/AppleString.h"
 #import "Environment/iOS/iOSDetail.h"
 
@@ -7,8 +8,6 @@
 
 #include "Config/StdString.h"
 #include "Config/Path.h"
-
-#import <Foundation/Foundation.h>
 
 #define MENGINE_APPLE_LOG_MAX_MESSAGE 1024
 

@@ -2,6 +2,8 @@ MENGINE_PROJECT(Apple)
 
 ADD_FILTER(
 src
+	AppleIncluder.h
+	
     AppleLog.h
     AppleLog.mm
 	AppleLogRecordParam.h

@@ -1,11 +1,9 @@
 #pragma once
 
-#include "Config/Config.h"
+#import "Environment/Apple/AppleIncluder.h"
 
 #import "AppleAdvertisementAttempts.h"
 #import "AppleAdvertisementCooldown.h"
-
-#import <Foundation/Foundation.h>
 
 @interface AppleAdvertisementBasePoint : NSObject
 

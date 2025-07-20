@@ -1,10 +1,7 @@
 #pragma once
 
-#include "Config/Config.h"
-
-#import "AppleSemaphore.h"
-
-#import <Foundation/Foundation.h>
+#import "Environment/Apple/AppleIncluder.h"
+#import "Environment/Apple/AppleSemaphore.h"
 
 @interface AppleSemaphoreService : NSObject
 

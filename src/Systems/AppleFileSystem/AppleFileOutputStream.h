@@ -2,13 +2,13 @@
 
 #include "Interface/FileOutputStreamInterface.h"
 
+#import "Environment/Apple/AppleIncluder.h"
+
 #include "Kernel/Factorable.h"
 
 #if defined(MENGINE_DEBUG)
 #   include "Kernel/BaseDebugFile.h"
 #endif
-
-#import <Foundation/Foundation.h>
 
 namespace Mengine
 {

@@ -305,41 +305,41 @@ namespace Mengine
             jobject jmap = Helper::AndroidMakeJObjectHashMap( _jenv, size );
 
             for( auto && [key, value] : _params ) {
-                jobject jkey = Helper::AndroidMakeJObjectString(_jenv, key);
+                jobject jkey = Helper::AndroidMakeJObjectString( _jenv, key );
 
-                Helper::visit(value, [_jenv, jmap, jkey](const ParamNull &_element) {
-                    MENGINE_UNUSED(_element);
+                Helper::visit(value, [_jenv, jmap, jkey]( const ParamNull & _element ) {
+                    MENGINE_UNUSED( _element );
 
-                    Helper::AndroidPutJObjectMap(_jenv, jmap, jkey, nullptr);
-                }, [_jenv, jmap, jkey](const ParamBool &_element) {
+                    Helper::AndroidPutJObjectMap( _jenv, jmap, jkey, nullptr );
+                }, [_jenv, jmap, jkey]( const ParamBool & _element ) {
                     jobject jvalue = Helper::AndroidMakeJObjectBoolean(_jenv, _element);
-                    Helper::AndroidPutJObjectMap(_jenv, jmap, jkey, jvalue);
-                    _jenv->DeleteLocalRef(jvalue);
-                }, [_jenv, jmap, jkey](const ParamInteger &_element) {
+                    Helper::AndroidPutJObjectMap( _jenv, jmap, jkey, jvalue );
+                    _jenv->DeleteLocalRef( jvalue );
+                }, [_jenv, jmap, jkey]( const ParamInteger & _element ) {
                     jobject jvalue = Helper::AndroidMakeJObjectInteger(_jenv, _element);
-                    Helper::AndroidPutJObjectMap(_jenv, jmap, jkey, jvalue);
-                    _jenv->DeleteLocalRef(jvalue);
-                }, [_jenv, jmap, jkey](const ParamDouble &_element) {
+                    Helper::AndroidPutJObjectMap( _jenv, jmap, jkey, jvalue );
+                    _jenv->DeleteLocalRef( jvalue );
+                }, [_jenv, jmap, jkey]( const ParamDouble & _element ) {
                     jobject jvalue = Helper::AndroidMakeJObjectDouble(_jenv, _element);
-                    Helper::AndroidPutJObjectMap(_jenv, jmap, jkey, jvalue);
-                    _jenv->DeleteLocalRef(jvalue);
-                }, [_jenv, jmap, jkey](const ParamString &_element) {
+                    Helper::AndroidPutJObjectMap( _jenv, jmap, jkey, jvalue );
+                    _jenv->DeleteLocalRef( jvalue );
+                }, [_jenv, jmap, jkey]( const ParamString & _element ) {
                     jobject jvalue = Helper::AndroidMakeJObjectString(_jenv, _element);
-                    Helper::AndroidPutJObjectMap(_jenv, jmap, jkey, jvalue);
-                    _jenv->DeleteLocalRef(jvalue);
-                }, [_jenv, jmap, jkey](const ParamWString &_element) {
+                    Helper::AndroidPutJObjectMap( _jenv, jmap, jkey, jvalue );
+                    _jenv->DeleteLocalRef( jvalue );
+                }, [_jenv, jmap, jkey]( const ParamWString & _element ) {
                     MENGINE_UNUSED(_element);
 
                     MENGINE_ASSERTION_FATAL( false, "not support ParamWString" );
-                }, [_jenv, jmap, jkey](const ParamConstString &_element) {
+                }, [_jenv, jmap, jkey]( const ParamConstString & _element ) {
+                    jobject jvalue = Helper::AndroidMakeJObjectString( _jenv, _element );
+                    Helper::AndroidPutJObjectMap( _jenv, jmap, jkey, jvalue );
+                    _jenv->DeleteLocalRef( jvalue );
+                }, [_jenv, jmap, jkey]( const ParamFilePath & _element ) {
                     jobject jvalue = Helper::AndroidMakeJObjectString(_jenv, _element);
-                    Helper::AndroidPutJObjectMap(_jenv, jmap, jkey, jvalue);
-                    _jenv->DeleteLocalRef(jvalue);
-                }, [_jenv, jmap, jkey](const ParamFilePath &_element) {
-                    jobject jvalue = Helper::AndroidMakeJObjectString(_jenv, _element);
-                    Helper::AndroidPutJObjectMap(_jenv, jmap, jkey, jvalue);
-                    _jenv->DeleteLocalRef(jvalue);
-                }, [_jenv, jmap, jkey](const ParamFactorablePtr &_element) {
+                    Helper::AndroidPutJObjectMap( _jenv, jmap, jkey, jvalue );
+                    _jenv->DeleteLocalRef( jvalue );
+                }, [_jenv, jmap, jkey]( const ParamFactorablePtr & _element ) {
                     MENGINE_UNUSED(_element);
 
                     MENGINE_ASSERTION_FATAL( false, "not support ParamFactorablePtr" );
@@ -648,9 +648,9 @@ namespace Mengine
             jclass jclass_Set      = _jenv->FindClass( "java/util/Set" );
             jclass jclass_Iterator = _jenv->FindClass( "java/util/Iterator" );
 
-            jmethodID jmethodID_Set_iterator      = _jenv->GetMethodID( jclass_Set, "iterator", "()Ljava/util/Iterator;" );
-            jmethodID jmethodID_Iterator_hasNext  = _jenv->GetMethodID( jclass_Iterator, "hasNext", "()Z" );
-            jmethodID jmethodID_Iterator_next     = _jenv->GetMethodID( jclass_Iterator, "next", "()Ljava/lang/Object;" );
+            jmethodID jmethodID_Set_iterator = _jenv->GetMethodID( jclass_Set, "iterator", "()Ljava/util/Iterator;" );
+            jmethodID jmethodID_Iterator_hasNext = _jenv->GetMethodID( jclass_Iterator, "hasNext", "()Z" );
+            jmethodID jmethodID_Iterator_next = _jenv->GetMethodID( jclass_Iterator, "next", "()Ljava/lang/Object;" );
 
             jobject jiterator = _jenv->CallObjectMethod( _jset, jmethodID_Set_iterator );
 

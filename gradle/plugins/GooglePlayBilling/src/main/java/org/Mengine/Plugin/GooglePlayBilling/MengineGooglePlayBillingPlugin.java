@@ -219,6 +219,8 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
 
                     MengineUI.showToastRes(activity, R.string.mengine_googleplaybilling_asks_update_playstore);
                 }
+
+                MengineGooglePlayBillingPlugin.this.activateSemaphore("GooglePlayBilling");
             }
         });
     }

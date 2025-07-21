@@ -2316,15 +2316,9 @@ namespace Mengine
                 DECLARE_FACTORABLE( PyInputMousePositionProvider );
 
             public:
-                PyInputMousePositionProvider()
-                    : m_renderCamera( nullptr )
-                    , m_renderViewport( nullptr )
+                void initialize( const RenderResolutionInterfacePtr & _resolution, const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const pybind::object & _cb, const pybind::args & _args )
                 {
-                }
-
-            public:
-                void initialize( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const pybind::object & _cb, const pybind::args & _args )
-                {
+                    m_renderResolution = _resolution;
                     m_renderCamera = _camera;
                     m_renderViewport = _viewport;
 
@@ -2339,6 +2333,7 @@ namespace Mengine
                     RenderContext context;
                     Helper::clearRenderContext( &context );
 
+                    context.resolution = m_renderResolution.get();
                     context.camera = m_renderCamera.get();
                     context.viewport = m_renderViewport.get();
 
@@ -2352,6 +2347,7 @@ namespace Mengine
                 }
 
             protected:
+                RenderResolutionInterfacePtr m_renderResolution;
                 RenderCameraInterfacePtr m_renderCamera;
                 RenderViewportInterfacePtr m_renderViewport;
             };
@@ -2360,8 +2356,15 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryInterfacePtr m_factoryPyInputMousePositionProvider;
             //////////////////////////////////////////////////////////////////////////
-            InputMousePositionProviderInterfacePtr s_addMousePositionProvider( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const pybind::object & _cb, const pybind::args & _args )
+            InputMousePositionProviderInterfacePtr s_addMousePositionProvider( const RenderResolutionInterfacePtr & _resolution, const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const pybind::object & _cb, const pybind::args & _args )
             {
+                RenderResolutionInterfacePtr resolution = _resolution;
+                if( resolution == nullptr )
+                {
+                    resolution = PLAYER_SERVICE()
+                        ->getRenderResolution();
+                }
+
                 RenderCameraInterfacePtr camera = _camera;
                 if( camera == nullptr )
                 {
@@ -2377,7 +2380,7 @@ namespace Mengine
                 }
 
                 PyInputMousePositionProviderPtr provider = m_factoryPyInputMousePositionProvider->createObject( MENGINE_DOCUMENT_PYTHON );
-                provider->initialize( camera, viewport, _cb, _args );
+                provider->initialize( resolution, camera, viewport, _cb, _args );
 
                 INPUT_SERVICE()
                     ->addMousePositionProvider( provider, MENGINE_DOCUMENT_PYTHON );

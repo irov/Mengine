@@ -229,6 +229,11 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             MusicAffectorCallbackPtr createMusicAffectorCallback( const pybind::object & _cb, const pybind::args & _args )
             {
+                if( _cb.is_none() == true )
+                {
+                    return nullptr;
+                }
+
                 MusicAffectorCallbackPtr callback = m_factoryMusicAffectorCallback->createObject( MENGINE_DOCUMENT_PYTHON );
 
                 callback->initialize( _cb, _args );

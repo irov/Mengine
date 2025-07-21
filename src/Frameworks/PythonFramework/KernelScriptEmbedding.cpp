@@ -2679,6 +2679,8 @@ namespace Mengine
             .def( "isHide", &RenderInterface::isHide )
             .def( "localHide", &RenderInterface::setLocalHide )
             .def( "isLocalHide", &RenderInterface::isLocalHide )
+            .def( "setRenderResolution", &RenderInterface::setRenderResolution )
+            .def( "getRenderResolution", &RenderInterface::getRenderResolution )
             .def( "setRenderViewport", &RenderInterface::setRenderViewport )
             .def( "getRenderViewport", &RenderInterface::getRenderViewport )
             .def( "setRenderCamera", &RenderInterface::setRenderCamera )

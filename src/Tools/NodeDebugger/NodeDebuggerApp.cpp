@@ -1,4 +1,4 @@
-#include "NodeDebuggerApp.h"
+﻿#include "NodeDebuggerApp.h"
 
 #include "imgui_impl_opengl3.h"
 #include "imgui_impl_glfw.h"
@@ -1813,7 +1813,7 @@ namespace Mengine
                                 desc->end = true;
                             }
 
-                            StdString::strncat_safe( desc->buffer, _buffer, _size, 256 );
+                            StdString::strzcat_safe( desc->buffer, _buffer, _size, 256 );
 
                             return 0;
                         }, &desc );
@@ -2812,12 +2812,12 @@ namespace Mengine
 
         if( _node->isTypeTextField == true && ImGui::CollapsingHeader( "TextField:", ImGuiTreeNodeFlags_DefaultOpen ) )
         {
-            uiEditorVec1f( "Max Length", _node->textField.MaxLength );
             uiEditorBool( "Wrap", _node->textField.Wrap );
-            uiEditorBool( "AutoScale", _node->textField.AutoScale );
+
             uiEditorVec2f( "AnchorPercent", _node->textField.AnchorPercent );
             uiEditorBool( "AnchorVerticalAlign", _node->textField.AnchorVerticalAlign );
             uiEditorBool( "AnchorHorizontalAlign", _node->textField.AnchorHorizontalAlign );
+
             uiEditorString( "TextId", _node->textField.TextId );
             uiReadOnlyString( "AliasTextId", _node->textField.TextAliasId );
             uiEditorString( "AliasEnvironment", _node->textField.TextAliasEnvironment );
@@ -2832,6 +2832,18 @@ namespace Mengine
 
             uiEditorString( "FontName", _node->textField.FontName );
             uiReadOnlyString( "TotalFontName", _node->textField.TotalFontName );
+
+            uiEditorBool( "##HasMaxLength", _node->textField.HasMaxLength ); ImGui::SameLine(); uiEditorVec1f( "MaxLength", _node->textField.MaxLength );
+            uiEditorVec1f( "TotalMaxLength", _node->textField.TotalMaxLength );
+            
+            uiEditorBool( "##HasMaxHeight", _node->textField.HasMaxHeight ); ImGui::SameLine(); uiEditorVec1f( "MaxHeight", _node->textField.MaxHeight );
+            uiEditorVec1f( "TotalMaxHeight", _node->textField.TotalMaxHeight );
+            
+            uiEditorBool( "##HasAutoScale", _node->textField.HasAutoScale ); ImGui::SameLine(); uiEditorBool( "AutoScale", _node->textField.AutoScale );
+            uiEditorBool( "TotalAutoScale", _node->textField.TotalAutoScale );
+            
+            uiEditorBool( "##HasJustify", _node->textField.HasJustify ); ImGui::SameLine(); uiEditorBool( "Justify", _node->textField.Justify );
+            uiEditorBool( "TotalJustify", _node->textField.TotalJustify );
 
             uiEditorBool( "##HasFontColor", _node->textField.HasFontColor ); ImGui::SameLine(); uiEditorColor( "FontColor", _node->textField.FontColor, _node->textField.HasFontColor );
             uiReadOnlyColor( "TotalFontColor", _node->textField.TotalFontColor );

@@ -412,10 +412,8 @@ namespace Mengine
 
     struct NodeTextField
     {
-        float MaxLength;
-
         bool Wrap;
-        bool AutoScale;
+
         mt::vec2f AnchorPercent;
         bool AnchorVerticalAlign;
         bool AnchorHorizontalAlign;
@@ -430,6 +428,14 @@ namespace Mengine
 
         String FontName;
 
+        bool HasMaxLength;
+        float MaxLength;
+        bool HasMaxHeight;
+        float MaxHeight;
+        bool HasAutoScale;
+        bool AutoScale;
+        bool HasJustify;
+        bool Justify;
         bool HasFontColor;
         Color FontColor;
         bool HasLineOffset;
@@ -446,9 +452,13 @@ namespace Mengine
         Color TotalFontColor;
         float TotalLineOffset;
         float TotalCharOffset;
-        float TotalCharScale;
+        float TotalMaxLength;
+        float TotalMaxHeight;
         uint32_t TotalHorizontAlign;
         uint32_t TotalVerticalAlign;
+        float TotalCharScale;
+        bool TotalAutoScale;
+        bool TotalJustify;
 
         uint32_t MaxCharCount;
 
@@ -456,9 +466,8 @@ namespace Mengine
 
         void serialize( pugi::xml_node & _xmlNode ) const
         {
-            SERIALIZE_PROP( MaxLength );
             SERIALIZE_PROP( Wrap );
-            SERIALIZE_PROP( AutoScale );
+
             SERIALIZE_PROP( AnchorPercent );
             SERIALIZE_PROP( AnchorHorizontalAlign );
             SERIALIZE_PROP( AnchorVerticalAlign );
@@ -468,6 +477,14 @@ namespace Mengine
 
             SERIALIZE_PROP( FontName );
 
+            SERIALIZE_PROP( HasMaxLength );
+            SERIALIZE_PROP( MaxLength );
+            SERIALIZE_PROP( HasMaxHeight );
+            SERIALIZE_PROP( MaxHeight );
+            SERIALIZE_PROP( HasAutoScale );
+            SERIALIZE_PROP( AutoScale );
+            SERIALIZE_PROP( HasJustify );
+            SERIALIZE_PROP( Justify );
             SERIALIZE_PROP( HasFontColor );
             SERIALIZE_PROP( FontColor );
             SERIALIZE_PROP( HasLineOffset );
@@ -486,9 +503,8 @@ namespace Mengine
 
         void deserialize( const pugi::xml_node & _xmlNode )
         {
-            DESERIALIZE_PROP( MaxLength );
             DESERIALIZE_PROP( Wrap );
-            DESERIALIZE_PROP( AutoScale );
+
             DESERIALIZE_PROP( AnchorPercent );
             DESERIALIZE_PROP( AnchorHorizontalAlign );
             DESERIALIZE_PROP( AnchorVerticalAlign );
@@ -503,6 +519,14 @@ namespace Mengine
 
             DESERIALIZE_PROP( FontName );
 
+            DESERIALIZE_PROP( HasMaxLength );
+            DESERIALIZE_PROP( MaxLength );
+            DESERIALIZE_PROP( HasMaxHeight );
+            DESERIALIZE_PROP( MaxHeight );
+            DESERIALIZE_PROP( HasAutoScale );
+            DESERIALIZE_PROP( AutoScale );
+            DESERIALIZE_PROP( HasJustify );
+            DESERIALIZE_PROP( Justify );
             DESERIALIZE_PROP( HasFontColor );
             DESERIALIZE_PROP( FontColor );
             DESERIALIZE_PROP( HasLineOffset );
@@ -516,12 +540,16 @@ namespace Mengine
             DESERIALIZE_PROP( VerticalAlign );
 
             DESERIALIZE_PROP( TotalFontName );
-            DESERIALIZE_PROP( TotalFontColor );
             DESERIALIZE_PROP( TotalLineOffset );
             DESERIALIZE_PROP( TotalCharOffset );
-            DESERIALIZE_PROP( TotalCharScale );
+            DESERIALIZE_PROP( TotalMaxLength );
+            DESERIALIZE_PROP( TotalMaxHeight );
+            DESERIALIZE_PROP( TotalFontColor );
             DESERIALIZE_PROP( TotalHorizontAlign );
             DESERIALIZE_PROP( TotalVerticalAlign );
+            DESERIALIZE_PROP( TotalCharScale );
+            DESERIALIZE_PROP( TotalAutoScale );
+            DESERIALIZE_PROP( TotalJustify );
 
             DESERIALIZE_PROP( MaxCharCount );
             DESERIALIZE_PROP( Pixelsnap );

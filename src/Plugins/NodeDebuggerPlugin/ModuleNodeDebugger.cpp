@@ -869,11 +869,7 @@ namespace Mengine
     {
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Type:TextField" );
 
-        Detail::serializeNodeProp( _textField->getMaxLength(), "MaxLength", xmlNode );
         Detail::serializeNodeProp( _textField->getWrap(), "Wrap", xmlNode );
-
-        Detail::serializeNodeProp( _textField->getAutoScale(), "AutoScale", xmlNode );
-        Detail::serializeNodeProp( _textField->getJustify(), "Justify", xmlNode );
         Detail::serializeNodeProp( _textField->getAnchorPercent(), "AnchorPercent", xmlNode );
         Detail::serializeNodeProp( _textField->getAnchorVerticalAlign(), "AnchorVerticalAlign", xmlNode );
         Detail::serializeNodeProp( _textField->getAnchorHorizontalAlign(), "AnchorHorizontalAlign", xmlNode );
@@ -903,6 +899,7 @@ namespace Mengine
                 {
                     Detail::serializeNodeProp( true, "HasText", xmlNode );
 
+                    Detail::serializeNodeProp( String(), "Format", xmlNode );
                     Detail::serializeNodeProp( text, "Text", xmlNode );
                 }
             }
@@ -944,6 +941,7 @@ namespace Mengine
                 {
                     Detail::serializeNodeProp( true, "HasText", xmlNode );
 
+                    Detail::serializeNodeProp( String(), "Format", xmlNode );
                     Detail::serializeNodeProp( text, "Text", xmlNode );
                 }
             }
@@ -974,23 +972,33 @@ namespace Mengine
             Detail::serializeNodeProp( "[Not-Found]", "TextAliasId", xmlNode );
         }
 
-
-
         if( _textField->isCompile() == true )
         {
             Detail::serializeNodeProp( _textField->calcFont()->getName(), "TotalFontName", xmlNode );
-            Detail::serializeNodeProp( _textField->calcFontColor(), "TotalFontColor", xmlNode );
             Detail::serializeNodeProp( _textField->calcLineOffset(), "TotalLineOffset", xmlNode );
             Detail::serializeNodeProp( _textField->calcCharOffset(), "TotalCharOffset", xmlNode );
-            Detail::serializeNodeProp( _textField->calcCharScale(), "TotalCharScale", xmlNode );
+            Detail::serializeNodeProp( _textField->calcMaxLength(), "TotalMaxLength", xmlNode );
+            Detail::serializeNodeProp( _textField->calcMaxHeight(), "TotalMaxHeight", xmlNode );
+            Detail::serializeNodeProp( _textField->calcFontColor(), "TotalFontColor", xmlNode );            
             Detail::serializeNodeProp( (uint32_t)_textField->calcHorizontAlign(), "TotalHorizontAlign", xmlNode );
-            Detail::serializeNodeProp( (uint32_t)_textField->calcVerticalAlign(), "TotalVerticalAlign", xmlNode );
+            Detail::serializeNodeProp( (uint32_t)_textField->calcVerticalAlign(), "TotalVerticalAlign", xmlNode );            
+            Detail::serializeNodeProp( _textField->calcCharScale(), "TotalCharScale", xmlNode );
+            Detail::serializeNodeProp( _textField->calcAutoScale(), "TotalAutoScale", xmlNode );
+            Detail::serializeNodeProp( _textField->calcJustify(), "TotalJustify", xmlNode );
         }
 
         const FontInterfacePtr & defaultFont = FONT_SERVICE()
             ->getDefaultFont();
 
         Detail::serializeNodeProp( _textField->getFont() != nullptr ? _textField->getFont()->getName() : defaultFont->getName(), "FontName", xmlNode );
+        Detail::serializeNodeProp( _textField->hasMaxLength(), "HasMaxLength", xmlNode );
+        Detail::serializeNodeProp( _textField->getMaxLength(), "MaxLength", xmlNode );
+        Detail::serializeNodeProp( _textField->hasMaxHeight(), "HasMaxHeight", xmlNode );
+        Detail::serializeNodeProp( _textField->getMaxHeight(), "MaxHeight", xmlNode );
+        Detail::serializeNodeProp( _textField->hasAutoScale(), "HasAutoScale", xmlNode );
+        Detail::serializeNodeProp( _textField->getAutoScale(), "AutoScale", xmlNode );
+        Detail::serializeNodeProp( _textField->hasJustify(), "HasJustify", xmlNode );
+        Detail::serializeNodeProp( _textField->getJustify(), "Justify", xmlNode );
         Detail::serializeNodeProp( _textField->hasFontColor(), "HasFontColor", xmlNode );
         Detail::serializeNodeProp( _textField->getFontColor(), "FontColor", xmlNode );
         Detail::serializeNodeProp( _textField->hasLineOffset(), "HasLineOffset", xmlNode );

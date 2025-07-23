@@ -30,15 +30,12 @@ public class MengineGoogleInAppReviewsPlugin extends MengineService implements M
                 Exception exception = task.getException();
 
                 if (exception != null) {
-                    this.logWarning("requestReviewFlow error message: %s trace: %s"
+                    this.logWarning("requestReviewFlow error message: %s"
                         , exception.getMessage()
-                        , exception.fillInStackTrace()
                     );
                 } else {
                     this.logWarning("requestReviewFlow unknown error");
                 }
-
-                this.nativeCall("onGoogleInAppReviewsRequestReviewError", exception);
 
                 return;
             }
@@ -47,7 +44,7 @@ public class MengineGoogleInAppReviewsPlugin extends MengineService implements M
 
             m_reviewInfo = task.getResult();
 
-            this.activateSemaphore("onGoogleInAppReviewsGettingReviewObject");
+            this.activateSemaphore("GoogleInAppReviewsReady");
         });
     }
 

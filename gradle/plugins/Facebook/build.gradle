@@ -8,5 +8,4 @@ android {
 dependencies {
     implementation api('com.facebook.android:facebook-android-sdk:18.0.3')
     implementation api('com.facebook.android:facebook-login:18.0.3')
-    implementation api('com.facebook.android:audience-network-sdk:6.20.0')
 }

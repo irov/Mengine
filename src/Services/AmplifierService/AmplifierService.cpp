@@ -67,7 +67,7 @@ namespace Mengine
                         ->stopEmitter( keep_soundIdentity );
 
                     SOUND_SERVICE()
-                        ->releaseSoundSource( keep_soundIdentity );
+                        ->releaseSoundIdentity( keep_soundIdentity );
                 }break;
             default:
                 break;
@@ -196,7 +196,7 @@ namespace Mengine
         }
 
         SOUND_SERVICE()
-            ->releaseSoundSource( keep_soundIdentity );
+            ->releaseSoundIdentity( keep_soundIdentity );
     }
     //////////////////////////////////////////////////////////////////////////
     bool AmplifierService::pauseMusic()

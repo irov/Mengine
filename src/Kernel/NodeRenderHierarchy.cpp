@@ -224,60 +224,58 @@ namespace Mengine
             return relation_target;
         }
         //////////////////////////////////////////////////////////////////////////
-        void fillNodeRenderContextInheritance( const NodePtr & _node, RenderContext * const _context )
+        void fillNodeRenderContextInheritance( const Node * _node, RenderContext * const _context )
         {
-            const Node * node_ptr = _node.get();
-
-            ZGroupType zGroup = Helper::getNodeRenderZGroupInheritance( node_ptr );
+            ZGroupType zGroup = Helper::getNodeRenderZGroupInheritance( _node );
 
             if( zGroup != MENGINE_RENDER_ZGROUP_DEFAULT )
             {
                 _context->zGroup = zGroup;
             }
 
-            int32_t zIndex = Helper::getNodeRenderZIndexInheritance( node_ptr );
+            int32_t zIndex = Helper::getNodeRenderZIndexInheritance( _node );
 
             if( zIndex != MENGINE_RENDER_ZINDEX_DEFAULT )
             {
                 _context->zIndex = zIndex;
             }
 
-            const RenderResolutionInterface * resolution = Helper::getNodeRenderResolutionInheritance( node_ptr );
+            const RenderResolutionInterface * resolution = Helper::getNodeRenderResolutionInheritance( _node );
 
             if( resolution != nullptr )
             {
                 _context->resolution = resolution;
             }
 
-            const RenderViewportInterface * viewport = Helper::getNodeRenderViewportInheritance( node_ptr );
+            const RenderViewportInterface * viewport = Helper::getNodeRenderViewportInheritance( _node );
 
             if( viewport != nullptr )
             {
                 _context->viewport = viewport;
             }
 
-            const RenderCameraInterface * camera = Helper::getNodeRenderCameraInheritance( node_ptr );
+            const RenderCameraInterface * camera = Helper::getNodeRenderCameraInheritance( _node );
 
             if( camera != nullptr )
             {
                 _context->camera = camera;
             }
 
-            const RenderTransformationInterface * transformation = Helper::getNodeRenderTransformationInheritance( node_ptr );
+            const RenderTransformationInterface * transformation = Helper::getNodeRenderTransformationInheritance( _node );
 
             if( transformation != nullptr )
             {
                 _context->transformation = transformation;
             }
 
-            const RenderScissorInterface * scissor = Helper::getNodeRenderScissorInheritance( node_ptr );
+            const RenderScissorInterface * scissor = Helper::getNodeRenderScissorInheritance( _node );
 
             if( camera != nullptr )
             {
                 _context->scissor = scissor;
             }
 
-            const RenderTargetInterface * target = Helper::getNodeRenderTargetInheritance( node_ptr );
+            const RenderTargetInterface * target = Helper::getNodeRenderTargetInheritance( _node );
 
             if( camera != nullptr )
             {

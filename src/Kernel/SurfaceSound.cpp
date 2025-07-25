@@ -101,15 +101,13 @@ namespace Mengine
         );
 
         if( SOUND_SERVICE()
-            ->releaseSoundSource( m_soundIdentity ) == false )
+            ->releaseSoundIdentity( m_soundIdentity ) == false )
         {
             LOGGER_ERROR( "surface sound '%s' emitter invalid release sound %u"
                 , this->getName().c_str()
                 , m_soundIdentity->getId()
             );
         }
-
-        m_soundIdentity->setSoundListener( nullptr );
 
         m_soundIdentity = nullptr;
 

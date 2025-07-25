@@ -22,6 +22,7 @@
 #include "Kernel/PrefetcherHelper.h"
 #include "Kernel/MixerBoolean.h"
 #include "Kernel/MixerMultiplicative.h"
+#include "Kernel/DebugFileHelper.h"
 
 #include "Config/StdAlgorithm.h"
 
@@ -519,7 +520,7 @@ namespace Mengine
         return buffer;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SoundService::releaseSoundSource( const SoundIdentityInterfacePtr & _identity )
+    bool SoundService::releaseSoundIdentity( const SoundIdentityInterfacePtr & _identity )
     {
         this->stopSoundBufferUpdate_( _identity );
 
@@ -708,7 +709,7 @@ namespace Mengine
 
                     if( identity->getSoundListener() != nullptr )
                     {
-                        m_soundIdentitiesEndAux.emplace_back(identity );
+                        m_soundIdentitiesEndAux.emplace_back( identity );
                     }
                 }
                 else
@@ -740,7 +741,7 @@ namespace Mengine
 
                     if( identity->getSoundListener() != nullptr )
                     {
-                        m_soundIdentitiesEndAux.emplace_back(identity );
+                        m_soundIdentitiesEndAux.emplace_back( identity );
                     }
                 }
                 else
@@ -757,9 +758,9 @@ namespace Mengine
 
         for( const SoundIdentityInterfacePtr & identity : m_soundIdentitiesEndAux )
         {
-            SoundListenerInterfacePtr keep_listener = identity->popSoundListener();
+            SoundListenerInterfacePtr listener = identity->popSoundListener();
 
-            keep_listener->onSoundEnd( identity );
+            listener->onSoundEnd( identity );
         }
 
         m_soundIdentitiesEndAux.clear();
@@ -1456,9 +1457,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::checkMaxSoundPlay_() const
     {
-        uint32_t playCount = (uint32_t)StdAlgorithm::count_if( m_soundIdentities.begin(), m_soundIdentities.end(), []( const SoundIdentityPtr & _Identity )
+        uint32_t playCount = (uint32_t)StdAlgorithm::count_if( m_soundIdentities.begin(), m_soundIdentities.end(), []( const SoundIdentityPtr & _identity )
         {
-            return _Identity->getState() == ESS_PLAY;
+            return _identity->getState() == ESS_PLAY;
         } );
 
         uint32_t Limit_MaxSoundPlay = CONFIG_VALUE_INTEGER( "Limit", "MaxSoundPlay", 16 );
@@ -1472,13 +1473,9 @@ namespace Mengine
 #if defined(MENGINE_DEBUG)
             for( const SoundIdentityInterfacePtr & identity : m_soundIdentities )
             {
-                if( identity->getStreamable() == false )
-                {
-                    continue;
-                }
-
-                LOGGER_ASSERTION( "sound: %s (doc: %s)"
+                LOGGER_ASSERTION( "sound: %s stream: %s (doc: %s)"
                     , identity->getStreamable() == true ? "streamable" : "instance"
+                    , Helper::getDebugFullPath( identity->getSoundSource()->getSoundBuffer()->getDecoder()->getStream() ).c_str()
                     , MENGINE_DOCUMENT_STR( identity->getDocument() )
                 );
             }

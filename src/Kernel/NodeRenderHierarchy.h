@@ -36,7 +36,7 @@ namespace Mengine
         ZGroupType getNodeRenderZGroupInheritance( const Node * _node );
         ZIndexType getNodeRenderZIndexInheritance( const Node * _node );
         //////////////////////////////////////////////////////////////////////////
-        void fillNodeRenderContextInheritance( const NodePtr & _node, RenderContext * const _context );
+        void fillNodeRenderContextInheritance( const Node * _node, RenderContext * const _context );
         //////////////////////////////////////////////////////////////////////////
     }
 }

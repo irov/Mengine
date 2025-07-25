@@ -107,7 +107,7 @@ namespace Mengine
                 void onSoundStop( const SoundIdentityInterfacePtr & _identity ) override
                 {
                     if( SOUND_SERVICE()
-                        ->releaseSoundSource( _identity ) == false )
+                        ->releaseSoundIdentity( _identity ) == false )
                     {
                         uint32_t id = _identity->getId();
 
@@ -126,7 +126,7 @@ namespace Mengine
                 void onSoundEnd( const SoundIdentityInterfacePtr & _identity ) override
                 {
                     if( SOUND_SERVICE()
-                        ->releaseSoundSource( _identity ) == false )
+                        ->releaseSoundIdentity( _identity ) == false )
                     {
                         uint32_t id = _identity->getId();
 

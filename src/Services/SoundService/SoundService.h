@@ -82,7 +82,7 @@ namespace Mengine
         float getSourceMixerVolume( const SoundIdentityInterfacePtr & _identity, const ConstString & _mixer ) const override;
 
     public:
-        bool releaseSoundSource( const SoundIdentityInterfacePtr & _identity ) override;
+        bool releaseSoundIdentity( const SoundIdentityInterfacePtr & _identity ) override;
 
     public:
         bool playEmitter( const SoundIdentityInterfacePtr & _identity ) override;

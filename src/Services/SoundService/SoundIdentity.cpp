@@ -37,6 +37,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundIdentity::initialize( const SoundSourceInterfacePtr & _source, ESoundSourceCategory _category, bool _streamable, bool _turn )
     {
+        const SoundBufferInterfacePtr & soundBuffer = _source->getSoundBuffer();
+
+        if( soundBuffer->acquireSoundBuffer() == false )
+        {
+            return false;
+        }
+
         UniqueId new_id = Helper::generateUniqueIdentity();
 
         m_id = new_id;
@@ -54,13 +61,6 @@ namespace Mengine
         m_streamable = _streamable;
         m_loop = false;
         m_turn = _turn;
-
-        const SoundBufferInterfacePtr & soundBuffer = m_source->getSoundBuffer();
-
-        if( soundBuffer->acquireSoundBuffer() == false )
-        {
-            return false;
-        }
 
         m_mixerVolume = PROTOTYPE_SERVICE()
             ->generatePrototype( ConstString::none(), MixerMultiplicative::getFactorableType(), MENGINE_DOCUMENT_FACTORABLE );
@@ -80,6 +80,7 @@ namespace Mengine
 
             const SoundBufferInterfacePtr & soundBuffer = m_source->getSoundBuffer();
             soundBuffer->releaseSoundBuffer();
+
             m_source = nullptr;
         }
 

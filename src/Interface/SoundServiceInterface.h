@@ -33,6 +33,7 @@ namespace Mengine
 
     public:
         virtual SoundIdentityInterfacePtr createSoundIdentity( bool _isHeadMode, const SoundBufferInterfacePtr & _sample, ESoundSourceCategory _type, bool _streamable, const DocumentInterfacePtr & _doc ) = 0;
+        virtual bool releaseSoundIdentity( const SoundIdentityInterfacePtr & _identity ) = 0;
 
     public:
         virtual SoundBufferInterfacePtr createSoundBufferFromFile( const ContentInterfacePtr & _content, bool _isStream, const DocumentInterfacePtr & _doc ) = 0;
@@ -61,9 +62,6 @@ namespace Mengine
     public:
         virtual bool setSourceMixerVolume( const SoundIdentityInterfacePtr & _identity, const ConstString & _mixer, float _volume, float _default ) = 0;
         virtual float getSourceMixerVolume( const SoundIdentityInterfacePtr & _identity, const ConstString & _mixer ) const = 0;
-
-    public:
-        virtual bool releaseSoundSource( const SoundIdentityInterfacePtr & _identity ) = 0;
 
     public:
         virtual bool playEmitter( const SoundIdentityInterfacePtr & _identity ) = 0;

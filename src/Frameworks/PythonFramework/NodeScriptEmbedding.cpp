@@ -439,22 +439,8 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             mt::vec2f HotSpotPolygon_getScreenPolygonCenter( HotSpotPolygon * _hs )
             {
-                const RenderCameraInterface * camera = Helper::getNodeRenderCameraInheritance( _hs );
-                const RenderViewportInterface * viewport = Helper::getNodeRenderViewportInheritance( _hs );
-
-                MENGINE_ASSERTION_MEMORY_PANIC( camera, "invalid get node '%s' render camera inheritance"
-                    , _hs->getName().c_str()
-                );
-
-                MENGINE_ASSERTION_MEMORY_PANIC( viewport, "invalid get node '%s' render viewport inheritance"
-                    , _hs->getName().c_str()
-                );
-
                 RenderContext context;
-                Helper::clearRenderContext( &context );
-
-                context.camera = camera;
-                context.viewport = viewport;
+                Helper::fillNodeRenderContextInheritance( _hs, &context );
 
                 mt::box2f b1;
                 _hs->getScreenPolygon( &context, &b1, nullptr );

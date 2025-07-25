@@ -1587,17 +1587,8 @@ namespace Mengine
 
                 const RenderInterface * render = node->getRender();
 
-                const RenderCameraInterfacePtr & camera = render->getRenderCamera();
-                const RenderViewportInterfacePtr & viewport = render->getRenderViewport();
-
-                MENGINE_ASSERTION_MEMORY_PANIC( camera, "invalid get arrow render camera inheritance" );
-                MENGINE_ASSERTION_MEMORY_PANIC( viewport, "invalid get arrow render viewport inheritance" );
-
                 RenderContext context;
-                Helper::clearRenderContext( &context );
-
-                context.camera = camera.get();
-                context.viewport = viewport.get();
+                render->makeRenderContext( &context );
 
                 ARROW_SERVICE()
                     ->calcMouseScreenPosition( &context, _pos, _screen );
@@ -1611,7 +1602,7 @@ namespace Mengine
                     ->getCursorPosition( _touchId );
 
                 mt::vec2f screenPosition;
-                if( this->s_calcMouseScreenPosition( _position, &screenPosition ) == false )
+                if( s_calcMouseScreenPosition( _position, &screenPosition ) == false )
                 {
                     return;
                 }
@@ -1624,7 +1615,7 @@ namespace Mengine
             void s_pushMouseButtonEvent( ETouchCode _touchId, const mt::vec2f & _pos, EMouseButtonCode _button, bool _isDown )
             {
                 mt::vec2f pos_screen;
-                if( this->s_calcMouseScreenPosition( _pos, &pos_screen ) == false )
+                if( s_calcMouseScreenPosition( _pos, &pos_screen ) == false )
                 {
                     return;
                 }
@@ -2255,7 +2246,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid create memory buffer" );
 
-                if( this->s_copyFile_( _resourceFilePath, memory ) == false )
+                if( s_copyFile_( _resourceFilePath, memory ) == false )
                 {
                     return false;
                 }
@@ -2285,7 +2276,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid create memory buffer" );
 
-                if( this->s_copyFile_( _resourceFilePath, memory ) == false )
+                if( s_copyFile_( _resourceFilePath, memory ) == false )
                 {
                     return false;
                 }
@@ -2316,11 +2307,11 @@ namespace Mengine
                 DECLARE_FACTORABLE( PyInputMousePositionProvider );
 
             public:
-                void initialize( const RenderResolutionInterfacePtr & _resolution, const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const pybind::object & _cb, const pybind::args & _args )
+                void initialize( const RenderResolutionInterfacePtr & _resolution, const RenderViewportInterfacePtr & _viewport, const RenderCameraInterfacePtr & _camera, const pybind::object & _cb, const pybind::args & _args )
                 {
                     m_renderResolution = _resolution;
-                    m_renderCamera = _camera;
                     m_renderViewport = _viewport;
+                    m_renderCamera = _camera;
 
                     PythonCallbackProvider::initialize( _cb, _args );
                 }
@@ -2334,8 +2325,8 @@ namespace Mengine
                     Helper::clearRenderContext( &context );
 
                     context.resolution = m_renderResolution.get();
-                    context.camera = m_renderCamera.get();
                     context.viewport = m_renderViewport.get();
+                    context.camera = m_renderCamera.get();
 
                     mt::vec2f wp;
                     ARROW_SERVICE()
@@ -2348,17 +2339,18 @@ namespace Mengine
 
             protected:
                 RenderResolutionInterfacePtr m_renderResolution;
-                RenderCameraInterfacePtr m_renderCamera;
                 RenderViewportInterfacePtr m_renderViewport;
+                RenderCameraInterfacePtr m_renderCamera;
             };
             //////////////////////////////////////////////////////////////////////////
             typedef IntrusivePtr<PyInputMousePositionProvider, InputMousePositionProviderInterface> PyInputMousePositionProviderPtr;
             //////////////////////////////////////////////////////////////////////////
             FactoryInterfacePtr m_factoryPyInputMousePositionProvider;
             //////////////////////////////////////////////////////////////////////////
-            InputMousePositionProviderInterfacePtr s_addMousePositionProvider( const RenderResolutionInterfacePtr & _resolution, const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const pybind::object & _cb, const pybind::args & _args )
+            InputMousePositionProviderInterfacePtr s_addMousePositionProvider( const RenderResolutionInterfacePtr & _resolution, const RenderViewportInterfacePtr & _viewport, const RenderCameraInterfacePtr & _camera, const pybind::object & _cb, const pybind::args & _args )
             {
                 RenderResolutionInterfacePtr resolution = _resolution;
+
                 if( resolution == nullptr )
                 {
                     resolution = PLAYER_SERVICE()
@@ -2366,6 +2358,7 @@ namespace Mengine
                 }
 
                 RenderCameraInterfacePtr camera = _camera;
+
                 if( camera == nullptr )
                 {
                     camera = PLAYER_SERVICE()
@@ -2373,6 +2366,7 @@ namespace Mengine
                 }
 
                 RenderViewportInterfacePtr viewport = _viewport;
+
                 if( viewport == nullptr )
                 {
                     viewport = PLAYER_SERVICE()
@@ -2380,7 +2374,8 @@ namespace Mengine
                 }
 
                 PyInputMousePositionProviderPtr provider = m_factoryPyInputMousePositionProvider->createObject( MENGINE_DOCUMENT_PYTHON );
-                provider->initialize( resolution, camera, viewport, _cb, _args );
+
+                provider->initialize( resolution, viewport, camera, _cb, _args );
 
                 INPUT_SERVICE()
                     ->addMousePositionProvider( provider, MENGINE_DOCUMENT_PYTHON );
@@ -2394,8 +2389,16 @@ namespace Mengine
                     ->removeMousePositionProvider( _provider );
             }
             //////////////////////////////////////////////////////////////////////////
-            mt::vec2f s_screenToWorldPoint( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const mt::vec2f & _screenPoint )
+            mt::vec2f s_screenToWorldPoint( const RenderResolutionInterfacePtr & _resolution, const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const mt::vec2f & _screenPoint )
             {
+                RenderResolutionInterfacePtr resolution = _resolution;
+
+                if( resolution == nullptr )
+                {
+                    resolution = PLAYER_SERVICE()
+                        ->getRenderResolution();
+                }
+
                 RenderCameraInterfacePtr camera = _camera;
 
                 if( camera == nullptr )
@@ -2405,6 +2408,7 @@ namespace Mengine
                 }
 
                 RenderViewportInterfacePtr viewport = _viewport;
+
                 if( viewport == nullptr )
                 {
                     viewport = PLAYER_SERVICE()
@@ -2414,6 +2418,7 @@ namespace Mengine
                 RenderContext context;
                 Helper::clearRenderContext( &context );
 
+                context.resolution = resolution.get();
                 context.camera = camera.get();
                 context.viewport = viewport.get();
 
@@ -2424,9 +2429,18 @@ namespace Mengine
                 return wp;
             }
             //////////////////////////////////////////////////////////////////////////
-            mt::vec2f s_screenToWorldClick( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const mt::vec2f & _screenPoint )
+            mt::vec2f s_screenToWorldClick( const RenderResolutionInterfacePtr & _resolution, const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const mt::vec2f & _screenPoint )
             {
+                RenderResolutionInterfacePtr resolution = _resolution;
+
+                if( resolution == nullptr )
+                {
+                    resolution = PLAYER_SERVICE()
+                        ->getRenderResolution();
+                }
+
                 RenderCameraInterfacePtr camera = _camera;
+
                 if( camera == nullptr )
                 {
                     camera = PLAYER_SERVICE()
@@ -2434,6 +2448,7 @@ namespace Mengine
                 }
 
                 RenderViewportInterfacePtr viewport = _viewport;
+
                 if( viewport == nullptr )
                 {
                     viewport = PLAYER_SERVICE()
@@ -2443,6 +2458,7 @@ namespace Mengine
                 RenderContext context;
                 Helper::clearRenderContext( &context );
 
+                context.resolution = resolution.get();
                 context.camera = camera.get();
                 context.viewport = viewport.get();
 
@@ -3245,14 +3261,14 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             mt::vec2f s_getCursorPosition()
             {
-                mt::vec2f wp = this->s_getTouchPosition( TC_TOUCH0 );
+                mt::vec2f wp = s_getTouchPosition( TC_TOUCH0 );
 
                 return wp;
             }
             //////////////////////////////////////////////////////////////////////////
             mt::vec2f s_getMousePosition()
             {
-                mt::vec2f wp = this->s_getTouchPosition( TC_TOUCH0 );
+                mt::vec2f wp = s_getTouchPosition( TC_TOUCH0 );
 
                 return wp;
             }

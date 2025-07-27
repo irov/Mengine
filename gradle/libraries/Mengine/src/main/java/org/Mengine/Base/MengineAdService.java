@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-public class MengineAdService extends MengineService implements DefaultLifecycleObserver, MengineAdProviderInterface, MengineAdResponseInterface, MengineListenerActivity, MengineListenerRemoteConfig, MengineListenerInAppPurchase {
+public class MengineAdService extends MengineService implements DefaultLifecycleObserver, MengineAdProviderInterface, MengineAdResponseInterface, MengineListenerApplication, MengineListenerActivity, MengineListenerRemoteConfig, MengineListenerInAppPurchase {
     public static final String SERVICE_NAME = "AdService";
     public static final boolean SERVICE_EMBEDDING = true;
     public static final int SAVE_VERSION = 1;
@@ -58,11 +58,14 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
     }
 
     @Override
-    public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
+    public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
         m_optionNoAds = this.hasOption("ad.no_ads");
 
         m_noAds = MengineFragmentInAppPurchase.INSTANCE.isOwnedInAppProduct(INAPPURCHASE_DISABLE_ADS);
+    }
 
+    @Override
+    public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
         if (this.hasAppOpen() == true) {
             ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
         }
@@ -314,8 +317,10 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
 
         m_noAds = noAds;
 
-        if (m_adProvider != null) {
-            m_adProvider.hideBanner();
+        if (m_noAds == true) {
+            if (m_adProvider != null) {
+                m_adProvider.hideBanner();
+            }
         }
     }
 

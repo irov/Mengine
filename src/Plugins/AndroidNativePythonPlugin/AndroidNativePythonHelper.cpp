@@ -222,6 +222,8 @@ namespace Mengine
             _jenv->DeleteLocalRef( jclass_Map );
             _jenv->DeleteLocalRef( jclass_Set );
             _jenv->DeleteLocalRef( jclass_Rect );
+            _jenv->DeleteLocalRef( jclass_JSONObject );
+            _jenv->DeleteLocalRef( jclass_JSONArray );
             _jenv->DeleteLocalRef( jclass_MengineCallback );
 
             return py_value;

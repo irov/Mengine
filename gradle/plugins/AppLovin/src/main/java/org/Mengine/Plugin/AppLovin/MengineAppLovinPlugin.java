@@ -165,7 +165,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
             this.createaMediation(application, "org.Mengine.Plugin.AppLovin.MediationAmazon.MengineAppLovinMediationAmazon");
         }
 
-        if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_NONET_BANNERS == true) {
+        if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_NONET_BANNERS == true && noAds == false) {
             MengineAppLovinNonetBannersInterface nonetBanners = (MengineAppLovinNonetBannersInterface)this.newInstance("org.Mengine.Plugin.AppLovin.NonetBanners.MengineAppLovinNonetBanners", true);
 
             if (nonetBanners == null) {
@@ -456,7 +456,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
     @Override
     public void showBanner() {
         if (m_bannerAd == null) {
-            this.assertionError("not found banner");
+            this.logWarning("not found banner");
 
             return;
         }
@@ -469,7 +469,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
     @Override
     public void hideBanner() {
         if (m_bannerAd == null) {
-            this.assertionError("not found banner");
+            this.logWarning("not found banner");
 
             return;
         }
@@ -482,8 +482,6 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
     @Override
     public int getBannerWidth() {
         if (m_bannerAd == null) {
-            this.assertionError("not found banner");
-
             return 0;
         }
 
@@ -495,8 +493,6 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
     @Override
     public int getBannerHeight() {
         if (m_bannerAd == null) {
-            this.assertionError("not found banner");
-
             return 0;
         }
 
@@ -530,7 +526,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
     @Override
     public boolean showInterstitial(String placement) {
         if (m_interstitialAd == null) {
-            this.assertionError("invalid show unavailable interstitial placement: %s"
+            this.logWarning("invalid show unavailable interstitial placement: %s"
                 , placement
             );
 
@@ -540,7 +536,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
         MengineActivity activity = this.getMengineActivity();
 
         if (activity == null) {
-            this.assertionError("invalid show interstitial activity is null");
+            this.logWarning("invalid show interstitial activity is null");
 
             return false;
         }
@@ -594,7 +590,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
     @Override
     public boolean showRewarded(String placement) {
         if (m_rewardedAd == null) {
-            this.assertionError("invalid show unavailable rewarded placement: %s"
+            this.logWarning("invalid show unavailable rewarded placement: %s"
                 , placement
             );
 
@@ -604,7 +600,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
         MengineActivity activity = this.getMengineActivity();
 
         if (activity == null) {
-            this.assertionError("invalid show rewarded activity is null");
+            this.logWarning("invalid show rewarded activity is null");
 
             return false;
         }
@@ -645,7 +641,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
     @Override
     public boolean showAppOpen(String placement) {
         if (m_appOpenAd == null) {
-            this.assertionError("invalid show unavailable appopen placement: %s"
+            this.logWarning("invalid show unavailable appopen placement: %s"
                 , placement
             );
 
@@ -688,7 +684,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
     @Override
     public void showMREC(int leftMargin, int topMargin) {
         if (m_MRECAd == null) {
-            this.assertionError("not found MREC");
+            this.logWarning("not found MREC");
 
             return;
         }
@@ -701,7 +697,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
     @Override
     public void hideMREC() {
         if (m_MRECAd == null) {
-            this.assertionError("not found MREC");
+            this.logWarning("not found MREC");
 
             return;
         }
@@ -714,8 +710,6 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
     @Override
     public int getMRECLeftMargin() {
         if (m_MRECAd == null) {
-            this.assertionError("not found MREC");
-
             return 0;
         }
 
@@ -727,8 +721,6 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
     @Override
     public int getMRECTopMargin() {
         if (m_MRECAd == null) {
-            this.assertionError("not found MREC");
-
             return 0;
         }
 
@@ -740,8 +732,6 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
     @Override
     public int getMRECWidth() {
         if (m_MRECAd == null) {
-            this.assertionError("not found MREC");
-
             return 0;
         }
 
@@ -753,8 +743,6 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
     @Override
     public int getMRECHeight() {
         if (m_MRECAd == null) {
-            this.assertionError("not found MREC");
-
             return 0;
         }
 
@@ -788,7 +776,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
     @Override
     public void showNative() {
         if (m_nativeAd == null) {
-            this.assertionError("not found native");
+            this.logWarning("not found native");
 
             return;
         }
@@ -801,7 +789,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
     @Override
     public void hideNative() {
         if (m_nativeAd == null) {
-            this.assertionError("not found native");
+            this.logWarning("not found native");
 
             return;
         }
@@ -814,8 +802,6 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
     @Override
     public int getNativeLeftMargin() {
         if (m_nativeAd == null) {
-            this.assertionError("not found native");
-
             return 0;
         }
 
@@ -827,8 +813,6 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
     @Override
     public int getNativeTopMargin() {
         if (m_nativeAd == null) {
-            this.assertionError("not found native");
-
             return 0;
         }
 
@@ -840,8 +824,6 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
     @Override
     public int getNativeWidth() {
         if (m_nativeAd == null) {
-            this.assertionError("not found native");
-
             return 0;
         }
 
@@ -853,8 +835,6 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
     @Override
     public int getNativeHeight() {
         if (m_nativeAd == null) {
-            this.assertionError("not found native");
-
             return 0;
         }
 
@@ -891,7 +871,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
         MengineActivity activity = this.getMengineActivity();
 
         if (activity == null) {
-            this.assertionError("invalid show consent flow activity is null");
+            this.logError("invalid show consent flow activity is null");
 
             return;
         }

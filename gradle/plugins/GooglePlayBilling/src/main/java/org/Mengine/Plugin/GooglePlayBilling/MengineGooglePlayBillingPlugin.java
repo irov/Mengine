@@ -258,7 +258,9 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
                     continue;
                 }
 
-                if (purchase.getPurchaseState() != Purchase.PurchaseState.PURCHASED) {
+                int state = purchase.getPurchaseState();
+
+                if (state != Purchase.PurchaseState.PURCHASED) {
                     continue;
                 }
 

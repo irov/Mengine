@@ -19,13 +19,13 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1nativeDebugBreak )( JNIEnv * env, jclass cls )
     {
-        jclass jclassMengineUtils = Mengine::Mengine_JNI_FindClass( env, "org/Mengine/Base/MengineUtils" );
+        jclass jclass_MengineUtils = Mengine::Mengine_JNI_FindClass(env, "org/Mengine/Base/MengineUtils" );
 
-        jmethodID jmethodIdPrintCurrentStackTrace = env->GetStaticMethodID( jclassMengineUtils, "printCurrentStackTrace", "()V" );
+        jmethodID jmethodIdPrintCurrentStackTrace = env->GetStaticMethodID( jclass_MengineUtils, "printCurrentStackTrace", "()V" );
 
-        env->CallStaticVoidMethod( jclassMengineUtils, jmethodIdPrintCurrentStackTrace );
+        env->CallStaticVoidMethod( jclass_MengineUtils, jmethodIdPrintCurrentStackTrace );
 
-        env->DeleteLocalRef( jclassMengineUtils );
+        env->DeleteLocalRef( jclass_MengineUtils );
 
         ::raise( SIGTRAP );
     }
@@ -93,11 +93,11 @@ extern "C"
         g_androidEnvJavaVM = vm;
 
         JNIEnv * env;
-        int get_status = g_androidEnvJavaVM->GetEnv( (void **)&env, JNI_VERSION_1_6 );
+        int status = g_androidEnvJavaVM->GetEnv( (void **)&env, JNI_VERSION_1_6 );
 
-        if( get_status != JNI_OK )
+        if( status != JNI_OK )
         {
-            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "[ERROR] JNI_OnLoad failed to get JNI Env" );
+            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "[ERROR] JNI_OnLoad failed to get JNI Env [%d]", status );
 
             return JNI_ERR;
         }
@@ -150,7 +150,7 @@ namespace Mengine
 
         if( status != JNI_OK )
         {
-            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "[ERROR] JNI_SetEnv failed to set pthread key" );
+            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "[ERROR] JNI_SetEnv failed to set pthread key [%d]", status );
 
             return JNI_FALSE;
         }
@@ -164,9 +164,9 @@ namespace Mengine
 
         int status = ::pthread_key_create( &g_androidEnvThreadKey, &Mengine_JNI_ThreadDestroyed );
 
-        if( status < JNI_OK )
+        if( status != JNI_OK )
         {
-            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "[ERROR] JNI_SetEnv failed to create pthread key" );
+            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "[ERROR] JNI_SetEnv failed to create pthread key [%d]", status );
 
             return JNI_FALSE;
         }
@@ -198,11 +198,11 @@ namespace Mengine
         }
 
         JNIEnv * new_env;
-        jint attach_status = g_androidEnvJavaVM->AttachCurrentThread( &new_env, nullptr );
+        jint status = g_androidEnvJavaVM->AttachCurrentThread( &new_env, nullptr );
 
-        if( attach_status != JNI_OK )
+        if( status != JNI_OK )
         {
-            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "[ERROR] JNI_GetEnv failed to attach current thread" );
+            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "[ERROR] JNI_GetEnv failed to attach current thread [%d]", status );
 
             return nullptr;
         }
@@ -225,11 +225,11 @@ namespace Mengine
         }
 
         JNIEnv * env;
-        jint attach_status = g_androidEnvJavaVM->AttachCurrentThread( &env, nullptr );
+        jint status = g_androidEnvJavaVM->AttachCurrentThread( &env, nullptr );
 
-        if( attach_status != JNI_OK )
+        if( status != JNI_OK )
         {
-            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "[ERROR] JNI_SetupThread failed to attach current thread" );
+            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "[ERROR] JNI_SetupThread failed to attach current thread [%d]", status );
 
             return JNI_FALSE;
         }
@@ -244,34 +244,34 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     jclass Mengine_JNI_GetClassApplication( JNIEnv * _jenv )
     {
-        jclass jclassMengineApplication = Mengine::Mengine_JNI_FindClass( _jenv, "org/Mengine/Base/MengineApplication" );
+        jclass jclass_MengineApplication = Mengine::Mengine_JNI_FindClass( _jenv, "org/Mengine/Base/MengineApplication" );
 
-        return jclassMengineApplication;
+        return jclass_MengineApplication;
     }
     //////////////////////////////////////////////////////////////////////////
     jobject Mengine_JNI_GetObjectApplication( JNIEnv * _jenv )
     {
-        jclass jclassMengineApplication = Mengine_JNI_GetClassApplication( _jenv );
+        jclass jclass_MengineApplication = Mengine_JNI_GetClassApplication( _jenv );
 
-        if( jclassMengineApplication == nullptr )
+        if( jclass_MengineApplication == nullptr )
         {
             return nullptr;
         }
 
-        jfieldID jfieldINSTANCE = _jenv->GetStaticFieldID( jclassMengineApplication, "INSTANCE", "Lorg/Mengine/Base/MengineApplication;" );
+        jfieldID jfield_INSTANCE = _jenv->GetStaticFieldID( jclass_MengineApplication, "INSTANCE", "Lorg/Mengine/Base/MengineApplication;" );
 
-        if( jfieldINSTANCE == nullptr )
+        if( jfield_INSTANCE == nullptr )
         {
-            _jenv->DeleteLocalRef( jclassMengineApplication );
+            _jenv->DeleteLocalRef( jclass_MengineApplication );
 
             return nullptr;
         }
 
-        jobject jobjectMengineApplication = _jenv->GetStaticObjectField( jclassMengineApplication, jfieldINSTANCE );
+        jobject jobject_MengineApplication = _jenv->GetStaticObjectField( jclass_MengineApplication, jfield_INSTANCE );
 
-        _jenv->DeleteLocalRef( jclassMengineApplication );
+        _jenv->DeleteLocalRef( jclass_MengineApplication );
 
-        return jobjectMengineApplication;
+        return jobject_MengineApplication;
     }
     //////////////////////////////////////////////////////////////////////////
     jmethodID Mengine_JNI_GetMethodApplication( JNIEnv * _jenv, const char * _methodName, const char * _signature )
@@ -292,9 +292,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     jclass Mengine_JNI_GetClassActivity( JNIEnv * _jenv )
     {
-        jclass jclassMengineActivity = Mengine::Mengine_JNI_FindClass( _jenv, "org/Mengine/Base/MengineActivity" );
+        jclass jclass_MengineActivity = Mengine::Mengine_JNI_FindClass( _jenv, "org/Mengine/Base/MengineActivity" );
 
-        return jclassMengineActivity;
+        return jclass_MengineActivity;
     }
     //////////////////////////////////////////////////////////////////////////
     jobject Mengine_JNI_GetObjectActivity( JNIEnv * _jenv )
@@ -340,13 +340,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     jclass Mengine_JNI_GetClassFragment( JNIEnv * _jenv, const Char * _fragmentName )
     {
-        Char fragmentClassName[256] = { '\0' };
+        Char fragmentClassName[256 + 1] = { '\0' };
         StdString::strcpy_safe( fragmentClassName, "org/Mengine/Base/", 256 );
         StdString::strcat_safe( fragmentClassName, _fragmentName, 256 );
 
-        jclass fragmentClass = Mengine::Mengine_JNI_FindClass( _jenv, fragmentClassName );
+        jclass jclass_Fragment = Mengine::Mengine_JNI_FindClass( _jenv, fragmentClassName );
 
-        return fragmentClass;
+        return jclass_Fragment;
     }
     //////////////////////////////////////////////////////////////////////////
     jobject Mengine_JNI_GetObjectFragment( JNIEnv * _jenv, const Char * _fragmentName )
@@ -358,7 +358,7 @@ namespace Mengine
             return nullptr;
         }
 
-        Char fragmentSignature[256] = { '\0' };
+        Char fragmentSignature[256 + 1] = { '\0' };
         StdString::strcpy_safe( fragmentSignature, "Lorg/Mengine/Base/", 256 );
         StdString::strcat_safe( fragmentSignature, _fragmentName, 256 );
         StdString::strcat_safe( fragmentSignature, ";", 256 );

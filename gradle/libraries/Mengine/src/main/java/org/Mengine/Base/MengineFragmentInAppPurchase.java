@@ -30,7 +30,11 @@ public class MengineFragmentInAppPurchase extends MengineFragment<MengineListene
     public boolean isOwnedInAppProduct(@NonNull String product) {
         Set<String> ownedProducts = MenginePreferences.getPreferenceStrings("mengine.billing.purchase.owned.products", null);
 
-        if (ownedProducts == null || ownedProducts.isEmpty()) {
+        if (ownedProducts == null) {
+            return false;
+        }
+
+        if (ownedProducts.isEmpty() == true) {
             return false;
         }
 

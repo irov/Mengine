@@ -91,8 +91,6 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
     }
 
     protected void setRemoteConfigDefaults(Map<String, String> defaults) {
-        m_defaults = defaults;
-
         if (BuildConfig.DEBUG == true) {
             for (Map.Entry<String, String> entry : defaults.entrySet()) {
                 String key = entry.getKey();
@@ -109,6 +107,8 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
                 }
             }
         }
+
+        m_defaults = defaults;
     }
 
     protected void fetchRemoteConfigValues(@NonNull FirebaseRemoteConfig remoteConfig) {

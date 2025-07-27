@@ -434,6 +434,8 @@ namespace Mengine
                     return nullptr;
                 }
 
+                MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid identity create sound affector callback" );
+
                 SoundAffectorCallbackPtr callback = m_factorySoundAffectorCallback->createObject( MENGINE_DOCUMENT_PYTHON );
 
                 callback->initialize( _identity, _cb, _args );
@@ -623,48 +625,64 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void soundStop( const SoundIdentityInterfacePtr & _identity )
             {
+                MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid sound stop identity" );
+
                 SOUND_SERVICE()
                     ->stopEmitter( _identity );
             }
             //////////////////////////////////////////////////////////////////////////
             void soundPause( const SoundIdentityInterfacePtr & _identity )
             {
+                MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid sound pause identity" );
+
                 SOUND_SERVICE()
                     ->pauseEmitter( _identity );
             }
             //////////////////////////////////////////////////////////////////////////
             void soundResume( const SoundIdentityInterfacePtr & _identity )
             {
+                MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid sound resume identity" );
+
                 SOUND_SERVICE()
                     ->resumeEmitter( _identity );
             }
             //////////////////////////////////////////////////////////////////////////
             bool isSoundStop( const SoundIdentityInterfacePtr & _identity )
             {
+                MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid sound check stop identity" );
+
                 return SOUND_SERVICE()
                     ->isEmitterStop( _identity );
             }
             //////////////////////////////////////////////////////////////////////////
             bool isSoundPlay( const SoundIdentityInterfacePtr & _identity )
             {
+                MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid sound check play identity" );
+
                 return SOUND_SERVICE()
                     ->isEmitterPlay( _identity );
             }
             //////////////////////////////////////////////////////////////////////////
             bool isSoundPause( const SoundIdentityInterfacePtr & _identity )
             {
+                MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid sound check pause identity" );
+
                 return SOUND_SERVICE()
                     ->isEmitterPause( _identity );
             }
             //////////////////////////////////////////////////////////////////////////
             void voiceStop( const SoundIdentityInterfacePtr & _identity )
             {
+                MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid voice stop identity" );
+
                 SOUND_SERVICE()
                     ->stopEmitter( _identity );
             }
             //////////////////////////////////////////////////////////////////////////
             void soundSourceSetVolume( const SoundIdentityInterfacePtr & _identity, float _volume )
             {
+                MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid sound source set volume identity" );
+
                 if( SOUND_SERVICE()
                     ->setSourceVolume( _identity, _volume, _volume, MENGINE_MIXER_VALUE_DEFAULT_SPEED, true ) == false )
                 {
@@ -677,6 +695,8 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             float soundSourceGetVolume( const SoundIdentityInterfacePtr & _identity )
             {
+                MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid sound source get volume identity" );
+
                 float volume = SOUND_SERVICE()
                     ->getSourceVolume( _identity );
 

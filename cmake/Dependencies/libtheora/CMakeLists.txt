@@ -10,6 +10,7 @@ INCLUDE_DIRECTORIES(${SOURCE_DIR}/lib)
 INCLUDE_DIRECTORIES(${OGG_INCLUDE_DIRS})
 
 # OUR SOURCES
+
 set(sources
     ${SOURCE_DIR}/lib/analyze.c
     ${SOURCE_DIR}/lib/apiwrapper.c
@@ -31,12 +32,17 @@ set(sources
     ${SOURCE_DIR}/lib/tokenize.c
     ${SOURCE_DIR}/lib/encoder_disabled.c
 )
-    
+
 set(sources_ext)
 
 set(sources_arm
     ${SOURCE_DIR}/lib/arm/armcpu.c
     ${SOURCE_DIR}/lib/arm/armstate.c
+    
+    ${SOURCE_DIR}/lib/arm/armbits.s
+    ${SOURCE_DIR}/lib/arm/armfrag.s
+    ${SOURCE_DIR}/lib/arm/armidct.s
+    ${SOURCE_DIR}/lib/arm/armloop.s
 )
 
 set(sources_x86
@@ -61,17 +67,48 @@ set(sources_x86_vc
     ${SOURCE_DIR}/lib/x86_vc/x86cpu.c
     ${SOURCE_DIR}/lib/x86_vc/x86state.c
 )
-    
+
 if(MSVC)
     set(sources_ext ${sources_ext} ${sources_x86_vc})
+    
+    if(MENGINE_ARCHITECTURE_X86)
+        add_definitions(-DOC_X86_ASM)
+    endif()
+    
+    if(MENGINE_ARCHITECTURE_X64)
+        add_definitions(-DOC_X86_64_ASM)
+    endif()
 endif()
 
 if(MINGW)
     set(sources_ext ${sources_ext} ${sources_x86})
+    
+    if(MENGINE_ARCHITECTURE_X86)
+        add_definitions(-DOC_X86_ASM)
+    endif()
+    
+    if(MENGINE_ARCHITECTURE_X64)
+        add_definitions(-DOC_X86_64_ASM)
+    endif()
 endif()
 
-if(MENGINE_ARCHITECTURE_ARM OR MENGINE_ARCHITECTURE_AARCH64)
+if(ANDROID)
+    if (${ANDROID_ABI} STREQUAL "x86_64")
+        set(sources_ext ${sources_ext} ${sources_x86})
+        add_definitions(-DOC_X86_64_ASM)
+    elseif (${ANDROID_ABI} STREQUAL "x86")
+        set(sources_ext ${sources_ext} ${sources_x86})
+        add_definitions(-DOC_X86_ASM)
+    elseif (${ANDROID_ABI} STREQUAL "arm64-v8a")
+        set(sources_ext ${sources_ext})
+    elseif (${ANDROID_ABI} STREQUAL "armeabi-v7a")
+        set(sources_ext ${sources_ext})
+    endif()
+endif()
+
+if(APPLE)
     set(sources_ext ${sources_ext} ${sources_arm})
+    add_definitions(-DOC_ARM_ASM)
 endif()
 
 add_library(${PROJECT_NAME} STATIC ${sources} ${sources_ext})

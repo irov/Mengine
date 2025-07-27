@@ -208,7 +208,9 @@ namespace Mengine
         {
             identity->setTurn( false );
 
-            if( identity->getState() != ESS_PLAY )
+            ESoundSourceState state = identity->getState();
+
+            if( state != ESS_PLAY )
             {
                 continue;
             }
@@ -227,7 +229,9 @@ namespace Mengine
         {
             identity->setTurn( true );
 
-            if( identity->getState() != ESS_PAUSE )
+            ESoundSourceState state = identity->getState();
+
+            if( state != ESS_PAUSE )
             {
                 continue;
             }
@@ -267,7 +271,9 @@ namespace Mengine
         {
             identity->setTurn( false );
 
-            if( identity->getState() == ESS_STOP )
+            ESoundSourceState state = identity->getState();
+
+            if( state == ESS_STOP )
             {
                 continue;
             }
@@ -336,7 +342,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( source, "create SoundSource invalid" );
 
-        SoundIdentityPtr identity = m_factorySoundIdentity->createObject( _doc );
+        SoundIdentityInterfacePtr identity = m_factorySoundIdentity->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( identity, "create SoundIdentity invalid" );
 
@@ -528,7 +534,7 @@ namespace Mengine
 
         uint32_t id = _identity->getId();
 
-        VectorSoundIdentity::iterator it_found = StdAlgorithm::find_if( m_soundIdentities.begin(), m_soundIdentities.end(), [id]( const SoundIdentityPtr & _identity )
+        VectorSoundIdentity::iterator it_found = StdAlgorithm::find_if( m_soundIdentities.begin(), m_soundIdentities.end(), [id]( const SoundIdentityInterfacePtr & _identity )
         {
             return _identity->getId() == id;
         } );
@@ -541,6 +547,14 @@ namespace Mengine
         m_soundIdentities.erase( it_found );
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SoundService::foreachSoundIdentities( const LambdaSoundIdentity & _lambda ) const
+    {
+        for( const SoundIdentityInterfacePtr & identity : m_soundIdentities )
+        {
+            _lambda( identity );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void SoundService::setSoundVolume( const ConstString & _type, float _volume, float _from, float _speed )
@@ -654,9 +668,11 @@ namespace Mengine
             process = true;
         }
 
-        for( const SoundIdentityPtr & identity : m_soundIdentities )
+        for( const SoundIdentityInterfacePtr & identity : m_soundIdentities )
         {
-            if( identity->getState() != ESS_PLAY )
+            ESoundSourceState state = identity->getState();
+
+            if( state != ESS_PLAY )
             {
                 continue;
             }
@@ -685,68 +701,78 @@ namespace Mengine
                 continue;
             }
 
-            const ThreadWorkerSoundBufferUpdatePtr & worker = identity->getWorkerUpdateBuffer();
-
-            float time_left = identity->getTimeLeft();
-            float time_new = time_left - _context->time;
-
-            if( worker != nullptr )
+            if( state == ESS_CANCEL )
             {
-                if( worker->isDone() == true )
+                if( identity->getSoundListener() != nullptr )
                 {
-                    identity->setState( ESS_STOP );
+                    m_soundIdentitiesEndAux.emplace_back( identity );
+                }
+            }
+            else
+            {
+                const ThreadWorkerSoundBufferUpdatePtr & worker = identity->getWorkerUpdateBuffer();
 
-                    this->stopSoundBufferUpdate_( identity );
+                float time_left = identity->getTimeLeft();
+                float time_new = time_left - _context->time;
 
-                    const SoundSourceInterfacePtr & soundSource = identity->getSoundSource();
-
-                    if( soundSource != nullptr )
+                if( worker != nullptr )
+                {
+                    if( worker->isDone() == true )
                     {
-                        soundSource->stop();
+                        identity->setState( ESS_STOP );
+
+                        this->stopSoundBufferUpdate_( identity );
+
+                        const SoundSourceInterfacePtr & soundSource = identity->getSoundSource();
+
+                        if( soundSource != nullptr )
+                        {
+                            soundSource->stop();
+                        }
+
+                        identity->setTimeLeft( 0.f );
+
+                        if( identity->getSoundListener() != nullptr )
+                        {
+                            m_soundIdentitiesEndAux.emplace_back( identity );
+                        }
                     }
-
-                    identity->setTimeLeft( 0.f );
-
-                    if( identity->getSoundListener() != nullptr )
+                    else
                     {
-                        m_soundIdentitiesEndAux.emplace_back( identity );
+                        if( time_new <= 0.f )
+                        {
+                            identity->setTimeLeft( 0.f );
+                        }
+                        else
+                        {
+                            identity->setTimeLeft( time_new );
+                        }
                     }
                 }
                 else
                 {
                     if( time_new <= 0.f )
                     {
+                        identity->setState( ESS_STOP );
+
+                        const SoundSourceInterfacePtr & soundSource = identity->getSoundSource();
+
+                        if( soundSource != nullptr )
+                        {
+                            soundSource->stop();
+                        }
+
                         identity->setTimeLeft( 0.f );
+
+                        if( identity->getSoundListener() != nullptr )
+                        {
+                            m_soundIdentitiesEndAux.emplace_back( identity );
+                        }
                     }
                     else
                     {
                         identity->setTimeLeft( time_new );
                     }
-                }
-            }
-            else
-            {
-                if( time_new <= 0.f )
-                {
-                    identity->setState( ESS_STOP );
-
-                    const SoundSourceInterfacePtr & soundSource = identity->getSoundSource();
-
-                    if( soundSource != nullptr )
-                    {
-                        soundSource->stop();
-                    }
-
-                    identity->setTimeLeft( 0.f );
-
-                    if( identity->getSoundListener() != nullptr )
-                    {
-                        m_soundIdentitiesEndAux.emplace_back( identity );
-                    }
-                }
-                else
-                {
-                    identity->setTimeLeft( time_new );
                 }
             }
         }
@@ -791,8 +817,6 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid play identity" );
 
-        SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
-
         ESoundSourceState state = _identity->getState();
 
         switch( state )
@@ -801,10 +825,12 @@ namespace Mengine
             {
                 if( this->checkMaxSoundPlay_() == false )
                 {
+                    _identity->setState( ESS_CANCEL );
+
                     return false;
                 }
 
-                this->updateSourceVolume_( identity );
+                this->updateSourceVolume_( _identity );
 
                 const SoundSourceInterfacePtr & source = _identity->getSoundSource();
 
@@ -822,72 +848,74 @@ namespace Mengine
 
                 float timeLeft = duration - position;
 
-                identity->setTimeLeft( timeLeft );
+                _identity->setTimeLeft( timeLeft );
 
-                identity->setState( ESS_PLAY );
+                _identity->setState( ESS_PLAY );
 
-                if( identity->getTurn() == true )
+                if( _identity->getTurn() == true )
                 {
                     if( source->play() == false )
                     {
                         LOGGER_ASSERTION( "invalid play %u"
-                            , identity->getId()
+                            , _identity->getId()
                         );
 
                         return false;
                     }
 
-                    this->playSoundBufferUpdate_( identity );
+                    this->playSoundBufferUpdate_( _identity );
                 }
             }break;
         case ESS_PAUSE:
             {
                 if( this->checkMaxSoundPlay_() == false )
                 {
+                    _identity->setState( ESS_CANCEL );
+
                     return false;
                 }
 
-                this->updateSourceVolume_( identity );
+                this->updateSourceVolume_( _identity );
 
-                const SoundSourceInterfacePtr & source = identity->getSoundSource();
+                const SoundSourceInterfacePtr & source = _identity->getSoundSource();
 
                 float duration = source->getDuration();
                 float position = source->getPosition();
 
                 float timeLeft = duration - position;
 
-                identity->setTimeLeft( timeLeft );
+                _identity->setTimeLeft( timeLeft );
 
-                identity->setState( ESS_PLAY );
+                _identity->setState( ESS_PLAY );
 
-                if( identity->getTurn() == true )
+                if( _identity->getTurn() == true )
                 {
                     if( source->resume() == false )
                     {
                         LOGGER_ASSERTION( "invalid resume %u"
-                            , identity->getId()
+                            , _identity->getId()
                         );
 
                         return false;
                     }
 
-                    this->resumeSoundBufferUpdate_( identity );
+                    this->resumeSoundBufferUpdate_( _identity );
                 }
 
-                const SoundListenerInterfacePtr & listener = identity->getSoundListener();
+                const SoundListenerInterfacePtr & listener = _identity->getSoundListener();
 
                 if( listener != nullptr )
                 {
                     SoundListenerInterfacePtr keep_listener = listener;
-                    keep_listener->onSoundResume( identity );
+                    keep_listener->onSoundResume( _identity );
                 }
             }break;
         default:
             {
 #if defined(MENGINE_DEBUG)
                 LOGGER_WARNING( "invalid state [%u] (doc: %s)"
-                    , identity->getState()
-                    , MENGINE_DOCUMENT_STR( identity->getDocument() )
+                    , _identity->getState()
+                    , MENGINE_DOCUMENT_STR( _identity->getDocument() )
                 );
 #endif
 
@@ -902,22 +930,20 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid pause identity" );
 
-        SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
-
-        ESoundSourceState state = identity->getState();
+        ESoundSourceState state = _identity->getState();
 
         switch( state )
         {
         case ESS_PLAY:
             {
-                identity->setState( ESS_PAUSE );
+                _identity->setState( ESS_PAUSE );
 
-                if( identity->getTurn() == true )
+                if( _identity->getTurn() == true )
                 {
-                    this->pauseSoundBufferUpdate_( identity );
+                    this->pauseSoundBufferUpdate_( _identity );
                 }
 
-                const SoundSourceInterfacePtr & source = identity->getSoundSource();
+                const SoundSourceInterfacePtr & source = _identity->getSoundSource();
 
                 source->pause();
 
@@ -926,22 +952,22 @@ namespace Mengine
 
                 float timeLeft = duration - position;
 
-                identity->setTimeLeft( timeLeft );
+                _identity->setTimeLeft( timeLeft );
 
-                const SoundListenerInterfacePtr & listener = identity->getSoundListener();
+                const SoundListenerInterfacePtr & listener = _identity->getSoundListener();
 
                 if( listener != nullptr )
                 {
                     SoundListenerInterfacePtr keep_listener = listener;
-                    keep_listener->onSoundPause( identity );
+                    keep_listener->onSoundPause( _identity );
                 }
             }break;
         default:
             {
 #if defined(MENGINE_DEBUG)
                 LOGGER_WARNING( "invalid state [%u] (doc: %s)"
-                    , identity->getState()
-                    , MENGINE_DOCUMENT_STR( identity->getDocument() )
+                    , _identity->getState()
+                    , MENGINE_DOCUMENT_STR( _identity->getDocument() )
                 );
 #endif
 
@@ -956,9 +982,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid resume identity" );
 
-        SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
-
-        ESoundSourceState state = identity->getState();
+        ESoundSourceState state = _identity->getState();
 
         switch( state )
         {
@@ -969,46 +993,46 @@ namespace Mengine
                     return false;
                 }
 
-                this->updateSourceVolume_( identity );
+                this->updateSourceVolume_( _identity );
 
-                const SoundSourceInterfacePtr & source = identity->getSoundSource();
+                const SoundSourceInterfacePtr & source = _identity->getSoundSource();
 
                 float duration = source->getDuration();
                 float position = source->getPosition();
 
                 float timeLeft = duration - position;
 
-                identity->setTimeLeft( timeLeft );
-                identity->setState( ESS_PLAY );
+                _identity->setTimeLeft( timeLeft );
+                _identity->setState( ESS_PLAY );
 
-                if( identity->getTurn() == true )
+                if( _identity->getTurn() == true )
                 {
                     if( source->resume() == false )
                     {
                         LOGGER_ASSERTION( "invalid resume %u"
-                            , identity->getId()
+                            , _identity->getId()
                         );
 
                         return false;
                     }
 
-                    this->resumeSoundBufferUpdate_( identity );
+                    this->resumeSoundBufferUpdate_( _identity );
                 }
 
-                const SoundListenerInterfacePtr & listener = identity->getSoundListener();
+                const SoundListenerInterfacePtr & listener = _identity->getSoundListener();
 
                 if( listener != nullptr )
                 {
                     SoundListenerInterfacePtr keep_listener = listener;
-                    keep_listener->onSoundResume( identity );
+                    keep_listener->onSoundResume( _identity );
                 }
             }break;
         default:
             {
 #if defined(MENGINE_DEBUG)
                 LOGGER_WARNING( "invalid state [%u] (doc: %s)"
-                    , identity->getState()
-                    , MENGINE_DOCUMENT_STR( identity->getDocument() )
+                    , _identity->getState()
+                    , MENGINE_DOCUMENT_STR( _identity->getDocument() )
                 );
 #endif
 
@@ -1023,23 +1047,21 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid stop identity" );
 
-        SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
-
-        ESoundSourceState state = identity->getState();
+        ESoundSourceState state = _identity->getState();
 
         switch( state )
         {
         case ESS_PLAY:
         case ESS_PAUSE:
             {
-                identity->setState( ESS_STOP );
+                _identity->setState( ESS_STOP );
 
-                if( identity->getTurn() == true )
+                if( _identity->getTurn() == true )
                 {
-                    this->stopSoundBufferUpdate_( identity );
+                    this->stopSoundBufferUpdate_( _identity );
                 }
 
-                const SoundSourceInterfacePtr & source = identity->getSoundSource();
+                const SoundSourceInterfacePtr & source = _identity->getSoundSource();
 
                 if( source != nullptr )
                 {
@@ -1047,23 +1069,23 @@ namespace Mengine
                     float position = source->getPosition();
 
                     float timeLeft = duration - position;
-                    identity->setTimeLeft( timeLeft );
+                    _identity->setTimeLeft( timeLeft );
 
                     source->stop();
                 }
 
-                if( identity->getSoundListener() != nullptr )
+                if( _identity->getSoundListener() != nullptr )
                 {
-                    SoundListenerInterfacePtr keep_listener = identity->getSoundListener();
-                    keep_listener->onSoundStop( identity );
+                    SoundListenerInterfacePtr keep_listener = _identity->getSoundListener();
+                    keep_listener->onSoundStop( _identity );
                 }
             }break;
         default:
             {
 #if defined(MENGINE_DEBUG)
                 LOGGER_WARNING( "invalid state [%u] (doc: %s)"
-                    , identity->getState()
-                    , MENGINE_DOCUMENT_STR( identity->getDocument() )
+                    , _identity->getState()
+                    , MENGINE_DOCUMENT_STR( _identity->getDocument() )
                 );
 #endif
 
@@ -1078,9 +1100,9 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid stop identity" );
 
-        SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
+        ESoundSourceState state = _identity->getState();
 
-        if( identity->getState() != ESS_STOP )
+        if( state != ESS_STOP )
         {
             return false;
         }
@@ -1092,9 +1114,9 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid play identity" );
 
-        SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
+        ESoundSourceState state = _identity->getState();
 
-        if( identity->getState() != ESS_PLAY )
+        if( state != ESS_PLAY )
         {
             return false;
         }
@@ -1106,9 +1128,9 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid pause identity" );
 
-        SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
+        ESoundSourceState state = _identity->getState();
 
-        if( identity->getState() != ESS_PAUSE )
+        if( state != ESS_PAUSE )
         {
             return false;
         }
@@ -1118,11 +1140,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::setLoop( const SoundIdentityInterfacePtr & _identity, bool _looped )
     {
-        SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
+        _identity->setLoop( _looped );
 
-        identity->setLoop( _looped );
-
-        const SoundSourceInterfacePtr & source = identity->getSoundSource();
+        const SoundSourceInterfacePtr & source = _identity->getSoundSource();
         source->setLoop( _looped );
 
         return true;
@@ -1130,9 +1150,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::getLoop( const SoundIdentityInterfacePtr & _identity ) const
     {
-        SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
-
-        bool looped = identity->getLoop();
+        bool looped = _identity->getLoop();
 
         return looped;
     }
@@ -1237,9 +1255,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid identity get duration" );
 
-        SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
-
-        const SoundSourceInterfacePtr & source = identity->getSoundSource();
+        const SoundSourceInterfacePtr & source = _identity->getSoundSource();
 
         if( source == nullptr )
         {
@@ -1259,14 +1275,12 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid identity set pos ms" );
 
-        SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
-
-        const SoundSourceInterfacePtr & source = identity->getSoundSource();
+        const SoundSourceInterfacePtr & source = _identity->getSoundSource();
 
         if( source == nullptr )
         {
             LOGGER_ERROR( "not setup source %u"
-                , identity->getId()
+                , _identity->getId()
             );
 
             return false;
@@ -1277,7 +1291,7 @@ namespace Mengine
         if( _position > duration )
         {
             LOGGER_ASSERTION( "emitter %u invalid position %f because length %f"
-                , identity->getId()
+                , _identity->getId()
                 , _position
                 , duration
             );
@@ -1286,13 +1300,13 @@ namespace Mengine
         }
 
         float timeLeft = duration - _position;
-        identity->setTimeLeft( timeLeft );
+        _identity->setTimeLeft( timeLeft );
 
-        bool hasBufferUpdate = identity->getWorkerUpdateBuffer() != nullptr;
+        bool hasBufferUpdate = _identity->getWorkerUpdateBuffer() != nullptr;
 
         if( hasBufferUpdate == true )
         {
-            this->pauseSoundBufferUpdate_( identity );
+            this->pauseSoundBufferUpdate_( _identity );
         }
 
         float current_position = source->getPosition();
@@ -1301,7 +1315,7 @@ namespace Mengine
         {
             if( hasBufferUpdate == true )
             {
-                this->resumeSoundBufferUpdate_( identity );
+                this->resumeSoundBufferUpdate_( _identity );
             }
 
             return true;
@@ -1325,7 +1339,7 @@ namespace Mengine
             if( source->resume() == false )
             {
                 LOGGER_ASSERTION( "invalid resume %u"
-                    , identity->getId()
+                    , _identity->getId()
                 );
 
                 return false;
@@ -1334,13 +1348,13 @@ namespace Mengine
 
         if( hasBufferUpdate == true )
         {
-            this->resumeSoundBufferUpdate_( identity );
+            this->resumeSoundBufferUpdate_( _identity );
         }
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SoundService::stopSoundBufferUpdate_( const SoundIdentityPtr & _identity )
+    bool SoundService::stopSoundBufferUpdate_( const SoundIdentityInterfacePtr & _identity )
     {
         if( _identity->getStreamable() == false )
         {
@@ -1365,7 +1379,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SoundService::playSoundBufferUpdate_( const SoundIdentityPtr & _identity )
+    bool SoundService::playSoundBufferUpdate_( const SoundIdentityInterfacePtr & _identity )
     {
         if( _identity->getStreamable() == false )
         {
@@ -1411,7 +1425,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SoundService::pauseSoundBufferUpdate_( const SoundIdentityPtr & _identity )
+    bool SoundService::pauseSoundBufferUpdate_( const SoundIdentityInterfacePtr & _identity )
     {
         if( _identity->getStreamable() == false )
         {
@@ -1433,7 +1447,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SoundService::resumeSoundBufferUpdate_( const SoundIdentityPtr & _identity )
+    bool SoundService::resumeSoundBufferUpdate_( const SoundIdentityInterfacePtr & _identity )
     {
         if( _identity->getStreamable() == false )
         {
@@ -1457,7 +1471,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::checkMaxSoundPlay_() const
     {
-        uint32_t playCount = (uint32_t)StdAlgorithm::count_if( m_soundIdentities.begin(), m_soundIdentities.end(), []( const SoundIdentityPtr & _identity )
+        uint32_t playCount = (uint32_t)StdAlgorithm::count_if( m_soundIdentities.begin(), m_soundIdentities.end(), []( const SoundIdentityInterfacePtr & _identity )
         {
             return _identity->getState() == ESS_PLAY;
         } );
@@ -1489,27 +1503,25 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float SoundService::getPosition( const SoundIdentityInterfacePtr & _identity )
     {
-        SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
-
-        const SoundSourceInterfacePtr & source = identity->getSoundSource();
+        const SoundSourceInterfacePtr & source = _identity->getSoundSource();
 
         if( source == nullptr )
         {
             return 0.f;
         }
 
-        bool hasBufferUpdate = identity->getWorkerUpdateBuffer() != nullptr;
+        bool hasBufferUpdate = _identity->getWorkerUpdateBuffer() != nullptr;
 
         if( hasBufferUpdate == true )
         {
-            this->pauseSoundBufferUpdate_( identity );
+            this->pauseSoundBufferUpdate_( _identity );
         }
 
         float position = source->getPosition();
 
         if( hasBufferUpdate == true )
         {
-            this->resumeSoundBufferUpdate_( identity );
+            this->resumeSoundBufferUpdate_( _identity );
         }
 
         return position;

@@ -3,6 +3,7 @@
 #include "Interface/EnvironmentServiceInterface.h"
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
+#include "Interface/FileServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 
 #if defined(MENGINE_WINDOWS_DEBUG)
@@ -21,6 +22,9 @@
 #include "Kernel/OptionHelper.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/TimestampHelper.h"
+#include "Kernel/FileLogger.h"
+#include "Kernel/FilePathHelper.h"
+#include "Kernel/ContentHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -202,9 +206,9 @@ namespace Mengine
 
         sentry_options_set_handler_pathw( options, unicode_sentryHandlerPath );
 #else
-        const Char * str_sentryHandlerPath = sentryHandlerPath.c_str();
+        const Char * sentryHandlerPath_str = sentryHandlerPath.c_str();
 
-        sentry_options_set_handler_path( options, str_sentryHandlerPath );
+        sentry_options_set_handler_path( options, sentryHandlerPath_str );
 #endif
 
         sentry_options_set_dsn( options, Win32SentryPlugin_DSN );
@@ -240,6 +244,58 @@ namespace Mengine
         sentry_options_set_on_crash( options, &Detail::sentry_crash_function, nullptr );
 #endif
 
+        bool Win32SentryPlugin_AttachLog = CONFIG_VALUE_BOOLEAN( "Win32SentryPlugin", "AttachLog", true );
+
+        if( Win32SentryPlugin_AttachLog == true )
+        {
+            const FileGroupInterfacePtr & userFileGroup = FILE_SERVICE()
+                ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
+
+            FileLoggerPtr sentryLog = Helper::makeFactorableUnique<FileLogger>( MENGINE_DOCUMENT_FACTORABLE );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( sentryLog, "invalid create file logger" );
+
+            PathString sentryLogPath;
+            sentryLogPath.assign( MENGINE_SENTRY_DATABASE_PATH );
+            sentryLogPath.append( MENGINE_PATH_FORWARDSLASH );
+            sentryLogPath.append( "mengine_sentry_error.log" );
+
+            FilePath sentryLogPath_fp = Helper::stringizeFilePath( sentryLogPath );
+
+            ContentInterfacePtr sentryLogContent = Helper::makeFileContent( userFileGroup, sentryLogPath_fp, MENGINE_DOCUMENT_FACTORABLE );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( sentryLogContent, "invalid make file content '%s'"
+                , sentryLogPath_fp.c_str()
+            );
+
+            sentryLog->setContent( sentryLogContent );
+
+#if defined(MENGINE_DEBUG)
+            sentryLog->setVerboseLevel( LM_MESSAGE );
+#else
+            sentryLog->setVerboseLevel( LM_WARNING );
+#endif
+
+            sentryLog->setWriteHistory( true );
+
+            if( LOGGER_SERVICE()
+                ->registerLogger( sentryLog ) == false )
+            {
+                LOGGER_ASSERTION( "invalid register file logger '%s'"
+                    , sentryLogPath_fp.c_str()
+                );
+            }
+            else
+            {
+                Char fullPath[MENGINE_MAX_PATH + 1] = {'\0'};
+                sentryLogContent->getFullPath( fullPath );
+
+                sentry_options_add_attachment( options, fullPath );
+
+                m_sentryLogger = sentryLog;
+            }
+        }
+
         if( sentry_init( options ) != 0 )
         {
             LOGGER_ERROR( "invalid initialize sentry plugin" );
@@ -272,6 +328,14 @@ namespace Mengine
             return;
         }
 #endif
+
+        if( m_sentryLogger != nullptr )
+        {
+            LOGGER_SERVICE()
+                ->unregisterLogger( m_sentryLogger );
+
+            m_sentryLogger = nullptr;
+        }
 
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ASSERTION );

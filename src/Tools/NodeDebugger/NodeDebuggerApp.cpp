@@ -203,6 +203,14 @@ namespace Mengine
             this->DoUIResolutionsTab();
         }} );
         m_tabs.push_back( {
+            "sounds",
+            "Sounds",
+            true,
+            [this]()
+        {
+            this->DoUISoundsTab();
+        }} );
+        m_tabs.push_back( {
             "settings",
             "Settings",
             true,
@@ -535,6 +543,10 @@ namespace Mengine
         {
             this->ReceiveObjectsLeak( payloadNode );
         }
+        else if( typeStr == "Sounds" )
+        {
+            this->ReceiveSounds( payloadNode );
+        }
         else if( typeStr == "Settings" )
         {
             this->ReceiveSettings( payloadNode );
@@ -728,8 +740,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::ReceiveSettings( const pugi::xml_node & _xmlContainer )
     {
-        MENGINE_UNUSED( _xmlContainer );
-
         m_settings.clear();
 
         for( const pugi::xml_node & setting : _xmlContainer.children() )
@@ -789,6 +799,38 @@ namespace Mengine
             }
 
             m_settings.emplace_back( desc );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::ReceiveSounds( const pugi::xml_node & _xmlContainer )
+    {
+        m_sounds.clear();
+
+        for( const pugi::xml_node & sound : _xmlContainer.children() )
+        {
+            uint32_t id = sound.attribute( "id" ).as_uint();
+            bool streamable = sound.attribute( "streamable" ).as_bool();
+            bool loop = sound.attribute( "loop" ).as_bool();
+            bool turn = sound.attribute( "turn" ).as_bool();
+            uint32_t category = sound.attribute( "category" ).as_uint();
+            uint32_t state = sound.attribute( "state" ).as_uint();
+            float time_left = sound.attribute( "time_left" ).as_float();
+            float volume = sound.attribute( "volume" ).as_float();
+            
+            const pugi::char_t * file = sound.attribute( "file" ).value();
+
+            SoundDesc desc;
+            desc.id = id;
+            desc.streamable = streamable;
+            desc.loop = loop;
+            desc.turn = turn;
+            desc.category = (ESoundSourceCategory)category;
+            desc.state = (ESoundSourceState)state;
+            desc.time_left = time_left;
+            desc.volume = volume;
+            desc.file = file;
+
+            m_sounds.emplace_back( desc );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1928,6 +1970,63 @@ namespace Mengine
             {
                 *_out = "null";
             }break;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::DoUISoundsTab()
+    {
+        for( const SoundDesc & desc : m_sounds )
+        {
+            ImGui::PushID( desc.id );
+            switch( desc.state )
+            {
+            case ESS_STOP:
+                ImGui::TextColored( ImVec4( 1.f, 0.f, 0.f, 1.f ), "[stop]" );
+                break;
+            case ESS_PLAY:
+                ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "[play]" );
+                break;
+            case ESS_PAUSE:
+                ImGui::TextColored( ImVec4( 0.f, 0.5f, 1.f, 1.f ), "[pause]" );
+                break;
+            }
+            ImGui::SameLine();
+            ImGui::BeginDisabled();
+            bool streamable = desc.streamable;
+            ImGui::Checkbox( "streamable", &streamable );
+            ImGui::EndDisabled();
+            ImGui::SameLine();
+            ImGui::BeginDisabled();
+            bool loop = desc.loop;
+            ImGui::Checkbox( "loop", &loop );
+            ImGui::EndDisabled();
+            ImGui::SameLine();
+            ImGui::BeginDisabled();
+            bool turn = desc.turn;
+            ImGui::Checkbox( "turn", &turn );
+            ImGui::EndDisabled();
+            ImGui::SameLine();
+            switch( desc.category )
+            {
+            case ES_SOURCE_CATEGORY_SOUND:
+                ImGui::Text( "[sound]" );
+                break;
+            case ES_SOURCE_CATEGORY_MUSIC:
+                ImGui::Text( "[music]" );
+                break;
+            case ES_SOURCE_CATEGORY_VOICE:
+                ImGui::Text( "[voice]" );
+                break;
+            }
+            ImGui::SameLine();
+            ImGui::Text( "[%u]", desc.id );
+            ImGui::SameLine();
+            ImGui::Text( "time: %f", desc.time_left );
+            ImGui::SameLine();
+            ImGui::Text( "volume: %f", desc.volume );
+            ImGui::SameLine();
+            ImGui::Text( "file: %s", desc.file.c_str() );
+            ImGui::PopID();
         }
     }
     //////////////////////////////////////////////////////////////////////////

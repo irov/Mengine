@@ -28,6 +28,7 @@ namespace Mengine
     public:
         const SoundSourceInterfacePtr & getSoundSource() const override;
 
+    public:
         void setSoundListener( const SoundListenerInterfacePtr & _listener ) override;
         const SoundListenerInterfacePtr & getSoundListener() const override;
         SoundListenerInterfacePtr popSoundListener() override;

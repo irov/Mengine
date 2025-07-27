@@ -36,6 +36,10 @@ namespace Mengine
         virtual bool releaseSoundIdentity( const SoundIdentityInterfacePtr & _identity ) = 0;
 
     public:
+        typedef Lambda<void( const SoundIdentityInterfacePtr & )> LambdaSoundIdentity;
+        virtual void foreachSoundIdentities( const LambdaSoundIdentity & _lambda ) const = 0;
+
+    public:
         virtual SoundBufferInterfacePtr createSoundBufferFromFile( const ContentInterfacePtr & _content, bool _isStream, const DocumentInterfacePtr & _doc ) = 0;
 
     public:

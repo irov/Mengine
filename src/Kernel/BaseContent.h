@@ -19,6 +19,8 @@ namespace Mengine
         void setFilePath( const FilePath & _filePath ) override final;
         const FilePath & getFilePath() const override final;
 
+        void getFullPath( Char * const _fullPath ) const override final;
+
     public:
         void setCodecType( const ConstString & _codecType ) override final;
         const ConstString & getCodecType() const override final;

@@ -69,6 +69,8 @@ namespace Mengine
                     SOUND_SERVICE()
                         ->releaseSoundIdentity( keep_soundIdentity );
                 }break;
+            case ESS_CANCEL:
+                break;
             default:
                 break;
             }

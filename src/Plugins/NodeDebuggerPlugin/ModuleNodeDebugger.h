@@ -81,9 +81,6 @@ namespace Mengine
         void onThreadWorkerDone( UniqueId _id ) override;
 
     public:
-        void updateArrow();
-
-    public:
         void setScene( const ScenePtr & _scene );
         void updateScene();
 
@@ -100,6 +97,7 @@ namespace Mengine
         void sendScene( const ScenePtr & _scene );
         void sendPickerable( const ScenePtr & _scene );
         void sendRenderable( const ScenePtr & _scene );
+        void sendSounds();
         void sendSettings();
         void sendMemory();
         void sendObjectsLeak();

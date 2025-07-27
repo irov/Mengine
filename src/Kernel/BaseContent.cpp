@@ -1,6 +1,7 @@
 #include "BaseContent.h"
 
 #include "Kernel/AssertionFilePath.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -34,6 +35,14 @@ namespace Mengine
     const FilePath & BaseContent::getFilePath() const
     {
         return m_filePath;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BaseContent::getFullPath( Char * const _fullPath ) const
+    {
+        MENGINE_ASSERTION_MEMORY_PANIC( m_fileGroup, "invalid file group" );
+        MENGINE_ASSERTION_MEMORY_PANIC( _fullPath, "invalid full path buffer" );        
+
+        m_fileGroup->getFullPath( m_filePath, _fullPath );
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseContent::setCodecType( const ConstString & _codecType )

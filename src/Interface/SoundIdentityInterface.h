@@ -21,8 +21,9 @@ namespace Mengine
     enum ESoundSourceState
     {
         ESS_STOP = 0,
-        ESS_PLAY = 2,
-        ESS_PAUSE = 4,
+        ESS_PLAY = 1,
+        ESS_PAUSE = 2,
+        ESS_CANCEL = 3,
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class SoundIdentityInterface> SoundIdentityInterfacePtr;
@@ -52,6 +53,7 @@ namespace Mengine
     public:
         virtual const SoundSourceInterfacePtr & getSoundSource() const = 0;
 
+    public:
         virtual void setSoundListener( const SoundListenerInterfacePtr & _listener ) = 0;
         virtual const SoundListenerInterfacePtr & getSoundListener() const = 0;
         virtual SoundListenerInterfacePtr popSoundListener() = 0;

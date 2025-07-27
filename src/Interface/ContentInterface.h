@@ -25,6 +25,8 @@ namespace Mengine
         virtual void setFilePath( const FilePath & _filePath ) = 0;
         virtual const FilePath & getFilePath() const = 0;
 
+        virtual void getFullPath( Char * const _fullPath ) const = 0;
+
     public:
         virtual void setCodecType( const ConstString & _codecType ) = 0;
         virtual const ConstString & getCodecType() const = 0;

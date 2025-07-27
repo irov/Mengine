@@ -65,6 +65,7 @@
 #include "Kernel/ThreadMutexHelper.h"
 #include "Kernel/VocabularyHelper.h"
 #include "Kernel/MixinDebug.h"
+#include "Kernel/DebugFileHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdAlgorithm.h"
@@ -380,6 +381,11 @@ namespace Mengine
                 this->sendScene( m_scene );
                 this->sendPickerable( m_scene );
                 this->sendRenderable( m_scene );
+            }
+
+            if( m_currentTab == "sounds" )
+            {
+                this->sendSounds();
             }
 
             if( m_currentTab == "settings" )
@@ -1511,6 +1517,66 @@ namespace Mengine
                     }break;
                 }
             } );
+        } );
+
+        NodeDebuggerPacket packet;
+
+        MyXMLWriter writer( packet.payload );
+
+#if defined(MENGINE_DEBUG)
+        const uint32_t xmlFlags = pugi::format_indent;
+#else
+        const uint32_t xmlFlags = pugi::format_raw;
+#endif
+
+        doc.save( writer, "  ", xmlFlags, pugi::encoding_utf8 );
+
+        this->sendPacket( packet );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ModuleNodeDebugger::sendSounds()
+    {
+        pugi::xml_document doc;
+
+        pugi::xml_node packetNode = doc.append_child( "Packet" );
+        packetNode.append_attribute( "type" ).set_value( "Sounds" );
+
+        pugi::xml_node payloadNode = packetNode.append_child( "Payload" );
+
+        SOUND_SERVICE()
+            ->foreachSoundIdentities( [&payloadNode]( const SoundIdentityInterfacePtr & _identity )
+        {
+            pugi::xml_node xml_sound = payloadNode.append_child( "Sound" );
+
+            UniqueId id = _identity->getId();
+
+            bool streamable = _identity->getStreamable();
+            bool loop = _identity->getLoop();
+            bool turn = _identity->getTurn();
+            ESoundSourceCategory category = _identity->getCategory();
+            ESoundSourceState state = _identity->getState();
+
+            float timeLeft = _identity->getTimeLeft();
+
+            const MixerMultiplicativeInterfacePtr & mixer = _identity->getMixerVolume();
+
+            float mixer_volume = mixer->mixValue();
+
+            xml_sound.append_attribute( "id" ).set_value( id );
+            xml_sound.append_attribute( "streamable" ).set_value( streamable );
+            xml_sound.append_attribute( "loop" ).set_value( loop );
+            xml_sound.append_attribute( "turn" ).set_value( turn );
+            xml_sound.append_attribute( "category" ).set_value( category );
+            xml_sound.append_attribute( "state" ).set_value( state );
+            xml_sound.append_attribute( "time_left" ).set_value( timeLeft );
+            xml_sound.append_attribute( "mixer_volume" ).set_value( mixer_volume );
+
+            const SoundSourceInterfacePtr & source = _identity->getSoundSource();
+            const SoundBufferInterfacePtr & buffer = source->getSoundBuffer();
+            const SoundDecoderInterfacePtr & decoder = buffer->getDecoder();
+            const InputStreamInterfacePtr & stream = decoder->getStream();
+
+            xml_sound.append_attribute( "file" ).set_value( Helper::getDebugFullPath( stream ).c_str() );
         } );
 
         NodeDebuggerPacket packet;

@@ -49,6 +49,10 @@ namespace Mengine
 
     public:
         SoundIdentityInterfacePtr createSoundIdentity( bool _isHeadMode, const SoundBufferInterfacePtr & _sample, ESoundSourceCategory _category, bool _streamable, const DocumentInterfacePtr & _doc ) override;
+        bool releaseSoundIdentity( const SoundIdentityInterfacePtr & _identity ) override;
+
+    public:
+        void foreachSoundIdentities( const LambdaSoundIdentity & _lambda ) const override;
 
     public:
         SoundBufferInterfacePtr createSoundBufferFromFile( const ContentInterfacePtr & _content, bool _streamable, const DocumentInterfacePtr & _doc ) override;
@@ -80,9 +84,6 @@ namespace Mengine
     public:
         bool setSourceMixerVolume( const SoundIdentityInterfacePtr & _identity, const ConstString & _mixer, float _volume, float _default ) override;
         float getSourceMixerVolume( const SoundIdentityInterfacePtr & _identity, const ConstString & _mixer ) const override;
-
-    public:
-        bool releaseSoundIdentity( const SoundIdentityInterfacePtr & _identity ) override;
 
     public:
         bool playEmitter( const SoundIdentityInterfacePtr & _identity ) override;
@@ -125,10 +126,10 @@ namespace Mengine
         void resumeSounds_();
 
     protected:
-        bool playSoundBufferUpdate_( const SoundIdentityPtr & _source );
-        bool stopSoundBufferUpdate_( const SoundIdentityPtr & _source );
-        bool pauseSoundBufferUpdate_( const SoundIdentityPtr & _source );
-        bool resumeSoundBufferUpdate_( const SoundIdentityPtr & _source );
+        bool playSoundBufferUpdate_( const SoundIdentityInterfacePtr & _source );
+        bool stopSoundBufferUpdate_( const SoundIdentityInterfacePtr & _source );
+        bool pauseSoundBufferUpdate_( const SoundIdentityInterfacePtr & _source );
+        bool resumeSoundBufferUpdate_( const SoundIdentityInterfacePtr & _source );
 
     protected:
         bool checkMaxSoundPlay_() const;

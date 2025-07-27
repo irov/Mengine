@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/SettingInterface.h"
+#include "Interface/SoundIdentityInterface.h"
 
 #include "Kernel/Vector.h"
 #include "Kernel/Map.h"
@@ -695,6 +696,20 @@ namespace Mengine
         Vector<SettingKeyDesc> keys;
     };
 
+    struct SoundDesc
+    {
+        uint32_t id;
+        bool streamable;
+        bool loop;
+        bool turn;
+        ESoundSourceCategory category;
+        ESoundSourceState state;
+        float time_left;
+        float volume;
+
+        String file;
+    };
+
     class NodeDebuggerApp
     {
     public:
@@ -718,6 +733,7 @@ namespace Mengine
         void ReceiveMemory( const pugi::xml_node & _xmlContainer );
         void ReceiveObjectsLeak( const pugi::xml_node & _xmlContainer );
         void ReceiveNetwork( const pugi::xml_node & _xmlContainer );
+        void ReceiveSounds( const pugi::xml_node & _xmlContainer );
         void ReceiveSettings( const pugi::xml_node & _xmlContainer );
         void ReceiveSelectedNode( const pugi::xml_node & _xmlContainer );
 
@@ -738,6 +754,7 @@ namespace Mengine
         void DoUIMemoryTab();
         void DoUIObjectsLeakTab();
         void DoUINetwork();
+        void DoUISoundsTab();
         void DoUISettingsTab();
         void DoUIResolutionsTab();
         String DoIPInput( const String & _title, const String & _inIP );
@@ -790,6 +807,7 @@ namespace Mengine
         Vector<NodeIcon> m_icons;
         Vector<CachedImage> m_imagesCache;
         Vector<TabDescriptor> m_tabs;
+        Vector<SoundDesc> m_sounds;
         Vector<SettingDesc> m_settings;
 
         struct LeakDesc

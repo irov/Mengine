@@ -127,10 +127,8 @@ namespace Mengine
             const ScenePtr & currentScene = SCENE_SERVICE()
                 ->getCurrentScene();
 
-            mt::vec2f point = {_event.x, _event.y};
-
             mt::vec2f cursorAdaptScreenPosition;
-            Helper::adaptScreenPosition( point, &cursorAdaptScreenPosition );
+            Helper::adaptScreenPosition( _event.position.screen, &cursorAdaptScreenPosition );
 
             mt::vec2f cursorWorldPosition;
             PLAYER_SERVICE()
@@ -139,7 +137,7 @@ namespace Mengine
             m_cursorAdaptScreenPosition = cursorAdaptScreenPosition;
             m_cursorWorldPosition = cursorWorldPosition;
 
-            this->findChildRecursive( currentScene, point );
+            this->findChildRecursive( currentScene, _event.position.screen );
 
             this->sendSelectedNode();
 
@@ -2737,7 +2735,7 @@ namespace Mengine
         this->getWorldBoundingBox( _node, _imageDesc, &boundingBox );
 
         const NodePtr & node = ARROW_SERVICE()
-            ->getNode();
+            ->getArrowNode();
 
         RenderInterface * render = node->getRender();
 

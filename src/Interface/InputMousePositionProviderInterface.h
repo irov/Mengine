@@ -12,7 +12,7 @@ namespace Mengine
         : public Mixin
     {
     public:
-        virtual void onMousePositionChange( ETouchCode _touchId, const mt::vec2f & _position, float _pressure ) = 0;
+        virtual void onMousePositionChange( ETouchCode _touchId, const mt::vec2f & _screenPosition, float _pressure ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<InputMousePositionProviderInterface> InputMousePositionProviderInterfacePtr;

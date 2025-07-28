@@ -10,23 +10,12 @@
 
 #include "Config/Typedef.h"
 #include "Config/UniqueId.h"
+#include "Config/Variant.h"
 
 #include "math/vec2.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    enum EInputEventType
-    {
-        IET_KEY,
-        IET_TEXT,
-        IET_ACCELEROMETER,
-        IET_MOUSE_BUTTON,
-        IET_MOUSE_WHELL,
-        IET_MOUSE_MOVE,
-        IET_MOUSE_ENTER,
-        IET_MOUSE_LEAVE
-    };
     //////////////////////////////////////////////////////////////////////////
     class InputServiceInterface
         : public ServiceInterface
@@ -68,26 +57,17 @@ namespace Mengine
         virtual void getSpecial( InputSpecialData * const _special ) const = 0;
 
     public:
-        struct InputUnionEvent
-        {
-            EInputEventType type;
+        typedef Variant<
+            InputKeyEvent,
+            InputTextEvent,
+            InputAccelerometerEvent,
+            InputMouseButtonEvent,
+            InputMouseWheelEvent,
+            InputMouseMoveEvent,
+            InputMouseEnterEvent,
+            InputMouseLeaveEvent> InputVariantEvent;
 
-            union
-            {
-                InputSpecialData special;
-
-                InputKeyEvent key;
-                InputTextEvent text;
-                InputAccelerometerEvent accelerometer;
-                InputMouseButtonEvent button;
-                InputMouseWheelEvent wheel;
-                InputMouseMoveEvent move;
-                InputMouseEnterEvent enter;
-                InputMouseLeaveEvent leave;
-            } data;
-        };
-
-        virtual void pushEvent( const InputUnionEvent & _event ) = 0;
+        virtual void pushEvent( const InputVariantEvent & _event ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 }

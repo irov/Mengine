@@ -1,6 +1,7 @@
 #include "InputServiceHelper.h"
 
 #include "Interface/InputServiceInterface.h"
+#include "Interface/PlayerServiceInterface.h"
 
 #include "Config/StdString.h"
 
@@ -73,22 +74,20 @@ namespace Mengine
                 return;
             }
 
-            InputServiceInterface::InputUnionEvent ev;
-
-            ev.type = IET_MOUSE_MOVE;
+            InputMouseMoveEvent ev;
 
             INPUT_SERVICE()
-                ->getSpecial( &ev.data.special );
+                ->getSpecial( &ev.special );
 
-            ev.data.move.touchId = _touchId;
+            ev.touchId = _touchId;
 
-            ev.data.move.x = vx;
-            ev.data.move.y = vy;
-            ev.data.move.pressure = _pressure;
+            ev.position.screen = mt::vec2f( vx, vy );
+            ev.position.world = mt::vec2f( 0.f, 0.f );
+            ev.pressure = _pressure;
 
-            ev.data.move.dx = _dx;
-            ev.data.move.dy = _dy;
-            ev.data.move.dpressure = _dpressure;
+            ev.screenDelta = mt::vec2f( _dx, _dy );
+            ev.worldDelta = mt::vec2f( 0.f, 0.f );
+            ev.dpressure = _dpressure;
 
             INPUT_SERVICE()
                 ->pushEvent( ev );
@@ -101,22 +100,20 @@ namespace Mengine
             INPUT_SERVICE()
                 ->validCursorPosition( _x, _y, &vx, &vy );
 
-            InputServiceInterface::InputUnionEvent ev;
-
-            ev.type = IET_MOUSE_BUTTON;
+            InputMouseButtonEvent ev;
 
             INPUT_SERVICE()
-                ->getSpecial( &ev.data.special );
+                ->getSpecial( &ev.special );
 
-            ev.data.button.touchId = _touchId;
+            ev.touchId = _touchId;
 
-            ev.data.button.x = vx;
-            ev.data.button.y = vy;
-            ev.data.button.pressure = _pressure;
+            ev.position.screen = mt::vec2f( vx, vy );
+            ev.position.world = mt::vec2f( 0.f, 0.f );
+            ev.pressure = _pressure;
 
-            ev.data.button.button = _button;
-            ev.data.button.isDown = _isDown;
-            ev.data.button.isPressed = true;
+            ev.button = _button;
+            ev.isDown = _isDown;
+            ev.isPressed = true;
 
             INPUT_SERVICE()
                 ->pushEvent( ev );
@@ -129,20 +126,21 @@ namespace Mengine
             INPUT_SERVICE()
                 ->validCursorPosition( _x, _y, &vx, &vy );
 
-            InputServiceInterface::InputUnionEvent ev;
-
-            ev.type = IET_KEY;
+            InputKeyEvent ev;
 
             INPUT_SERVICE()
-                ->getSpecial( &ev.data.special );
+                ->getSpecial( &ev.special );
 
-            ev.data.key.x = vx;
-            ev.data.key.y = vy;
-            ev.data.key.pressure = _pressure;
+            bool isAlreadyDown = INPUT_SERVICE()
+                ->isKeyDown( _code );
 
-            ev.data.key.code = _code;
-            ev.data.key.isDown = _isDown;
-            ev.data.key.isRepeat = _repeating;
+            ev.position.screen = mt::vec2f( vx, vy );
+            ev.position.world = mt::vec2f( 0.f, 0.f );
+            ev.pressure = _pressure;
+
+            ev.code = _code;
+            ev.isDown = _isDown;
+            ev.isRepeat = (isAlreadyDown == true && _isDown == true) || (_repeating == true);
 
             INPUT_SERVICE()
                 ->pushEvent( ev );
@@ -157,20 +155,18 @@ namespace Mengine
             INPUT_SERVICE()
                 ->validCursorPosition( _x, _y, &vx, &vy );
 
-            InputServiceInterface::InputUnionEvent ev;
-
-            ev.type = IET_TEXT;
+            InputTextEvent ev;
 
             INPUT_SERVICE()
-                ->getSpecial( &ev.data.special );
+                ->getSpecial( &ev.special );
 
-            ev.data.text.x = vx;
-            ev.data.text.y = vy;
-            ev.data.text.pressure = _pressure;
+            ev.position.screen = mt::vec2f( vx, vy );
+            ev.position.world = mt::vec2f( 0.f, 0.f );
+            ev.pressure = _pressure;
             
-            ev.data.text.symbol = _text[0];
+            ev.symbol = _text[0];
 
-            StdString::wcsncpy( ev.data.text.text, _text, MENGINE_INPUTTEXTEVENT_TEXT_MAX_SIZE );
+            StdString::wcsncpy( ev.text, _text, MENGINE_INPUTTEXTEVENT_TEXT_MAX_SIZE );
 
             INPUT_SERVICE()
                 ->pushEvent( ev );
@@ -183,18 +179,16 @@ namespace Mengine
             INPUT_SERVICE()
                 ->validCursorPosition( _x, _y, &vx, &vy );
 
-            InputServiceInterface::InputUnionEvent ev;
-
-            ev.type = IET_MOUSE_LEAVE;
+            InputMouseLeaveEvent ev;
 
             INPUT_SERVICE()
-                ->getSpecial( &ev.data.special );
+                ->getSpecial( &ev.special );
 
-            ev.data.leave.touchId = _touchId;
+            ev.touchId = _touchId;
 
-            ev.data.leave.x = vx;
-            ev.data.leave.y = vy;
-            ev.data.leave.pressure = _pressure;
+            ev.position.screen = mt::vec2f( vx, vy );
+            ev.position.world = mt::vec2f( 0.f, 0.f );
+            ev.pressure = _pressure;
 
             INPUT_SERVICE()
                 ->pushEvent( ev );
@@ -207,18 +201,16 @@ namespace Mengine
             INPUT_SERVICE()
                 ->validCursorPosition( _x, _y, &vx, &vy );
 
-            InputServiceInterface::InputUnionEvent ev;
-
-            ev.type = IET_MOUSE_ENTER;
+            InputMouseEnterEvent ev;
 
             INPUT_SERVICE()
-                ->getSpecial( &ev.data.special );
+                ->getSpecial( &ev.special );
 
-            ev.data.enter.touchId = _touchId;
+            ev.touchId = _touchId;
 
-            ev.data.enter.x = vx;
-            ev.data.enter.y = vy;
-            ev.data.enter.pressure = _pressure;
+            ev.position.screen = mt::vec2f( vx, vy );
+            ev.position.world = mt::vec2f( 0.f, 0.f );
+            ev.pressure = _pressure;
 
             INPUT_SERVICE()
                 ->pushEvent( ev );
@@ -231,19 +223,17 @@ namespace Mengine
             INPUT_SERVICE()
                 ->validCursorPosition( _x, _y, &vx, &vy );
 
-            InputServiceInterface::InputUnionEvent ev;
-
-            ev.type = IET_MOUSE_WHELL;
+            InputMouseWheelEvent ev;
 
             INPUT_SERVICE()
-                ->getSpecial( &ev.data.special );
+                ->getSpecial( &ev.special );
 
-            ev.data.wheel.x = vx;
-            ev.data.wheel.y = vy;
-            ev.data.wheel.pressure = _pressure;
+            ev.position.screen = mt::vec2f( vx, vy );
+            ev.position.world = mt::vec2f( 0.f, 0.f );
+            ev.pressure = _pressure;
 
-            ev.data.wheel.wheel = _wheel;
-            ev.data.wheel.scroll = _scroll;
+            ev.wheel = _wheel;
+            ev.scroll = _scroll;
 
             INPUT_SERVICE()
                 ->pushEvent( ev );
@@ -251,16 +241,14 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void pushAccelerometerEvent( float _dx, float _dy, float _dz )
         {
-            InputServiceInterface::InputUnionEvent ev;
-
-            ev.type = IET_ACCELEROMETER;
+            InputAccelerometerEvent ev;
 
             INPUT_SERVICE()
-                ->getSpecial( &ev.data.special );
+                ->getSpecial( &ev.special );
 
-            ev.data.accelerometer.dx = _dx;
-            ev.data.accelerometer.dy = _dy;
-            ev.data.accelerometer.dz = _dz;
+            ev.dx = _dx;
+            ev.dy = _dy;
+            ev.dz = _dz;
 
             INPUT_SERVICE()
                 ->pushEvent( ev );

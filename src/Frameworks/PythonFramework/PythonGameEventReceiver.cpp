@@ -45,15 +45,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonGameEventReceiver::onGameKey( const InputKeyEvent & _event )
     {
-        mt::vec2f point( _event.x, _event.y );
-
-        mt::vec2f wp;
-        PLAYER_SERVICE()
-            ->calcGlobalMouseWorldPosition( point, &wp );
-
         InputKeyEvent ev = _event;
-        ev.x = wp.x;
-        ev.y = wp.y;
+
+        PLAYER_SERVICE()
+            ->calcGlobalMouseWorldPosition( _event.position.screen, &ev.position.world );
 
         bool result = m_cb.call( ev );
 
@@ -62,15 +57,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonGameEventReceiver::onGameText( const InputTextEvent & _event )
     {
-        mt::vec2f point( _event.x, _event.y );
+        InputTextEvent ev = _event;
 
         mt::vec2f wp;
         PLAYER_SERVICE()
-            ->calcGlobalMouseWorldPosition( point, &wp );
-
-        InputTextEvent ev = _event;
-        ev.x = wp.x;
-        ev.y = wp.y;
+            ->calcGlobalMouseWorldPosition( _event.position.screen, &ev.position.world );
 
         bool result = m_cb.call( ev );
 
@@ -86,15 +77,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonGameEventReceiver::onGameMouseButton( const InputMouseButtonEvent & _event )
     {
-        mt::vec2f point( _event.x, _event.y );
-
-        mt::vec2f wp;
-        PLAYER_SERVICE()
-            ->calcGlobalMouseWorldPosition( point, &wp );
-
         InputMouseButtonEvent ev = _event;
-        ev.x = wp.x;
-        ev.y = wp.y;
+
+        PLAYER_SERVICE()
+            ->calcGlobalMouseWorldPosition( _event.position.screen, &ev.position.world );
 
         bool result = m_cb.call( ev );
 
@@ -103,15 +89,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonGameEventReceiver::onGameMouseButtonBegin( const InputMouseButtonEvent & _event )
     {
-        mt::vec2f point( _event.x, _event.y );
-
-        mt::vec2f wp;
-        PLAYER_SERVICE()
-            ->calcGlobalMouseWorldPosition( point, &wp );
-
         InputMouseButtonEvent ev = _event;
-        ev.x = wp.x;
-        ev.y = wp.y;
+
+        PLAYER_SERVICE()
+            ->calcGlobalMouseWorldPosition( _event.position.screen, &ev.position.world );
 
         bool result = m_cb.call( ev );
 
@@ -120,15 +101,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonGameEventReceiver::onGameMouseButtonEnd( const InputMouseButtonEvent & _event )
     {
-        mt::vec2f point( _event.x, _event.y );
-
-        mt::vec2f wp;
-        PLAYER_SERVICE()
-            ->calcGlobalMouseWorldPosition( point, &wp );
-
         InputMouseButtonEvent ev = _event;
-        ev.x = wp.x;
-        ev.y = wp.y;
+
+        PLAYER_SERVICE()
+            ->calcGlobalMouseWorldPosition( _event.position.screen, &ev.position.world );
 
         bool result = m_cb.call( ev );
 
@@ -137,22 +113,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonGameEventReceiver::onGameMouseMove( const InputMouseMoveEvent & _event )
     {
-        mt::vec2f point( _event.x, _event.y );
-        mt::vec2f delta( _event.dx, _event.dy );
+        InputMouseMoveEvent ev = _event;
 
-        mt::vec2f wp;
         PLAYER_SERVICE()
-            ->calcGlobalMouseWorldPosition( point, &wp );
+            ->calcGlobalMouseWorldPosition( _event.position.screen, &ev.position.world );
 
-        mt::vec2f wd;
         PLAYER_SERVICE()
-            ->calcGlobalMouseWorldDelta( delta, &wd );
-
-        InputMouseMoveEvent ev;
-        ev.x = wp.x;
-        ev.y = wp.y;
-        ev.dx = wd.x;
-        ev.dy = wd.y;
+            ->calcGlobalMouseWorldDelta( _event.screenDelta, &ev.worldDelta );
 
         bool result = m_cb.call( ev );
 

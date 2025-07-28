@@ -70,49 +70,12 @@ namespace Mengine
         m_eventsAux.clear();
         m_mutex->unlock();
 
-        for( const InputUnionEvent & ev : m_events )
+        for( const InputVariantEvent & ev : m_events )
         {
-            switch( ev.type )
+            Helper::visit( ev, [this]( const auto & _event )
             {
-            case IET_KEY:
-                {
-                    this->keyEvent_( ev.data.key );
-                }break;
-            case IET_TEXT:
-                {
-                    this->textEvent_( ev.data.text );
-                }break;
-            case IET_ACCELEROMETER:
-                {
-                    this->accelerometerEvent_( ev.data.accelerometer );
-                }break;
-            case IET_MOUSE_BUTTON:
-                {
-                    this->mouseButtonEvent_( ev.data.button );
-                }break;
-            case IET_MOUSE_WHELL:
-                {
-                    this->mouseWheelEvent_( ev.data.wheel );
-                }break;
-            case IET_MOUSE_MOVE:
-                {
-                    this->mouseMoveEvent_( ev.data.move );
-                }break;
-            case IET_MOUSE_ENTER:
-                {
-                    this->mouseEnterEvent_( ev.data.enter );
-                }break;
-            case IET_MOUSE_LEAVE:
-                {
-                    this->mouseLeaveEvent_( ev.data.leave );
-                }break;
-            default:
-                {
-                    MENGINE_ERROR_FATAL( "invalid input event type: %u"
-                        , ev.type
-                    );
-                }break;
-            }
+                this->dispatchEvent_( _event );
+            } );
         }
 
         m_events.clear();
@@ -290,7 +253,7 @@ namespace Mengine
         return inside;
     }
     //////////////////////////////////////////////////////////////////////////
-    void InputService::applyCursorPosition_( ETouchCode _touchId, float _x, float _y, float _pressure )
+    void InputService::applyCursorPosition_( ETouchCode _touchId, const mt::vec2f & _screenPosition, float _pressure )
     {
         MENGINE_ASSERTION_FATAL( _touchId < MENGINE_INPUT_MAX_TOUCH, "invalid touch id %u"
             , _touchId
@@ -300,8 +263,7 @@ namespace Mengine
 
         bool change = false;
 
-        mt::vec2f point( _x, _y );
-        if( mt::cmp_v2_v2( currentPosition, point ) == false )
+        if( mt::cmp_v2_v2( currentPosition, _screenPosition ) == false )
         {
             change = true;
         }
@@ -313,7 +275,7 @@ namespace Mengine
             change = true;
         }
 
-        m_cursorPosition[_touchId] = point;
+        m_cursorPosition[_touchId] = _screenPosition;
         m_cursorPressure[_touchId] = _pressure;
 
         if( change == true )
@@ -322,14 +284,14 @@ namespace Mengine
             {
                 const InputMousePositionProviderInterfacePtr & provider = desc.provider;
 
-                provider->onMousePositionChange( _touchId, point, _pressure );
+                provider->onMousePositionChange( _touchId, _screenPosition, _pressure );
             }
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void InputService::setCursorPosition( ETouchCode _touchId, const mt::vec2f & _point, float _pressure )
+    void InputService::setCursorPosition( ETouchCode _touchId, const mt::vec2f & _screenPosition, float _pressure )
     {
-        this->applyCursorPosition_( _touchId, _point.x, _point.y, _pressure );
+        this->applyCursorPosition_( _touchId, _screenPosition, _pressure );
     }
     //////////////////////////////////////////////////////////////////////////
     const mt::vec2f & InputService::getCursorPosition( ETouchCode _touchId ) const
@@ -393,7 +355,7 @@ namespace Mengine
         StdAlgorithm::fill( m_keyBuffer, m_keyBuffer + MENGINE_INPUT_MAX_KEY_CODE, false );
     }
     //////////////////////////////////////////////////////////////////////////
-    void InputService::pushEvent( const InputUnionEvent & _event )
+    void InputService::pushEvent( const InputVariantEvent & _event )
     {
         m_mutex->lock();
         m_eventsAux.emplace_back( _event );
@@ -413,7 +375,7 @@ namespace Mengine
         _special->isSpecial = isSpecial;
     }
     //////////////////////////////////////////////////////////////////////////
-    void InputService::keyEvent_( const InputKeyEvent & _event )
+    void InputService::dispatchEvent_( const InputKeyEvent & _event )
     {
         LOGGER_INFO( "input", "handle symbol code [%u] down [%u] repeat [%u]"
             , _event.code
@@ -421,20 +383,13 @@ namespace Mengine
             , _event.isRepeat
         );
 
-        bool isRepeat = (m_keyBuffer[_event.code] == true && _event.isDown == true);
-
         m_keyBuffer[_event.code] = _event.isDown;
 
-        InputKeyEvent ev = _event;
-
-        //ToDo
-        ev.isRepeat = isRepeat;
-
         APPLICATION_SERVICE()
-            ->handleKeyEvent( ev );
+            ->handleKeyEvent( _event );
     }
     //////////////////////////////////////////////////////////////////////////
-    void InputService::textEvent_( const InputTextEvent & _event )
+    void InputService::dispatchEvent_( const InputTextEvent & _event )
     {
         LOGGER_INFO( "input", "handle text: %ls"
             , _event.text
@@ -444,7 +399,7 @@ namespace Mengine
             ->handleTextEvent( _event );
     }
     //////////////////////////////////////////////////////////////////////////
-    void InputService::accelerometerEvent_( const InputAccelerometerEvent & _event )
+    void InputService::dispatchEvent_( const InputAccelerometerEvent & _event )
     {
         LOGGER_INFO( "input", "handle accelerometer: %.4f %.4f %.4f"
             , _event.dx
@@ -456,7 +411,7 @@ namespace Mengine
             ->handleAccelerometerEvent( _event );
     }
     //////////////////////////////////////////////////////////////////////////
-    void InputService::mouseButtonEvent_( const InputMouseButtonEvent & _event )
+    void InputService::dispatchEvent_( const InputMouseButtonEvent & _event )
     {
         if( _event.touchId == TC_TOUCH_INVALID )
         {
@@ -473,8 +428,8 @@ namespace Mengine
 
         LOGGER_INFO( "input", "handle mouse button touch [%u] pos [%.4f:%.4f] button [%u] down [%u] pressed [%u] pressure [%f]"
             , _event.touchId
-            , _event.x
-            , _event.y
+            , _event.position.screen.x
+            , _event.position.screen.y
             , _event.button
             , _event.isDown
             , _event.isPressed
@@ -483,7 +438,7 @@ namespace Mengine
 
         m_mouseBuffer[_event.button] = _event.isDown;
 
-        this->applyCursorPosition_( _event.touchId, _event.x, _event.y, _event.pressure );
+        this->applyCursorPosition_( _event.touchId, _event.position.screen, _event.pressure );
 
         APPLICATION_SERVICE()
             ->handleMouseButtonEventBegin( _event );
@@ -495,7 +450,7 @@ namespace Mengine
             ->handleMouseButtonEventEnd( _event );
     }
     //////////////////////////////////////////////////////////////////////////
-    void InputService::mouseMoveEvent_( const InputMouseMoveEvent & _event )
+    void InputService::dispatchEvent_( const InputMouseMoveEvent & _event )
     {
         if( _event.touchId == TC_TOUCH_INVALID )
         {
@@ -508,33 +463,33 @@ namespace Mengine
 
         LOGGER_INFO( "input", "handle mouse move touch [%u] pos [%.4f:%.4f] delta [%.8f:%.8f] pressure [%f]"
             , _event.touchId
-            , _event.x
-            , _event.y
-            , _event.dx
-            , _event.dy
+            , _event.position.screen.x
+            , _event.position.screen.y
+            , _event.screenDelta.x
+            , _event.screenDelta.y
             , _event.pressure
         );
 
-        this->applyCursorPosition_( _event.touchId, _event.x, _event.y, _event.pressure );
+        this->applyCursorPosition_( _event.touchId, _event.position.screen, _event.pressure );
 
         APPLICATION_SERVICE()
             ->handleMouseMove( _event );
     }
     //////////////////////////////////////////////////////////////////////////
-    void InputService::mouseWheelEvent_( const InputMouseWheelEvent & _event )
+    void InputService::dispatchEvent_( const InputMouseWheelEvent & _event )
     {
-        LOGGER_INFO( "input", "handle mouse wheel pos [%.4f:%.4f] wheel [%u] scroll [%d]"
-            , _event.x
-            , _event.y
+        LOGGER_INFO( "input", "handle mouse wheel wheel [%u] scroll [%d] pos [%.4f:%.4f] "
             , _event.wheel
             , _event.scroll
+            , _event.position.screen.x
+            , _event.position.screen.y
         );
 
         APPLICATION_SERVICE()
             ->handleMouseWheel( _event );
     }
     //////////////////////////////////////////////////////////////////////////
-    void InputService::mouseEnterEvent_( const InputMouseEnterEvent & _event )
+    void InputService::dispatchEvent_( const InputMouseEnterEvent & _event )
     {
         MENGINE_ASSERTION_FATAL( _event.touchId < MENGINE_INPUT_MAX_TOUCH, "invalid touch id %u"
             , _event.touchId
@@ -542,18 +497,18 @@ namespace Mengine
 
         LOGGER_INFO( "input", "handle mouse enter touch [%u] pos [%.4f:%.4f] pressure [%f]"
             , _event.touchId
-            , _event.x
-            , _event.y
+            , _event.position.screen.x
+            , _event.position.screen.y
             , _event.pressure
         );
 
-        this->applyCursorPosition_( _event.touchId, _event.x, _event.y, _event.pressure );
+        this->applyCursorPosition_( _event.touchId, _event.position.screen, _event.pressure );
 
         APPLICATION_SERVICE()
             ->handleMouseEnter( _event );
     }
     //////////////////////////////////////////////////////////////////////////
-    void InputService::mouseLeaveEvent_( const InputMouseLeaveEvent & _event )
+    void InputService::dispatchEvent_( const InputMouseLeaveEvent & _event )
     {
         MENGINE_ASSERTION_FATAL( _event.touchId < MENGINE_INPUT_MAX_TOUCH, "invalid touch id %u"
             , _event.touchId
@@ -561,8 +516,8 @@ namespace Mengine
 
         LOGGER_INFO( "input", "handle mouse leave touch [%u] pos [%.4f:%.4f] pressure [%f]"
             , _event.touchId
-            , _event.x
-            , _event.y
+            , _event.position.screen.x
+            , _event.position.screen.y
             , _event.pressure
         );
 

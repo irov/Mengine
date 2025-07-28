@@ -3498,21 +3498,6 @@ namespace Mengine
         bool nopause = APPLICATION_SERVICE()
             ->getNopause();
 
-        mt::vec2f point( 0.f, 0.f );
-        this->calcCursorPosition_( &point );
-
-        if( m_active == false )
-        {
-            if( nopause == false )
-            {
-                Helper::pushMouseLeaveEvent( TC_TOUCH0, point.x, point.y, 0.f );
-            }
-        }
-        else
-        {
-            Helper::pushMouseEnterEvent( TC_TOUCH0, point.x, point.y, 0.f );
-        }
-
         bool focus = m_active;
 
         if( nopause == true )
@@ -3529,8 +3514,13 @@ namespace Mengine
         APPLICATION_SERVICE()
             ->turnSound( focus );
 
+        mt::vec2f point( 0.f, 0.f );
+        this->calcCursorPosition_( &point );
+
         if( m_active == true )
         {
+            Helper::pushMouseEnterEvent( TC_TOUCH0, point.x, point.y, 0.f );
+
             if( m_cursorMode == true )
             {
                 if( m_cursor == NULL )
@@ -3543,6 +3533,11 @@ namespace Mengine
         }
         else
         {
+            if( nopause == false )
+            {
+                Helper::pushMouseLeaveEvent( TC_TOUCH0, point.x, point.y, 0.f );
+            }
+
             if( m_cursorMode == true )
             {
                 ::SetCursor( NULL );

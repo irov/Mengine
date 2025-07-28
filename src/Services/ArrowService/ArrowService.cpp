@@ -20,8 +20,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ArrowService::ArrowService()
         : m_arrowType( EAT_POINT )
-        , m_pointClick( 0.f, 0.f )
-        , m_radius( 0.f )
+        , m_arrowRadius( 0.f )
         , m_hided( false )
     {
     }
@@ -44,7 +43,7 @@ namespace Mengine
     {
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_COMPLETE );
 
-        m_node = nullptr;
+        m_arrowNode = nullptr;
 
         INPUT_SERVICE()
             ->removeMousePositionProvider( InputMousePositionProviderInterfacePtr::from( this ) );
@@ -55,45 +54,38 @@ namespace Mengine
         return m_arrowType;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ArrowService::setOffsetClick( const mt::vec2f & _offsetClick )
+    void ArrowService::setArrowPoint()
     {
         m_arrowType = EAT_POINT;
-
-        m_pointClick = _offsetClick;
     }
     //////////////////////////////////////////////////////////////////////////
-    const mt::vec2f & ArrowService::getOffsetClick() const
-    {
-        return m_pointClick;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ArrowService::setPolygon( const Polygon & _polygon )
+    void ArrowService::setArrowPolygon( const Polygon & _polygon )
     {
         m_arrowType = EAT_POLYGON;
 
-        m_polygon = _polygon;
+        m_arrowPolygon = _polygon;
     }
     //////////////////////////////////////////////////////////////////////////
-    const Polygon & ArrowService::getPolygon() const
+    const Polygon & ArrowService::getArrowPolygon() const
     {
-        return m_polygon;
+        return m_arrowPolygon;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ArrowService::setRadius( float _radius )
+    void ArrowService::setArrowRadius( float _radius )
     {
         m_arrowType = EAT_RADIUS;
 
-        m_radius = _radius;
+        m_arrowRadius = _radius;
     }
     //////////////////////////////////////////////////////////////////////////
-    float ArrowService::getRadius() const
+    float ArrowService::getArrowRadius() const
     {
-        return m_radius;
+        return m_arrowRadius;
     }
     //////////////////////////////////////////////////////////////////////////
-    const NodePtr & ArrowService::getNode() const
+    const NodePtr & ArrowService::getArrowNode() const
     {
-        return m_node;
+        return m_arrowNode;
     }
     //////////////////////////////////////////////////////////////////////////
     void ArrowService::calcMouseWorldPosition( const RenderContext * _context, const mt::vec2f & _screenPoint, mt::vec2f * const _worldPoint ) const
@@ -140,47 +132,7 @@ namespace Mengine
         *_worldPoint = p_vm;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ArrowService::calcPointClick( const RenderContext * _context, const mt::vec2f & _screenPoint, mt::vec2f * const _worldPoint ) const
-    {
-        MENGINE_UNUSED( _context );
-
-        mt::vec2f p1;
-        this->calcMouseWorldPosition( _context, _screenPoint, &p1 );
-
-        EArrowType arrowType = this->getArrowType();
-
-        switch( arrowType )
-        {
-        case EAT_POINT:
-            {
-                const mt::vec2f & pc = this->getOffsetClick();
-
-                mt::vec2f p = p1 + pc;
-
-                *_worldPoint = p;
-            }break;
-        case EAT_RADIUS:
-            {
-                mt::vec2f p = p1;
-
-                *_worldPoint = p;
-            }break;
-        case EAT_POLYGON:
-            {
-                mt::vec2f p = p1;
-
-                *_worldPoint = p;
-            }break;
-        default:
-            {
-                MENGINE_ASSERTION_FATAL( false, "arrow type '%u'"
-                    , arrowType
-                );
-            }break;
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ArrowService::calcPointDelta( const RenderContext * _context, const mt::vec2f & _screenDelta, mt::vec2f * const _worldDelta ) const
+    void ArrowService::calcMouseWorldDelta( const RenderContext * _context, const mt::vec2f & _screenDelta, mt::vec2f * const _worldDelta ) const
     {
         Helper::screenToWorldDelta( _context, _screenDelta, _worldDelta );
     }
@@ -232,7 +184,7 @@ namespace Mengine
             return;
         }
 
-        const NodePtr & node = this->getNode();
+        const NodePtr & node = this->getArrowNode();
 
         if( node == nullptr )
         {
@@ -260,7 +212,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( node, "failed create Interender for arrow" );
 
-        m_node = node;
+        m_arrowNode = node;
     }
     //////////////////////////////////////////////////////////////////////////
 }

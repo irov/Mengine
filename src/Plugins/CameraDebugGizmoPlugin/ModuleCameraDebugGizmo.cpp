@@ -66,8 +66,8 @@ namespace Mengine
         const mt::vec2f & camera_offset = camera->getCameraOffset();
 
         mt::vec2f new_camera_offset = camera_offset;
-        new_camera_offset.x += _event.dx * 2.f;
-        new_camera_offset.y -= _event.dy * 2.f;
+        new_camera_offset.x += _event.position.world.x * 2.f;
+        new_camera_offset.y -= _event.position.world.y * 2.f;
 
         camera->setCameraOffset( new_camera_offset );
 

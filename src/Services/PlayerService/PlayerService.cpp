@@ -167,7 +167,7 @@ namespace Mengine
     void PlayerService::_stopService()
     {
         const NodePtr & arrowNode = ARROW_SERVICE()
-            ->getNode();
+            ->getArrowNode();
 
         arrowNode->disable();
         arrowNode->dispose();
@@ -232,7 +232,7 @@ namespace Mengine
     void PlayerService::setArrow()
     {
         const NodePtr & node = ARROW_SERVICE()
-            ->getNode();
+            ->getArrowNode();
 
         node->enable();
     }
@@ -366,7 +366,7 @@ namespace Mengine
         m_defaultArrowCamera2D->enableForce();
 
         const NodePtr & node = ARROW_SERVICE()
-            ->getNode();
+            ->getArrowNode();
 
         RenderInterface * render = node->getRender();
 
@@ -702,7 +702,7 @@ namespace Mengine
         if( debugMask == 0 )
         {
             const NodePtr & node = ARROW_SERVICE()
-                ->getNode();
+                ->getArrowNode();
 
             Helper::nodeRenderChildren( node.get(), _renderPipeline, &m_renderContext, false );
         }
@@ -789,7 +789,7 @@ namespace Mengine
         MENGINE_UNUSED( _newScene );
 
         const NodePtr & arrowNode = ARROW_SERVICE()
-            ->getNode();
+            ->getArrowNode();
 
         arrowNode->removeFromParent();
         arrowNode->disable();
@@ -832,7 +832,7 @@ namespace Mengine
         MENGINE_UNUSED( _scene );
 
         const NodePtr & arrowNode = ARROW_SERVICE()
-            ->getNode();
+            ->getArrowNode();
 
         arrowNode->enableForce();
     }
@@ -850,7 +850,7 @@ namespace Mengine
         MENGINE_UNUSED( _scene );
 
         const NodePtr & arrowNode = ARROW_SERVICE()
-            ->getNode();
+            ->getArrowNode();
 
         arrowNode->removeFromParent();
         arrowNode->disable();
@@ -887,7 +887,7 @@ namespace Mengine
         MENGINE_UNUSED( _scene );
 
         const NodePtr & arrowNode = ARROW_SERVICE()
-            ->getNode();
+            ->getArrowNode();
 
         arrowNode->enableForce();
     }
@@ -897,7 +897,7 @@ namespace Mengine
         MENGINE_UNUSED( _scene );
 
         const NodePtr & arrowNode = ARROW_SERVICE()
-            ->getNode();
+            ->getArrowNode();
 
         arrowNode->removeFromParent();
         arrowNode->disable();

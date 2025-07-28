@@ -121,7 +121,7 @@ namespace Mengine
     void NodeDebugRenderService::renderDebugArrow( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external, bool _hide )
     {
         const NodePtr & node = ARROW_SERVICE()
-            ->getNode();
+            ->getArrowNode();
 
         this->renderDebugNode( node, _renderPipeline, _context, _external, _hide );
 
@@ -143,14 +143,14 @@ namespace Mengine
         case EAT_RADIUS:
             {
                 float radius = ARROW_SERVICE()
-                    ->getRadius();
+                    ->getArrowRadius();
 
                 Helper::nodeDebugRenderCircle( _renderPipeline, _context, wm, radius, 32, 0x8080FFFF, MENGINE_DOCUMENT_FORWARD );
             }break;
         case EAT_POLYGON:
             {
                 const Polygon & polygon = ARROW_SERVICE()
-                    ->getPolygon();
+                    ->getArrowPolygon();
 
                 Helper::nodeDebugRenderPolygon( _renderPipeline, _context, wm, polygon, 0x8080FFFF, MENGINE_DOCUMENT_FORWARD );
             }break;

@@ -39,7 +39,7 @@ namespace Mengine
         bool isMouseButtonDown( EMouseButtonCode _button ) const override;
 
     public:
-        void setCursorPosition( ETouchCode _touchId, const mt::vec2f & _point, float _pressure ) override;
+        void setCursorPosition( ETouchCode _touchId, const mt::vec2f & _screenPosition, float _pressure ) override;
         const mt::vec2f & getCursorPosition( ETouchCode _touchId ) const override;
         float getCursorPressure( ETouchCode _touchId ) const override;
         bool validCursorPosition( float _x, float _y, float * const _vx, float * const _vy ) const override;
@@ -52,23 +52,23 @@ namespace Mengine
         void onFocus( bool _focus ) override;
 
     public:
-        void pushEvent( const InputUnionEvent & _event ) override;
+        void pushEvent( const InputVariantEvent & _event ) override;
 
     protected:
         void getSpecial( InputSpecialData * const _special ) const override;
 
     protected:
-        void keyEvent_( const InputKeyEvent & _params );
-        void textEvent_( const InputTextEvent & _params );
-        void accelerometerEvent_( const InputAccelerometerEvent & _params );
-        void mouseButtonEvent_( const InputMouseButtonEvent & _params );
-        void mouseMoveEvent_( const InputMouseMoveEvent & _params );
-        void mouseWheelEvent_( const InputMouseWheelEvent & _params );
-        void mouseEnterEvent_( const InputMouseEnterEvent & _params );
-        void mouseLeaveEvent_( const InputMouseLeaveEvent & _params );
+        void dispatchEvent_( const InputKeyEvent & _params );
+        void dispatchEvent_( const InputTextEvent & _params );
+        void dispatchEvent_( const InputAccelerometerEvent & _params );
+        void dispatchEvent_( const InputMouseButtonEvent & _params );
+        void dispatchEvent_( const InputMouseMoveEvent & _params );
+        void dispatchEvent_( const InputMouseWheelEvent & _params );
+        void dispatchEvent_( const InputMouseEnterEvent & _params );
+        void dispatchEvent_( const InputMouseLeaveEvent & _params );
 
     protected:
-        void applyCursorPosition_( ETouchCode _touchId, float _x, float _y, float _pressure );
+        void applyCursorPosition_( ETouchCode _touchId, const mt::vec2f & _screenPosition, float _pressure );
 
     protected:
         mt::vec2f m_cursorPosition[MENGINE_INPUT_MAX_TOUCH];
@@ -88,7 +88,7 @@ namespace Mengine
         typedef Vector<InputMousePositionProviderDesc> VectorMousePositionProviders;
         VectorMousePositionProviders m_mousePositionProviders;
 
-        typedef Vector<InputUnionEvent> VectorInputEvents;
+        typedef Vector<InputVariantEvent> VectorInputEvents;
         VectorInputEvents m_eventsAux;
         VectorInputEvents m_events;
 

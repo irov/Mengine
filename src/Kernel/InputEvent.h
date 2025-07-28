@@ -7,6 +7,8 @@
 
 #include "Config/Char.h"
 
+#include "math/vec2.h"
+
 #define MENGINE_INPUTTEXTEVENT_TEXT_MAX_SIZE 32
 
 namespace Mengine
@@ -20,12 +22,17 @@ namespace Mengine
         bool isSpecial;
     };
     //////////////////////////////////////////////////////////////////////////
+    struct InputPositionData
+    {
+        mt::vec2f screen;
+        mt::vec2f world;
+    };
+    //////////////////////////////////////////////////////////////////////////
     struct InputKeyEvent
     {
         InputSpecialData special;
+        InputPositionData position;
 
-        float x;
-        float y;
         float pressure;
 
         EKeyCode code;
@@ -36,9 +43,8 @@ namespace Mengine
     struct InputTextEvent
     {
         InputSpecialData special;
+        InputPositionData position;
 
-        float x;
-        float y;
         float pressure;
 
         WChar symbol;
@@ -57,11 +63,10 @@ namespace Mengine
     struct InputMouseButtonEvent
     {
         InputSpecialData special;
+        InputPositionData position;
 
         ETouchCode touchId;
 
-        float x;
-        float y;
         float pressure;
 
         EMouseButtonCode button;
@@ -72,9 +77,8 @@ namespace Mengine
     struct InputMouseWheelEvent
     {
         InputSpecialData special;
+        InputPositionData position;
 
-        float x;
-        float y;
         float pressure;
 
         EWheelCode wheel;
@@ -84,37 +88,34 @@ namespace Mengine
     struct InputMouseMoveEvent
     {
         InputSpecialData special;
+        InputPositionData position;
 
         ETouchCode touchId;
 
-        float x;
-        float y;
         float pressure;
 
-        float dx;
-        float dy;
+        mt::vec2f screenDelta;
+        mt::vec2f worldDelta;
         float dpressure;
     };
     //////////////////////////////////////////////////////////////////////////
     struct InputMouseEnterEvent
     {
         InputSpecialData special;
+        InputPositionData position;
 
         ETouchCode touchId;
 
-        float x;
-        float y;
         float pressure;
     };
     //////////////////////////////////////////////////////////////////////////
     struct InputMouseLeaveEvent
     {
         InputSpecialData special;
+        InputPositionData position;
 
         ETouchCode touchId;
 
-        float x;
-        float y;
         float pressure;
     };
     //////////////////////////////////////////////////////////////////////////

@@ -285,7 +285,7 @@ namespace Mengine
     bool PickerService::pickTraps( const mt::vec2f & _point, ETouchCode _touchId, float _pressure, const InputSpecialData & _special, VectorPickers * const _pickers ) const
     {
         VectorPickerStates statesAux;
-        if( this->pickStates_( _point.x, _point.y, _touchId, _pressure, _special, &statesAux ) == false )
+        if( this->pickStates_( _point, _touchId, _pressure, _special, &statesAux ) == false )
         {
             return false;
         }
@@ -314,7 +314,7 @@ namespace Mengine
     bool PickerService::getTraps( const mt::vec2f & _point, VectorPickers * const _pickers ) const
     {
         VectorPickerStates statesAux;
-        if( this->getStates_( _point.x, _point.y, &statesAux ) == false )
+        if( this->getStates_( _point, &statesAux ) == false )
         {
             return false;
         }
@@ -356,7 +356,7 @@ namespace Mengine
             ->getSpecial( &special );
 
         VectorPickerStates statesAux;
-        this->pickStates_( position.x, position.y, touchId, pressure, special, &statesAux );
+        this->pickStates_( position, touchId, pressure, special, &statesAux );
     }
     //////////////////////////////////////////////////////////////////////////
     void PickerService::invalidateTraps()
@@ -368,7 +368,7 @@ namespace Mengine
     {
         MENGINE_VECTOR_AUX( m_states );
 
-        if( this->pickStates_( _event.x, _event.y, TC_TOUCH0, 0.f, _event.special, &m_states ) == false )
+        if( this->pickStates_( _event.position.screen, TC_TOUCH0, 0.f, _event.special, &m_states ) == false )
         {
             return false;
         }
@@ -397,20 +397,17 @@ namespace Mengine
 
             PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
-            mt::vec2f wp;
-            ARROW_SERVICE()
-                ->calcPointClick( &desc.context, mt::vec2f( _event.x, _event.y ), &wp );
-
             InputKeyEvent ne = _event;
-            ne.x = wp.x;
-            ne.y = wp.y;
+
+            ARROW_SERVICE()
+                ->calcMouseWorldPosition( &desc.context, ne.position.screen, &ne.position.world );
 
             LOGGER_INFO( "picker", "handle type '%s' name '%s' UID [%u] pos [%.4f;%.4f] [key]"
                 , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
                 , MENGINE_MIXIN_DEBUG_NAME( inputHandler )
                 , MENGINE_MIXIN_DEBUG_UID( inputHandler )
-                , ne.x
-                , ne.y
+                , ne.position.world.x
+                , ne.position.world.y
             );
 
             if( inputHandler->handleKeyEvent( &desc.context, ne ) == false )
@@ -428,7 +425,7 @@ namespace Mengine
     {
         MENGINE_VECTOR_AUX( m_states );
 
-        if( this->pickStates_( _event.x, _event.y, TC_TOUCH0, 0.f, _event.special, &m_states ) == false )
+        if( this->pickStates_( _event.position.screen, TC_TOUCH0, 0.f, _event.special, &m_states ) == false )
         {
             return false;
         }
@@ -457,20 +454,17 @@ namespace Mengine
 
             PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
-            mt::vec2f wp;
-            ARROW_SERVICE()
-                ->calcPointClick( &desc.context, mt::vec2f( _event.x, _event.y ), &wp );
-
             InputTextEvent ne = _event;
-            ne.x = wp.x;
-            ne.y = wp.y;
+
+            ARROW_SERVICE()
+                ->calcMouseWorldPosition( &desc.context, ne.position.screen, &ne.position.world );
 
             LOGGER_INFO( "picker", "handle type '%s' name '%s' UID [%u] pos [%.4f;%.4f] [text]"
                 , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
                 , MENGINE_MIXIN_DEBUG_NAME( inputHandler )
                 , MENGINE_MIXIN_DEBUG_UID( inputHandler )
-                , ne.x
-                , ne.y
+                , ne.position.world.x
+                , ne.position.world.y
             );
 
             if( inputHandler->handleTextEvent( &desc.context, ne ) == false )
@@ -497,7 +491,7 @@ namespace Mengine
     {
         MENGINE_VECTOR_AUX( m_states );
 
-        if( this->pickStates_( _event.x, _event.y, _event.touchId, _event.pressure, _event.special, &m_states ) == false )
+        if( this->pickStates_( _event.position.screen, _event.touchId, _event.pressure, _event.special, &m_states ) == false )
         {
             return false;
         }
@@ -529,23 +523,21 @@ namespace Mengine
                 return m_handleValue;
             }
 
-            mt::vec2f wp;
-            ARROW_SERVICE()
-                ->calcPointClick( &desc.context, mt::vec2f( _event.x, _event.y ), &wp );
-
             PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
             InputMouseButtonEvent ne = _event;
-            ne.x = wp.x;
-            ne.y = wp.y;
+
+            ARROW_SERVICE()
+                ->calcMouseWorldPosition( &desc.context, ne.position.screen, &ne.position.world );
+
             ne.isPressed = picker->isPickerPressed();
 
             LOGGER_INFO( "picker", "handle type '%s' name '%s' UID [%u] pos [%.4f;%.4f] [mouse button]"
                 , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
                 , MENGINE_MIXIN_DEBUG_NAME( inputHandler )
                 , MENGINE_MIXIN_DEBUG_UID( inputHandler )
-                , ne.x
-                , ne.y
+                , ne.position.world.x
+                , ne.position.world.y
             );
 
             if( inputHandler->handleMouseButtonEvent( &desc.context, ne ) == false )
@@ -563,7 +555,7 @@ namespace Mengine
     {
         MENGINE_VECTOR_AUX( m_states );
 
-        if( this->pickStates_( _event.x, _event.y, _event.touchId, _event.pressure, _event.special, &m_states ) == false )
+        if( this->pickStates_( _event.position.screen, _event.touchId, _event.pressure, _event.special, &m_states ) == false )
         {
             return false;
         }
@@ -600,23 +592,21 @@ namespace Mengine
                 picker->setPickerPressed( true );
             }
 
-            mt::vec2f wp;
-            ARROW_SERVICE()
-                ->calcPointClick( &desc.context, mt::vec2f( _event.x, _event.y ), &wp );
-
             PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
             InputMouseButtonEvent ne = _event;
-            ne.x = wp.x;
-            ne.y = wp.y;
+
+            ARROW_SERVICE()
+                ->calcMouseWorldPosition( &desc.context, ne.position.screen, &ne.position.world );
+
             ne.isPressed = picker->isPickerPressed();
 
             LOGGER_INFO( "picker", "handle type '%s' name '%s' UID [%u] pos [%.4f;%.4f] [mouse button begin]"
                 , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
                 , MENGINE_MIXIN_DEBUG_NAME( inputHandler )
                 , MENGINE_MIXIN_DEBUG_UID( inputHandler )
-                , ne.x
-                , ne.y
+                , ne.position.world.x
+                , ne.position.world.y
             );
 
             if( inputHandler->handleMouseButtonEventBegin( &desc.context, ne ) == false )
@@ -634,7 +624,7 @@ namespace Mengine
     {
         MENGINE_VECTOR_AUX( m_states );
 
-        if( this->pickStates_( _event.x, _event.y, _event.touchId, _event.pressure, _event.special, &m_states ) == false )
+        if( this->pickStates_( _event.position.screen, _event.touchId, _event.pressure, _event.special, &m_states ) == false )
         {
             return false;
         }
@@ -678,23 +668,21 @@ namespace Mengine
                 }
             }
 
-            mt::vec2f wp;
-            ARROW_SERVICE()
-                ->calcPointClick( &desc.context, mt::vec2f( _event.x, _event.y ), &wp );
-
             PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
             InputMouseButtonEvent ne = _event;
-            ne.x = wp.x;
-            ne.y = wp.y;
+
+            ARROW_SERVICE()
+                ->calcMouseWorldPosition( &desc.context, ne.position.screen, &ne.position.world );
+
             ne.isPressed = picker->isPickerPressed();
 
             LOGGER_INFO( "picker", "handle type '%s' name '%s' UID [%u] pos [%.4f;%.4f] [mouse button end]"
                 , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
                 , MENGINE_MIXIN_DEBUG_NAME( inputHandler )
                 , MENGINE_MIXIN_DEBUG_UID( inputHandler )
-                , ne.x
-                , ne.y
+                , ne.position.world.x
+                , ne.position.world.y
             );
 
             if( inputHandler->handleMouseButtonEventEnd( &desc.context, ne ) == false )
@@ -712,7 +700,7 @@ namespace Mengine
     {
         MENGINE_VECTOR_AUX( m_states );
 
-        if( this->pickStates_( _event.x, _event.y, _event.touchId, _event.pressure, _event.special, &m_states ) == false )
+        if( this->pickStates_( _event.position.screen, _event.touchId, _event.pressure, _event.special, &m_states ) == false )
         {
             return false;
         }
@@ -744,28 +732,25 @@ namespace Mengine
                 return m_handleValue;
             }
 
-            mt::vec2f wp;
-            ARROW_SERVICE()
-                ->calcPointClick( &desc.context, mt::vec2f( _event.x, _event.y ), &wp );
-
-            mt::vec2f dp;
-            ARROW_SERVICE()
-                ->calcPointDelta( &desc.context, mt::vec2f( _event.dx, _event.dy ), &dp );
-
             PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
             InputMouseMoveEvent ne = _event;
-            ne.x = wp.x;
-            ne.y = wp.y;
-            ne.dx = dp.x;
-            ne.dy = dp.y;
 
-            LOGGER_INFO( "picker", "handle type '%s' name '%s' UID [%u] pos [%.4f;%.4f] [mouse move]"
+            ARROW_SERVICE()
+                ->calcMouseWorldPosition( &desc.context, ne.position.screen, &ne.position.world );
+
+            mt::vec2f wd;
+            ARROW_SERVICE()
+                ->calcMouseWorldDelta( &desc.context, ne.screenDelta, &ne.worldDelta );
+
+            LOGGER_INFO( "picker", "handle type '%s' name '%s' UID [%u] pos [%.4f;%.4f] delta [%.4f;%.4f] [mouse move]"
                 , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
                 , MENGINE_MIXIN_DEBUG_NAME( inputHandler )
                 , MENGINE_MIXIN_DEBUG_UID( inputHandler )
-                , ne.x
-                , ne.y
+                , ne.position.world.x
+                , ne.position.world.y
+                , ne.worldDelta.x
+                , ne.worldDelta.y
             );
 
             if( inputHandler->handleMouseMove( &desc.context, ne ) == false )
@@ -783,7 +768,7 @@ namespace Mengine
     {
         MENGINE_VECTOR_AUX( m_states );
 
-        if( this->pickStates_( _event.x, _event.y, TC_TOUCH0, 0.f, _event.special, &m_states ) == false )
+        if( this->pickStates_( _event.position.screen, TC_TOUCH0, 0.f, _event.special, &m_states ) == false )
         {
             return false;
         }
@@ -815,22 +800,19 @@ namespace Mengine
                 return m_handleValue;
             }
 
-            mt::vec2f wp;
-            ARROW_SERVICE()
-                ->calcPointClick( &desc.context, mt::vec2f( _event.x, _event.y ), &wp );
-
             PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
             InputMouseWheelEvent ne = _event;
-            ne.x = wp.x;
-            ne.y = wp.y;
+
+            ARROW_SERVICE()
+                ->calcMouseWorldPosition( &desc.context, ne.position.screen, &ne.position.world );
 
             LOGGER_INFO( "picker", "handle type '%s' name '%s' UID [%u] pos [%.4f;%.4f] [mouse wheel]"
                 , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
                 , MENGINE_MIXIN_DEBUG_NAME( inputHandler )
                 , MENGINE_MIXIN_DEBUG_UID( inputHandler )
-                , ne.x
-                , ne.y
+                , ne.position.world.x
+                , ne.position.world.y
             );
 
             if( inputHandler->handleMouseWheel( &desc.context, ne ) == false )
@@ -848,7 +830,7 @@ namespace Mengine
     {
         MENGINE_VECTOR_AUX( m_states );
 
-        this->pickStates_( _event.x, _event.y, _event.touchId, _event.pressure, _event.special, &m_states );
+        this->pickStates_( _event.position.screen, _event.touchId, _event.pressure, _event.special, &m_states );
 
         return false;
     }
@@ -893,20 +875,17 @@ namespace Mengine
 
             PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
-            mt::vec2f wp;
-            ARROW_SERVICE()
-                ->calcPointClick( &desc.context, mt::vec2f( _event.x, _event.y ), &wp );
-
             InputMouseLeaveEvent ne = _event;
-            ne.x = wp.x;
-            ne.y = wp.y;
+
+            ARROW_SERVICE()
+                ->calcMouseWorldPosition( &desc.context, ne.position.screen, &ne.position.world );
 
             LOGGER_INFO( "picker", "handle type '%s' name '%s' UID [%u] pos [%.4f;%.4f] [mouse leave]"
                 , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
                 , MENGINE_MIXIN_DEBUG_NAME( inputHandler )
                 , MENGINE_MIXIN_DEBUG_UID( inputHandler )
-                , ne.x
-                , ne.y
+                , ne.position.world.x
+                , ne.position.world.y
             );
 
             inputHandler->handleMouseLeave( &desc.context, _event );
@@ -930,7 +909,7 @@ namespace Mengine
         visitor.visit( picker, context );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PickerService::pickStates_( float _x, float _y, ETouchCode _touchId, float _pressure, const InputSpecialData & _special, VectorPickerStates * const _states ) const
+    bool PickerService::pickStates_( const mt::vec2f & _screenPosition, ETouchCode _touchId, float _pressure, const InputSpecialData & _special, VectorPickerStates * const _states ) const
     {
         MENGINE_ASSERTION_FATAL( _states->empty() == true, "states not empty" );
 
@@ -948,8 +927,8 @@ namespace Mengine
 
         this->fillStates_( _states );
 
-        mt::vec2f adapt_screen_position;
-        Helper::adaptScreenPosition( mt::vec2f( _x, _y ), &adapt_screen_position );
+        mt::vec2f adaptScreenPosition;
+        Helper::adaptScreenPosition( _screenPosition, &adaptScreenPosition );
 
         bool handle = false;
 
@@ -970,7 +949,7 @@ namespace Mengine
 
             if( handle == false || m_handleValue == false )
             {
-                bool picked = picker->pick( adapt_screen_position, &desc.context );
+                bool picked = picker->pick( adaptScreenPosition, &desc.context );
 
                 if( m_block == false && picked == true )
                 {
@@ -980,23 +959,22 @@ namespace Mengine
 
                         PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
-                        mt::vec2f wp;
-                        ARROW_SERVICE()
-                            ->calcPointClick( &desc.context, mt::vec2f( _x, _y ), &wp );
-
                         InputMouseEnterEvent ne;
+                        
                         ne.special = _special;
                         ne.touchId = _touchId;
-                        ne.x = wp.x;
-                        ne.y = wp.y;
+                        ne.position.screen = _screenPosition;
                         ne.pressure = _pressure;
+
+                        ARROW_SERVICE()
+                            ->calcMouseWorldPosition( &desc.context, ne.position.screen, &ne.position.world );
 
                         LOGGER_INFO( "picker", "handle type '%s' name '%s' UID [%u] pos [%.4f;%.4f] [mouse enter]"
                             , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
                             , MENGINE_MIXIN_DEBUG_NAME( inputHandler )
                             , MENGINE_MIXIN_DEBUG_UID( inputHandler )
-                            , ne.x
-                            , ne.y
+                            , ne.position.world.x
+                            , ne.position.world.y
                         );
 
                         handle = inputHandler->handleMouseEnter( &desc.context, ne );
@@ -1018,23 +996,22 @@ namespace Mengine
 
                         PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
-                        mt::vec2f wp;
-                        ARROW_SERVICE()
-                            ->calcPointClick( &desc.context, mt::vec2f( _x, _y ), &wp );
-
                         InputMouseLeaveEvent ne;
+                        
                         ne.special = _special;
                         ne.touchId = _touchId;
-                        ne.x = wp.x;
-                        ne.y = wp.y;
+                        ne.position.screen = _screenPosition;
                         ne.pressure = _pressure;
+
+                        ARROW_SERVICE()
+                            ->calcMouseWorldPosition( &desc.context, ne.position.screen, &ne.position.world );
 
                         LOGGER_INFO( "picker", "handle type '%s' name '%s' UID [%u] pos [%.4f;%.4f] [mouse leave]"
                             , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
                             , MENGINE_MIXIN_DEBUG_NAME( inputHandler )
                             , MENGINE_MIXIN_DEBUG_UID( inputHandler )
-                            , ne.x
-                            , ne.y
+                            , ne.position.world.x
+                            , ne.position.world.y
                         );
 
                         inputHandler->handleMouseLeave( &desc.context, ne );
@@ -1049,23 +1026,22 @@ namespace Mengine
 
                     PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
-                    mt::vec2f wp;
-                    ARROW_SERVICE()
-                        ->calcPointClick( &desc.context, mt::vec2f( _x, _y ), &wp );
-
                     InputMouseLeaveEvent ne;
+
                     ne.special = _special;
                     ne.touchId = _touchId;
-                    ne.x = wp.x;
-                    ne.y = wp.y;
+                    ne.position.screen = _screenPosition;
                     ne.pressure = _pressure;
+
+                    ARROW_SERVICE()
+                        ->calcMouseWorldPosition( &desc.context, ne.position.screen, &ne.position.world );
 
                     LOGGER_INFO( "picker", "handle type '%s' name '%s' UID [%u] pos [%.4f;%.4f] [mouse leave]"
                         , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
                         , MENGINE_MIXIN_DEBUG_NAME( inputHandler )
                         , MENGINE_MIXIN_DEBUG_UID( inputHandler )
-                        , ne.x
-                        , ne.y
+                        , ne.position.world.x
+                        , ne.position.world.y
                     );
 
                     inputHandler->handleMouseLeave( &desc.context, ne );
@@ -1076,7 +1052,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PickerService::getStates_( float _x, float _y, VectorPickerStates * const _states ) const
+    bool PickerService::getStates_( const mt::vec2f & _screenPosition, VectorPickerStates * const _states ) const
     {
         MENGINE_ASSERTION_FATAL( _states->empty() == true, "states not empty" );
 
@@ -1098,8 +1074,8 @@ namespace Mengine
         VectorPickerStates statesAux;
         this->fillStates_( &statesAux );
 
-        mt::vec2f adapt_screen_position;
-        Helper::adaptScreenPosition( mt::vec2f( _x, _y ), &adapt_screen_position );
+        mt::vec2f adaptScreenPosition;
+        Helper::adaptScreenPosition( _screenPosition, &adaptScreenPosition );
 
         for( const PickerStateDesc & desc : statesAux )
         {
@@ -1110,7 +1086,7 @@ namespace Mengine
                 continue;
             }
 
-            bool picked = picker->pick( adapt_screen_position, &desc.context );
+            bool picked = picker->pick( adaptScreenPosition, &desc.context );
 
             if( picked == false )
             {

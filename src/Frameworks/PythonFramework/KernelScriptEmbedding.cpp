@@ -2966,13 +2966,11 @@ namespace Mengine
 
         pybind::interface_<ArrowServiceInterface, pybind::bases<Mixin>>( _kernel, "ArrowServiceInterface", true )
             .def( "getArrowType", &ArrowServiceInterface::getArrowType )
-            .def( "setOffsetClick", &ArrowServiceInterface::setOffsetClick )
-            .def( "getOffsetClick", &ArrowServiceInterface::getOffsetClick )
-            .def( "setPolygon", &ArrowServiceInterface::setPolygon )
-            .def( "getPolygon", &ArrowServiceInterface::getPolygon )
-            .def( "setRadius", &ArrowServiceInterface::setRadius )
-            .def( "getRadius", &ArrowServiceInterface::getRadius )
-            .def( "getNode", &ArrowServiceInterface::getNode )
+            .def( "setPolygon", &ArrowServiceInterface::setArrowPolygon )
+            .def( "getPolygon", &ArrowServiceInterface::getArrowPolygon )
+            .def( "setRadius", &ArrowServiceInterface::setArrowRadius )
+            .def( "getRadius", &ArrowServiceInterface::getArrowRadius )
+            .def( "getNode", &ArrowServiceInterface::getArrowNode )
             ;
 
         m_implement = scriptMethod;

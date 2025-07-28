@@ -7,7 +7,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        void adaptScreenPosition( const mt::vec2f & _screenPoint, mt::vec2f * const _adaptScreenPoint )
+        void adaptScreenPosition( const mt::vec2f & _screenPosition, mt::vec2f * const _adaptScreenPosition )
         {
             const Viewport & renderViewport = APPLICATION_SERVICE()
                 ->getRenderViewport();
@@ -24,7 +24,7 @@ namespace Mengine
             mt::vec2f windowScale = renderViewportSize * currentResolutionSizeInv;
             mt::vec2f windowOffset = renderViewport.begin * currentResolutionSizeInv;
 
-            *_adaptScreenPoint = (_screenPoint - windowOffset) / windowScale;
+            *_adaptScreenPosition = (_screenPosition - windowOffset) / windowScale;
         }
         //////////////////////////////////////////////////////////////////////////
         void adaptScreenDelta( const mt::vec2f & _screenDelta, mt::vec2f * const _adaptScreenDelta )
@@ -46,7 +46,7 @@ namespace Mengine
             *_adaptScreenDelta = _screenDelta / windowScale;
         }
         //////////////////////////////////////////////////////////////////////////
-        void adaptWorldPosition( const mt::vec2f & _screenPoint, mt::vec2f * const _adaptScreenPoint )
+        void adaptWorldPosition( const mt::vec2f & _screenPosition, mt::vec2f * const _adaptScreenPosition )
         {
             const Viewport & renderViewport = APPLICATION_SERVICE()
                 ->getRenderViewport();
@@ -63,7 +63,7 @@ namespace Mengine
             mt::vec2f windowScale = renderViewportSize * currentResolutionSizeInv;
             mt::vec2f windowOffset = renderViewport.begin * currentResolutionSizeInv;
 
-            *_adaptScreenPoint = _screenPoint * windowScale + windowOffset;
+            *_adaptScreenPosition = _screenPosition * windowScale + windowOffset;
         }
         //////////////////////////////////////////////////////////////////////////
     }

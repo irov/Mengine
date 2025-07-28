@@ -946,7 +946,7 @@ namespace Mengine
             void s_hideArrow( bool _hide )
             {
                 const NodePtr & node = ARROW_SERVICE()
-                    ->getNode();
+                    ->getArrowNode();
 
                 RenderInterface * render = node->getRender();
 
@@ -989,7 +989,7 @@ namespace Mengine
                 }
 
                 const NodePtr & node = ARROW_SERVICE()
-                    ->getNode();
+                    ->getArrowNode();
 
                 _layer->addChild( node );
 
@@ -1114,7 +1114,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( shape, "invalid create shape '%s'"
                     , _name.c_str()
-                );  
+                );
 
                 shape->setName( _name );
                 shape->setSurface( surface );
@@ -1583,7 +1583,7 @@ namespace Mengine
             bool s_calcMouseScreenPosition( const mt::vec2f & _pos, mt::vec2f * const _screen )
             {
                 const NodePtr & node = ARROW_SERVICE()
-                    ->getNode();
+                    ->getArrowNode();
 
                 const RenderInterface * render = node->getRender();
 
@@ -2317,7 +2317,7 @@ namespace Mengine
                 }
 
             protected:
-                void onMousePositionChange( ETouchCode _touchId, const mt::vec2f & _position, float _pressure ) override
+                void onMousePositionChange( ETouchCode _touchId, const mt::vec2f & _screenPosition, float _pressure ) override
                 {
                     MENGINE_UNUSED( _pressure );
 
@@ -2330,7 +2330,7 @@ namespace Mengine
 
                     mt::vec2f wp;
                     ARROW_SERVICE()
-                        ->calcMouseWorldPosition( &context, _position, &wp );
+                        ->calcMouseWorldPosition( &context, _screenPosition, &wp );
 
                     mt::vec3f v3( wp.x, wp.y, 0.f );
 
@@ -2464,7 +2464,7 @@ namespace Mengine
 
                 mt::vec2f wp;
                 ARROW_SERVICE()
-                    ->calcPointClick( &context, _screenPoint, &wp );
+                    ->calcMouseWorldPosition( &context, _screenPoint, &wp );
 
                 return wp;
             }
@@ -3582,15 +3582,10 @@ namespace Mengine
             protected:
                 void handleMouseLeave( const InputMouseLeaveEvent & _event ) override
                 {
-                    mt::vec2f point( _event.x, _event.y );
-
-                    mt::vec2f wp;
-                    PLAYER_SERVICE()
-                        ->calcGlobalMouseWorldPosition( point, &wp );
-
                     InputMouseLeaveEvent ev = _event;
-                    ev.x = wp.x;
-                    ev.y = wp.y;
+
+                    PLAYER_SERVICE()
+                        ->calcGlobalMouseWorldPosition( _event.position.screen, &ev.position.world );
 
                     pybind::object py_result = this->call_cb( ev );
 
@@ -3633,22 +3628,13 @@ namespace Mengine
             protected:
                 bool handleMouseMove( const InputMouseMoveEvent & _event ) override
                 {
-                    mt::vec2f point( _event.x, _event.y );
-                    mt::vec2f delta( _event.dx, _event.dy );
-
-                    mt::vec2f wp;
-                    PLAYER_SERVICE()
-                        ->calcGlobalMouseWorldPosition( point, &wp );
-
-                    mt::vec2f wd;
-                    PLAYER_SERVICE()
-                        ->calcGlobalMouseWorldDelta( delta, &wd );
-
                     InputMouseMoveEvent ev = _event;
-                    ev.x = wp.x;
-                    ev.y = wp.y;
-                    ev.dx = wd.x;
-                    ev.dy = wd.y;
+
+                    PLAYER_SERVICE()
+                        ->calcGlobalMouseWorldPosition( _event.position.screen, &ev.position.world );
+
+                    PLAYER_SERVICE()
+                        ->calcGlobalMouseWorldDelta( _event.screenDelta, &ev.worldDelta );
 
                     pybind::object py_result = this->call_cb( ev );
 
@@ -3693,15 +3679,10 @@ namespace Mengine
             protected:
                 bool handleMouseButtonEvent( const InputMouseButtonEvent & _event ) override
                 {
-                    mt::vec2f point( _event.x, _event.y );
-
-                    mt::vec2f wp;
-                    PLAYER_SERVICE()
-                        ->calcGlobalMouseWorldPosition( point, &wp );
-
                     InputMouseButtonEvent ev = _event;
-                    ev.x = wp.x;
-                    ev.y = wp.y;
+
+                    PLAYER_SERVICE()
+                        ->calcGlobalMouseWorldPosition( _event.position.screen, &ev.position.world );
 
                     pybind::object py_result = this->call_cb( ev );
 
@@ -3747,15 +3728,10 @@ namespace Mengine
                 //////////////////////////////////////////////////////////////////////////
                 bool handleMouseButtonEventEnd( const InputMouseButtonEvent & _event ) override
                 {
-                    mt::vec2f point( _event.x, _event.y );
-
-                    mt::vec2f wp;
-                    PLAYER_SERVICE()
-                        ->calcGlobalMouseWorldPosition( point, &wp );
-
                     InputMouseButtonEvent ev = _event;
-                    ev.x = wp.x;
-                    ev.y = wp.y;
+
+                    PLAYER_SERVICE()
+                        ->calcGlobalMouseWorldPosition( ev.position.screen, &ev.position.world );
 
                     pybind::object py_result = this->call_cb( ev );
 
@@ -3801,15 +3777,10 @@ namespace Mengine
                 //////////////////////////////////////////////////////////////////////////
                 bool handleMouseButtonEventBegin( const InputMouseButtonEvent & _event ) override
                 {
-                    mt::vec2f point( _event.x, _event.y );
-
-                    mt::vec2f wp;
-                    PLAYER_SERVICE()
-                        ->calcGlobalMouseWorldPosition( point, &wp );
-
                     InputMouseButtonEvent ev = _event;
-                    ev.x = wp.x;
-                    ev.y = wp.y;
+
+                    PLAYER_SERVICE()
+                        ->calcGlobalMouseWorldPosition( _event.position.screen, &ev.position.world );
 
                     pybind::object py_result = this->call_cb( ev );
 
@@ -4646,10 +4617,14 @@ namespace Mengine
             .def_member( "isSpecial", &InputSpecialData::isSpecial )
             ;
 
+        pybind::struct_<InputPositionData>( _kernel, "InputPositionData" )
+            .def_member( "screen", &InputPositionData::screen )
+            .def_member( "world", &InputPositionData::world )
+            ;
+
         pybind::struct_<InputKeyEvent>( _kernel, "InputKeyEvent" )
             .def_member( "special", &InputKeyEvent::special )
-            .def_member( "x", &InputKeyEvent::x )
-            .def_member( "y", &InputKeyEvent::y )
+            .def_member( "position", &InputKeyEvent::position )
             .def_member( "pressure", &InputKeyEvent::pressure )
             .def_member( "code", &InputKeyEvent::code )
             .def_member( "isDown", &InputKeyEvent::isDown )
@@ -4658,8 +4633,7 @@ namespace Mengine
 
         pybind::struct_<InputTextEvent>( _kernel, "InputTextEvent" )
             .def_member( "special", &InputTextEvent::special )
-            .def_member( "x", &InputTextEvent::x )
-            .def_member( "y", &InputTextEvent::y )
+            .def_member( "position", &InputTextEvent::position )
             .def_member( "pressure", &InputTextEvent::pressure )
             .def_member( "symbol", &InputTextEvent::symbol )
             .def_property_static( "text", &EngineScriptMethod::s_InputTextEvent_getText, nullptr )
@@ -4674,9 +4648,8 @@ namespace Mengine
 
         pybind::struct_<InputMouseButtonEvent>( _kernel, "InputMouseButtonEvent" )
             .def_member( "special", &InputMouseButtonEvent::special )
+            .def_member( "position", &InputMouseButtonEvent::position )
             .def_member( "touchId", &InputMouseButtonEvent::touchId )
-            .def_member( "x", &InputMouseButtonEvent::x )
-            .def_member( "y", &InputMouseButtonEvent::y )
             .def_member( "pressure", &InputMouseButtonEvent::pressure )
             .def_member( "button", &InputMouseButtonEvent::button )
             .def_member( "isDown", &InputMouseButtonEvent::isDown )
@@ -4685,8 +4658,7 @@ namespace Mengine
 
         pybind::struct_<InputMouseWheelEvent>( _kernel, "InputMouseWheelEvent" )
             .def_member( "special", &InputMouseWheelEvent::special )
-            .def_member( "x", &InputMouseWheelEvent::x )
-            .def_member( "y", &InputMouseWheelEvent::y )
+            .def_member( "position", &InputMouseWheelEvent::position )
             .def_member( "pressure", &InputMouseWheelEvent::pressure )
             .def_member( "wheel", &InputMouseWheelEvent::wheel )
             .def_member( "scroll", &InputMouseWheelEvent::scroll )
@@ -4694,28 +4666,25 @@ namespace Mengine
 
         pybind::struct_<InputMouseMoveEvent>( _kernel, "InputMouseMoveEvent" )
             .def_member( "special", &InputMouseMoveEvent::special )
+            .def_member( "position", &InputMouseMoveEvent::position )
             .def_member( "touchId", &InputMouseMoveEvent::touchId )
-            .def_member( "x", &InputMouseMoveEvent::x )
-            .def_member( "y", &InputMouseMoveEvent::y )
             .def_member( "pressure", &InputMouseMoveEvent::pressure )
-            .def_member( "dx", &InputMouseMoveEvent::dx )
-            .def_member( "dy", &InputMouseMoveEvent::dy )
+            .def_member( "screenDelta", &InputMouseMoveEvent::screenDelta )
+            .def_member( "worldDelta", &InputMouseMoveEvent::worldDelta )
             .def_member( "dpressure", &InputMouseMoveEvent::dpressure )
             ;
 
         pybind::struct_<InputMouseEnterEvent>( _kernel, "InputMouseEnterEvent" )
             .def_member( "special", &InputMouseEnterEvent::special )
+            .def_member( "position", &InputMouseEnterEvent::position )
             .def_member( "touchId", &InputMouseEnterEvent::touchId )
-            .def_member( "x", &InputMouseEnterEvent::x )
-            .def_member( "y", &InputMouseEnterEvent::y )
             .def_member( "pressure", &InputMouseEnterEvent::pressure )
             ;
 
         pybind::struct_<InputMouseLeaveEvent>( _kernel, "InputMouseLeaveEvent" )
             .def_member( "special", &InputMouseLeaveEvent::special )
+            .def_member( "position", &InputMouseLeaveEvent::position )
             .def_member( "touchId", &InputMouseLeaveEvent::touchId )
-            .def_member( "x", &InputMouseLeaveEvent::x )
-            .def_member( "y", &InputMouseLeaveEvent::y )
             .def_member( "pressure", &InputMouseLeaveEvent::pressure )
             ;
 

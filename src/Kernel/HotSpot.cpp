@@ -402,7 +402,7 @@ namespace Mengine
         case EAT_RADIUS:
             {
                 float radius = ARROW_SERVICE()
-                    ->getRadius();
+                    ->getArrowRadius();
 
                 bool result = this->testRadius( _context, _point, radius );
 
@@ -411,7 +411,7 @@ namespace Mengine
         case EAT_POLYGON:
             {
                 const Polygon & polygon = ARROW_SERVICE()
-                    ->getPolygon();
+                    ->getArrowPolygon();
 
                 bool result = this->testPolygon( _context, _point, polygon );
 

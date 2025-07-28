@@ -370,9 +370,9 @@ namespace Mengine
 
             {
                 WPath sPath = {L'\0'};
-                StdString::wcscpy( sPath, sDir );
-                StdString::wcscat( sPath, _path );
-                StdString::wcscat( sPath, _mask );
+                StdString::wcscpy_safe( sPath, sDir, MENGINE_MAX_PATH );
+                StdString::wcscat_safe( sPath, _path, MENGINE_MAX_PATH );
+                StdString::wcscat_safe( sPath, _mask, MENGINE_MAX_PATH );
 
                 WIN32_FIND_DATA fdFile;
                 HANDLE hFind = ::FindFirstFileEx( sPath, FindExInfoStandard, &fdFile, FindExSearchNameMatch, NULL, 0 );
@@ -393,8 +393,8 @@ namespace Mengine
                         }
 
                         WPath sPath2 = {L'\0'};
-                        StdString::wcscpy( sPath2, sPath );
-                        StdString::wcscat( sPath2, L"\0" );
+                        StdString::wcscpy_safe( sPath2, sPath, MENGINE_MAX_PATH );
+                        StdString::wcscat_safe( sPath2, L"\0", MENGINE_MAX_PATH );
 
                         Helper::pathCorrectForwardslashW( sPath2 );
 
@@ -414,7 +414,7 @@ namespace Mengine
                         }
                         else
                         {
-                            StdString::wcscpy( unicode_out, unicode_filepath );
+                            StdString::wcscpy_safe( unicode_out, unicode_filepath, MENGINE_MAX_PATH );
                         }
 
                         Path utf8_filepath = {'\0'};
@@ -444,9 +444,9 @@ namespace Mengine
 
             {
                 WPath sPath = {L'\0'};
-                StdString::wcscpy( sPath, sDir );
-                StdString::wcscat( sPath, _path );
-                StdString::wcscat( sPath, L"*.*" );
+                StdString::wcscpy_safe( sPath, sDir, MENGINE_MAX_PATH );
+                StdString::wcscat_safe( sPath, _path, MENGINE_MAX_PATH );
+                StdString::wcscat_safe( sPath, L"*.*", MENGINE_MAX_PATH );
 
                 WIN32_FIND_DATA fdFile;
                 HANDLE hFind = ::FindFirstFileEx( sPath, FindExInfoStandard, &fdFile, FindExSearchNameMatch, NULL, 0 );
@@ -470,15 +470,15 @@ namespace Mengine
                     }
 
                     WPath currentPath = {L'\0'};
-                    StdString::wcscpy( currentPath, sPath );
-                    StdString::wcscat( currentPath, L"\0" );
+                    StdString::wcscpy_safe( currentPath, sPath, MENGINE_MAX_PATH );
+                    StdString::wcscat_safe( currentPath, L"\0", MENGINE_MAX_PATH );
 
                     ::PathRemoveFileSpec( currentPath );
 
                     WPath nextPath = {L'\0'};
                     ::PathCombine( nextPath, currentPath, fdFile.cFileName );
 
-                    StdString::wcscat( nextPath, L"\\" );
+                    StdString::wcscat_safe( nextPath, L"\\", MENGINE_MAX_PATH );
 
                     bool stop;
                     if( Detail::listDirectoryContents( sDir, _mask, nextPath, _lambda, &stop ) == false )

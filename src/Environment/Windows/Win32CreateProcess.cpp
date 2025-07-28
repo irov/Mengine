@@ -32,8 +32,8 @@ namespace Mengine
         bool Win32CreateProcessW( const WChar * _process, const WChar * _command, bool _wait, uint32_t * const _exitCode )
         {
             WChar unicode_command[MENGINE_MAX_COMMAND_LENGTH + 1] = {L'\0'};
-            StdString::wcscpy( unicode_command, L" " );
-            StdString::wcscat( unicode_command, _command );
+            StdString::wcscpy_safe( unicode_command, L" ", MENGINE_MAX_COMMAND_LENGTH );
+            StdString::wcscat_safe( unicode_command, _command, MENGINE_MAX_COMMAND_LENGTH );
 
             if( _wait == true )
             {

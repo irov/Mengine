@@ -161,19 +161,19 @@ namespace Mengine
 
             if( base_lenght == 0 )
             {
-                StdString::wcscpy( _out, _path );
+                StdString::wcscpy_safe( _out, _path, MENGINE_MAX_PATH );
 
                 return;
             }
 
-            StdString::wcscpy( _out, _base );
+            StdString::wcscpy_safe( _out, _base, MENGINE_MAX_PATH );
 
             if( _base[base_lenght - 1] != _slash )
             {
-                StdString::wcschrcat( _out, _slash );
+                StdString::wcschrcat_safe( _out, _slash, MENGINE_MAX_PATH );
             }
 
-            StdString::wcscat( _out, _path );
+            StdString::wcscat_safe( _out, _path, MENGINE_MAX_PATH );
         }
         //////////////////////////////////////////////////////////////////////////
         void pathCombineA( Char * const _out, const Char * _base, const Char * _path, Char _slash )
@@ -203,17 +203,17 @@ namespace Mengine
 
             if( base_lenght == 0 )
             {
-                StdString::wcscpy( _base, _path );
+                StdString::wcscpy_safe( _base, _path, MENGINE_MAX_PATH );
 
                 return;
             }
 
             if( _base[base_lenght - 1] != _slash )
             {
-                StdString::wcschrcat( _base, _slash );
+                StdString::wcschrcat_safe( _base, _slash, MENGINE_MAX_PATH );
             }
 
-            StdString::wcscat( _base, _path );
+            StdString::wcscat_safe( _base, _path, MENGINE_MAX_PATH );
         }
         //////////////////////////////////////////////////////////////////////////
         void pathAppendA( Char * const _base, const Char * _path, Char _slash )
@@ -251,7 +251,7 @@ namespace Mengine
                 return;
             }
 
-            StdString::wcsnchrcat( _folderPath, _delim, MENGINE_MAX_PATH );
+            StdString::wcschrcat_safe( _folderPath, _delim, MENGINE_MAX_PATH );
         }
         //////////////////////////////////////////////////////////////////////////
         void pathCorrectFolderPathA( Char * const _folderPath, Char _delim )
@@ -299,7 +299,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void pathCorrectBackslashToW( WChar * const _out, const WChar * _filePath )
         {
-            StdString::wcscpy( _out, _filePath );
+            StdString::wcscpy_safe( _out, _filePath, MENGINE_MAX_PATH );
 
             Helper::pathCorrectBackslashW( _out );
         }
@@ -337,7 +337,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void pathCorrectForwardslashToW( WChar * const _out, const WChar * _filePath )
         {
-            StdString::wcscpy( _out, _filePath );
+            StdString::wcscpy_safe( _out, _filePath, MENGINE_MAX_PATH );
 
             Helper::pathCorrectForwardslashW( _out );
         }

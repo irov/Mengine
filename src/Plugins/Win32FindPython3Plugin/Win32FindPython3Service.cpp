@@ -172,7 +172,7 @@ namespace Mengine
             return false;
         }
 
-        StdString::wcscpy( Python3PathW, Python3PathInstallPathValue );
+        StdString::wcscpy_safe( Python3PathW, Python3PathInstallPathValue, MENGINE_MAX_PATH );
 
         WPath Python3PathPythonPathValue = {L'\0'};
         DWORD Python3PathPythonPathLen = MENGINE_MAX_PATH;
@@ -189,7 +189,7 @@ namespace Mengine
             return false;
         }
 
-        StdString::wcscpy( m_python3LibraryPathW, Python3PathPythonPathValue );
+        StdString::wcscpy_safe( m_python3LibraryPathW, Python3PathPythonPathValue, MENGINE_MAX_PATH );
 
         ::PathCombineW( m_python3ExecutablePathW, Python3PathW, L"python.exe" );
 
@@ -242,17 +242,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32FindPython3Service::getPython3ExecutablePathW( WChar * const _path ) const
     {
-        StdString::wcscpy( _path, m_python3ExecutablePathW );
+        StdString::wcscpy_safe( _path, m_python3ExecutablePathW, MENGINE_MAX_PATH );
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32FindPython3Service::getPython3LibraryPathW( WChar * const _path ) const
     {
-        StdString::wcscpy( _path, m_python3LibraryPathW );
+        StdString::wcscpy_safe( _path, m_python3LibraryPathW, MENGINE_MAX_PATH );
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32FindPython3Service::getPython3DllPathW( WChar * const _path ) const
     {
-        StdString::wcscpy( _path, m_python3DllPathW );
+        StdString::wcscpy_safe( _path, m_python3DllPathW, MENGINE_MAX_PATH );
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32FindPython3Service::getPython3ExecutablePathA( Char * const _path ) const

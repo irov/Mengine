@@ -127,18 +127,11 @@ namespace Mengine
             StdString::strcpy_safe( _value, _buffer, _capacity );
         }
         //////////////////////////////////////////////////////////////////////////
-        int32_t staticStringCompare( const Char * _buffer, size_t _capacity, const Char * _value )
+        int32_t staticStringCompare( const Char * _buffer, size_t _size, const Char * _value )
         {
             MENGINE_ASSERTION_MEMORY_PANIC( _value, "invalid compare value" );
 
-            size_t value_size = StdString::strlen( _value );
-
-            if( value_size >= _capacity )
-            {
-                return 1;
-            }
-
-            int32_t result = StdString::strncmp( _buffer, _value, _capacity );
+            int32_t result = StdString::strncmp( _buffer, _value, _size );
 
             return result;
         }

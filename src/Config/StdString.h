@@ -61,6 +61,22 @@ namespace Mengine
         MENGINE_INLINE WChar * wcschrcat( WChar * const _out, WChar _ch )
         {
             size_t len = StdString::wcslen( _out );
+
+            _out[len] = _ch;
+            _out[len + 1] = L'\0';
+
+            return _out;
+        }
+
+        MENGINE_INLINE WChar * wcschrcat_safe( WChar * const _out, WChar _ch, size_t _capacity )
+        {
+            size_t len = StdString::wcslen( _out );
+
+            if( len + 1 >= _capacity )
+            {
+                return _out;
+            }
+
             _out[len] = _ch;
             _out[len + 1] = L'\0';
 
@@ -164,7 +180,79 @@ namespace Mengine
 
             StdString::strncpy( _out + len, _in, _size );
 
-            _out[_capacity] = '\0';
+            _out[_size] = '\0';
+
+            return _out;
+        }
+
+        MENGINE_INLINE WChar * wcscpy_safe( WChar * const _out, const WChar * _in, size_t _capacity )
+        {
+            if( _capacity == 0 )
+            {
+                return _out;
+            }
+
+            StdString::wcsncpy( _out, _in, _capacity );
+
+            _out[_capacity] = L'\0';
+
+            return _out;
+        }
+
+        MENGINE_INLINE WChar * wcscat_safe( WChar * const _out, const WChar * _in, size_t _capacity )
+        {
+            size_t len = StdString::wcslen( _out );
+
+            if( len >= _capacity )
+            {
+                return _out;
+            }
+
+            StdString::wcsncpy( _out + len, _in, _capacity - len );
+
+            _out[_capacity] = L'\0';
+
+            return _out;
+        }
+
+        MENGINE_INLINE WChar * wcszcpy_safe( WChar * const _out, const WChar * _in, size_t _size, size_t _capacity )
+        {
+            if( _capacity == 0 )
+            {
+                return _out;
+            }
+
+            if( _size >= _capacity )
+            {
+                _size = _capacity;
+            }
+
+            StdString::wcsncpy( _out, _in, _size );
+
+            _out[_size] = L'\0';
+
+            return _out;
+        }
+
+        MENGINE_INLINE WChar * wcszcat_safe( WChar * const _out, const WChar * _in, size_t _size, size_t _capacity )
+        {
+            size_t len = StdString::wcslen( _out );
+
+            if( len >= _capacity )
+            {
+                return _out;
+            }
+
+            size_t capacity_len = _capacity - len;
+
+            if( _size >= capacity_len )
+            {
+                _size = capacity_len;
+            }
+
+            StdString::wcsncpy( _out + len, _in, _size );
+
+            _out[_size] = L'\0';
 
             return _out;
         }

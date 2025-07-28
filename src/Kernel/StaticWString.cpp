@@ -110,16 +110,14 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void staticWStringCopy( const WChar * _buffer, size_t _capacity, WChar * _value )
         {
-            MENGINE_UNUSED( _capacity );
-
-            StdString::wcscpy( _value, _buffer );
+            StdString::wcscpy_safe( _value, _buffer, _capacity );
         }
         //////////////////////////////////////////////////////////////////////////
-        int32_t staticWStringCompare( const WChar * _buffer, size_t _capacity, const WChar * _value )
+        int32_t staticWStringCompare( const WChar * _buffer, size_t _size, const WChar * _value )
         {
             MENGINE_ASSERTION_MEMORY_PANIC( _value, "invalid compare value" );
 
-            int32_t result = StdString::wcsncmp( _buffer, _value, _capacity );
+            int32_t result = StdString::wcsncmp( _buffer, _value, _size );
 
             return result;
         }

@@ -166,7 +166,7 @@ namespace Mengine
             
             ev.symbol = _text[0];
 
-            StdString::wcsncpy( ev.text, _text, MENGINE_INPUTTEXTEVENT_TEXT_MAX_SIZE );
+            StdString::wcscpy_safe( ev.text, _text, MENGINE_INPUTTEXTEVENT_TEXT_MAX_SIZE );
 
             INPUT_SERVICE()
                 ->pushEvent( ev );

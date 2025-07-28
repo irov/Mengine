@@ -23,9 +23,9 @@ namespace Mengine
     {
         // try to create mutex to sure that we are not running already
         WPath mutexName = {L'\0'};
-        StdString::wcscpy( mutexName, L"Mengine_ARM_Mutex_" );
-        StdString::wcscat( mutexName, _windowClassName );
-        StdString::wcscat( mutexName, _projectTitle );
+        StdString::wcscpy_safe( mutexName, L"Mengine_ARM_Mutex_", MENGINE_MAX_PATH );
+        StdString::wcscat_safe( mutexName, _windowClassName, MENGINE_MAX_PATH );
+        StdString::wcscat_safe( mutexName, _projectTitle, MENGINE_MAX_PATH );
 
         HANDLE mutex = ::CreateMutex( NULL, FALSE, mutexName );
 

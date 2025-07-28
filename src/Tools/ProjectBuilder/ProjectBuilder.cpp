@@ -1336,10 +1336,10 @@ static bool run()
     LOGGER_MESSAGE( "ToolsBuilderPlugin python module successful" );
 
     WCHAR python3LibPathCount[MENGINE_MAX_PATH + 1] = {L'\0'};
-    Mengine::StdString::wcscpy( python3LibPathCount, python3LibPath );
+    Mengine::StdString::wcscpy_safe( python3LibPathCount, python3LibPath, MENGINE_MAX_PATH );
 
     WCHAR python3LibPathItem[MENGINE_MAX_PATH + 1] = {L'\0'};
-    Mengine::StdString::wcscpy( python3LibPathItem, python3LibPath );
+    Mengine::StdString::wcscpy_safe( python3LibPathItem, python3LibPath, MENGINE_MAX_PATH );
 
     wchar_t * token;    
 

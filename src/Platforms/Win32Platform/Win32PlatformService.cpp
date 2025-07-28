@@ -2792,7 +2792,7 @@ namespace Mengine
         WPath fileCorrect = {L'\0'};
         Helper::pathCorrectForwardslashToW( fileCorrect, _file );
 
-        StdString::wcscat( szPath, pathCorrect );
+        StdString::wcscat_safe( szPath, pathCorrect, MENGINE_MAX_PATH );
 
         if( Helper::Win32ExistFile( szPath ) == false )
         {
@@ -2808,7 +2808,7 @@ namespace Mengine
             }
         }
 
-        StdString::wcscat( szPath, fileCorrect );
+        StdString::wcscat_safe( szPath, fileCorrect, MENGINE_MAX_PATH );
 
         HANDLE hFile = ::CreateFile( szPath, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL );
 
@@ -2897,12 +2897,12 @@ namespace Mengine
         WPath unicode_correctDirectoryPath = {L'\0'};
         Helper::pathCorrectForwardslashToW( unicode_correctDirectoryPath, unicode_directoryPath );
 
-        StdString::wcscat( szPath, unicode_correctDirectoryPath );
+        StdString::wcscat_safe( szPath, unicode_correctDirectoryPath, MENGINE_MAX_PATH );
 
         WPath unicode_correctFilePath = {L'\0'};
         Helper::pathCorrectForwardslashToW( unicode_correctFilePath, unicode_filePath );
 
-        StdString::wcscat( szPath, unicode_correctFilePath );
+        StdString::wcscat_safe( szPath, unicode_correctFilePath, MENGINE_MAX_PATH );
 
         if( Helper::Win32ExistFile( szPath ) == false )
         {
@@ -3170,7 +3170,7 @@ namespace Mengine
             ::PathRemoveBackslashW( currentDirectory );
             ::PathAddBackslashW( currentDirectory );
 
-            StdString::wcscat( currentDirectory, MENGINE_DEVELOPMENT_USER_FOLDER_NAME );
+            StdString::wcscat_safe( currentDirectory, MENGINE_DEVELOPMENT_USER_FOLDER_NAME, MENGINE_MAX_PATH );
 
             uint32_t Engine_BotId = CONFIG_VALUE_INTEGER( "Engine", "BotId", ~0U );
 
@@ -3181,7 +3181,7 @@ namespace Mengine
                 WChar suffixBuffer[32 + 1] = {L'\0'};
                 Helper::stringalized( botId, suffixBuffer, 32 );
 
-                StdString::wcscat( currentDirectory, suffixBuffer );
+                StdString::wcscat_safe( currentDirectory, suffixBuffer, MENGINE_MAX_PATH );
             }
 
             ::PathAddBackslashW( currentDirectory );

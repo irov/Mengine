@@ -48,7 +48,7 @@ namespace Mengine
         float pressure;
 
         WChar symbol;
-        WChar text[MENGINE_INPUTTEXTEVENT_TEXT_MAX_SIZE];
+        WChar text[MENGINE_INPUTTEXTEVENT_TEXT_MAX_SIZE + 1];
     };
     //////////////////////////////////////////////////////////////////////////
     struct InputAccelerometerEvent

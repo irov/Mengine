@@ -15,7 +15,7 @@ namespace Mengine
     {
     public:
         ConstStringHolderPythonString();
-        ~ConstStringHolderPythonString();
+        ~ConstStringHolderPythonString() override;
 
     public:
         void setPythonObject( pybind::kernel_interface * _kernel, PyObject * _value );

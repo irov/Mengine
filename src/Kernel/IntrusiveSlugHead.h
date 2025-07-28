@@ -17,16 +17,16 @@ namespace Mengine
         }
 
     protected:
-        uint32_t incref() noexcept override
+        uint32_t incref() override
         {
             return 1;
         }
 
-        void decref() noexcept override
+        void decref() override
         {
         }
 
-        uint32_t getrefcount() const noexcept override
+        uint32_t getrefcount() const override
         {
             return 1;
         };

@@ -2,6 +2,8 @@
 
 #include "Config/Char.h"
 
+#include "Config/StdAssert.h"
+
 #include <cstring>
 #include <cwchar>
 
@@ -33,6 +35,11 @@ namespace Mengine
 
         using std::wcstol;
 
+        using std::memcpy;
+        using std::memset;
+        using std::memmove;
+        using std::memcmp;
+
         MENGINE_INLINE Char * strchrcat( Char * const _out, Char _ch )
         {
             size_t len = StdString::strlen( _out );
@@ -45,10 +52,19 @@ namespace Mengine
 
         MENGINE_INLINE Char * strchrcat_safe( Char * const _out, Char _ch, size_t _capacity )
         {
+            if( _capacity == 0 )
+            {
+                assert( !"strchrcat_safe: output buffer overflow" );
+
+                return _out;
+            }
+
             size_t len = StdString::strlen( _out );
 
-            if( len >= _capacity )
+            if( len >= _capacity - 1 )
             {
+                assert( !"strchrcat_safe: output buffer overflow" );
+
                 return _out;
             }
 
@@ -70,59 +86,24 @@ namespace Mengine
 
         MENGINE_INLINE WChar * wcschrcat_safe( WChar * const _out, WChar _ch, size_t _capacity )
         {
-            size_t len = StdString::wcslen( _out );
-
-            if( len + 1 >= _capacity )
-            {
-                return _out;
-            }
-
-            _out[len] = _ch;
-            _out[len + 1] = L'\0';
-
-            return _out;
-        }
-
-        MENGINE_INLINE Char * strnchrcat( Char * const _out, Char _ch, size_t _count )
-        {
-            size_t len = StdString::strlen( _out );
-
-            if( len + 1 >= _count )
-            {
-                return _out;
-            }
-
-            _out[len] = _ch;
-            _out[len + 1] = '\0';
-
-            return _out;
-        }
-
-        MENGINE_INLINE WChar * wcsnchrcat( WChar * const _out, WChar _ch, size_t _count )
-        {
-            size_t len = StdString::wcslen( _out );
-
-            if( len + 1 >= _count )
-            {
-                return _out;
-            }
-
-            _out[len] = _ch;
-            _out[len + 1] = L'\0';
-
-            return _out;
-        }
-
-        MENGINE_INLINE Char * strcpy_safe( Char * const _out, const Char * _in, size_t _capacity )
-        {
             if( _capacity == 0 )
             {
+                assert( !"wcschrcat_safe: output buffer overflow" );
+
                 return _out;
             }
 
-            StdString::strncpy( _out, _in, _capacity );
+            size_t len = StdString::wcslen( _out );
 
-            _out[_capacity] = '\0';
+            if( len >= _capacity - 1 )
+            {
+                assert( !"wcschrcat_safe: output buffer overflow" );
+
+                return _out;
+            }
+
+            _out[len] = _ch;
+            _out[len + 1] = L'\0';
 
             return _out;
         }
@@ -131,136 +112,163 @@ namespace Mengine
         {
             if( _capacity == 0 )
             {
+                assert( !"strzcpy_safe: output buffer overflow" );
+
                 return _out;
+            }
+
+            if( _size == MENGINE_UNKNOWN_SIZE )
+            {
+                _size = StdString::strlen( _in );
             }
 
             if( _size >= _capacity )
             {
-                _size = _capacity;
+                assert( !"strzcpy_safe: output buffer overflow" );
+
+                _size = _capacity - 1;
             }
 
-            StdString::strncpy( _out, _in, _size );
+            StdString::memcpy( _out, _in, _size * sizeof( Char ) );
 
             _out[_size] = '\0';
+
+            return _out;
+        }
+
+        MENGINE_INLINE Char * strcpy_safe( Char * const _out, const Char * _in, size_t _capacity )
+        {
+            Char * result = StdString::strzcpy_safe( _out, _in, MENGINE_UNKNOWN_SIZE, _capacity );
+
+            return result;
+        }
+
+        MENGINE_INLINE Char * strzcat_safe( Char * const _out, const Char * _in, size_t _size, size_t _capacity )
+        {
+            if( _capacity == 0 )
+            {
+                assert( !"strzcat_safe: output buffer overflow" );
+
+                return _out;
+            }
+
+            size_t offset = StdString::strlen( _out );
+
+            if( offset >= _capacity )
+            {
+                assert( !"strzcat_safe: output buffer overflow" );
+
+                return _out;
+            }
+
+            size_t space = _capacity - offset - 1;
+
+            if( _size == MENGINE_UNKNOWN_SIZE )
+            {
+                _size = StdString::strlen( _in );
+            }
+
+            if( _size > space )
+            {
+                assert( !"strzcat_safe: output buffer overflow" );
+
+                _size = space;
+            }
+
+            StdString::memcpy( _out + offset, _in, _size * sizeof( Char ) );
+
+            _out[offset + _size] = '\0';
 
             return _out;
         }
 
         MENGINE_INLINE Char * strcat_safe( Char * const _out, const Char * _in, size_t _capacity )
         {
-            size_t len = StdString::strlen( _out );
+            Char * result = StdString::strzcat_safe( _out, _in, MENGINE_UNKNOWN_SIZE, _capacity );
 
-            if( len >= _capacity )
-            {
-                return _out;
-            }
-
-            StdString::strncpy( _out + len, _in, _capacity - len );
-
-            _out[_capacity] = '\0';
-
-            return _out;
-        }
-
-        MENGINE_INLINE Char * strzcat_safe( Char * const _out, const Char * _in, size_t _size, size_t _capacity )
-        {
-            size_t len = StdString::strlen( _out );
-
-            if( len >= _capacity )
-            {
-                return _out;
-            }
-
-            size_t capacity_len = _capacity - len;
-
-            if( _size >= capacity_len )
-            {
-                _size = capacity_len;
-            }
-
-            StdString::strncpy( _out + len, _in, _size );
-
-            _out[_size] = '\0';
-
-            return _out;
-        }
-
-        MENGINE_INLINE WChar * wcscpy_safe( WChar * const _out, const WChar * _in, size_t _capacity )
-        {
-            if( _capacity == 0 )
-            {
-                return _out;
-            }
-
-            StdString::wcsncpy( _out, _in, _capacity );
-
-            _out[_capacity] = L'\0';
-
-            return _out;
-        }
-
-        MENGINE_INLINE WChar * wcscat_safe( WChar * const _out, const WChar * _in, size_t _capacity )
-        {
-            size_t len = StdString::wcslen( _out );
-
-            if( len >= _capacity )
-            {
-                return _out;
-            }
-
-            StdString::wcsncpy( _out + len, _in, _capacity - len );
-
-            _out[_capacity] = L'\0';
-
-            return _out;
+            return result;
         }
 
         MENGINE_INLINE WChar * wcszcpy_safe( WChar * const _out, const WChar * _in, size_t _size, size_t _capacity )
         {
             if( _capacity == 0 )
             {
+                assert( !"wcszcpy_safe: output buffer overflow" );
+
                 return _out;
+            }
+
+            if( _size == MENGINE_UNKNOWN_SIZE )
+            {
+                _size = StdString::wcslen( _in );
             }
 
             if( _size >= _capacity )
             {
-                _size = _capacity;
+                assert( !"wcszcpy_safe: output buffer overflow" );
+
+                _size = _capacity - 1;
             }
 
-            StdString::wcsncpy( _out, _in, _size );
+            StdString::memcpy( _out, _in, _size * sizeof( WChar ) );
 
             _out[_size] = L'\0';
 
             return _out;
+        }
+
+        MENGINE_INLINE WChar * wcscpy_safe( WChar * const _out, const WChar * _in, size_t _capacity )
+        {
+            WChar * result = StdString::wcszcpy_safe( _out, _in, MENGINE_UNKNOWN_SIZE, _capacity );
+
+            return result;
         }
 
         MENGINE_INLINE WChar * wcszcat_safe( WChar * const _out, const WChar * _in, size_t _size, size_t _capacity )
         {
-            size_t len = StdString::wcslen( _out );
-
-            if( len >= _capacity )
+            if( _capacity == 0 )
             {
+                assert( !"wcszcat_safe: output buffer overflow" );
+
                 return _out;
             }
 
-            size_t capacity_len = _capacity - len;
+            size_t offset = StdString::wcslen( _out );
 
-            if( _size >= capacity_len )
+            if( offset >= _capacity )
             {
-                _size = capacity_len;
+                assert( !"wcszcat_safe: output buffer overflow" );
+
+                return _out;
             }
 
-            StdString::wcsncpy( _out + len, _in, _size );
+            size_t space = _capacity - offset - 1;
 
-            _out[_size] = L'\0';
+            if( _size == MENGINE_UNKNOWN_SIZE )
+            {
+                _size = StdString::wcslen( _in );
+            }
+
+            if( _size > space )
+            {
+                assert( !"wcszcat_safe: output buffer overflow" );
+
+                _size = space;
+            }
+
+            StdString::memcpy( _out + offset, _in, _size * sizeof( WChar ) );
+
+            _out[offset + _size] = L'\0';
 
             return _out;
         }
 
-        using std::memcpy;
-        using std::memset;
-        using std::memmove;
-        using std::memcmp;
+        MENGINE_INLINE WChar * wcscat_safe( WChar * const _out, const WChar * _in, size_t _capacity )
+        {
+            WChar * result = StdString::wcszcat_safe( _out, _in, MENGINE_UNKNOWN_SIZE, _capacity );
+
+            return result;
+        }
     }
 }
 
@@ -271,7 +279,7 @@ namespace Mengine
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_WCSICMP
 #   if defined(MENGINE_PLATFORM_WINDOWS)
-#       define MENGINE_WCSICMP(a,b) ::_wcsicmp((a), (b))
+#       define MENGINE_WCSICMP(a, b) ::_wcsicmp((a), (b))
 #   endif
 #endif
 //////////////////////////////////////////////////////////////////////////

@@ -11,7 +11,7 @@ namespace Mengine
         : public Factorable
     {
     public:
-        ServantInterface() noexcept
+        ServantInterface()
         {
         };
 

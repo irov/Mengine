@@ -721,8 +721,8 @@ namespace Mengine
         void Shutdown();
 
     protected:
-        void Resize( const int _width, const int _height );
-        void Update( const double _dt );
+        void Resize( int _width, int _height );
+        void Update( double _dt );
         void CompressPacket( NodeDebuggerPacket & _packet, PacketHeader & _hdr );
         void UncompressPacket( NodeDebuggerPacket & _packet, PacketHeader & _hdr, const uint8_t * _receivedData );
         void ProcessPacket( const NodeDebuggerPacket & _packet );

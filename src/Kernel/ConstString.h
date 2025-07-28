@@ -14,24 +14,24 @@ namespace Mengine
         typedef ConstStringHolder::value_type value_type;
 
     public:
-        MENGINE_CONSTEXPR ConstString() noexcept
+        MENGINE_CONSTEXPR ConstString() MENGINE_NOEXCEPT
             : m_holder( nullptr )
         {
         }
 
-        MENGINE_CONSTEXPR ConstString( const ConstString & _cstr ) noexcept
+        MENGINE_CONSTEXPR ConstString( const ConstString & _cstr ) MENGINE_NOEXCEPT
             : m_holder( _cstr.m_holder )
         {
         }
 
-        MENGINE_CONSTEXPR ConstString( ConstString && _cstr ) noexcept
+        MENGINE_CONSTEXPR ConstString( ConstString && _cstr ) MENGINE_NOEXCEPT
             : m_holder( _cstr.m_holder )
         {
             _cstr.m_holder = nullptr;
         }
 
     public:
-        explicit ConstString( const ConstStringHolder * _holder ) noexcept
+        explicit ConstString( const ConstStringHolder * _holder ) MENGINE_NOEXCEPT
             : m_holder( _holder )
         {
         }
@@ -40,7 +40,7 @@ namespace Mengine
         ConstString( std::nullptr_t ) = delete;
 
     public:
-        static MENGINE_INLINE const ConstString & none() noexcept
+        static MENGINE_INLINE const ConstString & none() MENGINE_NOEXCEPT
         {
             static const ConstString s_none;
 
@@ -48,7 +48,7 @@ namespace Mengine
         }
 
     public:
-        MENGINE_CONSTEXPR size_type size() const
+        MENGINE_CONSTEXPR size_type size() const MENGINE_NOEXCEPT
         {
             if( m_holder == nullptr )
             {
@@ -60,7 +60,7 @@ namespace Mengine
             return holder_size;
         }
 
-        MENGINE_CONSTEXPR const value_type * c_str() const
+        MENGINE_CONSTEXPR const value_type * c_str() const MENGINE_NOEXCEPT
         {
             if( m_holder == nullptr )
             {
@@ -72,12 +72,12 @@ namespace Mengine
             return holder_str;
         }
 
-        MENGINE_CONSTEXPR bool empty() const noexcept
+        MENGINE_CONSTEXPR bool empty() const MENGINE_NOEXCEPT
         {
             return m_holder == nullptr;
         }
 
-        MENGINE_CONSTEXPR hash_type hash() const
+        MENGINE_CONSTEXPR hash_type hash() const MENGINE_NOEXCEPT
         {
             if( m_holder == nullptr )
             {
@@ -89,45 +89,45 @@ namespace Mengine
             return holder_hash;
         }
 
-        MENGINE_CONSTEXPR void clear() noexcept
+        MENGINE_CONSTEXPR void clear() MENGINE_NOEXCEPT
         {
             m_holder = nullptr;
         }
 
     public:
-        MENGINE_CONSTEXPR ConstString & operator = ( const ConstString & _right ) noexcept
+        MENGINE_CONSTEXPR ConstString & operator = ( const ConstString & _right ) MENGINE_NOEXCEPT
         {
             m_holder = _right.m_holder;
 
             return *this;
         }
 
-        MENGINE_CONSTEXPR bool operator == ( const ConstString & _right ) const noexcept
+        MENGINE_CONSTEXPR bool operator == ( const ConstString & _right ) const MENGINE_NOEXCEPT
         {
             return m_holder == _right.m_holder;
         }
 
-        MENGINE_CONSTEXPR bool operator != ( const ConstString & _right ) const noexcept
+        MENGINE_CONSTEXPR bool operator != ( const ConstString & _right ) const MENGINE_NOEXCEPT
         {
             return m_holder != _right.m_holder;
         }
 
-        MENGINE_CONSTEXPR bool operator < ( const ConstString & _right ) const noexcept
+        MENGINE_CONSTEXPR bool operator < ( const ConstString & _right ) const MENGINE_NOEXCEPT
         {
             return m_holder < _right.m_holder;
         }
 
-        MENGINE_CONSTEXPR bool operator <= ( const ConstString & _right ) const noexcept
+        MENGINE_CONSTEXPR bool operator <= ( const ConstString & _right ) const MENGINE_NOEXCEPT
         {
             return m_holder <= _right.m_holder;
         }
 
-        MENGINE_CONSTEXPR bool operator > ( const ConstString & _right ) const noexcept
+        MENGINE_CONSTEXPR bool operator > ( const ConstString & _right ) const MENGINE_NOEXCEPT
         {
             return m_holder > _right.m_holder;
         }
 
-        MENGINE_CONSTEXPR bool operator >= ( const ConstString & _right ) const noexcept
+        MENGINE_CONSTEXPR bool operator >= ( const ConstString & _right ) const MENGINE_NOEXCEPT
         {
             return m_holder >= _right.m_holder;
         }
@@ -145,7 +145,7 @@ namespace Mengine
     public:
         struct less_type
         {
-            MENGINE_CONSTEXPR bool operator () ( const ConstString & _left, const ConstString & _right ) const noexcept
+            MENGINE_CONSTEXPR bool operator () ( const ConstString & _left, const ConstString & _right ) const MENGINE_NOEXCEPT
             {
                 return _left < _right;
             }
@@ -173,13 +173,13 @@ namespace Mengine
         const ConstStringHolder * m_holder;
     };
     //////////////////////////////////////////////////////////////////////////
-    bool operator == ( const ConstString & _left, const ConstString::value_type * _right );
+    bool operator == ( const ConstString & _left, const ConstString::value_type * _right ) MENGINE_NOEXCEPT;
     //////////////////////////////////////////////////////////////////////////
-    bool operator == ( const ConstString::value_type * _left, const ConstString & _right );
+    bool operator == ( const ConstString::value_type * _left, const ConstString & _right ) MENGINE_NOEXCEPT;
     //////////////////////////////////////////////////////////////////////////
-    bool operator != ( const ConstString & _left, const ConstString::value_type * _right );
+    bool operator != ( const ConstString & _left, const ConstString::value_type * _right ) MENGINE_NOEXCEPT;
     //////////////////////////////////////////////////////////////////////////
-    bool operator != ( const ConstString::value_type * _left, const ConstString & _right );
+    bool operator != ( const ConstString::value_type * _left, const ConstString & _right ) MENGINE_NOEXCEPT;
     //////////////////////////////////////////////////////////////////////////
     template<>
     struct Hashgen<ConstString>

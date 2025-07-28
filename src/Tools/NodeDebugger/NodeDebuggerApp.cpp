@@ -337,7 +337,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerApp::Resize( const int _width, const int _height )
+    void NodeDebuggerApp::Resize( int _width, int _height )
     {
         if( m_width != _width || m_height != _height )
         {
@@ -347,7 +347,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerApp::Update( const double _dt )
+    void NodeDebuggerApp::Update( double _dt )
     {
         MutexLocker lock( m_dataMutex );
 

@@ -310,6 +310,18 @@
 #define MENGINE_INLINE inline
 #endif
 
+#ifndef MENGINE_NOEXCEPT
+#   ifdef __cplusplus
+#       if __cplusplus >= 201103L
+#           define MENGINE_NOEXCEPT noexcept
+#       else
+#           define MENGINE_NOEXCEPT throw()
+#       endif
+#   else
+#       define MENGINE_NOEXCEPT
+#   endif
+#endif
+
 #ifndef MENGINE_NODISCARD
 #define MENGINE_NODISCARD [[nodiscard]]
 #endif

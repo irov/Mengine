@@ -43,7 +43,7 @@ namespace Mengine
 
     public:
         void setFactory( FactoryInterface * _factory );
-        MENGINE_INLINE FactoryInterface * getFactory() const noexcept;
+        MENGINE_INLINE FactoryInterface * getFactory() const MENGINE_NOEXCEPT;
 
     public:
         const ConstString & getType() const;
@@ -53,11 +53,11 @@ namespace Mengine
         bool getImmortal() const;
 
     protected:
-        uint32_t incref() noexcept override;
-        void decref() noexcept override;
+        uint32_t incref();
+        void decref();
 
     public:
-        uint32_t getrefcount() const noexcept override;
+        uint32_t getrefcount() const;
 
     private:
         virtual void destroy();
@@ -88,7 +88,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Factorable> FactorablePtr;
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE FactoryInterface * Factorable::getFactory() const noexcept
+    MENGINE_INLINE FactoryInterface * Factorable::getFactory() const MENGINE_NOEXCEPT
     {
         return m_factory;
     }

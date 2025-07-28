@@ -21,6 +21,8 @@
 #include "math/quat.h"
 #include "math/plane.h"
 #include "math/uv4.h"
+#include "math/fibo.h"
+#include "math/factorial.h"
 #include "math/utils.h"
 
 namespace Mengine

@@ -13,8 +13,8 @@ namespace Mengine
         : public EventationInterface
     {
     public:
-        BaseEventation() noexcept;
-        ~BaseEventation() noexcept override;
+        BaseEventation();
+        ~BaseEventation() override;
 
     public:
         void setReceiver( uint64_t _receiverMask, const EventReceiverInterfacePtr & _receiver ) override final;
@@ -30,7 +30,7 @@ namespace Mengine
 
     public:
         void foreachEventReceivers( const LambdaEventReceivers & _lambda ) const override final;
-        void removeEvents() noexcept override final;
+        void removeEvents() override final;
 
     protected:
         EventReceiverInterfacePtr m_receiver;

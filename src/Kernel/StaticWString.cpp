@@ -3,8 +3,6 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
-#include "Config/StdString.h"
-
 namespace Mengine
 {
     namespace Detail
@@ -51,66 +49,6 @@ namespace Mengine
             );
 
             _buffer[_index] = _ch;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void staticWStringAssign( WChar * _buffer, size_t _capacity, const WChar * _value, size_t _size )
-        {
-            MENGINE_ASSERTION_MEMORY_PANIC( _value, "invalid assign value" );
-
-            size_t value_size = _size;
-
-            if( value_size == MENGINE_UNKNOWN_SIZE )
-            {
-                value_size = StdString::wcslen( _value );
-            }
-
-            MENGINE_ASSERTION_FATAL( value_size < _capacity, "static wstring buffer assign '%ls' [size %zu]"
-                , _value
-                , value_size
-            );
-
-            if( value_size >= _capacity )
-            {
-                value_size = _capacity - 1;
-            }
-
-            StdString::wcsncpy( _buffer, _value, value_size );
-            _buffer[value_size] = L'\0';
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void staticWStringAppend( WChar * _buffer, size_t _capacity, const WChar * _value, size_t _size )
-        {
-            MENGINE_ASSERTION_MEMORY_PANIC( _value, "invalid append value" );
-
-            size_t value_size = _size;
-
-            if( value_size == MENGINE_UNKNOWN_SIZE )
-            {
-                value_size = StdString::wcslen( _value );
-            }
-
-            size_t buffer_size = StdString::wcslen( _buffer );
-
-            MENGINE_ASSERTION_FATAL( buffer_size + value_size < _capacity, "static string buffer '%ls' [size %zu] append '%ls' [size %zu] > [capacity %zu]"
-                , _buffer
-                , buffer_size
-                , _value
-                , value_size
-                , _capacity
-            );
-
-            if( value_size >= _capacity )
-            {
-                value_size = _capacity - 1;
-            }
-
-            StdString::wcsncat( _buffer, _value, value_size );
-            _buffer[buffer_size + value_size] = L'\0';
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void staticWStringCopy( const WChar * _buffer, size_t _capacity, WChar * _value )
-        {
-            StdString::wcscpy_safe( _value, _buffer, _capacity );
         }
         //////////////////////////////////////////////////////////////////////////
         int32_t staticWStringCompare( const WChar * _buffer, size_t _size, const WChar * _value )

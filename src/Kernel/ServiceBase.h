@@ -18,7 +18,7 @@ namespace Mengine
         static_assert(TypeTraits::is_base_of<ServiceInterface, T>, "T must derive from ServiceInterface");
 
     public:
-        ServiceBase() noexcept
+        ServiceBase()
             : m_serviceProvider( nullptr )
             , m_availableService( false )
             , m_initializeService( false )

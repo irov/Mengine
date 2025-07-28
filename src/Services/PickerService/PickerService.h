@@ -82,6 +82,9 @@ namespace Mengine
         bool getStates_( const mt::vec2f & _screenPosition, VectorPickerStates * const _states ) const;
 
     protected:
+        void calculateInputPositionWorld_( const PickerStateDesc & _desc, InputPositionData * const _position ) const;
+
+    protected:
         ScenePtr m_scene;
 
         RenderResolutionInterfacePtr m_resolution;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Config/Char.h"
+#include "Config/StdString.h"
 #include "Config/StdArg.h"
 #include "Config/StdInt.h"
 #include "Config/StdDef.h"
@@ -12,11 +12,7 @@ namespace Mengine
         size_t staticStringSize( const Char * _buffer, size_t _capacity );
         Char staticStringIndex( const Char * _buffer, size_t _capacity, size_t _index );
         void staticStringChange( Char * _buffer, size_t _capacity, size_t _index, Char _ch );
-        void staticStringAssign( Char * _buffer, size_t _capacity, const Char * _value, size_t _size );
-        void staticStringAppendChar( Char * const _buffer, size_t _capacity, Char _value );
-        void staticStringAppend( Char * _buffer, size_t _capacity, const Char * _value, size_t _size );
         void staticStringFormat( Char * _buffer, size_t _capacity, const Char * _format, MENGINE_VA_LIST_TYPE _args );
-        void staticStringCopy( const Char * _buffer, size_t _capacity, Char * _value );
         int32_t staticStringCompare( const Char * _buffer, size_t _capacity, const Char * _value );
     }
 
@@ -83,7 +79,7 @@ namespace Mengine
     public:
         void assign( Char _value )
         {
-            Detail::staticStringAppendChar( m_buffer, N, _value );
+            StdString::strchrcat_safe( m_buffer, _value, N );
         }
 
         void assign( const Char * _value )
@@ -93,7 +89,7 @@ namespace Mengine
 
         void assign( const Char * _value, size_t _size )
         {
-            Detail::staticStringAssign( m_buffer, N, _value, _size );
+            StdString::strzcpy_safe( m_buffer, _value, _size, N );
         }
 
         template<size_t N2>
@@ -116,7 +112,7 @@ namespace Mengine
 
         void append( Char _value )
         {
-            Detail::staticStringAppendChar( m_buffer, N, _value );
+            StdString::strchrcat_safe( m_buffer, _value, N );
         }
 
         void append( const Char * _value )
@@ -126,7 +122,7 @@ namespace Mengine
 
         void append( const Char * _value, size_t _size )
         {
-            Detail::staticStringAppend( m_buffer, N, _value, _size );
+            StdString::strzcat_safe( m_buffer, _value, _size, N );
         }
 
         template<size_t N2>
@@ -140,7 +136,7 @@ namespace Mengine
 
         void copy( Char * _value ) const
         {
-            Detail::staticStringCopy( m_buffer, N, _value );
+            StdString::strcpy_safe( _value, m_buffer, N );
         }
 
         void format( const Char * _format, ... )

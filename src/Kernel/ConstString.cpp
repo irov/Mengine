@@ -5,7 +5,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    bool operator == ( const ConstString & _left, const ConstString::value_type * _right )
+    bool operator == ( const ConstString & _left, const ConstString::value_type * _right ) MENGINE_NOEXCEPT
     {
         const ConstString::value_type * left_str = _left.c_str();
 
@@ -17,7 +17,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool operator == ( const ConstString::value_type * _left, const ConstString & _right )
+    bool operator == ( const ConstString::value_type * _left, const ConstString & _right ) MENGINE_NOEXCEPT
     {
         const ConstString::value_type * right_str = _right.c_str();
 
@@ -29,7 +29,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool operator != ( const ConstString & _left, const ConstString::value_type * _right )
+    bool operator != ( const ConstString & _left, const ConstString::value_type * _right ) MENGINE_NOEXCEPT
     {
         const ConstString::value_type * left_str = _left.c_str();
 
@@ -41,7 +41,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool operator != ( const ConstString::value_type * _left, const ConstString & _right )
+    bool operator != ( const ConstString::value_type * _left, const ConstString & _right ) MENGINE_NOEXCEPT
     {
         const ConstString::value_type * right_str = _right.c_str();
 

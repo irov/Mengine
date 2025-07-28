@@ -63,7 +63,7 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t Factorable::incref() noexcept
+    uint32_t Factorable::incref()
     {
         m_reference.incref();
 
@@ -72,7 +72,7 @@ namespace Mengine
         return count;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Factorable::decref() noexcept
+    void Factorable::decref()
     {
         if( m_reference.decref() != 0 )
         {
@@ -82,7 +82,7 @@ namespace Mengine
         this->destroy();
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t Factorable::getrefcount() const noexcept
+    uint32_t Factorable::getrefcount() const
     {
         uint32_t count = m_reference.getReferenceCount();
 

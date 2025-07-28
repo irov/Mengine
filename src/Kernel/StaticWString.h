@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Config/Char.h"
+#include "Config/StdString.h"
 #include "Config/StdInt.h"
 #include "Config/StdDef.h"
 
@@ -11,9 +11,6 @@ namespace Mengine
         size_t staticWStringSize( const WChar * _buffer, size_t _capacity );
         WChar staticWStringIndex( const WChar * _buffer, size_t _capacity, size_t _index );
         void staticWStringChange( WChar * _buffer, size_t _capacity, size_t _index, WChar _ch );
-        void staticWStringAssign( WChar * _buffer, size_t _capacity, const WChar * _value, size_t _size );
-        void staticWStringAppend( WChar * _buffer, size_t _capacity, const WChar * _value, size_t _size );
-        void staticWStringCopy( const WChar * _buffer, size_t _capacity, WChar * _value );
         int32_t staticWStringCompare( const WChar * _buffer, size_t _capacity, const WChar * _value );
     }
 
@@ -58,27 +55,27 @@ namespace Mengine
     public:
         void assign( const WChar * _value )
         {
-            Detail::staticWStringAssign( m_buffer, N, _value, MENGINE_UNKNOWN_SIZE );
+            StdString::wcszcpy_safe( m_buffer, _value, MENGINE_UNKNOWN_SIZE, N );
         }
 
         void assign( const WChar * _value, size_t _size )
         {
-            Detail::staticWStringAssign( m_buffer, N, _value, _size );
+            StdString::wcszcpy_safe( m_buffer, _value, _size, N );
         }
 
         void append( const WChar * _value )
         {
-            Detail::staticWStringAppend( m_buffer, N, _value, MENGINE_UNKNOWN_SIZE );
+            StdString::wcszcat_safe( m_buffer, _value, MENGINE_UNKNOWN_SIZE, N );
         }
 
         void append( const WChar * _value, size_t _size )
         {
-            Detail::staticWStringAppend( m_buffer, N, _value, _size );
+            StdString::wcszcat_safe( m_buffer, _value, _size, N );
         }
 
         void copy( WChar * _value ) const
         {
-            Detail::staticWStringCopy( m_buffer, N, _value );
+            StdString::wcscpy_safe( _value, m_buffer, N );
         }
          
         int32_t compare( const WChar * _value ) const

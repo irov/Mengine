@@ -322,7 +322,7 @@ namespace Mengine
         {
         }
 
-        PointerT( PointerT && _pointer ) noexcept
+        PointerT( PointerT && _pointer )
             : m_pointer( std::forward<PointerT>( _pointer.m_pointer ) )
         {
         }

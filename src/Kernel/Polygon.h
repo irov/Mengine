@@ -21,7 +21,7 @@ namespace Mengine
 
     public:
         Polygon( const Polygon & _polygon );
-        Polygon( Polygon && _polygon ) noexcept;
+        Polygon( Polygon && _polygon );
 
     public:
         typedef uint32_t size_type;
@@ -30,7 +30,7 @@ namespace Mengine
 
     public:
         Polygon & operator = ( const Polygon & _polygon );
-        Polygon & operator = ( Polygon && _polygon ) noexcept;
+        Polygon & operator = ( Polygon && _polygon );
 
     public:
         mt::vec2f & operator [] ( size_type _index );

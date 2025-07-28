@@ -15,7 +15,7 @@ namespace Mengine
 
     public:
         Geolygon( const Geolygon & _polygon );
-        Geolygon( Geolygon && _polygon ) noexcept;
+        Geolygon( Geolygon && _polygon );
 
         Geolygon( const Polygon & _outer, const VectorPolygon & _inners );
         Geolygon( Polygon && _outer, VectorPolygon && _inners );
@@ -27,7 +27,7 @@ namespace Mengine
 
     public:
         Geolygon & operator = ( const Geolygon & _polygon );
-        Geolygon & operator = ( Geolygon && _polygon ) noexcept;
+        Geolygon & operator = ( Geolygon && _polygon );
 
     public:
         const Polygon & getOuter() const;

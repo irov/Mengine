@@ -36,16 +36,16 @@ namespace Mengine
         ~Affector() override;
 
     public:
-        void setAffectorType( EAffectorType _type ) noexcept;
-        EAffectorType getAffectorType() const noexcept;
+        void setAffectorType( EAffectorType _type );
+        EAffectorType getAffectorType() const;
 
     public:
-        void setId( UniqueId _id ) noexcept;
-        UniqueId getId() const noexcept;
+        void setId( UniqueId _id );
+        UniqueId getId() const;
 
     public:
-        void setFreeze( bool _value ) noexcept;
-        bool getFreeze() const noexcept;
+        void setFreeze( bool _value );
+        bool getFreeze() const;
 
     public:
         void setEasing( const EasingInterfacePtr & _easing );
@@ -55,8 +55,8 @@ namespace Mengine
         virtual void _setFreeze( bool _value );
 
     public:
-        void setSpeedFactor( float _speed ) noexcept;
-        float getSpeedFactor() const noexcept;
+        void setSpeedFactor( float _speed );
+        float getSpeedFactor() const;
 
     public:
         bool prepare( EUpdateMode _updatableMode, uint32_t _updatableLeaf );

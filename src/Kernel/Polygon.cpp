@@ -16,7 +16,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    Polygon::Polygon( Polygon && _polygon ) noexcept
+    Polygon::Polygon( Polygon && _polygon )
         : m_points( std::move( _polygon.m_points ) )
     {
     }
@@ -28,7 +28,7 @@ namespace Mengine
         return *this;
     }
     //////////////////////////////////////////////////////////////////////////
-    Polygon & Polygon::operator = ( Polygon && _polygon ) noexcept
+    Polygon & Polygon::operator = ( Polygon && _polygon )
     {
         m_points = std::move( _polygon.m_points );
 

@@ -155,6 +155,7 @@ src
     StdIterator.h
     StdUtility.h
     StdThread.h
+    StdAssert.h
     Limits.h
     UInt32ToPointer.h
     Metaprogramming.h

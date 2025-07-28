@@ -270,7 +270,7 @@ namespace Mengine
                 return;
             }
 
-            StdString::strnchrcat( _folderPath, _delim, MENGINE_MAX_PATH );
+            StdString::strchrcat_safe( _folderPath, _delim, MENGINE_MAX_PATH );
         }
         //////////////////////////////////////////////////////////////////////////
         void pathCorrectBackslashW( WChar * const _filePath )

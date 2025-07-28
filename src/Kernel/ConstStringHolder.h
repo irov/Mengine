@@ -12,7 +12,7 @@ namespace Mengine
         : public IntrusiveLinked<ConstStringHolder>
     {
     protected:
-        ConstStringHolder() noexcept;
+        ConstStringHolder();
         virtual ~ConstStringHolder();
 
     public:
@@ -27,29 +27,29 @@ namespace Mengine
         typedef Char value_type;
 
     public:
-        MENGINE_CONSTEXPR const value_type * c_str() const noexcept
+        MENGINE_CONSTEXPR const value_type * c_str() const MENGINE_NOEXCEPT
         {
             return m_data;
         }
 
-        MENGINE_CONSTEXPR size_type size() const noexcept
+        MENGINE_CONSTEXPR size_type size() const MENGINE_NOEXCEPT
         {
             return m_size;
         }
 
-        MENGINE_CONSTEXPR bool empty() const noexcept
+        MENGINE_CONSTEXPR bool empty() const MENGINE_NOEXCEPT
         {
             return m_size == 0;
         }
 
     public:
-        MENGINE_CONSTEXPR hash_type hash() const noexcept
+        MENGINE_CONSTEXPR hash_type hash() const MENGINE_NOEXCEPT
         {
             return m_hash;
         }
 
     protected:
-        MENGINE_CONSTEXPR const value_type * data() const noexcept
+        MENGINE_CONSTEXPR const value_type * data() const MENGINE_NOEXCEPT
         {
             return m_data;
         }

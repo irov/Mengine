@@ -399,8 +399,7 @@ namespace Mengine
 
             InputKeyEvent ne = _event;
 
-            ARROW_SERVICE()
-                ->calcMouseWorldPosition( &desc.context, ne.position.screen, &ne.position.world );
+            this->calculateInputPositionWorld_( desc, &ne.position );
 
             LOGGER_INFO( "picker", "handle type '%s' name '%s' UID [%u] pos [%.4f;%.4f] [key]"
                 , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
@@ -456,8 +455,7 @@ namespace Mengine
 
             InputTextEvent ne = _event;
 
-            ARROW_SERVICE()
-                ->calcMouseWorldPosition( &desc.context, ne.position.screen, &ne.position.world );
+            this->calculateInputPositionWorld_( desc, &ne.position );
 
             LOGGER_INFO( "picker", "handle type '%s' name '%s' UID [%u] pos [%.4f;%.4f] [text]"
                 , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
@@ -527,8 +525,7 @@ namespace Mengine
 
             InputMouseButtonEvent ne = _event;
 
-            ARROW_SERVICE()
-                ->calcMouseWorldPosition( &desc.context, ne.position.screen, &ne.position.world );
+            this->calculateInputPositionWorld_( desc, &ne.position );
 
             ne.isPressed = picker->isPickerPressed();
 
@@ -596,8 +593,7 @@ namespace Mengine
 
             InputMouseButtonEvent ne = _event;
 
-            ARROW_SERVICE()
-                ->calcMouseWorldPosition( &desc.context, ne.position.screen, &ne.position.world );
+            this->calculateInputPositionWorld_( desc, &ne.position );
 
             ne.isPressed = picker->isPickerPressed();
 
@@ -672,8 +668,7 @@ namespace Mengine
 
             InputMouseButtonEvent ne = _event;
 
-            ARROW_SERVICE()
-                ->calcMouseWorldPosition( &desc.context, ne.position.screen, &ne.position.world );
+            this->calculateInputPositionWorld_( desc, &ne.position );
 
             ne.isPressed = picker->isPickerPressed();
 
@@ -736,8 +731,7 @@ namespace Mengine
 
             InputMouseMoveEvent ne = _event;
 
-            ARROW_SERVICE()
-                ->calcMouseWorldPosition( &desc.context, ne.position.screen, &ne.position.world );
+            this->calculateInputPositionWorld_( desc, &ne.position );
 
             mt::vec2f wd;
             ARROW_SERVICE()
@@ -804,8 +798,7 @@ namespace Mengine
 
             InputMouseWheelEvent ne = _event;
 
-            ARROW_SERVICE()
-                ->calcMouseWorldPosition( &desc.context, ne.position.screen, &ne.position.world );
+            this->calculateInputPositionWorld_( desc, &ne.position );
 
             LOGGER_INFO( "picker", "handle type '%s' name '%s' UID [%u] pos [%.4f;%.4f] [mouse wheel]"
                 , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
@@ -877,8 +870,7 @@ namespace Mengine
 
             InputMouseLeaveEvent ne = _event;
 
-            ARROW_SERVICE()
-                ->calcMouseWorldPosition( &desc.context, ne.position.screen, &ne.position.world );
+            this->calculateInputPositionWorld_( desc, &ne.position );
 
             LOGGER_INFO( "picker", "handle type '%s' name '%s' UID [%u] pos [%.4f;%.4f] [mouse leave]"
                 , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
@@ -966,8 +958,7 @@ namespace Mengine
                         ne.position.screen = _screenPosition;
                         ne.pressure = _pressure;
 
-                        ARROW_SERVICE()
-                            ->calcMouseWorldPosition( &desc.context, ne.position.screen, &ne.position.world );
+                        this->calculateInputPositionWorld_( desc, &ne.position );
 
                         LOGGER_INFO( "picker", "handle type '%s' name '%s' UID [%u] pos [%.4f;%.4f] [mouse enter]"
                             , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
@@ -1003,8 +994,7 @@ namespace Mengine
                         ne.position.screen = _screenPosition;
                         ne.pressure = _pressure;
 
-                        ARROW_SERVICE()
-                            ->calcMouseWorldPosition( &desc.context, ne.position.screen, &ne.position.world );
+                        this->calculateInputPositionWorld_( desc, &ne.position );
 
                         LOGGER_INFO( "picker", "handle type '%s' name '%s' UID [%u] pos [%.4f;%.4f] [mouse leave]"
                             , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
@@ -1033,8 +1023,7 @@ namespace Mengine
                     ne.position.screen = _screenPosition;
                     ne.pressure = _pressure;
 
-                    ARROW_SERVICE()
-                        ->calcMouseWorldPosition( &desc.context, ne.position.screen, &ne.position.world );
+                    this->calculateInputPositionWorld_( desc, &ne.position );
 
                     LOGGER_INFO( "picker", "handle type '%s' name '%s' UID [%u] pos [%.4f;%.4f] [mouse leave]"
                         , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
@@ -1097,6 +1086,12 @@ namespace Mengine
         }
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PickerService::calculateInputPositionWorld_( const PickerStateDesc & _desc, InputPositionData * const _position ) const
+    {
+        ARROW_SERVICE()
+            ->calcMouseWorldPosition( &_desc.context, _position->screen, &_position->world );
     }
     //////////////////////////////////////////////////////////////////////////
 }

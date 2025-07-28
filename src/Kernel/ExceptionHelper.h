@@ -8,8 +8,8 @@ namespace Mengine
     class ExceptionHelper
     {
     public:
-        ExceptionHelper( const Char * _file, int32_t _line, const Char * _function ) noexcept;
-        ~ExceptionHelper() noexcept;
+        ExceptionHelper( const Char * _file, int32_t _line, const Char * _function );
+        ~ExceptionHelper();
 
     public:
         void operator () ( const Char * _format, ... ) const;

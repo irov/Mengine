@@ -8,13 +8,13 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    BaseEventation::BaseEventation() noexcept
+    BaseEventation::BaseEventation()
         : m_receiverMask( 0 )
         , m_receiversMask( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    BaseEventation::~BaseEventation() noexcept
+    BaseEventation::~BaseEventation()
     {
         MENGINE_ASSERTION_CONTAINER_EMPTY( m_receivers );
     }
@@ -153,7 +153,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseEventation::removeEvents() noexcept
+    void BaseEventation::removeEvents()
     {
         m_receiver = nullptr;
 

@@ -12,14 +12,14 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    ExceptionHelper::ExceptionHelper( const Char * _file, int32_t _line, const Char * _function ) noexcept
+    ExceptionHelper::ExceptionHelper( const Char * _file, int32_t _line, const Char * _function )
         : m_file( _file )
         , m_line( _line )
         , m_function( _function )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    ExceptionHelper::~ExceptionHelper() noexcept
+    ExceptionHelper::~ExceptionHelper()
     {
     }
     //////////////////////////////////////////////////////////////////////////

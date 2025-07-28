@@ -17,7 +17,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    Geolygon::Geolygon( Geolygon && _geolygon ) noexcept
+    Geolygon::Geolygon( Geolygon && _geolygon )
         : m_outer( std::move( _geolygon.m_outer ) )
         , m_inners( std::move( _geolygon.m_inners ) )
     {
@@ -43,7 +43,7 @@ namespace Mengine
         return *this;
     }
     //////////////////////////////////////////////////////////////////////////
-    Geolygon & Geolygon::operator = ( Geolygon && _geolygon ) noexcept
+    Geolygon & Geolygon::operator = ( Geolygon && _geolygon )
     {
         m_outer = std::move( _geolygon.m_outer );
         m_inners = std::move( _geolygon.m_inners );

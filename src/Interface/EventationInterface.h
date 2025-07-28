@@ -40,7 +40,7 @@ namespace Mengine
     public:
         typedef Lambda<void( uint32_t _event, const EventReceiverInterfacePtr & _receiver )> LambdaEventReceivers;
         virtual void foreachEventReceivers( const LambdaEventReceivers & _lambda ) const = 0;
-        virtual void removeEvents() noexcept = 0;
+        virtual void removeEvents() = 0;
 
     public:
         template<class T>

@@ -9,7 +9,7 @@ namespace Mengine
         : public T
     {
     public:
-        ServantBase() noexcept
+        ServantBase()
         {
         }
 

@@ -2,7 +2,7 @@
 
 #include "Config/Config.h"
 
-#include "math/utils.h"
+#include "math/factorial.h"
 
 namespace Mengine
 {

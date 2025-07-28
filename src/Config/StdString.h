@@ -42,6 +42,8 @@ namespace Mengine
 
         MENGINE_INLINE Char * strchrcat( Char * const _out, Char _ch )
         {
+            assert( _out != nullptr && "strchrcat: output buffer is null" );
+
             size_t len = StdString::strlen( _out );
 
             _out[len] = _ch;
@@ -52,6 +54,8 @@ namespace Mengine
 
         MENGINE_INLINE Char * strchrcat_safe( Char * const _out, Char _ch, size_t _capacity )
         {
+            assert( _out != nullptr && "strchrcat_safe: output buffer is null" );
+
             if( _capacity == 0 )
             {
                 assert( !"strchrcat_safe: output buffer overflow" );
@@ -76,6 +80,8 @@ namespace Mengine
 
         MENGINE_INLINE WChar * wcschrcat( WChar * const _out, WChar _ch )
         {
+            assert( _out != nullptr && "wcschrcat: output buffer is null" );
+
             size_t len = StdString::wcslen( _out );
 
             _out[len] = _ch;
@@ -86,6 +92,8 @@ namespace Mengine
 
         MENGINE_INLINE WChar * wcschrcat_safe( WChar * const _out, WChar _ch, size_t _capacity )
         {
+            assert( _out != nullptr && "wcschrcat_safe: output buffer is null" );
+
             if( _capacity == 0 )
             {
                 assert( !"wcschrcat_safe: output buffer overflow" );
@@ -110,6 +118,9 @@ namespace Mengine
 
         MENGINE_INLINE Char * strzcpy_safe( Char * const _out, const Char * _in, size_t _size, size_t _capacity )
         {
+            assert( _out != nullptr && "strzcpy_safe: output buffer is null" );
+            assert( _in != nullptr && "strzcpy_safe: input buffer is null" );
+
             if( _capacity == 0 )
             {
                 assert( !"strzcpy_safe: output buffer overflow" );
@@ -138,6 +149,9 @@ namespace Mengine
 
         MENGINE_INLINE Char * strcpy_safe( Char * const _out, const Char * _in, size_t _capacity )
         {
+            assert( _out != nullptr && "strcpy_safe: output buffer is null" );
+            assert( _in != nullptr && "strcpy_safe: input buffer is null" );
+
             Char * result = StdString::strzcpy_safe( _out, _in, MENGINE_UNKNOWN_SIZE, _capacity );
 
             return result;
@@ -145,6 +159,9 @@ namespace Mengine
 
         MENGINE_INLINE Char * strzcat_safe( Char * const _out, const Char * _in, size_t _size, size_t _capacity )
         {
+            assert( _out != nullptr && "strzcat_safe: output buffer is null" );
+            assert( _in != nullptr && "strzcat_safe: input buffer is null" );
+
             if( _capacity == 0 )
             {
                 assert( !"strzcat_safe: output buffer overflow" );
@@ -184,6 +201,9 @@ namespace Mengine
 
         MENGINE_INLINE Char * strcat_safe( Char * const _out, const Char * _in, size_t _capacity )
         {
+            assert( _out != nullptr && "strcat_safe: output buffer is null" );
+            assert( _in != nullptr && "strcat_safe: input buffer is null" );
+
             Char * result = StdString::strzcat_safe( _out, _in, MENGINE_UNKNOWN_SIZE, _capacity );
 
             return result;
@@ -191,6 +211,9 @@ namespace Mengine
 
         MENGINE_INLINE WChar * wcszcpy_safe( WChar * const _out, const WChar * _in, size_t _size, size_t _capacity )
         {
+            assert( _out != nullptr && "wcszcpy_safe: output buffer is null" );
+            assert( _in != nullptr && "wcszcpy_safe: input buffer is null" );
+
             if( _capacity == 0 )
             {
                 assert( !"wcszcpy_safe: output buffer overflow" );
@@ -219,6 +242,9 @@ namespace Mengine
 
         MENGINE_INLINE WChar * wcscpy_safe( WChar * const _out, const WChar * _in, size_t _capacity )
         {
+            assert( _out != nullptr && "wcscpy_safe: output buffer is null" );
+            assert( _in != nullptr && "wcscpy_safe: input buffer is null" );
+
             WChar * result = StdString::wcszcpy_safe( _out, _in, MENGINE_UNKNOWN_SIZE, _capacity );
 
             return result;
@@ -226,6 +252,9 @@ namespace Mengine
 
         MENGINE_INLINE WChar * wcszcat_safe( WChar * const _out, const WChar * _in, size_t _size, size_t _capacity )
         {
+            assert( _out != nullptr && "wcszcat_safe: output buffer is null" );
+            assert( _in != nullptr && "wcszcat_safe: input buffer is null" );
+
             if( _capacity == 0 )
             {
                 assert( !"wcszcat_safe: output buffer overflow" );
@@ -265,6 +294,9 @@ namespace Mengine
 
         MENGINE_INLINE WChar * wcscat_safe( WChar * const _out, const WChar * _in, size_t _capacity )
         {
+            assert( _out != nullptr && "wcscat_safe: output buffer is null" );
+            assert( _in != nullptr && "wcscat_safe: input buffer is null" );
+
             WChar * result = StdString::wcszcat_safe( _out, _in, MENGINE_UNKNOWN_SIZE, _capacity );
 
             return result;

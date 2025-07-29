@@ -212,7 +212,7 @@ namespace Mengine
         bool updateTextLines_() const;
         void updateTextLinesWrap_( VectorTextLineChunks2 * const _textLines ) const;
         void updateTextLinesMaxCount_( VectorTextLineChunks2 * const _textLines ) const;
-        bool updateTextLinesDimension_( const FontInterfacePtr & _font, const VectorTextLineChunks2 & _textLines, float _justifyLength ) const;
+        bool updateTextLinesDimension_( const FontInterfacePtr & _font, const VectorTextLineChunks2 & _textLines, float _justifyLength, uint32_t * const _charCount, uint32_t * const _layoutCount, mt::vec2f * const _textOffset, mt::vec2f * const _textSize ) const;
 
     public:
         MENGINE_INLINE const ConstString & getTotalTextId() const;
@@ -292,10 +292,10 @@ namespace Mengine
         mutable VectorTextLineChunks m_cacheTextChars;
         mutable VectorTextLineChunks2 m_cacheTextLines;
 
-        mutable uint32_t m_charCount;
-        mutable uint32_t m_layoutCount;
-        mutable mt::vec2f m_textOffset;
-        mutable mt::vec2f m_textSize;
+        mutable uint32_t m_cacheCharCount;
+        mutable uint32_t m_cacheLayoutCount;
+        mutable mt::vec2f m_cacheTextOffset;
+        mutable mt::vec2f m_cacheTextSize;
 
         bool m_anchorHorizontalAlign;
         bool m_anchorVerticalAlign;

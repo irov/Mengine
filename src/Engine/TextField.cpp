@@ -178,14 +178,14 @@ namespace Mengine
         this->invalidateTextEntry();
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::notifyChangeTextAliasArguments_( const ConstString & _environment, const ConstString & _alias )
+    void TextField::notifyChangeTextAliasArguments_( const ConstString & _environment, const ConstString & _textId )
     {
-        if( m_aliasEnvironment != _environment || m_textId != _alias )
+        if( m_aliasEnvironment != _environment || m_textId != _textId )
         {
             return;
         }
 
-        this->invalidateTextArguments();
+        this->invalidateTextId();
     }
     //////////////////////////////////////////////////////////////////////////
     void TextField::notifyRenderDeviceLostPrepare_()

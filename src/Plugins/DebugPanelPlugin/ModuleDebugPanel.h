@@ -49,8 +49,8 @@ namespace Mengine
         void updateHistogramUpdate( HistogramUpdate * const _histogram, uint32_t _statisticId, float _coeffTime, float _multiplier );
 
     protected:
-        void drawHistogramUpdate( const HistogramUpdate & _histogram, const Char * _overlayFormat, float _maxValue, float _height ) const;
-        void drawHistogramPerFrame( const HistogramPerframe & _histogram, const Char * _overlayFormat, float _maxValue, float _height ) const;
+        void drawHistogramUpdate( const HistogramUpdate & _histogram, const Char * _label, const Char * _overlayFormat, float _maxValue, float _height ) const;
+        void drawHistogramPerFrame( const HistogramPerframe & _histogram, const Char * _label, const Char * _overlayFormat, float _maxValue, float _height ) const;
 
     protected:
         ImGUIRenderProviderInterfacePtr m_imguiRenderProvider;

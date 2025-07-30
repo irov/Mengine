@@ -825,7 +825,7 @@ namespace Mengine
 
         m_aliases[key] = _key;
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_TEXT_ALIAS, _environment, _textId );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_TEXT_ALIAS_ID, _environment, _textId );
     }
     //////////////////////////////////////////////////////////////////////////
     void TextService::removeTextAlias( const ConstString & _environment, const ConstString & _textId )
@@ -833,6 +833,8 @@ namespace Mengine
         PairAliasKey key = StdUtility::make_pair( _environment, _textId );
 
         m_aliases.erase( key );
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_TEXT_ALIAS_ID, _environment, _textId );
     }
     //////////////////////////////////////////////////////////////////////////
     bool TextService::isTextAlias( const ConstString & _textId ) const
@@ -893,7 +895,7 @@ namespace Mengine
 
         m_aliasesArguments.insert_or_assign( key, _arguments );
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_TEXT_ALIAS, _environment, _textId );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_TEXT_ALIAS_ARGUMENTS, _environment, _textId );
     }
     //////////////////////////////////////////////////////////////////////////
     bool TextService::getTextAliasArguments( const ConstString & _environment, const ConstString & _textId, VectorTextArguments * const _arguments ) const
@@ -933,6 +935,8 @@ namespace Mengine
         PairAliasKey key = StdUtility::make_pair( _environment, _textId );
 
         m_aliasesArguments.erase( key );
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_TEXT_ALIAS_ARGUMENTS, _environment, _textId );
     }
     //////////////////////////////////////////////////////////////////////////
     const VectorU32String & TextService::getLineDelims() const

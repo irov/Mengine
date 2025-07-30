@@ -3314,31 +3314,10 @@ namespace Mengine
 
             return false;
         }
-        
-        Char utf8_userLocaleISO639[LOCALE_NAME_MAX_LENGTH * 4 + 1] = {'\0'};
 
-        size_t locale_len;
-        if( Helper::unicodeToUtf8( unicode_userLocaleISO639, utf8_userLocaleISO639, LOCALE_NAME_MAX_LENGTH * 4, &locale_len ) == false )
-        {
-            LOGGER_ERROR( "invalid convert locale '%ls' from unicode to utf8"
-                , unicode_userLocaleISO639
-            );
-
-            return false;
-        }
-
-        if( locale_len < MENGINE_LOCALE_LANGUAGE_SIZE )
-        {
-            LOGGER_ERROR( "invalid locale '%s' len %zu < %d"
-                , utf8_userLocaleISO639
-                , locale_len
-                , MENGINE_LOCALE_LANGUAGE_SIZE
-            );
-
-            return false;
-        }
-
-        StdString::strcpy_safe( _userLocaleLanguage, utf8_userLocaleISO639, MENGINE_LOCALE_LANGUAGE_SIZE );
+        _userLocaleLanguage[0] = (Char)unicode_userLocaleISO639[0];
+        _userLocaleLanguage[1] = (Char)unicode_userLocaleISO639[1];
+        _userLocaleLanguage[2] = '\0';
 
         return true;
     }

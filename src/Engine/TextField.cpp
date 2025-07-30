@@ -82,10 +82,11 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_LOCALE_PREPARE, &TextField::notifyChangeLocalePrepare_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_LOCALE_POST, &TextField::notifyChangeLocalePost_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_DEBUG_TEXT_MODE, &TextField::notifyDebugMode_, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_TEXT_ALIAS, &TextField::notifyChangeTextAliasArguments_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_TEXT_ALIAS_ID, &TextField::notifyChangeTextAliasId_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_TEXT_ALIAS_ARGUMENTS, &TextField::notifyChangeTextAliasArguments_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE, &TextField::notifyRenderDeviceLostPrepare_, MENGINE_DOCUMENT_FACTORABLE );
 
-        this->invalidateTextLines();
+        this->invalidateTextId();
 
         return true;
     }
@@ -95,7 +96,8 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_LOCALE_PREPARE );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_LOCALE_POST );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_DEBUG_TEXT_MODE );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_TEXT_ALIAS );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_TEXT_ALIAS_ID );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_TEXT_ALIAS_ARGUMENTS );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE );
 
         Node::_deactivate();
@@ -178,7 +180,7 @@ namespace Mengine
         this->invalidateTextEntry();
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::notifyChangeTextAliasArguments_( const ConstString & _environment, const ConstString & _textId )
+    void TextField::notifyChangeTextAliasId_( const ConstString & _environment, const ConstString & _textId )
     {
         if( m_aliasEnvironment != _environment || m_textId != _textId )
         {
@@ -186,6 +188,16 @@ namespace Mengine
         }
 
         this->invalidateTextId();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::notifyChangeTextAliasArguments_( const ConstString & _environment, const ConstString & _textId )
+    {
+        if( m_aliasEnvironment != _environment || m_textId != _textId )
+        {
+            return;
+        }
+
+        this->invalidateTextArguments();
     }
     //////////////////////////////////////////////////////////////////////////
     void TextField::notifyRenderDeviceLostPrepare_()
@@ -2527,20 +2539,20 @@ namespace Mengine
         this->invalidateTextLines();
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::invalidateTextId() const
-    {
-        m_invalidateTextId = true;
-
-        this->invalidateTextArguments();
-        this->invalidateTextEntry();
-    }
-    //////////////////////////////////////////////////////////////////////////
     void TextField::invalidateTextArguments() const
     {
         m_invalidateTextArguments = true;
 
         this->invalidateFont();
         this->invalidateTextLines();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::invalidateTextId() const
+    {
+        m_invalidateTextId = true;
+
+        this->invalidateTextArguments();
+        this->invalidateTextEntry();
     }
     //////////////////////////////////////////////////////////////////////////
     void TextField::updateVerticesWM_( const FontInterfacePtr & _font ) const

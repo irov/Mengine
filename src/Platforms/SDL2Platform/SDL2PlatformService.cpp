@@ -225,7 +225,7 @@ namespace Mengine
         return Project_ExtraPreferencesFolderNameLen;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDL2PlatformService::getUserLocaleLanguage( Char * const _userLocale ) const
+    bool SDL2PlatformService::getUserLocaleLanguage( Char * const _userLocaleLanguage ) const
     {
         SDL_Locale * locale = SDL_GetPreferredLocales();
         

@@ -575,25 +575,20 @@ namespace Mengine
         return Project_ExtraPreferencesFolderNameLen;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidPlatformService::getUserLocaleLanguage( Char * const _userLocale ) const
+    bool AndroidPlatformService::getUserLocaleLanguage( Char * const _userLocaleLanguage ) const
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         jstring jlocale = (jstring)Helper::AndroidCallObjectApplicationMethod( jenv, "getDeviceLanguage", "()Ljava/lang/String;" );
 
         Char deviceLanguage[128 + 1] = {'\0'};
-        size_t deviceLanguageLen = Helper::AndroidCopyStringFromJString( jenv, jlocale, deviceLanguage, 128 );
+        Helper::AndroidCopyStringFromJString( jenv, jlocale, deviceLanguage, 128 );
 
         jenv->DeleteLocalRef( jlocale );
 
-        if( deviceLanguageLen != MENGINE_LOCALE_LANGUAGE_SIZE )
-        {
-            LOGGER_ERROR( "invalid get user locale language" );
-
-            return false;
-        }
-
-        StdString::strcpy_safe( _userLocale, deviceLanguage, MENGINE_LOCALE_LANGUAGE_SIZE );
+        _userLocaleLanguage[0] = deviceLanguage[0];
+        _userLocaleLanguage[1] = deviceLanguage[1];
+        _userLocaleLanguage[2] = '\0';
 
         return true;
     }

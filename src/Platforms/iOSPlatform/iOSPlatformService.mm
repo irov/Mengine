@@ -192,8 +192,10 @@ namespace Mengine
         }
         
         const Char * localeLanguage_str = [localeLanguage UTF8String];
-        
-        StdString::strcpy_safe( _userLocaleLanguage, localeLanguage_str, MENGINE_LOCALE_LANGUAGE_SIZE );
+
+        _userLocaleLanguage[0] = localeLanguage_str[0];
+        _userLocaleLanguage[1] = localeLanguage_str[1];
+        _userLocaleLanguage[2] = '\0';
 
         return true;
     }

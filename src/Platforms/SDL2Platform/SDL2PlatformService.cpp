@@ -238,7 +238,9 @@ namespace Mengine
             return false;
         }
 
-        StdString::strcpy_safe( _userLocale, locale->language, MENGINE_LOCALE_LANGUAGE_SIZE );
+        _userLocaleLanguage[0] = (Char)locale->language[0];
+        _userLocaleLanguage[1] = (Char)locale->language[1];
+        _userLocaleLanguage[2] = '\0';
 
         SDL_free( locale );
 

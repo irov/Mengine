@@ -98,21 +98,21 @@ macro(ADD_APPLOVIN_MEDIATION MEDIATION POD VERSION)
     endif()
 endmacro()
 
-ADD_APPLOVIN_MEDIATION(ADMOB "AppLovinMediationGoogleAdapter" "12.7.0.0")
+ADD_APPLOVIN_MEDIATION(ADMOB "AppLovinMediationGoogleAdapter" "12.8.0.0")
 ADD_APPLOVIN_MEDIATION(AMAZON "AppLovinMediationAmazonAdMarketplaceAdapter" "5.2.0.0")
 ADD_APPLOVIN_MEDIATION(BIDMACHINE "AppLovinMediationBidMachineAdapter" "3.3.0.0.0")
 ADD_APPLOVIN_MEDIATION(BIGO "AppLovinMediationBigoAdsAdapter" "4.7.0.2")
 ADD_APPLOVIN_MEDIATION(CHARTBOOST "AppLovinMediationChartboostAdapter" "9.9.0.0")
 ADD_APPLOVIN_MEDIATION(CSJ "AppLovinMediationCSJAdapter" "6.7.1.6.0")
 ADD_APPLOVIN_MEDIATION(DTEXCHANGE "AppLovinMediationFyberAdapter" "8.3.6.0") #DT Exchange
-ADD_APPLOVIN_MEDIATION(GOOGLEADMANAGER "AppLovinMediationGoogleAdManagerAdapter" "12.4.0.1")
+ADD_APPLOVIN_MEDIATION(GOOGLEADMANAGER "AppLovinMediationGoogleAdManagerAdapter" "12.8.0.0")
 ADD_APPLOVIN_MEDIATION(HYPRMX "AppLovinMediationHyprMXAdapter" "6.4.2.0.0")
 ADD_APPLOVIN_MEDIATION(INMOBI "AppLovinMediationInMobiAdapter" "10.8.3.1")
 ADD_APPLOVIN_MEDIATION(IRONSOURCE "AppLovinMediationIronSourceAdapter" "8.8.0.0.0")
 ADD_APPLOVIN_MEDIATION(LIFTOFF "AppLovinMediationLifftoffAdapter" "7.5.1.2")
 ADD_APPLOVIN_MEDIATION(LINE "AppLovinMediationLineAdapter" "2.9.20250512.0")
 ADD_APPLOVIN_MEDIATION(MAIO "AppLovinMediationMaioAdapter" "2.1.6.0")
-ADD_APPLOVIN_MEDIATION(META "AppLovinMediationFacebookAdapter" "6.20.0.0") #Meta
+ADD_APPLOVIN_MEDIATION(META "AppLovinMediationFacebookAdapter" "6.20.1.0") #Meta
 ADD_APPLOVIN_MEDIATION(MINTEGRAL "AppLovinMediationMintegralAdapter" "7.7.8.0.0")
 ADD_APPLOVIN_MEDIATION(MOBILEFUSE "AppLovinMediationMobileFuseAdapter" "1.9.2.1")
 ADD_APPLOVIN_MEDIATION(MOLOCO "AppLovinMediationMolocoAdapter" "3.9.1.1")
@@ -121,7 +121,7 @@ ADD_APPLOVIN_MEDIATION(PANGLE "AppLovinMediationByteDanceAdapter" "7.1.1.1.0") #
 ADD_APPLOVIN_MEDIATION(PUBMATIC "AppLovinMediationPubMaticAdapter" "4.5.2.0")
 ADD_APPLOVIN_MEDIATION(SMAATO "AppLovinMediationSmaatoAdapter" "22.9.3.1")
 ADD_APPLOVIN_MEDIATION(TENCENT "AppLovinMediationTencentGDTAdapter" "4.15.21.1")
-ADD_APPLOVIN_MEDIATION(UNITYADS "AppLovinMediationUnityAdsAdapter" "4.15.1.0")
+ADD_APPLOVIN_MEDIATION(UNITYADS "AppLovinMediationUnityAdsAdapter" "4.15.1.1")
 ADD_APPLOVIN_MEDIATION(VERVE "AppLovinMediationVerveAdapter" "3.6.0.0")
 ADD_APPLOVIN_MEDIATION(MYTARGET "AppLovinMediationMyTargetAdapter" "5.31.0.0") #VK
 ADD_APPLOVIN_MEDIATION(YANDEX "AppLovinMediationYandexAdapter" "7.12.3.0")

@@ -107,8 +107,7 @@ if(ANDROID)
 endif()
 
 if(APPLE)
-    set(sources_ext ${sources_ext} ${sources_arm})
-    add_definitions(-DOC_ARM_ASM)
+    set(sources_ext ${sources_ext})
 endif()
 
 add_library(${PROJECT_NAME} STATIC ${sources} ${sources_ext})

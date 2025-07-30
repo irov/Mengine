@@ -105,7 +105,7 @@ namespace Mengine
         NSString * path = [[NSBundle mainBundle] resourcePath];
         
         StdString::strcpy_safe( _currentPath, [path UTF8String], MENGINE_MAX_PATH );
-        StdString::strnchrcat( _currentPath, MENGINE_PATH_FORWARDSLASH, MENGINE_MAX_PATH );
+        StdString::strchrcat_safe( _currentPath, MENGINE_PATH_FORWARDSLASH, MENGINE_MAX_PATH );
 
         size_t path_length = [path length] + 1;
         

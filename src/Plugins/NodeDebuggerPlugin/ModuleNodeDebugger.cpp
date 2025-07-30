@@ -376,6 +376,11 @@ namespace Mengine
         {
             if( m_currentTab == "scene" )
             {
+                const NodePtr & arrowNode = ARROW_SERVICE()
+                    ->getArrowNode();
+
+                this->sendArrow( arrowNode );
+
                 this->sendScene( m_scene );
                 this->sendPickerable( m_scene );
                 this->sendRenderable( m_scene );
@@ -1324,6 +1329,34 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    void ModuleNodeDebugger::sendArrow( const NodePtr & _arrow )
+    {
+        pugi::xml_document doc;
+
+        pugi::xml_node packetNode = doc.append_child( "Packet" );
+        packetNode.append_attribute( "type" ).set_value( "Arrow" );
+
+        if( _arrow != nullptr )
+        {
+            pugi::xml_node payloadNode = packetNode.append_child( "Payload" );
+
+            this->serializeNode( _arrow, payloadNode );
+        }
+
+        NodeDebuggerPacket packet;
+
+        MyXMLWriter writer( packet.payload );
+
+#if defined(MENGINE_DEBUG)
+        const uint32_t xmlFlags = pugi::format_indent;
+#else
+        const uint32_t xmlFlags = pugi::format_raw;
+#endif
+        doc.save( writer, "  ", xmlFlags, pugi::encoding_utf8 );
+
+        this->sendPacket( packet );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void ModuleNodeDebugger::sendScene( const ScenePtr & _scene )
     {
         pugi::xml_document doc;
@@ -1949,6 +1982,17 @@ namespace Mengine
         this->stringToPath( pathStr, &path );
 
         NodePtr node = Helper::findUniqueNode( m_scene, path );
+
+        if( node == nullptr )
+        {
+            const NodePtr & arrowNode = ARROW_SERVICE()
+                ->getArrowNode();
+
+            if( arrowNode != nullptr )
+            {
+                node = Helper::findUniqueNode( arrowNode, path );
+            }
+        }
 
         if( node != nullptr )
         {

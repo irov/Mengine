@@ -206,8 +206,8 @@ namespace Mengine
         void invalidateFont() const;
         void invalidateTextLines() const;
         void invalidateTextEntry() const;
-        void invalidateTextId() const;
         void invalidateTextArguments() const;
+        void invalidateTextId() const;
 
 
         bool updateTextLines_() const;

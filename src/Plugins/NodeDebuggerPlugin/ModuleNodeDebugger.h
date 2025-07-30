@@ -94,6 +94,7 @@ namespace Mengine
         void compressPacket( NodeDebuggerPacket & _packet, PacketHeader & _hdr );
         void uncompressPacket( NodeDebuggerPacket & _packet, PacketHeader & _hdr, const uint8_t * _receivedData );
         void sendPacket( NodeDebuggerPacket & _packet );
+        void sendArrow( const NodePtr & _arrow );
         void sendScene( const ScenePtr & _scene );
         void sendPickerable( const ScenePtr & _scene );
         void sendRenderable( const ScenePtr & _scene );

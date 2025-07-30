@@ -264,13 +264,20 @@ namespace Mengine
 
         while( GL_FALSE == glfwWindowShouldClose( m_window ) )
         {
+            glfwPollEvents();
+
             const double currentTimerValue = glfwGetTime();
             const double dt = currentTimerValue - lastTimerValue;
             lastTimerValue = currentTimerValue;
 
-            this->Update( dt );
+            if( glfwGetWindowAttrib( m_window, GLFW_FOCUSED ) == GLFW_FALSE )
+            {
+                std::this_thread::sleep_for( std::chrono::microseconds( 100 ) );
 
-            glfwPollEvents();
+                continue;
+            }
+
+            this->Update( dt );            
 
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
@@ -287,7 +294,7 @@ namespace Mengine
             ImGui_ImplOpenGL3_RenderDrawData( ImGui::GetDrawData() );
 
             glfwSwapBuffers( m_window );
-
+            
             std::this_thread::sleep_for( std::chrono::microseconds( 1 ) );
         }
     }

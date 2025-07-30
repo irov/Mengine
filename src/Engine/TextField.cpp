@@ -86,7 +86,7 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_TEXT_ALIAS_ARGUMENTS, &TextField::notifyChangeTextAliasArguments_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE, &TextField::notifyRenderDeviceLostPrepare_, MENGINE_DOCUMENT_FACTORABLE );
 
-        this->invalidateTextLines();
+        this->invalidateTextId();
 
         return true;
     }
@@ -2539,20 +2539,20 @@ namespace Mengine
         this->invalidateTextLines();
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::invalidateTextId() const
-    {
-        m_invalidateTextId = true;
-
-        this->invalidateTextArguments();
-        this->invalidateTextEntry();
-    }
-    //////////////////////////////////////////////////////////////////////////
     void TextField::invalidateTextArguments() const
     {
         m_invalidateTextArguments = true;
 
         this->invalidateFont();
         this->invalidateTextLines();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::invalidateTextId() const
+    {
+        m_invalidateTextId = true;
+
+        this->invalidateTextArguments();
+        this->invalidateTextEntry();
     }
     //////////////////////////////////////////////////////////////////////////
     void TextField::updateVerticesWM_( const FontInterfacePtr & _font ) const

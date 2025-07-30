@@ -59,7 +59,7 @@ namespace Mengine
         _histogram->add( value );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleDebugPanel::drawHistogramUpdate( const HistogramUpdate & _histogram, const Char * _overlayFormat, float _maxValue, float _height ) const
+    void ModuleDebugPanel::drawHistogramUpdate( const HistogramUpdate & _histogram, const Char * _label, const Char * _overlayFormat, float _maxValue, float _height ) const
     {
         float currentValue = _histogram.getLastValue();
         const float * values = _histogram.getValues();
@@ -67,10 +67,13 @@ namespace Mengine
         Char overlayText[32 + 1] = {'\0'};
         MENGINE_SNPRINTF( overlayText, 32, _overlayFormat, currentValue );
 
-        ImGui::PlotHistogram( "", values, MENGINE_DEBUG_PANEL_HISTOGRAM_UPDATE_COUNT, 0, overlayText, 0.f, _maxValue, ImVec2( 0, _height ) );
+        Char imGuiLabel[32 + 1] = {'\0'};
+        MENGINE_SNPRINTF( imGuiLabel, 32, "##Update%s", _label );
+
+        ImGui::PlotHistogram( imGuiLabel, values, MENGINE_DEBUG_PANEL_HISTOGRAM_UPDATE_COUNT, 0, overlayText, 0.f, _maxValue, ImVec2( 0, _height ) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleDebugPanel::drawHistogramPerFrame( const HistogramPerframe & _histogram, const Char * _overlayFormat, float _maxValue, float _height ) const
+    void ModuleDebugPanel::drawHistogramPerFrame( const HistogramPerframe & _histogram, const Char * _label, const Char * _overlayFormat, float _maxValue, float _height ) const
     {
         float currentValue = _histogram.getLastValue();
         const float * values = _histogram.getValues();
@@ -78,7 +81,10 @@ namespace Mengine
         Char overlayText[32 + 1] = {'\0'};
         MENGINE_SNPRINTF( overlayText, 32, _overlayFormat, currentValue );
 
-        ImGui::PlotHistogram( "", values, MENGINE_DEBUG_PANEL_HISTOGRAM_PERFRAME_COUNT, 0, overlayText, 0.f, _maxValue, ImVec2( 0, _height ) );
+        Char imGuiLabel[32 + 1] = {'\0'};
+        MENGINE_SNPRINTF( imGuiLabel, 32, "##PerFrame%s", _label );
+
+        ImGui::PlotHistogram( imGuiLabel, values, MENGINE_DEBUG_PANEL_HISTOGRAM_PERFRAME_COUNT, 0, overlayText, 0.f, _maxValue, ImVec2( 0, _height ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void ModuleDebugPanel::_beginUpdate( bool _focus )
@@ -154,28 +160,28 @@ namespace Mengine
         float maxFPS = m_histogramFPS.getMaxValue();
         float histogramFPSHeight = maxFPS > 80.f ? maxFPS : 80.f;
 
-        this->drawHistogramUpdate( m_histogramFPS, "FPS: %.2f", histogramFPSHeight, 80.f );
-        this->drawHistogramUpdate( m_histogramAllocatorNew, "Memory alloc: %.2fkb", FLT_MAX, 60.f );
-        this->drawHistogramUpdate( m_histogramAllocatorFree, "Memory free: %.2fkb", FLT_MAX, 60.f );
+        this->drawHistogramUpdate( m_histogramFPS, "fps", "FPS: %.2f", histogramFPSHeight, 80.f );
+        this->drawHistogramUpdate( m_histogramAllocatorNew, "memalloc", "Memory alloc: %.2fkb", FLT_MAX, 60.f );
+        this->drawHistogramUpdate( m_histogramAllocatorFree, "memfree", "Memory free: %.2fkb", FLT_MAX, 60.f );
 
         int64_t Statistic_AllocatorSize = STATISTIC_GET_INTEGER( STATISTIC_ALLOCATOR_SIZE );
         ImGui::Text( "Allocator size: %lldmb %lldkb", Statistic_AllocatorSize / (1024 * 1024), (Statistic_AllocatorSize % (1024 * 1024)) / 1024 );
 
-        this->drawHistogramUpdate( m_histogramImageNew, "Image new: %.0f", FLT_MAX, 60.f );
-        this->drawHistogramUpdate( m_histogramImageFree, "Image free: %.0f", FLT_MAX, 60.f );
+        this->drawHistogramUpdate( m_histogramImageNew, "imagenew", "Image new: %.0f", FLT_MAX, 60.f );
+        this->drawHistogramUpdate( m_histogramImageFree, "imagefree", "Image free: %.0f", FLT_MAX, 60.f );
 
         int64_t Statistic_Render_ImageSize = STATISTIC_GET_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE );
         ImGui::Text( "Image size: %lld", Statistic_Render_ImageSize );
 
-        this->drawHistogramPerFrame( m_histogramPerFrameDrawIndexPrimitives, "DIP: %.0f", FLT_MAX, 50.f );
+        this->drawHistogramPerFrame( m_histogramPerFrameDrawIndexPrimitives, "dip", "DIP: %.0f", FLT_MAX, 50.f );
 
         float maxFillrate = m_histogramPerFrameFillrate.getMaxValue();
         float histogramFillrateHeight = maxFillrate > 10.f ? maxFillrate : 13.f;
 
-        this->drawHistogramPerFrame( m_histogramPerFrameFillrate, "Fillrate: %.2f", histogramFillrateHeight, 50.f );
-        this->drawHistogramPerFrame( m_histogramPerFrameObjects, "Objects: %.0f", FLT_MAX, 50.f );
-        this->drawHistogramPerFrame( m_histogramPerFrameTriangles, "Triangles: %.0f", FLT_MAX, 50.f );
-        this->drawHistogramPerFrame( m_histogramPerFrameBatches, "Batches: %.0f", FLT_MAX, 50.f );
+        this->drawHistogramPerFrame( m_histogramPerFrameFillrate, "fillrate", "Fillrate: %.2f", histogramFillrateHeight, 50.f );
+        this->drawHistogramPerFrame( m_histogramPerFrameObjects, "objects", "Objects: %.0f", FLT_MAX, 50.f );
+        this->drawHistogramPerFrame( m_histogramPerFrameTriangles, "triangles", "Triangles: %.0f", FLT_MAX, 50.f );
+        this->drawHistogramPerFrame( m_histogramPerFrameBatches, "batches", "Batches: %.0f", FLT_MAX, 50.f );
 
         ImGui::End();
 

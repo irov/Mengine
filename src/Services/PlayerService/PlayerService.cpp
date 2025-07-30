@@ -718,11 +718,13 @@ namespace Mengine
         const RenderInterface * render = m_renderExtra->getRender();
         render->render( _renderPipeline, &m_renderContext );
 
+        /*
         if( SERVICE_IS_INITIALIZE( NodeDebugRenderServiceInterface ) == true )
         {
             NODEDEBUGRENDER_SERVICE()
                 ->renderDebugInfo( _renderPipeline, &m_renderContext );
         }
+        */
     }
     //////////////////////////////////////////////////////////////////////////
     bool PlayerService::handleMouseEnter( const InputMouseEnterEvent & _event )

@@ -282,6 +282,7 @@ namespace Mengine
         SERVICE_PROVIDER_SETUP( serviceProvider );
 
         SERVICE_CREATE( AllocatorSystem, nullptr );
+        SERVICE_CREATE( EnumeratorService, nullptr );
         SERVICE_CREATE( StringizeService, nullptr );
         SERVICE_CREATE( DocumentService, nullptr );
 
@@ -292,8 +293,7 @@ namespace Mengine
         SERVICE_CREATE( DateTimeSystem, MENGINE_DOCUMENT_FUNCTION );
 
         SERVICE_CREATE( Win32KernelService, MENGINE_DOCUMENT_FUNCTION );
-
-        SERVICE_CREATE( EnumeratorService, MENGINE_DOCUMENT_FUNCTION );
+        
         SERVICE_CREATE( NotificationService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( OptionsService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( FactoryService, MENGINE_DOCUMENT_FUNCTION );
@@ -316,8 +316,7 @@ namespace Mengine
         SERVICE_CREATE( CodecService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( DataService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( ThreadService, MENGINE_DOCUMENT_FUNCTION );
-        SERVICE_CREATE( MemoryService, MENGINE_DOCUMENT_FUNCTION );
-        SERVICE_CREATE( EnumeratorService, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( MemoryService, MENGINE_DOCUMENT_FUNCTION );        
         SERVICE_CREATE( TimelineService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( TimepipeService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( ModuleService, MENGINE_DOCUMENT_FUNCTION );
@@ -397,7 +396,6 @@ namespace Mengine
         SERVICE_FINALIZE( ModuleService );
         SERVICE_FINALIZE( TimepipeService );
         SERVICE_FINALIZE( TimelineService );
-        SERVICE_FINALIZE( EnumeratorService );
         SERVICE_FINALIZE( MemoryService );
         SERVICE_FINALIZE( ThreadService );
         SERVICE_FINALIZE( DataService );

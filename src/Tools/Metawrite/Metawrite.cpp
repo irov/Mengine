@@ -79,6 +79,7 @@ namespace Mengine
         SERVICE_PROVIDER_SETUP( serviceProvider );
 
         SERVICE_CREATE( AllocatorSystem, nullptr );
+        SERVICE_CREATE( EnumeratorService, nullptr );
         SERVICE_CREATE( StringizeService, nullptr );
         SERVICE_CREATE( DocumentService, nullptr );
 
@@ -87,8 +88,7 @@ namespace Mengine
         SERVICE_CREATE( ThreadSystem, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( UnicodeSystem, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( DateTimeSystem, MENGINE_DOCUMENT_FUNCTION );
-
-        SERVICE_CREATE( EnumeratorService, MENGINE_DOCUMENT_FUNCTION );
+        
         SERVICE_CREATE( NotificationService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( OptionsService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( FactoryService, MENGINE_DOCUMENT_FUNCTION );

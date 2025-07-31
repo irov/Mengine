@@ -13,7 +13,7 @@
 
 namespace Mengine
 {
-    struct alignas(16) MENGINE_JMPBUF
+    struct MENGINE_ALIGNAS(16) MENGINE_JMPBUF
     {
         MENGINE_JMP_DECLARE( value );
     };

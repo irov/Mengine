@@ -322,6 +322,10 @@
 #   endif
 #endif
 
+#ifndef MENGINE_ALIGNAS
+#define MENGINE_ALIGNAS(X) alignas(X)
+#endif
+
 #ifndef MENGINE_NODISCARD
 #define MENGINE_NODISCARD [[nodiscard]]
 #endif

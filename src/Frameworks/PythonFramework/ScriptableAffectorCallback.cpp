@@ -18,12 +18,12 @@ namespace Mengine
         PythonCallbackProvider::initialize( _cb, _args );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ScriptableAffectorCallback::onAffectorEnd( UniqueId _id, bool _isEnd )
+    void ScriptableAffectorCallback::onAffectorEnd( bool _isEnd )
     {
         ScriptablePtr scriptable = m_scriptable;
         m_scriptable = nullptr;
 
-        this->call_cb( scriptable, _id, _isEnd );
+        this->call_cb( scriptable, _isEnd );
     }
     //////////////////////////////////////////////////////////////////////////
 }

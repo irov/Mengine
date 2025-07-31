@@ -10,11 +10,11 @@ namespace Mengine
         : virtual public IntrusivePtrBase
     {
     public:
-        Mixin() MENGINE_NOEXCEPT
+        Mixin()
         {
         }
 
-        virtual ~Mixin() MENGINE_NOEXCEPT
+        virtual ~Mixin()
         {
         }
     };

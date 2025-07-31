@@ -23,6 +23,7 @@
 #include "Kernel/MixerBoolean.h"
 #include "Kernel/MixerMultiplicative.h"
 #include "Kernel/DebugFileHelper.h"
+#include "Kernel/Stringstream.h"
 
 #include "Config/StdAlgorithm.h"
 
@@ -356,7 +357,7 @@ namespace Mengine
         }
 
         LOGGER_INFO( "sound", "create sound identity: %u head: %d category: %d streamable: %d turn: %d"
-            , identity->getId()
+            , identity->getUniqueIdentity()
             , _isHeadMode
             , _category
             , _streamable
@@ -532,11 +533,11 @@ namespace Mengine
 
         _identity->finalize();
 
-        uint32_t id = _identity->getId();
+        uint32_t id = _identity->getUniqueIdentity();
 
         VectorSoundIdentity::iterator it_found = StdAlgorithm::find_if( m_soundIdentities.begin(), m_soundIdentities.end(), [id]( const SoundIdentityInterfacePtr & _identity )
         {
-            return _identity->getId() == id;
+            return _identity->getUniqueIdentity() == id;
         } );
 
         if( it_found == m_soundIdentities.end() )
@@ -837,7 +838,7 @@ namespace Mengine
                 if( source == nullptr )
                 {
                     LOGGER_ERROR( "invalid play %u source is nullptr"
-                        , _identity->getId()
+                        , _identity->getUniqueIdentity()
                     );
 
                     return false;
@@ -857,7 +858,7 @@ namespace Mengine
                     if( source->play() == false )
                     {
                         LOGGER_ASSERTION( "invalid play %u"
-                            , _identity->getId()
+                            , _identity->getUniqueIdentity()
                         );
 
                         return false;
@@ -893,7 +894,7 @@ namespace Mengine
                     if( source->resume() == false )
                     {
                         LOGGER_ASSERTION( "invalid resume %u"
-                            , _identity->getId()
+                            , _identity->getUniqueIdentity()
                         );
 
                         return false;
@@ -1010,7 +1011,7 @@ namespace Mengine
                     if( source->resume() == false )
                     {
                         LOGGER_ASSERTION( "invalid resume %u"
-                            , _identity->getId()
+                            , _identity->getUniqueIdentity()
                         );
 
                         return false;
@@ -1260,7 +1261,7 @@ namespace Mengine
         if( source == nullptr )
         {
             LOGGER_ERROR( "source is nullptr id %u"
-                , _identity->getId()
+                , _identity->getUniqueIdentity()
             );
 
             return 0.f;
@@ -1280,7 +1281,7 @@ namespace Mengine
         if( source == nullptr )
         {
             LOGGER_ERROR( "not setup source %u"
-                , _identity->getId()
+                , _identity->getUniqueIdentity()
             );
 
             return false;
@@ -1291,7 +1292,7 @@ namespace Mengine
         if( _position > duration )
         {
             LOGGER_ASSERTION( "emitter %u invalid position %f because length %f"
-                , _identity->getId()
+                , _identity->getUniqueIdentity()
                 , _position
                 , duration
             );
@@ -1339,7 +1340,7 @@ namespace Mengine
             if( source->resume() == false )
             {
                 LOGGER_ASSERTION( "invalid resume %u"
-                    , _identity->getId()
+                    , _identity->getUniqueIdentity()
                 );
 
                 return false;
@@ -1480,20 +1481,22 @@ namespace Mengine
 
         if( playCount > Limit_MaxSoundPlay )
         {
-            LOGGER_ASSERTION( "sound play exceeded max count '%u'"
-                , Limit_MaxSoundPlay
-            );
+            Stringstream ss;
+            ss << "max sound play count exceeded: " << Limit_MaxSoundPlay;
 
 #if defined(MENGINE_DEBUG)
             for( const SoundIdentityInterfacePtr & identity : m_soundIdentities )
             {
-                LOGGER_ASSERTION( "sound: %s stream: %s (doc: %s)"
-                    , identity->getStreamable() == true ? "streamable" : "instance"
-                    , Helper::getDebugFullPath( identity->getSoundSource()->getSoundBuffer()->getDecoder()->getStream() ).c_str()
-                    , MENGINE_DOCUMENT_STR( identity->getDocument() )
-                );
+                ss << "\n"
+                    << "id: " << identity->getUniqueIdentity() << " "
+                    << (identity->getStreamable() == true ? "streamable" : "instance") << " "
+                    << "category: " << identity->getCategory() << " "
+                    << "state: " << identity->getState() << " "
+                    << "source: " << Helper::getDebugFullPath( identity->getSoundSource()->getSoundBuffer()->getDecoder()->getStream() ).c_str() << " "
+                    << "(doc: " << MENGINE_DOCUMENT_STR( identity->getDocument() ) << ")";
             }
 #endif
+            LOGGER_ASSERTION( "%s", ss.str().c_str() );
 
             return false;
         }

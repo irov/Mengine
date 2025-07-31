@@ -169,7 +169,7 @@ namespace Mengine
         {
             LOGGER_ASSERTION( "amplifier sound emitter '%s' invalid play [%u]"
                 , filePath.c_str()
-                , soundIdentity->getId()
+                , soundIdentity->getUniqueIdentity()
             );
 
             return false;

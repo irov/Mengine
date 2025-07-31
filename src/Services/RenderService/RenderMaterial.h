@@ -22,7 +22,7 @@ namespace Mengine
 
     public:
         const ConstString & getName() const override;
-        UniqueId getId() const override;
+        UniqueId getMaterialId() const override;
 
     public:
         void update( float _time, float _timing ) override;
@@ -53,7 +53,7 @@ namespace Mengine
         return m_name;
     }
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE UniqueId RenderMaterial::getId() const
+    MENGINE_INLINE UniqueId RenderMaterial::getMaterialId() const
     {
         return m_id;
     }

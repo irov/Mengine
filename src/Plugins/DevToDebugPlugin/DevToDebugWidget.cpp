@@ -15,12 +15,12 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void DevToDebugWidget::setId( const ConstString & _id )
+    void DevToDebugWidget::setWidgetId( const ConstString & _id )
     {
         m_id = _id;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & DevToDebugWidget::getId() const
+    const ConstString & DevToDebugWidget::getWidgetId() const
     {
         return m_id;
     }

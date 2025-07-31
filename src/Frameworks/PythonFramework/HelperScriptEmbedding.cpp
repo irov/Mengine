@@ -1536,7 +1536,7 @@ namespace Mengine
                 ACCOUNT_SERVICE()
                     ->foreachAccounts( [&accounts]( const AccountInterfacePtr & _account )
                 {
-                    const ConstString & accountId = _account->getId();
+                    const ConstString & accountId = _account->getAccountId();
 
                     accounts.emplace_back( accountId );
                 } );
@@ -2879,7 +2879,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( account, "invalid create account" );
 
-                const ConstString & accountId = account->getId();
+                const ConstString & accountId = account->getAccountId();
 
                 PyObject * py_value = pybind::ptr( _kernel, accountId );
 
@@ -2893,7 +2893,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( account, "invalid create account" );
 
-                const ConstString & accountId = account->getId();
+                const ConstString & accountId = account->getAccountId();
 
                 PyObject * py_value = pybind::ptr( _kernel, accountId );
 

@@ -58,7 +58,7 @@ namespace Mengine
     {
     public:
         virtual const ConstString & getName() const = 0;
-        virtual UniqueId getId() const = 0;
+        virtual UniqueId getMaterialId() const = 0;
 
     public:
         virtual void update( float _time, float _timing ) = 0;

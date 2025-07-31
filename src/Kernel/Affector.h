@@ -40,10 +40,6 @@ namespace Mengine
         EAffectorType getAffectorType() const;
 
     public:
-        void setId( UniqueId _id );
-        UniqueId getId() const;
-
-    public:
         void setFreeze( bool _value );
         bool getFreeze() const;
 
@@ -59,10 +55,10 @@ namespace Mengine
         float getSpeedFactor() const;
 
     public:
-        bool prepare( EUpdateMode _updatableMode, uint32_t _updatableLeaf );
+        void prepare( EUpdateMode _updatableMode, uint32_t _updatableLeaf );
 
     protected:
-        virtual bool _prepare();
+        virtual void _prepare();
 
     protected:
         void update( const UpdateContext * _context ) override;
@@ -85,7 +81,6 @@ namespace Mengine
     protected:
         EAffectorType m_type;
         EAffectorStatus m_status;
-        UniqueId m_id;
 
         EasingInterfacePtr m_easing;
 

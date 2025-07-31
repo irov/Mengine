@@ -5,7 +5,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    bool operator == ( const FilePath & _left, const FilePath::value_type * _right ) MENGINE_NOEXCEPT
+    bool operator == ( const FilePath & _left, const FilePath::value_type * _right )
     {
         const ConstString::value_type * left_str = _left.c_str();
 
@@ -17,7 +17,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool operator == ( const FilePath::value_type * _left, const FilePath & _right ) MENGINE_NOEXCEPT
+    bool operator == ( const FilePath::value_type * _left, const FilePath & _right )
     {
         const ConstString::value_type * right_str = _right.c_str();
 
@@ -29,7 +29,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool operator != ( const FilePath & _left, const FilePath::value_type * _right ) MENGINE_NOEXCEPT
+    bool operator != ( const FilePath & _left, const FilePath::value_type * _right )
     {
         const FilePath::value_type * left_str = _left.c_str();
 
@@ -41,7 +41,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool operator != ( const FilePath::value_type * _left, const FilePath & _right ) MENGINE_NOEXCEPT
+    bool operator != ( const FilePath::value_type * _left, const FilePath & _right )
     {
         const FilePath::value_type * right_str = _right.c_str();
 

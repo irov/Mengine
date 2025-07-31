@@ -9,17 +9,17 @@ namespace Mengine
         : public ConstString
     {
     public:
-        MENGINE_CONSTEXPR FilePath() MENGINE_NOEXCEPT
+        MENGINE_CONSTEXPR FilePath()
         {
         }
 
-        explicit FilePath( const ConstString & _cst ) MENGINE_NOEXCEPT
+        explicit FilePath( const ConstString & _cst )
             : ConstString( _cst )
         {
         }
 
     public:
-        static MENGINE_INLINE const FilePath & none() MENGINE_NOEXCEPT
+        static MENGINE_INLINE const FilePath & none()
         {
             static const FilePath s_none;
 
@@ -27,18 +27,18 @@ namespace Mengine
         }
     };
     //////////////////////////////////////////////////////////////////////////
-    bool operator == ( const FilePath & _left, const FilePath::value_type * _right ) MENGINE_NOEXCEPT;
+    bool operator == ( const FilePath & _left, const FilePath::value_type * _right );
     //////////////////////////////////////////////////////////////////////////
-    bool operator == ( const FilePath::value_type * _left, const FilePath & _right ) MENGINE_NOEXCEPT;
+    bool operator == ( const FilePath::value_type * _left, const FilePath & _right );
     //////////////////////////////////////////////////////////////////////////
-    bool operator != ( const FilePath & _left, const FilePath::value_type * _right ) MENGINE_NOEXCEPT;
+    bool operator != ( const FilePath & _left, const FilePath::value_type * _right );
     //////////////////////////////////////////////////////////////////////////
-    bool operator != ( const FilePath::value_type * _left, const FilePath & _right ) MENGINE_NOEXCEPT;
+    bool operator != ( const FilePath::value_type * _left, const FilePath & _right );
     //////////////////////////////////////////////////////////////////////////
     template<>
     struct Hashgen<FilePath>
     {
-        MENGINE_CONSTEXPR HashType operator()( const FilePath & _value ) const MENGINE_NOEXCEPT
+        MENGINE_CONSTEXPR HashType operator()( const FilePath & _value ) const
         {
             return _value.hash();
         }

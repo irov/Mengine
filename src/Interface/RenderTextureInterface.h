@@ -21,7 +21,7 @@ namespace Mengine
         virtual const RenderImageInterfacePtr & getImage() const = 0;
 
     public:
-        virtual uint32_t getId() const = 0;
+        virtual UniqueId getTextureId() const = 0;
 
     public:
         virtual const mt::uv4f & getUV() const = 0;

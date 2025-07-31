@@ -47,7 +47,7 @@ namespace Mengine
 
         for( const DevToDebugWidgetInterfacePtr & widget : m_widgets )
         {
-            const ConstString & id = widget->getId();
+            const ConstString & id = widget->getWidgetId();
 
             if( id != _id )
             {

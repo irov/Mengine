@@ -25,10 +25,8 @@ namespace Mengine
     {
         if( m_cb != nullptr )
         {
-            uint32_t id = this->getId();
-
             AffectorCallbackInterfacePtr cb = std::move( m_cb );
-            cb->onAffectorEnd( id, _isEnd );
+            cb->onAffectorEnd( _isEnd );
         }
     }
     //////////////////////////////////////////////////////////////////////////

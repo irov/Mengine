@@ -604,7 +604,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderService::updateTexture_( uint32_t _stageId, const RenderTextureInterfacePtr & _texture )
     {
-        uint32_t texture_id = _texture->getId();
+        UniqueId texture_id = _texture->getTextureId();
         uint32_t current_texture_id = m_currentTexturesId[_stageId];
 
         if( texture_id != current_texture_id || current_texture_id == 0 )
@@ -621,7 +621,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _material, "material is nullptr" );
 
-        UniqueId materialId = _material->getId();
+        UniqueId materialId = _material->getMaterialId();
 
         if( m_currentMaterialId == materialId )
         {

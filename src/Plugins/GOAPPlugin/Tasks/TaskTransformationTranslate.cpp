@@ -86,7 +86,6 @@ namespace Mengine
 #if defined(MENGINE_DOCUMENT_ENABLE)
         , m_doc( _doc )
 #endif
-        , m_id( 0 )
     {
         MENGINE_UNUSED( _doc );
     }
@@ -110,26 +109,19 @@ namespace Mengine
 
         const AffectorHubInterfacePtr & affectorHub = m_affectorable->getAffectorHub();
 
-        UniqueId id = affectorHub->addAffector( affector );
+        affectorHub->addAffector( affector );
 
-        if( id == 0 )
-        {
-            return true;
-        }
-
-        m_id = id;
+        m_affector = affector;
 
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void TaskTransformationTranslate::_onSkip()
     {
-        if( m_id != 0 )
+        if( m_affector != nullptr )
         {
-            const AffectorHubInterfacePtr & affectorHub = m_affectorable->getAffectorHub();
-
-            affectorHub->stopAffector( m_id );
-            m_id = 0;
+            m_affector->stop();
+            m_affector = nullptr;
         }
 
         TransformationInterface * transformation = m_transformable->getTransformation();
@@ -139,12 +131,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TaskTransformationTranslate::_onFinally()
     {
-        if( m_id != 0 )
+        if( m_affector != nullptr )
         {
-            const AffectorHubInterfacePtr & affectorHub = m_affectorable->getAffectorHub();
-
-            affectorHub->stopAffector( m_id );
-            m_id = 0;
+            m_affector->stop();
+            m_affector = nullptr;
         }
 
         m_affectorable = nullptr;

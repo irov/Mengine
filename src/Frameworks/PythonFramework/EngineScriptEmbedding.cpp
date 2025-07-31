@@ -2527,7 +2527,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryInterfacePtr m_factoryAffectorUIWheelOfFortune;
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_affectorUIWheelOfFortune( const NodePtr & _node, const NodePtr & _targer, float _coeff )
+            AffectorPtr s_affectorUIWheelOfFortune( const NodePtr & _node, const NodePtr & _targer, float _coeff )
             {
                 AffectorUIWheelOfFortunePtr affector = m_factoryAffectorUIWheelOfFortune->createObject( MENGINE_DOCUMENT_PYTHON );
 
@@ -2537,9 +2537,9 @@ namespace Mengine
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
-                uint32_t id = affectorHub->addAffector( affector );
+                affectorHub->addAffector( affector );
 
-                return id;
+                return affector;
             }
             //////////////////////////////////////////////////////////////////////////
             class AffectorGridBurnTransparency
@@ -2664,7 +2664,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryInterfacePtr m_factoryAffectorGridBurnTransparency;
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_gridBurnTransparency( const Grid2DPtr & _grid, const mt::vec2f & _pos, float _time, float _radius, float _ellipse, float _penumbra, const pybind::object & _cb )
+            AffectorPtr s_gridBurnTransparency( const Grid2DPtr & _grid, const mt::vec2f & _pos, float _time, float _radius, float _ellipse, float _penumbra, const pybind::object & _cb )
             {
                 AffectorGridBurnTransparencyPtr affector = m_factoryAffectorGridBurnTransparency->createObject( MENGINE_DOCUMENT_PYTHON );
 
@@ -2674,9 +2674,9 @@ namespace Mengine
 
                 const AffectorHubInterfacePtr & affectorHub = _grid->getAffectorHub();
 
-                uint32_t id = affectorHub->addAffector( affector );
+                affectorHub->addAffector( affector );
 
-                return id;
+                return affector;
             }
             //////////////////////////////////////////////////////////////////////////
             class AffectorUser
@@ -2709,7 +2709,7 @@ namespace Mengine
                 return affector;
             }
             //////////////////////////////////////////////////////////////////////////
-            UniqueId s_addAffector( const pybind::object & _cb, const pybind::args & _args )
+            AffectorPtr s_addAffector( const pybind::object & _cb, const pybind::args & _args )
             {
                 AffectorUserPtr affector = m_factoryAffectorUser->createObject( MENGINE_DOCUMENT_PYTHON );
 
@@ -2718,19 +2718,14 @@ namespace Mengine
                 const AffectorHubInterfacePtr & affectorHub = PLAYER_SERVICE()
                     ->getGlobalAffectorHub();
 
-                UniqueId id = affectorHub->addAffector( affector );
+                affectorHub->addAffector( affector );
 
-                return id;
+                return affector;
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_removeAffector( UniqueId _id )
+            void s_removeAffector( const AffectorPtr & _affector )
             {
-                const AffectorHubInterfacePtr & affectorHub = PLAYER_SERVICE()
-                    ->getGlobalAffectorHub();
-
-                bool successful = affectorHub->stopAffector( _id );
-
-                return successful;
+                _affector->stop();
             }
             //////////////////////////////////////////////////////////////////////////
             class AffectorFollower
@@ -2771,16 +2766,6 @@ namespace Mengine
                 const AffectorablePtr & getAffectorable() const
                 {
                     return m_affectorable;
-                }
-
-            protected:
-                void _stop() override
-                {
-                    UniqueId id = this->getId();
-
-                    const AffectorHubInterfacePtr & affectorHub = m_affectorable->getAffectorHub();
-
-                    affectorHub->stopAffector( id );
                 }
 
             protected:
@@ -2899,10 +2884,7 @@ namespace Mengine
 
                     const AffectorHubInterfacePtr & affectorHub = _affectorable->getAffectorHub();
 
-                    if( affectorHub->addAffector( affector ) == INVALID_UNIQUE_ID )
-                    {
-                        return nullptr;
-                    }
+                    affectorHub->addAffector( affector );
 
                     return affector;
                 }
@@ -3039,12 +3021,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_destroyValueFollower( const PythonValueFollowerPtr & _follower )
             {
-                UniqueId id = _follower->getId();
-
-                const AffectorHubInterfacePtr & affectorHub = PLAYER_SERVICE()
-                    ->getGlobalAffectorHub();
-
-                affectorHub->stopAffector( id );
+                _follower->stop();
             }
             //////////////////////////////////////////////////////////////////////////
             String s_SecureValueInterface_saveHexadecimal( const SecureValueInterface * _secure )

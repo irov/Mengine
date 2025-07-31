@@ -62,14 +62,9 @@ namespace Mengine
             (m_self->*m_method)(std::get<I>( std::forward<typename Notificator<ID>::args_type>( _args ) )...);
         }
 
-    protected:        
-#if defined(MENGINE_DEBUG) //avoid warning C4324
-        C * m_self;
-        M m_method;
-#else
+    protected:
         M m_method;
         C * m_self;
-#endif
     };
     //////////////////////////////////////////////////////////////////////////
     template<NotificatorId ID, class L>

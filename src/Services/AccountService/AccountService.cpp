@@ -125,7 +125,7 @@ namespace Mengine
         );
 
         LOGGER_INFO( "account", "create account '%s' UID '%.20s'"
-            , account->getId().c_str()
+            , account->getAccountId().c_str()
             , account->getUID().data
         );
 
@@ -149,7 +149,7 @@ namespace Mengine
         );
 
         LOGGER_INFO( "account", "create account '%s' UID '%.20s'"
-            , account->getId().c_str()
+            , account->getAccountId().c_str()
             , account->getUID().data
         );
 
@@ -170,7 +170,7 @@ namespace Mengine
             , _accountId.c_str()
         );
 
-        m_currentAccountId = newAccount->getId();
+        m_currentAccountId = newAccount->getAccountId();
 
         m_accounts.emplace( _accountId, newAccount );
 
@@ -210,7 +210,7 @@ namespace Mengine
             , _accountId.c_str()
         );
 
-        m_globalAccountId = newAccount->getId();
+        m_globalAccountId = newAccount->getAccountId();
 
         m_accounts.emplace( _accountId, newAccount );
 
@@ -310,7 +310,7 @@ namespace Mengine
         }
 
         LOGGER_INFO( "account", "delete account '%s' UID '%.20s'"
-            , account->getId().c_str()
+            , account->getAccountId().c_str()
             , account->getUID().data
         );
 
@@ -347,7 +347,7 @@ namespace Mengine
         m_currentAccountId = _accountId;
 
         LOGGER_INFO( "account", "select account '%s' UID '%.20s'"
-            , account->getId().c_str()
+            , account->getAccountId().c_str()
             , account->getUID().data
         );
 
@@ -425,7 +425,7 @@ namespace Mengine
         {
             const AccountPtr & account = value.element;
 
-            const ConstString & accountId = account->getId();
+            const ConstString & accountId = account->getAccountId();
 
             if( accountId == m_globalAccountId )
             {
@@ -520,7 +520,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AccountService::loadAccount_( const AccountInterfacePtr & _account )
     {
-        const ConstString & accountId = _account->getId();
+        const ConstString & accountId = _account->getAccountId();
 
         if( m_accountProvider != nullptr )
         {
@@ -659,7 +659,7 @@ namespace Mengine
         }
         else if( validAccount != nullptr )
         {
-            const ConstString & accountId = validAccount->getId();
+            const ConstString & accountId = validAccount->getAccountId();
 
             LOGGER_INFO( "account", "set valid account '%s'"
                 , accountId.c_str()
@@ -808,7 +808,7 @@ namespace Mengine
             if( account->save() == false )
             {
                 LOGGER_ERROR( "invalid save account id '%s' folder '%s'"
-                    , account->getId().c_str()
+                    , account->getAccountId().c_str()
                     , account->getFolderName().c_str()
                 );
 

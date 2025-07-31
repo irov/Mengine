@@ -32,9 +32,7 @@ namespace Mengine
         virtual const AffectorHubProviderInterface * getAffectorHubProvider() const = 0;
 
     public:
-        virtual UniqueId addAffector( const AffectorPtr & _affector ) = 0;
-        virtual bool hasAffector( UniqueId _id ) const = 0;
-        virtual bool stopAffector( UniqueId _id ) = 0;
+        virtual void addAffector( const AffectorPtr & _affector ) = 0;
 
     public:
         virtual void stopAffectors( EAffectorType _type ) = 0;

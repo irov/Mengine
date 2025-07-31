@@ -32,7 +32,7 @@ namespace Mengine
         DevToDebugWidgetInterfacePtr text1 = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetText" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        text1->setId( STRINGIZE_STRING_LOCAL( "text1" ) );
+        text1->setWidgetId( STRINGIZE_STRING_LOCAL( "text1" ) );
 
         DevToDebugPropertyInterfacePtr text1_color = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyConstColor" ), MENGINE_DOCUMENT_FACTORABLE );
@@ -55,7 +55,7 @@ namespace Mengine
         DevToDebugWidgetInterfacePtr btn_change = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetButton" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        btn_change->setId( STRINGIZE_STRING_LOCAL( "btn_change" ) );
+        btn_change->setWidgetId( STRINGIZE_STRING_LOCAL( "btn_change" ) );
 
         DevToDebugPropertyInterfacePtr btn_change_title = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyConstString" ), MENGINE_DOCUMENT_FACTORABLE );
@@ -82,7 +82,7 @@ namespace Mengine
         DevToDebugWidgetInterfacePtr btn_quit = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetButton" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        btn_quit->setId( STRINGIZE_STRING_LOCAL( "btn_quit" ) );
+        btn_quit->setWidgetId( STRINGIZE_STRING_LOCAL( "btn_quit" ) );
 
         DevToDebugPropertyInterfacePtr btn_quit_title = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyConstString" ), MENGINE_DOCUMENT_FACTORABLE );
@@ -105,7 +105,7 @@ namespace Mengine
         DevToDebugWidgetInterfacePtr checkbox_test = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetCheckbox" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        checkbox_test->setId( STRINGIZE_STRING_LOCAL( "checkbox_test" ) );
+        checkbox_test->setWidgetId( STRINGIZE_STRING_LOCAL( "checkbox_test" ) );
 
         DevToDebugPropertyInterfacePtr checkbox_test_text = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyConstString" ), MENGINE_DOCUMENT_FACTORABLE );

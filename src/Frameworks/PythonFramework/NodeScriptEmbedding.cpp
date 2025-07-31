@@ -521,11 +521,11 @@ namespace Mengine
                 return callback;
             }
             //////////////////////////////////////////////////////////////////////////
-            uint32_t ShapeQuadFlex_setPercentVisibilityTo( ShapeQuadFlex * _shape, float _time, const mt::vec4f & _percent, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            AffectorPtr ShapeQuadFlex_setPercentVisibilityTo( ShapeQuadFlex * _shape, float _time, const mt::vec4f & _percent, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
                 if( _shape->isActivate() == false )
                 {
-                    return 0;
+                    return nullptr;
                 }
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
@@ -551,12 +551,12 @@ namespace Mengine
 
                 if( _shape->isActivate() == false )
                 {
-                    return 0;
+                    return nullptr;
                 }
 
-                UniqueId id = affectorHub->addAffector( affector );
+                affectorHub->addAffector( affector );
 
-                return id;
+                return affector;
             }
             //////////////////////////////////////////////////////////////////////////
             void ShapeQuadFlex_setPercentVisibilityStop( ShapeQuadFlex * _shape )

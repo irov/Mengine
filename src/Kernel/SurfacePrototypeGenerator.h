@@ -41,10 +41,6 @@ namespace Mengine
                 , MENGINE_DOCUMENT_STR( _doc )
             );
 
-            UniqueId uniqueIdentity = Helper::generateUniqueIdentity();
-
-            surface->setUniqueIdentity( uniqueIdentity );
-
 #if defined(MENGINE_DOCUMENT_ENABLE)
             DocumentInterfacePtr doc = MENGINE_DOCUMENT_MESSAGE( "Surface '%s' type '%s' create '%s'"
                 , surface->getName().c_str()

@@ -105,7 +105,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "surface sound '%s' emitter invalid release sound %u"
                 , this->getName().c_str()
-                , m_soundIdentity->getId()
+                , m_soundIdentity->getUniqueIdentity()
             );
         }
 
@@ -223,7 +223,7 @@ namespace Mengine
         {
             LOGGER_WARNING( "surface sound '%s' invalid play [%u] resource '%s'"
                 , this->getName().c_str()
-                , m_soundIdentity->getId()
+                , m_soundIdentity->getUniqueIdentity()
                 , m_resourceSound->getName().c_str()
             );
 
@@ -340,7 +340,7 @@ namespace Mengine
             LOGGER_ERROR( "surface sound '%s' resource '%s' identity [%u] invalid set source volume %f"
                 , this->getName().c_str()
                 , m_resourceSound->getName().c_str()
-                , m_soundIdentity->getId()
+                , m_soundIdentity->getUniqueIdentity()
                 , m_volume
             );
         }

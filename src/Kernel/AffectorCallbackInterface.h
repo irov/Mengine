@@ -11,7 +11,7 @@ namespace Mengine
         : public Mixin
     {
     public:
-        virtual void onAffectorEnd( UniqueId _id, bool _isEnd ) = 0;
+        virtual void onAffectorEnd( bool _isEnd ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AffectorCallbackInterface> AffectorCallbackInterfacePtr;

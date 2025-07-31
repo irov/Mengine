@@ -339,7 +339,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    HM_EMITTER AstralaxEmitter2::getId() const
+    HM_EMITTER AstralaxEmitter2::getEmitterId() const
     {
         return m_emitterId;
     }

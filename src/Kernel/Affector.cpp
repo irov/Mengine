@@ -10,9 +10,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Affector::Affector()
-        : m_type( EAFFECTORTYPE_POSITION )
+        : m_type( EAFFECTORTYPE_NONE )
         , m_status( EAFFECTORSTATUS_IDLE )
-        , m_id( INVALID_UNIQUE_ID )
         , m_speedFactor( 1.f )
         , m_freeze( false )
         , m_affecting( false )
@@ -31,16 +30,6 @@ namespace Mengine
     EAffectorType Affector::getAffectorType() const
     {
         return m_type;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Affector::setId( UniqueId _id )
-    {
-        m_id = _id;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    UniqueId Affector::getId() const
-    {
-        return m_id;
     }
     //////////////////////////////////////////////////////////////////////////
     void Affector::setSpeedFactor( float _speedAffector )
@@ -82,27 +71,20 @@ namespace Mengine
         return m_easing;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Affector::prepare( EUpdateMode _updatableMode, uint32_t _updatableLeaf )
+    void Affector::prepare( EUpdateMode _updatableMode, uint32_t _updatableLeaf )
     {
         m_status = EAFFECTORSTATUS_PREPARE;
 
-        if( this->_prepare() == false )
-        {
-            return false;
-        }
+        this->_prepare();
 
         UpdationInterface * updation = this->getUpdation();
 
-        updation->activate( _updatableMode, _updatableLeaf );        
-
-        return true;
+        updation->activate( _updatableMode, _updatableLeaf );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Affector::_prepare()
+    void Affector::_prepare()
     {
         //Empty
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Affector::update( const UpdateContext * _context )
@@ -135,7 +117,7 @@ namespace Mengine
 
         this->_stop();
 
-        this->complete( false );        
+        this->complete( false );
     }
     //////////////////////////////////////////////////////////////////////////
     void Affector::_stop()
@@ -148,7 +130,7 @@ namespace Mengine
         MENGINE_UNUSED( _isEnd );
 
         MENGINE_ASSERTION_FATAL( m_affecting == false, "affector '%u' can not completed or removing in _affect (please return true if you want complete)"
-            , this->getId()
+            , this->getUniqueIdentity()
         );
 
         m_status = EAFFECTORSTATUS_COMPLETE;

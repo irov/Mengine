@@ -5,6 +5,8 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/ReferenceCounter.h"
 
+#include "Config/UniqueId.h"
+
 //////////////////////////////////////////////////////////////////////////
 #if !defined(MENGINE_FACTORABLE_DEBUG)
 #   if defined(MENGINE_DEBUG)
@@ -43,7 +45,11 @@ namespace Mengine
 
     public:
         void setFactory( FactoryInterface * _factory );
-        MENGINE_INLINE FactoryInterface * getFactory() const MENGINE_NOEXCEPT;
+        MENGINE_INLINE FactoryInterface * getFactory() const;
+
+    public:
+        void setUniqueIdentity( UniqueId _id );
+        MENGINE_INLINE UniqueId getUniqueIdentity() const;
 
     public:
         const ConstString & getType() const;
@@ -75,10 +81,12 @@ namespace Mengine
         MENGINE_INLINE static bool intrusive_ptr_check_ref( const Factorable * _ptr );
 #endif
 
-    protected:
+    private:
         ReferenceCounter m_reference;
-
+                
         FactoryInterface * m_factory;
+
+        UniqueId m_id;
 
 #if defined(MENGINE_FACTORABLE_DEBUG_ENABLE)
         bool m_destroy;
@@ -88,9 +96,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Factorable> FactorablePtr;
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE FactoryInterface * Factorable::getFactory() const MENGINE_NOEXCEPT
+    MENGINE_INLINE FactoryInterface * Factorable::getFactory() const
     {
         return m_factory;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE UniqueId Factorable::getUniqueIdentity() const
+    {
+        return m_id;
     }
     //////////////////////////////////////////////////////////////////////////
 #if defined(STDEX_INTRUSIVE_PTR_DEBUG)

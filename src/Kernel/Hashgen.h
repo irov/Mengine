@@ -12,7 +12,7 @@ namespace Mengine
     template<>
     struct Hashgen<uint32_t>
     {
-        HashType operator()( uint32_t _value ) const MENGINE_NOEXCEPT
+        HashType operator()( uint32_t _value ) const
         {
             return (HashType)_value;
         }
@@ -21,7 +21,7 @@ namespace Mengine
     template<>
     struct Hashgen<uint64_t>
     {
-        HashType operator()( uint64_t _value ) const MENGINE_NOEXCEPT
+        HashType operator()( uint64_t _value ) const
         {
             return (HashType)_value;
         }
@@ -30,7 +30,7 @@ namespace Mengine
     template<class K, class V>
     struct Hashgen<Pair<K, V>>
     {
-        HashType operator()( const Pair<K, V> & _value ) const MENGINE_NOEXCEPT
+        HashType operator()( const Pair<K, V> & _value ) const
         {
             return Hashgen<K>()(_value.first) + Hashgen<V>()(_value.second);
         }

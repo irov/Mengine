@@ -8,6 +8,8 @@
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/ParamsHelper.h"
+#include "Kernel/FilePathHelper.h"
+#include "Kernel/ConfigHelper.h"
 
 #include "Config/StdIO.h"
 
@@ -88,10 +90,10 @@ namespace Mengine
             , command
         );
 
-        String ffmpeg = Helper::getParam( m_options.params, STRINGIZE_STRING_LOCAL( "ffmpeg" ), "ffmpeg.exe" );
+        FilePath ffmpegPath = CONFIG_VALUE_FILEPATH( "Engine", "FFMPEGPath", STRINGIZE_FILEPATH_LOCAL( "ffmpeg.exe" ) );
 
         uint32_t exitCode;
-        if( Helper::Win32CreateProcessA( ffmpeg.c_str(), command, true, &exitCode ) == false )
+        if( Helper::Win32CreateProcessA( ffmpegPath.c_str(), command, true, &exitCode ) == false )
         {
             LOGGER_ERROR( "invalid convert:\n%ls"
                 , command

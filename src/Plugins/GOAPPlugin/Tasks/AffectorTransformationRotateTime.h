@@ -24,7 +24,7 @@ namespace Mengine
         bool _affect( const UpdateContext * _context, float * const _used ) override;
 
     protected:
-        bool _prepare() override;
+        void _prepare() override;
         void _complete( bool _isEnd ) override;
 
     protected:

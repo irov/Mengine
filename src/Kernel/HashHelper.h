@@ -44,13 +44,13 @@ namespace Mengine
 
             const Char * p = _data;
 
-            HashType b = *p;
+            HashType b = (HashType)*p;
 
             HashType x = b << 7;
 
             for( size_t i = 0; i != _len; ++i )
             {
-                HashType b2 = *p++;
+                HashType b2 = (HashType)*p++;
                 HashType x2 = Helper::Detail::xmul12864( 1000003ULL, x );
 
                 x = x2 ^ b2;

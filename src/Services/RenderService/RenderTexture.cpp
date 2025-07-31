@@ -9,7 +9,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     RenderTexture::RenderTexture()
-        : m_id( 0 )
+        : m_textureId( 0 )
         , m_width( 0 )
         , m_height( 0 )
         , m_widthInv( 0.f )
@@ -29,7 +29,7 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( _width != 0, "invalid width == 0" );
         MENGINE_ASSERTION_FATAL( _height != 0, "invalid height == 0" );
 
-        m_id = _id;
+        m_textureId = _id;
 
         m_image = _image;
 
@@ -61,9 +61,9 @@ namespace Mengine
         return m_image;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t RenderTexture::getId() const
+    UniqueId RenderTexture::getTextureId() const
     {
-        return m_id;
+        return m_textureId;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderTexture::setContent( const ContentInterfacePtr & _content )

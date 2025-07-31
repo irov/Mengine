@@ -23,9 +23,6 @@ namespace Mengine
         void finalize() override;
 
     public:
-        UniqueId getId() const override;
-
-    public:
         const SoundSourceInterfacePtr & getSoundSource() const override;
 
     public:
@@ -66,8 +63,6 @@ namespace Mengine
         const MixerMultiplicativeInterfacePtr & getMixerVolume() const override;
 
     protected:
-        UniqueId m_id;
-
         SoundSourceInterfacePtr m_source;
         SoundListenerInterfacePtr m_listener;
 

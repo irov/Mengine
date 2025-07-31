@@ -29,7 +29,7 @@ namespace Mengine
         const RenderImageInterfacePtr & getImage() const override;
 
     public:
-        uint32_t getId() const override;
+        UniqueId getTextureId() const override;
 
     public:
         void setContent( const ContentInterfacePtr & _content ) override;
@@ -46,7 +46,7 @@ namespace Mengine
         bool isPow2() const override;
 
     protected:
-        UniqueId m_id;
+        UniqueId m_textureId;
 
         RenderImageInterfacePtr m_image;
 

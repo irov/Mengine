@@ -46,14 +46,10 @@ namespace Mengine
                 , MENGINE_DOCUMENT_STR( _doc )
             );
 
-            UniqueId uniqueIdentity = Helper::generateUniqueIdentity();
-
-            node->setUniqueIdentity( uniqueIdentity );
-
 #if defined(MENGINE_DOCUMENT_ENABLE)
             DocumentInterfacePtr doc = MENGINE_DOCUMENT_MESSAGE( "Node type '%s' uid '%u'"
                 , node->getType().c_str()
-                , uniqueIdentity
+                , node->getUniqueIdentity()
             );
 
             doc->setParent( _doc );

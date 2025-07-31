@@ -9,8 +9,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SoundIdentity::SoundIdentity()
-        : m_id( INVALID_UNIQUE_ID )
-        , m_workerId( INVALID_UNIQUE_ID )
+        : m_workerId( INVALID_UNIQUE_ID )
         , m_timeLeft( 0.f )
         , m_state( ESS_STOP )
         , m_category( ES_SOURCE_CATEGORY_SOUND )
@@ -23,15 +22,15 @@ namespace Mengine
     SoundIdentity::~SoundIdentity()
     {
         MENGINE_ASSERTION_FATAL( m_source == nullptr, "sound identity '%d' source not null"
-            , m_id
+            , this->getUniqueIdentity()
         );
 
         MENGINE_ASSERTION_FATAL( m_listener == nullptr, "sound identity '%d' listener not null"
-            , m_id
+            , this->getUniqueIdentity()
         );
 
         MENGINE_ASSERTION_FATAL( m_worker == nullptr, "sound identity '%d' worker not null"
-            , m_id
+            , this->getUniqueIdentity()
         );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -43,10 +42,6 @@ namespace Mengine
         {
             return false;
         }
-
-        UniqueId new_id = Helper::generateUniqueIdentity();
-
-        m_id = new_id;
 
         m_source = _source;
         m_listener = nullptr;
@@ -71,7 +66,7 @@ namespace Mengine
     void SoundIdentity::finalize()
     {
         MENGINE_ASSERTION_FATAL( m_worker == nullptr, "sound identity '%d' worker not null"
-            , m_id
+            , this->getUniqueIdentity()
         );
 
         if( m_source != nullptr )
@@ -90,11 +85,6 @@ namespace Mengine
         m_state = ESS_STOP;
 
         m_mixerVolume = nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    UniqueId SoundIdentity::getId() const
-    {
-        return m_id;
     }
     //////////////////////////////////////////////////////////////////////////
     const SoundSourceInterfacePtr & SoundIdentity::getSoundSource() const
@@ -187,7 +177,7 @@ namespace Mengine
     void SoundIdentity::setTimeLeft( float _timeLeft )
     {
         MENGINE_ASSERTION_FATAL( _timeLeft >= 0.f, "sound identity '%d' set time left '%f' invalid"
-            , m_id
+            , this->getUniqueIdentity()
             , _timeLeft
         );
          

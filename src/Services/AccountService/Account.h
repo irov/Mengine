@@ -5,7 +5,6 @@
 #include "Interface/FileGroupInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 
-#include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/Map.h"
 
@@ -14,7 +13,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class Account
         : public AccountInterface
-        , public Factorable
     {
         DECLARE_FACTORABLE( Account );
 
@@ -27,7 +25,7 @@ namespace Mengine
         void finalize();
 
     public:
-        const ConstString & getId() const override;
+        const ConstString & getAccountId() const override;
         const FilePath & getFolderName() const override;
 
     public:
@@ -65,7 +63,7 @@ namespace Mengine
         ArchivatorInterfacePtr m_archivator;
         FileGroupInterfacePtr m_fileGroup;
 
-        ConstString m_id;
+        ConstString m_accountId;
         AccountUID m_uid;
         uint32_t m_projectVersion;
 

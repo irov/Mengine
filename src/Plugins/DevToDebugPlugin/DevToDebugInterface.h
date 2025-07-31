@@ -111,8 +111,8 @@ namespace Mengine
         , public Unknowable
     {
     public:
-        virtual void setId( const ConstString & _id ) = 0;
-        virtual const ConstString & getId() const = 0;
+        virtual void setWidgetId( const ConstString & _id ) = 0;
+        virtual const ConstString & getWidgetId() const = 0;
 
     public:
         virtual void setBaseProperty( const ConstString & _name, const DevToDebugPropertyInterfacePtr & _property ) = 0;

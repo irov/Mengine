@@ -34,9 +34,6 @@ namespace Mengine
 
         BitmapFontPtr font = factory->createObject( _doc );
 
-        UniqueId uniqueIdentity = Helper::generateUniqueIdentity();
-        font->setUniqueIdentity( uniqueIdentity );
-
 #if defined(MENGINE_DOCUMENT_ENABLE)
         DocumentInterfacePtr doc = MENGINE_DOCUMENT_MESSAGE( "BitmapFont '%s' type '%s' create '%s'"
             , font->getName().c_str()

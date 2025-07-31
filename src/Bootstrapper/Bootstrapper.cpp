@@ -116,7 +116,6 @@ SERVICE_EXTERN( TimelineService );
 SERVICE_EXTERN( TimepipeService );
 SERVICE_EXTERN( StatisticService );
 SERVICE_EXTERN( Application );
-SERVICE_EXTERN( EnumeratorService );
 SERVICE_EXTERN( ChronometerService );
 SERVICE_EXTERN( AmplifierService );
 //////////////////////////////////////////////////////////////////////////
@@ -1003,7 +1002,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::createServices_()
     {
-        MENGINE_ADD_SERVICE( EnumeratorService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( PlatformSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( ThreadSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( NotificationService, MENGINE_DOCUMENT_FACTORABLE );
@@ -2235,7 +2233,6 @@ namespace Mengine
         SERVICE_FINALIZE( MemoryService );
         SERVICE_FINALIZE( OptionsService );
         SERVICE_FINALIZE( VocabularyService );
-        SERVICE_FINALIZE( EnumeratorService );
         SERVICE_FINALIZE( NotificationService );
         SERVICE_FINALIZE( PrototypeService );
         SERVICE_FINALIZE( FactoryService );
@@ -2302,7 +2299,6 @@ namespace Mengine
         SERVICE_DESTROY( DateTimeSystem );
         SERVICE_DESTROY( EasingService );
         SERVICE_DESTROY( VocabularyService );
-        SERVICE_DESTROY( EnumeratorService );
         SERVICE_DESTROY( PluginService );
         SERVICE_DESTROY( ArrowService );
         SERVICE_DESTROY( FileService );

@@ -98,7 +98,7 @@ namespace Mengine
         {
             DevToDebugWidgetInterfacePtr widget = Helper::generatePrototype<DevToDebugWidgetText>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_PYTHON );
 
-            widget->setId( _id );
+            widget->setWidgetId( _id );
 
             return DevToDebugWidgetTextPtr::dynamic_from( widget );
         }
@@ -107,7 +107,7 @@ namespace Mengine
         {
             DevToDebugWidgetInterfacePtr widget = Helper::generatePrototype<DevToDebugWidgetButton>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_PYTHON );
 
-            widget->setId( _id );
+            widget->setWidgetId( _id );
 
             return DevToDebugWidgetButtonPtr::dynamic_from( widget );
         }
@@ -116,7 +116,7 @@ namespace Mengine
         {
             DevToDebugWidgetInterfacePtr widget = Helper::generatePrototype<DevToDebugWidgetCheckbox>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_PYTHON );
 
-            widget->setId( _id );
+            widget->setWidgetId( _id );
 
             return DevToDebugWidgetCheckboxPtr::dynamic_from( widget );
         }
@@ -125,7 +125,7 @@ namespace Mengine
         {
             DevToDebugWidgetInterfacePtr widget = Helper::generatePrototype<DevToDebugWidgetCommandLine>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_PYTHON );
 
-            widget->setId( _id );
+            widget->setWidgetId( _id );
 
             return DevToDebugWidgetCommandLinePtr::dynamic_from( widget );
         }
@@ -134,7 +134,7 @@ namespace Mengine
         {
             DevToDebugWidgetInterfacePtr widget = Helper::generatePrototype<DevToDebugWidgetRadioButton>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_PYTHON );
 
-            widget->setId( _id );
+            widget->setWidgetId( _id );
 
             DevToDebugPropertyContentPtr property_content = Helper::generatePrototype<DevToDebugPropertyContent>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_PYTHON );
 
@@ -147,7 +147,7 @@ namespace Mengine
         {
             DevToDebugWidgetInterfacePtr widget = Helper::generatePrototype<DevToDebugWidgetSelector>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_PYTHON );
 
-            widget->setId( _id );
+            widget->setWidgetId( _id );
 
             DevToDebugPropertyContentPtr property_content = Helper::generatePrototype<DevToDebugPropertyContent>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_PYTHON );
 
@@ -422,7 +422,7 @@ namespace Mengine
             ;
 
         pybind::interface_<DevToDebugWidget, pybind::bases<Scriptable>>( _kernel, "DevToDebugWidget" )
-            .def( "getId", &DevToDebugWidget::getId )
+            .def( "getId", &DevToDebugWidget::getWidgetId )
             .def_static_args( "setHide", &Detail::DevToDebugWidget_setHide )
             ;
 

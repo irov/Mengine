@@ -427,22 +427,11 @@ namespace Mengine
                 } );
             }
             //////////////////////////////////////////////////////////////////////////
-            UniqueId s_Affectorable_addAffector( Affectorable * _affectorable, const AffectorPtr & _affector )
+            void s_Affectorable_addAffector( Affectorable * _affectorable, const AffectorPtr & _affector )
             {
                 const AffectorHubInterfacePtr & affectorHub = _affectorable->getAffectorHub();
 
-                UniqueId id = affectorHub->addAffector( _affector );
-
-                return id;
-            }
-            //////////////////////////////////////////////////////////////////////////
-            bool s_Affectorable_stopAffector( Affectorable * _affectorable, UniqueId _id )
-            {
-                const AffectorHubInterfacePtr & affectorHub = _affectorable->getAffectorHub();
-
-                bool result = affectorHub->stopAffector( _id );
-
-                return result;
+                affectorHub->addAffector( _affector );
             }
             //////////////////////////////////////////////////////////////////////////
             void s_Affectorable_stopAllAffectors( Affectorable * _affectorable )
@@ -591,16 +580,16 @@ namespace Mengine
                 affectorHub->stopAffectors( EAFFECTORTYPE_POSITION );
             }
             //////////////////////////////////////////////////////////////////////////
-            UniqueId s_Node_originTo( Node * _node, float _time, const mt::vec3f & _origin, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            AffectorPtr s_Node_originTo( Node * _node, float _time, const mt::vec3f & _origin, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
                 if( _node->isActivate() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 if( _node->isAfterActive() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
@@ -626,14 +615,14 @@ namespace Mengine
 
                 if( _node->isActivate() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
-                UniqueId id = affectorHub->addAffector( affector );
+                affectorHub->addAffector( affector );
 
-                return id;
+                return affector;
             }
             //////////////////////////////////////////////////////////////////////////
             void s_Node_originStop( Node * _node )
@@ -647,16 +636,16 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorAccumulateLinear<mt::vec3f>> m_nodeAffectorCreatorAccumulateLinear;
             //////////////////////////////////////////////////////////////////////////
-            UniqueId s_Node_velocityTo( Node * _node, float _speed, const mt::vec3f & _dir, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            AffectorPtr s_Node_velocityTo( Node * _node, float _speed, const mt::vec3f & _dir, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
                 if( _node->isActivate() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 if( _node->isAfterActive() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
@@ -682,7 +671,7 @@ namespace Mengine
 
                 if( _node->isActivate() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 mt::vec3f linearSpeed = _dir * _speed;
@@ -691,9 +680,9 @@ namespace Mengine
 
                 affectorHub->setLinearSpeed( linearSpeed );
 
-                UniqueId id = affectorHub->addAffector( affector );
+                affectorHub->addAffector( affector );
 
-                return id;
+                return affector;
             }
             //////////////////////////////////////////////////////////////////////////
             class AffectorVelocity2
@@ -811,16 +800,16 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryAffectorVelocity2Ptr m_factoryAffectorVelocity2;
             //////////////////////////////////////////////////////////////////////////
-            UniqueId s_Node_velocityTo2( Node * _node, const mt::vec3f & _velocity, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            AffectorPtr s_Node_velocityTo2( Node * _node, const mt::vec3f & _velocity, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
                 if( _node->isActivate() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 if( _node->isAfterActive() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
@@ -839,30 +828,30 @@ namespace Mengine
 
                 if( _node->isActivate() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
                 affectorHub->setLinearSpeed( _velocity );
 
-                UniqueId id = affectorHub->addAffector( affector );
+                affectorHub->addAffector( affector );
 
-                return id;
+                return affector;
             }
             //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<mt::vec3f>> m_nodeAffectorCreatorInterpolateLinear;
             //////////////////////////////////////////////////////////////////////////
-            UniqueId s_Node_moveTo( Node * _node, float _time, const mt::vec3f & _point, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            AffectorPtr s_Node_moveTo( Node * _node, float _time, const mt::vec3f & _point, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
                 if( _node->isActivate() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 if( _node->isAfterActive() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
@@ -888,7 +877,7 @@ namespace Mengine
 
                 if( _node->isActivate() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 float invTime = 1.f / _time;
@@ -899,23 +888,23 @@ namespace Mengine
 
                 affectorHub->setLinearSpeed( linearSpeed );
 
-                UniqueId id = affectorHub->addAffector( affector );
+                affectorHub->addAffector( affector );
 
-                return id;
+                return affector;
             }
             //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadratic<mt::vec3f>> m_nodeAffectorCreatorInterpolateQuadratic;
             //////////////////////////////////////////////////////////////////////////
-            UniqueId s_Node_accMoveTo( Node * _node, float _time, const mt::vec3f & _point, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            AffectorPtr s_Node_accMoveTo( Node * _node, float _time, const mt::vec3f & _point, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
                 if( _node->isActivate() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 if( _node->isAfterActive() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
@@ -945,18 +934,18 @@ namespace Mengine
 
                 if( _node->isActivate() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
-                UniqueId id = affectorHub->addAffector( affector );
+                affectorHub->addAffector( affector );
 
-                return id;
+                return affector;
             }
             //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec2f, 1>> m_nodeAffectorCreatorInterpolateQuadraticBezier2f;
             IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec3f, 1>> m_nodeAffectorCreatorInterpolateQuadraticBezier3f;
             //////////////////////////////////////////////////////////////////////////
-            UniqueId s_Node_bezier2To( Node * _node
+            AffectorPtr s_Node_bezier2To( Node * _node
                 , float _time
                 , const mt::vec3f & _to
                 , const mt::vec3f & _v0
@@ -966,12 +955,12 @@ namespace Mengine
             {
                 if( _node->isActivate() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 if( _node->isAfterActive() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
@@ -997,7 +986,7 @@ namespace Mengine
                 {
                     return _to;
                 }
-                    , [_v0]( mt::vec3f * _v )
+                    , [_v0]( mt::vec3f * const _v )
                 {
                     _v[0] = _v0;
                 }
@@ -1011,17 +1000,17 @@ namespace Mengine
 
                 if( _node->isActivate() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
-                UniqueId id = affectorHub->addAffector( affector );
+                affectorHub->addAffector( affector );
 
-                return id;
+                return affector;
             }
             //////////////////////////////////////////////////////////////////////////
-            UniqueId s_Node_bezier2LocalFollower( Node * _node
+            AffectorPtr s_Node_bezier2LocalFollower( Node * _node
                 , float _time
                 , const NodePtr & _follow
                 , const mt::vec3f & _offset
@@ -1033,12 +1022,12 @@ namespace Mengine
 
                 if( _node->isActivate() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 if( _node->isAfterActive() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
@@ -1094,17 +1083,17 @@ namespace Mengine
 
                 if( _node->isActivate() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
-                UniqueId id = affectorHub->addAffector( affector );
+                affectorHub->addAffector( affector );
 
-                return id;
+                return affector;
             }
             //////////////////////////////////////////////////////////////////////////
-            UniqueId s_Node_bezier2WorldFollower( Node * _node
+            AffectorPtr s_Node_bezier2WorldFollower( Node * _node
                 , float _time
                 , const NodePtr & _follow
                 , const mt::vec3f & _offset
@@ -1116,12 +1105,12 @@ namespace Mengine
 
                 if( _node->isActivate() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 if( _node->isAfterActive() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
@@ -1177,17 +1166,17 @@ namespace Mengine
 
                 if( _node->isActivate() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
-                UniqueId id = affectorHub->addAffector( affector );
+                affectorHub->addAffector( affector );
 
-                return id;
+                return affector;
             }
             //////////////////////////////////////////////////////////////////////////
-            UniqueId s_Node_bezier2ScreenFollower( Node * _node
+            AffectorPtr s_Node_bezier2ScreenFollower( Node * _node
                 , float _time
                 , const NodePtr & _follow
                 , float _deep
@@ -1199,12 +1188,12 @@ namespace Mengine
 
                 if( _node->isActivate() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 if( _node->isAfterActive() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
@@ -1252,19 +1241,19 @@ namespace Mengine
 
                 if( _node->isActivate() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
-                UniqueId id = affectorHub->addAffector( affector );
+                affectorHub->addAffector( affector );
 
-                return id;
+                return affector;
             }
             //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec3f, 2>> m_nodeAffectorCreatorInterpolateCubicBezier;
             //////////////////////////////////////////////////////////////////////////
-            UniqueId s_Node_bezier3To( Node * _node
+            AffectorPtr s_Node_bezier3To( Node * _node
                 , float _time
                 , const mt::vec3f & _to
                 , const mt::vec3f & _v0
@@ -1275,12 +1264,12 @@ namespace Mengine
             {
                 if( _node->isActivate() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 if( _node->isAfterActive() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 TransformationInterface * transformation = _node->getTransformation();
@@ -1304,7 +1293,7 @@ namespace Mengine
                 {
                     return _to;
                 }
-                    , [_v0, _v1]( mt::vec3f * _v )
+                    , [_v0, _v1]( mt::vec3f * const _v )
                 {
                     _v[0] = _v0; _v[1] = _v1;
                 }
@@ -1318,19 +1307,19 @@ namespace Mengine
 
                 if( _node->isActivate() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
-                UniqueId id = affectorHub->addAffector( affector );
+                affectorHub->addAffector( affector );
 
-                return id;
+                return affector;
             }
             //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec3f, 3>> m_nodeAffectorCreatorInterpolateQuarticBezier;
             //////////////////////////////////////////////////////////////////////////
-            UniqueId s_Node_bezier4To( Node * _node
+            AffectorPtr s_Node_bezier4To( Node * _node
                 , float _time
                 , const mt::vec3f & _to
                 , const mt::vec3f & _v0
@@ -1342,12 +1331,12 @@ namespace Mengine
             {
                 if( _node->isActivate() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 if( _node->isAfterActive() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 TransformationInterface * transformation = _node->getTransformation();
@@ -1371,7 +1360,7 @@ namespace Mengine
                 {
                     return _to;
                 }
-                    , [_v0, _v1, _v2]( mt::vec3f * _v )
+                    , [_v0, _v1, _v2]( mt::vec3f * const _v )
                 {
                     _v[0] = _v0; _v[1] = _v1; _v[2] = _v2;
                 }
@@ -1385,14 +1374,14 @@ namespace Mengine
 
                 if( _node->isActivate() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
-                UniqueId id = affectorHub->addAffector( affector );
+                affectorHub->addAffector( affector );
 
-                return id;
+                return affector;
             }
             //////////////////////////////////////////////////////////////////////////
             class AffectorCreatorInterpolateParabolic
@@ -1577,7 +1566,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryAffectorInterpolateParabolicPtr m_nodeAffectorCreatorInterpolateParabolic;
             //////////////////////////////////////////////////////////////////////////
-            UniqueId s_Node_parabolaTo( Node * _node
+            AffectorPtr s_Node_parabolaTo( Node * _node
                 , float _time
                 , const mt::vec3f & _end
                 , const mt::vec3f & _v0
@@ -1587,12 +1576,12 @@ namespace Mengine
             {
                 if( _node->isActivate() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 if( _node->isAfterActive() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
@@ -1612,14 +1601,14 @@ namespace Mengine
 
                 if( _node->isActivate() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
-                UniqueId id = affectorHub->addAffector( affector );
+                affectorHub->addAffector( affector );
 
-                return id;
+                return affector;
             }
             //////////////////////////////////////////////////////////////////////////
             class AffectorCreatorFollowTo
@@ -1834,7 +1823,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryAffectorFollowToPtr m_nodeAffectorCreatorFollowTo;
             //////////////////////////////////////////////////////////////////////////
-            UniqueId s_Node_followTo( Node * _node
+            AffectorPtr s_Node_followTo( Node * _node
                 , const NodePtr & _target
                 , const mt::vec3f & _offset
                 , float _distance
@@ -1851,12 +1840,12 @@ namespace Mengine
             {
                 if( _node->isActivate() == false )
                 {
-                    return 0;
+                    return nullptr;
                 }
 
                 if( _node->isAfterActive() == false )
                 {
-                    return 0;
+                    return nullptr;
                 }
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
@@ -1879,14 +1868,14 @@ namespace Mengine
 
                 if( _node->isActivate() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
-                UniqueId id = affectorHub->addAffector( affector );
+                affectorHub->addAffector( affector );
 
-                return id;
+                return affector;
             }
             //////////////////////////////////////////////////////////////////////////
             class AffectorCreatorFollowToW
@@ -2049,7 +2038,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryAffectorFollowToWPtr m_nodeAffectorCreatorFollowToW;
             //////////////////////////////////////////////////////////////////////////
-            UniqueId s_Node_followToW( Node * _node
+            AffectorPtr s_Node_followToW( Node * _node
                 , const NodePtr & _target
                 , const mt::vec3f & _offset
                 , float _distance
@@ -2062,12 +2051,12 @@ namespace Mengine
             {
                 if( _node->isActivate() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 if( _node->isAfterActive() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
@@ -2088,14 +2077,14 @@ namespace Mengine
 
                 if( _node->isActivate() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
-                UniqueId id = affectorHub->addAffector( affector );
+                affectorHub->addAffector( affector );
 
-                return id;
+                return affector;
             }
             //////////////////////////////////////////////////////////////////////////
             void s_Node_angleStop( Node * _node )
@@ -2111,16 +2100,16 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float>> m_nodeAffectorCreatorInterpolateLinearFloat;
             //////////////////////////////////////////////////////////////////////////
-            UniqueId s_Node_angleTo( Node * _node, float _time, float _angle, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            AffectorPtr s_Node_angleTo( Node * _node, float _time, float _angle, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
                 if( _node->isActivate() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 if( _node->isAfterActive() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 TransformationInterface * transformation = _node->getTransformation();
@@ -2151,7 +2140,7 @@ namespace Mengine
 
                 if( _node->isActivate() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 float invTime = 1.f / _time;
@@ -2160,23 +2149,24 @@ namespace Mengine
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
                 affectorHub->setAngularSpeed( angularSpeed );
-                UniqueId id = affectorHub->addAffector( affector );
 
-                return id;
+                affectorHub->addAffector( affector );
+
+                return affector;
             }
             //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadratic<float>> m_nodeAffectorCreatorInterpolateQuadraticFloat;
             //////////////////////////////////////////////////////////////////////////
-            UniqueId s_Node_accAngleTo( Node * _node, float _time, float _angle, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            AffectorPtr s_Node_accAngleTo( Node * _node, float _time, float _angle, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
                 if( _node->isActivate() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 if( _node->isAfterActive() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
@@ -2212,12 +2202,12 @@ namespace Mengine
 
                 if( _node->isActivate() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
-                UniqueId id = affectorHub->addAffector( affector );
+                affectorHub->addAffector( affector );
 
-                return id;
+                return affector;
             }
             //////////////////////////////////////////////////////////////////////////
             void s_Node_removeEventListener( Node * _node )
@@ -2243,16 +2233,16 @@ namespace Mengine
                 affectorHub->stopAffectors( EAFFECTORTYPE_SCALE );
             }
             //////////////////////////////////////////////////////////////////////////
-            UniqueId s_Node_scaleTo( Node * _node, float _time, const mt::vec3f & _scale, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            AffectorPtr s_Node_scaleTo( Node * _node, float _time, const mt::vec3f & _scale, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
                 if( _node->isActivate() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 if( _node->isAfterActive() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 TransformationInterface * transformation = _node->getTransformation();
@@ -2278,14 +2268,14 @@ namespace Mengine
 
                 if( _node->isActivate() == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
-                UniqueId id = affectorHub->addAffector( affector );
+                affectorHub->addAffector( affector );
 
-                return id;
+                return affector;
             }
             //////////////////////////////////////////////////////////////////////////
             void s_Node_colorStop( Node * _node )
@@ -2314,7 +2304,7 @@ namespace Mengine
                 Helper::setNodeScreenPosition( _node, _screenPosition, _deep );
             }
             //////////////////////////////////////////////////////////////////////////
-            UniqueId s_Node_colorTo( Node * _node, float _time, const Color & _color, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            AffectorPtr s_Node_colorTo( Node * _node, float _time, const Color & _color, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
                 MENGINE_ASSERTION_MEMORY_PANIC( _node, "_node is None" );
 
@@ -2324,7 +2314,7 @@ namespace Mengine
                         , _node->getName().c_str()
                     );
 
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 if( _node->isAfterActive() == false )
@@ -2333,7 +2323,7 @@ namespace Mengine
                         , _node->getName().c_str()
                     );
 
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 RenderInterface * render = _node->getRender();
@@ -2375,26 +2365,17 @@ namespace Mengine
                         , _node->getName().c_str()
                     );
 
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
-                UniqueId id = affectorHub->addAffector( affector );
+                affectorHub->addAffector( affector );
 
-                if( id == INVALID_UNIQUE_ID )
-                {
-                    LOGGER_ERROR( "node '%s' invalid add affector"
-                        , _node->getName().c_str()
-                    );
-
-                    return INVALID_UNIQUE_ID;
-                }
-
-                return id;
+                return affector;
             }
             //////////////////////////////////////////////////////////////////////////
-            UniqueId s_Node_alphaTo( Node * _node, float _time, float _alpha, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            AffectorPtr s_Node_alphaTo( Node * _node, float _time, float _alpha, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
                 MENGINE_ASSERTION_MEMORY_PANIC( _node, "_node is None" );
 
@@ -2404,7 +2385,7 @@ namespace Mengine
                         , _node->getName().c_str()
                     );
 
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 if( _node->isAfterActive() == false )
@@ -2413,7 +2394,7 @@ namespace Mengine
                         , _node->getName().c_str()
                     );
 
-                    return INVALID_UNIQUE_ID;
+                    return nullptr;
                 }
 
                 RenderInterface * render = _node->getRender();
@@ -2457,23 +2438,14 @@ namespace Mengine
                         , _node->getName().c_str()
                     );
 
-                    return 0;
+                    return nullptr;
                 }
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
-                UniqueId id = affectorHub->addAffector( affector );
+                affectorHub->addAffector( affector );
 
-                if( id == INVALID_UNIQUE_ID )
-                {
-                    LOGGER_ERROR( "node '%s' invalid add affector"
-                        , _node->getName().c_str()
-                    );
-
-                    return INVALID_UNIQUE_ID;
-                }
-
-                return id;
+                return affector;
             }
             //////////////////////////////////////////////////////////////////////////
         };
@@ -2507,6 +2479,7 @@ namespace Mengine
 
         pybind::interface_<Factorable, pybind::bases<Mixin>>( _kernel, "Factorable", true )
             .def( "getType", &Factorable::getType )
+            .def( "getUniqueIdentity", &Factorable::getUniqueIdentity )
             ;
 
         pybind::interface_<Scriptable, pybind::bases<Mixin>>( _kernel, "Scriptable" )
@@ -2515,8 +2488,7 @@ namespace Mengine
 
         pybind::interface_<Identity, pybind::bases<Mixin>>( _kernel, "Identity" )
             .def( "setName", &Identity::setName )
-            .def( "getName", &Identity::getName )
-            .def( "getUniqueIdentity", &Node::getUniqueIdentity )
+            .def( "getName", &Identity::getName )            
             ;
 
         pybind::interface_<BoundingBox, pybind::bases<Mixin>>( _kernel, "BoundingBox" )
@@ -2770,7 +2742,6 @@ namespace Mengine
 
         pybind::interface_<Affectorable, pybind::bases<Mixin>>( _kernel, "Affectorable" )
             .def_proxy_static( "addAffector", scriptMethod, &KernelScriptMethod::s_Affectorable_addAffector )
-            .def_proxy_static( "stopAffector", scriptMethod, &KernelScriptMethod::s_Affectorable_stopAffector )
             .def_proxy_static( "stopAllAffectors", scriptMethod, &KernelScriptMethod::s_Affectorable_stopAllAffectors )
             .def_proxy_static( "setLinearSpeed", scriptMethod, &KernelScriptMethod::s_Affectorable_setLinearSpeed )
             .def_proxy_static( "getLinearSpeed", scriptMethod, &KernelScriptMethod::s_Affectorable_getLinearSpeed )
@@ -2863,7 +2834,7 @@ namespace Mengine
 
         pybind::interface_<Affector, pybind::bases<Updatable>>( _kernel, "Affector", true )
             .def( "stop", &Affector::stop )
-            .def( "getId", &Affector::getId )
+            .def( "getId", &Affector::getUniqueIdentity )
             .def( "setFreeze", &Affector::setFreeze )
             .def( "getFreeze", &Affector::getFreeze )
             .def( "setSpeedFactor", &Affector::setSpeedFactor )

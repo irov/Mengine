@@ -20,13 +20,8 @@ namespace Mengine
         void setName( const ConstString & _name );
         MENGINE_INLINE const ConstString & getName() const;
 
-        void setUniqueIdentity( UniqueId _uniqueIdentity );
-        MENGINE_INLINE UniqueId getUniqueIdentity() const;
-
     protected:
         ConstString m_name;
-
-        UniqueId m_uniqueIdentity;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Identity> IdentityPtr;
@@ -34,11 +29,6 @@ namespace Mengine
     MENGINE_INLINE const ConstString & Identity::getName()const
     {
         return m_name;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE UniqueId Identity::getUniqueIdentity() const
-    {
-        return m_uniqueIdentity;
     }
     //////////////////////////////////////////////////////////////////////////
 }

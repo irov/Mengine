@@ -109,7 +109,7 @@ namespace Mengine
                     if( SOUND_SERVICE()
                         ->releaseSoundIdentity( _identity ) == false )
                     {
-                        uint32_t id = _identity->getId();
+                        uint32_t id = _identity->getUniqueIdentity();
 
                         LOGGER_ERROR( "resource sound '%s' emitter invalid release sound '%u'"
                             , m_resource->getName().c_str()
@@ -128,7 +128,7 @@ namespace Mengine
                     if( SOUND_SERVICE()
                         ->releaseSoundIdentity( _identity ) == false )
                     {
-                        uint32_t id = _identity->getId();
+                        uint32_t id = _identity->getUniqueIdentity();
 
                         LOGGER_ERROR( "resource sound '%s' emitter invalid release sound '%u'"
                             , m_resource->getName().c_str()
@@ -408,7 +408,7 @@ namespace Mengine
                 }
 
             protected:
-                void onAffectorEnd( UniqueId _id, bool _isEnd ) override
+                void onAffectorEnd( bool _isEnd ) override
                 {
                     if( _isEnd == true )
                     {
@@ -416,7 +416,7 @@ namespace Mengine
                             ->stopEmitter( m_soundIdentity );
                     }
 
-                    this->call_cb( _id, _isEnd );
+                    this->call_cb( _isEnd );
                 }
 
             protected:
@@ -451,20 +451,20 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float>> m_affectorCreatorSound;
             //////////////////////////////////////////////////////////////////////////
-            void soundFadeIn( const SoundIdentityInterfacePtr & _identity, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            bool soundFadeIn( const SoundIdentityInterfacePtr & _identity, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
                 if( _identity == nullptr )
                 {
                     LOGGER_ERROR( "soundFadeIn invalid emitter" );
 
-                    return;
+                    return false;
                 }
 
                 SoundAffectorCallbackPtr callback = createSoundAffectorCallback( _identity, _cb, _args );
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
-                AffectorPtr affector = m_affectorCreatorSound->create( EAFFECTORTYPE_POSITION
+                AffectorPtr affector = m_affectorCreatorSound->create( EAFFECTORTYPE_VOLUME
                     , easing
                     , callback, [this, _identity]( float _volume )
                 {
@@ -478,6 +478,8 @@ namespace Mengine
                     ->getGlobalAffectorHub();
 
                 affectorHub->addAffector( affector );
+
+                return true;
             }
             //////////////////////////////////////////////////////////////////////////
             SoundIdentityInterfacePtr soundFadeOut( const ConstString & _resourceName, bool _loop, float _time, const ConstString & _easingType, const pybind::object & _cbs, const pybind::args & _args )
@@ -514,11 +516,11 @@ namespace Mengine
                     , _easingType.c_str()
                 );
 
-                AffectorPtr affector = m_affectorCreatorSound->create( EAFFECTORTYPE_POSITION
+                AffectorPtr affector = m_affectorCreatorSound->create( EAFFECTORTYPE_VOLUME
                     , easing
-                    , nullptr, [this, soundIdentity]( float _value )
+                    , nullptr, [this, soundIdentity]( float _volume )
                 {
-                    this->___soundFade( soundIdentity, _value );
+                    this->___soundFade( soundIdentity, _volume );
                 }
                     , 0.f, 1.f, _time
                     , MENGINE_DOCUMENT_PYTHON
@@ -534,13 +536,13 @@ namespace Mengine
                 return soundIdentity;
             }
             //////////////////////////////////////////////////////////////////////////
-            void soundFadeInTo( const SoundIdentityInterfacePtr & _identity, float _to, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            bool soundFadeInTo( const SoundIdentityInterfacePtr & _identity, float _to, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
                 if( _identity == nullptr )
                 {
                     LOGGER_ERROR( "soundFadeInTo invalid emitter" );
 
-                    return;
+                    return false;
                 }
 
                 SoundAffectorCallbackPtr callback = createSoundAffectorCallback( _identity, _cb, _args );
@@ -550,7 +552,7 @@ namespace Mengine
                 float volume = SOUND_SERVICE()
                     ->getSourceMixerVolume( _identity, STRINGIZE_STRING_LOCAL( "Fade" ) );
 
-                AffectorPtr affector = m_affectorCreatorSound->create( EAFFECTORTYPE_POSITION
+                AffectorPtr affector = m_affectorCreatorSound->create( EAFFECTORTYPE_VOLUME
                     , easing
                     , callback, [this, _identity]( float _volume )
                 {
@@ -564,6 +566,8 @@ namespace Mengine
                     ->getGlobalAffectorHub();
 
                 affectorHub->addAffector( affector );
+
+                return true;
             }
             //////////////////////////////////////////////////////////////////////////
             SoundIdentityInterfacePtr soundFadeOutTo( const ConstString & _resourceName, bool _loop, float _to, float _time, const ConstString & _easingType, const pybind::object & _cbs, const pybind::args & _args )
@@ -603,7 +607,7 @@ namespace Mengine
                 float volume = SOUND_SERVICE()
                     ->getSourceMixerVolume( soundIdentity, STRINGIZE_STRING_LOCAL( "Fade" ) );
 
-                AffectorPtr affector = m_affectorCreatorSound->create( EAFFECTORTYPE_POSITION
+                AffectorPtr affector = m_affectorCreatorSound->create( EAFFECTORTYPE_VOLUME
                     , easing
                     , nullptr, [this, soundIdentity]( float _value )
                 {
@@ -687,7 +691,7 @@ namespace Mengine
                     ->setSourceVolume( _identity, _volume, _volume, MENGINE_MIXER_VALUE_DEFAULT_SPEED, true ) == false )
                 {
                     LOGGER_ERROR( "sound emitter [%u] invalid set source volume [%f]"
-                        , _identity->getId()
+                        , _identity->getUniqueIdentity()
                         , _volume
                     );
                 }
@@ -785,7 +789,7 @@ namespace Mengine
         }
 
         pybind::interface_<SoundIdentityInterface, pybind::bases<Mixin>>( _kernel, "SoundIdentity" )
-            .def( "getId", &SoundIdentityInterface::getId )
+            .def( "getId", &SoundIdentityInterface::getUniqueIdentity )
             .def( "isStreamable", &SoundIdentityInterface::getStreamable )
             .def( "getStreamable", &SoundIdentityInterface::getStreamable )
             .def( "getLoop", &SoundIdentityInterface::getLoop )

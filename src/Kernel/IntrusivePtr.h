@@ -15,7 +15,7 @@ namespace Mengine
     template<class T, class D>
     struct Hashgen<IntrusivePtr<T, D>>
     {
-        HashType operator()( const IntrusivePtr<T, D> & _value ) const MENGINE_NOEXCEPT
+        HashType operator()( const IntrusivePtr<T, D> & _value ) const
         {
             const typename IntrusivePtr<T, D>::value_type * ptr = _value.get();
 

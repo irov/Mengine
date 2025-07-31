@@ -1,6 +1,8 @@
 #include "FactoryWithoutMutex.h"
 
-#include "ThreadGuardScope.h"
+#include "Kernel/EnumeratorHelper.h"
+#include "Kernel/ThreadGuardScope.h"
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionNotImplemented.h"
 
 namespace Mengine
@@ -38,6 +40,9 @@ namespace Mengine
 #endif
 
         object->setFactory( this );
+
+        UniqueId id = Helper::generateUniqueIdentity();
+        object->setUniqueIdentity( id );
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
         object->setDocument( _doc );

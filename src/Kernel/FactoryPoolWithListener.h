@@ -31,13 +31,8 @@ namespace Mengine
             }
 
         protected:
-#if defined(MENGINE_DEBUG) //avoid warning C4324
-            C * m_self;
-            M m_method;
-#else            
             M m_method;
             C * m_self;
-#endif
         };
         //////////////////////////////////////////////////////////////////////////
         template<class T, class C, class M>

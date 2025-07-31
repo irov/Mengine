@@ -37,7 +37,7 @@ namespace Mengine
         DocumentInterfacePtr m_doc;
 #endif
 
-        uint32_t m_id;
+        AffectorPtr m_affector;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef GOAP::IntrusivePtr<TaskTransformationScaleTime> TaskTransformationScaleTimePtr;

@@ -48,9 +48,6 @@ namespace Mengine
         virtual void finalize() = 0;
 
     public:
-        virtual UniqueId getId() const = 0;
-
-    public:
         virtual const SoundSourceInterfacePtr & getSoundSource() const = 0;
 
     public:

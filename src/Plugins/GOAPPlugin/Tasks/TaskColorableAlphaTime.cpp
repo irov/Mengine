@@ -99,7 +99,6 @@ namespace Mengine
 #if defined(MENGINE_DOCUMENT_ENABLE)
         , m_doc( _doc )
 #endif
-        , m_id( 0 )
     {
         MENGINE_UNUSED( _doc );
 
@@ -121,26 +120,19 @@ namespace Mengine
 
         const AffectorHubInterfacePtr & affectorHub = m_affectorable->getAffectorHub();
 
-        UniqueId id = affectorHub->addAffector( affector );
+        affectorHub->addAffector( affector );
 
-        if( id == 0 )
-        {
-            return true;
-        }
-
-        m_id = id;
+        m_affector = affector;
 
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void TaskColorableAlphaTime::_onSkip()
     {
-        if( m_id != 0 )
+        if( m_affector != nullptr )
         {
-            const AffectorHubInterfacePtr & affectorHub = m_affectorable->getAffectorHub();
-
-            affectorHub->stopAffector( m_id );
-            m_id = 0;
+            m_affector->stop();
+            m_affector = nullptr;
         }
 
         m_colorable->setLocalAlpha( m_to );
@@ -148,12 +140,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TaskColorableAlphaTime::_onFinally()
     {
-        if( m_id != 0 )
+        if( m_affector != nullptr )
         {
-            const AffectorHubInterfacePtr & affectorHub = m_affectorable->getAffectorHub();
-
-            affectorHub->stopAffector( m_id );
-            m_id = 0;
+            m_affector->stop();
+            m_affector = nullptr;
         }
 
         m_affectorable = nullptr;

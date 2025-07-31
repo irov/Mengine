@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Interface/ServantInterface.h"
 #include "Interface/AccountSettingProviderInterface.h"
 #include "Interface/InputStreamInterface.h"
 #include "Interface/OutputStreamInterface.h"
@@ -8,7 +9,6 @@
 #include "Kernel/Mixin.h"
 #include "Kernel/AccountUID.h"
 #include "Kernel/ConstString.h"
-#include "Kernel/Factorable.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/Magic.h"
 
@@ -18,10 +18,10 @@ namespace Mengine
     DECLARE_MAGIC_NUMBER( MAGIC_ACCOUNT_DATA, 'A', 'C', 'D', '1', 1 );
     //////////////////////////////////////////////////////////////////////////
     class AccountInterface
-        : public Mixin
+        : public ServantInterface
     {
     public:
-        virtual const ConstString & getId() const = 0;
+        virtual const ConstString & getAccountId() const = 0;
         virtual const FilePath & getFolderName() const = 0;
 
     public:

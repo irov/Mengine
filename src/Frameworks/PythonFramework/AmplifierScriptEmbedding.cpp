@@ -28,7 +28,6 @@ namespace Mengine
         {
         public:
             AmplifierScriptMethod()
-                : m_affectorMusicId( INVALID_UNIQUE_ID )
             {
             }
 
@@ -214,12 +213,12 @@ namespace Mengine
                 }
 
             protected:
-                void onAffectorEnd( UniqueId _id, bool _isEnd ) override
+                void onAffectorEnd( bool _isEnd ) override
                 {
                     AMPLIFIER_SERVICE()
                         ->stopMusic();
 
-                    this->call_cb( _id, _isEnd );
+                    this->call_cb( _isEnd );
                 }
             };
             //////////////////////////////////////////////////////////////////////////
@@ -241,11 +240,9 @@ namespace Mengine
                 return callback;
             }
             //////////////////////////////////////////////////////////////////////////
-            UniqueId m_affectorMusicId;
-            //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float>> m_affectorCreatorMusic;
             //////////////////////////////////////////////////////////////////////////
-            UniqueId musicFadeIn( float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            bool musicFadeIn( float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
                 LOGGER_INFO( "amplifier", "[script] music fade in time '%.2f' easing '%s'"
                     , _time
@@ -254,19 +251,19 @@ namespace Mengine
 
                 if( SERVICE_IS_INITIALIZE( AmplifierServiceInterface ) == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return false;
                 }
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
                 MusicAffectorCallbackPtr callback = createMusicAffectorCallback( _cb, _args );
 
-                AffectorPtr affector = m_affectorCreatorMusic->create( EAFFECTORTYPE_POSITION
+                AffectorPtr affector = m_affectorCreatorMusic->create( EAFFECTORTYPE_VOLUME
                     , easing
                     , callback
-                    , [this]( float _value )
+                    , [this]( float _volume )
                 {
-                    this->___musicFade( _value );
+                    this->___musicFade( _volume );
                 }
                     , 1.f, 0.f, _time
                     , MENGINE_DOCUMENT_PYTHON
@@ -275,22 +272,14 @@ namespace Mengine
                 const AffectorHubInterfacePtr & affectorHub = PLAYER_SERVICE()
                     ->getGlobalAffectorHub();
 
-                if( m_affectorMusicId != INVALID_UNIQUE_ID )
-                {
-                    if( affectorHub->hasAffector( m_affectorMusicId ) == true )
-                    {
-                        affectorHub->stopAffector( m_affectorMusicId );
-                    }
-                }
+                affectorHub->stopAffectors( EAFFECTORTYPE_VOLUME );
 
-                UniqueId id = affectorHub->addAffector( affector );
+                affectorHub->addAffector( affector );
 
-                m_affectorMusicId = id;
-
-                return id;
+                return true;
             }
             //////////////////////////////////////////////////////////////////////////
-            UniqueId musicFadeOut( const ConstString & _resourceMusic, float _pos, bool _isLooped, float _time, const ConstString & _easingType, const pybind::object & _cbs, const pybind::args & _args )
+            bool musicFadeOut( const ConstString & _resourceMusic, float _pos, bool _isLooped, float _time, const ConstString & _easingType, const pybind::object & _cbs, const pybind::args & _args )
             {
                 LOGGER_INFO( "amplifier", "[script] music fade out resource '%s' pos '%.2f' loop [%u] time '%.2f' easing '%s'"
                     , _resourceMusic.c_str()
@@ -302,7 +291,7 @@ namespace Mengine
 
                 if( SERVICE_IS_INITIALIZE( AmplifierServiceInterface ) == false )
                 {
-                    return INVALID_UNIQUE_ID;
+                    return false;
                 }
 
                 AmplifierMusicCallbackInterfacePtr cb = Helper::makeFactorableUnique<PythonAmplifierMusicCallback>( MENGINE_DOCUMENT_PYTHON, _cbs, _args );
@@ -314,17 +303,17 @@ namespace Mengine
                         , _resourceMusic.c_str()
                     );
 
-                    return INVALID_UNIQUE_ID;
+                    return false;
                 }
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
-                AffectorPtr affector = m_affectorCreatorMusic->create( EAFFECTORTYPE_POSITION
+                AffectorPtr affector = m_affectorCreatorMusic->create( EAFFECTORTYPE_VOLUME
                     , easing
                     , nullptr
-                    , [this]( float _value )
+                    , [this]( float _volume )
                 {
-                    this->___musicFade( _value );
+                    this->___musicFade( _volume );
                 }
                     , 0.f, 1.f, _time
                     , MENGINE_DOCUMENT_PYTHON
@@ -333,20 +322,13 @@ namespace Mengine
                 const AffectorHubInterfacePtr & affectorHub = PLAYER_SERVICE()
                     ->getGlobalAffectorHub();
 
-                if( m_affectorMusicId != INVALID_UNIQUE_ID )
-                {
-                    if( affectorHub->hasAffector( m_affectorMusicId ) == true )
-                    {
-                        affectorHub->stopAffector( m_affectorMusicId );
-                    }
-                }
+                affectorHub->stopAffectors( EAFFECTORTYPE_VOLUME );
 
-                UniqueId id = affectorHub->addAffector( affector );
+                affectorHub->addAffector( affector );
 
-                m_affectorMusicId = id;
-
-                return id;
+                return true;
             }
+            //////////////////////////////////////////////////////////////////////////
         };
         //////////////////////////////////////////////////////////////////////////
         typedef IntrusivePtr<AmplifierScriptMethod> AmplifierScriptMethodPtr;

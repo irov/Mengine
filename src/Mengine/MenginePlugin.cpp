@@ -11,6 +11,7 @@
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( AllocatorSystem );
+SERVICE_EXTERN( EnumeratorService );
 SERVICE_EXTERN( StringizeService );
 SERVICE_EXTERN( DocumentService );
 SERVICE_EXTERN( Bootstrapper );
@@ -31,6 +32,11 @@ extern "C" Mengine::ServiceProviderInterface * API_MengineCreate()
     SERVICE_PROVIDER_SETUP( serviceProvider );
 
     if( SERVICE_CREATE( AllocatorSystem, nullptr ) == false )
+    {
+        return nullptr;
+    }
+
+    if( SERVICE_CREATE( EnumeratorService, nullptr ) == false )
     {
         return nullptr;
     }
@@ -85,6 +91,9 @@ extern "C" void API_MengineFinalize()
 
     SERVICE_FINALIZE( StringizeService );
     SERVICE_DESTROY( StringizeService );
+
+    SERVICE_FINALIZE( EnumeratorService );
+    SERVICE_DESTROY( EnumeratorService );
 
     SERVICE_FINALIZE( AllocatorSystem );
     SERVICE_DESTROY( AllocatorSystem );

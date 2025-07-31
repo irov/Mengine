@@ -43,10 +43,6 @@ namespace Mengine
                 , MENGINE_DOCUMENT_STR( _doc )
             );
 
-            UniqueId uniqueIdentity = Helper::generateUniqueIdentity();
-
-            resource->setUniqueIdentity( uniqueIdentity );
-
 #if defined(MENGINE_DOCUMENT_ENABLE)
             DocumentInterfacePtr doc = MENGINE_DOCUMENT_MESSAGE( "Resource '%s' type '%s' create '%s'"
                 , resource->getName().c_str()

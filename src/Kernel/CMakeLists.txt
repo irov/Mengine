@@ -507,8 +507,6 @@ Assertion
     AssertionVSNPRINTF.h
     AssertionFilePath.h
     AssertionFilePath.cpp
-    AssertionIdentity.h
-    AssertionIdentity.cpp
 )
 
 ADD_FILTER(

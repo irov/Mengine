@@ -1,5 +1,7 @@
 #include "AffectorTransformationRotateTime.h"
 
+#include "Kernel/AssertionNotImplemented.h"
+
 #include "math/angle.h"
 #include "math/utils.h"
 
@@ -47,15 +49,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AffectorTransformationRotateTime::_prepare()
+    void AffectorTransformationRotateTime::_prepare()
     {
         switch( m_mode )
         {
         case ETRANSFORMATION_ROTATE_MODE_INTERPOLATE:
             {
                 mt::angle_correct_interpolate_from_to( m_from, m_to, &m_from, &m_to );
-
-                return true;
             } break;
         case ETRANSFORMATION_ROTATE_MODE_CW:
             {
@@ -64,8 +64,6 @@ namespace Mengine
                     m_from += mt::constant::two_pi;
                     m_to -= mt::constant::two_pi;
                 }
-
-                return true;
             } break;
         case ETRANSFORMATION_ROTATE_MODE_CCW:
             {
@@ -73,13 +71,13 @@ namespace Mengine
                 {
                     m_to += mt::constant::two_pi;
                     m_from -= mt::constant::two_pi;
-                }
-
-                return true;
+                }                
+            } break;
+        default:
+            {
+                MENGINE_ASSERTION_NOT_IMPLEMENTED();
             } break;
         }
-
-        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void AffectorTransformationRotateTime::_complete( bool _isEnd )

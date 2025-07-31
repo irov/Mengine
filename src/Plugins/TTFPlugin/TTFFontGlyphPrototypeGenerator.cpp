@@ -34,9 +34,6 @@ namespace Mengine
 
         TTFFontGlyphPtr glyph = factory->createObject( _doc );
 
-        UniqueId uniqueIdentity = Helper::generateUniqueIdentity();
-        glyph->setUniqueIdentity( uniqueIdentity );
-
 #if defined(MENGINE_DOCUMENT_ENABLE)
         DocumentInterfacePtr doc = MENGINE_DOCUMENT_MESSAGE( "TTFFontGlyph '%s' type '%s' create '%s'"
             , glyph->getName().c_str()

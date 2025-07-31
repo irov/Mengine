@@ -1579,7 +1579,7 @@ namespace Mengine
         {
             pugi::xml_node xml_sound = payloadNode.append_child( "Sound" );
 
-            UniqueId id = _identity->getId();
+            UniqueId id = _identity->getUniqueIdentity();
 
             bool streamable = _identity->getStreamable();
             bool loop = _identity->getLoop();

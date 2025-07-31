@@ -9,6 +9,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Factorable::Factorable()
         : m_factory( nullptr )
+        , m_id( INVALID_UNIQUE_ID )
 #if defined(MENGINE_FACTORABLE_DEBUG_ENABLE)
         , m_destroy( false )
         , m_immortal( false )
@@ -31,6 +32,11 @@ namespace Mengine
     void Factorable::setFactory( FactoryInterface * _factory )
     {
         m_factory = _factory;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Factorable::setUniqueIdentity( UniqueId _id )
+    {
+        m_id = _id;
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & Factorable::getType() const

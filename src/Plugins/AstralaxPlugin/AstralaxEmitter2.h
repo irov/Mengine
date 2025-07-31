@@ -70,7 +70,7 @@ namespace Mengine
         void setAngle( float _radians ) override;
 
     public:
-        HM_EMITTER getId() const;
+        HM_EMITTER getEmitterId() const;
 
         bool inInterval() const;
 

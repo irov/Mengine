@@ -32,7 +32,7 @@ namespace Mengine
         DocumentInterfacePtr m_doc;
 #endif
 
-        UniqueId m_id;
+        AffectorPtr m_affector;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef GOAP::IntrusivePtr<TaskTransformationRotateZ> TaskTransformationRotateZPtr;

@@ -27,29 +27,29 @@ namespace Mengine
         typedef Char value_type;
 
     public:
-        MENGINE_CONSTEXPR const value_type * c_str() const MENGINE_NOEXCEPT
+        MENGINE_CONSTEXPR const value_type * c_str() const
         {
             return m_data;
         }
 
-        MENGINE_CONSTEXPR size_type size() const MENGINE_NOEXCEPT
+        MENGINE_CONSTEXPR size_type size() const
         {
             return m_size;
         }
 
-        MENGINE_CONSTEXPR bool empty() const MENGINE_NOEXCEPT
+        MENGINE_CONSTEXPR bool empty() const
         {
             return m_size == 0;
         }
 
     public:
-        MENGINE_CONSTEXPR hash_type hash() const MENGINE_NOEXCEPT
+        MENGINE_CONSTEXPR hash_type hash() const
         {
             return m_hash;
         }
 
     protected:
-        MENGINE_CONSTEXPR const value_type * data() const MENGINE_NOEXCEPT
+        MENGINE_CONSTEXPR const value_type * data() const
         {
             return m_data;
         }

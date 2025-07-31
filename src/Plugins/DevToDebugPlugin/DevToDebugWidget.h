@@ -27,8 +27,8 @@ namespace Mengine
         ~DevToDebugWidget() override;
 
     public:
-        void setId( const ConstString & _id ) override;
-        const ConstString & getId() const override;
+        void setWidgetId( const ConstString & _id ) override;
+        const ConstString & getWidgetId() const override;
 
     public:
         void setBaseProperty( const ConstString & _name, const DevToDebugPropertyInterfacePtr & _property ) override;

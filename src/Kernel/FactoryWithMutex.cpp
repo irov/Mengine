@@ -1,6 +1,7 @@
 #include "FactoryWithMutex.h"
 
-#include "Kernel/ThreadMutexScope.h"
+#include "Kernel/EnumeratorHelper.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -43,6 +44,9 @@ namespace Mengine
         m_count.incref();
 
         object->setFactory( this );
+
+        UniqueId id = Helper::generateUniqueIdentity();
+        object->setUniqueIdentity( id );
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
         object->setDocument( _doc );

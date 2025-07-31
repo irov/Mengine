@@ -33,7 +33,7 @@ namespace Mengine
             240.f / 255.f, 241.f / 255.f, 242.f / 255.f, 243.f / 255.f, 244.f / 255.f, 245.f / 255.f, 246.f / 255.f, 247.f / 255.f, 248.f / 255.f, 249.f / 255.f,
             250.f / 255.f, 251.f / 255.f, 252.f / 255.f, 253.f / 255.f, 254.f / 255.f, 255.f / 255.f};
         //////////////////////////////////////////////////////////////////////////
-        uint8_t makeColorChannelF( float _channel ) MENGINE_NOEXCEPT
+        uint8_t makeColorChannelF( float _channel )
         {
             const float channel_255 = 255.5f;
 
@@ -42,14 +42,14 @@ namespace Mengine
             return channel8;
         }
         //////////////////////////////////////////////////////////////////////////
-        float makeColorChannel8( uint8_t _channel8 ) MENGINE_NOEXCEPT
+        float makeColorChannel8( uint8_t _channel8 )
         {
             float channelf = one_div_255[_channel8];
 
             return channelf;
         }
         //////////////////////////////////////////////////////////////////////////
-        ColorValue_ARGB makeRGBA8( uint8_t _r, uint8_t _g, uint8_t _b, uint8_t _a ) MENGINE_NOEXCEPT
+        ColorValue_ARGB makeRGBA8( uint8_t _r, uint8_t _g, uint8_t _b, uint8_t _a )
         {
 #if defined(MENGINE_RENDER_COLOR_RGBA)
             uint8_t b8 = _r;
@@ -68,7 +68,7 @@ namespace Mengine
             return argb;
         }
         //////////////////////////////////////////////////////////////////////////
-        ColorValue_ARGB makeRGBAF( float _r, float _g, float _b, float _a ) MENGINE_NOEXCEPT
+        ColorValue_ARGB makeRGBAF( float _r, float _g, float _b, float _a )
         {
             uint8_t r8 = Helper::makeColorChannelF( _r );
             uint8_t g8 = Helper::makeColorChannelF( _g );
@@ -80,7 +80,7 @@ namespace Mengine
             return argb;
         }
         //////////////////////////////////////////////////////////////////////////
-        Color makeColor8( uint8_t _r, uint8_t _g, uint8_t _b, uint8_t _a ) MENGINE_NOEXCEPT
+        Color makeColor8( uint8_t _r, uint8_t _g, uint8_t _b, uint8_t _a )
         {
             ColorValue_ARGB value = Helper::makeRGBA8( _r, _g, _b, _a );
 
@@ -102,12 +102,12 @@ namespace Mengine
             return Color( rf, gf, bf, af, value );
         }
         //////////////////////////////////////////////////////////////////////////
-        Color makeColorF( float _r, float _g, float _b, float _a ) MENGINE_NOEXCEPT
+        Color makeColorF( float _r, float _g, float _b, float _a )
         {
             return Color( _r, _g, _b, _a );
         }
         //////////////////////////////////////////////////////////////////////////
-        Color makeColorARGB( ColorValue_ARGB _argb ) MENGINE_NOEXCEPT
+        Color makeColorARGB( ColorValue_ARGB _argb )
         {
             if( _argb == Detail::COLOR_IDENTITY_VALUE )
             {

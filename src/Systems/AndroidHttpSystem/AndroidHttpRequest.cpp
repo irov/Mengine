@@ -82,6 +82,8 @@ namespace Mengine
             , m_timeout
         );
 
+        Helper::AndroidEnvExceptionCheck( jenv );
+
         jenv->DeleteLocalRef( jclass_MengineHttpRequestParam );
 
         jenv->DeleteLocalRef( jurl );

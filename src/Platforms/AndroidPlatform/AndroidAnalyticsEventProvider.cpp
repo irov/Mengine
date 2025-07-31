@@ -95,6 +95,8 @@ namespace Mengine
 
         jobject jobject_event = jenv->NewObject( jclass_MengineAnalyticsEventParam, jmethod_MengineAnalyticsEventParam, jobject_category, jobject_eventName, (jlong)eventTimestamp, jobject_bases, jobject_parameters );
 
+        Helper::AndroidEnvExceptionCheck( jenv );
+
         jenv->DeleteLocalRef( jclass_MengineAnalyticsEventParam );
 
         jenv->DeleteLocalRef( jobject_category );

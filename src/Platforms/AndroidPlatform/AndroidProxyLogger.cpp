@@ -87,6 +87,8 @@ namespace Mengine
             , jdata
         );
 
+        Helper::AndroidEnvExceptionCheck( jenv );
+
         jenv->DeleteLocalRef( jclass_MengineLoggerMessageParam );
         jenv->DeleteLocalRef( jclass_MengineTag );
 

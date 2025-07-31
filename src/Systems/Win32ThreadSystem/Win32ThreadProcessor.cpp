@@ -150,8 +150,16 @@ namespace Mengine
         ALLOCATOR_SYSTEM()
             ->beginThread( (ThreadId)m_threadId );
 
-        PLATFORM_SYSTEM()
-            ->beginThread( (ThreadId)m_threadId );
+        if( PLATFORM_SYSTEM()
+            ->beginThread( (ThreadId)m_threadId ) == false )
+        {
+            LOGGER_ERROR( "invalid begin thread '%s' id: %ld"
+                , m_description.nameA
+                , m_threadId
+            );
+
+            return;
+        }
 
         LOGGER_INFO( "thread", "create thread name: %s id: %ld priority: %d"
             , m_description.nameA

@@ -30,11 +30,16 @@ namespace Mengine
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformSystem::beginThread( ThreadId _threadId )
+    bool AndroidPlatformSystem::beginThread( ThreadId _threadId )
     {
         MENGINE_UNUSED( _threadId );
 
-        Mengine_JNI_SetupThread();
+        if( Mengine_JNI_SetupThread() == JNI_FALSE )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformSystem::endThread( ThreadId _threadId )

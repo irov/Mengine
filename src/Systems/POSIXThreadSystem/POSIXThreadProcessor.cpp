@@ -5,6 +5,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/ThreadEnum.h"
+#include "Kernel/ProfilerHelper.h"
 
 #include "Config/StdIntTypes.h"
 
@@ -139,8 +140,24 @@ namespace Mengine
         ALLOCATOR_SYSTEM()
             ->beginThread( (ThreadId)m_threadId );
 
-        PLATFORM_SYSTEM()
-            ->beginThread( (ThreadId)m_threadId );
+        if( PLATFORM_SYSTEM()
+            ->beginThread( (ThreadId)m_threadId ) == false )
+        {
+            LOGGER_ERROR( "invalid begin thread: %" MENGINE_PRIu64 " name: %s"
+                , (ThreadId)m_threadId
+                , m_description.nameA
+            );
+
+            return;
+        }
+
+        LOGGER_INFO( "thread", "create thread name: %s id: %ld priority: %d"
+            , m_description.nameA
+            , m_threadId
+            , m_priority
+        );
+
+        MENGINE_PROFILER_THREAD( m_description.nameA );
 
         while( m_exit == false )
         {

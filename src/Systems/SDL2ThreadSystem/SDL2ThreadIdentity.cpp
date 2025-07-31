@@ -122,6 +122,23 @@ namespace Mengine
         ALLOCATOR_SYSTEM()
             ->beginThread( m_threadId );
 
+        if( PLATFORM_SYSTEM()
+            ->beginThread( (ThreadId)m_threadId ) == false )
+        {
+            LOGGER_ERROR( "invalid begin thread '%s' id: %ld"
+                , m_description.nameA
+                , m_threadId
+            );
+
+            return;
+        }
+
+        LOGGER_INFO( "thread", "create thread name: %s id: %ld priority: %d"
+            , m_description.nameA
+            , m_threadId
+            , m_priority
+        );
+
         MENGINE_PROFILER_THREAD( m_description.nameA );
         
         ThreadIdentityRunnerInterfacePtr runner = m_runner;
@@ -130,6 +147,9 @@ namespace Mengine
         {
             runner->sleep();
         }
+
+        PLATFORM_SYSTEM()
+            ->endThread( (ThreadId)m_threadId );
 
         ALLOCATOR_SYSTEM()
             ->endThread( m_threadId );

@@ -79,11 +79,13 @@ namespace Mengine
         m_old_SDL_free_func = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void iOSPlatformSystem::beginThread( ThreadId _threadId )
+    bool iOSPlatformSystem::beginThread( ThreadId _threadId )
     {
         MENGINE_UNUSED( _threadId );
 
         //Empty
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformSystem::endThread( ThreadId _threadId )

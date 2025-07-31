@@ -10,11 +10,11 @@
 #include <signal.h>
 #include <pthread.h>
 
-static JavaVM * g_androidEnvJavaVM;
+static JavaVM * g_androidEnvJavaVM = nullptr;
 
-static jobject g_jobject_MengineClassLoader;
+static jobject g_jobject_MengineClassLoader = nullptr;
 
-extern "C" 
+extern "C"
 {
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1nativeDebugBreak )( JNIEnv * env, jclass cls )
@@ -37,7 +37,7 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1removeMengineAndroidClassLoaderJNI )( JNIEnv * env, jclass cls )
     {
-        env->DeleteLocalRef( g_jobject_MengineClassLoader );
+        env->DeleteGlobalRef( g_jobject_MengineClassLoader );
         g_jobject_MengineClassLoader = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -110,14 +110,16 @@ extern "C"
     JNIEXPORT void JNICALL JNI_OnUnload( JavaVM * vm, void * reserved )
     {
         JNIEnv * env;
-        if( vm->GetEnv( (void**)&env, JNI_VERSION_1_6 ) != JNI_OK )
+        int status = vm->GetEnv( (void**)&env, JNI_VERSION_1_6 );
+
+        if( status != JNI_OK )
         {
+            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "[ERROR] JNI_OnUnload failed to get JNI Env [%d]", status );
+
             return;
         }
 
         __android_log_print( ANDROID_LOG_INFO, "Mengine", "JNI_OnUnload" );
-
-        g_androidEnvJavaVM = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
 }
@@ -133,12 +135,26 @@ namespace Mengine
 
         if( env == nullptr )
         {
+            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "[ERROR] JNI_ThreadDestroyed called with null JNIEnv" );
+
+            return;
+        }
+
+        int status = ::pthread_setspecific( g_androidEnvThreadKey, nullptr );
+
+        if( status != JNI_OK )
+        {
+            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "[ERROR] JNI_ThreadDestroyed failed to clear pthread key [%d]", status );
+        }
+
+        if( g_androidEnvJavaVM == nullptr )
+        {
+            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "[ERROR] JNI_ThreadDestroyed failed to get JavaVM" );
+
             return;
         }
 
         g_androidEnvJavaVM->DetachCurrentThread();
-
-        ::pthread_setspecific( g_androidEnvThreadKey, nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     static int Mengine_JNI_SetEnv( JNIEnv * _env )
@@ -155,6 +171,8 @@ namespace Mengine
             return JNI_FALSE;
         }
 
+        __android_log_print( ANDROID_LOG_INFO, "Mengine", "JNI_SetEnv set JNIEnv for current thread" );
+
         return JNI_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -170,6 +188,8 @@ namespace Mengine
 
             return JNI_FALSE;
         }
+
+        __android_log_print( ANDROID_LOG_INFO, "Mengine", "JNI_SetEnv created pthread key for JNIEnv" );
 
         if( Mengine_JNI_SetEnv( _env ) == JNI_FALSE )
         {
@@ -236,8 +256,12 @@ namespace Mengine
 
         if( Mengine_JNI_SetEnv( env ) == JNI_FALSE )
         {
+            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "[ERROR] JNI_SetupThread failed to set environment" );
+
             return JNI_FALSE;
         }
+
+        __android_log_print( ANDROID_LOG_INFO, "Mengine", "JNI_SetupThread successfully set up thread environment" );
 
         return JNI_TRUE;
     }

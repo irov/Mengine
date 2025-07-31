@@ -89,11 +89,13 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDL2PlatformSystem::beginThread( ThreadId _threadId )
+    bool SDL2PlatformSystem::beginThread( ThreadId _threadId )
     {
         MENGINE_UNUSED( _threadId );
 
         //Empty
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void SDL2PlatformSystem::endThread( ThreadId _threadId )

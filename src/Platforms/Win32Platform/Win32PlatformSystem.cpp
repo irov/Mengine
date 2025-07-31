@@ -27,11 +27,13 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32PlatformSystem::beginThread( ThreadId _threadId )
+    bool Win32PlatformSystem::beginThread( ThreadId _threadId )
     {
         MENGINE_UNUSED( _threadId );
 
         //Empty
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32PlatformSystem::endThread( ThreadId _threadId )

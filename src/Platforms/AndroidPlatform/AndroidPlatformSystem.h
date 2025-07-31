@@ -18,7 +18,7 @@ namespace Mengine
         void _finalizeService() override;
 
     protected:
-        void beginThread( ThreadId _threadId ) override;
+        bool beginThread( ThreadId _threadId ) override;
         void endThread( ThreadId _threadId ) override;
     };
 }

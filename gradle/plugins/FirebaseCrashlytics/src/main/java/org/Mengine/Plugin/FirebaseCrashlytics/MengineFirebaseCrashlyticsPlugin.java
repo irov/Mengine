@@ -53,6 +53,28 @@ public class MengineFirebaseCrashlyticsPlugin extends MengineService implements 
         if (userId != null) {
             FirebaseCrashlytics.getInstance().setUserId(userId);
         }
+
+        String installId = application.getInstallId();
+        long installTimestamp = application.getInstallTimestamp();
+        String installVersion = application.getInstallVersion();
+        long installRND = application.getInstallRND();
+        long sessionIndex = application.getSessionIndex();
+        long sessionTimestamp = application.getSessionTimestamp();
+        long sessionRND = application.getSessionRND();
+
+        FirebaseCrashlytics.getInstance().setCustomKey("install_id", installId);
+        FirebaseCrashlytics.getInstance().setCustomKey("install_timestamp", installTimestamp);
+        FirebaseCrashlytics.getInstance().setCustomKey("install_version", installVersion);
+        FirebaseCrashlytics.getInstance().setCustomKey("install_rnd", installRND);
+        FirebaseCrashlytics.getInstance().setCustomKey("session_index", sessionIndex);
+        FirebaseCrashlytics.getInstance().setCustomKey("session_timestamp", sessionTimestamp);
+        FirebaseCrashlytics.getInstance().setCustomKey("session_rnd", sessionRND);
+
+        String acquisitionNetwork = application.getAcquisitionNetwork();
+        String acquisitionCampaign = application.getAcquisitionCampaign();
+
+        FirebaseCrashlytics.getInstance().setCustomKey("acquisition_network", acquisitionNetwork);
+        FirebaseCrashlytics.getInstance().setCustomKey("acquisition_campaign", acquisitionCampaign);
     }
 
     @Override
@@ -65,10 +87,10 @@ public class MengineFirebaseCrashlyticsPlugin extends MengineService implements 
             }
         }
 
-        boolean isCrashlyticsForceCrash = this.hasOption("firebase.crashlytics.forcecrash");
+        boolean isCrashlyticsForceCrash = this.hasOption("firebase.crashlytics.force_crash");
 
         if (isCrashlyticsForceCrash == true) {
-            long firebaseCrashlyticsForceCrashDelay = this.getOptionValueLong("firebase.crashlytics.forcecrash.delay", 5000);
+            long firebaseCrashlyticsForceCrashDelay = this.getOptionValueLong("firebase.crashlytics.force_crash.delay", 5000);
 
             MengineUtils.performOnMainThreadDelayed(() -> {
                 this.testCrash();

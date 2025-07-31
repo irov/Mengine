@@ -12,7 +12,7 @@ namespace Mengine
         SERVICE_DECLARE( "PlatformSystem" );
 
     public:
-        virtual void beginThread( ThreadId _threadId ) = 0;
+        virtual bool beginThread( ThreadId _threadId ) = 0;
         virtual void endThread( ThreadId _threadId ) = 0;
     };
 }

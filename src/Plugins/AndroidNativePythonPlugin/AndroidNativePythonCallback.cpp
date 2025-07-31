@@ -42,6 +42,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonCallback::setJavaFunctor( JNIEnv * _jenv, jobject _functor )
     {
+        if( m_functor != nullptr )
+        {
+            _jenv->DeleteGlobalRef( m_functor );
+        }
+
         m_functor = _jenv->NewGlobalRef( _functor );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -64,7 +69,7 @@ namespace Mengine
 
         jobject jparams = Helper::AndroidMakeJObjectHashMap( jenv, _params );
 
-        jenv->CallVoidMethod( jfunctor, jmethodID_FunctorBoolean_call, _result, jparams );
+        jenv->CallVoidMethod( jfunctor, jmethodID_FunctorBoolean_call, (_result == true ? JNI_TRUE : JNI_FALSE), jparams );
 
         Helper::AndroidEnvExceptionCheck( jenv );
 

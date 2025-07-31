@@ -133,6 +133,12 @@ int ForceRemoveDirectory( LPCTSTR dir )
 {
     size_t len = ::wcslen( dir ) + 2; // required to set 2 nulls at end of argument to SHFileOperation.
     wchar_t * tempdir = (wchar_t *)::malloc( len * sizeof( wchar_t ) );
+
+    if( tempdir == NULL )
+    {
+        return -1; // Memory allocation failed
+    }
+
     ::memset( tempdir, 0, len * sizeof( wchar_t ) );
     ::wcscpy( tempdir, dir );
 
@@ -144,7 +150,7 @@ int ForceRemoveDirectory( LPCTSTR dir )
         FOF_NOCONFIRMATION |
         FOF_NOERRORUI |
         FOF_SILENT,
-        false,
+        FALSE,
         0,
         L""};
 
@@ -217,6 +223,14 @@ bool read_file_memory( const wchar_t * _path, uint8_t ** _buffer, size_t * const
     ::rewind( f );
 
     uint8_t * buffer = (uint8_t *)::malloc( size * sizeof( uint8_t ) );
+
+    if( buffer == NULL )
+    {
+        ::fclose( f );
+
+        return false;
+    }
+
     ::fread( buffer, size, 1, f );
     ::fclose( f );
 
@@ -287,7 +301,7 @@ bool move_file_magic_memory( const wchar_t * _path, const char * _magic, const u
 {
     bool result = write_file_magic_memory( _path, _magic, _buffer, _size, _write );
 
-    ::free( (void *)_path );
+    ::free( (void *)_buffer );
 
     return result;
 }

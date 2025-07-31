@@ -57,6 +57,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Layout::addElement( ELayoutElementType _type, const LayoutElementGetterInterfacePtr & _getter, const LayoutElementSetterInterfacePtr & _setter, const DocumentInterfacePtr & _doc )
     {
+        MENGINE_UNUSED( _doc );
+
         MENGINE_ASSERTION_FATAL( _getter != nullptr, "element getter is nullptr" );
 
         LayoutElement element;
@@ -77,6 +79,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Layout::addSubLayout( ELayoutElementType _type, const LayoutInterfacePtr & _subLayout, const LayoutElementGetterInterfacePtr & _getter, const LayoutElementSetterInterfacePtr & _setter, const DocumentInterfacePtr & _doc )
     {
+        MENGINE_UNUSED( _doc );
+
         MENGINE_ASSERTION_FATAL( _subLayout != nullptr, "sub layout is nullptr" );
         MENGINE_ASSERTION_FATAL( _getter != nullptr, "element getter is nullptr" );
 

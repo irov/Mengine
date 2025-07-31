@@ -40,16 +40,16 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidCryptographySystem::generateRandomHexadecimal( uint32_t _length, Char * const _hexadecimal, bool _lowercase ) const
+    bool AndroidCryptographySystem::generateRandomHexadecimal( size_t _length, Char * const _hexadecimal, bool _lowercase ) const
     {
-        uint32_t bytes_needed = (_length + 1) / 2;
+        size_t bytes_needed = (_length + 1) / 2;
         uint8_t random_bytes[bytes_needed];
 
         ::arc4random_buf( random_bytes, bytes_needed );
 
         if( _lowercase == false )
         {
-            for( uint32_t i = 0; i != bytes_needed; ++i )
+            for( size_t i = 0; i != bytes_needed; ++i )
             {
                 uint8_t b = random_bytes[i];
 
@@ -58,7 +58,7 @@ namespace Mengine
         }
         else
         {
-            for( uint32_t i = 0; i != bytes_needed; ++i )
+            for( size_t i = 0; i != bytes_needed; ++i )
             {
                 uint8_t b = random_bytes[i];
 

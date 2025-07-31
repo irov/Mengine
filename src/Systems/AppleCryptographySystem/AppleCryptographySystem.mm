@@ -39,7 +39,7 @@ namespace Mengine
             uint64_t randomNumber = 0;
         };
         
-        int status = SecRandomCopyBytes(kSecRandomDefault, sizeof(bytes), bytes);
+        int status = ::SecRandomCopyBytes( kSecRandomDefault, sizeof(bytes), bytes );
         
         if( status != errSecSuccess )
         {
@@ -51,18 +51,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleCryptographySystem::generateRandomHexadecimal( uint32_t _length, Char * const _hexadecimal, bool _lowercase ) const
+    bool AppleCryptographySystem::generateRandomHexadecimal( size_t _length, Char * const _hexadecimal, bool _lowercase ) const
     {
-        MENGINE_ASSERTION_FATAL( _length < 1024, "invalid length %u"
-            , _length
-        );
-
-        MENGINE_ASSERTION_FATAL( _length % 2 == 0, "invalid odd %u"
-            , _length
-        );
+        MENGINE_ASSERTION_FATAL( _length < 1024, "invalid length %zu", _length );
+        MENGINE_ASSERTION_FATAL( _length % 2 == 0, "invalid odd %zu", _length );
         
         uint8_t buffer[512];
-        int result = SecRandomCopyBytes(kSecRandomDefault, sizeof(buffer), buffer);
+        int result = ::SecRandomCopyBytes( kSecRandomDefault, sizeof(buffer), buffer );
             
         if( result != errSecSuccess)
         {

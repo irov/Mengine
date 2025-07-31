@@ -59,10 +59,10 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool UWPCryptographySystem::generateRandomHexadecimal( uint32_t _length, Char * const _hexadecimal, bool _lowercase ) const
+    bool UWPCryptographySystem::generateRandomHexadecimal( size_t _length, Char * const _hexadecimal, bool _lowercase ) const
     {
-        MENGINE_ASSERTION_FATAL( _length < 1024, "invalid length %u", _length );
-        MENGINE_ASSERTION_FATAL( _length % 2 == 0, "invalid odd %u", _length );
+        MENGINE_ASSERTION_FATAL( _length < 1024, "invalid length %zu", _length );
+        MENGINE_ASSERTION_FATAL( _length % 2 == 0, "invalid odd %zu", _length );
 
         auto buffer = winrt::Windows::Security::Cryptography::CryptographicBuffer::GenerateRandom( _length / 2 );
 

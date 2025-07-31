@@ -18,7 +18,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool generateRandomHexadecimal( uint32_t _length, Char * const _hexadecimal, bool _lowercase )
+        bool generateRandomHexadecimal( size_t _length, Char * const _hexadecimal, bool _lowercase )
         {
             if( CRYPTOGRAPHY_SYSTEM()
                 ->generateRandomHexadecimal( _length, _hexadecimal, _lowercase ) == false )

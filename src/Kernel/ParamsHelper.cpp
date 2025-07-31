@@ -1,5 +1,8 @@
 #include "Kernel/ParamsHelper.h"
 
+#include "Kernel/AssertionNotImplemented.h"
+#include "Kernel/FilePathHelper.h"
+
 namespace Mengine
 {
     namespace Helper
@@ -118,11 +121,11 @@ namespace Mengine
             {
                 string_value.assign( _element );
             }
-                , [&string_value, _default]( const ParamWString & _element )
+                , [&string_value]( const ParamWString & _element )
             {
                 MENGINE_UNUSED( _element );
 
-                string_value.assign( _default );
+                MENGINE_ASSERTION_NOT_IMPLEMENTED();
             }
                 , [&string_value]( const ParamConstString & _element )
             {
@@ -132,11 +135,11 @@ namespace Mengine
             {
                 string_value.assign( _element.c_str(), _element.size() );
             }
-                , [&string_value, _default]( const FactorablePtr & _element )
+                , [&string_value]( const FactorablePtr & _element )
             {
                 MENGINE_UNUSED( _element );
 
-                string_value.assign( _default );
+                MENGINE_ASSERTION_NOT_IMPLEMENTED();
             } );
 
             return string_value;
@@ -190,33 +193,33 @@ namespace Mengine
 
                 wstring_value.assign( buffer );
             }
-                , [&wstring_value, _default]( const ParamString & _element )
+                , [&wstring_value]( const ParamString & _element )
             {
                 MENGINE_UNUSED( _element );
 
-                wstring_value.assign( _default );
+                MENGINE_ASSERTION_NOT_IMPLEMENTED();
             }
                 , [&wstring_value]( const ParamWString & _element )
             {
                 wstring_value.assign( _element );
             }
-                , [&wstring_value, _default]( const ParamConstString & _element )
+                , [&wstring_value]( const ParamConstString & _element )
             {
                 MENGINE_UNUSED( _element );
 
-                wstring_value.assign( _default );
+                MENGINE_ASSERTION_NOT_IMPLEMENTED();
             }
-                , [&wstring_value, _default]( const ParamFilePath &_element)
+                , [&wstring_value]( const ParamFilePath &_element)
             {
                 MENGINE_UNUSED( _element );
 
-                wstring_value.assign( _default );
+                MENGINE_ASSERTION_NOT_IMPLEMENTED();
             }
-                , [&wstring_value, _default]( const FactorablePtr & _element )
+                , [&wstring_value]( const FactorablePtr & _element )
             {
                 MENGINE_UNUSED( _element );
 
-                wstring_value.assign( _default );
+                MENGINE_ASSERTION_NOT_IMPLEMENTED();
             } );
 
             return wstring_value;
@@ -239,7 +242,62 @@ namespace Mengine
             const Params::mapped_type & value = it_found->second;
 
             ConstString const_string_value;
-            Helper::get( value, &const_string_value );
+            Helper::visit( value
+                , [&const_string_value]( const ParamNull & _element )
+            {
+                MENGINE_UNUSED( _element );
+            }
+                , [&const_string_value]( const ParamBool & _element )
+            {
+                if( _element == true )
+                {
+                    const_string_value = STRINGIZE_STRING_LOCAL( "1" );
+                }
+                else
+                {
+                    const_string_value = STRINGIZE_STRING_LOCAL( "0" );
+                }
+            }
+                , [&const_string_value]( const ParamInteger & _element )
+            {
+                Char buffer[256 + 1] = {'\0'};
+                Helper::stringalized( _element, buffer, 256 );
+
+                const_string_value = Helper::stringizeString( buffer );
+            }
+                , [&const_string_value]( const ParamDouble & _element )
+            {
+                Char buffer[256 + 1] = {'\0'};
+                Helper::stringalized( _element, buffer, 256 );
+
+                const_string_value = Helper::stringizeString( buffer );
+            }
+                , [&const_string_value]( const ParamString & _element )
+            {
+                const_string_value = Helper::stringizeString( _element );
+            }
+                , [&const_string_value]( const ParamWString & _element )
+            {
+                MENGINE_UNUSED( _element );
+
+                MENGINE_ASSERTION_NOT_IMPLEMENTED();
+            }
+                , [&const_string_value]( const ParamConstString & _element )
+            {
+                const_string_value = _element;
+            }
+                , [&const_string_value]( const ParamFilePath & _element )
+            {
+                MENGINE_UNUSED( _element );
+
+                MENGINE_ASSERTION_NOT_IMPLEMENTED();
+            }
+                , [&const_string_value]( const FactorablePtr & _element )
+            {
+                MENGINE_UNUSED( _element );
+
+                MENGINE_ASSERTION_NOT_IMPLEMENTED();
+            } );
 
             return const_string_value;
         }
@@ -261,7 +319,62 @@ namespace Mengine
             const Params::mapped_type & value = it_found->second;
 
             FilePath file_path_value;
-            Helper::get( value, &file_path_value );
+            Helper::visit( value
+                , [&file_path_value]( const ParamNull & _element )
+            {
+                MENGINE_UNUSED( _element );
+            }
+                , [&file_path_value]( const ParamBool & _element )
+            {
+                if( _element == true )
+                {
+                    file_path_value = STRINGIZE_FILEPATH_LOCAL( "1" );
+                }
+                else
+                {
+                    file_path_value = STRINGIZE_FILEPATH_LOCAL( "0" );
+                }
+            }
+                , [&file_path_value]( const ParamInteger & _element )
+            {
+                Char buffer[256 + 1] = {'\0'};
+                Helper::stringalized( _element, buffer, 256 );
+
+                file_path_value = Helper::stringizeFilePath( buffer );
+            }
+                , [&file_path_value]( const ParamDouble & _element )
+            {
+                Char buffer[256 + 1] = {'\0'};
+                Helper::stringalized( _element, buffer, 256 );
+
+                file_path_value = Helper::stringizeFilePath( buffer );
+            }
+                , [&file_path_value]( const ParamString & _element )
+            {
+                file_path_value = Helper::stringizeFilePath( _element );
+            }
+                , [&file_path_value]( const ParamWString & _element )
+            {
+                MENGINE_UNUSED( _element );
+
+                MENGINE_ASSERTION_NOT_IMPLEMENTED();
+            }
+                , [&file_path_value]( const ParamConstString & _element )
+            {
+                MENGINE_UNUSED( _element );
+
+                MENGINE_ASSERTION_NOT_IMPLEMENTED();                
+            }
+                , [&file_path_value]( const ParamFilePath & _element )
+            {
+                file_path_value = _element;
+            }
+                , [&file_path_value]( const FactorablePtr & _element )
+            {
+                MENGINE_UNUSED( _element );
+
+                MENGINE_ASSERTION_NOT_IMPLEMENTED();
+            } );
 
             return file_path_value;
         }

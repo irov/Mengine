@@ -37,7 +37,7 @@ namespace Mengine
 
         _event->foreachParameters( [jobject_parameters, jenv]( const ConstString & _name, const AnalyticsEventParameterInterfacePtr & _parameter )
             {
-                jobject name_jvalue = Helper::AndroidMakeJObjectString(jenv, _name);
+                jobject name_jvalue = Helper::AndroidMakeJObjectString( jenv, _name);
 
                 EAnalyticsEventParameterType parameterType = _parameter->getType();
 
@@ -84,6 +84,7 @@ namespace Mengine
 
                 Helper::AndroidPutJObjectMap( jenv, jobject_parameters, name_jvalue, jobject_parameter );
 
+                jenv->DeleteLocalRef( name_jvalue );
                 jenv->DeleteLocalRef( jobject_parameter );
             });
 

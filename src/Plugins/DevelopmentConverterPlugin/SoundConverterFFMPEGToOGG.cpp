@@ -90,8 +90,10 @@ namespace Mengine
 
         FilePath ffmpegPath = CONFIG_VALUE_FILEPATH( "Engine", "FFMPEGPath", STRINGIZE_FILEPATH_LOCAL( "ffmpeg.exe" ) );
 
+        FilePath ffmpegPath2 = Helper::getParam( m_options.params, STRINGIZE_STRING_LOCAL( "ffmpeg" ), ffmpegPath );
+
         uint32_t exitCode;
-        if( Helper::Win32CreateProcessA( ffmpegPath.c_str(), command, true, &exitCode ) == false )
+        if( Helper::Win32CreateProcessA( ffmpegPath2.c_str(), command, true, &exitCode ) == false )
         {
             LOGGER_ERROR( "invalid convert:\n%ls"
                 , command

@@ -59,9 +59,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonService::_finalizeService()
     {
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonService::androidMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
@@ -72,31 +70,29 @@ namespace Mengine
             , _args.repr().c_str()
         );
 
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
+        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
+        Mengine_JNI_PushLocalFrame( jenv, MENGINE_ANDROID_METHOD_MAX_ARGS );
+
         jvalue jargs[MENGINE_ANDROID_METHOD_MAX_ARGS];
-        jobject jfree[MENGINE_ANDROID_METHOD_MAX_ARGS] = {nullptr};
-        uint32_t freeCount = 0;
 
         jobject jplugin;
         jmethodID jmethodID_method;
-        if( this->getAndroidMethod( jenv, _plugin, _method, _args, "V", jargs, jfree, &freeCount, &jplugin, &jmethodID_method ) == false )
+
+        if( this->getAndroidMethod( jenv, _plugin, _method, _args, "V", jargs, &jplugin, &jmethodID_method ) == false )
         {
+            Mengine_JNI_PopLocalFrame( jenv, nullptr );
+
             return;
         }
 
-        jenv->CallVoidMethodA( jplugin, jmethodID_method, jargs );
+        Mengine_JNI_CallVoidMethodA( jenv, jplugin, jmethodID_method, jargs );
 
         Helper::AndroidEnvExceptionCheck( jenv );
 
-        for( uint32_t index = 0; index != freeCount; ++index )
-        {
-            jobject j = jfree[index];
-
-            jenv->DeleteLocalRef( j );
-        }
+        Mengine_JNI_PopLocalFrame( jenv, nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativePythonService::androidBooleanMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
@@ -107,31 +103,28 @@ namespace Mengine
             , _args.repr().c_str()
         );
 
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
+        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
+        Mengine_JNI_PushLocalFrame( jenv, MENGINE_ANDROID_METHOD_MAX_ARGS );
+
         jvalue jargs[MENGINE_ANDROID_METHOD_MAX_ARGS];
-        jobject jfree[MENGINE_ANDROID_METHOD_MAX_ARGS] = {nullptr};
-        uint32_t freeCount = 0;
 
         jobject jplugin;
         jmethodID jmethodID_method;
-        if( this->getAndroidMethod( jenv, _plugin, _method, _args, "Z", jargs, jfree, &freeCount, &jplugin, &jmethodID_method ) == false )
+        if( this->getAndroidMethod( jenv, _plugin, _method, _args, "Z", jargs, &jplugin, &jmethodID_method ) == false )
         {
+            Mengine_JNI_PopLocalFrame( jenv, nullptr );
+
             return false;
         }
 
-        jboolean jresult = jenv->CallBooleanMethodA( jplugin, jmethodID_method, jargs );
+        jboolean jresult = Mengine_JNI_CallBooleanMethodA( jenv, jplugin, jmethodID_method, jargs );
 
         Helper::AndroidEnvExceptionCheck( jenv );
 
-        for( uint32_t index = 0; index != freeCount; ++index )
-        {
-            jobject j = jfree[index];
-
-            jenv->DeleteLocalRef( j );
-        }
+        Mengine_JNI_PopLocalFrame( jenv, nullptr );
 
         return (bool)jresult;
     }
@@ -144,31 +137,28 @@ namespace Mengine
             , _args.repr().c_str()
         );
 
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
+        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
+        Mengine_JNI_PushLocalFrame( jenv, MENGINE_ANDROID_METHOD_MAX_ARGS );
+
         jvalue jargs[MENGINE_ANDROID_METHOD_MAX_ARGS];
-        jobject jfree[MENGINE_ANDROID_METHOD_MAX_ARGS] = {nullptr};
-        uint32_t freeCount = 0;
 
         jobject jplugin;
         jmethodID jmethodID_method;
-        if( this->getAndroidMethod( jenv, _plugin, _method, _args, "I", jargs, jfree, &freeCount, &jplugin, &jmethodID_method ) == false )
+        if( this->getAndroidMethod( jenv, _plugin, _method, _args, "I", jargs, &jplugin, &jmethodID_method ) == false )
         {
+            Mengine_JNI_PopLocalFrame( jenv, nullptr );
+
             return 0;
         }
 
-        jint jresult = jenv->CallIntMethodA( jplugin, jmethodID_method, jargs );
+        jint jresult = Mengine_JNI_CallIntMethodA( jenv, jplugin, jmethodID_method, jargs );
 
         Helper::AndroidEnvExceptionCheck( jenv );
 
-        for( uint32_t index = 0; index != freeCount; ++index )
-        {
-            jobject j = jfree[index];
-
-            jenv->DeleteLocalRef( j );
-        }
+        Mengine_JNI_PopLocalFrame( jenv, nullptr );
 
         return (int32_t)jresult;
     }
@@ -181,31 +171,28 @@ namespace Mengine
             , _args.repr().c_str()
         );
 
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
+        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
+        Mengine_JNI_PushLocalFrame( jenv, MENGINE_ANDROID_METHOD_MAX_ARGS );
+
         jvalue jargs[MENGINE_ANDROID_METHOD_MAX_ARGS];
-        jobject jfree[MENGINE_ANDROID_METHOD_MAX_ARGS] = {nullptr};
-        uint32_t freeCount = 0;
 
         jobject jplugin;
         jmethodID jmethodID_method;
-        if( this->getAndroidMethod( jenv, _plugin, _method, _args, "J", jargs, jfree, &freeCount, &jplugin, &jmethodID_method ) == false )
+        if( this->getAndroidMethod( jenv, _plugin, _method, _args, "J", jargs, &jplugin, &jmethodID_method ) == false )
         {
+            Mengine_JNI_PopLocalFrame( jenv, nullptr );
+
             return 0LL;
         }
 
-        jlong jresult = jenv->CallLongMethodA( jplugin, jmethodID_method, jargs );
+        jlong jresult = Mengine_JNI_CallLongMethodA( jenv, jplugin, jmethodID_method, jargs );
 
         Helper::AndroidEnvExceptionCheck( jenv );
 
-        for( uint32_t index = 0; index != freeCount; ++index )
-        {
-            jobject j = jfree[index];
-
-            jenv->DeleteLocalRef( j );
-        }
+        Mengine_JNI_PopLocalFrame( jenv, nullptr );
 
         return (int64_t)jresult;
     }
@@ -218,31 +205,28 @@ namespace Mengine
             , _args.repr().c_str()
         );
 
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
+        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
+        Mengine_JNI_PushLocalFrame( jenv, MENGINE_ANDROID_METHOD_MAX_ARGS );
+
         jvalue jargs[MENGINE_ANDROID_METHOD_MAX_ARGS];
-        jobject jfree[MENGINE_ANDROID_METHOD_MAX_ARGS] = {nullptr};
-        uint32_t freeCount = 0;
 
         jobject jplugin;
         jmethodID jmethodID_method;
-        if( this->getAndroidMethod( jenv, _plugin, _method, _args, "F", jargs, jfree, &freeCount, &jplugin, &jmethodID_method ) == false )
+        if( this->getAndroidMethod( jenv, _plugin, _method, _args, "F", jargs, &jplugin, &jmethodID_method ) == false )
         {
+            Mengine_JNI_PopLocalFrame( jenv, nullptr );
+
             return 0.f;
         }
 
-        jfloat jresult = jenv->CallFloatMethodA( jplugin, jmethodID_method, jargs );
+        jfloat jresult = Mengine_JNI_CallFloatMethodA( jenv, jplugin, jmethodID_method, jargs );
 
         Helper::AndroidEnvExceptionCheck( jenv );
 
-        for( uint32_t index = 0; index != freeCount; ++index )
-        {
-            jobject j = jfree[index];
-
-            jenv->DeleteLocalRef( j );
-        }
+        Mengine_JNI_PopLocalFrame( jenv, nullptr );
 
         return (float)jresult;
     }
@@ -255,31 +239,28 @@ namespace Mengine
             , _args.repr().c_str()
         );
 
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
+        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
+        Mengine_JNI_PushLocalFrame( jenv, MENGINE_ANDROID_METHOD_MAX_ARGS );
+
         jvalue jargs[MENGINE_ANDROID_METHOD_MAX_ARGS];
-        jobject jfree[MENGINE_ANDROID_METHOD_MAX_ARGS] = {nullptr};
-        uint32_t freeCount = 0;
 
         jobject jplugin;
         jmethodID jmethodID_method;
-        if( this->getAndroidMethod( jenv, _plugin, _method, _args, "D", jargs, jfree, &freeCount, &jplugin, &jmethodID_method ) == false )
+        if( this->getAndroidMethod( jenv, _plugin, _method, _args, "D", jargs, &jplugin, &jmethodID_method ) == false )
         {
+            Mengine_JNI_PopLocalFrame( jenv, nullptr );
+
             return 0.0;
         }
 
-        jdouble jresult = jenv->CallDoubleMethodA( jplugin, jmethodID_method, jargs );
+        jdouble jresult = Mengine_JNI_CallDoubleMethodA( jenv, jplugin, jmethodID_method, jargs );
 
         Helper::AndroidEnvExceptionCheck( jenv );
 
-        for( uint32_t index = 0; index != freeCount; ++index )
-        {
-            jobject j = jfree[index];
-
-            jenv->DeleteLocalRef( j );
-        }
+        Mengine_JNI_PopLocalFrame( jenv, nullptr );
 
         return (double)jresult;
     }
@@ -292,40 +273,37 @@ namespace Mengine
             , _args.repr().c_str()
         );
 
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
+        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
+        Mengine_JNI_PushLocalFrame( jenv, MENGINE_ANDROID_METHOD_MAX_ARGS );
+
         jvalue jargs[MENGINE_ANDROID_METHOD_MAX_ARGS];
-        jobject jfree[MENGINE_ANDROID_METHOD_MAX_ARGS] = {nullptr};
-        uint32_t freeCount = 0;
 
         jobject jplugin;
         jmethodID jmethodID_method;
-        if( this->getAndroidMethod( jenv, _plugin, _method, _args, "Ljava/lang/String;", jargs, jfree, &freeCount, &jplugin, &jmethodID_method ) == false )
+        if( this->getAndroidMethod( jenv, _plugin, _method, _args, "Ljava/lang/String;", jargs, &jplugin, &jmethodID_method ) == false )
         {
+            Mengine_JNI_PopLocalFrame( jenv, nullptr );
+
             return m_kernel->ret_none();
         }
 
-        jstring jresult = (jstring)jenv->CallObjectMethodA( jplugin, jmethodID_method, jargs );
+        jstring jstring_result = (jstring)Mengine_JNI_CallObjectMethodA( jenv, jplugin, jmethodID_method, jargs );
 
         Helper::AndroidEnvExceptionCheck( jenv );
 
-        for( uint32_t index = 0; index != freeCount; ++index )
-        {
-            jobject j = jfree[index];
+        Mengine_JNI_PopLocalFrame( jenv, nullptr );
 
-            jenv->DeleteLocalRef( j );
-        }
-
-        const Char * jresult_str = jenv->GetStringUTFChars( jresult, nullptr );
-        jsize jresult_size = jenv->GetStringLength( jresult );
+        const Char * jresult_str = Mengine_JNI_GetStringUTFChars( jenv, jstring_result, nullptr );
+        jsize jresult_size = Mengine_JNI_GetStringLength( jenv, jstring_result );
 
         PyObject * py_value = m_kernel->string_from_char_size( jresult_str, jresult_size );
 
-        jenv->ReleaseStringUTFChars( jresult, jresult_str );
+        Mengine_JNI_ReleaseStringUTFChars( jenv, jstring_result, jresult_str );
 
-        jenv->DeleteLocalRef( jresult );
+        Mengine_JNI_DeleteLocalRef( jenv, jstring_result );
 
         return py_value;
     }
@@ -338,33 +316,30 @@ namespace Mengine
             , _args.repr().c_str()
         );
 
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
+        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
+        Mengine_JNI_PushLocalFrame( jenv, MENGINE_ANDROID_METHOD_MAX_ARGS );
+
         jvalue jargs[MENGINE_ANDROID_METHOD_MAX_ARGS];
-        jobject jfree[MENGINE_ANDROID_METHOD_MAX_ARGS] = {nullptr};
-        uint32_t freeCount = 0;
 
         jobject jplugin;
         jmethodID jmethodID_method;
-        if( this->getAndroidMethod( jenv, _plugin, _method, _args, "Ljava/lang/Object;", jargs, jfree, &freeCount, &jplugin, &jmethodID_method ) == false )
+        if( this->getAndroidMethod( jenv, _plugin, _method, _args, "Ljava/lang/Object;", jargs, &jplugin, &jmethodID_method ) == false )
         {
+            Mengine_JNI_PopLocalFrame( jenv, nullptr );
+
             return m_kernel->ret_none();
         }
 
-        jobject jresult = jenv->CallObjectMethodA( jplugin, jmethodID_method, jargs );
+        jobject jresult = Mengine_JNI_CallObjectMethodA( jenv, jplugin, jmethodID_method, jargs );
 
         Helper::AndroidEnvExceptionCheck( jenv );
 
-        for( uint32_t index = 0; index != freeCount; ++index )
-        {
-            jobject j = jfree[index];
-
-            jenv->DeleteLocalRef( j );
-        }
-
         PyObject * py_result = Helper::androidNativePythonMakePyObject( m_kernel, jenv, jresult, MENGINE_DOCUMENT_FACTORABLE );
+
+        Mengine_JNI_PopLocalFrame( jenv, nullptr );
 
         return py_result;
     }
@@ -377,38 +352,35 @@ namespace Mengine
             , _args.repr().c_str()
         );
 
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
+        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
+        Mengine_JNI_PushLocalFrame( jenv, MENGINE_ANDROID_METHOD_MAX_ARGS );
+
         jvalue jargs[MENGINE_ANDROID_METHOD_MAX_ARGS];
-        jobject jfree[MENGINE_ANDROID_METHOD_MAX_ARGS] = {nullptr};
-        uint32_t freeCount = 0;
 
         jobject jplugin;
         jmethodID jmethodID_method;
-        if( this->getAndroidMethod( jenv, _plugin, _method, _args, "Lorg/json/JSONObject;", jargs, jfree, &freeCount, &jplugin, &jmethodID_method ) == false )
+        if( this->getAndroidMethod( jenv, _plugin, _method, _args, "Lorg/json/JSONObject;", jargs, &jplugin, &jmethodID_method ) == false )
         {
+            Mengine_JNI_PopLocalFrame( jenv, nullptr );
+
             return m_kernel->ret_none();
         }
 
-        jobject jresult = jenv->CallObjectMethodA( jplugin, jmethodID_method, jargs );
+        jobject jresult = Mengine_JNI_CallObjectMethodA( jenv, jplugin, jmethodID_method, jargs );
 
         Helper::AndroidEnvExceptionCheck( jenv );
 
-        for( uint32_t index = 0; index != freeCount; ++index )
-        {
-            jobject j = jfree[index];
-
-            jenv->DeleteLocalRef( j );
-        }
+        Mengine_JNI_PopLocalFrame( jenv, nullptr );
 
         PyObject * py_result = Helper::androidNativePythonMakePyObject( m_kernel, jenv, jresult, MENGINE_DOCUMENT_FACTORABLE );
 
         return py_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativePythonService::getAndroidMethod( JNIEnv * _jenv, const ConstString & _plugin, const ConstString & _method, const pybind::args & _args, const Char * _retType, jvalue * const _jargs, jobject * const _jfree, uint32_t * const _freeCount, jobject * const _jplugin, jmethodID * const _jmethodId ) const
+    bool AndroidNativePythonService::getAndroidMethod( MengineJNIEnvThread * _jenv, const ConstString & _plugin, const ConstString & _method, const pybind::args & _args, const Char * _retType, jvalue * const _jargs, jobject * const _jplugin, jmethodID * const _jmethodId ) const
     {
         MENGINE_ASSERTION_FATAL( _args.size() <= 32, "android method plugin '%s' method '%s' max args [32 < %zu]"
             , _plugin.c_str()
@@ -435,7 +407,6 @@ namespace Mengine
         StdString::strcat_safe( signature, "(", 1024 );
 
         StdString::memset( _jargs, 0, sizeof( jvalue ) * MENGINE_ANDROID_METHOD_MAX_ARGS );
-        StdString::memset( _jfree, 0, sizeof( jstring ) * MENGINE_ANDROID_METHOD_MAX_ARGS );
 
         uint32_t index_args = 0;
         uint32_t index_free = 0;
@@ -480,10 +451,9 @@ namespace Mengine
             {
                 const Char * value_str = (const Char *)arg.extract();
 
-                jstring jvalue = _jenv->NewStringUTF( value_str );
+                jstring jvalue = Mengine_JNI_NewStringUTF( _jenv, value_str );
 
                 _jargs[index_args++].l = jvalue;
-                _jfree[index_free++] = jvalue;
 
                 StdString::strcat_safe( signature, "Ljava/lang/String;", 1024 );
             }
@@ -494,7 +464,6 @@ namespace Mengine
                 jobject jlist = Helper::androidNativePythonListMakeJavaObject( _jenv, l );
 
                 _jargs[index_args++].l = jlist;
-                _jfree[index_free++] = jlist;
 
                 StdString::strcat_safe( signature, "Ljava/util/List;", 1024 );
             }
@@ -505,7 +474,6 @@ namespace Mengine
                 jobject jmap = Helper::androidNativePythonDictMakeJavaObject( _jenv, d );
 
                 _jargs[index_args++].l = jmap;
-                _jfree[index_free++] = jmap;
 
                 StdString::strcat_safe( signature, "Ljava/util/Map;", 1024 );
             }
@@ -525,17 +493,17 @@ namespace Mengine
         StdString::strcat_safe( signature, ")", 1024 );
         StdString::strcat_safe( signature, _retType, 1024 );
 
-        jclass plugin_class = _jenv->GetObjectClass( jplugin );
+        jclass jclass_PluginClass = Mengine_JNI_GetObjectClass( _jenv, jplugin );
 
         const Char * method_str = _method.c_str();
 
-        jmethodID jmethodId = _jenv->GetMethodID( plugin_class, method_str, signature );
+        jmethodID jmethodId = Mengine_JNI_GetMethodID( _jenv, jclass_PluginClass, method_str, signature );
 
         if( jmethodId == nullptr )
         {
             Helper::AndroidEnvExceptionCheck( _jenv );
 
-            _jenv->DeleteLocalRef( plugin_class );
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_PluginClass );
 
             LOGGER_FATAL( "android plugin '%s' not found method '%s' with signature '%s'"
                 , _plugin.c_str()
@@ -546,9 +514,8 @@ namespace Mengine
             return false;
         }
 
-        _jenv->DeleteLocalRef( plugin_class );
+        Mengine_JNI_DeleteLocalRef( _jenv, jclass_PluginClass );
 
-        *_freeCount = index_free;
         *_jplugin = jplugin;
         *_jmethodId = jmethodId;
 

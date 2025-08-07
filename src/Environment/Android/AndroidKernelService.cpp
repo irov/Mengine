@@ -20,8 +20,10 @@
 extern "C"
 {
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidKernelService_1call )(JNIEnv * env, jclass cls, jstring _plugin, jstring _method, jobjectArray _args)
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidKernelService_1call )(JNIEnv *, jclass cls, jstring _plugin, jstring _method, jobjectArray _args)
     {
+        Mengine::MengineJNIEnvThread * env = Mengine::Mengine_JNI_GetEnvThread();
+
         Mengine::ConstString plugin = Mengine::Helper::AndroidMakeConstStringFromJString( env, _plugin );
         Mengine::ConstString method = Mengine::Helper::AndroidMakeConstStringFromJString( env, _method );
 
@@ -36,41 +38,47 @@ extern "C"
             return;
         }
 
-        jobjectArray new_args = (jobjectArray)env->NewGlobalRef( _args );
+        jobjectArray jobject_NewArgs = (jobjectArray)Mengine::Mengine_JNI_NewGlobalRef( env, _args );
 
-        Mengine::Helper::dispatchMainThreadEvent( [env, plugin, method, new_args]() {
-            JNIEnv * main_jenv = Mengine::Mengine_JNI_GetEnv();
+        Mengine::Helper::dispatchMainThreadEvent( [plugin, method, jobject_NewArgs]() {
+            Mengine::MengineJNIEnvThread * main_jenv = Mengine::Mengine_JNI_GetEnvThread();
 
             ANDROID_KERNEL_SERVICE()
-                ->callPluginMethod( main_jenv, plugin, method, new_args );
+                ->callPluginMethod( main_jenv, plugin, method, jobject_NewArgs );
 
-            main_jenv->DeleteGlobalRef( new_args );
+            Mengine::Mengine_JNI_DeleteGlobalRef( main_jenv, jobject_NewArgs );
         } );
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidKernelService_1addPlugin )(JNIEnv * env, jclass cls, jstring _plugin, jobject _jmodule)
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidKernelService_1addPlugin )(JNIEnv *, jclass cls, jstring _plugin, jobject _jmodule)
     {
-        Mengine::ConstString plugin = Mengine::Helper::AndroidMakeConstStringFromJString(env, _plugin);
+        Mengine::MengineJNIEnvThread * env = Mengine::Mengine_JNI_GetEnvThread();
 
-        jobject new_jmodule = env->NewGlobalRef( _jmodule );
+        Mengine::ConstString plugin = Mengine::Helper::AndroidMakeConstStringFromJString( env, _plugin );
+
+        jobject new_jmodule = Mengine::Mengine_JNI_NewGlobalRef( env, _jmodule );
 
         ANDROID_KERNEL_SERVICE()
             ->addPlugin( plugin, new_jmodule );
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidKernelService_1removePlugin )(JNIEnv * env, jclass cls, jstring _name)
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidKernelService_1removePlugin )(JNIEnv *, jclass cls, jstring _name)
     {
-        Mengine::ConstString plugin = Mengine::Helper::AndroidMakeConstStringFromJString(env, _name);
+        Mengine::MengineJNIEnvThread * env = Mengine::Mengine_JNI_GetEnvThread();
+
+        Mengine::ConstString plugin = Mengine::Helper::AndroidMakeConstStringFromJString( env, _name );
 
         jobject jmodule = ANDROID_KERNEL_SERVICE()
             ->removePlugin( plugin );
 
-        env->DeleteGlobalRef( jmodule );
+        Mengine::Mengine_JNI_DeleteGlobalRef( env, jmodule );
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidKernelService_1activateSemaphore )(JNIEnv * env, jclass cls, jstring _name)
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidKernelService_1activateSemaphore )(JNIEnv *, jclass cls, jstring _name)
     {
-        Mengine::ConstString semaphore = Mengine::Helper::AndroidMakeConstStringFromJString(env, _name);
+        Mengine::MengineJNIEnvThread * env = Mengine::Mengine_JNI_GetEnvThread();
+
+        Mengine::ConstString semaphore = Mengine::Helper::AndroidMakeConstStringFromJString( env, _name );
 
         ANDROID_KERNEL_SERVICE()
             ->activateSemaphore( semaphore );
@@ -108,7 +116,7 @@ namespace Mengine
     {
         m_mutexJStrings = nullptr;
 
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
+        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
@@ -140,15 +148,15 @@ namespace Mengine
 
         for( auto && [name, jplugin] : m_plugins )
         {
-            jenv->DeleteGlobalRef( jplugin );
+            Mengine_JNI_DeleteGlobalRef( jenv, jplugin );
         }
 
         m_plugins.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidKernelService::stringize( JNIEnv * _jenv, jstring _value, ConstString * const _cstr )
+    void AndroidKernelService::stringize( MengineJNIEnvThread * _jenv, jstring _value, ConstString * const _cstr )
     {
-        jsize value_length = _jenv->GetStringLength( _value );
+        jsize value_length = Mengine_JNI_GetStringLength( _jenv, _value );
 
         if( value_length == 0 )
         {
@@ -240,7 +248,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidKernelService::callPluginMethod( JNIEnv * _jenv, const ConstString & _plugin, const ConstString & _method, jobjectArray _args ) const
+    void AndroidKernelService::callPluginMethod( MengineJNIEnvThread * _jenv, const ConstString & _plugin, const ConstString & _method, jobjectArray _args ) const
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_callbacksMutex );
 
@@ -355,17 +363,17 @@ namespace Mengine
             , _semaphore.c_str()
         );
 
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
+        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         const Char * name_str = _semaphore.c_str();
 
-        jstring jname = jenv->NewStringUTF( name_str );
+        jstring jstring_name = Mengine_JNI_NewStringUTF( jenv, name_str );
 
-        jboolean jresult = Helper::AndroidCallBooleanApplicationMethod( jenv, "waitSemaphore", "(Ljava/lang/String;)Z", jname );
+        jboolean jresult = Helper::AndroidCallBooleanApplicationMethod( jenv, "waitSemaphore", "(Ljava/lang/String;)Z", jstring_name );
 
-        jenv->DeleteLocalRef( jname );
+        Mengine_JNI_DeleteLocalRef( jenv, jstring_name );
 
         if( jresult == true )
         {

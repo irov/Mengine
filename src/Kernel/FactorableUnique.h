@@ -6,6 +6,7 @@
 #include "Kernel/MemoryAllocator.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/EnumeratorHelper.h"
 
 namespace Mengine
 {
@@ -46,6 +47,9 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC( factorable, "invalid create factorable '%s'"
                 , Typename<Type>::value
             );
+
+            UniqueId id = Helper::generateUniqueIdentity();
+            factorable->setUniqueIdentity( id );
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
             factorable->setDocument( _doc );

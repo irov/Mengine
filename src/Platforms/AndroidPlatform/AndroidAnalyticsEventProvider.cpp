@@ -19,9 +19,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidAnalyticsEventProvider::onAnalyticsEvent( const AnalyticsEventInterfacePtr & _event )
     {
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
+        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
 
-        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+        if( jenv == nullptr )
+        {
+            return;
+        }
 
         const ConstString & eventName = _event->getName();
 
@@ -37,7 +40,7 @@ namespace Mengine
 
         _event->foreachParameters( [jobject_parameters, jenv]( const ConstString & _name, const AnalyticsEventParameterInterfacePtr & _parameter )
             {
-                jobject name_jvalue = Helper::AndroidMakeJObjectString( jenv, _name);
+                jobject jobject_name = Helper::AndroidMakeJObjectString( jenv, _name);
 
                 EAnalyticsEventParameterType parameterType = _parameter->getType();
 
@@ -82,54 +85,60 @@ namespace Mengine
                     }break;
                 }
 
-                Helper::AndroidPutJObjectMap( jenv, jobject_parameters, name_jvalue, jobject_parameter );
+                Helper::AndroidPutJObjectMap( jenv, jobject_parameters, jobject_name, jobject_parameter );
 
-                jenv->DeleteLocalRef( name_jvalue );
-                jenv->DeleteLocalRef( jobject_parameter );
+                Mengine_JNI_DeleteLocalRef( jenv, jobject_name );
+                Mengine_JNI_DeleteLocalRef( jenv, jobject_parameter );
             });
 
         jobject jobject_category = Helper::AndroidGetJObjectEnum( jenv, "org/Mengine/Base/MengineAnalyticsEventCategory", "MengineAnalyticsEventCategory_Custom" );
 
         jclass jclass_MengineAnalyticsEventParam = Helper::AndroidEnvFindClass( jenv, "org/Mengine/Base/MengineParamAnalyticsEvent" );
 
-        jmethodID jmethod_MengineAnalyticsEventParam = jenv->GetMethodID( jclass_MengineAnalyticsEventParam, "<init>", "(Lorg/Mengine/Base/MengineAnalyticsEventCategory;Ljava/lang/String;JLjava/util/Map;Ljava/util/Map;)V" );
+        jmethodID jmethod_MengineAnalyticsEventParam = Mengine_JNI_GetMethodID( jenv, jclass_MengineAnalyticsEventParam, "<init>", "(Lorg/Mengine/Base/MengineAnalyticsEventCategory;Ljava/lang/String;JLjava/util/Map;Ljava/util/Map;)V" );
 
-        jobject jobject_event = jenv->NewObject( jclass_MengineAnalyticsEventParam, jmethod_MengineAnalyticsEventParam, jobject_category, jobject_eventName, (jlong)eventTimestamp, jobject_bases, jobject_parameters );
+        jobject jobject_event = Mengine_JNI_NewObject( jenv, jclass_MengineAnalyticsEventParam, jmethod_MengineAnalyticsEventParam, jobject_category, jobject_eventName, (jlong)eventTimestamp, jobject_bases, jobject_parameters );
 
         Helper::AndroidEnvExceptionCheck( jenv );
 
-        jenv->DeleteLocalRef( jclass_MengineAnalyticsEventParam );
+        Mengine_JNI_DeleteLocalRef( jenv, jclass_MengineAnalyticsEventParam );
 
-        jenv->DeleteLocalRef( jobject_category );
-        jenv->DeleteLocalRef( jobject_eventName );
-        jenv->DeleteLocalRef( jobject_bases );
-        jenv->DeleteLocalRef( jobject_parameters );
+        Mengine_JNI_DeleteLocalRef( jenv, jobject_category );
+        Mengine_JNI_DeleteLocalRef( jenv, jobject_eventName );
+        Mengine_JNI_DeleteLocalRef( jenv, jobject_bases );
+        Mengine_JNI_DeleteLocalRef( jenv, jobject_parameters );
 
         Helper::AndroidCallVoidFragmentMethod( jenv, "MengineFragmentAnalytics", "analyticsEvent", "(Lorg/Mengine/Base/MengineParamAnalyticsEvent;)V", jobject_event );
 
-        jenv->DeleteLocalRef( jobject_event );
+        Mengine_JNI_DeleteLocalRef( jenv, jobject_event );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidAnalyticsEventProvider::onAnalyticsScreenView( const ConstString & _screenType, const ConstString & _screenName )
     {
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
+        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
 
-        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+        if( jenv == nullptr )
+        {
+            return;
+        }
 
-        jobject screenType_jobject = Helper::AndroidMakeJObjectString( jenv, _screenType );
-        jobject screenName_jobject = Helper::AndroidMakeJObjectString( jenv, _screenName );
+        jobject jobject_ScreenType = Helper::AndroidMakeJObjectString( jenv, _screenType );
+        jobject jobject_ScreenName = Helper::AndroidMakeJObjectString( jenv, _screenName );
 
-        Helper::AndroidCallVoidFragmentMethod( jenv, "MengineFragmentAnalytics", "analyticsScreenView", "(Ljava/lang/String;Ljava/lang/String;)V", screenType_jobject, screenName_jobject );
+        Helper::AndroidCallVoidFragmentMethod( jenv, "MengineFragmentAnalytics", "analyticsScreenView", "(Ljava/lang/String;Ljava/lang/String;)V", jobject_ScreenType, jobject_ScreenName );
 
-        jenv->DeleteLocalRef( screenType_jobject );
-        jenv->DeleteLocalRef( screenName_jobject );
+        Mengine_JNI_DeleteLocalRef( jenv, jobject_ScreenType );
+        Mengine_JNI_DeleteLocalRef( jenv, jobject_ScreenName );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidAnalyticsEventProvider::onAnalyticsFlush()
     {
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
+        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
 
-        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+        if( jenv == nullptr )
+        {
+            return;
+        }
 
         Helper::AndroidCallVoidFragmentMethod( jenv, "MengineFragmentAnalytics", "analyticsFlush", "()V" );
     }

@@ -95,16 +95,12 @@ namespace Mengine
         bool finish = this->_affect( _context, &used );
         m_affecting = false;
 
-        if( finish == true )
+        if( finish == true || m_status == EAFFECTORSTATUS_STOP )
         {
-            IntrusivePtrScope ankh( this );
-
-            this->IntrusiveSlugLinkedPtr<Affector, void, IntrusivePtr, IntrusivePtrBase>::unlink();
-
             TIMELINE_SERVICE()
                 ->beginOffset( used, MENGINE_DOCUMENT_FACTORABLE );
 
-            this->complete( true );
+            this->complete( finish );
 
             TIMELINE_SERVICE()
                 ->endOffset();
@@ -129,11 +125,14 @@ namespace Mengine
     {
         MENGINE_UNUSED( _isEnd );
 
-        MENGINE_ASSERTION_FATAL( m_affecting == false, "affector '%u' can not completed or removing in _affect (please return true if you want complete)"
-            , this->getUniqueIdentity()
-        );
+        if( m_affecting == true )
+        {
+            return;
+        }
 
         m_status = EAFFECTORSTATUS_COMPLETE;
+
+        IntrusivePtrScope ankh( this );
 
         UpdationInterface * updation = this->getUpdation();
 

@@ -30,7 +30,7 @@ namespace Mengine
         int64_t seek( AAsset * _asset, int64_t _offset, int _whence ) const override;
 
     protected:
-        jobject m_jAssetManagerRef;
+        jobject m_jAssetManagerGlobalRef;
 
         AAssetManager * m_assetManager;
     };

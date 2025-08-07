@@ -78,19 +78,19 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    jobject AndroidHttpRequestGetAsset::_onHttp( JNIEnv * _jenv, jobject _jrequest )
+    jobject AndroidHttpRequestGetAsset::_onHttp( MengineJNIEnvThread * _jenv, jobject _jrequest )
     {
-        jobject jkey_login = Helper::AndroidMakeJObjectString( _jenv, m_login );
-        jobject jkey_password = Helper::AndroidMakeJObjectString( _jenv, m_password );
+        jobject jobject_login = Helper::AndroidMakeJObjectString( _jenv, m_login );
+        jobject jobject_password = Helper::AndroidMakeJObjectString( _jenv, m_password );
 
         jobject jresponse = Helper::AndroidCallObjectStaticClassMethod( _jenv, "org/Mengine/Base/MengineNetwork", "httpRequestGetAsset", "(Lorg/Mengine/Base/MengineParamHttpRequest;Ljava/lang/String;Ljava/lang/String;)Lorg/Mengine/Base/MengineParamHttpResponse;"
             , _jrequest
-            , jkey_login
-            , jkey_password
+            , jobject_login
+            , jobject_password
         );
 
-        _jenv->DeleteLocalRef( jkey_login );
-        _jenv->DeleteLocalRef( jkey_password );
+        Mengine_JNI_DeleteLocalRef( _jenv, jobject_login );
+        Mengine_JNI_DeleteLocalRef( _jenv, jobject_password );
 
         return jresponse;
     }

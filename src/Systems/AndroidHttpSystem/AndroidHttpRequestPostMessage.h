@@ -19,7 +19,7 @@ namespace Mengine
         const HttpRequestPostProperties & getPostProperties() const;
 
     protected:
-        jobject _onHttp( JNIEnv * _jenv, jobject _jrequest ) override;
+        jobject _onHttp( MengineJNIEnvThread * _jenv, jobject _jrequest ) override;
 
     protected:
         HttpRequestPostProperties m_properties;

@@ -87,11 +87,14 @@ namespace Mengine
 
         StdString::strzcat_safe( buffer, data, data_size, MENGINE_LOGGER_MAX_MESSAGE );
 
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
+        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
 
-        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+        if( jenv == nullptr )
+        {
+            return;
+        }
 
-        jclass jclass_UtilLog = jenv->FindClass( "android/util/Log" );
+        jclass jclass_UtilLog = Mengine_JNI_FindClass( jenv, "android/util/Log" );
 
         if( jclass_UtilLog == nullptr )
         {
@@ -134,23 +137,23 @@ namespace Mengine
             return;
         }
 
-        jmethodID jclass_UtilLog_method = jenv->GetStaticMethodID( jclass_UtilLog, method, "(Ljava/lang/String;Ljava/lang/String;)I" );
+        jmethodID jclass_UtilLog_method = Mengine_JNI_GetStaticMethodID( jenv, jclass_UtilLog, method, "(Ljava/lang/String;Ljava/lang/String;)I" );
 
         if( jclass_UtilLog_method == nullptr )
         {
             return;
         }
 
-        jstring jstring_Mengine = jenv->NewStringUTF( "Mengine" );
-        jstring jstring_buffer = jenv->NewStringUTF( buffer );
+        jstring jstring_Mengine = Mengine_JNI_NewStringUTF( jenv, "Mengine" );
+        jstring jstring_buffer = Mengine_JNI_NewStringUTF( jenv, buffer );
 
-        jint result = jenv->CallStaticIntMethod( jclass_UtilLog, jclass_UtilLog_method, jstring_Mengine, jstring_buffer );
+        jint result = Mengine_JNI_CallStaticIntMethod( jenv, jclass_UtilLog, jclass_UtilLog_method, jstring_Mengine, jstring_buffer );
         MENGINE_UNUSED( result );
 
-        jenv->DeleteLocalRef( jstring_Mengine );
-        jenv->DeleteLocalRef( jstring_buffer );
+        Mengine_JNI_DeleteLocalRef( jenv, jstring_Mengine );
+        Mengine_JNI_DeleteLocalRef( jenv, jstring_buffer );
 
-        jenv->DeleteLocalRef( jclass_UtilLog );
+        Mengine_JNI_DeleteLocalRef( jenv, jclass_UtilLog );
     }
     //////////////////////////////////////////////////////////////////////////
 }

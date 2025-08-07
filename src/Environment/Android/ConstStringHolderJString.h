@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Environment/Android/AndroidIncluder.h"
+#include "Environment/Android/AndroidEnv.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
@@ -18,8 +18,8 @@ namespace Mengine
         ~ConstStringHolderJString() override;
 
     public:
-        void setJString( JNIEnv * _jenv, jstring _value );
-        void removeJString( JNIEnv * _jenv );
+        void setJString( MengineJNIEnvThread * _jenv, jstring _value );
+        void removeJString( MengineJNIEnvThread * _jenv );
 
     protected:
         jstring m_value;

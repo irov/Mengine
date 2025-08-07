@@ -54,6 +54,8 @@
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/ThreadHelper.h"
 #include "Kernel/StatisticHelper.h"
+#include "Kernel/AssertionUtf8.h"
+#include "Kernel/StringSlice.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -86,15 +88,51 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     static volatile bool g_androidPlatformActived = true;
     //////////////////////////////////////////////////////////////////////////
+    static bool AndroidWriteMemory( JNIEnv * env, const Mengine::MemoryInterfacePtr & _memory, jobject _writer )
+    {
+        jclass jclass_Writer = env->GetObjectClass( _writer );
+
+        jmethodID jmethod_Writer_write_String = env->GetMethodID( jclass_Writer, "write", "(Ljava/lang/String;)V" );
+
+        const Mengine::Char * data_value = _memory->getBuffer();
+        size_t data_size = _memory->getSize();
+
+        MENGINE_ASSERTION_VALIDATE_UTF8( data_value, data_size );
+
+        Mengine::Utf8 jvalue_str[1024 + 1] = {'\0'};
+        bool result = Mengine::Helper::utf8Slice( data_value, data_size, jvalue_str, 1024, [env, _writer, jmethod_Writer_write_String]( const Mengine::Utf8 * _utf8 )
+        {
+            jstring jstring_value = env->NewStringUTF( _utf8 );
+
+            if( jstring_value == nullptr )
+            {
+                LOGGER_ERROR( "invalid write memory string UTF8: %s"
+                , _utf8
+                );
+
+                return false;
+            }
+
+            env->CallVoidMethod( _writer, jmethod_Writer_write_String, jstring_value );
+            env->DeleteLocalRef( jstring_value );
+
+            return true;
+        } );
+
+        env->DeleteLocalRef( jclass_Writer );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
     JNIEXPORT jstring JNICALL MENGINE_JAVA_INTERFACE( AndroidEnvironmentService_1getCompanyName )(JNIEnv * env, jclass cls)
     {
         Mengine::Char companyName[MENGINE_APPLICATION_COMPANY_MAXNAME + 1] = {'\0'};
         APPLICATION_SERVICE()
             ->getCompanyName( companyName );
 
-        jstring result = env->NewStringUTF( companyName );
+        jstring jstring_result = env->NewStringUTF( companyName );
 
-        return result;
+        return jstring_result;
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT jstring JNICALL MENGINE_JAVA_INTERFACE( AndroidEnvironmentService_1getProjectName )(JNIEnv * env, jclass cls)
@@ -103,9 +141,9 @@ extern "C"
         APPLICATION_SERVICE()
             ->getProjectName( projectName );
 
-        jstring result = env->NewStringUTF( projectName );
+        jstring jstring_result = env->NewStringUTF( projectName );
 
-        return result;
+        return jstring_result;
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT jstring JNICALL MENGINE_JAVA_INTERFACE( AndroidEnvironmentService_1getExtraPreferencesFolderName )(JNIEnv * env, jclass cls)
@@ -114,9 +152,9 @@ extern "C"
         PLATFORM_SERVICE()
             ->getExtraPreferencesFolderName( extraPreferencesFolderName );
 
-        jstring result = env->NewStringUTF( extraPreferencesFolderName );
+        jstring jstring_result = env->NewStringUTF( extraPreferencesFolderName );
 
-        return result;
+        return jstring_result;
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT jboolean JNICALL MENGINE_JAVA_INTERFACE( AndroidEnvironmentService_1hasCurrentAccount )(JNIEnv * env, jclass cls)
@@ -175,7 +213,7 @@ extern "C"
             return JNI_FALSE;
         }
 
-        if( Mengine::Helper::AndroidWriteMemory( env, memory, _writer ) == false )
+        if( AndroidWriteMemory( env, memory, _writer ) == false )
         {
             return JNI_FALSE;
         }
@@ -193,7 +231,7 @@ extern "C"
             return JNI_FALSE;
         }
 
-        if( Mengine::Helper::AndroidWriteMemory( env, memory, _writer ) == false )
+        if( AndroidWriteMemory( env, memory, _writer ) == false )
         {
             return JNI_FALSE;
         }
@@ -538,7 +576,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t AndroidPlatformService::getUserPath( Char * const _userPath ) const
     {
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
+        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         if( Helper::AndroidGetApplicationFilesDirCanonicalPath( jenv, _userPath ) == false )
         {
@@ -577,14 +617,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::getUserLocaleLanguage( Char * const _userLocaleLanguage ) const
     {
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
+        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
 
-        jstring jlocale = (jstring)Helper::AndroidCallObjectApplicationMethod( jenv, "getDeviceLanguage", "()Ljava/lang/String;" );
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+
+        jstring jstring_locale = (jstring)Helper::AndroidCallObjectApplicationMethod( jenv, "getDeviceLanguage", "()Ljava/lang/String;" );
 
         Char deviceLanguage[128 + 1] = {'\0'};
-        Helper::AndroidCopyStringFromJString( jenv, jlocale, deviceLanguage, 128 );
+        Helper::AndroidCopyStringFromJString( jenv, jstring_locale, deviceLanguage, 128 );
 
-        jenv->DeleteLocalRef( jlocale );
+        Mengine_JNI_DeleteLocalRef( jenv, jstring_locale );
 
         _userLocaleLanguage[0] = deviceLanguage[0];
         _userLocaleLanguage[1] = deviceLanguage[1];
@@ -805,7 +847,7 @@ namespace Mengine
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_RUN );
 
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
+        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
@@ -927,15 +969,15 @@ namespace Mengine
             , _url
         );
 
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
+        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        jstring jurl = jenv->NewStringUTF( _url );
+        jstring jstring_url = Mengine_JNI_NewStringUTF( jenv, _url );
 
-        jboolean jresult = Helper::AndroidCallBooleanActivityMethod( jenv, "linkingOpenURL", "(Ljava/lang/String;)Z", jurl );
+        jboolean jresult = Helper::AndroidCallBooleanActivityMethod( jenv, "linkingOpenURL", "(Ljava/lang/String;)Z", jstring_url );
 
-        jenv->DeleteLocalRef( jurl );
+        Mengine_JNI_DeleteLocalRef( jenv, jstring_url );
 
         return jresult;
     }
@@ -948,19 +990,19 @@ namespace Mengine
             , _body
         );
 
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
+        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        jstring jemail = jenv->NewStringUTF( _email );
-        jstring jsubject = jenv->NewStringUTF( _subject );
-        jstring jbody = jenv->NewStringUTF( _body );
+        jstring jstring_email = Mengine_JNI_NewStringUTF( jenv, _email );
+        jstring jstring_subject = Mengine_JNI_NewStringUTF( jenv, _subject );
+        jstring jstring_body = Mengine_JNI_NewStringUTF( jenv, _body );
 
-        jboolean jresult = Helper::AndroidCallBooleanActivityMethod( jenv, "linkingOpenMail", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Z", jemail, jsubject, jbody );
+        jboolean jresult = Helper::AndroidCallBooleanActivityMethod( jenv, "linkingOpenMail", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Z", jstring_email, jstring_subject, jstring_body );
 
-        jenv->DeleteLocalRef( jemail );
-        jenv->DeleteLocalRef( jsubject );
-        jenv->DeleteLocalRef( jbody );
+        Mengine_JNI_DeleteLocalRef( jenv, jstring_email );
+        Mengine_JNI_DeleteLocalRef( jenv, jstring_subject );
+        Mengine_JNI_DeleteLocalRef( jenv, jstring_body );
 
         return jresult;
     }
@@ -969,7 +1011,7 @@ namespace Mengine
     {
         LOGGER_MESSAGE( "open delete account" );
 
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
+        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
@@ -980,7 +1022,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::notifyBootstrapperInitializeBaseServices_()
     {
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
+        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
@@ -989,7 +1031,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::notifyBootstrapperCreateApplication_()
     {
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
+        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
@@ -1000,7 +1042,7 @@ namespace Mengine
     {
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_STOP );
 
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
+        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
@@ -1192,35 +1234,23 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::getAlwaysFullscreen() const
     {
-#if defined(MENGINE_PLATFORM_IOS)
         return true;
-#elif defined(MENGINE_PLATFORM_ANDROID)
-        return true;
-#endif
-
-        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::isDebuggerPresent() const
     {
-#if defined(MENGINE_PLATFORM_WINDOWS)
-        if( ::IsDebuggerPresent() == FALSE )
-        {
-            return false;
-        }
+        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
 
-        return true;
-#elif defined(MENGINE_PLATFORM_ANDROID)
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        jclass debugClass = jenv->FindClass("android/os/Debug");
-        jmethodID isDebuggerConnectedMethod = jenv->GetStaticMethodID( debugClass, "isDebuggerConnected", "()Z" );
+        jclass jclass_Debug = Mengine_JNI_FindClass( jenv, "android/os/Debug");
+        jmethodID isDebuggerConnectedMethod = Mengine_JNI_GetStaticMethodID( jenv, jclass_Debug, "isDebuggerConnected", "()Z" );
 
-        jboolean isDebuggerConnected = jenv->CallStaticBooleanMethod( debugClass, isDebuggerConnectedMethod );
+        jboolean isDebuggerConnected = Mengine_JNI_CallStaticBooleanMethod( jenv, jclass_Debug, isDebuggerConnectedMethod );
 
         Helper::AndroidEnvExceptionCheck( jenv );
 
-        jenv->DeleteLocalRef( debugClass );
+        Mengine_JNI_DeleteLocalRef( jenv, jclass_Debug );
 
         if( isDebuggerConnected == JNI_FALSE )
         {
@@ -1228,17 +1258,11 @@ namespace Mengine
         }
 
         return true;
-#else
-
-        return false;
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::debugBreak()
     {
-#if defined(MENGINE_PLATFORM_WINDOWS)
-        ::DebugBreak();
-#endif
+        // ToDo
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::closeWindow()
@@ -1277,21 +1301,27 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::showKeyboard()
     {
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
+        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         Helper::AndroidCallVoidActivityMethod( jenv,  "showKeyboard", "()V" );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::hideKeyboard()
     {
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
+        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         Helper::AndroidCallVoidActivityMethod( jenv, "hideKeyboard", "()V" );
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::isShowKeyboard() const
     {
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
+        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         bool result = Helper::AndroidCallBooleanActivityMethod( jenv, "isShowKeyboard", "()Z" );
 
@@ -1370,7 +1400,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::messageBox( const Char * _caption, const Char * _format, ... ) const
     {
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
+        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         Char str[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
 
@@ -1390,46 +1422,50 @@ namespace Mengine
             return;
         }
 
-        jstring j_caption = jenv->NewStringUTF( _caption );
-        jstring j_message = jenv->NewStringUTF( str );
+        jstring jstring_caption = Mengine_JNI_NewStringUTF( jenv, _caption );
+        jstring jstring_message = Mengine_JNI_NewStringUTF( jenv, str );
 
-        Helper::AndroidCallVoidActivityMethod( jenv, "showAlertDialog", "(Ljava/lang/String;Ljava/lang/String;)V", j_caption, j_message );
+        Helper::AndroidCallVoidActivityMethod( jenv, "showAlertDialog", "(Ljava/lang/String;Ljava/lang/String;)V", jstring_caption, jstring_message );
 
-        jenv->DeleteLocalRef( j_caption );
-        jenv->DeleteLocalRef( j_message );
+        Mengine_JNI_DeleteLocalRef( jenv, jstring_caption );
+        Mengine_JNI_DeleteLocalRef( jenv, jstring_message );
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::setClipboardText( const Char * _value ) const
     {
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
+        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
 
-        jstring j_text = jenv->NewStringUTF( _value );
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        Helper::AndroidCallVoidActivityMethod( jenv, "setClipboardText", "(Ljava/lang/String;)V", j_text );
+        jstring jstring_text = Mengine_JNI_NewStringUTF( jenv, _value );
 
-        jenv->DeleteLocalRef( j_text );
+        Helper::AndroidCallVoidActivityMethod( jenv, "setClipboardText", "(Ljava/lang/String;)V", jstring_text );
+
+        Mengine_JNI_DeleteLocalRef( jenv, jstring_text );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::getClipboardText( Char * _value, size_t _capacity ) const
     {
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
+        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
 
-        jstring j_text = (jstring)Helper::AndroidCallObjectActivityMethod( jenv, "getClipboardText", "()Ljava/lang/String;" );
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        if( j_text == nullptr )
+        jstring jstring_text = (jstring)Helper::AndroidCallObjectActivityMethod( jenv, "getClipboardText", "()Ljava/lang/String;" );
+
+        if( jstring_text == nullptr )
         {
             return false;
         }
 
-        const Char * text_str = jenv->GetStringUTFChars( j_text, nullptr );
+        const Char * text_str = Mengine_JNI_GetStringUTFChars( jenv, jstring_text, nullptr );
 
         StdString::strcpy_safe( _value, text_str, _capacity );
 
-        jenv->ReleaseStringUTFChars( j_text, text_str );
+        Mengine_JNI_ReleaseStringUTFChars( jenv, jstring_text, text_str );
 
-        jenv->DeleteLocalRef( j_text );
+        Mengine_JNI_DeleteLocalRef( jenv, jstring_text );
 
         return true;
     }
@@ -1645,7 +1681,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t AndroidPlatformService::androidNativeGetAndroidId( Char * _androidId, size_t _capacity ) const
     {
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
+        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
@@ -1653,7 +1689,7 @@ namespace Mengine
 
         size_t size = Helper::AndroidCopyStringFromJString( jenv, jReturnValue, _androidId, _capacity );
 
-        jenv->DeleteLocalRef( jReturnValue );
+        Mengine_JNI_DeleteLocalRef( jenv, jReturnValue );
 
         return size;
     }

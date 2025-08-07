@@ -34,11 +34,6 @@ namespace Mengine
     {
         MENGINE_UNUSED( _threadId );
 
-        if( Mengine_JNI_SetupThread() == JNI_FALSE )
-        {
-            return false;
-        }
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

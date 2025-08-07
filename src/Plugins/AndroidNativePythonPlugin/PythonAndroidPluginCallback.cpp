@@ -19,19 +19,19 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonAndroidPluginCallback::invoke( JNIEnv * _jenv, jobjectArray _args )
+    void PythonAndroidPluginCallback::invoke( MengineJNIEnvThread * _jenv, jobjectArray _args )
     {
         uint32_t cb_args_size = m_kernel->tuple_size( m_args );
 
-        jsize args_size = _jenv->GetArrayLength( _args );
+        jsize args_size = Mengine_JNI_GetArrayLength( _jenv, _args );
 
         PyObject * py_args = m_kernel->tuple_new( args_size + cb_args_size );
 
         for( jsize index = 0; index != args_size; ++index )
         {
-            jobject obj = _jenv->GetObjectArrayElement( _args, index );
+            jobject jobject_element = Mengine_JNI_GetObjectArrayElement( _jenv, _args, index );
 
-            PyObject * py_arg = Helper::androidNativePythonMakePyObject( m_kernel, _jenv, obj, MENGINE_DOCUMENT_FACTORABLE );
+            PyObject * py_arg = Helper::androidNativePythonMakePyObject( m_kernel, _jenv, jobject_element, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_FATAL( py_arg != nullptr, "android plugin method '%s' invalid arg"
                 , m_cb.repr().c_str()
@@ -41,7 +41,7 @@ namespace Mengine
 
             m_kernel->decref( py_arg );
 
-            _jenv->DeleteLocalRef( obj );
+            Mengine_JNI_DeleteLocalRef( _jenv, jobject_element );
         }
 
         for( uint32_t index = 0; index != cb_args_size; ++index )

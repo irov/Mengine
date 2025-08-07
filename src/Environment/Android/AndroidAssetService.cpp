@@ -13,7 +13,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     AndroidAssetService::AndroidAssetService()
-        : m_jAssetManagerRef( nullptr )
+        : m_jAssetManagerGlobalRef( nullptr )
         , m_assetManager( nullptr )
     {
     }
@@ -24,7 +24,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidAssetService::_initializeService()
     {
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
+        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
@@ -37,7 +37,9 @@ namespace Mengine
             return false;
         }
 
-        AAssetManager * assetManager = AAssetManager_fromJava( jenv, jAssetManager );
+        jobject jobject_AssetManagerGlobalRef = Mengine_JNI_NewGlobalRef( jenv, jAssetManager );
+
+        AAssetManager * assetManager = Mengine_JNI_GetAssetManagerFromJava( jenv, jobject_AssetManagerGlobalRef );
 
         if( assetManager == nullptr )
         {
@@ -46,7 +48,7 @@ namespace Mengine
             return false;
         }
 
-        m_jAssetManagerRef = jenv->NewGlobalRef( jAssetManager );
+        m_jAssetManagerGlobalRef = jobject_AssetManagerGlobalRef;
         m_assetManager = assetManager;
 
         return true;
@@ -54,14 +56,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidAssetService::_finalizeService()
     {
-        if( m_jAssetManagerRef != nullptr )
+        if(m_jAssetManagerGlobalRef != nullptr )
         {
-            JNIEnv * jenv = Mengine_JNI_GetEnv();
+            MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
 
             MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-            jenv->DeleteGlobalRef( m_jAssetManagerRef );
-            m_jAssetManagerRef = nullptr;
+            Mengine_JNI_DeleteGlobalRef( jenv, m_jAssetManagerGlobalRef );
+            m_jAssetManagerGlobalRef = nullptr;
         }
 
         m_assetManager = nullptr;

@@ -48,7 +48,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( m_response, "not setup 'response'" );
         MENGINE_ASSERTION_MEMORY_PANIC( m_receiver, "not setup 'receiver'" );
 
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
+        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
@@ -57,45 +57,45 @@ namespace Mengine
 
         HttpHeaders::size_type headers_size = m_headers.size();
 
-        jobject jheaders = Helper::AndroidMakeJObjectArrayList( jenv, headers_size );
+        jobject jobject_headers = Helper::AndroidMakeJObjectArrayList( jenv, headers_size );
 
         for( const String & header : m_headers )
         {
-            jobject jheader = Helper::AndroidMakeJObjectString( jenv, header );
+            jobject jobject_header = Helper::AndroidMakeJObjectString( jenv, header );
 
-            Helper::AndroidAddJObjectList( jenv, jheaders, jheader );
+            Helper::AndroidAddJObjectList( jenv, jobject_headers, jobject_header );
 
-            jenv->DeleteLocalRef( jheader );
+            Mengine_JNI_DeleteLocalRef( jenv, jobject_header );
         }
 
-        jobject jcookies = Helper::AndroidMakeJObjectString( jenv, m_cookies );
+        jobject jobject_cookies = Helper::AndroidMakeJObjectString( jenv, m_cookies );
 
         jclass jclass_MengineHttpRequestParam = Helper::AndroidEnvFindClass( jenv, "org/Mengine/Base/MengineParamHttpRequest" );
 
-        jmethodID jmethod_MengineHttpRequestParam_constructor = jenv->GetMethodID( jclass_MengineHttpRequestParam, "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;I)V" );
+        jmethodID jmethod_MengineHttpRequestParam_constructor = Mengine_JNI_GetMethodID( jenv, jclass_MengineHttpRequestParam, "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;I)V" );
 
-        jobject jrequest = jenv->NewObject( jclass_MengineHttpRequestParam, jmethod_MengineHttpRequestParam_constructor
+        jobject jobject_request = Mengine_JNI_NewObject( jenv, jclass_MengineHttpRequestParam, jmethod_MengineHttpRequestParam_constructor
             , jurl
             , jproxy
-            , jheaders
-            , jcookies
+            , jobject_headers
+            , jobject_cookies
             , m_timeout
         );
 
         Helper::AndroidEnvExceptionCheck( jenv );
 
-        jenv->DeleteLocalRef( jclass_MengineHttpRequestParam );
+        Mengine_JNI_DeleteLocalRef( jenv, jclass_MengineHttpRequestParam );
 
-        jenv->DeleteLocalRef( jurl );
-        jenv->DeleteLocalRef( jproxy );
-        jenv->DeleteLocalRef( jheaders );
-        jenv->DeleteLocalRef( jcookies );
+        Mengine_JNI_DeleteLocalRef( jenv, jurl );
+        Mengine_JNI_DeleteLocalRef( jenv, jproxy );
+        Mengine_JNI_DeleteLocalRef( jenv, jobject_headers );
+        Mengine_JNI_DeleteLocalRef( jenv, jobject_cookies );
 
-        jobject jresponse = this->_onHttp( jenv, jrequest );
+        jobject jobject_response = this->_onHttp( jenv, jobject_request );
 
-        jenv->DeleteLocalRef( jrequest );
+        Mengine_JNI_DeleteLocalRef( jenv, jobject_request );
 
-        if( jresponse == nullptr )
+        if( jobject_response == nullptr )
         {
             m_mutex->lock();
 
@@ -111,19 +111,19 @@ namespace Mengine
 
         jclass jclass_MengineHttpResponseParam = Helper::AndroidEnvFindClass( jenv, "org/Mengine/Base/MengineParamHttpResponse" );
 
-        jfieldID jfieldiD_HTTP_RESPONSE_CODE = jenv->GetFieldID( jclass_MengineHttpResponseParam, "HTTP_RESPONSE_CODE", "I" );
-        jfieldID jfieldiD_HTTP_CONTENT_LENGTH = jenv->GetFieldID( jclass_MengineHttpResponseParam, "HTTP_CONTENT_LENGTH", "I" );
-        jfieldID jfieldiD_HTTP_CONTENT_DATA = jenv->GetFieldID( jclass_MengineHttpResponseParam, "HTTP_CONTENT_DATA", "[B" );
-        jfieldID jfieldiD_HTTP_ERROR_MESSAGE = jenv->GetFieldID( jclass_MengineHttpResponseParam, "HTTP_ERROR_MESSAGE", "Ljava/lang/String;" );
+        jfieldID jfieldiD_HTTP_RESPONSE_CODE = Mengine_JNI_GetFieldID( jenv, jclass_MengineHttpResponseParam, "HTTP_RESPONSE_CODE", "I" );
+        jfieldID jfieldiD_HTTP_CONTENT_LENGTH = Mengine_JNI_GetFieldID( jenv, jclass_MengineHttpResponseParam, "HTTP_CONTENT_LENGTH", "I" );
+        jfieldID jfieldiD_HTTP_CONTENT_DATA = Mengine_JNI_GetFieldID( jenv, jclass_MengineHttpResponseParam, "HTTP_CONTENT_DATA", "[B" );
+        jfieldID jfieldiD_HTTP_ERROR_MESSAGE = Mengine_JNI_GetFieldID( jenv, jclass_MengineHttpResponseParam, "HTTP_ERROR_MESSAGE", "Ljava/lang/String;" );
 
-        jenv->DeleteLocalRef( jclass_MengineHttpResponseParam );
+        Mengine_JNI_DeleteLocalRef( jenv, jclass_MengineHttpResponseParam );
 
-        int HTTP_RESPONSE_CODE = jenv->GetIntField( jresponse, jfieldiD_HTTP_RESPONSE_CODE );
-        int HTTP_CONTENT_LENGTH = jenv->GetIntField( jresponse, jfieldiD_HTTP_CONTENT_LENGTH );
-        jbyteArray HTTP_CONTENT_DATA = (jbyteArray)jenv->GetObjectField( jresponse, jfieldiD_HTTP_CONTENT_DATA );
-        jstring HTTP_ERROR_MESSAGE = (jstring)jenv->GetObjectField( jresponse, jfieldiD_HTTP_ERROR_MESSAGE );
+        int HTTP_RESPONSE_CODE = Mengine_JNI_GetIntField( jenv, jobject_response, jfieldiD_HTTP_RESPONSE_CODE );
+        int HTTP_CONTENT_LENGTH = Mengine_JNI_GetIntField( jenv, jobject_response, jfieldiD_HTTP_CONTENT_LENGTH );
+        jbyteArray HTTP_CONTENT_DATA = (jbyteArray)Mengine_JNI_GetObjectField( jenv, jobject_response, jfieldiD_HTTP_CONTENT_DATA );
+        jstring HTTP_ERROR_MESSAGE = (jstring)Mengine_JNI_GetObjectField( jenv, jobject_response, jfieldiD_HTTP_ERROR_MESSAGE );
 
-        jenv->DeleteLocalRef( jresponse );
+        Mengine_JNI_DeleteLocalRef( jenv, jobject_response );
 
         m_mutex->lock();
 
@@ -135,7 +135,7 @@ namespace Mengine
 
             if( HTTP_CONTENT_DATA != nullptr )
             {
-                jbyte * bytes = jenv->GetByteArrayElements( HTTP_CONTENT_DATA, NULL );
+                jbyte * bytes = Mengine_JNI_GetByteArrayElements( jenv, HTTP_CONTENT_DATA, NULL );
 
                 if( m_isJSON == true )
                 {
@@ -146,7 +146,7 @@ namespace Mengine
                     m_response->appendData( bytes, HTTP_CONTENT_LENGTH );
                 }
 
-                jenv->ReleaseByteArrayElements( HTTP_CONTENT_DATA, bytes, 0 );
+                Mengine_JNI_ReleaseByteArrayElements( jenv, HTTP_CONTENT_DATA, bytes, 0 );
             }
 
             if( HTTP_ERROR_MESSAGE != nullptr )
@@ -161,12 +161,12 @@ namespace Mengine
 
         if( HTTP_CONTENT_DATA != nullptr )
         {
-            jenv->DeleteLocalRef( HTTP_CONTENT_DATA );
+            Mengine_JNI_DeleteLocalRef( jenv, HTTP_CONTENT_DATA );
         }
 
         if( HTTP_ERROR_MESSAGE != nullptr )
         {
-            jenv->DeleteLocalRef( HTTP_ERROR_MESSAGE );
+            Mengine_JNI_DeleteLocalRef( jenv, HTTP_ERROR_MESSAGE );
         }
 
         return true;

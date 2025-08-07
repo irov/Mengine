@@ -19,13 +19,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AndroidNativePythonCallback::~AndroidNativePythonCallback()
     {
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
+        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         if( m_functor != nullptr )
         {
-            jenv->DeleteGlobalRef( m_functor );
+            Mengine_JNI_DeleteGlobalRef( jenv, m_functor );
             m_functor = nullptr;
         }
     }
@@ -40,14 +40,14 @@ namespace Mengine
         return m_kernel;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonCallback::setJavaFunctor( JNIEnv * _jenv, jobject _functor )
+    void AndroidNativePythonCallback::setJavaFunctor( MengineJNIEnvThread * _jenv, jobject _functor )
     {
         if( m_functor != nullptr )
         {
-            _jenv->DeleteGlobalRef( m_functor );
+            Mengine_JNI_DeleteGlobalRef( _jenv, m_functor );
         }
 
-        m_functor = _jenv->NewGlobalRef( _functor );
+        m_functor = Mengine_JNI_NewGlobalRef( _jenv, _functor );
     }
     //////////////////////////////////////////////////////////////////////////
     jobject AndroidNativePythonCallback::getJavaFunctor() const
@@ -57,24 +57,24 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonCallback::call( bool _result, const Params & _params )
     {
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
+        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        jobject jfunctor = this->getJavaFunctor();
+        jobject jobject_functor = this->getJavaFunctor();
 
-        jclass jclass_Functor = jenv->GetObjectClass( jfunctor );
+        jclass jclass_Functor = Mengine_JNI_GetObjectClass( jenv, jobject_functor );
 
-        jmethodID jmethodID_FunctorBoolean_call = jenv->GetMethodID( jclass_Functor, "call", "(ZLjava/util/Map;)V" );
+        jmethodID jmethodID_FunctorBoolean_call = Mengine_JNI_GetMethodID( jenv, jclass_Functor, "call", "(ZLjava/util/Map;)V" );
 
-        jobject jparams = Helper::AndroidMakeJObjectHashMap( jenv, _params );
+        jobject jobject_params = Helper::AndroidMakeJObjectHashMap( jenv, _params );
 
-        jenv->CallVoidMethod( jfunctor, jmethodID_FunctorBoolean_call, (_result == true ? JNI_TRUE : JNI_FALSE), jparams );
+        Mengine_JNI_CallVoidMethod( jenv, jobject_functor, jmethodID_FunctorBoolean_call, (_result == true ? JNI_TRUE : JNI_FALSE), jobject_params );
 
         Helper::AndroidEnvExceptionCheck( jenv );
 
-        jenv->DeleteLocalRef( jparams );
-        jenv->DeleteLocalRef( jclass_Functor );
+        Mengine_JNI_DeleteLocalRef( jenv, jobject_params );
+        Mengine_JNI_DeleteLocalRef( jenv, jclass_Functor );
     }
     //////////////////////////////////////////////////////////////////////////
 }

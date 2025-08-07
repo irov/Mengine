@@ -36,6 +36,10 @@
 #define MENGINE_SENTRY_DATABASE_PATH "sentry-native"
 #endif
 
+#ifndef MENGINE_SENTRY_LOG_PATH
+#define MENGINE_SENTRY_LOG_PATH "mengine_sentry_error.log"
+#endif
+
 SERVICE_FACTORY( Win32SentryService, Mengine::Win32SentryService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
@@ -255,17 +259,10 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( sentryLog, "invalid create file logger" );
 
-            PathString sentryLogPath;
-            sentryLogPath.assign( MENGINE_SENTRY_DATABASE_PATH );
-            sentryLogPath.append( MENGINE_PATH_FORWARDSLASH );
-            sentryLogPath.append( "mengine_sentry_error.log" );
-
-            FilePath sentryLogPath_fp = Helper::stringizeFilePath( sentryLogPath );
-
-            ContentInterfacePtr sentryLogContent = Helper::makeFileContent( userFileGroup, sentryLogPath_fp, MENGINE_DOCUMENT_FACTORABLE );
+            ContentInterfacePtr sentryLogContent = Helper::makeFileContent( userFileGroup, STRINGIZE_FILEPATH_LOCAL_I( MENGINE_SENTRY_LOG_PATH ), MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( sentryLogContent, "invalid make file content '%s'"
-                , sentryLogPath_fp.c_str()
+                , MENGINE_SENTRY_LOG_PATH
             );
 
             sentryLog->setContent( sentryLogContent );
@@ -282,7 +279,7 @@ namespace Mengine
                 ->registerLogger( sentryLog ) == false )
             {
                 LOGGER_ASSERTION( "invalid register file logger '%s'"
-                    , sentryLogPath_fp.c_str()
+                    , MENGINE_SENTRY_LOG_PATH
                 );
             }
             else
@@ -340,7 +337,6 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ASSERTION );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ERROR );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ENGINE_STOP );
 
         sentry_close();
     }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Environment/Android/AndroidIncluder.h"
+#include "Environment/Android/AndroidEnv.h"
 
 #include "Config/Char.h"
 
@@ -9,17 +9,17 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        void AndroidCallVoidActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... );
-        MENGINE_NODISCARD jobject AndroidCallObjectActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... );
-        jboolean AndroidCallBooleanActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... );
-        jint AndroidCallIntActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... );
-        jlong AndroidCallLongActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... );
+        void AndroidCallVoidActivityMethod( MengineJNIEnvThread * _jenv, const Char * _name, const Char * _signature, ... );
+        MENGINE_NODISCARD jobject AndroidCallObjectActivityMethod( MengineJNIEnvThread * _jenv, const Char * _name, const Char * _signature, ... );
+        jboolean AndroidCallBooleanActivityMethod( MengineJNIEnvThread * _jenv, const Char * _name, const Char * _signature, ... );
+        jint AndroidCallIntActivityMethod( MengineJNIEnvThread * _jenv, const Char * _name, const Char * _signature, ... );
+        jlong AndroidCallLongActivityMethod( MengineJNIEnvThread * _jenv, const Char * _name, const Char * _signature, ... );
         //////////////////////////////////////////////////////////////////////////
-        void AndroidCallVoidActivityStaticMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... );
-        MENGINE_NODISCARD jobject AndroidCallObjectActivityStaticMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... );
-        jboolean AndroidCallBooleanActivityStaticMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... );
-        jint AndroidCallIntActivityStaticMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... );
-        jlong AndroidCallLongActivityStaticMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... );
+        void AndroidCallVoidActivityStaticMethod( MengineJNIEnvThread * _jenv, const Char * _name, const Char * _signature, ... );
+        MENGINE_NODISCARD jobject AndroidCallObjectActivityStaticMethod( MengineJNIEnvThread * _jenv, const Char * _name, const Char * _signature, ... );
+        jboolean AndroidCallBooleanActivityStaticMethod( MengineJNIEnvThread * _jenv, const Char * _name, const Char * _signature, ... );
+        jint AndroidCallIntActivityStaticMethod( MengineJNIEnvThread * _jenv, const Char * _name, const Char * _signature, ... );
+        jlong AndroidCallLongActivityStaticMethod( MengineJNIEnvThread * _jenv, const Char * _name, const Char * _signature, ... );
         //////////////////////////////////////////////////////////////////////////
     }
 }

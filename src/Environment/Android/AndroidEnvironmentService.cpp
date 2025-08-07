@@ -21,23 +21,23 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         template<size_t N>
-        static void getAndroidInfo( JNIEnv * _jenv, const Char * _method, StaticString<N> * const _value )
+        static void getAndroidInfo( MengineJNIEnvThread * _jenv, const Char * _method, StaticString<N> * const _value )
         {
-            jstring jinfo = (jstring)Helper::AndroidCallObjectApplicationMethod( _jenv, _method, "()Ljava/lang/String;" );
+            jstring jobject_AndroidInfo = (jstring)Helper::AndroidCallObjectApplicationMethod( _jenv, _method, "()Ljava/lang/String;" );
 
-            Helper::AndroidCopyStringFromJString( _jenv, jinfo, _value );
+            Helper::AndroidCopyStringFromJString( _jenv, jobject_AndroidInfo, _value );
 
-            _jenv->DeleteLocalRef( jinfo );
+            Mengine_JNI_DeleteLocalRef( _jenv, jobject_AndroidInfo );
         }
         //////////////////////////////////////////////////////////////////////////
-        static void getAndroidInfo( JNIEnv * _jenv, const Char * _method, Timestamp * const _value )
+        static void getAndroidInfo( MengineJNIEnvThread * _jenv, const Char * _method, Timestamp * const _value )
         {
             jlong jinfo = Helper::AndroidCallLongApplicationMethod( _jenv, _method, "()J" );
 
             *_value = (Timestamp)jinfo;
         }
         //////////////////////////////////////////////////////////////////////////
-        static void getAndroidInfo( JNIEnv * _jenv, const Char * _method, int64_t * const _value )
+        static void getAndroidInfo( MengineJNIEnvThread * _jenv, const Char * _method, int64_t * const _value )
         {
             jlong jinfo = Helper::AndroidCallLongApplicationMethod( _jenv, _method, "()J" );
 
@@ -61,7 +61,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidEnvironmentService::_initializeService()
     {
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
+        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 

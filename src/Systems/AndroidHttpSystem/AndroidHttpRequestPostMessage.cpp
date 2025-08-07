@@ -28,7 +28,7 @@ namespace Mengine
         return m_properties;
     }
     //////////////////////////////////////////////////////////////////////////
-    jobject AndroidHttpRequestPostMessage::_onHttp( JNIEnv * _jenv, jobject _jrequest )
+    jobject AndroidHttpRequestPostMessage::_onHttp( MengineJNIEnvThread * _jenv, jobject _jrequest )
     {
         HttpRequestPostProperties::size_type properties_size = m_properties.size();
 
@@ -36,13 +36,13 @@ namespace Mengine
 
         for( const HttpRequestPostProperty & property : m_properties )
         {
-            jobject jkey = Helper::AndroidMakeJObjectString( _jenv, property.key );
-            jobject jvalue = Helper::AndroidMakeJObjectString( _jenv, property.value );
+            jobject jobject_key = Helper::AndroidMakeJObjectString( _jenv, property.key );
+            jobject jobject_value = Helper::AndroidMakeJObjectString( _jenv, property.value );
 
-            Helper::AndroidPutJObjectMap( _jenv, jproperties, jkey, jvalue );
+            Helper::AndroidPutJObjectMap( _jenv, jproperties, jobject_key, jobject_value );
 
-            _jenv->DeleteLocalRef( jkey );
-            _jenv->DeleteLocalRef( jvalue );
+            Mengine_JNI_DeleteLocalRef( _jenv, jobject_key );
+            Mengine_JNI_DeleteLocalRef( _jenv, jobject_value );
         }
 
         jobject jresponse = Helper::AndroidCallObjectStaticClassMethod( _jenv, "org/Mengine/Base/MengineNetwork", "httpRequestPostMessage", "(Lorg/Mengine/Base/MengineParamHttpRequest;Ljava/util/Map;)Lorg/Mengine/Base/MengineParamHttpResponse;"
@@ -50,7 +50,7 @@ namespace Mengine
             , jproperties
         );
 
-        _jenv->DeleteLocalRef( jproperties );
+        Mengine_JNI_DeleteLocalRef( _jenv, jproperties );
 
         return jresponse;
     }

@@ -1,8 +1,9 @@
-#include "Environment/Android/AndroidDeclaration.h"
 #include "Environment/Android/AndroidEnv.h"
+#include "Environment/Android/AndroidDeclaration.h"
 
 #include "AndroidApplication.h"
 
+#include "Kernel/AllocatorHelper.h"
 #include "Kernel/Crash.h"
 
 #include "Config/StdLib.h"
@@ -52,24 +53,24 @@ extern "C"
 
         for( jsize i = 0; i != argc; ++i )
         {
-            jstring j_arg = (jstring)_env->GetObjectArrayElement( _args, i );
+            jstring jstring_arg = (jstring)_env->GetObjectArrayElement( _args, i );
 
-            const Mengine::Char * arg_str = _env->GetStringUTFChars( j_arg, nullptr );
+            const Mengine::Char * arg_str = _env->GetStringUTFChars( jstring_arg, nullptr );
 
             argv[i + 1] = (Mengine::Char *)arg_str;
 
-            _env->DeleteLocalRef( j_arg );
+            _env->DeleteLocalRef( jstring_arg );
         }
 
         bool result = application->bootstrap( nativeLibraryDir_str, argc + 1, argv );
 
         for( jsize i = 0; i != argc; ++i )
         {
-            jstring j_arg = (jstring)_env->GetObjectArrayElement( _args, i );
+            jstring jstring_arg = (jstring)_env->GetObjectArrayElement( _args, i );
 
-            _env->ReleaseStringUTFChars( j_arg, argv[i + 1] );
+            _env->ReleaseStringUTFChars( jstring_arg, argv[i + 1] );
 
-            _env->DeleteLocalRef( j_arg );
+            _env->DeleteLocalRef( jstring_arg );
         }
 
         _env->ReleaseStringUTFChars( _nativeLibraryDir, nativeLibraryDir_str );
@@ -83,9 +84,9 @@ extern "C"
             return nullptr;
         }
 
-        jobject j_application = _env->NewDirectByteBuffer( application, sizeof(void *) );
+        jobject jobject_application = _env->NewDirectByteBuffer( application, sizeof(void *) );
 
-        if ( j_application == nullptr)
+        if ( jobject_application == nullptr)
         {
             __android_log_print( ANDROID_LOG_ERROR, "Mengine", "[ERROR] Android bootstrap failed to create direct buffer" );
 
@@ -94,7 +95,7 @@ extern "C"
             return nullptr;
         }
 
-        return j_application;
+        return jobject_application;
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT jboolean JNICALL MENGINE_JAVA_INTERFACE( AndroidMain_1main )( JNIEnv * _env, jclass _cls, jobject _application)

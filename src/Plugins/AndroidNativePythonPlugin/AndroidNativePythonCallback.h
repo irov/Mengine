@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Environment/Android/AndroidIncluder.h"
+#include "Environment/Android/AndroidEnv.h"
 #include "Environment/Python/PythonIncluder.h"
 
 #include "Kernel/Factorable.h"
@@ -25,7 +25,7 @@ namespace Mengine
         pybind::kernel_interface * getKernel() const;
 
     public:
-        void setJavaFunctor( JNIEnv * _jenv, jobject _functor );
+        void setJavaFunctor( MengineJNIEnvThread * _jenv, jobject _functor );
         MENGINE_NODISCARD jobject getJavaFunctor() const;
 
     public:

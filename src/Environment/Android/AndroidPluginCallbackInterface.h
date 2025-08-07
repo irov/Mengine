@@ -2,7 +2,7 @@
 
 #include "Interface/ServantInterface.h"
 
-#include "Environment/Android/AndroidIncluder.h"
+#include "Environment/Android/AndroidEnv.h"
 
 namespace Mengine
 {
@@ -11,7 +11,7 @@ namespace Mengine
         : public ServantInterface
     {
     public:
-        virtual void invoke( JNIEnv * _jenv, jobjectArray _args ) = 0;
+        virtual void invoke( MengineJNIEnvThread * _jenv, jobjectArray _args ) = 0;
     };
     ////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AndroidPluginCallbackInterface> AndroidPluginCallbackInterfacePtr;

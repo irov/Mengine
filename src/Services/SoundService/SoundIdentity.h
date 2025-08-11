@@ -56,6 +56,9 @@ namespace Mengine
         ESoundSourceState getState() const override;
 
     public:
+        Timestamp getStateTimestamp() const override;
+
+    public:
         void setTimeLeft( float _timeLeft ) override;
         float getTimeLeft() const override;
 
@@ -74,6 +77,8 @@ namespace Mengine
 
         ESoundSourceState m_state;
         ESoundSourceCategory m_category;
+
+        Timestamp m_stateTimestamp;
 
         bool m_streamable;
         bool m_loop;

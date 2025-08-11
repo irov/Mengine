@@ -16,7 +16,7 @@ namespace Mengine
     {
         m_prefetcher = _prefetcher;
 
-        m_prefetchRefcount.incref();
+        m_prefetchRefcount.increfReferenceCount();
 
         return true;
     }
@@ -25,17 +25,19 @@ namespace Mengine
     {
         m_prefetcher = nullptr;
 
-        m_prefetchRefcount.reset();
+        m_prefetchRefcount.resetReferenceCount();
     }
     //////////////////////////////////////////////////////////////////////////
     void PrefetchReceiver::acquire()
     {
-        m_prefetchRefcount.incref();
+        m_prefetchRefcount.increfReferenceCount();
     }
     //////////////////////////////////////////////////////////////////////////
     bool PrefetchReceiver::release()
     {
-        if( m_prefetchRefcount.decref() != 0 )
+        uint32_t referenceCount = m_prefetchRefcount.decrefReferenceCount();
+
+        if( referenceCount != 0 )
         {
             return false;
         }

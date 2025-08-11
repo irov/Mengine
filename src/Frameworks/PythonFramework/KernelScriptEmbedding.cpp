@@ -2610,6 +2610,7 @@ namespace Mengine
             ;
 
         pybind::interface_<ResourcePacket, pybind::bases<Factorable>>( _kernel, "ResourcePacket" )
+            .def( "getGroupName", &ResourcePacket::getGroupName )
             ;
 
         pybind::interface_<UpdationInterface, pybind::bases<Mixin>>( _kernel, "Updation" )
@@ -2832,9 +2833,8 @@ namespace Mengine
             .def_proxy_interface<TransformationInterface>( &Transformable::getTransformation )
             ;
 
-        pybind::interface_<Affector, pybind::bases<Updatable>>( _kernel, "Affector", true )
+        pybind::interface_<Affector, pybind::bases<Factorable, Updatable>>( _kernel, "Affector", true )
             .def( "stop", &Affector::stop )
-            .def( "getId", &Affector::getUniqueIdentity )
             .def( "setFreeze", &Affector::setFreeze )
             .def( "getFreeze", &Affector::getFreeze )
             .def( "setSpeedFactor", &Affector::setSpeedFactor )

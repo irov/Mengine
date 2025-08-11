@@ -6,40 +6,41 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     ReferenceCounter::ReferenceCounter()
-        : m_counter( 0 )
+        : m_referenceCounter( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     ReferenceCounter::ReferenceCounter( uint32_t _counter )
-        : m_counter( _counter )
+        : m_referenceCounter( _counter )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     ReferenceCounter::~ReferenceCounter()
     {
-        MENGINE_ASSERTION_FATAL( m_counter == 0, "reference count is not zero '%u'"
-            , m_counter.load()
+        MENGINE_ASSERTION_FATAL( m_referenceCounter == 0, "reference count is not zero '%u'"
+            , m_referenceCounter.load()
         );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ReferenceCounter::setReferenceCount( uint32_t _counter )
+    uint32_t ReferenceCounter::increfReferenceCount()
     {
-        m_counter = _counter;
+        uint32_t referenceCount = m_referenceCounter++;
+
+        return referenceCount;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t ReferenceCounter::incref()
+    uint32_t ReferenceCounter::decrefReferenceCount()
     {
-        return m_counter++;
+        MENGINE_ASSERTION_FATAL( m_referenceCounter != 0, "decrefReferenceCount called on zero reference count" );
+
+        uint32_t referenceCount = --m_referenceCounter;
+
+        return referenceCount;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t ReferenceCounter::decref()
+    void ReferenceCounter::resetReferenceCount()
     {
-        return --m_counter;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ReferenceCounter::reset()
-    {
-        m_counter = 0;
+        m_referenceCounter.store( 0 );
     }
     //////////////////////////////////////////////////////////////////////////
 }

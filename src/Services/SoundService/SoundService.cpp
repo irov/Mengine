@@ -24,6 +24,7 @@
 #include "Kernel/MixerMultiplicative.h"
 #include "Kernel/DebugFileHelper.h"
 #include "Kernel/Stringstream.h"
+#include "Kernel/TimestampHelper.h"
 
 #include "Config/StdAlgorithm.h"
 
@@ -1477,10 +1478,12 @@ namespace Mengine
             return _identity->getState() == ESS_PLAY;
         } );
 
-        uint32_t Limit_MaxSoundPlay = CONFIG_VALUE_INTEGER( "Limit", "MaxSoundPlay", 16 );
+        uint32_t Limit_MaxSoundPlay = CONFIG_VALUE_INTEGER( "Limit", "MaxSoundPlay", 32 );
 
         if( playCount > Limit_MaxSoundPlay )
         {
+            Timestamp timestamp = Helper::getSystemTimestamp();
+
             Stringstream ss;
             ss << "max sound play count exceeded: " << Limit_MaxSoundPlay;
 
@@ -1492,6 +1495,7 @@ namespace Mengine
                     << (identity->getStreamable() == true ? "streamable" : "instance") << " "
                     << "category: " << identity->getCategory() << " "
                     << "state: " << identity->getState() << " "
+                    << "time: " << timestamp - identity->getStateTimestamp() << " "
                     << "source: " << Helper::getDebugFullPath( identity->getSoundSource()->getSoundBuffer()->getDecoder()->getStream() ).c_str() << " "
                     << "(doc: " << MENGINE_DOCUMENT_STR( identity->getDocument() ) << ")";
             }

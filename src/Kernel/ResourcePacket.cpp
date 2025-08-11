@@ -11,6 +11,16 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    void ResourcePacket::setGroupName( const ConstString & _groupName )
+    {
+        m_groupName = _groupName;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & ResourcePacket::getGroupName() const
+    {
+        return m_groupName;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void ResourcePacket::addResource( const ResourcePtr & _resource )
     {
         m_resources.emplace_back( _resource );

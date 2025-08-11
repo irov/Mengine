@@ -14,6 +14,10 @@ namespace Mengine
         ~ResourcePacket() override;
 
     public:
+        void setGroupName( const ConstString & _groupName );
+        const ConstString & getGroupName() const;
+
+    public:
         void addResource( const ResourcePtr & _resource );
 
     public:
@@ -25,6 +29,8 @@ namespace Mengine
         void uncache();
 
     protected:
+        ConstString m_groupName;
+
         VectorResources m_resources;
     };
     //////////////////////////////////////////////////////////////////////////

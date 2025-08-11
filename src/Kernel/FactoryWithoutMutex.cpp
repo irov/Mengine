@@ -31,7 +31,7 @@ namespace Mengine
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
-        m_count.incref();
+        m_count.increfReferenceCount();
 
         IntrusivePtrBase::intrusive_ptr_add_ref( this );
 
@@ -43,6 +43,11 @@ namespace Mengine
 
         UniqueId id = Helper::generateUniqueIdentity();
         object->setUniqueIdentity( id );
+
+#if defined(MENGINE_FACTORABLE_DEBUG_ENABLE)
+        Timestamp timestamp = Helper::getSystemTimestamp();
+        object->setFactorableTimestamp( timestamp );
+#endif
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
         object->setDocument( _doc );
@@ -61,7 +66,7 @@ namespace Mengine
 
         this->_destroyObject( _object );
 
-        m_count.decref();
+        m_count.decrefReferenceCount();
 
         MENGINE_THREAD_GUARD_END( FactoryWithoutMutex, this, "FactoryWithoutMutex::destroyObject" );
 

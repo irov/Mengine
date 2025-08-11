@@ -413,7 +413,7 @@ namespace Mengine
                     LOGGER_MESSAGE_RELEASE( "%.*s%s%s [%s] (%.0f, %.0f) %.2f\n"
                         , _tab
                         , "                                         "
-                        , _child->isActivate() ? _child->isEnable() ? "+" : "-" : "#"
+                        , _child->isActivate() == true ? _child->isEnable() ? "+" : "-" : "#"
                         , _child->getName().c_str()
                         , _child->getType().c_str()
                         , _child->getTransformation()->getWorldPosition().x

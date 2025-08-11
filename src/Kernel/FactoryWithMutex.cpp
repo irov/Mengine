@@ -2,6 +2,7 @@
 
 #include "Kernel/EnumeratorHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/TimestampHelper.h"
 
 namespace Mengine
 {
@@ -41,12 +42,17 @@ namespace Mengine
             m_mutex->unlock();
         }
 
-        m_count.incref();
+        m_count.increfReferenceCount();
 
         object->setFactory( this );
 
         UniqueId id = Helper::generateUniqueIdentity();
         object->setUniqueIdentity( id );
+
+#if defined(MENGINE_FACTORABLE_DEBUG_ENABLE)
+        Timestamp timestamp = Helper::getSystemTimestamp();
+        object->setFactorableTimestamp( timestamp );
+#endif
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
         object->setDocument( _doc );
@@ -84,7 +90,7 @@ namespace Mengine
             m_mutex->unlock();
         }
 
-        m_count.decref();        
+        m_count.decrefReferenceCount();        
 
         IntrusivePtrBase::intrusive_ptr_dec_ref( this );
     }

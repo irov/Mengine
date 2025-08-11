@@ -15,26 +15,23 @@ namespace Mengine
         ~ReferenceCounter();
 
     public:
-        void setReferenceCount( uint32_t _counter );
-
-    public:
         MENGINE_INLINE uint32_t getReferenceCount() const;
         MENGINE_INLINE bool isReferencing() const;
 
     public:
-        uint32_t incref();
-        uint32_t decref();
+        uint32_t increfReferenceCount();
+        uint32_t decrefReferenceCount();
 
     public:
-        void reset();
+        void resetReferenceCount();
 
     private:
-        AtomicUInt32 m_counter;
+        AtomicUInt32 m_referenceCounter;
     };
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE uint32_t ReferenceCounter::getReferenceCount() const
     {
-        uint32_t counter = Helper::atomicLoad( m_counter );
+        uint32_t counter = Helper::atomicLoad( m_referenceCounter );
 
         return counter;
     }

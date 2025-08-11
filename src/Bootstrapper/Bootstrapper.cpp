@@ -122,10 +122,6 @@ SERVICE_EXTERN( AmplifierService );
 SERVICE_EXTERN( MockupRenderSystem );
 SERVICE_EXTERN( SilentSoundSystem );
 //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_SYSTEM_TIME)
-SERVICE_EXTERN( TimeSystem );
-#endif
-//////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_SYSTEM_FILE)
 SERVICE_EXTERN( FileSystem );
 #endif
@@ -1006,8 +1002,7 @@ namespace Mengine
         MENGINE_ADD_SERVICE( ThreadSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( NotificationService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( VocabularyService, MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ADD_SERVICE( UnicodeSystem, MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ADD_SERVICE( TimeSystem, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( UnicodeSystem, MENGINE_DOCUMENT_FACTORABLE );        
         MENGINE_ADD_SERVICE( DateTimeSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( CryptographySystem, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -1058,21 +1053,21 @@ namespace Mengine
         LOGGER_INFO( "bootstrapper", "master release '%s'", Helper::isMasterRelease() == true ? "ON" : "OFF" );
 
 #if defined(MENGINE_ASSERTION_DEBUG_ENABLE)
-        LOGGER_INFO( "bootstrapper", "enable assertion debug: ON" );
+        LOGGER_INFO( "bootstrapper", "enable assertion debug: [ON]" );
 #else
-        LOGGER_INFO( "bootstrapper", "enable assertion debug [OFF]" );
+        LOGGER_INFO( "bootstrapper", "enable assertion debug: [OFF]" );
 #endif
 
 #if defined(MENGINE_ALLOCATOR_DEBUG_ENABLE)
-        LOGGER_INFO( "bootstrapper", "enable allocator debug [ON]" );
+        LOGGER_INFO( "bootstrapper", "enable allocator debug: [ON]" );
 #else
-        LOGGER_INFO( "bootstrapper", "enable allocator debug: OFF" );
+        LOGGER_INFO( "bootstrapper", "enable allocator debug: [OFF]" );
 #endif
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
-        LOGGER_INFO( "bootstrapper", "enable document debug: ON" );
+        LOGGER_INFO( "bootstrapper", "enable document debug: [ON]" );
 #else
-        LOGGER_INFO( "bootstrapper", "enable document debug [OFF]" );
+        LOGGER_INFO( "bootstrapper", "enable document debug: [OFF]" );
 #endif
 
 #if defined(MENGINE_PLUGIN_INI_STATIC)
@@ -2236,7 +2231,6 @@ namespace Mengine
         SERVICE_FINALIZE( NotificationService );
         SERVICE_FINALIZE( PrototypeService );
         SERVICE_FINALIZE( FactoryService );
-        SERVICE_FINALIZE( TimeSystem );
         SERVICE_FINALIZE( DateTimeSystem );
         SERVICE_FINALIZE( UnicodeSystem );
         SERVICE_FINALIZE( ThreadSystem );
@@ -2295,7 +2289,6 @@ namespace Mengine
         SERVICE_DESTROY( ArchiveService );
         SERVICE_DESTROY( MemoryService );
         SERVICE_DESTROY( ThreadService );
-        SERVICE_DESTROY( TimeSystem );
         SERVICE_DESTROY( DateTimeSystem );
         SERVICE_DESTROY( EasingService );
         SERVICE_DESTROY( VocabularyService );

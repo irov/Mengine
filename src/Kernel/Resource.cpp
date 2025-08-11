@@ -146,14 +146,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Resource::finalize()
     {
-        MENGINE_ASSERTION_FATAL( m_initialize == true, "resource '%s' type '%s' not initialize"
+        MENGINE_ASSERTION_FATAL( m_initialize == true, "resource '%s' type '%s' not initialize (doc: %s)"
             , this->getName().c_str()
             , this->getType().c_str()
+            , MENGINE_DOCUMENT_STR( this->getDocument() )
         );
 
-        MENGINE_ASSERTION_FATAL( this->isCompile() == false, "resource '%s' type '%s' not release before finalize"
+        MENGINE_ASSERTION_FATAL( this->isCompile() == false, "resource '%s' type '%s' group '%s' cache '%d' keep '%d' mapping '%d' precompile '%d' ignored '%d' not release before finalize (doc: %s)"
             , this->getName().c_str()
             , this->getType().c_str()
+            , this->getGroupName().c_str()
+            , this->isGroupCache()
+            , this->isKeep()
+            , this->isMapping()
+            , this->isPrecompile()
+            , this->isIgnored()
+            , MENGINE_DOCUMENT_STR( this->getDocument() )
         );
 
         this->_finalize();
@@ -177,7 +185,9 @@ namespace Mengine
             , this->getType().c_str()
         );
 
-        if( m_compileReferenceCount.incref() != 0 )
+        uint32_t referenceCount = m_compileReferenceCount.increfReferenceCount();
+
+        if( referenceCount != 0 )
         {
             return true;
         }
@@ -191,7 +201,7 @@ namespace Mengine
 
         if( Compilable::compile() == false )
         {
-            m_compileReferenceCount.reset();
+            m_compileReferenceCount.resetReferenceCount();
 
             return false;
         }
@@ -213,7 +223,9 @@ namespace Mengine
             , this->getType().c_str()
         );
 
-        if( m_compileReferenceCount.decref() != 0 )
+        uint32_t referenceCount = m_compileReferenceCount.decrefReferenceCount();
+
+        if( referenceCount != 0 )
         {
             return;
         }
@@ -237,14 +249,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Resource::prefetch( const LambdaPrefetch & _lambda )
     {
-        if( m_prefetchReferenceCount.incref() != 0 )
+        uint32_t referenceCount = m_prefetchReferenceCount.increfReferenceCount();
+
+        if( referenceCount != 0 )
         {
             return true;
         }
         
         if( _lambda() == false )
         {
-            m_prefetchReferenceCount.decref();
+            m_prefetchReferenceCount.decrefReferenceCount();
 
             return false;
         }
@@ -261,7 +275,9 @@ namespace Mengine
             return false;
         }
 
-        if( m_prefetchReferenceCount.decref() != 0 )
+        uint32_t referenceCount = m_prefetchReferenceCount.decrefReferenceCount();
+
+        if( referenceCount != 0 )
         {
             return true;
         }
@@ -278,14 +294,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Resource::cache()
     {
-        if( m_cacheReferenceCount.incref() != 0 )
+        uint32_t referenceCount = m_cacheReferenceCount.increfReferenceCount();
+
+        if( referenceCount != 0 )
         {
             return true;
         }
 
         if( this->compile() == false )
         {
-            m_cacheReferenceCount.reset();
+            m_cacheReferenceCount.resetReferenceCount();
 
             LOGGER_ERROR( "cache resource '%s' group '%s' invalid compile"
                 , this->getName().c_str()
@@ -302,7 +320,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Resource::uncache()
     {
-        if( m_cacheReferenceCount.decref() != 0 )
+        uint32_t referenceCount = m_cacheReferenceCount.decrefReferenceCount();
+
+        if( referenceCount != 0 )
         {
             return;
         }

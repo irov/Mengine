@@ -7,6 +7,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/EnumeratorHelper.h"
+#include "Kernel/TimestampHelper.h"
 
 namespace Mengine
 {
@@ -50,6 +51,11 @@ namespace Mengine
 
             UniqueId id = Helper::generateUniqueIdentity();
             factorable->setUniqueIdentity( id );
+
+#if defined(MENGINE_FACTORABLE_DEBUG_ENABLE)
+            Timestamp timestamp = Helper::getSystemTimestamp();
+            factorable->setFactorableTimestamp( timestamp );
+#endif
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
             factorable->setDocument( _doc );

@@ -941,8 +941,14 @@ namespace Mengine
 
         m_initializeModules = false;
 
-        for( const ScriptModulePackage & package : m_bootstrapperModules )
+        for( VectorScriptModulePack::const_reverse_iterator
+            it = m_bootstrapperModules.rbegin(),
+            it_end = m_bootstrapperModules.rend();
+            it != it_end;
+            ++it )
         {
+            const ScriptModulePackage & package = *it;
+
             if( package.module.empty() == true )
             {
                 continue;
@@ -1158,7 +1164,7 @@ namespace Mengine
 
         ConstStringHolderPythonString * holder = m_poolPythonString.createT();
 
-        holder->setPythonObject( m_kernel, (PyObject *)_object );
+        holder->setPythonObject( m_kernel, _object );
 
         if( STRINGIZE_SERVICE()
             ->stringizeExternal( holder, _cstr ) == false )

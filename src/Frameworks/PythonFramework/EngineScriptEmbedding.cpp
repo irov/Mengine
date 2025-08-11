@@ -2108,6 +2108,8 @@ namespace Mengine
             {
                 ResourcePacketPtr resourcePacket = Helper::makeFactorableUnique<ResourcePacket>( MENGINE_DOCUMENT_PYTHON );
 
+                resourcePacket->setGroupName( _groupName );
+
                 RESOURCE_SERVICE()
                     ->foreachGroupResources( _groupName, [resourcePacket]( const ResourcePtr & _resource )
                 {

@@ -46,7 +46,7 @@ namespace Mengine
         public:
             bool initialize()
             {
-                m_factorySoundAffectorCallback = Helper::makeFactoryPool<SoundAffectorCallback, 4>( MENGINE_DOCUMENT_FACTORABLE );
+                m_factorySoundAffectorCallback = Helper::makeFactoryPool<PythonSoundAffectorCallback, 4>( MENGINE_DOCUMENT_FACTORABLE );
 
                 m_affectorCreatorSound = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float>>( MENGINE_DOCUMENT_FACTORABLE );
                 m_affectorCreatorSound->initialize();
@@ -66,21 +66,21 @@ namespace Mengine
 
         public:
             //////////////////////////////////////////////////////////////////////////
-            class MySoundNodeListener
+            class PythonSoundListener
                 : public SoundListenerInterface
                 , public PythonCallbackProvider
                 , public Factorable
             {
-                DECLARE_FACTORABLE( MySoundNodeListener );
+                DECLARE_FACTORABLE( PythonSoundListener );
 
             public:
-                MySoundNodeListener( const ResourceSoundPtr & _resource, const pybind::object & _cbs, const pybind::args & _args )
+                PythonSoundListener( const ResourceSoundPtr & _resource, const pybind::object & _cbs, const pybind::args & _args )
                     : PythonCallbackProvider( _cbs, _args )
                     , m_resource( _resource )
                 {
                 }
 
-                ~MySoundNodeListener() override
+                ~PythonSoundListener() override
                 {
                     if( m_resource != nullptr )
                     {
@@ -92,15 +92,11 @@ namespace Mengine
             protected:
                 void onSoundPause( const SoundIdentityInterfacePtr & _identity ) override
                 {
-                    MENGINE_UNUSED( _identity );
-
                     this->call_method( "onSoundPause", _identity );
                 }
 
                 void onSoundResume( const SoundIdentityInterfacePtr & _identity ) override
                 {
-                    MENGINE_UNUSED( _identity );
-
                     this->call_method( "onSoundResume", _identity );
                 }
 
@@ -146,7 +142,7 @@ namespace Mengine
                 ResourceSoundPtr m_resource;
             };
             //////////////////////////////////////////////////////////////////////////
-            typedef IntrusivePtr<MySoundNodeListener, SoundListenerInterface> MySoundNodeListenerPtr;
+            typedef IntrusivePtr<PythonSoundListener, SoundListenerInterface> PythonSoundListenerPtr;
             //////////////////////////////////////////////////////////////////////////
             bool hasSound( const ConstString & _resourceName )
             {
@@ -237,7 +233,7 @@ namespace Mengine
                     return nullptr;
                 }
 
-                MySoundNodeListenerPtr snlistener = Helper::makeFactorableUnique<MySoundNodeListener>( _doc, resource, _cbs, _args );
+                PythonSoundListenerPtr snlistener = Helper::makeFactorableUnique<PythonSoundListener>( _doc, resource, _cbs, _args );
 
                 soundIdentity->setSoundListener( snlistener );
 
@@ -383,19 +379,19 @@ namespace Mengine
                     ->setPosition( _identity, _position );
             }
             //////////////////////////////////////////////////////////////////////////
-            class SoundAffectorCallback
+            class PythonSoundAffectorCallback
                 : public AffectorCallbackInterface
                 , public PythonCallbackProvider
                 , public Factorable
             {
-                DECLARE_FACTORABLE( SoundAffectorCallback );
+                DECLARE_FACTORABLE( PythonSoundAffectorCallback );
 
             public:
-                SoundAffectorCallback()
+                PythonSoundAffectorCallback()
                 {
                 }
 
-                ~SoundAffectorCallback() override
+                ~PythonSoundAffectorCallback() override
                 {
                 }
 
@@ -423,11 +419,11 @@ namespace Mengine
                 SoundIdentityInterfacePtr m_soundIdentity;
             };
             //////////////////////////////////////////////////////////////////////////
-            typedef IntrusivePtr<SoundAffectorCallback, AffectorCallbackInterface> SoundAffectorCallbackPtr;
+            typedef IntrusivePtr<PythonSoundAffectorCallback, AffectorCallbackInterface> PythonSoundAffectorCallbackPtr;
             //////////////////////////////////////////////////////////////////////////
             FactoryInterfacePtr m_factorySoundAffectorCallback;
             //////////////////////////////////////////////////////////////////////////
-            SoundAffectorCallbackPtr createSoundAffectorCallback( const SoundIdentityInterfacePtr & _identity, const pybind::object & _cb, const pybind::args & _args )
+            PythonSoundAffectorCallbackPtr createSoundAffectorCallback( const SoundIdentityInterfacePtr & _identity, const pybind::object & _cb, const pybind::args & _args )
             {
                 if( _cb.is_none() == true )
                 {
@@ -436,7 +432,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid identity create sound affector callback" );
 
-                SoundAffectorCallbackPtr callback = m_factorySoundAffectorCallback->createObject( MENGINE_DOCUMENT_PYTHON );
+                PythonSoundAffectorCallbackPtr callback = m_factorySoundAffectorCallback->createObject( MENGINE_DOCUMENT_PYTHON );
 
                 callback->initialize( _identity, _cb, _args );
 
@@ -460,7 +456,7 @@ namespace Mengine
                     return false;
                 }
 
-                SoundAffectorCallbackPtr callback = createSoundAffectorCallback( _identity, _cb, _args );
+                PythonSoundAffectorCallbackPtr callback = createSoundAffectorCallback( _identity, _cb, _args );
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
@@ -545,7 +541,7 @@ namespace Mengine
                     return false;
                 }
 
-                SoundAffectorCallbackPtr callback = createSoundAffectorCallback( _identity, _cb, _args );
+                PythonSoundAffectorCallbackPtr callback = createSoundAffectorCallback( _identity, _cb, _args );
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
@@ -788,8 +784,7 @@ namespace Mengine
             return false;
         }
 
-        pybind::interface_<SoundIdentityInterface, pybind::bases<Mixin>>( _kernel, "SoundIdentity" )
-            .def( "getId", &SoundIdentityInterface::getUniqueIdentity )
+        pybind::interface_<SoundIdentityInterface, pybind::bases<Factorable>>( _kernel, "SoundIdentity" )
             .def( "isStreamable", &SoundIdentityInterface::getStreamable )
             .def( "getStreamable", &SoundIdentityInterface::getStreamable )
             .def( "getLoop", &SoundIdentityInterface::getLoop )

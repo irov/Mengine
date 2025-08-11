@@ -7,6 +7,7 @@
 #include "Kernel/Mixin.h"
 
 #include "Config/UniqueId.h"
+#include "Config/Timestamp.h"
 
 namespace Mengine
 {
@@ -76,8 +77,12 @@ namespace Mengine
     public:
         virtual ESoundSourceCategory getCategory() const = 0;
 
+    public:
         virtual void setState( ESoundSourceState _state ) = 0;
         virtual ESoundSourceState getState() const = 0;
+
+    public:
+        virtual Timestamp getStateTimestamp() const = 0;
 
     public:
         virtual void setTimeLeft( float _timeLeft ) = 0;

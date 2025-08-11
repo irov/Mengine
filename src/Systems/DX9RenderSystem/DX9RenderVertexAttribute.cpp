@@ -38,7 +38,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderVertexAttribute::compile( IDirect3DDevice9 * _pD3DDevice )
     {
-        if( m_compileReferenceCount.incref() == 0 )
+        uint32_t referenceCount = m_compileReferenceCount.increfReferenceCount();
+
+        if( referenceCount == 0 )
         {
             MENGINE_ASSERTION_FATAL( m_pD3DVertexDeclaration == nullptr, "vertex declaration is already compile" );
 
@@ -86,7 +88,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderVertexAttribute::release()
     {
-        if( m_compileReferenceCount.decref() == 0 )
+        uint32_t referenceCount = m_compileReferenceCount.decrefReferenceCount();
+
+        if( referenceCount == 0 )
         {
             MENGINE_DXRELEASE( m_pD3DVertexDeclaration );
         }

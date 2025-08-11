@@ -18,7 +18,9 @@ namespace Mengine
     {
         MENGINE_THREAD_GUARD_SCOPE( CompilableReference, this );
 
-        if( m_compileReferenceCount.incref() != 0 )
+        uint32_t referenceCount = m_compileReferenceCount.increfReferenceCount();
+
+        if( referenceCount != 0 )
         {
             return true;
         }
@@ -37,7 +39,9 @@ namespace Mengine
 
         MENGINE_ASSERTION_FATAL( m_compileReferenceCount.getReferenceCount() != 0, "invalid release compilable zero reference" );
 
-        if( m_compileReferenceCount.decref() != 0 )
+        uint32_t referenceCount = m_compileReferenceCount.decrefReferenceCount();
+
+        if( referenceCount != 0 )
         {
             return;
         }

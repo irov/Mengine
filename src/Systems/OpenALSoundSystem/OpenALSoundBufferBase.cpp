@@ -25,7 +25,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundBufferBase::acquireSoundBuffer()
     {
-        if( m_refacquire.incref() != 0 )
+        uint32_t referenceCount = m_refacquire.increfReferenceCount();
+
+        if( referenceCount != 0 )
         {
             return true;
         }
@@ -40,7 +42,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundBufferBase::releaseSoundBuffer()
     {
-        if( m_refacquire.decref() != 0 )
+        uint32_t referenceCount = m_refacquire.decrefReferenceCount();
+
+        if( referenceCount != 0 )
         {
             return;
         }

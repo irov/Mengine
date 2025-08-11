@@ -4,6 +4,7 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/PrototypeHelper.h"
 #include "Kernel/MixerMultiplicative.h"
+#include "Kernel/TimestampHelper.h"
 
 namespace Mengine
 {
@@ -13,6 +14,7 @@ namespace Mengine
         , m_timeLeft( 0.f )
         , m_state( ESS_STOP )
         , m_category( ES_SOURCE_CATEGORY_SOUND )
+        , m_stateTimestamp( 0 )
         , m_streamable( false )
         , m_loop( false )
         , m_turn( false )
@@ -167,11 +169,18 @@ namespace Mengine
     void SoundIdentity::setState( ESoundSourceState _state )
     {
         m_state = _state;
+
+        m_stateTimestamp = Helper::getSystemTimestamp();
     }
     //////////////////////////////////////////////////////////////////////////
     ESoundSourceState SoundIdentity::getState() const
     {
         return m_state;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Timestamp SoundIdentity::getStateTimestamp() const
+    {
+        return m_stateTimestamp;
     }
     //////////////////////////////////////////////////////////////////////////
     void SoundIdentity::setTimeLeft( float _timeLeft )

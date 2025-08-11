@@ -8,11 +8,11 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Factorable::Factorable()
-        : m_factory( nullptr )
-        , m_id( INVALID_UNIQUE_ID )
+        : m_factorableFactory( nullptr )
+        , m_factorableId( INVALID_UNIQUE_ID )
 #if defined(MENGINE_FACTORABLE_DEBUG_ENABLE)
-        , m_destroy( false )
-        , m_immortal( false )
+        , m_factorableTimestamp( 0 )
+        , m_factorableDestroy( false )
 #endif
     {
     }
@@ -20,7 +20,7 @@ namespace Mengine
     Factorable::~Factorable()
     {
 #if defined(MENGINE_FACTORABLE_DEBUG_ENABLE)
-        if( m_destroy == false && m_factory != nullptr )
+        if( m_factorableDestroy == false && m_factorableFactory != nullptr )
         {
             MENGINE_THROW_EXCEPTION( "Factorable deleter but not destroy!!" );
 
@@ -31,56 +31,49 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Factorable::setFactory( FactoryInterface * _factory )
     {
-        m_factory = _factory;
+        m_factorableFactory = _factory;
     }
     //////////////////////////////////////////////////////////////////////////
     void Factorable::setUniqueIdentity( UniqueId _id )
     {
-        m_id = _id;
+        m_factorableId = _id;
     }
+    //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_FACTORABLE_DEBUG_ENABLE)
+    //////////////////////////////////////////////////////////////////////////
+    void Factorable::setFactorableTimestamp( Timestamp _timestamp )
+    {
+        m_factorableTimestamp = _timestamp;
+    }
+    //////////////////////////////////////////////////////////////////////////
+#endif
     //////////////////////////////////////////////////////////////////////////
     const ConstString & Factorable::getType() const
     {
-        if( m_factory == nullptr )
+        if( m_factorableFactory == nullptr )
         {
             return ConstString::none();
         }
 
-        const ConstString & type = m_factory->getType();
+        const ConstString & type = m_factorableFactory->getType();
 
         return type;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Factorable::setImmortal( bool _value )
-    {
-        MENGINE_UNUSED( _value );
-
-#if defined(MENGINE_FACTORABLE_DEBUG_ENABLE)
-        m_immortal = _value;
-#endif
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Factorable::getImmortal() const
-    {
-#if defined(MENGINE_FACTORABLE_DEBUG_ENABLE)
-        return m_immortal;
-#else
-        return false;
-#endif
-    }
-    //////////////////////////////////////////////////////////////////////////
     uint32_t Factorable::incref()
     {
-        m_reference.incref();
+        m_factorableReference.increfReferenceCount();
 
-        uint32_t count = m_reference.getReferenceCount();
+        uint32_t referenceCount = m_factorableReference.getReferenceCount();
 
-        return count;
+        return referenceCount;
     }
     //////////////////////////////////////////////////////////////////////////
     void Factorable::decref()
     {
-        if( m_reference.decref() != 0 )
+        uint32_t referenceCount = m_factorableReference.decrefReferenceCount();
+
+        if( referenceCount != 0 )
         {
             return;
         }
@@ -90,37 +83,28 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t Factorable::getrefcount() const
     {
-        uint32_t count = m_reference.getReferenceCount();
+        uint32_t referenceCount = m_factorableReference.getReferenceCount();
 
-        return count;
+        return referenceCount;
     }
     //////////////////////////////////////////////////////////////////////////
     void Factorable::destroy()
     {
 #if defined(MENGINE_FACTORABLE_DEBUG_ENABLE)
-        if( m_immortal == true )
-        {
-            MENGINE_THROW_EXCEPTION( "m_immortal == true" );
-
-            return;
-        }
-#endif
-
-#if defined(MENGINE_FACTORABLE_DEBUG_ENABLE)
-        if( m_destroy == true )
+        if( m_factorableDestroy == true )
         {
             MENGINE_THROW_EXCEPTION( "m_destroy == true" );
 
             return;
         }
 
-        m_destroy = true;
+        m_factorableDestroy = true;
 #endif
 
         this->_destroy();
 
 #if defined(MENGINE_FACTORABLE_DEBUG_ENABLE)
-        if( m_factory == nullptr )
+        if( m_factorableFactory == nullptr )
         {
             MENGINE_THROW_EXCEPTION( "m_factory == nullptr" );
 
@@ -128,20 +112,21 @@ namespace Mengine
         }
 #endif
 
-        m_factory->destroyObject( this );
+        m_factorableFactory->destroyObject( this );
     }
     //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_FACTORABLE_DEBUG_ENABLE)
     //////////////////////////////////////////////////////////////////////////
     bool Factorable::isDestroyed() const
     {
-        return m_destroy;
+        return m_factorableDestroy;
     }
     //////////////////////////////////////////////////////////////////////////
 #endif
     //////////////////////////////////////////////////////////////////////////
     void Factorable::_destroy()
     {
+        // Empty
     }
     //////////////////////////////////////////////////////////////////////////
 

@@ -66,7 +66,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderProgram::compile( IDirect3DDevice9 * _pD3DDevice )
     {
-        if( m_compileReferenceCount.incref() == 0 )
+        uint32_t referenceCount = m_compileReferenceCount.increfReferenceCount();
+
+        if( referenceCount == 0 )
         {
             LOGGER_INFO( "render", "compile program '%s'"
                 , this->getName().c_str()
@@ -82,7 +84,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderProgram::release()
     {
-        if( m_compileReferenceCount.decref() == 0 )
+        uint32_t referenceCount = m_compileReferenceCount.decrefReferenceCount();
+
+        if( referenceCount == 0 )
         {
             LOGGER_INFO( "render", "release program '%s'"
                 , this->getName().c_str()

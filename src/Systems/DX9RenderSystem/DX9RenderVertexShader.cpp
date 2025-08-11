@@ -45,7 +45,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderVertexShader::compile( IDirect3DDevice9 * _pD3DDevice )
     {
-        if( m_compileReferenceCount.incref() == 0 )
+        uint32_t referenceCount = m_compileReferenceCount.increfReferenceCount();
+
+        if( referenceCount == 0 )
         {
             MENGINE_ASSERTION_FATAL( m_pD3DVertexShader == nullptr, "shader '%s' already compiled"
                 , this->getName().c_str()
@@ -71,7 +73,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderVertexShader::release()
     {
-        if( m_compileReferenceCount.decref() == 0 )
+        uint32_t referenceCount = m_compileReferenceCount.decrefReferenceCount();
+
+        if( referenceCount == 0 )
         {
             MENGINE_DXRELEASE( m_pD3DVertexShader );
         }

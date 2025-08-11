@@ -61,7 +61,7 @@ namespace Mengine
             return DevToDebugTabPtr::dynamic_from( tab );
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool hasDevToDebugTab(const ConstString & _name )
+        static bool hasDevToDebugTab( const ConstString & _name )
         {
             bool result = DEVTODEBUG_SERVICE()
                 ->hasTab( _name );
@@ -79,11 +79,11 @@ namespace Mengine
         {
             if( _widget == nullptr )
             {
-                LOGGER_ERROR("DevToDebugTab invalid add widget [nullptr]");
-                
+                LOGGER_ERROR( "DevToDebugTab invalid add widget [nullptr]" );
+
                 return;
             }
-            
+
             _tab->addWidget( _widget );
         }
         //////////////////////////////////////////////////////////////////////////
@@ -422,7 +422,8 @@ namespace Mengine
             ;
 
         pybind::interface_<DevToDebugWidget, pybind::bases<Scriptable>>( _kernel, "DevToDebugWidget" )
-            .def( "getId", &DevToDebugWidget::getWidgetId )
+            .def_deprecated( "getId", &DevToDebugWidget::getWidgetId, "use getWidgetId" )
+            .def( "getWidgetId", &DevToDebugWidget::getWidgetId )
             .def_static_args( "setHide", &Detail::DevToDebugWidget_setHide )
             ;
 

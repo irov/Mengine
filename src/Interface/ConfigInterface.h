@@ -48,28 +48,22 @@ namespace Mengine
         bool hasValueInteger( const Char * _section, const Char * _key, T _default, T * const _value ) const
         {
             int64_t value;
-            if( this->hasValue( _section, _key, (int64_t)_default, &value ) == false )
-            {
-                return false;
-            }
+            bool result = this->hasValue( _section, _key, (int64_t)_default, &value );
 
             *_value = (T)value;
 
-            return true;
+            return result;
         }
 
         template<class T>
         bool hasValueFloat( const Char * _section, const Char * _key, T _default, T * const _value ) const
         {
             double value;
-            if( this->hasValue( _section, _key, (double)_default, &value ) == false )
-            {
-                return false;
-            }
+            bool result = this->hasValue( _section, _key, (double)_default, &value );
 
             *_value = (T)value;
 
-            return true;
+            return result;
         }
 
     public:

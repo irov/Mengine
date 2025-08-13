@@ -1013,7 +1013,7 @@ namespace Mengine
                     ->removeGlobalModule( _name );
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_logInfo( pybind::kernel_interface * _kernel, const StringView & _message )
+            void s_log( pybind::kernel_interface * _kernel, const StringView & _message, ELoggerLevel _level, uint32_t _color, uint32_t _flag )
             {
                 Path filename = {'\0'};
                 Char function[MENGINE_CODE_MAX_FUNCTION_NAME + 1] = {'\0'};
@@ -1024,149 +1024,53 @@ namespace Mengine
                 msg.timestamp = Helper::getLocalTimestamp();
                 msg.category = "python";
                 msg.thread = Helper::getCurrentThreadName();
-                msg.level = LM_INFO;
+                msg.level = _level;
                 msg.filter = LFILTER_NONE;
-                msg.color = LCOLOR_GREEN | LCOLOR_BLUE;
-                msg.flag = LFLAG_SHORT;
+                msg.color = _color;
+                msg.flag = _flag;
                 msg.file = filename;
                 msg.line = lineno;
                 msg.function = function;
-
                 msg.data = _message.c_str();
                 msg.size = _message.size();
 
                 LOGGER_SERVICE()
                     ->logMessage( msg );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_logDebug( pybind::kernel_interface * _kernel, const StringView & _message )
+            {
+                s_log( _kernel, _message, LM_DEBUG, LCOLOR_BLUE, LFLAG_SHORT );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_logInfo( pybind::kernel_interface * _kernel, const StringView & _message )
+            {
+                s_log( _kernel, _message, LM_INFO, LCOLOR_GREEN | LCOLOR_BLUE, LFLAG_SHORT );
             }
             //////////////////////////////////////////////////////////////////////////
             void s_logMessage( pybind::kernel_interface * _kernel, const StringView & _message )
             {
-                Path filename = {'\0'};
-                Char function[MENGINE_CODE_MAX_FUNCTION_NAME + 1] = {'\0'};
-                uint32_t lineno = 0;
-                _kernel->get_statetrace_top( filename, MENGINE_MAX_PATH, function, MENGINE_CODE_MAX_FUNCTION_NAME, &lineno );
-
-                LoggerMessage msg;
-                msg.timestamp = Helper::getLocalTimestamp();
-                msg.category = "python";
-                msg.thread = Helper::getCurrentThreadName();
-                msg.level = LM_MESSAGE;
-                msg.filter = LFILTER_NONE;
-                msg.color = LCOLOR_GREEN;
-                msg.flag = LFLAG_SHORT;
-                msg.file = filename;
-                msg.line = lineno;
-                msg.function = function;
-
-                msg.data = _message.c_str();
-                msg.size = _message.size();
-
-                LOGGER_SERVICE()
-                    ->logMessage( msg );
+                s_log( _kernel, _message, LM_MESSAGE, LCOLOR_GREEN, LFLAG_SHORT );
             }
             //////////////////////////////////////////////////////////////////////////
             void s_logWarning( pybind::kernel_interface * _kernel, const StringView & _message )
             {
-                Path filename = {'\0'};
-                Char function[MENGINE_CODE_MAX_FUNCTION_NAME + 1] = {'\0'};
-                uint32_t lineno = 0;
-                _kernel->get_statetrace_top( filename, MENGINE_MAX_PATH, function, MENGINE_CODE_MAX_FUNCTION_NAME, &lineno );
-
-                LoggerMessage msg;
-                msg.timestamp = Helper::getLocalTimestamp();
-                msg.category = "python";
-                msg.thread = Helper::getCurrentThreadName();
-                msg.level = LM_WARNING;
-                msg.filter = LFILTER_NONE;
-                msg.color = LCOLOR_RED | LCOLOR_GREEN;
-                msg.flag = LFLAG_SHORT;
-                msg.file = filename;
-                msg.line = lineno;
-                msg.function = function;
-
-                msg.data = _message.c_str();
-                msg.size = _message.size();
-
-                LOGGER_SERVICE()
-                    ->logMessage( msg );
+                s_log( _kernel, _message, LM_WARNING, LCOLOR_RED | LCOLOR_GREEN, LFLAG_SHORT );
             }
             //////////////////////////////////////////////////////////////////////////
             void s_logError( pybind::kernel_interface * _kernel, const StringView & _message )
             {
-                Path filename = {'\0'};
-                Char function[MENGINE_CODE_MAX_FUNCTION_NAME + 1] = {'\0'};
-                uint32_t lineno = 0;
-                _kernel->get_statetrace_top( filename, MENGINE_MAX_PATH, function, MENGINE_CODE_MAX_FUNCTION_NAME, &lineno );
-
-                LoggerMessage msg;
-                msg.timestamp = Helper::getLocalTimestamp();
-                msg.category = "python";
-                msg.thread = Helper::getCurrentThreadName();
-                msg.level = LM_ERROR;
-                msg.filter = LFILTER_NONE;
-                msg.color = LCOLOR_RED;
-                msg.flag = LFLAG_SHORT;
-                msg.file = filename;
-                msg.line = lineno;
-                msg.function = function;
-
-                msg.data = _message.c_str();
-                msg.size = _message.size();
-
-                LOGGER_SERVICE()
-                    ->logMessage( msg );
+                s_log( _kernel, _message, LM_ERROR, LCOLOR_RED, LFLAG_SHORT );
             }
             //////////////////////////////////////////////////////////////////////////
             void s_logMessageRelease( pybind::kernel_interface * _kernel, const StringView & _message )
             {
-                Path filename = {'\0'};
-                Char function[MENGINE_CODE_MAX_FUNCTION_NAME + 1] = {'\0'};
-                uint32_t lineno = 0;
-                _kernel->get_statetrace_top( filename, MENGINE_MAX_PATH, function, MENGINE_CODE_MAX_FUNCTION_NAME, &lineno );
-
-                LoggerMessage msg;
-                msg.timestamp = Helper::getLocalTimestamp();
-                msg.category = "python";
-                msg.thread = Helper::getCurrentThreadName();
-                msg.level = LM_MESSAGE_RELEASE;
-                msg.filter = LFILTER_NONE;
-                msg.color = LCOLOR_RED | LCOLOR_BLUE;
-                msg.flag = LFLAG_SHORT;
-                msg.file = filename;
-                msg.line = lineno;
-                msg.function = function;
-
-                msg.data = _message.c_str();
-                msg.size = _message.size();
-
-                LOGGER_SERVICE()
-                    ->logMessage( msg );
+                s_log( _kernel, _message, LM_MESSAGE_RELEASE, LCOLOR_RED | LCOLOR_BLUE, LFLAG_SHORT );
             }
             //////////////////////////////////////////////////////////////////////////
             void s_logFatal( pybind::kernel_interface * _kernel, const StringView & _message )
             {
-                Path filename = {'\0'};
-                Char function[MENGINE_CODE_MAX_FUNCTION_NAME + 1] = {'\0'};
-                uint32_t lineno = 0;
-                _kernel->get_statetrace_top( filename, MENGINE_MAX_PATH, function, MENGINE_CODE_MAX_FUNCTION_NAME, &lineno );
-
-                LoggerMessage msg;
-                msg.timestamp = Helper::getLocalTimestamp();
-                msg.category = "python";
-                msg.thread = Helper::getCurrentThreadName();
-                msg.level = LM_FATAL;
-                msg.filter = LFILTER_NONE;
-                msg.color = LCOLOR_RED;
-                msg.flag = LFLAG_FULL;
-                msg.file = filename;
-                msg.line = lineno;
-                msg.function = function;
-
-                msg.data = _message.c_str();
-                msg.size = _message.size();
-
-                LOGGER_SERVICE()
-                    ->logMessage( msg );
+                s_log( _kernel, _message, LM_FATAL, LCOLOR_RED, LFLAG_FULL );
             }
             //////////////////////////////////////////////////////////////////////////
             UniqueId s_enumerator()
@@ -4079,6 +3983,7 @@ namespace Mengine
 
         HelperScriptMethodPtr helperScriptMethod = Helper::makeFactorableUnique<HelperScriptMethod>( MENGINE_DOCUMENT_FACTORABLE );
 
+        pybind::def_functor_kernel( _kernel, "logDebug", helperScriptMethod, &HelperScriptMethod::s_logDebug );
         pybind::def_functor_kernel( _kernel, "logInfo", helperScriptMethod, &HelperScriptMethod::s_logInfo );
         pybind::def_functor_kernel( _kernel, "logMessage", helperScriptMethod, &HelperScriptMethod::s_logMessage );
         pybind::def_functor_kernel( _kernel, "logWarning", helperScriptMethod, &HelperScriptMethod::s_logWarning );

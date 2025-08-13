@@ -168,8 +168,8 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
         };
 
         PendingPurchasesParams pendingPurchasesParams = PendingPurchasesParams.newBuilder()
-                .enableOneTimeProducts()
-                .build();
+            .enableOneTimeProducts()
+            .build();
 
         m_billingClient = BillingClient.newBuilder(application)
             .setListener(purchasesUpdatedListener)

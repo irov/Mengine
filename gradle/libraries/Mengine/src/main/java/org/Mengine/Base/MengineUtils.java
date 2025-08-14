@@ -67,7 +67,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 public class MengineUtils {
-    public static final MengineTag TAG = MengineTag.of("MengineUtils");
+    public static final MengineTag TAG = MengineTag.of("MUtils");
 
     public static Class<?> getClazz(@NonNull ClassLoader cl, @NonNull MengineTag TAG, String name, boolean required) {
         try {

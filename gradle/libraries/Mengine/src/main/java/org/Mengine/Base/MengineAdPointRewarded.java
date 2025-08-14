@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 import org.json.JSONObject;
 
 public class MengineAdPointRewarded extends MengineAdPointBase {
-    public static final MengineTag TAG = MengineTag.of("MengineAdPointRewarded");
+    public static final MengineTag TAG = MengineTag.of("MAdPointRewarded");
 
     MengineAdPointRewarded(@NonNull String name, @NonNull JSONObject values) {
         super(name, values);

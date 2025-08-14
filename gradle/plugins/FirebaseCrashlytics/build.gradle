@@ -1,6 +1,8 @@
 apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/gms.gradle'
 
+def MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS_ANRMONITOR = Utils.getBooleanProperty("MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS_ANRMONITOR", false)
+
 android {
     namespace "org.Mengine.Plugin.FirebaseCrashlytics"
 }
@@ -10,4 +12,10 @@ dependencies {
 
     implementation 'com.google.firebase:firebase-crashlytics:20.0.0'
     implementation 'com.google.firebase:firebase-crashlytics-ndk:20.0.0'
+}
+
+android {
+    defaultConfig {
+        buildConfigField "boolean", "MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS_ANRMONITOR", "${MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS_ANRMONITOR}"
+    }
 }

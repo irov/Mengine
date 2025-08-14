@@ -8,7 +8,6 @@ import androidx.annotation.Size;
 import com.google.firebase.crashlytics.CustomKeysAndValues;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
-import org.Mengine.Base.BuildConfig;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineFatalErrorException;
@@ -100,12 +99,16 @@ public class MengineFirebaseCrashlyticsPlugin extends MengineService implements 
 
     @Override
     public void onResume(@NonNull MengineActivity activity) {
-        MengineFirebaseCrashlyticsANRMonitor.start();
+        if (BuildConfig.MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS_ANRMONITOR == true) {
+            MengineFirebaseCrashlyticsANRMonitor.start();
+        }
     }
 
     @Override
     public void onPause(@NonNull MengineActivity activity) {
-        MengineFirebaseCrashlyticsANRMonitor.stop();
+        if (BuildConfig.MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS_ANRMONITOR == true) {
+            MengineFirebaseCrashlyticsANRMonitor.stop();
+        }
     }
 
     @Override

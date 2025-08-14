@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MenginePreferences {
-    public static final MengineTag TAG = MengineTag.of("MenginePreferences");
+    public static final MengineTag TAG = MengineTag.of("MPreferences");
 
     protected static String NAME;
     protected static SharedPreferences PREFERENCES;
@@ -104,7 +104,9 @@ public class MenginePreferences {
 
     static public Set<String> getPreferenceStrings(@NonNull String name, Set<String> defaultValue) {
         synchronized (MenginePreferences.SETTINGS_SYNC) {
-            Set<String> value = (Set<String>) MenginePreferences.SETTINGS.getOrDefault(name, defaultValue);
+            Object v = MenginePreferences.SETTINGS.getOrDefault(name, defaultValue);
+
+            Set<String> value = (Set<String>)MenginePreferences.SETTINGS.getOrDefault(name, defaultValue);
 
             return value;
         }
@@ -122,7 +124,7 @@ public class MenginePreferences {
 
     static public void addPreferenceStrings(@NonNull String name, Collection<String> value) {
         synchronized (MenginePreferences.SETTINGS_SYNC) {
-            Set<String> currentValue = (Set<String>) MenginePreferences.SETTINGS.getOrDefault(name, null);
+            Set<String> currentValue = (Set<String>)MenginePreferences.SETTINGS.getOrDefault(name, null);
 
             if (currentValue == null) {
                 currentValue = new HashSet<>();

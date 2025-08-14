@@ -17,7 +17,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 
 public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Callback, View.OnKeyListener, View.OnTouchListener, SensorEventListener {
-    public static final MengineTag TAG = MengineTag.of("MengineSurfaceView");
+    public static final MengineTag TAG = MengineTag.of("MSurfaceView");
 
     private SensorManager m_sensorManager;
     private Sensor m_accelerometer;

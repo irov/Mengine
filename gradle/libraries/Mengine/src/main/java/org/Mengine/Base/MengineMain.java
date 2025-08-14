@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 import java.util.concurrent.CountDownLatch;
 
 public class MengineMain implements Runnable {
-    public static final MengineTag TAG = MengineTag.of("MengineMain");
+    public static final MengineTag TAG = MengineTag.of("MMain");
 
     protected static final CountDownLatch m_runLatch = new CountDownLatch(1);
 

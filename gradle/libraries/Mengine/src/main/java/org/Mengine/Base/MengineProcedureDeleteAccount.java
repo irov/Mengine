@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 import java.util.List;
 
 public class MengineProcedureDeleteAccount implements MengineProcedureInterface {
-    private static final MengineTag TAG = MengineTag.of("MenginePDeleteAccount");
+    private static final MengineTag TAG = MengineTag.of("MPDeleteAccount");
 
     public MengineProcedureDeleteAccount() {
     }

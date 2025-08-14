@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class MengineActivity extends AppCompatActivity {
-    public static final MengineTag TAG = MengineTag.of("MengineActivity");
+    public static final MengineTag TAG = MengineTag.of("MActivity");
 
     public enum ELifecycleState {
         ACTIVITY_INITIALIZE,

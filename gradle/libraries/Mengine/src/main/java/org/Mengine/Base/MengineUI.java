@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.function.Consumer;
 
 public class MengineUI {
-    public static final MengineTag TAG = MengineTag.of("MengineUI");
+    public static final MengineTag TAG = MengineTag.of("MUI");
 
     public static void showToast(@NonNull MengineActivity activity, @NonNull String format, Object ... args) {
         if (activity == null) {

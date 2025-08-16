@@ -183,6 +183,7 @@ namespace Mengine
         VectorDeferredRenderPrograms m_deferredCompilePrograms;
 
         uint32_t m_glMaxCombinedTextureImageUnits;
+        uint32_t m_glMaxTextureSize;
 
         struct TextureStage
         {

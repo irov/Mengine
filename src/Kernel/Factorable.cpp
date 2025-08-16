@@ -11,7 +11,6 @@ namespace Mengine
         : m_factorableFactory( nullptr )
         , m_factorableId( INVALID_UNIQUE_ID )
 #if defined(MENGINE_FACTORABLE_DEBUG_ENABLE)
-        , m_factorableTimestamp( 0 )
         , m_factorableDestroy( false )
 #endif
     {
@@ -38,15 +37,6 @@ namespace Mengine
     {
         m_factorableId = _id;
     }
-    //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_FACTORABLE_DEBUG_ENABLE)
-    //////////////////////////////////////////////////////////////////////////
-    void Factorable::setFactorableTimestamp( Timestamp _timestamp )
-    {
-        m_factorableTimestamp = _timestamp;
-    }
-    //////////////////////////////////////////////////////////////////////////
-#endif
     //////////////////////////////////////////////////////////////////////////
     const ConstString & Factorable::getType() const
     {

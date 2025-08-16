@@ -139,7 +139,12 @@ namespace Mengine
 
         if( glCheckFramebufferStatus( GL_FRAMEBUFFER ) != GL_FRAMEBUFFER_COMPLETE )
         {
-            MENGINE_GLERRORCHECK();
+            GLenum err = glGetError();
+
+            LOGGER_ERROR( "invalid create framebuffer status: %d error: %d"
+                , glCheckFramebufferStatus( GL_FRAMEBUFFER )
+                , err
+            );
 
             extension->deleteTexture( m_tuid );
             m_tuid = 0;

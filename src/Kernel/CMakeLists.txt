@@ -1007,6 +1007,8 @@ Core
     WriteHelper.cpp
     WriteHelper.h
     
+    ArgsToString.h
+    
     Validator.h
     
     ServiceRequiredList.h

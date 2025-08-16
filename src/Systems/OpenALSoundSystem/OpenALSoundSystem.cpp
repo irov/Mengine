@@ -72,7 +72,9 @@ namespace Mengine
 
         m_context = context;
 
-        MENGINE_RET_OPENAL_CALL( ALCboolean, currentResult, alcMakeContextCurrent, (m_context) );
+
+        ALCboolean currentResult;
+        MENGINE_RET_OPENAL_CALL( currentResult, alcMakeContextCurrent, (m_context) );
 
         if( currentResult == ALC_FALSE )
         {
@@ -98,7 +100,8 @@ namespace Mengine
             , minorVersion
         );
 
-        MENGINE_RET_OPENAL_CALL( const ALCchar *, defaultDeviceSpecifier, alcGetString, (m_device, ALC_DEVICE_SPECIFIER) );
+        const ALCchar * defaultDeviceSpecifier;
+        MENGINE_RET_OPENAL_CALL( defaultDeviceSpecifier, alcGetString, (m_device, ALC_DEVICE_SPECIFIER) );
 
         LOGGER_MESSAGE( "OpenAL device specifier: %s"
             , defaultDeviceSpecifier

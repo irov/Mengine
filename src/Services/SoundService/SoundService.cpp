@@ -134,17 +134,6 @@ namespace Mengine
     {
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ENGINE_PREPARE_FINALIZE );
 
-        this->stopSounds_();
-
-        for( const SoundIdentityInterfacePtr & identity : m_soundIdentities )
-        {
-            this->stopSoundBufferUpdate_( identity );
-
-            identity->finalize();
-        }
-
-        m_soundIdentities.clear();
-
         if( m_threadJobSoundBufferUpdate != nullptr )
         {
             THREAD_SERVICE()
@@ -176,6 +165,20 @@ namespace Mengine
 
         m_factorySoundIdentity = nullptr;
         m_factoryWorkerTaskSoundBufferUpdate = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SoundService::_stopService()
+    {
+        this->stopSounds_();
+
+        for( const SoundIdentityInterfacePtr & identity : m_soundIdentities )
+        {
+            this->stopSoundBufferUpdate_( identity );
+
+            identity->finalize();
+        }
+
+        m_soundIdentities.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::isSupportStreamSound() const
@@ -233,7 +236,7 @@ namespace Mengine
 
             ESoundSourceState state = identity->getState();
 
-            if( state != ESS_PAUSE )
+            if( state != ESS_PLAY )
             {
                 continue;
             }
@@ -350,20 +353,21 @@ namespace Mengine
 
         bool turn = _streamable == true ? m_turnStream : m_turnSound;
 
+        LOGGER_INFO( "sound", "create sound identity: %u head: %d category: %d streamable: %d turn: %d source: %s"
+            , identity->getUniqueIdentity()
+            , _isHeadMode
+            , _category
+            , _streamable
+            , turn
+            , Helper::getDebugFullPath( _buffer->getDecoder()->getStream() ).c_str()
+        );
+
         if( identity->initialize( source, _category, _streamable, turn ) == false )
         {
             LOGGER_ERROR( "invalide initialize identity sound" );
 
             return nullptr;
         }
-
-        LOGGER_INFO( "sound", "create sound identity: %u head: %d category: %d streamable: %d turn: %d"
-            , identity->getUniqueIdentity()
-            , _isHeadMode
-            , _category
-            , _streamable
-            , turn
-        );
 
         this->updateSourceVolume_( identity );
 
@@ -705,10 +709,7 @@ namespace Mengine
 
             if( state == ESS_CANCEL )
             {
-                if( identity->getSoundListener() != nullptr )
-                {
-                    m_soundIdentitiesEndAux.emplace_back( identity );
-                }
+                m_soundIdentitiesEndAux.emplace_back( identity );
             }
             else
             {
@@ -734,10 +735,7 @@ namespace Mengine
 
                         identity->setTimeLeft( 0.f );
 
-                        if( identity->getSoundListener() != nullptr )
-                        {
-                            m_soundIdentitiesEndAux.emplace_back( identity );
-                        }
+                        m_soundIdentitiesEndAux.emplace_back( identity );
                     }
                     else
                     {
@@ -766,10 +764,7 @@ namespace Mengine
 
                         identity->setTimeLeft( 0.f );
 
-                        if( identity->getSoundListener() != nullptr )
-                        {
-                            m_soundIdentitiesEndAux.emplace_back( identity );
-                        }
+                        m_soundIdentitiesEndAux.emplace_back( identity );
                     }
                     else
                     {
@@ -787,6 +782,11 @@ namespace Mengine
         for( const SoundIdentityInterfacePtr & identity : m_soundIdentitiesEndAux )
         {
             SoundListenerInterfacePtr listener = identity->popSoundListener();
+
+            if( listener == nullptr )
+            {
+                continue;
+            }
 
             listener->onSoundEnd( identity );
         }
@@ -818,6 +818,15 @@ namespace Mengine
     bool SoundService::playEmitter( const SoundIdentityInterfacePtr & _identity )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid play identity" );
+
+        LOGGER_INFO( "sound", "play sound identity: %u state: %d category: %d streamable: %d turn: %d source: %s"
+            , _identity->getUniqueIdentity()
+            , _identity->getState()
+            , _identity->getCategory()
+            , _identity->getStreamable()
+            , _identity->getTurn()
+            , Helper::getDebugFullPath( _identity->getSoundSource()->getSoundBuffer()->getDecoder()->getStream() ).c_str()
+        );
 
         ESoundSourceState state = _identity->getState();
 
@@ -932,6 +941,15 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid pause identity" );
 
+        LOGGER_INFO( "sound", "pause sound identity: %u state: %d category: %d streamable: %d turn: %d source: %s"
+            , _identity->getUniqueIdentity()
+            , _identity->getState()
+            , _identity->getCategory()
+            , _identity->getStreamable()
+            , _identity->getTurn()
+            , Helper::getDebugFullPath( _identity->getSoundSource()->getSoundBuffer()->getDecoder()->getStream() ).c_str()
+        );
+
         ESoundSourceState state = _identity->getState();
 
         switch( state )
@@ -983,6 +1001,15 @@ namespace Mengine
     bool SoundService::resumeEmitter( const SoundIdentityInterfacePtr & _identity )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid resume identity" );
+
+        LOGGER_INFO( "sound", "resume sound identity: %u state: %d category: %d streamable: %d turn: %d source: %s"
+            , _identity->getUniqueIdentity()
+            , _identity->getState()
+            , _identity->getCategory()
+            , _identity->getStreamable()
+            , _identity->getTurn()
+            , Helper::getDebugFullPath( _identity->getSoundSource()->getSoundBuffer()->getDecoder()->getStream() ).c_str()
+        );
 
         ESoundSourceState state = _identity->getState();
 
@@ -1048,6 +1075,15 @@ namespace Mengine
     bool SoundService::stopEmitter( const SoundIdentityInterfacePtr & _identity )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid stop identity" );
+
+        LOGGER_INFO( "sound", "stop sound identity: %u state: %d category: %d streamable: %d turn: %d source: %s"
+            , _identity->getUniqueIdentity()
+            , _identity->getState()
+            , _identity->getCategory()
+            , _identity->getStreamable()
+            , _identity->getTurn()
+            , Helper::getDebugFullPath( _identity->getSoundSource()->getSoundBuffer()->getDecoder()->getStream() ).c_str()
+        );
 
         ESoundSourceState state = _identity->getState();
 
@@ -1532,18 +1568,6 @@ namespace Mengine
         }
 
         return position;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void SoundService::_stopService()
-    {
-        this->stopSounds_();
-
-        for( const SoundIdentityInterfacePtr & identity : m_soundIdentities )
-        {
-            this->stopSoundBufferUpdate_( identity );
-
-            identity->finalize();
-        }
     }
     //////////////////////////////////////////////////////////////////////////
 }

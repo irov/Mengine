@@ -25,12 +25,16 @@ extern "C"
         
         already_bootstrapped = true;
 
+        __android_log_print( ANDROID_LOG_INFO, "Mengine", "Android bootstrap started" );
+
         if( Mengine::Mengine_JNI_Initialize( _env ) == JNI_FALSE )
         {
             __android_log_print( ANDROID_LOG_ERROR, "Mengine", "[ERROR] Android bootstrap JNI initialize failed" );
 
             return nullptr;
         }
+
+        __android_log_print( ANDROID_LOG_INFO, "Mengine", "Android bootstrap JNI initialize succeeded" );
 
         Mengine::AndroidApplication * application = new Mengine::AndroidApplication();
 
@@ -57,10 +61,14 @@ extern "C"
 
             const Mengine::Char * arg_str = _env->GetStringUTFChars( jstring_arg, nullptr );
 
+            __android_log_print( ANDROID_LOG_INFO, "Mengine", "argument: %s", arg_str );
+
             argv[i + 1] = (Mengine::Char *)arg_str;
 
             _env->DeleteLocalRef( jstring_arg );
         }
+
+        __android_log_print( ANDROID_LOG_INFO, "Mengine", "Android bootstrap initializing application started" );
 
         bool result = application->bootstrap( nativeLibraryDir_str, argc + 1, argv );
 
@@ -77,12 +85,14 @@ extern "C"
 
         if( result == false )
         {
-            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "[ERROR] Android bootstrap failed" );
+            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "[ERROR] Android bootstrap application failed" );
 
             delete application;
 
             return nullptr;
         }
+
+        __android_log_print( ANDROID_LOG_INFO, "Mengine", "Android bootstrap application initialized succeeded" );
 
         jobject jobject_application = _env->NewDirectByteBuffer( application, sizeof(void *) );
 

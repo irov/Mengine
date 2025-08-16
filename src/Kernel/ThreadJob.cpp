@@ -202,7 +202,7 @@ namespace Mengine
         static void threadWorkerUpdate( ThreadJobWorkerDesc & _desc )
         {
             ThreadWorkerInterfacePtr worker;
-            uint32_t id = 0;
+            UniqueId id = INVALID_UNIQUE_ID;
 
             EThreadStatus status = _desc.status;
 
@@ -331,7 +331,7 @@ namespace Mengine
 
         if( this->isCancel() == true )
         {
-            return 0;
+            return INVALID_UNIQUE_ID;
         }
 
         UniqueId new_id = Helper::generateUniqueIdentity();
@@ -357,7 +357,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ThreadJob::removeWorker( UniqueId _id )
     {
-        if( _id == 0 )
+        if( _id == INVALID_UNIQUE_ID )
         {
             return false;
         }
@@ -379,7 +379,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ThreadJob::pauseWorker( UniqueId _id )
     {
-        if( _id == 0 )
+        if( _id == INVALID_UNIQUE_ID )
         {
             return false;
         }
@@ -405,7 +405,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ThreadJob::resumeWorker( UniqueId _id )
     {
-        if( _id == 0 )
+        if( _id == INVALID_UNIQUE_ID )
         {
             return false;
         }

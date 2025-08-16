@@ -55,12 +55,6 @@ namespace Mengine
         void setUniqueIdentity( UniqueId _factorableId );
         MENGINE_INLINE UniqueId getUniqueIdentity() const;
 
-#if defined(MENGINE_FACTORABLE_DEBUG_ENABLE)
-    public:
-        void setFactorableTimestamp( Timestamp _factorableTimestamp );
-        MENGINE_INLINE Timestamp getFactorableTimestamp() const;
-#endif
-
     public:
         const ConstString & getType() const;
 
@@ -95,8 +89,6 @@ namespace Mengine
         UniqueId m_factorableId;
 
 #if defined(MENGINE_FACTORABLE_DEBUG_ENABLE)
-        Timestamp m_factorableTimestamp;
-
         bool m_factorableDestroy;
 #endif
     };
@@ -112,15 +104,6 @@ namespace Mengine
     {
         return m_factorableId;
     }
-    //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_FACTORABLE_DEBUG_ENABLE)
-    //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE Timestamp Factorable::getFactorableTimestamp() const
-    {
-        return m_factorableTimestamp;
-    }
-    //////////////////////////////////////////////////////////////////////////
-#endif
     //////////////////////////////////////////////////////////////////////////
 #if defined(STDEX_INTRUSIVE_PTR_DEBUG)
     MENGINE_INLINE bool Factorable::intrusive_ptr_check_ref( const Factorable * _ptr )

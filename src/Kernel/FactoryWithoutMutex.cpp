@@ -44,11 +44,6 @@ namespace Mengine
         UniqueId id = Helper::generateUniqueIdentity();
         object->setUniqueIdentity( id );
 
-#if defined(MENGINE_FACTORABLE_DEBUG_ENABLE)
-        Timestamp timestamp = Helper::getSystemTimestamp();
-        object->setFactorableTimestamp( timestamp );
-#endif
-
 #if defined(MENGINE_DOCUMENT_ENABLE)
         object->setDocument( _doc );
 #endif

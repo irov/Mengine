@@ -7,7 +7,7 @@
 
 namespace Mengine
 {
-    namespace Helper
+    namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
         const Char * glGetErrorString( GLenum _err )
@@ -31,20 +31,15 @@ namespace Mengine
             return "GL_UNKNOWN";
         }
         //////////////////////////////////////////////////////////////////////////
-        bool OpenGLRenderErrorCheck( const Char * _file, int32_t _line, const Char * _function )
+        bool OpenGLRenderErrorCheck( GLenum _err, const Char * _file, int32_t _line, const Char * _function, const Char * _method, const String & _args )
         {
-            GLenum err = glGetError();  
+            const Char * err_str = glGetErrorString( _err );
 
-            if( err == GL_NO_ERROR )
-            {
-                return false;
-            }
-
-            const Char * err_str = glGetErrorString( err );
-
-            LOGGER_VERBOSE_LEVEL( "opengl", LM_ERROR, LFILTER_NONE, LCOLOR_RED, _file, _line, _function, LFLAG_SHORT | LFLAG_FILESTAMP | LFLAG_FUNCTIONSTAMP )("error %s:%d"
+            LOGGER_VERBOSE_LEVEL( "opengl", LM_ERROR, LFILTER_NONE, LCOLOR_RED, _file, _line, _function, LFLAG_SHORT | LFLAG_FILESTAMP | LFLAG_FUNCTIONSTAMP )("call '%s(%s)' get error: %s (hr:%d)"
+                , _method
+                , _args.c_str()
                 , err_str
-                , err
+                , _err
                 );
 
             return true;

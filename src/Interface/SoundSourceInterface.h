@@ -25,20 +25,26 @@ namespace Mengine
         virtual void pause() = 0;
         virtual bool resume() = 0;
 
+    public:
         virtual bool isPlay() const = 0;
         virtual bool isPause() const = 0;
 
+    public:
         virtual void setVolume( float _volume ) = 0;
         virtual float getVolume() const = 0;
 
+    public:
         virtual void setLoop( bool _loop ) = 0;
         virtual bool getLoop() const = 0;
 
+    public:
         virtual float getDuration() const = 0;
 
+    public:
         virtual bool setPosition( float _position ) = 0;
         virtual float getPosition() const = 0;
 
+    public:
         virtual void setSoundBuffer( const SoundBufferInterfacePtr & _soundBuffer ) = 0;
         virtual const SoundBufferInterfacePtr & getSoundBuffer() const = 0;
     };

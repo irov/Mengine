@@ -1079,7 +1079,7 @@ namespace Mengine
         m_windowResolution.calcSize( &windowSize );
         m_windowViewport = Viewport( mt::vec2f::identity(), windowSize );
 
-        m_d3dpp = _fullscreen == true ? &m_d3dppFS : &m_d3dppW;
+        m_d3dpp = (_fullscreen == true) ? &m_d3dppFS : &m_d3dppW;
         m_d3dpp->BackBufferWidth = m_windowResolution.getWidth();
         m_d3dpp->BackBufferHeight = m_windowResolution.getHeight();
 
@@ -1105,17 +1105,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderSystem::supportTextureFormat( EPixelFormat _format ) const
     {
-        D3DFORMAT dxformat = Helper::toD3DFormat( _format );
+        D3DFORMAT dxFormat = Helper::toD3DFormat( _format );
 
-        HRESULT hresult = m_pD3D->CheckDeviceFormat( m_adapterToUse, m_deviceType, m_displayMode.Format, 0, D3DRTYPE_TEXTURE, dxformat );
+        HRESULT hResult = m_pD3D->CheckDeviceFormat( m_adapterToUse, m_deviceType, m_displayMode.Format, 0, D3DRTYPE_TEXTURE, dxFormat );
 
-        if( hresult == D3DERR_NOTAVAILABLE )
+        if( hResult == D3DERR_NOTAVAILABLE )
         {
             return false;
         }
 
-        MENGINE_IF_DXERRORCHECK( CheckDeviceFormat, hresult )
+        if( hResult != S_OK )
         {
+            LOGGER_ERROR( "CheckDeviceFormat failed for format %s (hr:%x)"
+                , Helper::getD3DFormatName( dxFormat )
+                , (uint32_t)hResult
+            );
+
             return false;
         }
 

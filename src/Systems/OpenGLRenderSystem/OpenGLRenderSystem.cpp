@@ -31,6 +31,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderSystem::OpenGLRenderSystem()
         : m_glMaxCombinedTextureImageUnits( 0 )
+        , m_glMaxTextureSize( 0 )
         , m_renderWindowCreate( false )
         , m_depthMask( false )
         , m_renderDeviceLost( false )
@@ -170,8 +171,7 @@ namespace Mengine
 #endif
 
         const Char * versionStr = reinterpret_cast<const Char *>(glGetString( GL_VERSION ));
-        MENGINE_GLERRORCHECK();
-        
+
         MENGINE_UNUSED( versionStr );
         
         LOGGER_INFO( "opengl", "OpenGL version: %s"
@@ -179,8 +179,7 @@ namespace Mengine
         );
 
         const Char * vendorStr = reinterpret_cast<const Char *>(glGetString( GL_VENDOR ));
-        MENGINE_GLERRORCHECK();
-        
+
         MENGINE_UNUSED( vendorStr );
 
         LOGGER_INFO( "opengl", "OpenGL vendor: %s"
@@ -188,7 +187,6 @@ namespace Mengine
         );
 
         const Char * rendererStr = reinterpret_cast<const Char *>(glGetString( GL_RENDERER ));
-        MENGINE_GLERRORCHECK();
 
         MENGINE_UNUSED( rendererStr );
         
@@ -198,8 +196,7 @@ namespace Mengine
 
 #if defined(MENGINE_RENDER_OPENGL_ES)
         const Char * extensionsStr = reinterpret_cast<const Char *>(glGetString( GL_EXTENSIONS ));
-        MENGINE_GLERRORCHECK();
-        
+
         MENGINE_UNUSED( extensionsStr );
 
         LOGGER_INFO( "opengl", "OpenGL extensions: %s"
@@ -208,8 +205,7 @@ namespace Mengine
 #endif
 
         const Char * shadingLanguageVersion = reinterpret_cast<const Char *>(glGetString( GL_SHADING_LANGUAGE_VERSION ));
-        MENGINE_GLERRORCHECK();
-        
+
         MENGINE_UNUSED( shadingLanguageVersion );
 
         LOGGER_INFO( "opengl", "OpenGL shading language version: %s"
@@ -220,6 +216,19 @@ namespace Mengine
         MENGINE_GLCALL( glGetIntegerv, (GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxCombinedTextureImageUnits) );
 
         m_glMaxCombinedTextureImageUnits = maxCombinedTextureImageUnits;
+
+        LOGGER_INFO( "opengl", "OpenGL max combined texture image units: %u"
+            , m_glMaxCombinedTextureImageUnits
+        );
+
+        GLint maxTextureSize;
+        MENGINE_GLCALL( glGetIntegerv, (GL_MAX_TEXTURE_SIZE, &maxTextureSize) );
+
+        m_glMaxTextureSize = maxTextureSize;
+
+        LOGGER_INFO( "opengl", "OpenGL max texture size: %u"
+            , m_glMaxTextureSize
+        );
 
         MENGINE_GLCALL( glFrontFace, (GL_CW) );
         MENGINE_GLCALL( glEnable, (GL_DEPTH_TEST) );

@@ -104,7 +104,7 @@ namespace Mengine
         GLuint tuid = extension->genTexture();
 
         MENGINE_GLCALL( glBindTexture, (GL_TEXTURE_2D, tuid) );
-        MENGINE_GLCALL( glTexImage2D, (GL_TEXTURE_2D, 0, GL_RGB, m_hwWidth, m_hwHeight, 0, m_format, m_type, 0) );
+        MENGINE_GLCALL( glTexImage2D, (GL_TEXTURE_2D, 0, m_internalFormat, m_hwWidth, m_hwHeight, 0, m_format, m_type, 0) );
 
         m_tuid = tuid;
 

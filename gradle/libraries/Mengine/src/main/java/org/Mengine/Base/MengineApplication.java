@@ -533,9 +533,6 @@ public abstract class MengineApplication extends Application {
         m_acquisitionNetwork = Objects.requireNonNullElse(network, "");
         m_acquisitionCampaign = Objects.requireNonNullElse(campaign, "");
 
-        this.setState("user.acquisition_network", m_acquisitionNetwork);
-        this.setState("user.acquisition_campaign", m_acquisitionCampaign);
-
         MenginePreferences.setPreferenceString("acquisition_network", m_acquisitionNetwork);
         MenginePreferences.setPreferenceString("acquisition_campaign", m_acquisitionCampaign);
 
@@ -673,8 +670,6 @@ public abstract class MengineApplication extends Application {
 
         long sessionTimestamp = MengineUtils.getTimestamp();
 
-        this.setState("build.debug", BuildConfig.DEBUG);
-
         this.setState("application.init", "started");
 
         this.setState("application.init", "load_preferences");
@@ -745,18 +740,6 @@ public abstract class MengineApplication extends Application {
         m_acquisitionCampaign = acquisitionCampaign;
 
         MengineStatistic.load(this);
-
-        this.setState("user.save_version", m_saveVersion);
-        this.setState("user.install_id", m_installId);
-        this.setState("user.install_timestamp", m_installTimestamp);
-        this.setState("user.install_version", m_installVersion);
-        this.setState("user.install_rnd", m_installRND);
-        this.setState("user.session_index", m_sessionIndex);
-        this.setState("user.session_timestamp", m_sessionTimestamp);
-        this.setState("user.session_rnd", m_sessionRND);
-        this.setState("user.session_id", m_sessionId);
-        this.setState("user.acquisition_network", m_acquisitionNetwork);
-        this.setState("user.acquisition_campaign", m_acquisitionCampaign);
 
         MengineAnalytics.addContextParameterBoolean("is_dev", BuildConfig.DEBUG);
         MengineAnalytics.addContextParameterString("install_id", m_installId);
@@ -836,9 +819,6 @@ public abstract class MengineApplication extends Application {
         ClassLoader cl = MengineApplication.class.getClassLoader();
 
         MengineNative.AndroidEnv_setMengineAndroidClassLoaderJNI(cl);
-
-        String engine_gitsha1 = this.getEngineGITSHA1();
-        this.setState("engine.gitsha1", engine_gitsha1);
 
         this.setState("application.init", "services_version");
 

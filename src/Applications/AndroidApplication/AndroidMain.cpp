@@ -76,7 +76,9 @@ extern "C"
         {
             jstring jstring_arg = (jstring)_env->GetObjectArrayElement( _args, i );
 
-            _env->ReleaseStringUTFChars( jstring_arg, argv[i + 1] );
+            Mengine::Char * arg = argv[i + 1];
+
+            _env->ReleaseStringUTFChars( jstring_arg, arg );
 
             _env->DeleteLocalRef( jstring_arg );
         }

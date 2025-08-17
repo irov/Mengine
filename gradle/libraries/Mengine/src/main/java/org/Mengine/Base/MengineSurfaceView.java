@@ -193,6 +193,7 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
         float refreshRate = m_display.getRefreshRate();
 
         Surface surface = holder.getSurface();
+
         MengineNative.AndroidPlatform_surfaceChangedEvent(surface, width, height, deviceWidth, deviceHeight, refreshRate);
 
         MengineMain.runLatch();

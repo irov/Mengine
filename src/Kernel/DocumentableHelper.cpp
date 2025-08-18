@@ -24,15 +24,11 @@ namespace Mengine
 
             StdString::strcat_safe( _message, message, _capacity );
 
-            size_t size = parent->getMessageSize();
-
             Char delim[] = " ==> ";
 
-            StdString::strcat_safe( _message, delim, _capacity - size );
+            StdString::strcat_safe( _message, delim, _capacity );
 
-            size_t size_delim = StdString::strlen( delim );
-
-            size_t capacity = Detail::getParentDocumentableMessage( parent, _message, _capacity - size - size_delim );
+            size_t capacity = Detail::getParentDocumentableMessage( parent, _message, _capacity );
 
             return capacity;
         }
@@ -58,16 +54,12 @@ namespace Mengine
 
             if( _identity != nullptr )
             {
-                size_t size = document->getMessageSize();
-
                 const ConstString & name = _identity->getName();
 
                 Char suffix[] = " Name: ";
 
-                size_t size_suffix = StdString::strlen( suffix );
-
-                StdString::strcat_safe( _message, suffix, _capacity - size );
-                StdString::strcat_safe( _message, name.c_str(), _capacity - size - size_suffix );
+                StdString::strcat_safe( _message, suffix, _capacity );
+                StdString::strcat_safe( _message, name.c_str(), _capacity );
             }
         }
         //////////////////////////////////////////////////////////////////////////

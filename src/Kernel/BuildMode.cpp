@@ -42,6 +42,19 @@ namespace Mengine
 #endif
         }
         //////////////////////////////////////////////////////////////////////////
+        bool isValidationMode()
+        {
+            if( SERVICE_IS_INITIALIZE( OptionsServiceInterface ) == true )
+            {
+                if( HAS_OPTION( "validation" ) == true )
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        //////////////////////////////////////////////////////////////////////////
         bool isQualityAssuranceMode()
         {
             if( SERVICE_IS_INITIALIZE( OptionsServiceInterface ) == true )

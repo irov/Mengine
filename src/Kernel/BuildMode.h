@@ -9,6 +9,7 @@ namespace Mengine
     {
         bool isDebugMode();
         bool isDevelopmentMode();
+        bool isValidationMode();
         bool isQualityAssuranceMode();
         bool isBuildPublish();
         bool isMasterRelease();

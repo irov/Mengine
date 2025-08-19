@@ -479,6 +479,10 @@ namespace Mengine
 
         this->addGlobalModuleT( "_DEVELOPMENT", developmentMode );
 
+        bool validationMode = Helper::isValidationMode();
+        
+        this->addGlobalModuleT( "_VALIDATION", validationMode );
+
         bool qualityAssuranceMode = Helper::isQualityAssuranceMode();
 
         this->addGlobalModuleT( "_QUALITYASSURANCE", qualityAssuranceMode );

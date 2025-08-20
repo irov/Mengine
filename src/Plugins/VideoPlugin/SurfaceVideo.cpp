@@ -232,7 +232,7 @@ namespace Mengine
         return Color::identity();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SurfaceVideo::_stop( uint32_t _playId )
+    bool SurfaceVideo::_stop( UniqueId _playId )
     {
         m_needUpdateVideoBuffer = false;
 
@@ -242,7 +242,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceVideo::_end( uint32_t _playId )
+    void SurfaceVideo::_end( UniqueId _playId )
     {
         m_needUpdateVideoBuffer = false;
 
@@ -250,7 +250,7 @@ namespace Mengine
             ->onAnimationEnd( _playId );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SurfaceVideo::_play( uint32_t _playId, float _time )
+    bool SurfaceVideo::_play( UniqueId _playId, float _time )
     {
         MENGINE_UNUSED( _playId );
         MENGINE_UNUSED( _time );
@@ -272,7 +272,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SurfaceVideo::_restart( uint32_t _playId, float _time )
+    bool SurfaceVideo::_restart( UniqueId _playId, float _time )
     {
         MENGINE_UNUSED( _time );
         MENGINE_UNUSED( _playId );
@@ -294,13 +294,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceVideo::_pause( uint32_t _playId )
+    void SurfaceVideo::_pause( UniqueId _playId )
     {
         EVENTABLE_METHOD( EVENT_ANIMATION_PAUSE )
             ->onAnimationPause( _playId );
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceVideo::_resume( uint32_t _playId, float _time )
+    void SurfaceVideo::_resume( UniqueId _playId, float _time )
     {
         EVENTABLE_METHOD( EVENT_ANIMATION_END )
             ->onAnimationResume( _playId, _time );
@@ -572,7 +572,7 @@ namespace Mengine
         return flags;
     }
     ////////////////////////////////////////////////////////////////////
-    bool SurfaceVideo::_interrupt( uint32_t _playId )
+    bool SurfaceVideo::_interrupt( UniqueId _playId )
     {
         MENGINE_UNUSED( _playId );
 

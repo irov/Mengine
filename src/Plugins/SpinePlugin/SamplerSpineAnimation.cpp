@@ -329,7 +329,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SamplerSpineAnimation::_play( uint32_t _enumerator, float _time )
+    bool SamplerSpineAnimation::_play( UniqueId _enumerator, float _time )
     {
         EVENTABLE_METHOD( EVENT_ANIMATION_PLAY )
             ->onAnimationPlay( _enumerator, _time );
@@ -337,7 +337,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SamplerSpineAnimation::_restart( uint32_t _enumerator, float _time )
+    bool SamplerSpineAnimation::_restart( UniqueId _enumerator, float _time )
     {
         EVENTABLE_METHOD( EVENT_ANIMATION_RESTART )
             ->onAnimationRestart( _enumerator, _time );
@@ -345,7 +345,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SamplerSpineAnimation::_pause( uint32_t _enumerator )
+    void SamplerSpineAnimation::_pause( UniqueId _enumerator )
     {
         EVENTABLE_METHOD( EVENT_ANIMATION_PAUSE )
             ->onAnimationPause( _enumerator );

@@ -562,8 +562,6 @@ Core
     
     IniHelper.h
     IniHelper.cpp
-    
-    HashType.h
    
     PathString.h
     PathWString.h

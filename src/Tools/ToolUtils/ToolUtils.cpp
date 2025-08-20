@@ -199,7 +199,7 @@ bool read_file_to_memory( const wchar_t * _path, uint8_t * _buffer, size_t _capa
     long size = ::ftell( f );
     ::rewind( f );
 
-    long read = (size < _capacity) ? size : _capacity;
+    size_t read = (size < _capacity) ? size : _capacity;
 
     ::fread( _buffer, 1, read, f );
     ::fclose( f );

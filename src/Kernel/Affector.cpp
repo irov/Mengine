@@ -109,6 +109,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Affector::stop()
     {
+        if( m_status == EAFFECTORSTATUS_COMPLETE )
+        {
+            return;
+        }
+
+        MENGINE_ASSERTION_FATAL( m_status == EAFFECTORSTATUS_PREPARE, "affector already complete" );
+
         m_status = EAFFECTORSTATUS_STOP;
 
         this->_stop();
@@ -129,6 +136,8 @@ namespace Mengine
         {
             return;
         }
+
+        MENGINE_ASSERTION_FATAL( m_status != EAFFECTORSTATUS_IDLE, "affector already complete" );
 
         m_status = EAFFECTORSTATUS_COMPLETE;
 

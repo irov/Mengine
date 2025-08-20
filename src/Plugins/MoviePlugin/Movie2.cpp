@@ -1080,7 +1080,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie2::_play( uint32_t _playId, float _time )
+    bool Movie2::_play( UniqueId _playId, float _time )
     {
         if( this->isCompile() == false )
         {
@@ -1099,7 +1099,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie2::_restart( uint32_t _playId, float _time )
+    bool Movie2::_restart( UniqueId _playId, float _time )
     {
         EVENTABLE_METHOD( EVENT_ANIMATION_RESTART )
             ->onAnimationRestart( _playId, _time );
@@ -1107,7 +1107,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::_pause( uint32_t _playId )
+    void Movie2::_pause( UniqueId _playId )
     {
         if( this->isCompile() == false )
         {
@@ -1124,7 +1124,7 @@ namespace Mengine
             ->onAnimationPause( _playId );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::_resume( uint32_t _playId, float _time )
+    void Movie2::_resume( UniqueId _playId, float _time )
     {
         if( this->isCompile() == false )
         {
@@ -1141,7 +1141,7 @@ namespace Mengine
             ->onAnimationResume( _playId, _time );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie2::_stop( uint32_t _playId )
+    bool Movie2::_stop( UniqueId _playId )
     {
         if( this->isCompile() == false )
         {
@@ -1160,13 +1160,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::_end( uint32_t _playId )
+    void Movie2::_end( UniqueId _playId )
     {
         EVENTABLE_METHOD( EVENT_ANIMATION_END )
             ->onAnimationEnd( _playId );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie2::_interrupt( uint32_t _playId )
+    bool Movie2::_interrupt( UniqueId _playId )
     {
         if( this->isCompile() == false )
         {

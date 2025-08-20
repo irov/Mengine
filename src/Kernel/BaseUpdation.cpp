@@ -35,7 +35,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     BaseUpdation::BaseUpdation()
         : m_mode( EUM_NODE_BASE )
-        , m_state( EUS_NORMAL )
         , m_deep( 0U )
     {
     }
@@ -51,24 +50,18 @@ namespace Mengine
         uint32_t mode_deep = Detail::calcModeDeep( m_mode, _deep );
         m_deep = mode_deep;
 
-        m_state = EUS_NORMAL;
-
         UPDATE_SERVICE()
             ->placeUpdatater( UpdationInterfacePtr::from( this ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseUpdation::deactivate()
     {
-        m_state = EUS_REMOVE;
+        UPDATE_SERVICE()
+            ->removeUpdatater( UpdationInterfacePtr::from( this ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseUpdation::replace( uint32_t _deep )
     {
-        if( m_state == EUS_REMOVE )
-        {
-            return;
-        }
-
         uint32_t mode_deep = Detail::calcModeDeep( m_mode, _deep );
 
         if( m_deep == mode_deep )
@@ -76,23 +69,21 @@ namespace Mengine
             return;
         }
 
+        UPDATE_SERVICE()
+            ->removeUpdatater( UpdationInterfacePtr::from( this ) );
+
         m_deep = mode_deep;
 
         UPDATE_SERVICE()
             ->placeUpdatater( UpdationInterfacePtr::from( this ) );
     }
     //////////////////////////////////////////////////////////////////////////
-    EUpdateMode BaseUpdation::getMode() const
+    EUpdateMode BaseUpdation::getUpdationMode() const
     {
         return m_mode;
     }
     //////////////////////////////////////////////////////////////////////////
-    EUpdateState BaseUpdation::getState() const
-    {
-        return m_state;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t BaseUpdation::getDeep() const
+    uint32_t BaseUpdation::getUpdationDeep() const
     {
         return m_deep;
     }

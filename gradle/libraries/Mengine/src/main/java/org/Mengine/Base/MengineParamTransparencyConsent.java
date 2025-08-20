@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class MengineParamTransparencyConsent {
-    private static final MengineTag TAG = MengineTag.of("MParamTransparencyConsent");
+    private static final MengineTag TAG = MengineTag.of("MNGParamTransparencyConsent");
 
     public static MengineConsentFlowUserGeography TRANSPARENCYCONSENT_USERGEOGRAPHY = MengineConsentFlowUserGeography.MengineConsentFlowUserGeography_Unknown;
 

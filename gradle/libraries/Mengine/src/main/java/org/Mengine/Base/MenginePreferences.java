@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MenginePreferences {
-    public static final MengineTag TAG = MengineTag.of("MPreferences");
+    public static final MengineTag TAG = MengineTag.of("MNGPreferences");
 
     protected static String NAME;
     protected static SharedPreferences PREFERENCES;

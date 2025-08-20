@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.Writer;
 
 public class MengineNative {
-    public static final MengineTag TAG = MengineTag.of("MNative");
+    public static final MengineTag TAG = MengineTag.of("MNGNative");
 
     public static native boolean AndroidMain_main(Object application);
     public static native Object AndroidMain_bootstrap(String nativeLibraryDir, String[] _args);

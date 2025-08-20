@@ -175,7 +175,7 @@ namespace Mengine
             ->getMainThreadId();
 
         Char stack_msg[8096 + 1] = {'\0'};
-        if( Helper::Win32GetCallstack( (DWORD)mainThreadId, nullptr, stack_msg, 8095 ) == false )
+        if( Helper::Win32GetCallstack( (DWORD)mainThreadId, nullptr, stack_msg, 8096 ) == false )
         {
             LOGGER_ERROR( "antifreeze monitor invalid callstack" );
         }

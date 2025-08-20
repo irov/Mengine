@@ -6,6 +6,7 @@
 #include "Kernel/Visitor.h"
 
 #include "Config/Lambda.h"
+#include "Config/HashType.h"
 
 namespace Mengine
 {
@@ -33,6 +34,9 @@ namespace Mengine
     public:
         MENGINE_INLINE Node * getParent() const;
         MENGINE_INLINE bool hasParent() const;
+
+    public:
+        HashType getHierarchyHash() const;
 
     public:
         void addChild( const NodePtr & _node );

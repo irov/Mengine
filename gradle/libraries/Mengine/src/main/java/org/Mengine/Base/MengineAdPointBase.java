@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 import org.json.JSONObject;
 
 public class MengineAdPointBase {
-    public static final MengineTag TAG = MengineTag.of("MAdBasePoint");
+    public static final MengineTag TAG = MengineTag.of("MNGAdBasePoint");
 
     protected String m_name;
 

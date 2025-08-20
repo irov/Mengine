@@ -7,12 +7,6 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    enum EUpdateState
-    {
-        EUS_NORMAL,
-        EUS_REMOVE,
-    };
-    //////////////////////////////////////////////////////////////////////////
     class Updatable;
     //////////////////////////////////////////////////////////////////////////
     class UpdationInterface
@@ -27,9 +21,8 @@ namespace Mengine
         virtual void replace( uint32_t _deep ) = 0;
 
     public:
-        virtual EUpdateMode getMode() const = 0;
-        virtual uint32_t getDeep() const = 0;
-        virtual EUpdateState getState() const = 0;
+        virtual EUpdateMode getUpdationMode() const = 0;
+        virtual uint32_t getUpdationDeep() const = 0;
 
     public:
         virtual void update( const UpdateContext * _context ) = 0;

@@ -97,7 +97,7 @@ namespace Mengine
         m_subcomposition = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie2SubComposition::_play( uint32_t _playId, float _time )
+    bool Movie2SubComposition::_play( UniqueId _playId, float _time )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_composition, "subcomposition '%s' is not initialized"
             , this->getName().c_str()
@@ -111,7 +111,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie2SubComposition::_restart( uint32_t _playId, float _time )
+    bool Movie2SubComposition::_restart( UniqueId _playId, float _time )
     {
         if( m_composition == nullptr )
         {
@@ -128,7 +128,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2SubComposition::_pause( uint32_t _playId )
+    void Movie2SubComposition::_pause( UniqueId _playId )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_composition, "subcomposition '%s' is not initialized"
             , this->getName().c_str()
@@ -140,7 +140,7 @@ namespace Mengine
             ->onAnimationPause( _playId );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2SubComposition::_resume( uint32_t _playId, float _time )
+    void Movie2SubComposition::_resume( UniqueId _playId, float _time )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_composition, "subcomposition '%s' is not initialized"
             , this->getName().c_str()
@@ -152,7 +152,7 @@ namespace Mengine
             ->onAnimationResume( _playId, _time );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie2SubComposition::_stop( uint32_t _playId )
+    bool Movie2SubComposition::_stop( UniqueId _playId )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_composition, "subcomposition '%s' is not initialized"
             , this->getName().c_str()
@@ -166,13 +166,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2SubComposition::_end( uint32_t _playId )
+    void Movie2SubComposition::_end( UniqueId _playId )
     {
         EVENTABLE_METHOD( EVENT_ANIMATION_END )
             ->onAnimationEnd( _playId );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie2SubComposition::_interrupt( uint32_t _playId )
+    bool Movie2SubComposition::_interrupt( UniqueId _playId )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_composition, "subcomposition '%s' is not initialized"
             , this->getName().c_str()

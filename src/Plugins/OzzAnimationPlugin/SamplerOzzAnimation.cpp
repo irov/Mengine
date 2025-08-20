@@ -197,7 +197,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SamplerOzzAnimation::_play( uint32_t _playId, float _time )
+    bool SamplerOzzAnimation::_play( UniqueId _playId, float _time )
     {
         MENGINE_UNUSED( _playId );
         MENGINE_UNUSED( _time );
@@ -207,7 +207,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SamplerOzzAnimation::_restart( uint32_t _playId, float _time )
+    bool SamplerOzzAnimation::_restart( UniqueId _playId, float _time )
     {
         MENGINE_UNUSED( _playId );
         MENGINE_UNUSED( _time );
@@ -217,14 +217,14 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SamplerOzzAnimation::_pause( uint32_t _playId )
+    void SamplerOzzAnimation::_pause( UniqueId _playId )
     {
         MENGINE_UNUSED( _playId );
 
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void SamplerOzzAnimation::_resume( uint32_t _playId, float _time )
+    void SamplerOzzAnimation::_resume( UniqueId _playId, float _time )
     {
         MENGINE_UNUSED( _playId );
         MENGINE_UNUSED( _time );
@@ -232,7 +232,7 @@ namespace Mengine
         m_time = 0.f;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SamplerOzzAnimation::_stop( uint32_t _playId )
+    bool SamplerOzzAnimation::_stop( UniqueId _playId )
     {
         EVENTABLE_METHOD( EVENT_ANIMATION_STOP )
             ->onAnimationStop( _playId );
@@ -240,13 +240,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SamplerOzzAnimation::_end( uint32_t _playId )
+    void SamplerOzzAnimation::_end( UniqueId _playId )
     {
         EVENTABLE_METHOD( EVENT_ANIMATION_END )
             ->onAnimationEnd( _playId );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SamplerOzzAnimation::_interrupt( uint32_t _playId )
+    bool SamplerOzzAnimation::_interrupt( UniqueId _playId )
     {
         MENGINE_UNUSED( _playId );
 

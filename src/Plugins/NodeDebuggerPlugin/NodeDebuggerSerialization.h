@@ -131,6 +131,12 @@ namespace Mengine
         }
 
         template<>
+        MENGINE_INLINE uint64_t getXmlValue<uint64_t>( const pugi::xml_attribute & _attrib )
+        {
+            return _attrib.as_ullong();
+        }
+
+        template<>
         MENGINE_INLINE float getXmlValue<float>( const pugi::xml_attribute & _attrib )
         {
             return _attrib.as_float();
@@ -284,6 +290,15 @@ namespace Mengine
             static const Char * get_value()
             {
                 return "uint32_t";
+            }
+        };
+
+        template<>
+        struct prop_type_name<uint64_t>
+        {
+            static const Char * get_value()
+            {
+                return "uint64_t";
             }
         };
 

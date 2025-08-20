@@ -130,6 +130,10 @@ SERVICE_EXTERN( FileSystem );
 SERVICE_EXTERN( SoundSystem );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_SYSTEM_TIME)
+SERVICE_EXTERN( TimeSystem );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_SYSTEM_RENDER)
 SERVICE_EXTERN( RenderSystem );
 #endif
@@ -1000,6 +1004,7 @@ namespace Mengine
     {
         MENGINE_ADD_SERVICE( PlatformSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( ThreadSystem, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( TimeSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( NotificationService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( VocabularyService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( UnicodeSystem, MENGINE_DOCUMENT_FACTORABLE );        
@@ -2234,6 +2239,7 @@ namespace Mengine
         SERVICE_FINALIZE( DateTimeSystem );
         SERVICE_FINALIZE( UnicodeSystem );
         SERVICE_FINALIZE( ThreadSystem );
+        SERVICE_FINALIZE( TimeSystem );
         SERVICE_FINALIZE( CryptographySystem );
         SERVICE_FINALIZE( PlatformSystem );
 
@@ -2294,8 +2300,8 @@ namespace Mengine
         SERVICE_DESTROY( VocabularyService );
         SERVICE_DESTROY( PluginService );
         SERVICE_DESTROY( ArrowService );
-        SERVICE_DESTROY( FileService );
-        SERVICE_DESTROY( ThreadSystem );
+        SERVICE_DESTROY( FileService );        
+        SERVICE_DESTROY( TimeSystem );
         SERVICE_DESTROY( TimepipeService );
         SERVICE_DESTROY( AnalyticsService );
         SERVICE_DESTROY( StatisticService );
@@ -2326,6 +2332,7 @@ namespace Mengine
         SERVICE_DESTROY( OptionsService );
         SERVICE_DESTROY( CryptographySystem );
         SERVICE_DESTROY( PlatformSystem );
+        SERVICE_DESTROY( TimeSystem );
     }
     //////////////////////////////////////////////////////////////////////////
 }

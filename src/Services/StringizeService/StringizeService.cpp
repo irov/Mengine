@@ -1,12 +1,12 @@
 #include "StringizeService.h"
 
-#include "Kernel/HashType.h"
 #include "Kernel/HashHelper.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionCharacter.h"
 
 #include "Config/StdString.h"
+#include "Config/HashType.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( StringizeService, Mengine::StringizeService );

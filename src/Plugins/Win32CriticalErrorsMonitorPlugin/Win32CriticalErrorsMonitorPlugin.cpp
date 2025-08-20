@@ -85,7 +85,7 @@ namespace Mengine
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
         Char stack[8096 + 1] = {'\0'};
-        if( Helper::Win32GetCallstack( ~0U, pExceptionPointers->ContextRecord, stack, 8095 ) == false )
+        if( Helper::Win32GetCallstack( ~0U, pExceptionPointers->ContextRecord, stack, 8096 ) == false )
         {
             LOGGER_FATAL( "catch exception and write dumb '%s'"
                 , g_monitor->m_dumpPath.c_str()

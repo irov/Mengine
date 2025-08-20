@@ -26,6 +26,7 @@ namespace Mengine
 
     public:
         void placeUpdatater( const UpdationInterfacePtr & _updation ) override;
+        void removeUpdatater( const UpdationInterfacePtr & _updation ) override;
 
     public:
         void onTimepipe( const UpdateContext * _context ) override;
@@ -40,14 +41,14 @@ namespace Mengine
         };
 
         typedef Vector<LeafUpdatable> LeafUpdatables;
+        LeafUpdatables m_beforeLeafs;
         LeafUpdatables m_leafs;
-
-        LeafUpdatables m_beforeLeaf;
-        LeafUpdatables m_afterLeaf;
+        LeafUpdatables m_afterLeafs;
 
     protected:
+        bool findLeafUpdatater_( const LeafUpdatables & _leafs, const UpdationInterfacePtr & _updation ) const;
+        bool findUpdatater_( const UpdationInterfacePtr & _updation ) const;
         void updateLeaf_( uint32_t _deep, LeafUpdatable * const _leaf, const UpdateContext * _context );
-        void finalizeLeaf_( LeafUpdatables & _leafs );
         LeafUpdatable * getLeafUpdatable( EUpdateMode _mode, uint32_t _deep );
     };
 }

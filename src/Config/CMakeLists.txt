@@ -160,6 +160,7 @@ src
     UInt32ToPointer.h
     Metaprogramming.h
     UniqueId.h
+    HashType.h
     NotificatorId.h
     StatisticId.h
     InitializerList.h

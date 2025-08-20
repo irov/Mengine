@@ -29,7 +29,7 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class MengineApplication extends Application {
-    private static final MengineTag TAG = MengineTag.of("MApplication");
+    private static final MengineTag TAG = MengineTag.of("MNGApplication");
 
     static {
         System.loadLibrary("AndroidApplication");

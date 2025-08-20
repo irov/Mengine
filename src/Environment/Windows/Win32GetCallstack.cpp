@@ -176,13 +176,13 @@ namespace Mengine
                 firstEntry, nextEntry, lastEntry
             };
             //////////////////////////////////////////////////////////////////////////
-            static size_t OnCallstackEntry( Char * const _stack, size_t _capacity, CallstackEntry * const _entry )
+            static void OnCallstackEntry( Char * const _stack, size_t _capacity, CallstackEntry * const _entry )
             {
                 CHAR buffer[MENGINE_STACKWALK_MAX_NAMELEN + 1] = {'\0'};
 
                 if( _entry->offset == 0 )
                 {
-                    return 0;
+                    return;
                 }
 
                 if( _entry->name[0] == 0 )
@@ -226,16 +226,7 @@ namespace Mengine
                     );
                 }
 
-                size_t buffer_len = StdString::strlen( buffer );
-
-                if( _capacity < buffer_len )
-                {
-                    return 0;
-                }
-
                 StdString::strcat_safe( _stack, buffer, _capacity );
-
-                return buffer_len;
             }
             //////////////////////////////////////////////////////////////////////////
             static bool GetCallstack( Char * const _stack, size_t _capacity, PCONTEXT _context, HMODULE hDbhHelp, HMODULE hKernel32, HANDLE hThread, HANDLE hProcess )
@@ -421,9 +412,7 @@ namespace Mengine
                         }
                     }
 
-                    size_t stack_len = Detail::OnCallstackEntry( _stack, _capacity, &csEntry );
-
-                    _capacity -= stack_len;
+                    Detail::OnCallstackEntry( _stack, _capacity, &csEntry );
 
                     if( frame.AddrReturn.Offset == 0 )
                     {

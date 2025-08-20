@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MengineAnalytics {
-    public static final MengineTag TAG = MengineTag.of("MAnalytics");
+    public static final MengineTag TAG = MengineTag.of("MNGAnalytics");
 
     private static final Map<String, Object> m_bases = new HashMap<>();
     private static final Map<String, Object> m_getter = new HashMap<>();

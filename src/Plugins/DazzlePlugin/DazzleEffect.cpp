@@ -55,7 +55,7 @@ namespace Mengine
         return m_resourceImage;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DazzleEffect::_play( uint32_t _enumerator, float _time )
+    bool DazzleEffect::_play( UniqueId _enumerator, float _time )
     {
         MENGINE_UNUSED( _enumerator );
         MENGINE_UNUSED( _time );
@@ -63,7 +63,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DazzleEffect::_restart( uint32_t _enumerator, float _time )
+    bool DazzleEffect::_restart( UniqueId _enumerator, float _time )
     {
         MENGINE_UNUSED( _enumerator );
         MENGINE_UNUSED( _time );

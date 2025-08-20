@@ -140,7 +140,7 @@ namespace Mengine
         return Color::identity();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SurfaceMockupVideo::_stop( uint32_t _playId )
+    bool SurfaceMockupVideo::_stop( UniqueId _playId )
     {
         EVENTABLE_METHOD( EVENT_ANIMATION_STOP )
             ->onAnimationStop( _playId );
@@ -148,13 +148,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceMockupVideo::_end( uint32_t _playId )
+    void SurfaceMockupVideo::_end( UniqueId _playId )
     {
         EVENTABLE_METHOD( EVENT_ANIMATION_END )
             ->onAnimationEnd( _playId );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SurfaceMockupVideo::_play( uint32_t _playId, float _time )
+    bool SurfaceMockupVideo::_play( UniqueId _playId, float _time )
     {
         MENGINE_UNUSED( _playId );
         MENGINE_UNUSED( _time );
@@ -164,7 +164,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SurfaceMockupVideo::_restart( uint32_t _playId, float _time )
+    bool SurfaceMockupVideo::_restart( UniqueId _playId, float _time )
     {
         MENGINE_UNUSED( _time );
         MENGINE_UNUSED( _playId );
@@ -174,13 +174,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceMockupVideo::_pause( uint32_t _playId )
+    void SurfaceMockupVideo::_pause( UniqueId _playId )
     {
         EVENTABLE_METHOD( EVENT_ANIMATION_PAUSE )
             ->onAnimationPause( _playId );
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceMockupVideo::_resume( uint32_t _playId, float _time )
+    void SurfaceMockupVideo::_resume( UniqueId _playId, float _time )
     {
         EVENTABLE_METHOD( EVENT_ANIMATION_END )
             ->onAnimationResume( _playId, _time );
@@ -272,7 +272,7 @@ namespace Mengine
         this->_setTime( duration );
     }
     ////////////////////////////////////////////////////////////////////
-    bool SurfaceMockupVideo::_interrupt( uint32_t _playId )
+    bool SurfaceMockupVideo::_interrupt( UniqueId _playId )
     {
         MENGINE_UNUSED( _playId );
 

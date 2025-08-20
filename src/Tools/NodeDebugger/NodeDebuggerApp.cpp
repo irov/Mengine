@@ -2761,6 +2761,17 @@ namespace Mengine
             ImGui::PopItemWidth();
             ImGui::Spacing();
 
+            Char hhash_text[64 + 1];
+            MENGINE_SNPRINTF( hhash_text, 64, "%" MENGINE_PRIu64, _node->hhash );
+
+            ImGui::SameLine();
+            ImGui::Text( "HHASH:" );
+            ImGui::SameLine();
+            ImGui::PushItemWidth( 25.f + 8.f * StdString::strlen( hhash_text ) );
+            ImGui::InputText( "##node_hhash", hhash_text, StdString::strlen( hhash_text ), ImGuiInputTextFlags_ReadOnly );
+            ImGui::PopItemWidth();
+            ImGui::Spacing();
+
             uiEditorBool( "Enable##node_enable", _node->enable );
             ImGui::Spacing();
         }

@@ -14,7 +14,7 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 public class MengineFirebaseCrashlyticsANRMonitor {
-    private static final MengineTag TAG = MengineTag.of("MFBCANRMonitor");
+    private static final MengineTag TAG = MengineTag.of("MNGFBCANRMonitor");
     private static final long TIMEOUT_MS = 10000;
 
     private static final Handler m_mainHandler = new Handler(Looper.getMainLooper());

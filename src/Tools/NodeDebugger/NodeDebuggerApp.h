@@ -623,6 +623,7 @@ namespace Mengine
             Icon_Entity = 4,
         };
 
+        HashType                hhash;
         uint32_t                uid;
         String                  name;
         String                  type;
@@ -662,6 +663,7 @@ namespace Mengine
 
         void deserialize( const pugi::xml_node & _xmlNode )
         {
+            DESERIALIZE_PROP( hhash );
             DESERIALIZE_PROP( uid );
             DESERIALIZE_PROP( name );
             DESERIALIZE_PROP( type );

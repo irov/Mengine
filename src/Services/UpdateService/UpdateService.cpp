@@ -29,9 +29,9 @@ namespace Mengine
     {
         uint32_t Engine_DefaultUpdateLeafs = CONFIG_VALUE_INTEGER( "Engine", "DefaultUpdateLeafs", 256U );
 
-        m_beforeLeaf.resize( 32 );
+        m_beforeLeafs.resize( 32 );
         m_leafs.resize( Engine_DefaultUpdateLeafs );
-        m_afterLeaf.resize( 32 );
+        m_afterLeafs.resize( 32 );
 
         TIMEPIPE_SERVICE()
             ->addTimepipe( TimepipeInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
@@ -47,9 +47,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void UpdateService::_stopService()
     {
-        m_beforeLeaf.clear();
+        m_beforeLeafs.clear();
         m_leafs.clear();
-        m_afterLeaf.clear();
+        m_afterLeafs.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     UpdateService::LeafUpdatable * UpdateService::getLeafUpdatable( EUpdateMode _mode, uint32_t _deep )
@@ -69,21 +69,21 @@ namespace Mengine
             }break;
         case EUM_SERVICE_BEFORE:
             {
-                MENGINE_ASSERTION_FATAL( _deep < m_beforeLeaf.size(), "deep %u"
+                MENGINE_ASSERTION_FATAL( _deep < m_beforeLeafs.size(), "deep %u"
                     , _deep
                 );
 
-                LeafUpdatable & leaf = m_beforeLeaf[_deep];
+                LeafUpdatable & leaf = m_beforeLeafs[_deep];
 
                 return &leaf;
             }break;
         case EUM_SERVICE_AFTER:
             {
-                MENGINE_ASSERTION_FATAL( _deep < m_afterLeaf.size(), "deep %u"
+                MENGINE_ASSERTION_FATAL( _deep < m_afterLeafs.size(), "deep %u"
                     , _deep
                 );
 
-                LeafUpdatable & leaf = m_afterLeaf[_deep];
+                LeafUpdatable & leaf = m_afterLeafs[_deep];
 
                 return &leaf;
             }break;
@@ -97,8 +97,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void UpdateService::placeUpdatater( const UpdationInterfacePtr & _updation )
     {
-        EUpdateMode update_mode = _updation->getMode();
-        uint32_t update_deep = _updation->getDeep();
+        MENGINE_ASSERTION_FATAL( this->findUpdatater_( _updation ) == false, "updation already exist" );
+
+        EUpdateMode update_mode = _updation->getUpdationMode();
+        uint32_t update_deep = _updation->getUpdationDeep();
 
         LeafUpdatable * leaf = this->getLeafUpdatable( update_mode, update_deep );
 
@@ -108,6 +110,77 @@ namespace Mengine
         );
 
         leaf->indeciesAdd.emplace_back( _updation );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void UpdateService::removeUpdatater( const UpdationInterfacePtr & _updation )
+    {
+        MENGINE_ASSERTION_FATAL( this->findUpdatater_( _updation ) == true, "updation already exist" );
+
+        EUpdateMode update_mode = _updation->getUpdationMode();
+        uint32_t update_deep = _updation->getUpdationDeep();
+
+        LeafUpdatable * leaf = this->getLeafUpdatable( update_mode, update_deep );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( leaf, "unsupport mode '%u' deep '%u'"
+            , update_mode
+            , update_deep
+        );
+
+        VectorUpdatableIndecies::iterator it_indecies_found = std::find( leaf->indecies.begin(), leaf->indecies.end(), _updation );
+
+        if( it_indecies_found != leaf->indecies.end() )
+        {
+            *it_indecies_found = nullptr;
+
+            return;
+        }
+
+        VectorUpdatableIndecies::iterator it_indecies_add_found = std::find( leaf->indeciesAdd.begin(), leaf->indeciesAdd.end(), _updation );
+
+        if( it_indecies_add_found != leaf->indeciesAdd.end() )
+        {
+            *it_indecies_add_found = nullptr;
+
+            return;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool UpdateService::findLeafUpdatater_( const LeafUpdatables & _leafs, const UpdationInterfacePtr & _updation ) const
+    {
+        for( const LeafUpdatable & leaf : _leafs )
+        {
+            if( std::find( leaf.indecies.begin(), leaf.indecies.end(), _updation ) != leaf.indecies.end() )
+            {
+                return true;
+            }
+
+            if( std::find( leaf.indeciesAdd.begin(), leaf.indeciesAdd.end(), _updation ) != leaf.indeciesAdd.end() )
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool UpdateService::findUpdatater_( const UpdationInterfacePtr & _updation ) const
+    {
+        if( this->findLeafUpdatater_( m_beforeLeafs, _updation ) == true )
+        {
+            return true;
+        }
+
+        if( this->findLeafUpdatater_( m_leafs, _updation ) == true )
+        {
+            return true;
+        }
+
+        if( this->findLeafUpdatater_( m_afterLeafs, _updation ) == true )
+        {
+            return true;
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void UpdateService::updateLeaf_( uint32_t _deep, LeafUpdatable * const _leaf, const UpdateContext * _context )
@@ -123,37 +196,18 @@ namespace Mengine
             leaf_indeciesAdd.clear();
         }
 
-        leaf_indecies.erase( StdAlgorithm::remove_if( leaf_indecies.begin(), leaf_indecies.end(), [_deep]( const UpdationInterfacePtr & _updation )
-        {
-            uint32_t updation_deep = _updation->getDeep();
-
-            if( updation_deep != _deep )
-            {
-                return true;
-            }
-
-            EUpdateState updation_state = _updation->getState();
-
-            if( updation_state == EUS_REMOVE )
-            {
-                return true;
-            }
-
-            return false;
-        } ), leaf_indecies.end() );
+        leaf_indecies.erase( StdAlgorithm::remove( leaf_indecies.begin(), leaf_indecies.end(), nullptr ), leaf_indecies.end() );
 
         for( const UpdationInterfacePtr & updation : leaf_indecies )
         {
-            uint32_t updation_deep = updation->getDeep();
-
-            if( updation_deep != _deep )
+            if( updation == nullptr )
             {
                 continue;
             }
 
-            EUpdateState updation_state = updation->getState();
+            uint32_t updation_deep = updation->getUpdationDeep();
 
-            if( updation_state == EUS_REMOVE )
+            if( updation_deep != _deep )
             {
                 continue;
             }
@@ -167,7 +221,7 @@ namespace Mengine
         MENGINE_PROFILER_CATEGORY();
 
         uint32_t enumerateBeforeDeep = 0U;
-        for( LeafUpdatable & leaf : m_beforeLeaf )
+        for( LeafUpdatable & leaf : m_beforeLeafs )
         {
             this->updateLeaf_( enumerateBeforeDeep, &leaf, _context );
 
@@ -183,7 +237,7 @@ namespace Mengine
         }
 
         uint32_t enumerateAfterDeep = 0U;
-        for( LeafUpdatable & leaf : m_afterLeaf )
+        for( LeafUpdatable & leaf : m_afterLeafs )
         {
             this->updateLeaf_( enumerateAfterDeep, &leaf, _context );
 

@@ -327,7 +327,7 @@ android {
     }
 
     androidResources {
-        noCompress += ['pak', 'bin']
+        noCompress += ['pak', 'bin', 'jpg', 'jpeg', 'png', 'webp', 'ogg', 'ogv', 'ogva']
     }
 
     namespace "org.Mengine.Project"

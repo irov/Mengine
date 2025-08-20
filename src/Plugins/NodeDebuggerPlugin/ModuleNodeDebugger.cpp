@@ -1231,6 +1231,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ModuleNodeDebugger::serializeNodeSingle( const NodePtr & _node, pugi::xml_node & _xmlNode )
     {
+        Detail::serializeNodeProp( _node->getHierarchyHash(), "hhash", _xmlNode );
         Detail::serializeNodeProp( _node->getUniqueIdentity(), "uid", _xmlNode );
         Detail::serializeNodeProp( _node->getName(), "name", _xmlNode );
         Detail::serializeNodeProp( _node->getType(), "type", _xmlNode );

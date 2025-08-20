@@ -11,6 +11,7 @@
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( AllocatorSystem );
+SERVICE_EXTERN( EnumeratorService );
 SERVICE_EXTERN( StringizeService );
 SERVICE_EXTERN( DocumentService );
 //////////////////////////////////////////////////////////////////////////
@@ -31,6 +32,7 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
         SERVICE_PROVIDER_SETUP( serviceProvider );
 
         SERVICE_CREATE( AllocatorSystem, nullptr );
+        SERVICE_CREATE( EnumeratorService, nullptr );
         SERVICE_CREATE( StringizeService, nullptr );
         SERVICE_CREATE( DocumentService, nullptr );
 
@@ -78,10 +80,12 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 
         SERVICE_FINALIZE( DocumentService );
         SERVICE_FINALIZE( StringizeService );
+        SERVICE_FINALIZE( EnumeratorService );
         SERVICE_FINALIZE( AllocatorSystem );
 
         SERVICE_DESTROY( DocumentService );
         SERVICE_DESTROY( StringizeService );
+        SERVICE_DESTROY( EnumeratorService );
         SERVICE_DESTROY( AllocatorSystem );
 
         SERVICE_PROVIDER_FINALIZE( serviceProvider );

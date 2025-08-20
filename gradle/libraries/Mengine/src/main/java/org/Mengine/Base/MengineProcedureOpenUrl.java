@@ -3,7 +3,7 @@ package org.Mengine.Base;
 import androidx.annotation.NonNull;
 
 public class MengineProcedureOpenUrl implements MengineProcedureInterface {
-    private static final MengineTag TAG = MengineTag.of("MPOpenUrl");
+    private static final MengineTag TAG = MengineTag.of("MNGPOpenUrl");
 
     private final String m_url;
 

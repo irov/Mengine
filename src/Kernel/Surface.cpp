@@ -36,7 +36,7 @@ namespace Mengine
     {
         this->_finalize();
 
-        this->Materialable::releaseMaterial();
+        Materialable::releaseMaterial();
     }
     //////////////////////////////////////////////////////////////////////////
     bool Surface::_initialize()
@@ -89,4 +89,5 @@ namespace Mengine
     {
         ++m_revision;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

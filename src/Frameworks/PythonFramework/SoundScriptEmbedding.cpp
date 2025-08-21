@@ -105,11 +105,9 @@ namespace Mengine
                     if( SOUND_SERVICE()
                         ->releaseSoundIdentity( _identity ) == false )
                     {
-                        uint32_t id = _identity->getUniqueIdentity();
-
                         LOGGER_ERROR( "resource sound '%s' emitter invalid release sound '%u'"
                             , m_resource->getName().c_str()
-                            , id
+                            , _identity->getUniqueIdentity()
                         );
                     }
 
@@ -124,11 +122,9 @@ namespace Mengine
                     if( SOUND_SERVICE()
                         ->releaseSoundIdentity( _identity ) == false )
                     {
-                        uint32_t id = _identity->getUniqueIdentity();
-
                         LOGGER_ERROR( "resource sound '%s' emitter invalid release sound '%u'"
                             , m_resource->getName().c_str()
-                            , id
+                            , _identity->getUniqueIdentity()
                         );
                     }
 

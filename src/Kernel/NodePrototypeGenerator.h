@@ -47,7 +47,7 @@ namespace Mengine
             );
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
-            DocumentInterfacePtr doc = MENGINE_DOCUMENT_MESSAGE( "Node type '%s' uid '%u'"
+            DocumentInterfacePtr doc = MENGINE_DOCUMENT_MESSAGE( "Node [%s:%u]"
                 , node->getType().c_str()
                 , node->getUniqueIdentity()
             );

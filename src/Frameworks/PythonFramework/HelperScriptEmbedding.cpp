@@ -275,7 +275,14 @@ namespace Mengine
             bool s_writeGameData( pybind::kernel_interface * _kernel, const ConstString & _name, PyObject * _data, PyObject * _pickleTypes )
             {
                 size_t size;
-                pybind::pickle( _kernel, _data, _pickleTypes, nullptr, 0, size );
+                if( pybind::pickle( _kernel, _data, _pickleTypes, nullptr, 0, &size ) == false )
+                {
+                    LOGGER_ERROR( "data '%s' invalid pickle [size]"
+                        , _name.c_str()
+                    );
+
+                    return false;
+                }
 
                 MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( size, MENGINE_DOCUMENT_PYTHON );
 
@@ -286,7 +293,7 @@ namespace Mengine
                 void * memory_buffer = buffer->getBuffer();
                 size_t memory_size = buffer->getSize();
 
-                if( pybind::pickle( _kernel, _data, _pickleTypes, memory_buffer, memory_size, size ) == false )
+                if( pybind::pickle( _kernel, _data, _pickleTypes, memory_buffer, memory_size, &size ) == false )
                 {
                     LOGGER_ERROR( "data '%s' invalid pickle"
                         , _name.c_str()
@@ -2905,9 +2912,11 @@ namespace Mengine
             bool s_writeGlobalPickleFile( pybind::kernel_interface * _kernel, const WString & _filePath, PyObject * _data, PyObject * _pickleTypes )
             {
                 size_t size;
-                if( pybind::pickle( _kernel, _data, _pickleTypes, nullptr, 0, size ) == false )
+                if( pybind::pickle( _kernel, _data, _pickleTypes, nullptr, 0, &size ) == false )
                 {
-                    LOGGER_ERROR( "invalid get pickle size" );
+                    LOGGER_ERROR( "file '%ls' invalid get pickle size"
+                        , _filePath.c_str()
+                    );
 
                     return false;
                 }
@@ -2921,9 +2930,11 @@ namespace Mengine
                 void * memory_buffer = buffer->getBuffer();
                 size_t memory_size = buffer->getSize();
 
-                if( pybind::pickle( _kernel, _data, _pickleTypes, memory_buffer, memory_size, size ) == false )
+                if( pybind::pickle( _kernel, _data, _pickleTypes, memory_buffer, memory_size, &size ) == false )
                 {
-                    LOGGER_ERROR( "invalid pickle" );
+                    LOGGER_ERROR( "file '%ls' invalid pickle"
+                        , _filePath.c_str()
+                    );
 
                     return false;
                 }
@@ -3063,7 +3074,8 @@ namespace Mengine
                 String utf8_filePath;
                 if( Helper::unicodeToUtf8( _filePath, &utf8_filePath ) == false )
                 {
-                    LOGGER_ERROR( "invalid file '%ls' convert to utf8"
+                    LOGGER_ERROR( "account '%s' invalid file '%ls' convert to utf8"
+                        , _accountId.c_str()
                         , _filePath.c_str()
                     );
 
@@ -3080,10 +3092,11 @@ namespace Mengine
                 FilePath filePath = Helper::stringizeFilePath( utf8_filePath );
 
                 size_t size;
-                if( pybind::pickle( _kernel, _data, _pickleTypes, nullptr, 0, size ) == false )
+                if( pybind::pickle( _kernel, _data, _pickleTypes, nullptr, 0, &size ) == false )
                 {
-                    LOGGER_ERROR( "'%s' invalid get pickle size"
+                    LOGGER_ERROR( "account '%s' invalid file '%ls' get pickle size"
                         , _accountId.c_str()
+                        , _filePath.c_str()
                     );
 
                     return false;
@@ -3099,10 +3112,11 @@ namespace Mengine
                 void * memory_buffer = buffer->getBuffer();
                 size_t memory_size = buffer->getSize();
 
-                if( pybind::pickle( _kernel, _data, _pickleTypes, memory_buffer, memory_size, size ) == false )
+                if( pybind::pickle( _kernel, _data, _pickleTypes, memory_buffer, memory_size, &size ) == false )
                 {
-                    LOGGER_ERROR( "account '%s' invalid pickle"
+                    LOGGER_ERROR( "account '%s' invalid file '%ls' pickle"
                         , _accountId.c_str()
+                        , _filePath.c_str()
                     );
 
                     return false;

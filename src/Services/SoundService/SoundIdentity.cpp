@@ -23,15 +23,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     SoundIdentity::~SoundIdentity()
     {
-        MENGINE_ASSERTION_FATAL( m_source == nullptr, "sound identity '%d' source not null"
+        MENGINE_ASSERTION_FATAL( m_source == nullptr, "sound identity '%u' source not null"
             , this->getUniqueIdentity()
         );
 
-        MENGINE_ASSERTION_FATAL( m_listener == nullptr, "sound identity '%d' listener not null"
+        MENGINE_ASSERTION_FATAL( m_listener == nullptr, "sound identity '%u' listener not null"
             , this->getUniqueIdentity()
         );
 
-        MENGINE_ASSERTION_FATAL( m_worker == nullptr, "sound identity '%d' worker not null"
+        MENGINE_ASSERTION_FATAL( m_worker == nullptr, "sound identity '%u' worker not null"
             , this->getUniqueIdentity()
         );
     }
@@ -67,7 +67,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SoundIdentity::finalize()
     {
-        MENGINE_ASSERTION_FATAL( m_worker == nullptr, "sound identity '%d' worker not null"
+        MENGINE_ASSERTION_FATAL( m_worker == nullptr, "sound identity '%u' worker not null"
             , this->getUniqueIdentity()
         );
 
@@ -185,7 +185,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SoundIdentity::setTimeLeft( float _timeLeft )
     {
-        MENGINE_ASSERTION_FATAL( _timeLeft >= 0.f, "sound identity '%d' set time left '%f' invalid"
+        MENGINE_ASSERTION_FATAL( _timeLeft >= 0.f, "sound identity '%u' set time left '%f' invalid"
             , this->getUniqueIdentity()
             , _timeLeft
         );

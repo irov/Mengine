@@ -210,10 +210,10 @@ namespace Mengine
 
     protected:
         bool createCompositionLayers_();
-        void destroyCompositionLayers_();
+        void disposeCompositionLayers_();
 
     protected:
-        void _destroy() override;
+        void _dispose() override;
 
     public:
         ResourceMovie2Ptr m_resourceMovie2;

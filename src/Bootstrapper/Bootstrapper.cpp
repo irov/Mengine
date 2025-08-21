@@ -1007,7 +1007,7 @@ namespace Mengine
         MENGINE_ADD_SERVICE( TimeSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( NotificationService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( VocabularyService, MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ADD_SERVICE( UnicodeSystem, MENGINE_DOCUMENT_FACTORABLE );        
+        MENGINE_ADD_SERVICE( UnicodeSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( DateTimeSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( CryptographySystem, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -2300,7 +2300,7 @@ namespace Mengine
         SERVICE_DESTROY( VocabularyService );
         SERVICE_DESTROY( PluginService );
         SERVICE_DESTROY( ArrowService );
-        SERVICE_DESTROY( FileService );        
+        SERVICE_DESTROY( FileService );
         SERVICE_DESTROY( TimeSystem );
         SERVICE_DESTROY( TimepipeService );
         SERVICE_DESTROY( AnalyticsService );
@@ -2332,7 +2332,7 @@ namespace Mengine
         SERVICE_DESTROY( OptionsService );
         SERVICE_DESTROY( CryptographySystem );
         SERVICE_DESTROY( PlatformSystem );
-        SERVICE_DESTROY( TimeSystem );
+        SERVICE_DESTROY( ThreadSystem );
     }
     //////////////////////////////////////////////////////////////////////////
 }

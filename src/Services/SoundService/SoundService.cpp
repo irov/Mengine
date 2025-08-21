@@ -538,12 +538,7 @@ namespace Mengine
 
         _identity->finalize();
 
-        uint32_t id = _identity->getUniqueIdentity();
-
-        VectorSoundIdentity::iterator it_found = StdAlgorithm::find_if( m_soundIdentities.begin(), m_soundIdentities.end(), [id]( const SoundIdentityInterfacePtr & _identity )
-        {
-            return _identity->getUniqueIdentity() == id;
-        } );
+        VectorSoundIdentity::iterator it_found = StdAlgorithm::find( m_soundIdentities.begin(), m_soundIdentities.end(), _identity );
 
         if( it_found == m_soundIdentities.end() )
         {
@@ -847,7 +842,7 @@ namespace Mengine
 
                 if( source == nullptr )
                 {
-                    LOGGER_ERROR( "invalid play %u source is nullptr"
+                    LOGGER_ERROR( "invalid play identity: %u source is nullptr"
                         , _identity->getUniqueIdentity()
                     );
 
@@ -867,7 +862,7 @@ namespace Mengine
                 {
                     if( source->play() == false )
                     {
-                        LOGGER_ASSERTION( "invalid play %u"
+                        LOGGER_ASSERTION( "invalid play identity: %u"
                             , _identity->getUniqueIdentity()
                         );
 
@@ -903,7 +898,7 @@ namespace Mengine
                 {
                     if( source->resume() == false )
                     {
-                        LOGGER_ASSERTION( "invalid resume %u"
+                        LOGGER_ASSERTION( "invalid resume identity: %u"
                             , _identity->getUniqueIdentity()
                         );
 
@@ -1038,7 +1033,7 @@ namespace Mengine
                 {
                     if( source->resume() == false )
                     {
-                        LOGGER_ASSERTION( "invalid resume %u"
+                        LOGGER_ASSERTION( "invalid resume identity: %u"
                             , _identity->getUniqueIdentity()
                         );
 
@@ -1297,7 +1292,7 @@ namespace Mengine
 
         if( source == nullptr )
         {
-            LOGGER_ERROR( "source is nullptr id %u"
+            LOGGER_ERROR( "source is nullptr identity: %u"
                 , _identity->getUniqueIdentity()
             );
 
@@ -1317,7 +1312,7 @@ namespace Mengine
 
         if( source == nullptr )
         {
-            LOGGER_ERROR( "not setup source %u"
+            LOGGER_ERROR( "not setup source identity: %u"
                 , _identity->getUniqueIdentity()
             );
 
@@ -1376,7 +1371,7 @@ namespace Mengine
         {
             if( source->resume() == false )
             {
-                LOGGER_ASSERTION( "invalid resume %u"
+                LOGGER_ASSERTION( "invalid resume identity: %u"
                     , _identity->getUniqueIdentity()
                 );
 

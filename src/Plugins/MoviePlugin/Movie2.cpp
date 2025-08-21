@@ -102,7 +102,7 @@ namespace Mengine
         {
             if( m_compositionName.empty() == false )
             {
-                this->destroyCompositionLayers_();
+                this->disposeCompositionLayers_();
             }
 
             m_compositionName = _compositionName;
@@ -677,34 +677,38 @@ namespace Mengine
 
         for( const ResourceMovie2::CompositionSubComposition & subcomposition : compositionDesc->subcompositions )
         {
-            Movie2SubCompositionPtr node = Helper::generateNodeFactorable<Movie2SubComposition>( MENGINE_DOCUMENT_FACTORABLE );
+            Movie2SubCompositionPtr subComposition = Helper::generateNodeFactorable<Movie2SubComposition>( MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( node, "name '%s' resource '%s' composition '%s' invalid create 'Movie2SubComposition'"
+            MENGINE_ASSERTION_MEMORY_PANIC( subComposition, "name '%s' resource '%s' composition '%s' invalid create 'Movie2SubComposition'"
                 , this->getName().c_str()
                 , this->getResourceMovie2()->getName().c_str()
                 , this->getCompositionName().c_str()
             );
 
-            node->setMovie( this );
+            subComposition->setMovie( this );
 
-            node->setName( subcomposition.name );
-            node->setDuration( subcomposition.duration );
-            node->setFrameDuration( subcomposition.frameDuration );
+            subComposition->setName( subcomposition.name );
+            subComposition->setDuration( subcomposition.duration );
+            subComposition->setFrameDuration( subcomposition.frameDuration );
 
-            this->addSubMovieComposition_( subcomposition.name, node );
+            this->addSubMovieComposition_( subcomposition.name, subComposition );
         }
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::destroyCompositionLayers_()
+    void Movie2::disposeCompositionLayers_()
     {
-        for( const MatrixProxyPtr & proxy : m_matrixProxies )
+        for( const HashtableSubCompositions::value_type & value : m_subCompositions )
         {
-            proxy->dispose();
+            const Movie2SubCompositionPtr & subComposition = value.element;
+
+            EventationInterface * eventation = subComposition->getEventation();
+
+            eventation->removeEvents();
         }
 
-        m_matrixProxies.clear();
+        m_subCompositions.clear();
 
         for( const HashtableSlots::value_type & value : m_slots )
         {
@@ -751,16 +755,12 @@ namespace Mengine
 
         m_astralaxEmitters.clear();
 
-        for( const HashtableSubCompositions::value_type & value : m_subCompositions )
+        for( const MatrixProxyPtr & proxy : m_matrixProxies )
         {
-            const Movie2SubCompositionPtr & subComposition = value.element;
-
-            EventationInterface * eventation = subComposition->getEventation();
-
-            eventation->removeEvents();
+            proxy->dispose();
         }
 
-        m_subCompositions.clear();
+        m_matrixProxies.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::setWorkAreaFromEvent( const ConstString & _eventName )
@@ -3521,6 +3521,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::addSprite_( uint32_t _index, const ShapeQuadFixedPtr & _sprite )
     {
+        MENGINE_ASSERTION_FATAL( m_sprites.exist( _index ) == false, "movie2 '%s' sprite '%u' already exists"
+            , this->getName().c_str()
+            , _index
+        );
+
         m_sprites.emplace( _index, _sprite );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -3567,6 +3572,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::addParticle_( uint32_t _index, const NodePtr & _particleEmitter )
     {
+        MENGINE_ASSERTION_FATAL( m_astralaxEmitters.exist( _index ) == false, "movie2 '%s' particle emitter '%u' already exists"
+            , this->getName().c_str()
+            , _index
+        );
+
         m_astralaxEmitters.emplace( _index, _particleEmitter );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -3613,6 +3623,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::addSlot_( uint32_t _index, const Movie2SlotPtr & _slot )
     {
+        MENGINE_ASSERTION_FATAL( m_slots.exist( _index ) == false, "movie2 '%s' slot '%u' already exists"
+            , this->getName().c_str()
+            , _index
+        );
+
         m_slots.emplace( _index, _slot );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -3684,6 +3699,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::addSocket_( uint32_t _index, const HotSpotPolygonPtr & _hotspot )
     {
+        MENGINE_ASSERTION_FATAL( m_sockets.exist( _index ) == false, "movie2 '%s' socket '%u' already exists"
+            , this->getName().c_str()
+            , _index
+        );
+
         m_sockets.emplace( _index, _hotspot );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -3755,6 +3775,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::addText_( uint32_t _index, const TextFieldPtr & _text )
     {
+        MENGINE_ASSERTION_FATAL( m_texts.exist( _index ) == false, "movie2 '%s' text '%u' already exists"
+            , this->getName().c_str()
+            , _index
+        );
+
         m_texts.emplace( _index, _text );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -3826,6 +3851,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::addSubMovieComposition_( const ConstString & _name, const Movie2SubCompositionPtr & _subComposition )
     {
+        MENGINE_ASSERTION_FATAL( m_subCompositions.exist( _name ) == false, "movie2 '%s' subcomposition '%s' already exists"
+            , this->getName().c_str()
+            , _name.c_str()
+        );
+
         m_subCompositions.emplace( _name, _subComposition );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -3834,11 +3864,13 @@ namespace Mengine
         m_matrixProxies.emplace_back( _matrixProxy );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::_destroy()
+    void Movie2::_dispose()
     {
-        Node::_destroy();
+        m_resourceMovie2 = nullptr;
 
-        this->destroyCompositionLayers_();
+        this->disposeCompositionLayers_();
+
+        Node::_dispose();
     }
     //////////////////////////////////////////////////////////////////////////
 }

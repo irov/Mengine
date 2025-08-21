@@ -987,7 +987,6 @@ namespace Mengine
             .def_property( "b", &Color::getB, &Color::setB )
             .def( "isSolid", &Color::isSolid )
             .def( "isIdentity", &Color::isIdentity )
-            .def( "isSolid", &Color::isSolid )
             ;
 
         pybind::struct_<Resolution>( _kernel, "Resolution" )

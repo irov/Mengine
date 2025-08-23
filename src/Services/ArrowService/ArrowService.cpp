@@ -43,7 +43,11 @@ namespace Mengine
     {
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_COMPLETE );
 
-        m_arrowNode = nullptr;
+        if( m_arrowNode != nullptr )
+        {
+            m_arrowNode->dispose();
+            m_arrowNode = nullptr;
+        }
 
         INPUT_SERVICE()
             ->removeMousePositionProvider( InputMousePositionProviderInterfacePtr::from( this ) );

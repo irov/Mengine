@@ -120,6 +120,9 @@ namespace Mengine
         PythonScriptLoggerPtr m_loggerWarning;
         PythonScriptLoggerPtr m_loggerError;
 
+        PyObject * m_pyOldStdOutHandle;
+        PyObject * m_pyOldStdErrorHandle;
+
         struct ScriptEmbeddingDesc
         {
             ConstString name;

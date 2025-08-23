@@ -62,7 +62,7 @@ if (file(ANDROID_APP_MAIN_PROJECT).exists() == false) {
 val fileAppProperties = file("$ANDROID_APP_MAIN_PROJECT/app.properties")
 
 if (fileAppProperties.exists() == true) {
-    println("\u001b[32m" + "[+] Load $ANDROID_APP_MAIN_PROJECT" + "/app.properties" + "\u001b[0m")
+    println("\u001b[32m" + "[+] Load $ANDROID_APP_MAIN_PROJECT/app.properties" + "\u001b[0m")
 
     val appProperties = java.util.Properties()
 
@@ -78,7 +78,7 @@ if (fileAppProperties.exists() == true) {
         extra[key.toString()] = value
     }
 } else {
-    println("\u001b[31m" + "[-] Not found $ANDROID_APP_MAIN_PROJECT" + "/app.properties" + "\u001b[0m")
+    println("\u001b[31m" + "[-] Not found $ANDROID_APP_MAIN_PROJECT/app.properties" + "\u001b[0m")
 }
 
 println("\u001b[32m" + "[+] Include :$ANDROID_APP_MAIN_PROJECT" + "\u001b[0m")

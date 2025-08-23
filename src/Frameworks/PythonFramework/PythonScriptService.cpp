@@ -281,6 +281,8 @@ namespace Mengine
     PythonScriptService::PythonScriptService()
         : m_kernel( nullptr )
         , m_moduleMengine( nullptr )
+        , m_pyOldStdOutHandle( nullptr )
+        , m_pyOldStdErrorHandle( nullptr )
         , m_initializeModules( false )
         , m_tracebackOffset( 0 )
     {
@@ -380,6 +382,12 @@ namespace Mengine
             .def_native_silent_kernel( "write", &PythonScriptLogger::write )
             .def_property( "softspace", &PythonScriptLogger::getSoftspace, &PythonScriptLogger::setSoftspace )
             ;
+
+        m_pyOldStdOutHandle = kernel->getStdOutHandle();
+        kernel->incref( m_pyOldStdOutHandle );
+
+        m_pyOldStdErrorHandle = kernel->getStdErrorHandle();
+        kernel->incref( m_pyOldStdErrorHandle );
 
         PythonScriptLoggerPtr loggerWarning = Helper::makeFactorableUnique<PythonScriptLogger>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -653,9 +661,6 @@ namespace Mengine
         m_loggerWarning = nullptr;
         m_loggerError = nullptr;
 
-        m_kernel->setStdOutHandle( nullptr );
-        m_kernel->setStdErrorHandle( nullptr );
-
         m_kernel->remove_scope<PythonScriptLogger>();
         m_kernel->remove_scope<PythonScriptModuleFinder>();
 
@@ -664,6 +669,28 @@ namespace Mengine
 
         m_kernel->set_current_module( nullptr );
         m_kernel->collect();
+
+        if( m_pyOldStdOutHandle != nullptr )
+        {
+            m_kernel->setStdOutHandle( m_pyOldStdOutHandle );
+            m_kernel->decref( m_pyOldStdOutHandle );
+            m_pyOldStdOutHandle = nullptr;
+        }
+        else
+        {
+            m_kernel->setStdOutHandle( nullptr );
+        }
+
+        if( m_pyOldStdErrorHandle != nullptr )
+        {
+            m_kernel->setStdErrorHandle( m_pyOldStdErrorHandle );
+            m_kernel->decref( m_pyOldStdErrorHandle );
+            m_pyOldStdErrorHandle = nullptr;
+        }
+        else
+        {
+            m_kernel->setStdErrorHandle( nullptr );
+        }
 
         m_bootstrapperModules.clear();
         m_prototypies.clear();

@@ -150,6 +150,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptProviderService::_finalizeService()
     {
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PythonScriptProviderService::_destroyService()
+    {
         pybind::allocator_interface * allocator = m_kernel->get_allocator();
 
         m_kernel->destroy();

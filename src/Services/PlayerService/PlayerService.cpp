@@ -385,6 +385,16 @@ namespace Mengine
         this->setRenderScissor( nullptr );
         this->setRenderTarget( nullptr );
 
+        const NodePtr & node = ARROW_SERVICE()
+            ->getArrowNode();
+
+        RenderInterface * render = node->getRender();
+
+        render->setRenderResolution( nullptr );
+        render->setRenderViewport( nullptr );
+        render->setRenderCamera( nullptr );
+        render->setRenderScissor( nullptr );
+
         m_defaultResolution = nullptr;
 
         if( m_defaultCamera2D != nullptr )

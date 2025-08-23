@@ -2120,8 +2120,8 @@ namespace Mengine
 
         SERVICE_FINALIZE( HttpService );
         SERVICE_FINALIZE( GameService );
-        SERVICE_FINALIZE( Application );
         SERVICE_FINALIZE( ArrowService );
+        SERVICE_FINALIZE( Application );
 
         SERVICE_FINALIZE( SecureService );
         SERVICE_FINALIZE( AccountService );
@@ -2172,6 +2172,10 @@ namespace Mengine
 
         SERVICE_FINALIZE( PluginService );
         SERVICE_FINALIZE( TimepipeService );
+
+        LOGGER_SERVICE()
+            ->setCurrentContentLog( nullptr );
+
 
         if( m_loggerFile != nullptr )
         {

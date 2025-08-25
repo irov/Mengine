@@ -136,7 +136,7 @@ namespace Mengine
 
         for( const String & frameworkPack : frameworkPacksSettings )
         {
-            LOGGER_INFO( "package", "package: %s"
+            LOGGER_INFO( "package", "framework package: %s"
                 , frameworkPack.c_str()
             );
 
@@ -163,12 +163,44 @@ namespace Mengine
             }
         }
 
+        VectorString mobilePacksSettings;
+        config->getValues( "GAME_PACKAGES", "MobilePack", &mobilePacksSettings );
+
+        for( const String & mobilePack : mobilePacksSettings )
+        {
+            LOGGER_INFO( "package", "mobile package: %s"
+                , mobilePack.c_str()
+            );
+
+            if( config->hasSection( mobilePack.c_str() ) == false )
+            {
+                LOGGER_ERROR( "invalid load '%s' mobile package no found section for '%s'"
+                    , Helper::getContentFullPath( _content ).c_str()
+                    , mobilePack.c_str()
+                );
+
+                return false;
+            }
+
+            PackageDesc pack;
+            Detail::configPackageDesc( config, mobilePack, &pack, true );
+
+            if( this->addPackage( pack, MENGINE_DOCUMENT_MESSAGE( "mobile package '%s'", mobilePack.c_str() ) ) == false )
+            {
+                LOGGER_ERROR( "invalid add mobile package '%s'"
+                    , pack.name.c_str()
+                );
+
+                return false;
+            }
+        }
+
         VectorString resourcePacksSettings;
         config->getValues( "GAME_PACKAGES", "ResourcePack", &resourcePacksSettings );
 
         for( const String & resourcePack : resourcePacksSettings )
         {
-            LOGGER_INFO( "package", "package: %s"
+            LOGGER_INFO( "package", "resource package: %s"
                 , resourcePack.c_str()
             );
 
@@ -200,7 +232,7 @@ namespace Mengine
 
         for( const String & languagePack : languagePackSettings )
         {
-            LOGGER_INFO( "package", "package: %s"
+            LOGGER_INFO( "package", "language package: %s"
                 , languagePack.c_str()
             );
 

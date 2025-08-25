@@ -111,7 +111,7 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
         this.log("loadAd");
 
         this.buildInterstitialAdEvent("load")
-                .log();
+            .log();
 
         this.setInterstitialState("load");
 

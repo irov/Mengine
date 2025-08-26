@@ -13,7 +13,7 @@ android {
 
     sourceSets {
         main {
-            if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR")) {
+            if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR") == true) {
                 def f = new File(ANDROID_APP_ASSETS_RES_DIR)
 
                 if (f.exists() == false) {

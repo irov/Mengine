@@ -81,7 +81,7 @@ if (MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING == true) {
     apply plugin: 'com.google.firebase.firebase-perf'
 }
 
-if (MENGINE_APP_PLUGIN_APPLOVIN == true && project.hasProperty("MENGINE_APP_PLUGIN_APPLOVIN_AD_REVIEW_KEY")) {
+if (MENGINE_APP_PLUGIN_APPLOVIN == true && project.hasProperty("MENGINE_APP_PLUGIN_APPLOVIN_AD_REVIEW_KEY") == true) {
     println "MENGINE_APP_PLUGIN_APPLOVIN_AD_REVIEW_KEY: $MENGINE_APP_PLUGIN_APPLOVIN_AD_REVIEW_KEY"
 
     apply plugin: 'applovin-quality-service'
@@ -124,7 +124,7 @@ android {
     }
 
     signingConfigs {
-        if (project.hasProperty("ANDROID_APP_DEBUG_STORE_FILE")) {
+        if (project.hasProperty("ANDROID_APP_DEBUG_STORE_FILE") == true) {
             debug {
                 println "ANDROID_APP_DEBUG_STORE_FILE: $ANDROID_APP_DEBUG_STORE_FILE"
                 println "ANDROID_APP_DEBUG_KEY_ALIAS: $ANDROID_APP_DEBUG_KEY_ALIAS"
@@ -142,7 +142,7 @@ android {
             }
         }
 
-        if (project.hasProperty("ANDROID_APP_RELEASE_STORE_FILE")) {
+        if (project.hasProperty("ANDROID_APP_RELEASE_STORE_FILE") == true) {
             release {
                 println "ANDROID_APP_RELEASE_STORE_FILE: $ANDROID_APP_RELEASE_STORE_FILE"
                 println "ANDROID_APP_RELEASE_KEY_ALIAS: $ANDROID_APP_RELEASE_KEY_ALIAS"
@@ -162,7 +162,7 @@ android {
     }
 
     defaultConfig {
-        if (project.hasProperty("ANDROID_APP_ID")) {
+        if (project.hasProperty("ANDROID_APP_ID") == true) {
             applicationId ANDROID_APP_ID
 
             println "ANDROID_APP_ID: $applicationId"
@@ -200,13 +200,13 @@ android {
 
     buildTypes {
         debug {
-            if (project.hasProperty("ANDROID_APP_DEBUG_STORE_FILE")) {
+            if (project.hasProperty("ANDROID_APP_DEBUG_STORE_FILE") == true) {
                 signingConfig signingConfigs.debug
             }
         }
 
         release {
-            if (project.hasProperty("ANDROID_APP_RELEASE_STORE_FILE")) {
+            if (project.hasProperty("ANDROID_APP_RELEASE_STORE_FILE") == true) {
                 signingConfig signingConfigs.release
             }
         }
@@ -282,7 +282,7 @@ android {
 			
             java.srcDirs += ['src']
 
-            if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR")) {
+            if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR") == true) {
                 println "ANDROID_APP_ASSETS_RES_DIR: $ANDROID_APP_ASSETS_RES_DIR"
 
                 def f = new File(ANDROID_APP_ASSETS_RES_DIR)
@@ -298,7 +298,7 @@ android {
                 res.srcDirs += ['res']
             }
 
-            if (project.hasProperty("ANDROID_APP_ASSETS_SRC_DIR")) {
+            if (project.hasProperty("ANDROID_APP_ASSETS_SRC_DIR") == true) {
                 println "ANDROID_APP_ASSETS_SRC_DIR: $ANDROID_APP_ASSETS_SRC_DIR"
 
                 def f = new File(ANDROID_APP_ASSETS_SRC_DIR)
@@ -723,7 +723,7 @@ if (MENGINE_APP_PLUGIN_AMPLITUDE == true) {
     }
 }
 
-if (project.hasProperty("MENGINE_APP_OPTIONS")) {
+if (project.hasProperty("MENGINE_APP_OPTIONS") == true) {
     println "MENGINE_APP_OPTIONS: $MENGINE_APP_OPTIONS"
 
     android {

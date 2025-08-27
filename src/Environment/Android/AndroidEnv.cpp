@@ -7,6 +7,7 @@
 
 #include "Config/StdString.h"
 #include "Config/StdLib.h"
+#include "Config/StdArg.h"
 
 #include <signal.h>
 #include <pthread.h>

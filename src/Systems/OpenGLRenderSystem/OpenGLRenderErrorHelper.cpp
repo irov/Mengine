@@ -1,4 +1,7 @@
 #include "OpenGLRenderErrorHelper.h"
+
+#if defined(MENGINE_OPENGL_RENDER_CHECK_ERROR_ENABLE)
+
 #include "OpenGLRenderExtension.h"
 
 #include "Kernel/Logger.h"
@@ -47,3 +50,5 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
     }
 }
+
+#endif

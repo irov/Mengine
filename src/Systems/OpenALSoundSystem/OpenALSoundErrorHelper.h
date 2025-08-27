@@ -51,7 +51,7 @@ namespace Mengine
     Method Args
 //////////////////////////////////////////////////////////////////////////
 #   define MENGINE_IF_OPENAL_CALL(Method, Args)\
-    Method Args; if( ALenum MENGINE_PP_CONCATENATE(__openal_err, MENGINE_CODE_LINE) = alGetError(); MENGINE_PP_CONCATENATE(__openal_err, MENGINE_CODE_LINE) != AL_NO_ERROR) )
+    Method Args; if( ALenum MENGINE_PP_CONCATENATE(__openal_err, MENGINE_CODE_LINE) = alGetError(); MENGINE_PP_CONCATENATE(__openal_err, MENGINE_CODE_LINE) != AL_NO_ERROR)
 //////////////////////////////////////////////////////////////////////////
 #   define MENGINE_RET_OPENAL_CALL(Ret, Method, Args)\
     Ret = Method Args

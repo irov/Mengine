@@ -347,7 +347,8 @@ namespace Mengine
 
         if( vb != nullptr )
         {
-            [encoder setVertexBuffer:vb->getBuffer() offset:0 atIndex:0];
+            uint32_t vertexOffset = _desc.baseVertexIndex * vb->getVertexSize();
+            [encoder setVertexBuffer:vb->getBuffer() offset:vertexOffset atIndex:0];
         }
 
         if( ib != nullptr )

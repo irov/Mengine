@@ -21,7 +21,7 @@ namespace Mengine
         bool initialize( uint32_t _vertexSize, EBufferType _bufferType ) override;
         void finalize() override;
 
-    protected:
+    public:
         uint32_t getVertexCount() const override;
         uint32_t getVertexSize() const override;
 

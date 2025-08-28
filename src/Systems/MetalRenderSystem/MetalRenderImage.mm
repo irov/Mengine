@@ -148,7 +148,10 @@ namespace Mengine
         size_t pitch;
         void * buffer = locked->getBuffer( &pitch );
 
-        MTLRegion region = MTLRegionMake2D( lockedRect.left, lockedRect.top, lockedRect.getWidth(), lockedRect.getHeight() );
+        uint32_t lockedWidth = lockedRect.getWidth();
+        uint32_t lockedHeight = lockedRect.getHeight();
+
+        MTLRegion region = MTLRegionMake2D( lockedRect.left, lockedRect.top, lockedWidth, lockedHeight );
         [m_texture replaceRegion:region mipmapLevel:_level withBytes:buffer bytesPerRow:pitch];
 
         return true;

@@ -136,7 +136,10 @@ namespace Mengine
 
         if( _windowDesc != nullptr )
         {
-            m_metalLayer.drawableSize = CGSizeMake( _windowDesc->resolution.getWidth(), _windowDesc->resolution.getHeight() );
+            CGFloat drawableWidth = (CGFloat)_windowDesc->resolution.getWidth();
+            CGFloat drawableHeight = (CGFloat)_windowDesc->resolution.getHeight();
+
+            m_metalLayer.drawableSize = CGSizeMake( drawableWidth, drawableHeight );
             m_vsync = _windowDesc->waitForVSync;
         }
 
@@ -347,14 +350,22 @@ namespace Mengine
 
         if( vb != nullptr )
         {
-            uint32_t vertexOffset = _desc.baseVertexIndex * vb->getVertexSize();
-            [encoder setVertexBuffer:vb->getBuffer() offset:vertexOffset atIndex:0];
+            uint32_t vertexSize = vb->getVertexSize();
+            uint32_t vertexOffset = _desc.baseVertexIndex * vertexSize;
+
+            MetalBufferId bufferId = vb->getBuffer();
+            [encoder setVertexBuffer:bufferId offset:vertexOffset atIndex:0];
         }
 
         if( ib != nullptr )
         {
             MTLIndexType indexType = ib->getIndexType();
-            [encoder drawIndexedPrimitives:MTLPrimitiveTypeTriangle indexCount:_desc.indexCount indexType:indexType indexBuffer:ib->getBuffer() indexBufferOffset:_desc.startIndex * m_currentIndexBuffer->getIndexSize()];
+            MetalBufferId indexBuffer = ib->getBuffer();
+
+            uint32_t indexSize = m_currentIndexBuffer->getIndexSize();
+            uint32_t bufferOffset = _desc.startIndex * indexSize;
+
+            [encoder drawIndexedPrimitives:MTLPrimitiveTypeTriangle indexCount:_desc.indexCount indexType:indexType indexBuffer:indexBuffer indexBufferOffset:bufferOffset];
         }
 
         [encoder endEncoding];
@@ -492,9 +503,15 @@ namespace Mengine
     {
         MetalRenderTargetTexture * target = _renderTarget.getT<MetalRenderTargetTexture *>();
 
-        MetalRenderImagePtr image = Helper::makeFactorableUnique<MetalRenderImage>( _doc, target->getDevice() );
+        MetalDeviceId device = target->getDevice();
+        MetalRenderImagePtr image = Helper::makeFactorableUnique<MetalRenderImage>( _doc, device );
 
-        if( image->initializeFromTexture( target->getTexture(), target->getHWWidth(), target->getHWHeight(), target->getHWPixelFormat() ) == false )
+        MetalTextureId texture = target->getTexture();
+        uint32_t hwWidth = target->getHWWidth();
+        uint32_t hwHeight = target->getHWHeight();
+        EPixelFormat hwPixelFormat = target->getHWPixelFormat();
+
+        if( image->initializeFromTexture( texture, hwWidth, hwHeight, hwPixelFormat ) == false )
         {
             return nullptr;
         }
@@ -558,7 +575,12 @@ namespace Mengine
         pass.colorAttachments[0].texture = drawable.texture;
         pass.colorAttachments[0].loadAction = MTLLoadActionClear;
         pass.colorAttachments[0].storeAction = MTLStoreActionStore;
-        pass.colorAttachments[0].clearColor = MTLClearColorMake( _color.getR(), _color.getG(), _color.getB(), _color.getA() );
+        double clearR = _color.getR();
+        double clearG = _color.getG();
+        double clearB = _color.getB();
+        double clearA = _color.getA();
+
+        pass.colorAttachments[0].clearColor = MTLClearColorMake( clearR, clearG, clearB, clearA );
 
         id<MTLRenderCommandEncoder> encoder = [m_commandBuffer renderCommandEncoderWithDescriptor:pass];
         [encoder endEncoding];

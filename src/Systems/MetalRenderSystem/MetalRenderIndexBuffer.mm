@@ -84,7 +84,11 @@ namespace Mengine
     {
         if( m_buffer != nil )
         {
-            memcpy( ((uint8_t *)[m_buffer contents]) + m_lockOffset * m_indexSize, m_memory->getBuffer(), m_memory->getSize() );
+            void * memoryBuffer = m_memory->getBuffer();
+            size_t memorySize = m_memory->getSize();
+            void * bufferContents = [m_buffer contents];
+
+            memcpy( ((uint8_t *)bufferContents) + m_lockOffset * m_indexSize, memoryBuffer, memorySize );
         }
 
         m_memory->clearBuffer();
@@ -116,7 +120,8 @@ namespace Mengine
             return false;
         }
 
-        memcpy( ((uint8_t *)[m_buffer contents]) + _offset * m_indexSize, _buffer, _count * m_indexSize );
+        void * bufferContents = [m_buffer contents];
+        memcpy( ((uint8_t *)bufferContents) + _offset * m_indexSize, _buffer, _count * m_indexSize );
 
         return true;
     }

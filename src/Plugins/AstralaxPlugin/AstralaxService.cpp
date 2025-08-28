@@ -1521,6 +1521,10 @@ namespace Mengine
             {
                 this->createFragmentShaderGLESSource_( ss, m );
             }break;
+        case RP_METAL:
+            {
+                this->createFragmentShaderGLESSource_( ss, m );
+            }break;
         default:
             {
                 LOGGER_ERROR( "not supported render platform [%u]"

@@ -124,44 +124,6 @@ android {
         }
     }
 
-    signingConfigs {
-        if (project.hasProperty("ANDROID_APP_DEBUG_STORE_FILE") == true) {
-            debug {
-                println "ANDROID_APP_DEBUG_STORE_FILE: $ANDROID_APP_DEBUG_STORE_FILE"
-                println "ANDROID_APP_DEBUG_KEY_ALIAS: $ANDROID_APP_DEBUG_KEY_ALIAS"
-
-                def f = new File(ANDROID_APP_DEBUG_STORE_FILE)
-
-                if (f.exists() == false) {
-                    throw new GradleException("ANDROID_APP_DEBUG_STORE_FILE not found folder: $ANDROID_APP_DEBUG_STORE_FILE")
-                }
-
-                storeFile file(ANDROID_APP_DEBUG_STORE_FILE)
-                storePassword ANDROID_APP_DEBUG_STORE_PASSWORD
-                keyAlias ANDROID_APP_DEBUG_KEY_ALIAS
-                keyPassword ANDROID_APP_DEBUG_KEY_PASSWORD
-            }
-        }
-
-        if (project.hasProperty("ANDROID_APP_RELEASE_STORE_FILE") == true) {
-            release {
-                println "ANDROID_APP_RELEASE_STORE_FILE: $ANDROID_APP_RELEASE_STORE_FILE"
-                println "ANDROID_APP_RELEASE_KEY_ALIAS: $ANDROID_APP_RELEASE_KEY_ALIAS"
-
-                def f = new File(ANDROID_APP_RELEASE_STORE_FILE)
-
-                if (f.exists() == false) {
-                    throw new GradleException("ANDROID_APP_RELEASE_STORE_FILE not found folder: $ANDROID_APP_RELEASE_STORE_FILE")
-                }
-
-                storeFile file(ANDROID_APP_RELEASE_STORE_FILE)
-                storePassword ANDROID_APP_RELEASE_STORE_PASSWORD
-                keyAlias ANDROID_APP_RELEASE_KEY_ALIAS
-                keyPassword ANDROID_APP_RELEASE_KEY_PASSWORD
-            }
-        }
-    }
-
     defaultConfig {
         if (project.hasProperty("ANDROID_APP_ID") == true) {
             applicationId ANDROID_APP_ID
@@ -199,15 +161,51 @@ android {
         println "versionName: $versionName"
     }
 
+    signingConfigs {
+        if (project.hasProperty("ANDROID_APP_DEBUG_STORE_FILE") == true) {
+            debug {
+                println "ANDROID_APP_DEBUG_STORE_FILE: $ANDROID_APP_DEBUG_STORE_FILE"
+
+                def f = new File(ANDROID_APP_DEBUG_STORE_FILE)
+
+                if (f.exists() == false) {
+                    throw new GradleException("ANDROID_APP_DEBUG_STORE_FILE not found folder: $ANDROID_APP_DEBUG_STORE_FILE")
+                }
+
+                storeFile file(ANDROID_APP_DEBUG_STORE_FILE)
+                storePassword ANDROID_APP_DEBUG_STORE_PASSWORD
+                keyAlias ANDROID_APP_DEBUG_KEY_ALIAS
+                keyPassword ANDROID_APP_DEBUG_KEY_PASSWORD
+            }
+        }
+
+        if (project.hasProperty("ANDROID_APP_RELEASE_STORE_FILE") == true) {
+            release {
+                println "ANDROID_APP_RELEASE_STORE_FILE: $ANDROID_APP_RELEASE_STORE_FILE"
+
+                def f = new File(ANDROID_APP_RELEASE_STORE_FILE)
+
+                if (f.exists() == false) {
+                    throw new GradleException("ANDROID_APP_RELEASE_STORE_FILE not found folder: $ANDROID_APP_RELEASE_STORE_FILE")
+                }
+
+                storeFile file(ANDROID_APP_RELEASE_STORE_FILE)
+                storePassword ANDROID_APP_RELEASE_STORE_PASSWORD
+                keyAlias ANDROID_APP_RELEASE_KEY_ALIAS
+                keyPassword ANDROID_APP_RELEASE_KEY_PASSWORD
+            }
+        }
+    }
+
     buildTypes {
-        debug {
-            if (project.hasProperty("ANDROID_APP_DEBUG_STORE_FILE") == true) {
+        if (project.hasProperty("ANDROID_APP_DEBUG_STORE_FILE") == true) {
+            debug {
                 signingConfig signingConfigs.debug
             }
         }
 
-        release {
-            if (project.hasProperty("ANDROID_APP_RELEASE_STORE_FILE") == true) {
+        if (project.hasProperty("ANDROID_APP_RELEASE_STORE_FILE") == true) {
+            release {
                 signingConfig signingConfigs.release
             }
         }

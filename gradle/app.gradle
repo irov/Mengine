@@ -268,13 +268,17 @@ android {
     if (ANDROID_APP_DELIVERY_PACKAGES != null) {
         def PACKAGES = ANDROID_APP_DELIVERY_PACKAGES.split(",")
 
+        def deliveryPacks = [] as ArrayList<String>
+
         for(PACKAGE_DESC in PACKAGES) {
             var PACKAGE_NAME = PACKAGE_DESC.split(";")[0]
 
             println "add delivery asset pack: $PACKAGE_NAME"
 
-            assetPacks += [":$ANDROID_APP_MAIN_PROJECT:" + PACKAGE_NAME]
+            deliveryPacks.add((":$ANDROID_APP_MAIN_PROJECT:$PACKAGE_NAME").toString())
         }
+
+        assetPacks = deliveryPacks
     }
 
     sourceSets {

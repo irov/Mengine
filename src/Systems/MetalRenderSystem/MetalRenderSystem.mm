@@ -352,7 +352,7 @@ namespace Mengine
 
         if( ib != nullptr )
         {
-            MTLIndexType indexType = (m_currentIndexBuffer->getIndexSize() == 2) ? MTLIndexTypeUInt16 : MTLIndexTypeUInt32;
+            MTLIndexType indexType = ib->getIndexType();
             [encoder drawIndexedPrimitives:MTLPrimitiveTypeTriangle indexCount:_desc.indexCount indexType:indexType indexBuffer:ib->getBuffer() indexBufferOffset:_desc.startIndex * m_currentIndexBuffer->getIndexSize()];
         }
 

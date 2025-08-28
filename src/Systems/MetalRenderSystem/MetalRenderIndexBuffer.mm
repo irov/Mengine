@@ -12,6 +12,7 @@ namespace Mengine
         , m_buffer( nil )
         , m_bufferType( BT_STATIC )
         , m_indexSize( 0 )
+        , m_indexType( MTLIndexTypeUInt16 )
         , m_indexCount( 0 )
         , m_lockOffset( 0 )
     {
@@ -23,6 +24,7 @@ namespace Mengine
     {
         m_indexSize = _indexSize;
         m_bufferType = _bufferType;
+        m_indexType = (_indexSize == 2) ? MTLIndexTypeUInt16 : MTLIndexTypeUInt32;
 
         MemoryBufferInterfacePtr memory = MEMORY_SERVICE()->createMemoryBuffer( MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid create memory" );
@@ -93,6 +95,11 @@ namespace Mengine
     MetalBufferId MetalRenderIndexBuffer::getBuffer() const
     {
         return m_buffer;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MTLIndexType MetalRenderIndexBuffer::getIndexType() const
+    {
+        return m_indexType;
     }
     //////////////////////////////////////////////////////////////////////////
     bool MetalRenderIndexBuffer::draw( const void * _buffer, uint32_t _offset, uint32_t _count )

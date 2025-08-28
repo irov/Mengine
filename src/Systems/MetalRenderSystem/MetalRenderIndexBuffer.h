@@ -34,6 +34,7 @@ namespace Mengine
 
     public:
         MetalBufferId getBuffer() const;
+        MTLIndexType getIndexType() const;
 
     protected:
         bool draw( const void * _buffer, uint32_t _offset, uint32_t _count ) override;
@@ -43,6 +44,7 @@ namespace Mengine
         MetalBufferId m_buffer;
         EBufferType m_bufferType;
         uint32_t m_indexSize;
+        MTLIndexType m_indexType;
         uint32_t m_indexCount;
         uint32_t m_lockOffset;
         MemoryBufferInterfacePtr m_memory;

@@ -6,9 +6,11 @@ src
 
     AppleSentryPlugin.h
     AppleSentryPlugin.mm
-    
+
     AppleSentryService.h
     AppleSentryService.mm
+    AppleSentryLogger.h
+    AppleSentryLogger.mm
 )
 
 if(MENGINE_TARGET_IOS)

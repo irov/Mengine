@@ -11,6 +11,9 @@ import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineListenerEngine;
 import org.Mengine.Base.MengineListenerTransparencyConsent;
 import org.Mengine.Base.MengineListenerUser;
+import org.Mengine.Base.MengineListenerLogger;
+import org.Mengine.Base.MengineLog;
+import org.Mengine.Base.MengineParamLoggerMessage;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineParamTransparencyConsent;
@@ -21,8 +24,12 @@ import java.util.Map;
 import io.sentry.Sentry;
 import io.sentry.android.core.SentryAndroid;
 import io.sentry.protocol.User;
+import io.sentry.SentryLogLevel;
+import io.sentry.SentryLogParameters;
+import io.sentry.SentryAttribute;
+import io.sentry.SentryAttributes;
 
-public class MengineSentryPlugin extends MengineService implements MengineListenerApplication, MengineListenerEngine, MengineListenerTransparencyConsent, MengineListenerUser {
+public class MengineSentryPlugin extends MengineService implements MengineListenerApplication, MengineListenerEngine, MengineListenerTransparencyConsent, MengineListenerUser, MengineListenerLogger {
     public static final String SERVICE_NAME = "Sentry";
     public static final boolean SERVICE_EMBEDDING = true;
 
@@ -153,6 +160,27 @@ public class MengineSentryPlugin extends MengineService implements MengineListen
     }
 
     @Override
+    public void onMengineLog(@NonNull MengineApplication application, @NonNull MengineParamLoggerMessage message) {
+        if (BuildConfig.DEBUG == false) {
+            if (message.MESSAGE_LEVEL != MengineLog.LM_WARNING && message.MESSAGE_LEVEL != MengineLog.LM_ERROR && message.MESSAGE_LEVEL != MengineLog.LM_FATAL) {
+                return;
+            }
+        }
+
+        SentryLogLevel level = MengineSentryPlugin.getSentryLogLevel(message);
+
+        SentryAttributes attributes = SentryAttributes.of(
+            SentryAttribute.stringAttribute("log.category", message.MESSAGE_CATEGORY.toString()),
+            SentryAttribute.stringAttribute("log.thread", message.MESSAGE_THREAD),
+            SentryAttribute.stringAttribute("log.file", message.MESSAGE_FILE),
+            SentryAttribute.integerAttribute("log.line", message.MESSAGE_LINE),
+            SentryAttribute.stringAttribute("log.function", message.MESSAGE_FUNCTION)
+        );
+
+        Sentry.logger().log(level, SentryLogParameters.create(attributes), message.MESSAGE_DATA);
+    }
+
+    @Override
     public void onMengineCaughtException(@NonNull MengineApplication application, Throwable throwable) {
         this.recordException(throwable);
     }
@@ -160,6 +188,26 @@ public class MengineSentryPlugin extends MengineService implements MengineListen
     @Override
     public void onAppState(@NonNull MengineApplication application, String name, Object value) {
         this.setCustomKey("." + name, value);
+    }
+
+    public static SentryLogLevel getSentryLogLevel(MengineParamLoggerMessage message) {
+        switch (message.MESSAGE_LEVEL) {
+            case MengineLog.LM_FATAL:
+                return SentryLogLevel.FATAL;
+            case MengineLog.LM_ERROR:
+                return SentryLogLevel.ERROR;
+            case MengineLog.LM_WARNING:
+                return SentryLogLevel.WARNING;
+            case MengineLog.LM_INFO:
+            case MengineLog.LM_MESSAGE:
+            case MengineLog.LM_MESSAGE_RELEASE:
+                return SentryLogLevel.INFO;
+            case MengineLog.LM_DEBUG:
+            case MengineLog.LM_VERBOSE:
+                return SentryLogLevel.DEBUG;
+            default:
+                return SentryLogLevel.INFO;
+        }
     }
 
     public void setCustomKey(String key, Object value) {

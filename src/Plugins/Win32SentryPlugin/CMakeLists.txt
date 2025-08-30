@@ -7,9 +7,11 @@ src
     Win32SentryPlugin.h
     Win32SentryPlugin.def
     Win32SentryPlugin.cpp
-    
+
     Win32SentryService.h
     Win32SentryService.cpp
+    Win32SentryLogger.h
+    Win32SentryLogger.cpp
 )
 
 add_definitions(-DSENTRY_BUILD_STATIC)

@@ -19,6 +19,8 @@
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/TimestampHelper.h"
+#include "Kernel/FactorableUnique.h"
+#include "AppleSentryLogger.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -45,7 +47,25 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ASSERTION, &AppleSentryService::notifyAssertion_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ERROR, &AppleSentryService::notifyError_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ENGINE_STOP, &AppleSentryService::notifyEngineStop_, MENGINE_DOCUMENT_FACTORABLE );
-        
+
+        AppleSentryLoggerPtr loggerSentry = Helper::makeFactorableUnique<AppleSentryLogger>( MENGINE_DOCUMENT_FACTORABLE );
+
+        bool debugMode = Helper::isDebugMode();
+
+        if( debugMode == false )
+        {
+            loggerSentry->setVerboseLevel( LM_WARNING );
+        }
+
+        uint32_t loggerFilter = MAKE_LOGGER_FILTER( LFILTER_PROTECTED );
+        loggerSentry->setVerboseFilter( loggerFilter );
+
+        if( LOGGER_SERVICE()
+            ->registerLogger( loggerSentry ) == true )
+        {
+            m_logger = loggerSentry;
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -55,7 +75,15 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ASSERTION );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ERROR );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ENGINE_STOP );
-        
+
+        if( m_logger != nullptr )
+        {
+            LOGGER_SERVICE()
+                ->unregisterLogger( m_logger );
+
+            m_logger = nullptr;
+        }
+
         [SentrySDK close];
     }
     //////////////////////////////////////////////////////////////////////////

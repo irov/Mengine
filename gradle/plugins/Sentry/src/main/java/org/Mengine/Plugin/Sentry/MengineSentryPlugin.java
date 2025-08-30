@@ -6,11 +6,16 @@ import androidx.annotation.BoolRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 
+import org.Mengine.Base.MengineAnalytics;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineListenerEngine;
+import org.Mengine.Base.MengineListenerLogger;
 import org.Mengine.Base.MengineListenerTransparencyConsent;
 import org.Mengine.Base.MengineListenerUser;
+import org.Mengine.Base.MengineLog;
+import org.Mengine.Base.MengineParamLoggerException;
+import org.Mengine.Base.MengineParamLoggerMessage;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineParamTransparencyConsent;
@@ -18,11 +23,16 @@ import org.Mengine.Base.MengineUtils;
 
 import java.util.Map;
 
+import io.sentry.JsonSerializable;
 import io.sentry.Sentry;
+import io.sentry.SentryAttribute;
+import io.sentry.SentryAttributes;
+import io.sentry.SentryLogLevel;
 import io.sentry.android.core.SentryAndroid;
+import io.sentry.logger.SentryLogParameters;
 import io.sentry.protocol.User;
 
-public class MengineSentryPlugin extends MengineService implements MengineListenerApplication, MengineListenerEngine, MengineListenerTransparencyConsent, MengineListenerUser {
+public class MengineSentryPlugin extends MengineService implements MengineListenerApplication, MengineListenerEngine, MengineListenerTransparencyConsent, MengineListenerLogger, MengineListenerUser {
     public static final String SERVICE_NAME = "Sentry";
     public static final boolean SERVICE_EMBEDDING = true;
 
@@ -162,6 +172,70 @@ public class MengineSentryPlugin extends MengineService implements MengineListen
         this.setCustomKey("." + name, value);
     }
 
+    static private SentryLogLevel getSentryLogLevel(@NonNull MengineParamLoggerMessage message) {
+        switch (message.MESSAGE_LEVEL) {
+            case MengineLog.LM_DEBUG:
+                return SentryLogLevel.DEBUG;
+            case MengineLog.LM_INFO:
+                return SentryLogLevel.INFO;
+            case MengineLog.LM_MESSAGE:
+            case MengineLog.LM_MESSAGE_RELEASE:
+                return SentryLogLevel.INFO;
+            case MengineLog.LM_WARNING:
+                return SentryLogLevel.WARN;
+            case MengineLog.LM_FATAL:
+                return SentryLogLevel.FATAL;
+        }
+
+        return SentryLogLevel.TRACE;
+    }
+
+    @Override
+    public void onMengineLog(@NonNull MengineApplication application, @NonNull MengineParamLoggerMessage message) {
+        if (BuildConfig.DEBUG == false) {
+            if (message.MESSAGE_LEVEL != MengineLog.LM_WARNING && message.MESSAGE_LEVEL != MengineLog.LM_ERROR && message.MESSAGE_LEVEL != MengineLog.LM_FATAL) {
+                return;
+            }
+        }
+
+        SentryLogLevel level = MengineSentryPlugin.getSentryLogLevel(message);
+
+        SentryAttributes attributes = SentryAttributes.of(null);
+        attributes.add(SentryAttribute.stringAttribute("log.category", message.MESSAGE_CATEGORY.toString()));
+        attributes.add(SentryAttribute.stringAttribute("log.thread", message.MESSAGE_THREAD));
+
+        if (message.MESSAGE_FILE != null) {
+            attributes.add(SentryAttribute.stringAttribute("log.file", message.MESSAGE_FILE));
+            attributes.add(SentryAttribute.integerAttribute("log.line", message.MESSAGE_LINE));
+        }
+
+        if (message.MESSAGE_FUNCTION != null) {
+            attributes.add(SentryAttribute.stringAttribute("log.function", message.MESSAGE_FUNCTION));
+        }
+
+        Sentry.logger().log(level, SentryLogParameters.create(attributes), message.MESSAGE_DATA);
+    }
+
+    @Override
+    public void onMengineException(@NonNull MengineApplication application, @NonNull MengineParamLoggerException exception) {
+        Sentry.withScope(scope -> {
+            scope.setExtra("log.category", exception.EXCEPTION_CATEGORY.toString());
+
+            for (Map.Entry<String, Object> entry : exception.EXCEPTION_ATTRIBUTES.entrySet()) {
+                String key = entry.getKey();
+                Object value = entry.getValue();
+
+                if (value == null) {
+                    scope.setExtra(key, "null");
+                } else {
+                    scope.setExtra(key, String.valueOf(value));
+                }
+            }
+
+            this.recordException(exception.EXCEPTION_THROWABLE);
+        });
+    }
+
     public void setCustomKey(String key, Object value) {
         if (value == null) {
             Sentry.setExtra(key, "null");
@@ -174,8 +248,6 @@ public class MengineSentryPlugin extends MengineService implements MengineListen
         this.logInfo("recordException throwable: %s"
             , throwable.getMessage()
         );
-
-        throwable.printStackTrace(System.err);
 
         Sentry.captureException(throwable);
     }

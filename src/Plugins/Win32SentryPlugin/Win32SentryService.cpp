@@ -25,6 +25,8 @@
 #include "Kernel/FileLogger.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/ContentHelper.h"
+#include "Kernel/FactorableUnique.h"
+#include "Win32SentryLogger.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -313,6 +315,24 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ASSERTION, &Win32SentryService::notifyAssertion_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ERROR, &Win32SentryService::notifyError_, MENGINE_DOCUMENT_FACTORABLE );
 
+        Win32SentryLoggerPtr loggerSentry = Helper::makeFactorableUnique<Win32SentryLogger>( MENGINE_DOCUMENT_FACTORABLE );
+
+        bool debugMode = Helper::isDebugMode();
+
+        if( debugMode == false )
+        {
+            loggerSentry->setVerboseLevel( LM_WARNING );
+        }
+
+        uint32_t loggerFilter = MAKE_LOGGER_FILTER( LFILTER_PROTECTED );
+        loggerSentry->setVerboseFilter( loggerFilter );
+
+        if( LOGGER_SERVICE()
+            ->registerLogger( loggerSentry ) == true )
+        {
+            m_logger = loggerSentry;
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -325,6 +345,14 @@ namespace Mengine
             return;
         }
 #endif
+
+        if( m_logger != nullptr )
+        {
+            LOGGER_SERVICE()
+                ->unregisterLogger( m_logger );
+
+            m_logger = nullptr;
+        }
 
         if( m_sentryLogger != nullptr )
         {

@@ -165,6 +165,10 @@ android {
         if (project.hasProperty("ANDROID_APP_DEBUG_STORE_FILE") == true) {
             debug {
                 println "ANDROID_APP_DEBUG_STORE_FILE: $ANDROID_APP_DEBUG_STORE_FILE"
+                println "ANDROID_APP_DEBUG_STORE_TYPE: $ANDROID_APP_DEBUG_STORE_TYPE"
+                println "ANDROID_APP_DEBUG_STORE_PASSWORD: $ANDROID_APP_DEBUG_STORE_PASSWORD"
+                println "ANDROID_APP_DEBUG_KEY_ALIAS: $ANDROID_APP_DEBUG_KEY_ALIAS"
+                println "ANDROID_APP_DEBUG_KEY_PASSWORD: $ANDROID_APP_DEBUG_KEY_PASSWORD"
 
                 def f = new File(ANDROID_APP_DEBUG_STORE_FILE)
 
@@ -173,6 +177,7 @@ android {
                 }
 
                 storeFile file(ANDROID_APP_DEBUG_STORE_FILE)
+                storeType ANDROID_APP_DEBUG_STORE_TYPE
                 storePassword ANDROID_APP_DEBUG_STORE_PASSWORD
                 keyAlias ANDROID_APP_DEBUG_KEY_ALIAS
                 keyPassword ANDROID_APP_DEBUG_KEY_PASSWORD
@@ -182,6 +187,10 @@ android {
         if (project.hasProperty("ANDROID_APP_RELEASE_STORE_FILE") == true) {
             release {
                 println "ANDROID_APP_RELEASE_STORE_FILE: $ANDROID_APP_RELEASE_STORE_FILE"
+                println "ANDROID_APP_RELEASE_STORE_TYPE: $ANDROID_APP_RELEASE_STORE_TYPE"
+                println "ANDROID_APP_RELEASE_STORE_PASSWORD: $ANDROID_APP_RELEASE_STORE_PASSWORD"
+                println "ANDROID_APP_RELEASE_KEY_ALIAS: $ANDROID_APP_RELEASE_KEY_ALIAS"
+                println "ANDROID_APP_RELEASE_KEY_PASSWORD: $ANDROID_APP_RELEASE_KEY_PASSWORD"
 
                 def f = new File(ANDROID_APP_RELEASE_STORE_FILE)
 
@@ -190,6 +199,7 @@ android {
                 }
 
                 storeFile file(ANDROID_APP_RELEASE_STORE_FILE)
+                storeType ANDROID_APP_RELEASE_STORE_TYPE
                 storePassword ANDROID_APP_RELEASE_STORE_PASSWORD
                 keyAlias ANDROID_APP_RELEASE_KEY_ALIAS
                 keyPassword ANDROID_APP_RELEASE_KEY_PASSWORD

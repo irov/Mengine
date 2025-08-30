@@ -84,6 +84,14 @@ public class MengineAnalytics {
         MengineAnalytics.m_getter.put(key, value);
     }
 
+    static public Map<String, Object> collapseContextParameters() {
+        Map<String, Object> parameters = new HashMap<>(MengineAnalytics.m_bases);
+
+        MengineAnalytics.collapseGetter(parameters);
+
+        return parameters;
+    }
+
     static private void collapseGetter(Map<String, Object> parameters) {
         for (Map.Entry<String, Object> entry : MengineAnalytics.m_getter.entrySet()) {
             String key = entry.getKey();

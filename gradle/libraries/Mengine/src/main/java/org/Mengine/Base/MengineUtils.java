@@ -954,9 +954,12 @@ public class MengineUtils {
     }
 
     public static boolean isDeviceTablet(Context context) {
-        int screenLayoutSize = MengineUtils.getDeviceScreenSize(context);
+        Resources resources = context.getResources();
+        Configuration configuration = resources.getConfiguration();
 
-        if (screenLayoutSize == Configuration.SCREENLAYOUT_SIZE_LARGE || screenLayoutSize == Configuration.SCREENLAYOUT_SIZE_XLARGE) {
+        int smallestWidthDp = configuration.smallestScreenWidthDp;
+
+        if (smallestWidthDp >= 600) {
             return true;
         }
 

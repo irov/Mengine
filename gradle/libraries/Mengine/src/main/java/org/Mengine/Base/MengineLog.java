@@ -42,7 +42,7 @@ public class MengineLog {
                 Log.wtf(category.toString(), "\uD83D\uDFE5 " + msg);
                 break;
             case LM_MESSAGE_RELEASE:
-                Log.w(category.toString(), msg);
+                Log.w(category.toString(), "\uD83D\uDCDD " + msg);
                 break;
             case LM_ERROR:
                 Log.e(category.toString(), "\uD83D\uDD34 " + msg);

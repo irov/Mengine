@@ -13,12 +13,15 @@ import org.Mengine.Base.MengineListenerTransparencyConsent;
 import org.Mengine.Base.MengineListenerUser;
 import org.Mengine.Base.MengineListenerLogger;
 import org.Mengine.Base.MengineLog;
+import org.Mengine.Base.MengineParamLoggerException;
 import org.Mengine.Base.MengineParamLoggerMessage;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineParamTransparencyConsent;
 import org.Mengine.Base.MengineUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import io.sentry.Sentry;
@@ -38,6 +41,52 @@ public class MengineSentryPlugin extends MengineService implements MengineListen
 
     public static boolean m_passMeasurementGDPR = false;
 
+    private static SentryLogLevel getSentryLogLevel(@NonNull MengineParamLoggerMessage message) {
+        switch (message.MESSAGE_LEVEL) {
+            case MengineLog.LM_FATAL:
+                return SentryLogLevel.FATAL;
+            case MengineLog.LM_ERROR:
+                return SentryLogLevel.ERROR;
+            case MengineLog.LM_WARNING:
+                return SentryLogLevel.WARNING;
+            case MengineLog.LM_INFO:
+            case MengineLog.LM_MESSAGE:
+            case MengineLog.LM_MESSAGE_RELEASE:
+                return SentryLogLevel.INFO;
+            case MengineLog.LM_DEBUG:
+            case MengineLog.LM_VERBOSE:
+                return SentryLogLevel.DEBUG;
+            default:
+                return SentryLogLevel.INFO;
+        }
+    }
+
+    private void setCustomKey(String key, Object value) {
+        if (value == null) {
+            Sentry.setExtra(key, "null");
+        } else {
+            Sentry.setExtra(key, String.valueOf(value));
+        }
+    }
+
+    private void recordException(Throwable throwable) {
+        this.logInfo("recordException throwable: %s",
+            throwable.getMessage()
+        );
+
+        throwable.printStackTrace(System.err);
+
+        Sentry.captureException(throwable);
+    }
+
+    public void testCrash() {
+        this.logMessage("testCrash");
+
+        this.setCustomKey("test.crash", true);
+
+        throw new RuntimeException("Sentry Test Crash");
+    }
+
     @Override
     public void onAppInit(MengineApplication application, boolean isMainProcess) throws MengineServiceInvalidInitializeException {
         if (isMainProcess == false) {
@@ -46,24 +95,24 @@ public class MengineSentryPlugin extends MengineService implements MengineListen
 
         String MengineSentryPlugin_DSN = this.getResourceString(METADATA_DSN);
 
-        this.logInfo("%s: %s"
-            , METADATA_DSN
-            , MengineUtils.getRedactedValue(MengineSentryPlugin_DSN)
+        this.logInfo("%s: %s",
+            METADATA_DSN,
+            MengineUtils.getRedactedValue(MengineSentryPlugin_DSN)
         );
 
         boolean MengineSentryPlugin_EnableUncaughtExceptionHandler = this.getResourceBoolean(METADATA_ENABLE_UNCAUGHT_EXCEPTION_HANDLER);
 
-        this.logInfo("%s: %b"
-            , METADATA_ENABLE_UNCAUGHT_EXCEPTION_HANDLER
-            , MengineSentryPlugin_EnableUncaughtExceptionHandler
+        this.logInfo("%s: %b",
+            METADATA_ENABLE_UNCAUGHT_EXCEPTION_HANDLER,
+            MengineSentryPlugin_EnableUncaughtExceptionHandler
         );
 
         MengineParamTransparencyConsent tcParam = application.makeTransparencyConsentParam();
 
         m_passMeasurementGDPR = tcParam.getConsentMeasurement();
 
-        this.logInfo("GDPR measurement: %s"
-            , m_passMeasurementGDPR
+        this.logInfo("GDPR measurement: %s",
+            m_passMeasurementGDPR
         );
 
         tcParam.getConsentAnalyticsStorage();
@@ -149,8 +198,8 @@ public class MengineSentryPlugin extends MengineService implements MengineListen
     public void onMengineTransparencyConsent(@NonNull MengineApplication application, @NonNull MengineParamTransparencyConsent consent) {
         m_passMeasurementGDPR = consent.getConsentMeasurement();
 
-        this.logInfo("GDPR measurement: %s"
-            , m_passMeasurementGDPR
+        this.logInfo("GDPR measurement: %s",
+            m_passMeasurementGDPR
         );
     }
 
@@ -169,15 +218,42 @@ public class MengineSentryPlugin extends MengineService implements MengineListen
 
         SentryLogLevel level = MengineSentryPlugin.getSentryLogLevel(message);
 
-        SentryAttributes attributes = SentryAttributes.of(
-            SentryAttribute.stringAttribute("log.category", message.MESSAGE_CATEGORY.toString()),
-            SentryAttribute.stringAttribute("log.thread", message.MESSAGE_THREAD),
-            SentryAttribute.stringAttribute("log.file", message.MESSAGE_FILE),
-            SentryAttribute.integerAttribute("log.line", message.MESSAGE_LINE),
-            SentryAttribute.stringAttribute("log.function", message.MESSAGE_FUNCTION)
-        );
+        List<SentryAttribute> attributesList = new ArrayList<>();
+        attributesList.add(SentryAttribute.stringAttribute("log.category", message.MESSAGE_CATEGORY.toString()));
+        attributesList.add(SentryAttribute.stringAttribute("log.thread", message.MESSAGE_THREAD));
+
+        if (message.MESSAGE_FILE != null && message.MESSAGE_FILE.isEmpty() == false) {
+            attributesList.add(SentryAttribute.stringAttribute("log.file", message.MESSAGE_FILE));
+            attributesList.add(SentryAttribute.integerAttribute("log.line", message.MESSAGE_LINE));
+        }
+
+        if (message.MESSAGE_FUNCTION != null && message.MESSAGE_FUNCTION.isEmpty() == false) {
+            attributesList.add(SentryAttribute.stringAttribute("log.function", message.MESSAGE_FUNCTION));
+        }
+
+        SentryAttributes attributes = SentryAttributes.of(attributesList.toArray(new SentryAttribute[0]));
 
         Sentry.logger().log(level, SentryLogParameters.create(attributes), message.MESSAGE_DATA);
+    }
+
+    @Override
+    public void onMengineException(@NonNull MengineApplication application, @NonNull MengineParamLoggerException exception) {
+        Sentry.withScope(scope -> {
+            scope.setExtra("log.category", exception.EXCEPTION_CATEGORY.toString());
+
+            for (Map.Entry<String, Object> entry : exception.EXCEPTION_ATTRIBUTES.entrySet()) {
+                String key = entry.getKey();
+                Object value = entry.getValue();
+
+                if (value == null) {
+                    scope.setExtra(key, "null");
+                } else {
+                    scope.setExtra(key, String.valueOf(value));
+                }
+            }
+
+            this.recordException(exception.EXCEPTION_THROWABLE);
+        });
     }
 
     @Override
@@ -189,50 +265,5 @@ public class MengineSentryPlugin extends MengineService implements MengineListen
     public void onAppState(@NonNull MengineApplication application, String name, Object value) {
         this.setCustomKey("." + name, value);
     }
-
-    public static SentryLogLevel getSentryLogLevel(MengineParamLoggerMessage message) {
-        switch (message.MESSAGE_LEVEL) {
-            case MengineLog.LM_FATAL:
-                return SentryLogLevel.FATAL;
-            case MengineLog.LM_ERROR:
-                return SentryLogLevel.ERROR;
-            case MengineLog.LM_WARNING:
-                return SentryLogLevel.WARNING;
-            case MengineLog.LM_INFO:
-            case MengineLog.LM_MESSAGE:
-            case MengineLog.LM_MESSAGE_RELEASE:
-                return SentryLogLevel.INFO;
-            case MengineLog.LM_DEBUG:
-            case MengineLog.LM_VERBOSE:
-                return SentryLogLevel.DEBUG;
-            default:
-                return SentryLogLevel.INFO;
-        }
-    }
-
-    public void setCustomKey(String key, Object value) {
-        if (value == null) {
-            Sentry.setExtra(key, "null");
-        } else {
-            Sentry.setExtra(key, String.valueOf(value));
-        }
-    }
-
-    public void recordException(Throwable throwable) {
-        this.logInfo("recordException throwable: %s"
-            , throwable.getMessage()
-        );
-
-        throwable.printStackTrace(System.err);
-
-        Sentry.captureException(throwable);
-    }
-
-    public void testCrash() {
-        this.logMessage("testCrash");
-
-        this.setCustomKey("test.crash", true);
-
-        throw new RuntimeException("Sentry Test Crash");
-    }
 }
+

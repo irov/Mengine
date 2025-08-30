@@ -63,19 +63,19 @@ namespace Mengine
         sentry_value_set_by_key( extra, "log.category", sentry_value_new_string( message.category ) );
         sentry_value_set_by_key( extra, "log.thread", sentry_value_new_string( message.thread.c_str() ) );
 
-        if( message.file != nullptr )
+        if( message.file != nullptr && message.file[0] != '\0' )
         {
             sentry_value_set_by_key( extra, "log.file", sentry_value_new_string( message.file ) );
+
+            if( message.line != 0 )
+            {
+                sentry_value_set_by_key( extra, "log.line", sentry_value_new_int32( message.line ) );
+            }
         }
 
-        if( message.function != nullptr )
+        if( message.function != nullptr && message.function[0] != '\0' )
         {
             sentry_value_set_by_key( extra, "log.function", sentry_value_new_string( message.function ) );
-        }
-
-        if( message.line != 0 )
-        {
-            sentry_value_set_by_key( extra, "log.line", sentry_value_new_int32( message.line ) );
         }
 
         sentry_value_set_by_key( event, "extra", extra );

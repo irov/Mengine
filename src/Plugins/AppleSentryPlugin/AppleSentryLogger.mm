@@ -58,8 +58,18 @@ namespace Mengine
         NSString * nsMessage = [NSString stringWithUTF8String:message.data];
         NSString * nsCategory = [NSString stringWithUTF8String:message.category];
         NSString * nsThread = [NSString stringWithUTF8String:message.thread.c_str()];
-        NSString * nsFile = message.file != nullptr ? [NSString stringWithUTF8String:message.file] : nil;
-        NSString * nsFunction = message.function != nullptr ? [NSString stringWithUTF8String:message.function] : nil;
+
+        NSString * nsFile = nil;
+        if( message.file != nullptr && message.file[0] != '\0' )
+        {
+            nsFile = [NSString stringWithUTF8String:message.file];
+        }
+
+        NSString * nsFunction = nil;
+        if( message.function != nullptr && message.function[0] != '\0' )
+        {
+            nsFunction = [NSString stringWithUTF8String:message.function];
+        }
 
         SentryLevel level = s_getSentryLevel( message.level );
 
@@ -71,16 +81,16 @@ namespace Mengine
             if( nsFile != nil )
             {
                 [scope setExtraValue:nsFile forKey:@"log.file"];
+
+                if( message.line != 0 )
+                {
+                    [scope setExtraValue:@(message.line) forKey:@"log.line"];
+                }
             }
 
             if( nsFunction != nil )
             {
                 [scope setExtraValue:nsFunction forKey:@"log.function"];
-            }
-
-            if( message.line != 0 )
-            {
-                [scope setExtraValue:@(message.line) forKey:@"log.line"];
             }
         }];
     }

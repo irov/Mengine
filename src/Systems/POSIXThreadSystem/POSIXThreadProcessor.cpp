@@ -143,17 +143,18 @@ namespace Mengine
         if( PLATFORM_SYSTEM()
             ->beginThread( (ThreadId)m_threadId ) == false )
         {
-            LOGGER_ERROR( "invalid begin thread: %" MENGINE_PRIu64 " name: %s"
-                , (ThreadId)m_threadId
+            LOGGER_ERROR( "invalid begin thread processor name: %s id: %" MENGINE_PRIu64 " priority: %d"
                 , m_description.nameA
+                , (ThreadId)m_threadId
+                , m_priority
             );
 
             return;
         }
 
-        LOGGER_INFO( "thread", "create thread name: %s id: %ld priority: %d"
+        LOGGER_INFO( "thread", "begin thread processor name: %s id: %" MENGINE_PRIu64 " priority: %d"
             , m_description.nameA
-            , m_threadId
+            , (ThreadId)m_threadId
             , m_priority
         );
 

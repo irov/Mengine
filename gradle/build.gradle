@@ -34,7 +34,7 @@ buildscript {
         }
 
         if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN") == true && project.hasProperty("MENGINE_APP_PLUGIN_APPLOVIN_AD_REVIEW_KEY") == true) {
-            classpath 'com.applovin.quality:AppLovinQualityServiceGradlePlugin:5.9.7'
+            classpath 'com.applovin.quality:AppLovinQualityServiceGradlePlugin:5.9.8'
         }
 
         if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_DATADOG") == true) {

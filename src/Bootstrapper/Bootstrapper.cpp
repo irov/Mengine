@@ -51,6 +51,7 @@
 #include "Config/Path.h"
 
 #include "Configuration/Configurations.h"
+#include "Configuration/SecureValue.h"
 
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_BOOTSTRAPPER_LOAD_CONFIG
@@ -1051,6 +1052,10 @@ namespace Mengine
 
         PLATFORM_SERVICE()
             ->initializeFileService();
+
+#if defined(MENGINE_DEBUG)
+        LOGGER_MESSAGE( "secure: %s", MENGINE_SECURE_VALUE );
+#endif
 
         LOGGER_INFO( "bootstrapper", "debug mode '%s'", Helper::isDebugMode() == true ? "ON" : "OFF" );
         LOGGER_INFO( "bootstrapper", "development mode '%s'", Helper::isDevelopmentMode() == true ? "ON" : "OFF" );

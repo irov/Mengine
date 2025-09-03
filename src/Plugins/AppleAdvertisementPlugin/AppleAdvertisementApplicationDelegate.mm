@@ -246,12 +246,6 @@
         return NO;
     }
     
-    BOOL noAds = [self getNoAds];
-    
-    if (noAds == YES) {
-        return NO;
-    }
-    
     if ([self.m_provider hasRewarded] == NO) {
         return NO;
     }

@@ -197,9 +197,7 @@ namespace Mengine
     protected:
         Timestamp m_beginTime;
 
-        StaticWString<MENGINE_MAX_PATH> m_windowClassName;        
-        
-        HINSTANCE m_hInstance;
+        StaticWString<MENGINE_MAX_PATH> m_windowClassName;
 
         HWND m_hWnd;
 

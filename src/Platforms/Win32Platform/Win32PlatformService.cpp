@@ -100,7 +100,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Win32PlatformService::Win32PlatformService()
         : m_beginTime( 0 )
-        , m_hInstance( NULL )
         , m_hWnd( NULL )
         , m_xDpi( ~0U )
         , m_yDpi( ~0U )
@@ -141,9 +140,7 @@ namespace Mengine
 
 #if defined(MENGINE_SETLOCALE_ENABLE)
         ::setlocale( LC_ALL, MENGINE_SETLOCALE_VALUE );
-#endif
-
-        m_hInstance = ::GetModuleHandle( NULL );
+#endif  
 
         if( ::QueryPerformanceFrequency( &m_performanceFrequency ) == TRUE )
         {
@@ -393,21 +390,6 @@ namespace Mengine
         }
 
         this->detachWindow();
-
-        if( m_hInstance != NULL )
-        {
-            LPCWSTR lpClassName = m_windowClassName.c_str();
-
-            if( ::UnregisterClass( lpClassName, m_hInstance ) == FALSE )
-            {
-                LOGGER_ERROR( "invalid UnregisterClass [%ls] get error: %ls"
-                    , m_windowClassName.c_str()
-                    , Helper::Win32GetLastErrorMessageW()
-                );
-            }
-
-            m_hInstance = NULL;
-        }
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDynamicLibraries );
 
@@ -797,7 +779,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32PlatformService::setHWNDIcon( const WChar * _iconResource )
     {
-        HICON hIcon = ::LoadIcon( m_hInstance, _iconResource );
+        HINSTANCE hInstance = ::GetModuleHandle( NULL );
+
+        HICON hIcon = ::LoadIcon( hInstance, _iconResource );
 
         if( hIcon == NULL )
         {
@@ -2165,6 +2149,8 @@ namespace Mengine
             return true;
         }
 
+        HINSTANCE hInstance = ::GetModuleHandle( NULL );
+
         WNDCLASSEX wc;
         ::ZeroMemory( &wc, sizeof( WNDCLASSEX ) );
         wc.cbSize = sizeof( WNDCLASSEX );
@@ -2172,7 +2158,7 @@ namespace Mengine
         wc.lpfnWndProc = &Detail::wndProc;
         wc.cbClsExtra = 0;
         wc.cbWndExtra = 0;
-        wc.hInstance = m_hInstance;
+        wc.hInstance = hInstance;
 
         wc.hIcon = m_hIcon;
         wc.hCursor = ::LoadCursor( NULL, MAKEINTRESOURCEW( 32512 ) );
@@ -2207,7 +2193,10 @@ namespace Mengine
         HWND hWnd = ::CreateWindowEx( dwExStyle, m_windowClassName.c_str(), m_projectTitle.c_str()
             , dwStyle
             , rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top
-            , NULL, NULL, m_hInstance, (LPVOID)this );
+            , NULL
+            , NULL
+            , hInstance
+            , (LPVOID)this );
 
         if( hWnd == NULL )
         {
@@ -2367,6 +2356,18 @@ namespace Mengine
         ::DestroyWindow( m_hWnd );
 
         m_hWnd = NULL;
+
+        LPCWSTR lpClassName = m_windowClassName.c_str();
+
+        HINSTANCE hInstance = ::GetModuleHandle( NULL );
+
+        if( ::UnregisterClass( lpClassName, hInstance ) == FALSE )
+        {
+            LOGGER_ERROR( "invalid UnregisterClass [%ls] get error: %ls"
+                , m_windowClassName.c_str()
+                , Helper::Win32GetLastErrorMessageW()
+            );
+        }
 
         this->updateWndMessage_();
 

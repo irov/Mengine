@@ -146,47 +146,12 @@ namespace Mengine
         g_androidEnvJavaVM->DetachCurrentThread();
     }
     //////////////////////////////////////////////////////////////////////////
-    static int Mengine_JNI_SetEnv( JNIEnv * _env, MengineJNIEnvThread ** _envThread )
+    static int Mengine_JNI_SetEnv( JNIEnv * _env )
     {
         MENGINE_ASSERTION_FATAL( g_androidEnvThreadKey != 0, "android ENV thread key not initialized" );
         MENGINE_ASSERTION_FATAL( pthread_getspecific( g_androidEnvThreadKey ) == nullptr, "ENV thread key already set" );
 
-        MengineJNIEnvThread * envThread = (MengineJNIEnvThread *)StdLib::malloc( sizeof(MengineJNIEnvThread) );
-
-        if( envThread == nullptr )
-        {
-            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "[ERROR] JNI_SetEnv failed to allocate memory for MengineJNIEnvThread" );
-
-            return JNI_FALSE;
-        }
-
-        envThread->env = _env;
-        envThread->jclass_Boolean = _env->FindClass( "java/lang/Boolean" );
-        envThread->jclass_Character = _env->FindClass( "java/lang/Character" );
-        envThread->jclass_Integer = _env->FindClass( "java/lang/Integer" );
-        envThread->jclass_Long = _env->FindClass( "java/lang/Long" );
-        envThread->jclass_Float = _env->FindClass( "java/lang/Float" );
-        envThread->jclass_Double = _env->FindClass( "java/lang/Double" );
-        envThread->jclass_String = _env->FindClass( "java/lang/String" );
-        envThread->jclass_Exception = _env->FindClass( "java/lang/Exception" );
-        envThread->jclass_List = _env->FindClass( "java/util/List" );
-        envThread->jclass_Map = _env->FindClass( "java/util/Map" );
-        envThread->jclass_Set = _env->FindClass( "java/util/Set" );
-        envThread->jclass_ArrayList = _env->FindClass( "java/util/ArrayList" );
-        envThread->jclass_HashMap = _env->FindClass( "java/util/HashMap" );
-        envThread->jclass_MapEntry = _env->FindClass( "java/util/Map$Entry" );
-        envThread->jclass_Iterator = _env->FindClass( "java/util/Iterator" );
-        envThread->jclass_Rect = _env->FindClass( "android/graphics/Rect" );
-        envThread->jclass_JSONObject = _env->FindClass( "org/json/JSONObject" );
-        envThread->jclass_JSONArray = _env->FindClass( "org/json/JSONArray" );
-        envThread->jclass_Class = _env->FindClass( "java/lang/Class" );
-        envThread->jclass_ClassLoader = _env->FindClass( "java/lang/ClassLoader" );
-
-        envThread->jclass_MengineCallback = Mengine_JNI_LoadClass( envThread, "org/Mengine/Base/MengineCallback" );
-        envThread->jclass_MengineApplication = Mengine_JNI_LoadClass( envThread, "org/Mengine/Base/MengineApplication" );
-        envThread->jclass_MengineActivity = Mengine_JNI_LoadClass( envThread, "org/Mengine/Base/MengineActivity" );
-
-        int status = ::pthread_setspecific( g_androidEnvThreadKey, (void *)envThread );
+        int status = ::pthread_setspecific( g_androidEnvThreadKey, (void *)_env );
 
         if( status != JNI_OK )
         {
@@ -196,11 +161,6 @@ namespace Mengine
         }
 
         __android_log_print( ANDROID_LOG_INFO, "Mengine", "JNI_SetEnv set JNIEnv for current thread" );
-
-        if( _envThread != nullptr )
-        {
-            *_envThread = envThread;
-        }
 
         return JNI_TRUE;
     }
@@ -220,7 +180,7 @@ namespace Mengine
 
         __android_log_print( ANDROID_LOG_INFO, "Mengine", "JNI_SetEnv created pthread key for JNIEnv" );
 
-        if( Mengine_JNI_SetEnv( _env, nullptr ) == JNI_FALSE )
+        if( Mengine_JNI_SetEnv( _env ) == JNI_FALSE )
         {
             return JNI_FALSE;
         }
@@ -228,15 +188,15 @@ namespace Mengine
         return JNI_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
-    MengineJNIEnvThread * Mengine_JNI_GetEnvThread()
+    JNIEnv * Mengine_JNI_GetEnv()
     {
         MENGINE_ASSERTION_FATAL( g_androidEnvThreadKey != 0, "android ENV thread key not initialized" );
 
-        MengineJNIEnvThread * envThread = (MengineJNIEnvThread *)::pthread_getspecific(g_androidEnvThreadKey );
+        JNIEnv * jenv = (JNIEnv *)::pthread_getspecific(g_androidEnvThreadKey );
 
-        if( envThread != nullptr )
+        if( jenv != nullptr )
         {
-            return envThread;
+            return jenv;
         }
 
         if( g_androidEnvJavaVM == nullptr )
@@ -246,8 +206,8 @@ namespace Mengine
             return nullptr;
         }
 
-        JNIEnv * new_env;
-        jint status = g_androidEnvJavaVM->AttachCurrentThread( &new_env, nullptr );
+        JNIEnv * new_jenv;
+        jint status = g_androidEnvJavaVM->AttachCurrentThread( &new_jenv, nullptr );
 
         if( status != JNI_OK )
         {
@@ -256,8 +216,7 @@ namespace Mengine
             return nullptr;
         }
 
-        MengineJNIEnvThread * new_envThread;
-        if( Mengine_JNI_SetEnv( new_env, &new_envThread ) == JNI_FALSE )
+        if( Mengine_JNI_SetEnv( new_jenv ) == JNI_FALSE )
         {
             __android_log_print( ANDROID_LOG_ERROR, "Mengine", "[ERROR] JNI_GetEnv failed to set environment" );
 
@@ -266,7 +225,7 @@ namespace Mengine
         	return nullptr;
         }
 
-        return new_envThread;
+        return new_jenv;
     }
     //////////////////////////////////////////////////////////////////////////
     int Mengine_JNI_SetupThread()
@@ -288,7 +247,7 @@ namespace Mengine
             return JNI_FALSE;
         }
 
-        if( Mengine_JNI_SetEnv( env, nullptr ) == JNI_FALSE )
+        if( Mengine_JNI_SetEnv( env ) == JNI_FALSE )
         {
             __android_log_print( ANDROID_LOG_ERROR, "Mengine", "[ERROR] JNI_SetupThread failed to set environment" );
 
@@ -302,355 +261,302 @@ namespace Mengine
         return JNI_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
-    static JNIEnv * Mengine_JNI_GetEnv( MengineJNIEnvThread * _jenv )
+    jboolean Mengine_JNI_IsInstanceOf( JNIEnv * _jenv, jobject _jobject, jclass _jclass )
     {
-        JNIEnv * env = _jenv->env;
-
-        return env;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    jboolean Mengine_JNI_IsInstanceOf( MengineJNIEnvThread * _jenv, jobject _jobject, jclass _jclass )
-    {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jboolean result = env->IsInstanceOf( _jobject, _jclass );
+        jboolean result = _jenv->IsInstanceOf( _jobject, _jclass );
 
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    jclass Mengine_JNI_GetClassBoolean( MengineJNIEnvThread * _jenv )
+    jclass Mengine_JNI_GetClassBoolean( JNIEnv * _jenv )
     {
-        jclass jclass_Boolean = _jenv->jclass_Boolean;
+        jclass jclass_Boolean = _jenv->FindClass( "java/lang/Boolean" );
 
         return jclass_Boolean;
     }
     //////////////////////////////////////////////////////////////////////////
-    jclass Mengine_JNI_GetClassCharacter( MengineJNIEnvThread * _jenv )
+    jclass Mengine_JNI_GetClassCharacter( JNIEnv * _jenv )
     {
-        jclass jclass_Character = _jenv->jclass_Character;
+        jclass jclass_Character = _jenv->FindClass( "java/lang/Character" );
 
         return jclass_Character;
     }
     //////////////////////////////////////////////////////////////////////////
-    jclass Mengine_JNI_GetClassInteger( MengineJNIEnvThread * _jenv )
+    jclass Mengine_JNI_GetClassInteger( JNIEnv * _jenv )
     {
-        jclass jclass_Integer = _jenv->jclass_Integer;
+        jclass jclass_Integer = _jenv->FindClass( "java/lang/Integer" );
 
         return jclass_Integer;
     }
     //////////////////////////////////////////////////////////////////////////
-    jclass Mengine_JNI_GetClassLong( MengineJNIEnvThread * _jenv )
+    jclass Mengine_JNI_GetClassLong( JNIEnv * _jenv )
     {
-        jclass jclass_Long = _jenv->jclass_Long;
+        jclass jclass_Long = _jenv->FindClass( "java/lang/Long" );
 
         return jclass_Long;
     }
     //////////////////////////////////////////////////////////////////////////
-    jclass Mengine_JNI_GetClassFloat( MengineJNIEnvThread * _jenv )
+    jclass Mengine_JNI_GetClassFloat( JNIEnv * _jenv )
     {
-        jclass jclass_Float = _jenv->jclass_Float;
+        jclass jclass_Float = _jenv->FindClass( "java/lang/Float" );
 
         return jclass_Float;
     }
     //////////////////////////////////////////////////////////////////////////
-    jclass Mengine_JNI_GetClassDouble( MengineJNIEnvThread * _jenv )
+    jclass Mengine_JNI_GetClassDouble( JNIEnv * _jenv )
     {
-        jclass jclass_Double = _jenv->jclass_Double;
+        jclass jclass_Double = _jenv->FindClass( "java/lang/Double" );
 
         return jclass_Double;
     }
     //////////////////////////////////////////////////////////////////////////
-    jclass Mengine_JNI_GetClassString( MengineJNIEnvThread * _jenv )
+    jclass Mengine_JNI_GetClassString( JNIEnv * _jenv )
     {
-        jclass jclass_String = _jenv->jclass_String;
+        jclass jclass_String = _jenv->FindClass( "java/lang/String" );
 
         return jclass_String;
     }
     //////////////////////////////////////////////////////////////////////////
-    jclass Mengine_JNI_GetClassException( MengineJNIEnvThread * _jenv )
+    jclass Mengine_JNI_GetClassException( JNIEnv * _jenv )
     {
-        jclass jclass_Exception = _jenv->jclass_Exception;
+        jclass jclass_Exception = _jenv->FindClass( "java/lang/Exception" );
 
         return jclass_Exception;
     }
     //////////////////////////////////////////////////////////////////////////
-    jclass Mengine_JNI_GetClassList( MengineJNIEnvThread * _jenv )
+    jclass Mengine_JNI_GetClassList( JNIEnv * _jenv )
     {
-        jclass jclass_List = _jenv->jclass_List;
+        jclass jclass_List = _jenv->FindClass( "java/util/List" );
 
         return jclass_List;
     }
     //////////////////////////////////////////////////////////////////////////
-    jclass Mengine_JNI_GetClassMap( MengineJNIEnvThread * _jenv )
+    jclass Mengine_JNI_GetClassMap( JNIEnv * _jenv )
     {
-        jclass jclass_Map = _jenv->jclass_Map;
+        jclass jclass_Map = _jenv->FindClass( "java/util/Map" );
 
         return jclass_Map;
     }
     //////////////////////////////////////////////////////////////////////////
-    jclass Mengine_JNI_GetClassSet( MengineJNIEnvThread * _jenv )
+    jclass Mengine_JNI_GetClassSet( JNIEnv * _jenv )
     {
-        jclass jclass_Set = _jenv->jclass_Set;
+        jclass jclass_Set = _jenv->FindClass( "java/util/Set" );
 
         return jclass_Set;
     }
     //////////////////////////////////////////////////////////////////////////
-    jclass Mengine_JNI_GetClassArrayList( MengineJNIEnvThread * _jenv )
+    jclass Mengine_JNI_GetClassArrayList( JNIEnv * _jenv )
     {
-        jclass jclass_ArrayList = _jenv->jclass_ArrayList;
+        jclass jclass_ArrayList = _jenv->FindClass( "java/util/ArrayList" );
 
         return jclass_ArrayList;
     }
     //////////////////////////////////////////////////////////////////////////
-    jclass Mengine_JNI_GetClassHashMap( MengineJNIEnvThread * _jenv )
+    jclass Mengine_JNI_GetClassHashMap( JNIEnv * _jenv )
     {
-        jclass jclass_HashMap = _jenv->jclass_HashMap;
+        jclass jclass_HashMap = _jenv->FindClass( "java/util/HashMap" );
 
         return jclass_HashMap;
     }
     //////////////////////////////////////////////////////////////////////////
-    jclass Mengine_JNI_GetClassMapEntry( MengineJNIEnvThread * _jenv )
+    jclass Mengine_JNI_GetClassMapEntry( JNIEnv * _jenv )
     {
-        jclass jclass_MapEntry = _jenv->jclass_MapEntry;
+        jclass jclass_MapEntry = _jenv->FindClass( "java/util/Map$Entry" );
 
         return jclass_MapEntry;
     }
     //////////////////////////////////////////////////////////////////////////
-    jclass Mengine_JNI_GetClassIterator( MengineJNIEnvThread * _jenv )
+    jclass Mengine_JNI_GetClassIterator( JNIEnv * _jenv )
     {
-        jclass jclass_Iterator = _jenv->jclass_Iterator;
+        jclass jclass_Iterator = _jenv->FindClass( "java/util/Iterator" );
 
         return jclass_Iterator;
     }
     //////////////////////////////////////////////////////////////////////////
-    jclass Mengine_JNI_GetClassRect( MengineJNIEnvThread * _jenv )
+    jclass Mengine_JNI_GetClassRect( JNIEnv * _jenv )
     {
-        jclass jclass_Rect = _jenv->jclass_Rect;
+        jclass jclass_Rect = _jenv->FindClass( "android/graphics/Rect" );
 
         return jclass_Rect;
     }
     //////////////////////////////////////////////////////////////////////////
-    jclass Mengine_JNI_GetClassJSONObject( MengineJNIEnvThread * _jenv )
+    jclass Mengine_JNI_GetClassJSONObject( JNIEnv * _jenv )
     {
-        jclass jclass_JSONObject = _jenv->jclass_JSONObject;
+        jclass jclass_JSONObject = _jenv->FindClass( "org/json/JSONObject" );
 
         return jclass_JSONObject;
     }
     //////////////////////////////////////////////////////////////////////////
-    jclass Mengine_JNI_GetClassJSONArray( MengineJNIEnvThread * _jenv )
+    jclass Mengine_JNI_GetClassJSONArray( JNIEnv * _jenv )
     {
-        jclass jclass_JSONArray = _jenv->jclass_JSONArray;
+        jclass jclass_JSONArray = _jenv->FindClass( "org/json/JSONArray" );
 
         return jclass_JSONArray;
     }
     //////////////////////////////////////////////////////////////////////////
-    jclass Mengine_JNI_GetClassClass( MengineJNIEnvThread * _jenv )
+    jclass Mengine_JNI_GetClassClass( JNIEnv * _jenv )
     {
-        jclass jclass_Class = _jenv->jclass_Class;
+        jclass jclass_Class = _jenv->FindClass( "java/lang/Class" );
 
         return jclass_Class;
     }
     //////////////////////////////////////////////////////////////////////////
-    jclass Mengine_JNI_GetClassClassLoader( MengineJNIEnvThread * _jenv )
+    jclass Mengine_JNI_GetClassClassLoader( JNIEnv * _jenv )
     {
-        jclass jclass_ClassLoader = _jenv->jclass_ClassLoader;
+        jclass jclass_ClassLoader = _jenv->FindClass( "java/lang/ClassLoader" );
 
         return jclass_ClassLoader;
     }
     //////////////////////////////////////////////////////////////////////////
-    jclass Mengine_JNI_GetObjectClass( MengineJNIEnvThread * _jenv, jobject _jobject )
+    jclass Mengine_JNI_GetObjectClass( JNIEnv * _jenv, jobject _jobject )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jclass jclass_Object = env->GetObjectClass( _jobject );
+        jclass jclass_Object = _jenv->GetObjectClass( _jobject );
 
         return jclass_Object;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Mengine_JNI_DeleteLocalRef( MengineJNIEnvThread * _jenv, jobject _jobject )
+    void Mengine_JNI_DeleteLocalRef( JNIEnv * _jenv, jobject _jobject )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        env->DeleteLocalRef( _jobject );
+        _jenv->DeleteLocalRef( _jobject );
     }
     //////////////////////////////////////////////////////////////////////////
-    jobject Mengine_JNI_NewGlobalRef( MengineJNIEnvThread * _jenv, jobject _jobject )
+    jobject Mengine_JNI_NewGlobalRef( JNIEnv * _jenv, jobject _jobject )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jobject jobjectGlobal = env->NewGlobalRef( _jobject );
+        jobject jobjectGlobal = _jenv->NewGlobalRef( _jobject );
 
         return jobjectGlobal;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Mengine_JNI_DeleteGlobalRef( MengineJNIEnvThread * _jenv, jobject _jobject )
+    void Mengine_JNI_DeleteGlobalRef( JNIEnv * _jenv, jobject _jobject )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        env->DeleteGlobalRef( _jobject );
+        _jenv->DeleteGlobalRef( _jobject );
     }
     //////////////////////////////////////////////////////////////////////////
-    int Mengine_JNI_ExceptionCheck( MengineJNIEnvThread * _jenv )
+    int Mengine_JNI_ExceptionCheck( JNIEnv * _jenv )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        int result = env->ExceptionCheck();
+        int result = _jenv->ExceptionCheck();
 
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    jthrowable Mengine_JNI_ExceptionOccurred( MengineJNIEnvThread * _jenv )
+    jthrowable Mengine_JNI_ExceptionOccurred( JNIEnv * _jenv )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jthrowable jThrowable = env->ExceptionOccurred();
+        jthrowable jThrowable = _jenv->ExceptionOccurred();
 
         return jThrowable;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Mengine_JNI_ExceptionClear( MengineJNIEnvThread * _jenv )
+    void Mengine_JNI_ExceptionClear( JNIEnv * _jenv )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        env->ExceptionClear();
+        _jenv->ExceptionClear();
     }
     //////////////////////////////////////////////////////////////////////////
-    int Mengine_JNI_PushLocalFrame( MengineJNIEnvThread * _jenv, jint _capacity )
+    int Mengine_JNI_PushLocalFrame( JNIEnv * _jenv, jint _capacity )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        int status = env->PushLocalFrame( _capacity );
+        int status = _jenv->PushLocalFrame( _capacity );
 
         return status;
     }
     //////////////////////////////////////////////////////////////////////////
-    jobject Mengine_JNI_PopLocalFrame( MengineJNIEnvThread * _jenv, jobject _result )
+    jobject Mengine_JNI_PopLocalFrame( JNIEnv * _jenv, jobject _result )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jobject jobjectResult = env->PopLocalFrame( _result );
+        jobject jobjectResult = _jenv->PopLocalFrame( _result );
 
         return jobjectResult;
     }
     //////////////////////////////////////////////////////////////////////////
-    jclass Mengine_JNI_FindClass( MengineJNIEnvThread * _jenv, const Char * _name )
+    jclass Mengine_JNI_FindClass( JNIEnv * _jenv, const Char * _name )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jclass jclass_FindClass = env->FindClass( _name );
+        jclass jclass_FindClass = _jenv->FindClass( _name );
 
         return jclass_FindClass;
     }
     //////////////////////////////////////////////////////////////////////////
-    jmethodID Mengine_JNI_GetMethodID( MengineJNIEnvThread * _jenv, jclass _jclass, const Char * _name, const Char * _signature )
+    jmethodID Mengine_JNI_GetMethodID( JNIEnv * _jenv, jclass _jclass, const Char * _name, const Char * _signature )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jmethodID jmethodID = env->GetMethodID( _jclass, _name, _signature );
+        jmethodID jmethodID = _jenv->GetMethodID( _jclass, _name, _signature );
 
         return jmethodID;
     }
     //////////////////////////////////////////////////////////////////////////
-    jmethodID Mengine_JNI_GetStaticMethodID( MengineJNIEnvThread * _jenv, jclass _jclass, const Char * _name, const Char * _signature )
+    jmethodID Mengine_JNI_GetStaticMethodID( JNIEnv * _jenv, jclass _jclass, const Char * _name, const Char * _signature )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jmethodID jmethodID = env->GetStaticMethodID( _jclass, _name, _signature );
+        jmethodID jmethodID = _jenv->GetStaticMethodID( _jclass, _name, _signature );
 
         return jmethodID;
     }
     //////////////////////////////////////////////////////////////////////////
-    jfieldID Mengine_JNI_GetFieldID( MengineJNIEnvThread * _jenv, jclass _jclass, const Char * _name, const Char * _signature )
+    jfieldID Mengine_JNI_GetFieldID( JNIEnv * _jenv, jclass _jclass, const Char * _name, const Char * _signature )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jfieldID jfieldID = env->GetFieldID( _jclass, _name, _signature );
+        jfieldID jfieldID = _jenv->GetFieldID( _jclass, _name, _signature );
 
         return jfieldID;
     }
     //////////////////////////////////////////////////////////////////////////
-    jint Mengine_JNI_GetIntField( MengineJNIEnvThread * _jenv, jobject _jobject, jfieldID _fieldID )
+    jint Mengine_JNI_GetIntField( JNIEnv * _jenv, jobject _jobject, jfieldID _fieldID )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jint jintField = env->GetIntField( _jobject, _fieldID );
+        jint jintField = _jenv->GetIntField( _jobject, _fieldID );
 
         return jintField;
     }
     //////////////////////////////////////////////////////////////////////////
-    jboolean Mengine_JNI_GetBooleanField( MengineJNIEnvThread * _jenv, jobject _jobject, jfieldID _fieldID )
+    jboolean Mengine_JNI_GetBooleanField( JNIEnv * _jenv, jobject _jobject, jfieldID _fieldID )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jboolean jbooleanField = env->GetBooleanField( _jobject, _fieldID );
+        jboolean jbooleanField = _jenv->GetBooleanField( _jobject, _fieldID );
 
         return jbooleanField;
     }
     //////////////////////////////////////////////////////////////////////////
-    jchar Mengine_JNI_GetCharField( MengineJNIEnvThread * _jenv, jobject _jobject, jfieldID _fieldID )
+    jchar Mengine_JNI_GetCharField( JNIEnv * _jenv, jobject _jobject, jfieldID _fieldID )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jchar jcharField = env->GetCharField( _jobject, _fieldID );
+        jchar jcharField = _jenv->GetCharField( _jobject, _fieldID );
 
         return jcharField;
     }
     //////////////////////////////////////////////////////////////////////////
-    jlong Mengine_JNI_GetLongField( MengineJNIEnvThread * _jenv, jobject _jobject, jfieldID _fieldID )
+    jlong Mengine_JNI_GetLongField( JNIEnv * _jenv, jobject _jobject, jfieldID _fieldID )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jlong jlongField = env->GetLongField( _jobject, _fieldID );
+        jlong jlongField = _jenv->GetLongField( _jobject, _fieldID );
 
         return jlongField;
     }
     //////////////////////////////////////////////////////////////////////////
-    jfloat Mengine_JNI_GetFloatField( MengineJNIEnvThread * _jenv, jobject _jobject, jfieldID _fieldID )
+    jfloat Mengine_JNI_GetFloatField( JNIEnv * _jenv, jobject _jobject, jfieldID _fieldID )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jfloat jfloatField = env->GetFloatField( _jobject, _fieldID );
+        jfloat jfloatField = _jenv->GetFloatField( _jobject, _fieldID );
 
         return jfloatField;
     }
     //////////////////////////////////////////////////////////////////////////
-    jdouble Mengine_JNI_GetDoubleField( MengineJNIEnvThread * _jenv, jobject _jobject, jfieldID _fieldID )
+    jdouble Mengine_JNI_GetDoubleField( JNIEnv * _jenv, jobject _jobject, jfieldID _fieldID )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jdouble jdoubleField = env->GetDoubleField( _jobject, _fieldID );
+        jdouble jdoubleField = _jenv->GetDoubleField( _jobject, _fieldID );
 
         return jdoubleField;
     }
     //////////////////////////////////////////////////////////////////////////
-    jobject Mengine_JNI_GetObjectField( MengineJNIEnvThread * _jenv, jobject _jobject, jfieldID _fieldID )
+    jobject Mengine_JNI_GetObjectField( JNIEnv * _jenv, jobject _jobject, jfieldID _fieldID )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jobject jobjectField = env->GetObjectField( _jobject, _fieldID );
+        jobject jobjectField = _jenv->GetObjectField( _jobject, _fieldID );
 
         return jobjectField;
     }
     //////////////////////////////////////////////////////////////////////////
-    jfieldID Mengine_JNI_GetStaticFieldID( MengineJNIEnvThread * _jenv, jclass _jclass, const Char * _name, const Char * _signature )
+    jfieldID Mengine_JNI_GetStaticFieldID( JNIEnv * _jenv, jclass _jclass, const Char * _name, const Char * _signature )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jfieldID jfieldID = env->GetStaticFieldID( _jclass, _name, _signature );
+        jfieldID jfieldID = _jenv->GetStaticFieldID( _jclass, _name, _signature );
 
         return jfieldID;
     }
     //////////////////////////////////////////////////////////////////////////
-    jobject Mengine_JNI_GetStaticObjectField( MengineJNIEnvThread * _jenv, jclass _jclass, jfieldID _fieldID )
+    jobject Mengine_JNI_GetStaticObjectField( JNIEnv * _jenv, jclass _jclass, jfieldID _fieldID )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jobject jobjectField = env->GetStaticObjectField( _jclass, _fieldID );
+        jobject jobjectField = _jenv->GetStaticObjectField( _jclass, _fieldID );
 
         return jobjectField;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Mengine_JNI_CallVoidMethod( MengineJNIEnvThread * _jenv, jobject _jobject, jmethodID _methodID, ... )
+    void Mengine_JNI_CallVoidMethod( JNIEnv * _jenv, jobject _jobject, jmethodID _methodID, ... )
     {
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _methodID );
@@ -660,21 +566,17 @@ namespace Mengine
         MENGINE_VA_LIST_END( args );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Mengine_JNI_CallVoidMethodV( MengineJNIEnvThread * _jenv, jobject _jobject, jmethodID _methodID, va_list _args )
+    void Mengine_JNI_CallVoidMethodV( JNIEnv * _jenv, jobject _jobject, jmethodID _methodID, va_list _args )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        env->CallVoidMethodV( _jobject, _methodID, _args );
+        _jenv->CallVoidMethodV( _jobject, _methodID, _args );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Mengine_JNI_CallVoidMethodA( MengineJNIEnvThread * _jenv, jobject _jobject, jmethodID _methodID, const jvalue * _args )
+    void Mengine_JNI_CallVoidMethodA( JNIEnv * _jenv, jobject _jobject, jmethodID _methodID, const jvalue * _args )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        env->CallVoidMethodA( _jobject, _methodID, _args );
+        _jenv->CallVoidMethodA( _jobject, _methodID, _args );
     }
     //////////////////////////////////////////////////////////////////////////
-    jboolean Mengine_JNI_CallBooleanMethod( MengineJNIEnvThread * _jenv, jobject _jobject, jmethodID _methodID, ... )
+    jboolean Mengine_JNI_CallBooleanMethod( JNIEnv * _jenv, jobject _jobject, jmethodID _methodID, ... )
     {
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _methodID );
@@ -686,25 +588,21 @@ namespace Mengine
         return jboolean_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    jboolean Mengine_JNI_CallBooleanMethodV( MengineJNIEnvThread * _jenv, jobject _jobject, jmethodID _methodID, va_list _args )
+    jboolean Mengine_JNI_CallBooleanMethodV( JNIEnv * _jenv, jobject _jobject, jmethodID _methodID, va_list _args )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jboolean jboolean_result = env->CallBooleanMethodV( _jobject, _methodID, _args );
+        jboolean jboolean_result = _jenv->CallBooleanMethodV( _jobject, _methodID, _args );
 
         return jboolean_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    jboolean Mengine_JNI_CallBooleanMethodA( MengineJNIEnvThread * _jenv, jobject _jobject, jmethodID _methodID, const jvalue * _args )
+    jboolean Mengine_JNI_CallBooleanMethodA( JNIEnv * _jenv, jobject _jobject, jmethodID _methodID, const jvalue * _args )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jboolean jboolean_result = env->CallBooleanMethodA( _jobject, _methodID, _args );
+        jboolean jboolean_result = _jenv->CallBooleanMethodA( _jobject, _methodID, _args );
 
         return jboolean_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    jchar Mengine_JNI_CallCharMethod( MengineJNIEnvThread * _jenv, jobject _jobject, jmethodID _methodID, ... )
+    jchar Mengine_JNI_CallCharMethod( JNIEnv * _jenv, jobject _jobject, jmethodID _methodID, ... )
     {
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _methodID );
@@ -716,25 +614,21 @@ namespace Mengine
         return jchar_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    jchar Mengine_JNI_CallCharMethodV( MengineJNIEnvThread * _jenv, jobject _jobject, jmethodID _methodID, va_list _args )
+    jchar Mengine_JNI_CallCharMethodV( JNIEnv * _jenv, jobject _jobject, jmethodID _methodID, va_list _args )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jchar jchar_result = env->CallCharMethodV( _jobject, _methodID, _args );
+        jchar jchar_result = _jenv->CallCharMethodV( _jobject, _methodID, _args );
 
         return jchar_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    jchar Mengine_JNI_CallCharMethodA( MengineJNIEnvThread * _jenv, jobject _jobject, jmethodID _methodID, const jvalue * _args )
+    jchar Mengine_JNI_CallCharMethodA( JNIEnv * _jenv, jobject _jobject, jmethodID _methodID, const jvalue * _args )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jchar jchar_result = env->CallCharMethodA( _jobject, _methodID, _args );
+        jchar jchar_result = _jenv->CallCharMethodA( _jobject, _methodID, _args );
 
         return jchar_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    jint Mengine_JNI_CallIntMethod( MengineJNIEnvThread * _jenv, jobject _jobject, jmethodID _methodID, ... )
+    jint Mengine_JNI_CallIntMethod( JNIEnv * _jenv, jobject _jobject, jmethodID _methodID, ... )
     {
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _methodID );
@@ -746,25 +640,21 @@ namespace Mengine
         return jint_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    jint Mengine_JNI_CallIntMethodV( MengineJNIEnvThread * _jenv, jobject _jobject, jmethodID _methodID, va_list _args )
+    jint Mengine_JNI_CallIntMethodV( JNIEnv * _jenv, jobject _jobject, jmethodID _methodID, va_list _args )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jint jint_result = env->CallIntMethodV( _jobject, _methodID, _args );
+        jint jint_result = _jenv->CallIntMethodV( _jobject, _methodID, _args );
 
         return jint_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    jint Mengine_JNI_CallIntMethodA( MengineJNIEnvThread * _jenv, jobject _jobject, jmethodID _methodID, const jvalue * _args )
+    jint Mengine_JNI_CallIntMethodA( JNIEnv * _jenv, jobject _jobject, jmethodID _methodID, const jvalue * _args )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jint jint_result = env->CallIntMethodA( _jobject, _methodID, _args );
+        jint jint_result = _jenv->CallIntMethodA( _jobject, _methodID, _args );
 
         return jint_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    jlong Mengine_JNI_CallLongMethod( MengineJNIEnvThread * _jenv, jobject _jobject, jmethodID _methodID, ... )
+    jlong Mengine_JNI_CallLongMethod( JNIEnv * _jenv, jobject _jobject, jmethodID _methodID, ... )
     {
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _methodID );
@@ -776,25 +666,21 @@ namespace Mengine
         return jlong_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    jlong Mengine_JNI_CallLongMethodV( MengineJNIEnvThread * _jenv, jobject _jobject, jmethodID _methodID, va_list _args )
+    jlong Mengine_JNI_CallLongMethodV( JNIEnv * _jenv, jobject _jobject, jmethodID _methodID, va_list _args )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jlong jlong_result = env->CallLongMethodV( _jobject, _methodID, _args );
+        jlong jlong_result = _jenv->CallLongMethodV( _jobject, _methodID, _args );
 
         return jlong_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    jlong Mengine_JNI_CallLongMethodA( MengineJNIEnvThread * _jenv, jobject _jobject, jmethodID _methodID, const jvalue * _args )
+    jlong Mengine_JNI_CallLongMethodA( JNIEnv * _jenv, jobject _jobject, jmethodID _methodID, const jvalue * _args )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jlong jlong_result = env->CallLongMethodA( _jobject, _methodID, _args );
+        jlong jlong_result = _jenv->CallLongMethodA( _jobject, _methodID, _args );
 
         return jlong_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    jfloat Mengine_JNI_CallFloatMethod( MengineJNIEnvThread * _jenv, jobject _jobject, jmethodID _methodID, ... )
+    jfloat Mengine_JNI_CallFloatMethod( JNIEnv * _jenv, jobject _jobject, jmethodID _methodID, ... )
     {
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _methodID );
@@ -806,25 +692,21 @@ namespace Mengine
         return jfloat_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    jfloat Mengine_JNI_CallFloatMethodV( MengineJNIEnvThread * _jenv, jobject _jobject, jmethodID _methodID, va_list _args )
+    jfloat Mengine_JNI_CallFloatMethodV( JNIEnv * _jenv, jobject _jobject, jmethodID _methodID, va_list _args )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jfloat jfloat_result = env->CallFloatMethodV( _jobject, _methodID, _args );
+        jfloat jfloat_result = _jenv->CallFloatMethodV( _jobject, _methodID, _args );
 
         return jfloat_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    jfloat Mengine_JNI_CallFloatMethodA( MengineJNIEnvThread * _jenv, jobject _jobject, jmethodID _methodID, const jvalue * _args )
+    jfloat Mengine_JNI_CallFloatMethodA( JNIEnv * _jenv, jobject _jobject, jmethodID _methodID, const jvalue * _args )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jfloat jfloat_result = env->CallFloatMethodA( _jobject, _methodID, _args );
+        jfloat jfloat_result = _jenv->CallFloatMethodA( _jobject, _methodID, _args );
 
         return jfloat_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    jdouble Mengine_JNI_CallDoubleMethod( MengineJNIEnvThread * _jenv, jobject _jobject, jmethodID _methodID, ... )
+    jdouble Mengine_JNI_CallDoubleMethod( JNIEnv * _jenv, jobject _jobject, jmethodID _methodID, ... )
     {
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _methodID );
@@ -836,25 +718,21 @@ namespace Mengine
         return jdouble_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    jdouble Mengine_JNI_CallDoubleMethodV( MengineJNIEnvThread * _jenv, jobject _jobject, jmethodID _methodID, va_list _args )
+    jdouble Mengine_JNI_CallDoubleMethodV( JNIEnv * _jenv, jobject _jobject, jmethodID _methodID, va_list _args )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jdouble jdouble_result = env->CallDoubleMethodV( _jobject, _methodID, _args );
+        jdouble jdouble_result = _jenv->CallDoubleMethodV( _jobject, _methodID, _args );
 
         return jdouble_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    jdouble Mengine_JNI_CallDoubleMethodA( MengineJNIEnvThread * _jenv, jobject _jobject, jmethodID _methodID, const jvalue * _args )
+    jdouble Mengine_JNI_CallDoubleMethodA( JNIEnv * _jenv, jobject _jobject, jmethodID _methodID, const jvalue * _args )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jdouble jdouble_result = env->CallDoubleMethodA( _jobject, _methodID, _args );
+        jdouble jdouble_result = _jenv->CallDoubleMethodA( _jobject, _methodID, _args );
 
         return jdouble_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    jobject Mengine_JNI_CallObjectMethod( MengineJNIEnvThread * _jenv, jobject _jobject, jmethodID _methodID, ... )
+    jobject Mengine_JNI_CallObjectMethod( JNIEnv * _jenv, jobject _jobject, jmethodID _methodID, ... )
     {
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _methodID );
@@ -866,25 +744,21 @@ namespace Mengine
         return jobject_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    jobject Mengine_JNI_CallObjectMethodV( MengineJNIEnvThread * _jenv, jobject _jobject, jmethodID _methodID, va_list _args )
+    jobject Mengine_JNI_CallObjectMethodV( JNIEnv * _jenv, jobject _jobject, jmethodID _methodID, va_list _args )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jobject jobject_result = env->CallObjectMethodV( _jobject, _methodID, _args );
+        jobject jobject_result = _jenv->CallObjectMethodV( _jobject, _methodID, _args );
 
         return jobject_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    jobject Mengine_JNI_CallObjectMethodA( MengineJNIEnvThread * _jenv, jobject _jobject, jmethodID _methodID, const jvalue * _args )
+    jobject Mengine_JNI_CallObjectMethodA( JNIEnv * _jenv, jobject _jobject, jmethodID _methodID, const jvalue * _args )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jobject jobject_result = env->CallObjectMethodA( _jobject, _methodID, _args );
+        jobject jobject_result = _jenv->CallObjectMethodA( _jobject, _methodID, _args );
 
         return jobject_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Mengine_JNI_CallStaticVoidMethod( MengineJNIEnvThread * _jenv, jclass _jclass, jmethodID _methodID, ... )
+    void Mengine_JNI_CallStaticVoidMethod( JNIEnv * _jenv, jclass _jclass, jmethodID _methodID, ... )
     {
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _methodID );
@@ -894,21 +768,17 @@ namespace Mengine
         MENGINE_VA_LIST_END( args );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Mengine_JNI_CallStaticVoidMethodV( MengineJNIEnvThread * _jenv, jclass _jclass, jmethodID _methodID, va_list _args )
+    void Mengine_JNI_CallStaticVoidMethodV( JNIEnv * _jenv, jclass _jclass, jmethodID _methodID, va_list _args )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        env->CallStaticVoidMethodV( _jclass, _methodID, _args );
+        _jenv->CallStaticVoidMethodV( _jclass, _methodID, _args );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Mengine_JNI_CallStaticVoidMethodA( MengineJNIEnvThread * _jenv, jclass _jclass, jmethodID _methodID, const jvalue * _args )
+    void Mengine_JNI_CallStaticVoidMethodA( JNIEnv * _jenv, jclass _jclass, jmethodID _methodID, const jvalue * _args )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        env->CallStaticVoidMethodA( _jclass, _methodID, _args );
+        _jenv->CallStaticVoidMethodA( _jclass, _methodID, _args );
     }
     //////////////////////////////////////////////////////////////////////////
-    jint Mengine_JNI_CallStaticIntMethod( MengineJNIEnvThread * _jenv, jclass _jclass, jmethodID _methodID, ... )
+    jint Mengine_JNI_CallStaticIntMethod( JNIEnv * _jenv, jclass _jclass, jmethodID _methodID, ... )
     {
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _methodID );
@@ -920,25 +790,21 @@ namespace Mengine
         return jint_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    jint Mengine_JNI_CallStaticIntMethodV( MengineJNIEnvThread * _jenv, jclass _jclass, jmethodID _methodID, va_list _args )
+    jint Mengine_JNI_CallStaticIntMethodV( JNIEnv * _jenv, jclass _jclass, jmethodID _methodID, va_list _args )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jint jint_result = env->CallStaticIntMethodV( _jclass, _methodID, _args );
+        jint jint_result = _jenv->CallStaticIntMethodV( _jclass, _methodID, _args );
 
         return jint_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    jint Mengine_JNI_CallStaticIntMethodA( MengineJNIEnvThread * _jenv, jclass _jclass, jmethodID _methodID, const jvalue * _args )
+    jint Mengine_JNI_CallStaticIntMethodA( JNIEnv * _jenv, jclass _jclass, jmethodID _methodID, const jvalue * _args )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jint jint_result = env->CallStaticIntMethodA( _jclass, _methodID, _args );
+        jint jint_result = _jenv->CallStaticIntMethodA( _jclass, _methodID, _args );
 
         return jint_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    jlong Mengine_JNI_CallStaticLongMethod( MengineJNIEnvThread * _jenv, jclass _jclass, jmethodID _methodID, ... )
+    jlong Mengine_JNI_CallStaticLongMethod( JNIEnv * _jenv, jclass _jclass, jmethodID _methodID, ... )
     {
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _methodID );
@@ -950,25 +816,21 @@ namespace Mengine
         return jlong_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    jlong Mengine_JNI_CallStaticLongMethodV( MengineJNIEnvThread * _jenv, jclass _jclass, jmethodID _methodID, va_list _args )
+    jlong Mengine_JNI_CallStaticLongMethodV( JNIEnv * _jenv, jclass _jclass, jmethodID _methodID, va_list _args )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jlong jlong_result = env->CallStaticLongMethodV( _jclass, _methodID, _args );
+        jlong jlong_result = _jenv->CallStaticLongMethodV( _jclass, _methodID, _args );
 
         return jlong_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    jlong Mengine_JNI_CallStaticLongMethodA( MengineJNIEnvThread * _jenv, jclass _jclass, jmethodID _methodID, const jvalue * _args )
+    jlong Mengine_JNI_CallStaticLongMethodA( JNIEnv * _jenv, jclass _jclass, jmethodID _methodID, const jvalue * _args )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jlong jlong_result = env->CallStaticLongMethodA( _jclass, _methodID, _args );
+        jlong jlong_result = _jenv->CallStaticLongMethodA( _jclass, _methodID, _args );
 
         return jlong_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    jboolean Mengine_JNI_CallStaticBooleanMethod( MengineJNIEnvThread * _jenv, jclass _jclass, jmethodID _methodID, ... )
+    jboolean Mengine_JNI_CallStaticBooleanMethod( JNIEnv * _jenv, jclass _jclass, jmethodID _methodID, ... )
     {
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _methodID );
@@ -980,7 +842,7 @@ namespace Mengine
         return jboolean_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    jobject Mengine_JNI_CallStaticObjectMethod( MengineJNIEnvThread * _jenv, jclass _jclass, jmethodID _methodID, ... )
+    jobject Mengine_JNI_CallStaticObjectMethod( JNIEnv * _jenv, jclass _jclass, jmethodID _methodID, ... )
     {
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _methodID );
@@ -992,43 +854,35 @@ namespace Mengine
         return jobject_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    jboolean Mengine_JNI_CallStaticBooleanMethodV( MengineJNIEnvThread * _jenv, jclass _jclass, jmethodID _methodID, va_list _args )
+    jboolean Mengine_JNI_CallStaticBooleanMethodV( JNIEnv * _jenv, jclass _jclass, jmethodID _methodID, va_list _args )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jboolean jboolean_result = env->CallStaticBooleanMethodV( _jclass, _methodID, _args );
+        jboolean jboolean_result = _jenv->CallStaticBooleanMethodV( _jclass, _methodID, _args );
 
         return jboolean_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    jboolean Mengine_JNI_CallStaticBooleanMethodA( MengineJNIEnvThread * _jenv, jclass _jclass, jmethodID _methodID, const jvalue * _args )
+    jboolean Mengine_JNI_CallStaticBooleanMethodA( JNIEnv * _jenv, jclass _jclass, jmethodID _methodID, const jvalue * _args )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jboolean jboolean_result = env->CallStaticBooleanMethodA( _jclass, _methodID, _args );
+        jboolean jboolean_result = _jenv->CallStaticBooleanMethodA( _jclass, _methodID, _args );
 
         return jboolean_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    jobject Mengine_JNI_CallStaticObjectMethodV( MengineJNIEnvThread * _jenv, jclass _jclass, jmethodID _methodID, va_list _args )
+    jobject Mengine_JNI_CallStaticObjectMethodV( JNIEnv * _jenv, jclass _jclass, jmethodID _methodID, va_list _args )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jobject jobject_result = env->CallStaticObjectMethodV( _jclass, _methodID, _args );
+        jobject jobject_result = _jenv->CallStaticObjectMethodV( _jclass, _methodID, _args );
 
         return jobject_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    jobject Mengine_JNI_CallStaticObjectMethodA( MengineJNIEnvThread * _jenv, jclass _jclass, jmethodID _methodID, const jvalue * _args )
+    jobject Mengine_JNI_CallStaticObjectMethodA( JNIEnv * _jenv, jclass _jclass, jmethodID _methodID, const jvalue * _args )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jobject jobject_result = env->CallStaticObjectMethodA( _jclass, _methodID, _args );
+        jobject jobject_result = _jenv->CallStaticObjectMethodA( _jclass, _methodID, _args );
 
         return jobject_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    jobject Mengine_JNI_NewObject( MengineJNIEnvThread * _jenv, jclass _jclass, jmethodID _methodID, ... )
+    jobject Mengine_JNI_NewObject( JNIEnv * _jenv, jclass _jclass, jmethodID _methodID, ... )
     {
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _methodID );
@@ -1040,132 +894,106 @@ namespace Mengine
         return jobject_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    jobject Mengine_JNI_NewObjectV( MengineJNIEnvThread * _jenv, jclass _jclass, jmethodID _methodID, va_list _args )
+    jobject Mengine_JNI_NewObjectV( JNIEnv * _jenv, jclass _jclass, jmethodID _methodID, va_list _args )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jobject jobject_result = env->NewObjectV( _jclass, _methodID, _args );
+        jobject jobject_result = _jenv->NewObjectV( _jclass, _methodID, _args );
 
         return jobject_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    jstring Mengine_JNI_NewStringUTF( MengineJNIEnvThread * _jenv, const Char * _str )
+    jstring Mengine_JNI_NewStringUTF( JNIEnv * _jenv, const Char * _str )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jstring jstr = env->NewStringUTF( _str );
+        jstring jstr = _jenv->NewStringUTF( _str );
 
         return jstr;
     }
     //////////////////////////////////////////////////////////////////////////
-    const Char * Mengine_JNI_GetStringUTFChars( MengineJNIEnvThread * _jenv, jstring _jstring, jboolean * const _isCopy )
+    const Char * Mengine_JNI_GetStringUTFChars( JNIEnv * _jenv, jstring _jstring, jboolean * const _isCopy )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        const Char * str = env->GetStringUTFChars( _jstring, _isCopy );
+        const Char * str = _jenv->GetStringUTFChars( _jstring, _isCopy );
 
         return str;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Mengine_JNI_ReleaseStringUTFChars( MengineJNIEnvThread * _jenv, jstring _jstring, const Char * _cstr )
+    void Mengine_JNI_ReleaseStringUTFChars( JNIEnv * _jenv, jstring _jstring, const Char * _cstr )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        env->ReleaseStringUTFChars( _jstring, _cstr );
+        _jenv->ReleaseStringUTFChars( _jstring, _cstr );
     }
     //////////////////////////////////////////////////////////////////////////
-    jsize Mengine_JNI_GetStringLength( MengineJNIEnvThread * _jenv, jstring _jstring )
+    jsize Mengine_JNI_GetStringLength( JNIEnv * _jenv, jstring _jstring )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jsize length = env->GetStringLength( _jstring );
+        jsize length = _jenv->GetStringLength( _jstring );
 
         return length;
     }
     //////////////////////////////////////////////////////////////////////////
-    jsize Mengine_JNI_GetArrayLength( MengineJNIEnvThread * _jenv, jobjectArray _jarray )
+    jsize Mengine_JNI_GetArrayLength( JNIEnv * _jenv, jobjectArray _jarray )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jsize length = env->GetArrayLength( _jarray );
+        jsize length = _jenv->GetArrayLength( _jarray );
 
         return length;
     }
     //////////////////////////////////////////////////////////////////////////
-    jobject Mengine_JNI_GetObjectArrayElement( MengineJNIEnvThread * _jenv, jobjectArray _jarray, jsize _index )
+    jobject Mengine_JNI_GetObjectArrayElement( JNIEnv * _jenv, jobjectArray _jarray, jsize _index )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jobject jobject_element = env->GetObjectArrayElement( _jarray, _index );
+        jobject jobject_element = _jenv->GetObjectArrayElement( _jarray, _index );
 
         return jobject_element;
     }
     //////////////////////////////////////////////////////////////////////////
-    jbyteArray Mengine_JNI_NewByteArray( MengineJNIEnvThread * _jenv, jsize _length )
+    jbyteArray Mengine_JNI_NewByteArray( JNIEnv * _jenv, jsize _length )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jbyteArray jbyte_array = env->NewByteArray( _length );
+        jbyteArray jbyte_array = _jenv->NewByteArray( _length );
 
         return jbyte_array;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Mengine_JNI_SetByteArrayRegion( MengineJNIEnvThread * _jenv, jbyteArray _jarray, jsize _start, jsize _len, const jbyte * _buf )
+    void Mengine_JNI_SetByteArrayRegion( JNIEnv * _jenv, jbyteArray _jarray, jsize _start, jsize _len, const jbyte * _buf )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        env->SetByteArrayRegion( _jarray, _start, _len, _buf );
+        _jenv->SetByteArrayRegion( _jarray, _start, _len, _buf );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Mengine_JNI_ReleaseByteArrayElements( MengineJNIEnvThread * _jenv, jbyteArray _jarray, jbyte * _elements, jint _mode )
+    void Mengine_JNI_ReleaseByteArrayElements( JNIEnv * _jenv, jbyteArray _jarray, jbyte * _elements, jint _mode )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        env->ReleaseByteArrayElements( _jarray, _elements, _mode );
+        _jenv->ReleaseByteArrayElements( _jarray, _elements, _mode );
     }
     //////////////////////////////////////////////////////////////////////////
-    jbyte * Mengine_JNI_GetByteArrayElements( MengineJNIEnvThread * _jenv, jbyteArray _jarray, jboolean * const _isCopy )
+    jbyte * Mengine_JNI_GetByteArrayElements( JNIEnv * _jenv, jbyteArray _jarray, jboolean * const _isCopy )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jbyte * byte_elements = env->GetByteArrayElements( _jarray, _isCopy );
+        jbyte * byte_elements = _jenv->GetByteArrayElements( _jarray, _isCopy );
 
         return byte_elements;
     }
     //////////////////////////////////////////////////////////////////////////
-    jobject Mengine_JNI_NewDirectByteBuffer( MengineJNIEnvThread * _jenv, void * _address, jlong _capacity )
+    jobject Mengine_JNI_NewDirectByteBuffer( JNIEnv * _jenv, void * _address, jlong _capacity )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        jobject jbyte_buffer = env->NewDirectByteBuffer( _address, _capacity );
+        jobject jbyte_buffer = _jenv->NewDirectByteBuffer( _address, _capacity );
 
         return jbyte_buffer;
     }
     //////////////////////////////////////////////////////////////////////////
-    void * Mengine_JNI_GetDirectBufferAddress( MengineJNIEnvThread * _jenv, jobject _jbuffer )
+    void * Mengine_JNI_GetDirectBufferAddress( JNIEnv * _jenv, jobject _jbuffer )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        void * address = env->GetDirectBufferAddress( _jbuffer );
+        void * address = _jenv->GetDirectBufferAddress( _jbuffer );
 
         return address;
     }
     //////////////////////////////////////////////////////////////////////////
-    jclass Mengine_JNI_GetClassMengineCallback( MengineJNIEnvThread * _jenv )
+    jclass Mengine_JNI_GetClassMengineCallback( JNIEnv * _jenv )
     {
-        jclass jclass_MengineCallback = _jenv->jclass_MengineCallback;
+        jclass jclass_MengineCallback = Mengine_JNI_LoadClass( _jenv, "org/Mengine/Base/MengineCallback" );
 
         return jclass_MengineCallback;
     }
     //////////////////////////////////////////////////////////////////////////
-    jclass Mengine_JNI_GetClassApplication( MengineJNIEnvThread * _jenv )
+    jclass Mengine_JNI_GetClassApplication( JNIEnv * _jenv )
     {
-        jclass jclass_MengineApplication = _jenv->jclass_MengineApplication;
+        jclass jclass_MengineApplication = Mengine_JNI_LoadClass( _jenv, "org/Mengine/Base/MengineApplication" );
 
         return jclass_MengineApplication;
     }
     //////////////////////////////////////////////////////////////////////////
-    jobject Mengine_JNI_GetObjectApplication( MengineJNIEnvThread * _jenv )
+    jobject Mengine_JNI_GetObjectApplication( JNIEnv * _jenv )
     {
         jclass jclass_MengineApplication = Mengine_JNI_GetClassApplication( _jenv );
 
@@ -1173,31 +1001,37 @@ namespace Mengine
 
         if( jfield_INSTANCE == nullptr )
         {
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_MengineApplication );
+
             return nullptr;
         }
 
         jobject jobject_MengineApplication = Mengine_JNI_GetStaticObjectField( _jenv, jclass_MengineApplication, jfield_INSTANCE );
 
+        Mengine_JNI_DeleteLocalRef( _jenv, jclass_MengineApplication );
+
         return jobject_MengineApplication;
     }
     //////////////////////////////////////////////////////////////////////////
-    jmethodID Mengine_JNI_GetMethodApplication( MengineJNIEnvThread * _jenv, const char * _methodName, const char * _signature )
+    jmethodID Mengine_JNI_GetMethodApplication( JNIEnv * _jenv, const char * _methodName, const char * _signature )
     {
         jclass jclass_MengineApplication = Mengine_JNI_GetClassApplication( _jenv );
 
         jmethodID jmethod_MengineApplication = Mengine_JNI_GetMethodID( _jenv, jclass_MengineApplication, _methodName, _signature );
 
+        Mengine_JNI_DeleteLocalRef( _jenv, jclass_MengineApplication );
+
         return jmethod_MengineApplication;
     }
     //////////////////////////////////////////////////////////////////////////
-    jclass Mengine_JNI_GetClassActivity( MengineJNIEnvThread * _jenv )
+    jclass Mengine_JNI_GetClassActivity( JNIEnv * _jenv )
     {
-        jclass jclass_MengineActivity = _jenv->jclass_MengineActivity;
+        jclass jclass_MengineActivity = Mengine_JNI_LoadClass( _jenv, "org/Mengine/Base/MengineActivity" );
 
         return jclass_MengineActivity;
     }
     //////////////////////////////////////////////////////////////////////////
-    jobject Mengine_JNI_GetObjectActivity( MengineJNIEnvThread * _jenv )
+    jobject Mengine_JNI_GetObjectActivity( JNIEnv * _jenv )
     {
         jclass jclass_MengineActivity = Mengine_JNI_GetClassActivity( _jenv );
 
@@ -1205,24 +1039,30 @@ namespace Mengine
 
         if( jfield_INSTANCE == nullptr )
         {
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_MengineActivity );
+
             return nullptr;
         }
 
         jobject jobject_MengineActivity = Mengine_JNI_GetStaticObjectField( _jenv,  jclass_MengineActivity, jfield_INSTANCE );
 
+        Mengine_JNI_DeleteLocalRef( _jenv, jclass_MengineActivity );
+
         return jobject_MengineActivity;
     }
     //////////////////////////////////////////////////////////////////////////
-    jmethodID Mengine_JNI_GetMethodActivity( MengineJNIEnvThread * _jenv, const Char * _methodName, const Char * _signature )
+    jmethodID Mengine_JNI_GetMethodActivity( JNIEnv * _jenv, const Char * _methodName, const Char * _signature )
     {
         jclass jclass_MengineActivity = Mengine_JNI_GetClassActivity( _jenv );
 
         jmethodID jmethodId_MengineActivity = Mengine_JNI_GetMethodID( _jenv, jclass_MengineActivity, _methodName, _signature );
 
+        Mengine_JNI_DeleteLocalRef( _jenv, jclass_MengineActivity );
+
         return jmethodId_MengineActivity;
     }
     //////////////////////////////////////////////////////////////////////////
-    jclass Mengine_JNI_GetClassFragment( MengineJNIEnvThread * _jenv, const Char * _fragmentName )
+    jclass Mengine_JNI_GetClassFragment( JNIEnv * _jenv, const Char * _fragmentName )
     {
         Char fragmentClassName[256 + 1] = { '\0' };
         StdString::strcpy_safe( fragmentClassName, "org/Mengine/Base/", 256 );
@@ -1233,7 +1073,7 @@ namespace Mengine
         return jclass_FragmentClassName;
     }
     //////////////////////////////////////////////////////////////////////////
-    jobject Mengine_JNI_GetObjectFragment( MengineJNIEnvThread * _jenv, const Char * _fragmentName )
+    jobject Mengine_JNI_GetObjectFragment( JNIEnv * _jenv, const Char * _fragmentName )
     {
         jclass jclass_Fragment = Mengine_JNI_GetClassFragment( _jenv, _fragmentName );
 
@@ -1263,7 +1103,7 @@ namespace Mengine
         return jobject_INSTANCE;
     }
     //////////////////////////////////////////////////////////////////////////
-    jmethodID Mengine_JNI_GetMethodFragment( MengineJNIEnvThread * _jenv, const Char * _fragment, const Char * _method, const Char * _signature )
+    jmethodID Mengine_JNI_GetMethodFragment( JNIEnv * _jenv, const Char * _fragment, const Char * _method, const Char * _signature )
     {
         jclass jclass_Fragment = Mengine_JNI_GetClassFragment( _jenv, _fragment );
 
@@ -1279,10 +1119,11 @@ namespace Mengine
         return methodId;
     }
     //////////////////////////////////////////////////////////////////////////
-    jclass Mengine_JNI_LoadClass( MengineJNIEnvThread * _jenv, const Char * _className )
+    jclass Mengine_JNI_LoadClass( JNIEnv * _jenv, const Char * _className )
     {
         jclass jclass_ClassLoader = Mengine_JNI_GetClassClassLoader( _jenv );
         jmethodID jmethodID_ClassLoader_loadClass = Mengine_JNI_GetMethodID( _jenv, jclass_ClassLoader, "loadClass", "(Ljava/lang/String;)Ljava/lang/Class;" );
+        Mengine_JNI_DeleteLocalRef( _jenv, jclass_ClassLoader );
 
         jstring jstring_className = Mengine_JNI_NewStringUTF( _jenv, _className );
         jclass jclass_FindClass = (jclass)Mengine_JNI_CallObjectMethod( _jenv, g_jobject_MengineClassLoader, jmethodID_ClassLoader_loadClass, jstring_className );
@@ -1291,20 +1132,16 @@ namespace Mengine
         return jclass_FindClass;
     }
     //////////////////////////////////////////////////////////////////////////
-    AAssetManager * Mengine_JNI_GetAssetManagerFromJava( MengineJNIEnvThread * _jenv, jobject _jassetManager )
+    AAssetManager * Mengine_JNI_GetAssetManagerFromJava( JNIEnv * _jenv, jobject _jassetManager )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        AAssetManager * assetManager = AAssetManager_fromJava( env, _jassetManager );
+        AAssetManager * assetManager = AAssetManager_fromJava( _jenv, _jassetManager );
 
         return assetManager;
     }
     //////////////////////////////////////////////////////////////////////////
-    ANativeWindow * Mengine_JNI_ANativeWindow_fromSurface( MengineJNIEnvThread * _jenv, jobject _surface )
+    ANativeWindow * Mengine_JNI_ANativeWindow_fromSurface( JNIEnv * _jenv, jobject _surface )
     {
-        JNIEnv * env = Mengine_JNI_GetEnv( _jenv );
-
-        ANativeWindow * nativeWindow = ANativeWindow_fromSurface( env, _surface );
+        ANativeWindow * nativeWindow = ANativeWindow_fromSurface( _jenv, _surface );
 
         return nativeWindow;
     }

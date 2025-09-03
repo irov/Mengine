@@ -43,7 +43,7 @@ namespace Mengine
         MENGINE_ASSERTION_VALIDATE_UTF8( message.category, MENGINE_UNKNOWN_SIZE );
         MENGINE_ASSERTION_VALIDATE_UTF8( message.data, message.size );
 
-        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 

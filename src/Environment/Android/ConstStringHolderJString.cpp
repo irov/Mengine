@@ -15,7 +15,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void ConstStringHolderJString::setJString( MengineJNIEnvThread * _jenv, jstring _value )
+    void ConstStringHolderJString::setJString( JNIEnv * _jenv, jstring _value )
     {
         m_value = (jstring)Mengine_JNI_NewGlobalRef( _jenv, (jobject)_value );
 
@@ -27,7 +27,7 @@ namespace Mengine
         this->setup( data, (ConstStringHolder::size_type)size, (ConstStringHolder::hash_type)hash );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ConstStringHolderJString::removeJString( MengineJNIEnvThread * _jenv )
+    void ConstStringHolderJString::removeJString( JNIEnv * _jenv )
     {
         const Char * data = this->data();
         Mengine_JNI_ReleaseStringUTFChars( _jenv, m_value, data );

@@ -70,7 +70,7 @@ namespace Mengine
             , _args.repr().c_str()
         );
 
-        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
@@ -103,7 +103,7 @@ namespace Mengine
             , _args.repr().c_str()
         );
 
-        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
@@ -137,7 +137,7 @@ namespace Mengine
             , _args.repr().c_str()
         );
 
-        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
@@ -171,7 +171,7 @@ namespace Mengine
             , _args.repr().c_str()
         );
 
-        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
@@ -205,7 +205,7 @@ namespace Mengine
             , _args.repr().c_str()
         );
 
-        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
@@ -239,7 +239,7 @@ namespace Mengine
             , _args.repr().c_str()
         );
 
-        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
@@ -273,7 +273,7 @@ namespace Mengine
             , _args.repr().c_str()
         );
 
-        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
@@ -316,7 +316,7 @@ namespace Mengine
             , _args.repr().c_str()
         );
 
-        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
@@ -352,7 +352,7 @@ namespace Mengine
             , _args.repr().c_str()
         );
 
-        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
@@ -380,7 +380,7 @@ namespace Mengine
         return py_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativePythonService::getAndroidMethod( MengineJNIEnvThread * _jenv, const ConstString & _plugin, const ConstString & _method, const pybind::args & _args, const Char * _retType, jvalue * const _jargs, jobject * const _jplugin, jmethodID * const _jmethodId ) const
+    bool AndroidNativePythonService::getAndroidMethod( JNIEnv * _jenv, const ConstString & _plugin, const ConstString & _method, const pybind::args & _args, const Char * _retType, jvalue * const _jargs, jobject * const _jplugin, jmethodID * const _jmethodId ) const
     {
         MENGINE_ASSERTION_FATAL( _args.size() <= 32, "android method plugin '%s' method '%s' max args [32 < %zu]"
             , _plugin.c_str()

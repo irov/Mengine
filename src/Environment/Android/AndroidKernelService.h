@@ -26,7 +26,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        void stringize( MengineJNIEnvThread * _jenv, jstring _value, ConstString * const _cstr ) override;
+        void stringize( JNIEnv * _jenv, jstring _value, ConstString * const _cstr ) override;
 
     public:
         void addPlugin( const ConstString & _plugin, jobject _jmodule ) override;
@@ -35,7 +35,7 @@ namespace Mengine
 
     public:
         bool hasPluginMethod( const ConstString & _plugin, const ConstString & _method ) const override;
-        void callPluginMethod( MengineJNIEnvThread * _jenv, const ConstString & _plugin, const ConstString & _method, jobjectArray _args ) const override;
+        void callPluginMethod( JNIEnv * _jenv, const ConstString & _plugin, const ConstString & _method, jobjectArray _args ) const override;
 
     public:
         AndroidPluginCallbackInterfacePtr addPluginCallback( const ConstString & _plugin, const ConstString & _method, const AndroidPluginCallbackInterfacePtr & _callback ) override;

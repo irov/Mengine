@@ -576,7 +576,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t AndroidPlatformService::getUserPath( Char * const _userPath ) const
     {
-        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
@@ -617,7 +617,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::getUserLocaleLanguage( Char * const _userLocaleLanguage ) const
     {
-        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
@@ -847,7 +847,7 @@ namespace Mengine
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_RUN );
 
-        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
@@ -969,7 +969,7 @@ namespace Mengine
             , _url
         );
 
-        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
@@ -990,7 +990,7 @@ namespace Mengine
             , _body
         );
 
-        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
@@ -1011,7 +1011,7 @@ namespace Mengine
     {
         LOGGER_MESSAGE( "open delete account" );
 
-        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
@@ -1022,7 +1022,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::notifyBootstrapperInitializeBaseServices_()
     {
-        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
@@ -1031,7 +1031,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::notifyBootstrapperCreateApplication_()
     {
-        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
@@ -1042,7 +1042,7 @@ namespace Mengine
     {
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_STOP );
 
-        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
@@ -1239,7 +1239,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::isDebuggerPresent() const
     {
-        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
@@ -1301,7 +1301,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::showKeyboard()
     {
-        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
@@ -1310,7 +1310,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::hideKeyboard()
     {
-        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
@@ -1319,7 +1319,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::isShowKeyboard() const
     {
-        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
@@ -1400,7 +1400,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::messageBox( const Char * _caption, const Char * _format, ... ) const
     {
-        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
@@ -1433,7 +1433,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::setClipboardText( const Char * _value ) const
     {
-        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
@@ -1448,7 +1448,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::getClipboardText( Char * _value, size_t _capacity ) const
     {
-        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
@@ -1681,7 +1681,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t AndroidPlatformService::androidNativeGetAndroidId( Char * _androidId, size_t _capacity ) const
     {
-        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 

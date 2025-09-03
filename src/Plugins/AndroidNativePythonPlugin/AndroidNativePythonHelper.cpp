@@ -18,7 +18,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        PyObject * androidNativePythonMakePyObject( pybind::kernel_interface * _kernel, MengineJNIEnvThread * _jenv, jobject _obj, const DocumentInterfacePtr & _doc )
+        PyObject * androidNativePythonMakePyObject( pybind::kernel_interface * _kernel, JNIEnv * _jenv, jobject _obj, const DocumentInterfacePtr & _doc )
         {
             PyObject * py_value = nullptr;
 
@@ -210,10 +210,26 @@ namespace Mengine
                 Mengine_JNI_DeleteLocalRef( _jenv, jclass_Class );
             }
 
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_Boolean );
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_Character );
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_Integer );
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_Long );
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_Float );
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_Double );
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_String );
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_Exception );
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_List );
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_Map );
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_Set );
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_Rect );
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_JSONObject );
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_JSONArray );
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_MengineCallback );
+
             return py_value;
         }
         //////////////////////////////////////////////////////////////////////////
-        jobject androidNativePythonListMakeJavaObject( MengineJNIEnvThread * _jenv, const pybind::list & _list )
+        jobject androidNativePythonListMakeJavaObject( JNIEnv * _jenv, const pybind::list & _list )
         {
             pybind::list::size_type s = _list.size();
 
@@ -235,7 +251,7 @@ namespace Mengine
             return jobject_list;
         }
         //////////////////////////////////////////////////////////////////////////
-        jobject androidNativePythonDictMakeJavaObject( MengineJNIEnvThread * _jenv, const pybind::dict & _dict )
+        jobject androidNativePythonDictMakeJavaObject( JNIEnv * _jenv, const pybind::dict & _dict )
         {
             pybind::dict::size_type s = _dict.size();
 
@@ -262,7 +278,7 @@ namespace Mengine
             return jobject_map;
         }
         //////////////////////////////////////////////////////////////////////////
-        jobject androidNativePythonMakeJavaObject( MengineJNIEnvThread * _jenv, const pybind::object & _obj )
+        jobject androidNativePythonMakeJavaObject( JNIEnv * _jenv, const pybind::object & _obj )
         {
             jobject jresult;
 

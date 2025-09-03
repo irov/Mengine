@@ -48,7 +48,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( m_response, "not setup 'response'" );
         MENGINE_ASSERTION_MEMORY_PANIC( m_receiver, "not setup 'receiver'" );
 
-        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 

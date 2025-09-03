@@ -14,7 +14,7 @@ namespace Mengine
         ~PythonAndroidPluginCallback() override;
 
     protected:
-        void invoke( MengineJNIEnvThread * _jenv, jobjectArray _args ) override;
+        void invoke( JNIEnv * _jenv, jobjectArray _args ) override;
 
     protected:
         pybind::kernel_interface * m_kernel;

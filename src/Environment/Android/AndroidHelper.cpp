@@ -21,11 +21,13 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        StaticString<1024> AndroidGetJavaClassName( MengineJNIEnvThread * _jenv, jclass _jclass )
+        StaticString<1024> AndroidGetJavaClassName( JNIEnv * _jenv, jclass _jclass )
         {
             jclass jclass_Class = Mengine_JNI_GetClassClass( _jenv );
 
             jmethodID jmethodID_getName = Mengine_JNI_GetMethodID( _jenv, jclass_Class, "getName", "()Ljava/lang/String;" );
+
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_Class );
 
             jstring jobject_ClassName = (jstring)Mengine_JNI_CallObjectMethod( _jenv, _jclass, jmethodID_getName );
 
@@ -42,7 +44,7 @@ namespace Mengine
             return value;
         }
         //////////////////////////////////////////////////////////////////////////
-        jclass AndroidEnvFindClass( MengineJNIEnvThread * _jenv, const Char * _className )
+        jclass AndroidEnvFindClass( JNIEnv * _jenv, const Char * _className )
         {
             jclass jclass_FindClass = Mengine_JNI_LoadClass( _jenv, _className );
 
@@ -60,7 +62,7 @@ namespace Mengine
             return jclass_FindClass;
         }
         //////////////////////////////////////////////////////////////////////////
-        jobject AndroidEnvGetObjectFragment( MengineJNIEnvThread * _jenv, const Char * _fragment )
+        jobject AndroidEnvGetObjectFragment( JNIEnv * _jenv, const Char * _fragment )
         {
             jobject jobject_Fragment = Mengine_JNI_GetObjectFragment( _jenv, _fragment );
 
@@ -78,7 +80,7 @@ namespace Mengine
             return jobject_Fragment;
         }
         //////////////////////////////////////////////////////////////////////////
-        jmethodID AndroidEnvGetMethodFragment( MengineJNIEnvThread * _jenv, const Char * _fragment, const Char * _method, const Char * _signature )
+        jmethodID AndroidEnvGetMethodFragment( JNIEnv * _jenv, const Char * _fragment, const Char * _method, const Char * _signature )
         {
             jmethodID jmethod_Fragment = Mengine_JNI_GetMethodFragment( _jenv, _fragment, _method, _signature );
 
@@ -98,7 +100,7 @@ namespace Mengine
             return jmethod_Fragment;
         }
         //////////////////////////////////////////////////////////////////////////
-        void AndroidCallVoidStaticClassMethod( MengineJNIEnvThread * _jenv, const Char * _name, const Char * _method, const Char * _signature, ... )
+        void AndroidCallVoidStaticClassMethod( JNIEnv * _jenv, const Char * _name, const Char * _method, const Char * _signature, ... )
         {
             jclass jclass_name = Helper::AndroidEnvFindClass( _jenv, _name );
 
@@ -122,7 +124,7 @@ namespace Mengine
             Mengine_JNI_DeleteLocalRef( _jenv, jclass_name );
         }
         //////////////////////////////////////////////////////////////////////////
-        jobject AndroidCallObjectStaticClassMethod( MengineJNIEnvThread * _jenv, const Char * _name, const Char * _method, const Char * _signature, ... )
+        jobject AndroidCallObjectStaticClassMethod( JNIEnv * _jenv, const Char * _name, const Char * _method, const Char * _signature, ... )
         {
             jclass jclass_name = Helper::AndroidEnvFindClass( _jenv, _name );
 
@@ -148,7 +150,7 @@ namespace Mengine
             return jresult;
         }
         //////////////////////////////////////////////////////////////////////////
-        jobject AndroidMakeJObjectPointer( MengineJNIEnvThread * _jenv, void * _value )
+        jobject AndroidMakeJObjectPointer( JNIEnv * _jenv, void * _value )
         {
             int64_t pointer_value = (int64_t)_value;
 
@@ -157,7 +159,7 @@ namespace Mengine
             return jpointer;
         }
         //////////////////////////////////////////////////////////////////////////
-        jobject AndroidMakeJObjectBoolean( MengineJNIEnvThread * _jenv, bool _value )
+        jobject AndroidMakeJObjectBoolean( JNIEnv * _jenv, bool _value )
         {
             jclass jclass_Boolean = Mengine_JNI_GetClassBoolean( _jenv );
 
@@ -165,10 +167,12 @@ namespace Mengine
 
             jobject value_jobject = Mengine_JNI_NewObject( _jenv, jclass_Boolean, Boolean_constructor, _value );
 
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_Boolean );
+
             return value_jobject;
         }
         //////////////////////////////////////////////////////////////////////////
-        jobject AndroidMakeJObjectCharacter( MengineJNIEnvThread * _jenv, Char _value )
+        jobject AndroidMakeJObjectCharacter( JNIEnv * _jenv, Char _value )
         {
             jclass jclass_Character = Mengine_JNI_GetClassCharacter( _jenv );
 
@@ -176,21 +180,25 @@ namespace Mengine
 
             jobject value_jobject = Mengine_JNI_NewObject( _jenv, jclass_Character, Character_constructor, _value );
 
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_Character );
+
             return value_jobject;
         }
         //////////////////////////////////////////////////////////////////////////
-        jobject AndroidMakeJObjectInteger( MengineJNIEnvThread * _jenv, int32_t _value )
+        jobject AndroidMakeJObjectInteger( JNIEnv * _jenv, int32_t _value )
         {
             jclass jclass_Integer = Mengine_JNI_GetClassInteger( _jenv );
 
             jmethodID Integer_constructor = Mengine_JNI_GetMethodID( _jenv, jclass_Integer, "<init>", "(I)V" );
 
             jobject value_jobject = Mengine_JNI_NewObject( _jenv, jclass_Integer, Integer_constructor, (jint)_value );
+
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_Integer );
 			
             return value_jobject;
         }
         //////////////////////////////////////////////////////////////////////////
-        jobject AndroidMakeJObjectLong( MengineJNIEnvThread * _jenv, int64_t _value )
+        jobject AndroidMakeJObjectLong( JNIEnv * _jenv, int64_t _value )
         {
             jclass jclass_Long = Mengine_JNI_GetClassLong( _jenv );
 
@@ -198,10 +206,12 @@ namespace Mengine
 
             jobject value_jobject = Mengine_JNI_NewObject( _jenv, jclass_Long, Long_constructor, (jlong)_value );
 
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_Long );
+
             return value_jobject;
         }
         //////////////////////////////////////////////////////////////////////////
-        jobject AndroidMakeJObjectFloat( MengineJNIEnvThread * _jenv, float _value )
+        jobject AndroidMakeJObjectFloat( JNIEnv * _jenv, float _value )
         {
             jclass jclass_Float = Mengine_JNI_GetClassFloat( _jenv );
 
@@ -209,10 +219,12 @@ namespace Mengine
 
             jobject value_jobject = Mengine_JNI_NewObject( _jenv, jclass_Float, Float_constructor, _value );
 
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_Float );
+
             return value_jobject;
         }
         //////////////////////////////////////////////////////////////////////////
-        jobject AndroidMakeJObjectDouble( MengineJNIEnvThread * _jenv, double _value )
+        jobject AndroidMakeJObjectDouble( JNIEnv * _jenv, double _value )
         {
             jclass jclass_Double = Mengine_JNI_GetClassDouble( _jenv );
 
@@ -220,10 +232,12 @@ namespace Mengine
 
             jobject value_jobject = Mengine_JNI_NewObject( _jenv, jclass_Double, Double_constructor, _value );
 
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_Double );
+
             return value_jobject;
         }
         //////////////////////////////////////////////////////////////////////////
-        jobject AndroidMakeJObjectString( MengineJNIEnvThread * _jenv, const Char * _value )
+        jobject AndroidMakeJObjectString( JNIEnv * _jenv, const Char * _value )
         {
             MENGINE_ASSERTION_VALIDATE_UTF8( _value, MENGINE_UNKNOWN_SIZE );
 
@@ -232,7 +246,7 @@ namespace Mengine
             return value_jstring;
         }
         //////////////////////////////////////////////////////////////////////////
-        jobject AndroidMakeJObjectString( MengineJNIEnvThread * _jenv, const String & _value )
+        jobject AndroidMakeJObjectString( JNIEnv * _jenv, const String & _value )
         {
             const Char * value_str = _value.c_str();
 
@@ -241,7 +255,7 @@ namespace Mengine
             return value_jobject;
         }
         //////////////////////////////////////////////////////////////////////////
-        jobject AndroidMakeJObjectString( MengineJNIEnvThread * _jenv, const ConstString & _value )
+        jobject AndroidMakeJObjectString( JNIEnv * _jenv, const ConstString & _value )
         {
             const Char * value_str = _value.c_str();
 
@@ -250,7 +264,7 @@ namespace Mengine
             return value_jobject;
         }
         //////////////////////////////////////////////////////////////////////////
-        jobject AndroidMakeJObjectArrayList( MengineJNIEnvThread * _jenv, int32_t _count )
+        jobject AndroidMakeJObjectArrayList( JNIEnv * _jenv, int32_t _count )
         {
             jclass jclass_ArrayList = Mengine_JNI_GetClassArrayList( _jenv );
 
@@ -258,10 +272,12 @@ namespace Mengine
 
             jobject value_jobject = Mengine_JNI_NewObject( _jenv, jclass_ArrayList, ArrayList_constructor, (jint)_count );
 
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_ArrayList );
+
             return value_jobject;
         }
         //////////////////////////////////////////////////////////////////////////
-        jobject AndroidMakeJObjectHashMap( MengineJNIEnvThread * _jenv, int32_t _count )
+        jobject AndroidMakeJObjectHashMap( JNIEnv * _jenv, int32_t _count )
         {
             jclass jclass_HashMap = Mengine_JNI_GetClassHashMap( _jenv );
 
@@ -269,10 +285,12 @@ namespace Mengine
 
             jobject value_jobject = Mengine_JNI_NewObject( _jenv, jclass_HashMap, HashMap_constructor, (jint)_count );
 
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_HashMap );
+
             return value_jobject;
         }
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_NODISCARD jobject AndroidMakeJObjectHashMap( MengineJNIEnvThread * _jenv, const Params & _params )
+        MENGINE_NODISCARD jobject AndroidMakeJObjectHashMap( JNIEnv * _jenv, const Params & _params )
         {
             Params::size_type size = _params.size();
 
@@ -325,7 +343,7 @@ namespace Mengine
             return jmap;
         }
         //////////////////////////////////////////////////////////////////////////
-        jobject AndroidGetJObjectEnum( MengineJNIEnvThread * _jenv, const Char * _className, const Char * _enumName )
+        jobject AndroidGetJObjectEnum( JNIEnv * _jenv, const Char * _className, const Char * _enumName )
         {
             jclass jclass_enum = Helper::AndroidEnvFindClass( _jenv, _className );
 
@@ -343,7 +361,7 @@ namespace Mengine
             return jobject_enum;
         }
         //////////////////////////////////////////////////////////////////////////
-        jboolean AndroidAddJObjectList( MengineJNIEnvThread * _jenv, jobject _list, jobject _value )
+        jboolean AndroidAddJObjectList( JNIEnv * _jenv, jobject _list, jobject _value )
         {
             jclass jclass_ArrayList = Mengine_JNI_GetClassList( _jenv );
 
@@ -356,11 +374,13 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        void AndroidPutJObjectMap( MengineJNIEnvThread * _jenv, jobject _map, jobject _key, jobject _value )
+        void AndroidPutJObjectMap( JNIEnv * _jenv, jobject _map, jobject _key, jobject _value )
         {
             jclass jclass_Map = Mengine_JNI_GetClassMap( _jenv );
 
             jmethodID Map_put = Mengine_JNI_GetMethodID( _jenv, jclass_Map, "put", "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;" );
+
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_Map );
 
             jobject jresult = Mengine_JNI_CallObjectMethod( _jenv, _map, Map_put, _key, _value );
 
@@ -369,11 +389,15 @@ namespace Mengine
             Mengine_JNI_DeleteLocalRef( _jenv, jresult );
         }
         //////////////////////////////////////////////////////////////////////////
-        jobject AndroidGetJObjectMap( MengineJNIEnvThread * _jenv, jobject _map, jobject _key )
+        jobject AndroidGetJObjectMap( JNIEnv * _jenv, jobject _map, jobject _key )
         {
             jclass jclass_Map = Mengine_JNI_GetClassMap( _jenv );
 
             jmethodID Map_get = Mengine_JNI_GetMethodID( _jenv, jclass_Map, "get", "(Ljava/lang/Object;)Ljava/lang/Object;" );
+
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_Map );
+
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_Map );
 
             jobject value = Mengine_JNI_CallObjectMethod( _jenv, _map, Map_get, _key );
 
@@ -382,7 +406,7 @@ namespace Mengine
             return value;
         }
         //////////////////////////////////////////////////////////////////////////
-        jboolean AndroidGetJavaObjectValueBoolean( MengineJNIEnvThread * _jenv, jclass _jclass, jobject _jobject )
+        jboolean AndroidGetJavaObjectValueBoolean( JNIEnv * _jenv, jclass _jclass, jobject _jobject )
         {
             jmethodID jmethod_Value = Mengine_JNI_GetMethodID( _jenv, _jclass, "booleanValue", "()Z" );
 
@@ -395,7 +419,7 @@ namespace Mengine
             return value;
         }
         //////////////////////////////////////////////////////////////////////////
-        jchar AndroidGetJavaObjectValueCharacter( MengineJNIEnvThread * _jenv, jclass _jclass, jobject _jobject )
+        jchar AndroidGetJavaObjectValueCharacter( JNIEnv * _jenv, jclass _jclass, jobject _jobject )
         {
             jmethodID jmethod_Value = Mengine_JNI_GetMethodID( _jenv, _jclass, "charValue", "()C" );
 
@@ -408,7 +432,7 @@ namespace Mengine
             return value;
         }
         //////////////////////////////////////////////////////////////////////////
-        jint AndroidGetJavaObjectValueInteger( MengineJNIEnvThread * _jenv, jclass _jclass, jobject _jobject )
+        jint AndroidGetJavaObjectValueInteger( JNIEnv * _jenv, jclass _jclass, jobject _jobject )
         {
             jmethodID jmethod_Value = Mengine_JNI_GetMethodID( _jenv, _jclass, "intValue", "()I" );
 
@@ -421,7 +445,7 @@ namespace Mengine
             return value;
         }
         //////////////////////////////////////////////////////////////////////////
-        jlong AndroidGetJavaObjectValueLong( MengineJNIEnvThread * _jenv, jclass _jclass, jobject _jobject )
+        jlong AndroidGetJavaObjectValueLong( JNIEnv * _jenv, jclass _jclass, jobject _jobject )
         {
             jmethodID jmethod_Value = Mengine_JNI_GetMethodID( _jenv, _jclass, "longValue", "()J" );
 
@@ -434,7 +458,7 @@ namespace Mengine
             return value;
         }
         //////////////////////////////////////////////////////////////////////////
-        jfloat AndroidGetJavaObjectValueFloat( MengineJNIEnvThread * _jenv, jclass _jclass, jobject _jobject )
+        jfloat AndroidGetJavaObjectValueFloat( JNIEnv * _jenv, jclass _jclass, jobject _jobject )
         {
             jmethodID jmethod_Value = Mengine_JNI_GetMethodID( _jenv, _jclass, "floatValue", "()F" );
 
@@ -447,7 +471,7 @@ namespace Mengine
             return value;
         }
         //////////////////////////////////////////////////////////////////////////
-        jdouble AndroidGetJavaObjectValueDouble( MengineJNIEnvThread * _jenv, jclass _jclass, jobject _jobject )
+        jdouble AndroidGetJavaObjectValueDouble( JNIEnv * _jenv, jclass _jclass, jobject _jobject )
         {
             jmethodID jmethod_Value = Mengine_JNI_GetMethodID( _jenv, _jclass, "doubleValue", "()D" );
 
@@ -460,7 +484,7 @@ namespace Mengine
             return value;
         }
         //////////////////////////////////////////////////////////////////////////
-        ConstString AndroidMakeConstStringFromJString( MengineJNIEnvThread * _jenv, jstring _value )
+        ConstString AndroidMakeConstStringFromJString( JNIEnv * _jenv, jstring _value )
         {
             ConstString value_cstr;
             ANDROID_KERNEL_SERVICE()
@@ -469,7 +493,7 @@ namespace Mengine
             return value_cstr;
         }
         //////////////////////////////////////////////////////////////////////////
-        FilePath AndroidMakeFilePathFromJString( MengineJNIEnvThread * _jenv, jstring _value )
+        FilePath AndroidMakeFilePathFromJString( JNIEnv * _jenv, jstring _value )
         {
             ConstString value_cstr;
             ANDROID_KERNEL_SERVICE()
@@ -478,7 +502,7 @@ namespace Mengine
             return FilePath( value_cstr );
         }
         //////////////////////////////////////////////////////////////////////////
-        String AndroidMakeStringFromJString( MengineJNIEnvThread * _jenv, jstring _value )
+        String AndroidMakeStringFromJString( JNIEnv * _jenv, jstring _value )
         {
             const Char * value_str = Mengine_JNI_GetStringUTFChars( _jenv, _value, nullptr );
             jsize value_size = Mengine_JNI_GetStringLength( _jenv, _value );
@@ -490,7 +514,7 @@ namespace Mengine
             return value_string;
         }
         //////////////////////////////////////////////////////////////////////////
-        size_t AndroidCopyStringFromJString( MengineJNIEnvThread * _jenv, jstring _value, Char * const _str, size_t _capacity )
+        size_t AndroidCopyStringFromJString( JNIEnv * _jenv, jstring _value, Char * const _str, size_t _capacity )
         {
             const Char * value_str = Mengine_JNI_GetStringUTFChars( _jenv, _value, nullptr );
             jsize value_size = Mengine_JNI_GetStringLength( _jenv, _value );
@@ -502,7 +526,7 @@ namespace Mengine
             return value_size;
         }
         //////////////////////////////////////////////////////////////////////////
-        void AndroidForeachJavaJSONObject( MengineJNIEnvThread * _jenv, jclass _jclass, jobject _jjson, const LambdaJavaJSONObjectForeach & _lambda )
+        void AndroidForeachJavaJSONObject( JNIEnv * _jenv, jclass _jclass, jobject _jjson, const LambdaJavaJSONObjectForeach & _lambda )
         {
             jmethodID JSONObject_keys = Mengine_JNI_GetMethodID( _jenv, _jclass, "keys", "()Ljava/util/Iterator;" );
 
@@ -510,6 +534,8 @@ namespace Mengine
 
             jmethodID Iterator_hasNext = Mengine_JNI_GetMethodID( _jenv, jclass_Iterator, "hasNext", "()Z" );
             jmethodID Iterator_next = Mengine_JNI_GetMethodID( _jenv, jclass_Iterator, "next", "()Ljava/lang/Object;" );
+
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_Iterator );
 
             jmethodID JSONObject_opt = Mengine_JNI_GetMethodID( _jenv, _jclass, "opt", "(Ljava/lang/String;)Ljava/lang/Object;" );
 
@@ -544,7 +570,7 @@ namespace Mengine
             Mengine_JNI_DeleteLocalRef( _jenv, jkeys );
         }
         //////////////////////////////////////////////////////////////////////////
-        void AndroidForeachJavaJSONArray( MengineJNIEnvThread * _jenv, jclass _jclass, jobject _jarray, const LambdaJavaJSONArrayForeach & _lambda )
+        void AndroidForeachJavaJSONArray( JNIEnv * _jenv, jclass _jclass, jobject _jarray, const LambdaJavaJSONArrayForeach & _lambda )
         {
             jmethodID JSONArray_length = Mengine_JNI_GetMethodID( _jenv, _jclass, "length", "()I" );
             jmethodID JSONArray_get = Mengine_JNI_GetMethodID( _jenv, _jclass, "get", "(I)Ljava/lang/Object;" );
@@ -565,13 +591,15 @@ namespace Mengine
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        void AndroidForeachJavaSet( MengineJNIEnvThread * _jenv, jclass _jclass, jobject _jset, const LambdaJavaSetForeach & _lambda )
+        void AndroidForeachJavaSet( JNIEnv * _jenv, jclass _jclass, jobject _jset, const LambdaJavaSetForeach & _lambda )
         {
             jclass jclass_Iterator = Mengine_JNI_GetClassIterator( _jenv );
 
             jmethodID jmethodID_Set_iterator = Mengine_JNI_GetMethodID( _jenv, _jclass, "iterator", "()Ljava/util/Iterator;" );
             jmethodID jmethodID_Iterator_hasNext = Mengine_JNI_GetMethodID( _jenv, jclass_Iterator, "hasNext", "()Z" );
             jmethodID jmethodID_Iterator_next = Mengine_JNI_GetMethodID( _jenv, jclass_Iterator, "next", "()Ljava/lang/Object;" );
+
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_Iterator );
 
             jobject jobject_iterator = Mengine_JNI_CallObjectMethod( _jenv, _jset, jmethodID_Set_iterator );
 
@@ -599,7 +627,7 @@ namespace Mengine
             Mengine_JNI_DeleteLocalRef( _jenv, jobject_iterator );
         }
         //////////////////////////////////////////////////////////////////////////
-        void AndroidForeachJavaMap( MengineJNIEnvThread * _jenv, jclass _jclass, jobject _jmap, const LambdaJavaMapForeach & _lambda )
+        void AndroidForeachJavaMap( JNIEnv * _jenv, jclass _jclass, jobject _jmap, const LambdaJavaMapForeach & _lambda )
         {
             jclass jclass_Set = Mengine_JNI_GetClassSet( _jenv );
             jclass jclass_Iterator = Mengine_JNI_GetClassIterator( _jenv );
@@ -611,6 +639,10 @@ namespace Mengine
             jmethodID jmethodID_Iterator_next = Mengine_JNI_GetMethodID( _jenv, jclass_Iterator, "next", "()Ljava/lang/Object;" );
             jmethodID jmethodID_MapEntry_getKey = Mengine_JNI_GetMethodID( _jenv, jclass_MapEntry, "getKey", "()Ljava/lang/Object;" );
             jmethodID jmethodID_MapEntry_getValue = Mengine_JNI_GetMethodID( _jenv, jclass_MapEntry, "getValue", "()Ljava/lang/Object;" );
+
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_Set );
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_Iterator );
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_MapEntry );
 
             jobject jset = Mengine_JNI_CallObjectMethod( _jenv, _jmap, jmethodID_Map_entrySet );
 
@@ -653,7 +685,7 @@ namespace Mengine
             Mengine_JNI_DeleteLocalRef( _jenv, jset );
         }
         //////////////////////////////////////////////////////////////////////////
-        uint32_t AndroidGetJavaListSize( MengineJNIEnvThread * _jenv, jclass _jclass, jobject _jlist )
+        uint32_t AndroidGetJavaListSize( JNIEnv * _jenv, jclass _jclass, jobject _jlist )
         {
             jmethodID List_size = Mengine_JNI_GetMethodID( _jenv, _jclass, "size", "()I");
 
@@ -664,7 +696,7 @@ namespace Mengine
             return (uint32_t)list_size;
         }
         //////////////////////////////////////////////////////////////////////////
-        void AndroidForeachJavaList( MengineJNIEnvThread * _jenv, jclass _jclass, jobject _jlist, const LambdaJavaListForeach & _lambda )
+        void AndroidForeachJavaList( JNIEnv * _jenv, jclass _jclass, jobject _jlist, const LambdaJavaListForeach & _lambda )
         {
             jmethodID List_size = Mengine_JNI_GetMethodID( _jenv, _jclass, "size", "()I");
             jmethodID List_get = Mengine_JNI_GetMethodID( _jenv, _jclass, "get", "(I)Ljava/lang/Object;");
@@ -685,7 +717,7 @@ namespace Mengine
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        void AndroidGetJavaRect( MengineJNIEnvThread * _jenv, jclass _jclass, jobject _jrect, Viewport * const _viewport )
+        void AndroidGetJavaRect( JNIEnv * _jenv, jclass _jclass, jobject _jrect, Viewport * const _viewport )
         {
             jfieldID jfieldID_Rect_left = Mengine_JNI_GetFieldID( _jenv, _jclass, "left", "I" );
             jfieldID jfieldID_Rect_top = Mengine_JNI_GetFieldID( _jenv, _jclass, "top", "I" );
@@ -703,7 +735,7 @@ namespace Mengine
             _viewport->end.y = (float)bottom;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool AndroidGetApplicationFilesDirCanonicalPath( MengineJNIEnvThread * _jenv, Char * const _path )
+        bool AndroidGetApplicationFilesDirCanonicalPath( JNIEnv * _jenv, Char * const _path )
         {
             jobject jobject_MengineApplication = Mengine_JNI_GetObjectApplication( _jenv );
 
@@ -744,7 +776,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        jobject AndroidGetActivitySurface( MengineJNIEnvThread * _jenv )
+        jobject AndroidGetActivitySurface( JNIEnv * _jenv )
         {
             jobject jobject_MengineActivity = Mengine_JNI_GetObjectActivity( _jenv );
 
@@ -763,7 +795,7 @@ namespace Mengine
             return jSurface;
         }
         //////////////////////////////////////////////////////////////////////////
-        void AndroidEnvExceptionCheck( MengineJNIEnvThread * _jenv )
+        void AndroidEnvExceptionCheck( JNIEnv * _jenv )
         {
             if( Mengine_JNI_ExceptionCheck( _jenv ) == JNI_FALSE )
             {

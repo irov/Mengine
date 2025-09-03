@@ -37,7 +37,7 @@ namespace Mengine
         PyObject * androidJSONObjectMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const override;
 
     protected:
-        bool getAndroidMethod( MengineJNIEnvThread * _jenv, const ConstString & _plugin, const ConstString & _method, const pybind::args & _args, const Char * _retType, jvalue * const _jargs, jobject * const _jplugin, jmethodID * const _jmethodId ) const;
+        bool getAndroidMethod( JNIEnv * _jenv, const ConstString & _plugin, const ConstString & _method, const pybind::args & _args, const Char * _retType, jvalue * const _jargs, jobject * const _jplugin, jmethodID * const _jmethodId ) const;
 
     protected:
         pybind::kernel_interface * m_kernel;

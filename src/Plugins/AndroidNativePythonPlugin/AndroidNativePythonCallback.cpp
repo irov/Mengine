@@ -19,7 +19,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AndroidNativePythonCallback::~AndroidNativePythonCallback()
     {
-        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
@@ -40,7 +40,7 @@ namespace Mengine
         return m_kernel;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonCallback::setJavaFunctor( MengineJNIEnvThread * _jenv, jobject _functor )
+    void AndroidNativePythonCallback::setJavaFunctor( JNIEnv * _jenv, jobject _functor )
     {
         if( m_functor != nullptr )
         {
@@ -57,7 +57,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonCallback::call( bool _result, const Params & _params )
     {
-        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 

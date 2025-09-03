@@ -10,9 +10,9 @@ namespace Mengine
 {
     namespace Helper
     {
-        MENGINE_NODISCARD PyObject * androidNativePythonMakePyObject( pybind::kernel_interface * _kernel, MengineJNIEnvThread * _jenv, jobject _obj, const DocumentInterfacePtr & _doc );
-        MENGINE_NODISCARD jobject androidNativePythonListMakeJavaObject( MengineJNIEnvThread * _jenv, const pybind::list & _list );
-        MENGINE_NODISCARD jobject androidNativePythonDictMakeJavaObject( MengineJNIEnvThread * _jenv, const pybind::dict & _dict );
-        MENGINE_NODISCARD jobject androidNativePythonMakeJavaObject( MengineJNIEnvThread * _jenv, const pybind::object & _obj );
+        MENGINE_NODISCARD PyObject * androidNativePythonMakePyObject( pybind::kernel_interface * _kernel, JNIEnv * _jenv, jobject _obj, const DocumentInterfacePtr & _doc );
+        MENGINE_NODISCARD jobject androidNativePythonListMakeJavaObject( JNIEnv * _jenv, const pybind::list & _list );
+        MENGINE_NODISCARD jobject androidNativePythonDictMakeJavaObject( JNIEnv * _jenv, const pybind::dict & _dict );
+        MENGINE_NODISCARD jobject androidNativePythonMakeJavaObject( JNIEnv * _jenv, const pybind::object & _obj );
     }
 }

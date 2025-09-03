@@ -19,7 +19,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidAnalyticsEventProvider::onAnalyticsEvent( const AnalyticsEventInterfacePtr & _event )
     {
-        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         if( jenv == nullptr )
         {
@@ -115,7 +115,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidAnalyticsEventProvider::onAnalyticsScreenView( const ConstString & _screenType, const ConstString & _screenName )
     {
-        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         if( jenv == nullptr )
         {
@@ -133,7 +133,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidAnalyticsEventProvider::onAnalyticsFlush()
     {
-        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         if( jenv == nullptr )
         {

@@ -18,8 +18,8 @@ namespace Mengine
         ~ConstStringHolderJString() override;
 
     public:
-        void setJString( MengineJNIEnvThread * _jenv, jstring _value );
-        void removeJString( MengineJNIEnvThread * _jenv );
+        void setJString( JNIEnv * _jenv, jstring _value );
+        void removeJString( JNIEnv * _jenv );
 
     protected:
         jstring m_value;

@@ -20,10 +20,8 @@
 extern "C"
 {
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidKernelService_1call )(JNIEnv *, jclass cls, jstring _plugin, jstring _method, jobjectArray _args)
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidKernelService_1call )(JNIEnv * env, jclass cls, jstring _plugin, jstring _method, jobjectArray _args)
     {
-        Mengine::MengineJNIEnvThread * env = Mengine::Mengine_JNI_GetEnvThread();
-
         Mengine::ConstString plugin = Mengine::Helper::AndroidMakeConstStringFromJString( env, _plugin );
         Mengine::ConstString method = Mengine::Helper::AndroidMakeConstStringFromJString( env, _method );
 
@@ -41,7 +39,7 @@ extern "C"
         jobjectArray jobject_NewArgs = (jobjectArray)Mengine::Mengine_JNI_NewGlobalRef( env, _args );
 
         Mengine::Helper::dispatchMainThreadEvent( [plugin, method, jobject_NewArgs]() {
-            Mengine::MengineJNIEnvThread * main_jenv = Mengine::Mengine_JNI_GetEnvThread();
+            JNIEnv * main_jenv = Mengine::Mengine_JNI_GetEnv();
 
             ANDROID_KERNEL_SERVICE()
                 ->callPluginMethod( main_jenv, plugin, method, jobject_NewArgs );
@@ -50,10 +48,8 @@ extern "C"
         } );
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidKernelService_1addPlugin )(JNIEnv *, jclass cls, jstring _plugin, jobject _jmodule)
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidKernelService_1addPlugin )(JNIEnv * env, jclass cls, jstring _plugin, jobject _jmodule)
     {
-        Mengine::MengineJNIEnvThread * env = Mengine::Mengine_JNI_GetEnvThread();
-
         Mengine::ConstString plugin = Mengine::Helper::AndroidMakeConstStringFromJString( env, _plugin );
 
         jobject new_jmodule = Mengine::Mengine_JNI_NewGlobalRef( env, _jmodule );
@@ -62,10 +58,8 @@ extern "C"
             ->addPlugin( plugin, new_jmodule );
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidKernelService_1removePlugin )(JNIEnv *, jclass cls, jstring _name)
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidKernelService_1removePlugin )(JNIEnv * env, jclass cls, jstring _name)
     {
-        Mengine::MengineJNIEnvThread * env = Mengine::Mengine_JNI_GetEnvThread();
-
         Mengine::ConstString plugin = Mengine::Helper::AndroidMakeConstStringFromJString( env, _name );
 
         jobject jmodule = ANDROID_KERNEL_SERVICE()
@@ -74,10 +68,8 @@ extern "C"
         Mengine::Mengine_JNI_DeleteGlobalRef( env, jmodule );
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidKernelService_1activateSemaphore )(JNIEnv *, jclass cls, jstring _name)
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidKernelService_1activateSemaphore )(JNIEnv * env, jclass cls, jstring _name)
     {
-        Mengine::MengineJNIEnvThread * env = Mengine::Mengine_JNI_GetEnvThread();
-
         Mengine::ConstString semaphore = Mengine::Helper::AndroidMakeConstStringFromJString( env, _name );
 
         ANDROID_KERNEL_SERVICE()
@@ -116,7 +108,7 @@ namespace Mengine
     {
         m_mutexJStrings = nullptr;
 
-        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
@@ -154,7 +146,7 @@ namespace Mengine
         m_plugins.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidKernelService::stringize( MengineJNIEnvThread * _jenv, jstring _value, ConstString * const _cstr )
+    void AndroidKernelService::stringize( JNIEnv * _jenv, jstring _value, ConstString * const _cstr )
     {
         jsize value_length = Mengine_JNI_GetStringLength( _jenv, _value );
 
@@ -248,7 +240,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidKernelService::callPluginMethod( MengineJNIEnvThread * _jenv, const ConstString & _plugin, const ConstString & _method, jobjectArray _args ) const
+    void AndroidKernelService::callPluginMethod( JNIEnv * _jenv, const ConstString & _plugin, const ConstString & _method, jobjectArray _args ) const
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_callbacksMutex );
 
@@ -363,7 +355,7 @@ namespace Mengine
             , _semaphore.c_str()
         );
 
-        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 

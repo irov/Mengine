@@ -4,6 +4,7 @@ import android.os.Process;
 
 import androidx.annotation.NonNull;
 
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 public class MengineMain implements Runnable {
@@ -70,7 +71,11 @@ public class MengineMain implements Runnable {
         }
 
         if (MengineNative.AndroidMain_main(m_nativeApplication) == false) {
-            MengineLog.logInfo(TAG, "main finish with failed" );
+            if (MengineActivity.INSTANCE == null) {
+                MengineApplication.INSTANCE.invalidInitialize(new MengineServiceInvalidInitializeException("main finish with failed"), Map.of());
+            } else {
+                MengineActivity.INSTANCE.finishWithAlertDialog("main finish with failed");
+            }
 
             return;
         }

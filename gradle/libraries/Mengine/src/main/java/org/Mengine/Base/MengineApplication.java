@@ -1212,7 +1212,7 @@ public abstract class MengineApplication extends Application {
         MengineNative.AndroidKernelService_call(plugin, method, args);
     }
 
-    private void invalidInitialize(@NonNull MengineServiceInvalidInitializeException e, @NonNull Map<String, Object> attributes) {
+    public void invalidInitialize(@NonNull MengineServiceInvalidInitializeException e, @NonNull Map<String, Object> attributes) {
         MengineLog.logException(TAG, e, attributes);
 
         m_invalidInitialize = true;

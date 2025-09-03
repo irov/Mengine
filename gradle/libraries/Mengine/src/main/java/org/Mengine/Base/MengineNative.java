@@ -50,7 +50,6 @@ public class MengineNative {
     public static native void AndroidPlatform_trimMemory(int level);
     public static native void AndroidPlatform_changeLocale(String locale);
 
-    public static native void AndroidEnv_nativeDebugBreak();
     public static native void AndroidEnv_setMengineAndroidClassLoaderJNI(ClassLoader cl);
     public static native void AndroidEnv_removeMengineAndroidClassLoaderJNI();
     public static native boolean AndroidEnv_isMasterRelease();

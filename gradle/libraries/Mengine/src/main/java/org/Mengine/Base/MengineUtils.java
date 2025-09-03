@@ -970,14 +970,6 @@ public class MengineUtils {
         return android.os.Debug.isDebuggerConnected();
     }
 
-    public static void debugBreak() {
-        if (android.os.Debug.isDebuggerConnected() == false) {
-            return;
-        }
-
-        MengineNative.AndroidEnv_nativeDebugBreak();
-    }
-
     public static boolean isAppInForeground(Context context) {
         ActivityManager activityManager = context.getSystemService(ActivityManager.class);
 
@@ -1021,8 +1013,6 @@ public class MengineUtils {
     }
 
     public static void throwRuntimeException(String message, Throwable throwable) {
-        MengineUtils.debugBreak();
-
         throw new RuntimeException(message, throwable);
     }
 

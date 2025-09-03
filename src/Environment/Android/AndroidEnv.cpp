@@ -19,21 +19,6 @@ static jobject g_jobject_MengineClassLoader = nullptr;
 extern "C"
 {
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1nativeDebugBreak )( JNIEnv *, jclass cls )
-    {
-        Mengine::MengineJNIEnvThread * env = Mengine::Mengine_JNI_GetEnvThread();
-
-        jclass jclass_MengineUtils = Mengine::Mengine_JNI_LoadClass( env, "org/Mengine/Base/MengineUtils" );
-
-        jmethodID jmethodIdPrintCurrentStackTrace = Mengine::Mengine_JNI_GetStaticMethodID( env, jclass_MengineUtils, "printCurrentStackTrace", "()V" );
-
-        Mengine::Mengine_JNI_CallStaticVoidMethod( env, jclass_MengineUtils, jmethodIdPrintCurrentStackTrace );
-
-        Mengine::Mengine_JNI_DeleteLocalRef( env, jclass_MengineUtils );
-
-        ::raise( SIGTRAP );
-    }
-    //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1setMengineAndroidClassLoaderJNI )( JNIEnv * env, jclass cls, jobject cl )
     {
         g_jobject_MengineClassLoader = (jobject)env->NewGlobalRef( cl );

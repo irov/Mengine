@@ -368,8 +368,6 @@ public class MengineUI {
 
         MengineLog.logError(TAG, format, args);
 
-        MengineUtils.debugBreak();
-
         MengineUI.showOkAlertDialog(activity, () -> {
             activity.finishAndRemoveTask();
         }, title, format, args);

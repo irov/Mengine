@@ -521,12 +521,6 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
             return false;
         }
 
-        boolean noAds = this.getNoAds();
-
-        if (noAds == true) {
-            return false;
-        }
-
         MengineApplication application = MengineApplication.INSTANCE;
 
         if (adPoint.canOfferAd(application) == false) {
@@ -554,12 +548,6 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
             return false;
         }
 
-        boolean noAds = this.getNoAds();
-
-        if (noAds == true) {
-            return false;
-        }
-
         MengineApplication application = MengineApplication.INSTANCE;
 
         if (adPoint.canYouShowAd(application) == false) {
@@ -584,12 +572,6 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         }
 
         if (m_adProvider == null) {
-            return false;
-        }
-
-        boolean noAds = this.getNoAds();
-
-        if (noAds == true) {
             return false;
         }
 

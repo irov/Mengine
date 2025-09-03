@@ -138,7 +138,7 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
         String installId = application.getInstallId();
 
         String userId = application.getUserId();
-        if (userId != null) {
+        if (userId != null && consent == TrackingConsent.GRANTED) {
             Datadog.setUserInfo(userId, null, null, Map.of("install_id", installId));
         }
 
@@ -201,6 +201,14 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
 
     @Override
     public void onMengineChangeUserId(@NonNull MengineApplication application, String oldUserId, String newUserId) {
+        MengineParamTransparencyConsent consentParam = application.makeTransparencyConsentParam();
+
+        TrackingConsent consent = this.getTrackingConsent(consentParam);
+
+        if (consent != TrackingConsent.GRANTED) {
+            return;
+        }
+
         String installId = application.getInstallId();
 
         Datadog.setUserInfo(newUserId, null, null, Map.of("install_id", installId));
@@ -208,7 +216,7 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
 
     @Override
     public void onMengineRemoveUserData(@NonNull MengineApplication application) {
-        Datadog.setUserInfo(null, null, null, null);
+        Datadog.clearAllData();
     }
 
     @Override

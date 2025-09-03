@@ -89,7 +89,7 @@ dependencies {
         implementation project(':plugins:AdMob')
     }
 
-    implementation api('com.applovin:applovin-sdk:13.3.1')
+    implementation api('com.applovin:applovin-sdk:13.4.0')
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_CONSENT_FLOW == true) {
         implementation 'com.google.android.ump:user-messaging-platform:3.2.0'

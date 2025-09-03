@@ -21,7 +21,7 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         template<size_t N>
-        static void getAndroidInfo( MengineJNIEnvThread * _jenv, const Char * _method, StaticString<N> * const _value )
+        static void getAndroidInfo( JNIEnv * _jenv, const Char * _method, StaticString<N> * const _value )
         {
             jstring jobject_AndroidInfo = (jstring)Helper::AndroidCallObjectApplicationMethod( _jenv, _method, "()Ljava/lang/String;" );
 
@@ -30,14 +30,14 @@ namespace Mengine
             Mengine_JNI_DeleteLocalRef( _jenv, jobject_AndroidInfo );
         }
         //////////////////////////////////////////////////////////////////////////
-        static void getAndroidInfo( MengineJNIEnvThread * _jenv, const Char * _method, Timestamp * const _value )
+        static void getAndroidInfo( JNIEnv * _jenv, const Char * _method, Timestamp * const _value )
         {
             jlong jinfo = Helper::AndroidCallLongApplicationMethod( _jenv, _method, "()J" );
 
             *_value = (Timestamp)jinfo;
         }
         //////////////////////////////////////////////////////////////////////////
-        static void getAndroidInfo( MengineJNIEnvThread * _jenv, const Char * _method, int64_t * const _value )
+        static void getAndroidInfo( JNIEnv * _jenv, const Char * _method, int64_t * const _value )
         {
             jlong jinfo = Helper::AndroidCallLongApplicationMethod( _jenv, _method, "()J" );
 
@@ -61,7 +61,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidEnvironmentService::_initializeService()
     {
-        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 

@@ -13,7 +13,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        void AndroidCallVoidFragmentMethod( MengineJNIEnvThread * _jenv, const Char * _fragment, const Char * _method, const Char * _signature, ... )
+        void AndroidCallVoidFragmentMethod( JNIEnv * _jenv, const Char * _fragment, const Char * _method, const Char * _signature, ... )
         {
             jmethodID jmethod_Fragment = Helper::AndroidEnvGetMethodFragment( _jenv, _fragment, _method, _signature );
 
@@ -31,7 +31,7 @@ namespace Mengine
             Mengine_JNI_DeleteLocalRef( _jenv, jobject_Fragment );
         }
         //////////////////////////////////////////////////////////////////////////
-        jobject AndroidCallObjectFragmentMethod( MengineJNIEnvThread * _jenv, const Char * _fragment, const Char * _method, const Char * _signature, ... )
+        jobject AndroidCallObjectFragmentMethod( JNIEnv * _jenv, const Char * _fragment, const Char * _method, const Char * _signature, ... )
         {
             jmethodID jmethod_Fragment = Helper::AndroidEnvGetMethodFragment( _jenv, _fragment, _method, _signature );
 
@@ -51,7 +51,7 @@ namespace Mengine
             return jresult;
         }
         //////////////////////////////////////////////////////////////////////////
-        jboolean AndroidCallBooleanFragmentMethod( MengineJNIEnvThread * _jenv, const Char * _fragment, const Char * _method, const Char * _signature, ... )
+        jboolean AndroidCallBooleanFragmentMethod( JNIEnv * _jenv, const Char * _fragment, const Char * _method, const Char * _signature, ... )
         {
             jmethodID jmethod_Fragment = Helper::AndroidEnvGetMethodFragment( _jenv, _fragment, _method, _signature );
 
@@ -71,7 +71,7 @@ namespace Mengine
             return jresult;
         }
         //////////////////////////////////////////////////////////////////////////
-        jint AndroidCallIntApplicationMethod( MengineJNIEnvThread * _jenv, const Char * _fragment, const Char * _method, const Char * _signature, ... )
+        jint AndroidCallIntApplicationMethod( JNIEnv * _jenv, const Char * _fragment, const Char * _method, const Char * _signature, ... )
         {
             jmethodID jmethod_Fragment = Helper::AndroidEnvGetMethodFragment( _jenv, _fragment, _method, _signature );
 
@@ -91,7 +91,7 @@ namespace Mengine
             return jresult;
         }
         //////////////////////////////////////////////////////////////////////////
-        jlong AndroidCallLongFragmentMethod( MengineJNIEnvThread * _jenv, const Char * _fragment, const Char * _method, const Char * _signature, ... )
+        jlong AndroidCallLongFragmentMethod( JNIEnv * _jenv, const Char * _fragment, const Char * _method, const Char * _signature, ... )
         {
             jmethodID jmethod_Fragment = Helper::AndroidEnvGetMethodFragment( _jenv, _fragment, _method, _signature );
 

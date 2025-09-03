@@ -20,7 +20,7 @@ namespace Mengine
         bool _onThreadTaskProcess() override;
 
     protected:
-        virtual jobject _onHttp( MengineJNIEnvThread * _jenv, jobject _basses ) = 0;
+        virtual jobject _onHttp( JNIEnv * _jenv, jobject _basses ) = 0;
 
     protected:
         void _onThreadTaskComplete( bool _successful ) override;

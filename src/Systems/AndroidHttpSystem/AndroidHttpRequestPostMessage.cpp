@@ -28,7 +28,7 @@ namespace Mengine
         return m_properties;
     }
     //////////////////////////////////////////////////////////////////////////
-    jobject AndroidHttpRequestPostMessage::_onHttp( MengineJNIEnvThread * _jenv, jobject _jrequest )
+    jobject AndroidHttpRequestPostMessage::_onHttp( JNIEnv * _jenv, jobject _jrequest )
     {
         HttpRequestPostProperties::size_type properties_size = m_properties.size();
 

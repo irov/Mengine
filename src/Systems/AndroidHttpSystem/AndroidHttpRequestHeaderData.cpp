@@ -28,7 +28,7 @@ namespace Mengine
         return m_data;
     }
     //////////////////////////////////////////////////////////////////////////
-    jobject AndroidHttpRequestHeaderData::_onHttp( MengineJNIEnvThread * _jenv, jobject _jrequest )
+    jobject AndroidHttpRequestHeaderData::_onHttp( JNIEnv * _jenv, jobject _jrequest )
     {
         const Data::value_type * data_buffer = m_data.data();
         Data::size_type data_size = m_data.size();

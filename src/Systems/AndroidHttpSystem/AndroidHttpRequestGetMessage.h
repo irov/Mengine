@@ -15,7 +15,7 @@ namespace Mengine
         ~AndroidHttpRequestGetMessage() override;
 
     protected:
-        jobject _onHttp( MengineJNIEnvThread * _jenv, jobject _basses ) override;
+        jobject _onHttp( JNIEnv * _jenv, jobject _basses ) override;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AndroidHttpRequestGetMessage, HttpRequestInterface> AndroidHttpRequestGetMessagePtr;

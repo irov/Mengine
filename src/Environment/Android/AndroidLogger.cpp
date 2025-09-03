@@ -87,7 +87,7 @@ namespace Mengine
 
         StdString::strzcat_safe( buffer, data, data_size, MENGINE_LOGGER_MAX_MESSAGE );
 
-        MengineJNIEnvThread * jenv = Mengine_JNI_GetEnvThread();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         if( jenv == nullptr )
         {
@@ -141,6 +141,8 @@ namespace Mengine
 
         if( jclass_UtilLog_method == nullptr )
         {
+            Mengine_JNI_DeleteLocalRef( jenv, jclass_UtilLog );
+
             return;
         }
 

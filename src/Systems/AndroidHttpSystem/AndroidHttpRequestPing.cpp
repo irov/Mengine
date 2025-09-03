@@ -17,7 +17,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    jobject AndroidHttpRequestPing::_onHttp( MengineJNIEnvThread * _jenv, jobject _jrequest )
+    jobject AndroidHttpRequestPing::_onHttp( JNIEnv * _jenv, jobject _jrequest )
     {
         jobject jresponse = Helper::AndroidCallObjectStaticClassMethod( _jenv, "org/Mengine/Base/MengineNetwork", "httpRequestPing", "(Lorg/Mengine/Base/MengineParamHttpRequest;)Lorg/Mengine/Base/MengineParamHttpResponse;"
             , _jrequest

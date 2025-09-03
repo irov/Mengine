@@ -19,7 +19,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonAndroidPluginCallback::invoke( MengineJNIEnvThread * _jenv, jobjectArray _args )
+    void PythonAndroidPluginCallback::invoke( JNIEnv * _jenv, jobjectArray _args )
     {
         uint32_t cb_args_size = m_kernel->tuple_size( m_args );
 

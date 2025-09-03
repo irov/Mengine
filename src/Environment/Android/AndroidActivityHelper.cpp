@@ -13,7 +13,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        void AndroidCallVoidActivityMethod( MengineJNIEnvThread * _jenv, const Char * _name, const Char * _signature, ... )
+        void AndroidCallVoidActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... )
         {
             jmethodID jmethodId = Mengine_JNI_GetMethodActivity( _jenv, _name, _signature );
 
@@ -42,7 +42,7 @@ namespace Mengine
             Mengine_JNI_DeleteLocalRef( _jenv, jobject_MengineActivity );
         }
         //////////////////////////////////////////////////////////////////////////
-        jobject AndroidCallObjectActivityMethod( MengineJNIEnvThread * _jenv, const Char * _name, const Char * _signature, ... )
+        jobject AndroidCallObjectActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... )
         {
             jmethodID jmethodId = Mengine_JNI_GetMethodActivity( _jenv, _name, _signature );
 
@@ -73,7 +73,7 @@ namespace Mengine
             return jresult;
         }
         //////////////////////////////////////////////////////////////////////////
-        jboolean AndroidCallBooleanActivityMethod( MengineJNIEnvThread * _jenv, const Char * _name, const Char * _signature, ... )
+        jboolean AndroidCallBooleanActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... )
         {
             jmethodID jmethodId = Mengine_JNI_GetMethodActivity( _jenv, _name, _signature );
 
@@ -104,7 +104,7 @@ namespace Mengine
             return jresult;
         }
         //////////////////////////////////////////////////////////////////////////
-        jint AndroidCallIntActivityMethod( MengineJNIEnvThread * _jenv, const Char * _name, const Char * _signature, ... )
+        jint AndroidCallIntActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... )
         {
             jmethodID jmethodId = Mengine_JNI_GetMethodActivity( _jenv, _name, _signature );
 
@@ -135,7 +135,7 @@ namespace Mengine
             return jresult;
         }
         //////////////////////////////////////////////////////////////////////////
-        jlong AndroidCallLongActivityMethod( MengineJNIEnvThread * _jenv, const Char * _name, const Char * _signature, ... )
+        jlong AndroidCallLongActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... )
         {
             jmethodID jmethodId = Mengine_JNI_GetMethodActivity( _jenv, _name, _signature );
 
@@ -166,7 +166,7 @@ namespace Mengine
             return jresult;
         }
         //////////////////////////////////////////////////////////////////////////
-        void AndroidCallVoidActivityStaticMethod( MengineJNIEnvThread * _jenv, const Char * _name, const Char * _signature, ... )
+        void AndroidCallVoidActivityStaticMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... )
         {
             jmethodID jmethodId = Mengine_JNI_GetMethodActivity( _jenv, _name, _signature );
 
@@ -191,9 +191,11 @@ namespace Mengine
             MENGINE_VA_LIST_END( args );
 
             Helper::AndroidEnvExceptionCheck( _jenv );
+
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_MengineActivity );
         }
         //////////////////////////////////////////////////////////////////////////
-        jobject AndroidCallObjectActivityStaticMethod( MengineJNIEnvThread * _jenv, const Char * _name, const Char * _signature, ... )
+        jobject AndroidCallObjectActivityStaticMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... )
         {
             jmethodID jmethodId = Mengine_JNI_GetMethodActivity( _jenv, _name, _signature );
 
@@ -219,10 +221,12 @@ namespace Mengine
 
             Helper::AndroidEnvExceptionCheck( _jenv );
 
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_MengineActivity );
+
             return jresult;
         }
         //////////////////////////////////////////////////////////////////////////
-        jboolean AndroidCallBooleanActivityStaticMethod( MengineJNIEnvThread * _jenv, const Char * _name, const Char * _signature, ... )
+        jboolean AndroidCallBooleanActivityStaticMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... )
         {
             jmethodID jmethodId = Mengine_JNI_GetMethodActivity( _jenv, _name, _signature );
 
@@ -248,10 +252,12 @@ namespace Mengine
 
             Helper::AndroidEnvExceptionCheck( _jenv );
 
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_MengineActivity );
+
             return jresult;
         }
         //////////////////////////////////////////////////////////////////////////
-        jint AndroidCallIntActivityStaticMethod( MengineJNIEnvThread * _jenv, const Char * _name, const Char * _signature, ... )
+        jint AndroidCallIntActivityStaticMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... )
         {
             jmethodID jmethodId = Mengine_JNI_GetMethodActivity( _jenv, _name, _signature );
 
@@ -277,10 +283,12 @@ namespace Mengine
 
             Helper::AndroidEnvExceptionCheck( _jenv );
 
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_MengineActivity );
+
             return jresult;
         }
         //////////////////////////////////////////////////////////////////////////
-        jlong AndroidCallLongActivityStaticMethod( MengineJNIEnvThread * _jenv, const Char * _name, const Char * _signature, ... )
+        jlong AndroidCallLongActivityStaticMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... )
         {
             jmethodID jmethodId = Mengine_JNI_GetMethodActivity( _jenv, _name, _signature );
 
@@ -305,6 +313,8 @@ namespace Mengine
             MENGINE_VA_LIST_END( args );
 
             Helper::AndroidEnvExceptionCheck( _jenv );
+
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_MengineActivity );
 
             return jresult;
         }

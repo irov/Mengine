@@ -13,7 +13,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        void AndroidCallVoidApplicationMethod( MengineJNIEnvThread * _jenv, const Char * _name, const Char * _signature, ... )
+        void AndroidCallVoidApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... )
         {
             jmethodID jmethodId = Mengine_JNI_GetMethodApplication( _jenv, _name, _signature );
 
@@ -42,7 +42,7 @@ namespace Mengine
             Mengine_JNI_DeleteLocalRef( _jenv, jobject_MengineApplication );
         }
         //////////////////////////////////////////////////////////////////////////
-        jobject AndroidCallObjectApplicationMethod( MengineJNIEnvThread * _jenv, const Char * _name, const Char * _signature, ... )
+        jobject AndroidCallObjectApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... )
         {
             jmethodID jmethodId = Mengine_JNI_GetMethodApplication( _jenv, _name, _signature );
 
@@ -73,7 +73,7 @@ namespace Mengine
             return jresult;
         }
         //////////////////////////////////////////////////////////////////////////
-        jboolean AndroidCallBooleanApplicationMethod( MengineJNIEnvThread * _jenv, const Char * _name, const Char * _signature, ... )
+        jboolean AndroidCallBooleanApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... )
         {
             jmethodID jmethodId = Mengine_JNI_GetMethodApplication( _jenv, _name, _signature );
 
@@ -104,7 +104,7 @@ namespace Mengine
             return jresult;
         }
         //////////////////////////////////////////////////////////////////////////
-        jint AndroidCallIntApplicationMethod( MengineJNIEnvThread * _jenv, const Char * _name, const Char * _signature, ... )
+        jint AndroidCallIntApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... )
         {
             jmethodID jmethodId = Mengine_JNI_GetMethodApplication( _jenv, _name, _signature );
 
@@ -135,7 +135,7 @@ namespace Mengine
             return jresult;
         }
         //////////////////////////////////////////////////////////////////////////
-        jlong AndroidCallLongApplicationMethod( MengineJNIEnvThread * _jenv, const Char * _name, const Char * _signature, ... )
+        jlong AndroidCallLongApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... )
         {
             jmethodID jmethodId = Mengine_JNI_GetMethodApplication( _jenv, _name, _signature );
 

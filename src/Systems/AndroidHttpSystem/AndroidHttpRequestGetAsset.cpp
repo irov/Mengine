@@ -78,7 +78,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    jobject AndroidHttpRequestGetAsset::_onHttp( MengineJNIEnvThread * _jenv, jobject _jrequest )
+    jobject AndroidHttpRequestGetAsset::_onHttp( JNIEnv * _jenv, jobject _jrequest )
     {
         jobject jobject_login = Helper::AndroidMakeJObjectString( _jenv, m_login );
         jobject jobject_password = Helper::AndroidMakeJObjectString( _jenv, m_password );

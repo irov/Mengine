@@ -71,10 +71,14 @@ public class MengineMain implements Runnable {
         }
 
         if (MengineNative.AndroidMain_main(m_nativeApplication) == false) {
-            if (MengineActivity.INSTANCE == null) {
-                MengineApplication.INSTANCE.invalidInitialize(new MengineServiceInvalidInitializeException("main finish with failed"), Map.of());
+            if (m_thread.isInterrupted() == false) {
+                if (MengineActivity.INSTANCE == null) {
+                    MengineApplication.INSTANCE.invalidInitialize(new MengineServiceInvalidInitializeException("main finish with failed"), Map.of());
+                } else {
+                    MengineActivity.INSTANCE.finishWithAlertDialog("main finish with failed");
+                }
             } else {
-                MengineActivity.INSTANCE.finishWithAlertDialog("main finish with failed");
+                MengineLog.logInfo(TAG, "main finish with failed");
             }
 
             return;

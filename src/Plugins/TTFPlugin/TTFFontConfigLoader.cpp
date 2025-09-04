@@ -65,10 +65,15 @@ namespace Mengine
         const TTFFontGlyphPtr & glyph = FONT_SERVICE()
             ->getGlyph( glyphName );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( glyph, "invalid font '%s' don't load glyph '%s'"
-            , name.c_str()
-            , glyphName.c_str()
-        );
+        if( glyph == nullptr )
+        {
+            LOGGER_ERROR( "invalid font '%s' don't found glyph '%s'"
+                , name.c_str()
+                , glyphName.c_str()
+            );
+
+            return false;
+        }
 
         font->setTTFFontGlyph( glyph );
 

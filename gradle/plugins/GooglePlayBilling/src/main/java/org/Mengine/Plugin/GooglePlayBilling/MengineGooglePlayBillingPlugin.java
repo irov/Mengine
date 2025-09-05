@@ -230,8 +230,6 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
 
     @Override
     public void onResume(@NonNull MengineActivity activity) {
-        this.logInfo("onResume");
-
         if (m_billingClient == null) {
             return;
         }

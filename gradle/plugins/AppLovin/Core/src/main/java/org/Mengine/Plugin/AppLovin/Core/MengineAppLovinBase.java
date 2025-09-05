@@ -32,9 +32,9 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class MengineAppLovinBase implements MengineAppLovinAdInterface {
+    protected final MengineAdService m_adService;
     protected final MengineAppLovinPluginInterface m_plugin;
     protected final MaxAdFormat m_adFormat;
-    protected final MengineAdResponseInterface m_adResponse;
 
     protected String m_adUnitId;
 
@@ -43,13 +43,10 @@ public class MengineAppLovinBase implements MengineAppLovinAdInterface {
     protected int m_requestAttempt;
     protected long m_requestTimestamp;
 
-    public MengineAppLovinBase(@NonNull MengineAppLovinPluginInterface plugin, MaxAdFormat adFormat) {
+    public MengineAppLovinBase(@NonNull MengineAdService adService, @NonNull MengineAppLovinPluginInterface plugin, MaxAdFormat adFormat) {
+        m_adService = adService;
         m_plugin = plugin;
         m_adFormat = adFormat;
-
-        MengineAdService adService = plugin.getService(MengineAdService.class);
-
-        m_adResponse = adService.getAdResponse();
 
         m_enumeratorRequest = 0;
         m_requestId = 0;
@@ -517,7 +514,9 @@ public class MengineAppLovinBase implements MengineAppLovinAdInterface {
 
         MengineFragmentAdRevenue.INSTANCE.adRevenue(revenue);
 
-        m_adResponse.onAdRevenuePaid(mediation, adFormat, placement, revenueValue);
+        MengineAdResponseInterface adResponse = m_adService.getAdResponse();
+
+        adResponse.onAdRevenuePaid(mediation, adFormat, placement, revenueValue);
     }
 
     protected void invalidInitialize(String format, Object ... args) throws MengineServiceInvalidInitializeException {

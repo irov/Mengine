@@ -42,6 +42,9 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
     protected long m_countShowRewarded = 0;
     protected long m_countShowAppOpen = 0;
 
+    protected boolean m_adInterstitialShowing = false;
+    protected boolean m_adRewardedShowing = false;
+
     protected boolean m_optionNoAds = false;
     protected boolean m_noAds = false;
 
@@ -334,6 +337,22 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         }
 
         return false;
+    }
+
+    public void setInterstitialAdShowing(boolean showing) {
+        m_adInterstitialShowing = showing;
+    }
+
+    public boolean isInterstitialAdShowing() {
+        return m_adInterstitialShowing;
+    }
+
+    public void setRewardedAdShowing(boolean showing) {
+        m_adRewardedShowing = showing;
+    }
+
+    public boolean isRewardedAdShowing() {
+        return m_adRewardedShowing;
     }
 
     @Override

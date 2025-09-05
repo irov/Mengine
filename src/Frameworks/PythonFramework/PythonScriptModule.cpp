@@ -43,6 +43,16 @@ namespace Mengine
 
         pybind::object module_function = m_module.get_attr( _method.c_str() );
 
+        if( module_function.is_invalid() == true )
+        {
+            LOGGER_ERROR( "module '%s' invalid get initializer '%s'"
+                , m_module.repr().c_str()
+                , _method.c_str()
+            );
+
+            return false;
+        }
+
         pybind::object py_result = module_function.call();
 
 #if defined(MENGINE_DEBUG)
@@ -87,6 +97,15 @@ namespace Mengine
 #endif
 
         pybind::object module_function = m_module.get_attr( _method.c_str() );
+
+        if( module_function.is_invalid() == true )
+        {
+            LOGGER_ERROR( "invalid get finalizer '%s'"
+                , _method.c_str()
+            );
+
+            return false;
+        }
 
         module_function.call();
 

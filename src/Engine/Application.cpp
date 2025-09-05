@@ -2270,7 +2270,7 @@ namespace Mengine
 
         m_locale = _locale;
 
-        LOGGER_INFO( "system", "set locale '%s' old '%s'"
+        LOGGER_INFO( "system", "begin change locale '%s' old '%s'"
             , m_locale.c_str()
             , prevLocale.c_str()
         );
@@ -2278,6 +2278,11 @@ namespace Mengine
         NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_LOCALE_PREPARE, prevLocale, _locale );
         NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_LOCALE, prevLocale, _locale );
         NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_LOCALE_POST, prevLocale, _locale );
+
+        LOGGER_INFO( "system", "end change locale '%s' old '%s'"
+            , m_locale.c_str()
+            , prevLocale.c_str()
+        );
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & Application::getLocale() const

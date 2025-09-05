@@ -93,7 +93,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PackageService::_initializeService()
     {
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_LOCALE, &PackageService::notifyChangeLocale, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_LOCALE, &PackageService::notifyChangeLocale_, MENGINE_DOCUMENT_FACTORABLE );
 
         m_factoryPackage = Helper::makeFactoryPool<Package, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -560,6 +560,10 @@ namespace Mengine
 
             if( package->enable() == false )
             {
+                LOGGER_ERROR( "invalid enable package '%s'"
+                    , package->getPackageDesc().name.c_str()
+                );
+
                 return false;
             }
         }
@@ -606,6 +610,10 @@ namespace Mengine
         {
             if( package->enable() == false )
             {
+                LOGGER_ERROR( "invalid enable package '%s'"
+                    , package->getPackageDesc().name.c_str()
+                );
+
                 return false;
             }
         }
@@ -638,6 +646,10 @@ namespace Mengine
         {
             if( package->disable() == false )
             {
+                LOGGER_ERROR( "invalid disable package '%s'"
+                    , package->getPackageDesc().name.c_str()
+                );
+
                 return false;
             }
         }
@@ -645,10 +657,15 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PackageService::notifyChangeLocale( const ConstString & _prevLocale, const ConstString & _currentlocale )
+    void PackageService::notifyChangeLocale_( const ConstString & _prevLocale, const ConstString & _currentlocale )
     {
         MENGINE_UNUSED( _prevLocale );
         MENGINE_UNUSED( _currentlocale );
+
+        LOGGER_INFO( "package", "begin change locale '%s' -> '%s'"
+            , _prevLocale.c_str()
+            , _currentlocale.c_str()
+        );
 
         const Tags & platformTags = PLATFORM_SERVICE()
             ->getPlatformTags();
@@ -672,6 +689,11 @@ namespace Mengine
 
             return;
         }
+
+        LOGGER_INFO( "package", "end change locale '%s' -> '%s'"
+            , _prevLocale.c_str()
+            , _currentlocale.c_str()
+        );
     }
     //////////////////////////////////////////////////////////////////////////
 }

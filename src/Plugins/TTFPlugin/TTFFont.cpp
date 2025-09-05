@@ -109,6 +109,15 @@ namespace Mengine
             }
         }
 
+        if( m_glyph == nullptr )
+        {
+            LOGGER_ERROR( "ttf font '%s' not setup glyph"
+                , this->getName().c_str()
+            );
+
+            return false;
+        }
+
         if( m_glyph->compile() == false )
         {
             return false;

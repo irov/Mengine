@@ -46,7 +46,7 @@ namespace Mengine
         bool disableLocalePackage( const ConstString & _locale, const Tags & _platformTag );
 
     protected:
-        void notifyChangeLocale( const ConstString & _prevLocale, const ConstString & _currentlocale );
+        void notifyChangeLocale_( const ConstString & _prevLocale, const ConstString & _currentlocale );
 
     protected:
         typedef Vector<PackagePtr> VectorPackages;

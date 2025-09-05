@@ -153,14 +153,11 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
 
     @Override
     public void onPause(@NonNull MengineActivity activity) {
-        this.logInfo("onPause");
-
+        //Empty
     }
 
     @Override
     public void onResume(@NonNull MengineActivity activity) {
-        this.logInfo("onResume");
-
         if (m_differedHideOnResume == true) {
             this.logInfo("deferred hide splash screen on resume");
 

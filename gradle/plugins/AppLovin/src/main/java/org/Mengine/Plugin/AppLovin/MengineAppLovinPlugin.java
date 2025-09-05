@@ -85,8 +85,8 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
     }
 
     @SuppressWarnings("unchecked")
-    protected <T extends MengineAppLovinAdInterface> T createAd(@NonNull List<String> adUnitIds, @NonNull String className) throws MengineServiceInvalidInitializeException {
-        T ad = (T)this.newInstance(className, true, this);
+    protected <T extends MengineAppLovinAdInterface> T createAd(@NonNull MengineAdService adService, @NonNull List<String> adUnitIds, @NonNull String className) throws MengineServiceInvalidInitializeException {
+        T ad = (T)this.newInstance(className, true, adService, this);
 
         if (ad == null) {
             this.invalidInitialize("not found AppLovin extension ad: %s"
@@ -126,37 +126,37 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
         List<String> adUnitIds = new ArrayList<>();
 
         if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_BANNERAD == true && noAds == false) {
-            m_bannerAd = this.createAd(adUnitIds, "org.Mengine.Plugin.AppLovin.BannerAd.MengineAppLovinBannerAd");
+            m_bannerAd = this.createAd(adService, adUnitIds, "org.Mengine.Plugin.AppLovin.BannerAd.MengineAppLovinBannerAd");
 
             m_ads.add(m_bannerAd);
         }
 
         if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_INTERSTITIALAD == true && noAds == false) {
-            m_interstitialAd = this.createAd(adUnitIds, "org.Mengine.Plugin.AppLovin.InterstitialAd.MengineAppLovinInterstitialAd");
+            m_interstitialAd = this.createAd(adService, adUnitIds, "org.Mengine.Plugin.AppLovin.InterstitialAd.MengineAppLovinInterstitialAd");
 
             m_ads.add(m_interstitialAd);
         }
 
         if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_REWARDEDAD == true) {
-            m_rewardedAd = this.createAd(adUnitIds, "org.Mengine.Plugin.AppLovin.RewardedAd.MengineAppLovinRewardedAd");
+            m_rewardedAd = this.createAd(adService, adUnitIds, "org.Mengine.Plugin.AppLovin.RewardedAd.MengineAppLovinRewardedAd");
 
             m_ads.add(m_rewardedAd);
         }
 
         if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_APPOPENAD == true && noAds == false) {
-            m_appOpenAd = this.createAd(adUnitIds, "org.Mengine.Plugin.AppLovin.AppOpenAd.MengineAppLovinAppOpenAd");
+            m_appOpenAd = this.createAd(adService, adUnitIds, "org.Mengine.Plugin.AppLovin.AppOpenAd.MengineAppLovinAppOpenAd");
 
             m_ads.add(m_appOpenAd);
         }
 
         if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_MRECAD == true && noAds == false) {
-            m_MRECAd = this.createAd(adUnitIds, "org.Mengine.Plugin.AppLovin.MRECAd.MengineAppLovinMRECAd");
+            m_MRECAd = this.createAd(adService, adUnitIds, "org.Mengine.Plugin.AppLovin.MRECAd.MengineAppLovinMRECAd");
 
             m_ads.add(m_MRECAd);
         }
 
         if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_NATIVEAD == true && noAds == false) {
-            m_nativeAd = this.createAd(adUnitIds, "org.Mengine.Plugin.AppLovin.NativeAd.MengineAppLovinNativeAd");
+            m_nativeAd = this.createAd(adService, adUnitIds, "org.Mengine.Plugin.AppLovin.NativeAd.MengineAppLovinNativeAd");
 
             m_ads.add(m_nativeAd);
         }

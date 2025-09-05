@@ -18,6 +18,8 @@ import com.applovin.mediation.ads.MaxRewardedAd;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineAdFormat;
 import org.Mengine.Base.MengineAdMediation;
+import org.Mengine.Base.MengineAdResponseInterface;
+import org.Mengine.Base.MengineAdService;
 import org.Mengine.Base.MengineAnalyticsEventBuilderInterface;
 import org.Mengine.Base.MengineNetwork;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
@@ -34,8 +36,8 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Me
 
     private MaxRewardedAd m_rewardedAd;
 
-    public MengineAppLovinRewardedAd(@NonNull MengineAppLovinPluginInterface plugin) throws MengineServiceInvalidInitializeException {
-        super(plugin, MaxAdFormat.REWARDED);
+    public MengineAppLovinRewardedAd(@NonNull MengineAdService adService, @NonNull MengineAppLovinPluginInterface plugin) throws MengineServiceInvalidInitializeException {
+        super(adService, plugin, MaxAdFormat.REWARDED);
 
         String MengineAppLovinPlugin_Rewarded_AdUnitId = plugin.getResourceString(METADATA_REWARDED_ADUNITID);
 
@@ -232,7 +234,9 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Me
             .addParameterLong("reward_amount", amount)
             .log();
 
-        m_adResponse.onAdUserRewarded(MengineAdMediation.ADMEDIATION_APPLOVINMAX, MengineAdFormat.ADFORMAT_REWARDED, placement, label, amount);
+        MengineAdResponseInterface adResponse = m_adService.getAdResponse();
+
+        adResponse.onAdUserRewarded(MengineAdMediation.ADMEDIATION_APPLOVINMAX, MengineAdFormat.ADFORMAT_REWARDED, placement, label, amount);
     }
 
     @Override
@@ -260,6 +264,8 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Me
             .log();
 
         this.setRewardedState("displayed." + placement + "." + ad.getNetworkName());
+
+        m_adService.setRewardedAdShowing(true);
     }
 
     @Override
@@ -275,8 +281,12 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Me
 
         this.setRewardedState("hidden." + placement + "." + ad.getNetworkName());
 
+        m_adService.setRewardedAdShowing(false);
+
         MengineUtils.performOnMainThread(() -> {
-            m_adResponse.onAdShowSuccess(MengineAdMediation.ADMEDIATION_APPLOVINMAX, MengineAdFormat.ADFORMAT_REWARDED, placement);
+            MengineAdResponseInterface adResponse = m_adService.getAdResponse();
+
+            adResponse.onAdShowSuccess(MengineAdMediation.ADMEDIATION_APPLOVINMAX, MengineAdFormat.ADFORMAT_REWARDED, placement);
 
             this.loadAd();
         });
@@ -329,8 +339,12 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Me
 
         this.setRewardedState("display_failed." + placement + "." + ad.getNetworkName() + "." + errorCode);
 
+        m_adService.setRewardedAdShowing(false);
+
         MengineUtils.performOnMainThread(() -> {
-            m_adResponse.onAdShowFailed(MengineAdMediation.ADMEDIATION_APPLOVINMAX, MengineAdFormat.ADFORMAT_REWARDED, placement, errorCode);
+            MengineAdResponseInterface adResponse = m_adService.getAdResponse();
+
+            adResponse.onAdShowFailed(MengineAdMediation.ADMEDIATION_APPLOVINMAX, MengineAdFormat.ADFORMAT_REWARDED, placement, errorCode);
 
             this.loadAd();
         });

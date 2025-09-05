@@ -104,7 +104,7 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
             return;
         }
 
-        MengineLog.logInfo(TAG, "handlePause");
+        MengineLog.logDebug(TAG, "handlePause");
 
         m_paused = true;
 

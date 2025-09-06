@@ -219,8 +219,6 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
             .log();
 
         this.setInterstitialState("displayed." + placement + "." + ad.getNetworkName());
-
-        m_adService.setInterstitialAdShowing(true);
     }
 
     @Override

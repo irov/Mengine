@@ -508,6 +508,8 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         m_lastShowInterstitial = MengineUtils.getTimestamp();
         m_countShowInterstitial += 1;
 
+        this.setInterstitialAdShowing(true);
+
         adPoint.showAd();
 
         return true;
@@ -600,6 +602,8 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
 
         m_lastShowRewarded = MengineUtils.getTimestamp();
         m_countShowRewarded += 1;
+
+        this.setRewardedAdShowing(true);
 
         adPoint.showAd();
 

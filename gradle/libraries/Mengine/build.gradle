@@ -4,7 +4,6 @@ apply from: rootProject.projectDir.getAbsolutePath() + '/gms.gradle'
 def ANDROID_APP_BUILD_NUMBER = Utils.getIntegerProperty("ANDROID_APP_BUILD_NUMBER", 0)
 def ANDROID_APP_BUILD_VERSION = Utils.getStringProperty("ANDROID_APP_BUILD_VERSION", "0.0.0")
 def ANDROID_APP_BUILD_PUBLISH = Utils.getBooleanProperty("ANDROID_APP_BUILD_PUBLISH", false)
-def ANDROID_APP_LOGGER_LEVEL_FORCE_VERBOSE = Utils.getBooleanProperty("ANDROID_APP_LOGGER_LEVEL_FORCE_VERBOSE", false)
 def MENGINE_APP_SECURE_VALUE = Utils.getStringProperty("MENGINE_APP_SECURE_VALUE", "0123456789A")
 def ANDROID_APP_MAIN_PROJECT = Utils.getStringProperty("ANDROID_APP_MAIN_PROJECT", "app")
 def MENGINE_APP_DEPLOY_PATH = Utils.getStringProperty("MENGINE_APP_DEPLOY_PATH", rootProject.projectDir.getAbsolutePath() + "/$ANDROID_APP_MAIN_PROJECT")
@@ -57,7 +56,6 @@ android {
         cmake_arguments.add("-DMENGINE_BUILD_VERSION:STRING=${ANDROID_APP_BUILD_VERSION}")
         cmake_arguments.add("-DMENGINE_DEPENDENCIES_PROJECT:STRING=Depends_Android")
         cmake_arguments.add("-DMENGINE_BUILD_MENGINE_BUILD_PUBLISH:BOOLEAN=" + (ANDROID_APP_BUILD_PUBLISH ? "ON" : "OFF"))
-        cmake_arguments.add("-DMENGINE_BUILD_MENGINE_LOGGER_LEVEL_FORCE_VERBOSE:BOOLEAN=" + (ANDROID_APP_LOGGER_LEVEL_FORCE_VERBOSE ? "ON" : "OFF"))
         cmake_arguments.add("-DMENGINE_SECURE_VALUE:STRING=${MENGINE_APP_SECURE_VALUE}")
         cmake_arguments.add("-DMENGINE_DEPLOY_PATH:STRING=${MENGINE_APP_DEPLOY_PATH}")
 

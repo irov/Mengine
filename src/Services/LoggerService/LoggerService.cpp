@@ -31,14 +31,6 @@
 #include "Config/StdString.h"
 #include "Config/StdAlgorithm.h"
 
-#ifndef MENGINE_LOGGER_LEVEL_FORCE_VERBOSE
-#define MENGINE_LOGGER_LEVEL_FORCE_VERBOSE 0
-#endif
-
-#if MENGINE_LOGGER_LEVEL_FORCE_VERBOSE == 1
-#   define MENGINE_LOGGER_LEVEL_FORCE_VERBOSE_ENABLE
-#endif
-
 #ifndef MENGINE_LOGGER_MESSAGE_BUFFER_MAX
 #define MENGINE_LOGGER_MESSAGE_BUFFER_MAX 64
 #endif
@@ -125,10 +117,6 @@ namespace Mengine
         {
             logLevel = LM_VERBOSE;
         }
-
-#if defined(MENGINE_LOGGER_LEVEL_FORCE_VERBOSE_ENABLE)
-        logLevel = LM_VERBOSE;
-#endif
 
         this->setVerboseLevel( logLevel );
 

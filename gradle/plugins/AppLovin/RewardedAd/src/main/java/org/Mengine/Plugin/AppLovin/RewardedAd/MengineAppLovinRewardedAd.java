@@ -264,8 +264,6 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Me
             .log();
 
         this.setRewardedState("displayed." + placement + "." + ad.getNetworkName());
-
-        m_adService.setRewardedAdShowing(true);
     }
 
     @Override

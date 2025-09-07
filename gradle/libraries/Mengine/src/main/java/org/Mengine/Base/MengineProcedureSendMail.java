@@ -227,37 +227,48 @@ public class MengineProcedureSendMail implements MengineProcedureInterface {
                 );
             }
 
-            File fileLoggerFile = new File(context.getFilesDir(), "mengine.log");
+            MengineFileLoggerService fileLoggerService = application.getService(MengineFileLoggerService.class);
 
-            if (fileLoggerFile.exists() == true) {
-                File fileLoggerZipFile = MengineUtils.createTempFile(context, "mng_file_logger_", ".zip");
+            if (fileLoggerService != null) {
+                File logFileAndroid = fileLoggerService.getLogFile();
 
-                if (fileLoggerZipFile != null && MengineUtils.zipFiles(fileLoggerFile, fileLoggerZipFile) == true) {
-                    Uri fileLoggerZipFileUri = MengineUtils.getUriForFile(context, fileLoggerZipFile);
+                if (logFileAndroid != null && logFileAndroid.exists()) {
+                    File fileLoggerZipFile = MengineUtils.createTempFile(context, "mng_android_log_", ".zip");
 
-                    if (fileLoggerZipFileUri == null) {
-                        return false;
+                    if (fileLoggerZipFile != null && MengineUtils.zipFiles(logFileAndroid, fileLoggerZipFile) == true) {
+                        Uri fileLoggerZipFileUri = MengineUtils.getUriForFile(context, fileLoggerZipFile);
+
+                        if (fileLoggerZipFileUri == null) {
+                            return false;
+                        }
+
+                        MengineLog.logInfo(TAG, "linkingOpenMail attach android log file '%s' for mail: %s subject: %s",
+                            fileLoggerZipFileUri,
+                            m_email,
+                            m_subject
+                        );
+
+                        fileUris.add(fileLoggerZipFileUri);
+                    } else {
+                        body_builder.append("\n\n[ERROR] invalid zip file logger android log file");
+
+                        MengineLog.logMessage(TAG, "linkingOpenMail invalid zip file logger android log file for mail: %s subject: %s",
+                            m_email,
+                            m_subject
+                        );
                     }
-
-                    MengineLog.logInfo(TAG, "linkingOpenMail attach file '%s' for mail: %s subject: %s",
-                        fileLoggerZipFileUri,
-                        m_email,
-                        m_subject
-                    );
-
-                    fileUris.add(fileLoggerZipFileUri);
                 } else {
-                    body_builder.append("\n\n[ERROR] invalid zip file logger log file");
+                    body_builder.append("\n\nNOT_FOUND_FILE_LOGGER_LOG");
 
-                    MengineLog.logMessage(TAG, "linkingOpenMail invalid zip file logger log file for mail: %s subject: %s",
+                    MengineLog.logMessage(TAG, "linkingOpenMail not found file logger android log file for mail: %s subject: %s",
                         m_email,
                         m_subject
                     );
                 }
             } else {
-                body_builder.append("\n\nNOT_FOUND_FILE_LOGGER_LOG");
+                body_builder.append("\n\nNOT_FOUND_FILE_LOGGER_SERVICE");
 
-                MengineLog.logMessage(TAG, "linkingOpenMail not found file logger log file for mail: %s subject: %s",
+                MengineLog.logMessage(TAG, "linkingOpenMail not found file logger service for mail: %s subject: %s",
                     m_email,
                     m_subject
                 );

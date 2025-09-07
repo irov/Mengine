@@ -367,6 +367,8 @@ namespace Mengine
 
             jmethodID ArrayList_add = Mengine_JNI_GetMethodID( _jenv, jclass_ArrayList, "add", "(Ljava/lang/Object;)Z" );
 
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_ArrayList );
+
             jboolean result = Mengine_JNI_CallBooleanMethod( _jenv, _list, ArrayList_add, _value );
 
             Helper::AndroidEnvExceptionCheck( _jenv );
@@ -394,8 +396,6 @@ namespace Mengine
             jclass jclass_Map = Mengine_JNI_GetClassMap( _jenv );
 
             jmethodID Map_get = Mengine_JNI_GetMethodID( _jenv, jclass_Map, "get", "(Ljava/lang/Object;)Ljava/lang/Object;" );
-
-            Mengine_JNI_DeleteLocalRef( _jenv, jclass_Map );
 
             Mengine_JNI_DeleteLocalRef( _jenv, jclass_Map );
 

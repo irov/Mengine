@@ -294,8 +294,6 @@ namespace Mengine
 
         Helper::AndroidEnvExceptionCheck( jenv );
 
-        Mengine_JNI_PopLocalFrame( jenv, nullptr );
-
         const Char * jresult_str = Mengine_JNI_GetStringUTFChars( jenv, jstring_result, nullptr );
         jsize jresult_size = Mengine_JNI_GetStringLength( jenv, jstring_result );
 
@@ -304,6 +302,8 @@ namespace Mengine
         Mengine_JNI_ReleaseStringUTFChars( jenv, jstring_result, jresult_str );
 
         Mengine_JNI_DeleteLocalRef( jenv, jstring_result );
+
+        Mengine_JNI_PopLocalFrame( jenv, nullptr );
 
         return py_value;
     }
@@ -339,6 +339,8 @@ namespace Mengine
 
         PyObject * py_result = Helper::androidNativePythonMakePyObject( m_kernel, jenv, jresult, MENGINE_DOCUMENT_FACTORABLE );
 
+        Mengine_JNI_DeleteLocalRef( jenv, jresult );
+
         Mengine_JNI_PopLocalFrame( jenv, nullptr );
 
         return py_result;
@@ -373,9 +375,11 @@ namespace Mengine
 
         Helper::AndroidEnvExceptionCheck( jenv );
 
-        Mengine_JNI_PopLocalFrame( jenv, nullptr );
-
         PyObject * py_result = Helper::androidNativePythonMakePyObject( m_kernel, jenv, jresult, MENGINE_DOCUMENT_FACTORABLE );
+
+        Mengine_JNI_DeleteLocalRef( jenv, jresult );
+
+        Mengine_JNI_PopLocalFrame( jenv, nullptr );
 
         return py_result;
     }

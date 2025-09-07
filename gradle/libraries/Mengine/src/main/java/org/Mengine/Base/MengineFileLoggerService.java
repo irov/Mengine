@@ -16,7 +16,12 @@ public class MengineFileLoggerService extends MengineService implements MengineL
     public static final String SERVICE_NAME = "FileLogger";
     public static final boolean SERVICE_EMBEDDING = true;
 
+    private File m_logFile;
     private FileWriter m_writer;
+
+    public File getLogFile() {
+        return m_logFile;
+    }
 
     @Override
     public void onAppInit(@NonNull MengineApplication application, boolean isMainProcess) throws MengineServiceInvalidInitializeException {
@@ -26,12 +31,18 @@ public class MengineFileLoggerService extends MengineService implements MengineL
 
         Context context = application.getApplicationContext();
 
-        File logFile = MengineUtils.createTempFile(context, "mng_log_", ".log");
+        m_logFile = MengineUtils.createTempFile(context, "mng_log_", ".log");
+
+        if (m_logFile == null) {
+            this.logError("invalid create log file");
+
+            return;
+        }
 
         try {
-            m_writer = new FileWriter(logFile, true);
+            m_writer = new FileWriter(m_logFile, true);
         } catch (IOException e) {
-            this.logException(e, Map.of("file", logFile.getAbsolutePath()));
+            this.logException(e, Map.of("file", m_logFile.getAbsolutePath()));
         }
     }
 
@@ -48,6 +59,8 @@ public class MengineFileLoggerService extends MengineService implements MengineL
 
             m_writer = null;
         }
+
+        m_logFile = null;
     }
 
     private void writeLine(String line) {

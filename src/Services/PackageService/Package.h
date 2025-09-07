@@ -21,8 +21,8 @@ namespace Mengine
         ~Package() override;
 
     public:
-        bool initialize( const FileGroupInterfacePtr & _baseFileGroup, const PackageDesc & _desc );
-        void finalize();
+        bool initialize( const FileGroupInterfacePtr & _baseFileGroup, const PackageDesc & _desc ) override;
+        void finalize() override;
 
     public:
         const PackageDesc & getPackageDesc() const override;

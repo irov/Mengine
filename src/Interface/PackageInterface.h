@@ -18,6 +18,10 @@ namespace Mengine
         : public ServantInterface
     {
     public:
+        virtual bool initialize( const FileGroupInterfacePtr & _baseFileGroup, const PackageDesc & _desc ) = 0;
+        virtual void finalize() = 0;
+
+    public:
         virtual const PackageDesc & getPackageDesc() const = 0;
 
     public:

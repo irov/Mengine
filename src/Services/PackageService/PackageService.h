@@ -41,15 +41,18 @@ namespace Mengine
     public:
         bool enablePackages( const ConstString & _locale, const Tags & _platformTags ) override;
 
-    public:
-        bool enableLocalePackage( const ConstString & _locale, const Tags & _platformTag );
-        bool disableLocalePackage( const ConstString & _locale, const Tags & _platformTag );
+    protected:
+        bool enableLocalePackages( const ConstString & _locale, const Tags & _platformTag );
+        bool disableLocalePackages( const ConstString & _locale, const Tags & _platformTag );
+
+    protected:
+        bool disableAllLocalesPackages( const Tags & _platformTag );
 
     protected:
         void notifyChangeLocale_( const ConstString & _prevLocale, const ConstString & _currentlocale );
 
     protected:
-        typedef Vector<PackagePtr> VectorPackages;
+        typedef Vector<PackageInterfacePtr> VectorPackages;
         VectorPackages m_packages;
 
         FactoryInterfacePtr m_factoryPackage;

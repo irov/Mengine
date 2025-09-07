@@ -106,7 +106,7 @@ namespace Mengine
     {
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_LOCALE );
 
-        for( const PackagePtr & package : m_packages )
+        for( const PackageInterfacePtr & package : m_packages )
         {
             package->finalize();
         }
@@ -266,7 +266,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PackageService::hasPackage( const ConstString & _name ) const
     {
-        for( const PackagePtr & package : m_packages )
+        for( const PackageInterfacePtr & package : m_packages )
         {
             const PackageDesc & desc = package->getPackageDesc();
 
@@ -366,7 +366,7 @@ namespace Mengine
             it != it_end;
             ++it )
         {
-            const PackagePtr & package = *it;
+            const PackageInterfacePtr & package = *it;
 
             const PackageDesc & desc = package->getPackageDesc();
 
@@ -389,7 +389,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const PackageInterfacePtr & PackageService::getPackage( const ConstString & _name ) const
     {
-        for( const PackagePtr & package : m_packages )
+        for( const PackageInterfacePtr & package : m_packages )
         {
             const PackageDesc & desc = package->getPackageDesc();
 
@@ -406,7 +406,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PackageService::existLocalePackage( const ConstString & _locale, const Tags & _platformTags ) const
     {
-        for( const PackagePtr & package : m_packages )
+        for( const PackageInterfacePtr & package : m_packages )
         {
             const PackageDesc & desc = package->getPackageDesc();
 
@@ -438,7 +438,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PackageService::foreachPackages( const LambdaPackage & _lambda ) const
     {
-        for( const PackagePtr & package : m_packages )
+        for( const PackageInterfacePtr & package : m_packages )
         {
             _lambda( package );
         }
@@ -450,7 +450,7 @@ namespace Mengine
 
         localesSet.insert( m_defaultLocale );
 
-        for( const PackagePtr & package : m_packages )
+        for( const PackageInterfacePtr & package : m_packages )
         {
             const PackageDesc & desc = package->getPackageDesc();
 
@@ -471,7 +471,7 @@ namespace Mengine
     {
         bool hasLocale = false;
 
-        for( const PackagePtr & package : m_packages )
+        for( const PackageInterfacePtr & package : m_packages )
         {
             const PackageDesc & desc = package->getPackageDesc();
 
@@ -499,7 +499,7 @@ namespace Mengine
 
         VectorPackages packages;
 
-        for( const PackagePtr & package : m_packages )
+        for( const PackageInterfacePtr & package : m_packages )
         {
             const PackageDesc & desc = package->getPackageDesc();
 
@@ -544,7 +544,7 @@ namespace Mengine
             }
         }
 
-        for( const PackagePtr & package : packages )
+        for( const PackageInterfacePtr & package : packages )
         {
             const PackageDesc & desc = package->getPackageDesc();
 
@@ -585,11 +585,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PackageService::enableLocalePackage( const ConstString & _locale, const Tags & _platformTag )
+    bool PackageService::enableLocalePackages( const ConstString & _locale, const Tags & _platformTag )
     {
         VectorPackages packages;
 
-        for( const PackagePtr & package : m_packages )
+        for( const PackageInterfacePtr & package : m_packages )
         {
             const PackageDesc & desc = package->getPackageDesc();
 
@@ -606,7 +606,7 @@ namespace Mengine
             packages.emplace_back( package );
         }
 
-        for( const PackagePtr & package : packages )
+        for( const PackageInterfacePtr & package : packages )
         {
             if( package->enable() == false )
             {
@@ -621,11 +621,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PackageService::disableLocalePackage( const ConstString & _locale, const Tags & _platformTag )
+    bool PackageService::disableLocalePackages( const ConstString & _locale, const Tags & _platformTag )
     {
         VectorPackages packages;
 
-        for( const PackagePtr & package : m_packages )
+        for( const PackageInterfacePtr & package : m_packages )
         {
             const PackageDesc & desc = package->getPackageDesc();
 
@@ -642,7 +642,48 @@ namespace Mengine
             packages.emplace_back( package );
         }
 
-        for( const PackagePtr & package : packages )
+        for( const PackageInterfacePtr & package : packages )
+        {
+            if( package->disable() == false )
+            {
+                LOGGER_ERROR( "invalid disable package '%s'"
+                    , package->getPackageDesc().name.c_str()
+                );
+
+                return false;
+            }
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PackageService::disableAllLocalesPackages( const Tags & _platformTag )
+    {
+        VectorPackages packages;
+
+        for( const PackageInterfacePtr & package : m_packages )
+        {
+            if( package->isEnable() == false )
+            {
+                continue;
+            }
+
+            const PackageDesc & desc = package->getPackageDesc();
+
+            if( _platformTag.hasTags( desc.platform ) == false )
+            {
+                continue;
+            }
+
+            if( desc.locales.empty() == true )
+            {
+                continue;
+            }
+
+            packages.emplace_back( package );
+        }
+
+        for( const PackageInterfacePtr & package : packages )
         {
             if( package->disable() == false )
             {
@@ -670,17 +711,17 @@ namespace Mengine
         const Tags & platformTags = PLATFORM_SERVICE()
             ->getPlatformTags();
 
-        if( this->disableLocalePackage( _prevLocale, platformTags ) == false )
+        if( this->disableAllLocalesPackages( platformTags ) == false )
         {
-            LOGGER_ERROR( "invalid disable locale package '%s' platform '%s'"
-                , _prevLocale.c_str()
+            LOGGER_ERROR( "invalid disable all locale package [platform: %s]"
+
                 , Helper::tagsToString( platformTags ).c_str()
             );
 
             return;
         }
 
-        if( this->enableLocalePackage( _currentlocale, platformTags ) == false )
+        if( this->enableLocalePackages( _currentlocale, platformTags ) == false )
         {
             LOGGER_ERROR( "invalid enable locale package '%s' platform '%s'"
                 , _currentlocale.c_str()

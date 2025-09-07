@@ -1461,8 +1461,6 @@ public class MengineUtils {
         return deviceInfo.toString();
     }
 
-
-
     static public Bundle getMetaDataBundle(@NonNull MengineApplication application) {
         Context context = application.getApplicationContext();
 

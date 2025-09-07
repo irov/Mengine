@@ -101,6 +101,8 @@ namespace Mengine
                 py_value = _kernel->exception_new( obj_str );
 
                 Mengine_JNI_ReleaseStringUTFChars( _jenv, jstring_message, obj_str );
+
+                Mengine_JNI_DeleteLocalRef( _jenv, jstring_message );
             }
             else if( Mengine_JNI_IsInstanceOf( _jenv, _obj, jclass_List ) == JNI_TRUE )
             {
@@ -239,6 +241,8 @@ namespace Mengine
 
             jobject jobject_list = Mengine_JNI_NewObject( _jenv, jclass_ArrayList, jmethod_List_constructor, (jsize)s );
 
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_ArrayList );
+
             for( const pybind::object & o : _list )
             {
                 jobject jobject_element = Helper::androidNativePythonMakeJavaObject( _jenv, o );
@@ -260,6 +264,8 @@ namespace Mengine
             jmethodID jmethod_HashMap_constructor = Mengine_JNI_GetMethodID( _jenv, jclass_HashMap, "<init>", "()V" );
 
             jobject jobject_map = Mengine_JNI_NewObject( _jenv, jclass_HashMap, jmethod_HashMap_constructor );
+
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_HashMap );
 
             for( const pybind::dict_pair_value & pair : _dict )
             {

@@ -227,6 +227,42 @@ public class MengineProcedureSendMail implements MengineProcedureInterface {
                 );
             }
 
+            File fileLoggerFile = new File(context.getFilesDir(), "mengine.log");
+
+            if (fileLoggerFile.exists() == true) {
+                File fileLoggerZipFile = MengineUtils.createTempFile(context, "mng_file_logger_", ".zip");
+
+                if (fileLoggerZipFile != null && MengineUtils.zipFiles(fileLoggerFile, fileLoggerZipFile) == true) {
+                    Uri fileLoggerZipFileUri = MengineUtils.getUriForFile(context, fileLoggerZipFile);
+
+                    if (fileLoggerZipFileUri == null) {
+                        return false;
+                    }
+
+                    MengineLog.logInfo(TAG, "linkingOpenMail attach file '%s' for mail: %s subject: %s",
+                        fileLoggerZipFileUri,
+                        m_email,
+                        m_subject
+                    );
+
+                    fileUris.add(fileLoggerZipFileUri);
+                } else {
+                    body_builder.append("\n\n[ERROR] invalid zip file logger log file");
+
+                    MengineLog.logMessage(TAG, "linkingOpenMail invalid zip file logger log file for mail: %s subject: %s",
+                        m_email,
+                        m_subject
+                    );
+                }
+            } else {
+                body_builder.append("\n\nNOT_FOUND_FILE_LOGGER_LOG");
+
+                MengineLog.logMessage(TAG, "linkingOpenMail not found file logger log file for mail: %s subject: %s",
+                    m_email,
+                    m_subject
+                );
+            }
+
             intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, fileUris);
         } catch (IOException e) {
             body_builder.append("\n\n[ERROR] invalid attaches file");

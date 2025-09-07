@@ -306,10 +306,10 @@ namespace Mengine
                 ->messageBox( "Mengine", "author: IROV\nemail for support/feedbacks/improvement request and suggestions: irov13@mail.ru" );
         }
 
-        const Char * engineGitURL = Helper::getEngineGITURL();
-        const Char * engineGitSHA1 = Helper::getEngineGITSHA1();
-        const Char * engineGitBranch = Helper::getEngineGITBranch();
-        const Char * engineGitDate = Helper::getEngineGITDate();
+        const Char * engineGitURL = Helper::getEngineGitURL();
+        const Char * engineGitSHA1 = Helper::getEngineGitSHA1();
+        const Char * engineGitBranch = Helper::getEngineGitBranch();
+        const Char * engineGitDate = Helper::getEngineGitDate();
 
         if( HAS_OPTION( "engineinfo" ) == true )
         {

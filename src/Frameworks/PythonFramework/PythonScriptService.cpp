@@ -321,16 +321,16 @@ namespace Mengine
         uint32_t python_version = kernel->get_python_version();
         this->addGlobalModuleT( "_PYTHON_VERSION", python_version );
 
-        const Char * engineGITSHA1 = Helper::getEngineGITSHA1();
+        const Char * engineGITSHA1 = Helper::getEngineGitSHA1();
         this->addGlobalModuleT( "_ENGINE_GITSHA1", engineGITSHA1 );
 
-        const Char * engineGITURL = Helper::getEngineGITURL();
+        const Char * engineGITURL = Helper::getEngineGitURL();
         this->addGlobalModuleT( "_ENGINE_GITURL", engineGITURL );
 
-        const Char * engineGITBranch = Helper::getEngineGITBranch();
+        const Char * engineGITBranch = Helper::getEngineGitBranch();
         this->addGlobalModuleT( "_ENGINE_GITBRANCH", engineGITBranch );
 
-        const Char * engineGITData = Helper::getEngineGITDate();
+        const Char * engineGITData = Helper::getEngineGitDate();
         this->addGlobalModuleT( "_ENGINE_GITDATA", engineGITData );
 
         const Char * contentCommit = Helper::getContentCommit();

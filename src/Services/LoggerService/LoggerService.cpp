@@ -124,8 +124,8 @@ namespace Mengine
 
         this->setVerboseFilter( verboseFilter );
 
-        const Char * verboses[MENGINE_OPTIONS_VALUES_MAX];
-        uint32_t verboses_count;
+        const Char * verboses[MENGINE_OPTIONS_VALUES_MAX] = {nullptr};
+        uint32_t verboses_count = 0;
         if( OPTIONS_SERVICE()
             ->getOptionValues( "verboses", verboses, &verboses_count ) == true )
         {
@@ -158,7 +158,7 @@ namespace Mengine
             "SILENT",               // LM_SILENT
             "FATAL",                // LM_FATAL
             "MESSAGE_RELEASE",      // LM_MESSAGE_RELEASE
-            "ERROR",                // LM_ERROR  
+            "ERROR",                // LM_ERROR
             "WARNING",              // LM_WARNING
             "MESSAGE",              // LM_MESSAGE
             "INFO",                 // LM_INFO
@@ -168,15 +168,25 @@ namespace Mengine
 
         const Char * loggerLevel = loggerLevels[logLevel];
         
+        const Char * buildVersion = Helper::getBuildVersion();
+        const Char * buildNumber = Helper::getBuildNumberString();
+        const Char * engineGitSHA1 = Helper::getEngineGitSHA1();
+        const Char * contentCommit = Helper::getContentCommit();
         bool developmentMode = Helper::isDevelopmentMode();
 
-        Char loggerLevelMessage[256 + 1] = {'\0'};
-        size_t loggerLevelMessageLen = MENGINE_SNPRINTF( loggerLevelMessage, 256, "start logger with verbose level [%s] Mode [%s] Debug [%s] Master [%s] Publish [%s]"
+
+        Char loggerLevelMessage[512 + 1] = {'\0'};
+        size_t loggerLevelMessageLen = MENGINE_SNPRINTF( loggerLevelMessage, 512, 
+            "logger: %s [%s] [%s] [%s] [%s] %s [%s] %.8s | %.8s"
             , loggerLevel
-            , developmentMode == true ? "Dev" : "Normal"
-            , MENGINE_DEBUG_VALUE( "True", "False" )
-            , MENGINE_MASTER_RELEASE_VALUE( "True", "False" )
-            , MENGINE_BUILD_PUBLISH_VALUE( "True", "False" )
+            , developmentMode == true ? "dev" : "prod"
+            , MENGINE_DEBUG_VALUE( "debug", "release" )
+            , MENGINE_MASTER_RELEASE_VALUE( "master", "RC" )
+            , MENGINE_BUILD_PUBLISH_VALUE( "publish", "manual" )
+            , buildVersion
+            , buildNumber
+            , engineGitSHA1
+            , contentCommit
         );
 
         LoggerMessage msg;

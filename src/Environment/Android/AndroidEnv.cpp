@@ -41,7 +41,7 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT jstring JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1getEngineGITSHA1 )( JNIEnv * env, jclass cls )
     {
-        const Mengine::Char * ENGINE_GIT_SHA1 = Mengine::Helper::getEngineGITSHA1();
+        const Mengine::Char * ENGINE_GIT_SHA1 = Mengine::Helper::getEngineGitSHA1();
 
         jstring result = env->NewStringUTF( ENGINE_GIT_SHA1 );
 

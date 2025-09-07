@@ -1513,12 +1513,12 @@ namespace Mengine
 
         if( playCount > Limit_MaxSoundPlay )
         {
-            Timestamp timestamp = Helper::getSystemTimestamp();
-
             Stringstream ss;
             ss << "max sound play count exceeded: " << Limit_MaxSoundPlay;
 
 #if defined(MENGINE_DEBUG)
+            Timestamp timestamp = Helper::getSystemTimestamp();
+
             for( const SoundIdentityInterfacePtr & identity : m_soundIdentities )
             {
                 ss << "\n"

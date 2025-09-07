@@ -7,7 +7,8 @@ def ANDROID_APP_BUILD_PUBLISH = Utils.getBooleanProperty("ANDROID_APP_BUILD_PUBL
 def MENGINE_APP_SECURE_VALUE = Utils.getStringProperty("MENGINE_APP_SECURE_VALUE", "0123456789A")
 def ANDROID_APP_MAIN_PROJECT = Utils.getStringProperty("ANDROID_APP_MAIN_PROJECT", "app")
 def MENGINE_APP_DEPLOY_PATH = Utils.getStringProperty("MENGINE_APP_DEPLOY_PATH", rootProject.projectDir.getAbsolutePath() + "/$ANDROID_APP_MAIN_PROJECT")
-def MENGINE_APP_BUILD_ASSERTION_DEBUG= Utils.getIntegerProperty("MENGINE_APP_BUILD_ASSERTION_DEBUG", -1)
+def MENGINE_APP_BUILD_ASSERTION_DEBUG = Utils.getIntegerProperty("MENGINE_APP_BUILD_ASSERTION_DEBUG", -1)
+def MENGINE_APP_BUILD_LOGGER_INFO = Utils.getIntegerProperty("MENGINE_APP_BUILD_LOGGER_INFO", -1)
 def MENGINE_APP_ENABLE_STRICT_MODE = Utils.getBooleanProperty("MENGINE_APP_ENABLE_STRICT_MODE", false)
 
 def ANDROID_APP_SCREEN_ORIENTATION = Utils.getStringProperty("ANDROID_APP_SCREEN_ORIENTATION", "sensorPortrait")
@@ -71,6 +72,10 @@ android {
                     if (MENGINE_APP_BUILD_ASSERTION_DEBUG != -1) {
                         cppFlags += ["-DMENGINE_ASSERTION_DEBUG=${MENGINE_APP_BUILD_ASSERTION_DEBUG}"]
                     }
+
+                    if (MENGINE_APP_BUILD_LOGGER_INFO != -1) {
+                        cppFlags += ["-DMENGINE_LOGGER_INFO=${MENGINE_APP_BUILD_LOGGER_INFO}"]
+                    }
                 }
             }
         }
@@ -86,6 +91,10 @@ android {
 
                     if (MENGINE_APP_BUILD_ASSERTION_DEBUG != -1) {
                         cppFlags += ["-DMENGINE_ASSERTION_DEBUG=${MENGINE_APP_BUILD_ASSERTION_DEBUG}"]
+                    }
+
+                    if (MENGINE_APP_BUILD_LOGGER_INFO != -1) {
+                        cppFlags += ["-DMENGINE_LOGGER_INFO=${MENGINE_APP_BUILD_LOGGER_INFO}"]
                     }
                 }
             }

@@ -1,5 +1,7 @@
 package org.Mengine.Base;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
 
 import java.io.File;
@@ -8,6 +10,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
 
 public class MengineFileLoggerService extends MengineService implements MengineListenerApplication, MengineListenerLogger {
     public static final String SERVICE_NAME = "FileLogger";
@@ -21,13 +24,14 @@ public class MengineFileLoggerService extends MengineService implements MengineL
             return;
         }
 
-        File dir = application.getApplicationContext().getFilesDir();
-        File logFile = new File(dir, "mengine.log");
+        Context context = application.getApplicationContext();
+
+        File logFile = MengineUtils.createTempFile(context, "mng_log_", ".log");
 
         try {
             m_writer = new FileWriter(logFile, true);
         } catch (IOException e) {
-            throw new MengineServiceInvalidInitializeException("invalid open log file");
+            this.logException(e, Map.of("file", logFile.getAbsolutePath()));
         }
     }
 
@@ -59,26 +63,31 @@ public class MengineFileLoggerService extends MengineService implements MengineL
         }
     }
 
-    private String makeTimestamp() {
+    private static String makeTimestamp() {
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US).format(new Date());
     }
 
     @Override
     public void onMengineLog(@NonNull MengineApplication application, @NonNull MengineParamLoggerMessage message) {
-        String line = String.format(Locale.US, "%s [%s] %s%n",
-                makeTimestamp(),
-                message.MESSAGE_CATEGORY.toString(),
-                message.MESSAGE_DATA);
+        String timestamp = MengineFileLoggerService.makeTimestamp();
+
+        String line = String.format(Locale.US, "%s |%s| [%s] %s"
+            , timestamp
+            , message.MESSAGE_THREAD
+            , message.MESSAGE_CATEGORY.toString()
+            , message.MESSAGE_DATA);
 
         this.writeLine(line);
     }
 
     @Override
     public void onMengineException(@NonNull MengineApplication application, @NonNull MengineParamLoggerException exception) {
-        String line = String.format(Locale.US, "%s [EXCEPTION] %s: %s%n",
-                makeTimestamp(),
-                exception.EXCEPTION_CATEGORY.toString(),
-                exception.EXCEPTION_THROWABLE.toString());
+        String timestamp = MengineFileLoggerService.makeTimestamp();
+
+        String line = String.format(Locale.US, "%s [EXCEPTION] %s: %s"
+            , timestamp
+            , exception.EXCEPTION_CATEGORY
+            , exception.EXCEPTION_THROWABLE);
 
         this.writeLine(line);
     }

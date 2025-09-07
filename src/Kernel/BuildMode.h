@@ -14,10 +14,10 @@ namespace Mengine
         bool isBuildPublish();
         bool isMasterRelease();
         bool isWindowsDebug();
-        const Char * getEngineGITSHA1();
-        const Char * getEngineGITURL();
-        const Char * getEngineGITBranch();
-        const Char * getEngineGITDate();
+        const Char * getEngineGitSHA1();
+        const Char * getEngineGitURL();
+        const Char * getEngineGitBranch();
+        const Char * getEngineGitDate();
         const Char * getEngineVersion();
         const Char * getContentCommit();
         const Char * getBuildSolutionName();

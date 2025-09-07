@@ -464,7 +464,7 @@ namespace Mengine
 
         sentry_set_extra( "Publish", sentry_value_new_bool( publishMode ) );
 
-        const Char * ENGINE_GIT_SHA1 = Helper::getEngineGITSHA1();
+        const Char * ENGINE_GIT_SHA1 = Helper::getEngineGitSHA1();
 
         LOGGER_INFO_PROTECTED( "sentry", "Sentry set extra [Engine Commit: %s]"
             , ENGINE_GIT_SHA1

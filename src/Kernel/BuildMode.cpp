@@ -89,28 +89,28 @@ namespace Mengine
             return windowDebug;
         }
         //////////////////////////////////////////////////////////////////////////
-        const Char * getEngineGITSHA1()
+        const Char * getEngineGitSHA1()
         {
             const Char * ENGINE_GIT_SHA1 = MENGINE_ENGINE_GIT_SHA1;
 
             return ENGINE_GIT_SHA1;
         }
         //////////////////////////////////////////////////////////////////////////
-        const Char * getEngineGITURL()
+        const Char * getEngineGitURL()
         {
             const Char * ENGINE_GIT_URL = MENGINE_ENGINE_GIT_URL;
 
             return ENGINE_GIT_URL;
         }
         //////////////////////////////////////////////////////////////////////////
-        const Char * getEngineGITBranch()
+        const Char * getEngineGitBranch()
         {
             const Char * ENGINE_GIT_BRANCH = MENGINE_ENGINE_GIT_BRANCH;
 
             return ENGINE_GIT_BRANCH;
         }
         //////////////////////////////////////////////////////////////////////////
-        const Char * getEngineGITDate()
+        const Char * getEngineGitDate()
         {
             const Char * ENGINE_GIT_DATE = MENGINE_ENGINE_GIT_DATE;
 

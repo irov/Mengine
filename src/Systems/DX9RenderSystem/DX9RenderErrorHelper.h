@@ -42,6 +42,7 @@ namespace Mengine
         if( Object != nullptr )\
         {\
             ULONG ref = Object -> Release();\
+            MENGINE_UNUSED( ref );\
             MENGINE_ASSERTION_FATAL( ref == 0, "release dx object ref != 0" );\
             Object = nullptr;\
         }\
@@ -63,6 +64,7 @@ namespace Mengine
         if( Object != nullptr )\
         {\
             ULONG ref = Object -> Release();\
+            MENGINE_UNUSED( ref );\
             Object = nullptr;\
         }\
     }while(false)

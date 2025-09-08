@@ -82,6 +82,10 @@ public class MengineFileLoggerService extends MengineService implements MengineL
 
     @Override
     public void onMengineLog(@NonNull MengineApplication application, @NonNull MengineParamLoggerMessage message) {
+        if (message.MESSAGE_SOURCE != MengineLoggerMessageSource.MengineLoggerMessageSource_Java) {
+            return;
+        }
+
         String timestamp = MengineFileLoggerService.makeTimestamp();
 
         String line = String.format(Locale.US, "%s |%s| [%s] %s"

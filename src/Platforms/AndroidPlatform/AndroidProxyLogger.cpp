@@ -49,7 +49,7 @@ namespace Mengine
 
         jclass jclass_MengineLoggerMessageParam = Helper::AndroidEnvFindClass( jenv, "org/Mengine/Base/MengineParamLoggerMessage" );
 
-        jmethodID jmethod_MengineLoggerMessageParam_constructor = Mengine_JNI_GetMethodID( jenv, jclass_MengineLoggerMessageParam, "<init>", "(Lorg/Mengine/Base/MengineTag;Ljava/lang/String;IILjava/lang/String;ILjava/lang/String;Ljava/lang/String;)V" );
+        jmethodID jmethod_MengineLoggerMessageParam_constructor = Mengine_JNI_GetMethodID( jenv, jclass_MengineLoggerMessageParam, "<init>", "(Lorg/Mengine/Base/MengineLoggerMessageSource;Lorg/Mengine/Base/MengineTag;Ljava/lang/String;IILjava/lang/String;ILjava/lang/String;Ljava/lang/String;)V" );
 
         jstring jstring_category = Mengine_JNI_NewStringUTF( jenv, message.category );
 
@@ -58,6 +58,8 @@ namespace Mengine
         jmethodID mid_MengineTag_of = Mengine_JNI_GetStaticMethodID( jenv, jclass_MengineTag, "of", "(Ljava/lang/String;)Lorg/Mengine/Base/MengineTag;" );
 
         jobject jobject_CategoryTag = Mengine_JNI_CallStaticObjectMethod( jenv, jclass_MengineTag, mid_MengineTag_of, jstring_category );
+
+        jobject jobject_source = Helper::AndroidGetJObjectEnum( jenv, "org/Mengine/Base/MengineLoggerMessageSource", "MengineLoggerMessageSource_Engine" );
 
         jstring jstring_thread = Mengine_JNI_NewStringUTF( jenv, message.thread.c_str() );
 
@@ -77,6 +79,7 @@ namespace Mengine
         jstring jstring_data = Mengine_JNI_NewStringUTF( jenv, message.data );
 
         jobject jstring_message = Mengine_JNI_NewObject( jenv, jclass_MengineLoggerMessageParam, jmethod_MengineLoggerMessageParam_constructor
+            , jobject_source
             , jobject_CategoryTag
             , jstring_thread
             , jlevel
@@ -92,6 +95,7 @@ namespace Mengine
         Mengine_JNI_DeleteLocalRef( jenv, jclass_MengineLoggerMessageParam );
         Mengine_JNI_DeleteLocalRef( jenv, jclass_MengineTag );
 
+        Mengine_JNI_DeleteLocalRef( jenv, jobject_source );
         Mengine_JNI_DeleteLocalRef( jenv, jobject_CategoryTag );
         Mengine_JNI_DeleteLocalRef( jenv, jstring_category );
         Mengine_JNI_DeleteLocalRef( jenv, jstring_thread );

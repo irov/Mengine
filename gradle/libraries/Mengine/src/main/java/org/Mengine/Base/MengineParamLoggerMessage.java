@@ -4,7 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class MengineParamLoggerMessage {
-    public MengineParamLoggerMessage(@NonNull MengineTag category, @NonNull String thread, int level, int filter, @Nullable String file, int line, @Nullable String function, @NonNull String data) {
+    public MengineParamLoggerMessage(@NonNull MengineLoggerMessageSource source, @NonNull MengineTag category, @NonNull String thread, int level, int filter, @Nullable String file, int line, @Nullable String function, @NonNull String data) {
+        this.MESSAGE_SOURCE = source;
         this.MESSAGE_CATEGORY = category;
         this.MESSAGE_THREAD = thread;
         this.MESSAGE_LEVEL = level;
@@ -15,6 +16,7 @@ public class MengineParamLoggerMessage {
         this.MESSAGE_DATA = data;
     }
 
+    @NonNull public final MengineLoggerMessageSource MESSAGE_SOURCE;
     @NonNull public final MengineTag MESSAGE_CATEGORY;
     @NonNull public final String MESSAGE_THREAD;
     public final int MESSAGE_LEVEL;

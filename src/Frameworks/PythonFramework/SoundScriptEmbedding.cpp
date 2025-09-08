@@ -161,7 +161,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryInterfacePtr m_factorySoundNodeListener;
             //////////////////////////////////////////////////////////////////////////
-            SoundIdentityInterfacePtr s_createSoundSource( const ConstString & _resourceName, bool _loop, ESoundSourceCategory _category, const pybind::object & _cbs, const pybind::args & _args, const DocumentInterfacePtr & _doc )
+            SoundIdentityInterfacePtr s_createSoundIdentity( const ConstString & _resourceName, bool _loop, ESoundSourceCategory _category, const pybind::object & _cbs, const pybind::args & _args, const DocumentInterfacePtr & _doc )
             {
                 MENGINE_ASSERTION_RESOURCE_TYPE_BY_NAME( _resourceName, ResourceSoundPtr, nullptr, "resource '%s' type does not match 'ResourceSound'"
                     , _resourceName.c_str()
@@ -188,6 +188,10 @@ namespace Mengine
 
                 if( soundBuffer == nullptr )
                 {
+                    LOGGER_ERROR( "resource sound '%s' invalid create sound buffer"
+                        , _resourceName.c_str()
+                    );
+
                     resource->release();
 
                     return nullptr;
@@ -243,7 +247,7 @@ namespace Mengine
                     , Helper::getResourceFilePathByName( _resourceName ).c_str()
                 );
 
-                SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cbs, _args, MENGINE_DOCUMENT_PYTHON );
+                SoundIdentityInterfacePtr soundIdentity = s_createSoundIdentity( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cbs, _args, MENGINE_DOCUMENT_PYTHON );
 
                 if( soundIdentity == nullptr )
                 {
@@ -262,6 +266,9 @@ namespace Mengine
                         , Helper::getResourceFilePathByName( _resourceName ).c_str()
                     );
 
+                    SOUND_SERVICE()
+                        ->releaseSoundIdentity( soundIdentity );
+
                     return nullptr;
                 }
 
@@ -275,7 +282,7 @@ namespace Mengine
                     , Helper::getResourceFilePathByName( _resourceName ).c_str()
                 );
 
-                SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_VOICE, _cbs, _args, MENGINE_DOCUMENT_PYTHON );
+                SoundIdentityInterfacePtr soundIdentity = s_createSoundIdentity( _resourceName, _loop, ES_SOURCE_CATEGORY_VOICE, _cbs, _args, MENGINE_DOCUMENT_PYTHON );
 
                 if( soundIdentity == nullptr )
                 {
@@ -293,6 +300,9 @@ namespace Mengine
                         , _resourceName.c_str()
                         , Helper::getResourceFilePathByName( _resourceName ).c_str()
                     );
+
+                    SOUND_SERVICE()
+                        ->releaseSoundIdentity( soundIdentity );
 
                     return nullptr;
                 }
@@ -324,9 +334,9 @@ namespace Mengine
                     , _position
                 );
 
-                SoundIdentityInterfacePtr sourceEmitter = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cbs, _args, MENGINE_DOCUMENT_PYTHON );
+                SoundIdentityInterfacePtr soundIdentity = s_createSoundIdentity( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cbs, _args, MENGINE_DOCUMENT_PYTHON );
 
-                if( sourceEmitter == nullptr )
+                if( soundIdentity == nullptr )
                 {
                     LOGGER_ERROR( "invalid create sound source '%s'"
                         , _resourceName.c_str()
@@ -336,18 +346,21 @@ namespace Mengine
                 }
 
                 if( SOUND_SERVICE()
-                    ->setPosition( sourceEmitter, _position ) == false )
+                    ->setPosition( soundIdentity, _position ) == false )
                 {
                     LOGGER_ERROR( "resource sound '%s' invalid set pos '%f'"
                         , _resourceName.c_str()
                         , _position
                     );
 
+                    SOUND_SERVICE()
+                        ->releaseSoundIdentity( soundIdentity );
+
                     return nullptr;
                 }
 
                 if( SOUND_SERVICE()
-                    ->playEmitter( sourceEmitter ) == false )
+                    ->playEmitter( soundIdentity ) == false )
                 {
                     LOGGER_WARNING( "invalid voice play resource '%s' file '%s' from position '%f'"
                         , _resourceName.c_str()
@@ -355,10 +368,13 @@ namespace Mengine
                         , _position
                     );
 
+                    SOUND_SERVICE()
+                        ->releaseSoundIdentity( soundIdentity );
+
                     return nullptr;
                 }
 
-                return sourceEmitter;
+                return soundIdentity;
             }
             //////////////////////////////////////////////////////////////////////////
             float soundGetPosition( const SoundIdentityInterfacePtr & _identity )
@@ -481,7 +497,7 @@ namespace Mengine
                     , Helper::getResourceFilePathByName( _resourceName ).c_str()
                 );
 
-                SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cbs, _args, MENGINE_DOCUMENT_PYTHON );
+                SoundIdentityInterfacePtr soundIdentity = s_createSoundIdentity( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cbs, _args, MENGINE_DOCUMENT_PYTHON );
 
                 if( soundIdentity == nullptr )
                 {
@@ -498,6 +514,9 @@ namespace Mengine
                     LOGGER_ERROR( "resource sound '%s' invalid play"
                         , _resourceName.c_str()
                     );
+
+                    SOUND_SERVICE()
+                        ->releaseSoundIdentity( soundIdentity );
 
                     return nullptr;
                 }
@@ -569,7 +588,7 @@ namespace Mengine
                     , Helper::getResourceFilePathByName( _resourceName ).c_str()
                 );
 
-                SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cbs, _args, MENGINE_DOCUMENT_PYTHON );
+                SoundIdentityInterfacePtr soundIdentity = s_createSoundIdentity( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cbs, _args, MENGINE_DOCUMENT_PYTHON );
 
                 if( soundIdentity == nullptr )
                 {
@@ -586,6 +605,9 @@ namespace Mengine
                     LOGGER_ERROR( "resource sound '%s' invalid play"
                         , _resourceName.c_str()
                     );
+
+                    SOUND_SERVICE()
+                        ->releaseSoundIdentity( soundIdentity );
 
                     return nullptr;
                 }

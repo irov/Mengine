@@ -283,6 +283,11 @@ namespace Mengine
                 continue;
             }
 
+            if( state == ESS_CANCEL )
+            {
+                continue;
+            }
+
             this->stopSoundBufferUpdate_( identity );
 
             const SoundSourceInterfacePtr & source = identity->getSoundSource();
@@ -673,6 +678,13 @@ namespace Mengine
         {
             ESoundSourceState state = identity->getState();
 
+            if( state == ESS_CANCEL )
+            {
+                m_soundIdentitiesEndAux.emplace_back( identity );
+
+                continue;
+            }
+
             if( state != ESS_PLAY )
             {
                 continue;
@@ -702,69 +714,62 @@ namespace Mengine
                 continue;
             }
 
-            if( state == ESS_CANCEL )
-            {
-                m_soundIdentitiesEndAux.emplace_back( identity );
-            }
-            else
-            {
-                const ThreadWorkerSoundBufferUpdatePtr & worker = identity->getWorkerUpdateBuffer();
+            const ThreadWorkerSoundBufferUpdatePtr & worker = identity->getWorkerUpdateBuffer();
 
-                float time_left = identity->getTimeLeft();
-                float time_new = time_left - _context->time;
+            float time_left = identity->getTimeLeft();
+            float time_new = time_left - _context->time;
 
-                if( worker != nullptr )
+            if( worker != nullptr )
+            {
+                if( worker->isDone() == true )
                 {
-                    if( worker->isDone() == true )
+                    identity->setState( ESS_STOP );
+
+                    this->stopSoundBufferUpdate_( identity );
+
+                    const SoundSourceInterfacePtr & soundSource = identity->getSoundSource();
+
+                    if( soundSource != nullptr )
                     {
-                        identity->setState( ESS_STOP );
-
-                        this->stopSoundBufferUpdate_( identity );
-
-                        const SoundSourceInterfacePtr & soundSource = identity->getSoundSource();
-
-                        if( soundSource != nullptr )
-                        {
-                            soundSource->stop();
-                        }
-
-                        identity->setTimeLeft( 0.f );
-
-                        m_soundIdentitiesEndAux.emplace_back( identity );
+                        soundSource->stop();
                     }
-                    else
-                    {
-                        if( time_new <= 0.f )
-                        {
-                            identity->setTimeLeft( 0.f );
-                        }
-                        else
-                        {
-                            identity->setTimeLeft( time_new );
-                        }
-                    }
+
+                    identity->setTimeLeft( 0.f );
+
+                    m_soundIdentitiesEndAux.emplace_back( identity );
                 }
                 else
                 {
                     if( time_new <= 0.f )
                     {
-                        identity->setState( ESS_STOP );
-
-                        const SoundSourceInterfacePtr & soundSource = identity->getSoundSource();
-
-                        if( soundSource != nullptr )
-                        {
-                            soundSource->stop();
-                        }
-
                         identity->setTimeLeft( 0.f );
-
-                        m_soundIdentitiesEndAux.emplace_back( identity );
                     }
                     else
                     {
                         identity->setTimeLeft( time_new );
                     }
+                }
+            }
+            else
+            {
+                if( time_new <= 0.f )
+                {
+                    identity->setState( ESS_STOP );
+
+                    const SoundSourceInterfacePtr & soundSource = identity->getSoundSource();
+
+                    if( soundSource != nullptr )
+                    {
+                        soundSource->stop();
+                    }
+
+                    identity->setTimeLeft( 0.f );
+
+                    m_soundIdentitiesEndAux.emplace_back( identity );
+                }
+                else
+                {
+                    identity->setTimeLeft( time_new );
                 }
             }
         }
@@ -1510,6 +1515,8 @@ namespace Mengine
         } );
 
         uint32_t Limit_MaxSoundPlay = CONFIG_VALUE_INTEGER( "Limit", "MaxSoundPlay", 32 );
+
+        LOGGER_MESSAGE( "[Sound] play count: %u all: %u", playCount, m_soundIdentities.size() );
 
         if( playCount > Limit_MaxSoundPlay )
         {

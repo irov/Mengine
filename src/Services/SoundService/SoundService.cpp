@@ -1516,8 +1516,6 @@ namespace Mengine
 
         uint32_t Limit_MaxSoundPlay = CONFIG_VALUE_INTEGER( "Limit", "MaxSoundPlay", 32 );
 
-        LOGGER_MESSAGE( "[Sound] play count: %u all: %u", playCount, m_soundIdentities.size() );
-
         if( playCount > Limit_MaxSoundPlay )
         {
             Stringstream ss;

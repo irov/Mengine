@@ -120,6 +120,7 @@ namespace Mengine
         PythonScriptLoggerPtr m_loggerWarning;
         PythonScriptLoggerPtr m_loggerError;
 
+        PyObject * m_pyOldExcepthook;
         PyObject * m_pyOldStdOutHandle;
         PyObject * m_pyOldStdErrorHandle;
 

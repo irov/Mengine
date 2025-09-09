@@ -169,6 +169,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundBufferStream::playSource( ALuint _sourceId, bool _looped, float _position )
     {
+        MENGINE_ASSERTION_FATAL( m_sourceId == 0, "source already playing %u"
+            , m_sourceId
+        );
+
         m_sourceId = _sourceId;
         m_looped = _looped;
 
@@ -284,6 +288,23 @@ namespace Mengine
         );
 
         this->setUpdating_( false );
+
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutexUpdating );
+
+        MENGINE_OPENAL_CALL( alSourceStop, (_sourceId) );
+
+        ALint queued = 0;
+        MENGINE_OPENAL_CALL( alGetSourcei, (_sourceId, AL_BUFFERS_QUEUED, &queued) );
+
+        for( ALint i = 0; i != queued; ++i )
+        {
+            ALuint bufferId = 0;
+            MENGINE_OPENAL_CALL( alSourceUnqueueBuffers, (_sourceId, 1, &bufferId) );
+        }
+
+        MENGINE_OPENAL_CALL( alSourcei, (_sourceId, AL_BUFFER, 0) );
+
+        m_sourceId = 0;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundBufferStream::setUpdating_( bool _updating )

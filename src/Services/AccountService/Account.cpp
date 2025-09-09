@@ -125,6 +125,14 @@ namespace Mengine
 
         m_settings.emplace( _setting, st );
 
+        if( this->save() == false )
+        {
+            LOGGER_ERROR( "account '%s' setting '%s' save failed"
+                , m_accountId.c_str()
+                , _setting.c_str()
+            );
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -145,6 +153,14 @@ namespace Mengine
         Setting & st = it_found->second;
 
         st.value.assign( _value );
+
+        if( this->save() == false )
+        {
+            LOGGER_ERROR( "account '%s' setting '%s' save failed"
+                , m_accountId.c_str()
+                , _setting.c_str()
+            );
+        }
 
         if( st.provider != nullptr )
         {

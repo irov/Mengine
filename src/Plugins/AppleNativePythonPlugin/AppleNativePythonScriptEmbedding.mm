@@ -69,8 +69,6 @@ namespace Mengine
                     {
                         NSString * key_str = pybind::extract_t( _kernel, key );
                         
-                        PyTypeObject * type = _kernel->get_object_type( value );
-                        
                         if( _kernel->bool_check( value ) == true )
                         {
                             bool value_bool = pybind::extract_t( _kernel, value );
@@ -203,8 +201,6 @@ namespace Mengine
                 PyObject * value;
                 while( _kernel->iterator_next( it, &value ) )
                 {
-                    PyTypeObject * type = _kernel->get_object_type( value );
-                        
                     if( _kernel->bool_check( value ) == true )
                     {
                         bool value_bool = pybind::extract_t( _kernel, value );

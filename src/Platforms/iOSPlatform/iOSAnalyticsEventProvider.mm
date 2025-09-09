@@ -21,8 +21,6 @@ namespace Mengine
         const ConstString & eventName = _event->getName();
         const Char * eventName_str = eventName.c_str();
         
-        uint32_t countParameters = _event->getCountParameters();
-        
         NSMutableDictionary<NSString *, id> * parameters = [[NSMutableDictionary alloc] init];
         
         _event->foreachParameters( [parameters]( const ConstString & _name, const AnalyticsEventParameterInterfacePtr & _parameter )

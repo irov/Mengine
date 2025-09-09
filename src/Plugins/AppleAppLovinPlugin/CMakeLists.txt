@@ -121,7 +121,7 @@ ADD_APPLOVIN_MEDIATION(PANGLE "AppLovinMediationByteDanceAdapter" "7.1.1.1.0") #
 ADD_APPLOVIN_MEDIATION(PUBMATIC "AppLovinMediationPubMaticAdapter" "4.5.2.0")
 ADD_APPLOVIN_MEDIATION(SMAATO "AppLovinMediationSmaatoAdapter" "22.9.3.1")
 ADD_APPLOVIN_MEDIATION(TENCENT "AppLovinMediationTencentGDTAdapter" "4.15.21.1")
-ADD_APPLOVIN_MEDIATION(UNITYADS "AppLovinMediationUnityAdsAdapter" "4.16.0.0")
+ADD_APPLOVIN_MEDIATION(UNITYADS "AppLovinMediationUnityAdsAdapter" "4.16.1.0")
 ADD_APPLOVIN_MEDIATION(VERVE "AppLovinMediationVerveAdapter" "3.6.0.0")
 ADD_APPLOVIN_MEDIATION(MYTARGET "AppLovinMediationMyTargetAdapter" "5.31.0.0") #VK
 ADD_APPLOVIN_MEDIATION(YANDEX "AppLovinMediationYandexAdapter" "7.12.3.0")

@@ -125,14 +125,6 @@ namespace Mengine
 
         m_settings.emplace( _setting, st );
 
-        if( this->save() == false )
-        {
-            LOGGER_ERROR( "account '%s' setting '%s' save failed"
-                , m_accountId.c_str()
-                , _setting.c_str()
-            );
-        }
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

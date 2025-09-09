@@ -281,6 +281,7 @@ namespace Mengine
     PythonScriptService::PythonScriptService()
         : m_kernel( nullptr )
         , m_moduleMengine( nullptr )
+        , m_pyOldExcepthook( nullptr )
         , m_pyOldStdOutHandle( nullptr )
         , m_pyOldStdErrorHandle( nullptr )
         , m_initializeModules( false )
@@ -310,15 +311,18 @@ namespace Mengine
 
         m_kernel = kernel;
 
-        kernel->set_sys_excepthook( &Detail::py_excepthook, this );
+        m_pyOldExcepthook = m_kernel->get_sys_excepthook();
+        m_kernel->incref( m_pyOldExcepthook );
+
+        m_kernel->set_sys_excepthook_f( &Detail::py_excepthook, this );
 
         m_moduleMengine = this->initModule( "Mengine" );
 
         this->addGlobalModule( "Mengine", m_moduleMengine );
 
-        kernel->set_current_module( m_moduleMengine );
+        m_kernel->set_current_module( m_moduleMengine );
 
-        uint32_t python_version = kernel->get_python_version();
+        uint32_t python_version = m_kernel->get_python_version();
         this->addGlobalModuleT( "_PYTHON_VERSION", python_version );
 
         const Char * engineGITSHA1 = Helper::getEngineGitSHA1();
@@ -383,11 +387,11 @@ namespace Mengine
             .def_property( "softspace", &PythonScriptLogger::getSoftspace, &PythonScriptLogger::setSoftspace )
             ;
 
-        m_pyOldStdOutHandle = kernel->getStdOutHandle();
-        kernel->incref( m_pyOldStdOutHandle );
+        m_pyOldStdOutHandle = m_kernel->getStdOutHandle();
+        m_kernel->incref( m_pyOldStdOutHandle );
 
-        m_pyOldStdErrorHandle = kernel->getStdErrorHandle();
-        kernel->incref( m_pyOldStdErrorHandle );
+        m_pyOldStdErrorHandle = m_kernel->getStdErrorHandle();
+        m_kernel->incref( m_pyOldStdErrorHandle );
 
         PythonScriptLoggerPtr loggerWarning = Helper::makeFactorableUnique<PythonScriptLogger>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -395,7 +399,7 @@ namespace Mengine
         loggerWarning->setLoggerLevel( LM_MESSAGE );
 
         pybind::object py_logger = pybind::make_object_t( m_kernel, loggerWarning );
-        kernel->setStdOutHandle( py_logger.ptr() );
+        m_kernel->setStdOutHandle( py_logger.ptr() );
 
         m_loggerWarning = loggerWarning;
 
@@ -405,7 +409,7 @@ namespace Mengine
         loggerError->setLoggerLevel( LM_WARNING );
 
         pybind::object py_loggerError = pybind::make_object_t( m_kernel, loggerError );
-        kernel->setStdErrorHandle( py_loggerError.ptr() );
+        m_kernel->setStdErrorHandle( py_loggerError.ptr() );
 
         m_loggerError = loggerError;
 
@@ -472,7 +476,7 @@ namespace Mengine
 
         m_moduleFinder->setEmbed( py_moduleFinder );
 
-        kernel->set_module_finder( py_moduleFinder.ptr() );
+        m_kernel->set_module_finder( py_moduleFinder.ptr() );
 
         m_factoryScriptModule = Helper::makeFactoryPoolWithMutex<PythonScriptModule, 8>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryEntityEventable = Helper::makeFactoryPoolWithMutex<EntityEventable, 64>( MENGINE_DOCUMENT_FACTORABLE );
@@ -670,15 +674,18 @@ namespace Mengine
         m_kernel->set_current_module( nullptr );
         m_kernel->collect();
 
+        if( m_pyOldExcepthook != nullptr )
+        {
+            m_kernel->set_sys_excepthook( m_pyOldExcepthook );
+            m_kernel->decref( m_pyOldExcepthook );
+            m_pyOldExcepthook = nullptr;
+        }
+
         if( m_pyOldStdOutHandle != nullptr )
         {
             m_kernel->setStdOutHandle( m_pyOldStdOutHandle );
             m_kernel->decref( m_pyOldStdOutHandle );
             m_pyOldStdOutHandle = nullptr;
-        }
-        else
-        {
-            m_kernel->setStdOutHandle( nullptr );
         }
 
         if( m_pyOldStdErrorHandle != nullptr )
@@ -686,10 +693,6 @@ namespace Mengine
             m_kernel->setStdErrorHandle( m_pyOldStdErrorHandle );
             m_kernel->decref( m_pyOldStdErrorHandle );
             m_pyOldStdErrorHandle = nullptr;
-        }
-        else
-        {
-            m_kernel->setStdErrorHandle( nullptr );
         }
 
         m_bootstrapperModules.clear();

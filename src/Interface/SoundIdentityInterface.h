@@ -33,6 +33,7 @@ namespace Mengine
         : public Mixin
     {
     public:
+        virtual void onSoundPlay( const SoundIdentityInterfacePtr & _identity ) = 0;
         virtual void onSoundPause( const SoundIdentityInterfacePtr & _identity ) = 0;
         virtual void onSoundResume( const SoundIdentityInterfacePtr & _identity ) = 0;
         virtual void onSoundStop( const SoundIdentityInterfacePtr & _identity ) = 0;

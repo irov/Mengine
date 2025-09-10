@@ -12,6 +12,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    void AmplifierSoundListener::onSoundPlay( const SoundIdentityInterfacePtr & _identity )
+    {
+        m_callback->onMusicPlay( _identity );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void AmplifierSoundListener::onSoundPause( const SoundIdentityInterfacePtr & _identity )
     {
         m_callback->onMusicPause( _identity );

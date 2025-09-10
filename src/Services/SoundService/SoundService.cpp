@@ -876,6 +876,14 @@ namespace Mengine
 
                     this->playSoundBufferUpdate_( _identity );
                 }
+
+                const SoundListenerInterfacePtr & listener = _identity->getSoundListener();
+
+                if( listener != nullptr )
+                {
+                    SoundListenerInterfacePtr keep_listener = listener;
+                    keep_listener->onSoundPlay( _identity );
+                }
             }break;
         case ESS_PAUSE:
             {
@@ -1514,6 +1522,11 @@ namespace Mengine
             return _identity->getState() == ESS_PLAY;
         } );
 
+        LOGGER_MESSAGE( "current play sound count: %u total: %u"
+            , playCount
+            , (uint32_t)m_soundIdentities.size()
+        );
+
         uint32_t Limit_MaxSoundPlay = CONFIG_VALUE_INTEGER( "Limit", "MaxSoundPlay", 32 );
 
         if( playCount > Limit_MaxSoundPlay )
@@ -1521,7 +1534,7 @@ namespace Mengine
             Stringstream ss;
             ss << "max sound play count exceeded: " << Limit_MaxSoundPlay;
 
-#if defined(MENGINE_DEBUG)
+#if defined(MENGINE_LOGGER_INFO)
             Timestamp timestamp = Helper::getSystemTimestamp();
 
             for( const SoundIdentityInterfacePtr & identity : m_soundIdentities )
@@ -1536,6 +1549,7 @@ namespace Mengine
                     << "(doc: " << MENGINE_DOCUMENT_STR( identity->getDocument() ) << ")";
             }
 #endif
+
             LOGGER_ASSERTION( "%s", ss.str().c_str() );
 
             return false;

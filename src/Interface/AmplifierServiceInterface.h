@@ -13,6 +13,7 @@ namespace Mengine
         : public Mixin
     {
     public:
+        virtual void onMusicPlay( const SoundIdentityInterfacePtr & _identity ) = 0;
         virtual void onMusicPause( const SoundIdentityInterfacePtr & _identity ) = 0;
         virtual void onMusicResume( const SoundIdentityInterfacePtr & _identity ) = 0;
         virtual void onMusicStop( const SoundIdentityInterfacePtr & _identity ) = 0;

@@ -212,6 +212,18 @@ public abstract class MengineApplication extends Application {
         return m_sessionId;
     }
 
+    public String getDeviceManufacturer() {
+        String deviceManufacturer = android.os.Build.MANUFACTURER;
+
+        return deviceManufacturer;
+    }
+
+    public String getDeviceBrand() {
+        String deviceBrand = android.os.Build.BRAND;
+
+        return deviceBrand;
+    }
+
     public String getDeviceModel() {
         String deviceName = android.os.Build.MODEL;
 

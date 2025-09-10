@@ -328,11 +328,19 @@ namespace Mengine
             float delta = m_playTime - _context->current;
             totalTime -= delta;
 
-            MENGINE_ASSERTION_FATAL( totalTime >= 0.f, "totalTime %f < 0.f ['%s:%s']"
-                , totalTime
+            MENGINE_ASSERTION_FATAL( totalTime >= 0.f, "BaseAnimation name: %s type: %s calcTotalTime invalid totalTime %f < 0.f play time: %f context time: %f current: %f"
                 , MENGINE_MIXIN_DEBUG_NAME( this )
                 , MENGINE_MIXIN_DEBUG_TYPE( this )
+                , totalTime
+                , m_playTime
+                , _context->time
+                , _context->current
             );
+
+            if( totalTime < 0.f )
+            {
+                return 0.f;
+            }
         }
 
         float speedFactor = this->getAnimationSpeedFactor();

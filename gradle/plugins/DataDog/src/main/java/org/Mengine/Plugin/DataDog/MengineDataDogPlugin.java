@@ -183,6 +183,18 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
             long sessionRND = application.getSessionRND();
             attributes.put("session.rnd", sessionRND);
 
+            String osVersion = application.getOSVersion();
+            attributes.put("os.version", osVersion);
+
+            int sdkVersion = application.getSDKVersion();
+            attributes.put("os.sdk", sdkVersion);
+
+            String deviceManufacturer = application.getDeviceManufacturer();
+            attributes.put("device.manufacturer", deviceManufacturer);
+
+            String deviceBrand = application.getDeviceBrand();
+            attributes.put("device.brand", deviceBrand);
+
             String deviceModel = application.getDeviceModel();
             attributes.put("device.model", deviceModel);
 

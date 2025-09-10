@@ -23,6 +23,7 @@ namespace Mengine
         ~AmplifierSoundListener() override;
 
     protected:
+        void onSoundPlay( const SoundIdentityInterfacePtr & _identity ) override;
         void onSoundPause( const SoundIdentityInterfacePtr & _identity ) override;
         void onSoundResume( const SoundIdentityInterfacePtr & _identity ) override;
         void onSoundStop( const SoundIdentityInterfacePtr & _identity ) override;

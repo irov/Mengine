@@ -673,13 +673,13 @@ public class MengineUtils {
         return null;
     }
 
-    public static boolean openUrl(@NonNull Context context, String url) {
+    public static boolean openUrl(@NonNull MengineActivity activity, String url) {
         Uri uri = Uri.parse(url);
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         intent.addCategory(Intent.CATEGORY_BROWSABLE);
 
         try {
-            context.startActivity(intent);
+            activity.startActivity(intent);
         } catch (final ActivityNotFoundException e) {
             MengineLog.logWarning(TAG, "openUrl url: %s catch ActivityNotFoundException: %s"
                 , url

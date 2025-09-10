@@ -433,6 +433,13 @@ namespace Mengine
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
+    void SurfaceSound::onSoundPlay( const SoundIdentityInterfacePtr & _identity )
+    {
+        MENGINE_UNUSED( _identity );
+
+        // Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
     void SurfaceSound::onSoundPause( const SoundIdentityInterfacePtr & _identity )
     {
         MENGINE_UNUSED( _identity );

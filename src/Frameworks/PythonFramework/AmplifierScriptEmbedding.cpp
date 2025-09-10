@@ -76,6 +76,11 @@ namespace Mengine
                 }
 
             protected:
+                void onMusicPlay( const SoundIdentityInterfacePtr & _identity ) override
+                {
+                    this->call_method( "onAmplifierMusicPlay", _identity );
+                }
+
                 void onMusicPause( const SoundIdentityInterfacePtr & _identity ) override
                 {
                     this->call_method( "onAmplifierMusicPause", _identity );

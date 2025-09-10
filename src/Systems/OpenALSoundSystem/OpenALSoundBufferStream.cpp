@@ -398,10 +398,6 @@ namespace Mengine
 
         switch( state )
         {
-        case AL_INITIAL:
-            {
-                //Empty
-            }break;
         case AL_PLAYING:
             {
                 //Empty
@@ -410,6 +406,7 @@ namespace Mengine
             {
                 //Empty
             }break;
+        case AL_INITIAL:
         case AL_STOPPED:
             {
                 if( m_looped == false )
@@ -442,8 +439,8 @@ namespace Mengine
         decoder_data_body.size = MENGINE_OPENAL_STREAM_BUFFER_SIZE;
 
         size_t bytesWritten = m_soundDecoder->decode( &decoder_data_body );
-
-        if( bytesWritten != MENGINE_OPENAL_STREAM_BUFFER_SIZE && m_looped == true )
+        
+        if( m_looped == true && bytesWritten != MENGINE_OPENAL_STREAM_BUFFER_SIZE )
         {
             if( m_soundDecoder->rewind() == false )
             {
@@ -462,7 +459,8 @@ namespace Mengine
 
             bytesWritten += bytesWritten2;
         }
-        else if( bytesWritten == 0 )
+        
+        if( bytesWritten == 0 )
         {
             *_bytes = 0;
 

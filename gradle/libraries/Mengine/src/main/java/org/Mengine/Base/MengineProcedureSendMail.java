@@ -1,5 +1,6 @@
 package org.Mengine.Base;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -296,11 +297,11 @@ public class MengineProcedureSendMail implements MengineProcedureInterface {
 
         Intent chooser = Intent.createChooser(intent, "Send Email");
 
-        chooser.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         try {
             activity.startActivity(chooser);
-        } catch (Exception e) {
+        } catch (final ActivityNotFoundException e) {
             MengineLog.logError(TAG, "[ERROR] linkingOpenMail failed start mail: %s subject: %s body: %s exception: %s"
                 , m_email
                 , m_subject

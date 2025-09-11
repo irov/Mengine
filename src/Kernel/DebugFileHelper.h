@@ -20,7 +20,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _ptr );
 
-#if defined(MENGINE_DEBUG)
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
             const DebugFileInterface * debug = Helper::dynamicCast<const DebugFileInterface *>( _ptr );
 
             if( debug == nullptr )
@@ -41,7 +41,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _ptr );
 
-#if defined(MENGINE_DEBUG)
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
             const DebugFileInterface * base = Helper::dynamicCast<const DebugFileInterface *>( _ptr );
 
             if( base == nullptr )
@@ -62,7 +62,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _ptr );
 
-#if defined(MENGINE_DEBUG)
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
             const DebugFileInterface * base = Helper::dynamicCast<const DebugFileInterface *>( _ptr );
 
             if( base == nullptr )
@@ -83,7 +83,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _ptr );
 
-#if defined(MENGINE_DEBUG)
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
             Path fullPath = {'\0'};
 
             const FilePath & relationPath = Helper::getDebugRelationPath( _ptr );

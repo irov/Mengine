@@ -2,6 +2,8 @@
 
 #include "Interface/DebugFileInterface.h"
 
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+
 namespace Mengine
 {
     class BaseDebugFile
@@ -27,3 +29,5 @@ namespace Mengine
         FilePath m_debugFilePath;
     };
 }
+
+#endif

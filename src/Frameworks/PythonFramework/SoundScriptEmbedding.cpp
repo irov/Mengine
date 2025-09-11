@@ -516,7 +516,7 @@ namespace Mengine
                 if( SOUND_SERVICE()
                     ->playEmitter( soundIdentity ) == false )
                 {
-                    LOGGER_ERROR( "resource sound '%s' invalid play"
+                    LOGGER_WARNING( "resource sound '%s' invalid play"
                         , _resourceName.c_str()
                     );
 
@@ -607,7 +607,7 @@ namespace Mengine
                 if( SOUND_SERVICE()
                     ->playEmitter( soundIdentity ) == false )
                 {
-                    LOGGER_ERROR( "resource sound '%s' invalid play"
+                    LOGGER_WARNING( "resource sound '%s' invalid play"
                         , _resourceName.c_str()
                     );
 

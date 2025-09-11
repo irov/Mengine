@@ -110,8 +110,10 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
 
         boolean crashReportsEnabled = false;
 
+        boolean isBuildPublish = application.isBuildPublish();
+
         String clientToken = MengineDataDogPlugin_ClientToken;
-        String envName = (BuildConfig.DEBUG == true) ? "dev" : "prod";
+        String envName = (isBuildPublish == true) ? "dev" : "prod";
         String variant = "";
 
         Configuration config = new Configuration.Builder(clientToken, envName, variant)
@@ -201,6 +203,12 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
             logger.addAttribute("mng_base", attributes);
         } catch (JSONException e) {
             this.logException(e, Map.of());
+        }
+
+        if (BuildConfig.DEBUG == true) {
+            logger.addTag("debug");
+        } else {
+            logger.addTag("release");
         }
 
         m_loggerDataDog = logger;

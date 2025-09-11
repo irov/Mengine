@@ -9,6 +9,7 @@ def ANDROID_APP_MAIN_PROJECT = Utils.getStringProperty("ANDROID_APP_MAIN_PROJECT
 def MENGINE_APP_DEPLOY_PATH = Utils.getStringProperty("MENGINE_APP_DEPLOY_PATH", rootProject.projectDir.getAbsolutePath() + "/$ANDROID_APP_MAIN_PROJECT")
 def MENGINE_APP_BUILD_ASSERTION_DEBUG = Utils.getIntegerProperty("MENGINE_APP_BUILD_ASSERTION_DEBUG", -1)
 def MENGINE_APP_BUILD_LOGGER_INFO = Utils.getIntegerProperty("MENGINE_APP_BUILD_LOGGER_INFO", -1)
+def MENGINE_APP_DEBUG_FILE_PATH = Utils.getIntegerProperty("MENGINE_APP_DEBUG_FILE_PATH", -1)
 def MENGINE_APP_ENABLE_STRICT_MODE = Utils.getBooleanProperty("MENGINE_APP_ENABLE_STRICT_MODE", false)
 
 def ANDROID_APP_SCREEN_ORIENTATION = Utils.getStringProperty("ANDROID_APP_SCREEN_ORIENTATION", "sensorPortrait")
@@ -76,6 +77,10 @@ android {
                     if (MENGINE_APP_BUILD_LOGGER_INFO != -1) {
                         cppFlags += ["-DMENGINE_LOGGER_INFO=${MENGINE_APP_BUILD_LOGGER_INFO}"]
                     }
+
+                    if (MENGINE_APP_DEBUG_FILE_PATH != -1) {
+                        cppFlags += ["-DMENGINE_DEBUG_FILE_PATH=${MENGINE_APP_DEBUG_FILE_PATH}"]
+                    }
                 }
             }
         }
@@ -95,6 +100,10 @@ android {
 
                     if (MENGINE_APP_BUILD_LOGGER_INFO != -1) {
                         cppFlags += ["-DMENGINE_LOGGER_INFO=${MENGINE_APP_BUILD_LOGGER_INFO}"]
+                    }
+
+                    if (MENGINE_APP_DEBUG_FILE_PATH != -1) {
+                        cppFlags += ["-DMENGINE_DEBUG_FILE_PATH=${MENGINE_APP_DEBUG_FILE_PATH}"]
                     }
                 }
             }

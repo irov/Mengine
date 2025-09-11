@@ -5,7 +5,7 @@
 #include "Kernel/PathHelper.h"
 #include "Kernel/PathString.h"
 
-#if defined(MENGINE_DEBUG)
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
 #   include "Config/Path.h"
 #   include "Config/DynamicCast.h"
 #endif

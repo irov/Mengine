@@ -21,6 +21,7 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.ActivityResultRegistry;
+import androidx.activity.result.IntentSenderRequest;
 import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -220,10 +221,18 @@ public class MengineActivity extends AppCompatActivity {
         }
     }
 
-    public ActivityResultLauncher<Intent> registerForActivityResult(@NonNull ActivityResultCallback<ActivityResult> callback) {
+    public ActivityResultLauncher<Intent> registerForActivityResultIntent(@NonNull ActivityResultCallback<ActivityResult> callback) {
         ActivityResultContract<Intent, ActivityResult> contract = new ActivityResultContracts.StartActivityForResult();
 
         ActivityResultLauncher<Intent> launcher = this.registerForActivityResult(contract, callback);
+
+        return launcher;
+    }
+
+    public ActivityResultLauncher<IntentSenderRequest> registerForActivityResultIntentSender(@NonNull ActivityResultCallback<ActivityResult> callback) {
+        ActivityResultContract<IntentSenderRequest, ActivityResult> contract = new ActivityResultContracts.StartIntentSenderForResult();
+
+        ActivityResultLauncher<IntentSenderRequest> launcher = this.registerForActivityResult(contract, callback);
 
         return launcher;
     }

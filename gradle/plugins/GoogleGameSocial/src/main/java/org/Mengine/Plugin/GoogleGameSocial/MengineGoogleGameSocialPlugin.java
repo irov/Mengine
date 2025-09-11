@@ -1,12 +1,17 @@
 package org.Mengine.Plugin.GoogleGameSocial;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.IntentSenderRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.games.AchievementsClient;
 import com.google.android.gms.games.AuthenticationResult;
 import com.google.android.gms.games.EventsClient;
@@ -34,6 +39,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
 
     private ActivityResultLauncher<Intent> m_achievementLauncher;
     private ActivityResultLauncher<Intent> m_leaderboardLauncher;
+    private ActivityResultLauncher<IntentSenderRequest> m_gamesResolutionLauncher;
 
     private GamesSignInClient m_gamesSignInClient;
     private AchievementsClient m_achievementsClient;
@@ -58,7 +64,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
 
     @Override
     public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
-        ActivityResultLauncher<Intent> achievementLauncher = activity.registerForActivityResult(result -> {
+        ActivityResultLauncher<Intent> achievementLauncher = activity.registerForActivityResultIntent(result -> {
             if (result.getResultCode() == Activity.RESULT_OK) {
                 Intent data = result.getData();
 
@@ -72,7 +78,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
 
         m_achievementLauncher = achievementLauncher;
 
-        ActivityResultLauncher<Intent> leaderboardLauncher = activity.registerForActivityResult(result -> {
+        ActivityResultLauncher<Intent> leaderboardLauncher = activity.registerForActivityResultIntent(result -> {
             if (result.getResultCode() == Activity.RESULT_OK) {
                 Intent data = result.getData();
 
@@ -81,10 +87,34 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                 );
 
                 this.nativeCall("onGoogleGameSocialShowLeaderboardSuccess");
+            } else {
+                this.logInfo("leaderboardLauncher onActivityResult resultCode: %d"
+                    , result.getResultCode()
+                );
             }
         });
 
         m_leaderboardLauncher = leaderboardLauncher;
+
+
+
+        ActivityResultLauncher<IntentSenderRequest> gamesResolutionLauncher = activity.registerForActivityResultIntentSender(result -> {
+            if (result.getResultCode() == Activity.RESULT_OK) {
+                Intent data = result.getData();
+
+                this.logInfo("gamesResolutionLauncher onActivityResult intent: %s",
+                    data
+                );
+
+                this.signInIntent();
+            } else {
+                this.logInfo("gamesResolutionLauncher onActivityResult resultCode: %d",
+                    result.getResultCode()
+                );
+            }
+        });
+
+        m_gamesResolutionLauncher = gamesResolutionLauncher;
 
         m_gamesSignInClient = PlayGames.getGamesSignInClient(activity);
         m_achievementsClient = PlayGames.getAchievementsClient(activity);
@@ -104,6 +134,12 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
             m_leaderboardLauncher.unregister();
 
             m_leaderboardLauncher = null;
+        }
+
+        if (m_gamesResolutionLauncher != null) {
+            m_gamesResolutionLauncher.unregister();
+
+            m_gamesResolutionLauncher = null;
         }
 
         m_gamesSignInClient = null;
@@ -181,6 +217,40 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
         m_gamesSignInClient.signIn().addOnCompleteListener(task -> {
             if (task.isSuccessful() == false) {
                 Exception e = task.getException();
+
+                if (e instanceof ResolvableApiException) {
+                    ResolvableApiException resolvable = (ResolvableApiException)e;
+                    PendingIntent pendingIntent = resolvable.getResolution();
+
+                    if (pendingIntent == null) {
+                        this.logInfo("signInIntent ResolvableApiException resolution null");
+
+                        this.nativeCall("onGoogleGameSocialSignInIntentError", e);
+
+                        return;
+                    }
+
+                    try {
+                        IntentSender sender = pendingIntent.getIntentSender();
+
+                        IntentSenderRequest request = new IntentSenderRequest.Builder(sender)
+                            .build();
+
+                        if (m_gamesResolutionLauncher != null) {
+                            m_gamesResolutionLauncher.launch(request);
+                        } else {
+                            this.logError("[ERROR] signInIntent gamesResolutionLauncher not available");
+
+                            this.nativeCall("onGoogleGameSocialSignInIntentError", e);
+                        }
+                    } catch (Exception ex) {
+                        this.logException(ex, Map.of());
+
+                        this.nativeCall("onGoogleGameSocialSignInIntentError", ex);
+                    }
+
+                    return;
+                }
 
                 if (e != null) {
                     this.logException(e, Map.of());

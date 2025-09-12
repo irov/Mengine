@@ -44,7 +44,7 @@ namespace Mengine
     {
         MENGINE_THREAD_GUARD_SCOPE( Win32FileInputStream, this );
 
-#if defined(MENGINE_DEBUG)
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
         this->setDebugRelationPath( _relationPath );
         this->setDebugFolderPath( _folderPath );
         this->setDebugFilePath( _filePath );

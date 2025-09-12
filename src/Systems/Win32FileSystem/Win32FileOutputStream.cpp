@@ -31,7 +31,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileOutputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, bool _withTemp )
     {
-#if defined(MENGINE_DEBUG)
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
         this->setDebugRelationPath( _relationPath );
         this->setDebugFolderPath( _folderPath );
         this->setDebugFilePath( _filePath );

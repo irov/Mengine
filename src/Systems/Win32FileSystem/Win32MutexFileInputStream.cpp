@@ -52,7 +52,7 @@ namespace Mengine
         MENGINE_UNUSED( _streaming );
         MENGINE_UNUSED( _share );
 
-#if defined(MENGINE_DEBUG)
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
         this->setDebugRelationPath( _relationPath );
         this->setDebugFolderPath( _folderPath );
         this->setDebugFilePath( _filePath );

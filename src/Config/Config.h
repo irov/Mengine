@@ -296,10 +296,16 @@
 #   define MENGINE_DOCUMENT_ARGUMENTS(...)
 #endif
 
-#if defined(MENGINE_DOCUMENT_ENABLE)
-#   define MENGINE_DOCUMENT_STR(Doc) ((Doc)->getMessage())
-#else
-#   define MENGINE_DOCUMENT_STR(Doc) MENGINE_STRING_EMPTY
+#if !defined(MENGINE_DEBUG_FILE_PATH)
+#   if defined(MENGINE_DEBUG)
+#       define MENGINE_DEBUG_FILE_PATH 1
+#   else
+#       define MENGINE_DEBUG_FILE_PATH 0
+#   endif
+#endif
+
+#if MENGINE_DEBUG_FILE_PATH == 1
+#   define MENGINE_DEBUG_FILE_PATH_ENABLE
 #endif
 
 #ifndef MENGINE_CONSTEXPR

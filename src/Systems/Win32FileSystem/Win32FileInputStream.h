@@ -7,8 +7,6 @@
 #include "Kernel/Factorable.h"
 #include "Kernel/ThreadGuardScope.h"
 
-#include "Kernel/BaseDebugFile.h"
-
 #ifndef MENGINE_WIN32_FILE_STREAM_BUFFER_SIZE
 #define MENGINE_WIN32_FILE_STREAM_BUFFER_SIZE 4096
 #endif
@@ -19,9 +17,6 @@ namespace Mengine
     class Win32FileInputStream
         : public FileInputStreamInterface
         , public Factorable
-#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
-        , public BaseDebugFile
-#endif
     {
         DECLARE_FACTORABLE( Win32FileInputStream );
 

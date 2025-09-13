@@ -129,7 +129,6 @@ Common
     DateTimeSystemInterface.h
     HttpServiceInterface.h
     HttpSystemInterface.h
-    DebugFileInterface.h
     TimerServiceInterface.h
     MixerMultiplicativeInterface.h
     MixerAveragingInterface.h

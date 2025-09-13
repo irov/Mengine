@@ -6,7 +6,6 @@
 
 #include "Kernel/Factorable.h"
 #include "Kernel/ThreadGuard.h"
-#include "Kernel/BaseDebugFile.h"
 
 #ifndef MENGINE_FILE_STREAM_BUFFER_SIZE
 #define MENGINE_FILE_STREAM_BUFFER_SIZE 4096
@@ -18,9 +17,6 @@ namespace Mengine
     class AndroidAssetInputStream
         : public FileInputStreamInterface
         , public Factorable
-#if defined(MENGINE_DEBUG)
-        , public BaseDebugFile
-#endif
     {
         DECLARE_FACTORABLE( AndroidAssetInputStream );
 

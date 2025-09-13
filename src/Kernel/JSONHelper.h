@@ -4,6 +4,7 @@
 #include "Interface/ContentInterface.h"
 #include "Interface/FileGroupInterface.h"
 #include "Interface/MemoryInterface.h"
+#include "Interface/DocumentInterface.h"
 
 #include "Kernel/JSON.h"
 #include "Kernel/String.h"

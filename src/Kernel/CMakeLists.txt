@@ -879,9 +879,6 @@ Core
     
     BaseDebuggerBoundingBox.h
     
-    BaseDebugFile.h
-    BaseDebugFile.cpp
-    
     DebugFileHelper.h
     
     Event.h

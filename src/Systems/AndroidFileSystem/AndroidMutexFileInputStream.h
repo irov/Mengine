@@ -7,19 +7,12 @@
 
 #include "Kernel/Factorable.h"
 
-#if defined(MENGINE_DEBUG)
-#   include "Kernel/BaseDebugFile.h"
-#endif
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class AndroidMutexFileInputStream
         : public FileInputStreamInterface
         , public Factorable
-#if defined(MENGINE_DEBUG)
-        , public BaseDebugFile
-#endif
     {
         DECLARE_FACTORABLE( AndroidMutexFileInputStream );
 

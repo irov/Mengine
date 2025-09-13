@@ -6,16 +6,11 @@
 
 #include "Kernel/Factorable.h"
 
-#include "Kernel/BaseDebugFile.h"
-
 namespace Mengine
 {
     class Win32FileOutputStream
         : public FileOutputStreamInterface
         , public Factorable
-#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
-        , public BaseDebugFile
-#endif
     {
         DECLARE_FACTORABLE( Win32FileOutputStream );
 

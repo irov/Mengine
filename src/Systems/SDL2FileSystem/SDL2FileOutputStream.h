@@ -6,19 +6,12 @@
 
 #include "Kernel/Factorable.h"
 
-#if defined(MENGINE_DEBUG)
-#   include "Kernel/BaseDebugFile.h"
-#endif
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class SDL2FileOutputStream
         : public FileOutputStreamInterface
         , public Factorable
-#if defined(MENGINE_DEBUG)
-        , public BaseDebugFile
-#endif
     {
         DECLARE_FACTORABLE( SDL2FileOutputStream );
 

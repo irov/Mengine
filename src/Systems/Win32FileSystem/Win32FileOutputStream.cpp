@@ -11,6 +11,7 @@
 #include "Kernel/StatisticHelper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
+#include "Kernel/DebugFileHelper.h"
 
 #include "Config/Path.h"
 
@@ -31,12 +32,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileOutputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, bool _withTemp )
     {
-#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
-        this->setDebugRelationPath( _relationPath );
-        this->setDebugFolderPath( _folderPath );
-        this->setDebugFilePath( _filePath );
-#endif
-
         m_relationPath = _relationPath;
         m_folderPath = _folderPath;
         m_filePath = _filePath;
@@ -96,11 +91,12 @@ namespace Mengine
 #if defined(MENGINE_DEBUG)
         if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
         {
-            const FilePath & folderPath = this->getDebugFolderPath();
-            const FilePath & filePath = this->getDebugFilePath();
-
-            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_OPEN_FILE, folderPath, filePath, false, false );
+            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_OPEN_FILE, m_folderPath, m_filePath, false, false );
         }
+#endif
+
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+        Helper::addDebugFilePath( this, _relationPath, _folderPath, _filePath );
 #endif
 
         return true;
@@ -116,10 +112,7 @@ namespace Mengine
 #if defined(MENGINE_DEBUG)
         if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
         {
-            const FilePath & folderPath = this->getDebugFolderPath();
-            const FilePath & filePath = this->getDebugFilePath();
-
-            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CLOSE_FILE, folderPath, filePath, false, false );
+            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CLOSE_FILE, m_folderPath, m_filePath, false, false );
         }
 #endif
 
@@ -163,6 +156,10 @@ namespace Mengine
                 return false;
             }
         }
+
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+        Helper::removeDebugFilePath( this );
+#endif
 
         return successful;
     }

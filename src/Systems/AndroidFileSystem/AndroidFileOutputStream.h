@@ -5,19 +5,12 @@
 #include "Kernel/Factorable.h"
 #include "Kernel/ThreadGuard.h"
 
-#if defined(MENGINE_DEBUG)
-#   include "Kernel/BaseDebugFile.h"
-#endif
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class AndroidFileOutputStream
         : public FileOutputStreamInterface
         , public Factorable
-#if defined(MENGINE_DEBUG)
-        , public BaseDebugFile
-#endif
     {
         DECLARE_FACTORABLE( AndroidFileOutputStream );
 

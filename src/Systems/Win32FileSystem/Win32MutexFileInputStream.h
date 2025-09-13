@@ -7,17 +7,12 @@
 
 #include "Kernel/Factorable.h"
 
-#include "Kernel/BaseDebugFile.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class Win32MutexFileInputStream
         : public FileInputStreamInterface
         , public Factorable
-#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
-        , public BaseDebugFile
-#endif
     {
         DECLARE_FACTORABLE( Win32MutexFileInputStream );
 

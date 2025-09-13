@@ -9,7 +9,8 @@ def ANDROID_APP_MAIN_PROJECT = Utils.getStringProperty("ANDROID_APP_MAIN_PROJECT
 def MENGINE_APP_DEPLOY_PATH = Utils.getStringProperty("MENGINE_APP_DEPLOY_PATH", rootProject.projectDir.getAbsolutePath() + "/$ANDROID_APP_MAIN_PROJECT")
 def MENGINE_APP_BUILD_ASSERTION_DEBUG = Utils.getIntegerProperty("MENGINE_APP_BUILD_ASSERTION_DEBUG", -1)
 def MENGINE_APP_BUILD_LOGGER_INFO = Utils.getIntegerProperty("MENGINE_APP_BUILD_LOGGER_INFO", -1)
-def MENGINE_APP_DEBUG_FILE_PATH = Utils.getIntegerProperty("MENGINE_APP_DEBUG_FILE_PATH", -1)
+def MENGINE_APP_BUILD_DEBUG_FILE_PATH = Utils.getIntegerProperty("MENGINE_APP_BUILD_DEBUG_FILE_PATH", -1)
+def MENGINE_APP_BUILD_DEBUG_DOCUMENT = Utils.getIntegerProperty("MENGINE_APP_BUILD_DEBUG_DOCUMENT", -1)
 def MENGINE_APP_ENABLE_STRICT_MODE = Utils.getBooleanProperty("MENGINE_APP_ENABLE_STRICT_MODE", false)
 
 def ANDROID_APP_SCREEN_ORIENTATION = Utils.getStringProperty("ANDROID_APP_SCREEN_ORIENTATION", "sensorPortrait")
@@ -20,6 +21,11 @@ def MENGINE_APP_LIBRARY_OPENAL32 = Utils.existAppLibrary("MENGINE_APP_LIBRARY_OP
 
 println("MENGINE_APP_SECURE_VALUE: $MENGINE_APP_SECURE_VALUE")
 println("MENGINE_APP_DEPLOY_PATH: $MENGINE_APP_DEPLOY_PATH")
+
+println("MENGINE_APP_BUILD_ASSERTION_DEBUG: $MENGINE_APP_BUILD_ASSERTION_DEBUG")
+println("MENGINE_APP_BUILD_LOGGER_INFO: $MENGINE_APP_BUILD_LOGGER_INFO")
+println("MENGINE_APP_BUILD_DEBUG_FILE_PATH: $MENGINE_APP_BUILD_DEBUG_FILE_PATH")
+println("MENGINE_APP_BUILD_DEBUG_DOCUMENT: $MENGINE_APP_BUILD_DEBUG_DOCUMENT")
 
 println("MENGINE_APP_ENABLE_STRICT_MODE: $MENGINE_APP_ENABLE_STRICT_MODE")
 
@@ -78,8 +84,12 @@ android {
                         cppFlags += ["-DMENGINE_LOGGER_INFO=${MENGINE_APP_BUILD_LOGGER_INFO}"]
                     }
 
-                    if (MENGINE_APP_DEBUG_FILE_PATH != -1) {
-                        cppFlags += ["-DMENGINE_DEBUG_FILE_PATH=${MENGINE_APP_DEBUG_FILE_PATH}"]
+                    if (MENGINE_APP_BUILD_DEBUG_FILE_PATH != -1) {
+                        cppFlags += ["-DMENGINE_DEBUG_FILE_PATH=${MENGINE_APP_BUILD_DEBUG_FILE_PATH}"]
+                    }
+
+                    if (MENGINE_APP_BUILD_DEBUG_DOCUMENT != -1) {
+                        cppFlags += ["-DMENGINE_DOCUMENT=${MENGINE_APP_BUILD_DEBUG_DOCUMENT}"]
                     }
                 }
             }
@@ -102,8 +112,12 @@ android {
                         cppFlags += ["-DMENGINE_LOGGER_INFO=${MENGINE_APP_BUILD_LOGGER_INFO}"]
                     }
 
-                    if (MENGINE_APP_DEBUG_FILE_PATH != -1) {
-                        cppFlags += ["-DMENGINE_DEBUG_FILE_PATH=${MENGINE_APP_DEBUG_FILE_PATH}"]
+                    if (MENGINE_APP_BUILD_DEBUG_FILE_PATH != -1) {
+                        cppFlags += ["-DMENGINE_DEBUG_FILE_PATH=${MENGINE_APP_BUILD_DEBUG_FILE_PATH}"]
+                    }
+
+                    if (MENGINE_APP_BUILD_DEBUG_DOCUMENT != -1) {
+                        cppFlags += ["-DMENGINE_DOCUMENT=${MENGINE_APP_BUILD_DEBUG_DOCUMENT}"]
                     }
                 }
             }

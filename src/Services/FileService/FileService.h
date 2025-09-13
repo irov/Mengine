@@ -6,8 +6,7 @@
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Hashtable.h"
 #include "Kernel/Vector.h"
-
-#include "Config/Atomic.h"
+#include "Kernel/UnorderedMap.h"
 
 namespace Mengine
 {
@@ -33,8 +32,33 @@ namespace Mengine
         bool hasFileGroup( const ConstString & _fileGroupName, FileGroupInterfacePtr * const _fileGroup ) const override;
         const FileGroupInterfacePtr & getFileGroup( const ConstString & _fileGroupName ) const override;
 
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+    public:
+        void addDebugFilePath( UniqueId _id, const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath ) override;
+        void removeDebugFilePath( UniqueId _id ) override;
+
+    public:
+        const FilePath & getDebugRelationPath( UniqueId _id ) const override;
+        const FilePath & getDebugFolderPath( UniqueId _id ) const override;
+        const FilePath & getDebugFilePath( UniqueId _id ) const override;
+#endif
+
     protected:
         typedef Hashtable<ConstString, FileGroupInterfacePtr> HashtableFileGroups;
         HashtableFileGroups m_fileGroups;
+
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+        ThreadMutexInterfacePtr m_debugFilePathsMutex;
+
+        struct DebugFilePath
+        {
+            FilePath relationPath;
+            FilePath folderPath;
+            FilePath filePath;
+        };
+
+        typedef UnorderedMap<UniqueId, DebugFilePath> UnorderedMapDebugFilePaths;
+        UnorderedMapDebugFilePaths m_debugFilePaths;
+#endif
     };
 }

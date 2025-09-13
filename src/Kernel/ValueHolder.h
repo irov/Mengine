@@ -1,7 +1,8 @@
 #pragma once
 
+#include "Interface/DocumentInterface.h"
+
 #include "Kernel/Factorable.h"
-#include "Kernel/Documentable.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine

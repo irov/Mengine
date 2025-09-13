@@ -6,7 +6,6 @@
 #include "AppleFileInputStream.h"
 
 #include "Kernel/Factorable.h"
-#include "Kernel/BaseDebugFile.h"
 
 namespace Mengine
 {
@@ -14,9 +13,6 @@ namespace Mengine
     class AppleMutexFileInputStream
         : public FileInputStreamInterface
         , public Factorable
-#if defined(MENGINE_DEBUG)
-        , public BaseDebugFile
-#endif
     {
         DECLARE_FACTORABLE( AppleMutexFileInputStream );
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/DebugFileInterface.h"
+#include "Interface/FileServiceInterface.h"
 
 #include "Kernel/PathHelper.h"
 #include "Kernel/PathString.h"
@@ -16,19 +16,62 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         template<class T>
+        void addDebugFilePath( const T * _ptr, const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath )
+        {
+            MENGINE_UNUSED( _ptr );
+            MENGINE_UNUSED( _relationPath );
+            MENGINE_UNUSED( _folderPath );
+            MENGINE_UNUSED( _filePath );
+
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+            const Factorable * factorable = Helper::dynamicCast<const Factorable *>( _ptr );
+
+            UniqueId id = factorable->getUniqueIdentity();
+
+            FILE_SERVICE()
+                ->addDebugFilePath( id, _relationPath, _folderPath, _filePath );
+#endif
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        void addDebugFilePath( const IntrusivePtr<T> & _ptr, const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath )
+        {
+            return Helper::addDebugFilePath( _ptr.get(), _relationPath, _folderPath, _filePath );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        void removeDebugFilePath( const T * _ptr )
+        {
+            MENGINE_UNUSED( _ptr );
+
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+            const Factorable * factorable = Helper::dynamicCast<const Factorable *>( _ptr );
+
+            UniqueId id = factorable->getUniqueIdentity();
+
+            FILE_SERVICE()
+                ->removeDebugFilePath( id );
+#endif
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        void removeDebugFilePath( const IntrusivePtr<T> & _ptr )
+        {
+            return Helper::removeDebugFilePath( _ptr.get() );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
         const FilePath & getDebugRelationPath( const T * _ptr )
         {
             MENGINE_UNUSED( _ptr );
 
 #if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
-            const DebugFileInterface * debug = Helper::dynamicCast<const DebugFileInterface *>( _ptr );
+            const Factorable * factorable = Helper::dynamicCast<const Factorable *>( _ptr );
 
-            if( debug == nullptr )
-            {
-                return FilePath::none();
-            }
+            UniqueId id = factorable->getUniqueIdentity();
 
-            const FilePath & relationPath = debug->getDebugRelationPath();
+            const FilePath & relationPath = FILE_SERVICE()
+                ->getDebugRelationPath( id );
 
             return relationPath;
 #else
@@ -42,14 +85,12 @@ namespace Mengine
             MENGINE_UNUSED( _ptr );
 
 #if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
-            const DebugFileInterface * base = Helper::dynamicCast<const DebugFileInterface *>( _ptr );
+            const Factorable * factorable = Helper::dynamicCast<const Factorable *>( _ptr );
 
-            if( base == nullptr )
-            {
-                return FilePath::none();
-            }
+            UniqueId id = factorable->getUniqueIdentity();
 
-            const FilePath & folderPath = base->getDebugFolderPath();
+            const FilePath & folderPath = FILE_SERVICE()
+                ->getDebugFolderPath( id );
 
             return folderPath;
 #else
@@ -63,14 +104,12 @@ namespace Mengine
             MENGINE_UNUSED( _ptr );
 
 #if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
-            const DebugFileInterface * base = Helper::dynamicCast<const DebugFileInterface *>( _ptr );
+            const Factorable * factorable = Helper::dynamicCast<const Factorable *>( _ptr );
 
-            if( base == nullptr )
-            {
-                return FilePath::none();
-            }
+            UniqueId id = factorable->getUniqueIdentity();
 
-            const FilePath & filePath = base->getDebugFilePath();
+            const FilePath & filePath = FILE_SERVICE()
+                ->getDebugFilePath( id );
 
             return filePath;
 #else

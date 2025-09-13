@@ -40,12 +40,6 @@ namespace Mengine
     {
         MENGINE_THREAD_GUARD_SCOPE( AndroidAssetInputStream, this );
 
-#if defined(MENGINE_DEBUG)
-        this->setDebugRelationPath( _relationPath );
-        this->setDebugFolderPath( _folderPath );
-        this->setDebugFilePath( _filePath );
-#endif
-
         m_streaming = _streaming;
         m_share = _share;
 
@@ -102,6 +96,10 @@ namespace Mengine
             }
         }
 
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+        Helper::addDebugFilePath( this, _relationPath, _folderPath, _filePath );
+#endif
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -135,10 +133,7 @@ namespace Mengine
 #if defined(MENGINE_DEBUG)
         if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
         {
-            const FilePath & folderPath = this->getDebugFolderPath();
-            const FilePath & filePath = this->getDebugFilePath();
-
-            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_OPEN_FILE, folderPath, filePath, true, m_streaming );
+            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_OPEN_FILE, _folderPath, _filePath, true, m_streaming );
         }
 #endif
 
@@ -157,8 +152,8 @@ namespace Mengine
 #if defined(MENGINE_DEBUG)
         if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
         {
-            const FilePath & folderPath = this->getDebugFolderPath();
-            const FilePath & filePath = this->getDebugFilePath();
+            const FilePath & folderPath = Helper::getDebugFolderPath( this );
+            const FilePath & filePath = Helper::getDebugFilePath( this );
 
             NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CLOSE_FILE, folderPath, filePath, false, m_streaming );
         }
@@ -168,6 +163,10 @@ namespace Mengine
             ->close( m_asset );
 
         m_asset = nullptr;
+
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+        Helper::removeDebugFilePath( this );
+#endif
 
         return true;
     }

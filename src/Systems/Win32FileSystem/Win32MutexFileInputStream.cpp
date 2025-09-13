@@ -13,6 +13,7 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
 #include "Kernel/MemoryCopy.h"
+#include "Kernel/DebugFileHelper.h"
 
 #include "Config/StdAlgorithm.h"
 
@@ -52,12 +53,6 @@ namespace Mengine
         MENGINE_UNUSED( _streaming );
         MENGINE_UNUSED( _share );
 
-#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
-        this->setDebugRelationPath( _relationPath );
-        this->setDebugFolderPath( _folderPath );
-        this->setDebugFilePath( _filePath );
-#endif
-
         size_t size = m_stream->size();
 
         if( _size != MENGINE_UNKNOWN_SIZE )
@@ -89,6 +84,10 @@ namespace Mengine
         m_capacity = 0;
         m_reading = 0;
 
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+        Helper::addDebugFilePath( this, _relationPath, _folderPath, _filePath );
+#endif
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -96,6 +95,10 @@ namespace Mengine
     {
         m_stream = nullptr;
         m_mutex = nullptr;
+
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+        Helper::removeDebugFilePath( this );
+#endif
 
         return true;
     }

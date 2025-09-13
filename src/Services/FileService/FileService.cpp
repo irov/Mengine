@@ -45,11 +45,23 @@ namespace Mengine
             return false;
         }
 
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+        m_debugFilePathsMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void FileService::_finalizeService()
     {
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+        m_debugFilePathsMutex = nullptr;
+
+        MENGINE_ASSERTION_CONTAINER_EMPTY( m_debugFilePaths );
+
+        m_debugFilePaths.clear();
+#endif
+
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Content" ), STRINGIZE_STRING_LOCAL( "File" ), nullptr );
 
@@ -196,5 +208,88 @@ namespace Mengine
 
         return fileGroup;
     }
+    //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+    //////////////////////////////////////////////////////////////////////////
+    void FileService::addDebugFilePath( UniqueId _id, const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath )
+    {
+        MENGINE_THREAD_MUTEX_SCOPE( m_debugFilePathsMutex );
+
+        DebugFilePath dfp;
+        dfp.relationPath = _relationPath;
+        dfp.folderPath = _folderPath;
+        dfp.filePath = _filePath;
+
+        auto result = m_debugFilePaths.emplace( _id, dfp );
+
+        MENGINE_UNUSED( result );
+        
+        MENGINE_ASSERTION_FATAL( result.second == true, "already add debug file path id %u"
+            , _id
+        );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void FileService::removeDebugFilePath( UniqueId _id )
+    {
+        MENGINE_THREAD_MUTEX_SCOPE( m_debugFilePathsMutex );
+
+        UnorderedMapDebugFilePaths::iterator it_found = m_debugFilePaths.find( _id );
+
+        MENGINE_ASSERTION_FATAL( it_found != m_debugFilePaths.end(), "not found debug file path id %u"
+            , _id
+        );
+
+        m_debugFilePaths.erase( it_found );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const FilePath & FileService::getDebugRelationPath( UniqueId _id ) const
+    {
+        MENGINE_THREAD_MUTEX_SCOPE( m_debugFilePathsMutex );
+
+        UnorderedMapDebugFilePaths::const_iterator it_found = m_debugFilePaths.find( _id );
+
+        if( it_found == m_debugFilePaths.end() )
+        {
+            return FilePath::none();
+        }
+
+        const DebugFilePath & dfp = it_found->second;
+
+        return dfp.relationPath;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const FilePath & FileService::getDebugFolderPath( UniqueId _id ) const
+    {
+        MENGINE_THREAD_MUTEX_SCOPE( m_debugFilePathsMutex );
+
+        UnorderedMapDebugFilePaths::const_iterator it_found = m_debugFilePaths.find( _id );
+
+        if( it_found == m_debugFilePaths.end() )
+        {
+            return FilePath::none();
+        }
+
+        const DebugFilePath & dfp = it_found->second;
+
+        return dfp.folderPath;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const FilePath & FileService::getDebugFilePath( UniqueId _id ) const
+    {
+        MENGINE_THREAD_MUTEX_SCOPE( m_debugFilePathsMutex );
+
+        UnorderedMapDebugFilePaths::const_iterator it_found = m_debugFilePaths.find( _id );
+
+        if( it_found == m_debugFilePaths.end() )
+        {
+            return FilePath::none();
+        }
+
+        const DebugFilePath & dfp = it_found->second;
+
+        return dfp.filePath;
+    }
+    //////////////////////////////////////////////////////////////////////////
+#endif
     //////////////////////////////////////////////////////////////////////////
 }

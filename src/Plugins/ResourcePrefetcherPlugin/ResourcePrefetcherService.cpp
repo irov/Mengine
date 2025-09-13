@@ -41,7 +41,7 @@ namespace Mengine
     bool ResourcePrefetcherService::_initializeService()
     {
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [MENGINE_DEBUG_ARGUMENTS( this )]()
+        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [MENGINE_DOCUMENT_ARGUMENTS( this )]()
         {
             SCRIPT_SERVICE()
                 ->addScriptEmbedding( ResourcePrefetcherScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<ResourcePrefetcherScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );

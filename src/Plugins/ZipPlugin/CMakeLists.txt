@@ -10,6 +10,8 @@ src
     FileGroupZip.cpp
     ArchivatorZip.h
     ArchivatorZip.cpp
+    ZipMemoryInputStream.h
+    ZipMemoryInputStream.cpp
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_CONFIG_DIR}/zlib)

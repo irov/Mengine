@@ -457,7 +457,7 @@ namespace Mengine
             , Helper::getContentFullPath( _content ).c_str()
         );
 
-        if( soundDecoder->prepareData( stream ) == false )
+        if( soundDecoder->prepareData( _content, stream ) == false )
         {
             LOGGER_ERROR( "can't initialize sound decoder for file '%s'"
                 , Helper::getContentFullPath( _content ).c_str()
@@ -487,16 +487,16 @@ namespace Mengine
             _streamable = false;
         }
 
-        SoundDecoderInterfacePtr soundDecoder;
+        SoundDecoderInterfacePtr decoder;
         if( _streamable == false )
         {
-            if( Helper::getPrefetchSoundDecoder( _content, &soundDecoder ) == false )
+            if( Helper::getPrefetchSoundDecoder( _content, &decoder ) == false )
             {
-                soundDecoder = this->createSoundDecoder_( _content, false, _doc );
+                decoder = this->createSoundDecoder_( _content, false, _doc );
             }
             else
             {
-                if( soundDecoder->rewind() == false )
+                if( decoder->rewind() == false )
                 {
                     LOGGER_ERROR( "invalid rewind decoder '%s'"
                         , Helper::getContentFullPath( _content ).c_str()
@@ -508,10 +508,10 @@ namespace Mengine
         }
         else
         {
-            soundDecoder = this->createSoundDecoder_( _content, true, _doc );
+            decoder = this->createSoundDecoder_( _content, true, _doc );
         }
 
-        if( soundDecoder == nullptr )
+        if( decoder == nullptr )
         {
             LOGGER_ERROR( "invalid create sound decoder '%s' codec '%s' streamable [%s]"
                 , Helper::getContentFullPath( _content ).c_str()
@@ -523,7 +523,7 @@ namespace Mengine
         }
 
         SoundBufferInterfacePtr buffer = SOUND_SYSTEM()
-            ->createSoundBuffer( soundDecoder, _streamable, _doc );
+            ->createSoundBuffer( decoder, _streamable, _doc );
 
         if( buffer == nullptr )
         {

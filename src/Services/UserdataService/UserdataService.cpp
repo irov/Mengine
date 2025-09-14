@@ -133,6 +133,8 @@ namespace Mengine
             , Helper::getContentFullPath( desc.content ).c_str()
         );
 
+        content->closeInputStreamFile( stream );
+
         return binaryBuffer;
     }
     //////////////////////////////////////////////////////////////////////////

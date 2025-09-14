@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/FileServiceInterface.h"
+#include "Interface/DocumentInterface.h"
 
 #include "Kernel/PathHelper.h"
 #include "Kernel/PathString.h"
@@ -16,12 +17,13 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        void addDebugFilePath( const T * _ptr, const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath )
+        void addDebugFilePath( const T * _ptr, const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, const DocumentInterfacePtr & _doc )
         {
             MENGINE_UNUSED( _ptr );
             MENGINE_UNUSED( _relationPath );
             MENGINE_UNUSED( _folderPath );
             MENGINE_UNUSED( _filePath );
+            MENGINE_UNUSED( _doc );
 
 #if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
             const Factorable * factorable = Helper::dynamicCast<const Factorable *>( _ptr );
@@ -29,14 +31,14 @@ namespace Mengine
             UniqueId id = factorable->getUniqueIdentity();
 
             FILE_SERVICE()
-                ->addDebugFilePath( id, _relationPath, _folderPath, _filePath );
+                ->addDebugFilePath( id, _relationPath, _folderPath, _filePath, _doc );
 #endif
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        void addDebugFilePath( const IntrusivePtr<T> & _ptr, const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath )
+        void addDebugFilePath( const IntrusivePtr<T> & _ptr, const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, const DocumentInterfacePtr & _doc )
         {
-            return Helper::addDebugFilePath( _ptr.get(), _relationPath, _folderPath, _filePath );
+            return Helper::addDebugFilePath( _ptr.get(), _relationPath, _folderPath, _filePath, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>

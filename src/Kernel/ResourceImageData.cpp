@@ -45,15 +45,15 @@ namespace Mengine
 
         const ConstString & codecType = content->getCodecType();
 
-        ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
+        ImageDecoderInterfacePtr decoder = CODEC_SERVICE()
             ->createDecoder( codecType, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( imageDecoder, "image decoder '%s' for file '%s' was not found"
+        MENGINE_ASSERTION_MEMORY_PANIC( decoder, "image decoder '%s' for file '%s' was not found"
             , this->getContent()->getCodecType().c_str()
             , Helper::getContentFullPath( this->getContent() ).c_str()
         );
 
-        if( imageDecoder->prepareData( stream ) == false )
+        if( decoder->prepareData( content, stream ) == false )
         {
             LOGGER_ERROR( "image decoder '%s' for file '%s' was not found"
                 , this->getContent()->getCodecType().c_str()
@@ -63,7 +63,7 @@ namespace Mengine
             return false;
         }
 
-        const ImageCodecDataInfo * dataInfo = imageDecoder->getCodecDataInfo();
+        const ImageCodecDataInfo * dataInfo = decoder->getCodecDataInfo();
 
         uint32_t width = dataInfo->width;
         uint32_t height = dataInfo->height;
@@ -81,7 +81,7 @@ namespace Mengine
         data.pitch = width * channels;
         data.format = format;
 
-        if( imageDecoder->decode( &data ) == 0 )
+        if( decoder->decode( &data ) == 0 )
         {
             LOGGER_ERROR( "image decoder '%s' for file '%s' invalid decode"
                 , this->getContent()->getCodecType().c_str()
@@ -90,6 +90,8 @@ namespace Mengine
 
             return false;
         }
+
+        decoder->finalize();
 
         return true;
     }

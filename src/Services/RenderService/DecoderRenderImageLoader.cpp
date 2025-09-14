@@ -33,12 +33,6 @@ namespace Mengine
         if( Helper::getPrefetchImageDecoder( _content, &decoder ) == false )
         {
             decoder = this->createImageDecoder_( _content );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( decoder, "invalid create decoder '%s' codec '%s' (doc: %s)"
-                , Helper::getContentFullPath( _content ).c_str()
-                , _content->getCodecType().c_str()
-                , MENGINE_DOCUMENTABLE_STR( this, "DecoderRenderImageLoader" )
-            );
         }
         else
         {
@@ -54,10 +48,26 @@ namespace Mengine
             }
         }
 
+        if( decoder == nullptr )
+        {
+            LOGGER_ERROR( "invalid create decoder '%s' codec '%s' (doc: %s)"
+                , Helper::getContentFullPath( _content ).c_str()
+                , _content->getCodecType().c_str()
+                , MENGINE_DOCUMENTABLE_STR( this, "DecoderRenderImageLoader" )
+            );
+
+            return false;
+        }
+        
         m_decoder = decoder;
         m_codecFlags = _codecFlags;
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DecoderRenderImageLoader::finalize()
+    {
+        m_decoder = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void DecoderRenderImageLoader::getImageDesc( RenderImageDesc * const _desc ) const
@@ -224,7 +234,7 @@ namespace Mengine
             , MENGINE_DOCUMENTABLE_STR( this, "DecoderRenderImageLoader" )
         );
 
-        if( decoder->prepareData( stream ) == false )
+        if( decoder->prepareData( _content, stream ) == false )
         {
             LOGGER_ERROR( "invalid prepare data '%s' codec '%s' (doc: %s)"
                 , Helper::getContentFullPath( _content ).c_str()

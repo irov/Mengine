@@ -39,6 +39,8 @@ namespace Mengine
 
             bool successful = INIUtils::loadIni( _ini, stream, _doc );
 
+            _content->closeInputStreamFile( stream );
+
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////

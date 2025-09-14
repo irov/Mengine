@@ -24,13 +24,14 @@ namespace Mengine
         }
 
     public:
-        bool initialize( const OutputStreamInterfacePtr & _stream ) override
+        bool initialize( const ContentInterfacePtr & _content, const OutputStreamInterfacePtr & _stream ) override
         {
             if( m_initialize == true )
             {
                 return false;
             }
 
+            m_content = _content;
             m_stream = _stream;
 
             m_initialize = this->_initialize();
@@ -47,6 +48,12 @@ namespace Mengine
 
             this->_finalize();
 
+            if( m_content != nullptr )
+            {
+                m_content->closeOutputStreamFile( m_stream );
+            }
+
+            m_content = nullptr;
             m_stream = nullptr;
         }
 
@@ -68,12 +75,18 @@ namespace Mengine
         }
 
     public:
+        const ContentInterfacePtr & getContent() const override
+        {
+            return m_content;
+        }
+
         OutputStreamInterfacePtr getStream() const override
         {
             return m_stream;
         }
 
     protected:
+        ContentInterfacePtr m_content;
         OutputStreamInterfacePtr m_stream;
 
         bool m_initialize;

@@ -34,7 +34,7 @@ namespace Mengine
 
 #if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
     public:
-        void addDebugFilePath( UniqueId _id, const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath ) override;
+        void addDebugFilePath( UniqueId _id, const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, const DocumentInterfacePtr & _doc ) override;
         void removeDebugFilePath( UniqueId _id ) override;
 
     public:
@@ -55,6 +55,7 @@ namespace Mengine
             FilePath relationPath;
             FilePath folderPath;
             FilePath filePath;
+            DocumentInterfacePtr doc;
         };
 
         typedef UnorderedMap<UniqueId, DebugFilePath> UnorderedMapDebugFilePaths;

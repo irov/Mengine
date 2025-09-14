@@ -205,9 +205,7 @@ namespace Mengine
                 bool streamable = resource->isStreamable();
 
                 SoundIdentityInterfacePtr soundIdentity = SOUND_SERVICE()
-                    ->createSoundIdentity( true, soundBuffer, _category, streamable
-                        , _doc
-                    );
+                    ->createSoundIdentity( true, soundBuffer, _category, streamable, _doc );
 
                 if( soundIdentity == nullptr )
                 {

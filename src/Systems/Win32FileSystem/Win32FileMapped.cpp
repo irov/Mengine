@@ -14,6 +14,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/FactoryPool.h"
+#include "Kernel/DebugFileHelper.h"
 
 #include "Config/Path.h"
 
@@ -103,6 +104,10 @@ namespace Mengine
 
         m_factoryFileMappedInputStream = Helper::makeFactoryPoolWithMutex<Win32FileMappedInputStream, 128>( MENGINE_DOCUMENT_FACTORABLE );
 
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+        Helper::addDebugFilePath( this, _relationPath, _folderPath, _filePath, MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -123,6 +128,10 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryFileMappedInputStream );
 
         m_factoryFileMappedInputStream = nullptr;
+
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+        Helper::removeDebugFilePath( this );
+#endif
 
         return true;
     }

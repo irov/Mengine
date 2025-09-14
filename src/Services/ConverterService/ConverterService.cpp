@@ -160,7 +160,9 @@ namespace Mengine
 
             oldFile = nullptr;
 
-            InputStreamInterfacePtr newFile = Helper::openInputStreamFile( outputFileGroup, outputFilePath, false, false, _doc );
+            ContentInterfacePtr newContent = Helper::makeFileContent( outputFileGroup, outputFilePath, MENGINE_DOCUMENT_FACTORABLE );
+
+            InputStreamInterfacePtr newFile = newContent->openInputStreamFile( false, false, _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( newFile, "converter '%s' can't open output file '%s' (time)"
                 , _converterType.c_str()
@@ -183,6 +185,8 @@ namespace Mengine
                     , Helper::getContentFullPath( options.outputContent ).c_str()
                 );
             }
+
+            newContent->closeInputStreamFile( newFile );
         }
 
         LOGGER_MESSAGE( "converter '%s'\nfrom: %s\nto: '%s'\n"

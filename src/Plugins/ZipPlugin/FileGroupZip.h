@@ -3,6 +3,7 @@
 #include "Interface/InputStreamInterface.h"
 #include "Interface/FileMappedInterface.h"
 #include "Interface/ThreadMutexInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/BaseFileGroup.h"
@@ -73,6 +74,8 @@ namespace Mengine
         bool loadMappedFile( const FilePath & _folderPath, FileMappedInterfacePtr * const _mappedFile ) const;
 
     protected:
+        FactoryInterfacePtr m_factoryZipMemoryInputStream;
+
         uint32_t m_mappedThreshold;
 
         struct ZipInfo

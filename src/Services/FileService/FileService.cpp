@@ -211,7 +211,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
     //////////////////////////////////////////////////////////////////////////
-    void FileService::addDebugFilePath( UniqueId _id, const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath )
+    void FileService::addDebugFilePath( UniqueId _id, const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, const DocumentInterfacePtr & _doc )
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_debugFilePathsMutex );
 
@@ -219,13 +219,19 @@ namespace Mengine
         dfp.relationPath = _relationPath;
         dfp.folderPath = _folderPath;
         dfp.filePath = _filePath;
+        dfp.doc = _doc;
 
         auto result = m_debugFilePaths.emplace( _id, dfp );
 
         MENGINE_UNUSED( result );
         
-        MENGINE_ASSERTION_FATAL( result.second == true, "already add debug file path id %u"
+        MENGINE_ASSERTION_FATAL( result.second == true, "already add debug file path id %u path: %s%s%s [doc: %s] prev [doc: %s]"
             , _id
+            , _relationPath.c_str()
+            , _folderPath.c_str()
+            , _filePath.c_str()
+            , MENGINE_DOCUMENT_STR( _doc )
+            , MENGINE_DOCUMENT_STR( result.first->second.doc )
         );
     }
     //////////////////////////////////////////////////////////////////////////

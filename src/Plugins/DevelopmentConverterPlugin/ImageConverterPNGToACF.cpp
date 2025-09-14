@@ -53,9 +53,11 @@ namespace Mengine
         FilePath full_inputFilePath = Helper::concatenateFilePath( {inputFolderPath, inputFilePath} );
         FilePath full_outputFilePath = Helper::concatenateFilePath( {outputFolderPath, outputFilePath} );
 
-        InputStreamInterfacePtr stream_intput = Helper::openInputStreamFile( m_fileGroupDev, full_inputFilePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+        ContentInterfacePtr content_input = Helper::makeFileContent( m_fileGroupDev, full_inputFilePath, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream_intput, "invalid open input file '%s'"
+        InputStreamInterfacePtr stream_input = content_input->openInputStreamFile( false, false, MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( stream_input, "invalid open input file '%s'"
             , Helper::getContentFullPath( m_options.inputContent ).c_str()
         );
 
@@ -66,7 +68,7 @@ namespace Mengine
             , Helper::getContentFullPath( m_options.inputContent ).c_str()
         );
 
-        if( decoder->prepareData( stream_intput ) == false )
+        if( decoder->prepareData( content_input, stream_input ) == false )
         {
             LOGGER_ERROR( "invalid prepare decoder '%s'"
                 , Helper::getContentFullPath( m_options.inputContent ).c_str()
@@ -102,7 +104,11 @@ namespace Mengine
             return false;
         }
 
-        OutputStreamInterfacePtr stream_output = Helper::openOutputStreamFile( m_fileGroupDev, full_outputFilePath, true, MENGINE_DOCUMENT_FACTORABLE );
+        decoder->finalize();
+
+        ContentInterfacePtr content_output = Helper::makeFileContent( m_fileGroupDev, full_outputFilePath, MENGINE_DOCUMENT_FACTORABLE );
+
+        OutputStreamInterfacePtr stream_output = content_output->openOutputStreamFile( true, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream_output, "'%s' invalid open output '%s'"
             , Helper::getContentFullPath( m_options.inputContent ).c_str()
@@ -116,7 +122,7 @@ namespace Mengine
             , Helper::getContentFullPath( m_options.inputContent ).c_str()
         );
 
-        if( encoder->initialize( stream_output ) == false )
+        if( encoder->initialize( content_output, stream_output ) == false )
         {
             LOGGER_ERROR( "%s invalid initialize encoder"
                 , Helper::getContentFullPath( m_options.inputContent ).c_str()
@@ -140,7 +146,7 @@ namespace Mengine
 
         encoder->finalize();
 
-        if( Helper::closeOutputStreamFile( m_fileGroupDev, stream_output ) == false )
+        if( content_output->closeOutputStreamFile( stream_output ) == false )
         {
             LOGGER_ERROR( "%s invalid close output '%s'"
                 , Helper::getContentFullPath( m_options.inputContent ).c_str()

@@ -171,6 +171,8 @@ namespace Mengine
             return nullptr;
         }
 
+        _content->closeInputStreamFile( stream );
+
         return config;
     }
     //////////////////////////////////////////////////////////////////////////

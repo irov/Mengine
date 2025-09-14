@@ -22,10 +22,6 @@ namespace Mengine
         ~PluginBase() override;
 
     protected:
-        void setUID( UniqueId _uid ) override;
-        UniqueId getUID() const override;
-
-    protected:
         void setDynamicLoad( bool _dynamicLoad ) override;
         bool isDynamicLoad() const override;
 
@@ -57,8 +53,6 @@ namespace Mengine
         void removeModuleFactory( const ConstString & _name );
 
     protected:
-        UniqueId m_uid;
-
         bool m_dynamicLoad;
         bool m_initializePlugin;
         bool m_availablePlugin;

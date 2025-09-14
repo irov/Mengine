@@ -62,7 +62,7 @@ namespace Mengine
             {
             case AE_MOVIE_RESOURCE_IMAGE:
                 {
-                    const aeMovieResourceImage * resource_image = (const aeMovieResourceImage *)_resource;
+                    const aeMovieResourceImage * resource_image = reinterpret_cast<const aeMovieResourceImage *>(_resource);
 
                     const Char * resource_image_name = resource_image->name;
 
@@ -81,7 +81,7 @@ namespace Mengine
                 }break;
             case AE_MOVIE_RESOURCE_VIDEO:
                 {
-                    const aeMovieResourceVideo * resource_video = (const aeMovieResourceVideo *)_resource;
+                    const aeMovieResourceVideo * resource_video = reinterpret_cast<const aeMovieResourceVideo *>(_resource);
 
                     const Char * resource_video_name = resource_video->name;
 
@@ -100,7 +100,7 @@ namespace Mengine
                 }break;
             case AE_MOVIE_RESOURCE_SOUND:
                 {
-                    const aeMovieResourceSound * resource_sound = (const aeMovieResourceSound *)_resource;
+                    const aeMovieResourceSound * resource_sound = reinterpret_cast<const aeMovieResourceSound *>(_resource);
 
                     const Char * resource_sound_name = resource_sound->name;
 
@@ -119,7 +119,7 @@ namespace Mengine
                 }break;
             case AE_MOVIE_RESOURCE_PARTICLE:
                 {
-                    const aeMovieResourceParticle * resource_particle = (const aeMovieResourceParticle *)_resource;
+                    const aeMovieResourceParticle * resource_particle = reinterpret_cast<const aeMovieResourceParticle *>(_resource);
 
                     const Char * resource_particle_name = resource_particle->name;
 
@@ -407,6 +407,8 @@ namespace Mengine
         }
 
         MemoryInterfacePtr memory = Helper::readStreamArchiveMagic( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEZ ), GET_MAGIC_VERSION( MAGIC_AEZ ), MENGINE_DOCUMENT_FACTORABLE );
+
+        content->closeInputStreamFile( stream );
 
         if( memory == nullptr )
         {

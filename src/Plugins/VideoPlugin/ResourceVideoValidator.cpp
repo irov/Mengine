@@ -139,9 +139,9 @@ namespace Mengine
             return false;
         }
 
-        InputStreamInterfacePtr videoStream = content->openInputStreamFile( true, false, MENGINE_DOCUMENT_FACTORABLE );
+        InputStreamInterfacePtr stream = content->openInputStreamFile( true, false, MENGINE_DOCUMENT_FACTORABLE );
 
-        if( videoStream == nullptr )
+        if( stream == nullptr )
         {
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' can't open video file '%s'"
                 , _resource->getName().c_str()
@@ -168,7 +168,7 @@ namespace Mengine
             return false;
         }
 
-        if( decoder->prepareData( videoStream ) == false )
+        if( decoder->prepareData( content, stream ) == false )
         {
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' can't initialize video decoder for file '%s'"
                 , _resource->getName().c_str()
@@ -180,6 +180,8 @@ namespace Mengine
         }
 
         bool valid = s_checkValidVideoDecoder( _resource, decoder );
+
+        decoder->finalize();
 
         return valid;
     }

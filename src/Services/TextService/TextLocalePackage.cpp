@@ -45,6 +45,8 @@ namespace Mengine
         stream->read( memory_buffer, xml_buffer_size );
         memory_buffer[xml_buffer_size] = '\0';
 
+        m_content->closeInputStreamFile( stream );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

@@ -242,7 +242,13 @@ namespace Mengine
 
         bool result = file->close();
 
-        MENGINE_ASSERTION( result == true, "failed close file '%s'"
+        if( result == false )
+        {
+            return false;
+        }
+
+        MENGINE_ASSERTION( result == true, "failed close file '%s%s'"
+            , m_relationPath.c_str()
             , m_folderPath.c_str()
         );
 

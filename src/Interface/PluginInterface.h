@@ -21,10 +21,6 @@ namespace Mengine
         virtual const ConstString & getPluginName() const = 0;
 
     public:
-        virtual void setUID( UniqueId _uid ) = 0;
-        virtual UniqueId getUID() const = 0;
-
-    public:
         virtual void setDynamicLoad( bool _dynamicLoad ) = 0;
         virtual bool isDynamicLoad() const = 0;
 

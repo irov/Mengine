@@ -40,6 +40,8 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid create memory" );
 
+        content->closeInputStreamFile( stream );
+
         const void * memory_buffer = memory->getBuffer();
         size_t memory_size = memory->getSize();
 

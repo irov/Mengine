@@ -7,6 +7,7 @@
 #include "Kernel/DebugFileHelper.h"
 #include "Kernel/ThreadGuardScope.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/DocumentHelper.h"
 
 #include "Config/Path.h"
 
@@ -64,7 +65,7 @@ namespace Mengine
 #endif
 
 #if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
-        Helper::addDebugFilePath( this, _relationPath, _folderPath, _filePath );
+        Helper::addDebugFilePath( this, _relationPath, _folderPath, _filePath, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
         return true;
@@ -76,7 +77,7 @@ namespace Mengine
 
         if( m_file == nullptr )
         {
-            return false;
+            return true;
         }
 
 #if defined(MENGINE_DEBUG)

@@ -441,6 +441,8 @@ namespace Mengine
         stream->read( memory, xml_buffer_size );
         memory[xml_buffer_size] = '\0';
 
+        _content->closeInputStreamFile( stream );
+
         BitmapGlyphSaxCallback tmsc( this, _content );
 
         xmlsax_callbacks_t callbacks;

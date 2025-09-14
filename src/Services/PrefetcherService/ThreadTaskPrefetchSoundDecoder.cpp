@@ -28,8 +28,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ThreadTaskPrefetchSoundDecoder::_finalize()
     {
-        m_soundDecoder = nullptr;
         m_memoryInput = nullptr;
+
+        if( m_soundDecoder != nullptr )
+        {
+            m_soundDecoder->finalize();
+            m_soundDecoder = nullptr;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool ThreadTaskPrefetchSoundDecoder::_onThreadTaskRun()
@@ -107,7 +112,7 @@ namespace Mengine
             return false;
         }
 
-        if( m_soundDecoder->prepareData( m_memoryInput ) == false )
+        if( m_soundDecoder->prepareData( nullptr, m_memoryInput ) == false )
         {
             LOGGER_ERROR( "decoder for file '%s' was not initialize"
                 , Helper::getContentFullPath( m_content ).c_str()

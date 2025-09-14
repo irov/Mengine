@@ -49,6 +49,8 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( service, "invalid generate service" );
 
+        service->setUniqueIdentity( ~0U );
+
 #if defined(MENGINE_DOCUMENT_ENABLE)
         service->setDocument( _doc );
 #endif

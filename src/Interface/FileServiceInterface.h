@@ -25,7 +25,7 @@ namespace Mengine
 
 #if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
     public:
-        virtual void addDebugFilePath( UniqueId _id, const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath ) = 0;        
+        virtual void addDebugFilePath( UniqueId _id, const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, const DocumentInterfacePtr & _doc ) = 0;
         virtual void removeDebugFilePath( UniqueId _id ) = 0;
 
     public:

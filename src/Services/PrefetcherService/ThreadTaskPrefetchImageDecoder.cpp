@@ -117,7 +117,7 @@ namespace Mengine
             return false;
         }
 
-        if( m_imageDecoder->prepareData( m_memoryInput ) == false )
+        if( m_imageDecoder->prepareData( nullptr, m_memoryInput ) == false )
         {
             LOGGER_ERROR( "decoder for file '%s' codec '%s' was not initialize"
                 , Helper::getContentFullPath( m_content ).c_str()

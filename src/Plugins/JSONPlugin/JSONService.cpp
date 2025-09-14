@@ -41,6 +41,8 @@ namespace Mengine
 
         jpp::object json = Helper::loadJSONStream( stream, _doc );
 
+        _content->closeInputStreamFile( stream );
+
         if( json.invalid() == true )
         {
             return false;

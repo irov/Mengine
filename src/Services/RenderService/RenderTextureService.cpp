@@ -150,7 +150,7 @@ namespace Mengine
             , Helper::getContentFullPath( _content ).c_str()
         );
 
-        if( imageEncoder->initialize( stream ) == false )
+        if( imageEncoder->initialize( _content, stream ) == false )
         {
             LOGGER_ERROR( "can't initialize encoder for file '%s'"
                 , Helper::getContentFullPath( _content ).c_str()

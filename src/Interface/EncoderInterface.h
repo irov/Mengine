@@ -13,14 +13,17 @@ namespace Mengine
         : public ServantInterface
     {
     public:
-        virtual bool initialize( const OutputStreamInterfacePtr & _stream ) = 0;
+        virtual const ContentInterfacePtr & getContent() const = 0;
+
+    public:
+        virtual OutputStreamInterfacePtr getStream() const = 0;
+
+    public:
+        virtual bool initialize( const ContentInterfacePtr & _content, const OutputStreamInterfacePtr & _stream ) = 0;
         virtual void finalize() = 0;
 
     public:
         virtual size_t encode( const EncoderData * _encoderData, const CodecDataInfo * _dataInfo ) = 0;
-
-    public:
-        virtual OutputStreamInterfacePtr getStream() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<EncoderInterface> EncoderInterfacePtr;

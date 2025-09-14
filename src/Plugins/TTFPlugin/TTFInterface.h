@@ -23,7 +23,6 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     class TTFTextureGlyphProviderInterface
-        : public Mixin
     {
     public:
         virtual bool onTextureGlyphFill( uint8_t * const _memory, size_t _pitch, uint32_t _channel, uint32_t _border ) const = 0;

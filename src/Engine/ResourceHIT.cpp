@@ -51,7 +51,7 @@ namespace Mengine
             , this->getContent()->getCodecType().c_str()
         );
 
-        if( decoder->prepareData( stream ) == false )
+        if( decoder->prepareData( content, stream ) == false )
         {
             LOGGER_ERROR( "resource HIT '%s' file '%s' invalid initialize decoder '%s'"
                 , this->getName().c_str()
@@ -108,6 +108,8 @@ namespace Mengine
 
         m_mipmap = mipmap;
         m_mipmapsize = (uint32_t)mipmapsize;
+
+        decoder->finalize();
 
         return true;
     }

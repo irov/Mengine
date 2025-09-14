@@ -72,10 +72,10 @@ namespace Mengine
 
         const ConstString & codecType = content->getCodecType();
 
-        ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
+        ImageDecoderInterfacePtr decoder = CODEC_SERVICE()
             ->createDecoder( codecType, MENGINE_DOCUMENT_FACTORABLE );
 
-        if( imageDecoder == nullptr )
+        if( decoder == nullptr )
         {
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' file '%s' invalid decoder '%s'"
                 , _resource->getName().c_str()
@@ -87,7 +87,7 @@ namespace Mengine
             return false;
         }
 
-        if( imageDecoder->prepareData( stream ) == false )
+        if( decoder->prepareData( content, stream ) == false )
         {
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' file '%s' decoder initialize failed '%s'"
                 , _resource->getName().c_str()
@@ -98,6 +98,8 @@ namespace Mengine
 
             return false;
         }
+
+        decoder->finalize();
 
         return true;
     }

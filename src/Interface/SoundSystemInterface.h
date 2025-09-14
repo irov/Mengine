@@ -32,7 +32,7 @@ namespace Mengine
         virtual void onTurnSound( bool _turn ) = 0;
 
     public:
-        virtual SoundBufferInterfacePtr createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _streamable, const DocumentInterfacePtr & _doc ) = 0;
+        virtual SoundBufferInterfacePtr createSoundBuffer( const SoundDecoderInterfacePtr & _decoder, bool _streamable, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
         virtual SoundSourceInterfacePtr createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _sample, const DocumentInterfacePtr & _doc ) = 0;

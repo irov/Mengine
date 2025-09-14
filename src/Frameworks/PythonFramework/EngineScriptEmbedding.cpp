@@ -1463,7 +1463,9 @@ namespace Mengine
 
                 if( _maxSize.x < 0.f || _maxSize.y < 0.f )
                 {
-                    InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, _filePath, false, false, MENGINE_DOCUMENT_PYTHON );
+                    ContentInterfacePtr content = Helper::makeFileContent( fileGroup, _filePath, MENGINE_DOCUMENT_PYTHON );
+
+                    InputStreamInterfacePtr stream = content->openInputStreamFile( false, false, MENGINE_DOCUMENT_PYTHON );
 
                     MENGINE_ASSERTION_MEMORY_PANIC( stream, "image file '%s' was not found"
                         , Helper::getFileGroupFullPath( fileGroup, _filePath ).c_str()
@@ -1476,23 +1478,25 @@ namespace Mengine
                     ConstString codecType = CODEC_SERVICE()
                         ->findCodecType( _filePath );
 
-                    ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
+                    ImageDecoderInterfacePtr decoder = CODEC_SERVICE()
                         ->createDecoder( codecType, MENGINE_DOCUMENT_PYTHON );
 
-                    MENGINE_ASSERTION_MEMORY_PANIC( imageDecoder, "invalid create decoder '%s' for '%s'"
+                    MENGINE_ASSERTION_MEMORY_PANIC( decoder, "invalid create decoder '%s' for '%s'"
                         , codecType.c_str()
                         , Helper::getFileGroupFullPath( fileGroup, _filePath ).c_str()
                     );
 
-                    if( imageDecoder->prepareData( stream ) == false )
+                    if( decoder->prepareData( content, stream ) == false )
                     {
                         return nullptr;
                     }
 
-                    const ImageCodecDataInfo * dataInfo = imageDecoder->getCodecDataInfo();
+                    const ImageCodecDataInfo * dataInfo = decoder->getCodecDataInfo();
 
                     maxSize.x = (float)dataInfo->width;
                     maxSize.y = (float)dataInfo->height;
+
+                    decoder->finalize();
                 }
                 else
                 {
@@ -2218,6 +2222,8 @@ namespace Mengine
 
                     return false;
                 }
+
+                content->closeInputStreamFile( stream );
 
                 resource->release();
 

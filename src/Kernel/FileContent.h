@@ -21,7 +21,10 @@ namespace Mengine
     public:
         MemoryInterfacePtr createMemoryFile( bool _stream, bool _share, const DocumentInterfacePtr & _doc ) override;
         MemoryInterfacePtr createMemoryFileString( bool _stream, bool _share, const DocumentInterfacePtr & _doc ) override;
+
         InputStreamInterfacePtr openInputStreamFile( bool _streaming, bool _share, const DocumentInterfacePtr & _doc ) override;
+        bool closeInputStreamFile( const InputStreamInterfacePtr & _stream ) override;
+
         OutputStreamInterfacePtr openOutputStreamFile( bool _withTemp, const DocumentInterfacePtr & _doc ) override;
         bool closeOutputStreamFile( const OutputStreamInterfacePtr & _stream ) override;
     };

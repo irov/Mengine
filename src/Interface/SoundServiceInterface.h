@@ -32,7 +32,7 @@ namespace Mengine
         virtual void updateVolume() = 0;
 
     public:
-        virtual SoundIdentityInterfacePtr createSoundIdentity( bool _isHeadMode, const SoundBufferInterfacePtr & _sample, ESoundSourceCategory _type, bool _streamable, const DocumentInterfacePtr & _doc ) = 0;
+        virtual SoundIdentityInterfacePtr createSoundIdentity( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer, ESoundSourceCategory _type, bool _streamable, const DocumentInterfacePtr & _doc ) = 0;
         virtual bool releaseSoundIdentity( const SoundIdentityInterfacePtr & _identity ) = 0;
 
     public:

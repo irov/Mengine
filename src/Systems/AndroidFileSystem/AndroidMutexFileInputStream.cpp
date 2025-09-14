@@ -5,6 +5,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/DebugFileHelper.h"
+#include "Kernel/DocumentHelper.h"
 
 #include "stdex/memorycopy.h"
 
@@ -75,7 +76,7 @@ namespace Mengine
         m_reading = 0;
 
 #if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
-        Helper::addDebugFilePath( this, _relationPath, _folderPath, _filePath );
+        Helper::addDebugFilePath( this, _relationPath, _folderPath, _filePath, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
         return true;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/ServantInterface.h"
+#include "Interface/ContentInterface.h"
 #include "Interface/InputStreamInterface.h"
 #include "Interface/ThreadMutexInterface.h"
 
@@ -20,6 +21,7 @@ namespace Mengine
         virtual void finalize() = 0;
 
     public:
+        virtual const ContentInterfacePtr & getContent() const = 0;
         virtual const InputStreamInterfacePtr & getStream() const = 0;
 
     public:
@@ -27,7 +29,7 @@ namespace Mengine
         virtual const CodecDataInfo * getCodecDataInfo() const = 0;
 
     public:
-        virtual bool prepareData( const InputStreamInterfacePtr & _stream ) = 0;
+        virtual bool prepareData( const ContentInterfacePtr & _content, const InputStreamInterfacePtr & _stream ) = 0;
 
     public:
         virtual size_t decode( const DecoderData * _data ) = 0;

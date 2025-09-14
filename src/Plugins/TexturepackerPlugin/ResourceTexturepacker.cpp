@@ -278,7 +278,9 @@ namespace Mengine
             }
             else
             {
-                InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, newFilePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+                ContentInterfacePtr content = Helper::makeFileContent( fileGroup, newFilePath, MENGINE_DOCUMENT_FACTORABLE );
+
+                InputStreamInterfacePtr stream = content->openInputStreamFile( false, false, MENGINE_DOCUMENT_FACTORABLE );
 
                 MENGINE_ASSERTION_FATAL( stream->size() != 0, "empty stream '%s' codec '%s'"
                     , Helper::getFileGroupFullPath( fileGroup, newFilePath ).c_str()
@@ -293,7 +295,7 @@ namespace Mengine
                     , codecType.c_str()
                 );
 
-                if( decoder->prepareData( stream ) == false )
+                if( decoder->prepareData( content, stream ) == false )
                 {
                     return false;
                 }
@@ -302,6 +304,8 @@ namespace Mengine
 
                 atlasSize.x = (float)dataInfo->width;
                 atlasSize.y = (float)dataInfo->height;
+
+                decoder->finalize();
             }
 
             resourceImage->setMaxSize( atlasSize );

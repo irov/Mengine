@@ -19,7 +19,7 @@
     if( _dynamic == true ){SERVICE_PROVIDER_SETUP(_serviceProvider);}\
     Mengine::PluginInterface * plugin = Mengine::Helper::newT<Mengine::FactorablePlugin<Type>>();\
     if( plugin == nullptr ){ return false; }\
-    plugin->setUID( _uid );\
+    plugin->setUniqueIdentity( _uid );\
     plugin->setDynamicLoad( _dynamic );\
     *_plugin = plugin;\
     return true;}}

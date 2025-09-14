@@ -43,6 +43,8 @@ namespace Mengine
             );
 
             memory = Helper::readStreamArchiveMagicMemory( stream, _archivator, GET_MAGIC_NUMBER( MAGIC_PTZ ), GET_MAGIC_VERSION( MAGIC_PTZ ), MENGINE_DOCUMENT_FACTORABLE );
+
+            _content->closeInputStreamFile( stream );
         }
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid get data" );

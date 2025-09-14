@@ -122,9 +122,9 @@ namespace Mengine
 
         const ContentInterfacePtr & content = this->getContent();
 
-        InputStreamInterfacePtr videoStream = content->openInputStreamFile( true, false, _doc );
+        InputStreamInterfacePtr stream = content->openInputStreamFile( true, false, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( videoStream, "group '%s' name '%s' can't open video file '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "group '%s' name '%s' can't open video file '%s'"
             , this->getGroupName().c_str()
             , this->getName().c_str()
             , Helper::getContentFullPath( this->getContent() ).c_str()
@@ -132,16 +132,16 @@ namespace Mengine
 
         const ConstString & codecType = content->getCodecType();
 
-        VideoDecoderInterfacePtr videoDecoder = CODEC_SERVICE()
+        VideoDecoderInterfacePtr decoder = CODEC_SERVICE()
             ->createDecoder( codecType, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( videoDecoder, "group '%s' name '%s' can't create video decoder for file '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( decoder, "group '%s' name '%s' can't create video decoder for file '%s'"
             , this->getGroupName().c_str()
             , this->getName().c_str()
             , Helper::getContentFullPath( this->getContent() ).c_str()
         );
 
-        if( videoDecoder->prepareData( videoStream ) == false )
+        if( decoder->prepareData( content, stream ) == false )
         {
             LOGGER_ERROR( "resource video '%s' group '%s' can't initialize video decoder for file '%s'"
                 , this->getName().c_str()
@@ -152,9 +152,9 @@ namespace Mengine
             return nullptr;
         }
 
-        m_videoDecoderCacher.addCache( videoDecoder );
+        m_videoDecoderCacher.addCache( decoder );
 
-        return videoDecoder;
+        return decoder;
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceVideo::destroyVideoDecoder( const VideoDecoderInterfacePtr & _decoder )

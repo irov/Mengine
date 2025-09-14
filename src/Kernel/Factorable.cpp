@@ -3,6 +3,7 @@
 #include "Interface/FactoryInterface.h"
 
 #include "Kernel/ExceptionHelper.h"
+#include "Kernel/Assertion.h"
 
 namespace Mengine
 {
@@ -18,6 +19,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Factorable::~Factorable()
     {
+        MENGINE_ASSERTION_FATAL( m_factorableId != 0, "invalid factorable id (not set?)" );
+
 #if defined(MENGINE_FACTORABLE_DEBUG_ENABLE)
         if( m_factorableDestroy == false && m_factorableFactory != nullptr )
         {

@@ -203,7 +203,7 @@ namespace Mengine
         return soundSource;
     }
     //////////////////////////////////////////////////////////////////////////
-    SoundBufferInterfacePtr OpenALSoundSystem::createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream, const DocumentInterfacePtr & _doc )
+    SoundBufferInterfacePtr OpenALSoundSystem::createSoundBuffer( const SoundDecoderInterfacePtr & _decoder, bool _isStream, const DocumentInterfacePtr & _doc )
     {
         OpenALSoundBufferBasePtr base = nullptr;
 
@@ -224,7 +224,7 @@ namespace Mengine
             base = buffer;
         }
 
-        if( base->load( _soundDecoder ) == false )
+        if( base->load( _decoder ) == false )
         {
             LOGGER_ASSERTION( "failed to create sound buffer from stream" );
 

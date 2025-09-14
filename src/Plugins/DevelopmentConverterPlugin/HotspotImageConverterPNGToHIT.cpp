@@ -46,7 +46,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( decoder, "invalid create decoder" );
 
-        if( decoder->prepareData( _stream ) == false )
+        if( decoder->prepareData( nullptr, _stream ) == false )
         {
             return false;
         }
@@ -79,20 +79,20 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////////////////////////
     bool HotspotImageConverterPNGToHIT::convert()
     {
-        InputStreamInterfacePtr input_stream = m_options.inputContent->openInputStreamFile( false, false, MENGINE_DOCUMENT_FACTORABLE );
+        InputStreamInterfacePtr stream_input = m_options.inputContent->openInputStreamFile( false, false, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( input_stream, "Image file '%s' was not found"
+        MENGINE_ASSERTION_MEMORY_PANIC( stream_input, "Image file '%s' was not found"
             , Helper::getContentFullPath( m_options.inputContent ).c_str()
         );
 
-        ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
+        ImageDecoderInterfacePtr decoder = CODEC_SERVICE()
             ->createDecoder( STRINGIZE_STRING_LOCAL( "pngImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( imageDecoder, "Image decoder for file '%s' was not found"
+        MENGINE_ASSERTION_MEMORY_PANIC( decoder, "Image decoder for file '%s' was not found"
             , Helper::getContentFullPath( m_options.inputContent ).c_str()
         );
 
-        if( imageDecoder->prepareData( input_stream ) == false )
+        if( decoder->prepareData( m_options.inputContent, stream_input ) == false )
         {
             LOGGER_ERROR( "image initialize for file '%s' was not found"
                 , Helper::getContentFullPath( m_options.inputContent ).c_str()
@@ -101,7 +101,7 @@ namespace Mengine
             return false;
         }
 
-        const ImageCodecDataInfo * dataInfo = imageDecoder->getCodecDataInfo();
+        const ImageCodecDataInfo * dataInfo = decoder->getCodecDataInfo();
 
         uint32_t width = dataInfo->width;
         uint32_t height = dataInfo->height;
@@ -126,7 +126,7 @@ namespace Mengine
         data.format = PF_L8;
         data.flags |= DF_IMAGE_READ_ALPHA_ONLY;
 
-        if( imageDecoder->decode( &data ) == 0 )
+        if( decoder->decode( &data ) == 0 )
         {
             LOGGER_ERROR( "invalid decode '%s'"
                 , Helper::getContentFullPath( m_options.inputContent ).c_str()
@@ -135,13 +135,13 @@ namespace Mengine
             return false;
         }
 
-        input_stream = nullptr;
+        decoder->finalize();
 
         this->makeMipMapLevel_( buffer, width, height, mimmap_level );
 
-        OutputStreamInterfacePtr output_stream = m_options.outputContent->openOutputStreamFile( true, MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr stream_output = m_options.outputContent->openOutputStreamFile( true, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( output_stream, "HIT file '%s' not create (open file)"
+        MENGINE_ASSERTION_MEMORY_PANIC( stream_output, "HIT file '%s' not create (open file)"
             , Helper::getContentFullPath( m_options.outputContent ).c_str()
         );
 
@@ -152,7 +152,7 @@ namespace Mengine
             , Helper::getContentFullPath( m_options.outputContent ).c_str()
         );
 
-        if( encoder->initialize( output_stream ) == false )
+        if( encoder->initialize( m_options.outputContent, stream_output ) == false )
         {
             LOGGER_ERROR( "HIT file '%s' not initialize (createEncoder hitPick)"
                 , Helper::getContentFullPath( m_options.outputContent ).c_str()
@@ -175,7 +175,7 @@ namespace Mengine
 
         encoder->finalize();
 
-        if( m_options.outputContent->closeOutputStreamFile( output_stream ) == false )
+        if( m_options.outputContent->closeOutputStreamFile( stream_output ) == false )
         {
             LOGGER_ERROR( "HIT file '%s' invalid close"
                 , Helper::getContentFullPath( m_options.outputContent ).c_str()

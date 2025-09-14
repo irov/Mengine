@@ -42,6 +42,13 @@ namespace Mengine
         return stream;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool FileContent::closeInputStreamFile( const InputStreamInterfacePtr & _stream )
+    {
+        bool successful = Helper::closeInputStreamFile( m_fileGroup, _stream );
+
+        return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
     OutputStreamInterfacePtr FileContent::openOutputStreamFile( bool _withTemp, const DocumentInterfacePtr & _doc )
     {
         OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( m_fileGroup, m_filePath, _withTemp, _doc );

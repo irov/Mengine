@@ -56,7 +56,7 @@ namespace Mengine
             return false;
         }
 
-        if( decoder->prepareData( stream ) == false )
+        if( decoder->prepareData( content, stream ) == false )
         {
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' can't initialize sound decoder for file '%s'"
                 , _resource->getName().c_str()
@@ -66,6 +66,8 @@ namespace Mengine
 
             return false;
         }
+
+        bool successful = true;
 
         const SoundCodecDataInfo * dataInfo = decoder->getCodecDataInfo();
 
@@ -81,7 +83,7 @@ namespace Mengine
                 , Helper::getContentFullPath( _resource->getContent() ).c_str()
             );
 
-            return false;
+            successful = false;
         }
 
         float limitNoStreamSoundDurationWarning = CONFIG_VALUE_FLOAT( "Limit", "NoStreamSoundDurationWarning", 2000.f ); //4kb
@@ -109,11 +111,11 @@ namespace Mengine
                 , Helper::getContentFullPath( _resource->getContent() ).c_str()
             );
 
-            return false;
+            successful = false;
         }
 
+        decoder->finalize();
         decoder = nullptr;
-        stream = nullptr;
 
         SoundBufferInterfacePtr soundBuffer = _resource->createSoundBuffer( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -131,7 +133,7 @@ namespace Mengine
         soundBuffer->acquireSoundBuffer();
         soundBuffer->releaseSoundBuffer();
 
-        return true;
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
 }

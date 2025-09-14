@@ -105,7 +105,7 @@ namespace Mengine
     {
         const ConverterOptions & options = this->getOptions();
 
-        ContentInterfacePtr protocolContent = Helper::getParam( options.params, STRINGIZE_STRING_LOCAL( "protocolContent" ), ContentInterfacePtr::none() );
+        ContentInterfacePtr protocol_content = Helper::getParam( options.params, STRINGIZE_STRING_LOCAL( "protocolContent" ), ContentInterfacePtr::none() );
         ParamInteger useProtocolVersion = Helper::getParam( options.params, STRINGIZE_STRING_LOCAL( "useProtocolVersion" ), 0LL );
         ParamInteger useProtocolCrc32 = Helper::getParam( options.params, STRINGIZE_STRING_LOCAL( "useProtocolCrc32" ), 0LL );
 
@@ -115,10 +115,10 @@ namespace Mengine
             , (int32_t)useProtocolVersion
         );
 
-        InputStreamInterfacePtr protocol_stream = protocolContent->openInputStreamFile( false, false, MENGINE_DOCUMENT_FACTORABLE );
+        InputStreamInterfacePtr protocol_stream = protocol_content->openInputStreamFile( false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( protocol_stream, "error open protocol '%s'"
-            , Helper::getContentFullPath( protocolContent ).c_str()
+            , Helper::getContentFullPath( protocol_content ).c_str()
         );
 
         size_t protocol_size = protocol_stream->size();
@@ -137,12 +137,13 @@ namespace Mengine
         if( protocol_stream->read( memory_protocol_buffer, protocol_size ) != protocol_size )
         {
             LOGGER_ERROR( "error read protocol '%s' error invalid read size"
-                , Helper::getContentFullPath( protocolContent ).c_str()
+                , Helper::getContentFullPath( protocol_content ).c_str()
             );
 
             return false;
         }
 
+        protocol_content->closeInputStreamFile( protocol_stream );
         protocol_stream = nullptr;
 
         Metabuf::XmlProtocol xml_protocol;
@@ -150,7 +151,7 @@ namespace Mengine
         if( xml_protocol.readProtocol( memory_protocol_buffer, protocol_size ) == false )
         {
             LOGGER_ERROR( "error read protocol '%s' error:\n%s"
-                , Helper::getContentFullPath( protocolContent ).c_str()
+                , Helper::getContentFullPath( protocol_content ).c_str()
                 , xml_protocol.getError().c_str()
             );
 
@@ -160,7 +161,7 @@ namespace Mengine
         if( useProtocolVersion != xml_protocol.getVersion() )
         {
             LOGGER_ERROR( "protocol '%s' invalid version '%u' use '%" MENGINE_PRIu64 "'"
-                , Helper::getContentFullPath( protocolContent ).c_str()
+                , Helper::getContentFullPath( protocol_content ).c_str()
                 , xml_protocol.getVersion()
                 , useProtocolVersion
             );
@@ -171,7 +172,7 @@ namespace Mengine
         if( useProtocolCrc32 != xml_protocol.getCrc32() )
         {
             LOGGER_ERROR( "protocol '%s' invalid crc32 '%u' use '%" MENGINE_PRIu64 "'"
-                , Helper::getContentFullPath( protocolContent ).c_str()
+                , Helper::getContentFullPath( protocol_content ).c_str()
                 , xml_protocol.getVersion()
                 , useProtocolCrc32
             );
@@ -218,12 +219,13 @@ namespace Mengine
             return false;
         }
 
+        options.inputContent->closeInputStreamFile( xml_stream );
         xml_stream = nullptr;
 
         const Metabuf::XmlMeta * xml_meta = xml_protocol.getMeta( "Data" );
 
         MENGINE_ASSERTION_MEMORY_PANIC( xml_meta, "invalid get meta 'Data' from protocol '%s'"
-            , Helper::getContentFullPath( protocolContent ).c_str()
+            , Helper::getContentFullPath( protocol_content ).c_str()
         );
 
         Metabuf::Xml2Metabuf xml_metabuf( &xml_protocol, xml_meta );
@@ -313,6 +315,7 @@ namespace Mengine
         bin_stream->flush();
 
         options.outputContent->closeOutputStreamFile( bin_stream );
+        bin_stream = nullptr;
 
         return true;
     }

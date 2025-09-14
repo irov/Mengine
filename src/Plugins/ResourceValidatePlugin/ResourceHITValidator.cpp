@@ -60,7 +60,7 @@ namespace Mengine
             return false;
         }
 
-        if( decoder->prepareData( stream ) == false )
+        if( decoder->prepareData( content, stream ) == false )
         {
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' file '%s' decoder initialize failed '%s'"
                 , _resource->getName().c_str()
@@ -71,6 +71,8 @@ namespace Mengine
 
             return false;
         }
+
+        decoder->finalize();
 
         return true;
     }

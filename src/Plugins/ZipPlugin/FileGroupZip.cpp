@@ -5,6 +5,8 @@
 #include "Interface/MemoryServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 
+#include "ZipMemoryInputStream.h"
+
 #include "Kernel/Logger.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/FilePathHelper.h"
@@ -19,7 +21,8 @@
 #include "Kernel/StringFormat.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/ThreadMutexHelper.h"
-#include "Kernel/DebugFileHelper.h"
+#include "Kernel/FactoryPool.h"
+#include "Kernel/AssertionFactory.h"
 
 #include "Config/StdIO.h"
 #include "Config/Path.h"
@@ -161,6 +164,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FileGroupZip::_initialize()
     {
+        m_factoryZipMemoryInputStream = Helper::makeFactoryPool<ZipMemoryInputStream, 256>( MENGINE_DOCUMENT_FACTORABLE );
+
         uint32_t ZipPlugin_ReserveFiles = CONFIG_VALUE_INTEGER( "ZipPlugin", "ReserveFiles", 16 * 1024 );
 
         m_files.reserve( ZipPlugin_ReserveFiles );
@@ -187,6 +192,10 @@ namespace Mengine
         m_files.clear();
         m_zips.clear();
         m_indexes.clear();
+
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryZipMemoryInputStream );
+
+        m_factoryZipMemoryInputStream = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool FileGroupZip::loadHeaders_()
@@ -628,7 +637,16 @@ namespace Mengine
                 , _filePath.c_str()
             );
 
-            return memory;
+            ZipMemoryInputStreamPtr zip_memory = m_factoryZipMemoryInputStream->createObject( _doc );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( zip_memory, "zip '%s' file '%s' invalid create zip memory stream"
+                , fi.zip->folderPath.c_str()
+                , _filePath.c_str()
+            );
+
+            zip_memory->setMemoryInputStream( memory );
+
+            return zip_memory;
         }
 
         InputStreamInterfacePtr stream = fi.zip->mappedFile->createInputStream( _doc );
@@ -707,9 +725,9 @@ namespace Mengine
             {
                 if( fi.file_size < m_mappedThreshold || fi.zip->mappedFile == nullptr )
                 {
-                    MemoryInputInterface * memory = _stream.getT<MemoryInputInterface *>();
+                    ZipMemoryInputStream * zip_memory = _stream.getT<ZipMemoryInputStream *>();
 
-                    void * buffer = memory->newBuffer( fi.file_size );
+                    void * buffer = zip_memory->newBuffer( fi.file_size );
 
                     MENGINE_ASSERTION_MEMORY_PANIC( buffer, "zip '%s' file '%s' failed new memory %zu"
                         , fi.zip->folderPath.c_str()
@@ -721,6 +739,10 @@ namespace Mengine
                     fi.zip->stream->seek( file_offset );
                     fi.zip->stream->read( buffer, fi.file_size );
                     fi.zip->mutex->unlock();
+
+                    const FilePath & relationPath = this->getRelationPath();
+
+                    zip_memory->open( relationPath, fi.zip->folderPath, _filePath );
                 }
                 else
                 {
@@ -732,9 +754,9 @@ namespace Mengine
             }
             else
             {
-                MemoryInputInterface * memory = _stream.getT<MemoryInputInterface *>();
+                ZipMemoryInputStream * zip_memory = _stream.getT<ZipMemoryInputStream *>();
 
-                void * buffer = memory->newBuffer( fi.unz_size );
+                void * buffer = zip_memory->newBuffer( fi.unz_size );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( buffer, "zip '%s' file '%s' failed new memory %zu"
                     , fi.zip->folderPath.c_str()
@@ -773,14 +795,12 @@ namespace Mengine
 
                     return false;
                 }
+
+                const FilePath & relationPath = this->getRelationPath();
+
+                zip_memory->open( relationPath, fi.zip->folderPath, _filePath );
             }
         }
-
-#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
-        const FilePath & relationPath = m_baseFileGroup->getRelationPath();
-
-        Helper::addDebugFilePath( _stream, relationPath, fi.zip->folderPath, _filePath );
-#endif
 
         return true;
     }
@@ -790,10 +810,6 @@ namespace Mengine
         MENGINE_UNUSED( _stream );
 
         //Empty
-
-#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
-        Helper::removeDebugFilePath( _stream );
-#endif
 
         return true;
     }

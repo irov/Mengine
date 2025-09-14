@@ -15,8 +15,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     PluginBase::PluginBase()
-        : m_uid( INVALID_UNIQUE_ID )
-        , m_dynamicLoad( false )
+        : m_dynamicLoad( false )
         , m_initializePlugin( false )
         , m_availablePlugin( true )
         , m_systemPlugin( false )
@@ -26,16 +25,6 @@ namespace Mengine
     PluginBase::~PluginBase()
     {
         //MENGINE_ASSERTION_OBSERVABLE -> move to ::_destroy
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void PluginBase::setUID( uint32_t _uid )
-    {
-        m_uid = _uid;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t PluginBase::getUID() const
-    {
-        return m_uid;
     }
     //////////////////////////////////////////////////////////////////////////
     void PluginBase::setDynamicLoad( bool _dynamicLoad )

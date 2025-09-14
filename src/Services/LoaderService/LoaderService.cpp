@@ -107,6 +107,8 @@ namespace Mengine
         bool reimport = false;
         bool done = this->importBin_( file_bin, _metadata, _metaVersion, &reimport, _doc );
 
+        _content->closeInputStreamFile( file_bin );
+
 #if defined(MENGINE_MASTER_RELEASE_DISABLE)
         if( reimport == true )
         {
@@ -130,9 +132,13 @@ namespace Mengine
                 return false;
             }
 
-            file_bin = Helper::openInputStreamFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+            ContentInterfacePtr reimport_content_bin = Helper::makeFileContent( fileGroup, filePath, _doc );
 
-            done = this->importBin_( file_bin, _metadata, _metaVersion, nullptr, _doc );
+            InputStreamInterfacePtr reimport_stream_bin = reimport_content_bin->openInputStreamFile( false, false, _doc );
+
+            done = this->importBin_( reimport_stream_bin, _metadata, _metaVersion, nullptr, _doc );
+
+            reimport_content_bin->closeInputStreamFile( reimport_stream_bin );
         }
 #endif
 
@@ -157,6 +163,8 @@ namespace Mengine
 
         uint8_t header_buff[Metacode::header_size];
         stream->read( header_buff, Metacode::header_size );
+
+        _content->closeInputStreamFile( stream );
 
         size_t header_read = 0;
         uint32_t readVersion;

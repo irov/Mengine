@@ -24,6 +24,7 @@ namespace Mengine
 
     public:
         bool initialize( const ContentInterfacePtr & _content, uint32_t _codecFlags );
+        void finalize();
 
     protected:
         void getImageDesc( RenderImageDesc * const _desc ) const override;

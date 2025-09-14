@@ -68,6 +68,13 @@ namespace Mengine
             this->_finalize();
 
             m_mutex = nullptr;
+
+            if( m_content != nullptr )
+            {
+                m_content->closeInputStreamFile( m_stream );
+            }
+
+            m_content = nullptr;
             m_stream = nullptr;
         }
 
@@ -84,16 +91,22 @@ namespace Mengine
         }
 
     public:
+        const ContentInterfacePtr & getContent() const override
+        {
+            return m_content;
+        }
+
         const InputStreamInterfacePtr & getStream() const override
         {
             return m_stream;
         }
 
     private:
-        bool prepareData( const InputStreamInterfacePtr & _stream ) override
+        bool prepareData( const ContentInterfacePtr & _content, const InputStreamInterfacePtr & _stream ) override
         {
             MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
+            m_content = _content;
             m_stream = _stream;
 
             if( this->_prepareData() == false )
@@ -183,6 +196,7 @@ namespace Mengine
 
     private:
         ThreadMutexInterfacePtr m_mutex;
+        ContentInterfacePtr m_content;
         InputStreamInterfacePtr m_stream;
 
         size_t m_rewindPos;

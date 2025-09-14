@@ -8,11 +8,10 @@ namespace Mengine
 {
     class TTFFontTextureGlyphProvider
         : public TTFTextureGlyphProviderInterface
-        , public Factorable
     {
     public:
         TTFFontTextureGlyphProvider( uint32_t _width, uint32_t _height, const void * _ttfmemory, size_t _ttfpitch, uint32_t _ttfchannel );
-        ~TTFFontTextureGlyphProvider() override;
+        ~TTFFontTextureGlyphProvider();
 
     public:
         bool onTextureGlyphFill( uint8_t * const _memory, size_t _pitch, uint32_t _channel, uint32_t _border ) const override;

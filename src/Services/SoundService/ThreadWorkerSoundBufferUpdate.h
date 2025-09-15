@@ -21,6 +21,7 @@ namespace Mengine
 
     public:
         void initialize( const SoundBufferInterfacePtr & _soundSource );
+        void finalize();
 
     public:
         bool isDone() const;

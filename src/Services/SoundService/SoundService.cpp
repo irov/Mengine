@@ -251,6 +251,8 @@ namespace Mengine
                 {
                     LOGGER_ASSERTION( "invalid resume (play)" );
 
+                    identity->setState( ESS_CANCEL );
+
                     continue;
                 }
 
@@ -265,7 +267,14 @@ namespace Mengine
                     continue;
                 }
 
-                this->playSoundBufferUpdate_( identity );
+                if( this->playSoundBufferUpdate_( identity ) == false )
+                {
+                    LOGGER_MESSAGE( "invalid play sound buffer update" );
+
+                    identity->setState( ESS_CANCEL );
+
+                    continue;
+                }
             }
         }
     }
@@ -874,7 +883,14 @@ namespace Mengine
                         return false;
                     }
 
-                    this->playSoundBufferUpdate_( _identity );
+                    if( this->playSoundBufferUpdate_( _identity ) == false )
+                    {
+                        LOGGER_MESSAGE( "invalid play sound buffer update" );
+
+                        _identity->setState( ESS_CANCEL );
+
+                        return false;
+                    }
                 }
 
                 const SoundListenerInterfacePtr & listener = _identity->getSoundListener();
@@ -914,6 +930,8 @@ namespace Mengine
                         LOGGER_ASSERTION( "invalid resume identity: %u"
                             , _identity->getUniqueIdentity()
                         );
+
+                        _identity->setState( ESS_CANCEL );
 
                         return false;
                     }
@@ -1049,6 +1067,8 @@ namespace Mengine
                         LOGGER_ASSERTION( "invalid resume identity: %u"
                             , _identity->getUniqueIdentity()
                         );
+
+                        _identity->setState( ESS_CANCEL );
 
                         return false;
                     }
@@ -1388,6 +1408,8 @@ namespace Mengine
                     , _identity->getUniqueIdentity()
                 );
 
+                _identity->setState( ESS_CANCEL );
+
                 return false;
             }
         }
@@ -1400,16 +1422,16 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SoundService::stopSoundBufferUpdate_( const SoundIdentityInterfacePtr & _identity )
+    void SoundService::stopSoundBufferUpdate_( const SoundIdentityInterfacePtr & _identity )
     {
         if( _identity->getStreamable() == false )
         {
-            return false;
+            return;
         }
 
         if( _identity->getWorkerUpdateBuffer() == nullptr )
         {
-            return false;
+            return;
         }
 
         if( m_threadJobSoundBufferUpdate != nullptr )
@@ -1421,15 +1443,13 @@ namespace Mengine
 
         _identity->setWorkerUpdateBuffer( nullptr );
         _identity->setWorkerId( INVALID_UNIQUE_ID );
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::playSoundBufferUpdate_( const SoundIdentityInterfacePtr & _identity )
     {
         if( _identity->getStreamable() == false )
         {
-            return false;
+            return true;
         }
 
         if( _identity->getWorkerUpdateBuffer() != nullptr )
@@ -1457,9 +1477,14 @@ namespace Mengine
             {
                 LOGGER_ERROR( "identity worker invalid add worker" );
 
+                worker->finalize();
+
+                _identity->setWorkerUpdateBuffer( nullptr );
+
                 return false;
             }
 
+            _identity->setWorkerUpdateBuffer( worker );
             _identity->setWorkerId( workerId );
         }
         else
@@ -1471,16 +1496,16 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SoundService::pauseSoundBufferUpdate_( const SoundIdentityInterfacePtr & _identity )
+    void SoundService::pauseSoundBufferUpdate_( const SoundIdentityInterfacePtr & _identity )
     {
         if( _identity->getStreamable() == false )
         {
-            return false;
+            return;
         }
 
         if( _identity->getWorkerUpdateBuffer() == nullptr )
         {
-            return false;
+            return;
         }
 
         if( m_threadJobSoundBufferUpdate != nullptr )
@@ -1489,20 +1514,18 @@ namespace Mengine
 
             m_threadJobSoundBufferUpdate->pauseWorker( workerId );
         }
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SoundService::resumeSoundBufferUpdate_( const SoundIdentityInterfacePtr & _identity )
+    void SoundService::resumeSoundBufferUpdate_( const SoundIdentityInterfacePtr & _identity )
     {
         if( _identity->getStreamable() == false )
         {
-            return false;
+            return;
         }
 
         if( _identity->getWorkerUpdateBuffer() == nullptr )
         {
-            return false;
+            return;
         }
 
         if( m_threadJobSoundBufferUpdate != nullptr )
@@ -1511,8 +1534,6 @@ namespace Mengine
 
             m_threadJobSoundBufferUpdate->resumeWorker( workerId );
         }
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::checkMaxSoundPlay_() const
@@ -1521,11 +1542,6 @@ namespace Mengine
         {
             return _identity->getState() == ESS_PLAY;
         } );
-
-        LOGGER_MESSAGE( "current play sound count: %u total: %u"
-            , playCount
-            , (uint32_t)m_soundIdentities.size()
-        );
 
         uint32_t Limit_MaxSoundPlay = CONFIG_VALUE_INTEGER( "Limit", "MaxSoundPlay", 32 );
 
@@ -1544,6 +1560,7 @@ namespace Mengine
                     << (identity->getStreamable() == true ? "streamable" : "instance") << " "
                     << "category: " << identity->getCategory() << " "
                     << "state: " << identity->getState() << " "
+                    << "volume: " << identity->getMixerVolume()->mixValue() << " "
                     << "time: " << timestamp - identity->getStateTimestamp() << " "
                     << "source: " << Helper::getDebugFullPath( identity->getSoundSource()->getSoundBuffer()->getDecoder()->getStream() ).c_str() << " "
                     << "(doc: " << MENGINE_DOCUMENT_STR( identity->getDocument() ) << ")";

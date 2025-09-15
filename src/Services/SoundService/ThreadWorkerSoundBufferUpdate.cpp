@@ -21,6 +21,11 @@ namespace Mengine
         m_soundBuffer = _soundBuffer;
     }
     //////////////////////////////////////////////////////////////////////////
+    void ThreadWorkerSoundBufferUpdate::finalize()
+    {
+        m_soundBuffer = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool ThreadWorkerSoundBufferUpdate::isDone() const
     {
         return m_done;

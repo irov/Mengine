@@ -231,6 +231,9 @@ namespace Mengine
                         , volume
                     );
 
+                    SOUND_SERVICE()
+                        ->releaseSoundIdentity( soundIdentity );
+
                     resource->release();
 
                     return nullptr;

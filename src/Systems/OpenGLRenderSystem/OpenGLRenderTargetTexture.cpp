@@ -258,12 +258,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderTargetTexture::onRenderReset()
     {
-        //Empty
+        this->release();
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderTargetTexture::onRenderRestore()
     {
-        //Empty
+        if( this->create() == false )
+        {
+            return false;
+        }
 
         return true;
     }

@@ -136,12 +136,23 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderImageTarget::onRenderReset()
     {
-        //Empty
+        if( m_renderTarget != nullptr )
+        {
+            m_renderTarget->onRenderReset();
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderImageTarget::onRenderRestore()
     {
-        //Empty
+        if( m_renderTarget == nullptr )
+        {
+            return false;
+        }
+
+        if( m_renderTarget->onRenderRestore() == false )
+        {
+            return false;
+        }
 
         return true;
     }

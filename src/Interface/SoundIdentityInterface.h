@@ -24,7 +24,6 @@ namespace Mengine
         ESS_STOP = 0,
         ESS_PLAY = 1,
         ESS_PAUSE = 2,
-        ESS_CANCEL = 3,
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class SoundIdentityInterface> SoundIdentityInterfacePtr;

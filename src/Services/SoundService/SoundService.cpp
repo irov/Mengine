@@ -251,7 +251,7 @@ namespace Mengine
                 {
                     LOGGER_ASSERTION( "invalid resume (play)" );
 
-                    identity->setState( ESS_CANCEL );
+                    identity->setState( ESS_STOP );
 
                     continue;
                 }
@@ -271,7 +271,7 @@ namespace Mengine
                 {
                     LOGGER_MESSAGE( "invalid play sound buffer update" );
 
-                    identity->setState( ESS_CANCEL );
+                    identity->setState( ESS_STOP );
 
                     continue;
                 }
@@ -288,11 +288,6 @@ namespace Mengine
             ESoundSourceState state = identity->getState();
 
             if( state == ESS_STOP )
-            {
-                continue;
-            }
-
-            if( state == ESS_CANCEL )
             {
                 continue;
             }
@@ -687,7 +682,7 @@ namespace Mengine
         {
             ESoundSourceState state = identity->getState();
 
-            if( state == ESS_CANCEL )
+            if( state == ESS_STOP )
             {
                 m_soundIdentitiesEndAux.emplace_back( identity );
 
@@ -845,7 +840,7 @@ namespace Mengine
             {
                 if( this->checkMaxSoundPlay_() == false )
                 {
-                    _identity->setState( ESS_CANCEL );
+                    _identity->setState( ESS_STOP );
 
                     return false;
                 }
@@ -887,7 +882,7 @@ namespace Mengine
                     {
                         LOGGER_MESSAGE( "invalid play sound buffer update" );
 
-                        _identity->setState( ESS_CANCEL );
+                        _identity->setState( ESS_STOP );
 
                         return false;
                     }
@@ -905,7 +900,7 @@ namespace Mengine
             {
                 if( this->checkMaxSoundPlay_() == false )
                 {
-                    _identity->setState( ESS_CANCEL );
+                    _identity->setState( ESS_STOP );
 
                     return false;
                 }
@@ -931,7 +926,7 @@ namespace Mengine
                             , _identity->getUniqueIdentity()
                         );
 
-                        _identity->setState( ESS_CANCEL );
+                        _identity->setState( ESS_STOP );
 
                         return false;
                     }
@@ -1068,7 +1063,7 @@ namespace Mengine
                             , _identity->getUniqueIdentity()
                         );
 
-                        _identity->setState( ESS_CANCEL );
+                        _identity->setState( ESS_STOP );
 
                         return false;
                     }
@@ -1104,13 +1099,14 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid stop identity" );
 
-        LOGGER_INFO( "sound", "stop sound identity: %u state: %d category: %d streamable: %d turn: %d source: %s"
+        LOGGER_INFO( "sound", "stop sound identity: %u state: %d category: %d streamable: %d turn: %d source: %s (doc: %s)"
             , _identity->getUniqueIdentity()
             , _identity->getState()
             , _identity->getCategory()
             , _identity->getStreamable()
             , _identity->getTurn()
             , Helper::getDebugFullPath( _identity->getSoundSource()->getSoundBuffer()->getDecoder()->getStream() ).c_str()
+            , MENGINE_DOCUMENT_STR( _identity->getDocument() )
         );
 
         ESoundSourceState state = _identity->getState();
@@ -1140,17 +1136,21 @@ namespace Mengine
                     source->stop();
                 }
 
-                if( _identity->getSoundListener() != nullptr )
+                const SoundListenerInterfacePtr & listener = _identity->getSoundListener();
+
+                if( listener != nullptr )
                 {
-                    SoundListenerInterfacePtr keep_listener = _identity->getSoundListener();
+                    SoundListenerInterfacePtr keep_listener = listener;
                     keep_listener->onSoundStop( _identity );
                 }
             }break;
         default:
             {
 #if defined(MENGINE_DEBUG)
-                LOGGER_WARNING( "invalid state [%u] (doc: %s)"
+                LOGGER_WARNING( "invalid stop sound identity: %u state: %u source: %s (doc: %s)"
+                    , _identity->getUniqueIdentity()
                     , _identity->getState()
+                    , Helper::getDebugFullPath( _identity->getSoundSource()->getSoundBuffer()->getDecoder()->getStream() ).c_str()
                     , MENGINE_DOCUMENT_STR( _identity->getDocument() )
                 );
 #endif
@@ -1408,7 +1408,7 @@ namespace Mengine
                     , _identity->getUniqueIdentity()
                 );
 
-                _identity->setState( ESS_CANCEL );
+                _identity->setState( ESS_STOP );
 
                 return false;
             }

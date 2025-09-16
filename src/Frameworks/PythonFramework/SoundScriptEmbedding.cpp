@@ -465,11 +465,11 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float>> m_affectorCreatorSound;
             //////////////////////////////////////////////////////////////////////////
-            bool soundFadeIn( const SoundIdentityInterfacePtr & _identity, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            bool soundFadeOut( const SoundIdentityInterfacePtr & _identity, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
                 if( _identity == nullptr )
                 {
-                    LOGGER_ERROR( "soundFadeIn invalid emitter" );
+                    LOGGER_ERROR( "soundFadeOut invalid emitter" );
 
                     return false;
                 }
@@ -496,9 +496,9 @@ namespace Mengine
                 return true;
             }
             //////////////////////////////////////////////////////////////////////////
-            SoundIdentityInterfacePtr soundFadeOut( const ConstString & _resourceName, bool _loop, float _time, const ConstString & _easingType, const pybind::object & _cbs, const pybind::args & _args )
+            SoundIdentityInterfacePtr soundFadeIn( const ConstString & _resourceName, bool _loop, float _time, const ConstString & _easingType, const pybind::object & _cbs, const pybind::args & _args )
             {
-                LOGGER_INFO( "sound", "[script] sound fade out resource '%s' file '%s'"
+                LOGGER_INFO( "sound", "[script] sound fade in resource '%s' file '%s'"
                     , _resourceName.c_str()
                     , Helper::getResourceFilePathByName( _resourceName ).c_str()
                 );
@@ -553,11 +553,11 @@ namespace Mengine
                 return soundIdentity;
             }
             //////////////////////////////////////////////////////////////////////////
-            bool soundFadeInTo( const SoundIdentityInterfacePtr & _identity, float _to, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            bool soundFadeOutTo( const SoundIdentityInterfacePtr & _identity, float _to, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
                 if( _identity == nullptr )
                 {
-                    LOGGER_ERROR( "soundFadeInTo invalid emitter" );
+                    LOGGER_ERROR( "soundFadeOutTo invalid emitter" );
 
                     return false;
                 }
@@ -587,9 +587,9 @@ namespace Mengine
                 return true;
             }
             //////////////////////////////////////////////////////////////////////////
-            SoundIdentityInterfacePtr soundFadeOutTo( const ConstString & _resourceName, bool _loop, float _to, float _time, const ConstString & _easingType, const pybind::object & _cbs, const pybind::args & _args )
+            SoundIdentityInterfacePtr soundFadeInTo( const ConstString & _resourceName, bool _loop, float _to, float _time, const ConstString & _easingType, const pybind::object & _cbs, const pybind::args & _args )
             {
-                LOGGER_INFO( "sound", "[script] sound fade out to resource '%s' file '%s'"
+                LOGGER_INFO( "sound", "[script] sound fade in to resource '%s' file '%s'"
                     , _resourceName.c_str()
                     , Helper::getResourceFilePathByName( _resourceName ).c_str()
                 );
@@ -808,10 +808,26 @@ namespace Mengine
             return false;
         }
 
-        pybind::interface_<SoundIdentityInterface, pybind::bases<Factorable>>( _kernel, "SoundIdentity" )
-            .def( "isStreamable", &SoundIdentityInterface::getStreamable )
+        pybind::enum_<ESoundSourceCategory>( _kernel, "ESoundSourceCategory" )
+            .def( "ES_SOURCE_CATEGORY_SOUND", ES_SOURCE_CATEGORY_SOUND )
+            .def( "ES_SOURCE_CATEGORY_MUSIC", ES_SOURCE_CATEGORY_MUSIC )
+            .def( "ES_SOURCE_CATEGORY_VOICE", ES_SOURCE_CATEGORY_VOICE )
+            ;
+
+        pybind::enum_<ESoundSourceState>( _kernel, "ESoundSourceState" )
+            .def( "ESS_STOP", ESS_STOP )
+            .def( "ESS_PLAY", ESS_PLAY )
+            .def( "ESS_PAUSE", ESS_PAUSE )
+            ;
+
+        pybind::interface_<SoundIdentityInterface, pybind::bases<Factorable>>( _kernel, "SoundIdentityInterface" )
             .def( "getStreamable", &SoundIdentityInterface::getStreamable )
             .def( "getLoop", &SoundIdentityInterface::getLoop )
+            .def( "getTurn", &SoundIdentityInterface::getTurn )
+            .def( "getCategory", &SoundIdentityInterface::getCategory )
+            .def( "getState", &SoundIdentityInterface::getState )
+            .def( "getStateTimestamp", &SoundIdentityInterface::getStateTimestamp )
+            .def( "getTimeLeft", &SoundIdentityInterface::getTimeLeft )
             ;
 
         pybind::def_functor( _kernel, "hasSound", soundScriptMethod, &SoundScriptMethod::hasSound );
@@ -836,11 +852,11 @@ namespace Mengine
         pybind::def_functor( _kernel, "soundGetVolume", soundScriptMethod, &SoundScriptMethod::soundGetVolume );
         pybind::def_functor( _kernel, "soundGetPosition", soundScriptMethod, &SoundScriptMethod::soundGetPosition );
         pybind::def_functor( _kernel, "soundSetPosition", soundScriptMethod, &SoundScriptMethod::soundSetPosition );
-        pybind::def_functor_args( _kernel, "soundFadeIn", soundScriptMethod, &SoundScriptMethod::soundFadeIn );
         pybind::def_functor_args( _kernel, "soundFadeOut", soundScriptMethod, &SoundScriptMethod::soundFadeOut );
-        pybind::def_functor_args( _kernel, "soundFadeInTo", soundScriptMethod, &SoundScriptMethod::soundFadeInTo );
+        pybind::def_functor_args( _kernel, "soundFadeIn", soundScriptMethod, &SoundScriptMethod::soundFadeIn );
         pybind::def_functor_args( _kernel, "soundFadeOutTo", soundScriptMethod, &SoundScriptMethod::soundFadeOutTo );
-
+        pybind::def_functor_args( _kernel, "soundFadeInTo", soundScriptMethod, &SoundScriptMethod::soundFadeInTo );
+        
         pybind::def_functor_args( _kernel, "voicePlay", soundScriptMethod, &SoundScriptMethod::voicePlay );
         pybind::def_functor( _kernel, "voiceStop", soundScriptMethod, &SoundScriptMethod::voiceStop );
         pybind::def_functor( _kernel, "voicePause", soundScriptMethod, &SoundScriptMethod::voicePause );

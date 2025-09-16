@@ -200,9 +200,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceSound::_play( UniqueId _enumerator, float _time )
     {
-        MENGINE_UNUSED( _enumerator );
-        MENGINE_UNUSED( _time );
-
         if( this->isCompile() == false )
         {
             LOGGER_ERROR( "surface sound '%s' not compile"
@@ -230,23 +227,31 @@ namespace Mengine
             return false;
         }
 
+        EVENTABLE_METHOD( EVENT_ANIMATION_PLAY )
+            ->onAnimationPlay( _enumerator, _time );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceSound::_restart( UniqueId _enumerator, float _time )
     {
-        MENGINE_UNUSED( _time );
-        MENGINE_UNUSED( _enumerator );
+        if( this->isCompile() == false )
+        {
+            LOGGER_ERROR( "surface sound '%s' not compile"
+                , this->getName().c_str()
+            );
 
-        //ToDo
+            return false;
+        }
+
+        EVENTABLE_METHOD( EVENT_ANIMATION_RESTART )
+            ->onAnimationRestart( _enumerator, _time );
 
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void SurfaceSound::_pause( UniqueId _enumerator )
     {
-        MENGINE_UNUSED( _enumerator );
-
         if( this->isCompile() == false )
         {
             LOGGER_ERROR( "surface sound '%s' not compile"
@@ -258,13 +263,13 @@ namespace Mengine
 
         SOUND_SERVICE()
             ->pauseEmitter( m_soundIdentity );
+
+        EVENTABLE_METHOD( EVENT_ANIMATION_PAUSE )
+            ->onAnimationPause( _enumerator );
     }
     //////////////////////////////////////////////////////////////////////////
     void SurfaceSound::_resume( UniqueId _enumerator, float _time )
     {
-        MENGINE_UNUSED( _time );
-        MENGINE_UNUSED( _enumerator );
-
         if( this->isCompile() == false )
         {
             LOGGER_ERROR( "surface sound '%s' not compile"
@@ -276,18 +281,26 @@ namespace Mengine
 
         SOUND_SERVICE()
             ->resumeEmitter( m_soundIdentity );
+
+        EVENTABLE_METHOD( EVENT_ANIMATION_RESUME )
+            ->onAnimationResume( _enumerator, _time );
     }
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceSound::_stop( UniqueId _enumerator )
     {
+        if( this->isCompile() == false )
+        {
+            LOGGER_ERROR( "surface sound '%s' not compile"
+                , this->getName().c_str()
+            );
+
+            return false;
+        }
+
         if( m_soundIdentity != nullptr )
         {
-            if( SOUND_SERVICE()
-                ->isEmitterStop( m_soundIdentity ) == false )
-            {
-                SOUND_SERVICE()
-                    ->stopEmitter( m_soundIdentity );
-            }
+            SOUND_SERVICE()
+                ->stopEmitter( m_soundIdentity );
         }
 
         EVENTABLE_METHOD( EVENT_ANIMATION_END )

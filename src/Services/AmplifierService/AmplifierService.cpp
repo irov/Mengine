@@ -57,7 +57,7 @@ namespace Mengine
 
             switch( state )
             {
-            case ESS_STOP:
+            case ESS_INIT:
                 break;
             case ESS_PAUSE:
                 break;
@@ -69,7 +69,9 @@ namespace Mengine
                     SOUND_SERVICE()
                         ->releaseSoundIdentity( keep_soundIdentity );
                 }break;
-            default:
+            case ESS_STOP:
+                break;
+            case ESS_END:
                 break;
             }
         }
@@ -189,7 +191,7 @@ namespace Mengine
 
         ESoundSourceState state = keep_soundIdentity->getState();
 
-        if( state != ESS_STOP )
+        if( state == ESS_PAUSE && state == ESS_PLAY )
         {
             SOUND_SERVICE()
                 ->stopEmitter( keep_soundIdentity );

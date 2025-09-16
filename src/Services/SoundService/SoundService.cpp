@@ -251,7 +251,7 @@ namespace Mengine
                 {
                     LOGGER_ASSERTION( "invalid resume (play)" );
 
-                    identity->setState( ESS_STOP );
+                    identity->setState( ESS_END );
 
                     continue;
                 }
@@ -271,7 +271,7 @@ namespace Mengine
                 {
                     LOGGER_MESSAGE( "invalid play sound buffer update" );
 
-                    identity->setState( ESS_STOP );
+                    identity->setState( ESS_END );
 
                     continue;
                 }
@@ -287,7 +287,7 @@ namespace Mengine
 
             ESoundSourceState state = identity->getState();
 
-            if( state == ESS_STOP )
+            if( state == ESS_INIT || state == ESS_STOP || state == ESS_END )
             {
                 continue;
             }
@@ -682,15 +682,25 @@ namespace Mengine
         {
             ESoundSourceState state = identity->getState();
 
-            if( state == ESS_STOP )
+            if( state == ESS_INIT )
             {
-                m_soundIdentitiesEndAux.emplace_back( identity );
-
                 continue;
             }
 
-            if( state != ESS_PLAY )
+            if( state == ESS_PAUSE )
             {
+                continue;
+            }
+
+            if( state == ESS_STOP )
+            {
+                continue;
+            }
+
+            if( state == ESS_END )
+            {
+                m_soundIdentitiesEndAux.emplace_back( identity );
+
                 continue;
             }
 
@@ -727,18 +737,7 @@ namespace Mengine
             {
                 if( worker->isDone() == true )
                 {
-                    identity->setState( ESS_STOP );
-
-                    this->stopSoundBufferUpdate_( identity );
-
-                    const SoundSourceInterfacePtr & soundSource = identity->getSoundSource();
-
-                    if( soundSource != nullptr )
-                    {
-                        soundSource->stop();
-                    }
-
-                    identity->setTimeLeft( 0.f );
+                    identity->setState( ESS_END );
 
                     m_soundIdentitiesEndAux.emplace_back( identity );
                 }
@@ -758,16 +757,7 @@ namespace Mengine
             {
                 if( time_new <= 0.f )
                 {
-                    identity->setState( ESS_STOP );
-
-                    const SoundSourceInterfacePtr & soundSource = identity->getSoundSource();
-
-                    if( soundSource != nullptr )
-                    {
-                        soundSource->stop();
-                    }
-
-                    identity->setTimeLeft( 0.f );
+                    identity->setState( ESS_END );
 
                     m_soundIdentitiesEndAux.emplace_back( identity );
                 }
@@ -785,6 +775,17 @@ namespace Mengine
 
         for( const SoundIdentityInterfacePtr & identity : m_soundIdentitiesEndAux )
         {
+            this->stopSoundBufferUpdate_( identity );
+
+            const SoundSourceInterfacePtr & soundSource = identity->getSoundSource();
+
+            if( soundSource != nullptr )
+            {
+                soundSource->stop();
+            }
+
+            identity->setTimeLeft( 0.f );
+
             SoundListenerInterfacePtr listener = identity->popSoundListener();
 
             if( listener == nullptr )
@@ -832,19 +833,18 @@ namespace Mengine
             , Helper::getDebugFullPath( _identity->getSoundSource()->getSoundBuffer()->getDecoder()->getStream() ).c_str()
         );
 
+        if( this->checkMaxSoundPlay_() == false )
+        {
+            return false;
+        }
+
         ESoundSourceState state = _identity->getState();
 
         switch( state )
         {
+        case ESS_INIT:
         case ESS_STOP:
             {
-                if( this->checkMaxSoundPlay_() == false )
-                {
-                    _identity->setState( ESS_STOP );
-
-                    return false;
-                }
-
                 this->updateSourceVolume_( _identity );
 
                 const SoundSourceInterfacePtr & source = _identity->getSoundSource();
@@ -882,7 +882,7 @@ namespace Mengine
                     {
                         LOGGER_MESSAGE( "invalid play sound buffer update" );
 
-                        _identity->setState( ESS_STOP );
+                        _identity->setState( ESS_END );
 
                         return false;
                     }
@@ -898,13 +898,6 @@ namespace Mengine
             }break;
         case ESS_PAUSE:
             {
-                if( this->checkMaxSoundPlay_() == false )
-                {
-                    _identity->setState( ESS_STOP );
-
-                    return false;
-                }
-
                 this->updateSourceVolume_( _identity );
 
                 const SoundSourceInterfacePtr & source = _identity->getSoundSource();
@@ -926,7 +919,7 @@ namespace Mengine
                             , _identity->getUniqueIdentity()
                         );
 
-                        _identity->setState( ESS_STOP );
+                        _identity->setState( ESS_END );
 
                         return false;
                     }
@@ -1032,17 +1025,17 @@ namespace Mengine
             , Helper::getDebugFullPath( _identity->getSoundSource()->getSoundBuffer()->getDecoder()->getStream() ).c_str()
         );
 
+        if( this->checkMaxSoundPlay_() == false )
+        {
+            return false;
+        }
+
         ESoundSourceState state = _identity->getState();
 
         switch( state )
         {
         case ESS_PAUSE:
             {
-                if( this->checkMaxSoundPlay_() == false )
-                {
-                    return false;
-                }
-
                 this->updateSourceVolume_( _identity );
 
                 const SoundSourceInterfacePtr & source = _identity->getSoundSource();
@@ -1063,7 +1056,7 @@ namespace Mengine
                             , _identity->getUniqueIdentity()
                         );
 
-                        _identity->setState( ESS_STOP );
+                        _identity->setState( ESS_END );
 
                         return false;
                     }
@@ -1157,48 +1150,6 @@ namespace Mengine
 
                 return false;
             }break;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool SoundService::isEmitterStop( const SoundIdentityInterfacePtr & _identity ) const
-    {
-        MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid stop identity" );
-
-        ESoundSourceState state = _identity->getState();
-
-        if( state != ESS_STOP )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool SoundService::isEmitterPlay( const SoundIdentityInterfacePtr & _identity ) const
-    {
-        MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid play identity" );
-
-        ESoundSourceState state = _identity->getState();
-
-        if( state != ESS_PLAY )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool SoundService::isEmitterPause( const SoundIdentityInterfacePtr & _identity ) const
-    {
-        MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid pause identity" );
-
-        ESoundSourceState state = _identity->getState();
-
-        if( state != ESS_PAUSE )
-        {
-            return false;
         }
 
         return true;
@@ -1397,6 +1348,12 @@ namespace Mengine
 
         if( source->setPosition( _position ) == false )
         {
+            LOGGER_ASSERTION( "invalid set position identity: %u"
+                , _identity->getUniqueIdentity()
+            );
+
+            _identity->setState( ESS_END );
+
             return false;
         }
 
@@ -1408,7 +1365,7 @@ namespace Mengine
                     , _identity->getUniqueIdentity()
                 );
 
-                _identity->setState( ESS_STOP );
+                _identity->setState( ESS_END );
 
                 return false;
             }

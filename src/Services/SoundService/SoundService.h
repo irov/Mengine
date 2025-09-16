@@ -92,11 +92,6 @@ namespace Mengine
         bool stopEmitter( const SoundIdentityInterfacePtr & _identity ) override;
 
     public:
-        bool isEmitterStop( const SoundIdentityInterfacePtr & _identity ) const override;
-        bool isEmitterPlay( const SoundIdentityInterfacePtr & _identity ) const override;
-        bool isEmitterPause( const SoundIdentityInterfacePtr & _identity ) const override;
-
-    public:
         bool setLoop( const SoundIdentityInterfacePtr & _identity, bool _looped ) override;
         bool getLoop( const SoundIdentityInterfacePtr & _identity ) const override;
 

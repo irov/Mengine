@@ -74,11 +74,6 @@ namespace Mengine
         virtual bool stopEmitter( const SoundIdentityInterfacePtr & _identity ) = 0;
 
     public:
-        virtual bool isEmitterStop( const SoundIdentityInterfacePtr & _identity ) const = 0;
-        virtual bool isEmitterPlay( const SoundIdentityInterfacePtr & _identity ) const = 0;
-        virtual bool isEmitterPause( const SoundIdentityInterfacePtr & _identity ) const = 0;
-
-    public:
         virtual bool setLoop( const SoundIdentityInterfacePtr & _identity, bool _looped ) = 0;
         virtual bool getLoop( const SoundIdentityInterfacePtr & _identity ) const = 0;
 

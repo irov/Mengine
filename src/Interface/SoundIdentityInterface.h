@@ -21,9 +21,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     enum ESoundSourceState
     {
-        ESS_STOP = 0,
+        ESS_INIT = 0,
         ESS_PLAY = 1,
         ESS_PAUSE = 2,
+        ESS_STOP = 3,
+        ESS_END = 4,
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class SoundIdentityInterface> SoundIdentityInterfacePtr;

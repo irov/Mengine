@@ -671,30 +671,6 @@ namespace Mengine
                     ->resumeEmitter( _identity );
             }
             //////////////////////////////////////////////////////////////////////////
-            bool isSoundStop( const SoundIdentityInterfacePtr & _identity )
-            {
-                MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid sound check stop identity" );
-
-                return SOUND_SERVICE()
-                    ->isEmitterStop( _identity );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            bool isSoundPlay( const SoundIdentityInterfacePtr & _identity )
-            {
-                MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid sound check play identity" );
-
-                return SOUND_SERVICE()
-                    ->isEmitterPlay( _identity );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            bool isSoundPause( const SoundIdentityInterfacePtr & _identity )
-            {
-                MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid sound check pause identity" );
-
-                return SOUND_SERVICE()
-                    ->isEmitterPause( _identity );
-            }
-            //////////////////////////////////////////////////////////////////////////
             void voiceStop( const SoundIdentityInterfacePtr & _identity )
             {
                 MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid voice stop identity" );
@@ -815,9 +791,11 @@ namespace Mengine
             ;
 
         pybind::enum_<ESoundSourceState>( _kernel, "ESoundSourceState" )
-            .def( "ESS_STOP", ESS_STOP )
+            .def( "ESS_INIT", ESS_INIT )            
             .def( "ESS_PLAY", ESS_PLAY )
             .def( "ESS_PAUSE", ESS_PAUSE )
+            .def( "ESS_STOP", ESS_STOP )
+            .def( "ESS_END", ESS_END )
             ;
 
         pybind::interface_<SoundIdentityInterface, pybind::bases<Factorable>>( _kernel, "SoundIdentityInterface" )
@@ -843,9 +821,6 @@ namespace Mengine
         pybind::def_functor( _kernel, "soundStop", soundScriptMethod, &SoundScriptMethod::soundStop );
         pybind::def_functor( _kernel, "soundPause", soundScriptMethod, &SoundScriptMethod::soundPause );
         pybind::def_functor( _kernel, "soundResume", soundScriptMethod, &SoundScriptMethod::soundResume );
-        pybind::def_functor( _kernel, "isSoundStop", soundScriptMethod, &SoundScriptMethod::isSoundStop );
-        pybind::def_functor( _kernel, "isSoundPlay", soundScriptMethod, &SoundScriptMethod::isSoundPlay );
-        pybind::def_functor( _kernel, "isSoundPause", soundScriptMethod, &SoundScriptMethod::isSoundPause );
         pybind::def_functor( _kernel, "soundSourceSetVolume", soundScriptMethod, &SoundScriptMethod::soundSourceSetVolume );
         pybind::def_functor( _kernel, "soundSourceGetVolume", soundScriptMethod, &SoundScriptMethod::soundSourceGetVolume );
         pybind::def_functor( _kernel, "soundSetVolume", soundScriptMethod, &SoundScriptMethod::soundSetVolume );

@@ -12,7 +12,7 @@ namespace Mengine
     SoundIdentity::SoundIdentity()
         : m_workerId( INVALID_UNIQUE_ID )
         , m_timeLeft( 0.f )
-        , m_state( ESS_STOP )
+        , m_state( ESS_INIT )
         , m_category( ES_SOURCE_CATEGORY_SOUND )
         , m_stateTimestamp( 0 )
         , m_streamable( false )
@@ -52,7 +52,7 @@ namespace Mengine
 
         m_timeLeft = 0.f;
 
-        m_state = ESS_STOP;
+        m_state = ESS_INIT;
         m_category = _category;
 
         m_streamable = _streamable;
@@ -84,7 +84,7 @@ namespace Mengine
         m_listener = nullptr;
         m_worker = nullptr;
 
-        m_state = ESS_STOP;
+        m_state = ESS_END;
 
         m_mixerVolume = nullptr;
     }

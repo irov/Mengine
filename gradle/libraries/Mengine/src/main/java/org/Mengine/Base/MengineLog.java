@@ -120,12 +120,20 @@ public class MengineLog {
     }
 
     public static String logMessage(@NonNull MengineTag category, @NonNull String format, Object ... args) {
+        if (BuildConfig.DEBUG == false) {
+            return "";
+        }
+
         String m = MengineLog.log(LM_MESSAGE, category, MengineLog.LFILTER_NONE, format, args);
 
         return m;
     }
 
     public static String logMessageProtected(@NonNull MengineTag category, @NonNull String format, Object ... args) {
+        if (BuildConfig.DEBUG == false) {
+            return "";
+        }
+
         String m = MengineLog.log(LM_MESSAGE, category, MengineLog.LFILTER_PROTECTED, format, args);
 
         return m;

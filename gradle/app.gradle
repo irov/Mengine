@@ -332,9 +332,6 @@ android {
         jniLibs {
             pickFirsts += ['lib/**/libc++_shared.so']
 
-            if(MENGINE_APP_LIBRARY_OPENAL32) {
-                pickFirsts += ['lib/**/libopenal.so']
-            }
         }
     }
 
@@ -357,14 +354,6 @@ if (ANDROID_APP_SPLIT_ENABLE == true) {
                 output.versionCodeOverride = baseAbiVersionCode * 1000000 + variant.versionCode
             }
         }
-    }
-}
-
-Utils.logAvailable("MENGINE_APP_LIBRARY_OPENAL32", MENGINE_APP_LIBRARY_OPENAL32)
-
-if (MENGINE_APP_LIBRARY_OPENAL32 == true) {
-    dependencies {
-        implementation project(':libraries:OpenAL32')
     }
 }
 

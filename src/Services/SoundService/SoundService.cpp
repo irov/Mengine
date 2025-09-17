@@ -880,7 +880,7 @@ namespace Mengine
 
                     if( this->playSoundBufferUpdate_( _identity ) == false )
                     {
-                        LOGGER_MESSAGE( "invalid play sound buffer update" );
+                        LOGGER_ASSERTION( "invalid play sound buffer update" );
 
                         _identity->setState( ESS_END );
 

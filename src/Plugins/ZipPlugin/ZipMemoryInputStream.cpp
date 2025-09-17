@@ -26,6 +26,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ZipMemoryInputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath )
     {
+        MENGINE_UNUSED( _relationPath );
+        MENGINE_UNUSED( _folderPath );
+        MENGINE_UNUSED( _filePath );
+
 #if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)        
         Helper::addDebugFilePath( this, _relationPath, _folderPath, _filePath, MENGINE_DOCUMENT_FACTORABLE );
 #endif

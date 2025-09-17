@@ -764,7 +764,7 @@ namespace Mengine
             }
         };
         //////////////////////////////////////////////////////////////////////////
-        typedef IntrusivePtr< SoundScriptMethod> SoundScriptMethodPtr;
+        typedef IntrusivePtr<SoundScriptMethod> SoundScriptMethodPtr;
         //////////////////////////////////////////////////////////////////////////
     }
     SoundScriptEmbedding::SoundScriptEmbedding()

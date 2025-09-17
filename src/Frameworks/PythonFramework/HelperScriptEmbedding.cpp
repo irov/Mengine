@@ -1022,6 +1022,14 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_log( pybind::kernel_interface * _kernel, const StringView & _message, ELoggerLevel _level, uint32_t _color, uint32_t _flag )
             {
+                ELoggerLevel verboseLevel = LOGGER_SERVICE()
+                    ->getVerboseLevel();
+
+                if( verboseLevel < _level )
+                {
+                    return;
+                }
+
                 Path filename = {'\0'};
                 Char function[MENGINE_CODE_MAX_FUNCTION_NAME + 1] = {'\0'};
                 uint32_t lineno = 0;
@@ -1047,12 +1055,22 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_logDebug( pybind::kernel_interface * _kernel, const StringView & _message )
             {
+                MENGINE_UNUSED( _kernel );
+                MENGINE_UNUSED( _message );
+
+#if defined(MENGINE_LOGGER_INFO_ENABLE)
                 s_log( _kernel, _message, LM_DEBUG, LCOLOR_BLUE, LFLAG_SHORT );
+#endif
             }
             //////////////////////////////////////////////////////////////////////////
             void s_logInfo( pybind::kernel_interface * _kernel, const StringView & _message )
             {
+                MENGINE_UNUSED( _kernel );
+                MENGINE_UNUSED( _message );
+
+#if defined(MENGINE_LOGGER_INFO_ENABLE)
                 s_log( _kernel, _message, LM_INFO, LCOLOR_GREEN | LCOLOR_BLUE, LFLAG_SHORT );
+#endif
             }
             //////////////////////////////////////////////////////////////////////////
             void s_logMessage( pybind::kernel_interface * _kernel, const StringView & _message )

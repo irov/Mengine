@@ -180,6 +180,10 @@ public class MengineLog {
     }
 
     public static String logSingleMessage(@NonNull MengineTag category, @NonNull String format, Object ... args) {
+        if (BuildConfig.DEBUG == false) {
+            return "";
+        }
+
         String m = MengineLog.buildTotalMsg(format, args);
 
         synchronized (MengineLog.m_singlesLock) {

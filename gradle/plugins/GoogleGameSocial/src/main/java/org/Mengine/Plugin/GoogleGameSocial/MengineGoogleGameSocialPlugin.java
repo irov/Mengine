@@ -19,6 +19,8 @@ import com.google.android.gms.games.GamesSignInClient;
 import com.google.android.gms.games.LeaderboardsClient;
 import com.google.android.gms.games.PlayGames;
 import com.google.android.gms.games.PlayGamesSdk;
+import com.google.android.gms.games.achievement.Achievement;
+import com.google.android.gms.games.achievement.AchievementBuffer;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
@@ -30,6 +32,9 @@ import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 
 import org.Mengine.Plugin.GoogleService.MengineGoogleServicePlugin;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Map;
 
@@ -95,8 +100,6 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
         });
 
         m_leaderboardLauncher = leaderboardLauncher;
-
-
 
         ActivityResultLauncher<IntentSenderRequest> gamesResolutionLauncher = activity.registerForActivityResultIntentSender(result -> {
             if (result.getResultCode() == Activity.RESULT_OK) {
@@ -200,14 +203,14 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
             this.logInfo("google game social isAuthenticated success");
 
             m_isAuthenticated = true;
+
+            this.activateSemaphore("GoogleGameSocialAuthenticated");
         });
     }
 
     public void signInIntent() {
         if (MengineNetwork.isNetworkAvailable() == false) {
             this.logInfo("signInIntent network not available");
-
-            this.nativeCall("onGoogleGameSocialSignInIntentError", new RuntimeException("network not available"));
 
             return;
         }
@@ -225,8 +228,6 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                     if (pendingIntent == null) {
                         this.logInfo("signInIntent ResolvableApiException resolution null");
 
-                        this.nativeCall("onGoogleGameSocialSignInIntentError", e);
-
                         return;
                     }
 
@@ -240,13 +241,9 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                             m_gamesResolutionLauncher.launch(request);
                         } else {
                             this.logError("[ERROR] signInIntent gamesResolutionLauncher not available");
-
-                            this.nativeCall("onGoogleGameSocialSignInIntentError", e);
                         }
                     } catch (Exception ex) {
                         this.logException(ex, Map.of());
-
-                        this.nativeCall("onGoogleGameSocialSignInIntentError", ex);
                     }
 
                     return;
@@ -258,8 +255,6 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                     this.logError("[ERROR] signInIntent failed: null exception");
                 }
 
-                this.nativeCall("onGoogleGameSocialSignInIntentError", e);
-
                 return;
             }
 
@@ -270,8 +265,6 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
 
                 m_isAuthenticated = false;
 
-                this.nativeCall("onGoogleGameSocialSignInIntentFailed");
-
                 return;
             }
 
@@ -279,8 +272,97 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
 
             m_isAuthenticated = true;
 
-            this.nativeCall("onGoogleGameSocialSignInIntentSuccess");
+            this.activateSemaphore("GoogleGameSocialAuthenticated");
         });
+    }
+
+    public void requestAchievementsState() {
+        if (MengineNetwork.isNetworkAvailable() == false) {
+            this.logInfo("requestAchievementsState network not available");
+
+            this.nativeCall("onGoogleGameSocialRequestAchievementsStateError", new RuntimeException("network not available"));
+
+            return;
+        }
+
+        if (m_isAuthenticated == false) {
+            this.logInfo("requestAchievementsState not authenticated");
+
+            this.nativeCall("onGoogleGameSocialRequestAchievementsStateError", new RuntimeException("not authenticated"));
+
+            return;
+        }
+
+        m_achievementsClient.load(true)
+            .addOnSuccessListener(achievementsData -> {
+                AchievementBuffer achievementBuffer = achievementsData.get();
+
+                if (achievementBuffer == null) {
+                    this.logError("[ERROR] requestAchievementsState achievementBuffer null");
+
+                    this.nativeCall("onGoogleGameSocialRequestAchievementsStateError", new RuntimeException("achievementBuffer null"));
+
+                    return;
+                }
+
+                try {
+                    int count = achievementBuffer.getCount();
+
+                    JSONArray achievementsJSON = new JSONArray();
+
+                    for (int index = 0; index < count; ++index) {
+                        Achievement achievement = achievementBuffer.get(index).freeze();
+
+                        JSONObject achievementJSON = new JSONObject();
+
+                        achievementJSON.put("achievementId", achievement.getAchievementId());
+                        achievementJSON.put("name", achievement.getName());
+                        achievementJSON.put("description", achievement.getDescription());
+                        achievementJSON.put("state", achievement.getState());
+                        achievementJSON.put("type", achievement.getType());
+                        achievementJSON.put("xpValue", achievement.getXpValue());
+                        achievementJSON.put("lastUpdatedTimestamp", achievement.getLastUpdatedTimestamp());
+
+                        if (achievement.getType() == Achievement.TYPE_INCREMENTAL) {
+                            achievementJSON.put("currentSteps", achievement.getCurrentSteps());
+                            achievementJSON.put("totalSteps", achievement.getTotalSteps());
+                        } else {
+                            achievementJSON.put("currentSteps", 0);
+                            achievementJSON.put("totalSteps", 0);
+                        }
+
+                        achievementsJSON.put(achievementJSON);
+                    }
+
+                    this.logInfo("requestAchievementsState success %s", achievementsJSON);
+
+                    this.nativeCall("onGoogleGameSocialRequestAchievementsStateSuccessful", achievementsJSON);
+                } catch (JSONException exception) {
+                    this.logException(exception, Map.of());
+
+                    this.nativeCall("onGoogleGameSocialRequestAchievementsStateError", exception);
+
+                    return;
+                } catch (RuntimeException exception) {
+                    this.logException(exception, Map.of());
+
+                    this.nativeCall("onGoogleGameSocialRequestAchievementsStateError", exception);
+
+                    return;
+                } finally {
+                    if (achievementBuffer != null) {
+                        achievementBuffer.release();
+                    }
+                }
+            }).addOnFailureListener(e -> {
+                this.logException(e, Map.of());
+
+                this.nativeCall("onGoogleGameSocialRequestAchievementsStateError", e);
+            }).addOnCanceledListener(() -> {
+                this.logInfo("requestAchievementsState canceled");
+
+                this.nativeCall("onGoogleGameSocialRequestAchievementsStateCanceled");
+            });
     }
 
     public void showAchievements() {
@@ -288,6 +370,14 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
             this.logInfo("showAchievements network not available");
 
             this.nativeCall("onGoogleGameSocialShowAchievementError", new RuntimeException("network not available"));
+
+            return;
+        }
+
+        if (m_isAuthenticated == false) {
+            this.logInfo("showAchievements not authenticated");
+
+            this.nativeCall("onGoogleGameSocialShowAchievementError", new RuntimeException("not authenticated"));
 
             return;
         }

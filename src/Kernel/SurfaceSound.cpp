@@ -200,6 +200,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceSound::_play( UniqueId _enumerator, float _time )
     {
+        MENGINE_UNUSED( _enumerator );
+        MENGINE_UNUSED( _time );
+
         if( this->isCompile() == false )
         {
             LOGGER_ERROR( "surface sound '%s' not compile"
@@ -227,14 +230,14 @@ namespace Mengine
             return false;
         }
 
-        EVENTABLE_METHOD( EVENT_ANIMATION_PLAY )
-            ->onAnimationPlay( _enumerator, _time );
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceSound::_restart( UniqueId _enumerator, float _time )
     {
+        MENGINE_UNUSED( _enumerator );
+        MENGINE_UNUSED( _time );
+
         if( this->isCompile() == false )
         {
             LOGGER_ERROR( "surface sound '%s' not compile"
@@ -244,6 +247,12 @@ namespace Mengine
             return false;
         }
 
+        LOGGER_INFO( "sound", "[surface] sound restart '%s' resource '%s' file '%s'"
+            , this->getName().c_str()
+            , m_resourceSound->getName().c_str()
+            , Helper::getResourceFilePath( m_resourceSound ).c_str()
+        );
+
         EVENTABLE_METHOD( EVENT_ANIMATION_RESTART )
             ->onAnimationRestart( _enumerator, _time );
 
@@ -252,6 +261,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SurfaceSound::_pause( UniqueId _enumerator )
     {
+        MENGINE_UNUSED( _enumerator );
+
         if( this->isCompile() == false )
         {
             LOGGER_ERROR( "surface sound '%s' not compile"
@@ -261,15 +272,21 @@ namespace Mengine
             return;
         }
 
+        LOGGER_INFO( "sound", "[surface] sound pause '%s' resource '%s' file '%s'"
+            , this->getName().c_str()
+            , m_resourceSound->getName().c_str()
+            , Helper::getResourceFilePath( m_resourceSound ).c_str()
+        );
+
         SOUND_SERVICE()
             ->pauseEmitter( m_soundIdentity );
-
-        EVENTABLE_METHOD( EVENT_ANIMATION_PAUSE )
-            ->onAnimationPause( _enumerator );
     }
     //////////////////////////////////////////////////////////////////////////
     void SurfaceSound::_resume( UniqueId _enumerator, float _time )
     {
+        MENGINE_UNUSED( _enumerator );
+        MENGINE_UNUSED( _time );
+
         if( this->isCompile() == false )
         {
             LOGGER_ERROR( "surface sound '%s' not compile"
@@ -279,11 +296,14 @@ namespace Mengine
             return;
         }
 
+        LOGGER_INFO( "sound", "[surface] sound resume '%s' resource '%s' file '%s'"
+            , this->getName().c_str()
+            , m_resourceSound->getName().c_str()
+            , Helper::getResourceFilePath( m_resourceSound ).c_str()
+        );
+
         SOUND_SERVICE()
             ->resumeEmitter( m_soundIdentity );
-
-        EVENTABLE_METHOD( EVENT_ANIMATION_RESUME )
-            ->onAnimationResume( _enumerator, _time );
     }
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceSound::_stop( UniqueId _enumerator )
@@ -296,6 +316,12 @@ namespace Mengine
 
             return false;
         }
+
+        LOGGER_INFO( "sound", "[surface] sound stop '%s' resource '%s' file '%s'"
+            , this->getName().c_str()
+            , m_resourceSound->getName().c_str()
+            , Helper::getResourceFilePath( m_resourceSound ).c_str()
+        );
 
         if( m_soundIdentity != nullptr )
         {
@@ -316,6 +342,12 @@ namespace Mengine
         //    SOUND_SERVICE()
         //        ->stopEmitter( m_soundEmitter );
         //}
+
+        LOGGER_INFO( "sound", "[surface] sound end '%s' resource '%s' file '%s'"
+            , this->getName().c_str()
+            , m_resourceSound->getName().c_str()
+            , Helper::getResourceFilePath( m_resourceSound ).c_str()
+        );
 
         EVENTABLE_METHOD( EVENT_ANIMATION_END )
             ->onAnimationEnd( _enumerator );
@@ -450,7 +482,11 @@ namespace Mengine
     {
         MENGINE_UNUSED( _identity );
 
-        // Empty
+        uint32_t id = this->getPlayId();
+        float playTime = this->getPlayTime();
+
+        EVENTABLE_METHOD( EVENT_ANIMATION_PLAY )
+            ->onAnimationPlay( id, playTime );
     }
     //////////////////////////////////////////////////////////////////////////
     void SurfaceSound::onSoundPause( const SoundIdentityInterfacePtr & _identity )
@@ -468,9 +504,10 @@ namespace Mengine
         MENGINE_UNUSED( _identity );
 
         uint32_t id = this->getPlayId();
+        float playTime = this->getPlayTime();
 
         EVENTABLE_METHOD( EVENT_ANIMATION_RESUME )
-            ->onAnimationResume( id, 0.f );
+            ->onAnimationResume( id, playTime );
     }
     //////////////////////////////////////////////////////////////////////////
     void SurfaceSound::onSoundStop( const SoundIdentityInterfacePtr & _identity )

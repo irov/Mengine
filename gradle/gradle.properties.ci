@@ -11,9 +11,8 @@
 # http://www.gradle.org/docs/current/userguide/multi_project_builds.html#sec:decoupled_projects
 # org.gradle.parallel=true
 #Thu Dec 22 15:16:00 CET 2022
+ANDROID_APP_MAIN_PROJECT=ci
+
 android.useAndroidX=true
 android.useFullClasspathForDexingTransform=true
-android.enableJetifier=false
-org.gradle.daemon=false
-
-ANDROID_APP_MAIN_PROJECT=ci
+android.enableJetifier=true

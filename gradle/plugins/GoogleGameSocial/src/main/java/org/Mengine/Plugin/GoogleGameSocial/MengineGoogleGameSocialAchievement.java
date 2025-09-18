@@ -107,7 +107,6 @@ public final class MengineGoogleGameSocialAchievement {
     public JSONObject toJSONObject() throws JSONException {
         JSONObject achievementJSON = new JSONObject();
 
-        achievementJSON.put("achievementId", m_id);
         achievementJSON.put("name", m_name);
         achievementJSON.put("description", m_description);
         achievementJSON.put("state", m_state);

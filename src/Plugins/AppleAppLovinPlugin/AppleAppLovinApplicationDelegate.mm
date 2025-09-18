@@ -16,6 +16,10 @@
 
 #include "Configuration/Configurations.h"
 
+#if defined(MENGINE_DEBUG)
+#   import <AdSupport/AdSupport.h>
+#endif
+
 #if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_META)
 #   import <FBAudienceNetwork/FBAdSettings.h>
 #endif
@@ -215,9 +219,39 @@
     
     [advertisement setProvider:self];
     
+    NSMutableArray * adUnitIdentifiers = [NSMutableArray array];
+    
+#if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_BANNER)
+        NSString * MengineAppleAppLovinPlugin_BannerAdUnitId = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"BannerAdUnitId" withDefault:nil];
+        
+        if (MengineAppleAppLovinPlugin_BannerAdUnitId != nil) {
+            [adUnitIdentifiers addObject:MengineAppleAppLovinPlugin_BannerAdUnitId];
+        }
+#endif
+        
+#if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_INTERSTITIAL)
+        NSString * MengineAppleAppLovinPlugin_InterstitialAdUnitId = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"InterstitialAdUnitId" withDefault:nil];
+        
+        if (MengineAppleAppLovinPlugin_InterstitialAdUnitId != nil) {
+            [adUnitIdentifiers addObject:MengineAppleAppLovinPlugin_InterstitialAdUnitId];
+        }
+#endif
+        
+#if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_REWARDED)
+        NSString * MengineAppleAppLovinPlugin_RewardedAdUnitId = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"RewardedAdUnitId" withDefault:nil];
+        
+        if (MengineAppleAppLovinPlugin_RewardedAdUnitId != nil) {
+            [adUnitIdentifiers addObject:MengineAppleAppLovinPlugin_RewardedAdUnitId];
+        }
+#endif
+    
     ALSdkInitializationConfiguration * initializationConfiguration = [ALSdkInitializationConfiguration configurationWithSdkKey:MengineAppleAppLovinPlugin_SdkKey builderBlock:^(ALSdkInitializationConfigurationBuilder * _Nonnull builder) {
         builder.pluginVersion = [@"Mengine-v" stringByAppendingString:@MENGINE_ENGINE_VERSION_STRING];
         builder.mediationProvider = ALMediationProviderMAX;
+        builder.adUnitIdentifiers = adUnitIdentifiers;
+#if defined(MENGINE_DEBUG)
+        builder.testDeviceAdvertisingIdentifiers = @[[ASIdentifierManager sharedManager].advertisingIdentifier.UUIDString];
+#endif
     }];
     
     [[ALSdk shared] initializeWithConfiguration:initializationConfiguration completionHandler:^(ALSdkConfiguration *configuration) {
@@ -255,8 +289,6 @@
 #endif
         
 #if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_BANNER)
-        NSString * MengineAppleAppLovinPlugin_BannerAdUnitId = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"BannerAdUnitId" withDefault:nil];
-        
         if (MengineAppleAppLovinPlugin_BannerAdUnitId != nil) {
             NSString * MengineAppleAppLovinPlugin_BannerPlacement = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"BannerPlacement" withDefault:@"banner"];
             
@@ -269,8 +301,6 @@
 #endif
         
 #if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_INTERSTITIAL)
-        NSString * MengineAppleAppLovinPlugin_InterstitialAdUnitId = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"InterstitialAdUnitId" withDefault:nil];
-        
         if (MengineAppleAppLovinPlugin_InterstitialAdUnitId != nil) {
             AppleAppLovinInterstitialDelegate * interstitialAd = [[AppleAppLovinInterstitialDelegate alloc] initWithAdUnitIdentifier:MengineAppleAppLovinPlugin_InterstitialAdUnitId];
             
@@ -279,8 +309,6 @@
 #endif
         
 #if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_REWARDED)
-        NSString * MengineAppleAppLovinPlugin_RewardedAdUnitId = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"RewardedAdUnitId" withDefault:nil];
-        
         if (MengineAppleAppLovinPlugin_RewardedAdUnitId != nil) {
             AppleAppLovinRewardedDelegate * rewardedAd = [[AppleAppLovinRewardedDelegate alloc] initWithAdUnitIdentifier:MengineAppleAppLovinPlugin_RewardedAdUnitId];
             

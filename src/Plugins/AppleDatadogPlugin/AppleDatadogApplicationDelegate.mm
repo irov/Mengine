@@ -6,6 +6,9 @@
 #import "Environment/iOS/iOSDetail.h"
 #import "Environment/iOS/iOSLog.h"
 
+@import DatadogCore;
+@import DatadogLogs;
+
 #define PLUGIN_BUNDLE_NAME "MengineAppleDatadogPlugin"
 
 @implementation AppleDatadogApplicationDelegate

@@ -6,7 +6,7 @@
 #import "Environment/iOS/iOSPluginLoggerDelegateInterface.h"
 #import "Environment/iOS/iOSPluginTransparencyConsentDelegateInterface.h"
 
-@import DatadogObjc;
+@class DDLogger;
 
 @interface AppleDatadogApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface, iOSPluginUserIdDelegateInterface, iOSPluginConfigDelegateInterface, iOSPluginLoggerDelegateInterface, iOSPluginTransparencyConsentDelegateInterface>
 

@@ -317,7 +317,6 @@ namespace Mengine
             return config;
         }
 
-
         LOGGER_ERROR( "account '%s' settings not found any config '%s' or '%s'"
             , m_accountId.c_str()
             , Helper::getContentFullPath( m_settingsJSONContent ).c_str()

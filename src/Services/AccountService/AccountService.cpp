@@ -101,6 +101,8 @@ namespace Mengine
 
         m_currentAccountId = lastAccount;
 
+        m_invalidateAccounts = true;
+
         this->saveAccounts();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -186,6 +188,8 @@ namespace Mengine
             m_accountProvider->onSelectAccount( _accountId );
         }
 
+        m_invalidateAccounts = true;
+
         return newAccount;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -215,6 +219,8 @@ namespace Mengine
         m_accounts.emplace( _accountId, newAccount );
 
         newAccount->apply();
+
+        m_invalidateAccounts = true;
 
         return newAccount;
     }
@@ -359,6 +365,8 @@ namespace Mengine
         }
 
         m_invalidateAccounts = true;
+
+        this->saveAccounts();
 
         return true;
     }

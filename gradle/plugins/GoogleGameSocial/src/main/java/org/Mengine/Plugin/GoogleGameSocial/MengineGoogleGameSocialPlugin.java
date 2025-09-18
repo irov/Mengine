@@ -36,6 +36,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class MengineGoogleGameSocialPlugin extends MengineService implements MengineListenerApplication, MengineListenerActivity {
@@ -52,6 +53,8 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
     private EventsClient m_eventsClient;
 
     private boolean m_isAuthenticated = false;
+    private final Map<String, MengineGoogleGameSocialAchievement> m_cachedAchievements = new HashMap<>();
+    private final Object m_cachedAchievementsLock = new Object();
 
     @Override
     public boolean onAvailable(@NonNull MengineApplication application) {
@@ -149,6 +152,10 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
         m_achievementsClient = null;
         m_leaderboardsClient = null;
         m_eventsClient = null;
+
+        synchronized (m_cachedAchievementsLock) {
+            m_cachedAchievements.clear();
+        }
     }
 
     @Override
@@ -187,6 +194,10 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
 
                 m_isAuthenticated = false;
 
+                synchronized (m_cachedAchievementsLock) {
+                    m_cachedAchievements.clear();
+                }
+
                 return;
             }
 
@@ -196,6 +207,10 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                 this.logInfo("google game social isAuthenticated failed");
 
                 m_isAuthenticated = false;
+
+                synchronized (m_cachedAchievementsLock) {
+                    m_cachedAchievements.clear();
+                }
 
                 return;
             }
@@ -265,6 +280,10 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
 
                 m_isAuthenticated = false;
 
+                synchronized (m_cachedAchievementsLock) {
+                    m_cachedAchievements.clear();
+                }
+
                 return;
             }
 
@@ -306,32 +325,24 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                 }
 
                 try {
-                    int count = achievementBuffer.getCount();
-
                     JSONArray achievementsJSON = new JSONArray();
 
-                    for (int index = 0; index < count; ++index) {
-                        Achievement achievement = achievementBuffer.get(index).freeze();
+                    synchronized (m_cachedAchievementsLock) {
+                        m_cachedAchievements.clear();
 
-                        JSONObject achievementJSON = new JSONObject();
+                        int count = achievementBuffer.getCount();
 
-                        achievementJSON.put("achievementId", achievement.getAchievementId());
-                        achievementJSON.put("name", achievement.getName());
-                        achievementJSON.put("description", achievement.getDescription());
-                        achievementJSON.put("state", achievement.getState());
-                        achievementJSON.put("type", achievement.getType());
-                        achievementJSON.put("xpValue", achievement.getXpValue());
-                        achievementJSON.put("lastUpdatedTimestamp", achievement.getLastUpdatedTimestamp());
+                        for (int index = 0; index < count; ++index) {
+                            Achievement achievement = achievementBuffer.get(index).freeze();
 
-                        if (achievement.getType() == Achievement.TYPE_INCREMENTAL) {
-                            achievementJSON.put("currentSteps", achievement.getCurrentSteps());
-                            achievementJSON.put("totalSteps", achievement.getTotalSteps());
-                        } else {
-                            achievementJSON.put("currentSteps", 0);
-                            achievementJSON.put("totalSteps", 0);
+                            MengineGoogleGameSocialAchievement achievementInfo = new MengineGoogleGameSocialAchievement(achievement);
+
+                            m_cachedAchievements.put(achievementInfo.getId(), achievementInfo);
+
+                            JSONObject achievementJSON = achievementInfo.toJSONObject();
+
+                            achievementsJSON.put(achievementJSON);
                         }
-
-                        achievementsJSON.put(achievementJSON);
                     }
 
                     this.logInfo("requestAchievementsState success %s", achievementsJSON);
@@ -421,6 +432,22 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
             return;
         }
 
+        boolean alreadyUnlocked;
+
+        synchronized (m_cachedAchievementsLock) {
+            MengineGoogleGameSocialAchievement cachedAchievement = m_cachedAchievements.get(achievementId);
+
+            alreadyUnlocked = cachedAchievement != null && cachedAchievement.isUnlocked();
+        }
+
+        if (alreadyUnlocked) {
+            this.logInfo("unlockAchievement achievementId: %s already unlocked", achievementId);
+
+            this.nativeCall("onGoogleGameSocialUnlockAchievementSuccess", achievementId);
+
+            return;
+        }
+
         this.logInfo("unlockAchievement achievementId: %s"
             , achievementId
         );
@@ -430,6 +457,20 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                 this.logInfo("unlockAchievement complete achievementId: %s"
                     , achievementId
                 );
+
+                long timestamp = System.currentTimeMillis();
+
+                synchronized (m_cachedAchievementsLock) {
+                    MengineGoogleGameSocialAchievement achievementInfo = m_cachedAchievements.get(achievementId);
+
+                    if (achievementInfo == null) {
+                        achievementInfo = MengineGoogleGameSocialAchievement.placeholder(achievementId);
+
+                        m_cachedAchievements.put(achievementId, achievementInfo);
+                    }
+
+                    achievementInfo.markUnlocked(timestamp);
+                }
 
                 MengineFragmentGame.INSTANCE.unlockAchievement(achievementId);
 
@@ -484,6 +525,24 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                     , numSteps
                 );
 
+                long timestamp = System.currentTimeMillis();
+
+                synchronized (m_cachedAchievementsLock) {
+                    MengineGoogleGameSocialAchievement achievementInfo = m_cachedAchievements.get(achievementId);
+
+                    if (achievementInfo == null) {
+                        achievementInfo = MengineGoogleGameSocialAchievement.placeholder(achievementId);
+
+                        m_cachedAchievements.put(achievementId, achievementInfo);
+                    }
+
+                    achievementInfo.incrementSteps(numSteps, timestamp);
+
+                    if (Boolean.TRUE.equals(aBoolean)) {
+                        achievementInfo.markUnlocked(timestamp);
+                    }
+                }
+
                 MengineFragmentGame.INSTANCE.incrementAchievement(achievementId, numSteps);
 
                 this.nativeCall("onGoogleGameSocialIncrementAchievementSuccess", achievementId, numSteps);
@@ -534,6 +593,20 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                 this.logInfo("revealAchievement complete achievementId: %s"
                     , achievementId
                 );
+
+                long timestamp = System.currentTimeMillis();
+
+                synchronized (m_cachedAchievementsLock) {
+                    MengineGoogleGameSocialAchievement achievementInfo = m_cachedAchievements.get(achievementId);
+
+                    if (achievementInfo == null) {
+                        achievementInfo = MengineGoogleGameSocialAchievement.placeholder(achievementId);
+
+                        m_cachedAchievements.put(achievementId, achievementInfo);
+                    }
+
+                    achievementInfo.markRevealed(timestamp);
+                }
 
                 MengineFragmentGame.INSTANCE.revealAchievement(achievementId);
 

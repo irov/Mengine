@@ -21,9 +21,11 @@ import com.applovin.mediation.ads.MaxAdView;
 import com.applovin.sdk.AppLovinSdkUtils;
 
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineAdService;
 import org.Mengine.Base.MengineAnalyticsEventBuilderInterface;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
+import org.Mengine.Base.MengineUtils;
 import org.Mengine.Plugin.AppLovin.Core.MengineAppLovinBase;
 import org.Mengine.Plugin.AppLovin.Core.MengineAppLovinMRECAdInterface;
 import org.Mengine.Plugin.AppLovin.Core.MengineAppLovinPluginInterface;
@@ -41,8 +43,8 @@ public class MengineAppLovinMRECAd extends MengineAppLovinBase implements Mengin
     protected volatile boolean m_visible = false;
     protected volatile boolean m_loaded = false;
 
-    public MengineAppLovinMRECAd(@NonNull MengineAppLovinPluginInterface plugin) throws MengineServiceInvalidInitializeException {
-        super(plugin, MaxAdFormat.MREC);
+    public MengineAppLovinMRECAd(@NonNull MengineAdService adService, @NonNull MengineAppLovinPluginInterface plugin) throws MengineServiceInvalidInitializeException {
+        super(adService, plugin, MaxAdFormat.MREC);
 
         String MengineAppLovinPlugin_MREC_AdUnitId = plugin.getResourceString(METADATA_MREC_ADUNITID);
 
@@ -283,7 +285,7 @@ public class MengineAppLovinMRECAd extends MengineAppLovinBase implements Mengin
     }
 
     public void show(int leftMargin, int topMargin) {
-        MengineUtils.performOnMainThread("show", () -> {
+        MengineUtils.performOnMainThread(() -> {
             if (m_visible == true) {
                 return;
             }
@@ -302,7 +304,7 @@ public class MengineAppLovinMRECAd extends MengineAppLovinBase implements Mengin
     }
 
     public void hide() {
-        MengineUtils.performOnMainThread("hide", () -> {
+        MengineUtils.performOnMainThread(() -> {
             if (m_visible == false) {
                 return;
             }

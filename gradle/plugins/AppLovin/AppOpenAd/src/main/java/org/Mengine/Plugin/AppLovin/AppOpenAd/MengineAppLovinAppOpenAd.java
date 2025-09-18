@@ -17,6 +17,8 @@ import com.applovin.mediation.ads.MaxAppOpenAd;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineAdFormat;
 import org.Mengine.Base.MengineAdMediation;
+import org.Mengine.Base.MengineAdResponseInterface;
+import org.Mengine.Base.MengineAdService;
 import org.Mengine.Base.MengineAnalyticsEventBuilderInterface;
 import org.Mengine.Base.MengineNetwork;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
@@ -35,8 +37,8 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Men
 
     protected MaxAppOpenAd m_appOpenAd;
 
-    public MengineAppLovinAppOpenAd(@NonNull MengineAppLovinPluginInterface plugin) throws MengineServiceInvalidInitializeException {
-        super(plugin, MaxAdFormat.APP_OPEN);
+    public MengineAppLovinAppOpenAd(@NonNull MengineAdService adService, @NonNull MengineAppLovinPluginInterface plugin) throws MengineServiceInvalidInitializeException {
+        super(adService, plugin, MaxAdFormat.APP_OPEN);
 
         String MengineAppLovinPlugin_AppOpen_AdUnitId = plugin.getResourceString(METADATA_APPOPEN_ADUNITID);
 
@@ -233,7 +235,9 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Men
         this.setAppOpenState("hidden." + placement + "." + ad.getNetworkName());
 
         MengineUtils.performOnMainThread(() -> {
-            m_adResponse.onAdShowSuccess(MengineAdMediation.ADMEDIATION_APPLOVINMAX, MengineAdFormat.ADFORMAT_APPOPEN, placement);
+            MengineAdResponseInterface adResponse = m_adService.getAdResponse();
+
+            adResponse.onAdShowSuccess(MengineAdMediation.ADMEDIATION_APPLOVINMAX, MengineAdFormat.ADFORMAT_APPOPEN, placement);
 
             this.loadAd();
         });
@@ -285,7 +289,9 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Men
         this.setAppOpenState("display_failed." + placement + "." + ad.getNetworkName() + "." + errorCode);
 
         MengineUtils.performOnMainThread(() -> {
-            m_adResponse.onAdShowFailed(MengineAdMediation.ADMEDIATION_APPLOVINMAX, MengineAdFormat.ADFORMAT_APPOPEN, placement, errorCode);
+            MengineAdResponseInterface adResponse = m_adService.getAdResponse();
+
+            adResponse.onAdShowFailed(MengineAdMediation.ADMEDIATION_APPLOVINMAX, MengineAdFormat.ADFORMAT_APPOPEN, placement, errorCode);
 
             this.loadAd();
         });

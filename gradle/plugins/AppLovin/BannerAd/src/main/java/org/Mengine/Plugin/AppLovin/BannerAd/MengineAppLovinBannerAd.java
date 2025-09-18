@@ -21,6 +21,7 @@ import com.applovin.mediation.ads.MaxAdView;
 import com.applovin.sdk.AppLovinSdkUtils;
 
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineAdService;
 import org.Mengine.Base.MengineAnalyticsEventBuilderInterface;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineUtils;
@@ -42,8 +43,8 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements Meng
     protected volatile boolean m_visible = false;
     protected volatile boolean m_loaded = false;
 
-    public MengineAppLovinBannerAd(@NonNull MengineAppLovinPluginInterface plugin) throws MengineServiceInvalidInitializeException {
-        super(plugin, MaxAdFormat.BANNER);
+    public MengineAppLovinBannerAd(@NonNull MengineAdService adService, @NonNull MengineAppLovinPluginInterface plugin) throws MengineServiceInvalidInitializeException {
+        super(adService, plugin, MaxAdFormat.BANNER);
 
         String MengineAppLovinPlugin_Banner_AdUnitId = plugin.getResourceString(METADATA_BANNER_ADUNITID);
 

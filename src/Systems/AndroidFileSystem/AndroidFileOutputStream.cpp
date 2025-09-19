@@ -71,13 +71,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidFileOutputStream::close()
+    void AndroidFileOutputStream::close()
     {
         MENGINE_THREAD_GUARD_SCOPE( AndroidFileOutputStream, this );
 
         if( m_file == nullptr )
         {
-            return true;
+            return;
         }
 
 #if defined(MENGINE_DEBUG)
@@ -98,8 +98,6 @@ namespace Mengine
 #if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
         Helper::removeDebugFilePath( this );
 #endif
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t AndroidFileOutputStream::write( const void * _data, size_t _size )

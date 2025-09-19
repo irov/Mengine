@@ -805,13 +805,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FileGroupZip::closeInputFile( const InputStreamInterfacePtr & _stream )
+    void FileGroupZip::closeInputFile( const InputStreamInterfacePtr & _stream )
     {
         MENGINE_UNUSED( _stream );
 
         //Empty
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     InputStreamInterfacePtr FileGroupZip::createInputMutexFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, const ThreadMutexInterfacePtr & _mutex, FileGroupInterface ** const _fileGroup, const DocumentInterfacePtr & _doc )
@@ -839,13 +837,11 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FileGroupZip::closeInputMutexFile( const InputStreamInterfacePtr & _stream )
+    void FileGroupZip::closeInputMutexFile( const InputStreamInterfacePtr & _stream )
     {
         MENGINE_UNUSED( _stream );
 
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
-
-        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     OutputStreamInterfacePtr FileGroupZip::createOutputFile( const DocumentInterfacePtr & _doc )
@@ -868,13 +864,11 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FileGroupZip::closeOutputFile( const OutputStreamInterfacePtr & _stream )
+    void FileGroupZip::closeOutputFile( const OutputStreamInterfacePtr & _stream )
     {
         MENGINE_UNUSED( _stream );
 
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool FileGroupZip::isAvailableMappedFile() const
@@ -904,13 +898,11 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FileGroupZip::closeMappedFile( const MappedInterfacePtr & _stream )
+    void FileGroupZip::closeMappedFile( const MappedInterfacePtr & _stream )
     {
         MENGINE_UNUSED( _stream );
 
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
-
-        return false;
     }
     //////////////////////////////////////////////////////////////////////////
 }

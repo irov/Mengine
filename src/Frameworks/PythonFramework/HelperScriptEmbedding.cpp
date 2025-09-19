@@ -2995,7 +2995,11 @@ namespace Mengine
                 }
 
                 //TODO create global data save
-                if( Helper::writeStreamArchiveMagic( stream, archivator, GET_MAGIC_NUMBER( MAGIC_ACCOUNT_DATA ), GET_MAGIC_VERSION( MAGIC_ACCOUNT_DATA ), true, memory_buffer, memory_size, EAC_NORMAL ) == false )
+                bool successful = Helper::writeStreamArchiveMagic( stream, archivator, GET_MAGIC_NUMBER( MAGIC_ACCOUNT_DATA ), GET_MAGIC_VERSION( MAGIC_ACCOUNT_DATA ), true, memory_buffer, memory_size, EAC_NORMAL );
+
+                Helper::closeOutputStreamFile( fileGroup, stream );
+
+                if( successful == false )
                 {
                     LOGGER_ERROR( "invalid write file '%s'"
                         , filePath.c_str()
@@ -3004,22 +3008,22 @@ namespace Mengine
                     return false;
                 }
 
-                if( Helper::closeOutputStreamFile( fileGroup, stream ) == false )
-                {
-                    LOGGER_ERROR( "invalid close file '%s'"
-                        , filePath.c_str()
-                    );
-
-                    return false;
-                }
-
-                stream = nullptr;
-
                 return true;
             }
             //////////////////////////////////////////////////////////////////////////
             PyObject * s_loadGlobalPickleFile( pybind::kernel_interface * _kernel, const WString & _filePath, PyObject * _pickleTypes )
             {
+                ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
+
+                if( archivator == nullptr )
+                {
+                    LOGGER_ERROR( "invalid get archivator '%s'"
+                        , "lz4"
+                    );
+
+                    return _kernel->ret_none();
+                }
+
                 String utf8_filePath;
                 if( Helper::unicodeToUtf8( _filePath, &utf8_filePath ) == false )
                 {
@@ -3041,17 +3045,6 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "invalid open file '%s'"
                         , filePath.c_str()
-                    );
-
-                    return _kernel->ret_none();
-                }
-
-                ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
-
-                if( archivator == nullptr )
-                {
-                    LOGGER_ERROR( "invalid get archivator '%s'"
-                        , "lz4"
                     );
 
                     return _kernel->ret_none();

@@ -80,18 +80,13 @@ namespace Mengine
             , Helper::getContentFullPath( m_options.outputContent ).c_str()
         );
 
-        if( Helper::writeStreamArchiveMagic( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_DZZ ), GET_MAGIC_VERSION( MAGIC_DZZ ), false, data_memory, data_size, EAC_BEST ) == false )
+        bool successful = Helper::writeStreamArchiveMagic( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_DZZ ), GET_MAGIC_VERSION( MAGIC_DZZ ), false, data_memory, data_size, EAC_BEST );
+
+        Helper::closeOutputStreamFile( m_fileGroupDev, stream );
+
+        if( successful == false )
         {
             LOGGER_ERROR( "dazzle converter invalid write '%s'"
-                , Helper::getContentFullPath( m_options.outputContent ).c_str()
-            );
-
-            return false;
-        }
-
-        if( Helper::closeOutputStreamFile( m_fileGroupDev, stream ) == false )
-        {
-            LOGGER_ERROR( "dazzle converter invalid close '%s'"
                 , Helper::getContentFullPath( m_options.outputContent ).c_str()
             );
 

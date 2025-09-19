@@ -156,6 +156,8 @@ namespace Mengine
                 , Helper::getContentFullPath( _content ).c_str()
             );
 
+            _content->closeOutputStreamFile( stream );
+
             return false;
         }
 
@@ -199,14 +201,7 @@ namespace Mengine
 
         image->unlock( locked, 0, true );
 
-        if( _content->closeOutputStreamFile( stream ) == false )
-        {
-            LOGGER_ERROR( "can't close file '%s'"
-                , Helper::getContentFullPath( _content ).c_str()
-            );
-
-            return false;
-        }
+        _content->closeOutputStreamFile( stream );
 
         if( bytesWritten == 0 )
         {

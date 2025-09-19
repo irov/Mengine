@@ -26,7 +26,7 @@ namespace Mengine
 
     public:
         bool open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, size_t _offset, size_t _size, bool _streaming, bool _share ) override;
-        bool close() override;
+        void close() override;
 
     public:
         size_t read( void * const _buf, size_t _size ) override;

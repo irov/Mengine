@@ -175,14 +175,7 @@ namespace Mengine
 
         encoder->finalize();
 
-        if( m_options.outputContent->closeOutputStreamFile( stream_output ) == false )
-        {
-            LOGGER_ERROR( "HIT file '%s' invalid close"
-                , Helper::getContentFullPath( m_options.outputContent ).c_str()
-            );
-
-            return false;
-        }
+        m_options.outputContent->closeOutputStreamFile( stream_output );
 
         if( encodeSize == 0 )
         {

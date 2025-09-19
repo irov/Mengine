@@ -82,7 +82,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidMutexFileInputStream::close()
+    void AndroidMutexFileInputStream::close()
     {
         m_stream = nullptr;
         m_mutex = nullptr;
@@ -90,8 +90,6 @@ namespace Mengine
 #if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
         Helper::removeDebugFilePath( this );
 #endif
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t AndroidMutexFileInputStream::read( void * const _buf, size_t _count )

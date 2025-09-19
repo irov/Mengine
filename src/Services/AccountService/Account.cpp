@@ -378,10 +378,7 @@ namespace Mengine
             return false;
         }
 
-        if( m_fileGroup->closeOutputFile( file ) == false )
-        {
-            return false;
-        }
+        m_fileGroup->closeOutputFile( file );
 
         return true;
     }
@@ -424,6 +421,11 @@ namespace Mengine
         return stream;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Account::closeReadBinaryFile( const InputStreamInterfacePtr & _stream )
+    {
+        m_fileGroup->closeInputFile( _stream );
+    }
+    //////////////////////////////////////////////////////////////////////////
     OutputStreamInterfacePtr Account::openWriteBinaryFile( const FilePath & _filePath )
     {
         PathString path;
@@ -447,18 +449,9 @@ namespace Mengine
         return stream;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Account::closeReadBinaryFile( const InputStreamInterfacePtr & _stream )
+    void Account::closeWriteBinaryFile( const OutputStreamInterfacePtr & _stream )
     {
-        bool successful = m_fileGroup->closeInputFile( _stream );
-
-        return successful;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Account::openWriteBinaryFile( const OutputStreamInterfacePtr & _stream )
-    {
-        bool successful = m_fileGroup->closeOutputFile( _stream );
-
-        return successful;
+        m_fileGroup->closeOutputFile( _stream );
     }
     //////////////////////////////////////////////////////////////////////////
     MemoryInterfacePtr Account::loadBinaryFile( const FilePath & _filePath )
@@ -476,6 +469,8 @@ namespace Mengine
         }
 
         MemoryInterfacePtr binaryBuffer = Helper::readStreamArchiveMagic( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_ACCOUNT_DATA ), GET_MAGIC_VERSION( MAGIC_ACCOUNT_DATA ), MENGINE_DOCUMENT_FACTORABLE );
+
+        this->closeReadBinaryFile( stream );
 
         if( binaryBuffer == nullptr )
         {
@@ -517,18 +512,17 @@ namespace Mengine
         const void * data_memory = _data;
         size_t data_size = _size;
 
-        if( Helper::writeStreamArchiveMagic( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_ACCOUNT_DATA ), GET_MAGIC_VERSION( MAGIC_ACCOUNT_DATA ), true, data_memory, data_size, EAC_NORMAL ) == false )
+        bool successful = Helper::writeStreamArchiveMagic( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_ACCOUNT_DATA ), GET_MAGIC_VERSION( MAGIC_ACCOUNT_DATA ), true, data_memory, data_size, EAC_NORMAL );
+
+        this->closeWriteBinaryFile( stream );
+
+        if( successful == false )
         {
             LOGGER_ERROR( "account '%s' invalid write file '%s'"
                 , m_accountId.c_str()
                 , _filepath.c_str()
             );
 
-            return false;
-        }
-
-        if( m_fileGroup->closeOutputFile( stream ) == false )
-        {
             return false;
         }
 

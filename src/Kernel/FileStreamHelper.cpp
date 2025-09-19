@@ -72,36 +72,14 @@ namespace Mengine
             return file;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool closeInputStreamFile( const FileGroupInterfacePtr & _fileGroup, const InputStreamInterfacePtr & _stream )
+        void closeInputStreamFile( const FileGroupInterfacePtr & _fileGroup, const InputStreamInterfacePtr & _stream )
         {
-            if( _fileGroup->closeInputFile( _stream ) == false )
-            {
-                const FilePath & filePath = Helper::getDebugRelationPath( _stream );
-
-                LOGGER_ERROR( "invalid close input file '%s'"
-                    , Helper::getFileGroupFullPath( _fileGroup, filePath ).c_str()
-                );
-
-                return false;
-            }
-
-            return true;
+            _fileGroup->closeInputFile( _stream );
         }
         //////////////////////////////////////////////////////////////////////////
-        bool closeOutputStreamFile( const FileGroupInterfacePtr & _fileGroup, const OutputStreamInterfacePtr & _stream )
+        void closeOutputStreamFile( const FileGroupInterfacePtr & _fileGroup, const OutputStreamInterfacePtr & _stream )
         {
-            if( _fileGroup->closeOutputFile( _stream ) == false )
-            {
-                const FilePath & filePath = Helper::getDebugFilePath( _stream );
-
-                LOGGER_ERROR( "invalid close output file '%s'"
-                    , Helper::getFileGroupFullPath( _fileGroup, filePath ).c_str()
-                );
-
-                return false;
-            }
-
-            return true;
+            _fileGroup->closeOutputFile( _stream );
         }
         //////////////////////////////////////////////////////////////////////////
         bool writeOutputStreamFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _withTemp, const MemoryInterfacePtr & _memory, const DocumentInterfacePtr & _doc )
@@ -115,7 +93,11 @@ namespace Mengine
             const void * memory_buffer = _memory->getBuffer();
             size_t memory_size = _memory->getSize();
 
-            if( stream->write( memory_buffer, memory_size ) == false )
+            bool successful = stream->write( memory_buffer, memory_size );
+
+            Helper::closeOutputStreamFile( _fileGroup, stream );
+
+            if( successful == false )
             {
                 LOGGER_ERROR( "invalid write output file '%s'"
                     , Helper::getFileGroupFullPath( _fileGroup, _filePath ).c_str()
@@ -123,17 +105,6 @@ namespace Mengine
 
                 return false;
             }
-
-            if( Helper::closeOutputStreamFile( _fileGroup, stream ) == false )
-            {
-                LOGGER_ERROR( "invalid close output file '%s'"
-                    , Helper::getFileGroupFullPath( _fileGroup, _filePath ).c_str()
-                );
-
-                return false;
-            }
-
-            stream = nullptr;
 
             return true;
         }

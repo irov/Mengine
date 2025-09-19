@@ -12,7 +12,7 @@ namespace Mengine
     {
     public:
         virtual bool open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, bool _withTemp ) = 0;
-        virtual bool close() = 0;
+        virtual void close() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<FileOutputStreamInterface, OutputStreamInterface> FileOutputStreamInterfacePtr;

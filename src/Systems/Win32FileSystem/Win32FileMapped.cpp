@@ -111,7 +111,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileMapped::close()
+    void Win32FileMapped::close()
     {
         if( m_hMapping != INVALID_HANDLE_VALUE )
         {
@@ -132,8 +132,6 @@ namespace Mengine
 #if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
         Helper::removeDebugFilePath( this );
 #endif
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     InputStreamInterfacePtr Win32FileMapped::createInputStream( const DocumentInterfacePtr & _doc )

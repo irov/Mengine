@@ -5,7 +5,7 @@ ENDMACRO()
 MACRO(MENGINE_GENERATE_COCOAPODS)
     SET(PODFILE_BUFFER "")
     
-    STRING(APPEND PODFILE_BUFFER "source 'https://github.com/CocoaPods/Specs.git'\n")
+    STRING(APPEND PODFILE_BUFFER "source 'https://cdn.cocoapods.org/'\n")
     
     STRING(APPEND PODFILE_BUFFER "project '${MENGINE_PROJECT_NAME}.xcodeproj'\n")
     
@@ -17,7 +17,7 @@ MACRO(MENGINE_GENERATE_COCOAPODS)
         STRING(APPEND PODFILE_BUFFER "platform :ios, '${CMAKE_OSX_DEPLOYMENT_TARGET}'\n")
     endif()
 
-    STRING(APPEND PODFILE_BUFFER "use_frameworks!\n")
+    STRING(APPEND PODFILE_BUFFER "use_frameworks! :linkage => :static\n")
     STRING(APPEND PODFILE_BUFFER "inhibit_all_warnings!\n")
     STRING(APPEND PODFILE_BUFFER "\n")
 
@@ -100,7 +100,6 @@ MACRO(MENGINE_GENERATE_COCOAPODS)
             list(GET ${APPLICATION_APPLE_COCOAPODS_PROJECT} 0 COCOAPOD_PROJECT_NAME_0)
             
             STRING(APPEND PODFILE_BUFFER "target '" ${COCOAPOD_PROJECT_NAME_0} "' do\n")
-            STRING(APPEND PODFILE_BUFFER "  use_frameworks!\n")
             
             foreach(INDEX RANGE 0 ${LENGTH_APPLICATION_APPLE_COCOAPODS_PROJECT} 5)
                 SET(COCOAPOD_PROJECT_NAME)
@@ -154,7 +153,6 @@ MACRO(MENGINE_GENERATE_COCOAPODS)
     endif()
 
     STRING(APPEND PODFILE_BUFFER "target '" ${PROJECT_NAME} "' do\n")
-    STRING(APPEND PODFILE_BUFFER "  use_frameworks!\n")
 
     if(NOT ${LENGTH_APPLICATION_APPLE_GLOBAL_COCOAPODS} EQUAL -1)
         foreach(INDEX RANGE 0 ${LENGTH_APPLICATION_APPLE_GLOBAL_COCOAPODS} 5)

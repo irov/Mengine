@@ -56,8 +56,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
 
     @Override
     public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) {
-        activity.checkPermission(Manifest.permission.POST_NOTIFICATIONS
-            , () -> {
+        activity.checkPermissionPostNotifications(() -> {
                 this.startLocalNotifications(activity);
             }
             , () -> {}

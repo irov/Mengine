@@ -1,5 +1,6 @@
 package org.Mengine.Base;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -138,6 +139,20 @@ public class MengineActivity extends AppCompatActivity {
 
     public void checkPermission(String permission, Runnable onSuccess, Runnable onFailure) {
         this.checkPermissionRationale(permission, onSuccess, onFailure, null, null);
+    }
+
+    public void checkPermissionPostNotifications(Runnable onSuccess, Runnable onFailure) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            this.checkPermission(Manifest.permission.POST_NOTIFICATIONS, onSuccess, onFailure);
+        } else {
+            if (onSuccess != null) {
+                onSuccess.run();
+            }
+        }
+    }
+
+    public void checkPermissionPostNotifications() {
+        this.checkPermissionPostNotifications(null, null);
     }
 
     public void checkPermissionRationale(String permission, Runnable onSuccess, Runnable onFailure, String title, String format, Object ... args) {

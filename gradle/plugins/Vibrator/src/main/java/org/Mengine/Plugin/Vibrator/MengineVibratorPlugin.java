@@ -29,18 +29,15 @@ public class MengineVibratorPlugin extends MengineService implements MengineList
 
     @Override
     public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) {
-        activity.checkPermission(Manifest.permission.VIBRATE, () -> {
-            Vibrator vibrator = activity.getSystemService(Vibrator.class);
+        Vibrator vibrator = activity.getSystemService(Vibrator.class);
 
-            if (vibrator.hasVibrator() == false) {
-                this.logInfo("vibrator not found");
+        if (vibrator.hasVibrator() == false) {
+            this.logInfo("vibrator not found");
 
-                return;
-            }
+            return;
+        }
 
-            m_vibrator = vibrator;
-        }, () -> {}
-        );
+        m_vibrator = vibrator;
     }
 
     @Override

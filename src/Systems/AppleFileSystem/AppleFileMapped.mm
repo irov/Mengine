@@ -28,11 +28,9 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleFileMapped::close()
+    void AppleFileMapped::close()
     {
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
-
-        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     InputStreamInterfacePtr AppleFileMapped::createInputStream( const DocumentInterfacePtr & _doc )

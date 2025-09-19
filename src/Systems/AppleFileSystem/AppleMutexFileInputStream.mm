@@ -46,12 +46,6 @@ namespace Mengine
         MENGINE_UNUSED( _streaming );
         MENGINE_UNUSED( _share );
 
-#if defined(MENGINE_DEBUG)
-        this->setDebugRelationPath( _relationPath );
-        this->setDebugFolderPath( _folderPath );
-        this->setDebugFilePath( _filePath );
-#endif
-
         size_t size = m_stream->size();
 
         if( _size != ~0U )
@@ -84,16 +78,22 @@ namespace Mengine
         m_carriage = 0;
         m_capacity = 0;
         m_reading = 0;
+        
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+        Helper::addDebugFilePath( this, _relationPath, _folderPath, _filePath, MENGINE_DOCUMENT_FACTORABLE );
+#endif
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleMutexFileInputStream::close()
+    void AppleMutexFileInputStream::close()
     {
         m_stream = nullptr;
         m_mutex = nullptr;
-
-        return true;
+        
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+        Helper::removeDebugFilePath( this );
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     size_t AppleMutexFileInputStream::read( void * const _buf, size_t _count )
@@ -301,9 +301,9 @@ namespace Mengine
     bool AppleMutexFileInputStream::time( uint64_t * const _time ) const
     {
 #if defined(MENGINE_DEBUG)
-        const FilePath & relationPath = this->getDebugRelationPath();
-        const FilePath & folderPath = this->getDebugFolderPath();
-        const FilePath & filePath = this->getDebugFilePath();
+        const FilePath & relationPath = Helper::getDebugRelationPath( this );
+        const FilePath & folderPath = Helper::getDebugFolderPath( this );
+        const FilePath & filePath = Helper::getDebugFilePath( this );
 
         Path fullPath = {'\0'};
         if( Helper::concatenateFilePath( {relationPath, folderPath, filePath}, fullPath ) == false )

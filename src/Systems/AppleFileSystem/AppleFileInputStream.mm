@@ -39,12 +39,6 @@ namespace Mengine
     {
         MENGINE_THREAD_GUARD_SCOPE( AppleFileInputStream, this );
 
-#if defined(MENGINE_DEBUG)
-        this->setDebugRelationPath( _relationPath );
-        this->setDebugFolderPath( _folderPath );
-        this->setDebugFilePath( _filePath );
-#endif
-
         m_streaming = _streaming;
         m_share = _share;
 
@@ -115,6 +109,10 @@ namespace Mengine
                 return false;
             }
         }
+        
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+        Helper::addDebugFilePath( this, _relationPath, _folderPath, _filePath, MENGINE_DOCUMENT_FACTORABLE );
+#endif
 
         return true;
     }
@@ -154,18 +152,18 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleFileInputStream::close()
-{
+    void AppleFileInputStream::close()
+    {
         if( m_fileHandle == nullptr )
         {
-            return true;
+            return;
         }
         
 #if defined(MENGINE_DEBUG)
         if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
         {
-            const FilePath & folderPath = this->getDebugFolderPath();
-            const FilePath & filePath = this->getDebugFilePath();
+            const FilePath & folderPath = Helper::getDebugFolderPath( this );
+            const FilePath & filePath = Helper::getDebugFilePath( this );
             
             NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CLOSE_FILE, folderPath, filePath, true, m_streaming );
         }
@@ -178,13 +176,13 @@ namespace Mengine
                 , Helper::getDebugFullPath( this ).c_str()
                 , [[AppleDetail getMessageFromNSError:error] UTF8String]
             );
-            
-            return false;
         }
-
+        
         m_fileHandle = nil;
         
-        return true;
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+        Helper::removeDebugFilePath( this );
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     size_t AppleFileInputStream::read( void * const _buf, size_t _count )
@@ -396,9 +394,9 @@ namespace Mengine
     bool AppleFileInputStream::time( uint64_t * const _time ) const
     {
 #if defined(MENGINE_DEBUG)
-        const FilePath & relationPath = this->getDebugRelationPath();
-        const FilePath & folderPath = this->getDebugFolderPath();
-        const FilePath & filePath = this->getDebugFilePath();
+        const FilePath & relationPath = Helper::getDebugRelationPath( this );
+        const FilePath & folderPath = Helper::getDebugFolderPath( this );
+        const FilePath & filePath = Helper::getDebugFilePath( this );
 
         Path fullPath = {'\0'};
         if( Helper::concatenateFilePath( {relationPath, folderPath, filePath}, fullPath ) == false )

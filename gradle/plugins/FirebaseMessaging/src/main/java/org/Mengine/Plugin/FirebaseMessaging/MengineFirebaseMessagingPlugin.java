@@ -32,7 +32,7 @@ public class MengineFirebaseMessagingPlugin extends MengineService implements Me
     }
 
     public void askNotificationPermission(@NonNull MengineActivity activity) {
-        activity.checkPermission(Manifest.permission.POST_NOTIFICATIONS);
+        activity.checkPermissionPostNotifications();
     }
 
     @Override

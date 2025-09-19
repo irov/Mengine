@@ -8,5 +8,5 @@ android {
 dependencies {
     implementation project(':plugins:Firebase')
 
-    implementation 'com.google.firebase:firebase-config:23.0.0'
+    implementation 'com.google.firebase:firebase-config:23.0.1'
 }

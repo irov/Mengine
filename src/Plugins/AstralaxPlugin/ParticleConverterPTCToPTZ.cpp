@@ -79,7 +79,11 @@ namespace Mengine
             , full_outputFilePath.c_str()
         );
 
-        if( Helper::writeStreamArchiveMagic( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_PTZ ), GET_MAGIC_VERSION( MAGIC_PTZ ), false, data_memory, data_size, EAC_BEST ) == false )
+        bool successful = Helper::writeStreamArchiveMagic( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_PTZ ), GET_MAGIC_VERSION( MAGIC_PTZ ), false, data_memory, data_size, EAC_BEST );
+
+        Helper::closeOutputStreamFile( m_fileGroupDev, stream );
+
+        if( successful == false )
         {
             LOGGER_ERROR( "invalid write '%s'"
                 , full_outputFilePath.c_str()
@@ -87,13 +91,6 @@ namespace Mengine
 
             return false;
         }
-
-        if( Helper::closeOutputStreamFile( m_fileGroupDev, stream ) == false )
-        {
-            return false;
-        }
-
-        stream = nullptr;
 
         return true;
     }

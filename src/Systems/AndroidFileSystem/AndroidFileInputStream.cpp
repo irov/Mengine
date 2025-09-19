@@ -140,11 +140,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidFileInputStream::close()
+    void AndroidFileInputStream::close()
     {
         if( m_file == nullptr )
         {
-            return true;
+            return;
         }
 
 #if defined(MENGINE_DEBUG)
@@ -165,8 +165,6 @@ namespace Mengine
 #if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
         Helper::removeDebugFilePath( this );
 #endif
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t AndroidFileInputStream::read( void * const _buf, size_t _count )

@@ -804,10 +804,7 @@ namespace Mengine
             return false;
         }
 
-        if( Helper::closeOutputStreamFile( m_fileGroup, stream ) == false )
-        {
-            return false;
-        }
+        Helper::closeOutputStreamFile( m_fileGroup, stream );
 
         for( const HashtableAccounts::value_type & value : m_accounts )
         {

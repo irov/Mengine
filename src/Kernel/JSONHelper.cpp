@@ -189,17 +189,11 @@ namespace Mengine
                 return false;
             }
 
-            if( Helper::writeJSONStream( _j, stream ) == false )
-            {
-                return false;
-            }
+            bool successful = Helper::writeJSONStream( _j, stream );
 
-            if( Helper::closeOutputStreamFile( _fileGroup, stream ) == false )
-            {
-                return false;
-            }
+            Helper::closeOutputStreamFile( _fileGroup, stream );
 
-            return true;
+            return successful;
         }
         //////////////////////////////////////////////////////////////////////////
         bool writeJSONFileCompact( const jpp::object & _j, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _withTemp, const DocumentInterfacePtr & _doc )
@@ -211,17 +205,11 @@ namespace Mengine
                 return false;
             }
 
-            if( Helper::writeJSONStreamCompact( _j, stream ) == false )
-            {
-                return false;
-            }
+            bool successful = Helper::writeJSONStreamCompact( _j, stream );
 
-            if( Helper::closeOutputStreamFile( _fileGroup, stream ) == false )
-            {
-                return false;
-            }
+            Helper::closeOutputStreamFile( _fileGroup, stream );
 
-            return true;
+            return successful;
         }
         //////////////////////////////////////////////////////////////////////////
         bool writeJSONStream( const jpp::object & _j, const OutputStreamInterfacePtr & _stream )

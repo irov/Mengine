@@ -42,11 +42,9 @@ namespace Mengine
         return stream;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FileContent::closeInputStreamFile( const InputStreamInterfacePtr & _stream )
+    void FileContent::closeInputStreamFile( const InputStreamInterfacePtr & _stream )
     {
-        bool successful = Helper::closeInputStreamFile( m_fileGroup, _stream );
-
-        return successful;
+        Helper::closeInputStreamFile( m_fileGroup, _stream );
     }
     //////////////////////////////////////////////////////////////////////////
     OutputStreamInterfacePtr FileContent::openOutputStreamFile( bool _withTemp, const DocumentInterfacePtr & _doc )
@@ -56,11 +54,9 @@ namespace Mengine
         return stream;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FileContent::closeOutputStreamFile( const OutputStreamInterfacePtr & _stream )
+    void FileContent::closeOutputStreamFile( const OutputStreamInterfacePtr & _stream )
     {
-        bool successful = Helper::closeOutputStreamFile( m_fileGroup, _stream );
-
-        return successful;
+        Helper::closeOutputStreamFile( m_fileGroup, _stream );
     }
     //////////////////////////////////////////////////////////////////////////
 }

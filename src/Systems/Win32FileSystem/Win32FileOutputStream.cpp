@@ -102,11 +102,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileOutputStream::close()
+    void Win32FileOutputStream::close()
     {
         if( m_hFile == INVALID_HANDLE_VALUE )
         {
-            return true;
+            return;
         }
 
 #if defined(MENGINE_DEBUG)
@@ -116,7 +116,7 @@ namespace Mengine
         }
 #endif
 
-        bool successful = this->flush();
+        this->flush();
 
         ::CloseHandle( m_hFile );
         m_hFile = INVALID_HANDLE_VALUE;
@@ -152,16 +152,12 @@ namespace Mengine
                     , fullPathTemp
                     , fullPath
                 );
-
-                return false;
             }
         }
 
 #if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
         Helper::removeDebugFilePath( this );
 #endif
-
-        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t Win32FileOutputStream::write( const void * _data, size_t _size )

@@ -43,9 +43,10 @@ namespace Mengine
 
     public:
         virtual InputStreamInterfacePtr openReadBinaryFile( const FilePath & _filePath ) = 0;
+        virtual void closeReadBinaryFile( const InputStreamInterfacePtr & _stream ) = 0;
+
         virtual OutputStreamInterfacePtr openWriteBinaryFile( const FilePath & _filePath ) = 0;
-        virtual bool closeReadBinaryFile( const InputStreamInterfacePtr & _stream ) = 0;
-        virtual bool openWriteBinaryFile( const OutputStreamInterfacePtr & _stream ) = 0;
+        virtual void closeWriteBinaryFile( const OutputStreamInterfacePtr & _stream ) = 0;
 
     public:
         virtual MemoryInterfacePtr loadBinaryFile( const FilePath & _filePath ) = 0;

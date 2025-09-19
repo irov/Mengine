@@ -140,13 +140,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidAssetInputStream::close()
+    void AndroidAssetInputStream::close()
     {
         MENGINE_THREAD_GUARD_SCOPE( AndroidAssetInputStream, this );
 
         if( m_asset == nullptr )
         {
-            return true;
+            return;
         }
 
 #if defined(MENGINE_DEBUG)
@@ -167,8 +167,6 @@ namespace Mengine
 #if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
         Helper::removeDebugFilePath( this );
 #endif
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t AndroidAssetInputStream::read( void * const _buf, size_t _count )

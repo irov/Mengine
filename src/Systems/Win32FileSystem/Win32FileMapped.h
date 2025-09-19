@@ -22,7 +22,7 @@ namespace Mengine
 
     public:
         bool open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, bool _share ) override;
-        bool close() override;
+        void close() override;
 
     public:
         InputStreamInterfacePtr createInputStream( const DocumentInterfacePtr & _doc ) override;

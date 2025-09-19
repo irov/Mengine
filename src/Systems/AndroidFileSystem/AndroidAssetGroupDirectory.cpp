@@ -179,19 +179,13 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidAssetGroupDirectory::closeInputFile( const InputStreamInterfacePtr & _stream )
+    void AndroidAssetGroupDirectory::closeInputFile( const InputStreamInterfacePtr & _stream )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
 
         FileInputStreamInterface * file = stdex::intrusive_get<FileInputStreamInterface *>( _stream );
 
-        bool result = file->close();
-
-        MENGINE_ASSERTION( result == true, "failed close file '%s'"
-            , m_folderPath.c_str()
-        );
-
-        return result;
+        file->close();
     }
     //////////////////////////////////////////////////////////////////////////
     InputStreamInterfacePtr AndroidAssetGroupDirectory::createInputMutexFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, const ThreadMutexInterfacePtr & _mutex, FileGroupInterface ** const _fileGroup, const DocumentInterfacePtr & _doc )
@@ -240,19 +234,13 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidAssetGroupDirectory::closeInputMutexFile( const InputStreamInterfacePtr & _stream )
+    void AndroidAssetGroupDirectory::closeInputMutexFile( const InputStreamInterfacePtr & _stream )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
 
         FileInputStreamInterface * file = stdex::intrusive_get<FileInputStreamInterface *>( _stream );
 
-        bool result = file->close();
-
-        MENGINE_ASSERTION( result == true, "failed close file '%s'"
-            , m_folderPath.c_str()
-        );
-
-        return result;
+        file->close();
     }
     //////////////////////////////////////////////////////////////////////////
     OutputStreamInterfacePtr AndroidAssetGroupDirectory::createOutputFile( const DocumentInterfacePtr & _doc )
@@ -275,13 +263,11 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidAssetGroupDirectory::closeOutputFile( const OutputStreamInterfacePtr & _stream )
+    void AndroidAssetGroupDirectory::closeOutputFile( const OutputStreamInterfacePtr & _stream )
     {
         MENGINE_UNUSED( _stream );
 
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
-
-        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidAssetGroupDirectory::isAvailableMappedFile() const
@@ -311,13 +297,11 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidAssetGroupDirectory::closeMappedFile( const MappedInterfacePtr & _stream )
+    void AndroidAssetGroupDirectory::closeMappedFile( const MappedInterfacePtr & _stream )
     {
         MENGINE_UNUSED( _stream );
 
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
-
-        return false;
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -20,7 +20,7 @@ namespace Mengine
 
     public:
         bool open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, bool _withTemp ) override;
-        bool close() override;
+        void close() override;
 
     public:
         size_t write( const void * _data, size_t _size ) override;

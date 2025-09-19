@@ -49,10 +49,10 @@ namespace Mengine
         virtual MemoryInterfacePtr createMemoryFileString( bool _stream, bool _share, const DocumentInterfacePtr & _doc ) = 0;
 
         virtual InputStreamInterfacePtr openInputStreamFile( bool _streaming, bool _share, const DocumentInterfacePtr & _doc ) = 0;
-        virtual bool closeInputStreamFile( const InputStreamInterfacePtr & _stream ) = 0;
+        virtual void closeInputStreamFile( const InputStreamInterfacePtr & _stream ) = 0;
 
         virtual OutputStreamInterfacePtr openOutputStreamFile( bool _withTemp, const DocumentInterfacePtr & _doc ) = 0;
-        virtual bool closeOutputStreamFile( const OutputStreamInterfacePtr & _stream ) = 0;
+        virtual void closeOutputStreamFile( const OutputStreamInterfacePtr & _stream ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ContentInterface> ContentInterfacePtr;

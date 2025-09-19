@@ -234,25 +234,13 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileGroupDirectory::closeInputFile( const InputStreamInterfacePtr & _stream )
+    void Win32FileGroupDirectory::closeInputFile( const InputStreamInterfacePtr & _stream )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
 
         FileInputStreamInterface * file = _stream.getT<FileInputStreamInterface *>();
 
-        bool result = file->close();
-
-        if( result == false )
-        {
-            return false;
-        }
-
-        MENGINE_ASSERTION( result == true, "failed close file '%s%s'"
-            , m_relationPath.c_str()
-            , m_folderPath.c_str()
-        );
-
-        return result;
+        file->close();
     }
     //////////////////////////////////////////////////////////////////////////
     InputStreamInterfacePtr Win32FileGroupDirectory::createInputMutexFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, const ThreadMutexInterfacePtr & _mutex, FileGroupInterface ** const _fileGroup, const DocumentInterfacePtr & _doc )
@@ -299,20 +287,13 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileGroupDirectory::closeInputMutexFile( const InputStreamInterfacePtr & _stream )
+    void Win32FileGroupDirectory::closeInputMutexFile( const InputStreamInterfacePtr & _stream )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
 
         FileInputStreamInterface * file = _stream.getT<FileInputStreamInterface *>();
 
-        bool result = file->close();
-
-        MENGINE_ASSERTION( result == true, "failed close file '%s%s'"
-            , m_relationPath.c_str()
-            , m_folderPath.c_str()
-        );
-
-        return result;
+        file->close();
     }
     //////////////////////////////////////////////////////////////////////////
     OutputStreamInterfacePtr Win32FileGroupDirectory::createOutputFile( const DocumentInterfacePtr & _doc )
@@ -341,20 +322,13 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileGroupDirectory::closeOutputFile( const OutputStreamInterfacePtr & _stream )
+    void Win32FileGroupDirectory::closeOutputFile( const OutputStreamInterfacePtr & _stream )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
 
         FileOutputStreamInterface * file = _stream.getT<FileOutputStreamInterface *>();
 
-        bool result = file->close();
-
-        MENGINE_ASSERTION( result == true, "failed close file '%s%s'"
-            , m_relationPath.c_str()
-            , m_folderPath.c_str()
-        );
-
-        return result;
+        file->close();
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileGroupDirectory::isAvailableMappedFile() const
@@ -405,20 +379,13 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileGroupDirectory::closeMappedFile( const MappedInterfacePtr & _stream )
+    void Win32FileGroupDirectory::closeMappedFile( const MappedInterfacePtr & _stream )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
 
         FileMappedInterface * mapped = _stream.getT<FileMappedInterface *>();
 
-        bool result = mapped->close();
-
-        MENGINE_ASSERTION( result == true, "failed close file '%s%s'"
-            , m_relationPath.c_str()
-            , m_folderPath.c_str()
-        );
-
-        return result;
+        mapped->close();
     }
     //////////////////////////////////////////////////////////////////////////
 }

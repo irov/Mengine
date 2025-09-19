@@ -125,11 +125,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileInputStream::close()
+    void Win32FileInputStream::close()
     {
         if( m_hFile == INVALID_HANDLE_VALUE )
         {
-            return true;
+            return;
         }
 
 #if defined(MENGINE_DEBUG)
@@ -156,8 +156,6 @@ namespace Mengine
 #if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
         Helper::removeDebugFilePath( this );
 #endif
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileInputStream::openFile_( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, WChar * const _fullPath )

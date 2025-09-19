@@ -243,19 +243,13 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleFileGroupDirectory::closeInputFile( const InputStreamInterfacePtr & _stream )
+    void AppleFileGroupDirectory::closeInputFile( const InputStreamInterfacePtr & _stream )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
 
         FileInputStreamInterface * file = _stream.getT<FileInputStreamInterface *>();
 
-        bool result = file->close();
-
-        MENGINE_ASSERTION( result == true, "failed close file '%s'"
-            , m_folderPath.c_str()
-        );
-
-        return result;
+        file->close();
     }
     //////////////////////////////////////////////////////////////////////////
     InputStreamInterfacePtr AppleFileGroupDirectory::createInputMutexFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, const ThreadMutexInterfacePtr & _mutex, FileGroupInterface ** const _fileGroup, const DocumentInterfacePtr & _doc )
@@ -303,19 +297,13 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleFileGroupDirectory::closeInputMutexFile( const InputStreamInterfacePtr & _stream )
+    void AppleFileGroupDirectory::closeInputMutexFile( const InputStreamInterfacePtr & _stream )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
 
         FileInputStreamInterface * file = _stream.getT<FileInputStreamInterface *>();
 
-        bool result = file->close();
-
-        MENGINE_ASSERTION( result == true, "failed close file '%s'"
-            , m_folderPath.c_str()
-        );
-
-        return result;
+        file->close();
     }
     //////////////////////////////////////////////////////////////////////////
     OutputStreamInterfacePtr AppleFileGroupDirectory::createOutputFile( const DocumentInterfacePtr & _doc )
@@ -343,19 +331,13 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleFileGroupDirectory::closeOutputFile( const OutputStreamInterfacePtr & _stream )
+    void AppleFileGroupDirectory::closeOutputFile( const OutputStreamInterfacePtr & _stream )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
 
         FileOutputStreamInterface * file = _stream.getT<FileOutputStreamInterface *>();
 
-        bool result = file->close();
-
-        MENGINE_ASSERTION( result == true, "failed close file '%s'"
-            , m_folderPath.c_str()
-        );
-
-        return result;
+        file->close();
     }
     //////////////////////////////////////////////////////////////////////////
     bool AppleFileGroupDirectory::isAvailableMappedFile() const
@@ -385,13 +367,11 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleFileGroupDirectory::closeMappedFile( const MappedInterfacePtr & _stream )
+    void AppleFileGroupDirectory::closeMappedFile( const MappedInterfacePtr & _stream )
     {
         MENGINE_UNUSED( _stream );
 
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
-
-        return false;
     }
     //////////////////////////////////////////////////////////////////////////
 }

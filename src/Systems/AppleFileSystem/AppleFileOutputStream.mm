@@ -97,7 +97,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleFileOutputStream::close()
+    void AppleFileOutputStream::close()
     {
         if( m_fileHandle == nullptr )
         {
@@ -108,8 +108,6 @@ namespace Mengine
         m_fileHandle = nil;
 
         m_size = 0;
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t AppleFileOutputStream::write( const void * _data, size_t _size )

@@ -283,7 +283,7 @@
     );
     
 	if (self.m_authenticateSuccess == NO) {
-        IOS_LOGGER_ERROR( @"invalid report score '%@' value: %lld"
+        IOS_LOGGER_ERROR( @"invalid report score '%@' value: %lld [not authenticated]"
            , identifier
            , score
         );
@@ -291,19 +291,28 @@
         return NO;
     }
     
-	GKScore * scoreReporter = [[GKScore alloc] initWithLeaderboardIdentifier:identifier];
-	scoreReporter.value = score;
-    scoreReporter.context = 0;
+    if ([GKLocalPlayer localPlayer].isAuthenticated == NO) {
+        IOS_LOGGER_ERROR( @"invalid report score '%@' value: %lld [local player not authenticated]"
+            , identifier
+            , score
+        );
+        
+        return NO;
+    }
     
-    NSArray * scores = @[scoreReporter];
-    [GKScore reportScores:scores withCompletionHandler:^(NSError * error) {
+    GKPlayer * player = [GKLocalPlayer localPlayer];
+    
+    [GKLeaderboard submitScore:score
+                       context:0
+                        player:player
+                leaderboardIDs:@[identifier]
+             completionHandler:^(NSError * _Nullable error) {
         if (error != nil) {
-            IOS_LOGGER_ERROR( @"response score '%@' value: %lld error: %@"
+            IOS_LOGGER_ERROR(@"response score '%@' value: %lld error: %@"
                 , identifier
                 , score
-                , [AppleDetail getMessageFromNSError:error]
-            );
-            
+                , [AppleDetail getMessageFromNSError:error]);
+
             [AppleDetail dispatchMainQueue:^{
                 handler(error);
             }];

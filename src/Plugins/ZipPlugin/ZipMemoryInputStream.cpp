@@ -37,15 +37,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ZipMemoryInputStream::close()
+    void ZipMemoryInputStream::close()
     {
         m_stream = nullptr;
 
 #if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
         Helper::removeDebugFilePath( this );
 #endif
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     Pointer ZipMemoryInputStream::newBuffer( size_t _size )

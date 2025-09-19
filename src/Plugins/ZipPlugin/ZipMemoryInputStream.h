@@ -23,7 +23,7 @@ namespace Mengine
 
     public:
         bool open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath );
-        bool close();
+        void close();
 
     public:
         Pointer newBuffer( size_t _size ) override;

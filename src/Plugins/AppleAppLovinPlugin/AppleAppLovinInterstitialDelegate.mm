@@ -11,8 +11,8 @@
 
 @implementation AppleAppLovinInterstitialDelegate
 
-- (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull)adUnitId {
-    self = [super initWithAdUnitIdentifier:adUnitId adFormat:MAAdFormat.interstitial];
+- (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull)adUnitId advertisement:(id<AppleAdvertisementInterface> _Nonnull)advertisement {
+    self = [super initWithAdUnitIdentifier:adUnitId adFormat:MAAdFormat.interstitial advertisement:advertisement];
     
     MAInterstitialAd * interstitialAd;
     
@@ -35,6 +35,8 @@
     interstitialAd.adReviewDelegate = self;
     
     self.m_interstitialAd = interstitialAd;
+    
+    self.m_showing = NO;
     
 #if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON)
     self.m_amazonLoader = [[AppleAppLovinInterstitialAmazonLoader alloc] initWithSlotId:amazonSlotId interstitialAd:self.m_interstitialAd];
@@ -107,9 +109,15 @@
         return NO;
     }
     
+    self.m_showing = YES;
+    
     [self.m_interstitialAd showAdForPlacement:placement];
 
     return YES;
+}
+
+- (BOOL) isShowing {
+    return self.m_showing;
 }
 
 - (void) loadAd {
@@ -183,6 +191,8 @@
         @"ad": [self getMAAdParams:ad]
     }];
     
+    self.m_showing = NO;
+    
     id<AppleAdvertisementCallbackInterface> callback = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementInterstitialCallback];
     
     if (callback != nil) {
@@ -201,6 +211,8 @@
         @"error_code": @(error.code),
         @"ad": [self getMAAdParams:ad]
     }];
+    
+    self.m_showing = NO;
     
     id<AppleAdvertisementCallbackInterface> callback = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementInterstitialCallback];
     

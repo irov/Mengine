@@ -15,8 +15,9 @@
 @interface AppleAppLovinBannerDelegate : AppleAppLovinBaseDelegate<MAAdRequestDelegate, MAAdViewAdDelegate, MAAdRevenueDelegate, MAAdReviewDelegate>
 
 - (instancetype _Nullable)initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
-                                          placement:(NSString * _Nonnull) placement
-                                           adaptive:(BOOL) adaptive;
+                                     advertisement:(id<AppleAdvertisementInterface> _Nonnull)advertisement
+                                         placement:(NSString * _Nonnull) placement
+                                          adaptive:(BOOL) adaptive;
 
 - (void)show;
 - (void)hide;

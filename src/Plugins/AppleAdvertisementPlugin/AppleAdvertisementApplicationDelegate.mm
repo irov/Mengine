@@ -235,8 +235,26 @@
     
     self.m_lastShowInterstitial = [AppleDetail getTimestamp];
     self.m_countShowInterstitial += 1;
-
+    
     [adPoint showAd];
+    
+    return YES;
+}
+
+- (BOOL)isShowingInterstitial {
+    if (self.m_provider == nil) {
+        return NO;
+    }
+    
+    BOOL noAds = [self getNoAds];
+    
+    if (noAds == YES) {
+        return NO;
+    }
+    
+    if ([self.m_provider isShowingInterstitial] == NO) {
+        return NO;
+    }
     
     return YES;
 }
@@ -322,6 +340,18 @@
     self.m_countShowRewarded += 1;
     
     [adPoint showAd];
+    
+    return YES;
+}
+
+- (BOOL)isShowingRewarded {
+    if (self.m_provider == nil) {
+        return NO;
+    }
+    
+    if ([self.m_provider isShowingRewarded] == NO) {
+        return NO;
+    }
     
     return YES;
 }

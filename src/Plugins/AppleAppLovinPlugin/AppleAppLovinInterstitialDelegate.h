@@ -14,14 +14,17 @@
 
 @interface AppleAppLovinInterstitialDelegate : AppleAppLovinBaseDelegate<MAAdRequestDelegate, MAAdDelegate, MAAdRevenueDelegate, MAAdExpirationDelegate, MAAdReviewDelegate>
 
-- (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId;
+- (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId advertisement:(id<AppleAdvertisementInterface> _Nonnull)advertisement;
 
 - (BOOL) canYouShow:(NSString * _Nonnull) placement;
 - (BOOL) show:(NSString * _Nonnull) placement;
+- (BOOL) isShowing;
 
 - (void) loadAd;
 
 @property (nonatomic, strong) MAInterstitialAd * _Nullable m_interstitialAd;
+
+@property (atomic, assign) BOOL m_showing;
 
 #if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON)
 @property (nonatomic, strong) AppleAppLovinInterstitialAmazonLoader * _Nullable m_amazonLoader;

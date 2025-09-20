@@ -9,7 +9,8 @@
 @implementation AppleAppLovinBaseDelegate
 
 - (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
-                                          adFormat:(MAAdFormat * _Nonnull) adFormat {
+                                           adFormat:(MAAdFormat * _Nonnull) adFormat
+                                      advertisement:(id<AppleAdvertisementInterface> _Nonnull)advertisement{
     self = [super init];
     
     self.m_adUnitId = adUnitId;

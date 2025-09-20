@@ -282,6 +282,14 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        static bool appleAdvertisement_isShowingInterstitial() {
+            if ([[AppleAdvertisementApplicationDelegate sharedInstance] isShowingInterstitial] == NO) {
+                return false;
+            }
+            
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
         static bool appleAdvertisement_hasRewarded() {
             if ([[AppleAdvertisementApplicationDelegate sharedInstance] hasRewarded] == NO) {
                 return false;
@@ -314,6 +322,14 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        static bool appleAdvertisement_isShowingRewarded() {
+            if ([[AppleAdvertisementApplicationDelegate sharedInstance] isShowingRewarded] == NO) {
+                return false;
+            }
+            
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     AppleAdvertisementScriptEmbedding::AppleAdvertisementScriptEmbedding()
@@ -339,11 +355,13 @@ namespace Mengine
         pybind::def_function( _kernel, "appleAdvertisementHasInterstitial", &Detail::appleAdvertisement_hasInterstitial );
         pybind::def_function( _kernel, "appleAdvertisementCanYouShowInterstitial", &Detail::appleAdvertisement_canYouShowInterstitial );
         pybind::def_function( _kernel, "appleAdvertisementShowInterstitial", &Detail::appleAdvertisement_showInterstitial );
+        pybind::def_function( _kernel, "appleAdvertisementIsShowingInterstitial", &Detail::appleAdvertisement_isShowingInterstitial );
         
         pybind::def_function( _kernel, "appleAdvertisementHasRewarded", &Detail::appleAdvertisement_hasRewarded );
         pybind::def_function( _kernel, "appleAdvertisementCanOfferRewarded", &Detail::appleAdvertisement_canOfferRewarded );
         pybind::def_function( _kernel, "appleAdvertisementCanYouShowRewarded", &Detail::appleAdvertisement_canYouShowRewarded );
         pybind::def_function( _kernel, "appleAdvertisementShowRewarded", &Detail::appleAdvertisement_showRewarded );
+        pybind::def_function( _kernel, "appleAdvertisementIsShowingRewarded", &Detail::appleAdvertisement_isShowingRewarded );
 
         return true;
     }
@@ -359,9 +377,11 @@ namespace Mengine
         _kernel->remove_from_module( "appleAdvertisementGetBannerHeight", nullptr );
         _kernel->remove_from_module( "appleAdvertisementCanYouShowInterstitial", nullptr );
         _kernel->remove_from_module( "appleAdvertisementShowInterstitial", nullptr );
+        _kernel->remove_from_module( "appleAdvertisementIsShowingInterstitial", nullptr );
         _kernel->remove_from_module( "appleAdvertisementCanOfferRewarded", nullptr );
         _kernel->remove_from_module( "appleAdvertisementCanYouShowRewarded", nullptr );
         _kernel->remove_from_module( "appleAdvertisementShowRewarded", nullptr );
+        _kernel->remove_from_module( "appleAdvertisementIsShowingRewarded", nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
 }

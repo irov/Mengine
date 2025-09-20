@@ -34,6 +34,8 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
 
     private MaxInterstitialAd m_interstitialAd;
 
+    private boolean m_showing = false;
+
     public MengineAppLovinInterstitialAd(@NonNull MengineAdService adService, @NonNull MengineAppLovinPluginInterface plugin) throws MengineServiceInvalidInitializeException {
         super(adService, plugin, MaxAdFormat.INTERSTITIAL);
 
@@ -179,9 +181,16 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
             return false;
         }
 
+        m_showing = true;
+
         m_interstitialAd.showAd(placement, activity);
 
         return true;
+    }
+
+    @Override
+    public boolean isShowingInterstitial() {
+        return m_showing;
     }
 
     @Override
@@ -234,7 +243,7 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
 
         this.setInterstitialState("hidden." + placement + "." + ad.getNetworkName());
 
-        m_adService.setInterstitialAdShowing(false);
+        m_showing = false;
 
         MengineUtils.performOnMainThread(() -> {
             MengineAdResponseInterface adResponse = m_adService.getAdResponse();
@@ -292,7 +301,7 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
 
         this.setInterstitialState("display_failed." + placement + "." + ad.getNetworkName() + "." + errorCode);
 
-        m_adService.setInterstitialAdShowing(false);
+        m_showing = false;
 
         MengineUtils.performOnMainThread(() -> {
             MengineAdResponseInterface adResponse = m_adService.getAdResponse();

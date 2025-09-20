@@ -553,6 +553,15 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
     }
 
     @Override
+    public boolean isShowingInterstitial() {
+        if (m_interstitialAd == null) {
+            return false;
+        }
+
+        return m_interstitialAd.isShowingInterstitial();
+    }
+
+    @Override
     public boolean hasRewarded() {
         if (m_rewardedAd == null) {
             return false;
@@ -614,6 +623,15 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
         }
 
         return true;
+    }
+
+    @Override
+    public boolean isShowingRewarded() {
+        if (m_rewardedAd == null) {
+            return false;
+        }
+
+        return m_rewardedAd.isShowingRewarded();
     }
 
     @Override

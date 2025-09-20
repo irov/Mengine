@@ -42,9 +42,6 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
     protected long m_countShowRewarded = 0;
     protected long m_countShowAppOpen = 0;
 
-    protected boolean m_adInterstitialShowing = false;
-    protected boolean m_adRewardedShowing = false;
-
     protected boolean m_optionNoAds = false;
     protected boolean m_noAds = false;
 
@@ -339,22 +336,6 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         return false;
     }
 
-    public void setInterstitialAdShowing(boolean showing) {
-        m_adInterstitialShowing = showing;
-    }
-
-    public boolean isInterstitialAdShowing() {
-        return m_adInterstitialShowing;
-    }
-
-    public void setRewardedAdShowing(boolean showing) {
-        m_adRewardedShowing = showing;
-    }
-
-    public boolean isRewardedAdShowing() {
-        return m_adRewardedShowing;
-    }
-
     @Override
     public boolean hasBanner() {
         if (m_adProvider == null) {
@@ -508,9 +489,21 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         m_lastShowInterstitial = MengineUtils.getTimestamp();
         m_countShowInterstitial += 1;
 
-        this.setInterstitialAdShowing(true);
-
         adPoint.showAd();
+
+        return true;
+    }
+
+    public boolean isShowingInterstitial() {
+        boolean noAds = this.getNoAds();
+
+        if (noAds == true) {
+            return false;
+        }
+
+        if (m_adProvider.isShowingInterstitial() == false) {
+            return false;
+        }
 
         return true;
     }
@@ -603,9 +596,15 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         m_lastShowRewarded = MengineUtils.getTimestamp();
         m_countShowRewarded += 1;
 
-        this.setRewardedAdShowing(true);
-
         adPoint.showAd();
+
+        return true;
+    }
+
+    public boolean isShowingRewarded() {
+        if (m_adProvider.isShowingRewarded() == false) {
+            return false;
+        }
 
         return true;
     }

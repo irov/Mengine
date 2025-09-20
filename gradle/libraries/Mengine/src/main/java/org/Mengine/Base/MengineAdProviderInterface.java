@@ -14,13 +14,14 @@ public interface MengineAdProviderInterface {
 
     boolean canYouShowInterstitial(String placement);
     boolean showInterstitial(String placement);
+    boolean isShowingInterstitial();
 
     boolean hasRewarded();
 
     boolean canOfferRewarded(String placement);
     boolean canYouShowRewarded(String placement);
-
     boolean showRewarded(String placement);
+    boolean isShowingRewarded();
 
     boolean hasAppOpen();
 

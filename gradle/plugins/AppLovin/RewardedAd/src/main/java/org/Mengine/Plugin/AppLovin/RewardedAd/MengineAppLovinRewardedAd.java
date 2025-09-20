@@ -36,6 +36,8 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Me
 
     private MaxRewardedAd m_rewardedAd;
 
+    private boolean m_showing = false;
+
     public MengineAppLovinRewardedAd(@NonNull MengineAdService adService, @NonNull MengineAppLovinPluginInterface plugin) throws MengineServiceInvalidInitializeException {
         super(adService, plugin, MaxAdFormat.REWARDED);
 
@@ -203,9 +205,16 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Me
             return false;
         }
 
+        m_showing = true;
+
         m_rewardedAd.showAd(placement, activity);
 
         return true;
+    }
+
+    @Override
+    public boolean isShowingRewarded() {
+        return m_showing;
     }
 
     @Override
@@ -279,7 +288,7 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Me
 
         this.setRewardedState("hidden." + placement + "." + ad.getNetworkName());
 
-        m_adService.setRewardedAdShowing(false);
+        m_showing = false;
 
         MengineUtils.performOnMainThread(() -> {
             MengineAdResponseInterface adResponse = m_adService.getAdResponse();
@@ -337,7 +346,7 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Me
 
         this.setRewardedState("display_failed." + placement + "." + ad.getNetworkName() + "." + errorCode);
 
-        m_adService.setRewardedAdShowing(false);
+        m_showing = false;
 
         MengineUtils.performOnMainThread(() -> {
             MengineAdResponseInterface adResponse = m_adService.getAdResponse();

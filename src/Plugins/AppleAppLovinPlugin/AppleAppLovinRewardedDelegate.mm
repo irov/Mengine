@@ -10,8 +10,8 @@
 
 @implementation AppleAppLovinRewardedDelegate
 
-- (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull)adUnitId {
-    self = [super initWithAdUnitIdentifier:adUnitId adFormat:MAAdFormat.rewarded];
+- (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull)adUnitId advertisement:(id<AppleAdvertisementInterface> _Nonnull)advertisement {
+    self = [super initWithAdUnitIdentifier:adUnitId adFormat:MAAdFormat.rewarded advertisement:advertisement];
     
     MARewardedAd * rewardedAd;
     
@@ -35,9 +35,7 @@
     
     self.m_rewardedAd = rewardedAd;
     
-    self.m_requestAttempt = 0;
-    self.m_enumeratorRequest = 0;
-    self.m_requestId = 0;
+    self.m_showing = NO;
     
 #if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON)
     self.m_amazonLoader = [[AppleAppLovinRewardedAmazonLoader alloc] initWithSlotId:amazonSlotId rewardedAd:self.m_rewardedAd];
@@ -127,9 +125,15 @@
         return NO;
     }
     
+    self.m_showing = YES;
+    
     [self.m_rewardedAd showAdForPlacement:placement];
 
     return YES;
+}
+
+- (BOOL) isShowing {
+    return self.m_showing;
 }
 
 - (void) loadAd {
@@ -203,6 +207,8 @@
         @"placement": ad.placement,
         @"ad": [self getMAAdParams:ad]
     }];
+    
+    self.m_showing = NO;
 
     id<AppleAdvertisementCallbackInterface> callback = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementRewardedCallback];
     
@@ -222,6 +228,8 @@
         @"error_code": @(error.code),
         @"ad": [self getMAAdParams:ad]
     }];
+    
+    self.m_showing = NO;
 
     id<AppleAdvertisementCallbackInterface> callback = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementRewardedCallback];
     

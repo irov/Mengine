@@ -4,12 +4,15 @@
 
 #import "Environment/Apple/AppleIncluder.h"
 
+#import "Plugins/AppleAdvertisementPlugin/AppleAdvertisementInterface.h"
+
 #import <AppLovinSDK/AppLovinSDK.h>
 
 @interface AppleAppLovinBaseDelegate : NSObject
 
 - (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
-                                          adFormat:(MAAdFormat * _Nonnull) adFormat;
+                                           adFormat:(MAAdFormat * _Nonnull) adFormat
+                                      advertisement:(id<AppleAdvertisementInterface> _Nonnull)advertisement;
 
 - (void) loadAd;
 - (void) retryLoadAd;
@@ -31,6 +34,7 @@
 - (void) eventRevenue:(MAAd * _Nonnull) ad;
 
 @property (nonatomic, strong) NSString * _Nonnull m_adUnitId;
+@property (nonatomic, strong) id<AppleAdvertisementInterface> _Nonnull m_advertisement;
 @property (nonatomic, strong) MAAdFormat * _Nonnull m_adFormat;
 
 @property (nonatomic, assign) NSInteger m_enumeratorRequest;

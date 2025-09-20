@@ -154,36 +154,22 @@
     
     IOS_LOGGER_MESSAGE(@"AppLovin: %@ [%lu]", ALSdk.version, ALSdk.versionCode);
     
-    NSString * MengineAppleAppLovinPlugin_CCPA = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"CCPA" withDefault:@"UNKNOWN"];
-    
-    if ([MengineAppleAppLovinPlugin_CCPA caseInsensitiveCompare:@"YES"] == NSOrderedSame) {
-        [ALPrivacySettings setDoNotSell: YES];
-    } else if ([MengineAppleAppLovinPlugin_CCPA caseInsensitiveCompare:@"NO"] == NSOrderedSame) {
-        [ALPrivacySettings setDoNotSell: NO];
-    } else if ([MengineAppleAppLovinPlugin_CCPA caseInsensitiveCompare:@"UNKNOWN"] == NSOrderedSame) {
-        //Nothing
-    } else {
-        IOS_LOGGER_ERROR(@"[ERROR] AppLovin plugin invalid config [%@.CCPA] value %@ [YES|NO|UNKNOWN]", @PLUGIN_BUNDLE_NAME, MengineAppleAppLovinPlugin_CCPA);
-        
-        return NO;
-    }
-    
-    NSString * MengineAppleAppLovinPlugin_SdkKey = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"SdkKey" withDefault:nil];
-    
-    if (MengineAppleAppLovinPlugin_SdkKey == nil) {
-        IOS_LOGGER_ERROR(@"[ERROR] AppLovin plugin missed required config [%@.SdkKey]", @PLUGIN_BUNDLE_NAME);
-        
-        return NO;
-    }
-   
     ALSdkSettings * settings = [ALSdk shared].settings;
     
-    BOOL MengineAppleAppLovinPlugin_Verbose = [AppleBundle getPluginConfigBoolean:@PLUGIN_BUNDLE_NAME withKey:@"Verbose" withDefault:NO];
+    BOOL MengineAppleAppLovinPlugin_VerboseLoggingEnabled = [AppleBundle getPluginConfigBoolean:@PLUGIN_BUNDLE_NAME withKey:@"VerboseLoggingEnabled" withDefault:NO];
     
-    if (MengineAppleAppLovinPlugin_Verbose == YES) {
+    if (MengineAppleAppLovinPlugin_VerboseLoggingEnabled == YES) {
         settings.verboseLoggingEnabled = YES;
     } else {
         settings.verboseLoggingEnabled = NO;
+    }
+        
+    BOOL MengineAppleAppLovinPlugin_CreativeDebuggerEnabled = [AppleBundle getPluginConfigBoolean:@PLUGIN_BUNDLE_NAME withKey:@"CreativeDebuggerEnabled" withDefault:NO];
+    
+    if (MengineAppleAppLovinPlugin_CreativeDebuggerEnabled == YES) {
+        settings.creativeDebuggerEnabled = YES;
+    } else {
+        settings.creativeDebuggerEnabled = NO;
     }
     
     NSString * userId = [iOSApplication.sharedInstance getUserId];
@@ -211,8 +197,23 @@
         settings.termsAndPrivacyPolicyFlowSettings.enabled = YES;
         settings.termsAndPrivacyPolicyFlowSettings.privacyPolicyURL = [NSURL URLWithString:MengineAppleAppLovinPlugin_PrivacyPolicyURL];
         settings.termsAndPrivacyPolicyFlowSettings.termsOfServiceURL = [NSURL URLWithString:MengineAppleAppLovinPlugin_TermsOfServiceURL];
+        settings.termsAndPrivacyPolicyFlowSettings.showTermsAndPrivacyPolicyAlertInGDPR = NO;
     } else {
         settings.termsAndPrivacyPolicyFlowSettings.enabled = NO;
+    }
+    
+    NSString * MengineAppleAppLovinPlugin_PrivacyDoNoSell = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"PrivacyDoNoSell" withDefault:@"UNKNOWN"];
+    
+    if ([MengineAppleAppLovinPlugin_PrivacyDoNoSell caseInsensitiveCompare:@"YES"] == NSOrderedSame) {
+        [ALPrivacySettings setDoNotSell: YES];
+    } else if ([MengineAppleAppLovinPlugin_PrivacyDoNoSell caseInsensitiveCompare:@"NO"] == NSOrderedSame) {
+        [ALPrivacySettings setDoNotSell: NO];
+    } else if ([MengineAppleAppLovinPlugin_PrivacyDoNoSell caseInsensitiveCompare:@"UNKNOWN"] == NSOrderedSame) {
+        //Nothing
+    } else {
+        IOS_LOGGER_ERROR(@"[ERROR] AppLovin plugin invalid config [%@.PrivacyDoNoSell] value %@ [YES|NO|UNKNOWN]", @PLUGIN_BUNDLE_NAME, MengineAppleAppLovinPlugin_PrivacyDoNoSell);
+        
+        return NO;
     }
     
     id<AppleAdvertisementInterface> advertisement = [iOSDetail getPluginDelegateOfProtocol:@protocol(AppleAdvertisementInterface)];
@@ -245,12 +246,22 @@
         }
 #endif
     
+    NSString * MengineAppleAppLovinPlugin_SdkKey = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"SdkKey" withDefault:nil];
+    
+    if (MengineAppleAppLovinPlugin_SdkKey == nil) {
+        IOS_LOGGER_ERROR(@"[ERROR] AppLovin plugin missed required config [%@.SdkKey]", @PLUGIN_BUNDLE_NAME);
+        
+        return NO;
+    }
+    
     ALSdkInitializationConfiguration * initializationConfiguration = [ALSdkInitializationConfiguration configurationWithSdkKey:MengineAppleAppLovinPlugin_SdkKey builderBlock:^(ALSdkInitializationConfigurationBuilder * _Nonnull builder) {
         builder.pluginVersion = [@"Mengine-v" stringByAppendingString:@MENGINE_ENGINE_VERSION_STRING];
         builder.mediationProvider = ALMediationProviderMAX;
         builder.adUnitIdentifiers = adUnitIdentifiers;
 #if defined(MENGINE_DEBUG)
-        builder.testDeviceAdvertisingIdentifiers = @[[ASIdentifierManager sharedManager].advertisingIdentifier.UUIDString];
+        if ([AppleDetail hasOption:@"applovin.test_device_advertising"] == YES) {
+            builder.testDeviceAdvertisingIdentifiers = @[[ASIdentifierManager sharedManager].advertisingIdentifier.UUIDString];
+        }
 #endif
     }];
     
@@ -294,7 +305,7 @@
             
             BOOL MengineAppleAppLovinPlugin_BannerAdaptive = [AppleBundle getPluginConfigBoolean:@PLUGIN_BUNDLE_NAME withKey:@"BannerAdaptive" withDefault:YES];
             
-            AppleAppLovinBannerDelegate * bannerAd = [[AppleAppLovinBannerDelegate alloc] initWithAdUnitIdentifier:MengineAppleAppLovinPlugin_BannerAdUnitId placement:MengineAppleAppLovinPlugin_BannerPlacement adaptive:MengineAppleAppLovinPlugin_BannerAdaptive];
+            AppleAppLovinBannerDelegate * bannerAd = [[AppleAppLovinBannerDelegate alloc] initWithAdUnitIdentifier:MengineAppleAppLovinPlugin_BannerAdUnitId advertisement:advertisement placement:MengineAppleAppLovinPlugin_BannerPlacement adaptive:MengineAppleAppLovinPlugin_BannerAdaptive];
             
             self.m_bannerAd = bannerAd;
         }
@@ -302,7 +313,7 @@
         
 #if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_INTERSTITIAL)
         if (MengineAppleAppLovinPlugin_InterstitialAdUnitId != nil) {
-            AppleAppLovinInterstitialDelegate * interstitialAd = [[AppleAppLovinInterstitialDelegate alloc] initWithAdUnitIdentifier:MengineAppleAppLovinPlugin_InterstitialAdUnitId];
+            AppleAppLovinInterstitialDelegate * interstitialAd = [[AppleAppLovinInterstitialDelegate alloc] initWithAdUnitIdentifier:MengineAppleAppLovinPlugin_InterstitialAdUnitId advertisement:advertisement];
             
             self.m_interstitialAd = interstitialAd;
         }
@@ -310,7 +321,7 @@
         
 #if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_REWARDED)
         if (MengineAppleAppLovinPlugin_RewardedAdUnitId != nil) {
-            AppleAppLovinRewardedDelegate * rewardedAd = [[AppleAppLovinRewardedDelegate alloc] initWithAdUnitIdentifier:MengineAppleAppLovinPlugin_RewardedAdUnitId];
+            AppleAppLovinRewardedDelegate * rewardedAd = [[AppleAppLovinRewardedDelegate alloc] initWithAdUnitIdentifier:MengineAppleAppLovinPlugin_RewardedAdUnitId advertisement:advertisement];
             
             self.m_rewardedAd = rewardedAd;
         }
@@ -407,6 +418,18 @@
     return YES;
 }
 
+- (BOOL)isShowingInterstitial {
+    if (self.m_interstitialAd == nil) {
+        return NO;
+    }
+    
+    if ([self.m_interstitialAd isShowing] == NO) {
+        return NO;
+    }
+    
+    return YES;
+}
+
 - (BOOL)hasRewarded {
     if (self.m_rewardedAd == nil) {
         return NO;
@@ -462,5 +485,19 @@
     
     return YES;
 }
+
+- (BOOL)isShowingRewarded {
+    if (self.m_rewardedAd == nil) {
+        return NO;
+    }
+    
+    if ([self.m_rewardedAd isShowing] == NO) {
+        return NO;
+    }
+    
+    return YES;
+}
+
+    
 
 @end

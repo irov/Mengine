@@ -11,10 +11,11 @@
 
 @implementation AppleAppLovinBannerDelegate
 
-- (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
-                                          placement:(NSString * _Nonnull) placement
-                                           adaptive:(BOOL) adaptive {
-    self = [super initWithAdUnitIdentifier:adUnitId adFormat:MAAdFormat.banner];
+- (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull)adUnitId
+                                      advertisement:(id<AppleAdvertisementInterface> _Nonnull)advertisement
+                                          placement:(NSString * _Nonnull)placement
+                                           adaptive:(BOOL)adaptive {
+    self = [super initWithAdUnitIdentifier:adUnitId adFormat:MAAdFormat.banner advertisement:advertisement];
     
     self.m_bannerAdaptive = adaptive;
     

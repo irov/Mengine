@@ -19,11 +19,13 @@
 - (BOOL)hasInterstitial;
 - (BOOL)canYouShowInterstitial:(NSString *)placement;
 - (BOOL)showInterstitial:(NSString *)placement;
+- (BOOL)isShowingInterstitial;
 
 - (BOOL)hasRewarded;
 - (BOOL)canOfferRewarded:(NSString *)placement;
 - (BOOL)canYouShowRewarded:(NSString *)placement;
 - (BOOL)showRewarded:(NSString *)placement;
+- (BOOL)isShowingRewarded;
 @end
 
 @protocol AppleAdvertisementInterface <AppleAdvertisementProviderInterface>
@@ -33,6 +35,9 @@
 - (id<AppleAdvertisementProviderInterface>)getProvider;
 
 - (void)readyAdProvider;
+
+- (BOOL)isShowingInterstitial;
+- (BOOL)isShowingRewarded;
 
 - (void)setBannerCallback:(id<AppleAdvertisementCallbackInterface>)callback;
 - (id<AppleAdvertisementCallbackInterface>)getBannerCallback;

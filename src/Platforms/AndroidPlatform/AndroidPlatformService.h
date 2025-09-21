@@ -60,6 +60,8 @@ namespace Mengine
         bool updatePlatform() override;
         void tickPlatform( float _frameTime, bool _render, bool _flush, bool _pause ) override;
         void stopPlatform()	override;
+        void freezePlatform( bool _tick, bool _render ) override;
+        void unfreezePlatform( bool _tick, bool _render ) override;
 
     public:
         void setSleepMode( bool _sleepMode ) override;
@@ -182,6 +184,8 @@ namespace Mengine
         void androidNativeStartEvent() override;
         void androidNativeRestartEvent() override;
         void androidNativeDestroyEvent() override;
+        void androidNativeFreezeEvent( bool _tick, bool _render ) override;
+        void androidNativeUnfreezeEvent( bool _tick, bool _render ) override;
         void androidNativeClipboardChangedEvent() override;
         void androidNativeWindowFocusChangedEvent( jboolean _focus ) override;
         void androidNativeQuitEvent() override;
@@ -215,6 +219,8 @@ namespace Mengine
                 PET_START,
                 PET_RESTART,
                 PET_DESTROY,
+                PET_FREEZE,
+                PET_UNFREEZE,
                 PET_SURFACE_CREATE,
                 PET_SURFACE_DESTROY,
                 PET_SURFACE_CHANGED,
@@ -260,6 +266,18 @@ namespace Mengine
             struct PlatformDestroyEvent
             {
                 int32_t dummy;
+            };
+
+            struct PlatformFreezeEvent
+            {
+                bool tick;
+                bool render;
+            };
+
+            struct PlatformUnfreezeEvent
+            {
+                bool tick;
+                bool render;
             };
 
             struct PlatformSurfaceCreateEvent
@@ -316,6 +334,8 @@ namespace Mengine
                 PlatformStartEvent start;
                 PlatformRestartEvent restart;
                 PlatformDestroyEvent destroy;
+                PlatformFreezeEvent freeze;
+                PlatformUnfreezeEvent unfreeze;
                 PlatformSurfaceCreateEvent surfaceCreate;
                 PlatformSurfaceDestroyEvent surfaceDestroy;
                 PlatformSurfaceChangedEvent surfaceChanged;
@@ -334,6 +354,8 @@ namespace Mengine
         void startEvent_( const PlatformUnionEvent::PlatformStartEvent & _event );
         void restartEvent_( const PlatformUnionEvent::PlatformRestartEvent & _event );
         void destroyEvent_( const PlatformUnionEvent::PlatformDestroyEvent & _event );
+        void freezeEvent_( const PlatformUnionEvent::PlatformFreezeEvent & _event );
+        void unfreezeEvent_( const PlatformUnionEvent::PlatformUnfreezeEvent & _event );
         void surfaceCreateEvent_( const PlatformUnionEvent::PlatformSurfaceCreateEvent & _event );
         void surfaceDestroyEvent_( const PlatformUnionEvent::PlatformSurfaceDestroyEvent & _event );
         void surfaceChangedEvent_( const PlatformUnionEvent::PlatformSurfaceChangedEvent & _event );
@@ -369,6 +391,7 @@ namespace Mengine
             EAS_PAUSE,
             EAS_STOP,
             EAS_RESTART,
+            EAS_FREEZE,
             EAS_DESTROY
         };
 
@@ -399,6 +422,8 @@ namespace Mengine
         float m_pauseUpdatingTime;
 
         bool m_active;
+        int32_t m_freezedTick;
+        int32_t m_freezedRender;
 
         bool m_desktop;
         bool m_touchpad;

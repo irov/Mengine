@@ -106,6 +106,8 @@ namespace Mengine
         , m_performanceFrequency{0}
         , m_performanceSupport( false )
         , m_active( false )
+        , m_freezedTick( 0 )
+        , m_freezedRender( 0 )
         , m_hIcon( NULL )
         , m_close( false )
         , m_sleepMode( true )
@@ -661,7 +663,7 @@ namespace Mengine
         bool updating = APPLICATION_SERVICE()
             ->beginUpdate( _frameTime );
 
-        if( updating == true )
+        if( m_freezedTick == 0 && updating == true )
         {
             if( m_pauseUpdatingTime >= 0.f )
             {
@@ -676,7 +678,7 @@ namespace Mengine
         APPLICATION_SERVICE()
             ->endUpdate();
 
-        if( this->isNeedWindowRender() == true && _render == true )
+        if( m_freezedRender == false && this->isNeedWindowRender() == true && _render == true )
         {
             bool sucessful = APPLICATION_SERVICE()
                 ->render();
@@ -699,7 +701,7 @@ namespace Mengine
                     m_pauseUpdatingTime = _frameTime;
                 }
 
-                if( m_sleepMode == true )
+                if( m_freezedTick != 0 || m_freezedRender != 0 || m_sleepMode == true )
                 {
                     ::Sleep( 100 );
                 }
@@ -775,6 +777,32 @@ namespace Mengine
         this->detachWindow();
 
         MENGINE_PROFILER_END_APPLICATION();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32PlatformService::freezePlatform( bool _tick, bool _render )
+    {
+        if( _tick == true )
+        {
+            ++m_freezedTick;
+        }
+
+        if( _render == true )
+        {
+            ++m_freezedRender;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32PlatformService::unfreezePlatform( bool _tick, bool _render )
+    {
+        if( _tick == true )
+        {
+            --m_freezedTick;
+        }
+
+        if( _render == true )
+        {
+            --m_freezedRender;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32PlatformService::setHWNDIcon( const WChar * _iconResource )

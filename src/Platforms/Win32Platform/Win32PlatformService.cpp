@@ -106,10 +106,10 @@ namespace Mengine
         , m_performanceFrequency{0}
         , m_performanceSupport( false )
         , m_active( false )
+        , m_close( false )
         , m_freezedTick( 0 )
         , m_freezedRender( 0 )
         , m_hIcon( NULL )
-        , m_close( false )
         , m_sleepMode( true )
         , m_windowExposed( false )
         , m_pauseUpdatingTime( -1.f )

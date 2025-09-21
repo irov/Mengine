@@ -45,7 +45,6 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
         if (MengineAppLovinPlugin_Interstitial_AdUnitId.isEmpty() == true) {
             this.invalidInitialize("meta %s is empty"
                 , plugin.getResourceName(METADATA_INTERSTITIAL_ADUNITID)
-                , MengineAppLovinPlugin_Interstitial_AdUnitId
             );
         }
 

@@ -46,7 +46,7 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Me
 
         if (MengineAppLovinPlugin_Rewarded_AdUnitId.isEmpty() == true) {
             this.invalidInitialize("meta %s is empty"
-                , METADATA_REWARDED_ADUNITID
+                , plugin.getResourceName(METADATA_REWARDED_ADUNITID)
             );
         }
 

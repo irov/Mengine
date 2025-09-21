@@ -1,12 +1,14 @@
 #import "AppleAppLovinRewardedDelegate.h"
 
+#include "Interface/PlatformServiceInterface.h"
+
 #import "Environment/Apple/AppleDetail.h"
 #import "Environment/Apple/AppleString.h"
 
 #import "Environment/iOS/iOSLog.h"
 #import "Environment/iOS/iOSNetwork.h"
 
-#include "AppleAppLovinApplicationDelegate.h"
+#import "AppleAppLovinApplicationDelegate.h"
 
 @implementation AppleAppLovinRewardedDelegate
 
@@ -189,6 +191,9 @@
         @"placement": ad.placement,
         @"ad": [self getMAAdParams:ad]
     }];
+    
+    PLATFORM_SERVICE()
+        ->freezePlatform( true, true );
 }
 
 - (void) didClickAd:(MAAd *)ad {
@@ -207,6 +212,9 @@
         @"placement": ad.placement,
         @"ad": [self getMAAdParams:ad]
     }];
+    
+    PLATFORM_SERVICE()
+        ->unfreezePlatform( true, true );
     
     self.m_showing = NO;
 

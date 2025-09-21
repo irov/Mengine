@@ -238,9 +238,10 @@ namespace Mengine
         bool m_fullscreen;
 
         bool m_active;
+        bool m_close;
+
         int32_t m_freezedTick;
         int32_t m_freezedRender;
-        bool m_close;
 
         bool m_sleepMode;
         bool m_windowExposed;

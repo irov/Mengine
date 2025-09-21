@@ -1,13 +1,13 @@
 #import "AppleAppLovinInterstitialDelegate.h"
 
+#include "Interface/PlatformServiceInterface.h"
+
 #import "Environment/Apple/AppleDetail.h"
 #import "Environment/Apple/AppleString.h"
 
 #import "Environment/iOS/iOSLog.h"
 
-#include "AppleAppLovinApplicationDelegate.h"
-
-#include "Kernel/AnalyticsHelper.h"
+#import "AppleAppLovinApplicationDelegate.h"
 
 @implementation AppleAppLovinInterstitialDelegate
 
@@ -172,6 +172,9 @@
         @"placement": ad.placement,
         @"ad": [self getMAAdParams:ad]
     }];
+    
+    PLATFORM_SERVICE()
+        ->freezePlatform( true, true );
 }
 
 - (void) didClickAd:(MAAd *)ad {
@@ -190,6 +193,9 @@
         @"placement": ad.placement,
         @"ad": [self getMAAdParams:ad]
     }];
+    
+    PLATFORM_SERVICE()
+        ->unfreezePlatform( true, true );
     
     self.m_showing = NO;
     

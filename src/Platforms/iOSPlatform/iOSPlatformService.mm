@@ -90,6 +90,8 @@ namespace Mengine
         , m_pauseUpdatingTime( -1.f )
         , m_active( false )
         , m_sleepMode( true )
+        , m_freezedTick( 0 )
+        , m_freezedRender( 0 )
         , m_desktop( false )
         , m_touchpad( false )
         , m_glContext( nullptr )
@@ -790,7 +792,7 @@ namespace Mengine
         bool updating = APPLICATION_SERVICE()
             ->beginUpdate( _frameTime );
 
-        if( updating == true )
+        if( m_freezedTick == 0 && updating == true )
         {
             if( m_pauseUpdatingTime >= 0.f )
             {
@@ -801,8 +803,11 @@ namespace Mengine
             APPLICATION_SERVICE()
                 ->tick( _frameTime );
         }
+        
+        APPLICATION_SERVICE()
+            ->endUpdate();
 
-        if( this->isNeedWindowRender() == true && _render == true )
+        if( m_freezedRender == 0 && this->isNeedWindowRender() == true && _render == true )
         {
             bool sucessful = APPLICATION_SERVICE()
                 ->render();
@@ -823,9 +828,6 @@ namespace Mengine
                 }
             }
         }
-
-        APPLICATION_SERVICE()
-            ->endUpdate();
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::loopPlatform()
@@ -966,6 +968,32 @@ namespace Mengine
         }
         
         this->pushQuitEvent_();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void iOSPlatformService::freezePlatform( bool _tick, bool _render )
+    {
+        if( _tick == true )
+        {
+            ++m_freezedTick;
+        }
+
+        if( _render == true )
+        {
+            ++m_freezedRender;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void iOSPlatformService::unfreezePlatform( bool _tick, bool _render )
+    {
+        if( _tick == true )
+        {
+            --m_freezedTick;
+        }
+
+        if( _render == true )
+        {
+            --m_freezedRender;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::setSleepMode( bool _sleepMode )

@@ -86,7 +86,7 @@
 extern "C"
 {
     //////////////////////////////////////////////////////////////////////////
-    static volatile bool g_androidPlatformActived = true;
+    static volatile bool g_androidPlatformActived = false;
     //////////////////////////////////////////////////////////////////////////
     static bool AndroidWriteMemory( JNIEnv * env, const Mengine::MemoryInterfacePtr & _memory, jobject _writer )
     {
@@ -431,6 +431,32 @@ extern "C"
         platformExtension->androidNativeDestroyEvent();
     }
     ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1freezeEvent )(JNIEnv * env, jclass cls, jboolean tick, jboolean render)
+    {
+        if( g_androidPlatformActived == false )
+        {
+            return;
+        }
+
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        platformExtension->androidNativeFreezeEvent( tick, render );
+    }
+    ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1unfreezeEvent )(JNIEnv * env, jclass cls, jboolean tick, jboolean render)
+    {
+        if( g_androidPlatformActived == false )
+        {
+            return;
+        }
+
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        platformExtension->androidNativeUnfreezeEvent( tick, render );
+    }
+    ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1clipboardChangedEvent )(JNIEnv * env, jclass cls)
     {
         if( g_androidPlatformActived == false )
@@ -553,6 +579,8 @@ namespace Mengine
         , m_prevTime( 0.0 )
         , m_pauseUpdatingTime( -1.f )
         , m_active( false )
+        , m_freezedTick( 0 )
+        , m_freezedRender( 0 )
         , m_desktop( false )
         , m_touchpad( false )
     {
@@ -754,6 +782,8 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_BASE_SERVICES, &AndroidPlatformService::notifyBootstrapperInitializeBaseServices_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, &AndroidPlatformService::notifyBootstrapperCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );
 
+        g_androidPlatformActived = true;
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -864,7 +894,7 @@ namespace Mengine
         bool updating = APPLICATION_SERVICE()
             ->beginUpdate( _frameTime );
 
-        if( updating == true )
+        if(m_freezedTick == 0 && updating == true )
         {
             if( m_pauseUpdatingTime >= 0.f )
             {
@@ -889,7 +919,7 @@ namespace Mengine
             return;
         }
 
-        if( _render == false )
+        if( m_freezedRender != 0 || _render == false )
         {
             return;
         }
@@ -1049,6 +1079,32 @@ namespace Mengine
         Helper::AndroidCallVoidFragmentMethod( jenv, "MengineFragmentEngine", "platformStop", "()V" );
 
         this->pushQuitEvent_();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::freezePlatform( bool _tick, bool _render )
+    {
+        if( _tick == true )
+        {
+            ++m_freezedTick;
+        }
+
+        if( _render == true )
+        {
+            ++m_freezedRender;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::unfreezePlatform( bool _tick, bool _render )
+    {
+        if( _tick == true )
+        {
+            --m_freezedTick;
+        }
+
+        if( _render == true )
+        {
+            --m_freezedRender;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::setSleepMode( bool _sleepMode )
@@ -1534,6 +1590,14 @@ namespace Mengine
             case PlatformUnionEvent::PET_DESTROY:
                 {
                     this->destroyEvent_( ev.data.destroy );
+                }break;
+            case PlatformUnionEvent::PET_FREEZE:
+                {
+                    this->freezeEvent_( ev.data.freeze );
+                }break;
+            case PlatformUnionEvent::PET_UNFREEZE:
+                {
+                    this->unfreezeEvent_( ev.data.unfreeze );
                 }break;
             case PlatformUnionEvent::PET_SURFACE_CREATE:
                 {
@@ -2331,6 +2395,37 @@ namespace Mengine
         this->pushEvent( event );
     }
     //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::androidNativeFreezeEvent( bool _tick, bool _render )
+    {
+        PlatformUnionEvent event;
+        event.type = PlatformUnionEvent::PET_FREEZE;
+        event.data.freeze.tick = _tick;
+        event.data.freeze.render = _render;
+
+        LOGGER_INFO( "platform", "freeze event: tick %d render %d"
+            , _tick
+            , _render
+        );
+
+        this->pushEvent( event );
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::androidNativeUnfreezeEvent( bool _tick, bool _render )
+    {
+        PlatformUnionEvent event;
+        event.type = PlatformUnionEvent::PET_UNFREEZE;
+        event.data.unfreeze.tick = _tick;
+        event.data.unfreeze.render = _render;
+
+        LOGGER_INFO( "platform", "unfreeze event: tick %d render %d"
+            , _tick
+            , _render
+        );
+
+        this->pushEvent( event );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeClipboardChangedEvent()
     {
         PlatformUnionEvent event;
@@ -2445,6 +2540,22 @@ namespace Mengine
         MENGINE_UNUSED( _event );
 
         //ToDo
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::freezeEvent_( const PlatformUnionEvent::PlatformFreezeEvent & _event )
+    {
+        bool tick = _event.tick;
+        bool render = _event.render;
+
+        this->freezePlatform( tick, render );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::unfreezeEvent_( const PlatformUnionEvent::PlatformUnfreezeEvent & _event )
+    {
+        bool tick = _event.tick;
+        bool render = _event.render;
+
+        this->unfreezePlatform( tick, render );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::surfaceCreateEvent_( const PlatformUnionEvent::PlatformSurfaceCreateEvent & _event )

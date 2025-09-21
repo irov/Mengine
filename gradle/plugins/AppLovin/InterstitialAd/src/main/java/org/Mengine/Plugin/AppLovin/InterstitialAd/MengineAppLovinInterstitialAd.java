@@ -20,6 +20,7 @@ import org.Mengine.Base.MengineAdMediation;
 import org.Mengine.Base.MengineAdResponseInterface;
 import org.Mengine.Base.MengineAdService;
 import org.Mengine.Base.MengineAnalyticsEventBuilderInterface;
+import org.Mengine.Base.MengineNative;
 import org.Mengine.Base.MengineNetwork;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineUtils;
@@ -228,6 +229,8 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
             .log();
 
         this.setInterstitialState("displayed." + placement + "." + ad.getNetworkName());
+
+        MengineNative.AndroidPlatform_freezeEvent( true, true );
     }
 
     @Override
@@ -242,6 +245,8 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
             .log();
 
         this.setInterstitialState("hidden." + placement + "." + ad.getNetworkName());
+
+        MengineNative.AndroidPlatform_unfreezeEvent( false, false );
 
         m_showing = false;
 

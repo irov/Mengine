@@ -42,6 +42,9 @@ namespace Mengine
         virtual bool updatePlatform() = 0;
         virtual void tickPlatform( float _frameTime, bool _render, bool _flush, bool _pause ) = 0;
         virtual void stopPlatform() = 0;
+        virtual void freezePlatform( bool _tick, bool _render ) = 0;
+        virtual void unfreezePlatform( bool _tick, bool _render ) = 0;
+
 
     public:
         virtual void setSleepMode( bool _sleepMode ) = 0;

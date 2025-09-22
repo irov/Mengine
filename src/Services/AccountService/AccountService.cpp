@@ -801,6 +801,10 @@ namespace Mengine
 
         if( Helper::writeJSONStream( j_root, stream ) == false )
         {
+            LOGGER_ERROR( "invalid write accounts '%s'"
+                , Game_AccountsPath.c_str()
+            );
+
             return false;
         }
 

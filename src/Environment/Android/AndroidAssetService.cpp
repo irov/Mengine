@@ -97,23 +97,23 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t AndroidAssetService::read( AAsset * _asset, void * _buffer, size_t _size ) const
     {
-        size_t read = AAsset_read( _asset, _buffer, _size );
+        int read = AAsset_read( _asset, _buffer, _size );
 
-        return read;
+        return (size_t)read;
     }
     //////////////////////////////////////////////////////////////////////////
     int64_t AndroidAssetService::size( AAsset * _asset ) const
     {
-        int64_t size = AAsset_getLength64( _asset );
+        off64_t size = AAsset_getLength64( _asset );
 
-        return size;
+        return (int64_t)size;
     }
     //////////////////////////////////////////////////////////////////////////
     int64_t AndroidAssetService::seek( AAsset * _asset, int64_t _offset, int _whence ) const
     {
-        int64_t seek = AAsset_seek64( _asset, _offset, _whence );
+        off64_t seek = AAsset_seek64( _asset, _offset, _whence );
 
-        return seek;
+        return (int64_t)seek;
     }
     //////////////////////////////////////////////////////////////////////////
 }

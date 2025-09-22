@@ -213,7 +213,7 @@ namespace Mengine
         bool triangulate( const Polygon & _polygon, VectorPoints * const _result )
         {
             const VectorPoints & polygon_points = _polygon.getPoints();
-            uint32_t polygon_size = _polygon.size();
+            VectorPoints::size_type polygon_size = _polygon.size();
 
             --polygon_size;
 
@@ -222,29 +222,29 @@ namespace Mengine
                 return false;
             }
 
-            uint32_t * V = Helper::allocateArrayT<uint32_t>( polygon_size );  /* we want a counter-clockwise polygon in V */
+            VectorPoints::size_type * V = Helper::allocateArrayT<VectorPoints::size_type>( polygon_size );  /* we want a counter-clockwise polygon in V */
 
             float polygon_area = _polygon.area();
 
             if( polygon_area < 0.f )
             {
-                for( uint32_t v = 0; v != polygon_size; ++v )
+                for( VectorPoints::size_type v = 0; v != polygon_size; ++v )
                 {
                     V[v] = v;
                 }
             }
             else
             {
-                for( uint32_t v = 0; v != polygon_size; ++v )
+                for( VectorPoints::size_type v = 0; v != polygon_size; ++v )
                 {
                     V[v] = (polygon_size - 1) - v;
                 }
             }
 
-            uint32_t nv = polygon_size;
-            uint32_t count = 2 * nv;
+            VectorPoints::size_type nv = polygon_size;
+            VectorPoints::size_type count = 2 * nv;
 
-            for( uint32_t v = nv - 1; nv > 2; )
+            for( VectorPoints::size_type v = nv - 1; nv > 2; )
             {
                 if( 0 == (count--) )
                 {
@@ -253,7 +253,7 @@ namespace Mengine
                     return false;
                 }
 
-                uint32_t u = v;
+                VectorPoints::size_type u = v;
 
                 if( nv <= u )
                 {
@@ -267,7 +267,7 @@ namespace Mengine
                     v = 0;
                 }
 
-                uint32_t w = v + 1;
+                VectorPoints::size_type w = v + 1;
 
                 if( nv <= w )
                 {
@@ -276,9 +276,9 @@ namespace Mengine
 
                 if( Detail::snip( polygon_points, u, v, w, nv, V ) == true )
                 {
-                    uint32_t a = V[u];
-                    uint32_t b = V[v];
-                    uint32_t c = V[w];
+                    VectorPoints::size_type a = V[u];
+                    VectorPoints::size_type b = V[v];
+                    VectorPoints::size_type c = V[w];
 
                     const mt::vec2f & Ca = polygon_points[a];
                     const mt::vec2f & Cb = polygon_points[b];
@@ -288,7 +288,7 @@ namespace Mengine
                     _result->emplace_back( Cb );
                     _result->emplace_back( Cc );
 
-                    for( uint32_t s = v, t = v + 1; t < nv; s++, t++ )
+                    for( VectorPoints::size_type s = v, t = v + 1; t < nv; s++, t++ )
                     {
                         V[s] = V[t];
                     }
@@ -307,7 +307,7 @@ namespace Mengine
         bool triangulate_indices( const Polygon & _polygon, VectorPolygonIndices * const _result )
         {
             const VectorPoints & polygon_points = _polygon.getPoints();
-            uint32_t n = _polygon.size();
+            VectorPoints::size_type n = _polygon.size();
 
             --n;
 
@@ -316,29 +316,29 @@ namespace Mengine
                 return false;
             }
 
-            uint32_t * V = Helper::allocateArrayT<uint32_t>( n );
+            VectorPoints::size_type * V = Helper::allocateArrayT<VectorPoints::size_type>( n );
 
             float polygon_area = _polygon.area();
 
             if( polygon_area < 0.f )
             {
-                for( uint32_t v = 0; v < n; v++ )
+                for( VectorPoints::size_type v = 0; v < n; v++ )
                 {
                     V[v] = v;
                 }
             }
             else
             {
-                for( uint32_t v = 0; v < n; v++ )
+                for( VectorPoints::size_type v = 0; v < n; v++ )
                 {
                     V[v] = (n - 1) - v;
                 }
             }
 
-            uint32_t nv = n;
-            uint32_t count = 2 * nv;
+            VectorPoints::size_type nv = n;
+            VectorPoints::size_type count = 2 * nv;
 
-            for( uint32_t v = nv - 1; nv > 2; )
+            for( VectorPoints::size_type v = nv - 1; nv > 2; )
             {
                 if( 0 == (count--) )
                 {
@@ -347,7 +347,7 @@ namespace Mengine
                     return false;
                 }
 
-                uint32_t u = v;
+                VectorPoints::size_type u = v;
 
                 if( nv <= u )
                 {
@@ -361,7 +361,7 @@ namespace Mengine
                     v = 0;
                 }
 
-                uint32_t w = v + 1;
+                VectorPoints::size_type w = v + 1;
 
                 if( nv <= w )
                 {
@@ -370,15 +370,15 @@ namespace Mengine
 
                 if( Detail::snip( polygon_points, u, v, w, nv, V ) == true )
                 {
-                    uint32_t a = V[u];
-                    uint32_t b = V[v];
-                    uint32_t c = V[w];
+                    VectorPoints::size_type a = V[u];
+                    VectorPoints::size_type b = V[v];
+                    VectorPoints::size_type c = V[w];
 
                     _result->emplace_back( a );
                     _result->emplace_back( b );
                     _result->emplace_back( c );
 
-                    for( uint32_t s = v, t = v + 1; t < nv; s++, t++ )
+                    for( VectorPoints::size_type s = v, t = v + 1; t < nv; s++, t++ )
                     {
                         V[s] = V[t];
                     }

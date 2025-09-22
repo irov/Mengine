@@ -20,7 +20,7 @@ namespace Mengine
     class Hashtable
     {
     public:
-        typedef uint32_t size_type;
+        typedef size_t size_type;
         typedef HashType hash_type;
         typedef K key_type;
         typedef T element_type_ptr;
@@ -148,7 +148,7 @@ namespace Mengine
         }
 
     public:
-        void reserve( uint32_t _capacity )
+        void reserve( size_type _capacity )
         {
             if( m_capacity > _capacity )
             {
@@ -171,7 +171,7 @@ namespace Mengine
             return m_size == 0;
         }
 
-        uint32_t size() const
+        size_type size() const
         {
             return m_size;
         }
@@ -640,7 +640,7 @@ namespace Mengine
     class Hashtable<K, T *, H>
     {
     public:
-        typedef uint32_t size_type;
+        typedef size_t size_type;
         typedef HashType hash_type;
         typedef K key_type;
         typedef T * element_type_ptr;
@@ -679,8 +679,8 @@ namespace Mengine
         {
             MENGINE_ASSERTION_MEMORY_PANIC( _element, "invalid emplace element" );
 
-            uint32_t test_size = (m_size + m_dummy) * 3 + 1;
-            uint32_t test_capacity = m_capacity * 2;
+            size_type test_size = (m_size + m_dummy) * 3 + 1;
+            size_type test_capacity = m_capacity * 2;
             if( test_size > test_capacity )
             {
                 this->increase_();
@@ -697,8 +697,8 @@ namespace Mengine
         {
             MENGINE_ASSERTION_MEMORY_PANIC( _element, "invalid change element" );
 
-            uint32_t test_size = (m_size + m_dummy) * 3 + 1;
-            uint32_t test_capacity = m_capacity * 2;
+            size_type test_size = (m_size + m_dummy) * 3 + 1;
+            size_type test_capacity = m_capacity * 2;
             if( test_size > test_capacity )
             {
                 this->increase_();
@@ -766,7 +766,7 @@ namespace Mengine
         }
 
     public:
-        void reserve( uint32_t _capacity )
+        void reserve( size_type _capacity )
         {
             if( m_capacity > _capacity )
             {
@@ -789,7 +789,7 @@ namespace Mengine
             return m_size == 0;
         }
 
-        uint32_t size() const
+        size_type size() const
         {
             return m_size;
         }

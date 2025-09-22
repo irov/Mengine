@@ -8,12 +8,12 @@
 
 namespace Mengine
 {
-    template<class T, uint32_t Size>
+    template<class T, size_t Size>
     class ArrayTString
     {
     public:
         typedef T value_type;
-        typedef uint32_t size_type;
+        typedef size_t size_type;
 
     public:
         ArrayTString()

@@ -189,18 +189,25 @@ namespace Mengine
         }
 #endif
 
+        size_t imIniSettingsSize = 0;
+        const char * imIniSettings = ImGui::SaveIniSettingsToMemory( &imIniSettingsSize );
+
         const FileGroupInterfacePtr & userFileGroup = FILE_SERVICE()
             ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
 
-        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( userFileGroup, STRINGIZE_FILEPATH_LOCAL( "imgui.ini" ), true, MENGINE_DOCUMENT_FACTORABLE );
+        if( imIniSettingsSize != 0 )
+        {
+            OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( userFileGroup, STRINGIZE_FILEPATH_LOCAL( MENGINE_IMGUI_INI_FILE ), true, MENGINE_DOCUMENT_FACTORABLE );
 
-        size_t imIniSettingsSize;
-        const char * imIniSettings = ImGui::SaveIniSettingsToMemory( &imIniSettingsSize );
+            stream->write( imIniSettings, imIniSettingsSize );
+            stream->flush();
 
-        stream->write( imIniSettings, imIniSettingsSize );
-        stream->flush();
-
-        Helper::closeOutputStreamFile( userFileGroup, stream );
+            Helper::closeOutputStreamFile( userFileGroup, stream );
+        }
+        else
+        {
+            userFileGroup->removeFile( STRINGIZE_FILEPATH_LOCAL( MENGINE_IMGUI_INI_FILE ) );
+        }
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
         ImGui_ImplSDL2_Shutdown();

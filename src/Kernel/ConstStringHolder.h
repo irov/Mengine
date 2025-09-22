@@ -22,7 +22,7 @@ namespace Mengine
         ConstStringHolder & operator = ( const ConstStringHolder & _holder );
 
     public:
-        typedef uint32_t size_type;
+        typedef size_t size_type;
         typedef HashType hash_type;
         typedef Char value_type;
 

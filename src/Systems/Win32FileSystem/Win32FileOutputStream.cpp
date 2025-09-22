@@ -116,6 +116,11 @@ namespace Mengine
         }
 #endif
 
+        MENGINE_ASSERTION_FATAL( m_size != 0, "file '%s:%s' is empty"
+            , m_folderPath.c_str()
+            , m_filePath.c_str()
+        );
+
         this->flush();
 
         ::CloseHandle( m_hFile );

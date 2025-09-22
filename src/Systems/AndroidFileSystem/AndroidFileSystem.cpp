@@ -136,6 +136,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidFileSystem::createDirectory( const Char * _basePath, const Char * _directory )
     {
+        LOGGER_INFO( "file", "create directory path '%s' directory '%s'"
+            , _basePath
+            , _directory
+        );
+
         Path correctBasePath = {'\0'};
         Helper::pathCorrectBackslashToA( correctBasePath, _basePath );
 
@@ -211,6 +216,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidFileSystem::removeFile( const Char * _filePath )
     {
+        LOGGER_INFO( "file", "remove file '%s'"
+            , _filePath
+        );
+
         Path pathCorrect = {'\0'};
         Helper::pathCorrectBackslashToA( pathCorrect, _filePath );
 
@@ -226,6 +235,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidFileSystem::moveFile( const Char * _oldFilePath, const Char * _newFilePath )
     {
+        LOGGER_INFO( "file", "move file from '%s' to '%s'"
+            , _oldFilePath
+            , _newFilePath
+        );
+
         Path oldPathCorrect = {'\0'};
         Helper::pathCorrectBackslashToA( oldPathCorrect, _oldFilePath );
 
@@ -233,7 +247,7 @@ namespace Mengine
         Helper::pathCorrectBackslashToA( newPathCorrect, _newFilePath );
 
         struct stat sb;
-        if( stat( newPathCorrect, &sb ) == 0 && ((sb.st_mode) & S_IFMT) != S_IFDIR )
+        if( ::stat( newPathCorrect, &sb ) == 0 && ((sb.st_mode) & S_IFMT) != S_IFDIR )
         {
             int result_remove = ::remove( newPathCorrect );
 
@@ -284,7 +298,7 @@ namespace Mengine
     uint64_t AndroidFileSystem::getFileTime( const Char * _filePath ) const
     {
         struct stat fs;
-        if( stat( _filePath, &fs ) != 0 )
+        if( ::stat( _filePath, &fs ) != 0 )
         {
             return 0U;
         }

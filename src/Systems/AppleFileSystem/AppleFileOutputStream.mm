@@ -35,7 +35,6 @@ namespace Mengine
 
         Path concatenatePath = {'\0'};
 
-#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
         if( m_withTemp == true )
         {
             if( Helper::concatenateFilePath( {m_relationPath, m_folderPath, m_filePath, STRINGIZE_FILEPATH_LOCAL( ".~tmp" )}, concatenatePath ) == false )
@@ -60,17 +59,6 @@ namespace Mengine
                 return false;
             }
         }
-#else
-        if( Helper::concatenateFilePath( {m_relationPath, m_folderPath, m_filePath}, concatenatePath ) == false )
-        {
-            LOGGER_ERROR( "invalid concatenate filePath '%s:%s'"
-                , m_folderPath.c_str()
-                , m_filePath.c_str()
-            );
-
-            return false;
-        }
-#endif
 
         NSFileHandle * fileHandle = [NSFileHandle fileHandleForWritingAtPath:@(concatenatePath)];
         
@@ -93,6 +81,10 @@ namespace Mengine
         m_fileHandle = fileHandle;
 
         m_size = 0;
+        
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+        Helper::addDebugFilePath( this, m_relationPath, m_folderPath, m_filePath, MENGINE_DOCUMENT_FACTORABLE );
+#endif
 
         return true;
     }
@@ -103,11 +95,38 @@ namespace Mengine
         {
             return true;
         }
+        
+        MENGINE_ASSERTION_FATAL( m_size != 0, "file '%s:%s' is empty"
+            , m_folderPath.c_str()
+            , m_filePath.c_str()
+        );
 
         [m_fileHandle closeFile];
         m_fileHandle = nil;
 
         m_size = 0;
+        
+        if( m_withTemp == true )
+        {
+            Path fullPathTemp = {'\0'};
+            Helper::concatenateFilePath( {m_relationPath, m_folderPath, m_filePath, STRINGIZE_FILEPATH_LOCAL( ".~tmp" )}, fullPath );
+
+            Path fullPath = {'\0'};
+            Helper::concatenateFilePath( {m_relationPath, m_folderPath, m_filePath}, fullPath );
+
+            if( FILE_SYSTEM()
+                ->moveFile( fullPathTemp, fullPath ) == false )
+            {
+                LOGGER_ERROR( "invalid move close file from '%s' to '%s'"
+                    , fullPathTemp
+                    , fullPath
+                );
+            }
+        }
+        
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+        Helper::removeDebugFilePath( this );
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     size_t AppleFileOutputStream::write( const void * _data, size_t _size )

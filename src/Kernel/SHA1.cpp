@@ -28,8 +28,8 @@ namespace Mengine
             struct SHA1_CTX
             {
                 uint32_t state[5];
-                size_t count[2];
-                uint8_t  buffer[64];
+                uint32_t count[2];
+                uint8_t buffer[64];
             };
             //////////////////////////////////////////////////////////////////////////
             MENGINE_CONSTEXPR uint32_t SHA1_rotl32( uint32_t var, uint32_t hops )
@@ -37,7 +37,7 @@ namespace Mengine
                 return (var << hops) | (var >> (32 - hops));
             }
             //////////////////////////////////////////////////////////////////////////
-            MENGINE_CONSTEXPR void SHA1_Transform( uint32_t state[5], const uint8_t buffer[64] )
+            MENGINE_CONSTEXPR void SHA1_Transform( uint32_t * const state, const uint8_t * buffer )
             {
                 typedef union
                 {
@@ -45,7 +45,13 @@ namespace Mengine
                     uint32_t l[16];
                 } CHAR64LONG16;
 
-                CHAR64LONG16 * block = (CHAR64LONG16 *)buffer;
+                CHAR64LONG16 blk = {};
+                for( size_t i = 0; i != 64; ++i )
+                {
+                    blk.c[i] = buffer[i];
+                }
+
+                CHAR64LONG16 * block = &blk;
 
                 uint32_t a = state[0];
                 uint32_t b = state[1];
@@ -81,7 +87,7 @@ namespace Mengine
                 state[4] += e;
             }
             //////////////////////////////////////////////////////////////////////////
-            MENGINE_INLINE void SHA1_Init( SHA1_CTX * context )
+            MENGINE_INLINE void SHA1_Init( SHA1_CTX * const context )
             {
                 context->state[0] = 0x67452301;
                 context->state[1] = 0xEFCDAB89;
@@ -92,9 +98,9 @@ namespace Mengine
                 context->count[1] = 0;
             }
             //////////////////////////////////////////////////////////////////////////
-            MENGINE_INLINE void SHA1_Update( SHA1_CTX * context, const uint8_t * data, size_t len )
+            MENGINE_INLINE void SHA1_Update( SHA1_CTX * const context, const uint8_t * data, size_t len )
             {
-                size_t j = (context->count[0] >> 3) & 63;
+                uint32_t j = (context->count[0] >> 3) & 63;
 
                 if( (context->count[0] += len << 3) < (len << 3) )
                 {
@@ -126,20 +132,22 @@ namespace Mengine
                 stdex::memorycopy( context->buffer, j, &data[i], (len - i) * sizeof( uint8_t ) );
             }
             //////////////////////////////////////////////////////////////////////////
-            MENGINE_INLINE void SHA1_Final( SHA1_CTX * context, uint8_t * const digest, size_t _size )
+            MENGINE_INLINE void SHA1_Final( SHA1_CTX * const context, uint8_t * const digest, size_t _size )
             {
                 uint8_t finalcount[8];
 
                 for( size_t i = 0; i != 8; i++ )
                 {
-                    finalcount[i] = (unsigned char)((context->count[(i >= 4 ? 0 : 1)] >> ((3 - (i & 3)) * 8)) & 255);
+                    finalcount[i] = (uint8_t)((context->count[(i >= 4 ? 0 : 1)] >> ((3 - (i & 3)) * 8)) & 255);
                 }
 
-                SHA1_Update( context, (uint8_t *)"\200", 1 );
+                uint8_t pad[] = {0x80};
+                SHA1_Update( context, pad, 1 );
 
                 while( (context->count[0] & 504) != 448 )
                 {
-                    SHA1_Update( context, (uint8_t *)"\0", 1 );
+                    uint8_t zero[] = {0x00};
+                    SHA1_Update( context, zero, 1 );
                 }
 
                 SHA1_Update( context, finalcount, 8 );
@@ -151,7 +159,7 @@ namespace Mengine
 
                 StdString::memset( context->buffer, 0, 64 * sizeof( uint8_t ) );
                 StdString::memset( context->state, 0, 5 * sizeof( uint32_t ) );
-                StdString::memset( context->count, 0, 2 * sizeof( size_t ) );
+                StdString::memset( context->count, 0, 2 * sizeof( uint32_t ) );
                 StdString::memset( finalcount, 0, 8 );
             }
             //////////////////////////////////////////////////////////////////////////
@@ -162,7 +170,7 @@ namespace Mengine
             Detail::SHA1_CTX context;
 
             Detail::SHA1_Init( &context );
-            Detail::SHA1_Update( &context, (uint8_t *)_buffer, _size );
+            Detail::SHA1_Update( &context, (const uint8_t *)_buffer, _size );
             Detail::SHA1_Final( &context, _sha1, _digestSize );
         }
         //////////////////////////////////////////////////////////////////////////
@@ -171,7 +179,7 @@ namespace Mengine
             uint8_t sha1[MENGINE_SHA1_UINT8_COUNT];
             Helper::makeSHA1( _buffer, _size, sha1, MENGINE_SHA1_UINT8_COUNT );
 
-            Helper::encodeHexadecimal( sha1, sizeof( sha1 ), _hex, ~0U, _lowercase, nullptr );
+            Helper::encodeHexadecimal( sha1, sizeof( sha1 ), _hex, MENGINE_UNKNOWN_SIZE, _lowercase, nullptr );
         }
         //////////////////////////////////////////////////////////////////////////
         void makeSHA1String( const Char * _string, Char * const _hex, bool _lowercase )
@@ -181,7 +189,7 @@ namespace Mengine
             uint8_t sha1[MENGINE_SHA1_UINT8_COUNT];
             Helper::makeSHA1( _string, len, sha1, MENGINE_SHA1_UINT8_COUNT );
 
-            Helper::encodeHexadecimal( sha1, sizeof( sha1 ), _hex, ~0U, _lowercase, nullptr );
+            Helper::encodeHexadecimal( sha1, sizeof( sha1 ), _hex, MENGINE_UNKNOWN_SIZE, _lowercase, nullptr );
         }
         //////////////////////////////////////////////////////////////////////////
         void makeSHA1Base64( const void * _buffer, size_t _size, Char * const _base64 )

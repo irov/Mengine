@@ -43,12 +43,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleMutexFileInputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, size_t _offset, size_t _size, bool _streaming, bool _share )
     {
+        MENGINE_UNUSED( _relationPath );
+        MENGINE_UNUSED( _folderPath );
+        MENGINE_UNUSED( _filePath );
         MENGINE_UNUSED( _streaming );
         MENGINE_UNUSED( _share );
 
         size_t size = m_stream->size();
 
-        if( _size != ~0U )
+        if( _size != MENGINE_UNKNOWN_SIZE )
         {
             if( _offset + _size > size )
             {

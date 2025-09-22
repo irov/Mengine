@@ -2,12 +2,12 @@ MENGINE_PROJECT(Apple)
 
 ADD_FILTER(
 src
-	AppleIncluder.h
-	
+    AppleIncluder.h
+    
     AppleLog.h
     AppleLog.mm
-	AppleLogRecordParam.h
-	AppleLogRecordParam.mm
+    AppleLogRecordParam.h
+    AppleLogRecordParam.mm
     AppleDetail.h
     AppleDetail.mm
     AppleBundle.h
@@ -17,9 +17,9 @@ src
     
     AppleEvent.h
     AppleEvent.mm
-	
-	AppleISO8601Date.h
-	AppleISO8601Date.mm
+    
+    AppleISO8601Date.h
+    AppleISO8601Date.mm
 
     AppleUserDefaults.h
     AppleUserDefaults.mm
@@ -33,6 +33,8 @@ src
     AppleSemaphoreListenerNSProxy.mm
     AppleSemaphoreService.h
     AppleSemaphoreService.mm
+    
+    AppleKernelServiceInterface.h
     
     AppleKernelService.h
     AppleKernelService.mm

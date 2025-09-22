@@ -34,6 +34,12 @@ namespace Mengine
 
         size_t m_size;
 
+        FilePath m_relationPath;
+        FilePath m_folderPath;
+        FilePath m_filePath;
+
+        bool m_withTemp;
+
         MENGINE_THREAD_GUARD_INIT( AndroidFileOutputStream );
     };
     //////////////////////////////////////////////////////////////////////////

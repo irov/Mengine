@@ -12,7 +12,6 @@
 #include "Interface/DateTimeSystemInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/EnvironmentServiceInterface.h"
-#include "Interface/iOSKernelServiceInterface.h"
 #include "Interface/AccountServiceInterface.h"
 #include "Interface/AnalyticsServiceInterface.h"
 
@@ -20,6 +19,7 @@
 #import "Environment/iOS/iOSApplication.h"
 #import "Environment/iOS/iOSDetail.h"
 #import "Environment/iOS/iOSLog.h"
+#import "Environment/iOS/iOSKernelServiceInterface.h"
 
 #include "iOSAnalyticsEventProvider.h"
 

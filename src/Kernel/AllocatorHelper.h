@@ -26,7 +26,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        T * allocateMemoryNT( uint32_t _count, const Char * _doc )
+        T * allocateMemoryNT( size_t _count, const Char * _doc )
         {
             const size_t element_size = sizeof( T );
             const size_t memory_size = element_size * _count;
@@ -36,7 +36,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        T * callocateMemoryNT( uint32_t _count, const Char * _doc )
+        T * callocateMemoryNT( size_t _count, const Char * _doc )
         {
             const size_t element_size = sizeof( T );
             void * ptr = Helper::callocateMemory( _count, element_size, _doc );

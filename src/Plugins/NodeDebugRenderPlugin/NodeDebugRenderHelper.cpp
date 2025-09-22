@@ -100,14 +100,14 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void nodeDebugRenderPolygon( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const mt::mat4f & _wm, const Polygon & _polygon, ColorValue_ARGB _color, const DocumentInterfacePtr & _doc )
         {
-            uint32_t numpoints = _polygon.size();
+            Polygon::size_type numpoints = _polygon.size();
 
             if( numpoints == 0 )
             {
                 return;
             }
 
-            uint32_t vertexCount = numpoints * 2;
+            Polygon::size_type vertexCount = numpoints * 2;
 
             VectorRenderVertex2D & vertices = RENDER_SERVICE()
                 ->getDebugRenderVertex2D( vertexCount );

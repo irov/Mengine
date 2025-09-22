@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Interface/iOSKernelServiceInterface.h"
-#include "Interface/LoggerInterface.h"
+#import "Environment/iOS/iOSKernelServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
 

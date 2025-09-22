@@ -1128,7 +1128,7 @@ namespace Mengine
         return batch;
     }
     //////////////////////////////////////////////////////////////////////////
-    VectorRenderVertex2D & RenderService::getDebugRenderVertex2D( uint32_t _count )
+    VectorRenderVertex2D & RenderService::getDebugRenderVertex2D( size_t _count )
     {
         m_debugRenderVertices.emplace_back( VectorRenderVertex2D() );
         VectorRenderVertex2D & vertices_array = m_debugRenderVertices.back();
@@ -1137,7 +1137,7 @@ namespace Mengine
         return vertices_array;
     }
     //////////////////////////////////////////////////////////////////////////
-    VectorRenderIndex & RenderService::getDebugRenderIndex( uint32_t _count )
+    VectorRenderIndex & RenderService::getDebugRenderIndex( size_t _count )
     {
         m_debugRenderIndices.emplace_back( VectorRenderIndex() );
         VectorRenderIndex & indices_array = m_debugRenderIndices.back();

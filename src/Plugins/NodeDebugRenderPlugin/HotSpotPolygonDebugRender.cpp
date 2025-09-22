@@ -23,14 +23,14 @@ namespace Mengine
 
         const Polygon & polygon = _node->getPolygon();
 
-        uint32_t numpoints = polygon.size();
+        Polygon::size_type numpoints = polygon.size();
 
         if( numpoints == 0 )
         {
             return;
         }
 
-        uint32_t vertexCount = numpoints * 2;
+        Polygon::size_type vertexCount = numpoints * 2;
 
         VectorRenderVertex2D & vertices = RENDER_SERVICE()
             ->getDebugRenderVertex2D( vertexCount );
@@ -50,9 +50,9 @@ namespace Mengine
 
         const VectorPoints & ring = polygon.getPoints();
 
-        for( uint32_t i = 0; i != numpoints; ++i )
+        for( Polygon::size_type i = 0; i != numpoints; ++i )
         {
-            uint32_t j = (i + 1) % numpoints;
+            Polygon::size_type j = (i + 1) % numpoints;
 
             mt::vec3f trP0;
             mt::mul_v3_v2_m4( &trP0, ring[i], wm );

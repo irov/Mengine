@@ -51,8 +51,8 @@ namespace Mengine
         SERVICE_DECLARE( "RenderService" )
 
     public:
-        virtual VectorRenderVertex2D & getDebugRenderVertex2D( uint32_t _count ) = 0;
-        virtual VectorRenderIndex & getDebugRenderIndex( uint32_t _count ) = 0;
+        virtual VectorRenderVertex2D & getDebugRenderVertex2D( size_t _count ) = 0;
+        virtual VectorRenderIndex & getDebugRenderIndex( size_t _count ) = 0;
 
     public:
         virtual bool createRenderWindow( const Resolution & _windowResolution, const Viewport & _renderViewport, bool _vsync, uint32_t _bits, bool _fullscreen, int32_t _FSAAType, int32_t _FSAAQuality ) = 0;

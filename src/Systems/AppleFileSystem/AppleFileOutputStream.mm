@@ -1,6 +1,7 @@
 #include "AppleFileOutputStream.h"
 
 #include "Interface/PlatformServiceInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #import "Environment/Apple/AppleDetail.h"
 
@@ -109,7 +110,7 @@ namespace Mengine
         if( m_withTemp == true )
         {
             Path fullPathTemp = {'\0'};
-            Helper::concatenateFilePath( {m_relationPath, m_folderPath, m_filePath, STRINGIZE_FILEPATH_LOCAL( ".~tmp" )}, fullPath );
+            Helper::concatenateFilePath( {m_relationPath, m_folderPath, m_filePath, STRINGIZE_FILEPATH_LOCAL( ".~tmp" )}, fullPathTemp );
 
             Path fullPath = {'\0'};
             Helper::concatenateFilePath( {m_relationPath, m_folderPath, m_filePath}, fullPath );

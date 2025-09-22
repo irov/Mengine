@@ -51,8 +51,8 @@ namespace Mengine
         const RenderBatchInterfacePtr & requestRenderBatch( const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _vertexCount, uint32_t _indexCount, const DocumentInterfacePtr & _doc ) override;
 
     public:
-        VectorRenderVertex2D & getDebugRenderVertex2D( uint32_t _count ) override;
-        VectorRenderIndex & getDebugRenderIndex( uint32_t _count ) override;
+        VectorRenderVertex2D & getDebugRenderVertex2D( size_t _count ) override;
+        VectorRenderIndex & getDebugRenderIndex( size_t _count ) override;
 
     public:
         bool beginScene( const RenderPipelineInterfacePtr & _pipeline ) override;

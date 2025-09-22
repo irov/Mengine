@@ -16,12 +16,17 @@
     return sharedInstance;
 }
 
-- (void)scheduleNotification:(NSNumber *)badge withTitle:(NSString *)title withBody:(NSString *)body withDelay:(NSTimeInterval)delay {
+- (void)scheduleNotification:(NSNumber *)badge withTitle:(NSString *)title withBody:(NSString *)body withDelay:(NSTimeInterval)delay relevanceScore:(double)relevanceScore {
     UNMutableNotificationContent * content = [[UNMutableNotificationContent alloc] init];
     content.title = title;
     content.body = body;
     content.sound = [UNNotificationSound defaultSound];
     content.badge = badge;
+    
+    if (@available(iOS 15.0, *)) {
+        content.interruptionLevel = UNNotificationInterruptionLevelTimeSensitive;
+        content.relevanceScore = relevanceScore; // от 0.0 до 1.0
+    }
 
     UNTimeIntervalNotificationTrigger * trigger = [UNTimeIntervalNotificationTrigger triggerWithTimeInterval:delay repeats:NO];
 
@@ -81,7 +86,7 @@
         , notification.request.content.body
     );
     
-    completionHandler(UNNotificationPresentationOptionAlert | UNNotificationPresentationOptionSound | UNNotificationPresentationOptionBadge);
+    completionHandler(UNNotificationPresentationOptionBanner | UNNotificationPresentationOptionList | UNNotificationPresentationOptionSound | UNNotificationPresentationOptionBadge);
 }
 
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void(^)(void))completionHandler API_AVAILABLE(macos(10.14), ios(10.0), watchos(3.0)) API_UNAVAILABLE(tvos) {

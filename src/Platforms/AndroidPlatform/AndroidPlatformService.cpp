@@ -894,7 +894,7 @@ namespace Mengine
         bool updating = APPLICATION_SERVICE()
             ->beginUpdate( _frameTime );
 
-        if(m_freezedTick == 0 && updating == true )
+        if( m_freezedTick == 0 && updating == true )
         {
             if( m_pauseUpdatingTime >= 0.f )
             {

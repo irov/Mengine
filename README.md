@@ -43,6 +43,11 @@ Games that are being developed or have been released on this engine
 
 Mobile
 -------
+[NY: Hidden Crimes](https://www.youtube.com/watch?v=zgBkBY-GCBI)
+
+From now on all New York secrets are in your hands! A new "hidden objects" game will let you explore the most remote and mysterious corners of the legendary city, enjoying the atmosphere of detective adventures.
+Try on the role of a famous criminal blogger and take part into the most puzzling criminal investigations. Use your skills of searching objects to find evidence, leading to the trails of mysterious criminals. The police of the Big Apple awaits for your help since you're the one who can guide them through the world of mysteries and secrets!
+
 [Numberphile](https://www.wonderland-games.com/projects/numberphile)
 
 [![Android](https://raw.githubusercontent.com/irov/badgets/master/half/GetItOnGooglePlay_Badge_Web_color_English.png)](https://play.google.com/store/apps/details?id=com.wonderland.numberphile)

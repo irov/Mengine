@@ -2,10 +2,10 @@
 
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PlatformServiceInterface.h"
-#include "Interface/AndroidAssetServiceInterface.h"
 
 #include "Environment/Android/AndroidEnv.h"
 #include "Environment/Android/AndroidActivityHelper.h"
+#include "Environment/Android/AndroidAssetServiceInterface.h"
 
 #include "AndroidAssetInputStream.h"
 #include "AndroidMutexAssetInputStream.h"

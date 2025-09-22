@@ -27,6 +27,7 @@ namespace Mengine
                         ++index;
 
                         const Char ch1 = _format[index];
+
                         switch( ch1 )
                         {
                         case '%':
@@ -38,7 +39,7 @@ namespace Mengine
                             }break;
                         default:
                             {
-                                return MENGINE_UNKNOWN_SIZE;
+                                return MENGINE_UNKNOWN_COUNT;
                             }break;
                         }
                     }break;

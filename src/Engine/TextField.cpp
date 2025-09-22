@@ -43,7 +43,7 @@ namespace Mengine
         , m_charOffset( 0.f )
         , m_anchorPercent( 0.f, 0.f )
         , m_textParams( EFP_NONE )
-        , m_maxCharCount( MENGINE_UNKNOWN_SIZE )
+        , m_maxCharCount( MENGINE_UNKNOWN_COUNT )
         , m_cacheCharCount( 0 )
         , m_cacheLayoutCount( 0 )
         , m_cacheTextSize( 0.f, 0.f )
@@ -1125,7 +1125,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::updateTextLinesMaxCount_( VectorTextLineChunks2 * const _textLines ) const
     {
-        if( m_maxCharCount == MENGINE_UNKNOWN_SIZE )
+        if( m_maxCharCount == MENGINE_UNKNOWN_COUNT )
         {
             return;
         }
@@ -1371,7 +1371,7 @@ namespace Mengine
 
         bool autoScale = this->calcAutoScale();
 
-        MENGINE_ASSERTION( !(autoScale == true && (m_wrap == true || m_maxCharCount != MENGINE_UNKNOWN_SIZE)), "text '%s' invalid enable together attributes 'wrap' and 'autoScale'"
+        MENGINE_ASSERTION( !(autoScale == true && (m_wrap == true || m_maxCharCount != MENGINE_UNKNOWN_COUNT)), "text '%s' invalid enable together attributes 'wrap' and 'autoScale'"
             , this->getName().c_str()
         );
 

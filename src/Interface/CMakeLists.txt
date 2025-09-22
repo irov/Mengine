@@ -138,9 +138,6 @@ Common
     HttpRequestInterface.h
     HttpReceiverInterface.h
     EnvironmentServiceInterface.h
-    AndroidAssetServiceInterface.h
-    AppleKernelServiceInterface.h
-    iOSKernelServiceInterface.h
     Win32KernelServiceInterface.h
     ArrowServiceInterface.h
     AmplifierServiceInterface.h

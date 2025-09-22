@@ -351,15 +351,15 @@
 #endif
 
 #ifndef MENGINE_UNKNOWN_SIZE
-#define MENGINE_UNKNOWN_SIZE (~0U)
+#define MENGINE_UNKNOWN_SIZE ((size_t)-1)
 #endif
 
-#ifndef MENGINE_UNKNOWN_HASH
-#define MENGINE_UNKNOWN_HASH (-1)
+#ifndef MENGINE_UNKNOWN_COUNT
+#define MENGINE_UNKNOWN_COUNT ((uint32_t)-1)
 #endif
 
 #ifndef MENGINE_PATH_INVALID_LENGTH
-#define MENGINE_PATH_INVALID_LENGTH (~0U)
+#define MENGINE_PATH_INVALID_LENGTH ((size_t)-1)
 #endif
 
 #if defined(MENGINE_PLATFORM_MACOS)

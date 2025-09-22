@@ -20,7 +20,7 @@ namespace Mengine
     class Hashtable2
     {
     public:
-        typedef uint32_t size_type;
+        typedef size_t size_type;
         typedef HashType hash_type;
         typedef K1 key_type1;
         typedef K2 key_type2;
@@ -161,7 +161,7 @@ namespace Mengine
         }
 
     public:
-        void reserve( uint32_t _capacity )
+        void reserve( size_type _capacity )
         {
             if( m_capacity > _capacity )
             {
@@ -184,7 +184,7 @@ namespace Mengine
             return m_size == 0;
         }
 
-        uint32_t size() const
+        size_type size() const
         {
             return m_size;
         }
@@ -656,7 +656,7 @@ namespace Mengine
     class Hashtable2<K1, K2, T *, H1, H2>
     {
     public:
-        typedef uint32_t size_type;
+        typedef size_t size_type;
         typedef HashType hash_type;
         typedef K1 key_type1;
         typedef K2 key_type2;
@@ -708,8 +708,8 @@ namespace Mengine
         {
             MENGINE_ASSERTION_MEMORY_PANIC( _element, "invalid emplace element" );
 
-            uint32_t test_size = (m_size + m_dummy) * 3 + 1;
-            uint32_t test_capacity = m_capacity * 2;
+            size_type test_size = (m_size + m_dummy) * 3 + 1;
+            size_type test_capacity = m_capacity * 2;
 
             if( test_size > test_capacity )
             {
@@ -727,8 +727,8 @@ namespace Mengine
         {
             MENGINE_ASSERTION_MEMORY_PANIC( _element, "invalid change element" );
 
-            uint32_t test_size = (m_size + m_dummy) * 3 + 1;
-            uint32_t test_capacity = m_capacity * 2;
+            size_type test_size = (m_size + m_dummy) * 3 + 1;
+            size_type test_capacity = m_capacity * 2;
 
             if( test_size > test_capacity )
             {
@@ -797,7 +797,7 @@ namespace Mengine
         }
 
     public:
-        void reserve( uint32_t _capacity )
+        void reserve( size_type _capacity )
         {
             if( m_capacity > _capacity )
             {
@@ -820,7 +820,7 @@ namespace Mengine
             return m_size == 0;
         }
 
-        uint32_t size() const
+        size_type size() const
         {
             return m_size;
         }

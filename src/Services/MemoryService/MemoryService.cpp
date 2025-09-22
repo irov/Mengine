@@ -83,7 +83,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        size_t minSize = 0U;
+        size_t minSize = 0;
         size_t maxSize = MENGINE_UNKNOWN_SIZE;
 
         const VectorCacheBufferMemory::size_type invalidIndex = MENGINE_UNKNOWN_SIZE;

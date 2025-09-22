@@ -13,6 +13,8 @@ src
     AndroidHelper.h
     AndroidHelper.cpp
     
+    AndroidAssetServiceInterface.h
+    
     AndroidKernelServiceInterface.h
     
     AndroidKernelService.h

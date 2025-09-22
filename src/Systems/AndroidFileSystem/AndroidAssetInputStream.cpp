@@ -2,7 +2,8 @@
 
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PlatformServiceInterface.h"
-#include "Interface/AndroidAssetServiceInterface.h"
+
+#include "Environment/Android/AndroidAssetServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/ThreadGuardScope.h"
@@ -52,7 +53,7 @@ namespace Mengine
         int64_t size = ANDROID_ASSET_SERVICE()
             ->size( m_asset );
 
-        if( _size != ~0U )
+        if( _size != MENGINE_UNKNOWN_SIZE )
         {
             if( _offset + _size > (size_t)size )
             {

@@ -328,20 +328,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Account::save()
     {
-        const FilePath & settingsJSONPath = m_settingsJSONContent->getFilePath();
-
-        OutputStreamInterfacePtr file = Helper::openOutputStreamFile( m_fileGroup, settingsJSONPath, true, MENGINE_DOCUMENT_FACTORABLE );
-
-        if( file == nullptr )
-        {
-            LOGGER_ERROR( "can't open file for writing. Account '%s' settings not saved '%s'"
-                , m_accountId.c_str()
-                , Helper::getContentFullPath( m_settingsJSONContent ).c_str()
-            );
-
-            return false;
-        }
-
         jpp::object j_root = jpp::make_object();
 
         jpp::object j_account = jpp::make_object();
@@ -373,12 +359,17 @@ namespace Mengine
         j_root.set( "ACCOUNT", j_account );
         j_root.set( "SETTINGS", j_settings );
 
-        if( Helper::writeJSONStream( j_root, file ) == false )
+        const FilePath & settingsJSONPath = m_settingsJSONContent->getFilePath();
+
+        if( Helper::writeJSONFileCompact( j_root, m_fileGroup, settingsJSONPath, true, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
+            LOGGER_ERROR( "account '%s' invalid write json to file '%s'"
+                , m_accountId.c_str()
+                , Helper::getContentFullPath( m_settingsJSONContent ).c_str()
+            );
+
             return false;
         }
-
-        m_fileGroup->closeOutputFile( file );
 
         return true;
     }

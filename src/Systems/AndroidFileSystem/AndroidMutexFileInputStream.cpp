@@ -44,7 +44,7 @@ namespace Mengine
 
         size_t size = m_stream->size();
 
-        if( _size != ~0U )
+        if( _size != MENGINE_UNKNOWN_SIZE )
         {
             if( _offset + _size > size )
             {
@@ -179,9 +179,9 @@ namespace Mengine
 
         size_t pos = m_offset + current;
 
-        int64_t result = ::fseek( file, pos, SEEK_SET );
+        int32_t result = ::fseeko( file, pos, SEEK_SET );
 
-        if( result <= 0 )
+        if( result < 0 )
         {
             LOGGER_ERROR( "invalid seek pos: %zu size: %zu"
                 , pos

@@ -68,7 +68,7 @@ namespace Mengine
 
         LoggerInterfacePtr loggerAndroid = Helper::makeFactorableUnique<AndroidLogger>( MENGINE_DOCUMENT_FUNCTION );
 
-        loggerAndroid->setWriteHistory(true );
+        loggerAndroid->setWriteHistory( true );
 
         if(LOGGER_SERVICE()
             ->registerLogger(loggerAndroid ) == true )
@@ -81,10 +81,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidApplication::finalizeLoggerService_()
     {
-        if(m_loggerAndroid != nullptr )
+        if( m_loggerAndroid != nullptr )
         {
             LOGGER_SERVICE()
-                ->unregisterLogger(m_loggerAndroid );
+                ->unregisterLogger( m_loggerAndroid );
 
             m_loggerAndroid = nullptr;
         }

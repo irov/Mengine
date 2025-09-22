@@ -59,7 +59,9 @@ namespace Mengine
         {
             if( _offset + _size > size )
             {
-                LOGGER_ERROR( "invalid file '%s' range %zu:%zu size %zu"
+                LOGGER_ERROR( "invalid relation '%s' folder '%s' file '%s' range %zu:%zu size %zu"
+                    , _relationPath.c_str()
+                    , _folderPath.c_str()
                     , _filePath.c_str()
                     , _offset
                     , _size

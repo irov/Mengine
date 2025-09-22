@@ -24,7 +24,7 @@ namespace Mengine
         Polygon( Polygon && _polygon );
 
     public:
-        typedef uint32_t size_type;
+        typedef VectorPoints::size_type size_type;
         typedef VectorPoints::iterator iterator;
         typedef VectorPoints::const_iterator const_iterator;
 

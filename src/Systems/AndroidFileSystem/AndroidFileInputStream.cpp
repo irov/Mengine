@@ -14,6 +14,7 @@
 #include "stdex/memorycopy.h"
 
 #include <sys/stat.h>
+#include <errno.h>
 
 namespace Mengine
 {
@@ -49,11 +50,31 @@ namespace Mengine
             return false;
         }
 
-        ::fseek( m_file, 0, SEEK_END );
-        int64_t size = ::ftell( m_file );
+        int32_t result = ::fseeko( m_file, 0, SEEK_END );
+
+        if( result < 0 )
+        {
+            LOGGER_ERROR( "invalid file '%s' seek end"
+                , fullPath
+            );
+
+            return false;
+        }
+
+        off_t size = ::ftello( m_file );
+
+        if( size < 0 )
+        {
+            LOGGER_ERROR( "invalid file '%s' tell"
+                , fullPath
+            );
+
+            return false;
+        }
+
         ::rewind( m_file );
 
-        if( _size != ~0U )
+        if( _size != MENGINE_UNKNOWN_SIZE )
         {
             if( _offset + _size > (size_t)size )
             {
@@ -82,9 +103,9 @@ namespace Mengine
 
         if( m_offset != 0 )
         {
-            int64_t result = ::fseek( m_file, m_offset, SEEK_SET );
+            int32_t result_set = ::fseeko( m_file, m_offset, SEEK_SET );
 
-            if( result <= 0 )
+            if( result_set < 0 )
             {
                 LOGGER_ERROR( "invalid file '%s' seek offset %zu size %zu"
                     , fullPath
@@ -254,6 +275,20 @@ namespace Mengine
 
         if( bytesRead == 0 )
         {
+            int ferr = ::ferror( m_file );
+
+            if( ferr != 0 )
+            {
+                LOGGER_ERROR( "file '%s:%s' invalid read size: %zu error: %d"
+                    , Helper::getDebugFolderPath( this ).c_str()
+                    , Helper::getDebugFilePath( this ).c_str()
+                    , _size
+                    , ferr
+                );
+
+                return false;
+            }
+
             *_read = 0;
 
             return true;
@@ -299,7 +334,7 @@ namespace Mengine
         {
             int64_t seek_pos = m_offset + _pos;
 
-            int64_t result = ::fseek( m_file, seek_pos, SEEK_SET );
+            int32_t result = ::fseeko( m_file, seek_pos, SEEK_SET );
 
             if( result < 0 )
             {
@@ -316,7 +351,19 @@ namespace Mengine
             m_carriage = 0;
             m_capacity = 0;
 
-            m_reading = static_cast<size_t>(result) - m_offset;
+            off_t pos = ::ftello( m_file );
+
+            if( pos < 0 )
+            {
+                LOGGER_ERROR( "file '%s:%s' invalid tell"
+                    , Helper::getDebugFolderPath( this ).c_str()
+                    , Helper::getDebugFilePath( this ).c_str()
+                );
+
+                return false;
+            }
+
+            m_reading = static_cast<size_t>(pos) - m_offset;
         }
 
         return true;
@@ -360,8 +407,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidFileInputStream::time( uint64_t * const _time ) const
     {
-        MENGINE_UNUSED( _time );
-
+#if defined(MENGINE_DEBUG)
         int fd = ::fileno( m_file );
 
         struct stat fi;
@@ -377,7 +423,12 @@ namespace Mengine
 
         *_time = (uint64_t)fi.st_mtime;
 
+        return true;
+#else
+        MENGINE_UNUSED( _time );
+
         return false;
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidFileInputStream::memory( void ** const _memory, size_t * const _size )

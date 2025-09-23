@@ -136,7 +136,7 @@
     return YES;
 }
 
-+ (void)getParamsFromNSDictionary:(NSDictionary *) _in outParams:(Mengine::Params * const) _out {
++ (void)getParamsFromNSDictionary:(NSDictionary *)_in outParams:(Mengine::Params * const)_out {
     if (_in == nil) {
         return;
     }

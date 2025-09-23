@@ -259,43 +259,45 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleFileInputStream::read_( void * const _buf, size_t _offset, size_t _size, size_t * const _read )
     {
-        if( _size == 0 )
-        {
-            *_read = 0;
-
-            return true;
-        }
-
-        uint8_t * buf_offset = MENGINE_PVOID_OFFSET( _buf, _offset );
-
-        NSError * error = nil;
-        NSData * data = [m_fileHandle readDataUpToLength:_size error:&error];
-        
-        if( error != nil )
-        {
-            LOGGER_ERROR( "read file '%s' offset %zu size %zu:%zu get error %s"
-                , Helper::getDebugFullPath( this ).c_str()
-                , _offset
-                , _size
-                , m_size
-                , [[AppleDetail getMessageFromNSError:error] UTF8String]
-            );
+        @autoreleasepool {
+            if( _size == 0 )
+            {
+                *_read = 0;
+                
+                return true;
+            }
             
-            return false;
-        }
-        
-        if( data.length == 0 )
-        {
-            *_read = 0;
-
+            uint8_t * buf_offset = MENGINE_PVOID_OFFSET( _buf, _offset );
+            
+            NSError * error = nil;
+            NSData * data = [m_fileHandle readDataUpToLength:_size error:&error];
+            
+            if( data == nil )
+            {
+                LOGGER_ERROR( "read file '%s' offset %zu size %zu:%zu get error %s"
+                             , Helper::getDebugFullPath( this ).c_str()
+                             , _offset
+                             , _size
+                             , m_size
+                             , [[AppleDetail getMessageFromNSError:error] UTF8String]
+                             );
+                
+                return false;
+            }
+            
+            if( data.length == 0 )
+            {
+                *_read = 0;
+                
+                return true;
+            }
+            
+            stdex::memorycopy( buf_offset, 0, data.bytes, data.length );
+            
+            *_read = data.length;
+            
             return true;
         }
-        
-        stdex::memorycopy( buf_offset, 0, data.bytes, data.length );
-
-        *_read = data.length;
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AppleFileInputStream::seek( size_t _pos )

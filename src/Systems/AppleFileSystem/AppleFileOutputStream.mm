@@ -8,6 +8,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/PathHelper.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/DebugFileHelper.h"
 
 #include "Config/Path.h"
 

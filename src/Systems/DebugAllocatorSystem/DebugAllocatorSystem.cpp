@@ -16,7 +16,7 @@
 #include "Config/StdLib.h"
 
 #if !defined(MENGINE_DEBUG_ALLOCATOR_REPORT)
-#   ifdef MENGINE_PLATFORM_WINDOWS
+#   ifdef MENGINE_DEBUG
 #       define MENGINE_DEBUG_ALLOCATOR_REPORT 1
 #   else
 #       define MENGINE_DEBUG_ALLOCATOR_REPORT 0
@@ -28,7 +28,7 @@
 #endif
 
 #if !defined(MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION)
-#   ifdef MENGINE_PLATFORM_WINDOWS
+#   ifdef MENGINE_DEBUG
 #       define MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION 1
 #   else
 #       define MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION 0
@@ -60,7 +60,7 @@ namespace Mengine
         ////////////////////////////////////////////////////////////////////////
         static void setMemoryOverrideCorruptionTrap( void * _p, size_t _size )
         {
-            uint8_t * b = MENGINE_PVOID_OFFSET( _p, _size );
+            uint8_t * b = MENGINE_PVOID_OFFSET( _p, _size - MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
 
             StdString::memset( b, 0xEF, MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
         }
@@ -138,14 +138,14 @@ namespace Mengine
         );
         
         StdString::memset( new_mem, 0xDB, _size );
+        
+        size_t usage_size = MENGINE_MALLOC_SIZE( new_mem );
+        
+        MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1, "invalid get memory size" );
 
 #if defined(MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_ENABLE) && MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE > 0
-        Detail::setMemoryOverrideCorruptionTrap( new_mem, _size );
+        Detail::setMemoryOverrideCorruptionTrap( new_mem, usage_size );
 #endif
-
-        size_t usage_size = MENGINE_MALLOC_SIZE( new_mem );
-
-        MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1, "invalid get memory size" );
 
 #if defined(MENGINE_DEBUG_ALLOCATOR_REPORT_ENABLE)
         this->report( _doc, usage_size, 0 );
@@ -210,14 +210,14 @@ namespace Mengine
         );
 
         StdString::memset( new_mem, 0x00, calloc_size );
-
-#if defined(MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_ENABLE) && MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE > 0
-        Detail::setMemoryOverrideCorruptionTrap( new_mem, calloc_size );
-#endif
-
+        
         size_t usage_size = MENGINE_MALLOC_SIZE( new_mem );
 
         MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1, "invalid get memory size" );
+
+#if defined(MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_ENABLE) && MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE > 0
+        Detail::setMemoryOverrideCorruptionTrap( new_mem, usage_size );
+#endif
 
 #if defined(MENGINE_DEBUG_ALLOCATOR_REPORT_ENABLE)
         this->report( _doc, usage_size, 0 );
@@ -248,14 +248,14 @@ namespace Mengine
             );
             
             StdString::memset( new_mem, 0xDB, _size );
-
-#if defined(MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_ENABLE) && MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE > 0
-            Detail::setMemoryOverrideCorruptionTrap( new_mem, _size );
-#endif
-
+            
             size_t usage_size = MENGINE_MALLOC_SIZE( new_mem );
 
             MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1, "invalid get memory size" );
+
+#if defined(MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_ENABLE) && MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE > 0
+            Detail::setMemoryOverrideCorruptionTrap( new_mem, usage_size );
+#endif
 
 #if defined(MENGINE_DEBUG_ALLOCATOR_REPORT_ENABLE)
             this->report( _doc, usage_size, 0 );
@@ -288,23 +288,23 @@ namespace Mengine
             , _mem
             , _doc
         );
-
-#if defined(MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_ENABLE) && MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE > 0
-        Detail::setMemoryOverrideCorruptionTrap( new_mem, _size );
-#endif
-
+        
         size_t usage_size = MENGINE_MALLOC_SIZE( new_mem );
 
         MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1, "invalid get memory size" );
+
+#if defined(MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_ENABLE) && MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE > 0
+        Detail::setMemoryOverrideCorruptionTrap( new_mem, usage_size );
+#endif
 
 #if defined(MENGINE_DEBUG_ALLOCATOR_REPORT_ENABLE)
         this->report( _doc, usage_size, old_size );
 #endif
 
         STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_NEW, usage_size );
-        STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_SIZE, usage_size );
-
         STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_FREE, old_size );
+        
+        STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_SIZE, usage_size );
         STATISTIC_DEL_INTEGER( STATISTIC_ALLOCATOR_SIZE, old_size );
         
         return new_mem;

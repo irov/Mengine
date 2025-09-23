@@ -171,64 +171,66 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleMutexFileInputStream::read_( void * const _buf, size_t _offset, size_t _size, size_t * const _read )
     {
-        if( _size == 0 )
-        {
-            *_read = 0;
-
-            return true;
-        }
-
-        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
-
-        NSFileHandle * fileHandle = m_stream->getFileHandle();
-
-        size_t current = m_reading - m_capacity + m_carriage;
-
-        size_t seek_pos = m_offset + current;
-
-        NSError * seek_error = nil;
-        if( [fileHandle seekToOffset:seek_pos error:&seek_error] == NO )
-        {
-            LOGGER_ERROR( "file '%s' seek %zu:%zu get [error: %s]"
-                , Helper::getDebugFullPath( m_stream ).c_str()
-                , seek_pos
-                , m_size
-                , [[AppleDetail getMessageFromNSError:seek_error] UTF8String]
-            );
-
-            return false;
-        }
-
-        uint8_t * buf_offset = MENGINE_PVOID_OFFSET( _buf, _offset );
-
-        NSError * read_error = nil;
-        NSData * data = [fileHandle readDataUpToLength:_size error:&read_error];
-        
-        if( read_error != nil )
-        {
-            LOGGER_ERROR( "read file '%s' offset %zu size %zu:%zu get error %s"
-                , Helper::getDebugFullPath( m_stream ).c_str()
-                , _offset
-                , _size
-                , m_size
-                , [[AppleDetail getMessageFromNSError:read_error] UTF8String]
-            );
+        @autoreleasepool {
+            if( _size == 0 )
+            {
+                *_read = 0;
+                
+                return true;
+            }
             
-            return false;
-        }
-
-        if( data.length == 0 )
-        {
-            *_read = 0;
-
+            MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+            
+            NSFileHandle * fileHandle = m_stream->getFileHandle();
+            
+            size_t current = m_reading - m_capacity + m_carriage;
+            
+            size_t seek_pos = m_offset + current;
+            
+            NSError * seek_error = nil;
+            if( [fileHandle seekToOffset:seek_pos error:&seek_error] == NO )
+            {
+                LOGGER_ERROR( "file '%s' seek %zu:%zu get [error: %s]"
+                    , Helper::getDebugFullPath( m_stream ).c_str()
+                    , seek_pos
+                    , m_size
+                    , [[AppleDetail getMessageFromNSError:seek_error] UTF8String]
+                );
+                
+                return false;
+            }
+            
+            uint8_t * buf_offset = MENGINE_PVOID_OFFSET( _buf, _offset );
+            
+            NSError * read_error = nil;
+            NSData * data = [fileHandle readDataUpToLength:_size error:&read_error];
+            
+            if( data == nil )
+            {
+                LOGGER_ERROR( "read file '%s' offset %zu size %zu:%zu get error %s"
+                    , Helper::getDebugFullPath( m_stream ).c_str()
+                    , _offset
+                    , _size
+                    , m_size
+                    , [[AppleDetail getMessageFromNSError:read_error] UTF8String]
+                );
+                
+                return false;
+            }
+            
+            if( data.length == 0 )
+            {
+                *_read = 0;
+                
+                return true;
+            }
+            
+            stdex::memorycopy( buf_offset, 0, data.bytes, data.length );
+            
+            *_read = data.length;
+            
             return true;
         }
-        
-        stdex::memorycopy( buf_offset, 0, data.bytes, data.length );
-
-        *_read = data.length;
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AppleMutexFileInputStream::seek( size_t _pos )

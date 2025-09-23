@@ -130,6 +130,7 @@
 #include "Kernel/ContentHelper.h"
 #include "Kernel/PrototypeHelper.h"
 #include "Kernel/NodeScreenPosition.h"
+#include "Kernel/TagsHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/Lambda.h"
@@ -4201,6 +4202,10 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_incrementResources( const ConstString & _groupName )
             {
+                LOGGER_INFO( "resource", "increment resources group: %s"
+                    , _groupName.c_str()
+                );
+
                 RESOURCE_SERVICE()
                     ->foreachGroupResources( _groupName, []( const ResourcePtr & _resource )
                 {
@@ -4217,6 +4222,10 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_decrementResources( const ConstString & _groupName )
             {
+                LOGGER_INFO( "resource", "decrement resources group: %s"
+                    , _groupName.c_str()
+                );
+
                 RESOURCE_SERVICE()
                     ->foreachGroupResources( _groupName, []( const ResourcePtr & _resource )
                 {
@@ -4226,6 +4235,10 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_incrementResourcesTags( const Tags & _tags )
             {
+                LOGGER_INFO( "resource", "increment resources tags: %s"
+                    , Helper::tagsToString( _tags ).c_str()
+                );
+
                 RESOURCE_SERVICE()
                     ->foreachTagsResources( _tags, []( const ResourcePtr & _resource )
                 {
@@ -4242,6 +4255,10 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_decrementResourcesTags( const Tags & _tags )
             {
+                LOGGER_INFO( "resource", "decrement resources tags: %s"
+                    , Helper::tagsToString( _tags ).c_str()
+                );
+
                 RESOURCE_SERVICE()
                     ->foreachTagsResources( _tags, []( const ResourcePtr & _resource )
                 {

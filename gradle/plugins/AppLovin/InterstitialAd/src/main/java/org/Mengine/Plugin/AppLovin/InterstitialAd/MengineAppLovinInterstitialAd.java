@@ -245,7 +245,7 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
 
         this.setInterstitialState("hidden." + placement + "." + ad.getNetworkName());
 
-        MengineNative.AndroidPlatform_unfreezeEvent( false, false );
+        MengineNative.AndroidPlatform_unfreezeEvent( true, true );
 
         m_showing = false;
 

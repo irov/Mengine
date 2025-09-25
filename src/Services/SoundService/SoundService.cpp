@@ -249,9 +249,11 @@ namespace Mengine
             {
                 if( source->resume() == false )
                 {
-                    LOGGER_ASSERTION( "invalid resume (play)" );
+                    LOGGER_ASSERTION( "invalid resume (play) identity [%u]"
+                        , identity->getUniqueIdentity() 
+                    );
 
-                    identity->setState( ESS_END );
+                    identity->setState( ESS_STOP );
 
                     continue;
                 }
@@ -269,9 +271,11 @@ namespace Mengine
 
                 if( this->playSoundBufferUpdate_( identity ) == false )
                 {
-                    LOGGER_MESSAGE( "invalid play sound buffer update" );
+                    LOGGER_MESSAGE( "invalid play sound buffer update identity [%u]"
+                        , identity->getUniqueIdentity()
+                    );
 
-                    identity->setState( ESS_END );
+                    identity->setState( ESS_STOP );
 
                     continue;
                 }
@@ -692,12 +696,7 @@ namespace Mengine
                 continue;
             }
 
-            if( state == ESS_STOP )
-            {
-                continue;
-            }
-
-            if( state == ESS_END )
+            if( state == ESS_STOP || state == ESS_END )
             {
                 m_soundIdentitiesEndAux.emplace_back( identity );
 
@@ -737,7 +736,7 @@ namespace Mengine
             {
                 if( worker->isDone() == true )
                 {
-                    identity->setState( ESS_END );
+                    identity->setState( ESS_STOP );
 
                     m_soundIdentitiesEndAux.emplace_back( identity );
                 }
@@ -757,7 +756,7 @@ namespace Mengine
             {
                 if( time_new <= 0.f )
                 {
-                    identity->setState( ESS_END );
+                    identity->setState( ESS_STOP );
 
                     m_soundIdentitiesEndAux.emplace_back( identity );
                 }
@@ -882,7 +881,7 @@ namespace Mengine
                     {
                         LOGGER_ASSERTION( "invalid play sound buffer update" );
 
-                        _identity->setState( ESS_END );
+                        _identity->setState( ESS_STOP );
 
                         return false;
                     }
@@ -919,7 +918,7 @@ namespace Mengine
                             , _identity->getUniqueIdentity()
                         );
 
-                        _identity->setState( ESS_END );
+                        _identity->setState( ESS_STOP );
 
                         return false;
                     }
@@ -1056,7 +1055,7 @@ namespace Mengine
                             , _identity->getUniqueIdentity()
                         );
 
-                        _identity->setState( ESS_END );
+                        _identity->setState( ESS_STOP );
 
                         return false;
                     }
@@ -1351,10 +1350,6 @@ namespace Mengine
             LOGGER_ASSERTION( "invalid set position identity: %u"
                 , _identity->getUniqueIdentity()
             );
-
-            _identity->setState( ESS_END );
-
-            return false;
         }
 
         if( hasBufferUpdate == true && playing == true && pausing == false )
@@ -1365,7 +1360,7 @@ namespace Mengine
                     , _identity->getUniqueIdentity()
                 );
 
-                _identity->setState( ESS_END );
+                _identity->setState( ESS_STOP );
 
                 return false;
             }

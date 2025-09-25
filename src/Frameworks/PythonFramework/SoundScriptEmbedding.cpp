@@ -22,6 +22,7 @@
 #include "Kernel/ResourceHelper.h"
 #include "Kernel/ResourceSound.h"
 #include "Kernel/VocabularyHelper.h"
+#include "Kernel/DebugFileHelper.h"
 
 #include "Config/Lambda.h"
 
@@ -562,6 +563,12 @@ namespace Mengine
                     return false;
                 }
 
+                LOGGER_INFO( "sound", "[script] sound fade out to '%f' in time '%f' file '%s'"
+                    , _to
+                    , _time
+                    , Helper::getDebugFullPath( _identity->getSoundSource()->getSoundBuffer()->getDecoder()->getStream() ).c_str()
+                );
+
                 PythonSoundAffectorCallbackPtr callback = createSoundAffectorCallback( _identity, _cb, _args );
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
@@ -598,8 +605,9 @@ namespace Mengine
 
                 if( soundIdentity == nullptr )
                 {
-                    LOGGER_ERROR( "invalid create sound source '%s'"
+                    LOGGER_ERROR( "invalid create sound source resource '%s' file '%s'"
                         , _resourceName.c_str()
+                        , Helper::getResourceFilePathByName( _resourceName ).c_str()
                     );
 
                     return nullptr;
@@ -608,8 +616,9 @@ namespace Mengine
                 if( SOUND_SERVICE()
                     ->playEmitter( soundIdentity ) == false )
                 {
-                    LOGGER_WARNING( "resource sound '%s' invalid play"
+                    LOGGER_WARNING( "invalid play emitter resource '%s' file '%s'"
                         , _resourceName.c_str()
+                        , Helper::getResourceFilePathByName( _resourceName ).c_str()
                     );
 
                     SOUND_SERVICE()

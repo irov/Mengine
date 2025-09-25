@@ -221,7 +221,7 @@ namespace Mengine
         if( SOUND_SERVICE()
             ->playEmitter( m_soundIdentity ) == false )
         {
-            LOGGER_WARNING( "surface sound '%s' invalid play [%u] resource '%s'"
+            LOGGER_WARNING( "surface sound '%s' invalid play identity [%u] resource: '%s'"
                 , this->getName().c_str()
                 , m_soundIdentity->getUniqueIdentity()
                 , m_resourceSound->getName().c_str()
@@ -329,7 +329,7 @@ namespace Mengine
                 ->stopEmitter( m_soundIdentity );
         }
 
-        EVENTABLE_METHOD( EVENT_ANIMATION_END )
+        EVENTABLE_METHOD( EVENT_ANIMATION_STOP )
             ->onAnimationStop( _enumerator );
 
         return true;

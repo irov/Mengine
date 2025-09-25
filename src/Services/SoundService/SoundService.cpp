@@ -1136,6 +1136,10 @@ namespace Mengine
                     keep_listener->onSoundStop( _identity );
                 }
             }break;
+        case ESS_STOP:
+            {
+                //Empty
+            }break;
         default:
             {
 #if defined(MENGINE_DEBUG)

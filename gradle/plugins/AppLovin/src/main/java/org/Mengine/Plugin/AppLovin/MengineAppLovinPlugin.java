@@ -85,7 +85,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
     }
 
     @SuppressWarnings("unchecked")
-    protected <T extends MengineAppLovinAdInterface> T createAd(@NonNull MengineAdService adService, @NonNull List<String> adUnitIds, @NonNull String className) throws MengineServiceInvalidInitializeException {
+    protected <T extends MengineAppLovinAdInterface> T createAd(@NonNull MengineAdService adService, @NonNull List<? super String> adUnitIds, @NonNull String className) throws MengineServiceInvalidInitializeException {
         T ad = (T)this.newInstance(className, true, adService, this);
 
         if (ad == null) {

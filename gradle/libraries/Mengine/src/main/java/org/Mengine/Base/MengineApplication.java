@@ -753,7 +753,10 @@ public abstract class MengineApplication extends Application {
 
         MengineStatistic.load(this);
 
-        MengineAnalytics.addContextParameterBoolean("is_dev", BuildConfig.DEBUG);
+        boolean is_publish = this.isBuildPublish();
+
+        MengineAnalytics.addContextParameterBoolean("is_publish", is_publish);
+        MengineAnalytics.addContextParameterBoolean("is_debug", BuildConfig.DEBUG);
         MengineAnalytics.addContextParameterString("install_id", m_installId);
         MengineAnalytics.addContextParameterLong("install_timestamp", m_installTimestamp);
         MengineAnalytics.addContextParameterString("install_version", m_installVersion);

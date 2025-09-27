@@ -39,7 +39,8 @@
     NSInteger sessionIndex = [iOSApplication.sharedInstance getSessionIndex];
     NSInteger sessionTimestamp = [iOSApplication.sharedInstance getSessionTimestamp];
     
-    [FIRAnalytics setUserPropertyString:MENGINE_DEBUG_VALUE(@"true", @"false") forName:@"is_dev"];
+    [FIRAnalytics setUserPropertyString:MENGINE_PUBLISH_VALUE(@"true", @"false") forName:@"is_publish"];
+    [FIRAnalytics setUserPropertyString:MENGINE_DEBUG_VALUE(@"true", @"false") forName:@"is_debug"];
     [FIRAnalytics setUserPropertyString:installId forName:@"install_id"];
     [FIRAnalytics setUserPropertyString:[NSString stringWithFormat:@"%ld", (long)installTimestamp] forName:@"install_timestamp"];
     [FIRAnalytics setUserPropertyString:intstallVersion forName:@"install_version"];

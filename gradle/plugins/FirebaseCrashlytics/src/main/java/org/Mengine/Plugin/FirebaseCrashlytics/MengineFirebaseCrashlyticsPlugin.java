@@ -35,12 +35,13 @@ public class MengineFirebaseCrashlyticsPlugin extends MengineService implements 
 
     @Override
     public void onAppInit(@NonNull MengineApplication application, boolean isMainProcess) throws MengineServiceInvalidInitializeException {
-        FirebaseCrashlytics.getInstance().setCustomKey("is_dev", BuildConfig.DEBUG);
+        boolean is_publish = application.isBuildPublish();
+        FirebaseCrashlytics.getInstance().setCustomKey("is_publish", is_publish);
+        FirebaseCrashlytics.getInstance().setCustomKey("is_debug", BuildConfig.DEBUG);
 
-        boolean isBuildPublish = application.isBuildPublish();
         boolean isDebuggerConnected = MengineUtils.isDebuggerConnected();
 
-        if (isBuildPublish == false && isDebuggerConnected == false) {
+        if (is_publish == false && isDebuggerConnected == false) {
             FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false);
         }
     }

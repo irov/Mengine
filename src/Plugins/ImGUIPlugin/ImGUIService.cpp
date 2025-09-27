@@ -206,7 +206,10 @@ namespace Mengine
         }
         else
         {
-            userFileGroup->removeFile( STRINGIZE_FILEPATH_LOCAL( MENGINE_IMGUI_INI_FILE ) );
+            if( userFileGroup->existFile( STRINGIZE_FILEPATH_LOCAL( MENGINE_IMGUI_INI_FILE ), false ) == true )
+            {
+                userFileGroup->removeFile( STRINGIZE_FILEPATH_LOCAL( MENGINE_IMGUI_INI_FILE ) );
+            }
         }
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)

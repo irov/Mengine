@@ -56,13 +56,16 @@ public class MengineAmplitudePlugin extends MengineService implements MengineLis
         long sessionIndex = application.getSessionIndex();
         long sessionTimestamp = application.getSessionTimestamp();
 
-        identify.set("is_dev", String.valueOf(BuildConfig.DEBUG));
+        boolean is_publish = application.isBuildPublish();
+
+        identify.set("is_publish", is_publish);
+        identify.set("is_debug", BuildConfig.DEBUG);
         identify.set("install_id", installId);
-        identify.set("install_timestamp", String.valueOf(installTimestamp));
+        identify.set("install_timestamp", installTimestamp);
         identify.set("install_version", installVersion);
-        identify.set("install_rnd", String.valueOf(installRND));
-        identify.set("session_index", String.valueOf(sessionIndex));
-        identify.set("session_timestamp", String.valueOf(sessionTimestamp));
+        identify.set("install_rnd", installRND);
+        identify.set("session_index", sessionIndex);
+        identify.set("session_timestamp", sessionTimestamp);
 
         String acquisitionNetwork = application.getAcquisitionNetwork();
         String acquisitionCampaign = application.getAcquisitionCampaign();
@@ -73,7 +76,7 @@ public class MengineAmplitudePlugin extends MengineService implements MengineLis
         long currentTimestamp = MengineUtils.getTimestamp();
         long lifeTime = currentTimestamp - installTimestamp;
 
-        identify.set("life_time", String.valueOf(lifeTime));
+        identify.set("life_time", lifeTime);
 
         amplitude.identify(identify);
 

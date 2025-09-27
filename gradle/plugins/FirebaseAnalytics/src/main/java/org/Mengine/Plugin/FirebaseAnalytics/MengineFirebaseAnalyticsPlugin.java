@@ -49,7 +49,10 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
         long sessionIndex = application.getSessionIndex();
         long sessionTimestamp = application.getSessionTimestamp();
 
-        firebaseAnalytics.setUserProperty("is_dev", String.valueOf(BuildConfig.DEBUG));
+        boolean is_publish = application.isBuildPublish();
+
+        firebaseAnalytics.setUserProperty("is_publish", String.valueOf(is_publish));
+        firebaseAnalytics.setUserProperty("is_debug", String.valueOf(BuildConfig.DEBUG));
         firebaseAnalytics.setUserProperty("install_id", installId);
         firebaseAnalytics.setUserProperty("install_timestamp", String.valueOf(installTimestamp));
         firebaseAnalytics.setUserProperty("install_version", installVersion);

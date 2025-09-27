@@ -110,10 +110,10 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
 
         boolean crashReportsEnabled = false;
 
-        boolean isBuildPublish = application.isBuildPublish();
+        boolean is_publish = application.isBuildPublish();
 
         String clientToken = MengineDataDogPlugin_ClientToken;
-        String envName = (isBuildPublish == true) ? "dev" : "prod";
+        String envName = (is_publish == true) ? "dev" : "prod";
         String variant = "";
 
         Configuration config = new Configuration.Builder(clientToken, envName, variant)

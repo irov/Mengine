@@ -21,6 +21,7 @@ import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineAdProviderInterface;
 import org.Mengine.Base.MengineAdService;
 import org.Mengine.Base.MengineConsentFlowUserGeography;
+import org.Mengine.Base.MengineFragmentAdvertisingId;
 import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineListenerRemoteConfig;
 import org.Mengine.Base.MengineApplication;
@@ -256,9 +257,21 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
         builder.setPluginVersion("Mengine-v" + engineVersion);
 
         if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_TEST_DEVICE_ADVERTISING_ID != null) {
-            List<String> testDeviceAdvertisingIds = List.of(BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_TEST_DEVICE_ADVERTISING_ID);
+            if ("SELF".equals(BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_TEST_DEVICE_ADVERTISING_ID)) {
+                boolean limitAdTracking = MengineFragmentAdvertisingId.INSTANCE.isLimitAdTracking();
 
-            builder.setTestDeviceAdvertisingIds(testDeviceAdvertisingIds);
+                if (limitAdTracking == false) {
+                    String advertisingId = MengineFragmentAdvertisingId.INSTANCE.getAdvertisingId();
+
+                    List<String> testDeviceAdvertisingIds = List.of(advertisingId);
+                    builder.setTestDeviceAdvertisingIds(testDeviceAdvertisingIds);
+                } else {
+                    this.logWarning("can not set test device advertising id, user limit ad tracking");
+                }
+            } else {
+                List<String> testDeviceAdvertisingIds = List.of(BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_TEST_DEVICE_ADVERTISING_ID);
+                builder.setTestDeviceAdvertisingIds(testDeviceAdvertisingIds);
+            }
         }
 
         AppLovinSdkInitializationConfiguration config = builder.build();

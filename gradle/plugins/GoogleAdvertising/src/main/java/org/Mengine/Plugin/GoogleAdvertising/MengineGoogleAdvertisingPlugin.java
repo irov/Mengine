@@ -77,13 +77,26 @@ public class MengineGoogleAdvertisingPlugin extends MengineService implements Me
         if (tcParam.getConsentAdStorage() == false) {
             this.logInfo("AdvertisingId disabled by consent ad storage");
 
-            m_advertisingId = LIMIT_ADVERTISING_ID;
-            m_advertisingLimitTrackingEnabled = true;
-            m_advertisingLimitTrackingFetch = true;
+            synchronized (m_syncronizationAdvertising) {
+                m_advertisingId = LIMIT_ADVERTISING_ID;
+                m_advertisingLimitTrackingEnabled = true;
+                m_advertisingLimitTrackingFetch = true;
+            }
 
             MengineFragmentAdvertisingId.INSTANCE.setAdvertisingId(m_advertisingId, m_advertisingLimitTrackingEnabled);
 
             return;
+        }
+
+        synchronized (m_syncronizationAdvertising) {
+            if (m_advertisingLimitTrackingFetch == true) {
+                this.logInfo("AdvertisingId: %s limit: %s"
+                    , MengineUtils.getRedactedValue(m_advertisingId)
+                    , m_advertisingLimitTrackingEnabled == true ? "true" : "false"
+                );
+
+                MengineFragmentAdvertisingId.INSTANCE.setAdvertisingId(m_advertisingId, m_advertisingLimitTrackingEnabled);
+            }
         }
 
         Runnable task = () -> {
@@ -132,38 +145,46 @@ public class MengineGoogleAdvertisingPlugin extends MengineService implements Me
 
     private void postAdInfo(AdvertisingIdClient.Info adInfo) {
         synchronized (m_syncronizationAdvertising) {
+            String newAdvertisingId;
+            boolean newAdvertisingLimitTrackingEnabled;
+
             if (adInfo == null) {
-                m_advertisingId = LIMIT_ADVERTISING_ID;
-                m_advertisingLimitTrackingEnabled = true;
+                newAdvertisingId = LIMIT_ADVERTISING_ID;
+                newAdvertisingLimitTrackingEnabled = true;
             } else if (adInfo.isLimitAdTrackingEnabled() == true) {
-                m_advertisingId = LIMIT_ADVERTISING_ID;
-                m_advertisingLimitTrackingEnabled = true;
+                newAdvertisingId = LIMIT_ADVERTISING_ID;
+                newAdvertisingLimitTrackingEnabled = true;
             } else {
                 String adInfoAdvertisingId = adInfo.getId();
 
                 if (Objects.equals(adInfoAdvertisingId, LIMIT_ADVERTISING_ID) == true) {
-                    m_advertisingId = LIMIT_ADVERTISING_ID;
-                    m_advertisingLimitTrackingEnabled = true;
+                    newAdvertisingId = LIMIT_ADVERTISING_ID;
+                    newAdvertisingLimitTrackingEnabled = true;
                 } else {
-                    m_advertisingId = adInfoAdvertisingId;
-                    m_advertisingLimitTrackingEnabled = false;
+                    newAdvertisingId = adInfoAdvertisingId;
+                    newAdvertisingLimitTrackingEnabled = false;
                 }
             }
 
             m_advertisingLimitTrackingFetch = true;
-        }
 
-        this.logInfo("AdvertisingId: %s limit: %s"
-            , MengineUtils.getRedactedValue(m_advertisingId)
-            , m_advertisingLimitTrackingEnabled == true ? "true" : "false"
-        );
+            m_advertisingThread = null;
+
+            if (Objects.equals(m_advertisingId, newAdvertisingId) == true && m_advertisingLimitTrackingEnabled == newAdvertisingLimitTrackingEnabled) {
+                return;
+            }
+
+            m_advertisingId = newAdvertisingId;
+            m_advertisingLimitTrackingEnabled = newAdvertisingLimitTrackingEnabled;
+        }
 
         MengineUtils.performOnMainThread(() -> {
+            this.logInfo("AdvertisingId: %s limit: %s"
+                , MengineUtils.getRedactedValue(m_advertisingId)
+                , m_advertisingLimitTrackingEnabled == true ? "true" : "false"
+            );
+
             MengineFragmentAdvertisingId.INSTANCE.setAdvertisingId(m_advertisingId, m_advertisingLimitTrackingEnabled);
         });
-
-        synchronized (m_syncronizationAdvertising) {
-            m_advertisingThread = null;
-        }
     }
 }

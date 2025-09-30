@@ -75,7 +75,7 @@ public class MengineFragment<L extends MengineServiceInterface> implements Mengi
         );
     }
 
-    protected void propagate(MenginePropagateV0<L> propagate) {
+    protected void propagate(MenginePropagateV0<? super L> propagate) {
         List<L> listeners = this.getListeners();
 
         for (L listener : listeners) {
@@ -91,7 +91,7 @@ public class MengineFragment<L extends MengineServiceInterface> implements Mengi
         }
     }
 
-    protected <A1> void propagate(MenginePropagateV1<L, A1> propagate, A1 a1) {
+    protected <A1> void propagate(MenginePropagateV1<? super L, A1> propagate, A1 a1) {
         List<L> listeners = this.getListeners();
 
         for (L listener : listeners) {
@@ -107,7 +107,7 @@ public class MengineFragment<L extends MengineServiceInterface> implements Mengi
         }
     }
 
-    protected <A1, A2> void propagate(MenginePropagateV2<L, A1, A2> propagate, A1 a1, A2 a2) {
+    protected <A1, A2> void propagate(MenginePropagateV2<? super L, A1, A2> propagate, A1 a1, A2 a2) {
         List<L> listeners = this.getListeners();
 
         for (L listener : listeners) {
@@ -123,7 +123,7 @@ public class MengineFragment<L extends MengineServiceInterface> implements Mengi
         }
     }
 
-    protected <A1, A2, A3> void propagate(MenginePropagateV3<L, A1, A2, A3> propagate, A1 a1, A2 a2, A3 a3) {
+    protected <A1, A2, A3> void propagate(MenginePropagateV3<? super L, A1, A2, A3> propagate, A1 a1, A2 a2, A3 a3) {
         List<L> listeners = this.getListeners();
 
         for (L listener : listeners) {
@@ -139,7 +139,7 @@ public class MengineFragment<L extends MengineServiceInterface> implements Mengi
         }
     }
 
-    protected <A1, A2, A3, A4> void propagate(MenginePropagateV4<L, A1, A2, A3, A4> propagate, A1 a1, A2 a2, A3 a3, A4 a4) {
+    protected <A1, A2, A3, A4> void propagate(MenginePropagateV4<? super L, A1, A2, A3, A4> propagate, A1 a1, A2 a2, A3 a3, A4 a4) {
         List<L> listeners = this.getListeners();
 
         for (L listener : listeners) {
@@ -155,7 +155,7 @@ public class MengineFragment<L extends MengineServiceInterface> implements Mengi
         }
     }
 
-    protected <A1, A2, A3, A4, A5> void propagate(MenginePropagateV5<L, A1, A2, A3, A4, A5> propagate, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5) {
+    protected <A1, A2, A3, A4, A5> void propagate(MenginePropagateV5<? super L, A1, A2, A3, A4, A5> propagate, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5) {
         List<L> listeners = this.getListeners();
 
         for (L listener : listeners) {
@@ -171,7 +171,7 @@ public class MengineFragment<L extends MengineServiceInterface> implements Mengi
         }
     }
 
-    protected boolean propagateB(MenginePropagateB0<L> propagate) {
+    protected boolean propagateB(MenginePropagateB0<? super L> propagate) {
         List<L> listeners = this.getListeners();
 
         for (L listener : listeners) {
@@ -191,7 +191,7 @@ public class MengineFragment<L extends MengineServiceInterface> implements Mengi
         return false;
     }
 
-    protected <A1> boolean propagateB(MenginePropagateB1<L, A1> propagate, A1 a1) {
+    protected <A1> boolean propagateB(MenginePropagateB1<? super L, A1> propagate, A1 a1) {
         List<L> listeners = this.getListeners();
 
         for (L listener : listeners) {
@@ -211,7 +211,7 @@ public class MengineFragment<L extends MengineServiceInterface> implements Mengi
         return false;
     }
 
-    protected <A1, A2> boolean propagateB(MenginePropagateB2<L, A1, A2> propagate, A1 a1, A2 a2) {
+    protected <A1, A2> boolean propagateB(MenginePropagateB2<? super L, A1, A2> propagate, A1 a1, A2 a2) {
         List<L> listeners = this.getListeners();
 
         for (L listener : listeners) {
@@ -231,7 +231,7 @@ public class MengineFragment<L extends MengineServiceInterface> implements Mengi
         return false;
     }
 
-    protected <A1, A2, A3> boolean propagateB(MenginePropagateB3<L, A1, A2, A3> propagate, A1 a1, A2 a2, A3 a3) {
+    protected <A1, A2, A3> boolean propagateB(MenginePropagateB3<? super L, A1, A2, A3> propagate, A1 a1, A2 a2, A3 a3) {
         List<L> listeners = this.getListeners();
 
         for (L listener : listeners) {
@@ -251,7 +251,7 @@ public class MengineFragment<L extends MengineServiceInterface> implements Mengi
         return false;
     }
 
-    protected <A1, A2, A3, A4> boolean propagateB(MenginePropagateB4<L, A1, A2, A3, A4> propagate, A1 a1, A2 a2, A3 a3, A4 a4) {
+    protected <A1, A2, A3, A4> boolean propagateB(MenginePropagateB4<? super L, A1, A2, A3, A4> propagate, A1 a1, A2 a2, A3 a3, A4 a4) {
         List<L> listeners = this.getListeners();
 
         for (L listener : listeners) {
@@ -271,7 +271,7 @@ public class MengineFragment<L extends MengineServiceInterface> implements Mengi
         return false;
     }
 
-    protected <A1, A2, A3, A4, A5> boolean propagateB(MenginePropagateB5<L, A1, A2, A3, A4, A5> propagate, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5) {
+    protected <A1, A2, A3, A4, A5> boolean propagateB(MenginePropagateB5<? super L, A1, A2, A3, A4, A5> propagate, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5) {
         List<L> listeners = this.getListeners();
 
         for (L listener : listeners) {

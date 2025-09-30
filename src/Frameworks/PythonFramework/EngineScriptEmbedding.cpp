@@ -413,7 +413,7 @@ namespace Mengine
                     ->destroyLayout( _layout );
             }
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_pipe( const pybind::object & _pipe, const pybind::object & _timing, const pybind::object & _event, const pybind::args & _args )
+            UniqueId s_pipe( const pybind::object & _pipe, const pybind::object & _timing, const pybind::object & _event, const pybind::args & _args )
             {
                 PythonSchedulePipePtr py_pipe = m_factoryPythonSchedulePipe->createObject( MENGINE_DOCUMENT_PYTHON );
                 py_pipe->initialize( _pipe, _args );
@@ -432,12 +432,12 @@ namespace Mengine
                 const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                     ->getLocalScheduler();
 
-                uint32_t id = sm->timing( py_pipe, py_timing, py_event, MENGINE_DOCUMENT_PYTHON );
+                UniqueId id = sm->timing( py_pipe, py_timing, py_event, MENGINE_DOCUMENT_PYTHON );
 
                 return id;
             }
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_schedule( float _timing, const pybind::object & _script, const pybind::args & _args )
+            UniqueId s_schedule( float _timing, const pybind::object & _script, const pybind::args & _args )
             {
                 const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                     ->getLocalScheduler();
@@ -445,7 +445,7 @@ namespace Mengine
                 PythonScheduleEventPtr sl = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYTHON );
                 sl->initialize( _script, _args );
 
-                uint32_t id = sm->event( _timing, sl, MENGINE_DOCUMENT_PYTHON );
+                UniqueId id = sm->event( _timing, sl, MENGINE_DOCUMENT_PYTHON );
 
                 return id;
             }
@@ -549,7 +549,7 @@ namespace Mengine
                 return time;
             }
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_scheduleGlobal( float _timing, const pybind::object & _cb, const pybind::args & _args )
+            UniqueId s_scheduleGlobal( float _timing, const pybind::object & _cb, const pybind::args & _args )
             {
                 const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                     ->getGlobalScheduler();
@@ -559,7 +559,32 @@ namespace Mengine
                 PythonScheduleEventPtr sl = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYTHON );
                 sl->initialize( _cb, _args );
 
-                uint32_t id = sm->event( _timing, sl, MENGINE_DOCUMENT_PYTHON );
+                UniqueId id = sm->event( _timing, sl, MENGINE_DOCUMENT_PYTHON );
+
+                return id;
+            }
+
+            //////////////////////////////////////////////////////////////////////////
+            UniqueId s_pipeGlobal( const pybind::object & _pipe, const pybind::object & _timing, const pybind::object & _event, const pybind::args & _args )
+            {
+                PythonSchedulePipePtr py_pipe = m_factoryPythonSchedulePipe->createObject( MENGINE_DOCUMENT_PYTHON );
+                py_pipe->initialize( _pipe, _args );
+
+                PythonScheduleTimingPtr py_timing = m_factoryPythonScheduleTiming->createObject( MENGINE_DOCUMENT_PYTHON );
+                py_timing->initialize( _timing, _args );
+
+                PythonScheduleEventPtr py_event;
+
+                if( _event.is_none() == false )
+                {
+                    py_event = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYTHON );
+                    py_event->initialize( _event, _args );
+                }
+
+                const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
+                    ->getGlobalScheduler();
+
+                UniqueId id = sm->timing( py_pipe, py_timing, py_event, MENGINE_DOCUMENT_PYTHON );
 
                 return id;
             }
@@ -4365,6 +4390,7 @@ namespace Mengine
         pybind::def_functor( _kernel, "scheduleTime", nodeScriptMethod, &EngineScriptMethod::s_scheduleTime );
 
         pybind::def_functor_args( _kernel, "scheduleGlobal", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobal );
+        pybind::def_functor_args( _kernel, "pipeGlobal", nodeScriptMethod, &EngineScriptMethod::s_pipeGlobal );
         pybind::def_functor( _kernel, "scheduleGlobalRemove", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalRemove );
         pybind::def_functor( _kernel, "scheduleGlobalRemoveAll", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalRemoveAll );
         pybind::def_functor( _kernel, "scheduleGlobalFreeze", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalFreeze );

@@ -1477,6 +1477,8 @@ namespace Mengine
 
                 LOGGER_MESSAGE( "quit application" );
 
+                NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_TERMINATE );
+
                 m_close = true;
 
                 ::PostQuitMessage( 0 );
@@ -3503,6 +3505,15 @@ namespace Mengine
 
         m_active = _active;
 
+        if( m_active == false )
+        {
+            NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_RESIGN_ACTIVE );
+        }
+        else
+        {
+            NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_ENTER_FOREGROUND );
+        }
+
         bool nopause = APPLICATION_SERVICE()
             ->getNopause();
 
@@ -3550,6 +3561,15 @@ namespace Mengine
             {
                 ::SetCursor( NULL );
             }
+        }
+
+        if( m_active == false )
+        {
+            NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_ENTER_BACKGROUND );
+        }
+        else
+        {
+            NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_BECOME_ACTIVE );
         }
     }
     //////////////////////////////////////////////////////////////////////////

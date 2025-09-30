@@ -61,13 +61,11 @@ namespace Mengine
         bool onGameClose() override;
         void onGameOverFillrate( double _fillrate, double _limit ) override;
         void onGameFrameEnd() override;
-#if defined(MENGINE_PLATFORM_IOS) || defined(MENGINE_PLATFORM_ANDROID)
         void onGameApplicationDidBecomeActive() override;
         void onGameApplicationWillEnterForeground() override;
         void onGameApplicationDidEnterBackground() override;
         void onGameApplicationWillResignActive() override;
         void onGameApplicationWillTerminate() override;
-#endif
         void onGameAnalyticsEvent( const AnalyticsEventInterfacePtr & _event ) override;
         void onGameAnalyticsScreenView( const ConstString & _screenType, const ConstString & _screenName ) override;
         void onGameAnalyticsFlush() override;

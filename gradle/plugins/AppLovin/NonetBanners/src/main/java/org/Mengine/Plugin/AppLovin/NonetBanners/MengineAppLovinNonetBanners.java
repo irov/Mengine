@@ -42,7 +42,7 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
     protected boolean m_visible;
     protected int m_requestId;
 
-    static class NonetBanner {
+    static protected class NonetBanner {
         public String image;
         public String url;
     }

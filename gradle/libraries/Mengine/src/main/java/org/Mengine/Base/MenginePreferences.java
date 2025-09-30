@@ -219,7 +219,7 @@ public class MenginePreferences {
         MenginePreferences.setPreferenceJSON(name, json);
     }
 
-    static public JSONObject getPreferenceJSON(@NonNull String name, Supplier<JSONObject> defaultValue) {
+    static public JSONObject getPreferenceJSON(@NonNull String name, Supplier<? extends JSONObject> defaultValue) {
         String value = MenginePreferences.getPreferenceString(name, null);
 
         if (value == null) {

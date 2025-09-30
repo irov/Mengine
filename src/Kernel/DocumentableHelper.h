@@ -6,6 +6,7 @@
 #if defined(MENGINE_DOCUMENT_ENABLE)
 #   include "Kernel/Documentable.h"
 #   include "Kernel/Identity.h"
+#   include "Kernel/LoggerMessage.h"
 
 #   include "Config/DynamicCast.h"
 #   include "Config/StdString.h"
@@ -27,11 +28,11 @@ namespace Mengine
         template<class D, class I>
         const Char * getDocumentableThreadLocalMessage( const D * _documentable, const I * _identity, const Char * _message )
         {
-            static MENGINE_THREAD_LOCAL Char message[4096 + 1] = {'\0'};
-            Detail::getDocumentableMessage( _documentable, _identity, message, 4096 );
-            StdString::strcat_safe( message, " [", 4096 );
-            StdString::strcat_safe( message, _message, 4096 );
-            StdString::strcat_safe( message, "]", 4096 );
+            static MENGINE_THREAD_LOCAL Char message[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
+            Detail::getDocumentableMessage( _documentable, _identity, message, MENGINE_LOGGER_MAX_MESSAGE );
+            StdString::strcat_safe( message, " [", MENGINE_LOGGER_MAX_MESSAGE );
+            StdString::strcat_safe( message, _message, MENGINE_LOGGER_MAX_MESSAGE );
+            StdString::strcat_safe( message, "]", MENGINE_LOGGER_MAX_MESSAGE );
             return message;
 
         }

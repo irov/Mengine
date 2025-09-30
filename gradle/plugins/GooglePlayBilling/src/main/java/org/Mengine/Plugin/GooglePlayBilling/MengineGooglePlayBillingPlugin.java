@@ -715,7 +715,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
     }
 
     @AnyThread
-    private void handlePurchases(List<Purchase> purchases) {
+    private void handlePurchases(List<? extends Purchase> purchases) {
         for (Purchase purchase : purchases) {
             this.handlePurchase(purchase);
         }

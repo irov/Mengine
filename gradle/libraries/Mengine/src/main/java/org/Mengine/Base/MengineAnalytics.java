@@ -92,7 +92,7 @@ public class MengineAnalytics {
         return parameters;
     }
 
-    static private void collapseGetter(Map<String, Object> parameters) {
+    static private void collapseGetter(Map<? super String, Object> parameters) {
         for (Map.Entry<String, Object> entry : MengineAnalytics.m_getter.entrySet()) {
             String key = entry.getKey();
             MengineAnalyticsGetter getter = (MengineAnalyticsGetter)entry.getValue();

@@ -61,13 +61,11 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_TIME_FACTOR_CHANGE, &GameService::notifyTimeFactorChange_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_SETTING_CHANGE, &GameService::notifySettingChange_, MENGINE_DOCUMENT_FACTORABLE );
 
-#if defined(MENGINE_PLATFORM_IOS) || defined(MENGINE_PLATFORM_ANDROID)
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_DID_BECOME_ACTIVE, &GameService::notifyApplicationDidBecomeActive_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_WILL_ENTER_FOREGROUND, &GameService::notifyApplicationWillEnterForeground_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_DID_ENTER_BACKGROUND, &GameService::notifyApplicationDidEnterBackground_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_WILL_RESIGN_ACTIVE, &GameService::notifyApplicationWillResignActive_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_WILL_TERMINATE, &GameService::notifyApplicationWillTerminate_, MENGINE_DOCUMENT_FACTORABLE );
-#endif
 
         ANALYTICS_SERVICE()
             ->addEventProvider( AnalyticsEventProviderInterfacePtr::from( this ) );
@@ -80,13 +78,11 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_TIME_FACTOR_CHANGE );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SETTING_CHANGE );
 
-#if defined(MENGINE_PLATFORM_IOS) || defined(MENGINE_PLATFORM_ANDROID)
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_DID_BECOME_ACTIVE );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_WILL_ENTER_FOREGROUND );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_DID_ENTER_BACKGROUND );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_WILL_RESIGN_ACTIVE );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_WILL_TERMINATE );
-#endif
 
         ANALYTICS_SERVICE()
             ->removeEventProvider( AnalyticsEventProviderInterfacePtr::from( this ) );
@@ -531,8 +527,6 @@ namespace Mengine
             ->onGameSettingChange( _setting, _key );
     }
     //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLATFORM_IOS) || defined(MENGINE_PLATFORM_ANDROID)
-    //////////////////////////////////////////////////////////////////////////
     void GameService::notifyApplicationDidBecomeActive_()
     {
         EVENTABLE_METHOD( EVENT_GAME_APPLICATION_DID_BECOME_ACTIVE )
@@ -561,8 +555,6 @@ namespace Mengine
         EVENTABLE_METHOD( EVENT_GAME_APPLICATION_WILL_TERMINATE )
             ->onGameApplicationWillTerminate();
     }
-    //////////////////////////////////////////////////////////////////////////
-#endif
     //////////////////////////////////////////////////////////////////////////
     void GameService::onAnalyticsEvent( const AnalyticsEventInterfacePtr & _event )
     {

@@ -282,9 +282,7 @@ namespace Mengine
     void PythonGameEventReceiver::onGameFrameEnd()
     {
         m_cb.call();
-    }
-    //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLATFORM_IOS) || defined(MENGINE_PLATFORM_ANDROID)
+    }    
     //////////////////////////////////////////////////////////////////////////
     void PythonGameEventReceiver::onGameApplicationDidBecomeActive()
     {
@@ -310,8 +308,6 @@ namespace Mengine
     {
         m_cb.call();
     }
-    //////////////////////////////////////////////////////////////////////////
-#endif
     //////////////////////////////////////////////////////////////////////////
     void PythonGameEventReceiver::onGameAnalyticsEvent( const AnalyticsEventInterfacePtr & _event )
     {

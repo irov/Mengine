@@ -148,9 +148,6 @@ namespace Mengine
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_HTTP_CANCEL, HttpRequestId );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_HTTP_RESPONSE, const HttpResponseInterfacePtr & );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_SETTING_CHANGE, const SettingInterfacePtr &, const Char * );
-    //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLATFORM_IOS) || defined(MENGINE_PLATFORM_ANDROID)
-    //////////////////////////////////////////////////////////////////////////
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_APPLICATION_DID_BECOME_ACTIVE );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_APPLICATION_WILL_ENTER_FOREGROUND );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_APPLICATION_DID_ENTER_BACKGROUND );
@@ -158,8 +155,6 @@ namespace Mengine
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_APPLICATION_WILL_TERMINATE );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_APPLICATION_DID_RECEIVE_MEMORY_WARNING );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_APPLICATION_DID_RECEIVE_TRIM_MEMORY, int32_t );
-    //////////////////////////////////////////////////////////////////////////
-#endif
     //////////////////////////////////////////////////////////////////////////
     MENGINE_NOTIFICATOR_DECLARE_END();
     //////////////////////////////////////////////////////////////////////////

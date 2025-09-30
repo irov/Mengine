@@ -73,13 +73,11 @@ namespace Mengine
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onOverFillrate" ), EVENT_GAME_OVER_FILLRATE, _doc );
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onFrameEnd" ), EVENT_GAME_FRAME_END, _doc );
 
-#if defined(MENGINE_PLATFORM_IOS) || defined(MENGINE_PLATFORM_ANDROID)
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onApplicationDidBecomeActive" ), EVENT_GAME_APPLICATION_DID_BECOME_ACTIVE, _doc );
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onApplicationWillEnterForeground" ), EVENT_GAME_APPLICATION_WILL_ENTER_FOREGROUND, _doc );
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onApplicationDidEnterBackground" ), EVENT_GAME_APPLICATION_DID_ENTER_BACKGROUD, _doc );
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onApplicationWillResignActive" ), EVENT_GAME_APPLICATION_WILL_RESIGN_ACTIVE, _doc );
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onApplicationWillTerminate" ), EVENT_GAME_APPLICATION_WILL_TERMINATE, _doc );
-#endif
 
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onAnalyticsEvent" ), EVENT_GAME_ANALYTICS_EVENT, _doc );
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onAnalyticsScreenView" ), EVENT_GAME_ANALYTICS_SCREENVIEW, _doc );

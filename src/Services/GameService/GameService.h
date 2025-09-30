@@ -89,13 +89,11 @@ namespace Mengine
         void notifyTimeFactorChange_( float _timeFactor );
         void notifySettingChange_( const SettingInterfacePtr & _setting, const Char * _key );
 
-#if defined(MENGINE_PLATFORM_IOS) || defined(MENGINE_PLATFORM_ANDROID)
         void notifyApplicationDidBecomeActive_();
         void notifyApplicationWillEnterForeground_();
         void notifyApplicationDidEnterBackground_();
         void notifyApplicationWillResignActive_();
         void notifyApplicationWillTerminate_();
-#endif
 
     protected:
         void onAnalyticsEvent( const AnalyticsEventInterfacePtr & _event ) override;

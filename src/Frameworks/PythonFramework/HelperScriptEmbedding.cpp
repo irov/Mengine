@@ -28,6 +28,7 @@
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonDocument.h"
 #include "Environment/Python/PythonCallbackProvider.h"
+#include "Environment/Python/PythonTraceback.h"
 
 #if defined(MENGINE_PLATFORM_ANDROID)
 #   include "Environment/Android/AndroidKernelServiceInterface.h"
@@ -1800,8 +1801,8 @@ namespace Mengine
                     return false;
                 }
 
-                Char setting_value[32 + 1] = {'\0'};
-                if( Helper::stringalized( _value, setting_value, 32 ) == false )
+                Char setting_value[64 + 1] = {'\0'};
+                if( Helper::stringalized( _value, setting_value, 64 ) == false )
                 {
                     return false;
                 }
@@ -1830,8 +1831,8 @@ namespace Mengine
                     return false;
                 }
 
-                Char setting_value[32 + 1] = {'\0'};
-                if( Helper::stringalized( _value, setting_value, 31 ) == false )
+                Char setting_value[64 + 1] = {'\0'};
+                if( Helper::stringalized( _value, setting_value, 64 ) == false )
                 {
                     return false;
                 }
@@ -1860,8 +1861,8 @@ namespace Mengine
                     return false;
                 }
 
-                Char setting_value[32 + 1] = {'\0'};
-                if( Helper::stringalized( _value, setting_value, 32 ) == false )
+                Char setting_value[64 + 1] = {'\0'};
+                if( Helper::stringalized( _value, setting_value, 64 ) == false )
                 {
                     return false;
                 }
@@ -1890,8 +1891,8 @@ namespace Mengine
                     return false;
                 }
 
-                Char setting_value[64 + 1] = {'\0'};
-                if( Helper::stringalized( _value, setting_value, 64 ) == false )
+                Char setting_value[256 + 1] = {'\0'};
+                if( Helper::stringalized( _value, setting_value, 256 ) == false )
                 {
                     return false;
                 }

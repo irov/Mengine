@@ -49,8 +49,6 @@ namespace Mengine
         m_folderName = _folderPath;
         m_projectVersion = _projectVersion;
 
-        Helper::makeUID( 20, m_uid.data );
-
         PathString settingsJSONPath;
         settingsJSONPath += m_folderName;
         settingsJSONPath += MENGINE_ACCOUNT_SETTINGS_JSON_PATH;
@@ -260,11 +258,6 @@ namespace Mengine
             const Char * value;
             if( config->hasValue( "SETTINGS", key.c_str(), "", &value ) == false )
             {
-                LOGGER_WARNING( "account '%s' failed get setting '%s'"
-                    , m_accountId.c_str()
-                    , key.c_str()
-                );
-
                 continue;
             }
 
@@ -361,7 +354,7 @@ namespace Mengine
 
         const FilePath & settingsJSONPath = m_settingsJSONContent->getFilePath();
 
-        if( Helper::writeJSONFileCompact( j_root, m_fileGroup, settingsJSONPath, true, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( Helper::writeJSONFile( j_root, m_fileGroup, settingsJSONPath, true, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             LOGGER_ERROR( "account '%s' invalid write json to file '%s'"
                 , m_accountId.c_str()

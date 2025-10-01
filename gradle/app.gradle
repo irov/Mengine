@@ -746,7 +746,7 @@ if (project.hasProperty("MENGINE_APP_OPTIONS") == true) {
 
     android {
         defaultConfig {
-            buildConfigField "String", "MENGINE_APP_OPTIONS", MENGINE_APP_OPTIONS.empty == false ? "\"MENGINE_APP_OPTIONS\"" : null
+            buildConfigField "String", "MENGINE_APP_OPTIONS", MENGINE_APP_OPTIONS.empty == false ? "\"MENGINE_APP_OPTIONS\"" : "\"\""
         }
     }
 } else {
@@ -754,7 +754,7 @@ if (project.hasProperty("MENGINE_APP_OPTIONS") == true) {
 
     android {
         defaultConfig {
-            buildConfigField "String", "MENGINE_APP_OPTIONS", null
+            buildConfigField "String", "MENGINE_APP_OPTIONS", "\"\""
         }
     }
 }

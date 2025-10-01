@@ -172,20 +172,25 @@ namespace Mengine
             , _accountId.c_str()
         );
 
-        m_currentAccountId = newAccount->getAccountId();
+        AccountUID uid;
+        Helper::makeUID( 20, uid.data );
+
+        newAccount->setUID( uid );
 
         m_accounts.emplace( _accountId, newAccount );
 
+        m_currentAccountId = _accountId;        
+
         if( m_accountProvider != nullptr )
         {
-            m_accountProvider->onCreateAccount( _accountId, false );
+            m_accountProvider->onCreateAccount( m_currentAccountId, false );
         }
 
         newAccount->apply();
 
         if( m_accountProvider != nullptr )
         {
-            m_accountProvider->onSelectAccount( _accountId );
+            m_accountProvider->onSelectAccount( m_currentAccountId );
         }
 
         m_invalidateAccounts = true;
@@ -214,9 +219,19 @@ namespace Mengine
             , _accountId.c_str()
         );
 
-        m_globalAccountId = newAccount->getAccountId();
+        AccountUID uid;
+        Helper::makeUID( 20, uid.data );
+
+        newAccount->setUID( uid );
 
         m_accounts.emplace( _accountId, newAccount );
+
+        m_globalAccountId = _accountId;
+
+        if( m_accountProvider != nullptr )
+        {
+            m_accountProvider->onCreateAccount( m_globalAccountId, true );
+        }
 
         newAccount->apply();
 
@@ -365,8 +380,6 @@ namespace Mengine
         }
 
         m_invalidateAccounts = true;
-
-        this->saveAccounts();
 
         return true;
     }

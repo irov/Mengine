@@ -17,12 +17,22 @@ fun getBooleanProperty(name: String, d: Boolean): Boolean {
     return d
 }
 
-fun getStringProperty(name: String, d: String): String {
+fun getStringProperty(name: String, d: String): String? {
     if (extra.has(name) == false) {
         return d
     }
 
-    return extra[name].toString()
+    val s = extra[name].toString()
+
+    if (s.isEmpty() == true) {
+        return null
+    }
+
+    if ((s.startsWith('"') && s.endsWith('"')) || (s.startsWith("'") && s.endsWith("'"))) {
+        return s.substring(1, s.length - 1)
+    }
+
+    return s
 }
 
 fun includeLibrary(name: String, path: String) {
@@ -53,7 +63,7 @@ println("\u001b[32m" + "=== Start configure ===" + "\u001b[0m")
 
 val ANDROID_APP_MAIN_PROJECT = getStringProperty("ANDROID_APP_MAIN_PROJECT", "app");
 
-if (file(ANDROID_APP_MAIN_PROJECT).exists() == false) {
+if (ANDROID_APP_MAIN_PROJECT == null || file(ANDROID_APP_MAIN_PROJECT).exists() == false) {
     println("\u001b[31m" + "[-] Not found $ANDROID_APP_MAIN_PROJECT" + "\u001b[0m")
 
     throw kotlin.Exception("Not found $ANDROID_APP_MAIN_PROJECT")

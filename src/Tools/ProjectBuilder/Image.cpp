@@ -11,6 +11,7 @@
 #include "Kernel/PixelFormatHelper.h"
 #include "Kernel/ImageCodecHelper.h"
 #include "Kernel/VocabularyHelper.h"
+#include "Kernel/ContentHelper.h"
 
 namespace Mengine
 {
@@ -30,7 +31,9 @@ namespace Mengine
     {
         FileGroupInterfacePtr globalFileGroup = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "dev" ) );
 
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( globalFileGroup, _path, false, false, MENGINE_DOCUMENT_FUNCTION );
+        ContentInterfacePtr content = Helper::makeFileContent( globalFileGroup, _path, MENGINE_DOCUMENT_FUNCTION );
+
+        InputStreamInterfacePtr stream = content->openInputStreamFile( false, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream == nullptr )
         {
@@ -48,7 +51,7 @@ namespace Mengine
             return false;
         }
 
-        if( imageDecoder->prepareData( stream ) == false )
+        if( imageDecoder->prepareData( content, stream ) == false )
         {
             return false;
         }
@@ -98,7 +101,9 @@ namespace Mengine
     {
         FileGroupInterfacePtr globalFileGroup = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "dev" ) );
 
-        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( globalFileGroup, _path, false, MENGINE_DOCUMENT_FUNCTION );
+        ContentInterfacePtr content = Helper::makeFileContent( globalFileGroup, _path, MENGINE_DOCUMENT_FUNCTION );
+
+        OutputStreamInterfacePtr stream = content->openOutputStreamFile( false, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream == nullptr )
         {
@@ -116,7 +121,7 @@ namespace Mengine
             return false;
         }
 
-        if( encoder->initialize( stream ) == false )
+        if( encoder->initialize( content, stream ) == false )
         {
             return false;
         }

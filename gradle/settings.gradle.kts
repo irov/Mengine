@@ -28,7 +28,11 @@ fun getStringProperty(name: String, d: String): String? {
         return null
     }
 
-    if ((s.startsWith('"') && s.endsWith('"')) || (s.startsWith("'") && s.endsWith("'"))) {
+    if (s.startsWith('"') && s.endsWith('"')) {
+        return s.substring(1, s.length - 1)
+    }
+
+    if (s.startsWith("'") && s.endsWith("'")) {
         return s.substring(1, s.length - 1)
     }
 

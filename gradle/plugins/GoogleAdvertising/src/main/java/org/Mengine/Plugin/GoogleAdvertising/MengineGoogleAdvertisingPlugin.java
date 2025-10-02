@@ -25,8 +25,6 @@ public class MengineGoogleAdvertisingPlugin extends MengineService implements Me
     public static final String SERVICE_NAME = "Advertising";
     public static final int SAVE_VERSION = 1;
 
-    private static final String LIMIT_ADVERTISING_ID = "00000000-0000-0000-0000-000000000000";
-
     protected String m_advertisingId;
     protected boolean m_advertisingLimitTrackingEnabled = false;
     protected boolean m_advertisingLimitTrackingFetch = false;
@@ -64,7 +62,7 @@ public class MengineGoogleAdvertisingPlugin extends MengineService implements Me
         int version = bundle.getInt("version", 0);
 
         synchronized (m_syncronizationAdvertising) {
-            m_advertisingId = bundle.getString("advertisingId", LIMIT_ADVERTISING_ID);
+            m_advertisingId = bundle.getString("advertisingId", MengineFragmentAdvertisingId.LIMIT_ADVERTISING_ID);
             m_advertisingLimitTrackingEnabled = bundle.getBoolean("advertisingLimitTrackingEnabled", true);
             m_advertisingLimitTrackingFetch = bundle.getBoolean("advertisingLimitTrackingFetch", false);
         }
@@ -78,7 +76,7 @@ public class MengineGoogleAdvertisingPlugin extends MengineService implements Me
             this.logInfo("AdvertisingId disabled by consent ad storage");
 
             synchronized (m_syncronizationAdvertising) {
-                m_advertisingId = LIMIT_ADVERTISING_ID;
+                m_advertisingId = MengineFragmentAdvertisingId.LIMIT_ADVERTISING_ID;
                 m_advertisingLimitTrackingEnabled = true;
                 m_advertisingLimitTrackingFetch = true;
             }
@@ -149,16 +147,16 @@ public class MengineGoogleAdvertisingPlugin extends MengineService implements Me
             boolean newAdvertisingLimitTrackingEnabled;
 
             if (adInfo == null) {
-                newAdvertisingId = LIMIT_ADVERTISING_ID;
+                newAdvertisingId = MengineFragmentAdvertisingId.LIMIT_ADVERTISING_ID;
                 newAdvertisingLimitTrackingEnabled = true;
             } else if (adInfo.isLimitAdTrackingEnabled() == true) {
-                newAdvertisingId = LIMIT_ADVERTISING_ID;
+                newAdvertisingId = MengineFragmentAdvertisingId.LIMIT_ADVERTISING_ID;
                 newAdvertisingLimitTrackingEnabled = true;
             } else {
                 String adInfoAdvertisingId = adInfo.getId();
 
-                if (Objects.equals(adInfoAdvertisingId, LIMIT_ADVERTISING_ID) == true) {
-                    newAdvertisingId = LIMIT_ADVERTISING_ID;
+                if (Objects.equals(adInfoAdvertisingId, MengineFragmentAdvertisingId.LIMIT_ADVERTISING_ID) == true) {
+                    newAdvertisingId = MengineFragmentAdvertisingId.LIMIT_ADVERTISING_ID;
                     newAdvertisingLimitTrackingEnabled = true;
                 } else {
                     newAdvertisingId = adInfoAdvertisingId;

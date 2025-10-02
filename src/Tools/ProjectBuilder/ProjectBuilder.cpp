@@ -546,7 +546,9 @@ static PyObject * py_isAlphaInImageFile( PyObject * _self, PyObject * _args )
 
     Mengine::FileGroupInterfacePtr globalFileGroup = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "dev" ) );
 
-    Mengine::InputStreamInterfacePtr stream = Mengine::Helper::openInputStreamFile( globalFileGroup, c_path, false, false, MENGINE_DOCUMENT_FUNCTION );
+    Mengine::ContentInterfacePtr content = Mengine::Helper::makeFileContent( globalFileGroup, c_path, MENGINE_DOCUMENT_FUNCTION );
+
+    Mengine::InputStreamInterfacePtr stream = content->openInputStreamFile( false, false, MENGINE_DOCUMENT_FUNCTION );
 
     if( stream == nullptr )
     {
@@ -564,7 +566,7 @@ static PyObject * py_isAlphaInImageFile( PyObject * _self, PyObject * _args )
         return nullptr;
     }
 
-    if( imageDecoder->prepareData( stream ) == false )
+    if( imageDecoder->prepareData( content, stream ) == false )
     {
         return nullptr;
     }
@@ -633,7 +635,9 @@ static PyObject * py_isPow2SquadImageFile( PyObject * _self, PyObject * _args )
 
     Mengine::FileGroupInterfacePtr globalFileGroup = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "dev" ) );
 
-    Mengine::InputStreamInterfacePtr stream = Mengine::Helper::openInputStreamFile( globalFileGroup, c_path, false, false, MENGINE_DOCUMENT_FUNCTION );
+    Mengine::ContentInterfacePtr content = Mengine::Helper::makeFileContent( globalFileGroup, c_path, MENGINE_DOCUMENT_FUNCTION );
+
+    Mengine::InputStreamInterfacePtr stream = content->openInputStreamFile( false, false, MENGINE_DOCUMENT_FUNCTION );
 
     if( stream == nullptr )
     {
@@ -651,7 +655,7 @@ static PyObject * py_isPow2SquadImageFile( PyObject * _self, PyObject * _args )
         return nullptr;
     }
 
-    if( imageDecoder->prepareData( stream ) == false )
+    if( imageDecoder->prepareData( content, stream ) == false )
     {
         return nullptr;
     }

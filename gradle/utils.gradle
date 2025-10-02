@@ -11,17 +11,35 @@ Utils.getBooleanProperty = { String name, Boolean d ->
         return false
     }
 
-    return true
+    if (p as Integer == 1) {
+        return true
+    }
+
+    throw new IllegalArgumentException("Property '${name}' must be 0 or 1, but got '${p}'")
+
+    return d
 }
 
 Utils.getStringProperty = { String name, String d ->
-    def p = project.findProperty(name)
+    def s = project.findProperty(name)
 
-    if (p == null) {
+    if (s == null) {
         return d
     }
 
-    return p
+    if (s.isEmpty() == true) {
+        return null
+    }
+
+    if (s.startsWith('"') && s.endsWith('"')) {
+        return s.substring(1, s.length() - 1)
+    }
+
+    if (s.startsWith("'") && s.endsWith("'")) {
+        return s.substring(1, s.length() - 1)
+    }
+
+    return s
 }
 
 Utils.getIntegerProperty = { String name, Integer d ->
@@ -31,9 +49,15 @@ Utils.getIntegerProperty = { String name, Integer d ->
         return d
     }
 
-    def v = p as Integer
+    try {
+        def v = p as Integer
 
-    return v
+        return v
+    } catch (ClassCastException e) {
+        throw new IllegalArgumentException("Property '${name}' must be integer, but got '${p}'")
+    }
+
+    return d
 }
 
 Utils.isEnableAllLibrary = { ->

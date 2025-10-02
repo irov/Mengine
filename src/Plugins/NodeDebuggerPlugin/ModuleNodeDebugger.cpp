@@ -1955,10 +1955,7 @@ namespace Mengine
                 uint32_t width = widthAttr.as_uint();
                 uint32_t height = heightAttr.as_uint();
 
-                if( widthAttr )
-                {
-                    this->receiveResolutins( width, height );
-                }
+                this->receiveResolutins( width, height );
             }
         }
         else if( typeStr == "Settings" )
@@ -1970,7 +1967,11 @@ namespace Mengine
                 pugi::xml_attribute keyAttr = xmlNode.attribute( "key" );
                 pugi::xml_attribute valueAttr = xmlNode.attribute( "value" );
 
-                this->receiveSetting( nameAttr.as_string(), keyAttr.as_string(), valueAttr.as_string() );
+                const Char * name = nameAttr.as_string();
+                const Char * key = keyAttr.as_string();
+                const Char * value = valueAttr.as_string();
+
+                this->receiveSetting( name, key, value );
             }
         }
     }

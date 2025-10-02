@@ -3,8 +3,10 @@ package org.Mengine.Base;
 public class MengineFragmentAdvertisingId extends MengineFragment<MengineListenerAdvertisingId> {
     public static MengineFragmentAdvertisingId INSTANCE = null;
 
-    public String m_advertisingId;
-    public boolean m_limitAdTracking;
+    public static final String LIMIT_ADVERTISING_ID = "00000000-0000-0000-0000-000000000000";
+
+    public String m_advertisingId = MengineFragmentAdvertisingId.LIMIT_ADVERTISING_ID;
+    public boolean m_limitAdTracking = true;
 
     public String getAdvertisingId() {
         return m_advertisingId;

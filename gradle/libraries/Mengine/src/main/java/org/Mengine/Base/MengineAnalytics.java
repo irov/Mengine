@@ -63,6 +63,13 @@ public class MengineAnalytics {
         MengineAnalytics.m_bases.put(key, value);
     }
 
+    static public void addContextGetterParameterBoolean(@Size(min = 1L,max = 40L) String key, MengineAnalyticsGetter<Boolean> value) {
+        MengineAnalytics.assertContext(key);
+        MengineAnalytics.assertGetter(key);
+
+        MengineAnalytics.m_getter.put(key, value);
+    }
+
     static public void addContextGetterParameterString(@Size(min = 1L,max = 40L) String key, MengineAnalyticsGetter<String> value) {
         MengineAnalytics.assertContext(key);
         MengineAnalytics.assertGetter(key);

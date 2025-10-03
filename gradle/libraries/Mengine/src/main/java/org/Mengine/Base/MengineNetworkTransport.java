@@ -12,6 +12,7 @@ public class MengineNetworkTransport {
     public final static MengineNetworkTransport NETWORKTRANSPORT_LOWPAN = new MengineNetworkTransport("NETWORKTRANSPORT_LOWPAN");
     public final static MengineNetworkTransport NETWORKTRANSPORT_USB = new MengineNetworkTransport("NETWORKTRANSPORT_USB");
     public final static MengineNetworkTransport NETWORKTRANSPORT_THREAD = new MengineNetworkTransport("NETWORKTRANSPORT_THREAD");
+    public final static MengineNetworkTransport NETWORKTRANSPORT_SATELLITE = new MengineNetworkTransport("NETWORKTRANSPORT_SATELLITE");
     public final static MengineNetworkTransport NETWORKTRANSPORT_UNKNOWN = new MengineNetworkTransport("NETWORKTRANSPORT_UNKNOWN");
 
     private final String m_name;

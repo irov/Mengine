@@ -775,17 +775,19 @@ public abstract class MengineApplication extends Application {
             return m_acquisitionCampaign;
         });
 
-        MengineAnalytics.addContextGetterParameterLong("connection", () -> {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-                return -3L;
-            }
-
+        MengineAnalytics.addContextGetterParameterBoolean("network_available", () -> {
             boolean networkAvailable = MengineNetwork.isNetworkAvailable();
 
-            if (networkAvailable == false) {
-                return -2L;
-            }
+            return networkAvailable;
+        });
 
+        MengineAnalytics.addContextGetterParameterBoolean("network_unmetered", () -> {
+            boolean networkUnmetered = MengineNetwork.isNetworkUnmetered();
+
+            return networkUnmetered;
+        });
+
+        MengineAnalytics.addContextGetterParameterLong("network_transport", () -> {
             MengineNetworkTransport networkTransport = MengineNetwork.getNetworkTransport();
 
             if (networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_CELLULAR) {
@@ -820,6 +822,14 @@ public abstract class MengineApplication extends Application {
                 return 8L;
             }
 
+            if (networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_THREAD) {
+                return 9L;
+            }
+
+            if (networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_SATELLITE) {
+                return 10L;
+            }
+
             return -1L;
         });
 
@@ -834,8 +844,6 @@ public abstract class MengineApplication extends Application {
         ClassLoader cl = MengineApplication.class.getClassLoader();
 
         MengineNative.AndroidEnv_setMengineAndroidClassLoaderJNI(cl);
-
-        this.setState("application.init", "services_version");
 
         this.setState("application.init", "services_prepare");
 
@@ -914,6 +922,8 @@ public abstract class MengineApplication extends Application {
             }
         }
 
+        this.setState("application.init", "native_app_create");
+
         Object nativeApplication = this.createNativeApplication();
 
         if (nativeApplication == null) {
@@ -936,9 +946,9 @@ public abstract class MengineApplication extends Application {
             MengineNative.AndroidKernelService_addPlugin(tag.toString(), p);
         }
 
-        this.setState("application.init", "run_main");
-
         MengineNative.AndroidKernelService_addPlugin("Application", this);
+
+        this.setState("application.init", "native_app_run");
 
         m_main = new MengineMain(m_nativeApplication);
         m_main.start();

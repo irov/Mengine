@@ -1402,7 +1402,7 @@ public class MengineUtils {
         String hyphen_option_value = hyphen_option + ":";
         String double_hyphen_option_value = double_hyphen_option + ":";
 
-        for(String o : options) {
+        for (String o : options) {
             if (o.equals(hyphen_option) == true) {
                 MengineLog.logSingleWarning(TAG, "option [%s] has no value", option);
 

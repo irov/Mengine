@@ -6,6 +6,7 @@ import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
 import android.os.Build;
+import android.os.ext.SdkExtensions;
 
 import androidx.annotation.NonNull;
 
@@ -35,25 +36,39 @@ public class MengineMonitorConnectivityStatusService extends MengineService impl
             return MengineNetworkTransport.NETWORKTRANSPORT_VPN;
         }
 
-        if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI_AWARE) == true) {
-            return MengineNetworkTransport.NETWORKTRANSPORT_WIFI_AWARE;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI_AWARE) == true) {
+                return MengineNetworkTransport.NETWORKTRANSPORT_WIFI_AWARE;
+            }
         }
 
-        if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_LOWPAN) == true) {
-            return MengineNetworkTransport.NETWORKTRANSPORT_LOWPAN;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_LOWPAN) == true) {
+                return MengineNetworkTransport.NETWORKTRANSPORT_LOWPAN;
+            }
         }
 
-        if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_USB) == true) {
-            return MengineNetworkTransport.NETWORKTRANSPORT_USB;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (SdkExtensions.getExtensionVersion(Build.VERSION_CODES.UPSIDE_DOWN_CAKE) >= 12) {
+                if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_USB) == true) {
+                    return MengineNetworkTransport.NETWORKTRANSPORT_USB;
+                }
+            }
         }
 
-        if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_THREAD) == true) {
-            return MengineNetworkTransport.NETWORKTRANSPORT_THREAD;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (SdkExtensions.getExtensionVersion(Build.VERSION_CODES.UPSIDE_DOWN_CAKE) >= 7) {
+                if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_THREAD) == true) {
+                    return MengineNetworkTransport.NETWORKTRANSPORT_THREAD;
+                }
+            }
         }
 
-        if (Build.VERSION.SDK_INT >= 34) {
-            if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_SATELLITE) == true) {
-                return MengineNetworkTransport.NETWORKTRANSPORT_SATELLITE;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            if (SdkExtensions.getExtensionVersion(Build.VERSION_CODES.UPSIDE_DOWN_CAKE) >= 12) {
+                if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_SATELLITE) == true) {
+                    return MengineNetworkTransport.NETWORKTRANSPORT_SATELLITE;
+                }
             }
         }
 
@@ -157,7 +172,7 @@ public class MengineMonitorConnectivityStatusService extends MengineService impl
             );
         }
 
-        this.recomputeAndPublish(cm, null);
+        this.recomputeAndPublish(cm);
     }
 
     @Override

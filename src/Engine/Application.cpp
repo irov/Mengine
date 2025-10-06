@@ -89,10 +89,12 @@
 #include "Kernel/FileContent.h"
 #include "Kernel/RenderResolution.h"
 #include "Kernel/RenderViewport.h"
+#include "Kernel/RenderViewportDefault.h"
 #include "Kernel/RenderScissor.h"
 #include "Kernel/RenderCameraOrthogonal.h"
 #include "Kernel/RenderCameraProjection.h"
 #include "Kernel/RenderCameraOrthogonalTarget.h"
+#include "Kernel/RenderCameraOrthogonalDefault.h"
 #include "Kernel/BasePrototypeGenerator.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionUtf8.h"
@@ -536,10 +538,12 @@ namespace Mengine
         NODE_FACTORY( Layer2D );
         NODE_FACTORY( Landscape2D );
         NODE_FACTORY( RenderViewport );
+        NODE_FACTORY( RenderViewportDefault );
         NODE_FACTORY( RenderScissor );
         NODE_FACTORY( RenderCameraOrthogonal );
         NODE_FACTORY( RenderCameraProjection );
         NODE_FACTORY( RenderCameraOrthogonalTarget );
+        NODE_FACTORY( RenderCameraOrthogonalDefault );
         NODE_FACTORY( Window );
         NODE_FACTORY( ShapeCircle );
         NODE_FACTORY( ShapePacMan );
@@ -599,10 +603,12 @@ namespace Mengine
         NODE_FACTORY( Layer2D );
         NODE_FACTORY( Landscape2D );
         NODE_FACTORY( RenderViewport );
+        NODE_FACTORY( RenderViewportDefault );
         NODE_FACTORY( RenderScissor );
         NODE_FACTORY( RenderCameraOrthogonal );
         NODE_FACTORY( RenderCameraProjection );
         NODE_FACTORY( RenderCameraOrthogonalTarget );
+        NODE_FACTORY( RenderCameraOrthogonalDefault );
         NODE_FACTORY( Window );
         NODE_FACTORY( ShapeCircle );
         NODE_FACTORY( ShapePacMan );

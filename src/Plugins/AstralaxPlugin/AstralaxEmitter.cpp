@@ -44,10 +44,7 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////
     bool AstralaxEmitter::_activate()
     {
-        if( Node::_activate() == false )
-        {
-            return false;
-        }
+        //Empty
 
         return true;
     }

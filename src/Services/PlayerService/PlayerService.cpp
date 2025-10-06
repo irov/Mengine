@@ -26,8 +26,10 @@
 #include "Kernel/Scene.h"
 #include "Kernel/NodeRenderHierarchy.h"
 #include "Kernel/RenderViewport.h"
+#include "Kernel/RenderViewportDefault.h"
 #include "Kernel/RenderScissor.h"
 #include "Kernel/RenderCameraOrthogonal.h"
+#include "Kernel/RenderCameraOrthogonalDefault.h"
 #include "Kernel/RenderCameraHelper.h"
 #include "Kernel/MT19937Randomizer.h"
 #include "Kernel/ThreadTask.h"
@@ -324,45 +326,25 @@ namespace Mengine
         const Resolution & contentResolution = APPLICATION_SERVICE()
             ->getContentResolution();
 
-        mt::vec2f cr;
-        contentResolution.calcSize( &cr );
-        Viewport vp( 0.f, 0.f, cr.x, cr.y );
-
-        float gameViewportAspect;
-        Viewport gameViewport;
-        APPLICATION_SERVICE()
-            ->getGameViewport( &gameViewportAspect, &gameViewport );
-
         m_defaultResolution = Helper::generateFactorable<RenderResolution>( MENGINE_DOCUMENT_FACTORABLE );
-
         m_defaultResolution->setContentResolution( contentResolution );
-        m_defaultResolution->setGameViewport( gameViewport );
 
         this->setRenderResolution( m_defaultResolution );
 
-        m_defaultCamera2D = Helper::generateNodeFactorable<RenderCameraOrthogonal>( MENGINE_DOCUMENT_FACTORABLE );
-
+        m_defaultCamera2D = Helper::generateNodeFactorable<RenderCameraOrthogonalDefault>( MENGINE_DOCUMENT_FACTORABLE );
         m_defaultCamera2D->setName( STRINGIZE_STRING_LOCAL( "DefaultCamera2D" ) );
-
-        m_defaultCamera2D->setOrthogonalViewport( gameViewport );
         m_defaultCamera2D->enableForce();
 
         this->setRenderCamera( m_defaultCamera2D );
 
-        m_defaultViewport2D = Helper::generateNodeFactorable<RenderViewport>( MENGINE_DOCUMENT_FACTORABLE );
-
+        m_defaultViewport2D = Helper::generateNodeFactorable<RenderViewportDefault>( MENGINE_DOCUMENT_FACTORABLE );
         m_defaultViewport2D->setName( STRINGIZE_STRING_LOCAL( "DefaultViewport2D" ) );
-
-        m_defaultViewport2D->setViewport( vp );
         m_defaultViewport2D->enableForce();
 
         this->setRenderViewport( m_defaultViewport2D );
 
-        m_defaultArrowCamera2D = Helper::generateNodeFactorable<RenderCameraOrthogonal>( MENGINE_DOCUMENT_FACTORABLE );
-
+        m_defaultArrowCamera2D = Helper::generateNodeFactorable<RenderCameraOrthogonalDefault>( MENGINE_DOCUMENT_FACTORABLE );
         m_defaultArrowCamera2D->setName( STRINGIZE_STRING_LOCAL( "DefaultArrowCamera2D" ) );
-
-        m_defaultArrowCamera2D->setOrthogonalViewport( gameViewport );
         m_defaultArrowCamera2D->enableForce();
 
         const NodePtr & node = ARROW_SERVICE()
@@ -563,17 +545,17 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderCameraOrthogonalPtr & PlayerService::getDefaultSceneRenderCamera2D() const
+    const RenderCameraInterfacePtr & PlayerService::getDefaultSceneRenderCamera2D() const
     {
         return m_defaultCamera2D;
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderViewportPtr & PlayerService::getDefaultRenderViewport2D() const
+    const RenderViewportInterfacePtr & PlayerService::getDefaultRenderViewport2D() const
     {
         return m_defaultViewport2D;
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderCameraOrthogonalPtr & PlayerService::getDefaultArrowRenderCamera2D() const
+    const RenderCameraInterfacePtr & PlayerService::getDefaultArrowRenderCamera2D() const
     {
         return m_defaultArrowCamera2D;
     }

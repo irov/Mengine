@@ -51,9 +51,9 @@ namespace Mengine
         virtual void destroyLayout( const LayoutInterfacePtr & _layout ) = 0;
 
     public:
-        virtual const RenderCameraOrthogonalPtr & getDefaultSceneRenderCamera2D() const = 0;
-        virtual const RenderViewportPtr & getDefaultRenderViewport2D() const = 0;
-        virtual const RenderCameraOrthogonalPtr & getDefaultArrowRenderCamera2D() const = 0;
+        virtual const RenderCameraInterfacePtr & getDefaultSceneRenderCamera2D() const = 0;
+        virtual const RenderViewportInterfacePtr & getDefaultRenderViewport2D() const = 0;
+        virtual const RenderCameraInterfacePtr & getDefaultArrowRenderCamera2D() const = 0;
 
     public:
         virtual void setRenderResolution( const RenderResolutionInterfacePtr & _resolution ) = 0;

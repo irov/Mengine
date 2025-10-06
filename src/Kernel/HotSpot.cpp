@@ -339,10 +339,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool HotSpot::_activate()
     {
-        if( Node::_activate() == false )
-        {
-            return false;
-        }
+        //Empty
 
         return true;
     }

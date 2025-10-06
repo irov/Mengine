@@ -62,9 +62,6 @@
 #include "Kernel/Interender.h"
 #include "Kernel/RenderViewport.h"
 #include "Kernel/RenderScissor.h"
-#include "Kernel/RenderCameraOrthogonal.h"
-#include "Kernel/RenderCameraProjection.h"
-#include "Kernel/RenderCameraOrthogonalTarget.h"
 #include "Kernel/ResourceImage.h"
 #include "Kernel/Shape.h"
 #include "Kernel/Entity.h"
@@ -2860,7 +2857,6 @@ namespace Mengine
 
         pybind::interface_<RenderResolutionInterface, pybind::bases<Mixin>>( _kernel, "RenderResolutionInterface" )
             .def( "getContentResolution", &RenderResolutionInterface::getContentResolution )
-            .def( "getGameViewport", &RenderResolutionInterface::getGameViewport )
             ;
 
         pybind::interface_<RenderViewportInterface, pybind::bases<Mixin>>( _kernel, "RenderViewportInterface" )

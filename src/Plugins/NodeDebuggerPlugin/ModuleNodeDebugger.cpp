@@ -2331,10 +2331,10 @@ namespace Mengine
         MENGINE_UNUSED( _width );
         MENGINE_UNUSED( _height );
 
-        Resolution resolution( 640, 480 );
+        Resolution newResolution( _width, _height );
 
         APPLICATION_SERVICE()
-            ->setWindowResolution( resolution );
+            ->setWindowResolution( newResolution );
     }
     //////////////////////////////////////////////////////////////////////////
     void ModuleNodeDebugger::receiveSetting( const Char * _setting, const Char * _key, const Char * _value )

@@ -100,9 +100,6 @@
 #include "Kernel/ResourceImage.h"
 #include "Kernel/RenderViewport.h"
 #include "Kernel/RenderScissor.h"
-#include "Kernel/RenderCameraOrthogonal.h"
-#include "Kernel/RenderCameraProjection.h"
-#include "Kernel/RenderCameraOrthogonalTarget.h"
 #include "Kernel/SurfaceSound.h"
 #include "Kernel/SurfaceImage.h"
 #include "Kernel/SurfaceImageSequence.h"
@@ -1694,25 +1691,25 @@ namespace Mengine
                 return _kernel->string_from_char( deviceLanguage );
             }
             //////////////////////////////////////////////////////////////////////////
-            const RenderCameraOrthogonalPtr & s_getDefaultSceneRenderCamera2D()
+            const RenderCameraInterfacePtr & s_getDefaultSceneRenderCamera2D()
             {
-                const RenderCameraOrthogonalPtr & camera = PLAYER_SERVICE()
+                const RenderCameraInterfacePtr & camera = PLAYER_SERVICE()
                     ->getDefaultSceneRenderCamera2D();
 
                 return camera;
             }
             //////////////////////////////////////////////////////////////////////////
-            const RenderViewportPtr & s_getDefaultRenderViewport2D()
+            const RenderViewportInterfacePtr & s_getDefaultRenderViewport2D()
             {
-                const RenderViewportPtr & viewport = PLAYER_SERVICE()
+                const RenderViewportInterfacePtr & viewport = PLAYER_SERVICE()
                     ->getDefaultRenderViewport2D();
 
                 return viewport;
             }
             //////////////////////////////////////////////////////////////////////////
-            const RenderCameraOrthogonalPtr & s_getDefaultArrowRenderCamera2D()
+            const RenderCameraInterfacePtr & s_getDefaultArrowRenderCamera2D()
             {
-                const RenderCameraOrthogonalPtr & camera = PLAYER_SERVICE()
+                const RenderCameraInterfacePtr & camera = PLAYER_SERVICE()
                     ->getDefaultArrowRenderCamera2D();
 
                 return camera;

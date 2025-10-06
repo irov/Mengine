@@ -14,8 +14,8 @@
 #include "Kernel/Resolution.h"
 #include "Kernel/Affectorable.h"
 #include "Kernel/RenderResolution.h"
-#include "Kernel/RenderCameraOrthogonal.h"
-#include "Kernel/RenderViewport.h"
+#include "Kernel/RenderViewportDefault.h"
+#include "Kernel/RenderCameraOrthogonalDefault.h"
 #include "Kernel/RenderRoot.h"
 
 namespace Mengine
@@ -62,9 +62,9 @@ namespace Mengine
         const AffectorHubInterfacePtr & getGlobalAffectorHub() const override;
 
     public:
-        const RenderCameraOrthogonalPtr & getDefaultSceneRenderCamera2D() const override;
-        const RenderViewportPtr & getDefaultRenderViewport2D() const override;
-        const RenderCameraOrthogonalPtr & getDefaultArrowRenderCamera2D() const override;
+        const RenderCameraInterfacePtr & getDefaultSceneRenderCamera2D() const override;
+        const RenderViewportInterfacePtr & getDefaultRenderViewport2D() const override;
+        const RenderCameraInterfacePtr & getDefaultArrowRenderCamera2D() const override;
 
     public:
         void setRenderResolution( const RenderResolutionInterfacePtr & _resolution ) override;
@@ -141,9 +141,9 @@ namespace Mengine
 
     protected:
         RenderResolutionPtr m_defaultResolution;
-        RenderCameraOrthogonalPtr m_defaultCamera2D;
-        RenderViewportPtr m_defaultViewport2D;
-        RenderCameraOrthogonalPtr m_defaultArrowCamera2D;
+        RenderCameraOrthogonalDefaultPtr m_defaultCamera2D;
+        RenderViewportDefaultPtr m_defaultViewport2D;
+        RenderCameraOrthogonalDefaultPtr m_defaultArrowCamera2D;
 
         RenderResolutionInterfacePtr m_renderResolution;
         RenderViewportInterfacePtr m_renderViewport;

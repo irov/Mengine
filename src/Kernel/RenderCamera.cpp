@@ -23,11 +23,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool RenderCamera::_activate()
     {
-        if( Node::_activate() == false )
-        {
-            return true;
-        }
-
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, &RenderCamera::notifyChangeWindowResolution_, MENGINE_DOCUMENT_FACTORABLE );
 
         this->invalidateViewMatrix_();

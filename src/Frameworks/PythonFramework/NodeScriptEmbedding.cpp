@@ -81,10 +81,12 @@
 #include "Kernel/SurfaceSolidColor.h"
 #include "Kernel/Interender.h"
 #include "Kernel/RenderViewport.h"
+#include "Kernel/RenderViewportDefault.h"
 #include "Kernel/RenderScissor.h"
 #include "Kernel/RenderCameraOrthogonal.h"
 #include "Kernel/RenderCameraProjection.h"
 #include "Kernel/RenderCameraOrthogonalTarget.h"
+#include "Kernel/RenderCameraOrthogonalDefault.h"
 #include "Kernel/ResourceImage.h"
 #include "Kernel/ResourceImageData.h"
 #include "Kernel/ResourceImageEmpty.h"
@@ -783,6 +785,9 @@ namespace Mengine
             .def( "getViewport", &RenderViewport::getViewport )
             ;
 
+        pybind::interface_<RenderViewportDefault, pybind::bases<Node, RenderViewportInterface>>( _kernel, "RenderViewportDefault", false )
+            ;
+
         pybind::interface_<RenderScissor, pybind::bases<Node, RenderScissorInterface>>( _kernel, "RenderScissor", false )
             .def( "setScissorViewport", &RenderScissor::setScissorViewport )
             .def( "getScissorViewport", &RenderScissor::getScissorViewport )
@@ -822,6 +827,9 @@ namespace Mengine
             .def( "setFixedHorizont", &RenderCameraOrthogonalTarget::setFixedHorizont )
             .def( "getFixedHorizont", &RenderCameraOrthogonalTarget::getFixedHorizont )
             .def( "isFixedHorizont", &RenderCameraOrthogonalTarget::isFixedHorizont )
+            ;
+
+        pybind::interface_<RenderCameraOrthogonalDefault, pybind::bases<Node>>( _kernel, "RenderCameraOrthogonalDefault", false )
             ;
 
         {
@@ -1205,10 +1213,12 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( Window );
 
         SCRIPT_CLASS_WRAPPING( RenderViewport );
+        SCRIPT_CLASS_WRAPPING( RenderViewportDefault );
         SCRIPT_CLASS_WRAPPING( RenderScissor );
         SCRIPT_CLASS_WRAPPING( RenderCameraOrthogonal );
         SCRIPT_CLASS_WRAPPING( RenderCameraProjection );
         SCRIPT_CLASS_WRAPPING( RenderCameraOrthogonalTarget );
+        SCRIPT_CLASS_WRAPPING( RenderCameraOrthogonalDefault );
 
         SCRIPT_CLASS_WRAPPING( SurfaceSound );
         SCRIPT_CLASS_WRAPPING( SurfaceImage );
@@ -1267,10 +1277,12 @@ namespace Mengine
         UNSCRIPT_CLASS_WRAPPING( Window );
 
         UNSCRIPT_CLASS_WRAPPING( RenderViewport );
+        UNSCRIPT_CLASS_WRAPPING( RenderViewportDefault );
         UNSCRIPT_CLASS_WRAPPING( RenderScissor );
         UNSCRIPT_CLASS_WRAPPING( RenderCameraOrthogonal );
         UNSCRIPT_CLASS_WRAPPING( RenderCameraProjection );
         UNSCRIPT_CLASS_WRAPPING( RenderCameraOrthogonalTarget );
+        UNSCRIPT_CLASS_WRAPPING( RenderCameraOrthogonalDefault );
 
         UNSCRIPT_CLASS_WRAPPING( SurfaceSound );
         UNSCRIPT_CLASS_WRAPPING( SurfaceImage );

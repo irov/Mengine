@@ -23,11 +23,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool RenderViewport::_activate()
     {
-        if( Node::_activate() == false )
-        {
-            return true;
-        }
-
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, &RenderViewport::notifyChangeWindowResolution, MENGINE_DOCUMENT_FACTORABLE );
 
         this->invalidateViewport_();

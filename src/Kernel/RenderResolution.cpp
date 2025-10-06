@@ -1,5 +1,7 @@
 #include "RenderResolution.h"
 
+#include "Kernel/NotificationHelper.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -9,6 +11,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderResolution::~RenderResolution()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool RenderResolution::_activate()
+    {
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, &RenderResolution::notifyChangeWindowResolution_, MENGINE_DOCUMENT_FACTORABLE );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void RenderResolution::_deactivate()
+    {
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderResolution::setContentResolution( const Resolution & _resolution )
@@ -24,16 +38,6 @@ namespace Mengine
         return m_contentResolution;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderResolution::setGameViewport( const Viewport & _viewport )
-    {
-        m_gameViewport = _viewport;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const Viewport & RenderResolution::getGameViewport() const
-    {
-        return m_gameViewport;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void RenderResolution::fromContentToScreenPosition( const mt::vec2f & _contentPosition, mt::vec2f * const _screenPosition ) const
     {
         *_screenPosition = _contentPosition * m_contentResolutionSizeInv;
@@ -42,6 +46,12 @@ namespace Mengine
     void RenderResolution::fromScreenToContentPosition( const mt::vec2f & _screenPosition, mt::vec2f * const _contentPosition ) const
     {
         *_contentPosition = _screenPosition * m_contentResolutionSize;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void RenderResolution::notifyChangeWindowResolution_( bool _fullscreen, const Resolution & _resolution )
+    {
+          MENGINE_UNUSED( _fullscreen );
+          MENGINE_UNUSED( _resolution );
     }
     //////////////////////////////////////////////////////////////////////////
 }

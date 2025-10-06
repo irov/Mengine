@@ -298,8 +298,12 @@ RenderCamera
     RenderCameraProjection.h
     RenderCameraOrthogonalTarget.cpp
     RenderCameraOrthogonalTarget.h
+    RenderCameraOrthogonalDefault.cpp
+    RenderCameraOrthogonalDefault.h
     RenderViewport.h
     RenderViewport.cpp
+    RenderViewportDefault.h
+    RenderViewportDefault.cpp
     RenderScissor.h
     RenderScissor.cpp
     RenderResolution.h

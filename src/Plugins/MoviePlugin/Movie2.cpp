@@ -2681,11 +2681,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::_activate()
     {
-        if( Node::_activate() == false )
-        {
-            return false;
-        }
-
         ae_vector3_t anchorPoint;
         if( ae_get_movie_composition_anchor_point( m_composition, anchorPoint ) == AE_TRUE )
         {

@@ -156,6 +156,7 @@ namespace Mengine
     MENGINE_INLINE void RenderCamera::invalidateProjectionMatrix_() const
     {
         m_invalidateProjectionMatrix = true;
+        m_invalidateViewMatrix = true;
         m_invalidateViewProjectionMatrix = true;
     }
     //////////////////////////////////////////////////////////////////////////

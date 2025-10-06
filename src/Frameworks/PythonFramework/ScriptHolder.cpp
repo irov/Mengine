@@ -17,11 +17,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ScriptHolder::_activate()
     {
-        if( Node::_activate() == false )
-        {
-            return false;
-        }
-
         m_script = EVENTABLE_METHODR( EVENT_SCRIPT_HOLDER_KEEP, pybind::object() )
             ->onScriptHolderKeepScript();
 

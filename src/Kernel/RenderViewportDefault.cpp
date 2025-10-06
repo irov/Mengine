@@ -1,4 +1,4 @@
-#include "RenderScissor.h"
+#include "RenderViewportDefault.h"
 
 #include "Interface/ApplicationInterface.h"
 
@@ -8,52 +8,40 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    RenderScissor::RenderScissor()
+    RenderViewportDefault::RenderViewportDefault()
         : m_invalidateViewport( true )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderScissor::~RenderScissor()
+    RenderViewportDefault::~RenderViewportDefault()
     {
-        MENGINE_ASSERTION_OBSERVABLE( this, "scissor '%s'"
+        MENGINE_ASSERTION_OBSERVABLE( this, "viewport '%s'"
             , this->getName().c_str()
         );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderScissor::_activate()
+    bool RenderViewportDefault::_activate()
     {
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, &RenderScissor::notifyChangeWindowResolution, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, &RenderViewportDefault::notifyChangeWindowResolution, MENGINE_DOCUMENT_FACTORABLE );
 
         this->invalidateViewport_();
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderScissor::_deactivate()
+    void RenderViewportDefault::_deactivate()
     {
         Node::_deactivate();
 
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION );
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderScissor::setScissorViewport( const Viewport & _viewport )
-    {
-        m_viewport = _viewport;
-
-        this->invalidateViewport_();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const Viewport & RenderScissor::getScissorViewport() const
-    {
-        return m_viewport;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void RenderScissor::_invalidateWorldMatrix() const
+    void RenderViewportDefault::_invalidateWorldMatrix() const
     {
         this->invalidateViewport_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderScissor::updateViewport_() const
+    void RenderViewportDefault::updateViewport_() const
     {
         m_invalidateViewport = false;
 
@@ -76,11 +64,13 @@ namespace Mengine
 
         mt::vec2f viewportMaskSize = viewportMaskEnd - viewportMaskBegin;
 
+        Viewport viewport( 0.f, 0.f, contentResolutionSize.x, contentResolutionSize.y );
+
         const mt::mat4f & wm = this->getWorldMatrix();
 
         Viewport viewportWM;
-        mt::mul_v2_v2_m4( &viewportWM.begin, m_viewport.begin, wm );
-        mt::mul_v2_v2_m4( &viewportWM.end, m_viewport.end, wm );
+        mt::mul_v2_v2_m4( &viewportWM.begin, viewport.begin, wm );
+        mt::mul_v2_v2_m4( &viewportWM.end, viewport.end, wm );
 
         viewportWM.begin *= contentResolutionSizeInv;
         viewportWM.end *= contentResolutionSizeInv;
@@ -91,12 +81,22 @@ namespace Mengine
         m_viewportWM.clamp( contentResolutionSize );
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderScissor::notifyChangeWindowResolution( bool _fullscreen, const Resolution & _resolution )
+    void RenderViewportDefault::notifyChangeWindowResolution( bool _fullscreen, const Resolution & _resolution )
     {
         MENGINE_UNUSED( _fullscreen );
         MENGINE_UNUSED( _resolution );
 
         this->invalidateViewport_();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void RenderViewportDefault::fromCameraToContentPosition( const mt::vec2f & _cameraPosition, mt::vec2f * const _contentPosition ) const
+    {
+        const Viewport & vpwm = this->getViewportWM();
+
+        mt::vec2f wpwm_size;
+        vpwm.calcSize( &wpwm_size );
+
+        *_contentPosition = vpwm.begin + _cameraPosition * wpwm_size;
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -118,11 +118,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Entity::_activate()
     {
-        if( Node::_activate() == false )
-        {
-            return false;
-        }
-
         bool successful = EVENTABLE_METHODR( EVENT_ENTITY_PREPARATION, true )
             ->onEntityPreparation( m_behavior );
 

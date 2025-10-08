@@ -2281,7 +2281,7 @@ namespace Mengine
 
                 ImGui::Spacing();
 
-                ImGui::TextDisabled( "Android:" );
+                ImGui::TextDisabled( "iPad:" );
 
                 for( const ResolutionDesc & res : resolutions_iPad )
                 {

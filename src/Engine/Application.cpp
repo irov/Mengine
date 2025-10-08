@@ -1961,30 +1961,30 @@ namespace Mengine
 
         if( windowResolutionHeight > maxClientResolutionHeight )
         {
-            uint32_t new_witdh = static_cast<uint32_t>(float( windowResolutionHeight ) * aspect + 0.5f);
+            uint32_t new_width = static_cast<uint32_t>(float( maxClientResolutionHeight ) * aspect + 0.5f);
             uint32_t new_height = maxClientResolutionHeight;
 
-            if( new_witdh > maxClientResolutionWidth )
+            if( new_width > maxClientResolutionWidth )
             {
-                new_witdh = maxClientResolutionWidth;
+                new_width = maxClientResolutionWidth;
                 new_height = static_cast<uint32_t>(float( maxClientResolutionWidth ) / aspect + 0.5f);
             }
 
-            _windowResolution->setWidth( new_witdh );
+            _windowResolution->setWidth( new_width );
             _windowResolution->setHeight( new_height );
         }
         else if( windowResolutionWidth > maxClientResolutionWidth )
         {
-            uint32_t new_witdh = maxClientResolutionWidth;
-            uint32_t new_height = static_cast<uint32_t>(float( windowResolutionWidth ) / aspect + 0.5f);
+            uint32_t new_width = maxClientResolutionWidth;
+            uint32_t new_height = static_cast<uint32_t>(float( maxClientResolutionWidth ) / aspect + 0.5f);
 
             if( new_height > maxClientResolutionHeight )
             {
-                new_witdh = static_cast<uint32_t>(float( maxClientResolutionHeight ) * aspect + 0.5f);
+                new_width = static_cast<uint32_t>(float( maxClientResolutionHeight ) * aspect + 0.5f);
                 new_height = maxClientResolutionHeight;
             }
 
-            _windowResolution->setWidth( new_witdh );
+            _windowResolution->setWidth( new_width );
             _windowResolution->setHeight( new_height );
         }
         else
@@ -2064,11 +2064,13 @@ namespace Mengine
             return;
         }
 
-        LOGGER_INFO( "system", "set change window resolution size %u:%u -> %u:%u"
+        LOGGER_INFO( "system", "set change window resolution size %u:%u -> %u:%u aspect %f -> %f"
             , m_windowResolution.getWidth()
             , m_windowResolution.getHeight()
             , _resolution.getWidth()
             , _resolution.getHeight()
+            , m_windowResolution.getAspectRatio()
+            , _resolution.getAspectRatio()
         );
 
         m_windowResolution = _resolution;
@@ -2138,10 +2140,11 @@ namespace Mengine
             return;
         }
 
-        LOGGER_INFO( "system", "current resolution [%s] [%u %u]"
+        LOGGER_INFO( "system", "current resolution [%s] [%u %u] aspect: %f"
             , fullscreen == true ? "Fullscreen" : "Window"
             , windowResolution.getWidth()
             , windowResolution.getHeight()
+            , windowResolution.getAspectRatio()
         );
 
         m_currentWindowResolution = windowResolution;

@@ -23,8 +23,10 @@ namespace Mengine
         MENGINE_INLINE float getWidthF() const;
         MENGINE_INLINE float getHeightF() const;
 
+    public:
         float getAspectRatio() const;
 
+    public:
         void calcSize( mt::vec2f * const _size ) const;
         void calcSizeInv( mt::vec2f * const _size ) const;
         void calcScale( const Resolution & _resolution, mt::vec2f * const _scale ) const;

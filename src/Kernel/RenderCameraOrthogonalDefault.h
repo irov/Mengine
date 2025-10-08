@@ -28,7 +28,7 @@ namespace Mengine
     protected:
         void makeViewport_( Viewport * const _viewport ) const;
 
-    protected:        
+    protected:
         mutable Viewport m_renderViewport;
     };
     //////////////////////////////////////////////////////////////////////////

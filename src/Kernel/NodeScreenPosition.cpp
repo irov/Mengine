@@ -52,8 +52,8 @@ namespace Mengine
                     ->getRenderResolution();
 
                 resolution = player_resolution.get();
-            }   
-            
+            }
+
             resolution->fromContentToScreenPosition( contentPosition, _screenPosition );
         }
         //////////////////////////////////////////////////////////////////////////

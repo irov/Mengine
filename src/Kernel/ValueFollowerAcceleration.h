@@ -52,6 +52,8 @@ namespace Mengine
         {
             *_used = _context->time;
 
+            m_speed += m_acceleration * _context->time;
+
             float value_length = this->getLength();
 
             if( mt::equal_f_z( value_length ) == true )
@@ -60,8 +62,6 @@ namespace Mengine
 
                 return true;
             }
-
-            m_speed += m_acceleration * _context->time;
 
             float step = m_speed * _context->time;
 
@@ -73,11 +73,7 @@ namespace Mengine
             }
             else if( step + m_minimalDistance >= value_length )
             {
-                T offset = this->getDistance();
-
-                T add = offset * ((value_length - m_minimalDistance) / value_length);
-
-                this->step( add );
+                this->overtake();
 
                 return true;
             }

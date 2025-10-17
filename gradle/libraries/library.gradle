@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 
-def ANDROID_APP_MAIN_PROJECT = Utils.getStringProperty("ANDROID_APP_MAIN_PROJECT", "app")
+final String ANDROID_APP_MAIN_PROJECT = Utils.getStringProperty("ANDROID_APP_MAIN_PROJECT", "app")
 
 apply from: rootProject.projectDir.getAbsolutePath() + '/base.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/androidx.gradle'
@@ -10,7 +10,7 @@ android {
     sourceSets {
         main {
             if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR") == true) {
-                def f = new File(ANDROID_APP_ASSETS_RES_DIR)
+                final def f = new File(ANDROID_APP_ASSETS_RES_DIR)
 
                 if (f.exists() == false) {
                     throw new GradleException("ANDROID_APP_ASSETS_RES_DIR not found folder: $ANDROID_APP_ASSETS_RES_DIR")

@@ -1,7 +1,7 @@
-def ANDROID_APP_DEBUG_MINIFY_ENABLE = Utils.getBooleanProperty("ANDROID_APP_DEBUG_MINIFY_ENABLE", false)
-def ANDROID_APP_RELEASE_MINIFY_ENABLE = Utils.getBooleanProperty("ANDROID_APP_RELEASE_MINIFY_ENABLE", false)
+final Boolean ANDROID_APP_DEBUG_MINIFY_ENABLE = Utils.getBooleanProperty("ANDROID_APP_DEBUG_MINIFY_ENABLE", false)
+final Boolean ANDROID_APP_RELEASE_MINIFY_ENABLE = Utils.getBooleanProperty("ANDROID_APP_RELEASE_MINIFY_ENABLE", false)
 
-def proguardUserFile = project.file('proguard-rules.pro')
+final File proguardUserFile = project.file('proguard-rules.pro')
 
 android {
     buildTypes {

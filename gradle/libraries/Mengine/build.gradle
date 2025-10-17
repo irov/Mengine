@@ -1,23 +1,23 @@
 apply from: rootProject.projectDir.getAbsolutePath() + '/libraries/library.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/gms.gradle'
 
-def ANDROID_APP_BUILD_NUMBER = Utils.getIntegerProperty("ANDROID_APP_BUILD_NUMBER", 0)
-def ANDROID_APP_BUILD_VERSION = Utils.getStringProperty("ANDROID_APP_BUILD_VERSION", "0.0.0")
-def ANDROID_APP_BUILD_PUBLISH = Utils.getBooleanProperty("ANDROID_APP_BUILD_PUBLISH", false)
-def MENGINE_APP_SECURE_VALUE = Utils.getStringProperty("MENGINE_APP_SECURE_VALUE", "0123456789A")
-def ANDROID_APP_MAIN_PROJECT = Utils.getStringProperty("ANDROID_APP_MAIN_PROJECT", "app")
-def MENGINE_APP_DEPLOY_PATH = Utils.getStringProperty("MENGINE_APP_DEPLOY_PATH", rootProject.projectDir.getAbsolutePath() + "/$ANDROID_APP_MAIN_PROJECT")
-def MENGINE_APP_BUILD_ASSERTION_DEBUG = Utils.getIntegerProperty("MENGINE_APP_BUILD_ASSERTION_DEBUG", -1)
-def MENGINE_APP_BUILD_LOGGER_INFO = Utils.getIntegerProperty("MENGINE_APP_BUILD_LOGGER_INFO", -1)
-def MENGINE_APP_BUILD_DEBUG_FILE_PATH = Utils.getIntegerProperty("MENGINE_APP_BUILD_DEBUG_FILE_PATH", -1)
-def MENGINE_APP_BUILD_DEBUG_DOCUMENT = Utils.getIntegerProperty("MENGINE_APP_BUILD_DEBUG_DOCUMENT", -1)
-def MENGINE_APP_ENABLE_STRICT_MODE = Utils.getBooleanProperty("MENGINE_APP_ENABLE_STRICT_MODE", false)
+final Integer ANDROID_APP_BUILD_NUMBER = Utils.getIntegerProperty("ANDROID_APP_BUILD_NUMBER", 0)
+final String ANDROID_APP_BUILD_VERSION = Utils.getStringProperty("ANDROID_APP_BUILD_VERSION", "0.0.0")
+final Boolean ANDROID_APP_BUILD_PUBLISH = Utils.getBooleanProperty("ANDROID_APP_BUILD_PUBLISH", false)
+final String MENGINE_APP_SECURE_VALUE = Utils.getStringProperty("MENGINE_APP_SECURE_VALUE", "0123456789A")
+final String ANDROID_APP_MAIN_PROJECT = Utils.getStringProperty("ANDROID_APP_MAIN_PROJECT", "app")
+final String MENGINE_APP_DEPLOY_PATH = Utils.getStringProperty("MENGINE_APP_DEPLOY_PATH", rootProject.projectDir.getAbsolutePath() + "/$ANDROID_APP_MAIN_PROJECT")
+final Integer MENGINE_APP_BUILD_ASSERTION_DEBUG = Utils.getIntegerProperty("MENGINE_APP_BUILD_ASSERTION_DEBUG", -1)
+final Integer MENGINE_APP_BUILD_LOGGER_INFO = Utils.getIntegerProperty("MENGINE_APP_BUILD_LOGGER_INFO", -1)
+final Integer MENGINE_APP_BUILD_DEBUG_FILE_PATH = Utils.getIntegerProperty("MENGINE_APP_BUILD_DEBUG_FILE_PATH", -1)
+final Integer MENGINE_APP_BUILD_DEBUG_DOCUMENT = Utils.getIntegerProperty("MENGINE_APP_BUILD_DEBUG_DOCUMENT", -1)
+final Boolean MENGINE_APP_ENABLE_STRICT_MODE = Utils.getBooleanProperty("MENGINE_APP_ENABLE_STRICT_MODE", false)
 
-def ANDROID_APP_SCREEN_ORIENTATION = Utils.getStringProperty("ANDROID_APP_SCREEN_ORIENTATION", "sensorPortrait")
-def ANDROID_APP_REQUIRED_HARDWARE_TOUCHSCREEN = Utils.getBooleanProperty("ANDROID_APP_REQUIRED_HARDWARE_TOUCHSCREEN", false)
-def ANDROID_APP_REQUIRED_HARDWARE_SENSOR_ACCELEROMETER = Utils.getBooleanProperty("ANDROID_APP_REQUIRED_HARDWARE_SENSOR_ACCELEROMETER", false)
+final String ANDROID_APP_SCREEN_ORIENTATION = Utils.getStringProperty("ANDROID_APP_SCREEN_ORIENTATION", "sensorPortrait")
+final Boolean ANDROID_APP_REQUIRED_HARDWARE_TOUCHSCREEN = Utils.getBooleanProperty("ANDROID_APP_REQUIRED_HARDWARE_TOUCHSCREEN", false)
+final Boolean ANDROID_APP_REQUIRED_HARDWARE_SENSOR_ACCELEROMETER = Utils.getBooleanProperty("ANDROID_APP_REQUIRED_HARDWARE_SENSOR_ACCELEROMETER", false)
 
-def MENGINE_APP_LIBRARY_OPENAL32 = Utils.existAppLibrary("MENGINE_APP_LIBRARY_OPENAL32")
+final Boolean MENGINE_APP_LIBRARY_OPENAL32 = Utils.existAppLibrary("MENGINE_APP_LIBRARY_OPENAL32")
 
 println("MENGINE_APP_SECURE_VALUE: $MENGINE_APP_SECURE_VALUE")
 println("MENGINE_APP_DEPLOY_PATH: $MENGINE_APP_DEPLOY_PATH")
@@ -52,7 +52,7 @@ android {
     }
 
     buildTypes {
-        List<String> cmake_arguments = new ArrayList<String>()
+        final List<String> cmake_arguments = new ArrayList<String>()
         cmake_arguments.add("-DANDROID_PLATFORM=android-" + project.minSdkVersion)
         cmake_arguments.add("-DANDROID_ARM_NEON=TRUE")
         cmake_arguments.add("-DANDROID_STL=c++_shared")
@@ -70,7 +70,7 @@ android {
         debug {
             externalNativeBuild {
                 cmake {
-                    for (String argument : cmake_arguments) {
+                    for (final String argument : cmake_arguments) {
                         arguments.add(argument)
                     }
 
@@ -98,7 +98,7 @@ android {
         release {
             externalNativeBuild {
                 cmake {
-                    for (String argument : cmake_arguments) {
+                    for (final String argument : cmake_arguments) {
                         arguments.add(argument)
                     }
 

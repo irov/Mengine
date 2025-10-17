@@ -1,4 +1,4 @@
-def ANDROID_APP_SPLIT_ENABLE = Utils.getBooleanProperty("ANDROID_APP_SPLIT_ENABLE", false)
+final Boolean ANDROID_APP_SPLIT_ENABLE = Utils.getBooleanProperty("ANDROID_APP_SPLIT_ENABLE", false)
 
 android {
     defaultConfig {

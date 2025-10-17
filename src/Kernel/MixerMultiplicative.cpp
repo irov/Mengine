@@ -84,10 +84,18 @@ namespace Mengine
         {
             float used = 0.f;
 
-            if( m.follower.update( _context, &used ) == false )
+            float old_value = m.follower.getValue();
+
+            m.follower.update( _context, &used );
+
+            float new_value = m.follower.getValue();
+
+            if( old_value == new_value )
             {
-                process = true;
+                continue;
             }
+
+            process = true;
         }
 
         return process;

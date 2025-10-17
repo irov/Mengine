@@ -1,3 +1,5 @@
+import java.util.Properties
+
 fun getBooleanProperty(name: String, d: Boolean): Boolean {
     if (extra.has(name) == false) {
         return d
@@ -17,7 +19,7 @@ fun getBooleanProperty(name: String, d: Boolean): Boolean {
     return d
 }
 
-fun getStringProperty(name: String, d: String): String? {
+fun getStringProperty(name: String, d: String?): String? {
     if (extra.has(name) == false) {
         return d
     }
@@ -39,46 +41,58 @@ fun getStringProperty(name: String, d: String): String? {
     return s
 }
 
+val RED: String = "\u001b[31m"
+val GREEN: String = "\u001b[32m"
+val RESET: String = "\u001b[0m"
+
+fun printredln(s: String) {
+    println(RED + s + RESET)
+}
+
+fun printgreenln(s: String) {
+    println(GREEN + s + RESET)
+}
+
 fun includeLibrary(name: String, path: String) {
     if (getBooleanProperty("MENGINE_APP_LIBRARY_ALL", false) == false && getBooleanProperty(name, true) == false) {
-        println("\u001b[31m" + "[-] Exclude library: $path" + "\u001b[0m")
+        printredln("[-] Exclude library: $path")
 
         return
     }
 
-    println("\u001b[32m" + "[+] Include library: $path" + "\u001b[0m")
+    printgreenln("[+] Include library: $path")
 
     include(path)
 }
 
 fun includePlugin(name: String, path: String, required: List<String> = emptyList()) {
     if (getBooleanProperty("MENGINE_APP_PLUGIN_ENABLE_ALL", false) == false && (getBooleanProperty(name, false) == false || required.all { getBooleanProperty(it, false) } == false)) {
-        println("\u001b[31m" + "[-] Exclude plugin: $path" + "\u001b[0m")
+        printredln("[-] Exclude plugin: $path")
 
         return
     }
 
-    println("\u001b[32m" + "[+] Include plugin: $path" + "\u001b[0m")
+    printgreenln("[+] Include plugin: $path")
 
     include(path)
 }
 
-println("\u001b[32m" + "=== Start configure ===" + "\u001b[0m")
+printgreenln("=== Start configure ===")
 
-val ANDROID_APP_MAIN_PROJECT = getStringProperty("ANDROID_APP_MAIN_PROJECT", "app");
+val ANDROID_APP_MAIN_PROJECT: String? = getStringProperty("ANDROID_APP_MAIN_PROJECT", "app")
 
 if (ANDROID_APP_MAIN_PROJECT == null || file(ANDROID_APP_MAIN_PROJECT).exists() == false) {
-    println("\u001b[31m" + "[-] Not found $ANDROID_APP_MAIN_PROJECT" + "\u001b[0m")
+    printredln("[-] Not found $ANDROID_APP_MAIN_PROJECT")
 
     throw kotlin.Exception("Not found $ANDROID_APP_MAIN_PROJECT")
 }
 
-val fileAppProperties = file("$ANDROID_APP_MAIN_PROJECT/app.properties")
+val fileAppProperties: File = file("$ANDROID_APP_MAIN_PROJECT/app.properties")
 
 if (fileAppProperties.exists() == true) {
-    println("\u001b[32m" + "[+] Load $ANDROID_APP_MAIN_PROJECT/app.properties" + "\u001b[0m")
+    printgreenln("[+] Load $ANDROID_APP_MAIN_PROJECT/app.properties")
 
-    val appProperties = java.util.Properties()
+    val appProperties = Properties()
 
     fileAppProperties.reader().use { reader -> appProperties.load(reader) }
 
@@ -92,23 +106,23 @@ if (fileAppProperties.exists() == true) {
         extra[key.toString()] = value
     }
 } else {
-    println("\u001b[31m" + "[-] Not found $ANDROID_APP_MAIN_PROJECT/app.properties" + "\u001b[0m")
+    printredln("[-] Not found $ANDROID_APP_MAIN_PROJECT/app.properties")
 }
 
-println("\u001b[32m" + "[+] Include :$ANDROID_APP_MAIN_PROJECT" + "\u001b[0m")
+printgreenln("[+] Include :$ANDROID_APP_MAIN_PROJECT")
 include(":$ANDROID_APP_MAIN_PROJECT")
 
 if (extra.has("ANDROID_APP_DELIVERY_PACKAGES") == true) {
     val PACKAGES = extra["ANDROID_APP_DELIVERY_PACKAGES"].toString().split(",")
 
     for(PACKAGE_DESC in PACKAGES) {
-        val PACKAGE_NAME = PACKAGE_DESC.split(";").get(0)
+        val PACKAGE_NAME = PACKAGE_DESC.split(";")[0]
         val PACKAGE_PATH = PACKAGE_DESC.split(";").getOrNull(1)
 
         if (PACKAGE_PATH == null || PACKAGE_PATH == "NO-PATH") {
-            println("\u001b[32m" + "[+] Include delivery: :$ANDROID_APP_MAIN_PROJECT:$PACKAGE_NAME" + "\u001b[0m")
+            printgreenln("[+] Include delivery: :$ANDROID_APP_MAIN_PROJECT:$PACKAGE_NAME")
         } else {
-            println("\u001b[32m" + "[+] Include delivery: :$ANDROID_APP_MAIN_PROJECT:$PACKAGE_NAME extra path $PACKAGE_PATH" + "\u001b[0m")
+            printgreenln("[+] Include delivery: :$ANDROID_APP_MAIN_PROJECT:$PACKAGE_NAME extra path $PACKAGE_PATH")
         }
 
         include(":$ANDROID_APP_MAIN_PROJECT:$PACKAGE_NAME")

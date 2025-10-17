@@ -121,7 +121,7 @@ namespace Mengine
                 m_factoryDelaySchedulePipe = Helper::makeFactoryPool<DelaySchedulePipe, 16>( MENGINE_DOCUMENT_FACTORABLE );
                 m_factoryPythonScheduleTiming = Helper::makeFactoryPool<PythonScheduleTiming, 16>( MENGINE_DOCUMENT_FACTORABLE );
                 m_factoryPythonSchedulePipe = Helper::makeFactoryPool<PythonSchedulePipe, 16>( MENGINE_DOCUMENT_FACTORABLE );
-                m_factoryNodeAffectorCallback = Helper::makeFactoryPool<ScriptableAffectorCallback, 4>( MENGINE_DOCUMENT_FACTORABLE );                
+                m_factoryNodeAffectorCallback = Helper::makeFactoryPool<ScriptableAffectorCallback, 4>( MENGINE_DOCUMENT_FACTORABLE );
                 m_factoryPythonLayoutElementGetter = Helper::makeFactoryPool<PythonLayoutElementGetter, 4>( MENGINE_DOCUMENT_FACTORABLE );
                 m_factoryPythonLayoutElementSetter = Helper::makeFactoryPool<PythonLayoutElementSetter, 4>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -366,8 +366,8 @@ namespace Mengine
                 py_getter->initialize( _getter, _args );
 
                 PythonLayoutElementSetterPtr py_setter;
-                
-                if( _setter.is_none() == false ) 
+
+                if( _setter.is_none() == false )
                 {
                     py_setter = m_factoryPythonLayoutElementSetter->createObject( MENGINE_DOCUMENT_PYTHON );
                     py_setter->initialize( _setter, _args );
@@ -2485,7 +2485,7 @@ namespace Mengine
 
         pybind::interface_<Identity, pybind::bases<Mixin>>( _kernel, "Identity" )
             .def( "setName", &Identity::setName )
-            .def( "getName", &Identity::getName )            
+            .def( "getName", &Identity::getName )
             ;
 
         pybind::interface_<BoundingBox, pybind::bases<Mixin>>( _kernel, "BoundingBox" )
@@ -2887,7 +2887,7 @@ namespace Mengine
             .def_member( "target", &RenderContext::target )
             .def_member( "zGroup", &RenderContext::zGroup )
             .def_member( "zIndex", &RenderContext::zIndex )
-            ;            
+            ;
 
         pybind::interface_<SchedulerInterface, pybind::bases<Mixin>>( _kernel, "SchedulerInterface", true )
             .def_proxy_static_args( "timing", scriptMethod, &KernelScriptMethod::ScheduleInterface_timing )

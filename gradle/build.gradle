@@ -18,7 +18,7 @@ buildscript {
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.2.0'
 
         if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_GOOGLE_SERVICE") == true) {
-            classpath 'com.google.gms:google-services:4.4.3'
+            classpath 'com.google.gms:google-services:4.4.4'
         }
 
         if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_SENTRY") == true) {
@@ -43,12 +43,12 @@ buildscript {
     }
 }
 
-def ANDROID_APP_NDK_VERSION = Utils.getStringProperty("ANDROID_APP_NDK_VERSION", null)
-def ANDROID_APP_CMAKE_VERSION = Utils.getStringProperty("ANDROID_APP_CMAKE_VERSION", null)
-def ANDROID_APP_BUILD_TOOLS_VERSION = Utils.getStringProperty("ANDROID_APP_BUILD_TOOLS_VERSION", null)
-def ANDROID_APP_MIN_SDK_VERSION = Utils.getIntegerProperty("ANDROID_APP_MIN_SDK_VERSION", null)
-def ANDROID_APP_TARGET_SDK_VERSION = Utils.getIntegerProperty("ANDROID_APP_TARGET_SDK_VERSION", null)
-def ANDROID_APP_COMPILE_SDK_VERSION = Utils.getIntegerProperty("ANDROID_APP_COMPILE_SDK_VERSION", null)
+final String ANDROID_APP_NDK_VERSION = Utils.getStringProperty("ANDROID_APP_NDK_VERSION", null)
+final String ANDROID_APP_CMAKE_VERSION = Utils.getStringProperty("ANDROID_APP_CMAKE_VERSION", null)
+final String ANDROID_APP_BUILD_TOOLS_VERSION = Utils.getStringProperty("ANDROID_APP_BUILD_TOOLS_VERSION", null)
+final Integer ANDROID_APP_MIN_SDK_VERSION = Utils.getIntegerProperty("ANDROID_APP_MIN_SDK_VERSION", null)
+final Integer ANDROID_APP_TARGET_SDK_VERSION = Utils.getIntegerProperty("ANDROID_APP_TARGET_SDK_VERSION", null)
+final Integer ANDROID_APP_COMPILE_SDK_VERSION = Utils.getIntegerProperty("ANDROID_APP_COMPILE_SDK_VERSION", null)
 
 allprojects {
     layout.buildDirectory.set(layout.projectDirectory.dir(rootProject.projectDir.getAbsolutePath() + "/../outputs/gradle/build/${rootProject.name}/${project.name}"))
@@ -57,7 +57,7 @@ allprojects {
         if (ANDROID_APP_NDK_VERSION != null) {
             ndkVersion = ANDROID_APP_NDK_VERSION
         } else {
-            ndkVersion = "28.2.13676358"
+            ndkVersion = "29.0.14206865"
         }
 
         if (ANDROID_APP_CMAKE_VERSION != null) {

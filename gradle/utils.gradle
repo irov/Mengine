@@ -1,7 +1,7 @@
 ext.Utils = [:]
 
-Utils.getBooleanProperty = { String name, Boolean d ->
-    def p = project.findProperty(name)
+Utils.getBooleanProperty = { final String name, final Boolean d ->
+    final def p = project.findProperty(name)
 
     if (p == null) {
         return d
@@ -16,12 +16,10 @@ Utils.getBooleanProperty = { String name, Boolean d ->
     }
 
     throw new IllegalArgumentException("Property '${name}' must be 0 or 1, but got '${p}'")
-
-    return d
 }
 
-Utils.getStringProperty = { String name, String d ->
-    def s = project.findProperty(name)
+Utils.getStringProperty = { final String name, final String d ->
+    final def s = project.findProperty(name)
 
     if (s == null) {
         return d
@@ -42,26 +40,24 @@ Utils.getStringProperty = { String name, String d ->
     return s
 }
 
-Utils.getIntegerProperty = { String name, Integer d ->
-    def p = project.findProperty(name)
+Utils.getIntegerProperty = { final String name, final Integer d ->
+    final def p = project.findProperty(name)
 
     if (p == null) {
         return d
     }
 
     try {
-        def v = p as Integer
+        final def v = p as Integer
 
         return v
-    } catch (ClassCastException e) {
-        throw new IllegalArgumentException("Property '${name}' must be integer, but got '${p}'")
+    } catch (final ClassCastException e) {
+        throw new IllegalArgumentException("Property '${name}' must be integer, but got '${p}' [exception: ${e}]")
     }
-
-    return d
 }
 
-Utils.isEnableAllLibrary = { ->
-    def enableAll = project.findProperty("MENGINE_APP_LIBRARY_ENABLE_ALL")
+Utils.isEnableAllLibrary = { -> Boolean
+    final def enableAll = project.findProperty("MENGINE_APP_LIBRARY_ENABLE_ALL")
 
     if (enableAll != null && (enableAll as Integer) == 1) {
         return true
@@ -70,18 +66,18 @@ Utils.isEnableAllLibrary = { ->
     return false
 }
 
-Utils.existAppLibrary = { String name ->
+Utils.existAppLibrary = { final String name ->
     if (Utils.isEnableAllLibrary() == true) {
         return true
     }
 
-    boolean p = Utils.getBooleanProperty(name, true)
+    final boolean p = Utils.getBooleanProperty(name, true)
 
     return p
 }
 
 Utils.isEnableAllPlugins = { ->
-    def enableAll = project.findProperty("MENGINE_APP_PLUGIN_ENABLE_ALL")
+    final def enableAll = project.findProperty("MENGINE_APP_PLUGIN_ENABLE_ALL")
 
     if (enableAll != null && (enableAll as Integer) == 1) {
         return true
@@ -90,76 +86,61 @@ Utils.isEnableAllPlugins = { ->
     return false
 }
 
-Utils.existAppPlugin = { String name, List<String> required = [] ->
+Utils.existAppPlugin = { final String name, final List<String> required = [] ->
     if (Utils.isEnableAllPlugins() == true) {
         return true
     }
 
-    for (String r : required) {
+    for (final String r : required) {
         if (Utils.existAppPlugin(r) == false) {
-            return false;
+            return false
         }
     }
 
-    boolean p = Utils.getBooleanProperty(name, false)
+    final boolean p = Utils.getBooleanProperty(name, false)
 
-    return p;
+    return p
 }
 
-Utils.getBooleanAppPluginProperty = { String name, List<String> required = [] ->
+Utils.getBooleanAppPluginProperty = { final String name, final List<String> required = [] ->
     if (Utils.isEnableAllPlugins() == true) {
         return true
     }
 
-    for (String r : required) {
+    for (final String r : required) {
         if (Utils.existAppPlugin(r) == false) {
-            return false;
+            return false
         }
     }
 
-    boolean p = Utils.getBooleanProperty(name, false)
+    final boolean p = Utils.getBooleanProperty(name, false)
 
     return p
 }
 
-Utils.getStringAppPluginProperty = { String name ->
-    if (Utils.isEnableAllPlugins() == true) {
-        return true
-    }
-
-    String p = Utils.getStringProperty(name)
+Utils.existAppService = { final String name ->
+    final boolean p = Utils.getBooleanProperty(name, true)
 
     return p
 }
 
-Utils.getIntegerAppPluginProperty = { String name ->
-    if (Utils.isEnableAllPlugins() == true) {
-        return true
-    }
+final String RED = "\u001b[31m"
+final String GREEN = "\u001b[32m"
+final String YELLOW = "\u001b[33m"
+final String RESET = "\u001b[0m"
 
-    Integer p = Utils.getIntegerProperty(name)
-
-    return p
-}
-
-Utils.existAppService = { String name ->
-    boolean p = Utils.getBooleanProperty(name, true)
-
-    return p
-}
-
-Utils.logAvailable = { String name, boolean value ->
+Utils.logAvailable = { final String name, final boolean value ->
     if (value == false) {
-        println "\u001b[31m${name}: ${value}\u001b[0m"
+        println RED + "${name}: ${value}" + RESET
     } else {
-        println "\u001b[32m${name}: ${value}\u001b[0m"
+        println GREEN + "${name}: ${value}" + RESET
     }
 }
 
-Utils.logString = { String name, String value ->
-    println "\u001b[33m${name}: ${value}\u001b[0m"
+Utils.logString = { final String name, final String value ->
+    println YELLOW + "${name}: ${value}" + RESET
 }
 
-Utils.logInteger = { String name, int value ->
-    println "\u001b[33m${name}: ${value}\u001b[0m"
+Utils.logInteger = { final String name, final int value ->
+    println YELLOW + "${name}: ${value}" + RESET
 }

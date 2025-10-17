@@ -60,11 +60,7 @@ namespace Mengine
             }
             else if( step + m_minimalDistance >= value_length )
             {
-                T offset = this->getDistance();
-
-                T add = offset * ((value_length - m_minimalDistance) / value_length);
-
-                this->step( add );
+                this->overtake();
 
                 return true;
             }

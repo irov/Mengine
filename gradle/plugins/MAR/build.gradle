@@ -6,10 +6,10 @@ android {
             if (project.hasProperty("MENGINE_APP_PLUGIN_MAR_RES_DIR") == true) {
                 println "MENGINE_APP_PLUGIN_MAR_RES_DIR: $MENGINE_APP_PLUGIN_MAR_RES_DIR"
 
-                def f = new File(MENGINE_APP_PLUGIN_MAR_RES_DIR)
+                final def f = new File(MENGINE_APP_PLUGIN_MAR_RES_DIR)
 
                 if (f.exists() == false) {
-                    throw new GradleException("MENGINE_APP_PLUGIN_MAR_RES_DIR not found folder: $MENGINE_APP_PLUGIN_MAR_RES_DIR");
+                    throw new GradleException("MENGINE_APP_PLUGIN_MAR_RES_DIR not found folder: $MENGINE_APP_PLUGIN_MAR_RES_DIR")
                 }
 
                 res.srcDirs += [MENGINE_APP_PLUGIN_MAR_RES_DIR]
@@ -22,10 +22,10 @@ android {
             if (project.hasProperty("MENGINE_APP_PLUGIN_MAR_ASSETS_SRC_DIR") == true) {
                 println "MENGINE_APP_PLUGIN_MAR_ASSETS_SRC_DIR: $MENGINE_APP_PLUGIN_MAR_ASSETS_SRC_DIR"
 
-                def f = new File(MENGINE_APP_PLUGIN_MAR_ASSETS_SRC_DIR)
+                final def f = new File(MENGINE_APP_PLUGIN_MAR_ASSETS_SRC_DIR)
 
                 if (f.exists() == false) {
-                    throw new GradleException("MENGINE_APP_PLUGIN_MAR_ASSETS_SRC_DIR not found folder: $MENGINE_APP_PLUGIN_MAR_ASSETS_SRC_DIR");
+                    throw new GradleException("MENGINE_APP_PLUGIN_MAR_ASSETS_SRC_DIR not found folder: $MENGINE_APP_PLUGIN_MAR_ASSETS_SRC_DIR")
                 }
 
                 assets.srcDirs += [MENGINE_APP_PLUGIN_MAR_ASSETS_SRC_DIR]

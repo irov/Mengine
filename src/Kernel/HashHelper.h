@@ -50,7 +50,7 @@ namespace Mengine
             for( size_t i = 0; i != _len; ++i )
             {
                 HashType b2 = (HashType)*p++;
-                HashType x2 = Helper::Detail::xmul12864( 1000003ULL, x );
+                HashType x2 = Detail::xmul12864( 1000003ULL, x );
 
                 x = x2 ^ b2;
             }
@@ -77,18 +77,10 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
-    namespace Literals
-    {
-        //////////////////////////////////////////////////////////////////////////
-        MENGINE_CONSTEXPR HashType operator "" _hash( const Char * _value, size_t _size )
-        {
-            return Helper::makeHash( _value, _size );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    using namespace Literals;
-    //////////////////////////////////////////////////////////////////////////
 }
 //////////////////////////////////////////////////////////////////////////
-using namespace Mengine::Literals;
+MENGINE_CONSTEXPR Mengine::HashType operator ""_hash( const Mengine::Char * _value, size_t _size )
+{
+    return Mengine::Helper::makeHash( _value, _size );
+}
 //////////////////////////////////////////////////////////////////////////

@@ -7,56 +7,56 @@ apply from: rootProject.projectDir.getAbsolutePath() + '/split.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/delivery.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/gms.gradle'
 
-def ANDROID_APP_BUILD_NUMBER = Utils.getIntegerProperty("ANDROID_APP_BUILD_NUMBER", 0)
-def ANDROID_APP_BUILD_VERSION = Utils.getStringProperty("ANDROID_APP_BUILD_VERSION", "0.0.0")
-def ANDROID_APP_BUILD_PUBLISH = Utils.getBooleanProperty("ANDROID_APP_BUILD_PUBLISH", false)
-def ANDROID_APP_SPLIT_ENABLE = Utils.getBooleanProperty("ANDROID_APP_SPLIT_ENABLE", false)
-def ANDROID_APP_BUNDLE_ENABLE = Utils.getBooleanProperty("ANDROID_APP_BUNDLE_ENABLE", false)
-def ANDROID_APP_DELIVERY_PACKAGES = Utils.getStringProperty("ANDROID_APP_DELIVERY_PACKAGES", null)
-def ANDROID_APP_MAIN_PROJECT = Utils.getStringProperty("ANDROID_APP_MAIN_PROJECT", "app")
+final Integer ANDROID_APP_BUILD_NUMBER = Utils.getIntegerProperty("ANDROID_APP_BUILD_NUMBER", 0)
+final String ANDROID_APP_BUILD_VERSION = Utils.getStringProperty("ANDROID_APP_BUILD_VERSION", "0.0.0")
+final Boolean ANDROID_APP_BUILD_PUBLISH = Utils.getBooleanProperty("ANDROID_APP_BUILD_PUBLISH", false)
+final Boolean ANDROID_APP_SPLIT_ENABLE = Utils.getBooleanProperty("ANDROID_APP_SPLIT_ENABLE", false)
+final Boolean ANDROID_APP_BUNDLE_ENABLE = Utils.getBooleanProperty("ANDROID_APP_BUNDLE_ENABLE", false)
+final String ANDROID_APP_DELIVERY_PACKAGES = Utils.getStringProperty("ANDROID_APP_DELIVERY_PACKAGES", null)
+final String ANDROID_APP_MAIN_PROJECT = Utils.getStringProperty("ANDROID_APP_MAIN_PROJECT", "app")
 
-def MENGINE_APP_LIBRARY_MENGINE = Utils.existAppLibrary("MENGINE_APP_LIBRARY_MENGINE")
-def MENGINE_APP_LIBRARY_OPENAL32 = Utils.existAppLibrary("MENGINE_APP_LIBRARY_OPENAL32")
+final Boolean MENGINE_APP_LIBRARY_MENGINE = Utils.existAppLibrary("MENGINE_APP_LIBRARY_MENGINE")
+final Boolean MENGINE_APP_LIBRARY_OPENAL32 = Utils.existAppLibrary("MENGINE_APP_LIBRARY_OPENAL32")
 
-def MENGINE_APP_SERVICE_AD = Utils.existAppService("MENGINE_APP_SERVICE_AD")
-def MENGINE_APP_SERVICE_MONITORCONNECTIVITYSTATUS = Utils.existAppService("MENGINE_APP_SERVICE_MONITORCONNECTIVITYSTATUS")
-def MENGINE_APP_SERVICE_FILELOGGER = Utils.existAppService("MENGINE_APP_SERVICE_FILELOGGER")
+final Boolean MENGINE_APP_SERVICE_AD = Utils.existAppService("MENGINE_APP_SERVICE_AD")
+final Boolean MENGINE_APP_SERVICE_MONITORCONNECTIVITYSTATUS = Utils.existAppService("MENGINE_APP_SERVICE_MONITORCONNECTIVITYSTATUS")
+final Boolean MENGINE_APP_SERVICE_FILELOGGER = Utils.existAppService("MENGINE_APP_SERVICE_FILELOGGER")
 
-def MENGINE_APP_PLUGIN_SPLASHSCREEN = Utils.existAppPlugin("MENGINE_APP_PLUGIN_SPLASHSCREEN")
-def MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS = Utils.existAppPlugin("MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS")
-def MENGINE_APP_PLUGIN_GOOGLE_SERVICE = Utils.existAppPlugin("MENGINE_APP_PLUGIN_GOOGLE_SERVICE")
-def MENGINE_APP_PLUGIN_GOOGLE_ADVERTISING = Utils.existAppPlugin("MENGINE_APP_PLUGIN_GOOGLE_ADVERTISING", ["MENGINE_APP_PLUGIN_GOOGLE_SERVICE"])
-def MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL = Utils.existAppPlugin("MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL", ["MENGINE_APP_PLUGIN_GOOGLE_SERVICE"])
-def MENGINE_APP_PLUGIN_GOOGLE_PLAY_BILLING = Utils.existAppPlugin("MENGINE_APP_PLUGIN_GOOGLE_PLAY_BILLING", ["MENGINE_APP_PLUGIN_GOOGLE_SERVICE"])
-def MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS = Utils.existAppPlugin("MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS", ["MENGINE_APP_PLUGIN_GOOGLE_SERVICE"])
-def MENGINE_APP_PLUGIN_GOOGLE_CONSENT = Utils.existAppPlugin("MENGINE_APP_PLUGIN_GOOGLE_CONSENT", ["MENGINE_APP_PLUGIN_GOOGLE_SERVICE"])
-def MENGINE_APP_PLUGIN_FIREBASE = Utils.existAppPlugin("MENGINE_APP_PLUGIN_FIREBASE", ["MENGINE_APP_PLUGIN_GOOGLE_SERVICE"])
-def MENGINE_APP_PLUGIN_FIREBASE_INSTALLATIONS = Utils.existAppPlugin("MENGINE_APP_PLUGIN_FIREBASE_INSTALLATIONS", ["MENGINE_APP_PLUGIN_FIREBASE"])
-def MENGINE_APP_PLUGIN_FIREBASE_APPCHECK = Utils.existAppPlugin("MENGINE_APP_PLUGIN_FIREBASE_APPCHECK", ["MENGINE_APP_PLUGIN_FIREBASE"])
-def MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS = Utils.existAppPlugin("MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS", ["MENGINE_APP_PLUGIN_FIREBASE"])
-def MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS_NATIVE_SYMBOL_UPLOAD_ENABLE = Utils.getBooleanProperty("MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS_NATIVE_SYMBOL_UPLOAD_ENABLE", false)
-def MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS = Utils.existAppPlugin("MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS", ["MENGINE_APP_PLUGIN_FIREBASE"])
-def MENGINE_APP_PLUGIN_FIREBASE_MESSAGING = Utils.existAppPlugin("MENGINE_APP_PLUGIN_FIREBASE_MESSAGING", ["MENGINE_APP_PLUGIN_FIREBASE"])
-def MENGINE_APP_PLUGIN_FIREBASE_REMOTECONFIG = Utils.existAppPlugin("MENGINE_APP_PLUGIN_FIREBASE_REMOTECONFIG", ["MENGINE_APP_PLUGIN_FIREBASE"])
-def MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING = Utils.existAppPlugin("MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING", ["MENGINE_APP_PLUGIN_FIREBASE"])
-def MENGINE_APP_PLUGIN_FLURRY = Utils.existAppPlugin("MENGINE_APP_PLUGIN_FLURRY")
-def MENGINE_APP_PLUGIN_APPMETRICA = Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPMETRICA")
-def MENGINE_APP_PLUGIN_APPSFLYER = Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPSFLYER")
-def MENGINE_APP_PLUGIN_DEVTODEV = Utils.existAppPlugin("MENGINE_APP_PLUGIN_DEVTODEV")
-def MENGINE_APP_PLUGIN_FACEBOOK = Utils.existAppPlugin("MENGINE_APP_PLUGIN_FACEBOOK")
-def MENGINE_APP_PLUGIN_SENTRY = Utils.existAppPlugin("MENGINE_APP_PLUGIN_SENTRY")
-def MENGINE_APP_PLUGIN_MAR = Utils.existAppPlugin("MENGINE_APP_PLUGIN_MAR")
-def MENGINE_APP_PLUGIN_ADMOB = Utils.existAppPlugin("MENGINE_APP_PLUGIN_ADMOB", ["MENGINE_APP_PLUGIN_GOOGLE_SERVICE"])
-def MENGINE_APP_PLUGIN_AMAZON = Utils.existAppPlugin("MENGINE_APP_PLUGIN_AMAZON")
-def MENGINE_APP_PLUGIN_APPLOVIN = Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN")
-def MENGINE_APP_PLUGIN_APPLOVIN_AD_REVIEW_KEY = Utils.getStringProperty("MENGINE_APP_PLUGIN_APPLOVIN_AD_REVIEW_KEY", null)
-def MENGINE_APP_PLUGIN_ADJUST = Utils.existAppPlugin("MENGINE_APP_PLUGIN_ADJUST")
-def MENGINE_APP_PLUGIN_HELPSHIFT = Utils.existAppPlugin("MENGINE_APP_PLUGIN_HELPSHIFT")
-def MENGINE_APP_PLUGIN_ONESIGNAL = Utils.existAppPlugin("MENGINE_APP_PLUGIN_ONESIGNAL")
-def MENGINE_APP_PLUGIN_LEANPLUM = Utils.existAppPlugin("MENGINE_APP_PLUGIN_LEANPLUM")
-def MENGINE_APP_PLUGIN_DATADOG = Utils.existAppPlugin("MENGINE_APP_PLUGIN_DATADOG")
-def MENGINE_APP_PLUGIN_VIBRATOR = Utils.existAppPlugin("MENGINE_APP_PLUGIN_VIBRATOR")
-def MENGINE_APP_PLUGIN_AMPLITUDE = Utils.existAppPlugin("MENGINE_APP_PLUGIN_AMPLITUDE")
+final Boolean MENGINE_APP_PLUGIN_SPLASHSCREEN = Utils.existAppPlugin("MENGINE_APP_PLUGIN_SPLASHSCREEN")
+final Boolean MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS = Utils.existAppPlugin("MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS")
+final Boolean MENGINE_APP_PLUGIN_GOOGLE_SERVICE = Utils.existAppPlugin("MENGINE_APP_PLUGIN_GOOGLE_SERVICE")
+final Boolean MENGINE_APP_PLUGIN_GOOGLE_ADVERTISING = Utils.existAppPlugin("MENGINE_APP_PLUGIN_GOOGLE_ADVERTISING", ["MENGINE_APP_PLUGIN_GOOGLE_SERVICE"])
+final Boolean MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL = Utils.existAppPlugin("MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL", ["MENGINE_APP_PLUGIN_GOOGLE_SERVICE"])
+final Boolean MENGINE_APP_PLUGIN_GOOGLE_PLAY_BILLING = Utils.existAppPlugin("MENGINE_APP_PLUGIN_GOOGLE_PLAY_BILLING", ["MENGINE_APP_PLUGIN_GOOGLE_SERVICE"])
+final Boolean MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS = Utils.existAppPlugin("MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS", ["MENGINE_APP_PLUGIN_GOOGLE_SERVICE"])
+final Boolean MENGINE_APP_PLUGIN_GOOGLE_CONSENT = Utils.existAppPlugin("MENGINE_APP_PLUGIN_GOOGLE_CONSENT", ["MENGINE_APP_PLUGIN_GOOGLE_SERVICE"])
+final Boolean MENGINE_APP_PLUGIN_FIREBASE = Utils.existAppPlugin("MENGINE_APP_PLUGIN_FIREBASE", ["MENGINE_APP_PLUGIN_GOOGLE_SERVICE"])
+final Boolean MENGINE_APP_PLUGIN_FIREBASE_INSTALLATIONS = Utils.existAppPlugin("MENGINE_APP_PLUGIN_FIREBASE_INSTALLATIONS", ["MENGINE_APP_PLUGIN_FIREBASE"])
+final Boolean MENGINE_APP_PLUGIN_FIREBASE_APPCHECK = Utils.existAppPlugin("MENGINE_APP_PLUGIN_FIREBASE_APPCHECK", ["MENGINE_APP_PLUGIN_FIREBASE"])
+final Boolean MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS = Utils.existAppPlugin("MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS", ["MENGINE_APP_PLUGIN_FIREBASE"])
+final Boolean MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS_NATIVE_SYMBOL_UPLOAD_ENABLE = Utils.getBooleanProperty("MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS_NATIVE_SYMBOL_UPLOAD_ENABLE", false)
+final Boolean MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS = Utils.existAppPlugin("MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS", ["MENGINE_APP_PLUGIN_FIREBASE"])
+final Boolean MENGINE_APP_PLUGIN_FIREBASE_MESSAGING = Utils.existAppPlugin("MENGINE_APP_PLUGIN_FIREBASE_MESSAGING", ["MENGINE_APP_PLUGIN_FIREBASE"])
+final Boolean MENGINE_APP_PLUGIN_FIREBASE_REMOTECONFIG = Utils.existAppPlugin("MENGINE_APP_PLUGIN_FIREBASE_REMOTECONFIG", ["MENGINE_APP_PLUGIN_FIREBASE"])
+final Boolean MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING = Utils.existAppPlugin("MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING", ["MENGINE_APP_PLUGIN_FIREBASE"])
+final Boolean MENGINE_APP_PLUGIN_FLURRY = Utils.existAppPlugin("MENGINE_APP_PLUGIN_FLURRY")
+final Boolean MENGINE_APP_PLUGIN_APPMETRICA = Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPMETRICA")
+final Boolean MENGINE_APP_PLUGIN_APPSFLYER = Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPSFLYER")
+final Boolean MENGINE_APP_PLUGIN_DEVTODEV = Utils.existAppPlugin("MENGINE_APP_PLUGIN_DEVTODEV")
+final Boolean MENGINE_APP_PLUGIN_FACEBOOK = Utils.existAppPlugin("MENGINE_APP_PLUGIN_FACEBOOK")
+final Boolean MENGINE_APP_PLUGIN_SENTRY = Utils.existAppPlugin("MENGINE_APP_PLUGIN_SENTRY")
+final Boolean MENGINE_APP_PLUGIN_MAR = Utils.existAppPlugin("MENGINE_APP_PLUGIN_MAR")
+final Boolean MENGINE_APP_PLUGIN_ADMOB = Utils.existAppPlugin("MENGINE_APP_PLUGIN_ADMOB", ["MENGINE_APP_PLUGIN_GOOGLE_SERVICE"])
+final Boolean MENGINE_APP_PLUGIN_AMAZON = Utils.existAppPlugin("MENGINE_APP_PLUGIN_AMAZON")
+final Boolean MENGINE_APP_PLUGIN_APPLOVIN = Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN")
+final String MENGINE_APP_PLUGIN_APPLOVIN_AD_REVIEW_KEY = Utils.getStringProperty("MENGINE_APP_PLUGIN_APPLOVIN_AD_REVIEW_KEY", null)
+final Boolean MENGINE_APP_PLUGIN_ADJUST = Utils.existAppPlugin("MENGINE_APP_PLUGIN_ADJUST")
+final Boolean MENGINE_APP_PLUGIN_HELPSHIFT = Utils.existAppPlugin("MENGINE_APP_PLUGIN_HELPSHIFT")
+final Boolean MENGINE_APP_PLUGIN_ONESIGNAL = Utils.existAppPlugin("MENGINE_APP_PLUGIN_ONESIGNAL")
+final Boolean MENGINE_APP_PLUGIN_LEANPLUM = Utils.existAppPlugin("MENGINE_APP_PLUGIN_LEANPLUM")
+final Boolean MENGINE_APP_PLUGIN_DATADOG = Utils.existAppPlugin("MENGINE_APP_PLUGIN_DATADOG")
+final Boolean MENGINE_APP_PLUGIN_VIBRATOR = Utils.existAppPlugin("MENGINE_APP_PLUGIN_VIBRATOR")
+final Boolean MENGINE_APP_PLUGIN_AMPLITUDE = Utils.existAppPlugin("MENGINE_APP_PLUGIN_AMPLITUDE")
 
 Utils.logString("ANDROID_APP_DELIVERY_PACKAGES", ANDROID_APP_DELIVERY_PACKAGES)
 Utils.logAvailable("ANDROID_APP_BUILD_PUBLISH", ANDROID_APP_BUILD_PUBLISH)
@@ -99,7 +99,7 @@ android {
     ext.plugins = []
     ext.activities = []
 
-    gradle.taskGraph.whenReady { taskGraph ->
+    gradle.taskGraph.whenReady { final taskGraph ->
         if (taskGraph.hasTask(assembleDebug)) {
             //Empty
         } else if (taskGraph.hasTask(assembleRelease)) {
@@ -138,7 +138,7 @@ android {
             println "HARDCODE ANDROID_APP_ID: $applicationId"
         }
 
-        def buildNumber = ANDROID_APP_BUILD_NUMBER
+        final def buildNumber = ANDROID_APP_BUILD_NUMBER
 
         if (ANDROID_APP_BUILD_PUBLISH == true) {
             if (ANDROID_APP_BUNDLE_ENABLE == true) {
@@ -169,7 +169,7 @@ android {
                 println "ANDROID_APP_DEBUG_KEY_ALIAS: $ANDROID_APP_DEBUG_KEY_ALIAS"
                 println "ANDROID_APP_DEBUG_KEY_PASSWORD: $ANDROID_APP_DEBUG_KEY_PASSWORD"
 
-                def f = new File(ANDROID_APP_DEBUG_STORE_FILE)
+                final def f = new File(ANDROID_APP_DEBUG_STORE_FILE)
 
                 if (f.exists() == false) {
                     throw new GradleException("ANDROID_APP_DEBUG_STORE_FILE not found folder: $ANDROID_APP_DEBUG_STORE_FILE")
@@ -191,7 +191,7 @@ android {
                 println "ANDROID_APP_RELEASE_KEY_ALIAS: $ANDROID_APP_RELEASE_KEY_ALIAS"
                 println "ANDROID_APP_RELEASE_KEY_PASSWORD: $ANDROID_APP_RELEASE_KEY_PASSWORD"
 
-                def f = new File(ANDROID_APP_RELEASE_STORE_FILE)
+                final def f = new File(ANDROID_APP_RELEASE_STORE_FILE)
 
                 if (f.exists() == false) {
                     throw new GradleException("ANDROID_APP_RELEASE_STORE_FILE not found folder: $ANDROID_APP_RELEASE_STORE_FILE")
@@ -223,7 +223,7 @@ android {
     if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true) {
         if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS_NATIVE_SYMBOL_UPLOAD_ENABLE == true) {
             buildTypes {
-                var buildDirectory = getLayout().getBuildDirectory();
+                final var buildDirectory = getLayout().getBuildDirectory()
 
                 debug {
                     firebaseCrashlytics {
@@ -273,12 +273,12 @@ android {
     }
 
     if (ANDROID_APP_DELIVERY_PACKAGES != null) {
-        def PACKAGES = ANDROID_APP_DELIVERY_PACKAGES.split(",")
+        final def PACKAGES = ANDROID_APP_DELIVERY_PACKAGES.split(",")
 
-        def deliveryPacks = [] as ArrayList<String>
+        final def deliveryPacks = [] as ArrayList<String>
 
-        for(PACKAGE_DESC in PACKAGES) {
-            var PACKAGE_NAME = PACKAGE_DESC.split(";")[0]
+        for(final PACKAGE_DESC in PACKAGES) {
+            final var PACKAGE_NAME = PACKAGE_DESC.split(";")[0]
 
             println "add delivery asset pack: $PACKAGE_NAME"
 
@@ -297,7 +297,7 @@ android {
             if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR") == true) {
                 println "ANDROID_APP_ASSETS_RES_DIR: $ANDROID_APP_ASSETS_RES_DIR"
 
-                def f = new File(ANDROID_APP_ASSETS_RES_DIR)
+                final def f = new File(ANDROID_APP_ASSETS_RES_DIR)
 
                 if (f.exists() == false) {
                     throw new GradleException("ANDROID_APP_ASSETS_RES_DIR not found folder: $ANDROID_APP_ASSETS_RES_DIR")
@@ -313,7 +313,7 @@ android {
             if (project.hasProperty("ANDROID_APP_ASSETS_SRC_DIR") == true) {
                 println "ANDROID_APP_ASSETS_SRC_DIR: $ANDROID_APP_ASSETS_SRC_DIR"
 
-                def f = new File(ANDROID_APP_ASSETS_SRC_DIR)
+                final def f = new File(ANDROID_APP_ASSETS_SRC_DIR)
 
                 if (f.exists() == false) {
                     throw new GradleException("ANDROID_APP_ASSETS_SRC_DIR not found folder: $ANDROID_APP_ASSETS_SRC_DIR")
@@ -346,12 +346,12 @@ android {
 }
 
 if (ANDROID_APP_SPLIT_ENABLE == true) {
-    android.applicationVariants.configureEach { variant ->
-        variant.outputs.each { output ->
-            def abiCodes = ["arm64-v8a": 1, "armeabi-v7a": 2, "x86": 3, "x86_64": 4]
+    android.applicationVariants.configureEach { final variant ->
+        variant.outputs.each { final output ->
+            final def abiCodes = ["arm64-v8a": 1, "armeabi-v7a": 2, "x86": 3, "x86_64": 4]
 
-            def filter = output.getFilter("ABI")
-            def baseAbiVersionCode = abiCodes.get(filter)
+            final def filter = output.getFilter("ABI")
+            final def baseAbiVersionCode = abiCodes.get(filter)
 
             if (baseAbiVersionCode != null) {
                 output.versionCodeOverride = baseAbiVersionCode * 1000000 + variant.versionCode
@@ -782,10 +782,10 @@ if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true && MENGINE_APP_PLUGIN_FIREBA
         doLast {
             println "[TASK] checkDebugUnstrippedNativeLibsDir"
 
-            def f = android.buildTypes.debug.firebaseCrashlytics.unstrippedNativeLibsDir.get().getAsFile()
+            final File f = android.buildTypes.debug.firebaseCrashlytics.unstrippedNativeLibsDir.get().getAsFile()
 
             if (f.exists() == false) {
-                var fname = f.getCanonicalPath()
+                final var fname = f.getCanonicalPath()
 
                 throw new GradleException("unstrippedNativeLibsDir not found folder: $fname")
             }
@@ -798,10 +798,10 @@ if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true && MENGINE_APP_PLUGIN_FIREBA
         doLast {
             println "[TASK] checkReleaseUnstrippedNativeLibsDir"
 
-            def f = android.buildTypes.release.firebaseCrashlytics.unstrippedNativeLibsDir.get().getAsFile()
+            final File f = android.buildTypes.release.firebaseCrashlytics.unstrippedNativeLibsDir.get().getAsFile()
 
             if (f.exists() == false) {
-                var fname = f.getCanonicalPath()
+                final var fname = f.getCanonicalPath()
 
                 throw new GradleException("unstrippedNativeLibsDir not found folder: $fname")
             }
@@ -810,7 +810,7 @@ if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true && MENGINE_APP_PLUGIN_FIREBA
         }
     }
 
-    tasks.configureEach { task ->
+    tasks.configureEach { final task ->
         if (task.name == 'assembleRelease') {
             task.finalizedBy checkReleaseUnstrippedNativeLibsDir
         } else if(task.name == 'assembleDebug') {
@@ -818,19 +818,19 @@ if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true && MENGINE_APP_PLUGIN_FIREBA
         }
     }
 
-    tasks.configureEach { task ->
+    tasks.configureEach { final task ->
         if (task.name.startsWith('generateCrashlyticsSymbolFile')) {
             task.dependsOn 'merge' + (task.name =~ /^generateCrashlyticsSymbolFile(.+)$/)[0][1] + 'NativeLibs'
         }
     }
 
-    tasks.configureEach { task ->
+    tasks.configureEach { final task ->
         if (task.name.startsWith('injectCrashlyticsBuildIds')) {
             task.dependsOn 'merge' + (task.name =~ /^injectCrashlyticsBuildIds(.+)$/)[0][1] + 'NativeLibs'
         }
     }
 
-    tasks.configureEach { task ->
+    tasks.configureEach { final task ->
         if (task.name == "bundleRelease") {
             task.finalizedBy 'uploadCrashlyticsSymbolFileRelease'
         }

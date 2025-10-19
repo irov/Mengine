@@ -96,21 +96,19 @@ namespace Mengine
 
         m_globalScheduler = schedulerGlobal;
 
-        m_randomizer = Helper::makeFactorableUnique<MT19937Randomizer>( MENGINE_DOCUMENT_FACTORABLE );
-
         if( HAS_OPTION( "seed" ) == true )
         {
-            uint32_t randomSeed = GET_OPTION_VALUE_UINT32( "seed", 0U );
+            uint64_t randomSeed = GET_OPTION_VALUE_UINT32( "seed", 0ULL );
 
-            m_randomizer->setSeed( randomSeed );
+            m_randomizer = Helper::makeFactorableUnique<MT19937Randomizer>( MENGINE_DOCUMENT_FACTORABLE, randomSeed );
         }
         else
         {
             Timestamp milliseconds = Helper::getSystemTimestamp();
 
-            uint32_t randomSeed = (uint32_t)milliseconds;
+            uint64_t randomSeed = (uint64_t)milliseconds;
 
-            m_randomizer->setSeed( randomSeed );
+            m_randomizer = Helper::makeFactorableUnique<MT19937Randomizer>( MENGINE_DOCUMENT_FACTORABLE, randomSeed );
         }
 
         m_affectorable = Helper::makeFactorableUnique<PlayerGlobalAffectorable>( MENGINE_DOCUMENT_FACTORABLE );

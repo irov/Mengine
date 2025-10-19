@@ -2,7 +2,7 @@
 
 #include "Interface/RandomizerInterface.h"
 
-#include <random>
+#include "Config/StdRandom.h"
 
 namespace Mengine
 {
@@ -13,10 +13,8 @@ namespace Mengine
 
     public:
         MT19937Randomizer();
+        MT19937Randomizer( uint64_t _seed );
         ~MT19937Randomizer() override;
-
-    protected:
-        void setSeed( uint64_t _seed ) override;
 
     protected:
         uint32_t getRandom32( uint32_t _max ) const override;
@@ -38,7 +36,7 @@ namespace Mengine
         double getRandomRanged( double _min, double _max ) const override;
 
     protected:
-        mutable std::mt19937_64 m_engineRandomize;
+        mutable StdRandom::mt19937_64 m_engineRandomize;
 
         float m_epsilonf;
         double m_epsilond;

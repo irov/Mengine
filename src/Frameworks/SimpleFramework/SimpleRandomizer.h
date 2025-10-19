@@ -6,8 +6,6 @@ namespace Mengine
 {
     namespace Helper
     {
-        void setSimpleRandomizerSeed( uint64_t _seed );
-
         uint32_t getSimpleRandomizerRandom32( uint32_t _max );
         uint32_t getSimpleRandomizerRandomRange32( uint32_t _min, uint32_t _max );
 

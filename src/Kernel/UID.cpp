@@ -2,9 +2,8 @@
 
 #include "Kernel/RandomDevice.h"
 
-#include <random>
-#include <functional>
 #include "Config/StdAlgorithm.h"
+#include "Config/StdRandom.h"
 
 namespace Mengine
 {
@@ -28,19 +27,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void makeUID( uint32_t _length, Char * const _uid )
         {
-            uint64_t device_seed = Helper::generateRandomDeviceSeed();
-            uint64_t locale_seed = Helper::generateRandomLocaleSeed();
+            StdRandom::mt19937_64 rng = Helper::generateRandomDeviceMT19937();
 
-            uint64_t seed = device_seed + locale_seed;
+            size_t char_array_size = MENGINE_STATIC_STRING_LENGTH( char_array );
 
-            Helper::makeUIDSeed( seed, _length, _uid );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void makeUIDSeed( uint64_t _seed, uint32_t _length, Char * const _uid )
-        {
-            std::mt19937_64 rng{_seed};
-
-            std::uniform_int_distribution<uint64_t> dist( 0, MENGINE_STATIC_STRING_LENGTH( char_array ) );
+            StdRandom::uniform_int_distribution<uint64_t> dist( 0, char_array_size );
 
             StdAlgorithm::generate_n( _uid, _length, [&dist, &rng]()
             {

@@ -730,12 +730,6 @@ namespace Mengine
             , m_desktop
         );
 
-        uint32_t deviceSeed = Helper::generateRandomDeviceSeed();
-
-        LOGGER_INFO_PROTECTED( "platform", "Device Seed: %u"
-            , deviceSeed
-        );
-
         m_analyticsEventProvider = Helper::makeFactorableUnique<AndroidAnalyticsEventProvider>( MENGINE_DOCUMENT_FACTORABLE );
 
         ANALYTICS_SERVICE()

@@ -11,9 +11,6 @@ namespace Mengine
         : public ServantInterface
     {
     public:
-        virtual void setSeed( uint64_t _seed ) = 0;
-
-    public:
         virtual uint32_t getRandom32( uint32_t _max ) const = 0;
         virtual uint32_t getRandomRange32( uint32_t _min, uint32_t _max ) const = 0;
 

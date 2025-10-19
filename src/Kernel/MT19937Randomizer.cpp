@@ -8,13 +8,20 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     MT19937Randomizer::MT19937Randomizer()
+        : m_engineRandomize( Helper::generateRandomDeviceMT19937() )
     {
-        uint64_t seed = Helper::generateRandomLocaleSeed();
+        StdRandom::mt19937_64::result_type min_value = (m_engineRandomize.min)();
+        StdRandom::mt19937_64::result_type max_value = (m_engineRandomize.max)();
 
-        m_engineRandomize = std::mt19937_64{seed};
-
-        std::mt19937_64::result_type min_value = (m_engineRandomize.min)();
-        std::mt19937_64::result_type max_value = (m_engineRandomize.max)();
+        m_epsilonf = 1.f / float( max_value - min_value );
+        m_epsilond = 1.0 / double( max_value - min_value );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MT19937Randomizer::MT19937Randomizer( uint64_t _seed )
+        : m_engineRandomize{_seed}
+    {
+        StdRandom::mt19937_64::result_type min_value = (m_engineRandomize.min)();
+        StdRandom::mt19937_64::result_type max_value = (m_engineRandomize.max)();
 
         m_epsilonf = 1.f / float( max_value - min_value );
         m_epsilond = 1.0 / double( max_value - min_value );
@@ -24,11 +31,6 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void MT19937Randomizer::setSeed( uint64_t _seed )
-    {
-        m_engineRandomize.seed( _seed );
-    }
-    //////////////////////////////////////////////////////////////////////////
     uint32_t MT19937Randomizer::getRandom32( uint32_t _max ) const
     {
         if( _max < 2 )
@@ -36,7 +38,7 @@ namespace Mengine
             return 0U;
         }
 
-        std::uniform_int_distribution<uint32_t> uid( 0, _max - 1 );
+        StdRandom::uniform_int_distribution<uint32_t> uid( 0, _max - 1 );
 
         uint32_t rand_value = uid( m_engineRandomize );
 
@@ -55,7 +57,7 @@ namespace Mengine
             return _max - 1;
         }
 
-        std::uniform_int_distribution<uint32_t> uid( _min, _max - 1 );
+        StdRandom::uniform_int_distribution<uint32_t> uid( _min, _max - 1 );
 
         uint32_t rand_value = uid( m_engineRandomize );
 
@@ -64,7 +66,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     int32_t MT19937Randomizer::getRandom32i( int32_t _max ) const
     {
-        std::uniform_int_distribution<int32_t> uid( _max > 0 ? 0 : _max, _max > 0 ? _max : 0 );
+        StdRandom::uniform_int_distribution<int32_t> uid( _max > 0 ? 0 : _max, _max > 0 ? _max : 0 );
 
         int32_t rand_value = uid( m_engineRandomize );
 
@@ -78,7 +80,7 @@ namespace Mengine
             return _max - 1;
         }
 
-        std::uniform_int_distribution<int32_t> uid( _min, _max - 1 );
+        StdRandom::uniform_int_distribution<int32_t> uid( _min, _max - 1 );
 
         int32_t rand_value = uid( m_engineRandomize );
 
@@ -92,7 +94,7 @@ namespace Mengine
             return 0U;
         }
 
-        std::uniform_int_distribution<uint64_t> uid( 0, _max - 1 );
+        StdRandom::uniform_int_distribution<uint64_t> uid( 0, _max - 1 );
 
         uint64_t rand_value = uid( m_engineRandomize );
 
@@ -111,7 +113,7 @@ namespace Mengine
             return _max - 1;
         }
 
-        std::uniform_int_distribution<uint64_t> uid( _min, _max - 1 );
+        StdRandom::uniform_int_distribution<uint64_t> uid( _min, _max - 1 );
 
         uint64_t rand_value = uid( m_engineRandomize );
 
@@ -120,7 +122,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     int64_t MT19937Randomizer::getRandom64i( int64_t _max ) const
     {
-        std::uniform_int_distribution<int64_t> uid( _max > 0 ? 0 : _max, _max > 0 ? _max : 0 );
+        StdRandom::uniform_int_distribution<int64_t> uid( _max > 0 ? 0 : _max, _max > 0 ? _max : 0 );
 
         int64_t rand_value = uid( m_engineRandomize );
 
@@ -134,7 +136,7 @@ namespace Mengine
             return _max - 1;
         }
 
-        std::uniform_int_distribution<int64_t> uid( _min, _max - 1 );
+        StdRandom::uniform_int_distribution<int64_t> uid( _min, _max - 1 );
 
         int64_t rand_value = uid( m_engineRandomize );
 
@@ -152,7 +154,7 @@ namespace Mengine
             return 0.f;
         }
 
-        std::uniform_real_distribution<float> uid( 0.f, _max );
+        StdRandom::uniform_real_distribution<float> uid( 0.f, _max );
 
         float rand_value = uid( m_engineRandomize );
 
@@ -179,7 +181,7 @@ namespace Mengine
             return _max;
         }
 
-        std::uniform_real_distribution<float> uid( _min, _max );
+        StdRandom::uniform_real_distribution<float> uid( _min, _max );
 
         float rand_value = uid( m_engineRandomize );
 
@@ -197,7 +199,7 @@ namespace Mengine
             return 0.0;
         }
 
-        std::uniform_real_distribution<double> uid( 0.0, _max );
+        StdRandom::uniform_real_distribution<double> uid( 0.0, _max );
 
         double rand_value = uid( m_engineRandomize );
 
@@ -224,7 +226,7 @@ namespace Mengine
             return _max;
         }
 
-        std::uniform_real_distribution<double> uid( _min, _max );
+        StdRandom::uniform_real_distribution<double> uid( _min, _max );
 
         double rand_value = uid( m_engineRandomize );
 

@@ -156,6 +156,7 @@ src
     StdUtility.h
     StdThread.h
     StdAssert.h
+    StdRandom.h
     Limits.h
     UInt32ToPointer.h
     Metaprogramming.h

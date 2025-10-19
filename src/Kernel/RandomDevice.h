@@ -1,12 +1,11 @@
 #pragma once
 
-#include "Config/Typedef.h"
+#include "Config/StdRandom.h"
 
 namespace Mengine
 {
     namespace Helper
     {
-        uint64_t generateRandomLocaleSeed();
-        uint64_t generateRandomDeviceSeed();
+        StdRandom::mt19937_64 generateRandomDeviceMT19937();
     }
 }

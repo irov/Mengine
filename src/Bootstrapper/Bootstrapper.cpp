@@ -901,31 +901,31 @@ namespace Mengine
         LOGGER_INFO( "bootstrapper", "register base generator..." );
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( ConstString::none(), STRINGIZE_STRING_LOCAL( "EntityEventable" ), Helper::makeDefaultPrototypeGenerator<EntityEventable, 128>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addPrototype( ConstString::none(), EntityEventable::getFactorableType(), Helper::makeDefaultPrototypeGenerator<EntityEventable, 128>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), STRINGIZE_STRING_LOCAL( "MT19937Randomizer" ), Helper::makeDefaultPrototypeGenerator<MT19937Randomizer, 8>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), MT19937Randomizer::getFactorableType(), Helper::makeDefaultPrototypeGenerator<MT19937Randomizer, 8>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( ConstString::none(), STRINGIZE_STRING_LOCAL( "MixerMultiplicative" ), Helper::makeDefaultPrototypeGenerator<MixerMultiplicative, 32>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addPrototype( ConstString::none(), MixerMultiplicative::getFactorableType(), Helper::makeDefaultPrototypeGenerator<MixerMultiplicative, 32>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( ConstString::none(), STRINGIZE_STRING_LOCAL( "MixerAveraging" ), Helper::makeDefaultPrototypeGenerator<MixerAveraging, 32>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addPrototype( ConstString::none(), MixerAveraging::getFactorableType(), Helper::makeDefaultPrototypeGenerator<MixerAveraging, 32>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( ConstString::none(), STRINGIZE_STRING_LOCAL( "MixerBoolean" ), Helper::makeDefaultPrototypeGenerator<MixerBoolean, 32>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addPrototype( ConstString::none(), MixerBoolean::getFactorableType(), Helper::makeDefaultPrototypeGenerator<MixerBoolean, 32>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
@@ -938,19 +938,19 @@ namespace Mengine
         LOGGER_INFO( "bootstrapper", "unregister base generator..." );
 
         PROTOTYPE_SERVICE()
-            ->removePrototype( ConstString::none(), STRINGIZE_STRING_LOCAL( "EntityEventable" ), nullptr );
+            ->removePrototype( ConstString::none(), EntityEventable::getFactorableType(), nullptr );
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), MT19937Randomizer::getFactorableType(), nullptr );
 
         PROTOTYPE_SERVICE()
-            ->removePrototype( ConstString::none(), STRINGIZE_STRING_LOCAL( "MixerMultiplicative" ), nullptr );
+            ->removePrototype( ConstString::none(), MixerMultiplicative::getFactorableType(), nullptr );
 
         PROTOTYPE_SERVICE()
-            ->removePrototype( ConstString::none(), STRINGIZE_STRING_LOCAL( "MixerAveraging" ), nullptr );
+            ->removePrototype( ConstString::none(), MixerAveraging::getFactorableType(), nullptr );
 
         PROTOTYPE_SERVICE()
-            ->removePrototype( ConstString::none(), STRINGIZE_STRING_LOCAL( "MixerBoolean" ), nullptr );
+            ->removePrototype( ConstString::none(), MixerBoolean::getFactorableType(), nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
 #define MENGINE_ADD_FRAMEWORK( Name, Info, Doc )\

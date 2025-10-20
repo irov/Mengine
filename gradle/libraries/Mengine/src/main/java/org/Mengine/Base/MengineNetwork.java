@@ -53,6 +53,9 @@ public class MengineNetwork {
 
         HttpURLConnection connection = (HttpURLConnection)httpUrl.openConnection();
 
+        connection.setUseCaches(false);
+        connection.setDoInput(true);
+        connection.setInstanceFollowRedirects(true);
         connection.setRequestMethod(method);
         connection.setDoOutput(output);
 
@@ -218,19 +221,20 @@ public class MengineNetwork {
         } catch (final UnknownHostException e) {
             MengineParamHttpResponse response = new MengineParamHttpResponse();
 
-            response.HTTP_RESPONSE_CODE = HttpURLConnection.HTTP_NOT_FOUND;
+            response.HTTP_RESPONSE_CODE = HttpURLConnection.HTTP_UNAVAILABLE;
             response.HTTP_CONTENT_LENGTH = 0;
-            response.HTTP_CONTENT_DATA = null;
+            response.HTTP_CONTENT_DATA = new byte[0];
             response.HTTP_ERROR_MESSAGE = e.getMessage();
 
             return response;
         } catch (final Exception e) {
-            MengineLog.logMessage(TAG, "invalid http request url: %s exception: %s"
-                , request.HTTP_URL
-                , e.getMessage()
-            );
+            MengineParamHttpResponse response = new MengineParamHttpResponse();
+            response.HTTP_RESPONSE_CODE = HttpURLConnection.HTTP_INTERNAL_ERROR;
+            response.HTTP_CONTENT_LENGTH = 0;
+            response.HTTP_CONTENT_DATA = new byte[0];
+            response.HTTP_ERROR_MESSAGE = e.getMessage();
 
-            return null;
+            return response;
         }
     }
 
@@ -249,11 +253,14 @@ public class MengineNetwork {
 
         String userCredentials = login + ":" + password;
 
-        String basicAuth = "Basic " + Base64.encodeToString(userCredentials.getBytes(StandardCharsets.UTF_8), Base64.DEFAULT);
+        String basicAuth = "Basic " + Base64.encodeToString(userCredentials.getBytes(StandardCharsets.UTF_8), Base64.NO_WRAP);
         connection.setRequestProperty("Authorization", basicAuth);
     }
 
     protected static void setData(@NonNull HttpURLConnection connection, @NonNull byte[] data) throws IOException {
+        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setFixedLengthStreamingMode(data.length);
+
         OutputStream output = connection.getOutputStream();
 
         output.write(data);
@@ -287,6 +294,7 @@ public class MengineNetwork {
         String boundary = MengineUtils.getSecureRandomHexString(32);
 
         connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+        connection.setChunkedStreamingMode(0);
 
         OutputStream output = connection.getOutputStream();
 
@@ -296,15 +304,24 @@ public class MengineNetwork {
             String key = entry.getKey();
             String value = entry.getValue();
 
-            writer.append("--").append(boundary).append("\r\n");
-            writer.append("Content-Disposition: form-data; name=\"").append(key).append("\"").append("\r\n");
-            writer.append("Content-Type: text/plain; charset=UTF-8").append("\r\n");
+            writer.append("--");
+            writer.append(boundary);
             writer.append("\r\n");
-            writer.append(value).append("\r\n");
-            writer.flush();
+            writer.append("Content-Disposition: form-data; name=\"");
+            writer.append(key);
+            writer.append("\"");
+            writer.append("\r\n");
+            writer.append("Content-Type: text/plain; charset=UTF-8");
+            writer.append("\r\n");
+            writer.append("\r\n");
+            writer.append(value);
+            writer.append("\r\n");
         }
 
-        writer.append("--").append(boundary).append("--").append("\r\n");
+        writer.append("--");
+        writer.append(boundary);
+        writer.append("--");
+        writer.append("\r\n");
         writer.flush();
     }
 
@@ -344,6 +361,7 @@ public class MengineNetwork {
 
         if (length == 0) {
             response.HTTP_CONTENT_LENGTH = 0;
+            response.HTTP_CONTENT_DATA = new byte[0];
         } else if (length == -1) {
             byte [] data = MengineUtils.inputStreamToByteArray(is);
 
@@ -361,6 +379,10 @@ public class MengineNetwork {
 
     protected static void getResponseErrorMessage(@NonNull HttpURLConnection connection, @NonNull MengineParamHttpResponse response) throws IOException {
         InputStream is = connection.getErrorStream();
+
+        if (is == null) {
+            return;
+        }
 
         String HTTP_ERROR_MESSAGE = MengineUtils.inputStreamToString(is);
 

@@ -21,6 +21,6 @@ namespace Mengine
         size_t decodeData_( void * const _buffer, size_t _bufferSize, size_t _pitch ) const;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ImageDecoderMemory> ImageDecoderMemoryPtr;
+    typedef IntrusivePtr<ImageDecoderMemory, ImageDecoderInterface> ImageDecoderMemoryPtr;
     //////////////////////////////////////////////////////////////////////////
 }

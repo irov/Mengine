@@ -5,18 +5,18 @@
 
 namespace Mengine
 {
-    class Futex
+    class SpinLock
     {
     public:
-        Futex();
-        ~Futex();
+        SpinLock();
+        ~SpinLock();
 
     public:
         void lock();
         void unlock();
 
     protected:
-        Atomic<StdThread::thread::id> m_owner;
-        AtomicInt32 m_lock;
+        MENGINE_ALIGNAS( 64 ) Atomic<size_t> m_owner;
+        MENGINE_ALIGNAS( 64 ) AtomicInt32 m_lock;
     };
 }

@@ -3,7 +3,7 @@
 #include "Interface/ServiceProviderInterface.h"
 
 #include "Kernel/StaticString.h"
-#include "Kernel/Futex.h"
+#include "Kernel/SpinLock.h"
 
 #ifndef MENGINE_SERVICE_PROVIDER_MAX_REQUIRED
 #define MENGINE_SERVICE_PROVIDER_MAX_REQUIRED 16
@@ -119,10 +119,10 @@ namespace Mengine
 
         uint32_t m_waitsCount;
 
-        Futex m_futexServices;
-        Futex m_futexDependencies;
-        Futex m_futexLeaves;
-        Futex m_futexWaits;
+        SpinLock m_futexServices;
+        SpinLock m_futexDependencies;
+        SpinLock m_futexLeaves;
+        SpinLock m_futexWaits;
 
 #if defined(MENGINE_DEBUG)
         const Char * m_initializeServiceName;

@@ -83,14 +83,7 @@ namespace Mengine
         for( Element & m : m_mixer )
         {
             float used = 0.f;
-
-            float old_value = m.follower.getValue();
-
-            m.follower.update( _context, &used );
-
-            float new_value = m.follower.getValue();
-
-            if( old_value == new_value )
+            if( m.follower.update( _context, &used ) == false )
             {
                 continue;
             }

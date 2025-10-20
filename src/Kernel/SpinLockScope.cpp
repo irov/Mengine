@@ -1,17 +1,17 @@
-#include "FutexScope.h"
+#include "SpinLockScope.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    FutexScope::FutexScope( Futex & _futex )
-        : m_futex( _futex )
+    SpinLockScope::SpinLockScope( SpinLock & _futex )
+        : m_spinlock( _futex )
     {
-        m_futex.lock();
+        m_spinlock.lock();
     }
     //////////////////////////////////////////////////////////////////////////
-    FutexScope::~FutexScope()
+    SpinLockScope::~SpinLockScope()
     {
-        m_futex.unlock();
+        m_spinlock.unlock();
     }
     //////////////////////////////////////////////////////////////////////////
 }

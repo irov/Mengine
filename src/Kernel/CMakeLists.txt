@@ -721,13 +721,13 @@ Core
     ConstStringProxy.h
     
     VectorResourceImages.h
-    
-    Futex.h
-    Futex.cpp
 
-    FutexScope.h
-    FutexScope.cpp
-    
+    SpinLock.h
+    SpinLock.cpp
+
+    SpinLockScope.h
+    SpinLockScope.cpp
+
     UID.h
     UID.cpp
     

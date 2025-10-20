@@ -11,6 +11,7 @@
 #include "Kernel/Stringalized.h"
 #include "Kernel/StatisticHelper.h"
 
+#include "Config/StdString.h"
 #include "Config/Version.h"
 
 namespace Mengine
@@ -116,8 +117,8 @@ namespace Mengine
                 Char userName[1024 + 1] = {'\0'};
                 Char scheme[1024 + 1] = {'\0'};
                 Char hostName[1024 + 1] = {'\0'};
-                Char urlPath[1024 + 1] = {'\0'};
-                Char extraInfo[1024 + 1] = {'\0'};
+                Char urlPath[4096 + 1] = {'\0'};
+                Char extraInfo[4096 + 1] = {'\0'};
 
                 urlComponents.lpszScheme = scheme;
                 urlComponents.dwSchemeLength = MENGINE_STATIC_STRING_LENGTH( scheme );
@@ -180,9 +181,28 @@ namespace Mengine
                     dwRequestFlags |= INTERNET_FLAG_IGNORE_CERT_CN_INVALID;
                 }
 
+                ArrayString<4096> pathWithQuery;
+                pathWithQuery.append( urlComponents.lpszUrlPath );
+
+                if( urlComponents.lpszExtraInfo != NULL )
+                {
+                    const Char * hash = StdString::strchr( urlComponents.lpszExtraInfo, '#' );
+
+                    if( hash != nullptr )
+                    {
+                        pathWithQuery.append( urlComponents.lpszExtraInfo, (size_t)(hash - urlComponents.lpszExtraInfo) );
+                    }
+                    else
+                    {
+                        pathWithQuery.append( urlComponents.lpszExtraInfo );
+                    }
+                }
+
+                const Char * pathWithQuery_str = pathWithQuery.c_str();
+
                 HINTERNET hRequest = ::HttpOpenRequestA( hConnect
                     , _verb
-                    , urlComponents.lpszUrlPath
+                    , pathWithQuery_str
                     , NULL
                     , NULL
                     , NULL
@@ -266,6 +286,31 @@ namespace Mengine
                 return true;
             }
             //////////////////////////////////////////////////////////////////////////
+            static bool sendRequestData( HINTERNET _hRequest, const Data & _data )
+            {
+                const Data::value_type * data_buffer = _data.data();
+                Data::size_type data_size = _data.size();
+
+                INTERNET_BUFFERSA ib = {0};
+                ib.dwStructSize = sizeof( ib );
+                ib.dwBufferTotal = (DWORD)data_size;
+
+                if( ::HttpSendRequestExA( _hRequest, &ib, NULL, 0, 0 ) == FALSE )
+                {
+                    return false;
+                }
+
+                DWORD dwNumberOfBytesWritten = 0;
+                DWORD dwNumberOfBytesToWrite = (DWORD)data_size;
+
+                if( ::InternetWriteFile( _hRequest, (LPCVOID)data_buffer, dwNumberOfBytesToWrite, &dwNumberOfBytesWritten ) == FALSE )
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            //////////////////////////////////////////////////////////////////////////
             static bool getResponseStatusCode( HINTERNET _hRequest, const HttpResponseInterfacePtr & _response )
             {
                 DWORD statusCode = 0;
@@ -338,6 +383,8 @@ namespace Mengine
                 {
                     return false;
                 }
+
+                STATISTIC_INC_INTEGER( STATISTIC_HTTP_RESPONSE_COUNT );
 
                 LOGGER_HTTP_INFO( "response [%u] code: %u data: %zu"
                     , _response->getRequest()->getRequestId()
@@ -412,12 +459,12 @@ namespace Mengine
             CRYPTOGRAPHY_SYSTEM()
                 ->generateRandomHexadecimal( 16, boundary, false );
 
-            ArrayString<1024> header;
+            ArrayString<4096> header;
             header.append( "Content-Type: multipart/form-data; boundary=" );
             header.append( boundary );
 
             const Char * header_str = header.c_str();
-            ArrayString<1024>::size_type header_size = header.size();
+            ArrayString<4096>::size_type header_size = header.size();
 
             if( ::HttpAddRequestHeadersA( hRequest, header_str, header_size, HTTP_ADDREQ_FLAG_ADD | HTTP_ADDREQ_FLAG_REPLACE ) == FALSE )
             {
@@ -451,7 +498,9 @@ namespace Mengine
                 body.append( pair.key );
                 body.append( "\"\r\n" );
 
-                body.append( "Content-Type: text/plain; charset=UTF-8\r\n" );
+                body.append( "Content-Type: text/plain; charset=UTF-8" );
+                body.append( "\r\n" );
+                body.append( "\r\n" );
                 body.append( pair.value );
                 body.append( "\r\n" );
             }
@@ -467,6 +516,16 @@ namespace Mengine
             DWORD dwNumberOfBytesToWrite = (DWORD)body_size;
 
             if( ::InternetWriteFile( hRequest, (LPCVOID)body_str, dwNumberOfBytesToWrite, &dwNumberOfBytesWritten ) == FALSE )
+            {
+                Detail::errorRequest( _response );
+
+                ::InternetCloseHandle( hRequest );
+                ::InternetCloseHandle( hConnect );
+
+                return false;
+            }
+
+            if( dwNumberOfBytesWritten != dwNumberOfBytesToWrite )
             {
                 Detail::errorRequest( _response );
 
@@ -508,44 +567,7 @@ namespace Mengine
                 return false;
             }
 
-            const Data::value_type * data_buffer = _data.data();
-            Data::size_type data_size = _data.size();
-
-            ArrayString<1024> header;
-            header.append( "Content-Length: " );
-
-            Char strContentLength[32 + 1] = {'\0'};
-            Helper::stringalized( data_size, strContentLength, 32 );
-
-            header.append( strContentLength );
-
-            const Char * header_str = header.c_str();
-            ArrayString<1024>::size_type header_size = header.size();
-
-            if( ::HttpAddRequestHeadersA( hRequest, header_str, header_size, HTTP_ADDREQ_FLAG_ADD | HTTP_ADDREQ_FLAG_REPLACE ) == FALSE )
-            {
-                Detail::errorRequest( _response );
-
-                ::InternetCloseHandle( hRequest );
-                ::InternetCloseHandle( hConnect );
-
-                return false;
-            }
-
-            if( Detail::sendRequest( hRequest ) == false )
-            {
-                Detail::errorRequest( _response );
-
-                ::InternetCloseHandle( hRequest );
-                ::InternetCloseHandle( hConnect );
-
-                return false;
-            }
-
-            DWORD dwNumberOfBytesWritten = 0;
-            DWORD dwNumberOfBytesToWrite = (DWORD)data_size;
-
-            if( ::InternetWriteFile( hRequest, (LPCVOID)data_buffer, dwNumberOfBytesToWrite, &dwNumberOfBytesWritten ) == FALSE )
+            if( Detail::sendRequestData( hRequest, _data ) == false )
             {
                 Detail::errorRequest( _response );
 
@@ -683,7 +705,7 @@ namespace Mengine
 
                 CHAR bstrEncoded[1024 + 1] = {'\0'};
                 DWORD dwSize = 1024;
-                ::CryptBinaryToStringA( (const BYTE *)credentials_str, credentials_size, CRYPT_STRING_BASE64 | CRYPT_STRING_NOCRLF, bstrEncoded, &dwSize );
+                ::CryptBinaryToStringA( reinterpret_cast<const BYTE *>(credentials_str), credentials_size, CRYPT_STRING_BASE64 | CRYPT_STRING_NOCRLF, bstrEncoded, &dwSize );
 
                 ArrayString<1024> header;
                 header.append( "Authorization: Basic " );

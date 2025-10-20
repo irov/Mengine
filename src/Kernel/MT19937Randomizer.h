@@ -17,6 +17,9 @@ namespace Mengine
         ~MT19937Randomizer() override;
 
     protected:
+        void setSeed( uint64_t _seed ) override;
+
+    protected:
         uint32_t getRandom32( uint32_t _max ) const override;
         uint32_t getRandomRange32( uint32_t _min, uint32_t _max ) const override;
 

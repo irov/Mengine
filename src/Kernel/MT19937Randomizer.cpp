@@ -31,6 +31,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    void MT19937Randomizer::setSeed( uint64_t _seed )
+    {
+        m_engineRandomize.seed( _seed );
+    }
+    //////////////////////////////////////////////////////////////////////////
     uint32_t MT19937Randomizer::getRandom32( uint32_t _max ) const
     {
         if( _max < 2 )

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+    <string name="mengine_delete_account_success_title">Account Deleted</string>
+    <string name="mengine_delete_account_success_message">Account data has been deleted. The application will now close.</string>
+    <string name="mengine_delete_account_option_reason_1">Tired of or lost interest in the game</string>
+    <string name="mengine_delete_account_option_reason_2">Want to start over from scratch</string>
+    <string name="mengine_delete_account_option_reason_3">Too many ads</string>
+    <string name="mengine_delete_account_option_reason_4">Support didn’t solve my problem</string>
+    <string name="mengine_delete_account_option_reason_5">Other reason</string>
+    <string name="mengine_delete_account_option_title">Choose a reason</string>
+    <string name="mengine_delete_account_try_title">Delete Account</string>
+    <string name="mengine_delete_account_try_message">Click \'YES\' will delete all account data. All game progress, virtual goods, and currency will be permanently removed and unrecoverable.</string>
+</resources>

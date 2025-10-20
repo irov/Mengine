@@ -5,7 +5,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
-#include "Kernel/FutexScope.h"
+#include "Kernel/SpinLockScope.h"
 
 #include "Config/StdString.h"
 #include "Config/StdAlgorithm.h"
@@ -66,7 +66,7 @@ namespace Mengine
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
-        MENGINE_FUTEX_SCOPE( m_futexServices );
+        MENGINE_SPINLOCK_SCOPE( m_futexServices );
 
         ServiceInterfacePtr service = this->generateService_( _generator, _doc );
 
@@ -344,7 +344,7 @@ namespace Mengine
             , MENGINE_SERVICE_PROVIDER_NAME_SIZE
         );
 
-        MENGINE_FUTEX_SCOPE( m_futexDependencies );
+        MENGINE_SPINLOCK_SCOPE( m_futexDependencies );
 
         uint32_t id = m_dependenciesCount++;
 
@@ -363,7 +363,7 @@ namespace Mengine
             , MENGINE_SERVICE_PROVIDER_NAME_SIZE
         );
 
-        MENGINE_FUTEX_SCOPE( m_futexWaits );
+        MENGINE_SPINLOCK_SCOPE( m_futexWaits );
 
         for( uint32_t index = 0; index != m_servicesCount; ++index )
         {
@@ -407,7 +407,7 @@ namespace Mengine
             , MENGINE_SERVICE_PROVIDER_NAME_SIZE
         );
 
-        MENGINE_FUTEX_SCOPE( m_futexLeaves );
+        MENGINE_SPINLOCK_SCOPE( m_futexLeaves );
 
         uint32_t id = m_leaveCount++;
 
@@ -471,7 +471,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ServiceProvider::removeDependency_( const ServiceInterfacePtr & _service )
     {
-        MENGINE_FUTEX_SCOPE( m_futexDependencies );
+        MENGINE_SPINLOCK_SCOPE( m_futexDependencies );
 
         const Char * name = _service->getServiceId();
 
@@ -502,7 +502,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ServiceProvider::checkWaits_( const ServiceInterfacePtr & _service )
     {
-        MENGINE_FUTEX_SCOPE( m_futexWaits );
+        MENGINE_SPINLOCK_SCOPE( m_futexWaits );
 
         const Char * name = _service->getServiceId();
 
@@ -602,7 +602,7 @@ namespace Mengine
         );
 #endif
 
-        MENGINE_FUTEX_SCOPE( m_futexServices );
+        MENGINE_SPINLOCK_SCOPE( m_futexServices );
 
         for( uint32_t index = 0; index != m_servicesCount; ++index )
         {
@@ -641,7 +641,7 @@ namespace Mengine
         );
 #endif
 
-        MENGINE_FUTEX_SCOPE( m_futexServices );
+        MENGINE_SPINLOCK_SCOPE( m_futexServices );
 
         for( uint32_t index = 0; index != m_servicesCount; ++index )
         {
@@ -680,7 +680,7 @@ namespace Mengine
         );
 #endif
 
-        MENGINE_FUTEX_SCOPE( m_futexServices );
+        MENGINE_SPINLOCK_SCOPE( m_futexServices );
 
         for( uint32_t index = 0; index != m_servicesCount; ++index )
         {

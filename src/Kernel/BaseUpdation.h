@@ -19,11 +19,22 @@ namespace Mengine
         void replace( uint32_t _deep ) override final;
 
     public:
-        EUpdateMode getUpdationMode() const final;
-        uint32_t getUpdationDeep() const final;
+        MENGINE_INLINE EUpdateMode getUpdationMode() const final;
+        MENGINE_INLINE uint32_t getUpdationDeep() const final;
 
     private:
         EUpdateMode m_mode;
         uint32_t m_deep;
     };
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE EUpdateMode BaseUpdation::getUpdationMode() const
+    {
+        return m_mode;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE uint32_t BaseUpdation::getUpdationDeep() const
+    {
+        return m_deep;
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

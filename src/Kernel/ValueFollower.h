@@ -13,7 +13,6 @@ namespace Mengine
         ValueFollower()
             : m_value( T() )
             , m_follow( T() )
-            , m_eof( false )
         {
         }
 
@@ -55,8 +54,6 @@ namespace Mengine
         void overtake()
         {
             m_value = m_follow;
-
-            m_eof = true;
         }
 
         void step( const T & _value )
@@ -78,16 +75,9 @@ namespace Mengine
 
         bool update( const UpdateContext * _context, float * const _used )
         {
-            if( m_eof == true )
-            {
-                *_used = 0.f;
+            bool process = this->_update( _context, _used );
 
-                return true;
-            }
-
-            bool successful = this->_update( _context, _used );
-
-            return successful;
+            return process;
         }
 
     protected:
@@ -96,7 +86,5 @@ namespace Mengine
     protected:
         T m_value;
         T m_follow;
-
-        bool m_eof;
     };
 }

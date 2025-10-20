@@ -9,8 +9,6 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class BaseTransformation> BaseTransformationPtr;
-    //////////////////////////////////////////////////////////////////////////
     class BaseTransformation
         : public TransformationInterface
     {
@@ -153,8 +151,6 @@ namespace Mengine
         mutable bool m_invalidateLocalMatrix;
         mutable bool m_invalidateWorldMatrix;
     };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<BaseTransformation> BaseTransformationPtr;
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE BaseTransformation * BaseTransformation::getRelationTransformation() const
     {

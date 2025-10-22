@@ -574,14 +574,6 @@ namespace Mengine
         }
 
         m_sdlInput = sdlInput;
-
-        uint64_t deviceSeed = Helper::generateRandomDeviceSeed();
-        
-        MENGINE_UNUSED( deviceSeed );
-
-        LOGGER_INFO_PROTECTED( "platform", "Device Seed: %" MENGINE_PRIu64
-            , deviceSeed
-        );
         
         m_analyticsEventProvider = Helper::makeFactorableUnique<iOSAnalyticsEventProvider>( MENGINE_DOCUMENT_FACTORABLE );
 

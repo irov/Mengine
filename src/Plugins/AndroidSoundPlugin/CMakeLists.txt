@@ -1,0 +1,11 @@
+MENGINE_PROJECT(AndroidSoundPlugin)
+
+ADD_FILTER(
+src
+    AndroidSoundPlugin.h
+    AndroidSoundPlugin.cpp
+)
+
+ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_ANDROID_SOUND)
+
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)

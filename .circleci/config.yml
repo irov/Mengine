@@ -11,13 +11,8 @@ jobs:
 
     parallelism: 4
     
-    environment:
-      JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
-    
     steps:
       - checkout
-      
-      - android/accept-licenses
       
       - android/install-ndk:
           version: 29.0.14206865
@@ -26,8 +21,8 @@ jobs:
           name: install OpenJDK 17
           command: |
             sudo apt-get update && sudo apt-get install openjdk-17-jdk
-            sudo update-alternatives --set java $JAVA_HOME/bin/java
-            sudo update-alternatives --set javac $JAVA_HOME/bin/javac
+            sudo update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+            sudo update-alternatives --set javac /usr/lib/jvm/java-17-openjdk-amd64/bin/javac
             java -version
       
       - run:

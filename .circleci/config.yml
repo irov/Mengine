@@ -48,7 +48,10 @@ jobs:
       - run:
           name: sdkmanager cmake
           command: |
-            yes | sdkmanager "ndk;29.0.14206865;platforms;android-36;build-tools;36.1.0;cmake;3.31.6"
+            yes | sdkmanager "ndk;29.0.14206865"
+            yes | sdkmanager "platforms;android-36"
+            yes | sdkmanager "build-tools;36.1.0"
+            yes | sdkmanager "cmake;3.31.6"
           shell: /bin/bash -e
           
       - run:

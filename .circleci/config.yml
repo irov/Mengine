@@ -1,15 +1,18 @@
 version: 2.1
 
 orbs:
-  android: circleci/android@2.5.0
+  android: circleci/android@3.1.0
 
 jobs:
   build:
     executor:
       name: android/android-machine
-      tag: 2024.04.1
+      tag: 2025.10.1
 
     parallelism: 4
+    
+    environment:
+      JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
     
     steps:
       - checkout
@@ -23,8 +26,8 @@ jobs:
           name: install OpenJDK 17
           command: |
             sudo apt-get update && sudo apt-get install openjdk-17-jdk
-            sudo update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java
-            sudo update-alternatives --set javac /usr/lib/jvm/java-17-openjdk-amd64/bin/javac
+            sudo update-alternatives --set java $JAVA_HOME/bin/java
+            sudo update-alternatives --set javac $JAVA_HOME/bin/javac
             java -version
       
       - run:
@@ -48,7 +51,7 @@ jobs:
       - run:
           name: sdkmanager cmake
           command: |
-            yes | sdkmanager "cmake;3.31.6"
+            yes | sdkmanager "platforms;android-36;build-tools;36.1.0;cmake;3.31.6"
           shell: /bin/bash -e
           
       - run:

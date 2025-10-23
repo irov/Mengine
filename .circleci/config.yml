@@ -14,9 +14,6 @@ jobs:
     steps:
       - checkout
       
-      - android/install-ndk:
-          version: 29.0.14206865
-          
       - run:
           name: install OpenJDK 17
           command: |
@@ -46,7 +43,7 @@ jobs:
       - run:
           name: sdkmanager cmake
           command: |
-            yes | sdkmanager "platforms;android-36;build-tools;36.1.0;cmake;3.31.6"
+            yes | sdkmanager "ndk;29.0.14206865;platforms;android-36;build-tools;36.1.0;cmake;3.31.6"
           shell: /bin/bash -e
           
       - run:

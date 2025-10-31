@@ -62,6 +62,8 @@ namespace Mengine
         ~Node() override;
 
     public:
+        HashType getHierarchyHash() const;
+
         NodePtr findUniqueChild( UniqueId _uniqueIdentity ) const;
 
     protected:

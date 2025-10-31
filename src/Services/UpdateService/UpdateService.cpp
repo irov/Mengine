@@ -17,6 +17,29 @@ SERVICE_FACTORY( UpdateService, Mengine::UpdateService );
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        bool findLeafUpdatater( const LeafUpdatables & _leafs, const UpdationInterface * _updation )
+        {
+            for( const LeafUpdatable & leaf : _leafs )
+            {
+                if( std::find( leaf.indecies.begin(), leaf.indecies.end(), _updation ) != leaf.indecies.end() )
+                {
+                    return true;
+                }
+
+                if( std::find( leaf.indeciesAdd.begin(), leaf.indeciesAdd.end(), _updation ) != leaf.indeciesAdd.end() )
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
+    //////////////////////////////////////////////////////////////////////////
     UpdateService::UpdateService()
     {
     }
@@ -52,7 +75,7 @@ namespace Mengine
         m_afterLeafs.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    UpdateService::LeafUpdatable * UpdateService::getLeafUpdatable( EUpdateMode _mode, uint32_t _deep )
+    LeafUpdatable * UpdateService::getLeafUpdatable( EUpdateMode _mode, uint32_t _deep )
     {
         switch( _mode )
         {
@@ -95,12 +118,15 @@ namespace Mengine
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void UpdateService::placeUpdatater( const UpdationInterfacePtr & _updation )
+    void UpdateService::placeUpdatater( UpdationInterface * _updation )
     {
         MENGINE_ASSERTION_FATAL( this->findUpdatater_( _updation ) == false, "updation already exist" );
 
         EUpdateMode update_mode = _updation->getUpdationMode();
         uint32_t update_deep = _updation->getUpdationDeep();
+
+        MENGINE_ASSERTION_FATAL( update_mode != EUM_UNKNOWN, "updation mode is UNKNOWN" );
+        MENGINE_ASSERTION_FATAL( update_deep != ~0U, "updation deep is INVALID" );
 
         LeafUpdatable * leaf = this->getLeafUpdatable( update_mode, update_deep );
 
@@ -112,12 +138,15 @@ namespace Mengine
         leaf->indeciesAdd.emplace_back( _updation );
     }
     //////////////////////////////////////////////////////////////////////////
-    void UpdateService::removeUpdatater( const UpdationInterfacePtr & _updation )
+    void UpdateService::removeUpdatater( UpdationInterface * _updation )
     {
         MENGINE_ASSERTION_FATAL( this->findUpdatater_( _updation ) == true, "updation already exist" );
 
         EUpdateMode update_mode = _updation->getUpdationMode();
         uint32_t update_deep = _updation->getUpdationDeep();
+
+        MENGINE_ASSERTION_FATAL( update_mode != EUM_UNKNOWN, "updation mode is UNKNOWN" );
+        MENGINE_ASSERTION_FATAL( update_deep != ~0U, "updation deep is INVALID" );
 
         LeafUpdatable * leaf = this->getLeafUpdatable( update_mode, update_deep );
 
@@ -143,39 +172,26 @@ namespace Mengine
 
             return;
         }
+
+        MENGINE_ASSERTION_FATAL( false, "updation not found mode '%u' deep '%u'"
+            , update_mode
+            , update_deep
+        );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool UpdateService::findLeafUpdatater_( const LeafUpdatables & _leafs, const UpdationInterfacePtr & _updation ) const
+    bool UpdateService::findUpdatater_( const UpdationInterface * _updation ) const
     {
-        for( const LeafUpdatable & leaf : _leafs )
-        {
-            if( std::find( leaf.indecies.begin(), leaf.indecies.end(), _updation ) != leaf.indecies.end() )
-            {
-                return true;
-            }
-
-            if( std::find( leaf.indeciesAdd.begin(), leaf.indeciesAdd.end(), _updation ) != leaf.indeciesAdd.end() )
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool UpdateService::findUpdatater_( const UpdationInterfacePtr & _updation ) const
-    {
-        if( this->findLeafUpdatater_( m_beforeLeafs, _updation ) == true )
+        if( Detail::findLeafUpdatater( m_beforeLeafs, _updation ) == true )
         {
             return true;
         }
 
-        if( this->findLeafUpdatater_( m_leafs, _updation ) == true )
+        if( Detail::findLeafUpdatater( m_leafs, _updation ) == true )
         {
             return true;
         }
 
-        if( this->findLeafUpdatater_( m_afterLeafs, _updation ) == true )
+        if( Detail::findLeafUpdatater( m_afterLeafs, _updation ) == true )
         {
             return true;
         }
@@ -198,7 +214,7 @@ namespace Mengine
 
         leaf_indecies.erase( StdAlgorithm::remove( leaf_indecies.begin(), leaf_indecies.end(), nullptr ), leaf_indecies.end() );
 
-        for( const UpdationInterfacePtr & updation : leaf_indecies )
+        for( UpdationInterface * updation : leaf_indecies )
         {
             if( updation == nullptr )
             {

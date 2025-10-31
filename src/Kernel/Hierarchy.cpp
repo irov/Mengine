@@ -5,6 +5,8 @@
 #include "Kernel/IntrusivePtrScope.h"
 #include "Kernel/MixinDebug.h"
 
+#include "Config/StdException.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -15,25 +17,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Hierarchy::~Hierarchy()
     {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    HashType Hierarchy::getHierarchyHash() const
-    {
-        const ConstString & name = static_cast<const Node *>(this)->getName();
-
-        HashType hash = name.hash(); 
-
-        for( Hierarchy * parent = this->getParent(); parent != nullptr; parent = parent->getParent() )
-        {
-            const ConstString & parent_name = static_cast<const Node *>(parent)->getName();
-
-            HashType parent_hash = parent_name.hash();
-
-            hash = (hash << 5) | (hash >> (sizeof( HashType ) * 8 - 5));
-            hash ^= parent_hash;            
-        }
-
-        return hash;
     }
     //////////////////////////////////////////////////////////////////////////
     void Hierarchy::addChild( const NodePtr & _node )
@@ -95,9 +78,18 @@ namespace Mengine
     {
         IntrusivePtrScope ankh( this );
 
+#if defined(MENGINE_DEBUG)
+        if( dynamic_cast<const Node *>(this) == nullptr )
+        {
+            throw StdException::runtime_error( "hierarchy this not node" );
+        }
+#endif
+
+        Node * self = static_cast<Node *>(this);
+
         Node * child_parent = _child->getParent();
 
-        if( child_parent == this )
+        if( child_parent == self )
         {
             if( _hint != EHierarchyInsert::EHI_BACK )
             {
@@ -124,12 +116,8 @@ namespace Mengine
 
             this->insertChild_( _insert, _child );
 
-            Node * parentNode = static_cast<Node *>(this);
-
-            _child->setParent_( parentNode, _hint );
+            _child->setParent_( self, _hint );
         }
-
-        const Node * self = static_cast<const Node *>(this);
 
         bool self_freeze = self->isFreeze();
         bool child_freeze = _child->isFreeze();

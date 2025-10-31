@@ -16,8 +16,8 @@ namespace Mengine
         SERVICE_DECLARE( "UpdateService" )
 
     public:
-        virtual void placeUpdatater( const UpdationInterfacePtr & _updation ) = 0;
-        virtual void removeUpdatater( const UpdationInterfacePtr & _updation ) = 0;
+        virtual void placeUpdatater( UpdationInterface * _updation ) = 0;
+        virtual void removeUpdatater( UpdationInterface * _updation ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

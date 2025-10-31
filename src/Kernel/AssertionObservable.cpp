@@ -17,7 +17,12 @@ namespace Mengine
             bool observer = NOTIFICATION_SERVICE()
                 ->hasObserver( _observer );
 
-            return observer;
+            if( observer == false )
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

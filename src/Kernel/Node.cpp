@@ -463,6 +463,26 @@ namespace Mengine
             }
         }
     }
+
+    //////////////////////////////////////////////////////////////////////////
+    HashType Node::getHierarchyHash() const
+    {
+        const ConstString & name = this->getName();
+
+        HashType hash = name.hash();
+
+        for( Node * parent = this->getParent(); parent != nullptr; parent = parent->getParent() )
+        {
+            const ConstString & parent_name = parent->getName();
+
+            HashType parent_hash = parent_name.hash();
+
+            hash = (hash << 5) | (hash >> (sizeof( HashType ) * 8 - 5));
+            hash ^= parent_hash;
+        }
+
+        return hash;
+    }
     //////////////////////////////////////////////////////////////////////////
     NodePtr Node::findUniqueChild( UniqueId _uniqueIdentity ) const
     {

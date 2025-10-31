@@ -34,8 +34,8 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     BaseUpdation::BaseUpdation()
-        : m_mode( EUM_NODE_BASE )
-        , m_deep( 0U )
+        : m_mode( EUM_UNKNOWN )
+        , m_deep( ~0U )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -48,16 +48,20 @@ namespace Mengine
         m_mode = _mode;
 
         uint32_t mode_deep = Detail::calcModeDeep( m_mode, _deep );
+
         m_deep = mode_deep;
 
         UPDATE_SERVICE()
-            ->placeUpdatater( UpdationInterfacePtr::from( this ) );
+            ->placeUpdatater( this );
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseUpdation::deactivate()
     {
         UPDATE_SERVICE()
-            ->removeUpdatater( UpdationInterfacePtr::from( this ) );
+            ->removeUpdatater( this );
+
+        m_mode = EUM_UNKNOWN;
+        m_deep = ~0U;
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseUpdation::replace( uint32_t _deep )
@@ -70,12 +74,12 @@ namespace Mengine
         }
 
         UPDATE_SERVICE()
-            ->removeUpdatater( UpdationInterfacePtr::from( this ) );
+            ->removeUpdatater( this );
 
         m_deep = mode_deep;
 
         UPDATE_SERVICE()
-            ->placeUpdatater( UpdationInterfacePtr::from( this ) );
+            ->placeUpdatater( this );
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -6,6 +6,7 @@ namespace Mengine
 {
     enum EUpdateMode
     {
+        EUM_UNKNOWN,
         EUM_NODE_BASE,
         EUM_NODE_AFFECTOR,
         EUM_SERVICE_BEFORE,

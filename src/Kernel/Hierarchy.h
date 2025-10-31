@@ -36,9 +36,6 @@ namespace Mengine
         MENGINE_INLINE bool hasParent() const;
 
     public:
-        HashType getHierarchyHash() const;
-
-    public:
         void addChild( const NodePtr & _node );
         void addChildFront( const NodePtr & _node );
         bool addChildAfter( const NodePtr & _node, const NodePtr & _after );

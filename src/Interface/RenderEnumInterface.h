@@ -15,6 +15,7 @@ namespace Mengine
         RP_DX11,
         RP_OPENGL,
         RP_OPENGLES,
+        RP_METAL,
         RP_UNKNOWN
     };
     //////////////////////////////////////////////////////////////////////////

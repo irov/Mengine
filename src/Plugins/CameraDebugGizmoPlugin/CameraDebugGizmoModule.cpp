@@ -1,4 +1,4 @@
-#include "ModuleCameraDebugGizmo.h"
+#include "CameraDebugGizmoModule.h"
 
 #include "Interface/PlayerServiceInterface.h"
 #include "Interface/InputServiceInterface.h"
@@ -9,18 +9,18 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    ModuleCameraDebugGizmo::ModuleCameraDebugGizmo()
+    CameraDebugGizmoModule::CameraDebugGizmoModule()
         : m_scaleStepMin( 0.f )
         , m_scaleStepStep( 0.f )
         , m_scaleStepMax( 0.f )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    ModuleCameraDebugGizmo::~ModuleCameraDebugGizmo()
+    CameraDebugGizmoModule::~CameraDebugGizmoModule()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ModuleCameraDebugGizmo::_initializeModule()
+    bool CameraDebugGizmoModule::_initializeModule()
     {
         m_scaleStepMin = CONFIG_VALUE_FLOAT( "CameraDebugGizmoPlugin", "ScaleStepMin", 0.05f );
         m_scaleStepStep = CONFIG_VALUE_FLOAT( "CameraDebugGizmoPlugin", "ScaleStepStep", 0.05f );
@@ -29,12 +29,12 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleCameraDebugGizmo::_finalizeModule()
+    void CameraDebugGizmoModule::_finalizeModule()
     {
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ModuleCameraDebugGizmo::_handleKeyEvent( const InputKeyEvent & _event )
+    bool CameraDebugGizmoModule::_handleKeyEvent( const InputKeyEvent & _event )
     {
         if( _event.code == KC_ESCAPE && _event.isDown == true )
         {
@@ -48,7 +48,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ModuleCameraDebugGizmo::_handleMouseMove( const InputMouseMoveEvent & _event )
+    bool CameraDebugGizmoModule::_handleMouseMove( const InputMouseMoveEvent & _event )
     {
         bool controlDown = _event.special.isControl;
 
@@ -74,7 +74,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ModuleCameraDebugGizmo::_handleMouseWheel( const InputMouseWheelEvent & _event )
+    bool CameraDebugGizmoModule::_handleMouseWheel( const InputMouseWheelEvent & _event )
     {
         bool controlDown = _event.special.isControl;
 

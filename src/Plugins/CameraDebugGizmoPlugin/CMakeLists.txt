@@ -6,8 +6,8 @@ src
     CameraDebugGizmoPlugin.def
     CameraDebugGizmoPlugin.cpp
     
-    ModuleCameraDebugGizmo.cpp
-    ModuleCameraDebugGizmo.h
+    CameraDebugGizmoModule.cpp
+    CameraDebugGizmoModule.h
 )
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_CAMERADEBUGGIZMO)

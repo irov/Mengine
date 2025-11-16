@@ -135,6 +135,10 @@ namespace Mengine
         void clear() override;
         bool isEmpty() const override;
 
+    public:
+        bool lockBatches();
+        void unlockBatches();
+
     protected:
         bool testRenderPass_( const RenderContext * _context
             , const RenderVertexBufferInterfacePtr & _vertexBuffer
@@ -170,6 +174,8 @@ namespace Mengine
         typedef DynamicArray<RenderIndex> DynamicArrayRenderIndices;
         DynamicArrayRenderIndices m_indicesQuad;
         DynamicArrayRenderIndices m_indicesLine;
+
+        Vector<RenderBatchInterfacePtr> m_lockedBatches;
 
 #if defined(MENGINE_MASTER_RELEASE_DISABLE)
         struct DebugRenderObject

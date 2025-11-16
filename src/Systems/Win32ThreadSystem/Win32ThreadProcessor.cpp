@@ -48,7 +48,6 @@ namespace Mengine
         : m_priority( ETP_NORMAL )
         , m_thread( INVALID_HANDLE_VALUE )
         , m_threadId( 0 )
-        , m_task( nullptr )
         , m_exit( false )
     {
     }
@@ -140,6 +139,7 @@ namespace Mengine
         ::DeleteCriticalSection( &m_conditionLock );
 #endif
 
+        m_task = nullptr;
         m_mutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -193,6 +193,7 @@ namespace Mengine
                     MENGINE_PROFILER_FRAME( "thread" );
 
                     m_task->process();
+
                     m_mutex->unlock();
                 }
 
@@ -226,7 +227,7 @@ namespace Mengine
         return (ThreadId)m_threadId;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32ThreadProcessor::processTask( ThreadTaskInterface * _task )
+    bool Win32ThreadProcessor::processTask( const ThreadTaskInterfacePtr & _task )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _task, "invalid process task" );
 
@@ -275,10 +276,12 @@ namespace Mengine
         }
 
         ::EnterCriticalSection( &m_taskLock );
+
         if( m_task != nullptr )
         {
             m_task->cancel();
         }
+
         ::LeaveCriticalSection( &m_taskLock );
 
         ::EnterCriticalSection( &m_processLock );

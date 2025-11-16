@@ -40,22 +40,14 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Men
     public MengineAppLovinAppOpenAd(@NonNull MengineAdService adService, @NonNull MengineAppLovinPluginInterface plugin) throws MengineServiceInvalidInitializeException {
         super(adService, plugin, MaxAdFormat.APP_OPEN);
 
-        String MengineAppLovinPlugin_AppOpen_AdUnitId = plugin.getResourceString(METADATA_APPOPEN_ADUNITID);
-
-        if (MengineAppLovinPlugin_AppOpen_AdUnitId.isEmpty() == true) {
-            this.invalidInitialize("meta %s is empty"
-                , METADATA_APPOPEN_ADUNITID
-            );
-        }
-
-        this.setAdUnitId(MengineAppLovinPlugin_AppOpen_AdUnitId);
+        this.setAdUnitId(METADATA_APPOPEN_ADUNITID, "AppOpenAdUnitId");
 
         String MengineAppLovinPlugin_AppOpen_Placement = plugin.getResourceString(METADATA_APPOPEN_PLACEMENT);
 
         m_placement = MengineAppLovinPlugin_AppOpen_Placement;
     }
 
-    protected MengineAnalyticsEventBuilderInterface buildAppOpenAdEvent(@Size(min = 1L,max = 40L) String event) {
+    protected MengineAnalyticsEventBuilderInterface buildAppOpenAdEvent(@Size(min = 1L, max = 40L) String event) {
         MengineAnalyticsEventBuilderInterface builder = this.buildAdEvent("mng_applovin_appopen_" + event)
             .addParameterString("placement", m_placement)
             ;

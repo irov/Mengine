@@ -56,12 +56,12 @@ namespace Mengine
     {
         uint32_t num_points = _polygon.size();
 
-        if( num_points > b2_maxPolygonVertices )
+        if( num_points > B2_MAX_POLYGON_VERTICES)
         {
             return false;
         }
 
-        b2Vec2 vertices[b2_maxPolygonVertices];
+        b2Vec2 vertices[B2_MAX_POLYGON_VERTICES];
         for( uint32_t i = 0; i != num_points; ++i )
         {
             const mt::vec2f & v = _polygon[i];
@@ -79,8 +79,9 @@ namespace Mengine
 
         shapeDef.userData = (Box2DBodyInterface *)this;
         shapeDef.density = _density;
-        shapeDef.friction = _friction;
-        shapeDef.restitution = _restitution;
+        shapeDef.material = ::b2DefaultSurfaceMaterial();
+        shapeDef.material.friction = _friction;
+        shapeDef.material.restitution = _restitution;
         shapeDef.isSensor = _isSensor;
         shapeDef.filter.categoryBits = _categoryBits;
         shapeDef.filter.maskBits = _collisionMask;
@@ -114,8 +115,9 @@ namespace Mengine
 
         shapeDef.userData = (Box2DBodyInterface *)this;
         shapeDef.density = _density;
-        shapeDef.friction = _friction;
-        shapeDef.restitution = _restitution;
+        shapeDef.material = ::b2DefaultSurfaceMaterial();
+        shapeDef.material.friction = _friction;
+        shapeDef.material.restitution = _restitution;
         shapeDef.isSensor = _isSensor;
         shapeDef.filter.categoryBits = _categoryBits;
         shapeDef.filter.maskBits = _collisionMask;
@@ -143,15 +145,17 @@ namespace Mengine
         b2Vec2 b2_position = m_scaler.toBox2DWorld( _position );
         float b2_width = m_scaler.toBox2DWorld( _width );
         float b2_height = m_scaler.toBox2DWorld( _height );
+        b2Rot b2_rot = ::b2MakeRot( _angle );
 
-        b2Polygon box = ::b2MakeOffsetBox( b2_width, b2_height, b2_position, _angle );
+        b2Polygon box = ::b2MakeOffsetBox( b2_width, b2_height, b2_position, b2_rot );
 
         b2ShapeDef shapeDef = ::b2DefaultShapeDef();
 
         shapeDef.userData = (Box2DBodyInterface *)this;
         shapeDef.density = _density;
-        shapeDef.friction = _friction;
-        shapeDef.restitution = _restitution;
+        shapeDef.material = ::b2DefaultSurfaceMaterial();
+        shapeDef.material.friction = _friction;
+        shapeDef.material.restitution = _restitution;
         shapeDef.isSensor = _isSensor;
         shapeDef.filter.categoryBits = _categoryBits;
         shapeDef.filter.maskBits = _collisionMask;
@@ -205,7 +209,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float Box2DBody::getBodyInertiaTensor() const
     {
-        float inertiaTensor = ::b2Body_GetInertiaTensor( m_bodyId );
+        float inertiaTensor = ::b2Body_GetRotationalInertia( m_bodyId );
 
         return inertiaTensor;
     }

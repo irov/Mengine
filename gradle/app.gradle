@@ -58,12 +58,15 @@ final Boolean MENGINE_APP_PLUGIN_DATADOG = Utils.existAppPlugin("MENGINE_APP_PLU
 final Boolean MENGINE_APP_PLUGIN_VIBRATOR = Utils.existAppPlugin("MENGINE_APP_PLUGIN_VIBRATOR")
 final Boolean MENGINE_APP_PLUGIN_AMPLITUDE = Utils.existAppPlugin("MENGINE_APP_PLUGIN_AMPLITUDE")
 
+final Boolean MENGINE_APP_HAS_ADS = Utils.getBooleanProperty("MENGINE_APP_HAS_ADS", false)
+
 Utils.logString("ANDROID_APP_DELIVERY_PACKAGES", ANDROID_APP_DELIVERY_PACKAGES)
 Utils.logAvailable("ANDROID_APP_BUILD_PUBLISH", ANDROID_APP_BUILD_PUBLISH)
 Utils.logAvailable("ANDROID_APP_SPLIT_ENABLE", ANDROID_APP_SPLIT_ENABLE)
 Utils.logAvailable("ANDROID_APP_BUNDLE_ENABLE", ANDROID_APP_BUNDLE_ENABLE)
 Utils.logInteger("ANDROID_APP_BUILD_NUMBER", ANDROID_APP_BUILD_NUMBER)
 Utils.logString("ANDROID_APP_BUILD_VERSION", ANDROID_APP_BUILD_VERSION)
+Utils.logAvailable("MENGINE_APP_HAS_ADS", MENGINE_APP_HAS_ADS)
 
 if (MENGINE_APP_PLUGIN_GOOGLE_SERVICE == true) {
     apply plugin: 'com.google.gms.google-services'
@@ -379,6 +382,10 @@ if (MENGINE_APP_LIBRARY_MENGINE == true) {
 Utils.logAvailable("MENGINE_APP_SERVICE_AD", MENGINE_APP_SERVICE_AD)
 
 if (MENGINE_APP_SERVICE_AD == true) {
+    if (MENGINE_APP_HAS_ADS == false) {
+        throw new GradleException("MENGINE_APP_HAS_ADS must be set to true when MENGINE_APP_SERVICE_AD is enabled. Set -PMENGINE_APP_HAS_ADS=true")
+    }
+    
     android.ext.plugins += 'org.Mengine.Base.MengineAdService'
 }
 
@@ -417,6 +424,10 @@ if (MENGINE_APP_PLUGIN_GOOGLE_SERVICE == true) {
 Utils.logAvailable("MENGINE_APP_PLUGIN_GOOGLE_ADVERTISING", MENGINE_APP_PLUGIN_GOOGLE_ADVERTISING)
 
 if (MENGINE_APP_PLUGIN_GOOGLE_ADVERTISING == true) {
+    if (MENGINE_APP_HAS_ADS == false) {
+        throw new GradleException("MENGINE_APP_HAS_ADS must be set to true when MENGINE_APP_PLUGIN_GOOGLE_ADVERTISING is enabled. Set -PMENGINE_APP_HAS_ADS=true")
+    }
+    
     android.ext.plugins += 'org.Mengine.Plugin.GoogleAdvertising.MengineGoogleAdvertisingPlugin'
 
     dependencies {
@@ -664,6 +675,10 @@ if (MENGINE_APP_PLUGIN_MAR == true) {
 Utils.logAvailable("MENGINE_APP_PLUGIN_ADMOB", MENGINE_APP_PLUGIN_ADMOB)
 
 if (MENGINE_APP_PLUGIN_ADMOB == true) {
+    if (MENGINE_APP_HAS_ADS == false) {
+        throw new GradleException("MENGINE_APP_HAS_ADS must be set to true when MENGINE_APP_PLUGIN_ADMOB is enabled. Set -PMENGINE_APP_HAS_ADS=true")
+    }
+    
     android.ext.plugins += 'org.Mengine.Plugin.AdMob.MengineAdMobPlugin'
 
     dependencies {
@@ -674,6 +689,10 @@ if (MENGINE_APP_PLUGIN_ADMOB == true) {
 Utils.logAvailable("MENGINE_APP_PLUGIN_AMAZON", MENGINE_APP_PLUGIN_AMAZON)
 
 if (MENGINE_APP_PLUGIN_AMAZON == true) {
+    if (MENGINE_APP_HAS_ADS == false) {
+        throw new GradleException("MENGINE_APP_HAS_ADS must be set to true when MENGINE_APP_PLUGIN_AMAZON is enabled. Set -PMENGINE_APP_HAS_ADS=true")
+    }
+    
     android.ext.plugins += 'org.Mengine.Plugin.Amazon.MengineAmazonPlugin'
 
     dependencies {
@@ -684,6 +703,10 @@ if (MENGINE_APP_PLUGIN_AMAZON == true) {
 Utils.logAvailable("MENGINE_APP_PLUGIN_APPLOVIN", MENGINE_APP_PLUGIN_APPLOVIN)
 
 if (MENGINE_APP_PLUGIN_APPLOVIN == true) {
+    if (MENGINE_APP_HAS_ADS == false) {
+        throw new GradleException("MENGINE_APP_HAS_ADS must be set to true when MENGINE_APP_PLUGIN_APPLOVIN is enabled. Set -PMENGINE_APP_HAS_ADS=true")
+    }
+    
     android.ext.plugins += 'org.Mengine.Plugin.AppLovin.MengineAppLovinPlugin'
 
     dependencies {
@@ -762,6 +785,7 @@ if (project.hasProperty("MENGINE_APP_OPTIONS") == true) {
 android {
     defaultConfig {
         buildConfigField "boolean", "ANDROID_APP_BUILD_PUBLISH", "${ANDROID_APP_BUILD_PUBLISH}"
+        buildConfigField "boolean", "MENGINE_APP_HAS_ADS", "${MENGINE_APP_HAS_ADS}"
     }
 }
 

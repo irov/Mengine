@@ -46,22 +46,14 @@ public class MengineAppLovinMRECAd extends MengineAppLovinBase implements Mengin
     public MengineAppLovinMRECAd(@NonNull MengineAdService adService, @NonNull MengineAppLovinPluginInterface plugin) throws MengineServiceInvalidInitializeException {
         super(adService, plugin, MaxAdFormat.MREC);
 
-        String MengineAppLovinPlugin_MREC_AdUnitId = plugin.getResourceString(METADATA_MREC_ADUNITID);
-
-        if (MengineAppLovinPlugin_MREC_AdUnitId.isEmpty() == true) {
-            this.invalidInitialize("meta %s is empty"
-                , METADATA_MREC_ADUNITID
-            );
-        }
-
-        this.setAdUnitId(MengineAppLovinPlugin_MREC_AdUnitId);
+        this.setAdUnitId(METADATA_MREC_ADUNITID, "MRECAdUnitId");
 
         String MengineAppLovinPlugin_MREC_Placement = plugin.getResourceString(METADATA_MREC_PLACEMENT);
 
         m_placement = MengineAppLovinPlugin_MREC_Placement;
     }
 
-    protected MengineAnalyticsEventBuilderInterface buildMRECAdEvent(@Size(min = 1L,max = 40L) String event) {
+    protected MengineAnalyticsEventBuilderInterface buildMRECAdEvent(@Size(min = 1L, max = 40L) String event) {
         MengineAnalyticsEventBuilderInterface builder = this.buildAdEvent("mng_applovin_mrec_" + event)
             .addParameterString("placement", m_placement);
 

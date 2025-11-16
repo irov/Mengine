@@ -1821,10 +1821,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::render()
     {
+        m_renderPipeline->clear();
+
         if( m_nopause == false && m_focus == false )
         {
-            m_renderPipeline->clear();
-
             return false;
         }
 
@@ -1838,9 +1838,7 @@ namespace Mengine
             ->render( m_renderPipeline );
 
         RENDER_SERVICE()
-            ->endScene( m_renderPipeline );
-
-        m_renderPipeline->clear();
+            ->endScene( m_renderPipeline );        
 
         return true;
     }

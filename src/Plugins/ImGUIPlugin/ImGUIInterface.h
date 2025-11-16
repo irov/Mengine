@@ -7,6 +7,7 @@
 #include "Config/Lambda.h"
 
 #include "imgui.h"
+#include "imgui_internal.h"
 
 namespace Mengine
 {

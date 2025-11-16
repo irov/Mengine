@@ -56,7 +56,7 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
 
     protected MengineRunnablePeriodically m_refreshTimer;
 
-    protected MengineAnalyticsEventBuilderInterface buildNonetBannersEvent(@Size(min = 1L,max = 40L) String event) {
+    protected MengineAnalyticsEventBuilderInterface buildNonetBannersEvent(@Size(min = 1L, max = 40L) String event) {
         MengineAnalyticsEventBuilderInterface builder = m_plugin.buildEvent("mng_applovin_nonet_banners_" + event);
 
         return builder;

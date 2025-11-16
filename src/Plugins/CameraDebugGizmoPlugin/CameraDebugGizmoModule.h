@@ -4,14 +4,14 @@
 
 namespace Mengine
 {
-    class ModuleCameraDebugGizmo
+    class CameraDebugGizmoModule
         : public ModuleBase
     {
-        DECLARE_FACTORABLE( ModuleCameraDebugGizmo );
+        DECLARE_FACTORABLE( CameraDebugGizmoModule );
 
     public:
-        ModuleCameraDebugGizmo();
-        ~ModuleCameraDebugGizmo() override;
+        CameraDebugGizmoModule();
+        ~CameraDebugGizmoModule() override;
 
     public:
         bool _initializeModule() override;

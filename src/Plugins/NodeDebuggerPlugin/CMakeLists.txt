@@ -6,8 +6,8 @@ ADD_FILTER(
     NodeDebuggerPlugin.def
     NodeDebuggerPlugin.cpp
 
-    ModuleNodeDebugger.h
-    ModuleNodeDebugger.cpp
+    NodeDebuggerModule.h
+    NodeDebuggerModule.cpp
 
     NodeDebuggerSerialization.h
 

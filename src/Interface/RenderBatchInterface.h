@@ -43,6 +43,10 @@ namespace Mengine
         virtual const RenderIndexBufferInterfacePtr & getIndexBuffer() const = 0;
 
     public:
+        virtual bool lock() = 0;
+        virtual bool unlock() = 0;
+
+    public:
         virtual RenderBatchLockData * getLockData() = 0;
     };
     //////////////////////////////////////////////////////////////////////////

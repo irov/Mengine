@@ -18,11 +18,12 @@ public class MengineService implements MengineServiceInterface {
     private String m_serviceName;
     private MengineTag m_serviceTag;
     private boolean m_embedding;
+    private JSONObject m_serviceConfig = null;
     private Boolean m_availableStatus = null;
     private Boolean m_availableAnalytics = null;
 
     @Override
-    public void onAppInitialize(@NonNull MengineApplication application, String serviceName, boolean embedding) {
+    public void onAppInitialize(@NonNull MengineApplication application, @NonNull String serviceName, boolean embedding) {
         m_application = application;
         m_serviceName = serviceName;
         m_embedding = embedding;
@@ -74,7 +75,7 @@ public class MengineService implements MengineServiceInterface {
     }
 
     @Override
-    public Object newInstance(String name, boolean required, Object ... args) {
+    public Object newInstance(@NonNull String name, boolean required, Object ... args) {
         ClassLoader cl = this.getClass().getClassLoader();
 
         Object instance = MengineUtils.newInstance(cl, m_serviceTag, name, required, args);
@@ -97,40 +98,40 @@ public class MengineService implements MengineServiceInterface {
     }
 
     @Override
-    public boolean hasOption(String option) {
+    public boolean hasOption(@NonNull String option) {
         boolean value = MengineUtils.hasOption(m_application, option);
 
         return value;
     }
 
     @Override
-    public int getOptionValueInteger(String option, int defaultValue) {
+    public int getOptionValueInteger(@NonNull String option, int defaultValue) {
         int value = MengineUtils.getOptionValueInteger(m_application, option, defaultValue);
 
         return value;
     }
 
     @Override
-    public long getOptionValueLong(String option, long defaultValue) {
+    public long getOptionValueLong(@NonNull String option, long defaultValue) {
         long value = MengineUtils.getOptionValueLong(m_application, option, defaultValue);
 
         return value;
     }
 
     @Override
-    public String getOptionValueString(String option, String defaultValue) {
+    public String getOptionValueString(@NonNull String option, String defaultValue) {
         String value = MengineUtils.getOptionValueString(m_application, option, defaultValue);
 
         return value;
     }
 
     @Override
-    public void setStatisticInteger(@Size(min = 1L,max = 40L) String key, long value) {
+    public void setStatisticInteger(@Size(min = 1L, max = 40L) String key, long value) {
         MengineStatistic.setInteger(key, value);
     }
 
     @Override
-    public void increaseStatisticInteger(@Size(min = 1L,max = 40L) String key, long value) {
+    public void increaseStatisticInteger(@Size(min = 1L, max = 40L) String key, long value) {
         if (value == 0L) {
             return;
         }
@@ -139,7 +140,7 @@ public class MengineService implements MengineServiceInterface {
     }
 
     @Override
-    public void decreaseStatisticInteger(@Size(min = 1L,max = 40L) String key, long value) {
+    public void decreaseStatisticInteger(@Size(min = 1L, max = 40L) String key, long value) {
         if (value == 0L) {
             return;
         }
@@ -148,12 +149,12 @@ public class MengineService implements MengineServiceInterface {
     }
 
     @Override
-    public void setStatisticDouble(@Size(min = 1L,max = 40L) String key, double value) {
+    public void setStatisticDouble(@Size(min = 1L, max = 40L) String key, double value) {
         MengineStatistic.setDouble(key, value);
     }
 
     @Override
-    public void increaseStatisticDouble(@Size(min = 1L,max = 40L) String key, double value) {
+    public void increaseStatisticDouble(@Size(min = 1L, max = 40L) String key, double value) {
         if (value == 0.0) {
             return;
         }
@@ -162,7 +163,7 @@ public class MengineService implements MengineServiceInterface {
     }
 
     @Override
-    public void decreaseStatisticDouble(@Size(min = 1L,max = 40L) String key, double value) {
+    public void decreaseStatisticDouble(@Size(min = 1L, max = 40L) String key, double value) {
         if (value == 0.0) {
             return;
         }
@@ -193,12 +194,12 @@ public class MengineService implements MengineServiceInterface {
     }
 
     @Override
-    public void setState(@NonNull @Size(min = 1L,max = 1024L) String name, Object value) {
+    public void setState(@NonNull @Size(min = 1L, max = 1024L) String name, Object value) {
         m_application.setState(name, value);
     }
 
     @Override
-    public String logVerbose(String format, Object ... args) {
+    public String logVerbose(@NonNull String format, Object ... args) {
         MengineTag t = this.getServiceTag();
         String m = MengineLog.logVerbose(t, format, args);
 
@@ -206,7 +207,7 @@ public class MengineService implements MengineServiceInterface {
     }
 
     @Override
-    public String logDebug(String format, Object ... args) {
+    public String logDebug(@NonNull String format, Object ... args) {
         MengineTag t = this.getServiceTag();
         String m = MengineLog.logDebug(t, format, args);
 
@@ -214,7 +215,7 @@ public class MengineService implements MengineServiceInterface {
     }
 
     @Override
-    public String logInfo(String format, Object ... args) {
+    public String logInfo(@NonNull String format, Object ... args) {
         MengineTag t = this.getServiceTag();
         String m = MengineLog.logInfo(t, format, args);
 
@@ -222,7 +223,7 @@ public class MengineService implements MengineServiceInterface {
     }
 
     @Override
-    public String logMessage(String format, Object ... args) {
+    public String logMessage(@NonNull String format, Object ... args) {
         MengineTag t = this.getServiceTag();
         String m = MengineLog.logMessage(t, format, args);
 
@@ -230,7 +231,7 @@ public class MengineService implements MengineServiceInterface {
     }
 
     @Override
-    public String logMessageProtected(String format, Object ... args) {
+    public String logMessageProtected(@NonNull String format, Object ... args) {
         MengineTag t = this.getServiceTag();
         String m = MengineLog.logMessageProtected(t, format, args);
 
@@ -238,7 +239,7 @@ public class MengineService implements MengineServiceInterface {
     }
 
     @Override
-    public String logMessageRelease(String format, Object ... args) {
+    public String logMessageRelease(@NonNull String format, Object ... args) {
         MengineTag t = this.getServiceTag();
         String m = MengineLog.logMessageRelease(t, format, args);
 
@@ -246,7 +247,7 @@ public class MengineService implements MengineServiceInterface {
     }
 
     @Override
-    public String logWarning(String format, Object ... args) {
+    public String logWarning(@NonNull String format, Object ... args) {
         MengineTag t = this.getServiceTag();
         String m = MengineLog.logWarning(t, format, args);
 
@@ -254,7 +255,7 @@ public class MengineService implements MengineServiceInterface {
     }
 
     @Override
-    public String logError(String format, Object ... args) {
+    public String logError(@NonNull String format, Object ... args) {
         MengineTag t = this.getServiceTag();
         String m = MengineLog.logError(t, format, args);
 
@@ -268,19 +269,45 @@ public class MengineService implements MengineServiceInterface {
     }
 
     @Override
-    public void assertionError(String format, Object ... args) {
+    public void assertionError(@NonNull String format, Object ... args) {
         MengineTag t = this.getServiceTag();
         MengineUtils.throwAssertionError(t, null, format, args);
     }
 
-    private boolean availableAnalytics() {
-        if (m_availableAnalytics == null) {
-            JSONObject config_analytics = MengineFragmentRemoteConfig.INSTANCE.getRemoteConfigValue("plugin_" + m_serviceName);
+    @Override
+    public JSONObject getServiceConfig() {
+        if (m_serviceConfig == null) {
+            String serviceTag = m_serviceTag.toString();
 
-            if (config_analytics == null) {
+            JSONObject serviceConfig = MengineFragmentRemoteConfig.INSTANCE.getRemoteConfigValue(serviceTag);
+
+            m_serviceConfig = serviceConfig;
+        }
+
+        return m_serviceConfig;
+    }
+
+    @Override
+    public String getServiceConfigOptString(@NonNull String key, @NonNull String defaultValue) {
+        JSONObject serviceConfig = this.getServiceConfig();
+
+        if (serviceConfig == null) {
+            return defaultValue;
+        }
+
+        String value = serviceConfig.optString(key, defaultValue);
+
+        return value;
+    }
+
+    public boolean availableAnalytics() {
+        if (m_availableAnalytics == null) {
+            JSONObject serviceConfig = this.getServiceConfig();
+
+            if (serviceConfig == null) {
                 m_availableAnalytics = false;
             } else {
-                boolean enabled = config_analytics.optBoolean("enable_analytics", false);
+                boolean enabled = serviceConfig.optBoolean("enable_analytics", false);
 
                 m_availableAnalytics = enabled;
             }
@@ -290,7 +317,7 @@ public class MengineService implements MengineServiceInterface {
     }
 
     @Override
-    public MengineAnalyticsEventBuilderInterface buildEvent(@Size(min = 1L,max = 40L) String name) {
+    public MengineAnalyticsEventBuilderInterface buildEvent(@Size(min = 1L, max = 40L) String name) {
         if (this.availableAnalytics() == false) {
             MengineAnalyticsEventBuilderInterface eventBuilderDummy = MengineAnalytics.buildEventDummy(name);
             eventBuilderDummy.addParameterString("service", m_serviceName);
@@ -305,18 +332,18 @@ public class MengineService implements MengineServiceInterface {
     }
 
     @Override
-    public void nativeCall(String method, Object ... args) {
+    public void nativeCall(@NonNull String method, Object ... args) {
         MengineTag t = this.getServiceTag();
         m_application.nativeCall(t.toString(), method, args);
     }
 
     @Override
-    public void activateSemaphore(String name) {
+    public void activateSemaphore(@NonNull String name) {
         m_application.activateSemaphore(name);
     }
 
     @Override
-    public void deactivateSemaphore(String name) {
+    public void deactivateSemaphore(@NonNull String name) {
         m_application.deactivateSemaphore(name);
     }
 

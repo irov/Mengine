@@ -382,8 +382,6 @@ namespace Mengine
             }
             else
             {
-                ThreadTaskInterface * task = desc_task.task.get();
-
                 for( ThreadProcessorDesc & desc_thread : m_threadProcessors )
                 {
                     if( desc_thread.name != desc_task.processorName )
@@ -391,7 +389,7 @@ namespace Mengine
                         continue;
                     }
 
-                    if( desc_thread.processor->processTask( task ) == false )
+                    if( desc_thread.processor->processTask( desc_task.task ) == false )
                     {
                         continue;
                     }
@@ -541,9 +539,7 @@ namespace Mengine
                 continue;
             }
 
-            ThreadTaskInterface * task_ptr = _desc.task.get();
-
-            if( desc_thread.processor->processTask( task_ptr ) == true )
+            if( desc_thread.processor->processTask( _desc.task ) == true )
             {
                 _desc.processor = desc_thread.processor;
                 _desc.progress = true;

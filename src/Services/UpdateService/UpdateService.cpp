@@ -20,7 +20,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        bool findLeafUpdatater( const LeafUpdatables & _leafs, const UpdationInterface * _updation )
+        static bool findLeafUpdatater( const LeafUpdatables & _leafs, const UpdationInterface * _updation )
         {
             for( const LeafUpdatable & leaf : _leafs )
             {
@@ -201,8 +201,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void UpdateService::updateLeaf_( uint32_t _deep, LeafUpdatable * const _leaf, const UpdateContext * _context )
     {
-        MENGINE_UNUSED( _deep );
-
         VectorUpdatableIndecies & leaf_indecies = _leaf->indecies;
         VectorUpdatableIndecies & leaf_indeciesAdd = _leaf->indeciesAdd;
 
@@ -216,11 +214,6 @@ namespace Mengine
 
         for( UpdationInterface * updation : leaf_indecies )
         {
-            if( updation == nullptr )
-            {
-                continue;
-            }
-
             uint32_t updation_deep = updation->getUpdationDeep();
 
             if( updation_deep != _deep )

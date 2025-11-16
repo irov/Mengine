@@ -732,6 +732,8 @@ namespace Mengine
 
             m_renderService->endRenderPass( context );
         }
+
+        m_renderPrimitives.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void BatchRenderPipeline::clear()
@@ -748,6 +750,66 @@ namespace Mengine
         bool empty = m_renderPrimitives.empty();
 
         return empty;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool BatchRenderPipeline::lockBatches()
+    {
+        for( const RenderPass & pass : m_renderPasses )
+        {
+            if( (pass.flags & RENDER_PASS_FLAG_SINGLE) == RENDER_PASS_FLAG_SINGLE )
+            {
+                continue;
+            }
+
+            const RenderBatchInterfacePtr & batch = pass.batch;
+
+            if( batch == nullptr )
+            {
+                continue;
+            }
+
+            bool alreadyLocked = false;
+
+            for( const RenderBatchInterfacePtr & lockedBatch : m_lockedBatches )
+            {
+                if( lockedBatch.get() == batch.get() )
+                {
+                    alreadyLocked = true;
+                    break;
+                }
+            }
+
+            if( alreadyLocked == true )
+            {
+                continue;
+            }
+
+            if( batch->lock() == false )
+            {
+                this->unlockBatches();
+
+                return false;
+            }
+
+            m_lockedBatches.emplace_back( batch );
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BatchRenderPipeline::unlockBatches()
+    {
+        for( const RenderBatchInterfacePtr & batch : m_lockedBatches )
+        {
+            if( batch == nullptr )
+            {
+                continue;
+            }
+
+            batch->unlock();
+        }
+
+        m_lockedBatches.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void BatchRenderPipeline::insertRenderObjects_( const RenderPass & _renderPass, const MemoryInterfacePtr & _vertexMemory, uint32_t _vertexSize, const MemoryInterfacePtr & _indexMemory, uint32_t * const _vbPos, uint32_t * const _ibPos )

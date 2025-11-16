@@ -35,56 +35,56 @@ public class MengineAnalytics {
         }
     }
 
-    static public void addContextParameterBoolean(@Size(min = 1L,max = 40L) String key, boolean value) {
+    static public void addContextParameterBoolean(@Size(min = 1L, max = 40L) String key, boolean value) {
         MengineAnalytics.assertContext(key);
         MengineAnalytics.assertGetter(key);
 
         MengineAnalytics.m_bases.put(key, value);
     }
 
-    static public void addContextParameterString(@Size(min = 1L,max = 40L) String key, @Size(min = 1L,max = 100L) String value) {
+    static public void addContextParameterString(@Size(min = 1L, max = 40L) String key, @Size(min = 1L, max = 100L) String value) {
         MengineAnalytics.assertContext(key);
         MengineAnalytics.assertGetter(key);
 
         MengineAnalytics.m_bases.put(key, value);
     }
 
-    static public void addContextParameterLong(@Size(min = 1L,max = 40L) String key, long value) {
+    static public void addContextParameterLong(@Size(min = 1L, max = 40L) String key, long value) {
         MengineAnalytics.assertContext(key);
         MengineAnalytics.assertGetter(key);
 
         MengineAnalytics.m_bases.put(key, value);
     }
 
-    static public void addContextParameterDouble(@Size(min = 1L,max = 40L) String key, double value) {
+    static public void addContextParameterDouble(@Size(min = 1L, max = 40L) String key, double value) {
         MengineAnalytics.assertContext(key);
         MengineAnalytics.assertGetter(key);
 
         MengineAnalytics.m_bases.put(key, value);
     }
 
-    static public void addContextGetterParameterBoolean(@Size(min = 1L,max = 40L) String key, MengineAnalyticsGetter<Boolean> value) {
+    static public void addContextGetterParameterBoolean(@Size(min = 1L, max = 40L) String key, MengineAnalyticsGetter<Boolean> value) {
         MengineAnalytics.assertContext(key);
         MengineAnalytics.assertGetter(key);
 
         MengineAnalytics.m_getter.put(key, value);
     }
 
-    static public void addContextGetterParameterString(@Size(min = 1L,max = 40L) String key, MengineAnalyticsGetter<String> value) {
+    static public void addContextGetterParameterString(@Size(min = 1L, max = 40L) String key, MengineAnalyticsGetter<String> value) {
         MengineAnalytics.assertContext(key);
         MengineAnalytics.assertGetter(key);
 
         MengineAnalytics.m_getter.put(key, value);
     }
 
-    static public void addContextGetterParameterLong(@Size(min = 1L,max = 40L) String key, MengineAnalyticsGetter<Long> value) {
+    static public void addContextGetterParameterLong(@Size(min = 1L, max = 40L) String key, MengineAnalyticsGetter<Long> value) {
         MengineAnalytics.assertContext(key);
         MengineAnalytics.assertGetter(key);
 
         MengineAnalytics.m_getter.put(key, value);
     }
 
-    static public void addContextGetterParameterDouble(@Size(min = 1L,max = 40L) String key, MengineAnalyticsGetter<Double> value) {
+    static public void addContextGetterParameterDouble(@Size(min = 1L, max = 40L) String key, MengineAnalyticsGetter<Double> value) {
         MengineAnalytics.assertContext(key);
         MengineAnalytics.assertGetter(key);
 
@@ -110,7 +110,7 @@ public class MengineAnalytics {
         }
     }
 
-    static public MengineAnalyticsEventBuilderInterface buildEvent(@Size(min = 1L,max = 40L) String name) {
+    static public MengineAnalyticsEventBuilderInterface buildEvent(@Size(min = 1L, max = 40L) String name) {
         Map<String, Object> parameters = new HashMap<>();
 
         MengineAnalytics.collapseGetter(parameters);
@@ -120,7 +120,7 @@ public class MengineAnalytics {
         return eventBuilder;
     }
 
-    static public MengineAnalyticsEventBuilderInterface buildEventDummy(@Size(min = 1L,max = 40L) String name) {
+    static public MengineAnalyticsEventBuilderInterface buildEventDummy(@Size(min = 1L, max = 40L) String name) {
         MengineAnalyticsEventBuilderInterface eventBuilder = new MengineAnalyticsEventBuilderDummy(name);
 
         return eventBuilder;

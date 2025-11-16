@@ -23,6 +23,7 @@ import com.applovin.sdk.AppLovinSdkUtils;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineAdService;
 import org.Mengine.Base.MengineAnalyticsEventBuilderInterface;
+import org.Mengine.Base.MengineFragmentRemoteConfig;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineUtils;
 import org.Mengine.Plugin.AppLovin.Core.MengineAppLovinBannerAdInterface;
@@ -46,16 +47,7 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements Meng
     public MengineAppLovinBannerAd(@NonNull MengineAdService adService, @NonNull MengineAppLovinPluginInterface plugin) throws MengineServiceInvalidInitializeException {
         super(adService, plugin, MaxAdFormat.BANNER);
 
-        String MengineAppLovinPlugin_Banner_AdUnitId = plugin.getResourceString(METADATA_BANNER_ADUNITID);
-
-        if (MengineAppLovinPlugin_Banner_AdUnitId.isEmpty() == true) {
-            this.invalidInitialize("meta %s is empty"
-                , plugin.getResourceName(METADATA_BANNER_ADUNITID)
-                , MengineAppLovinPlugin_Banner_AdUnitId
-            );
-        }
-
-        this.setAdUnitId(MengineAppLovinPlugin_Banner_AdUnitId);
+        this.setAdUnitId(METADATA_BANNER_ADUNITID, "BannerAdUnitId");
 
         String MengineAppLovinPlugin_Banner_Placement = plugin.getResourceString(METADATA_BANNER_PLACEMENT);
 
@@ -68,7 +60,7 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements Meng
         return size;
     }
 
-    protected MengineAnalyticsEventBuilderInterface buildBannerAdEvent(@Size(min = 1L,max = 40L) String event) {
+    protected MengineAnalyticsEventBuilderInterface buildBannerAdEvent(@Size(min = 1L, max = 40L) String event) {
         MengineAnalyticsEventBuilderInterface builder = this.buildAdEvent("mng_applovin_banner_" + event)
             .addParameterString("placement", m_placement);
 

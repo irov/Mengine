@@ -1,4 +1,4 @@
-#include "ModuleDebugPanel.h"
+#include "DebugPanelModule.h"
 
 #include "Interface/RenderMaterialServiceInterface.h"
 
@@ -11,16 +11,16 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    ModuleDebugPanel::ModuleDebugPanel()
+    DebugPanelModule::DebugPanelModule()
         : m_show( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    ModuleDebugPanel::~ModuleDebugPanel()
+    DebugPanelModule::~DebugPanelModule()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ModuleDebugPanel::_initializeModule()
+    bool DebugPanelModule::_initializeModule()
     {
         const ImGUIRenderProviderInterfacePtr & imguiRenderProvider = IMGUI_SERVICE()
             ->getRenderProvider();
@@ -30,12 +30,12 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleDebugPanel::_finalizeModule()
+    void DebugPanelModule::_finalizeModule()
     {
         m_imguiRenderProvider = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ModuleDebugPanel::_handleKeyEvent( const InputKeyEvent & _event )
+    bool DebugPanelModule::_handleKeyEvent( const InputKeyEvent & _event )
     {
         if( _event.code == KC_F9 && _event.isDown == true )
         {
@@ -45,7 +45,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleDebugPanel::updateHistogramUpdate( HistogramUpdate * const _histogram, uint32_t _statisticId, float _coeffTime, float _multiplier )
+    void DebugPanelModule::updateHistogramUpdate( HistogramUpdate * const _histogram, uint32_t _statisticId, float _coeffTime, float _multiplier )
     {
         static int64_t old_value[MENGINE_STATISTIC_MAX_COUNT] = {0};
 
@@ -59,7 +59,7 @@ namespace Mengine
         _histogram->add( value );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleDebugPanel::drawHistogramUpdate( const HistogramUpdate & _histogram, const Char * _label, const Char * _overlayFormat, float _maxValue, float _height ) const
+    void DebugPanelModule::drawHistogramUpdate( const HistogramUpdate & _histogram, const Char * _label, const Char * _overlayFormat, float _maxValue, float _height ) const
     {
         float currentValue = _histogram.getLastValue();
         const float * values = _histogram.getValues();
@@ -73,7 +73,7 @@ namespace Mengine
         ImGui::PlotHistogram( imGuiLabel, values, MENGINE_DEBUG_PANEL_HISTOGRAM_UPDATE_COUNT, 0, overlayText, 0.f, _maxValue, ImVec2( 0, _height ) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleDebugPanel::drawHistogramPerFrame( const HistogramPerframe & _histogram, const Char * _label, const Char * _overlayFormat, float _maxValue, float _height ) const
+    void DebugPanelModule::drawHistogramPerFrame( const HistogramPerframe & _histogram, const Char * _label, const Char * _overlayFormat, float _maxValue, float _height ) const
     {
         float currentValue = _histogram.getLastValue();
         const float * values = _histogram.getValues();
@@ -87,7 +87,7 @@ namespace Mengine
         ImGui::PlotHistogram( imGuiLabel, values, MENGINE_DEBUG_PANEL_HISTOGRAM_PERFRAME_COUNT, 0, overlayText, 0.f, _maxValue, ImVec2( 0, _height ) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleDebugPanel::_beginUpdate( bool _focus )
+    void DebugPanelModule::_beginUpdate( bool _focus )
     {
         MENGINE_UNUSED( _focus );
 
@@ -111,7 +111,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleDebugPanel::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context )
+    void DebugPanelModule::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context )
     {
         if( m_show == false )
         {
@@ -148,7 +148,7 @@ namespace Mengine
         _renderPipeline->addRenderExternal( _context, renderMaterial, nullptr, RenderDrawPrimitiveInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleDebugPanel::onRenderDrawPrimitives( const RenderPrimitive * _primitives, uint32_t _count ) const
+    void DebugPanelModule::onRenderDrawPrimitives( const RenderPrimitive * _primitives, uint32_t _count ) const
     {
         MENGINE_UNUSED( _primitives );
         MENGINE_UNUSED( _count );

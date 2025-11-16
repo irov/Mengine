@@ -6,8 +6,8 @@ src
     DebugPanelPlugin.def
     DebugPanelPlugin.cpp
     
-    ModuleDebugPanel.cpp
-    ModuleDebugPanel.h
+    DebugPanelModule.cpp
+    DebugPanelModule.h
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_CONFIG_DIR}/imgui)

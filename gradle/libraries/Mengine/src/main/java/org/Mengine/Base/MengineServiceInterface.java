@@ -9,6 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Size;
 import androidx.annotation.StringRes;
 
+import org.json.JSONObject;
+
 import java.util.Map;
 
 public interface MengineServiceInterface {
@@ -18,7 +20,7 @@ public interface MengineServiceInterface {
         return true;
     }
 
-    void onAppInitialize(@NonNull MengineApplication application, String serviceName, boolean embedding);
+    void onAppInitialize(@NonNull MengineApplication application, @NonNull String serviceName, boolean embedding);
     void onAppFinalize(@NonNull MengineApplication application);
 
     void onActivityInitialize(@NonNull MengineActivity activity);
@@ -39,48 +41,51 @@ public interface MengineServiceInterface {
     MengineTag getServiceTag();
 
     <T> T getService(Class<T> cls);
-    Object newInstance(String name, boolean required, Object ... args);
+    Object newInstance(@NonNull String name, boolean required, Object ... args);
 
     boolean isAvailable();
     boolean isEmbedding();
 
-    boolean hasOption(String option);
-    int getOptionValueInteger(String option, int defaultValue);
-    long getOptionValueLong(String option, long defaultValue);
-    String getOptionValueString(String option, String defaultValue);
+    boolean hasOption(@NonNull String option);
+    int getOptionValueInteger(@NonNull String option, int defaultValue);
+    long getOptionValueLong(@NonNull String option, long defaultValue);
+    String getOptionValueString(@NonNull String option, String defaultValue);
 
-    void setStatisticInteger(@Size(min = 1L,max = 40L) String key, long value);
-    void increaseStatisticInteger(@Size(min = 1L,max = 40L) String key, long value);
-    void decreaseStatisticInteger(@Size(min = 1L,max = 40L) String key, long value);
-    void setStatisticDouble(@Size(min = 1L,max = 40L) String key, double value);
-    void increaseStatisticDouble(@Size(min = 1L,max = 40L) String key, double value);
-    void decreaseStatisticDouble(@Size(min = 1L,max = 40L) String key, double value);
+    void setStatisticInteger(@Size(min = 1L, max = 40L) String key, long value);
+    void increaseStatisticInteger(@Size(min = 1L, max = 40L) String key, long value);
+    void decreaseStatisticInteger(@Size(min = 1L, max = 40L) String key, long value);
+    void setStatisticDouble(@Size(min = 1L, max = 40L) String key, double value);
+    void increaseStatisticDouble(@Size(min = 1L, max = 40L) String key, double value);
+    void decreaseStatisticDouble(@Size(min = 1L, max = 40L) String key, double value);
+
+    JSONObject getServiceConfig();
+    String getServiceConfigOptString(@NonNull String key, @NonNull String defaultValue);
 
     boolean runOnUiThread(String doc, Runnable action);
 
     String getUserId();
 
-    void setState(@NonNull @Size(min = 1L,max = 1024L) String name, Object value);
+    void setState(@NonNull @Size(min = 1L, max = 1024L) String name, Object value);
 
-    String logVerbose(String format, Object ... args);
-    String logDebug(String format, Object ... args);
-    String logInfo(String format, Object ... args);
-    String logMessage(String format, Object ... args);
-    String logMessageProtected(String format, Object ... args);
-    String logMessageRelease(String format, Object ... args);
-    String logWarning(String format, Object ... args);
-    String logError(String format, Object ... args);
+    String logVerbose(@NonNull String format, Object ... args);
+    String logDebug(@NonNull String format, Object ... args);
+    String logInfo(@NonNull String format, Object ... args);
+    String logMessage(@NonNull String format, Object ... args);
+    String logMessageProtected(@NonNull String format, Object ... args);
+    String logMessageRelease(@NonNull String format, Object ... args);
+    String logWarning(@NonNull String format, Object ... args);
+    String logError(@NonNull String format, Object ... args);
 
     void logException(@NonNull Throwable e, @NonNull Map<String, Object> attributes);
 
-    void assertionError(String format, Object ... args);
+    void assertionError(@NonNull String format, Object ... args);
 
-    MengineAnalyticsEventBuilderInterface buildEvent(@Size(min = 1L,max = 40L) String name);
+    MengineAnalyticsEventBuilderInterface buildEvent(@Size(min = 1L, max = 40L) String name);
 
-    void nativeCall(String method, Object ... args);
+    void nativeCall(@NonNull String method, Object ... args);
 
-    void activateSemaphore(String name);
-    void deactivateSemaphore(String name);
+    void activateSemaphore(@NonNull String name);
+    void deactivateSemaphore(@NonNull String name);
 
     String getResourceName(@AnyRes int id);
     boolean getResourceBoolean(@BoolRes int id);

@@ -23,6 +23,7 @@ import org.Mengine.Base.MengineUtils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import okhttp3.OkHttpClient;
 
@@ -40,9 +41,10 @@ public class MengineAmplitudePlugin extends MengineService implements MengineLis
         String MengineAmplitudePlugin_ApiKey = this.getResourceString(METADATA_API_KEY);
 
         Configuration configuration = new Configuration(MengineAmplitudePlugin_ApiKey, application);
-        configuration.getAutocapture().add(AutocaptureOption.SESSIONS);
-        configuration.getAutocapture().add(AutocaptureOption.APP_LIFECYCLES);
-        configuration.getAutocapture().add(AutocaptureOption.SCREEN_VIEWS);
+        Set<AutocaptureOption> autocaptureOptions = configuration.getAutocapture();
+        autocaptureOptions.add(AutocaptureOption.SESSIONS);
+        autocaptureOptions.add(AutocaptureOption.APP_LIFECYCLES);
+        autocaptureOptions.add(AutocaptureOption.SCREEN_VIEWS);
         configuration.setFlushEventsOnClose(true);
 
         Amplitude amplitude = new Amplitude(configuration);

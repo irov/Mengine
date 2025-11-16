@@ -292,14 +292,14 @@ namespace Mengine
         this->invalidateLocalMatrix();
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseTransformation::setLocalOrientation( const mt::vec3f & _euler )
+    void BaseTransformation::setLocalOrientation( const mt::vec3f & _orientation )
     {
-        if( mt::cmp_v3_v3( m_orientation, _euler ) == true )
+        if( mt::cmp_v3_v3( m_orientation, _orientation ) == true )
         {
             return;
         }
 
-        m_orientation = _euler;
+        m_orientation = _orientation;
 
         if( mt::equal_f_z( m_orientation.x ) == true )
         {

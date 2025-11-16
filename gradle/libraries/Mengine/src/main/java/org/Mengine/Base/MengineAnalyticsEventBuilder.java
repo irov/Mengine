@@ -11,7 +11,7 @@ public class MengineAnalyticsEventBuilder implements MengineAnalyticsEventBuilde
     private final Map<String, Object> m_bases;
     private final Map<String, Object> m_parameters;
 
-    MengineAnalyticsEventBuilder(Map<String, Object> bases, Map<String, Object> parameters, @NonNull @Size(min = 1L,max = 40L) String name) {
+    MengineAnalyticsEventBuilder(Map<String, Object> bases, Map<String, Object> parameters, @NonNull @Size(min = 1L, max = 40L) String name) {
         m_bases = bases;
         m_parameters = parameters;
         m_name = name;
@@ -54,7 +54,7 @@ public class MengineAnalyticsEventBuilder implements MengineAnalyticsEventBuilde
     }
 
     @Override
-    public MengineAnalyticsEventBuilderInterface addParameterBoolean(@NonNull @Size(min = 1L,max = 40L) String key, boolean value) {
+    public MengineAnalyticsEventBuilderInterface addParameterBoolean(@NonNull @Size(min = 1L, max = 40L) String key, boolean value) {
         this.assertBases(key);
         this.assertParameters(key);
 
@@ -64,7 +64,7 @@ public class MengineAnalyticsEventBuilder implements MengineAnalyticsEventBuilde
     }
 
     @Override
-    public MengineAnalyticsEventBuilderInterface addParameterString(@NonNull @Size(min = 1L,max = 40L) String key, @NonNull @Size(min = 0L,max = 100L) String value) {
+    public MengineAnalyticsEventBuilderInterface addParameterString(@NonNull @Size(min = 1L, max = 40L) String key, @NonNull @Size(min = 0L,max = 100L) String value) {
         this.assertBases(key);
         this.assertParameters(key);
 
@@ -74,7 +74,7 @@ public class MengineAnalyticsEventBuilder implements MengineAnalyticsEventBuilde
     }
 
     @Override
-    public MengineAnalyticsEventBuilderInterface addParameterException(@NonNull @Size(min = 1L,max = 40L) String key, @Nullable Exception e) {
+    public MengineAnalyticsEventBuilderInterface addParameterException(@NonNull @Size(min = 1L, max = 40L) String key, @Nullable Exception e) {
         String message = e != null ? e.getMessage() : null;
 
         this.addParameterString(key, message != null ? message : "null");
@@ -83,7 +83,7 @@ public class MengineAnalyticsEventBuilder implements MengineAnalyticsEventBuilde
     }
 
     @Override
-    public MengineAnalyticsEventBuilderInterface addParameterThrowable(@NonNull @Size(min = 1L,max = 40L) String key, @NonNull Throwable e) {
+    public MengineAnalyticsEventBuilderInterface addParameterThrowable(@NonNull @Size(min = 1L, max = 40L) String key, @NonNull Throwable e) {
         String message = e.getMessage();
 
         this.addParameterString(key, message != null ? message : "null");
@@ -92,7 +92,7 @@ public class MengineAnalyticsEventBuilder implements MengineAnalyticsEventBuilde
     }
 
     @Override
-    public MengineAnalyticsEventBuilderInterface addParameterJSON(@NonNull @Size(min = 1L,max = 40L) String key, @NonNull @Size(min = 0L,max = 100L) String value) {
+    public MengineAnalyticsEventBuilderInterface addParameterJSON(@NonNull @Size(min = 1L, max = 40L) String key, @NonNull @Size(min = 0L,max = 100L) String value) {
         this.assertJSON(key, value);
 
         this.addParameterString(key, value);
@@ -101,7 +101,7 @@ public class MengineAnalyticsEventBuilder implements MengineAnalyticsEventBuilde
     }
 
     @Override
-    public MengineAnalyticsEventBuilderInterface addParameterLong(@NonNull @Size(min = 1L,max = 40L) String key, long value) {
+    public MengineAnalyticsEventBuilderInterface addParameterLong(@NonNull @Size(min = 1L, max = 40L) String key, long value) {
         this.assertBases(key);
         this.assertParameters(key);
 
@@ -111,7 +111,7 @@ public class MengineAnalyticsEventBuilder implements MengineAnalyticsEventBuilde
     }
 
     @Override
-    public MengineAnalyticsEventBuilderInterface addParameterDouble(@NonNull @Size(min = 1L,max = 40L) String key, double value) {
+    public MengineAnalyticsEventBuilderInterface addParameterDouble(@NonNull @Size(min = 1L, max = 40L) String key, double value) {
         this.assertBases(key);
         this.assertParameters(key);
 

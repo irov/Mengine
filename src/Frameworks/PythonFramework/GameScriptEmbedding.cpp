@@ -103,7 +103,7 @@ namespace Mengine
             return false;
         }
 
-        ConstString Game_PersonalityModule = CONFIG_VALUE_CONSTSTRING( "Game", "PersonalityModule", STRINGIZE_FILEPATH_LOCAL( "Personality" ) );
+        ConstString Game_PersonalityModule = CONFIG_VALUE_CONSTSTRING( "Game", "PersonalityModule", STRINGIZE_STRING_LOCAL( "Personality" ) );
 
         ScriptModuleInterfacePtr module = SCRIPT_SERVICE()
             ->importModule( Game_PersonalityModule );

@@ -47,22 +47,14 @@ public class MengineAppLovinNativeAd extends MengineAppLovinBase implements Meng
     public MengineAppLovinNativeAd(@NonNull MengineAdService adService, @NonNull MengineAppLovinPluginInterface plugin) throws MengineServiceInvalidInitializeException {
         super(adService, plugin, MaxAdFormat.NATIVE);
 
-        String MengineAppLovinPlugin_Native_AdUnitId = plugin.getResourceString(METADATA_NATIVE_ADUNITID);
-
-        if (MengineAppLovinPlugin_Native_AdUnitId.isEmpty() == true) {
-            this.invalidInitialize("meta %s is empty"
-                , METADATA_NATIVE_ADUNITID
-            );
-        }
-
-        this.setAdUnitId(MengineAppLovinPlugin_Native_AdUnitId);
+        this.setAdUnitId(METADATA_NATIVE_ADUNITID, "NativeAdUnitId");
 
         String MengineAppLovinPlugin_Native_Placement = plugin.getResourceString(METADATA_NATIVE_PLACEMENT);
 
         m_placement = MengineAppLovinPlugin_Native_Placement;
     }
 
-    protected MengineAnalyticsEventBuilderInterface buildNativeAdEvent(@Size(min = 1L,max = 40L) String event) {
+    protected MengineAnalyticsEventBuilderInterface buildNativeAdEvent(@Size(min = 1L, max = 40L) String event) {
         MengineAnalyticsEventBuilderInterface builder = this.buildAdEvent("mng_applovin_native_" + event)
             .addParameterString("placement", m_placement);
 

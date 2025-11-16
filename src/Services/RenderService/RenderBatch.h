@@ -35,8 +35,8 @@ namespace Mengine
         bool process( const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _vertexCount, uint32_t _indexCount );
 
     public:
-        bool lock();
-        bool unlock();
+        bool lock() override;
+        bool unlock() override;
 
     public:
         void deviceLostPrepare();

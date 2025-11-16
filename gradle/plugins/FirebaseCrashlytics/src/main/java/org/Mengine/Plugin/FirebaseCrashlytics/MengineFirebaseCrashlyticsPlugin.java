@@ -142,7 +142,7 @@ public class MengineFirebaseCrashlyticsPlugin extends MengineService implements 
         FirebaseCrashlytics.getInstance().recordException(throwable);
     }
 
-    public void setCustomKey(@NonNull @Size(min = 1L,max = 1024L) String key, Object value) {
+    public void setCustomKey(@NonNull @Size(min = 1L, max = 1024L) String key, Object value) {
         if (value == null) {
             FirebaseCrashlytics.getInstance().setCustomKey(key, "null");
         } else if (value instanceof Boolean booleanValue) {

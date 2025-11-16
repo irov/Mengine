@@ -122,17 +122,14 @@ endif()
 
 if(MENGINE_DEPENDENCE_BOX2D)
     message("================box2d================")
-    configure_file(${CMAKE_CURRENT_LIST_DIR}/box2d/include/box2d/math_functions.h ${THIRDPARTY_DIR}/box2d/include/box2d/math_functions.h COPYONLY)
-    configure_file(${CMAKE_CURRENT_LIST_DIR}/box2d/src/core.h ${THIRDPARTY_DIR}/box2d/src/core.h COPYONLY)
-    configure_file(${CMAKE_CURRENT_LIST_DIR}/box2d/src/allocate.c ${THIRDPARTY_DIR}/box2d/src/allocate.c COPYONLY)
-    configure_file(${CMAKE_CURRENT_LIST_DIR}/box2d/CMakeLists.txt ${THIRDPARTY_DIR}/box2d/CMakeLists.txt COPYONLY)
-
+    
     SET(BOX2D_SAMPLES OFF CACHE BOOL "BOX2D_SAMPLES" FORCE)
     SET(BOX2D_BENCHMARKS OFF CACHE BOOL "BOX2D_BENCHMARKS" FORCE)
     SET(BOX2D_DOCS OFF CACHE BOOL "BOX2D_DOCS" FORCE)
     SET(BOX2D_PROFILE OFF CACHE BOOL "BOX2D_PROFILE" FORCE)
     SET(BOX2D_VALIDATE OFF CACHE BOOL "BOX2D_VALIDATE" FORCE)
     SET(BOX2D_UNIT_TESTS OFF CACHE BOOL "BOX2D_UNIT_TESTS" FORCE)
+    SET(BOX2D_COMPILE_WARNING_AS_ERROR OFF CACHE BOOL "BOX2D_COMPILE_WARNING_AS_ERROR" FORCE)
     
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/box2d ${THIRDPARTY_CONFIG_DIR}/box2d)
 endif()
@@ -173,6 +170,7 @@ endif()
 
 if(MENGINE_DEPENDENCE_THEORA)
     message("================libtheora================")
+    configure_file(${CMAKE_CURRENT_LIST_DIR}/libtheora/lib/encoder_disabled.c ${THIRDPARTY_DIR}/libtheora/lib/encoder_disabled.c COPYONLY)
     
     ADD_SUBDIRECTORY(libtheora ${THIRDPARTY_CONFIG_DIR}/libtheora)
 endif()

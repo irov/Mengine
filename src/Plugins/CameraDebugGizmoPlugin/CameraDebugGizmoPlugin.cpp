@@ -1,6 +1,6 @@
 #include "CameraDebugGizmoPlugin.h"
 
-#include "ModuleCameraDebugGizmo.h"
+#include "CameraDebugGizmoModule.h"
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/ModuleFactory.h"
@@ -35,14 +35,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool CameraDebugGizmoPlugin::_initializePlugin()
     {
-        this->addModuleFactory( ModuleCameraDebugGizmo::getFactorableType(), Helper::makeModuleFactory<ModuleCameraDebugGizmo>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+        this->addModuleFactory( CameraDebugGizmoModule::getFactorableType(), Helper::makeModuleFactory<CameraDebugGizmoModule>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void CameraDebugGizmoPlugin::_finalizePlugin()
     {
-        this->removeModuleFactory( ModuleCameraDebugGizmo::getFactorableType() );
+        this->removeModuleFactory( CameraDebugGizmoModule::getFactorableType() );
     }
     //////////////////////////////////////////////////////////////////////////
 }

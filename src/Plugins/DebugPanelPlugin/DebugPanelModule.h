@@ -15,15 +15,15 @@
 
 namespace Mengine
 {
-    class ModuleDebugPanel
+    class DebugPanelModule
         : public ModuleBase
         , public RenderDrawPrimitiveInterface
     {
-        DECLARE_FACTORABLE( ModuleDebugPanel );
+        DECLARE_FACTORABLE( DebugPanelModule );
 
     public:
-        ModuleDebugPanel();
-        ~ModuleDebugPanel() override;
+        DebugPanelModule();
+        ~DebugPanelModule() override;
 
     public:
         bool _initializeModule() override;

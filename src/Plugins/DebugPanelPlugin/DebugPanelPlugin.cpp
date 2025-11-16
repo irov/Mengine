@@ -1,6 +1,6 @@
 #include "DebugPanelPlugin.h"
 
-#include "ModuleDebugPanel.h"
+#include "DebugPanelModule.h"
 
 #include "Kernel/ModuleFactory.h"
 #include "Kernel/ConfigHelper.h"
@@ -35,14 +35,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DebugPanelPlugin::_initializePlugin()
     {
-        this->addModuleFactory( ModuleDebugPanel::getFactorableType(), Helper::makeModuleFactory<ModuleDebugPanel>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+        this->addModuleFactory( DebugPanelModule::getFactorableType(), Helper::makeModuleFactory<DebugPanelModule>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DebugPanelPlugin::_finalizePlugin()
     {
-        this->removeModuleFactory( ModuleDebugPanel::getFactorableType() );
+        this->removeModuleFactory( DebugPanelModule::getFactorableType() );
     }
     //////////////////////////////////////////////////////////////////////////
 }

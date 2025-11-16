@@ -8,11 +8,11 @@ public final class MengineTag {
 
     private final String value;
 
-    private MengineTag(@NonNull @Size(min = 1L,max = MengineTag.MAX_LENGTH) String value) {
+    private MengineTag(@NonNull @Size(min = 1L, max = MengineTag.MAX_LENGTH) String value) {
         this.value = value;
     }
 
-    public static MengineTag of(@NonNull @Size(min = 1L,max = MengineTag.MAX_LENGTH) String value) {
+    public static MengineTag of(@NonNull @Size(min = 1L, max = MengineTag.MAX_LENGTH) String value) {
         return new MengineTag(value);
     }
 

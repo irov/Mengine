@@ -1,6 +1,6 @@
 #include "NodeDebuggerPlugin.h"
 
-#include "ModuleNodeDebugger.h"
+#include "NodeDebuggerModule.h"
 
 #include "Kernel/ModuleFactory.h"
 #include "Kernel/ConstStringHelper.h"
@@ -22,14 +22,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool NodeDebuggerPlugin::_initializePlugin()
     {
-        this->addModuleFactory( ModuleNodeDebugger::getFactorableType(), Helper::makeModuleFactory<ModuleNodeDebugger>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+        this->addModuleFactory( NodeDebuggerModule::getFactorableType(), Helper::makeModuleFactory<NodeDebuggerModule>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerPlugin::_finalizePlugin()
     {
-        this->removeModuleFactory( ModuleNodeDebugger::getFactorableType() );
+        this->removeModuleFactory( NodeDebuggerModule::getFactorableType() );
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerPlugin::_destroyPlugin()

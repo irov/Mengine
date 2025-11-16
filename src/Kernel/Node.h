@@ -45,7 +45,7 @@ namespace Mengine
         , public AffectorHubProviderInterface
         , public Updatable
         , public Renderable
-        , public Transformable        
+        , public Transformable
         , public Animatable
         , public Eventable
         , public Pickerable
@@ -64,6 +64,7 @@ namespace Mengine
     public:
         HashType getHierarchyHash() const;
 
+    public:
         NodePtr findUniqueChild( UniqueId _uniqueIdentity ) const;
 
     protected:

@@ -42,18 +42,10 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Me
     public MengineAppLovinRewardedAd(@NonNull MengineAdService adService, @NonNull MengineAppLovinPluginInterface plugin) throws MengineServiceInvalidInitializeException {
         super(adService, plugin, MaxAdFormat.REWARDED);
 
-        String MengineAppLovinPlugin_Rewarded_AdUnitId = plugin.getResourceString(METADATA_REWARDED_ADUNITID);
-
-        if (MengineAppLovinPlugin_Rewarded_AdUnitId.isEmpty() == true) {
-            this.invalidInitialize("meta %s is empty"
-                , plugin.getResourceName(METADATA_REWARDED_ADUNITID)
-            );
-        }
-
-        this.setAdUnitId(MengineAppLovinPlugin_Rewarded_AdUnitId);
+        this.setAdUnitId(METADATA_REWARDED_ADUNITID, "RewardedAdUnitId");
     }
 
-    protected MengineAnalyticsEventBuilderInterface buildRewardedAdEvent(@Size(min = 1L,max = 40L) String event) {
+    protected MengineAnalyticsEventBuilderInterface buildRewardedAdEvent(@Size(min = 1L, max = 40L) String event) {
         MengineAnalyticsEventBuilderInterface builder = this.buildAdEvent("mng_applovin_rewarded_" + event);
 
         return builder;

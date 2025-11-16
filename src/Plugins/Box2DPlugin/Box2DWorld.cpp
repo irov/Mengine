@@ -124,11 +124,9 @@ namespace Mengine
         b2Vec2 b2_position = m_scaler.toBox2DWorld( _position );
         float b2_radius = m_scaler.toBox2DWorld( _radius );
 
-        b2Circle b2_circle = {{0.f, 0.f}, b2_radius};
-        b2Transform b2_transform = {b2_position, ::b2MakeRot( 0.f )};
+        b2ShapeProxy b2_proxy = ::b2MakeProxy( &b2_position, 1, b2_radius );
 
-        b2QueryFilter b2_queryFilter = ::b2DefaultQueryFilter();
-        
+        b2QueryFilter b2_queryFilter = ::b2DefaultQueryFilter();        
         b2_queryFilter.categoryBits = _categoryBits;
         b2_queryFilter.maskBits = _maskBits;
 
@@ -137,7 +135,7 @@ namespace Mengine
         desc.capacity = _capacity;
         desc.found = 0;
 
-        ::b2World_OverlapCircle( m_worldId, &b2_circle, b2_transform, b2_queryFilter, &Detail::b2OverlapResult, &desc );
+        ::b2World_OverlapShape( m_worldId, &b2_proxy, b2_queryFilter, &Detail::b2OverlapResult, &desc );
 
         return desc.found;
     }

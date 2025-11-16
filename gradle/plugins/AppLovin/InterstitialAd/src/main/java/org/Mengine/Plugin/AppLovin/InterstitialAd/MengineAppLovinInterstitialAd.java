@@ -27,6 +27,7 @@ import org.Mengine.Base.MengineUtils;
 import org.Mengine.Plugin.AppLovin.Core.MengineAppLovinBase;
 import org.Mengine.Plugin.AppLovin.Core.MengineAppLovinInterstitialAdInterface;
 import org.Mengine.Plugin.AppLovin.Core.MengineAppLovinPluginInterface;
+import org.json.JSONObject;
 
 import java.util.Map;
 
@@ -40,18 +41,10 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
     public MengineAppLovinInterstitialAd(@NonNull MengineAdService adService, @NonNull MengineAppLovinPluginInterface plugin) throws MengineServiceInvalidInitializeException {
         super(adService, plugin, MaxAdFormat.INTERSTITIAL);
 
-        String MengineAppLovinPlugin_Interstitial_AdUnitId = plugin.getResourceString(METADATA_INTERSTITIAL_ADUNITID);
-
-        if (MengineAppLovinPlugin_Interstitial_AdUnitId.isEmpty() == true) {
-            this.invalidInitialize("meta %s is empty"
-                , plugin.getResourceName(METADATA_INTERSTITIAL_ADUNITID)
-            );
-        }
-
-        this.setAdUnitId(MengineAppLovinPlugin_Interstitial_AdUnitId);
+        this.setAdUnitId(METADATA_INTERSTITIAL_ADUNITID, "InterstitialAdUnitId");
     }
 
-    protected MengineAnalyticsEventBuilderInterface buildInterstitialAdEvent(@Size(min = 1L,max = 40L) String event) {
+    protected MengineAnalyticsEventBuilderInterface buildInterstitialAdEvent(@Size(min = 1L, max = 40L) String event) {
         MengineAnalyticsEventBuilderInterface builder = this.buildAdEvent("mng_applovin_interstitial_" + event);
 
         return builder;

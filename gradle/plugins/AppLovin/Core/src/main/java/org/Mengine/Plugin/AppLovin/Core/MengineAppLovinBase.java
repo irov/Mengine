@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Size;
+import androidx.annotation.StringRes;
 
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdFormat;
@@ -25,6 +26,7 @@ import org.Mengine.Base.MengineLog;
 import org.Mengine.Base.MengineParamAdRevenue;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineUtils;
+import org.json.JSONObject;
 
 import java.util.List;
 import java.util.Locale;
@@ -59,7 +61,23 @@ public class MengineAppLovinBase implements MengineAppLovinAdInterface {
         return m_plugin;
     }
 
-    protected void setAdUnitId(@NonNull String adUnitId) {
+    protected void setAdUnitId(@StringRes int METADATA_ADUNITID, @NonNull String configAdUnitId) throws MengineServiceInvalidInitializeException {
+        String metadataAdUnitId = m_plugin.getResourceString(METADATA_ADUNITID);
+
+        if (metadataAdUnitId.isEmpty() == true) {
+            this.invalidInitialize("meta %s not found"
+                , m_plugin.getResourceName(METADATA_ADUNITID)
+            );
+        }
+
+        String adUnitId = m_plugin.getServiceConfigOptString(configAdUnitId, metadataAdUnitId);
+
+        if (adUnitId == null) {
+            this.invalidInitialize("config %s is empty"
+                , configAdUnitId
+            );
+        }
+
         m_adUnitId = adUnitId;
     }
 
@@ -227,11 +245,11 @@ public class MengineAppLovinBase implements MengineAppLovinAdInterface {
         return params;
     }
 
-    protected void setState(@NonNull @Size(min = 1L,max = 1024L) String name, Object value) {
+    protected void setState(@NonNull @Size(min = 1L, max = 1024L) String name, Object value) {
         m_plugin.setState(name, value);
     }
 
-    protected MengineAnalyticsEventBuilderInterface buildAdEvent(@Size(min = 1L,max = 40L) String name) {
+    protected MengineAnalyticsEventBuilderInterface buildAdEvent(@Size(min = 1L, max = 40L) String name) {
         long requestTime = this.getRequestTime();
 
         MengineAnalyticsEventBuilderInterface eventBuilder = m_plugin.buildEvent(name);

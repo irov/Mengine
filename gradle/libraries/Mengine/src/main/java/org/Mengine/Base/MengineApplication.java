@@ -103,6 +103,7 @@ public abstract class MengineApplication extends Application {
     public abstract String getVersionName();
     public abstract boolean isBuildPublish();
     public abstract String getApplicationOptions();
+    public abstract boolean hasAds();
 
     public void createFragment(Class<?> cls) {
         MengineFragmentInterface fragment = (MengineFragmentInterface) MengineUtils.newInstance(TAG, cls, true);
@@ -262,7 +263,7 @@ public abstract class MengineApplication extends Application {
         return androidId;
     }
 
-    public void setState(@NonNull @Size(min = 1L,max = 1024L) String name, Object value) {
+    public void setState(@NonNull @Size(min = 1L, max = 1024L) String name, Object value) {
         MengineLog.logDebug(TAG, "setState: %s = %s"
             , name
             , value

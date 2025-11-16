@@ -39,7 +39,7 @@ namespace Mengine
         ThreadId getThreadId() const override;
 
     public:
-        bool processTask( ThreadTaskInterface * _task ) override;
+        bool processTask( const ThreadTaskInterfacePtr & _task ) override;
         void removeTask() override;
 
     public:
@@ -66,7 +66,7 @@ namespace Mengine
         CONDITION_VARIABLE m_conditionVariable;
 #endif
 
-        ThreadTaskInterface * m_task;
+        ThreadTaskInterfacePtr m_task;
         AtomicBool m_exit;
     };
     //////////////////////////////////////////////////////////////////////////

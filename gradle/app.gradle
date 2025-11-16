@@ -226,7 +226,7 @@ android {
     if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true) {
         if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS_NATIVE_SYMBOL_UPLOAD_ENABLE == true) {
             buildTypes {
-                final var buildDirectory = getLayout().getBuildDirectory()
+                final def buildDirectory = getLayout().getBuildDirectory()
 
                 debug {
                     firebaseCrashlytics {
@@ -281,7 +281,7 @@ android {
         final def deliveryPacks = [] as ArrayList<String>
 
         for(final PACKAGE_DESC in PACKAGES) {
-            final var PACKAGE_NAME = PACKAGE_DESC.split(";")[0]
+            final def PACKAGE_NAME = PACKAGE_DESC.split(";")[0]
 
             println "add delivery asset pack: $PACKAGE_NAME"
 
@@ -809,7 +809,7 @@ if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true && MENGINE_APP_PLUGIN_FIREBA
             final File f = android.buildTypes.debug.firebaseCrashlytics.unstrippedNativeLibsDir.get().getAsFile()
 
             if (f.exists() == false) {
-                final var fname = f.getCanonicalPath()
+                final def fname = f.getCanonicalPath()
 
                 throw new GradleException("unstrippedNativeLibsDir not found folder: $fname")
             }
@@ -825,7 +825,7 @@ if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true && MENGINE_APP_PLUGIN_FIREBA
             final File f = android.buildTypes.release.firebaseCrashlytics.unstrippedNativeLibsDir.get().getAsFile()
 
             if (f.exists() == false) {
-                final var fname = f.getCanonicalPath()
+                final def fname = f.getCanonicalPath()
 
                 throw new GradleException("unstrippedNativeLibsDir not found folder: $fname")
             }

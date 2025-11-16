@@ -57,16 +57,16 @@ namespace Mengine
         String url;
     };
     //////////////////////////////////////////////////////////////////////////
-    class ModuleNodeDebugger
+    class NodeDebuggerModule
         : public ModuleBase
         , public ThreadWorkerInterface
         , public SceneDataProviderInterface
     {
-        DECLARE_FACTORABLE( ModuleNodeDebugger );
+        DECLARE_FACTORABLE( NodeDebuggerModule );
 
     public:
-        ModuleNodeDebugger();
-        ~ModuleNodeDebugger() override;
+        NodeDebuggerModule();
+        ~NodeDebuggerModule() override;
 
     protected:
         bool _initializeModule() override;

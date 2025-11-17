@@ -34,7 +34,6 @@
             GADAdNetworkResponseInfo * loadedInfo = responseInfo.loadedAdNetworkResponseInfo;
             if (loadedInfo.adNetworkClassName != nil) {
                 [params setObject:loadedInfo.adNetworkClassName forKey:@"adNetworkClassName"];
-                [params setObject:loadedInfo.adNetworkClassName forKey:@"networkName"];
             }
             NSDictionary<NSString *, id> * dictionaryRepresentation = loadedInfo.dictionaryRepresentation;
             if (dictionaryRepresentation != nil) {

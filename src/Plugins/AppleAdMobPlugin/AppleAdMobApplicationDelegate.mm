@@ -91,7 +91,7 @@
     
     GADMobileAds * mobileAds = [GADMobileAds sharedInstance];
     
-    GADVersionNumber version = [GADMobileAds versionNumber];
+    GADVersionNumber version = [mobileAds versionNumber];
     NSString * versionString = [NSString stringWithFormat:@"%lu.%lu.%lu", version.majorVersion, version.minorVersion, version.patchVersion];
     
     IOS_LOGGER_MESSAGE(@"AdMob: %@", versionString);

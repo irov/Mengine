@@ -414,6 +414,10 @@ PLUGIN_EXPORT( AppleMARSDK );
 PLUGIN_EXPORT( AppleAppLovin );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_PLUGIN_APPLE_ADMOB_STATIC)
+PLUGIN_EXPORT( AppleAdMob );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_APPLE_FIREBASE_ANALYTICS_STATIC)
 PLUGIN_EXPORT( AppleFirebaseAnalytics );
 #endif
@@ -1471,6 +1475,10 @@ namespace Mengine
 
 #if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_STATIC)
         MENGINE_ADD_PLUGIN( AppleAppLovin, "plugin AppleAppLovin...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#if defined(MENGINE_PLUGIN_APPLE_ADMOB_STATIC)
+        MENGINE_ADD_PLUGIN( AppleAdMob, "plugin AppleAdMob...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #if defined(MENGINE_PLUGIN_APPLE_FIREBASE_ANALYTICS_STATIC)

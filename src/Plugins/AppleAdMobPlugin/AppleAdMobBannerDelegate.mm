@@ -50,7 +50,20 @@
     
     bannerView.delegate = self;
     
-    CGSize size = [self getSize];
+    CGSize size;
+    
+    if (self.m_bannerAdaptive == YES) {
+        CGFloat screen_width = CGRectGetWidth(UIScreen.mainScreen.bounds);
+        size = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(screen_width).size;
+    } else {
+        BOOL isPad = UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPad;
+        
+        if (isPad == YES) {
+            size = GADAdSizeLeaderboard.size;
+        } else {
+            size = GADAdSizeBanner.size;
+        }
+    }    
     
     CGFloat banner_height = size.height;
     
@@ -115,18 +128,7 @@
 
 - (CGSize) getSize {
     if (self.m_bannerView == nil) {
-        if (self.m_bannerAdaptive == YES) {
-            CGFloat screen_width = CGRectGetWidth(UIScreen.mainScreen.bounds);
-            return GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(screen_width).size;
-        } else {
-            BOOL isPad = UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPad;
-            
-            if (isPad == YES) {
-                return GADAdSizeLeaderboard.size;
-            } else {
-                return GADAdSizeBanner.size;
-            }
-        }
+        return CGSizeZero;
     }
     
     return self.m_bannerView.adSize.size;

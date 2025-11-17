@@ -19,23 +19,23 @@
     
     self.m_bannerAdaptive = adaptive;
     
+    GADAdSize adSize;
+    if (adaptive == YES) {
+        CGFloat screen_width = CGRectGetWidth(UIScreen.mainScreen.bounds);
+        adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(screen_width);
+    } else {
+        BOOL isPad = UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPad;
+        
+        if (isPad == YES) {
+            adSize = GADAdSizeLeaderboard;
+        } else {
+            adSize = GADAdSizeBanner;
+        }
+    }
+    
     GADBannerView * bannerView;
     
     @try {
-        GADAdSize adSize;
-        if (adaptive == YES) {
-            CGFloat screen_width = CGRectGetWidth(UIScreen.mainScreen.bounds);
-            adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(screen_width);
-        } else {
-            BOOL isPad = UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPad;
-            
-            if (isPad == YES) {
-                adSize = GADAdSizeLeaderboard;
-            } else {
-                adSize = GADAdSizeBanner;
-            }
-        }
-        
         bannerView = [[GADBannerView alloc] initWithAdSize:adSize];
         bannerView.adUnitID = adUnitId;
     } @catch (NSException * ex) {
@@ -50,20 +50,7 @@
     
     bannerView.delegate = self;
     
-    CGSize size;
-    
-    if (self.m_bannerAdaptive == YES) {
-        CGFloat screen_width = CGRectGetWidth(UIScreen.mainScreen.bounds);
-        size = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(screen_width).size;
-    } else {
-        BOOL isPad = UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPad;
-        
-        if (isPad == YES) {
-            size = GADAdSizeLeaderboard.size;
-        } else {
-            size = GADAdSizeBanner.size;
-        }
-    }    
+    CGSize size = adSize.size;    
     
     CGFloat banner_height = size.height;
     

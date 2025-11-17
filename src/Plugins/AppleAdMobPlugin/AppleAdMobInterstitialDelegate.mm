@@ -37,11 +37,7 @@
 }
 
 - (BOOL) canYouShow:(NSString * _Nonnull)placement {
-    if (self.m_interstitialAd == nil) {
-        return NO;
-    }
-    
-    BOOL ready = self.m_interstitialAd != nil;
+    BOOL ready = (self.m_interstitialAd != nil);
     
     [self log:@"canYouShow" withParams:@{@"placement":placement, @"ready":@(ready)}];
     
@@ -58,11 +54,7 @@
 }
 
 - (BOOL) show:(NSString * _Nonnull)placement {
-    if (self.m_interstitialAd == nil) {
-        return NO;
-    }
-    
-    BOOL ready = self.m_interstitialAd != nil;
+    BOOL ready = (self.m_interstitialAd != nil);
        
     [self log:@"show" withParams:@{@"placement":placement, @"ready":@(ready)}];
     

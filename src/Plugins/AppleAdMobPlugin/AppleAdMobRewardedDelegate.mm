@@ -38,11 +38,7 @@
 }
 
 - (BOOL) canOffer:(NSString * _Nonnull)placement {
-    if (self.m_rewardedAd == nil) {
-        return NO;
-    }
-    
-    BOOL ready = self.m_rewardedAd != nil;
+    BOOL ready = (self.m_rewardedAd != nil);
     
     [self log:@"canOffer" withParams:@{@"placement":placement, @"ready":@(ready)}];
     
@@ -55,11 +51,7 @@
 }
 
 - (BOOL) canYouShow:(NSString * _Nonnull)placement {
-    if (self.m_rewardedAd == nil) {
-        return NO;
-    }
-    
-    BOOL ready = self.m_rewardedAd != nil;
+    BOOL ready = (self.m_rewardedAd != nil);
 
     [self log:@"canYouShow" withParams:@{@"placement":placement, @"ready":@(ready)}];
 
@@ -80,11 +72,7 @@
 }
 
 - (BOOL) show:(NSString * _Nonnull)placement {
-    if (self.m_rewardedAd == nil) {
-        return NO;
-    }
-    
-    BOOL ready = self.m_rewardedAd != nil;
+    BOOL ready = (self.m_rewardedAd != nil);
        
     [self log:@"show" withParams:@{@"placement":placement, @"ready":@(ready)}];
     

@@ -11,6 +11,7 @@
 #include "Interface/PluginServiceInterface.h"
 #include "Interface/DateTimeSystemInterface.h"
 #include "Interface/ThreadServiceInterface.h"
+#include "Interface/SoundServiceInterface.h"
 #include "Interface/EnvironmentServiceInterface.h"
 #include "Interface/AccountServiceInterface.h"
 #include "Interface/AnalyticsServiceInterface.h"

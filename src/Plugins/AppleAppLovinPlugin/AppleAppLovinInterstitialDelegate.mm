@@ -174,7 +174,7 @@
     }];
     
     PLATFORM_SERVICE()
-        ->freezePlatform( true, true );
+        ->freezePlatform( true, true, true );
 }
 
 - (void) didClickAd:(MAAd *)ad {
@@ -195,7 +195,7 @@
     }];
     
     PLATFORM_SERVICE()
-        ->unfreezePlatform( true, true );
+        ->unfreezePlatform( true, true, true );
     
     self.m_showing = NO;
     

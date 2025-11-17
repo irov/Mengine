@@ -30,9 +30,6 @@ namespace Mengine
         bool isSilent() const override;
 
     public:
-        void onTurnSound( bool _turn ) override;
-
-    public:
         SoundSourceInterfacePtr createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _sample, const DocumentInterfacePtr & _doc ) override;
         SoundBufferInterfacePtr createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _streamable, const DocumentInterfacePtr & _doc ) override;
 

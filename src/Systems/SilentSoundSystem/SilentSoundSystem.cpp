@@ -49,11 +49,6 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SilentSoundSystem::onTurnSound( bool _turn )
-    {
-        MENGINE_UNUSED( _turn );
-    }
-    //////////////////////////////////////////////////////////////////////////
     SoundSourceInterfacePtr SilentSoundSystem::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer, const DocumentInterfacePtr & _doc )
     {
         SilentSoundSourcePtr soundSource = m_factorySilentSoundSource->createObject( _doc );

@@ -9,6 +9,7 @@
 #include "Interface/DateTimeSystemInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/ThreadServiceInterface.h"
+#include "Interface/SoundServiceInterface.h"
 #include "Interface/PluginInterface.h"
 #include "Interface/EnvironmentServiceInterface.h"
 
@@ -66,8 +67,8 @@
 #include <functional>
 #include <cerrno>
 
+//////////////////////////////////////////////////////////////////////////
 typedef HRESULT( WINAPI * FGetDpiForMonitor )(HMONITOR, MONITOR_DPI_TYPE, UINT *, UINT *);
-
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_SETLOCALE
 #define MENGINE_SETLOCALE 1
@@ -109,6 +110,7 @@ namespace Mengine
         , m_close( false )
         , m_freezedTick( 0 )
         , m_freezedRender( 0 )
+        , m_freezedSound( 0 )
         , m_hIcon( NULL )
         , m_sleepMode( true )
         , m_windowExposed( false )
@@ -771,7 +773,7 @@ namespace Mengine
         MENGINE_PROFILER_END_APPLICATION();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32PlatformService::freezePlatform( bool _tick, bool _render )
+    void Win32PlatformService::freezePlatform( bool _tick, bool _render, bool _sound )
     {
         if( _tick == true )
         {
@@ -782,9 +784,20 @@ namespace Mengine
         {
             ++m_freezedRender;
         }
+
+        if( _sound == true )
+        {
+            ++m_freezedSound;
+        }
+
+        if( m_freezedSound == 1 )
+        {
+            SOUND_SERVICE()
+                ->setMute( STRINGIZE_STRING_LOCAL( "FreezePlatform" ), true );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32PlatformService::unfreezePlatform( bool _tick, bool _render )
+    void Win32PlatformService::unfreezePlatform( bool _tick, bool _render, bool _sound )
     {
         if( _tick == true )
         {
@@ -794,6 +807,17 @@ namespace Mengine
         if( _render == true )
         {
             --m_freezedRender;
+        }
+
+        if( _sound == true )
+        {
+            --m_freezedSound;
+        }
+
+        if( m_freezedSound == 0 )
+        {
+            SOUND_SERVICE()
+                ->setMute( STRINGIZE_STRING_LOCAL( "FreezePlatform" ), false );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -2303,6 +2327,7 @@ namespace Mengine
         if( shcoreModule != NULL )
         {
             FGetDpiForMonitor GetDpiForMonitor = (FGetDpiForMonitor)::GetProcAddress( shcoreModule, "GetDpiForMonitor" );
+
             if( GetDpiForMonitor != NULL )
             {
                 HMONITOR monitor = ::MonitorFromWindow( (HWND)m_hWnd, MONITOR_DEFAULTTONEAREST );

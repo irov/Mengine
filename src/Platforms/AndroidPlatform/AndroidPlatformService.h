@@ -60,8 +60,8 @@ namespace Mengine
         bool updatePlatform() override;
         void tickPlatform( float _frameTime, bool _render, bool _flush, bool _pause ) override;
         void stopPlatform()	override;
-        void freezePlatform( bool _tick, bool _render ) override;
-        void unfreezePlatform( bool _tick, bool _render ) override;
+        void freezePlatform( bool _tick, bool _render, bool _sound ) override;
+        void unfreezePlatform( bool _tick, bool _render, bool _sound ) override;
 
     public:
         void setSleepMode( bool _sleepMode ) override;
@@ -272,12 +272,14 @@ namespace Mengine
             {
                 bool tick;
                 bool render;
+                bool sound;
             };
 
             struct PlatformUnfreezeEvent
             {
                 bool tick;
                 bool render;
+                bool sound;
             };
 
             struct PlatformSurfaceCreateEvent
@@ -422,8 +424,10 @@ namespace Mengine
         float m_pauseUpdatingTime;
 
         bool m_active;
-        int32_t m_freezedTick;
-        int32_t m_freezedRender;
+        
+        AtomicInt32 m_freezedTick;
+        AtomicInt32 m_freezedRender;
+        AtomicInt32 m_freezedSound;
 
         bool m_desktop;
         bool m_touchpad;

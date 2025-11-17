@@ -9,6 +9,7 @@
 #import <FirebaseCrashlytics/FirebaseCrashlytics.h>
 
 #import <mach/mach.h>
+#import <pthread.h>
 
 #if defined(MENGINE_DEBUG)
 #   import <execinfo.h>
@@ -89,11 +90,32 @@ static void RunLoopObserverCallback(CFRunLoopObserverRef observer, CFRunLoopActi
     }];
 }
 
-static size_t my_backtrace_from_fp( _STRUCT_ARM_THREAD_STATE64 _state, void ** _buffer, size_t _size ) {
+static BOOL is_valid_frame_pointer( void ** _frame, uintptr_t _stackLow, uintptr_t _stackHigh ) {
+    if( _frame == NULL )
+    {
+        return NO;
+    }
+    
+    uintptr_t frameValue = (uintptr_t)_frame;
+    
+    if( frameValue < _stackLow || frameValue > _stackHigh )
+    {
+        return NO;
+    }
+    
+    if( (frameValue & 0xF) != 0 )
+    {
+        return NO;
+    }
+    
+    return YES;
+}
+
+static size_t my_backtrace_from_fp( _STRUCT_ARM_THREAD_STATE64 _state, void ** _buffer, size_t _size, uintptr_t _stackLow, uintptr_t _stackHigh ) {
     void **fp = (void **)(uintptr_t)_state.__fp;
     void *pc = (void *)(uintptr_t)_state.__pc;
     
-    if (fp == NULL || pc == NULL) {
+    if (is_valid_frame_pointer(fp, _stackLow, _stackHigh) == NO || pc == NULL) {
         return 0;
     }
     
@@ -102,6 +124,10 @@ static size_t my_backtrace_from_fp( _STRUCT_ARM_THREAD_STATE64 _state, void ** _
     _buffer[i++] = pc;
     
     while (fp && i < _size) {
+        if (is_valid_frame_pointer(fp, _stackLow, _stackHigh) == NO) {
+            break;
+        }
+        
         void *saved_pc = *(fp + 1);
         
         if (saved_pc == NULL) break;
@@ -110,7 +136,7 @@ static size_t my_backtrace_from_fp( _STRUCT_ARM_THREAD_STATE64 _state, void ** _
         
         void **next_fp = (void **)(*fp);
         
-        if (next_fp <= fp || ((uintptr_t)next_fp & 0xF)) {
+        if (next_fp <= fp || is_valid_frame_pointer(next_fp, _stackLow, _stackHigh) == NO) {
             break;
         }
         
@@ -133,7 +159,27 @@ static size_t my_backtrace_from_fp( _STRUCT_ARM_THREAD_STATE64 _state, void ** _
     
     void * buffer[128] = {NULL};
     
-    size_t countFrames = my_backtrace_from_fp(state, buffer, 128);
+    uintptr_t stackLow = 0;
+    uintptr_t stackHigh = 0;
+    
+    // Try to get stack bounds via pthread API
+    void * stackAddr = pthread_get_stackaddr_np(thread);
+    size_t stackSize = pthread_get_stacksize_np(thread);
+    
+    if( stackAddr != NULL && stackSize > 0 )
+    {
+        stackHigh = (uintptr_t)stackAddr;
+        stackLow = stackHigh - (uintptr_t)stackSize;
+    }
+    else
+    {
+        // Fallback: use heuristic address range for user-space stack
+        // Typical user-space stack addresses on 64-bit iOS
+        stackLow = 0x100000000ULL;
+        stackHigh = 0x7FFFFFFFFFFFF000ULL;
+    }
+    
+    size_t countFrames = my_backtrace_from_fp(state, buffer, 128, stackLow, stackHigh);
     
     if (countFrames == 0) {
         return NO;

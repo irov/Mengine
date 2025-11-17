@@ -120,7 +120,7 @@
                 , error.cmpMessage
             );
             
-            [AppleDetail dispatchMainQueue:^{
+            [AppleDetail addMainQueueOperation:^{
                 [provider onAppleAppLovinConsentFlowShowFailed];
             }];
             
@@ -129,7 +129,7 @@
         
         IOS_LOGGER_MESSAGE( @"AppLovin CMP show success" );
         
-        [AppleDetail dispatchMainQueue:^{
+        [AppleDetail addMainQueueOperation:^{
             [provider onAppleAppLovinConsentFlowShowSuccess];
         }];
     }];

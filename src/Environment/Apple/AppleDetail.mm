@@ -2,6 +2,8 @@
 #import "AppleString.h"
 #import "AppleFactorablePtr.h"
 
+#import "Environment/Apple/AppleBundle.h"
+
 #include "Kernel/Assertion.h"
 
 @implementation AppleDetail
@@ -70,16 +72,150 @@
     return randomHexStringTrim;
 }
 
+static volatile BOOL OPERATION_QUEUES_WORKING = YES;
 
-+ (void)addMainQueueOperation:(dispatch_block_t)block {
++ (NSOperationQueue *)userInteractiveOperationQueue {
+    static NSOperationQueue *queue = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        queue = [[NSOperationQueue alloc] init];
+        NSString * bundleId = [AppleBundle getIdentifier];
+        queue.name = [NSString stringWithFormat:@"%@.queue.user.interactive", bundleId];
+        queue.qualityOfService = NSQualityOfServiceUserInteractive;
+    });
+    return queue;
+}
+
++ (NSOperationQueue *)userInitiatedOperationQueue {
+    static NSOperationQueue *queue = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        queue = [[NSOperationQueue alloc] init];
+        NSString * bundleId = [AppleBundle getIdentifier];
+        queue.name = [NSString stringWithFormat:@"%@.queue.user.initiated", bundleId];
+        queue.qualityOfService = NSQualityOfServiceUserInitiated;
+    });
+    return queue;
+}
+
++ (NSOperationQueue *)utilityOperationQueue {
+    static NSOperationQueue *queue = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        queue = [[NSOperationQueue alloc] init];
+        NSString * bundleId = [AppleBundle getIdentifier];
+        queue.name = [NSString stringWithFormat:@"%@.queue.utility", bundleId];
+        queue.qualityOfService = NSQualityOfServiceUtility;
+    });
+    return queue;
+}
+
++ (NSOperationQueue *)backgroundOperationQueue {
+    static NSOperationQueue *queue = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        queue = [[NSOperationQueue alloc] init];
+        NSString * bundleId = [AppleBundle getIdentifier];
+        queue.name = [NSString stringWithFormat:@"%@.queue.background", bundleId];
+        queue.qualityOfService = NSQualityOfServiceBackground;
+    });
+    return queue;
+}
+
++ (NSOperationQueue *)defaultOperationQueue {
+    static NSOperationQueue *queue = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        queue = [[NSOperationQueue alloc] init];
+        NSString * bundleId = [AppleBundle getIdentifier];
+        queue.name = [NSString stringWithFormat:@"%@.queue.default", bundleId];
+        queue.qualityOfService = NSQualityOfServiceDefault;
+    });
+    return queue;
+}
+
++ (void)addMainQueueOperation:(dispatch_block_t _Nonnull)block {
+    if (OPERATION_QUEUES_WORKING == NO) {
+        return;
+    }
+    
     NSBlockOperation * operation = [NSBlockOperation blockOperationWithBlock:block];
     
     [[NSOperationQueue mainQueue] addOperation:operation];
 }
 
++ (void)addMainQueueOperation:(dispatch_block_t _Nonnull)block afterSeconds:(NSTimeInterval)seconds {
+    if (OPERATION_QUEUES_WORKING == NO) {
+        return;
+    }
+    
+    dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(seconds * NSEC_PER_SEC));
+    
+    dispatch_after(time, dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), ^{
+        [AppleDetail addMainQueueOperation:block];
+    });
+}
 
-+ (void)dispatchMainQueue:(dispatch_block_t _Nonnull)block {
-    dispatch_async(dispatch_get_main_queue(), block);
++ (void)addDefaultQueueOperation:(dispatch_block_t _Nonnull)block {
+    if (OPERATION_QUEUES_WORKING == NO) {
+        return;
+    }
+    
+    NSBlockOperation * operation = [NSBlockOperation blockOperationWithBlock:block];
+    
+    [[AppleDetail defaultOperationQueue] addOperation:operation];
+}
+
++ (void)addBackgroundQueueOperation:(dispatch_block_t _Nonnull)block {
+    if (OPERATION_QUEUES_WORKING == NO) {
+        return;
+    }
+    
+    NSBlockOperation * operation = [NSBlockOperation blockOperationWithBlock:block];
+    
+    [[AppleDetail backgroundOperationQueue] addOperation:operation];
+}
+
++ (void)addUtilityQueueOperation:(dispatch_block_t _Nonnull)block {
+    if (OPERATION_QUEUES_WORKING == NO) {
+        return;
+    }
+    
+    NSBlockOperation * operation = [NSBlockOperation blockOperationWithBlock:block];
+    
+    [[AppleDetail utilityOperationQueue] addOperation:operation];
+}
+
++ (void)addUserInitiatedQueueOperation:(dispatch_block_t _Nonnull)block {
+    if (OPERATION_QUEUES_WORKING == NO) {
+        return;
+    }
+    
+    NSBlockOperation * operation = [NSBlockOperation blockOperationWithBlock:block];
+    
+    [[AppleDetail userInitiatedOperationQueue] addOperation:operation];
+}
+
++ (void)addUserInteractiveQueueOperation:(dispatch_block_t _Nonnull)block {
+    if (OPERATION_QUEUES_WORKING == NO) {
+        return;
+    }
+    
+    NSBlockOperation * operation = [NSBlockOperation blockOperationWithBlock:block];
+    
+    [[AppleDetail userInteractiveOperationQueue] addOperation:operation];
+}
+
++ (void)cancelAllQueueOperations {
+    OPERATION_QUEUES_WORKING = NO;
+    
+    [[AppleDetail defaultOperationQueue] cancelAllOperations];
+    [[AppleDetail backgroundOperationQueue] cancelAllOperations];
+    [[AppleDetail utilityOperationQueue] cancelAllOperations];
+    [[AppleDetail userInitiatedOperationQueue] cancelAllOperations];
+    [[AppleDetail userInteractiveOperationQueue] cancelAllOperations];
+    
+    [[NSOperationQueue mainQueue] cancelAllOperations];
 }
 
 + (BOOL)hasOption:(NSString *)value {

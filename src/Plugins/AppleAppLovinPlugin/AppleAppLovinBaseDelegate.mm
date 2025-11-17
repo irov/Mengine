@@ -146,13 +146,11 @@
 - (void) retryLoadAd {
     self.m_requestAttempt++;
     
-    NSTimeInterval delaySec = pow(2, MIN(6, self.m_requestAttempt));
+    NSTimeInterval seconds = pow(2, MIN(6, self.m_requestAttempt));
     
-    [AppleDetail addMainQueueOperation:^{
-        [NSThread sleepForTimeInterval:delaySec];
-        
+    [AppleDetail addMainQueueOperation:^{        
         [self loadAd];
-    }];
+    } afterSeconds:seconds];
 }
 
 - (NSInteger) increaseRequestId {

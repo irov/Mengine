@@ -224,16 +224,16 @@
 
     UIAlertController * alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction * okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        [AppleDetail dispatchMainQueue:^{
+        [AppleDetail addMainQueueOperation:^{
             ok();
         }];
     }];
 
     [alertController addAction:okAction];
 
-    dispatch_async(dispatch_get_main_queue(), ^{
+    [AppleDetail addMainQueueOperation:^{
         [viewController presentViewController:alertController animated:YES completion:nil];
-    });
+    }];
 }
 
 + (void) showAreYouSureAlertDialogWithTitle:(NSString *)title
@@ -267,7 +267,7 @@
     UIAlertAction * yesAction = [UIAlertAction actionWithTitle:@"YES"
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction * _Nonnull action) {
-        [AppleDetail dispatchMainQueue:^{
+        [AppleDetail addMainQueueOperation:^{
             yes();
         }];
     }];
@@ -275,7 +275,7 @@
     UIAlertAction * cancelAction = [UIAlertAction actionWithTitle:@"CANCEL"
                                                            style:UIAlertActionStyleCancel
                                                          handler:^(UIAlertAction * _Nonnull action) {
-        [AppleDetail dispatchMainQueue:^{
+        [AppleDetail addMainQueueOperation:^{
             cancel();
         }];
     }];
@@ -293,9 +293,9 @@
         });
     }
     
-    dispatch_async(dispatch_get_main_queue(), ^{
+    [AppleDetail addMainQueueOperation:^{
         [viewController presentViewController:alert animated:YES completion:nil];
-    });
+    }];
 }
 
 @end

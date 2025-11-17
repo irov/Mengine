@@ -79,7 +79,6 @@ namespace Mengine
     POSIXThreadProcessor::POSIXThreadProcessor()
         : m_priority( ETP_NORMAL )
         , m_threadId( 0 )
-        , m_task( nullptr )
         , m_exit( false )
     {
     }
@@ -132,6 +131,8 @@ namespace Mengine
         ::pthread_cond_destroy( &m_conditionVariable );
 
         m_threadId = 0;
+        
+        m_task = nullptr;
         m_mutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -209,7 +210,7 @@ namespace Mengine
         return (ThreadId)m_threadId;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool POSIXThreadProcessor::processTask( ThreadTaskInterface * _task )
+    bool POSIXThreadProcessor::processTask( const ThreadTaskInterfacePtr & _task )
     {
         if( m_exit == true )
         {

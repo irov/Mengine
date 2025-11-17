@@ -436,7 +436,7 @@
     if( application.bootstrap( argc, argv ) == false ) {
         [AppleLog withFormat:@"🔴 [ERROR] Mengine application bootstrap [Failed]"];
         
-        [[NSOperationQueue mainQueue] cancelAllOperations];
+        [AppleDetail cancelAllQueueOperations];
         
         application.finalize();
         
@@ -454,7 +454,7 @@
     if( application.initialize() == false ) {
         [AppleLog withFormat:@"🔴 [ERROR] Mengine application initialize [Failed]"];
         
-        [[NSOperationQueue mainQueue] cancelAllOperations];
+        [AppleDetail cancelAllQueueOperations];
         
         application.finalize();
         
@@ -471,7 +471,7 @@
     
     application.loop();
     
-    [[NSOperationQueue mainQueue] cancelAllOperations];
+    [AppleDetail cancelAllQueueOperations];
     
     application.finalize();
     

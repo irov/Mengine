@@ -42,7 +42,7 @@
                 , [AppleDetail getMessageFromNSError:_error]
             );
             
-            [AppleDetail dispatchMainQueue:^{
+            [AppleDetail addMainQueueOperation:^{
                 [callback onAppleGameCenterAuthenticate:NO];
             }];
             
@@ -54,7 +54,7 @@
         if (self.m_gameCenterAuthenticate == false) {
             self.m_gameCenterAuthenticate = true;
             
-            [AppleDetail dispatchMainQueue:^{
+            [AppleDetail addMainQueueOperation:^{
                 [callback onAppleGameCenterAuthenticate:YES];
             }];
         }
@@ -63,7 +63,7 @@
         
         [self.m_achievementsComplete removeAllObjects];
         
-        [AppleDetail dispatchMainQueue:^{
+        [AppleDetail addMainQueueOperation:^{
             [callback onAppleGameCenterSynchronizate:NO];
         }];
         
@@ -75,7 +75,7 @@
                     , [AppleDetail getMessageFromNSError:_error]
                 );
                 
-                [AppleDetail dispatchMainQueue:^{
+                [AppleDetail addMainQueueOperation:^{
                     [callback onAppleGameCenterSynchronizate:NO];
                 }];
                 
@@ -95,7 +95,7 @@
             self.m_achievementsSynchronization = true;
             
             if (callback != nil) {
-                [AppleDetail dispatchMainQueue:^{
+                [AppleDetail addMainQueueOperation:^{
                     [callback onAppleGameCenterSynchronizate:YES];
                 }];
             }
@@ -125,7 +125,7 @@
                , [AppleDetail getMessageFromNSError:_error]
             );
             
-            [AppleDetail dispatchMainQueue:^{
+            [AppleDetail addMainQueueOperation:^{
                 handler( NO );
             }];
             
@@ -141,7 +141,7 @@
             [self.m_achievementsComplete addObject:identifier];
         }
         
-        [AppleDetail dispatchMainQueue:^{
+        [AppleDetail addMainQueueOperation:^{
             handler( YES );
         }];
     }];
@@ -189,7 +189,7 @@
         if (error != nil) {
             self.m_authenticateSuccess = NO;
             
-            [AppleDetail dispatchMainQueue:^{
+            [AppleDetail addMainQueueOperation:^{
                 handler( error );
             }];
             
@@ -198,7 +198,7 @@
         
         self.m_authenticateSuccess = YES;
         
-        [AppleDetail dispatchMainQueue:^{
+        [AppleDetail addMainQueueOperation:^{
             handler( nil );
         }];
     }];
@@ -213,7 +213,7 @@
     
     [GKAchievement loadAchievementsWithCompletionHandler:^(NSArray<GKAchievement *> * achievements, NSError * error) {
         if (error != nil) {
-            [AppleDetail dispatchMainQueue:^{
+            [AppleDetail addMainQueueOperation:^{
                 handler( error, nil );
             }];
             
@@ -221,7 +221,7 @@
         }
         
         if (achievements != nil) {
-            [AppleDetail dispatchMainQueue:^{
+            [AppleDetail addMainQueueOperation:^{
                 handler( nil, nil );
             }];
             
@@ -236,7 +236,7 @@
             }
         }
         
-        [AppleDetail dispatchMainQueue:^{
+        [AppleDetail addMainQueueOperation:^{
             handler( nil, cmpAch );
         }];
     }];
@@ -259,7 +259,7 @@
                 , [AppleDetail getMessageFromNSError:error]
             );
             
-            [AppleDetail dispatchMainQueue:^{
+            [AppleDetail addMainQueueOperation:^{
                 handler( error );
             }];
             
@@ -268,7 +268,7 @@
         
         IOS_LOGGER_MESSAGE( @"reset achievement success" );
         
-        [AppleDetail dispatchMainQueue:^{
+        [AppleDetail addMainQueueOperation:^{
             handler( nil );
         }];
     }];
@@ -313,7 +313,7 @@
                 , score
                 , [AppleDetail getMessageFromNSError:error]);
 
-            [AppleDetail dispatchMainQueue:^{
+            [AppleDetail addMainQueueOperation:^{
                 handler(error);
             }];
             
@@ -325,7 +325,7 @@
             , score
         );
         
-        [AppleDetail dispatchMainQueue:^{
+        [AppleDetail addMainQueueOperation:^{
             handler(nil);
         }];
 	}];
@@ -343,7 +343,7 @@
     [achievement setPercentComplete: percent];
     
     [GKAchievement reportAchievements:@[achievement] withCompletionHandler:^(NSError * error) {
-        [AppleDetail dispatchMainQueue:^{
+        [AppleDetail addMainQueueOperation:^{
             handler(error);
         }];
     }];

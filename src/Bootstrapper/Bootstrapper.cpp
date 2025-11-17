@@ -1338,11 +1338,11 @@ namespace Mengine
 #endif
 
 #if defined(MENGINE_PLUGIN_WAV_STATIC)
-        MENGINE_ADD_PLUGIN( WAV, "plugin WAVCodec...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( WAV, "plugin WAV...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #if defined(MENGINE_PLUGIN_OGG_VORBIS_STATIC)
-        MENGINE_ADD_PLUGIN( OggVorbis, "plugin OggVorbisCodec...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( OggVorbis, "plugin OggVorbis...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #if defined(MENGINE_PLUGIN_PVRTC_STATIC)
@@ -1414,7 +1414,7 @@ namespace Mengine
 #endif
 
 #if defined(MENGINE_PLUGIN_SDL2_SOCKET_STATIC)
-        MENGINE_ADD_PLUGIN( SDL2Socket, "plugin SDLSocket...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( SDL2Socket, "plugin SDL2Socket...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #if defined(MENGINE_PLUGIN_GOAP_STATIC)

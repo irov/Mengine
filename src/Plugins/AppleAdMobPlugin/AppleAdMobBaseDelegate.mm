@@ -106,11 +106,9 @@
     
     NSTimeInterval delaySec = pow(2, MIN(6, self.m_requestAttempt));
     
-    [AppleDetail addMainQueueOperation:^{
-        [NSThread sleepForTimeInterval:delaySec];
-        
+    [AppleDetail addMainQueueOperation:^{        
         [self loadAd];
-    }];
+    } afterSeconds:delaySec];
 }
 
 - (NSInteger) increaseRequestId {

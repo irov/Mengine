@@ -25,7 +25,15 @@
 + (NSString * _Nonnull)getRandomHexString:(NSUInteger)length;
 
 + (void)addMainQueueOperation:(dispatch_block_t _Nonnull)block;
-+ (void)dispatchMainQueue:(dispatch_block_t _Nonnull)block;
++ (void)addMainQueueOperation:(dispatch_block_t _Nonnull)block afterSeconds:(NSTimeInterval)seconds;
+
++ (void)addDefaultQueueOperation:(dispatch_block_t _Nonnull)block;
++ (void)addBackgroundQueueOperation:(dispatch_block_t _Nonnull)block;
++ (void)addUtilityQueueOperation:(dispatch_block_t _Nonnull)block;
++ (void)addUserInitiatedQueueOperation:(dispatch_block_t _Nonnull)block;
++ (void)addUserInteractiveQueueOperation:(dispatch_block_t _Nonnull)block;
+
++ (void)cancelAllQueueOperations;
 
 + (BOOL)hasOption:(NSString * _Nonnull)value;
 

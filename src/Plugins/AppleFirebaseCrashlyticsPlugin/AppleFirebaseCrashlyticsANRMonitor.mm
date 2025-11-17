@@ -1,6 +1,7 @@
 #import "AppleFirebaseCrashlyticsANRMonitor.h"
 
 #import "Environment/iOS/iOSLog.h"
+#import "Environment/Apple/AppleDetail.h"
 
 #include "Config/StdString.h"
 
@@ -34,11 +35,11 @@
 }
 
 - (void)runANRMainWatcher {
-    dispatch_async(dispatch_get_main_queue(), ^{
+    [AppleDetail addMainQueueOperation:^{
         pthread_t thread = pthread_self();
         
         [self runANRWatcher:thread withName:@"Main"];
-    });
+    }];
 }
 
 static void RunLoopObserverCallback(CFRunLoopObserverRef observer, CFRunLoopActivity activity, void *info) {
@@ -70,7 +71,7 @@ static void RunLoopObserverCallback(CFRunLoopObserverRef observer, CFRunLoopActi
     CFRunLoopAddObserver(CFRunLoopGetMain(), observer, kCFRunLoopCommonModes);
     CFRelease(observer);
     
-    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+    [AppleDetail addUserInitiatedQueueOperation:^{
         while (true) {
             long result = dispatch_semaphore_wait(semaphore, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)));
             
@@ -85,7 +86,7 @@ static void RunLoopObserverCallback(CFRunLoopObserverRef observer, CFRunLoopActi
             
             [AppleFirebaseCrashlyticsANRMonitor backtraceOfMachPort:thread withName:name];
         }
-    });
+    }];
 }
 
 static size_t my_backtrace_from_fp( _STRUCT_ARM_THREAD_STATE64 _state, void ** _buffer, size_t _size ) {

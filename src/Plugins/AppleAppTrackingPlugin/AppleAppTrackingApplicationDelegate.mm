@@ -65,7 +65,7 @@
             
             IOS_LOGGER_MESSAGE( @"app tracking authorization status: %lu", self.m_status );
             
-            [AppleDetail dispatchMainQueue:^{
+            [AppleDetail addMainQueueOperation:^{
                 response( self.m_status, self.m_idfa );
             }];
         }];

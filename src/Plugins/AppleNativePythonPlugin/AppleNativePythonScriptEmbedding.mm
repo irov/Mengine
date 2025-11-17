@@ -325,7 +325,7 @@ namespace Mengine
             {
                 PythonCallbackProviderPtr keep = PythonCallbackProviderPtr::from(this);
 
-                [AppleDetail dispatchMainQueue:^{
+                [AppleDetail addMainQueueOperation:^{
                     keep->call_cb();
                 }];
             }

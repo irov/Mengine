@@ -27,18 +27,17 @@
     NSMutableDictionary * params = [NSMutableDictionary dictionary];
     
     if (responseInfo != nil) {
-        if (responseInfo.adNetworkClassName != nil) {
-            [params setObject:responseInfo.adNetworkClassName forKey:@"adNetworkClassName"];
-        }
         if (responseInfo.responseIdentifier != nil) {
             [params setObject:responseInfo.responseIdentifier forKey:@"responseIdentifier"];
         }
         if (responseInfo.loadedAdNetworkResponseInfo != nil) {
-            if (responseInfo.loadedAdNetworkResponseInfo.adNetworkClassName != nil) {
-                [params setObject:responseInfo.loadedAdNetworkResponseInfo.adNetworkClassName forKey:@"networkName"];
+            GADAdNetworkResponseInfo * loadedInfo = responseInfo.loadedAdNetworkResponseInfo;
+            if (loadedInfo.adNetworkClassName != nil) {
+                [params setObject:loadedInfo.adNetworkClassName forKey:@"adNetworkClassName"];
+                [params setObject:loadedInfo.adNetworkClassName forKey:@"networkName"];
             }
-            if (responseInfo.loadedAdNetworkResponseInfo.credentials != nil) {
-                [params setObject:responseInfo.loadedAdNetworkResponseInfo.credentials forKey:@"credentials"];
+            if (loadedInfo.credentials != nil) {
+                [params setObject:loadedInfo.credentials forKey:@"credentials"];
             }
         }
     }

@@ -36,8 +36,9 @@
                 [params setObject:loadedInfo.adNetworkClassName forKey:@"adNetworkClassName"];
                 [params setObject:loadedInfo.adNetworkClassName forKey:@"networkName"];
             }
-            if (loadedInfo.credentials != nil) {
-                [params setObject:loadedInfo.credentials forKey:@"credentials"];
+            NSDictionary<NSString *, id> * dictionaryRepresentation = loadedInfo.dictionaryRepresentation;
+            if (dictionaryRepresentation != nil) {
+                [params setObject:dictionaryRepresentation forKey:@"dictionaryRepresentation"];
             }
         }
     }

@@ -335,8 +335,7 @@ namespace Mengine
 
         m_turnSound = _turn;
 
-        SOUND_SYSTEM()
-            ->onTurnSound( m_turnSound );
+        this->updateVolume();
     }
     //////////////////////////////////////////////////////////////////////////
     SoundIdentityInterfacePtr SoundService::createSoundIdentity( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer, ESoundSourceCategory _category, bool _streamable, const DocumentInterfacePtr & _doc )

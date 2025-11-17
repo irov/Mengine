@@ -199,7 +199,7 @@
     [self eventRewarded:@"will_present" params:@{}];
     
     PLATFORM_SERVICE()
-        ->freezePlatform( true, true );
+        ->freezePlatform( true, true, true );
 }
 
 - (void)ad:(id<GADFullScreenPresentingAd>)ad didFailToPresentFullScreenContentWithError:(NSError *)error {
@@ -227,7 +227,7 @@
     [self eventRewarded:@"dismissed" params:@{}];
     
     PLATFORM_SERVICE()
-        ->unfreezePlatform( true, true );
+        ->unfreezePlatform( true, true, true );
     
     self.m_showing = NO;
     

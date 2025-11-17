@@ -581,6 +581,7 @@ namespace Mengine
         , m_active( false )
         , m_freezedTick( 0 )
         , m_freezedRender( 0 )
+        , m_freezedSound( 0 )
         , m_desktop( false )
         , m_touchpad( false )
     {
@@ -1075,7 +1076,7 @@ namespace Mengine
         this->pushQuitEvent_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::freezePlatform( bool _tick, bool _render )
+    void AndroidPlatformService::freezePlatform( bool _tick, bool _render, bool _sound )
     {
         if( _tick == true )
         {
@@ -1086,9 +1087,20 @@ namespace Mengine
         {
             ++m_freezedRender;
         }
+
+        if( _sound == true )
+        {
+            ++m_freezedSound;
+        }
+
+        if( m_freezedSound == 1 )
+        {
+            SOUND_SERVICE()
+                ->setMute( STRINGIZE_STRING_LOCAL( "FreezePlatform" ), true );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::unfreezePlatform( bool _tick, bool _render )
+    void AndroidPlatformService::unfreezePlatform( bool _tick, bool _render, bool _sound )
     {
         if( _tick == true )
         {
@@ -1098,6 +1110,17 @@ namespace Mengine
         if( _render == true )
         {
             --m_freezedRender;
+        }
+
+        if( _sound == true )
+        {
+            --m_freezedSound;
+        }
+
+        if( m_freezedSound == 0 )
+        {
+            SOUND_SERVICE()
+                ->setMute( STRINGIZE_STRING_LOCAL( "FreezePlatform" ), false );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -2540,16 +2563,18 @@ namespace Mengine
     {
         bool tick = _event.tick;
         bool render = _event.render;
+        bool sound = _event.sound;
 
-        this->freezePlatform( tick, render );
+        this->freezePlatform( tick, render, sound );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::unfreezeEvent_( const PlatformUnionEvent::PlatformUnfreezeEvent & _event )
     {
         bool tick = _event.tick;
         bool render = _event.render;
+        bool sound = _event.sound;
 
-        this->unfreezePlatform( tick, render );
+        this->unfreezePlatform( tick, render, sound );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::surfaceCreateEvent_( const PlatformUnionEvent::PlatformSurfaceCreateEvent & _event )

@@ -61,8 +61,10 @@ namespace Mengine
         bool updatePlatform() override;
         void tickPlatform( float _frameTime, bool _render, bool _flush, bool _pause ) override;
         void stopPlatform()	override;
-        void freezePlatform( bool _tick, bool _render ) override;
-        void unfreezePlatform( bool _tick, bool _render ) override;
+
+    public:
+        void freezePlatform( bool _tick, bool _render, bool _sound ) override;
+        void unfreezePlatform( bool _tick, bool _render, bool _sound ) override;
 
     public:
         void setSleepMode( bool _sleepMode ) override;
@@ -225,8 +227,9 @@ namespace Mengine
         bool m_active;
         bool m_sleepMode;
         
-        int32_t m_freezedTick;
-        int32_t m_freezedRender;
+        AtomicInt32 m_freezedTick;
+        AtomicInt32 m_freezedRender;
+        AtomicInt32 m_freezedSound;
 
         bool m_desktop;
         bool m_touchpad;

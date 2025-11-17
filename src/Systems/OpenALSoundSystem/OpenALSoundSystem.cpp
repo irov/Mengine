@@ -177,13 +177,6 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenALSoundSystem::onTurnSound( bool _turn )
-    {
-        MENGINE_UNUSED( _turn );
-
-        // ToDo
-    }
-    //////////////////////////////////////////////////////////////////////////
     SoundSourceInterfacePtr OpenALSoundSystem::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer, const DocumentInterfacePtr & _doc )
     {
         OpenALSoundSourcePtr soundSource = m_factoryOpenALSoundSource->createObject( _doc );

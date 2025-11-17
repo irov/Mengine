@@ -29,9 +29,6 @@ namespace Mengine
         virtual bool isSilent() const = 0;
 
     public:
-        virtual void onTurnSound( bool _turn ) = 0;
-
-    public:
         virtual SoundBufferInterfacePtr createSoundBuffer( const SoundDecoderInterfacePtr & _decoder, bool _streamable, const DocumentInterfacePtr & _doc ) = 0;
 
     public:

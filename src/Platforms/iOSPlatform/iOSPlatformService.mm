@@ -92,6 +92,7 @@ namespace Mengine
         , m_sleepMode( true )
         , m_freezedTick( 0 )
         , m_freezedRender( 0 )
+        , m_freezedSound( 0 )
         , m_desktop( false )
         , m_touchpad( false )
         , m_glContext( nullptr )
@@ -962,7 +963,7 @@ namespace Mengine
         this->pushQuitEvent_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void iOSPlatformService::freezePlatform( bool _tick, bool _render )
+    void iOSPlatformService::freezePlatform( bool _tick, bool _render, bool _sound )
     {
         if( _tick == true )
         {
@@ -973,9 +974,20 @@ namespace Mengine
         {
             ++m_freezedRender;
         }
+        
+        if( _sound == true )
+        {
+            ++m_freezedSound;
+        }
+
+        if( m_freezedSound == 1 )
+        {
+            SOUND_SERVICE()
+                ->setMute( STRINGIZE_STRING_LOCAL( "FreezePlatform" ), true );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
-    void iOSPlatformService::unfreezePlatform( bool _tick, bool _render )
+    void iOSPlatformService::unfreezePlatform( bool _tick, bool _render, bool _sound )
     {
         if( _tick == true )
         {
@@ -985,6 +997,17 @@ namespace Mengine
         if( _render == true )
         {
             --m_freezedRender;
+        }
+        
+        if( _sound == true )
+        {
+            --m_freezedSound;
+        }
+
+        if( m_freezedSound == 0 )
+        {
+            SOUND_SERVICE()
+                ->setMute( STRINGIZE_STRING_LOCAL( "FreezePlatform" ), false );
         }
     }
     //////////////////////////////////////////////////////////////////////////

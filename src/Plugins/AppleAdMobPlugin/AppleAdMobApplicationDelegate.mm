@@ -96,14 +96,6 @@
     
     IOS_LOGGER_MESSAGE(@"AdMob: %@", versionString);
     
-    NSString * MengineAppleAdMobPlugin_AppId = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"AppId" withDefault:nil];
-    
-    if (MengineAppleAdMobPlugin_AppId != nil && [MengineAppleAdMobPlugin_AppId length] > 0) {
-        [GADMobileAds configureWithApplicationID:MengineAppleAdMobPlugin_AppId];
-        
-        IOS_LOGGER_MESSAGE(@"[AdMob] configure with AppId: %@", MengineAppleAdMobPlugin_AppId);
-    }
-    
     BOOL MengineAppleAdMobPlugin_RequestConfigurationTestDeviceIdsEnabled = [AppleBundle getPluginConfigBoolean:@PLUGIN_BUNDLE_NAME withKey:@"RequestConfigurationTestDeviceIdsEnabled" withDefault:NO];
     
     if (MengineAppleAdMobPlugin_RequestConfigurationTestDeviceIdsEnabled == YES) {

@@ -31,7 +31,21 @@ ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_APPLE_ADMOB)
 
 ADD_MENGINE_COCOAPOD("Google-Mobile-Ads-SDK" "NO-GIT" "12.11.0")
 
+if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+    ADD_FILTER(
+    embedding
+        AppleAdMobScriptEmbedding.h
+        AppleAdMobScriptEmbedding.mm
+    )
+    
+    INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
+endif()
+
 ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleAdMobApplicationDelegate")
+
+if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+    TARGET_LINK_LIBRARIES(${PROJECT_NAME} Python)
+endif()
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} AppleAdvertisementPlugin)
 

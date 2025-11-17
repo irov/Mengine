@@ -6,9 +6,24 @@ src
     LayoutEditorPlugin.def
     LayoutEditorPlugin.cpp
     
-    ModuleLayoutEditor.cpp
-    ModuleLayoutEditor.h
+    LayoutEditorWidgetType.h
+    
+    LayoutEditorLogger.cpp
+    LayoutEditorLogger.h
+    
+    LayoutEditorModule.cpp
+    LayoutEditorModule.h
 )
+
+if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+    ADD_FILTER(
+    embedding
+        LayoutEditorScriptEmbedding.cpp
+        LayoutEditorScriptEmbedding.h
+    )
+        
+    INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
+endif()
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_CONFIG_DIR}/imgui)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/imgui)

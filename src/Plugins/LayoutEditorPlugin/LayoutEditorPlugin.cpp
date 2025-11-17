@@ -1,11 +1,18 @@
 #include "LayoutEditorPlugin.h"
 
-#include "ModuleLayoutEditor.h"
+#include "Interface/ScriptServiceInterface.h"
+
+#include "LayoutEditorModule.h"
+
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+#include "LayoutEditorScriptEmbedding.h"
+#endif
 
 #include "Kernel/ModuleFactory.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/PluginHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( LayoutEditor, Mengine::LayoutEditorPlugin );
@@ -35,14 +42,33 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LayoutEditorPlugin::_initializePlugin()
     {
-        this->addModuleFactory( ModuleLayoutEditor::getFactorableType(), Helper::makeModuleFactory<ModuleLayoutEditor>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+        this->addModuleFactory( LayoutEditorModule::getFactorableType(), Helper::makeModuleFactory<LayoutEditorModule>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+        NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EMBEDDING, this, [MENGINE_DOCUMENT_ARGUMENTS( this )]()
+            {
+                SCRIPT_SERVICE()
+                    ->addScriptEmbedding( LayoutEditorScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<LayoutEditorScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
+            }, MENGINE_DOCUMENT_FACTORABLE );
+
+        NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EJECTING, this, []()
+            {
+                SCRIPT_SERVICE()
+                    ->removeScriptEmbedding( LayoutEditorScriptEmbedding::getFactorableType() );
+            }, MENGINE_DOCUMENT_FACTORABLE );
+#endif
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void LayoutEditorPlugin::_finalizePlugin()
     {
-        this->removeModuleFactory( ModuleLayoutEditor::getFactorableType() );
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
+#endif
+
+        this->removeModuleFactory( LayoutEditorModule::getFactorableType() );
     }
     //////////////////////////////////////////////////////////////////////////
 }

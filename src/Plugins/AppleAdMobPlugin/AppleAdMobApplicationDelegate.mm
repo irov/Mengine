@@ -131,40 +131,48 @@
     MengineAppleAdMobPlugin_RewardedAdUnitId = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"RewardedAdUnitId" withDefault:nil];
 #endif
     
+    __weak AppleAdMobApplicationDelegate * weakSelf = self;
+    
     [mobileAds startWithCompletionHandler:^(GADInitializationStatus * _Nonnull status) {
-        IOS_LOGGER_MESSAGE(@"[AdMob] plugin initialize complete");
+        AppleAdMobApplicationDelegate * strongSelf = weakSelf;
         
-        id<AppleAdvertisementInterface> advertisement = [iOSDetail getPluginDelegateOfProtocol:@protocol(AppleAdvertisementInterface)];
-        
-#if defined(MENGINE_PLUGIN_APPLE_ADMOB_BANNER)
-        if (MengineAppleAdMobPlugin_BannerAdUnitId != nil) {
-            NSString * MengineAppleAdMobPlugin_BannerPlacement = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"BannerPlacement" withDefault:@"banner"];
-            
-            BOOL MengineAppleAdMobPlugin_BannerAdaptive = [AppleBundle getPluginConfigBoolean:@PLUGIN_BUNDLE_NAME withKey:@"BannerAdaptive" withDefault:YES];
-            
-            AppleAdMobBannerDelegate * bannerAd = [[AppleAdMobBannerDelegate alloc] initWithAdUnitIdentifier:MengineAppleAdMobPlugin_BannerAdUnitId advertisement:advertisement placement:MengineAppleAdMobPlugin_BannerPlacement adaptive:MengineAppleAdMobPlugin_BannerAdaptive];
-            
-            self.m_bannerAd = bannerAd;
+        if (strongSelf == nil) {
+            return;
         }
+        
+        [AppleDetail addMainQueueOperation:^{
+            IOS_LOGGER_MESSAGE(@"[AdMob] plugin initialize complete");
+            
+#if defined(MENGINE_PLUGIN_APPLE_ADMOB_BANNER)
+            if (MengineAppleAdMobPlugin_BannerAdUnitId != nil) {
+                NSString * MengineAppleAdMobPlugin_BannerPlacement = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"BannerPlacement" withDefault:@"banner"];
+                
+                BOOL MengineAppleAdMobPlugin_BannerAdaptive = [AppleBundle getPluginConfigBoolean:@PLUGIN_BUNDLE_NAME withKey:@"BannerAdaptive" withDefault:YES];
+                
+                AppleAdMobBannerDelegate * bannerAd = [[AppleAdMobBannerDelegate alloc] initWithAdUnitIdentifier:MengineAppleAdMobPlugin_BannerAdUnitId advertisement:advertisement placement:MengineAppleAdMobPlugin_BannerPlacement adaptive:MengineAppleAdMobPlugin_BannerAdaptive];
+                
+                strongSelf.m_bannerAd = bannerAd;
+            }
 #endif
         
 #if defined(MENGINE_PLUGIN_APPLE_ADMOB_INTERSTITIAL)
-        if (MengineAppleAdMobPlugin_InterstitialAdUnitId != nil) {
-            AppleAdMobInterstitialDelegate * interstitialAd = [[AppleAdMobInterstitialDelegate alloc] initWithAdUnitIdentifier:MengineAppleAdMobPlugin_InterstitialAdUnitId advertisement:advertisement];
-            
-            self.m_interstitialAd = interstitialAd;
-        }
+            if (MengineAppleAdMobPlugin_InterstitialAdUnitId != nil) {
+                AppleAdMobInterstitialDelegate * interstitialAd = [[AppleAdMobInterstitialDelegate alloc] initWithAdUnitIdentifier:MengineAppleAdMobPlugin_InterstitialAdUnitId advertisement:advertisement];
+                
+                strongSelf.m_interstitialAd = interstitialAd;
+            }
 #endif
         
 #if defined(MENGINE_PLUGIN_APPLE_ADMOB_REWARDED)
-        if (MengineAppleAdMobPlugin_RewardedAdUnitId != nil) {
-            AppleAdMobRewardedDelegate * rewardedAd = [[AppleAdMobRewardedDelegate alloc] initWithAdUnitIdentifier:MengineAppleAdMobPlugin_RewardedAdUnitId advertisement:advertisement];
-            
-            self.m_rewardedAd = rewardedAd;
-        }
+            if (MengineAppleAdMobPlugin_RewardedAdUnitId != nil) {
+                AppleAdMobRewardedDelegate * rewardedAd = [[AppleAdMobRewardedDelegate alloc] initWithAdUnitIdentifier:MengineAppleAdMobPlugin_RewardedAdUnitId advertisement:advertisement];
+                
+                strongSelf.m_rewardedAd = rewardedAd;
+            }
 #endif
         
-        [advertisement readyAdProvider];
+            [advertisement readyAdProvider];
+        }];
     }];
     
     return YES;

@@ -1,19 +1,13 @@
 #pragma once
 
-#import "Environment/Apple/AppleIncluder.h"
-
-typedef NS_ENUM(NSInteger, EAppleAppTrackingAuthorization) {
-    EAATA_AUTHORIZED,
-    EAATA_DENIED,
-    EAATA_RESTRICTED,
-    EAATA_NOT_DETERMINED
-};
+#import "Environment/iOS/iOSAppTrackingAuthorization.h"
 
 @protocol AppleAppTrackingInterface <NSObject>
 
 + (instancetype)sharedInstance;
 
-- (void)authorization:(void (^)(EAppleAppTrackingAuthorization status, NSString *idfa))response;
+- (void)authorization;
+
 - (EAppleAppTrackingAuthorization)getAuthorizationStatus;
 - (NSString *)getIDFA;
 - (BOOL)isTrackingAllowed;

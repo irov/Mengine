@@ -5,6 +5,7 @@
 #import "Environment/Apple/AppleLogRecordParam.h"
 
 #import "Environment/iOS/iOSAdRevenueParam.h"
+#import "Environment/iOS/iOSAppTrackingTransparencyParam.h"
 #import "Environment/iOS/iOSTransparencyConsentParam.h"
 #import "Environment/iOS/iOSUIMainApplicationDelegateInterface.h"
 
@@ -39,6 +40,7 @@
 + (void)setUserId:(iOSUserParam * _Nonnull)userId;
 + (void)removeUserData;
 + (void)adRevenue:(iOSAdRevenueParam * _Nonnull)revenue;
++ (void)appTrackingTransparency:(iOSAppTrackingTransparencyParam * _Nonnull)tracking;
 + (void)transparencyConsent:(iOSTransparencyConsentParam * _Nonnull)consent;
 + (void)log:(AppleLogRecordParam * _Nonnull)record;
 + (void)config:(NSDictionary * _Nonnull)config;

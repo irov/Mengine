@@ -30,7 +30,7 @@
         }break;
         case ATTrackingManagerAuthorizationStatusDenied: {
             self.m_status = EAATA_DENIED;
-            self.m_idfa = IDFA_DENIED;
+            self.m_idfa = IDFA_NOT_DETERMINED;
         }break;
         case ATTrackingManagerAuthorizationStatusNotDetermined: {
             self.m_status = EAATA_NOT_DETERMINED;
@@ -38,7 +38,7 @@
         }break;
         case ATTrackingManagerAuthorizationStatusRestricted: {
             self.m_status = EAATA_RESTRICTED;
-            self.m_idfa = IDFA_RESTRICTED;
+            self.m_idfa = IDFA_NOT_DETERMINED;
         }break;
     }
     

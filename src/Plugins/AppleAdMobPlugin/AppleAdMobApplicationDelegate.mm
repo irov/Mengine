@@ -4,6 +4,7 @@
 #import "Environment/Apple/AppleSemaphoreService.h"
 #import "Environment/Apple/AppleDetail.h"
 
+#import "Environment/iOS/iOSAppTrackingTransparencyParam.h"
 #import "Environment/iOS/iOSApplication.h"
 #import "Environment/iOS/iOSDetail.h"
 #import "Environment/iOS/iOSNetwork.h"
@@ -28,6 +29,7 @@
         self.m_bannerAd = nil;
         self.m_interstitialAd = nil;
         self.m_rewardedAd = nil;
+        self.m_initialized = NO;
     }
     
     return self;
@@ -80,6 +82,18 @@
     return sharedInstance;
 }
 
+#pragma mark - iOSPluginAppTrackingTransparencyDelegateInterface
+
+- (void)onAppTrackingTransparency:(iOSAppTrackingTransparencyParam *)param {
+    if (self.m_initialized == YES) {
+        return;
+    }
+    
+    IOS_LOGGER_MESSAGE(@"[AdMob] ATT completed, initializing AdMob");
+    
+    [self initializeAdMob];
+}
+
 #pragma mark - iOSPluginApplicationDelegateInterface
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
@@ -87,7 +101,19 @@
         IOS_LOGGER_ERROR(@"[ERROR] AdMob plugin not found bundle config [%@]", @PLUGIN_BUNDLE_NAME);
         
         return NO;
+    }    
+    
+    return YES;
+}
+
+- (void)initializeAdMob {
+    if (self.m_initialized == YES) {
+        return;
     }
+    
+    self.m_initialized = YES;
+    
+    IOS_LOGGER_MESSAGE(@"[AdMob] initializing after ATT completion");
     
     GADMobileAds * mobileAds = [GADMobileAds sharedInstance];
     
@@ -174,8 +200,6 @@
             [advertisement readyAdProvider];
         }];
     }];
-    
-    return YES;
 }
 
 #pragma mark - AppleAdvertisementProviderInterface

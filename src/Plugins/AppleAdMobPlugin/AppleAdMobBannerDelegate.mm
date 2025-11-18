@@ -109,7 +109,7 @@
     UIViewController * viewController = [iOSDetail getRootViewController];
     self.m_bannerView.rootViewController = viewController;
     
-    GADRequest * request = [GADRequest request];
+    GADRequest * request = [self createAdRequest];
     [self.m_bannerView loadRequest:request];
 }
 

@@ -136,7 +136,7 @@
     
     [self eventRewarded:@"load" params:@{}];
     
-    GADRequest * request = [GADRequest request];
+    GADRequest * request = [self createAdRequest];
     
     __weak AppleAdMobRewardedDelegate * weakSelf = self;
     

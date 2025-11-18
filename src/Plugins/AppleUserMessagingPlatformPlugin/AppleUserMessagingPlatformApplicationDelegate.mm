@@ -9,7 +9,17 @@
 
 @implementation AppleUserMessagingPlatformApplicationDelegate
 
-#pragma mark - helpers
+- (instancetype)init {
+    self = [super init];
+    
+    if (self) {
+        self.m_completed = NO;
+    }
+    
+    return self;
+}
+
+#pragma mark - Details
 
 - (void)notifyConsentChangedFromDefaults {
     iOSTransparencyConsentParam * consent = [[iOSTransparencyConsentParam alloc] initFromUserDefaults];
@@ -27,13 +37,15 @@
 #if defined(MENGINE_DEBUG)
     UMPDebugSettings *debugSettings = [[UMPDebugSettings alloc] init];
     debugSettings.geography = UMPDebugGeographyEEA;
-    debugSettings.testDeviceIdentifiers = @[@"46D5A6B4-FAE4-4EA3-9D36-94F9A7CEA291"];
+    //debugSettings.testDeviceIdentifiers = @[@"DB1869F9-B9D0-4D84-B2CB-F63F249E58C9"];
     parameters.debugSettings = debugSettings;
 #endif
     
     [UMPConsentInformation.sharedInstance requestConsentInfoUpdateWithParameters:parameters completionHandler:^(NSError * _Nullable error) {
         if (error != nil) {
             IOS_LOGGER_MESSAGE(@"[UMP] requestConsentInfoUpdate error: %@", error);
+            
+            self.m_completed = YES;
             
             return;
         }
@@ -45,6 +57,8 @@
             
             [iOSTransparencyConsentParam setConsentFlowUserGeography:iOSConsentFlowUserGeographyOther];
             
+            self.m_completed = YES;
+            
             return;
         }
         
@@ -55,6 +69,8 @@
         if (formStatus != UMPFormStatusAvailable) {
             IOS_LOGGER_MESSAGE(@"[UMP] formStatus not available: %ld", (long)formStatus);
             
+            self.m_completed = YES;
+            
             return;
         }
         
@@ -63,6 +79,8 @@
         [UMPConsentForm loadAndPresentIfRequiredFromViewController:rootVC completionHandler:^(NSError * _Nullable loadError) {
             if (loadError != nil) {
                 IOS_LOGGER_MESSAGE(@"[UMP] loadAndPresentIfRequiredFromViewController error: %@", loadError);
+                
+                self.m_completed = YES;
 
                 return;
             }

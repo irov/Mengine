@@ -17,14 +17,9 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static void AppleAppTracking_authorization( const pybind::object & _cb, const pybind::args & _args )
+        static void AppleAppTracking_authorization()
         {
-            pybind::object copy_cb = _cb;
-            pybind::args copy_args = _args;
-            
-            [[AppleAppTrackingApplicationDelegate sharedInstance] authorization:^(EAppleAppTrackingAuthorization status, NSString * idfa) {
-                copy_cb.call_args( status, idfa, copy_args );
-            }];
+            [[AppleAppTrackingApplicationDelegate sharedInstance] authorization];
         };
         //////////////////////////////////////////////////////////////////////////
     }
@@ -46,7 +41,7 @@ namespace Mengine
             .def( "EAATA_NOT_DETERMINED", EAATA_NOT_DETERMINED )
             ;
 
-        pybind::def_function_args( _kernel, "appleAppTrackingAuthorization", &Detail::AppleAppTracking_authorization );
+        pybind::def_function( _kernel, "appleAppTrackingAuthorization", &Detail::AppleAppTracking_authorization );
 
         return true;
     }

@@ -98,7 +98,7 @@
 }
 
 - (BOOL)isComplete {
-    return self.m_completed
+    return self.m_completed;
 }
 
 @end

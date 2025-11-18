@@ -71,7 +71,7 @@
         tracking.APPTRACKINGTRANSPARENCY_AUTHORIZATION = self.m_status;
         tracking.APPTRACKINGTRANSPARENCY_IDFA = self.m_idfa;
         
-        [AppleDetail appTrackingTransparency:tracking];
+        [iOSDetail appTrackingTransparency:tracking];
     }];
 }
 

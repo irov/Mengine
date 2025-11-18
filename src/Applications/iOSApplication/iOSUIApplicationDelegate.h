@@ -27,4 +27,7 @@
 @property (nonatomic, strong) NSMutableArray<iOSPluginAppTrackingTransparencyDelegateInterface> * m_pluginAppTrackingTransparencyDelegates;
 @property (nonatomic, strong) NSMutableArray<iOSPluginTransparencyConsentDelegateInterface> * m_pluginTransparencyConsentDelegates;
 
+@property (nonatomic, strong) NSMutableArray<dispatch_block_t> * m_didBecomeActiveOperations;
+@property (nonatomic, assign) BOOL m_didBecomeActiveObserverRegistered;
+
 @end

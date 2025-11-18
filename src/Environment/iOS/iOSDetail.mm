@@ -194,6 +194,12 @@
     }];
 }
 
++ (void) addDidBecomeActiveOperation:(dispatch_block_t _Nonnull)block {
+    NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
+    
+    [delegate addDidBecomeActiveOperation:block];
+}
+
 + (NSString *) pathForTemporaryFileWithPrefix:(NSString *)prefix ext:(NSString *)ext {
     NSString * result;
     CFUUIDRef uuid = CFUUIDCreate(NULL);

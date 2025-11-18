@@ -45,6 +45,8 @@
 + (void)log:(AppleLogRecordParam * _Nonnull)record;
 + (void)config:(NSDictionary * _Nonnull)config;
 
++ (void)addDidBecomeActiveOperation:(dispatch_block_t _Nonnull)block;
+
 + (NSString * _Nonnull)pathForTemporaryFileWithPrefix:(NSString * _Nonnull)prefix ext:(NSString * _Nonnull)ext;
 
 + (void)showOkAlertWithTitle:(NSString * _Nonnull)title

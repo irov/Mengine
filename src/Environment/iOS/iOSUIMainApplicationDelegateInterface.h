@@ -40,4 +40,6 @@
 - (void)eventAppTrackingTransparency:(iOSAppTrackingTransparencyParam * _Nonnull)tracking;
 - (void)eventTransparencyConsent:(iOSTransparencyConsentParam * _Nonnull)consent;
 
+- (void)addDidBecomeActiveOperation:(dispatch_block_t _Nonnull)block;
+
 @end

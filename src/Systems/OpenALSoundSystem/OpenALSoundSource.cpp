@@ -12,6 +12,18 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        static ALfloat calcGain( float _volume )
+        {
+            ALfloat gain = (ALfloat)StdMath::powf( _volume, 2.f );
+
+            return gain;
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
+    //////////////////////////////////////////////////////////////////////////
     OpenALSoundSource::OpenALSoundSource()
         : m_volume( 1.f )
         , m_sourceId( 0 )
@@ -145,7 +157,8 @@ namespace Mengine
             return false;
         }
 
-        ALfloat gain = (ALfloat)StdMath::powf( m_volume, 2.f );
+        ALfloat gain = Detail::calcGain( m_volume );
+
         MENGINE_OPENAL_CALL( alSourcef, (m_sourceId, AL_GAIN, gain) );
 
         m_soundBuffer->resumeSource( m_sourceId );
@@ -192,7 +205,8 @@ namespace Mengine
 
         if( m_playing == true && m_sourceId != 0 )
         {
-            ALfloat gain = (ALfloat)StdMath::powf( m_volume, 2.f );
+            ALfloat gain = Detail::calcGain( m_volume );
+
             MENGINE_OPENAL_CALL( alSourcef, (m_sourceId, AL_GAIN, gain) );
         }
     }
@@ -379,7 +393,8 @@ namespace Mengine
         MENGINE_OPENAL_CALL( alSourcef, (_source, AL_MAX_GAIN, 1.f) );
         MENGINE_OPENAL_CALL( alSourcef, (_source, AL_PITCH, 1.f) );
 
-        ALfloat gain = (ALfloat)StdMath::powf( m_volume, 2.f );
+        ALfloat gain = Detail::calcGain( m_volume );
+
         MENGINE_OPENAL_CALL( alSourcef, (_source, AL_GAIN, gain) );
     }
     //////////////////////////////////////////////////////////////////////////

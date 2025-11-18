@@ -255,30 +255,6 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenALSoundBufferStream::resumeSource( ALuint _sourceId )
-    {
-        MENGINE_UNUSED( _sourceId );
-
-        MENGINE_ASSERTION_FATAL( m_sourceId == _sourceId, "invalid source: %u"
-            , _sourceId
-        );
-
-        this->setUpdating_( true );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenALSoundBufferStream::pauseSource( ALuint _sourceId )
-    {
-        MENGINE_UNUSED( _sourceId );
-
-        MENGINE_ASSERTION_FATAL( m_sourceId == _sourceId, "invalid source: %u"
-            , _sourceId
-        );
-
-        this->setUpdating_( false );
-    }
-    //////////////////////////////////////////////////////////////////////////
     void OpenALSoundBufferStream::stopSource( ALuint _sourceId )
     {
         MENGINE_UNUSED( _sourceId );
@@ -305,6 +281,34 @@ namespace Mengine
         MENGINE_OPENAL_CALL( alSourcei, (_sourceId, AL_BUFFER, 0) );
 
         m_sourceId = 0;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenALSoundBufferStream::pauseSource( ALuint _sourceId )
+    {
+        MENGINE_UNUSED( _sourceId );
+
+        MENGINE_ASSERTION_FATAL( m_sourceId == _sourceId, "invalid source: %u"
+            , _sourceId
+        );
+
+        MENGINE_OPENAL_CALL( alSourcePause, (_sourceId) );
+
+        this->setUpdating_( false );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OpenALSoundBufferStream::resumeSource( ALuint _sourceId )
+    {
+        MENGINE_UNUSED( _sourceId );
+
+        MENGINE_ASSERTION_FATAL( m_sourceId == _sourceId, "invalid source: %u"
+            , _sourceId
+        );
+
+        this->setUpdating_( true );
+
+        MENGINE_OPENAL_CALL( alSourcePlay, (_sourceId) );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundBufferStream::setUpdating_( bool _updating )
@@ -439,7 +443,7 @@ namespace Mengine
         decoder_data_body.size = MENGINE_OPENAL_STREAM_BUFFER_SIZE;
 
         size_t bytesWritten = m_soundDecoder->decode( &decoder_data_body );
-        
+
         if( m_looped == true && bytesWritten != MENGINE_OPENAL_STREAM_BUFFER_SIZE )
         {
             if( m_soundDecoder->rewind() == false )
@@ -459,7 +463,7 @@ namespace Mengine
 
             bytesWritten += bytesWritten2;
         }
-        
+
         if( bytesWritten == 0 )
         {
             *_bytes = 0;

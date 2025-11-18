@@ -45,7 +45,7 @@ namespace Mengine
     bool OpenALSoundBufferMemory::updateSoundBuffer()
     {
         //Empty
-        
+
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -192,18 +192,6 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenALSoundBufferMemory::resumeSource( ALuint _sourceId )
-    {
-        MENGINE_OPENAL_CALL( alSourcePlay, (_sourceId) );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenALSoundBufferMemory::pauseSource( ALuint _sourceId )
-    {
-        MENGINE_OPENAL_CALL( alSourcePause, (_sourceId) );
-    }
-    //////////////////////////////////////////////////////////////////////////
     void OpenALSoundBufferMemory::stopSource( ALuint _sourceId )
     {
         MENGINE_OPENAL_CALL( alSourceStop, (_sourceId) );
@@ -219,6 +207,18 @@ namespace Mengine
 
         MENGINE_OPENAL_CALL( alSourceRewind, (_sourceId) );
         MENGINE_OPENAL_CALL( alSourcei, (_sourceId, AL_BUFFER, 0) );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenALSoundBufferMemory::pauseSource( ALuint _sourceId )
+    {
+        MENGINE_OPENAL_CALL( alSourcePause, (_sourceId) );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OpenALSoundBufferMemory::resumeSource( ALuint _sourceId )
+    {
+        MENGINE_OPENAL_CALL( alSourcePlay, (_sourceId) );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundBufferMemory::setTimePosition( ALuint _sourceId, float _position ) const

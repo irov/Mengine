@@ -36,9 +36,9 @@ namespace Mengine
 
     public:
         bool playSource( ALuint _sourceId, bool _looped, float _position ) override;
-        bool resumeSource( ALuint _sourceId ) override;
-        void pauseSource( ALuint _sourceId ) override;
         void stopSource( ALuint _sourceId ) override;
+        void pauseSource( ALuint _sourceId ) override;
+        bool resumeSource( ALuint _sourceId ) override;
 
     public:
         bool setTimePosition( ALuint _sourceId, float _position ) const override;

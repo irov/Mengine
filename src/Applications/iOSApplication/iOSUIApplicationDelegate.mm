@@ -30,6 +30,9 @@
         self.m_pluginAppTrackingTransparencyDelegates = [NSMutableArray<iOSPluginAppTrackingTransparencyDelegateInterface> array];
         self.m_pluginTransparencyConsentDelegates = [NSMutableArray<iOSPluginTransparencyConsentDelegateInterface> array];
         
+        self.m_didBecomeActiveOperations = [NSMutableArray<dispatch_block_t> array];
+        self.m_didBecomeActiveObserverRegistered = NO;
+        
         NSArray * proxysClassed = [iOSApplicationDelegates getApplicationDelegates];
         
         for (id className in proxysClassed) {
@@ -243,6 +246,20 @@
     }
 }
 
+- (void)addDidBecomeActiveOperation:(dispatch_block_t _Nonnull)block {
+    UIApplicationState appState = [[UIApplication sharedApplication] applicationState];
+    
+    if (appState == UIApplicationStateActive) {
+        [AppleDetail addMainQueueOperation:block];
+        
+        return;
+    }
+    
+    @synchronized(self) {
+        [self.m_didBecomeActiveOperations addObject:block];
+    }
+}
+
 #pragma mark - UIApplicationDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(nullable NSDictionary<UIApplicationLaunchOptionsKey, id> *)launchOptions API_AVAILABLE(ios(3.0)) {
@@ -327,6 +344,15 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     [AppleLog withFormat:@"Mengine application applicationDidBecomeActive"];
+    
+    @synchronized(self) {
+        NSArray<dispatch_block_t> * operations = [self.m_didBecomeActiveOperations copy];
+        [self.m_didBecomeActiveOperations removeAllObjects];
+
+        for (dispatch_block_t operation in operations) {
+            [AppleDetail addMainQueueOperation:operation];
+        }
+    }
     
     @autoreleasepool {
         for (id delegate in self.m_pluginApplicationDelegates) {

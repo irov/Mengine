@@ -142,5 +142,12 @@
     [iOSAnalytics event:name params:total_params];
 }
 
+- (GADRequest *) createAdRequest {
+    GADRequest * request = [GADRequest request];
+    request.requestAgent = @"Mengine";
+    
+    return request;
+}
+
 @end
 

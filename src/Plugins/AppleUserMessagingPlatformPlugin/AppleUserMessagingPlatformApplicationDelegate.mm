@@ -21,7 +21,9 @@
 
 #pragma mark - Details
 
-- (void)notifyConsentChangedFromDefaults {
+- (void)completedConsent {
+    self.m_completed = YES;
+    
     iOSTransparencyConsentParam * consent = [[iOSTransparencyConsentParam alloc] initFromUserDefaults];
     
     [iOSDetail transparencyConsent:consent];
@@ -45,7 +47,7 @@
         if (error != nil) {
             IOS_LOGGER_MESSAGE(@"[UMP] requestConsentInfoUpdate error: %@", error);
             
-            self.m_completed = YES;
+            [self completedConsent];
             
             return;
         }
@@ -57,7 +59,7 @@
             
             [iOSTransparencyConsentParam setConsentFlowUserGeography:iOSConsentFlowUserGeographyOther];
             
-            self.m_completed = YES;
+            [self completedConsent];
             
             return;
         }
@@ -69,7 +71,7 @@
         if (formStatus != UMPFormStatusAvailable) {
             IOS_LOGGER_MESSAGE(@"[UMP] formStatus not available: %ld", (long)formStatus);
             
-            self.m_completed = YES;
+            [self completedConsent];
             
             return;
         }
@@ -80,17 +82,23 @@
             if (loadError != nil) {
                 IOS_LOGGER_MESSAGE(@"[UMP] loadAndPresentIfRequiredFromViewController error: %@", loadError);
                 
-                self.m_completed = YES;
+                [self completedConsent];
 
                 return;
             }
+            
+            IOS_LOGGER_MESSAGE(@"[UMP] loadAndPresentIfRequiredFromViewController completed");
      
             // After form dismissal, UMP writes IABTCF_* to NSUserDefaults. Broadcast updated consent.
-            [self notifyConsentChangedFromDefaults];
+            [self completedConsent];
         }];
     }];
     
     return YES;
+}
+
+- (BOOL)isComplete {
+    return self.m_completed
 }
 
 @end

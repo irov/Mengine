@@ -218,6 +218,14 @@
     }
 }
 
+- (void)eventAppTrackingTransparency:(iOSAppTrackingTransparencyParam * _Nonnull)tracking {
+    @autoreleasepool {
+        for (NSObject<iOSPluginAppTrackingTransparencyDelegateInterface> * delegate in self.m_pluginAppTrackingTransparencyDelegates) {
+            [delegate onAppTrackingTransparency:tracking];
+        }
+    }
+}
+
 - (void)eventTransparencyConsent:(iOSTransparencyConsentParam *)consent {
     @autoreleasepool {
         for (NSObject<iOSPluginTransparencyConsentDelegateInterface> * delegate in self.m_pluginTransparencyConsentDelegates) {

@@ -2,6 +2,8 @@ MENGINE_PROJECT(AppleUserMessagingPlatformPlugin)
 
 ADD_FILTER(
 src
+    AppleUserMessagingPlatformInterface.h
+
     AppleUserMessagingPlatformApplicationDelegate.h
     AppleUserMessagingPlatformApplicationDelegate.mm
 )

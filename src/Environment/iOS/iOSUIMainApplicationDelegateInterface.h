@@ -6,6 +6,7 @@
 #import "Environment/iOS/iOSPluginConfigDelegateInterface.h"
 #import "Environment/iOS/iOSPluginUserIdDelegateInterface.h"
 #import "Environment/iOS/iOSPluginAdRevenueDelegateInterface.h"
+#import "Environment/iOS/iOSPluginAppTrackingTransparencyDelegateInterface.h"
 #import "Environment/iOS/iOSPluginTransparencyConsentDelegateInterface.h"
 
 @protocol iOSUIMainApplicationDelegateInterface <NSObject>
@@ -15,6 +16,7 @@
 - (NSArray<iOSPluginConfigDelegateInterface> * _Nonnull)getPluginConfigDelegates;
 - (NSArray<iOSPluginUserIdDelegateInterface> * _Nonnull)getPluginUserIdDelegates;
 - (NSArray<iOSPluginAdRevenueDelegateInterface> * _Nonnull)getPluginAdRevenueDelegates;
+- (NSArray<iOSPluginAppTrackingTransparencyDelegateInterface> *_Nonnull)getPluginAppTrackingTransparencyDelegates;
 - (NSArray<iOSPluginTransparencyConsentDelegateInterface> * _Nonnull)getPluginTransparencyConsentDelegates;
 
 - (id _Nullable)getPluginDelegateOfClass:(Class _Nonnull)delegateClass;
@@ -35,6 +37,7 @@
 - (void)eventRemoveUserData;
 
 - (void)eventAdRevenue:(iOSAdRevenueParam * _Nonnull)revenue;
+- (void)eventAppTrackingTransparency:(iOSAppTrackingTransparencyParam * _Nonnull)tracking;
 - (void)eventTransparencyConsent:(iOSTransparencyConsentParam * _Nonnull)consent;
 
 @end

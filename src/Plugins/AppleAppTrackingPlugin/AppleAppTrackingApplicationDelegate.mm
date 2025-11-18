@@ -29,19 +29,19 @@
     return sharedInstance;
 }
 
-- (void)makeIDFA {
++ (NSString *)makeIDFA {
     NSUUID * idfa_uuid = [iOSDetail getAdIdentifier];
 
     if (idfa_uuid == nil) {
-        return;
+        return @"00000000-0000-0000-0000-000000000000";
     }
 
     NSString * idfa = [idfa_uuid UUIDString];
     
-    self.m_idfa = idfa;
+    return idfa;
 }
 
-- (void)authorization:(void (^)(EAppleAppTrackingAuthorization status, NSString *idfa))response {
+- (void)authorization {
     IOS_LOGGER_MESSAGE( @"request app tracking authorization" );
     
     [ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
@@ -49,24 +49,29 @@
             case ATTrackingManagerAuthorizationStatusAuthorized: {
                 self.m_status = EAATA_AUTHORIZED;
                 
-                [self makeIDFA];
+                self.m_idfa = [AppleAppTrackingApplicationDelegate makeIDFA];
             }break;
             case ATTrackingManagerAuthorizationStatusDenied: {
                 self.m_status = EAATA_DENIED;
+                self.m_idfa = @"00000000-0000-0000-0000-000000000000";
             }break;
             case ATTrackingManagerAuthorizationStatusNotDetermined: {
                 self.m_status = EAATA_NOT_DETERMINED;
+                self.m_idfa = @"00000000-0000-0000-0000-000000000000";
             }break;
             case ATTrackingManagerAuthorizationStatusRestricted: {
                 self.m_status = EAATA_RESTRICTED;
+                self.m_idfa = @"00000000-0000-0000-0000-000000000000";
             }break;
         }
         
         IOS_LOGGER_MESSAGE( @"app tracking authorization status: %lu", self.m_status );
         
-        [AppleDetail addMainQueueOperation:^{
-            response( self.m_status, self.m_idfa );
-        }];
+        iOSAppTrackingTransparencyParam * tracking = [[iOSAppTrackingTransparencyParam alloc] init];
+        tracking.APPTRACKINGTRANSPARENCY_AUTHORIZATION = self.m_status;
+        tracking.APPTRACKINGTRANSPARENCY_IDFA = self.m_idfa;
+        
+        [AppleDetail appTrackingTransparency:tracking];
     }];
 }
 

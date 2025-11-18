@@ -160,6 +160,14 @@
     }];
 }
 
++ (void) appTrackingTransparency:(iOSAppTrackingTransparencyParam * _Nonnull)tracking {
+    [AppleDetail addMainQueueOperation:^{
+        NSObject<iOSUIMainApplicationDelegateInterface> * delegate = [iOSDetail getUIMainApplicationDelegate];
+    
+        [delegate eventAppTrackingTransparency:tracking];
+    }];
+}
+
 + (void) transparencyConsent:(iOSTransparencyConsentParam *)consent {
     [AppleDetail addMainQueueOperation:^{
         NSObject<iOSUIMainApplicationDelegateInterface> * delegate = [iOSDetail getUIMainApplicationDelegate];

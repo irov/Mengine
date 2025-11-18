@@ -22,11 +22,8 @@
     content.body = body;
     content.sound = [UNNotificationSound defaultSound];
     content.badge = badge;
-    
-    if (@available(iOS 15.0, *)) {
-        content.interruptionLevel = UNNotificationInterruptionLevelTimeSensitive;
-        content.relevanceScore = relevanceScore; // от 0.0 до 1.0
-    }
+    content.interruptionLevel = UNNotificationInterruptionLevelTimeSensitive;
+    content.relevanceScore = relevanceScore; // от 0.0 до 1.0
 
     UNTimeIntervalNotificationTrigger * trigger = [UNTimeIntervalNotificationTrigger triggerWithTimeInterval:delay repeats:NO];
 

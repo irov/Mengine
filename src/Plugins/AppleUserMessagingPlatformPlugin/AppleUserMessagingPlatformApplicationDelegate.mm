@@ -14,60 +14,65 @@
 - (void)notifyConsentChangedFromDefaults {
     iOSTransparencyConsentParam * consent = [[iOSTransparencyConsentParam alloc] initFromUserDefaults];
     
-    // Infer geography based on IABTCF_gdprApplies when present
-    if ([consent isEEA] == YES) {
-        [iOSTransparencyConsentParam setConsentFlowUserGeography:iOSConsentFlowUserGeographyGDPR];
-    } else {
-        [iOSTransparencyConsentParam setConsentFlowUserGeography:iOSConsentFlowUserGeographyOther];
-    }
-    
     [iOSDetail transparencyConsent:consent];
-}
-
-- (void)runUMPFlow {
-    UMPRequestParameters *parameters = [[UMPRequestParameters alloc] init];
-    // Debug settings can be added later via bundle config if needed
-    
-    [UMPConsentInformation.sharedInstance requestConsentInfoUpdateWithParameters:parameters completionHandler:^(NSError * _Nullable error) {
-        if (error != nil) {
-            IOS_LOGGER_MESSAGE(@"[UMP] requestConsentInfoUpdate error: %@", error);
-            [self notifyConsentChangedFromDefaults];
-            return;
-        }
-        
-        UMPFormStatus formStatus = UMPConsentInformation.sharedInstance.formStatus;
-        if (formStatus == UMPFormStatusAvailable) {
-            [UMPConsentForm loadWithCompletionHandler:^(UMPConsentForm * _Nullable form, NSError * _Nullable loadError) {
-                if (loadError != nil) {
-                    IOS_LOGGER_MESSAGE(@"[UMP] loadWithCompletionHandler error: %@", loadError);
-                    [self notifyConsentChangedFromDefaults];
-                    return;
-                }
-                
-                UIViewController * rootVC = [iOSDetail getRootViewController];
-                [form presentFromViewController:rootVC completionHandler:^(NSError * _Nullable dismissError) {
-                    if (dismissError != nil) {
-                        IOS_LOGGER_MESSAGE(@"[UMP] present dismiss error: %@", dismissError);
-                    }
-                    
-                    // After form dismissal, UMP writes IABTCF_* to NSUserDefaults. Broadcast updated consent.
-                    [self notifyConsentChangedFromDefaults];
-                }];
-            }];
-        } else {
-            // No form to show; just propagate current consent state from defaults
-            [self notifyConsentChangedFromDefaults];
-        }
-    }];
 }
 
 #pragma mark - iOSPluginApplicationDelegateInterface
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    [self runUMPFlow];
+    UMPRequestParameters *parameters = [[UMPRequestParameters alloc] init];
+    parameters.tagForUnderAgeOfConsent = NO;
+    
+    // For testing purposes, you can force a UMPDebugGeography of EEA or not EEA.
+#if defined(MENGINE_DEBUG)
+    UMPDebugSettings *debugSettings = [[UMPDebugSettings alloc] init];
+    debugSettings.geography = UMPDebugGeographyEEA;
+    debugSettings.testDeviceIdentifiers = @[@"46D5A6B4-FAE4-4EA3-9D36-94F9A7CEA291"];
+    parameters.debugSettings = debugSettings;
+#endif
+    
+    [UMPConsentInformation.sharedInstance requestConsentInfoUpdateWithParameters:parameters completionHandler:^(NSError * _Nullable error) {
+        if (error != nil) {
+            IOS_LOGGER_MESSAGE(@"[UMP] requestConsentInfoUpdate error: %@", error);
+            
+            return;
+        }
+        
+        UMPPrivacyOptionsRequirementStatus privacyOptionsRequirementStatus = UMPConsentInformation.sharedInstance.privacyOptionsRequirementStatus;
+        
+        if (privacyOptionsRequirementStatus == UMPPrivacyOptionsRequirementStatusNotRequired) {
+            IOS_LOGGER_MESSAGE(@"[UMP] privacyOptionsRequirementStatus not required");
+            
+            [iOSTransparencyConsentParam setConsentFlowUserGeography:iOSConsentFlowUserGeographyOther];
+            
+            return;
+        }
+        
+        [iOSTransparencyConsentParam setConsentFlowUserGeography:iOSConsentFlowUserGeographyGDPR];
+        
+        UMPFormStatus formStatus = UMPConsentInformation.sharedInstance.formStatus;
+        
+        if (formStatus != UMPFormStatusAvailable) {
+            IOS_LOGGER_MESSAGE(@"[UMP] formStatus not available: %ld", (long)formStatus);
+            
+            return;
+        }
+        
+        UIViewController * rootVC = [iOSDetail getRootViewController];
+            
+        [UMPConsentForm loadAndPresentIfRequiredFromViewController:rootVC completionHandler:^(NSError * _Nullable loadError) {
+            if (loadError != nil) {
+                IOS_LOGGER_MESSAGE(@"[UMP] loadAndPresentIfRequiredFromViewController error: %@", loadError);
+
+                return;
+            }
+     
+            // After form dismissal, UMP writes IABTCF_* to NSUserDefaults. Broadcast updated consent.
+            [self notifyConsentChangedFromDefaults];
+        }];
+    }];
+    
     return YES;
 }
 
 @end
-
-

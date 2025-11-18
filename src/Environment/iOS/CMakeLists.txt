@@ -20,6 +20,10 @@ src
     iOSEnvironmentService.mm
 
     iOSConsentFlowUserGeography.h
+    
+    iOSAppTrackingAuthorization.h
+    iOSAppTrackingTransparencyParam.h
+    iOSAppTrackingTransparencyParam.mm
 
     iOSTransparencyConsentParam.h
     iOSTransparencyConsentParam.mm
@@ -44,6 +48,7 @@ src
     iOSPluginUserIdDelegateInterface.h
     iOSPluginAdRevenueDelegateInterface.h
     iOSPluginApplicationDelegateInterface.h
+    iOSPluginAppTrackingTransparencyDelegateInterface.h
     iOSPluginTransparencyConsentDelegateInterface.h
     iOSPluginLoggerDelegateInterface.h
 	iOSPluginConfigDelegateInterface.h

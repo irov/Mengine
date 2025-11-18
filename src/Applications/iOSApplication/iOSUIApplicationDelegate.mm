@@ -27,6 +27,7 @@
         self.m_pluginAnalyticDelegates = [NSMutableArray<iOSPluginAnalyticDelegateInterface> array];
         self.m_pluginUserIdDelegates = [NSMutableArray<iOSPluginUserIdDelegateInterface> array];
         self.m_pluginAdRevenueDelegates = [NSMutableArray<iOSPluginAdRevenueDelegateInterface> array];
+        self.m_pluginAppTrackingTransparencyDelegates = [NSMutableArray<iOSPluginAppTrackingTransparencyDelegateInterface> array];
         self.m_pluginTransparencyConsentDelegates = [NSMutableArray<iOSPluginTransparencyConsentDelegateInterface> array];
         
         NSArray * proxysClassed = [iOSApplicationDelegates getApplicationDelegates];
@@ -66,6 +67,10 @@
                 [self.m_pluginAdRevenueDelegates addObject:delegate];
             }
             
+            if ([delegate conformsToProtocol:@protocol(iOSPluginAppTrackingTransparencyDelegateInterface)] == YES) {
+                [self.m_pluginAppTrackingTransparencyDelegates addObject:delegate];
+            }
+            
             if ([delegate conformsToProtocol:@protocol(iOSPluginTransparencyConsentDelegateInterface)] == YES) {
                 [self.m_pluginTransparencyConsentDelegates addObject:delegate];
             }
@@ -99,6 +104,10 @@
 
 - (NSArray<iOSPluginAdRevenueDelegateInterface> *)getPluginAdRevenueDelegates {
     return self.m_pluginAdRevenueDelegates;
+}
+
+- (NSArray<iOSPluginAppTrackingTransparencyDelegateInterface> *)getPluginAppTrackingTransparencyDelegates {
+    return self.m_pluginAppTrackingTransparencyDelegates;
 }
 
 - (NSArray<iOSPluginTransparencyConsentDelegateInterface> *)getPluginTransparencyConsentDelegates {

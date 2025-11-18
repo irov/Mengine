@@ -8,6 +8,7 @@
 #import "Environment/iOS/iOSPluginAnalyticDelegateInterface.h"
 #import "Environment/iOS/iOSPluginUserIdDelegateInterface.h"
 #import "Environment/iOS/iOSPluginAdRevenueDelegateInterface.h"
+#import "Environment/iOS/iOSPluginAppTrackingTransparencyDelegateInterface.h"
 #import "Environment/iOS/iOSPluginTransparencyConsentDelegateInterface.h"
 
 #import <UIKit/UIKit.h>
@@ -23,6 +24,7 @@
 @property (nonatomic, strong) NSMutableArray<iOSPluginAnalyticDelegateInterface> * m_pluginAnalyticDelegates;
 @property (nonatomic, strong) NSMutableArray<iOSPluginUserIdDelegateInterface> * m_pluginUserIdDelegates;
 @property (nonatomic, strong) NSMutableArray<iOSPluginAdRevenueDelegateInterface> * m_pluginAdRevenueDelegates;
+@property (nonatomic, strong) NSMutableArray<iOSPluginAppTrackingTransparencyDelegateInterface> * m_pluginAppTrackingTransparencyDelegates;
 @property (nonatomic, strong) NSMutableArray<iOSPluginTransparencyConsentDelegateInterface> * m_pluginTransparencyConsentDelegates;
 
 @end

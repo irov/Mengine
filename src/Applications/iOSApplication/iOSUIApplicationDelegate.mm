@@ -247,7 +247,7 @@
 }
 
 - (void)addDidBecomeActiveOperationWithCompletion:(iOSDidBecomeActiveOperationBlock)block {
-    @synchronized(self) {
+    @synchronized(self.m_didBecomeActiveOperations) {
         [self.m_didBecomeActiveOperations addObject:block];
     }
         
@@ -263,7 +263,7 @@
 
     iOSDidBecomeActiveOperationBlock operation = nil;
     
-    @synchronized(self) {
+    @synchronized(self.m_didBecomeActiveOperations) {
         if (self.m_isProcessingDidBecomeActiveOperation == YES) {
             return;
         }
@@ -286,7 +286,7 @@
 - (void)processOperation:(iOSDidBecomeActiveOperationBlock)block {
     [AppleDetail addMainQueueOperation:^{
         block(^{
-            @synchronized(self) {
+            @synchronized(self.m_didBecomeActiveOperations) {
                 self.m_isProcessingDidBecomeActiveOperation = NO;
             }
             
@@ -380,7 +380,6 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     [AppleLog withFormat:@"Mengine application applicationDidBecomeActive"];
     
-    // Начинаем обработку накопленных операций (приложение уже активно)
     [self processNextOperation];
     
     @autoreleasepool {

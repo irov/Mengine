@@ -30,5 +30,6 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
 @property (nonatomic, strong) NSMutableArray<iOSPluginTransparencyConsentDelegateInterface> * m_pluginTransparencyConsentDelegates;
 
 @property (nonatomic, strong) NSMutableArray<iOSDidBecomeActiveOperationBlock> * m_didBecomeActiveOperations;
+@property (nonatomic, assign) BOOL m_isProcessingDidBecomeActiveOperation;
 
 @end

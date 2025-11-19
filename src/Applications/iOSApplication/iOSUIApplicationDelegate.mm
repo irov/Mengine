@@ -246,19 +246,23 @@
 }
 
 - (void)addDidBecomeActiveOperationWithCompletion:(void (^ _Nonnull)(void (^ _Nonnull completion)(void)))block {
-    UIApplicationState appState = [[UIApplication sharedApplication] applicationState];
-    
     @synchronized(self) {
         BOOL wasQueueEmpty = ([self.m_didBecomeActiveOperations count] == 0);
         [self.m_didBecomeActiveOperations addObject:block];
         
-        if (appState == UIApplicationStateActive && wasQueueEmpty == YES) {
+        if (wasQueueEmpty == YES) {
             [self processNextOperation];
         }
     }
 }
 
 - (void)processNextOperation {
+    UIApplicationState appState = [[UIApplication sharedApplication] applicationState];
+    
+    if (appState != UIApplicationStateActive) {
+        return;
+    }
+
     @synchronized(self) {
         if ([self.m_didBecomeActiveOperations count] == 0) {
             return;

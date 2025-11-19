@@ -30,7 +30,7 @@
         self.m_pluginAppTrackingTransparencyDelegates = [NSMutableArray<iOSPluginAppTrackingTransparencyDelegateInterface> array];
         self.m_pluginTransparencyConsentDelegates = [NSMutableArray<iOSPluginTransparencyConsentDelegateInterface> array];
         
-        self.m_didBecomeActiveOperations = [NSMutableArray<void (^)(void (^)(void)))> array];
+        self.m_didBecomeActiveOperations = [NSMutableArray<iOSDidBecomeActiveOperationBlock> array];
         
         NSArray * proxysClassed = [iOSApplicationDelegates getApplicationDelegates];
         
@@ -245,7 +245,7 @@
     }
 }
 
-- (void)addDidBecomeActiveOperationWithCompletion:(void (^ _Nonnull)(void (^ _Nonnull completion)(void)))block {
+- (void)addDidBecomeActiveOperationWithCompletion:(iOSDidBecomeActiveOperationBlock)block {
     @synchronized(self) {
         BOOL wasQueueEmpty = ([self.m_didBecomeActiveOperations count] == 0);
         [self.m_didBecomeActiveOperations addObject:block];
@@ -268,14 +268,14 @@
             return;
         }
         
-        void (^operation)(void (^)(void)) = [self.m_didBecomeActiveOperations firstObject];
+        iOSDidBecomeActiveOperationBlock operation = [self.m_didBecomeActiveOperations firstObject];
         [self.m_didBecomeActiveOperations removeObjectAtIndex:0];
         
         [self processOperation:operation];
     }
 }
 
-- (void)processOperation:(void (^)(void (^)(void)))block {
+- (void)processOperation:(iOSDidBecomeActiveOperationBlock)block {
     [AppleDetail addMainQueueOperation:^{
         void (^completion)(void) = ^{
             [self processNextOperation];

@@ -13,6 +13,8 @@
 
 #import <UIKit/UIKit.h>
 
+typedef void (^iOSDidBecomeActiveOperationBlock)(void (^ _Nonnull completion)(void));
+
 @interface iOSUIApplicationDelegate : NSObject<UIApplicationDelegate, iOSUIMainApplicationDelegateInterface>
 
 @property (nonatomic, strong) UIWindow * m_window;
@@ -27,6 +29,6 @@
 @property (nonatomic, strong) NSMutableArray<iOSPluginAppTrackingTransparencyDelegateInterface> * m_pluginAppTrackingTransparencyDelegates;
 @property (nonatomic, strong) NSMutableArray<iOSPluginTransparencyConsentDelegateInterface> * m_pluginTransparencyConsentDelegates;
 
-@property (nonatomic, strong) NSMutableArray<void (^)(void (^)(void)))> * m_didBecomeActiveOperations;
+@property (nonatomic, strong) NSMutableArray<iOSDidBecomeActiveOperationBlock> * m_didBecomeActiveOperations;
 
 @end

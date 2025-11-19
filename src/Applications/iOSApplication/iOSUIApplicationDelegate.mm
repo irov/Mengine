@@ -269,7 +269,6 @@
         }
         
         iOSDidBecomeActiveOperationBlock operation = [self.m_didBecomeActiveOperations firstObject];
-        [self.m_didBecomeActiveOperations removeObjectAtIndex:0];
         
         [self processOperation:operation];
     }
@@ -278,6 +277,10 @@
 - (void)processOperation:(iOSDidBecomeActiveOperationBlock)block {
     [AppleDetail addMainQueueOperation:^{
         void (^completion)(void) = ^{
+            @synchronized(self) {
+                [self.m_didBecomeActiveOperations removeObjectAtIndex:0];
+            }
+            
             [self processNextOperation];
         };
         

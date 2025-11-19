@@ -10,6 +10,7 @@
 #include "Interface/EnumeratorServiceInterface.h"
 #include "Interface/PluginServiceInterface.h"
 #include "Interface/DateTimeSystemInterface.h"
+#include "Interface/SoundServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/EnvironmentServiceInterface.h"
 #include "Interface/AccountServiceInterface.h"

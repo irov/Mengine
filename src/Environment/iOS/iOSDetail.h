@@ -45,7 +45,9 @@
 + (void)log:(AppleLogRecordParam * _Nonnull)record;
 + (void)config:(NSDictionary * _Nonnull)config;
 
-+ (void)addDidBecomeActiveOperation:(dispatch_block_t _Nonnull)block;
++ (void)addDidBecomeActiveOperationWithCompletion:(void (^ _Nonnull)(void (^ _Nonnull completion)(void)))block;
+
++ (BOOL)hasSystemWindows;
 
 + (NSString * _Nonnull)pathForTemporaryFileWithPrefix:(NSString * _Nonnull)prefix ext:(NSString * _Nonnull)ext;
 

@@ -31,6 +31,7 @@
         self.m_pluginTransparencyConsentDelegates = [NSMutableArray<iOSPluginTransparencyConsentDelegateInterface> array];
         
         self.m_didBecomeActiveOperations = [NSMutableArray<iOSDidBecomeActiveOperationBlock> array];
+        self.m_isProcessingDidBecomeActiveOperation = NO;
         
         NSArray * proxysClassed = [iOSApplicationDelegates getApplicationDelegates];
         
@@ -247,13 +248,10 @@
 
 - (void)addDidBecomeActiveOperationWithCompletion:(iOSDidBecomeActiveOperationBlock)block {
     @synchronized(self) {
-        BOOL wasQueueEmpty = ([self.m_didBecomeActiveOperations count] == 0);
         [self.m_didBecomeActiveOperations addObject:block];
-        
-        if (wasQueueEmpty == YES) {
-            [self processNextOperation];
-        }
     }
+        
+    [self processNextOperation];
 }
 
 - (void)processNextOperation {
@@ -263,28 +261,37 @@
         return;
     }
 
+    iOSDidBecomeActiveOperationBlock operation = nil;
+    
     @synchronized(self) {
+        if (self.m_isProcessingDidBecomeActiveOperation == YES) {
+            return;
+        }
+        
         if ([self.m_didBecomeActiveOperations count] == 0) {
             return;
         }
         
-        iOSDidBecomeActiveOperationBlock operation = [self.m_didBecomeActiveOperations firstObject];
-        
+        operation = [self.m_didBecomeActiveOperations firstObject];
+        [self.m_didBecomeActiveOperations removeObjectAtIndex:0];
+
+        self.m_isProcessingDidBecomeActiveOperation = YES;
+    }
+    
+    if (operation != nil) {
         [self processOperation:operation];
     }
 }
 
 - (void)processOperation:(iOSDidBecomeActiveOperationBlock)block {
     [AppleDetail addMainQueueOperation:^{
-        void (^completion)(void) = ^{
+        block(^{
             @synchronized(self) {
-                [self.m_didBecomeActiveOperations removeObjectAtIndex:0];
+                self.m_isProcessingDidBecomeActiveOperation = NO;
             }
             
             [self processNextOperation];
-        };
-        
-        block(completion);
+        });
     }];
 }
 

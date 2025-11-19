@@ -194,10 +194,37 @@
     }];
 }
 
-+ (void) addDidBecomeActiveOperation:(dispatch_block_t _Nonnull)block {
++ (void) addDidBecomeActiveOperationWithCompletion:(void (^ _Nonnull)(void (^ _Nonnull completion)(void)))block {
     NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
     
-    [delegate addDidBecomeActiveOperation:block];
+    [delegate addDidBecomeActiveOperationWithCompletion:block];
+}
+
++ (BOOL)hasSystemWindows {
+    UIApplication * application = [UIApplication sharedApplication];
+    
+    // Проверяем количество окон - системные диалоги создают дополнительные окна
+    NSArray<UIWindow *> * windows = application.windows;
+    
+    if (windows.count > 1) {
+        // Есть дополнительные окна (вероятно системный диалог)
+        return YES;
+    }
+    
+    // Проверяем наличие модальных view controllers
+    UIViewController * rootViewController = [iOSDetail getRootViewController];
+    
+    if (rootViewController != nil) {
+        UIViewController * presented = rootViewController.presentedViewController;
+        
+        // Проверяем цепочку модальных view controllers
+        while (presented != nil) {
+            // Есть модальный view controller
+            return YES;
+        }
+    }
+    
+    return NO;
 }
 
 + (NSString *) pathForTemporaryFileWithPrefix:(NSString *)prefix ext:(NSString *)ext {

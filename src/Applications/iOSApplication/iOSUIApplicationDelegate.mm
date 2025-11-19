@@ -30,8 +30,7 @@
         self.m_pluginAppTrackingTransparencyDelegates = [NSMutableArray<iOSPluginAppTrackingTransparencyDelegateInterface> array];
         self.m_pluginTransparencyConsentDelegates = [NSMutableArray<iOSPluginTransparencyConsentDelegateInterface> array];
         
-        self.m_didBecomeActiveOperations = [NSMutableArray<dispatch_block_t> array];
-        self.m_didBecomeActiveObserverRegistered = NO;
+        self.m_didBecomeActiveOperations = [NSMutableArray<void (^)(void (^)(void)))> array];
         
         NSArray * proxysClassed = [iOSApplicationDelegates getApplicationDelegates];
         
@@ -246,18 +245,40 @@
     }
 }
 
-- (void)addDidBecomeActiveOperation:(dispatch_block_t _Nonnull)block {
+- (void)addDidBecomeActiveOperationWithCompletion:(void (^ _Nonnull)(void (^ _Nonnull completion)(void)))block {
     UIApplicationState appState = [[UIApplication sharedApplication] applicationState];
     
-    if (appState == UIApplicationStateActive) {
-        [AppleDetail addMainQueueOperation:block];
-        
-        return;
-    }
-    
     @synchronized(self) {
+        BOOL wasQueueEmpty = ([self.m_didBecomeActiveOperations count] == 0);
         [self.m_didBecomeActiveOperations addObject:block];
+        
+        if (appState == UIApplicationStateActive && wasQueueEmpty == YES) {
+            [self processNextOperation];
+        }
     }
+}
+
+- (void)processNextOperation {
+    @synchronized(self) {
+        if ([self.m_didBecomeActiveOperations count] == 0) {
+            return;
+        }
+        
+        void (^operation)(void (^)(void)) = [self.m_didBecomeActiveOperations firstObject];
+        [self.m_didBecomeActiveOperations removeObjectAtIndex:0];
+        
+        [self processOperation:operation];
+    }
+}
+
+- (void)processOperation:(void (^)(void (^)(void)))block {
+    [AppleDetail addMainQueueOperation:^{
+        void (^completion)(void) = ^{
+            [self processNextOperation];
+        };
+        
+        block(completion);
+    }];
 }
 
 #pragma mark - UIApplicationDelegate
@@ -345,14 +366,8 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     [AppleLog withFormat:@"Mengine application applicationDidBecomeActive"];
     
-    @synchronized(self) {
-        NSArray<dispatch_block_t> * operations = [self.m_didBecomeActiveOperations copy];
-        [self.m_didBecomeActiveOperations removeAllObjects];
-
-        for (dispatch_block_t operation in operations) {
-            [AppleDetail addMainQueueOperation:operation];
-        }
-    }
+    // Начинаем обработку накопленных операций (приложение уже активно)
+    [self processNextOperation];
     
     @autoreleasepool {
         for (id delegate in self.m_pluginApplicationDelegates) {

@@ -85,10 +85,11 @@
     
     __weak AppleAppTrackingApplicationDelegate * weakSelf = self;
     
-    [iOSDetail addDidBecomeActiveOperation:^{
+    [iOSDetail addDidBecomeActiveOperationWithCompletion:^(void (^ _Nonnull completion)(void)) {
         AppleAppTrackingApplicationDelegate * strongSelf = weakSelf;
         
         if (strongSelf == nil) {
+            completion();
             return;
         }
         
@@ -96,21 +97,23 @@
         
         if (status != ATTrackingManagerAuthorizationStatusNotDetermined) {
             [strongSelf updateTrackingStatus:status];
-            
+            completion();
             return;
         }
         
-        [strongSelf requestAuthorization];
+        [strongSelf requestAuthorizationWithCompletion:completion];
     }];
 }
 
-- (void)requestAuthorization {
+- (void)requestAuthorizationWithCompletion:(void (^ _Nonnull)(void))completion {
     IOS_LOGGER_MESSAGE( @"requesting ATT authorization dialog" );
     
     [ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
         IOS_LOGGER_MESSAGE( @"app tracking authorization status: %lu", status );
 
         [self updateTrackingStatus:status];
+        
+        completion();
     }];
 }
 

@@ -32,7 +32,7 @@
 #pragma mark - iOSPluginApplicationDelegateInterface
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    UMPRequestParameters *parameters = [[UMPRequestParameters alloc] init];
+    UMPRequestParameters * parameters = [[UMPRequestParameters alloc] init];
     parameters.tagForUnderAgeOfConsent = NO;
     
     // For testing purposes, you can force a UMPDebugGeography of EEA or not EEA.
@@ -43,11 +43,19 @@
     parameters.debugSettings = debugSettings;
 #endif
     
+    __weak AppleUserMessagingPlatformApplicationDelegate * weakSelf = self;
+    
     [UMPConsentInformation.sharedInstance requestConsentInfoUpdateWithParameters:parameters completionHandler:^(NSError * _Nullable error) {
+        AppleUserMessagingPlatformApplicationDelegate * strongSelf = weakSelf;
+        
+        if (strongSelf == nil) {
+            return;
+        }
+        
         if (error != nil) {
             IOS_LOGGER_MESSAGE(@"[UMP] requestConsentInfoUpdate error: %@", error);
             
-            [self completedConsent];
+            [strongSelf completedConsent];
             
             return;
         }
@@ -59,7 +67,7 @@
             
             [iOSTransparencyConsentParam setConsentFlowUserGeography:iOSConsentFlowUserGeographyOther];
             
-            [self completedConsent];
+            [strongSelf completedConsent];
             
             return;
         }
@@ -71,26 +79,37 @@
         if (formStatus != UMPFormStatusAvailable) {
             IOS_LOGGER_MESSAGE(@"[UMP] formStatus not available: %ld", (long)formStatus);
             
-            [self completedConsent];
+            [strongSelf completedConsent];
             
             return;
         }
         
-        UIViewController * rootVC = [iOSDetail getRootViewController];
+        [iOSDetail addDidBecomeActiveOperationWithCompletion:^(void (^ _Nonnull completion)(void)) {
+            AppleUserMessagingPlatformApplicationDelegate * strongSelf2 = weakSelf;
             
-        [UMPConsentForm loadAndPresentIfRequiredFromViewController:rootVC completionHandler:^(NSError * _Nullable loadError) {
-            if (loadError != nil) {
-                IOS_LOGGER_MESSAGE(@"[UMP] loadAndPresentIfRequiredFromViewController error: %@", loadError);
-                
-                [self completedConsent];
-
+            if (strongSelf2 == nil) {
+                completion();
                 return;
             }
             
-            IOS_LOGGER_MESSAGE(@"[UMP] loadAndPresentIfRequiredFromViewController completed");
-     
-            // After form dismissal, UMP writes IABTCF_* to NSUserDefaults. Broadcast updated consent.
-            [self completedConsent];
+            UIViewController * rootVC = [iOSDetail getRootViewController];
+                
+            [UMPConsentForm loadAndPresentIfRequiredFromViewController:rootVC completionHandler:^(NSError * _Nullable loadError) {
+                if (loadError != nil) {
+                    IOS_LOGGER_MESSAGE(@"[UMP] loadAndPresentIfRequiredFromViewController error: %@", loadError);
+                    
+                    [strongSelf2 completedConsent];
+                    completion();
+
+                    return;
+                }
+                
+                IOS_LOGGER_MESSAGE(@"[UMP] loadAndPresentIfRequiredFromViewController completed");
+         
+                // After form dismissal, UMP writes IABTCF_* to NSUserDefaults. Broadcast updated consent.
+                [strongSelf2 completedConsent];
+                completion();
+            }];
         }];
     }];
     

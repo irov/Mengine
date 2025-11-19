@@ -4,6 +4,7 @@
 
 #import "Environment/iOS/iOSDetail.h"
 #import "Environment/iOS/iOSLog.h"
+#import <UserNotifications/UserNotifications.h>
 
 @implementation AppleUserNotificationCenterApplicationDelegate
 
@@ -55,19 +56,34 @@
     
     center.delegate = self;
     
-    [center requestAuthorizationWithOptions:(UNAuthorizationOptionAlert | UNAuthorizationOptionSound | UNAuthorizationOptionBadge)
-                          completionHandler:^(BOOL granted, NSError * _Nullable error) {
-        if (error != nil) {
-            IOS_LOGGER_MESSAGE(@"Notification permission denied: %@"
-               , [AppleDetail getMessageFromNSError:error]
-            );
-            
-            self.m_notificationPermissionGranted = NO;
-            
+    __weak AppleUserNotificationCenterApplicationDelegate * weakSelf = self;
+    
+    [iOSDetail addDidBecomeActiveOperationWithCompletion:^(void (^ _Nonnull completion)(void)) {
+        AppleUserNotificationCenterApplicationDelegate * strongSelf = weakSelf;
+        
+        if (strongSelf == nil) {
+            completion();
             return;
         }
         
-        self.m_notificationPermissionGranted = granted;
+        UNUserNotificationCenter * center = [UNUserNotificationCenter currentNotificationCenter];
+        
+        [center requestAuthorizationWithOptions:(UNAuthorizationOptionAlert | UNAuthorizationOptionSound | UNAuthorizationOptionBadge)
+                              completionHandler:^(BOOL granted, NSError * _Nullable error) {
+            if (error != nil) {
+                IOS_LOGGER_MESSAGE(@"Notification permission denied: %@"
+                   , [AppleDetail getMessageFromNSError:error]
+                );
+                
+                strongSelf.m_notificationPermissionGranted = NO;
+                completion();
+                
+                return;
+            }
+            
+            strongSelf.m_notificationPermissionGranted = granted;
+            completion();
+        }];
     }];
     
     return YES;

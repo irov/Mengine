@@ -203,28 +203,43 @@
 + (BOOL)hasSystemWindows {
     UIApplication * application = [UIApplication sharedApplication];
     
-    // Проверяем количество окон - системные диалоги создают дополнительные окна
-    NSArray<UIWindow *> * windows = application.windows;
+    NSMutableArray<UIWindow *> * all_windows = [NSMutableArray array];
     
-    if (windows.count > 1) {
-        // Есть дополнительные окна (вероятно системный диалог)
-        return YES;
-    }
-    
-    // Проверяем наличие модальных view controllers
-    UIViewController * rootViewController = [iOSDetail getRootViewController];
-    
-    if (rootViewController != nil) {
-        UIViewController * presented = rootViewController.presentedViewController;
+    for (UIScene * scene in application.connectedScenes) {
+        if (scene.activationState != UISceneActivationStateForegroundActive) {
+            continue;
+        }
+
+        if ([scene isKindOfClass:[UIWindowScene class]] == NO) {
+            continue;
+        }
+
+        UIWindowScene * window_scene = (UIWindowScene *)scene;
         
-        // Проверяем цепочку модальных view controllers
-        while (presented != nil) {
-            // Есть модальный view controller
-            return YES;
+        for (UIWindow *window in window_scene.windows) {
+            if (window.isHidden) {
+                continue;
+            }
+            
+            [all_windows addObject:window];
         }
     }
     
-    return NO;
+    if (all_windows.count > 1) {
+        return YES;
+    }
+    
+    UIViewController * view = [iOSDetail getRootViewController];
+    
+    if (view == nil) {
+        return NO;
+    }
+    
+    if (view.presentedViewController == nil) {
+        return NO;
+    }
+    
+    return YES;
 }
 
 + (NSString *) pathForTemporaryFileWithPrefix:(NSString *)prefix ext:(NSString *)ext {

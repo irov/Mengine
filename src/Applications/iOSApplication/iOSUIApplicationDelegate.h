@@ -13,7 +13,7 @@
 
 #import <UIKit/UIKit.h>
 
-typedef void (^iOSDidBecomeActiveOperationBlock)(void (^ _Nonnull completion)(void));
+typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
 
 @interface iOSUIApplicationDelegate : NSObject<UIApplicationDelegate, iOSUIMainApplicationDelegateInterface>
 

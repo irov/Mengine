@@ -255,32 +255,34 @@
 }
 
 - (void)processNextOperation {
-    UIApplicationState appState = [[UIApplication sharedApplication] applicationState];
-    
-    if (appState != UIApplicationStateActive) {
-        return;
-    }
-
-    iOSDidBecomeActiveOperationBlock operation = nil;
-    
-    @synchronized(self.m_didBecomeActiveOperations) {
-        if (self.m_isProcessingDidBecomeActiveOperation == YES) {
+    [AppleDetail addMainQueueOperation:^{
+        UIApplicationState appState = [[UIApplication sharedApplication] applicationState];
+        
+        if (appState != UIApplicationStateActive) {
             return;
         }
+
+        iOSDidBecomeActiveOperationBlock operation = nil;
         
-        if ([self.m_didBecomeActiveOperations count] == 0) {
-            return;
+        @synchronized(self.m_didBecomeActiveOperations) {
+            if (self.m_isProcessingDidBecomeActiveOperation == YES) {
+                return;
+            }
+            
+            if ([self.m_didBecomeActiveOperations count] == 0) {
+                return;
+            }
+            
+            operation = [self.m_didBecomeActiveOperations firstObject];
+            [self.m_didBecomeActiveOperations removeObjectAtIndex:0];
+
+            self.m_isProcessingDidBecomeActiveOperation = YES;
         }
         
-        operation = [self.m_didBecomeActiveOperations firstObject];
-        [self.m_didBecomeActiveOperations removeObjectAtIndex:0];
-
-        self.m_isProcessingDidBecomeActiveOperation = YES;
-    }
-    
-    if (operation != nil) {
-        [self processOperation:operation];
-    }
+        if (operation != nil) {
+            [self processOperation:operation];
+        }
+    }];
 }
 
 - (void)processOperation:(iOSDidBecomeActiveOperationBlock)block {

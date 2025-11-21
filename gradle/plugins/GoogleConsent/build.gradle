@@ -12,11 +12,11 @@ android {
 dependencies {
     implementation project(':plugins:GoogleService')
 
-    implementation 'com.google.android.ump:user-messaging-platform:3.2.0'
+    implementation 'com.google.android.ump:user-messaging-platform:4.0.0'
 }
 
 android {
     defaultConfig {
-        buildConfigField "String", "MENGINE_APP_PLUGIN_GOOGLE_CONSENT_TEST_DEVICE_HASHED_ID", MENGINE_APP_PLUGIN_GOOGLE_CONSENT_TEST_DEVICE_HASHED_ID != null ? "\"MENGINE_APP_PLUGIN_GOOGLE_CONSENT_TEST_DEVICE_HASHED_ID\"" : "\"\""
+        buildConfigField "String", "MENGINE_APP_PLUGIN_GOOGLE_CONSENT_TEST_DEVICE_HASHED_ID", MENGINE_APP_PLUGIN_GOOGLE_CONSENT_TEST_DEVICE_HASHED_ID != null ? "\"${MENGINE_APP_PLUGIN_GOOGLE_CONSENT_TEST_DEVICE_HASHED_ID}\"" : "\"\""
     }
 }

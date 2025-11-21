@@ -17,6 +17,7 @@ import com.datadog.android.privacy.TrackingConsent;
 import org.Mengine.Base.BuildConfig;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineFragmentRemoteConfig;
 import org.Mengine.Base.MengineListenerActivity;
 import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineListenerLogger;
@@ -299,7 +300,7 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
     }
 
     @Override
-    public void onMengineRemoteConfigFetch(@NonNull MengineApplication application, boolean updated, @NonNull Map<String, JSONObject> configs) {
+    public void onMengineRemoteConfigFetch(@NonNull MengineApplication application, boolean updated, @NonNull Map<String, JSONObject> configs, @NonNull Map<String, Integer> ids) {
         JSONObject datadog_debug_message = configs.getOrDefault("datadog_debug_message", null);
 
         if (datadog_debug_message != null) {
@@ -314,6 +315,10 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
             boolean enable = datadog_info_message.optBoolean("enable", false);
 
             m_enableInfoMessage = enable;
+        }
+
+        if (m_loggerDataDog != null) {
+            m_loggerDataDog.addAttribute("mng_ids", ids);
         }
     }
 

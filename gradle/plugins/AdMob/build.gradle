@@ -1,12 +1,39 @@
 apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/gms.gradle'
 
+final Boolean MENGINE_APP_PLUGIN_ADMOB_BANNERAD = Utils.getBooleanAppPluginProperty("MENGINE_APP_PLUGIN_ADMOB_BANNERAD")
+final Boolean MENGINE_APP_PLUGIN_ADMOB_INTERSTITIALAD = Utils.getBooleanAppPluginProperty("MENGINE_APP_PLUGIN_ADMOB_INTERSTITIALAD")
+final Boolean MENGINE_APP_PLUGIN_ADMOB_REWARDEDAD = Utils.getBooleanAppPluginProperty("MENGINE_APP_PLUGIN_ADMOB_REWARDEDAD")
+
+Utils.logAvailable("MENGINE_APP_PLUGIN_ADMOB_BANNERAD", MENGINE_APP_PLUGIN_ADMOB_BANNERAD)
+Utils.logAvailable("MENGINE_APP_PLUGIN_ADMOB_INTERSTITIALAD", MENGINE_APP_PLUGIN_ADMOB_INTERSTITIALAD)
+Utils.logAvailable("MENGINE_APP_PLUGIN_ADMOB_REWARDEDAD", MENGINE_APP_PLUGIN_ADMOB_REWARDEDAD)
+
 android {
     namespace "org.Mengine.Plugin.AdMob"
 }
 
 dependencies {
     implementation project(':plugins:GoogleService')
+    implementation project(':plugins:AdMob:Core')
 
-    implementation api('com.google.android.gms:play-services-ads:24.4.0')
+    if (MENGINE_APP_PLUGIN_ADMOB_BANNERAD == true) {
+        implementation project(':plugins:AdMob:BannerAd')
+    }
+
+    if (MENGINE_APP_PLUGIN_ADMOB_INTERSTITIALAD == true) {
+        implementation project(':plugins:AdMob:InterstitialAd')
+    }
+
+    if (MENGINE_APP_PLUGIN_ADMOB_REWARDEDAD == true) {
+        implementation project(':plugins:AdMob:RewardedAd')
+    }
+}
+
+android {
+    defaultConfig {
+        buildConfigField "boolean", "MENGINE_APP_PLUGIN_ADMOB_BANNERAD", "${MENGINE_APP_PLUGIN_ADMOB_BANNERAD}"
+        buildConfigField "boolean", "MENGINE_APP_PLUGIN_ADMOB_INTERSTITIALAD", "${MENGINE_APP_PLUGIN_ADMOB_INTERSTITIALAD}"
+        buildConfigField "boolean", "MENGINE_APP_PLUGIN_ADMOB_REWARDEDAD", "${MENGINE_APP_PLUGIN_ADMOB_REWARDEDAD}"
+    }
 }

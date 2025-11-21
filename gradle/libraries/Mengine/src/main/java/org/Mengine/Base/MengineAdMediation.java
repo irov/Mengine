@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 public class MengineAdMediation {
     public final static MengineAdMediation ADMEDIATION_APPLOVINMAX = new MengineAdMediation("ADMEDIATION_APPLOVINMAX");
+    public final static MengineAdMediation ADMEDIATION_ADMOB = new MengineAdMediation("ADMEDIATION_ADMOB");
 
     private final String m_name;
 

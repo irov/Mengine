@@ -180,7 +180,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
     }
 
     @Override
-    public void onMengineRemoteConfigFetch(@NonNull MengineApplication application, boolean updated, @NonNull Map<String, JSONObject> remoteConfig) {
+    public void onMengineRemoteConfigFetch(@NonNull MengineApplication application, boolean updated, @NonNull Map<String, JSONObject> remoteConfig, @NonNull Map<String, Integer> ids) {
         synchronized (m_syncronizationAdPoints) {
             m_adInterstitialPoints.clear();
             m_adRewardedPoints.clear();
@@ -924,6 +924,8 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
 
     @Override
     public void onAdShowSuccess(@NonNull MengineAdMediation mediation, @NonNull MengineAdFormat format, String placement) {
+        placement = Objects.requireNonNullElse(placement, "");
+
         Map<String, Object> params = Map.of("placement", placement);
 
         if (format == MengineAdFormat.ADFORMAT_INTERSTITIAL) {

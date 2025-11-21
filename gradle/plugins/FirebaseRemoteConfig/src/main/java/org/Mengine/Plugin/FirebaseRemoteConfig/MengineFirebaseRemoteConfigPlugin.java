@@ -115,6 +115,7 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
         Map<String, FirebaseRemoteConfigValue> remoteValues = remoteConfig.getAll();
 
         Map<String, JSONObject> configs = new HashMap<>();
+        Map<String, Integer> ids = new HashMap<>();
 
         for (Map.Entry<String, String> entry : m_defaults.entrySet()) {
             String key = entry.getKey();
@@ -148,13 +149,17 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
             }
 
             configs.put(key, value_json);
+
+            int id = value_json.optInt("id", 0);
+
+            ids.put(key, id);
         }
 
         this.logInfo("remote config values: %s"
             , configs
         );
 
-        MengineFragmentRemoteConfig.INSTANCE.remoteConfigFetch(configs);
+        MengineFragmentRemoteConfig.INSTANCE.remoteConfigFetch(configs, ids);
     }
 
     protected void propagateRemoteConfigValues(boolean updated) {

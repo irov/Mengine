@@ -3,6 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application>
+        <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="@string/mengine_google_ads_app_id"/>
+
         <meta-data android:name="com.google.android.gms.ads.AD_MANAGER_APP" android:value="@bool/mengine_google_ads_enable_manager_app"/>
         <meta-data android:name="com.google.android.gms.ads.flag.OPTIMIZE_INITIALIZATION" android:value="true"/>
         <meta-data android:name="com.google.android.gms.ads.flag.OPTIMIZE_AD_LOADING" android:value="true"/>

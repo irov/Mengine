@@ -179,6 +179,10 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
             return "appLovin";
         }
 
+        if (adMediation == MengineAdMediation.ADMEDIATION_ADMOB) {
+            return "adMob";
+        }
+
         return "unknown";
     }
 

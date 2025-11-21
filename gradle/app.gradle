@@ -381,11 +381,7 @@ if (MENGINE_APP_LIBRARY_MENGINE == true) {
 
 Utils.logAvailable("MENGINE_APP_SERVICE_AD", MENGINE_APP_SERVICE_AD)
 
-if (MENGINE_APP_SERVICE_AD == true) {
-    if (MENGINE_APP_HAS_ADS == false) {
-        throw new GradleException("MENGINE_APP_HAS_ADS must be set to true when MENGINE_APP_SERVICE_AD is enabled. Set -PMENGINE_APP_HAS_ADS=true")
-    }
-    
+if (MENGINE_APP_SERVICE_AD == true && MENGINE_APP_HAS_ADS == true) {
     android.ext.plugins += 'org.Mengine.Base.MengineAdService'
 }
 

@@ -19,7 +19,7 @@ public interface MengineAppLovinMediationInterface {
     void onAppCreate(@NonNull MengineApplication application, @NonNull MengineAppLovinPluginInterface plugin);
     void onAppTerminate(@NonNull MengineApplication application, @NonNull MengineAppLovinPluginInterface plugin);
 
-    void onMengineRemoteConfigFetch(@NonNull MengineApplication application, boolean updated, @NonNull Map<String, JSONObject> configs);
+    void onMengineRemoteConfigFetch(@NonNull MengineApplication application, boolean updated, @NonNull Map<String, JSONObject> configs, @NonNull Map<String, Integer> ids);
 
     void loadMediatorBanner(@NonNull MengineActivity activity, @NonNull MengineAppLovinPluginInterface plugin, @NonNull MaxAdView adView, MengineAppLovinMediationLoadedCallback loadAdCallback) throws MengineServiceInvalidInitializeException;
     void loadMediatorInterstitial(@NonNull MengineActivity activity, @NonNull MengineAppLovinPluginInterface plugin, @NonNull MaxInterstitialAd interstitialAd, MengineAppLovinMediationLoadedCallback loadAdCallback) throws MengineServiceInvalidInitializeException;

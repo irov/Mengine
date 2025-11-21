@@ -407,7 +407,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
     }
 
     @Override
-    public void onMengineRemoteConfigFetch(@NonNull MengineApplication application, boolean updated, @NonNull Map<String, JSONObject> configs) {
+    public void onMengineRemoteConfigFetch(@NonNull MengineApplication application, boolean updated, @NonNull Map<String, JSONObject> configs, @NonNull Map<String, Integer> ids) {
         JSONObject applovin_show_mediation_debugger = configs.getOrDefault("applovin_show_mediation_debugger", null);
 
         if (applovin_show_mediation_debugger != null) {
@@ -417,11 +417,11 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
         }
 
         for (MengineAppLovinMediationInterface mediation : m_mediations) {
-            mediation.onMengineRemoteConfigFetch(application, updated, configs);
+            mediation.onMengineRemoteConfigFetch(application, updated, configs, ids);
         }
 
         if (m_nonetBanners != null) {
-            m_nonetBanners.onMengineRemoteConfigFetch(application, updated, configs);
+            m_nonetBanners.onMengineRemoteConfigFetch(application, updated, configs, ids);
         }
     }
 

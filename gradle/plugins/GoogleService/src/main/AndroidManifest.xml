@@ -4,7 +4,6 @@
     <application>
         <meta-data android:name="com.google.android.gms.games.APP_ID" android:value="@string/app_id"/>
         <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version"/>
-        <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="@string/mengine_google_ads_app_id"/>
 
         <meta-data android:name="google_analytics_default_allow_analytics_storage" android:value="true" />
         <meta-data android:name="google_analytics_default_allow_ad_storage" android:value="true" />

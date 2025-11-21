@@ -12,6 +12,7 @@ public class MengineFragmentRemoteConfig extends MengineFragment<MengineListener
 
     private String m_installationId;
     private Map<String, JSONObject> m_configs = new HashMap<>();
+    private Map<String, Integer> m_ids = new HashMap<>();
     private final Object m_syncronizationConfigs = new Object();
 
     MengineFragmentRemoteConfig() {
@@ -38,6 +39,12 @@ public class MengineFragmentRemoteConfig extends MengineFragment<MengineListener
         }
     }
 
+    public Map<String, Integer> getRemoteConfigIds() {
+        synchronized (m_syncronizationConfigs) {
+            return m_ids;
+        }
+    }
+
     public JSONObject getRemoteConfigValue(String key) {
         synchronized (m_syncronizationConfigs) {
             JSONObject value = m_configs.get(key);
@@ -46,15 +53,17 @@ public class MengineFragmentRemoteConfig extends MengineFragment<MengineListener
         }
     }
 
-    public void remoteConfigFetch(@NonNull Map<String, JSONObject> configs) {
+    public void remoteConfigFetch(@NonNull Map<String, JSONObject> configs, @NonNull Map<String, Integer> ids) {
         synchronized (m_syncronizationConfigs) {
             m_configs = configs;
+            m_ids = ids;
         }
     }
 
     public void remoteConfigPropagate(boolean updated) {
         Map<String, JSONObject> configs = this.getRemoteConfigs();
+        Map<String, Integer> ids = this.getRemoteConfigIds();
 
-        this.propagate(MengineListenerRemoteConfig::onMengineRemoteConfigFetch, updated, configs);
+        this.propagate(MengineListenerRemoteConfig::onMengineRemoteConfigFetch, updated, configs, ids);
     }
 }

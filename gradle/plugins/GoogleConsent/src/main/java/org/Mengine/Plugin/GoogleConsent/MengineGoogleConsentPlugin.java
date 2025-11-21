@@ -24,7 +24,7 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
         ConsentRequestParameters.Builder builder = new ConsentRequestParameters.Builder();
 
         if (BuildConfig.DEBUG == true) {
-            if (BuildConfig.MENGINE_APP_PLUGIN_GOOGLE_CONSENT_TEST_DEVICE_HASHED_ID != null) {
+            if (BuildConfig.MENGINE_APP_PLUGIN_GOOGLE_CONSENT_TEST_DEVICE_HASHED_ID.isEmpty() == false) {
                 ConsentDebugSettings debugSettings = new ConsentDebugSettings.Builder(activity)
                     .setDebugGeography(ConsentDebugSettings
                         .DebugGeography
@@ -42,45 +42,53 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
 
         ConsentInformation consentInformation = UserMessagingPlatform.getConsentInformation(activity);
 
+        MengineApplication application = this.getMengineApplication();
+
+        this.logInfo("Google Consent requestConsentInfoUpdate started");
+
         consentInformation.requestConsentInfoUpdate(activity, params
             , () -> {
                 boolean formAvailable = consentInformation.isConsentFormAvailable();
                 int consentStatus = consentInformation.getConsentStatus();
                 ConsentInformation.PrivacyOptionsRequirementStatus privacyOptionsRequirementStatus = consentInformation.getPrivacyOptionsRequirementStatus();
 
-                this.logInfo("updated consent info update success status: %d formAvailable: %b privacyOptionsRequirementStatus: %s"
+                this.logInfo("Google Consent requestConsentInfoUpdate success consentStatus: %d formAvailable: %b privacyOptionsRequirementStatus: %s"
                     , consentStatus
                     , formAvailable
-                    , privacyOptionsRequirementStatus
+                    , privacyOptionsRequirementStatus.toString()
                 );
 
                 if (formAvailable == false) {
+                    application.checkTransparencyConsentServices();
+
                     return;
                 }
 
                 if (privacyOptionsRequirementStatus == ConsentInformation.PrivacyOptionsRequirementStatus.NOT_REQUIRED) {
-                    MengineApplication application = this.getMengineApplication();
-
                     application.checkTransparencyConsentServices();
 
                     return;
                 }
 
                 if (consentStatus != ConsentInformation.ConsentStatus.REQUIRED) {
+                    application.checkTransparencyConsentServices();
+
                     return;
                 }
 
-                this.loadForm(activity);
+                this.loadForm(application, activity);
             }
             , (formError) -> {
                 this.logError("consent info update failure: %s [%d]"
                     , formError.getMessage()
                     , formError.getErrorCode()
                 );
+
+                application.checkTransparencyConsentServices();
             });
     }
 
-    public void loadForm(@NonNull MengineActivity activity) {
+    public void loadForm(@NonNull MengineApplication application, @NonNull MengineActivity activity) {
         UserMessagingPlatform.loadAndShowConsentFormIfRequired(activity
             , (loadAndShowError) -> {
                 if (loadAndShowError != null) {
@@ -89,12 +97,12 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
                         , loadAndShowError.getErrorCode()
                     );
 
+                    application.checkTransparencyConsentServices();
+
                     return;
                 }
 
                 this.logInfo("consent form load and show success");
-
-                MengineApplication application = this.getMengineApplication();
 
                 application.checkTransparencyConsentServices();
             });

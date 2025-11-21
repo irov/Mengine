@@ -13,7 +13,7 @@ public interface MengineAppLovinNonetBannersInterface {
     void onAppCreate(@NonNull MengineApplication application, @NonNull MengineAppLovinPluginInterface plugin) throws MengineServiceInvalidInitializeException;
     void onAppTerminate(@NonNull MengineApplication application, @NonNull MengineAppLovinPluginInterface plugin);
 
-    void onMengineRemoteConfigFetch(@NonNull MengineApplication application, boolean updated, @NonNull Map<String, JSONObject> configs);
+    void onMengineRemoteConfigFetch(@NonNull MengineApplication application, boolean updated, @NonNull Map<String, JSONObject> configs, @NonNull Map<String, Integer> ids);
 
     void onActivityCreate(@NonNull MengineActivity activity);
     void onActivityDestroy(@NonNull MengineActivity activity);

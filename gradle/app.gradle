@@ -670,10 +670,18 @@ if (MENGINE_APP_PLUGIN_MAR == true) {
 
 Utils.logAvailable("MENGINE_APP_PLUGIN_ADMOB", MENGINE_APP_PLUGIN_ADMOB)
 
+Boolean MENGINE_APP_ADMEDIATION_ADDED = false
+
 if (MENGINE_APP_PLUGIN_ADMOB == true) {
+    if (MENGINE_APP_ADMEDIATION_ADDED == true) {
+        throw new GradleException("Cannot enable MENGINE_APP_PLUGIN_ADMOB because another mediation plugin is already enabled. Only one mediation plugin (MENGINE_APP_PLUGIN_ADMOB or MENGINE_APP_PLUGIN_APPLOVIN) can be enabled at a time.")
+    }
+    
     if (MENGINE_APP_HAS_ADS == false) {
         throw new GradleException("MENGINE_APP_HAS_ADS must be set to true when MENGINE_APP_PLUGIN_ADMOB is enabled. Set -PMENGINE_APP_HAS_ADS=true")
     }
+    
+    MENGINE_APP_ADMEDIATION_ADDED = true
     
     android.ext.plugins += 'org.Mengine.Plugin.AdMob.MengineAdMobPlugin'
 
@@ -699,9 +707,15 @@ if (MENGINE_APP_PLUGIN_AMAZON == true) {
 Utils.logAvailable("MENGINE_APP_PLUGIN_APPLOVIN", MENGINE_APP_PLUGIN_APPLOVIN)
 
 if (MENGINE_APP_PLUGIN_APPLOVIN == true) {
+    if (MENGINE_APP_ADMEDIATION_ADDED == true) {
+        throw new GradleException("Cannot enable MENGINE_APP_PLUGIN_APPLOVIN because another mediation plugin is already enabled. Only one mediation plugin (MENGINE_APP_PLUGIN_ADMOB or MENGINE_APP_PLUGIN_APPLOVIN) can be enabled at a time.")
+    }
+    
     if (MENGINE_APP_HAS_ADS == false) {
         throw new GradleException("MENGINE_APP_HAS_ADS must be set to true when MENGINE_APP_PLUGIN_APPLOVIN is enabled. Set -PMENGINE_APP_HAS_ADS=true")
     }
+    
+    MENGINE_APP_ADMEDIATION_ADDED = true
     
     android.ext.plugins += 'org.Mengine.Plugin.AppLovin.MengineAppLovinPlugin'
 

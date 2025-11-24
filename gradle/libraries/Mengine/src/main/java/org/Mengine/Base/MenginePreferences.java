@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.HashMap;
@@ -58,6 +59,12 @@ public class MenginePreferences {
 
     static public void setPreferenceBoolean(@NonNull String name, boolean value) {
         synchronized (MenginePreferences.SETTINGS_SYNC) {
+            Boolean currentValue = (Boolean)MenginePreferences.SETTINGS.getOrDefault(name, null);
+
+            if (Objects.equals(currentValue, value) == true) {
+                return;
+            }
+
             MenginePreferences.SETTINGS.put(name, value);
         }
 
@@ -76,6 +83,12 @@ public class MenginePreferences {
 
     static public void setPreferenceLong(@NonNull String name, long value) {
         synchronized (MenginePreferences.SETTINGS_SYNC) {
+            Long currentValue = (Long)MenginePreferences.SETTINGS.getOrDefault(name, null);
+
+            if (Objects.equals(currentValue, value) == true) {
+                return;
+            }
+
             MenginePreferences.SETTINGS.put(name, value);
         }
 
@@ -94,6 +107,12 @@ public class MenginePreferences {
 
     static public void setPreferenceString(@NonNull String name, String value) {
         synchronized (MenginePreferences.SETTINGS_SYNC) {
+            String currentValue = (String)MenginePreferences.SETTINGS.getOrDefault(name, null);
+
+            if (Objects.equals(currentValue, value) == true) {
+                return;
+            }
+
             MenginePreferences.SETTINGS.put(name, value);
         }
 
@@ -114,6 +133,12 @@ public class MenginePreferences {
 
     static public void setPreferenceStrings(@NonNull String name, Set<String> value) {
         synchronized (MenginePreferences.SETTINGS_SYNC) {
+            Set<String> currentValue = (Set<String>)MenginePreferences.SETTINGS.getOrDefault(name, null);
+
+            if (Objects.equals(currentValue, value) == true) {
+                return;
+            }
+
             MenginePreferences.SETTINGS.put(name, value);
         }
 

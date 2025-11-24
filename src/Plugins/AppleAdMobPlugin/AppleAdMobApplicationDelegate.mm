@@ -122,20 +122,20 @@
     
     IOS_LOGGER_MESSAGE(@"AdMob: %@", versionString);
     
+#if defined(MENGINE_DEBUG)
     BOOL MengineAppleAdMobPlugin_RequestConfigurationTestDeviceIdsEnabled = [AppleBundle getPluginConfigBoolean:@PLUGIN_BUNDLE_NAME withKey:@"RequestConfigurationTestDeviceIdsEnabled" withDefault:NO];
     
     if (MengineAppleAdMobPlugin_RequestConfigurationTestDeviceIdsEnabled == YES) {
         GADRequestConfiguration * requestConfiguration = mobileAds.requestConfiguration;
         
-#if defined(MENGINE_DEBUG)
         if ([AppleDetail hasOption:@"admob.test_device_advertising"] == YES) {
             NSString * testDeviceId = [[[ASIdentifierManager sharedManager] advertisingIdentifier] UUIDString];
             requestConfiguration.testDeviceIdentifiers = @[testDeviceId];
             
             IOS_LOGGER_MESSAGE(@"[AdMob] test device id: %@", testDeviceId);
         }
-#endif
     }
+#endif
     
     id<AppleAdvertisementInterface> advertisement = [iOSDetail getPluginDelegateOfProtocol:@protocol(AppleAdvertisementInterface)];
     

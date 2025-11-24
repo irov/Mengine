@@ -69,6 +69,10 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
     public void onActivityDestroy(@NonNull MengineActivity activity) {
         super.onActivityDestroy(activity);
 
+        this.destroyInterstitialAd();
+    }
+
+    private void destroyInterstitialAd() {
         if (m_interstitialAd != null) {
             m_interstitialAd.setFullScreenContentCallback(null);
             m_interstitialAd.setOnPaidEventListener(null);
@@ -104,6 +108,8 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
             InterstitialAd.load(activity, m_adUnitId, adRequest, new InterstitialAdLoadCallback() {
                 @Override
                 public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                    MengineAdMobInterstitialAd.this.destroyInterstitialAd();
+
                     m_interstitialAd = interstitialAd;
 
                     m_interstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
@@ -217,7 +223,7 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
 
                 @Override
                 public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                    m_interstitialAd = null;
+                    MengineAdMobInterstitialAd.this.destroyInterstitialAd();
 
                     MengineAdMobInterstitialAd.this.logLoadAdError("onAdFailedToLoad", loadAdError);
 
@@ -247,10 +253,6 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
     }
 
     public boolean canYouShowInterstitial(String placement) {
-        if (m_interstitialAd == null) {
-            return false;
-        }
-
         if (MengineNetwork.isNetworkAvailable() == false) {
             return false;
         }
@@ -272,10 +274,6 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
     }
 
     public boolean showInterstitial(@NonNull MengineActivity activity, String placement) {
-        if (m_interstitialAd == null) {
-            return false;
-        }
-
         if (MengineNetwork.isNetworkAvailable() == false) {
             return false;
         }
@@ -295,10 +293,10 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
 
         m_showing = true;
 
+        InterstitialAd show_interstitialAd = m_interstitialAd;
+
         MengineUtils.performOnMainThread(() -> {
-            if (m_interstitialAd != null) {
-                m_interstitialAd.show(activity);
-            }
+            show_interstitialAd.show(activity);
         });
 
         return true;

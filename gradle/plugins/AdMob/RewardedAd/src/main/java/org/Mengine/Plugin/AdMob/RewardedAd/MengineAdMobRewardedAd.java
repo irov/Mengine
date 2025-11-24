@@ -69,6 +69,10 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
     public void onActivityDestroy(@NonNull MengineActivity activity) {
         super.onActivityDestroy(activity);
 
+        this.destroyRewardedAd();
+    }
+
+    private void destroyRewardedAd() {
         if (m_rewardedAd != null) {
             m_rewardedAd.setFullScreenContentCallback(null);
             m_rewardedAd.setOnPaidEventListener(null);
@@ -104,6 +108,8 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
             RewardedAd.load(activity, m_adUnitId, adRequest, new RewardedAdLoadCallback() {
                 @Override
                 public void onAdLoaded(@NonNull RewardedAd rewardedAd) {
+                    MengineAdMobRewardedAd.this.destroyRewardedAd();
+
                     m_rewardedAd = rewardedAd;
 
                     m_rewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
@@ -217,7 +223,7 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
 
                 @Override
                 public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                    m_rewardedAd = null;
+                    MengineAdMobRewardedAd.this.destroyRewardedAd();
 
                     MengineAdMobRewardedAd.this.logLoadAdError("onAdFailedToLoad", loadAdError);
 
@@ -247,10 +253,6 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
     }
 
     public boolean canOfferRewarded(String placement) {
-        if (m_rewardedAd == null) {
-            return false;
-        }
-
         if (MengineNetwork.isNetworkAvailable() == false) {
             return false;
         }
@@ -272,10 +274,6 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
     }
 
     public boolean canYouShowRewarded(String placement) {
-        if (m_rewardedAd == null) {
-            return false;
-        }
-
         if (MengineNetwork.isNetworkAvailable() == false) {
             return false;
         }
@@ -297,10 +295,6 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
     }
 
     public boolean showRewarded(@NonNull MengineActivity activity, String placement) {
-        if (m_rewardedAd == null) {
-            return false;
-        }
-
         if (MengineNetwork.isNetworkAvailable() == false) {
             return false;
         }
@@ -320,27 +314,27 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
 
         m_showing = true;
 
+        RewardedAd show_rewardedAd = m_rewardedAd;
+
         MengineUtils.performOnMainThread(() -> {
-            if (m_rewardedAd != null) {
-                m_rewardedAd.show(activity, new OnUserEarnedRewardListener() {
-                    @Override
-                    public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
-                        String rewardType = rewardItem.getType();
-                        int rewardAmount = rewardItem.getAmount();
+            show_rewardedAd.show(activity, new OnUserEarnedRewardListener() {
+                @Override
+                public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
+                    String rewardType = rewardItem.getType();
+                    int rewardAmount = rewardItem.getAmount();
 
-                        MengineAdMobRewardedAd.this.log("onUserEarnedReward");
+                    MengineAdMobRewardedAd.this.log("onUserEarnedReward");
 
-                        MengineAdMobRewardedAd.this.buildRewardedAdEvent("user_rewarded")
-                            .addParameterString("reward_type", rewardType)
-                            .addParameterLong("reward_amount", rewardAmount)
-                            .log();
+                    MengineAdMobRewardedAd.this.buildRewardedAdEvent("user_rewarded")
+                        .addParameterString("reward_type", rewardType)
+                        .addParameterLong("reward_amount", rewardAmount)
+                        .log();
 
-                        MengineAdResponseInterface adResponse = m_adService.getAdResponse();
+                    MengineAdResponseInterface adResponse = m_adService.getAdResponse();
 
-                        adResponse.onAdUserRewarded(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_REWARDED, placement, rewardType, rewardAmount);
-                    }
-                });
-            }
+                    adResponse.onAdUserRewarded(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_REWARDED, placement, rewardType, rewardAmount);
+                }
+            });
         });
 
         return true;

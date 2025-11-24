@@ -8,22 +8,23 @@ android {
         }
     }
 
-    buildTypes {
-        final List<String> cmake_arguments = new ArrayList<String>()
-        cmake_arguments.add("-DANDROID_PLATFORM=android-" + project.minSdkVersion)
-        cmake_arguments.add("-DANDROID_ARM_NEON=TRUE")
-        cmake_arguments.add("-DANDROID_STL=c++_shared")
-        cmake_arguments.add("-DANDROID_TOOLCHAIN=clang")
-        cmake_arguments.add("-DCMAKE_SYSTEM_NAME=Android")
-        cmake_arguments.add("-DCMAKE_SYSTEM_VERSION=${project.minSdkVersion}")
+    defaultConfig {
+        externalNativeBuild {
+            cmake {
+                arguments.add("-DANDROID_PLATFORM=android-" + project.minSdkVersion)
+                arguments.add("-DANDROID_ARM_NEON=TRUE")
+                arguments.add("-DANDROID_STL=c++_shared")
+                arguments.add("-DANDROID_TOOLCHAIN=clang")
+                arguments.add("-DCMAKE_SYSTEM_NAME=Android")
+                arguments.add("-DCMAKE_SYSTEM_VERSION=${project.minSdkVersion}")
+            }
+        }
+    }
 
+    buildTypes {
         debug {
             externalNativeBuild {
                 cmake {
-                    for (final String argument : cmake_arguments) {
-                        arguments.add(argument)
-                    }
-
                     arguments.add("-DCMAKE_BUILD_TYPE:STRING=Debug")
                 }
             }
@@ -32,10 +33,6 @@ android {
         release {
             externalNativeBuild {
                 cmake {
-                    for (final String argument : cmake_arguments) {
-                        arguments.add(argument)
-                    }
-
                     arguments.add("-DCMAKE_BUILD_TYPE:STRING=Release")
                 }
             }

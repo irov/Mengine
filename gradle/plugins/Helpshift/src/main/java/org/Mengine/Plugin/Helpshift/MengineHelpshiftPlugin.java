@@ -47,14 +47,14 @@ public class MengineHelpshiftPlugin extends MengineService implements HelpshiftE
         String MengineHelpshiftPlugin_PlatformId = this.getResourceString(METADATA_PLATFORM_ID);
 
         this.logInfo("%s: %s"
-            , METADATA_PLATFORM_ID
+            , this.getResourceName(METADATA_PLATFORM_ID)
             , MengineUtils.getRedactedValue(MengineHelpshiftPlugin_PlatformId)
         );
 
         String MengineHelpshiftPlugin_Domain = this.getResourceString(METADATA_DOMAIN);
 
         this.logInfo("%s: %s"
-            , METADATA_DOMAIN
+            , this.getResourceName(METADATA_DOMAIN)
             , MengineUtils.getRedactedValue(MengineHelpshiftPlugin_Domain)
         );
 

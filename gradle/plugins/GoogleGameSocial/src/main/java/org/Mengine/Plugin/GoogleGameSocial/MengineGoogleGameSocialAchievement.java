@@ -74,7 +74,7 @@ public final class MengineGoogleGameSocialAchievement {
         m_state = Achievement.STATE_UNLOCKED;
         m_lastUpdatedTimestamp = timestamp;
 
-        if (this.isIncremental()) {
+        if (this.isIncremental() == true) {
             m_currentSteps = m_totalSteps;
         }
     }
@@ -107,6 +107,9 @@ public final class MengineGoogleGameSocialAchievement {
     public JSONObject toJSONObject() throws JSONException {
         JSONObject achievementJSON = new JSONObject();
 
+        boolean unlocked = this.isUnlocked();
+        boolean incremental = this.isIncremental();
+
         achievementJSON.put("name", m_name);
         achievementJSON.put("description", m_description);
         achievementJSON.put("state", m_state);
@@ -115,8 +118,8 @@ public final class MengineGoogleGameSocialAchievement {
         achievementJSON.put("lastUpdatedTimestamp", m_lastUpdatedTimestamp);
         achievementJSON.put("currentSteps", m_currentSteps);
         achievementJSON.put("totalSteps", m_totalSteps);
-        achievementJSON.put("isUnlocked", this.isUnlocked());
-        achievementJSON.put("isIncremental", this.isIncremental());
+        achievementJSON.put("isUnlocked", unlocked);
+        achievementJSON.put("isIncremental", incremental);
 
         return achievementJSON;
     }

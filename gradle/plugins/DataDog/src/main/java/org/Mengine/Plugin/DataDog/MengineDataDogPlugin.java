@@ -78,7 +78,7 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
         String MengineDataDogPlugin_Site = this.getResourceString(METADATA_SITE);
 
         this.logInfo("%s: %s"
-            , METADATA_SITE
+            , this.getResourceName(METADATA_SITE)
             , MengineUtils.getRedactedValue(MengineDataDogPlugin_Site)
         );
 
@@ -105,7 +105,7 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
         String MengineDataDogPlugin_ClientToken = this.getResourceString(METADATA_CLIENT_TOKEN);
 
         this.logInfo("%s: %s"
-            , METADATA_CLIENT_TOKEN
+            , this.getResourceName(METADATA_CLIENT_TOKEN)
             , MengineUtils.getRedactedValue(MengineDataDogPlugin_ClientToken)
         );
 

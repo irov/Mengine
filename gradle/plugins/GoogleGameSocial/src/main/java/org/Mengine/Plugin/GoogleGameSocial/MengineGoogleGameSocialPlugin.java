@@ -168,14 +168,14 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
     }
 
     private void signInSilently() {
-        if (m_isAuthenticated == true) {
-            this.logInfo("signInSilently already authenticated");
+        if (MengineNetwork.isNetworkAvailable() == false) {
+            this.logInfo("signInSilently network not available");
 
             return;
         }
 
-        if (MengineNetwork.isNetworkAvailable() == false) {
-            this.logInfo("signInSilently network not available");
+        if (m_isAuthenticated == true) {
+            this.logInfo("signInSilently already authenticated");
 
             return;
         }

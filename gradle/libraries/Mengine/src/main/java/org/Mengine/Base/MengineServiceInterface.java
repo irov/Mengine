@@ -71,7 +71,6 @@ public interface MengineServiceInterface {
     String logDebug(@NonNull String format, Object ... args);
     String logInfo(@NonNull String format, Object ... args);
     String logMessage(@NonNull String format, Object ... args);
-    String logMessageProtected(@NonNull String format, Object ... args);
     String logMessageRelease(@NonNull String format, Object ... args);
     String logWarning(@NonNull String format, Object ... args);
     String logError(@NonNull String format, Object ... args);

@@ -42,7 +42,7 @@ public class MengineAppsFlyerPlugin extends MengineService implements MengineLis
         String MengineAppsFlyerPlugin_ApiKey = application.getResourceString(METADATA_API_KEY);
 
         this.logInfo("%s: %s"
-            , METADATA_API_KEY
+            , this.getResourceName(METADATA_API_KEY)
             , MengineUtils.getRedactedValue(MengineAppsFlyerPlugin_ApiKey)
         );
 

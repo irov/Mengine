@@ -30,24 +30,24 @@ public class MengineLeanplumPlugin extends MengineService implements MengineList
         String Environment = this.getResourceString(METADATA_ENVIRONMENT);
 
         this.logInfo("%s: %s"
-            , METADATA_APP_ID
+            , this.getResourceName(METADATA_APP_ID)
             , MengineUtils.getRedactedValue(AppId)
         );
 
         if (BuildConfig.DEBUG == true) {
             this.logInfo("%s: %s"
-                , METADATA_DEV_KEY
+                , this.getResourceName(METADATA_DEV_KEY)
                 , MengineUtils.getRedactedValue(DevKey)
             );
         } else {
             this.logInfo("%s: %s"
-                , METADATA_PROD_KEY
+                , this.getResourceName(METADATA_PROD_KEY)
                 , MengineUtils.getRedactedValue(ProdKey)
             );
         }
 
         this.logInfo("%s: %s"
-            , METADATA_ENVIRONMENT
+            , this.getResourceName(METADATA_ENVIRONMENT)
             , Environment
         );
 

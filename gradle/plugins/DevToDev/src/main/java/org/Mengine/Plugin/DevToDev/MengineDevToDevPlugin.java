@@ -52,7 +52,7 @@ public class MengineDevToDevPlugin extends MengineService implements MengineList
         String MengineDevToDevPlugin_AppId = this.getResourceString(METADATA_APP_ID);
 
         this.logInfo("%s: %s"
-            , METADATA_APP_ID
+            , this.getResourceName(METADATA_APP_ID)
             , MengineUtils.getRedactedValue(MengineDevToDevPlugin_AppId)
         );
 

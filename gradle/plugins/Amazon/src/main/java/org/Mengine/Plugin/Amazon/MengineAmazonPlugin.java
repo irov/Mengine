@@ -26,7 +26,7 @@ public class MengineAmazonPlugin extends MengineService implements MengineListen
         String MengineAmazonPlugin_AppId = this.getResourceString(METADATA_APP_ID);
 
         this.logInfo("%s: %s"
-            , METADATA_APP_ID
+            , this.getResourceName(METADATA_APP_ID)
             , MengineUtils.getRedactedValue(MengineAmazonPlugin_AppId)
         );
 
@@ -50,7 +50,7 @@ public class MengineAmazonPlugin extends MengineService implements MengineListen
         }
 
         this.logInfo("%s: %b"
-            , METADATA_ENABLE_TESTING
+            , this.getResourceName(METADATA_ENABLE_TESTING)
             , MengineAmazonPlugin_EnableTesting
         );
 
@@ -61,7 +61,7 @@ public class MengineAmazonPlugin extends MengineService implements MengineListen
         }
 
         this.logInfo("%s: %b"
-            , METADATA_ENABLE_LOGGING
+            , this.getResourceName(METADATA_ENABLE_LOGGING)
             , MengineAmazonPlugin_EnableLogging
         );
     }

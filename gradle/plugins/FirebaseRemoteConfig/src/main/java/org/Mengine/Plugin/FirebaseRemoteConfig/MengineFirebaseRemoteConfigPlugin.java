@@ -42,7 +42,7 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
         int MengineFirebaseRemoteConfigPlugin_MinimumFetchInterval = this.getResourceInteger(METADATA_MINIMUM_FETCH_INTERVAL);
 
         this.logInfo("%s: %d"
-            , METADATA_MINIMUM_FETCH_INTERVAL
+            , this.getResourceName(METADATA_MINIMUM_FETCH_INTERVAL)
             , MengineFirebaseRemoteConfigPlugin_MinimumFetchInterval
         );
 

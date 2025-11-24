@@ -87,7 +87,7 @@ public class MengineAdjustPlugin extends MengineService implements MengineListen
         String MengineAdjustPlugin_AppToken = this.getResourceString(METADATA_APP_TOKEN);
 
         this.logInfo("%s: %s"
-            , METADATA_APP_TOKEN
+            , this.getResourceName(METADATA_APP_TOKEN)
             , MengineUtils.getRedactedValue(MengineAdjustPlugin_AppToken)
         );
 

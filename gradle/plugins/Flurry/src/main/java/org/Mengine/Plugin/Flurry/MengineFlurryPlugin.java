@@ -36,7 +36,7 @@ public class MengineFlurryPlugin extends MengineService implements MengineListen
         String MengineFlurryPlugin_ApiKey = this.getResourceString(METADATA_API_KEY);
 
         this.logInfo("%s: %s"
-            , METADATA_API_KEY
+            , this.getResourceName(METADATA_API_KEY)
             , MengineUtils.getRedactedValue(MengineFlurryPlugin_ApiKey)
         );
 

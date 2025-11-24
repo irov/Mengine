@@ -50,14 +50,14 @@ public class MengineSentryPlugin extends MengineService implements MengineListen
         String MengineSentryPlugin_DSN = this.getResourceString(METADATA_DSN);
 
         this.logInfo("%s: %s"
-            , METADATA_DSN
+            , this.getResourceName(METADATA_DSN)
             , MengineUtils.getRedactedValue(MengineSentryPlugin_DSN)
         );
 
         boolean MengineSentryPlugin_EnableUncaughtExceptionHandler = this.getResourceBoolean(METADATA_ENABLE_UNCAUGHT_EXCEPTION_HANDLER);
 
         this.logInfo("%s: %b"
-            , METADATA_ENABLE_UNCAUGHT_EXCEPTION_HANDLER
+            , this.getResourceName(METADATA_ENABLE_UNCAUGHT_EXCEPTION_HANDLER)
             , MengineSentryPlugin_EnableUncaughtExceptionHandler
         );
 

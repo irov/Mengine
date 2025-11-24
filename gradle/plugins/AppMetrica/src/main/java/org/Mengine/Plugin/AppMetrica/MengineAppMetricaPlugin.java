@@ -53,7 +53,7 @@ public class MengineAppMetricaPlugin extends MengineService implements MengineLi
         String MengineAppMetricaPlugin_ApiKey = this.getResourceString(METADATA_API_KEY);
 
         this.logInfo("%s: %s"
-            , METADATA_API_KEY
+            , this.getResourceName(METADATA_API_KEY)
             , MengineUtils.getRedactedValue(MengineAppMetricaPlugin_ApiKey)
         );
 

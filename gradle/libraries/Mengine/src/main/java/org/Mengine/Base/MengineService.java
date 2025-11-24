@@ -231,14 +231,6 @@ public class MengineService implements MengineServiceInterface {
     }
 
     @Override
-    public String logMessageProtected(@NonNull String format, Object ... args) {
-        MengineTag t = this.getServiceTag();
-        String m = MengineLog.logMessageProtected(t, format, args);
-
-        return m;
-    }
-
-    @Override
     public String logMessageRelease(@NonNull String format, Object ... args) {
         MengineTag t = this.getServiceTag();
         String m = MengineLog.logMessageRelease(t, format, args);

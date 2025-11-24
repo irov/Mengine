@@ -179,7 +179,7 @@
         IOS_LOGGER_MESSAGE( @"reset achievement success" );
     }] ;
     
-    return YES;
+    return result;
 }
 
 - (BOOL)login:(void(^)(NSError *))handler {

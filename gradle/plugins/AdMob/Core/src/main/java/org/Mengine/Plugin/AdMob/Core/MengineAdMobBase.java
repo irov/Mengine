@@ -300,4 +300,3 @@ public class MengineAdMobBase extends AdListener implements MengineAdMobAdInterf
         throw new MengineServiceInvalidInitializeException(message);
     }
 }
-

@@ -264,7 +264,9 @@ public class MengineAdMobBannerAd extends MengineAdMobBase implements MengineAdM
         this.setBannerState("load");
 
         try {
-            AdRequest adRequest = new AdRequest.Builder().build();
+            AdRequest adRequest = new AdRequest.Builder()
+                .build();
+
             m_adView.loadAd(adRequest);
         } catch (final Exception e) {
             m_plugin.logError("[Banner] loadAd adUnitId: %s exception: %s"

@@ -26,13 +26,13 @@ import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineFragmentGame;
 import org.Mengine.Base.MengineNetwork;
+import org.Mengine.Base.MenginePreferences;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineListenerActivity;
 import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 
 import org.Mengine.Plugin.GoogleService.MengineGoogleServicePlugin;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -42,6 +42,8 @@ import java.util.Map;
 public class MengineGoogleGameSocialPlugin extends MengineService implements MengineListenerApplication, MengineListenerActivity {
     public static final String SERVICE_NAME = "GGameSocial";
     public static final boolean SERVICE_EMBEDDING = true;
+
+    private static final String PREFERENCE_KEY_TRYING_SIGN_IN_INTENT = "mengine.googlegamesocial.trying_sign_in_intent";
 
     private ActivityResultLauncher<Intent> m_achievementLauncher;
     private ActivityResultLauncher<Intent> m_leaderboardLauncher;
@@ -105,19 +107,23 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
         m_leaderboardLauncher = leaderboardLauncher;
 
         ActivityResultLauncher<IntentSenderRequest> gamesResolutionLauncher = activity.registerForActivityResultIntentSender(result -> {
-            if (result.getResultCode() == Activity.RESULT_OK) {
-                Intent data = result.getData();
-
-                this.logInfo("gamesResolutionLauncher onActivityResult intent: %s",
-                    data
-                );
-
-                this.signInIntent();
-            } else {
+            if (result.getResultCode() != Activity.RESULT_OK) {
                 this.logInfo("gamesResolutionLauncher onActivityResult resultCode: %d",
                     result.getResultCode()
                 );
+
+                MenginePreferences.setPreferenceBoolean(PREFERENCE_KEY_TRYING_SIGN_IN_INTENT, false);
+
+                return;
             }
+
+            Intent data = result.getData();
+
+            this.logInfo("gamesResolutionLauncher onActivityResult intent: %s",
+                data
+            );
+
+            this.signInIntent();
         });
 
         m_gamesResolutionLauncher = gamesResolutionLauncher;
@@ -204,7 +210,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
             AuthenticationResult result = isAuthenticatedTask.getResult();
 
             if (result.isAuthenticated() == false) {
-                this.logInfo("google game social isAuthenticated failed");
+                this.logInfo("signInSilently isAuthenticated failed, trying signInIntent");
 
                 m_isAuthenticated = false;
 
@@ -212,12 +218,22 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                     m_cachedAchievements.clear();
                 }
 
+                if (MenginePreferences.getPreferenceBoolean(PREFERENCE_KEY_TRYING_SIGN_IN_INTENT, false) == false) {
+                    MenginePreferences.setPreferenceBoolean(PREFERENCE_KEY_TRYING_SIGN_IN_INTENT, true);
+
+                    this.logInfo("signInSilently trying signInIntent");
+
+                    this.signInIntent();
+                }
+
                 return;
             }
 
-            this.logInfo("google game social isAuthenticated success");
+            this.logInfo("signInSilently isAuthenticated success");
 
             m_isAuthenticated = true;
+
+            MenginePreferences.setPreferenceBoolean(PREFERENCE_KEY_TRYING_SIGN_IN_INTENT, false);
 
             this.activateSemaphore("GoogleGameSocialAuthenticated");
         });
@@ -290,6 +306,8 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
             this.logInfo("signInIntent success");
 
             m_isAuthenticated = true;
+
+            MenginePreferences.setPreferenceBoolean(PREFERENCE_KEY_TRYING_SIGN_IN_INTENT, false);
 
             this.activateSemaphore("GoogleGameSocialAuthenticated");
         });

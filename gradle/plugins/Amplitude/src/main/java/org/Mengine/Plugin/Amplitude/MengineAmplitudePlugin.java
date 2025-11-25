@@ -10,6 +10,7 @@ import com.amplitude.core.events.Revenue;
 import com.amplitude.core.network.NetworkTrackingPlugin;
 import com.amplitude.core.events.Identify;
 
+import org.Mengine.Base.MengineAnalyticsEventCategory;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineListenerAdRevenue;
 import org.Mengine.Base.MengineListenerAnalytics;
@@ -37,7 +38,7 @@ public class MengineAmplitudePlugin extends MengineService implements MengineLis
     protected Amplitude m_amplitude;
 
     @Override
-    public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
+    public void onAppPrepare(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
         String MengineAmplitudePlugin_ApiKey = this.getResourceString(METADATA_API_KEY);
 
         Configuration configuration = new Configuration(MengineAmplitudePlugin_ApiKey, application);
@@ -102,26 +103,24 @@ public class MengineAmplitudePlugin extends MengineService implements MengineLis
     }
 
     @Override
-    public void onMengineChangeUserId(@NonNull MengineApplication application, String oldUserId, String newUserId) {
-        if (m_amplitude == null) {
-            return;
-        }
+    public void onAppTerminate(@NonNull MengineApplication application) {
+        m_amplitude.flush();
+        m_amplitude = null;
+    }
 
+    @Override
+    public void onMengineChangeUserId(@NonNull MengineApplication application, String oldUserId, String newUserId) {
         m_amplitude.setUserId(newUserId);
     }
 
     @Override
     public void onMengineRemoveUserData(@NonNull MengineApplication application) {
-        if (m_amplitude == null) {
-            return;
-        }
-
         m_amplitude.reset();
     }
 
     @Override
     public void onMengineAnalyticsEvent(@NonNull MengineApplication application, @NonNull MengineParamAnalyticsEvent param) {
-        if (m_amplitude == null) {
+        if (param.ANALYTICS_CATEGORY == MengineAnalyticsEventCategory.MengineAnalyticsEventCategory_System) {
             return;
         }
 
@@ -134,10 +133,6 @@ public class MengineAmplitudePlugin extends MengineService implements MengineLis
 
     @Override
     public void onMengineAnalyticsScreenView(@NonNull MengineApplication application, @NonNull String screenType, @NonNull String screenName) {
-        if (m_amplitude == null) {
-            return;
-        }
-
         Map<String, Object> eventProperties = new HashMap<>();
         eventProperties.put("screen_type", screenType);
         eventProperties.put("screen_name", screenName);
@@ -147,19 +142,11 @@ public class MengineAmplitudePlugin extends MengineService implements MengineLis
 
     @Override
     public void onMengineAnalyticsFlush(@NonNull MengineApplication application) {
-        if (m_amplitude == null) {
-            return;
-        }
-
         m_amplitude.flush();
     }
 
     @Override
     public void onMengineAdRevenue(@NonNull MengineApplication application, @NonNull MengineParamAdRevenue revenue) {
-        if (m_amplitude == null) {
-            return;
-        }
-
         Revenue r = new Revenue();
         r.setCurrency(revenue.ADREVENUE_REVENUE_CURRENCY);
         r.setPrice(revenue.ADREVENUE_REVENUE_VALUE);

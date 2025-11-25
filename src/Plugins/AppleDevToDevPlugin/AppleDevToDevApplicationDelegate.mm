@@ -72,4 +72,23 @@
     //Empty
 }
 
+#pragma mark - iOSPluginAnalyticDelegateInterface
+
+- (void)onAnalyticEvent:(NSString *)event params:(NSDictionary *)params {
+    [self sendEvent:event parameters:params];
+}
+
+- (void)onAnalyticScreen:(NSString *)screen type:(NSString *)type {
+    DTDCustomEventParameters * devtodev_parameters = [[DTDCustomEventParameters alloc] init];
+    
+    [devtodev_parameters addString:@"screen_type" value:type];
+    [devtodev_parameters addString:@"screen_name" value:screen];
+    
+    [DTDAnalytics customEvent:@"screen_view" withParameters:devtodev_parameters];
+}
+
+- (void)onAnalyticFlush {
+    // DevToDev automatically flushes events, no manual flush needed
+}
+
 @end

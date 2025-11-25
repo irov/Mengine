@@ -25,6 +25,10 @@
 }
 
 - (void) dealloc {
+    [self destroyInterstitialAd];
+}
+
+- (void) destroyInterstitialAd {
     if (self.m_interstitialAd != nil) {
         self.m_interstitialAd.fullScreenContentDelegate = nil;
         
@@ -154,6 +158,8 @@
     
     self.m_showing = NO;
     
+    [self destroyInterstitialAd];
+    
     id<AppleAdvertisementCallbackInterface> callback = [[AppleAdMobApplicationDelegate sharedInstance] getAdvertisementInterstitialCallback];
     
     if (callback != nil) {
@@ -173,13 +179,14 @@
     
     self.m_showing = NO;
     
+    [self destroyInterstitialAd];
+    
     id<AppleAdvertisementCallbackInterface> callback = [[AppleAdMobApplicationDelegate sharedInstance] getAdvertisementInterstitialCallback];
     
     if (callback != nil) {
         [callback onAppleAdvertisementShowSuccess:@"unknown"];
     }
     
-    self.m_interstitialAd = nil;
     [self loadAd];
 }
 

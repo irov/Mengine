@@ -16,7 +16,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleAmplitudeAnalyticsEventProvider::onAnalyticsEvent( const AnalyticsEventInterfacePtr & _event )
-    {
+    {        
         const ConstString & eventName = _event->getName();
         const Char * eventName_str = eventName.c_str();
 

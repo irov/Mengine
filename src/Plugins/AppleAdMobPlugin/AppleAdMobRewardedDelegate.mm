@@ -26,6 +26,10 @@
 }
 
 - (void) dealloc {
+    [self destroyRewardedAd];
+}
+
+- (void) destroyRewardedAd {
     if (self.m_rewardedAd != nil) {
         self.m_rewardedAd.fullScreenContentDelegate = nil;
         
@@ -52,9 +56,9 @@
 
 - (BOOL) canYouShow:(NSString * _Nonnull)placement {
     BOOL ready = (self.m_rewardedAd != nil);
-
+    
     [self log:@"canYouShow" withParams:@{@"placement":placement, @"ready":@(ready)}];
-
+    
     if( ready == NO ) {
         [self eventRewarded:@"show" params:@{
             @"placement": placement,
@@ -73,7 +77,7 @@
 
 - (BOOL) show:(NSString * _Nonnull)placement {
     BOOL ready = (self.m_rewardedAd != nil);
-       
+    
     [self log:@"show" withParams:@{@"placement":placement, @"ready":@(ready)}];
     
     [self eventRewarded:@"show" params:@{
@@ -198,6 +202,8 @@
         @"error_code": @(error.code)
     }];
     
+    [self destroyRewardedAd];
+    
     self.m_showing = NO;
     
     id<AppleAdvertisementCallbackInterface> callback = [[AppleAdMobApplicationDelegate sharedInstance] getAdvertisementRewardedCallback];
@@ -217,6 +223,8 @@
     PLATFORM_SERVICE()
         ->unfreezePlatform( true, true, true );
     
+    [self destroyRewardedAd];
+    
     self.m_showing = NO;
     
     id<AppleAdvertisementCallbackInterface> callback = [[AppleAdMobApplicationDelegate sharedInstance] getAdvertisementRewardedCallback];
@@ -225,7 +233,6 @@
         [callback onAppleAdvertisementShowSuccess:@"unknown"];
     }
     
-    self.m_rewardedAd = nil;
     [self loadAd];
 }
 

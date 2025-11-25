@@ -418,10 +418,6 @@ PLUGIN_EXPORT( AppleAppLovin );
 PLUGIN_EXPORT( AppleAdMob );
 #endif
 //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_APPLE_FIREBASE_ANALYTICS_STATIC)
-PLUGIN_EXPORT( AppleFirebaseAnalytics );
-#endif
-//////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_APPLE_FIREBASE_CRASHLYTICS_STATIC)
 PLUGIN_EXPORT( AppleFirebaseCrashlytics );
 #endif
@@ -456,14 +452,6 @@ PLUGIN_EXPORT( AppleStoreInAppPurchase );
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_APPLE_ADJUST_STATIC)
 PLUGIN_EXPORT( AppleAdjust );
-#endif
-//////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_APPLE_AMPLITUDE_STATIC)
-PLUGIN_EXPORT( AppleAmplitude );
-#endif
-//////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_APPLE_DEVTODEV_STATIC)
-PLUGIN_EXPORT( AppleDevToDev );
 #endif
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_APPLE_SENTRY_STATIC)
@@ -1485,10 +1473,6 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( AppleAdMob, "plugin AppleAdMob...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
-#if defined(MENGINE_PLUGIN_APPLE_FIREBASE_ANALYTICS_STATIC)
-        MENGINE_ADD_PLUGIN( AppleFirebaseAnalytics, "plugin AppleFirebaseAnalytics...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
 #if defined(MENGINE_PLUGIN_APPLE_FIREBASE_MESSAGING_STATIC)
         MENGINE_ADD_PLUGIN( AppleFirebaseMessaging, "plugin AppleFirebaseMessaging...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
@@ -1515,14 +1499,6 @@ namespace Mengine
 
 #if defined(MENGINE_PLUGIN_APPLE_ADJUST_STATIC)
         MENGINE_ADD_PLUGIN( AppleAdjust, "plugin AppleAdjust...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-#if defined(MENGINE_PLUGIN_APPLE_AMPLITUDE_STATIC)
-        MENGINE_ADD_PLUGIN( AppleAmplitude, "plugin AppleAmplitude...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-#if defined(MENGINE_PLUGIN_APPLE_DEVTODEV_STATIC)
-        MENGINE_ADD_PLUGIN( AppleDevToDev, "plugin AppleDevToDev...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #if defined(MENGINE_PLUGIN_XMLTOBIN_STATIC)

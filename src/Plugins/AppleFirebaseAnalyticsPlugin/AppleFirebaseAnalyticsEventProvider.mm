@@ -3,6 +3,7 @@
 #import "Environment/Apple/AppleString.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/AnalyticsHelper.h"
 
 #include "Config/StdAlgorithm.h"
 
@@ -51,65 +52,46 @@ namespace Mengine
             }
             
             const Char * name_str = _name.c_str();
-            
-            EAnalyticsEventParameterType parameterType = _parameter->getType();
 
-            switch( parameterType )
+            Helper::visitAnalyticsParameter( _parameter
+                , [firebase_parameters, name_str]( bool _value )
             {
-            case EAEPT_BOOLEAN:
-                {
-                    AnalyticsEventParameterBooleanInterfacePtr parameter_boolean = AnalyticsEventParameterBooleanInterfacePtr::from( _parameter );
-                    bool parameter_value = parameter_boolean->resolveValue();
-
-                    [firebase_parameters setValue:@(parameter_value) forKey:@(name_str)];
-                }break;
-            case EAEPT_INTEGER:
-                {
-                    AnalyticsEventParameterIntegerInterfacePtr parameter_integer = AnalyticsEventParameterIntegerInterfacePtr::from( _parameter );
-                    int64_t parameter_value = parameter_integer->resolveValue();
-
-                    [firebase_parameters setValue:@(parameter_value) forKey:@(name_str)];
-                }break;
-            case EAEPT_DOUBLE:
-                {
-                    AnalyticsEventParameterDoubleInterfacePtr parameter_double = AnalyticsEventParameterDoubleInterfacePtr::from( _parameter );
-                    double parameter_value = parameter_double->resolveValue();
-
-                    [firebase_parameters setValue:@(parameter_value) forKey:@(name_str)];
-                }break;
-            case EAEPT_STRING:
-                {
-                    AnalyticsEventParameterStringInterfacePtr parameter_string = AnalyticsEventParameterStringInterfacePtr::from( _parameter );
-                    const String & parameter_value = parameter_string->resolveValue();
-                    
-                    String::size_type parameter_value_size = parameter_value.size();
-                    
-                    if( parameter_value_size > 100 )
-                    {
-                        return;
-                    }
-                    
-                    const Char * parameter_value_str = parameter_value.c_str();
-
-                    [firebase_parameters setValue:@(parameter_value_str) forKey:@(name_str)];
-                }break;
-            case EAEPT_CONSTSTRING:
-                {
-                    AnalyticsEventParameterConstStringInterfacePtr parameter_string = AnalyticsEventParameterConstStringInterfacePtr::from( _parameter );
-                    const ConstString & parameter_value = parameter_string->resolveValue();
-                    
-                    ConstString::size_type parameter_value_size = parameter_value.size();
-                    
-                    if( parameter_value_size > 100 )
-                    {
-                        return;
-                    }
-                    
-                    const Char * parameter_value_str = parameter_value.c_str();
-
-                    [firebase_parameters setValue:@(parameter_value_str) forKey:@(name_str)];
-                }break;
+                [firebase_parameters setValue:@(_value) forKey:@(name_str)];
             }
+                , [firebase_parameters, name_str]( int64_t _value )
+            {
+                [firebase_parameters setValue:@(_value) forKey:@(name_str)];
+            }
+                , [firebase_parameters, name_str]( double _value )
+            {
+                [firebase_parameters setValue:@(_value) forKey:@(name_str)];
+            }
+                , [firebase_parameters, name_str]( const String & _value )
+            {
+                String::size_type parameter_value_size = _value.size();
+                
+                if( parameter_value_size > 100 )
+                {
+                    return;
+                }
+                
+                const Char * parameter_value_str = _value.c_str();
+
+                [firebase_parameters setValue:@(parameter_value_str) forKey:@(name_str)];
+            }
+                , [firebase_parameters, name_str]( const ConstString & _value )
+            {
+                ConstString::size_type parameter_value_size = _value.size();
+                
+                if( parameter_value_size > 100 )
+                {
+                    return;
+                }
+                
+                const Char * parameter_value_str = _value.c_str();
+
+                [firebase_parameters setValue:@(parameter_value_str) forKey:@(name_str)];
+            } );
         } );
         
         [FIRAnalytics logEventWithName:@(eventName_str) 

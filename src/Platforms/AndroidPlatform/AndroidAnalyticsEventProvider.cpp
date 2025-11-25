@@ -5,6 +5,7 @@
 #include "Environment/Android/AndroidFragmentHelper.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AnalyticsHelper.h"
 
 namespace Mengine
 {
@@ -42,48 +43,29 @@ namespace Mengine
             {
                 jobject jobject_name = Helper::AndroidMakeJObjectString( jenv, _name);
 
-                EAnalyticsEventParameterType parameterType = _parameter->getType();
-
                 jobject jobject_parameter = nullptr;
 
-                switch( parameterType )
+                Helper::visitAnalyticsParameter( _parameter
+                    , [jenv, &jobject_parameter]( bool _value )
                 {
-                    case EAEPT_BOOLEAN:
-                    {
-                        AnalyticsEventParameterBooleanInterfacePtr parameter_boolean = AnalyticsEventParameterBooleanInterfacePtr::from( _parameter );
-                        bool parameter_value = parameter_boolean->resolveValue();
-
-                        jobject_parameter = Helper::AndroidMakeJObjectBoolean( jenv, parameter_value );
-                    }break;
-                    case EAEPT_INTEGER:
-                    {
-                        AnalyticsEventParameterIntegerInterfacePtr parameter_integer = AnalyticsEventParameterIntegerInterfacePtr::from( _parameter );
-                        int64_t parameter_value = parameter_integer->resolveValue();
-
-                        jobject_parameter = Helper::AndroidMakeJObjectLong( jenv, parameter_value );
-                    }break;
-                    case EAEPT_DOUBLE:
-                    {
-                        AnalyticsEventParameterDoubleInterfacePtr parameter_double = AnalyticsEventParameterDoubleInterfacePtr::from( _parameter );
-                        double parameter_value = parameter_double->resolveValue();
-
-                        jobject_parameter = Helper::AndroidMakeJObjectDouble( jenv, parameter_value );
-                    }break;
-                    case EAEPT_STRING:
-                    {
-                        AnalyticsEventParameterStringInterfacePtr parameter_string = AnalyticsEventParameterStringInterfacePtr::from( _parameter );
-                        const String & parameter_value = parameter_string->resolveValue();
-
-                        jobject_parameter = Helper::AndroidMakeJObjectString( jenv, parameter_value );
-                    }break;
-                    case EAEPT_CONSTSTRING:
-                    {
-                        AnalyticsEventParameterConstStringInterfacePtr parameter_conststring = AnalyticsEventParameterConstStringInterfacePtr::from( _parameter );
-                        const ConstString & parameter_value = parameter_conststring->resolveValue();
-
-                        jobject_parameter = Helper::AndroidMakeJObjectString( jenv, parameter_value );
-                    }break;
+                    jobject_parameter = Helper::AndroidMakeJObjectBoolean( jenv, _value );
                 }
+                    , [jenv, &jobject_parameter]( int64_t _value )
+                {
+                    jobject_parameter = Helper::AndroidMakeJObjectLong( jenv, _value );
+                }
+                    , [jenv, &jobject_parameter]( double _value )
+                {
+                    jobject_parameter = Helper::AndroidMakeJObjectDouble( jenv, _value );
+                }
+                    , [jenv, &jobject_parameter]( const String & _value )
+                {
+                    jobject_parameter = Helper::AndroidMakeJObjectString( jenv, _value );
+                }
+                    , [jenv, &jobject_parameter]( const ConstString & _value )
+                {
+                    jobject_parameter = Helper::AndroidMakeJObjectString( jenv, _value );
+                } );
 
                 Helper::AndroidPutJObjectMap( jenv, jobject_parameters, jobject_name, jobject_parameter );
 

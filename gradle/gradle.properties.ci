@@ -16,3 +16,15 @@ ANDROID_APP_MAIN_PROJECT=ci
 android.useAndroidX=true
 android.useFullClasspathForDexingTransform=true
 android.enableJetifier=true
+
+# Explicitly disable split APK to avoid IncrementalSplitterRunnable issues
+ANDROID_APP_SPLIT_ENABLE=false
+
+# Increase memory for Gradle to handle large builds
+org.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=512m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8
+
+# Disable build cache to avoid issues with incremental builds in CI
+org.gradle.caching=false
+
+# Configure daemon settings for CI
+org.gradle.daemon=false

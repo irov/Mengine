@@ -4,6 +4,7 @@
 #import "Environment/iOS/iOSAnalytics.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AnalyticsHelper.h"
 
 namespace Mengine
 {
@@ -28,54 +29,33 @@ namespace Mengine
             const Char * name_str = _name.c_str();
             ConstString::size_type name_size = _name.size();
             
-            EAnalyticsEventParameterType parameterType = _parameter->getType();
+            MENGINE_UNUSED( name_size );
 
-            switch( parameterType )
+            Helper::visitAnalyticsParameter( _parameter
+                , [parameters, name_str]( bool _value )
             {
-            case EAEPT_BOOLEAN:
-                {
-                    AnalyticsEventParameterBooleanInterfacePtr parameter_boolean = AnalyticsEventParameterBooleanInterfacePtr::from( _parameter );
-                    bool parameter_value = parameter_boolean->resolveValue();
-
-                    [parameters setValue:@(parameter_value) forKey:@(name_str)];
-                }break;
-            case EAEPT_INTEGER:
-                {
-                    AnalyticsEventParameterIntegerInterfacePtr parameter_integer = AnalyticsEventParameterIntegerInterfacePtr::from( _parameter );
-                    int64_t parameter_value = parameter_integer->resolveValue();
-
-                    [parameters setValue:@(parameter_value) forKey:@(name_str)];
-                }break;
-            case EAEPT_DOUBLE:
-                {
-                    AnalyticsEventParameterDoubleInterfacePtr parameter_double = AnalyticsEventParameterDoubleInterfacePtr::from( _parameter );
-                    double parameter_value = parameter_double->resolveValue();
-
-                    [parameters setValue:@(parameter_value) forKey:@(name_str)];
-                }break;
-            case EAEPT_STRING:
-                {
-                    AnalyticsEventParameterStringInterfacePtr parameter_string = AnalyticsEventParameterStringInterfacePtr::from( _parameter );
-                    const String & parameter_value = parameter_string->resolveValue();
-                    
-                    String::size_type parameter_value_size = parameter_value.size();
-                                        
-                    const Char * parameter_value_str = parameter_value.c_str();
-
-                    [parameters setValue:@(parameter_value_str) forKey:@(name_str)];
-                }break;
-            case EAEPT_CONSTSTRING:
-                {
-                    AnalyticsEventParameterConstStringInterfacePtr parameter_string = AnalyticsEventParameterConstStringInterfacePtr::from( _parameter );
-                    const ConstString & parameter_value = parameter_string->resolveValue();
-                    
-                    ConstString::size_type parameter_value_size = parameter_value.size();
-                                        
-                    const Char * parameter_value_str = parameter_value.c_str();
-
-                    [parameters setValue:@(parameter_value_str) forKey:@(name_str)];
-                }break;
+                [parameters setValue:@(_value) forKey:@(name_str)];
             }
+                , [parameters, name_str]( int64_t _value )
+            {
+                [parameters setValue:@(_value) forKey:@(name_str)];
+            }
+                , [parameters, name_str]( double _value )
+            {
+                [parameters setValue:@(_value) forKey:@(name_str)];
+            }
+                , [parameters, name_str]( const String & _value )
+            {
+                const Char * parameter_value_str = _value.c_str();
+
+                [parameters setValue:@(parameter_value_str) forKey:@(name_str)];
+            }
+                , [parameters, name_str]( const ConstString & _value )
+            {
+                const Char * parameter_value_str = _value.c_str();
+
+                [parameters setValue:@(parameter_value_str) forKey:@(name_str)];
+            } );
         } );
         
         [iOSAnalytics event:@(eventName_str) params:parameters];

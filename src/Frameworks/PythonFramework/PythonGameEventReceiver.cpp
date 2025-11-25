@@ -1,6 +1,7 @@
 #include "PythonGameEventReceiver.h"
 
 #include "Interface/PlayerServiceInterface.h"
+#include "Kernel/AnalyticsHelper.h"
 
 namespace Mengine
 {
@@ -317,46 +318,27 @@ namespace Mengine
 
         _event->foreachParameters( [&params]( const ConstString & _name, const AnalyticsEventParameterInterfacePtr & _parameter )
         {
-            EAnalyticsEventParameterType parameterType = _parameter->getType();
-
-            switch( parameterType )
+            Helper::visitAnalyticsParameter( _parameter
+                , [&params, &_name]( bool _value )
             {
-            case EAEPT_BOOLEAN:
-                {
-                    AnalyticsEventParameterBooleanInterfacePtr parameter_boolean = AnalyticsEventParameterBooleanInterfacePtr::from( _parameter );
-                    bool parameter_value = parameter_boolean->resolveValue();
-
-                    params.set( _name, parameter_value );
-                }break;
-            case EAEPT_INTEGER:
-                {
-                    AnalyticsEventParameterIntegerInterfacePtr parameter_integer = AnalyticsEventParameterIntegerInterfacePtr::from( _parameter );
-                    int64_t parameter_value = parameter_integer->resolveValue();
-
-                    params.set( _name, parameter_value );
-                }break;
-            case EAEPT_DOUBLE:
-                {
-                    AnalyticsEventParameterDoubleInterfacePtr parameter_double = AnalyticsEventParameterDoubleInterfacePtr::from( _parameter );
-                    double parameter_value = parameter_double->resolveValue();
-
-                    params.set( _name, parameter_value );
-                }break;
-            case EAEPT_STRING:
-                {
-                    AnalyticsEventParameterStringInterfacePtr parameter_string = AnalyticsEventParameterStringInterfacePtr::from( _parameter );
-                    const String & parameter_value = parameter_string->resolveValue();
-
-                    params.set( _name, parameter_value );
-                }break;
-            case EAEPT_CONSTSTRING:
-                {
-                    AnalyticsEventParameterConstStringInterfacePtr parameter_string = AnalyticsEventParameterConstStringInterfacePtr::from( _parameter );
-                    const ConstString & parameter_value = parameter_string->resolveValue();
-
-                    params.set( _name, parameter_value );
-                }break;
-            }            
+                params.set( _name, _value );
+            }
+                , [&params, &_name]( int64_t _value )
+            {
+                params.set( _name, _value );
+            }
+                , [&params, &_name]( double _value )
+            {
+                params.set( _name, _value );
+            }
+                , [&params, &_name]( const String & _value )
+            {
+                params.set( _name, _value );
+            }
+                , [&params, &_name]( const ConstString & _value )
+            {
+                params.set( _name, _value );
+            } );
         });
 
         const ConstString & name = _event->getName();

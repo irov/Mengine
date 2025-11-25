@@ -2,6 +2,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/AnalyticsHelper.h"
 
 #include "Config/StdString.h"
 
@@ -29,51 +30,32 @@ namespace Mengine
         _event->foreachParameters( [devtodev_parameters]( const ConstString & _name, const AnalyticsEventParameterInterfacePtr & _parameter )
         {
             const Char * name_str = _name.c_str();
-            
-            EAnalyticsEventParameterType parameterType = _parameter->getType();
 
-            switch( parameterType )
+            Helper::visitAnalyticsParameter( _parameter
+                , [devtodev_parameters, name_str]( bool _value )
             {
-            case EAEPT_BOOLEAN:
-                {
-                    AnalyticsEventParameterBooleanInterfacePtr parameter_boolean = AnalyticsEventParameterBooleanInterfacePtr::from( _parameter );
-                    bool parameter_value = parameter_boolean->resolveValue();
-
-                    [devtodev_parameters addBool:@(name_str) value:@(parameter_value)];
-                }break;
-            case EAEPT_INTEGER:
-                {
-                    AnalyticsEventParameterIntegerInterfacePtr parameter_integer = AnalyticsEventParameterIntegerInterfacePtr::from( _parameter );
-                    int64_t parameter_value = parameter_integer->resolveValue();
-
-                    [devtodev_parameters addInt:@(name_str) value:parameter_value];
-                }break;
-            case EAEPT_DOUBLE:
-                {
-                    AnalyticsEventParameterDoubleInterfacePtr parameter_double = AnalyticsEventParameterDoubleInterfacePtr::from( _parameter );
-                    double parameter_value = parameter_double->resolveValue();
-
-                    [devtodev_parameters addDouble:@(name_str) value:parameter_value];
-                }break;
-            case EAEPT_STRING:
-                {
-                    AnalyticsEventParameterStringInterfacePtr parameter_string = AnalyticsEventParameterStringInterfacePtr::from( _parameter );
-                    const String & parameter_value = parameter_string->resolveValue();
-                    
-                    const Char * parameter_value_str = parameter_value.c_str();
-
-                    [devtodev_parameters addString:@(name_str) value:@(parameter_value_str)];
-                }break;
-            case EAEPT_CONSTSTRING:
-                {
-                    AnalyticsEventParameterConstStringInterfacePtr parameter_string = AnalyticsEventParameterConstStringInterfacePtr::from( _parameter );
-                    const ConstString & parameter_value = parameter_string->resolveValue();
-                    
-                    const Char * parameter_value_str = parameter_value.c_str();
-
-                    [devtodev_parameters addString:@(name_str) value:@(parameter_value_str)];
-                }break;
+                [devtodev_parameters addBool:@(name_str) value:@(_value)];
             }
+                , [devtodev_parameters, name_str]( int64_t _value )
+            {
+                [devtodev_parameters addInt:@(name_str) value:_value];
+            }
+                , [devtodev_parameters, name_str]( double _value )
+            {
+                [devtodev_parameters addDouble:@(name_str) value:_value];
+            }
+                , [devtodev_parameters, name_str]( const String & _value )
+            {
+                const Char * parameter_value_str = _value.c_str();
+
+                [devtodev_parameters addString:@(name_str) value:@(parameter_value_str)];
+            }
+                , [devtodev_parameters, name_str]( const ConstString & _value )
+            {
+                const Char * parameter_value_str = _value.c_str();
+
+                [devtodev_parameters addString:@(name_str) value:@(parameter_value_str)];
+            } );
         } );
         
         [DTDAnalytics customEvent:@(eventName_str) withParameters:devtodev_parameters];

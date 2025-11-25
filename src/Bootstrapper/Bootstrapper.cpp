@@ -458,6 +458,10 @@ PLUGIN_EXPORT( AppleStoreInAppPurchase );
 PLUGIN_EXPORT( AppleAdjust );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_PLUGIN_APPLE_AMPLITUDE_STATIC)
+PLUGIN_EXPORT( AppleAmplitude );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_APPLE_DEVTODEV_STATIC)
 PLUGIN_EXPORT( AppleDevToDev );
 #endif
@@ -1511,6 +1515,10 @@ namespace Mengine
 
 #if defined(MENGINE_PLUGIN_APPLE_ADJUST_STATIC)
         MENGINE_ADD_PLUGIN( AppleAdjust, "plugin AppleAdjust...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#if defined(MENGINE_PLUGIN_APPLE_AMPLITUDE_STATIC)
+        MENGINE_ADD_PLUGIN( AppleAmplitude, "plugin AppleAmplitude...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #if defined(MENGINE_PLUGIN_APPLE_DEVTODEV_STATIC)

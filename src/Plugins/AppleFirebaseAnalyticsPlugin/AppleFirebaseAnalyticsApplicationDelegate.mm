@@ -94,4 +94,22 @@
     }];
 }
 
+#pragma mark - iOSPluginAnalyticDelegateInterface
+
+- (void)onAnalyticEvent:(NSString *)event params:(NSDictionary *)params {
+    [FIRAnalytics logEventWithName:event parameters:params];
+}
+
+- (void)onAnalyticScreen:(NSString *)screen type:(NSString *)type {
+    [FIRAnalytics logEventWithName:kFIREventScreenView
+                        parameters:@{
+                            kFIRParameterScreenClass: type,
+                            kFIRParameterScreenName: screen
+                        }];
+}
+
+- (void)onAnalyticFlush {
+    // Firebase Analytics automatically flushes events, no manual flush needed
+}
+
 @end

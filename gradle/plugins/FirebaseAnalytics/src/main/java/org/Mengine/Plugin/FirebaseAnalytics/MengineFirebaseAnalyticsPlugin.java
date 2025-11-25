@@ -75,20 +75,17 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
     }
 
     @Override
-    public void onMengineChangeUserId(@NonNull MengineApplication application, String oldUserId, String newUserId) {
-        if (m_firebaseAnalytics == null) {
-            return;
-        }
+    public void onAppTerminate(@NonNull MengineApplication application) {
+        m_firebaseAnalytics = null;
+    }
 
+    @Override
+    public void onMengineChangeUserId(@NonNull MengineApplication application, String oldUserId, String newUserId) {
         m_firebaseAnalytics.setUserId(newUserId);
     }
 
     @Override
     public void onMengineRemoveUserData(@NonNull MengineApplication application) {
-        if (m_firebaseAnalytics == null) {
-            return;
-        }
-
         m_firebaseAnalytics.resetAnalyticsData();
         m_firebaseAnalytics.setUserId(null);
     }
@@ -128,10 +125,6 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
 
     @Override
     public void onMengineAnalyticsEvent(@NonNull MengineApplication application, @NonNull MengineParamAnalyticsEvent param) {
-        if (m_firebaseAnalytics == null) {
-            return;
-        }
-
         Bundle bundle = new Bundle();
 
         this.updateBundle(bundle, param.ANALYTICS_BASES);
@@ -142,10 +135,6 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
 
     @Override
     public void onMengineAnalyticsScreenView(@NonNull MengineApplication application, @NonNull String screenType, @NonNull String screenName) {
-        if (m_firebaseAnalytics == null) {
-            return;
-        }
-
         Bundle params = new Bundle();
 
         params.putString(FirebaseAnalytics.Param.SCREEN_CLASS, screenType);
@@ -188,10 +177,6 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
 
     @Override
     public void onMengineAdRevenue(@NonNull MengineApplication application, @NonNull MengineParamAdRevenue revenue) {
-        if (m_firebaseAnalytics == null) {
-            return;
-        }
-
         MengineAdMediation adMediation = revenue.ADREVENUE_MEDIATION;
         String adFirebaseMediation = MengineFirebaseAnalyticsPlugin.getAdMediation(adMediation);
         String networkName = revenue.ADREVENUE_NETWORK;
@@ -214,10 +199,6 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
 
     @Override
     public void onMengineTransparencyConsent(@NonNull MengineApplication application, @NonNull MengineParamTransparencyConsent tcParam) {
-        if (m_firebaseAnalytics == null) {
-            return;
-        }
-
         boolean AD_STORAGE = tcParam.getConsentAdStorage();
         boolean ANALYTICS_STORAGE =  tcParam.getConsentAnalyticsStorage();
         boolean AD_USER_DATA = tcParam.getConsentAdUserData();
@@ -241,10 +222,6 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
 
     @Override
     public void onMengineUnlockAchievement(@NonNull MengineApplication application, String achievementId) {
-        if (m_firebaseAnalytics == null) {
-            return;
-        }
-
         Bundle params = new Bundle();
         params.putString(FirebaseAnalytics.Param.ACHIEVEMENT_ID, achievementId);
 
@@ -253,28 +230,16 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
 
     @Override
     public void onMengineIncrementAchievement(@NonNull MengineApplication application, String achievementId, int numSteps) {
-        if (m_firebaseAnalytics == null) {
-            return;
-        }
-
         //Todo: implement increment achievement
     }
 
     @Override
     public void onMengineRevealAchievement(@NonNull MengineApplication application, String achievementId) {
-        if (m_firebaseAnalytics == null) {
-            return;
-        }
-
         //Todo: implement reveal achievement
     }
 
     @Override
     public void onMengineSubmitLeaderboardScore(@NonNull MengineApplication application, String leaderboardId, long score) {
-        if (m_firebaseAnalytics == null) {
-            return;
-        }
-
         Bundle params = new Bundle();
         params.putLong(FirebaseAnalytics.Param.SCORE, score);
         params.putString(FirebaseAnalytics.Param.CHARACTER, "LEADERBOARD_" + leaderboardId);

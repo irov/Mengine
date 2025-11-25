@@ -135,5 +135,22 @@
     [[Amplitude instance] logRevenueV2:ampRevenue];
 }
 
+#pragma mark - iOSPluginAnalyticDelegateInterface
+
+- (void)onAnalyticEvent:(NSString *)event params:(NSDictionary *)params {
+    [[Amplitude instance] logEvent:event withEventProperties:params];
+}
+
+- (void)onAnalyticScreen:(NSString *)screen type:(NSString *)type {
+    [[Amplitude instance] logEvent:@"screen_view" withEventProperties:@{
+        @"screen_name": screen,
+        @"screen_type": type
+    }];
+}
+
+- (void)onAnalyticFlush {
+    [[Amplitude instance] uploadEvents];
+}
+
 @end
 

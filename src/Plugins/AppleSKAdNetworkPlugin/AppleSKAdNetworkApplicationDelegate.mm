@@ -238,7 +238,7 @@
                 , [AppleDetail getMessageFromNSError:error]
             );
             
-            [iOSAnalytics event:@"mng_skadnetwork_installation_error" params:@{
+            [iOSAnalytics eventSystem:@"mng_skadnetwork_installation_error" params:@{
                 @"error": error,
                 @"error_code": @(error.code)
             }];
@@ -256,7 +256,7 @@
         [AppleKeyChain setTimeIntervalForKey:@"mengine.skadnetwork.time" value:self.m_time];
         [AppleKeyChain setIntegerForKey:@"mengine.skadnetwork.fine" value:0];
             
-        [iOSAnalytics event:@"mng_skadnetwork_installation" params:@{}];
+        [iOSAnalytics eventSystem:@"mng_skadnetwork_installation" params:@{}];
     }];
 }
 
@@ -387,7 +387,7 @@
                 , [AppleDetail getMessageFromNSError:error]
             );
             
-            [iOSAnalytics event:@"mng_skadnetwork_conversion_error" params:@{
+            [iOSAnalytics eventSystem:@"mng_skadnetwork_conversion_error" params:@{
                 @"error": error,
                 @"error_code": @(error.code),
                 @"fine": @(fine),
@@ -410,7 +410,7 @@
         
         [AppleKeyChain setIntegerForKey:@"mengine.skadnetwork.fine" value:fine];
         
-        [iOSAnalytics event:@"mng_skadnetwork_conversion" params:@{
+        [iOSAnalytics eventSystem:@"mng_skadnetwork_conversion" params:@{
             @"fine": @(fine),
             @"coarse": coarse,
             @"window": window_id,

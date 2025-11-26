@@ -139,7 +139,7 @@
     
     [total_params addEntriesFromDictionary:params];
     
-    [iOSAnalytics event:name params:total_params];
+    [iOSAnalytics eventSystem:name params:total_params];
 }
 
 - (GADRequest *) createAdRequest {

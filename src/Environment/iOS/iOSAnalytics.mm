@@ -6,11 +6,11 @@
 
 @implementation iOSAnalytics
 
-+ (void)event:(NSString * _Nonnull)event params:(NSDictionary * _Nonnull)params {
++ (void)event:(NSString * _Nonnull)event category:(iOSAnalyticsEventCategory)category params:(NSDictionary * _Nonnull)params {
     [AppleDetail addMainQueueOperation:^{
         NSObject<iOSUIMainApplicationDelegateInterface> * delegate = [iOSDetail getUIMainApplicationDelegate];
         
-        [delegate eventAnalytic:event params:params];
+        [delegate eventAnalytic:event category:category params:params];
     }];
 }
 

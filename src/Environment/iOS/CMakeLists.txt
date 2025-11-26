@@ -40,6 +40,8 @@ src
     iOSAnalytics.h
     iOSAnalytics.mm
     
+    iOSAnalyticsEventCategory.h
+    
     iOSNetwork.h
     iOSNetwork.mm
     

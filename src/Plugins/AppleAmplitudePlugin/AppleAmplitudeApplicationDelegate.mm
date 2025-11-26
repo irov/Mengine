@@ -7,6 +7,7 @@
 #import "Environment/iOS/iOSAdRevenueParam.h"
 #import "Environment/iOS/iOSLog.h"
 #import "Environment/iOS/iOSUserParam.h"
+#import "Environment/iOS/iOSAnalyticsEventCategory.h"
 
 #import <Amplitude/Amplitude.h>
 
@@ -137,7 +138,11 @@
 
 #pragma mark - iOSPluginAnalyticDelegateInterface
 
-- (void)onAnalyticEvent:(NSString *)event params:(NSDictionary *)params {
+- (void)onAnalyticEvent:(NSString *)event category:(iOSAnalyticsEventCategory)category params:(NSDictionary *)params {
+    if (category == iOSAnalyticsEventCategory_System) {
+        return;
+    }
+    
     [[Amplitude instance] logEvent:event withEventProperties:params];
 }
 

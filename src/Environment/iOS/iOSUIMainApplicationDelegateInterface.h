@@ -8,6 +8,7 @@
 #import "Environment/iOS/iOSPluginAdRevenueDelegateInterface.h"
 #import "Environment/iOS/iOSPluginAppTrackingTransparencyDelegateInterface.h"
 #import "Environment/iOS/iOSPluginTransparencyConsentDelegateInterface.h"
+#import "Environment/iOS/iOSAnalyticsEventCategory.h"
 
 @protocol iOSUIMainApplicationDelegateInterface <NSObject>
 
@@ -29,7 +30,7 @@
 
 - (void)eventConfig:(NSDictionary * _Nonnull)config;
 
-- (void)eventAnalytic:(NSString * _Nonnull)event params:(NSDictionary * _Nonnull)params;
+- (void)eventAnalytic:(NSString * _Nonnull)event category:(iOSAnalyticsEventCategory)category params:(NSDictionary * _Nonnull)params;
 - (void)eventAnalyticScreen:(NSString * _Nonnull)name type:(NSString * _Nonnull)type;
 - (void)eventAnalyticFlush;
 

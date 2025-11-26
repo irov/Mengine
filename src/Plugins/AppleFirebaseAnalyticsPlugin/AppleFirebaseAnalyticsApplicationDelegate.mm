@@ -5,6 +5,7 @@
 #import "Environment/iOS/iOSApplication.h"
 #import "Environment/iOS/iOSDetail.h"
 #import "Environment/iOS/iOSAdRevenueParam.h"
+#import "Environment/iOS/iOSAnalyticsEventCategory.h"
 
 #import <FirebaseAnalytics/FirebaseAnalytics.h>
 
@@ -96,7 +97,11 @@
 
 #pragma mark - iOSPluginAnalyticDelegateInterface
 
-- (void)onAnalyticEvent:(NSString *)event params:(NSDictionary *)params {
+- (void)onAnalyticEvent:(NSString *)event category:(iOSAnalyticsEventCategory)category params:(NSDictionary *)params {
+    if (category == iOSAnalyticsEventCategory_System) {
+        return;
+    }
+    
     [FIRAnalytics logEventWithName:event parameters:params];
 }
 

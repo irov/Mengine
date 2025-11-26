@@ -182,10 +182,10 @@
     }
 }
 
-- (void)eventAnalytic:(NSString * _Nonnull)event params:(NSDictionary * _Nonnull)params {
+- (void)eventAnalytic:(NSString * _Nonnull)event category:(iOSAnalyticsEventCategory)category params:(NSDictionary * _Nonnull)params {
     @autoreleasepool {
         for (NSObject<iOSPluginAnalyticDelegateInterface> * delegate in self.m_pluginAnalyticDelegates) {
-            [delegate onAnalyticEvent:event params:params];
+            [delegate onAnalyticEvent:event category:category params:params];
         }
     }
 }

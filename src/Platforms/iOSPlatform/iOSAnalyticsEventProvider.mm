@@ -2,6 +2,7 @@
 
 #import "Environment/Apple/AppleIncluder.h"
 #import "Environment/iOS/iOSAnalytics.h"
+#import "Environment/iOS/iOSAnalyticsEventCategory.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AnalyticsHelper.h"
@@ -58,7 +59,7 @@ namespace Mengine
             } );
         } );
         
-        [iOSAnalytics event:@(eventName_str) params:parameters];
+        [iOSAnalytics event:@(eventName_str) category:iOSAnalyticsEventCategory_Custom params:parameters];
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSAnalyticsEventProvider::onAnalyticsScreenView( const ConstString & _screenType, const ConstString & _screenName )

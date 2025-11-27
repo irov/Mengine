@@ -348,4 +348,81 @@
     }];
 }
 
++ (void)visitParameters:(NSDictionary<NSString *, id> * _Nonnull)parameters
+                 onBool:(void (^ _Nonnull)(NSString * _Nonnull key, BOOL value))onBool
+               onInteger:(void (^ _Nonnull)(NSString * _Nonnull key, int64_t value))onInteger
+                onDouble:(void (^ _Nonnull)(NSString * _Nonnull key, double value))onDouble
+                onString:(void (^ _Nonnull)(NSString * _Nonnull key, NSString * _Nonnull value))onString
+                  onNull:(void (^ _Nonnull)(NSString * _Nonnull key))onNull
+               onUnknown:(BOOL (^ _Nonnull)(NSString * _Nonnull key, id _Nonnull value))onUnknown {
+    if (parameters == nil) {
+        return;
+    }
+    
+    CFTypeID boolenTypeId = CFBooleanGetTypeID();
+    CFTypeID numberTypeId = CFNumberGetTypeID();
+    
+    for (NSString * key in parameters) {
+        id value = [parameters objectForKey:key];
+        
+        if (value == nil) {
+            onNull(key);
+        } else if ([value isKindOfClass:[NSNumber class]] == YES) {
+            CFTypeID valueTypeId = CFGetTypeID((__bridge CFTypeRef)(value));
+            
+            if (valueTypeId == boolenTypeId) {
+                BOOL b = [value boolValue];
+                onBool(key, b);
+            } else if (valueTypeId == numberTypeId) {
+                CFNumberType numberType = CFNumberGetType((__bridge CFNumberRef)value);
+                
+                switch (numberType) {
+                    case kCFNumberSInt8Type:
+                    case kCFNumberSInt16Type:
+                    case kCFNumberSInt32Type:
+                    case kCFNumberSInt64Type:
+                    case kCFNumberCharType:
+                    case kCFNumberShortType:
+                    case kCFNumberIntType:
+                    case kCFNumberLongType:
+                    case kCFNumberLongLongType: {
+                        int64_t n = [value longLongValue];
+                        onInteger(key, n);
+                    } break;
+                        
+                    case kCFNumberFloat32Type:
+                    case kCFNumberFloat64Type:
+                    case kCFNumberFloatType:
+                    case kCFNumberDoubleType: {
+                        double d = [value doubleValue];
+                        onDouble(key, d);
+                    } break;
+                    
+                    case kCFNumberCFIndexType:
+                    case kCFNumberNSIntegerType:
+                    case kCFNumberCGFloatType: {
+                        double d = [value doubleValue];
+                        onDouble(key, d);
+                    } break;
+                }
+            } else {
+                BOOL handled = onUnknown(key, value);
+                if (handled == NO) {
+                    // Skip unsupported type
+                }
+            }
+        } else if ([value isKindOfClass:[NSString class]] == YES) {
+            NSString * s = (NSString *)value;
+            onString(key, s);
+        } else if ([value isKindOfClass:[NSNull class]]) {
+            onNull(key);
+        } else {
+            BOOL handled = onUnknown(key, value);
+            if (handled == NO) {
+                // Skip unsupported type
+            }
+        }
+    }
+}
+
 @end

@@ -97,19 +97,13 @@ public class MengineAdjustPlugin extends MengineService implements MengineListen
             config.setLogLevel(LogLevel.INFO);
         }
 
-        boolean hasAds = application.hasAds();
+        Adjust.getAdid(adid -> {
+            this.logInfo("Adjust adid: %s"
+                , MengineUtils.getRedactedValue(adid)
+            );
 
-        if (hasAds == true) {
-            Adjust.getAdid(adid -> {
-                this.logInfo("Adjust adid: %s"
-                    , MengineUtils.getRedactedValue(adid)
-                );
-
-                application.setADID(adid);
-            });
-        } else {
-            this.logInfo("Skip Adjust AdID request, ads disabled");
-        }
+            application.setADID(adid);
+        });
 
         config.setOnAttributionChangedListener(attribution -> {
             this.logInfo("Adjust attribution changed: %s"
@@ -207,11 +201,6 @@ public class MengineAdjustPlugin extends MengineService implements MengineListen
 
     @Override
     public void onMengineAdRevenue(@NonNull MengineApplication application, @NonNull MengineParamAdRevenue revenue) {
-        if (application.hasAds() == false) {
-            this.logInfo("Skip Adjust AdRevenue, ads disabled");
-            return;
-        }
-
         MengineAdMediation mediation = revenue.ADREVENUE_MEDIATION;
         String AdjustMediation = MengineAdjustPlugin.getAdjustMediation(mediation);
         String network = revenue.ADREVENUE_NETWORK;
@@ -233,11 +222,6 @@ public class MengineAdjustPlugin extends MengineService implements MengineListen
 
     @Override
     public void onMengineTransparencyConsent(@NonNull MengineApplication application, @NonNull MengineParamTransparencyConsent tcParam) {
-        if (application.hasAds() == false) {
-            this.logInfo("Skip Adjust third-party sharing, ads disabled");
-            return;
-        }
-
         boolean EEA = tcParam.isEEA();
         boolean AD_PERSONALIZATION = tcParam.getConsentAdPersonalization();
         boolean AD_USER_DATA = tcParam.getConsentAdUserData();

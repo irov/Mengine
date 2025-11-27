@@ -11,7 +11,7 @@ src
     ImageDecoderJPEG.cpp
     ImageDecoderJPEG.h
     ImageEncoderJPEG.cpp
-    ImageEncoderJPEG.h    
+    ImageEncoderJPEG.h
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_CONFIG_DIR}/libjpeg)

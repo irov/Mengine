@@ -103,7 +103,6 @@ public abstract class MengineApplication extends Application {
     public abstract String getVersionName();
     public abstract boolean isBuildPublish();
     public abstract String getApplicationOptions();
-    public abstract boolean hasAds();
 
     public void createFragment(Class<?> cls) {
         MengineFragmentInterface fragment = (MengineFragmentInterface) MengineUtils.newInstance(TAG, cls, true);

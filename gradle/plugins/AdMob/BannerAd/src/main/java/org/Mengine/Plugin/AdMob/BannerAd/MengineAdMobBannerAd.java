@@ -212,6 +212,9 @@ public class MengineAdMobBannerAd extends MengineAdMobBase implements MengineAdM
         adView.setVisibility(View.GONE);
         adView.setBackgroundColor(Color.TRANSPARENT);
 
+        ViewGroup viewGroup = activity.getContentViewGroup();
+        viewGroup.addView(adView);
+
         m_adView = adView;
 
         int widthDp = adSize.getWidth();
@@ -222,10 +225,6 @@ public class MengineAdMobBannerAd extends MengineAdMobBase implements MengineAdM
         this.setBannerState("init." + m_placement);
 
         this.loadAd();
-
-        ViewGroup viewGroup = activity.getContentViewGroup();
-
-        viewGroup.addView(m_adView);
     }
 
     @Override

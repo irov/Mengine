@@ -30,7 +30,7 @@ namespace Mengine
         virtual void logFlush() = 0;
 
     public:
-        virtual AnalyticsEventBuilderInterfacePtr buildEvent( const ConstString & _eventName, const DocumentInterfacePtr & _doc ) = 0;
+        virtual AnalyticsEventBuilderInterfacePtr buildEvent( EAnalyticsEventCategory _category, const ConstString & _eventName, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
         virtual AnalyticsContextInterfacePtr makeContext( const DocumentInterfacePtr & _doc ) = 0;

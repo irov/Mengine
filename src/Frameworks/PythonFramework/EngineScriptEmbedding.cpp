@@ -1818,7 +1818,7 @@ namespace Mengine
             void s_analyticsEvent( const ConstString & _eventName, const AnalyticsContextInterfacePtr & _context, const pybind::dict & _parameters )
             {
                 AnalyticsEventBuilderInterfacePtr builder = ANALYTICS_SERVICE()
-                    ->buildEvent( _eventName, MENGINE_DOCUMENT_PYTHON );
+                    ->buildEvent( AEEC_CUSTOM, _eventName, MENGINE_DOCUMENT_PYTHON );
 
                 builder->setLocalContext( _context );
 

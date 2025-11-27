@@ -30,6 +30,10 @@ namespace Mengine
         const AnalyticsContextInterfacePtr & getGlobalContext() const;
 
     public:
+        void setEventCategory( EAnalyticsEventCategory _category );
+        EAnalyticsEventCategory getEventCategory() const;
+
+    public:
         void setEventName( const ConstString & _eventName );
         const ConstString & getEventName() const;
 
@@ -48,7 +52,7 @@ namespace Mengine
         AnalyticsEventBuilderInterface * addParameterConstString( const ConstString & _name, const ConstString & _value ) override;
 
     public:
-        Timestamp log() override;
+        Timestamp log() const override;
 
     protected:
         AnalyticsFactoryInterfacePtr m_analyticsFactory;
@@ -56,6 +60,8 @@ namespace Mengine
         AnalyticsContextInterfacePtr m_globalContext;
 
         ConstString m_eventName;
+
+        EAnalyticsEventCategory m_category;
 
         AnalyticsContextInterfacePtr m_localContext;
 

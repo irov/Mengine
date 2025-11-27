@@ -87,13 +87,14 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    AnalyticsEventBuilderInterfacePtr AnalyticsService::buildEvent( const ConstString & _eventName, const DocumentInterfacePtr & _doc )
+    AnalyticsEventBuilderInterfacePtr AnalyticsService::buildEvent( EAnalyticsEventCategory _category, const ConstString & _eventName, const DocumentInterfacePtr & _doc )
     {
         AnalyticsEventBuilderPtr builder = m_analyticsFactory->makeEventBuilder( _doc );
 
         builder->setAnalyticsFactory( m_analyticsFactory );
         builder->setGlobalContext( m_analyticsGlobalContext );
-        builder->setEventName( _eventName );
+        builder->setEventCategory( _category );
+        builder->setEventName( _eventName );        
 
         return builder;
     }

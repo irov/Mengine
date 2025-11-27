@@ -27,10 +27,11 @@ namespace Mengine
         virtual void addParameter( const ConstString & _name, const AnalyticsEventParameterInterfacePtr & _parameter ) = 0;
         
     public:
-        virtual uint32_t getCountParameters() const = 0;
+        virtual size_t getCountParameters() const = 0;
 
-        typedef Lambda<void( const ConstString & _name, const AnalyticsEventParameterInterfacePtr & _parameter )> LambdaForeachParameters;
-        virtual void foreachParameters( const LambdaForeachParameters & _lambda ) const = 0;
+    public:
+        typedef Lambda<void( const ConstString & _name, const AnalyticsEventParameterInterfacePtr & _parameter )> LambdaEventParameter;
+        virtual void foreachParameters( const LambdaEventParameter & _lambda ) const = 0;
 
     public:
         virtual void addParameterBoolean( const ConstString & _name, bool _value, const DocumentInterfacePtr & _doc ) = 0;

@@ -2,6 +2,7 @@
 
 #include "Interface/ServantInterface.h"
 #include "Interface/AnalyticsContextInterface.h"
+#include "Interface/AnalyticsEventInterface.h"
 
 #include "Kernel/ConstString.h"
 #include "Kernel/String.h"
@@ -26,7 +27,7 @@ namespace Mengine
         virtual AnalyticsEventBuilderInterface * addParameterConstString( const ConstString & _name, const ConstString & _value ) = 0;
 
     public:
-        virtual Timestamp log() = 0;
+        virtual Timestamp log() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AnalyticsEventBuilderInterface> AnalyticsEventBuilderInterfacePtr;

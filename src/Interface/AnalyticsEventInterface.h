@@ -10,11 +10,21 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    enum EAnalyticsEventCategory
+    {
+        AEEC_SYSTEM = 0,
+        AEEC_CUSTOM = 1
+    };
+    //////////////////////////////////////////////////////////////////////////
     class AnalyticsEventInterface
         : public ServantInterface
     {
     public:
         virtual const ConstString & getName() const = 0;
+
+    public:
+        virtual void setCategory( EAnalyticsEventCategory _category ) = 0;
+        virtual EAnalyticsEventCategory getCategory() const = 0;
 
     public:
         virtual void setTimestamp( Timestamp _time ) = 0;
@@ -33,7 +43,7 @@ namespace Mengine
         virtual const AnalyticsContextInterfacePtr & getGlobalContext() const = 0;
 
     public:
-        virtual uint32_t getCountParameters() const = 0;
+        virtual size_t getCountParameters() const = 0;
 
         typedef Lambda<void( const ConstString & _name, const AnalyticsEventParameterInterfacePtr & _parameter )> LambdaEventParameter;
         virtual void foreachParameters( const LambdaEventParameter & _lambda ) const = 0;

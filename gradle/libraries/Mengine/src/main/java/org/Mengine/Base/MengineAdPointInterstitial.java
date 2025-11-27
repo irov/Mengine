@@ -20,7 +20,7 @@ public class MengineAdPointInterstitial extends MengineAdPointBase {
         m_actionOffset = this.parseAdPointInteger(values, "trigger_action_offset", false, -1);
         m_actionCooldown = this.parseAdPointInteger(values, "trigger_action_cooldown", false, -1);
         m_timeOffset = this.parseAdPointTime(values, "trigger_time_offset", false, -1);
-        m_timeCooldown = this.parseAdPointTime(values, "trigger_time_cooldown", false, -1);
+        m_timeCooldown = this.parseAdPointTime(values, "trigger_time_cooldown", false, 600);
         m_installTimeOffset = this.parseAdPointTime(values, "trigger_install_time_offset", false, 600);
         m_sessionOffset = this.parseAdPointLong(values, "trigger_session_offset", false, -1);
     }

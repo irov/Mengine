@@ -1745,7 +1745,7 @@ namespace Mengine
         LOGGER_INFO( "bootstrapper", "create application..." );
 
         Timestamp mengine_create_application_timestamp = ANALYTICS_SERVICE()
-            ->buildEvent( STRINGIZE_STRING_LOCAL( "mng_create_application_start" ), MENGINE_DOCUMENT_FACTORABLE )
+            ->buildEvent( AEEC_SYSTEM, STRINGIZE_STRING_LOCAL( "mng_create_application_start" ), MENGINE_DOCUMENT_FACTORABLE )
             ->log();
 
         if( SERVICE_CREATE_SAFE( Application, MENGINE_DOCUMENT_FACTORABLE ) == false )
@@ -1756,7 +1756,7 @@ namespace Mengine
         NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
 
         ANALYTICS_SERVICE()
-            ->buildEvent( STRINGIZE_STRING_LOCAL( "mng_create_application_completed" ), MENGINE_DOCUMENT_FACTORABLE )
+            ->buildEvent( AEEC_SYSTEM, STRINGIZE_STRING_LOCAL( "mng_create_application_completed" ), MENGINE_DOCUMENT_FACTORABLE )
             ->addParameterInteger( STRINGIZE_STRING_LOCAL( "time" ), Helper::getSystemDurationTimestamp( mengine_create_application_timestamp ) )
             ->log();
 

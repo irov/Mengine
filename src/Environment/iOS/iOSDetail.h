@@ -74,11 +74,11 @@
                                      cancel:(void (^ _Nonnull)(void) _Nonnull)cancel;
 
 + (void)visitParameters:(NSDictionary<NSString *, id> * _Nonnull)parameters
-                 onBool:(void (^ _Nonnull)(NSString * _Nonnull key, BOOL value))onBool
-               onInteger:(void (^ _Nonnull)(NSString * _Nonnull key, int64_t value))onInteger
-                onDouble:(void (^ _Nonnull)(NSString * _Nonnull key, double value))onDouble
-                onString:(void (^ _Nonnull)(NSString * _Nonnull key, NSString * _Nonnull value))onString
-                  onNull:(void (^ _Nonnull)(NSString * _Nonnull key))onNull
-               onUnknown:(BOOL (^ _Nonnull)(NSString * _Nonnull key, id _Nonnull value))onUnknown;
+                forBool:(void (^ _Nonnull)(NSString * _Nonnull key, BOOL value))forBool
+              forInteger:(void (^ _Nonnull)(NSString * _Nonnull key, int64_t value))forInteger
+               forDouble:(void (^ _Nonnull)(NSString * _Nonnull key, double value))forDouble
+               forString:(void (^ _Nonnull)(NSString * _Nonnull key, NSString * _Nonnull value))forString
+                 forNull:(void (^ _Nonnull)(NSString * _Nonnull key))forNull
+              forUnknown:(BOOL (^ _Nonnull)(NSString * _Nonnull key, id _Nonnull value))forUnknown;
 
 @end

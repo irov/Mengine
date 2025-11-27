@@ -35,9 +35,4 @@ public class FinalApplication extends org.Mengine.Base.MengineApplication {
     public String getApplicationOptions() {
         return BuildConfig.MENGINE_APP_OPTIONS;
     }
-
-    @Override
-    public boolean hasAds() {
-        return BuildConfig.MENGINE_APP_HAS_ADS;
-    }
 }

@@ -7,6 +7,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     AnalyticsEventBuilder::AnalyticsEventBuilder()
+        : m_category( AEEC_CUSTOM )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -64,6 +65,16 @@ namespace Mengine
         return m_localContext;
     }
     //////////////////////////////////////////////////////////////////////////
+    void AnalyticsEventBuilder::setEventCategory( EAnalyticsEventCategory _category )
+    {
+        m_category = _category;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    EAnalyticsEventCategory AnalyticsEventBuilder::getEventCategory() const
+    {
+        return m_category;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void AnalyticsEventBuilder::addParameter( const ConstString & _name, const AnalyticsEventParameterInterfacePtr & _parameter )
     {
         m_context->addParameter( _name, _parameter );
@@ -104,11 +115,12 @@ namespace Mengine
         return this;
     }
     //////////////////////////////////////////////////////////////////////////
-    Timestamp AnalyticsEventBuilder::log()
+    Timestamp AnalyticsEventBuilder::log() const
     {
         AnalyticsEventInterfacePtr event = m_analyticsFactory->makeEvent( m_eventName, MENGINE_DOCUMENT_FACTORABLE );
 
         event->setContext( m_context );
+        event->setCategory( m_category );
 
         AnalyticsContextInterfacePtr resolve_globalContext = m_globalContext->resolveContext( MENGINE_DOCUMENT_FACTORABLE );
         event->setGlobalContext( resolve_globalContext );

@@ -31,7 +31,7 @@ namespace Mengine
         void logFlush() override;
 
     public:
-        AnalyticsEventBuilderInterfacePtr buildEvent( const ConstString & _eventName, const DocumentInterfacePtr & _doc ) override;
+        AnalyticsEventBuilderInterfacePtr buildEvent( EAnalyticsEventCategory _category, const ConstString & _eventName, const DocumentInterfacePtr & _doc ) override;
 
     public:
         AnalyticsContextInterfacePtr makeContext( const DocumentInterfacePtr & _doc ) override;

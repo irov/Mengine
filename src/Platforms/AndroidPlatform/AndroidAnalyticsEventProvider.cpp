@@ -9,6 +9,20 @@
 
 namespace Mengine
 {
+    namespace Detail
+    {
+        static const Char * getAndroidAnalyticsCategoryEnumName( EAnalyticsEventCategory _category )
+        {
+            switch( _category )
+            {
+            case AEEC_SYSTEM:
+                return "MengineAnalyticsEventCategory_System";
+            default:
+                return "MengineAnalyticsEventCategory_Custom";
+            }
+        }
+    }
+
     //////////////////////////////////////////////////////////////////////////
     AndroidAnalyticsEventProvider::AndroidAnalyticsEventProvider()
     {
@@ -73,7 +87,11 @@ namespace Mengine
                 Mengine_JNI_DeleteLocalRef( jenv, jobject_parameter );
             });
 
-        jobject jobject_category = Helper::AndroidGetJObjectEnum( jenv, "org/Mengine/Base/MengineAnalyticsEventCategory", "MengineAnalyticsEventCategory_Custom" );
+        EAnalyticsEventCategory eventCategory = _event->getCategory();
+
+        const Char * categoryEnumName = Detail::getAndroidAnalyticsCategoryEnumName( eventCategory );
+
+        jobject jobject_category = Helper::AndroidGetJObjectEnum( jenv, "org/Mengine/Base/MengineAnalyticsEventCategory", categoryEnumName );
 
         jclass jclass_MengineAnalyticsEventParam = Helper::AndroidEnvFindClass( jenv, "org/Mengine/Base/MengineParamAnalyticsEvent" );
 

@@ -10,6 +10,20 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        static iOSAnalyticsEventCategory getIOSAnalyticsCategory( EAnalyticsEventCategory _category )
+        {
+            switch( _category )
+            {
+            case AEEC_SYSTEM:
+                return iOSAnalyticsEventCategory_System;
+            default:
+                return iOSAnalyticsEventCategory_Custom;
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     iOSAnalyticsEventProvider::iOSAnalyticsEventProvider()
     {
     }
@@ -58,8 +72,12 @@ namespace Mengine
                 [parameters setValue:@(parameter_value_str) forKey:@(name_str)];
             } );
         } );
+
+        EAnalyticsEventCategory eventCategory = _event->getCategory();
+
+        iOSAnalyticsEventCategory iosCategory = Detail::getIOSAnalyticsCategory( eventCategory );
         
-        [iOSAnalytics event:@(eventName_str) category:iOSAnalyticsEventCategory_Custom params:parameters];
+        [iOSAnalytics event:@(eventName_str) category:iosCategory params:parameters];
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSAnalyticsEventProvider::onAnalyticsScreenView( const ConstString & _screenType, const ConstString & _screenName )

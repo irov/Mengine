@@ -4,7 +4,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     AnalyticsEvent::AnalyticsEvent()
-        : m_timestamp( 0 )
+        : m_category( AEEC_CUSTOM )
+        , m_timestamp( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -20,6 +21,16 @@ namespace Mengine
     const ConstString & AnalyticsEvent::getName() const
     {
         return m_name;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AnalyticsEvent::setCategory( EAnalyticsEventCategory _category )
+    {
+        m_category = _category;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    EAnalyticsEventCategory AnalyticsEvent::getCategory() const
+    {
+        return m_category;
     }
     //////////////////////////////////////////////////////////////////////////
     void AnalyticsEvent::setTimestamp( Timestamp _timestamp )
@@ -62,22 +73,22 @@ namespace Mengine
         return m_globalContext;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t AnalyticsEvent::getCountParameters() const
+    size_t AnalyticsEvent::getCountParameters() const
     {
-        uint32_t parametersCount = 0;
+        size_t parametersCount = 0;
 
-        uint32_t selfParametersCount = m_context->getCountParameters();
+        size_t selfParametersCount = m_context->getCountParameters();
         parametersCount += selfParametersCount;
 
         if( m_localContext != nullptr )
         {
-            uint32_t localParametersCount = m_localContext->getCountParameters();
+            size_t localParametersCount = m_localContext->getCountParameters();
             parametersCount += localParametersCount;
         }
 
         if( m_globalContext != nullptr )
         {
-            uint32_t globalParametersCount = m_globalContext->getCountParameters();
+            size_t globalParametersCount = m_globalContext->getCountParameters();
             parametersCount += globalParametersCount;
         }
 

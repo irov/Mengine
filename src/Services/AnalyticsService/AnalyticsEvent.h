@@ -22,6 +22,10 @@ namespace Mengine
         const ConstString & getName() const override;
 
     public:
+        void setCategory( EAnalyticsEventCategory _category ) override;
+        EAnalyticsEventCategory getCategory() const override;
+
+    public:
         void setTimestamp( Timestamp _timestamp ) override;
         Timestamp getTimestamp() const override;
 
@@ -38,11 +42,12 @@ namespace Mengine
         const AnalyticsContextInterfacePtr & getGlobalContext() const override;
 
     public:
-        uint32_t getCountParameters() const override;
+        size_t getCountParameters() const override;
         void foreachParameters( const LambdaEventParameter & _lambda ) const override;
 
     protected:
         ConstString m_name;
+        EAnalyticsEventCategory m_category;
 
         Timestamp m_timestamp;
 

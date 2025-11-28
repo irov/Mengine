@@ -19,12 +19,19 @@
 
     DTDCustomEventParameters * devtodev_parameters = [[DTDCustomEventParameters alloc] init];
 
-    for (NSString * key in parameters)
-    {
-        id value = parameters[key];
-        
+    [iOSDetail visitParameters:parameters forBool:^(NSString * key, bool value) {
+        [devtodev_parameters addBool:key value:value];
+    } forInteger:^(NSString * key, int64_t value) {
+        [devtodev_parameters addInt:key value:value];
+    } forDouble:^(NSString * key, double value) {
+        [devtodev_parameters addDouble:key value:value];
+    } forString:^(NSString * key, NSString * value) {
         [devtodev_parameters addString:key value:value];
-    }
+    } forNull:^(NSString * key) {
+        // DevToDev does not have a specific null type, so we can skip or add as empty string
+    } forUnknown:^(NSString * key, id value) {
+        // Handle unknown types if necessary
+    }];
 
     [DTDAnalytics customEvent:eventName withParameters:devtodev_parameters];
 }

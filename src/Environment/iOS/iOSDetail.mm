@@ -350,11 +350,11 @@
 
 + (void)visitParameters:(NSDictionary<NSString *, id> * _Nonnull)parameters
                 forBool:(void (^ _Nonnull)(NSString * _Nonnull key, BOOL value))forBool
-              forInteger:(void (^ _Nonnull)(NSString * _Nonnull key, int64_t value))forInteger
-               forDouble:(void (^ _Nonnull)(NSString * _Nonnull key, double value))forDouble
-               forString:(void (^ _Nonnull)(NSString * _Nonnull key, NSString * _Nonnull value))forString
-                 forNull:(void (^ _Nonnull)(NSString * _Nonnull key))forNull
-              forUnknown:(BOOL (^ _Nonnull)(NSString * _Nonnull key, id _Nonnull value))forUnknown {
+             forInteger:(void (^ _Nonnull)(NSString * _Nonnull key, int64_t value))forInteger
+              forDouble:(void (^ _Nonnull)(NSString * _Nonnull key, double value))forDouble
+              forString:(void (^ _Nonnull)(NSString * _Nonnull key, NSString * _Nonnull value))forString
+                forNull:(void (^ _Nonnull)(NSString * _Nonnull key))forNull
+             forUnknown:(void (^ _Nonnull)(NSString * _Nonnull key, id _Nonnull value))forUnknown {
     if (parameters == nil) {
         return;
     }
@@ -372,6 +372,7 @@
             
             if (valueTypeId == boolenTypeId) {
                 BOOL b = [value boolValue];
+                
                 forBool(key, b);
             } else if (valueTypeId == numberTypeId) {
                 CFNumberType numberType = CFNumberGetType((__bridge CFNumberRef)value);
@@ -387,40 +388,36 @@
                     case kCFNumberLongType:
                     case kCFNumberLongLongType: {
                         int64_t n = [value longLongValue];
+                        
                         forInteger(key, n);
                     } break;
-                        
                     case kCFNumberFloat32Type:
                     case kCFNumberFloat64Type:
                     case kCFNumberFloatType:
                     case kCFNumberDoubleType: {
                         double d = [value doubleValue];
+                        
                         forDouble(key, d);
                     } break;
-                    
                     case kCFNumberCFIndexType:
                     case kCFNumberNSIntegerType:
                     case kCFNumberCGFloatType: {
                         double d = [value doubleValue];
+                        
                         forDouble(key, d);
                     } break;
                 }
             } else {
-                BOOL handled = forUnknown(key, value);
-                if (handled == NO) {
-                    // Skip unsupported type
-                }
+                forUnknown(key, value);
             }
         } else if ([value isKindOfClass:[NSString class]] == YES) {
             NSString * s = (NSString *)value;
+            
             forString(key, s);
         } else if ([value isKindOfClass:[NSNull class]]) {
             forNull(key);
         } else {
-            BOOL handled = forUnknown(key, value);
-            if (handled == NO) {
-                // Skip unsupported type
-            }
+            forUnknown(key, value);
         }
     }
 }

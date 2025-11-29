@@ -434,7 +434,7 @@
     [points setObject:point forKey:name];
 }
 
-- (void)onConfig:(NSDictionary * _Nonnull)config {
+- (void)onConfig:(NSDictionary * _Nonnull)config ids:(NSDictionary<NSString *, NSNumber *> * _Nonnull)ids {
     @synchronized (self) {
         NSMutableDictionary * interstitialPoints = [NSMutableDictionary dictionary];
         NSMutableDictionary * rewardedPoints = [NSMutableDictionary dictionary];

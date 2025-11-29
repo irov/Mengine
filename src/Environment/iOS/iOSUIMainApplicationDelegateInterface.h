@@ -28,7 +28,7 @@
 
 - (void)eventLog:(AppleLogRecordParam * _Nonnull)record;
 
-- (void)eventConfig:(NSDictionary * _Nonnull)config;
+- (void)eventConfig:(NSDictionary * _Nonnull)config ids:(NSDictionary<NSString *, NSNumber *> * _Nonnull)ids;
 
 - (void)eventAnalytic:(NSString * _Nonnull)event category:(iOSAnalyticsEventCategory)category params:(NSDictionary * _Nonnull)params;
 - (void)eventAnalyticScreen:(NSString * _Nonnull)name type:(NSString * _Nonnull)type;

@@ -641,7 +641,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32PlatformService::tickPlatform( float _frameTime, bool _render, bool _flush, bool _pause )
+    bool Win32PlatformService::tickPlatform( float _frameTime, bool _render, bool _flush, bool _pause )
     {
         MENGINE_UNUSED( _frameTime );
 
@@ -650,7 +650,7 @@ namespace Mengine
         {
             ::Sleep( 200 );
 
-            return;
+            return false;
         }
 #endif
 
@@ -715,6 +715,8 @@ namespace Mengine
                 }
             }
         }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32PlatformService::loopPlatform()

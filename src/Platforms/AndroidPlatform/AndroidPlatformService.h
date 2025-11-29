@@ -58,7 +58,7 @@ namespace Mengine
         bool runPlatform() override;
         void loopPlatform() override;
         bool updatePlatform() override;
-        void tickPlatform( float _frameTime, bool _render, bool _flush, bool _pause ) override;
+        bool tickPlatform( float _frameTime, bool _render, bool _flush, bool _pause ) override;
         void stopPlatform()	override;
         void freezePlatform( bool _tick, bool _render, bool _sound ) override;
         void unfreezePlatform( bool _tick, bool _render, bool _sound ) override;

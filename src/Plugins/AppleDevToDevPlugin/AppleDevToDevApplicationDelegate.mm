@@ -2,8 +2,9 @@
 
 #import "Environment/Apple/AppleBundle.h"
 
+#import "Environment/Apple/AppleDetail.h"
+
 #import "Environment/iOS/iOSApplication.h"
-#import "Environment/iOS/iOSDetail.h"
 #import "Environment/iOS/iOSLog.h"
 #import "Environment/iOS/iOSAnalyticsEventCategory.h"
 
@@ -19,7 +20,7 @@
 
     DTDCustomEventParameters * devtodev_parameters = [[DTDCustomEventParameters alloc] init];
 
-    [iOSDetail visitParameters:parameters forBool:^(NSString * key, bool value) {
+    [AppleDetail visitParameters:parameters forBool:^(NSString * key, BOOL value) {
         [devtodev_parameters addBool:key value:value];
     } forInteger:^(NSString * key, int64_t value) {
         [devtodev_parameters addInt:key value:value];

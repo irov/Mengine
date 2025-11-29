@@ -43,7 +43,7 @@
 + (void)appTrackingTransparency:(iOSAppTrackingTransparencyParam * _Nonnull)tracking;
 + (void)transparencyConsent:(iOSTransparencyConsentParam * _Nonnull)consent;
 + (void)log:(AppleLogRecordParam * _Nonnull)record;
-+ (void)config:(NSDictionary * _Nonnull)config;
++ (void)config:(NSDictionary * _Nonnull)config ids:(NSDictionary<NSString *, NSNumber *> * _Nonnull)ids;
 
 + (void)addDidBecomeActiveOperationWithCompletion:(void (^ _Nonnull)(void (^ _Nonnull completion)(void)))block;
 

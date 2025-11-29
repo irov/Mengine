@@ -70,6 +70,7 @@
 
 #include <sys/stat.h>
 #include <dlfcn.h>
+#include <unistd.h>
 
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_SETLOCALE_ENABLE
@@ -882,7 +883,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::tickPlatform( float _frameTime, bool _render, bool _flush, bool _pause )
+    bool AndroidPlatformService::tickPlatform( float _frameTime, bool _render, bool _flush, bool _pause )
     {
         MENGINE_UNUSED( _pause );
         MENGINE_UNUSED( _flush );
@@ -907,17 +908,17 @@ namespace Mengine
 
         if( m_active == false )
         {
-            return;
+            return false;
         }
 
         if( m_activityState != EAS_RESUME && m_activityState != EAS_START )
         {
-            return;
+            return false;
         }
 
         if( m_freezedRender != 0 || _render == false )
         {
-            return;
+            return false;
         }
 
         MENGINE_THREAD_MUTEX_SCOPE( m_nativeWindowMutex );
@@ -925,7 +926,7 @@ namespace Mengine
 
         if( m_nativeWindow == nullptr || m_eglSurface == EGL_NO_SURFACE || m_eglContext == EGL_NO_CONTEXT )
         {
-            return;
+            return false;
         }
 
         bool sucessful = APPLICATION_SERVICE()
@@ -943,7 +944,7 @@ namespace Mengine
                 , ::eglGetError()
             );
 
-            return;
+            return false;
         }
 
         if( ::eglSwapBuffers( m_eglDisplay, m_eglSurface ) == EGL_FALSE )
@@ -952,8 +953,10 @@ namespace Mengine
                 , ::eglGetError()
             );
 
-            return;
+            return false;
         }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::loopPlatform()
@@ -973,7 +976,10 @@ namespace Mengine
 
             m_prevTime = currentTime;
 
-            this->tickPlatform( frameTime, true, true, true );
+            if( this->tickPlatform( frameTime, true, true, true ) == false )
+            {
+                usleep( 100000 );
+            }
         }
     }
     //////////////////////////////////////////////////////////////////////////

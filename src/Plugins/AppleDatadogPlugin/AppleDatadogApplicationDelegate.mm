@@ -214,12 +214,26 @@
 
 #pragma mark - iOSPluginConfigDelegateInterface
 
-- (void)onConfig:(NSDictionary * _Nonnull)config {
-#ifdef MENGINE_RELEASE
-    self.m_enableDebugMessage = [[config objectForKey:@"datadog_debug_message"] boolValue];
-#endif
+- (void)onConfig:(NSDictionary * _Nonnull)config ids:(NSDictionary<NSString *, NSNumber *> * _Nonnull)ids {
+    NSDictionary * datadog_debug_message = [config objectForKey:@"datadog_debug_message"];
     
-    self.m_enableInfoMessage = [[config objectForKey:@"datadog_info_message"] boolValue];
+    if (datadog_debug_message != nil) {
+        BOOL enable = [[datadog_debug_message objectForKey:@"enable"] boolValue];
+        
+        self.m_enableDebugMessage = enable;
+    }
+    
+    NSDictionary * datadog_info_message = [config objectForKey:@"datadog_info_message"];
+    
+    if (datadog_info_message != nil) {
+        BOOL enable = [[datadog_info_message objectForKey:@"enable"] boolValue];
+        
+        self.m_enableInfoMessage = enable;
+    }
+    
+    if (self.m_logger != nil) {
+        [self.m_logger addAttributeForKey:@"mng_ids" value:ids];
+    }
 }
 
 #pragma mark - iOSPluginTransparencyConsentDelegateInterface

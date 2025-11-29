@@ -111,6 +111,7 @@
     NSArray<NSString *> * remoteKeys = [remoteConfig allKeysFromSource:FIRRemoteConfigSourceDefault];
     
     NSMutableDictionary * configs = [NSMutableDictionary dictionary];
+    NSMutableDictionary<NSString *, NSNumber *> * ids = [NSMutableDictionary dictionary];
     
     for( NSString * key in remoteKeys ) {
         FIRRemoteConfigValue * value = [remoteConfig configValueForKey:key];
@@ -130,13 +131,19 @@
         }
         
         [configs setObject:json forKey:key];
+        
+        id idValueObj = [json objectForKey:@"id"];
+        
+        if (idValueObj != nil && [idValueObj isKindOfClass:[NSNumber class]] == YES) {
+            [ids setObject:(NSNumber *)idValueObj forKey:key];
+        }
     }
     
     @synchronized (self) {
         self.m_configs = configs;
     }
     
-    [iOSDetail config:configs];
+    [iOSDetail config:configs ids:ids];
 }
 
 - (BOOL)hasRemoteConfig:(NSString *)key {

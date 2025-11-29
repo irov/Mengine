@@ -90,7 +90,6 @@ namespace Mengine
         , m_prevTime( 0.0 )
         , m_pauseUpdatingTime( -1.f )
         , m_active( false )
-        , m_sleepMode( true )
         , m_freezedTick( 0 )
         , m_freezedRender( 0 )
         , m_freezedSound( 0 )
@@ -772,17 +771,15 @@ namespace Mengine
             return false;
         }
 
-        this->tickPlatform( 0.f, false, false, false );
+        this->tickPlatform( 0.f );
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_RUN );
         
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void iOSPlatformService::tickPlatform( float _frameTime, bool _render, bool _flush, bool _pause )
+    void iOSPlatformService::tickPlatform( float _frameTime )
     {
-        MENGINE_UNUSED( _pause );
-        
         bool updating = APPLICATION_SERVICE()
             ->beginUpdate( _frameTime );
 
@@ -801,27 +798,51 @@ namespace Mengine
         APPLICATION_SERVICE()
             ->endUpdate();
 
-        if( m_freezedRender == 0 && this->isNeedWindowRender() == true && _render == true )
+        if( updating == false )
         {
-            bool sucessful = APPLICATION_SERVICE()
-                ->render();
-
-            if( sucessful == true && _flush == true )
+            if( m_pauseUpdatingTime < 0.f )
             {
-                APPLICATION_SERVICE()
-                    ->flush();
-
-                if( m_sdlWindow != nullptr )
-                {
-                    SDL_ShowWindow( m_sdlWindow );
-
-                    if( SDL_GetWindowFlags( m_sdlWindow ) & SDL_WINDOW_OPENGL )
-                    {
-                        SDL_GL_SwapWindow( m_sdlWindow );
-                    }
-                }
+                m_pauseUpdatingTime = _frameTime;
             }
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool iOSPlatformService::renderPlatform()
+    {
+        if( m_freezedRender != 0 )
+        {
+            return false;
+        }
+
+        if( this->isNeedWindowRender() == false )
+        {
+            return false;
+        }
+
+        bool sucessful = APPLICATION_SERVICE()
+            ->render();
+
+        if( sucessful == false )
+        {
+            return false;
+        }
+
+        APPLICATION_SERVICE()
+            ->flush();
+
+        if( m_sdlWindow == nullptr )
+        {
+            return false;
+        }
+
+        SDL_ShowWindow( m_sdlWindow );
+
+        if( SDL_GetWindowFlags( m_sdlWindow ) & SDL_WINDOW_OPENGL )
+        {
+            SDL_GL_SwapWindow( m_sdlWindow );
+        }
+        
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::loopPlatform()
@@ -840,8 +861,22 @@ namespace Mengine
             float frameTime = (float)(currentTime - m_prevTime);
             
             m_prevTime = currentTime;
+            
+            if( m_active == false )
+            {
+                SDL_Delay( 100 );
 
-            this->tickPlatform( frameTime, true, true, true );
+                continue;
+            }
+
+            this->tickPlatform( frameTime );
+            
+            if( this->renderPlatform() == false )
+            {
+                SDL_Delay( 100 );
+                
+                continue;
+            }
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1010,16 +1045,6 @@ namespace Mengine
             SOUND_SERVICE()
                 ->setMute( STRINGIZE_STRING_LOCAL( "FreezePlatform" ), false );
         }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void iOSPlatformService::setSleepMode( bool _sleepMode )
-    {
-        m_sleepMode = _sleepMode;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool iOSPlatformService::getSleepMode() const
-    {
-        return m_sleepMode;
     }
     //////////////////////////////////////////////////////////////////////////
     Timestamp iOSPlatformService::getPlatfomTime() const

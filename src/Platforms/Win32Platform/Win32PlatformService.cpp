@@ -112,7 +112,6 @@ namespace Mengine
         , m_freezedRender( 0 )
         , m_freezedSound( 0 )
         , m_hIcon( NULL )
-        , m_sleepMode( true )
         , m_windowExposed( false )
         , m_pauseUpdatingTime( -1.f )
         , m_prevTime( 0.0 )
@@ -585,16 +584,6 @@ namespace Mengine
         ::DebugBreak();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32PlatformService::setSleepMode( bool _sleepMode )
-    {
-        m_sleepMode = _sleepMode;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Win32PlatformService::getSleepMode() const
-    {
-        return m_sleepMode;
-    }
-    //////////////////////////////////////////////////////////////////////////
     Timestamp Win32PlatformService::getPlatfomTime() const
     {
         Timestamp currentTime = Helper::getSystemTimestamp();
@@ -618,7 +607,7 @@ namespace Mengine
             return false;
         }
 
-        this->tickPlatform( 0.f, false, false, false );
+        this->tickPlatform( 0.f );
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_RUN );
 
@@ -641,18 +630,9 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32PlatformService::tickPlatform( float _frameTime, bool _render, bool _flush, bool _pause )
+    void Win32PlatformService::tickPlatform( float _frameTime )
     {
         MENGINE_UNUSED( _frameTime );
-
-#if defined(MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA)
-        if( m_sessionLock == true )
-        {
-            ::Sleep( 200 );
-
-            return false;
-        }
-#endif
 
         bool updating = APPLICATION_SERVICE()
             ->beginUpdate( _frameTime );
@@ -672,49 +652,39 @@ namespace Mengine
         APPLICATION_SERVICE()
             ->endUpdate();
 
-        if( m_freezedRender == false && this->isNeedWindowRender() == true && _render == true )
+        if( updating == false )
         {
-            bool sucessful = APPLICATION_SERVICE()
-                ->render();
-
-            if( sucessful == true && _flush == true )
+            if( m_pauseUpdatingTime < 0.f )
             {
-                APPLICATION_SERVICE()
-                    ->flush();
-            }
-
-            m_windowExposed = false;
-        }
-
-        if( _pause == true )
-        {
-            if( updating == false )
-            {
-                if( m_pauseUpdatingTime < 0.f )
-                {
-                    m_pauseUpdatingTime = _frameTime;
-                }
-
-                if( m_freezedTick != 0 || m_freezedRender != 0 || m_sleepMode == true )
-                {
-                    ::Sleep( 100 );
-                }
-                else
-                {
-                    ::Sleep( 1 );
-                }
-            }
-            else
-            {
-                bool OPTION_maxfps = HAS_OPTION( "maxfps" );
-
-                if( APPLICATION_SERVICE()
-                    ->getVSync() == false && OPTION_maxfps == false )
-                {
-                    ::Sleep( 1 );
-                }
+                m_pauseUpdatingTime = _frameTime;
             }
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32PlatformService::renderPlatform()
+    {
+        if( m_freezedRender != 0 )
+        {
+            return false;
+        }
+
+        if( this->isNeedWindowRender() == false )
+        {
+            return false;
+        }
+
+        bool sucessful = APPLICATION_SERVICE()
+            ->render();
+
+        if( sucessful == false )
+        {
+            return false;
+        }
+
+        APPLICATION_SERVICE()
+            ->flush();
+            
+        m_windowExposed = false;
 
         return true;
     }
@@ -740,7 +710,38 @@ namespace Mengine
 
             m_prevTime = currentTime;
 
-            this->tickPlatform( frameTime, true, true, true );
+#if defined(MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA)
+            if( m_sessionLock == true )
+            {
+                ::Sleep( 200 );
+
+                continue;
+            }
+#endif
+
+            if( m_active == false )
+            {
+                ::Sleep( 100 );
+
+                continue;
+            }
+
+            this->tickPlatform( frameTime );
+
+            if( this->renderPlatform() == false )
+            {
+                ::Sleep( 100 );
+
+                continue;
+            }
+
+            bool OPTION_maxfps = HAS_OPTION( "maxfps" );
+
+            if( APPLICATION_SERVICE()
+                ->getVSync() == false && OPTION_maxfps == false )
+            {
+                ::Sleep( 1 );
+            }
         }
     }
     //////////////////////////////////////////////////////////////////////////

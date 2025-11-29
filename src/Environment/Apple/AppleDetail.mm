@@ -272,26 +272,32 @@ static volatile BOOL OPERATION_QUEUES_WORKING = YES;
     return YES;
 }
 
-+ (void)getParamsFromNSDictionary:(NSDictionary *)_in outParams:(Mengine::Params * const)_out {
-    if (_in == nil) {
++ (void)visitParameters:(NSDictionary<NSString *, id> * _Nonnull)parameters
+                forBool:(void (^ _Nonnull)(NSString * _Nonnull key, BOOL value))forBool
+             forInteger:(void (^ _Nonnull)(NSString * _Nonnull key, int64_t value))forInteger
+              forDouble:(void (^ _Nonnull)(NSString * _Nonnull key, double value))forDouble
+              forString:(void (^ _Nonnull)(NSString * _Nonnull key, NSString * _Nonnull value))forString
+                forNull:(void (^ _Nonnull)(NSString * _Nonnull key))forNull
+             forUnknown:(void (^ _Nonnull)(NSString * _Nonnull key, id _Nonnull value))forUnknown {
+    if (parameters == nil) {
         return;
     }
     
     CFTypeID boolenTypeId = CFBooleanGetTypeID();
     CFTypeID numberTypeId = CFNumberGetTypeID();
     
-    [_in enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL * stop) {
-        Mengine::ConstString key_cstr = [AppleString NSStringToConstString:key];
+    for (NSString * key in parameters) {
+        id value = [parameters objectForKey:key];
         
-        Mengine::ParamVariant variant;
-        
-        if ([value isKindOfClass:[NSNumber class]] == YES) {
+        if (value == nil) {
+            forNull(key);
+        } else if ([value isKindOfClass:[NSNumber class]] == YES) {
             CFTypeID valueTypeId = CFGetTypeID((__bridge CFTypeRef)(value));
             
             if (valueTypeId == boolenTypeId) {
-                bool b = [value boolValue];
+                BOOL b = [value boolValue];
                 
-                variant = Mengine::ParamBool(b);
+                forBool(key, b);
             } else if (valueTypeId == numberTypeId) {
                 CFNumberType numberType = CFNumberGetType((__bridge CFNumberRef)value);
                 
@@ -307,38 +313,208 @@ static volatile BOOL OPERATION_QUEUES_WORKING = YES;
                     case kCFNumberLongLongType: {
                         int64_t n = [value longLongValue];
                         
-                        variant = Mengine::ParamInteger(n);
-                    }break;
-                        
+                        forInteger(key, n);
+                    } break;
                     case kCFNumberFloat32Type:
                     case kCFNumberFloat64Type:
                     case kCFNumberFloatType:
                     case kCFNumberDoubleType: {
                         double d = [value doubleValue];
                         
-                        variant = Mengine::ParamDouble(d);
-                    }break;
-                    
+                        forDouble(key, d);
+                    } break;
                     case kCFNumberCFIndexType:
                     case kCFNumberNSIntegerType:
                     case kCFNumberCGFloatType: {
+                        double d = [value doubleValue];
                         
-                    }break;
+                        forDouble(key, d);
+                    } break;
                 }
+            } else {
+                forUnknown(key, value);
             }
         } else if ([value isKindOfClass:[NSString class]] == YES) {
-            Mengine::ConstString s = [AppleString NSStringToConstString:value];
+            NSString * s = (NSString *)value;
             
-            variant = Mengine::ParamConstString(s);
+            forString(key, s);
         } else if ([value isKindOfClass:[NSNull class]]) {
-            variant = Mengine::ParamNull();
+            forNull(key);
         } else {
-            const Mengine::Char * value_str = [[NSString stringWithFormat:@"%@", value] UTF8String];
-            
-            variant = Mengine::ParamString(value_str);
+            forUnknown(key, value);
         }
+    }
+}
+
++ (void)visitValues:(NSSet<id> * _Nonnull)values
+            forBool:(void (^ _Nonnull)(BOOL value))forBool
+         forInteger:(void (^ _Nonnull)(int64_t value))forInteger
+          forDouble:(void (^ _Nonnull)(double value))forDouble
+          forString:(void (^ _Nonnull)(NSString * _Nonnull value))forString
+            forNull:(void (^ _Nonnull)(void))forNull
+         forUnknown:(void (^ _Nonnull)(id _Nonnull value))forUnknown {
+    if (values == nil) {
+        return;
+    }
+    
+    CFTypeID boolenTypeId = CFBooleanGetTypeID();
+    CFTypeID numberTypeId = CFNumberGetTypeID();
+    
+    for (id value in values) {
+        if (value == nil || [value isKindOfClass:[NSNull class]]) {
+            forNull();
+        } else if ([value isKindOfClass:[NSNumber class]] == YES) {
+            CFTypeID valueTypeId = CFGetTypeID((__bridge CFTypeRef)(value));
+            
+            if (valueTypeId == boolenTypeId) {
+                BOOL b = [value boolValue];
+                
+                forBool(b);
+            } else if (valueTypeId == numberTypeId) {
+                CFNumberType numberType = CFNumberGetType((__bridge CFNumberRef)value);
+                
+                switch (numberType) {
+                    case kCFNumberSInt8Type:
+                    case kCFNumberSInt16Type:
+                    case kCFNumberSInt32Type:
+                    case kCFNumberSInt64Type:
+                    case kCFNumberCharType:
+                    case kCFNumberShortType:
+                    case kCFNumberIntType:
+                    case kCFNumberLongType:
+                    case kCFNumberLongLongType: {
+                        int64_t n = [value longLongValue];
+                        
+                        forInteger(n);
+                    } break;
+                    case kCFNumberFloat32Type:
+                    case kCFNumberFloat64Type:
+                    case kCFNumberFloatType:
+                    case kCFNumberDoubleType:
+                    case kCFNumberCFIndexType:
+                    case kCFNumberNSIntegerType:
+                    case kCFNumberCGFloatType: {
+                        double d = [value doubleValue];
+                        
+                        forDouble(d);
+                    } break;
+                }
+            } else {
+                forUnknown(value);
+            }
+        } else if ([value isKindOfClass:[NSString class]] == YES) {
+            NSString * s = (NSString *)value;
+            
+            forString(s);
+        } else {
+            forUnknown(value);
+        }
+    }
+}
+
++ (void)visitValues:(NSArray<id> * _Nonnull)values
+            forBool:(void (^ _Nonnull)(BOOL value))forBool
+         forInteger:(void (^ _Nonnull)(int64_t value))forInteger
+          forDouble:(void (^ _Nonnull)(double value))forDouble
+          forString:(void (^ _Nonnull)(NSString * _Nonnull value))forString
+            forNull:(void (^ _Nonnull)(void))forNull
+         forUnknown:(void (^ _Nonnull)(id _Nonnull value))forUnknown {
+    if (values == nil) {
+        return;
+    }
+    
+    CFTypeID boolenTypeId = CFBooleanGetTypeID();
+    CFTypeID numberTypeId = CFNumberGetTypeID();
+    
+    for (id value in values) {
+        if (value == nil || [value isKindOfClass:[NSNull class]]) {
+            forNull();
+        } else if ([value isKindOfClass:[NSNumber class]] == YES) {
+            CFTypeID valueTypeId = CFGetTypeID((__bridge CFTypeRef)(value));
+            
+            if (valueTypeId == boolenTypeId) {
+                BOOL b = [value boolValue];
+                
+                forBool(b);
+            } else if (valueTypeId == numberTypeId) {
+                CFNumberType numberType = CFNumberGetType((__bridge CFNumberRef)value);
+                
+                switch (numberType) {
+                    case kCFNumberSInt8Type:
+                    case kCFNumberSInt16Type:
+                    case kCFNumberSInt32Type:
+                    case kCFNumberSInt64Type:
+                    case kCFNumberCharType:
+                    case kCFNumberShortType:
+                    case kCFNumberIntType:
+                    case kCFNumberLongType:
+                    case kCFNumberLongLongType: {
+                        int64_t n = [value longLongValue];
+                        
+                        forInteger(n);
+                    } break;
+                    case kCFNumberFloat32Type:
+                    case kCFNumberFloat64Type:
+                    case kCFNumberFloatType:
+                    case kCFNumberDoubleType:
+                    case kCFNumberCFIndexType:
+                    case kCFNumberNSIntegerType:
+                    case kCFNumberCGFloatType: {
+                        double d = [value doubleValue];
+                        
+                        forDouble(d);
+                    } break;
+                }
+            } else {
+                forUnknown(value);
+            }
+        } else if ([value isKindOfClass:[NSString class]] == YES) {
+            NSString * s = (NSString *)value;
+            
+            forString(s);
+        } else {
+            forUnknown(value);
+        }
+    }
+}
+
++ (void)getParamsFromNSDictionary:(NSDictionary *)_in outParams:(Mengine::Params * const)_out {
+    if (_in == nil) {
+        return;
+    }
+    
+    [AppleDetail visitParameters:_in forBool:^(NSString * key, BOOL value) {
+        Mengine::ConstString key_cstr = [AppleString NSStringToConstString:key];
+        Mengine::ParamVariant variant = Mengine::ParamBool(value);
         
-        _out->emplace( key_cstr, variant );
+        _out->emplace(key_cstr, variant);
+    } forInteger:^(NSString * key, int64_t value) {
+        Mengine::ConstString key_cstr = [AppleString NSStringToConstString:key];
+        Mengine::ParamVariant variant = Mengine::ParamInteger(value);
+        
+        _out->emplace(key_cstr, variant);
+    } forDouble:^(NSString * key, double value) {
+        Mengine::ConstString key_cstr = [AppleString NSStringToConstString:key];
+        Mengine::ParamVariant variant = Mengine::ParamDouble(value);
+        
+        _out->emplace(key_cstr, variant);
+    } forString:^(NSString * key, NSString * value) {
+        Mengine::ConstString key_cstr = [AppleString NSStringToConstString:key];
+        Mengine::ConstString s = [AppleString NSStringToConstString:value];
+        Mengine::ParamVariant variant = Mengine::ParamConstString(s);
+        
+        _out->emplace(key_cstr, variant);
+    } forNull:^(NSString * key) {
+        Mengine::ConstString key_cstr = [AppleString NSStringToConstString:key];
+        Mengine::ParamVariant variant = Mengine::ParamNull();
+        
+        _out->emplace(key_cstr, variant);
+    } forUnknown:^(NSString * key, id value) {
+        Mengine::ConstString key_cstr = [AppleString NSStringToConstString:key];
+        const Mengine::Char * value_str = [[NSString stringWithFormat:@"%@", value] UTF8String];
+        Mengine::ParamVariant variant = Mengine::ParamString(value_str);
+        
+        _out->emplace(key_cstr, variant);
     }];
 }
 

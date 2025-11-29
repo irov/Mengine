@@ -118,65 +118,30 @@ namespace Mengine
             PyObject * wrap( pybind::kernel_interface * _kernel, pybind::type_cast_result<value_type>::TCastRef _value ) override
             {
                 PyObject * py_dict = _kernel->dict_new();
+                __block bool error = false;
                 
-                CFTypeID boolenTypeId = CFBooleanGetTypeID();
-                CFTypeID numberTypeId = CFNumberGetTypeID();
-                
-                for (NSString * key in _value) {
-                    id value = [_value objectForKey:key];
-                    
+                [AppleDetail visitParameters:_value forBool:^(NSString * key, BOOL value) {
                     PyObject * py_key = pybind::ptr( _kernel, key );
-                    
-                    if ([value isKindOfClass:[NSNumber class]] == YES) {
-                        CFTypeID valueTypeId = CFGetTypeID((__bridge CFTypeRef)(value));
-                        
-                        if (valueTypeId == boolenTypeId) {
-                            bool b = [value boolValue];
-                            
-                            pybind::dict_setobject_t( _kernel, py_dict, py_key, b );
-                        } else if (valueTypeId == numberTypeId) {
-                            CFNumberType numberType = CFNumberGetType((__bridge CFNumberRef)value);
-                            
-                            switch (numberType) {
-                                case kCFNumberSInt8Type:
-                                case kCFNumberSInt16Type:
-                                case kCFNumberSInt32Type:
-                                case kCFNumberSInt64Type:
-                                case kCFNumberCharType:
-                                case kCFNumberShortType:
-                                case kCFNumberIntType:
-                                case kCFNumberLongType:
-                                case kCFNumberLongLongType: {
-                                    int64_t n = [value longLongValue];
-                                    
-                                    pybind::dict_setobject_t( _kernel, py_dict, py_key, n );
-                                }break;
-                                    
-                                case kCFNumberFloat32Type:
-                                case kCFNumberFloat64Type:
-                                case kCFNumberFloatType:
-                                case kCFNumberDoubleType: {
-                                    double d = [value doubleValue];
-                                    
-                                    pybind::dict_setobject_t( _kernel, py_dict, py_key, d );
-                                }break;
-                                
-                                case kCFNumberCFIndexType:
-                                case kCFNumberNSIntegerType:
-                                case kCFNumberCGFloatType: {
-                                    
-                                }break;
-                            }
-                        }
-                    } else if ([value isKindOfClass:[NSString class]] == YES) {
-                        NSString * s = (NSString *)value;
-                        
-                        pybind::dict_setobject_t( _kernel, py_dict, py_key, s );
-                    } else if ([value isKindOfClass:[NSNull class]]) {
-                        //Empty (???)
-                    } else {
-                        return nullptr;
-                    }
+                    pybind::dict_setobject_t( _kernel, py_dict, py_key, (bool)value );
+                } forInteger:^(NSString * key, int64_t value) {
+                    PyObject * py_key = pybind::ptr( _kernel, key );
+                    pybind::dict_setobject_t( _kernel, py_dict, py_key, value );
+                } forDouble:^(NSString * key, double value) {
+                    PyObject * py_key = pybind::ptr( _kernel, key );
+                    pybind::dict_setobject_t( _kernel, py_dict, py_key, value );
+                } forString:^(NSString * key, NSString * value) {
+                    PyObject * py_key = pybind::ptr( _kernel, key );
+                    pybind::dict_setobject_t( _kernel, py_dict, py_key, value );
+                } forNull:^(NSString * key) {
+                    PyObject * py_key = pybind::ptr( _kernel, key );
+                    PyObject * py_none = _kernel->ret_none();
+                    pybind::dict_setobject_t( _kernel, py_dict, py_key, py_none );
+                } forUnknown:^(NSString * key, id value) {
+                    error = true;
+                }];
+                
+                if (error == true) {
+                    return nullptr;
                 }
 
                 return py_dict;
@@ -247,61 +212,25 @@ namespace Mengine
             PyObject * wrap( pybind::kernel_interface * _kernel, pybind::type_cast_result<value_type>::TCastRef _value ) override
             {
                 PyObject * py_set = _kernel->set_new();
+                __block bool error = false;
                 
-                CFTypeID boolenTypeId = CFBooleanGetTypeID();
-                CFTypeID numberTypeId = CFNumberGetTypeID();
+                [AppleDetail visitValues:_value forBool:^(BOOL value) {
+                    pybind::set_set_t( _kernel, py_set, (bool)value );
+                } forInteger:^(int64_t value) {
+                    pybind::set_set_t( _kernel, py_set, value );
+                } forDouble:^(double value) {
+                    pybind::set_set_t( _kernel, py_set, value );
+                } forString:^(NSString * value) {
+                    pybind::set_set_t( _kernel, py_set, value );
+                } forNull:^(void) {
+                    PyObject * py_none = _kernel->ret_none();
+                    pybind::set_set_t( _kernel, py_set, py_none );
+                } forUnknown:^(id value) {
+                    error = true;
+                }];
                 
-                for (id value in _value) {
-                    if ([value isKindOfClass:[NSNumber class]] == YES) {
-                        CFTypeID valueTypeId = CFGetTypeID((__bridge CFTypeRef)(value));
-                        
-                        if (valueTypeId == boolenTypeId) {
-                            bool b = [value boolValue];
-                            
-                            pybind::set_set_t( _kernel, py_set, b );
-                        } else if (valueTypeId == numberTypeId) {
-                            CFNumberType numberType = CFNumberGetType((__bridge CFNumberRef)value);
-                            
-                            switch (numberType) {
-                                case kCFNumberSInt8Type:
-                                case kCFNumberSInt16Type:
-                                case kCFNumberSInt32Type:
-                                case kCFNumberSInt64Type:
-                                case kCFNumberCharType:
-                                case kCFNumberShortType:
-                                case kCFNumberIntType:
-                                case kCFNumberLongType:
-                                case kCFNumberLongLongType: {
-                                    int64_t n = [value longLongValue];
-                                    
-                                    pybind::set_set_t( _kernel, py_set, n );
-                                }break;
-                                    
-                                case kCFNumberFloat32Type:
-                                case kCFNumberFloat64Type:
-                                case kCFNumberFloatType:
-                                case kCFNumberDoubleType: {
-                                    double d = [value doubleValue];
-                                    
-                                    pybind::set_set_t( _kernel, py_set, d );
-                                }break;
-                                
-                                case kCFNumberCFIndexType:
-                                case kCFNumberNSIntegerType:
-                                case kCFNumberCGFloatType: {
-                                    
-                                }break;
-                            }
-                        }
-                    } else if ([value isKindOfClass:[NSString class]] == YES) {
-                        NSString * s = (NSString *)value;
-                        
-                        pybind::set_set_t( _kernel, py_set, s );
-                    } else if ([value isKindOfClass:[NSNull class]]) {
-                        //Empty (???)
-                    } else {
-                        return nullptr;
-                    }
+                if (error == true) {
+                    return nullptr;
                 }
 
                 return py_set;

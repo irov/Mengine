@@ -73,12 +73,4 @@
                                         yes:(void (^ _Nonnull)(void) _Nonnull)yes
                                      cancel:(void (^ _Nonnull)(void) _Nonnull)cancel;
 
-+ (void)visitParameters:(NSDictionary<NSString *, id> * _Nonnull)parameters
-                forBool:(void (^ _Nonnull)(NSString * _Nonnull key, BOOL value))forBool
-             forInteger:(void (^ _Nonnull)(NSString * _Nonnull key, int64_t value))forInteger
-              forDouble:(void (^ _Nonnull)(NSString * _Nonnull key, double value))forDouble
-              forString:(void (^ _Nonnull)(NSString * _Nonnull key, NSString * _Nonnull value))forString
-                forNull:(void (^ _Nonnull)(NSString * _Nonnull key))forNull
-             forUnknown:(void (^ _Nonnull)(NSString * _Nonnull key, id _Nonnull value))forUnknown;
-
 @end

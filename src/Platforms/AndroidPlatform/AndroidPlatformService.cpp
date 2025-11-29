@@ -870,7 +870,7 @@ namespace Mengine
             return false;
         }
 
-        this->tickPlatform( 0.f, false, false, false );
+        this->tickPlatform( 0.f );
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_RUN );
 
@@ -883,11 +883,8 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidPlatformService::tickPlatform( float _frameTime, bool _render, bool _flush, bool _pause )
+    void AndroidPlatformService::tickPlatform( float _frameTime )
     {
-        MENGINE_UNUSED( _pause );
-        MENGINE_UNUSED( _flush );
-
         bool updating = APPLICATION_SERVICE()
             ->beginUpdate( _frameTime );
 
@@ -906,17 +903,23 @@ namespace Mengine
         APPLICATION_SERVICE()
             ->endUpdate();
 
-        if( m_active == false )
+        if( updating == false )
         {
-            return false;
+            if( m_pauseUpdatingTime < 0.f )
+            {
+                m_pauseUpdatingTime = _frameTime;
+            }
         }
-
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AndroidPlatformService::renderPlatform()
+    {
         if( m_activityState != EAS_RESUME && m_activityState != EAS_START )
         {
             return false;
         }
 
-        if( m_freezedRender != 0 || _render == false )
+        if( m_freezedRender != 0 )
         {
             return false;
         }
@@ -932,7 +935,7 @@ namespace Mengine
         bool sucessful = APPLICATION_SERVICE()
             ->render();
 
-        if( sucessful == true && _flush == true )
+        if( sucessful == true )
         {
             APPLICATION_SERVICE()
                 ->flush();
@@ -976,9 +979,20 @@ namespace Mengine
 
             m_prevTime = currentTime;
 
-            if( this->tickPlatform( frameTime, true, true, true ) == false )
+            if( m_active == false )
             {
                 usleep( 100000 );
+
+                continue;
+            }
+
+            this->tickPlatform( frameTime );
+
+            if( this->renderPlatform() == false )
+            {
+                usleep( 100000 );
+
+                continue;
             }
         }
     }
@@ -1129,18 +1143,6 @@ namespace Mengine
             SOUND_SERVICE()
                 ->setMute( STRINGIZE_STRING_LOCAL( "FreezePlatform" ), false );
         }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::setSleepMode( bool _sleepMode )
-    {
-        MENGINE_UNUSED( _sleepMode );
-
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool AndroidPlatformService::getSleepMode() const
-    {
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     Timestamp AndroidPlatformService::getPlatfomTime() const

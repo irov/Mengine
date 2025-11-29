@@ -37,17 +37,14 @@ namespace Mengine
         void _stopService() override;
 
     public:
-        void setSleepMode( bool _sleepMode ) override;
-        bool getSleepMode() const override;
-
-    public:
         Timestamp getPlatfomTime() const override;
 
     public:
         bool runPlatform() override;
         void loopPlatform() override;
         bool updatePlatform() override;
-        bool tickPlatform( float _frameTime, bool _render, bool _flush, bool _pause ) override;
+        void tickPlatform( float _frameTime ) override;
+        bool renderPlatform() override;
         void stopPlatform() override;
         void freezePlatform( bool _tick, bool _render, bool _sound ) override;
         void unfreezePlatform( bool _tick, bool _render, bool _sound ) override;

@@ -40,15 +40,11 @@ namespace Mengine
         virtual bool runPlatform() = 0;
         virtual void loopPlatform() = 0;
         virtual bool updatePlatform() = 0;
-        virtual bool tickPlatform( float _frameTime, bool _render, bool _flush, bool _pause ) = 0;
+        virtual void tickPlatform( float _frameTime ) = 0;
+        virtual bool renderPlatform() = 0;
         virtual void stopPlatform() = 0;
         virtual void freezePlatform( bool _tick, bool _render, bool _sound ) = 0;
         virtual void unfreezePlatform( bool _tick, bool _render, bool _sound ) = 0;
-
-
-    public:
-        virtual void setSleepMode( bool _sleepMode ) = 0;
-        virtual bool getSleepMode() const = 0;
 
     public:
         virtual Timestamp getPlatfomTime() const = 0;

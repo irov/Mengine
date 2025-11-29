@@ -346,73 +346,7 @@ static volatile BOOL OPERATION_QUEUES_WORKING = YES;
     }
 }
 
-+ (void)visitValues:(NSSet<id> * _Nonnull)values
-            forBool:(void (^ _Nonnull)(BOOL value))forBool
-         forInteger:(void (^ _Nonnull)(int64_t value))forInteger
-          forDouble:(void (^ _Nonnull)(double value))forDouble
-          forString:(void (^ _Nonnull)(NSString * _Nonnull value))forString
-            forNull:(void (^ _Nonnull)(void))forNull
-         forUnknown:(void (^ _Nonnull)(id _Nonnull value))forUnknown {
-    if (values == nil) {
-        return;
-    }
-    
-    CFTypeID boolenTypeId = CFBooleanGetTypeID();
-    CFTypeID numberTypeId = CFNumberGetTypeID();
-    
-    for (id value in values) {
-        if (value == nil || [value isKindOfClass:[NSNull class]]) {
-            forNull();
-        } else if ([value isKindOfClass:[NSNumber class]] == YES) {
-            CFTypeID valueTypeId = CFGetTypeID((__bridge CFTypeRef)(value));
-            
-            if (valueTypeId == boolenTypeId) {
-                BOOL b = [value boolValue];
-                
-                forBool(b);
-            } else if (valueTypeId == numberTypeId) {
-                CFNumberType numberType = CFNumberGetType((__bridge CFNumberRef)value);
-                
-                switch (numberType) {
-                    case kCFNumberSInt8Type:
-                    case kCFNumberSInt16Type:
-                    case kCFNumberSInt32Type:
-                    case kCFNumberSInt64Type:
-                    case kCFNumberCharType:
-                    case kCFNumberShortType:
-                    case kCFNumberIntType:
-                    case kCFNumberLongType:
-                    case kCFNumberLongLongType: {
-                        int64_t n = [value longLongValue];
-                        
-                        forInteger(n);
-                    } break;
-                    case kCFNumberFloat32Type:
-                    case kCFNumberFloat64Type:
-                    case kCFNumberFloatType:
-                    case kCFNumberDoubleType:
-                    case kCFNumberCFIndexType:
-                    case kCFNumberNSIntegerType:
-                    case kCFNumberCGFloatType: {
-                        double d = [value doubleValue];
-                        
-                        forDouble(d);
-                    } break;
-                }
-            } else {
-                forUnknown(value);
-            }
-        } else if ([value isKindOfClass:[NSString class]] == YES) {
-            NSString * s = (NSString *)value;
-            
-            forString(s);
-        } else {
-            forUnknown(value);
-        }
-    }
-}
-
-+ (void)visitValues:(NSArray<id> * _Nonnull)values
++ (void)visitValues:(id<NSFastEnumeration> _Nonnull)values
             forBool:(void (^ _Nonnull)(BOOL value))forBool
          forInteger:(void (^ _Nonnull)(int64_t value))forInteger
           forDouble:(void (^ _Nonnull)(double value))forDouble

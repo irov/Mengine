@@ -59,15 +59,7 @@
                 forNull:(void (^ _Nonnull)(NSString * _Nonnull key))forNull
              forUnknown:(void (^ _Nonnull)(NSString * _Nonnull key, id _Nonnull value))forUnknown;
 
-+ (void)visitValues:(NSSet<id> * _Nonnull)values
-            forBool:(void (^ _Nonnull)(BOOL value))forBool
-         forInteger:(void (^ _Nonnull)(int64_t value))forInteger
-          forDouble:(void (^ _Nonnull)(double value))forDouble
-          forString:(void (^ _Nonnull)(NSString * _Nonnull value))forString
-            forNull:(void (^ _Nonnull)(void))forNull
-         forUnknown:(void (^ _Nonnull)(id _Nonnull value))forUnknown;
-
-+ (void)visitValues:(NSArray<id> * _Nonnull)values
++ (void)visitValues:(id<NSFastEnumeration> _Nonnull)values
             forBool:(void (^ _Nonnull)(BOOL value))forBool
          forInteger:(void (^ _Nonnull)(int64_t value))forInteger
           forDouble:(void (^ _Nonnull)(double value))forDouble

@@ -186,7 +186,7 @@
     }];
 }
 
-+ (void) config:(NSDictionary * _Nonnull)config ids:(NSDictionary<NSString *, NSNumber *> * _Nonnull)ids {
++ (void) config:(NSDictionary * _Nonnull)config ids:(NSDictionary * _Nonnull)ids {
     [AppleDetail addMainQueueOperation:^{
         NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
         

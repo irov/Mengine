@@ -174,7 +174,7 @@
     }
 }
 
-- (void)eventConfig:(NSDictionary *)config ids:(NSDictionary<NSString *, NSNumber *> *)ids {
+- (void)eventConfig:(NSDictionary *)config ids:(NSDictionary *)ids {
     @autoreleasepool {
         for (NSObject<iOSPluginConfigDelegateInterface> * delegate in self.m_pluginConfigDelegates) {
             [delegate onConfig:config ids:ids];

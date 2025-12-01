@@ -214,7 +214,7 @@
 
 #pragma mark - iOSPluginConfigDelegateInterface
 
-- (void)onConfig:(NSDictionary * _Nonnull)config ids:(NSDictionary<NSString *, NSNumber *> * _Nonnull)ids {
+- (void)onConfig:(NSDictionary * _Nonnull)config ids:(NSDictionary * _Nonnull)ids {
     NSDictionary * datadog_debug_message = [config objectForKey:@"datadog_debug_message"];
     
     if (datadog_debug_message != nil) {

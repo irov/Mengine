@@ -4,6 +4,6 @@
 
 @protocol iOSPluginConfigDelegateInterface <NSObject>
 
-- (void)onConfig:(NSDictionary * _Nonnull)config ids:(NSDictionary<NSString *, NSNumber *> * _Nonnull)ids;
+- (void)onConfig:(NSDictionary * _Nonnull)config ids:(NSDictionary * _Nonnull)ids;
 
 @end

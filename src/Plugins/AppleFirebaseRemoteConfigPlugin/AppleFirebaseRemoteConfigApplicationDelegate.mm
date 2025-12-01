@@ -15,6 +15,7 @@
     
     if (self) {
         self.m_configs = nil;
+        self.m_ids = nil;
     }
     
     return self;
@@ -111,7 +112,7 @@
     NSArray<NSString *> * remoteKeys = [remoteConfig allKeysFromSource:FIRRemoteConfigSourceDefault];
     
     NSMutableDictionary * configs = [NSMutableDictionary dictionary];
-    NSMutableDictionary<NSString *, NSNumber *> * ids = [NSMutableDictionary dictionary];
+    NSMutableDictionary * ids = [NSMutableDictionary dictionary];
     
     for( NSString * key in remoteKeys ) {
         FIRRemoteConfigValue * value = [remoteConfig configValueForKey:key];
@@ -141,6 +142,7 @@
     
     @synchronized (self) {
         self.m_configs = configs;
+        self.m_ids = ids;
     }
     
     [iOSDetail config:configs ids:ids];

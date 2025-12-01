@@ -7,5 +7,6 @@
 @interface AppleFirebaseRemoteConfigApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface, AppleFirebaseRemoteConfigInterface>
 
 @property (nonatomic) NSDictionary * m_configs;
+@property (nonatomic) NSDictionary * m_ids;
 
 @end

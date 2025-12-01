@@ -8,4 +8,3 @@ android {
 dependencies {
     implementation api('com.google.android.gms:play-services-ads:24.7.0')
 }
-

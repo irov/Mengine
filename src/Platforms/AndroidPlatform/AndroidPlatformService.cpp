@@ -981,7 +981,7 @@ namespace Mengine
 
             if( m_active == false )
             {
-                usleep( 100000 );
+                usleep( 250000 );
 
                 continue;
             }
@@ -990,7 +990,7 @@ namespace Mengine
 
             if( this->renderPlatform() == false )
             {
-                usleep( 100000 );
+                usleep( 250000 );
 
                 continue;
             }

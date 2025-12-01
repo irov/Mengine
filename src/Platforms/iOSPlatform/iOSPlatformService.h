@@ -163,8 +163,10 @@ namespace Mengine
     public:
         UIWindow * getUIWindow() const override;
 
+#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
     public:
         SDL_GLContext getGLContext() const override;
+#endif
 
     public:
         UniqueId addSDLEventHandler( const LambdaSDLEventHandler & _handler ) override;

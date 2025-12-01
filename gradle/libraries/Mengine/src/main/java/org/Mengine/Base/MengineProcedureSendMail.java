@@ -57,12 +57,16 @@ public class MengineProcedureSendMail implements MengineProcedureInterface {
         String sessionId = application.getSessionId();
         String installationId = MengineFragmentRemoteConfig.INSTANCE.getInstallationId();
 
-        body_builder.append("\n\n");
-        body_builder.append("        Account Info:" + "\n");
-        body_builder.append("        * install id: " + installId + "\n");
-        body_builder.append("        * user id: " + userId + "\n");
-        body_builder.append("        * session id: " + sessionId + "\n");
-        body_builder.append("        * installation id: " + installationId + "\n");
+        String lineSeparator = System.lineSeparator();
+
+        body_builder.append(lineSeparator);
+        body_builder.append(lineSeparator);
+
+        body_builder.append("        Account Info:").append(lineSeparator);
+        body_builder.append("        * install id: " + installId).append(lineSeparator);
+        body_builder.append("        * user id: " + userId).append(lineSeparator);
+        body_builder.append("        * session id: " + sessionId).append(lineSeparator);
+        body_builder.append("        * installation id: " + installationId).append(lineSeparator);
 
         try {
             ArrayList<Parcelable> fileUris = new ArrayList<>();
@@ -126,10 +130,15 @@ public class MengineProcedureSendMail implements MengineProcedureInterface {
 
             OutputStreamWriter logFileStream = new OutputStreamWriter(new FileOutputStream(logFile), StandardCharsets.UTF_8);
 
-            logFileStream.write("[BEGIN CURRENT LOG]\n\n");
+            logFileStream.write("[BEGIN CURRENT LOG]");
+            logFileStream.write(lineSeparator);
+            logFileStream.write(lineSeparator);
+
 
             if (MengineNative.AndroidEnvironmentService_writeCurrentLogToFile(logFileStream) == true) {
-                logFileStream.write("\n\n[END CURRENT LOG]");
+                logFileStream.write(lineSeparator);
+                logFileStream.write(lineSeparator);
+                logFileStream.write("[END CURRENT LOG]");
                 logFileStream.flush();
                 logFileStream.close();
 
@@ -188,10 +197,14 @@ public class MengineProcedureSendMail implements MengineProcedureInterface {
 
             OutputStreamWriter oldLogFileStream = new OutputStreamWriter(new FileOutputStream(oldLogFile), StandardCharsets.UTF_8);
 
-            oldLogFileStream.write("[BEGIN OLD LOG]\n\n");
+            oldLogFileStream.write("[BEGIN OLD LOG]");
+            oldLogFileStream.write(lineSeparator);
+            oldLogFileStream.write(lineSeparator);
 
             if (MengineNative.AndroidEnvironmentService_writeOldLogToFile(oldLogFileStream) == true) {
-                oldLogFileStream.write("\n\n[END OLD LOG]");
+                oldLogFileStream.write(lineSeparator);
+                oldLogFileStream.write(lineSeparator);
+                oldLogFileStream.write("[END OLD LOG]");
                 oldLogFileStream.flush();
                 oldLogFileStream.close();
 

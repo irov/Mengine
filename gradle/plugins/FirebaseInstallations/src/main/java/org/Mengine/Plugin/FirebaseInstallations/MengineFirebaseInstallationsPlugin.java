@@ -20,14 +20,14 @@ public class MengineFirebaseInstallationsPlugin extends MengineService implement
                 if (task.isSuccessful() == false) {
                     Exception exception = task.getException();
 
-                    this.logMessage("Firebase", "Failed to get Firebase Installations ID: ", exception.getMessage());
+                    this.logMessage("Failed to get Firebase Installations ID: %s", exception.getMessage());
 
                     return;
                 }
 
                 String fid = task.getResult();
 
-                this.logMessage("Firebase Installations ID: ", fid);
+                this.logMessage("Firebase Installations ID: %s", fid);
 
                 MengineFragmentRemoteConfig.INSTANCE.setInstallationId(fid);
             });

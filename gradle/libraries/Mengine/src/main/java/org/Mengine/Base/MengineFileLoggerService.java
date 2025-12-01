@@ -70,6 +70,8 @@ public class MengineFileLoggerService extends MengineService implements MengineL
 
         try {
             m_writer.write(line);
+            String lineSeparator = System.lineSeparator();
+            m_writer.write(lineSeparator);
             m_writer.flush();
         } catch (IOException ignored) {
             // ignore

@@ -1444,18 +1444,20 @@ public class MengineUtils {
 
         StringBuilder deviceInfo = new StringBuilder();
 
-        deviceInfo.append("=== Device Info ===").append("\n");
-        deviceInfo.append("Manufacturer: ").append(manufacturer).append("\n");
-        deviceInfo.append("Model: ").append(model).append("\n");
-        deviceInfo.append("Brand: ").append(brand).append("\n");
-        deviceInfo.append("Device: ").append(device).append("\n");
-        deviceInfo.append("Hardware: ").append(hardware).append("\n");
-        deviceInfo.append("Product: ").append(product).append("\n");
-        deviceInfo.append("Board: ").append(board).append("\n");
-        deviceInfo.append("Android Version: ").append(androidVersion).append("\n");
-        deviceInfo.append("SDK Int: ").append(sdkInt).append("\n");
-        deviceInfo.append("ID: ").append(id).append("\n");
-        deviceInfo.append("Fingerprint: ").append(fingerprint).append("\n");
+        String lineSeparator = System.lineSeparator();
+
+        deviceInfo.append("=== Device Info ===").append(lineSeparator);
+        deviceInfo.append("Manufacturer: ").append(manufacturer).append(lineSeparator);
+        deviceInfo.append("Model: ").append(model).append(lineSeparator);
+        deviceInfo.append("Brand: ").append(brand).append(lineSeparator);
+        deviceInfo.append("Device: ").append(device).append(lineSeparator);
+        deviceInfo.append("Hardware: ").append(hardware).append(lineSeparator);
+        deviceInfo.append("Product: ").append(product).append(lineSeparator);
+        deviceInfo.append("Board: ").append(board).append(lineSeparator);
+        deviceInfo.append("Android Version: ").append(androidVersion).append(lineSeparator);
+        deviceInfo.append("SDK Int: ").append(sdkInt).append(lineSeparator);
+        deviceInfo.append("ID: ").append(id).append(lineSeparator);
+        deviceInfo.append("Fingerprint: ").append(fingerprint).append(lineSeparator);
         deviceInfo.append("===================");
 
         return deviceInfo.toString();

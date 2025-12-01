@@ -90,24 +90,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MetalRenderSystem::_initializeService()
     {
-        m_device = MTLCreateSystemDefaultDevice();
-
-        if( m_device == nil )
-        {
-            LOGGER_ERROR( "MetalRenderSystem: failed to create device" );
-
-            return false;
-        }
-
-        m_commandQueue = [m_device newCommandQueue];
-
-        if( m_commandQueue == nil )
-        {
-            LOGGER_ERROR( "MetalRenderSystem: failed to create command queue" );
-
-            return false;
-        }
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -129,12 +111,46 @@ namespace Mengine
         return m_renderSystemName;
     }
     //////////////////////////////////////////////////////////////////////////
+    void MetalRenderSystem::setMetalContext( id<MTLDevice> _device, CAMetalLayer * _layer )
+    {
+        m_device = _device;
+        m_metalLayer = _layer;
+
+        if( m_device == nil )
+        {
+            LOGGER_ERROR( "MetalRenderSystem: setMetalContext with nil device" );
+
+            return;
+        }
+
+        if( m_commandQueue == nil )
+        {
+            m_commandQueue = [m_device newCommandQueue];
+
+            if( m_commandQueue == nil )
+            {
+                LOGGER_ERROR( "MetalRenderSystem: failed to create command queue" );
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool MetalRenderSystem::createRenderWindow( const RenderWindowDesc * _windowDesc )
     {
-        m_metalLayer = [CAMetalLayer layer];
-        [m_metalLayer setDevice:m_device];
+        if( m_metalLayer == nil )
+        {
+            m_metalLayer = [CAMetalLayer layer];
 
-        if( _windowDesc != nullptr )
+            if( m_metalLayer == nil )
+            {
+                LOGGER_ERROR( "MetalRenderSystem: failed to create CAMetalLayer" );
+
+                return false;
+            }
+
+            [m_metalLayer setDevice:m_device];
+        }
+
+        if( _windowDesc != nullptr && m_metalLayer != nil )
         {
             CGFloat drawableWidth = (CGFloat)_windowDesc->resolution.getWidth();
             CGFloat drawableHeight = (CGFloat)_windowDesc->resolution.getHeight();
@@ -143,7 +159,7 @@ namespace Mengine
             m_vsync = _windowDesc->waitForVSync;
         }
 
-        return true;
+        return m_metalLayer != nil;
     }
     //////////////////////////////////////////////////////////////////////////
     void MetalRenderSystem::destroyRenderWindow()

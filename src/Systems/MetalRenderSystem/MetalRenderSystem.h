@@ -6,10 +6,13 @@
 #import <Metal/Metal.h>
 #import <QuartzCore/CAMetalLayer.h>
 
+#include "Environment/Metal/MetalRenderSystemExtensionInterface.h"
+
 namespace Mengine
 {
     class MetalRenderSystem
         : public ServiceBase<RenderSystemInterface>
+        , public MetalRenderSystemExtensionInterface
     {
         DECLARE_UNKNOWABLE();
 

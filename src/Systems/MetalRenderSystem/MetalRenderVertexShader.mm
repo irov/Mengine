@@ -1,0 +1,33 @@
+#include "MetalRenderVertexShader.h"
+
+namespace Mengine
+{
+    //////////////////////////////////////////////////////////////////////////
+    MetalRenderVertexShader::MetalRenderVertexShader()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MetalRenderVertexShader::~MetalRenderVertexShader() = default;
+    //////////////////////////////////////////////////////////////////////////
+    bool MetalRenderVertexShader::initialize( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile )
+    {
+        MENGINE_UNUSED( _compile );
+
+        m_name = _name;
+        m_memory = _memory;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MetalRenderVertexShader::finalize()
+    {
+        m_memory = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & MetalRenderVertexShader::getName() const
+    {
+        return m_name;
+    }
+    //////////////////////////////////////////////////////////////////////////
+}
+

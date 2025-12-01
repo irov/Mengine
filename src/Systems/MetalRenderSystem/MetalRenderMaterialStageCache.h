@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Interface/RenderMaterialStageCacheInterface.h"
+#include "Interface/RenderMaterialInterface.h"
+
 #include "Kernel/Factorable.h"
 
 namespace Mengine

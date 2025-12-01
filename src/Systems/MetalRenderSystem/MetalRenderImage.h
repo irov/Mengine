@@ -19,7 +19,7 @@ namespace Mengine
         ~MetalRenderImage() override;
         bool initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _format, bool _upscalePow2 );
         bool initializeFromTexture( id<MTLTexture> _texture, uint32_t _width, uint32_t _height, EPixelFormat _format );
-        void finalize() override;
+        void finalize();
 
     public:
         void setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider ) override;

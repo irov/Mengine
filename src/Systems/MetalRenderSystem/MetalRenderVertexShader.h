@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Interface/RenderVertexShaderInterface.h"
+#include "Interface/MemoryInterface.h"
+
 #include "Kernel/Factorable.h"
 
 namespace Mengine

@@ -1027,6 +1027,10 @@ namespace Mengine
                     return nullptr;
                 }
 
+                const TransformationInterface * node_transformation = _node->getTransformation();
+
+                const mt::vec3f & start_pos = node_transformation->getLocalPosition();
+
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
                 ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
@@ -1040,13 +1044,9 @@ namespace Mengine
 
                     node_transformation->setLocalPosition( _v );
                 }
-                    , [_node]()
+                    , [start_pos]()
                 {
-                    const TransformationInterface * node_transformation = _node->getTransformation();
-
-                    const mt::vec3f & node_pos = node_transformation->getLocalPosition();
-
-                    return node_pos;
+                    return start_pos;
                 }
                     , [_follow, _offset]()
                 {
@@ -1056,19 +1056,15 @@ namespace Mengine
 
                     return position + _offset;
                 }
-                    , [_node, _follow, _offset]( mt::vec3f * const _v )
+                    , [start_pos, _follow, _offset]( mt::vec3f * const _v )
                 {
-                    TransformationInterface * node_transformation = _node->getTransformation();
-
-                    const mt::vec3f & node_pos = node_transformation->getLocalPosition();
-
                     const TransformationInterface * follow_transformation = _follow->getTransformation();
 
                     const mt::vec3f & position = follow_transformation->getLocalPosition();
 
-                    float x = position.x + _offset.x;
+                    mt::vec3f target = position + _offset;
 
-                    _v[0] = mt::vec3f( x, node_pos.y, 0.f );
+                    _v[0] = mt::vec3f( target.x, start_pos.y, start_pos.z );
                 }
                     , _time
                     , MENGINE_DOCUMENT_PYTHON
@@ -1110,6 +1106,10 @@ namespace Mengine
                     return nullptr;
                 }
 
+                const TransformationInterface * node_transformation = _node->getTransformation();
+
+                const mt::vec3f & start_pos = node_transformation->getWorldPosition();
+
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
                 ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
@@ -1123,13 +1123,9 @@ namespace Mengine
 
                     node_transformation->setWorldPosition( _v );
                 }
-                    , [_node]()
+                    , [start_pos]()
                 {
-                    const TransformationInterface * node_transformation = _node->getTransformation();
-
-                    const mt::vec3f & node_pos = node_transformation->getWorldPosition();
-
-                    return node_pos;
+                    return start_pos;
                 }
                     , [_follow, _offset]()
                 {
@@ -1139,19 +1135,15 @@ namespace Mengine
 
                     return position + _offset;
                 }
-                    , [_node, _follow, _offset]( mt::vec3f * const _v )
+                    , [start_pos, _follow, _offset]( mt::vec3f * const _v )
                 {
-                    const TransformationInterface * node_transformation = _node->getTransformation();
-
-                    const mt::vec3f & node_pos = node_transformation->getWorldPosition();
-
                     const TransformationInterface * follow_transformation = _follow->getTransformation();
 
                     const mt::vec3f & position = follow_transformation->getWorldPosition();
 
-                    float x = position.x + _offset.x;
+                    mt::vec3f target = position + _offset;
 
-                    _v[0] = mt::vec3f( x, node_pos.y, 0.f );
+                    _v[0] = mt::vec3f( target.x, start_pos.y, start_pos.z );
                 }
                     , _time
                     , MENGINE_DOCUMENT_PYTHON
@@ -1193,6 +1185,9 @@ namespace Mengine
                     return nullptr;
                 }
 
+                mt::vec2f start_pos;
+                Helper::getNodeScreenPosition( _node, &start_pos );
+
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
                 ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
@@ -1204,12 +1199,9 @@ namespace Mengine
                 {
                     Helper::setNodeScreenPosition( _node, _v, _deep );
                 }
-                    , [_node]()
+                    , [start_pos]()
                 {
-                    mt::vec2f node_pos;
-                    Helper::getNodeScreenPosition( _node, &node_pos );
-
-                    return node_pos;
+                    return start_pos;
                 }
                     , [_follow]()
                 {
@@ -1218,15 +1210,12 @@ namespace Mengine
 
                     return follow_pos;
                 }
-                    , [_node, _follow]( mt::vec2f * const _v )
+                    , [start_pos, _follow]( mt::vec2f * const _v )
                 {
-                    mt::vec2f node_pos;
-                    Helper::getNodeScreenPosition( _node, &node_pos );
-
                     mt::vec2f follow_pos;
                     Helper::getNodeScreenPosition( _follow.get(), &follow_pos );
 
-                    _v[0] = mt::vec2f( follow_pos.x, node_pos.y );
+                    _v[0] = mt::vec2f( follow_pos.x, start_pos.y );
                 }
                     , _time
                     , MENGINE_DOCUMENT_PYTHON

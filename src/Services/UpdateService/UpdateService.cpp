@@ -214,6 +214,11 @@ namespace Mengine
 
         for( UpdationInterface * updation : leaf_indecies )
         {
+            if( updation == nullptr )
+            {
+                continue;
+            }
+
             uint32_t updation_deep = updation->getUpdationDeep();
 
             if( updation_deep != _deep )

@@ -135,7 +135,7 @@ namespace Mengine
             return false;
         }
 
-        decoder->finalize();
+        decoder = nullptr;
 
         this->makeMipMapLevel_( buffer, width, height, mimmap_level );
 

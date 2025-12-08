@@ -123,7 +123,7 @@ namespace Mengine
             miplevel_data_memory += miplevel_data_size;
         }
 
-        decoder->finalize();
+        decoder = nullptr;
 
         ContentInterfacePtr content_output = Helper::makeFileContent( m_fileGroupDev, full_inputFilePath, MENGINE_DOCUMENT_FACTORABLE );
 

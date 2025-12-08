@@ -304,8 +304,6 @@ namespace Mengine
 
                 atlasSize.x = (float)dataInfo->width;
                 atlasSize.y = (float)dataInfo->height;
-
-                decoder->finalize();
             }
 
             resourceImage->setMaxSize( atlasSize );

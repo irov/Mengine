@@ -112,11 +112,25 @@ namespace Mengine
         float Engine_VoiceVolume = CONFIG_VALUE_FLOAT( "Engine", "VoiceVolume", 1.f );
         this->setVoiceVolume( STRINGIZE_STRING_LOCAL( "Generic" ), Engine_VoiceVolume, 0.f, MENGINE_MIXER_VALUE_DEFAULT_SPEED );
 
+        bool OPTION_soundoff = HAS_OPTION( "soundoff" ) || HAS_OPTION( "nosound" );
+
+        if( OPTION_soundoff == true )
+        {
+            this->setSoundVolume( STRINGIZE_STRING_LOCAL( "__SoundOFF__" ), 0.f, 0.f, MENGINE_MIXER_VALUE_DEFAULT_SPEED );
+        }
+
         bool OPTION_musicoff = HAS_OPTION( "musicoff" ) || HAS_OPTION( "nomusic" );
 
         if( OPTION_musicoff == true )
         {
             this->setMusicVolume( STRINGIZE_STRING_LOCAL( "__MusicOFF__" ), 0.f, 0.f, MENGINE_MIXER_VALUE_DEFAULT_SPEED );
+        }
+
+        bool OPTION_voiceoff = HAS_OPTION( "voiceoff" ) || HAS_OPTION( "novoice" );
+
+        if( OPTION_voiceoff == true )
+        {
+            this->setVoiceVolume( STRINGIZE_STRING_LOCAL( "__VoiceOFF__" ), 0.f, 0.f, MENGINE_MIXER_VALUE_DEFAULT_SPEED );
         }
 
         m_factoryWorkerTaskSoundBufferUpdate = Helper::makeFactoryPoolWithMutex<ThreadWorkerSoundBufferUpdate, 32>( MENGINE_DOCUMENT_FACTORABLE );

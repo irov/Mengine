@@ -114,7 +114,6 @@ namespace Mengine
             successful = false;
         }
 
-        decoder->finalize();
         decoder = nullptr;
 
         SoundBufferInterfacePtr soundBuffer = _resource->createSoundBuffer( MENGINE_DOCUMENT_FACTORABLE );

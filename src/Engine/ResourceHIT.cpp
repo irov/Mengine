@@ -109,8 +109,6 @@ namespace Mengine
         m_mipmap = mipmap;
         m_mipmapsize = (uint32_t)mipmapsize;
 
-        decoder->finalize();
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

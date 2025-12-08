@@ -1518,8 +1518,6 @@ namespace Mengine
 
                     maxSize.x = (float)dataInfo->width;
                     maxSize.y = (float)dataInfo->height;
-
-                    decoder->finalize();
                 }
                 else
                 {

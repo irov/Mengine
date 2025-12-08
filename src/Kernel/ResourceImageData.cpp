@@ -91,8 +91,6 @@ namespace Mengine
             return false;
         }
 
-        decoder->finalize();
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

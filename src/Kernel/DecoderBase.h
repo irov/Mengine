@@ -37,22 +37,14 @@ namespace Mengine
                 return false;
             }
 
+            m_mutex = _mutex;
+
             if( this->_initialize() == false )
             {
                 return false;
-            }
-
-            m_mutex = _mutex;
+            }            
 
             m_initialize = true;
-
-            return true;
-        }
-
-    protected:
-        virtual bool _initialize()
-        {
-            //Empty
 
             return true;
         }
@@ -64,6 +56,8 @@ namespace Mengine
             {
                 return;
             }
+
+            m_initialize = false;
 
             this->_finalize();
 
@@ -79,6 +73,13 @@ namespace Mengine
         }
 
     protected:
+        virtual bool _initialize()
+        {
+            //Empty
+
+            return true;
+        }
+
         virtual void _finalize()
         {
             //Empty

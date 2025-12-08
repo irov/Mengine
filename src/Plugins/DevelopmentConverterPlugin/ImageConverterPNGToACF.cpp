@@ -104,7 +104,7 @@ namespace Mengine
             return false;
         }
 
-        decoder->finalize();
+        decoder = nullptr;
 
         ContentInterfacePtr content_output = Helper::makeFileContent( m_fileGroupDev, full_outputFilePath, MENGINE_DOCUMENT_FACTORABLE );
 

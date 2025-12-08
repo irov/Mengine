@@ -295,8 +295,6 @@ namespace Mengine
             }
         }
 
-        decoder->finalize();
-
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////

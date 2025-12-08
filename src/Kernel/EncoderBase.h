@@ -34,9 +34,14 @@ namespace Mengine
             m_content = _content;
             m_stream = _stream;
 
-            m_initialize = this->_initialize();
+            if( this->_initialize() == false )
+            {
+                return false;
+            }
 
-            return m_initialize;
+            m_initialize = true;
+
+            return true;
         }
 
         void finalize() override
@@ -45,6 +50,8 @@ namespace Mengine
             {
                 return;
             }
+
+            m_initialize = false;
 
             this->_finalize();
 
@@ -60,6 +67,8 @@ namespace Mengine
     protected:
         virtual bool _initialize()
         {
+            //Empty
+
             return true;
         }
 

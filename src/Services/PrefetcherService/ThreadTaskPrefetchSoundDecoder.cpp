@@ -29,12 +29,7 @@ namespace Mengine
     void ThreadTaskPrefetchSoundDecoder::_finalize()
     {
         m_memoryInput = nullptr;
-
-        if( m_soundDecoder != nullptr )
-        {
-            m_soundDecoder->finalize();
-            m_soundDecoder = nullptr;
-        }
+        m_soundDecoder = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ThreadTaskPrefetchSoundDecoder::_onThreadTaskRun()

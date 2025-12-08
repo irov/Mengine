@@ -181,8 +181,6 @@ namespace Mengine
 
         bool valid = s_checkValidVideoDecoder( _resource, decoder );
 
-        decoder->finalize();
-
         return valid;
     }
     //////////////////////////////////////////////////////////////////////////

@@ -6,6 +6,7 @@ import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineListenerActivity;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineParamTransparencyConsent;
+import org.Mengine.Base.MengineConsentFlowUserGeography;
 
 import android.os.Bundle;
 
@@ -119,5 +120,44 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
 
         ConsentInformation consentInformation = UserMessagingPlatform.getConsentInformation(activity);
         consentInformation.reset();
+    }
+
+    public void showConsentFlow() {
+        MengineActivity activity = this.getMengineActivity();
+
+        if (activity == null) {
+            this.logError("[ERROR] showConsentFlow invalid activity");
+
+            this.nativeCall("onAndroidGoogleConsentFlowError", new RuntimeException("invalid activity"));
+
+            return;
+        }
+
+        UserMessagingPlatform.showPrivacyOptionsForm(activity, formError -> {
+            if (formError != null) {
+                this.logError("Failed to show consent dialog error: %s [%d]"
+                    , formError.getMessage()
+                    , formError.getErrorCode()
+                );
+
+                this.nativeCall("onAndroidGoogleConsentFlowError", new RuntimeException(formError.getMessage()));
+
+                return;
+            }
+
+            this.logInfo("Consent dialog was shown");
+
+            this.nativeCall("onAndroidGoogleConsentFlowCompleted");
+        });
+    }
+
+    public boolean isConsentFlowUserGeographyGDPR() {
+        MengineConsentFlowUserGeography geography = MengineParamTransparencyConsent.getTransparencyconsentUsergeography();
+
+        if (geography != MengineConsentFlowUserGeography.MengineConsentFlowUserGeography_EEA) {
+            return false;
+        }
+
+        return true;
     }
 }

@@ -56,7 +56,7 @@ public class MengineGoogleInAppReviewsPlugin extends MengineService implements M
 
     public void launchTheInAppReview() {
         if (m_reviewInfo == null) {
-            this.logError("[ERROR] reviewInfo == null");
+            this.logError("[ERROR] launchTheInAppReview reviewInfo == null");
 
             this.nativeCall("onGoogleInAppReviewsLaunchingTheReviewError", new RuntimeException("reviewInfo == null"));
 
@@ -64,7 +64,7 @@ public class MengineGoogleInAppReviewsPlugin extends MengineService implements M
         }
 
         if (MengineNetwork.isNetworkAvailable() == false) {
-            this.logError("[ERROR] network is not available");
+            this.logError("[ERROR] launchTheInAppReview network is not available");
 
             this.nativeCall("onGoogleInAppReviewsLaunchingTheReviewError", new RuntimeException("network is not available"));
 
@@ -74,7 +74,7 @@ public class MengineGoogleInAppReviewsPlugin extends MengineService implements M
         MengineActivity activity = this.getMengineActivity();
 
         if (activity == null) {
-            this.logError("[ERROR] invalid activity");
+            this.logError("[ERROR] launchTheInAppReview invalid activity");
 
             this.nativeCall("onGoogleInAppReviewsLaunchingTheReviewError", new RuntimeException("invalid activity"));
 

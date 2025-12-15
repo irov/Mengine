@@ -79,7 +79,10 @@ public class MengineFileLoggerService extends MengineService implements MengineL
     }
 
     private static String makeTimestamp() {
-        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US).format(new Date());
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US);
+        Date date = new Date();
+        String timestamp = format.format(date);
+        return timestamp;
     }
 
     @Override

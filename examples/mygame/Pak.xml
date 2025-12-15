@@ -1,3 +1,5 @@
-<Pak> 
-    <Scripts Path = "/" Initializer = "onInitialize" Finalizer = "onFinalize"/>
-</Pak>	
+<Pak>
+    <Scripts>
+        <Script Path = "/" Initializer = "onInitialize" Finalizer = "onFinalize"/>
+    </Scripts>
+</Pak>

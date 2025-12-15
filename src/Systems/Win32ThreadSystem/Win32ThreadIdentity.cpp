@@ -14,6 +14,7 @@
 #include "Kernel/FactorableUnique.h"
 
 #include "Config/StdString.h"
+#include "Config/StdException.h"
 
 namespace Mengine
 {
@@ -32,9 +33,9 @@ namespace Mengine
                 thread->main();
             }
 #if defined(MENGINE_DEBUG)
-            catch( const std::exception & ex )
+            catch( const StdException::exception & ex )
             {
-                LOGGER_ERROR( "std::exception exception '%s'"
+                LOGGER_ERROR( "StdException::exception exception '%s'"
                     , ex.what()
                 );
             }

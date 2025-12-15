@@ -1,0 +1,34 @@
+{
+    "Project": {
+        "Name": "MyGame",
+        "Codename": "MyGame",
+        "Company": "Mengine"
+    },
+    
+    "Game": {
+        "ContentResolution": [2736, 1536],
+        "PersonalityModule": "Personality"
+    },
+    
+    "Window": {
+        "Fullscreen": false,
+        "Size": [1368, 768]
+    },
+    
+    "Engine": {
+        "ProtocolPath": "../../src/Metacode/protocol.xml"
+    },
+    
+    "DevPlugins-PC": {
+        "Name": [
+            "XmlToBinPlugin.dll",
+            "DevelopmentConverterPlugin.dll"
+        ]
+    },
+    
+    "Frameworks": {
+        "Name": [
+            "PythonFramework"
+        ]
+    }
+}

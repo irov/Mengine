@@ -63,6 +63,7 @@ namespace Mengine
         }
 
         m_generator = nullptr;
+        m_type = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     FactoryInterfacePtr PythonEntityPrototypeGenerator::_initializeFactory()

@@ -35,6 +35,7 @@
 
 #include "Config/StdString.h"
 #include "Config/StdAlgorithm.h"
+#include "Config/StdLimits.h"
 
 #include "math/quat.h"
 
@@ -3317,10 +3318,10 @@ namespace Mengine
                         const RenderProgramVariableInterfacePtr & programVariable = surfaceTrackMatte->getProgramVariable();
 
                         float uvbb[4];
-                        uvbb[0] = std::numeric_limits<float>::max();
-                        uvbb[1] = std::numeric_limits<float>::max();
-                        uvbb[2] = -std::numeric_limits<float>::max();
-                        uvbb[3] = -std::numeric_limits<float>::max();
+                        uvbb[0] = StdLimits::numeric_limits<float>::max();
+                        uvbb[1] = StdLimits::numeric_limits<float>::max();
+                        uvbb[2] = -StdLimits::numeric_limits<float>::max();
+                        uvbb[3] = -StdLimits::numeric_limits<float>::max();
 
                         for( uint32_t index = 0; index != track_matte_mesh->vertexCount; ++index )
                         {
@@ -3442,10 +3443,10 @@ namespace Mengine
                         const RenderProgramVariableInterfacePtr & programVariable = surfaceTrackMatte->getProgramVariable();
 
                         float uvbb[4];
-                        uvbb[0] = std::numeric_limits<float>::max();
-                        uvbb[1] = std::numeric_limits<float>::max();
-                        uvbb[2] = -std::numeric_limits<float>::max();
-                        uvbb[3] = -std::numeric_limits<float>::max();
+                        uvbb[0] = StdLimits::numeric_limits<float>::max();
+                        uvbb[1] = StdLimits::numeric_limits<float>::max();
+                        uvbb[2] = -StdLimits::numeric_limits<float>::max();
+                        uvbb[3] = -StdLimits::numeric_limits<float>::max();
 
                         for( uint32_t index = 0; index != track_matte_mesh->vertexCount; ++index )
                         {

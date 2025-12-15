@@ -21,6 +21,7 @@
 #include "Config/StdAlgorithm.h"
 #include "Config/StdIterator.h"
 #include "Config/StdMath.h"
+#include "Config/StdException.h"
 
 #include "math/box2.h"
 
@@ -2318,7 +2319,7 @@ namespace Mengine
 
             return expected_args;
         }
-        catch( const std::exception & _ex )
+        catch( const StdException::exception & _ex )
         {
             LOGGER_ERROR( "text field '%s' textId '%s' text '%s' except error '%s'"
                 , this->getName().c_str()

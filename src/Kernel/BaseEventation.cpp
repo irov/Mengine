@@ -16,7 +16,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     BaseEventation::~BaseEventation()
     {
-        MENGINE_ASSERTION_CONTAINER_EMPTY( m_receivers );
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseEventation::setReceiver( uint64_t _receiverMask, const EventReceiverInterfacePtr & _receiver )
@@ -156,6 +155,7 @@ namespace Mengine
     void BaseEventation::removeEvents()
     {
         m_receiver = nullptr;
+        m_receiverMask = 0;
 
         m_receivers.clear();
         m_receiversMask = 0;

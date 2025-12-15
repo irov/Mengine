@@ -9,7 +9,7 @@ def onPreparation(isDebug):
 def onRun():
     Scene = Mengine.createScene("Main", Main)
 
-    Mengine.setCurrentScene(Scene, "Test", False, True, None)
+    Mengine.setCurrentScene(Scene, False, True, None)
     pass
 
 def onFinalize():

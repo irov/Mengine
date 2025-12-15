@@ -9,6 +9,7 @@
 
 #include "Config/StdString.h"
 #include "Config/StdAlgorithm.h"
+#include "Config/StdException.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_FACTORY( ServiceProvider, Mengine::ServiceProvider );
@@ -175,7 +176,7 @@ namespace Mengine
         {
             successful = service->initializeService( this );
         }
-        catch( const std::exception & ex )
+        catch( const StdException::exception & ex )
         {
             MENGINE_UNUSED( ex );
 

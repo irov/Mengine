@@ -57,13 +57,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::_dispose()
     {
-        EventationInterface * eventation = this->getEventation();
-
-        if( eventation != nullptr )
-        {
-            eventation->removeEvents();
-        }
-
         this->clearAffectorHub();
     }
     //////////////////////////////////////////////////////////////////////////

@@ -12,6 +12,8 @@ src
     PythonForwardDeclaration.h
     PythonCallbackProvider.h
     PythonCallbackProvider.cpp
+    PythonCallbackProviderHelper.h
+    PythonCallbackProviderHelper.cpp
     PythonTraceback.h
     PythonTraceback.cpp
 )

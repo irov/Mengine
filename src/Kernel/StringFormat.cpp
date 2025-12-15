@@ -5,6 +5,7 @@
 #include "Kernel/StringRegex.h"
 
 #include "Config/StdIO.h"
+#include "Config/StdException.h"
 
 namespace Mengine
 {
@@ -178,7 +179,7 @@ namespace Mengine
 
                 _out->append( text_value );
             }
-            catch( const std::exception & _ex )
+            catch( const StdException::exception & _ex )
             {
                 LOGGER_ERROR( "fill string '%s' tag '%s' catch exception '%s'"
                     , _text.c_str(), _tag, _ex.what()

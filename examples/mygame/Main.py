@@ -44,7 +44,7 @@ class Main(object):
             
             shape.setLocalPosition((x, y))
             
-            self.node.addChildren(shape)
+            self.node.addChild(shape)
             pass
             
         def __event(id, isComplete):

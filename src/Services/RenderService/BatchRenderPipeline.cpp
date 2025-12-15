@@ -11,6 +11,7 @@
 #include "Kernel/ContentHelper.h"
 
 #include "Config/StdAlgorithm.h"
+#include "Config/StdLimits.h"
 
 namespace Mengine
 {
@@ -200,10 +201,10 @@ namespace Mengine
             ro.materialSmartId = 0;
 
             mt::box2f bb;
-            bb.minimum.x = (std::numeric_limits<float>::lowest)();
-            bb.minimum.y = (std::numeric_limits<float>::lowest)();
-            bb.maximum.x = (std::numeric_limits<float>::max)();
-            bb.maximum.y = (std::numeric_limits<float>::max)();
+            bb.minimum.x = (StdLimits::numeric_limits<float>::lowest)();
+            bb.minimum.y = (StdLimits::numeric_limits<float>::lowest)();
+            bb.maximum.x = (StdLimits::numeric_limits<float>::max)();
+            bb.maximum.y = (StdLimits::numeric_limits<float>::max)();
 
             ro.bb = bb;
         }

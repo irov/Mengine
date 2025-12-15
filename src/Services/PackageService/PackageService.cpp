@@ -534,12 +534,10 @@ namespace Mengine
 
                 if( this->loadLocalePacksByName_( m_defaultLocale, _platformTags, &packages ) == false )
                 {
-                    LOGGER_ERROR( "not found default locale '%s' platform '%s' pack"
+                    LOGGER_MESSAGE( "not found default locale '%s' platform '%s' pack"
                         , m_defaultLocale.c_str()
                         , Helper::tagsToString( _platformTags ).c_str()
                     );
-
-                    return false;
                 }
             }
         }

@@ -15,6 +15,7 @@
 #include "Kernel/PrefetcherHelper.h"
 
 #include "Config/StdString.h"
+#include "Config/StdException.h"
 
 namespace Mengine
 {
@@ -212,7 +213,7 @@ namespace Mengine
                 {
                     id = Magic_LoadEmitter( m_mf, magicName );
                 }
-                catch( const std::exception & _ex )
+                catch( const StdException::exception & _ex )
                 {
                     LOGGER_ERROR( "astralax emitter container invalid load emitter '%s' (catch exception '%s')"
                         , magicName

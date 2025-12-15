@@ -33,6 +33,7 @@
 
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonEventReceiver.h"
+#include "Environment/Python/PythonCallbackProviderHelper.h"
 #include "Environment/Python/PythonScriptWrapper.h"
 #include "Environment/Python/PythonDocument.h"
 #include "Environment/Python/PythonTraceback.h"
@@ -553,8 +554,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( sm, "scheduler global is nullptr" );
 
-                PythonScheduleEventPtr sl = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYTHON );
-                sl->initialize( _cb, _args );
+                PythonScheduleEventPtr sl = Helper::makePythonCallbackProvider( m_factoryPythonScheduleEvent, _cb, _args, MENGINE_DOCUMENT_PYTHON );
 
                 UniqueId id = sm->event( _timing, sl, MENGINE_DOCUMENT_PYTHON );
 
@@ -768,8 +768,7 @@ namespace Mengine
                     return false;
                 }
 
-                PythonSceneChangeCallbackPtr py_cb = m_factoryPythonSceneChangeCallback->createObject( MENGINE_DOCUMENT_PYTHON );
-                py_cb->initialize( _cb, _args );
+                PythonSceneChangeCallbackPtr py_cb = Helper::makePythonCallbackProvider( m_factoryPythonSceneChangeCallback, _cb, _args, MENGINE_DOCUMENT_PYTHON );
 
                 ScenePtr currentScene = SCENE_SERVICE()
                     ->getCurrentScene();
@@ -812,8 +811,7 @@ namespace Mengine
                     return false;
                 }
 
-                PythonSceneChangeCallbackPtr py_cb = m_factoryPythonSceneChangeCallback->createObject( MENGINE_DOCUMENT_PYTHON );
-                py_cb->initialize( _cb, _args );
+                PythonSceneChangeCallbackPtr py_cb = Helper::makePythonCallbackProvider( m_factoryPythonSceneChangeCallback, _cb, _args, MENGINE_DOCUMENT_PYTHON );
 
                 ScenePtr currentScene = SCENE_SERVICE()
                     ->getCurrentScene();
@@ -845,8 +843,7 @@ namespace Mengine
                     return false;
                 }
 
-                PythonSceneChangeCallbackPtr py_cb = m_factoryPythonSceneChangeCallback->createObject( MENGINE_DOCUMENT_PYTHON );
-                py_cb->initialize( _cb, _args );
+                PythonSceneChangeCallbackPtr py_cb = Helper::makePythonCallbackProvider( m_factoryPythonSceneChangeCallback, _cb, _args, MENGINE_DOCUMENT_PYTHON );
 
                 if( SCENE_SERVICE()
                     ->restartCurrentScene( _immediately, py_cb ) == false )
@@ -2731,18 +2728,14 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             AffectorPtr s_createAffector( const pybind::object & _cb, const pybind::args & _args )
             {
-                AffectorUserPtr affector = m_factoryAffectorUser->createObject( MENGINE_DOCUMENT_PYTHON );
-
-                affector->initialize( _cb, _args );
+                AffectorUserPtr affector = Helper::makePythonCallbackProvider( m_factoryAffectorUser, _cb, _args, MENGINE_DOCUMENT_PYTHON );
 
                 return affector;
             }
             //////////////////////////////////////////////////////////////////////////
             AffectorPtr s_addAffector( const pybind::object & _cb, const pybind::args & _args )
             {
-                AffectorUserPtr affector = m_factoryAffectorUser->createObject( MENGINE_DOCUMENT_PYTHON );
-
-                affector->initialize( _cb, _args );
+                AffectorUserPtr affector = Helper::makePythonCallbackProvider( m_factoryAffectorUser, _cb, _args, MENGINE_DOCUMENT_PYTHON );
 
                 const AffectorHubInterfacePtr & affectorHub = PLAYER_SERVICE()
                     ->getGlobalAffectorHub();
@@ -3458,10 +3451,7 @@ namespace Mengine
                     return false;
                 }
 
-                PythonSceneChangeCallbackPtr py_cb = m_factoryPythonSceneChangeCallback
-                    ->createObject( MENGINE_DOCUMENT_PYTHON );
-
-                py_cb->initialize( _cb, _args );
+                PythonSceneChangeCallbackPtr py_cb = Helper::makePythonCallbackProvider( m_factoryPythonSceneChangeCallback, _cb, _args, MENGINE_DOCUMENT_PYTHON );
 
                 if( SCENE_SERVICE()
                     ->removeCurrentScene( _immediately, py_cb ) == false )
@@ -3616,10 +3606,7 @@ namespace Mengine
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();
 
-                PyGlobalMouseLeaveHandlerPtr handler = m_factoryPyGlobalMouseLeaveHandlers
-                    ->createObject( MENGINE_DOCUMENT_PYTHON );
-
-                handler->initialize( _cb, _args );
+                PyGlobalMouseLeaveHandlerPtr handler = Helper::makePythonCallbackProvider( m_factoryPyGlobalMouseLeaveHandlers, _cb, _args, MENGINE_DOCUMENT_PYTHON );
 
                 UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYTHON );
 
@@ -3667,10 +3654,7 @@ namespace Mengine
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();
 
-                PyGlobalMouseMoveHandlerPtr handler = m_factoryPyGlobalMouseMoveHandlers
-                    ->createObject( MENGINE_DOCUMENT_PYTHON );
-
-                handler->initialize( _cb, _args );
+                PyGlobalMouseMoveHandlerPtr handler = Helper::makePythonCallbackProvider( m_factoryPyGlobalMouseMoveHandlers, _cb, _args, MENGINE_DOCUMENT_PYTHON );
 
                 UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYTHON );
 
@@ -3715,10 +3699,7 @@ namespace Mengine
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();
 
-                PyGlobalMouseHandlerButtonPtr handler = m_factoryPyGlobalMouseHandlerButtons
-                    ->createObject( MENGINE_DOCUMENT_PYTHON );
-
-                handler->initialize( _cb, _args );
+                PyGlobalMouseHandlerButtonPtr handler = Helper::makePythonCallbackProvider( m_factoryPyGlobalMouseHandlerButtons, _cb, _args, MENGINE_DOCUMENT_PYTHON );
 
                 UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYTHON );
 
@@ -3764,10 +3745,7 @@ namespace Mengine
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();
 
-                PyGlobalMouseHandlerButtonEndPtr handler = m_factoryPyGlobalMouseHandlerButtonEnds
-                    ->createObject( MENGINE_DOCUMENT_PYTHON );
-
-                handler->initialize( _cb, _args );
+                PyGlobalMouseHandlerButtonEndPtr handler = Helper::makePythonCallbackProvider( m_factoryPyGlobalMouseHandlerButtonEnds, _cb, _args, MENGINE_DOCUMENT_PYTHON );
 
                 UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYTHON );
 
@@ -3815,10 +3793,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( globalHandleSystem, "invalid get global input handler" );
 
-                PyGlobalMouseHandlerButtonBeginPtr handler = m_factoryPyGlobalMouseHandlerButtonBegins
-                    ->createObject( MENGINE_DOCUMENT_PYTHON );
-
-                handler->initialize( _cb, _args );
+                PyGlobalMouseHandlerButtonBeginPtr handler = Helper::makePythonCallbackProvider( m_factoryPyGlobalMouseHandlerButtonBegins, _cb, _args, MENGINE_DOCUMENT_PYTHON );
 
                 UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYTHON );
 
@@ -3861,10 +3836,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( globalHandleSystem, "invalid get global input handler" );
 
-                const PyGlobalMouseHandlerWheelPtr & handler = m_factoryPyGlobalMouseHandlerWheels
-                    ->createObject( MENGINE_DOCUMENT_PYTHON );
-
-                handler->initialize( _cb, _args );
+                PyGlobalMouseHandlerWheelPtr handler = Helper::makePythonCallbackProvider( m_factoryPyGlobalMouseHandlerWheels, _cb, _args, MENGINE_DOCUMENT_PYTHON );
 
                 UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYTHON );
 
@@ -3906,10 +3878,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( globalHandleSystem, "invalid get global input handler" );
 
-                PyGlobalKeyHandlerPtr handler = m_factoryPyGlobalKeyHandler
-                    ->createObject( MENGINE_DOCUMENT_PYTHON );
-
-                handler->initialize( _cb, _args );
+                PyGlobalKeyHandlerPtr handler = Helper::makePythonCallbackProvider( m_factoryPyGlobalKeyHandler, _cb, _args, MENGINE_DOCUMENT_PYTHON );
 
                 UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYTHON );
 
@@ -3949,10 +3918,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( globalHandleSystem, "invalid get global input handler" );
 
-                PyGlobalBaseHandlerPtr handler = m_factoryPyGlobalTextHandler
-                    ->createObject( MENGINE_DOCUMENT_PYTHON );
-
-                handler->initialize( _cb, _args );
+                PyGlobalBaseHandlerPtr handler = Helper::makePythonCallbackProvider( m_factoryPyGlobalTextHandler, _cb, _args, MENGINE_DOCUMENT_PYTHON );
 
                 UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYTHON );
 
@@ -3992,10 +3958,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( globalHandleSystem, "invalid get global input handler" );
 
-                PyGlobalBaseHandlerPtr handler = m_factoryPyGlobalAccelerometerHandler
-                    ->createObject( MENGINE_DOCUMENT_PYTHON );
-
-                handler->initialize( _cb, _args );
+                PyGlobalBaseHandlerPtr handler = Helper::makePythonCallbackProvider( m_factoryPyGlobalAccelerometerHandler, _cb, _args, MENGINE_DOCUMENT_PYTHON );
 
                 UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYTHON );
 

@@ -10,7 +10,7 @@
 
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonDocument.h"
-#include "Environment/Python/PythonCallbackProvider.h"
+#include "Environment/Python/PythonCallbackProviderHelper.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/AffectorCallbackInterface.h"
@@ -238,9 +238,7 @@ namespace Mengine
                     return nullptr;
                 }
 
-                MusicAffectorCallbackPtr callback = m_factoryMusicAffectorCallback->createObject( MENGINE_DOCUMENT_PYTHON );
-
-                callback->initialize( _cb, _args );
+                MusicAffectorCallbackPtr callback = Helper::makePythonCallbackProvider( m_factoryMusicAffectorCallback, _cb, _args, MENGINE_DOCUMENT_PYTHON );
 
                 return callback;
             }

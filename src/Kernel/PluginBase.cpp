@@ -10,6 +10,7 @@
 #include "Kernel/VocabularyHelper.h"
 
 #include "Config/StdString.h"
+#include "Config/StdException.h"
 
 namespace Mengine
 {
@@ -115,7 +116,7 @@ namespace Mengine
         {
             successful = this->_initializePlugin();
         }
-        catch( const std::exception & ex )
+        catch( const StdException::exception & ex )
         {
             LOGGER_ERROR( "plugin '%s' initialize exception: %s"
                 , this->getPluginName().c_str()

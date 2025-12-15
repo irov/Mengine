@@ -141,6 +141,7 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
         String installId = application.getInstallId();
 
         String userId = application.getUserId();
+
         if (userId != null && consent == TrackingConsent.GRANTED) {
             Datadog.setUserInfo(userId, null, null, Map.of("install_id", installId));
         }
@@ -149,7 +150,10 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
             .build();
         Logs.enable(logsConfig);
 
+        String packageName = context.getPackageName();
+        
         Logger logger = new Logger.Builder()
+            .setService(packageName)
             .setNetworkInfoEnabled(false)
             .setLogcatLogsEnabled(false)
             .build();

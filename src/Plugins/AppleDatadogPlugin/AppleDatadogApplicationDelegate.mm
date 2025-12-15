@@ -65,6 +65,10 @@
         
         return NO;
     }
+
+    NSString * bundleIdentifier = [AppleBundle getIdentifier];
+
+    NSString * AppleDatadogApplicationDelegate_Service = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"Service" withDefault:bundleIdentifier];
     
     DDConfiguration * configuration = [[DDConfiguration alloc] initWithClientToken:AppleDatadogApplicationDelegate_ClientToken
 #if defined(MENGINE_DEBUG)
@@ -73,6 +77,8 @@
                                                                                env:@"prod"
 #endif
     ];
+
+    configuration.service = AppleDatadogApplicationDelegate_Service;
     
     NSString * AppleDatadogApplicationDelegate_Site = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"Site" withDefault:@"us1"];
     
@@ -105,7 +111,7 @@
     [DDLogs enableWith:logsConfiguration];
     
     DDLoggerConfiguration * loggerConfiguration = [[DDLoggerConfiguration alloc]
-                                                   initWithService:nil
+                                                   initWithService:AppleDatadogApplicationDelegate_Service
                                                    name:nil
                                                    networkInfoEnabled:NO
                                                    bundleWithRumEnabled:NO

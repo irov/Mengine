@@ -98,6 +98,10 @@ if(MENGINE_PLUGIN_ANDROID_NATIVE_PYTHON)
     ADD_SUBDIRECTORY(AndroidNativePythonPlugin)
 endif()
 
+if(MENGINE_PLUGIN_ANDROID_SOUND)
+    ADD_SUBDIRECTORY(AndroidSoundPlugin)
+endif()
+
 if(MENGINE_PLUGIN_DAZZLE)
     ADD_SUBDIRECTORY(DazzlePlugin)
 endif()

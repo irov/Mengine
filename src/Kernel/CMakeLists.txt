@@ -477,6 +477,12 @@ Randomizer
 )
 
 ADD_FILTER(
+Dice
+    PityDice.cpp
+    PityDice.h
+)
+
+ADD_FILTER(
 Assertion
     Assertion.h
     Assertion.cpp

@@ -12,6 +12,7 @@
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/PackageServiceInterface.h"
 #include "Interface/RandomizerInterface.h"
+#include "Interface/DiceInterface.h"
 #include "Interface/PluginServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
@@ -83,7 +84,6 @@
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/ThreadTask.h"
 #include "Kernel/Scene.h"
-#include "Kernel/MT19937Randomizer.h"
 #include "Kernel/InputServiceHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/UnicodeHelper.h"
@@ -1113,6 +1113,21 @@ namespace Mengine
                 );
 
                 return randomizer;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            DiceInterfacePtr s_createDice( const ConstString & _prototype, const RandomizerInterfacePtr & _randomizer, float _chance )
+            {
+                DiceInterfacePtr dice = PROTOTYPE_SERVICE()
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Dice" ), _prototype, MENGINE_DOCUMENT_PYTHON );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( dice, "invalid create dice '%s'"
+                    , _prototype.c_str()
+                );
+
+                dice->setRandomizer( _randomizer );
+                dice->setChance( _chance );
+
+                return dice;
             }
             //////////////////////////////////////////////////////////////////////////
             ShapeQuadFixedPtr s_createSprite( const ConstString & _name, const ResourceImagePtr & _resource )
@@ -4324,6 +4339,7 @@ namespace Mengine
         pybind::def_functor( _kernel, "createSprite", nodeScriptMethod, &EngineScriptMethod::s_createSprite );
 
         pybind::def_functor( _kernel, "generateRandomizer", nodeScriptMethod, &EngineScriptMethod::s_generateRandomizer );
+        pybind::def_functor( _kernel, "createDice", nodeScriptMethod, &EngineScriptMethod::s_createDice );
 
         pybind::def_functor_args( _kernel, "addTimer", nodeScriptMethod, &EngineScriptMethod::s_addTimer );
         pybind::def_functor( _kernel, "removeTimer", nodeScriptMethod, &EngineScriptMethod::s_removeTimer );
@@ -4723,6 +4739,14 @@ namespace Mengine
             .def( "getRandomRange", &RandomizerInterface::getRandomRange32 )
             .def( "getRandomf", &RandomizerInterface::getRandomf )
             .def( "getRandomRangef", &RandomizerInterface::getRandomRangef )
+            ;
+
+        pybind::interface_<DiceInterface, pybind::bases<Mixin>>( _kernel, "DiceInterface" )
+            .def( "setRandomizer", &DiceInterface::setRandomizer )
+            .def( "getRandomizer", &DiceInterface::getRandomizer )
+            .def( "setChance", &DiceInterface::setChance )
+            .def( "getChance", &DiceInterface::getChance )
+            .def( "roll", &DiceInterface::roll )
             ;
 
         pybind::interface_<SecureValueInterface, pybind::bases<Mixin>>( _kernel, "SecureValueInterface" )

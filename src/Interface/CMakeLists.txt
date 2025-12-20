@@ -93,6 +93,7 @@ Common
     MetabufLoaderInterface.h
     LoaderServiceInterface.h
     RandomizerInterface.h
+    DiceInterface.h
     AnimationInterface.h
     EventationInterface.h
     EventReceiverInterface.h

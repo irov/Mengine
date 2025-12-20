@@ -43,17 +43,75 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
         return drawable;
     }
 
+    private ImageView.ScaleType getScaleTypeFromResource(Context context) {
+        Resources resources = context.getResources();
+        
+        try {
+            int resourceId = resources.getIdentifier("mengine_splashscreen_type", "string", context.getPackageName());
+            
+            if (resourceId == 0) {
+                return ImageView.ScaleType.FIT_XY;
+            }
+            
+            String scaleTypeString = resources.getString(resourceId).toLowerCase();
+            
+            switch (scaleTypeString) {
+                case "center":
+                    return ImageView.ScaleType.CENTER;
+                case "center_crop":
+                    return ImageView.ScaleType.CENTER_CROP;
+                case "center_inside":
+                    return ImageView.ScaleType.CENTER_INSIDE;
+                case "fit_center":
+                    return ImageView.ScaleType.FIT_CENTER;
+                case "fit_start":
+                    return ImageView.ScaleType.FIT_START;
+                case "fit_end":
+                    return ImageView.ScaleType.FIT_END;
+                case "fit_xy":
+                    return ImageView.ScaleType.FIT_XY;
+                case "matrix":
+                    return ImageView.ScaleType.MATRIX;
+                default:
+                    this.logWarning("unknown mengine_splashscreen_type: %s, using FIT_XY", scaleTypeString);
+                    return ImageView.ScaleType.FIT_XY;
+            }
+        } catch (Exception e) {
+            this.logWarning("error reading mengine_splashscreen_type: %s, using FIT_XY", e.getMessage());
+            return ImageView.ScaleType.FIT_XY;
+        }
+    }
+
+    private boolean getUseBackgroundFromResource(Context context) {
+        Resources resources = context.getResources();
+        
+        try {
+            int resourceId = resources.getIdentifier("mengine_splashscreen_use_background", "bool", context.getPackageName());
+            
+            if (resourceId == 0) {
+                return false;
+            }
+            
+            return resources.getBoolean(resourceId);
+        } catch (Exception e) {
+            this.logWarning("error reading mengine_splashscreen_use_background: %s, using setImageDrawable", e.getMessage());
+            return false;
+        }
+    }
+
     private ImageView createBackground(Context context) {
         ImageView image = new ImageView(context);
         Drawable mengine_splashscreen = this.getDrawableSplashScreen(context);
-        image.setBackground(mengine_splashscreen);
-
-        boolean mengine_splashscreen_background_inside = context.getResources().getBoolean(R.bool.mengine_splashscreen_background_inside);
-
-        if (mengine_splashscreen_background_inside == true) {
-            image.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+        
+        boolean useBackground = this.getUseBackgroundFromResource(context);
+        
+        if (useBackground == true) {
+            image.setBackground(mengine_splashscreen);
         } else {
-            image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            image.setImageDrawable(mengine_splashscreen);
+
+            ImageView.ScaleType scaleType = this.getScaleTypeFromResource(context);
+            image.setScaleType(scaleType);
         }
 
         ViewGroup.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);

@@ -41,6 +41,7 @@
 #include "Kernel/FileContent.h"
 #include "Kernel/EntityEventable.h"
 #include "Kernel/MT19937Randomizer.h"
+#include "Kernel/PityDice.h"
 #include "Kernel/VocabularyHelper.h"
 #include "Kernel/PluginHelper.h"
 #include "Kernel/MixerMultiplicative.h"
@@ -909,6 +910,12 @@ namespace Mengine
         }
 
         if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Dice" ), PityDice::getFactorableType(), Helper::makeDefaultPrototypeGenerator<PityDice, 32>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        {
+            return false;
+        }
+
+        if( PROTOTYPE_SERVICE()
             ->addPrototype( ConstString::none(), MixerMultiplicative::getFactorableType(), Helper::makeDefaultPrototypeGenerator<MixerMultiplicative, 32>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
@@ -938,6 +945,9 @@ namespace Mengine
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), MT19937Randomizer::getFactorableType(), nullptr );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Dice" ), PityDice::getFactorableType(), nullptr );
 
         PROTOTYPE_SERVICE()
             ->removePrototype( ConstString::none(), MixerMultiplicative::getFactorableType(), nullptr );

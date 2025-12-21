@@ -39,7 +39,7 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
     private boolean m_showing = false;
 
     public MengineAdMobInterstitialAd(@NonNull MengineAdService adService, @NonNull MengineAdMobPluginInterface plugin) throws MengineServiceInvalidInitializeException {
-        super(adService, plugin);
+        super(adService, plugin, MengineAdFormat.ADFORMAT_INTERSTITIAL);
 
         this.setAdUnitId(METADATA_INTERSTITIAL_ADUNITID, "InterstitialAdUnitId");
     }

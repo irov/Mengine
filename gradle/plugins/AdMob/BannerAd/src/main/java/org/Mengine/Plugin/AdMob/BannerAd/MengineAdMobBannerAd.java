@@ -45,7 +45,7 @@ public class MengineAdMobBannerAd extends MengineAdMobBase implements MengineAdM
     protected volatile boolean m_loaded = false;
 
     public MengineAdMobBannerAd(@NonNull MengineAdService adService, @NonNull MengineAdMobPluginInterface plugin) throws MengineServiceInvalidInitializeException {
-        super(adService, plugin);
+        super(adService, plugin, MengineAdFormat.ADFORMAT_BANNER);
 
         this.setAdUnitId(METADATA_BANNER_ADUNITID, "BannerAdUnitId");
 

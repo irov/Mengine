@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 public class MengineAdMobBase extends AdListener implements MengineAdMobAdInterface {
     protected final MengineAdService m_adService;
     protected final MengineAdMobPluginInterface m_plugin;
+    protected final MengineAdFormat m_adFormat;
 
     protected String m_adUnitId;
 
@@ -36,9 +37,10 @@ public class MengineAdMobBase extends AdListener implements MengineAdMobAdInterf
     protected int m_requestAttempt;
     protected long m_requestTimestamp;
 
-    public MengineAdMobBase(@NonNull MengineAdService adService, @NonNull MengineAdMobPluginInterface plugin) {
+    public MengineAdMobBase(@NonNull MengineAdService adService, @NonNull MengineAdMobPluginInterface plugin, @NonNull MengineAdFormat adFormat) {
         m_adService = adService;
         m_plugin = plugin;
+        m_adFormat = adFormat;
 
         m_enumeratorRequest = 0;
         m_requestId = 0;
@@ -185,8 +187,7 @@ public class MengineAdMobBase extends AdListener implements MengineAdMobAdInterf
     protected void log(String callback, Map<String, Object> params) {
         StringBuilder sb = new StringBuilder(512);
 
-        sb.append(String.format(Locale.US, "[AdMob] %s ", callback));
-
+        this.writeCallback(sb, callback);
         this.writeParams(sb, params);
         this.writeBaseInfo(sb);
 
@@ -200,9 +201,10 @@ public class MengineAdMobBase extends AdListener implements MengineAdMobAdInterf
     protected void logError(String callback, Exception e) {
         StringBuilder sb = new StringBuilder(1024);
 
-        sb.append(String.format(Locale.US, "[AdMob] %s exception: %s ", callback, e.getMessage()));
-
+        this.writeCallback(sb, callback);
         this.writeBaseInfo(sb);
+
+        sb.append(String.format(Locale.US, "Exception: %s ", e.getMessage()));
 
         sb.setLength(sb.length() - 1); //remove last ' '
 
@@ -214,8 +216,7 @@ public class MengineAdMobBase extends AdListener implements MengineAdMobAdInterf
     protected void logAdError(String callback, @NonNull AdError error) {
         StringBuilder sb = new StringBuilder(1024);
 
-        sb.append(String.format(Locale.US, "[AdMob] %s ", callback));
-
+        this.writeCallback(sb, callback);
         this.writeBaseInfo(sb);
 
         int errorCode = error.getCode();
@@ -234,8 +235,7 @@ public class MengineAdMobBase extends AdListener implements MengineAdMobAdInterf
     protected void logLoadAdError(String callback, @NonNull LoadAdError error) {
         StringBuilder sb = new StringBuilder(1024);
 
-        sb.append(String.format(Locale.US, "[AdMob] %s ", callback));
-
+        this.writeCallback(sb, callback);
         this.writeBaseInfo(sb);
 
         int errorCode = error.getCode();
@@ -257,6 +257,13 @@ public class MengineAdMobBase extends AdListener implements MengineAdMobAdInterf
         }
 
         sb.append(String.format(Locale.US, "%s ", params));
+    }
+
+    protected void writeCallback(StringBuilder sb, String callback)
+    {
+        String label = m_adFormat.getName();
+
+        sb.append(String.format(Locale.US, "[%s] %s ", label, callback));
     }
 
     protected void writeBaseInfo(StringBuilder sb) {

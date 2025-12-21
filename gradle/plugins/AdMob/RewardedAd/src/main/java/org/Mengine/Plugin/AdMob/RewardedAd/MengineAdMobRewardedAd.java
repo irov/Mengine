@@ -39,7 +39,7 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
     private boolean m_showing = false;
 
     public MengineAdMobRewardedAd(@NonNull MengineAdService adService, @NonNull MengineAdMobPluginInterface plugin) throws MengineServiceInvalidInitializeException {
-        super(adService, plugin);
+        super(adService, plugin, MengineAdFormat.ADFORMAT_REWARDED);
 
         this.setAdUnitId(METADATA_REWARDED_ADUNITID, "RewardedAdUnitId");
     }

@@ -222,7 +222,7 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
 
         this.setInterstitialState("displayed." + placement + "." + ad.getNetworkName());
 
-        MengineNative.AndroidPlatform_freezeEvent( true, true );
+        MengineNative.AndroidPlatform_freezeEvent(true, true);
     }
 
     @Override
@@ -238,7 +238,7 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
 
         this.setInterstitialState("hidden." + placement + "." + ad.getNetworkName());
 
-        MengineNative.AndroidPlatform_unfreezeEvent( true, true );
+        MengineNative.AndroidPlatform_unfreezeEvent(true, true);
 
         m_showing = false;
 

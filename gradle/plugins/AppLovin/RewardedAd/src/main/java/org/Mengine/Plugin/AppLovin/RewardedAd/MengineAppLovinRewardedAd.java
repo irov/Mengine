@@ -267,7 +267,7 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Me
 
         this.setRewardedState("displayed." + placement + "." + ad.getNetworkName());
 
-        MengineNative.AndroidPlatform_freezeEvent( true, true );
+        MengineNative.AndroidPlatform_freezeEvent(true, true);
     }
 
     @Override

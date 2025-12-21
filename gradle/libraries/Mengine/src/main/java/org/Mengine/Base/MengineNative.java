@@ -43,8 +43,8 @@ public class MengineNative {
     public static native void AndroidPlatform_startEvent();
     public static native void AndroidPlatform_restartEvent();
     public static native void AndroidPlatform_destroyEvent();
-    public static native void AndroidPlatform_freezeEvent( boolean tick, boolean render );
-    public static native void AndroidPlatform_unfreezeEvent( boolean tick, boolean render );
+    public static native void AndroidPlatform_freezeEvent(boolean tick, boolean render);
+    public static native void AndroidPlatform_unfreezeEvent(boolean tick, boolean render);
     public static native void AndroidPlatform_clipboardChangedEvent();
     public static native void AndroidPlatform_windowFocusChangedEvent(boolean focus);
     public static native void AndroidPlatform_quitEvent();

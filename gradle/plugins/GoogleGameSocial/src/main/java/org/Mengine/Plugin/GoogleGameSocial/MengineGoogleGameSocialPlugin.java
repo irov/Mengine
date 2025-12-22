@@ -8,7 +8,6 @@ import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.IntentSenderRequest;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -54,7 +53,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
     private LeaderboardsClient m_leaderboardsClient;
     private EventsClient m_eventsClient;
 
-    private boolean m_isAuthenticated = false;
+    private volatile boolean m_isAuthenticated = false;
     private Map<String, MengineGoogleGameSocialAchievement> m_cachedAchievements = new HashMap<>();
     private final Object m_cachedAchievementsLock = new Object();
 
@@ -75,33 +74,45 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
     @Override
     public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
         ActivityResultLauncher<Intent> achievementLauncher = activity.registerForActivityResultIntent(result -> {
-            if (result.getResultCode() == Activity.RESULT_OK) {
-                Intent data = result.getData();
-
-                this.logInfo("achievementLauncher onActivityResult intent: %s"
-                    , data
+            if (result.getResultCode() != Activity.RESULT_OK) {
+                this.logInfo("achievementLauncher onActivityResult resultCode: %d"
+                    , result.getResultCode()
                 );
 
-                this.nativeCall("onGoogleGameSocialShowAchievementSuccess");
+                this.nativeCall("onGoogleGameSocialShowAchievementCanceled");
+
+                return;
             }
+
+            Intent data = result.getData();
+
+            this.logInfo("achievementLauncher onActivityResult intent: %s"
+                , data
+            );
+
+            this.nativeCall("onGoogleGameSocialShowAchievementSuccess");
         });
 
         m_achievementLauncher = achievementLauncher;
 
         ActivityResultLauncher<Intent> leaderboardLauncher = activity.registerForActivityResultIntent(result -> {
-            if (result.getResultCode() == Activity.RESULT_OK) {
-                Intent data = result.getData();
-
-                this.logInfo("leaderboardLauncher onActivityResult intent: %s"
-                    , data
-                );
-
-                this.nativeCall("onGoogleGameSocialShowLeaderboardSuccess");
-            } else {
+            if (result.getResultCode() != Activity.RESULT_OK) {
                 this.logInfo("leaderboardLauncher onActivityResult resultCode: %d"
                     , result.getResultCode()
                 );
+
+                this.nativeCall("onGoogleGameSocialShowLeaderboardCanceled");
+
+                return;
             }
+
+            Intent data = result.getData();
+
+            this.logInfo("leaderboardLauncher onActivityResult intent: %s"
+                , data
+            );
+
+            this.nativeCall("onGoogleGameSocialShowLeaderboardSuccess");
         });
 
         m_leaderboardLauncher = leaderboardLauncher;
@@ -186,6 +197,12 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
             return;
         }
 
+        if (m_gamesSignInClient == null) {
+            this.logError("[ERROR] signInSilently gamesSignInClient not initialized");
+
+            return;
+        }
+
         m_gamesSignInClient.isAuthenticated().addOnCompleteListener(isAuthenticatedTask -> {
             boolean isSuccessful = isAuthenticatedTask.isSuccessful();
 
@@ -246,6 +263,12 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
             return;
         }
 
+        if (m_gamesSignInClient == null) {
+            this.logError("[ERROR] signInIntent gamesSignInClient not initialized");
+
+            return;
+        }
+
         this.logInfo("signInIntent");
 
         m_gamesSignInClient.signIn().addOnCompleteListener(task -> {
@@ -265,6 +288,14 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                     try {
                         IntentSender sender = pendingIntent.getIntentSender();
 
+                        if (sender == null) {
+                            this.logError("[ERROR] signInIntent PendingIntent IntentSender null");
+
+                            MenginePreferences.setPreferenceBoolean(PREFERENCE_KEY_TRYING_SIGN_IN_INTENT, false);
+
+                            return;
+                        }
+
                         IntentSenderRequest request = new IntentSenderRequest.Builder(sender)
                             .build();
 
@@ -272,9 +303,13 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                             m_gamesResolutionLauncher.launch(request);
                         } else {
                             this.logError("[ERROR] signInIntent gamesResolutionLauncher not available");
+
+                            MenginePreferences.setPreferenceBoolean(PREFERENCE_KEY_TRYING_SIGN_IN_INTENT, false);
                         }
                     } catch (Exception ex) {
                         this.logException(ex, Map.of());
+
+                        MenginePreferences.setPreferenceBoolean(PREFERENCE_KEY_TRYING_SIGN_IN_INTENT, false);
                     }
 
                     return;
@@ -326,6 +361,14 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
             this.logInfo("requestAchievementsState not authenticated");
 
             this.nativeCall("onGoogleGameSocialRequestAchievementsStateError", new RuntimeException("not authenticated"));
+
+            return;
+        }
+
+        if (m_achievementsClient == null) {
+            this.logError("[ERROR] requestAchievementsState achievementsClient not initialized");
+
+            this.nativeCall("onGoogleGameSocialRequestAchievementsStateError", new RuntimeException("achievementsClient not initialized"));
 
             return;
         }
@@ -420,13 +463,25 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
             return;
         }
 
+        if (m_achievementsClient == null) {
+            this.logError("[ERROR] showAchievements achievementsClient not initialized");
+
+            this.nativeCall("onGoogleGameSocialShowAchievementError", new RuntimeException("achievementsClient not initialized"));
+
+            return;
+        }
+
         this.logInfo("showAchievements");
 
         m_achievementsClient.getAchievementsIntent()
             .addOnSuccessListener(intent -> {
                 this.logInfo("get achievements success");
 
-                m_achievementLauncher.launch(intent);
+                if (m_achievementLauncher != null) {
+                    m_achievementLauncher.launch(intent);
+                } else {
+                    this.logError("[ERROR] showAchievements achievementLauncher not available");
+                }
             }).addOnFailureListener(e -> {
                 this.logException(e, Map.of());
 
@@ -456,13 +511,15 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
         synchronized (m_cachedAchievementsLock) {
             MengineGoogleGameSocialAchievement cachedAchievement = m_cachedAchievements.get(achievementId);
 
-            if (cachedAchievement == null) {
-                cachedAchievement = MengineGoogleGameSocialAchievement.placeholder(achievementId);
-
-                m_cachedAchievements.put(achievementId, cachedAchievement);
+            if (cachedAchievement != null) {
+                return cachedAchievement;
             }
 
-            return cachedAchievement;
+            MengineGoogleGameSocialAchievement newAchievement = MengineGoogleGameSocialAchievement.placeholder(achievementId);
+
+            m_cachedAchievements.put(achievementId, newAchievement);
+
+            return newAchievement;
         }
     }
 
@@ -483,6 +540,14 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
             );
 
             this.nativeCall("onGoogleGameSocialUnlockAchievementError", achievementId, new RuntimeException("not authenticated"));
+
+            return;
+        }
+
+        if (m_achievementsClient == null) {
+            this.logError("[ERROR] unlockAchievement achievementsClient not initialized");
+
+            this.nativeCall("onGoogleGameSocialUnlockAchievementError", achievementId, new RuntimeException("achievementsClient not initialized"));
 
             return;
         }
@@ -554,6 +619,14 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
             return;
         }
 
+        if (m_achievementsClient == null) {
+            this.logError("[ERROR] incrementAchievement achievementsClient not initialized");
+
+            this.nativeCall("onGoogleGameSocialIncrementAchievementError", achievementId, numSteps, new RuntimeException("achievementsClient not initialized"));
+
+            return;
+        }
+
         this.logInfo("incrementAchievement achievementId: %s numSteps: %d"
             , achievementId
             , numSteps
@@ -619,6 +692,14 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
             return;
         }
 
+        if (m_achievementsClient == null) {
+            this.logError("[ERROR] revealAchievement achievementsClient not initialized");
+
+            this.nativeCall("onGoogleGameSocialRevealAchievementError", achievementId, new RuntimeException("achievementsClient not initialized"));
+
+            return;
+        }
+
         this.logInfo("revealAchievement achievementId: %s "
             , achievementId
         );
@@ -678,6 +759,14 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
             return;
         }
 
+        if (m_leaderboardsClient == null) {
+            this.logError("[ERROR] submitLeaderboardScore leaderboardsClient not initialized");
+
+            this.nativeCall("onGoogleGameSocialLeaderboardScoreError", leaderboardId, score, new RuntimeException("leaderboardsClient not initialized"));
+
+            return;
+        }
+
         this.logInfo("submitLeaderboardScore leaderboardId: %s score: %d"
             , leaderboardId
             , score
@@ -731,6 +820,14 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
             return;
         }
 
+        if (m_leaderboardsClient == null) {
+            this.logError("[ERROR] showLeaderboard leaderboardsClient not initialized");
+
+            this.nativeCall("onGoogleGameSocialShowLeaderboardError", leaderboardId, new RuntimeException("leaderboardsClient not initialized"));
+
+            return;
+        }
+
         this.logInfo("showLeaderboard: %s"
             , leaderboardId
         );
@@ -741,7 +838,11 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                     , leaderboardId
                 );
 
-                m_leaderboardLauncher.launch(intent);
+                if (m_leaderboardLauncher != null) {
+                    m_leaderboardLauncher.launch(intent);
+                } else {
+                    this.logError("[ERROR] showLeaderboard leaderboardLauncher not available");
+                }
             }).addOnFailureListener(e -> {
                 this.logException(e, Map.of(
                     "leaderboardId", leaderboardId
@@ -776,6 +877,14 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
             );
 
             this.nativeCall("onGoogleGameSocialIncrementEventError", eventId, value, new RuntimeException("not authenticated"));
+
+            return;
+        }
+
+        if (m_eventsClient == null) {
+            this.logError("[ERROR] incrementEvent eventsClient not initialized");
+
+            this.nativeCall("onGoogleGameSocialIncrementEventError", eventId, value, new RuntimeException("eventsClient not initialized"));
 
             return;
         }

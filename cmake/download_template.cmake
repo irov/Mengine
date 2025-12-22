@@ -107,7 +107,10 @@ macro(GIT_CLONE NAME REPOSITORY)
 
             CONFIGURE_COMMAND ""
             BUILD_COMMAND ""
-            UPDATE_COMMAND ""
+            UPDATE_COMMAND ${GIT_EXECUTABLE} fetch --tags --force --prune
+                COMMAND ${GIT_EXECUTABLE} checkout -f ${TAG}
+                COMMAND ${GIT_EXECUTABLE} reset --hard ${TAG}
+                COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
             INSTALL_COMMAND ""
         )
     else()

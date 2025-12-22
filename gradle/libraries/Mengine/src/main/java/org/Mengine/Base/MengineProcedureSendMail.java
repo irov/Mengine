@@ -52,21 +52,17 @@ public class MengineProcedureSendMail implements MengineProcedureInterface {
 
         StringBuilder body_builder = new StringBuilder(m_body);
 
-        String installId = application.getInstallId();
-        String userId = application.getUserId();
-        String sessionId = application.getSessionId();
-        String installationId = MengineFragmentRemoteConfig.INSTANCE.getInstallationId();
-
         String lineSeparator = System.lineSeparator();
+        String indent = "        ";
 
         body_builder.append(lineSeparator);
         body_builder.append(lineSeparator);
+        body_builder.append("----- Please Describe Your Message Above Here -----").append(lineSeparator);
+        body_builder.append(lineSeparator);
 
-        body_builder.append("        Account Info:").append(lineSeparator);
-        body_builder.append("        * install id: " + installId).append(lineSeparator);
-        body_builder.append("        * user id: " + userId).append(lineSeparator);
-        body_builder.append("        * session id: " + sessionId).append(lineSeparator);
-        body_builder.append("        * installation id: " + installationId).append(lineSeparator);
+        MengineUtils.buildPrintApplicationInfo(body_builder, indent, application);
+        MengineUtils.buildPrintAccountInfo(body_builder, indent, application);
+        MengineUtils.buildPrintDeviceInfo(body_builder, indent);
 
         try {
             ArrayList<Parcelable> fileUris = new ArrayList<>();

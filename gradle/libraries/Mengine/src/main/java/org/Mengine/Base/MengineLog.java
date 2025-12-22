@@ -144,7 +144,8 @@ public class MengineLog {
     public static void logException(@NonNull MengineTag category, @NonNull Throwable e, @NonNull Map<String, Object> attributes) {
         String message = e.toString();
         String trace = Log.getStackTraceString(e);
-        MengineLog.logError(category, "%s\n%s", message, trace);
+        String lineSeparator = System.lineSeparator();
+        MengineLog.logError(category, "%s%s%s", message, lineSeparator, trace);
 
         MengineParamLoggerException exception = new MengineParamLoggerException(category, e, attributes);
 

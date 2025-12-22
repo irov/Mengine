@@ -601,6 +601,9 @@ if(MENGINE_DEPENDENCE_OPENAL_SOFT)
         SET(FORCE_STATIC_VCRT OFF CACHE BOOL "Force /MT for static VC runtimes" FORCE)
     endif()
     
+    SET(ALSOFT_STL_HARDENING "None" CACHE STRING "Specifies the level of C++ STL hardening. None, Performance, Debug" FORCE)
+    SET(ALSOFT_ENABLE_MODULES OFF CACHE BOOL "Enable use of C++20 modules when supported" FORCE)
+    
     SET(ALSOFT_STATIC_LIBGCC OFF CACHE BOOL "Force -static-libgcc for static GCC runtimes" FORCE)
     SET(ALSOFT_STATIC_STDCXX OFF CACHE BOOL "Static link libstdc++" FORCE)
     SET(ALSOFT_STATIC_WINPTHREAD OFF CACHE BOOL "Static link libwinpthread" FORCE)

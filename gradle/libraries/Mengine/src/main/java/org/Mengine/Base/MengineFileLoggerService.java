@@ -106,10 +106,10 @@ public class MengineFileLoggerService extends MengineService implements MengineL
 
         String timestamp = MengineFileLoggerService.makeTimestamp();
 
-        String line = String.format(Locale.US, "%s |%s| [%s] %s"
+        String line = String.format(Locale.US, "%s [%s] |%s| %s"
             , timestamp
-            , message.MESSAGE_THREAD
             , message.MESSAGE_CATEGORY.toString()
+            , message.MESSAGE_THREAD
             , message.MESSAGE_DATA);
 
         this.writeLine(line);

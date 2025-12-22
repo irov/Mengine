@@ -24,6 +24,7 @@ import android.view.WindowManager;
 import android.view.WindowMetrics;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 
 import org.json.JSONArray;
@@ -153,26 +154,26 @@ public class MengineUtils {
     }
 
     public static class Code {
-        Code(String file, int line, String function) {
+        Code(@Nullable String file, int line, @Nullable String function) {
             this.file = file;
             this.line = line;
             this.method = function;
         }
 
-        public final String file;
+        public final @Nullable String file;
         public final int line;
-        public final String method;
+        public final @Nullable String method;
     }
 
     public static Code getCurrentThreadCode(int index) {
         if (BuildConfig.DEBUG == false) {
-            return new Code("", 0, "");
+            return new Code(null, 0, null);
         }
 
         StackTraceElement[] trace = Thread.currentThread().getStackTrace();
 
         if (trace.length < index) {
-            return new Code("", 0, "");
+            return new Code(null, 0, null);
         }
 
         StackTraceElement top = trace[index];
@@ -1429,7 +1430,51 @@ public class MengineUtils {
         return defaultValue;
     }
 
-    static public String getPrintDeviceInfo() {
+    static public void buildPrintApplicationInfo(@NonNull StringBuilder sb, @NonNull String indent, @NonNull MengineApplication application) {
+        String packageName = application.getPackageName();
+        String versionName = application.getVersionName();
+        int versionCode = application.getVersionCode();
+
+        String lineSeparator = System.lineSeparator();
+
+        sb.append(indent).append("[Application Info]").append(lineSeparator);
+        sb.append(indent).append("Package: ").append(packageName).append(lineSeparator);
+        sb.append(indent).append("Version: ").append(versionName).append(lineSeparator);
+        sb.append(indent).append("Code: ").append(versionCode).append(lineSeparator);
+    }
+
+    static public String getPrintApplicationInfo(@NonNull MengineApplication application) {
+        StringBuilder sb = new StringBuilder();
+
+        MengineUtils.buildPrintApplicationInfo(sb, "", application);
+
+        return sb.toString();
+    }
+
+    static public void buildPrintAccountInfo(@NonNull StringBuilder sb, @NonNull String indent, @NonNull MengineApplication application) {
+        String installId = application.getInstallId();
+        String userId = application.getUserId();
+        String sessionId = application.getSessionId();
+        String installationId = MengineFragmentRemoteConfig.INSTANCE.getInstallationId();
+
+        String lineSeparator = System.lineSeparator();
+
+        sb.append(indent).append("[Account Info]").append(lineSeparator);
+        sb.append(indent).append("Install Id: " + installId).append(lineSeparator);
+        sb.append(indent).append("User Id: " + userId).append(lineSeparator);
+        sb.append(indent).append("Session Id: " + sessionId).append(lineSeparator);
+        sb.append(indent).append("Remote Id: " + installationId).append(lineSeparator);
+    }
+
+    static public String getPrintAccountInfo(@NonNull MengineApplication application) {
+        StringBuilder sb = new StringBuilder();
+
+        MengineUtils.buildPrintAccountInfo(sb, "", application);
+
+        return sb.toString();
+    }
+
+    static public void buildPrintDeviceInfo(@NonNull StringBuilder sb, @NonNull String indent) {
         String manufacturer = Build.MANUFACTURER;
         String model = Build.MODEL;
         String brand = Build.BRAND;
@@ -1440,27 +1485,28 @@ public class MengineUtils {
         String androidVersion = Build.VERSION.RELEASE;
         int sdkInt = Build.VERSION.SDK_INT;
         String id = Build.ID;
-        String fingerprint = Build.FINGERPRINT;
-
-        StringBuilder deviceInfo = new StringBuilder();
 
         String lineSeparator = System.lineSeparator();
 
-        deviceInfo.append("=== Device Info ===").append(lineSeparator);
-        deviceInfo.append("Manufacturer: ").append(manufacturer).append(lineSeparator);
-        deviceInfo.append("Model: ").append(model).append(lineSeparator);
-        deviceInfo.append("Brand: ").append(brand).append(lineSeparator);
-        deviceInfo.append("Device: ").append(device).append(lineSeparator);
-        deviceInfo.append("Hardware: ").append(hardware).append(lineSeparator);
-        deviceInfo.append("Product: ").append(product).append(lineSeparator);
-        deviceInfo.append("Board: ").append(board).append(lineSeparator);
-        deviceInfo.append("Android Version: ").append(androidVersion).append(lineSeparator);
-        deviceInfo.append("SDK Int: ").append(sdkInt).append(lineSeparator);
-        deviceInfo.append("ID: ").append(id).append(lineSeparator);
-        deviceInfo.append("Fingerprint: ").append(fingerprint).append(lineSeparator);
-        deviceInfo.append("===================");
+        sb.append(indent).append("[Device Info]").append(lineSeparator);
+        sb.append(indent).append("Manufacturer: ").append(manufacturer).append(lineSeparator);
+        sb.append(indent).append("Model: ").append(model).append(lineSeparator);
+        sb.append(indent).append("Brand: ").append(brand).append(lineSeparator);
+        sb.append(indent).append("Device: ").append(device).append(lineSeparator);
+        sb.append(indent).append("Hardware: ").append(hardware).append(lineSeparator);
+        sb.append(indent).append("Product: ").append(product).append(lineSeparator);
+        sb.append(indent).append("Board: ").append(board).append(lineSeparator);
+        sb.append(indent).append("Android Version: ").append(androidVersion).append(lineSeparator);
+        sb.append(indent).append("SDK Int: ").append(sdkInt).append(lineSeparator);
+        sb.append(indent).append("ID: ").append(id).append(lineSeparator);
+    }
 
-        return deviceInfo.toString();
+    static public String getPrintDeviceInfo() {
+        StringBuilder sb = new StringBuilder();
+
+        MengineUtils.buildPrintDeviceInfo(sb, "");
+
+        return sb.toString();
     }
 
     static public Bundle getMetaDataBundle(@NonNull MengineApplication application) {

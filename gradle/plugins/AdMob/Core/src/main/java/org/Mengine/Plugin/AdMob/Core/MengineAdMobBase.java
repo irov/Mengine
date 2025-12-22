@@ -195,7 +195,7 @@ public class MengineAdMobBase extends AdListener implements MengineAdMobAdInterf
 
         String message = sb.toString();
 
-        m_plugin.logInfo("%s", message);
+        m_plugin.logDebug("%s", message);
     }
 
     protected void logError(String callback, Exception e) {
@@ -229,7 +229,7 @@ public class MengineAdMobBase extends AdListener implements MengineAdMobAdInterf
 
         String message = sb.toString();
 
-        m_plugin.logInfo("%s", message);
+        m_plugin.logDebug("%s", message);
     }
 
     protected void logLoadAdError(String callback, @NonNull LoadAdError error) {
@@ -248,7 +248,7 @@ public class MengineAdMobBase extends AdListener implements MengineAdMobAdInterf
 
         String message = sb.toString();
 
-        m_plugin.logInfo("%s", message);
+        m_plugin.logDebug("%s", message);
     }
 
     protected void writeParams(StringBuilder sb, Map<String, Object> params) {

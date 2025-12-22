@@ -250,6 +250,10 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
             return;
         }
 
+        if (message.MESSAGE_LEVEL == MengineLog.LM_VERBOSE || message.MESSAGE_LEVEL == MengineLog.LM_DEBUG) {
+            return;
+        }
+
         Map<String, Object> attributes = BuildConfig.DEBUG == true ? Map.of("mng_record", Map.of(
             "code.category", message.MESSAGE_CATEGORY,
             "code.thread", message.MESSAGE_THREAD,
@@ -264,9 +268,6 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
         );
 
         switch (message.MESSAGE_LEVEL) {
-            case MengineLog.LM_VERBOSE:
-            case MengineLog.LM_DEBUG:
-                return;
             case MengineLog.LM_INFO:
                 boolean enableInfoMessage = this.getEnableInfoMessage();
 

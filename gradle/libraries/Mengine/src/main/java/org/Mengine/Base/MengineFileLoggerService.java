@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 
-public class MengineFileLoggerService extends MengineService implements MengineListenerApplication, MengineListenerLogger {
+public class MengineFileLoggerService extends MengineService implements MengineListenerApplication, MengineListenerActivity, MengineListenerLogger {
     public static final String SERVICE_NAME = "FileLogger";
     public static final boolean SERVICE_EMBEDDING = true;
 
@@ -34,7 +34,7 @@ public class MengineFileLoggerService extends MengineService implements MengineL
         m_logFile = MengineUtils.createTempFile(context, "mng_log_", ".log");
 
         if (m_logFile == null) {
-            this.logError("invalid create log file");
+            this.logWarning("invalid create log file");
 
             return;
         }
@@ -52,6 +52,7 @@ public class MengineFileLoggerService extends MengineService implements MengineL
 
         if (m_writer != null) {
             try {
+                m_writer.flush();
                 m_writer.close();
             } catch (IOException ignored) {
                 // ignore
@@ -63,6 +64,19 @@ public class MengineFileLoggerService extends MengineService implements MengineL
         m_logFile = null;
     }
 
+    @Override
+    public void onPause(@NonNull MengineActivity activity) {
+        if (m_writer == null) {
+            return;
+        }
+
+        try {
+            m_writer.flush();
+        } catch (IOException ignored) {
+            // ignore
+        }
+    }
+
     private void writeLine(String line) {
         if (m_writer == null) {
             return;
@@ -72,7 +86,6 @@ public class MengineFileLoggerService extends MengineService implements MengineL
             m_writer.write(line);
             String lineSeparator = System.lineSeparator();
             m_writer.write(lineSeparator);
-            m_writer.flush();
         } catch (IOException ignored) {
             // ignore
         }

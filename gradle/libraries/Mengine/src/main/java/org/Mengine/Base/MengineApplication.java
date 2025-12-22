@@ -453,7 +453,7 @@ public abstract class MengineApplication extends Application {
     }
 
     protected Object createNativeApplication() {
-        MengineLog.logInfo(TAG, "[BEGIN] bootstrap native application");
+        MengineLog.logDebug(TAG, "[BEGIN] bootstrap native application");
 
         ApplicationInfo applicationInfo = this.getApplicationInfo();
         String nativeLibraryDir = applicationInfo.nativeLibraryDir;
@@ -473,7 +473,7 @@ public abstract class MengineApplication extends Application {
             return null;
         }
 
-        MengineLog.logInfo(TAG, "[END] bootstrap native application");
+        MengineLog.logDebug(TAG, "[END] bootstrap native application");
 
         return nativeApplication;
     }
@@ -483,12 +483,12 @@ public abstract class MengineApplication extends Application {
             return;
         }
 
-        MengineLog.logInfo(TAG, "[BEGIN] destroy native application");
+        MengineLog.logDebug(TAG, "[BEGIN] destroy native application");
 
         MengineNative.AndroidMain_destroy(m_nativeApplication);
         m_nativeApplication = null;
 
-        MengineLog.logInfo(TAG, "[END] destroy native application");
+        MengineLog.logDebug(TAG, "[END] destroy native application");
     }
 
     protected Object getNativeApplication() {
@@ -597,7 +597,7 @@ public abstract class MengineApplication extends Application {
 
     @Override
     public void onCreate() {
-        MengineLog.logInfo(TAG, "[BEGIN] onCreate");
+        MengineLog.logDebug(TAG, "[BEGIN] onCreate");
 
         if (m_invalidInitialize == false) {
             List<MengineListenerApplication> applicationListeners = this.getApplicationListeners();
@@ -608,7 +608,7 @@ public abstract class MengineApplication extends Application {
                         continue;
                     }
 
-                    MengineLog.logInfo(TAG, "onAppInit service: %s"
+                    MengineLog.logDebug(TAG, "onAppInit service: %s"
                         , l.getServiceName()
                     );
 
@@ -643,7 +643,7 @@ public abstract class MengineApplication extends Application {
                     continue;
                 }
 
-                MengineLog.logInfo(TAG, "onAppInit service: %s isMainProcess: %b"
+                MengineLog.logDebug(TAG, "onAppInit service: %s isMainProcess: %b"
                     , l.getServiceName()
                     , isMainProcess
                 );
@@ -853,7 +853,7 @@ public abstract class MengineApplication extends Application {
 
                 l.onAppPrepare(this);
 
-                MengineLog.logInfo(TAG, "onAppPrepare service: %s time: %d"
+                MengineLog.logDebug(TAG, "onAppPrepare service: %s time: %d"
                     , l.getServiceName()
                     , MengineUtils.getTimestamp() - service_timestamp
                 );
@@ -955,11 +955,11 @@ public abstract class MengineApplication extends Application {
 
         this.setState("application.init", "completed");
 
-        MengineLog.logInfo(TAG, "[END] onCreate time: %d", MengineUtils.getTimestamp() - sessionTimestamp);
+        MengineLog.logDebug(TAG, "[END] onCreate time: %d", MengineUtils.getTimestamp() - sessionTimestamp);
     }
 
     public void onServicesLoad() {
-        MengineLog.logInfo(TAG, "[BEGIN] onServicesLoad");
+        MengineLog.logDebug(TAG, "[BEGIN] onServicesLoad");
 
         List<MengineServiceInterface> services = this.getServices();
 
@@ -980,11 +980,11 @@ public abstract class MengineApplication extends Application {
             s.onLoad(this, bundle);
         }
 
-        MengineLog.logInfo(TAG, "[END] onServicesLoad");
+        MengineLog.logDebug(TAG, "[END] onServicesLoad");
     }
 
     public void onServicesSave() {
-        MengineLog.logInfo(TAG, "[BEGIN] onServicesSave");
+        MengineLog.logDebug(TAG, "[BEGIN] onServicesSave");
 
         List<MengineServiceInterface> services = this.getServices();
 
@@ -1011,7 +1011,7 @@ public abstract class MengineApplication extends Application {
             this.forceSaveService(s, bundle);
         }
 
-        MengineLog.logInfo(TAG, "[END] onServicesSave");
+        MengineLog.logDebug(TAG, "[END] onServicesSave");
     }
 
     public void forceSaveService(@NonNull MengineServiceInterface s, Bundle bundle) {
@@ -1037,7 +1037,7 @@ public abstract class MengineApplication extends Application {
 
     @Override
     public void onTerminate() {
-        MengineLog.logInfo(TAG, "[BEGIN] onTerminate");
+        MengineLog.logDebug(TAG, "[BEGIN] onTerminate");
 
         this.onServicesSave();
 
@@ -1080,7 +1080,7 @@ public abstract class MengineApplication extends Application {
 
         MengineNative.AndroidEnv_removeMengineAndroidClassLoaderJNI();
 
-        MengineLog.logInfo(TAG, "[END] onTerminate");
+        MengineLog.logDebug(TAG, "[END] onTerminate");
 
         super.onTerminate();
     }
@@ -1089,7 +1089,7 @@ public abstract class MengineApplication extends Application {
     public void attachBaseContext(Context base) {
         super.attachBaseContext(base);
 
-        MengineLog.logInfo(TAG, "[BEGIN] attachBaseContext");
+        MengineLog.logDebug(TAG, "[BEGIN] attachBaseContext");
 
         List<MengineListenerApplication> applicationListeners = this.getApplicationListeners();
 
@@ -1097,14 +1097,14 @@ public abstract class MengineApplication extends Application {
             l.onAppAttachBaseContext(this, base);
         }
 
-        MengineLog.logInfo(TAG, "[END] attachBaseContext");
+        MengineLog.logDebug(TAG, "[END] attachBaseContext");
     }
 
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
-        MengineLog.logInfo(TAG, "[BEGIN] onConfigurationChanged config: %s"
+        MengineLog.logDebug(TAG, "[BEGIN] onConfigurationChanged config: %s"
             , newConfig.toString()
         );
 
@@ -1118,14 +1118,14 @@ public abstract class MengineApplication extends Application {
             l.onAppConfigurationChanged(this, newConfig);
         }
 
-        MengineLog.logInfo(TAG, "[END] onConfigurationChanged");
+        MengineLog.logDebug(TAG, "[END] onConfigurationChanged");
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
 
-        MengineLog.logInfo(TAG, "[BEGIN] onLowMemory");
+        MengineLog.logDebug(TAG, "[BEGIN] onLowMemory");
 
         List<MengineListenerApplication> applicationListeners = this.getApplicationListeners();
 
@@ -1141,14 +1141,14 @@ public abstract class MengineApplication extends Application {
 
         MengineNative.AndroidPlatform_lowMemory();
 
-        MengineLog.logInfo(TAG, "[END] onLowMemory");
+        MengineLog.logDebug(TAG, "[END] onLowMemory");
     }
 
     @Override
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
 
-        MengineLog.logInfo(TAG, "[BEGIN] onTrimMemory level: %d", level);
+        MengineLog.logDebug(TAG, "[BEGIN] onTrimMemory level: %d", level);
 
         List<MengineListenerApplication> applicationListeners = this.getApplicationListeners();
 
@@ -1164,7 +1164,7 @@ public abstract class MengineApplication extends Application {
 
         MengineNative.AndroidPlatform_trimMemory(level);
 
-        MengineLog.logInfo(TAG, "[END] onTrimMemory");
+        MengineLog.logDebug(TAG, "[END] onTrimMemory");
     }
 
     public void activateSemaphore(String name) {

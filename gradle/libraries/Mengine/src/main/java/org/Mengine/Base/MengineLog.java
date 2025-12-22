@@ -76,10 +76,6 @@ public class MengineLog {
     private static void logString(int level, @NonNull MengineTag category, int filter, String data) {
         MengineLog.logNativeLevel(level, category, data);
 
-        if (level >= LM_INFO) {
-            return;
-        }
-
         String thread = MengineUtils.getCurrentThreadName();
 
         MengineUtils.Code code = MengineUtils.getCurrentThreadCode(6);
@@ -110,20 +106,12 @@ public class MengineLog {
     }
 
     public static String logInfo(@NonNull MengineTag category, @NonNull String format, Object ... args) {
-        if (BuildConfig.DEBUG == false) {
-            return "";
-        }
-
         String m = MengineLog.log(LM_INFO, category, MengineLog.LFILTER_NONE, format, args);
 
         return m;
     }
 
     public static String logMessage(@NonNull MengineTag category, @NonNull String format, Object ... args) {
-        if (BuildConfig.DEBUG == false) {
-            return "";
-        }
-
         String m = MengineLog.log(LM_MESSAGE, category, MengineLog.LFILTER_NONE, format, args);
 
         return m;

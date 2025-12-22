@@ -27,7 +27,7 @@ public class MengineMain implements Runnable {
     public void start() {
         MengineLog.logInfo(TAG, "main start");
 
-        m_thread = new Thread(this, "MengineMain");
+        m_thread = new Thread(this, "MNGMain");
         m_thread.start();
     }
 

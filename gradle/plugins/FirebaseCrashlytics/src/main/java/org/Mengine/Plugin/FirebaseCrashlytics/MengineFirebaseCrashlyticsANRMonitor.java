@@ -84,7 +84,7 @@ public class MengineFirebaseCrashlyticsANRMonitor {
                 }
 
                 FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
-                Throwable anrThrowable = new Throwable("Mengine ANR detected on main thread: " + mainThread.getName() + " (state: " + mainThread.getState() + ")");
+                Throwable anrThrowable = new Throwable("ANR detected on main thread: " + mainThread.getName() + " (state: " + mainThread.getState() + ")");
                 anrThrowable.setStackTrace(mainStack);
 
                 for (Map.Entry<Thread, StackTraceElement[]> entry : allThreads.entrySet()) {
@@ -109,7 +109,7 @@ public class MengineFirebaseCrashlyticsANRMonitor {
 
                 crashlytics.recordException(anrThrowable, params);
             }
-        }, "MengineANRMonitor");
+        }, "MNGANRMonitor");
 
         m_watcherThread.start();
     }

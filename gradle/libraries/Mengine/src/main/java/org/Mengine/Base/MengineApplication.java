@@ -155,7 +155,7 @@ public abstract class MengineApplication extends Application {
         String versionName = this.getVersionName();
         int versionCode = this.getVersionCode();
 
-        MengineLog.logInfo(TAG, "MengineApplication id: %s version: %s [%d]"
+        MengineLog.logInfo(TAG, "app id: %s version: %s [%d]"
             , applicationId
             , versionName
             , versionCode
@@ -941,9 +941,9 @@ public abstract class MengineApplication extends Application {
                 continue;
             }
 
-            MengineTag tag = p.getServiceTag();
+            String name = p.getServiceName();
 
-            MengineNative.AndroidKernelService_addPlugin(tag.toString(), p);
+            MengineNative.AndroidKernelService_addPlugin("Mengine" + name, p);
         }
 
         MengineNative.AndroidKernelService_addPlugin("Application", this);
@@ -1060,9 +1060,9 @@ public abstract class MengineApplication extends Application {
                 continue;
             }
 
-            MengineTag tag = p.getServiceTag();
+            String name = p.getServiceName();
 
-            MengineNative.AndroidKernelService_removePlugin(tag.toString());
+            MengineNative.AndroidKernelService_removePlugin("Mengine" + name);
         }
 
         for (MengineServiceInterface service : m_services) {

@@ -126,7 +126,7 @@ public class MengineGoogleAdvertisingPlugin extends MengineService implements Me
         };
 
         synchronized (m_synchronizationAdvertising) {
-            m_advertisingThread = new Thread(task, "MengineGAID");
+            m_advertisingThread = new Thread(task, "MNGGAID");
             m_advertisingThread.start();
         }
     }

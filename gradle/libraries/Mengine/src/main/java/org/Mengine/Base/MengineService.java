@@ -28,7 +28,7 @@ public class MengineService implements MengineServiceInterface {
         m_serviceName = serviceName;
         m_embedding = embedding;
 
-        m_serviceTag = MengineTag.of("Mengine" + m_serviceName);
+        m_serviceTag = MengineTag.of("MNG" + m_serviceName);
     }
 
     @Override

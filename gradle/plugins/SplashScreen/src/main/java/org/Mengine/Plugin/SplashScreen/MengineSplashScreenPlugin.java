@@ -227,12 +227,12 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
 
     @Override
     public void onMenginePlatformRun(@NonNull MengineApplication application) {
-        this.logInfo("Mengine platform run, skip splash screen");
+        this.logInfo("platform run, skip splash screen");
 
         MengineActivity activity = this.getMengineActivity();
 
         if (activity == null) {
-            this.logWarning("MengineActivity is null, cannot hide splash screen");
+            this.logWarning("activity is null, cannot hide splash screen");
 
             return;
         }
@@ -247,7 +247,7 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
             return;
         }
 
-        this.logInfo("hide splash screen on Mengine platform run");
+        this.logInfo("hide splash screen on platform run");
 
         this.hideSplash(activity);
     }

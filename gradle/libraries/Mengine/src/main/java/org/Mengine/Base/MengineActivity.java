@@ -269,7 +269,7 @@ public class MengineActivity extends AppCompatActivity {
         long activity_timestamp = MengineUtils.getTimestamp();
 
         try {
-            Thread.currentThread().setName("MengineActivity");
+            Thread.currentThread().setName("MNGActivity");
         } catch (final Exception e) {
             MengineLog.logMessage(TAG, "modify activity thread name exception: %s"
                 , e.getMessage()

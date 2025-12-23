@@ -15,13 +15,11 @@ namespace Mengine
         virtual ConfigInterfacePtr createMemoryConfig( const DocumentInterfacePtr & _doc ) = 0;
 
     public:
-        virtual ConfigInterfacePtr loadConfig( const ContentInterfacePtr & _content, const ConstString & _configType, const DocumentInterfacePtr & _doc ) = 0;
+        virtual void addFrontConfig( const ConfigInterfacePtr & _config ) = 0;
+        virtual void addBackConfig( const ConfigInterfacePtr & _config ) = 0;
 
     public:
-        virtual bool loadDefaultConfig( const ContentInterfacePtr & _content, const ConstString & _configType, const DocumentInterfacePtr & _doc ) = 0;
-
-    public:
-        virtual const ConfigInterfacePtr & getDefaultConfig() const = 0;
+        virtual const ConfigInterfacePtr & getMainConfig() const = 0;
 
 #if !defined(MENGINE_BUILD_PUBLISH_ENABLE)
     public:

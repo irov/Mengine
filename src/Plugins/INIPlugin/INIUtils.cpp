@@ -101,7 +101,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, const Char ** const _value )
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, String * const _value )
         {
             const Char * ini_value = tinyini_get_property_value( &_ini.ini, _section, _key );
 

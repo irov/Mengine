@@ -123,20 +123,6 @@ namespace Mengine
 
             return ENGINE_VERSION;
         }
-        //////////////////////////////////////////////////////////////////////////        
-        const Char * getContentCommit()
-        {
-            const Char * defaultContentCommit = "0000000000000000000000000000000000000000";
-
-            if( SERVICE_IS_INITIALIZE( ConfigServiceInterface ) == true )
-            {
-                const Char * Info_ContentCommit = CONFIG_VALUE_STRING( "Info", "ContentCommit", defaultContentCommit );
-
-                return Info_ContentCommit;
-            }
-
-            return defaultContentCommit;
-        }
         //////////////////////////////////////////////////////////////////////////
         const Char * getBuildSolutionName()
         {

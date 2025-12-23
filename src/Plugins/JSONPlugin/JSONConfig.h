@@ -34,7 +34,7 @@ namespace Mengine
         bool hasValue( const Char * _section, const Char * _key, bool _default, bool * const _value ) const override;
         bool hasValue( const Char * _section, const Char * _key, int64_t _default, int64_t * const _value ) const override;
         bool hasValue( const Char * _section, const Char * _key, double _default, double * const _value ) const override;
-        bool hasValue( const Char * _section, const Char * _key, const Char * _default, const Char ** const _value ) const override;
+        bool hasValue( const Char * _section, const Char * _key, const String & _default, String * const _value ) const override;
         bool hasValue( const Char * _section, const Char * _key, const ConstString & _default, ConstString * const _value ) const override;
         bool hasValue( const Char * _section, const Char * _key, const FilePath & _default, FilePath * const _value ) const override;
         bool hasValue( const Char * _section, const Char * _key, const Tags & _default, Tags * const _value ) const override;
@@ -45,7 +45,7 @@ namespace Mengine
         bool setValue( const Char * _section, const Char * _key, bool _value ) override;
         bool setValue( const Char * _section, const Char * _key, int64_t _value ) override;
         bool setValue( const Char * _section, const Char * _key, double _value ) override;
-        bool setValue( const Char * _section, const Char * _key, const Char * _value ) override;
+        bool setValue( const Char * _section, const Char * _key, const String & _value ) override;
         bool setValue( const Char * _section, const Char * _key, const ConstString & _value ) override;
         bool setValue( const Char * _section, const Char * _key, const FilePath & _value ) override;
         bool setValue( const Char * _section, const Char * _key, const Tags & _value ) override;

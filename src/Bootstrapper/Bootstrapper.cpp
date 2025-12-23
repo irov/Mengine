@@ -652,8 +652,7 @@ namespace Mengine
                 return nullptr;
             }
 
-            ConfigInterfacePtr applicationConfig = CONFIG_SERVICE()
-                ->loadConfig( _content, ConstString::none(), _doc );
+            ConfigInterfacePtr applicationConfig = Helper::loadConfig( _content, ConstString::none(), _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( applicationConfig, "invalid open application settings '%s'"
                 , Helper::getContentFullPath( _content ).c_str()
@@ -690,8 +689,9 @@ namespace Mengine
         {
             ContentInterfacePtr content = Helper::makeFileContent( defaultFileGroup, filePath, MENGINE_DOCUMENT_FACTORABLE );
 
-            if( CONFIG_SERVICE()
-                ->loadDefaultConfig( content, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE ) == false )
+            ConfigInterfacePtr config = Helper::loadConfig( content, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+
+            if( config == nullptr )
             {
                 LOGGER_ERROR( "invalid load include config '%s'"
                     , filePath.c_str()
@@ -699,6 +699,9 @@ namespace Mengine
 
                 return false;
             }
+
+            CONFIG_SERVICE()
+                ->addBackConfig( config );
         }
 
         VectorFilePath credentialsPaths;
@@ -708,8 +711,9 @@ namespace Mengine
         {
             ContentInterfacePtr content = Helper::makeFileContent( defaultFileGroup, filePath, MENGINE_DOCUMENT_FACTORABLE );
 
-            if( CONFIG_SERVICE()
-                ->loadDefaultConfig( content, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE ) == false )
+            ConfigInterfacePtr config = Helper::loadConfig( content, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+
+            if( config == nullptr )
             {
                 LOGGER_ERROR( "invalid load credential '%s'"
                     , filePath.c_str()
@@ -717,6 +721,9 @@ namespace Mengine
 
                 return false;
             }
+
+            CONFIG_SERVICE()
+                ->addBackConfig( config );
         }
 
         applicationConfig->getValues( "Packages", "Path", &m_packagesPaths );
@@ -727,8 +734,9 @@ namespace Mengine
         {
             ContentInterfacePtr content = Helper::makeFileContent( defaultFileGroup, Helper::stringizeFilePath( option_config ), MENGINE_DOCUMENT_FACTORABLE );
 
-            if( CONFIG_SERVICE()
-                ->loadDefaultConfig( content, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE ) == false )
+            ConfigInterfacePtr config = Helper::loadConfig( content, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+
+            if( config == nullptr )
             {
                 LOGGER_ERROR( "invalid load option config '%s'"
                     , option_config
@@ -736,6 +744,9 @@ namespace Mengine
 
                 return false;
             }
+
+            CONFIG_SERVICE()
+                ->addBackConfig( config );
         }
 
         VectorString options;

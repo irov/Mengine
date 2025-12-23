@@ -1,25 +1,17 @@
 #pragma once
 
 #include "Interface/ConfigInterface.h"
-#include "Interface/InputStreamInterface.h"
-
-#include "INIUtils.h"
-
-#include "Kernel/Tags.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    typedef Vector<INIUtils::IniStore> VectorIniStores;
-    //////////////////////////////////////////////////////////////////////////
-    class INIConfig
+    class AndroidRemoteConfig
         : public ConfigInterface
     {
         DECLARE_FACTORABLE( INIConfig );
 
     public:
-        INIConfig();
-        ~INIConfig() override;
+        AndroidRemoteConfig();
+        ~AndroidRemoteConfig() override;
 
     public:
         void setPlatformTags( const Tags & _platformTags ) override;
@@ -65,12 +57,5 @@ namespace Mengine
 
     protected:
         Tags m_platformTags;
-
-        VectorIniStores m_stores;
     };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<INIConfig, ConfigInterface> INIConfigPtr;
-    //////////////////////////////////////////////////////////////////////////
 }
-
-

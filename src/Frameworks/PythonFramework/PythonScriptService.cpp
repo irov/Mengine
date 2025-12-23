@@ -337,9 +337,6 @@ namespace Mengine
         const Char * engineGITData = Helper::getEngineGitDate();
         this->addGlobalModuleT( "_ENGINE_GITDATA", engineGITData );
 
-        const Char * contentCommit = Helper::getContentCommit();
-        this->addGlobalModuleT( "_CONTENT_COMMIT", contentCommit );
-
         bool publish = MENGINE_BUILD_PUBLISH_VALUE( true, false );
 
         if( publish == true )

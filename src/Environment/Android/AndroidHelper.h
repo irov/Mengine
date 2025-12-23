@@ -34,11 +34,11 @@ namespace Mengine
         MENGINE_NODISCARD jobject AndroidMakeJObjectLong( JNIEnv * _jenv, int64_t _value );
         MENGINE_NODISCARD jobject AndroidMakeJObjectFloat( JNIEnv * _jenv, float _value );
         MENGINE_NODISCARD jobject AndroidMakeJObjectDouble( JNIEnv * _jenv, double _value );
-        MENGINE_NODISCARD jobject AndroidMakeJObjectString( JNIEnv * _jenv, const Char * _value );
-        MENGINE_NODISCARD jobject AndroidMakeJObjectString( JNIEnv * _jenv, const String & _value );
-        MENGINE_NODISCARD jobject AndroidMakeJObjectString( JNIEnv * _jenv, const ConstString & _value );
+        MENGINE_NODISCARD jstring AndroidMakeJObjectString( JNIEnv * _jenv, const Char * _value );
+        MENGINE_NODISCARD jstring AndroidMakeJObjectString( JNIEnv * _jenv, const String & _value );
+        MENGINE_NODISCARD jstring AndroidMakeJObjectString( JNIEnv * _jenv, const ConstString & _value );
         template<size_t N>
-        MENGINE_NODISCARD jobject AndroidMakeJObjectString( JNIEnv * _jenv, const StaticString<N> & _value )
+        MENGINE_NODISCARD jstring AndroidMakeJObjectString( JNIEnv * _jenv, const StaticString<N> & _value )
         {
             return Helper::AndroidMakeJObjectString( _jenv, _value.c_str() );
         }
@@ -83,6 +83,15 @@ namespace Mengine
         typedef Lambda<void( jint index, jobject value )> LambdaJavaJSONArrayForeach;
         //////////////////////////////////////////////////////////////////////////
         void AndroidForeachJavaJSONArray( JNIEnv * _jenv, jclass _jclass, jobject _jarray, const LambdaJavaJSONArrayForeach & _lambda );
+        //////////////////////////////////////////////////////////////////////////
+        MENGINE_NODISCARD jobject AndroidGetJavaJSONArrayElement( JNIEnv * _jenv, jclass _jclass, jobject _jarray, jint _index );
+        jint AndroidGetJavaJSONArrayLength( JNIEnv * _jenv, jclass _jclass, jobject _jarray );
+        jboolean AndroidGetJavaJSONArrayBoolean( JNIEnv * _jenv, jclass _jclass, jobject _jarray, jint _index, jboolean _default );
+        jint AndroidGetJavaJSONArrayInt( JNIEnv * _jenv, jclass _jclass, jobject _jarray, jint _index, jint _default );
+        jlong AndroidGetJavaJSONArrayLong( JNIEnv * _jenv, jclass _jclass, jobject _jarray, jint _index, jlong _default );
+        jfloat AndroidGetJavaJSONArrayFloat( JNIEnv * _jenv, jclass _jclass, jobject _jarray, jint _index, jfloat _default );
+        jdouble AndroidGetJavaJSONArrayDouble( JNIEnv * _jenv, jclass _jclass, jobject _jarray, jint _index, jdouble _default );
+        MENGINE_NODISCARD jstring AndroidGetJavaJSONArrayString( JNIEnv * _jenv, jclass _jclass, jobject _jarray, jint _index, jstring _default );
         //////////////////////////////////////////////////////////////////////////
         typedef Lambda<void( jobject value )> LambdaJavaSetForeach;
         //////////////////////////////////////////////////////////////////////////

@@ -50,13 +50,13 @@ namespace Mengine
 
         m_factoryMemoryConfig = Helper::makeFactoryPool<MemoryConfig, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
-        MultiConfigPtr defaultConfig = Helper::makeFactorableUnique<MultiConfig>( MENGINE_DOCUMENT_FACTORABLE );
+        MultiConfigPtr mainConfig = Helper::makeFactorableUnique<MultiConfig>( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( defaultConfig, "invalid create default config" );
+        MENGINE_ASSERTION_MEMORY_PANIC( mainConfig, "invalid create default config" );
 
-        defaultConfig->setMutex( mutex );
+        mainConfig->setMutex( mutex );
 
-        m_defaultConfig = defaultConfig;
+        m_mainConfig = mainConfig;
 
 #if !defined(MENGINE_BUILD_PUBLISH_ENABLE)
         PersistentConfigPtr persistentConfig = Helper::makeFactorableUnique<PersistentConfig>( MENGINE_DOCUMENT_FACTORABLE );
@@ -65,7 +65,7 @@ namespace Mengine
 
         persistentConfig->setMutex( mutex );
 
-        m_defaultConfig->addConfig( persistentConfig );
+        m_mainConfig->addBackConfig( persistentConfig );
 
         m_persistentConfig = persistentConfig;
 #endif
@@ -75,10 +75,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ConfigService::_finalizeService()
     {
-        if( m_defaultConfig != nullptr )
+        if( m_mainConfig != nullptr )
         {
-            m_defaultConfig->setMutex( nullptr );
-            m_defaultConfig = nullptr;
+            m_mainConfig->setMutex( nullptr );
+            m_mainConfig = nullptr;
         }
 
 #if !defined(MENGINE_BUILD_PUBLISH_ENABLE)
@@ -110,97 +110,19 @@ namespace Mengine
         return config;
     }
     //////////////////////////////////////////////////////////////////////////
-    ConfigInterfacePtr ConfigService::loadConfig( const ContentInterfacePtr & _content, const ConstString & _configType, const DocumentInterfacePtr & _doc )
+    void ConfigService::addFrontConfig( const ConfigInterfacePtr & _config )
     {
-        LOGGER_INFO( "config", "load config '%s' (doc: %s)"
-            , Helper::getContentFullPath( _content ).c_str()
-            , MENGINE_DOCUMENT_STR( _doc )
-        );
-
-        InputStreamInterfacePtr stream = _content->openInputStreamFile( false, false, _doc );
-
-        if( stream == nullptr )
-        {
-            LOGGER_ERROR( "invalid open config '%s' (doc: %s)"
-                , Helper::getContentFullPath( _content ).c_str()
-                , MENGINE_DOCUMENT_STR( _doc )
-            );
-
-            return nullptr;
-        }
-
-        if( stream->size() == 0 )
-        {
-            LOGGER_ERROR( "empty config '%s' (doc: %s)"
-                , Helper::getContentFullPath( _content ).c_str()
-                , MENGINE_DOCUMENT_STR( _doc )
-            );
-
-            return nullptr;
-        }
-
-        ConstString configType = _configType;
-
-        if( _configType == ConstString::none() )
-        {
-            const FilePath & filePath = _content->getFilePath();
-
-            configType = Helper::getFilePathExt( filePath );
-        }
-
-        ConfigInterfacePtr config = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Config" ), configType, _doc );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( config, "invalid generate config '%s' (doc: %s)"
-            , Helper::getContentFullPath( _content ).c_str()
-            , MENGINE_DOCUMENT_STR( _doc )
-        );
-
-        const Tags & platformTags = PLATFORM_SERVICE()
-            ->getPlatformTags();
-
-        config->setPlatformTags( platformTags );
-
-        if( config->load( stream, _doc ) == false )
-        {
-            LOGGER_ERROR( "invalid load config '%s' (doc: %s)"
-                , Helper::getContentFullPath( _content ).c_str()
-                , MENGINE_DOCUMENT_STR( _doc )
-            );
-
-            return nullptr;
-        }
-
-        _content->closeInputStreamFile( stream );
-
-        return config;
+        m_mainConfig->addFrontConfig( _config );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ConfigService::loadDefaultConfig( const ContentInterfacePtr & _content, const ConstString & _configType, const DocumentInterfacePtr & _doc )
+    void ConfigService::addBackConfig( const ConfigInterfacePtr & _config )
     {
-        LOGGER_INFO( "config", "load default config '%s'"
-            , Helper::getContentFullPath( _content ).c_str()
-        );
-
-        ConfigInterfacePtr config = this->loadConfig( _content, _configType, _doc );
-
-        if( config == nullptr )
-        {
-            LOGGER_ERROR( "invalid load default config '%s'"
-                , Helper::getContentFullPath( _content ).c_str()
-            );
-
-            return false;
-        }
-
-        m_defaultConfig->addConfig( config );
-
-        return true;
+        m_mainConfig->addBackConfig( _config );
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConfigInterfacePtr & ConfigService::getDefaultConfig() const
+    const ConfigInterfacePtr & ConfigService::getMainConfig() const
     {
-        return m_defaultConfig;
+        return m_mainConfig;
     }
     //////////////////////////////////////////////////////////////////////////
 #if !defined(MENGINE_BUILD_PUBLISH_ENABLE)

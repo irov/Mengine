@@ -2266,7 +2266,7 @@ namespace Mengine
             bool s_getConfigBool( const Char * _section, const Char * _key, bool _default )
             {
                 const ConfigInterfacePtr & config = CONFIG_SERVICE()
-                    ->getDefaultConfig();
+                    ->getMainConfig();
 
                 bool value;
                 config->hasValue( _section, _key, _default, &value );
@@ -2277,7 +2277,7 @@ namespace Mengine
             int32_t s_getConfigInt( const Char * _section, const Char * _key, int32_t _default )
             {
                 const ConfigInterfacePtr & config = CONFIG_SERVICE()
-                    ->getDefaultConfig();
+                    ->getMainConfig();
 
                 int32_t value;
                 config->hasValueInteger( _section, _key, _default, &value );
@@ -2288,7 +2288,7 @@ namespace Mengine
             uint32_t s_getConfigUInt( const Char * _section, const Char * _key, uint32_t _default )
             {
                 const ConfigInterfacePtr & config = CONFIG_SERVICE()
-                    ->getDefaultConfig();
+                    ->getMainConfig();
 
                 uint32_t value;
                 config->hasValueInteger( _section, _key, _default, &value );
@@ -2299,7 +2299,7 @@ namespace Mengine
             uint64_t s_getConfigUInt64( const Char * _section, const Char * _key, uint64_t _default )
             {
                 const ConfigInterfacePtr & config = CONFIG_SERVICE()
-                    ->getDefaultConfig();
+                    ->getMainConfig();
 
                 uint64_t value;
                 config->hasValueInteger( _section, _key, _default, &value );
@@ -2310,7 +2310,7 @@ namespace Mengine
             float s_getConfigFloat( const Char * _section, const Char * _key, float _default )
             {
                 const ConfigInterfacePtr & config = CONFIG_SERVICE()
-                    ->getDefaultConfig();
+                    ->getMainConfig();
 
                 float value;
                 config->hasValueFloat( _section, _key, _default, &value );
@@ -2318,12 +2318,12 @@ namespace Mengine
                 return value;
             }
             //////////////////////////////////////////////////////////////////////////
-            const Char * s_getConfigString( const Char * _section, const Char * _key, const Char * _default )
+            String s_getConfigString( const Char * _section, const Char * _key, const Char * _default )
             {
                 const ConfigInterfacePtr & config = CONFIG_SERVICE()
-                    ->getDefaultConfig();
+                    ->getMainConfig();
 
-                const Char * value;
+                String value;
                 config->hasValue( _section, _key, _default, &value );
 
                 return value;
@@ -2332,7 +2332,7 @@ namespace Mengine
             VectorString s_getConfigStrings( const Char * _section, const Char * _key )
             {
                 const ConfigInterfacePtr & config = CONFIG_SERVICE()
-                    ->getDefaultConfig();
+                    ->getMainConfig();
 
                 VectorString values;
                 config->getValues( _section, _key, &values );

@@ -199,7 +199,7 @@ namespace Mengine
         return Detail::hasValueT( m_stores, m_platformTags, _section, _key, _default, _value );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool INIConfig::hasValue( const Char * _section, const Char * _key, const Char * _default, const Char ** const _value ) const
+    bool INIConfig::hasValue( const Char * _section, const Char * _key, const String & _default, String * const _value ) const
     {
         return Detail::hasValueT( m_stores, m_platformTags, _section, _key, _default, _value );
     }
@@ -262,7 +262,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool INIConfig::setValue( const Char * _section, const Char * _key, const Char * _value )
+    bool INIConfig::setValue( const Char * _section, const Char * _key, const String & _value )
     {
         MENGINE_UNUSED( _section );
         MENGINE_UNUSED( _key );

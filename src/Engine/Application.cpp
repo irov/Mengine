@@ -216,14 +216,14 @@ namespace Mengine
         Helper::registerDecoder<ImageDecoderMemory>( STRINGIZE_STRING_LOCAL( "memoryImage" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerDecoder<ImageDecoderArchive>( STRINGIZE_STRING_LOCAL( "archiveImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        const Char * Project_Company = CONFIG_VALUE_STRING( "Project", "Company", "UNKNOWN" );
-        const Char * Project_Name = CONFIG_VALUE_STRING( "Project", "Name", "UNKNOWN" );
+        String Project_Company = CONFIG_VALUE_STRING( "Project", "Company", "UNKNOWN" );
+        String Project_Name = CONFIG_VALUE_STRING( "Project", "Name", "UNKNOWN" );
 
-        MENGINE_ASSERTION_VALIDATE_UTF8( Project_Company, MENGINE_UNKNOWN_SIZE );
-        MENGINE_ASSERTION_VALIDATE_UTF8( Project_Name, MENGINE_UNKNOWN_SIZE );
+        MENGINE_ASSERTION_VALIDATE_UTF8( Project_Company.c_str(), MENGINE_UNKNOWN_SIZE );
+        MENGINE_ASSERTION_VALIDATE_UTF8( Project_Name.c_str(), MENGINE_UNKNOWN_SIZE );
 
-        m_companyName.assign( Project_Company );
-        m_projectName.assign( Project_Name );
+        m_companyName.assign( Project_Company.c_str() );
+        m_projectName.assign( Project_Name.c_str() );
 
         m_projectCodename = CONFIG_VALUE_CONSTSTRING( "Project", "Codename", ConstString::none() );
         m_projectVersion = CONFIG_VALUE_INTEGER( "Project", "Version", 0 );
@@ -327,16 +327,6 @@ namespace Mengine
         LOGGER_MESSAGE( "mengine commit '%s'", engineGitSHA1 );
         LOGGER_MESSAGE( "mengine branch '%s'", engineGitBranch );
         LOGGER_MESSAGE( "mengine date '%s'", engineGitDate );
-
-        const Char * contentCommit = Helper::getContentCommit();
-
-        if( HAS_OPTION( "contentinfo" ) == true )
-        {
-            PLATFORM_SERVICE()
-                ->messageBox( "Mengine", "Content Commit '%s'", contentCommit );
-        }
-
-        LOGGER_MESSAGE( "content commit '%s'", contentCommit );
 
         const Char * buildVersion = Helper::getBuildVersion();
         uint32_t buildVersionNumber = Helper::getBuildVersionNumber();

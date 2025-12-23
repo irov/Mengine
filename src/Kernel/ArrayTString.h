@@ -32,6 +32,11 @@ namespace Mengine
         }
 
     public:
+        value_type * data()
+        {
+            return m_buffer;
+        }
+
         const value_type * c_str() const
         {
             return m_buffer;

@@ -941,9 +941,9 @@ public abstract class MengineApplication extends Application {
                 continue;
             }
 
-            String name = p.getServiceName();
+            String name = p.getEmbeddingName();
 
-            MengineNative.AndroidKernelService_addPlugin("Mengine" + name, p);
+            MengineNative.AndroidKernelService_addPlugin(name, p);
         }
 
         MengineNative.AndroidKernelService_addPlugin("Application", this);
@@ -1060,9 +1060,9 @@ public abstract class MengineApplication extends Application {
                 continue;
             }
 
-            String name = p.getServiceName();
+            String name = p.getEmbeddingName();
 
-            MengineNative.AndroidKernelService_removePlugin("Mengine" + name);
+            MengineNative.AndroidKernelService_removePlugin(name);
         }
 
         for (MengineServiceInterface service : m_services) {

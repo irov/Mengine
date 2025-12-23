@@ -7,6 +7,8 @@
 #include "Kernel/ArrayString.h"
 #include "Kernel/ThreadMutexScope.h"
 
+#include "Config/StdString.h"
+
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {   
@@ -29,11 +31,18 @@ namespace Mengine
         return m_mutex;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MultiConfig::addConfig( const ConfigInterfacePtr & _config )
+    void MultiConfig::addFrontConfig( const ConfigInterfacePtr & _config )
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
-        m_configs.push_back( _config );
+        m_configs.insert( m_configs.begin(), _config );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MultiConfig::addBackConfig( const ConfigInterfacePtr & _config )
+    {
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+
+        m_configs.insert( m_configs.end(), _config );
     }
     //////////////////////////////////////////////////////////////////////////
     void MultiConfig::foreachConfig( const LambdaConfigs & _lambda )
@@ -143,7 +152,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MultiConfig::hasValue( const Char * _section, const Char * _key, const Char * _default, const Char ** const _value ) const
+    bool MultiConfig::hasValue( const Char * _section, const Char * _key, const String & _default, String * const _value ) const
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
@@ -278,7 +287,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MultiConfig::setValue( const Char * _section, const Char * _key, const Char * _value )
+    bool MultiConfig::setValue( const Char * _section, const Char * _key, const String & _value )
     {
         MENGINE_UNUSED( _section );
         MENGINE_UNUSED( _key );

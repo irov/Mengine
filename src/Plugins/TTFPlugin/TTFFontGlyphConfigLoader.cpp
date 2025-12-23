@@ -76,8 +76,8 @@ namespace Mengine
         }
         else
         {
-            const Char * ttfName = nullptr;
-            if( _config->hasValue( glyphName.c_str(), "Name", "", & ttfName) == false )
+            String ttfName;
+            if( _config->hasValue( glyphName.c_str(), "Name", "", &ttfName ) == false )
             {
                 LOGGER_ERROR( "ttf font '%s' don't setup Name"
                     , glyphName.c_str()
@@ -89,11 +89,11 @@ namespace Mengine
             ConstString groupName;
             Path utf8_ttfPath = {'\0'};
             if( PLATFORM_SERVICE()
-                ->getSystemFontPath( &groupName, ttfName, utf8_ttfPath ) == MENGINE_UNKNOWN_SIZE )
+                ->getSystemFontPath( &groupName, ttfName.c_str(), utf8_ttfPath ) == MENGINE_UNKNOWN_SIZE )
             {
                 LOGGER_ERROR( "ttf font '%s' don't found '%s' path"
                     , glyphName.c_str()
-                    , ttfName
+                    , ttfName.c_str()
                 );
 
                 return false;

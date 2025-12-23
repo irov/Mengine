@@ -237,7 +237,7 @@ namespace Mengine
             return value_jobject;
         }
         //////////////////////////////////////////////////////////////////////////
-        jobject AndroidMakeJObjectString( JNIEnv * _jenv, const Char * _value )
+        jstring AndroidMakeJObjectString( JNIEnv * _jenv, const Char * _value )
         {
             MENGINE_ASSERTION_VALIDATE_UTF8( _value, MENGINE_UNKNOWN_SIZE );
 
@@ -246,20 +246,20 @@ namespace Mengine
             return value_jstring;
         }
         //////////////////////////////////////////////////////////////////////////
-        jobject AndroidMakeJObjectString( JNIEnv * _jenv, const String & _value )
+        jstring AndroidMakeJObjectString( JNIEnv * _jenv, const String & _value )
         {
             const Char * value_str = _value.c_str();
 
-            jobject value_jobject = Helper::AndroidMakeJObjectString( _jenv, value_str );
+            jstring value_jobject = Helper::AndroidMakeJObjectString( _jenv, value_str );
 
             return value_jobject;
         }
         //////////////////////////////////////////////////////////////////////////
-        jobject AndroidMakeJObjectString( JNIEnv * _jenv, const ConstString & _value )
+        jstring AndroidMakeJObjectString( JNIEnv * _jenv, const ConstString & _value )
         {
             const Char * value_str = _value.c_str();
 
-            jobject value_jobject = Helper::AndroidMakeJObjectString( _jenv, value_str );
+            jstring value_jobject = Helper::AndroidMakeJObjectString( _jenv, value_str );
 
             return value_jobject;
         }
@@ -589,6 +589,94 @@ namespace Mengine
 
                 Mengine_JNI_DeleteLocalRef( _jenv, jvalue );
             }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        jobject AndroidGetJavaJSONArrayElement( JNIEnv * _jenv, jclass _jclass, jobject _jarray, jint _index )
+        {
+            jmethodID JSONArray_get = Mengine_JNI_GetMethodID( _jenv, _jclass, "get", "(I)Ljava/lang/Object;" );
+
+            jobject jvalue = Mengine_JNI_CallObjectMethod( _jenv, _jarray, JSONArray_get, _index );
+
+            Helper::AndroidEnvExceptionCheck( _jenv );
+
+            return jvalue;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        jint AndroidGetJavaJSONArrayLength( JNIEnv * _jenv, jclass _jclass, jobject _jarray )
+        {
+            jmethodID JSONArray_length = Mengine_JNI_GetMethodID( _jenv, _jclass, "length", "()I" );
+
+            jint jarray_length = Mengine_JNI_CallIntMethod( _jenv, _jarray, JSONArray_length );
+
+            Helper::AndroidEnvExceptionCheck( _jenv );
+
+            return jarray_length;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        jboolean AndroidGetJavaJSONArrayBoolean( JNIEnv * _jenv, jclass _jclass, jobject _jarray, jint _index, jboolean _default )
+        {
+            jmethodID JSONArray_optBoolean = Mengine_JNI_GetMethodID( _jenv, _jclass, "optBoolean", "(IZ)Z" );
+
+            jboolean jvalue = Mengine_JNI_CallBooleanMethod( _jenv, _jarray, JSONArray_optBoolean, _index, _default );
+
+            Helper::AndroidEnvExceptionCheck( _jenv );
+
+            return jvalue;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        jint AndroidGetJavaJSONArrayInt( JNIEnv * _jenv, jclass _jclass, jobject _jarray, jint _index, jint _default )
+        {
+            jmethodID JSONArray_optInt = Mengine_JNI_GetMethodID( _jenv, _jclass, "optInt", "(II)I" );
+
+            jint jvalue = Mengine_JNI_CallIntMethod( _jenv, _jarray, JSONArray_optInt, _index, _default );
+
+            Helper::AndroidEnvExceptionCheck( _jenv );
+
+            return jvalue;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        jlong AndroidGetJavaJSONArrayLong( JNIEnv * _jenv, jclass _jclass, jobject _jarray, jint _index, jlong _default )
+        {
+            jmethodID JSONArray_optLong = Mengine_JNI_GetMethodID( _jenv, _jclass, "optLong", "(IJ)J" );
+
+            jlong jvalue = Mengine_JNI_CallLongMethod(_jenv, _jarray, JSONArray_optLong, _index, _default );
+
+            Helper::AndroidEnvExceptionCheck( _jenv );
+
+            return jvalue;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        jfloat AndroidGetJavaJSONArrayFloat( JNIEnv * _jenv, jclass _jclass, jobject _jarray, jint _index, jfloat _default )
+        {
+            jmethodID JSONArray_optFloat = Mengine_JNI_GetMethodID( _jenv, _jclass, "optFloat", "(IF)F" );
+
+            jfloat jvalue = Mengine_JNI_CallFloatMethod( _jenv, _jarray, JSONArray_optFloat, _index, _default );
+
+            Helper::AndroidEnvExceptionCheck( _jenv );
+
+            return jvalue;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        jdouble AndroidGetJavaJSONArrayDouble( JNIEnv * _jenv, jclass _jclass, jobject _jarray, jint _index, jdouble _default )
+        {
+            jmethodID JSONArray_optDouble = Mengine_JNI_GetMethodID( _jenv, _jclass, "optDouble", "(ID)D" );
+
+            jdouble jvalue = Mengine_JNI_CallDoubleMethod( _jenv, _jarray, JSONArray_optDouble, _index, _default );
+
+            Helper::AndroidEnvExceptionCheck( _jenv );
+
+            return jvalue;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        jstring AndroidGetJavaJSONArrayString( JNIEnv * _jenv, jclass _jclass, jobject _jarray, jint _index, jstring _default )
+        {
+            jmethodID JSONArray_optString = Mengine_JNI_GetMethodID( _jenv, _jclass, "optString", "(ILjava/lang/String;)Ljava/lang/String;" );
+
+            jstring jvalue = (jstring)Mengine_JNI_CallObjectMethod( _jenv, _jarray, JSONArray_optString, _index, _default );
+
+            Helper::AndroidEnvExceptionCheck( _jenv );
+
+            return jvalue;
         }
         //////////////////////////////////////////////////////////////////////////
         void AndroidForeachJavaSet( JNIEnv * _jenv, jclass _jclass, jobject _jset, const LambdaJavaSetForeach & _lambda )

@@ -1,13 +1,13 @@
 #include "SettingsService.h"
 
 #include "Interface/PrototypeServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/ContentHelper.h"
+#include "Kernel/ConfigHelper.h"
 #include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -125,8 +125,7 @@ namespace Mengine
             , Helper::getContentFullPath( _content ).c_str()
         );
 
-        ConfigInterfacePtr config = CONFIG_SERVICE()
-            ->loadConfig( _content, ConstString::none(), _doc );
+        ConfigInterfacePtr config = Helper::loadConfig( _content, ConstString::none(), _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( config, "invalid load settings '%s'"
             , Helper::getContentFullPath( _content ).c_str()

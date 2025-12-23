@@ -16,6 +16,7 @@
 #include "Kernel/UID.h"
 #include "Kernel/JSONHelper.h"
 #include "Kernel/ContentHelper.h"
+#include "Kernel/ConfigHelper.h"
 
 #include "Config/StdString.h"
 
@@ -230,8 +231,8 @@ namespace Mengine
             return false;
         }
 
-        const Char * uid;
-        if( config->hasValue( "ACCOUNT", "UID", "", &uid ) == false )
+        String uid;
+        if( config->hasValue( "ACCOUNT", "UID", String(), &uid ) == false )
         {
             LOGGER_ERROR( "account '%s' failed not found uid"
                 , m_accountId.c_str()
@@ -240,12 +241,12 @@ namespace Mengine
             return false;
         }
 
-        MENGINE_ASSERTION_FATAL( StdString::strlen( uid ) == 20, "account '%s' invalid uid '%s'"
+        MENGINE_ASSERTION_FATAL( uid.size() == 20, "account '%s' invalid uid '%s'"
             , m_accountId.c_str()
-            , uid
+            , uid.c_str()
         );
 
-        stdex::memorycopy( m_uid.data, 0, uid, 20 );
+        stdex::memorycopy( m_uid.data, 0, uid.c_str(), 20 );
 
         LOGGER_INFO( "account", "load account '%s' projectVersion [%u] uid '%.20s' settings"
             , m_accountId.c_str()
@@ -255,15 +256,15 @@ namespace Mengine
 
         for( auto && [key, st] : m_settings )
         {
-            const Char * value;
-            if( config->hasValue( "SETTINGS", key.c_str(), "", &value ) == false )
+            String value;
+            if( config->hasValue( "SETTINGS", key.c_str(), String(), &value ) == false )
             {
                 continue;
             }
 
             LOGGER_INFO( "account", "load setting '%s' value '%s'"
                 , key.c_str()
-                , value
+                , value.c_str()
             );
 
             st.value.assign( value );
@@ -276,8 +277,7 @@ namespace Mengine
     {
         if( m_settingsJSONContent->exist( true ) == true )
         {
-            ConfigInterfacePtr config = CONFIG_SERVICE()
-                ->loadConfig( m_settingsJSONContent, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+            ConfigInterfacePtr config = Helper::loadConfig( m_settingsJSONContent, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
             if( config == nullptr )
             {
@@ -294,8 +294,7 @@ namespace Mengine
 
         if( m_settingsINIContent->exist( true ) == true )
         {
-            ConfigInterfacePtr config = CONFIG_SERVICE()
-                ->loadConfig( m_settingsINIContent, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+            ConfigInterfacePtr config = Helper::loadConfig( m_settingsINIContent, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
             if( config == nullptr )
             {

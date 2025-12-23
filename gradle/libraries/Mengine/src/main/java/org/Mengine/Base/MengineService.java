@@ -17,6 +17,7 @@ public class MengineService implements MengineServiceInterface {
     private MengineActivity m_activity;
     private String m_serviceName;
     private MengineTag m_serviceTag;
+    private String m_embeddingName;
     private boolean m_embedding;
     private JSONObject m_serviceConfig = null;
     private Boolean m_availableStatus = null;
@@ -29,6 +30,7 @@ public class MengineService implements MengineServiceInterface {
         m_embedding = embedding;
 
         m_serviceTag = MengineTag.of("MNG" + m_serviceName);
+        m_embeddingName = "Mengine" + m_serviceName;
     }
 
     @Override
@@ -64,6 +66,11 @@ public class MengineService implements MengineServiceInterface {
     @Override
     public MengineTag getServiceTag() {
         return m_serviceTag;
+    }
+
+    @Override
+    public String getEmbeddingName() {
+        return m_embeddingName;
     }
 
     @SuppressWarnings("unchecked")
@@ -269,9 +276,7 @@ public class MengineService implements MengineServiceInterface {
     @Override
     public JSONObject getServiceConfig() {
         if (m_serviceConfig == null) {
-            String serviceTag = m_serviceTag.toString();
-
-            JSONObject serviceConfig = MengineFragmentRemoteConfig.INSTANCE.getRemoteConfigValue(serviceTag);
+            JSONObject serviceConfig = MengineFragmentRemoteConfig.INSTANCE.getRemoteConfig(m_serviceName);
 
             m_serviceConfig = serviceConfig;
         }
@@ -325,8 +330,9 @@ public class MengineService implements MengineServiceInterface {
 
     @Override
     public void nativeCall(@NonNull String method, Object ... args) {
-        MengineTag t = this.getServiceTag();
-        m_application.nativeCall(t.toString(), method, args);
+        String name = this.getEmbeddingName();
+
+        m_application.nativeCall(name, method, args);
     }
 
     @Override

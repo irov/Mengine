@@ -9,11 +9,13 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        void AndroidCallVoidFragmentMethod( JNIEnv * _jenv, const Char * _fragmentName, const Char * _methodName, const Char * _methodSignature, ... );
-        MENGINE_NODISCARD jobject AndroidCallObjectFragmentMethod( JNIEnv * _jenv, const Char * _fragmentName, const Char * _methodName, const Char * _methodSignature, ... );
-        jboolean AndroidCallBooleanFragmentMethod( JNIEnv * _jenv, const Char * _fragmentName, const Char * _methodName, const Char * _methodSignature, ... );
-        jint AndroidCallIntFragmentMethod( JNIEnv * _jenv, const Char * _fragmentName, const Char * _methodName, const Char * _methodSignature, ... );
-        jlong AndroidCallLongFragmentMethod( JNIEnv * _jenv, const Char * _fragmentName, const Char * _methodName, const Char * _methodSignature, ... );
+        void AndroidCallVoidFragmentMethod( JNIEnv * _jenv, const Char * _fragment, const Char * _method, const Char * _signature, ... );
+        MENGINE_NODISCARD jobject AndroidCallObjectFragmentMethod( JNIEnv * _jenv, const Char * _fragment, const Char * _method, const Char * _signature, ... );
+        jboolean AndroidCallBooleanFragmentMethod( JNIEnv * _jenv, const Char * _fragment, const Char * _method, const Char * _signature, ... );
+        jint AndroidCallIntFragmentMethod( JNIEnv * _jenv, const Char * _fragment, const Char * _method, const Char * _signature, ... );
+        jlong AndroidCallLongFragmentMethod( JNIEnv * _jenv, const Char * _fragment, const Char * _method, const Char * _signature, ... );
+        jfloat AndroidCallFloatFragmentMethod( JNIEnv * _jenv, const Char * _fragment, const Char * _method, const Char * _signature, ... );
+        jdouble AndroidCallDoubleFragmentMethod( JNIEnv * _jenv, const Char * _fragment, const Char * _method, const Char * _signature, ... );
         //////////////////////////////////////////////////////////////////////////
     }
 }

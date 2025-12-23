@@ -964,6 +964,8 @@ Core
     BaseComponentHub.cpp
     
     ConfigHelper.h
+    ConfigHelper.cpp
+    
     OptionHelper.h
     
     Utf8Helper.h

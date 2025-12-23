@@ -4041,7 +4041,7 @@ namespace Mengine
             bool s_hasGameParam( const ConstString & _paramName )
             {
                 const ConfigInterfacePtr & config = CONFIG_SERVICE()
-                    ->getDefaultConfig();
+                    ->getMainConfig();
 
                 bool result = config->existValue( "Params", _paramName.c_str() );
 
@@ -4051,15 +4051,15 @@ namespace Mengine
             PyObject * s_getGameParamString( pybind::kernel_interface * _kernel, const ConstString & _paramName )
             {
                 const ConfigInterfacePtr & config = CONFIG_SERVICE()
-                    ->getDefaultConfig();
+                    ->getMainConfig();
 
-                const Char * param_value;
+                String param_value;
                 if( config->hasValue( "Params", _paramName.c_str(), "", &param_value ) == false )
                 {
                     return _kernel->ret_none();
                 }
 
-                PyObject * py_param = _kernel->string_from_char( param_value );
+                PyObject * py_param = _kernel->string_from_char( param_value.c_str() );
 
                 return py_param;
             }
@@ -4067,15 +4067,15 @@ namespace Mengine
             PyObject * s_getGameParamUnicode( pybind::kernel_interface * _kernel, const ConstString & _paramName )
             {
                 const ConfigInterfacePtr & config = CONFIG_SERVICE()
-                    ->getDefaultConfig();
+                    ->getMainConfig();
 
-                const Char * param_value;
+                String param_value;
                 if( config->hasValue( "Params", _paramName.c_str(), "", &param_value ) == false )
                 {
                     return _kernel->ret_none();
                 }
 
-                PyObject * py_param = _kernel->unicode_from_utf8( param_value );
+                PyObject * py_param = _kernel->unicode_from_utf8( param_value.c_str() );
 
                 return py_param;
             }
@@ -4083,7 +4083,7 @@ namespace Mengine
             PyObject * s_getGameParamFloat( pybind::kernel_interface * _kernel, const ConstString & _paramName )
             {
                 const ConfigInterfacePtr & config = CONFIG_SERVICE()
-                    ->getDefaultConfig();
+                    ->getMainConfig();
 
                 float param_value;
                 if( config->hasValueFloat( "Params", _paramName.c_str(), 0.f, &param_value ) == false )
@@ -4097,7 +4097,7 @@ namespace Mengine
             PyObject * s_getGameParamInt( pybind::kernel_interface * _kernel, const ConstString & _paramName )
             {
                 const ConfigInterfacePtr & config = CONFIG_SERVICE()
-                    ->getDefaultConfig();
+                    ->getMainConfig();
 
                 int32_t param_value;
                 if( config->hasValueInteger( "Params", _paramName.c_str(), 0, &param_value ) == false )
@@ -4111,7 +4111,7 @@ namespace Mengine
             bool s_getGameParamBool( const ConstString & _paramName, bool _default )
             {
                 const ConfigInterfacePtr & config = CONFIG_SERVICE()
-                    ->getDefaultConfig();
+                    ->getMainConfig();
 
                 bool param_value;
                 config->hasValue( "Params", _paramName.c_str(), _default, &param_value );

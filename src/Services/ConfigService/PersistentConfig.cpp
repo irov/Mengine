@@ -218,7 +218,7 @@ namespace Mengine
         return Detail::hasValueT( _section, _key, _default, _value, MENGINE_DOCUMENT_FACTORABLE );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PersistentConfig::hasValue( const Char * _section, const Char * _key, const Char * _default, const Char ** const _value ) const
+    bool PersistentConfig::hasValue( const Char * _section, const Char * _key, const String & _default, String * const _value ) const
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
@@ -281,7 +281,7 @@ namespace Mengine
         return Detail::setValueT( _section, _key, _value, MENGINE_DOCUMENT_FACTORABLE );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PersistentConfig::setValue( const Char * _section, const Char * _key, const Char * _value )
+    bool PersistentConfig::setValue( const Char * _section, const Char * _key, const String & _value )
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 

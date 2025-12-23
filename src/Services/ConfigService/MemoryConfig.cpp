@@ -6,6 +6,8 @@
 #include "Kernel/Stringalized.h"
 #include "Kernel/ArrayString.h"
 
+#include "Config/StdString.h"
+
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
@@ -272,7 +274,7 @@ namespace Mengine
         return Detail::hasValueT( m_records, m_platformTags, _section, _key, _default, _value );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MemoryConfig::hasValue( const Char * _section, const Char * _key, const Char * _default, const Char ** const _value ) const
+    bool MemoryConfig::hasValue( const Char * _section, const Char * _key, const String & _default, String * const _value ) const
     {
         return Detail::hasValueT( m_records, m_platformTags, _section, _key, _default, _value );
     }
@@ -317,7 +319,7 @@ namespace Mengine
         return Detail::setValueT( m_records, _section, _key, _value );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MemoryConfig::setValue( const Char * _section, const Char * _key, const Char * _value )
+    bool MemoryConfig::setValue( const Char * _section, const Char * _key, const String & _value )
     {
         return Detail::setValueT( m_records, _section, _key, _value );
     }

@@ -13,6 +13,7 @@
 #include "Kernel/JSONHelper.h"
 #include "Kernel/DebugFileHelper.h"
 
+#include "Config/StdString.h"
 #include "Config/Typeinfo.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -44,7 +45,7 @@ namespace Mengine
                 , MENGINE_TYPEINFO_NAME( T )
             );
 
-            *_value = j_value;
+            jpp::cast_object_internal()(j_value.ptr(), _value);
 
             return true;
         }
@@ -315,7 +316,7 @@ namespace Mengine
         return Detail::hasJSONValueT( m_json, m_platformTags, _section, _key, _default, _value );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool JSONConfig::hasValue( const Char * _section, const Char * _key, const Char * _default, const Char ** const _value ) const
+    bool JSONConfig::hasValue( const Char * _section, const Char * _key, const String & _default, String * const _value ) const
     {
         return Detail::hasJSONValueT( m_json, m_platformTags, _section, _key, _default, _value );
     }
@@ -366,7 +367,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool JSONConfig::setValue( const Char * _section, const Char * _key, const Char * _value )
+    bool JSONConfig::setValue( const Char * _section, const Char * _key, const String & _value )
     {
         Detail::setJSONValueT( m_json, _section, _key, _value );
 

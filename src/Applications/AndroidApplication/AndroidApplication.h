@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/LoggerInterface.h"
+#include "Interface/ConfigInterface.h"
 
 #include "Config/Char.h"
 
@@ -24,12 +25,17 @@ namespace Mengine
 
     protected:
         bool initializeOptionsService_( int32_t argc, Char ** const _argv );
-        bool initializeLoggerService_();
 
     protected:
+        bool initializeLoggerService_();
         void finalizeLoggerService_();
 
     protected:
+        bool initializeConfigService_();
+        void finalizeConfigService_();
+
+    protected:
         LoggerInterfacePtr m_loggerAndroid;
+        ConfigInterfacePtr m_configAndroid;
     };
 }

@@ -38,6 +38,9 @@ src
     AndroidLogger.h
     AndroidLogger.cpp
     
+    AndroidRemoteConfig.h
+    AndroidRemoteConfig.cpp
+    
     AndroidPlatformServiceExtensionInterface.h
     
     stack_chk_fail_local.c

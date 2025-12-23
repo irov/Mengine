@@ -71,7 +71,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DevToDebugService::_initializeService()
     {
-        String DevToDebug_DSN = CONFIG_VALUE_STRING( "DevToDebugPlugin", "DSN", "" );
+        String DevToDebug_DSN = CONFIG_VALUE_STRING( "DevToDebugPlugin", "DSN", String() );
 
         LOGGER_MESSAGE( "DevToDebug DSN: %s"
             , DevToDebug_DSN.c_str()

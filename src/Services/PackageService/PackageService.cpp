@@ -124,8 +124,7 @@ namespace Mengine
             , Helper::getContentFullPath( _content ).c_str()
         );
 
-        ConfigInterfacePtr config = CONFIG_SERVICE()
-            ->loadConfig( _content, ConstString::none(), _doc );
+        ConfigInterfacePtr config = Helper::loadConfig( _content, ConstString::none(), _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( config, "invalid load packages '%s'"
             , Helper::getContentFullPath( _content ).c_str()

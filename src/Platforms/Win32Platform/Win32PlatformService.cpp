@@ -307,7 +307,7 @@ namespace Mengine
 
         m_factoryDynamicLibraries = Helper::makeFactoryPool<Win32DynamicLibrary, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
-        const Char * Window_ClassName = CONFIG_VALUE_STRING( "Window", "ClassName", MENGINE_WINDOW_CLASSNAME );
+        String Window_ClassName = CONFIG_VALUE_STRING( "Window", "ClassName", MENGINE_WINDOW_CLASSNAME );
 
         Helper::utf8ToUnicode( Window_ClassName, m_windowClassName.data(), MENGINE_MAX_PATH );
 
@@ -3279,9 +3279,9 @@ namespace Mengine
 
         ::CoTaskMemFree( itemIDList );
 
-        const Char * Project_Company = CONFIG_VALUE_STRING( "Project", "Company", "UNKNOWN" );
+        String Project_Company = CONFIG_VALUE_STRING( "Project", "Company", "UNKNOWN" );
 
-        if( StdString::strlen( Project_Company ) == 0 )
+        if( Project_Company.empty() == true )
         {
             LOGGER_ERROR( "invalid get company name" );
 
@@ -3292,7 +3292,7 @@ namespace Mengine
         if( Helper::utf8ToUnicode( Project_Company, companyNameW, MENGINE_APPLICATION_COMPANY_MAXNAME ) == false )
         {
             LOGGER_ERROR( "invalid convert company name from utf8 to unicode '%s'"
-                , Project_Company
+                , Project_Company.c_str()
             );
 
             return 0;
@@ -3301,9 +3301,9 @@ namespace Mengine
         WPath roamingPath = {L'\0'};
         ::PathCombineW( roamingPath, currentPath, companyNameW );
 
-        const Char * Project_Name = CONFIG_VALUE_STRING( "Project", "Name", "UNKNOWN" );
+        String Project_Name = CONFIG_VALUE_STRING( "Project", "Name", "UNKNOWN" );
 
-        if( StdString::strlen( Project_Name ) == 0 )
+        if( Project_Name.empty() == true )
         {
             LOGGER_ERROR( "invalid get project name" );
 
@@ -3314,7 +3314,7 @@ namespace Mengine
         if( Helper::utf8ToUnicode( Project_Name, projectNameW, MENGINE_APPLICATION_PROJECT_MAXNAME ) == false )
         {
             LOGGER_ERROR( "invalid convert project name from utf8 to unicode '%s'"
-                , Project_Name
+                , Project_Name.c_str()
             );
 
             return 0;
@@ -3339,15 +3339,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t Win32PlatformService::getExtraPreferencesFolderName( Char * const _folderName ) const
     {
-        const Char * Project_ExtraPreferencesFolderName = CONFIG_VALUE_STRING( "Project", "ExtraPreferencesFolderName", "" );
+        String Project_ExtraPreferencesFolderName = CONFIG_VALUE_STRING( "Project", "ExtraPreferencesFolderName", "" );
 
-        MENGINE_ASSERTION_FATAL( Helper::isCorrectFolderPathA( Project_ExtraPreferencesFolderName ) == true, "invalid extra preferences folder name '%s'"
-            , Project_ExtraPreferencesFolderName
+        MENGINE_ASSERTION_FATAL( Helper::isCorrectFolderPathA( Project_ExtraPreferencesFolderName.c_str() ) == true, "invalid extra preferences folder name '%s'"
+            , Project_ExtraPreferencesFolderName.c_str()
         );
 
-        StdString::strcpy_safe( _folderName, Project_ExtraPreferencesFolderName, MENGINE_MAX_PATH );
+        StdString::strcpy_safe( _folderName, Project_ExtraPreferencesFolderName.c_str(), MENGINE_MAX_PATH );
 
-        size_t Project_ExtraPreferencesFolderNameLen = StdString::strlen( Project_ExtraPreferencesFolderName );
+        size_t Project_ExtraPreferencesFolderNameLen = Project_ExtraPreferencesFolderName.size();
 
         return Project_ExtraPreferencesFolderNameLen;
     }

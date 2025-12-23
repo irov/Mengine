@@ -171,13 +171,11 @@ namespace Mengine
         const Char * buildVersion = Helper::getBuildVersion();
         const Char * buildNumber = Helper::getBuildNumberString();
         const Char * engineGitSHA1 = Helper::getEngineGitSHA1();
-        const Char * contentCommit = Helper::getContentCommit();
         bool developmentMode = Helper::isDevelopmentMode();
-
 
         Char loggerLevelMessage[512 + 1] = {'\0'};
         size_t loggerLevelMessageLen = MENGINE_SNPRINTF( loggerLevelMessage, 512, 
-            "logger: %s [%s] [%s] [%s] [%s] %s [%s] %.8s | %.8s"
+            "logger: %s [%s] [%s] [%s] [%s] %s [%s] %.8s"
             , loggerLevel
             , developmentMode == true ? "dev" : "prod"
             , MENGINE_DEBUG_VALUE( "debug", "release" )
@@ -186,7 +184,6 @@ namespace Mengine
             , buildVersion
             , buildNumber
             , engineGitSHA1
-            , contentCommit
         );
 
         LoggerMessage msg;

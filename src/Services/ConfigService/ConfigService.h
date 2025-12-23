@@ -32,13 +32,11 @@ namespace Mengine
         ConfigInterfacePtr createMemoryConfig( const DocumentInterfacePtr & _doc ) override;
 
     public:
-        ConfigInterfacePtr loadConfig( const ContentInterfacePtr & _content, const ConstString & _configType, const DocumentInterfacePtr & _doc ) override;
+        void addFrontConfig( const ConfigInterfacePtr & _config ) override;
+        void addBackConfig( const ConfigInterfacePtr & _config ) override;
 
     public:
-        bool loadDefaultConfig( const ContentInterfacePtr & _content, const ConstString & _configType, const DocumentInterfacePtr & _doc ) override;
-
-    public:
-        const ConfigInterfacePtr & getDefaultConfig() const override;
+        const ConfigInterfacePtr & getMainConfig() const override;
 
 #if !defined(MENGINE_BUILD_PUBLISH_ENABLE)
     public:
@@ -48,7 +46,7 @@ namespace Mengine
     protected:
         ThreadMutexInterfacePtr m_mutex;
 
-        MultiConfigPtr m_defaultConfig;
+        MultiConfigPtr m_mainConfig;
 
 #if !defined(MENGINE_BUILD_PUBLISH_ENABLE)
         PersistentConfigPtr m_persistentConfig;

@@ -111,5 +111,45 @@ namespace Mengine
             return jresult;
         }
         //////////////////////////////////////////////////////////////////////////
+        jfloat AndroidCallFloatFragmentMethod( JNIEnv * _jenv, const Char * _fragment, const Char * _method, const Char * _signature, ... )
+        {
+            jmethodID jmethod_Fragment = Helper::AndroidEnvGetMethodFragment( _jenv, _fragment, _method, _signature );
+
+            jobject jobject_Fragment = Helper::AndroidEnvGetObjectFragment( _jenv, _fragment );
+
+            MENGINE_VA_LIST_TYPE args;
+            MENGINE_VA_LIST_START( args, _signature );
+
+            jfloat jresult = Mengine_JNI_CallFloatMethodV( _jenv, jobject_Fragment, jmethod_Fragment, args );
+
+            MENGINE_VA_LIST_END( args );
+
+            Helper::AndroidEnvExceptionCheck( _jenv );
+
+            Mengine_JNI_DeleteLocalRef( _jenv, jobject_Fragment );
+
+            return jresult;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        jdouble AndroidCallDoubleFragmentMethod( JNIEnv * _jenv, const Char * _fragment, const Char * _method, const Char * _signature, ... )
+        {
+            jmethodID jmethod_Fragment = Helper::AndroidEnvGetMethodFragment( _jenv, _fragment, _method, _signature );
+
+            jobject jobject_Fragment = Helper::AndroidEnvGetObjectFragment( _jenv, _fragment );
+
+            MENGINE_VA_LIST_TYPE args;
+            MENGINE_VA_LIST_START( args, _signature );
+
+            jdouble jresult = Mengine_JNI_CallDoubleMethodV( _jenv, jobject_Fragment, jmethod_Fragment, args );
+
+            MENGINE_VA_LIST_END( args );
+
+            Helper::AndroidEnvExceptionCheck( _jenv );
+
+            Mengine_JNI_DeleteLocalRef( _jenv, jobject_Fragment );
+
+            return jresult;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

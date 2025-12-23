@@ -715,8 +715,7 @@ namespace Mengine
         {
             ContentInterfacePtr settingsJSONContent = Helper::makeFileContent( m_fileGroup, settingsJSONPath, MENGINE_DOCUMENT_FACTORABLE );
 
-            ConfigInterfacePtr config = CONFIG_SERVICE()
-                ->loadConfig( settingsJSONContent, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+            ConfigInterfacePtr config = Helper::loadConfig( settingsJSONContent, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
             if( config == nullptr )
             {
@@ -736,8 +735,7 @@ namespace Mengine
         {
             ContentInterfacePtr settingsINIContent = Helper::makeFileContent( m_fileGroup, settingsINIPath, MENGINE_DOCUMENT_FACTORABLE );
 
-            ConfigInterfacePtr config = CONFIG_SERVICE()
-                ->loadConfig( settingsINIContent, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+            ConfigInterfacePtr config = Helper::loadConfig( settingsINIContent, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
             if( config == nullptr )
             {

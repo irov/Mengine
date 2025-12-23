@@ -211,8 +211,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FontService::loadGlyphs( const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc )
     {
-        ConfigInterfacePtr config = CONFIG_SERVICE()
-            ->loadConfig( _content, ConstString::none(), _doc );
+        ConfigInterfacePtr config = Helper::loadConfig( _content, ConstString::none(), _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( config, "invalid load glyph config '%s'"
             , Helper::getContentFullPath( _content ).c_str()
@@ -290,8 +289,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FontService::unloadGlyphs( const ContentInterfacePtr & _content )
     {
-        ConfigInterfacePtr config = CONFIG_SERVICE()
-            ->loadConfig( _content, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+        ConfigInterfacePtr config = Helper::loadConfig( _content, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( config, "invalid load glyphs config '%s'"
             , Helper::getContentFullPath( _content ).c_str()
@@ -342,8 +340,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FontService::loadFonts( const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc )
     {
-        ConfigInterfacePtr config = CONFIG_SERVICE()
-            ->loadConfig( _content, ConstString::none(), _doc );
+        ConfigInterfacePtr config = Helper::loadConfig( _content, ConstString::none(), _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( config, "invalid load settings '%s'"
             , Helper::getContentFullPath( _content ).c_str()
@@ -469,8 +466,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FontService::unloadFonts( const ContentInterfacePtr & _content )
     {
-        ConfigInterfacePtr config = CONFIG_SERVICE()
-            ->loadConfig( _content, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+        ConfigInterfacePtr config = Helper::loadConfig( _content, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( config, "invalid load settings '%s'"
             , Helper::getContentFullPath( _content ).c_str()

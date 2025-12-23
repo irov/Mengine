@@ -85,7 +85,6 @@ namespace Mengine
         EDevToDebugStatus m_status;
 
         String m_dsn;
-        String m_uuid;
         String m_workerURL;
 
         uint32_t m_throttle;

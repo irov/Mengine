@@ -9,9 +9,11 @@
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/PluginServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
+#include "Interface/ConfigServiceInterface.h"
 
 #include "Environment/Android/AndroidEnv.h"
 #include "Environment/Android/AndroidLogger.h"
+#include "Environment/Android/AndroidRemoteConfig.h"
 
 #include "Mengine/MenginePlugin.h"
 
@@ -90,6 +92,33 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    bool AndroidApplication::initializeConfigService_()
+    {
+        ConfigInterfacePtr configAndroid = Helper::makeFactorableUnique<AndroidRemoteConfig>( MENGINE_DOCUMENT_FUNCTION );
+
+        if( configAndroid == nullptr )
+        {
+            return false;
+        }
+
+        const auto & platformTags = PLATFORM_SERVICE()
+            ->getPlatformTags();
+
+        configAndroid->setPlatformTags( platformTags );
+
+        CONFIG_SERVICE()
+            ->addFrontConfig( configAndroid );
+
+        m_configAndroid = configAndroid;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidApplication::finalizeConfigService_()
+    {
+        m_configAndroid = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool AndroidApplication::bootstrap( const Mengine::Char * _nativeLibraryDir, int32_t _argc, Char ** const _argv )
     {
         MENGINE_UNUSED( _nativeLibraryDir );
@@ -127,6 +156,21 @@ namespace Mengine
         UNKNOWN_SERVICE_LEAVE( AndroidApplication, LoggerServiceInterface, [this]()
         {
             this->finalizeLoggerService_();
+        } );
+
+        UNKNOWN_SERVICE_WAIT( AndroidApplication, ConfigServiceInterface, [this]()
+        {
+            if( this->initializeConfigService_() == false )
+            {
+                return false;
+            }
+
+            return true;
+        } );
+
+        UNKNOWN_SERVICE_LEAVE( AndroidApplication, ConfigServiceInterface, [this]()
+        {
+            this->finalizeConfigService_();
         } );
 
         if( API_MengineBootstrap() == false )

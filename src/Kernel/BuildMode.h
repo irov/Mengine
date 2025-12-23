@@ -19,7 +19,6 @@ namespace Mengine
         const Char * getEngineGitBranch();
         const Char * getEngineGitDate();
         const Char * getEngineVersion();
-        const Char * getContentCommit();
         const Char * getBuildSolutionName();
         const Char * getBuildDate();
         const Char * getBuildUsername();

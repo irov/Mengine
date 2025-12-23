@@ -293,6 +293,14 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
             , products
         );
 
+        if (products.isEmpty() == true) {
+            this.logError("[Error] queryProducts empty products list");
+
+            this.nativeCall("onGooglePlayBillingQueryProductFailed");
+
+            return;
+        }
+
         if (m_billingClient == null) {
             this.logError("[ERROR] queryProducts billing client not created");
 

@@ -76,6 +76,22 @@ public abstract class MengineApplication extends Application {
 
     private final Object m_syncState = new Object();
 
+    private static class DeferredCall {
+        final public String plugin;
+        final public String method;
+        final public Object[] args;
+
+        public DeferredCall(String plugin, String method, Object[] args) {
+            this.plugin = plugin;
+            this.method = method;
+            this.args = args;
+        }
+    }
+
+    private final Object m_syncDeferredCalls = new Object();
+    private List<DeferredCall> m_deferredCalls = new ArrayList<>();
+    private List<DeferredCall> m_deferredCallsAux = new ArrayList<>();
+
     public static boolean isMasterRelease() {
         return MengineNative.AndroidEnv_isMasterRelease();
     }
@@ -1232,9 +1248,33 @@ public abstract class MengineApplication extends Application {
             );
         }
 
-        this.setState("native.call", plugin + "." + method);
+        synchronized (m_syncDeferredCalls) {
+            m_deferredCalls.add(new DeferredCall(plugin, method, args));
+        }
+    }
 
-        MengineNative.AndroidKernelService_call(plugin, method, args);
+    public void processDeferredCalls() {
+        synchronized (m_syncDeferredCalls) {
+            if (m_deferredCalls.isEmpty() == true) {
+                return;
+            }
+
+            List<DeferredCall> temp = m_deferredCalls;
+            m_deferredCalls = m_deferredCallsAux;
+            m_deferredCallsAux = temp;
+        }
+
+        for (DeferredCall call : m_deferredCallsAux) {
+            final String plugin = call.plugin;
+            final String method = call.method;
+            final Object[] args = call.args;
+
+            this.setState("native.call", plugin + "." + method);
+
+            MengineNative.AndroidKernelService_call(plugin, method, args);
+        }
+
+        m_deferredCallsAux.clear();
     }
 
     public void invalidInitialize(@NonNull MengineServiceInvalidInitializeException e, @NonNull Map<String, Object> attributes) {

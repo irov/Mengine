@@ -886,7 +886,7 @@ namespace Mengine
     void AndroidPlatformService::tickPlatform( float _frameTime )
     {
         bool updating = APPLICATION_SERVICE()
-            ->beginUpdate( _frameTime );
+            ->beginUpdate();
 
         if( m_freezedTick == 0 && updating == true )
         {

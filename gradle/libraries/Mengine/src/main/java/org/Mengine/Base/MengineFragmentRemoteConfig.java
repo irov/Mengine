@@ -174,93 +174,113 @@ public class MengineFragmentRemoteConfig extends MengineFragment<MengineListener
         }
     }
 
-    public boolean getRemoteConfigSectionValueBoolean(@NonNull String name, @NonNull String section, @NonNull String key, boolean defaultValue) {
+    public Boolean getRemoteConfigSectionValueBoolean(@NonNull String name, @NonNull String section, @NonNull String key) {
         synchronized (m_syncronizationConfigs) {
             JSONObject config = m_configs.get(name);
 
             if (config == null) {
-                return defaultValue;
+                return null;
             }
 
             JSONObject value = config.optJSONObject(section);
 
             if (value == null) {
-                return defaultValue;
+                return null;
             }
 
-            return value.optBoolean(key, defaultValue);
+            if (value.has(key) == false) {
+                return null;
+            }
+
+            return Boolean.valueOf(value.optBoolean(key));
         }
     }
 
-    public int getRemoteConfigSectionValueInteger(@NonNull String name, @NonNull String section, @NonNull String key, int defaultValue) {
+    public Integer getRemoteConfigSectionValueInteger(@NonNull String name, @NonNull String section, @NonNull String key) {
         synchronized (m_syncronizationConfigs) {
             JSONObject config = m_configs.get(name);
 
             if (config == null) {
-                return defaultValue;
+                return null;
             }
 
             JSONObject value = config.optJSONObject(section);
 
             if (value == null) {
-                return defaultValue;
+                return null;
             }
 
-            return value.optInt(key, defaultValue);
+            if (value.has(key) == false) {
+                return null;
+            }
+
+            return Integer.valueOf(value.optInt(key));
         }
     }
 
-    public long getRemoteConfigSectionValueLong(@NonNull String name, @NonNull String section, @NonNull String key, long defaultValue) {
+    public Long getRemoteConfigSectionValueLong(@NonNull String name, @NonNull String section, @NonNull String key) {
         synchronized (m_syncronizationConfigs) {
             JSONObject config = m_configs.get(name);
 
             if (config == null) {
-                return defaultValue;
+                return null;
             }
 
             JSONObject value = config.optJSONObject(section);
 
             if (value == null) {
-                return defaultValue;
+                return null;
             }
 
-            return value.optLong(key, defaultValue);
+            if (value.has(key) == false) {
+                return null;
+            }
+
+            return Long.valueOf(value.optLong(key));
         }
     }
 
-    public double getRemoteConfigSectionValueDouble(@NonNull String name, @NonNull String section, @NonNull String key, double defaultValue) {
+    public Double getRemoteConfigSectionValueDouble(@NonNull String name, @NonNull String section, @NonNull String key) {
         synchronized (m_syncronizationConfigs) {
             JSONObject config = m_configs.get(name);
 
             if (config == null) {
-                return defaultValue;
+                return null;
             }
 
             JSONObject value = config.optJSONObject(section);
 
             if (value == null) {
-                return defaultValue;
+                return null;
             }
 
-            return value.optDouble(key, defaultValue);
+            if (value.has(key) == false) {
+                return null;
+            }
+
+            return Double.valueOf(value.optDouble(key));
         }
     }
 
-    public String getRemoteConfigSectionValueString(@NonNull String name, @NonNull String section, @NonNull String key, String defaultValue) {
+    public String getRemoteConfigSectionValueString(@NonNull String name, @NonNull String section, @NonNull String key) {
         synchronized (m_syncronizationConfigs) {
             JSONObject config = m_configs.get(name);
 
             if (config == null) {
-                return defaultValue;
+                return null;
             }
 
             JSONObject value = config.optJSONObject(section);
 
             if (value == null) {
-                return defaultValue;
+                return null;
             }
 
-            return value.optString(key, defaultValue);
+            if (value.has(key) == false) {
+                return null;
+            }
+
+            return value.optString(key, null);
         }
     }
 

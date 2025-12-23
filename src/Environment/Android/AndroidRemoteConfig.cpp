@@ -94,15 +94,26 @@ namespace Mengine
         jstring jstring_name = Helper::AndroidMakeJObjectString( jenv, ANDROID_REMOTE_CONFIG_NAME );
         jstring jstring_section = Helper::AndroidMakeJObjectString( jenv, _section );
         jstring jstring_key = Helper::AndroidMakeJObjectString( jenv, _key );
-        jboolean jboolean_default = (_default == true ? JNI_TRUE : JNI_FALSE);
 
-        jboolean jresult = Helper::AndroidCallBooleanFragmentMethod( jenv, "MengineFragmentRemoteConfig", "getRemoteConfigSectionValueBoolean", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Z)Z", jstring_name, jstring_section, jstring_key, jboolean_default );
+        jobject jresult = Helper::AndroidCallObjectFragmentMethod( jenv, "MengineFragmentRemoteConfig", "getRemoteConfigSectionValueBoolean", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/Boolean;", jstring_name, jstring_section, jstring_key );
 
         Mengine_JNI_DeleteLocalRef( jenv, jstring_name );
         Mengine_JNI_DeleteLocalRef( jenv, jstring_section );
         Mengine_JNI_DeleteLocalRef( jenv, jstring_key );
 
-        *_value = (bool)jresult;
+        if( jresult == nullptr )
+        {
+            return false;
+        }
+
+        jclass jclass_Boolean = Mengine_JNI_GetClassBoolean( jenv );
+
+        jboolean jboolean_value = Helper::AndroidGetJavaObjectValueBoolean( jenv, jclass_Boolean, jresult );
+
+        Mengine_JNI_DeleteLocalRef( jenv, jclass_Boolean );
+        Mengine_JNI_DeleteLocalRef( jenv, jresult );
+
+        *_value = (bool)jboolean_value;
 
         return true;
     }
@@ -121,15 +132,26 @@ namespace Mengine
         jstring jstring_name = Helper::AndroidMakeJObjectString( jenv, ANDROID_REMOTE_CONFIG_NAME );
         jstring jstring_section = Helper::AndroidMakeJObjectString( jenv, _section );
         jstring jstring_key = Helper::AndroidMakeJObjectString( jenv, _key );
-        jlong jlong_default = (jlong)_default;
 
-        jlong jresult = Helper::AndroidCallLongFragmentMethod( jenv, "MengineFragmentRemoteConfig", "getRemoteConfigSectionValueLong", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;J)J", jstring_name, jstring_section, jstring_key, jlong_default );
+        jobject jresult = Helper::AndroidCallObjectFragmentMethod( jenv, "MengineFragmentRemoteConfig", "getRemoteConfigSectionValueLong", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/Long;", jstring_name, jstring_section, jstring_key );
 
         Mengine_JNI_DeleteLocalRef( jenv, jstring_name );
         Mengine_JNI_DeleteLocalRef( jenv, jstring_section );
         Mengine_JNI_DeleteLocalRef( jenv, jstring_key );
 
-        *_value = (int64_t)jresult;
+        if( jresult == nullptr )
+        {
+            return false;
+        }
+
+        jclass jclass_Long = Mengine_JNI_GetClassLong( jenv );
+
+        jlong jlong_value = Helper::AndroidGetJavaObjectValueLong( jenv, jclass_Long, jresult );
+
+        Mengine_JNI_DeleteLocalRef( jenv, jclass_Long );
+        Mengine_JNI_DeleteLocalRef( jenv, jresult );
+
+        *_value = (int64_t)jlong_value;
 
         return true;
     }
@@ -148,15 +170,26 @@ namespace Mengine
         jstring jstring_name = Helper::AndroidMakeJObjectString( jenv, ANDROID_REMOTE_CONFIG_NAME );
         jstring jstring_section = Helper::AndroidMakeJObjectString( jenv, _section );
         jstring jstring_key = Helper::AndroidMakeJObjectString( jenv, _key );
-        jdouble jdouble_default = (jdouble)_default;
 
-        jdouble jresult = Helper::AndroidCallDoubleFragmentMethod( jenv, "MengineFragmentRemoteConfig", "getRemoteConfigSectionValueDouble", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;D)D", jstring_name, jstring_section, jstring_key, jdouble_default );
+        jobject jresult = Helper::AndroidCallObjectFragmentMethod( jenv, "MengineFragmentRemoteConfig", "getRemoteConfigSectionValueDouble", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/Double;", jstring_name, jstring_section, jstring_key );
 
         Mengine_JNI_DeleteLocalRef( jenv, jstring_name );
         Mengine_JNI_DeleteLocalRef( jenv, jstring_section );
         Mengine_JNI_DeleteLocalRef( jenv, jstring_key );
 
-        *_value = (double)jresult;
+        if( jresult == nullptr )
+        {
+            return false;
+        }
+
+        jclass jclass_Double = Mengine_JNI_GetClassDouble( jenv );
+
+        jdouble jdouble_value = Helper::AndroidGetJavaObjectValueDouble( jenv, jclass_Double, jresult );
+
+        Mengine_JNI_DeleteLocalRef( jenv, jclass_Double );
+        Mengine_JNI_DeleteLocalRef( jenv, jresult );
+
+        *_value = (double)jdouble_value;
 
         return true;
     }
@@ -175,19 +208,15 @@ namespace Mengine
         jstring jstring_name = Helper::AndroidMakeJObjectString( jenv, ANDROID_REMOTE_CONFIG_NAME );
         jstring jstring_section = Helper::AndroidMakeJObjectString( jenv, _section );
         jstring jstring_key = Helper::AndroidMakeJObjectString( jenv, _key );
-        jstring jstring_default = Helper::AndroidMakeJObjectString( jenv, _default );
 
-        jobject jresult = Helper::AndroidCallObjectFragmentMethod( jenv, "MengineFragmentRemoteConfig", "getRemoteConfigSectionValueString", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;", jstring_name, jstring_section, jstring_key, jstring_default );
+        jobject jresult = Helper::AndroidCallObjectFragmentMethod( jenv, "MengineFragmentRemoteConfig", "getRemoteConfigSectionValueString", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;", jstring_name, jstring_section, jstring_key );
 
         Mengine_JNI_DeleteLocalRef( jenv, jstring_name );
         Mengine_JNI_DeleteLocalRef( jenv, jstring_section );
         Mengine_JNI_DeleteLocalRef( jenv, jstring_key );
-        Mengine_JNI_DeleteLocalRef( jenv, jstring_default );
 
         if( jresult == nullptr )
         {
-            *_value = _default;
-
             return false;
         }
 
@@ -214,19 +243,15 @@ namespace Mengine
         jstring jstring_name = Helper::AndroidMakeJObjectString( jenv, ANDROID_REMOTE_CONFIG_NAME );
         jstring jstring_section = Helper::AndroidMakeJObjectString( jenv, _section );
         jstring jstring_key = Helper::AndroidMakeJObjectString( jenv, _key );
-        jstring jstring_default = Helper::AndroidMakeJObjectString( jenv, _default );
 
-        jobject jresult = Helper::AndroidCallObjectFragmentMethod( jenv, "MengineFragmentRemoteConfig", "getRemoteConfigSectionValueString", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;", jstring_name, jstring_section, jstring_key, jstring_default );
+        jobject jresult = Helper::AndroidCallObjectFragmentMethod( jenv, "MengineFragmentRemoteConfig", "getRemoteConfigSectionValueString", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;", jstring_name, jstring_section, jstring_key );
 
         Mengine_JNI_DeleteLocalRef( jenv, jstring_name );
         Mengine_JNI_DeleteLocalRef( jenv, jstring_section );
         Mengine_JNI_DeleteLocalRef( jenv, jstring_key );
-        Mengine_JNI_DeleteLocalRef( jenv, jstring_default );
 
         if( jresult == nullptr )
         {
-            *_value = _default;
-
             return false;
         }
 

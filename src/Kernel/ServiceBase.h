@@ -41,6 +41,21 @@ namespace Mengine
             return required;
         }
 
+    protected:
+        void registerService( ServiceInterface * _service ) override
+        {
+            MENGINE_UNUSED( _service );
+
+            //Empty
+        }
+
+        void unregisterService( ServiceInterface * _service ) override
+        {
+            MENGINE_UNUSED( _service );
+
+            //Empty
+        }
+
     private:
         bool availableService() override
         {

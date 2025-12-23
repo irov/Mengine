@@ -632,10 +632,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32PlatformService::tickPlatform( float _frameTime )
     {
-        MENGINE_UNUSED( _frameTime );
-
         bool updating = APPLICATION_SERVICE()
-            ->beginUpdate( _frameTime );
+            ->beginUpdate();
 
         if( m_freezedTick == 0 && updating == true )
         {

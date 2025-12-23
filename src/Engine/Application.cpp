@@ -31,6 +31,7 @@
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/AnalyticsServiceInterface.h"
 #include "Interface/TimerServiceInterface.h"
+#include "Interface/DispatcherServiceInterface.h"
 
 #include "Isometric.h"
 #include "HotSpotPolygon.h"
@@ -1701,12 +1702,14 @@ namespace Mengine
             ->minimizeWindow();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Application::beginUpdate( float _frameTime )
+    bool Application::beginUpdate()
     {
         MENGINE_PROFILER_CATEGORY();
 
-        TIMER_SERVICE()
-            ->update( _frameTime );
+        this->updateNotification();
+
+        DISPATCHER_SERVICE()
+            ->preUpdate();
 
         if( SERVICE_IS_INITIALIZE( ThreadServiceInterface ) == true )
         {
@@ -1730,6 +1733,9 @@ namespace Mengine
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_BEGIN_UPDATE );
 
+        DISPATCHER_SERVICE()
+            ->update();
+
         GAME_SERVICE()
             ->update();
 
@@ -1749,9 +1755,7 @@ namespace Mengine
         else if( (m_focus == true && m_freeze == false) && m_update == false )
         {
             m_update = true;
-        }
-
-        this->updateNotification();
+        }        
 
         return true;
     }
@@ -1799,6 +1803,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::endUpdate()
     {
+        DISPATCHER_SERVICE()
+            ->postUpdate();
+
         SCENE_SERVICE()
             ->update();
 

@@ -57,7 +57,7 @@ namespace Mengine
         m_thread = thread;
 
         UniqueId timerId = TIMER_SERVICE()
-            ->addTimer( (float)FileModifyHook_Time, [this]( UniqueId _id )
+            ->addTimer( FileModifyHook_Time, [this]( UniqueId _id )
         {
             MENGINE_UNUSED( _id );
 

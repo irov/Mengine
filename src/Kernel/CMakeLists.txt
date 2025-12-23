@@ -805,6 +805,9 @@ Core
     IntrusiveSlugList.h
     IntrusiveSlugLinkedPtr.h
     
+    DispatchableBase.h
+    DispatchableBase.cpp
+    
     LoggerBase.h
     LoggerBase.cpp
     

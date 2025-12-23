@@ -233,7 +233,9 @@ namespace Mengine
             );
         }
 
-        this->deferredRequiredInitialize_( _doc, _result );
+        this->autoRegistration_( _desc );
+
+        this->deferredRequiredInitialize_( _desc, _doc, _result );
     }
     //////////////////////////////////////////////////////////////////////////
     bool ServiceProvider::finalizeService( const Char * _name )
@@ -286,6 +288,8 @@ namespace Mengine
             desc.available = false;
             desc.initialize = false;
             desc.service->finalizeService();
+
+            this->autoUnregistration_( &desc );
 
             return true;
         }
@@ -573,11 +577,66 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ServiceProvider::deferredRequiredInitialize_( const DocumentInterfacePtr & _doc, bool * const _result )
+    void ServiceProvider::autoRegistration_( ServiceDesc * const _desc )
     {
         for( uint32_t index_service = 0; index_service != m_servicesCount; ++index_service )
         {
             ServiceDesc & desc = m_services[index_service];
+
+            if( &desc == _desc )
+            {
+                continue;
+            }
+
+            if( desc.service == nullptr )
+            {
+                continue;
+            }
+
+            if( desc.initialize == false )
+            {
+                continue;
+            }
+
+            desc.service->registerService( _desc->service.get() );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ServiceProvider::autoUnregistration_( ServiceDesc * const _desc )
+    {
+        for( uint32_t index_service = 0; index_service != m_servicesCount; ++index_service )
+        {
+            ServiceDesc & desc = m_services[index_service];
+
+            if( &desc == _desc )
+            {
+                continue;
+            }
+
+            if( desc.service == nullptr )
+            {
+                continue;
+            }
+
+            if( desc.initialize == false )
+            {
+                continue;
+            }
+
+            desc.service->unregisterService( _desc->service.get() );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ServiceProvider::deferredRequiredInitialize_( ServiceDesc * const _desc, const DocumentInterfacePtr & _doc, bool * const _result )
+    {
+        for( uint32_t index_service = 0; index_service != m_servicesCount; ++index_service )
+        {
+            ServiceDesc & desc = m_services[index_service];
+
+            if( &desc == _desc )
+            {
+                continue;
+            }
 
             if( desc.requiring == false )
             {

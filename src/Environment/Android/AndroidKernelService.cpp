@@ -36,16 +36,10 @@ extern "C"
             return;
         }
 
-        jobjectArray jobject_NewArgs = (jobjectArray)Mengine::Mengine_JNI_NewGlobalRef( env, _args );
+        JNIEnv * main_jenv = Mengine::Mengine_JNI_GetEnv();
 
-        Mengine::Helper::dispatchMainThreadEvent( [plugin, method, jobject_NewArgs]() {
-            JNIEnv * main_jenv = Mengine::Mengine_JNI_GetEnv();
-
-            ANDROID_KERNEL_SERVICE()
-                ->callPluginMethod( main_jenv, plugin, method, jobject_NewArgs );
-
-            Mengine::Mengine_JNI_DeleteGlobalRef( main_jenv, jobject_NewArgs );
-        } );
+        ANDROID_KERNEL_SERVICE()
+            ->callPluginMethod( main_jenv, plugin, method, _args );
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidKernelService_1addPlugin )(JNIEnv * env, jclass cls, jstring _plugin, jobject _jmodule)
@@ -401,6 +395,15 @@ namespace Mengine
         semaphore.listeners.emplace_back( _listener );
 
         return _listener;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidKernelService::_update()
+    {
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+
+        Helper::AndroidCallVoidApplicationMethod( jenv, "processDeferredCalls", "()V" );
     }
     //////////////////////////////////////////////////////////////////////////
 }

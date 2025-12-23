@@ -2,6 +2,8 @@
 
 #include "Kernel/EnumeratorHelper.h"
 #include "Kernel/Logger.h"
+#include "Kernel/TimestampHelper.h"
+#include "Kernel/DocumentHelper.h"
 
 #include "Config/StdAlgorithm.h"
 
@@ -12,6 +14,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     TimerService::TimerService()
+        : m_prevTime( ~0ULL )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -45,7 +48,7 @@ namespace Mengine
         m_timers.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    UniqueId TimerService::addTimer( float _delay, const LambdaTimer & _lambda, const DocumentInterfacePtr & _doc )
+    UniqueId TimerService::addTimer( Timestamp _delay, const LambdaTimer & _lambda, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -83,8 +86,14 @@ namespace Mengine
         desc.lambda = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TimerService::update( float _frameTime )
+    void TimerService::_preUpdate()
     {
+        Timestamp currentTime = Helper::getSystemTimestamp();
+
+        Timestamp deltaTime = m_prevTime == ~0ULL ? 0ULL : currentTime - m_prevTime;
+
+        m_prevTime = currentTime;
+
         for( TimerDesc & desc : m_timers )
         {
             if( desc.id == INVALID_UNIQUE_ID )
@@ -92,7 +101,7 @@ namespace Mengine
                 continue;
             }
 
-            desc.time -= _frameTime;
+            desc.time -= deltaTime;
 
             if( desc.time > 0 )
             {

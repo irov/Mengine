@@ -7,6 +7,7 @@
 #include "ConstStringHolderJString.h"
 
 #include "Kernel/ServiceBase.h"
+#include "Kernel/DispatchableBase.h"
 #include "Kernel/Pool.h"
 #include "Kernel/Vector.h"
 #include "Kernel/Map.h"
@@ -16,6 +17,7 @@ namespace Mengine
 {
     class AndroidKernelService
         : public ServiceBase<AndroidKernelServiceInterface>
+        , public DispatchableBase
     {
     public:
         AndroidKernelService();
@@ -44,6 +46,9 @@ namespace Mengine
     public:
         void activateSemaphore( const ConstString & _semaphore ) override;
         AndroidSemaphoreListenerInterfacePtr waitSemaphore( const ConstString & _semaphore, const AndroidSemaphoreListenerInterfacePtr & _listener ) override;
+
+    public:
+        void _update() override;
 
     protected:
         ThreadMutexInterfacePtr m_mutexJStrings;

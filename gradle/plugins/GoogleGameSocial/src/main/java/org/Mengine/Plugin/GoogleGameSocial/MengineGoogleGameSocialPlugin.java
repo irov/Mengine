@@ -560,6 +560,18 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
             return;
         }
 
+        synchronized (m_cachedAchievementsLock) {
+            MengineGoogleGameSocialAchievement cachedAchievement = m_cachedAchievements.get(achievementId);
+
+            if (cachedAchievement != null && cachedAchievement.isIncremental() == true) {
+                this.logError("unlockAchievement achievementId: %s is incremental, cannot unlock directly. Use incrementAchievement instead.", achievementId);
+
+                this.nativeCall("onGoogleGameSocialUnlockAchievementError", achievementId, new RuntimeException("incremental achievement cannot be unlocked directly"));
+
+                return;
+            }
+        }
+
         this.logInfo("unlockAchievement achievementId: %s"
             , achievementId
         );
@@ -625,6 +637,18 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
             this.nativeCall("onGoogleGameSocialIncrementAchievementError", achievementId, numSteps, new RuntimeException("achievementsClient not initialized"));
 
             return;
+        }
+
+        synchronized (m_cachedAchievementsLock) {
+            MengineGoogleGameSocialAchievement cachedAchievement = m_cachedAchievements.get(achievementId);
+
+            if (cachedAchievement != null && cachedAchievement.isIncremental() == false) {
+                this.logError("incrementAchievement achievementId: %s is not incremental, cannot increment. Use unlockAchievement instead.", achievementId);
+
+                this.nativeCall("onGoogleGameSocialIncrementAchievementError", achievementId, numSteps, new RuntimeException("standard achievement cannot be incremented"));
+
+                return;
+            }
         }
 
         this.logInfo("incrementAchievement achievementId: %s numSteps: %d"

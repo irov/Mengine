@@ -125,9 +125,12 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
             String value_string;
 
             if (value == null) {
-                this.logInfo("remote config invalid key: %s not found in configs: %s"
+                String default_value = m_defaults.get(key);
+
+                this.logDebug("remote config invalid key: %s not found in configs: %s setting default value: %s"
                     , key
                     , remoteValues.keySet()
+                    , default_value
                 );
 
                 value_string = m_defaults.get(key);
@@ -158,6 +161,31 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
         this.logInfo("remote config values: %s"
             , configs
         );
+
+        JSONObject extraKeys = new JSONObject();
+        for (Map.Entry<String, FirebaseRemoteConfigValue> entry : remoteValues.entrySet()) {
+            String key = entry.getKey();
+            
+            if (m_defaults.containsKey(key) == false) {
+                FirebaseRemoteConfigValue value = entry.getValue();
+                String value_string = value.asString();
+                
+                try {
+                    extraKeys.put(key, value_string);
+                } catch (final JSONException e) {
+                    this.logException(e, Map.of(
+                        "key", key,
+                        "value", value_string
+                    ));
+                }
+            }
+        }
+
+        if (extraKeys.length() > 0) {
+            this.logWarning("remote config extra keys (not in defaults): %s"
+                , extraKeys
+            );
+        }
 
         MengineFragmentRemoteConfig.INSTANCE.remoteConfigFetch(configs, ids);
     }

@@ -117,8 +117,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t iOSPlatformService::getUserPath( Char * const _userPath ) const
     {
-        const Char * Project_Company = CONFIG_VALUE_STRING( "Project", "Company", "UNKNOWN" );
-        const Char * Project_Name = CONFIG_VALUE_STRING( "Project", "Name", "UNKNOWN" );
+        String Project_Name = CONFIG_VALUE_STRING( "Project", "Name", "UNKNOWN" );
 
         NSArray * paths = NSSearchPathForDirectoriesInDomains( NSApplicationSupportDirectory, NSUserDomainMask, YES );
         
@@ -129,10 +128,7 @@ namespace Mengine
             return 0;
         }
 
-        NSString * first_path = [paths objectAtIndex:0];
-
-        NSString * userPath = [first_path stringByAppendingPathComponent:@(Project_Company)];
-        userPath = [userPath stringByAppendingPathComponent:@(Project_Name)];
+        NSString * userPath = [NSString pathWithComponents:@[[paths objectAtIndex:0], @(Project_Company.c_str()), @(Project_Name.c_str())]];
         
         Path extraPreferencesFolderName = {'\0'};
         size_t ExtraPreferencesFolderNameLen = this->getExtraPreferencesFolderName( extraPreferencesFolderName );

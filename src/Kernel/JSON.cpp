@@ -72,6 +72,20 @@ namespace jpp
         return jpp::make_string( value_str );
     };
     //////////////////////////////////////////////////////////////////////////    
+    jpp::object extract_object_extern<Mengine::PathString>::operator()( const Mengine::PathString & _value ) const
+    {
+        const Mengine::Char * value_str = _value.c_str();
+
+        return jpp::make_string( value_str );
+    };
+    //////////////////////////////////////////////////////////////////////////    
+    jpp::object extract_object_extern<Mengine::URLString>::operator()( const Mengine::URLString & _value ) const
+    {
+        const Mengine::Char * value_str = _value.c_str();
+
+        return jpp::make_string( value_str );
+    };
+    //////////////////////////////////////////////////////////////////////////    
     jpp::object extract_object_extern<Mengine::VectorChar>::operator()( const Mengine::VectorChar & _value ) const
     {
         const Mengine::Char * value_str = _value.data();
@@ -150,7 +164,21 @@ namespace jpp
     {
         const Mengine::Char * value = _obj;
 
-        *_value = Mengine::String( value );
+        _value->assign( value );
+    };
+    //////////////////////////////////////////////////////////////////////////
+    void cast_object_extern<Mengine::PathString>::operator()( const jpp::object & _obj, Mengine::PathString * const _value ) const
+    {
+        const Mengine::Char * value = _obj;
+
+        _value->assign( value );
+    };
+    //////////////////////////////////////////////////////////////////////////
+    void cast_object_extern<Mengine::URLString>::operator()( const jpp::object & _obj, Mengine::URLString * const _value ) const
+    {
+        const Mengine::Char * value = _obj;
+
+        _value->assign( value );
     };
     //////////////////////////////////////////////////////////////////////////
     void cast_object_extern<Mengine::VectorChar>::operator()( const jpp::object & _obj, Mengine::VectorChar * const _value ) const
@@ -204,6 +232,20 @@ namespace jpp
     };
     //////////////////////////////////////////////////////////////////////////
     bool check_object_extern<Mengine::String>::operator()( const jpp::object & _obj, Mengine::String * const ) const
+    {
+        bool result = _obj.is_type_string();
+
+        return result;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    bool check_object_extern<Mengine::PathString>::operator()( const jpp::object & _obj, Mengine::PathString * const ) const
+    {
+        bool result = _obj.is_type_string();
+
+        return result;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    bool check_object_extern<Mengine::URLString>::operator()( const jpp::object & _obj, Mengine::URLString * const ) const
     {
         bool result = _obj.is_type_string();
 

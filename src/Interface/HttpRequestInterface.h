@@ -5,6 +5,8 @@
 #include "Interface/ThreadTaskInterface.h"
 
 #include "Kernel/Mixin.h"
+#include "Kernel/URLString.h"
+#include "Kernel/String.h"
 
 namespace Mengine
 {
@@ -13,8 +15,8 @@ namespace Mengine
         : public Mixin
     {
     public:
-        virtual void setURL( const String & _url ) = 0;
-        virtual const String & getURL() const = 0;
+        virtual void setURL( const URLString & _url ) = 0;
+        virtual const URLString & getURL() const = 0;
 
         virtual void setProxy( const String & _proxy ) = 0;
         virtual const String & getProxy() const = 0;

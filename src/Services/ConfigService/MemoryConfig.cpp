@@ -277,6 +277,16 @@ namespace Mengine
         return Detail::hasValueT( m_records, m_platformTags, _section, _key, _default, _value );
     }
     //////////////////////////////////////////////////////////////////////////
+    bool MemoryConfig::hasValue( const Char * _section, const Char * _key, const PathString & _default, PathString * const _value ) const
+    {
+        return Detail::hasValueT( m_records, m_platformTags, _section, _key, _default, _value );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool MemoryConfig::hasValue( const Char * _section, const Char * _key, const URLString & _default, URLString * const _value ) const
+    {
+        return Detail::hasValueT( m_records, m_platformTags, _section, _key, _default, _value );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool MemoryConfig::hasValue( const Char * _section, const Char * _key, const ConstString & _default, ConstString * const _value ) const
     {
         return Detail::hasValueT( m_records, m_platformTags, _section, _key, _default, _value );
@@ -318,6 +328,16 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     bool MemoryConfig::setValue( const Char * _section, const Char * _key, const String & _value )
+    {
+        return Detail::setValueT( m_records, _section, _key, _value );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool MemoryConfig::setValue( const Char * _section, const Char * _key, const PathString & _value )
+    {
+        return Detail::setValueT( m_records, _section, _key, _value );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool MemoryConfig::setValue( const Char * _section, const Char * _key, const URLString & _value )
     {
         return Detail::setValueT( m_records, _section, _key, _value );
     }

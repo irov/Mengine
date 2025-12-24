@@ -14,7 +14,7 @@
 #include "Kernel/GlyphCode.h"
 #include "Kernel/Color.h"
 #include "Kernel/TextParams.h"
-#include "Kernel/String.h"
+#include "Kernel/U32String.h"
 
 #include "math/vec4.h"
 #include "math/uv4.h"

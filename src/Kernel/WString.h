@@ -8,5 +8,5 @@
 
 namespace Mengine
 {
-    typedef std::basic_string<Char, std::char_traits<Char>, StlAllocator<Char>> String;
+    typedef std::basic_string<WChar, std::char_traits<WChar>, StlAllocator<WChar>> WString;
 }

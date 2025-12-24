@@ -30,7 +30,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestId HttpScriptEmbedding::downloadAsset( const String & _url, const String & _login, const String & _password, const ConstString & _fileGroupName, const FilePath & _filePath, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args )
+    HttpRequestId HttpScriptEmbedding::downloadAsset( const URLString & _url, const String & _login, const String & _password, const ConstString & _fileGroupName, const FilePath & _filePath, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args )
     {
         if( SERVICE_IS_INITIALIZE( HttpServiceInterface ) == false )
         {
@@ -58,7 +58,7 @@ namespace Mengine
         return id;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestId HttpScriptEmbedding::postMessage( const String & _url, const Params & _params, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args )
+    HttpRequestId HttpScriptEmbedding::postMessage( const URLString & _url, const Params & _params, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args )
     {
         if( SERVICE_IS_INITIALIZE( HttpServiceInterface ) == false )
         {
@@ -82,7 +82,7 @@ namespace Mengine
         return id;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestId HttpScriptEmbedding::headerData( const String & _url, const VectorString & _headers, const Data & _data, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args )
+    HttpRequestId HttpScriptEmbedding::headerData( const URLString & _url, const VectorString & _headers, const Data & _data, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args )
     {
         if( SERVICE_IS_INITIALIZE( HttpServiceInterface ) == false )
         {
@@ -97,7 +97,7 @@ namespace Mengine
         return id;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestId HttpScriptEmbedding::getMessage( const String & _url, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args )
+    HttpRequestId HttpScriptEmbedding::getMessage( const URLString & _url, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args )
     {
         if( SERVICE_IS_INITIALIZE( HttpServiceInterface ) == false )
         {

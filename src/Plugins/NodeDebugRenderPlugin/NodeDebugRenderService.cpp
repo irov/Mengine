@@ -33,6 +33,7 @@
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/PrefetcherHelper.h"
 #include "Kernel/GlobalInputHandlerHelper.h"
+#include "Kernel/VectorString.h"
 #include "Kernel/Surface.h"
 
 #include <iomanip>

@@ -211,7 +211,7 @@ namespace Mengine
         return m_applicationJSONHeaders;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestId HttpService::ping( const String & _url, int32_t _timeout, const HttpLambdaPing & _lambda, const DocumentInterfacePtr & _doc )
+    HttpRequestId HttpService::ping( const URLString & _url, int32_t _timeout, const HttpLambdaPing & _lambda, const DocumentInterfacePtr & _doc )
     {
         if( this->isStopService() == true )
         {
@@ -273,7 +273,7 @@ namespace Mengine
         return requestId;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestId HttpService::getMessage( const String & _url, const HttpHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
+    HttpRequestId HttpService::getMessage( const URLString & _url, const HttpHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
     {
         if( this->isStopService() == true )
         {
@@ -330,7 +330,7 @@ namespace Mengine
         return requestId;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestId HttpService::postMessage( const String & _url, const HttpHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpRequestPostProperties & _params, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
+    HttpRequestId HttpService::postMessage( const URLString & _url, const HttpHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpRequestPostProperties & _params, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
     {
         if( this->isStopService() == true )
         {
@@ -387,7 +387,7 @@ namespace Mengine
         return requestId;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestId HttpService::deleteMessage( const String & _url, const HttpHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
+    HttpRequestId HttpService::deleteMessage( const URLString & _url, const HttpHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
     {
         if( this->isStopService() == true )
         {
@@ -444,7 +444,7 @@ namespace Mengine
         return requestId;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestId HttpService::headerData( const String & _url, const HttpHeaders & _headers, const Data & _data, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
+    HttpRequestId HttpService::headerData( const URLString & _url, const HttpHeaders & _headers, const Data & _data, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
     {
         if( this->isStopService() == true )
         {
@@ -500,7 +500,7 @@ namespace Mengine
         return requestId;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestId HttpService::getAsset( const String & _url, const String & _login, const String & _password, const ContentInterfacePtr & _content, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
+    HttpRequestId HttpService::getAsset( const URLString & _url, const String & _login, const String & _password, const ContentInterfacePtr & _content, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
     {
         if( this->isStopService() == true )
         {

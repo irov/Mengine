@@ -5,6 +5,7 @@
 
 #include "Interface/HttpReceiverInterface.h"
 
+#include "Kernel/URLString.h"
 #include "Kernel/HttpRequestFlags.h"
 #include "Kernel/HttpLambdaPing.h"
 #include "Kernel/Data.h"
@@ -24,14 +25,14 @@ namespace Mengine
         virtual const HttpHeaders & getApplicationJSONHeaders() const = 0;
 
     public:
-        virtual HttpRequestId ping( const String & _url, int32_t _timeout, const HttpLambdaPing & _lambda, const DocumentInterfacePtr & _doc ) = 0;
+        virtual HttpRequestId ping( const URLString & _url, int32_t _timeout, const HttpLambdaPing & _lambda, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
-        virtual HttpRequestId getMessage( const String & _url, const HttpHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) = 0;
-        virtual HttpRequestId postMessage( const String & _url, const HttpHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpRequestPostProperties & _params, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) = 0;
-        virtual HttpRequestId deleteMessage( const String & _url, const HttpHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) = 0;
-        virtual HttpRequestId headerData( const String & _url, const HttpHeaders & _headers, const Data & _data, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) = 0;
-        virtual HttpRequestId getAsset( const String & _url, const String & _login, const String & _password, const ContentInterfacePtr & _content, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) = 0;
+        virtual HttpRequestId getMessage( const URLString & _url, const HttpHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) = 0;
+        virtual HttpRequestId postMessage( const URLString & _url, const HttpHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpRequestPostProperties & _params, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) = 0;
+        virtual HttpRequestId deleteMessage( const URLString & _url, const HttpHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) = 0;
+        virtual HttpRequestId headerData( const URLString & _url, const HttpHeaders & _headers, const Data & _data, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) = 0;
+        virtual HttpRequestId getAsset( const URLString & _url, const String & _login, const String & _password, const ContentInterfacePtr & _content, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
         virtual bool cancelRequest( HttpRequestId _id ) = 0;

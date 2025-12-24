@@ -307,7 +307,7 @@ namespace Mengine
 
         m_factoryDynamicLibraries = Helper::makeFactoryPool<Win32DynamicLibrary, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
-        String Window_ClassName = CONFIG_VALUE_STRING( "Window", "ClassName", MENGINE_WINDOW_CLASSNAME );
+        PathString Window_ClassName = CONFIG_VALUE_PATHSTRING( "Window", "ClassName", MENGINE_WINDOW_CLASSNAME );
 
         Helper::utf8ToUnicode( Window_ClassName, m_windowClassName.data(), MENGINE_MAX_PATH );
 
@@ -3277,7 +3277,7 @@ namespace Mengine
 
         ::CoTaskMemFree( itemIDList );
 
-        String Project_Company = CONFIG_VALUE_STRING( "Project", "Company", "UNKNOWN" );
+        PathString Project_Company = CONFIG_VALUE_PATHSTRING( "Project", "Company", "UNKNOWN" );
 
         if( Project_Company.empty() == true )
         {
@@ -3299,7 +3299,7 @@ namespace Mengine
         WPath roamingPath = {L'\0'};
         ::PathCombineW( roamingPath, currentPath, companyNameW );
 
-        String Project_Name = CONFIG_VALUE_STRING( "Project", "Name", "UNKNOWN" );
+        PathString Project_Name = CONFIG_VALUE_PATHSTRING( "Project", "Name", "UNKNOWN" );
 
         if( Project_Name.empty() == true )
         {
@@ -3337,7 +3337,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t Win32PlatformService::getExtraPreferencesFolderName( Char * const _folderName ) const
     {
-        String Project_ExtraPreferencesFolderName = CONFIG_VALUE_STRING( "Project", "ExtraPreferencesFolderName", "" );
+        PathString Project_ExtraPreferencesFolderName = CONFIG_VALUE_PATHSTRING( "Project", "ExtraPreferencesFolderName", "" );
 
         MENGINE_ASSERTION_FATAL( Helper::isCorrectFolderPathA( Project_ExtraPreferencesFolderName.c_str() ) == true, "invalid extra preferences folder name '%s'"
             , Project_ExtraPreferencesFolderName.c_str()

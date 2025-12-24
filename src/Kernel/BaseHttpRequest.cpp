@@ -16,12 +16,12 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseHttpRequest::setURL( const String & _url )
+    void BaseHttpRequest::setURL( const URLString & _url )
     {
         m_url = _url;
     }
     //////////////////////////////////////////////////////////////////////////
-    const String & BaseHttpRequest::getURL() const
+    const URLString & BaseHttpRequest::getURL() const
     {
         return m_url;
     }

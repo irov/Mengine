@@ -5,7 +5,5 @@
 
 namespace Mengine
 {
-    typedef Vector<String> VectorString;    
-    typedef Vector<WString> VectorWString;
-    typedef Vector<U32String> VectorU32String;
+    typedef Vector<String> VectorString;
 }

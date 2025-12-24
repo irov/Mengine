@@ -193,6 +193,20 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        bool stringalized( const Char * _string, PathString * const _value )
+        {
+            _value->assign( _string );
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool stringalized( const Char * _string, URLString * const _value )
+        {
+            _value->assign( _string );
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
         bool stringalized( const Char * _string, ConstString * const _value )
         {
             *_value = Helper::stringizeString( _string );
@@ -600,6 +614,40 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const String & _value, Char * const _string, size_t _capacity )
+        {
+            int32_t result = MENGINE_SNPRINTF( _string, _capacity, "%s", _value.c_str() );
+
+            if( result < 0 )
+            {
+                return false;
+            }
+
+            if( (size_t)result >= _capacity )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool stringalized( const PathString & _value, Char * const _string, size_t _capacity )
+        {
+            int32_t result = MENGINE_SNPRINTF( _string, _capacity, "%s", _value.c_str() );
+
+            if( result < 0 )
+            {
+                return false;
+            }
+
+            if( (size_t)result >= _capacity )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool stringalized( const URLString & _value, Char * const _string, size_t _capacity )
         {
             int32_t result = MENGINE_SNPRINTF( _string, _capacity, "%s", _value.c_str() );
 
@@ -1039,6 +1087,23 @@ namespace Mengine
         bool stringalized( const WString & _value, WChar * const _string, size_t _capacity )
         {
             int32_t result = MENGINE_SWPRINTF( _string, _capacity, L"%s", _value.c_str() );
+
+            if( result < 0 )
+            {
+                return false;
+            }
+
+            if( (size_t)result >= _capacity )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool stringalized( const PathWString * _value, WChar * const _string, size_t _capacity )
+        {
+            int32_t result = MENGINE_SWPRINTF( _string, _capacity, L"%s", _value->c_str() );
 
             if( result < 0 )
             {

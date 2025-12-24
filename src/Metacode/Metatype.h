@@ -11,6 +11,7 @@
 #include "Kernel/Polygon.h"
 #include "Kernel/Viewport.h"
 #include "Kernel/String.h"
+#include "Kernel/WString.h"
 #include "Kernel/Floats.h"
 
 #include "Config/Typedef.h"

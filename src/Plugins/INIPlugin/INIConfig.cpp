@@ -204,6 +204,16 @@ namespace Mengine
         return Detail::hasValueT( m_stores, m_platformTags, _section, _key, _default, _value );
     }
     //////////////////////////////////////////////////////////////////////////
+    bool INIConfig::hasValue( const Char * _section, const Char * _key, const PathString & _default, PathString * const _value ) const
+    {
+        return Detail::hasValueT( m_stores, m_platformTags, _section, _key, _default, _value );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool INIConfig::hasValue( const Char * _section, const Char * _key, const URLString & _default, URLString * const _value ) const
+    {
+        return Detail::hasValueT( m_stores, m_platformTags, _section, _key, _default, _value );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool INIConfig::hasValue( const Char * _section, const Char * _key, const ConstString & _default, ConstString * const _value ) const
     {
         return Detail::hasValueT( m_stores, m_platformTags, _section, _key, _default, _value );
@@ -263,6 +273,28 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     bool INIConfig::setValue( const Char * _section, const Char * _key, const String & _value )
+    {
+        MENGINE_UNUSED( _section );
+        MENGINE_UNUSED( _key );
+        MENGINE_UNUSED( _value );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool INIConfig::setValue( const Char * _section, const Char * _key, const PathString & _value )
+    {
+        MENGINE_UNUSED( _section );
+        MENGINE_UNUSED( _key );
+        MENGINE_UNUSED( _value );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool INIConfig::setValue( const Char * _section, const Char * _key, const URLString & _value )
     {
         MENGINE_UNUSED( _section );
         MENGINE_UNUSED( _key );

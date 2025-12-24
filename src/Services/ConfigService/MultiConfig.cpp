@@ -169,6 +169,40 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool MultiConfig::hasValue( const Char * _section, const Char * _key, const PathString & _default, PathString * const _value ) const
+    {
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+
+        for( const ConfigInterfacePtr & config : m_configs )
+        {
+            if( config->hasValue( _section, _key, _default, _value ) == true )
+            {
+                return true;
+            }
+        }
+
+        *_value = _default;
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool MultiConfig::hasValue( const Char * _section, const Char * _key, const URLString & _default, URLString * const _value ) const
+    {
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+
+        for( const ConfigInterfacePtr & config : m_configs )
+        {
+            if( config->hasValue( _section, _key, _default, _value ) == true )
+            {
+                return true;
+            }
+        }
+
+        *_value = _default;
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool MultiConfig::hasValue( const Char * _section, const Char * _key, const ConstString & _default, ConstString * const _value ) const
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
@@ -288,6 +322,28 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     bool MultiConfig::setValue( const Char * _section, const Char * _key, const String & _value )
+    {
+        MENGINE_UNUSED( _section );
+        MENGINE_UNUSED( _key );
+        MENGINE_UNUSED( _value );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool MultiConfig::setValue( const Char * _section, const Char * _key, const PathString & _value )
+    {
+        MENGINE_UNUSED( _section );
+        MENGINE_UNUSED( _key );
+        MENGINE_UNUSED( _value );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool MultiConfig::setValue( const Char * _section, const Char * _key, const URLString & _value )
     {
         MENGINE_UNUSED( _section );
         MENGINE_UNUSED( _key );

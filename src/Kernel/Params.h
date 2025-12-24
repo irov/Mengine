@@ -4,6 +4,7 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/String.h"
+#include "Kernel/WString.h"
 #include "Kernel/Factorable.h"
 
 #include "Config/Variant.h"

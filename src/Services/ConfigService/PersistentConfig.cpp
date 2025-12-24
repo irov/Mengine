@@ -225,6 +225,20 @@ namespace Mengine
         return Detail::hasValueT( _section, _key, _default, _value, MENGINE_DOCUMENT_FACTORABLE );
     }
     //////////////////////////////////////////////////////////////////////////
+    bool PersistentConfig::hasValue( const Char * _section, const Char * _key, const PathString & _default, PathString * const _value ) const
+    {
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+
+        return Detail::hasValueT( _section, _key, _default, _value, MENGINE_DOCUMENT_FACTORABLE );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PersistentConfig::hasValue( const Char * _section, const Char * _key, const URLString & _default, URLString * const _value ) const
+    {
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+
+        return Detail::hasValueT( _section, _key, _default, _value, MENGINE_DOCUMENT_FACTORABLE );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool PersistentConfig::hasValue( const Char * _section, const Char * _key, const ConstString & _default, ConstString * const _value ) const
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
@@ -282,6 +296,20 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     bool PersistentConfig::setValue( const Char * _section, const Char * _key, const String & _value )
+    {
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+
+        return Detail::setValueT( _section, _key, _value, MENGINE_DOCUMENT_FACTORABLE );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PersistentConfig::setValue( const Char * _section, const Char * _key, const PathString & _value )
+    {
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+
+        return Detail::setValueT( _section, _key, _value, MENGINE_DOCUMENT_FACTORABLE );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PersistentConfig::setValue( const Char * _section, const Char * _key, const URLString & _value )
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 

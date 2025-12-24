@@ -105,7 +105,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderSystem::_initializeService()
     {
-        String Render_D3D9_DLL = CONFIG_VALUE_STRING( "DirectX9", "D3D9_DLL", MENGINE_D3D9_DLL_NAME );
+        PathString Render_D3D9_DLL = CONFIG_VALUE_PATHSTRING( "DirectX9", "D3D9_DLL", MENGINE_D3D9_DLL_NAME );
 
         DynamicLibraryInterfacePtr d3d9Library = PLATFORM_SERVICE()
             ->loadDynamicLibrary( Render_D3D9_DLL.c_str(), MENGINE_DOCUMENT_FACTORABLE );

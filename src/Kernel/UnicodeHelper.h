@@ -4,6 +4,7 @@
 #include "Kernel/FilePath.h"
 #include "Kernel/PathString.h"
 #include "Kernel/String.h"
+#include "Kernel/WString.h"
 
 #include "Config/Char.h"
 

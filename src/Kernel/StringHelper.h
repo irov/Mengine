@@ -2,6 +2,8 @@
 
 #include "Kernel/String.h"
 #include "Kernel/VectorString.h"
+#include "Kernel/VectorWString.h"
+#include "Kernel/VectorU32String.h"
 #include "Kernel/ConstString.h"
 
 namespace Mengine

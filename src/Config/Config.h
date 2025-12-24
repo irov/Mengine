@@ -393,6 +393,10 @@
 #   endif
 #endif
 
+#ifndef MENGINE_MAX_URL
+#define MENGINE_MAX_URL 2083
+#endif
+
 #ifndef MENGINE_LOCALE_LANGUAGE_SIZE
 #define MENGINE_LOCALE_LANGUAGE_SIZE 2
 #endif

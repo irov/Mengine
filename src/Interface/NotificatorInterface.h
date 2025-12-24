@@ -14,6 +14,7 @@
 #include "Kernel/ErrorLevel.h"
 #include "Kernel/LoggerMessage.h"
 #include "Kernel/HttpRequestId.h"
+#include "Kernel/URLString.h"
 
 #include "Config/Typedef.h"
 #include "Config/Char.h"
@@ -144,7 +145,7 @@ namespace Mengine
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_MOUNT_USER_FILEGROUP );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_PLATFORM_ATACH_WINDOW );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_PLATFORM_DETACH_WINDOW );
-    MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_HTTP_REQUEST, HttpRequestId, const String & );
+    MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_HTTP_REQUEST, HttpRequestId, const URLString & );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_HTTP_CANCEL, HttpRequestId );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_HTTP_RESPONSE, const HttpResponseInterfacePtr & );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_SETTING_CHANGE, const SettingInterfacePtr &, const Char * );

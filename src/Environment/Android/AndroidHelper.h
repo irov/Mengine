@@ -7,6 +7,8 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/String.h"
+#include "Kernel/PathString.h"
+#include "Kernel/URLString.h"
 #include "Kernel/ArrayString.h"
 #include "Kernel/StaticString.h"
 #include "Kernel/Viewport.h"
@@ -36,6 +38,8 @@ namespace Mengine
         MENGINE_NODISCARD jobject AndroidMakeJObjectDouble( JNIEnv * _jenv, double _value );
         MENGINE_NODISCARD jstring AndroidMakeJObjectString( JNIEnv * _jenv, const Char * _value );
         MENGINE_NODISCARD jstring AndroidMakeJObjectString( JNIEnv * _jenv, const String & _value );
+        MENGINE_NODISCARD jstring AndroidMakeJObjectString( JNIEnv * _jenv, const PathString & _value );
+        MENGINE_NODISCARD jstring AndroidMakeJObjectString( JNIEnv * _jenv, const URLString & _value );
         MENGINE_NODISCARD jstring AndroidMakeJObjectString( JNIEnv * _jenv, const ConstString & _value );
         template<size_t N>
         MENGINE_NODISCARD jstring AndroidMakeJObjectString( JNIEnv * _jenv, const StaticString<N> & _value )

@@ -78,7 +78,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool CachalotPlugin::_initializePlugin()
     {
-        String CachalotPlugin_DSN = CONFIG_VALUE_STRING( "CachalotPlugin", "DSN", "" );
+        URLString CachalotPlugin_DSN = CONFIG_VALUE_URLSTRING( "CachalotPlugin", "DSN", "" );
 
         LOGGER_MESSAGE( "Cachalot DSN: %s"
             , CachalotPlugin_DSN.c_str()

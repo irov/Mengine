@@ -54,7 +54,7 @@ namespace Mengine
     {
         ConstString type;
         HttpRequestId id;
-        String url;
+        URLString url;
     };
     //////////////////////////////////////////////////////////////////////////
     class NodeDebuggerModule
@@ -135,7 +135,7 @@ namespace Mengine
         void notifyChangeSceneDestroy( const ScenePtr & _scene );
         void notifyRemoveSceneDestroy();
         void notifyIncrefFactoryGeneration( uint32_t _generator );
-        void notifyHttpRequest( HttpRequestId _id, const String & _url );
+        void notifyHttpRequest( HttpRequestId _id, const URLString & _url );
         void notifyHttpResponse( const HttpResponseInterfacePtr & _response );
 
     public:

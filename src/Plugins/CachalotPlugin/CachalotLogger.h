@@ -18,8 +18,8 @@ namespace Mengine
         ~CachalotLogger() override;
 
     public:
-        void setDSN( const String & _dsn );
-        const String & getDSN() const;
+        void setDSN( const URLString & _dsn );
+        const URLString & getDSN() const;
 
     public:
         bool _initializeLogger() override;
@@ -37,7 +37,7 @@ namespace Mengine
         void onHttpRequestComplete( const HttpResponseInterfacePtr & _response ) override;
 
     protected:
-        String m_dsn;
+        URLString m_dsn;
 
         enum ECachalotStatus
         {

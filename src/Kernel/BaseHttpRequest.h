@@ -17,8 +17,8 @@ namespace Mengine
         ~BaseHttpRequest() override;
 
     public:
-        void setURL( const String & _url ) override;
-        const String & getURL() const override;
+        void setURL( const URLString & _url ) override;
+        const URLString & getURL() const override;
 
         void setProxy( const String & _proxy ) override;
         const String & getProxy() const override;
@@ -50,7 +50,7 @@ namespace Mengine
     protected:
         HttpRequestId m_id;
 
-        String m_url;
+        URLString m_url;
         String m_proxy;
         String m_cookies;
         HttpHeaders m_headers;

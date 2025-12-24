@@ -79,6 +79,12 @@ namespace Mengine
 #define CONFIG_VALUE_STRING( section, key, d )\
     []( const Mengine::String & _default ) { Mengine::String value = Mengine::Helper::Detail::getConfigValue( section, key, _default ); return value;}(d)
 //////////////////////////////////////////////////////////////////////////
+#define CONFIG_VALUE_PATHSTRING( section, key, d )\
+    []( const Mengine::PathString & _default ) { Mengine::PathString value = Mengine::Helper::Detail::getConfigValue( section, key, _default ); return value;}(d)
+//////////////////////////////////////////////////////////////////////////
+#define CONFIG_VALUE_URLSTRING( section, key, d )\
+    []( const Mengine::URLString & _default ) { Mengine::URLString value = Mengine::Helper::Detail::getConfigValue( section, key, _default ); return value;}(d)
+//////////////////////////////////////////////////////////////////////////
 #define CONFIG_VALUE_CONSTSTRING( section, key, d )\
     []( const Mengine::ConstString & _default ) { static Mengine::ConstString value = Mengine::Helper::Detail::getConfigValue( section, key, _default ); return value;}(d)
 //////////////////////////////////////////////////////////////////////////

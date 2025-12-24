@@ -3,6 +3,7 @@
 #include "Interface/FontInterface.h"
 
 #include "Kernel/Mixin.h"
+#include "Kernel/String.h"
 #include "Kernel/Tags.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"

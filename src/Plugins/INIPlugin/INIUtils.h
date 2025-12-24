@@ -4,6 +4,8 @@
 #include "Interface/ContentInterface.h"
 #include "Interface/MemoryInterface.h"
 
+#include "Kernel/PathString.h"
+#include "Kernel/URLString.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/VectorConstString.h"
 #include "Kernel/FilePath.h"
@@ -39,6 +41,8 @@ namespace Mengine
         bool hasIniValue( const IniStore & _ini, const Char * _section, const Char * _key );
         //////////////////////////////////////////////////////////////////////////
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, String * const _value );
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, PathString * const _value );
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, URLString * const _value );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, ConstString * const _value );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, Tags * const _value );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, Resolution * const _value );

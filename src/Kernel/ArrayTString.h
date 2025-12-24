@@ -26,7 +26,7 @@ namespace Mengine
         }
 
     public:
-        explicit ArrayTString( const T * _value )
+        ArrayTString( const T * _value )
         {
             this->assign( _value );
         }

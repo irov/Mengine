@@ -111,6 +111,7 @@
 #include "Kernel/ValueInterpolatorParabolic.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/VectorWString.h"
 
 #include "math/angle.h"
 #include "math/vec4.h"

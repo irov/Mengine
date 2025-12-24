@@ -9,6 +9,8 @@
 #include "Kernel/Color.h"
 #include "Kernel/AspectRatioViewport.h"
 #include "Kernel/String.h"
+#include "Kernel/PathString.h"
+#include "Kernel/URLString.h"
 #include "Kernel/VectorChar.h"
 
 #include "jpp/jpp.hpp"
@@ -50,6 +52,18 @@ namespace jpp
     struct extract_object_extern<Mengine::String>
     {
         jpp::object operator()( const Mengine::String & _value ) const;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    template<>
+    struct extract_object_extern<Mengine::PathString>
+    {
+        jpp::object operator()( const Mengine::PathString & _value ) const;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    template<>
+    struct extract_object_extern<Mengine::URLString>
+    {
+        jpp::object operator()( const Mengine::URLString & _value ) const;
     };
     //////////////////////////////////////////////////////////////////////////
     template<>
@@ -101,6 +115,18 @@ namespace jpp
     };
     //////////////////////////////////////////////////////////////////////////
     template<>
+    struct cast_object_extern<Mengine::PathString>
+    {
+        void operator()( const jpp::object & _obj, Mengine::PathString * const _value ) const;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    template<>
+    struct cast_object_extern<Mengine::URLString>
+    {
+        void operator()( const jpp::object & _obj, Mengine::URLString * const _value ) const;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    template<>
     struct cast_object_extern<Mengine::VectorChar>
     {
         void operator()( const jpp::object & _obj, Mengine::VectorChar * const _value ) const;
@@ -146,6 +172,18 @@ namespace jpp
     struct check_object_extern<Mengine::String>
     {
         bool operator()( const jpp::object & _obj, Mengine::String * const ) const;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    template<>
+    struct check_object_extern<Mengine::PathString>
+    {
+        bool operator()( const jpp::object & _obj, Mengine::PathString * const ) const;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    template<>
+    struct check_object_extern<Mengine::URLString>
+    {
+        bool operator()( const jpp::object & _obj, Mengine::URLString * const ) const;
     };
     //////////////////////////////////////////////////////////////////////////
     template<>

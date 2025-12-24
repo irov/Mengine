@@ -5,10 +5,13 @@ import android.os.Bundle;
 import androidx.annotation.IntegerRes;
 import androidx.annotation.NonNull;
 
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigValue;
+import com.google.firebase.remoteconfig.RemoteConfigComponent;
 import com.google.firebase.remoteconfig.internal.DefaultsXmlParser;
+import com.google.firebase.remoteconfig.interop.rollouts.RolloutsState;
 
 import org.Mengine.Base.MengineParamAcquisition;
 import org.Mengine.Base.MengineActivity;
@@ -58,6 +61,13 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
 
         FirebaseRemoteConfigSettings configSettings = configSettingsBuilder.build();
         remoteConfig.setConfigSettingsAsync(configSettings);
+
+        FirebaseApp app = FirebaseApp.getInstance();
+        RemoteConfigComponent component = app.get(RemoteConfigComponent.class);
+
+        component.registerRolloutsStateSubscriber("firebase", (@NonNull RolloutsState state) -> {
+            this.logInfo("remote config rollouts state changed: %s", state);
+        });
 
         Map<String, String> defaults = DefaultsXmlParser.getDefaultsFromXml(application, R.xml.remote_config_defaults);
         this.setRemoteConfigDefaults(defaults);

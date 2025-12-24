@@ -11,9 +11,13 @@ Containers
     DynamicArray.h
     Data.h
     String.h
+    WString.h
+    U32String.h
     StringRegex.h
     VectorChar.h
     VectorString.h
+    VectorWString.h
+    VectorU32String.h
     VectorConstString.h
     VectorFilePath.h
     Stringstream.h
@@ -575,6 +579,8 @@ Core
    
     PathString.h
     PathWString.h
+    
+    URLString.h
    
     FilePath.h
     FilePath.cpp

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Kernel/FilePath.h"
-#include "Kernel/String.h"
+#include "Kernel/WString.h"
 
 #include "Config/InitializerList.h"
 

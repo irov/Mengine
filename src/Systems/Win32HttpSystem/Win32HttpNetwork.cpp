@@ -133,7 +133,7 @@ namespace Mengine
                 urlComponents.lpszExtraInfo = extraInfo;
                 urlComponents.dwExtraInfoLength = MENGINE_STATIC_STRING_LENGTH( extraInfo );
 
-                const String & HTTP_URL = _request->getURL();
+                const URLString & HTTP_URL = _request->getURL();
 
                 const String::value_type * HTTP_URL_str = HTTP_URL.c_str();
                 String::size_type HTTP_URL_size = HTTP_URL.size();

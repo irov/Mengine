@@ -10,6 +10,8 @@
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Hashtable.h"
+#include "Kernel/PathString.h"
+#include "Kernel/URLString.h"
 
 #include "Config/UniqueId.h"
 
@@ -84,8 +86,8 @@ namespace Mengine
 
         EDevToDebugStatus m_status;
 
-        String m_dsn;
-        String m_workerURL;
+        URLString m_dsn;
+        URLString m_workerURL;
 
         uint32_t m_throttle;
 

@@ -633,7 +633,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t AndroidPlatformService::getExtraPreferencesFolderName( Char * const _folderName ) const
     {
-        String Project_ExtraPreferencesFolderName = CONFIG_VALUE_STRING( "Project", "ExtraPreferencesFolderName", "" );
+        PathString Project_ExtraPreferencesFolderName = CONFIG_VALUE_PATHSTRING( "Project", "ExtraPreferencesFolderName", "" );
 
         MENGINE_ASSERTION_FATAL( Helper::isCorrectFolderPathA( Project_ExtraPreferencesFolderName.c_str() ) == true, "invalid extra preferences folder name '%s'"
             , Project_ExtraPreferencesFolderName.c_str()

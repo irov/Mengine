@@ -4,7 +4,7 @@
 #include "Interface/TextEntryInterface.h"
 
 #include "Kernel/VectorTextArguments.h"
-#include "Kernel/VectorString.h"
+#include "Kernel/VectorU32String.h"
 #include "Kernel/Tags.h"
 
 namespace Mengine

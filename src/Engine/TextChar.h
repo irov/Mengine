@@ -3,7 +3,7 @@
 #include "Interface/FontInterface.h"
 
 #include "Kernel/Vector.h"
-#include "Kernel/VectorString.h"
+#include "Kernel/VectorU32String.h"
 
 namespace Mengine
 {

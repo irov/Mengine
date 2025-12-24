@@ -2464,7 +2464,7 @@ namespace Mengine
         m_shouldUpdateScene = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::notifyHttpRequest( HttpRequestId _id, const String & _url )
+    void NodeDebuggerModule::notifyHttpRequest( HttpRequestId _id, const URLString & _url )
     {
         NodeDebuggerRequestData requestData;
 

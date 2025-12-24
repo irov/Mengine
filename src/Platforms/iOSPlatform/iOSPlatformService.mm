@@ -117,7 +117,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t iOSPlatformService::getUserPath( Char * const _userPath ) const
     {
-        String Project_Name = CONFIG_VALUE_STRING( "Project", "Name", "UNKNOWN" );
+        PathString Project_Company = CONFIG_VALUE_PATHSTRING( "Project", "Company", "UNKNOWN" );
+        PathString Project_Name = CONFIG_VALUE_PATHSTRING( "Project", "Name", "UNKNOWN" );
 
         NSArray * paths = NSSearchPathForDirectoriesInDomains( NSApplicationSupportDirectory, NSUserDomainMask, YES );
         
@@ -168,15 +169,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t iOSPlatformService::getExtraPreferencesFolderName( Char * const _folderName ) const
     {
-        const Char * Project_ExtraPreferencesFolderName = CONFIG_VALUE_STRING( "Project", "ExtraPreferencesFolderName", "" );
+        PathString Project_ExtraPreferencesFolderName = CONFIG_VALUE_STRING( "Project", "ExtraPreferencesFolderName", "" );
 
-        MENGINE_ASSERTION_FATAL( Helper::isCorrectFolderPathA( Project_ExtraPreferencesFolderName ) == true, "invalid extra preferences folder name '%s'"
-            , Project_ExtraPreferencesFolderName
+        MENGINE_ASSERTION_FATAL( Helper::isCorrectFolderPathA( Project_ExtraPreferencesFolderName.c_str() ) == true, "invalid extra preferences folder name '%s'"
+            , Project_ExtraPreferencesFolderName.c_str()
         );
 
-        StdString::strcpy_safe( _folderName, Project_ExtraPreferencesFolderName, MENGINE_MAX_PATH );
+        StdString::strcpy_safe( _folderName, Project_ExtraPreferencesFolderName.c_str(), MENGINE_MAX_PATH );
         
-        size_t Project_ExtraPreferencesFolderNameLen = StdString::strlen( Project_ExtraPreferencesFolderName );
+        size_t Project_ExtraPreferencesFolderNameLen = Project_ExtraPreferencesFolderName.size();
 
         return Project_ExtraPreferencesFolderNameLen;
     }
@@ -1859,7 +1860,7 @@ namespace Mengine
             );
         }
 
-        const Char * Engine_SDL_HINT_RENDER_SCALE_QUALITY = CONFIG_VALUE_STRING( "SDL", "SDL_HINT_RENDER_SCALE_QUALITY", "linear" );
+        PathString Engine_SDL_HINT_RENDER_SCALE_QUALITY = CONFIG_VALUE_PATHSTRING( "SDL", "SDL_HINT_RENDER_SCALE_QUALITY", "linear" );
 
         if( SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, Engine_SDL_HINT_RENDER_SCALE_QUALITY ) != SDL_TRUE )
         {
@@ -1869,7 +1870,7 @@ namespace Mengine
             );
         }
 
-        const Char * Engine_SDL_HINT_ORIENTATIONS = CONFIG_VALUE_STRING( "SDL", "SDL_HINT_ORIENTATIONS", "Portrait" );
+        PathString Engine_SDL_HINT_ORIENTATIONS = CONFIG_VALUE_PATHSTRING( "SDL", "SDL_HINT_ORIENTATIONS", "Portrait" );
 
         if( SDL_SetHint( SDL_HINT_ORIENTATIONS, Engine_SDL_HINT_ORIENTATIONS ) != SDL_TRUE )
         {
@@ -1879,7 +1880,7 @@ namespace Mengine
             );
         }
 
-        const Char * Engine_SDL_HINT_IOS_HIDE_HOME_INDICATOR = CONFIG_VALUE_STRING( "SDL", "SDL_HINT_IOS_HIDE_HOME_INDICATOR", "1" );
+        PathString Engine_SDL_HINT_IOS_HIDE_HOME_INDICATOR = CONFIG_VALUE_PATHSTRING( "SDL", "SDL_HINT_IOS_HIDE_HOME_INDICATOR", "1" );
 
         if( SDL_SetHint( SDL_HINT_IOS_HIDE_HOME_INDICATOR, Engine_SDL_HINT_IOS_HIDE_HOME_INDICATOR ) != SDL_TRUE )
         {

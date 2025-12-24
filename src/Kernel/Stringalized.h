@@ -6,7 +6,11 @@
 #include "Kernel/Resolution.h"
 #include "Kernel/Color.h"
 #include "Kernel/AspectRatioViewport.h"
+#include "Kernel/PathString.h"
+#include "Kernel/PathWString.h"
+#include "Kernel/URLString.h"
 #include "Kernel/String.h"
+#include "Kernel/WString.h"
 
 #include "Config/Char.h"
 #include "Config/StdInt.h"
@@ -42,6 +46,8 @@ namespace Mengine
         bool stringalized( const Char * _string, mt::uv4f * const _value );
         bool stringalized( const Char * _string, const Char ** const _value );
         bool stringalized( const Char * _string, String * const _value );
+        bool stringalized( const Char * _string, PathString * const _value );
+        bool stringalized( const Char * _string, URLString * const _value );
         bool stringalized( const Char * _string, ConstString * const _value );
         bool stringalized( const Char * _string, FilePath * const _value );
         bool stringalized( const Char * _string, Tags * const _value );
@@ -69,6 +75,8 @@ namespace Mengine
         bool stringalized( const mt::uv4f & _value, Char * const _string, size_t _capacity );
         bool stringalized( const Char * _value, Char * const _string, size_t _capacity );
         bool stringalized( const String & _value, Char * const _string, size_t _capacity );
+        bool stringalized( const PathString & _value, Char * const _string, size_t _capacity );
+        bool stringalized( const URLString & _value, Char * const _string, size_t _capacity );
         bool stringalized( const ConstString & _value, Char * const _string, size_t _capacity );
         bool stringalized( const FilePath & _value, Char * const _string, size_t _capacity );
         bool stringalized( const Tags & _value, Char * const _string, size_t _capacity );
@@ -95,6 +103,7 @@ namespace Mengine
         bool stringalized( const mt::vec4f & _value, WChar * const _string, size_t _capacity );
         bool stringalized( const mt::uv4f & _value, WChar * const _string, size_t _capacity );
         bool stringalized( const WChar * _value, WChar * const _string, size_t _capacity );
+        bool stringalized( const PathWString * _value, WChar * const _string, size_t _capacity );
         bool stringalized( const WString & _value, WChar * const _string, size_t _capacity );
         bool stringalized( const Resolution & _value, WChar * const _string, size_t _capacity );
         bool stringalized( const Color & _value, WChar * const _string, size_t _capacity );

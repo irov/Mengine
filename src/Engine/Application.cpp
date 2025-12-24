@@ -217,8 +217,8 @@ namespace Mengine
         Helper::registerDecoder<ImageDecoderMemory>( STRINGIZE_STRING_LOCAL( "memoryImage" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerDecoder<ImageDecoderArchive>( STRINGIZE_STRING_LOCAL( "archiveImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        String Project_Company = CONFIG_VALUE_STRING( "Project", "Company", "UNKNOWN" );
-        String Project_Name = CONFIG_VALUE_STRING( "Project", "Name", "UNKNOWN" );
+        PathString Project_Company = CONFIG_VALUE_PATHSTRING( "Project", "Company", "UNKNOWN" );
+        PathString Project_Name = CONFIG_VALUE_PATHSTRING( "Project", "Name", "UNKNOWN" );
 
         MENGINE_ASSERTION_VALIDATE_UTF8( Project_Company.c_str(), MENGINE_UNKNOWN_SIZE );
         MENGINE_ASSERTION_VALIDATE_UTF8( Project_Name.c_str(), MENGINE_UNKNOWN_SIZE );

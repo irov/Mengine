@@ -255,6 +255,24 @@ namespace Mengine
             return value_jobject;
         }
         //////////////////////////////////////////////////////////////////////////
+        jstring AndroidMakeJObjectString( JNIEnv * _jenv, const PathString & _value )
+        {
+            const Char * value_str = _value.c_str();
+
+            jstring value_jobject = Helper::AndroidMakeJObjectString( _jenv, value_str );
+
+            return value_jobject;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        jstring AndroidMakeJObjectString( JNIEnv * _jenv, const URLString & _value )
+        {
+            const Char * value_str = _value.c_str();
+
+            jstring value_jobject = Helper::AndroidMakeJObjectString( _jenv, value_str );
+
+            return value_jobject;
+        }
+        //////////////////////////////////////////////////////////////////////////
         jstring AndroidMakeJObjectString( JNIEnv * _jenv, const ConstString & _value )
         {
             const Char * value_str = _value.c_str();

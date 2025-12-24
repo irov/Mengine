@@ -321,6 +321,16 @@ namespace Mengine
         return Detail::hasJSONValueT( m_json, m_platformTags, _section, _key, _default, _value );
     }
     //////////////////////////////////////////////////////////////////////////
+    bool JSONConfig::hasValue( const Char * _section, const Char * _key, const PathString & _default, PathString * const _value ) const
+    {
+        return Detail::hasJSONValueT( m_json, m_platformTags, _section, _key, _default, _value );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool JSONConfig::hasValue( const Char * _section, const Char * _key, const URLString & _default, URLString * const _value ) const
+    {
+        return Detail::hasJSONValueT( m_json, m_platformTags, _section, _key, _default, _value );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool JSONConfig::hasValue( const Char * _section, const Char * _key, const ConstString & _default, ConstString * const _value ) const
     {
         return Detail::hasJSONValueT( m_json, m_platformTags, _section, _key, _default, _value );
@@ -368,6 +378,20 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     bool JSONConfig::setValue( const Char * _section, const Char * _key, const String & _value )
+    {
+        Detail::setJSONValueT( m_json, _section, _key, _value );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool JSONConfig::setValue( const Char * _section, const Char * _key, const PathString & _value )
+    {
+        Detail::setJSONValueT( m_json, _section, _key, _value );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool JSONConfig::setValue( const Char * _section, const Char * _key, const URLString & _value )
     {
         Detail::setJSONValueT( m_json, _section, _key, _value );
 

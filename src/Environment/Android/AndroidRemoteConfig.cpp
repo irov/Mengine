@@ -229,6 +229,76 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool AndroidRemoteConfig::hasValue( const Char * _section, const Char * _key, const PathString & _default, PathString * const _value ) const
+    {
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        if( jenv == nullptr )
+        {
+            *_value = _default;
+
+            return false;
+        }
+
+        jstring jstring_name = Helper::AndroidMakeJObjectString( jenv, ANDROID_REMOTE_CONFIG_NAME );
+        jstring jstring_section = Helper::AndroidMakeJObjectString( jenv, _section );
+        jstring jstring_key = Helper::AndroidMakeJObjectString( jenv, _key );
+
+        jobject jresult = Helper::AndroidCallObjectFragmentMethod( jenv, "MengineFragmentRemoteConfig", "getRemoteConfigSectionValueString", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;", jstring_name, jstring_section, jstring_key );
+
+        Mengine_JNI_DeleteLocalRef( jenv, jstring_name );
+        Mengine_JNI_DeleteLocalRef( jenv, jstring_section );
+        Mengine_JNI_DeleteLocalRef( jenv, jstring_key );
+
+        if( jresult == nullptr )
+        {
+            return false;
+        }
+
+        jstring jstring_result = (jstring)jresult;
+
+        *_value = Helper::AndroidMakeStringFromJString( jenv, jstring_result );
+
+        Mengine_JNI_DeleteLocalRef( jenv, jstring_result );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AndroidRemoteConfig::hasValue( const Char * _section, const Char * _key, const URLString & _default, URLString * const _value ) const
+    {
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        if( jenv == nullptr )
+        {
+            *_value = _default;
+
+            return false;
+        }
+
+        jstring jstring_name = Helper::AndroidMakeJObjectString( jenv, ANDROID_REMOTE_CONFIG_NAME );
+        jstring jstring_section = Helper::AndroidMakeJObjectString( jenv, _section );
+        jstring jstring_key = Helper::AndroidMakeJObjectString( jenv, _key );
+
+        jobject jresult = Helper::AndroidCallObjectFragmentMethod( jenv, "MengineFragmentRemoteConfig", "getRemoteConfigSectionValueString", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;", jstring_name, jstring_section, jstring_key );
+
+        Mengine_JNI_DeleteLocalRef( jenv, jstring_name );
+        Mengine_JNI_DeleteLocalRef( jenv, jstring_section );
+        Mengine_JNI_DeleteLocalRef( jenv, jstring_key );
+
+        if( jresult == nullptr )
+        {
+            return false;
+        }
+
+        jstring jstring_result = (jstring)jresult;
+
+        *_value = Helper::AndroidMakeStringFromJString( jenv, jstring_result );
+
+        Mengine_JNI_DeleteLocalRef( jenv, jstring_result );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool AndroidRemoteConfig::hasValue( const Char * _section, const Char * _key, const ConstString & _default, ConstString * const _value ) const
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
@@ -469,6 +539,28 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidRemoteConfig::setValue( const Char * _section, const Char * _key, const String & _value )
+    {
+        MENGINE_UNUSED( _section );
+        MENGINE_UNUSED( _key );
+        MENGINE_UNUSED( _value );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AndroidRemoteConfig::setValue( const Char * _section, const Char * _key, const PathString & _value )
+    {
+        MENGINE_UNUSED( _section );
+        MENGINE_UNUSED( _key );
+        MENGINE_UNUSED( _value );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AndroidRemoteConfig::setValue( const Char * _section, const Char * _key, const URLString & _value )
     {
         MENGINE_UNUSED( _section );
         MENGINE_UNUSED( _key );

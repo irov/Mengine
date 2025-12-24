@@ -115,6 +115,34 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, PathString * const _value )
+        {
+            const Char * ini_value = tinyini_get_property_value( &_ini.ini, _section, _key );
+
+            if( ini_value == nullptr )
+            {
+                return false;
+            }
+
+            _value->assign( ini_value );
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, URLString * const _value )
+        {
+            const Char * ini_value = tinyini_get_property_value( &_ini.ini, _section, _key );
+
+            if( ini_value == nullptr )
+            {
+                return false;
+            }
+
+            _value->assign( ini_value );
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, ConstString * const _value )
         {
             const Char * ini_value = tinyini_get_property_value( &_ini.ini, _section, _key );

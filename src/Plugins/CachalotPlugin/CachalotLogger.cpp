@@ -30,12 +30,12 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void CachalotLogger::setDSN( const String & _dsn )
+    void CachalotLogger::setDSN( const URLString & _dsn )
     {
         m_dsn = _dsn;
     }
     //////////////////////////////////////////////////////////////////////////
-    const String & CachalotLogger::getDSN() const
+    const URLString & CachalotLogger::getDSN() const
     {
         return m_dsn;
     }

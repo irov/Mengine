@@ -111,12 +111,12 @@ namespace Mengine
             }
         };
         //////////////////////////////////////////////////////////////////////////
-        static AppleStoreInAppPurchaseProductsRequestInterfacePtr AppleStoreInAppPurchase_requestProducts( NSSet * _productIdentifiers, const pybind::dict & _cbs, const pybind::args & _args )
+        static AppleStoreInAppPurchaseProductsRequestInterfacePtr AppleStoreInAppPurchase_requestProducts( NSSet * _consumableIdentifiers, NSSet * _nonconsumableIdentifiers, const pybind::dict & _cbs, const pybind::args & _args )
         {
             AppleStoreInAppPurchaseProductsResponseInterfacePtr response = Helper::makeFactorableUnique<PythonAppleStoreInAppPurchaseProductsResponse>( MENGINE_DOCUMENT_PYTHON, _cbs, _args );
             
             AppleStoreInAppPurchaseProductsRequestInterfacePtr request = APPLE_STOREINAPPPURCHASE_SERVICE()
-                ->requestProducts( _productIdentifiers, response );
+                ->requestProducts( _consumableIdentifiers, _nonconsumableIdentifiers, response );
             
             return request;
         }

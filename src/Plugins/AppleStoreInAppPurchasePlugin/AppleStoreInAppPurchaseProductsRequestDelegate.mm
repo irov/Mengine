@@ -6,11 +6,10 @@
 #include "Kernel/Logger.h"
 #include "Kernel/ThreadHelper.h"
 
-//////////////////////////////////////////////////////////////////////////
 @implementation AppleStoreInAppPurchaseProductsRequestDelegate
-//////////////////////////////////////////////////////////////////////////
+
 #pragma mark -
-//////////////////////////////////////////////////////////////////////////
+
 - (instancetype _Nonnull)initWithFactory:(Mengine::AppleStoreInAppPurchaseFactoryInterface * _Nonnull)_factory request:(const Mengine::AppleStoreInAppPurchaseProductsRequestInterfacePtr &)_request cb: (const Mengine::AppleStoreInAppPurchaseProductsResponseInterfacePtr &)_cb {
     self = [super init];
     
@@ -20,22 +19,21 @@
     
     return self;
 }
-//////////////////////////////////////////////////////////////////////////
+
 -(void)dealloc {
     self.m_request = nullptr;
     self.m_cb = nullptr;
 }
-//////////////////////////////////////////////////////////////////////////
+
 #pragma mark - SKProductsRequestDelegate
-//////////////////////////////////////////////////////////////////////////
+
 - (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response {
     NSMutableString * skProductsLog = [NSMutableString stringWithString:@""];
     
     NSArray<SKProduct *> * skProducts = response.products;
     
     Mengine::VectorAppleStoreInAppPurchaseProducts products;
-    for( SKProduct * skProduct in skProducts )
-    {
+    for( SKProduct * skProduct in skProducts ) {
         [skProductsLog appendString:skProduct.productIdentifier];
         [skProductsLog appendString:@", "];
         
@@ -55,7 +53,7 @@
         cb_copy->onProductResponse( request_copy, products );
     });
 }
-//////////////////////////////////////////////////////////////////////////
+
 - (void)requestDidFinish:(SKRequest *)request {
     IOS_LOGGER_MESSAGE( @"[SKProductsRequestDelegate] requestDidFinish" );
     
@@ -69,7 +67,7 @@
     self.m_cb = nullptr;
     self.m_request = nullptr;
 }
-//////////////////////////////////////////////////////////////////////////
+
 - (void)request:(SKRequest *)request didFailWithError:(NSError *)error {
     IOS_LOGGER_MESSAGE( @"[SKProductsRequestDelegate] request didFailWithError: %@"
         , [AppleDetail getMessageFromNSError:error]
@@ -85,5 +83,5 @@
     self.m_cb = nullptr;
     self.m_request = nullptr;
 }
-//////////////////////////////////////////////////////////////////////////
+
 @end

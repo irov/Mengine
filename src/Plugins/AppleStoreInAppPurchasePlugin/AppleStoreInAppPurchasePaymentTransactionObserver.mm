@@ -34,10 +34,13 @@
     return self;
 }
 
-- (void)activateWithFactory: (Mengine::AppleStoreInAppPurchaseFactoryInterface * _Nonnull)_factory service: (Mengine::AppleStoreInAppPurchaseServiceInterface * _Nonnull)_service {
+- (void)activateWithFactory:(Mengine::AppleStoreInAppPurchaseFactoryInterface * _Nonnull)_factory service:(Mengine::AppleStoreInAppPurchaseServiceInterface * _Nonnull)_service consumableIdentifiers:(NSSet * _Nonnull)_consumableIdentifiers nonconsumableIdentifiers:(NSSet * _Nonnull)_nonconsumableIdentifiers {
     @synchronized (self) {
         m_factory = _factory;
         m_service = _service;
+        
+        self.m_consumableIdentifiers = _consumableIdentifiers;
+        self.m_nonconsumableIdentifiers = _nonconsumableIdentifiers;
         
         for (NSDictionary * value in self.m_cacheSKPaymentTransactions) {
             SKPaymentQueue * queue = value[@"queue"];
@@ -99,7 +102,7 @@
                         , skPaymentTransaction.payment.productIdentifier
                     );
                     
-                    if ([skPaymentTransaction.payment.productIdentifier rangeOfString:@".nonconsumable."].location != NSNotFound) {
+                    if ([self.m_nonconsumableIdentifiers containsObject:skPaymentTransaction.payment.productIdentifier] == YES) {
                         [[AppleStoreInAppPurchaseEntitlements sharedInstance] add:skPaymentTransaction.payment.productIdentifier];
                     }
                     
@@ -111,7 +114,7 @@
                         , skPaymentTransaction.payment.productIdentifier
                     );
                     
-                    if ([skPaymentTransaction.payment.productIdentifier rangeOfString:@".nonconsumable."].location != NSNotFound) {
+                    if ([self.m_nonconsumableIdentifiers containsObject:skPaymentTransaction.payment.productIdentifier] == YES) {
                         [[AppleStoreInAppPurchaseEntitlements sharedInstance] add:skPaymentTransaction.payment.productIdentifier];
                     }
                     
@@ -136,7 +139,7 @@
                     , skPaymentTransaction.payment.productIdentifier
                 );
                 
-                if ([skPaymentTransaction.payment.productIdentifier rangeOfString:@".nonconsumable."].location != NSNotFound) {
+                if ([self.m_nonconsumableIdentifiers containsObject:skPaymentTransaction.payment.productIdentifier] == YES) {
                     [[AppleStoreInAppPurchaseEntitlements sharedInstance] add:skPaymentTransaction.payment.productIdentifier];
                 }
                 

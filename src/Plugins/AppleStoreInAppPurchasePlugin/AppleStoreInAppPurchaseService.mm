@@ -40,9 +40,7 @@ namespace Mengine
             
             [[SKPaymentQueue defaultQueue] setDelegate:m_paymentQueueDelegate];
         }
-        
-        [[AppleStoreInAppPurchasePaymentTransactionObserver sharedInstance] activateWithFactory:this service:this];
-                
+                        
         return true;
     }
     ////////////////////////////////////////////////////////////////////////
@@ -86,25 +84,36 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    AppleStoreInAppPurchaseProductsRequestInterfacePtr AppleStoreInAppPurchaseService::requestProducts( NSSet * _productIdentifiers, const AppleStoreInAppPurchaseProductsResponseInterfacePtr & _cb )
+    AppleStoreInAppPurchaseProductsRequestInterfacePtr AppleStoreInAppPurchaseService::requestProducts( NSSet * _consumableIdentifiers, NSSet * _nonconsumableIdentifiers, const AppleStoreInAppPurchaseProductsResponseInterfacePtr & _cb )
     {
+        if( [_consumableIdentifiers intersectsSet:_nonconsumableIdentifiers] == YES )
+        {
+            IOS_LOGGER_ERROR( @"requestProducts: consumable: %@ nonconsumable: %@ not unique", _consumableIdentifiers, _nonconsumableIdentifiers );
+            
+            return nullptr;
+        }
+        
         if( [SKPaymentQueue canMakePayments] == NO )
         {
             return nullptr;
         }
         
-        IOS_LOGGER_MESSAGE( @"requestProducts: identifiers: %@", _productIdentifiers );
+        IOS_LOGGER_MESSAGE( @"requestProducts: consumable: %@ nonconsumable: %@", _consumableIdentifiers, _nonconsumableIdentifiers );
+        
+        [[AppleStoreInAppPurchasePaymentTransactionObserver sharedInstance] activateWithFactory:this service:this consumableIdentifiers:_consumableIdentifiers nonconsumableIdentifiers:_nonconsumableIdentifiers];
         
         AppleStoreInAppPurchaseProductsRequestPtr request = m_factoryProductsRequest->createObject( MENGINE_DOCUMENT_FACTORABLE );
         
-        SKProductsRequest * skrequest = [[SKProductsRequest alloc] initWithProductIdentifiers:_productIdentifiers];
+        NSSet * productIdentifiers = [_consumableIdentifiers setByAddingObjectsFromSet:_nonconsumableIdentifiers];
+        
+        SKProductsRequest * skRequest = [[SKProductsRequest alloc] initWithProductIdentifiers:productIdentifiers];
         
         id<SKProductsRequestDelegate> delegate = [[AppleStoreInAppPurchaseProductsRequestDelegate alloc] initWithFactory:this request:request cb:_cb];
-        skrequest.delegate = delegate;
+        skRequest.delegate = delegate;
         
-        request->setSKProductsRequest( skrequest, delegate );
+        request->setSKProductsRequest( skRequest, delegate );
         
-        [skrequest start];
+        [skRequest start];
         
         return request;
     }

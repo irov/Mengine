@@ -83,7 +83,7 @@ namespace Mengine
         
     public:
         virtual bool canMakePayments() const = 0;
-        virtual AppleStoreInAppPurchaseProductsRequestInterfacePtr requestProducts( NSSet * _productIdentifiers, const AppleStoreInAppPurchaseProductsResponseInterfacePtr & _cb ) = 0;
+        virtual AppleStoreInAppPurchaseProductsRequestInterfacePtr requestProducts( NSSet * _consumableIdentifiers, NSSet * _nonconsumableIdentifiers, const AppleStoreInAppPurchaseProductsResponseInterfacePtr & _cb ) = 0;
         virtual bool isOwnedProduct( NSString * _productIdentifier ) const = 0;
         virtual bool purchaseProduct( const AppleStoreInAppPurchaseProductInterfacePtr & _product ) = 0;
         virtual void restoreCompletedTransactions() = 0;

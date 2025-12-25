@@ -24,11 +24,13 @@
 
 - (instancetype _Nonnull)init {
     self = [super init];
+    
     if (self) {
         NSSet * entitlements = [AppleKeyChain getSetForKey:APPLE_STOREINAPPPURCHASE_ENTITLEMENTS_KEY];
         
         self.m_entitlements = entitlements != nil ? [entitlements mutableCopy] : [NSMutableSet set];
     }
+    
     return self;
 }
 

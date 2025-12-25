@@ -35,33 +35,39 @@
 }
 
 - (void)activateWithFactory: (Mengine::AppleStoreInAppPurchaseFactoryInterface * _Nonnull)_factory service: (Mengine::AppleStoreInAppPurchaseServiceInterface * _Nonnull)_service {
-    m_factory = _factory;
-    m_service = _service;
-    
-    for (NSDictionary * value in self.m_cacheSKPaymentTransactions) {
-        SKPaymentQueue * queue = value[@"queue"];
-        NSArray<SKPaymentTransaction *> * transactions = value[@"transactions"];
+    @synchronized (self) {
+        m_factory = _factory;
+        m_service = _service;
         
-        [self paymentQueue:queue updatedTransactions:transactions];
+        for (NSDictionary * value in self.m_cacheSKPaymentTransactions) {
+            SKPaymentQueue * queue = value[@"queue"];
+            NSArray<SKPaymentTransaction *> * transactions = value[@"transactions"];
+            
+            [self paymentQueue:queue updatedTransactions:transactions];
+        }
     }
 }
 
 - (void)deactivate {
-    m_factory = nullptr;
-    m_service = nullptr;
-    
-    [self.m_cacheSKPaymentTransactions removeAllObjects];
+    @synchronized (self) {
+        m_factory = nullptr;
+        m_service = nullptr;
+        
+        [self.m_cacheSKPaymentTransactions removeAllObjects];
+    }
 }
 
 #pragma mark - SKPaymentTransactionObserver
 
 // Sent when the transaction array has changed (additions or state changes).  Client should check state of transactions and finish as appropriate.
 - (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray<SKPaymentTransaction *> *)transactions {
-    if (m_service == nil) {
-        NSDictionary * value = @{@"queue": queue, @"transactions": transactions};
-        [self.m_cacheSKPaymentTransactions addObject:value];
-        
-        return;
+    @synchronized (self) {
+        if (m_service == nil) {
+            NSDictionary * value = @{@"queue": queue, @"transactions": transactions};
+            [self.m_cacheSKPaymentTransactions addObject:value];
+            
+            return;
+        }
     }
     
     IOS_LOGGER_MESSAGE( @"SKPaymentTransactionObserver paymentQueue updatedTransactions" );

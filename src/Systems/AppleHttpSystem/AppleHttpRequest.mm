@@ -50,7 +50,7 @@ namespace Mengine
 
         AppleHttpRequestParam * request = [AppleHttpRequestParam alloc];
         
-        request.HTTP_URL = [AppleString NSStringFromString:m_url];
+        request.HTTP_URL = [AppleString NSStringFromURLString:m_url];
         request.HTTP_PROXY = [AppleString NSStringFromString:m_proxy];
         request.HTTP_HEADERS = [AppleDetail getNSArrayFromVectorString:m_headers];
         request.HTTP_COOKIES = [AppleString NSStringFromString:m_cookies];

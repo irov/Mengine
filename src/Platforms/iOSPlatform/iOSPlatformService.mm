@@ -169,7 +169,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t iOSPlatformService::getExtraPreferencesFolderName( Char * const _folderName ) const
     {
-        PathString Project_ExtraPreferencesFolderName = CONFIG_VALUE_STRING( "Project", "ExtraPreferencesFolderName", "" );
+        PathString Project_ExtraPreferencesFolderName = CONFIG_VALUE_PATHSTRING( "Project", "ExtraPreferencesFolderName", "" );
 
         MENGINE_ASSERTION_FATAL( Helper::isCorrectFolderPathA( Project_ExtraPreferencesFolderName.c_str() ) == true, "invalid extra preferences folder name '%s'"
             , Project_ExtraPreferencesFolderName.c_str()
@@ -778,7 +778,7 @@ namespace Mengine
     void iOSPlatformService::tickPlatform( float _frameTime )
     {
         bool updating = APPLICATION_SERVICE()
-            ->beginUpdate( _frameTime );
+            ->beginUpdate();
 
         if( m_freezedTick == 0 && updating == true )
         {
@@ -1862,30 +1862,30 @@ namespace Mengine
 
         PathString Engine_SDL_HINT_RENDER_SCALE_QUALITY = CONFIG_VALUE_PATHSTRING( "SDL", "SDL_HINT_RENDER_SCALE_QUALITY", "linear" );
 
-        if( SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, Engine_SDL_HINT_RENDER_SCALE_QUALITY ) != SDL_TRUE )
+        if( SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, Engine_SDL_HINT_RENDER_SCALE_QUALITY.c_str() ) != SDL_TRUE )
         {
             LOGGER_WARNING( "set hint SDL_HINT_RENDER_SCALE_QUALITY to [%s] error: %s"
-                , Engine_SDL_HINT_RENDER_SCALE_QUALITY
+                , Engine_SDL_HINT_RENDER_SCALE_QUALITY.c_str()
                 , SDL_GetError()
             );
         }
 
         PathString Engine_SDL_HINT_ORIENTATIONS = CONFIG_VALUE_PATHSTRING( "SDL", "SDL_HINT_ORIENTATIONS", "Portrait" );
 
-        if( SDL_SetHint( SDL_HINT_ORIENTATIONS, Engine_SDL_HINT_ORIENTATIONS ) != SDL_TRUE )
+        if( SDL_SetHint( SDL_HINT_ORIENTATIONS, Engine_SDL_HINT_ORIENTATIONS.c_str() ) != SDL_TRUE )
         {
             LOGGER_WARNING( "set hint SDL_HINT_ORIENTATIONS to [%s] error: %s"
-                , Engine_SDL_HINT_ORIENTATIONS
+                , Engine_SDL_HINT_ORIENTATIONS.c_str()
                 , SDL_GetError()
             );
         }
 
         PathString Engine_SDL_HINT_IOS_HIDE_HOME_INDICATOR = CONFIG_VALUE_PATHSTRING( "SDL", "SDL_HINT_IOS_HIDE_HOME_INDICATOR", "1" );
 
-        if( SDL_SetHint( SDL_HINT_IOS_HIDE_HOME_INDICATOR, Engine_SDL_HINT_IOS_HIDE_HOME_INDICATOR ) != SDL_TRUE )
+        if( SDL_SetHint( SDL_HINT_IOS_HIDE_HOME_INDICATOR, Engine_SDL_HINT_IOS_HIDE_HOME_INDICATOR.c_str() ) != SDL_TRUE )
         {
             LOGGER_WARNING( "set hint SDL_HINT_IOS_HIDE_HOME_INDICATOR to [%s] error: %s"
-                , Engine_SDL_HINT_IOS_HIDE_HOME_INDICATOR
+                , Engine_SDL_HINT_IOS_HIDE_HOME_INDICATOR.c_str()
                 , SDL_GetError()
             );
         }

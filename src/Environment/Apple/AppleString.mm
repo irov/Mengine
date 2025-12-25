@@ -59,6 +59,24 @@
             
     return ns;
 }
+
++ (NSString *) NSStringFromPathString:(const Mengine::PathString &)_value {
+    const Mengine::Char * value_str = _value.c_str();
+    Mengine::PathString::size_type value_size = _value.size();
+            
+    NSString * ns = [AppleString NSStringFromString:value_str withSize:value_size];
+            
+    return ns;
+}
+
++ (NSString *) NSStringFromURLString:(const Mengine::URLString &)_value {
+    const Mengine::Char * value_str = _value.c_str();
+    Mengine::URLString::size_type value_size = _value.size();
+            
+    NSString * ns = [AppleString NSStringFromString:value_str withSize:value_size];
+            
+    return ns;
+}
         
 + (NSString *) NSStringFromConstString:(const Mengine::ConstString &)_value {
     const Mengine::Char * value_str = _value.c_str();

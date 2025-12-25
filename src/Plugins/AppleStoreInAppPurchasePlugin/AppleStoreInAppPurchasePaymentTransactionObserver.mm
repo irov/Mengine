@@ -163,8 +163,10 @@
 
 // Sent when transactions are removed from the queue (via finishTransaction:).
 - (void)paymentQueue:(SKPaymentQueue *)queue removedTransactions:(NSArray<SKPaymentTransaction *> *)transactions {
-    if (m_service == nil) {
-        return;
+    @synchronized (self) {
+        if (m_service == nil) {
+            return;
+        }
     }
     
     IOS_LOGGER_MESSAGE( @"SKPaymentTransactionObserver paymentQueue: %@ removedTransactions: %@"
@@ -177,8 +179,10 @@
 
 // Sent when an error is encountered while adding transactions from the user's purchase history back to the queue.
 - (void)paymentQueue:(SKPaymentQueue *)queue restoreCompletedTransactionsFailedWithError:(NSError *)error {
-    if (m_service == nil) {
-        return;
+    @synchronized (self) {
+        if (m_service == nil) {
+            return;
+        }
     }
     
     IOS_LOGGER_MESSAGE( @"SKPaymentTransactionObserver paymentQueue: %@ restoreCompletedTransactionsFailedWithError: %@"
@@ -191,8 +195,10 @@
 
 // Sent when all transactions from the user's purchase history have successfully been added back to the queue.
 - (void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue {
-    if (m_service == nil) {
-        return;
+    @synchronized (self) {
+        if (m_service == nil) {
+            return;
+        }
     }
     
     IOS_LOGGER_MESSAGE( @"SKPaymentTransactionObserver paymentQueueRestoreCompletedTransactionsFinished: %@"
@@ -204,8 +210,10 @@
 
 // Sent when a user initiates an IAP buy from the App Store
 - (BOOL)paymentQueue:(SKPaymentQueue *)queue shouldAddStorePayment:(SKPayment *)payment forProduct:(SKProduct *)product {
-    if (m_service == nil) {
-        return;
+    @synchronized (self) {
+        if (m_service == nil) {
+            return NO;
+        }
     }
     
     IOS_LOGGER_MESSAGE( @"SKPaymentTransactionObserver paymentQueue: %@ shouldAddStorePayment: %@ forProduct: %@"
@@ -220,8 +228,10 @@
 }
 
 - (void)paymentQueueDidChangeStorefront:(SKPaymentQueue *)queue {
-    if (m_service == nil) {
-        return;
+    @synchronized (self) {
+        if (m_service == nil) {
+            return;
+        }
     }
     
     IOS_LOGGER_MESSAGE( @"SKPaymentTransactionObserver paymentQueueDidChangeStorefront: %@"
@@ -233,8 +243,10 @@
 
 // Sent when entitlements for a user have changed and access to the specified IAPs has been revoked.
 - (void)paymentQueue:(SKPaymentQueue *)queue didRevokeEntitlementsForProductIdentifiers:(NSArray<NSString *> *)productIdentifiers {
-    if (m_service == nil) {
-        return;
+    @synchronized (self) {
+        if (m_service == nil) {
+            return;
+        }
     }
     
     IOS_LOGGER_MESSAGE( @"SKPaymentTransactionObserver paymentQueue: %@ didRevokeEntitlementsForProductIdentifiers: %@"

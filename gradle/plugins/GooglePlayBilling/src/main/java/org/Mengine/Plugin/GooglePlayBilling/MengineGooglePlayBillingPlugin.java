@@ -288,17 +288,28 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
         return owned;
     }
 
-    public void queryProducts(List<String> products) {
-        this.logInfo("queryProducts products: %s"
-            , products
-        );
-
-        if (products.isEmpty() == true) {
+    public void queryProducts(List<String> consumableProducts, List<String> nonConsumableProducts) {
+        if (consumableProducts.isEmpty() == true && nonConsumableProducts.isEmpty() == true) {
             this.logError("[Error] queryProducts empty products list");
 
             this.nativeCall("onGooglePlayBillingQueryProductFailed");
 
             return;
+        }
+
+        this.logInfo("queryProducts consumableProducts: %s nonConsumableProducts: %s"
+            , consumableProducts
+            , nonConsumableProducts
+        );
+
+        List<String> products = new ArrayList<>();
+
+        if (consumableProducts != null) {
+            products.addAll(consumableProducts);
+        }
+
+        if (nonConsumableProducts != null) {
+            products.addAll(nonConsumableProducts);
         }
 
         if (m_billingClient == null) {

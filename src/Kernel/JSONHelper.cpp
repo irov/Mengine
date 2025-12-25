@@ -272,5 +272,21 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        String JSONToString( const jpp::object & _j )
+        {
+            String json_string;
+            Helper::writeJSONString( _j, &json_string );
+
+            return json_string;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        String JSONToStringCompact( const jpp::object & _j )
+        {
+            String json_string;
+            Helper::writeJSONStringCompact( _j, &json_string );
+
+            return json_string;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

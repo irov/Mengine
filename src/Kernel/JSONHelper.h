@@ -29,5 +29,8 @@ namespace Mengine
         bool writeJSONStringCompact( const jpp::object & _j, String * const _string );
         bool writeJSONData( const jpp::object & _j, Data * const _data );
         bool writeJSONDataCompact( const jpp::object & _j, Data * const _data );
+
+        String JSONToString( const jpp::object & _j );
+        String JSONToStringCompact( const jpp::object & _j );
     }
 }

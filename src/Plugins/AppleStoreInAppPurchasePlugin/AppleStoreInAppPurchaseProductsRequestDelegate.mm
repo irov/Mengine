@@ -63,9 +63,6 @@
     Mengine::Helper::dispatchMainThreadEvent([cb_copy, request_copy]() {
         cb_copy->onProductFinish( request_copy );
     });
-    
-    self.m_cb = nullptr;
-    self.m_request = nullptr;
 }
 
 - (void)request:(SKRequest *)request didFailWithError:(NSError *)error {
@@ -79,9 +76,6 @@
     Mengine::Helper::dispatchMainThreadEvent([cb_copy, request_copy]() {
         cb_copy->onProductFail( request_copy );
     });
-    
-    self.m_cb = nullptr;
-    self.m_request = nullptr;
 }
 
 @end

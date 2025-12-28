@@ -103,8 +103,8 @@ Common
     RenderInterface.h
     UpdateServiceInterface.h
     UpdationInterface.h
-    DispatcherServiceInterface.h
-    DispatchableInterface.h
+    LifecycleServiceInterface.h
+    LifecycleInterface.h
     ServantInterface.h
     EnumeratorServiceInterface.h
     SceneServiceInterface.h

@@ -283,6 +283,13 @@ BaseAnimation
 )
 
 ADD_FILTER(
+BaseLifecycle
+    Lifecycleable.h
+    BaseLifecycle.h
+    BaseLifecycle.cpp
+)
+
+ADD_FILTER(
 MatrixProxy
     MatrixProxy.cpp
     MatrixProxy.h
@@ -810,9 +817,6 @@ Core
     IntrusiveSlugListSize.h
     IntrusiveSlugList.h
     IntrusiveSlugLinkedPtr.h
-    
-    DispatchableBase.h
-    DispatchableBase.cpp
     
     LoggerBase.h
     LoggerBase.cpp

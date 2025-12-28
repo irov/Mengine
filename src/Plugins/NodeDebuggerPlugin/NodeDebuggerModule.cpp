@@ -415,10 +415,8 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::_beginUpdate( bool _focus )
+    void NodeDebuggerModule::_preUpdate()
     {
-        MENGINE_UNUSED( _focus );
-
         if( m_shouldRecreateServer == true )
         {
             this->recreateServer();

@@ -104,7 +104,7 @@ namespace Mengine
     void BasePicker::updatePickers()
     {
         PICKER_SERVICE()
-            ->update();
+            ->invalidateTraps();
     }
     //////////////////////////////////////////////////////////////////////////
     void BasePicker::setPickerEnable( bool _enable )

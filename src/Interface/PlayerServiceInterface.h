@@ -28,15 +28,11 @@ namespace Mengine
         virtual void onFocus( bool _focus ) = 0;
 
     public:
-        virtual void update() = 0;
         virtual void render( const RenderPipelineInterfacePtr & _renderPipeline ) = 0;
 
     public:
         virtual void initializeRenderResources() = 0;
         virtual void finalizeRenderResources() = 0;
-
-    public:
-        virtual void setArrow() = 0;
 
     public:
         virtual void calcGlobalMouseWorldPosition( const mt::vec2f & _screenPoint, mt::vec2f * const _worldPoint ) = 0;

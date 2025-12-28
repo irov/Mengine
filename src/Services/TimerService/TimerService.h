@@ -1,19 +1,21 @@
 #pragma once
 
 #include "Interface/TimerServiceInterface.h"
-#include "Interface/DispatchableInterface.h"
+#include "Interface/LifecycleInterface.h"
 #include "Interface/TimepipeInterface.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/DispatchableBase.h"
+#include "Kernel/BaseLifecycle.h"
 #include "Kernel/Vector.h"
 
 namespace Mengine
 {
     class TimerService
         : public ServiceBase<TimerServiceInterface>
-        , public DispatchableBase
+        , protected BaseLifecycle
     {
+        DECLARE_LIFECYCLEABLE();
+
     public:
         TimerService();
         ~TimerService() override;

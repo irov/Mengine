@@ -8,6 +8,7 @@
 #include "ThreadQueue.h"
 
 #include "Kernel/ServiceBase.h"
+#include "Kernel/BaseLifecycle.h"
 #include "Kernel/String.h"
 #include "Kernel/Vector.h"
 
@@ -17,7 +18,10 @@ namespace Mengine
 {
     class ThreadService
         : public ServiceBase<ThreadServiceInterface>
+        , protected BaseLifecycle
     {
+        DECLARE_LIFECYCLEABLE();
+
     public:
         ThreadService();
         ~ThreadService() override;
@@ -50,8 +54,8 @@ namespace Mengine
         ThreadQueueInterfacePtr createTaskQueue( uint32_t _packetSize, const DocumentInterfacePtr & _doc ) override;
         void cancelTaskQueue( const ThreadQueueInterfacePtr & _queue ) override;
 
-    public:
-        void update() override;
+    protected:
+        void _preUpdate() override;
 
     public:
         void updateMainThread() override;

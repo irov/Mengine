@@ -229,14 +229,6 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void PlayerService::setArrow()
-    {
-        const NodePtr & node = ARROW_SERVICE()
-            ->getArrowNode();
-
-        node->enable();
-    }
-    //////////////////////////////////////////////////////////////////////////
     void PlayerService::calcGlobalMouseWorldPosition( const mt::vec2f & _screenPoint, mt::vec2f * const _worldPoint )
     {
         Helper::screenToWorldPosition( &m_renderContext, _screenPoint, _worldPoint );
@@ -532,11 +524,8 @@ namespace Mengine
         return handler;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PlayerService::update()
+    void PlayerService::_update()
     {
-        PICKER_SERVICE()
-            ->update();
-
         if( m_globalInputHandler != nullptr )
         {
             m_globalInputHandler->update();

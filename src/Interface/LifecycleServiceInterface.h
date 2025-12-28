@@ -1,18 +1,18 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/DispatchableInterface.h"
+#include "Interface/LifecycleInterface.h"
 
 namespace Mengine
 {
-    class DispatcherServiceInterface
+    class LifecycleServiceInterface
         : public ServiceInterface
     {
-        SERVICE_DECLARE( "DispatcherService" )
+        SERVICE_DECLARE( "LifecycleService" )
 
     public:
-        virtual void addDispatchable( DispatchableInterface * _dispatchable ) = 0;
-        virtual void removeDispatchable( DispatchableInterface * _dispatchable ) = 0;
+        virtual void registerLifecycle( LifecycleInterface * _dispatchable ) = 0;
+        virtual void unregisterLifecycle( LifecycleInterface * _dispatchable ) = 0;
 
     public:
         virtual void preUpdate() = 0;
@@ -22,5 +22,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define DISPATCHER_SERVICE()\
-    ((Mengine::DispatcherServiceInterface *)SERVICE_GET(Mengine::DispatcherServiceInterface))
+    ((Mengine::LifecycleServiceInterface *)SERVICE_GET(Mengine::LifecycleServiceInterface))
 //////////////////////////////////////////////////////////////////////////

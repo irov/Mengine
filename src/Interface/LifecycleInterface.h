@@ -4,7 +4,7 @@
 
 namespace Mengine
 {
-    class DispatchableInterface
+    class LifecycleInterface
         : public Mixin
     {
     public:

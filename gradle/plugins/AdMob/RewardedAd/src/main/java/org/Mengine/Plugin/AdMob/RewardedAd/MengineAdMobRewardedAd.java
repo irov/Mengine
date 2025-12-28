@@ -103,6 +103,8 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
         }
 
         try {
+            MengineAdResponseInterface adResponse = m_adService.getAdResponse();
+
             AdRequest adRequest = new AdRequest.Builder().build();
 
             RewardedAd.load(activity, m_adUnitId, adRequest, new RewardedAdLoadCallback() {
@@ -128,11 +130,9 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
 
                             m_showing = false;
 
+                            adResponse.onAdShowSuccess(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_REWARDED, null);
+
                             MengineUtils.performOnMainThread(() -> {
-                                MengineAdResponseInterface adResponse = m_adService.getAdResponse();
-
-                                adResponse.onAdShowSuccess(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_REWARDED, null);
-
                                 MengineAdMobRewardedAd.this.loadAd();
                             });
                         }
@@ -154,11 +154,9 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
 
                             m_showing = false;
 
+                            adResponse.onAdShowFailed(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_REWARDED, null, errorCode);
+
                             MengineUtils.performOnMainThread(() -> {
-                                MengineAdResponseInterface adResponse = m_adService.getAdResponse();
-
-                                adResponse.onAdShowFailed(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_REWARDED, null, errorCode);
-
                                 MengineAdMobRewardedAd.this.loadAd();
                             });
                         }

@@ -18,9 +18,6 @@ namespace Mengine
         SERVICE_DECLARE( "ChronometerService" );
 
     public:
-        virtual void update() = 0;
-
-    public:
         virtual ChronometerInterfacePtr addChronometer( const LambdaChronometer & _lambda, const DocumentInterfacePtr & _doc ) = 0;
         virtual bool removeChronometer( const ChronometerInterfacePtr & _chronometer ) = 0;
     };

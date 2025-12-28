@@ -17,9 +17,6 @@ namespace Mengine
         SERVICE_DECLARE( "ThreadService" )
 
     public:
-        virtual void update() = 0;
-
-    public:
         virtual ThreadJobPtr createJob( uint32_t _sleep, const DocumentInterfacePtr & _doc ) = 0;
 
     public:

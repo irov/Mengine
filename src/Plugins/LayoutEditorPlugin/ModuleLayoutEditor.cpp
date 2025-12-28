@@ -77,12 +77,6 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleLayoutEditor::_beginUpdate( bool _focus )
-    {
-        MENGINE_UNUSED( _focus );
-
-    }
-    //////////////////////////////////////////////////////////////////////////
     void ModuleLayoutEditor::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context )
     {
         if( m_show == false )

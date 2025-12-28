@@ -87,10 +87,8 @@ namespace Mengine
         ImGui::PlotHistogram( imGuiLabel, values, MENGINE_DEBUG_PANEL_HISTOGRAM_PERFRAME_COUNT, 0, overlayText, 0.f, _maxValue, ImVec2( 0, _height ) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DebugPanelModule::_beginUpdate( bool _focus )
+    void DebugPanelModule::_preUpdate()
     {
-        MENGINE_UNUSED( _focus );
-
         static Timestamp old_Time = Helper::getSystemTimestamp();
 
         Timestamp current_Time = Helper::getSystemTimestamp();

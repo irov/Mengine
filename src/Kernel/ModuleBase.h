@@ -35,14 +35,6 @@ namespace Mengine
         virtual void _finalizeModule();
 
     public:
-        void beginUpdate( bool _focus ) override;
-        void endUpdate() override;
-
-    protected:
-        virtual void _beginUpdate( bool _focus );
-        virtual void _endUpdate();
-
-    public:
         void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) override;
 
     protected:
@@ -83,6 +75,16 @@ namespace Mengine
     protected:
         virtual bool _handleMouseEnter( const InputMouseEnterEvent & _event );
         virtual void _handleMouseLeave( const InputMouseLeaveEvent & _event );
+
+    private:
+        void preUpdate() override;
+        void update() override;
+        void postUpdate() override;
+
+    protected:
+        virtual void _preUpdate();
+        virtual void _update();
+        virtual void _postUpdate();
 
     protected:
         ConstString m_name;

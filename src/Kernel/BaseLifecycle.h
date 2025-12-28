@@ -1,22 +1,22 @@
 #pragma once
 
-#include "Interface/DispatchableInterface.h"
+#include "Interface/LifecycleInterface.h"
 
 namespace Mengine
 {
-    class DispatchableBase
-        : public DispatchableInterface
+    class BaseLifecycle
+        : public LifecycleInterface
     {
     public:
-        DispatchableBase();
-        ~DispatchableBase() override;
+        BaseLifecycle();
+        ~BaseLifecycle() override;
 
     private:
         void preUpdate() override;
         void update() override;
         void postUpdate() override;
 
-    public:
+    protected:
         virtual void _preUpdate();
         virtual void _update();
         virtual void _postUpdate();

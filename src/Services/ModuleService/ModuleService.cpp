@@ -231,19 +231,27 @@ namespace Mengine
         m_leaves.push_back( desc );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleService::beginUpdate( bool _focus )
+    void ModuleService::_preUpdate()
     {
         for( const ModuleInterfacePtr & module : m_modules )
         {
-            module->beginUpdate( _focus );
+            module->preUpdate();
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleService::endUpdate()
+    void ModuleService::_update()
     {
         for( const ModuleInterfacePtr & module : m_modules )
         {
-            module->endUpdate();
+            module->update();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ModuleService::_postUpdate()
+    {
+        for( const ModuleInterfacePtr & module : m_modules )
+        {
+            module->postUpdate();
         }
     }
     //////////////////////////////////////////////////////////////////////////

@@ -34,8 +34,8 @@ namespace Mengine
     {
         m_mutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-        m_eventsAux.reserve( 16 );
         m_events.reserve( 16 );
+        m_eventsAux.reserve( 16 );
 
         return true;
     }
@@ -57,20 +57,20 @@ namespace Mengine
 
         m_mutex = nullptr;
 
-        m_events.clear();
         m_eventsAux.clear();
+        m_events.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void InputService::update()
+    void InputService::_update()
     {
         MENGINE_PROFILER_CATEGORY();
 
         m_mutex->lock();
-        std::swap( m_events, m_eventsAux );
-        m_eventsAux.clear();
+        std::swap( m_eventsAux, m_events );
+        m_events.clear();
         m_mutex->unlock();
 
-        for( const InputVariantEvent & ev : m_events )
+        for( const InputVariantEvent & ev : m_eventsAux )
         {
             Helper::visit( ev, [this]( const auto & _event )
             {
@@ -78,7 +78,7 @@ namespace Mengine
             } );
         }
 
-        m_events.clear();
+        m_eventsAux.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     bool InputService::isSpecialDown() const
@@ -358,7 +358,7 @@ namespace Mengine
     void InputService::pushEvent( const InputVariantEvent & _event )
     {
         m_mutex->lock();
-        m_eventsAux.emplace_back( _event );
+        m_events.emplace_back( _event );
         m_mutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////

@@ -33,7 +33,7 @@ namespace Mengine
         bool _handleKeyEvent( const InputKeyEvent & _event ) override;
 
     protected:
-        void _beginUpdate( bool _focus ) override;
+        void _preUpdate() override;
 
     protected:
         void _render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) override;

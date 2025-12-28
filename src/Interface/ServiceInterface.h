@@ -3,6 +3,7 @@
 #include "Interface/ServiceProviderInterface.h"
 
 #include "Kernel/Factorable.h"
+#include "Kernel/Lifecycleable.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/ExceptionHelper.h"
 #include "Kernel/Typename.h"
@@ -17,6 +18,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class ServiceInterface
         : public Factorable
+        , public Lifecycleable
     {
     public:
         virtual const Char * getServiceId() const = 0;

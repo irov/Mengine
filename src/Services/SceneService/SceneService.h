@@ -3,6 +3,7 @@
 #include "Interface/SceneServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
+#include "Kernel/BaseLifecycle.h"
 
 #include "Config/Atomic.h"
 
@@ -10,7 +11,10 @@ namespace Mengine
 {
     class SceneService
         : public ServiceBase<SceneServiceInterface>
+        , protected BaseLifecycle
     {
+        DECLARE_LIFECYCLEABLE();
+
     public:
         SceneService();
         ~SceneService() override;
@@ -33,10 +37,13 @@ namespace Mengine
         const ScenePtr & getGlobalScene() const override;
 
     public:
-        void update() override;
+        void _postUpdate() override;
 
     public:
         bool isProcess() const override;
+
+    protected:
+        void process();
 
     protected:
         enum ESceneCommandType

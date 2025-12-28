@@ -454,7 +454,7 @@ namespace Mengine
 
         renderPass.zGroup = _context->zGroup == MENGINE_RENDER_ZGROUP_DEFAULT ? 0 : _context->zGroup;
         renderPass.zIndex = _context->zIndex == MENGINE_RENDER_ZINDEX_DEFAULT ? 0 : _context->zIndex;
-        
+
         renderPass.drawPrimitive = _drawPrimitive;
 
         renderPass.flags = RENDER_PASS_FLAG_SINGLE;
@@ -714,13 +714,13 @@ namespace Mengine
         {
             const RenderVertexBufferInterfacePtr & vertexBuffer = renderPass.vertexBuffer;
             const RenderIndexBufferInterfacePtr & indexBuffer = renderPass.indexBuffer;
+            const RenderProgramVariableInterfacePtr & programVariable = renderPass.programVariable;
 
             const RenderContext * context = &renderPass.context;
 
-            const RenderProgramVariableInterfacePtr & programVariable = renderPass.programVariable;
-            const RenderDrawPrimitiveInterfacePtr & drawPrimitive = renderPass.drawPrimitive;
-
             m_renderService->beginRenderPass( vertexBuffer, indexBuffer, programVariable, context );
+
+            const RenderDrawPrimitiveInterfacePtr & drawPrimitive = renderPass.drawPrimitive;
 
             if( drawPrimitive == nullptr )
             {
@@ -1113,12 +1113,12 @@ namespace Mengine
             renderPass.vertexBuffer = _vertexBuffer;
             renderPass.indexBuffer = _indexBuffer;
             renderPass.programVariable = _programVariable;
-            
+
             renderPass.context = *_context;
 
             renderPass.zGroup = _context->zGroup == MENGINE_RENDER_ZGROUP_DEFAULT ? 0 : _context->zGroup;
             renderPass.zIndex = _context->zIndex == MENGINE_RENDER_ZINDEX_DEFAULT ? 0 : _context->zIndex;
-            
+
             renderPass.flags = RENDER_PASS_FLAG_NONE;
 
             m_renderPasses.emplace_back( renderPass );

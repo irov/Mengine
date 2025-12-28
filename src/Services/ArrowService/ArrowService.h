@@ -24,13 +24,13 @@ namespace Mengine
         EArrowType getArrowType() const override;
 
     protected:
-        void setArrowPoint() override;
+        void setArrowTypePoint() override;
 
-        void setArrowPolygon( const Polygon & _polygon ) override;
-        const Polygon & getArrowPolygon() const override;
+        void setArrowTypePolygon( const Polygon & _polygon ) override;
+        const Polygon & getArrowTypePolygon() const override;
 
-        void setArrowRadius( float _radius ) override;
-        float getArrowRadius() const override;
+        void setArrowTypeRadius( float _radius ) override;
+        float getArrowTypeRadius() const override;
 
     protected:
         const NodePtr & getArrowNode() const override;

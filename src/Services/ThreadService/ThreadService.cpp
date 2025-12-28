@@ -349,7 +349,7 @@ namespace Mengine
         }
     }
     ///////////////////////////////////////////////////////////////////////////
-    void ThreadService::update()
+    void ThreadService::_preUpdate()
     {
         m_mutexDispatchEvents->lock();
         std::swap( m_dispatchEventsAux, m_dispatchEvents );

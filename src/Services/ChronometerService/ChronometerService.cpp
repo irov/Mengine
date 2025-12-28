@@ -76,7 +76,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ChronometerService::update()
+    void ChronometerService::_update()
     {
         if( m_chronometers.empty() == true )
         {

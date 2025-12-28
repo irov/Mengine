@@ -4,6 +4,7 @@
 #include "Interface/ThreadMutexInterface.h"
 
 #include "Kernel/ServiceBase.h"
+#include "Kernel/BaseLifecycle.h"
 #include "Kernel/Resolution.h"
 #include "Kernel/Viewport.h"
 #include "Kernel/Vector.h"
@@ -12,7 +13,10 @@ namespace Mengine
 {
     class InputService
         : public ServiceBase<InputServiceInterface>
+        , protected BaseLifecycle
     {
+        DECLARE_LIFECYCLEABLE();
+
     public:
         InputService();
         ~InputService() override;
@@ -22,7 +26,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        void update() override;
+        void _update() override;
 
     public:
         bool isSpecialDown() const override;
@@ -89,8 +93,8 @@ namespace Mengine
         VectorMousePositionProviders m_mousePositionProviders;
 
         typedef Vector<InputVariantEvent> VectorInputEvents;
-        VectorInputEvents m_eventsAux;
         VectorInputEvents m_events;
+        VectorInputEvents m_eventsAux;
 
         bool m_keyBuffer[MENGINE_INPUT_MAX_KEY_CODE];
         bool m_mouseBuffer[MENGINE_INPUT_MAX_MOUSE_BUTTON_CODE];

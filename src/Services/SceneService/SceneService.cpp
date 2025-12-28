@@ -95,7 +95,7 @@ namespace Mengine
 
         if( _immediately == true )
         {
-            this->update();
+            this->process();
         }
 
         return true;
@@ -131,7 +131,7 @@ namespace Mengine
 
         if( _immediately == true )
         {
-            this->update();
+            this->process();
         }
 
         return true;
@@ -167,7 +167,7 @@ namespace Mengine
 
         if( _immediately == true )
         {
-            this->update();
+            this->process();
         }
 
         return true;
@@ -395,7 +395,7 @@ namespace Mengine
         return m_globalScene;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SceneService::update()
+    void SceneService::process()
     {
         if( m_process != 0 )
         {
@@ -434,6 +434,11 @@ namespace Mengine
         }
 
         --m_process;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SceneService::_postUpdate()
+    {
+        this->process();
     }
     //////////////////////////////////////////////////////////////////////////
     bool SceneService::isProcess() const

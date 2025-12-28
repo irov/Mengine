@@ -1,4 +1,4 @@
-#include "DispatcherService.h"
+#include "LifecycleService.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/MixinDebug.h"
@@ -7,51 +7,51 @@
 #include "Config/StdAlgorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( DispatcherService, Mengine::DispatcherService );
+SERVICE_FACTORY( LifecycleService, Mengine::LifecycleService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    DispatcherService::DispatcherService()
+    LifecycleService::LifecycleService()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    DispatcherService::~DispatcherService()
+    LifecycleService::~LifecycleService()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void DispatcherService::registerService( ServiceInterface * _service )
+    void LifecycleService::registerService( ServiceInterface * _service )
     {
-        DispatchableInterface * dispatchable = dynamic_cast<DispatchableInterface *>(_service);
+        LifecycleInterface * dispatchable = dynamic_cast<LifecycleInterface *>(_service);
 
         if( dispatchable == nullptr )
         {
             return;
         }
 
-        this->addDispatchable( dispatchable );
+        this->registerLifecycle( dispatchable );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DispatcherService::unregisterService( ServiceInterface * _service )
+    void LifecycleService::unregisterService( ServiceInterface * _service )
     {
-        DispatchableInterface * dispatchable = dynamic_cast<DispatchableInterface *>(_service);
+        LifecycleInterface * dispatchable = dynamic_cast<LifecycleInterface *>(_service);
         
         if( dispatchable == nullptr )
         {
             return;
         }
 
-        this->removeDispatchable( dispatchable );
+        this->unregisterLifecycle( dispatchable );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DispatcherService::_initializeService()
+    bool LifecycleService::_initializeService()
     {
         //Empty
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DispatcherService::_finalizeService()
+    void LifecycleService::_finalizeService()
     {
         m_dispatchable.erase( StdAlgorithm::remove_if( m_dispatchable.begin(), m_dispatchable.end(), []( const DispatchableDesc & _desc )
         {
@@ -83,7 +83,7 @@ namespace Mengine
         m_dispatchableAdd.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void DispatcherService::addDispatchable( DispatchableInterface * _dispatchable )
+    void LifecycleService::registerLifecycle( LifecycleInterface * _dispatchable )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _dispatchable, "dispatchable is nullptr" );
 
@@ -107,7 +107,7 @@ namespace Mengine
         m_dispatchableAdd.emplace_back( desc );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DispatcherService::removeDispatchable( DispatchableInterface * _dispatchable )
+    void LifecycleService::unregisterLifecycle( LifecycleInterface * _dispatchable )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _dispatchable, "dispatchable is nullptr" );
 
@@ -136,7 +136,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void DispatcherService::preUpdate()
+    void LifecycleService::preUpdate()
     {
         if( m_dispatchableAdd.empty() == false )
         {
@@ -150,7 +150,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void DispatcherService::update()
+    void LifecycleService::update()
     {
         for( const DispatchableDesc & desc : m_dispatchable )
         {
@@ -158,7 +158,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void DispatcherService::postUpdate()
+    void LifecycleService::postUpdate()
     {
         for( const DispatchableDesc & desc : m_dispatchable )
         {

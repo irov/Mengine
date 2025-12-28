@@ -10,6 +10,7 @@
 #include "Interface/FactoryInterface.h"
 
 #include "Kernel/ServiceBase.h"
+#include "Kernel/BaseLifecycle.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/Resolution.h"
 #include "Kernel/Affectorable.h"
@@ -22,7 +23,10 @@ namespace Mengine
 {
     class PlayerService
         : public ServiceBase<PlayerServiceInterface>
+        , protected BaseLifecycle
     {
+        DECLARE_LIFECYCLEABLE();
+
     public:
         PlayerService();
         ~PlayerService() override;
@@ -31,9 +35,6 @@ namespace Mengine
         bool _initializeService() override;
         void _finalizeService() override;
         void _stopService() override;
-
-    public:
-        void setArrow() override;
 
     public:
         void calcGlobalMouseWorldPosition( const mt::vec2f & _screenPoint, mt::vec2f * const _worldPoint ) override;
@@ -101,7 +102,7 @@ namespace Mengine
         void finalizeRenderResources() override;
 
     public:
-        void update() override;
+        void _update() override;
 
     public:
         void render( const RenderPipelineInterfacePtr & _renderPipeline ) override;

@@ -1,18 +1,18 @@
 #pragma once
 
-#include "Interface/DispatcherServiceInterface.h"
+#include "Interface/LifecycleServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Vector.h"
 
 namespace Mengine
 {
-    class DispatcherService
-        : public ServiceBase<DispatcherServiceInterface>
+    class LifecycleService
+        : public ServiceBase<LifecycleServiceInterface>
     {
     public:
-        DispatcherService();
-        ~DispatcherService() override;
+        LifecycleService();
+        ~LifecycleService() override;
 
     public:
         void registerService( ServiceInterface * _service ) override;
@@ -23,8 +23,8 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        void addDispatchable( DispatchableInterface * _dispatchable ) override;
-        void removeDispatchable( DispatchableInterface * _dispatchable ) override;
+        void registerLifecycle( LifecycleInterface * _dispatchable ) override;
+        void unregisterLifecycle( LifecycleInterface * _dispatchable ) override;
 
     public:
         void preUpdate() override;
@@ -34,7 +34,7 @@ namespace Mengine
     protected:
         struct DispatchableDesc
         {
-            DispatchableInterface * dispatchable;
+            LifecycleInterface * dispatchable;
         };
 
         typedef Vector<DispatchableDesc> VectorDispatchable;

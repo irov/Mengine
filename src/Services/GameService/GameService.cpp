@@ -268,7 +268,7 @@ namespace Mengine
             ->handleMouseLeave( _event );
     }
     //////////////////////////////////////////////////////////////////////////
-    void GameService::update()
+    void GameService::_update()
     {
 #if defined(MENGINE_DEBUG)
         double Limit_Fillrate = CONFIG_VALUE_FLOAT( "Limit", "Fillrate", 100.0 );

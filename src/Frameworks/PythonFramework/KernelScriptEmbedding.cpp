@@ -2920,15 +2920,6 @@ namespace Mengine
             .def( "EAT_POLYGON", EAT_POLYGON )
             ;
 
-        pybind::interface_<ArrowServiceInterface, pybind::bases<Mixin>>( _kernel, "ArrowServiceInterface", true )
-            .def( "getArrowType", &ArrowServiceInterface::getArrowType )
-            .def( "setPolygon", &ArrowServiceInterface::setArrowPolygon )
-            .def( "getPolygon", &ArrowServiceInterface::getArrowPolygon )
-            .def( "setRadius", &ArrowServiceInterface::setArrowRadius )
-            .def( "getRadius", &ArrowServiceInterface::getArrowRadius )
-            .def( "getNode", &ArrowServiceInterface::getArrowNode )
-            ;
-
         m_implement = scriptMethod;
 
         return true;

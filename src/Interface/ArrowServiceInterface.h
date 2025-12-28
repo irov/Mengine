@@ -24,16 +24,16 @@ namespace Mengine
         SERVICE_DECLARE( "ArrowService" );
 
     public:
-        virtual EArrowType getArrowType() const = 0;
+        virtual void setArrowTypePoint() = 0;
+
+        virtual void setArrowTypePolygon( const Polygon & _polygon ) = 0;
+        virtual const Polygon & getArrowTypePolygon() const = 0;
+
+        virtual void setArrowTypeRadius( float _radius ) = 0;
+        virtual float getArrowTypeRadius() const = 0;
 
     public:
-        virtual void setArrowPoint() = 0;
-
-        virtual void setArrowPolygon( const Polygon & _polygon ) = 0;
-        virtual const Polygon & getArrowPolygon() const = 0;
-
-        virtual void setArrowRadius( float _radius ) = 0;
-        virtual float getArrowRadius() const = 0;
+        virtual EArrowType getArrowType() const = 0;
 
     public:
         virtual const NodePtr & getArrowNode() const = 0;

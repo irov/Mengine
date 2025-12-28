@@ -58,31 +58,31 @@ namespace Mengine
         return m_arrowType;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ArrowService::setArrowPoint()
+    void ArrowService::setArrowTypePoint()
     {
         m_arrowType = EAT_POINT;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ArrowService::setArrowPolygon( const Polygon & _polygon )
+    void ArrowService::setArrowTypePolygon( const Polygon & _polygon )
     {
         m_arrowType = EAT_POLYGON;
 
         m_arrowPolygon = _polygon;
     }
     //////////////////////////////////////////////////////////////////////////
-    const Polygon & ArrowService::getArrowPolygon() const
+    const Polygon & ArrowService::getArrowTypePolygon() const
     {
         return m_arrowPolygon;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ArrowService::setArrowRadius( float _radius )
+    void ArrowService::setArrowTypeRadius( float _radius )
     {
         m_arrowType = EAT_RADIUS;
 
         m_arrowRadius = _radius;
     }
     //////////////////////////////////////////////////////////////////////////
-    float ArrowService::getArrowRadius() const
+    float ArrowService::getArrowTypeRadius() const
     {
         return m_arrowRadius;
     }

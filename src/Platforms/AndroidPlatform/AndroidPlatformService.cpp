@@ -2435,7 +2435,6 @@ namespace Mengine
 
         this->pushEvent( event );
     }
-
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeUnfreezeEvent( bool _tick, bool _render )
     {

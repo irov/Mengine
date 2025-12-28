@@ -1,42 +1,42 @@
-#include "DispatchableBase.h"
+#include "BaseLifecycle.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    DispatchableBase::DispatchableBase()
+    BaseLifecycle::BaseLifecycle()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    DispatchableBase::~DispatchableBase()
+    BaseLifecycle::~BaseLifecycle()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void DispatchableBase::preUpdate()
+    void BaseLifecycle::preUpdate()
     {
         this->_preUpdate();
     }
     //////////////////////////////////////////////////////////////////////////
-    void DispatchableBase::update()
+    void BaseLifecycle::update()
     {
         this->_update();
     }
     //////////////////////////////////////////////////////////////////////////
-    void DispatchableBase::postUpdate()
+    void BaseLifecycle::postUpdate()
     {
         this->_postUpdate();
     }
     //////////////////////////////////////////////////////////////////////////
-    void DispatchableBase::_preUpdate()
+    void BaseLifecycle::_preUpdate()
     {
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void DispatchableBase::_update()
+    void BaseLifecycle::_update()
     {
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void DispatchableBase::_postUpdate()
+    void BaseLifecycle::_postUpdate()
     {
         //Empty
     }

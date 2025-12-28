@@ -144,14 +144,14 @@ namespace Mengine
         case EAT_RADIUS:
             {
                 float radius = ARROW_SERVICE()
-                    ->getArrowRadius();
+                    ->getArrowTypeRadius();
 
                 Helper::nodeDebugRenderCircle( _renderPipeline, _context, wm, radius, 32, 0x8080FFFF, MENGINE_DOCUMENT_FORWARD );
             }break;
         case EAT_POLYGON:
             {
                 const Polygon & polygon = ARROW_SERVICE()
-                    ->getArrowPolygon();
+                    ->getArrowTypePolygon();
 
                 Helper::nodeDebugRenderPolygon( _renderPipeline, _context, wm, polygon, 0x8080FFFF, MENGINE_DOCUMENT_FORWARD );
             }break;

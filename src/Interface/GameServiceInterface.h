@@ -13,7 +13,7 @@
 #include "Kernel/Params.h"
 
 namespace Mengine
-{    
+{
     class GameServiceInterface
         : public ServiceInterface
         , public InputHandlerInterface
@@ -26,9 +26,6 @@ namespace Mengine
         virtual void run() = 0;
         virtual void interruption() = 0;
         virtual void stop() = 0;
-
-    public:
-        virtual void update() = 0;
 
     public:
         virtual void render( const RenderPipelineInterfacePtr & _renderPipeline ) = 0;

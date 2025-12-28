@@ -956,13 +956,6 @@ namespace Mengine
                 return scene;
             }
             //////////////////////////////////////////////////////////////////////////
-            ArrowServiceInterface * s_getArrowService()
-            {
-                ArrowServiceInterface * arrowService = ARROW_SERVICE();
-
-                return arrowService;
-            }
-            //////////////////////////////////////////////////////////////////////////
             void s_hideArrow( bool _hide )
             {
                 const NodePtr & node = ARROW_SERVICE()
@@ -971,6 +964,48 @@ namespace Mengine
                 RenderInterface * render = node->getRender();
 
                 render->setLocalHide( _hide );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            EArrowType s_getArrowType()
+            {
+                return ARROW_SERVICE()
+                    ->getArrowType();
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_setArrowTypePoint()
+            {
+                ARROW_SERVICE()
+                    ->setArrowTypePoint();
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_setArrowTypePolygon( const Polygon & _polygon )
+            {
+                ARROW_SERVICE()
+                    ->setArrowTypePolygon( _polygon );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            const Polygon & s_getArrowTypePolygon()
+            {
+                return ARROW_SERVICE()
+                    ->getArrowTypePolygon();
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_setArrowTypeRadius( float _radius )
+            {
+                ARROW_SERVICE()
+                    ->setArrowTypeRadius( _radius );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            float s_getArrowTypeRadius()
+            {
+                return ARROW_SERVICE()
+                    ->getArrowTypeRadius();
+            }
+            //////////////////////////////////////////////////////////////////////////
+            const NodePtr & s_getArrowNode()
+            {
+                return ARROW_SERVICE()
+                    ->getArrowNode();
             }
             //////////////////////////////////////////////////////////////////////////
             const Resolution & s_getCurrentResolution()
@@ -4379,8 +4414,14 @@ namespace Mengine
         pybind::def_functor( _kernel, "getTouchPosition", nodeScriptMethod, &EngineScriptMethod::s_getTouchPosition );
         pybind::def_functor( _kernel, "getMousePosition", nodeScriptMethod, &EngineScriptMethod::s_getMousePosition );
 
-        pybind::def_functor( _kernel, "getArrow", nodeScriptMethod, &EngineScriptMethod::s_getArrowService );
         pybind::def_functor( _kernel, "hideArrow", nodeScriptMethod, &EngineScriptMethod::s_hideArrow );
+        pybind::def_functor( _kernel, "getArrowType", nodeScriptMethod, &EngineScriptMethod::s_getArrowType );
+        pybind::def_functor( _kernel, "setArrowTypePoint", nodeScriptMethod, &EngineScriptMethod::s_setArrowTypePoint );
+        pybind::def_functor( _kernel, "setArrowTypePolygon", nodeScriptMethod, &EngineScriptMethod::s_setArrowTypePolygon );
+        pybind::def_functor( _kernel, "getArrowTypePolygon", nodeScriptMethod, &EngineScriptMethod::s_getArrowTypePolygon );
+        pybind::def_functor( _kernel, "setArrowTypeRadius", nodeScriptMethod, &EngineScriptMethod::s_setArrowTypeRadius );
+        pybind::def_functor( _kernel, "getArrowTypeRadius", nodeScriptMethod, &EngineScriptMethod::s_getArrowTypeRadius );
+        pybind::def_functor( _kernel, "getArrowNode", nodeScriptMethod, &EngineScriptMethod::s_getArrowNode );
 
         pybind::def_functor( _kernel, "setArrowLayer", nodeScriptMethod, &EngineScriptMethod::s_setArrowLayer );
 

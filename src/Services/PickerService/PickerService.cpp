@@ -329,7 +329,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PickerService::update()
+    void PickerService::_update()
     {
         MENGINE_PROFILER_CATEGORY();
 

@@ -31,7 +31,7 @@
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/AnalyticsServiceInterface.h"
 #include "Interface/TimerServiceInterface.h"
-#include "Interface/DispatcherServiceInterface.h"
+#include "Interface/LifecycleServiceInterface.h"
 
 #include "Isometric.h"
 #include "HotSpotPolygon.h"
@@ -1711,18 +1711,6 @@ namespace Mengine
         DISPATCHER_SERVICE()
             ->preUpdate();
 
-        if( SERVICE_IS_INITIALIZE( ThreadServiceInterface ) == true )
-        {
-            THREAD_SERVICE()
-                ->update();
-        }
-
-        if( SERVICE_IS_INITIALIZE( ModuleServiceInterface ) == true )
-        {
-            MODULE_SERVICE()
-                ->beginUpdate( m_focus );
-        }
-
         if( m_nopause == false )
         {
             if( m_update == false && (m_focus == false || m_freeze == true) )
@@ -1734,18 +1722,6 @@ namespace Mengine
         NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_BEGIN_UPDATE );
 
         DISPATCHER_SERVICE()
-            ->update();
-
-        GAME_SERVICE()
-            ->update();
-
-        INPUT_SERVICE()
-            ->update();
-
-        CHRONOMETER_SERVICE()
-            ->update();
-
-        PLAYER_SERVICE()
             ->update();
 
         if( (m_focus == false || m_freeze == true) && m_update == true )
@@ -1805,12 +1781,6 @@ namespace Mengine
     {
         DISPATCHER_SERVICE()
             ->postUpdate();
-
-        SCENE_SERVICE()
-            ->update();
-
-        MODULE_SERVICE()
-            ->endUpdate();
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_END_UPDATE );
     }

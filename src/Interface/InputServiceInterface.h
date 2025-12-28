@@ -23,9 +23,6 @@ namespace Mengine
         SERVICE_DECLARE( "InputService" )
 
     public:
-        virtual void update() = 0;
-
-    public:
         virtual bool isSpecialDown() const = 0;
         virtual bool isAltDown() const = 0;
         virtual bool isShiftDown() const = 0;

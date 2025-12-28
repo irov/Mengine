@@ -3,6 +3,7 @@
 #include "Interface/PickerServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
+#include "Kernel/BaseLifecycle.h"
 #include "Kernel/Viewport.h"
 #include "Kernel/Vector.h"
 #include "Kernel/RenderContext.h"
@@ -21,7 +22,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class PickerService
         : public ServiceBase<PickerServiceInterface>
+        , protected BaseLifecycle
     {
+        DECLARE_LIFECYCLEABLE();
+
     public:
         PickerService();
         ~PickerService() override;
@@ -46,7 +50,7 @@ namespace Mengine
         void setRenderTarget( const RenderTargetInterfacePtr & _target ) override;
 
     public:
-        void update() override;
+        void _update() override;
 
     public:
         bool pickTraps( const mt::vec2f & _point, ETouchCode _touchId, float _pressure, const InputSpecialData & _special, VectorPickers * const _pickers ) const override;

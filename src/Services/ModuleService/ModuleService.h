@@ -4,6 +4,7 @@
 #include "Interface/TimepipeInterface.h"
 
 #include "Kernel/ServiceBase.h"
+#include "Kernel/BaseLifecycle.h"
 #include "Kernel/Hashtable.h"
 #include "Kernel/Vector.h"
 
@@ -11,7 +12,10 @@ namespace Mengine
 {
     class ModuleService
         : public ServiceBase<ModuleServiceInterface>
+        , protected BaseLifecycle
     {
+        DECLARE_LIFECYCLEABLE();
+
     public:
         ModuleService();
         ~ModuleService() override;
@@ -34,8 +38,9 @@ namespace Mengine
         void leaveModule( const ConstString & _name, const LambdaLeaveModule & _lambda ) override;
 
     public:
-        void beginUpdate( bool _focus ) override;
-        void endUpdate() override;
+        void _preUpdate() override;
+        void _update() override;
+        void _postUpdate() override;
 
     public:
         void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) override;

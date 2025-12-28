@@ -67,7 +67,7 @@
 #define MENGINE_BOOTSTRAPPER_CONFIG_PATH "application.json"
 #endif
 //////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN( DispatcherService );
+SERVICE_EXTERN( LifecycleService );
 SERVICE_EXTERN( SecureService );
 SERVICE_EXTERN( FactoryService );
 SERVICE_EXTERN( OptionsService );
@@ -1024,7 +1024,7 @@ namespace Mengine
         MENGINE_ADD_SERVICE( PlatformSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( ThreadSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( TimeSystem, MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ADD_SERVICE( DispatcherService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( LifecycleService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( NotificationService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( VocabularyService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( UnicodeSystem, MENGINE_DOCUMENT_FACTORABLE );
@@ -2354,7 +2354,7 @@ namespace Mengine
         SERVICE_DESTROY( LoggerService );
         SERVICE_DESTROY( FactoryService );
         SERVICE_DESTROY( OptionsService );
-        SERVICE_DESTROY( DispatcherService );
+        SERVICE_DESTROY( LifecycleService );
         SERVICE_DESTROY( CryptographySystem );
         SERVICE_DESTROY( PlatformSystem );
         SERVICE_DESTROY( ThreadSystem );

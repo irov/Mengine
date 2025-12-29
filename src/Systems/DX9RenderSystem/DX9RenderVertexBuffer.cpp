@@ -75,7 +75,7 @@ namespace Mengine
             STATISTIC_DEC_INTEGER( STATISTIC_RENDER_VERTEX_BUFFER_ALLOC_COUNT );
             STATISTIC_DEL_INTEGER( STATISTIC_RENDER_VERTEX_BUFFER_ALLOC_SIZE, m_vertexCapacity * m_vertexSize );
 
-            MENGINE_DXRELEASE( m_pD3DVertexBuffer );
+            MENGINE_DX9_RELEASE( m_pD3DVertexBuffer );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -104,7 +104,7 @@ namespace Mengine
             STATISTIC_DEC_INTEGER( STATISTIC_RENDER_VERTEX_BUFFER_ALLOC_COUNT );
             STATISTIC_DEL_INTEGER( STATISTIC_RENDER_VERTEX_BUFFER_ALLOC_SIZE, m_vertexCapacity * m_vertexSize );
 
-            MENGINE_DXRELEASE( m_pD3DVertexBuffer );
+            MENGINE_DX9_RELEASE( m_pD3DVertexBuffer );
         }
 
         m_vertexCapacity = m_vertexCount;
@@ -112,7 +112,7 @@ namespace Mengine
         uint32_t bufferSize = m_vertexCapacity * m_vertexSize;
 
         IDirect3DVertexBuffer9 * pD3DVertexBuffer = nullptr;
-        MENGINE_IF_DXCALL( m_pD3DDevice, CreateVertexBuffer, (bufferSize, m_usage, 0, m_pool, &pD3DVertexBuffer, NULL) )
+        MENGINE_IF_DX9_CALL( m_pD3DDevice, CreateVertexBuffer, (bufferSize, m_usage, 0, m_pool, &pD3DVertexBuffer, NULL) )
         {
             return false;
         }
@@ -159,7 +159,7 @@ namespace Mengine
         uint32_t lockSize = _count * m_vertexSize;
 
         void * lock_memory = nullptr;
-        MENGINE_IF_DXCALL( m_pD3DVertexBuffer, Lock, (offsetSize, lockSize, &lock_memory, d3d_flag) )
+        MENGINE_IF_DX9_CALL( m_pD3DVertexBuffer, Lock, (offsetSize, lockSize, &lock_memory, d3d_flag) )
         {
             LOGGER_ASSERTION( "invalid lock count %u offset %u (doc '%s')"
                 , _count
@@ -182,7 +182,7 @@ namespace Mengine
     {
         m_memory->setBuffer( nullptr, 0 );
 
-        MENGINE_IF_DXCALL( m_pD3DVertexBuffer, Unlock, () )
+        MENGINE_IF_DX9_CALL( m_pD3DVertexBuffer, Unlock, () )
         {
             LOGGER_ASSERTION( "invalid unlock (doc: %s)"
                 , MENGINE_DOCUMENTABLE_STR( this, "DX9RenderVertexBuffer" )
@@ -211,7 +211,7 @@ namespace Mengine
         UINT sizeToLock = (UINT)(_count * m_vertexSize);
 
         void * lock_memory = nullptr;
-        MENGINE_IF_DXCALL( m_pD3DVertexBuffer, Lock, (offsetToLock, sizeToLock, &lock_memory, D3DLOCK_DISCARD) )
+        MENGINE_IF_DX9_CALL( m_pD3DVertexBuffer, Lock, (offsetToLock, sizeToLock, &lock_memory, D3DLOCK_DISCARD) )
         {
             LOGGER_ASSERTION( "invalid lock offset %u size %u (doc %s)"
                 , offsetToLock
@@ -224,7 +224,7 @@ namespace Mengine
 
         Helper::memoryCopy( lock_memory, 0, _buffer, 0, _count * m_vertexSize );
 
-        MENGINE_IF_DXCALL( m_pD3DVertexBuffer, Unlock, () )
+        MENGINE_IF_DX9_CALL( m_pD3DVertexBuffer, Unlock, () )
         {
             LOGGER_ASSERTION( "invalid unlock (doc: %s)"
                 , MENGINE_DOCUMENTABLE_STR( this, "DX9RenderVertexBuffer" )
@@ -240,12 +240,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderVertexBuffer::enable()
     {
-        MENGINE_DXCALL( m_pD3DDevice, SetStreamSource, (0, m_pD3DVertexBuffer, 0, m_vertexSize) );
+        MENGINE_DX9_CALL( m_pD3DDevice, SetStreamSource, (0, m_pD3DVertexBuffer, 0, m_vertexSize) );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderVertexBuffer::disable()
     {
-        MENGINE_DXCALL( m_pD3DDevice, SetStreamSource, (0, nullptr, 0, 0) );
+        MENGINE_DX9_CALL( m_pD3DDevice, SetStreamSource, (0, nullptr, 0, 0) );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderVertexBuffer::onRenderReset()
@@ -263,7 +263,7 @@ namespace Mengine
             STATISTIC_DEC_INTEGER( STATISTIC_RENDER_VERTEX_BUFFER_ALLOC_COUNT );
             STATISTIC_DEL_INTEGER( STATISTIC_RENDER_VERTEX_BUFFER_ALLOC_SIZE, m_vertexCapacity * m_vertexSize );
 
-            MENGINE_DXRELEASE( m_pD3DVertexBuffer );
+            MENGINE_DX9_RELEASE( m_pD3DVertexBuffer );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -279,7 +279,7 @@ namespace Mengine
         uint32_t bufferSize = m_vertexCapacity * m_vertexSize;
 
         IDirect3DVertexBuffer9 * pD3DVertexBuffer = nullptr;
-        MENGINE_IF_DXCALL( m_pD3DDevice, CreateVertexBuffer, (bufferSize, m_usage, 0, m_pool, &pD3DVertexBuffer, nullptr) )
+        MENGINE_IF_DX9_CALL( m_pD3DDevice, CreateVertexBuffer, (bufferSize, m_usage, 0, m_pool, &pD3DVertexBuffer, nullptr) )
         {
             return false;
         }

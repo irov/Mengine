@@ -4,7 +4,13 @@
 
 #include "Environment/DirectX11/DX11RenderIncluder.h"
 
-#include "Kernel/Assertion.h"
+#if !defined(MENGINE_DX11_CHECK_ERROR)
+#   define MENGINE_DX11_CHECK_ERROR 1
+#endif
+
+#if MENGINE_DX11_CHECK_ERROR == 1
+#   define MENGINE_DX11_CHECK_ERROR_ENABLE
+#endif
 
 namespace Mengine
 {
@@ -14,49 +20,55 @@ namespace Mengine
         const Char * getDX11ErrorMessage( HRESULT _hr );
     }
     //////////////////////////////////////////////////////////////////////////
-    class DX11ErrorHelper
+}
+
+#if defined(MENGINE_DX11_CHECK_ERROR_ENABLE)
+#   include "Kernel/Assertion.h"
+#   include "Kernel/ArgsToString.h"
+
+//////////////////////////////////////////////////////////////////////////
+namespace Mengine
+{
+    namespace Detail
     {
-    public:
-        DX11ErrorHelper( const Char * _file, uint32_t _line, const Char * _method );
-
-    public:
-        bool operator == ( HRESULT _hr ) const;
-
-    protected:
-        const Char * m_file;
-        uint32_t m_line;
-        const Char * m_method;
-    };
-    //////////////////////////////////////////////////////////////////////////
+        bool logDX11Error( HRESULT _hr, const Char * _file, uint32_t _line, const Char * _function, const Char * _method, const String & _args );
+    }
 }
 //////////////////////////////////////////////////////////////////////////
-#define DXERRORCHECK( MethodName, HRES )\
-    (Mengine::DX11ErrorHelper(MENGINE_CODE_FILE, MENGINE_CODE_LINE, MethodName ) == HRES)
+#   define MENGINE_DX11_RELEASE( Object )\
+    do{\
+        if( Object != nullptr ){\
+            ULONG ref = Object -> Release();\
+            MENGINE_UNUSED( ref );\
+            MENGINE_ASSERTION_FATAL( ref == 0, "release dx11 object ref != 0" );\
+            Object = nullptr;\
+        }\
+    }while(false)
 //////////////////////////////////////////////////////////////////////////
-#define IF_DXERRORCHECK( Method, HRES )\
-    if( DXERRORCHECK(#Method, HRES) )
+#   define MENGINE_IF_DX11_CALL( Device, Method, Args )\
+    if( HRESULT MENGINE_PP_CONCATENATE(__dx11call_hr, MENGINE_CODE_LINE) = Device -> Method Args; MENGINE_PP_CONCATENATE(__dx11call_hr, MENGINE_CODE_LINE) != S_OK && Mengine::Detail::logDX11Error( MENGINE_PP_CONCATENATE(__dx11call_hr, MENGINE_CODE_LINE), MENGINE_CODE_FILE, MENGINE_CODE_LINE, MENGINE_CODE_FUNCTION, #Method, Helper::argsToString Args ) )
 //////////////////////////////////////////////////////////////////////////
-#if MENGINE_RENDER_CHECK_ERROR
-//////////////////////////////////////////////////////////////////////////
-#   define DXRELEASE( Object )\
-    if( Object == nullptr ){}else{ ULONG ref = Object -> Release(); MENGINE_ASSERTION_FATAL( ref == 0, "ref not zero [%lu]", ref ); Object = nullptr; }
-//////////////////////////////////////////////////////////////////////////
-#   define DXCALL( Device, Method, Args )\
-    (DXERRORCHECK(#Method, Device -> Method Args))
+#   define MENGINE_DX11_CALL( Device, Method, Args )\
+    do{\
+        MENGINE_IF_DX11_CALL( Device, Method, Args ){}\
+    }while(false)
 //////////////////////////////////////////////////////////////////////////
 #else
 //////////////////////////////////////////////////////////////////////////
-#   define DXRELEASE( Object )\
-    if( Object == nullptr ){}else{Object -> Release(); Object = nullptr;}
+#   define MENGINE_DX11_RELEASE( Object )\
+    do{\
+        if( Object != nullptr ){\
+            ULONG ref = Object -> Release();\
+            MENGINE_UNUSED( ref );\
+            Object = nullptr;\
+        }\
+    }while(false)
 //////////////////////////////////////////////////////////////////////////
-#   define DXCALL( Device, Method, Args )\
+#   define MENGINE_IF_DX11_CALL( Device, Method, Args )\
+    if( HRESULT MENGINE_PP_CONCATENATE(__dx11call_hr, MENGINE_CODE_LINE) = Device -> Method Args; MENGINE_PP_CONCATENATE(__dx11call_hr, MENGINE_CODE_LINE) != S_OK )
+//////////////////////////////////////////////////////////////////////////
+#   define MENGINE_DX11_CALL( Device, Method, Args )\
     (Device -> Method Args)
 //////////////////////////////////////////////////////////////////////////
 #endif
-//////////////////////////////////////////////////////////////////////////
-#define IF_DXCALL( Device, Method, Args )\
-    if( DXCALL(Device, Method, Args) )
-//////////////////////////////////////////////////////////////////////////
-#define DXGETREF( Object )\
-    [Object](){Object->AddRef(); ULONG ref = Object->Release(); return ref;}()
 //////////////////////////////////////////////////////////////////////////

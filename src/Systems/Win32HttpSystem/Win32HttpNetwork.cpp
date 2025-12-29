@@ -466,7 +466,7 @@ namespace Mengine
             const Char * header_str = header.c_str();
             ArrayString<4096>::size_type header_size = header.size();
 
-            if( ::HttpAddRequestHeadersA( hRequest, header_str, header_size, HTTP_ADDREQ_FLAG_ADD | HTTP_ADDREQ_FLAG_REPLACE ) == FALSE )
+            if( ::HttpAddRequestHeadersA( hRequest, header_str, (DWORD)header_size, HTTP_ADDREQ_FLAG_ADD | HTTP_ADDREQ_FLAG_REPLACE ) == FALSE )
             {
                 Detail::errorRequest( _response );
 
@@ -705,7 +705,7 @@ namespace Mengine
 
                 CHAR bstrEncoded[1024 + 1] = {'\0'};
                 DWORD dwSize = 1024;
-                ::CryptBinaryToStringA( reinterpret_cast<const BYTE *>(credentials_str), credentials_size, CRYPT_STRING_BASE64 | CRYPT_STRING_NOCRLF, bstrEncoded, &dwSize );
+                ::CryptBinaryToStringA( reinterpret_cast<const BYTE *>(credentials_str), (DWORD)credentials_size, CRYPT_STRING_BASE64 | CRYPT_STRING_NOCRLF, bstrEncoded, &dwSize );
 
                 ArrayString<1024> header;
                 header.append( "Authorization: Basic " );
@@ -714,7 +714,7 @@ namespace Mengine
                 const Char * header_str = header.c_str();
                 ArrayString<1024>::size_type header_size = header.size();
 
-                if( ::HttpAddRequestHeadersA( hRequest, header_str, header_size, HTTP_ADDREQ_FLAG_ADD | HTTP_ADDREQ_FLAG_REPLACE ) == FALSE )
+                if( ::HttpAddRequestHeadersA( hRequest, header_str, (DWORD)header_size, HTTP_ADDREQ_FLAG_ADD | HTTP_ADDREQ_FLAG_REPLACE ) == FALSE )
                 {
                     Detail::errorRequest( _response );
 

@@ -16,7 +16,7 @@ namespace Mengine
         void unlock();
 
     protected:
-        MENGINE_ALIGNAS( 64 ) Atomic<size_t> m_owner;
-        MENGINE_ALIGNAS( 64 ) AtomicInt32 m_lock;
+        AtomicUInt32 m_owner;
+        AtomicInt32 m_lock;
     };
 }

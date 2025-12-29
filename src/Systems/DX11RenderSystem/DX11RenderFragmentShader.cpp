@@ -14,7 +14,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX11RenderFragmentShader::~DX11RenderFragmentShader()
     {
-        MENGINE_ASSERTION_FATAL( m_pD3DPixelShader == nullptr );
+        MENGINE_ASSERTION_FATAL( m_pD3DPixelShader == nullptr, "Pixel shader is not null" );
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & DX11RenderFragmentShader::getName() const
@@ -35,7 +35,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderFragmentShader::finalize()
     {
-        MENGINE_ASSERTION_FATAL( m_pD3DPixelShader == nullptr );
+        MENGINE_ASSERTION_FATAL( m_pD3DPixelShader == nullptr, "Pixel shader is not null" );
 
         m_memory = nullptr;
     }
@@ -44,7 +44,7 @@ namespace Mengine
     {
         if( m_compileReferenceCount == 0 )
         {
-            MENGINE_ASSERTION_FATAL( m_pD3DPixelShader == nullptr );
+            MENGINE_ASSERTION_FATAL( m_pD3DPixelShader == nullptr, "Pixel shader is not null" );
 
             const DWORD * shader_compile_data = m_memory->getBuffer();
             size_t shader_compile_size = m_memory->getSize();
@@ -54,7 +54,7 @@ namespace Mengine
             );
 
             ID3D11PixelShader * pD3DPixelShader;
-            IF_DXCALL( _pD3DDevice, CreatePixelShader, (shader_compile_data, shader_compile_size, NULL, &pD3DPixelShader) )
+            MENGINE_IF_DX11_CALL( _pD3DDevice, CreatePixelShader, (shader_compile_data, shader_compile_size, NULL, &pD3DPixelShader) )
             {
                 return false;
             }

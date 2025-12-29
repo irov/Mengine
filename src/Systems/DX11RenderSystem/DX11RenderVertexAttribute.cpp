@@ -18,7 +18,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX11RenderVertexAttribute::~DX11RenderVertexAttribute()
     {
-        MENGINE_ASSERTION_FATAL( m_pD3DVertexDeclaration == nullptr );
+        MENGINE_ASSERTION_FATAL( m_pD3DVertexDeclaration == nullptr, "Vertex declaration is not null" );
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderVertexAttribute::initialize( const ConstString & _name, uint32_t _elementSize )
@@ -31,7 +31,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderVertexAttribute::finalize()
     {
-        MENGINE_ASSERTION_FATAL( m_pD3DVertexDeclaration == nullptr );
+        MENGINE_ASSERTION_FATAL( m_pD3DVertexDeclaration == nullptr, "Vertex declaration is not null" );
 
         m_attributes.clear();
     }
@@ -40,7 +40,7 @@ namespace Mengine
     {
         if( m_compileReferenceCount == 0 )
         {
-            MENGINE_ASSERTION_FATAL( m_pD3DVertexDeclaration == nullptr );
+            MENGINE_ASSERTION_FATAL( m_pD3DVertexDeclaration == nullptr, "Vertex declaration is not null" );
 
             D3D11_INPUT_ELEMENT_DESC declaration[64];
 
@@ -48,7 +48,7 @@ namespace Mengine
 
             for( const AttributeDesc & desc : m_attributes )
             {
-                MENGINE_ASSERTION_FATAL( declaration_iterator < 64 );
+                MENGINE_ASSERTION_FATAL( declaration_iterator < 64, "Declaration iterator is out of bounds" );
 
                 D3D11_INPUT_ELEMENT_DESC & element = declaration[declaration_iterator++];
 
@@ -91,7 +91,7 @@ namespace Mengine
             size_t shaderCompileMemorySize = _shaderCompileMemory->getSize();
 
             ID3D11InputLayout * pD3DVertexDeclaration;
-            IF_DXCALL( _pD3DDevice, CreateInputLayout, (declaration, declaration_iterator, shaderCompileMemoryBuffer, shaderCompileMemorySize, &pD3DVertexDeclaration) )
+            MENGINE_IF_DX11_CALL( _pD3DDevice, CreateInputLayout, (declaration, declaration_iterator, shaderCompileMemoryBuffer, shaderCompileMemorySize, &pD3DVertexDeclaration) )
             {
                 return false;
             }
@@ -147,7 +147,7 @@ namespace Mengine
 
         m_attributes.emplace_back( desc );
 
-        MENGINE_ASSERTION_FATAL( m_attributes.size() < 64 );
+        MENGINE_ASSERTION_FATAL( m_attributes.size() < 64, "Attributes count is out of bounds" );
     }
     //////////////////////////////////////////////////////////////////////////
 }

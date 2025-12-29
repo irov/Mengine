@@ -4,16 +4,12 @@
 
 #include "Environment/DirectX9/DX9RenderIncluder.h"
 
-#if !defined(MENGINE_DXRENDER_CHECK_ERROR)
-#   if defined(MENGINE_DEBUG)
-#       define MENGINE_DXRENDER_CHECK_ERROR 1
-#   else
-#       define MENGINE_DXRENDER_CHECK_ERROR 0
-#   endif
+#if !defined(MENGINE_DX9_CHECK_ERROR)
+#   define MENGINE_DX9_CHECK_ERROR 1
 #endif
 
-#if MENGINE_DXRENDER_CHECK_ERROR == 1
-#   define MENGINE_DXRENDER_CHECK_ERROR_ENABLE
+#if MENGINE_DX9_CHECK_ERROR == 1
+#   define MENGINE_DX9_CHECK_ERROR_ENABLE
 #endif
 
 namespace Mengine
@@ -24,9 +20,9 @@ namespace Mengine
     }
 }
 
-#if defined(MENGINE_DXRENDER_CHECK_ERROR_ENABLE)
-#   include "Kernel/ArgsToString.h"
+#if defined(MENGINE_DX9_CHECK_ERROR_ENABLE)
 #   include "Kernel/Assertion.h"
+#   include "Kernel/ArgsToString.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
@@ -37,10 +33,9 @@ namespace Mengine
     }
 }
 //////////////////////////////////////////////////////////////////////////
-#   define MENGINE_DXRELEASE( Object )\
+#   define MENGINE_DX9_RELEASE( Object )\
     do{\
-        if( Object != nullptr )\
-        {\
+        if( Object != nullptr ){\
             ULONG ref = Object -> Release();\
             MENGINE_UNUSED( ref );\
             MENGINE_ASSERTION_FATAL( ref == 0, "release dx object ref != 0" );\
@@ -48,31 +43,29 @@ namespace Mengine
         }\
     }while(false)
 //////////////////////////////////////////////////////////////////////////
-#   define MENGINE_IF_DXCALL( Device, Method, Args )\
-    if( HRESULT MENGINE_PP_CONCATENATE(__dxcall_hr, MENGINE_CODE_LINE) = Device -> Method Args; MENGINE_PP_CONCATENATE(__dxcall_hr, MENGINE_CODE_LINE) != S_OK && Mengine::Detail::logDX9Error( MENGINE_PP_CONCATENATE(__dxcall_hr, MENGINE_CODE_LINE), MENGINE_CODE_FILE, MENGINE_CODE_LINE, MENGINE_CODE_FUNCTION, #Method, Helper::argsToString Args ) )
+#   define MENGINE_IF_DX9_CALL( Device, Method, Args )\
+    if( HRESULT MENGINE_PP_CONCATENATE(__dx9call_hr, MENGINE_CODE_LINE) = Device -> Method Args; MENGINE_PP_CONCATENATE(__dx9call_hr, MENGINE_CODE_LINE) != S_OK && Mengine::Detail::logDX9Error( MENGINE_PP_CONCATENATE(__dx9call_hr, MENGINE_CODE_LINE), MENGINE_CODE_FILE, MENGINE_CODE_LINE, MENGINE_CODE_FUNCTION, #Method, Helper::argsToString Args ) )
 //////////////////////////////////////////////////////////////////////////
-#   define MENGINE_DXCALL( Device, Method, Args )\
+#   define MENGINE_DX9_CALL( Device, Method, Args )\
     do{\
-        MENGINE_IF_DXCALL( Device, Method, Args ){}\
-    }\
-    while(false)
+        MENGINE_IF_DX9_CALL( Device, Method, Args ){}\
+    }while(false)
 //////////////////////////////////////////////////////////////////////////
 #else
 //////////////////////////////////////////////////////////////////////////
-#   define MENGINE_DXRELEASE( Object )\
+#   define MENGINE_DX9_RELEASE( Object )\
     do{\
-        if( Object != nullptr )\
-        {\
+        if( Object != nullptr ){\
             ULONG ref = Object -> Release();\
             MENGINE_UNUSED( ref );\
             Object = nullptr;\
         }\
     }while(false)
 //////////////////////////////////////////////////////////////////////////
-#   define MENGINE_IF_DXCALL( Device, Method, Args )\
-    if( HRESULT MENGINE_PP_CONCATENATE(__dxcall_hr, MENGINE_CODE_LINE) = Device -> Method Args; MENGINE_PP_CONCATENATE(__dxcall_hr, MENGINE_CODE_LINE) != S_OK )
+#   define MENGINE_IF_DX9_CALL( Device, Method, Args )\
+    if( HRESULT MENGINE_PP_CONCATENATE(__dx9call_hr, MENGINE_CODE_LINE) = Device -> Method Args; MENGINE_PP_CONCATENATE(__dx9call_hr, MENGINE_CODE_LINE) != S_OK )
 //////////////////////////////////////////////////////////////////////////
-#   define MENGINE_DXCALL( Device, Method, Args )\
+#   define MENGINE_DX9_CALL( Device, Method, Args )\
     (Device -> Method Args)
 //////////////////////////////////////////////////////////////////////////
 #endif

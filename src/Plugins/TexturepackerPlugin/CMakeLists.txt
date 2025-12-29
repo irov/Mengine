@@ -19,7 +19,7 @@ src
 
 if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
     ADD_FILTER(
-    embedding    
+    embedding
         TexturepackerScriptEmbedding.cpp
         TexturepackerScriptEmbedding.h
         )

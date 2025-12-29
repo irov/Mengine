@@ -49,7 +49,8 @@
 #include "Kernel/OptionHelper.h"
 
 #include "Config/StdString.h"
-#include "Config/Algorithm.h"
+#include "Config/StdAlgorithm.h"
+#include "Config/StdMath.h"
 
 #include "math/uv4.h"
 
@@ -111,7 +112,7 @@ namespace Mengine
 
         // Use the factory to create an adapter for the primary graphics interface (video card).
         IDXGIAdapter * adapter;
-        IF_DXCALL( factory, EnumAdapters, (m_adapterToUse, &adapter) )
+        MENGINE_IF_DX11_CALL( factory, EnumAdapters, (m_adapterToUse, &adapter) )
         {
             return false;
         }
@@ -153,14 +154,14 @@ namespace Mengine
 
         IDXGIOutput * adapterOutput;
         // Enumerate the primary adapter output (monitor).
-        IF_DXCALL( adapter, EnumOutputs, (0, &adapterOutput) )
+        MENGINE_IF_DX11_CALL( adapter, EnumOutputs, (0, &adapterOutput) )
         {
             return false;
         }
 
         // Get the number of modes that fit the DXGI_FORMAT_B8G8R8A8_UNORM display format for the adapter output (monitor).
         UINT DisplayModeListNum;
-        IF_DXCALL( adapterOutput, GetDisplayModeList, (DXGI_FORMAT_B8G8R8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &DisplayModeListNum, nullptr) )
+        MENGINE_IF_DX11_CALL( adapterOutput, GetDisplayModeList, (DXGI_FORMAT_B8G8R8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &DisplayModeListNum, nullptr) )
         {
             return false;
         }
@@ -168,12 +169,12 @@ namespace Mengine
         // Create a list to hold all the possible display modes for this monitor/video card combination.
         m_DisplayModeList.resize( DisplayModeListNum );
 
-        IF_DXCALL( adapterOutput, GetDisplayModeList, (DXGI_FORMAT_B8G8R8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &DisplayModeListNum, m_DisplayModeList.data()) )
+        MENGINE_IF_DX11_CALL( adapterOutput, GetDisplayModeList, (DXGI_FORMAT_B8G8R8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &DisplayModeListNum, m_DisplayModeList.data()) )
         {
             return false;
         }
 
-        DXRELEASE( adapterOutput );
+        MENGINE_DX11_RELEASE( adapterOutput );
 
         DXGI_ADAPTER_DESC AdapterDesc;
         adapter->GetDesc( &AdapterDesc );
@@ -229,7 +230,10 @@ namespace Mengine
     void DX11RenderSystem::_finalizeService()
     {
 #if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
-        m_dxgiSwapChain->SetFullscreenState( FALSE, nullptr );
+        if( m_dxgiSwapChain != NULL )
+        {
+            m_dxgiSwapChain->SetFullscreenState( FALSE, nullptr );
+        }
 #endif
 
         m_deferredCompilePrograms.clear();
@@ -253,17 +257,23 @@ namespace Mengine
         m_pD3DRasterizerState = nullptr;
 
         // Flush the immediate context to force cleanup
-        m_pD3DDeviceContext->Flush();
+        if( m_pD3DDeviceContext != nullptr )
+        {
+            m_pD3DDeviceContext->Flush();
+            m_pD3DDeviceContext = nullptr;
+        }
 
-        m_pD3DDeviceContext = nullptr;
         m_pD3DDeviceImmediateContext = nullptr;
 
-        ID3D11Debug * D3DDevice;
-        m_pD3DDevice->QueryInterface( __uuidof(ID3D11Debug), reinterpret_cast<void **>(&D3DDevice) );
-        D3DDevice->ReportLiveDeviceObjects( D3D11_RLDO_DETAIL );
-        D3DDevice->Release();
+        if( m_pD3DDevice != nullptr )
+        {
+            ID3D11Debug * D3DDevice;
+            m_pD3DDevice->QueryInterface( __uuidof(ID3D11Debug), reinterpret_cast<void **>(&D3DDevice) );
+            D3DDevice->ReportLiveDeviceObjects( D3D11_RLDO_DETAIL );
+            D3DDevice->Release();
 
-        m_pD3DDevice = nullptr;
+            m_pD3DDevice = nullptr;
+        }
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderVertexAttribute );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderVertexShader );
@@ -371,12 +381,17 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void DX11RenderSystem::destroyRenderWindow()
+    {
+        //ToDo
+    }
+    //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setProjectionMatrix( const mt::mat4f & _projectionMatrix )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
-        float DirectX11_PerfectPixelOffsetX = CONFIG_VALUE( "DirectX11", "PerfectPixelOffsetX", 0.f );
-        float DirectX11_PerfectPixelOffsetY = CONFIG_VALUE( "DirectX11", "PerfectPixelOffsetY", 0.f );
+        float DirectX11_PerfectPixelOffsetX = CONFIG_VALUE_FLOAT( "DirectX11", "PerfectPixelOffsetX", 0.f );
+        float DirectX11_PerfectPixelOffsetY = CONFIG_VALUE_FLOAT( "DirectX11", "PerfectPixelOffsetY", 0.f );
 
         float perfect_x = DirectX11_PerfectPixelOffsetX / (m_windowViewport.end.x - m_windowViewport.begin.x);
         float perfect_y = DirectX11_PerfectPixelOffsetY / (m_windowViewport.end.y - m_windowViewport.begin.y);
@@ -445,7 +460,7 @@ namespace Mengine
 
         DX11RenderTargetTexturePtr renderTargetTexture = m_factoryRenderTargetTexture->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( renderTargetTexture );
+        MENGINE_ASSERTION_MEMORY_PANIC( renderTargetTexture, "invalid create render target texture" );
 
         renderTargetTexture->setDirect3D11Device( m_pD3DDevice );
 
@@ -477,12 +492,12 @@ namespace Mengine
 
         DX11RenderTargetOffscreenPtr renderTargetOffscreen = m_factoryRenderTargetOffscreen->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( renderTargetOffscreen );
+        MENGINE_ASSERTION_MEMORY_PANIC( renderTargetOffscreen, "invalid create render target offscreen" );
 
         renderTargetOffscreen->setDirect3D11Device( m_pD3DDevice );
 
         ID3D11Texture2D * backBufferPtr;
-        IF_DXCALL( m_dxgiSwapChain, GetBuffer, (0, __uuidof(ID3D11Texture2D), (LPVOID *)&backBufferPtr) )
+        MENGINE_IF_DX11_CALL( m_dxgiSwapChain, GetBuffer, (0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBufferPtr)) )
         {
             return nullptr;
         }
@@ -515,7 +530,7 @@ namespace Mengine
 
         DX11RenderImageTargetPtr renderImageTarget = m_factoryRenderImageTarget->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( renderImageTarget );
+        MENGINE_ASSERTION_MEMORY_PANIC( renderImageTarget, "invalid create render image target" );
 
         renderImageTarget->setDirect3D11Device( m_pD3DDevice );
 
@@ -673,7 +688,7 @@ namespace Mengine
         r.right = (uint32_t)ex;
         r.bottom = (uint32_t)ey;
 
-        //DXCALL(m_pD3DDevice, SetRenderState, (D3DRS_SCISSORTESTENABLE, TRUE));
+        //MENGINE_DX11_CALL(m_pD3DDevice, SetRenderState, (D3DRS_SCISSORTESTENABLE, TRUE));
         m_D3DRasterizerStateDesc.ScissorEnable = TRUE;
 
         // scissors
@@ -709,8 +724,8 @@ namespace Mengine
         viewport.Height = _viewport.getHeight();
         viewport.MinDepth = 0.f;
         viewport.MaxDepth = 1.f;
-        viewport.TopLeftX = MT_floorf( _viewport.begin.x + 0.5f );
-        viewport.TopLeftY = MT_floorf( _viewport.begin.y + 0.5f );
+        viewport.TopLeftX = StdMath::floorf( _viewport.begin.x + 0.5f );
+        viewport.TopLeftY = StdMath::floorf( _viewport.begin.y + 0.5f );
 
         // Create the viewport.
         m_pD3DDeviceContext->RSSetViewports( 1, &viewport );
@@ -726,7 +741,7 @@ namespace Mengine
         m_depthStencilView = nullptr;
 
 #if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
-        IF_DXCALL( m_dxgiSwapChain, SetFullscreenState, (_fullscreen, nullptr) )
+        MENGINE_IF_DX11_CALL( m_dxgiSwapChain, SetFullscreenState, (_fullscreen, nullptr) )
         {
             return;
         }
@@ -746,13 +761,13 @@ namespace Mengine
         modeDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
         modeDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 
-        IF_DXCALL( m_dxgiSwapChain, ResizeTarget, (&modeDesc) )
+        MENGINE_IF_DX11_CALL( m_dxgiSwapChain, ResizeTarget, (&modeDesc) )
         {
             return;
         }
 #endif
 
-        IF_DXCALL( m_dxgiSwapChain, ResizeBuffers, (2, resolutionWidth, resolutionHeight, DXGI_FORMAT_B8G8R8A8_UNORM, 0) )
+        MENGINE_IF_DX11_CALL( m_dxgiSwapChain, ResizeBuffers, (2, resolutionWidth, resolutionHeight, DXGI_FORMAT_B8G8R8A8_UNORM, 0) )
         {
             return;
         }
@@ -762,14 +777,14 @@ namespace Mengine
         // create new render targets
         // Get the pointer to the back buffer.
         ID3D11Texture2D * backBuffer;
-        IF_DXCALL( m_dxgiSwapChain, GetBuffer, (0, __uuidof(ID3D11Texture2D), (LPVOID *)&backBuffer) )
+        MENGINE_IF_DX11_CALL( m_dxgiSwapChain, GetBuffer, (0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer)) )
         {
             return;
         }
 
         // Create the render target view with the back buffer pointer.
         ID3D11RenderTargetView * renderTargetView;
-        IF_DXCALL( m_pD3DDevice, CreateRenderTargetView, (backBuffer, nullptr, &renderTargetView) )
+        MENGINE_IF_DX11_CALL( m_pD3DDevice, CreateRenderTargetView, (backBuffer, nullptr, &renderTargetView) )
         {
             return;
         }
@@ -799,7 +814,7 @@ namespace Mengine
 
         // Create the texture for the depth buffer using the filled out description.
         ID3D11Texture2D * depthStencilBuffer;
-        IF_DXCALL( m_pD3DDevice, CreateTexture2D, (&depthBufferDesc, nullptr, &depthStencilBuffer) )
+        MENGINE_IF_DX11_CALL( m_pD3DDevice, CreateTexture2D, (&depthBufferDesc, nullptr, &depthStencilBuffer) )
         {
             return;
         }
@@ -826,7 +841,7 @@ namespace Mengine
 
         // Create the depth stencil view.
         ID3D11DepthStencilView * depthStencilView;
-        IF_DXCALL( m_pD3DDevice, CreateDepthStencilView, (m_depthStencilBuffer.Get(), &depthStencilViewDesc, &depthStencilView) )
+        MENGINE_IF_DX11_CALL( m_pD3DDevice, CreateDepthStencilView, (m_depthStencilBuffer.Get(), &depthStencilViewDesc, &depthStencilView) )
         {
             return;
         }
@@ -865,6 +880,14 @@ namespace Mengine
     uint32_t DX11RenderSystem::getMaxCombinedTextureImageUnits() const
     {
         return (uint32_t)D3D11_COMMONSHADER_SAMPLER_SLOT_COUNT;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t DX11RenderSystem::getMaxTextureSize() const
+    {
+        // D3D11 supports up to 16384x16384 textures (feature level 11.0+)
+        // For feature level 9.x, the limit is 2048x2048
+        // We return a conservative value that should work for most cases
+        return 16384U;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::onDeviceLostPrepare()
@@ -993,7 +1016,7 @@ namespace Mengine
     {
         DX11RenderVertexBufferPtr buffer = m_factoryVertexBuffer->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( buffer );
+        MENGINE_ASSERTION_MEMORY_PANIC( buffer, "invalid create vertex buffer" );
 
         buffer->setDirect3D11Device( m_pD3DDevice );
 
@@ -1038,7 +1061,7 @@ namespace Mengine
     {
         DX11RenderIndexBufferPtr buffer = m_factoryIndexBuffer->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( buffer );
+        MENGINE_ASSERTION_MEMORY_PANIC( buffer, "invalid create index buffer" );
 
         buffer->setDirect3D11Device( m_pD3DDevice );
 
@@ -1259,9 +1282,9 @@ namespace Mengine
         D3DTEXTUREFILTERTYPE dx_mipmap = Helper::toD3DTextureFilter( _mipmap );
         D3DTEXTUREFILTERTYPE dx_magnification = Helper::toD3DTextureFilter( _magnification );
 
-        DXCALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_MINFILTER, dx_minification) );
-        DXCALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_MIPFILTER, dx_mipmap) );
-        DXCALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_MAGFILTER, dx_magnification) );
+        MENGINE_DX11_CALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_MINFILTER, dx_minification) );
+        MENGINE_DX11_CALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_MIPFILTER, dx_mipmap) );
+        MENGINE_DX11_CALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_MAGFILTER, dx_magnification) );
         */
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1452,6 +1475,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderSystem::setProgramVariable( const RenderProgramInterfacePtr & _program, const RenderProgramVariableInterfacePtr & _variable )
     {
+        MENGINE_UNUSED( _program );
+
         if( _variable == nullptr )
         {
             return true;
@@ -1459,7 +1484,7 @@ namespace Mengine
 
         DX11RenderProgramVariable * dx9_variable = _variable.getT<DX11RenderProgramVariable *>();
 
-        bool successful = dx9_variable->apply( m_pD3DDevice, m_pD3DDeviceImmediateContext, _program );
+        bool successful = dx9_variable->apply( m_pD3DDevice, m_pD3DDeviceImmediateContext );
 
         return successful;
     }
@@ -1524,12 +1549,12 @@ namespace Mengine
 
         HWND hWnd = win32Extension->getWindowHandle();
 
-        IF_DXCALL( _dxgiFactory, CreateSwapChainForHwnd, (m_pD3DDevice.Get(), hWnd, &swapChainDesc, NULL, NULL, &dxgiSwapChain) )
+        MENGINE_IF_DX11_CALL( _dxgiFactory, CreateSwapChainForHwnd, (m_pD3DDevice.Get(), hWnd, &swapChainDesc, NULL, NULL, &dxgiSwapChain) )
         {
             return false;
         }
 
-        IF_DXCALL( _dxgiFactory, MakeWindowAssociation, (hWnd, DXGI_MWA_NO_WINDOW_CHANGES | DXGI_MWA_NO_ALT_ENTER) )
+        MENGINE_IF_DX11_CALL( _dxgiFactory, MakeWindowAssociation, (hWnd, DXGI_MWA_NO_WINDOW_CHANGES | DXGI_MWA_NO_ALT_ENTER) )
         {
             return false;
         }
@@ -1539,7 +1564,7 @@ namespace Mengine
 
         IInspectable * iWindow = sdlExtension->getWindowHandle();
 
-        IF_DXCALL( _dxgiFactory, CreateSwapChainForCoreWindow, (m_pD3DDevice.Get(), iWindow, &swapChainDesc, NULL, &dxgiSwapChain) )
+        MENGINE_IF_DX11_CALL( _dxgiFactory, CreateSwapChainForCoreWindow, (m_pD3DDevice.Get(), iWindow, &swapChainDesc, NULL, &dxgiSwapChain) )
         {
             return false;
         }
@@ -1556,14 +1581,14 @@ namespace Mengine
     {
         // Get the pointer to the back buffer.
         ID3D11Texture2D * backBuffer;
-        IF_DXCALL( m_dxgiSwapChain, GetBuffer, (0, __uuidof(ID3D11Texture2D), (LPVOID *)&backBuffer) )
+        MENGINE_IF_DX11_CALL( m_dxgiSwapChain, GetBuffer, (0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer)) )
         {
             return false;
         }
 
         // Create the render target view with the back buffer pointer.
         ID3D11RenderTargetView * renderTargetView;
-        IF_DXCALL( m_pD3DDevice, CreateRenderTargetView, (backBuffer, nullptr, &renderTargetView) )
+        MENGINE_IF_DX11_CALL( m_pD3DDevice, CreateRenderTargetView, (backBuffer, nullptr, &renderTargetView) )
         {
             return false;
         }
@@ -1598,7 +1623,7 @@ namespace Mengine
 
         // Create the texture for the depth buffer using the filled out description.
         ID3D11Texture2D * depthStencilBuffer;
-        IF_DXCALL( m_pD3DDevice, CreateTexture2D, (&depthBufferDesc, nullptr, &depthStencilBuffer) )
+        MENGINE_IF_DX11_CALL( m_pD3DDevice, CreateTexture2D, (&depthBufferDesc, nullptr, &depthStencilBuffer) )
         {
             return false;
         }
@@ -1630,7 +1655,7 @@ namespace Mengine
 
         // Create the depth stencil view.
         ID3D11DepthStencilView * depthStencilView;
-        IF_DXCALL( m_pD3DDevice, CreateDepthStencilView, (m_depthStencilBuffer.Get(), &depthStencilViewDesc, &depthStencilView) )
+        MENGINE_IF_DX11_CALL( m_pD3DDevice, CreateDepthStencilView, (m_depthStencilBuffer.Get(), &depthStencilViewDesc, &depthStencilView) )
         {
             return false;
         }
@@ -1644,7 +1669,7 @@ namespace Mengine
     {
         // Create the rasterizer state from the description we just filled out.
         ID3D11RasterizerState * rasterizerState;
-        IF_DXCALL( m_pD3DDevice, CreateRasterizerState, (&m_D3DRasterizerStateDesc, &rasterizerState) )
+        MENGINE_IF_DX11_CALL( m_pD3DDevice, CreateRasterizerState, (&m_D3DRasterizerStateDesc, &rasterizerState) )
         {
             return false;
         }

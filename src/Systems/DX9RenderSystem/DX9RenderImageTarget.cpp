@@ -31,14 +31,14 @@ namespace Mengine
 
 #if defined(MENGINE_DEBUG)
         DWORD fillmode;
-        MENGINE_DXCALL( pD3DDevice, GetRenderState, (D3DRS_FILLMODE, &fillmode) );
+        MENGINE_DX9_CALL( pD3DDevice, GetRenderState, (D3DRS_FILLMODE, &fillmode) );
 
         if( fillmode != D3DFILL_WIREFRAME )
         {
-            MENGINE_DXCALL( pD3DDevice, SetTexture, (_stage, pD3DTexture) );
+            MENGINE_DX9_CALL( pD3DDevice, SetTexture, (_stage, pD3DTexture) );
         }
 #else
-        MENGINE_DXCALL( pD3DDevice, SetTexture, (_stage, pD3DTexture) );
+        MENGINE_DX9_CALL( pD3DDevice, SetTexture, (_stage, pD3DTexture) );
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
@@ -46,7 +46,7 @@ namespace Mengine
     {
         IDirect3DDevice9 * pD3DDevice = m_target->getDirect3dDevice9();
 
-        MENGINE_DXCALL( pD3DDevice, SetTexture, (_stage, nullptr) );
+        MENGINE_DX9_CALL( pD3DDevice, SetTexture, (_stage, nullptr) );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderImageTarget::setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider )

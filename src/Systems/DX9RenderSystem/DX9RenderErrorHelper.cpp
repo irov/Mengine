@@ -55,7 +55,7 @@ namespace Mengine
     }
 }
 
-#if defined(MENGINE_DXRENDER_CHECK_ERROR_ENABLE)
+#if defined(MENGINE_DX9_CHECK_ERROR_ENABLE)
 #   include "Kernel/Logger.h"
 
 namespace Mengine

@@ -27,8 +27,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX11RenderImage::~DX11RenderImage()
     {
-        MENGINE_ASSERTION_FATAL( m_pD3DTexture == nullptr );
-        MENGINE_ASSERTION_FATAL( m_pD3DResourceView == nullptr );
+        MENGINE_ASSERTION_FATAL( m_pD3DTexture == nullptr, "D3D texture is not null" );
+        MENGINE_ASSERTION_FATAL( m_pD3DResourceView == nullptr, "D3D resource view is not null" );
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderImage::initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _pixelFormat )
@@ -73,7 +73,7 @@ namespace Mengine
         const ID3D11DevicePtr & pD3DDevice = this->getDirect3D11Device();
 
         ID3D11Texture2D * pD3DTexture;
-        IF_DXCALL( pD3DDevice, CreateTexture2D, (&textureDesc, nullptr, &pD3DTexture) )
+        MENGINE_IF_DX11_CALL( pD3DDevice, CreateTexture2D, (&textureDesc, nullptr, &pD3DTexture) )
         {
             return false;
         }
@@ -89,7 +89,7 @@ namespace Mengine
         shaderResourceViewDesc.Texture2D.MipLevels = textureDesc.MipLevels;
 
         ID3D11ShaderResourceView * pD3DResourceView;
-        IF_DXCALL( pD3DDevice, CreateShaderResourceView, (m_pD3DTexture.Get(), &shaderResourceViewDesc, &pD3DResourceView) )
+        MENGINE_IF_DX11_CALL( pD3DDevice, CreateShaderResourceView, (m_pD3DTexture.Get(), &shaderResourceViewDesc, &pD3DResourceView) )
         {
             return false;
         }
@@ -117,11 +117,11 @@ namespace Mengine
         D3D11_RASTERIZER_DESC RasterState;
         pImmediateContext->RSGetState(&RasterState);
 
-        DXCALL( m_pD3DDevice, GetRenderState, (D3DRS_FILLMODE, &fillmode) );
+        MENGINE_DX11_CALL( m_pD3DDevice, GetRenderState, (D3DRS_FILLMODE, &fillmode) );
 
         if( fillmode != D3DFILL_WIREFRAME )
         {
-            DXCALL( m_pD3DDevice, SetTexture, (_stage, m_pD3DTexture) );
+            MENGINE_DX11_CALL( m_pD3DDevice, SetTexture, (_stage, m_pD3DTexture) );
         }*/
 
 

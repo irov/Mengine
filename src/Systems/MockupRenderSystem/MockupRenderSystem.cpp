@@ -350,6 +350,12 @@ namespace Mengine
         return m_dxMaxCombinedTextureImageUnits;
     }
     //////////////////////////////////////////////////////////////////////////
+    uint32_t MockupRenderSystem::getMaxTextureSize() const
+    {
+        // Return a reasonable default value for mockup system
+        return 8192U;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void MockupRenderSystem::onDeviceLostPrepare()
     {
         //Empty

@@ -44,15 +44,15 @@ namespace Mengine
         );
 
         IDirect3DTexture9 * pD3DTexture = nullptr;
-        MENGINE_IF_DXCALL( m_pD3DDevice, CreateTexture, (HWWidth, HWHeight, _mipmaps, 0, D3DFormat, D3DPOOL_MANAGED, &pD3DTexture, NULL) )
+        MENGINE_IF_DX9_CALL( m_pD3DDevice, CreateTexture, (HWWidth, HWHeight, _mipmaps, 0, D3DFormat, D3DPOOL_MANAGED, &pD3DTexture, NULL) )
         {
             return false;
         }
 
         D3DSURFACE_DESC texDesc;
-        MENGINE_IF_DXCALL( pD3DTexture, GetLevelDesc, (0, &texDesc) )
+        MENGINE_IF_DX9_CALL( pD3DTexture, GetLevelDesc, (0, &texDesc) )
         {
-            MENGINE_DXRELEASE( pD3DTexture );
+            MENGINE_DX9_RELEASE( pD3DTexture );
 
             return false;
         }
@@ -90,7 +90,7 @@ namespace Mengine
             STATISTIC_DEC_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_COUNT );
             STATISTIC_DEL_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE, Helper::getTextureMemorySize( m_hwWidth, m_hwHeight, m_hwPixelFormat ) );
 
-            MENGINE_DXRELEASE( m_pD3DTexture );
+            MENGINE_DX9_RELEASE( m_pD3DTexture );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -98,20 +98,20 @@ namespace Mengine
     {
 #if defined(MENGINE_DEBUG)
         DWORD fillmode;
-        MENGINE_DXCALL( m_pD3DDevice, GetRenderState, (D3DRS_FILLMODE, &fillmode) );
+        MENGINE_DX9_CALL( m_pD3DDevice, GetRenderState, (D3DRS_FILLMODE, &fillmode) );
 
         if( fillmode != D3DFILL_WIREFRAME )
         {
-            MENGINE_DXCALL( m_pD3DDevice, SetTexture, (_stage, m_pD3DTexture) );
+            MENGINE_DX9_CALL( m_pD3DDevice, SetTexture, (_stage, m_pD3DTexture) );
         }
 #else
-        MENGINE_DXCALL( m_pD3DDevice, SetTexture, (_stage, m_pD3DTexture) );
+        MENGINE_DX9_CALL( m_pD3DDevice, SetTexture, (_stage, m_pD3DTexture) );
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderImage::unbind( uint32_t _stage )
     {
-        MENGINE_DXCALL( m_pD3DDevice, SetTexture, (_stage, nullptr) );
+        MENGINE_DX9_CALL( m_pD3DDevice, SetTexture, (_stage, nullptr) );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderImage::setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider )
@@ -143,7 +143,7 @@ namespace Mengine
         rect.right = _rect.right;
 
         D3DLOCKED_RECT TRect;
-        MENGINE_IF_DXCALL( m_pD3DTexture, LockRect, (_level, &TRect, &rect, flags) )
+        MENGINE_IF_DX9_CALL( m_pD3DTexture, LockRect, (_level, &TRect, &rect, flags) )
         {
             return nullptr;
         }
@@ -163,7 +163,7 @@ namespace Mengine
         MENGINE_UNUSED( _locked );
         MENGINE_UNUSED( _successful );
 
-        MENGINE_IF_DXCALL( m_pD3DTexture, UnlockRect, (_level) )
+        MENGINE_IF_DX9_CALL( m_pD3DTexture, UnlockRect, (_level) )
         {
             return false;
         }

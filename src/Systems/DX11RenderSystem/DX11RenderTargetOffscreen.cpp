@@ -18,7 +18,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX11RenderTargetOffscreen::~DX11RenderTargetOffscreen()
     {
-        MENGINE_ASSERTION_FATAL( m_pD3DTexture == nullptr );
+        MENGINE_ASSERTION_FATAL( m_pD3DTexture == nullptr, "Texture is not null" );
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderTargetOffscreen::initialize( uint32_t _width, uint32_t _height, ID3D11Texture2D * _textureSource )
@@ -34,7 +34,7 @@ namespace Mengine
         const ID3D11DevicePtr & pD3DDevice = this->getDirect3D11Device();
 
         ID3D11Texture2D * pD3DTexture;
-        IF_DXCALL( pD3DDevice, CreateTexture2D, (&textureDesc, nullptr, &pD3DTexture) )
+        MENGINE_IF_DX11_CALL( pD3DDevice, CreateTexture2D, (&textureDesc, nullptr, &pD3DTexture) )
         {
             return false;
         }

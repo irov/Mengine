@@ -75,11 +75,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32CryptographySystem::generateRandomHexadecimal( size_t _length, Char * const _hexadecimal, bool _lowercase ) const
     {
-        MENGINE_ASSERTION_FATAL( _length < 1024, "invalid length %u", _length );
-        MENGINE_ASSERTION_FATAL( _length % 2 == 0, "invalid odd %u", _length );
+        MENGINE_ASSERTION_FATAL( _length < 1024, "invalid length %zu", _length );
+        MENGINE_ASSERTION_FATAL( _length % 2 == 0, "invalid odd %zu", _length );
+
+        DWORD dwLen = (DWORD)_length / 2;
 
         BYTE pbData[512];
-        if( ::CryptGenRandom( m_hCryptProvider, _length / 2, pbData ) == FALSE )
+        if( ::CryptGenRandom( m_hCryptProvider, dwLen, pbData ) == FALSE )
         {
             LOGGER_ERROR( "CryptGenRandom invalid %ls"
                 , Helper::Win32GetLastErrorMessageW()

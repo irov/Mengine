@@ -57,13 +57,13 @@ namespace Mengine
         FrameworkFactoryInterfacePtr factory = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Framework" ), _name );
 
         MENGINE_ASSERTION_MEMORY_PANIC( factory, "not found framework '%s'"
-            , _name.c_str() 
+            , _name.c_str()
         );
 
         FrameworkInterfacePtr framework = factory->createFramework( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( framework, "invalid create framework '%s'"
-            , _name.c_str() 
+            , _name.c_str()
         );
 
         framework->setName( _name );

@@ -42,7 +42,7 @@ namespace Mengine
                 return (aCROSSbp >= 0.f) && (bCROSScp >= 0.f) && (cCROSSap >= 0.f);
             }
             //////////////////////////////////////////////////////////////////////////
-            static bool snip( const VectorPoints & _points, Polygon::size_type u, Polygon::size_type v, Polygon::size_type w, Polygon::size_type n, Polygon::size_type * const V )
+            static bool snip( const VectorPoints & _points, Polygon::size_type u, Polygon::size_type v, Polygon::size_type w, Polygon::size_type n, VectorPolygonIndices::value_type * const V )
             {
                 Polygon::size_type Vu = V[u];
                 Polygon::size_type Vv = V[v];
@@ -215,36 +215,38 @@ namespace Mengine
             const VectorPoints & polygon_points = _polygon.getPoints();
             VectorPoints::size_type polygon_size = _polygon.size();
 
-            --polygon_size;
+            VectorPolygonIndices::value_type n = (VectorPolygonIndices::value_type)polygon_size;
 
-            if( polygon_size < 3 )
+            --n;
+
+            if( n < 3 )
             {
                 return false;
             }
 
-            VectorPoints::size_type * V = Helper::allocateArrayT<VectorPoints::size_type>( polygon_size );  /* we want a counter-clockwise polygon in V */
+            VectorPolygonIndices::value_type * V = Helper::allocateArrayT<VectorPolygonIndices::value_type>( n );  /* we want a counter-clockwise polygon in V */
 
             float polygon_area = _polygon.area();
 
             if( polygon_area < 0.f )
             {
-                for( VectorPoints::size_type v = 0; v != polygon_size; ++v )
+                for( VectorPolygonIndices::value_type v = 0; v != n; ++v )
                 {
                     V[v] = v;
                 }
             }
             else
             {
-                for( VectorPoints::size_type v = 0; v != polygon_size; ++v )
+                for( VectorPolygonIndices::value_type v = 0; v != n; ++v )
                 {
-                    V[v] = (polygon_size - 1) - v;
+                    V[v] = (n - 1) - v;
                 }
             }
 
-            VectorPoints::size_type nv = polygon_size;
-            VectorPoints::size_type count = 2 * nv;
+            VectorPolygonIndices::value_type nv = n;
+            VectorPolygonIndices::value_type count = 2 * nv;
 
-            for( VectorPoints::size_type v = nv - 1; nv > 2; )
+            for( VectorPolygonIndices::value_type v = nv - 1; nv > 2; )
             {
                 if( 0 == (count--) )
                 {
@@ -253,7 +255,7 @@ namespace Mengine
                     return false;
                 }
 
-                VectorPoints::size_type u = v;
+                VectorPolygonIndices::value_type u = v;
 
                 if( nv <= u )
                 {
@@ -267,7 +269,7 @@ namespace Mengine
                     v = 0;
                 }
 
-                VectorPoints::size_type w = v + 1;
+                VectorPolygonIndices::value_type w = v + 1;
 
                 if( nv <= w )
                 {
@@ -276,9 +278,9 @@ namespace Mengine
 
                 if( Detail::snip( polygon_points, u, v, w, nv, V ) == true )
                 {
-                    VectorPoints::size_type a = V[u];
-                    VectorPoints::size_type b = V[v];
-                    VectorPoints::size_type c = V[w];
+                    VectorPolygonIndices::value_type a = V[u];
+                    VectorPolygonIndices::value_type b = V[v];
+                    VectorPolygonIndices::value_type c = V[w];
 
                     const mt::vec2f & Ca = polygon_points[a];
                     const mt::vec2f & Cb = polygon_points[b];
@@ -288,7 +290,7 @@ namespace Mengine
                     _result->emplace_back( Cb );
                     _result->emplace_back( Cc );
 
-                    for( VectorPoints::size_type s = v, t = v + 1; t < nv; s++, t++ )
+                    for( VectorPolygonIndices::value_type s = v, t = v + 1; t < nv; s++, t++ )
                     {
                         V[s] = V[t];
                     }
@@ -307,7 +309,9 @@ namespace Mengine
         bool triangulate_indices( const Polygon & _polygon, VectorPolygonIndices * const _result )
         {
             const VectorPoints & polygon_points = _polygon.getPoints();
-            VectorPoints::size_type n = _polygon.size();
+            VectorPoints::size_type polygon_size = _polygon.size();
+
+            VectorPolygonIndices::value_type n = (VectorPolygonIndices::value_type)polygon_size;
 
             --n;
 
@@ -316,29 +320,29 @@ namespace Mengine
                 return false;
             }
 
-            VectorPoints::size_type * V = Helper::allocateArrayT<VectorPoints::size_type>( n );
+            VectorPolygonIndices::value_type * V = Helper::allocateArrayT<VectorPolygonIndices::value_type>( n );
 
             float polygon_area = _polygon.area();
 
             if( polygon_area < 0.f )
             {
-                for( VectorPoints::size_type v = 0; v < n; v++ )
+                for( VectorPolygonIndices::value_type v = 0; v < n; v++ )
                 {
                     V[v] = v;
                 }
             }
             else
             {
-                for( VectorPoints::size_type v = 0; v < n; v++ )
+                for( VectorPolygonIndices::value_type v = 0; v < n; v++ )
                 {
                     V[v] = (n - 1) - v;
                 }
             }
 
-            VectorPoints::size_type nv = n;
-            VectorPoints::size_type count = 2 * nv;
+            VectorPolygonIndices::value_type nv = n;
+            VectorPolygonIndices::value_type count = 2 * nv;
 
-            for( VectorPoints::size_type v = nv - 1; nv > 2; )
+            for( VectorPolygonIndices::value_type v = nv - 1; nv > 2; )
             {
                 if( 0 == (count--) )
                 {
@@ -347,7 +351,7 @@ namespace Mengine
                     return false;
                 }
 
-                VectorPoints::size_type u = v;
+                VectorPolygonIndices::value_type u = v;
 
                 if( nv <= u )
                 {
@@ -361,7 +365,7 @@ namespace Mengine
                     v = 0;
                 }
 
-                VectorPoints::size_type w = v + 1;
+                VectorPolygonIndices::value_type w = v + 1;
 
                 if( nv <= w )
                 {
@@ -370,15 +374,15 @@ namespace Mengine
 
                 if( Detail::snip( polygon_points, u, v, w, nv, V ) == true )
                 {
-                    VectorPoints::size_type a = V[u];
-                    VectorPoints::size_type b = V[v];
-                    VectorPoints::size_type c = V[w];
+                    VectorPolygonIndices::value_type a = V[u];
+                    VectorPolygonIndices::value_type b = V[v];
+                    VectorPolygonIndices::value_type c = V[w];
 
                     _result->emplace_back( a );
                     _result->emplace_back( b );
                     _result->emplace_back( c );
 
-                    for( VectorPoints::size_type s = v, t = v + 1; t < nv; s++, t++ )
+                    for( VectorPolygonIndices::value_type s = v, t = v + 1; t < nv; s++, t++ )
                     {
                         V[s] = V[t];
                     }

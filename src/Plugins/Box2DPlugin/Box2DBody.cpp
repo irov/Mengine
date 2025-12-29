@@ -54,7 +54,7 @@ namespace Mengine
         , uint32_t _collisionMask
         , int32_t _groupIndex )
     {
-        uint32_t num_points = _polygon.size();
+        Polygon::size_type num_points = _polygon.size();
 
         if( num_points > B2_MAX_POLYGON_VERTICES)
         {
@@ -69,7 +69,7 @@ namespace Mengine
             vertices[i] = m_scaler.toBox2DWorld( v );
         }
 
-        b2Hull hull = ::b2ComputeHull( vertices, num_points );
+        b2Hull hull = ::b2ComputeHull( vertices, (int)num_points );
 
         MENGINE_ASSERTION_FATAL( ::b2ValidateHull( &hull ) == true, "invalid hull" );
 

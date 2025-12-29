@@ -18,6 +18,7 @@
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/StatisticHelper.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/TextureHelper.h"
 
 #include "Kernel/Logger.h"
 
@@ -925,6 +926,24 @@ namespace Mengine
             , hwFormat
         );
 
+        uint32_t hwWidth = Helper::getTexturePow2( _width );
+        uint32_t hwHeight = Helper::getTexturePow2( _height );
+        uint32_t maxTextureSize = this->getMaxTextureSize();
+
+        if( maxTextureSize > 0 && (hwWidth > maxTextureSize || hwHeight > maxTextureSize) )
+        {
+            LOGGER_ERROR( "invalid texture size exceeds maximum: size %u:%u hwSize %u:%u maxSize %u PF %u"
+                , _width
+                , _height
+                , hwWidth
+                , hwHeight
+                , maxTextureSize
+                , hwFormat
+            );
+
+            return nullptr;
+        }
+
         OpenGLRenderImagePtr image = m_factoryRenderImage->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( image, "invalid create" );
@@ -1048,6 +1067,11 @@ namespace Mengine
     uint32_t OpenGLRenderSystem::getMaxCombinedTextureImageUnits() const
     {
         return m_glMaxCombinedTextureImageUnits;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t OpenGLRenderSystem::getMaxTextureSize() const
+    {
+        return m_glMaxTextureSize;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onWindowMovedOrResized()

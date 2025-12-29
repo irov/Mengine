@@ -57,7 +57,7 @@ namespace Mengine
         depthStencilStateDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
         ID3D11DepthStencilState * depthStencilState;
-        IF_DXCALL( _pD3DDevice, CreateDepthStencilState, (&depthStencilStateDesc, &depthStencilState) )
+        MENGINE_IF_DX11_CALL( _pD3DDevice, CreateDepthStencilState, (&depthStencilStateDesc, &depthStencilState) )
         {
             return false;
         }
@@ -97,7 +97,7 @@ namespace Mengine
         }
 
         ID3D11BlendState * blendState;
-        IF_DXCALL( _pD3DDevice, CreateBlendState, (&blendStateDesc, &blendState) )
+        MENGINE_IF_DX11_CALL( _pD3DDevice, CreateBlendState, (&blendStateDesc, &blendState) )
         {
             return false;
         }
@@ -118,7 +118,7 @@ namespace Mengine
             samplerDesc.MaxLOD = FLT_MAX;
 
             ID3D11SamplerState * samplerState;
-            IF_DXCALL( _pD3DDevice, CreateSamplerState, (&samplerDesc, &samplerState) )
+            MENGINE_IF_DX11_CALL( _pD3DDevice, CreateSamplerState, (&samplerDesc, &samplerState) )
             {
                 return false;
             }

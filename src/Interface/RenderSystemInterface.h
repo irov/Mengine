@@ -166,6 +166,9 @@ namespace Mengine
         virtual uint32_t getMaxCombinedTextureImageUnits() const = 0;
 
     public:
+        virtual uint32_t getMaxTextureSize() const = 0;
+
+    public:
         virtual uint32_t getAvailableTextureMemory() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////

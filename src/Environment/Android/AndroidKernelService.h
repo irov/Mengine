@@ -7,7 +7,7 @@
 #include "ConstStringHolderJString.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/DispatchableBase.h"
+#include "Kernel/BaseLifecycle.h"
 #include "Kernel/Pool.h"
 #include "Kernel/Vector.h"
 #include "Kernel/Map.h"
@@ -17,7 +17,7 @@ namespace Mengine
 {
     class AndroidKernelService
         : public ServiceBase<AndroidKernelServiceInterface>
-        , public DispatchableBase
+        , public BaseLifecycle
     {
     public:
         AndroidKernelService();
@@ -54,10 +54,10 @@ namespace Mengine
         ThreadMutexInterfacePtr m_mutexJStrings;
 
         typedef Pool<ConstStringHolderJString, 256> PoolConstStringHolderJString;
-        PoolConstStringHolderJString m_poolJString;
+        PoolConstStringHolderJString m_poolJStrings;
 
         typedef IntrusiveList<ConstStringHolderJString> IntrusiveListConstStringHolderJString;
-        IntrusiveListConstStringHolderJString m_holdersJString;
+        IntrusiveListConstStringHolderJString m_holdersJStrings;
 
         ThreadMutexInterfacePtr m_semaphoresMutex;
         ThreadMutexInterfacePtr m_callbacksMutex;

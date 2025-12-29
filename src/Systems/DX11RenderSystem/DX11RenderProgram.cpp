@@ -78,7 +78,7 @@ namespace Mengine
         descConstBuffer.ByteWidth = 16 * 4;
 
         ID3D11Buffer * bindMatrixBuffer;
-        IF_DXCALL( _pD3DDevice, CreateBuffer, (&descConstBuffer, nullptr, &bindMatrixBuffer) )
+        MENGINE_IF_DX11_CALL( _pD3DDevice, CreateBuffer, (&descConstBuffer, nullptr, &bindMatrixBuffer) )
         {
             return false;
         }
@@ -170,7 +170,7 @@ namespace Mengine
         MENGINE_UNUSED( _projectionMatrix );
 
         D3D11_MAPPED_SUBRESOURCE mappedResource;
-        IF_DXCALL( _pImmediateContext, Map, (m_bindMatrixBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource) )
+        MENGINE_IF_DX11_CALL( _pImmediateContext, Map, (m_bindMatrixBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource) )
         {
             return;
         }

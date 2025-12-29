@@ -31,7 +31,7 @@ namespace Mengine
         stagingTextureDesc.Usage = D3D11_USAGE_STAGING;
 
         ID3D11Texture2D * pD3DStagingTexture;
-        IF_DXCALL( _pD3DDevice, CreateTexture2D, (&stagingTextureDesc, NULL, &pD3DStagingTexture) )
+        MENGINE_IF_DX11_CALL( _pD3DDevice, CreateTexture2D, (&stagingTextureDesc, NULL, &pD3DStagingTexture) )
         {
             LOGGER_ERROR( "invalid create texture 2d [%u:%u]"
                 , _width
@@ -56,7 +56,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderImageLocked::lock( const ID3D11DeviceContextPtr & _pImmediateContext )
     {
-        IF_DXCALL( _pImmediateContext, Map, (m_pD3DStagingTexture.Get(), 0, D3D11_MAP_WRITE, 0, &m_stagingTextureMemory) )
+        MENGINE_IF_DX11_CALL( _pImmediateContext, Map, (m_pD3DStagingTexture.Get(), 0, D3D11_MAP_WRITE, 0, &m_stagingTextureMemory) )
         {
             LOGGER_ERROR( "invalid map staging texture" );
 

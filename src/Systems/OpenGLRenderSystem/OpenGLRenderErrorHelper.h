@@ -5,11 +5,7 @@
 #include "Config/StdInt.h"
 
 #if !defined(MENGINE_OPENGL_RENDER_CHECK_ERROR)
-#   if defined(MENGINE_DEBUG)
-#       define MENGINE_OPENGL_RENDER_CHECK_ERROR 1
-#   else
-#       define MENGINE_OPENGL_RENDER_CHECK_ERROR 0
-#   endif
+#   define MENGINE_OPENGL_RENDER_CHECK_ERROR 1
 #endif
 
 #if MENGINE_OPENGL_RENDER_CHECK_ERROR == 1

@@ -3,11 +3,7 @@
 #include "Config/Config.h"
 
 #if !defined(MENGINE_OPENAL_RENDER_CHECK_ERROR)
-#   if defined(MENGINE_DEBUG)
-#       define MENGINE_OPENAL_RENDER_CHECK_ERROR 1
-#   else
-#       define MENGINE_OPENAL_RENDER_CHECK_ERROR 0
-#   endif
+#   define MENGINE_OPENAL_RENDER_CHECK_ERROR 1
 #endif
 
 #if MENGINE_OPENAL_RENDER_CHECK_ERROR == 1

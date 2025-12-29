@@ -48,6 +48,7 @@ namespace Mengine
 
     public:
         bool createRenderWindow( const RenderWindowDesc * _windowDesc ) override;
+        void destroyRenderWindow() override;
 
     public:
         void setProjectionMatrix( const mt::mat4f & _projection ) override;
@@ -120,6 +121,8 @@ namespace Mengine
         void changeWindowMode( const Resolution & _resolution, bool _fullscreen ) override;
 
         uint32_t getMaxCombinedTextureImageUnits() const override;
+
+        uint32_t getMaxTextureSize() const override;
 
         void onDeviceLostPrepare() override;
         bool onDeviceLostRestore() override;

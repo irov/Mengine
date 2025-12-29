@@ -115,6 +115,8 @@ namespace Mengine
 
         uint32_t getMaxCombinedTextureImageUnits() const override;
 
+        uint32_t getMaxTextureSize() const override;
+
         void onWindowMovedOrResized() override;
         void onWindowClose() override;
 

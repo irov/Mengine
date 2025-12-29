@@ -20,9 +20,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX11RenderTargetTexture::~DX11RenderTargetTexture()
     {
-        MENGINE_ASSERTION_FATAL( m_pD3DTexture == nullptr );
-        MENGINE_ASSERTION_FATAL( m_pD3DResourceView == nullptr );
-        MENGINE_ASSERTION_FATAL( m_pRenderTargetView == nullptr );
+        MENGINE_ASSERTION_FATAL( m_pD3DTexture == nullptr, "Texture is not null" );
+        MENGINE_ASSERTION_FATAL( m_pD3DResourceView == nullptr, "Resource view is not null" );
+        MENGINE_ASSERTION_FATAL( m_pRenderTargetView == nullptr, "Render target view is not null" );
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderTargetTexture::initialize( uint32_t _width, uint32_t _height, EPixelFormat _format )
@@ -62,7 +62,7 @@ namespace Mengine
         const ID3D11DevicePtr & pD3DDevice = this->getDirect3D11Device();
 
         ID3D11Texture2D * pD3DTexture;
-        IF_DXCALL( pD3DDevice, CreateTexture2D, (&m_textureDesc, nullptr, &pD3DTexture) )
+        MENGINE_IF_DX11_CALL( pD3DDevice, CreateTexture2D, (&m_textureDesc, nullptr, &pD3DTexture) )
         {
             return nullptr;
         }
@@ -78,7 +78,7 @@ namespace Mengine
         shaderResourceViewDesc.Texture2D.MipLevels = m_textureDesc.MipLevels;
 
         ID3D11ShaderResourceView * pD3DResourceView;
-        IF_DXCALL( pD3DDevice, CreateShaderResourceView, (m_pD3DTexture.Get(), &shaderResourceViewDesc, &pD3DResourceView) )
+        MENGINE_IF_DX11_CALL( pD3DDevice, CreateShaderResourceView, (m_pD3DTexture.Get(), &shaderResourceViewDesc, &pD3DResourceView) )
         {
             return nullptr;
         }
@@ -93,7 +93,7 @@ namespace Mengine
         renderTargetViewDesc.Texture2D.MipSlice = 0;
 
         ID3D11RenderTargetView * pRenderTargetView;
-        IF_DXCALL( pD3DDevice, CreateRenderTargetView, (m_pD3DTexture.Get(), &renderTargetViewDesc, &pRenderTargetView) )
+        MENGINE_IF_DX11_CALL( pD3DDevice, CreateRenderTargetView, (m_pD3DTexture.Get(), &renderTargetViewDesc, &pRenderTargetView) )
         {
             return nullptr;
         }

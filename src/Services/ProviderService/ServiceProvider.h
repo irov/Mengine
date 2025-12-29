@@ -119,10 +119,10 @@ namespace Mengine
 
         uint32_t m_waitsCount;
 
-        SpinLock m_futexServices;
-        SpinLock m_futexDependencies;
-        SpinLock m_futexLeaves;
-        SpinLock m_futexWaits;
+        SpinLock m_spinLockServices;
+        SpinLock m_spinLockDependencies;
+        SpinLock m_spinLockLeaves;
+        SpinLock m_spinLockWaits;
 
 #if defined(MENGINE_DEBUG)
         const Char * m_initializeServiceName;

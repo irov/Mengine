@@ -8,17 +8,17 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static size_t get_thread_cookie()
+        static uint32_t get_thread_cookie()
         {
-            static Atomic<size_t> s_cookie_counter{0};
-            static MENGINE_THREAD_LOCAL size_t s_thread_cookie = 0;
+            static AtomicUInt32 s_cookie_counter{0};
+            static MENGINE_THREAD_LOCAL uint32_t s_thread_cookie = 0;
 
             if( s_thread_cookie != 0 )
             {
                 return s_thread_cookie;
             }
 
-            size_t cookie;
+            uint32_t cookie;
 
             do
             {
@@ -46,16 +46,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SpinLock::lock()
     {
-        size_t me = Detail::get_thread_cookie();
+        uint32_t me = Detail::get_thread_cookie();
 
-        if( m_owner.load( StdAtomic::memory_order_relaxed ) == me )
+        if( m_owner.load( StdAtomic::memory_order_acquire ) == me )
         {
-            m_lock.fetch_add( 1, StdAtomic::memory_order_relaxed );
+            m_lock.fetch_add( 1, StdAtomic::memory_order_acq_rel );
 
             return;
         }
 
-        size_t expected = 0;
+        uint32_t expected = 0;
 
         while( m_owner.compare_exchange_weak( expected, me, StdAtomic::memory_order_acquire, StdAtomic::memory_order_relaxed ) == false )
         {
@@ -64,21 +64,21 @@ namespace Mengine
             StdThread::yield();
         }
 
-        m_lock.store( 1, StdAtomic::memory_order_relaxed );
+        m_lock.store( 1, StdAtomic::memory_order_release );
     }
     //////////////////////////////////////////////////////////////////////////
     void SpinLock::unlock()
     {
-        size_t me = Detail::get_thread_cookie();
+        uint32_t me = Detail::get_thread_cookie();
 
-        if( m_owner.load( StdAtomic::memory_order_relaxed ) != me )
+        if( m_owner.load( StdAtomic::memory_order_acquire ) != me )
         {
             MENGINE_ASSERTION( false, "SpinLock::unlock invalid owner thread id" );
 
             return;
         }
 
-        size_t lock_count = m_lock.fetch_sub( 1, StdAtomic::memory_order_relaxed );
+        int32_t lock_count = m_lock.fetch_sub( 1, StdAtomic::memory_order_acq_rel );
 
         MENGINE_ASSERTION( lock_count > 0, "SpinLock::unlock invalid lock count" );
 

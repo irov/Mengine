@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/RenderProgramVariableInterface.h"
+#include "Interface/RenderProgramInterface.h"
 
 #include "Environment/DirectX11/DX11RenderIncluder.h"
 
@@ -32,7 +33,7 @@ namespace Mengine
         void updatePixelVariables( uint32_t _index, const float * _values, uint32_t _size, uint32_t _count ) override;
 
     public:
-        bool apply( const ID3D11DevicePtr & _pD3DDevice, const ID3D11DeviceContextPtr & _pImmediateContext, const RenderProgramInterfacePtr & _program );
+        bool apply( const ID3D11DevicePtr & _pD3DDevice, const ID3D11DeviceContextPtr & _pImmediateContext );
 
     public:
         struct ProgramVariableDesc

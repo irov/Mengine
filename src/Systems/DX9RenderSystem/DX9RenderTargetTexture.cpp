@@ -43,15 +43,15 @@ namespace Mengine
         uint32_t HWHeight = Helper::getTexturePow2( _height );
 
         IDirect3DTexture9 * pD3DTexture;
-        MENGINE_IF_DXCALL( m_pD3DDevice, CreateTexture, (HWWidth, HWHeight, 1, D3DUSAGE_RENDERTARGET, d3dFormat, D3DPOOL_DEFAULT, &pD3DTexture, NULL) )
+        MENGINE_IF_DX9_CALL( m_pD3DDevice, CreateTexture, (HWWidth, HWHeight, 1, D3DUSAGE_RENDERTARGET, d3dFormat, D3DPOOL_DEFAULT, &pD3DTexture, NULL) )
         {
             return false;
         }
 
         D3DSURFACE_DESC texDesc;
-        MENGINE_IF_DXCALL( pD3DTexture, GetLevelDesc, (0, &texDesc) )
+        MENGINE_IF_DX9_CALL( pD3DTexture, GetLevelDesc, (0, &texDesc) )
         {
-            MENGINE_DXRELEASE( pD3DTexture );
+            MENGINE_DX9_RELEASE( pD3DTexture );
 
             return false;
         }
@@ -77,7 +77,7 @@ namespace Mengine
 
         if( this->_initialize() == false )
         {
-            MENGINE_DXRELEASE( m_pD3DTexture );
+            MENGINE_DX9_RELEASE( m_pD3DTexture );
             m_pD3DTexture = NULL;
 
             return false;
@@ -102,7 +102,7 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( m_pD3DSurfaceOld == nullptr, "surface not released" );
         MENGINE_ASSERTION_FATAL( m_pD3DSurfaceCurrent == nullptr, "surface not released" );
 
-        MENGINE_DXRELEASE( m_pD3DTexture );
+        MENGINE_DX9_RELEASE( m_pD3DTexture );
 
         STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_FREE );
         STATISTIC_DEC_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_COUNT );
@@ -154,7 +154,7 @@ namespace Mengine
     bool DX9RenderTargetTexture::begin() const
     {
         IDirect3DSurface9 * pD3DSurface;
-        MENGINE_DXCALL( m_pD3DTexture, GetSurfaceLevel, (0, &pD3DSurface) );
+        MENGINE_DX9_CALL( m_pD3DTexture, GetSurfaceLevel, (0, &pD3DSurface) );
 
         if( pD3DSurface == nullptr )
         {
@@ -162,17 +162,17 @@ namespace Mengine
         }
 
         IDirect3DSurface9 * pD3DSurfaceOld;
-        MENGINE_DXCALL( m_pD3DDevice, GetRenderTarget, (0, &pD3DSurfaceOld) );
+        MENGINE_DX9_CALL( m_pD3DDevice, GetRenderTarget, (0, &pD3DSurfaceOld) );
 
         D3DVIEWPORT9 VPOld;
-        MENGINE_IF_DXCALL( m_pD3DDevice, GetViewport, (&VPOld) )
+        MENGINE_IF_DX9_CALL( m_pD3DDevice, GetViewport, (&VPOld) )
         {
             return false;
         }
 
         m_VPOld = VPOld;
 
-        MENGINE_DXCALL( m_pD3DDevice, SetRenderTarget, (0, pD3DSurface) );
+        MENGINE_DX9_CALL( m_pD3DDevice, SetRenderTarget, (0, pD3DSurface) );
 
         m_pD3DSurfaceOld = pD3DSurfaceOld;
         m_pD3DSurfaceCurrent = pD3DSurface;
@@ -185,7 +185,7 @@ namespace Mengine
         VP.MinZ = 0.f;
         VP.MaxZ = 1.f;
 
-        MENGINE_IF_DXCALL( m_pD3DDevice, SetViewport, (&VP) )
+        MENGINE_IF_DX9_CALL( m_pD3DDevice, SetViewport, (&VP) )
         {
             return false;
         }
@@ -195,9 +195,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderTargetTexture::end() const
     {
-        MENGINE_DXCALL( m_pD3DDevice, SetRenderTarget, (0, m_pD3DSurfaceOld) );
+        MENGINE_DX9_CALL( m_pD3DDevice, SetRenderTarget, (0, m_pD3DSurfaceOld) );
 
-        MENGINE_DXCALL( m_pD3DDevice, SetViewport, (&m_VPOld) );
+        MENGINE_DX9_CALL( m_pD3DDevice, SetViewport, (&m_VPOld) );
 
         if( m_pD3DSurfaceOld != nullptr )
         {
@@ -238,7 +238,7 @@ namespace Mengine
         STATISTIC_DEC_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_COUNT );
         STATISTIC_DEL_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE, Helper::getTextureMemorySize( m_hwWidth, m_hwHeight, m_hwPixelFormat ) );
 
-        MENGINE_DXRELEASE( m_pD3DTexture );
+        MENGINE_DX9_RELEASE( m_pD3DTexture );
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderTargetTexture::onRenderRestore()
@@ -248,7 +248,7 @@ namespace Mengine
         D3DFORMAT D3DFormat = Helper::toD3DFormat( m_hwPixelFormat );
 
         IDirect3DTexture9 * pD3DTexture;
-        MENGINE_IF_DXCALL( m_pD3DDevice, CreateTexture, (m_hwWidth, m_hwHeight, 1, D3DUSAGE_RENDERTARGET, D3DFormat, D3DPOOL_DEFAULT, &pD3DTexture, nullptr) )
+        MENGINE_IF_DX9_CALL( m_pD3DDevice, CreateTexture, (m_hwWidth, m_hwHeight, 1, D3DUSAGE_RENDERTARGET, D3DFormat, D3DPOOL_DEFAULT, &pD3DTexture, nullptr) )
         {
             return false;
         }

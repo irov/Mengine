@@ -60,7 +60,7 @@ namespace Mengine
             );
 
             IDirect3DVertexShader9 * pD3DVertexShader;
-            MENGINE_IF_DXCALL( _pD3DDevice, CreateVertexShader, (dx_source, &pD3DVertexShader) )
+            MENGINE_IF_DX9_CALL( _pD3DDevice, CreateVertexShader, (dx_source, &pD3DVertexShader) )
             {
                 return false;
             }
@@ -77,13 +77,13 @@ namespace Mengine
 
         if( referenceCount == 0 )
         {
-            MENGINE_DXRELEASE( m_pD3DVertexShader );
+            MENGINE_DX9_RELEASE( m_pD3DVertexShader );
         }
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderVertexShader::enable( IDirect3DDevice9 * _pD3DDevice )
     {
-        MENGINE_DXCALL( _pD3DDevice, SetVertexShader, (m_pD3DVertexShader) );
+        MENGINE_DX9_CALL( _pD3DDevice, SetVertexShader, (m_pD3DVertexShader) );
     }
     //////////////////////////////////////////////////////////////////////////
 }

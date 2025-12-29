@@ -109,6 +109,8 @@ namespace Mengine
 
         uint32_t getMaxCombinedTextureImageUnits() const override;
 
+        uint32_t getMaxTextureSize() const override;
+
         void onDeviceLostPrepare() override;
         bool onDeviceLostRestore() override;
 

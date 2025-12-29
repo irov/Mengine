@@ -55,30 +55,31 @@ namespace Mengine
             }
         }
     }
-    //////////////////////////////////////////////////////////////////////////
-    DX11ErrorHelper::DX11ErrorHelper( const Char * _file, uint32_t _line, const Char * _method )
-        : m_file( _file )
-        , m_line( _line )
-        , m_method( _method )
-    {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool DX11ErrorHelper::operator == ( HRESULT _hr ) const
-    {
-        if( _hr == S_OK )
-        {
-            return false;
-        }
-
-        const Char * message = Helper::getDX11ErrorMessage( _hr );
-
-        LOGGER_VERBOSE_LEVEL( "dx11", LM_ERROR, LFILTER_NONE, LCOLOR_RED, m_file, m_line, LFLAG_SHORT | LFLAG_FILESTAMP | LFLAG_FUNCTIONSTAMP )("call '%s' get error: %s (hr:%x)"
-            , m_method
-            , message
-            , (uint32_t)_hr
-            );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
 }
+
+#if defined(MENGINE_DX11_CHECK_ERROR_ENABLE)
+#   include "Kernel/Logger.h"
+
+namespace Mengine
+{
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        bool logDX11Error( HRESULT _hr, const Char * _file, uint32_t _line, const Char * _function, const Char * _method, const String & _args )
+        {
+            const Char * message = Helper::getDX11ErrorMessage( _hr );
+
+            LOGGER_VERBOSE_LEVEL( "dx11", LM_ERROR, LFILTER_NONE, LCOLOR_RED, _file, _line, _function, LFLAG_SHORT | LFLAG_FILESTAMP | LFLAG_FUNCTIONSTAMP )("call '%s(%s)' get error: %s (hr:%x)"
+                , _method
+                , _args.c_str()
+                , message
+                , (uint32_t)_hr
+                );
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
+}
+
+#endif

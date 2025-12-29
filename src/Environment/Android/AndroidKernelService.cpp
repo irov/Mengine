@@ -107,23 +107,23 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         for( IntrusiveListConstStringHolderJString::iterator
-             it = m_holdersJString.begin();
-             it != m_holdersJString.end(); )
+             it = m_holdersJStrings.begin();
+             it != m_holdersJStrings.end(); )
         {
             IntrusiveListConstStringHolderJString::iterator it_erase = it;
 
             ConstStringHolderJString * holder = *it;
             ++it;
 
-            m_holdersJString.erase( it_erase );
+            m_holdersJStrings.erase(it_erase );
 
             holder->removeJString( jenv );
 
-            m_poolJString.destroyT( holder );
+            m_poolJStrings.destroyT(holder );
         }
 
-        m_holdersJString.clear();
-        m_poolJString.clear();
+        m_holdersJStrings.clear();
+        m_poolJStrings.clear();
 
         m_semaphoresMutex = nullptr;
         m_callbacksMutex = nullptr;
@@ -153,7 +153,7 @@ namespace Mengine
 
         MENGINE_THREAD_MUTEX_SCOPE( m_mutexJStrings );
 
-        ConstStringHolderJString * holder = m_poolJString.createT();
+        ConstStringHolderJString * holder = m_poolJStrings.createT();
 
         holder->setJString( _jenv, _value );
 
@@ -162,12 +162,12 @@ namespace Mengine
         {
             holder->removeJString( _jenv );
 
-            m_poolJString.destroyT( holder );
+            m_poolJStrings.destroyT(holder );
 
             return;
         }
 
-        m_holdersJString.push_back( holder );
+        m_holdersJStrings.push_back(holder );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidKernelService::addPlugin( const ConstString & _pluginName, jobject _jmodule )

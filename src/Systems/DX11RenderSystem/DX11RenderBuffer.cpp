@@ -28,7 +28,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX11RenderBuffer::~DX11RenderBuffer()
     {
-        MENGINE_ASSERTION_FATAL( m_pD3DBuffer == nullptr );
+        MENGINE_ASSERTION_FATAL( m_pD3DBuffer == nullptr, "D3D buffer is not null" );
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderBuffer::initializeBuffer( uint32_t _elementSize, EBufferType _bufferType )
@@ -124,7 +124,7 @@ namespace Mengine
         const ID3D11DevicePtr & pD3DDevice = this->getDirect3D11Device();
 
         ID3D11Buffer * pD3DBuffer;
-        IF_DXCALL( pD3DDevice, CreateBuffer, (&desc, _initData == nullptr ? nullptr : &InitData, &pD3DBuffer) )
+        MENGINE_IF_DX11_CALL( pD3DDevice, CreateBuffer, (&desc, _initData == nullptr ? nullptr : &InitData, &pD3DBuffer) )
         {
             return false;
         }
@@ -155,7 +155,7 @@ namespace Mengine
             return nullptr;
         }
 
-        MENGINE_ASSERTION_FATAL( m_memory->getBuffer() == nullptr );
+        MENGINE_ASSERTION_FATAL( m_memory->getBuffer() == nullptr, "Memory buffer is not null" );
 
         //uint32_t offsetSize = _offset * m_elementSize;
         //uint32_t lockSize = _count * m_elementSize;
@@ -163,7 +163,7 @@ namespace Mengine
         ID3D11DeviceContextPtr pImmediateContext = this->getDirect3D11ImmediateContext();
 
         D3D11_MAPPED_SUBRESOURCE mappedResource;
-        IF_DXCALL( pImmediateContext, Map, (m_pD3DBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource) )
+        MENGINE_IF_DX11_CALL( pImmediateContext, Map, (m_pD3DBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource) )
         {
             // TODO: add error log
             return nullptr;
@@ -221,7 +221,7 @@ namespace Mengine
 
         ID3D11DeviceContextPtr pImmediateContext = this->getDirect3D11ImmediateContext();
 
-        IF_DXCALL( pImmediateContext, Map, (m_pD3DBuffer.Get(), 0, mapFlags, 0, &mappedResource) )
+        MENGINE_IF_DX11_CALL( pImmediateContext, Map, (m_pD3DBuffer.Get(), 0, mapFlags, 0, &mappedResource) )
         {
             // TODO: add error log
             return nullptr;

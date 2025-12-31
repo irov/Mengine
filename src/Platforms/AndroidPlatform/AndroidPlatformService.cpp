@@ -355,7 +355,7 @@ extern "C"
         platformExtension->androidNativeAccelerationEvent( x, y, z );
     }
     ///////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1pauseEvent )(JNIEnv * env, jclass cls)
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1pauseEvent )(JNIEnv * env, jclass cls, jfloat x, jfloat y)
     {
         if( g_androidPlatformActived == false )
         {
@@ -365,10 +365,10 @@ extern "C"
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
-        platformExtension->androidNativePauseEvent();
+        platformExtension->androidNativePauseEvent( x, y );
     }
     ///////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1resumeEvent )(JNIEnv * env, jclass cls)
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1resumeEvent )(JNIEnv * env, jclass cls, jfloat x, jfloat y)
     {
         if( g_androidPlatformActived == false )
         {
@@ -378,7 +378,7 @@ extern "C"
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
-        platformExtension->androidNativeResumeEvent();
+        platformExtension->androidNativeResumeEvent( x, y );
     }
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1stopEvent )(JNIEnv * env, jclass cls)
@@ -433,7 +433,7 @@ extern "C"
         platformExtension->androidNativeDestroyEvent();
     }
     ///////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1freezeEvent )(JNIEnv * env, jclass cls, jboolean tick, jboolean render)
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1freezeEvent )(JNIEnv * env, jclass cls, jstring owner, jboolean freeze)
     {
         if( g_androidPlatformActived == false )
         {
@@ -443,20 +443,9 @@ extern "C"
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
-        platformExtension->androidNativeFreezeEvent( tick, render );
-    }
-    ///////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1unfreezeEvent )(JNIEnv * env, jclass cls, jboolean tick, jboolean render)
-    {
-        if( g_androidPlatformActived == false )
-        {
-            return;
-        }
+        Mengine::ConstString owner_const = Mengine::Helper::AndroidMakeConstStringFromJString( env, owner );
 
-        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
-            ->getUnknown();
-
-        platformExtension->androidNativeUnfreezeEvent( tick, render );
+        platformExtension->androidNativeFreezeEvent( owner_const, freeze );
     }
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1clipboardChangedEvent )(JNIEnv * env, jclass cls)
@@ -526,6 +515,58 @@ extern "C"
         platformExtension->androidNativeTrimMemoryEvent( level );
     }
     ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT jboolean JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1processEvents )(JNIEnv * env, jclass cls)
+    {
+        if( g_androidPlatformActived == false )
+        {
+            return JNI_FALSE;
+        }
+
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        return platformExtension->androidNativeProcessEvents();
+    }
+    ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT jfloat JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1getLastFingerX )(JNIEnv * env, jclass cls)
+    {
+        if( g_androidPlatformActived == false )
+        {
+            return 0.f;
+        }
+
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        return platformExtension->androidNativeGetLastFingerX();
+    }
+    ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT jfloat JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1getLastFingerY )(JNIEnv * env, jclass cls)
+    {
+        if( g_androidPlatformActived == false )
+        {
+            return 0.f;
+        }
+
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        return platformExtension->androidNativeGetLastFingerY();
+    }
+    ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT jfloat JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1getLastFingerPressure )(JNIEnv * env, jclass cls)
+    {
+        if( g_androidPlatformActived == false )
+        {
+            return 0.f;
+        }
+
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        return platformExtension->androidNativeGetLastFingerPressure();
+    }
+    ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1changeLocale )(JNIEnv * env, jclass cls, jstring _language)
     {
         if( g_androidPlatformActived == false )
@@ -578,12 +619,12 @@ namespace Mengine
         , m_eglDisplay( EGL_NO_DISPLAY )
         , m_eglSurface( EGL_NO_SURFACE )
         , m_eglContext( EGL_NO_CONTEXT )
+        , m_lastFingerX( 0.f )
+        , m_lastFingerY( 0.f )
+        , m_lastFingerPressure( 0.f )
         , m_prevTime( 0.0 )
         , m_pauseUpdatingTime( -1.f )
         , m_active( false )
-        , m_freezedTick( 0 )
-        , m_freezedRender( 0 )
-        , m_freezedSound( 0 )
         , m_desktop( false )
         , m_touchpad( false )
     {
@@ -748,7 +789,6 @@ namespace Mengine
 
         m_nativeWindowMutex = Helper::createThreadMutex(MENGINE_DOCUMENT_FACTORABLE );
         m_eglSurfaceMutex = Helper::createThreadMutex(MENGINE_DOCUMENT_FACTORABLE );
-        m_eventsMutex = Helper::createThreadMutex(MENGINE_DOCUMENT_FACTORABLE );
 
         EGLDisplay eglDisplay = ::eglGetDisplay( EGL_DEFAULT_DISPLAY );
 
@@ -851,12 +891,6 @@ namespace Mengine
 
         m_platformTags.clear();
 
-        m_eventsMutex->lock();
-        m_eventsAux.clear();
-        m_events.clear();
-        m_eventsMutex->unlock();
-
-        m_eventsMutex = nullptr;
         m_nativeWindowMutex = nullptr;
         m_eglSurfaceMutex = nullptr;
 
@@ -888,7 +922,7 @@ namespace Mengine
         bool updating = APPLICATION_SERVICE()
             ->beginUpdate();
 
-        if( m_freezedTick == 0 && updating == true )
+        if( updating == true )
         {
             if( m_pauseUpdatingTime >= 0.f )
             {
@@ -915,11 +949,6 @@ namespace Mengine
     bool AndroidPlatformService::renderPlatform()
     {
         if( m_activityState != EAS_RESUME && m_activityState != EAS_START )
-        {
-            return false;
-        }
-
-        if( m_freezedRender != 0 )
         {
             return false;
         }
@@ -1093,56 +1122,6 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         Helper::AndroidCallVoidFragmentMethod( jenv, "MengineFragmentEngine", "platformStop", "()V" );
-
-        this->pushQuitEvent_();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::freezePlatform( bool _tick, bool _render, bool _sound )
-    {
-        if( _tick == true )
-        {
-            ++m_freezedTick;
-        }
-
-        if( _render == true )
-        {
-            ++m_freezedRender;
-        }
-
-        if( _sound == true )
-        {
-            ++m_freezedSound;
-        }
-
-        if( m_freezedSound == 1 )
-        {
-            SOUND_SERVICE()
-                ->setMute( STRINGIZE_STRING_LOCAL( "FreezePlatform" ), true );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::unfreezePlatform( bool _tick, bool _render, bool _sound )
-    {
-        if( _tick == true )
-        {
-            --m_freezedTick;
-        }
-
-        if( _render == true )
-        {
-            --m_freezedRender;
-        }
-
-        if( _sound == true )
-        {
-            --m_freezedSound;
-        }
-
-        if( m_freezedSound == 0 )
-        {
-            SOUND_SERVICE()
-                ->setMute( STRINGIZE_STRING_LOCAL( "FreezePlatform" ), false );
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     Timestamp AndroidPlatformService::getPlatfomTime() const
@@ -1351,7 +1330,7 @@ namespace Mengine
     {
         //Empty
         
-        this->pushQuitEvent_();
+        //this->pushQuitEvent_();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::minimizeWindow()
@@ -1580,100 +1559,30 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::processEvents_()
     {
-        m_eventsMutex->lock();
-        std::swap( m_events, m_eventsAux );
-        m_eventsAux.clear();
-        m_eventsMutex->unlock();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        for( const PlatformUnionEvent & ev : m_events )
-        {
-            switch( ev.type )
-            {
-            case PlatformUnionEvent::PET_QUIT:
-                {
-                    return true;
-                }break;
-            case PlatformUnionEvent::PET_PAUSE:
-                {
-                    this->pauseEvent_( ev.data.pause );
-                }break;
-            case PlatformUnionEvent::PET_RESUME:
-                {
-                    this->resumeEvent_( ev.data.resume );
-                }break;
-            case PlatformUnionEvent::PET_STOP:
-                {
-                    this->stopEvent_( ev.data.stop );
-                }break;
-            case PlatformUnionEvent::PET_START:
-                {
-                    this->startEvent_( ev.data.start );
-                }break;
-            case PlatformUnionEvent::PET_RESTART:
-                {
-                    this->restartEvent_( ev.data.restart );
-                }break;
-            case PlatformUnionEvent::PET_DESTROY:
-                {
-                    this->destroyEvent_( ev.data.destroy );
-                }break;
-            case PlatformUnionEvent::PET_FREEZE:
-                {
-                    this->freezeEvent_( ev.data.freeze );
-                }break;
-            case PlatformUnionEvent::PET_UNFREEZE:
-                {
-                    this->unfreezeEvent_( ev.data.unfreeze );
-                }break;
-            case PlatformUnionEvent::PET_SURFACE_CREATE:
-                {
-                    this->surfaceCreateEvent_( ev.data.surfaceCreate );
-                }break;
-            case PlatformUnionEvent::PET_SURFACE_DESTROY:
-                {
-                    this->surfaceDestroyEvent_( ev.data.surfaceDestroy );
-                }break;
-            case PlatformUnionEvent::PET_SURFACE_CHANGED:
-                {
-                    this->surfaceChangedEvent_( ev.data.surfaceChanged );
-                }break;
-            case PlatformUnionEvent::PET_CLIPBOARD_CHANGED:
-                {
-                    this->clipboardChangedEvent_( ev.data.clipboardChanged );
-                }break;
-            case PlatformUnionEvent::PET_WINDOW_FOCUS_CHANGED:
-                {
-                    this->windowFocusChangedEvent_( ev.data.windowFocusChanged );
-                }break;
-            case PlatformUnionEvent::PET_LOW_MEMORY:
-                {
-                    this->lowMemoryEvent_( ev.data.lowMemory );
-                }break;
-            case PlatformUnionEvent::PET_TRIM_MEMORY:
-                {
-                    this->trimMemoryEvent_( ev.data.trimMemory );
-                }break;
-            case PlatformUnionEvent::PET_CHANGE_LOCALE:
-                {
-                    this->changeLocaleEvent_( ev.data.changeLocale );
-                }break;
-            default:
-                break;
-            }
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::pushQuitEvent_()
-    {
-        PlatformUnionEvent ev;
+        jobject jobject_MengineApplication = Mengine_JNI_GetObjectApplication( jenv );
 
-        ev.type = PlatformUnionEvent::PET_QUIT;
+        MENGINE_ASSERTION_FATAL( jobject_MengineApplication != nullptr, "invalid get object application" );
 
-        LOGGER_INFO( "platform", "quit event" );
+        jclass jclass_MenginePlatformEventQueue = Helper::AndroidEnvFindClass( jenv, "org/Mengine/Base/MenginePlatformEventQueue" );
 
-        this->pushEvent( ev );
+        MENGINE_ASSERTION_FATAL( jclass_MenginePlatformEventQueue != nullptr, "invalid find class MenginePlatformEventQueue" );
+
+        jmethodID jmethodID_processEvents = Mengine_JNI_GetStaticMethodID( jenv, jclass_MenginePlatformEventQueue, "processEvents", "(Lorg/Mengine/Base/MengineApplication;)Z" );
+
+        MENGINE_ASSERTION_FATAL( jmethodID_processEvents != nullptr, "invalid get method processEvents" );
+
+        jboolean shouldQuit = Mengine_JNI_CallStaticBooleanMethod( jenv, jclass_MenginePlatformEventQueue, jmethodID_processEvents, jobject_MengineApplication );
+
+        Helper::AndroidEnvExceptionCheck( jenv );
+
+        Mengine_JNI_DeleteLocalRef( jenv, jclass_MenginePlatformEventQueue );
+        Mengine_JNI_DeleteLocalRef( jenv, jobject_MengineApplication );
+
+        return shouldQuit == JNI_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::setActive_( float _x, float _y, bool _active )
@@ -1784,6 +1693,21 @@ namespace Mengine
         return size;
     }
     //////////////////////////////////////////////////////////////////////////
+    jfloat AndroidPlatformService::androidNativeGetLastFingerX() const
+    {
+        return m_lastFingerX;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    jfloat AndroidPlatformService::androidNativeGetLastFingerY() const
+    {
+        return m_lastFingerY;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    jfloat AndroidPlatformService::androidNativeGetLastFingerPressure() const
+    {
+        return m_lastFingerPressure;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeSurfaceCreatedEvent( ANativeWindow * _nativeWindow )
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_nativeWindowMutex );
@@ -1792,13 +1716,9 @@ namespace Mengine
 
         m_nativeWindow = _nativeWindow;
 
-        PlatformUnionEvent ev;
-        ev.type = PlatformUnionEvent::PET_SURFACE_CREATE;
-        ev.data.surfaceCreate.nativeWindow = _nativeWindow;
-
         LOGGER_INFO( "platform", "push surface create event" );
 
-        this->pushEvent( ev );
+        this->surfaceCreateEvent_( _nativeWindow );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeSurfaceDestroyedEvent()
@@ -1814,12 +1734,9 @@ namespace Mengine
 
         m_nativeWindow = nullptr;
 
-        PlatformUnionEvent ev;
-        ev.type = PlatformUnionEvent::PET_SURFACE_DESTROY;
-
         LOGGER_INFO( "platform", "push surface destroy event" );
 
-        this->pushEvent( ev );
+        this->surfaceDestroyEvent_();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeSurfaceChangedEvent( ANativeWindow * _nativeWindow, jint surfaceWidth, jint surfaceHeight, jint deviceWidth, jint deviceHeight, jfloat rate )
@@ -1833,14 +1750,6 @@ namespace Mengine
 
         m_nativeWindow = _nativeWindow;
 
-        PlatformUnionEvent ev;
-        ev.type = PlatformUnionEvent::PET_SURFACE_CHANGED;
-        ev.data.surfaceChanged.nativeWindow = _nativeWindow;
-        ev.data.surfaceChanged.surfaceWidth = surfaceWidth;
-        ev.data.surfaceChanged.surfaceHeight = surfaceHeight;
-        ev.data.surfaceChanged.deviceWidth = deviceWidth;
-        ev.data.surfaceChanged.deviceHeight = deviceHeight;
-
         LOGGER_INFO( "platform", "push surface changed event surface: %d;%d device: %d;%d rate: %f"
             , surfaceWidth
             , surfaceHeight
@@ -1849,7 +1758,7 @@ namespace Mengine
             , rate
         );
 
-        this->pushEvent( ev );
+        this->surfaceChangedEvent_( _nativeWindow, surfaceWidth, surfaceHeight, deviceWidth, deviceHeight, rate );
     }
     //////////////////////////////////////////////////////////////////////////
     ETouchCode AndroidPlatformService::acquireFingerIndex_( jint _pointerId )
@@ -1923,6 +1832,10 @@ namespace Mengine
                 m_currentFingersY[fingerIndex] = _y;
                 m_currentFingersPressure[fingerIndex] = _pressure;
 
+                m_lastFingerX = _x;
+                m_lastFingerY = _y;
+                m_lastFingerPressure = _pressure;
+
                 LOGGER_INFO( "platform", "touch [%d] down position: %.4f;%.4f pressure: %.4f"
                     , fingerIndex
                     , _x
@@ -1949,6 +1862,10 @@ namespace Mengine
                 m_currentFingersX[fingerIndex] = _x;
                 m_currentFingersY[fingerIndex] = _y;
                 m_currentFingersPressure[fingerIndex] = _pressure;
+
+                m_lastFingerX = _x;
+                m_lastFingerY = _y;
+                m_lastFingerPressure = _pressure;
 
                 LOGGER_INFO( "platform", "touch [%d] up position: %.4f;%.4f pressure: %.4f"
                     , fingerIndex
@@ -1983,6 +1900,10 @@ namespace Mengine
                 m_currentFingersX[fingerIndex] = _x;
                 m_currentFingersY[fingerIndex] = _y;
                 m_currentFingersPressure[fingerIndex] = _pressure;
+
+                m_lastFingerX = _x;
+                m_lastFingerY = _y;
+                m_lastFingerPressure = _pressure;
 
                 LOGGER_INFO( "platform", "touch [%d] move position: %.4f;%.4f pressure: %.4f delta: %.4f;%.4f dpressure: %.4f"
                     , fingerIndex
@@ -2303,9 +2224,9 @@ namespace Mengine
             return;
         }
 
-        jfloat x = m_currentFingersX[0];
-        jfloat y = m_currentFingersY[0];
-        jfloat pressure = m_currentFingersPressure[0];
+        jfloat x = m_lastFingerX;
+        jfloat y = m_lastFingerY;
+        jfloat pressure = m_lastFingerPressure;
 
         LOGGER_INFO( "platform", "key event: %d down: %d repeat: %d"
             , keyCode
@@ -2331,261 +2252,177 @@ namespace Mengine
         Helper::pushTextEvent( x, y, pressure, text );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::androidNativePauseEvent()
+    void AndroidPlatformService::androidNativePauseEvent( jfloat _x, jfloat _y )
     {
         m_activityState = EAS_PAUSE;
 
-        float x = m_currentFingersX[0];
-        float y = m_currentFingersY[0];
-
-        PlatformUnionEvent event;
-        event.type = PlatformUnionEvent::PET_PAUSE;
-
-        event.data.pause.x = x;
-        event.data.pause.y = y;
-
         LOGGER_INFO( "platform", "pause event: %.4f;%.4f"
-            , x
-            , y
+            , _x
+            , _y
         );
 
-        this->pushEvent( event );
+        this->pauseEvent_( _x, _y );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::androidNativeResumeEvent()
+    void AndroidPlatformService::androidNativeResumeEvent( jfloat _x, jfloat _y )
     {
         m_activityState = EAS_RESUME;
 
-        float x = m_currentFingersX[0];
-        float y = m_currentFingersY[0];
-
-        PlatformUnionEvent event;
-        event.type = PlatformUnionEvent::PET_RESUME;
-
-        event.data.resume.x = x;
-        event.data.resume.y = y;
-
         LOGGER_INFO( "platform", "resume event: %.4f;%.4f"
-            , x
-            , y
+            , _x
+            , _y
         );
 
-        this->pushEvent( event );
+        this->resumeEvent_( _x, _y );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeStopEvent()
     {
         m_activityState = EAS_STOP;
 
-        PlatformUnionEvent event;
-        event.type = PlatformUnionEvent::PET_STOP;
-
         LOGGER_INFO( "platform", "stop event" );
 
-        this->pushEvent( event );
+        this->stopEvent_();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeStartEvent()
     {
         m_activityState = EAS_START;
 
-        PlatformUnionEvent event;
-        event.type = PlatformUnionEvent::PET_START;
-
         LOGGER_INFO( "platform", "start event" );
 
-        this->pushEvent( event );
+        this->startEvent_();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeRestartEvent()
     {
         m_activityState = EAS_RESTART;
 
-        PlatformUnionEvent event;
-        event.type = PlatformUnionEvent::PET_RESTART;
-
         LOGGER_INFO( "platform", "restart event" );
 
-        this->pushEvent( event );
+        this->restartEvent_();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeDestroyEvent()
     {
         m_activityState = EAS_DESTROY;
 
-        PlatformUnionEvent event;
-        event.type = PlatformUnionEvent::PET_DESTROY;
-
         LOGGER_INFO( "platform", "destroy event" );
 
-        this->pushEvent( event );
+        this->destroyEvent_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::androidNativeFreezeEvent( bool _tick, bool _render )
+    void AndroidPlatformService::androidNativeFreezeEvent( const ConstString & _owner, bool _freeze )
     {
-        PlatformUnionEvent event;
-        event.type = PlatformUnionEvent::PET_FREEZE;
-        event.data.freeze.tick = _tick;
-        event.data.freeze.render = _render;
-
-        LOGGER_INFO( "platform", "freeze event: tick %d render %d"
-            , _tick
-            , _render
+        LOGGER_INFO( "platform", "freeze event: owner '%s' %d"
+            , _owner.c_str()
+            , _freeze
         );
 
-        this->pushEvent( event );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::androidNativeUnfreezeEvent( bool _tick, bool _render )
-    {
-        PlatformUnionEvent event;
-        event.type = PlatformUnionEvent::PET_UNFREEZE;
-        event.data.unfreeze.tick = _tick;
-        event.data.unfreeze.render = _render;
-
-        LOGGER_INFO( "platform", "unfreeze event: tick %d render %d"
-            , _tick
-            , _render
-        );
-
-        this->pushEvent( event );
+        this->freezeEvent_( _owner, _freeze );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeClipboardChangedEvent()
     {
-        PlatformUnionEvent event;
-        event.type = PlatformUnionEvent::PET_CLIPBOARD_CHANGED;
-
         LOGGER_INFO( "platform", "clipboard changed event" );
 
-        this->pushEvent( event );
+        this->clipboardChangedEvent_();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeWindowFocusChangedEvent( jboolean _focus )
     {
-        PlatformUnionEvent event;
-        event.type = PlatformUnionEvent::PET_WINDOW_FOCUS_CHANGED;
-
-        event.data.windowFocusChanged.focus = _focus;
-
         LOGGER_INFO( "platform", "window focus changed event: %d"
             , _focus
         );
 
-        this->pushEvent( event );
+        this->windowFocusChangedEvent_( _focus );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeQuitEvent()
     {
         LOGGER_INFO( "platform", "quit event" );
 
-        this->pushQuitEvent_();
+        this->stopEvent_();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeLowMemoryEvent()
     {
-        PlatformUnionEvent event;
-        event.type = PlatformUnionEvent::PET_LOW_MEMORY;
-
         LOGGER_INFO( "platform", "low memory event" );
 
-        this->pushEvent( event );
+        this->lowMemoryEvent_();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeTrimMemoryEvent(jint _level)
     {
-        PlatformUnionEvent event;
-        event.type = PlatformUnionEvent::PET_TRIM_MEMORY;
-
-        event.data.trimMemory.level = _level;
-
         LOGGER_INFO( "platform", "trim memory event: %d"
             , _level
         );
 
-        this->pushEvent( event );
+        this->trimMemoryEvent_( _level );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeChangeLocale( const Mengine::Char * _language )
     {
-        PlatformUnionEvent event;
-        event.type = PlatformUnionEvent::PET_CHANGE_LOCALE;
-
-        StdString::strcpy_safe( event.data.changeLocale.language, _language, MENGINE_LOCALE_LANGUAGE_SIZE );
-
         LOGGER_INFO( "platform", "change locale event: %s"
              , _language
          );
 
-        this->pushEvent( event );
+        this->changeLocaleEvent_( _language );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::pauseEvent_( const PlatformUnionEvent::PlatformPauseEvent & _event )
+    jboolean AndroidPlatformService::androidNativeProcessEvents()
     {
-        float x = _event.x;
-        float y = _event.y;
-
-        this->setActive_( x, y, false );
+        // This method is called from Java processEvents() which already processes events
+        // We just return false here as the actual processing is done in Java
+        return JNI_FALSE;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::pauseEvent_( float _x, float _y )
+    {
+        this->setActive_( _x, _y, false );
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_RESIGN_ACTIVE );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::resumeEvent_( const PlatformUnionEvent::PlatformResumeEvent & _event )
+    void AndroidPlatformService::resumeEvent_( float _x, float _y )
     {
-        float x = _event.x;
-        float y = _event.y;
-
-        this->setActive_( x, y, true );
+        this->setActive_( _x, _y, true );
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_BECOME_ACTIVE );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::stopEvent_( const PlatformUnionEvent::PlatformStopEvent & _event )
+    void AndroidPlatformService::stopEvent_()
     {
-        MENGINE_UNUSED( _event );
-
         NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_ENTER_BACKGROUND );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::startEvent_( const PlatformUnionEvent::PlatformStartEvent & _event )
+    void AndroidPlatformService::startEvent_()
     {
-        MENGINE_UNUSED( _event );
-
         NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_ENTER_FOREGROUND );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::restartEvent_( const PlatformUnionEvent::PlatformRestartEvent & _event )
+    void AndroidPlatformService::restartEvent_()
     {
-        MENGINE_UNUSED( _event );
-
         //ToDo
     }
-    void AndroidPlatformService::destroyEvent_( const PlatformUnionEvent::PlatformDestroyEvent & _event )
+    void AndroidPlatformService::destroyEvent_()
     {
-        MENGINE_UNUSED( _event );
-
         //ToDo
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::freezeEvent_( const PlatformUnionEvent::PlatformFreezeEvent & _event )
+    void AndroidPlatformService::freezeEvent_( const ConstString & _owner, bool _freeze )
     {
-        bool tick = _event.tick;
-        bool render = _event.render;
-        bool sound = _event.sound;
+        APPLICATION_SERVICE()
+            ->setUpdateFreeze( _owner, _freeze );
 
-        this->freezePlatform( tick, render, sound );
+        APPLICATION_SERVICE()
+            ->setRenderFreeze( _owner, _freeze );
+
+        SOUND_SERVICE()
+            ->setMute( _owner, _freeze );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::unfreezeEvent_( const PlatformUnionEvent::PlatformUnfreezeEvent & _event )
-    {
-        bool tick = _event.tick;
-        bool render = _event.render;
-        bool sound = _event.sound;
-
-        this->unfreezePlatform( tick, render, sound );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::surfaceCreateEvent_( const PlatformUnionEvent::PlatformSurfaceCreateEvent & _event )
+    void AndroidPlatformService::surfaceCreateEvent_( ANativeWindow * _nativeWindow )
     {
         MENGINE_ASSERTION_FATAL( m_eglDisplay != nullptr, "display not created" );
         MENGINE_ASSERTION_FATAL( m_eglSurface == nullptr, "already created egl surface" );
@@ -2798,7 +2635,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::surfaceDestroyEvent_( const PlatformUnionEvent::PlatformSurfaceDestroyEvent & _event )
+    void AndroidPlatformService::surfaceDestroyEvent_()
     {
         LOGGER_INFO( "platform", "surface destroy event" );
 
@@ -2851,10 +2688,15 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::surfaceChangedEvent_( const PlatformUnionEvent::PlatformSurfaceChangedEvent & _event )
+    void AndroidPlatformService::surfaceChangedEvent_( ANativeWindow * _nativeWindow, jint _surfaceWidth, jint _surfaceHeight, jint _deviceWidth, jint _deviceHeight, jfloat _rate )
     {
-        jint surfaceWidth = _event.surfaceWidth;
-        jint surfaceHeight = _event.surfaceHeight;
+        MENGINE_UNUSED( _nativeWindow );
+        MENGINE_UNUSED( _deviceWidth );
+        MENGINE_UNUSED( _deviceHeight );
+        MENGINE_UNUSED( _rate );
+
+        jint surfaceWidth = _surfaceWidth;
+        jint surfaceHeight = _surfaceHeight;
 
         Resolution windowResolution( surfaceWidth, surfaceHeight );
 
@@ -2862,69 +2704,33 @@ namespace Mengine
             ->setWindowResolution( windowResolution );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::clipboardChangedEvent_( const PlatformUnionEvent::PlatformClipboardChangedEvent & _event )
+    void AndroidPlatformService::clipboardChangedEvent_()
     {
-        MENGINE_UNUSED( _event );
+        //ToDo
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::windowFocusChangedEvent_( jboolean _focus )
+    {
+        MENGINE_UNUSED( _focus );
 
         //ToDo
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::windowFocusChangedEvent_( const PlatformUnionEvent::PlatformWindowFocusChangedEvent & _event )
+    void AndroidPlatformService::lowMemoryEvent_()
     {
-        MENGINE_UNUSED( _event );
-
-        //ToDo
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::lowMemoryEvent_( const PlatformUnionEvent::PlatformLowMemoryEvent & _event )
-    {
-        MENGINE_UNUSED( _event );
-
         NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_RECEIVE_MEMORY_WARNING );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::trimMemoryEvent_( const PlatformUnionEvent::PlatformTrimMemoryEvent & _event )
+    void AndroidPlatformService::trimMemoryEvent_( jint _level )
     {
-        jint level = _event.level;
-
-        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_RECEIVE_TRIM_MEMORY, level );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_RECEIVE_TRIM_MEMORY, _level );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::changeLocaleEvent_( const PlatformUnionEvent::PlatformChangeLocale & _event )
+    void AndroidPlatformService::changeLocaleEvent_( const Char * _language )
     {
-        MENGINE_UNUSED( _event );
+        MENGINE_UNUSED( _language );
 
         //ToDo
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::pushEvent( const PlatformUnionEvent & _event )
-    {
-        MENGINE_THREAD_MUTEX_SCOPE( m_eventsMutex );
-
-        m_eventsAux.emplace_back( _event );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool AndroidPlatformService::hasEvent( PlatformUnionEvent::EPlatformEventType _type ) const
-    {
-        MENGINE_THREAD_MUTEX_SCOPE( m_eventsMutex );
-
-        for( const PlatformUnionEvent & event : m_eventsAux )
-        {
-            if( event.type == _type )
-            {
-                return true;
-            }
-        }
-
-        for( const PlatformUnionEvent & event : m_events )
-        {
-            if( event.type == _type )
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
     //////////////////////////////////////////////////////////////////////////
 }

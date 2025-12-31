@@ -22,6 +22,7 @@ import org.Mengine.Base.MengineAdService;
 import org.Mengine.Base.MengineAnalyticsEventBuilderInterface;
 import org.Mengine.Base.MengineNative;
 import org.Mengine.Base.MengineNetwork;
+import org.Mengine.Base.MenginePlatformEventQueue;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineUtils;
 import org.Mengine.Plugin.AdMob.Core.MengineAdMobBase;
@@ -124,7 +125,7 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
 
                             MengineAdMobInterstitialAd.this.setInterstitialState("dismissed");
 
-                            MengineNative.AndroidPlatform_unfreezeEvent(true, true);
+                            MenginePlatformEventQueue.pushFreezeEvent("AdMobInterstitialAd", false);
 
                             m_showing = false;
 
@@ -172,7 +173,7 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
 
                             MengineAdMobInterstitialAd.this.setInterstitialState("showed");
 
-                            MengineNative.AndroidPlatform_freezeEvent(true, true);
+                            MenginePlatformEventQueue.pushFreezeEvent("AdMobInterstitialAd", true);
                         }
 
                         @Override

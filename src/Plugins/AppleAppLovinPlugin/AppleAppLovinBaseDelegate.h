@@ -33,6 +33,8 @@
 - (void) event:(NSString * _Nonnull)name params:(NSDictionary<NSString*, id> * _Nonnull)params;
 - (void) eventRevenue:(MAAd * _Nonnull) ad;
 
+- (void) setAdFreeze:(BOOL)freeze;
+
 @property (nonatomic, strong) NSString * _Nonnull m_adUnitId;
 @property (nonatomic, strong) id<AppleAdvertisementInterface> _Nonnull m_advertisement;
 @property (nonatomic, strong) MAAdFormat * _Nonnull m_adFormat;

@@ -497,7 +497,7 @@ namespace Mengine
         renderTargetOffscreen->setDirect3D11Device( m_pD3DDevice );
 
         ID3D11Texture2D * backBufferPtr;
-        MENGINE_IF_DX11_CALL( m_dxgiSwapChain, GetBuffer, (0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBufferPtr)) )
+        MENGINE_IF_DX11_CALL( m_dxgiSwapChain, GetBuffer, (0, __uuidof(ID3D11Texture2D), reinterpret_cast<void **>(&backBufferPtr)) )
         {
             return nullptr;
         }
@@ -777,7 +777,7 @@ namespace Mengine
         // create new render targets
         // Get the pointer to the back buffer.
         ID3D11Texture2D * backBuffer;
-        MENGINE_IF_DX11_CALL( m_dxgiSwapChain, GetBuffer, (0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer)) )
+        MENGINE_IF_DX11_CALL( m_dxgiSwapChain, GetBuffer, (0, __uuidof(ID3D11Texture2D), static_cast<void **>(&backBuffer)) )
         {
             return;
         }
@@ -1581,7 +1581,7 @@ namespace Mengine
     {
         // Get the pointer to the back buffer.
         ID3D11Texture2D * backBuffer;
-        MENGINE_IF_DX11_CALL( m_dxgiSwapChain, GetBuffer, (0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer)) )
+        MENGINE_IF_DX11_CALL( m_dxgiSwapChain, GetBuffer, (0, __uuidof(ID3D11Texture2D), static_cast<void **>(&backBuffer)) )
         {
             return false;
         }

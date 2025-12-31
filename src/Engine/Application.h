@@ -12,6 +12,8 @@
 #include "Kernel/ResourceCursor.h"
 #include "Kernel/MapAspectRatioViewports.h"
 
+#include "Interface/MixerBooleanInterface.h"
+
 #include "math/vec4.h"
 
 namespace Mengine
@@ -49,8 +51,16 @@ namespace Mengine
         int32_t getWindowFSAAQuality() const override;
 
     public:
+        void setFocus( bool _focus ) override;
         bool isFocus() const override;
-        bool isFrozen() const override;
+
+    public:        
+        void setUpdateFreeze( const ConstString & _owner, bool _freeze ) override;
+        bool isUpdateFrozen() const override;
+
+    public:
+        void setRenderFreeze( const ConstString & _owner, bool _freeze ) override;
+        bool isRenderFrozen() const override;
 
     public:
         void setNopause( bool _nopause ) override;
@@ -95,10 +105,9 @@ namespace Mengine
         bool beginUpdate() override;
         void tick( float _time ) override;
         void endUpdate() override;
-        void setFocus( bool _focus ) override;
-        void setFreeze( bool _freeze ) override;
         void close() override;
 
+    public:
         void turnSound( bool _turn ) override;
 
     public:
@@ -201,9 +210,11 @@ namespace Mengine
         bool m_videoEnable;
 
         bool m_focus;
-        bool m_freeze;
-        bool m_update;
+        bool m_updateGraceful;
         bool m_nopause;
+
+        MixerBooleanInterfacePtr m_updateFreezer;
+        MixerBooleanInterfacePtr m_renderFreezer;
 
         Resolution m_windowResolution;
 

@@ -570,7 +570,7 @@ public class MengineActivity extends AppCompatActivity {
             this.syncFullscreenWindow(window);
         }
 
-        MengineNative.AndroidPlatform_windowFocusChangedEvent(hasFocus);
+        MenginePlatformEventQueue.pushWindowFocusChangedEvent(hasFocus);
 
         MengineLog.logDebug(TAG, "[END] onWindowFocusChanged focus: %s"
             , hasFocus
@@ -757,7 +757,7 @@ public class MengineActivity extends AppCompatActivity {
 
         application.setState("activity.lifecycle", "started");
 
-        MengineNative.AndroidPlatform_startEvent();
+        MenginePlatformEventQueue.pushStartEvent();
 
         MengineLog.logDebug(TAG, "[END] onStart");
     }
@@ -800,7 +800,7 @@ public class MengineActivity extends AppCompatActivity {
 
         application.setState("activity.lifecycle", "stopped");
 
-        MengineNative.AndroidPlatform_stopEvent();
+        MenginePlatformEventQueue.pushStopEvent();
 
         MengineLog.logDebug(TAG, "[END] onStop");
     }
@@ -847,7 +847,9 @@ public class MengineActivity extends AppCompatActivity {
 
         application.setState("activity.lifecycle", "paused");
 
-        MengineNative.AndroidPlatform_pauseEvent();
+        float x = MengineNative.AndroidPlatform_getLastFingerX();
+        float y = MengineNative.AndroidPlatform_getLastFingerY();
+        MenginePlatformEventQueue.pushPauseEvent(x, y);
 
         MengineLog.logDebug(TAG, "[END] onPause");
     }
@@ -890,7 +892,9 @@ public class MengineActivity extends AppCompatActivity {
 
         application.setState("activity.lifecycle", "resumed");
 
-        MengineNative.AndroidPlatform_resumeEvent();
+        float x = MengineNative.AndroidPlatform_getLastFingerX();
+        float y = MengineNative.AndroidPlatform_getLastFingerY();
+        MenginePlatformEventQueue.pushResumeEvent(x, y);
 
         MengineLog.logDebug(TAG, "[END] onResume");
     }
@@ -992,7 +996,7 @@ public class MengineActivity extends AppCompatActivity {
 
         MengineNative.AndroidKernelService_removePlugin("Activity");
 
-        MengineNative.AndroidPlatform_destroyEvent();
+        MenginePlatformEventQueue.pushDestroyEvent();
 
         m_activityListeners.clear();
 
@@ -1037,7 +1041,7 @@ public class MengineActivity extends AppCompatActivity {
 
         application.setState("activity.lifecycle", "restarted");
 
-        MengineNative.AndroidPlatform_restartEvent();
+        MenginePlatformEventQueue.pushRestartEvent();
 
         MengineLog.logDebug(TAG, "[END] onRestart");
     }
@@ -1081,7 +1085,7 @@ public class MengineActivity extends AppCompatActivity {
 
             String language = m_currentLocale.getLanguage();
 
-            MengineNative.AndroidPlatform_changeLocale(language);
+            MenginePlatformEventQueue.pushChangeLocaleEvent(language);
         }
 
         MengineLog.logDebug(TAG, "[END] onConfigurationChanged");

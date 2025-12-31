@@ -61,8 +61,6 @@ namespace Mengine
         void tickPlatform( float _frameTime ) override;
         bool renderPlatform() override;
         void stopPlatform()	override;
-        void freezePlatform( bool _tick, bool _render, bool _sound ) override;
-        void unfreezePlatform( bool _tick, bool _render, bool _sound ) override;
 
     public:
         Timestamp getPlatfomTime() const override;
@@ -155,6 +153,9 @@ namespace Mengine
 
     protected:
         size_t androidNativeGetAndroidId( Char * _androidId, size_t _capacity ) const override;
+        jfloat androidNativeGetLastFingerX() const override;
+        jfloat androidNativeGetLastFingerY() const override;
+        jfloat androidNativeGetLastFingerPressure() const override;
 
     protected:
         void androidNativeSurfaceCreatedEvent( ANativeWindow * _nativeWindow ) override;
@@ -175,20 +176,20 @@ namespace Mengine
         void androidNativeAccelerationEvent( jfloat _x, jfloat _y, jfloat _z ) override;
         void androidNativeKeyEvent( jboolean _isDown, jint _keyCode, jint _repeatCount ) override;
         void androidNativeTextEvent( jint _unicode ) override;
-        void androidNativePauseEvent() override;
-        void androidNativeResumeEvent() override;
+        void androidNativePauseEvent( jfloat _x, jfloat _y ) override;
+        void androidNativeResumeEvent( jfloat _x, jfloat _y ) override;
         void androidNativeStopEvent() override;
         void androidNativeStartEvent() override;
         void androidNativeRestartEvent() override;
         void androidNativeDestroyEvent() override;
-        void androidNativeFreezeEvent( bool _tick, bool _render ) override;
-        void androidNativeUnfreezeEvent( bool _tick, bool _render ) override;
+        void androidNativeFreezeEvent( const ConstString & _owner, bool _freeze ) override;
         void androidNativeClipboardChangedEvent() override;
         void androidNativeWindowFocusChangedEvent( jboolean _focus ) override;
         void androidNativeQuitEvent() override;
         void androidNativeLowMemoryEvent() override;
         void androidNativeTrimMemoryEvent( jint _level ) override;
         void androidNativeChangeLocale( const Mengine::Char * _language ) override;
+        jboolean androidNativeProcessEvents() override;
 
     protected:
         bool createWindow_( const Resolution & _resolution, bool _fullscreen );
@@ -198,175 +199,26 @@ namespace Mengine
     protected:
         bool processEvents_();
         
-    protected:
-        void pushQuitEvent_();
 
     protected:
         void setActive_( float _x, float _y, bool _active );
 
     protected:
-        struct PlatformUnionEvent
-        {
-            enum EPlatformEventType
-            {
-                PET_QUIT,
-                PET_PAUSE,
-                PET_RESUME,
-                PET_STOP,
-                PET_START,
-                PET_RESTART,
-                PET_DESTROY,
-                PET_FREEZE,
-                PET_UNFREEZE,
-                PET_SURFACE_CREATE,
-                PET_SURFACE_DESTROY,
-                PET_SURFACE_CHANGED,
-                PET_CLIPBOARD_CHANGED,
-                PET_WINDOW_FOCUS_CHANGED,
-                PET_LOW_MEMORY,
-                PET_TRIM_MEMORY,
-                PET_CHANGE_LOCALE,
-            } type;
-
-            struct PlatformQuitEvent
-            {
-                int32_t dummy;
-            };
-
-            struct PlatformPauseEvent
-            {
-                float x;
-                float y;
-            };
-
-            struct PlatformResumeEvent
-            {
-                float x;
-                float y;
-            };
-
-            struct PlatformStopEvent
-            {
-                int32_t dummy;
-            };
-
-            struct PlatformStartEvent
-            {
-                int32_t dummy;
-            };
-
-            struct PlatformRestartEvent
-            {
-                int32_t dummy;
-            };
-
-            struct PlatformDestroyEvent
-            {
-                int32_t dummy;
-            };
-
-            struct PlatformFreezeEvent
-            {
-                bool tick;
-                bool render;
-                bool sound;
-            };
-
-            struct PlatformUnfreezeEvent
-            {
-                bool tick;
-                bool render;
-                bool sound;
-            };
-
-            struct PlatformSurfaceCreateEvent
-            {
-                ANativeWindow * nativeWindow;
-            };
-
-            struct PlatformSurfaceDestroyEvent
-            {
-                int32_t dummy;
-            };
-
-            struct PlatformSurfaceChangedEvent
-            {
-                ANativeWindow * nativeWindow;
-                jint surfaceWidth;
-                jint surfaceHeight;
-                jint deviceWidth;
-                jint deviceHeight;
-                jfloat rate;
-            };
-
-            struct PlatformClipboardChangedEvent
-            {
-                int32_t dummy;
-            };
-
-            struct PlatformWindowFocusChangedEvent
-            {
-                jboolean focus;
-            };
-
-            struct PlatformLowMemoryEvent
-            {
-                int32_t dummy;
-            };
-
-            struct PlatformTrimMemoryEvent
-            {
-                jint level;
-            };
-
-            struct PlatformChangeLocale
-            {
-                Char language[MENGINE_LOCALE_LANGUAGE_SIZE + 1];
-            };
-
-            union
-            {
-                PlatformQuitEvent quit;
-                PlatformPauseEvent pause;
-                PlatformResumeEvent resume;
-                PlatformStopEvent stop;
-                PlatformStartEvent start;
-                PlatformRestartEvent restart;
-                PlatformDestroyEvent destroy;
-                PlatformFreezeEvent freeze;
-                PlatformUnfreezeEvent unfreeze;
-                PlatformSurfaceCreateEvent surfaceCreate;
-                PlatformSurfaceDestroyEvent surfaceDestroy;
-                PlatformSurfaceChangedEvent surfaceChanged;
-                PlatformClipboardChangedEvent clipboardChanged;
-                PlatformWindowFocusChangedEvent windowFocusChanged;
-                PlatformLowMemoryEvent lowMemory;
-                PlatformTrimMemoryEvent trimMemory;
-                PlatformChangeLocale changeLocale;
-            } data;
-        };
-
-    protected:
-        void pauseEvent_( const PlatformUnionEvent::PlatformPauseEvent & _event );
-        void resumeEvent_( const PlatformUnionEvent::PlatformResumeEvent & _event );
-        void stopEvent_( const PlatformUnionEvent::PlatformStopEvent & _event );
-        void startEvent_( const PlatformUnionEvent::PlatformStartEvent & _event );
-        void restartEvent_( const PlatformUnionEvent::PlatformRestartEvent & _event );
-        void destroyEvent_( const PlatformUnionEvent::PlatformDestroyEvent & _event );
-        void freezeEvent_( const PlatformUnionEvent::PlatformFreezeEvent & _event );
-        void unfreezeEvent_( const PlatformUnionEvent::PlatformUnfreezeEvent & _event );
-        void surfaceCreateEvent_( const PlatformUnionEvent::PlatformSurfaceCreateEvent & _event );
-        void surfaceDestroyEvent_( const PlatformUnionEvent::PlatformSurfaceDestroyEvent & _event );
-        void surfaceChangedEvent_( const PlatformUnionEvent::PlatformSurfaceChangedEvent & _event );
-        void clipboardChangedEvent_( const PlatformUnionEvent::PlatformClipboardChangedEvent & _event );
-        void windowFocusChangedEvent_( const PlatformUnionEvent::PlatformWindowFocusChangedEvent & _event );
-        void lowMemoryEvent_( const PlatformUnionEvent::PlatformLowMemoryEvent & _event );
-        void trimMemoryEvent_( const PlatformUnionEvent::PlatformTrimMemoryEvent & _event );
-        void changeLocaleEvent_( const PlatformUnionEvent::PlatformChangeLocale & _event );
-
-    protected:
-        void pushEvent( const PlatformUnionEvent & _event );
-        bool hasEvent( PlatformUnionEvent::EPlatformEventType _type ) const;
+        void pauseEvent_( float _x, float _y );
+        void resumeEvent_( float _x, float _y );
+        void stopEvent_();
+        void startEvent_();
+        void restartEvent_();
+        void destroyEvent_();
+        void freezeEvent_( const ConstString & _owner, bool _freeze );
+        void surfaceCreateEvent_( ANativeWindow * _nativeWindow );
+        void surfaceDestroyEvent_();
+        void surfaceChangedEvent_( ANativeWindow * _nativeWindow, jint _surfaceWidth, jint _surfaceHeight, jint _deviceWidth, jint _deviceHeight, jfloat _rate );
+        void clipboardChangedEvent_();
+        void windowFocusChangedEvent_( jboolean _focus );
+        void lowMemoryEvent_();
+        void trimMemoryEvent_( jint _level );
+        void changeLocaleEvent_( const Char * _language );
 
     protected:
         Timestamp m_beginTime;
@@ -408,11 +260,10 @@ namespace Mengine
         jfloat m_currentFingersY[MENGINE_INPUT_MAX_TOUCH];
         jfloat m_currentFingersPressure[MENGINE_INPUT_MAX_TOUCH];
 
-        ThreadMutexInterfacePtr m_eventsMutex;
+        jfloat m_lastFingerX;
+        jfloat m_lastFingerY;
+        jfloat m_lastFingerPressure;
 
-        typedef Vector<PlatformUnionEvent> VectorInputEvents;
-        VectorInputEvents m_eventsAux;
-        VectorInputEvents m_events;
 
         StaticString<MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME> m_projectTitle;
 
@@ -421,10 +272,6 @@ namespace Mengine
         float m_pauseUpdatingTime;
 
         bool m_active;
-        
-        AtomicInt32 m_freezedTick;
-        AtomicInt32 m_freezedRender;
-        AtomicInt32 m_freezedSound;
 
         bool m_desktop;
         bool m_touchpad;

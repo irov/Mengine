@@ -108,9 +108,6 @@ namespace Mengine
         , m_performanceSupport( false )
         , m_active( false )
         , m_close( false )
-        , m_freezedTick( 0 )
-        , m_freezedRender( 0 )
-        , m_freezedSound( 0 )
         , m_hIcon( NULL )
         , m_windowExposed( false )
         , m_pauseUpdatingTime( -1.f )
@@ -635,7 +632,7 @@ namespace Mengine
         bool updating = APPLICATION_SERVICE()
             ->beginUpdate();
 
-        if( m_freezedTick == 0 && updating == true )
+        if( updating == true )
         {
             if( m_pauseUpdatingTime >= 0.f )
             {
@@ -661,11 +658,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32PlatformService::renderPlatform()
     {
-        if( m_freezedRender != 0 )
-        {
-            return false;
-        }
-
         if( this->isNeedWindowRender() == false )
         {
             return false;
@@ -774,53 +766,6 @@ namespace Mengine
         MENGINE_PROFILER_END_APPLICATION();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32PlatformService::freezePlatform( bool _tick, bool _render, bool _sound )
-    {
-        if( _tick == true )
-        {
-            ++m_freezedTick;
-        }
-
-        if( _render == true )
-        {
-            ++m_freezedRender;
-        }
-
-        if( _sound == true )
-        {
-            ++m_freezedSound;
-        }
-
-        if( m_freezedSound == 1 )
-        {
-            SOUND_SERVICE()
-                ->setMute( STRINGIZE_STRING_LOCAL( "FreezePlatform" ), true );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Win32PlatformService::unfreezePlatform( bool _tick, bool _render, bool _sound )
-    {
-        if( _tick == true )
-        {
-            --m_freezedTick;
-        }
-
-        if( _render == true )
-        {
-            --m_freezedRender;
-        }
-
-        if( _sound == true )
-        {
-            --m_freezedSound;
-        }
-
-        if( m_freezedSound == 0 )
-        {
-            SOUND_SERVICE()
-                ->setMute( STRINGIZE_STRING_LOCAL( "FreezePlatform" ), false );
-        }
-    }
     //////////////////////////////////////////////////////////////////////////
     bool Win32PlatformService::setHWNDIcon( const WChar * _iconResource )
     {

@@ -31,7 +31,10 @@
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/AnalyticsServiceInterface.h"
 #include "Interface/TimerServiceInterface.h"
+#include "Interface/PrototypeServiceInterface.h"
 #include "Interface/LifecycleServiceInterface.h"
+
+#include "Kernel/MixerBoolean.h"
 
 #include "Isometric.h"
 #include "HotSpotPolygon.h"
@@ -144,8 +147,7 @@ namespace Mengine
         , m_textEnable( true )
         , m_videoEnable( true )
         , m_focus( true )
-        , m_freeze( false )
-        , m_update( true )
+        , m_updateGraceful( true )
         , m_nopause( false )
         , m_bits( 0 )
         , m_fullscreen( false )
@@ -228,6 +230,12 @@ namespace Mengine
 
         m_projectCodename = CONFIG_VALUE_CONSTSTRING( "Project", "Codename", ConstString::none() );
         m_projectVersion = CONFIG_VALUE_INTEGER( "Project", "Version", 0 );
+
+        m_updateFreezer = PROTOTYPE_SERVICE()
+            ->generatePrototype( ConstString::none(), MixerBoolean::getFactorableType(), MENGINE_DOCUMENT_FACTORABLE );
+
+        m_renderFreezer = PROTOTYPE_SERVICE()
+            ->generatePrototype( ConstString::none(), MixerBoolean::getFactorableType(), MENGINE_DOCUMENT_FACTORABLE );
 
         m_contentResolution = CONFIG_VALUE_RESOLUTION( "Game", "ContentResolution", Resolution( 1024, 768 ) );
         m_fixedContentResolution = CONFIG_VALUE_BOOLEAN( "Game", "FixedContentResolution", true );
@@ -436,6 +444,9 @@ namespace Mengine
 
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "memoryImage" ) );
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "archiveImage" ) );
+
+        m_updateFreezer = nullptr;
+        m_renderFreezer = nullptr;
 
         this->unregisterBaseTypes_();
         this->unregisterBaseNodeTypes_();
@@ -1624,16 +1635,6 @@ namespace Mengine
         return m_inputMouseButtonEventBlock;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Application::isFocus() const
-    {
-        return m_focus;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Application::isFrozen() const
-    {
-        return m_freeze;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void Application::setFocus( bool _focus )
     {
         if( m_focus == _focus )
@@ -1643,12 +1644,14 @@ namespace Mengine
 
         m_focus = _focus;
 
-        LOGGER_INFO( "system", "focus [%u] (freeze %u)"
+        bool updateFrozen = this->isUpdateFrozen();
+
+        LOGGER_INFO( "system", "focus [%u] (frozen %u)"
             , m_focus
-            , m_freeze
+            , updateFrozen
         );
 
-        if( m_freeze == true )
+        if( updateFrozen == true )
         {
             return;
         }
@@ -1660,21 +1663,24 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Application::setFreeze( bool _freeze )
+    bool Application::isFocus() const
     {
-        if( m_freeze == _freeze )
-        {
-            return;
-        }
+        return m_focus;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Application::setUpdateFreeze( const ConstString & _owner, bool _freeze )
+    {
+        m_updateFreezer->setValue( _owner, _freeze );
 
-        m_freeze = _freeze;
+        bool updateFrozen = this->isUpdateFrozen();
 
-        LOGGER_INFO( "system", "freeze [%u] (focus %u)"
-            , m_freeze
+        LOGGER_INFO( "system", "frozen '%s' [%u] (focus %u)"
+            , _owner.c_str()
+            , updateFrozen
             , m_focus
         );
 
-        if( m_freeze == true )
+        if( updateFrozen == true )
         {
             return;
         }
@@ -1684,6 +1690,32 @@ namespace Mengine
             GAME_SERVICE()
                 ->setFocus( m_focus );
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Application::isUpdateFrozen() const
+    {
+        bool updateFrozen = m_updateFreezer->mixValue();
+
+        return updateFrozen;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Application::setRenderFreeze( const ConstString & _owner, bool _freeze )
+    {
+        m_renderFreezer->setValue( _owner, _freeze );
+
+        bool renderFrozen = this->isRenderFrozen();
+
+        LOGGER_INFO( "system", "render frozen '%s' [%u]"
+            , _owner.c_str()
+            , renderFrozen
+        );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Application::isRenderFrozen() const
+    {
+        bool renderFrozen = m_renderFreezer->mixValue();
+
+        return renderFrozen;
     }
     //////////////////////////////////////////////////////////////////////////
     void Application::setNopause( bool _nopause )
@@ -1708,12 +1740,14 @@ namespace Mengine
 
         this->updateNotification();
 
-        DISPATCHER_SERVICE()
+        LIFECYCLE_SERVICE()
             ->preUpdate();
+
+        bool updateFrozen = this->isUpdateFrozen();
 
         if( m_nopause == false )
         {
-            if( m_update == false && (m_focus == false || m_freeze == true) )
+            if( m_updateGraceful == false && (m_focus == false || updateFrozen == true) )
             {
                 return false;
             }
@@ -1721,17 +1755,20 @@ namespace Mengine
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_BEGIN_UPDATE );
 
-        DISPATCHER_SERVICE()
+        LIFECYCLE_SERVICE()
             ->update();
 
-        if( (m_focus == false || m_freeze == true) && m_update == true )
+        if( m_nopause == false )
         {
-            m_update = false;
+            if( (m_focus == false || updateFrozen == true) && m_updateGraceful == true )
+            {
+                m_updateGraceful = false;
+            }
+            else if( (m_focus == true && updateFrozen == false) && m_updateGraceful == false )
+            {
+                m_updateGraceful = true;
+            }
         }
-        else if( (m_focus == true && m_freeze == false) && m_update == false )
-        {
-            m_update = true;
-        }        
 
         return true;
     }
@@ -1779,7 +1816,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::endUpdate()
     {
-        DISPATCHER_SERVICE()
+        MENGINE_PROFILER_CATEGORY();
+
+        LIFECYCLE_SERVICE()
             ->postUpdate();
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_END_UPDATE );
@@ -1787,9 +1826,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::render()
     {
+        MENGINE_PROFILER_CATEGORY();
+
         m_renderPipeline->clear();
 
-        if( m_nopause == false && m_focus == false )
+        bool renderFrozen = this->isRenderFrozen();
+
+        if( renderFrozen == true )
         {
             return false;
         }

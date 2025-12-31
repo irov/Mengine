@@ -64,8 +64,6 @@ namespace Mengine
         void stopPlatform()	override;
 
     public:
-        void freezePlatform( bool _tick, bool _render, bool _sound ) override;
-        void unfreezePlatform( bool _tick, bool _render, bool _sound ) override;
 
     public:
         Timestamp getPlatfomTime() const override;
@@ -224,10 +222,6 @@ namespace Mengine
         float m_pauseUpdatingTime;
 
         bool m_active;
-        
-        AtomicInt32 m_freezedTick;
-        AtomicInt32 m_freezedRender;
-        AtomicInt32 m_freezedSound;
 
         bool m_desktop;
         bool m_touchpad;

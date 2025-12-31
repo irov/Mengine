@@ -47,4 +47,6 @@
 
 - (void)setRewardedCallback:(id<AppleAdvertisementCallbackInterface>)callback;
 - (id<AppleAdvertisementCallbackInterface>)getRewardedCallback;
+
+- (void)setAdFreeze:(NSString *)adName freeze:(BOOL)freeze;
 @end

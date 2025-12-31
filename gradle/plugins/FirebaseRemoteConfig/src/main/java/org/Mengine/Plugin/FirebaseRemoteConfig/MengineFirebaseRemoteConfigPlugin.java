@@ -250,6 +250,7 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
                 }
 
                 this.fetchRemoteConfigValues(remoteConfig);
+
                 this.propagateRemoteConfigValues(true);
             }).addOnFailureListener(activity, e -> {
                 m_prefetching = false;

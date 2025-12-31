@@ -96,7 +96,9 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
             }
         }
 
-        MengineNative.AndroidPlatform_resumeEvent();
+        float x = MengineNative.AndroidPlatform_getLastFingerX();
+        float y = MengineNative.AndroidPlatform_getLastFingerY();
+        MenginePlatformEventQueue.pushResumeEvent(x, y);
     }
 
     public void handlePause() {
@@ -123,7 +125,9 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
             }
         }
 
-        MengineNative.AndroidPlatform_pauseEvent();
+        float x = MengineNative.AndroidPlatform_getLastFingerX();
+        float y = MengineNative.AndroidPlatform_getLastFingerY();
+        MenginePlatformEventQueue.pushPauseEvent(x, y);
     }
 
     public void handleDestroy() {
@@ -155,14 +159,14 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
             return;
         }
 
-        MengineNative.AndroidPlatform_surfaceCreatedEvent(surface);
+        MenginePlatformEventQueue.pushSurfaceCreatedEvent(surface);
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         MengineLog.logInfo(TAG, "surfaceDestroyed");
 
-        MengineNative.AndroidPlatform_surfaceDestroyedEvent();
+        MenginePlatformEventQueue.pushSurfaceDestroyedEvent();
     }
 
     @Override
@@ -194,7 +198,7 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
 
         Surface surface = holder.getSurface();
 
-        MengineNative.AndroidPlatform_surfaceChangedEvent(surface, width, height, deviceWidth, deviceHeight, refreshRate);
+        MenginePlatformEventQueue.pushSurfaceChangedEvent(surface, width, height, deviceWidth, deviceHeight, refreshRate);
 
         MengineMain.runLatch();
     }

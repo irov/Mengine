@@ -48,8 +48,6 @@ namespace Mengine
         virtual bool beginUpdate() = 0;
         virtual void tick( float _time ) = 0;
         virtual void endUpdate() = 0;
-        virtual void setFocus( bool _focus ) = 0;
-        virtual void setFreeze( bool _freeze ) = 0;
         virtual void close() = 0;
 
         virtual void turnSound( bool _turn ) = 0;
@@ -110,9 +108,19 @@ namespace Mengine
         virtual void setVSync( bool _vsync ) = 0;
         virtual bool getVSync() const = 0;
 
+    public:
+        virtual void setFocus( bool _focus ) = 0;
         virtual bool isFocus() const = 0;
-        virtual bool isFrozen() const = 0;
 
+    public:
+        virtual void setUpdateFreeze( const ConstString & _owner, bool _freeze ) = 0;
+        virtual bool isUpdateFrozen() const = 0;
+
+    public:
+        virtual void setRenderFreeze( const ConstString & _owner, bool _freeze ) = 0;
+        virtual bool isRenderFrozen() const = 0;
+
+    public:
         virtual void setNopause( bool _nopause ) = 0;
         virtual bool getNopause() const = 0;
 

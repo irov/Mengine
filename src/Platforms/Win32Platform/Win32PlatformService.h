@@ -46,8 +46,6 @@ namespace Mengine
         void tickPlatform( float _frameTime ) override;
         bool renderPlatform() override;
         void stopPlatform() override;
-        void freezePlatform( bool _tick, bool _render, bool _sound ) override;
-        void unfreezePlatform( bool _tick, bool _render, bool _sound ) override;
 
     public:
         bool setHWNDIcon( const WChar * _iconResource ) override;
@@ -236,10 +234,6 @@ namespace Mengine
 
         bool m_active;
         bool m_close;
-
-        AtomicInt32 m_freezedTick;
-        AtomicInt32 m_freezedRender;
-        AtomicInt32 m_freezedSound;
 
         bool m_sleepMode;
         bool m_windowExposed;

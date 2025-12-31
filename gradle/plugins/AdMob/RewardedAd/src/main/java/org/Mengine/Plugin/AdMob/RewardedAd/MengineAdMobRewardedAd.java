@@ -23,6 +23,7 @@ import org.Mengine.Base.MengineAdService;
 import org.Mengine.Base.MengineAnalyticsEventBuilderInterface;
 import org.Mengine.Base.MengineNative;
 import org.Mengine.Base.MengineNetwork;
+import org.Mengine.Base.MenginePlatformEventQueue;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineUtils;
 import org.Mengine.Plugin.AdMob.Core.MengineAdMobBase;
@@ -126,7 +127,7 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
 
                             MengineAdMobRewardedAd.this.setRewardedState("dismissed");
 
-                            MengineNative.AndroidPlatform_unfreezeEvent(true, true);
+                            MenginePlatformEventQueue.pushFreezeEvent("AdMobRewardedAd", false);
 
                             m_showing = false;
 
@@ -170,7 +171,7 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
 
                             MengineAdMobRewardedAd.this.setRewardedState("showed");
 
-                            MengineNative.AndroidPlatform_freezeEvent(true, true);
+                            MenginePlatformEventQueue.pushFreezeEvent("AdMobRewardedAd", true);
                         }
 
                         @Override

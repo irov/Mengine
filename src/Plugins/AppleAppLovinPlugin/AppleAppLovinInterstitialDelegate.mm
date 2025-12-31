@@ -1,6 +1,10 @@
 #import "AppleAppLovinInterstitialDelegate.h"
 
 #include "Interface/PlatformServiceInterface.h"
+#include "Interface/ApplicationInterface.h"
+#include "Interface/SoundServiceInterface.h"
+
+#include "Kernel/ConstStringHelper.h"
 
 #import "Environment/Apple/AppleDetail.h"
 #import "Environment/Apple/AppleString.h"
@@ -173,8 +177,7 @@
         @"ad": [self getMAAdParams:ad]
     }];
     
-    PLATFORM_SERVICE()
-        ->freezePlatform( true, true, true );
+    [self setAdFreeze:YES];
 }
 
 - (void) didClickAd:(MAAd *)ad {
@@ -194,8 +197,7 @@
         @"ad": [self getMAAdParams:ad]
     }];
     
-    PLATFORM_SERVICE()
-        ->unfreezePlatform( true, true, true );
+    [self setAdFreeze:NO];
     
     self.m_showing = NO;
     

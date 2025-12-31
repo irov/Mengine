@@ -43,8 +43,6 @@ namespace Mengine
         virtual void tickPlatform( float _frameTime ) = 0;
         virtual bool renderPlatform() = 0;
         virtual void stopPlatform() = 0;
-        virtual void freezePlatform( bool _tick, bool _render, bool _sound ) = 0;
-        virtual void unfreezePlatform( bool _tick, bool _render, bool _sound ) = 0;
 
     public:
         virtual Timestamp getPlatfomTime() const = 0;

@@ -102,6 +102,6 @@ public class MengineClipboard extends View implements ClipboardManager.OnPrimary
     public void onPrimaryClipChanged() {
         MengineLog.logMessage(TAG, "clipboard changed");
 
-        MengineNative.AndroidPlatform_clipboardChangedEvent();
+        MenginePlatformEventQueue.pushClipboardChangedEvent();
     }
 }

@@ -200,4 +200,8 @@
     [iOSDetail adRevenue:revenue];
 }
 
+- (void) setAdFreeze:(BOOL)freeze {
+    [self.m_advertisement setAdFreeze:self.m_adUnitId freeze:freeze];
+}
+
 @end

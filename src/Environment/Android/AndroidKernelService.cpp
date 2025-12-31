@@ -403,7 +403,13 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        Helper::AndroidCallVoidApplicationMethod( jenv, "processDeferredCalls", "()V" );
+        jobject jobject_MengineApplication = Mengine_JNI_GetObjectApplication( jenv );
+
+        MENGINE_ASSERTION_FATAL( jobject_MengineApplication != nullptr, "invalid get object application" );
+
+        Helper::AndroidCallVoidStaticClassMethod( jenv, "org/Mengine/Base/MengineNativeCallQueue", "processCalls", "(Lorg/Mengine/Base/MengineApplication;)V", jobject_MengineApplication );
+
+        Mengine_JNI_DeleteLocalRef( jenv, jobject_MengineApplication );
     }
     //////////////////////////////////////////////////////////////////////////
 }

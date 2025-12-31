@@ -29,6 +29,8 @@
 
 - (GADRequest * _Nonnull) createAdRequest;
 
+- (void) setAdFreeze:(BOOL)freeze;
+
 @property (nonatomic, strong) NSString * _Nonnull m_adUnitId;
 @property (nonatomic, strong) id<AppleAdvertisementInterface> _Nonnull m_advertisement;
 

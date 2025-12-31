@@ -332,7 +332,7 @@ public class MengineService implements MengineServiceInterface {
     public void nativeCall(@NonNull String method, Object ... args) {
         String name = this.getEmbeddingName();
 
-        m_application.nativeCall(name, method, args);
+        MengineNativeCallQueue.pushCall(name, method, args);
     }
 
     @Override

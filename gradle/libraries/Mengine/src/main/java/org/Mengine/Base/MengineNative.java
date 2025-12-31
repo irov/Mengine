@@ -37,14 +37,16 @@ public class MengineNative {
     public static native void AndroidPlatform_textEvent(int unicode);
     public static native void AndroidPlatform_touchEvent(int action, int pointerId, float x, float y, float pressure);
     public static native void AndroidPlatform_accelerationEvent(float x, float y, float z);
-    public static native void AndroidPlatform_pauseEvent();
-    public static native void AndroidPlatform_resumeEvent();
+    public static native void AndroidPlatform_pauseEvent(float x, float y);
+    public static native void AndroidPlatform_resumeEvent(float x, float y);
+    public static native float AndroidPlatform_getLastFingerX();
+    public static native float AndroidPlatform_getLastFingerY();
+    public static native float AndroidPlatform_getLastFingerPressure();
     public static native void AndroidPlatform_stopEvent();
     public static native void AndroidPlatform_startEvent();
     public static native void AndroidPlatform_restartEvent();
     public static native void AndroidPlatform_destroyEvent();
-    public static native void AndroidPlatform_freezeEvent(boolean tick, boolean render);
-    public static native void AndroidPlatform_unfreezeEvent(boolean tick, boolean render);
+    public static native void AndroidPlatform_freezeEvent(String owner, boolean freeze);
     public static native void AndroidPlatform_clipboardChangedEvent();
     public static native void AndroidPlatform_windowFocusChangedEvent(boolean focus);
     public static native void AndroidPlatform_quitEvent();
@@ -63,4 +65,6 @@ public class MengineNative {
     public static native long AndroidStatistic_getRenderFrameCount();
     public static native long AndroidStatistic_getAllocatorSize();
     public static native long AndroidStatistic_getRenderTextureAllocSize();
+
+    public static native boolean AndroidPlatform_processEvents();
 }

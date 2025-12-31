@@ -90,9 +90,6 @@ namespace Mengine
         , m_prevTime( 0.0 )
         , m_pauseUpdatingTime( -1.f )
         , m_active( false )
-        , m_freezedTick( 0 )
-        , m_freezedRender( 0 )
-        , m_freezedSound( 0 )
         , m_desktop( false )
         , m_touchpad( false )
         , m_glContext( nullptr )
@@ -780,7 +777,7 @@ namespace Mengine
         bool updating = APPLICATION_SERVICE()
             ->beginUpdate();
 
-        if( m_freezedTick == 0 && updating == true )
+        if( updating == true )
         {
             if( m_pauseUpdatingTime >= 0.f )
             {
@@ -806,11 +803,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool iOSPlatformService::renderPlatform()
     {
-        if( m_freezedRender != 0 )
-        {
-            return false;
-        }
-
         if( this->isNeedWindowRender() == false )
         {
             return false;
@@ -996,53 +988,6 @@ namespace Mengine
         this->pushQuitEvent_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void iOSPlatformService::freezePlatform( bool _tick, bool _render, bool _sound )
-    {
-        if( _tick == true )
-        {
-            ++m_freezedTick;
-        }
-
-        if( _render == true )
-        {
-            ++m_freezedRender;
-        }
-        
-        if( _sound == true )
-        {
-            ++m_freezedSound;
-        }
-
-        if( m_freezedSound == 1 )
-        {
-            SOUND_SERVICE()
-                ->setMute( STRINGIZE_STRING_LOCAL( "FreezePlatform" ), true );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void iOSPlatformService::unfreezePlatform( bool _tick, bool _render, bool _sound )
-    {
-        if( _tick == true )
-        {
-            --m_freezedTick;
-        }
-
-        if( _render == true )
-        {
-            --m_freezedRender;
-        }
-        
-        if( _sound == true )
-        {
-            --m_freezedSound;
-        }
-
-        if( m_freezedSound == 0 )
-        {
-            SOUND_SERVICE()
-                ->setMute( STRINGIZE_STRING_LOCAL( "FreezePlatform" ), false );
-        }
-    }
     //////////////////////////////////////////////////////////////////////////
     Timestamp iOSPlatformService::getPlatfomTime() const
     {

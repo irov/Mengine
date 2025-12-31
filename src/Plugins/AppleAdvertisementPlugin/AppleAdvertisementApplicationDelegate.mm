@@ -2,9 +2,15 @@
 
 #import "Environment/Apple/AppleDetail.h"
 #import "Environment/Apple/AppleSemaphoreService.h"
+#import "Environment/Apple/AppleString.h"
 
 #import "Environment/iOS/iOSDetail.h"
 #import "Environment/iOS/iOSLog.h"
+
+#include "Interface/ApplicationInterface.h"
+#include "Interface/SoundServiceInterface.h"
+
+#include "Kernel/ConstStringHelper.h"
 
 @implementation AppleAdvertisementApplicationDelegate
 
@@ -86,6 +92,19 @@
 
 - (id<AppleAdvertisementCallbackInterface>)getRewardedCallback {
     return self.m_rewardedCallback;
+}
+
+- (void)setAdFreeze:(NSString *)adName freeze:(BOOL)freeze {
+    Mengine::ConstString adNameConst = [AppleString NSStringToConstString:adName];
+    
+    APPLICATION_SERVICE()
+        ->setUpdateFreeze( adNameConst, freeze );
+    
+    APPLICATION_SERVICE()
+        ->setRenderFreeze( adNameConst, freeze );
+    
+    SOUND_SERVICE()
+        ->setMute( adNameConst, freeze );
 }
 
 #pragma mark - AppleAdvertisementProviderInterface

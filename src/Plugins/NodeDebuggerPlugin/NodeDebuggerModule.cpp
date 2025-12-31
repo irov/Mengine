@@ -2305,10 +2305,10 @@ namespace Mengine
         if( _command == "pause" )
         {
             bool alreadyFrozen = APPLICATION_SERVICE()
-                ->isFrozen();
+                ->isUpdateFrozen();
 
             APPLICATION_SERVICE()
-                ->setFreeze( !alreadyFrozen );
+                ->setUpdateFreeze( NodeDebuggerModule::getFactorableType(), !alreadyFrozen );
         }
         else if( _command == "scene" )
         {

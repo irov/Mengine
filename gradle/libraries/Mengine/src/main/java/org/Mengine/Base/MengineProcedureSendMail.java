@@ -275,6 +275,42 @@ public class MengineProcedureSendMail implements MengineProcedureInterface {
                         m_subject
                     );
                 }
+
+                File oldLogFileAndroid = fileLoggerService.getOldLogFile();
+
+                if (oldLogFileAndroid != null && oldLogFileAndroid.exists()) {
+                    File oldFileLoggerZipFile = MengineUtils.createTempFile(context, "mng_android_old_log_", ".zip");
+
+                    if (oldFileLoggerZipFile != null && MengineUtils.zipFiles(oldLogFileAndroid, oldFileLoggerZipFile) == true) {
+                        Uri oldFileLoggerZipFileUri = MengineUtils.getUriForFile(context, oldFileLoggerZipFile);
+
+                        if (oldFileLoggerZipFileUri == null) {
+                            return false;
+                        }
+
+                        MengineLog.logInfo(TAG, "linkingOpenMail attach android old log file '%s' for mail: %s subject: %s",
+                            oldFileLoggerZipFileUri,
+                            m_email,
+                            m_subject
+                        );
+
+                        fileUris.add(oldFileLoggerZipFileUri);
+                    } else {
+                        body_builder.append("\n\n[ERROR] invalid zip file logger android old log file");
+
+                        MengineLog.logMessage(TAG, "linkingOpenMail invalid zip file logger android old log file for mail: %s subject: %s",
+                            m_email,
+                            m_subject
+                        );
+                    }
+                } else {
+                    body_builder.append("\n\nNOT_FOUND_FILE_LOGGER_OLD_LOG");
+
+                    MengineLog.logMessage(TAG, "linkingOpenMail not found file logger android old log file for mail: %s subject: %s",
+                        m_email,
+                        m_subject
+                    );
+                }
             } else {
                 body_builder.append("\n\nNOT_FOUND_FILE_LOGGER_SERVICE");
 

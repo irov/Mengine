@@ -42,7 +42,7 @@ public class MengineSentryPlugin extends MengineService implements MengineListen
     public static boolean m_passMeasurementGDPR = false;
 
     @Override
-    public void onAppInit(MengineApplication application, boolean isMainProcess) throws MengineServiceInvalidInitializeException {
+    public void onAppInit(@NonNull MengineApplication application, boolean isMainProcess) throws MengineServiceInvalidInitializeException {
         if (isMainProcess == false) {
             return;
         }

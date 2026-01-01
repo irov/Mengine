@@ -24,6 +24,7 @@ import org.Mengine.Base.MengineNative;
 import org.Mengine.Base.MengineNetwork;
 import org.Mengine.Base.MenginePlatformEventQueue;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
+import org.Mengine.Base.MengineTag;
 import org.Mengine.Base.MengineUtils;
 import org.Mengine.Plugin.AdMob.Core.MengineAdMobBase;
 import org.Mengine.Plugin.AdMob.Core.MengineAdMobInterstitialAdInterface;
@@ -32,6 +33,8 @@ import org.Mengine.Plugin.AdMob.Core.MengineAdMobPluginInterface;
 import java.util.Map;
 
 public class MengineAdMobInterstitialAd extends MengineAdMobBase implements MengineAdMobInterstitialAdInterface {
+    public static final MengineTag TAG = MengineTag.of("MNGAdMobInterstitialAd");
+
     public static final @StringRes int METADATA_INTERSTITIAL_ADUNITID = R.string.mengine_admob_interstitial_adunitid;
 
     private InterstitialAd m_interstitialAd;
@@ -125,14 +128,14 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
 
                             MengineAdMobInterstitialAd.this.setInterstitialState("dismissed");
 
-                            MenginePlatformEventQueue.pushFreezeEvent("AdMobInterstitialAd", false);
+                            MenginePlatformEventQueue.pushFreezeEvent(TAG.toString(), false);
 
                             m_showing = false;
 
                             MengineUtils.performOnMainThread(() -> {
                                 MengineAdResponseInterface adResponse = m_adService.getAdResponse();
 
-                                adResponse.onAdShowSuccess(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_INTERSTITIAL, null);
+                                adResponse.onAdShowSuccess(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_INTERSTITIAL, "null");
 
                                 MengineAdMobInterstitialAd.this.loadAd();
                             });
@@ -158,7 +161,7 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
                             MengineUtils.performOnMainThread(() -> {
                                 MengineAdResponseInterface adResponse = m_adService.getAdResponse();
 
-                                adResponse.onAdShowFailed(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_INTERSTITIAL, null, errorCode);
+                                adResponse.onAdShowFailed(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_INTERSTITIAL, "null", errorCode);
 
                                 MengineAdMobInterstitialAd.this.loadAd();
                             });
@@ -173,7 +176,7 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
 
                             MengineAdMobInterstitialAd.this.setInterstitialState("showed");
 
-                            MenginePlatformEventQueue.pushFreezeEvent("AdMobInterstitialAd", true);
+                            MenginePlatformEventQueue.pushFreezeEvent(TAG.toString(), true);
                         }
 
                         @Override
@@ -207,7 +210,7 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
                                 long valueMicros = adValue.getValueMicros();
                                 double value = valueMicros / 1000000.0;
 
-                                MengineAdMobInterstitialAd.this.revenuePaid(responseInfo, MengineAdFormat.ADFORMAT_INTERSTITIAL, null, value);
+                                MengineAdMobInterstitialAd.this.revenuePaid(responseInfo, MengineAdFormat.ADFORMAT_INTERSTITIAL, "null", value);
                             }
                         }
                     });

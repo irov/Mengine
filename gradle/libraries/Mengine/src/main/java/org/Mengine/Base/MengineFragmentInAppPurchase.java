@@ -8,6 +8,8 @@ import java.util.Set;
 public class MengineFragmentInAppPurchase extends MengineFragment<MengineListenerInAppPurchase> {
     public static MengineFragmentInAppPurchase INSTANCE = null;
 
+    private static final String PREFERENCE_PURCHASE_OWNED_PRODUCTS = "mengine.billing.purchase.owned.products";
+
     MengineFragmentInAppPurchase() {
         super(MengineListenerInAppPurchase.class);
 
@@ -28,7 +30,7 @@ public class MengineFragmentInAppPurchase extends MengineFragment<MengineListene
     }
 
     public boolean isOwnedInAppProduct(@NonNull String product) {
-        Set<String> ownedProducts = MenginePreferences.getPreferenceStrings("mengine.billing.purchase.owned.products", null);
+        Set<String> ownedProducts = MenginePreferences.getPreferenceStrings(PREFERENCE_PURCHASE_OWNED_PRODUCTS, null);
 
         if (ownedProducts == null) {
             return false;
@@ -42,7 +44,7 @@ public class MengineFragmentInAppPurchase extends MengineFragment<MengineListene
     }
 
     public void ownedInAppProducts(@NonNull Set<String> products) {
-        MenginePreferences.setPreferenceStrings("mengine.billing.purchase.owned.products", products);
+        MenginePreferences.setPreferenceStrings(PREFERENCE_PURCHASE_OWNED_PRODUCTS, products);
 
         this.propagate(MengineListenerInAppPurchase::onMengineOwnedInAppProducts, products);
     }

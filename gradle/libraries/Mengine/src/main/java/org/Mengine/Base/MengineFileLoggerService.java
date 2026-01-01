@@ -5,8 +5,11 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -16,11 +19,85 @@ public class MengineFileLoggerService extends MengineService implements MengineL
     public static final String SERVICE_NAME = "FileLogger";
     public static final boolean SERVICE_EMBEDDING = true;
 
+    private static final String PREFERENCE_LOG_FILE_PATH = "mengine.file_logger.log_file_path";
+
     private File m_logFile;
+    private File m_oldLogFile;
     private FileWriter m_writer;
 
     public File getLogFile() {
         return m_logFile;
+    }
+
+    public File getOldLogFile() {
+        return m_oldLogFile;
+    }
+
+    private static void copyFile(File source, File dest) throws IOException {
+        try (FileInputStream sourceStream = new FileInputStream(source);
+             FileOutputStream destStream = new FileOutputStream(dest);
+             FileChannel sourceChannel = sourceStream.getChannel();
+             FileChannel destChannel = destStream.getChannel()) {
+            destChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
+        }
+    }
+
+    private File openOldLogFile(@NonNull Context context) {
+        String previousLogFilePath = MenginePreferences.getPreferenceString(PREFERENCE_LOG_FILE_PATH, null);
+
+        if (previousLogFilePath == null) {
+            return null;
+        }
+
+        File previousLogFile = new File(previousLogFilePath);
+
+        if (previousLogFile.exists() == false ) {
+            return null;
+        }
+
+        if (previousLogFile.length() == 0) {
+            return null;
+        }
+
+        File oldLogFile = MengineUtils.createTempFile(context, "mng_old_log_", ".log");
+
+        if (oldLogFile == null) {
+            this.logWarning("invalid create old log file");
+
+            return null;
+        }
+
+        try {
+            this.logInfo("saved previous log file as old log: %s -> %s", previousLogFilePath, oldLogFile.getAbsolutePath());
+
+            FileInputStream sourceStream = new FileInputStream(previousLogFile);
+            FileOutputStream destStream = new FileOutputStream(oldLogFile);
+            FileChannel sourceChannel = sourceStream.getChannel();
+            FileChannel destChannel = destStream.getChannel();
+            destChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
+        } catch (IOException e) {
+            this.logException(e, Map.of("source", previousLogFilePath, "dest", oldLogFile.getAbsolutePath()));
+
+            return null;
+        }
+
+        return oldLogFile;
+    }
+
+    private File openLogFile(@NonNull Context context) {
+        File logFile = MengineUtils.createTempFile(context, "mng_log_", ".log");
+
+        if (logFile == null) {
+            this.logWarning("invalid create log file");
+
+            return null;
+        }
+
+        String logFileAbsolutePath = logFile.getAbsolutePath();
+
+        MenginePreferences.setPreferenceString(PREFERENCE_LOG_FILE_PATH, logFileAbsolutePath);
+
+        return logFile;
     }
 
     @Override
@@ -31,13 +108,9 @@ public class MengineFileLoggerService extends MengineService implements MengineL
 
         Context context = application.getApplicationContext();
 
-        m_logFile = MengineUtils.createTempFile(context, "mng_log_", ".log");
+        m_oldLogFile = this.openOldLogFile(context);
 
-        if (m_logFile == null) {
-            this.logWarning("invalid create log file");
-
-            return;
-        }
+        m_logFile = this.openLogFile(context);
 
         try {
             m_writer = new FileWriter(m_logFile, true);
@@ -62,6 +135,7 @@ public class MengineFileLoggerService extends MengineService implements MengineL
         }
 
         m_logFile = null;
+        m_oldLogFile = null;
     }
 
     @Override

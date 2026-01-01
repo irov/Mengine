@@ -408,16 +408,22 @@ public abstract class MengineApplication extends Application {
         return true;
     }
 
-    private boolean isMainProcess() {
-        String packageName = this.getPackageName();
-
+    private static String getProcessName(@NonNull Context context) {
         String processName;
+
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
             processName = Application.getProcessName();
         } else {
-            Context context = this.getApplicationContext();
             processName = MengineUtils.getProcessNameBeforeVersionP(context);
         }
+
+        return processName;
+    }
+
+    private boolean isMainProcess() {
+        String packageName = this.getPackageName();
+
+        String processName = MengineApplication.getProcessName(this);
 
         if (processName == null) {
             return false;
@@ -637,28 +643,30 @@ public abstract class MengineApplication extends Application {
 
         List<MengineListenerApplication> applicationListeners = this.getApplicationListeners();
 
-        for (MengineListenerApplication l : applicationListeners) {
-            try {
-                if (l.onAvailable(this) == false) {
-                    continue;
-                }
-
-                MengineLog.logDebug(TAG, "onAppInit service: %s isMainProcess: %b"
-                    , l.getServiceName()
-                    , isMainProcess
-                );
-
-                l.onAppInit(this, isMainProcess);
-            } catch (final MengineServiceInvalidInitializeException e) {
-                this.invalidInitialize(e, Map.of("service", l.getServiceName()));
-
-                return;
-            }
-        }
-
         if (isMainProcess == false) {
+            for (MengineListenerApplication l : applicationListeners) {
+                try {
+                    if (l.onAvailable(this) == false) {
+                        continue;
+                    }
+
+                    MengineLog.logDebug(TAG, "onAppInit service: %s isMainProcess: %b"
+                        , l.getServiceName()
+                        , isMainProcess
+                    );
+
+                    l.onAppInit(this, false);
+                } catch (final MengineServiceInvalidInitializeException e) {
+                    this.invalidInitialize(e, Map.of("service", l.getServiceName()));
+
+                    return;
+                }
+            }
+
             return;
         }
+
+        MenginePreferences.initialize(this, TAG);
 
         if (BuildConfig.DEBUG == true) {
             String deviceInfo = MengineUtils.getPrintDeviceInfo();
@@ -680,13 +688,30 @@ public abstract class MengineApplication extends Application {
                     .build());
         }
 
+        for (MengineListenerApplication l : applicationListeners) {
+            try {
+                if (l.onAvailable(this) == false) {
+                    continue;
+                }
+
+                MengineLog.logDebug(TAG, "onAppInit service: %s isMainProcess: %b"
+                    , l.getServiceName()
+                    , isMainProcess
+                );
+
+                l.onAppInit(this, true);
+            } catch (final MengineServiceInvalidInitializeException e) {
+                this.invalidInitialize(e, Map.of("service", l.getServiceName()));
+
+                return;
+            }
+        }
+
         long sessionTimestamp = MengineUtils.getTimestamp();
 
         this.setState("application.init", "started");
 
         this.setState("application.init", "load_preferences");
-
-        MenginePreferences.initialize(this, TAG);
 
         long MENGINE_APPLICATION_SAVE_VERSION = 1L;
 

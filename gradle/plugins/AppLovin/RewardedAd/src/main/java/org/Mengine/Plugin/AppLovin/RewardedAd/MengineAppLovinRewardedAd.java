@@ -33,6 +33,8 @@ import org.Mengine.Plugin.AppLovin.Core.MengineAppLovinRewardedAdInterface;
 import java.util.Map;
 
 public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements MengineAppLovinRewardedAdInterface, MaxAdRequestListener, MaxRewardedAdListener, MaxAdRevenueListener, MaxAdExpirationListener, MaxAdReviewListener {
+    public static final MengineTag TAG = MengineTag.of("MNGAppLovinRewardedAd");
+
     public static final @StringRes int METADATA_REWARDED_ADUNITID = R.string.mengine_applovin_rewarded_adunitid;
 
     private MaxRewardedAd m_rewardedAd;
@@ -267,7 +269,7 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Me
 
         this.setRewardedState("displayed." + placement + "." + ad.getNetworkName());
 
-        MenginePlatformEventQueue.pushFreezeEvent("AppLovinRewardedAd", true);
+        MenginePlatformEventQueue.pushFreezeEvent(TAG.toString(), true);
     }
 
     @Override
@@ -283,7 +285,7 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Me
 
         this.setRewardedState("hidden." + placement + "." + ad.getNetworkName());
 
-        MenginePlatformEventQueue.pushFreezeEvent("AppLovinRewardedAd", false);
+        MenginePlatformEventQueue.pushFreezeEvent(TAG.toString(), false);
 
         m_showing = false;
 

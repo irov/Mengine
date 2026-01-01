@@ -25,6 +25,7 @@ import org.Mengine.Base.MengineNative;
 import org.Mengine.Base.MengineNetwork;
 import org.Mengine.Base.MenginePlatformEventQueue;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
+import org.Mengine.Base.MengineTag;
 import org.Mengine.Base.MengineUtils;
 import org.Mengine.Plugin.AdMob.Core.MengineAdMobBase;
 import org.Mengine.Plugin.AdMob.Core.MengineAdMobPluginInterface;
@@ -33,6 +34,8 @@ import org.Mengine.Plugin.AdMob.Core.MengineAdMobRewardedAdInterface;
 import java.util.Map;
 
 public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineAdMobRewardedAdInterface {
+    public static final MengineTag TAG = MengineTag.of("MNGAdMobRewardedAd");
+
     public static final @StringRes int METADATA_REWARDED_ADUNITID = R.string.mengine_admob_rewarded_adunitid;
 
     private RewardedAd m_rewardedAd;
@@ -127,11 +130,11 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
 
                             MengineAdMobRewardedAd.this.setRewardedState("dismissed");
 
-                            MenginePlatformEventQueue.pushFreezeEvent("AdMobRewardedAd", false);
+                            MenginePlatformEventQueue.pushFreezeEvent(TAG.toString(), false);
 
                             m_showing = false;
 
-                            adResponse.onAdShowSuccess(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_REWARDED, null);
+                            adResponse.onAdShowSuccess(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_REWARDED, "null");
 
                             MengineUtils.performOnMainThread(() -> {
                                 MengineAdMobRewardedAd.this.loadAd();
@@ -155,7 +158,7 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
 
                             m_showing = false;
 
-                            adResponse.onAdShowFailed(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_REWARDED, null, errorCode);
+                            adResponse.onAdShowFailed(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_REWARDED, "null", errorCode);
 
                             MengineUtils.performOnMainThread(() -> {
                                 MengineAdMobRewardedAd.this.loadAd();
@@ -171,7 +174,7 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
 
                             MengineAdMobRewardedAd.this.setRewardedState("showed");
 
-                            MenginePlatformEventQueue.pushFreezeEvent("AdMobRewardedAd", true);
+                            MenginePlatformEventQueue.pushFreezeEvent(TAG.toString(), true);
                         }
 
                         @Override

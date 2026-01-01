@@ -275,7 +275,7 @@ public class MengineAdMobBase extends AdListener implements MengineAdMobAdInterf
         sb.append(String.format(Locale.US, "RetryAttempt: %d ", m_requestAttempt));
     }
 
-    protected void revenuePaid(@NonNull ResponseInfo responseInfo, @NonNull MengineAdFormat adFormat, String placement, double revenueValue) {
+    protected void revenuePaid(@NonNull ResponseInfo responseInfo, @NonNull MengineAdFormat adFormat, @NonNull String placement, double revenueValue) {
         MengineAdMediation mediation = MengineAdMediation.ADMEDIATION_ADMOB;
         String networkName = "AdMob";
         String adUnitId = m_adUnitId;

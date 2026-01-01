@@ -1014,7 +1014,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
     }
 
     @Override
-    public void onAdShowFailed(@NonNull MengineAdMediation mediation, @NonNull MengineAdFormat format, String placement, int errorCode) {
+    public void onAdShowFailed(@NonNull MengineAdMediation mediation, @NonNull MengineAdFormat format, @NonNull String placement, int errorCode) {
         Map<String, Object> params = Map.of("placement", placement, "error_code", errorCode);
 
         if (format == MengineAdFormat.ADFORMAT_INTERSTITIAL) {
@@ -1029,7 +1029,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
     }
 
     @Override
-    public void onAdUserRewarded(@NonNull MengineAdMediation mediation, @NonNull MengineAdFormat format, String placement, String label, int amount) {
+    public void onAdUserRewarded(@NonNull MengineAdMediation mediation, @NonNull MengineAdFormat format, @NonNull String placement, String label, int amount) {
         Map<String, Object> params = Map.of("placement", placement, "label", label, "amount", amount);
 
         if (format == MengineAdFormat.ADFORMAT_REWARDED) {

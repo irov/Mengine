@@ -1718,7 +1718,214 @@ namespace Mengine
 
         LOGGER_INFO( "platform", "push surface create event" );
 
-        this->surfaceCreateEvent_( _nativeWindow );
+        MENGINE_ASSERTION_FATAL( m_eglDisplay != nullptr, "display not created" );
+        MENGINE_ASSERTION_FATAL( m_eglSurface == nullptr, "already created egl surface" );
+        MENGINE_ASSERTION_FATAL( m_eglContext == nullptr, "already created egl context" );
+
+        LOGGER_INFO( "platform", "surface create event" );
+
+        MENGINE_THREAD_MUTEX_SCOPE( m_eglSurfaceMutex );
+
+        if( m_nativeWindow == nullptr )
+        {
+            LOGGER_ERROR( "[egl] native window is null" );
+
+            return;
+        }
+
+        int32_t format_got = ANativeWindow_getFormat( m_nativeWindow );
+
+        LOGGER_INFO( "platform", "native window format: %d"
+            , format_got
+        );
+
+        if( ::eglBindAPI( EGL_OPENGL_ES_API ) == EGL_FALSE )
+        {
+            LOGGER_WARNING( "[egl] failed to bind ES api [%d]"
+                , ::eglGetError()
+            );
+        }
+
+        EGLint base_red_size = 8;
+        EGLint base_green_size = 8;
+        EGLint base_blue_size = 8;
+        EGLint base_alpha_size = 8;
+        EGLint base_depth_size = 24;
+
+        const EGLint configAttribs[] = {
+            EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
+            EGL_RED_SIZE, base_red_size,
+            EGL_GREEN_SIZE, base_green_size,
+            EGL_BLUE_SIZE, base_blue_size,
+            EGL_ALPHA_SIZE, base_alpha_size,
+            EGL_DEPTH_SIZE, base_depth_size,
+            EGL_NONE
+        };
+
+        EGLConfig configs[128];
+        EGLint numConfigs;
+        if( ::eglChooseConfig( m_eglDisplay, configAttribs, configs, MENGINE_ARRAY_SIZE(configs), &numConfigs ) == EGL_FALSE )
+        {
+            LOGGER_ERROR( "[egl] failed to choose config [%d]"
+                , ::eglGetError()
+            );
+
+            return;
+        }
+
+        if( numConfigs == 0 )
+        {
+            LOGGER_ERROR( "[egl] no configs found" );
+
+            return;
+        }
+
+        EGLint best_config_index = -1;
+        EGLint best_config_score = -1;
+
+        for( EGLint index = 0; index != numConfigs; ++index )
+        {
+            EGLint red;
+            EGLint green;
+            EGLint blue;
+            EGLint alpha;
+            EGLint depth;
+            ::eglGetConfigAttrib( m_eglDisplay, configs[index], EGL_RED_SIZE, &red );
+            ::eglGetConfigAttrib( m_eglDisplay, configs[index], EGL_GREEN_SIZE, &green );
+            ::eglGetConfigAttrib( m_eglDisplay, configs[index], EGL_BLUE_SIZE, &blue );
+            ::eglGetConfigAttrib( m_eglDisplay, configs[index], EGL_ALPHA_SIZE, &alpha );
+            ::eglGetConfigAttrib( m_eglDisplay, configs[index], EGL_DEPTH_SIZE, &depth );
+
+            EGLint red_score = red - base_red_size;
+            EGLint green_score = green - base_green_size;
+            EGLint blue_score = blue - base_blue_size;
+            EGLint alpha_score = alpha - base_alpha_size;
+            EGLint depth_score = depth - base_depth_size;
+
+            EGLint total_score = red_score + green_score + blue_score + alpha_score + depth_score;
+
+            if( best_config_score == -1 )
+            {
+                best_config_index = index;
+                best_config_score = total_score;
+            }
+            else if( total_score < best_config_score )
+            {
+                best_config_index = index;
+                best_config_score = total_score;
+            }
+        }
+
+        if( best_config_index == -1 )
+        {
+            LOGGER_ERROR( "[egl] no suitable config found" );
+
+            return;
+        }
+
+        EGLConfig best_config = configs[best_config_index];
+
+        EGLint result_red;
+        EGLint result_green;
+        EGLint result_blue;
+        EGLint result_alpha;
+        EGLint result_depth;
+        ::eglGetConfigAttrib( m_eglDisplay, best_config, EGL_RED_SIZE, &result_red );
+        ::eglGetConfigAttrib( m_eglDisplay, best_config, EGL_GREEN_SIZE, &result_green );
+        ::eglGetConfigAttrib( m_eglDisplay, best_config, EGL_BLUE_SIZE, &result_blue );
+        ::eglGetConfigAttrib( m_eglDisplay, best_config, EGL_ALPHA_SIZE, &result_alpha );
+        ::eglGetConfigAttrib( m_eglDisplay, best_config, EGL_DEPTH_SIZE, &result_depth );
+
+        LOGGER_MESSAGE( "[egl] config red: %d green: %d blue: %d alpha: %d depth: %d"
+            , result_red
+            , result_green
+            , result_blue
+            , result_alpha
+            , result_depth
+        );
+
+        EGLint format_wanted = 0;
+        if( ::eglGetConfigAttrib( m_eglDisplay, best_config, EGL_NATIVE_VISUAL_ID, &format_wanted ) == EGL_FALSE )
+        {
+            LOGGER_ERROR( "[egl] failed to get config attrib [%d]"
+                , ::eglGetError()
+            );
+
+            return;
+        }
+
+        int errSetBuffersGeometry = ANativeWindow_setBuffersGeometry( m_nativeWindow, 0, 0, format_wanted );
+
+        if( errSetBuffersGeometry != 0 )
+        {
+            LOGGER_ERROR("[egl] failed to set buffers geometry: %d"
+                , errSetBuffersGeometry
+            );
+
+            return;
+        }
+
+        EGLint attribs[64] = {EGL_NONE};
+
+        EGLSurface eglSurface = ::eglCreateWindowSurface( m_eglDisplay, best_config, m_nativeWindow, attribs );
+
+        if( eglSurface == EGL_NO_SURFACE )
+        {
+            LOGGER_ERROR( "[egl] failed to create window surface [%d]"
+                , ::eglGetError()
+            );
+
+            return;
+        }
+
+        m_eglSurface = eglSurface;
+
+        EGLint width;
+        EGLint height;
+        ::eglQuerySurface( m_eglDisplay, m_eglSurface, EGL_WIDTH, &width );
+        ::eglQuerySurface( m_eglDisplay, m_eglSurface, EGL_HEIGHT, &height );
+
+        const EGLint contextAttribs[] = {
+            EGL_CONTEXT_CLIENT_VERSION, 2,
+            EGL_NONE
+        };
+
+        EGLContext eglShareContext = EGL_NO_CONTEXT;
+
+        EGLContext context = ::eglCreateContext( m_eglDisplay, best_config, eglShareContext, contextAttribs );
+
+        if( context == EGL_NO_CONTEXT )
+        {
+            LOGGER_ERROR( "[egl] failed to create context [%d]"
+                , ::eglGetError()
+            );
+
+            return;
+        }
+
+        m_eglContext = context;
+
+        if( ::eglMakeCurrent( m_eglDisplay, m_eglSurface, m_eglSurface, m_eglContext ) == EGL_FALSE )
+        {
+            LOGGER_ERROR( "[egl] failed to make current [%d]"
+                , ::eglGetError()
+            );
+
+            return;
+        }
+
+        if( ::eglSwapInterval( m_eglDisplay, 1 ) == EGL_FALSE )
+        {
+            LOGGER_WARNING( "[egl] invalid set swap interval [%d]"
+                , ::eglGetError()
+            );
+        }
+
+        if( RENDER_SERVICE()
+            ->onDeviceLostRestore() == false )
+        {
+            return;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeSurfaceDestroyedEvent()
@@ -1736,7 +1943,55 @@ namespace Mengine
 
         LOGGER_INFO( "platform", "push surface destroy event" );
 
-        this->surfaceDestroyEvent_();
+        LOGGER_INFO( "platform", "surface destroy event" );
+
+        MENGINE_THREAD_MUTEX_SCOPE( m_eglSurfaceMutex );
+
+        if( m_eglDisplay == EGL_NO_DISPLAY )
+        {
+            return;
+        }
+
+        RENDER_SERVICE()
+            ->onDeviceLostPrepare();
+
+        if( ::eglBindAPI( EGL_OPENGL_ES_API ) == EGL_FALSE )
+        {
+            LOGGER_WARNING( "[egl] failed to bind ES api [%d]"
+                , ::eglGetError()
+            );
+        }
+
+        if( ::eglMakeCurrent( m_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT ) == EGL_FALSE )
+        {
+            LOGGER_WARNING( "[egl] failed to clear currents [%d]"
+                , ::eglGetError()
+            );
+        }
+
+        if( m_eglContext != EGL_NO_CONTEXT )
+        {
+            if( ::eglDestroyContext( m_eglDisplay, m_eglContext ) == EGL_FALSE )
+            {
+                LOGGER_WARNING( "[egl] failed to destroy context [%d]"
+                    , ::eglGetError()
+                );
+            }
+
+            m_eglContext = EGL_NO_CONTEXT;
+        }
+
+        if( m_eglSurface != EGL_NO_SURFACE )
+        {
+            if( ::eglDestroySurface( m_eglDisplay, m_eglSurface ) == EGL_FALSE )
+            {
+                LOGGER_WARNING( "[egl] failed to destroy surface [%d]"
+                    , ::eglGetError()
+                );
+            }
+
+            m_eglSurface = EGL_NO_SURFACE;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeSurfaceChangedEvent( ANativeWindow * _nativeWindow, jint surfaceWidth, jint surfaceHeight, jint deviceWidth, jint deviceHeight, jfloat rate )
@@ -1758,7 +2013,18 @@ namespace Mengine
             , rate
         );
 
-        this->surfaceChangedEvent_( _nativeWindow, surfaceWidth, surfaceHeight, deviceWidth, deviceHeight, rate );
+        MENGINE_UNUSED( _nativeWindow );
+        MENGINE_UNUSED( deviceWidth );
+        MENGINE_UNUSED( deviceHeight );
+        MENGINE_UNUSED( rate );
+
+        jint surfaceWidth_local = surfaceWidth;
+        jint surfaceHeight_local = surfaceHeight;
+
+        Resolution windowResolution( surfaceWidth_local, surfaceHeight_local );
+
+        APPLICATION_SERVICE()
+            ->setWindowResolution( windowResolution );
     }
     //////////////////////////////////////////////////////////////////////////
     ETouchCode AndroidPlatformService::acquireFingerIndex_( jint _pointerId )
@@ -2261,7 +2527,9 @@ namespace Mengine
             , _y
         );
 
-        this->pauseEvent_( _x, _y );
+        this->setActive_( _x, _y, false );
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_RESIGN_ACTIVE );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeResumeEvent( jfloat _x, jfloat _y )
@@ -2273,7 +2541,9 @@ namespace Mengine
             , _y
         );
 
-        this->resumeEvent_( _x, _y );
+        this->setActive_( _x, _y, true );
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_BECOME_ACTIVE );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeStopEvent()
@@ -2282,7 +2552,7 @@ namespace Mengine
 
         LOGGER_INFO( "platform", "stop event" );
 
-        this->stopEvent_();
+        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_ENTER_BACKGROUND );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeStartEvent()
@@ -2291,7 +2561,7 @@ namespace Mengine
 
         LOGGER_INFO( "platform", "start event" );
 
-        this->startEvent_();
+        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_ENTER_FOREGROUND );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeRestartEvent()
@@ -2300,7 +2570,7 @@ namespace Mengine
 
         LOGGER_INFO( "platform", "restart event" );
 
-        this->restartEvent_();
+        //ToDo
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeDestroyEvent()
@@ -2309,7 +2579,7 @@ namespace Mengine
 
         LOGGER_INFO( "platform", "destroy event" );
 
-        this->destroyEvent_();
+        //ToDo
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeFreezeEvent( const ConstString & _owner, bool _freeze )
@@ -2319,99 +2589,6 @@ namespace Mengine
             , _freeze
         );
 
-        this->freezeEvent_( _owner, _freeze );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::androidNativeClipboardChangedEvent()
-    {
-        LOGGER_INFO( "platform", "clipboard changed event" );
-
-        this->clipboardChangedEvent_();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::androidNativeWindowFocusChangedEvent( jboolean _focus )
-    {
-        LOGGER_INFO( "platform", "window focus changed event: %d"
-            , _focus
-        );
-
-        this->windowFocusChangedEvent_( _focus );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::androidNativeQuitEvent()
-    {
-        LOGGER_INFO( "platform", "quit event" );
-
-        this->stopEvent_();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::androidNativeLowMemoryEvent()
-    {
-        LOGGER_INFO( "platform", "low memory event" );
-
-        this->lowMemoryEvent_();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::androidNativeTrimMemoryEvent(jint _level)
-    {
-        LOGGER_INFO( "platform", "trim memory event: %d"
-            , _level
-        );
-
-        this->trimMemoryEvent_( _level );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::androidNativeChangeLocale( const Mengine::Char * _language )
-    {
-        LOGGER_INFO( "platform", "change locale event: %s"
-             , _language
-         );
-
-        this->changeLocaleEvent_( _language );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    jboolean AndroidPlatformService::androidNativeProcessEvents()
-    {
-        // This method is called from Java processEvents() which already processes events
-        // We just return false here as the actual processing is done in Java
-        return JNI_FALSE;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::pauseEvent_( float _x, float _y )
-    {
-        this->setActive_( _x, _y, false );
-
-        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_RESIGN_ACTIVE );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::resumeEvent_( float _x, float _y )
-    {
-        this->setActive_( _x, _y, true );
-
-        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_BECOME_ACTIVE );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::stopEvent_()
-    {
-        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_ENTER_BACKGROUND );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::startEvent_()
-    {
-        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_ENTER_FOREGROUND );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::restartEvent_()
-    {
-        //ToDo
-    }
-    void AndroidPlatformService::destroyEvent_()
-    {
-        //ToDo
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::freezeEvent_( const ConstString & _owner, bool _freeze )
-    {
         APPLICATION_SERVICE()
             ->setUpdateFreeze( _owner, _freeze );
 
@@ -2422,315 +2599,63 @@ namespace Mengine
             ->setMute( _owner, _freeze );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::surfaceCreateEvent_( ANativeWindow * _nativeWindow )
+    void AndroidPlatformService::androidNativeClipboardChangedEvent()
     {
-        MENGINE_ASSERTION_FATAL( m_eglDisplay != nullptr, "display not created" );
-        MENGINE_ASSERTION_FATAL( m_eglSurface == nullptr, "already created egl surface" );
-        MENGINE_ASSERTION_FATAL( m_eglContext == nullptr, "already created egl context" );
+        LOGGER_INFO( "platform", "clipboard changed event" );
 
-        LOGGER_INFO( "platform", "surface create event" );
-
-        MENGINE_THREAD_MUTEX_SCOPE( m_nativeWindowMutex );
-        MENGINE_THREAD_MUTEX_SCOPE( m_eglSurfaceMutex );
-
-        if( m_nativeWindow == nullptr )
-        {
-            LOGGER_ERROR( "[egl] native window is null" );
-
-            return;
-        }
-
-        int32_t format_got = ANativeWindow_getFormat( m_nativeWindow );
-
-        LOGGER_INFO( "platform", "native window format: %d"
-            , format_got
-        );
-
-        if( ::eglBindAPI( EGL_OPENGL_ES_API ) == EGL_FALSE )
-        {
-            LOGGER_WARNING( "[egl] failed to bind ES api [%d]"
-                , ::eglGetError()
-            );
-        }
-
-        EGLint base_red_size = 8;
-        EGLint base_green_size = 8;
-        EGLint base_blue_size = 8;
-        EGLint base_alpha_size = 8;
-        EGLint base_depth_size = 24;
-
-        const EGLint configAttribs[] = {
-            EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
-            EGL_RED_SIZE, base_red_size,
-            EGL_GREEN_SIZE, base_green_size,
-            EGL_BLUE_SIZE, base_blue_size,
-            EGL_ALPHA_SIZE, base_alpha_size,
-            EGL_DEPTH_SIZE, base_depth_size,
-            EGL_NONE
-        };
-
-        EGLConfig configs[128];
-        EGLint numConfigs;
-        if( ::eglChooseConfig( m_eglDisplay, configAttribs, configs, MENGINE_ARRAY_SIZE(configs), &numConfigs ) == EGL_FALSE )
-        {
-            LOGGER_ERROR( "[egl] failed to choose config [%d]"
-                , ::eglGetError()
-            );
-
-            return;
-        }
-
-        if( numConfigs == 0 )
-        {
-            LOGGER_ERROR( "[egl] no configs found" );
-
-            return;
-        }
-
-        EGLint best_config_index = -1;
-        EGLint best_config_score = -1;
-
-        for( EGLint index = 0; index != numConfigs; ++index )
-        {
-            EGLint red;
-            EGLint green;
-            EGLint blue;
-            EGLint alpha;
-            EGLint depth;
-            ::eglGetConfigAttrib( m_eglDisplay, configs[index], EGL_RED_SIZE, &red );
-            ::eglGetConfigAttrib( m_eglDisplay, configs[index], EGL_GREEN_SIZE, &green );
-            ::eglGetConfigAttrib( m_eglDisplay, configs[index], EGL_BLUE_SIZE, &blue );
-            ::eglGetConfigAttrib( m_eglDisplay, configs[index], EGL_ALPHA_SIZE, &alpha );
-            ::eglGetConfigAttrib( m_eglDisplay, configs[index], EGL_DEPTH_SIZE, &depth );
-
-            EGLint red_score = red - base_red_size;
-            EGLint green_score = green - base_green_size;
-            EGLint blue_score = blue - base_blue_size;
-            EGLint alpha_score = alpha - base_alpha_size;
-            EGLint depth_score = depth - base_depth_size;
-
-            EGLint total_score = red_score + green_score + blue_score + alpha_score + depth_score;
-
-            if( best_config_score == -1 )
-            {
-                best_config_index = index;
-                best_config_score = total_score;
-            }
-            else if( total_score < best_config_score )
-            {
-                best_config_index = index;
-                best_config_score = total_score;
-            }
-        }
-
-        if( best_config_index == -1 )
-        {
-            LOGGER_ERROR( "[egl] no suitable config found" );
-
-            return;
-        }
-
-        EGLConfig best_config = configs[best_config_index];
-
-        EGLint result_red;
-        EGLint result_green;
-        EGLint result_blue;
-        EGLint result_alpha;
-        EGLint result_depth;
-        ::eglGetConfigAttrib( m_eglDisplay, best_config, EGL_RED_SIZE, &result_red );
-        ::eglGetConfigAttrib( m_eglDisplay, best_config, EGL_GREEN_SIZE, &result_green );
-        ::eglGetConfigAttrib( m_eglDisplay, best_config, EGL_BLUE_SIZE, &result_blue );
-        ::eglGetConfigAttrib( m_eglDisplay, best_config, EGL_ALPHA_SIZE, &result_alpha );
-        ::eglGetConfigAttrib( m_eglDisplay, best_config, EGL_DEPTH_SIZE, &result_depth );
-
-        LOGGER_MESSAGE( "[egl] config red: %d green: %d blue: %d alpha: %d depth: %d"
-            , result_red
-            , result_green
-            , result_blue
-            , result_alpha
-            , result_depth
-        );
-
-        EGLint format_wanted = 0;
-        if( ::eglGetConfigAttrib( m_eglDisplay, best_config, EGL_NATIVE_VISUAL_ID, &format_wanted ) == EGL_FALSE )
-        {
-            LOGGER_ERROR( "[egl] failed to get config attrib [%d]"
-                , ::eglGetError()
-            );
-
-            return;
-        }
-
-        int errSetBuffersGeometry = ANativeWindow_setBuffersGeometry( m_nativeWindow, 0, 0, format_wanted );
-
-        if( errSetBuffersGeometry != 0 )
-        {
-            LOGGER_ERROR("[egl] failed to set buffers geometry: %d"
-                , errSetBuffersGeometry
-            );
-
-            return;
-        }
-
-        EGLint attribs[64] = {EGL_NONE};
-
-        EGLSurface eglSurface = ::eglCreateWindowSurface( m_eglDisplay, best_config, m_nativeWindow, attribs );
-
-        if( eglSurface == EGL_NO_SURFACE )
-        {
-            LOGGER_ERROR( "[egl] failed to create window surface [%d]"
-                , ::eglGetError()
-            );
-
-            return;
-        }
-
-        m_eglSurface = eglSurface;
-
-        EGLint width;
-        EGLint height;
-        ::eglQuerySurface( m_eglDisplay, m_eglSurface, EGL_WIDTH, &width );
-        ::eglQuerySurface( m_eglDisplay, m_eglSurface, EGL_HEIGHT, &height );
-
-        const EGLint contextAttribs[] = {
-            EGL_CONTEXT_CLIENT_VERSION, 2,
-            EGL_NONE
-        };
-
-        EGLContext eglShareContext = EGL_NO_CONTEXT;
-
-        EGLContext context = ::eglCreateContext( m_eglDisplay, best_config, eglShareContext, contextAttribs );
-
-        if( context == EGL_NO_CONTEXT )
-        {
-            LOGGER_ERROR( "[egl] failed to create context [%d]"
-                , ::eglGetError()
-            );
-
-            return;
-        }
-
-        m_eglContext = context;
-
-        if( ::eglMakeCurrent( m_eglDisplay, m_eglSurface, m_eglSurface, m_eglContext ) == EGL_FALSE )
-        {
-            LOGGER_ERROR( "[egl] failed to make current [%d]"
-                , ::eglGetError()
-            );
-
-            return;
-        }
-
-        if( ::eglSwapInterval( m_eglDisplay, 1 ) == EGL_FALSE )
-        {
-            LOGGER_WARNING( "[egl] invalid set swap interval [%d]"
-                , ::eglGetError()
-            );
-        }
-
-        if( RENDER_SERVICE()
-            ->onDeviceLostRestore() == false )
-        {
-            return;
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::surfaceDestroyEvent_()
-    {
-        LOGGER_INFO( "platform", "surface destroy event" );
-
-        MENGINE_THREAD_MUTEX_SCOPE( m_eglSurfaceMutex );
-
-        if( m_eglDisplay == EGL_NO_DISPLAY )
-        {
-            return;
-        }
-
-        RENDER_SERVICE()
-            ->onDeviceLostPrepare();
-
-        if( ::eglBindAPI( EGL_OPENGL_ES_API ) == EGL_FALSE )
-        {
-            LOGGER_WARNING( "[egl] failed to bind ES api [%d]"
-                , ::eglGetError()
-            );
-        }
-
-        if( ::eglMakeCurrent( m_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT ) == EGL_FALSE )
-        {
-            LOGGER_WARNING( "[egl] failed to clear currents [%d]"
-                , ::eglGetError()
-            );
-        }
-
-        if( m_eglContext != EGL_NO_CONTEXT )
-        {
-            if( ::eglDestroyContext( m_eglDisplay, m_eglContext ) == EGL_FALSE )
-            {
-                LOGGER_WARNING( "[egl] failed to destroy context [%d]"
-                    , ::eglGetError()
-                );
-            }
-
-            m_eglContext = EGL_NO_CONTEXT;
-        }
-
-        if( m_eglSurface != EGL_NO_SURFACE )
-        {
-            if( ::eglDestroySurface( m_eglDisplay, m_eglSurface ) == EGL_FALSE )
-            {
-                LOGGER_WARNING( "[egl] failed to destroy surface [%d]"
-                    , ::eglGetError()
-                );
-            }
-
-            m_eglSurface = EGL_NO_SURFACE;
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::surfaceChangedEvent_( ANativeWindow * _nativeWindow, jint _surfaceWidth, jint _surfaceHeight, jint _deviceWidth, jint _deviceHeight, jfloat _rate )
-    {
-        MENGINE_UNUSED( _nativeWindow );
-        MENGINE_UNUSED( _deviceWidth );
-        MENGINE_UNUSED( _deviceHeight );
-        MENGINE_UNUSED( _rate );
-
-        jint surfaceWidth = _surfaceWidth;
-        jint surfaceHeight = _surfaceHeight;
-
-        Resolution windowResolution( surfaceWidth, surfaceHeight );
-
-        APPLICATION_SERVICE()
-            ->setWindowResolution( windowResolution );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::clipboardChangedEvent_()
-    {
         //ToDo
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::windowFocusChangedEvent_( jboolean _focus )
+    void AndroidPlatformService::androidNativeWindowFocusChangedEvent( jboolean _focus )
     {
+        LOGGER_INFO( "platform", "window focus changed event: %d"
+            , _focus
+        );
+
         MENGINE_UNUSED( _focus );
 
         //ToDo
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::lowMemoryEvent_()
+    void AndroidPlatformService::androidNativeQuitEvent()
     {
+        LOGGER_INFO( "platform", "quit event" );
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_ENTER_BACKGROUND );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::androidNativeLowMemoryEvent()
+    {
+        LOGGER_INFO( "platform", "low memory event" );
+
         NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_RECEIVE_MEMORY_WARNING );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::trimMemoryEvent_( jint _level )
+    void AndroidPlatformService::androidNativeTrimMemoryEvent(jint _level)
     {
+        LOGGER_INFO( "platform", "trim memory event: %d"
+            , _level
+        );
+
         NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_RECEIVE_TRIM_MEMORY, _level );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::changeLocaleEvent_( const Char * _language )
+    void AndroidPlatformService::androidNativeChangeLocale( const Mengine::Char * _language )
     {
+        LOGGER_INFO( "platform", "change locale event: %s"
+             , _language
+         );
+
         MENGINE_UNUSED( _language );
 
         //ToDo
+    }
+    //////////////////////////////////////////////////////////////////////////
+    jboolean AndroidPlatformService::androidNativeProcessEvents()
+    {
+        // This method is called from Java processEvents() which already processes events
+        // We just return false here as the actual processing is done in Java
+        return JNI_FALSE;
     }
     //////////////////////////////////////////////////////////////////////////
 }

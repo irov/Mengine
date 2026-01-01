@@ -203,22 +203,6 @@ namespace Mengine
     protected:
         void setActive_( float _x, float _y, bool _active );
 
-    protected:
-        void pauseEvent_( float _x, float _y );
-        void resumeEvent_( float _x, float _y );
-        void stopEvent_();
-        void startEvent_();
-        void restartEvent_();
-        void destroyEvent_();
-        void freezeEvent_( const ConstString & _owner, bool _freeze );
-        void surfaceCreateEvent_( ANativeWindow * _nativeWindow );
-        void surfaceDestroyEvent_();
-        void surfaceChangedEvent_( ANativeWindow * _nativeWindow, jint _surfaceWidth, jint _surfaceHeight, jint _deviceWidth, jint _deviceHeight, jfloat _rate );
-        void clipboardChangedEvent_();
-        void windowFocusChangedEvent_( jboolean _focus );
-        void lowMemoryEvent_();
-        void trimMemoryEvent_( jint _level );
-        void changeLocaleEvent_( const Char * _language );
 
     protected:
         Timestamp m_beginTime;

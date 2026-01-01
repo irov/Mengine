@@ -32,6 +32,8 @@ import org.json.JSONObject;
 import java.util.Map;
 
 public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implements MengineAppLovinInterstitialAdInterface, MaxAdListener, MaxAdRequestListener, MaxAdRevenueListener, MaxAdExpirationListener, MaxAdReviewListener {
+    public static final MengineTag TAG = MengineTag.of("MNGAppLovinInterstitialAd");
+
     public static final @StringRes int METADATA_INTERSTITIAL_ADUNITID = R.string.mengine_applovin_interstitial_adunitid;
 
     private MaxInterstitialAd m_interstitialAd;
@@ -222,7 +224,7 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
 
         this.setInterstitialState("displayed." + placement + "." + ad.getNetworkName());
 
-        MenginePlatformEventQueue.pushFreezeEvent("AppLovinInterstitialAd", true);
+        MenginePlatformEventQueue.pushFreezeEvent(TAG.toString(), true);
     }
 
     @Override
@@ -238,7 +240,7 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
 
         this.setInterstitialState("hidden." + placement + "." + ad.getNetworkName());
 
-        MenginePlatformEventQueue.pushFreezeEvent("AppLovinInterstitialAd", false);
+        MenginePlatformEventQueue.pushFreezeEvent(TAG.toString(), false);
 
         m_showing = false;
 

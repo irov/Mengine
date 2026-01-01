@@ -147,16 +147,37 @@
 #pragma mark - iOSPluginTransparencyConsentDelegateInterface
 
 - (void)onTransparencyConsent:(iOSTransparencyConsentParam *)consent {
-    IOS_LOGGER_MESSAGE(@"UMP consent received, requesting ATT authorization");
+    IOS_LOGGER_MESSAGE(@"UMP consent received, checking if ATT authorization should be requested");
     
+    // Check if consent is still pending - don't request ATT if pending
+    if ([consent isPending] == YES) {
+        IOS_LOGGER_MESSAGE(@"Consent is pending, skipping ATT authorization request");
+        return;
+    }
+    
+    // Check if user granted consent for ad storage - if NO, user denied tracking in GDPR prompt
+    // According to Apple guidelines, we should NOT request ATT if user denied tracking in GDPR
+    BOOL adStorageConsent = [consent getConsentAdStorage];
+    if (adStorageConsent == NO) {
+        IOS_LOGGER_MESSAGE(@"User denied ad storage consent in GDPR prompt, skipping ATT authorization request");
+        
+        // Update tracking status based on current system status (but don't request ATT dialog)
+        ATTrackingManagerAuthorizationStatus status = [ATTrackingManager trackingAuthorizationStatus];
+        [self updateTrackingStatus:status];
+        
+        return;
+    }
+    
+    // User granted consent for ad storage, now check ATT status
     ATTrackingManagerAuthorizationStatus status = [ATTrackingManager trackingAuthorizationStatus];
     
     if (status != ATTrackingManagerAuthorizationStatusNotDetermined) {
         [self updateTrackingStatus:status];
-
         return;
     }
     
+    // User granted GDPR consent and ATT is not determined, request ATT authorization
+    IOS_LOGGER_MESSAGE(@"User granted GDPR consent for ad storage, requesting ATT authorization");
     [self authorization];
 }
 

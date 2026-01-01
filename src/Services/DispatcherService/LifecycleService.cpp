@@ -22,26 +22,26 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void LifecycleService::registerService( ServiceInterface * _service )
     {
-        LifecycleInterface * dispatchable = dynamic_cast<LifecycleInterface *>(_service);
+        LifecycleInterface * lifecycle = _service->getLifecycleable();
 
-        if( dispatchable == nullptr )
+        if( lifecycle == nullptr )
         {
             return;
         }
 
-        this->registerLifecycle( dispatchable );
+        this->registerLifecycle( lifecycle );
     }
     //////////////////////////////////////////////////////////////////////////
     void LifecycleService::unregisterService( ServiceInterface * _service )
     {
-        LifecycleInterface * dispatchable = dynamic_cast<LifecycleInterface *>(_service);
+        LifecycleInterface * lifecycle = _service->getLifecycleable();
         
-        if( dispatchable == nullptr )
+        if( lifecycle == nullptr )
         {
             return;
         }
 
-        this->unregisterLifecycle( dispatchable );
+        this->unregisterLifecycle( lifecycle );
     }
     //////////////////////////////////////////////////////////////////////////
     bool LifecycleService::_initializeService()

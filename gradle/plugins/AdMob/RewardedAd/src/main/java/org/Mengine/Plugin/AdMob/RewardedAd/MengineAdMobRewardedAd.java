@@ -134,7 +134,7 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
 
                             m_showing = false;
 
-                            adResponse.onAdShowSuccess(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_REWARDED, "null");
+                            adResponse.onAdShowSuccess(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_REWARDED, null);
 
                             MengineUtils.performOnMainThread(() -> {
                                 MengineAdMobRewardedAd.this.loadAd();
@@ -158,7 +158,7 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
 
                             m_showing = false;
 
-                            adResponse.onAdShowFailed(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_REWARDED, "null", errorCode);
+                            adResponse.onAdShowFailed(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_REWARDED, null, errorCode);
 
                             MengineUtils.performOnMainThread(() -> {
                                 MengineAdMobRewardedAd.this.loadAd();

@@ -32,14 +32,14 @@ namespace Mengine
         void postUpdate() override;
 
     protected:
-        struct DispatchableDesc
+        struct LifecycleDesc
         {
-            LifecycleInterface * dispatchable;
+            LifecycleInterface * lifecycle;
         };
 
-        typedef Vector<DispatchableDesc> VectorDispatchable;
-        VectorDispatchable m_dispatchable;
-        VectorDispatchable m_dispatchableAdd;
+        typedef Vector<LifecycleDesc> VectorLifecycle;
+        VectorLifecycle m_lifecycles;
+        VectorLifecycle m_lifecyclesAdd;
     };
 }
 

@@ -135,7 +135,7 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
                             MengineUtils.performOnMainThread(() -> {
                                 MengineAdResponseInterface adResponse = m_adService.getAdResponse();
 
-                                adResponse.onAdShowSuccess(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_INTERSTITIAL, "null");
+                                adResponse.onAdShowSuccess(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_INTERSTITIAL, null);
 
                                 MengineAdMobInterstitialAd.this.loadAd();
                             });
@@ -161,7 +161,7 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
                             MengineUtils.performOnMainThread(() -> {
                                 MengineAdResponseInterface adResponse = m_adService.getAdResponse();
 
-                                adResponse.onAdShowFailed(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_INTERSTITIAL, "null", errorCode);
+                                adResponse.onAdShowFailed(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_INTERSTITIAL, null, errorCode);
 
                                 MengineAdMobInterstitialAd.this.loadAd();
                             });
@@ -210,7 +210,7 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
                                 long valueMicros = adValue.getValueMicros();
                                 double value = valueMicros / 1000000.0;
 
-                                MengineAdMobInterstitialAd.this.revenuePaid(responseInfo, MengineAdFormat.ADFORMAT_INTERSTITIAL, "null", value);
+                                MengineAdMobInterstitialAd.this.revenuePaid(responseInfo, MengineAdFormat.ADFORMAT_INTERSTITIAL, null, value);
                             }
                         }
                     });

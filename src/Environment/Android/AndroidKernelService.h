@@ -17,8 +17,10 @@ namespace Mengine
 {
     class AndroidKernelService
         : public ServiceBase<AndroidKernelServiceInterface>
-        , public BaseLifecycle
+        , protected BaseLifecycle
     {
+        DECLARE_LIFECYCLEABLE();
+
     public:
         AndroidKernelService();
         ~AndroidKernelService() override;

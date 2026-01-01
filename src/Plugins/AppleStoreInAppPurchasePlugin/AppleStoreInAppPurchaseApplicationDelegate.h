@@ -2,6 +2,10 @@
 
 #import "Environment/iOS/iOSPluginApplicationDelegateInterface.h"
 
-@interface AppleStoreInAppPurchaseApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface>
+#import "Environment/Apple/AppleIncluder.h"
+
+#import <StoreKit/StoreKit.h>
+
+@interface AppleStoreInAppPurchaseApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface, SKPaymentQueueDelegate>
 
 @end

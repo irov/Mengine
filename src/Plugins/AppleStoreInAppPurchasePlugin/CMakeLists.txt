@@ -13,9 +13,6 @@ src
     
     AppleStoreInAppPurchaseApplicationDelegate.h
     AppleStoreInAppPurchaseApplicationDelegate.mm
-
-    AppleStoreInAppPurchasePaymentQueueDelegate.h
-    AppleStoreInAppPurchasePaymentQueueDelegate.mm
 	
 	AppleStoreInAppPurchaseEntitlements.h
 	AppleStoreInAppPurchaseEntitlements.mm

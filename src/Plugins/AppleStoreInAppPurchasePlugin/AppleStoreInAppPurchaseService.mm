@@ -21,7 +21,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     AppleStoreInAppPurchaseService::AppleStoreInAppPurchaseService()
-        : m_paymentQueueDelegate( nil )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -34,24 +33,13 @@ namespace Mengine
         m_factoryPaymentTransaction = Helper::makeFactoryPoolWithMutex<AppleStoreInAppPurchasePaymentTransaction, 16>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryProduct = Helper::makeFactoryPoolWithMutex<AppleStoreInAppPurchaseProduct, 16>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryProductsRequest = Helper::makeFactoryPoolWithMutex<AppleStoreInAppPurchaseProductsRequest, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        
-        if (@available(iOS 13.0, *)) {
-            m_paymentQueueDelegate = [[AppleStoreInAppPurchasePaymentQueueDelegate alloc] init];
-            
-            [[SKPaymentQueue defaultQueue] setDelegate:m_paymentQueueDelegate];
-        }
-                        
+       
         return true;
     }
     ////////////////////////////////////////////////////////////////////////
     void AppleStoreInAppPurchaseService::_finalizeService()
     {
         [[AppleStoreInAppPurchasePaymentTransactionObserver sharedInstance] deactivate];
-        
-        if (@available(iOS 13.0, *)) {
-            [[SKPaymentQueue defaultQueue] setDelegate:nil];
-            m_paymentQueueDelegate = nil;
-        }
         
         m_paymentTransactionProvider = nullptr;
         

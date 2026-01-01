@@ -9,7 +9,6 @@
 
 #include "Kernel/ServiceBase.h"
 
-#import "AppleStoreInAppPurchasePaymentQueueDelegate.h"
 #import "AppleStoreInAppPurchaseProductsRequestDelegate.h"
 #import "AppleStoreInAppPurchasePaymentTransactionObserver.h"
 
@@ -50,7 +49,5 @@ namespace Mengine
         FactoryInterfacePtr m_factoryPaymentTransaction;
         FactoryInterfacePtr m_factoryProduct;
         FactoryInterfacePtr m_factoryProductsRequest;
-        
-        AppleStoreInAppPurchasePaymentQueueDelegate * m_paymentQueueDelegate;
     };
 }

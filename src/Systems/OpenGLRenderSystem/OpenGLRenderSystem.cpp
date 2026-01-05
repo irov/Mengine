@@ -624,6 +624,8 @@ namespace Mengine
         {
             if( m_currentProgramVariable->apply( m_currentProgram ) == false )
             {
+                m_currentProgram->disable();
+
                 return;
             }
         }

@@ -28,23 +28,19 @@
 #pragma mark - SKProductsRequestDelegate
 
 - (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response {
-    NSMutableString * skProductsLog = [NSMutableString stringWithString:@""];
+    IOS_LOGGER_MESSAGE( @"[SKProductsRequestDelegate] productsRequest didReceiveResponse products: %@ invalids: %@"
+        , response.products
+        , response.invalidProductIdentifiers
+    );
     
     NSArray<SKProduct *> * skProducts = response.products;
     
     Mengine::VectorAppleStoreInAppPurchaseProducts products;
     for( SKProduct * skProduct in skProducts ) {
-        [skProductsLog appendString:skProduct.productIdentifier];
-        [skProductsLog appendString:@", "];
-        
         Mengine::AppleStoreInAppPurchaseProductInterfacePtr product = self.m_factory->makeProduct( skProduct );
         
         products.emplace_back( product );
     }
-    
-    IOS_LOGGER_MESSAGE( @"[SKProductsRequestDelegate] productsRequest didReceiveResponse: %@"
-        , skProductsLog
-    );
     
     Mengine::AppleStoreInAppPurchaseProductsResponseInterfacePtr cb_copy = self.m_cb;
     Mengine::AppleStoreInAppPurchaseProductsRequestInterfacePtr request_copy = self.m_request;

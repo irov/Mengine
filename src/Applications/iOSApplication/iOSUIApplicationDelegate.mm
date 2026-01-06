@@ -300,13 +300,15 @@
 #pragma mark - UIApplicationDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(nullable NSDictionary<UIApplicationLaunchOptionsKey, id> *)launchOptions API_AVAILABLE(ios(3.0)) {
-    [AppleLog withFormat:@"Mengine application didFinishLaunchingWithOptions"];
+    [AppleLog withFormat:@"Mengine application '%@' didFinishLaunchingWithOptions"
+        , [[NSBundle mainBundle] bundleIdentifier]
+    ];
     
     [[iOSNetwork sharedInstance] startMonitoring];
     
     @autoreleasepool {
         if( [iOSApplication.sharedInstance didFinishLaunchingWithOptions:launchOptions] == NO) {
-            [AppleLog withFormat:@"🔴 [ERROR] Mengine iOSApplication didFinishLaunchingWithOptions failed"];
+            [AppleLog withFormat:@"🔴 [ERROR] Mengine application didFinishLaunchingWithOptions failed"];
             
             return NO;
         }

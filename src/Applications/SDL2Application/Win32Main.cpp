@@ -1,10 +1,10 @@
-#include "Environment/SDL2/SDL2Includer.h"
+#include "Environment/SDL2/SDL2MainIncluder.h"
 
 #include "SDL2Application.h"
 
 #include "Config/StdLib.h"
 
-int main( int argc, char * argv[] )
+int SDL_main( int argc, char * argv[] )
 {
     Mengine::SDL2Application application;
 

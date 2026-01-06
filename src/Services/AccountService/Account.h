@@ -53,7 +53,7 @@ namespace Mengine
         void closeReadBinaryFile( const InputStreamInterfacePtr & _stream ) override;
 
         OutputStreamInterfacePtr openWriteBinaryFile( const FilePath & _filePath ) override;
-        void closeWriteBinaryFile( const OutputStreamInterfacePtr & _stream ) override;
+        bool closeWriteBinaryFile( const OutputStreamInterfacePtr & _stream ) override;
 
     public:
         MemoryInterfacePtr loadBinaryFile( const FilePath & _filepath ) override;

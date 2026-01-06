@@ -432,9 +432,11 @@ namespace Mengine
         return stream;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Account::closeWriteBinaryFile( const OutputStreamInterfacePtr & _stream )
+    bool Account::closeWriteBinaryFile( const OutputStreamInterfacePtr & _stream )
     {
-        m_fileGroup->closeOutputFile( _stream );
+        bool result = m_fileGroup->closeOutputFile( _stream );
+
+        return result;
     }
     //////////////////////////////////////////////////////////////////////////
     MemoryInterfacePtr Account::loadBinaryFile( const FilePath & _filePath )

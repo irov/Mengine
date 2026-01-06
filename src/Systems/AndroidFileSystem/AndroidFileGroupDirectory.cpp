@@ -334,13 +334,15 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidFileGroupDirectory::closeOutputFile( const OutputStreamInterfacePtr & _stream )
+    bool AndroidFileGroupDirectory::closeOutputFile( const OutputStreamInterfacePtr & _stream )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
 
         FileOutputStreamInterface * file = stdex::intrusive_get<FileOutputStreamInterface *>( _stream );
 
-        file->close();
+        bool result = file->close();
+
+        return result;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidFileGroupDirectory::isAvailableMappedFile() const

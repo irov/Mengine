@@ -175,10 +175,20 @@ namespace Mengine
 
         encoder->finalize();
 
-        m_options.outputContent->closeOutputStreamFile( stream_output );
+        bool successful_close_stream = m_options.outputContent->closeOutputStreamFile( stream_output );
 
         if( encodeSize == 0 )
         {
+            return false;
+        }
+
+        if( successful_close_stream == false )
+        {
+            LOGGER_ERROR( "invalid close output '%s' for file '%s'"
+                , Helper::getContentFullPath( m_options.outputContent ).c_str()
+                , Helper::getContentFullPath( m_options.inputContent ).c_str()
+            );
+
             return false;
         }
 

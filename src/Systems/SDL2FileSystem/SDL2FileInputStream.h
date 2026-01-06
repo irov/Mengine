@@ -26,7 +26,7 @@ namespace Mengine
 
     public:
         bool open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, size_t _offset, size_t _size, bool _streaming, bool _share ) override;
-        bool close() override;
+        void close() override;
 
     public:
         size_t read( void * const _buf, size_t _count ) override;
@@ -48,7 +48,6 @@ namespace Mengine
         SDL_RWops * getRWops() const;
 
     protected:
-        bool openFile_( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, Char *  const _fullPath );
         bool read_( void * const _buf, size_t _offset, size_t _size, size_t * const _read );
         bool seek_( size_t _pos );
 

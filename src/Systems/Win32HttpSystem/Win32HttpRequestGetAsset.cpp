@@ -54,17 +54,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32HttpRequestGetAsset::_onThreadTaskRun()
     {
-        const FileGroupInterfacePtr & fileGroup = m_content->getFileGroup();
-        const FilePath & filePath = m_content->getFilePath();
-
-        if( fileGroup->createDirectory( filePath ) == false )
+        if( m_content->createDirectory() == false )
         {
             return false;
         }
-        
-        FilePath filePathTmp = Helper::stringizeFilePathFormat( "%s.~tmp", filePath.c_str() );
 
-        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( fileGroup, filePathTmp, true, MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr stream = m_content->openOutputStreamFile( true, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "get asset url '%s' invalid open file '%s'"
             , m_url.c_str()
@@ -85,42 +80,71 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32HttpRequestGetAsset::_onThreadTaskComplete( bool _successful )
     {
-        bool successful_stream_flush = true;
+        EHttpCode code = m_response->getCode();
 
-        FileGroupInterfacePtr fileGroup = m_content->getFileGroup();
-        FilePath filePath = m_content->getFilePath();
-        m_content = nullptr;
+        ContentInterfacePtr content = std::move( m_content );
+        OutputStreamInterfacePtr stream = std::move( m_stream );
 
-        if( m_stream != nullptr )
+        if( _successful == false )
+        {
+            LOGGER_MESSAGE( "get asset url '%s' failed http request code '%d'"
+                , m_url.c_str()
+                , code
+            );
+
+            Win32HttpRequest::_onThreadTaskComplete( false );
+
+            return;
+        }
+
+        if( HTTP_CODE_IS_SUCCESSFUL( code ) == false )
+        {
+            LOGGER_MESSAGE( "get asset url '%s' invalid http request code '%d'"
+                , m_url.c_str()
+                , code
+            );
+
+            Win32HttpRequest::_onThreadTaskComplete( false );
+
+            return;
+        }
+
+        if( stream != nullptr )
         {
             const HttpResponseInterfacePtr & response = this->getReponse();
 
             const Data & data = response->getData();
 
-            Helper::writeStreamData( m_stream, data );
+            Helper::writeStreamData( stream, data );
 
-            successful_stream_flush = m_stream->flush();
+            bool successful_stream_flush = stream->flush();
 
-            Helper::closeOutputStreamFile( fileGroup, m_stream );
+            bool successful_stream_close = content->closeOutputStreamFile( stream );
             m_stream = nullptr;
-        }
 
-        EHttpCode code = m_response->getCode();
+            if( successful_stream_flush == false )
+            {
+                LOGGER_WARNING( "get asset url '%s' invalid flush stream for file '%s'"
+                    , m_url.c_str()
+                    , Helper::getContentFullPath( content ).c_str()
+                );
 
-        if( _successful == false || HTTP_CODE_IS_SUCCESSFUL( code ) == false || successful_stream_flush == false )
-        {
-            Win32HttpRequest::_onThreadTaskComplete( false );
+                Win32HttpRequest::_onThreadTaskComplete( false );
 
-            return;
-        }
-        
-        FilePath filePathTmp = Helper::stringizeFilePathFormat( "%s.~tmp", filePath.c_str() );
+                return;
+            }
 
-        if( fileGroup->moveFile( filePathTmp, filePath ) == false )
-        {
-            Win32HttpRequest::_onThreadTaskComplete( false );
+            if( successful_stream_close == false )
+            {
+                LOGGER_WARNING( "get asset url '%s' invalid close stream for file '%s'"
+                    , m_url.c_str()
+                    , Helper::getContentFullPath( content ).c_str()
+                );
 
-            return;
+                Win32HttpRequest::_onThreadTaskComplete( false );
+
+                return;
+            }
         }
 
         Win32HttpRequest::_onThreadTaskComplete( true );

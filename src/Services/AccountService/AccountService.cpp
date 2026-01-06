@@ -819,7 +819,14 @@ namespace Mengine
             return false;
         }
 
-        Helper::closeOutputStreamFile( m_fileGroup, stream );
+        if( Helper::closeOutputStreamFile( m_fileGroup, stream ) == false )
+        {
+            LOGGER_ERROR( "can't close file after writing. Accounts '%s' settings not saved"
+                , Game_AccountsPath.c_str()
+            );
+
+            return false;
+        }
 
         for( const HashtableAccounts::value_type & value : m_accounts )
         {

@@ -28,20 +28,32 @@
 #   define MENGINE_RENDER_OPENGL_ES
 #   define MENGINE_RENDER_OPENGL_ES_ANDROID
 #elif defined(MENGINE_PLATFORM_WINDOWS)
-#   include "SDL_opengl.h"
-#   include "SDL_opengl_glext.h"
+#   if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3)
+#       include "SDL3/SDL_opengl.h"
+#   else
+#       include "SDL_opengl.h"
+#       include "SDL_opengl_glext.h"
+#   endif
 
 #   define MENGINE_RENDER_OPENGL_NORMAL
 #   define MENGINE_RENDER_OPENGL_NORMAL_WINDOWS
 #elif defined(MENGINE_PLATFORM_LINUX)
-#   include "SDL_opengl.h"
-#   include "SDL_opengl_glext.h"
+#   if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3)
+#       include "SDL3/SDL_opengl.h"
+#   else
+#       include "SDL_opengl.h"
+#       include "SDL_opengl_glext.h"
+#   endif
 
 #   define MENGINE_RENDER_OPENGL_NORMAL
 #   define MENGINE_RENDER_OPENGL_NORMAL_LINUX
 #elif defined(MENGINE_PLATFORM_MACOS)
-#   include "SDL_opengl.h"
-#   include "SDL_opengl_glext.h"
+#   if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3)
+#       include "SDL3/SDL_opengl.h"
+#   else
+#       include "SDL_opengl.h"
+#       include "SDL_opengl_glext.h"
+#   endif
 
 #   define MENGINE_RENDER_OPENGL_NORMAL
 #   define MENGINE_RENDER_OPENGL_NORMAL_OSX

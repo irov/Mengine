@@ -163,11 +163,21 @@ namespace Mengine
 
         encoder->finalize();
 
-        content_output->closeOutputStreamFile( stream_output );
+        bool successful_close_stream = content_output->closeOutputStreamFile( stream_output );
 
         if( encode_byte == 0 )
         {
             LOGGER_ERROR( "'%s' invalid encode"
+                , Helper::getContentFullPath( m_options.inputContent ).c_str()
+            );
+
+            return false;
+        }
+
+        if( successful_close_stream == false )
+        {
+            LOGGER_ERROR( "invalid close output '%s' for file '%s'"
+                , Helper::getContentFullPath( content_output ).c_str()
                 , Helper::getContentFullPath( m_options.inputContent ).c_str()
             );
 

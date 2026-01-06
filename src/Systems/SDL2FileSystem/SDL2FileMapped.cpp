@@ -28,11 +28,9 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDL2FileMapped::close()
+    void SDL2FileMapped::close()
     {
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
-
-        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     InputStreamInterfacePtr SDL2FileMapped::createInputStream( const DocumentInterfacePtr & _doc )

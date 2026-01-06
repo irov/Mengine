@@ -207,26 +207,25 @@ namespace Mengine
 
         LOGGER_INFO( "application", "creating render window..." );
 
-        const Char * projectTitle = nullptr;
-        size_t projectTitleLen = 0;
-
-        ConstString APPLICATION_TITLE = CONFIG_VALUE_CONSTSTRING( "Window", "ApplicationTitleTextId", STRINGIZE_STRING_LOCAL( "APPLICATION_TITLE" ) );
+        ConstString Window_ApplicationTitleTextId = CONFIG_VALUE_CONSTSTRING( "Window", "ApplicationTitleTextId", STRINGIZE_STRING_LOCAL( "APPLICATION_TITLE" ) );
 
         TextEntryInterfacePtr entry;
         if( TEXT_SERVICE()
-            ->hasTextEntry( APPLICATION_TITLE, &entry ) == false )
+            ->hasTextEntry( Window_ApplicationTitleTextId, &entry ) == false )
         {
             LOGGER_MESSAGE( "application not setup title '%s'"
-                , APPLICATION_TITLE.c_str()
+                , Window_ApplicationTitleTextId.c_str()
             );
         }
         else
         {
-            projectTitle = entry->getValue( &projectTitleLen );
-        }
+            const String & projectTitle = entry->getValue();
 
-        PLATFORM_SERVICE()
-            ->setProjectTitle( projectTitle );
+            const Char * projectTitleStr = projectTitle.c_str();
+
+            PLATFORM_SERVICE()
+                ->setProjectTitle( projectTitleStr );
+        }
 
         if( PLATFORM_SERVICE()
             ->alreadyRunningMonitor() == false )

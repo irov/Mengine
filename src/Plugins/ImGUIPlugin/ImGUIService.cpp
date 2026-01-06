@@ -11,6 +11,10 @@
 #include "Environment/SDL2/SDL2PlatformServiceExtensionInterface.h"
 #endif
 
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3)
+#include "Environment/SDL3/SDL3PlatformServiceExtensionInterface.h"
+#endif
+
 #if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
 #include "Environment/DirectX9/DX9RenderSystemExtensionInterface.h"
 #endif
@@ -40,6 +44,10 @@
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
 #include "imgui_impl_sdl2.h"
+#endif
+
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3)
+#include "imgui_impl_sdl3.h"
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
@@ -155,6 +163,18 @@ namespace Mengine
         m_handlerId = handlerId;
 #endif
 
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3)
+        SDL3PlatformServiceExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
+            ->getDynamicUnknown();
+
+        uint32_t handlerId = sdlPlatform->addSDLEventHandler( []( SDL_Event * _event )
+        {
+            ImGui_ImplSDL3_ProcessEvent( _event );
+        } );
+
+        m_handlerId = handlerId;
+#endif
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -189,6 +209,17 @@ namespace Mengine
         }
 #endif
 
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3)
+        if( m_handlerId != INVALID_UNIQUE_ID )
+        {
+            SDL3PlatformServiceExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
+                ->getDynamicUnknown();
+
+            sdlPlatform->removeSDLEventHandler( m_handlerId );
+            m_handlerId = INVALID_UNIQUE_ID;
+        }
+#endif
+
         size_t imIniSettingsSize = 0;
         const char * imIniSettings = ImGui::SaveIniSettingsToMemory( &imIniSettingsSize );
 
@@ -214,6 +245,10 @@ namespace Mengine
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
         ImGui_ImplSDL2_Shutdown();
+#endif
+
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3)
+        ImGui_ImplSDL3_Shutdown();
 #endif
 
         ImGui::DestroyContext();
@@ -300,6 +335,23 @@ namespace Mengine
 
         m_handlerId = handlerId;
 #endif
+
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3)
+        SDL3PlatformServiceExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
+            ->getDynamicUnknown();
+
+        SDL_Window * window = sdlPlatform->getWindow();
+        SDL_GLContext gl_context = sdlPlatform->getGLContext();
+
+        ImGui_ImplSDL3_InitForOpenGL( window, gl_context );        
+
+        UniqueId handlerId = sdlPlatform->addSDLEventHandler( []( SDL_Event * _event )
+        {
+            ImGui_ImplSDL3_ProcessEvent( _event );
+        } );
+
+        m_handlerId = handlerId;
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void ImGUIService::notifyPlatformDetachWindow_()
@@ -329,11 +381,24 @@ namespace Mengine
 
         ImGui_ImplSDL2_Shutdown();
 #endif
+
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3)
+        if( m_handlerId != INVALID_UNIQUE_ID )
+        {
+            SDL3PlatformServiceExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
+                ->getDynamicUnknown();
+
+            sdlPlatform->removeSDLEventHandler( m_handlerId );
+            m_handlerId = INVALID_UNIQUE_ID;
+        }
+
+        ImGui_ImplSDL3_Shutdown();
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void ImGUIService::notifyRenderDeviceCreate_()
     {
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2) && defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
+#if (defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2) || defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3)) && defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
         ImGui_ImplOpenGL2_Init();
 #endif
 
@@ -358,7 +423,6 @@ namespace Mengine
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
-        ImGui_ImplOpenGL2_DestroyFontsTexture();
         ImGui_ImplOpenGL2_DestroyDeviceObjects();
 
         ImGui_ImplOpenGL2_Shutdown();

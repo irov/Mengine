@@ -314,8 +314,19 @@ namespace Mengine
 
         bin_stream->flush();
 
-        options.outputContent->closeOutputStreamFile( bin_stream );
+        bool successful_close_stream = options.outputContent->closeOutputStreamFile( bin_stream );
+
         bin_stream = nullptr;
+
+        if( successful_close_stream == false )
+        {
+            LOGGER_ERROR( "error create bin '%s' invalid close file for '%s'"
+                , Helper::getContentFullPath( options.outputContent ).c_str()
+                , Helper::getContentFullPath( options.inputContent ).c_str()
+            );
+
+            return false;
+        }
 
         return true;
     }

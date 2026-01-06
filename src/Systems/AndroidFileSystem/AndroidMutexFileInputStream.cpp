@@ -87,6 +87,8 @@ namespace Mengine
         m_stream = nullptr;
         m_mutex = nullptr;
 
+        m_size = 0;
+
 #if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
         Helper::removeDebugFilePath( this );
 #endif

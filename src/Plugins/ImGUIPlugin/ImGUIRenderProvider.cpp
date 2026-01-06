@@ -6,6 +6,10 @@
 #include "Environment/SDL2/SDL2PlatformServiceExtensionInterface.h"
 #endif
 
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3)
+#include "Environment/SDL3/SDL3PlatformServiceExtensionInterface.h"
+#endif
+
 #if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
 #include "Environment/DirectX9/DX9RenderImageExtensionInterface.h"
 #endif
@@ -24,6 +28,10 @@
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
 #include "imgui_impl_sdl2.h"
+#endif
+
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3)
+#include "imgui_impl_sdl3.h"
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
@@ -84,6 +92,10 @@ namespace Mengine
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
         ImGui_ImplSDL2_NewFrame();
+#endif
+
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3)
+        ImGui_ImplSDL3_NewFrame();
 #endif
 
         ImGui::NewFrame();

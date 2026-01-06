@@ -43,6 +43,18 @@ if(MENGINE_PLATFORM_SDL2)
     INCLUDE_DIRECTORIES(${THIRDPARTY_CONFIG_DIR}/SDL2)
 endif()
 
+if(MENGINE_PLATFORM_SDL3)
+    ADD_FILTER(
+    imgui_platform_ext
+        ${IMGUI_BACKENDS_SOURCE}/imgui_impl_sdl3.h
+        ${IMGUI_BACKENDS_SOURCE}/imgui_impl_sdl3.cpp
+    )
+
+    INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/SDL3/include/include-config-$<LOWER_CASE:$<CONFIG>>)
+    INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/SDL3/include)
+    INCLUDE_DIRECTORIES(${THIRDPARTY_CONFIG_DIR}/SDL3)
+endif()
+
 if(MENGINE_RENDER_DIRECTX9)
     ADD_FILTER(
     imgui_render_ext

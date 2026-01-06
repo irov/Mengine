@@ -34,20 +34,33 @@ namespace Mengine
     {
         MENGINE_THREAD_GUARD_SCOPE( SDL2FileInputStream, this );
 
-#if defined(MENGINE_DEBUG)
-        this->setDebugRelationPath( _relationPath );
-        this->setDebugFolderPath( _folderPath );
-        this->setDebugFilePath( _filePath );
-#endif
-
         m_streaming = _streaming;
         m_share = _share;
 
         Path fullPath = {'\0'};
-        if( this->openFile_( _relationPath, _folderPath, _filePath, fullPath ) == false )
+        if( Helper::concatenateFilePath( {_relationPath, _folderPath, _filePath}, fullPath ) == false )
         {
+            LOGGER_ERROR( "invalid concatenate filePath '%s:%s'"
+                , _folderPath.c_str()
+                , _filePath.c_str()
+            );
+
             return false;
         }
+
+        SDL_RWops * rwops = SDL_RWFromFile( fullPath, "rb" );
+
+        if( rwops == nullptr )
+        {
+            LOGGER_ERROR( "invalid open file '%s' error '%s'"
+                , fullPath
+                , SDL_GetError()
+            );
+
+            return false;
+        }
+
+        m_rwops = rwops;
 
         Sint64 size = SDL_RWsize( m_rwops );
 
@@ -108,35 +121,6 @@ namespace Mengine
             }
         }
 
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool SDL2FileInputStream::openFile_( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, Char * const _fullPath )
-    {
-        if( Helper::concatenateFilePath( {_relationPath, _folderPath, _filePath}, _fullPath ) == false )
-        {
-            LOGGER_ERROR( "invalid concatenate filePath '%s:%s'"
-                , _folderPath.c_str()
-                , _filePath.c_str()
-            );
-
-            return false;
-        }
-
-        SDL_RWops * rwops = SDL_RWFromFile( _fullPath, "rb" );
-
-        if( rwops == nullptr )
-        {
-            LOGGER_ERROR( "invalid open file '%s' error '%s'"
-                , _fullPath
-                , SDL_GetError()
-            );
-
-            return false;
-        }
-
-        m_rwops = rwops;
-
 #if defined(MENGINE_DEBUG)
         if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
         {
@@ -144,28 +128,39 @@ namespace Mengine
         }
 #endif
 
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+        Helper::addDebugFilePath( this, _relationPath, _folderPath, _filePath, MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDL2FileInputStream::close()
+    void SDL2FileInputStream::close()
     {
         if( m_rwops == nullptr )
         {
-            return true;
+            return;
         }
 
 #if defined(MENGINE_DEBUG)
         if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
         {
-            const FilePath & folderPath = this->getDebugFolderPath();
-            const FilePath & filePath = this->getDebugFilePath();
+            const FilePath & folderPath = Helper::getDebugFolderPath( this );
+            const FilePath & filePath = Helper::getDebugFilePath( this );
 
             NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CLOSE_FILE, folderPath, filePath, true, m_streaming );
         }
 #endif
 
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+        Helper::removeDebugFilePath( this );
+#endif
+
         int error = SDL_RWclose( m_rwops );
+
         m_rwops = nullptr;
+
+        m_size = 0;
 
         if( error != 0 )
         {
@@ -173,11 +168,7 @@ namespace Mengine
                 , Helper::getDebugFullPath( this ).c_str()
                 , SDL_GetError()
             );
-
-            return false;
         }
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t SDL2FileInputStream::read( void * const _buf, size_t _count )
@@ -372,9 +363,9 @@ namespace Mengine
     bool SDL2FileInputStream::time( uint64_t * const _time ) const
     {
 #if defined(MENGINE_DEBUG)
-        const FilePath & relationPath = this->getDebugRelationPath();
-        const FilePath & folderPath = this->getDebugFolderPath();
-        const FilePath & filePath = this->getDebugFilePath();
+        const FilePath & relationPath = Helper::getDebugRelationPath( this );
+        const FilePath & folderPath = Helper::getDebugFolderPath( this );
+        const FilePath & filePath = Helper::getDebugFilePath( this );
 
         Path fullPath = {'\0'};
         if( Helper::concatenateFilePath( {relationPath, folderPath, filePath}, fullPath ) == false )
@@ -412,6 +403,6 @@ namespace Mengine
     SDL_RWops * SDL2FileInputStream::getRWops() const
     {
         return m_rwops;
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
 }

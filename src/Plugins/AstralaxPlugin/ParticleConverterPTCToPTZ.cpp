@@ -81,7 +81,14 @@ namespace Mengine
 
         bool successful = Helper::writeStreamArchiveMagic( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_PTZ ), GET_MAGIC_VERSION( MAGIC_PTZ ), false, data_memory, data_size, EAC_BEST );
 
-        Helper::closeOutputStreamFile( m_fileGroupDev, stream );
+        if( Helper::closeOutputStreamFile( m_fileGroupDev, stream ) == false )
+        {
+            LOGGER_ERROR( "invalid close '%s'"
+                , full_outputFilePath.c_str()
+            );
+
+            return false;
+        }
 
         if( successful == false )
         {

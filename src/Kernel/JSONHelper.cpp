@@ -191,7 +191,10 @@ namespace Mengine
 
             bool successful = Helper::writeJSONStream( _j, stream );
 
-            Helper::closeOutputStreamFile( _fileGroup, stream );
+            if( Helper::closeOutputStreamFile( _fileGroup, stream ) == false )
+            {
+                return false;
+            }
 
             return successful;
         }
@@ -207,7 +210,10 @@ namespace Mengine
 
             bool successful = Helper::writeJSONStreamCompact( _j, stream );
 
-            Helper::closeOutputStreamFile( _fileGroup, stream );
+            if( Helper::closeOutputStreamFile( _fileGroup, stream ) == false )
+            {
+                return false;
+            }
 
             return successful;
         }

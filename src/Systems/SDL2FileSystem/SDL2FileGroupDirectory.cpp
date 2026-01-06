@@ -245,19 +245,13 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDL2FileGroupDirectory::closeInputFile( const InputStreamInterfacePtr & _stream )
+    void SDL2FileGroupDirectory::closeInputFile( const InputStreamInterfacePtr & _stream )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
 
         FileInputStreamInterface * file = stdex::intrusive_get<FileInputStreamInterface *>( _stream );
 
-        bool result = file->close();
-
-        MENGINE_ASSERTION( result == true, "failed close file '%s'"
-            , m_folderPath.c_str()
-        );
-
-        return result;
+        file->close();
     }
     //////////////////////////////////////////////////////////////////////////
     InputStreamInterfacePtr SDL2FileGroupDirectory::createInputMutexFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, const ThreadMutexInterfacePtr & _mutex, FileGroupInterface ** const _fileGroup, const DocumentInterfacePtr & _doc )
@@ -305,19 +299,13 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDL2FileGroupDirectory::closeInputMutexFile( const InputStreamInterfacePtr & _stream )
+    void SDL2FileGroupDirectory::closeInputMutexFile( const InputStreamInterfacePtr & _stream )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
 
         FileInputStreamInterface * file = stdex::intrusive_get<FileInputStreamInterface *>( _stream );
 
-        bool result = file->close();
-
-        MENGINE_ASSERTION( result == true, "failed close file '%s'"
-            , m_folderPath.c_str()
-        );
-
-        return result;
+        file->close();
     }
     //////////////////////////////////////////////////////////////////////////
     OutputStreamInterfacePtr SDL2FileGroupDirectory::createOutputFile( const DocumentInterfacePtr & _doc )
@@ -353,10 +341,6 @@ namespace Mengine
 
         bool result = file->close();
 
-        MENGINE_ASSERTION( result == true, "failed close file '%s'"
-            , m_folderPath.c_str()
-        );
-
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -387,13 +371,11 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDL2FileGroupDirectory::closeMappedFile( const MappedInterfacePtr & _stream )
+    void SDL2FileGroupDirectory::closeMappedFile( const MappedInterfacePtr & _stream )
     {
         MENGINE_UNUSED( _stream );
 
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
-
-        return false;
     }
     //////////////////////////////////////////////////////////////////////////
 }

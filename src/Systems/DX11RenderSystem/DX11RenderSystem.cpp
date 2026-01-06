@@ -8,7 +8,9 @@
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
 #   include "Environment/Windows/Win32PlatformServiceExtensionInterface.h"
 #elif defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
-#   include "Environment/SDL/SDLPlatformServiceExtensionInterface.h"
+#   include "Environment/SDL2/SDL2PlatformServiceExtensionInterface.h"
+#elif defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3)
+#   include "Environment/SDL3/SDL3PlatformServiceExtensionInterface.h"
 #endif
 
 #include "DX11RenderEnum.h"
@@ -1559,7 +1561,17 @@ namespace Mengine
             return false;
         }
 #elif defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2) && defined(MENGINE_PLATFORM_WINDOWS)
-        SDLPlatformServiceExtensionInterface * sdlExtension = PLATFORM_SERVICE()
+        SDL2PlatformServiceExtensionInterface * sdlExtension = PLATFORM_SERVICE()
+            ->getDynamicUnknown();
+
+        IInspectable * iWindow = sdlExtension->getWindowHandle();
+
+        MENGINE_IF_DX11_CALL( _dxgiFactory, CreateSwapChainForCoreWindow, (m_pD3DDevice.Get(), iWindow, &swapChainDesc, NULL, &dxgiSwapChain) )
+        {
+            return false;
+        }
+#elif defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3) && defined(MENGINE_PLATFORM_WINDOWS)
+        SDL3PlatformServiceExtensionInterface * sdlExtension = PLATFORM_SERVICE()
             ->getDynamicUnknown();
 
         IInspectable * iWindow = sdlExtension->getWindowHandle();

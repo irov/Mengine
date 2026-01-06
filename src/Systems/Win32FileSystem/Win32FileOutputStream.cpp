@@ -102,12 +102,17 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32FileOutputStream::close()
+    bool Win32FileOutputStream::close()
     {
         if( m_hFile == INVALID_HANDLE_VALUE )
         {
-            return;
+            return false;
         }
+
+        MENGINE_ASSERTION_FATAL( m_size != 0, "file '%s:%s' is empty"
+            , m_folderPath.c_str()
+            , m_filePath.c_str()
+        );
 
 #if defined(MENGINE_DEBUG)
         if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
@@ -116,39 +121,40 @@ namespace Mengine
         }
 #endif
 
-        MENGINE_ASSERTION_FATAL( m_size != 0, "file '%s:%s' is empty"
-            , m_folderPath.c_str()
-            , m_filePath.c_str()
-        );
-
-        this->flush();
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+        Helper::removeDebugFilePath( this );
+#endif
 
         ::CloseHandle( m_hFile );
         m_hFile = INVALID_HANDLE_VALUE;
 
+        m_size = 0;
+
         if( m_withTemp == true )
         {
             Path fullPathTemp = {'\0'};
-            size_t fullPathTempLen = Helper::Win32ConcatenateFilePathTempA( m_relationPath, m_folderPath, m_filePath, fullPathTemp );
+            if( Helper::Win32ConcatenateFilePathTempA( m_relationPath, m_folderPath, m_filePath, fullPathTemp ) == MENGINE_PATH_INVALID_LENGTH )
+            {
+                LOGGER_ERROR( "invalid concatenate temp file path '%s%s%s'"
+                    , m_relationPath.c_str()
+                    , m_folderPath.c_str()
+                    , m_filePath.c_str()
+                );
 
-            MENGINE_UNUSED( fullPathTempLen );
-
-            MENGINE_ASSERTION_FATAL( fullPathTempLen != MENGINE_PATH_INVALID_LENGTH, "invlalid concatenate filePathTemp '%s%s%s'"
-                , m_relationPath.c_str()
-                , m_folderPath.c_str()
-                , m_filePath.c_str()
-            );
+                return false;
+            }
 
             Path fullPath = {'\0'};
-            size_t fullPathLen = Helper::Win32ConcatenateFilePathA( m_relationPath, m_folderPath, m_filePath, fullPath );
+            if( Helper::Win32ConcatenateFilePathA( m_relationPath, m_folderPath, m_filePath, fullPath ) == MENGINE_PATH_INVALID_LENGTH )
+            {
+                LOGGER_ERROR( "invalid concatenate file path '%s%s%s'"
+                    , m_relationPath.c_str()
+                    , m_folderPath.c_str()
+                    , m_filePath.c_str()
+                );
 
-            MENGINE_UNUSED( fullPathLen );
-
-            MENGINE_ASSERTION_FATAL( fullPathLen != MENGINE_PATH_INVALID_LENGTH, "invlalid concatenate filePath '%s%s%s'"
-                , m_relationPath.c_str()
-                , m_folderPath.c_str()
-                , m_filePath.c_str()
-            );
+                return false;
+            }
 
             if( FILE_SYSTEM()
                 ->moveFile( fullPathTemp, fullPath ) == false )
@@ -157,12 +163,12 @@ namespace Mengine
                     , fullPathTemp
                     , fullPath
                 );
+
+                return false;
             }
         }
 
-#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
-        Helper::removeDebugFilePath( this );
-#endif
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t Win32FileOutputStream::write( const void * _data, size_t _size )

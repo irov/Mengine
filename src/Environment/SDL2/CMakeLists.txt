@@ -3,6 +3,7 @@ MENGINE_PROJECT(SDL2)
 ADD_FILTER(
 src
     SDL2Includer.h
+    SDL2MainIncluder.h
     
     SDL2PlatformServiceExtensionInterface.h
     

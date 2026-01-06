@@ -50,7 +50,7 @@ namespace Mengine
     public:
         OutputStreamInterfacePtr createOutputFile( const DocumentInterfacePtr & _doc ) override;
         bool openOutputFile( const FilePath & _filePath, const OutputStreamInterfacePtr & _stream, bool _withTemp ) override;
-        void closeOutputFile( const OutputStreamInterfacePtr & _stream ) override;
+        bool closeOutputFile( const OutputStreamInterfacePtr & _stream ) override;
 
     public:
         bool isAvailableMappedFile() const override;

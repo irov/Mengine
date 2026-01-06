@@ -864,11 +864,13 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void FileGroupZip::closeOutputFile( const OutputStreamInterfacePtr & _stream )
+    bool FileGroupZip::closeOutputFile( const OutputStreamInterfacePtr & _stream )
     {
         MENGINE_UNUSED( _stream );
 
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool FileGroupZip::isAvailableMappedFile() const

@@ -175,13 +175,23 @@ namespace Mengine
         const void * data_memory = _data;
         size_t data_size = _size;
 
-        bool successful = Helper::writeStreamArchiveMagic( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_USER_DATA ), GET_MAGIC_VERSION( MAGIC_USER_DATA ), true, data_memory, data_size, EAC_NORMAL );
+        bool successful_write_stream = Helper::writeStreamArchiveMagic( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_USER_DATA ), GET_MAGIC_VERSION( MAGIC_USER_DATA ), true, data_memory, data_size, EAC_NORMAL );
 
-        content->closeOutputStreamFile( stream );
+        bool successful_close_stream = content->closeOutputStreamFile( stream );
 
-        if( successful == false )
+        if( successful_write_stream == false )
         {
             LOGGER_ERROR( "data '%s' invalid write file '%s'"
+                , _name.c_str()
+                , Helper::getContentFullPath( desc.content ).c_str()
+            );
+
+            return false;
+        }
+
+        if( successful_close_stream == false )
+        {
+            LOGGER_ERROR( "data '%s' invalid close file '%s'"
                 , _name.c_str()
                 , Helper::getContentFullPath( desc.content ).c_str()
             );

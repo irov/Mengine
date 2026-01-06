@@ -48,10 +48,42 @@ namespace Mengine
         m_share = _share;
 
         WPath fullPath = {L'\0'};
-        if( this->openFile_( _relationPath, _folderPath, _filePath, fullPath ) == false )
+        size_t fullPathLen = Helper::Win32ConcatenateFilePathW( _relationPath, _folderPath, _filePath, fullPath );
+
+        MENGINE_UNUSED( fullPathLen );
+
+        MENGINE_ASSERTION_FATAL( fullPathLen != MENGINE_PATH_INVALID_LENGTH, "invlalid concatenate filePath '%s%s%s'"
+            , _relationPath.c_str()
+            , _folderPath.c_str()
+            , _filePath.c_str()
+        );
+
+        DWORD sharedMode = FILE_SHARE_READ;
+
+        if( m_share == true )
         {
+            sharedMode |= FILE_SHARE_WRITE | FILE_SHARE_DELETE;
+        }
+
+        HANDLE hFile = Helper::Win32CreateFile( fullPath
+            , GENERIC_READ
+            , sharedMode
+            , OPEN_EXISTING
+        );
+
+        if( hFile == INVALID_HANDLE_VALUE )
+        {
+            LOGGER_ERROR( "invalid open input relation '%s' folder '%s' file '%s' full '%ls'"
+                , _relationPath.c_str()
+                , _folderPath.c_str()
+                , _filePath.c_str()
+                , fullPath
+            );
+
             return false;
         }
+
+        m_hFile = hFile;
 
         LARGE_INTEGER lpFileSize;
         if( ::GetFileSizeEx( m_hFile, &lpFileSize ) == FALSE )
@@ -118,6 +150,15 @@ namespace Mengine
             }
         }
 
+#if defined(MENGINE_DEBUG)
+        if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
+        {
+            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_OPEN_FILE, _folderPath, _filePath, true, m_streaming );
+        }
+#endif
+
+        STATISTIC_INC_INTEGER( STATISTIC_FILE_OPEN_COUNT );
+
 #if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
         Helper::addDebugFilePath( this, _relationPath, _folderPath, _filePath, MENGINE_DOCUMENT_FACTORABLE );
 #endif
@@ -142,8 +183,14 @@ namespace Mengine
         }
 #endif
 
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+        Helper::removeDebugFilePath( this );
+#endif
+
         BOOL successful = ::CloseHandle( m_hFile );
         m_hFile = INVALID_HANDLE_VALUE;
+
+        m_size = 0;
 
         if( successful == FALSE )
         {
@@ -152,61 +199,6 @@ namespace Mengine
                 , Helper::Win32GetLastErrorMessageW()
             );
         }
-
-#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
-        Helper::removeDebugFilePath( this );
-#endif
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Win32FileInputStream::openFile_( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, WChar * const _fullPath )
-    {
-        size_t fullPathLen = Helper::Win32ConcatenateFilePathW( _relationPath, _folderPath, _filePath, _fullPath );
-
-        MENGINE_UNUSED( fullPathLen );
-
-        MENGINE_ASSERTION_FATAL( fullPathLen != MENGINE_PATH_INVALID_LENGTH, "invlalid concatenate filePath '%s%s%s'"
-            , _relationPath.c_str()
-            , _folderPath.c_str()
-            , _filePath.c_str()
-        );
-
-        DWORD sharedMode = FILE_SHARE_READ;
-
-        if( m_share == true )
-        {
-            sharedMode |= FILE_SHARE_WRITE | FILE_SHARE_DELETE;
-        }
-
-        HANDLE hFile = Helper::Win32CreateFile( _fullPath
-            , GENERIC_READ
-            , sharedMode
-            , OPEN_EXISTING
-        );
-
-        if( hFile == INVALID_HANDLE_VALUE )
-        {
-            LOGGER_ERROR( "invalid open input relation '%s' folder '%s' file '%s' full '%ls'"
-                , _relationPath.c_str()
-                , _folderPath.c_str()
-                , _filePath.c_str()
-                , _fullPath
-            );
-
-            return false;
-        }
-
-        m_hFile = hFile;
-
-#if defined(MENGINE_DEBUG)
-        if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
-        {
-            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_OPEN_FILE, _folderPath, _filePath, true, m_streaming );
-        }
-#endif
-
-        STATISTIC_INC_INTEGER( STATISTIC_FILE_OPEN_COUNT );
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t Win32FileInputStream::read( void * const _buf, size_t _count )

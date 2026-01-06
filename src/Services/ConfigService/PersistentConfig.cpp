@@ -125,7 +125,10 @@ namespace Mengine
                 return false;
             }
 
-            userFileGroup->closeOutputFile( stream );
+            if( userFileGroup->closeOutputFile( stream ) == false )
+            {
+                return false;
+            }
 
             return true;
         }

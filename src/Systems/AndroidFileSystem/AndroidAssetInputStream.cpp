@@ -45,10 +45,30 @@ namespace Mengine
         m_share = _share;
 
         Path fullPath = {'\0'};
-        if( this->openFile_( _relationPath, _folderPath, _filePath, fullPath ) == false )
+        if( Helper::concatenateFilePath( {_relationPath, _folderPath, _filePath}, fullPath ) == false )
         {
+            LOGGER_ERROR( "invalid concatenate filePath '%s:%s:%s'"
+                , _relationPath.c_str()
+                , _folderPath.c_str()
+                , _filePath.c_str()
+            );
+
             return false;
         }
+
+        AAsset * asset = ANDROID_ASSET_SERVICE()
+            ->open( fullPath, AASSET_MODE_UNKNOWN );
+
+        if( asset == nullptr )
+        {
+            LOGGER_ERROR( "invalid open file '%s'"
+                , fullPath
+            );
+
+            return false;
+        }
+
+        m_asset = asset;
 
         int64_t size = ANDROID_ASSET_SERVICE()
             ->size( m_asset );
@@ -83,7 +103,7 @@ namespace Mengine
         if( m_offset != 0 )
         {
             int64_t result = ANDROID_ASSET_SERVICE()
-                    ->seek( m_asset, m_offset, SEEK_SET );
+                ->seek( m_asset, m_offset, SEEK_SET );
 
             if( result <= 0 )
             {
@@ -97,45 +117,15 @@ namespace Mengine
             }
         }
 
-#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
-        Helper::addDebugFilePath( this, _relationPath, _folderPath, _filePath, MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool AndroidAssetInputStream::openFile_( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, Char * const _fullPath )
-    {
-        if( Helper::concatenateFilePath( {_relationPath, _folderPath, _filePath}, _fullPath ) == false )
-        {
-            LOGGER_ERROR( "invalid concatenate filePath '%s:%s:%s'"
-                , _relationPath.c_str()
-                , _folderPath.c_str()
-                , _filePath.c_str()
-            );
-
-            return false;
-        }
-
-        AAsset * asset = ANDROID_ASSET_SERVICE()
-            ->open( _fullPath, AASSET_MODE_UNKNOWN );
-
-        if( asset == nullptr )
-        {
-            LOGGER_ERROR( "invalid open file '%s'"
-                , _fullPath
-            );
-
-            return false;
-        }
-
-        m_asset = asset;
-
 #if defined(MENGINE_DEBUG)
         if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
         {
             NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_OPEN_FILE, _folderPath, _filePath, true, m_streaming );
         }
+#endif
+
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+        Helper::addDebugFilePath( this, _relationPath, _folderPath, _filePath, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
         return true;
@@ -160,14 +150,16 @@ namespace Mengine
         }
 #endif
 
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+        Helper::removeDebugFilePath( this );
+#endif
+
         ANDROID_ASSET_SERVICE()
             ->close( m_asset );
 
         m_asset = nullptr;
 
-#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
-        Helper::removeDebugFilePath( this );
-#endif
+        m_size = 0;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t AndroidAssetInputStream::read( void * const _buf, size_t _count )

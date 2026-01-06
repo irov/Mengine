@@ -6,6 +6,7 @@
 #include "Kernel/PathHelper.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/DebugFileHelper.h"
 
 #include "Config/Path.h"
 
@@ -94,6 +95,10 @@ namespace Mengine
         }
 #endif
 
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+        Helper::addDebugFilePath( this, _relationPath, _folderPath, _filePath, MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -104,20 +109,37 @@ namespace Mengine
             return true;
         }
 
+        MENGINE_ASSERTION_FATAL( m_size != 0, "file '%s:%s' is empty"
+            , m_folderPath.c_str()
+            , m_filePath.c_str()
+        );
+
 #if defined(MENGINE_DEBUG)
         if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
         {
-            const FilePath & folderPath = this->getDebugFolderPath();
-            const FilePath & filePath = this->getDebugFilePath();
-
-            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CLOSE_FILE, folderPath, filePath, false, false );
+            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CLOSE_FILE, m_folderPath, m_filePath, false, false );
         }
 #endif
 
-        SDL_RWclose( m_rwops );
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+        Helper::removeDebugFilePath( this );
+#endif
+
+        int error = SDL_RWclose( m_rwops );
         m_rwops = nullptr;
 
         m_size = 0;
+
+        if( error != 0 )
+        {
+            LOGGER_ERROR( "invalid close file '%s:%s' get error: %s"
+                , m_folderPath.c_str()
+                , m_filePath.c_str()
+                , SDL_GetError()
+            );
+
+            return false;
+        }
 
 #if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
         if( m_withTemp == true )
@@ -147,6 +169,11 @@ namespace Mengine
             if( FILE_SYSTEM()
                 ->moveFile( fullPathTemp, fullPath ) == false )
             {
+                LOGGER_ERROR( "invalid move file from '%s' to '%s'"
+                    , fullPathTemp
+                    , fullPath
+                );
+
                 return false;
             }
         }

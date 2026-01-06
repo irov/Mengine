@@ -94,13 +94,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidFileOutputStream::close()
+    bool AndroidFileOutputStream::close()
     {
         MENGINE_THREAD_GUARD_SCOPE( AndroidFileOutputStream, this );
 
         if( m_file == nullptr )
         {
-            return;
+            return false;
         }
 
         MENGINE_ASSERTION_FATAL( m_size != 0, "file '%s:%s' is empty"
@@ -115,18 +115,49 @@ namespace Mengine
         }
 #endif
 
-        ::fclose( m_file );
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+        Helper::removeDebugFilePath( this );
+#endif
+
+        int error = ::fclose( m_file );
         m_file = nullptr;
 
         m_size = 0;
 
+        if( error != 0 )
+        {
+            LOGGER_ERROR( "invalid close file '%s:%s' error: %d"
+                , m_folderPath.c_str()
+                , m_filePath.c_str()
+                , errno
+            );
+
+            return false;
+        }
+
         if( m_withTemp == true )
         {
             Path fullPathTemp = {'\0'};
-            Helper::concatenateFilePath( {m_relationPath, m_folderPath, m_filePath, STRINGIZE_FILEPATH_LOCAL( ".~tmp" )}, fullPathTemp );
+            if( Helper::concatenateFilePath( {m_relationPath, m_folderPath, m_filePath, STRINGIZE_FILEPATH_LOCAL( ".~tmp" )}, fullPathTemp ) == false )
+            {
+                LOGGER_ERROR( "invalid concatenate filePath '%s:%s' [temp]"
+                    , m_folderPath.c_str()
+                    , m_filePath.c_str()
+                );
+
+                return false;
+            }
 
             Path fullPath = {'\0'};
-            Helper::concatenateFilePath( {m_relationPath, m_folderPath, m_filePath}, fullPath );
+            if( Helper::concatenateFilePath( {m_relationPath, m_folderPath, m_filePath}, fullPath ) == false )
+            {
+                LOGGER_ERROR( "invalid concatenate filePath '%s:%s'"
+                    , m_folderPath.c_str()
+                    , m_filePath.c_str()
+                );
+
+                return false;
+            }
 
             if( FILE_SYSTEM()
                 ->moveFile( fullPathTemp, fullPath ) == false )
@@ -135,12 +166,12 @@ namespace Mengine
                     , fullPathTemp
                     , fullPath
                 );
+
+                return false;
             }
         }
 
-#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
-        Helper::removeDebugFilePath( this );
-#endif
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t AndroidFileOutputStream::write( const void * _data, size_t _size )

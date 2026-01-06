@@ -45,10 +45,30 @@ namespace Mengine
         m_share = _share;
 
         Path fullPath = {'\0'};
-        if( this->openFile_( _relationPath, _folderPath, _filePath, fullPath ) == false )
+        if( Helper::concatenateFilePath( {_relationPath, _folderPath, _filePath}, fullPath ) == false )
         {
+            LOGGER_ERROR( "invalid concatenate filePath '%s:%s:%s'"
+                , _relationPath.c_str()
+                , _folderPath.c_str()
+                , _filePath.c_str()
+            );
+
             return false;
         }
+
+        FILE * file = ::fopen( fullPath, "rb" );
+
+        if( file == nullptr )
+        {
+            LOGGER_ERROR( "invalid open file '%s' error: %d"
+                , fullPath
+                , errno
+            );
+
+            return false;
+        }
+
+        m_file = file;
 
         int32_t result = ::fseeko( m_file, 0, SEEK_END );
 
@@ -117,45 +137,15 @@ namespace Mengine
             }
         }
 
-#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
-        Helper::addDebugFilePath( this, _relationPath, _folderPath, _filePath, MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool AndroidFileInputStream::openFile_( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, Char * const _fullPath )
-    {
-        if( Helper::concatenateFilePath( {_relationPath, _folderPath, _filePath}, _fullPath ) == false )
-        {
-            LOGGER_ERROR( "invalid concatenate filePath '%s:%s:%s'"
-                , _relationPath.c_str()
-                , _folderPath.c_str()
-                , _filePath.c_str()
-            );
-
-            return false;
-        }
-
-        FILE * file = ::fopen( _fullPath, "rb" );
-
-        if( file == nullptr )
-        {
-            LOGGER_ERROR( "invalid open file '%s' error: %d"
-                , _fullPath
-                , errno
-            );
-
-            return false;
-        }
-
-        m_file = file;
-
 #if defined(MENGINE_DEBUG)
         if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
         {
             NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_OPEN_FILE, _folderPath, _filePath, true, m_streaming );
         }
+#endif
+
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+        Helper::addDebugFilePath( this, _relationPath, _folderPath, _filePath, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
         return true;
@@ -178,14 +168,14 @@ namespace Mengine
         }
 #endif
 
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+        Helper::removeDebugFilePath( this );
+#endif
+
         ::fclose( m_file );
         m_file = nullptr;
 
         m_size = 0;
-
-#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
-        Helper::removeDebugFilePath( this );
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
     size_t AndroidFileInputStream::read( void * const _buf, size_t _count )

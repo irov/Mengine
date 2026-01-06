@@ -1,9 +1,11 @@
 #include "SDL2ThreadProcessor.h"
 
 #include "Interface/AllocatorSystemInterface.h"
+#include "Interface/PlatformSystemInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/ThreadEnum.h"
+#include "Kernel/ProfilerHelper.h"
 
 namespace Mengine
 {
@@ -179,7 +181,7 @@ namespace Mengine
         m_threadId = SDL_ThreadID();
 
         ALLOCATOR_SYSTEM()
-            ->beginThread( m_threadId );
+            ->beginThread( (ThreadId)m_threadId );
 
         if( PLATFORM_SYSTEM()
             ->beginThread( (ThreadId)m_threadId ) == false )
@@ -271,8 +273,11 @@ namespace Mengine
             }
         }
 
+        PLATFORM_SYSTEM()
+            ->endThread( (ThreadId)m_threadId );
+
         ALLOCATOR_SYSTEM()
-            ->endThread( m_threadId );
+            ->endThread( (ThreadId)m_threadId );
     }
     //////////////////////////////////////////////////////////////////////////
     ThreadId SDL2ThreadProcessor::getThreadId() const
@@ -280,7 +285,7 @@ namespace Mengine
         return (ThreadId)m_threadId;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDL2ThreadProcessor::processTask( ThreadTaskInterface * _task )
+    bool SDL2ThreadProcessor::processTask( const ThreadTaskInterfacePtr & _task )
     {
         if( m_exit == true )
         {

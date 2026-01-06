@@ -2998,7 +2998,14 @@ namespace Mengine
                 //TODO create global data save
                 bool successful = Helper::writeStreamArchiveMagic( stream, archivator, GET_MAGIC_NUMBER( MAGIC_ACCOUNT_DATA ), GET_MAGIC_VERSION( MAGIC_ACCOUNT_DATA ), true, memory_buffer, memory_size, EAC_NORMAL );
 
-                Helper::closeOutputStreamFile( fileGroup, stream );
+                if( Helper::closeOutputStreamFile( fileGroup, stream ) == false )
+                {
+                    LOGGER_ERROR( "invalid close file '%s'"
+                        , filePath.c_str()
+                    );
+
+                    return false;
+                }
 
                 if( successful == false )
                 {

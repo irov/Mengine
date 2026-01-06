@@ -201,11 +201,21 @@ namespace Mengine
 
         image->unlock( locked, 0, true );
 
-        _content->closeOutputStreamFile( stream );
+        bool successful_close_stream = _content->closeOutputStreamFile( stream );
 
         if( bytesWritten == 0 )
         {
             LOGGER_ERROR( "Error while encoding image data" );
+
+            return false;
+        }
+
+        if( successful_close_stream == false )
+        {
+            LOGGER_ERROR( "invalid close output '%s' for file '%s'"
+                , Helper::getContentFullPath( _content ).c_str()
+                , Helper::getContentFullPath( _content ).c_str()
+            );
 
             return false;
         }

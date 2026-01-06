@@ -60,12 +60,10 @@ namespace Mengine
         bool runPlatform()	override;
         void loopPlatform() override;
         bool updatePlatform() override;
-        bool tickPlatform( float _frameTimeF, bool _render, bool _flush, bool _pause ) override;
+        void tickPlatform( float _frameTimeF ) override;
+        bool renderPlatform() override;
         void stopPlatform()	override;
 
-    public:
-        void setSleepMode( bool _sleepMode ) override;
-        bool getSleepMode() const override;
 
     public:
         Timestamp getPlatfomTime() const override;
@@ -88,6 +86,13 @@ namespace Mengine
     public:
         bool isDesktop() const override;
         bool hasTouchpad() const override;
+
+    public:
+        int32_t dpToWidthPx( int32_t _dp ) const override;
+        int32_t dpToHeightPx( int32_t _dp ) const override;
+
+        int32_t pxToWidthDp( int32_t _px ) const override;
+        int32_t pxToHeightDp( int32_t _px ) const override;
 
     public:
         DynamicLibraryInterfacePtr loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentInterfacePtr & _doc ) override;
@@ -234,7 +239,6 @@ namespace Mengine
         float m_pauseUpdatingTime;
 
         bool m_active;
-        bool m_sleepMode;
 
         bool m_desktop;
         bool m_touchpad;

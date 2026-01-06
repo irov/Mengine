@@ -90,7 +90,6 @@ namespace Mengine
         , m_prevTime( 0.0 )
         , m_pauseUpdatingTime( -1.f )
         , m_active( false )
-        , m_sleepMode( true )
         , m_desktop( false )
         , m_touchpad( false )
 #if defined( MENGINE_ENVIRONMENT_RENDER_OPENGL )
@@ -180,7 +179,7 @@ namespace Mengine
         PathString Project_Company = CONFIG_VALUE_PATHSTRING( "Project", "Company", "UNKNOWN" );
         PathString Project_Name = CONFIG_VALUE_PATHSTRING( "Project", "Name", "UNKNOWN" );
 
-        Char * sdl_prefPath = SDL_GetPrefPath( Project_Company, Project_Name );
+        Char * sdl_prefPath = SDL_GetPrefPath( Project_Company.c_str(), Project_Name.c_str() );
 
         size_t sdl_prefPathLen = StdString::strlen( _userPath );
 
@@ -645,12 +644,6 @@ namespace Mengine
 
         m_factoryDynamicLibraries = Helper::makeFactoryPool<SDL2DynamicLibrary, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
-        uint64_t deviceSeed = Helper::generateRandomDeviceSeed();
-
-        LOGGER_INFO_PROTECTED( "platform", "Device Seed: %" MENGINE_PRIu64
-            , deviceSeed
-        );
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -844,20 +837,17 @@ namespace Mengine
             return false;
         }
 
-        if( this->tickPlatform( 0.f, false, false, false ) == false )
-        {
-            return false;
-        }
+        this->tickPlatform( 0.f );
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_RUN );
         
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDL2PlatformService::tickPlatform( float _frameTime, bool _render, bool _flush, bool _pause )
+    void SDL2PlatformService::tickPlatform( float _frameTime )
     {
         bool updating = APPLICATION_SERVICE()
-            ->beginUpdate( _frameTime );
+            ->beginUpdate();
 
         if( updating == true )
         {
@@ -871,64 +861,59 @@ namespace Mengine
                 ->tick( _frameTime );
         }
 
-        if( this->isNeedWindowRender() == true && _render == true )
-        {
-            bool sucessful = APPLICATION_SERVICE()
-                ->render();
-
-            if( sucessful == true && _flush == true )
-            {
-                APPLICATION_SERVICE()
-                    ->flush();
-
-                if( m_sdlWindow != nullptr )
-                {
-                    SDL_ShowWindow( m_sdlWindow );
-
-                    if( SDL_GetWindowFlags( m_sdlWindow ) & SDL_WINDOW_OPENGL )
-                    {
-                        SDL_GL_SwapWindow( m_sdlWindow );
-                    }
-                }
-            }
-        }
-
         APPLICATION_SERVICE()
             ->endUpdate();
 
-        MENGINE_UNUSED( _pause );
-
 #if defined(MENGINE_PLATFORM_WINDOWS) || defined(MENGINE_PLATFORM_MACOS)
-        if( _pause == true )
+        if( updating == false )
         {
-            if( updating == false )
+            if( m_pauseUpdatingTime < 0.f )
             {
-                if( m_pauseUpdatingTime < 0.f )
-                {
-                    m_pauseUpdatingTime = _frameTime;
-                }
-
-                if( m_sleepMode == true )
-                {
-                    SDL_Delay( 100 );
-                }
-                else
-                {
-                    SDL_Delay( 1 );
-                }
+                m_pauseUpdatingTime = _frameTime;
             }
-            else
-            {
-                bool OPTION_maxfps = HAS_OPTION( "maxfps" );
 
-                if( APPLICATION_SERVICE()
-                    ->getVSync() == false && OPTION_maxfps == false )
-                {
-                    SDL_Delay( 1 );
-                }
+            SDL_Delay( 1 );
+        }
+        else
+        {
+            bool OPTION_maxfps = HAS_OPTION( "maxfps" );
+
+            if( APPLICATION_SERVICE()
+                ->getVSync() == false && OPTION_maxfps == false )
+            {
+                SDL_Delay( 1 );
             }
         }
 #endif
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDL2PlatformService::renderPlatform()
+    {
+        if( this->isNeedWindowRender() == false )
+        {
+            return false;
+        }
+
+        bool sucessful = APPLICATION_SERVICE()
+            ->render();
+
+        if( sucessful == false )
+        {
+            return false;
+        }
+
+        APPLICATION_SERVICE()
+            ->flush();
+
+        if( m_sdlWindow != nullptr )
+        {
+            SDL_ShowWindow( m_sdlWindow );
+
+            if( SDL_GetWindowFlags( m_sdlWindow ) & SDL_WINDOW_OPENGL )
+            {
+                SDL_GL_SwapWindow( m_sdlWindow );
+            }
+        }
 
         return true;
     }
@@ -950,9 +935,20 @@ namespace Mengine
 
             m_prevTime = currentTime;
 
-            if( this->tickPlatform( frameTime, true, true, true ) == false )
+            if( m_active == false )
             {
-                break;
+                SDL_Delay( 100 );
+
+                continue;
+            }
+
+            this->tickPlatform( frameTime );
+
+            if( this->renderPlatform() == false )
+            {
+                SDL_Delay( 100 );
+
+                continue;
             }
         }
     }
@@ -1008,16 +1004,6 @@ namespace Mengine
         }
         
         this->pushQuitEvent_();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void SDL2PlatformService::setSleepMode( bool _sleepMode )
-    {
-        m_sleepMode = _sleepMode;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool SDL2PlatformService::getSleepMode() const
-    {
-        return m_sleepMode;
     }
     //////////////////////////////////////////////////////////////////////////
     Timestamp SDL2PlatformService::getPlatfomTime() const
@@ -1332,6 +1318,7 @@ namespace Mengine
     {
         this->setupWindow_();
 
+#if defined(MENGINE_PLATFORM_WINDOWS)
         SDL_Window * sharePixelFormatWindow = SDL_CreateWindow( "MengineSharePixelFormatWindow", 0, 0, 1, 1, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN );
 
         Char sBuf[64 + 1] = {'\0'};
@@ -1363,6 +1350,13 @@ namespace Mengine
         }
 
         return true;
+#else
+        MENGINE_UNUSED( _hWND );
+
+        LOGGER_ERROR( "SDL3PlatformService::attachWindow unsupported for this platform" );
+
+        return false;
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDL2PlatformService::hasPlatformTag( const ConstString & _tag ) const
@@ -1385,6 +1379,34 @@ namespace Mengine
     bool SDL2PlatformService::hasTouchpad() const
     {
         return m_touchpad;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int32_t SDL2PlatformService::dpToWidthPx( int32_t _dp ) const
+    {
+        MENGINE_UNUSED( _dp );
+
+        return 0;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int32_t SDL2PlatformService::dpToHeightPx( int32_t _px ) const
+    {
+        MENGINE_UNUSED( _px );
+
+        return 0;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int32_t SDL2PlatformService::pxToWidthDp( int32_t _px ) const
+    {
+        MENGINE_UNUSED( _px );
+
+        return 0;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int32_t SDL2PlatformService::pxToHeightDp( int32_t _px ) const
+    {
+        MENGINE_UNUSED( _px );
+
+        return 0;
     }
     //////////////////////////////////////////////////////////////////////////
     DynamicLibraryInterfacePtr SDL2PlatformService::loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentInterfacePtr & _doc )
@@ -2126,10 +2148,10 @@ namespace Mengine
 
         PathString Engine_SDL_HINT_RENDER_SCALE_QUALITY = CONFIG_VALUE_PATHSTRING( "SDL2", "SDL_HINT_RENDER_SCALE_QUALITY", "linear" );
 
-        if( SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, Engine_SDL_HINT_RENDER_SCALE_QUALITY ) != SDL_TRUE )
+        if( SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, Engine_SDL_HINT_RENDER_SCALE_QUALITY.c_str() ) != SDL_TRUE )
         {
             LOGGER_WARNING( "set hint SDL_HINT_RENDER_SCALE_QUALITY to [%s] error: %s"
-                , Engine_SDL_HINT_RENDER_SCALE_QUALITY
+                , Engine_SDL_HINT_RENDER_SCALE_QUALITY.c_str()
                 , SDL_GetError()
             );
         }

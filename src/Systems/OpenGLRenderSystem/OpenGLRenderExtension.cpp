@@ -2,7 +2,13 @@
 
 #if defined(MENGINE_RENDER_OPENGL_NORMAL)
 
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
 #include "Environment/SDL2/SDL2Includer.h"
+#elif defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3)
+#include "Environment/SDL3/SDL3Includer.h"
+#else
+#error "Unknown SDL environment"
+#endif
 
 // textures
 PFNGLACTIVETEXTUREPROC              glActiveTexture_ = nullptr;

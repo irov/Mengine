@@ -1,6 +1,7 @@
 #include "SDL2ThreadIdentity.h"
 
 #include "Interface/AllocatorSystemInterface.h"
+#include "Interface/PlatformSystemInterface.h"
 
 #include "SDL2ThreadIdentityRunner.h"
 
@@ -120,7 +121,7 @@ namespace Mengine
         m_threadId = SDL_ThreadID();
 
         ALLOCATOR_SYSTEM()
-            ->beginThread( m_threadId );
+            ->beginThread( (ThreadId)m_threadId );
 
         if( PLATFORM_SYSTEM()
             ->beginThread( (ThreadId)m_threadId ) == false )
@@ -152,7 +153,7 @@ namespace Mengine
             ->endThread( (ThreadId)m_threadId );
 
         ALLOCATOR_SYSTEM()
-            ->endThread( m_threadId );
+            ->endThread( (ThreadId)m_threadId );
     }
     //////////////////////////////////////////////////////////////////////////
     ThreadId SDL2ThreadIdentity::getThreadId() const

@@ -9,6 +9,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/PathHelper.h"
+#include "Kernel/DebugFileHelper.h"
 
 #include "Config/Path.h"
 
@@ -45,12 +46,6 @@ namespace Mengine
         MENGINE_UNUSED( _streaming );
         MENGINE_UNUSED( _share );
 
-#if defined(MENGINE_DEBUG)
-        this->setDebugRelationPath( _relationPath );
-        this->setDebugFolderPath( _folderPath );
-        this->setDebugFilePath( _filePath );
-#endif
-
         size_t size = m_stream->size();
 
         if( _size != MENGINE_UNKNOWN_SIZE )
@@ -84,15 +79,23 @@ namespace Mengine
         m_capacity = 0;
         m_reading = 0;
 
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+        Helper::addDebugFilePath( this, _relationPath, _folderPath, _filePath, MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDL2MutexFileInputStream::close()
+    void SDL2MutexFileInputStream::close()
     {
         m_stream = nullptr;
         m_mutex = nullptr;
 
-        return true;
+        m_size = 0;
+
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+        Helper::removeDebugFilePath( this );
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     size_t SDL2MutexFileInputStream::read( void * const _buf, size_t _count )
@@ -277,9 +280,9 @@ namespace Mengine
     bool SDL2MutexFileInputStream::time( uint64_t * const _time ) const
     {
 #if defined(MENGINE_DEBUG)
-        const FilePath & relationPath = this->getDebugRelationPath();
-        const FilePath & folderPath = this->getDebugFolderPath();
-        const FilePath & filePath = this->getDebugFilePath();
+        const FilePath & relationPath = Helper::getDebugRelationPath( this );
+        const FilePath & folderPath = Helper::getDebugFolderPath( this );
+        const FilePath & filePath = Helper::getDebugFilePath( this );
 
         Path fullPath = {'\0'};
         if( Helper::concatenateFilePath( {relationPath, folderPath, filePath}, fullPath ) == false )

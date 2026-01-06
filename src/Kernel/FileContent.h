@@ -15,10 +15,10 @@ namespace Mengine
         FileContent();
         ~FileContent() override;
 
-    public:
+    protected:
         bool exist( bool _recursive ) const override;
 
-    public:
+    protected:
         MemoryInterfacePtr createMemoryFile( bool _stream, bool _share, const DocumentInterfacePtr & _doc ) override;
         MemoryInterfacePtr createMemoryFileString( bool _stream, bool _share, const DocumentInterfacePtr & _doc ) override;
 
@@ -26,7 +26,10 @@ namespace Mengine
         void closeInputStreamFile( const InputStreamInterfacePtr & _stream ) override;
 
         OutputStreamInterfacePtr openOutputStreamFile( bool _withTemp, const DocumentInterfacePtr & _doc ) override;
-        void closeOutputStreamFile( const OutputStreamInterfacePtr & _stream ) override;
+        bool closeOutputStreamFile( const OutputStreamInterfacePtr & _stream ) override;
+
+    protected:
+        bool createDirectory() override;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<FileContent, ContentInterface> FileContentPtr;

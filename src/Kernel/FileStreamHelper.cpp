@@ -77,9 +77,11 @@ namespace Mengine
             _fileGroup->closeInputFile( _stream );
         }
         //////////////////////////////////////////////////////////////////////////
-        void closeOutputStreamFile( const FileGroupInterfacePtr & _fileGroup, const OutputStreamInterfacePtr & _stream )
+        bool closeOutputStreamFile( const FileGroupInterfacePtr & _fileGroup, const OutputStreamInterfacePtr & _stream )
         {
-            _fileGroup->closeOutputFile( _stream );
+            bool result = _fileGroup->closeOutputFile( _stream );
+
+            return result;
         }
         //////////////////////////////////////////////////////////////////////////
         bool writeOutputStreamFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _withTemp, const MemoryInterfacePtr & _memory, const DocumentInterfacePtr & _doc )
@@ -95,7 +97,14 @@ namespace Mengine
 
             bool successful = stream->write( memory_buffer, memory_size );
 
-            Helper::closeOutputStreamFile( _fileGroup, stream );
+            if( Helper::closeOutputStreamFile( _fileGroup, stream ) == false )
+            {
+                LOGGER_ERROR( "can't close output file '%s'"
+                    , Helper::getFileGroupFullPath( _fileGroup, _filePath ).c_str()
+                );
+
+                return false;
+            }
 
             if( successful == false )
             {
@@ -107,6 +116,13 @@ namespace Mengine
             }
 
             return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool createDirectory( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
+        {
+            bool result = _fileGroup->createDirectory( _filePath );
+
+            return result;
         }
         //////////////////////////////////////////////////////////////////////////
     }

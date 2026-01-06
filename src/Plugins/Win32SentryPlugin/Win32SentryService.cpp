@@ -126,12 +126,6 @@ namespace Mengine
         }
 #endif
 
-        LOGGER_MESSAGE( "Sentry version: %s name: %s agent: %s"
-            , sentry_sdk_version()
-            , sentry_sdk_name()
-            , sentry_sdk_user_agent()
-        );
-
         URLString Win32SentryPlugin_DSN = CONFIG_VALUE_URLSTRING( "Win32SentryPlugin", "DSN", "" );
 
         if( Win32SentryPlugin_DSN.empty() == true )
@@ -146,6 +140,12 @@ namespace Mengine
         );
 
         sentry_options_t * options = sentry_options_new();
+
+        LOGGER_MESSAGE( "Sentry version: %s name: %s agent: %s"
+            , sentry_sdk_version()
+            , sentry_options_get_sdk_name( options )
+            , sentry_options_get_user_agent( options )
+        );
 
 #if defined(MENGINE_DEBUG)
         sentry_options_set_debug( options, 1 );

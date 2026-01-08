@@ -49,27 +49,39 @@ public class MenginePlatformEventQueue {
     }
 
     public static void pushPauseEvent(float x, float y) {
+        MengineNative.AndroidPlatform_lockActivity();
         MenginePlatformEventQueue.pushEvent(new PauseEvent(x, y));
+        MengineNative.AndroidPlatform_unlockActivity();
     }
 
     public static void pushResumeEvent(float x, float y) {
+        MengineNative.AndroidPlatform_lockActivity();
         MenginePlatformEventQueue.pushEvent(new ResumeEvent(x, y));
+        MengineNative.AndroidPlatform_unlockActivity();
     }
 
     public static void pushStopEvent() {
+        MengineNative.AndroidPlatform_lockActivity();
         MenginePlatformEventQueue.pushEvent(new StopEvent());
+        MengineNative.AndroidPlatform_unlockActivity();
     }
 
     public static void pushStartEvent() {
+        MengineNative.AndroidPlatform_lockActivity();
         MenginePlatformEventQueue.pushEvent(new StartEvent());
+        MengineNative.AndroidPlatform_unlockActivity();
     }
 
     public static void pushRestartEvent() {
+        MengineNative.AndroidPlatform_lockActivity();
         MenginePlatformEventQueue.pushEvent(new RestartEvent());
+        MengineNative.AndroidPlatform_unlockActivity();
     }
 
     public static void pushDestroyEvent() {
+        MengineNative.AndroidPlatform_lockActivity();
         MenginePlatformEventQueue.pushEvent(new DestroyEvent());
+        MengineNative.AndroidPlatform_unlockActivity();
     }
 
     public static void pushFreezeEvent(String owner, boolean freeze) {
@@ -101,15 +113,21 @@ public class MenginePlatformEventQueue {
     }
 
     public static void pushSurfaceCreatedEvent(Surface surface) {
+        MengineNative.AndroidPlatform_lockActivity();
         MenginePlatformEventQueue.pushEvent(new SurfaceCreateEvent(surface));
+        MengineNative.AndroidPlatform_unlockActivity();
     }
 
     public static void pushSurfaceDestroyedEvent() {
+        MengineNative.AndroidPlatform_lockActivity();
         MenginePlatformEventQueue.pushEvent(new SurfaceDestroyEvent());
+        MengineNative.AndroidPlatform_unlockActivity();
     }
 
     public static void pushSurfaceChangedEvent(Surface surface, int surfaceWidth, int surfaceHeight, int deviceWidth, int deviceHeight, float rate) {
+        MengineNative.AndroidPlatform_lockActivity();
         MenginePlatformEventQueue.pushEvent(new SurfaceChangedEvent(surface, surfaceWidth, surfaceHeight, deviceWidth, deviceHeight, rate));
+        MengineNative.AndroidPlatform_unlockActivity();
     }
 
     public static boolean processEvents(@NonNull MengineApplication application) {

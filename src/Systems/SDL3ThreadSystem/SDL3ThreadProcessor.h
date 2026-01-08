@@ -71,6 +71,3 @@ namespace Mengine
     typedef IntrusivePtr<SDL3ThreadProcessor, ThreadProcessorInterface> SDL3ThreadProcessorPtr;
     //////////////////////////////////////////////////////////////////////////
 }
-
-
-

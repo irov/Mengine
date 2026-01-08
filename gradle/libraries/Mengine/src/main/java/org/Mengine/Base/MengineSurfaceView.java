@@ -95,10 +95,6 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
                 m_sensorManager.registerListener(this, m_linearAccelerometer, SensorManager.SENSOR_DELAY_GAME);
             }
         }
-
-        float x = MengineNative.AndroidPlatform_getLastFingerX();
-        float y = MengineNative.AndroidPlatform_getLastFingerY();
-        MenginePlatformEventQueue.pushResumeEvent(x, y);
     }
 
     public void handlePause() {
@@ -124,10 +120,6 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
                 m_sensorManager.unregisterListener(this, m_linearAccelerometer);
             }
         }
-
-        float x = MengineNative.AndroidPlatform_getLastFingerX();
-        float y = MengineNative.AndroidPlatform_getLastFingerY();
-        MenginePlatformEventQueue.pushPauseEvent(x, y);
     }
 
     public void handleDestroy() {

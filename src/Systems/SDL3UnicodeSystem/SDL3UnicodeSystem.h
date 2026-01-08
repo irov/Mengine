@@ -36,6 +36,3 @@ namespace Mengine
         WChar m_unicodeBuffer[MENGINE_UNICODE_CONVERT_BUFFER + 1] = {L'\0'};
     };
 }
-
-
-

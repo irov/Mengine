@@ -38,6 +38,3 @@ namespace Mengine
 #endif
     };
 }
-
-
-

@@ -71,6 +71,3 @@ namespace Mengine
     typedef IntrusivePtr<SDL3FileGroupDirectory, FileGroupInterface> SDL3FileGroupDirectoryPtr;
     //////////////////////////////////////////////////////////////////////////
 }
-
-
-

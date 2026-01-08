@@ -36,6 +36,10 @@ namespace Mengine
         virtual void androidNativeWindowFocusChangedEvent( jboolean _focus ) = 0;
 
     public:
+        virtual void lockActivity() = 0;
+        virtual void unlockActivity() = 0;
+
+    public:
         virtual void androidNativeQuitEvent() = 0;
         virtual void androidNativeLowMemoryEvent() = 0;
         virtual void androidNativeTrimMemoryEvent( jint _level ) = 0;

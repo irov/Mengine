@@ -584,6 +584,32 @@ extern "C"
         env->ReleaseStringUTFChars( _language, language_str );
     }
     ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1lockActivity )(JNIEnv * env, jclass cls)
+    {
+        if( g_androidPlatformActived == false )
+        {
+            return;
+        }
+
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        platformExtension->lockActivity();
+    }
+    ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1unlockActivity )(JNIEnv * env, jclass cls)
+    {
+        if( g_androidPlatformActived == false )
+        {
+            return;
+        }
+
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        platformExtension->unlockActivity();
+    }
+    ///////////////////////////////////////////////////////////////////////
     JNIEXPORT jlong JNICALL MENGINE_JAVA_INTERFACE( AndroidStatistic_1getRenderFrameCount )(JNIEnv * env, jclass cls)
     {
         int64_t Statistic_RenderFrameCount = STATISTIC_GET_INTEGER( Mengine::STATISTIC_RENDER_FRAME_COUNT );
@@ -720,8 +746,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::getMaxClientResolution( Resolution * const _resolution ) const
     {
-        MENGINE_THREAD_MUTEX_SCOPE( m_nativeWindowMutex );
-
         if( m_nativeWindow == nullptr )
         {
             *_resolution = Resolution( 0.f, 0.f );
@@ -787,9 +811,6 @@ namespace Mengine
             m_proxyLogger = proxyLogger;
         }
 
-        m_nativeWindowMutex = Helper::createThreadMutex(MENGINE_DOCUMENT_FACTORABLE );
-        m_eglSurfaceMutex = Helper::createThreadMutex(MENGINE_DOCUMENT_FACTORABLE );
-
         EGLDisplay eglDisplay = ::eglGetDisplay( EGL_DEFAULT_DISPLAY );
 
         if( eglDisplay == EGL_NO_DISPLAY )
@@ -816,12 +837,52 @@ namespace Mengine
 
         m_factoryDynamicLibraries = Helper::makeFactoryPool<AndroidDynamicLibrary, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
+        m_activityMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
+
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_BASE_SERVICES, &AndroidPlatformService::notifyBootstrapperInitializeBaseServices_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, &AndroidPlatformService::notifyBootstrapperCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );
 
         g_androidPlatformActived = true;
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::_finalizeService()
+    {
+        LOGGER_INFO( "platform", "finalize" );
+
+        g_androidPlatformActived = false;
+
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_BASE_SERVICES );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
+
+        if( m_proxyLogger != nullptr )
+        {
+            LOGGER_SERVICE()
+                ->unregisterLogger( m_proxyLogger );
+
+            m_proxyLogger = nullptr;
+        }
+
+        if( m_analyticsEventProvider != nullptr )
+        {
+            ANALYTICS_SERVICE()
+                ->removeEventProvider( m_analyticsEventProvider );
+
+            m_analyticsEventProvider = nullptr;
+        }
+
+        m_active = false;
+
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDynamicLibraries );
+
+        m_factoryDynamicLibraries = nullptr;
+
+        this->destroyWindow_();
+
+        m_platformTags.clear();
+
+        m_activityMutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::_runService()
@@ -856,45 +917,6 @@ namespace Mengine
             , dateTime.minute
             , dateTime.second
         );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::_finalizeService()
-    {
-        LOGGER_INFO( "platform", "finalize" );
-
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_BASE_SERVICES );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
-
-        if( m_proxyLogger != nullptr )
-        {
-            LOGGER_SERVICE()
-                ->unregisterLogger( m_proxyLogger );
-
-            m_proxyLogger = nullptr;
-        }
-
-        if( m_analyticsEventProvider != nullptr )
-        {
-            ANALYTICS_SERVICE()
-                ->removeEventProvider( m_analyticsEventProvider );
-
-            m_analyticsEventProvider = nullptr;
-        }
-
-        m_active = false;
-
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDynamicLibraries );
-
-        m_factoryDynamicLibraries = nullptr;
-
-        this->destroyWindow_();
-
-        m_platformTags.clear();
-
-        m_nativeWindowMutex = nullptr;
-        m_eglSurfaceMutex = nullptr;
-
-        m_platformTags.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::runPlatform()
@@ -953,9 +975,6 @@ namespace Mengine
             return false;
         }
 
-        MENGINE_THREAD_MUTEX_SCOPE( m_nativeWindowMutex );
-        MENGINE_THREAD_MUTEX_SCOPE( m_eglSurfaceMutex );
-
         if( m_nativeWindow == nullptr || m_eglSurface == EGL_NO_SURFACE || m_eglContext == EGL_NO_CONTEXT )
         {
             return false;
@@ -999,19 +1018,23 @@ namespace Mengine
         {
             double currentTime = Helper::getElapsedTime();
 
+            float frameTime = (float)(currentTime - m_prevTime);
+
+            m_prevTime = currentTime;
+
+            m_activityMutex->lock();
+
             if( this->updatePlatform() == false )
             {
                 break;
             }
 
-            float frameTime = (float)(currentTime - m_prevTime);
-
-            m_prevTime = currentTime;
-
             if( m_active == false )
             {
-                usleep( 250000 );
+                m_activityMutex->unlock();
 
+                usleep( 100000 );
+                
                 continue;
             }
 
@@ -1019,10 +1042,18 @@ namespace Mengine
 
             if( this->renderPlatform() == false )
             {
+                m_activityMutex->unlock();
+
                 usleep( 250000 );
 
                 continue;
             }
+            
+            m_activityMutex->unlock();
+            
+            // Small delay after releasing mutex to give UI thread a chance to acquire it
+            // This prevents UI thread from being blocked indefinitely when trying to push events
+            usleep( 1000 );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1271,8 +1302,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::getDesktopResolution( Resolution * const _resolution ) const
     {
-        MENGINE_THREAD_MUTEX_SCOPE( m_nativeWindowMutex );
-
         if( m_nativeWindow == nullptr )
         {
             *_resolution = Resolution( 0.f, 0.f );
@@ -1459,6 +1488,16 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::lockActivity()
+    {
+        m_activityMutex->lock();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::unlockActivity()
+    {
+        m_activityMutex->unlock();
+    }
+    //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::messageBox( const Char * _caption, const Char * _format, ... ) const
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
@@ -1544,8 +1583,6 @@ namespace Mengine
         LOGGER_INFO( "platform", "destroy window" );
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_DETACH_WINDOW );
-
-        MENGINE_THREAD_MUTEX_SCOPE( m_eglSurfaceMutex );
 
         if( ::eglTerminate( m_eglDisplay ) == EGL_FALSE )
         {
@@ -1710,8 +1747,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeSurfaceCreatedEvent( ANativeWindow * _nativeWindow )
     {
-        MENGINE_THREAD_MUTEX_SCOPE( m_nativeWindowMutex );
-
         MENGINE_ASSERTION_FATAL( m_nativeWindow == nullptr, "native window already created" );
 
         m_nativeWindow = _nativeWindow;
@@ -1723,8 +1758,6 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( m_eglContext == nullptr, "already created egl context" );
 
         LOGGER_INFO( "platform", "surface create event" );
-
-        MENGINE_THREAD_MUTEX_SCOPE( m_eglSurfaceMutex );
 
         if( m_nativeWindow == nullptr )
         {
@@ -1930,8 +1963,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeSurfaceDestroyedEvent()
     {
-        MENGINE_THREAD_MUTEX_SCOPE( m_nativeWindowMutex );
-
         MENGINE_ASSERTION_FATAL( m_nativeWindow != nullptr, "native window already destroyed" );
 
         if( m_nativeWindow != nullptr )
@@ -1944,8 +1975,6 @@ namespace Mengine
         LOGGER_INFO( "platform", "push surface destroy event" );
 
         LOGGER_INFO( "platform", "surface destroy event" );
-
-        MENGINE_THREAD_MUTEX_SCOPE( m_eglSurfaceMutex );
 
         if( m_eglDisplay == EGL_NO_DISPLAY )
         {
@@ -1996,8 +2025,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeSurfaceChangedEvent( ANativeWindow * _nativeWindow, jint surfaceWidth, jint surfaceHeight, jint deviceWidth, jint deviceHeight, jfloat rate )
     {
-        MENGINE_THREAD_MUTEX_SCOPE( m_nativeWindowMutex );
-
         if( m_nativeWindow != nullptr )
         {
             ANativeWindow_release( m_nativeWindow );

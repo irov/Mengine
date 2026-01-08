@@ -39,6 +39,3 @@ namespace Mengine
         FactoryInterfacePtr m_factoryThreadConditionVariable;
     };
 }
-
-
-

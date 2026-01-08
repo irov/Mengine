@@ -103,5 +103,7 @@ public class MengineClipboard extends View implements ClipboardManager.OnPrimary
         MengineLog.logMessage(TAG, "clipboard changed");
 
         MenginePlatformEventQueue.pushClipboardChangedEvent();
+
+        MengineLog.logDebug(TAG, "[END] onPrimaryClipChanged");
     }
 }

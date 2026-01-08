@@ -34,6 +34,3 @@ namespace Mengine
         AtomicBool m_cancel;
     };
 }
-
-
-

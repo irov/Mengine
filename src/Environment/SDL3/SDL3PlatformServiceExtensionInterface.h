@@ -53,6 +53,3 @@ namespace Mengine
         virtual void removeSDLEventHandler( UniqueId _handlerId ) = 0;
     };
 }
-
-
-

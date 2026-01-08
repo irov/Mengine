@@ -290,7 +290,7 @@ namespace Mengine
         MENGINE_UNUSED( _mask );
         MENGINE_UNUSED( _lambda );
 
-        LOGGER_WARNING( "AndroidPlatformService::findFiles not support" );
+        LOGGER_WARNING( "AndroidFileSystem::findFiles not support" );
 
         return false;
     }

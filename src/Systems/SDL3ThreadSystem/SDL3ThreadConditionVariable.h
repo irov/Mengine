@@ -38,6 +38,3 @@ namespace Mengine
     typedef IntrusivePtr<SDL3ThreadConditionVariable, ThreadConditionVariableInterface> SDL3ThreadConditionVariablePtr;
     //////////////////////////////////////////////////////////////////////////
 }
-
-
-

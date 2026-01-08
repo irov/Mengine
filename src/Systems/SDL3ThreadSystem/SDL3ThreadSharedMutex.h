@@ -44,6 +44,3 @@ namespace Mengine
     typedef IntrusivePtr<SDL3ThreadSharedMutex, ThreadSharedMutexInterface> SDL3ThreadSharedMutexPtr;
     //////////////////////////////////////////////////////////////////////////
 }
-
-
-

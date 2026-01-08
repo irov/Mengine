@@ -145,6 +145,10 @@ namespace Mengine
         bool createDirectoryUserMusic( const Char * _directoryPath, const Char * _file, const void * _data, size_t _size ) override;
 
     protected:
+        void lockActivity() override;
+        void unlockActivity() override;
+
+    protected:
         void messageBox( const Char * _caption, const Char * _format, ... ) const override;
 
     protected:
@@ -215,8 +219,7 @@ namespace Mengine
 
         LoggerInterfacePtr m_proxyLogger;
 
-        ThreadMutexInterfacePtr m_nativeWindowMutex;
-        ThreadMutexInterfacePtr m_eglSurfaceMutex;
+        ThreadMutexInterfacePtr m_activityMutex;
 
         enum EActivityState
         {

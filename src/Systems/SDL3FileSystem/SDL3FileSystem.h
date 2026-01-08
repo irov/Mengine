@@ -33,6 +33,3 @@ namespace Mengine
         uint64_t getFileTime( const Char * _filePath ) const override;
     };
 }
-
-
-

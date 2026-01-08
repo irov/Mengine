@@ -22,6 +22,3 @@ namespace Mengine
         FilePath m_relationPath;
     };
 }
-
-
-

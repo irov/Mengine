@@ -19,6 +19,3 @@ namespace Mengine
     typedef IntrusivePtr<SDL3MessageBoxLogger, LoggerInterface> SDL3MessageBoxLoggerPtr;
     //////////////////////////////////////////////////////////////////////////
 }
-
-
-

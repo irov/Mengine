@@ -73,6 +73,3 @@ namespace Mengine
     typedef IntrusivePtr<SDL3FileInputStream, FileInputStreamInterface> SDL3FileInputStreamPtr;
     //////////////////////////////////////////////////////////////////////////
 }
-
-
-

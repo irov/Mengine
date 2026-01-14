@@ -10,6 +10,7 @@
 #import "AppleSKAdNetworkDetail.h"
 
 #import <StoreKit/SKAdNetwork.h>
+#import <StoreKit/SKANError.h>
 
 @implementation AppleSKAdNetworkApplicationDelegate
 
@@ -381,6 +382,10 @@
 
     [AppleSKAdNetworkDetail updatePostbackConversionValue:fine coarseValue:coarse lockWindow:NO completionHandler:^(NSError *error) {
         if (error != nil) {
+            if ([AppleSKAdNetworkDetail isPostbackConversionUnknownError:error] == YES) {
+                return;
+            }
+            
             IOS_LOGGER_ERROR( @"updatePostbackConversionValue fine: %ld coarse: %@ error: %@"
                 , fine
                 , coarse

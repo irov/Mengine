@@ -1,6 +1,7 @@
 #import "AppleSKAdNetworkDetail.h"
 
 #import <StoreKit/SKAdNetwork.h>
+#import <StoreKit/SKANError.h>
 
 @implementation AppleSKAdNetworkDetail
 
@@ -72,6 +73,16 @@
         
         completion(error);
     }
+}
+
++ (BOOL)isPostbackConversionUnknownError:(NSError *)error {
+    if (@available(iOS 15.4, *)) {
+        if (error.code == SKANErrorUnknown) {
+            return YES;
+        }
+    }
+    
+    return NO;
 }
 
 @end

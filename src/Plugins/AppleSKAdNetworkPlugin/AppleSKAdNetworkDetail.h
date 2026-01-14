@@ -11,4 +11,6 @@
                           coarseValue:(NSString *)coarseValue
                            lockWindow:(BOOL)lockWindow
                     completionHandler:(void (^)(NSError *error))completion;
+
++ (BOOL)isPostbackConversionUnknownError:(NSError *)error;
 @end

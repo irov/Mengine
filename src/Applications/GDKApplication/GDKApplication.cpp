@@ -1,4 +1,4 @@
-#include "Win32Application.h"
+#include "GDKApplication.h"
 
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/BootstrapperInterface.h"
@@ -13,7 +13,6 @@
 #include "Environment/Windows/Win32Helper.h"
 #include "Environment/Windows/Win32MessageBoxLogger.h"
 #include "Environment/Windows/Win32ConsoleLogger.h"
-#include "Environment/Windows/Win32ExtraFileLogger.h"
 #include "Environment/Windows/Win32PlatformServiceExtensionInterface.h"
 
 #if defined(MENGINE_WINDOWS_DEBUG)
@@ -21,6 +20,8 @@
 #endif
 
 #include "Mengine/MenginePlugin.h"
+
+#include "Environment/Windows/Win32ExtraFileLogger.h"
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
@@ -37,8 +38,6 @@
 #include <ctime>
 #include <functional>
 
-#include "resource.h"
-
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_DLL_NAME
 #define MENGINE_DLL_NAME L"Mengine.dll"
@@ -47,18 +46,18 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    Win32Application::Win32Application()
+    GDKApplication::GDKApplication()
 #if defined(MENGINE_PLUGIN_MENGINE_SHARED)
         : m_hInstance( NULL )
 #endif
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    Win32Application::~Win32Application()
+    GDKApplication::~GDKApplication()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Application::initializeOptionsService_()
+    bool GDKApplication::initializeOptionsService_()
     {
         LPCWSTR lpCmdLine = ::GetCommandLineW();
 
@@ -119,7 +118,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Application::initializeLoggerService_()
+    bool GDKApplication::initializeLoggerService_()
     {
         if( LOGGER_SERVICE()
             ->isSilent() == true )
@@ -183,7 +182,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32Application::finalizeLoggerService_()
+    void GDKApplication::finalizeLoggerService_()
     {
         if( m_loggerConsole != nullptr )
         {
@@ -232,7 +231,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Application::initialize()
+    bool GDKApplication::initialize()
     {
 #if defined(MENGINE_PLUGIN_MENGINE_SHARED)
         HINSTANCE hInstance = ::LoadLibrary( MENGINE_DLL_NAME );
@@ -288,7 +287,7 @@ namespace Mengine
 
         SERVICE_PROVIDER_SETUP( serviceProvider );
 
-        UNKNOWN_SERVICE_WAIT( Win32Application, OptionsServiceInterface, [this]()
+        UNKNOWN_SERVICE_WAIT( GDKApplication, OptionsServiceInterface, [this]()
         {
             if( this->initializeOptionsService_() == false )
             {
@@ -298,7 +297,7 @@ namespace Mengine
             return true;
         } );
 
-        UNKNOWN_SERVICE_WAIT( Win32Application, LoggerServiceInterface, [this]()
+        UNKNOWN_SERVICE_WAIT( GDKApplication, LoggerServiceInterface, [this]()
         {
             if( this->initializeLoggerService_() == false )
             {
@@ -308,7 +307,7 @@ namespace Mengine
             return true;
         } );
 
-        UNKNOWN_SERVICE_LEAVE( Win32Application, LoggerServiceInterface, [this]()
+        UNKNOWN_SERVICE_LEAVE( GDKApplication, LoggerServiceInterface, [this]()
         {
             this->finalizeLoggerService_();
         } );
@@ -369,11 +368,6 @@ namespace Mengine
             return true;
         }
 
-        Win32PlatformServiceExtensionInterface * win32PlatformExtension = PLATFORM_SERVICE()
-            ->getUnknown();
-
-        win32PlatformExtension->setHWNDIcon( MAKEINTRESOURCEW( IDI_MENGINE ) );
-
         bool fullscreen = APPLICATION_SERVICE()
             ->getFullscreenMode();
 
@@ -433,13 +427,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32Application::loop()
+    void GDKApplication::loop()
     {
         PLATFORM_SERVICE()
             ->loopPlatform();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32Application::finalize()
+    void GDKApplication::finalize()
     {
         if( SERVICE_PROVIDER_EXIST() == true )
         {

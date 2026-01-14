@@ -3679,8 +3679,7 @@ namespace Mengine
     bool Win32PlatformService::initializeFileService()
     {
         Path currentPath = {'\0'};
-        size_t currentPathLen = PLATFORM_SERVICE()
-            ->getCurrentPath( currentPath );
+        size_t currentPathLen = this->getCurrentPath( currentPath );
 
         if( currentPathLen == 0 )
         {

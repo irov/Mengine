@@ -28,7 +28,7 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////////////////////////
     bool ShaderConverterTextToPSO11::_initialize()
     {
-        m_convertExt = STRINGIZE_STRING_LOCAL( ".pso" );
+        m_convertExt = STRINGIZE_STRING_LOCAL( ".pso11" );
 
         return true;
     }

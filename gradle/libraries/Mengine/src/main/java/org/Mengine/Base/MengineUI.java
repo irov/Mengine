@@ -302,7 +302,7 @@ public class MengineUI {
             builder.setCancelable(false);
 
             builder.setPositiveButton("ACCEPT", (dialog, which) -> {
-                int option = selectedPos[0];
+                Integer option = selectedPos[0];
 
                 MengineLog.logMessage(TAG,"click [CHOOSE OPTION] accept option: %d"
                     , option

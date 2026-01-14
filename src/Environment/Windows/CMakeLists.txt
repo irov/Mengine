@@ -25,6 +25,9 @@ src
     Win32ConsoleLogger.h
     Win32ConsoleLogger.cpp
     
+    Win32ExtraFileLogger.h
+    Win32ExtraFileLogger.cpp
+    
     Win32Register.h
     Win32Register.cpp
     

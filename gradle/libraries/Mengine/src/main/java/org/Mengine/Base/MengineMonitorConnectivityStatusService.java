@@ -148,7 +148,7 @@ public class MengineMonitorConnectivityStatusService extends MengineService impl
                 final boolean unmetered = networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED);
                 MengineNetworkTransport transport = MengineMonitorConnectivityStatusService.getNetworkTransport(networkCapabilities);
 
-                MengineMonitorConnectivityStatusService.this.logInfo("network %s capabilities changed unmetered: %b transport: %s"
+                MengineMonitorConnectivityStatusService.this.logDebug("network %s capabilities changed unmetered: %b transport: %s"
                     , network.toString()
                     , unmetered
                     , transport

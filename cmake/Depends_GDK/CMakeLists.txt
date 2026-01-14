@@ -1,0 +1,21 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
+
+PROJECT(Depends_GDK)
+
+SET(MENGINE_REPOSITORY ${CMAKE_CURRENT_LIST_DIR}/../..)
+
+INCLUDE(${MENGINE_REPOSITORY}/cmake/build_options_template.cmake)
+INCLUDE(${MENGINE_REPOSITORY}/cmake/base_template.cmake)
+INCLUDE(${MENGINE_REPOSITORY}/cmake/macro_template.cmake)
+INCLUDE(${MENGINE_REPOSITORY}/cmake/win64_template.cmake)
+INCLUDE(${MENGINE_REPOSITORY}/cmake/dependencies_template.cmake)
+
+# GDK supports DirectX 11 (Windows desktop) and DirectX 12 (all platforms including Xbox)
+# DirectX 9 is not natively supported by GDK
+SET_MENGINE_ENVIRONMENT(WINDOWS DIRECTX11 WIN32 MSVC)
+
+SET_MENGINE_DEPENDENCIES_OUTPUT_DIRECTORY()
+
+SET(MENGINE_DEPENDENCE_SDL2 OFF CACHE BOOL "MENGINE_DEPENDENCE_SDL2" FORCE)
+
+ADD_SUBDIRECTORY(${CMAKE_CURRENT_LIST_DIR}/../Dependencies ${CMAKE_TEMP_DIR})

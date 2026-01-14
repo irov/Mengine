@@ -11,6 +11,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
@@ -165,10 +168,13 @@ public class MengineFileLoggerService extends MengineService implements MengineL
         }
     }
 
+    private static final DateTimeFormatter TS_FORMAT =
+        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS", Locale.US)
+            .withZone(ZoneId.systemDefault());
+
     private static String makeTimestamp() {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US);
-        Date date = new Date();
-        String timestamp = format.format(date);
+        Instant now = Instant.now();
+        String timestamp = TS_FORMAT.format(now);
         return timestamp;
     }
 

@@ -27,7 +27,7 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////////////////////////
     bool ShaderConverterTextToVSO11::_initialize()
     {
-        m_convertExt = STRINGIZE_STRING_LOCAL( ".vso" );
+        m_convertExt = STRINGIZE_STRING_LOCAL( ".vso11" );
 
         return true;
     }

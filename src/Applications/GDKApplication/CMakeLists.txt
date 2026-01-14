@@ -1,38 +1,17 @@
-MENGINE_PROJECT(Win32Application)
+MENGINE_PROJECT(GDKApplication)
 
 if(MENGINE_TOOLCHAIN_MSVC)
 ADD_FILTER(
 main
-    Win32Main.cpp
-)
-endif()
-
-if(MENGINE_TOOLCHAIN_MINGW)
-ADD_FILTER(
-main
-    MinGW32Main.cpp
+    GDKMain.cpp
 )
 endif()
     
 ADD_FILTER(
-Win32Application
-    Win32Application.cpp
-    Win32Application.h
+GDKApplication
+    GDKApplication.cpp
+    GDKApplication.h
 )
-
-if(MENGINE_TOOLCHAIN_MINGW)
-    # resource compilation for mingw
-    ADD_CUSTOM_COMMAND(OUTPUT ${MENGINE_SOLUTIONS_CONFIG_DIR}/res/Win32Application_rc.o
-                       COMMAND ${MINGW_ROOT}/bin/llvm-windres.exe -I ${CMAKE_CURRENT_SOURCE_DIR}
-                                           -i ${CMAKE_CURRENT_SOURCE_DIR}/Win32Application.rc
-                                           -o ${MENGINE_SOLUTIONS_CONFIG_DIR}/res/Win32Application_rc.o)
-    
-    SET(SRC_FILES ${SRC_FILES} ${MENGINE_SOLUTIONS_CONFIG_DIR}/res/Win32Application_rc.o)
-endif()
-
-if(MENGINE_TOOLCHAIN_MSVC)
-    SET(SRC_FILES ${SRC_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/Win32Application.rc)
-endif()
 
 LINK_DIRECTORIES(${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})
 
@@ -67,10 +46,6 @@ endif()
 
 if(MENGINE_TOOLCHAIN_MSVC)
     set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS /NODEFAULTLIB:"libci.lib")
-endif()
-
-if(MINGW)
-    set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS -Wl,-Map="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Win32Application.map")
 endif()
 
 if(MENGINE_TOOLCHAIN_MSVC)

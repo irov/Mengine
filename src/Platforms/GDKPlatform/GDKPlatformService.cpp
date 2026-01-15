@@ -65,12 +65,63 @@
 #ifndef MENGINE_DEVELOPMENT_USER_FOLDER_NAME
 #define MENGINE_DEVELOPMENT_USER_FOLDER_NAME L"User"
 #endif
+//////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_WINDOW_CLASSNAME
+#define MENGINE_WINDOW_CLASSNAME "GDKWindow"
+#endif
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PlatformService, Mengine::GDKPlatformService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        static LRESULT CALLBACK wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
+        {
+            switch( uMsg )
+            {
+            case WM_CREATE:
+                {
+                    LPCREATESTRUCTW createStruct = (LPCREATESTRUCTW)lParam;
+
+                    GDKPlatformService * platform = (GDKPlatformService *)createStruct->lpCreateParams;
+
+#if defined(MENGINE_PLATFORM_WINDOWS64)
+                    ::SetWindowLongPtr( hWnd, GWLP_USERDATA, (LONG_PTR)platform );
+#else
+                    ::SetWindowLongPtr( hWnd, GWLP_USERDATA, (LONG)platform );
+#endif
+
+                    return (LRESULT)NULL;
+                }
+                break;
+            }
+
+            GDKPlatformService * platform = nullptr;
+
+#if defined(MENGINE_PLATFORM_WINDOWS64)
+            platform = (GDKPlatformService *)::GetWindowLongPtr( hWnd, GWLP_USERDATA );
+#else
+            platform = (GDKPlatformService *)::GetWindowLongPtr( hWnd, GWLP_USERDATA );
+#endif
+
+            if( platform == nullptr )
+            {
+                LRESULT result = ::DefWindowProc( hWnd, uMsg, wParam, lParam );
+
+                return result;
+            }
+
+            // For now, just use default window proc
+            // Can be extended later if needed
+            LRESULT result = ::DefWindowProc( hWnd, uMsg, wParam, lParam );
+
+            return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
     //////////////////////////////////////////////////////////////////////////
     GDKPlatformService::GDKPlatformService()
         : m_beginTime( 0 )
@@ -137,6 +188,10 @@ namespace Mengine
         }
 
         LOGGER_INFO( "platform", "GDK Platform initialized" );
+
+        PathString Window_ClassName = CONFIG_VALUE_PATHSTRING( "Window", "ClassName", MENGINE_WINDOW_CLASSNAME );
+
+        Helper::utf8ToUnicode( Window_ClassName, m_windowClassName.data(), MENGINE_MAX_PATH );
 
         m_factoryDynamicLibraries = Helper::makeFactoryPool<GDKDynamicLibrary, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -469,21 +524,104 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool GDKPlatformService::createWindow( const Resolution & _resolution, bool _fullscreen )
     {
-        MENGINE_UNUSED( _resolution );
-        MENGINE_UNUSED( _fullscreen );
-
-        LOGGER_INFO( "platform", "GDK createWindow - placeholder implementation" );
-
         m_windowResolution = _resolution;
         m_fullscreen = _fullscreen;
+
+        bool Platform_WithoutWindow = CONFIG_VALUE_BOOLEAN( "Platform", "WithoutWindow", false );
+
+        if( Platform_WithoutWindow == true || HAS_OPTION( "norender" ) == true )
+        {
+            LOGGER_INFO( "platform", "platform without window" );
+
+            return true;
+        }
+
+        HINSTANCE hInstance = ::GetModuleHandle( NULL );
+
+        WNDCLASSEX wc;
+        ::ZeroMemory( &wc, sizeof( WNDCLASSEX ) );
+        wc.cbSize = sizeof( WNDCLASSEX );
+        wc.style = CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
+        wc.lpfnWndProc = &Detail::wndProc;
+        wc.cbClsExtra = 0;
+        wc.cbWndExtra = 0;
+        wc.hInstance = hInstance;
+        wc.hIcon = NULL;
+        wc.hCursor = ::LoadCursor( NULL, MAKEINTRESOURCEW( 32512 ) );
+        wc.hbrBackground = (HBRUSH)::GetStockObject( BLACK_BRUSH );
+        wc.lpszMenuName = NULL;
+        wc.lpszClassName = m_windowClassName.c_str();
+        wc.hIconSm = NULL;
+
+        ATOM result = ::RegisterClassEx( &wc );
+
+        if( result == 0 )
+        {
+            LOGGER_ERROR( "can't register window class %ls"
+                , Helper::Win32GetLastErrorMessageW()
+            );
+
+            return false;
+        }
+
+        DWORD dwStyle = this->getWindowStyle_( _fullscreen );
+        dwStyle &= ~WS_VISIBLE;
+
+        RECT rc;
+        if( this->calcWindowsRect_( m_windowResolution, _fullscreen, &rc ) == false )
+        {
+            return false;
+        }
+
+        DWORD dwExStyle = this->getWindowExStyle_( _fullscreen );
+
+        HWND hWnd = ::CreateWindowEx( dwExStyle, m_windowClassName.c_str(), m_projectTitle.c_str()
+            , dwStyle
+            , rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top
+            , NULL
+            , NULL
+            , hInstance
+            , (LPVOID)this );
+
+        if( hWnd == NULL )
+        {
+            LOGGER_ERROR( "can't create window %ls"
+                , Helper::Win32GetLastErrorMessageW()
+            );
+
+            return false;
+        }
+
+        if( this->atachWindow( hWnd, _fullscreen ) == false )
+        {
+            LOGGER_ERROR( "can't atach window" );
+
+            return false;
+        }
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool GDKPlatformService::atachWindow( HWND _hWnd, bool _fullscreen )
     {
+        MENGINE_ASSERTION_FATAL( _hWnd != NULL, "atachWindow hWnd is NULL" );
+
         m_hWnd = _hWnd;
         m_fullscreen = _fullscreen;
+
+        HWND hWndFgnd = ::GetForegroundWindow();
+
+        if( hWndFgnd != m_hWnd )
+        {
+            LOGGER_INFO( "platform", "setup foreground window..." );
+
+            ::ShowWindow( m_hWnd, SW_MINIMIZE );
+            ::ShowWindow( m_hWnd, SW_RESTORE );
+        }
+        else
+        {
+            ::ShowWindow( m_hWnd, SW_SHOW );
+        }
 
         return true;
     }
@@ -1096,6 +1234,131 @@ namespace Mengine
     bool GDKPlatformService::setHWNDIcon( const WChar * _iconResource )
     {
         MENGINE_UNUSED( _iconResource );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
+    DWORD GDKPlatformService::getWindowStyle_( bool _fullscreen ) const
+    {
+        MENGINE_UNUSED( _fullscreen );
+
+        DWORD dwStyle = WS_OVERLAPPED;
+
+        dwStyle |= WS_POPUP;
+        dwStyle |= WS_VISIBLE;
+
+        if( _fullscreen == false )
+        {
+            dwStyle |= WS_CAPTION;
+
+            dwStyle |= WS_SYSMENU;
+            dwStyle |= WS_MINIMIZEBOX;
+        }
+
+        return dwStyle;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    DWORD GDKPlatformService::getWindowExStyle_( bool _fullscreen ) const
+    {
+        MENGINE_UNUSED( _fullscreen );
+
+        DWORD dwExStyle = 0;
+
+        dwExStyle |= WS_EX_APPWINDOW;
+
+        if( _fullscreen == false )
+        {
+            dwExStyle |= WS_EX_WINDOWEDGE;
+        }
+
+        return dwExStyle;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool GDKPlatformService::calcWindowsRect_( const Resolution & _resolution, bool _fullscreen, RECT * const _rect ) const
+    {
+        uint32_t resolutionWidth = _resolution.getWidth();
+        uint32_t resolutionHeight = _resolution.getHeight();
+
+        RECT rc;
+        if( ::SetRect( &rc, 0, 0, (int32_t)resolutionWidth, (int32_t)resolutionHeight ) == FALSE )
+        {
+            LOGGER_ERROR( "invalid set rect %ls"
+                , Helper::Win32GetLastErrorMessageW()
+            );
+
+            return false;
+        }
+
+        if( _fullscreen == false )
+        {
+            uint32_t OPTION_winx = GET_OPTION_VALUE_UINT32( "winx", MENGINE_UNKNOWN_COUNT );
+            uint32_t OPTION_winy = GET_OPTION_VALUE_UINT32( "winy", MENGINE_UNKNOWN_COUNT );
+
+            if( OPTION_winx != MENGINE_UNKNOWN_COUNT && OPTION_winy != MENGINE_UNKNOWN_COUNT )
+            {
+                uint32_t width = rc.right - rc.left;
+                uint32_t height = rc.bottom - rc.top;
+
+                rc.left = OPTION_winx;
+                rc.top = OPTION_winy;
+                rc.right = rc.left + width;
+                rc.bottom = rc.top + height;
+            }
+            else
+            {
+                DWORD dwStyle = this->getWindowStyle_( _fullscreen );
+                DWORD dwStyleEx = this->getWindowExStyle_( _fullscreen );
+
+                if( ::AdjustWindowRectEx( &rc, dwStyle, FALSE, dwStyleEx ) == FALSE )
+                {
+                    LOGGER_ERROR( "invalid adjust window rect %ls"
+                        , Helper::Win32GetLastErrorMessageW()
+                    );
+
+                    return false;
+                }
+
+                RECT workArea;
+                if( ::SystemParametersInfo( SPI_GETWORKAREA, 0, &workArea, 0 ) == FALSE )
+                {
+                    LOGGER_ERROR( "invalid system parameters info %ls"
+                        , Helper::Win32GetLastErrorMessageW()
+                    );
+
+                    return false;
+                }
+
+                LONG width = rc.right - rc.left;
+                LONG height = rc.bottom - rc.top;
+
+                LONG left = (workArea.left + workArea.right - width) / 2;
+                LONG top = (workArea.top + workArea.bottom - height) / 2;
+
+                if( top > 0 )
+                {
+                    rc.top = (workArea.top + workArea.bottom - height) / 2;
+                }
+                else
+                {
+                    rc.top = 0;
+                }
+
+                if( left > 0 )
+                {
+                    rc.left = (workArea.left + workArea.right - width) / 2;
+                }
+                else
+                {
+                    rc.left = 0;
+                }
+
+                rc.right = rc.left + width;
+                rc.bottom = rc.top + height;
+            }
+        }
+
+        *_rect = rc;
 
         return true;
     }

@@ -144,6 +144,11 @@ namespace Mengine
         bool setHWNDIcon( const WChar * _iconResource ) override;
 
     protected:
+        DWORD getWindowStyle_( bool _fullscreen ) const;
+        DWORD getWindowExStyle_( bool _fullscreen ) const;
+        bool calcWindowsRect_( const Resolution & _resolution, bool _fullscreen, RECT * const _rect ) const;
+
+    protected:
         HWND getWindowHandle() const override;
 
     protected:
@@ -166,6 +171,8 @@ namespace Mengine
 
         bool m_desktop;
         bool m_touchpad;
+
+        StaticWString<MENGINE_MAX_PATH> m_windowClassName;
 
         HWND m_hWnd;
     };

@@ -14,6 +14,8 @@ namespace Mengine
     class RenderTextureService
         : public ServiceBase<RenderTextureServiceInterface>
     {
+        DECLARE_FACTORABLE( RenderTextureService );
+
     public:
         RenderTextureService();
         ~RenderTextureService() override;

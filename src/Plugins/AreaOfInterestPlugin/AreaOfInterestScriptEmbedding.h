@@ -12,7 +12,6 @@ namespace Mengine
 {
     class AreaOfInterestScriptEmbedding
         : public ScriptEmbeddingInterface
-        , public Factorable
     {
         DECLARE_FACTORABLE( AreaOfInterestScriptEmbedding );
 

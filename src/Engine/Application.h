@@ -22,6 +22,8 @@ namespace Mengine
     class Application
         : public ServiceBase<ApplicationInterface>
     {
+        DECLARE_FACTORABLE( Application );
+
     public:
         Application();
         ~Application() override;

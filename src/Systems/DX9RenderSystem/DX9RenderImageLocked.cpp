@@ -11,12 +11,18 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderImageLocked::initialize( const D3DLOCKED_RECT & _lockedRect )
+    void DX9RenderImageLocked::initialize( const Rect & _rect, const D3DLOCKED_RECT & _lockedRect )
     {
+        m_rect = _rect;
         m_lockedRect = _lockedRect;
     }
     //////////////////////////////////////////////////////////////////////////
-    Pointer DX9RenderImageLocked::getBuffer( size_t * const _pitch ) const
+    const Rect & DX9RenderImageLocked::getLockedRect() const
+    {
+        return m_rect;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Pointer DX9RenderImageLocked::getLockedBuffer( size_t * const _pitch ) const
     {
         *_pitch = (size_t)m_lockedRect.Pitch;
 

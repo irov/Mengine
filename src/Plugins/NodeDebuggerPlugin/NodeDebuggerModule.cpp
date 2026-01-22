@@ -1492,7 +1492,7 @@ namespace Mengine
                     {
                         xml_key.append_attribute( "type" ).set_value( "int" );
 
-                        int64_t value = _setting->getValueInteger( _key, 0LL );
+                        int64_t value = _setting->getValueInteger( _key, MENGINE_INT64_C( 0 ) );
 
                         xml_key.append_attribute( "value" ).set_value( value );
                     }break;

@@ -1,0 +1,3 @@
+LIBRARY	"ImGUIFrameworkPlugin"
+EXPORTS 
+    dllMengineCreatePlugin @1

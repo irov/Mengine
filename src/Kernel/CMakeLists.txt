@@ -542,6 +542,11 @@ Core
 
     ServantBase.h
     ServiceBase.h
+    
+    ScriptEmbeddable.h
+    
+    BaseScriptEmbedded.h
+    BaseScriptEmbedded.cpp
 
     FontBase.h
     FontBase.cpp
@@ -773,11 +778,6 @@ Core
     ModuleBase.cpp
     
     ModuleFactory.h
-
-    FrameworkBase.h
-    FrameworkBase.cpp
-    
-    FrameworkFactory.h
     
     SingleHolder.h
     ValueHolder.h
@@ -1086,6 +1086,8 @@ Codec
 
 ADD_FILTER(
 Factory
+    Localable.h
+    Localable.cpp
     Factorable.h
     Factorable.cpp
     FactorableGeneric.h

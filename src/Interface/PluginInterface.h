@@ -1,7 +1,8 @@
 #pragma once
 
-#include "Interface/ServantInterface.h"
-
+#include "Kernel/Factorable.h"
+#include "Kernel/Visitable.h"
+#include "Kernel/ScriptEmbeddable.h"
 #include "Kernel/ServiceRequiredList.h"
 #include "Kernel/ConstString.h"
 
@@ -14,9 +15,15 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<class PluginInterface> PluginInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
     class PluginInterface
-        : public ServantInterface
+        : public Factorable
+        , public Visitable
+        , public ScriptEmbeddable
     {
+        DECLARE_VISITABLE_BASE();
+
     public:
         virtual const ConstString & getPluginName() const = 0;
 
@@ -25,7 +32,15 @@ namespace Mengine
         virtual bool isDynamicLoad() const = 0;
 
     public:
+        virtual void setFrameworkMode( bool _frameworkMode ) = 0;
+        virtual bool isFrameworkMode() const = 0;
+
+    public:
         virtual const ServiceRequiredList & requiredServices() const = 0;
+
+    public:
+        virtual bool registerPlugin( const PluginInterfacePtr & _plugin ) = 0;
+        virtual void unregisterPlugin( const PluginInterfacePtr & _plugin ) = 0;
 
     public:
         virtual bool initializePlugin() = 0;

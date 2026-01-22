@@ -20,12 +20,16 @@ namespace Mengine
         ~DX9RenderImageLocked() override;
 
     public:
-        void initialize( const D3DLOCKED_RECT & _lockedRect );
+        void initialize( const Rect & _rect, const D3DLOCKED_RECT & _lockedRect );
 
     protected:
-        Pointer getBuffer( size_t * const _pitch ) const override;
+        const Rect & getLockedRect() const override;
 
     protected:
+        Pointer getLockedBuffer( size_t * const _pitch ) const override;
+
+    protected:
+        Rect m_rect;
         D3DLOCKED_RECT m_lockedRect;
     };
     //////////////////////////////////////////////////////////////////////////

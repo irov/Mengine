@@ -5,10 +5,6 @@
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/DebuggerBoundingBoxInterface.h"
 
-#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-#include "SpineScriptEmbedding.h"
-#endif
-
 #include "ResourceSpineAtlasDefault.h"
 #include "ResourceSpineAtlasTexturepacker.h"
 #include "ResourceSpineSkeleton.h"
@@ -83,20 +79,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SpinePlugin::_initializePlugin()
     {
-#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
-        {
-            SCRIPT_SERVICE()
-                ->addScriptEmbedding( SpineScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<SpineScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
-        }, MENGINE_DOCUMENT_FACTORABLE );
-
-        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
-        {
-            SCRIPT_SERVICE()
-                ->removeScriptEmbedding( SpineScriptEmbedding::getFactorableType() );
-        }, MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
         if( Helper::addResourcePrototype<ResourceSpineAtlasDefault, 64>( MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
@@ -150,11 +132,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SpinePlugin::_finalizePlugin()
     {
-#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
-#endif
-
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), Spine::getFactorableType() );
 
         Helper::removeResourcePrototype<ResourceSpineAtlasDefault>();

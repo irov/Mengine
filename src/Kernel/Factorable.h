@@ -7,10 +7,6 @@
 
 #include "Config/UniqueId.h"
 
-#if defined(MENGINE_DEBUG)
-#   include "Config/Timestamp.h"
-#endif
-
 //////////////////////////////////////////////////////////////////////////
 #if !defined(MENGINE_FACTORABLE_DEBUG)
 #   if defined(MENGINE_DEBUG)

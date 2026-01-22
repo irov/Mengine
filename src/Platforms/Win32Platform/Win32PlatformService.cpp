@@ -381,6 +381,13 @@ namespace Mengine
             m_hIcon = NULL;
         }
 
+        for( const ExtraWindowDesc & windowDesc : m_extraWindows )
+        {
+            this->destroyExtraWindow_( windowDesc.hWnd, windowDesc.className.c_str() );
+        }
+
+        m_extraWindows.clear();
+
         this->detachWindow();
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDynamicLibraries );
@@ -1018,7 +1025,7 @@ namespace Mengine
                 {
                     LPCREATESTRUCTW createStruct = (LPCREATESTRUCTW)lParam;
 
-                    Win32PlatformService * app = (Win32PlatformService *)createStruct->lpCreateParams;
+                    Win32PlatformService * app = reinterpret_cast<Win32PlatformService *>(createStruct->lpCreateParams);
 
 #if defined(MENGINE_PLATFORM_WINDOWS64)
                     ::SetWindowLongPtr( hWnd, GWLP_USERDATA, (LONG_PTR)app );
@@ -1033,7 +1040,7 @@ namespace Mengine
 
             LONG_PTR value = ::GetWindowLongPtr( hWnd, GWLP_USERDATA );
 
-            Win32PlatformService * platform = (Win32PlatformService *)value;
+            Win32PlatformService * platform = reinterpret_cast<Win32PlatformService *>(value);
 
             if( platform == nullptr )
             {
@@ -1043,6 +1050,43 @@ namespace Mengine
             }
 
             LRESULT app_result = platform->wndProc( hWnd, uMsg, wParam, lParam );
+
+            return app_result;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static LRESULT CALLBACK wndProcExtra( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
+        {
+            switch( uMsg )
+            {
+            case WM_CREATE:
+                {
+                    LPCREATESTRUCTW createStruct = (LPCREATESTRUCTW)lParam;
+
+                    Win32PlatformService * app = reinterpret_cast<Win32PlatformService *>(createStruct->lpCreateParams);
+
+#if defined(MENGINE_PLATFORM_WINDOWS64)
+                    ::SetWindowLongPtr( hWnd, GWLP_USERDATA, (LONG_PTR)app );
+#else
+                    ::SetWindowLongPtr( hWnd, GWLP_USERDATA, (LONG)app );
+#endif
+
+                    return (LRESULT)NULL;
+                }
+                break;
+            }
+
+            LONG_PTR value = ::GetWindowLongPtr( hWnd, GWLP_USERDATA );
+
+            Win32PlatformService * platform = reinterpret_cast<Win32PlatformService *>(value);
+
+            if( platform == nullptr )
+            {
+                LRESULT result = ::DefWindowProc( hWnd, uMsg, wParam, lParam );
+
+                return result;
+            }
+
+            LRESULT app_result = platform->wndProcExtra( hWnd, uMsg, wParam, lParam );
 
             return app_result;
         }
@@ -1464,6 +1508,44 @@ namespace Mengine
                     , ::IsWindowVisible( hWnd )
                 );
             }break;
+        }
+
+        LRESULT result = ::DefWindowProc( hWnd, uMsg, wParam, lParam );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    LRESULT Win32PlatformService::wndProcExtra( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
+    {
+        VectorExtraWindowDesc::const_iterator it_found = StdAlgorithm::find_if( m_extraWindows.begin(), m_extraWindows.end(),
+            [hWnd]( const ExtraWindowDesc & _desc )
+            {
+                return _desc.hWnd == hWnd;
+            }
+        );
+
+        MENGINE_ASSERTION_FATAL( it_found != m_extraWindows.end(), "wndProcExtra window not found in m_extraWindows" );
+
+        const ExtraWindowDesc & windowDesc = *it_found;
+
+        BOOL handled = FALSE;
+        LRESULT lResult = windowDesc.wndProc( hWnd, uMsg, wParam, lParam, &handled );
+
+        if( handled == TRUE )
+        {
+            return lResult;
+        }
+
+        if( uMsg == WM_CLOSE )
+        {
+            this->destroyExtraWindow( hWnd );
+
+            return 0;
+        }
+
+        if( uMsg == WM_DESTROY )
+        {
+            return 0;
         }
 
         LRESULT result = ::DefWindowProc( hWnd, uMsg, wParam, lParam );
@@ -2153,7 +2235,7 @@ namespace Mengine
         wc.hInstance = hInstance;
 
         wc.hIcon = m_hIcon;
-        wc.hCursor = ::LoadCursor( NULL, MAKEINTRESOURCEW( 32512 ) );
+        wc.hCursor = ::LoadCursor( NULL, IDC_ARROW );
         wc.hbrBackground = (HBRUSH)::GetStockObject( BLACK_BRUSH );
 
         wc.lpszMenuName = NULL;
@@ -2365,6 +2447,165 @@ namespace Mengine
         this->updateWndMessage_();
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    HWND Win32PlatformService::createExtraWindow( const Resolution & _resolution, const Char * _title, const Char * _className, const LambdaWin32ProcessHandler & _wndProc )
+    {
+        MENGINE_ASSERTION_FATAL( _title != nullptr && _title[0] != '\0', "invalid createExtraWindow title is empty" );
+        MENGINE_ASSERTION_FATAL( _className != nullptr && _className[0] != '\0', "invalid createExtraWindow className is empty" );
+        MENGINE_ASSERTION_FATAL( _wndProc != nullptr, "invalid createExtraWindow wndProc is empty" );
+
+        HINSTANCE hInstance = ::GetModuleHandle( NULL );
+
+        StaticWString<MENGINE_MAX_PATH> windowClassNameExtra;
+        Helper::utf8ToUnicode( _className, windowClassNameExtra.data(), MENGINE_MAX_PATH, nullptr );
+
+        WNDCLASSEX wc;
+        ::ZeroMemory( &wc, sizeof( WNDCLASSEX ) );
+        wc.cbSize = sizeof( WNDCLASSEX );
+        wc.style = CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
+        wc.lpfnWndProc = &Detail::wndProcExtra;
+        wc.cbClsExtra = 0;
+        wc.cbWndExtra = 0;
+        wc.hInstance = hInstance;
+
+        wc.hIcon = m_hIcon;
+        wc.hCursor = ::LoadCursor( NULL, IDC_ARROW );
+        wc.hbrBackground = (HBRUSH)::GetStockObject( BLACK_BRUSH );
+
+        wc.lpszMenuName = NULL;
+        wc.lpszClassName = windowClassNameExtra.c_str();
+        wc.hIconSm = NULL;
+
+        ATOM result = ::RegisterClassEx( &wc );
+
+        if( result == 0 )
+        {
+            DWORD errorCode = ::GetLastError();
+
+            if( errorCode != ERROR_CLASS_ALREADY_EXISTS )
+            {
+                LOGGER_ERROR( "can't register secondary window '%s' class '%s' error: %ls"
+                    , _title
+                    , _className
+                    , Helper::Win32GetLastErrorMessageW()
+                );
+
+                return NULL;
+            }
+        }
+
+        WChar titleW[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME] = {L'\0'};
+        Helper::utf8ToUnicode( _title, titleW, MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME, nullptr );
+
+        DWORD dwStyle = this->getWindowStyle_( false );
+        dwStyle &= ~WS_VISIBLE;
+
+        RECT rc;
+        if( this->calcWindowsRect_( _resolution, false, &rc ) == false )
+        {
+            LOGGER_ERROR( "can't calc extra window '%s' title '%s' rect"
+                , _className
+                , _title
+            );
+
+            return NULL;
+        }
+
+        DWORD dwExStyle = this->getWindowExStyle_( false );
+
+        HWND hWnd = ::CreateWindowEx( dwExStyle, windowClassNameExtra.c_str(), titleW
+            , dwStyle
+            , rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top
+            , NULL
+            , NULL
+            , hInstance
+            , (LPVOID)this );
+
+        if( hWnd == NULL )
+        {
+            LOGGER_ERROR( "can't create secondary window '%s' title '%s' error: %ls"
+                , _className
+                , _title
+                , Helper::Win32GetLastErrorMessageW()
+            );
+
+            return NULL;
+        }
+
+        ExtraWindowDesc windowDesc;
+        windowDesc.hWnd = hWnd;
+        StdString::wcscpy_safe( windowDesc.className.data(), windowClassNameExtra.c_str(), MENGINE_MAX_PATH );
+        windowDesc.wndProc = _wndProc;
+        m_extraWindows.emplace_back( windowDesc );
+
+        ::ShowWindow( hWnd, SW_SHOW );
+        ::UpdateWindow( hWnd );
+
+        return hWnd;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32PlatformService::destroyExtraWindow_( HWND _hWnd, const WChar * _className )
+    {
+        if( _hWnd == NULL )
+        {
+            return;
+        }
+
+        ::CloseWindow( _hWnd );
+        ::DestroyWindow( _hWnd );
+
+        if( _className != nullptr && _className[0] != L'\0' )
+        {
+            HINSTANCE hInstance = ::GetModuleHandle( NULL );
+            if( ::UnregisterClass( _className, hInstance ) == FALSE )
+            {
+                LOGGER_ERROR( "invalid UnregisterClass [%ls] get error: %ls"
+                    , _className
+                    , Helper::Win32GetLastErrorMessageW()
+                );
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32PlatformService::destroyExtraWindow( HWND _hWnd )
+    {
+        if( _hWnd == NULL )
+        {
+            return false;
+        }
+
+        VectorExtraWindowDesc::const_iterator it_found = StdAlgorithm::find_if( m_extraWindows.begin(), m_extraWindows.end(),
+            [_hWnd]( const ExtraWindowDesc & _desc )
+            {
+                return _desc.hWnd == _hWnd;
+            }
+        );
+
+        MENGINE_ASSERTION_FATAL( it_found != m_extraWindows.end(), "destroyExtraWindow window not found in m_extraWindows" );
+
+        const ExtraWindowDesc & windowDesc = *it_found;
+
+        this->destroyExtraWindow_( windowDesc.hWnd, windowDesc.className.c_str() );
+
+        m_extraWindows.erase( it_found );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t Win32PlatformService::getExtraWindowCount() const
+    {
+        return m_extraWindows.size();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    HWND Win32PlatformService::getExtraWindowHandle( size_t _index ) const
+    {
+        if( _index >= m_extraWindows.size() )
+        {
+            return NULL;
+        }
+
+        return m_extraWindows[_index].hWnd;
     }
     //////////////////////////////////////////////////////////////////////////
     HWND Win32PlatformService::getWindowHandle() const

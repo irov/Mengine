@@ -2,13 +2,10 @@
 
 #include "Interface/ServiceInterface.h"
 
+#include "Environment/Python/PythonForwardDeclaration.h"
+
 #include "Config/ThreadId.h"
 
-//////////////////////////////////////////////////////////////////////////
-namespace pybind
-{
-    class kernel_interface;
-}
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {

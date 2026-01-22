@@ -15,17 +15,18 @@
     MENGINE_PP_CONCATENATE(initMenginePlugin, Name)
 //////////////////////////////////////////////////////////////////////////
 #define PLUGIN_FACTORY_STATIC(Name, Type)\
-    extern "C"{bool PLUGIN_FUNCTION(Name)( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** const _plugin, Mengine::UniqueId _uid, bool _dynamic ){\
+    extern "C"{bool PLUGIN_FUNCTION(Name)( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** const _plugin, Mengine::UniqueId _uid, bool _dynamic, bool _framework ){\
     if( _dynamic == true ){SERVICE_PROVIDER_SETUP(_serviceProvider);}\
     Mengine::PluginInterface * plugin = Mengine::Helper::newT<Mengine::FactorablePlugin<Type>>();\
     if( plugin == nullptr ){ return false; }\
     plugin->setUniqueIdentity( _uid );\
     plugin->setDynamicLoad( _dynamic );\
+    plugin->setFrameworkMode( _framework );\
     *_plugin = plugin;\
     return true;}}
 //////////////////////////////////////////////////////////////////////////
 #ifndef PLUGIN_FACTORY_CREATE_FUNCTION
-#define PLUGIN_FACTORY_CREATE_FUNCTION dllCreatePlugin
+#define PLUGIN_FACTORY_CREATE_FUNCTION dllMengineCreatePlugin
 #endif
 //////////////////////////////////////////////////////////////////////////
 #define PLUGIN_FACTORY_CREATE_FUNCTION_NAME MENGINE_PP_STRINGIZE(PLUGIN_FACTORY_CREATE_FUNCTION)
@@ -35,7 +36,7 @@
     {\
         bool PLUGIN_FACTORY_CREATE_FUNCTION( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** const _plugin, Mengine::UniqueId _uid )\
         {\
-            return PLUGIN_FUNCTION(Name)( _serviceProvider, _plugin, _uid, true );\
+            return PLUGIN_FUNCTION(Name)( _serviceProvider, _plugin, _uid, true, false );\
         }\
     }
 //////////////////////////////////////////////////////////////////////////
@@ -53,7 +54,7 @@
 #define PLUGIN_EXPORT(Name)\
     extern "C"\
     {\
-        extern bool PLUGIN_FUNCTION(Name)( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** const _plugin, Mengine::UniqueId _uid, bool _dynamic );\
+        extern bool PLUGIN_FUNCTION(Name)( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** const _plugin, Mengine::UniqueId _uid, bool _dynamic, bool _framework );\
     }
 //////////////////////////////////////////////////////////////////////////
 #define PLUGIN_SERVICE_WAIT( Type, Lambda )\

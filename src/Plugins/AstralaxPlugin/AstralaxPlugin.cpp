@@ -3,18 +3,12 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
-#include "Interface/ScriptServiceInterface.h"
 
 #include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
 #include "Plugins/ResourcePrefetcherPlugin/ResourcePrefetcherServiceInterface.h"
 
 #include "ResourceAstralax.h"
 #include "MetabufLoaderResourceAstralax.h"
-
-#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-#include "AstralaxScriptEmbedding.h"
-#endif
-
 
 #include "AstralaxInterface.h"
 #include "AstralaxIncluder.h"
@@ -85,20 +79,6 @@ namespace Mengine
             return false;
         }
 
-#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-        NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EMBEDDING, this, [this]()
-        {
-            SCRIPT_SERVICE()
-                ->addScriptEmbedding( AstralaxScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<AstralaxScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
-        }, MENGINE_DOCUMENT_FACTORABLE );
-
-        NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EJECTING, this, []()
-        {
-            SCRIPT_SERVICE()
-                ->removeScriptEmbedding( AstralaxScriptEmbedding::getFactorableType() );
-        }, MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
         if( PROTOTYPE_SERVICE()
             ->addPrototype( Node::getFactorableType(), STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), Helper::makeFactorableUnique<NodePrototypeGenerator<AstralaxEmitter, 128>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
@@ -161,11 +141,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AstralaxPlugin::_finalizePlugin()
     {
-#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
-#endif
-
         PROTOTYPE_SERVICE()
             ->removePrototype( Node::getFactorableType(), STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), nullptr );
 

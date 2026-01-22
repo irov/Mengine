@@ -2,14 +2,13 @@
 
 #include "Interface/ScriptEmbeddingInterface.h"
 
-#include "Kernel/Factorable.h"
-
 namespace Mengine
 {
     class ImGUIScriptEmbedding
         : public ScriptEmbeddingInterface
-        , public Factorable
     {
+        DECLARE_FACTORABLE( ImGUIScriptEmbedding );
+
     public:
         ImGUIScriptEmbedding();
         ~ImGUIScriptEmbedding() override;

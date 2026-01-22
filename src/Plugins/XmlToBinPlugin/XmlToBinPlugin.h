@@ -7,7 +7,7 @@ namespace Mengine
     class XmlToBinPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "XmlToBin" )
+        PLUGIN_DECLARE( "XmlToBin" );
 
     public:
         XmlToBinPlugin();

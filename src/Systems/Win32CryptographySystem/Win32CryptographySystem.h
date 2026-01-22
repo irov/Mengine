@@ -11,6 +11,8 @@ namespace Mengine
     class Win32CryptographySystem
         : public ServiceBase<CryptographySystemInterface>
     {
+        DECLARE_FACTORABLE( Win32CryptographySystem );
+
     public:
         Win32CryptographySystem();
         ~Win32CryptographySystem() override;

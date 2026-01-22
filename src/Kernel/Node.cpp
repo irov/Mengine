@@ -565,7 +565,7 @@ namespace Mengine
         } );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::visitChildren( const VisitorPtr & _visitor )
+    void Node::visitChildren( Visitor * _visitor )
     {
         IntrusivePtrScope ankh( this );
 
@@ -575,7 +575,7 @@ namespace Mengine
         } );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::visitThree( const VisitorPtr & _visitor )
+    void Node::visitThree( Visitor * _visitor )
     {
         IntrusivePtrScope ankh( this );
 

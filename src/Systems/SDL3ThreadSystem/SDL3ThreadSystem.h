@@ -10,6 +10,9 @@ namespace Mengine
     class SDL3ThreadSystem
         : public ServiceBase<ThreadSystemInterface>
     {
+        DECLARE_FACTORABLE( SDL3ThreadSystem );
+        DECLARE_VISITABLE( ServiceInterface );
+
     public:
         SDL3ThreadSystem();
         ~SDL3ThreadSystem() override;

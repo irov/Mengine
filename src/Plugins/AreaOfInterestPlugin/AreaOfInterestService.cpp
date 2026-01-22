@@ -6,12 +6,6 @@
 #include "NodeAreaOfInterestTrigger.h"
 #include "NodeAreaOfInterestActor.h"
 
-#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-#   include "Interface/ScriptServiceInterface.h"
-
-#   include "AreaOfInterestScriptEmbedding.h"
-#endif
-
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/FactoryPool.h"
@@ -36,20 +30,6 @@ namespace Mengine
         Helper::addNodePrototype<NodeAreaOfInterestTrigger, 32>( MENGINE_DOCUMENT_FACTORABLE );
         Helper::addNodePrototype<NodeAreaOfInterestActor, 32>( MENGINE_DOCUMENT_FACTORABLE );
 
-#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
-        {
-            SCRIPT_SERVICE()
-                ->addScriptEmbedding( AreaOfInterestScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<AreaOfInterestScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
-        }, MENGINE_DOCUMENT_FACTORABLE );
-
-        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
-        {
-            SCRIPT_SERVICE()
-                ->removeScriptEmbedding( AreaOfInterestScriptEmbedding::getFactorableType() );
-        }, MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
         m_factoryAreaOfInterestZones = Helper::makeFactoryPool<AreaOfInterestZone, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
         TIMEPIPE_SERVICE()
@@ -60,11 +40,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AreaOfInterestService::_finalizeService()
     {
-#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
-#endif
-
         Helper::removeNodePrototype<NodeAreaOfInterestTrigger>();
         Helper::removeNodePrototype<NodeAreaOfInterestTrigger>();
 

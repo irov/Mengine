@@ -186,7 +186,7 @@ namespace Mengine
                 ->foreachPrefetches( _lambda );
         }
         //////////////////////////////////////////////////////////////////////////
-        void visitPrefetches( const VisitorPtr & _visitor )
+        void visitPrefetches( Visitor * _visitor )
         {
             if( SERVICE_IS_INITIALIZE( PrefetcherServiceInterface ) == false )
             {

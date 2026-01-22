@@ -1618,7 +1618,7 @@ namespace Mengine
 
             if( _vsync == false )
             {
-                if( SDL_GL_SetSwapInterval( 0 ) != 0 )
+                if( SDL_GL_SetSwapInterval( 0 ) == false )
                 {
                     LOGGER_WARNING( "notify vsync changed error: %s"
                         , SDL_GetError()
@@ -1627,7 +1627,7 @@ namespace Mengine
             }
             else
             {
-                if( SDL_GL_SetSwapInterval( 1 ) != 0 )
+                if( SDL_GL_SetSwapInterval( 1 ) == false )
                 {
                     LOGGER_WARNING( "notify vsync changed error: %s"
                         , SDL_GetError()

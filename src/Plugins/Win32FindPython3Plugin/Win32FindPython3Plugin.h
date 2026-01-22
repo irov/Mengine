@@ -7,7 +7,7 @@ namespace Mengine
     class Win32FindPython3Plugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "Win32FindPython3" )
+        PLUGIN_DECLARE( "Win32FindPython3" );
 
     public:
         Win32FindPython3Plugin();

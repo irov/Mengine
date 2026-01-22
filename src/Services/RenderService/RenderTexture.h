@@ -32,6 +32,9 @@ namespace Mengine
         UniqueId getTextureId() const override;
 
     public:
+        Timestamp getCreateTimestamp() const override;
+
+    public:
         void setContent( const ContentInterfacePtr & _content ) override;
         const ContentInterfacePtr & getContent() const override;
 
@@ -47,6 +50,7 @@ namespace Mengine
 
     protected:
         UniqueId m_textureId;
+        Timestamp m_createTimestamp;
 
         RenderImageInterfacePtr m_image;
 

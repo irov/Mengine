@@ -1,2 +1,3 @@
-LIBRARY		"BitmapFontPlugin"
-EXPORTS 	dllCreatePlugin 	@1
+LIBRARY	"BitmapFontPlugin"
+EXPORTS 
+    dllMengineCreatePlugin @1

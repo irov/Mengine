@@ -3,7 +3,6 @@
 #include "Interface/PickerServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/BaseLifecycle.h"
 #include "Kernel/Viewport.h"
 #include "Kernel/Vector.h"
 #include "Kernel/RenderContext.h"
@@ -22,8 +21,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class PickerService
         : public ServiceBase<PickerServiceInterface>
-        , protected BaseLifecycle
     {
+        DECLARE_FACTORABLE( PickerService );
         DECLARE_LIFECYCLEABLE();
 
     public:

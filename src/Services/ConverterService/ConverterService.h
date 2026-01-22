@@ -10,6 +10,8 @@ namespace Mengine
     class ConverterService
         : public ServiceBase<ConverterServiceInterface>
     {
+        DECLARE_FACTORABLE( ConverterService );
+
     public:
         ConverterService();
         ~ConverterService() override;

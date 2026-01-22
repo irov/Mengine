@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Plugins/ImGUIPlugin/ImGUIInterface.h"
+#include "Frameworks/ImGUIFramework/ImGUIInterface.h"
 
 #include "Kernel/ModuleBase.h"
 #include "Kernel/DummySceneEventReceiver.h"

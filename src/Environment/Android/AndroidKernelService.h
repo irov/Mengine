@@ -7,7 +7,6 @@
 #include "ConstStringHolderJString.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/BaseLifecycle.h"
 #include "Kernel/Pool.h"
 #include "Kernel/Vector.h"
 #include "Kernel/Map.h"
@@ -17,7 +16,6 @@ namespace Mengine
 {
     class AndroidKernelService
         : public ServiceBase<AndroidKernelServiceInterface>
-        , protected BaseLifecycle
     {
         DECLARE_LIFECYCLEABLE();
 

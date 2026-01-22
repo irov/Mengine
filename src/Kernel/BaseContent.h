@@ -12,6 +12,10 @@ namespace Mengine
         ~BaseContent() override;
 
     public:
+        void setGroupName( const ConstString & _groupName ) override final;
+        const ConstString & getGroupName() const override final;
+
+    public:
         void setFileGroup( const FileGroupInterfacePtr & _fileGroup ) override final;
         const FileGroupInterfacePtr & getFileGroup() const override final;
 
@@ -35,6 +39,8 @@ namespace Mengine
         bool isValidNoExist() const override final;
 
     protected:
+        ConstString m_groupName;
+
         FileGroupInterfacePtr m_fileGroup;
         FilePath m_filePath;
 

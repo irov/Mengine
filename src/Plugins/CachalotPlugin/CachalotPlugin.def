@@ -1,2 +1,3 @@
-LIBRARY		"CachalotPlugin"
-EXPORTS 	dllCreatePlugin 	@1
+LIBRARY	"CachalotPlugin"
+EXPORTS 
+    dllMengineCreatePlugin @1

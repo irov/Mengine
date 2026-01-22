@@ -11,6 +11,8 @@ namespace Mengine
     class Win32FindPython3Service
         : public ServiceBase<Win32FindPython3ServiceInterface>
     {
+        DECLARE_FACTORABLE( Win32FindPython3Service );
+
     public:
         Win32FindPython3Service();
         ~Win32FindPython3Service() override;

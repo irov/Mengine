@@ -8,7 +8,7 @@ namespace Mengine
     class ResourceConvertPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "ResourceConvert" )
+        PLUGIN_DECLARE( "ResourceConvert" );
 
     public:
         ResourceConvertPlugin();

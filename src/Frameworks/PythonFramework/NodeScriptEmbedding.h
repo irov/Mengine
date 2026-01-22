@@ -8,7 +8,6 @@ namespace Mengine
 {
     class NodeScriptEmbedding
         : public ScriptEmbeddingInterface
-        , public Factorable
     {
         DECLARE_FACTORABLE( NodeScriptEmbedding );
 

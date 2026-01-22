@@ -6,10 +6,6 @@
 
 #include "Plugins/ResourcePrefetcherPlugin/ResourcePrefetcherServiceInterface.h"
 
-#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-#include "JSONScriptEmbedding.h"
-#endif
-
 #include "ResourceJSON.h"
 
 #include "MetabufLoaderResourceJSON.h"
@@ -76,7 +72,7 @@ namespace Mengine
 
         LOGGER_MESSAGE( "jpp version: %s seed: %u"
             , version
-            , JSON_Seed 
+            , JSON_Seed
         );
 
         jpp::set_alloc_funcs( &Detail::my_jpp_malloc, &Detail::my_jpp_free );
@@ -85,20 +81,6 @@ namespace Mengine
         {
             return false;
         }
-
-#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
-        {
-            SCRIPT_SERVICE()
-                ->addScriptEmbedding( JSONScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<JSONScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
-        }, MENGINE_DOCUMENT_FACTORABLE );
-
-        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
-        {
-            SCRIPT_SERVICE()
-                ->removeScriptEmbedding( JSONScriptEmbedding::getFactorableType() );
-        }, MENGINE_DOCUMENT_FACTORABLE );
-#endif
 
         if( Helper::addResourcePrototype<ResourceJSON, 64>( MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
@@ -150,11 +132,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void JSONPlugin::_finalizePlugin()
     {
-#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
-#endif
-
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Config" ), STRINGIZE_STRING_LOCAL( "json" ), nullptr );
 

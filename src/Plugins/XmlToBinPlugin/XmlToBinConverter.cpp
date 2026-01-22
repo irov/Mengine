@@ -106,8 +106,8 @@ namespace Mengine
         const ConverterOptions & options = this->getOptions();
 
         ContentInterfacePtr protocol_content = Helper::getParam( options.params, STRINGIZE_STRING_LOCAL( "protocolContent" ), ContentInterfacePtr::none() );
-        ParamInteger useProtocolVersion = Helper::getParam( options.params, STRINGIZE_STRING_LOCAL( "useProtocolVersion" ), 0LL );
-        ParamInteger useProtocolCrc32 = Helper::getParam( options.params, STRINGIZE_STRING_LOCAL( "useProtocolCrc32" ), 0LL );
+        ParamInteger useProtocolVersion = Helper::getParam( options.params, STRINGIZE_STRING_LOCAL( "useProtocolVersion" ), MENGINE_INT64_C( 0 ) );
+        ParamInteger useProtocolCrc32 = Helper::getParam( options.params, STRINGIZE_STRING_LOCAL( "useProtocolCrc32" ), MENGINE_INT64_C( 0 ) );
 
         LOGGER_INFO( "convert", "xml to bin:\nxml - %s\nbin - %s\nversion - %d"
             , Helper::getContentFullPath( options.inputContent ).c_str()

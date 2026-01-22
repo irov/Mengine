@@ -13,6 +13,7 @@ Common
     ScriptModuleInterface.h
     ScriptCodeDataInterface.h
     ScriptEmbeddingInterface.h
+    ScriptEmbeddableInterface.h
     ScriptProviderServiceInterface.h
     ScriptServiceInterface.h
     CodecFactoryInterface.h
@@ -112,8 +113,6 @@ Common
     ChronometerInterface.h
     ChronometerServiceInterface.h
     ArgumentsInterface.h
-    FrameworkInterface.h
-    FrameworkServiceInterface.h
     PluginServiceInterface.h
     DynamicLibraryInterface.h
     ScriptWrapperInterface.h

@@ -2,13 +2,10 @@
 
 #include "Interface/ScriptEmbeddingInterface.h"
 
-#include "Kernel/Factorable.h"
-
 namespace Mengine
 {
     class ConstsScriptEmbedding
         : public ScriptEmbeddingInterface
-        , public Factorable
     {
         DECLARE_FACTORABLE( ConstsScriptEmbedding );
 

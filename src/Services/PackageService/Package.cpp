@@ -707,6 +707,15 @@ namespace Mengine
 
             ContentInterfacePtr content = Helper::makeFileContent( m_fileGroup, FilePath::none(), MENGINE_DOCUMENT_FACTORABLE );
 
+            MENGINE_ASSERTION_MEMORY_PANIC( content, "file '%s' group '%s' resource '%s' type '%s' invalid create content"
+                , Helper::getContentFullPath( _desc.content ).c_str()
+                , groupName.c_str()
+                , resource->getName().c_str()
+                , resource->getType().c_str()
+            );
+
+            content->setGroupName( groupName );
+
             resource->setContent( content );
             
             MetabufLoaderInterfacePtr loader = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), type );

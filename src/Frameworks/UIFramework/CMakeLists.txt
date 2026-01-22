@@ -4,12 +4,7 @@ ADD_FILTER(
 UIFrameworkPlugin
     UIFrameworkPlugin.cpp
     UIFrameworkPlugin.h
-)
-
-ADD_FILTER(
-UIFramework
-    UIFramework.cpp
-    UIFramework.h
+    UIFrameworkPlugin.def
 )
 
 ADD_FILTER(

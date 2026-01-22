@@ -27,35 +27,26 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseScriptablePrototypeGenerator::registerScriptWrapperObserver()
     {
-        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING_END, [this]()
+        const ConstString & prototype = this->getPrototype();
+
+        ScriptWrapperInterfacePtr scriptWrapper = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "ScriptWrapping" ), prototype );
+
+        if( scriptWrapper == nullptr )
         {
-            const ConstString & prototype = this->getPrototype();
+            LOGGER_WARNING( "scriptable category '%s' prototype '%s' generator not found script wrapping"
+                , this->getCategory().c_str()
+                , prototype.c_str()
+            );
 
-            ScriptWrapperInterfacePtr scriptWrapper = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "ScriptWrapping" ), prototype );
+            return;
+        }
 
-            if( scriptWrapper == nullptr )
-            {
-                LOGGER_WARNING( "scriptable category '%s' prototype '%s' generator not found script wrapping"
-                    , this->getCategory().c_str()
-                    , prototype.c_str()
-                );
-
-                return;
-            }
-
-            m_scriptWrapper = scriptWrapper;
-        }, MENGINE_DOCUMENT_FACTORABLE );
-
-        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, [this]()
-        {
-            m_scriptWrapper = nullptr;
-        }, MENGINE_DOCUMENT_FACTORABLE );
+        m_scriptWrapper = scriptWrapper;
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseScriptablePrototypeGenerator::unregisterScriptWrapperObserver()
     {
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING_END );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
+        m_scriptWrapper = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseScriptablePrototypeGenerator::setupScriptable( const ScriptablePtr & _scriptable )

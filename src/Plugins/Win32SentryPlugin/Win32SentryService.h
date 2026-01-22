@@ -13,6 +13,8 @@ namespace Mengine
     class Win32SentryService
         : public ServiceBase<Win32SentryServiceInterface>
     {
+        DECLARE_FACTORABLE( Win32SentryService );
+
     public:
         Win32SentryService();
         ~Win32SentryService() override;

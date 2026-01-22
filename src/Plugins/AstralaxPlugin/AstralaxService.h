@@ -20,6 +20,8 @@ namespace Mengine
     class AstralaxService
         : public ServiceBase<AstralaxServiceInterface>
     {
+        DECLARE_FACTORABLE( AstralaxService );
+
     public:
         AstralaxService();
         ~AstralaxService() override;

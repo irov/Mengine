@@ -13,6 +13,8 @@ namespace Mengine
     class NodeDebugRenderService
         : public ServiceBase<NodeDebugRenderServiceInterface>
     {
+        DECLARE_FACTORABLE( NodeDebugRenderService );
+
     public:
         NodeDebugRenderService();
         ~NodeDebugRenderService() override;

@@ -9,6 +9,8 @@ namespace Mengine
     class JSONService
         : public ServiceBase<JSONServiceInterface>
     {
+        DECLARE_FACTORABLE( JSONService );
+
     public:
         JSONService();
         ~JSONService() override;

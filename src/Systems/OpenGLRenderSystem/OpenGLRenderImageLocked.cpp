@@ -50,7 +50,7 @@ namespace Mengine
         return m_lockedRect;
     }
     //////////////////////////////////////////////////////////////////////////
-    Pointer OpenGLRenderImageLocked::getBuffer( size_t * const _pitch ) const
+    Pointer OpenGLRenderImageLocked::getLockedBuffer( size_t * const _pitch ) const
     {
         *_pitch = m_lockedPitch;
 

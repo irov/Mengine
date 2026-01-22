@@ -19,6 +19,8 @@ namespace Mengine
     class ConfigService
         : public ServiceBase<ConfigServiceInterface>
     {
+        DECLARE_FACTORABLE( ConfigService );
+
     public:
         ConfigService();
         ~ConfigService() override;

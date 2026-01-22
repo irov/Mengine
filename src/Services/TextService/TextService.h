@@ -27,6 +27,8 @@ namespace Mengine
     class TextService
         : public ServiceBase<TextServiceInterface>
     {
+        DECLARE_FACTORABLE( TextService );
+
     public:
         TextService();
         ~TextService() override;

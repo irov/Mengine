@@ -3,7 +3,6 @@
 #include "Interface/SceneServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/BaseLifecycle.h"
 
 #include "Config/Atomic.h"
 
@@ -11,8 +10,8 @@ namespace Mengine
 {
     class SceneService
         : public ServiceBase<SceneServiceInterface>
-        , protected BaseLifecycle
     {
+        DECLARE_FACTORABLE( SceneService );
         DECLARE_LIFECYCLEABLE();
 
     public:

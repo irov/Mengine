@@ -12,6 +12,8 @@ namespace Mengine
     class VocabularyService
         : public ServiceBase<VocabularyServiceInterface>
     {
+        DECLARE_FACTORABLE( VocabularyService );
+
     public:
         VocabularyService();
         ~VocabularyService() override;

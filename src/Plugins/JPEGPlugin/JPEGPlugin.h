@@ -7,7 +7,7 @@ namespace Mengine
     class JPEGPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "JPEG" )
+        PLUGIN_DECLARE( "JPEG" );
 
     public:
         JPEGPlugin();

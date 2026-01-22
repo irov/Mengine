@@ -9,6 +9,8 @@
 
 #include "Kernel/Factorable.h"
 
+#include "Config/Timestamp.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -82,6 +84,8 @@ namespace Mengine
 
     protected:
         RenderImageProviderInterfacePtr m_renderImageProvider;
+
+        Timestamp m_createTimestamp;
 
         GLuint m_uid;
 

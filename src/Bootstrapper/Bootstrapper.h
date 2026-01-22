@@ -10,6 +10,8 @@ namespace Mengine
     class Bootstrapper
         : public ServiceBase<BootstrapperInterface>
     {
+        DECLARE_FACTORABLE( Bootstrapper );
+
     public:
         Bootstrapper();
         ~Bootstrapper() override;
@@ -25,6 +27,8 @@ namespace Mengine
 
     protected:
         bool createServices_();
+        bool createSentryPlugins_();
+        bool createStaticFrameworks_();
         bool createStaticPlugins_();
         bool createDynamicPlugins_();
         bool createDynamicDevPlugins_();
@@ -34,24 +38,18 @@ namespace Mengine
         bool createDynamicPriorityDevPlugins_();
         bool createDynamicOptionsPlugins_();
         bool createApplication_();
-        bool createFrameworks_();
 
     protected:
         bool registerBaseTypes_();
         void unregisterBaseTypes_();
 
     protected:
-        void finalizeFrameworks_();
-
-    protected:
         bool runModules_();
         bool runDevModules_();
-        bool runFrameworks_();
 
     protected:
         void stopModules_();
         void stopDevModules_();
-        void stopFrameworks_();
 
     protected:
         bool loadApplicationConfig_();

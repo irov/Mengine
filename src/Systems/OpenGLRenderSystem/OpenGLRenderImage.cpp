@@ -14,12 +14,14 @@
 #include "Kernel/TextureHelper.h"
 #include "Kernel/StatisticHelper.h"
 #include "Kernel/PixelFormatHelper.h"
+#include "Kernel/TimestampHelper.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderImage::OpenGLRenderImage()
-        : m_uid( 0 )
+        : m_createTimestamp( 0 )
+        , m_uid( 0 )
         , m_hwPixelFormat( PF_UNKNOWN )
         , m_width( 0 )
         , m_height( 0 )
@@ -175,23 +177,6 @@ namespace Mengine
         return m_renderImageProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderImage::release()
-    {
-        if( m_uid == 0 )
-        {
-            return;
-        }
-
-        OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
-            ->getUnknown();
-
-        extension->deleteTexture( m_uid );
-
-        m_uid = 0;
-
-        STATISTIC_DEL_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE, m_hwWidth * m_hwHeight * Helper::getPixelFormatChannels( m_hwPixelFormat ) );
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderImage::create()
     {
         MENGINE_ASSERTION_FATAL( m_uid == 0, "texture already created" );
@@ -212,7 +197,36 @@ namespace Mengine
 
         STATISTIC_ADD_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE, m_hwWidth * m_hwHeight * Helper::getPixelFormatChannels( m_hwPixelFormat ) );
 
+        LOGGER_DEBUG( "opengl", "render texture alloc add: %u total: %" MENGINE_PRId64
+            , m_hwWidth * m_hwHeight * Helper::getPixelFormatChannels( m_hwPixelFormat )
+            , STATISTIC_GET_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE )
+        );
+
+        m_createTimestamp = Helper::getSystemTimestamp();
+
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderImage::release()
+    {
+        if( m_uid == 0 )
+        {
+            return;
+        }
+
+        OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
+            ->getUnknown();
+
+        extension->deleteTexture( m_uid );
+
+        m_uid = 0;
+
+        STATISTIC_DEL_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE, m_hwWidth * m_hwHeight * Helper::getPixelFormatChannels( m_hwPixelFormat ) );
+
+        LOGGER_DEBUG( "opengl", "render texture alloc del: %u total: %" MENGINE_PRId64
+            , m_hwWidth * m_hwHeight * Helper::getPixelFormatChannels( m_hwPixelFormat )
+            , STATISTIC_GET_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE )
+        );
     }
     //////////////////////////////////////////////////////////////////////////
     RenderImageLockedInterfacePtr OpenGLRenderImage::lock( uint32_t _level, const Rect & _rect, bool _readOnly )
@@ -246,12 +260,10 @@ namespace Mengine
             return true;
         }
 
-        OpenGLRenderImageLocked * imageLocked = _locked.getT<OpenGLRenderImageLocked *>();
-
-        const Rect & lockedRect = imageLocked->getLockedRect();
+        const Rect & lockedRect = _locked->getLockedRect();
 
         size_t pitch;
-        void * buffer = imageLocked->getBuffer( &pitch );
+        void * buffer = _locked->getLockedBuffer( &pitch );
 
         MENGINE_GLCALL( glBindTexture, (GL_TEXTURE_2D, m_uid) );
 
@@ -358,6 +370,9 @@ namespace Mengine
         }
 
         m_lockFirst = false;
+
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_UNLOCK_COUNT );
+        STATISTIC_ADD_INTEGER( STATISTIC_RENDER_TEXTURE_UNLOCK_PIXEL, (lockedRect.bottom - lockedRect.top) * (lockedRect.right - lockedRect.left) );
 
         return successful;
     }

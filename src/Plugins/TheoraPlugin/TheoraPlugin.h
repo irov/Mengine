@@ -8,7 +8,7 @@ namespace Mengine
         : public PluginBase
     {
     public:
-        PLUGIN_DECLARE( "Theora" )
+        PLUGIN_DECLARE( "Theora" );
 
     public:
         TheoraPlugin();

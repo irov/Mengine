@@ -11,6 +11,8 @@ namespace Mengine
     class PrototypeService
         : public ServiceBase<PrototypeServiceInterface>
     {
+        DECLARE_FACTORABLE( PrototypeService );
+
     public:
         PrototypeService();
         ~PrototypeService() override;

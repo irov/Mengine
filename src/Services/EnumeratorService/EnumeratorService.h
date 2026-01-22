@@ -11,6 +11,8 @@ namespace Mengine
     class EnumeratorService
         : public ServiceBase<EnumeratorServiceInterface>
     {
+        DECLARE_FACTORABLE( EnumeratorService );
+
     public:
         EnumeratorService();
         ~EnumeratorService() override;

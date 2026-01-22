@@ -515,19 +515,6 @@ extern "C"
         platformExtension->androidNativeTrimMemoryEvent( level );
     }
     ///////////////////////////////////////////////////////////////////////
-    JNIEXPORT jboolean JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1processEvents )(JNIEnv * env, jclass cls)
-    {
-        if( g_androidPlatformActived == false )
-        {
-            return JNI_FALSE;
-        }
-
-        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
-            ->getUnknown();
-
-        return platformExtension->androidNativeProcessEvents();
-    }
-    ///////////////////////////////////////////////////////////////////////
     JNIEXPORT jfloat JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1getLastFingerX )(JNIEnv * env, jclass cls)
     {
         if( g_androidPlatformActived == false )
@@ -921,12 +908,39 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::runPlatform()
     {
-        if( this->updatePlatform() == false )
+        for(;;)
         {
-            return false;
-        }
+            m_activityMutex->lock();
 
-        this->tickPlatform( 0.f );
+            if( this->updatePlatform() == false )
+            {
+                return false;
+            }
+
+            if( m_activityState != EAS_RESUME && m_activityState != EAS_START )
+            {
+                m_activityMutex->unlock();
+
+                usleep( 100000 );
+
+                continue;
+            }
+
+            if( m_nativeWindow == nullptr || m_eglSurface == EGL_NO_SURFACE || m_eglContext == EGL_NO_CONTEXT )
+            {
+                m_activityMutex->unlock();
+
+                usleep( 100000 );
+
+                continue;
+            }
+
+            this->tickPlatform( 0.f );
+
+            m_activityMutex->unlock();
+
+            break;
+        }
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_RUN );
 
@@ -970,16 +984,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::renderPlatform()
     {
-        if( m_activityState != EAS_RESUME && m_activityState != EAS_START )
-        {
-            return false;
-        }
-
-        if( m_nativeWindow == nullptr || m_eglSurface == EGL_NO_SURFACE || m_eglContext == EGL_NO_CONTEXT )
-        {
-            return false;
-        }
-
         bool sucessful = APPLICATION_SERVICE()
             ->render();
 
@@ -1035,6 +1039,24 @@ namespace Mengine
 
                 usleep( 100000 );
                 
+                continue;
+            }
+
+            if( m_activityState != EAS_RESUME && m_activityState != EAS_START )
+            {
+                m_activityMutex->unlock();
+
+                usleep( 100000 );
+
+                continue;
+            }
+
+            if( m_nativeWindow == nullptr || m_eglSurface == EGL_NO_SURFACE || m_eglContext == EGL_NO_CONTEXT )
+            {
+                m_activityMutex->unlock();
+
+                usleep( 100000 );
+
                 continue;
             }
 
@@ -2532,9 +2554,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeTextEvent( jint _unicode )
     {
-        jfloat x = m_currentFingersX[0];
-        jfloat y = m_currentFingersY[0];
-        jfloat pressure = m_currentFingersPressure[0];
+        jfloat x = m_lastFingerX;
+        jfloat y = m_lastFingerY;
+        jfloat pressure = m_lastFingerPressure;
 
         WChar text[2] = {(WChar)_unicode, L'\0'};
 
@@ -2676,13 +2698,6 @@ namespace Mengine
         MENGINE_UNUSED( _language );
 
         //ToDo
-    }
-    //////////////////////////////////////////////////////////////////////////
-    jboolean AndroidPlatformService::androidNativeProcessEvents()
-    {
-        // This method is called from Java processEvents() which already processes events
-        // We just return false here as the actual processing is done in Java
-        return JNI_FALSE;
     }
     //////////////////////////////////////////////////////////////////////////
 }

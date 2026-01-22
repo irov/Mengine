@@ -1,2 +1,3 @@
-LIBRARY		"MoviePlugin"
-EXPORTS 	dllCreatePlugin 	@1
+LIBRARY	"MoviePlugin"
+EXPORTS 
+    dllMengineCreatePlugin @1

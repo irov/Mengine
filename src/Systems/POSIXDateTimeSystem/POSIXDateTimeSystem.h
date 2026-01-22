@@ -9,6 +9,9 @@ namespace Mengine
     class POSIXDateTimeSystem
         : public ServiceBase<DateTimeSystemInterface>
     {
+        DECLARE_FACTORABLE( POSIXDateTimeSystem );
+        DECLARE_VISITABLE( ServiceInterface );
+
     public:
         POSIXDateTimeSystem();
         ~POSIXDateTimeSystem() override;

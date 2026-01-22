@@ -16,6 +16,8 @@ namespace Mengine
     class LoggerService
         : public ServiceBase<LoggerServiceInterface>
     {
+        DECLARE_FACTORABLE( LoggerService );
+
     public:
         LoggerService();
         ~LoggerService() override;

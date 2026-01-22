@@ -1,2 +1,3 @@
-LIBRARY		"GOAPPlugin"
-EXPORTS 	dllCreatePlugin 	@1
+LIBRARY	"GOAPPlugin"
+EXPORTS 
+    dllMengineCreatePlugin @1

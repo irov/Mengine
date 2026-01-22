@@ -19,6 +19,7 @@ namespace Mengine
         : public ServiceBase<AllocatorSystemInterface>
         , public UnknownAllocatorDebugReportInterface
     {
+        DECLARE_FACTORABLE( DebugAllocatorSystem );
         DECLARE_UNKNOWABLE();
 
     public:

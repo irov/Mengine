@@ -5,6 +5,7 @@
 #include "Environment/Windows/WindowsIncluder.h"
 
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/Resolution.h"
 
 #include "Config/Typedef.h"
 #include "Config/Lambda.h"
@@ -25,6 +26,14 @@ namespace Mengine
 
     public:
         typedef Lambda<LRESULT( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, BOOL * const pHandled )> LambdaWin32ProcessHandler;
+
+    public:
+        virtual HWND createExtraWindow( const Resolution & _resolution, const Char * _title, const Char * _className, const LambdaWin32ProcessHandler & _wndProc ) = 0;
+        virtual bool destroyExtraWindow( HWND _hWnd ) = 0;
+        virtual size_t getExtraWindowCount() const = 0;
+        virtual HWND getExtraWindowHandle( size_t _index ) const = 0;
+
+    public:        
         virtual UniqueId addWin32ProcessHandler( const LambdaWin32ProcessHandler & _lambda, const DocumentInterfacePtr & _doc ) = 0;
         virtual void removeWin32ProcessHandler( UniqueId _id ) = 0;
 

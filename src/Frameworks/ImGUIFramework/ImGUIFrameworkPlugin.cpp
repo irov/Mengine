@@ -1,0 +1,47 @@
+#include "ImGUIFrameworkPlugin.h"
+
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/FrameworkFactory.h"
+#include "Kernel/VocabularyHelper.h"
+#include "Kernel/PluginHelper.h"
+#include "Kernel/AssertionAllocator.h"
+
+//////////////////////////////////////////////////////////////////////////
+SERVICE_EXTERN( ImGUIService );
+//////////////////////////////////////////////////////////////////////////
+PLUGIN_FACTORY( ImGUIFramework, Mengine::ImGUIFrameworkPlugin );
+//////////////////////////////////////////////////////////////////////////
+namespace Mengine
+{
+    //////////////////////////////////////////////////////////////////////////
+    ImGUIFrameworkPlugin::ImGUIFrameworkPlugin()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ImGUIFrameworkPlugin::~ImGUIFrameworkPlugin()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ImGUIFrameworkPlugin::_initializePlugin()
+    {
+        if( SERVICE_CREATE( ImGUIService, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ImGUIFrameworkPlugin::_finalizePlugin()
+    {
+        SERVICE_FINALIZE( ImGUIService );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ImGUIFrameworkPlugin::_destroyPlugin()
+    {
+        SERVICE_DESTROY( ImGUIService );
+
+        MENGINE_ASSERTION_ALLOCATOR( "imgui" );
+    }
+    //////////////////////////////////////////////////////////////////////////
+}

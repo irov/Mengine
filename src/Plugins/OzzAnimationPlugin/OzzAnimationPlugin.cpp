@@ -2,17 +2,12 @@
 
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 
 #include "ResourceOzzMesh.h"
 #include "ResourceOzzSkeleton.h"
 #include "ResourceOzzAnimation.h"
 
 #include "NodeOzzAnimation.h"
-
-#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-#include "OzzScriptEmbedding.h"
-#endif
 
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/ResourcePrototypeGenerator.h"
@@ -85,6 +80,7 @@ namespace Mengine
         }
     };
     //////////////////////////////////////////////////////////////////////////
+    // cppcheck-suppress uninitMemberVar
     OzzAnimationPlugin::OzzAnimationPlugin()
         : m_allocatorOld( nullptr )
     {
@@ -103,20 +99,6 @@ namespace Mengine
         OzzAllocator * new_allocator = Helper::newT<OzzAllocator>();
 
         ozz::memory::SetDefaulAllocator( new_allocator );
-
-#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-        NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EMBEDDING, this, [this]()
-        {
-            SCRIPT_SERVICE()
-                ->addScriptEmbedding( OzzScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<OzzScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
-        }, MENGINE_DOCUMENT_FACTORABLE );
-
-        NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EJECTING, this, []()
-        {
-            SCRIPT_SERVICE()
-                ->removeScriptEmbedding( OzzScriptEmbedding::getFactorableType() );
-        }, MENGINE_DOCUMENT_FACTORABLE );
-#endif
 
         if( Helper::addResourcePrototype<ResourceOzzSkeleton, 16>( MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
@@ -149,11 +131,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OzzAnimationPlugin::_finalizePlugin()
     {
-#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
-#endif
-
         Helper::removeResourcePrototype<ResourceOzzSkeleton>();
         Helper::removeResourcePrototype<ResourceOzzMesh>();
         Helper::removeResourcePrototype<ResourceOzzAnimation>();

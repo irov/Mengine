@@ -142,10 +142,10 @@ namespace Mengine
         {
             return false;
         }
-        
+
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_PLATFORM_ATACH_WINDOW, &ImGUIService::notifyPlatformAtachWindow_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_PLATFORM_DETACH_WINDOW, &ImGUIService::notifyPlatformDetachWindow_, MENGINE_DOCUMENT_FACTORABLE );
-        
+
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_DEVICE_CREATE, &ImGUIService::notifyRenderDeviceCreate_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_DEVICE_DESTROY, &ImGUIService::notifyRenderDeviceDestroy_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE, &ImGUIService::notifyRenderDeviceLostPrepare_, MENGINE_DOCUMENT_FACTORABLE );
@@ -326,7 +326,7 @@ namespace Mengine
         SDL_Window * window = sdlPlatform->getWindow();
         SDL_GLContext gl_context = sdlPlatform->getGLContext();
 
-        ImGui_ImplSDL2_InitForOpenGL( window, gl_context );        
+        ImGui_ImplSDL2_InitForOpenGL( window, gl_context );
 
         UniqueId handlerId = sdlPlatform->addSDLEventHandler( []( SDL_Event * _event )
         {
@@ -343,7 +343,7 @@ namespace Mengine
         SDL_Window * window = sdlPlatform->getWindow();
         SDL_GLContext gl_context = sdlPlatform->getGLContext();
 
-        ImGui_ImplSDL3_InitForOpenGL( window, gl_context );        
+        ImGui_ImplSDL3_InitForOpenGL( window, gl_context );
 
         UniqueId handlerId = sdlPlatform->addSDLEventHandler( []( SDL_Event * _event )
         {

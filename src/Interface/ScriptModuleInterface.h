@@ -1,13 +1,10 @@
 #pragma once
 
+#include "Environment/Python/PythonForwardDeclaration.h"
+
 #include "Kernel/Mixin.h"
 #include "Kernel/ConstString.h"
 
-//////////////////////////////////////////////////////////////////////////
-namespace pybind
-{
-    class module;
-}
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {

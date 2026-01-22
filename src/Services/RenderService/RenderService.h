@@ -27,6 +27,8 @@ namespace Mengine
     class RenderService
         : public ServiceBase<RenderServiceInterface>
     {
+        DECLARE_FACTORABLE( RenderService );
+
     public:
         RenderService();
         ~RenderService() override;

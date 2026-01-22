@@ -10,7 +10,7 @@ namespace Mengine
     class Win32XlsExportPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "Win32XlsExport" )
+        PLUGIN_DECLARE( "Win32XlsExport" );
 
     public:
         Win32XlsExportPlugin();

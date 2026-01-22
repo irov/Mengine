@@ -8,7 +8,6 @@ namespace Mengine
 {
     class AstralaxScriptEmbedding
         : public ScriptEmbeddingInterface
-        , public Factorable
     {
         DECLARE_FACTORABLE( AstralaxScriptEmbedding );
 

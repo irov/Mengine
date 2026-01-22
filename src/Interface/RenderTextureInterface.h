@@ -6,6 +6,8 @@
 
 #include "Kernel/Rect.h"
 
+#include "Config/Timestamp.h"
+
 #include "math/uv4.h"
 
 namespace Mengine
@@ -22,6 +24,9 @@ namespace Mengine
 
     public:
         virtual UniqueId getTextureId() const = 0;
+
+    public:
+        virtual Timestamp getCreateTimestamp() const = 0;
 
     public:
         virtual const mt::uv4f & getUV() const = 0;

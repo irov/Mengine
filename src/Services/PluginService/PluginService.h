@@ -13,6 +13,8 @@ namespace Mengine
     class PluginService
         : public ServiceBase<PluginServiceInterface>
     {
+        DECLARE_FACTORABLE( PluginService );
+
     public:
         PluginService();
         ~PluginService() override;
@@ -22,8 +24,8 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        bool loadPlugin( const Char * _dynamicLibraryName, const DocumentInterfacePtr & _doc ) override;
-        bool createPlugin( const DynamicLibraryInterfacePtr & _dynamicLibrary, TPluginCreate _create, bool _dynamic, const DocumentInterfacePtr & _doc ) override;
+        bool loadPlugin( const Char * _dynamicLibraryName, bool _frameworkMode, const DocumentInterfacePtr & _doc ) override;
+        bool createPlugin( const DynamicLibraryInterfacePtr & _dynamicLibrary, TPluginCreate _create, bool _dynamicLoad, bool _frameworkMode, const DocumentInterfacePtr & _doc ) override;
         void unloadPlugins() override;
 
     public:
@@ -35,6 +37,9 @@ namespace Mengine
     public:
         void setAvailablePlugin( const ConstString & _pluginName, bool _available ) override;
         bool isAvailablePlugin( const ConstString & _pluginName ) const override;
+
+    protected:
+        bool autoRegistration_( const PluginInterfacePtr & _plugin );
 
     protected:
         struct PluginDesc

@@ -11,6 +11,8 @@ namespace Mengine
     class ComponentService
         : public ServiceBase<ComponentServiceInterface>
     {
+        DECLARE_FACTORABLE( ComponentService );
+
     public:
         ComponentService();
         ~ComponentService() override;

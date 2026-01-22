@@ -142,8 +142,8 @@ namespace Mengine
         rect.left = _rect.left;
         rect.right = _rect.right;
 
-        D3DLOCKED_RECT TRect;
-        MENGINE_IF_DX9_CALL( m_pD3DTexture, LockRect, (_level, &TRect, &rect, flags) )
+        D3DLOCKED_RECT lockedRect;
+        MENGINE_IF_DX9_CALL( m_pD3DTexture, LockRect, (_level, &lockedRect, &rect, flags) )
         {
             return nullptr;
         }
@@ -153,7 +153,7 @@ namespace Mengine
 
         DX9RenderImageLockedPtr imageLocked = DX9RenderImageLockedFactoryStorage::createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-        imageLocked->initialize( TRect );
+        imageLocked->initialize( _rect, lockedRect );
 
         return imageLocked;
     }

@@ -44,7 +44,7 @@ namespace Mengine
         m_availablePlugins.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PluginService::loadPlugin( const Char * _dynamicLibraryName, const DocumentInterfacePtr & _doc )
+    bool PluginService::loadPlugin( const Char * _dynamicLibraryName, bool _frameworkMode, const DocumentInterfacePtr & _doc )
     {
         DynamicLibraryInterfacePtr dynamicLibrary = PLATFORM_SERVICE()
             ->loadDynamicLibrary( _dynamicLibraryName, _doc );
@@ -60,9 +60,9 @@ namespace Mengine
 
         const Char * symbol = PLUGIN_FACTORY_CREATE_FUNCTION_NAME;
 
-        TDynamicLibraryFunction function_dllCreatePlugin = dynamicLibrary->getSymbol( symbol );
+        TDynamicLibraryFunction function_dllMengineCreatePlugin = dynamicLibrary->getSymbol( symbol );
 
-        if( function_dllCreatePlugin == nullptr )
+        if( function_dllMengineCreatePlugin == nullptr )
         {
             LOGGER_ERROR( "can't load '%s' plugin symbol '%s'"
                 , _dynamicLibraryName
@@ -72,9 +72,9 @@ namespace Mengine
             return false;
         }
 
-        TPluginCreate dllCreatePlugin = (TPluginCreate)function_dllCreatePlugin;
+        TPluginCreate dllMengineCreatePlugin = (TPluginCreate)function_dllMengineCreatePlugin;
 
-        if( this->createPlugin( dynamicLibrary, dllCreatePlugin, true, _doc ) == false )
+        if( this->createPlugin( dynamicLibrary, dllMengineCreatePlugin, true, _frameworkMode, _doc ) == false )
         {
             LOGGER_ERROR( "can't load '%s' plugin [invalid create]"
                 , _dynamicLibraryName
@@ -86,7 +86,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PluginService::createPlugin( const DynamicLibraryInterfacePtr & _dynamicLibrary, TPluginCreate _create, bool _dynamic, const DocumentInterfacePtr & _doc )
+    bool PluginService::createPlugin( const DynamicLibraryInterfacePtr & _dynamicLibrary, TPluginCreate _create, bool _dynamicLoad, bool _frameworkMode, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -95,7 +95,7 @@ namespace Mengine
         ServiceProviderInterface * serviceProvider = SERVICE_PROVIDER_GET();
 
         PluginInterface * plugin;
-        if( _create( serviceProvider, &plugin, id, _dynamic ) == false )
+        if( _create( serviceProvider, &plugin, id, _dynamicLoad, _frameworkMode ) == false )
         {
             LOGGER_ERROR( "can't create plugin [invalid create]" );
 
@@ -145,6 +145,13 @@ namespace Mengine
             {
                 m_plugins.push_back( desc );
 
+                desc.plugin = nullptr;
+
+                continue;
+            }
+
+            if( desc.plugin->isFrameworkMode() == true && this->isInitializeService() == true )
+            {
                 continue;
             }
 
@@ -165,12 +172,53 @@ namespace Mengine
             {
                 m_plugins.push_back( desc );
 
+                desc.plugin = nullptr;
+
+                continue;
+            }
+
+            if( desc.plugin->isFrameworkMode() == true && this->isInitializeService() == true )
+            {
                 continue;
             }
 
             desc.plugin->finalizePlugin();
             desc.plugin = nullptr;
         }
+
+        for( PluginDesc & desc : reverse_plugins )
+        {
+            if( desc.plugin == nullptr )
+            {
+                continue;
+            }
+
+            if( desc.dynamicLibrary != nullptr )
+            {
+                continue;
+            }
+
+            desc.plugin->finalizePlugin();
+            desc.plugin = nullptr;
+
+            desc.dynamicLibrary = nullptr;
+        }
+
+        for( PluginDesc & desc : reverse_plugins )
+        {
+            if( desc.plugin == nullptr )
+            {
+                continue;
+            }
+
+            if( desc.dynamicLibrary == nullptr )
+            {
+                continue;
+            }
+
+            desc.plugin->finalizePlugin();
+            desc.plugin = nullptr;
+        }            
     }
     //////////////////////////////////////////////////////////////////////////
     bool PluginService::addPlugin( const PluginInterfacePtr & _plugin, const DynamicLibraryInterfacePtr & _dynamicLibrary )
@@ -187,6 +235,17 @@ namespace Mengine
             LOGGER_ERROR( "already exist plugin '%s'"
                 , _plugin->getPluginName().c_str()
             );
+
+            return false;
+        }
+
+        if( this->autoRegistration_( _plugin ) == false )
+        {
+            LOGGER_ERROR( "invalid auto registration plugin '%s'"
+                , _plugin->getPluginName().c_str()
+            );
+
+            _plugin->finalizePlugin();
 
             return false;
         }
@@ -317,6 +376,28 @@ namespace Mengine
         bool available = it_found->second;
 
         return available;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PluginService::autoRegistration_( const PluginInterfacePtr & _plugin )
+    {
+        for( const PluginDesc & desc : m_plugins )
+        {
+            const PluginInterfacePtr & plugin = desc.plugin;
+
+            bool available = plugin->isAvailablePlugin();
+
+            if( available == false )
+            {
+                continue;
+            }
+
+            if( plugin->registerPlugin( _plugin ) == false )
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
 }

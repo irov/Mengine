@@ -7,6 +7,7 @@
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/ScriptEmbeddingInterface.h"
+#include "Interface/ScriptEmbeddableInterface.h"
 #include "Interface/ScriptProviderServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"

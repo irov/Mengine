@@ -13,6 +13,8 @@ namespace Mengine
     class AnalyticsService
         : public ServiceBase<AnalyticsServiceInterface>
     {
+        DECLARE_FACTORABLE( AnalyticsService );
+
     public:
         AnalyticsService();
         ~AnalyticsService() override;

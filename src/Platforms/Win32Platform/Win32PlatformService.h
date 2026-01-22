@@ -14,6 +14,7 @@
 #include "Kernel/StaticString.h"
 #include "Kernel/StaticWString.h"
 #include "Kernel/SHA1.h"
+#include "Kernel/Vector.h"
 
 #include "Config/Timestamp.h"
 #include "Config/UniqueId.h"
@@ -62,6 +63,12 @@ namespace Mengine
     public:
         bool atachWindow( HWND _hWnd, bool _fullscreen ) override;
         bool detachWindow() override;
+
+    public:
+        HWND createExtraWindow( const Resolution & _resolution, const Char * _title, const Char * _className, const LambdaWin32ProcessHandler & _wndProc ) override;
+        bool destroyExtraWindow( HWND _hWnd ) override;
+        size_t getExtraWindowCount() const override;
+        HWND getExtraWindowHandle( size_t _index ) const override;
 
     public:
         const Tags & getPlatformTags() const override;
@@ -149,7 +156,11 @@ namespace Mengine
 
     public:
         LRESULT wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
+        LRESULT wndProcExtra( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
         bool wndProcInput( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT * const _result );
+
+    protected:
+        void destroyExtraWindow_( HWND _hWnd, const WChar * _className );
 
     protected:
         bool calcCursorPosition_( mt::vec2f * const _position ) const;
@@ -197,6 +208,16 @@ namespace Mengine
         StaticWString<MENGINE_MAX_PATH> m_windowClassName;
 
         HWND m_hWnd;
+
+        struct ExtraWindowDesc
+        {
+            HWND hWnd;
+            StaticWString<MENGINE_MAX_PATH> className;
+            LambdaWin32ProcessHandler wndProc;
+        };
+
+        typedef Vector<ExtraWindowDesc> VectorExtraWindowDesc;
+        VectorExtraWindowDesc m_extraWindows;
 
         UINT m_xDpi;
         UINT m_yDpi;

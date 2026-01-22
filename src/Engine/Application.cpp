@@ -683,8 +683,7 @@ namespace Mengine
         LOGGER_INFO( "system", "register resource type..." );
 
 #define ADD_PROTOTYPE( Type )\
-        if( PROTOTYPE_SERVICE()\
-            ->addPrototype( Resource::getFactorableType(), Type::getFactorableType(), Helper::makeFactorableUnique<ResourcePrototypeGenerator<Type, 128>>(MENGINE_DOCUMENT_FACTORABLE) ) == false )\
+        if( Helper::addResourcePrototype<Type, 128>(MENGINE_DOCUMENT_FACTORABLE) == false )\
         {\
             return false;\
         }

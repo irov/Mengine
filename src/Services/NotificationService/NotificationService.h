@@ -11,6 +11,8 @@ namespace Mengine
     class NotificationService
         : public ServiceBase<NotificationServiceInterface>
     {
+        DECLARE_FACTORABLE( NotificationService );
+
     public:
         NotificationService();
         ~NotificationService() override;

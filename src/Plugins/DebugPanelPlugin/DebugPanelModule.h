@@ -1,9 +1,15 @@
 #pragma once
 
-#include "Plugins/ImGUIPlugin/ImGUIInterface.h"
+#include "Frameworks/ImGUIFramework/ImGUIInterface.h"
 
 #include "Kernel/ModuleBase.h"
 #include "Kernel/Histogram.h"
+#include "Kernel/PathString.h"
+
+#include "Config/Timestamp.h"
+#include "Config/UniqueId.h"
+
+#include "imgui.h"
 
 #ifndef MENGINE_DEBUG_PANEL_HISTOGRAM_UPDATE_COUNT
 #define MENGINE_DEBUG_PANEL_HISTOGRAM_UPDATE_COUNT 32
@@ -53,6 +59,11 @@ namespace Mengine
         void drawHistogramPerFrame( const HistogramPerframe & _histogram, const Char * _label, const Char * _overlayFormat, float _maxValue, float _height ) const;
 
     protected:
+        void renderDebugPanel() const;
+        void renderTextureMonitor() const;
+        ImVec4 getBorderColor_( Timestamp _alive ) const;
+
+    protected:
         ImGUIRenderProviderInterfacePtr m_imguiRenderProvider;
 
         mutable HistogramUpdate m_histogramFPS;
@@ -68,6 +79,13 @@ namespace Mengine
 
         mutable HistogramPerframe m_histogramPerFrameFillrate;
 
+        Timestamp m_warning;
+        Timestamp m_critical;
+
+        mutable UniqueId m_selectedTextureId;
+        mutable PathString m_selectedPath;
+
         bool m_show;
+        mutable int32_t m_selectedTab;
     };
 }

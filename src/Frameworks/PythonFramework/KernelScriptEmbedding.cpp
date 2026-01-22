@@ -2570,6 +2570,8 @@ namespace Mengine
             ;
 
         pybind::interface_<ContentInterface, pybind::bases<Mixin>>( _kernel, "ContentInterface" )
+            .def( "setGroupName", &ContentInterface::setGroupName )
+            .def( "getGroupName", &ContentInterface::getGroupName )
             .def( "setFileGroup", &ContentInterface::setFileGroup )
             .def( "getFileGroup", &ContentInterface::getFileGroup )
             .def( "setFilePath", &ContentInterface::setFilePath )

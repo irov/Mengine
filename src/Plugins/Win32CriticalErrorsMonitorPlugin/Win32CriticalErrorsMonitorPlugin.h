@@ -10,7 +10,7 @@ namespace Mengine
     class Win32CriticalErrorsMonitorPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "Win32CriticalErrorsMonitor" )
+        PLUGIN_DECLARE( "Win32CriticalErrorsMonitor" );
 
     public:
         Win32CriticalErrorsMonitorPlugin();

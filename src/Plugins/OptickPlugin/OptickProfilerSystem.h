@@ -17,6 +17,8 @@ namespace Mengine
     class OptickProfilerSystem
         : public ServiceBase<ProfilerSystemInterface>
     {
+        DECLARE_FACTORABLE( OptickProfilerSystem );
+
     public:
         OptickProfilerSystem();
         ~OptickProfilerSystem() override;

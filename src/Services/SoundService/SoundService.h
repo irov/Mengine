@@ -21,6 +21,8 @@ namespace Mengine
         : public ServiceBase<SoundServiceInterface>
         , public TimepipeInterface
     {
+        DECLARE_FACTORABLE( SoundService );
+
     public:
         SoundService();
         ~SoundService() override;

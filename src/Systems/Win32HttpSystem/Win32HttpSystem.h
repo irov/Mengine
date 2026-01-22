@@ -12,6 +12,8 @@ namespace Mengine
     class Win32HttpSystem
         : public ServiceBase<HttpSystemInterface>
     {
+        DECLARE_FACTORABLE( Win32HttpSystem );
+
     public:
         Win32HttpSystem();
         ~Win32HttpSystem() override;

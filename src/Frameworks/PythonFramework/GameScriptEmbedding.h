@@ -8,7 +8,6 @@ namespace Mengine
 {
     class GameScriptEmbedding
         : public ScriptEmbeddingInterface
-        , public Factorable
     {
         DECLARE_FACTORABLE( GameScriptEmbedding );
 

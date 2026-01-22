@@ -10,7 +10,6 @@
 #include "Interface/FactoryInterface.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/BaseLifecycle.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/Resolution.h"
 #include "Kernel/Affectorable.h"
@@ -23,8 +22,8 @@ namespace Mengine
 {
     class PlayerService
         : public ServiceBase<PlayerServiceInterface>
-        , protected BaseLifecycle
     {
+        DECLARE_FACTORABLE( PlayerService );
         DECLARE_LIFECYCLEABLE();
 
     public:

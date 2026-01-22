@@ -6,13 +6,10 @@
 
 #include "PathfinderInterface.h"
 
-#include "Kernel/Factorable.h"
-
 namespace Mengine
 {
     class PathfinderScriptEmbedding
         : public ScriptEmbeddingInterface
-        , public Factorable
     {
         DECLARE_FACTORABLE( PathfinderScriptEmbedding );
 

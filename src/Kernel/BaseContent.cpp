@@ -15,6 +15,16 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    void BaseContent::setGroupName( const ConstString & _groupName )
+    {
+        m_groupName = _groupName;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & BaseContent::getGroupName() const
+    {
+        return m_groupName;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void BaseContent::setFileGroup( const FileGroupInterfacePtr & _fileGroup )
     {
         m_fileGroup = _fileGroup;

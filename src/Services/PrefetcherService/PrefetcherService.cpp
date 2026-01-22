@@ -530,7 +530,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void PrefetcherService::visitPrefetches( const VisitorPtr & _visitor ) const
+    void PrefetcherService::visitPrefetches( Visitor * _visitor ) const
     {
         if( this->isAvailableService() == false )
         {

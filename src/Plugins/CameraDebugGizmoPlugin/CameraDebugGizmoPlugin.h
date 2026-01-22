@@ -7,7 +7,7 @@ namespace Mengine
     class CameraDebugGizmoPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "CameraDebugGizmo" )
+        PLUGIN_DECLARE( "CameraDebugGizmo" );
 
     public:
         CameraDebugGizmoPlugin();

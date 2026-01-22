@@ -22,6 +22,8 @@ namespace Mengine
     class StringizeService
         : public ServiceBase<StringizeServiceInterface>
     {
+        DECLARE_FACTORABLE( StringizeService );
+
     public:
         StringizeService();
         ~StringizeService() override;

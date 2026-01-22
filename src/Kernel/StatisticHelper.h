@@ -13,7 +13,7 @@
 #   define STATISTIC_DEC_INTEGER(ID) (SERVICE_IS_INITIALIZE(Mengine::StatisticServiceInterface) == true ? STATISTIC_SERVICE()->delStatisticInteger(ID, 1) : MENGINE_NOP)
 #   define STATISTIC_ADD_INTEGER(ID, VALUE) (SERVICE_IS_INITIALIZE(Mengine::StatisticServiceInterface) == true ? STATISTIC_SERVICE()->addStatisticInteger(ID, (VALUE)) : MENGINE_NOP)
 #   define STATISTIC_DEL_INTEGER(ID, VALUE) (SERVICE_IS_INITIALIZE(Mengine::StatisticServiceInterface) == true ? STATISTIC_SERVICE()->delStatisticInteger(ID, (VALUE)) : MENGINE_NOP)
-#   define STATISTIC_GET_INTEGER(ID) (SERVICE_IS_INITIALIZE(Mengine::StatisticServiceInterface) == true ? STATISTIC_SERVICE()->getStatisticInteger(ID) : 0LL)
+#   define STATISTIC_GET_INTEGER(ID) (SERVICE_IS_INITIALIZE(Mengine::StatisticServiceInterface) == true ? STATISTIC_SERVICE()->getStatisticInteger(ID) : MENGINE_INT64_C(0))
 #   define STATISTIC_RESET_INTEGER(ID) (SERVICE_IS_INITIALIZE(Mengine::StatisticServiceInterface) == true ? STATISTIC_SERVICE()->resetStatisticInteger(ID) : MENGINE_NOP)
 
 #   define STATISTIC_ADD_DOUBLE(ID, VALUE) (SERVICE_IS_INITIALIZE(Mengine::StatisticServiceInterface) == true ? STATISTIC_SERVICE()->addStatisticDouble(ID, (VALUE)) : MENGINE_NOP)
@@ -34,7 +34,7 @@
 #   define STATISTIC_DEC_INTEGER(ID)
 #   define STATISTIC_ADD_INTEGER(ID, VALUE)
 #   define STATISTIC_DEL_INTEGER(ID, VALUE)
-#   define STATISTIC_GET_INTEGER(ID) (0LL)
+#   define STATISTIC_GET_INTEGER(ID) MENGINE_INT64_C(0)
 #   define STATISTIC_RESET_INTEGER(ID)
 
 #   define STATISTIC_ADD_DOUBLE(ID, VALUE)

@@ -7,7 +7,7 @@ namespace Mengine
     class DevelopmentConverterPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "DevelopmentConverter" )
+        PLUGIN_DECLARE( "DevelopmentConverter" );
 
     public:
         DevelopmentConverterPlugin();

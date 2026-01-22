@@ -9,7 +9,6 @@
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/BaseEventation.h"
-#include "Kernel/BaseLifecycle.h"
 #include "Kernel/Resolution.h"
 
 namespace Mengine
@@ -19,10 +18,10 @@ namespace Mengine
         : public ServiceBase<GameServiceInterface>
         , public AnalyticsEventProviderInterface
         , protected BaseEventation
-        , protected BaseLifecycle
     {
-        DECLARE_EVENTABLE();
+        DECLARE_FACTORABLE( GameService );
         DECLARE_LIFECYCLEABLE();
+        DECLARE_EVENTABLE();
 
     public:
         GameService();
@@ -31,6 +30,7 @@ namespace Mengine
     public:
         bool _initializeService() override;
         void _finalizeService() override;
+        void _stopService() override;
 
     public:
         bool preparation() override;

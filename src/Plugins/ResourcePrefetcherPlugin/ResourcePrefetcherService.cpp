@@ -3,12 +3,6 @@
 #include "Interface/FileGroupInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 
-#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-#   include "Interface/ScriptServiceInterface.h"
-
-#   include "ResourcePrefetcherScriptEmbedding.h"
-#endif
-
 #include "DataflowResourcePrefetcher.h"
 #include "ArchiveResourcePrefetcher.h"
 #include "ImageDecoderResourcePrefetcher.h"
@@ -40,20 +34,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourcePrefetcherService::_initializeService()
     {
-#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [MENGINE_DOCUMENT_ARGUMENTS( this )]()
-        {
-            SCRIPT_SERVICE()
-                ->addScriptEmbedding( ResourcePrefetcherScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<ResourcePrefetcherScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
-        }, MENGINE_DOCUMENT_FACTORABLE );
-
-        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
-        {
-            SCRIPT_SERVICE()
-                ->removeScriptEmbedding( ResourcePrefetcherScriptEmbedding::getFactorableType() );
-        }, MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
         VOCABULARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcherType" ), STRINGIZE_STRING_LOCAL( "Default" ), Helper::makeFactorableUnique<DefaultResourcePrefetcher>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
         VOCABULARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcherType" ), STRINGIZE_STRING_LOCAL( "Dataflow" ), Helper::makeFactorableUnique<DataflowResourcePrefetcher>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
@@ -83,11 +63,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourcePrefetcherService::_finalizeService()
     {
-#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
-#endif
-
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), ResourceImageDefault::getFactorableType() );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), ResourceSound::getFactorableType() );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), ResourceHIT::getFactorableType() );

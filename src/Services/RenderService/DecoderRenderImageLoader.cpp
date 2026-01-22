@@ -96,7 +96,7 @@ namespace Mengine
         RenderImageLockedInterfacePtr locked = _image->lock( 0, rect, false );
 
         size_t pitch = 0;
-        void * textureBuffer = locked->getBuffer( &pitch );
+        void * textureBuffer = locked->getLockedBuffer( &pitch );
 
         MENGINE_ASSERTION_MEMORY_PANIC( textureBuffer, "invalid lock mipmap %u rect %u:%u-%u:%u"
             , 0

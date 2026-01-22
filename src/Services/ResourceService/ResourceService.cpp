@@ -247,7 +247,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceService::visitResources( const VisitorPtr & _visitor ) const
+    void ResourceService::visitResources( Visitor * _visitor ) const
     {
         const ResourceBank::HashtableResources & resources = m_globalBank->getResources();
 
@@ -259,7 +259,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceService::visitGroupResources( const ConstString & _groupName, const VisitorPtr & _visitor ) const
+    void ResourceService::visitGroupResources( const ConstString & _groupName, Visitor * _visitor ) const
     {
         MapResourceCache::const_iterator it_cache_found = m_resourcesCache.find( _groupName );
 

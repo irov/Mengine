@@ -10,12 +10,14 @@ namespace Mengine
     class LifecycleService
         : public ServiceBase<LifecycleServiceInterface>
     {
+        DECLARE_FACTORABLE( LifecycleService );
+
     public:
         LifecycleService();
         ~LifecycleService() override;
 
     public:
-        void registerService( ServiceInterface * _service ) override;
+        bool registerService( ServiceInterface * _service ) override;
         void unregisterService( ServiceInterface * _service ) override;
 
     public:

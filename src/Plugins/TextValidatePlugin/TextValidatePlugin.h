@@ -7,7 +7,7 @@ namespace Mengine
     class TextValidatePlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "TextValidate" )
+        PLUGIN_DECLARE( "TextValidate" );
 
     public:
         TextValidatePlugin();

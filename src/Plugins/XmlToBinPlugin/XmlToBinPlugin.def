@@ -1,2 +1,3 @@
 LIBRARY "XmlToBinPlugin"
-EXPORTS dllCreatePlugin @1
+EXPORTS 
+    dllMengineCreatePlugin @1

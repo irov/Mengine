@@ -10,10 +10,6 @@
 #include "SurfaceMockupVideo.h"
 #include "ResourceVideoValidator.h"
 
-#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-#include "VideoScriptEmbedding.h"
-#endif
-
 #include "LoaderResourceVideo.h"
 
 #include "Kernel/ConfigHelper.h"
@@ -59,20 +55,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool VideoPlugin::_initializePlugin()
     {
-#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-        NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EMBEDDING, this, [this]()
-        {
-            SCRIPT_SERVICE()
-                ->addScriptEmbedding( VideoScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<VideoScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
-        }, MENGINE_DOCUMENT_FACTORABLE );
-
-        NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EJECTING, this, []()
-        {
-            SCRIPT_SERVICE()
-                ->removeScriptEmbedding( VideoScriptEmbedding::getFactorableType() );
-        }, MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
         if( Helper::addResourcePrototype<ResourceVideo, 128>( MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
@@ -104,11 +86,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void VideoPlugin::_finalizePlugin()
     {
-#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
-#endif
-
         Helper::removeResourcePrototype<ResourceVideo>();
         Helper::removeSurfacePrototype<SurfaceVideo>();
 

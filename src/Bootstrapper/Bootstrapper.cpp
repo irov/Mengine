@@ -7,11 +7,9 @@
 #include "Interface/RenderMaterialServiceInterface.h"
 #include "Interface/SoundSystemInterface.h"
 #include "Interface/ThreadServiceInterface.h"
-#include "Interface/FrameworkInterface.h"
 #include "Interface/AccountServiceInterface.h"
 #include "Interface/SceneServiceInterface.h"
 #include "Interface/GameServiceInterface.h"
-#include "Interface/FrameworkServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/AnalyticsServiceInterface.h"
@@ -83,7 +81,6 @@ SERVICE_EXTERN( AnalyticsService );
 SERVICE_EXTERN( ThreadService );
 SERVICE_EXTERN( SoundService );
 SERVICE_EXTERN( ModuleService );
-SERVICE_EXTERN( FrameworkService );
 SERVICE_EXTERN( CodecService );
 SERVICE_EXTERN( DataService );
 SERVICE_EXTERN( PrefetcherService );
@@ -320,12 +317,24 @@ PLUGIN_EXPORT( NodeDebugger );
 PLUGIN_EXPORT( OzzAnimation );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_PLUGIN_GOAPFRAMEWORK_STATIC)
+PLUGIN_EXPORT( GOAPFramework );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_PYTHONFRAMEWORK_STATIC)
 PLUGIN_EXPORT( PythonFramework );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_PLUGIN_SIMPLEFRAMEWORK_STATIC)
+PLUGIN_EXPORT( SimpleFramework );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_UIFRAMEWORK_STATIC)
 PLUGIN_EXPORT( UIFramework );
+#endif
+//////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_PLUGIN_IMGUIFRAMEWORK_STATIC)
+PLUGIN_EXPORT( ImGUIFramework );
 #endif
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_JSON_STATIC)
@@ -362,10 +371,6 @@ PLUGIN_EXPORT( DevToDebug );
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_CACHALOT_STATIC)
 PLUGIN_EXPORT( Cachalot );
-#endif
-//////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_IMGUI_STATIC)
-PLUGIN_EXPORT( ImGUI );
 #endif
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_CAMERADEBUGGIZMO_STATIC)
@@ -491,9 +496,47 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::initialize()
     {
+        LOGGER_INFO( "bootstrapper", "bootstrapper create services" );
+
         if( this->createServices_() == false )
         {
             LOGGER_ERROR( "invalid create create services" );
+
+            return false;
+        }
+
+        LOGGER_INFO( "bootstrapper", "bootstrapper create dynamic priority plugins" );
+
+        if( this->createDynamicSystemPlugins_() == false )
+        {
+            LOGGER_ERROR( "invalid create dynamic priority plugins" );
+
+            return false;
+        }
+
+        LOGGER_INFO( "bootstrapper", "bootstrapper create dynamic priority dev plugins" );
+
+        if( this->createDynamicSystemDevPlugins_() == false )
+        {
+            LOGGER_ASSERTION( "invalid create dynamic priority dev plugins" );
+
+            return false;
+        }
+
+        LOGGER_INFO( "bootstrapper", "bootstrapper create sentry" );
+
+        if( this->createSentryPlugins_() == false )
+        {
+            LOGGER_ERROR( "invalid create sentry" );
+
+            return false;
+        }
+
+        LOGGER_INFO( "bootstrapper", "bootstrapper create static frameworks" );
+
+        if( this->createStaticFrameworks_() == false )
+        {
+            LOGGER_ERROR( "invalid create static frameworks" );
 
             return false;
         }
@@ -579,15 +622,6 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_INFO( "bootstrapper", "bootstrapper create frameworks" );
-
-        if( this->createFrameworks_() == false )
-        {
-            LOGGER_ERROR( "invalid create frameworks" );
-
-            return false;
-        }
-
         NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_COMPLETE );
 
         return true;
@@ -598,16 +632,7 @@ namespace Mengine
         THREAD_SERVICE()
             ->updateMainThread();
 
-        LOGGER_INFO( "bootstrapper", "bootstrapper run frameworks" );
-
-        if( this->runFrameworks_() == false )
-        {
-            LOGGER_ERROR( "invalid run frameworks" );
-
-            return false;
-        }
-
-        NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_RUN_FRAMEWORKS );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_RUN );
 
         LOGGER_INFO( "bootstrapper", "bootstrapper initialize game" );
 
@@ -977,7 +1002,7 @@ namespace Mengine
             {\
                 LOGGER_INFO( "bootstrapper", "%s", Info );\
             }\
-            if( PLUGIN_CREATE(Name, Doc) == false )\
+            if( PLUGIN_CREATE(Name, true, Doc) == false )\
             {\
                 if(SERVICE_IS_INITIALIZE(LoggerServiceInterface) == true)\
                 {\
@@ -993,7 +1018,7 @@ namespace Mengine
             {\
                 LOGGER_INFO( "bootstrapper", "%s", Info );\
             }\
-            if( PLUGIN_CREATE(Name, Doc) == false )\
+            if( PLUGIN_CREATE(Name, false, Doc) == false )\
             {\
                 if(SERVICE_IS_INITIALIZE(LoggerServiceInterface) == true)\
                 {\
@@ -1069,9 +1094,6 @@ namespace Mengine
 
         MENGINE_ADD_SERVICE( FileSystem, MENGINE_DOCUMENT_FACTORABLE );
 
-        PLATFORM_SERVICE()
-            ->initializeFileService();
-
 #if defined(MENGINE_DEBUG)
         LOGGER_MESSAGE( "secure: %s", MENGINE_SECURE_VALUE );
 #endif
@@ -1099,6 +1121,21 @@ namespace Mengine
         LOGGER_INFO( "bootstrapper", "enable document debug: [OFF]" );
 #endif
 
+        if( this->registerBaseTypes_() == false )
+        {
+            return false;
+        }
+
+#if defined(MENGINE_DEBUG)
+        Path currentPath = {'\0'};
+        PLATFORM_SERVICE()
+            ->getCurrentPath( currentPath );
+
+        LOGGER_INFO_PROTECTED( "bootstrapper", "current folder '%s'"
+            , currentPath
+        );
+#endif
+
 #if defined(MENGINE_PLUGIN_INI_STATIC)
         MENGINE_ADD_PLUGIN( INI, "plugin INI...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
@@ -1107,18 +1144,8 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( JSON, "plugin JSON...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
-        if( this->registerBaseTypes_() == false )
-        {
-            return false;
-        }
-
-        Path currentPath = {'\0'};
         PLATFORM_SERVICE()
-            ->getCurrentPath( currentPath );
-
-        LOGGER_INFO_PROTECTED( "bootstrapper", "current folder '%s'"
-            , currentPath
-        );
+            ->initializeFileService();
 
 #if defined(MENGINE_BOOTSTRAPPER_LOAD_CONFIG_ENABLE)
         LOGGER_INFO( "bootstrapper", "bootstrapper load application config" );
@@ -1220,7 +1247,6 @@ namespace Mengine
         BOOTSTRAPPER_SERVICE_CREATE( HttpService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( SoundService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( ModuleService, MENGINE_DOCUMENT_FACTORABLE );
-        BOOTSTRAPPER_SERVICE_CREATE( FrameworkService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( CodecService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( DataService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( PrefetcherService, MENGINE_DOCUMENT_FACTORABLE );
@@ -1249,32 +1275,14 @@ namespace Mengine
         BOOTSTRAPPER_SERVICE_CREATE( GameService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( AmplifierService, MENGINE_DOCUMENT_FACTORABLE );
 
-        LOGGER_INFO( "bootstrapper", "bootstrapper create dynamic priority plugins" );
-
-        if( this->createDynamicSystemPlugins_() == false )
-        {
-            LOGGER_ERROR( "invalid create dynamic priority plugins" );
-
-            return false;
-        }
-
-        LOGGER_INFO( "bootstrapper", "bootstrapper create dynamic priority dev plugins" );
-
-        if( this->createDynamicSystemDevPlugins_() == false )
-        {
-            LOGGER_ASSERTION( "invalid create dynamic priority dev plugins" );
-
-            return false;
-        }
-
 #undef BOOTSTRAPPER_SERVICE_CREATE
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Bootstrapper::createStaticPlugins_()
+    bool Bootstrapper::createSentryPlugins_()
     {
-        LOGGER_INFO( "bootstrapper", "create plugins..." );
+        LOGGER_INFO( "bootstrapper", "create sentry plugins..." );
 
 #if defined(MENGINE_PLUGIN_WIN32_SENTRY_STATIC)
         MENGINE_ADD_PLUGIN( Win32Sentry, "plugin Win32Sentry...", MENGINE_DOCUMENT_FACTORABLE );
@@ -1284,16 +1292,42 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( AppleSentry, "plugin AppleSentry...", MENGINE_DOCUMENT_FACTORABLE );
 #endif        
 
-#if defined(MENGINE_EXTERNAL_BOOTSTRAPPER)
-        MENGINE_ADD_PLUGIN( ExternalBootstrapper, "initialize external Bootstrapper [" MENGINE_PP_STRINGIZE( MENGINE_EXTERNAL_BOOTSTRAPPER ) "]...", MENGINE_DOCUMENT_FACTORABLE );
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Bootstrapper::createStaticFrameworks_()
+    {
+        LOGGER_INFO( "bootstrapper", "create static frameworks..." );
+
+#if defined(MENGINE_PLUGIN_GOAPFRAMEWORK_STATIC)
+        MENGINE_ADD_FRAMEWORK( GOAPFramework, "plugin GOAPFramework...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#if defined(MENGINE_PLUGIN_IMGUIFRAMEWORK_STATIC)
+        MENGINE_ADD_FRAMEWORK( ImGUIFramework, "plugin ImGUIFramework...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #if defined(MENGINE_PLUGIN_PYTHONFRAMEWORK_STATIC)
         MENGINE_ADD_FRAMEWORK( PythonFramework, "plugin PythonFramework...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
+#if defined(MENGINE_PLUGIN_SIMPLEFRAMEWORK_STATIC)
+        MENGINE_ADD_FRAMEWORK( SimpleFramework, "plugin SimpleFramework...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
 #if defined(MENGINE_PLUGIN_UIFRAMEWORK_STATIC)
         MENGINE_ADD_FRAMEWORK( UIFramework, "plugin UIFramework...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Bootstrapper::createStaticPlugins_()
+    {
+        LOGGER_INFO( "bootstrapper", "create plugins..." );
+
+#if defined(MENGINE_EXTERNAL_BOOTSTRAPPER)
+        MENGINE_ADD_PLUGIN( ExternalBootstrapper, "initialize external Bootstrapper [" MENGINE_PP_STRINGIZE( MENGINE_EXTERNAL_BOOTSTRAPPER ) "]...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #if defined(MENGINE_PLUGIN_NODEDEBUGRENDER_STATIC)
@@ -1444,10 +1478,6 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( Cachalot, "plugin Cachalot...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
-#if defined(MENGINE_PLUGIN_IMGUI_STATIC)
-        MENGINE_ADD_PLUGIN( ImGUI, "plugin ImGUI...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
 #if defined(MENGINE_PLUGIN_CAMERADEBUGGIZMO_STATIC)
         MENGINE_ADD_PLUGIN( CameraDebugGizmo, "plugin CameraDebugGizmo...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
@@ -1459,6 +1489,7 @@ namespace Mengine
 #if defined(MENGINE_PLUGIN_MEMORYUSAGEMONITOR_STATIC)
         MENGINE_ADD_PLUGIN( MemoryUsageMonitor, "plugin MemoryUsageMonitor...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
+
 
 #if defined(MENGINE_PLUGIN_WIN32_ANTIFREEZEMONITOR_STATIC)
         MENGINE_ADD_PLUGIN( Win32AntifreezeMonitor, "plugin Win32AntifreezeMonitor...", MENGINE_DOCUMENT_FACTORABLE );
@@ -1545,7 +1576,7 @@ namespace Mengine
             );
 
             if( PLUGIN_SERVICE()
-                ->loadPlugin( pluginName.c_str(), MENGINE_DOCUMENT_FACTORABLE ) == false )
+                ->loadPlugin( pluginName.c_str(), false, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_FATAL( "failed to load dynamic plugin '%s'"
                     , pluginName.c_str()
@@ -1560,19 +1591,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::createDynamicDevPlugins_()
     {
-        bool devplugins = MENGINE_MASTER_RELEASE_VALUE( false, Helper::isDevelopmentMode() );
+        bool devplugins_avalilable = MENGINE_MASTER_RELEASE_VALUE( false, Helper::isDevelopmentMode() );
 
         if( HAS_OPTION( "devplugins" ) == true )
         {
-            devplugins = true;
+            devplugins_avalilable = true;
         }
 
         if( HAS_OPTION( "nodevplugins" ) == true )
         {
-            devplugins = false;
+            devplugins_avalilable = false;
         }
 
-        if( devplugins == false )
+        if( devplugins_avalilable == false )
         {
             return true;
         }
@@ -1587,7 +1618,7 @@ namespace Mengine
             );
 
             if( PLUGIN_SERVICE()
-                ->loadPlugin( pluginName.c_str(), MENGINE_DOCUMENT_FACTORABLE ) == false )
+                ->loadPlugin( pluginName.c_str(), false, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_WARNING( "failed to load dynamic dev plugin '%s'"
                     , pluginName.c_str()
@@ -1610,7 +1641,7 @@ namespace Mengine
             );
 
             if( PLUGIN_SERVICE()
-                ->loadPlugin( pluginName.c_str(), MENGINE_DOCUMENT_FACTORABLE ) == false )
+                ->loadPlugin( pluginName.c_str(), false, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_ERROR( "failed to load dynamic system plugin '%s'"
                     , pluginName.c_str()
@@ -1652,7 +1683,7 @@ namespace Mengine
             );
 
             if( PLUGIN_SERVICE()
-                ->loadPlugin( pluginName.c_str(), MENGINE_DOCUMENT_FACTORABLE ) == false )
+                ->loadPlugin( pluginName.c_str(), false, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_WARNING( "failed to load dynamic system dev plugin '%s'"
                     , pluginName.c_str()
@@ -1675,7 +1706,7 @@ namespace Mengine
             );
 
             if( PLUGIN_SERVICE()
-                ->loadPlugin( pluginName.c_str(), MENGINE_DOCUMENT_FACTORABLE ) == false )
+                ->loadPlugin( pluginName.c_str(), false, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_ERROR( "failed to load priority plugin '%s'"
                     , pluginName.c_str()
@@ -1717,7 +1748,7 @@ namespace Mengine
             );
 
             if( PLUGIN_SERVICE()
-                ->loadPlugin( pluginName.c_str(), MENGINE_DOCUMENT_FACTORABLE ) == false )
+                ->loadPlugin( pluginName.c_str(), false, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_WARNING( "failed to load priority dev plugin '%s'"
                     , pluginName.c_str()
@@ -1750,7 +1781,7 @@ namespace Mengine
             );
 
             if( PLUGIN_SERVICE()
-                ->loadPlugin( pluginName, MENGINE_DOCUMENT_FACTORABLE ) == false )
+                ->loadPlugin( pluginName, false, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_ERROR( "failed to load dynamic options plugin '%s'"
                     , pluginName
@@ -1782,33 +1813,6 @@ namespace Mengine
             ->buildEvent( AEEC_SYSTEM, STRINGIZE_STRING_LOCAL( "mng_create_application_completed" ), MENGINE_DOCUMENT_FACTORABLE )
             ->addParameterInteger( STRINGIZE_STRING_LOCAL( "time" ), Helper::getSystemDurationTimestamp( mengine_create_application_timestamp ) )
             ->log();
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Bootstrapper::createFrameworks_()
-    {
-        LOGGER_INFO( "bootstrapper", "create frameworks..." );
-
-        VectorConstString frameworks;
-        CONFIG_VALUES( "Frameworks", "Name", &frameworks );
-
-        for( const ConstString & frameworkName : frameworks )
-        {
-            LOGGER_INFO( "bootstrapper", "create framework '%s'"
-                , frameworkName.c_str()
-            );
-
-            if( FRAMEWORK_SERVICE()
-                ->initializeFramework( frameworkName, MENGINE_DOCUMENT_FACTORABLE ) == false )
-            {
-                LOGGER_ERROR( "failed initialize framework '%s'"
-                    , frameworkName.c_str()
-                );
-
-                return false;
-            }
-        }
 
         return true;
     }
@@ -1889,17 +1893,6 @@ namespace Mengine
                     );
                 }
             }
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Bootstrapper::runFrameworks_()
-    {
-        if( FRAMEWORK_SERVICE()
-            ->runFrameworks() == false )
-        {
-            return false;
         }
 
         return true;
@@ -2018,49 +2011,6 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Bootstrapper::finalizeFrameworks_()
-    {
-        if( SERVICE_IS_INITIALIZE( FrameworkServiceInterface ) == false )
-        {
-            return;
-        }
-
-        VectorConstString frameworks;
-        CONFIG_VALUES( "Frameworks", "Name", &frameworks );
-
-        for( const ConstString & frameworkName : frameworks )
-        {
-            if( FRAMEWORK_SERVICE()
-                ->isInitializeFramework( frameworkName ) == false )
-            {
-                continue;
-            }
-
-            LOGGER_INFO( "bootstrapper", "finalize framework '%s'"
-                , frameworkName.c_str()
-            );
-
-            if( FRAMEWORK_SERVICE()
-                ->finalizeFramework( frameworkName ) == false )
-            {
-                LOGGER_ERROR( "failed to stop framework '%s'"
-                    , frameworkName.c_str()
-                );
-            }
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Bootstrapper::stopFrameworks_()
-    {
-        if( SERVICE_IS_INITIALIZE( FrameworkServiceInterface ) == false )
-        {
-            return;
-        }
-
-        FRAMEWORK_SERVICE()
-            ->stopFrameworks();
-    }
-    //////////////////////////////////////////////////////////////////////////
     void Bootstrapper::stop()
     {
         if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
@@ -2116,10 +2066,7 @@ namespace Mengine
         if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
         {
             NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_STOP_SERVICES );
-        }
-
-        this->stopFrameworks_();
-        this->finalizeFrameworks_();
+        }  
 
         if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
         {
@@ -2168,7 +2115,6 @@ namespace Mengine
         SERVICE_FINALIZE( TimelineService );
         SERVICE_FINALIZE( WatchdogService );
         SERVICE_FINALIZE( ModuleService );
-        SERVICE_FINALIZE( FrameworkService );
         SERVICE_FINALIZE( PlayerService );
         SERVICE_FINALIZE( AmplifierService );
         SERVICE_FINALIZE( PickerService );
@@ -2295,7 +2241,6 @@ namespace Mengine
         SERVICE_DESTROY( TimelineService );
         SERVICE_DESTROY( WatchdogService );
         SERVICE_DESTROY( ModuleService );
-        SERVICE_DESTROY( FrameworkService );
         SERVICE_DESTROY( PlayerService );
         SERVICE_DESTROY( PickerService );
         SERVICE_DESTROY( UpdateService );

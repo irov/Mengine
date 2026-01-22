@@ -7,7 +7,7 @@ namespace Mengine
     class GraphicsPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "Graphics" )
+        PLUGIN_DECLARE( "Graphics" );
 
     public:
         GraphicsPlugin();

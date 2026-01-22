@@ -22,6 +22,8 @@ namespace Mengine
     class MemoryService
         : public ServiceBase<MemoryServiceInterface>
     {
+        DECLARE_FACTORABLE( MemoryService );
+
     public:
         MemoryService();
         ~MemoryService() override;

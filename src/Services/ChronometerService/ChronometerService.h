@@ -6,15 +6,14 @@
 #include "Chronometer.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/BaseLifecycle.h"
 #include "Kernel/Vector.h"
 
 namespace Mengine
 {
     class ChronometerService
         : public ServiceBase<ChronometerServiceInterface>
-        , protected BaseLifecycle
     {
+        DECLARE_FACTORABLE( ChronometerService );
         DECLARE_LIFECYCLEABLE();
 
     public:

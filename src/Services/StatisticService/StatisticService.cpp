@@ -45,7 +45,7 @@ namespace Mengine
             m_statisticEnabled[index] = Helper::isStatisticDefaultEnabled( (StatisticId)index );
         }
 
-        StdAlgorithm::fill_n( m_statisticIntegers, MENGINE_STATISTIC_MAX_COUNT, 0LL );
+        StdAlgorithm::fill_n( m_statisticIntegers, MENGINE_STATISTIC_MAX_COUNT, MENGINE_INT64_C( 0 ) );
         StdAlgorithm::fill_n( m_statisticDoubles, MENGINE_STATISTIC_MAX_COUNT, 0.0 );
 
         return true;
@@ -95,7 +95,7 @@ namespace Mengine
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
-        m_statisticIntegers[_id] = 0LL;
+        m_statisticIntegers[_id] = MENGINE_INT64_C( 0 );
     }
     //////////////////////////////////////////////////////////////////////////
     void StatisticService::addStatisticDouble( StatisticId _id, double _value )

@@ -7,7 +7,7 @@ namespace Mengine
     class OggVorbisPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "OggVorbis" )
+        PLUGIN_DECLARE( "OggVorbis" );
 
     public:
         OggVorbisPlugin();

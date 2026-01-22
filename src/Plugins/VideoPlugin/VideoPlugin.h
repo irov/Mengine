@@ -2,13 +2,19 @@
 
 #include "Kernel/PluginBase.h"
 
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+#include "VideoScriptEmbedding.h"
+#endif
+
 namespace Mengine
 {
     class VideoPlugin
         : public PluginBase
+        , protected EXTEND_EMBEDDABLE( VideoScriptEmbedding )
     {
-    public:
-        PLUGIN_DECLARE( "Video" )
+        PLUGIN_DECLARE( "Video" );
+        DECLARE_VISITABLE( PluginInterface );
+        DECLARE_EMBEDDABLE();
 
     public:
         VideoPlugin();

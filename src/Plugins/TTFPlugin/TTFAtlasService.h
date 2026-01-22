@@ -12,6 +12,8 @@ namespace Mengine
     class TTFAtlasService
         : public ServiceBase<TTFAtlasServiceInterface>
     {
+        DECLARE_FACTORABLE( TTFAtlasService );
+
     public:
         TTFAtlasService();
         ~TTFAtlasService() override;

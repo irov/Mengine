@@ -4,12 +4,14 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/TextureHelper.h"
+#include "Kernel/TimestampHelper.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     RenderTexture::RenderTexture()
         : m_textureId( 0 )
+    	, m_createTimestamp( 0 )
         , m_width( 0 )
         , m_height( 0 )
         , m_widthInv( 0.f )
@@ -30,6 +32,7 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( _height != 0, "invalid height == 0" );
 
         m_textureId = _id;
+        m_createTimestamp = Helper::getSystemTimestamp();
 
         m_image = _image;
 
@@ -64,6 +67,11 @@ namespace Mengine
     UniqueId RenderTexture::getTextureId() const
     {
         return m_textureId;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Timestamp RenderTexture::getCreateTimestamp() const
+    {
+        return m_createTimestamp;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderTexture::setContent( const ContentInterfacePtr & _content )

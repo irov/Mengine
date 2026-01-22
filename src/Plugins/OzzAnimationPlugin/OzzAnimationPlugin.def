@@ -1,2 +1,3 @@
 LIBRARY "OzzAnimationPlugin"
-EXPORTS dllCreatePlugin @1
+EXPORTS 
+    dllMengineCreatePlugin @1

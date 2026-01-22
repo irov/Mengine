@@ -547,7 +547,7 @@ namespace Mengine
         wc.cbWndExtra = 0;
         wc.hInstance = hInstance;
         wc.hIcon = NULL;
-        wc.hCursor = ::LoadCursor( NULL, MAKEINTRESOURCEW( 32512 ) );
+        wc.hCursor = ::LoadCursor( NULL, IDC_ARROW );
         wc.hbrBackground = (HBRUSH)::GetStockObject( BLACK_BRUSH );
         wc.lpszMenuName = NULL;
         wc.lpszClassName = m_windowClassName.c_str();

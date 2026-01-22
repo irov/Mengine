@@ -8,8 +8,9 @@ namespace Mengine
 {
     class AndroidNativePythonScriptEmbedding
         : public ScriptEmbeddingInterface
-        , public Factorable
     {
+        DECLARE_FACTORABLE( AndroidNativePythonScriptEmbedding );
+
     public:
         AndroidNativePythonScriptEmbedding();
         ~AndroidNativePythonScriptEmbedding() override;

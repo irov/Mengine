@@ -38,7 +38,7 @@ namespace Mengine
         {
             if( _len == 0 )
             {
-                return 0LL;
+                return MENGINE_UINT64_C( 0 );
             }
 
             const Char * p = _data;
@@ -50,27 +50,27 @@ namespace Mengine
             for( size_t i = 0; i != _len; ++i )
             {
                 HashType b2 = (HashType)*p++;
-                HashType x2 = Detail::xmul12864( 1000003ULL, x );
+                HashType x2 = Detail::xmul12864( MENGINE_UINT64_C( 1000003 ), x );
 
                 x = x2 ^ b2;
             }
 
             x ^= (HashType)_len;
 
-            if( x == ~0ULL )
+            if( x == MENGINE_UINT64_C( ~0 ) )
             {
-                x = ~1ULL;
+                x = MENGINE_UINT64_C( ~1 );
             }
 
             return x;
         }
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_CONSTEXPR HashType combineHash( HashType hash1, HashType hash2 )
+        MENGINE_CONSTEXPR HashType combineHash( HashType hash1, HashType hash2 ) MENGINE_NOEXCEPT
         {
-            HashType hash = 0;
+            HashType hash = MENGINE_UINT64_C( 0x9e3779b97f4a7c15 );
 
-            hash ^= hash1 + 0x9e3779b9 + (hash << 6) + (hash >> 2);
-            hash ^= hash2 + 0x9e3779b9 + (hash << 6) + (hash >> 2);
+            hash ^= hash1 + MENGINE_UINT64_C( 0x9e3779b97f4a7c15 ) + (hash << 6) + (hash >> 2);
+            hash ^= hash2 + MENGINE_UINT64_C( 0x9e3779b97f4a7c15 ) + (hash << 6) + (hash >> 2);
 
             return hash;
         }

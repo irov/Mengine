@@ -2,12 +2,17 @@
 
 #include "Kernel/PluginBase.h"
 
+#include "AndroidNativePythonScriptEmbedding.h"
+
 namespace Mengine
 {
     class AndroidNativePythonPlugin
         : public PluginBase
+        , protected EXTEND_EMBEDDABLE(AndroidNativePythonScriptEmbedding)
     {
         PLUGIN_DECLARE( "AndroidNativePython" )
+        DECLARE_VISITABLE( PluginInterface );
+        DECLARE_EMBEDDABLE();
 
     public:
         AndroidNativePythonPlugin();

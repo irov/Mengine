@@ -9,6 +9,8 @@ namespace Mengine
     class NativeUnicodeSystem
         : public ServiceBase<UnicodeSystemInterface>
     {
+        DECLARE_FACTORABLE( NativeUnicodeSystem );
+
     public:
         NativeUnicodeSystem();
         ~NativeUnicodeSystem() override;

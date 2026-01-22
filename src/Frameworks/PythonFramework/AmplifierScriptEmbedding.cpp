@@ -36,14 +36,12 @@ namespace Mengine
             }
 
         public:
-            bool initialize()
+            void initialize()
             {
                 m_factoryMusicAffectorCallback = Helper::makeFactoryPool<MusicAffectorCallback, 4>( MENGINE_DOCUMENT_FACTORABLE );
 
                 m_affectorCreatorMusic = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float>>( MENGINE_DOCUMENT_FACTORABLE );
                 m_affectorCreatorMusic->initialize();
-
-                return true;
             }
 
             void finalize()
@@ -350,10 +348,7 @@ namespace Mengine
     {
         AmplifierScriptMethodPtr scriptMethod = Helper::makeFactorableUnique<AmplifierScriptMethod>( MENGINE_DOCUMENT_FACTORABLE );
 
-        if( scriptMethod->initialize() == false )
-        {
-            return false;
-        }
+        scriptMethod->initialize();
 
         pybind::def_functor_args( _kernel, "musicPlay", scriptMethod, &AmplifierScriptMethod::musicPlay );
         pybind::def_functor( _kernel, "musicSetVolume", scriptMethod, &AmplifierScriptMethod::musicSetVolume );

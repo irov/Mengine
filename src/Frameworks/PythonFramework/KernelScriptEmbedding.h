@@ -8,7 +8,6 @@ namespace Mengine
 {
     class KernelScriptEmbedding
         : public ScriptEmbeddingInterface
-        , public Factorable
     {
         DECLARE_FACTORABLE( KernelScriptEmbedding );
 

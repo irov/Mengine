@@ -1,6 +1,13 @@
 MENGINE_PROJECT(GOAPFramework)
 
 ADD_FILTER(
+UIFrameworkPlugin
+    GOAPFrameworkPlugin.cpp
+    GOAPFrameworkPlugin.h
+    GOAPFrameworkPlugin.def
+)
+
+ADD_FILTER(
 src   
     HttpCook.h
     HttpCook.cpp

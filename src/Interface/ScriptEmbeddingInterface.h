@@ -1,18 +1,15 @@
 #pragma once
 
-#include "Kernel/Mixin.h"
+#include "Interface/ServantInterface.h"
 
-//////////////////////////////////////////////////////////////////////////
-namespace pybind
-{
-    class kernel_interface;
-}
+#include "Environment/Python/PythonForwardDeclaration.h"
+
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class ScriptEmbeddingInterface
-        : public Mixin
+        : public ServantInterface
     {
     public:
         virtual bool embed( pybind::kernel_interface * _kernel ) = 0;

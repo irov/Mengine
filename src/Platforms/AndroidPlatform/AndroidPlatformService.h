@@ -193,7 +193,6 @@ namespace Mengine
         void androidNativeLowMemoryEvent() override;
         void androidNativeTrimMemoryEvent( jint _level ) override;
         void androidNativeChangeLocale( const Mengine::Char * _language ) override;
-        jboolean androidNativeProcessEvents() override;
 
     protected:
         bool createWindow_( const Resolution & _resolution, bool _fullscreen );

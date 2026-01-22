@@ -182,7 +182,7 @@ namespace Mengine
         RenderImageLockedInterfacePtr locked = image->lock( 0, rect, true );
 
         size_t pitch = 0;
-        void * buffer = locked->getBuffer( &pitch );
+        void * buffer = locked->getLockedBuffer( &pitch );
 
         MENGINE_ASSERTION_MEMORY_PANIC( buffer, "can't lock texture '%s'"
             , Helper::getContentFullPath( _content ).c_str()

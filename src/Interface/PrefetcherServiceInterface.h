@@ -49,7 +49,7 @@ namespace Mengine
 
     public:        
         virtual void foreachPrefetches( const LambdaPrefetchTask & _lambda ) const = 0;
-        virtual void visitPrefetches( const VisitorPtr & _visitor ) const = 0;
+        virtual void visitPrefetches( Visitor * _visitor ) const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

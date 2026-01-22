@@ -12,6 +12,8 @@ namespace Mengine
         : public ServiceBase<ArrowServiceInterface>
         , public InputMousePositionProviderInterface
     {
+        DECLARE_FACTORABLE( ArrowService );
+
     public:
         ArrowService();
         ~ArrowService() override;

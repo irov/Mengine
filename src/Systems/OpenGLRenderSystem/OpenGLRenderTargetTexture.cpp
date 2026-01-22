@@ -161,6 +161,11 @@ namespace Mengine
 
         STATISTIC_ADD_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE, m_hwWidth * m_hwHeight * Helper::getPixelFormatChannels( m_hwPixelFormat ) );
 
+        LOGGER_DEBUG( "opengl", "render texture alloc del: %u total: %" PRIi64
+            , m_hwWidth * m_hwHeight * Helper::getPixelFormatChannels( m_hwPixelFormat )
+            , STATISTIC_GET_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE )
+        );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -182,6 +187,11 @@ namespace Mengine
         }
 
         STATISTIC_DEL_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE, m_hwWidth * m_hwHeight * Helper::getPixelFormatChannels( m_hwPixelFormat ) );
+
+        LOGGER_DEBUG( "opengl", "render texture alloc del: %u total: %" MENGINE_PRId64
+            , m_hwWidth * m_hwHeight * Helper::getPixelFormatChannels( m_hwPixelFormat )
+            , STATISTIC_GET_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE )
+        );
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t OpenGLRenderTargetTexture::getHWMipmaps() const

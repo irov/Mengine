@@ -12,6 +12,8 @@ namespace Mengine
     class PackageService
         : public ServiceBase<PackageServiceInterface>
     {
+        DECLARE_FACTORABLE( PackageService );
+
     public:
         PackageService();
         ~PackageService() override;

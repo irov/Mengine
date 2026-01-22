@@ -68,6 +68,4 @@ public class MengineNative {
     public static native long AndroidStatistic_getRenderFrameCount();
     public static native long AndroidStatistic_getAllocatorSize();
     public static native long AndroidStatistic_getRenderTextureAllocSize();
-
-    public static native boolean AndroidPlatform_processEvents();
 }

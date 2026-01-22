@@ -8,7 +8,6 @@
 #include "ThreadQueue.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/BaseLifecycle.h"
 #include "Kernel/String.h"
 #include "Kernel/Vector.h"
 
@@ -18,8 +17,8 @@ namespace Mengine
 {
     class ThreadService
         : public ServiceBase<ThreadServiceInterface>
-        , protected BaseLifecycle
     {
+        DECLARE_FACTORABLE( ThreadService );
         DECLARE_LIFECYCLEABLE();
 
     public:

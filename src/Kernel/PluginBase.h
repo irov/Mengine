@@ -8,8 +8,7 @@
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/Observable.h"
-#include "Kernel/Vector.h"
-#include "Kernel/String.h"
+#include "Kernel/BaseScriptEmbedded.h"
 
 namespace Mengine
 {
@@ -26,7 +25,15 @@ namespace Mengine
         bool isDynamicLoad() const override;
 
     protected:
+        void setFrameworkMode( bool _frameworkMode ) override;
+        bool isFrameworkMode() const override;
+
+    protected:
         const ServiceRequiredList & requiredServices() const override;
+
+    protected:
+        bool registerPlugin( const PluginInterfacePtr & _plugin ) override;
+        void unregisterPlugin( const PluginInterfacePtr & _plugin ) override;
 
     protected:
         bool initializePlugin() override;
@@ -54,6 +61,7 @@ namespace Mengine
 
     protected:
         bool m_dynamicLoad;
+        bool m_frameworkMode;
         bool m_initializePlugin;
         bool m_availablePlugin;
         bool m_systemPlugin;

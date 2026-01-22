@@ -25,6 +25,8 @@ namespace Mengine
         : public ServiceBase<UpdateServiceInterface>
         , public TimepipeInterface
     {
+        DECLARE_FACTORABLE( UpdateService );
+
     public:
         UpdateService();
         ~UpdateService() override;

@@ -10,6 +10,8 @@ namespace Mengine
     class TimelineService
         : public ServiceBase<TimelineServiceInterface>
     {
+        DECLARE_FACTORABLE( TimelineService );
+
     public:
         TimelineService();
         ~TimelineService() override;

@@ -9,7 +9,7 @@ namespace Mengine
     class FEPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "FE" )
+        PLUGIN_DECLARE( "FE" );
 
     public:
         FEPlugin();

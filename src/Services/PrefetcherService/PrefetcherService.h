@@ -14,6 +14,8 @@ namespace Mengine
     class PrefetcherService
         : public ServiceBase<PrefetcherServiceInterface>
     {
+        DECLARE_FACTORABLE( PrefetcherService );
+
     public:
         PrefetcherService();
         ~PrefetcherService() override;
@@ -46,7 +48,7 @@ namespace Mengine
 
     public:
         void foreachPrefetches( const LambdaPrefetchTask & _lambda ) const override;
-        void visitPrefetches( const VisitorPtr & _visitor ) const override;
+        void visitPrefetches( Visitor * _visitor ) const override;
 
     protected:
         bool hasPrefetch_( const ContentInterfacePtr & _content, PrefetchReceiverPtr * const _receiver ) const;

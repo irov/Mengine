@@ -19,6 +19,10 @@ namespace Mengine
         : public ServantInterface
     {
     public:
+        virtual void setGroupName( const ConstString & _groupName ) = 0;
+        virtual const ConstString & getGroupName() const = 0;
+
+    public:
         virtual void setFileGroup( const FileGroupInterfacePtr & _fileGroup ) = 0;
         virtual const FileGroupInterfacePtr & getFileGroup() const = 0;
 

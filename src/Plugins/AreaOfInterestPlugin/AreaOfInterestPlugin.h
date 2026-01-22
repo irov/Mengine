@@ -2,12 +2,19 @@
 
 #include "Kernel/PluginBase.h"
 
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+#   include "AreaOfInterestScriptEmbedding.h"
+#endif
+
 namespace Mengine
 {
     class AreaOfInterestPlugin
         : public PluginBase
+        , protected EXTEND_EMBEDDABLE( AreaOfInterestScriptEmbedding )
     {
-        PLUGIN_DECLARE( "AreaOfInterest" )
+        PLUGIN_DECLARE( "AreaOfInterest" );
+        DECLARE_VISITABLE( PluginInterface );
+        DECLARE_EMBEDDABLE();
 
     public:
         AreaOfInterestPlugin();

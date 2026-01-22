@@ -9,6 +9,8 @@ namespace Mengine
     class DataService
         : public ServiceBase<DataServiceInterface>
     {
+        DECLARE_FACTORABLE( DataService );
+
     public:
         DataService();
         ~DataService() override;

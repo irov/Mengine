@@ -14,6 +14,8 @@ namespace Mengine
     class FEService
         : public ServiceBase<FEServiceInterface>
     {
+        DECLARE_FACTORABLE( FEService );
+
     public:
         FEService();
         ~FEService() override;

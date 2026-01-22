@@ -6,14 +6,11 @@
 
 #include "Interface/ScriptWrapperInterface.h"
 
+#include "Environment/Python/PythonForwardDeclaration.h"
+
 #include "Kernel/IntrusivePtr.h"
 #include "Kernel/Mixin.h"
 
-//////////////////////////////////////////////////////////////////////////
-namespace pybind
-{
-    class kernel_interface;
-}
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {

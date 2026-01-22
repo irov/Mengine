@@ -15,6 +15,8 @@ namespace Mengine
     class AccountService
         : public ServiceBase<AccountServiceInterface>
     {
+        DECLARE_FACTORABLE( AccountService );
+
     public:
         AccountService();
         ~AccountService() override;

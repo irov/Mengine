@@ -76,7 +76,7 @@ namespace Mengine
         RenderImageLockedInterfacePtr texture_locked = texture_image->lock( 0, rect, false );
 
         size_t texture_pitch;
-        uint8_t * texture_memory = texture_locked->getBuffer( &texture_pitch );
+        uint8_t * texture_memory = texture_locked->getLockedBuffer( &texture_pitch );
 
         MENGINE_ASSERTION_MEMORY_PANIC( texture_memory, "invalid texture memory" );
 

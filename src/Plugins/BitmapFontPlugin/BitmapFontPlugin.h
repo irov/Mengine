@@ -7,7 +7,7 @@ namespace Mengine
     class BitmapFontPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "BitmapFont" )
+        PLUGIN_DECLARE( "BitmapFont" );
 
     public:
         BitmapFontPlugin();

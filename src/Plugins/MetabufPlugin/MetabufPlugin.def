@@ -1,2 +1,3 @@
-LIBRARY		"MetabufPlugin"
-EXPORTS 	dllCreatePlugin 	@1
+LIBRARY	"MetabufPlugin"
+EXPORTS 
+    dllMengineCreatePlugin @1

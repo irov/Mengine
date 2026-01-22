@@ -29,6 +29,8 @@ namespace Mengine
     class PythonScriptService
         : public ServiceBase<ScriptServiceInterface>
     {
+        DECLARE_FACTORABLE( PythonScriptService );
+
     public:
         PythonScriptService();
         ~PythonScriptService() override;

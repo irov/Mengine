@@ -110,7 +110,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativePythonScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
-        pybind::def_function_kernel_args( _kernel, "setAndroidCallback", &Detail::AndroidNativePythonService_addAndroidCallback );
         pybind::def_function_kernel_args( _kernel, "addAndroidCallback", &Detail::AndroidNativePythonService_addAndroidCallback );
         pybind::def_function( _kernel, "removeAndroidCallback", &Detail::AndroidNativePythonService_removeAndroidCallback );
         pybind::def_function_args( _kernel, "androidMethod", &Detail::AndroidNativePythonService_androidMethod );

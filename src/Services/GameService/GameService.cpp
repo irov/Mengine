@@ -87,13 +87,16 @@ namespace Mengine
         ANALYTICS_SERVICE()
             ->removeEventProvider( AnalyticsEventProviderInterfacePtr::from( this ) );
 
+        m_iconPath.clear();
+        m_currentPackName.clear();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void GameService::_stopService()
+    {
         this->removeEvents();
 
         m_userEventsAdd.clear();
         m_userEvents.clear();
-
-        m_iconPath.clear();
-        m_currentPackName.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     bool GameService::handleKeyEvent( const InputKeyEvent & _event )

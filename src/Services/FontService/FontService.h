@@ -13,6 +13,8 @@ namespace Mengine
     class FontService
         : public ServiceBase<FontServiceInterface>
     {
+        DECLARE_FACTORABLE( FontService );
+
     public:
         FontService();
         ~FontService() override;

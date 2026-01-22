@@ -1,6 +1,13 @@
 MENGINE_PROJECT(SimpleFramework)
 
 ADD_FILTER(
+SimpleFrameworkPlugin
+    SimpleFrameworkPlugin.cpp
+    SimpleFrameworkPlugin.h
+    SimpleFrameworkPlugin.def
+)
+
+ADD_FILTER(
 SimpleSprite
     SimpleRandomizer.cpp
     SimpleRandomizer.h

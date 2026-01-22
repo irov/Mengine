@@ -10,6 +10,8 @@ namespace Mengine
     class SettingsService
         : public ServiceBase<SettingsServiceInterface>
     {
+        DECLARE_FACTORABLE( SettingsService );
+
     public:
         SettingsService();
         ~SettingsService() override;

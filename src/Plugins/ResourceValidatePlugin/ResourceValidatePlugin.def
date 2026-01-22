@@ -1,2 +1,3 @@
 LIBRARY "ResourceValidatePlugin"
-EXPORTS dllCreatePlugin @1
+EXPORTS 
+    dllMengineCreatePlugin @1

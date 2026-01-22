@@ -20,16 +20,18 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void LifecycleService::registerService( ServiceInterface * _service )
+    bool LifecycleService::registerService( ServiceInterface * _service )
     {
         LifecycleInterface * lifecycle = _service->getLifecycleable();
 
         if( lifecycle == nullptr )
         {
-            return;
+            return true;
         }
 
         this->registerLifecycle( lifecycle );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void LifecycleService::unregisterService( ServiceInterface * _service )

@@ -8,7 +8,6 @@ namespace Mengine
 {
     class SoundScriptEmbedding
         : public ScriptEmbeddingInterface
-        , public Factorable
     {
         DECLARE_FACTORABLE( SoundScriptEmbedding );
 

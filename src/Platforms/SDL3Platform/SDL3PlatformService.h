@@ -40,6 +40,8 @@ namespace Mengine
         : public ServiceBase<PlatformServiceInterface>
         , public SDL3PlatformServiceExtensionInterface
     {
+        DECLARE_FACTORABLE( SDL3PlatformService );
+        DECLARE_VISITABLE( ServiceInterface );
         DECLARE_UNKNOWABLE();
 
     public:

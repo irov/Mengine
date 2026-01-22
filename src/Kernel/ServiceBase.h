@@ -4,6 +4,7 @@
 #include "Interface/ServiceProviderInterface.h"
 
 #include "Kernel/Observable.h"
+#include "Kernel/BaseLifecycle.h"
 #include "Kernel/AssertionObservable.h"
 
 #include "Config/TypeTraits.h"
@@ -14,6 +15,7 @@ namespace Mengine
     class ServiceBase
         : public T
         , public Observable
+        , protected BaseLifecycle
     {
         static_assert(TypeTraits::is_base_of<ServiceInterface, T>, "T must derive from ServiceInterface");
 
@@ -42,11 +44,13 @@ namespace Mengine
         }
 
     protected:
-        void registerService( ServiceInterface * _service ) override
+        bool registerService( ServiceInterface * _service ) override
         {
             MENGINE_UNUSED( _service );
 
             //Empty
+
+            return true;
         }
 
         void unregisterService( ServiceInterface * _service ) override

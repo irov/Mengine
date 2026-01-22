@@ -10,6 +10,8 @@ namespace Mengine
     class DocumentService
         : public ServiceBase<DocumentServiceInterface>
     {
+        DECLARE_FACTORABLE( DocumentService );
+
     public:
         DocumentService();
         ~DocumentService() override;

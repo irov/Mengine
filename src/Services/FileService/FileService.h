@@ -13,6 +13,8 @@ namespace Mengine
     class FileService
         : public ServiceBase<FileServiceInterface>
     {
+        DECLARE_FACTORABLE( FileService );
+
     public:
         FileService();
         ~FileService() override;

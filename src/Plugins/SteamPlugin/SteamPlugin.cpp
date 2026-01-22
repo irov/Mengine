@@ -1,5 +1,7 @@
 #include "SteamPlugin.h"
 
+#include "Interface/ScriptServiceInterface.h"
+
 #include "Kernel/ModuleFactory.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/ConfigHelper.h"

@@ -8,7 +8,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef bool(*TPluginCreate)(ServiceProviderInterface * _serviceProvider, PluginInterface ** const _plugin, UniqueId _uid, bool _dynamic);
+    typedef bool(*TPluginCreate)(ServiceProviderInterface * _serviceProvider, PluginInterface ** const _plugin, UniqueId _uid, bool _dynamic, bool _framework);
     typedef bool(*TPluginDestroy)(ServiceProviderInterface * _serviceProvider, PluginInterface * _plugin, UniqueId _uid);
     //////////////////////////////////////////////////////////////////////////
     class PluginServiceInterface
@@ -17,8 +17,8 @@ namespace Mengine
         SERVICE_DECLARE( "PluginService" )
 
     public:
-        virtual bool loadPlugin( const Char * _dynamicLibraryName, const DocumentInterfacePtr & _doc ) = 0;
-        virtual bool createPlugin( const DynamicLibraryInterfacePtr & _dynamicLibrary, TPluginCreate _create, bool _dynamic, const DocumentInterfacePtr & _doc ) = 0;
+        virtual bool loadPlugin( const Char * _dynamicLibraryName, bool _frameworkMode, const DocumentInterfacePtr & _doc ) = 0;
+        virtual bool createPlugin( const DynamicLibraryInterfacePtr & _dynamicLibrary, TPluginCreate _create, bool _dynamicLoad, bool _frameworkMode, const DocumentInterfacePtr & _doc ) = 0;
         virtual void unloadPlugins() = 0;
 
     public:
@@ -37,6 +37,6 @@ namespace Mengine
 #define PLUGIN_SERVICE()\
     ((Mengine::PluginServiceInterface *)SERVICE_GET(Mengine::PluginServiceInterface))
 //////////////////////////////////////////////////////////////////////////
-#define PLUGIN_CREATE(Name, Doc)\
-    PLUGIN_SERVICE()->createPlugin( nullptr, &PLUGIN_FUNCTION( Name ), false, Doc )
+#define PLUGIN_CREATE(Name, FrameworkMode, Doc)\
+    PLUGIN_SERVICE()->createPlugin( nullptr, &PLUGIN_FUNCTION( Name ), false, FrameworkMode, Doc )
 //////////////////////////////////////////////////////////////////////////

@@ -1,0 +1,3 @@
+LIBRARY	"UIFrameworkPlugin"
+EXPORTS 
+    dllMengineCreatePlugin @1

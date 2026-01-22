@@ -2,13 +2,19 @@
 
 #include "Kernel/PluginBase.h"
 
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+#include "TexturepackerScriptEmbedding.h"
+#endif
+
 namespace Mengine
 {
     class TexturepackerPlugin
         : public PluginBase
+        , protected EXTEND_EMBEDDABLE( TexturepackerScriptEmbedding )
     {
-    public:
-        PLUGIN_DECLARE( "Texturepacker" )
+        PLUGIN_DECLARE( "Texturepacker" );
+        DECLARE_VISITABLE( PluginInterface );
+        DECLARE_EMBEDDABLE();
 
     public:
         TexturepackerPlugin();

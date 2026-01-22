@@ -86,16 +86,23 @@ public class MengineMonitorConnectivityStatusService extends MengineService impl
             for (Network network : networks) {
                 NetworkCapabilities nc = cm.getNetworkCapabilities(network);
 
-                if (nc != null &&
-                    nc.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true &&
-                    nc.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) == true ) {
-
-                    available = true;
-                    unmetered = nc.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED);
-                    transport = MengineMonitorConnectivityStatusService.getNetworkTransport(nc);
-
-                    break;
+                if (nc == null) {
+                    continue;
                 }
+
+                if (nc.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == false ||
+                    nc.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) == false) {
+                    continue;
+                }
+
+                final boolean candidateUnmetered = nc.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED);
+                final MengineNetworkTransport candidateTransport = MengineMonitorConnectivityStatusService.getNetworkTransport(nc);
+
+                available = true;
+                unmetered = candidateUnmetered;
+                transport = candidateTransport;
+
+                break;
             }
         } catch (SecurityException e) {
             MengineMonitorConnectivityStatusService.this.logError("SecurityException ACCESS_NETWORK_STATE missing [exception: %s]"

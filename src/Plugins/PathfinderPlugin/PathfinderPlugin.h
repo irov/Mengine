@@ -2,12 +2,19 @@
 
 #include "Kernel/PluginBase.h"
 
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+#   include "PathfinderScriptEmbedding.h"
+#endif
+
 namespace Mengine
 {
     class PathfinderPlugin
         : public PluginBase
+        , protected EXTEND_EMBEDDABLE( PathfinderScriptEmbedding )
     {
-        PLUGIN_DECLARE( "Pathfinder" )
+        PLUGIN_DECLARE( "Pathfinder" );
+        DECLARE_VISITABLE( PluginInterface );
+        DECLARE_EMBEDDABLE();
 
     public:
         PathfinderPlugin();

@@ -44,6 +44,5 @@ namespace Mengine
         virtual void androidNativeLowMemoryEvent() = 0;
         virtual void androidNativeTrimMemoryEvent( jint _level ) = 0;
         virtual void androidNativeChangeLocale( const Mengine::Char * _language ) = 0;
-        virtual jboolean androidNativeProcessEvents() = 0;
     };
 }

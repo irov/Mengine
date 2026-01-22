@@ -19,6 +19,7 @@ namespace Mengine
         : public ServiceBase<SoundSystemInterface>
         , public OpenALSoundSystemExtensionInterface
     {
+        DECLARE_FACTORABLE( OpenALSoundSystem );
         DECLARE_UNKNOWABLE();
 
     public:

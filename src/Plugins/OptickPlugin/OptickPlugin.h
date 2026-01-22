@@ -9,7 +9,7 @@ namespace Mengine
     class OptickPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "Optick" )
+        PLUGIN_DECLARE( "Optick" );
 
     public:
         OptickPlugin();

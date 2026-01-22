@@ -14,7 +14,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     TimerService::TimerService()
-        : m_prevTime( ~0ULL )
+        : m_prevTime( MENGINE_UINT64_C( ~0 ) )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -90,7 +90,7 @@ namespace Mengine
     {
         Timestamp currentTime = Helper::getSystemTimestamp();
 
-        Timestamp deltaTime = m_prevTime == ~0ULL ? 0ULL : currentTime - m_prevTime;
+        Timestamp deltaTime = m_prevTime == MENGINE_UINT64_C( ~0 ) ? MENGINE_UINT64_C( 0 ) : currentTime - m_prevTime;
 
         m_prevTime = currentTime;
 

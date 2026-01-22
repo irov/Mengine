@@ -24,6 +24,9 @@ namespace Mengine
         void initialize( const ContentInterfacePtr & _content, uint32_t _codecFlags );
 
     public:
+        const ContentInterfacePtr & getContent() const override;
+
+    public:
         RenderImageLoaderInterfacePtr getLoader( const DocumentInterfacePtr & _doc ) const override;
 
     protected:

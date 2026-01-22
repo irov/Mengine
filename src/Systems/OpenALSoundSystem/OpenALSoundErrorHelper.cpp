@@ -6,7 +6,7 @@
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-    namespace Helper
+    namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
         bool OpenALErrorCheck( ALenum _err, const Char * _method, const Char * _file, int32_t _line, const Char * _function, const String & _args )

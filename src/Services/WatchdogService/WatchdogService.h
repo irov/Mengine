@@ -13,6 +13,8 @@ namespace Mengine
     class WatchdogService
         : public ServiceBase<WatchdogServiceInterface>
     {
+        DECLARE_FACTORABLE( WatchdogService );
+
     public:
         WatchdogService();
         ~WatchdogService() override;

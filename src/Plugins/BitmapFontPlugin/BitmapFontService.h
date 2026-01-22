@@ -11,6 +11,8 @@ namespace Mengine
     class BitmapFontService
         : public ServiceBase<BitmapFontServiceInterface>
     {
+        DECLARE_FACTORABLE( BitmapFontService );
+
     public:
         BitmapFontService();
         ~BitmapFontService() override;

@@ -8,7 +8,6 @@ namespace Mengine
 {
     class ResourceScriptEmbedding
         : public ScriptEmbeddingInterface
-        , public Factorable
     {
         DECLARE_FACTORABLE( ResourceScriptEmbedding );
 

@@ -7,7 +7,7 @@ namespace Mengine
     class DDSPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "DDS" )
+        PLUGIN_DECLARE( "DDS" );
 
     public:
         DDSPlugin();

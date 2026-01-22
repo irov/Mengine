@@ -23,10 +23,10 @@ namespace Mengine
         void initialize( size_t _size, size_t _pitch, const Rect & _rect );
 
     public:
-        const Rect & getLockedRect() const;
+        const Rect & getLockedRect() const override;
 
     public:
-        Pointer getBuffer( size_t * const _pitch ) const override;
+        Pointer getLockedBuffer( size_t * const _pitch ) const override;
 
     protected:
         MemoryInterfacePtr m_lockedMemory;

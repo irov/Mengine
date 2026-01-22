@@ -98,7 +98,7 @@ namespace Mengine
 
         if( HAS_OPTION( "seed" ) == true )
         {
-            uint64_t randomSeed = GET_OPTION_VALUE_UINT32( "seed", 0ULL );
+            uint64_t randomSeed = GET_OPTION_VALUE_UINT32( "seed", MENGINE_UINT64_C( 0 ) );
 
             m_randomizer = Helper::makeFactorableUnique<MT19937Randomizer>( MENGINE_DOCUMENT_FACTORABLE, randomSeed );
         }

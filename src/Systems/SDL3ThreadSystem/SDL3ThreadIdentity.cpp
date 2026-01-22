@@ -102,9 +102,9 @@ namespace Mengine
 
         m_thread = thread;
 
-        LOGGER_INFO( "thread", "create thread name: %s id: %llu priority: %d"
+        LOGGER_INFO( "thread", "create thread name: %s id: %" MENGINE_PRIu64 " priority : % d"
             , m_description.nameA
-            , (unsigned long long)m_threadId
+            , (uint64_t)m_threadId
             , m_priority
         );
 
@@ -126,17 +126,17 @@ namespace Mengine
         if( PLATFORM_SYSTEM()
             ->beginThread( (ThreadId)m_threadId ) == false )
         {
-            LOGGER_ERROR( "invalid begin thread '%s' id: %llu"
+            LOGGER_ERROR( "invalid begin thread '%s' id: %" MENGINE_PRIu64
                 , m_description.nameA
-                , m_threadId
+                , (uint64_t)m_threadId
             );
 
             return;
         }
 
-        LOGGER_INFO( "thread", "create thread name: %s id: %llu priority: %d"
+        LOGGER_INFO( "thread", "create thread name: %s id: %" MENGINE_PRIu64 " priority: %d"
             , m_description.nameA
-            , m_threadId
+            , (uint64_t)m_threadId
             , m_priority
         );
 

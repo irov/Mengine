@@ -523,7 +523,7 @@ namespace Mengine
         );
 
         size_t pitch = 0;
-        void * lockRect = locked->getBuffer( &pitch );
+        void * lockRect = locked->getLockedBuffer( &pitch );
 
         MENGINE_ASSERTION_MEMORY_PANIC( lockRect, "surface '%s' resource '%s' invalid lock texture [%u:%u]"
             , this->getName().c_str()

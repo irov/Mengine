@@ -8,7 +8,6 @@ namespace Mengine
 {
     class AmplifierScriptEmbedding
         : public ScriptEmbeddingInterface
-        , public Factorable
     {
         DECLARE_FACTORABLE( AmplifierScriptEmbedding );
 

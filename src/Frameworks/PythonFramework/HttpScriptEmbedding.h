@@ -7,13 +7,11 @@
 #include "Environment/Python/PythonIncluder.h"
 
 #include "Kernel/Params.h"
-#include "Kernel/Factorable.h"
 
 namespace Mengine
 {
     class HttpScriptEmbedding
         : public ScriptEmbeddingInterface
-        , public Factorable
     {
         DECLARE_FACTORABLE( HttpScriptEmbedding );
 

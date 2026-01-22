@@ -4,7 +4,6 @@
 #include "Interface/ThreadMutexInterface.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/BaseLifecycle.h"
 #include "Kernel/Resolution.h"
 #include "Kernel/Viewport.h"
 #include "Kernel/Vector.h"
@@ -13,8 +12,8 @@ namespace Mengine
 {
     class InputService
         : public ServiceBase<InputServiceInterface>
-        , protected BaseLifecycle
     {
+        DECLARE_FACTORABLE( InputService );
         DECLARE_LIFECYCLEABLE();
 
     public:

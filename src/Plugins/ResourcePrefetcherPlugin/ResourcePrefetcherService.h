@@ -10,6 +10,8 @@ namespace Mengine
     class ResourcePrefetcherService
         : public ServiceBase<ResourcePrefetcherServiceInterface>
     {
+        DECLARE_FACTORABLE( ResourcePrefetcherService );
+
     public:
         ResourcePrefetcherService();
         ~ResourcePrefetcherService() override;

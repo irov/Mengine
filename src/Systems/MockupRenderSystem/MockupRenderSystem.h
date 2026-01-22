@@ -22,6 +22,8 @@ namespace Mengine
     class MockupRenderSystem
         : public ServiceBase<RenderSystemInterface>
     {
+        DECLARE_FACTORABLE( MockupRenderSystem );
+
     public:
         MockupRenderSystem();
         ~MockupRenderSystem() override;

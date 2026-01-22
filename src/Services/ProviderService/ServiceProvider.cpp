@@ -233,7 +233,15 @@ namespace Mengine
             );
         }
 
-        this->autoRegistration_( _desc );
+        if( this->autoRegistration_( _desc ) == false )
+        {
+            *_result = false;
+
+            MENGINE_THROW_EXCEPTION( "invalid auto registration service '%s' (doc: %s)"
+                , service->getServiceId()
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
+        }
 
         this->deferredRequiredInitialize_( _desc, _doc, _result );
     }
@@ -577,7 +585,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ServiceProvider::autoRegistration_( ServiceDesc * const _desc )
+    bool ServiceProvider::autoRegistration_( ServiceDesc * const _desc )
     {
         for( uint32_t index_service = 0; index_service != m_servicesCount; ++index_service )
         {
@@ -598,8 +606,13 @@ namespace Mengine
                 continue;
             }
 
-            desc.service->registerService( _desc->service.get() );
+            if( desc.service->registerService( _desc->service.get() ) == false )
+            {
+                return false;
+            }
         }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ServiceProvider::autoUnregistration_( ServiceDesc * const _desc )

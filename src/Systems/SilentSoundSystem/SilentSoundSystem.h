@@ -15,6 +15,8 @@ namespace Mengine
     class SilentSoundSystem
         : public ServiceBase<SoundSystemInterface>
     {
+        DECLARE_FACTORABLE( SilentSoundSystem );
+
     public:
         SilentSoundSystem();
         ~SilentSoundSystem() override;

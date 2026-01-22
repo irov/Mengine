@@ -9,6 +9,8 @@ namespace Mengine
     class Win32KernelService
         : public ServiceBase<Win32KernelServiceInterface>
     {
+        DECLARE_FACTORABLE( Win32KernelService );
+
     public:
         Win32KernelService();
         ~Win32KernelService() override;

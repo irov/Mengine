@@ -24,6 +24,8 @@ namespace Mengine
     class RenderMaterialService
         : public ServiceBase<RenderMaterialServiceInterface>
     {
+        DECLARE_FACTORABLE( RenderMaterialService );
+
     public:
         RenderMaterialService();
         ~RenderMaterialService() override;

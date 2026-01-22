@@ -1,21 +1,16 @@
 #include "UIFrameworkPlugin.h"
 
-#include "Interface/FrameworkFactoryInterface.h"
-#include "Interface/ScriptServiceInterface.h"
-#include "Interface/ScriptProviderServiceInterface.h"
+#include "Button.h"
+#include "Checkbox.h"
 
-#include "UIFramework.h"
-
-#include "Kernel/ConstStringHelper.h"
-#include "Kernel/FrameworkFactory.h"
-#include "Kernel/VocabularyHelper.h"
 #include "Kernel/PluginHelper.h"
+#include "Kernel/PrototypeHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( UIFramework, Mengine::UIFrameworkPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
-{    
+{
     //////////////////////////////////////////////////////////////////////////
     UIFrameworkPlugin::UIFrameworkPlugin()
     {
@@ -27,14 +22,23 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool UIFrameworkPlugin::_initializePlugin()
     {
-        VOCABULARY_SET( FrameworkFactoryInterface, STRINGIZE_STRING_LOCAL( "Framework" ), UIFramework::getFactorableType(), Helper::makeFrameworkFactory<UIFramework>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+        if( Helper::addNodePrototype<Button, 128>( MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
+
+        if( Helper::addNodePrototype<Checkbox, 128>( MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void UIFrameworkPlugin::_finalizePlugin()
     {
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Framework" ), UIFramework::getFactorableType() );
+        Helper::removeNodePrototype<Button>();
+        Helper::removeNodePrototype<Checkbox>();
     }
     //////////////////////////////////////////////////////////////////////////
     void UIFrameworkPlugin::_destroyPlugin()

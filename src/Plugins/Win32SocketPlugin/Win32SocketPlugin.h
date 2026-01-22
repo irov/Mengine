@@ -7,7 +7,7 @@ namespace Mengine
     class Win32SocketPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "Win32Socket" )
+        PLUGIN_DECLARE( "Win32Socket" );
 
     public:
         Win32SocketPlugin();

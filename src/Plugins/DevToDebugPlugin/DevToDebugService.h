@@ -21,6 +21,8 @@ namespace Mengine
         : public ServiceBase<DevToDebugServiceInterface>
         , public HttpReceiverInterface
     {
+        DECLARE_FACTORABLE( DevToDebugService );
+
     public:
         DevToDebugService();
         ~DevToDebugService() override;

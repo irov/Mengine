@@ -14,7 +14,9 @@ namespace Mengine
 {
     class SteamService
         : public ServiceBase<SteamServiceInterface>
-    {
+    {        
+        DECLARE_FACTORABLE( SteamService );
+
     public:
         SteamService();
         ~SteamService() override;

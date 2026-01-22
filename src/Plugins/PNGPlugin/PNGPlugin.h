@@ -7,7 +7,7 @@ namespace Mengine
     class PNGPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "PNG" )
+        PLUGIN_DECLARE( "PNG" );
 
     public:
         PNGPlugin();

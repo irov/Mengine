@@ -9,7 +9,7 @@ namespace Mengine
     class Win32AntifreezeMonitorPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "Win32AntifreezeMonitor" )
+        PLUGIN_DECLARE( "Win32AntifreezeMonitor" );
 
     public:
         Win32AntifreezeMonitorPlugin();

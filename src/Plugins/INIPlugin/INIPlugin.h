@@ -7,7 +7,7 @@ namespace Mengine
     class INIPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "INI" )
+        PLUGIN_DECLARE( "INI" );
 
     public:
         INIPlugin();

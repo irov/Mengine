@@ -4,7 +4,6 @@
 #include "Interface/TimepipeInterface.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/BaseLifecycle.h"
 #include "Kernel/Hashtable.h"
 #include "Kernel/Vector.h"
 
@@ -12,8 +11,8 @@ namespace Mengine
 {
     class ModuleService
         : public ServiceBase<ModuleServiceInterface>
-        , protected BaseLifecycle
     {
+        DECLARE_FACTORABLE( ModuleService );
         DECLARE_LIFECYCLEABLE();
 
     public:

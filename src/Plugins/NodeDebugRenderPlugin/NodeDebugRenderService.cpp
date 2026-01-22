@@ -82,7 +82,7 @@ namespace Mengine
         }, MENGINE_DOCUMENT_FACTORABLE );
 
         m_timerFPS = TIMER_SERVICE()
-            ->addTimer( 1000ULL, [this]( UniqueId _id )
+            ->addTimer( MENGINE_UINT64_C( 1000 ), [this]( UniqueId _id )
         {
             MENGINE_UNUSED( _id );
 

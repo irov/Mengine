@@ -2,12 +2,19 @@
 
 #include "Kernel/PluginBase.h"
 
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+#   include "ResourcePrefetcherScriptEmbedding.h"
+#endif
+
 namespace Mengine
 {
     class ResourcePrefetcherPlugin
         : public PluginBase
+        , protected EXTEND_EMBEDDABLE( ResourcePrefetcherScriptEmbedding )
     {
-        PLUGIN_DECLARE( "ResourcePrefetcher" )
+        PLUGIN_DECLARE( "ResourcePrefetcher" );
+        DECLARE_VISITABLE( PluginInterface );
+        DECLARE_EMBEDDABLE();
 
     public:
         ResourcePrefetcherPlugin();

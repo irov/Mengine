@@ -168,7 +168,7 @@ namespace Mengine
 
         m_thread = thread;
 
-        Timestamp DevToDebug_PropertySyncTime = CONFIG_VALUE_INTEGER( "DevToDebugPlugin", "PropertySyncTime", 1000ULL );
+        Timestamp DevToDebug_PropertySyncTime = CONFIG_VALUE_INTEGER( "DevToDebugPlugin", "PropertySyncTime", MENGINE_UINT64_C( 1000 ) );
 
         UniqueId timerId = TIMER_SERVICE()
             ->addTimer( DevToDebug_PropertySyncTime, [this]( UniqueId _id )

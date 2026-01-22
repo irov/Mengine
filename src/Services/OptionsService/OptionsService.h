@@ -21,6 +21,8 @@ namespace Mengine
     class OptionsService
         : public ServiceBase<OptionsServiceInterface>
     {
+        DECLARE_FACTORABLE( OptionsService );
+
     public:
         OptionsService();
         ~OptionsService() override;

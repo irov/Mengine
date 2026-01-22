@@ -7,7 +7,7 @@ namespace Mengine
     class WAVPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "WAV" )
+        PLUGIN_DECLARE( "WAV" );
 
     public:
         WAVPlugin();

@@ -16,6 +16,8 @@ namespace Mengine
         : public ServiceBase<GraveyardServiceInterface>
         , public TimepipeInterface
     {
+        DECLARE_FACTORABLE( GraveyardService );
+
     public:
         GraveyardService();
         ~GraveyardService() override;

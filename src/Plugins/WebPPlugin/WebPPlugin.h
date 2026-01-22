@@ -9,7 +9,7 @@ namespace Mengine
     class WebPPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "WebP" )
+        PLUGIN_DECLARE( "WebP" );
 
     public:
         WebPPlugin();

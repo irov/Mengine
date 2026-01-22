@@ -1,3 +1,3 @@
-LIBRARY		"FEPlugin"
-EXPORTS 	
-	dllCreatePlugin 	@1
+LIBRARY	"FEPlugin"
+EXPORTS 
+    dllMengineCreatePlugin @1

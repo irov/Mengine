@@ -17,6 +17,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PluginBase::PluginBase()
         : m_dynamicLoad( false )
+        , m_frameworkMode( false )
         , m_initializePlugin( false )
         , m_availablePlugin( true )
         , m_systemPlugin( false )
@@ -36,6 +37,16 @@ namespace Mengine
     bool PluginBase::isDynamicLoad() const
     {
         return m_dynamicLoad;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PluginBase::setFrameworkMode( bool _frameworkMode )
+    {
+        m_frameworkMode = _frameworkMode;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PluginBase::isFrameworkMode() const
+    {
+        return m_frameworkMode;
     }
     //////////////////////////////////////////////////////////////////////////
     bool PluginBase::_availablePlugin() const
@@ -58,6 +69,21 @@ namespace Mengine
         static ServiceRequiredList required = {};
 
         return required;
+    }
+    bool PluginBase::registerPlugin( const PluginInterfacePtr & _plugin )
+    {
+        MENGINE_UNUSED( _plugin );
+
+        //Empty
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PluginBase::unregisterPlugin( const PluginInterfacePtr & _plugin )
+    {
+        MENGINE_UNUSED( _plugin );
+
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     bool PluginBase::initializePlugin()

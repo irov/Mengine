@@ -8,7 +8,6 @@ namespace Mengine
 {
     class SpineScriptEmbedding
         : public ScriptEmbeddingInterface
-        , public Factorable
     {
         DECLARE_FACTORABLE( SpineScriptEmbedding );
 

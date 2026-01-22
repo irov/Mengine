@@ -12,6 +12,8 @@ namespace Mengine
     class UserdataService
         : public ServiceBase<UserdataServiceInterface>
     {
+        DECLARE_FACTORABLE( UserdataService );
+
     public:
         UserdataService();
         ~UserdataService() override;

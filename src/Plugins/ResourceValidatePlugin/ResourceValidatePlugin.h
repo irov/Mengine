@@ -7,7 +7,7 @@ namespace Mengine
     class ResourceValidatePlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "ResourceValidate" )
+        PLUGIN_DECLARE( "ResourceValidate" );
 
     public:
         ResourceValidatePlugin();

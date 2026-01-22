@@ -103,20 +103,6 @@ namespace Mengine
         m_iso639_1["turkish"] = STRINGIZE_STRING_LOCAL( "tr" );
         m_iso639_1["ukrainian"] = STRINGIZE_STRING_LOCAL( "ua" );
 
-#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
-        {
-            SCRIPT_SERVICE()
-                ->addScriptEmbedding( SteamScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<SteamScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
-        }, MENGINE_DOCUMENT_FACTORABLE );
-
-        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
-        {
-            SCRIPT_SERVICE()
-                ->removeScriptEmbedding( SteamScriptEmbedding::getFactorableType() );
-        }, MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_PACKAGES_LOAD, &SteamService::notifyPackagesLoad_, MENGINE_DOCUMENT_FACTORABLE );
 
         ISteamClient * client = SteamClient();
@@ -222,11 +208,6 @@ namespace Mengine
         {
             return;
         }
-
-#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
-#endif
 
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_PACKAGES_LOAD );
 

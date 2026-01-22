@@ -26,6 +26,11 @@ namespace Mengine
         m_codecFlags = _codecFlags;
     }
     //////////////////////////////////////////////////////////////////////////
+    const ContentInterfacePtr & DecoderRenderImageProvider::getContent() const
+    {
+        return m_content;
+    }
+    //////////////////////////////////////////////////////////////////////////
     RenderImageLoaderInterfacePtr DecoderRenderImageProvider::getLoader( const DocumentInterfacePtr & _doc ) const
     {
         RenderImageLoaderInterfacePtr loader = RENDERTEXTURE_SERVICE()

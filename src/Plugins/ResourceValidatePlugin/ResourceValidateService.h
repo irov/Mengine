@@ -9,6 +9,8 @@ namespace Mengine
     class ResourceValidateService
         : public ServiceBase<ResourceValidateServiceInterface>
     {
+        DECLARE_FACTORABLE( ResourceValidateService );
+
     public:
         ResourceValidateService();
         ~ResourceValidateService() override;

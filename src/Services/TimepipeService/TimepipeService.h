@@ -12,6 +12,8 @@ namespace Mengine
     class TimepipeService
         : public ServiceBase<TimepipeServiceInterface>
     {
+        DECLARE_FACTORABLE( TimepipeService );
+
     public:
         TimepipeService();
         ~TimepipeService() override;

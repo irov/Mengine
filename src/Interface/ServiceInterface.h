@@ -32,7 +32,7 @@ namespace Mengine
         virtual const ServiceRequiredList & requiredServices() const = 0;
 
     public:
-        virtual void registerService( ServiceInterface * _service ) = 0;
+        virtual bool registerService( ServiceInterface * _service ) = 0;
         virtual void unregisterService( ServiceInterface * _service ) = 0;
 
     protected:

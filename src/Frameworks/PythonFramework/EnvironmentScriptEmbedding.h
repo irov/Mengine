@@ -2,16 +2,10 @@
 
 #include "Interface/ScriptEmbeddingInterface.h"
 
-#include "Environment/Python/PythonIncluder.h"
-
-#include "Kernel/Params.h"
-#include "Kernel/Factorable.h"
-
 namespace Mengine
 {
     class EnvironmentScriptEmbedding
         : public ScriptEmbeddingInterface
-        , public Factorable
     {
         DECLARE_FACTORABLE( EnvironmentScriptEmbedding );
 

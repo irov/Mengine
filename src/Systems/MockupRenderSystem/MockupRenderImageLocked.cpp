@@ -32,10 +32,16 @@ namespace Mengine
         memory->newBuffer( size );
 
         m_lockedMemory = memory;
+        m_lockedRect = _lockedRect;
         m_lockedPitch = pitch;
     }
     //////////////////////////////////////////////////////////////////////////
-    Pointer MockupRenderImageLocked::getBuffer( size_t * const _pitch ) const
+    const Rect & MockupRenderImageLocked::getLockedRect() const
+    {
+        return m_lockedRect;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Pointer MockupRenderImageLocked::getLockedBuffer( size_t * const _pitch ) const
     {
         *_pitch = m_lockedPitch;
 

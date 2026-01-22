@@ -11,6 +11,8 @@ namespace Mengine
     class CodecService
         : public ServiceBase<CodecServiceInterface>
     {
+        DECLARE_FACTORABLE( CodecService );
+
     public:
         CodecService();
         ~CodecService() override;

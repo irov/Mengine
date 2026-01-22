@@ -25,6 +25,8 @@ namespace Mengine
         : public ServiceBase<RenderSystemInterface>
         , public OpenGLRenderSystemExtensionInterface
     {
+        DECLARE_FACTORABLE( OpenGLRenderSystem );
+        DECLARE_VISITABLE( ServiceInterface );
         DECLARE_UNKNOWABLE();
 
     public:

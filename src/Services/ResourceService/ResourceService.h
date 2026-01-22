@@ -19,6 +19,8 @@ namespace Mengine
     class ResourceService
         : public ServiceBase<ResourceServiceInterface>
     {
+        DECLARE_FACTORABLE( ResourceService );
+
     public:
         ResourceService();
         ~ResourceService() override;
@@ -45,8 +47,8 @@ namespace Mengine
         void foreachTagsResources( const Tags & _tags, const LambdaResource & _lambda ) const override;
 
     public:
-        void visitResources( const VisitorPtr & _visitor ) const override;
-        void visitGroupResources( const ConstString & _groupName, const VisitorPtr & _visitor ) const override;
+        void visitResources( Visitor * _visitor ) const override;
+        void visitGroupResources( const ConstString & _groupName, Visitor * _visitor ) const override;
 
     protected:
         void notifyEngineFinalize_();

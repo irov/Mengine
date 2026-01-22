@@ -1,47 +1,36 @@
-#include "ImGUIPlugin.h"
+#include "SimpleFrameworkPlugin.h"
 
-#include "Kernel/ConstStringHelper.h"
-#include "Kernel/ModuleFactory.h"
-#include "Kernel/AssertionAllocator.h"
 #include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN( ImGUIService );
-//////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( ImGUI, Mengine::ImGUIPlugin );
+PLUGIN_FACTORY( SimpleFramework, Mengine::SimpleFrameworkPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    ImGUIPlugin::ImGUIPlugin()
-        : m_handlerId( 0 )
+    SimpleFrameworkPlugin::SimpleFrameworkPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    ImGUIPlugin::~ImGUIPlugin()
+    SimpleFrameworkPlugin::~SimpleFrameworkPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ImGUIPlugin::_initializePlugin()
+    bool SimpleFrameworkPlugin::_initializePlugin()
     {
-        if( SERVICE_CREATE( ImGUIService, MENGINE_DOCUMENT_FACTORABLE ) == false )
-        {
-            return false;
-        }
+        //Empty
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ImGUIPlugin::_finalizePlugin()
+    void SimpleFrameworkPlugin::_finalizePlugin()
     {
-        SERVICE_FINALIZE( ImGUIService );
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void ImGUIPlugin::_destroyPlugin()
+    void SimpleFrameworkPlugin::_destroyPlugin()
     {
-        SERVICE_DESTROY( ImGUIService );
-
-        MENGINE_ASSERTION_ALLOCATOR( "imgui" );
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
 }

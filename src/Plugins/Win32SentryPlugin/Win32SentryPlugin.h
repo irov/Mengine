@@ -7,7 +7,7 @@ namespace Mengine
     class Win32SentryPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "Sentry" )
+        PLUGIN_DECLARE( "Sentry" );
 
     public:
         Win32SentryPlugin();

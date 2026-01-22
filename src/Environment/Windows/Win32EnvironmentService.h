@@ -12,6 +12,8 @@ namespace Mengine
     class Win32EnvironmentService
         : public ServiceBase<EnvironmentServiceInterface>
     {
+        DECLARE_FACTORABLE( Win32EnvironmentService );
+
     public:
         Win32EnvironmentService();
         ~Win32EnvironmentService() override;

@@ -18,6 +18,8 @@ namespace Mengine
     class FactoryService
         : public ServiceBase<FactoryServiceInterface>
     {
+        DECLARE_FACTORABLE( FactoryService );
+
     public:
         FactoryService();
         ~FactoryService() override;

@@ -16,6 +16,8 @@ namespace Mengine
         : public ServiceBase<HttpServiceInterface>
         , public HttpReceiverInterface
     {
+        DECLARE_FACTORABLE( HttpService );
+
     public:
         HttpService();
         ~HttpService() override;

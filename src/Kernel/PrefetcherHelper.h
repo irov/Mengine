@@ -33,7 +33,7 @@ namespace Mengine
        bool unfetch( const ContentInterfacePtr & _content );
        //////////////////////////////////////////////////////////////////////////
        void foreachPrefetches( const LambdaPrefetchTask & _lambda );
-       void visitPrefetches( const VisitorPtr & _visitor );
+       void visitPrefetches( Visitor * _visitor );
        //////////////////////////////////////////////////////////////////////////
     }
 }

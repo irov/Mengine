@@ -4,12 +4,19 @@
 
 #include "steam/steam_api.h"
 
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+#include "SteamScriptEmbedding.h"
+#endif
+
 namespace Mengine
 {
     class SteamPlugin
         : public PluginBase
+        , protected EXTEND_EMBEDDABLE( SteamScriptEmbedding )
     {
-        PLUGIN_DECLARE( "Steam" )
+        PLUGIN_DECLARE( "Steam" );
+        DECLARE_VISITABLE( PluginInterface );
+        DECLARE_EMBEDDABLE();
 
     public:
         SteamPlugin();

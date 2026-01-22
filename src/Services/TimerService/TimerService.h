@@ -5,15 +5,14 @@
 #include "Interface/TimepipeInterface.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/BaseLifecycle.h"
 #include "Kernel/Vector.h"
 
 namespace Mengine
 {
     class TimerService
         : public ServiceBase<TimerServiceInterface>
-        , protected BaseLifecycle
     {
+        DECLARE_FACTORABLE( TimerService );
         DECLARE_LIFECYCLEABLE();
 
     public:

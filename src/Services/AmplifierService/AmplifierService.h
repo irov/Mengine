@@ -15,6 +15,8 @@ namespace Mengine
     class AmplifierService
         : public ServiceBase<AmplifierServiceInterface>
     {
+        DECLARE_FACTORABLE( AmplifierService );
+
     public:
         AmplifierService();
         ~AmplifierService() override;

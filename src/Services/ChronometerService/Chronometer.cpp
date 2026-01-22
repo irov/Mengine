@@ -7,10 +7,10 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Chronometer::Chronometer()
-        : m_timeBegin( 0 )
-        , m_timePauseBegin( 0 )
-        , m_timePauseCollect( 0 )
-        , m_timeBase( ~0ULL )
+        : m_timeBegin( MENGINE_UINT64_C( 0 ) )
+        , m_timePauseBegin( MENGINE_UINT64_C( 0 ) )
+        , m_timePauseCollect( MENGINE_UINT64_C( 0 ) )
+        , m_timeBase( MENGINE_UINT64_C( ~0 ) )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -34,7 +34,7 @@ namespace Mengine
 
         Timestamp chronometerTime = _currentTime - m_timeBegin - m_timePauseCollect;
 
-        if( m_timeBase == ~0ULL || chronometerTime - m_timeBase >= 1000 )
+        if( m_timeBase == MENGINE_UINT64_C( ~0 ) || chronometerTime - m_timeBase >= MENGINE_UINT64_C( 1000 ) )
         {
             m_lambda( chronometerTime );
 

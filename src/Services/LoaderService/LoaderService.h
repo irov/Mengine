@@ -20,6 +20,8 @@ namespace Mengine
     class LoaderService
         : public ServiceBase<LoaderServiceInterface>
     {
+        DECLARE_FACTORABLE( LoaderService );
+
     public:
         LoaderService();
         ~LoaderService() override;

@@ -129,6 +129,7 @@
 #include "Kernel/PrototypeHelper.h"
 #include "Kernel/NodeScreenPosition.h"
 #include "Kernel/TagsHelper.h"
+#include "Kernel/Localable.h"
 
 #include "Config/StdString.h"
 #include "Config/Lambda.h"
@@ -166,7 +167,7 @@ namespace Mengine
             }
 
         public:
-            bool initialize()
+            void initialize()
             {
                 m_factoryPythonScheduleTiming = Helper::makeFactoryPool<PythonScheduleTiming, 8>( MENGINE_DOCUMENT_FACTORABLE );
                 m_factoryPythonSchedulePipe = Helper::makeFactoryPool<PythonSchedulePipe, 8>( MENGINE_DOCUMENT_FACTORABLE );
@@ -196,8 +197,6 @@ namespace Mengine
 
                 m_creatorAffectorNodeFollowerTextureUVScale = Helper::makeFactorableUnique<AffectorNodeFollowerCreator<ShapeQuadFlex, mt::vec2f>>( MENGINE_DOCUMENT_FACTORABLE );
                 m_creatorAffectorNodeFollowerTextureUVScale->initialize();
-
-                return true;
             }
 
             void finalize()
@@ -306,7 +305,7 @@ namespace Mengine
                 }
 
                 bool successful = PLUGIN_SERVICE()
-                    ->loadPlugin( utf8_pluginName, MENGINE_DOCUMENT_PYTHON );
+                    ->loadPlugin( utf8_pluginName, false, MENGINE_DOCUMENT_PYTHON );
 
                 return successful;
             }
@@ -1378,7 +1377,7 @@ namespace Mengine
                     : public Visitor
                     , public ConcreteVisitor<HotSpot>
                     , public PythonCallbackProvider
-                    , public Factorable
+                    , public Localable
                 {
                 public:
                     HotSpotVisitor( const pybind::object & _cb, const pybind::args & _args )
@@ -1393,11 +1392,8 @@ namespace Mengine
                     }
                 };
 
-                typedef IntrusivePtr<HotSpotVisitor> HotSpotVisitorPtr;
-
-                HotSpotVisitorPtr visitor = Helper::makeFactorableUnique<HotSpotVisitor>( MENGINE_DOCUMENT_PYTHON, _cb, _args );
-
-                _scene->visitThree( visitor );
+                HotSpotVisitor visitor( _cb, _args );
+                _scene->visitThree( &visitor );
             }
             //////////////////////////////////////////////////////////////////////////
             void s_renderOneFrame()
@@ -1588,6 +1584,10 @@ namespace Mengine
 
                 if( newCodecType.empty() == true )
                 {
+                    LOGGER_ERROR( "invalid codec type for '%s'"
+                        , Helper::getFileGroupFullPath( fileGroup, _filePath ).c_str()
+                    );
+
                     return nullptr;
                 }
 
@@ -4348,10 +4348,7 @@ namespace Mengine
     {
         EngineScriptMethodPtr nodeScriptMethod = Helper::makeFactorableUnique<EngineScriptMethod>( MENGINE_DOCUMENT_FACTORABLE );
 
-        if( nodeScriptMethod->initialize() == false )
-        {
-            return false;
-        }
+        nodeScriptMethod->initialize();
 
         pybind::def_functor_args( _kernel, "createCurrentScene", nodeScriptMethod, &EngineScriptMethod::createCurrentScene );
         pybind::def_functor_args( _kernel, "setCurrentScene", nodeScriptMethod, &EngineScriptMethod::setCurrentScene );

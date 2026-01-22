@@ -9,6 +9,9 @@ namespace Mengine
     class SDL3FileSystem
         : public ServiceBase<FileSystemInterface>
     {
+        DECLARE_FACTORABLE( SDL3FileSystem );
+        DECLARE_VISITABLE( ServiceInterface );
+
     public:
         SDL3FileSystem();
         ~SDL3FileSystem() override;

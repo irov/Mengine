@@ -2,13 +2,20 @@
 
 #include "Kernel/PluginBase.h"
 
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+#include "JSONScriptEmbedding.h"
+#endif
+
 namespace Mengine
 {
     class JSONPlugin
         : public PluginBase
+        , protected EXTEND_EMBEDDABLE( JSONScriptEmbedding )
     {
     public:
-        PLUGIN_DECLARE( "JSON" )
+        PLUGIN_DECLARE( "JSON" );
+        DECLARE_VISITABLE( PluginInterface );
+        DECLARE_EMBEDDABLE();
 
     public:
         JSONPlugin();

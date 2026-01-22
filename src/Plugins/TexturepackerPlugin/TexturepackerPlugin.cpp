@@ -2,14 +2,9 @@
 
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
-#include "Interface/ScriptServiceInterface.h"
 
 #include "ResourceTexturepacker.h"
 #include "ResourceMultiTexturepacker.h"
-
-#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-#include "TexturepackerScriptEmbedding.h"
-#endif
 
 #include "LoaderResourceTexturepacker.h"
 
@@ -36,20 +31,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TexturepackerPlugin::_initializePlugin()
     {
-#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
-        {
-            SCRIPT_SERVICE()
-                ->addScriptEmbedding( TexturepackerScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<TexturepackerScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
-        }, MENGINE_DOCUMENT_FACTORABLE );
-
-        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
-        {
-            SCRIPT_SERVICE()
-                ->removeScriptEmbedding( TexturepackerScriptEmbedding::getFactorableType() );
-        }, MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
         if( Helper::addResourcePrototype<ResourceTexturepacker, 64>( MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
@@ -77,11 +58,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TexturepackerPlugin::_finalizePlugin()
     {
-#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
-#endif
-
         Helper::removeResourcePrototype<ResourceTexturepacker>();
         Helper::removeResourcePrototype<ResourceMultiTexturepacker>();
     }

@@ -1,2 +1,3 @@
-LIBRARY		"Box2DPlugin"
-EXPORTS 	dllCreatePlugin 	@1
+LIBRARY	"Box2DPlugin"
+EXPORTS 
+    dllMengineCreatePlugin @1

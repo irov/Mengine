@@ -4,21 +4,18 @@
 
 namespace Mengine
 {
-    class ImGUIPlugin
+    class ImGUIFrameworkPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "ImGUI" )
+        PLUGIN_DECLARE( "ImGUIFramework" );
 
     public:
-        ImGUIPlugin();
-        ~ImGUIPlugin() override;
+        ImGUIFrameworkPlugin();
+        ~ImGUIFrameworkPlugin() override;
 
     protected:
         bool _initializePlugin() override;
         void _finalizePlugin() override;
         void _destroyPlugin() override;
-
-    protected:
-        uint32_t m_handlerId;
     };
 }

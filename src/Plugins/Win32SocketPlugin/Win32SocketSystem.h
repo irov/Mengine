@@ -14,6 +14,8 @@ namespace Mengine
     class Win32SocketSystem
         : public ServiceBase<SocketSystemInterface>
     {
+        DECLARE_FACTORABLE( Win32SocketSystem );
+
     public:
         Win32SocketSystem();
         ~Win32SocketSystem() override;

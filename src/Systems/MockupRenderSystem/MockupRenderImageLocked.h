@@ -24,11 +24,14 @@ namespace Mengine
         void initialize( const Rect & _lockedRect, EPixelFormat _hwPixelFormat );
 
     protected:
-        Pointer getBuffer( size_t * const _pitch ) const override;
+        const Rect & getLockedRect() const override;
+
+    protected:
+        Pointer getLockedBuffer( size_t * const _pitch ) const override;
 
     protected:
         MemoryInterfacePtr m_lockedMemory;
-
+        Rect m_lockedRect;
         size_t m_lockedPitch;
     };
     //////////////////////////////////////////////////////////////////////////

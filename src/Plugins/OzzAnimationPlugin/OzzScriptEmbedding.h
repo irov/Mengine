@@ -8,7 +8,6 @@ namespace Mengine
 {
     class OzzScriptEmbedding
         : public ScriptEmbeddingInterface
-        , public Factorable
     {
         DECLARE_FACTORABLE( OzzScriptEmbedding );
 

@@ -9,6 +9,8 @@ namespace Mengine
     class EasingService
         : public ServiceBase<EasingServiceInterface>
     {
+        DECLARE_FACTORABLE( EasingService );
+
     public:
         EasingService();
         ~EasingService() override;

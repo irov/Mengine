@@ -8,7 +8,6 @@ namespace Mengine
 {
     class EngineScriptEmbedding
         : public ScriptEmbeddingInterface
-        , public Factorable
     {
         DECLARE_FACTORABLE( EngineScriptEmbedding );
 

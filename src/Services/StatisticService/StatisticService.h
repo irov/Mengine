@@ -11,6 +11,8 @@ namespace Mengine
     class StatisticService
         : public ServiceBase<StatisticServiceInterface>
     {
+        DECLARE_FACTORABLE( StatisticService );
+
     public:
         StatisticService();
         ~StatisticService() override;
@@ -44,7 +46,7 @@ namespace Mengine
         ThreadSharedMutexInterfacePtr m_mutex;
 
         bool m_statisticEnabled[MENGINE_STATISTIC_MAX_COUNT] = {true};
-        int64_t m_statisticIntegers[MENGINE_STATISTIC_MAX_COUNT] = {0LL};
+        int64_t m_statisticIntegers[MENGINE_STATISTIC_MAX_COUNT] = {MENGINE_INT64_C( 0 )};
         double m_statisticDoubles[MENGINE_STATISTIC_MAX_COUNT] = {0.0};
         ConstString m_statisticConstStrings[MENGINE_STATISTIC_MAX_COUNT];
     };

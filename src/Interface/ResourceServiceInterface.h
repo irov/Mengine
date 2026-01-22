@@ -40,8 +40,8 @@ namespace Mengine
         virtual void foreachTagsResources( const Tags & _tags, const LambdaResource & _lambda ) const = 0;
 
     public:
-        virtual void visitResources( const VisitorPtr & _visitor ) const = 0;
-        virtual void visitGroupResources( const ConstString & _groupName, const VisitorPtr & _visitor ) const = 0;
+        virtual void visitResources( Visitor * _visitor ) const = 0;
+        virtual void visitGroupResources( const ConstString & _groupName, Visitor * _visitor ) const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

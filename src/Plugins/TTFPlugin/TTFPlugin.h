@@ -15,7 +15,7 @@ namespace Mengine
     class TTFPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "TTF" )
+        PLUGIN_DECLARE( "TTF" );
 
     public:
         TTFPlugin();

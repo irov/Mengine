@@ -1,0 +1,3 @@
+LIBRARY	"SimpleFrameworkPlugin"
+EXPORTS 
+    dllMengineCreatePlugin @1

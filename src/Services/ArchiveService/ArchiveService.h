@@ -10,6 +10,8 @@ namespace Mengine
     class ArchiveService
         : public ServiceBase<ArchiveServiceInterface>
     {
+        DECLARE_FACTORABLE( ArchiveService );
+
     public:
         ArchiveService();
         ~ArchiveService() override;

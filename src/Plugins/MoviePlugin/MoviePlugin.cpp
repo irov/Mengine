@@ -13,10 +13,6 @@
 #include "Plugins/ResourcePrefetcherPlugin/ResourcePrefetcherServiceInterface.h"
 #include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
 
-#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-#include "Movie2ScriptEmbedding.h"
-#endif
-
 #include "DataflowAEZ.h"
 #include "Movie2DebugRender.h"
 
@@ -125,6 +121,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
+    // cppcheck-suppress uninitMemberVar
     MoviePlugin::MoviePlugin()
         : m_movieInstance( nullptr )
     {
@@ -141,20 +138,6 @@ namespace Mengine
         m_hashkey = MoviePlugin_HASHKEY;
 
         m_movieInstance = ae_create_movie_instance( m_hashkey.c_str(), &Detail::stdex_movie_alloc, &Detail::stdex_movie_alloc_n, &Detail::stdex_movie_free, &Detail::stdex_movie_free_n, 0, &Detail::stdex_movie_logerror, this );
-
-#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-        NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EMBEDDING, this, [MENGINE_DOCUMENT_ARGUMENTS( this )]()
-        {
-            SCRIPT_SERVICE()
-                ->addScriptEmbedding( Movie2ScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<Movie2ScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
-        }, MENGINE_DOCUMENT_FACTORABLE );
-
-        NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EJECTING, this, []()
-        {
-            SCRIPT_SERVICE()
-                ->removeScriptEmbedding( Movie2ScriptEmbedding::getFactorableType() );
-        }, MENGINE_DOCUMENT_FACTORABLE );
-#endif
 
         if( Helper::addNodePrototype<Movie2, 128>( MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
@@ -275,11 +258,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MoviePlugin::_finalizePlugin()
     {
-#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
-#endif
-
         ae_delete_movie_instance( m_movieInstance );
         m_movieInstance = nullptr;
 

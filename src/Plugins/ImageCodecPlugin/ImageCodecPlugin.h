@@ -7,7 +7,7 @@ namespace Mengine
     class ImageCodecPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "ImageCodec" )
+        PLUGIN_DECLARE( "ImageCodec" );
 
     public:
         ImageCodecPlugin();

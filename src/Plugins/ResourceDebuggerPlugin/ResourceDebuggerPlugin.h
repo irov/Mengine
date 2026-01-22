@@ -9,7 +9,7 @@ namespace Mengine
     class ResourceDebuggerPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "ResourceDebugger" )
+        PLUGIN_DECLARE( "ResourceDebugger" );
 
     public:
         ResourceDebuggerPlugin();

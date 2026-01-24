@@ -92,6 +92,8 @@ namespace Mengine
 
     public:
         MENGINE_INLINE uint32_t getCompileReferenceCount() const;
+        MENGINE_INLINE uint32_t getPrefetchReferenceCount() const;
+        MENGINE_INLINE uint32_t getCacheReferenceCount() const;
 
     public:
         typedef Lambda<bool()> LambdaPrefetch;
@@ -184,6 +186,20 @@ namespace Mengine
     MENGINE_INLINE uint32_t Resource::getCompileReferenceCount() const
     {
         uint32_t count = m_compileReferenceCount.getReferenceCount();
+
+        return count;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE uint32_t Resource::getPrefetchReferenceCount() const
+    {
+        uint32_t count = m_prefetchReferenceCount.getReferenceCount();
+
+        return count;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE uint32_t Resource::getCacheReferenceCount() const
+    {
+        uint32_t count = m_cacheReferenceCount.getReferenceCount();
 
         return count;
     }

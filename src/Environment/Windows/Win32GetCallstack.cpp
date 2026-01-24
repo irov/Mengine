@@ -469,7 +469,7 @@ namespace Mengine
 
             HANDLE hThread;
 
-            if( _threadId == ~0U )
+            if( _threadId == MENGINE_UINT32_C(~0) )
             {
                 hThread = ::GetCurrentThread();
             }
@@ -489,7 +489,7 @@ namespace Mengine
 
             (*pSymCleanup)(hProcess);
 
-            if( _threadId != ~0U )
+            if( _threadId != MENGINE_UINT32_C(~0) )
             {
                 ::CloseHandle( hThread );
             }
@@ -501,7 +501,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
 #else
         //////////////////////////////////////////////////////////////////////////
-        bool Win32GetCallstack( DWORD _threadId, PCONTEXT _context, Char * const _stack, size_t _capacity )
+        bool Win32GetCallstack( ThreadId _threadId, PCONTEXT _context, Char * const _stack, size_t _capacity )
         {
             MENGINE_UNUSED( _threadId );
             MENGINE_UNUSED( _context );

@@ -18,6 +18,7 @@ ADD_FILTER(
 Win32Application
     Win32Application.cpp
     Win32Application.h
+    Win32Application.def
 )
 
 if(MENGINE_TOOLCHAIN_MINGW)

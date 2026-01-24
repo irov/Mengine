@@ -36,7 +36,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MemoryUsageMonitor::initialize()
     {
-        uint32_t MemoryUsageMonitor_Seconds = CONFIG_VALUE_INTEGER( "MemoryUsageMonitorPlugin", "Seconds", 10U );
+        uint32_t MemoryUsageMonitor_Seconds = CONFIG_VALUE_INTEGER( "MemoryUsageMonitorPlugin", "Seconds", MENGINE_UINT32_C(10) );
 
         MENGINE_ASSERTION_FATAL( MemoryUsageMonitor_Seconds != 0, "invalid seconds" );
 

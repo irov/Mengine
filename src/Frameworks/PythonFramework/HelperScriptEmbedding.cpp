@@ -442,7 +442,7 @@ namespace Mengine
             {
                 MENGINE_UNUSED( _group );
 
-                return 0U;
+                return MENGINE_UINT32_C(0);
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_intersectPathVsCircle( const pybind::list & _path, const mt::vec3f & _position, float _radius )
@@ -789,7 +789,7 @@ namespace Mengine
             uint32_t s_getOptionUInt32( const Char * _option )
             {
                 uint32_t value = OPTIONS_SERVICE()
-                    ->getOptionUInt32( _option, 0U );
+                    ->getOptionUInt32( _option, MENGINE_UINT32_C(0) );
 
                 return value;
             }

@@ -320,7 +320,7 @@ namespace Mengine
                     , op.value[0].c_str()
                 );
 
-                return 0U;
+                return MENGINE_UINT32_C(0);
             }
 
             return value_uint32;

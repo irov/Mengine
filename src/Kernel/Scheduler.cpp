@@ -34,7 +34,7 @@ namespace Mengine
     {
         UpdationInterface * updation = this->getUpdation();
 
-        updation->activate( EUM_SERVICE_BEFORE, 0U );
+        updation->activate( EUM_SERVICE_BEFORE, MENGINE_UINT32_C(0) );
 
         return true;
     }

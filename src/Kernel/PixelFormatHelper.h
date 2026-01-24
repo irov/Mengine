@@ -44,12 +44,12 @@ namespace Mengine
             case PF_DXT5:
                 return 4;
             case PF_UNKNOWN:
-                return ~0U;
+                return MENGINE_UINT32_C(~0);
             default:
                 break;
             }
 
-            return ~0U;
+            return MENGINE_UINT32_C(~0);
         }
         //////////////////////////////////////////////////////////////////////////
         MENGINE_INLINE uint32_t getPixelFormatDepth( EPixelFormat _format )

@@ -234,7 +234,7 @@ namespace Mengine
 
         if( sourceId == 0 )
         {
-            return 0U;
+            return MENGINE_UINT32_C(0);
         }
 
         STATISTIC_INC_INTEGER( STATISTIC_SOUND_SOURCE_COUNT );
@@ -263,7 +263,7 @@ namespace Mengine
 
         if( bufferId == 0 )
         {
-            return 0U;
+            return MENGINE_UINT32_C(0);
         }
 
         STATISTIC_INC_INTEGER( STATISTIC_SOUND_BUFFER_COUNT );

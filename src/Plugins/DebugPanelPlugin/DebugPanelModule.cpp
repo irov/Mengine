@@ -2,6 +2,7 @@
 
 #include "Interface/RenderMaterialServiceInterface.h"
 #include "Interface/RenderTextureServiceInterface.h"
+#include "Interface/ResourceServiceInterface.h"
 #include "Interface/FileGroupInterface.h"
 
 #include "Kernel/StatisticHelper.h"
@@ -38,8 +39,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DebugPanelModule::_initializeModule()
     {
-        uint32_t TextureMonitor_WarningSeconds = CONFIG_VALUE_INTEGER( "TextureMonitorPlugin", "WarningSeconds", 60U );
-        uint32_t TextureMonitor_CriticalSeconds = CONFIG_VALUE_INTEGER( "TextureMonitorPlugin", "CriticalSeconds", 300U );
+        uint32_t TextureMonitor_WarningSeconds = CONFIG_VALUE_INTEGER( "TextureMonitorPlugin", "WarningSeconds", MENGINE_UINT32_C(60) );
+        uint32_t TextureMonitor_CriticalSeconds = CONFIG_VALUE_INTEGER( "TextureMonitorPlugin", "CriticalSeconds", MENGINE_UINT32_C(300) );
 
         MENGINE_ASSERTION_FATAL( TextureMonitor_WarningSeconds != 0, "invalid warning seconds" );
         MENGINE_ASSERTION_FATAL( TextureMonitor_CriticalSeconds != 0, "invalid critical seconds" );
@@ -77,7 +78,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DebugPanelModule::updateHistogramUpdate( HistogramUpdate * const _histogram, uint32_t _statisticId, float _coeffTime, float _multiplier )
     {
-        static int64_t old_value[MENGINE_STATISTIC_MAX_COUNT] = {0};
+        static int64_t old_value[MENGINE_STATISTIC_MAX_COUNT] = { MENGINE_INT64_C(0)};
 
         int64_t Statistic_Value = STATISTIC_GET_INTEGER( _statisticId );
 
@@ -210,6 +211,13 @@ namespace Mengine
                 {
                     m_selectedTab = 1;
                     this->renderTextureMonitor();
+                    ImGui::EndTabItem();
+                }
+
+                if( ImGui::BeginTabItem( "Resources" ) )
+                {
+                    m_selectedTab = 2;
+                    this->renderResourceMonitor();
                     ImGui::EndTabItem();
                 }
 
@@ -450,6 +458,180 @@ namespace Mengine
         if( m_selectedTextureId != INVALID_UNIQUE_ID )
         {
             ImGui::TextWrapped( "%s", m_selectedPath.c_str() );
+        }
+        else
+        {
+            ImGui::Text( "<none>" );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DebugPanelModule::renderResourceMonitor() const
+    {
+        struct ResourceDesc
+        {
+            ResourcePtr resource;
+            ConstString name;
+            FilePath filePath;
+            PathString fullPath;
+            uint32_t compileRef;
+            uint32_t prefetchRef;
+            uint32_t cacheRef;
+            ConstString type;
+            bool isCached;
+        };
+
+        struct GroupDesc
+        {
+            ConstString name;
+            Vector<ResourceDesc> resources;
+        };
+
+        Vector<GroupDesc> groups;
+        UnorderedConstStringMap<size_t> groupIndices;
+
+        RESOURCE_SERVICE()
+            ->foreachResources( [&groups, &groupIndices, this]( const ResourcePtr & _resource )
+        {
+            if( m_filterResourceCompileRefCountGT1 && _resource->getCompileReferenceCount() <= 1 )
+            {
+                return;
+            }
+
+            ConstString groupName = STRINGIZE_STRING_LOCAL( "runtime" );
+            FilePath filePath = FilePath::none();
+            PathString fullPath( "runtime" );
+
+            const ConstString & resourceGroupName = _resource->getGroupName();
+            if( resourceGroupName.empty() == false )
+            {
+                groupName = resourceGroupName;
+            }
+
+            const ContentInterfacePtr & content = _resource->getContent();
+            if( content != nullptr )
+            {
+                filePath = content->getFilePath();
+                fullPath = Helper::getContentFullPath( content );
+            }
+
+            ResourceDesc desc;
+            desc.resource = _resource;
+            desc.name = _resource->getName();
+            desc.filePath = filePath;
+            desc.fullPath = fullPath;
+            desc.compileRef = _resource->getCompileReferenceCount();
+            desc.prefetchRef = _resource->getPrefetchReferenceCount();
+            desc.cacheRef = _resource->getCacheReferenceCount();
+            desc.type = _resource->getType();
+            desc.isCached = _resource->isCache();
+
+            size_t groupIndex = 0;
+            UnorderedConstStringMap<size_t>::const_iterator it_found = groupIndices.find( groupName );
+            if( it_found == groupIndices.end() )
+            {
+                GroupDesc group;
+                group.name = groupName;
+
+                groups.emplace_back( group );
+                groupIndex = groups.size() - 1;
+                groupIndices.emplace( groupName, groupIndex );
+            }
+            else
+            {
+                groupIndex = it_found->second;
+            }
+
+            groups[groupIndex].resources.emplace_back( desc );
+        } );
+
+        StdAlgorithm::sort( groups.begin(), groups.end(), []( const GroupDesc & _l, const GroupDesc & _r )
+        {
+            return StdString::strcmp( _l.name.c_str(), _r.name.c_str() ) < 0;
+        } );
+
+        uint32_t totalResources = 0;
+        for( GroupDesc & group : groups )
+        {
+            StdAlgorithm::sort( group.resources.begin(), group.resources.end(), []( const ResourceDesc & _l, const ResourceDesc & _r )
+            {
+                return StdString::strcmp( _l.name.c_str(), _r.name.c_str() ) < 0;
+            } );
+
+            totalResources += (uint32_t)group.resources.size();
+        }
+
+        ImGui::Checkbox( "Filter: Compile RefCount > 1", &m_filterResourceCompileRefCountGT1 );
+        ImGui::SameLine();
+        ImGui::Text( "Total resources: %u", totalResources );
+
+        for( const GroupDesc & group : groups )
+        {
+            Char groupLabel[256 + 1] = {'\0'};
+            MENGINE_SNPRINTF( groupLabel, 256, "%s (%u)", group.name.c_str(), (uint32_t)group.resources.size() );
+
+            if( ImGui::CollapsingHeader( groupLabel, ImGuiTreeNodeFlags_DefaultOpen ) == false )
+            {
+                continue;
+            }
+
+            ImGui::PushID( group.name.c_str() );
+
+            if( ImGui::BeginTable( "resources", 7, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_Resizable ) )
+            {
+                ImGui::TableSetupColumn( "Name", ImGuiTableColumnFlags_WidthStretch );
+                ImGui::TableSetupColumn( "Type", ImGuiTableColumnFlags_WidthFixed, 120.f );
+                ImGui::TableSetupColumn( "Compile", ImGuiTableColumnFlags_WidthFixed, 60.f );
+                ImGui::TableSetupColumn( "Prefetch", ImGuiTableColumnFlags_WidthFixed, 65.f );
+                ImGui::TableSetupColumn( "Cache", ImGuiTableColumnFlags_WidthFixed, 55.f );
+                ImGui::TableSetupColumn( "Cached", ImGuiTableColumnFlags_WidthFixed, 55.f );
+                ImGui::TableHeadersRow();
+
+                for( const ResourceDesc & desc : group.resources )
+                {
+                    const bool selected = (m_selectedResourceGroup == group.name && m_selectedResourceName == desc.name);
+
+                    const Char * displayName = desc.name.empty() == false ? desc.name.c_str() : "[unnamed]";
+
+                    ImGui::TableNextRow();
+                    ImGui::TableNextColumn();
+
+                    ImGui::PushID( (void*)desc.resource.get() );
+                    if( ImGui::Selectable( displayName, selected, ImGuiSelectableFlags_SpanAllColumns ) == true )
+                    {
+                        m_selectedResourceGroup = group.name;
+                        m_selectedResourceName = desc.name;
+                        m_selectedResourcePath = desc.fullPath;
+                    }
+                    ImGui::PopID();
+
+                    ImGui::TableNextColumn();
+                    ImGui::Text( "%s", desc.type.c_str() );
+
+                    ImGui::TableNextColumn();
+                    ImGui::Text( "%u", desc.compileRef );
+
+                    ImGui::TableNextColumn();
+                    ImGui::Text( "%u", desc.prefetchRef );
+
+                    ImGui::TableNextColumn();
+                    ImGui::Text( "%u", desc.cacheRef );
+
+                    ImGui::TableNextColumn();
+                    ImGui::Text( "%s", desc.isCached ? "yes" : "-" );
+                }
+
+                ImGui::EndTable();
+            }
+
+            ImGui::PopID();
+        }
+
+        ImGui::Separator();
+
+        ImGui::Text( "Selected path:" );
+        if( m_selectedResourceGroup.empty() == false )
+        {
+            ImGui::TextWrapped( "%s", m_selectedResourcePath.c_str() );
         }
         else
         {

@@ -126,7 +126,7 @@ namespace Mengine
         uint32_t update_deep = _updation->getUpdationDeep();
 
         MENGINE_ASSERTION_FATAL( update_mode != EUM_UNKNOWN, "updation mode is UNKNOWN" );
-        MENGINE_ASSERTION_FATAL( update_deep != ~0U, "updation deep is INVALID" );
+        MENGINE_ASSERTION_FATAL( update_deep != MENGINE_UINT32_C(~0), "updation deep is INVALID" );
 
         LeafUpdatable * leaf = this->getLeafUpdatable( update_mode, update_deep );
 
@@ -146,7 +146,7 @@ namespace Mengine
         uint32_t update_deep = _updation->getUpdationDeep();
 
         MENGINE_ASSERTION_FATAL( update_mode != EUM_UNKNOWN, "updation mode is UNKNOWN" );
-        MENGINE_ASSERTION_FATAL( update_deep != ~0U, "updation deep is INVALID" );
+        MENGINE_ASSERTION_FATAL( update_deep != MENGINE_UINT32_C(~0), "updation deep is INVALID" );
 
         LeafUpdatable * leaf = this->getLeafUpdatable( update_mode, update_deep );
 
@@ -234,7 +234,7 @@ namespace Mengine
     {
         MENGINE_PROFILER_CATEGORY();
 
-        uint32_t enumerateBeforeDeep = 0U;
+        uint32_t enumerateBeforeDeep = MENGINE_UINT32_C(0);
         for( LeafUpdatable & leaf : m_beforeLeafs )
         {
             this->updateLeaf_( enumerateBeforeDeep, &leaf, _context );
@@ -242,7 +242,7 @@ namespace Mengine
             ++enumerateBeforeDeep;
         }
 
-        uint32_t enumerateDeep = 0U;
+        uint32_t enumerateDeep = MENGINE_UINT32_C(0);
         for( LeafUpdatable & leaf : m_leafs )
         {
             this->updateLeaf_( enumerateDeep, &leaf, _context );
@@ -250,7 +250,7 @@ namespace Mengine
             ++enumerateDeep;
         }
 
-        uint32_t enumerateAfterDeep = 0U;
+        uint32_t enumerateAfterDeep = MENGINE_UINT32_C(0);
         for( LeafUpdatable & leaf : m_afterLeafs )
         {
             this->updateLeaf_( enumerateAfterDeep, &leaf, _context );

@@ -78,7 +78,7 @@ namespace Mengine
         font->setTTFFontGlyph( glyph );
 
         uint32_t height;
-        if( _config->hasValueInteger( name.c_str(), "Height", 0U, &height ) == false )
+        if( _config->hasValueInteger( name.c_str(), "Height", MENGINE_UINT32_C(0), &height ) == false )
         {
             LOGGER_ERROR( "ttf font '%s' don't setup Height"
                 , name.c_str()
@@ -122,7 +122,7 @@ namespace Mengine
             unknownFE->setEffectName( FEName );
 
             uint32_t FESample;
-            if( _config->hasValueInteger( name.c_str(), "FESample", 0U, &FESample ) == true )
+            if( _config->hasValueInteger( name.c_str(), "FESample", MENGINE_UINT32_C(0), &FESample ) == true )
             {
                 fontEffet->setEffectSample( FESample );
             }

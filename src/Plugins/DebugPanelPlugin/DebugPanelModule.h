@@ -5,6 +5,7 @@
 #include "Kernel/ModuleBase.h"
 #include "Kernel/Histogram.h"
 #include "Kernel/PathString.h"
+#include "Kernel/ConstString.h"
 
 #include "Config/Timestamp.h"
 #include "Config/UniqueId.h"
@@ -61,6 +62,9 @@ namespace Mengine
     protected:
         void renderDebugPanel() const;
         void renderTextureMonitor() const;
+        void renderResourceMonitor() const;
+
+    protected:
         ImVec4 getBorderColor_( Timestamp _alive ) const;
 
     protected:
@@ -84,6 +88,11 @@ namespace Mengine
 
         mutable UniqueId m_selectedTextureId;
         mutable PathString m_selectedPath;
+
+        mutable ConstString m_selectedResourceGroup;
+        mutable ConstString m_selectedResourceName;
+        mutable PathString m_selectedResourcePath;
+        mutable bool m_filterResourceCompileRefCountGT1{ false };
 
         bool m_show;
         mutable int32_t m_selectedTab;

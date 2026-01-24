@@ -312,7 +312,7 @@ namespace Mengine
                 , Helper::Win32GetLastErrorMessageW()
             );
 
-            return 0U;
+            return MENGINE_UINT64_C(0);
         }
 
         FILETIME creation;
@@ -330,7 +330,7 @@ namespace Mengine
                 , Helper::Win32GetLastErrorMessageW()
             );
 
-            return 0U;
+            return MENGINE_UINT64_C(0);
         }
 
         ::CloseHandle( handle );

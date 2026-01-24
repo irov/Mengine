@@ -7,7 +7,7 @@
 #include "Interface/MemoryInterface.h"
 
 #ifndef MENGINE_RENDER_VERTEX_MAX_BATCH
-#define MENGINE_RENDER_VERTEX_MAX_BATCH (65000U)
+#define MENGINE_RENDER_VERTEX_MAX_BATCH MENGINE_UINT32_C(65000)
 #endif
 
 namespace Mengine

@@ -15,9 +15,9 @@ namespace Mengine
         : m_service( nullptr )
         , m_instance( nullptr )
         , m_renderVertices( nullptr )
-        , m_renderVertexCount( 0U )
+        , m_renderVertexCount( MENGINE_UINT32_C(0) )
         , m_renderIndicies( nullptr )
-        , m_renderIndexCount( 0U )
+        , m_renderIndexCount( MENGINE_UINT32_C(0) )
     {
     }
     //////////////////////////////////////////////////////////////////////////

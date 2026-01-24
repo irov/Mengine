@@ -15,10 +15,10 @@ namespace Mengine
             switch( _mode )
             {
             case EUM_NODE_BASE:
-                return _deep * 2U + 0U;
+                return _deep * 2U + MENGINE_UINT32_C(0);
                 break;
             case EUM_NODE_AFFECTOR:
-                return _deep * 2U + 1U;
+                return _deep * 2U + MENGINE_UINT32_C(1);
                 break;
             case EUM_SERVICE_BEFORE:
                 return _deep;
@@ -27,7 +27,7 @@ namespace Mengine
                 return _deep;
                 break;
             default:
-                return ~0U;
+                return MENGINE_UINT32_C(~0);
             };
         }
         //////////////////////////////////////////////////////////////////////////
@@ -35,7 +35,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     BaseUpdation::BaseUpdation()
         : m_mode( EUM_UNKNOWN )
-        , m_deep( ~0U )
+        , m_deep( MENGINE_UINT32_C(~0) )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -61,7 +61,7 @@ namespace Mengine
             ->removeUpdatater( this );
 
         m_mode = EUM_UNKNOWN;
-        m_deep = ~0U;
+        m_deep = MENGINE_UINT32_C(~0);
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseUpdation::replace( uint32_t _deep )

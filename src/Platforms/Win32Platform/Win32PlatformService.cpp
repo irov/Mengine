@@ -102,8 +102,8 @@ namespace Mengine
     Win32PlatformService::Win32PlatformService()
         : m_beginTime( 0 )
         , m_hWnd( NULL )
-        , m_xDpi( ~0U )
-        , m_yDpi( ~0U )
+        , m_xDpi( MENGINE_UINT32_C(~0) )
+        , m_yDpi( MENGINE_UINT32_C(~0) )
         , m_performanceFrequency{0}
         , m_performanceSupport( false )
         , m_active( false )
@@ -498,10 +498,10 @@ namespace Mengine
         if( ::GlobalMemoryStatusEx( &mem_st ) == TRUE )
         {
             LOGGER_INFO( "platform", "start memory: %u.%uMb total, %u.%uMb free, %u.%uMb Page file total, %u.%uMb Page file free"
-                , (uint32_t)(mem_st.ullTotalPhys / (1000UL * 1000UL) / 1000UL), (uint32_t)(mem_st.ullTotalPhys / (1000UL * 1000UL) % 1000UL)
-                , (uint32_t)(mem_st.ullAvailPhys / (1000UL * 1000UL) / 1000UL), (uint32_t)(mem_st.ullAvailPhys / (1000UL * 1000UL) % 1000UL)
-                , (uint32_t)(mem_st.ullTotalPageFile / (1000UL * 1000UL) / 1000UL), (uint32_t)(mem_st.ullTotalPageFile / (1000UL * 1000UL) % 1000UL)
-                , (uint32_t)(mem_st.ullAvailPageFile / (1000UL * 1000UL) / 1000UL), (uint32_t)(mem_st.ullAvailPageFile / (1000UL * 1000UL) % 1000UL)
+                , (uint32_t)(mem_st.ullTotalPhys / (MENGINE_UINT64_C(1000) * MENGINE_UINT64_C(1000)) / MENGINE_UINT64_C(1000)), (uint32_t)(mem_st.ullTotalPhys / (MENGINE_UINT64_C(1000) * MENGINE_UINT64_C(1000)) % MENGINE_UINT64_C(1000))
+                , (uint32_t)(mem_st.ullAvailPhys / (MENGINE_UINT64_C(1000) * MENGINE_UINT64_C(1000)) / MENGINE_UINT64_C(1000)), (uint32_t)(mem_st.ullAvailPhys / (MENGINE_UINT64_C(1000) * MENGINE_UINT64_C(1000)) % MENGINE_UINT64_C(1000))
+                , (uint32_t)(mem_st.ullTotalPageFile / (MENGINE_UINT64_C(1000) * MENGINE_UINT64_C(1000)) / MENGINE_UINT64_C(1000)), (uint32_t)(mem_st.ullTotalPageFile / (MENGINE_UINT64_C(1000) * MENGINE_UINT64_C(1000)) % MENGINE_UINT64_C(1000))
+                , (uint32_t)(mem_st.ullAvailPageFile / (MENGINE_UINT64_C(1000) * MENGINE_UINT64_C(1000)) / MENGINE_UINT64_C(1000)), (uint32_t)(mem_st.ullAvailPageFile / (MENGINE_UINT64_C(1000) * MENGINE_UINT64_C(1000)) % MENGINE_UINT64_C(1000))
             );
         }
 
@@ -2349,8 +2349,8 @@ namespace Mengine
 
         HINSTANCE shcoreModule = ::LoadLibraryA( "shcore.dll" );
 
-        m_xDpi = ~0U;
-        m_yDpi = ~0U;
+        m_xDpi = MENGINE_UINT32_C(~0);
+        m_yDpi = MENGINE_UINT32_C(~0);
 
         if( shcoreModule != NULL )
         {
@@ -2360,8 +2360,8 @@ namespace Mengine
             {
                 HMONITOR monitor = ::MonitorFromWindow( (HWND)m_hWnd, MONITOR_DEFAULTTONEAREST );
 
-                UINT xDpi = ~0U;
-                UINT yDpi = ~0U;
+                UINT xDpi = MENGINE_UINT32_C(~0);
+                UINT yDpi = MENGINE_UINT32_C(~0);
                 HRESULT hr = GetDpiForMonitor( monitor, MDT_EFFECTIVE_DPI, &xDpi, &yDpi );
 
                 if( hr != S_OK )
@@ -2382,7 +2382,7 @@ namespace Mengine
         }
 
 #ifndef NOGDI
-        if( m_xDpi == ~0U || m_yDpi == ~0U )
+        if( m_xDpi == MENGINE_UINT32_C(~0) || m_yDpi == MENGINE_UINT32_C(~0))
         {
             HDC dc = ::GetDC( m_hWnd );
             UINT xDpi = ::GetDeviceCaps( dc, LOGPIXELSX );
@@ -3407,9 +3407,9 @@ namespace Mengine
 
             StdString::wcscat_safe( currentDirectory, MENGINE_DEVELOPMENT_USER_FOLDER_NAME, MENGINE_MAX_PATH );
 
-            uint32_t Engine_BotId = CONFIG_VALUE_INTEGER( "Engine", "BotId", ~0U );
+            uint32_t Engine_BotId = CONFIG_VALUE_INTEGER( "Engine", "BotId", MENGINE_UINT32_C(~0) );
 
-            if( Engine_BotId != ~0U || HAS_OPTION( "bot" ) == true )
+            if( Engine_BotId != MENGINE_UINT32_C(~0) || HAS_OPTION( "bot" ) == true )
             {
                 uint32_t botId = GET_OPTION_VALUE_UINT32( "bot", Engine_BotId );
 

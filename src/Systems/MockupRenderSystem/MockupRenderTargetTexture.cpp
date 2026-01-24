@@ -61,7 +61,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t MockupRenderTargetTexture::getHWMipmaps() const
     {
-        return 0U;
+        return MENGINE_UINT32_C(0);
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t MockupRenderTargetTexture::getHWWidth() const

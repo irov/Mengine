@@ -310,12 +310,12 @@ namespace Mengine
         RenderImageDesc imageDesc;
         imageLoader->getImageDesc( &imageDesc );
 
-        if( _width != ~0U )
+        if( _width != MENGINE_UINT32_C(~0) )
         {
             imageDesc.width = _width;
         }
 
-        if( _height != ~0U )
+        if( _height != MENGINE_UINT32_C(~0) )
         {
             imageDesc.height = _height;
         }

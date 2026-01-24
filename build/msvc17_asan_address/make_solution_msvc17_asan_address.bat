@@ -4,12 +4,12 @@ set "VERSION=17"
 set "YEAR=2022"
 
 set "SOLUTION_NAME=solution_msvc%VERSION%_asan_address"
-set "SOURCE_DIRECTORY=%~dp0..\..\cmake\Win32_ASAN_ADDRESS"
-set "DEPENDENCIES_PROJECT=Depends_WIN32_ASAN_ADDRESS"
+set "SOURCE_DIRECTORY=%~dp0..\..\cmake\Win64_ASAN_ADDRESS"
+set "DEPENDENCIES_PROJECT=Depends_WIN64_ASAN_ADDRESS"
 set "GENERATOR=Visual Studio %VERSION% %YEAR%"
-set "ARCHITECTURE=Win32"
+set "ARCHITECTURE=x64"
 
-@call %~dp0../vcvarsall_msvc%VERSION%.bat
+@call %~dp0../vcvarsall_msvc%VERSION%_x64.bat
 
 @call %~dp0../make_solution.bat %* "SOLUTION_NAME=%SOLUTION_NAME%" "SOURCE_DIRECTORY=%SOURCE_DIRECTORY%" "GENERATOR=%GENERATOR%" "ARCHITECTURE=%ARCHITECTURE%"
 

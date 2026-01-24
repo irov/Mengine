@@ -578,7 +578,7 @@ namespace Mengine
             return true;
         }
 
-        if( config->hasValueInteger( "SETTINGS", "AccountEnumerator", 0U, &m_playerEnumerator ) == false )
+        if( config->hasValueInteger( "SETTINGS", "AccountEnumerator", MENGINE_UINT32_C(0), &m_playerEnumerator ) == false )
         {
             LOGGER_ERROR( "get [SETTINGS] AccountEnumerator failed" );
 

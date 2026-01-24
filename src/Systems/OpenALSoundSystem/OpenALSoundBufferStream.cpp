@@ -21,7 +21,7 @@ namespace Mengine
         , m_looped( false )
         , m_updating( false )
     {
-        StdAlgorithm::fill_n( m_alBuffersId, MENGINE_OPENAL_STREAM_BUFFER_COUNT, 0u );
+        StdAlgorithm::fill_n( m_alBuffersId, MENGINE_OPENAL_STREAM_BUFFER_COUNT, MENGINE_UINT32_C(0) );
     }
     //////////////////////////////////////////////////////////////////////////
     OpenALSoundBufferStream::~OpenALSoundBufferStream()

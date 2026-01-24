@@ -49,7 +49,7 @@ namespace Mengine
         StaticString<20> buffer;
         buffer.format( "%x%x", m_value, hash );
 
-        uint32_t unprotected_value = (m_value ^ hash) ^ (MENGINE_ABS( m_buffer.compare( buffer ) ) * ~0U);
+        uint32_t unprotected_value = (m_value ^ hash) ^ (MENGINE_ABS( m_buffer.compare( buffer ) ) * MENGINE_UINT32_C(~0));
 
         if( (unprotected_value ^ hash) != m_value )
         {

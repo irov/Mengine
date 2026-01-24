@@ -240,7 +240,7 @@ namespace Mengine
             VectorDocuments leakObjects;
 
             FACTORY_SERVICE()
-                ->debugFactoryForeachLeakObjects( ~0U, [&leakObjects]( const FactoryInterface * _factory, const Factorable * _factorable )
+                ->debugFactoryForeachLeakObjects( MENGINE_UINT32_C(~0), [&leakObjects]( const FactoryInterface * _factory, const Factorable * _factorable )
             {
                 MENGINE_UNUSED( _factory );
                 MENGINE_UNUSED( _factorable );

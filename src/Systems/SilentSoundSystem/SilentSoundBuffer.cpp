@@ -8,8 +8,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SilentSoundBuffer::SilentSoundBuffer()
-        : m_playTime( 0UL )
-        , m_pauseTime( 0UL )
+        : m_playTime( MENGINE_UINT64_C(0) )
+        , m_pauseTime( MENGINE_UINT64_C(0) )
         , m_frequency( 0 )
         , m_channels( 0 )
         , m_duration( 0.f )
@@ -36,7 +36,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SilentSoundBuffer::updateSoundBuffer()
     {
-        float timePos = this->getTimePosition( 0U );
+        float timePos = this->getTimePosition( MENGINE_UINT64_C(0) );
 
         if( timePos >= m_duration )
         {
@@ -85,7 +85,7 @@ namespace Mengine
         Timestamp time = Helper::getSystemTimestamp();
 
         m_playTime = time;
-        m_pauseTime = 0UL;
+        m_pauseTime = MENGINE_UINT64_C(0);
     }
     //////////////////////////////////////////////////////////////////////////
     bool SilentSoundBuffer::resume( UniqueId _id )
@@ -97,7 +97,7 @@ namespace Mengine
         Timestamp delta = m_pauseTime - m_playTime;
 
         m_playTime = time - delta;
-        m_pauseTime = 0UL;
+        m_pauseTime = MENGINE_UINT64_C(0);
 
         return true;
     }
@@ -115,8 +115,8 @@ namespace Mengine
     {
         MENGINE_UNUSED( _id );
 
-        m_playTime = 0UL;
-        m_pauseTime = 0UL;
+        m_playTime = MENGINE_UINT64_C(0);
+        m_pauseTime = MENGINE_UINT64_C(0);
     }
     //////////////////////////////////////////////////////////////////////////
     float SilentSoundBuffer::getTimePosition( UniqueId _id ) const

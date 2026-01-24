@@ -44,6 +44,27 @@
 #define MENGINE_DLL_NAME L"Mengine.dll"
 #endif
 //////////////////////////////////////////////////////////////////////////
+extern "C" Mengine::ServiceProviderInterface * API_ApplicationMengineGet()
+{
+#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
+    HMODULE hMengine = ::GetModuleHandleW( MENGINE_DLL_NAME );
+    if( hMengine == NULL )
+    {
+        return nullptr;
+    }
+
+    FAPI_MengineGet API_MengineGet = (FAPI_MengineGet)::GetProcAddress( hMengine, "API_MengineGet" );
+    if( API_MengineGet == nullptr )
+    {
+        return nullptr;
+    }
+
+    return API_MengineGet();
+#else
+    return API_MengineGet();
+#endif
+}
+//////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -474,3 +495,4 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
 }
+//////////////////////////////////////////////////////////////////////////

@@ -1,5 +1,5 @@
-CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
-                                             
+CMAKE_MINIMUM_REQUIRED(VERSION 3.5)
+
 project( sha1 )
 
 SET( SOURCE_DIR ${THIRDPARTY_DIR}/sha1 )

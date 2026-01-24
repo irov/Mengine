@@ -157,7 +157,7 @@ namespace Mengine
 
         Helper::fingerprintSHA1( m_fingerprint, false );
 
-        uint32_t DevToDebug_ProccesTime = CONFIG_VALUE_INTEGER( "DevToDebugPlugin", "ProccesTime", 2000U );
+        uint32_t DevToDebug_ProccesTime = CONFIG_VALUE_INTEGER( "DevToDebugPlugin", "ProccesTime", MENGINE_UINT32_C(2000) );
 
         ThreadIdentityInterfacePtr thread = Helper::createThreadIdentity( MENGINE_THREAD_DESCRIPTION( "MNGD2DProcess" ), ETP_BELOW_NORMAL, [this]( const ThreadIdentityRunnerInterfacePtr & _runner )
         {
@@ -555,8 +555,8 @@ namespace Mengine
 
                 jpp::object j = Helper::loadJSONString( responseJson, MENGINE_DOCUMENT_FACTORABLE );
 
-                uint32_t revision_from = j.get( "revision_from", 0U );
-                uint32_t revision_to = j.get( "revision_to", 0U );
+                uint32_t revision_from = j.get( "revision_from", MENGINE_UINT32_C(0) );
+                uint32_t revision_to = j.get( "revision_to", MENGINE_UINT32_C(0) );
 
                 if( revision_from == revision_to )
                 {

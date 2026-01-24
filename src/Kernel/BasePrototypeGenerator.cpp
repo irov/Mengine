@@ -37,7 +37,7 @@ namespace Mengine
     {
         //Empty
 
-        return 0U;
+        return MENGINE_UINT32_C(0);
     }
     //////////////////////////////////////////////////////////////////////////
 }

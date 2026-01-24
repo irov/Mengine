@@ -12,7 +12,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     TimelineService::TimelineService()
-        : m_context{~0U, -1.f, -1.f}
+        : m_context{MENGINE_UINT32_C(~0), -1.f, -1.f}
         , m_total( 0.f )
         , m_timeFactorBase( 1.f )
         , m_timeFactorCoefficient( 0.0625f )
@@ -96,7 +96,7 @@ namespace Mengine
     void TimelineService::begin( const UpdateContext * _context )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _context, "invalid context" );
-        MENGINE_ASSERTION_FATAL( m_context.revision == ~0U, "double begin" );
+        MENGINE_ASSERTION_FATAL( m_context.revision == MENGINE_UINT32_C(~0), "double begin" );
 
         m_context = *_context;
 
@@ -107,7 +107,7 @@ namespace Mengine
     {
         m_total += m_context.time;
 
-        m_context.revision = ~0U;
+        m_context.revision = MENGINE_UINT32_C(~0);
         m_context.current = -1.f;
         m_context.time = -1.f;
     }

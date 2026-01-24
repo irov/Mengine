@@ -66,8 +66,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderBatch::restore()
     {
-        m_vertexCount = 0U;
-        m_indexCount = 0U;
+        m_vertexCount = MENGINE_UINT32_C(0);
+        m_indexCount = MENGINE_UINT32_C(0);
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderBatch::process( const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _vertexCount, uint32_t _indexCount )
@@ -90,7 +90,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool RenderBatch::lock()
     {
-        if( m_vertexCount == 0U )
+        if( m_vertexCount == MENGINE_UINT32_C(0) )
         {
             m_lockData.vertexMemory = nullptr;
             m_lockData.indexMemory = nullptr;
@@ -98,8 +98,8 @@ namespace Mengine
             m_lockData.vertexSize = m_vertexBuffer->getVertexSize();
             m_lockData.indexSize = m_indexBuffer->getIndexSize();
 
-            m_lockData.vbPos = 0U;
-            m_lockData.ibPos = 0U;
+            m_lockData.vbPos = MENGINE_UINT32_C(0);
+            m_lockData.ibPos = MENGINE_UINT32_C(0);
 
             return true;
         }
@@ -141,27 +141,25 @@ namespace Mengine
         m_lockData.vertexSize = m_vertexBuffer->getVertexSize();
         m_lockData.indexSize = m_indexBuffer->getIndexSize();
 
-        m_lockData.vbPos = 0U;
-        m_lockData.ibPos = 0U;
+        m_lockData.vbPos = MENGINE_UINT32_C(0);
+        m_lockData.ibPos = MENGINE_UINT32_C(0);
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderBatch::unlock()
     {   
-        if( m_vertexCount == 0U )
+        if( m_vertexCount == MENGINE_UINT32_C(0) )
         {
             return true;
         }
 
         m_lockData.vertexMemory = nullptr;
         m_lockData.indexMemory = nullptr;
-
-        m_lockData.vertexSize = 0U;
-        m_lockData.indexSize = 0U;
-
-        m_lockData.vbPos = 0U;
-        m_lockData.ibPos = 0U;
+        m_lockData.vertexSize = MENGINE_UINT32_C(0);
+        m_lockData.indexSize = MENGINE_UINT32_C(0);
+        m_lockData.vbPos = MENGINE_UINT32_C(0);
+        m_lockData.ibPos = MENGINE_UINT32_C(0);
 
         if( m_vertexBuffer->unlock() == false )
         {

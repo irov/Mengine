@@ -52,7 +52,7 @@ namespace Mengine
         {
             if( m_holder == nullptr )
             {
-                return 0U;
+                return MENGINE_UINT32_C(0);
             }
 
             const size_type holder_size = m_holder->size();

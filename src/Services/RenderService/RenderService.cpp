@@ -54,7 +54,7 @@ namespace Mengine
         , m_currentDepthBufferTestEnable( false )
         , m_currentDepthBufferWriteEnable( false )
     {
-        StdAlgorithm::fill_n( m_currentTexturesId, MENGINE_MAX_TEXTURE_STAGES, 0u );
+        StdAlgorithm::fill_n( m_currentTexturesId, MENGINE_MAX_TEXTURE_STAGES, MENGINE_UINT32_C(0) );
     }
     //////////////////////////////////////////////////////////////////////////
     RenderService::~RenderService()
@@ -63,8 +63,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool RenderService::_initializeService()
     {
-        m_maxVertexCount = CONFIG_VALUE_INTEGER( "Engine", "RenderMaxVertexCount", 32000U );
-        m_maxIndexCount = CONFIG_VALUE_INTEGER( "Engine", "RenderMaxIndexCount", 48000U );
+        m_maxVertexCount = CONFIG_VALUE_INTEGER( "Engine", "RenderMaxVertexCount", MENGINE_UINT32_C(32000) );
+        m_maxIndexCount = CONFIG_VALUE_INTEGER( "Engine", "RenderMaxIndexCount", MENGINE_UINT32_C(48000) );
 
         STATISTIC_RESET_INTEGER( STATISTIC_RENDER_PERFRAME_DRAWINDEXPRIMITIVES );
         STATISTIC_RESET_DOUBLE( STATISTIC_RENDER_PERFRAME_FILLRATE );

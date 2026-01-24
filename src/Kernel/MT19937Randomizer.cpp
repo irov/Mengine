@@ -40,7 +40,7 @@ namespace Mengine
     {
         if( _max < 2 )
         {
-            return 0U;
+            return MENGINE_UINT32_C(0);
         }
 
         StdRandom::uniform_int_distribution<uint32_t> uid( 0, _max - 1 );
@@ -54,7 +54,7 @@ namespace Mengine
     {
         if( _max < 2 )
         {
-            return 0U;
+            return MENGINE_UINT32_C(0);
         }
 
         if( _min >= _max )
@@ -96,7 +96,7 @@ namespace Mengine
     {
         if( _max < 2 )
         {
-            return 0U;
+            return MENGINE_UINT32_C(0);
         }
 
         StdRandom::uniform_int_distribution<uint64_t> uid( 0, _max - 1 );
@@ -110,7 +110,7 @@ namespace Mengine
     {
         if( _max < 2 )
         {
-            return 0U;
+            return MENGINE_UINT32_C(0);
         }
 
         if( _min >= _max )

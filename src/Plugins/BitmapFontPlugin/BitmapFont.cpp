@@ -75,7 +75,7 @@ namespace Mengine
         const ContentInterfacePtr & content = m_glyph->getBitmapImageContent();
 
         m_textureFont = RENDERTEXTURE_SERVICE()
-            ->loadTexture( content, DF_IMAGE_NONE, ~0U, ~0U, MENGINE_DOCUMENT_FACTORABLE );
+            ->loadTexture( content, DF_IMAGE_NONE, MENGINE_UINT32_C(~0), MENGINE_UINT32_C(~0), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( m_textureFont, "font '%s' invalid loading font image '%s'"
             , m_name.c_str()

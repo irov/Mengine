@@ -38,7 +38,7 @@ namespace Mengine
         , m_debugStopRenderObjects( false )
         , m_debugLimitRenderObjects( 0 )
         , m_iterateRenderObjects( 0 )
-        , m_showLogRenderObjects( ~0U )
+        , m_showLogRenderObjects( MENGINE_UINT32_C(~0) )
 #endif
     {
     }
@@ -49,15 +49,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool BatchRenderPipeline::initialize()
     {
-        uint32_t Engine_RenderMaxObject = CONFIG_VALUE_INTEGER( "Engine", "RenderMaxObject", 8000U );
-        uint32_t Engine_RenderMaxPass = CONFIG_VALUE_INTEGER( "Engine", "RenderMaxPass", 200U );
+        uint32_t Engine_RenderMaxObject = CONFIG_VALUE_INTEGER( "Engine", "RenderMaxObject", MENGINE_UINT32_C(8000) );
+        uint32_t Engine_RenderMaxPass = CONFIG_VALUE_INTEGER( "Engine", "RenderMaxPass", MENGINE_UINT32_C(200) );
 
         m_renderObjects.reserve( Engine_RenderMaxObject );
         m_renderPrimitives.reserve( Engine_RenderMaxObject );
         m_renderPasses.reserve( Engine_RenderMaxPass );
 
-        uint32_t Engine_RenderMaxQuadBatch = CONFIG_VALUE_INTEGER( "Engine", "RenderMaxQuadBatch", 2000U );
-        uint32_t Engine_RenderMaxLineBatch = CONFIG_VALUE_INTEGER( "Engine", "RenderMaxLineBatch", 4000U );
+        uint32_t Engine_RenderMaxQuadBatch = CONFIG_VALUE_INTEGER( "Engine", "RenderMaxQuadBatch", MENGINE_UINT32_C(2000) );
+        uint32_t Engine_RenderMaxLineBatch = CONFIG_VALUE_INTEGER( "Engine", "RenderMaxLineBatch", MENGINE_UINT32_C(4000) );
 
         m_indicesQuad.resize( Engine_RenderMaxQuadBatch * 6 );
         m_indicesLine.resize( Engine_RenderMaxLineBatch * 1 );
@@ -87,15 +87,15 @@ namespace Mengine
 
         switch( Engine_RenderServiceBatchMode )
         {
-        case 0U:
+        case MENGINE_UINT32_C(0):
             {
                 m_batchMode = ERBM_NONE;
             }break;
-        case 1U:
+        case MENGINE_UINT32_C(1):
             {
                 m_batchMode = ERBM_NORMAL;
             }break;
-        case 2U:
+        case MENGINE_UINT32_C(2):
             {
                 m_batchMode = ERBM_SMART;
             }break;
@@ -440,8 +440,8 @@ namespace Mengine
 
         RenderPass renderPass;
 
-        renderPass.beginRenderObject = 0U;
-        renderPass.countRenderObject = 0U;
+        renderPass.beginRenderObject = MENGINE_UINT32_C(0);
+        renderPass.countRenderObject = MENGINE_UINT32_C(0);
 
         renderPass.batch = nullptr;
 
@@ -452,9 +452,8 @@ namespace Mengine
 
         renderPass.context = *_context;
 
-        renderPass.zGroup = _context->zGroup == MENGINE_RENDER_ZGROUP_DEFAULT ? 0 : _context->zGroup;
-        renderPass.zIndex = _context->zIndex == MENGINE_RENDER_ZINDEX_DEFAULT ? 0 : _context->zIndex;
-
+        renderPass.zGroup = _context->zGroup == MENGINE_RENDER_ZGROUP_DEFAULT ? MENGINE_INT32_C(0) : _context->zGroup;
+        renderPass.zIndex = _context->zIndex == MENGINE_RENDER_ZINDEX_DEFAULT ? MENGINE_INT32_C(0) : _context->zIndex;
         renderPass.drawPrimitive = _drawPrimitive;
 
         renderPass.flags = RENDER_PASS_FLAG_SINGLE;
@@ -637,7 +636,7 @@ namespace Mengine
 
         if( m_debugLimitRenderObjects == 0 )
         {
-            m_showLogRenderObjects = ~0U;
+            m_showLogRenderObjects = MENGINE_UINT32_C(~0);
         }
 #endif
 
@@ -1105,7 +1104,7 @@ namespace Mengine
             RenderPass renderPass;
 
             renderPass.beginRenderObject = (uint32_t)m_renderObjects.size();
-            renderPass.countRenderObject = 0U;
+            renderPass.countRenderObject = MENGINE_UINT32_C(0);
 
             renderPass.batch = _batch;
 

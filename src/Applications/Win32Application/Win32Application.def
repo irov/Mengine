@@ -1,3 +1,2 @@
-LIBRARY		"WinApplication"
-EXPORTS 	initInterfaceSystem 	@1
-EXPORTS 	releaseInterfaceSystem 	@2
+LIBRARY	"Win32Application"
+EXPORTS API_ApplicationMengineGet @1

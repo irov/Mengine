@@ -183,7 +183,7 @@ namespace Mengine
         uint32_t width = dataInfo->width;
         uint32_t height = dataInfo->height;
 
-        if( (width > Limit_TextureWidth && Limit_TextureWidth != 0U) || (height > Limit_TextureHeight && Limit_TextureHeight != 0U) )
+        if( (width > Limit_TextureWidth && Limit_TextureWidth != MENGINE_UINT32_C(0)) || (height > Limit_TextureHeight && Limit_TextureHeight != MENGINE_UINT32_C(0)) )
         {
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' file '%s' invalid limit [%u:%u] texture size [%u:%u]"
                 , _resource->getName().c_str()

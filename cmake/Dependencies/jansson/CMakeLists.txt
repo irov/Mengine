@@ -1,10 +1,11 @@
-cmake_minimum_required (VERSION 3.1)
+cmake_minimum_required (VERSION 3.5)
 project(jansson C)
 
 # Options
 option(JANSSON_BUILD_SHARED_LIBS "Build shared libraries." OFF)
 option(USE_URANDOM "Use /dev/urandom to seed the hash function." ON)
 option(USE_WINDOWS_CRYPTOAPI "Use CryptGenRandom to seed the hash function." ON)
+option(USE_DTOA "Use dtoa for optimal floating-point to string conversions." ON)
 
 if (MSVC)
    # This option must match the settings used in your program, in particular if you
@@ -25,7 +26,7 @@ set(JANSSON_TEMP_DIR ${CMAKE_CURRENT_BINARY_DIR}/tmp)
 # set (JANSSON_VERSION "2.3.1")
 # set (JANSSON_SOVERSION 2)
 
-set(JANSSON_DISPLAY_VERSION "2.14")
+set(JANSSON_DISPLAY_VERSION "2.14.1")
 
 # This is what is required to match the same numbers as automake's
 set(JANSSON_VERSION "4.14.0")
@@ -82,6 +83,9 @@ check_function_exists (sched_yield HAVE_SCHED_YIELD)
 
 # Check for the int-type includes
 check_include_files (stdint.h HAVE_STDINT_H)
+
+include (TestBigEndian)
+TEST_BIG_ENDIAN(WORDS_BIGENDIAN)
 
 # Check our 64 bit integer sizes
 check_type_size (__int64 __INT64)
@@ -183,6 +187,8 @@ endif ()
 # detect what to use for the 64 bit type.
 # Note: I will prefer long long if I can get it, as that is what the automake system aimed for.
 if (NOT DEFINED JSON_INT_T)
+   set (JSON_INTEGER_IS_LONG_LONG 1)
+
    if (HAVE_LONG_LONG_INT AND (LONG_LONG_INT EQUAL 8))
       set (JSON_INT_T "long long")
    elseif (HAVE_INT64_T)
@@ -205,18 +211,7 @@ if (NOT DEFINED JSON_INT_T)
    endif ()
 endif ()
 
-
-# If locale.h and localeconv() are available, define to 1, otherwise to 0.
 check_include_files (locale.h HAVE_LOCALE_H)
-check_function_exists (localeconv HAVE_LOCALECONV)
-
-if (HAVE_LOCALECONV AND HAVE_LOCALE_H)
-   set (JSON_HAVE_LOCALECONV 1)
-else ()
-   set (JSON_HAVE_LOCALECONV 0)
-endif()
-
-# check if we have setlocale
 check_function_exists(setlocale HAVE_SETLOCALE)
 
 # Check what the inline keyword is.
@@ -275,6 +270,9 @@ include_directories (${CMAKE_CURRENT_BINARY_DIR}/private_include)
 
 # Add the lib sources.
 file(GLOB JANSSON_SRC src/*.c)
+if (NOT USE_DTOA)
+   list(FILTER JANSSON_SRC EXCLUDE REGEX ".*dtoa\\.c$")
+endif()
 
 set(JANSSON_HDR_PRIVATE
    ${CMAKE_CURRENT_SOURCE_DIR}/src/hashtable.h
@@ -332,7 +330,7 @@ if(JANSSON_BUILD_SHARED_LIBS)
    )
       list(REMOVE_ITEM CMAKE_REQUIRED_LIBRARIES "-Wl,--version-script,${CMAKE_CURRENT_BINARY_DIR}/jansson.sym")
       if (VSCRIPT_WORKS)
-         set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--version-script,${CMAKE_CURRENT_BINARY_DIR}/jansson.sym")
+         set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--version-script,${CMAKE_CURRENT_BINARY_DIR}/jansson.sym")
       endif()
    endif()
 
@@ -527,6 +525,11 @@ if (NOT JANSSON_WITHOUT_TESTS)
          if (IS_DIRECTORY ${TESTDIR})
             get_filename_component(TNAME ${TESTDIR} NAME)
 
+            if ((USE_DTOA AND EXISTS ${TESTDIR}/skip_if_dtoa) OR
+                (NOT USE_DTOA AND EXISTS ${TESTDIR}/skip_unless_dtoa))
+               continue()
+            endif()
+
             if (JANSSON_TEST_WITH_VALGRIND)
                add_test(memcheck__${SUITE}__${TNAME}
                         ${MEMCHECK_COMMAND} ${SUITE_TEST_CMD} ${TESTDIR})
@@ -592,9 +595,7 @@ foreach(p LIB BIN INCLUDE CMAKE)
 endforeach()
 
 # Generate the config file for the build-tree.
-set(JANSSON__INCLUDE_DIRS
-    "${CMAKE_CURRENT_SOURCE_DIR}/include"
-    "${CMAKE_CURRENT_BINARY_DIR}/include")
+set(JANSSON__INCLUDE_DIRS "${CMAKE_CURRENT_BINARY_DIR}/include")
 set(JANSSON_INCLUDE_DIRS ${JANSSON__INCLUDE_DIRS} CACHE PATH "Jansson include directories")
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/janssonConfig.cmake.in
                ${CMAKE_CURRENT_BINARY_DIR}/janssonConfig.cmake

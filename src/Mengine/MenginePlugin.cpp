@@ -54,6 +54,13 @@ extern "C" Mengine::ServiceProviderInterface * API_MengineCreate()
     return serviceProvider;
 }
 //////////////////////////////////////////////////////////////////////////
+extern "C" Mengine::ServiceProviderInterface * API_MengineGet()
+{
+    Mengine::ServiceProviderInterface * serviceProvider = SERVICE_PROVIDER_GET();
+
+    return serviceProvider;
+}
+//////////////////////////////////////////////////////////////////////////
 extern "C" bool API_MengineBootstrap()
 {
     if( SERVICE_CREATE( Bootstrapper, MENGINE_DOCUMENT_FUNCTION ) == false )

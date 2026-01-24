@@ -56,7 +56,8 @@ namespace Mengine
             , m_resourceImages.size()
         );
 
-        uint32_t iterator = 0U;
+        uint32_t iterator = MENGINE_UINT32_C(0);
+
         for( const ResourceImagePtr & resourceImage : m_resourceImages )
         {
             if( resourceImage->compile() == false )

@@ -30,9 +30,9 @@ namespace Mengine
         , m_emitterCameraRelative( false )
         , m_randomMode( false )
         , m_renderVertices( nullptr )
-        , m_renderVertexCount( 0U )
+        , m_renderVertexCount( MENGINE_UINT32_C(0) )
         , m_renderIndicies( nullptr )
-        , m_renderIndexCount( 0U )
+        , m_renderIndexCount( MENGINE_UINT32_C(0) )
         , m_emitterTranslateWithParticle( true )
         , m_emitterTranslateWithParticleSetup( false )
     {

@@ -42,7 +42,7 @@ namespace Mengine
 
         m_archivator = archivator;
 
-        uint32_t AstralaxPlugin_ParticleMaxCount = CONFIG_VALUE_INTEGER( "AstralaxPlugin", "ParticleMaxCount", 10000U );
+        uint32_t AstralaxPlugin_ParticleMaxCount = CONFIG_VALUE_INTEGER( "AstralaxPlugin", "ParticleMaxCount", MENGINE_UINT32_C(10000) );
 
         m_maxParticlesNum = AstralaxPlugin_ParticleMaxCount;
 

@@ -5,7 +5,7 @@
 
 #define LOGGER_LEVEL_COUNT (Mengine::LM_VERBOSE + 1)
 
-#define MAKE_LOGGER_FILTER( FILTER ) (~0u & ~(FILTER))
+#define MAKE_LOGGER_FILTER( FILTER ) (MENGINE_UINT32_C(~0) & ~(FILTER))
 
 namespace Mengine
 {

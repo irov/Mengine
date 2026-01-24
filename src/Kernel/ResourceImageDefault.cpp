@@ -68,8 +68,8 @@ namespace Mengine
         uint32_t maxSize_width = (uint32_t)(maxSize.x + 0.5f);
         uint32_t maxSize_height = (uint32_t)(maxSize.y + 0.5f);
 
-        uint32_t width = trimAtlas == true ? maxSize_width : ~0U;
-        uint32_t height = trimAtlas == true ? maxSize_height : ~0U;
+        uint32_t width = trimAtlas == true ? maxSize_width : MENGINE_UINT32_C(~0);
+        uint32_t height = trimAtlas == true ? maxSize_height : MENGINE_UINT32_C(~0);
 
         const ContentInterfacePtr & content = this->getContent();
 

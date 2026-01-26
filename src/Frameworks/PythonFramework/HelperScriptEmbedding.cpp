@@ -78,6 +78,7 @@
 #include "Kernel/VocabularyHelper.h"
 #include "Kernel/StringView.h"
 #include "Kernel/AssertionCompilable.h"
+#include "Kernel/URLString.h"
 
 #include "Config/StdString.h"
 #include "Config/StdMath.h"
@@ -3507,6 +3508,49 @@ namespace Mengine
 
                 return py_tags;
             }
+        };        
+        //////////////////////////////////////////////////////////////////////////
+        struct extract_URLString_type
+            : public pybind::type_cast_result<URLString>
+        {
+        public:
+            bool apply( pybind::kernel_interface * _kernel, PyObject * _obj, URLString & _value, bool _nothrow ) override
+            {
+                MENGINE_UNUSED( _kernel );
+                MENGINE_UNUSED( _nothrow );
+
+                if( _kernel->string_check( _obj ) == true )
+                {
+                    size_t size = 0;
+                    const String::value_type * string_char = _kernel->string_to_char_and_size( _obj, &size );
+
+                    if( string_char == nullptr )
+                    {
+                        return false;
+                    }
+
+                    _value.assign( string_char, size );
+                }
+                else
+                {
+                    return false;
+                }
+
+                return true;
+            }
+
+        public:
+            PyObject * wrap( pybind::kernel_interface * _kernel, pybind::type_cast_result<URLString>::TCastRef _value ) override
+            {
+                MENGINE_UNUSED( _kernel );
+
+                const String::value_type * value_str = _value.c_str();
+                String::size_type value_size = _value.size();
+
+                PyObject * py_value = _kernel->string_from_char_size( value_str, (uint32_t)value_size );
+
+                return py_value;
+            }
         };
         //////////////////////////////////////////////////////////////////////////
         struct extract_String_type
@@ -3977,6 +4021,8 @@ namespace Mengine
 
         pybind::registration_stl_vector_type_cast<VectorResourceImages>(_kernel);
         pybind::registration_stl_vector_type_cast<VectorHotSpotPolygons>(_kernel);
+
+        pybind::registration_type_cast<URLString>(_kernel, pybind::make_type_cast<extract_URLString_type>(_kernel));
 
         pybind::registration_type_cast<String>(_kernel, pybind::make_type_cast<extract_String_type>(_kernel));
         pybind::registration_type_cast<WString>(_kernel, pybind::make_type_cast<extract_WString_type>(_kernel));

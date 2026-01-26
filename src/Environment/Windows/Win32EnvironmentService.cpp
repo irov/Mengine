@@ -157,7 +157,7 @@ namespace Mengine
         ::ZeroMemory( &osInfo, sizeof( osInfo ) );
         osInfo.dwOSVersionInfoSize = sizeof( osInfo );
 
-        HMODULE hNtdll = ::LoadLibrary( L"ntdll.dll" );
+        HMODULE hNtdll = ::LoadLibraryW( L"ntdll.dll" );
 
         if( hNtdll != NULL )
         {

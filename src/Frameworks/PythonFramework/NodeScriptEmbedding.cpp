@@ -1131,6 +1131,8 @@ namespace Mengine
             pybind::interface_<Grid2D, pybind::bases<Node, Materialable>>( _kernel, "Grid2D", false )
                 .def( "setResourceImage", &Grid2D::setResourceImage )
                 .def( "getResourceImage", &Grid2D::getResourceImage )
+                .def( "setOffset", &Grid2D::setOffset )
+                .def( "getOffset", &Grid2D::getOffset )
                 .def( "setWidth", &Grid2D::setWidth )
                 .def( "getWidth", &Grid2D::getWidth )
                 .def( "setHeight", &Grid2D::setHeight )
@@ -1139,7 +1141,6 @@ namespace Mengine
                 .def( "getCountX", &Grid2D::getCountX )
                 .def( "setCountY", &Grid2D::setCountY )
                 .def( "getCountY", &Grid2D::getCountY )
-                .def( "setAngle", &Grid2D::setAngle )
                 ;
 
             pybind::interface_<Gyroscope, pybind::bases<Node>>( _kernel, "Gyroscope", false )

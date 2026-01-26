@@ -92,7 +92,7 @@ namespace Mengine
         mutable ConstString m_selectedResourceGroup;
         mutable ConstString m_selectedResourceName;
         mutable PathString m_selectedResourcePath;
-        mutable bool m_filterResourceCompileRefCountGT1{ false };
+        mutable int m_filterResourceCompileRef{ 0 }; // 0: ref==0, 1: ref==1, 2: ref>1
 
         bool m_show;
         mutable int32_t m_selectedTab;

@@ -456,7 +456,6 @@ namespace Mengine
             }
         }
     }
-
     //////////////////////////////////////////////////////////////////////////
     HashType Node::getHierarchyHash() const
     {

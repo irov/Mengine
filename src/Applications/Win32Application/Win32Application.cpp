@@ -48,12 +48,14 @@ extern "C" Mengine::ServiceProviderInterface * API_ApplicationMengineGet()
 {
 #if defined(MENGINE_PLUGIN_MENGINE_SHARED)
     HMODULE hMengine = ::GetModuleHandleW( MENGINE_DLL_NAME );
+
     if( hMengine == NULL )
     {
         return nullptr;
     }
 
     FAPI_MengineGet API_MengineGet = (FAPI_MengineGet)::GetProcAddress( hMengine, "API_MengineGet" );
+
     if( API_MengineGet == nullptr )
     {
         return nullptr;
@@ -256,7 +258,7 @@ namespace Mengine
     bool Win32Application::initialize()
     {
 #if defined(MENGINE_PLUGIN_MENGINE_SHARED)
-        HINSTANCE hInstance = ::LoadLibrary( MENGINE_DLL_NAME );
+        HINSTANCE hInstance = ::LoadLibraryW( MENGINE_DLL_NAME );
 
         if( hInstance == NULL )
         {

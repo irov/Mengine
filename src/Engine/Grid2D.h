@@ -39,7 +39,8 @@ namespace Mengine
         const ResourceImagePtr & getResourceImage() const;
 
     public:
-        void setAngle( const mt::vec2f & _offset, float _angle );
+        void setOffset( const mt::vec2f & _offset );
+        const mt::vec2f & getOffset() const;
 
     public:
         void setWidth( float _width );

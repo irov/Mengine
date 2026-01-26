@@ -544,7 +544,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32PlatformService::setProcessDPIAware()
     {
-        HMODULE hUser32 = ::LoadLibrary( L"user32.dll" );
+        HMODULE hUser32 = ::LoadLibraryW( L"user32.dll" );
 
         if( hUser32 == NULL )
         {
@@ -2347,7 +2347,7 @@ namespace Mengine
         ::SetFocus( m_hWnd );
         ::UpdateWindow( m_hWnd );
 
-        HINSTANCE shcoreModule = ::LoadLibraryA( "shcore.dll" );
+        HINSTANCE shcoreModule = ::LoadLibraryW( L"shcore.dll" );
 
         m_xDpi = MENGINE_UINT32_C(~0);
         m_yDpi = MENGINE_UINT32_C(~0);

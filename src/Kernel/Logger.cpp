@@ -16,6 +16,18 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
+        void loggerLockMessages()
+        {
+            LOGGER_SERVICE()
+                ->lockMessages();
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void loggerUnlockMessages()
+        {
+            LOGGER_SERVICE()
+                ->unlockMessages();
+        }
+        //////////////////////////////////////////////////////////////////////////
         bool loggerValidMessage( const Char * _category, ELoggerLevel _level, uint32_t _filter )
         {
             if( SERVICE_IS_INITIALIZE( LoggerServiceInterface ) == false )
@@ -29,6 +41,16 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
+    }
+    //////////////////////////////////////////////////////////////////////////
+    LoggerLockScope::LoggerLockScope()
+    {
+        Detail::loggerLockMessages();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    LoggerLockScope::~LoggerLockScope()
+    {
+        Detail::loggerUnlockMessages();
     }
     //////////////////////////////////////////////////////////////////////////
     LoggerOperator::LoggerOperator( const Char * _category, ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _file, int32_t _line, const Char * _function, uint32_t _flag )

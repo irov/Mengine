@@ -39,8 +39,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
+        void loggerLockMessages();
+        void loggerUnlockMessages();
         bool loggerValidMessage( const Char * _category, ELoggerLevel _level, uint32_t _filter );
     }
+    //////////////////////////////////////////////////////////////////////////
+    class LoggerLockScope
+    {
+    public:
+        LoggerLockScope();
+        ~LoggerLockScope();
+    };
     //////////////////////////////////////////////////////////////////////////
     class LoggerOperator
     {
@@ -72,6 +81,13 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
 }
+//////////////////////////////////////////////////////////////////////////
+#define LOGGER_LOCK_MESSAGES() Mengine::Detail::loggerLockMessages();
+#define LOGGER_UNLOCK_MESSAGES() Mengine::Detail::loggerLockMessages();
+#define LOGGER_SCOPE_MESSAGES_II(Index) Mengine::LoggerLockScope MENGINE_PP_CONCATENATE(logger_lock_scope_, Index)
+#define LOGGER_SCOPE_MESSAGES_I(Index) LOGGER_SCOPE_MESSAGES_II(Index)
+#define LOGGER_SCOPE_MESSAGES() LOGGER_SCOPE_MESSAGES_I(MENGINE_CODE_COUNTER)
+//////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 #define LOGGER_VERBOSE_LEVEL( CATEGORY, LEVEL, FILTER, COLOR, FILE, LINE, FUNCTION, FLAG )\
     if( Mengine::Detail::loggerValidMessage(CATEGORY, LEVEL, FILTER) == false) {} else Mengine::LoggerOperator(CATEGORY, (LEVEL), (FILTER), (COLOR), (FILE), (LINE), (FUNCTION), (FLAG))

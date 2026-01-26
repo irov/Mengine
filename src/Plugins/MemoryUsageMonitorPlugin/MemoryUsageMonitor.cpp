@@ -3,7 +3,6 @@
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/AllocatorSystemInterface.h"
 #include "Interface/SceneServiceInterface.h"
-#include "Interface/LoggerServiceInterface.h"
 #include "Interface/UnknownAllocatorDebugReportInterface.h"
 
 #include "Kernel/ConfigHelper.h"
@@ -93,8 +92,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _id );
 
-        LOGGER_SERVICE()
-            ->lockMessages();
+        LOGGER_SCOPE_MESSAGES();
 
         int64_t Statistic_AllocatorSize = STATISTIC_GET_INTEGER( STATISTIC_ALLOCATOR_SIZE );
 
@@ -189,9 +187,6 @@ namespace Mengine
 
             std::swap( m_prevUsages, m_prevUsagesAux );
         }
-
-        LOGGER_SERVICE()
-            ->unlockMessages();
 
         return true;
     }

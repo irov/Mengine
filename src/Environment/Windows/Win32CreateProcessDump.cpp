@@ -30,7 +30,7 @@ namespace Mengine
                 return false;
             }
 
-            HMODULE hDbgHelp = ::LoadLibrary( L"DbgHelp.dll" );
+            HMODULE hDbgHelp = ::LoadLibraryW( L"DbgHelp.dll" );
 
             if( hDbgHelp == NULL )
             {

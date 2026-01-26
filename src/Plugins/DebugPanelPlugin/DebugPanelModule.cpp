@@ -1,6 +1,8 @@
 #include "DebugPanelModule.h"
 
 #include "Interface/RenderMaterialServiceInterface.h"
+
+#include "Kernel/Logger.h"
 #include "Interface/RenderTextureServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/FileGroupInterface.h"
@@ -39,8 +41,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DebugPanelModule::_initializeModule()
     {
-        uint32_t TextureMonitor_WarningSeconds = CONFIG_VALUE_INTEGER( "TextureMonitorPlugin", "WarningSeconds", MENGINE_UINT32_C(60) );
-        uint32_t TextureMonitor_CriticalSeconds = CONFIG_VALUE_INTEGER( "TextureMonitorPlugin", "CriticalSeconds", MENGINE_UINT32_C(300) );
+        uint32_t TextureMonitor_WarningSeconds = CONFIG_VALUE_INTEGER( "TextureMonitorPlugin", "WarningSeconds", MENGINE_UINT32_C( 60 ) );
+        uint32_t TextureMonitor_CriticalSeconds = CONFIG_VALUE_INTEGER( "TextureMonitorPlugin", "CriticalSeconds", MENGINE_UINT32_C( 300 ) );
 
         MENGINE_ASSERTION_FATAL( TextureMonitor_WarningSeconds != 0, "invalid warning seconds" );
         MENGINE_ASSERTION_FATAL( TextureMonitor_CriticalSeconds != 0, "invalid critical seconds" );
@@ -78,7 +80,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DebugPanelModule::updateHistogramUpdate( HistogramUpdate * const _histogram, uint32_t _statisticId, float _coeffTime, float _multiplier )
     {
-        static int64_t old_value[MENGINE_STATISTIC_MAX_COUNT] = { MENGINE_INT64_C(0)};
+        static int64_t old_value[MENGINE_STATISTIC_MAX_COUNT] = {MENGINE_INT64_C( 0 )};
 
         int64_t Statistic_Value = STATISTIC_GET_INTEGER( _statisticId );
 
@@ -231,6 +233,27 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DebugPanelModule::renderDebugPanel() const
     {
+        if( ImGui::Button( "Print to logs" ) )
+        {
+            LOGGER_SCOPE_MESSAGES();
+
+            float currentFPS = m_histogramFPS.getLastValue();
+            int64_t Statistic_AllocatorSize = STATISTIC_GET_INTEGER( STATISTIC_ALLOCATOR_SIZE );
+            int64_t Statistic_Render_ImageSize = STATISTIC_GET_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE );
+            float currentDIP = m_histogramPerFrameDrawIndexPrimitives.getLastValue();
+            float currentFillrate = m_histogramPerFrameFillrate.getLastValue();
+            float currentObjects = m_histogramPerFrameObjects.getLastValue();
+            float currentTriangles = m_histogramPerFrameTriangles.getLastValue();
+            float currentBatches = m_histogramPerFrameBatches.getLastValue();
+
+            LOGGER_MESSAGE( "DebugPanel [Statistics] FPS: %.2f | Allocator: %" MENGINE_PRId64 " mb %" MENGINE_PRId64 " kb | Image: %" MENGINE_PRId64 " mb %" MENGINE_PRId64 " kb | DIP: %.0f | Fillrate: %.2f | Objects: %.0f | Triangles: %.0f | Batches: %.0f"
+                , currentFPS
+                , Statistic_AllocatorSize / MENGINE_INT64_C( 1024 * 1024 ), (Statistic_AllocatorSize % MENGINE_INT64_C( 1024 * 1024 )) / 1024
+                , Statistic_Render_ImageSize / MENGINE_INT64_C( 1024 * 1024 ), (Statistic_Render_ImageSize % MENGINE_INT64_C( 1024 * 1024 )) / 1024
+                , currentDIP, currentFillrate, currentObjects, currentTriangles, currentBatches
+            );
+        }
+
         float maxFPS = m_histogramFPS.getMaxValue();
         float histogramFPSHeight = maxFPS > 80.f ? maxFPS : 80.f;
 
@@ -363,6 +386,35 @@ namespace Mengine
         }
 
         ImGui::Text( "Total textures: %u", totalTextures );
+        ImGui::SameLine();
+        if( ImGui::Button( "Print to logs" ) )
+        {
+            LOGGER_SCOPE_MESSAGES();
+
+            LOGGER_MESSAGE( "DebugPanel [Textures] Total: %u", totalTextures );
+            for( const GroupDesc & group : groups )
+            {
+                LOGGER_MESSAGE( "DebugPanel [Textures] Group: %s (%u)", group.name.c_str(), (uint32_t)group.textures.size() );
+                for( const TextureDesc & desc : group.textures )
+                {
+                    const Timestamp alive = now > desc.createTimestamp ? (now - desc.createTimestamp) : 0;
+                    const Timestamp aliveSeconds = alive / TIMESTAMP_MILLISECONDS_SECOND64;
+                    const uint32_t aliveMinutes = (uint32_t)(aliveSeconds / 60);
+                    const uint32_t aliveSecondsRemainder = (uint32_t)(aliveSeconds % 60);
+                    const Char * displayName = desc.filePath.empty() == false ? desc.filePath.c_str() : "runtime";
+                    Char memStr[32] = {'\0'};
+                    if( desc.memorySize < 1024 )
+                        MENGINE_SNPRINTF( memStr, 32, "%u b", desc.memorySize );
+                    else if( desc.memorySize < 1024 * 1024 )
+                        MENGINE_SNPRINTF( memStr, 32, "%u kb", desc.memorySize / 1024 );
+                    else
+                        MENGINE_SNPRINTF( memStr, 32, "%u mb %u kb", desc.memorySize / (1024 * 1024), (desc.memorySize / 1024) % 1024 );
+                    LOGGER_MESSAGE( "DebugPanel [Textures]   %s | %ux%u | %s | %um %us"
+                        , displayName, desc.width, desc.height, memStr, aliveMinutes, aliveSecondsRemainder
+                    );
+                }
+            }
+        }
 
         for( const GroupDesc & group : groups )
         {
@@ -492,10 +544,13 @@ namespace Mengine
         RESOURCE_SERVICE()
             ->foreachResources( [&groups, &groupIndices, this]( const ResourcePtr & _resource )
         {
-            if( m_filterResourceCompileRefCountGT1 && _resource->getCompileReferenceCount() <= 1 )
-            {
+            uint32_t compileRef = _resource->getCompileReferenceCount();
+            if( m_filterResourceCompileRef == 0 && compileRef != 0 )
                 return;
-            }
+            if( m_filterResourceCompileRef == 1 && compileRef != 1 )
+                return;
+            if( m_filterResourceCompileRef == 2 && compileRef <= 1 )
+                return;
 
             ConstString groupName = STRINGIZE_STRING_LOCAL( "runtime" );
             FilePath filePath = FilePath::none();
@@ -560,9 +615,33 @@ namespace Mengine
             totalResources += (uint32_t)group.resources.size();
         }
 
-        ImGui::Checkbox( "Filter: Compile RefCount > 1", &m_filterResourceCompileRefCountGT1 );
+        ImGui::Text( "Filter:" );
         ImGui::SameLine();
-        ImGui::Text( "Total resources: %u", totalResources );
+        ImGui::RadioButton( "0", &m_filterResourceCompileRef, 0 );
+        ImGui::SameLine();
+        ImGui::RadioButton( "1", &m_filterResourceCompileRef, 1 );
+        ImGui::SameLine();
+        ImGui::RadioButton( ">1", &m_filterResourceCompileRef, 2 );
+        ImGui::SameLine();
+        ImGui::Text( "Total: %u", totalResources );
+
+        if( ImGui::Button( "Print to logs" ) )
+        {
+            LOGGER_SCOPE_MESSAGES();
+
+            LOGGER_MESSAGE( "DebugPanel [Resources] Filter: %d | Total: %u", m_filterResourceCompileRef, totalResources );
+            for( const GroupDesc & group : groups )
+            {
+                LOGGER_MESSAGE( "DebugPanel [Resources] Group: %s (%u)", group.name.c_str(), (uint32_t)group.resources.size() );
+                for( const ResourceDesc & desc : group.resources )
+                {
+                    const Char * displayName = desc.name.empty() == false ? desc.name.c_str() : "[unnamed]";
+                    LOGGER_MESSAGE( "DebugPanel [Resources]   %s | %s | compile: %u | prefetch: %u | cache: %u | cached: %s"
+                        , displayName, desc.type.c_str(), desc.compileRef, desc.prefetchRef, desc.cacheRef, desc.isCached ? "yes" : "-"
+                    );
+                }
+            }
+        }
 
         for( const GroupDesc & group : groups )
         {
@@ -595,7 +674,7 @@ namespace Mengine
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
 
-                    ImGui::PushID( (void*)desc.resource.get() );
+                    ImGui::PushID( (void *)desc.resource.get() );
                     if( ImGui::Selectable( displayName, selected, ImGuiSelectableFlags_SpanAllColumns ) == true )
                     {
                         m_selectedResourceGroup = group.name;

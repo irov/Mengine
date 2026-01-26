@@ -52,10 +52,14 @@ namespace Mengine
         return m_resourceImage;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Grid2D::setAngle( const mt::vec2f & _offset, float _angle )
+    void Grid2D::setOffset( const mt::vec2f & _offset )
     {
         m_offset = _offset;
-        m_angle = _angle;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const mt::vec2f & Grid2D::getOffset() const
+    {
+        return m_offset;
     }
     //////////////////////////////////////////////////////////////////////////
     void Grid2D::setWidth( float _width )

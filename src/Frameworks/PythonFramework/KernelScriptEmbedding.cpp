@@ -2530,7 +2530,6 @@ namespace Mengine
 
             .def( "setAngle", &TransformationInterface::setLocalOrientationX )
             .def( "getAngle", &TransformationInterface::getLocalOrientationX )
-            .def_proxy_static( "setAngleDeg", scriptMethod, &KernelScriptMethod::s_Transformation_setAngleDeg )
 
             .def( "setDirection", &TransformationInterface::setDirection )
             .def( "setBillboard", &TransformationInterface::setBillboard )

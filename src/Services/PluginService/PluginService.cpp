@@ -245,8 +245,6 @@ namespace Mengine
                 , _plugin->getPluginName().c_str()
             );
 
-            _plugin->finalizePlugin();
-
             return false;
         }
 

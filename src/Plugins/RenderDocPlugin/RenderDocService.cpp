@@ -6,7 +6,7 @@
 #include "Kernel/NotificationHelper.h"
 
 #ifndef MENGINE_RENDERDOC_DLLNAME
-#define MENGINE_RENDERDOC_DLLNAME "renderdoc.dll"
+#define MENGINE_RENDERDOC_DLLNAME L"renderdoc.dll"
 #endif
 
 //////////////////////////////////////////////////////////////////////////
@@ -27,11 +27,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool RenderDocService::_initializeService()
     {
-        HMODULE renderDocModule = ::LoadLibraryA( MENGINE_RENDERDOC_DLLNAME );
+        HMODULE renderDocModule = ::LoadLibraryW( MENGINE_RENDERDOC_DLLNAME );
         
         if( renderDocModule == NULL )
         {
-            LOGGER_ERROR( "invalid load module '%s' error: %ls"
+            LOGGER_ERROR( "invalid load module '%ls' error: %ls"
                 , MENGINE_RENDERDOC_DLLNAME
                 , Helper::Win32GetLastErrorMessageW()
             );
@@ -43,7 +43,7 @@ namespace Mengine
 
         if( RENDERDOC_GetAPI == NULL  )
         {
-            LOGGER_ERROR( "invalid module '%s' get API '%s' error: %ls"
+            LOGGER_ERROR( "invalid module '%ls' get API '%s' error: %ls"
                 , MENGINE_RENDERDOC_DLLNAME
                 , "RENDERDOC_GetAPI"
                 , Helper::Win32GetLastErrorMessageW()
@@ -55,7 +55,7 @@ namespace Mengine
         RENDERDOC_API_1_6_0 * rdoc_api = nullptr;
         if( RENDERDOC_GetAPI( eRENDERDOC_API_Version_1_6_0, (void **)&rdoc_api ) != 1 )
         {
-            LOGGER_ERROR( "invalid module '%s' RENDERDOC_GetAPI failed [eRENDERDOC_API_Version_1_6_0]"
+            LOGGER_ERROR( "invalid module '%ls' RENDERDOC_GetAPI failed [eRENDERDOC_API_Version_1_6_0]"
                 , MENGINE_RENDERDOC_DLLNAME
             );
 

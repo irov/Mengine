@@ -45,7 +45,7 @@ namespace Mengine
             return false;
         }
 
-        HINSTANCE hInstance = ::LoadLibrary( unicode_name );
+        HINSTANCE hInstance = ::LoadLibraryW( unicode_name );
 
         if( hInstance == NULL )
         {

@@ -11,16 +11,16 @@
 
 namespace Mengine
 {
-    class ModuleLayoutEditor
+    class LayoutEditorModule
         : public ModuleBase
         , public DummySceneEventReceiver
         , public RenderDrawPrimitiveInterface
     {
-        DECLARE_FACTORABLE( ModuleLayoutEditor );
+        DECLARE_FACTORABLE( LayoutEditorModule );
 
     public:
-        ModuleLayoutEditor();
-        ~ModuleLayoutEditor() override;
+        LayoutEditorModule();
+        ~LayoutEditorModule() override;
 
     public:
         bool _initializeModule() override;

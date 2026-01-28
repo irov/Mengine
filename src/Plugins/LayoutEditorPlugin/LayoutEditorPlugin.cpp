@@ -1,6 +1,6 @@
 #include "LayoutEditorPlugin.h"
 
-#include "ModuleLayoutEditor.h"
+#include "LayoutEditorModule.h"
 
 #include "Kernel/ModuleFactory.h"
 #include "Kernel/ConfigHelper.h"
@@ -35,14 +35,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LayoutEditorPlugin::_initializePlugin()
     {
-        this->addModuleFactory( ModuleLayoutEditor::getFactorableType(), Helper::makeModuleFactory<ModuleLayoutEditor>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+        this->addModuleFactory( LayoutEditorModule::getFactorableType(), Helper::makeModuleFactory<LayoutEditorModule>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void LayoutEditorPlugin::_finalizePlugin()
     {
-        this->removeModuleFactory( ModuleLayoutEditor::getFactorableType() );
+        this->removeModuleFactory( LayoutEditorModule::getFactorableType() );
     }
     //////////////////////////////////////////////////////////////////////////
 }

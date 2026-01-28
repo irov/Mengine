@@ -1,4 +1,4 @@
-﻿#include "ModuleLayoutEditor.h"
+﻿#include "LayoutEditorModule.h"
 
 #include "Interface/RenderMaterialServiceInterface.h"
 #include "Interface/SceneServiceInterface.h"
@@ -19,7 +19,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    ModuleLayoutEditor::ModuleLayoutEditor()
+    LayoutEditorModule::LayoutEditorModule()
         : m_scene( nullptr )
         , m_enumeratorLayout( 0 )
         , m_selectedLayoutIndex( ~0 )
@@ -30,11 +30,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    ModuleLayoutEditor::~ModuleLayoutEditor()
+    LayoutEditorModule::~LayoutEditorModule()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ModuleLayoutEditor::_initializeModule()
+    bool LayoutEditorModule::_initializeModule()
     {
         const ImGUIRenderProviderInterfacePtr & imguiRenderProvider = IMGUI_SERVICE()
             ->getRenderProvider();
@@ -44,12 +44,12 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleLayoutEditor::_finalizeModule()
+    void LayoutEditorModule::_finalizeModule()
     {
         m_imguiRenderProvider = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ModuleLayoutEditor::_handleKeyEvent( const InputKeyEvent & _event )
+    bool LayoutEditorModule::_handleKeyEvent( const InputKeyEvent & _event )
     {
         if( _event.code == KC_F1 && _event.isDown == true )
         {
@@ -77,7 +77,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleLayoutEditor::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context )
+    void LayoutEditorModule::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context )
     {
         if( m_show == false )
         {
@@ -90,30 +90,30 @@ namespace Mengine
         _renderPipeline->addRenderExternal( _context, renderMaterial, nullptr, RenderDrawPrimitiveInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ModuleLayoutEditor::onEntityCreate( const EntityBehaviorInterfacePtr & _behavior, Entity * _entity )
+    bool LayoutEditorModule::onEntityCreate( const EntityBehaviorInterfacePtr & _behavior, Entity * _entity )
     {
         MENGINE_UNUSED( _behavior );
-        
+
         m_scene = Helper::staticNodeCast<Scene *>( _entity );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleLayoutEditor::onEntityDestroy( const EntityBehaviorInterfacePtr & _behavior )
+    void LayoutEditorModule::onEntityDestroy( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
 
         m_scene = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ModuleLayoutEditor::onEntityPreparation( const EntityBehaviorInterfacePtr & _behavior )
+    bool LayoutEditorModule::onEntityPreparation( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ModuleLayoutEditor::onEntityActivate( const EntityBehaviorInterfacePtr & _behavior )
+    bool LayoutEditorModule::onEntityActivate( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
 
@@ -140,7 +140,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleLayoutEditor::onEntityDeactivate( const EntityBehaviorInterfacePtr & _behavior )
+    void LayoutEditorModule::onEntityDeactivate( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
 
@@ -150,19 +150,19 @@ namespace Mengine
         m_show = false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleLayoutEditor::onRenderDrawPrimitives( const RenderPrimitive * _primitives, uint32_t _count ) const
+    void LayoutEditorModule::onRenderDrawPrimitives( const RenderPrimitive * _primitives, uint32_t _count ) const
     {
         MENGINE_UNUSED( _primitives );
         MENGINE_UNUSED( _count );
 
         m_imguiRenderProvider->newFrame();
 
-        const_cast<ModuleLayoutEditor *>(this)->renderImGUI();
+        const_cast<LayoutEditorModule *>(this)->renderImGUI();
 
         m_imguiRenderProvider->endFrame();
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleLayoutEditor::renderImGUI()
+    void LayoutEditorModule::renderImGUI()
     {
         ImGui::Begin( "Layout Editor" );
 
@@ -172,7 +172,7 @@ namespace Mengine
         ImGui::End();
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleLayoutEditor::renderImGUILayouts()
+    void LayoutEditorModule::renderImGUILayouts()
     {
         if( ImGui::Button( "+" ) == true )
         {
@@ -231,7 +231,7 @@ namespace Mengine
 
             if( ImGui::IsKeyPressed( ImGuiKey_DownArrow, false ) == true )
             {
-                if( m_selectedLayoutIndex < (int)m_layouts.size() - 1 )
+                if( m_selectedLayoutIndex < (int32_t)m_layouts.size() - 1 )
                 {
                     m_selectedLayoutIndex++;
                     m_editedNameLayoutIndex = ~0;
@@ -298,7 +298,7 @@ namespace Mengine
         ImGui::Separator();
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleLayoutEditor::renderImGUIWidgets()
+    void LayoutEditorModule::renderImGUIWidgets()
     {
         if( m_selectedLayoutIndex == ~0 )
         {
@@ -371,7 +371,7 @@ namespace Mengine
         ImGui::EndChild();
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleLayoutEditor::newLayout()
+    void LayoutEditorModule::newLayout()
     {
         Layout layout;
 
@@ -396,7 +396,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleLayoutEditor::removeLayout()
+    void LayoutEditorModule::removeLayout()
     {
         if( m_layouts.empty() == true )
         {
@@ -405,7 +405,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_FATAL( (int32_t)m_layouts.size() >= m_selectedLayoutIndex, "selected index %d more layouts count %zu"
             , m_selectedLayoutIndex
-            , (size_t)m_layouts.size() 
+            , (size_t)m_layouts.size()
         );
 
         m_layouts.erase( m_layouts.begin() + m_selectedLayoutIndex );

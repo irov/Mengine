@@ -6,8 +6,8 @@ src
     LayoutEditorPlugin.def
     LayoutEditorPlugin.cpp
     
-    ModuleLayoutEditor.cpp
-    ModuleLayoutEditor.h
+    LayoutEditorModule.cpp
+    LayoutEditorModule.h
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_CONFIG_DIR}/imgui)

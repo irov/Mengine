@@ -1,6 +1,6 @@
-#include "MacOSWorkspace.h"
+#import "MacOSWorkspace.h"
 
-#include "Environment/Apple/AppleErrorHelper.h"
+#import "Environment/Apple/AppleErrorHelper.h"
 
 #include "Kernel/Logger.h"
 

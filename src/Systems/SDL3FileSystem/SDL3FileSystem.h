@@ -10,7 +10,6 @@ namespace Mengine
         : public ServiceBase<FileSystemInterface>
     {
         DECLARE_FACTORABLE( SDL3FileSystem );
-        DECLARE_VISITABLE( ServiceInterface );
 
     public:
         SDL3FileSystem();

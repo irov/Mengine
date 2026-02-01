@@ -171,6 +171,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void HttpService::_stopService()
     {
+        for( ReceiverDesc & desc : m_receiverDescs )
+        {
+            desc.task->cancel();
+        }
+
         for( const ConstString & threadName : m_threads )
         {
             THREAD_SERVICE()

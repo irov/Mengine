@@ -1,7 +1,7 @@
 #import "MacOSApplication.h"
 
-#include "Environment/Apple/AppleUserDefaults.h"
-#include "Environment/Apple/AppleDetail.h"
+#import "Environment/Apple/AppleUserDefaults.h"
+#import "Environment/Apple/AppleDetail.h"
 
 @implementation MacOSApplication
 

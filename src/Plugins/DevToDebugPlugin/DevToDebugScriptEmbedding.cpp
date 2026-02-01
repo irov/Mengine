@@ -422,7 +422,6 @@ namespace Mengine
             ;
 
         pybind::interface_<DevToDebugWidget, pybind::bases<Scriptable>>( _kernel, "DevToDebugWidget" )
-            .def_deprecated( "getId", &DevToDebugWidget::getWidgetId, "use getWidgetId" )
             .def( "getWidgetId", &DevToDebugWidget::getWidgetId )
             .def_static_args( "setHide", &Detail::DevToDebugWidget_setHide )
             ;

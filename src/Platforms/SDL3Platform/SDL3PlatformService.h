@@ -19,12 +19,11 @@
 #include "Interface/FactoryInterface.h"
 
 #include "Environment/SDL3/SDL3PlatformServiceExtensionInterface.h"
+#include "Environment/SDL3/SDL3Includer.h"
 
 #if defined(MENGINE_PLATFORM_MACOS)
-#   import "MacOSWorkspace.h"
+#   import "Environment/MacOS/MacOSWorkspace.h"
 #endif
-
-#include "Environment/SDL3/SDL3Includer.h"
 
 #include "SDL3Input.h"
 
@@ -41,7 +40,6 @@ namespace Mengine
         , public SDL3PlatformServiceExtensionInterface
     {
         DECLARE_FACTORABLE( SDL3PlatformService );
-        DECLARE_VISITABLE( ServiceInterface );
         DECLARE_UNKNOWABLE();
 
     public:

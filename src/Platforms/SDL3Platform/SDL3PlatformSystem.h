@@ -12,7 +12,6 @@ namespace Mengine
         : public ServiceBase<PlatformSystemInterface>
     {
         DECLARE_FACTORABLE( SDL3PlatformSystem );
-        DECLARE_VISITABLE( ServiceInterface );
 
     public:
         SDL3PlatformSystem();

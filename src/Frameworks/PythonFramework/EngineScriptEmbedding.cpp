@@ -4403,7 +4403,6 @@ namespace Mengine
         pybind::def_functor( _kernel, "scheduleGlobalFreezeAll", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalFreezeAll );
         pybind::def_functor( _kernel, "scheduleGlobalResumeAll", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalResumeAll );
         pybind::def_functor( _kernel, "scheduleGlobalIsFreeze", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalIsFreeze );
-        pybind::def_functor_deprecated( _kernel, "scheduleGlobalTime", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalPassed, "use scheduleGlobalPassed" );
         pybind::def_functor( _kernel, "scheduleGlobalPassed", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalPassed );
         pybind::def_functor( _kernel, "scheduleGlobalLeft", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalLeft );
 
@@ -4446,7 +4445,6 @@ namespace Mengine
         pybind::def_functor_args( _kernel, "foreachSceneHotspot", nodeScriptMethod, &EngineScriptMethod::s_foreachSceneHotspot );
 
 
-        pybind::def_functor_deprecated( _kernel, "renderOneFrame", nodeScriptMethod, &EngineScriptMethod::s_renderOneFrame, "don't use" );
         pybind::def_functor( _kernel, "writeImageToFile", nodeScriptMethod, &EngineScriptMethod::s_writeImageToFile );
         pybind::def_functor( _kernel, "createImageResource", nodeScriptMethod, &EngineScriptMethod::s_createImageResource );
         pybind::def_functor( _kernel, "createImageSolidResource", nodeScriptMethod, &EngineScriptMethod::s_createImageSolidResource );
@@ -4589,13 +4587,10 @@ namespace Mengine
         pybind::def_functor( _kernel, "analyticsAddGlobalContextParameterString", nodeScriptMethod, &EngineScriptMethod::s_addAnalyticsGlobalContextParameterString );
         pybind::def_functor( _kernel, "analyticsAddGlobalContextParameterInteger", nodeScriptMethod, &EngineScriptMethod::s_addAnalyticsGlobalContextParameterInteger );
         pybind::def_functor( _kernel, "analyticsAddGlobalContextParameterDouble", nodeScriptMethod, &EngineScriptMethod::s_addAnalyticsGlobalContextParameterDouble );
-        pybind::def_functor_deprecated( _kernel, "analyticsCustomEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsEvent, "use analyticsEvent" );
         pybind::def_functor( _kernel, "analyticsEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsEvent );
         pybind::def_functor( _kernel, "analyticsScreenView", nodeScriptMethod, &EngineScriptMethod::s_analyticsScreenView );
         pybind::def_functor( _kernel, "analyticsEventFlush", nodeScriptMethod, &EngineScriptMethod::s_analyticsEventFlush );
 
-        pybind::def_functor_deprecated( _kernel, "mountResourcePak", nodeScriptMethod, &EngineScriptMethod::s_mountResourcePackage, "use 'mountResourcePackage'" );
-        pybind::def_functor_deprecated( _kernel, "unmountResourcePak", nodeScriptMethod, &EngineScriptMethod::s_unmountResourcePackage, "use 'unmountResourcePackage'" );
         pybind::def_functor( _kernel, "mountResourcePackage", nodeScriptMethod, &EngineScriptMethod::s_mountResourcePackage );
         pybind::def_functor( _kernel, "unmountResourcePackage", nodeScriptMethod, &EngineScriptMethod::s_unmountResourcePackage );
         pybind::def_functor( _kernel, "hasPackage", nodeScriptMethod, &EngineScriptMethod::s_hasPackage );
@@ -4802,7 +4797,6 @@ namespace Mengine
             .def_proxy_static_kernel( "cmpSecureValue", nodeScriptMethod, &EngineScriptMethod::s_SecureUnsignedValue_cmpSecureValue )
             ;
 
-        pybind::def_functor_deprecated( _kernel, "makeSecureValue", nodeScriptMethod, &EngineScriptMethod::s_makeSecureUnsignedValue, "use makeSecureUnsignedValue" );
         pybind::def_functor( _kernel, "makeSecureUnsignedValue", nodeScriptMethod, &EngineScriptMethod::s_makeSecureUnsignedValue );
 
         pybind::interface_<SecureStringValue, pybind::bases<SecureValueInterface>>( _kernel, "SecureStringValue" )

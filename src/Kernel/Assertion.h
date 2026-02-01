@@ -22,6 +22,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void AssertionSetNotDebugBreak( bool _debugBreak );
         bool AssertionIsNotDebugBreak();
+        void AssertionMessage( const Char * _category, const Char * _file, int32_t _line, const Char * _function, const Char * _message );
         //////////////////////////////////////////////////////////////////////////
         void Assertion( const Char * _category, EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line, const Char * _function );
         void Assertion( const Char * _category, EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line, const Char * _function, const Char * _format, ... ) MENGINE_ATTRIBUTE_FORMAT_STRING( 7, 8 );

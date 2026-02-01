@@ -36,6 +36,8 @@ namespace Mengine
 
     protected:
         ISteamClient * m_client;
+        HSteamPipe m_hSteamPipe;
+        HSteamUser m_hSteamUser;
         ISteamUser * m_user;
         ISteamUserStats	* m_userStats;
         ISteamFriends * m_friends;

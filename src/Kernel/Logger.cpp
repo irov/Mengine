@@ -18,12 +18,22 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void loggerLockMessages()
         {
+            if( SERVICE_IS_INITIALIZE( LoggerServiceInterface ) == false )
+            {
+                return;
+            }
+
             LOGGER_SERVICE()
                 ->lockMessages();
         }
         //////////////////////////////////////////////////////////////////////////
         void loggerUnlockMessages()
         {
+            if( SERVICE_IS_INITIALIZE( LoggerServiceInterface ) == false )
+            {
+                return;
+            }
+
             LOGGER_SERVICE()
                 ->unlockMessages();
         }

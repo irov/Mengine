@@ -1,4 +1,4 @@
-#include "MacOSEnvironmentService.h"
+#import "MacOSEnvironmentService.h"
 
 #include "Interface/PlatformServiceInterface.h"
 
@@ -12,7 +12,7 @@
 #import <SystemConfiguration/SystemConfiguration.h>
 #import <Cocoa/Cocoa.h>
 
-#import <sys/sysctl.h>
+#include <sys/sysctl.h>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( EnvironmentService, Mengine::MacOSEnvironmentService );

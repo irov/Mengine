@@ -2767,10 +2767,8 @@ namespace Mengine
             .def( "findUniqueChild", &Node::findUniqueChild )
             .def_proxy_static( "removeChild", scriptMethod, &KernelScriptMethod::s_Node_removeChild )
 
-            .def_proxy_static_deprecated( "removeAllChild", scriptMethod, &KernelScriptMethod::s_Node_removeChildren, "use removeChildren" )
             .def_proxy_static( "removeChildren", scriptMethod, &KernelScriptMethod::s_Node_removeChildren )
             .def_proxy_static( "removeFromParent", scriptMethod, &KernelScriptMethod::s_Node_removeFromParent )
-            .def_proxy_static_deprecated( "destroyAllChild", scriptMethod, &KernelScriptMethod::s_Node_destroyChildren, "use destroyChildren" )
             .def_proxy_static( "destroyChildren", scriptMethod, &KernelScriptMethod::s_Node_destroyChildren )
             .def_proxy_static( "isHomeless", scriptMethod, &KernelScriptMethod::s_Node_isHomeless )
 
@@ -2779,7 +2777,6 @@ namespace Mengine
 
             .def_proxy_static( "getDebugId", scriptMethod, &KernelScriptMethod::s_Node_getDebugId )
 
-            .def_proxy_static_deprecated( "createChildren", scriptMethod, &KernelScriptMethod::s_Node_createChild, "use createChild" )
             .def_proxy_static( "createChild", scriptMethod, &KernelScriptMethod::s_Node_createChild )
             .def_proxy_static_kernel( "getAllChildren", scriptMethod, &KernelScriptMethod::s_Node_getAllChildren )
 

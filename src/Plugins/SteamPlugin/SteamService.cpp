@@ -146,6 +146,8 @@ namespace Mengine
             return false;
         }
 
+        m_user = user;
+
         //m_user = m_client->GetISteamUser( hSteamUser, hSteamPipe, STEAMUSER_INTERFACE_VERSION );
         //
         //if( m_user->BLoggedOn() == false )
@@ -212,6 +214,9 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_PACKAGES_LOAD );
 
         m_userStats->StoreStats();
+        
+        m_client->ReleaseUser( m_hSteamPipe, m_hSteamUser );
+        m_client->BReleaseSteamPipe( m_hSteamPipe );
 
         SteamAPI_Shutdown();
     }

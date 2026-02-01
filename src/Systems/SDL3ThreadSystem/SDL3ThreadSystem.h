@@ -11,7 +11,6 @@ namespace Mengine
         : public ServiceBase<ThreadSystemInterface>
     {
         DECLARE_FACTORABLE( SDL3ThreadSystem );
-        DECLARE_VISITABLE( ServiceInterface );
 
     public:
         SDL3ThreadSystem();

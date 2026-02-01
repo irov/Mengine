@@ -4093,10 +4093,8 @@ namespace Mengine
         pybind::def_functor( _kernel, "getTime", helperScriptMethod, &HelperScriptMethod::s_getTime );
         pybind::def_functor( _kernel, "getTimeMs", helperScriptMethod, &HelperScriptMethod::s_getTimeMs );
 
-        pybind::def_functor_deprecated( _kernel, "getDate", helperScriptMethod, &HelperScriptMethod::s_getTime, "use getTime" );
 
         pybind::def_functor( _kernel, "getLocalDateTimeMs", helperScriptMethod, &HelperScriptMethod::s_getLocalDateTimeMs );
-        pybind::def_functor_deprecated( _kernel, "getDateStruct", helperScriptMethod, &HelperScriptMethod::s_getLocalDateStruct, "use getLocalDateStruct" );
         pybind::def_functor( _kernel, "getLocalDateStruct", helperScriptMethod, &HelperScriptMethod::s_getLocalDateStruct );
         pybind::def_functor( _kernel, "getLocalDateStructFromTimeMs", helperScriptMethod, &HelperScriptMethod::s_getLocalDateStructFromTimeMs );
 
@@ -4298,7 +4296,6 @@ namespace Mengine
 
         pybind::def_functor( _kernel, "makeUID", helperScriptMethod, &HelperScriptMethod::s_makeUID );
 
-        pybind::def_functor_deprecated( _kernel, "getTextFromID", helperScriptMethod, &HelperScriptMethod::s_getTextFromId, "use getTextFromId" );
         pybind::def_functor( _kernel, "getTextFromId", helperScriptMethod, &HelperScriptMethod::s_getTextFromId );
 
         pybind::def_functor( _kernel, "setTextAlias", helperScriptMethod, &HelperScriptMethod::s_setTextAlias );

@@ -285,7 +285,7 @@ namespace Mengine
         {
             PluginDesc & desc = *it;
 
-            if( desc.plugin == _plugin )
+            if( desc.plugin != _plugin )
             {
                 continue;
             }

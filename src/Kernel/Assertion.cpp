@@ -32,6 +32,20 @@ namespace Mengine
             return Assertion_NotDebugBreak;
         }
         //////////////////////////////////////////////////////////////////////////
+        void AssertionMessage( const Char * _category, const Char * _file, int32_t _line, const Char * _function, const Char * _message )
+        {
+            if( SERVICE_IS_INITIALIZE( LoggerServiceInterface ) == true )
+            {
+                LOGGER_VERBOSE_LEVEL( _category, LM_ERROR, LFILTER_NONE, LCOLOR_RED, _file, _line, _function, LFLAG_NONE )("%s"
+                    , _message
+                    );
+            }
+            else
+            {
+                Helper::PlatformLogMessage( _message );
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
         AssertionOperator::AssertionOperator( const Char * _category, EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line, const Char * _function )
             : m_category( _category )
             , m_level( _level )
@@ -84,8 +98,8 @@ namespace Mengine
             MENGINE_VSNPRINTF( message_info, MENGINE_ASSERTION_MAX_MESSAGE, _format, args );            
             MENGINE_VA_LIST_END( args );
 
-            Char assertion_info[MENGINE_ASSERTION_MAX_MESSAGE + 1] = {'\0'};
-            MENGINE_SNPRINTF( assertion_info, MENGINE_ASSERTION_MAX_MESSAGE, "%s[%d] Assertion [%s] [%s]: %s"
+            Char assertion_msg[MENGINE_ASSERTION_MAX_MESSAGE + 1] = {'\0'};
+            MENGINE_SNPRINTF( assertion_msg, MENGINE_ASSERTION_MAX_MESSAGE, "%s[%d] Assertion [%s] [%s]: %s"
                 , _file
                 , _line
                 , _test
@@ -93,22 +107,13 @@ namespace Mengine
                 , message_info
             );
 
-            if( SERVICE_IS_INITIALIZE( LoggerServiceInterface ) == true )
-            {
-                LOGGER_VERBOSE_LEVEL( _category, LM_ERROR, LFILTER_NONE, LCOLOR_RED, _file, _line, _function, LFLAG_NONE )("%s"
-                    , assertion_info
-                    );
-            }
-            else
-            {
-                Helper::PlatformLogMessage( assertion_info );
-            }
+            Helper::AssertionMessage( _category, _file, _line, _function, assertion_msg );
 
             NOTIFICATION_NOTIFY( NOTIFICATOR_ASSERTION, _category, _level, _test, _file, _line, _function, message_info );
             
             if( _level == ASSERTION_LEVEL_CRITICAL )
             {
-                Helper::crash( assertion_info );
+                Helper::crash( assertion_msg );
 
                 return;
             }
@@ -116,7 +121,7 @@ namespace Mengine
             if( _level == ASSERTION_LEVEL_EXCEPTION )
             {
                 MENGINE_THROW_EXCEPTION( "%s"
-                    , assertion_info
+                    , assertion_msg
                 );
                 
                 return;
@@ -124,7 +129,7 @@ namespace Mengine
 
             if( _level == ASSERTION_LEVEL_FATAL )
             {
-                Helper::abort( assertion_info );
+                Helper::abort( assertion_msg );
             }
 
 #if defined(MENGINE_DEBUG)

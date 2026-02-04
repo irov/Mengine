@@ -10,6 +10,7 @@
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/ThreadMutexHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -43,8 +44,7 @@ namespace Mengine
         {
             SERVICE_WAIT( ThreadSystemInterface, [this]()
             {
-                ThreadMutexInterfacePtr mutex = THREAD_SYSTEM()
-                    ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+                ThreadMutexInterfacePtr mutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( mutex, "invalid create mutex" );
 

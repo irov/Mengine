@@ -28,7 +28,7 @@ namespace Mengine
         void finalize();
 
     public:
-        void main();
+        void main( ThreadId _threadId );
 
     public:
         EThreadPriority getPriority() const override;

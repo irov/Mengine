@@ -19,24 +19,21 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     void * _python_malloc( size_t _size )
     {
-        void * p = ALLOCATOR_SYSTEM()
-            ->malloc( _size, "python" );
+        void * p = Mengine::Helper::allocateMemory( _size, "python" );
 
         return p;
     }
     //////////////////////////////////////////////////////////////////////////
     void * _python_realloc( void * _ptr, size_t _size )
     {
-        void * p = ALLOCATOR_SYSTEM()
-            ->realloc( _ptr, _size, "python" );
+        void * p = Mengine::Helper::reallocateMemory( _ptr, _size, "python" );
 
         return p;
     }
     //////////////////////////////////////////////////////////////////////////
     void _python_free( void * _ptr )
     {
-        ALLOCATOR_SYSTEM()
-            ->free( _ptr, "python" );
+        Mengine::Helper::deallocateMemory( _ptr, "python" );
     }
     //////////////////////////////////////////////////////////////////////////
 }
@@ -63,32 +60,28 @@ namespace Mengine
         protected:
             void * malloc( size_t _size ) override
             {
-                void * p = ALLOCATOR_SYSTEM()
-                    ->malloc( _size, "pybind" );
+                void * p = Helper::allocateMemory( _size, "pybind" );
 
                 return p;
             }
 
             void * calloc( size_t _num, size_t _size ) override
             {
-                void * p = ALLOCATOR_SYSTEM()
-                    ->calloc( _num, _size, "pybind" );
+                void * p = Helper::callocateMemory( _num, _size, "pybind" );
 
                 return p;
             }
 
             void * realloc( void * _ptr, size_t _size ) override
             {
-                void * p = ALLOCATOR_SYSTEM()
-                    ->realloc( _ptr, _size, "pybind" );
+                void * p = Helper::reallocateMemory( _ptr, _size, "pybind" );
 
                 return p;
             }
 
             void free( void * _ptr ) override
             {
-                ALLOCATOR_SYSTEM()
-                    ->free( _ptr, "pybind" );
+                Helper::deallocateMemory( _ptr, "pybind" );
             }
         };
         //////////////////////////////////////////////////////////////////////////

@@ -17,7 +17,17 @@ namespace Mengine
     bool POSIXThreadMutex::initialize()
     {
         pthread_mutexattr_t attr;
-        ::pthread_mutexattr_init( &attr );
+        int attr_status = ::pthread_mutexattr_init( &attr );
+
+        if( attr_status != 0 )
+        {
+            LOGGER_ERROR( "invalid init mutex attr error: %d (doc: %s)"
+                , attr_status
+                , MENGINE_DOCUMENT_STR( this->getDocument() )
+            );
+
+            return false;
+        }
 
         ::pthread_mutexattr_settype( &attr, PTHREAD_MUTEX_RECURSIVE );
 
@@ -30,8 +40,12 @@ namespace Mengine
                 , MENGINE_DOCUMENT_STR( this->getDocument() )
             );
 
+            ::pthread_mutexattr_destroy( &attr );
+
             return false;
         }
+
+        ::pthread_mutexattr_destroy( &attr );
 
         return true;
     }

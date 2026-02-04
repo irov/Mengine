@@ -5,6 +5,7 @@
 #include "Kernel/ThreadSharedMutexScope.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/StatisticDetail.h"
+#include "Kernel/ThreadMutexHelper.h"
 
 #include "Config/StdAlgorithm.h"
 
@@ -33,8 +34,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool StatisticService::_initializeService()
     {
-        ThreadSharedMutexInterfacePtr mutex = THREAD_SYSTEM()
-            ->createSharedMutex( MENGINE_DOCUMENT_FACTORABLE );
+        ThreadSharedMutexInterfacePtr mutex = Helper::createThreadSharedMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( mutex, "invalid create shared mutex" );
 

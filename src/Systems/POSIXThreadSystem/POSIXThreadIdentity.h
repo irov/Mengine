@@ -34,7 +34,7 @@ namespace Mengine
         const ThreadIdentityRunnerInterfacePtr & getRunner() const override;
 
     public:
-        void main();
+        void main( ThreadId _threadId );
 
     public:
         EThreadPriority getPriority() const override;

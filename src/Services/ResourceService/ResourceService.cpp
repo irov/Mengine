@@ -37,11 +37,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceService::_initializeService()
     {
-        ThreadMutexInterfacePtr mutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( mutex, "invalid create mutex" );
-
-        m_mutex = mutex;
+        m_mutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         m_factoryResourceBank = Helper::makeFactoryPool<ResourceBank, 8>( MENGINE_DOCUMENT_FACTORABLE );
 

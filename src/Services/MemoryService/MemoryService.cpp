@@ -34,11 +34,7 @@ namespace Mengine
         m_factoryMemoryBuffer = Helper::makeFactoryPoolWithMutex<MemoryBuffer, 16>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryMemoryProxy = Helper::makeFactoryPoolWithMutex<MemoryProxy, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
-        ThreadMutexInterfacePtr memoryCacheMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( memoryCacheMutex, "invalid create memory cache mutex" );
-
-        m_memoryCacheMutex = memoryCacheMutex;
+        m_memoryCacheMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

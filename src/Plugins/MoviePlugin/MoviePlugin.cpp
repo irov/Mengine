@@ -51,8 +51,9 @@ namespace Mengine
         {
             AE_UNUSED( _userdata );
 
-            return ALLOCATOR_SYSTEM()
-                ->malloc( _size, "movie" );
+            ae_voidptr_t p = Helper::allocateMemory( _size, "movie" );
+
+            return p;
         }
         //////////////////////////////////////////////////////////////////////////
         static ae_voidptr_t stdex_movie_alloc_n( ae_userdata_t _userdata, ae_size_t _size, ae_size_t _count )
@@ -61,24 +62,23 @@ namespace Mengine
 
             size_t total = _size * _count;
 
-            return ALLOCATOR_SYSTEM()
-                ->malloc( total, "movie" );
+            ae_voidptr_t p = Helper::allocateMemory( total, "movie" );
+
+            return p;
         }
         //////////////////////////////////////////////////////////////////////////
         static void stdex_movie_free( ae_userdata_t _userdata, ae_constvoidptr_t _ptr )
         {
             AE_UNUSED( _userdata );
 
-            ALLOCATOR_SYSTEM()
-                ->free( (void *)_ptr, "movie" );
+            Helper::deallocateMemory( (void *)_ptr, "movie" );
         }
         //////////////////////////////////////////////////////////////////////////
         static void stdex_movie_free_n( ae_userdata_t _userdata, ae_constvoidptr_t _ptr )
         {
             AE_UNUSED( _userdata );
 
-            ALLOCATOR_SYSTEM()
-                ->free( (void *)_ptr, "movie" );
+            Helper::deallocateMemory( (void *)_ptr, "movie" );
         }
         //////////////////////////////////////////////////////////////////////////
         static void stdex_movie_logerror( ae_userdata_t _userdata, aeMovieErrorCode _code, const ae_char_t * _format, ... )

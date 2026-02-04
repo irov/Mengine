@@ -69,7 +69,7 @@ namespace Mengine
                 );
             }
 
-            thread->main();
+            thread->main( (ThreadId)current_threadId );
 
             return nullptr;
         }
@@ -136,17 +136,17 @@ namespace Mengine
         m_mutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void POSIXThreadProcessor::main()
+    void POSIXThreadProcessor::main( ThreadId _threadId )
     {
         ALLOCATOR_SYSTEM()
-            ->beginThread( (ThreadId)m_threadId );
+            ->beginThread( _threadId );
 
         if( PLATFORM_SYSTEM()
-            ->beginThread( (ThreadId)m_threadId ) == false )
+            ->beginThread( _threadId ) == false )
         {
             LOGGER_ERROR( "invalid begin thread processor name: %s id: %" MENGINE_PRIu64 " priority: %d"
                 , m_description.nameA
-                , (ThreadId)m_threadId
+                , _threadId
                 , m_priority
             );
 
@@ -155,7 +155,7 @@ namespace Mengine
 
         LOGGER_INFO( "thread", "begin thread processor name: %s id: %" MENGINE_PRIu64 " priority: %d"
             , m_description.nameA
-            , (ThreadId)m_threadId
+            , _threadId
             , m_priority
         );
 
@@ -199,10 +199,10 @@ namespace Mengine
         }
 
         PLATFORM_SYSTEM()
-            ->endThread( (ThreadId)m_threadId );
+            ->endThread( _threadId );
 
         ALLOCATOR_SYSTEM()
-            ->endThread( (ThreadId)m_threadId );
+            ->endThread( _threadId );
     }
     //////////////////////////////////////////////////////////////////////////
     ThreadId POSIXThreadProcessor::getThreadId() const

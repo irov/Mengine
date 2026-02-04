@@ -77,7 +77,7 @@ namespace Mengine
                 );
             }
 
-            thread->main();
+            thread->main( (ThreadId)current_threadId );
 
             return nullptr;
         }
@@ -141,17 +141,17 @@ namespace Mengine
         return m_runner;
     }
     //////////////////////////////////////////////////////////////////////////
-    void POSIXThreadIdentity::main()
+    void POSIXThreadIdentity::main( ThreadId _threadId )
     {
         ALLOCATOR_SYSTEM()
-            ->beginThread( (ThreadId)m_threadId );
+            ->beginThread( _threadId );
 
         if( PLATFORM_SYSTEM()
-            ->beginThread( (ThreadId)m_threadId ) == false )
+            ->beginThread( _threadId ) == false )
         {
             LOGGER_ERROR( "invalid begin thread identity name: %s id: %" MENGINE_PRIu64 " priority: %d"
                 , m_description.nameA
-                , (ThreadId)m_threadId
+                , _threadId
                 , m_priority
             );
 
@@ -160,11 +160,11 @@ namespace Mengine
 
         LOGGER_INFO( "thread", "begin thread name: %s id: %" MENGINE_PRIu64 " priority: %d"
             , m_description.nameA
-            , (ThreadId)m_threadId
+            , _threadId
             , m_priority
         );
 
-        MENGINE_PROFILER_THREAD( m_name.c_str() );
+        MENGINE_PROFILER_THREAD( m_description.nameA );
         
         ThreadIdentityRunnerInterfacePtr runner = m_runner;
 
@@ -174,10 +174,10 @@ namespace Mengine
         }
 
         PLATFORM_SYSTEM()
-            ->endThread( (ThreadId)m_threadId );
+            ->endThread( _threadId );
 
         ALLOCATOR_SYSTEM()
-            ->endThread( (ThreadId)m_threadId );
+            ->endThread( _threadId );
     }
     //////////////////////////////////////////////////////////////////////////
     ThreadId POSIXThreadIdentity::getThreadId() const

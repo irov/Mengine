@@ -13,7 +13,6 @@ namespace Mengine
         , protected EXTEND_EMBEDDABLE( AstralaxScriptEmbedding )
     {
         PLUGIN_DECLARE( "Astralax" );
-        DECLARE_VISITABLE( PluginInterface );
         DECLARE_EMBEDDABLE();
 
     public:

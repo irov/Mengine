@@ -36,8 +36,9 @@ namespace ImGuiExt
             ImGui::SameLine();
 
             ImGui::SetCursorPosX( ImGui::GetCursorPosX() - textSize.x - 8.f );
-            const ImVec4 imageColor = _disabled ? ImVec4( 1.0f, 1.0f, 1.0f, 0.5f ) : ImVec4( 1.0f, 1.0f, 1.0f, 1.0f );
-            ImGui::Image( _icon->image, ImVec2( 16.f, 16.f ), _icon->uv0, _icon->uv1, imageColor );
+            const ImVec4 tintImageColor = ImVec4( 1.0f, 1.0f, 1.0f, 1.0f );
+            const ImVec4 borderImageColor = _disabled ? ImVec4( 0.5f, 0.5f, 0.5f, 1.0f ) : ImVec4( 1.0f, 1.0f, 1.0f, 1.0f );
+            ImGui::Image( _icon->image, ImVec2( 16.f, 16.f ), _icon->uv0, _icon->uv1, tintImageColor, borderImageColor );
         }
 
         return {isOpened, isClicked};

@@ -16,7 +16,6 @@ namespace Mengine
         , protected EXTEND_EMBEDDABLE( Movie2ScriptEmbedding )
     {
         PLUGIN_DECLARE( "Movie" );
-        DECLARE_VISITABLE( PluginInterface );
         DECLARE_EMBEDDABLE();
 
     public:

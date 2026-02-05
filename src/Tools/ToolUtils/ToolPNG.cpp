@@ -82,6 +82,8 @@ uint8_t * png_load_from_memory( const uint8_t * _buffer, size_t _size, uint32_t 
     *_height = image.height;
     *_channels = PNG_IMAGE_PIXEL_COMPONENT_SIZE( image.format );
 
+    png_image_free( &image );
+
     return pixels;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -114,6 +116,8 @@ const uint8_t * png_write_to_memory( const uint8_t * _buffer, size_t _size, uint
     png_alloc_size_t needed = 0;
     if( png_image_write_to_memory( &image, nullptr, &needed, 0, _buffer, _size, nullptr ) == 0 )
     {
+        png_image_free( &image );
+
         return nullptr;
     }
 
@@ -121,12 +125,15 @@ const uint8_t * png_write_to_memory( const uint8_t * _buffer, size_t _size, uint
 
     if( buffer == nullptr )
     {
+        png_image_free( &image );
+
         return nullptr;
     }
 
     if( png_image_write_to_memory( &image, buffer, &needed, 0, _buffer, static_cast<png_int_32>(_size), nullptr ) == 0 )
     {
-        free( buffer );
+        ::free( buffer );
+        png_image_free( &image );
 
         return nullptr;
     }

@@ -156,12 +156,12 @@ int main( int argc, char * argv[] )
     Mengine::FilePath fp_out = Mengine::Helper::unicodeToFilePath( out );
 
     if( PLUGIN_SERVICE()
-        ->loadPlugin( "XmlToBinPlugin.dll", MENGINE_DOCUMENT_FUNCTION ) == false )
+        ->loadPlugin( "XmlToBinPlugin.dll", false, MENGINE_DOCUMENT_FUNCTION ) == false )
     {
         return EXIT_FAILURE;
     }
 
-    using namespace Mengine::Literals;
+    //using namespace Mengine::Literals;
 
     Mengine::ConverterInterfacePtr converter = CONVERTER_SERVICE()
         ->createConverter( STRINGIZE_STRING_LOCAL( "xml2bin" ), MENGINE_DOCUMENT_FUNCTION );

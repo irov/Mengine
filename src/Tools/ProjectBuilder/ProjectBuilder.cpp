@@ -332,33 +332,33 @@ namespace Mengine
 
         SERVICE_CREATE( FileSystem, MENGINE_DOCUMENT_FUNCTION );
 
-        PLUGIN_CREATE( Zip, MENGINE_DOCUMENT_FUNCTION );
-        PLUGIN_CREATE( LZ4, MENGINE_DOCUMENT_FUNCTION );
-        PLUGIN_CREATE( JPEG, MENGINE_DOCUMENT_FUNCTION );
-        PLUGIN_CREATE( PNG, MENGINE_DOCUMENT_FUNCTION );
-        PLUGIN_CREATE( WebP, MENGINE_DOCUMENT_FUNCTION );
-        PLUGIN_CREATE( PVRTC, MENGINE_DOCUMENT_FUNCTION );
-        PLUGIN_CREATE( Theora, MENGINE_DOCUMENT_FUNCTION );
-        PLUGIN_CREATE( OggVorbis, MENGINE_DOCUMENT_FUNCTION );
-        PLUGIN_CREATE( ImageCodec, MENGINE_DOCUMENT_FUNCTION );
-        PLUGIN_CREATE( Movie, MENGINE_DOCUMENT_FUNCTION );
-        PLUGIN_CREATE( Metabuf, MENGINE_DOCUMENT_FUNCTION );
-        PLUGIN_CREATE( Win32FindPython3, MENGINE_DOCUMENT_FUNCTION );
+        PLUGIN_CREATE( Zip, false, MENGINE_DOCUMENT_FUNCTION );
+        PLUGIN_CREATE( LZ4, false, MENGINE_DOCUMENT_FUNCTION );
+        PLUGIN_CREATE( JPEG, false, MENGINE_DOCUMENT_FUNCTION );
+        PLUGIN_CREATE( PNG, false, MENGINE_DOCUMENT_FUNCTION );
+        PLUGIN_CREATE( WebP, false, MENGINE_DOCUMENT_FUNCTION );
+        PLUGIN_CREATE( PVRTC, false, MENGINE_DOCUMENT_FUNCTION );
+        PLUGIN_CREATE( Theora, false, MENGINE_DOCUMENT_FUNCTION );
+        PLUGIN_CREATE( OggVorbis, false, MENGINE_DOCUMENT_FUNCTION );
+        PLUGIN_CREATE( ImageCodec, false, MENGINE_DOCUMENT_FUNCTION );
+        PLUGIN_CREATE( Movie, false, MENGINE_DOCUMENT_FUNCTION );
+        PLUGIN_CREATE( Metabuf, false, MENGINE_DOCUMENT_FUNCTION );
+        PLUGIN_CREATE( Win32FindPython3, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( PLUGIN_SERVICE()
-            ->loadPlugin( "DevelopmentConverterPlugin.dll", MENGINE_DOCUMENT_FUNCTION ) == false )
+            ->loadPlugin( "DevelopmentConverterPlugin.dll", false, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             return false;
         }
 
         if( PLUGIN_SERVICE()
-            ->loadPlugin( "AstralaxPlugin.dll", MENGINE_DOCUMENT_FUNCTION ) == false )
+            ->loadPlugin( "AstralaxPlugin.dll", false, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             return false;
         }
 
         if( PLUGIN_SERVICE()
-            ->loadPlugin( "XmlToBinPlugin.dll", MENGINE_DOCUMENT_FUNCTION ) == false )
+            ->loadPlugin( "XmlToBinPlugin.dll", false, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             return false;
         }

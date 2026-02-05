@@ -252,7 +252,6 @@ namespace Mengine
             this->OnConnectButton();
         }
 
-        ImGui_ImplOpenGL3_CreateFontsTexture();
         ImGui_ImplOpenGL3_CreateDeviceObjects();
 
         return true;

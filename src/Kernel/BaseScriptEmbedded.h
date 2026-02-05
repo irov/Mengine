@@ -41,5 +41,5 @@ namespace Mengine
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 #   define EXTEND_EMBEDDABLE(Type) Mengine::BaseScriptEmbedded<Type>
 #else 
-#   define EXTEND_EMBEDDABLE(Type) Mengine::DummyEmbedded
+#   define EXTEND_EMBEDDABLE(Type) Mengine::DummyScriptEmbedded
 #endif

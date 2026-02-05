@@ -397,6 +397,10 @@ PLUGIN_EXPORT( Win32AntifreezeMonitor );
 PLUGIN_EXPORT( AndroidNativePython );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_PLUGIN_ANDROID_SOUND_STATIC)
+PLUGIN_EXPORT( AndroidSound );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_APPLE_NATIVE_PYTHON_STATIC)
 PLUGIN_EXPORT( AppleNativePython );
 #endif
@@ -1497,6 +1501,10 @@ namespace Mengine
 
 #if defined(MENGINE_PLUGIN_ANDROID_NATIVE_PYTHON_STATIC)
         MENGINE_ADD_PLUGIN( AndroidNativePython, "plugin AndroidNativePython...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#if defined(MENGINE_PLUGIN_ANDROID_SOUND_STATIC)
+        MENGINE_ADD_PLUGIN( AndroidSound, "plugin AndroidSound...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #if defined(MENGINE_PLUGIN_APPLE_NATIVE_PYTHON_STATIC)

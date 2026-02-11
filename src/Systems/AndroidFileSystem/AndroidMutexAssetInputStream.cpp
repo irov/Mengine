@@ -1,6 +1,5 @@
 #include "AndroidMutexAssetInputStream.h"
 
-#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 
 #include "Environment/Android/AndroidAssetServiceInterface.h"

@@ -1,7 +1,5 @@
 #include "SDL3Input.h"
 
-#include "Interface/UnicodeSystemInterface.h"
-
 #include "Kernel/Logger.h"
 #include "Kernel/InputServiceHelper.h"
 #include "Kernel/String.h"
@@ -160,12 +158,9 @@ namespace Mengine
                     return;
                 }
 
-                size_t text_len = StdString::strlen( text );
-
                 WChar text_code[256 + 1] = {L'\0'};
                 size_t text_code_size;
-                UNICODE_SYSTEM()
-                    ->utf8ToUnicode( text, text_len, text_code, 256, &text_code_size );
+                Helper::utf8ToUnicode( text, text_code, 256, &text_code_size );
 
                 Helper::pushTextEvent( point.x, point.y, 0.f, text_code );
             }break;

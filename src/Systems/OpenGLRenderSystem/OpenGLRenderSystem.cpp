@@ -290,6 +290,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::destroyRenderWindow()
     {
+        m_renderWindowCreate = false;
+
         NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_DEVICE_DESTROY );
     }
     //////////////////////////////////////////////////////////////////////////

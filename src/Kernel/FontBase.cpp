@@ -1,7 +1,7 @@
 #include "FontBase.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/Utf8Helper.h"
+#include "Kernel/UnicodeHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
@@ -137,7 +137,7 @@ namespace Mengine
             )
         {
             uint32_t code;
-            if( Helper::Utf8NextCode( &text_it, text_end, &code ) == false )
+            if( Helper::utf8NextCode( &text_it, text_end, &code ) == false )
             {
                 LOGGER_ERROR( "font '%s' text '%s' have invalid utf8 symbol '%s'"
                     , this->getName().c_str()
@@ -232,7 +232,7 @@ namespace Mengine
             )
         {
             uint32_t code;
-            if( Helper::Utf8NextCode( &text_it, text_end, &code ) == false )
+            if( Helper::utf8NextCode( &text_it, text_end, &code ) == false )
             {
                 LOGGER_ERROR( "font '%s' text '%.*s' invalid utf8"
                     , this->getName().c_str()

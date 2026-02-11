@@ -1,7 +1,6 @@
 #include "Metatype.h"
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/UnicodeSystemInterface.h"
 
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/Logger.h"
@@ -142,9 +141,8 @@ namespace Metabuf
 
         size_t unicodeSize;
 
-        Mengine::WChar unicode[2];
-        if( UNICODE_SYSTEM()
-            ->utf8ToUnicode( utf8, size, unicode, 2, &unicodeSize ) == false )
+        Mengine::WChar unicode[2] = {L'\0'};
+        if( Mengine::Helper::utf8ToUnicode( utf8, size, unicode, 2, &unicodeSize ) == false )
         {
             stdex::throw_memory_reader_exception();
 

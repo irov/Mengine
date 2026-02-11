@@ -75,25 +75,29 @@ namespace Mengine
             OpenALSoundSystemExtensionInterface * soundSystemExtension = SOUND_SYSTEM()
                 ->getUnknown();
 
-            m_sourceId = soundSystemExtension->genSourceId();
+            ALuint sourceId = soundSystemExtension->genSourceId();
 
-            if( m_sourceId == 0 )
+            if( sourceId == 0 )
             {
                 return false;
             }
 
-            this->apply_( m_sourceId );
+            this->apply_( sourceId );
 
-            if( m_soundBuffer->playSource( m_sourceId, m_loop, m_time ) == false )
+            if( m_soundBuffer->playSource( sourceId, m_loop, m_time ) == false )
             {
                 LOGGER_ASSERTION( "invalid buffer play [%u] loop [%u] time [%f]"
-                    , m_sourceId
+                    , sourceId
                     , m_loop
                     , m_time
                 );
 
+                soundSystemExtension->releaseSourceId( sourceId );
+
                 return false;
             }
+
+            m_sourceId = sourceId;
         }
         else
         {
@@ -321,7 +325,6 @@ namespace Mengine
             return 0.f;
         }
 
-        //timing dont assign to zero when m_soundBuffer is stopped!
         if( mt::equal_f_z( position ) == true && mt::equal_f_z( m_time ) == false )
         {
             position = m_time;
@@ -335,6 +338,11 @@ namespace Mengine
         this->unloadBuffer_();
 
         m_soundBuffer = OpenALSoundBufferBasePtr::from( _soundBuffer );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const SoundBufferInterfacePtr & OpenALSoundSource::getSoundBuffer() const
+    {
+        return m_soundBuffer;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundSource::unloadBuffer_()
@@ -396,11 +404,6 @@ namespace Mengine
         ALfloat gain = Detail::calcGain( m_volume );
 
         MENGINE_OPENAL_CALL( alSourcef, (_source, AL_GAIN, gain) );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const SoundBufferInterfacePtr & OpenALSoundSource::getSoundBuffer() const
-    {
-        return m_soundBuffer;
     }
     //////////////////////////////////////////////////////////////////////////
 }

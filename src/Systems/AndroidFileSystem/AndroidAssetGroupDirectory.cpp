@@ -1,6 +1,5 @@
 #include "AndroidAssetGroupDirectory.h"
 
-#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PlatformServiceInterface.h"
 
 #include "Environment/Android/AndroidEnv.h"

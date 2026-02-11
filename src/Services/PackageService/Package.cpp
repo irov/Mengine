@@ -5,7 +5,6 @@
 #include "Interface/TextServiceInterface.h"
 #include "Interface/FontServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
-#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/UserdataServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/PlatformServiceInterface.h"

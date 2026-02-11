@@ -1,7 +1,6 @@
 #include "AccountService.h"
 
 #include "Interface/ApplicationInterface.h"
-#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 

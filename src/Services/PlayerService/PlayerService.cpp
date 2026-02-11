@@ -7,7 +7,6 @@
 #include "Interface/TimelineServiceInterface.h"
 #include "Interface/FactoryServiceInterface.h"
 #include "Interface/UpdateServiceInterface.h"
-#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/ModuleInterface.h"
 #include "Interface/ApplicationInterface.h"

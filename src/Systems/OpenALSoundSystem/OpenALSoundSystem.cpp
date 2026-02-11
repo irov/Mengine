@@ -1,7 +1,6 @@
 #include "OpenALSoundSystem.h"
 #include "OpenALSoundErrorHelper.h"
 
-#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"

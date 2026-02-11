@@ -29,16 +29,26 @@ namespace Mengine
         {
             int status = ::mkdir( _fullpath, S_IRWXU );
 
-            if( status != 0 )
+            if( status == 0 )
+            {
+                return true;
+            }
+
+            if( errno == EEXIST )
             {
                 LOGGER_WARNING( "'%s' already exists"
                     , _fullpath
                 );
 
-                return false;
+                return true;
             }
 
-            return true;
+            LOGGER_ERROR( "invalid create directory '%s' error: %d"
+                , _fullpath
+                , errno
+            );
+
+            return false;
         }
         //////////////////////////////////////////////////////////////////////////
         static bool isDirectoryFullpath( const Char * _fullpath )
@@ -167,10 +177,19 @@ namespace Mengine
         Helper::pathRemoveSlashA( correctDirectory, MENGINE_PATH_FORWARDSLASH );
 
         uint32_t paths_count = 0;
-        Path paths[16];
+        Path paths[64];
 
         for( ;; )
         {
+            if( paths_count >= 64 )
+            {
+                LOGGER_ERROR( "too many directories in path '%s'"
+                    , correctDirectory
+                );
+
+                return false;
+            }
+
             StdString::strcpy_safe( paths[paths_count++], correctDirectory, MENGINE_MAX_PATH );
 
             if( Helper::pathRemoveFileSpecA( correctDirectory, MENGINE_PATH_FORWARDSLASH ) == false )
@@ -297,8 +316,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint64_t AndroidFileSystem::getFileTime( const Char * _filePath ) const
     {
+        Path pathCorrect = {'\0'};
+        Helper::pathCorrectBackslashToA( pathCorrect, _filePath );
+
         struct stat fs;
-        if( ::stat( _filePath, &fs ) != 0 )
+        if( ::stat( pathCorrect, &fs ) != 0 )
         {
             return 0U;
         }

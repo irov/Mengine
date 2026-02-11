@@ -1,7 +1,6 @@
 #include "Win32FileMapped.h"
 
 #include "Interface/MemoryServiceInterface.h"
-#include "Interface/UnicodeSystemInterface.h"
 
 #include "Environment/Windows/Win32FileHelper.h"
 #include "Environment/Windows/Win32Helper.h"

@@ -21,7 +21,6 @@ src
     TextLocalePackage.h
 )
 
-INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/utf8/source)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/xmlsax/include)
 
 ADD_MENGINE_LIBRARY(Services)

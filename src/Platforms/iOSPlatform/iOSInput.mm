@@ -1,7 +1,5 @@
 #include "iOSInput.h"
 
-#include "Interface/UnicodeSystemInterface.h"
-
 #include "Kernel/Logger.h"
 #include "Kernel/InputServiceHelper.h"
 #include "Kernel/String.h"
@@ -159,8 +157,7 @@ namespace Mengine
 
                 WChar text_code[SDL_TEXTINPUTEVENT_TEXT_SIZE + 1] = {L'\0'};
                 size_t text_code_size;
-                UNICODE_SYSTEM()
-                    ->utf8ToUnicode( text, MENGINE_UNKNOWN_SIZE, text_code, SDL_TEXTINPUTEVENT_TEXT_SIZE, &text_code_size );
+                Helper::utf8ToUnicode( text, text_code, SDL_TEXTINPUTEVENT_TEXT_SIZE, &text_code_size );
 
                 Helper::pushTextEvent( point.x, point.y, 0.f, text_code );
             }break;

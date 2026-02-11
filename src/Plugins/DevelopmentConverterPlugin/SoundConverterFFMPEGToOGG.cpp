@@ -1,6 +1,5 @@
 #include "SoundConverterFFMPEGToOGG.h"
 
-#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PlatformServiceInterface.h"
 
 #include "Environment/Windows/Win32CreateProcess.h"

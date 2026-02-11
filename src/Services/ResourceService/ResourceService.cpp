@@ -1,6 +1,5 @@
 #include "ResourceService.h"
 
-#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ContentInterface.h"
 

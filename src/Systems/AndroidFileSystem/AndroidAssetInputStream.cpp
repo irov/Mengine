@@ -1,6 +1,5 @@
 #include "AndroidAssetInputStream.h"
 
-#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PlatformServiceInterface.h"
 
 #include "Environment/Android/AndroidAssetServiceInterface.h"

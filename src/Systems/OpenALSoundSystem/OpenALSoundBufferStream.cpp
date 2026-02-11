@@ -296,7 +296,7 @@ namespace Mengine
         this->setUpdating_( false );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenALSoundBufferStream::resumeSource( ALuint _sourceId )
+    void OpenALSoundBufferStream::resumeSource( ALuint _sourceId )
     {
         MENGINE_UNUSED( _sourceId );
 
@@ -307,8 +307,6 @@ namespace Mengine
         this->setUpdating_( true );
 
         MENGINE_OPENAL_CALL( alSourcePlay, (_sourceId) );
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundBufferStream::setUpdating_( bool _updating )

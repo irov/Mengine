@@ -1,6 +1,5 @@
 #include "Win32FileInputStream.h"
 
-#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PlatformServiceInterface.h"
 
 #include "Environment/Windows/Win32FileHelper.h"

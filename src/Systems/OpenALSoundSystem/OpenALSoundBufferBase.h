@@ -36,7 +36,7 @@ namespace Mengine
         virtual bool playSource( ALuint _source, bool _looped, float _carriage ) = 0;
         virtual void stopSource( ALuint _source ) = 0;
         virtual void pauseSource( ALuint _source ) = 0;
-        virtual bool resumeSource( ALuint _source ) = 0;
+        virtual void resumeSource( ALuint _source ) = 0;
 
     public:
         virtual bool setTimePosition( ALuint _source, float _position ) const = 0;

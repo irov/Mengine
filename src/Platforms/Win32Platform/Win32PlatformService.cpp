@@ -50,7 +50,7 @@
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/ExecutorHelper.h"
 #include "Kernel/TimestampHelper.h"
-#include "Kernel/Utf8Helper.h"
+#include "Kernel/UnicodeHelper.h"
 #include "Kernel/ThreadMutexHelper.h"
 #include "Kernel/Hexadecimal.h"
 #include "Kernel/VocabularyHelper.h"
@@ -804,7 +804,7 @@ namespace Mengine
             return;
         }
 
-        Helper::utf8ToUnicodeSize( _projectTitle, MENGINE_UNKNOWN_SIZE, m_projectTitle.data(), MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME );
+        Helper::utf8ToUnicode( _projectTitle, MENGINE_UNKNOWN_SIZE, m_projectTitle.data(), MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME );
 
         LOGGER_INFO( "platform", "project title: %s"
             , _projectTitle
@@ -832,7 +832,7 @@ namespace Mengine
         WPath unicode_shortpath = {L'\0'};
         DWORD len = ::GetShortPathName( unicode_path, unicode_shortpath, MENGINE_MAX_PATH );
 
-        if( Helper::unicodeToUtf8Size( unicode_shortpath, (size_t)len, _shortpath, MENGINE_MAX_PATH ) == false )
+        if( Helper::unicodeToUtf8( unicode_shortpath, (size_t)len, _shortpath, MENGINE_MAX_PATH ) == false )
         {
             LOGGER_ERROR( "invalid convert shortpath to utf8" );
 
@@ -2157,7 +2157,7 @@ namespace Mengine
     bool Win32PlatformService::sendChar_( WPARAM wParam )
     {
         Char utf8_code[5 + 1] = {'\0'};
-        if( Helper::Utf32ToUtf8( (Utf32)wParam, utf8_code ) == false )
+        if( Helper::utf32ToUtf8( (Utf32)wParam, utf8_code ) == false )
         {
             return false;
         }

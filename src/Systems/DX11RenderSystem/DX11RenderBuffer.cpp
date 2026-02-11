@@ -115,7 +115,6 @@ namespace Mengine
         desc.MiscFlags = 0;
         desc.StructureByteStride = (UINT)m_elementSize;
 
-        // Define the resource data.
         D3D11_SUBRESOURCE_DATA InitData;
         InitData.pSysMem = _initData;
         InitData.SysMemPitch = 0;
@@ -157,15 +156,11 @@ namespace Mengine
 
         MENGINE_ASSERTION_FATAL( m_memory->getBuffer() == nullptr, "Memory buffer is not null" );
 
-        //uint32_t offsetSize = _offset * m_elementSize;
-        //uint32_t lockSize = _count * m_elementSize;
-
         ID3D11DeviceContextPtr pImmediateContext = this->getDirect3D11ImmediateContext();
 
         D3D11_MAPPED_SUBRESOURCE mappedResource;
         MENGINE_IF_DX11_CALL( pImmediateContext, Map, (m_pD3DBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource) )
         {
-            // TODO: add error log
             return nullptr;
         }
 
@@ -200,9 +195,6 @@ namespace Mengine
             return false;
         }
 
-        // TODO: somehow needs to reinterpret offset to subresource
-        // UINT offsetToLock = (UINT)(_offset * m_elementSize);
-
         D3D11_MAP mapFlags = D3D11_MAP_WRITE_DISCARD;
         switch( m_bufferType )
         {
@@ -223,8 +215,7 @@ namespace Mengine
 
         MENGINE_IF_DX11_CALL( pImmediateContext, Map, (m_pD3DBuffer.Get(), 0, mapFlags, 0, &mappedResource) )
         {
-            // TODO: add error log
-            return nullptr;
+            return false;
         }
 
         stdex::memorycopy( mappedResource.pData, 0, _buffer, _count * m_elementSize );

@@ -11,7 +11,7 @@
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionType.h"
-#include "Kernel/Utf8Helper.h"
+#include "Kernel/UnicodeHelper.h"
 #include "Kernel/VocabularyHelper.h"
 #include "Kernel/Data.h"
 #include "Kernel/ParamsHelper.h"
@@ -65,7 +65,7 @@ namespace Mengine
             const char * text_end = _value + len;
 
             uint32_t code;
-            if( Helper::Utf8NextCode( &text_it, text_end, &code ) == false )
+            if( Helper::utf8NextCode( &text_it, text_end, &code ) == false )
             {
                 return false;
             }

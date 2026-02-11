@@ -1,6 +1,6 @@
 #include "StringSlice.h"
 
-#include "Kernel/Utf8Helper.h"
+#include "Kernel/UnicodeHelper.h"
 
 #include "Config/StdString.h"
 
@@ -63,7 +63,7 @@ namespace Mengine
 
             while( it_current != it_end )
             {
-                if( Helper::Utf8NextCode( &it_current, it_end, nullptr ) == false )
+                if( Helper::utf8NextCode( &it_current, it_end, nullptr ) == false )
                 {
                     return false;
                 }

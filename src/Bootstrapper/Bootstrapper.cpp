@@ -142,10 +142,6 @@ SERVICE_EXTERN( RenderSystem );
 SERVICE_EXTERN( ThreadSystem );
 #endif
 //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_SYSTEM_UNICODE)
-SERVICE_EXTERN( UnicodeSystem );
-#endif
-//////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_SYSTEM_CRYPTOGRAPHY)
 SERVICE_EXTERN( CryptographySystem );
 #endif
@@ -1052,7 +1048,6 @@ namespace Mengine
         MENGINE_ADD_SERVICE( LifecycleService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( NotificationService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( VocabularyService, MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ADD_SERVICE( UnicodeSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( DateTimeSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( CryptographySystem, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -2207,7 +2202,6 @@ namespace Mengine
         SERVICE_FINALIZE( PrototypeService );
         SERVICE_FINALIZE( FactoryService );
         SERVICE_FINALIZE( DateTimeSystem );
-        SERVICE_FINALIZE( UnicodeSystem );
         SERVICE_FINALIZE( ThreadSystem );
         SERVICE_FINALIZE( TimeSystem );
         SERVICE_FINALIZE( CryptographySystem );
@@ -2245,7 +2239,6 @@ namespace Mengine
         SERVICE_DESTROY( PickerService );
         SERVICE_DESTROY( UpdateService );
         SERVICE_DESTROY( InputService );
-        SERVICE_DESTROY( UnicodeSystem );
         SERVICE_DESTROY( CodecService );
         SERVICE_DESTROY( SoundService );
         SERVICE_DESTROY( SoundSystem );

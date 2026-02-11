@@ -34,7 +34,7 @@ namespace Mengine
             Helper::AndroidEnvExceptionCheck( _jenv );
 
             const Char * obj_class_name_str = Mengine_JNI_GetStringUTFChars( _jenv, jobject_ClassName, nullptr );
-            jsize obj_class_name_size = Mengine_JNI_GetStringLength( _jenv, jobject_ClassName );
+            jsize obj_class_name_size = Mengine_JNI_GetStringUTFLength( _jenv, jobject_ClassName );
 
             StaticString<1024> value( obj_class_name_str, obj_class_name_size );
 
@@ -523,7 +523,7 @@ namespace Mengine
         String AndroidMakeStringFromJString( JNIEnv * _jenv, jstring _value )
         {
             const Char * value_str = Mengine_JNI_GetStringUTFChars( _jenv, _value, nullptr );
-            jsize value_size = Mengine_JNI_GetStringLength( _jenv, _value );
+            jsize value_size = Mengine_JNI_GetStringUTFLength( _jenv, _value );
 
             String value_string( value_str, value_size );
 
@@ -535,7 +535,7 @@ namespace Mengine
         size_t AndroidCopyStringFromJString( JNIEnv * _jenv, jstring _value, Char * const _str, size_t _capacity )
         {
             const Char * value_str = Mengine_JNI_GetStringUTFChars( _jenv, _value, nullptr );
-            jsize value_size = Mengine_JNI_GetStringLength( _jenv, _value );
+            jsize value_size = Mengine_JNI_GetStringUTFLength( _jenv, _value );
 
             StdString::strcpy_safe( _str, value_str, _capacity );
 
@@ -658,17 +658,6 @@ namespace Mengine
             jmethodID JSONArray_optLong = Mengine_JNI_GetMethodID( _jenv, _jclass, "optLong", "(IJ)J" );
 
             jlong jvalue = Mengine_JNI_CallLongMethod(_jenv, _jarray, JSONArray_optLong, _index, _default );
-
-            Helper::AndroidEnvExceptionCheck( _jenv );
-
-            return jvalue;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        jfloat AndroidGetJavaJSONArrayFloat( JNIEnv * _jenv, jclass _jclass, jobject _jarray, jint _index, jfloat _default )
-        {
-            jmethodID JSONArray_optFloat = Mengine_JNI_GetMethodID( _jenv, _jclass, "optFloat", "(IF)F" );
-
-            jfloat jvalue = Mengine_JNI_CallFloatMethod( _jenv, _jarray, JSONArray_optFloat, _index, _default );
 
             Helper::AndroidEnvExceptionCheck( _jenv );
 

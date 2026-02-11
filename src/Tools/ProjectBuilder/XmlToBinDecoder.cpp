@@ -8,7 +8,6 @@
 #include "Interface/ConverterInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/PluginInterface.h"
-#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/ConverterServiceInterface.h"
 
 #include "Kernel/Logger.h"

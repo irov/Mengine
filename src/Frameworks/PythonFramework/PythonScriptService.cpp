@@ -2,7 +2,6 @@
 
 #include "Interface/ApplicationInterface.h"
 #include "Interface/OptionsServiceInterface.h"
-#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"

@@ -1,7 +1,6 @@
 #include "Win32XlsExportPlugin.h"
 
 #include "Interface/ApplicationInterface.h"
-#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PlatformServiceInterface.h"
 
 #define MENGINE_WINDOWS_MIN_VERSION_WIN8

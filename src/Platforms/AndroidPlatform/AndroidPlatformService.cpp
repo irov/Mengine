@@ -3,7 +3,6 @@
 #include "Interface/LoggerInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
-#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/InputServiceInterface.h"
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
@@ -914,6 +913,8 @@ namespace Mengine
 
             if( this->updatePlatform() == false )
             {
+                m_activityMutex->unlock();
+
                 return false;
             }
 

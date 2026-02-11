@@ -1,10 +1,9 @@
 #include "Win32ConcatenateFileHelper.h"
 
-#include "Interface/UnicodeSystemInterface.h"
-
 #include "Kernel/PathHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/MemoryCopy.h"
+#include "Kernel/UnicodeHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/Path.h"
@@ -55,8 +54,7 @@ namespace Mengine
                 return MENGINE_PATH_INVALID_LENGTH;
             }
 
-            if( UNICODE_SYSTEM()
-                ->utf8ToUnicode( utf8_filePath, utf8_filePathLen, _concatenatePath, MENGINE_MAX_PATH, nullptr ) == false )
+            if( Helper::utf8ToUnicode( utf8_filePath, utf8_filePathLen, _concatenatePath, MENGINE_MAX_PATH, nullptr ) == false )
             {
                 LOGGER_ERROR( "invalid utf8 '%s' to unicode"
                     , utf8_filePath
@@ -110,8 +108,7 @@ namespace Mengine
                 return MENGINE_PATH_INVALID_LENGTH;
             }
 
-            if( UNICODE_SYSTEM()
-                ->utf8ToUnicode( utf8_filePath, utf8_filePathLen, _concatenatePath, MENGINE_MAX_PATH, nullptr ) == false )
+            if( Helper::utf8ToUnicode( utf8_filePath, utf8_filePathLen, _concatenatePath, MENGINE_MAX_PATH, nullptr ) == false )
             {
                 LOGGER_ERROR( "invalid utf8 '%s' to unicode"
                     , utf8_filePath

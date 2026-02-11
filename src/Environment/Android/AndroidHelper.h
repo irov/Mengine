@@ -93,7 +93,6 @@ namespace Mengine
         jboolean AndroidGetJavaJSONArrayBoolean( JNIEnv * _jenv, jclass _jclass, jobject _jarray, jint _index, jboolean _default );
         jint AndroidGetJavaJSONArrayInt( JNIEnv * _jenv, jclass _jclass, jobject _jarray, jint _index, jint _default );
         jlong AndroidGetJavaJSONArrayLong( JNIEnv * _jenv, jclass _jclass, jobject _jarray, jint _index, jlong _default );
-        jfloat AndroidGetJavaJSONArrayFloat( JNIEnv * _jenv, jclass _jclass, jobject _jarray, jint _index, jfloat _default );
         jdouble AndroidGetJavaJSONArrayDouble( JNIEnv * _jenv, jclass _jclass, jobject _jarray, jint _index, jdouble _default );
         MENGINE_NODISCARD jstring AndroidGetJavaJSONArrayString( JNIEnv * _jenv, jclass _jclass, jobject _jarray, jint _index, jstring _default );
         //////////////////////////////////////////////////////////////////////////

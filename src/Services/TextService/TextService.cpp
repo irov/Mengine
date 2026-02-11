@@ -2,7 +2,6 @@
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
-#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/FileGroupInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
@@ -24,7 +23,7 @@
 #include "Kernel/ContentHelper.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/NotificationHelper.h"
-#include "Kernel/Utf8Helper.h"
+#include "Kernel/UnicodeHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -153,7 +152,7 @@ namespace Mengine
                     const xmlsax_char_t * str_value_end = str_value + str_value_size;
 
                     const xmlsax_char_t * str_value_invalid_utf8;
-                    if( Helper::Utf8Validate( str_value, str_value_end, &str_value_invalid_utf8 ) == false )
+                    if( Helper::utf8Validate( str_value, str_value_end, &str_value_invalid_utf8 ) == false )
                     {
                         LOGGER_ASSERTION( "'%s' invalid read text key '%s' value |%s| invalid utf8 char |%s|"
                             , Helper::getContentFullPath( m_content ).c_str()
@@ -164,7 +163,7 @@ namespace Mengine
 
                         Char * text_str_value_char = text_str_value.data();
 
-                        const Char * text_str_end = Helper::Utf8ReplaceInvalid( str_value + 0, str_value + str_value_size, text_str_value_char );
+                        const Char * text_str_end = Helper::utf8ReplaceInvalid( str_value + 0, str_value + str_value_size, text_str_value_char );
 
                         text_str_size = text_str_end - text_str_value.c_str();
 

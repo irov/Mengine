@@ -1,6 +1,5 @@
 #include "AndroidFileInputStream.h"
 
-#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PlatformServiceInterface.h"
 
 #include "Kernel/Logger.h"

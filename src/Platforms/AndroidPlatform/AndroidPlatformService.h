@@ -3,7 +3,6 @@
 #include "Interface/PlatformServiceInterface.h"
 
 #include "Interface/StringizeServiceInterface.h"
-#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/SoundSystemInterface.h"

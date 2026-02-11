@@ -214,11 +214,9 @@ namespace Mengine
         MENGINE_OPENAL_CALL( alSourcePause, (_sourceId) );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenALSoundBufferMemory::resumeSource( ALuint _sourceId )
+    void OpenALSoundBufferMemory::resumeSource( ALuint _sourceId )
     {
         MENGINE_OPENAL_CALL( alSourcePlay, (_sourceId) );
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundBufferMemory::setTimePosition( ALuint _sourceId, float _position ) const

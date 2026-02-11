@@ -79,7 +79,7 @@ namespace Mengine
         Detail::getAndroidInfo( jenv, "getSessionId", &m_sessionId );
         Detail::getAndroidInfo( jenv, "getSessionRND", &m_sessionRND );
 
-        m_osVersion.assign( "Android" );
+        m_osFamily.assign( "Android" );
 
         StaticString<256> androidId;
         Detail::getAndroidInfo( jenv, "getAndroidId", &androidId );

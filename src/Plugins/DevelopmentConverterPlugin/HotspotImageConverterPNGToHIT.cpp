@@ -1,6 +1,5 @@
 #include "HotspotImageConverterPNGToHIT.h"
 
-#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/ImageCodecInterface.h"
 #include "Interface/PickCodecInterface.h"
 #include "Interface/CodecServiceInterface.h"

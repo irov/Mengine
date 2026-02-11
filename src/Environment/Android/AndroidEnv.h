@@ -122,7 +122,7 @@ namespace Mengine
     jstring Mengine_JNI_NewStringUTF( JNIEnv * _jenv, const Char * _str );
     const Char * Mengine_JNI_GetStringUTFChars( JNIEnv * _jenv, jstring _jstring, jboolean * const _isCopy );
     void Mengine_JNI_ReleaseStringUTFChars( JNIEnv * _jenv, jstring _jstring, const Char * _cstr );
-    jsize Mengine_JNI_GetStringLength( JNIEnv * _jenv, jstring _jstring );
+    jsize Mengine_JNI_GetStringUTFLength( JNIEnv * _jenv, jstring _jstring );
 
     jsize Mengine_JNI_GetArrayLength( JNIEnv * _jenv, jobjectArray _jarray );
     jobject Mengine_JNI_GetObjectArrayElement( JNIEnv * _jenv, jobjectArray _jarray, jsize _index );

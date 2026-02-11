@@ -20,7 +20,7 @@ namespace Mengine
         m_value = (jstring)Mengine_JNI_NewGlobalRef( _jenv, (jobject)_value );
 
         const char * data = Mengine_JNI_GetStringUTFChars( _jenv, m_value, nullptr );
-        jsize size = Mengine_JNI_GetStringLength( _jenv, m_value );
+        jsize size = Mengine_JNI_GetStringUTFLength( _jenv, m_value );
 
         int64_t hash = Helper::makeHash( data, size );
 

@@ -52,12 +52,6 @@ namespace Mengine
     {
         MENGINE_UNUSED( _uniform );
 
-        // let's check first index - must be float4x4
-        if( _index == 0 && _size * _count != 16 )
-        {
-            // TODO: warning to log
-        }
-
         m_vertexFloats.insert( m_vertexFloats.end(), _values, _values + _size * _count );
 
         ProgramVariableDesc variable;
@@ -96,7 +90,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderProgramVariable::apply( const ID3D11DevicePtr & _pD3DDevice, const ID3D11DeviceContextPtr & _pImmediateContext )
     {
-        // create vertex shader buffers
         if( m_vertexVariables.size() != m_vertexBuffers.size() )
         {
             m_vertexBufferUpdate = false;
@@ -135,12 +128,6 @@ namespace Mengine
             }
         }
 
-        if( m_vertexBufferUpdate == true )
-        {
-
-        }
-
-        // set all vertex buffers
         if( m_vertexBuffers.empty() == false )
         {
             ID3D11Buffer ** buffers = m_vertexBuffers.data();
@@ -149,7 +136,6 @@ namespace Mengine
             _pImmediateContext->VSSetConstantBuffers( 0, count, buffers );
         }
 
-        // create pixel shader buffers
         if( m_pixelVariables.size() != m_pixelBuffers.size() )
         {
             m_pixelBufferUpdate = false;
@@ -199,7 +185,7 @@ namespace Mengine
 
                 MENGINE_IF_DX11_CALL( _pImmediateContext, Map, (d3dBuffer, 0, D3D11_MAP_WRITE, 0, &mappedResource) )
                 {
-                    return nullptr;
+                    return false;
                 }
 
                 const float * values = m_pixelFloats.data() + v.offset;
@@ -212,7 +198,6 @@ namespace Mengine
             }
         }
 
-        // set all pixel buffers
         if( m_pixelBuffers.empty() == false )
         {
             ID3D11Buffer ** buffers = m_pixelBuffers.data();

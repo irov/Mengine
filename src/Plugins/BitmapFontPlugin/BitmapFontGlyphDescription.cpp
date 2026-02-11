@@ -10,7 +10,7 @@
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/Stringalized.h"
 #include "Kernel/ContentHelper.h"
-#include "Kernel/Utf8Helper.h"
+#include "Kernel/UnicodeHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -305,7 +305,7 @@ namespace Mengine
                     uint32_t code = 0;
                     size_t code_length = StdString::strlen( id );
 
-                    if( Helper::Utf8NextCode( &id, id + code_length, &code ) == false )
+                    if( Helper::utf8NextCode( &id, id + code_length, &code ) == false )
                     {
                         LOGGER_ERROR( "bitmap glyph '%s' invalid utf8 id '%s'"
                             , Helper::getContentFullPath( m_content ).c_str()
@@ -362,7 +362,7 @@ namespace Mengine
                             uint32_t code;
                             size_t id_length = StdString::strlen( id );
 
-                            if( Helper::Utf8NextCode( &id, id + id_length, &code ) == false )
+                            if( Helper::utf8NextCode( &id, id + id_length, &code ) == false )
                             {
                                 LOGGER_ERROR( "bitmap glyph '%s' invalid utf8 code '%s'"
                                     , Helper::getContentFullPath( m_content ).c_str()

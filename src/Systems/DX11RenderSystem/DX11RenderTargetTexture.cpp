@@ -31,7 +31,6 @@ namespace Mengine
 
         if( D3DFormat == DXGI_FORMAT_UNKNOWN )
         {
-            // TODO: handle log
             return false;
         }
 
@@ -64,7 +63,7 @@ namespace Mengine
         ID3D11Texture2D * pD3DTexture;
         MENGINE_IF_DX11_CALL( pD3DDevice, CreateTexture2D, (&m_textureDesc, nullptr, &pD3DTexture) )
         {
-            return nullptr;
+            return false;
         }
 
         m_pD3DTexture.Attach( pD3DTexture );
@@ -80,7 +79,7 @@ namespace Mengine
         ID3D11ShaderResourceView * pD3DResourceView;
         MENGINE_IF_DX11_CALL( pD3DDevice, CreateShaderResourceView, (m_pD3DTexture.Get(), &shaderResourceViewDesc, &pD3DResourceView) )
         {
-            return nullptr;
+            return false;
         }
 
         m_pD3DResourceView.Attach( pD3DResourceView );
@@ -95,7 +94,7 @@ namespace Mengine
         ID3D11RenderTargetView * pRenderTargetView;
         MENGINE_IF_DX11_CALL( pD3DDevice, CreateRenderTargetView, (m_pD3DTexture.Get(), &renderTargetViewDesc, &pRenderTargetView) )
         {
-            return nullptr;
+            return false;
         }
 
         m_pRenderTargetView.Attach( pRenderTargetView );

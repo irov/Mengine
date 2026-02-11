@@ -84,7 +84,7 @@ namespace Mengine
                 jstring jobj_string = (jstring)_obj;
 
                 const Char * obj_str = Mengine_JNI_GetStringUTFChars( _jenv, jobj_string, nullptr );
-                jsize obj_size = Mengine_JNI_GetStringLength( _jenv, jobj_string );
+                jsize obj_size = Mengine_JNI_GetStringUTFLength( _jenv, jobj_string );
 
                 py_value = _kernel->string_from_char_size( obj_str, obj_size );
 

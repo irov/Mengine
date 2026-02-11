@@ -1,7 +1,5 @@
 #include "PathHelper.h"
 
-#include "Interface/UnicodeSystemInterface.h"
-
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
@@ -105,7 +103,7 @@ namespace Mengine
         FilePath unicodeToFilePath( const WString & _unicode )
         {
             String utf8;
-            if( Helper::unicodeToUtf8Size( _unicode.c_str(), _unicode.size(), &utf8 ) == false )
+            if( Helper::unicodeToUtf8( _unicode.c_str(), _unicode.size(), &utf8 ) == false )
             {
                 return FilePath::none();
             }

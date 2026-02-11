@@ -7,7 +7,6 @@
 #include "Interface/MemoryInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/ImageCodecInterface.h"
-#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/ArchivatorInterface.h"
 #include "Interface/ConfigServiceInterface.h"

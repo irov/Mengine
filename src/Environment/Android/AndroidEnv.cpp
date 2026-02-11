@@ -920,9 +920,9 @@ namespace Mengine
         _jenv->ReleaseStringUTFChars( _jstring, _cstr );
     }
     //////////////////////////////////////////////////////////////////////////
-    jsize Mengine_JNI_GetStringLength( JNIEnv * _jenv, jstring _jstring )
+    jsize Mengine_JNI_GetStringUTFLength( JNIEnv * _jenv, jstring _jstring )
     {
-        jsize length = _jenv->GetStringLength( _jstring );
+        jsize length = _jenv->GetStringUTFLength( _jstring );
 
         return length;
     }

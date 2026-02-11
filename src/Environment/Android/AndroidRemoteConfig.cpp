@@ -671,12 +671,12 @@ namespace Mengine
             }
 
             AspectRatioViewport aspect;
-            aspect.width = (float)Helper::AndroidGetJavaJSONArrayFloat( jenv, jclass_JSONArray, jarray_element, 0, 0.f );
-            aspect.height = (float)Helper::AndroidGetJavaJSONArrayFloat( jenv, jclass_JSONArray, jarray_element, 1, 0.f );
-            aspect.viewport.begin.x = (float)Helper::AndroidGetJavaJSONArrayFloat( jenv, jclass_JSONArray, jarray_element, 2, 0.f );
-            aspect.viewport.begin.y = (float)Helper::AndroidGetJavaJSONArrayFloat( jenv, jclass_JSONArray, jarray_element, 3, 0.f );
-            aspect.viewport.end.x = (float)Helper::AndroidGetJavaJSONArrayFloat( jenv, jclass_JSONArray, jarray_element, 4, 0.f );
-            aspect.viewport.end.y = (float)Helper::AndroidGetJavaJSONArrayFloat( jenv, jclass_JSONArray, jarray_element, 5, 0.f );
+            aspect.width = (float)Helper::AndroidGetJavaJSONArrayDouble( jenv, jclass_JSONArray, jarray_element, 0, 0.f );
+            aspect.height = (float)Helper::AndroidGetJavaJSONArrayDouble( jenv, jclass_JSONArray, jarray_element, 1, 0.f );
+            aspect.viewport.begin.x = (float)Helper::AndroidGetJavaJSONArrayDouble( jenv, jclass_JSONArray, jarray_element, 2, 0.f );
+            aspect.viewport.begin.y = (float)Helper::AndroidGetJavaJSONArrayDouble( jenv, jclass_JSONArray, jarray_element, 3, 0.f );
+            aspect.viewport.end.x = (float)Helper::AndroidGetJavaJSONArrayDouble( jenv, jclass_JSONArray, jarray_element, 4, 0.f );
+            aspect.viewport.end.y = (float)Helper::AndroidGetJavaJSONArrayDouble( jenv, jclass_JSONArray, jarray_element, 5, 0.f );
 
             _values->emplace_back( aspect );
         } );

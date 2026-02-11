@@ -295,7 +295,7 @@ namespace Mengine
         Helper::AndroidEnvExceptionCheck( jenv );
 
         const Char * jresult_str = Mengine_JNI_GetStringUTFChars( jenv, jstring_result, nullptr );
-        jsize jresult_size = Mengine_JNI_GetStringLength( jenv, jstring_result );
+        jsize jresult_size = Mengine_JNI_GetStringUTFLength( jenv, jstring_result );
 
         PyObject * py_value = m_kernel->string_from_char_size( jresult_str, jresult_size );
 

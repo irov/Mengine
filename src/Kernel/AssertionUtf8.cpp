@@ -2,7 +2,7 @@
 
 #if defined(MENGINE_ASSERTION_DEBUG_ENABLE)
 #   include "Kernel/Assertion.h"
-#   include "Kernel/Utf8Helper.h"
+#   include "Kernel/UnicodeHelper.h"
 
 #   include "Config/StdIO.h"
 #   include "Config/StdString.h"
@@ -18,10 +18,10 @@ namespace Mengine
                 _len = StdString::strlen( _value );
             }
 
-            if( Helper::Utf8Validate( _value, _value + _len, nullptr ) == false )
+            if( Helper::utf8Validate( _value, _value + _len, nullptr ) == false )
             {
                 Char replace_msg[MENGINE_ASSERTION_MAX_MESSAGE + 1] = {'\0'};
-                const Char * replace_msg_end = Helper::Utf8ReplaceInvalid( _value, _value + _len, replace_msg);
+                const Char * replace_msg_end = Helper::utf8ReplaceInvalid( _value, _value + _len, replace_msg);
                 size_t replace_msg_len = replace_msg_end - replace_msg;
 
                 Char msg[MENGINE_ASSERTION_MAX_MESSAGE + 1] = {'\0'};

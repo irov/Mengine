@@ -142,7 +142,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidKernelService::stringize( JNIEnv * _jenv, jstring _value, ConstString * const _cstr )
     {
-        jsize value_length = Mengine_JNI_GetStringLength( _jenv, _value );
+        jsize value_length = Mengine_JNI_GetStringUTFLength( _jenv, _value );
 
         if( value_length == 0 )
         {

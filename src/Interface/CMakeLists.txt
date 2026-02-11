@@ -88,7 +88,6 @@ Common
     SocketSystemInterface.h
     FactoryServiceInterface.h
     ResourceServiceInterface.h
-    UnicodeSystemInterface.h
     NotificatorInterface.h
     ConfigLoaderInterface.h
     MetabufLoaderInterface.h

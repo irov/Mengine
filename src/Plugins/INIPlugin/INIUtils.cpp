@@ -1,6 +1,5 @@
 #include "INIUtils.h"
 
-#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/MemoryServiceInterface.h"
 #include "Interface/SecureServiceInterface.h"
 

@@ -228,12 +228,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ALuint OpenALSoundSystem::genSourceId()
     {
-        ALuint sourceId = 0;
+        ALuint sourceId = AL_NONE;
         MENGINE_OPENAL_CALL( alGenSources, (1, &sourceId) );
 
-        if( sourceId == 0 )
+        if( sourceId == AL_NONE )
         {
-            return MENGINE_UINT32_C(0);
+            return AL_NONE;
         }
 
         STATISTIC_INC_INTEGER( STATISTIC_SOUND_SOURCE_COUNT );
@@ -244,7 +244,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundSystem::releaseSourceId( ALuint _sourceId )
     {
-        if( _sourceId == 0 )
+        if( _sourceId == AL_NONE )
         {
             return;
         }
@@ -257,12 +257,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ALuint OpenALSoundSystem::genBufferId()
     {
-        ALuint bufferId = 0;
+        ALuint bufferId = AL_NONE;
         MENGINE_OPENAL_CALL( alGenBuffers, (1, &bufferId) );
 
-        if( bufferId == 0 )
+        if( bufferId == AL_NONE )
         {
-            return MENGINE_UINT32_C(0);
+            return AL_NONE;
         }
 
         STATISTIC_INC_INTEGER( STATISTIC_SOUND_BUFFER_COUNT );
@@ -273,7 +273,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundSystem::releaseBufferId( ALuint _bufferId )
     {
-        if( _bufferId == 0 )
+        if( _bufferId == AL_NONE )
         {
             return;
         }

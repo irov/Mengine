@@ -26,7 +26,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OpenALSoundSource::OpenALSoundSource()
         : m_volume( 1.f )
-        , m_sourceId( 0 )
+        , m_sourceId( AL_NONE )
         , m_time( 0.f )
         , m_headMode( true )
         , m_playing( false )
@@ -37,7 +37,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OpenALSoundSource::~OpenALSoundSource()
     {
-        MENGINE_ASSERTION_FATAL( m_sourceId == 0, "sound source id '%u' not released"
+        MENGINE_ASSERTION_FATAL( m_sourceId == AL_NONE, "sound source id '%u' not released"
             , m_sourceId
         );
     }
@@ -77,7 +77,7 @@ namespace Mengine
 
             ALuint sourceId = soundSystemExtension->genSourceId();
 
-            if( sourceId == 0 )
+            if( sourceId == AL_NONE )
             {
                 return false;
             }
@@ -129,7 +129,7 @@ namespace Mengine
             return;
         }
 
-        if( m_sourceId == 0 )
+        if( m_sourceId == AL_NONE )
         {
             return;
         }
@@ -304,7 +304,7 @@ namespace Mengine
             return 0.f;
         }
 
-        if( m_sourceId == 0 )
+        if( m_sourceId == AL_NONE )
         {
             return m_time;
         }
@@ -357,10 +357,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundSource::releaseSourceId_()
     {
-        if( m_sourceId != 0 )
+        if( m_sourceId != AL_NONE )
         {
             ALuint sourceId = m_sourceId;
-            m_sourceId = 0;
+            m_sourceId = AL_NONE;
 
             m_soundBuffer->stopSource( sourceId );
 

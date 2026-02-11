@@ -15,7 +15,6 @@ ANDROID_APP_MAIN_PROJECT=ci
 
 android.useAndroidX=true
 android.useFullClasspathForDexingTransform=true
-android.enableJetifier=true
 
 # Explicitly disable split APK to avoid IncrementalSplitterRunnable issues
 ANDROID_APP_SPLIT_ENABLE=false

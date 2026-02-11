@@ -17,11 +17,11 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     OpenALSoundBufferStream::OpenALSoundBufferStream()
-        : m_sourceId( 0 )
+        : m_sourceId( AL_NONE )
         , m_looped( false )
         , m_updating( false )
     {
-        StdAlgorithm::fill_n( m_alBuffersId, MENGINE_OPENAL_STREAM_BUFFER_COUNT, MENGINE_UINT32_C(0) );
+        StdAlgorithm::fill_n( m_alBuffersId, MENGINE_OPENAL_STREAM_BUFFER_COUNT, AL_NONE );
     }
     //////////////////////////////////////////////////////////////////////////
     OpenALSoundBufferStream::~OpenALSoundBufferStream()
@@ -31,7 +31,7 @@ namespace Mengine
         {
             ALuint id = m_alBuffersId[index];
 
-            MENGINE_ASSERTION_FATAL( id == 0, "buffer not released [%u]"
+            MENGINE_ASSERTION_FATAL( id == AL_NONE, "buffer not released [%u]"
                 , id
             );
         }
@@ -75,12 +75,12 @@ namespace Mengine
         {
             ALuint id = m_alBuffersId[i];
 
-            if( id == 0 )
+            if( id == AL_NONE )
             {
                 continue;
             }
 
-            m_alBuffersId[i] = 0;
+            m_alBuffersId[i] = AL_NONE;
 
             this->releaseBufferId( id );
         }
@@ -92,7 +92,7 @@ namespace Mengine
         {
             ALuint id = this->genBufferId();
 
-            if( id == 0 )
+            if( id == AL_NONE )
             {
                 LOGGER_ASSERTION( "invalid gen %u buffer ID"
                     , i
@@ -169,7 +169,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundBufferStream::playSource( ALuint _sourceId, bool _looped, float _position )
     {
-        MENGINE_ASSERTION_FATAL( m_sourceId == 0, "source already playing %u"
+        MENGINE_ASSERTION_FATAL( m_sourceId == AL_NONE, "source already playing %u"
             , m_sourceId
         );
 
@@ -274,13 +274,13 @@ namespace Mengine
 
         for( ALint i = 0; i != queued; ++i )
         {
-            ALuint bufferId = 0;
+            ALuint bufferId = AL_NONE;
             MENGINE_OPENAL_CALL( alSourceUnqueueBuffers, (_sourceId, 1, &bufferId) );
         }
 
         MENGINE_OPENAL_CALL( alSourcei, (_sourceId, AL_BUFFER, 0) );
 
-        m_sourceId = 0;
+        m_sourceId = AL_NONE;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundBufferStream::pauseSource( ALuint _sourceId )

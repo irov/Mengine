@@ -13,13 +13,13 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     OpenALSoundBufferMemory::OpenALSoundBufferMemory()
-        : m_alBufferId( 0 )
+        : m_alBufferId( AL_NONE )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     OpenALSoundBufferMemory::~OpenALSoundBufferMemory()
     {
-        MENGINE_ASSERTION_FATAL( m_alBufferId == 0, "sound buffer: %u not released"
+        MENGINE_ASSERTION_FATAL( m_alBufferId == AL_NONE, "sound buffer: %u not released"
             , m_alBufferId
         );
     }
@@ -33,10 +33,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundBufferMemory::_releaseSoundBuffer()
     {
-        if( m_alBufferId != 0 )
+        if( m_alBufferId != AL_NONE )
         {
             this->releaseBufferId( m_alBufferId );
-            m_alBufferId = 0;
+
+            m_alBufferId = AL_NONE;
         }
 
         m_soundDecoder = nullptr;
@@ -51,13 +52,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundBufferMemory::load( const SoundDecoderInterfacePtr & _soundDecoder )
     {
-        MENGINE_ASSERTION_FATAL( m_alBufferId == 0, "sound buffer: %u already loaded"
+        MENGINE_ASSERTION_FATAL( m_alBufferId == AL_NONE, "sound buffer: %u already loaded"
             , m_alBufferId
         );
 
         ALuint alBufferId = this->genBufferId();
 
-        if( alBufferId == 0 )
+        if( alBufferId == AL_NONE )
         {
             LOGGER_ASSERTION( "invalid gen buffer" );
 

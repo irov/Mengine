@@ -214,7 +214,6 @@ namespace Mengine
 
         float position = m_soundBuffer->getTimePosition( m_sourceId );
 
-        //timing dont assign to zero when m_soundBuffer is stopped!
         if( mt::equal_f_z( position ) == true && mt::equal_f_z( m_time ) == false )
         {
             position = m_time;

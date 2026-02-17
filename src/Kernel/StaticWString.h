@@ -53,6 +53,11 @@ namespace Mengine
         }
 
     public:
+        void assign( WChar _value )
+        {
+            StdString::wcschrcpy_safe( m_buffer, _value, N );
+        }
+
         void assign( const WChar * _value )
         {
             StdString::wcszcpy_safe( m_buffer, _value, MENGINE_UNKNOWN_SIZE, N );

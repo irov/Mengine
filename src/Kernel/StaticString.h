@@ -79,7 +79,7 @@ namespace Mengine
     public:
         void assign( Char _value )
         {
-            StdString::strchrcat_safe( m_buffer, _value, N );
+            StdString::strchrcpy_safe( m_buffer, _value, N );
         }
 
         void assign( const Char * _value )

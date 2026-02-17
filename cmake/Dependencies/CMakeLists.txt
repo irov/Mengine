@@ -298,11 +298,6 @@ endif()
 
 if(MENGINE_DEPENDENCE_WEBP)
     message("================libwebp================")
-    
-    configure_file(${CMAKE_CURRENT_LIST_DIR}/libwebp/CMakeLists.txt ${THIRDPARTY_DIR}/libwebp/CMakeLists.txt COPYONLY)
-    
-    set(PNG_PNG_INCLUDE_DIR ${PNG_INCLUDE_DIRS} CACHE STRING "PNG_PNG_INCLUDE_DIR" FORCE)
-    
     set(WEBP_LINK_STATIC ON CACHE BOOL "Link using static libraries. If OFF, use dynamic libraries." FORCE)
     set(WEBP_ENABLE_SIMD ON CACHE BOOL "Enable any SIMD optimization." FORCE)
     set(WEBP_BUILD_ANIM_UTILS OFF CACHE BOOL "WEBP_BUILD_ANIM_UTILS" FORCE)
@@ -312,12 +307,15 @@ if(MENGINE_DEPENDENCE_WEBP)
     set(WEBP_BUILD_IMG2WEBP OFF CACHE BOOL "Build the img2webp animation tool." FORCE)
     set(WEBP_BUILD_VWEBP OFF CACHE BOOL "Build the vwebp viewer tool." FORCE)
     set(WEBP_BUILD_WEBPINFO OFF CACHE BOOL "Build the webpinfo command line tool." FORCE)
+    set(WEBP_BUILD_LIBWEBPMUX OFF CACHE BOOL "Build the libwebpmux library." FORCE)
     set(WEBP_BUILD_WEBPMUX OFF CACHE BOOL "Build the webpinfo command line tool." FORCE)
     set(WEBP_BUILD_EXTRAS OFF CACHE BOOL "Build extras." FORCE)
     set(WEBP_BUILD_WEBP_JS OFF CACHE BOOL "Emscripten build of webp.js" FORCE)
+    set(WEBP_BUILD_FUZZTEST OFF CACHE BOOL "Build the fuzztest tests." FORCE)
     set(WEBP_USE_THREAD OFF CACHE BOOL "Enable threading support" FORCE)
     set(WEBP_NEAR_LOSSLESS OFF CACHE BOOL "Enable near-lossless encoding" FORCE)
     set(WEBP_ENABLE_SWAP_16BIT_CSP OFF CACHE BOOL "Enable byte swap for 16 bit colorspaces." FORCE)
+    set(WEBP_ENABLE_WUNUSED_RESULT OFF CACHE BOOL "Add [[nodiscard]] to some functions. CMake must be at least 3.21 to force C23" FORCE)
     set(WEBP_UNICODE OFF CACHE BOOL "Build Unicode executables." FORCE)
 
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/libwebp ${THIRDPARTY_CONFIG_DIR}/libwebp)
@@ -388,12 +386,27 @@ endif()
 
 if(MENGINE_DEPENDENCE_PUGIXML)
     message("================pugixml================")
-    set(BUILD_SHARED_LIBS OFF CACHE STRING "BUILD_SHARED_LIBS" FORCE)
-    set(BUILD_TESTS OFF CACHE BOOL "BUILD_TESTS" FORCE)
-    set(USE_VERSIONED_LIBDIR OFF CACHE STRING "USE_VERSIONED_LIBDIR" FORCE)
-    set(STATIC_CRT ${MENGINE_STATIC_CRT} CACHE STRING "STATIC_CRT" FORCE)
-    set(USE_POSTFIX OFF CACHE STRING "USE_POSTFIX" FORCE)
-    set(BUILD_DEFINES "PUGIXML_NO_XPATH" CACHE STRING "BUILD_DEFINES" FORCE)
+    set(PUGIXML_USE_VERSIONED_LIBDIR OFF CACHE BOOL "Use a private subdirectory to install the headers and libraries" FORCE)
+    set(PUGIXML_USE_POSTFIX OFF CACHE BOOL "Use separate postfix for each configuration to make sure you can install multiple build outputs" FORCE)
+    
+    if(MENGINE_TOOLCHAIN_MSVC)
+        set(PUGIXML_STATIC_CRT ${MENGINE_STATIC_CRT} CACHE BOOL "Use static MSVC RT libraries" FORCE)
+    endif()
+    
+    set(PUGIXML_BUILD_TESTS OFF CACHE BOOL "Build pugixml tests" FORCE)
+    set(PUGIXML_BUILD_SHARED_AND_STATIC_LIBS OFF CACHE BOOL "Build both shared and static libraries" FORCE)
+    
+    set(PUGIXML_WCHAR_MODE OFF CACHE BOOL "Enable wchar_t mode" FORCE)
+    set(PUGIXML_COMPACT ON CACHE BOOL "Enable compact mode" FORCE)
+    set(PUGIXML_INSTALL OFF CACHE BOOL "Enable installation rules" FORCE)
+    
+    set(PUGIXML_NO_XPATH ON CACHE BOOL "Disable XPath" FORCE)
+    set(PUGIXML_NO_STL ON CACHE BOOL "Disable STL" FORCE)
+    set(PUGIXML_NO_EXCEPTIONS ON CACHE BOOL "Disable Exceptions" FORCE)
+    
+    if (APPLE)
+        set(PUGIXML_BUILD_APPLE_FRAMEWORK OFF CACHE BOOL "Build as Apple Frameworks" FORCE)
+    endif()
 
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/pugixml ${THIRDPARTY_CONFIG_DIR}/pugixml)
 endif()

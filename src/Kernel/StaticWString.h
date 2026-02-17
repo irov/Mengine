@@ -60,7 +60,7 @@ namespace Mengine
 
         void assign( const WChar * _value )
         {
-            StdString::wcszcpy_safe( m_buffer, _value, MENGINE_UNKNOWN_SIZE, N );
+            StdString::wcscpy_safe( m_buffer, _value, N );
         }
 
         void assign( const WChar * _value, size_t _size )
@@ -70,7 +70,7 @@ namespace Mengine
 
         void append( const WChar * _value )
         {
-            StdString::wcszcat_safe( m_buffer, _value, MENGINE_UNKNOWN_SIZE, N );
+            StdString::wcscat_safe( m_buffer, _value, N );
         }
 
         void append( const WChar * _value, size_t _size )

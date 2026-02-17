@@ -84,7 +84,7 @@ namespace Mengine
 
         void assign( const Char * _value )
         {
-            this->assign( _value, MENGINE_UNKNOWN_SIZE );
+            StdString::strcpy_safe( m_buffer, _value, N );
         }
 
         void assign( const Char * _value, size_t _size )
@@ -117,7 +117,7 @@ namespace Mengine
 
         void append( const Char * _value )
         {
-            this->append( _value, MENGINE_UNKNOWN_SIZE );
+            StdString::strcat_safe( m_buffer, _value, N );
         }
 
         void append( const Char * _value, size_t _size )

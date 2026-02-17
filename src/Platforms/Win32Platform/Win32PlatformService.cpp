@@ -804,7 +804,7 @@ namespace Mengine
             return;
         }
 
-        Helper::utf8ToUnicode( _projectTitle, MENGINE_UNKNOWN_SIZE, m_projectTitle.data(), MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME );
+        Helper::utf8ToUnicode( _projectTitle, m_projectTitle.data(), MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME );
 
         LOGGER_INFO( "platform", "project title: %s"
             , _projectTitle

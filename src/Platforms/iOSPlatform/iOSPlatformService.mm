@@ -934,7 +934,122 @@ namespace Mengine
 
         [mailCompose setToRecipients:[NSArray arrayWithObjects:@(_email), nil]];
         [mailCompose setSubject:@(_subject)];
-        [mailCompose setMessageBody:@(_body) isHTML:NO];
+
+        NSMutableString * mailBodyBuilder = [NSMutableString stringWithUTF8String:_body];
+
+        [mailBodyBuilder appendString:@"\n\n"];
+        [mailBodyBuilder appendString:@"----- Please Describe Your Message Above Here -----\n\n"];
+
+        {
+            Mengine::Char userName[MENGINE_ENVIRONMENT_USER_MAXNAME] = {'\0'};
+            Mengine::Char deviceModel[MENGINE_ENVIRONMENT_DEVICE_MODEL_MAXNAME] = {'\0'};
+            Mengine::Char deviceLanguage[MENGINE_ENVIRONMENT_DEVICE_LANGUAGE_MAXNAME] = {'\0'};
+            Mengine::Char osFamily[MENGINE_ENVIRONMENT_OS_FAMILY_MAXNAME] = {'\0'};
+            Mengine::Char osVersion[MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME] = {'\0'};
+            Mengine::Char bundleId[MENGINE_ENVIRONMENT_BUNDLEID_MAXNAME] = {'\0'};
+            Mengine::Char installId[MENGINE_ENVIRONMENT_INSTALLID_MAXNAME] = {'\0'};
+            Mengine::Char installVersion[MENGINE_ENVIRONMENT_INSTALLVERSION_MAXNAME] = {'\0'};
+            Mengine::Char sessionId[MENGINE_ENVIRONMENT_SESSIONID_MAXNAME] = {'\0'};
+
+            ENVIRONMENT_SERVICE()
+                ->getUserName( userName );
+
+            ENVIRONMENT_SERVICE()
+                ->getDeviceModel( deviceModel );
+
+            ENVIRONMENT_SERVICE()
+                ->getDeviceLanguage( deviceLanguage );
+
+            ENVIRONMENT_SERVICE()
+                ->getOSFamily( osFamily );
+
+            ENVIRONMENT_SERVICE()
+                ->getOSVersion( osVersion );
+
+            ENVIRONMENT_SERVICE()
+                ->getBundleId( bundleId );
+
+            ENVIRONMENT_SERVICE()
+                ->getInstallId( installId );
+
+            ENVIRONMENT_SERVICE()
+                ->getInstallVersion( installVersion );
+
+            ENVIRONMENT_SERVICE()
+                ->getSessionId( sessionId );
+
+            [mailBodyBuilder appendString:@"[Application]\n"];
+            [mailBodyBuilder appendFormat:@"    User: %s\n", userName];
+            [mailBodyBuilder appendFormat:@"    Bundle: %s\n", bundleId];
+            [mailBodyBuilder appendFormat:@"    InstallId: %s\n", installId];
+            [mailBodyBuilder appendFormat:@"    InstallVersion: %s\n", installVersion];
+            [mailBodyBuilder appendFormat:@"    SessionId: %s\n", sessionId];
+            [mailBodyBuilder appendString:@"\n"];
+
+            [mailBodyBuilder appendString:@"[Device]\n"];
+            [mailBodyBuilder appendFormat:@"    Model: %s\n", deviceModel];
+            [mailBodyBuilder appendFormat:@"    Language: %s\n", deviceLanguage];
+            [mailBodyBuilder appendFormat:@"    OSFamily: %s\n", osFamily];
+            [mailBodyBuilder appendFormat:@"    OSVersion: %s\n", osVersion];
+            [mailBodyBuilder appendString:@"\n"];
+        }
+
+        [mailCompose setMessageBody:mailBodyBuilder isHTML:NO];
+
+        Mengine::Char userPath[MENGINE_MAX_PATH] = {'\0'};
+        size_t userPathLen = this->getUserPath( userPath );
+
+        if( userPathLen != 0 )
+        {
+            NSString * userPathString = [NSString stringWithUTF8String:userPath];
+
+            NSFileManager * fileManager = [NSFileManager defaultManager];
+            NSDirectoryEnumerator<NSString *> * enumerator = [fileManager enumeratorAtPath:userPathString];
+
+            for( NSString * relativePath in enumerator )
+            {
+                NSString * fullPath = [userPathString stringByAppendingPathComponent:relativePath];
+
+                BOOL isDirectory = NO;
+                if( [fileManager fileExistsAtPath:fullPath isDirectory:&isDirectory] == NO || isDirectory == YES )
+                {
+                    continue;
+                }
+
+                NSString * extension = [[fullPath pathExtension] lowercaseString];
+
+                if( [extension isEqualToString:@"log"] == NO &&
+                    [extension isEqualToString:@"zip"] == NO &&
+                    [extension isEqualToString:@"sav"] == NO )
+                {
+                    continue;
+                }
+
+                NSData * fileData = [NSData dataWithContentsOfFile:fullPath];
+
+                if( fileData == nil )
+                {
+                    continue;
+                }
+
+                NSString * fileName = [relativePath lastPathComponent];
+
+                NSString * mimeType = @"application/octet-stream";
+
+                if( [extension isEqualToString:@"log"] == YES )
+                {
+                    mimeType = @"text/plain";
+                }
+                else if( [extension isEqualToString:@"zip"] == YES )
+                {
+                    mimeType = @"application/zip";
+                }
+
+                [mailCompose addAttachmentData:fileData
+                                      mimeType:mimeType
+                                      fileName:fileName];
+            }
+        }
 
         [viewController presentViewController:mailCompose
                                      animated:YES

@@ -15,7 +15,6 @@ namespace Mengine
         , EXTEND_EMBEDDABLE( OzzScriptEmbedding )
     {
         PLUGIN_DECLARE( "OzzAnimation" );
-        DECLARE_VISITABLE( PluginInterface );
         DECLARE_EMBEDDABLE();
 
     public:

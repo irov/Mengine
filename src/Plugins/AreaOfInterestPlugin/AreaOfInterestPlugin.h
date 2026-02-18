@@ -13,7 +13,6 @@ namespace Mengine
         , protected EXTEND_EMBEDDABLE( AreaOfInterestScriptEmbedding )
     {
         PLUGIN_DECLARE( "AreaOfInterest" );
-        DECLARE_VISITABLE( PluginInterface );
         DECLARE_EMBEDDABLE();
 
     public:

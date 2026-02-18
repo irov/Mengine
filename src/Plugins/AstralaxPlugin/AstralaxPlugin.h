@@ -3,7 +3,7 @@
 #include "Kernel/PluginBase.h"
 
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-#include "AstralaxScriptEmbedding.h"
+#   include "AstralaxScriptEmbedding.h"
 #endif
 
 namespace Mengine

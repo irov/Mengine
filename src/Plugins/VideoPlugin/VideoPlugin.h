@@ -3,7 +3,7 @@
 #include "Kernel/PluginBase.h"
 
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-#include "VideoScriptEmbedding.h"
+#   include "VideoScriptEmbedding.h"
 #endif
 
 namespace Mengine
@@ -13,7 +13,6 @@ namespace Mengine
         , protected EXTEND_EMBEDDABLE( VideoScriptEmbedding )
     {
         PLUGIN_DECLARE( "Video" );
-        DECLARE_VISITABLE( PluginInterface );
         DECLARE_EMBEDDABLE();
 
     public:

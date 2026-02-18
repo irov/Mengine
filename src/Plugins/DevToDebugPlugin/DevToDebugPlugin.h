@@ -13,7 +13,6 @@ namespace Mengine
         , protected EXTEND_EMBEDDABLE( DevToDebugScriptEmbedding )
     {
         PLUGIN_DECLARE( "DevToDebug" );
-        DECLARE_VISITABLE( PluginInterface );
         DECLARE_EMBEDDABLE();
 
     public:

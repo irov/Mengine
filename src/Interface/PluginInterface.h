@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Kernel/Factorable.h"
-#include "Kernel/Visitable.h"
 #include "Kernel/ScriptEmbeddable.h"
 #include "Kernel/ServiceRequiredList.h"
 #include "Kernel/ConstString.h"
@@ -19,11 +18,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class PluginInterface
         : public Factorable
-        , public Visitable
         , public ScriptEmbeddable
     {
-        DECLARE_VISITABLE_BASE();
-
     public:
         virtual const ConstString & getPluginName() const = 0;
 

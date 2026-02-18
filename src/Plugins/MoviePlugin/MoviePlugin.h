@@ -4,7 +4,7 @@
 #include "Kernel/String.h"
 
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-#include "Movie2ScriptEmbedding.h"
+#   include "Movie2ScriptEmbedding.h"
 #endif
 
 #include "movie/movie.hpp"

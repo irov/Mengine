@@ -3,7 +3,7 @@
 #include "Kernel/PluginBase.h"
 
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-#include "TexturepackerScriptEmbedding.h"
+#   include "TexturepackerScriptEmbedding.h"
 #endif
 
 namespace Mengine
@@ -13,7 +13,6 @@ namespace Mengine
         , protected EXTEND_EMBEDDABLE( TexturepackerScriptEmbedding )
     {
         PLUGIN_DECLARE( "Texturepacker" );
-        DECLARE_VISITABLE( PluginInterface );
         DECLARE_EMBEDDABLE();
 
     public:

@@ -14,8 +14,15 @@
 
 #   define GL_GLEXT_PROTOTYPES
 
-#   include "SDL_opengles.h"
-#   include "SDL_opengles2.h"
+#   if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3)
+#       include "SDL3/SDL_opengles.h"
+#       include "SDL3/SDL_opengles2.h"
+#   elif defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
+#       include "SDL_opengles.h"
+#       include "SDL_opengles2.h"
+#   else
+#       error "OpenGL ES not supported"
+#   endif
 
 #   define MENGINE_RENDER_OPENGL_ES
 #   define MENGINE_RENDER_OPENGL_ES_IOS
@@ -30,9 +37,11 @@
 #elif defined(MENGINE_PLATFORM_WINDOWS)
 #   if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3)
 #       include "SDL3/SDL_opengl.h"
-#   else
+#   elif defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
 #       include "SDL_opengl.h"
 #       include "SDL_opengl_glext.h"
+#   else
+#       error "OpenGL not supported"
 #   endif
 
 #   define MENGINE_RENDER_OPENGL_NORMAL
@@ -40,9 +49,11 @@
 #elif defined(MENGINE_PLATFORM_LINUX)
 #   if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3)
 #       include "SDL3/SDL_opengl.h"
-#   else
+#   elif defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
 #       include "SDL_opengl.h"
 #       include "SDL_opengl_glext.h"
+#   else
+#       error "OpenGL not supported"
 #   endif
 
 #   define MENGINE_RENDER_OPENGL_NORMAL
@@ -50,9 +61,11 @@
 #elif defined(MENGINE_PLATFORM_MACOS)
 #   if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3)
 #       include "SDL3/SDL_opengl.h"
-#   else
+#   elif defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
 #       include "SDL_opengl.h"
 #       include "SDL_opengl_glext.h"
+#   else
+#       error "OpenGL not supported"
 #   endif
 
 #   define MENGINE_RENDER_OPENGL_NORMAL

@@ -1,18 +1,18 @@
 android {
-    ndkVersion project.ndkVersion
-    compileSdk project.compileSdkVersion
-    buildToolsVersion project.buildToolsVersion
+    ndkVersion = project.ndkVersion
+    compileSdk = project.compileSdkVersion
+    buildToolsVersion = project.buildToolsVersion
 
     compileOptions {
-        coreLibraryDesugaringEnabled true
-        sourceCompatibility project.javaVersion
-        targetCompatibility project.javaVersion
+        coreLibraryDesugaringEnabled = true
+        sourceCompatibility = project.javaVersion
+        targetCompatibility = project.javaVersion
     }
 
     defaultConfig {
-        multiDexEnabled true
-        minSdk project.minSdkVersion
-        targetSdk project.targetSdkVersion
+        multiDexEnabled = true
+        minSdk = project.minSdkVersion
+        targetSdk = project.targetSdkVersion
     }
 
     buildFeatures {

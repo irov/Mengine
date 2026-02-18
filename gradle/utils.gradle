@@ -7,15 +7,30 @@ Utils.getBooleanProperty = { final String name, final Boolean d ->
         return d
     }
 
-    if (p as Integer == 0) {
-        return false
+    try {
+        if (p as Integer == 0) {
+            return false
+        }
+
+        if (p as Integer == 1) {
+            return true
+        }
+
+        throw new IllegalArgumentException("Property '${name}' must be 0/1 or true/false, but got '${p}'")
+    } catch (final Exception ignored) {
     }
 
-    if (p as Integer == 1) {
+    final def s = p.toString().trim().toLowerCase()
+
+    if (s == "true") {
         return true
     }
 
-    throw new IllegalArgumentException("Property '${name}' must be 0 or 1, but got '${p}'")
+    if (s == "false") {
+        return false
+    }
+
+    throw new IllegalArgumentException("Property '${name}' must be 0/1 or true/false, but got '${p}'")
 }
 
 Utils.getStringProperty = { final String name, final String d ->
@@ -57,13 +72,7 @@ Utils.getIntegerProperty = { final String name, final Integer d ->
 }
 
 Utils.isEnableAllLibrary = { -> Boolean
-    final def enableAll = project.findProperty("MENGINE_APP_LIBRARY_ENABLE_ALL")
-
-    if (enableAll != null && (enableAll as Integer) == 1) {
-        return true
-    }
-
-    return false
+    return Utils.getBooleanProperty("MENGINE_APP_LIBRARY_ENABLE_ALL", false)
 }
 
 Utils.existAppLibrary = { final String name ->
@@ -77,13 +86,7 @@ Utils.existAppLibrary = { final String name ->
 }
 
 Utils.isEnableAllPlugins = { ->
-    final def enableAll = project.findProperty("MENGINE_APP_PLUGIN_ENABLE_ALL")
-
-    if (enableAll != null && (enableAll as Integer) == 1) {
-        return true
-    }
-
-    return false
+    return Utils.getBooleanProperty("MENGINE_APP_PLUGIN_ENABLE_ALL", false)
 }
 
 Utils.existAppPlugin = { final String name, final List<String> required = [] ->

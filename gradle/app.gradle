@@ -209,13 +209,13 @@ android {
     buildTypes {
         if (project.hasProperty("ANDROID_APP_DEBUG_STORE_FILE") == true) {
             debug {
-                signingConfig signingConfigs.debug
+                signingConfig = signingConfigs.debug
             }
         }
 
         if (project.hasProperty("ANDROID_APP_RELEASE_STORE_FILE") == true) {
             release {
-                signingConfig signingConfigs.release
+                signingConfig = signingConfigs.release
             }
         }
     }
@@ -227,27 +227,27 @@ android {
 
                 debug {
                     firebaseCrashlytics {
-                        mappingFileUploadEnabled true
-                        nativeSymbolUploadEnabled true
+                        mappingFileUploadEnabled = true
+                        nativeSymbolUploadEnabled = true
 
                         unstrippedNativeLibsDir buildDirectory.dir("intermediates/merged_native_libs/debug/mergeDebugNativeLibs/out/lib")
                     }
 
                     ndk {
-                        debugSymbolLevel 'FULL'
+                        debugSymbolLevel = 'FULL'
                     }
                 }
 
                 release {
                     firebaseCrashlytics {
-                        mappingFileUploadEnabled true
-                        nativeSymbolUploadEnabled true
+                        mappingFileUploadEnabled = true
+                        nativeSymbolUploadEnabled = true
 
                         unstrippedNativeLibsDir buildDirectory.dir("intermediates/merged_native_libs/release/mergeReleaseNativeLibs/out/lib")
                     }
 
                     ndk {
-                        debugSymbolLevel 'SYMBOL_TABLE'
+                        debugSymbolLevel = 'SYMBOL_TABLE'
                     }
                 }
             }
@@ -257,15 +257,15 @@ android {
             buildTypes {
                 debug {
                     firebaseCrashlytics {
-                        mappingFileUploadEnabled false
-                        nativeSymbolUploadEnabled false
+                        mappingFileUploadEnabled = false
+                        nativeSymbolUploadEnabled = false
                     }
                 }
 
                 release {
                     firebaseCrashlytics {
-                        mappingFileUploadEnabled false
-                        nativeSymbolUploadEnabled false
+                        mappingFileUploadEnabled = false
+                        nativeSymbolUploadEnabled = false
                     }
                 }
             }

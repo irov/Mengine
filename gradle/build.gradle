@@ -5,10 +5,10 @@ buildscript {
         google()
         mavenLocal()
         mavenCentral()
-        maven { url 'https://plugins.gradle.org/m2/' }
+        maven { url = 'https://plugins.gradle.org/m2/' }
 
         if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN") == true) {
-            maven { url 'https://artifacts.applovin.com/android' }
+            maven { url = 'https://artifacts.applovin.com/android' }
         }
     }
 
@@ -106,51 +106,51 @@ allprojects {
         google()
         mavenLocal()
         mavenCentral()
-        maven { url 'https://plugins.gradle.org/m2/' }
+        maven { url = 'https://plugins.gradle.org/m2/' }
 
         if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN") == true) {
             if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_BIDMACHINE") == true) {
-                maven { url "https://artifactory.bidmachine.io/bidmachine" }
+                maven { url = "https://artifactory.bidmachine.io/bidmachine" }
             }
 
             if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_CHARTBOOST") == true) {
-                maven { url "https://cboost.jfrog.io/artifactory/chartboost-ads/" }
+                maven { url = "https://cboost.jfrog.io/artifactory/chartboost-ads/" }
             }
 
             if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_IRONSOURCE") == true) {
-                maven { url "https://android-sdk.is.com" }
+                maven { url = "https://android-sdk.is.com" }
             }
 
             if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MAIO") == true) {
-                maven { url "https://imobile-maio.github.io/maven" }
+                maven { url = "https://imobile-maio.github.io/maven" }
             }
 
             if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MINTEGRAL") == true) {
-                maven { url "https://dl-maven-android.mintegral.com/repository/mbridge_android_sdk_oversea" }
+                maven { url = "https://dl-maven-android.mintegral.com/repository/mbridge_android_sdk_oversea" }
             }
 
             if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_OGURY") == true) {
-                maven { url "https://maven.ogury.co" }
+                maven { url = "https://maven.ogury.co" }
             }
 
             if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_PANGLE") == true) {
-                maven { url "https://artifact.bytedance.com/repository/pangle" }
+                maven { url = "https://artifact.bytedance.com/repository/pangle" }
             }
 
             if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_PUBMATIC") == true) {
-                maven { url "https://repo.pubmatic.com/artifactory/public-repos" }
+                maven { url = "https://repo.pubmatic.com/artifactory/public-repos" }
             }
 
             if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_SMAATO") == true) {
-                maven { url "https://s3.amazonaws.com/smaato-sdk-releases/" }
+                maven { url = "https://s3.amazonaws.com/smaato-sdk-releases/" }
             }
 
             if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_VERVE") == true) {
-                maven { url "https://verve.jfrog.io/artifactory/verve-gradle-release" }
+                maven { url = "https://verve.jfrog.io/artifactory/verve-gradle-release" }
             }
 
             if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_YSO") == true) {
-                maven { url "https://ysonetwork.s3.eu-west-3.amazonaws.com/sdk/android" }
+                maven { url = "https://ysonetwork.s3.eu-west-3.amazonaws.com/sdk/android" }
             }
         }
     }

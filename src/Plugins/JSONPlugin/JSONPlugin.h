@@ -3,7 +3,7 @@
 #include "Kernel/PluginBase.h"
 
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-#include "JSONScriptEmbedding.h"
+#   include "JSONScriptEmbedding.h"
 #endif
 
 namespace Mengine
@@ -14,7 +14,6 @@ namespace Mengine
     {
     public:
         PLUGIN_DECLARE( "JSON" );
-        DECLARE_VISITABLE( PluginInterface );
         DECLARE_EMBEDDABLE();
 
     public:

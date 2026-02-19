@@ -13,7 +13,6 @@ namespace Mengine
         , EXTEND_EMBEDDABLE( SpineScriptEmbedding )
     {
         PLUGIN_DECLARE( "Spine" );
-        DECLARE_VISITABLE( PluginInterface );
         DECLARE_EMBEDDABLE();
 
     public:

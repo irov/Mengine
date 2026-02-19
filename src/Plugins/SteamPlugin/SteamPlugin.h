@@ -5,7 +5,7 @@
 #include "steam/steam_api.h"
 
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-#include "SteamScriptEmbedding.h"
+#   include "SteamScriptEmbedding.h"
 #endif
 
 namespace Mengine
@@ -15,7 +15,6 @@ namespace Mengine
         , protected EXTEND_EMBEDDABLE( SteamScriptEmbedding )
     {
         PLUGIN_DECLARE( "Steam" );
-        DECLARE_VISITABLE( PluginInterface );
         DECLARE_EMBEDDABLE();
 
     public:

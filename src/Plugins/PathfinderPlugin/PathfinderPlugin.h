@@ -13,7 +13,6 @@ namespace Mengine
         , protected EXTEND_EMBEDDABLE( PathfinderScriptEmbedding )
     {
         PLUGIN_DECLARE( "Pathfinder" );
-        DECLARE_VISITABLE( PluginInterface );
         DECLARE_EMBEDDABLE();
 
     public:

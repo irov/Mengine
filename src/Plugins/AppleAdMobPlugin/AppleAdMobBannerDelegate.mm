@@ -17,12 +17,16 @@
                                            adaptive:(BOOL)adaptive {
     self = [super initWithAdUnitIdentifier:adUnitId advertisement:advertisement];
     
+    if (self == nil) {
+        return nil;
+    }
+    
     self.m_bannerAdaptive = adaptive;
     
     GADAdSize adSize;
-    if (adaptive == YES) {
+    if (self.m_bannerAdaptive == YES) {
         CGFloat screen_width = CGRectGetWidth(UIScreen.mainScreen.bounds);
-        adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(screen_width);
+        adSize = GADLargeAnchoredAdaptiveBannerAdSizeWithWidth(screen_width);
     } else {
         BOOL isPad = UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPad;
         
@@ -34,7 +38,7 @@
     }
     
     GADBannerView * bannerView;
-    
+
     @try {
         bannerView = [[GADBannerView alloc] initWithAdSize:adSize];
         bannerView.adUnitID = adUnitId;
@@ -48,22 +52,39 @@
         return nil;
     }
     
+    UIViewController * viewController = [iOSDetail getRootViewController];
+    
+    if (viewController == nil || viewController.view == nil) {
+        IOS_LOGGER_ERROR(@"[Error] AppleAdMobBannerDelegate invalid root view controller for adUnitId: %@", adUnitId);
+        
+        return nil;
+    }
+    
     bannerView.delegate = self;
     
-    CGSize size = adSize.size;    
+    CGSize size = adSize.size;
     
+    CGFloat banner_width = size.width;
     CGFloat banner_height = size.height;
     
-    CGFloat screen_width = CGRectGetWidth(UIScreen.mainScreen.bounds);
-    CGFloat screen_height = CGRectGetHeight(UIScreen.mainScreen.bounds);
+    CGFloat screen_width = CGRectGetWidth(viewController.view.bounds);
+    CGFloat screen_height = CGRectGetHeight(viewController.view.bounds);
     
-    CGRect rect = CGRectMake(0, screen_height - banner_height, screen_width, banner_height);
+    CGFloat bottomInset = 0.f;
+    
+    if (@available(iOS 11.0, *)) {
+        bottomInset = viewController.view.safeAreaInsets.bottom;
+    }
+    
+    CGFloat origin_x = (screen_width - banner_width) * 0.5f;
+    CGFloat origin_y = screen_height - bottomInset - banner_height;
+    
+    CGRect rect = CGRectMake(origin_x, origin_y, banner_width, banner_height);
     
     bannerView.frame = rect;
     
     bannerView.backgroundColor = UIColor.clearColor;
     
-    UIViewController * viewController = [iOSDetail getRootViewController];
     [viewController.view addSubview:bannerView];
     bannerView.hidden = YES;
     
@@ -107,6 +128,13 @@
     [self eventBanner:@"load" params:@{}];
     
     UIViewController * viewController = [iOSDetail getRootViewController];
+    
+    if (viewController == nil) {
+        IOS_LOGGER_ERROR(@"[Error] AppleAdMobBannerDelegate invalid root view controller in loadAd for adUnitId: %@", self.m_adUnitId);
+        
+        return;
+    }
+    
     self.m_bannerView.rootViewController = viewController;
     
     GADRequest * request = [self createAdRequest];
@@ -146,10 +174,12 @@
 #pragma mark - GADBannerViewDelegate
 
 - (void)bannerViewDidReceiveAd:(GADBannerView *)bannerView {
-    [self log:@"bannerViewDidReceiveAd" withParams:[self getGADResponseInfoParams:bannerView.responseInfo]];
+    NSDictionary<NSString *, id> * responseParams = [self getGADResponseInfoParams:bannerView.responseInfo];
+    
+    [self log:@"bannerViewDidReceiveAd" withParams:responseParams];
     
     [self eventBanner:@"loaded" params:@{
-        @"response": [self getGADResponseInfoParams:bannerView.responseInfo]
+        @"response": responseParams
     }];
     
     self.m_requestAttempt = 0;

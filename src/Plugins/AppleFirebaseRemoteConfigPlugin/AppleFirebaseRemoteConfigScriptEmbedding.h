@@ -2,14 +2,13 @@
 
 #include "Interface/ScriptEmbeddingInterface.h"
 
-#include "Kernel/Factorable.h"
-
 namespace Mengine
 {
     class AppleFirebaseRemoteConfigScriptEmbedding
         : public ScriptEmbeddingInterface
-        , public Factorable
     {
+        DECLARE_FACTORABLE( AppleFirebaseRemoteConfigScriptEmbedding );
+        
     public:
         AppleFirebaseRemoteConfigScriptEmbedding();
         ~AppleFirebaseRemoteConfigScriptEmbedding() override;

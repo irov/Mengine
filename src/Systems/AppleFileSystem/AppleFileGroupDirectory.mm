@@ -331,13 +331,15 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleFileGroupDirectory::closeOutputFile( const OutputStreamInterfacePtr & _stream )
+    bool AppleFileGroupDirectory::closeOutputFile( const OutputStreamInterfacePtr & _stream )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
 
         FileOutputStreamInterface * file = _stream.getT<FileOutputStreamInterface *>();
 
-        file->close();
+        bool result = file->close();
+        
+        return result;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AppleFileGroupDirectory::isAvailableMappedFile() const

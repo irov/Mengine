@@ -6,8 +6,6 @@
 #import "Environment/Apple/AppleSemaphoreService.h"
 #import "Environment/Apple/AppleString.h"
 
-#include "AppleNativePythonScriptEmbedding.h"
-
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/Logger.h"
 
@@ -29,25 +27,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleNativePythonService::_initializeService()
     {
-        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
-        {
-            SCRIPT_SERVICE()
-                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "AppleNativePythonScriptEmbedding" ), Helper::makeFactorableUnique<AppleNativePythonScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
-        }, MENGINE_DOCUMENT_FACTORABLE );
-
-        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
-        {
-            SCRIPT_SERVICE()
-                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "AppleNativePythonScriptEmbedding" ) );
-        }, MENGINE_DOCUMENT_FACTORABLE );
-
+        //Empty
+        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleNativePythonService::_finalizeService()
     {
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     pybind::object AppleNativePythonService::addAppleCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb, const pybind::args & _args )

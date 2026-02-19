@@ -2,14 +2,13 @@
 
 #include "Interface/ScriptEmbeddingInterface.h"
 
-#include "Kernel/Factorable.h"
-
 namespace Mengine
 {
     class AppleAdvertisementScriptEmbedding
         : public ScriptEmbeddingInterface
-        , public Factorable
     {
+        DECLARE_FACTORABLE( AppleAdvertisementScriptEmbedding );
+        
     public:
         AppleAdvertisementScriptEmbedding();
         ~AppleAdvertisementScriptEmbedding() override;

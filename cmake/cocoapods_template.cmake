@@ -5,7 +5,7 @@ ENDMACRO()
 MACRO(MENGINE_GENERATE_COCOAPODS)
     SET(PODFILE_BUFFER "")
     
-    STRING(APPEND PODFILE_BUFFER "source 'https://cdn.cocoapods.org/'\n")
+    STRING(APPEND PODFILE_BUFFER "source 'https://github.com/CocoaPods/Specs.git'\n")
     
     STRING(APPEND PODFILE_BUFFER "project '${MENGINE_PROJECT_NAME}.xcodeproj'\n")
     

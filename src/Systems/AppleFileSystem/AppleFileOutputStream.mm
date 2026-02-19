@@ -91,7 +91,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleFileOutputStream::close()
+    bool AppleFileOutputStream::close()
     {
         if( m_fileHandle == nullptr )
         {
@@ -123,12 +123,16 @@ namespace Mengine
                     , fullPathTemp
                     , fullPath
                 );
+                
+                return false;
             }
         }
         
 #if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
         Helper::removeDebugFilePath( this );
 #endif
+        
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t AppleFileOutputStream::write( const void * _data, size_t _size )

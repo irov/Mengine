@@ -8,8 +8,9 @@ namespace Mengine
 {
     class AppleAdMobScriptEmbedding
         : public ScriptEmbeddingInterface
-        , public Factorable
     {
+        DECLARE_FACTORABLE( AppleAdMobScriptEmbedding );
+        
     public:
         AppleAdMobScriptEmbedding();
         ~AppleAdMobScriptEmbedding() override;

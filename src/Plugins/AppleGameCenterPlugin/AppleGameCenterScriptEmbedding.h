@@ -8,8 +8,9 @@ namespace Mengine
 {
     class AppleGameCenterScriptEmbedding
         : public ScriptEmbeddingInterface
-        , public Factorable
     {
+        DECLARE_FACTORABLE( AppleGameCenterScriptEmbedding );
+        
     public:
         AppleGameCenterScriptEmbedding();
         ~AppleGameCenterScriptEmbedding() override;

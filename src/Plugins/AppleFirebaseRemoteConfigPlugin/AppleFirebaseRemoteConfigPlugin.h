@@ -2,12 +2,18 @@
 
 #include "Kernel/PluginBase.h"
 
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+#   include "AppleFirebaseRemoteConfigScriptEmbedding.h"
+#endif
+
 namespace Mengine
 {
     class AppleFirebaseRemoteConfigPlugin
         : public PluginBase
+        , protected EXTEND_EMBEDDABLE( AppleFirebaseRemoteConfigScriptEmbedding )
     {
-        PLUGIN_DECLARE( "AppleFirebaseRemoteConfig" )
+        PLUGIN_DECLARE( "AppleFirebaseRemoteConfig" );
+        DECLARE_EMBEDDABLE();
 
     public:
         AppleFirebaseRemoteConfigPlugin();

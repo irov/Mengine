@@ -1336,7 +1336,11 @@ namespace Mengine
             return false;
         }
 
+#if defined(SDL_PROP_WINDOW_CREATE_UIKIT_WINDOW_POINTER)
+        SDL_SetPointerProperty( props, SDL_PROP_WINDOW_CREATE_UIKIT_WINDOW_POINTER, _hWND );
+#else
         SDL_SetPointerProperty( props, SDL_PROP_WINDOW_CREATE_COCOA_WINDOW_POINTER, _hWND );
+#endif
 
         SDL_Window * sdlWindow = SDL_CreateWindowWithProperties( props );
         SDL_DestroyProperties( props );
@@ -1696,9 +1700,15 @@ namespace Mengine
     UIWindow * iOSPlatformService::getUIWindow() const
     {
         SDL_PropertiesID props = SDL_GetWindowProperties( m_sdlWindow );
-        void * window = SDL_GetPointerProperty( props, SDL_PROP_WINDOW_COCOA_WINDOW_POINTER, nullptr );
+        void * window = nullptr;
 
-        return static_cast<UIWindow *>(window);
+#if defined(SDL_PROP_WINDOW_UIKIT_WINDOW_POINTER)
+        window = SDL_GetPointerProperty( props, SDL_PROP_WINDOW_UIKIT_WINDOW_POINTER, nullptr );
+#else
+        window = SDL_GetPointerProperty( props, SDL_PROP_WINDOW_COCOA_WINDOW_POINTER, nullptr );
+#endif
+
+        return (__bridge UIWindow *)window;
     }
     //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)

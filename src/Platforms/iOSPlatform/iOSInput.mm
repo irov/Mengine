@@ -136,7 +136,7 @@ namespace Mengine
 #if defined(MENGINE_PLATFORM_MOBILE)
                 if( code == KC_RETURN )
                 {
-                    SDL_StopTextInput();
+                    SDL_StopTextInput( _sdlWindow );
                 }
 #endif
             } break;

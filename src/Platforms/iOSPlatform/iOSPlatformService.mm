@@ -1855,6 +1855,7 @@ namespace Mengine
             );
         }
 
+#if defined(SDL_HINT_RENDER_SCALE_QUALITY)
         PathString Engine_SDL_HINT_RENDER_SCALE_QUALITY = CONFIG_VALUE_PATHSTRING( "SDL", "SDL_HINT_RENDER_SCALE_QUALITY", "linear" );
 
         if( SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, Engine_SDL_HINT_RENDER_SCALE_QUALITY.c_str() ) == false )
@@ -1864,6 +1865,7 @@ namespace Mengine
                 , SDL_GetError()
             );
         }
+#endif
 
         PathString Engine_SDL_HINT_ORIENTATIONS = CONFIG_VALUE_PATHSTRING( "SDL", "SDL_HINT_ORIENTATIONS", "Portrait" );
 
@@ -1896,7 +1898,6 @@ namespace Mengine
         Uint32 windowFlags = 0;
 
         windowFlags |= SDL_WINDOW_OPENGL;
-        windowFlags |= SDL_WINDOW_SHOWN;
         windowFlags |= SDL_WINDOW_RESIZABLE;
         windowFlags |= SDL_WINDOW_FULLSCREEN;
         windowFlags |= SDL_WINDOW_BORDERLESS;
@@ -1948,7 +1949,9 @@ namespace Mengine
         m_sdlWindow = window;
 
         LOGGER_INFO( "platform", "SDL_HINT_RENDER_DRIVER: %s", SDL_GetHint( SDL_HINT_RENDER_DRIVER ) );
+#if defined(SDL_HINT_RENDER_SCALE_QUALITY)
         LOGGER_INFO( "platform", "SDL_HINT_RENDER_SCALE_QUALITY: %s", SDL_GetHint( SDL_HINT_RENDER_SCALE_QUALITY ) );
+#endif
         LOGGER_INFO( "platform", "SDL_HINT_ORIENTATIONS: %s", SDL_GetHint( SDL_HINT_ORIENTATIONS ) );
 
         return true;

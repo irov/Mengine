@@ -2,8 +2,8 @@
 
 #include "Interface/PlatformServiceInterface.h"
 
-#include "Environment/SDL2/SDL2Includer.h"
-#include "Environment/SDL2/SDL2PlatformServiceExtensionInterface.h"
+#include "Environment/SDL3/SDL3Includer.h"
+#include "Environment/SDL3/SDL3PlatformServiceExtensionInterface.h"
 
 #import "iOSApplicationDelegates.h"
 
@@ -494,7 +494,7 @@
         }
     }
     
-    SDL_iPhoneSetEventPump( SDL_TRUE );
+    SDL_SetiOSEventPump( true );
     
     Mengine::iOSApplication application;
     
@@ -515,7 +515,7 @@
         
         application.finalize();
         
-        SDL_iPhoneSetEventPump( SDL_FALSE );
+        SDL_SetiOSEventPump( false );
         
         [iOSDetail showOkAlertWithTitle:@"Failed..."
                                 message:@"Mengine bootstraped application"
@@ -533,7 +533,7 @@
         
         application.finalize();
         
-        SDL_iPhoneSetEventPump( SDL_FALSE );
+        SDL_SetiOSEventPump( false );
         
         [iOSDetail showOkAlertWithTitle:@"Failed..."
                                 message:@"Mengine initialized application"
@@ -560,7 +560,7 @@
         }
     }
     
-    SDL_iPhoneSetEventPump( SDL_FALSE );
+    SDL_SetiOSEventPump( false );
     
     [AppleLog withFormat:@"Mengine application finish"];
     

@@ -18,11 +18,11 @@
 #include "Interface/FactoryInterface.h"
 #include "Interface/AnalyticsEventProviderInterface.h"
 
-#include "Environment/SDL2/SDL2PlatformServiceExtensionInterface.h"
+#include "Environment/SDL3/SDL3PlatformServiceExtensionInterface.h"
 
 #import "iOSMailComposeDelegate.h"
 
-#include "Environment/SDL2/SDL2Includer.h"
+#include "Environment/SDL3/SDL3Includer.h"
 
 #include "iOSInput.h"
 
@@ -36,7 +36,7 @@ namespace Mengine
 {
     class iOSPlatformService
         : public ServiceBase<PlatformServiceInterface>
-        , public SDL2PlatformServiceExtensionInterface
+        , public SDL3PlatformServiceExtensionInterface
     {
         DECLARE_UNKNOWABLE();
 
@@ -76,7 +76,7 @@ namespace Mengine
 
     public:
         bool createWindow( const Resolution & _resolution, bool _fullscreen ) override;
-        bool attachWindow( const void * _hWND ) override;
+        bool attachWindow( void * _hWND ) override;
 
     public:
         bool hasPlatformTag( const ConstString & _tag ) const override;
@@ -194,8 +194,6 @@ namespace Mengine
         Tags m_platformTags;
 
         SDL_Window * m_sdlWindow;
-
-        SDL_Joystick * m_sdlAccelerometer;
 
         struct SDLEventHandlerDesc
         {

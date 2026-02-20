@@ -14,7 +14,7 @@
 
 #include "Mengine/MenginePlugin.h"
 
-#include "Environment/SDL2/SDL2MessageBoxLogger.h"
+#include "Environment/SDL3/SDL3MessageBoxLogger.h"
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/StringArguments.h"
@@ -76,7 +76,7 @@ namespace Mengine
             m_loggerStdio = loggerStdio;
         }
 
-        LoggerInterfacePtr loggerMessageBox = Helper::makeFactorableUnique<SDL2MessageBoxLogger>( MENGINE_DOCUMENT_FUNCTION );
+        LoggerInterfacePtr loggerMessageBox = Helper::makeFactorableUnique<SDL3MessageBoxLogger>( MENGINE_DOCUMENT_FUNCTION );
 
         loggerMessageBox->setVerboseLevel( LM_FATAL );
 

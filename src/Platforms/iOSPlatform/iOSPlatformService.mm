@@ -84,7 +84,6 @@ namespace Mengine
     iOSPlatformService::iOSPlatformService()
         : m_beginTime( 0 )
         , m_sdlWindow( nullptr )
-        , m_sdlAccelerometer( nullptr )
         , m_sdlInput( nullptr )
         , m_prevTime( 0.0 )
         , m_pauseUpdatingTime( -1.f )
@@ -228,42 +227,42 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static int SDL_EventFilter_RemoveMouse( void * userdata, SDL_Event * event )
+        static bool SDL_EventFilter_RemoveMouse( void * userdata, SDL_Event * event )
         {
             MENGINE_UNUSED( userdata );
 
             switch( event->type )
             {
-            case SDL_MOUSEMOTION:
-            case SDL_MOUSEBUTTONDOWN:
-            case SDL_MOUSEBUTTONUP:
+            case SDL_EVENT_MOUSE_MOTION:
+            case SDL_EVENT_MOUSE_BUTTON_DOWN:
+            case SDL_EVENT_MOUSE_BUTTON_UP:
                 {
-                    return 0;
+                    return false;
                 }break;
             default: break;
             };
 
-            return 1;
+            return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        static int SDL_EventFilter_EnterBackground( void * userdata, SDL_Event * event )
+        static bool SDL_EventFilter_EnterBackground( void * userdata, SDL_Event * event )
         {
             MENGINE_UNUSED( userdata );
 
             switch( event->type )
             {
-            case SDL_APP_WILLENTERBACKGROUND:
+            case SDL_EVENT_WILL_ENTER_BACKGROUND:
                 {
-                    return 0;
+                    return false;
                 }break;
-            case SDL_APP_DIDENTERBACKGROUND:
+            case SDL_EVENT_DID_ENTER_BACKGROUND:
                 {
-                    return 0;
+                    return false;
                 }break;
             default: break;
             };
 
-            return 1;
+            return true;
         }
         //////////////////////////////////////////////////////////////////////////
         static const Char * SDL_GetLoggerCategoryString( int category )
@@ -343,33 +342,27 @@ namespace Mengine
         ::setlocale( LC_ALL, MENGINE_SETLOCALE_VALUE );
 #endif
 
-        SDL_version ver;
-        SDL_GetVersion( &ver );
-
-        LOGGER_INFO( "platform", "SDL version: %u.%u.%u"
-            , ver.major
-            , ver.minor
-            , ver.patch
-        );
+        int version = SDL_GetVersion();
 
         const char * revision = SDL_GetRevision();
-        
-        MENGINE_UNUSED( revision );
 
-        LOGGER_INFO( "platform", "SDL revision: %s"
+        LOGGER_INFO( "platform", "SDL3 version: %d.%d.%d revision: %s"
+            , SDL_VERSIONNUM_MAJOR( version )
+            , SDL_VERSIONNUM_MINOR( version )
+            , SDL_VERSIONNUM_MICRO( version )
             , revision
         );
 
-        SDL_bool isTablet = SDL_IsTablet();
+        bool isTablet = SDL_IsTablet();
 
-        LOGGER_INFO( "platform", "SDL Tablet: %s"
-            , isTablet == SDL_TRUE ? "true" : "false"
+        LOGGER_INFO( "platform", "SDL3 Tablet: %s"
+            , isTablet == true ? "true" : "false"
         );
 
 #if defined(MENGINE_DEBUG)
-        SDL_LogSetAllPriority( SDL_LOG_PRIORITY_VERBOSE );
+        SDL_SetLogPriorities( SDL_LOG_PRIORITY_VERBOSE );
 #else
-        SDL_LogSetAllPriority( SDL_LOG_PRIORITY_ERROR );
+        SDL_SetLogPriorities( SDL_LOG_PRIORITY_ERROR );
 #endif
 
         SDL_LogSetOutputFunction( &Detail::SDL_LogOutputFunction, nullptr );
@@ -463,7 +456,7 @@ namespace Mengine
 
                 SDL_SetEventFilter( &Detail::SDL_EventFilter_EnterBackground, nullptr );
             }
-            else if( StdString::strcmp( sdlPlatform, "Mac OS X" ) == 0 )
+            else if( StdString::strcmp( sdlPlatform, "macOS" ) == 0 || StdString::strcmp( sdlPlatform, "Mac OS X" ) == 0 )
             {
                 m_desktop = true;
                 m_touchpad = false;
@@ -477,7 +470,7 @@ namespace Mengine
 
                 m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "ANDROID" ) );
 
-                if( isTablet == SDL_TRUE )
+                if( isTablet == true )
                 {
                     m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "TABLET" ) );
                 }
@@ -495,7 +488,7 @@ namespace Mengine
 
                 m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "IOS" ) );
 
-                if( isTablet == SDL_TRUE )
+                if( isTablet == true )
                 {
                     m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "TABLET" ) );
                 }
@@ -601,12 +594,8 @@ namespace Mengine
         );
 
         LOGGER_INFO_PROTECTED( "platform", "  CPU: %d Count %d CacheLineSize"
-            , SDL_GetCPUCount()
+            , SDL_GetNumLogicalCPUCores()
             , SDL_GetCPUCacheLineSize()
-        );
-
-        LOGGER_INFO_PROTECTED( "platform", "  CPU RDTSC: %d"
-            , SDL_HasRDTSC()
         );
 
         LOGGER_INFO_PROTECTED( "platform", "  CPU AltiVec: %d"
@@ -615,10 +604,6 @@ namespace Mengine
 
         LOGGER_INFO_PROTECTED( "platform", "  CPU MMX: %d"
             , SDL_HasMMX()
-        );
-
-        LOGGER_INFO_PROTECTED( "platform", "  CPU 3DNow: %d"
-            , SDL_Has3DNow()
         );
 
         LOGGER_INFO_PROTECTED( "platform", "  CPU SSE: %d"
@@ -661,48 +646,9 @@ namespace Mengine
             , SDL_GetSystemRAM()
         );
 
-        // Search accelerometer device among joysticks
-        int numJoysticks = SDL_NumJoysticks();
+        // SDL_Joystick/accelerometer support removed in SDL3
+        LOGGER_INFO( "platform", "accelerometer support removed in SDL3" );
 
-        for( int deviceIndex = 0; deviceIndex != numJoysticks; ++deviceIndex )
-        {
-            SDL_Joystick * joystick = SDL_JoystickOpen( deviceIndex );
-
-            if( joystick == nullptr )
-            {
-                continue;
-            }
-
-            const Char * joystickName = SDL_JoystickName( joystick );
-
-            bool isAccelerometer = false;
-
-            if( StdString::strcmp( joystickName, "Android Accelerometer" ) == 0 )
-            {
-                isAccelerometer = true;
-            }
-            else if( StdString::strcmp( joystickName, "iOS Accelerometer" ) == 0 )
-            {
-                isAccelerometer = true;
-            }
-
-            if( isAccelerometer == true )
-            {
-                LOGGER_INFO( "platform", "accelerometer found: %s"
-                    , joystickName
-                );
-
-                m_sdlAccelerometer = joystick;
-
-                break;
-            }
-        }
-
-        if( m_sdlAccelerometer == nullptr )
-        {
-            LOGGER_INFO( "platform", "accelerometer not found" );
-        }
-        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -721,15 +667,6 @@ namespace Mengine
             , dateTime.second
         );
 
-        if( m_sdlAccelerometer != nullptr )
-        {
-            if( SDL_JoystickGetAttached( m_sdlAccelerometer ) == SDL_TRUE )
-            {
-                SDL_JoystickClose( m_sdlAccelerometer );
-            }
-
-            m_sdlAccelerometer = nullptr;
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::_finalizeService()
@@ -1184,7 +1121,7 @@ namespace Mengine
         }
 
         int attribute_GL_CONTEXT_PROFILE_MASK = 0;
-        if( SDL_GL_GetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, &attribute_GL_CONTEXT_PROFILE_MASK ) != 0 )
+        if( SDL_GL_GetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, &attribute_GL_CONTEXT_PROFILE_MASK ) == false )
         {
             LOGGER_WARNING( "get attribute SDL_GL_CONTEXT_PROFILE_MASK error: %s"
                 , SDL_GetError()
@@ -1192,7 +1129,7 @@ namespace Mengine
         }
 
         int attribute_GL_CONTEXT_MAJOR_VERSION = 0;
-        if( SDL_GL_GetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, &attribute_GL_CONTEXT_MAJOR_VERSION ) != 0 )
+        if( SDL_GL_GetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, &attribute_GL_CONTEXT_MAJOR_VERSION ) == false )
         {
             LOGGER_WARNING( "get attribute SDL_GL_CONTEXT_MAJOR_VERSION error: %s"
                 , SDL_GetError()
@@ -1200,7 +1137,7 @@ namespace Mengine
         }
 
         int attribute_GL_CONTEXT_MINOR_VERSION = 0;
-        if( SDL_GL_GetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, &attribute_GL_CONTEXT_MINOR_VERSION ) != 0 )
+        if( SDL_GL_GetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, &attribute_GL_CONTEXT_MINOR_VERSION ) == false )
         {
             LOGGER_WARNING( "get attribute SDL_GL_CONTEXT_MINOR_VERSION error: %s"
                 , SDL_GetError()
@@ -1208,7 +1145,7 @@ namespace Mengine
         }
 
         int attribute_SDL_GL_RED_SIZE = 0;
-        if( SDL_GL_GetAttribute( SDL_GL_RED_SIZE, &attribute_SDL_GL_RED_SIZE ) != 0 )
+        if( SDL_GL_GetAttribute( SDL_GL_RED_SIZE, &attribute_SDL_GL_RED_SIZE ) == false )
         {
             LOGGER_WARNING( "get attribute SDL_GL_RED_SIZE error: %s"
                 , SDL_GetError()
@@ -1216,7 +1153,7 @@ namespace Mengine
         }
 
         int attribute_SDL_GL_GREEN_SIZE = 0;
-        if( SDL_GL_GetAttribute( SDL_GL_GREEN_SIZE, &attribute_SDL_GL_GREEN_SIZE ) != 0 )
+        if( SDL_GL_GetAttribute( SDL_GL_GREEN_SIZE, &attribute_SDL_GL_GREEN_SIZE ) == false )
         {
             LOGGER_WARNING( "get attribute SDL_GL_GREEN_SIZE error: %s"
                 , SDL_GetError()
@@ -1224,7 +1161,7 @@ namespace Mengine
         }
 
         int attribute_SDL_GL_BLUE_SIZE = 0;
-        if( SDL_GL_GetAttribute( SDL_GL_BLUE_SIZE, &attribute_SDL_GL_BLUE_SIZE ) != 0 )
+        if( SDL_GL_GetAttribute( SDL_GL_BLUE_SIZE, &attribute_SDL_GL_BLUE_SIZE ) == false )
         {
             LOGGER_WARNING( "get attribute SDL_GL_BLUE_SIZE error: %s"
                 , SDL_GetError()
@@ -1232,7 +1169,7 @@ namespace Mengine
         }
 
         int attribute_SDL_GL_ALPHA_SIZE = 0;
-        if( SDL_GL_GetAttribute( SDL_GL_ALPHA_SIZE, &attribute_SDL_GL_ALPHA_SIZE ) != 0 )
+        if( SDL_GL_GetAttribute( SDL_GL_ALPHA_SIZE, &attribute_SDL_GL_ALPHA_SIZE ) == false )
         {
             LOGGER_WARNING( "get attribute SDL_GL_ALPHA_SIZE error: %s"
                 , SDL_GetError()
@@ -1240,7 +1177,7 @@ namespace Mengine
         }
 
         int attribute_SDL_GL_DEPTH_SIZE = 0;
-        if( SDL_GL_GetAttribute( SDL_GL_DEPTH_SIZE, &attribute_SDL_GL_DEPTH_SIZE ) != 0 )
+        if( SDL_GL_GetAttribute( SDL_GL_DEPTH_SIZE, &attribute_SDL_GL_DEPTH_SIZE ) == false )
         {
             LOGGER_WARNING( "set attribute SDL_GL_DEPTH_SIZE error: %s"
                 , SDL_GetError()
@@ -1248,7 +1185,7 @@ namespace Mengine
         }
 
         int attribute_SDL_GL_DOUBLEBUFFER = 0;
-        if( SDL_GL_GetAttribute( SDL_GL_DOUBLEBUFFER, &attribute_SDL_GL_DOUBLEBUFFER ) != 0 )
+        if( SDL_GL_GetAttribute( SDL_GL_DOUBLEBUFFER, &attribute_SDL_GL_DOUBLEBUFFER ) == false )
         {
             LOGGER_WARNING( "get attribute SDL_GL_DOUBLEBUFFER error: %s"
                 , SDL_GetError()
@@ -1295,9 +1232,9 @@ namespace Mengine
 
         int drawable_width;
         int drawable_height;
-        SDL_GL_GetDrawableSize( m_sdlWindow, &drawable_width, &drawable_height );
+        SDL_GetWindowSizeInPixels( m_sdlWindow, &drawable_width, &drawable_height );
 
-        LOGGER_INFO( "platform", "SDL drawable size [%d, %d]"
+        LOGGER_INFO( "platform", "SDL3 drawable size [%d, %d]"
             , drawable_width
             , drawable_height
         );
@@ -1329,18 +1266,18 @@ namespace Mengine
             , win_max_height
         );
 
-        Uint32 flags = SDL_GetWindowFlags( m_sdlWindow );
+        SDL_WindowFlags flags = SDL_GetWindowFlags( m_sdlWindow );
 
         if( (flags & SDL_WINDOW_FULLSCREEN) != SDL_WINDOW_FULLSCREEN )
         {
-            int displayIndex = SDL_GetWindowDisplayIndex( m_sdlWindow );
+            SDL_DisplayID displayID = SDL_GetDisplayForWindow( m_sdlWindow );
 
-            if( displayIndex >= 0 )
+            if( displayID != 0 )
             {
                 SDL_Rect displayBounds;
-                if( SDL_GetDisplayBounds( displayIndex, &displayBounds ) == 0 )
+                if( SDL_GetDisplayBounds( displayID, &displayBounds ) == true )
                 {
-                    LOGGER_INFO( "platform", "SDL display bounds [%d, %d] size [%d, %d]"
+                    LOGGER_INFO( "platform", "SDL3 display bounds [%d, %d] size [%d, %d]"
                         , displayBounds.x
                         , displayBounds.y
                         , displayBounds.w
@@ -1349,16 +1286,15 @@ namespace Mengine
                 }
                 else
                 {
-                    LOGGER_WARNING( "SDL display [%d] bounds get error: %s"
-                        , displayIndex
+                    LOGGER_WARNING( "SDL3 display bounds get error: %s"
                         , SDL_GetError()
                     );
                 }
 
                 SDL_Rect usableBounds;
-                if( SDL_GetDisplayUsableBounds( displayIndex, &usableBounds ) == 0 )
+                if( SDL_GetDisplayUsableBounds( displayID, &usableBounds ) == true )
                 {
-                    LOGGER_INFO( "platform", "SDL display usable bounds [%d, %d] size [%d, %d]"
+                    LOGGER_INFO( "platform", "SDL3 display usable bounds [%d, %d] size [%d, %d]"
                         , usableBounds.x
                         , usableBounds.y
                         , usableBounds.w
@@ -1367,8 +1303,7 @@ namespace Mengine
                 }
                 else
                 {
-                    LOGGER_WARNING( "SDL display [%d] usable bounds get error: %s"
-                        , displayIndex
+                    LOGGER_WARNING( "SDL3 display usable bounds get error: %s"
                         , SDL_GetError()
                     );
                 }
@@ -1388,22 +1323,23 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool iOSPlatformService::attachWindow( const void * _hWND )
+    bool iOSPlatformService::attachWindow( void * _hWND )
     {
         this->setupWindow_();
 
-        SDL_Window * sharePixelFormatWindow = SDL_CreateWindow( "MengineSharePixelFormatWindow", 0, 0, 1, 1, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN );
+        SDL_PropertiesID props = SDL_CreateProperties();
+        if( props == 0 )
+        {
+            LOGGER_ERROR( "create properties failed: %s"
+                , SDL_GetError()
+            );
+            return false;
+        }
 
-        Char sBuf[64 + 1] = {'\0'};
-        MENGINE_SNPRINTF( sBuf, 64, "%p", sharePixelFormatWindow );
+        SDL_SetPointerProperty( props, SDL_PROP_WINDOW_CREATE_COCOA_WINDOW_POINTER, _hWND );
 
-        SDL_SetHint( SDL_HINT_VIDEO_WINDOW_SHARE_PIXEL_FORMAT, sBuf );
-
-        SDL_Window * sdlWindow = SDL_CreateWindowFrom( _hWND );
-
-        SDL_SetHint( SDL_HINT_VIDEO_WINDOW_SHARE_PIXEL_FORMAT, nullptr );
-
-        SDL_DestroyWindow( sharePixelFormatWindow );
+        SDL_Window * sdlWindow = SDL_CreateWindowWithProperties( props );
+        SDL_DestroyProperties( props );
 
         if( sdlWindow == nullptr )
         {
@@ -1480,17 +1416,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool iOSPlatformService::getDesktopResolution( Resolution * const _resolution ) const
     {
-        uint32_t width;
-        uint32_t height;
-
         int drawable_width;
         int drawable_height;
-        SDL_GL_GetDrawableSize( m_sdlWindow, &drawable_width, &drawable_height );
+        SDL_GetWindowSizeInPixels( m_sdlWindow, &drawable_width, &drawable_height );
 
-        width = (uint32_t)drawable_width;
-        height = (uint32_t)drawable_height;
-
-        * _resolution = Resolution( width, height );
+        *_resolution = Resolution( (uint32_t)drawable_width, (uint32_t)drawable_height );
 
         return true;
     }
@@ -1765,14 +1695,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     UIWindow * iOSPlatformService::getUIWindow() const
     {
-        SDL_SysWMinfo wmInfo;
-        SDL_VERSION( &wmInfo.version );
+        SDL_PropertiesID props = SDL_GetWindowProperties( m_sdlWindow );
+        void * window = SDL_GetPointerProperty( props, SDL_PROP_WINDOW_COCOA_WINDOW_POINTER, nullptr );
 
-        SDL_GetWindowWMInfo( m_sdlWindow, &wmInfo );
-
-        UIWindow * uiwindow = wmInfo.info.uikit.window;
-
-        return uiwindow;
+        return static_cast<UIWindow *>(window);
     }
     //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
@@ -1921,7 +1847,7 @@ namespace Mengine
 
         PathString Engine_SDL_HINT_RENDER_SCALE_QUALITY = CONFIG_VALUE_PATHSTRING( "SDL", "SDL_HINT_RENDER_SCALE_QUALITY", "linear" );
 
-        if( SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, Engine_SDL_HINT_RENDER_SCALE_QUALITY.c_str() ) != SDL_TRUE )
+        if( SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, Engine_SDL_HINT_RENDER_SCALE_QUALITY.c_str() ) == false )
         {
             LOGGER_WARNING( "set hint SDL_HINT_RENDER_SCALE_QUALITY to [%s] error: %s"
                 , Engine_SDL_HINT_RENDER_SCALE_QUALITY.c_str()
@@ -1931,7 +1857,7 @@ namespace Mengine
 
         PathString Engine_SDL_HINT_ORIENTATIONS = CONFIG_VALUE_PATHSTRING( "SDL", "SDL_HINT_ORIENTATIONS", "Portrait" );
 
-        if( SDL_SetHint( SDL_HINT_ORIENTATIONS, Engine_SDL_HINT_ORIENTATIONS.c_str() ) != SDL_TRUE )
+        if( SDL_SetHint( SDL_HINT_ORIENTATIONS, Engine_SDL_HINT_ORIENTATIONS.c_str() ) == false )
         {
             LOGGER_WARNING( "set hint SDL_HINT_ORIENTATIONS to [%s] error: %s"
                 , Engine_SDL_HINT_ORIENTATIONS.c_str()
@@ -1941,7 +1867,7 @@ namespace Mengine
 
         PathString Engine_SDL_HINT_IOS_HIDE_HOME_INDICATOR = CONFIG_VALUE_PATHSTRING( "SDL", "SDL_HINT_IOS_HIDE_HOME_INDICATOR", "1" );
 
-        if( SDL_SetHint( SDL_HINT_IOS_HIDE_HOME_INDICATOR, Engine_SDL_HINT_IOS_HIDE_HOME_INDICATOR.c_str() ) != SDL_TRUE )
+        if( SDL_SetHint( SDL_HINT_IOS_HIDE_HOME_INDICATOR, Engine_SDL_HINT_IOS_HIDE_HOME_INDICATOR.c_str() ) == false )
         {
             LOGGER_WARNING( "set hint SDL_HINT_IOS_HIDE_HOME_INDICATOR to [%s] error: %s"
                 , Engine_SDL_HINT_IOS_HIDE_HOME_INDICATOR.c_str()
@@ -1964,19 +1890,40 @@ namespace Mengine
         windowFlags |= SDL_WINDOW_RESIZABLE;
         windowFlags |= SDL_WINDOW_FULLSCREEN;
         windowFlags |= SDL_WINDOW_BORDERLESS;
-        windowFlags |= SDL_WINDOW_ALLOW_HIGHDPI;
+        windowFlags |= SDL_WINDOW_HIGH_PIXEL_DENSITY;
+
+        int numDisplays = 0;
+        SDL_DisplayID * displays = SDL_GetDisplays( &numDisplays );
 
         LOGGER_INFO( "platform", "num video displays: %d"
-            , SDL_GetNumVideoDisplays()
+            , numDisplays
         );
+
+        if( displays != nullptr )
+        {
+            SDL_free( displays );
+        }
 
         const Char * projectTitle_str = m_projectTitle.c_str();
 
+        SDL_DisplayID displayID = 0;
+        if( numDisplays > 0 )
+        {
+            displays = SDL_GetDisplays( &numDisplays );
+            if( displays != nullptr && numDisplays > 0 )
+            {
+                displayID = displays[0];
+                SDL_free( displays );
+            }
+        }
+
+        const SDL_DisplayMode * mode = SDL_GetDesktopDisplayMode( displayID );
+        int width = ( mode != nullptr ) ? mode->w : 0;
+        int height = ( mode != nullptr ) ? mode->h : 0;
+
         SDL_Window * window = SDL_CreateWindow( projectTitle_str
-            , SDL_WINDOWPOS_UNDEFINED
-            , SDL_WINDOWPOS_UNDEFINED
-            , -1
-            , -1
+            , width
+            , height
             , windowFlags );
 
         if( window == nullptr )
@@ -2003,7 +1950,7 @@ namespace Mengine
 
         if( m_glContext != nullptr )
         {
-            SDL_GL_DeleteContext( m_glContext );
+            SDL_GL_DestroyContext( m_glContext );
             m_glContext = nullptr;
         }
 
@@ -2021,96 +1968,22 @@ namespace Mengine
         {
             switch( _eventId )
             {
-                /* Application events */
-                MENGINE_MESSAGE_CASE( SDL_QUIT, "User - requested quit" );
-
-                /* These application events have special meaning on iOS, see README-ios.md for details */
-                MENGINE_MESSAGE_CASE( SDL_APP_TERMINATING, "The application is being terminated by the OS Called on iOS in applicationWillTerminate Called on Android in onDestroy" );
-                MENGINE_MESSAGE_CASE( SDL_APP_LOWMEMORY, "The application is low on memory, free memory if possible.Called on iOS in applicationDidReceiveMemoryWarning Called on Android in onLowMemory" );
-                MENGINE_MESSAGE_CASE( SDL_APP_WILLENTERBACKGROUND, "The application is about to enter the background Called on iOS in applicationWillResignActive Called on Android in onPause" );
-                MENGINE_MESSAGE_CASE( SDL_APP_DIDENTERBACKGROUND, "The application did enter the background and may not get CPU for some time Called on iOS in applicationDidEnterBackground Called on Android in onPause" );
-                MENGINE_MESSAGE_CASE( SDL_APP_WILLENTERFOREGROUND, "The application is about to enter the foreground Called on iOS in applicationWillEnterForeground Called on Android in onResume" );
-                MENGINE_MESSAGE_CASE( SDL_APP_DIDENTERFOREGROUND, "The application is now interactive Called on iOS in applicationDidBecomeActive Called on Android in onResume" );
-                
-                MENGINE_MESSAGE_CASE( SDL_LOCALECHANGED, "The user's locale preferences have changed." );
-
-                /* Display events */
-                MENGINE_MESSAGE_CASE( SDL_DISPLAYEVENT, "Display state change" );
-
-                /* Window events */
-                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT, "Window state change" );
-                MENGINE_MESSAGE_CASE( SDL_SYSWMEVENT, "System specific event" );
-
-                /* Keyboard events */
-                MENGINE_MESSAGE_CASE( SDL_KEYDOWN, "Key pressed" );
-                MENGINE_MESSAGE_CASE( SDL_KEYUP, "Key released" );
-                MENGINE_MESSAGE_CASE( SDL_TEXTEDITING, "Keyboard text editing (composition)" );
-                MENGINE_MESSAGE_CASE( SDL_TEXTINPUT, "Keyboard text input" );
-                MENGINE_MESSAGE_CASE( SDL_KEYMAPCHANGED, "Keymap changed due to a system event such as an input language or keyboard layout change." );
-
-                MENGINE_MESSAGE_CASE( SDL_TEXTEDITING_EXT, "Extended keyboard text editing (composition)" );
-
-                /* Mouse events */
-                MENGINE_MESSAGE_CASE( SDL_MOUSEMOTION, "Mouse moved" );
-                MENGINE_MESSAGE_CASE( SDL_MOUSEBUTTONDOWN, "Mouse button pressed" );
-                MENGINE_MESSAGE_CASE( SDL_MOUSEBUTTONUP, "Mouse button released" );
-                MENGINE_MESSAGE_CASE( SDL_MOUSEWHEEL, "Mouse wheel motion" );
-
-                /* Joystick events */
-                MENGINE_MESSAGE_CASE( SDL_JOYAXISMOTION, "Joystick axis motion" );
-                MENGINE_MESSAGE_CASE( SDL_JOYBALLMOTION, "Joystick trackball motion" );
-                MENGINE_MESSAGE_CASE( SDL_JOYHATMOTION, "Joystick hat position change" );
-                MENGINE_MESSAGE_CASE( SDL_JOYBUTTONDOWN, "Joystick button pressed" );
-                MENGINE_MESSAGE_CASE( SDL_JOYBUTTONUP, "Joystick button released" );
-                MENGINE_MESSAGE_CASE( SDL_JOYDEVICEADDED, "A new joystick has been inserted into the system" );
-                MENGINE_MESSAGE_CASE( SDL_JOYDEVICEREMOVED, "An opened joystick has been removed" );
-
-                /* Game controller events */
-                MENGINE_MESSAGE_CASE( SDL_CONTROLLERAXISMOTION, "Game controller axis motion" );
-                MENGINE_MESSAGE_CASE( SDL_CONTROLLERBUTTONDOWN, "Game controller button pressed" );
-                MENGINE_MESSAGE_CASE( SDL_CONTROLLERBUTTONUP, "Game controller button released" );
-                MENGINE_MESSAGE_CASE( SDL_CONTROLLERDEVICEADDED, "A new Game controller has been inserted into the system" );
-                MENGINE_MESSAGE_CASE( SDL_CONTROLLERDEVICEREMOVED, "An opened Game controller has been removed" );
-                MENGINE_MESSAGE_CASE( SDL_CONTROLLERDEVICEREMAPPED, "The controller mapping was updated" );
-                MENGINE_MESSAGE_CASE( SDL_CONTROLLERTOUCHPADDOWN, "Game controller touchpad was touched" );
-                MENGINE_MESSAGE_CASE( SDL_CONTROLLERTOUCHPADMOTION, "Game controller touchpad finger was moved" );
-                MENGINE_MESSAGE_CASE( SDL_CONTROLLERTOUCHPADUP, "Game controller touchpad finger was lifted" );
-                MENGINE_MESSAGE_CASE( SDL_CONTROLLERSENSORUPDATE, "Game controller sensor was updated" );
-
-                /* Touch events */
-                MENGINE_MESSAGE_CASE( SDL_FINGERDOWN, "SDL_FINGERDOWN" );
-                MENGINE_MESSAGE_CASE( SDL_FINGERUP, "SDL_FINGERUP" );
-                MENGINE_MESSAGE_CASE( SDL_FINGERMOTION, "SDL_FINGERMOTION" );
-
-                /* Gesture events */
-                MENGINE_MESSAGE_CASE( SDL_DOLLARGESTURE, "SDL_DOLLARGESTURE" );
-                MENGINE_MESSAGE_CASE( SDL_DOLLARRECORD, "SDL_DOLLARRECORD" );
-                MENGINE_MESSAGE_CASE( SDL_MULTIGESTURE, "SDL_MULTIGESTURE" );
-
-                /* Clipboard events */
-                MENGINE_MESSAGE_CASE( SDL_CLIPBOARDUPDATE, "The clipboard changed" );
-
-                /* Drag and drop events */
-                MENGINE_MESSAGE_CASE( SDL_DROPFILE, "The system requests a file open" );
-                MENGINE_MESSAGE_CASE( SDL_DROPTEXT, "text/plain drag-and-drop event" );
-                MENGINE_MESSAGE_CASE( SDL_DROPBEGIN, "A new set of drops is beginning (NULL filename)" );
-                MENGINE_MESSAGE_CASE( SDL_DROPCOMPLETE, "Current set of drops is now complete (NULL filename)" );
-
-                /* Audio hotplug events */
-                MENGINE_MESSAGE_CASE( SDL_AUDIODEVICEADDED, "A new audio device is available" );
-                MENGINE_MESSAGE_CASE( SDL_AUDIODEVICEREMOVED, "An audio device has been removed" );
-
-                /* Sensor events */
-                MENGINE_MESSAGE_CASE( SDL_SENSORUPDATE, "A sensor was updated" );
-
-                /* Render events */
-                MENGINE_MESSAGE_CASE( SDL_RENDER_TARGETS_RESET, "The render targets have been reset and their contents need to be updated" );
-                MENGINE_MESSAGE_CASE( SDL_RENDER_DEVICE_RESET, "The device has been reset and all textures need to be recreated" );
+                MENGINE_MESSAGE_CASE( SDL_EVENT_QUIT, "User - requested quit" );
+                MENGINE_MESSAGE_CASE( SDL_EVENT_TERMINATING, "Application is being terminated by the OS" );
+                MENGINE_MESSAGE_CASE( SDL_EVENT_LOW_MEMORY, "Application is low on memory" );
+                MENGINE_MESSAGE_CASE( SDL_EVENT_WILL_ENTER_BACKGROUND, "Application about to enter background" );
+                MENGINE_MESSAGE_CASE( SDL_EVENT_DID_ENTER_BACKGROUND, "Application did enter background" );
+                MENGINE_MESSAGE_CASE( SDL_EVENT_WILL_ENTER_FOREGROUND, "Application about to enter foreground" );
+                MENGINE_MESSAGE_CASE( SDL_EVENT_DID_ENTER_FOREGROUND, "Application is now interactive" );
+                MENGINE_MESSAGE_CASE( SDL_EVENT_WINDOW_RESIZED, "Window resized" );
+                MENGINE_MESSAGE_CASE( SDL_EVENT_WINDOW_FOCUS_GAINED, "Window focus gained" );
+                MENGINE_MESSAGE_CASE( SDL_EVENT_WINDOW_FOCUS_LOST, "Window focus lost" );
+                MENGINE_MESSAGE_CASE( SDL_EVENT_WINDOW_CLOSE_REQUESTED, "Window close requested" );
             default:
                 break;
             }
 
-            if( _eventId >= SDL_USEREVENT )
+            if( _eventId >= SDL_EVENT_USER && _eventId <= SDL_EVENT_LAST )
             {
                 static MENGINE_THREAD_LOCAL Char userEventMessage[32 + 1] = {'\0'};
                 MENGINE_SNPRINTF( userEventMessage, 32, "[User event: %u]"
@@ -2123,34 +1996,6 @@ namespace Mengine
             return "UNKNOWN";
         }
         //////////////////////////////////////////////////////////////////////////
-        static const Char * getWindowEventMessage( SDL_WindowEventID _eventId )
-        {
-            switch( _eventId )
-            {
-                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_NONE, "Never used" );
-                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_SHOWN, "Window has been shown" );
-                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_HIDDEN, "Window has been hidden" );
-                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_EXPOSED, "Window has been exposed and should be redrawn" );
-                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_MOVED, "Window has been moved to data1, data2" );
-                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_RESIZED, "Window has been resized to data1xdata2" );
-                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_SIZE_CHANGED, "The window size has changed, either as a result of an API call or through the system or user changing the window size." );
-                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_MINIMIZED, "Window has been minimized" );
-                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_MAXIMIZED, "Window has been maximized" );
-                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_RESTORED, "Window has been restored to normal size and position" );
-                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_ENTER, "Window has gained mouse focus" );
-                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_LEAVE, "Window has lost mouse focus" );
-                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_FOCUS_GAINED, "Window has gained keyboard focus" );
-                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_FOCUS_LOST, "Window has lost keyboard focus" );
-                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_CLOSE, "The window manager requests that the window be closed" );
-                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_TAKE_FOCUS, "Window is being offered a focus (should SetWindowInputFocus() on itself or a subwindow, or ignore)" );
-                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_HIT_TEST, "Window had a hit test that wasn't SDL_HITTEST_NORMAL." );
-                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_ICCPROF_CHANGED, "The ICC profile of the window's display has changed." );
-                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_DISPLAY_CHANGED, "Window has been moved to display data1." );
-            }
-
-            return "Unknown";
-        }
-        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     bool iOSPlatformService::processEvents_()
@@ -2158,7 +2003,7 @@ namespace Mengine
         bool shouldQuit = false;
         
         SDL_Event sdlEvent;
-        while( SDL_PollEvent( &sdlEvent ) != 0 )
+        while( SDL_PollEvent( &sdlEvent ) == true )
         {
             LOGGER_INFO( "platform", "platform event: %s (%u)"
                 , Detail::getPlatformEventMessage( sdlEvent.type )
@@ -2172,111 +2017,68 @@ namespace Mengine
 
             m_sdlInput->handleEvent( m_sdlWindow, sdlEvent );
 
+            if( sdlEvent.type >= SDL_EVENT_WINDOW_FIRST && sdlEvent.type <= SDL_EVENT_WINDOW_LAST )
+            {
+                if( sdlEvent.window.windowID != SDL_GetWindowID( m_sdlWindow ) )
+                {
+                    continue;
+                }
+            }
+
             switch( sdlEvent.type )
             {
-            case SDL_WINDOWEVENT:
+            case SDL_EVENT_WINDOW_RESIZED:
                 {
-                    Uint32 windowID = SDL_GetWindowID( m_sdlWindow );
+                    Sint32 width = sdlEvent.window.data1;
+                    Sint32 height = sdlEvent.window.data2;
 
-                    if( sdlEvent.window.windowID != windowID )
-                    {
-                        continue;
-                    }
+                    Resolution windowResolution( width, height );
 
-                    SDL_WindowEventID windowEventId = (SDL_WindowEventID)sdlEvent.window.event;
-
-                    LOGGER_INFO( "platform", "window event: %s (%u)"
-                        , Detail::getWindowEventMessage( windowEventId )
-                        , windowEventId
-                    );
-
-                    switch( windowEventId )
-                    {
-                    case SDL_WINDOWEVENT_SHOWN:
-                        {
-                            //TODO
-                        }break;
-                    case SDL_WINDOWEVENT_HIDDEN:
-                        {
-                            //TODO
-                        }break;
-                    case SDL_WINDOWEVENT_EXPOSED:
-                        {
-                            //TODO
-                        }break;
-                    case SDL_WINDOWEVENT_MOVED:
-                        {
-                            //TODO
-                        }break;
-                    case SDL_WINDOWEVENT_RESIZED:
-                        {
-                            Sint32 width = sdlEvent.window.data1;
-                            Sint32 height = sdlEvent.window.data2;
-
-                            Resolution windowResolution( width, height );
-
-                            APPLICATION_SERVICE()
-                                ->setWindowResolution( windowResolution );
-                        }break;
-                    case SDL_WINDOWEVENT_SIZE_CHANGED:
-                        {
-                            Sint32 width = sdlEvent.window.data1;
-                            Sint32 height = sdlEvent.window.data2;
-
-                            MENGINE_UNUSED( width );
-                            MENGINE_UNUSED( height );
-                            //TODO
-                        }break;
-                    case SDL_WINDOWEVENT_FOCUS_GAINED:
-                    case SDL_WINDOWEVENT_MAXIMIZED:
-                    case SDL_WINDOWEVENT_RESTORED:
-                    case SDL_WINDOWEVENT_ENTER:
-                        {
-                            this->setActive_( true );
-                        }break;
-                    case SDL_WINDOWEVENT_FOCUS_LOST:
-                    case SDL_WINDOWEVENT_MINIMIZED:
-                    case SDL_WINDOWEVENT_LEAVE:
-                        {
-                            this->setActive_( false );
-                        }break;
-                    case SDL_WINDOWEVENT_CLOSE:
-                        {
-                            this->pushQuitEvent_();
-                        }break;
-                    case SDL_WINDOWEVENT_TAKE_FOCUS:
-                        {
-                            //TODO
-                        }break;
-                    default:
-                        break;
-                    }
+                    APPLICATION_SERVICE()
+                        ->setWindowResolution( windowResolution );
                 }break;
-            case SDL_QUIT:
+            case SDL_EVENT_WINDOW_FOCUS_GAINED:
+            case SDL_EVENT_WINDOW_MAXIMIZED:
+            case SDL_EVENT_WINDOW_RESTORED:
+            case SDL_EVENT_WINDOW_MOUSE_ENTER:
+                {
+                    this->setActive_( true );
+                }break;
+            case SDL_EVENT_WINDOW_FOCUS_LOST:
+            case SDL_EVENT_WINDOW_MINIMIZED:
+            case SDL_EVENT_WINDOW_MOUSE_LEAVE:
+                {
+                    this->setActive_( false );
+                }break;
+            case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
+                {
+                    this->pushQuitEvent_();
+                }break;
+            case SDL_EVENT_QUIT:
                 {
                     shouldQuit = true;
                 }break;
-            case SDL_APP_TERMINATING:
+            case SDL_EVENT_TERMINATING:
                 {
                     NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_TERMINATE );
                 }break;
-            case SDL_APP_LOWMEMORY:
-                {                    
+            case SDL_EVENT_LOW_MEMORY:
+                {
                     NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_RECEIVE_MEMORY_WARNING );
                 }break;
-            case SDL_APP_WILLENTERBACKGROUND:
+            case SDL_EVENT_WILL_ENTER_BACKGROUND:
                 {
                     NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_RESIGN_ACTIVE );
                 }break;
-            case SDL_APP_DIDENTERBACKGROUND:
+            case SDL_EVENT_DID_ENTER_BACKGROUND:
                 {
                     NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_ENTER_BACKGROUND );
                 }break;
-            case SDL_APP_WILLENTERFOREGROUND:
+            case SDL_EVENT_WILL_ENTER_FOREGROUND:
                 {
                     NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_ENTER_FOREGROUND );
                 }break;
-            case SDL_APP_DIDENTERFOREGROUND:
+            case SDL_EVENT_DID_ENTER_FOREGROUND:
                 {
                     NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_BECOME_ACTIVE );
                 }break;
@@ -2296,12 +2098,12 @@ namespace Mengine
     void iOSPlatformService::pushQuitEvent_()
     {
         SDL_Event e;
-        e.type = SDL_QUIT;
+        e.type = SDL_EVENT_QUIT;
         e.quit.timestamp = SDL_GetTicks();
 
-        if( SDL_PushEvent( &e ) == -1 )
+        if( SDL_PushEvent( &e ) == false )
         {
-            LOGGER_WARNING( "invalid push event [SDL_QUIT] error: %s"
+            LOGGER_WARNING( "invalid push event [SDL_EVENT_QUIT] error: %s"
                 , SDL_GetError()
             );
         }

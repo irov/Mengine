@@ -11,7 +11,6 @@ namespace Mengine
         , protected EXTEND_EMBEDDABLE(AndroidNativePythonScriptEmbedding)
     {
         PLUGIN_DECLARE( "AndroidNativePython" )
-        DECLARE_VISITABLE( PluginInterface );
         DECLARE_EMBEDDABLE();
 
     public:

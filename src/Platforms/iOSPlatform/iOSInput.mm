@@ -12,9 +12,9 @@ namespace Mengine
     iOSInput::iOSInput()
     {
         StdAlgorithm::fill_n( m_keyDown, MENGINE_INPUT_MAX_KEY_CODE, false );
-        StdAlgorithm::fill_n( m_keys, SDL_NUM_SCANCODES, KC_UNASSIGNED );
+        StdAlgorithm::fill_n( m_keys, SDL_SCANCODE_COUNT, KC_UNASSIGNED );
         StdAlgorithm::fill_n( m_codes, MENGINE_INPUT_MAX_KEY_CODE, SDL_SCANCODE_UNKNOWN );
-        StdAlgorithm::fill_n( m_fingers, MENGINE_INPUT_MAX_TOUCH, -1 );
+        StdAlgorithm::fill_n( m_fingers, MENGINE_INPUT_MAX_TOUCH, (SDL_FingerID)-1 );
     }
     //////////////////////////////////////////////////////////////////////////
     iOSInput::~iOSInput()
@@ -32,17 +32,14 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void iOSInput::calcCursorPosition_( SDL_Window * _sdlWindow, Sint32 _mx, Sint32 _my, mt::vec2f * const _point ) const
+    void iOSInput::calcCursorPosition_( SDL_Window * _sdlWindow, float _mx, float _my, mt::vec2f * const _point ) const
     {
         int win_width;
         int win_height;
         SDL_GetWindowSize( _sdlWindow, &win_width, &win_height );
 
-        float x = static_cast<float>(_mx);
-        float y = static_cast<float>(_my);
-
-        _point->x = x / float(win_width);
-        _point->y = y / float(win_height);
+        _point->x = _mx / float(win_width);
+        _point->y = _my / float(win_height);
     }
     //////////////////////////////////////////////////////////////////////////
     ETouchCode iOSInput::acquireFingerIndex_( SDL_FingerID _fingerId )
@@ -98,30 +95,30 @@ namespace Mengine
     {
         switch( _event.type )
         {
-        case SDL_MOUSEWHEEL:
+        case SDL_EVENT_MOUSE_WHEEL:
             {
-                Sint32 mouseX = _event.wheel.mouseX;
-                Sint32 mouseY = _event.wheel.mouseY;
+                float mouseX = _event.wheel.mouse_x;
+                float mouseY = _event.wheel.mouse_y;
 
                 mt::vec2f point;
                 this->calcCursorPosition_( _sdlWindow, mouseX, mouseY, &point );
 
-                Sint32 wheel_vertically = _event.wheel.y;
+                float wheel_vertically = _event.wheel.y;
 
-                Helper::pushMouseWheelEvent( point.x, point.y, 0.f, WC_CENTRAL, wheel_vertically );
+                Helper::pushMouseWheelEvent( point.x, point.y, 0.f, WC_CENTRAL, (Sint32)wheel_vertically );
             }break;
-        case SDL_KEYDOWN:
-        case SDL_KEYUP:
+        case SDL_EVENT_KEY_DOWN:
+        case SDL_EVENT_KEY_UP:
             {
-                int x;
-                int y;
-                Uint32 state = SDL_GetMouseState( &x, &y );
+                float x;
+                float y;
+                SDL_MouseButtonFlags state = SDL_GetMouseState( &x, &y );
                 MENGINE_UNUSED( state );
 
                 mt::vec2f point;
                 this->calcCursorPosition_( _sdlWindow, x, y, &point );
 
-                SDL_Scancode scancode = _event.key.keysym.scancode;
+                SDL_Scancode scancode = _event.key.scancode;
 
                 EKeyCode code = this->getKeyCode_( scancode );
 
@@ -130,11 +127,11 @@ namespace Mengine
                     return;
                 }
 
-                bool isDown = _event.key.type == SDL_KEYDOWN;
+                bool isDown = _event.key.down;
 
                 m_keyDown[code] = isDown;
 
-                Helper::pushKeyEvent( point.x, point.y, 0.f, code, isDown, false );
+                Helper::pushKeyEvent( point.x, point.y, 0.f, code, isDown, _event.key.repeat );
 
 #if defined(MENGINE_PLATFORM_MOBILE)
                 if( code == KC_RETURN )
@@ -143,11 +140,11 @@ namespace Mengine
                 }
 #endif
             } break;
-        case SDL_TEXTINPUT:
+        case SDL_EVENT_TEXT_INPUT:
             {
-                int x;
-                int y;
-                Uint32 state = SDL_GetMouseState( &x, &y );
+                float x;
+                float y;
+                SDL_MouseButtonFlags state = SDL_GetMouseState( &x, &y );
                 MENGINE_UNUSED( state );
 
                 mt::vec2f point;
@@ -155,33 +152,38 @@ namespace Mengine
 
                 const Char * text = _event.text.text;
 
-                WChar text_code[SDL_TEXTINPUTEVENT_TEXT_SIZE + 1] = {L'\0'};
+                if( text == nullptr )
+                {
+                    return;
+                }
+
+                WChar text_code[256 + 1] = {L'\0'};
                 size_t text_code_size;
-                Helper::utf8ToUnicode( text, text_code, SDL_TEXTINPUTEVENT_TEXT_SIZE, &text_code_size );
+                Helper::utf8ToUnicode( text, text_code, 256, &text_code_size );
 
                 Helper::pushTextEvent( point.x, point.y, 0.f, text_code );
             }break;
-        case SDL_MOUSEMOTION:
+        case SDL_EVENT_MOUSE_MOTION:
             {
-                Sint32 x = _event.motion.x;
-                Sint32 y = _event.motion.y;
+                float x = _event.motion.x;
+                float y = _event.motion.y;
 
                 mt::vec2f point;
                 this->calcCursorPosition_( _sdlWindow, x, y, &point );
 
-                Sint32 xrel = _event.motion.xrel;
-                Sint32 yrel = _event.motion.yrel;
+                float xrel = _event.motion.xrel;
+                float yrel = _event.motion.yrel;
 
                 mt::vec2f delta;
                 this->calcCursorPosition_( _sdlWindow, xrel, yrel, &delta );
 
                 Helper::pushMouseMoveEvent( TC_TOUCH0, point.x, point.y, delta.x, delta.y, 0.f, 0.f );
             }break;
-        case SDL_MOUSEBUTTONDOWN:
-        case SDL_MOUSEBUTTONUP:
+        case SDL_EVENT_MOUSE_BUTTON_DOWN:
+        case SDL_EVENT_MOUSE_BUTTON_UP:
             {
-                Sint32 x = _event.button.x;
-                Sint32 y = _event.button.y;
+                float x = _event.button.x;
+                float y = _event.button.y;
 
                 mt::vec2f point;
                 this->calcCursorPosition_( _sdlWindow, x, y, &point );
@@ -209,19 +211,19 @@ namespace Mengine
                     return;
                 };
 
-                bool isDown = _event.type == SDL_MOUSEBUTTONDOWN;
+                bool isDown = _event.button.down;
 
                 Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, button, 0.f, isDown );
             }break;
-        case SDL_FINGERMOTION:
+        case SDL_EVENT_FINGER_MOTION:
             {
-                SDL_FingerID fingerId = _event.tfinger.fingerId;
+                SDL_FingerID fingerId = _event.tfinger.fingerID;
 
                 ETouchCode fingerIndex = this->getFingerIndex_( fingerId );
 
                 if( fingerIndex == TC_TOUCH_INVALID )
                 {
-                    LOGGER_INFO( "platform", "SDL_FINGERMOTION unknown touch" );
+                    LOGGER_INFO( "platform", "SDL_EVENT_FINGER_MOTION unknown touch" );
 
                     return;
                 }
@@ -234,15 +236,15 @@ namespace Mengine
 
                 Helper::pushMouseMoveEvent( fingerIndex, x, y, dx, dy, pressure, 0.f );
             }break;
-        case SDL_FINGERDOWN:
+        case SDL_EVENT_FINGER_DOWN:
             {
-                SDL_FingerID fingerId = _event.tfinger.fingerId;
+                SDL_FingerID fingerId = _event.tfinger.fingerID;
 
                 ETouchCode fingerIndex = this->acquireFingerIndex_( fingerId );
 
                 if( fingerIndex == TC_TOUCH_INVALID )
                 {
-                    LOGGER_INFO( "platform", "SDL_FINGERDOWN too many touches" );
+                    LOGGER_INFO( "platform", "SDL_EVENT_FINGER_DOWN no free touch" );
 
                     return;
                 }
@@ -253,15 +255,15 @@ namespace Mengine
 
                 Helper::pushMouseButtonEvent( fingerIndex, x, y, MC_LBUTTON, pressure, true );
             }break;
-        case SDL_FINGERUP:
+        case SDL_EVENT_FINGER_UP:
             {
-                SDL_FingerID fingerId = _event.tfinger.fingerId;
+                SDL_FingerID fingerId = _event.tfinger.fingerID;
 
                 ETouchCode fingerIndex = this->releaseFingerIndex_( fingerId );
 
                 if( fingerIndex == TC_TOUCH_INVALID )
                 {
-                    LOGGER_INFO( "platform", "SDL_FINGERUP too many touches" );
+                    LOGGER_INFO( "platform", "SDL_EVENT_FINGER_UP too many touches" );
 
                     return;
                 }
@@ -303,9 +305,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void iOSInput::getCursorPosition( SDL_Window * _sdlWindow, mt::vec2f * const _point ) const
     {
-        int x = 0;
-        int y = 0;
-        Uint32 state = SDL_GetMouseState( &x, &y );
+        float x = 0.f;
+        float y = 0.f;
+        SDL_MouseButtonFlags state = SDL_GetMouseState( &x, &y );
         MENGINE_UNUSED( state );
 
         this->calcCursorPosition_( _sdlWindow, x, y, _point );
@@ -418,7 +420,7 @@ namespace Mengine
 
         m_keys[SDL_SCANCODE_AC_BACK] = Mengine::KC_BROWSER_BACK;
 
-        for( uint32_t i = 0; i != SDL_NUM_SCANCODES; ++i )
+        for( uint32_t i = 0; i != SDL_SCANCODE_COUNT; ++i )
         {
             EKeyCode code = m_keys[i];
 
@@ -433,7 +435,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     EKeyCode iOSInput::getKeyCode_( SDL_Scancode _key ) const
     {
-        if( _key >= SDL_NUM_SCANCODES )
+        if( _key >= SDL_SCANCODE_COUNT )
         {
             return KC_UNASSIGNED;
         }

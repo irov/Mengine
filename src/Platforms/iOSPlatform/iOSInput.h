@@ -3,7 +3,7 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/InputServiceInterface.h"
 
-#include "Environment/SDL2/SDL2Includer.h"
+#include "Environment/SDL3/SDL3Includer.h"
 
 #include "Kernel/Factorable.h"
 
@@ -37,7 +37,7 @@ namespace Mengine
         void fillKeys_();
 
     protected:
-        void calcCursorPosition_( SDL_Window * _sdlWindow, Sint32 _mx, Sint32 _my, mt::vec2f * const _point ) const;
+        void calcCursorPosition_( SDL_Window * _sdlWindow, float _mx, float _my, mt::vec2f * const _point ) const;
 
     protected:
         ETouchCode acquireFingerIndex_( SDL_FingerID _fingerId );
@@ -51,7 +51,7 @@ namespace Mengine
     protected:
         bool m_keyDown[MENGINE_INPUT_MAX_KEY_CODE];
 
-        EKeyCode m_keys[SDL_NUM_SCANCODES];
+        EKeyCode m_keys[SDL_SCANCODE_COUNT];
         SDL_Scancode m_codes[MENGINE_INPUT_MAX_KEY_CODE];
 
         SDL_FingerID m_fingers[MENGINE_INPUT_MAX_TOUCH];

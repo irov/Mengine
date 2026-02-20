@@ -365,7 +365,7 @@ namespace Mengine
         SDL_SetLogPriorities( SDL_LOG_PRIORITY_ERROR );
 #endif
 
-        SDL_LogSetOutputFunction( &Detail::SDL_LogOutputFunction, nullptr );
+        SDL_SetLogOutputFunction( &Detail::SDL_LogOutputFunction, nullptr );
 
         m_platformTags.clear();
 
@@ -1496,17 +1496,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::showKeyboard()
     {
-        SDL_StartTextInput();
+        SDL_StartTextInput( m_sdlWindow );
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::hideKeyboard()
     {
-        SDL_StopTextInput();
+        SDL_StopTextInput( m_sdlWindow );
     }
     //////////////////////////////////////////////////////////////////////////
     bool iOSPlatformService::isShowKeyboard() const
     {
-        SDL_bool active = SDL_IsTextInputActive();
+        bool active = SDL_TextInputActive( m_sdlWindow );
 
         return active;
     }
@@ -1518,7 +1518,7 @@ namespace Mengine
             return true;
         }
 
-        Uint32 flags = SDL_GetWindowFlags( m_sdlWindow );
+        SDL_WindowFlags flags = SDL_GetWindowFlags( m_sdlWindow );
 
         bool alreadyFullscreen = (flags & SDL_WINDOW_FULLSCREEN) == SDL_WINDOW_FULLSCREEN;
 
@@ -1540,7 +1540,7 @@ namespace Mengine
         if( SDL_GetWindowFlags( m_sdlWindow ) & SDL_WINDOW_OPENGL )
         {
             int profile;
-            if( SDL_GL_GetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, &profile ) == -1 )
+            if( SDL_GL_GetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, &profile ) == false )
             {
                 return;
             }
@@ -1552,7 +1552,7 @@ namespace Mengine
 
             if( _vsync == false )
             {
-                if( SDL_GL_SetSwapInterval( 0 ) != 0 )
+                if( SDL_GL_SetSwapInterval( 0 ) == false )
                 {
                     LOGGER_WARNING( "notify vsync changed error: %s"
                         , SDL_GetError()
@@ -1561,7 +1561,7 @@ namespace Mengine
             }
             else
             {
-                if( SDL_GL_SetSwapInterval( 1 ) != 0 )
+                if( SDL_GL_SetSwapInterval( 1 ) == false )
                 {
                     LOGGER_WARNING( "notify vsync changed error: %s"
                         , SDL_GetError()
@@ -1575,11 +1575,11 @@ namespace Mengine
     {
         if( _mode == true )
         {
-            SDL_ShowCursor( SDL_ENABLE );
+            SDL_ShowCursor();
         }
         else
         {
-            SDL_ShowCursor( SDL_DISABLE );
+            SDL_HideCursor();
         }
     }
     //////////////////////////////////////////////////////////////////////////

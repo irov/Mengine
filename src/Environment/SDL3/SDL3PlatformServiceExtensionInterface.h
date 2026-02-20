@@ -8,6 +8,10 @@
 #   include "Environment/Windows/WindowsIncluder.h"
 #endif
 
+#if defined(MENGINE_PLATFORM_IOS)
+#   import <UIKit/UIKit.h>
+#endif
+
 #include "Config/UniqueId.h"
 
 namespace Mengine

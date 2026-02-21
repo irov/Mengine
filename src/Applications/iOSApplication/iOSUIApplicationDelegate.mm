@@ -2,7 +2,7 @@
 
 #include "Interface/PlatformServiceInterface.h"
 
-#include "Environment/SDL3/SDL3MainIncluder.h"
+#include "Environment/SDL3/SDL3Includer.h"
 #include "Environment/SDL3/SDL3PlatformServiceExtensionInterface.h"
 
 #import "iOSApplicationDelegates.h"
@@ -346,8 +346,6 @@
         }
     }
     
-    SDL_SetMainReady();
-    
     [self performSelector:@selector(postFinishLaunch) withObject:nil afterDelay:0.0];
     
     return YES;
@@ -484,6 +482,8 @@
 
 
 - (void)postFinishLaunch {
+    SDL_SetMainReady();
+    
     @autoreleasepool {
         for (id delegate in self.m_pluginApplicationDelegates) {
             if ([delegate respondsToSelector:@selector(beginLoop:)] == NO) {

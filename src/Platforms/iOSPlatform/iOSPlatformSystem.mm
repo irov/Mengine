@@ -55,12 +55,12 @@ namespace Mengine
     {
         SDL_GetMemoryFunctions( &m_old_SDL_malloc_func, &m_old_SDL_calloc_func, &m_old_SDL_realloc_func, &m_old_SDL_free_func );
 
-        if( SDL_SetMemoryFunctions( &Detail::SDL_malloc_func, &Detail::SDL_calloc_func, &Detail::SDL_realloc_func, &Detail::SDL_free_func ) != 0 )
+        if( SDL_SetMemoryFunctions( &Detail::SDL_malloc_func, &Detail::SDL_calloc_func, &Detail::SDL_realloc_func, &Detail::SDL_free_func ) == false )
         {
             return false;
         }
 
-        if( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_JOYSTICK ) != 0 )
+        if( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_JOYSTICK ) == false )
         {
             return false;
         }
@@ -73,6 +73,7 @@ namespace Mengine
         SDL_Quit();
 
         SDL_SetMemoryFunctions( m_old_SDL_malloc_func, m_old_SDL_calloc_func, m_old_SDL_realloc_func, m_old_SDL_free_func );
+        
         m_old_SDL_malloc_func = nullptr;
         m_old_SDL_calloc_func = nullptr;
         m_old_SDL_realloc_func = nullptr;

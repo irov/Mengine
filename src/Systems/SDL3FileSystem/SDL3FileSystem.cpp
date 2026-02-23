@@ -7,7 +7,7 @@
 #if defined(MENGINE_PLATFORM_WINDOWS)
 #   include "Environment/Windows/WindowsIncluder.h"
 #   include "Environment/Windows/Win32FileHelper.h"
-#elif defined(MENGINE_PLATFORM_APPLE)
+#elif defined(MENGINE_VENDOR_APPLE)
 #   if defined(MENGINE_PLATFORM_MACOS)
 #       include "Environment/MacOS/MacOSUtils.h"
 #   endif

@@ -91,7 +91,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( png_ptr, "PNG encoder error: Can't create write structure" );
 
-#ifdef PNG_WRITE_CUSTOMIZE_COMPRESSION_SUPPORTED
+#if defined(PNG_WRITE_CUSTOMIZE_COMPRESSION_SUPPORTED)
         png_set_compression_level( png_ptr, 9 );
 #endif
 

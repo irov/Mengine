@@ -169,7 +169,7 @@ SERVICE_EXTERN( AndroidKernelService );
 SERVICE_EXTERN( AndroidAssetService );
 #endif
 //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLATFORM_APPLE)
+#if defined(MENGINE_VENDOR_APPLE)
 SERVICE_EXTERN( AppleKernelService );
 #endif
 //////////////////////////////////////////////////////////////////////////
@@ -1060,7 +1060,7 @@ namespace Mengine
         MENGINE_ADD_SERVICE( AndroidAssetService, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
-#if defined(MENGINE_PLATFORM_APPLE)
+#if defined(MENGINE_VENDOR_APPLE)
         MENGINE_ADD_SERVICE( AppleKernelService, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
@@ -2177,7 +2177,7 @@ namespace Mengine
         SERVICE_FINALIZE( AndroidKernelService );
 #endif
 
-#if defined(MENGINE_PLATFORM_APPLE)
+#if defined(MENGINE_VENDOR_APPLE)
         SERVICE_FINALIZE( AppleKernelService );
 #endif
 
@@ -2277,7 +2277,7 @@ namespace Mengine
         SERVICE_DESTROY( AndroidKernelService );
 #endif
 
-#if defined(MENGINE_PLATFORM_APPLE)
+#if defined(MENGINE_VENDOR_APPLE)
         SERVICE_DESTROY( AppleKernelService );
 #endif
 

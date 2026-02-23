@@ -54,7 +54,8 @@
 
 #if defined(_WIN32)
 #   define MENGINE_PLATFORM_WINDOWS
-#   define MENGINE_PLATFORM_DESKTOP
+#   define MENGINE_VENDOR_MICROSOFT
+#   define MENGINE_DEVICE_DESKTOP
 #   if defined(_WIN64)
 #       define MENGINE_PLATFORM_WINDOWS64
 #   else
@@ -84,23 +85,24 @@
 #   endif
 #elif defined(__linux__) && !defined(__ANDROID__)
 #   define MENGINE_PLATFORM_LINUX
-#   define MENGINE_PLATFORM_DESKTOP
+#   define MENGINE_DEVICE_DESKTOP
 #elif defined(__APPLE__)
-#   define MENGINE_PLATFORM_APPLE
+#   define MENGINE_VENDOR_APPLE
 #   include <TargetConditionals.h>
 #   if TARGET_OS_OSX
 #       define MENGINE_PLATFORM_MACOS
-#       define MENGINE_PLATFORM_DESKTOP
+#       define MENGINE_DEVICE_DESKTOP
 #   elif TARGET_OS_IPHONE
 #       define MENGINE_PLATFORM_IOS
-#       define MENGINE_PLATFORM_MOBILE
+#       define MENGINE_DEVICE_MOBILE
 #       if TARGET_OS_SIMULATOR
 #           define MENGINE_PLATFORM_IOS_SIMULATOR
 #       endif
 #   endif
 #elif defined(__ANDROID__)
 #   define MENGINE_PLATFORM_ANDROID
-#   define MENGINE_PLATFORM_MOBILE
+#   define MENGINE_VENDOR_GOOGLE
+#   define MENGINE_DEVICE_MOBILE
 #else
 #   error "undefine platform"
 #endif

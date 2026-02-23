@@ -15,7 +15,7 @@
 @implementation AppleSKAdNetworkApplicationDelegate
 
 + (instancetype)sharedInstance {
-    static AppleSKAdNetworkApplicationDelegate *sharedInstance = nil;
+    static AppleSKAdNetworkApplicationDelegate * sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         sharedInstance = [iOSDetail getPluginDelegateOfClass:[AppleSKAdNetworkApplicationDelegate class]];

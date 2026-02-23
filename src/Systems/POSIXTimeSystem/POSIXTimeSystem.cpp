@@ -30,7 +30,7 @@ namespace Mengine
     {
         struct timespec tv;
 
-#if defined(MENGINE_PLATFORM_ANDROID) || defined(MENGINE_PLATFORM_APPLE)
+#if defined(MENGINE_PLATFORM_ANDROID) || defined(MENGINE_VENDOR_APPLE)
         ::clock_gettime( CLOCK_REALTIME, &tv );
 #else
         ::timespec_get( &tv, TIME_UTC );
@@ -45,7 +45,7 @@ namespace Mengine
     {
         struct timespec tv;
 
-#if defined(MENGINE_PLATFORM_ANDROID) || defined(MENGINE_PLATFORM_APPLE)
+#if defined(MENGINE_PLATFORM_ANDROID) || defined(MENGINE_VENDOR_APPLE)
         ::clock_gettime( CLOCK_MONOTONIC, &tv );
 #else
         ::timespec_get( &tv, TIME_UTC );

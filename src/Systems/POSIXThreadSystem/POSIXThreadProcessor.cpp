@@ -23,7 +23,7 @@ namespace Mengine
             
             const ThreadDescription & description = thread->getDescription();
 
-#if defined(MENGINE_PLATFORM_APPLE)
+#if defined(MENGINE_VENDOR_APPLE)
             ::pthread_setname_np( description.nameA );
 #else
             ::pthread_setname_np( current_threadId, description.nameA );

@@ -9,6 +9,15 @@
 
 @implementation AppleUserMessagingPlatformApplicationDelegate
 
++ (instancetype)sharedInstance {
+    static AppleUserMessagingPlatformApplicationDelegate * sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [iOSDetail getPluginDelegateOfClass:[AppleUserMessagingPlatformApplicationDelegate class]];
+    });
+    return sharedInstance;
+}
+
 - (instancetype)init {
     self = [super init];
     
@@ -27,6 +36,41 @@
     iOSTransparencyConsentParam * consent = [[iOSTransparencyConsentParam alloc] initFromUserDefaults];
     
     [iOSDetail transparencyConsent:consent];
+}
+
+- (void)showConsentFlow {
+    UMPPrivacyOptionsRequirementStatus privacyOptionsRequirementStatus = UMPConsentInformation.sharedInstance.privacyOptionsRequirementStatus;
+
+    if (privacyOptionsRequirementStatus == UMPPrivacyOptionsRequirementStatusNotRequired) {
+        IOS_LOGGER_MESSAGE(@"[UMP] privacy options form not required");
+
+        return;
+    }
+
+    [iOSDetail addDidBecomeActiveOperationWithCompletion:^(void (^ _Nonnull completion)(void)) {
+        UIViewController * rootVC = [iOSDetail getRootViewController];
+
+        [UMPConsentForm presentPrivacyOptionsFormFromViewController:rootVC completionHandler:^(NSError * _Nullable error) {
+            if (error != nil) {
+                IOS_LOGGER_MESSAGE(@"[UMP] presentPrivacyOptionsFormFromViewController error: %@", error);
+            } else {
+                IOS_LOGGER_MESSAGE(@"[UMP] presentPrivacyOptionsFormFromViewController completed");
+            }
+
+            // UMP writes IABTCF_* values to NSUserDefaults after dismissal.
+            iOSTransparencyConsentParam * consent = [[iOSTransparencyConsentParam alloc] initFromUserDefaults];
+
+            [iOSDetail transparencyConsent:consent];
+
+            completion();
+        }];
+    }];
+}
+
+- (BOOL)isConsentFlowUserGeographyGDPR {
+    iOSConsentFlowUserGeography userGeography = [iOSTransparencyConsentParam getConsentFlowUserGeography];
+
+    return userGeography == iOSConsentFlowUserGeographyGDPR;
 }
 
 #pragma mark - iOSPluginApplicationDelegateInterface

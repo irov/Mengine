@@ -956,7 +956,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::handleKeyEvent( const InputKeyEvent & _event )
     {
-#if defined(MENGINE_PLATFORM_DESKTOP)
+#if defined(MENGINE_DEVICE_DESKTOP)
         bool developmentMode = Helper::isDevelopmentMode();
 
         if( developmentMode == true )

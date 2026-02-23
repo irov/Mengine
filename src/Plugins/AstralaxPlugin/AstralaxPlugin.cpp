@@ -58,7 +58,7 @@ namespace Mengine
     {
         const char * version = Magic_GetVersion();
 
-#if !defined(MENGINE_TOOLCHAIN_MINGW64) && !defined(MENGINE_PLATFORM_APPLE)
+#if !defined(MENGINE_TOOLCHAIN_MINGW64) && !defined(MENGINE_VENDOR_APPLE)
         if( StdString::strstr( version, MAGIC_API ) == nullptr )
         {
             LOGGER_ASSERTION( "Astralax Magic Particles Version: '%s' but need '%s'"

@@ -10,8 +10,8 @@
 
 @interface AppleFacebookShareDelegate : NSObject<FBSDKSharingDelegate>
 
-@property (assign) Mengine::AppleFacebookServiceInterface * _Nonnull m_service;
+@property (nonatomic, weak) id<AppleFacebookInterface> m_facebook;
 
-- (instancetype _Nonnull) initWithService:(Mengine::AppleFacebookServiceInterface* _Nonnull)service;
+- (instancetype _Nonnull) initWithFacebook:(id<AppleFacebookInterface> _Nonnull)facebook;
 
 @end

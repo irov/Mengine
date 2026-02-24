@@ -1,54 +1,36 @@
 #pragma once
 
-#include "Interface/ServiceInterface.h"
+#import "Environment/Apple/AppleIncluder.h"
 
-#include "Kernel/ConstString.h"
-#include "Kernel/VectorConstString.h"
-#include "Kernel/Params.h"
+@protocol AppleFacebookProviderInterface <NSObject>
 
-namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
-    class AppleFacebookProviderInterface
-        : public Mixin
-    {
-    public:
-        virtual void onFacebookLoginSuccess( const Params & _params ) = 0;
-        virtual void onFacebookLoginCancel() = 0;
+- (void)onFacebookLoginSuccess:(NSDictionary<NSString *, NSString *> *)params;
+- (void)onFacebookLoginCancel;
 
-        virtual void onFacebookError( int32_t _code, const Char * _errorMessage ) = 0;
+- (void)onFacebookError:(NSInteger)code message:(NSString *)errorMessage;
 
-        virtual void onFacebookShareSuccess( const Char * _postId ) = 0;
-        virtual void onFacebookShareCancel() = 0;
-        virtual void onFacebookShareError( int32_t _code, const Char * _errorMessage ) = 0;
+- (void)onFacebookShareSuccess:(NSString *)postId;
+- (void)onFacebookShareCancel;
+- (void)onFacebookShareError:(NSInteger)code message:(NSString *)errorMessage;
 
-        virtual void onFacebookProfilePictureLinkGetSuccess( const Char * _userId, const Char * _pictureURL ) = 0;
-        virtual void onFacebookProfilePictureLinkGetError( int32_t _code, const Char * _errorMessage ) = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<AppleFacebookProviderInterface> AppleFacebookProviderInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
-    class AppleFacebookServiceInterface
-        : public ServiceInterface
-    {
-        SERVICE_DECLARE( "AppleFacebookService" )
+- (void)onFacebookProfilePictureLinkGetSuccess:(NSString *)userId pictureURL:(NSString *)pictureURL;
+- (void)onFacebookProfilePictureLinkGetError:(NSInteger)code message:(NSString *)errorMessage;
 
-    public:
-        virtual void setProvider( const AppleFacebookProviderInterfacePtr & _provider ) = 0;
-        virtual const AppleFacebookProviderInterfacePtr & getProvider() const = 0;
+@end
 
-    public:
-        virtual bool login( const VectorConstString & _permissions ) = 0;
-        virtual void logout() = 0;
-        virtual bool isLoggedIn() const = 0;
-        virtual bool getAccessToken( Char * const _token, size_t _capacity ) const = 0;
-        virtual bool getUserId( Char * const _userId, size_t _capacity ) const = 0;
-        virtual void shareLink( const Char * link, const Char * picture ) = 0;
-        virtual void getProfilePictureLink() = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-}
-//////////////////////////////////////////////////////////////////////////
-#define APPLE_FACEBOOK_SERVICE()\
-    ((Mengine::AppleFacebookServiceInterface *)SERVICE_GET(Mengine::AppleFacebookServiceInterface))
-//////////////////////////////////////////////////////////////////////////
+@protocol AppleFacebookInterface <NSObject>
+
++ (instancetype)sharedInstance;
+
+- (void)setProvider:(id<AppleFacebookProviderInterface>)provider;
+- (id<AppleFacebookProviderInterface>)getProvider;
+
+- (BOOL)login:(NSArray<NSString *> *)permissions;
+- (void)logout;
+- (BOOL)isLoggedIn;
+- (NSString * _Nullable)getAccessToken;
+- (NSString * _Nullable)getUserId;
+- (void)shareLink:(NSString *)link picture:(NSString *)picture;
+- (void)getProfilePictureLink;
+
+@end

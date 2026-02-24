@@ -2,16 +2,10 @@ MENGINE_PROJECT(AppleFacebookPlugin)
 
 ADD_FILTER(
 src
-    AppleFacebookPlugin.h
-    AppleFacebookPlugin.mm
-
     AppleFacebookInterface.h
 
     AppleFacebookApplicationDelegate.h
     AppleFacebookApplicationDelegate.mm
-
-    AppleFacebookService.h
-    AppleFacebookService.mm
 
     AppleFacebookShareDelegate.h
     AppleFacebookShareDelegate.mm

@@ -16,6 +16,8 @@
 
 @interface AppleAppLovinApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface, AppleAppLovinInterface, AppleAdvertisementProviderInterface>
 
++ (instancetype)sharedInstance;
+
 - (id<AppleAdvertisementCallbackInterface>)getAdvertisementBannerCallback;
 - (id<AppleAdvertisementCallbackInterface>)getAdvertisementInterstitialCallback;
 - (id<AppleAdvertisementCallbackInterface>)getAdvertisementRewardedCallback;

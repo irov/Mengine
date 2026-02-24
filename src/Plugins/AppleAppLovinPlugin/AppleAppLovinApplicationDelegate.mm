@@ -12,6 +12,10 @@
 
 #import "Plugins/AppleAdvertisementPlugin/AppleAdvertisementInterface.h"
 
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+#   include "AppleAppLovinScriptEmbedding.h"
+#endif
+
 #include "Config/Version.h"
 
 #include "Configuration/Configurations.h"
@@ -140,6 +144,18 @@
 }
 
 #pragma mark - iOSPluginApplicationDelegateInterface
+
+- (void)onRunBegin {
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+    Mengine::Helper::addScriptEmbedding<Mengine::AppleAppLovinScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE );
+#endif
+}
+
+- (void)onStopEnd {
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+    Mengine::Helper::removeScriptEmbedding<Mengine::AppleAppLovinScriptEmbedding>();
+#endif
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     if ([AppleBundle hasPluginConfig:@PLUGIN_BUNDLE_NAME] == NO) {

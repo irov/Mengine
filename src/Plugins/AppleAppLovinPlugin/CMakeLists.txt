@@ -35,9 +35,6 @@ ADD_PLUGIN_OPTION(MENGINE_PLUGIN_APPLE_APPLOVIN MEDIATION_YSO OFF "MENGINE_PLUGI
 
 ADD_FILTER(
 src
-    AppleAppLovinPlugin.h
-    AppleAppLovinPlugin.mm
-
     AppleAppLovinInterface.h
     
     AppleAppLovinBaseDelegate.h

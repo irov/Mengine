@@ -3,9 +3,6 @@ MENGINE_PROJECT(AppleAppTrackingPlugin)
 ADD_FILTER(
 src
     AppleAppTrackingInterface.h
-
-    AppleAppTrackingPlugin.h
-    AppleAppTrackingPlugin.mm
     
     AppleAppTrackingApplicationDelegate.h
     AppleAppTrackingApplicationDelegate.mm

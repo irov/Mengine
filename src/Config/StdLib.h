@@ -4,6 +4,9 @@
 
 #if defined(MENGINE_VENDOR_APPLE)
 #   include <malloc/malloc.h>
+#elif defined(MENGINE_PLATFORM_LINUX)
+#   include <cstdlib>
+#   include <malloc.h>
 #else
 #   include <cstdlib>
 #endif
@@ -26,6 +29,8 @@ namespace Mengine
 #   elif defined(MENGINE_VENDOR_APPLE)
 #       define MENGINE_MALLOC_SIZE(p) ::malloc_size((p))
 #   elif defined(MENGINE_PLATFORM_ANDROID)
+#       define MENGINE_MALLOC_SIZE(p) ::malloc_usable_size((p))
+#   elif defined(MENGINE_PLATFORM_LINUX)
 #       define MENGINE_MALLOC_SIZE(p) ::malloc_usable_size((p))
 #   endif
 #endif

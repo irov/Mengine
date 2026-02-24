@@ -11,6 +11,9 @@
 #   if defined(MENGINE_PLATFORM_MACOS)
 #       include "Environment/MacOS/MacOSUtils.h"
 #   endif
+#elif defined(MENGINE_PLATFORM_LINUX)
+#   include <sys/stat.h>
+#   include <sys/types.h>
 #endif
 
 #include "SDL2FileGroupDirectory.h"

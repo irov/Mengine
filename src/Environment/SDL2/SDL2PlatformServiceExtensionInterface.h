@@ -6,6 +6,8 @@
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
 #   include "Environment/Windows/WindowsIncluder.h"
+#elif defined(MENGINE_PLATFORM_LINUX)
+#   include <X11/Xlib.h>
 #endif
 
 #include "Config/UniqueId.h"

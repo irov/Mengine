@@ -2,6 +2,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/InputServiceHelper.h"
+#include "Kernel/UnicodeHelper.h"
 #include "Kernel/String.h"
 
 #include "Config/StdAlgorithm.h"

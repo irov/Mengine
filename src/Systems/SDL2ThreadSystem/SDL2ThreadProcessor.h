@@ -44,7 +44,7 @@ namespace Mengine
         bool isCurrentThread() const override;
 
     public:
-        EThreadPriority getPriority() const;
+        EThreadPriority getPriority() const override;
         const ThreadDescription & getDescription() const override;
 
     protected:

@@ -1049,7 +1049,9 @@ namespace Mengine
         MENGINE_ADD_SERVICE( NotificationService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( VocabularyService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( DateTimeSystem, MENGINE_DOCUMENT_FACTORABLE );
+#if defined(MENGINE_SYSTEM_CRYPTOGRAPHY)
         MENGINE_ADD_SERVICE( CryptographySystem, MENGINE_DOCUMENT_FACTORABLE );
+#endif
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
         MENGINE_ADD_SERVICE( Win32KernelService, MENGINE_DOCUMENT_FACTORABLE );
@@ -2204,7 +2206,9 @@ namespace Mengine
         SERVICE_FINALIZE( DateTimeSystem );
         SERVICE_FINALIZE( ThreadSystem );
         SERVICE_FINALIZE( TimeSystem );
+#if defined(MENGINE_SYSTEM_CRYPTOGRAPHY)
         SERVICE_FINALIZE( CryptographySystem );
+#endif
         SERVICE_FINALIZE( PlatformSystem );
 
 
@@ -2293,7 +2297,9 @@ namespace Mengine
         SERVICE_DESTROY( FactoryService );
         SERVICE_DESTROY( OptionsService );
         SERVICE_DESTROY( LifecycleService );
+#if defined(MENGINE_SYSTEM_CRYPTOGRAPHY)
         SERVICE_DESTROY( CryptographySystem );
+#endif
         SERVICE_DESTROY( PlatformSystem );
         SERVICE_DESTROY( ThreadSystem );
     }

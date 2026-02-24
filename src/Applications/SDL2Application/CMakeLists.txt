@@ -25,6 +25,11 @@ elseif(MENGINE_TARGET_MACOS)
     main
         MacOSMain.mm
     )
+elseif(MENGINE_TARGET_UNIX)
+    ADD_FILTER(
+    main
+        UnixMain.cpp
+    )
 else()
     message(FATAL_ERROR "SDL2Application unsupport this target")
 endif()

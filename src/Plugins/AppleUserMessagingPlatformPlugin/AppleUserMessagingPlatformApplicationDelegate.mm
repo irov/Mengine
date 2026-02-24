@@ -5,11 +5,13 @@
 #import "Environment/iOS/iOSTransparencyConsentParam.h"
 #import "Environment/iOS/iOSConsentFlowUserGeography.h"
 
-#import <UserMessagingPlatform/UserMessagingPlatform.h>
+#include "Kernel/ScriptEmbeddingHelper.h"
 
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 #   include "AppleUserMessagingPlatformScriptEmbedding.h"
 #endif
+
+#import <UserMessagingPlatform/UserMessagingPlatform.h>
 
 @implementation AppleUserMessagingPlatformApplicationDelegate
 
@@ -81,7 +83,7 @@
 
 - (void)onRunBegin {
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-    Mengine::Helper::addScriptEmbedding<Mengine::AppleUserMessagingPlatformScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE );
+    Mengine::Helper::addScriptEmbedding<Mengine::AppleUserMessagingPlatformScriptEmbedding>( MENGINE_DOCUMENT_FUNCTION );
 #endif
 }
 

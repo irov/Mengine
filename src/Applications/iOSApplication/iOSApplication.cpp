@@ -202,7 +202,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void iOSApplication::run()
+    bool iOSApplication::run()
     {
         APPLICATION_SERVICE()
             ->turnSound( true );

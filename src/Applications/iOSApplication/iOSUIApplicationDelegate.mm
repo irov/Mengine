@@ -528,7 +528,7 @@
     
     @autoreleasepool {
         for (id delegate in self.m_pluginApplicationDelegates) {
-            if ([delegate respondsToSelector:@selector(onBootstrapEnd:)] == NO) {
+            if ([delegate respondsToSelector:@selector(onBootstrapEnd)] == NO) {
                 continue;
             }
             
@@ -538,7 +538,7 @@
     
     @autoreleasepool {
         for (id delegate in self.m_pluginApplicationDelegates) {
-            if ([delegate respondsToSelector:@selector(onInitializeBegin:)] == NO) {
+            if ([delegate respondsToSelector:@selector(onInitializeBegin)] == NO) {
                 continue;
             }
             
@@ -566,7 +566,7 @@
     
     @autoreleasepool {
         for (id delegate in self.m_pluginApplicationDelegates) {
-            if ([delegate respondsToSelector:@selector(onInitializeEnd:)] == NO) {
+            if ([delegate respondsToSelector:@selector(onInitializeEnd)] == NO) {
                 continue;
             }
             
@@ -576,7 +576,7 @@
     
     @autoreleasepool {
         for (id delegate in self.m_pluginApplicationDelegates) {
-            if ([delegate respondsToSelector:@selector(onRunBegin:)] == NO) {
+            if ([delegate respondsToSelector:@selector(onRunBegin)] == NO) {
                 continue;
             }
             
@@ -604,7 +604,7 @@
     
     @autoreleasepool {
         for (id delegate in self.m_pluginApplicationDelegates) {
-            if ([delegate respondsToSelector:@selector(onRunEnd:)] == NO) {
+            if ([delegate respondsToSelector:@selector(onRunEnd)] == NO) {
                 continue;
             }
             
@@ -614,7 +614,7 @@
     
     @autoreleasepool {
         for (id delegate in self.m_pluginApplicationDelegates) {
-            if ([delegate respondsToSelector:@selector(onLoopBegin:)] == NO) {
+            if ([delegate respondsToSelector:@selector(onLoopBegin)] == NO) {
                 continue;
             }
             
@@ -626,7 +626,7 @@
     
     @autoreleasepool {
         for (id delegate in self.m_pluginApplicationDelegates) {
-            if ([delegate respondsToSelector:@selector(onLoopEnd:)] == NO) {
+            if ([delegate respondsToSelector:@selector(onLoopEnd)] == NO) {
                 continue;
             }
             
@@ -638,7 +638,7 @@
     
     @autoreleasepool {
         for (id delegate in self.m_pluginApplicationDelegates) {
-            if ([delegate respondsToSelector:@selector(onStopBegin:)] == NO) {
+            if ([delegate respondsToSelector:@selector(onStopBegin)] == NO) {
                 continue;
             }
             
@@ -650,7 +650,7 @@
     
     @autoreleasepool {
         for (id delegate in self.m_pluginApplicationDelegates) {
-            if ([delegate respondsToSelector:@selector(onStopEnd:)] == NO) {
+            if ([delegate respondsToSelector:@selector(onStopEnd)] == NO) {
                 continue;
             }
             
@@ -660,7 +660,7 @@
     
     @autoreleasepool {
         for (id delegate in self.m_pluginApplicationDelegates) {
-            if ([delegate respondsToSelector:@selector(onFinalize:)] == NO) {
+            if ([delegate respondsToSelector:@selector(onFinalize)] == NO) {
                 continue;
             }
             

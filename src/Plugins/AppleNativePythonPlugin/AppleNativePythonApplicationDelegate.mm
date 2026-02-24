@@ -8,6 +8,7 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/Map.h"
 #include "Kernel/Vector.h"
+#include "Kernel/ScriptEmbeddingHelper.h"
 
 #include "Config/StdAlgorithm.h"
 
@@ -48,7 +49,7 @@ namespace Mengine
 
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 - (void)onRunBegin {
-    Mengine::Helper::addScriptEmbedding<Mengine::AppleNativePythonScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE );
+    Mengine::Helper::addScriptEmbedding<Mengine::AppleNativePythonScriptEmbedding>( MENGINE_DOCUMENT_FUNCTION );
 }
 
 - (void)onStopEnd {

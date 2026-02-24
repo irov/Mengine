@@ -5,6 +5,8 @@
 #import "Environment/iOS/iOSLog.h"
 #import "Environment/iOS/iOSAppTrackingTransparencyParam.h"
 
+#include "Kernel/ScriptEmbeddingHelper.h"
+
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 #   include "AppleAppTrackingScriptEmbedding.h"
 #endif
@@ -189,7 +191,7 @@
 
 - (void)onRunBegin {
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-    Mengine::Helper::addScriptEmbedding<Mengine::AppleAppTrackingScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE );
+    Mengine::Helper::addScriptEmbedding<Mengine::AppleAppTrackingScriptEmbedding>( MENGINE_DOCUMENT_FUNCTION );
 #endif
 }
 

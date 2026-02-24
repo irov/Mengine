@@ -5,6 +5,7 @@
 #import "Environment/iOS/iOSLog.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/ScriptEmbeddingHelper.h"
 
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 #   include "AppleStoreReviewScriptEmbedding.h"
@@ -43,7 +44,7 @@
 
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 - (void)onRunBegin {
-    Mengine::Helper::addScriptEmbedding<Mengine::AppleStoreReviewScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE );
+    Mengine::Helper::addScriptEmbedding<Mengine::AppleStoreReviewScriptEmbedding>( MENGINE_DOCUMENT_FUNCTION );
 }
 
 - (void)onStopEnd {

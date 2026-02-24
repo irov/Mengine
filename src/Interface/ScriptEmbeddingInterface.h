@@ -4,8 +4,6 @@
 
 #include "Environment/Python/PythonForwardDeclaration.h"
 
-#include "Kernel/ScriptEmbeddingHelper.h"
-
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {

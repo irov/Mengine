@@ -22,6 +22,7 @@
 #include "Kernel/VocabularyHelper.h"
 #include "Kernel/PluginHelper.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/ScriptEmbeddingHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( ScriptProviderService );
@@ -94,74 +95,67 @@ namespace Mengine
             return false;
         }
 
-        if( SCRIPT_SERVICE()
-            ->addScriptEmbedding( ConstsScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<ConstsScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        if( Helper::addScriptEmbedding<ConstsScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
-        if( SCRIPT_SERVICE()
-            ->addScriptEmbedding( MathScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<MathScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        if( Helper::addScriptEmbedding<MathScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
-        if( SCRIPT_SERVICE()
-            ->addScriptEmbedding( HelperScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<HelperScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        if( Helper::addScriptEmbedding<HelperScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
-        if( SCRIPT_SERVICE()
-            ->addScriptEmbedding( KernelScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<KernelScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        if( Helper::addScriptEmbedding<KernelScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
-        if( SCRIPT_SERVICE()
-            ->addScriptEmbedding( HttpScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<HttpScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        if( Helper::addScriptEmbedding<HttpScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
-        if( SCRIPT_SERVICE()
-            ->addScriptEmbedding( EnvironmentScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<EnvironmentScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        if( Helper::addScriptEmbedding<HttpScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
-        if( SCRIPT_SERVICE()
-            ->addScriptEmbedding( NodeScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<NodeScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        if( Helper::addScriptEmbedding<EnvironmentScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
-        if( SCRIPT_SERVICE()
-            ->addScriptEmbedding( ResourceScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<ResourceScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        if( Helper::addScriptEmbedding<NodeScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
-        if( SCRIPT_SERVICE()
-            ->addScriptEmbedding( EntityScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<EntityScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        if( Helper::addScriptEmbedding<ResourceScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
-        if( SCRIPT_SERVICE()
-            ->addScriptEmbedding( SoundScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<SoundScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        if( Helper::addScriptEmbedding<EntityScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
-        if( SCRIPT_SERVICE()
-            ->addScriptEmbedding( AmplifierScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<AmplifierScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        if( Helper::addScriptEmbedding<SoundScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
-        if( SCRIPT_SERVICE()
-            ->addScriptEmbedding( EngineScriptEmbedding::getFactorableType(), Helper::makeFactorableUnique<EngineScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        if( Helper::addScriptEmbedding<AmplifierScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
+
+        if( Helper::addScriptEmbedding<EngineScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }

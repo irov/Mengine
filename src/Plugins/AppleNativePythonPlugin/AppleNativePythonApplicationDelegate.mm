@@ -11,9 +11,13 @@
 #   include "AppleNativePythonScriptEmbedding.h"
 #endif
 
+typedef NSMutableArray<AppleNativePythonCallbackDesc *> AppleNativePythonCallbacks;
+typedef NSMutableDictionary<NSString *, AppleNativePythonCallbacks *> AppleNativePythonMethods;
+typedef NSMutableDictionary<NSString *, AppleNativePythonMethods *> AppleNativePythonCallbacksMap;
+
 @implementation AppleNativePythonApplicationDelegate
 {
-    NSMutableDictionary<NSString *, NSMutableDictionary<NSString *, NSMutableArray<AppleNativePythonCallbackDesc *> *> *> * m_callbacks;
+    AppleNativePythonCallbacksMap * m_callbacks;
 }
 
 + (instancetype)sharedInstance {
@@ -32,6 +36,13 @@
     m_callbacks = [NSMutableDictionary dictionary];
 
     return self;
+}
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    (void)application;
+    (void)launchOptions;
+
+    return YES;
 }
 
 - (void)onFinalize {
@@ -64,14 +75,16 @@
         method = @"";
     }
 
-    NSMutableDictionary<NSString *, NSMutableArray<AppleNativePythonCallbackDesc *> *> * pluginMethods = m_callbacks[plugin];
+    AppleNativePythonMethods * pluginMethods = m_callbacks[plugin];
+    
     if( pluginMethods == nil )
     {
         pluginMethods = [NSMutableDictionary dictionary];
         m_callbacks[plugin] = pluginMethods;
     }
 
-    NSMutableArray<AppleNativePythonCallbackDesc *> * callbacks = pluginMethods[method];
+    AppleNativePythonCallbacks * callbacks = pluginMethods[method];
+    
     if( callbacks == nil )
     {
         callbacks = [NSMutableArray array];
@@ -97,7 +110,8 @@
         method = @"";
     }
 
-    NSMutableDictionary<NSString *, NSMutableArray<AppleNativePythonCallbackDesc *> *> * pluginMethods = m_callbacks[plugin];
+    AppleNativePythonMethods * pluginMethods = m_callbacks[plugin];
+    
     if( pluginMethods == nil )
     {
         LOGGER_ERROR( "invalid remove apple callback plugin '%s' method '%s' not found"
@@ -108,7 +122,8 @@
         return;
     }
 
-    NSMutableArray<AppleNativePythonCallbackDesc *> * callbacks = pluginMethods[method];
+    AppleNativePythonCallbacks * callbacks = pluginMethods[method];
+    
     if( callbacks == nil )
     {
         LOGGER_ERROR( "invalid remove apple callback plugin '%s' method '%s' not found"

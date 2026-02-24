@@ -6,6 +6,10 @@
 
 #include "Kernel/Logger.h"
 
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+#   include "AppleStoreReviewScriptEmbedding.h"
+#endif
+
 #import <StoreKit/StoreKit.h>
 
 @implementation AppleStoreReviewApplicationDelegate
@@ -37,7 +41,20 @@
 
 #pragma mark - iOSPluginApplicationDelegateInterface
 
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+- (void)onRunBegin {
+    Mengine::Helper::addScriptEmbedding<Mengine::AppleStoreReviewScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE );
+}
+
+- (void)onStopEnd {
+    Mengine::Helper::removeScriptEmbedding<Mengine::AppleStoreReviewScriptEmbedding>();
+}
+#endif
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    (void)application;
+    (void)launchOptions;
+
     //ToDo
     
     return YES;

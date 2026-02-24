@@ -1,15 +1,8 @@
 #include "AppleStoreReviewScriptEmbedding.h"
 
-#include "Interface/ScriptServiceInterface.h"
-
 #include "Environment/Python/PythonIncluder.h"
 
 #import "AppleStoreReviewApplicationDelegate.h"
-
-#include "Kernel/FactorableUnique.h"
-#include "Kernel/ConstStringHelper.h"
-#include "Kernel/DocumentHelper.h"
-#include "Kernel/Logger.h"
 
 namespace Mengine
 {

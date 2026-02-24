@@ -484,16 +484,6 @@
 - (void)postFinishLaunch {
     SDL_SetMainReady();
     
-    @autoreleasepool {
-        for (id delegate in self.m_pluginApplicationDelegates) {
-            if ([delegate respondsToSelector:@selector(beginLoop:)] == NO) {
-                continue;
-            }
-            
-            [delegate beginLoop];
-        }
-    }
-    
     SDL_SetiOSEventPump( true );
     
     Mengine::iOSApplication application;
@@ -506,6 +496,16 @@
     for( NSString * arg : arguments )
     {
         argv[argc++] = (Mengine::Char *)[arg UTF8String];
+    }
+    
+    @autoreleasepool {
+        for (id delegate in self.m_pluginApplicationDelegates) {
+            if ([delegate respondsToSelector:@selector(onBootstrapBegin:)] == NO) {
+                continue;
+            }
+            
+            [delegate onBootstrapBegin:arguments];
+        }
     }
     
     if( application.bootstrap( argc, argv ) == false ) {
@@ -524,6 +524,26 @@
         }];
         
         return;
+    }
+    
+    @autoreleasepool {
+        for (id delegate in self.m_pluginApplicationDelegates) {
+            if ([delegate respondsToSelector:@selector(onBootstrapEnd:)] == NO) {
+                continue;
+            }
+            
+            [delegate onBootstrapEnd];
+        }
+    }
+    
+    @autoreleasepool {
+        for (id delegate in self.m_pluginApplicationDelegates) {
+            if ([delegate respondsToSelector:@selector(onInitializeBegin:)] == NO) {
+                continue;
+            }
+            
+            [delegate onInitializeBegin];
+        }
     }
 
     if( application.initialize() == false ) {
@@ -544,21 +564,111 @@
         return;
     }
     
-    application.loop();
-    
-    [AppleDetail cancelAllQueueOperations];
-    
-    application.finalize();
-    
     @autoreleasepool {
         for (id delegate in self.m_pluginApplicationDelegates) {
-            if ([delegate respondsToSelector:@selector(endLoop:)] == NO) {
+            if ([delegate respondsToSelector:@selector(onInitializeEnd:)] == NO) {
                 continue;
             }
             
-            [delegate endLoop];
+            [delegate onInitializeEnd];
         }
     }
+    
+    @autoreleasepool {
+        for (id delegate in self.m_pluginApplicationDelegates) {
+            if ([delegate respondsToSelector:@selector(onRunBegin:)] == NO) {
+                continue;
+            }
+            
+            [delegate onRunBegin];
+        }
+    }
+    
+    if( application.run() == false ) {
+        [AppleLog withFormat:@"🔴 [ERROR] Mengine application run [Failed]"];
+        
+        [AppleDetail cancelAllQueueOperations];
+        
+        application.finalize();
+        
+        SDL_SetiOSEventPump( false );
+        
+        [iOSDetail showOkAlertWithTitle:@"Failed..."
+                                message:@"Mengine run application"
+                                     ok:^{
+            ::exit( EXIT_FAILURE );
+        }];
+        
+        return;
+    }
+    
+    @autoreleasepool {
+        for (id delegate in self.m_pluginApplicationDelegates) {
+            if ([delegate respondsToSelector:@selector(onRunEnd:)] == NO) {
+                continue;
+            }
+            
+            [delegate onRunEnd];
+        }
+    }
+    
+    @autoreleasepool {
+        for (id delegate in self.m_pluginApplicationDelegates) {
+            if ([delegate respondsToSelector:@selector(onLoopBegin:)] == NO) {
+                continue;
+            }
+            
+            [delegate onLoopBegin];
+        }
+    }
+    
+    application.loop();
+    
+    @autoreleasepool {
+        for (id delegate in self.m_pluginApplicationDelegates) {
+            if ([delegate respondsToSelector:@selector(onLoopEnd:)] == NO) {
+                continue;
+            }
+            
+            [delegate onLoopEnd];
+        }
+    }
+    
+    [AppleDetail cancelAllQueueOperations];
+    
+    @autoreleasepool {
+        for (id delegate in self.m_pluginApplicationDelegates) {
+            if ([delegate respondsToSelector:@selector(onStopBegin:)] == NO) {
+                continue;
+            }
+            
+            [delegate onStopBegin];
+        }
+    }
+    
+    application.stop();
+    
+    @autoreleasepool {
+        for (id delegate in self.m_pluginApplicationDelegates) {
+            if ([delegate respondsToSelector:@selector(onStopEnd:)] == NO) {
+                continue;
+            }
+            
+            [delegate onStopEnd];
+        }
+    }
+    
+    @autoreleasepool {
+        for (id delegate in self.m_pluginApplicationDelegates) {
+            if ([delegate respondsToSelector:@selector(onFinalize:)] == NO) {
+                continue;
+            }
+            
+            [delegate onFinalize];
+        }
+    }
+    
+    application.finalize();
     
     SDL_SetiOSEventPump( false );
     

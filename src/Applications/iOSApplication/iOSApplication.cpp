@@ -198,7 +198,12 @@ namespace Mengine
 
             return false;
         }
-
+        
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void iOSApplication::run()
+    {
         APPLICATION_SERVICE()
             ->turnSound( true );
 
@@ -217,7 +222,7 @@ namespace Mengine
             ->loopPlatform();
     }
     //////////////////////////////////////////////////////////////////////////
-    void iOSApplication::finalize()
+    void iOSApplication::stop()
     {
         if( SERVICE_PROVIDER_EXIST() == false )
         {
@@ -235,7 +240,15 @@ namespace Mengine
             BOOTSTRAPPER_SERVICE()
                 ->stop();
         }
-
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void iOSApplication::finalize()
+    {
+        if( SERVICE_PROVIDER_EXIST() == false )
+        {
+            return;
+        }
+        
         ::API_MengineFinalize();
     }
     //////////////////////////////////////////////////////////////////////////

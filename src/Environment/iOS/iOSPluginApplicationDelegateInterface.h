@@ -13,8 +13,17 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions;
 
 @optional
-- (BOOL)beginLoop;
-- (void)endLoop;
+- (void)onBootstrapBegin:(NSArray<NSString *> *)arguments;
+- (void)onBootstrapEnd;
+- (void)onInitializeBegin;
+- (void)onInitializeEnd;
+- (void)onRunBegin;
+- (void)onRunEnd;
+- (void)onLoopBegin;
+- (void)onLoopEnd;
+- (void)onStopBegin;
+- (void)onStopEnd;
+- (void)onFinalize;
 
 - (void)onEvent:(AppleEvent *)event args:(NSArray *)args;
 

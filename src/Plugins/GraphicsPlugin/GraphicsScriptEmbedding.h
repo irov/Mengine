@@ -7,6 +7,8 @@ namespace Mengine
     class GraphicsScriptEmbedding
         : public ScriptEmbeddingInterface
     {
+        DECLARE_FACTORABLE( GraphicsScriptEmbedding );
+
     public:
         GraphicsScriptEmbedding();
         ~GraphicsScriptEmbedding() override;

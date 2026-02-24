@@ -6,8 +6,6 @@
 
 #include "AreaOfInterestInterface.h"
 
-#include "Kernel/Factorable.h"
-
 namespace Mengine
 {
     class AreaOfInterestScriptEmbedding

@@ -773,6 +773,7 @@ Core
     PluginBase.cpp
     
     PluginHelper.h
+    ScriptEmbeddingHelper.h
     
     ModuleBase.h
     ModuleBase.cpp

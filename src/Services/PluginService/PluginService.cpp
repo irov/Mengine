@@ -238,9 +238,9 @@ namespace Mengine
             return false;
         }
 
-        if( this->autoRegistration_( _plugin ) == false )
+        if( this->autoPreRegistration_( _plugin ) == false )
         {
-            LOGGER_ERROR( "invalid auto registration plugin '%s'"
+            LOGGER_ERROR( "invalid auto pre registration plugin '%s'"
                 , _plugin->getPluginName().c_str()
             );
 
@@ -250,6 +250,15 @@ namespace Mengine
         if( _plugin->initializePlugin() == false )
         {
             LOGGER_ERROR( "invalid initialize plugin '%s'"
+                , _plugin->getPluginName().c_str()
+            );
+
+            return false;
+        }
+
+        if( this->autoPostRegistration_( _plugin ) == false )
+        {
+            LOGGER_ERROR( "invalid auto post registration plugin '%s'"
                 , _plugin->getPluginName().c_str()
             );
 
@@ -375,7 +384,7 @@ namespace Mengine
         return available;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PluginService::autoRegistration_( const PluginInterfacePtr & _plugin )
+    bool PluginService::autoPreRegistration_( const PluginInterfacePtr & _plugin ) const
     {
         for( const PluginDesc & desc : m_plugins )
         {
@@ -389,6 +398,33 @@ namespace Mengine
             }
 
             if( plugin->registerPlugin( _plugin ) == false )
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PluginService::autoPostRegistration_( const PluginInterfacePtr & _plugin ) const
+    {
+        for( const PluginDesc & desc : m_plugins )
+        {
+            const PluginInterfacePtr & plugin = desc.plugin;
+
+            if( plugin == _plugin )
+            {
+                continue;
+            }
+
+            bool available = plugin->isAvailablePlugin();
+
+            if( available == false )
+            {
+                continue;
+            }
+
+            if( _plugin->registerPlugin( plugin ) == false )
             {
                 return false;
             }

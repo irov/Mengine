@@ -18,6 +18,10 @@ namespace Mengine
     public:
         bool initialize();
         void finalize();
+        
+    public:
+        bool run();
+        void stop();
 
     public:
         void loop();

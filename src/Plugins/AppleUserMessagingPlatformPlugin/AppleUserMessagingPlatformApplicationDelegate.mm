@@ -7,6 +7,10 @@
 
 #import <UserMessagingPlatform/UserMessagingPlatform.h>
 
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+#   include "AppleUserMessagingPlatformScriptEmbedding.h"
+#endif
+
 @implementation AppleUserMessagingPlatformApplicationDelegate
 
 + (instancetype)sharedInstance {
@@ -74,6 +78,18 @@
 }
 
 #pragma mark - iOSPluginApplicationDelegateInterface
+
+- (void)onRunBegin {
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+    Mengine::Helper::addScriptEmbedding<Mengine::AppleUserMessagingPlatformScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE );
+#endif
+}
+
+- (void)onStopEnd {
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+    Mengine::Helper::removeScriptEmbedding<Mengine::AppleUserMessagingPlatformScriptEmbedding>();
+#endif
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     UMPRequestParameters * parameters = [[UMPRequestParameters alloc] init];

@@ -39,7 +39,8 @@ namespace Mengine
         bool isAvailablePlugin( const ConstString & _pluginName ) const override;
 
     protected:
-        bool autoRegistration_( const PluginInterfacePtr & _plugin );
+        bool autoPreRegistration_( const PluginInterfacePtr & _plugin ) const;
+        bool autoPostRegistration_( const PluginInterfacePtr & _plugin ) const;
 
     protected:
         struct PluginDesc

@@ -7,10 +7,10 @@
 
 @interface AppleHelpshiftDelegate : NSObject<HelpshiftDelegate>
 
-@property (assign) Mengine::AppleHelpshiftServiceInterface * _Nonnull m_service;
+@property (nonatomic, weak) id<AppleHelpshiftInterface> m_helpshift;
 
-- (instancetype _Nonnull) initWithService:(Mengine::AppleHelpshiftServiceInterface* _Nonnull) service;
+- (instancetype _Nonnull) initWithHelpshift:(id<AppleHelpshiftInterface>)helpshift;
 
-- (const char * _Nonnull) convertToChar:(NSObject * _Nullable) object;
+- (NSString * _Nonnull) convertToString:(NSObject * _Nullable) object;
 
 @end

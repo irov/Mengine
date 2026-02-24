@@ -1,14 +1,12 @@
 #pragma once
 
 #import "Environment/iOS/iOSPluginApplicationDelegateInterface.h"
+#import "AppleHelpshiftInterface.h"
+#import "AppleHelpshiftDelegate.h"
 
-@interface AppleFirebaseRemoteConfigApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface>
+@interface AppleHelpshiftApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface, AppleHelpshiftInterface>
 
-+ (instancetype) sharedInstance;
-
-- (BOOL)existRemoteConfigValue:(NSString *)key;
-- (NSDictionary *)getRemoteConfigValue:(NSString *)key;
-
-@property (nonatomic) NSDictionary * m_configs;
+@property (nonatomic, strong) id<AppleHelpshiftProviderInterface> m_provider;
+@property (nonatomic, strong) AppleHelpshiftDelegate * m_delegate;
 
 @end

@@ -4,6 +4,8 @@
 
 #include "Environment/Python/PythonForwardDeclaration.h"
 
+#include "Kernel/ScriptEmbeddingHelper.h"
+
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
@@ -19,7 +21,3 @@ namespace Mengine
     typedef IntrusivePtr<ScriptEmbeddingInterface> ScriptEmbeddingInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 }
-
-#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-#   include "Kernel/ScriptEmbeddingHelper.h"
-#endif

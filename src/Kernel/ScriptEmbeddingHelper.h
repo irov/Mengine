@@ -17,8 +17,11 @@ namespace Mengine
                 return false;
             }
 
+            const ConstString & type = T::getFactorableType();
+            ScriptEmbeddingInterfacePtr embedding = Helper::makeFactorableUnique<T>( _doc );
+
             bool result = SCRIPT_SERVICE()
-                ->addScriptEmbedding( T::getFactorableType(), Helper::makeFactorableUnique<T>( _doc ) );
+                ->addScriptEmbedding( type, embedding );
 
             return result;
         }
@@ -31,8 +34,10 @@ namespace Mengine
                 return;
             }
 
+            const ConstString & type = T::getFactorableType();
+
             SCRIPT_SERVICE()
-                ->removeScriptEmbedding( T::getFactorableType() );
+                ->removeScriptEmbedding( type );
         }
         //////////////////////////////////////////////////////////////////////////
     }

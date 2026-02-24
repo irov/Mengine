@@ -6,7 +6,7 @@
 #import "Environment/Python/PythonScriptWrapper.h"
 #import "Environment/Python/PythonCallbackProvider.h"
 
-#include "AppleNativePythonInterface.h"
+#import "AppleNativePythonApplicationDelegate.h"
 
 namespace Mengine
 {
@@ -262,12 +262,16 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         typedef IntrusivePtr<PythonAppleSemaphoreListener, AppleSemaphoreListenerInterface> PythonAppleSemaphoreListenerPtr;
         //////////////////////////////////////////////////////////////////////////
-        void AppleNativePythonService_waitSemaphore( const ConstString & _name, const pybind::object & _cb, const pybind::args & _args )
+        void AppleNativePython_waitSemaphore( NSString * _name, const pybind::object & _cb, const pybind::args & _args )
         {
+            if( _name == nil )
+            {
+                _name = @"";
+            }
+
             AppleSemaphoreListenerInterfacePtr listener = Helper::makeFactorableUnique<PythonAppleSemaphoreListener>( MENGINE_DOCUMENT_PYTHON, _cb, _args );
 
-            APPLE_NATIVEPYTHON_SERVICE()
-                ->waitSemaphore( _name, listener );
+            [[AppleNativePythonApplicationDelegate sharedInstance] waitSemaphore:_name listener:listener];
         }
         ///////////////////////////////////////////////////////////////////////
     }
@@ -286,7 +290,7 @@ namespace Mengine
         pybind::registration_type_cast<NSDictionary *>(_kernel, pybind::make_type_cast<Detail::extract_NSDictionary_type>(_kernel));
         pybind::registration_type_cast<NSSet *>(_kernel, pybind::make_type_cast<Detail::extract_NSSet_type>(_kernel));
         
-        pybind::def_function_args( _kernel, "waitSemaphore", &Detail::AppleNativePythonService_waitSemaphore );
+        pybind::def_function_args( _kernel, "waitSemaphore", &Detail::AppleNativePython_waitSemaphore );
 
         return true;
     }

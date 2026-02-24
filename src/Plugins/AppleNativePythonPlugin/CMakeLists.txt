@@ -2,13 +2,10 @@ MENGINE_PROJECT(AppleNativePythonPlugin)
 
 ADD_FILTER(
 src
-    AppleNativePythonPlugin.h
-    AppleNativePythonPlugin.mm
-    
     AppleNativePythonInterface.h
-    
-    AppleNativePythonService.h
-    AppleNativePythonService.mm
+
+    AppleNativePythonApplicationDelegate.h
+    AppleNativePythonApplicationDelegate.mm
     
     AppleNativePythonScriptEmbedding.h
     AppleNativePythonScriptEmbedding.mm
@@ -17,6 +14,8 @@ src
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_APPLE_NATIVE_PYTHON)
+
+ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleNativePythonApplicationDelegate")
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Python)

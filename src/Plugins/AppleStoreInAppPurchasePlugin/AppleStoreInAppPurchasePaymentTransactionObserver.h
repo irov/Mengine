@@ -1,7 +1,6 @@
 #pragma once
 
 #include "AppleStoreInAppPurchaseInterface.h"
-#include "AppleStoreInAppPurchaseFactoryInterface.h"
 
 #import "Environment/Apple/AppleIncluder.h"
 
@@ -9,8 +8,7 @@
 
 @interface AppleStoreInAppPurchasePaymentTransactionObserver : NSObject <SKPaymentTransactionObserver>
 
-@property (assign) Mengine::AppleStoreInAppPurchaseFactoryInterface * _Nullable m_factory;
-@property (assign) Mengine::AppleStoreInAppPurchaseServiceInterface * _Nullable m_service;
+@property (nonatomic, weak) id<AppleStoreInAppPurchaseInterface> _Nullable m_inAppPurchase;
 
 @property (strong) NSSet<NSString *> * _Nullable m_consumableIdentifiers;
 @property (strong) NSSet<NSString *> * _Nullable m_nonconsumableIdentifiers;
@@ -21,7 +19,9 @@
 
 - (instancetype _Nonnull) init;
 
-- (void)activateWithFactory:(Mengine::AppleStoreInAppPurchaseFactoryInterface * _Nonnull)_factory service:(Mengine::AppleStoreInAppPurchaseServiceInterface * _Nonnull)_service consumableIdentifiers:(NSSet * _Nonnull)_consumableIdentifiers nonconsumableIdentifiers:(NSSet * _Nonnull)_nonconsumableIdentifiers;
+- (void)activateWithInAppPurchase:(id<AppleStoreInAppPurchaseInterface> _Nonnull)inAppPurchase
+            consumableIdentifiers:(NSSet<NSString *> * _Nonnull)consumableIdentifiers
+         nonconsumableIdentifiers:(NSSet<NSString *> * _Nonnull)nonconsumableIdentifiers;
 
 - (void)deactivate;
 

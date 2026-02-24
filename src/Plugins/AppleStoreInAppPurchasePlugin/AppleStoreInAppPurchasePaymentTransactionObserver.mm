@@ -12,8 +12,7 @@
 
 @implementation AppleStoreInAppPurchasePaymentTransactionObserver
 
-@synthesize m_factory;
-@synthesize m_service;
+@synthesize m_inAppPurchase;
 
 #pragma mark -
 
@@ -34,13 +33,14 @@
     return self;
 }
 
-- (void)activateWithFactory:(Mengine::AppleStoreInAppPurchaseFactoryInterface * _Nonnull)_factory service:(Mengine::AppleStoreInAppPurchaseServiceInterface * _Nonnull)_service consumableIdentifiers:(NSSet * _Nonnull)_consumableIdentifiers nonconsumableIdentifiers:(NSSet * _Nonnull)_nonconsumableIdentifiers {
+- (void)activateWithInAppPurchase:(id<AppleStoreInAppPurchaseInterface> _Nonnull)inAppPurchase
+            consumableIdentifiers:(NSSet<NSString *> * _Nonnull)consumableIdentifiers
+         nonconsumableIdentifiers:(NSSet<NSString *> * _Nonnull)nonconsumableIdentifiers {
     @synchronized (self) {
-        m_factory = _factory;
-        m_service = _service;
+        self.m_inAppPurchase = inAppPurchase;
         
-        self.m_consumableIdentifiers = _consumableIdentifiers;
-        self.m_nonconsumableIdentifiers = _nonconsumableIdentifiers;
+        self.m_consumableIdentifiers = consumableIdentifiers;
+        self.m_nonconsumableIdentifiers = nonconsumableIdentifiers;
         
         for (NSDictionary * value in self.m_cacheSKPaymentTransactions) {
             SKPaymentQueue * queue = value[@"queue"];
@@ -53,8 +53,7 @@
 
 - (void)deactivate {
     @synchronized (self) {
-        m_factory = nullptr;
-        m_service = nullptr;
+        self.m_inAppPurchase = nil;
         
         [self.m_cacheSKPaymentTransactions removeAllObjects];
     }
@@ -65,7 +64,7 @@
 // Sent when the transaction array has changed (additions or state changes).  Client should check state of transactions and finish as appropriate.
 - (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray<SKPaymentTransaction *> *)transactions {
     @synchronized (self) {
-        if (m_service == nil) {
+        if (self.m_inAppPurchase == nil) {
             NSDictionary * value = @{@"queue": queue, @"transactions": transactions};
             [self.m_cacheSKPaymentTransactions addObject:value];
             
@@ -75,11 +74,18 @@
     
     IOS_LOGGER_MESSAGE( @"SKPaymentTransactionObserver paymentQueue updatedTransactions" );
     
-    Mengine::AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr copy_provider = m_service->getPaymentTransactionProvider();
+    Mengine::AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr copy_provider = [self.m_inAppPurchase getPaymentTransactionProvider];
+
+    if( copy_provider == nullptr )
+    {
+        LOGGER_ERROR( "payment transaction provider is not set" );
+
+        return;
+    }
     
     for (SKPaymentTransaction * skPaymentTransaction in transactions)
     {
-        Mengine::AppleStoreInAppPurchasePaymentTransactionInterfacePtr paymentTransaction = m_factory->makePaymentTransaction( skPaymentTransaction, queue );
+        Mengine::AppleStoreInAppPurchasePaymentTransactionInterfacePtr paymentTransaction = [self.m_inAppPurchase makePaymentTransaction:skPaymentTransaction queue:queue];
         
         SKPaymentTransactionState state = skPaymentTransaction.transactionState;
         
@@ -164,7 +170,7 @@
 // Sent when transactions are removed from the queue (via finishTransaction:).
 - (void)paymentQueue:(SKPaymentQueue *)queue removedTransactions:(NSArray<SKPaymentTransaction *> *)transactions {
     @synchronized (self) {
-        if (m_service == nil) {
+        if (self.m_inAppPurchase == nil) {
             return;
         }
     }
@@ -180,7 +186,7 @@
 // Sent when an error is encountered while adding transactions from the user's purchase history back to the queue.
 - (void)paymentQueue:(SKPaymentQueue *)queue restoreCompletedTransactionsFailedWithError:(NSError *)error {
     @synchronized (self) {
-        if (m_service == nil) {
+        if (self.m_inAppPurchase == nil) {
             return;
         }
     }
@@ -196,7 +202,7 @@
 // Sent when all transactions from the user's purchase history have successfully been added back to the queue.
 - (void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue {
     @synchronized (self) {
-        if (m_service == nil) {
+        if (self.m_inAppPurchase == nil) {
             return;
         }
     }
@@ -211,7 +217,7 @@
 // Sent when a user initiates an IAP buy from the App Store
 - (BOOL)paymentQueue:(SKPaymentQueue *)queue shouldAddStorePayment:(SKPayment *)payment forProduct:(SKProduct *)product {
     @synchronized (self) {
-        if (m_service == nil) {
+        if (self.m_inAppPurchase == nil) {
             return NO;
         }
     }
@@ -229,7 +235,7 @@
 
 - (void)paymentQueueDidChangeStorefront:(SKPaymentQueue *)queue {
     @synchronized (self) {
-        if (m_service == nil) {
+        if (self.m_inAppPurchase == nil) {
             return;
         }
     }
@@ -244,7 +250,7 @@
 // Sent when entitlements for a user have changed and access to the specified IAPs has been revoked.
 - (void)paymentQueue:(SKPaymentQueue *)queue didRevokeEntitlementsForProductIdentifiers:(NSArray<NSString *> *)productIdentifiers {
     @synchronized (self) {
-        if (m_service == nil) {
+        if (self.m_inAppPurchase == nil) {
             return;
         }
     }

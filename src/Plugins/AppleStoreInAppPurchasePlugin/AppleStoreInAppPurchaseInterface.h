@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Interface/ServiceInterface.h"
 #include "Interface/ServantInterface.h"
 
 #import "Environment/Apple/AppleIncluder.h"
+#import <StoreKit/StoreKit.h>
 
 #include "Kernel/VectorConstString.h"
 #include "Kernel/String.h"
@@ -72,25 +72,25 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AppleStoreInAppPurchasePaymentTransactionProviderInterface> AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
-    class AppleStoreInAppPurchaseServiceInterface
-        : public ServiceInterface
-    {
-        SERVICE_DECLARE( "AppleStoreInAppPurchaseService" )
-        
-    public:
-        virtual void setPaymentTransactionProvider( const AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr & _paymentTransactionProvider ) = 0;
-        virtual const AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr & getPaymentTransactionProvider() const = 0;
-        
-    public:
-        virtual bool canMakePayments() const = 0;
-        virtual AppleStoreInAppPurchaseProductsRequestInterfacePtr requestProducts( NSSet * _consumableIdentifiers, NSSet * _nonconsumableIdentifiers, const AppleStoreInAppPurchaseProductsResponseInterfacePtr & _cb ) = 0;
-        virtual bool isOwnedProduct( NSString * _productIdentifier ) const = 0;
-        virtual bool purchaseProduct( const AppleStoreInAppPurchaseProductInterfacePtr & _product ) = 0;
-        virtual void restoreCompletedTransactions() = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
 }
 //////////////////////////////////////////////////////////////////////////
-#define APPLE_STOREINAPPPURCHASE_SERVICE()\
-    ((Mengine::AppleStoreInAppPurchaseServiceInterface *)SERVICE_GET(Mengine::AppleStoreInAppPurchaseServiceInterface))
-//////////////////////////////////////////////////////////////////////////
+@protocol AppleStoreInAppPurchaseInterface <NSObject>
+
++ (instancetype)sharedInstance;
+
+- (void)setPaymentTransactionProvider:(const Mengine::AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr &)paymentTransactionProvider;
+- (const Mengine::AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr &)getPaymentTransactionProvider;
+
+- (BOOL)canMakePayments;
+- (Mengine::AppleStoreInAppPurchaseProductsRequestInterfacePtr)requestProducts:(NSSet<NSString *> *)consumableIdentifiers
+                                                      nonconsumableIdentifiers:(NSSet<NSString *> *)nonconsumableIdentifiers
+                                                                          cb:(const Mengine::AppleStoreInAppPurchaseProductsResponseInterfacePtr &)cb;
+- (BOOL)isOwnedProduct:(NSString *)productIdentifier;
+- (BOOL)purchaseProduct:(const Mengine::AppleStoreInAppPurchaseProductInterfacePtr &)product;
+- (void)restoreCompletedTransactions;
+
+- (Mengine::AppleStoreInAppPurchaseProductInterfacePtr)makeProduct:(SKProduct *)skProduct;
+- (Mengine::AppleStoreInAppPurchasePaymentTransactionInterfacePtr)makePaymentTransaction:(SKPaymentTransaction *)skPaymentTransaction
+                                                                                  queue:(SKPaymentQueue *)skPaymentQueue;
+
+@end

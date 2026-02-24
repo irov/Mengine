@@ -3,13 +3,6 @@ MENGINE_PROJECT(AppleStoreInAppPurchasePlugin)
 ADD_FILTER(
 src
     AppleStoreInAppPurchaseInterface.h
-    AppleStoreInAppPurchaseFactoryInterface.h
-
-    AppleStoreInAppPurchasePlugin.h
-    AppleStoreInAppPurchasePlugin.mm
-    
-    AppleStoreInAppPurchaseService.h
-    AppleStoreInAppPurchaseService.mm
     
     AppleStoreInAppPurchaseApplicationDelegate.h
     AppleStoreInAppPurchaseApplicationDelegate.mm

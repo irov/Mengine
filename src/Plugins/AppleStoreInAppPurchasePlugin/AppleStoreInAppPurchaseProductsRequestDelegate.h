@@ -1,7 +1,6 @@
 #pragma once
 
 #include "AppleStoreInAppPurchaseInterface.h"
-#include "AppleStoreInAppPurchaseFactoryInterface.h"
 
 #import "Environment/Apple/AppleIncluder.h"
 
@@ -9,10 +8,12 @@
 
 @interface AppleStoreInAppPurchaseProductsRequestDelegate : NSObject <SKProductsRequestDelegate>
 
-@property (assign) Mengine::AppleStoreInAppPurchaseFactoryInterface * _Nonnull m_factory;
+@property (nonatomic, weak) id<AppleStoreInAppPurchaseInterface> _Nonnull m_inAppPurchase;
 @property (assign) Mengine::AppleStoreInAppPurchaseProductsRequestInterfacePtr m_request;
 @property (assign) Mengine::AppleStoreInAppPurchaseProductsResponseInterfacePtr m_cb;
 
-- (instancetype _Nonnull) initWithFactory: (Mengine::AppleStoreInAppPurchaseFactoryInterface * _Nonnull)_factory request:(const Mengine::AppleStoreInAppPurchaseProductsRequestInterfacePtr &)_request cb: (const Mengine::AppleStoreInAppPurchaseProductsResponseInterfacePtr &)_cb;
+- (instancetype _Nonnull)initWithInAppPurchase:(id<AppleStoreInAppPurchaseInterface> _Nonnull)inAppPurchase
+                                       request:(const Mengine::AppleStoreInAppPurchaseProductsRequestInterfacePtr &)request
+                                            cb:(const Mengine::AppleStoreInAppPurchaseProductsResponseInterfacePtr &)cb;
 
 @end

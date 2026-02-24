@@ -10,12 +10,14 @@
 
 #pragma mark -
 
-- (instancetype _Nonnull)initWithFactory:(Mengine::AppleStoreInAppPurchaseFactoryInterface * _Nonnull)_factory request:(const Mengine::AppleStoreInAppPurchaseProductsRequestInterfacePtr &)_request cb: (const Mengine::AppleStoreInAppPurchaseProductsResponseInterfacePtr &)_cb {
+- (instancetype _Nonnull)initWithInAppPurchase:(id<AppleStoreInAppPurchaseInterface> _Nonnull)inAppPurchase
+                                       request:(const Mengine::AppleStoreInAppPurchaseProductsRequestInterfacePtr &)request
+                                            cb:(const Mengine::AppleStoreInAppPurchaseProductsResponseInterfacePtr &)cb {
     self = [super init];
     
-    self.m_factory = _factory;
-    self.m_request = _request;
-    self.m_cb = _cb;
+    self.m_inAppPurchase = inAppPurchase;
+    self.m_request = request;
+    self.m_cb = cb;
     
     return self;
 }
@@ -28,6 +30,8 @@
 #pragma mark - SKProductsRequestDelegate
 
 - (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response {
+    (void)request;
+
     IOS_LOGGER_MESSAGE( @"[SKProductsRequestDelegate] productsRequest didReceiveResponse products: %@ invalids: %@"
         , response.products
         , response.invalidProductIdentifiers
@@ -37,7 +41,7 @@
     
     Mengine::VectorAppleStoreInAppPurchaseProducts products;
     for( SKProduct * skProduct in skProducts ) {
-        Mengine::AppleStoreInAppPurchaseProductInterfacePtr product = self.m_factory->makeProduct( skProduct );
+        Mengine::AppleStoreInAppPurchaseProductInterfacePtr product = [self.m_inAppPurchase makeProduct:skProduct];
         
         products.emplace_back( product );
     }
@@ -51,6 +55,8 @@
 }
 
 - (void)requestDidFinish:(SKRequest *)request {
+    (void)request;
+
     IOS_LOGGER_MESSAGE( @"[SKProductsRequestDelegate] requestDidFinish" );
     
     Mengine::AppleStoreInAppPurchaseProductsResponseInterfacePtr cb_copy = self.m_cb;
@@ -62,6 +68,8 @@
 }
 
 - (void)request:(SKRequest *)request didFailWithError:(NSError *)error {
+    (void)request;
+
     IOS_LOGGER_MESSAGE( @"[SKProductsRequestDelegate] request didFailWithError: %@"
         , [AppleDetail getMessageFromNSError:error]
     );

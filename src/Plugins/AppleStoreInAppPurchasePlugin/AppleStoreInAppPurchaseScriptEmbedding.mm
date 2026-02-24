@@ -1,8 +1,7 @@
 #include "AppleStoreInAppPurchaseScriptEmbedding.h"
 
 #include "AppleStoreInAppPurchaseInterface.h"
-
-#include "Interface/ScriptServiceInterface.h"
+#import "AppleStoreInAppPurchaseApplicationDelegate.h"
 
 #include "AppleStoreInAppPurchasePaymentTransaction.h"
 #include "AppleStoreInAppPurchaseProduct.h"
@@ -65,22 +64,17 @@ namespace Mengine
         {
             AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr provider = Helper::makeFactorableUnique<PythonAppleStoreInAppPurchasePaymentTransactionProvider>( MENGINE_DOCUMENT_PYTHON, _cbs, _args );
 
-            APPLE_STOREINAPPPURCHASE_SERVICE()
-                ->setPaymentTransactionProvider( provider );
+            [[AppleStoreInAppPurchaseApplicationDelegate sharedInstance] setPaymentTransactionProvider:provider];
         }
         //////////////////////////////////////////////////////////////////////////
         static void AppleStoreInAppPurchase_removePaymentTransactionProvider()
         {
-            APPLE_STOREINAPPPURCHASE_SERVICE()
-                ->setPaymentTransactionProvider( nullptr );
+            [[AppleStoreInAppPurchaseApplicationDelegate sharedInstance] setPaymentTransactionProvider:nullptr];
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_AppleStoreInAppPurchase_canMakePayments()
+        static bool AppleStoreInAppPurchase_canMakePayments()
         {
-            bool result = APPLE_STOREINAPPPURCHASE_SERVICE()
-                ->canMakePayments();
-            
-            return result;
+            return [[AppleStoreInAppPurchaseApplicationDelegate sharedInstance] canMakePayments];
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonAppleStoreInAppPurchaseProductsResponse
@@ -115,24 +109,28 @@ namespace Mengine
         {
             AppleStoreInAppPurchaseProductsResponseInterfacePtr response = Helper::makeFactorableUnique<PythonAppleStoreInAppPurchaseProductsResponse>( MENGINE_DOCUMENT_PYTHON, _cbs, _args );
             
-            AppleStoreInAppPurchaseProductsRequestInterfacePtr request = APPLE_STOREINAPPPURCHASE_SERVICE()
-                ->requestProducts( _consumableIdentifiers, _nonconsumableIdentifiers, response );
+            AppleStoreInAppPurchaseProductsRequestInterfacePtr request = [[AppleStoreInAppPurchaseApplicationDelegate sharedInstance] requestProducts:_consumableIdentifiers
+                                                                                                               nonconsumableIdentifiers:_nonconsumableIdentifiers
+                                                                                                                                   cb:response];
             
             return request;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_AppleStoreInAppPurchase_purchaseProduct( const AppleStoreInAppPurchaseProductInterfacePtr & _product )
+        static bool AppleStoreInAppPurchase_isOwnedProduct( NSString * _productIdentifier )
         {
-            bool successful = APPLE_STOREINAPPPURCHASE_SERVICE()
-                ->purchaseProduct( _product );
+            return [[AppleStoreInAppPurchaseApplicationDelegate sharedInstance] isOwnedProduct:_productIdentifier];
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool AppleStoreInAppPurchase_purchaseProduct( const AppleStoreInAppPurchaseProductInterfacePtr & _product )
+        {
+            bool successful = [[AppleStoreInAppPurchaseApplicationDelegate sharedInstance] purchaseProduct:_product];
             
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_AppleStoreInAppPurchase_restoreCompletedTransactions()
+        static void AppleStoreInAppPurchase_restoreCompletedTransactions()
         {
-            APPLE_STOREINAPPPURCHASE_SERVICE()
-                ->restoreCompletedTransactions();
+            [[AppleStoreInAppPurchaseApplicationDelegate sharedInstance] restoreCompletedTransactions];
         }
         //////////////////////////////////////////////////////////////////////////
     }
@@ -147,16 +145,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleStoreInAppPurchaseScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
-        AppleStoreInAppPurchaseServiceInterface * service = APPLE_STOREINAPPPURCHASE_SERVICE();
-
         pybind::def_function_args( _kernel, "appleStoreInAppPurchaseSetPaymentTransactionProvider", &Detail::AppleStoreInAppPurchase_setPaymentTransactionProvider );
         pybind::def_function( _kernel, "appleStoreInAppPurchaseRemovePaymentTransactionProvider", &Detail::AppleStoreInAppPurchase_removePaymentTransactionProvider );
         
-        pybind::def_functor( _kernel, "appleStoreInAppPurchaseCanMakePayments", service, &AppleStoreInAppPurchaseServiceInterface::canMakePayments );
+        pybind::def_function( _kernel, "appleStoreInAppPurchaseCanMakePayments", &Detail::AppleStoreInAppPurchase_canMakePayments );
         pybind::def_function_args( _kernel, "appleStoreInAppPurchaseRequestProducts", &Detail::AppleStoreInAppPurchase_requestProducts );
-        pybind::def_functor( _kernel, "appleStoreInAppPurchaseIsOwnedProduct", service, &AppleStoreInAppPurchaseServiceInterface::isOwnedProduct );
-        pybind::def_functor( _kernel, "appleStoreInAppPurchasePurchaseProduct", service, &AppleStoreInAppPurchaseServiceInterface::purchaseProduct );
-        pybind::def_functor( _kernel, "appleStoreInAppPurchaseRestoreCompletedTransactions", service, &AppleStoreInAppPurchaseServiceInterface::restoreCompletedTransactions );
+        pybind::def_function( _kernel, "appleStoreInAppPurchaseIsOwnedProduct", &Detail::AppleStoreInAppPurchase_isOwnedProduct );
+        pybind::def_function( _kernel, "appleStoreInAppPurchasePurchaseProduct", &Detail::AppleStoreInAppPurchase_purchaseProduct );
+        pybind::def_function( _kernel, "appleStoreInAppPurchaseRestoreCompletedTransactions", &Detail::AppleStoreInAppPurchase_restoreCompletedTransactions );
 
         pybind::interface_<AppleStoreInAppPurchasePaymentTransactionInterface, pybind::bases<Factorable>>( _kernel, "AppleStoreInAppPurchasePaymentTransactionInterface", true )
             .def( "getProductIdentifier", &AppleStoreInAppPurchasePaymentTransactionInterface::getProductIdentifier )

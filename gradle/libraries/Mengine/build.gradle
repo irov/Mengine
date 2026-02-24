@@ -116,17 +116,10 @@ android {
         }
     }
 
-    if (MENGINE_APP_LIBRARY_OPENAL32 == true) {
-        preBuild.dependsOn ":libraries:OpenAL32:build"
-    }
-
     namespace "org.Mengine.Base"
 }
 
 dependencies {
-    if (MENGINE_APP_LIBRARY_OPENAL32 == true) {
-        implementation project(':libraries:OpenAL32')
-    }
 }
 
 android {

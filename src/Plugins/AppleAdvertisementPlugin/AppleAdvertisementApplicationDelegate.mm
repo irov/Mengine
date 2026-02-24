@@ -1,5 +1,8 @@
 #import "AppleAdvertisementApplicationDelegate.h"
 
+#include "Interface/ApplicationInterface.h"
+#include "Interface/SoundServiceInterface.h"
+
 #import "Environment/Apple/AppleDetail.h"
 #import "Environment/Apple/AppleSemaphoreService.h"
 #import "Environment/Apple/AppleString.h"
@@ -11,10 +14,8 @@
 #   include "AppleAdvertisementScriptEmbedding.h"
 #endif
 
-#include "Interface/ApplicationInterface.h"
-#include "Interface/SoundServiceInterface.h"
-
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/ScriptEmbeddingHelper.h"
 
 @implementation AppleAdvertisementApplicationDelegate
 
@@ -488,7 +489,7 @@
 
 - (void)onRunBegin {
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-    Mengine::Helper::addScriptEmbedding<Mengine::AppleAdvertisementScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE );
+    Mengine::Helper::addScriptEmbedding<Mengine::AppleAdvertisementScriptEmbedding>( MENGINE_DOCUMENT_FUNCTION );
 #endif
 }
 

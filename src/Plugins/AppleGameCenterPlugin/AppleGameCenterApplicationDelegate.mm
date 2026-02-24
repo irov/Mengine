@@ -9,6 +9,8 @@
 #   include "AppleGameCenterScriptEmbedding.h"
 #endif
 
+#include "Kernel/ScriptEmbeddingHelper.h"
+
 @implementation AppleGameCenterApplicationDelegate
 
 
@@ -359,7 +361,7 @@
 
 - (void)onRunBegin {
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-    Mengine::Helper::addScriptEmbedding<Mengine::AppleGameCenterScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE );
+    Mengine::Helper::addScriptEmbedding<Mengine::AppleGameCenterScriptEmbedding>( MENGINE_DOCUMENT_FUNCTION );
 #endif
 }
 

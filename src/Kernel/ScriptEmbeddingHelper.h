@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/ScriptServiceInterface.h"
+#include "Interface/ScriptEmbeddingInterface.h"
 
 #include "Kernel/FactorableUnique.h"
 

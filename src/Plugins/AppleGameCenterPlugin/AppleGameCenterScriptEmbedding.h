@@ -18,8 +18,5 @@ namespace Mengine
     public:
         bool embed( pybind::kernel_interface * _kernel ) override;
         void eject( pybind::kernel_interface * _kernel ) override;
-
-    protected:
-        FactorablePtr m_implement;
     };
 }

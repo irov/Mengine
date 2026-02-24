@@ -5,6 +5,10 @@
 #import "Environment/iOS/iOSDetail.h"
 #import "Environment/iOS/iOSLog.h"
 
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+#   include "AppleGameCenterScriptEmbedding.h"
+#endif
+
 @implementation AppleGameCenterApplicationDelegate
 
 
@@ -352,6 +356,18 @@
 }
 
 #pragma mark - iOSPluginApplicationDelegateInterface
+
+- (void)onRunBegin {
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+    Mengine::Helper::addScriptEmbedding<Mengine::AppleGameCenterScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE );
+#endif
+}
+
+- (void)onStopEnd {
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+    Mengine::Helper::removeScriptEmbedding<Mengine::AppleGameCenterScriptEmbedding>();
+#endif
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     //ToDo

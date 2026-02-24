@@ -1,32 +1,40 @@
 #include "AppleAdjustScriptEmbedding.h"
 
-#include "AppleAdjustInterface.h"
-
-#include "Interface/ScriptServiceInterface.h"
+#import "AppleAdjustApplicationDelegate.h"
 
 #include "Environment/Python/PythonIncluder.h"
-#include "Environment/Python/PythonDocumentTraceback.h"
-
-#include "Kernel/FactorableUnique.h"
-#include "Kernel/ConstStringHelper.h"
-#include "Kernel/DocumentHelper.h"
-#include "Kernel/Logger.h"
 
 namespace Mengine
 {
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static bool AppleAdjust_eventTraking(const ConstString & _token )
+        static bool AppleAdjust_eventTraking( NSString * _token )
         {
-            APPLE_ADJUST_SERVICE()
-                ->eventTraking( _token );
+            AppleAdjustApplicationDelegate * delegate = [AppleAdjustApplicationDelegate sharedInstance];
+
+            if( delegate == nil )
+            {
+                return false;
+            }
+
+            [delegate eventTraking:_token];
+
+            return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool AppleAdjust_revenueTracking(const ConstString & _token, double _amount, const ConstString & _currency )
+        static bool AppleAdjust_revenueTracking( NSString * _token, double _amount, NSString * _currency )
         {
-            APPLE_ADJUST_SERVICE()
-                ->revenueTracking( _token, _amount, _currency );
+            AppleAdjustApplicationDelegate * delegate = [AppleAdjustApplicationDelegate sharedInstance];
+
+            if( delegate == nil )
+            {
+                return false;
+            }
+
+            [delegate revenueTracking:_token amount:_amount currency:_currency];
+
+            return true;
         }
         //////////////////////////////////////////////////////////////////////////
     }
@@ -50,8 +58,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleAdjustScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
-        _kernel->remove_from_module( "appleMARSDKSetProvider", nullptr );
-        _kernel->remove_from_module( "appleMARSDKLogin", nullptr );
+        _kernel->remove_from_module( "appleAdjustEventTraking", nullptr );
+        _kernel->remove_from_module( "appleAdjustRevenueTracking", nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
 }

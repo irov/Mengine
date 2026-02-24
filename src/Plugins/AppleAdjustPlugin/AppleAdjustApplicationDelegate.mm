@@ -1,12 +1,39 @@
 #import "AppleAdjustApplicationDelegate.h"
 
 #include "Environment/Apple/AppleBundle.h"
+#import "Environment/iOS/iOSDetail.h"
+#import "Environment/iOS/iOSLog.h"
+
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+#   include "AppleAdjustScriptEmbedding.h"
+#endif
 
 #define PLUGIN_BUNDLE_NAME @"MengineAppleAdjustPlugin"
 
 @implementation AppleAdjustApplicationDelegate
 
++ (instancetype)sharedInstance {
+    static AppleAdjustApplicationDelegate * sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [iOSDetail getPluginDelegateOfClass:[AppleAdjustApplicationDelegate class]];
+    });
+    return sharedInstance;
+}
+
 #pragma mark - iOSPluginApplicationDelegateInterface
+
+- (void)onRunBegin {
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+    Mengine::Helper::addScriptEmbedding<Mengine::AppleAdjustScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE );
+#endif
+}
+
+- (void)onStopEnd {
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+    Mengine::Helper::removeScriptEmbedding<Mengine::AppleAdjustScriptEmbedding>();
+#endif
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     if (Mengine::Helper::AppleHasBundlePluginConfig(PLUGIN_BUNDLE_NAME) == NO) {
@@ -33,6 +60,28 @@
     [adjustConfig setDelegate:self];
     
     [Adjust appDidLaunch:adjustConfig];
+
+    IOS_LOGGER_MESSAGE(@"[Adjust] adid: %s", [[Adjust adid] UTF8String]);
+
+    [Adjust requestTrackingAuthorizationWithCompletionHandler:^(NSUInteger status) {
+        switch (status) {
+            case 0:
+                IOS_LOGGER_MESSAGE(@"[Adjust] ATTrackingManagerAuthorizationStatusNotDetermined");
+                break;
+            case 1:
+                IOS_LOGGER_MESSAGE(@"[Adjust] ATTrackingManagerAuthorizationStatusRestricted");
+                break;
+            case 2:
+                IOS_LOGGER_MESSAGE(@"[Adjust] ATTrackingManagerAuthorizationStatusDenied");
+                break;
+            case 3:
+                IOS_LOGGER_MESSAGE(@"[Adjust] ATTrackingManagerAuthorizationStatusAuthorized");
+                break;
+            default:
+                IOS_LOGGER_MESSAGE(@"[Adjust] ATTrackingManagerAuthorizationStatus unknown: %lu", (unsigned long)status);
+                break;
+        }
+    }];
     
     return YES;
 }
@@ -63,6 +112,42 @@
     [Adjust appWillOpenUrl:url];
     
     return YES;
+}
+
+#pragma mark - AppleAdjustApi
+
+- (void)eventTraking:(NSString *)token {
+    if (token == nil) {
+        IOS_LOGGER_MESSAGE(@"[Adjust] eventTraking token is null");
+        return;
+    }
+
+    IOS_LOGGER_MESSAGE(@"[Adjust] eventTraking token: %s", token.UTF8String);
+
+    ADJEvent * event = [ADJEvent eventWithEventToken:token];
+
+    [Adjust trackEvent:event];
+}
+
+- (void)revenueTracking:(NSString *)token amount:(double)amount currency:(NSString *)currency {
+    if (token == nil) {
+        IOS_LOGGER_MESSAGE(@"[Adjust] revenueTracking token is null");
+        return;
+    }
+
+    NSString * adjustCurrency = currency != nil ? currency : @"EUR";
+
+    IOS_LOGGER_MESSAGE(@"[Adjust] revenueTracking token: %s amount: %lf currency: %s"
+        , token.UTF8String
+        , amount
+        , adjustCurrency.UTF8String
+    );
+
+    ADJEvent * event = [ADJEvent eventWithEventToken:token];
+
+    [event setRevenue:amount currency:adjustCurrency];
+
+    [Adjust trackEvent:event];
 }
 
 #pragma mark - AdjustDelegate

@@ -2,14 +2,6 @@ MENGINE_PROJECT(AppleAdjustPlugin)
 
 ADD_FILTER(
 src
-    AppleAdjustPlugin.h
-    AppleAdjustPlugin.mm
-
-    AppleAdjustInterface.h
-
-    AppleAdjustService.h
-    AppleAdjustService.mm
-
     AppleAdjustApplicationDelegate.h
     AppleAdjustApplicationDelegate.mm
 )

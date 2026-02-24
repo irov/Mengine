@@ -120,11 +120,6 @@ namespace Mengine
             return false;
         }
 
-        if( Helper::addScriptEmbedding<HttpScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) == false )
-        {
-            return false;
-        }
-
         if( Helper::addScriptEmbedding<EnvironmentScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;

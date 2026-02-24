@@ -47,10 +47,10 @@ namespace Mengine
         virtual void endFill() = 0;
 
     public:
-        virtual void moveTo( const mt::vec2f & _point ) = 0;
-        virtual void lineTo( const mt::vec2f & _point ) = 0;
-        virtual void quadraticCurveTo( const mt::vec2f & _p0, const mt::vec2f & _point ) = 0;
-        virtual void bezierCurveTo( const mt::vec2f & _p0, const mt::vec2f & _p1, const mt::vec2f & _point ) = 0;
+        virtual void pointMoveTo( const mt::vec2f & _point ) = 0;
+        virtual void pointLineTo( const mt::vec2f & _point ) = 0;
+        virtual void pointQuadraticCurveTo( const mt::vec2f & _p0, const mt::vec2f & _point ) = 0;
+        virtual void pointBezierCurveTo( const mt::vec2f & _p0, const mt::vec2f & _p1, const mt::vec2f & _point ) = 0;
 
     public:
         virtual void drawRect( const mt::vec2f & _point, float _width, float _height ) = 0;

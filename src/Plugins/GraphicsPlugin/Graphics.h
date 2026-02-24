@@ -71,10 +71,10 @@ namespace Mengine
         void endFill() override;
 
     public:
-        void moveTo( const mt::vec2f & _point ) override;
-        void lineTo( const mt::vec2f & _point ) override;
-        void quadraticCurveTo( const mt::vec2f & _p0, const mt::vec2f & _point ) override;
-        void bezierCurveTo( const mt::vec2f & _p0, const mt::vec2f & _p1, const mt::vec2f & _point ) override;
+        void pointMoveTo( const mt::vec2f & _point ) override;
+        void pointLineTo( const mt::vec2f & _point ) override;
+        void pointQuadraticCurveTo( const mt::vec2f & _p0, const mt::vec2f & _point ) override;
+        void pointBezierCurveTo( const mt::vec2f & _p0, const mt::vec2f & _p1, const mt::vec2f & _point ) override;
 
     public:
         void drawRect( const mt::vec2f & _point, float _width, float _height ) override;

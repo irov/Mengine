@@ -234,28 +234,28 @@ namespace Mengine
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Graphics::moveTo( const mt::vec2f & _point )
+    void Graphics::pointMoveTo( const mt::vec2f & _point )
     {
-        GP_CALL( gp_move_to, (m_canvas, _point.x, _point.y) );
+        GP_CALL( gp_point_move_to, (m_canvas, _point.x, _point.y) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Graphics::lineTo( const mt::vec2f & _point )
+    void Graphics::pointLineTo( const mt::vec2f & _point )
     {
-        GP_CALL( gp_line_to, (m_canvas, _point.x, _point.y) );
+        GP_CALL( gp_point_line_to, (m_canvas, _point.x, _point.y) );
 
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Graphics::quadraticCurveTo( const mt::vec2f & _p0, const mt::vec2f & _point )
+    void Graphics::pointQuadraticCurveTo( const mt::vec2f & _p0, const mt::vec2f & _point )
     {
-        GP_CALL( gp_quadratic_curve_to, (m_canvas, _p0.x, _p0.y, _point.x, _point.y) );
+        GP_CALL( gp_point_quadratic_curve_to, (m_canvas, _p0.x, _p0.y, _point.x, _point.y) );
 
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Graphics::bezierCurveTo( const mt::vec2f & _p0, const mt::vec2f & _p1, const mt::vec2f & _point )
+    void Graphics::pointBezierCurveTo( const mt::vec2f & _p0, const mt::vec2f & _p1, const mt::vec2f & _point )
     {
-        GP_CALL( gp_bezier_curve_to, (m_canvas, _p0.x, _p0.y, _p1.x, _p1.y, _point.x, _point.y) );
+        GP_CALL( gp_point_bezier_curve_to, (m_canvas, _p0.x, _p0.y, _p1.x, _p1.y, _point.x, _point.y) );
 
         m_invalidateLocalVertex2D = true;
     }

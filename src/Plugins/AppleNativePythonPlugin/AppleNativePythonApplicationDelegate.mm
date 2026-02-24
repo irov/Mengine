@@ -1,36 +1,19 @@
 #import "AppleNativePythonApplicationDelegate.h"
+#import "AppleNativePythonCallbackDesc.h"
 
 #import "Environment/Apple/AppleSemaphoreListenerNSProxy.h"
 #import "Environment/Apple/AppleSemaphoreService.h"
-#import "Environment/Apple/AppleString.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/ConstString.h"
-#include "Kernel/Map.h"
-#include "Kernel/Vector.h"
 #include "Kernel/ScriptEmbeddingHelper.h"
-
-#include "Config/StdAlgorithm.h"
 
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 #   include "AppleNativePythonScriptEmbedding.h"
 #endif
 
-namespace Mengine
-{
-    struct AppleNativePythonCallbackDesc
-    {
-        pybind::object cb;
-        pybind::args args;
-    };
-
-    typedef Vector<AppleNativePythonCallbackDesc> VectorAppleNativePythonCallbacks;
-    typedef Map<Pair<ConstString, ConstString>, VectorAppleNativePythonCallbacks> MapAppleNativePythonCallbacks;
-}
-
 @implementation AppleNativePythonApplicationDelegate
 {
-    Mengine::MapAppleNativePythonCallbacks m_callbacks;
+    NSMutableDictionary<NSString *, NSMutableDictionary<NSString *, NSMutableArray<AppleNativePythonCallbackDesc *> *> *> * m_callbacks;
 }
 
 + (instancetype)sharedInstance {
@@ -43,8 +26,16 @@ namespace Mengine
     return sharedInstance;
 }
 
+- (instancetype)init {
+    self = [super init];
+
+    m_callbacks = [NSMutableDictionary dictionary];
+
+    return self;
+}
+
 - (void)onFinalize {
-    m_callbacks.clear();
+    [m_callbacks removeAllObjects];
 }
 
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
@@ -55,7 +46,7 @@ namespace Mengine
 - (void)onStopEnd {
     Mengine::Helper::removeScriptEmbedding<Mengine::AppleNativePythonScriptEmbedding>();
 
-    m_callbacks.clear();
+    [m_callbacks removeAllObjects];
 }
 #endif
 
@@ -73,25 +64,22 @@ namespace Mengine
         method = @"";
     }
 
-    Mengine::ConstString plugin_cs = [AppleString NSStringToConstString:plugin];
-    Mengine::ConstString method_cs = [AppleString NSStringToConstString:method];
-
-    Mengine::MapAppleNativePythonCallbacks::iterator it_found = m_callbacks.find( Mengine::StdUtility::make_pair( plugin_cs, method_cs ) );
-
-    if( it_found == m_callbacks.end() )
+    NSMutableDictionary<NSString *, NSMutableArray<AppleNativePythonCallbackDesc *> *> * pluginMethods = m_callbacks[plugin];
+    if( pluginMethods == nil )
     {
-        Mengine::VectorAppleNativePythonCallbacks new_callbacks;
-
-        it_found = m_callbacks.emplace( Mengine::StdUtility::make_pair( Mengine::StdUtility::make_pair( plugin_cs, method_cs ), new_callbacks ) ).first;
+        pluginMethods = [NSMutableDictionary dictionary];
+        m_callbacks[plugin] = pluginMethods;
     }
 
-    Mengine::VectorAppleNativePythonCallbacks & callbacks = it_found->second;
+    NSMutableArray<AppleNativePythonCallbackDesc *> * callbacks = pluginMethods[method];
+    if( callbacks == nil )
+    {
+        callbacks = [NSMutableArray array];
+        pluginMethods[method] = callbacks;
+    }
 
-    Mengine::AppleNativePythonCallbackDesc desc;
-    desc.cb = cb;
-    desc.args = args;
-
-    callbacks.emplace_back( desc );
+    AppleNativePythonCallbackDesc * desc = [[AppleNativePythonCallbackDesc alloc] initWithCallback:cb args:args];
+    [callbacks addObject:desc];
 
     return cb;
 }
@@ -109,38 +97,61 @@ namespace Mengine
         method = @"";
     }
 
-    Mengine::ConstString plugin_cs = [AppleString NSStringToConstString:plugin];
-    Mengine::ConstString method_cs = [AppleString NSStringToConstString:method];
-
-    Mengine::MapAppleNativePythonCallbacks::iterator it_found = m_callbacks.find( Mengine::StdUtility::make_pair( plugin_cs, method_cs ) );
-
-    if( it_found == m_callbacks.end() )
+    NSMutableDictionary<NSString *, NSMutableArray<AppleNativePythonCallbackDesc *> *> * pluginMethods = m_callbacks[plugin];
+    if( pluginMethods == nil )
     {
         LOGGER_ERROR( "invalid remove apple callback plugin '%s' method '%s' not found"
-            , plugin_cs.c_str()
-            , method_cs.c_str()
+            , [plugin UTF8String]
+            , [method UTF8String]
         );
 
         return;
     }
 
-    Mengine::VectorAppleNativePythonCallbacks & callbacks = it_found->second;
+    NSMutableArray<AppleNativePythonCallbackDesc *> * callbacks = pluginMethods[method];
+    if( callbacks == nil )
+    {
+        LOGGER_ERROR( "invalid remove apple callback plugin '%s' method '%s' not found"
+            , [plugin UTF8String]
+            , [method UTF8String]
+        );
 
-    Mengine::VectorAppleNativePythonCallbacks::iterator it_callback_found = Mengine::StdAlgorithm::find_if( callbacks.begin(), callbacks.end(), [cb](const Mengine::AppleNativePythonCallbackDesc & desc) {
-        return desc.cb.ptr() == cb.ptr();
-    } );
+        return;
+    }
 
-    if( it_callback_found == callbacks.end() )
+    NSUInteger index = NSNotFound;
+    for( NSUInteger i = 0; i != callbacks.count; ++i )
+    {
+        AppleNativePythonCallbackDesc * desc = callbacks[i];
+
+        if( desc->m_cb.ptr() == cb.ptr() )
+        {
+            index = i;
+            break;
+        }
+    }
+
+    if( index == NSNotFound )
     {
         LOGGER_ERROR( "invalid remove apple callback plugin '%s' method '%s' not found [cb]"
-            , plugin_cs.c_str()
-            , method_cs.c_str()
+            , [plugin UTF8String]
+            , [method UTF8String]
         );
 
         return;
     }
 
-    callbacks.erase( it_callback_found );
+    [callbacks removeObjectAtIndex:index];
+
+    if( callbacks.count == 0 )
+    {
+        [pluginMethods removeObjectForKey:method];
+    }
+
+    if( pluginMethods.count == 0 )
+    {
+        [m_callbacks removeObjectForKey:plugin];
+    }
 }
 
 - (void)activateSemaphore:(NSString *)name {

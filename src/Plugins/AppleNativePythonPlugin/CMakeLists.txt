@@ -4,6 +4,9 @@ ADD_FILTER(
 src
     AppleNativePythonInterface.h
 
+    AppleNativePythonCallbackDesc.h
+    AppleNativePythonCallbackDesc.mm
+
     AppleNativePythonApplicationDelegate.h
     AppleNativePythonApplicationDelegate.mm
     

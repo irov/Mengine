@@ -11,9 +11,6 @@ MESSAGE("Apple Firebase RemoteConfig plist name: ${MENGINE_APPLICATION_DEPLOY_FI
 
 ADD_FILTER(
 src
-    AppleFirebaseRemoteConfigPlugin.h
-    AppleFirebaseRemoteConfigPlugin.mm
-    
     AppleFirebaseRemoteConfigApplicationDelegate.h
     AppleFirebaseRemoteConfigApplicationDelegate.mm
     

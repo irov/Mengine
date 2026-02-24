@@ -9,8 +9,8 @@
 
 @interface AppleMARSDKAdRewardedDelegate : NSObject<MARAdRewardedDelegate>
 
-@property (assign) Mengine::AppleMARSDKServiceInterface * _Nonnull m_service;
+@property (nonatomic, weak) id<AppleMARSDKInterface> m_marsdk;
 
-- (instancetype _Nonnull) initWithService:(Mengine::AppleMARSDKServiceInterface* _Nonnull)service;
+- (instancetype _Nonnull) initWithMARSDK:(id<AppleMARSDKInterface>)marsdk;
 
 @end

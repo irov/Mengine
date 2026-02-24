@@ -2,14 +2,13 @@
 
 #include "Interface/ScriptEmbeddingInterface.h"
 
-#include "Kernel/Factorable.h"
-
 namespace Mengine
 {
     class AppleMARSDKScriptEmbedding
         : public ScriptEmbeddingInterface
-        , public Factorable
     {
+        DECLARE_FACTORABLE( AppleMARSDKScriptEmbedding );
+
     public:
         AppleMARSDKScriptEmbedding();
         ~AppleMARSDKScriptEmbedding() override;

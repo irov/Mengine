@@ -1,20 +1,17 @@
 #import "AppleMARSDKDelegate.h"
 
-#include "Environment/Apple/AppleErrorHelper.h"
-#include "Environment/Apple/AppleDetail.h"
-#include "Environment/iOS/iOSDetail.h"
-
-#include "Kernel/Logger.h"
-#include "Kernel/ThreadHelper.h"
+#import "Environment/Apple/AppleDetail.h"
+#import "Environment/iOS/iOSDetail.h"
+#import "Environment/iOS/iOSLog.h"
 
 @implementation AppleMARSDKDelegate
 
 #pragma mark -
 
-- (instancetype _Nonnull)initWithService: (Mengine::AppleMARSDKServiceInterface* _Nonnull)service {
+- (instancetype _Nonnull)initWithMARSDK:(id<AppleMARSDKInterface>)marsdk {
     self = [super init];
     
-    self.m_service = service;
+    self.m_marsdk = marsdk;
     
     return self;
 }
@@ -32,146 +29,124 @@
 }
 
 - (void) OnPlatformInit: (NSDictionary *)params {
-    LOGGER_MESSAGE( "OnPlatformInit params: %s"
+    IOS_LOGGER_MESSAGE( @"OnPlatformInit params: %s"
         , [[NSString stringWithFormat:@"%@", params] UTF8String]
     );
-    
-    Mengine::AppleMARSDKProviderInterfacePtr provider = self.m_service->getProvider();
-    
-    if( provider == nullptr )
+
+    id<AppleMARSDKProviderInterface> provider = [self.m_marsdk getProvider];
+
+    if( provider == nil )
     {
         return;
     }
 
-    Mengine::Helper::dispatchMainThreadEvent([provider, params]() {
-        Mengine::MapParams result_params;
-        Mengine::Helper::AppleGetParamsNSDictionary( params, &result_params );
-        
-        provider->onPlatformInit( result_params );
-    });
+    [AppleDetail addMainQueueOperation:^{
+        [provider onPlatformInit:params];
+    }];
 }
 
 - (void) OnRealName:(NSDictionary*)params {
-    LOGGER_MESSAGE( "OnRealName params: %s"
+    IOS_LOGGER_MESSAGE( @"OnRealName params: %s"
         , [[NSString stringWithFormat:@"%@", params] UTF8String]
     );
-    
-    Mengine::AppleMARSDKProviderInterfacePtr provider = self.m_service->getProvider();
-    
-    if( provider == nullptr )
+
+    id<AppleMARSDKProviderInterface> provider = [self.m_marsdk getProvider];
+
+    if( provider == nil )
     {
         return;
     }
 
-    Mengine::Helper::dispatchMainThreadEvent([provider, params]() {
-        Mengine::MapParams result_params;
-        Mengine::Helper::AppleGetParamsNSDictionary( params, &result_params );
-        
-        provider->onRealName( result_params );
-    });
+    [AppleDetail addMainQueueOperation:^{
+        [provider onRealName:params];
+    }];
 }
 
 - (void) OnEventWithCode:(int)code msg: (NSString*)msg {
-    LOGGER_MESSAGE( "OnEventWithCode code:%d msg:%s"
+    IOS_LOGGER_MESSAGE( @"OnEventWithCode code:%d msg:%s"
         , code
         , [msg UTF8String]
     );
-    
-    Mengine::AppleMARSDKProviderInterfacePtr provider = self.m_service->getProvider();
-    
-    if( provider == nullptr )
+
+    id<AppleMARSDKProviderInterface> provider = [self.m_marsdk getProvider];
+
+    if( provider == nil )
     {
         return;
     }
-    
-    Mengine::Helper::dispatchMainThreadEvent([provider, code, msg]() {
-        const Mengine::Char * msg_str = [msg UTF8String];
-        
-        provider->onEventWithCode( code, msg_str );
-    });
+
+    [AppleDetail addMainQueueOperation:^{
+        [provider onEventWithCode:code msg:msg];
+    }];
 }
 
 - (void) OnEventCustom:(NSString*)eventName params:(NSDictionary*)params {
-    LOGGER_MESSAGE( "OnEventCustom event:%s params:%s"
+    IOS_LOGGER_MESSAGE( @"OnEventCustom event:%s params:%s"
         , [eventName UTF8String]
         , [[NSString stringWithFormat:@"%@", params] UTF8String]
     );
-    
-    Mengine::AppleMARSDKProviderInterfacePtr provider = self.m_service->getProvider();
-    
-    if( provider == nullptr )
+
+    id<AppleMARSDKProviderInterface> provider = [self.m_marsdk getProvider];
+
+    if( provider == nil )
     {
         return;
     }
 
-    Mengine::Helper::dispatchMainThreadEvent([provider, eventName, params]() {
-        const Mengine::Char * eventName_str = [eventName UTF8String];
-        
-        Mengine::MapParams result_params;
-        Mengine::Helper::AppleGetParamsNSDictionary( params, &result_params );
-        
-        provider->onEventCustom( eventName_str, result_params );
-    });
+    [AppleDetail addMainQueueOperation:^{
+        [provider onEventCustom:eventName params:params];
+    }];
 }
 
 - (void) OnUserLogin: (NSDictionary *)params {
-    LOGGER_MESSAGE( "OnUserLogin params:%s"
+    IOS_LOGGER_MESSAGE( @"OnUserLogin params:%s"
         , [[NSString stringWithFormat:@"%@", params] UTF8String]
     );
-    
-    Mengine::AppleMARSDKProviderInterfacePtr provider = self.m_service->getProvider();
-    
-    if( provider == nullptr )
+
+    id<AppleMARSDKProviderInterface> provider = [self.m_marsdk getProvider];
+
+    if( provider == nil )
     {
         return;
     }
-    
-    Mengine::Helper::dispatchMainThreadEvent([provider, params]() {
-        Mengine::MapParams result_params;
-        Mengine::Helper::AppleGetParamsNSDictionary( params, &result_params );
-        
-        provider->onUserLogin( result_params );
-    });
+
+    [AppleDetail addMainQueueOperation:^{
+        [provider onUserLogin:params];
+    }];
 }
 
 - (void) OnUserLogout: (NSDictionary *)params {
-    LOGGER_MESSAGE( "OnUserLogout params:%s"
+    IOS_LOGGER_MESSAGE( @"OnUserLogout params:%s"
         , [[NSString stringWithFormat:@"%@", params] UTF8String]
     );
-    
-    Mengine::AppleMARSDKProviderInterfacePtr provider = self.m_service->getProvider();
-    
-    if( provider == nullptr )
+
+    id<AppleMARSDKProviderInterface> provider = [self.m_marsdk getProvider];
+
+    if( provider == nil )
     {
         return;
     }
-    
-    Mengine::Helper::dispatchMainThreadEvent([provider, params]() {
-        Mengine::MapParams result_params;
-        Mengine::Helper::AppleGetParamsNSDictionary( params, &result_params );
-        
-        provider->onUserLogout( result_params );
-    });
+
+    [AppleDetail addMainQueueOperation:^{
+        [provider onUserLogout:params];
+    }];
 }
 
 - (void) OnPayPaid: (NSDictionary *)params {
-    LOGGER_MESSAGE( "OnPayPaid params:%s"
+    IOS_LOGGER_MESSAGE( @"OnPayPaid params:%s"
         , [[NSString stringWithFormat:@"%@", params] UTF8String]
     );
-    
-    Mengine::AppleMARSDKProviderInterfacePtr provider = self.m_service->getProvider();
-    
-    if( provider == nullptr )
+
+    id<AppleMARSDKProviderInterface> provider = [self.m_marsdk getProvider];
+
+    if( provider == nil )
     {
         return;
     }
-    
-    Mengine::Helper::dispatchMainThreadEvent([provider, params]() {
-        Mengine::MapParams result_params;
-        Mengine::Helper::AppleGetParamsNSDictionary( params, &result_params );
-        
-        provider->onPayPaid( result_params );
-    });
+
+    [AppleDetail addMainQueueOperation:^{
+        [provider onPayPaid:params];
+    }];
 }
 
 @end

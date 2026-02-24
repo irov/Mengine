@@ -1,82 +1,54 @@
 #pragma once
 
-#include "Interface/ServiceInterface.h"
+#import "Environment/Apple/AppleIncluder.h"
 
-#include "Kernel/ConstString.h"
-#include "Kernel/VectorConstString.h"
-#include "Kernel/Map.h"
-#include "Kernel/String.h"
-#include "Kernel/Params.h"
+@protocol AppleMARSDKProviderInterface <NSObject>
 
-namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
-    class AppleMARSDKProviderInterface
-        : public Mixin
-    {
-    public:
-        virtual void onPlatformInit( const MapParams & _params ) = 0;
-        virtual void onRealName( const MapParams & _params ) = 0;
-        virtual void onEventWithCode( int32_t _code, const Char * _msg ) = 0;
-        virtual void onEventCustom( const Char * _eventName, const MapParams & _params ) = 0;
-        
-    public:
-        virtual void onUserLogin( const MapParams & _params ) = 0;
-        virtual void onUserLogout( const MapParams & _params ) = 0;
-        virtual void onPayPaid( const MapParams & _params ) = 0;
-        
-    public:
-        virtual void onPropComplete( const ConstString & _orderId ) = 0;
-        virtual void onPropError( const ConstString & _orderId ) = 0;
-        
-    public:
-        virtual void onPurchasedNonConsumable( const VectorConstString & _purchased ) = 0;
-        
-    public:
-        virtual void onAdRewardedDidFailed() = 0;
-        virtual void onAdRewardedDidLoaded() = 0;
-        virtual void onAdRewardedDidShow() = 0;
-        virtual void onAdRewardedDidShowFailed() = 0;
-        virtual void onAdRewardedDidClicked() = 0;
-        virtual void onAdRewardedDidClosed() = 0;
-        virtual void onAdRewardedDidSkipped() = 0;
-        virtual void onAdRewardedDidFinished( const Char * _itemName, uint32_t _itemNum ) = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<AppleMARSDKProviderInterface> AppleMARSDKProviderInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
-    class AppleMARSDKServiceInterface
-        : public ServiceInterface
-    {
-        SERVICE_DECLARE( "AppleMARSDKService" )
+- (void)onPlatformInit:(NSDictionary *)params;
+- (void)onRealName:(NSDictionary *)params;
+- (void)onEventWithCode:(NSInteger)code msg:(NSString *)msg;
+- (void)onEventCustom:(NSString *)eventName params:(NSDictionary *)params;
 
-    public:
-        virtual void setProvider( const AppleMARSDKProviderInterfacePtr & _provider ) = 0;
-        virtual const AppleMARSDKProviderInterfacePtr & getProvider() const = 0;
-        
-    public:
-        virtual bool login() = 0;
-        virtual bool logout() = 0;
-        virtual bool switchAccount() = 0;
-        
-    public:
-        virtual void requestNonConsumablePurchased() = 0;
-        
-    public:
-        virtual void submitExtendedData( const Char * _data ) = 0;
-        virtual void submitPaymentData( const Char * _data ) = 0;
-        
-        virtual void propComplete( const ConstString & _productId ) = 0;
-        
-    public:
-        virtual void showRewardVideoAd( const ConstString & _itemName, uint32_t _itemNum ) = 0;
-        
-    public:
-        virtual int64_t getInternetDate() const = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-}
-//////////////////////////////////////////////////////////////////////////
-#define APPLE_MARSDK_SERVICE()\
-    ((Mengine::AppleMARSDKServiceInterface *)SERVICE_GET(Mengine::AppleMARSDKServiceInterface))
-//////////////////////////////////////////////////////////////////////////
+- (void)onUserLogin:(NSDictionary *)params;
+- (void)onUserLogout:(NSDictionary *)params;
+- (void)onPayPaid:(NSDictionary *)params;
+
+- (void)onPropComplete:(NSString *)orderId;
+- (void)onPropError:(NSString *)orderId;
+
+- (void)onPurchasedNonConsumable:(NSArray<NSString *> *)purchased;
+
+- (void)onAdRewardedDidFailed;
+- (void)onAdRewardedDidLoaded;
+- (void)onAdRewardedDidShow;
+- (void)onAdRewardedDidShowFailed;
+- (void)onAdRewardedDidClicked;
+- (void)onAdRewardedDidClosed;
+- (void)onAdRewardedDidSkipped;
+- (void)onAdRewardedDidFinished:(NSString *)itemName itemNum:(NSUInteger)itemNum;
+
+@end
+
+@protocol AppleMARSDKInterface <NSObject>
+
++ (instancetype)sharedInstance;
+
+- (void)setProvider:(id<AppleMARSDKProviderInterface>)provider;
+- (id<AppleMARSDKProviderInterface>)getProvider;
+
+- (BOOL)login;
+- (BOOL)logout;
+- (BOOL)switchAccount;
+
+- (void)requestNonConsumablePurchased;
+
+- (void)submitExtendedData:(NSString *)data;
+- (void)submitPaymentData:(NSString *)data;
+
+- (void)propComplete:(NSString *)productId;
+
+- (void)showRewardVideoAd:(NSString *)itemName itemNum:(NSUInteger)itemNum;
+
+- (NSInteger)getInternetDate;
+
+@end

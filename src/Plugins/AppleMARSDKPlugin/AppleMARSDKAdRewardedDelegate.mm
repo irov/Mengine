@@ -1,19 +1,16 @@
 #import "AppleMARSDKAdRewardedDelegate.h"
 
-#include "Environment/Apple/AppleErrorHelper.h"
-#include "Environment/iOS/iOSDetail.h"
-
-#include "Kernel/Logger.h"
-#include "Kernel/ThreadHelper.h"
+#import "Environment/Apple/AppleDetail.h"
+#import "Environment/iOS/iOSLog.h"
 
 @implementation AppleMARSDKAdRewardedDelegate
 
 #pragma mark -
 
-- (instancetype _Nonnull)initWithService:(Mengine::AppleMARSDKServiceInterface* _Nonnull)service {
+- (instancetype _Nonnull)initWithMARSDK:(id<AppleMARSDKInterface>)marsdk {
     self = [super init];
     
-    self.m_service = service;
+    self.m_marsdk = marsdk;
     
     return self;
 }
@@ -21,143 +18,141 @@
 #pragma mark - MARAdRewardedDelegate
 
 - (void) MARAdRewardedDidFailed:(MARAdErrorCode)code withMessage: (NSString *)message adDict:(NSDictionary *)adDict {
-    LOGGER_MESSAGE( "MARAdRewardedDidFailed code: %d message: %s adDict: %s"
+    IOS_LOGGER_MESSAGE( @"MARAdRewardedDidFailed code: %d message: %s adDict: %s"
         , (int32_t)code
         , [message UTF8String]
         , [[NSString stringWithFormat:@"%@", adDict] UTF8String]
     );
-    
-    Mengine::AppleMARSDKProviderInterfacePtr provider = self.m_service->getProvider();
-    
-    if( provider == nullptr )
+
+    id<AppleMARSDKProviderInterface> provider = [self.m_marsdk getProvider];
+
+    if( provider == nil )
     {
         return;
     }
-    
-    Mengine::Helper::dispatchMainThreadEvent([provider]() {
-        provider->onAdRewardedDidFailed();
-    });
+
+    [AppleDetail addMainQueueOperation:^{
+        [provider onAdRewardedDidFailed];
+    }];
 }
 
 - (void) MARAdRewardedDidLoaded:(NSDictionary *)adDict {
-    LOGGER_MESSAGE( "MARAdRewardedDidLoaded adDict: %s"
+    IOS_LOGGER_MESSAGE( @"MARAdRewardedDidLoaded adDict: %s"
         , [[NSString stringWithFormat:@"%@", adDict] UTF8String]
     );
-    
-    Mengine::AppleMARSDKProviderInterfacePtr provider = self.m_service->getProvider();
-    
-    if( provider == nullptr )
+
+    id<AppleMARSDKProviderInterface> provider = [self.m_marsdk getProvider];
+
+    if( provider == nil )
     {
         return;
     }
-    
-    Mengine::Helper::dispatchMainThreadEvent([provider]() {
-        provider->onAdRewardedDidLoaded();
-    });
+
+    [AppleDetail addMainQueueOperation:^{
+        [provider onAdRewardedDidLoaded];
+    }];
 }
 
 - (void) MARAdRewardedDidShow:(NSDictionary *)adDict {
-    LOGGER_MESSAGE( "MARAdRewardedDidShow adDict: %s"
+    IOS_LOGGER_MESSAGE( @"MARAdRewardedDidShow adDict: %s"
         , [[NSString stringWithFormat:@"%@", adDict] UTF8String]
     );
-    
-    Mengine::AppleMARSDKProviderInterfacePtr provider = self.m_service->getProvider();
-    
-    if( provider == nullptr )
+
+    id<AppleMARSDKProviderInterface> provider = [self.m_marsdk getProvider];
+
+    if( provider == nil )
     {
         return;
     }
-    
-    Mengine::Helper::dispatchMainThreadEvent([provider]() {
-        provider->onAdRewardedDidShow();
-    });
+
+    [AppleDetail addMainQueueOperation:^{
+        [provider onAdRewardedDidShow];
+    }];
 }
 
 - (void) MARAdRewardedDidShowFailed:(NSDictionary *)adDict {
-    LOGGER_MESSAGE( "MARAdRewardedDidShowFailed adDict: %s"
+    IOS_LOGGER_MESSAGE( @"MARAdRewardedDidShowFailed adDict: %s"
         , [[NSString stringWithFormat:@"%@", adDict] UTF8String]
     );
-    
-    Mengine::AppleMARSDKProviderInterfacePtr provider = self.m_service->getProvider();
-    
-    if( provider == nullptr )
+
+    id<AppleMARSDKProviderInterface> provider = [self.m_marsdk getProvider];
+
+    if( provider == nil )
     {
         return;
     }
-    
-    Mengine::Helper::dispatchMainThreadEvent([provider]() {
-        provider->onAdRewardedDidShowFailed();
-    });
+
+    [AppleDetail addMainQueueOperation:^{
+        [provider onAdRewardedDidShowFailed];
+    }];
 }
 
 - (void) MARAdRewardedDidClicked:(NSDictionary *)adDict {
-    LOGGER_MESSAGE( "MARAdRewardedDidClicked adDict: %s"
+    IOS_LOGGER_MESSAGE( @"MARAdRewardedDidClicked adDict: %s"
         , [[NSString stringWithFormat:@"%@", adDict] UTF8String]
     );
-    
-    Mengine::AppleMARSDKProviderInterfacePtr provider = self.m_service->getProvider();
-    
-    if( provider == nullptr )
+
+    id<AppleMARSDKProviderInterface> provider = [self.m_marsdk getProvider];
+
+    if( provider == nil )
     {
         return;
     }
-    
-    Mengine::Helper::dispatchMainThreadEvent([provider]() {
-        provider->onAdRewardedDidClicked();
-    });
+
+    [AppleDetail addMainQueueOperation:^{
+        [provider onAdRewardedDidClicked];
+    }];
 }
 
 - (void) MARAdRewardedDidClosed:(NSDictionary *)adDict {
-    LOGGER_MESSAGE( "MARAdRewardedDidClosed adDict: %s"
+    IOS_LOGGER_MESSAGE( @"MARAdRewardedDidClosed adDict: %s"
         , [[NSString stringWithFormat:@"%@", adDict] UTF8String]
     );
-    
-    Mengine::AppleMARSDKProviderInterfacePtr provider = self.m_service->getProvider();
-    
-    if( provider == nullptr )
+
+    id<AppleMARSDKProviderInterface> provider = [self.m_marsdk getProvider];
+
+    if( provider == nil )
     {
         return;
     }
-    
-    Mengine::Helper::dispatchMainThreadEvent([provider]() {
-        provider->onAdRewardedDidClosed();
-    });
+
+    [AppleDetail addMainQueueOperation:^{
+        [provider onAdRewardedDidClosed];
+    }];
 }
 
 - (void) MARAdRewardedDidSkipped:(NSDictionary *)adDict {
-    LOGGER_MESSAGE( "MARAdRewardedDidSkipped adDict: %s"
+    IOS_LOGGER_MESSAGE( @"MARAdRewardedDidSkipped adDict: %s"
         , [[NSString stringWithFormat:@"%@", adDict] UTF8String]
     );
-    
-    Mengine::AppleMARSDKProviderInterfacePtr provider = self.m_service->getProvider();
-    
-    if( provider == nullptr )
+
+    id<AppleMARSDKProviderInterface> provider = [self.m_marsdk getProvider];
+
+    if( provider == nil )
     {
         return;
     }
-    
-    Mengine::Helper::dispatchMainThreadEvent([provider]() {
-        provider->onAdRewardedDidSkipped();
-    });
+
+    [AppleDetail addMainQueueOperation:^{
+        [provider onAdRewardedDidSkipped];
+    }];
 }
 
 - (void) MARAdRewardedDidFinished:(NSString *)itemName itemNum:(int)itemNum adDict:(NSDictionary *)adDict {
-    LOGGER_MESSAGE( "MARAdRewardedDidFinished adDict: %s"
+    IOS_LOGGER_MESSAGE( @"MARAdRewardedDidFinished adDict: %s"
         , [[NSString stringWithFormat:@"%@", adDict] UTF8String]
     );
-    
-    Mengine::AppleMARSDKProviderInterfacePtr provider = self.m_service->getProvider();
-    
-    if( provider == nullptr )
+
+    id<AppleMARSDKProviderInterface> provider = [self.m_marsdk getProvider];
+
+    if( provider == nil )
     {
         return;
     }
-    
-    Mengine::Helper::dispatchMainThreadEvent([provider, itemName, itemNum]() {
-        const Mengine::Char * itemName_str = [itemName UTF8String];
-        
-        provider->onAdRewardedDidFinished( itemName_str, itemNum );
-    });
+
+    [AppleDetail addMainQueueOperation:^{
+        [provider onAdRewardedDidFinished:itemName itemNum:itemNum];
+    }];
 }
 
 @end

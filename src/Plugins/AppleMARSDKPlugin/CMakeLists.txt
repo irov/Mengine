@@ -20,9 +20,6 @@ ADD_FILTER(
 src
     AppleMARSDKInterface.h
 
-    AppleMARSDKPlugin.h
-    AppleMARSDKPlugin.mm
-
     AppleMARSDKApplicationDelegate.h
     AppleMARSDKApplicationDelegate.mm
 
@@ -31,9 +28,6 @@ src
 
     AppleMARSDKAdRewardedDelegate.h
     AppleMARSDKAdRewardedDelegate.mm
-
-    AppleMARSDKService.h
-    AppleMARSDKService.mm
 )
 
 if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)

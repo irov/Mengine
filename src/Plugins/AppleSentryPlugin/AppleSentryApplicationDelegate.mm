@@ -1,20 +1,42 @@
 #import "AppleSentryApplicationDelegate.h"
+#import "AppleSentryNotificationObserver.h"
 
 #import "Environment/Apple/AppleBundle.h"
 #import "Environment/Apple/AppleUserDefaults.h"
 
 #include "Kernel/BuildMode.h"
+#include "Kernel/OptionHelper.h"
 
 #import "Sentry/Sentry.h"
 
 @implementation AppleSentryApplicationDelegate
+{
+    Mengine::AppleSentryNotificationObserver * m_notificationObserver;
+}
 
 #pragma mark - iOSPluginApplicationDelegateInterface
+
+static BOOL AppleSentry_isAvailable() {
+    if( HAS_OPTION( "sentry" ) == true )
+    {
+        return YES;
+    }
+
+    if( HAS_OPTION( "nosentry" ) == true )
+    {
+        return NO;
+    }
+
+    BOOL available = Mengine::Helper::AppleGetBundlePluginConfigBoolean( @("MengineAppleSentryPlugin"), @("Available"), YES );
+
+    return available;
+}
 
 - (instancetype _Nonnull)init {
     self = [super init];
     
     self.m_sendAllow = NO;
+    m_notificationObserver = nullptr;
     
     return self;
 }
@@ -32,10 +54,18 @@
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    (void)application;
+    (void)launchOptions;
+
+    if( AppleSentry_isAvailable() == NO )
+    {
+        return YES;
+    }
+
     NSString * AppleSentryPlugin_DSN = Mengine::Helper::AppleGetBundlePluginConfigString( @("MengineAppleSentryPlugin"), @("DSN"), nil );
     
     if( AppleSentryPlugin_DSN == nil ) {
-        return NO;
+        return YES;
     }
     
     BOOL passGDPR = Mengine::Helper::AppleGetUserDefaultsBoolean( @("mengine.gdpr.pass"), NO );
@@ -78,8 +108,26 @@
             return breadcrumb;
         };
     }];
+
+    if( m_notificationObserver == nullptr )
+    {
+        m_notificationObserver = new Mengine::AppleSentryNotificationObserver();
+        m_notificationObserver->initialize();
+        m_notificationObserver->setupApplicationScope();
+    }
     
     return YES;
+}
+
+- (void)onFinalize {
+    if( m_notificationObserver == nullptr )
+    {
+        return;
+    }
+
+    m_notificationObserver->finalize();
+    delete m_notificationObserver;
+    m_notificationObserver = nullptr;
 }
 
 @end

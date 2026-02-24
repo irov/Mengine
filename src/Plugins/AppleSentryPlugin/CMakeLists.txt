@@ -2,13 +2,8 @@ MENGINE_PROJECT(AppleSentryPlugin)
 
 ADD_FILTER(
 src
-    AppleSentryInterface.h
-
-    AppleSentryPlugin.h
-    AppleSentryPlugin.mm
-    
-    AppleSentryService.h
-    AppleSentryService.mm
+    AppleSentryNotificationObserver.h
+    AppleSentryNotificationObserver.mm
 )
 
 if(MENGINE_TARGET_IOS)

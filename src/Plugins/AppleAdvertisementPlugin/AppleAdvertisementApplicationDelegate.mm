@@ -7,6 +7,10 @@
 #import "Environment/iOS/iOSDetail.h"
 #import "Environment/iOS/iOSLog.h"
 
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+#   include "AppleAdvertisementScriptEmbedding.h"
+#endif
+
 #include "Interface/ApplicationInterface.h"
 #include "Interface/SoundServiceInterface.h"
 
@@ -481,6 +485,18 @@
 }
 
 #pragma mark - iOSPluginApplicationDelegateInterface
+
+- (void)onRunBegin {
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+    Mengine::Helper::addScriptEmbedding<Mengine::AppleAdvertisementScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE );
+#endif
+}
+
+- (void)onStopEnd {
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+    Mengine::Helper::removeScriptEmbedding<Mengine::AppleAdvertisementScriptEmbedding>();
+#endif
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     

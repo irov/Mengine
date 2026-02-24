@@ -6,9 +6,6 @@ ADD_PLUGIN_OPTION(MENGINE_PLUGIN_APPLE_ADMOB REWARDED OFF "MENGINE_PLUGIN_APPLE_
 
 ADD_FILTER(
 src
-    AppleAdMobPlugin.h
-    AppleAdMobPlugin.mm
-
     AppleAdMobInterface.h
     
     AppleAdMobBaseDelegate.h

@@ -10,7 +10,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     if (Mengine::Helper::iOSHasBundlePluginConfig(@"MengineAppleOneSignalPlugin") == NO) {
-        return NO;
+        return YES;
     }
     
     NSString * MengineAppleOneSignalPlugin_AppId = Mengine::Helper::AppleGetBundlePluginConfigString(@"MengineAppleOneSignalPlugin", @"AppId", nil);
@@ -19,6 +19,11 @@
     [OneSignal setLogLevel:ONE_S_LL_VERBOSE visualLevel:ONE_S_LL_NONE];
 #endif
     
+    if( MengineAppleOneSignalPlugin_AppId == nil )
+    {
+        return YES;
+    }
+
     [OneSignal initWithLaunchOptions:launchOptions];
     [OneSignal setAppId:MengineAppleOneSignalPlugin_AppId];
     

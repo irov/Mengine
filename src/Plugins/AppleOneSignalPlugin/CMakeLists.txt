@@ -2,9 +2,6 @@ MENGINE_PROJECT(AppleOneSignalPlugin)
 
 ADD_FILTER(
 src
-    AppleOneSignalPlugin.h
-    AppleOneSignalPlugin.mm
-    
     AppleOneSignalApplicationDelegate.h
     AppleOneSignalApplicationDelegate.mm
 )

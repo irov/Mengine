@@ -1,9 +1,12 @@
 #import "iOSUIApplicationDelegate.h"
 
 #include "Interface/PlatformServiceInterface.h"
+#include "Interface/PluginServiceInterface.h"
 
 #include "Environment/SDL3/SDL3Includer.h"
 #include "Environment/SDL3/SDL3PlatformServiceExtensionInterface.h"
+
+#include "Kernel/ConstStringHelper.h"
 
 #import "iOSApplicationDelegates.h"
 
@@ -524,6 +527,17 @@
         }];
         
         return;
+    }
+
+    if( SERVICE_IS_INITIALIZE( PluginServiceInterface ) == true ) {
+        NSArray<NSString *> * delegates = [iOSApplicationDelegates getApplicationDelegates];
+
+        for( NSString * pluginNameString in delegates ) {
+            const Mengine::ConstString pluginName = Mengine::Helper::stringizeString( [pluginNameString UTF8String] );
+
+            PLUGIN_SERVICE()
+                ->setAvailablePlugin( pluginName, true );
+        }
     }
     
     @autoreleasepool {

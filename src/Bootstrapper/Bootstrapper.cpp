@@ -393,74 +393,6 @@ PLUGIN_EXPORT( Win32AntifreezeMonitor );
 PLUGIN_EXPORT( AndroidNativePython );
 #endif
 //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_APPLE_NATIVE_PYTHON_STATIC)
-PLUGIN_EXPORT( AppleNativePython );
-#endif
-//////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_APPLE_ADVERTISEMENT_STATIC)
-PLUGIN_EXPORT( AppleAdvertisement );
-#endif
-//////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_APPLE_GAMECENTER_STATIC)
-PLUGIN_EXPORT( AppleGameCenter );
-#endif
-//////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_APPLE_APPTRACKING_STATIC)
-PLUGIN_EXPORT( AppleAppTracking );
-#endif
-//////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_APPLE_MARSDK_STATIC)
-PLUGIN_EXPORT( AppleMARSDK );
-#endif
-//////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_STATIC)
-PLUGIN_EXPORT( AppleAppLovin );
-#endif
-//////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_APPLE_ADMOB_STATIC)
-PLUGIN_EXPORT( AppleAdMob );
-#endif
-//////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_APPLE_FIREBASE_CRASHLYTICS_STATIC)
-PLUGIN_EXPORT( AppleFirebaseCrashlytics );
-#endif
-//////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_APPLE_FIREBASE_MESSAGING_STATIC)
-PLUGIN_EXPORT( AppleFirebaseMessaging );
-#endif
-//////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_APPLE_FIREBASE_REMOTECONFIG_STATIC)
-PLUGIN_EXPORT( AppleFirebaseRemoteConfig );
-#endif
-//////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_APPLE_FIREBASE_PERFORMANCEMONITORING_STATIC)
-PLUGIN_EXPORT( AppleFirebasePerformanceMonitoring );
-#endif
-//////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_APPLE_FACEBOOK_STATIC)
-PLUGIN_EXPORT( AppleFacebook );
-#endif
-//////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_APPLE_HELPSHIFT_STATIC)
-PLUGIN_EXPORT( AppleHelpshift );
-#endif
-//////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_APPLE_STOREREVIEW_STATIC)
-PLUGIN_EXPORT( AppleStoreReview );
-#endif
-//////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_APPLE_STOREINAPPPURCHASE_STATIC)
-PLUGIN_EXPORT( AppleStoreInAppPurchase );
-#endif
-//////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_APPLE_ADJUST_STATIC)
-PLUGIN_EXPORT( AppleAdjust );
-#endif
-//////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_APPLE_SENTRY_STATIC)
-PLUGIN_EXPORT( AppleSentry );
-#endif
-//////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_XMLTOBIN_STATIC)
 PLUGIN_EXPORT( XmlToBin );
 #endif
@@ -1283,10 +1215,6 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( Win32Sentry, "plugin Win32Sentry...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
-#if defined(MENGINE_PLUGIN_APPLE_SENTRY_STATIC)
-        MENGINE_ADD_PLUGIN( AppleSentry, "plugin AppleSentry...", MENGINE_DOCUMENT_FACTORABLE );
-#endif        
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1492,62 +1420,6 @@ namespace Mengine
 
 #if defined(MENGINE_PLUGIN_ANDROID_NATIVE_PYTHON_STATIC)
         MENGINE_ADD_PLUGIN( AndroidNativePython, "plugin AndroidNativePython...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-#if defined(MENGINE_PLUGIN_APPLE_NATIVE_PYTHON_STATIC)
-        MENGINE_ADD_PLUGIN( AppleNativePython, "plugin AppleNativePython...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-#if defined(MENGINE_PLUGIN_APPLE_ADVERTISEMENT_STATIC)
-        MENGINE_ADD_PLUGIN( AppleAdvertisement, "plugin AppleAdvertisement...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-#if defined(MENGINE_PLUGIN_APPLE_GAMECENTER_STATIC)
-        MENGINE_ADD_PLUGIN( AppleGameCenter, "plugin AppleGameCenter...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-#if defined(MENGINE_PLUGIN_APPLE_APPTRACKING_STATIC)
-        MENGINE_ADD_PLUGIN( AppleAppTracking, "plugin AppleAppTracking...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-#if defined(MENGINE_PLUGIN_APPLE_MARSDK_STATIC)
-        MENGINE_ADD_PLUGIN( AppleMARSDK, "plugin AppleMARSDK...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-#if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_STATIC)
-        MENGINE_ADD_PLUGIN( AppleAppLovin, "plugin AppleAppLovin...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-#if defined(MENGINE_PLUGIN_APPLE_ADMOB_STATIC)
-        MENGINE_ADD_PLUGIN( AppleAdMob, "plugin AppleAdMob...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-#if defined(MENGINE_PLUGIN_APPLE_FIREBASE_MESSAGING_STATIC)
-        MENGINE_ADD_PLUGIN( AppleFirebaseMessaging, "plugin AppleFirebaseMessaging...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-#if defined(MENGINE_PLUGIN_APPLE_FIREBASE_REMOTECONFIG_STATIC)
-        MENGINE_ADD_PLUGIN( AppleFirebaseRemoteConfig, "plugin AppleFirebaseRemoteConfig...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-#if defined(MENGINE_PLUGIN_APPLE_FACEBOOK_STATIC)
-        MENGINE_ADD_PLUGIN( AppleFacebook, "plugin AppleFacebook...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-#if defined(MENGINE_PLUGIN_APPLE_HELPSHIFT_STATIC)
-        MENGINE_ADD_PLUGIN( AppleHelpshift, "plugin AppleHelpshift...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-#if defined(MENGINE_PLUGIN_APPLE_STOREREVIEW_STATIC)
-        MENGINE_ADD_PLUGIN( AppleStoreReview, "plugin AppleStoreReview...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-#if defined(MENGINE_PLUGIN_APPLE_STOREINAPPPURCHASE_STATIC)
-        MENGINE_ADD_PLUGIN( AppleStoreInAppPurchase, "plugin AppleStoreInAppPurchase...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-#if defined(MENGINE_PLUGIN_APPLE_ADJUST_STATIC)
-        MENGINE_ADD_PLUGIN( AppleAdjust, "plugin AppleAdjust...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #if defined(MENGINE_PLUGIN_XMLTOBIN_STATIC)

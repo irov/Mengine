@@ -12,7 +12,7 @@
 @interface AppleAdvertisementPlugin : NSObject<iOSPluginInterface, AppleAdvertisementInterface, iOSPluginConfigDelegateInterface>
 
 - (instancetype)init;
-+ (instancetype) sharedInstance;
++ (instancetype)sharedInstance;
 
 @property (nonatomic, strong) id<AppleAdvertisementProviderInterface> m_provider;
 

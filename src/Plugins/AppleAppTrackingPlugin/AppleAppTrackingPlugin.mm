@@ -57,7 +57,7 @@
 
 #pragma mark - AppleAppTrackingInterface
 
-+ (instancetype) sharedInstance {
++ (instancetype)sharedInstance {
     static AppleAppTrackingPlugin * sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{

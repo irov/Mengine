@@ -17,7 +17,7 @@
 
 @implementation AppleFirebaseCrashlyticsANRMonitor
 
-+ (instancetype) sharedInstance {
++ (instancetype)sharedInstance {
     static AppleFirebaseCrashlyticsANRMonitor *sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{

@@ -9,7 +9,7 @@
 
 @interface AppleAppTrackingPlugin : NSObject<iOSPluginInterface, AppleAppTrackingInterface, iOSPluginTransparencyConsentDelegateInterface>
 
-+ (instancetype) sharedInstance;
++ (instancetype)sharedInstance;
 
 @property (nonatomic, assign) EAppleAppTrackingAuthorization m_status;
 @property (nonatomic, strong) NSString * m_idfa;

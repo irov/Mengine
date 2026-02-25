@@ -6,7 +6,7 @@
 
 @implementation AppleFirebasePlugin
 
-+ (instancetype) sharedInstance {
++ (instancetype)sharedInstance {
     static AppleFirebasePlugin *sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{

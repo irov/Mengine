@@ -6,7 +6,7 @@
 
 @interface AppleFirebaseCrashlyticsANRMonitor : NSObject
 
-+ (instancetype) sharedInstance;
++ (instancetype)sharedInstance;
 
 - (instancetype)init NS_UNAVAILABLE;
 

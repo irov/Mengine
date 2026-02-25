@@ -15,7 +15,7 @@
 
 @implementation AppleStoreReviewPlugin
 
-+ (instancetype) sharedInstance {
++ (instancetype)sharedInstance {
     static AppleStoreReviewPlugin * sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{

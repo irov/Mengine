@@ -2,7 +2,7 @@
 
 @implementation ApplePythonProvider
 
-- (instancetype) initWithCbs:(const pybind::dict &)cbs args:(const pybind::args &)args {
+- (instancetype)initWithCbs:(const pybind::dict &)cbs args:(const pybind::args &)args {
     self = [super init];
     
     self.m_cbs = cbs;

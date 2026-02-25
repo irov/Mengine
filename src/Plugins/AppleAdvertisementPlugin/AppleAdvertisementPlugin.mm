@@ -42,7 +42,7 @@
 
 #pragma mark - AppleAdvertisementInterface
 
-+ (instancetype) sharedInstance {
++ (instancetype)sharedInstance {
     static AppleAdvertisementPlugin * sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{

@@ -13,7 +13,7 @@
 
 @implementation AppleDatadogPlugin
 
-+ (instancetype) sharedInstance {
++ (instancetype)sharedInstance {
     static AppleDatadogPlugin *sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{

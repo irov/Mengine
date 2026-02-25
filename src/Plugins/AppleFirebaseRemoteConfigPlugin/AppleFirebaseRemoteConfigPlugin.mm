@@ -9,6 +9,7 @@
 #endif
 
 #include "Kernel/Logger.h"
+#include "Kernel/ScriptEmbeddingHelper.h"
 
 #import <FirebaseRemoteConfig/FirebaseRemoteConfig.h>
 
@@ -38,7 +39,7 @@
 
 - (void)onRunBegin {
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-    Mengine::Helper::addScriptEmbedding<Mengine::AppleFirebaseRemoteConfigScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE );
+    Mengine::Helper::addScriptEmbedding<Mengine::AppleFirebaseRemoteConfigScriptEmbedding>( MENGINE_DOCUMENT_FUNCTION );
 #endif
 }
 

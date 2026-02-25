@@ -15,7 +15,7 @@
 
 @implementation AppleFirebaseCrashlyticsPlugin
 
-+ (instancetype) sharedInstance {
++ (instancetype)sharedInstance {
     static AppleFirebaseCrashlyticsPlugin *sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{

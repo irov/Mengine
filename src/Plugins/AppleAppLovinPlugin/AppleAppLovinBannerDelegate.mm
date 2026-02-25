@@ -7,7 +7,7 @@
 #import "Environment/iOS/iOSDetail.h"
 #import "Environment/iOS/iOSLog.h"
 
-#import "AppleAppLovinApplicationDelegate.h"
+#import "AppleAppLovinPlugin.h"
 
 @implementation AppleAppLovinBannerDelegate
 
@@ -261,7 +261,7 @@
 
     [self eventRevenue:ad];
     
-    id<AppleAdvertisementCallbackInterface> callback = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementBannerCallback];
+    id<AppleAdvertisementCallbackInterface> callback = [[AppleAppLovinPlugin sharedInstance] getAdvertisementBannerCallback];
     
     if (callback != nil) {
         [callback onAppleAdvertisementRevenuePaid:ad.placement withRevenue:ad.revenue];

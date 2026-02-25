@@ -20,8 +20,8 @@ ADD_FILTER(
 src
     AppleMARSDKInterface.h
 
-    AppleMARSDKApplicationDelegate.h
-    AppleMARSDKApplicationDelegate.mm
+    AppleMARSDKPlugin.h
+    AppleMARSDKPlugin.mm
 
     AppleMARSDKDelegate.h
     AppleMARSDKDelegate.mm
@@ -42,7 +42,7 @@ endif()
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_APPLE_MARSDK)
 
-ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleMARSDKApplicationDelegate")
+ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleMARSDKPlugin")
 
 ADD_MENGINE_COCOAPOD("MARSDKCore_ios" "NO-GIT" "NO-TAG")
 

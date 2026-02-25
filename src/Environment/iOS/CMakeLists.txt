@@ -49,7 +49,7 @@ src
     
     iOSPluginUserIdDelegateInterface.h
     iOSPluginAdRevenueDelegateInterface.h
-    iOSPluginApplicationDelegateInterface.h
+    iOSPluginInterface.h
     iOSPluginAppTrackingTransparencyDelegateInterface.h
     iOSPluginTransparencyConsentDelegateInterface.h
     iOSPluginLoggerDelegateInterface.h

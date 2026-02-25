@@ -1,6 +1,6 @@
 #include "AppleAdjustScriptEmbedding.h"
 
-#import "AppleAdjustApplicationDelegate.h"
+#import "AppleAdjustPlugin.h"
 
 #include "Environment/Python/PythonIncluder.h"
 
@@ -11,7 +11,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool AppleAdjust_eventTraking( NSString * _token )
         {
-            AppleAdjustApplicationDelegate * delegate = [AppleAdjustApplicationDelegate sharedInstance];
+            AppleAdjustPlugin * delegate = [AppleAdjustPlugin sharedInstance];
 
             if( delegate == nil )
             {
@@ -25,7 +25,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool AppleAdjust_revenueTracking( NSString * _token, double _amount, NSString * _currency )
         {
-            AppleAdjustApplicationDelegate * delegate = [AppleAdjustApplicationDelegate sharedInstance];
+            AppleAdjustPlugin * delegate = [AppleAdjustPlugin sharedInstance];
 
             if( delegate == nil )
             {

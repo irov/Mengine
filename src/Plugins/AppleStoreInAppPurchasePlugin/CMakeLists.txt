@@ -4,8 +4,8 @@ ADD_FILTER(
 src
     AppleStoreInAppPurchaseInterface.h
     
-    AppleStoreInAppPurchaseApplicationDelegate.h
-    AppleStoreInAppPurchaseApplicationDelegate.mm
+    AppleStoreInAppPurchasePlugin.h
+    AppleStoreInAppPurchasePlugin.mm
 	
 	AppleStoreInAppPurchaseEntitlements.h
 	AppleStoreInAppPurchaseEntitlements.mm
@@ -36,7 +36,7 @@ endif()
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_APPLE_STOREINAPPPURCHASE)
 
-ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleStoreInAppPurchaseApplicationDelegate")
+ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleStoreInAppPurchasePlugin")
 
 ADD_MENGINE_APPLE_FRAMEWORK(StoreKit)
 

@@ -2,8 +2,8 @@ MENGINE_PROJECT(AppleAdjustPlugin)
 
 ADD_FILTER(
 src
-    AppleAdjustApplicationDelegate.h
-    AppleAdjustApplicationDelegate.mm
+    AppleAdjustPlugin.h
+    AppleAdjustPlugin.mm
 )
 
 if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
@@ -19,7 +19,7 @@ endif()
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_APPLE_ADJUST)
 
 ADD_MENGINE_COCOAPOD("Adjust" "NO-GIT" "4.38.1")
-ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleAdjustApplicationDelegate")
+ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleAdjustPlugin")
 
 IF(MENGINE_TARGET_IOS)
     ADD_MENGINE_APPLE_FRAMEWORK(AdSupport)

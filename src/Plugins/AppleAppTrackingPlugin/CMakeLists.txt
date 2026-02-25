@@ -4,8 +4,8 @@ ADD_FILTER(
 src
     AppleAppTrackingInterface.h
     
-    AppleAppTrackingApplicationDelegate.h
-    AppleAppTrackingApplicationDelegate.mm
+    AppleAppTrackingPlugin.h
+    AppleAppTrackingPlugin.mm
 )
 
 if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
@@ -20,7 +20,7 @@ endif()
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_APPLE_APPTRACKING)
 
-ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleAppTrackingApplicationDelegate")
+ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleAppTrackingPlugin")
 
 ADD_MENGINE_APPLE_FRAMEWORK(AppTrackingTransparency)
 ADD_MENGINE_APPLE_FRAMEWORK(AdSupport)

@@ -12,7 +12,7 @@
 #import "Environment/iOS/iOSDetail.h"
 #import "Environment/iOS/iOSLog.h"
 
-#import "AppleAdMobApplicationDelegate.h"
+#import "AppleAdMobPlugin.h"
 
 @implementation AppleAdMobInterstitialDelegate
 
@@ -163,7 +163,7 @@
     
     [self destroyInterstitialAd];
     
-    id<AppleAdvertisementCallbackInterface> callback = [[AppleAdMobApplicationDelegate sharedInstance] getAdvertisementInterstitialCallback];
+    id<AppleAdvertisementCallbackInterface> callback = [[AppleAdMobPlugin sharedInstance] getAdvertisementInterstitialCallback];
     
     if (callback != nil) {
         [callback onAppleAdvertisementShowFailed:@"unknown" withError:error.code];
@@ -183,7 +183,7 @@
     
     [self destroyInterstitialAd];
     
-    id<AppleAdvertisementCallbackInterface> callback = [[AppleAdMobApplicationDelegate sharedInstance] getAdvertisementInterstitialCallback];
+    id<AppleAdvertisementCallbackInterface> callback = [[AppleAdMobPlugin sharedInstance] getAdvertisementInterstitialCallback];
     
     if (callback != nil) {
         [callback onAppleAdvertisementShowSuccess:@"unknown"];

@@ -4,8 +4,8 @@ ADD_FILTER(
 src
     AppleStoreReviewInterface.h
     
-    AppleStoreReviewApplicationDelegate.h
-    AppleStoreReviewApplicationDelegate.mm
+    AppleStoreReviewPlugin.h
+    AppleStoreReviewPlugin.mm
 )
 
 if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
@@ -20,7 +20,7 @@ endif()
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_APPLE_STOREREVIEW)
 
-ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleStoreReviewApplicationDelegate")
+ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleStoreReviewPlugin")
 
 ADD_MENGINE_APPLE_FRAMEWORK(StoreKit)
 

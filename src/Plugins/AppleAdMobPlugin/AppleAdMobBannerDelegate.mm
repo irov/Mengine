@@ -7,7 +7,7 @@
 #import "Environment/iOS/iOSDetail.h"
 #import "Environment/iOS/iOSLog.h"
 
-#import "AppleAdMobApplicationDelegate.h"
+#import "AppleAdMobPlugin.h"
 
 @implementation AppleAdMobBannerDelegate
 

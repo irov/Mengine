@@ -7,7 +7,7 @@
 
 #import "Environment/Python/ApplePythonProvider.h"
 
-#import "AppleAdvertisementApplicationDelegate.h"
+#import "AppleAdvertisementPlugin.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/ConstStringHelper.h"
@@ -189,26 +189,26 @@ namespace Mengine
         {
             id<AppleAdvertisementCallbackInterface> callback = [[PythonAppleAdvertisementBannerCallback alloc] initWithCbs:_cbs args:_args];
             
-            [[AppleAdvertisementApplicationDelegate sharedInstance] setBannerCallback:callback];
+            [[AppleAdvertisementPlugin sharedInstance] setBannerCallback:callback];
         }
         //////////////////////////////////////////////////////////////////////////
         static void appleAdvertisement_setInterstitialCallback( const pybind::dict & _cbs, const pybind::args & _args )
         {
             id<AppleAdvertisementCallbackInterface> callback = [[PythonAppleAdvertisementInterstitialCallback alloc] initWithCbs:_cbs args:_args];
             
-            [[AppleAdvertisementApplicationDelegate sharedInstance] setInterstitialCallback:callback];
+            [[AppleAdvertisementPlugin sharedInstance] setInterstitialCallback:callback];
         }
         //////////////////////////////////////////////////////////////////////////
         static void appleAdvertisement_setRewardedCallback( const pybind::dict & _cbs, const pybind::args & _args )
         {
             id<AppleAdvertisementCallbackInterface> callback = [[PythonAppleAdvertisementRewardedCallback alloc] initWithCbs:_cbs args:_args];
             
-            [[AppleAdvertisementApplicationDelegate sharedInstance] setRewardedCallback:callback];
+            [[AppleAdvertisementPlugin sharedInstance] setRewardedCallback:callback];
         }
         //////////////////////////////////////////////////////////////////////////
         static bool appleAdvertisement_hasBanner()
         {
-            if ([[AppleAdvertisementApplicationDelegate sharedInstance] hasBanner] == NO) {
+            if ([[AppleAdvertisementPlugin sharedInstance] hasBanner] == NO) {
                 return false;
             }
             
@@ -217,7 +217,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool appleAdvertisement_showBanner()
         {
-            if ([[AppleAdvertisementApplicationDelegate sharedInstance] showBanner] == NO) {
+            if ([[AppleAdvertisementPlugin sharedInstance] showBanner] == NO) {
                 return false;
             }
             
@@ -226,7 +226,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool appleAdvertisement_hideBanner()
         {
-            if ([[AppleAdvertisementApplicationDelegate sharedInstance] hideBanner] == NO) {
+            if ([[AppleAdvertisementPlugin sharedInstance] hideBanner] == NO) {
                 return false;
             }
             
@@ -237,7 +237,7 @@ namespace Mengine
         {
             uint32_t width;
             uint32_t height;
-            if ([[AppleAdvertisementApplicationDelegate sharedInstance] getBannerWidth:&width height:&height] == NO) {
+            if ([[AppleAdvertisementPlugin sharedInstance] getBannerWidth:&width height:&height] == NO) {
                 return _kernel->ret_none();
             }
             
@@ -250,7 +250,7 @@ namespace Mengine
         {
             uint32_t width;
             uint32_t height;
-            if ([[AppleAdvertisementApplicationDelegate sharedInstance] getBannerWidth:&width height:&height] == NO) {
+            if ([[AppleAdvertisementPlugin sharedInstance] getBannerWidth:&width height:&height] == NO) {
                 return _kernel->ret_none();
             }
             
@@ -260,7 +260,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         static bool appleAdvertisement_hasInterstitial() {
-            if ([[AppleAdvertisementApplicationDelegate sharedInstance] hasInterstitial] == NO) {
+            if ([[AppleAdvertisementPlugin sharedInstance] hasInterstitial] == NO) {
                 return false;
             }
             
@@ -268,14 +268,14 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         static bool appleAdvertisement_canYouShowInterstitial( NSString * _placement ) {
-            if ([[AppleAdvertisementApplicationDelegate sharedInstance] canYouShowInterstitial:_placement] == NO) {
+            if ([[AppleAdvertisementPlugin sharedInstance] canYouShowInterstitial:_placement] == NO) {
                 return false;
             }
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
         static bool appleAdvertisement_showInterstitial( NSString * _placement ) {
-            if ([[AppleAdvertisementApplicationDelegate sharedInstance] showInterstitial:_placement] == NO) {
+            if ([[AppleAdvertisementPlugin sharedInstance] showInterstitial:_placement] == NO) {
                 return false;
             }
             
@@ -283,7 +283,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         static bool appleAdvertisement_isShowingInterstitial() {
-            if ([[AppleAdvertisementApplicationDelegate sharedInstance] isShowingInterstitial] == NO) {
+            if ([[AppleAdvertisementPlugin sharedInstance] isShowingInterstitial] == NO) {
                 return false;
             }
             
@@ -291,7 +291,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         static bool appleAdvertisement_hasRewarded() {
-            if ([[AppleAdvertisementApplicationDelegate sharedInstance] hasRewarded] == NO) {
+            if ([[AppleAdvertisementPlugin sharedInstance] hasRewarded] == NO) {
                 return false;
             }
             
@@ -299,7 +299,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         static bool appleAdvertisement_canOfferRewarded( NSString * _placement ) {
-            if ([[AppleAdvertisementApplicationDelegate sharedInstance] canOfferRewarded:_placement] == NO) {
+            if ([[AppleAdvertisementPlugin sharedInstance] canOfferRewarded:_placement] == NO) {
                 return false;
             }
             
@@ -307,7 +307,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         static bool appleAdvertisement_canYouShowRewarded( NSString * _placement ) {
-            if ([[AppleAdvertisementApplicationDelegate sharedInstance] canYouShowRewarded:_placement] == NO) {
+            if ([[AppleAdvertisementPlugin sharedInstance] canYouShowRewarded:_placement] == NO) {
                 return false;
             }
             
@@ -315,7 +315,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         static bool appleAdvertisement_showRewarded( NSString * _placement ) {
-            if ([[AppleAdvertisementApplicationDelegate sharedInstance] showRewarded:_placement] == NO) {
+            if ([[AppleAdvertisementPlugin sharedInstance] showRewarded:_placement] == NO) {
                 return false;
             }
             
@@ -323,7 +323,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         static bool appleAdvertisement_isShowingRewarded() {
-            if ([[AppleAdvertisementApplicationDelegate sharedInstance] isShowingRewarded] == NO) {
+            if ([[AppleAdvertisementPlugin sharedInstance] isShowingRewarded] == NO) {
                 return false;
             }
             

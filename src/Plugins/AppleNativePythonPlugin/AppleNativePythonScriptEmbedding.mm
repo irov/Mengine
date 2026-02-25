@@ -6,7 +6,7 @@
 #import "Environment/Python/PythonScriptWrapper.h"
 #import "Environment/Python/PythonCallbackProvider.h"
 
-#import "AppleNativePythonApplicationDelegate.h"
+#import "AppleNativePythonPlugin.h"
 
 namespace Mengine
 {
@@ -271,7 +271,7 @@ namespace Mengine
 
             AppleSemaphoreListenerInterfacePtr listener = Helper::makeFactorableUnique<PythonAppleSemaphoreListener>( MENGINE_DOCUMENT_PYTHON, _cb, _args );
 
-            [[AppleNativePythonApplicationDelegate sharedInstance] waitSemaphore:_name listener:listener];
+            [[AppleNativePythonPlugin sharedInstance] waitSemaphore:_name listener:listener];
         }
         ///////////////////////////////////////////////////////////////////////
     }

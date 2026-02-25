@@ -5,7 +5,7 @@
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonDocument.h"
 
-#import "AppleAppTrackingApplicationDelegate.h"
+#import "AppleAppTrackingPlugin.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/ConstStringHelper.h"
@@ -19,7 +19,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void AppleAppTracking_authorization()
         {
-            [[AppleAppTrackingApplicationDelegate sharedInstance] authorization];
+            [[AppleAppTrackingPlugin sharedInstance] authorization];
         };
         //////////////////////////////////////////////////////////////////////////
     }

@@ -1,7 +1,7 @@
 #include "AppleStoreInAppPurchaseScriptEmbedding.h"
 
 #include "AppleStoreInAppPurchaseInterface.h"
-#import "AppleStoreInAppPurchaseApplicationDelegate.h"
+#import "AppleStoreInAppPurchasePlugin.h"
 
 #include "AppleStoreInAppPurchasePaymentTransaction.h"
 #include "AppleStoreInAppPurchaseProduct.h"
@@ -64,17 +64,17 @@ namespace Mengine
         {
             AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr provider = Helper::makeFactorableUnique<PythonAppleStoreInAppPurchasePaymentTransactionProvider>( MENGINE_DOCUMENT_PYTHON, _cbs, _args );
 
-            [[AppleStoreInAppPurchaseApplicationDelegate sharedInstance] setPaymentTransactionProvider:provider];
+            [[AppleStoreInAppPurchasePlugin sharedInstance] setPaymentTransactionProvider:provider];
         }
         //////////////////////////////////////////////////////////////////////////
         static void AppleStoreInAppPurchase_removePaymentTransactionProvider()
         {
-            [[AppleStoreInAppPurchaseApplicationDelegate sharedInstance] setPaymentTransactionProvider:nullptr];
+            [[AppleStoreInAppPurchasePlugin sharedInstance] setPaymentTransactionProvider:nullptr];
         }
         //////////////////////////////////////////////////////////////////////////
         static bool AppleStoreInAppPurchase_canMakePayments()
         {
-            return [[AppleStoreInAppPurchaseApplicationDelegate sharedInstance] canMakePayments];
+            return [[AppleStoreInAppPurchasePlugin sharedInstance] canMakePayments];
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonAppleStoreInAppPurchaseProductsResponse
@@ -109,7 +109,7 @@ namespace Mengine
         {
             AppleStoreInAppPurchaseProductsResponseInterfacePtr response = Helper::makeFactorableUnique<PythonAppleStoreInAppPurchaseProductsResponse>( MENGINE_DOCUMENT_PYTHON, _cbs, _args );
             
-            AppleStoreInAppPurchaseProductsRequestInterfacePtr request = [[AppleStoreInAppPurchaseApplicationDelegate sharedInstance] requestProducts:_consumableIdentifiers
+            AppleStoreInAppPurchaseProductsRequestInterfacePtr request = [[AppleStoreInAppPurchasePlugin sharedInstance] requestProducts:_consumableIdentifiers
                                                                                                                nonconsumableIdentifiers:_nonconsumableIdentifiers
                                                                                                                                    cb:response];
             
@@ -118,19 +118,19 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool AppleStoreInAppPurchase_isOwnedProduct( NSString * _productIdentifier )
         {
-            return [[AppleStoreInAppPurchaseApplicationDelegate sharedInstance] isOwnedProduct:_productIdentifier];
+            return [[AppleStoreInAppPurchasePlugin sharedInstance] isOwnedProduct:_productIdentifier];
         }
         //////////////////////////////////////////////////////////////////////////
         static bool AppleStoreInAppPurchase_purchaseProduct( const AppleStoreInAppPurchaseProductInterfacePtr & _product )
         {
-            bool successful = [[AppleStoreInAppPurchaseApplicationDelegate sharedInstance] purchaseProduct:_product];
+            bool successful = [[AppleStoreInAppPurchasePlugin sharedInstance] purchaseProduct:_product];
             
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
         static void AppleStoreInAppPurchase_restoreCompletedTransactions()
         {
-            [[AppleStoreInAppPurchaseApplicationDelegate sharedInstance] restoreCompletedTransactions];
+            [[AppleStoreInAppPurchasePlugin sharedInstance] restoreCompletedTransactions];
         }
         //////////////////////////////////////////////////////////////////////////
     }

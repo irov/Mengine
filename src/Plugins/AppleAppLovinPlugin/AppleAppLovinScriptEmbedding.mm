@@ -6,7 +6,7 @@
 #include "Environment/Python/PythonDocument.h"
 #import "Environment/Python/ApplePythonProvider.h"
 
-#import "AppleAppLovinApplicationDelegate.h"
+#import "AppleAppLovinPlugin.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/ConstStringHelper.h"
@@ -49,7 +49,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool appleAppLovin_hasSupportedCMP()
         {
-            if( [[AppleAppLovinApplicationDelegate sharedInstance] hasSupportedCMP] == NO )
+            if( [[AppleAppLovinPlugin sharedInstance] hasSupportedCMP] == NO )
             {
                 return false;
             }
@@ -59,7 +59,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool appleAppLovin_isConsentFlowUserGeographyGDPR()
         {
-            if( [[AppleAppLovinApplicationDelegate sharedInstance] isConsentFlowUserGeographyGDPR] == NO )
+            if( [[AppleAppLovinPlugin sharedInstance] isConsentFlowUserGeographyGDPR] == NO )
             {
                 return false;
             }
@@ -72,12 +72,12 @@ namespace Mengine
             id<AppleAppLovinConsentFlowProviderInterface> callback
                 = [[PythonAppleAppLovinConsentFlowProvider alloc] initWithCbs:_cbs args:_args];
             
-            [[AppleAppLovinApplicationDelegate sharedInstance] loadAndShowCMPFlow:callback];
+            [[AppleAppLovinPlugin sharedInstance] loadAndShowCMPFlow:callback];
         }
         //////////////////////////////////////////////////////////////////////////
         static void appleAppLovin_showMediationDebugger()
         {
-            [[AppleAppLovinApplicationDelegate sharedInstance] showMediationDebugger];
+            [[AppleAppLovinPlugin sharedInstance] showMediationDebugger];
         }
         //////////////////////////////////////////////////////////////////////////
     }

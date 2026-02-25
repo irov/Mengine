@@ -4,8 +4,8 @@ ADD_FILTER(
 src
     AppleAdvertisementInterface.h
     
-    AppleAdvertisementApplicationDelegate.h
-    AppleAdvertisementApplicationDelegate.mm
+    AppleAdvertisementPlugin.h
+    AppleAdvertisementPlugin.mm
     
     AppleAdvertisementAttempts.h
     AppleAdvertisementAttempts.mm
@@ -35,7 +35,7 @@ endif()
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_APPLE_ADVERTISEMENT)
 
-ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleAdvertisementApplicationDelegate")
+ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleAdvertisementPlugin")
 
 if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
     TARGET_LINK_LIBRARIES(${PROJECT_NAME} Python)

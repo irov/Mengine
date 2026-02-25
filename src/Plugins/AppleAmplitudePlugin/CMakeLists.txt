@@ -2,13 +2,13 @@ MENGINE_PROJECT(AppleAmplitudePlugin)
 
 ADD_FILTER(
 src
-    AppleAmplitudeApplicationDelegate.h
-    AppleAmplitudeApplicationDelegate.mm
+    AppleAmplitudePlugin.h
+    AppleAmplitudePlugin.mm
 )
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_APPLE_AMPLITUDE)
 
 ADD_MENGINE_COCOAPOD("Amplitude" "NO-GIT" "8.22.2")
 
-ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleAmplitudeApplicationDelegate")
+ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleAmplitudePlugin")
 

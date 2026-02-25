@@ -9,7 +9,7 @@
 
 #import "Environment/Python/ApplePythonProvider.h"
 
-#import "AppleMARSDKApplicationDelegate.h"
+#import "AppleMARSDKPlugin.h"
 
 @interface PythonAppleMARSDKProvider : ApplePythonProvider<AppleMARSDKProviderInterface>
 @end
@@ -225,27 +225,27 @@ namespace Mengine
         {
             id<AppleMARSDKProviderInterface> provider = [[PythonAppleMARSDKProvider alloc] initWithCbs:_cbs args:_args];
 
-            [[AppleMARSDKApplicationDelegate sharedInstance] setProvider:provider];
+            [[AppleMARSDKPlugin sharedInstance] setProvider:provider];
         }
         //////////////////////////////////////////////////////////////////////////
         static bool AppleMARSDK_login()
         {
-            return [[AppleMARSDKApplicationDelegate sharedInstance] login];
+            return [[AppleMARSDKPlugin sharedInstance] login];
         }
         //////////////////////////////////////////////////////////////////////////
         static bool AppleMARSDK_logout()
         {
-            return [[AppleMARSDKApplicationDelegate sharedInstance] logout];
+            return [[AppleMARSDKPlugin sharedInstance] logout];
         }
         //////////////////////////////////////////////////////////////////////////
         static bool AppleMARSDK_switchAccount()
         {
-            return [[AppleMARSDKApplicationDelegate sharedInstance] switchAccount];
+            return [[AppleMARSDKPlugin sharedInstance] switchAccount];
         }
         //////////////////////////////////////////////////////////////////////////
         static void AppleMARSDK_requestNonConsumablePurchased()
         {
-            [[AppleMARSDKApplicationDelegate sharedInstance] requestNonConsumablePurchased];
+            [[AppleMARSDKPlugin sharedInstance] requestNonConsumablePurchased];
         }
         //////////////////////////////////////////////////////////////////////////
         static void AppleMARSDK_submitExtendedData(const Char * _data )
@@ -257,7 +257,7 @@ namespace Mengine
                 data = @"";
             }
 
-            [[AppleMARSDKApplicationDelegate sharedInstance] submitExtendedData:data];
+            [[AppleMARSDKPlugin sharedInstance] submitExtendedData:data];
         }
         //////////////////////////////////////////////////////////////////////////
         static void AppleMARSDK_submitPaymentData(const Char * _data )
@@ -269,7 +269,7 @@ namespace Mengine
                 data = @"";
             }
 
-            [[AppleMARSDKApplicationDelegate sharedInstance] submitPaymentData:data];
+            [[AppleMARSDKPlugin sharedInstance] submitPaymentData:data];
         }
         //////////////////////////////////////////////////////////////////////////
         static void AppleMARSDK_propComplete(const ConstString & _orderId )
@@ -281,7 +281,7 @@ namespace Mengine
                 orderId = @"";
             }
 
-            [[AppleMARSDKApplicationDelegate sharedInstance] propComplete:orderId];
+            [[AppleMARSDKPlugin sharedInstance] propComplete:orderId];
         }
         //////////////////////////////////////////////////////////////////////////
         static void AppleMARSDK_showRewardVideoAd(const ConstString & _itemName, uint32_t _itemNum )
@@ -293,12 +293,12 @@ namespace Mengine
                 itemName = @"";
             }
 
-            [[AppleMARSDKApplicationDelegate sharedInstance] showRewardVideoAd:itemName itemNum:_itemNum];
+            [[AppleMARSDKPlugin sharedInstance] showRewardVideoAd:itemName itemNum:_itemNum];
         }
         //////////////////////////////////////////////////////////////////////////
         static int64_t AppleMARSDK_getInternetDate()
         {
-            return [[AppleMARSDKApplicationDelegate sharedInstance] getInternetDate];
+            return [[AppleMARSDKPlugin sharedInstance] getInternetDate];
         }
         //////////////////////////////////////////////////////////////////////////
     }

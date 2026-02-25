@@ -4,8 +4,8 @@ ADD_FILTER(
 src
     AppleGameCenterInterface.h
     
-    AppleGameCenterApplicationDelegate.h
-    AppleGameCenterApplicationDelegate.mm
+    AppleGameCenterPlugin.h
+    AppleGameCenterPlugin.mm
 )
 
 if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
@@ -20,7 +20,7 @@ endif()
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_APPLE_GAMECENTER)
 
-ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleGameCenterApplicationDelegate")
+ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleGameCenterPlugin")
 
 ADD_MENGINE_APPLE_FRAMEWORK(GameKit)
 

@@ -12,7 +12,7 @@
 #import "Environment/iOS/iOSLog.h"
 #import "Environment/iOS/iOSNetwork.h"
 
-#import "AppleAppLovinApplicationDelegate.h"
+#import "AppleAppLovinPlugin.h"
 
 @implementation AppleAppLovinRewardedDelegate
 
@@ -220,7 +220,7 @@
     
     self.m_showing = NO;
 
-    id<AppleAdvertisementCallbackInterface> callback = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementRewardedCallback];
+    id<AppleAdvertisementCallbackInterface> callback = [[AppleAppLovinPlugin sharedInstance] getAdvertisementRewardedCallback];
     
     if (callback != nil) {
         [callback onAppleAdvertisementShowSuccess:ad.placement];
@@ -241,7 +241,7 @@
     
     self.m_showing = NO;
 
-    id<AppleAdvertisementCallbackInterface> callback = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementRewardedCallback];
+    id<AppleAdvertisementCallbackInterface> callback = [[AppleAppLovinPlugin sharedInstance] getAdvertisementRewardedCallback];
     
     if (callback != nil) {
         [callback onAppleAdvertisementShowFailed:ad.placement withError:error.code];
@@ -270,7 +270,7 @@
         @"ad": [self getMAAdParams:ad]
     }];
     
-    id<AppleAdvertisementCallbackInterface> callback = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementRewardedCallback];
+    id<AppleAdvertisementCallbackInterface> callback = [[AppleAppLovinPlugin sharedInstance] getAdvertisementRewardedCallback];
     
     if (callback != nil) {
         [callback onAppleAdvertisementUserRewarded:ad.placement withLabel:reward.label withAmount:reward.amount];
@@ -284,7 +284,7 @@
 
     [self eventRevenue:ad];
 
-    id<AppleAdvertisementCallbackInterface> callback = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementRewardedCallback];
+    id<AppleAdvertisementCallbackInterface> callback = [[AppleAppLovinPlugin sharedInstance] getAdvertisementRewardedCallback];
     
     if (callback != nil) {
         [callback onAppleAdvertisementRevenuePaid:ad.placement withRevenue:ad.revenue];

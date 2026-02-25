@@ -9,14 +9,14 @@ src
 if(MENGINE_TARGET_IOS)
     ADD_FILTER(
     delegate
-        AppleSentryApplicationDelegate.h
-        AppleSentryApplicationDelegate.mm
+        AppleSentryPlugin.h
+        AppleSentryPlugin.mm
     )
 elseif(MENGINE_TARGET_MACOS)
     ADD_FILTER(
     delegate
-        MacOSSentryApplicationDelegate.h
-        MacOSSentryApplicationDelegate.mm
+        MacOSSentryPlugin.h
+        MacOSSentryPlugin.mm
     )
 endif()
 
@@ -24,9 +24,9 @@ endif()
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_APPLE_SENTRY)
 
 if(MENGINE_TARGET_IOS)
-    ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleSentryApplicationDelegate")
+    ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleSentryPlugin")
 elseif(MENGINE_TARGET_MACOS)
-    ADD_MENGINE_APPLE_APPLICATION_DELEGATE("MacOSSentryApplicationDelegate")
+    ADD_MENGINE_APPLE_APPLICATION_DELEGATE("MacOSSentryPlugin")
 endif()
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}stdex${MENGINE_LIB_SUFFIX})

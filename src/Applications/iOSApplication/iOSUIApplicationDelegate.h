@@ -2,7 +2,7 @@
 
 #import "Environment/iOS/iOSUIMainApplicationDelegateInterface.h"
 
-#import "Environment/iOS/iOSPluginApplicationDelegateInterface.h"
+#import "Environment/iOS/iOSPluginInterface.h"
 #import "Environment/iOS/iOSPluginLoggerDelegateInterface.h"
 #import "Environment/iOS/iOSPluginConfigDelegateInterface.h"
 #import "Environment/iOS/iOSPluginAnalyticDelegateInterface.h"
@@ -20,7 +20,7 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
 @property (nonatomic, strong) UIWindow * m_window;
 
 @property (nonatomic, strong) NSMutableArray<id> * m_pluginDelegates;
-@property (nonatomic, strong) NSMutableArray<iOSPluginApplicationDelegateInterface> * m_pluginApplicationDelegates;
+@property (nonatomic, strong) NSMutableArray<iOSPluginInterface> * m_pluginApplicationDelegates;
 @property (nonatomic, strong) NSMutableArray<iOSPluginLoggerDelegateInterface> * m_pluginLoggerDelegates;
 @property (nonatomic, strong) NSMutableArray<iOSPluginConfigDelegateInterface> * m_pluginConfigDelegates;
 @property (nonatomic, strong) NSMutableArray<iOSPluginAnalyticDelegateInterface> * m_pluginAnalyticDelegates;

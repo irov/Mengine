@@ -7,7 +7,7 @@
 #include "Environment/Python/PythonTraceback.h"
 #import "Environment/Python/ApplePythonProvider.h"
 
-#import "AppleGameCenterApplicationDelegate.h"
+#import "AppleGameCenterPlugin.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/ConstStringHelper.h"
@@ -53,12 +53,12 @@ namespace Mengine
             id<AppleGameCenterConnectCallbackInterface> callback
                 = [[PythonAppleGameCenterConnectCallback alloc] initWithCbs:_cbs args:_args];
             
-            [[AppleGameCenterApplicationDelegate sharedInstance] connect:callback];
+            [[AppleGameCenterPlugin sharedInstance] connect:callback];
         }
         //////////////////////////////////////////////////////////////////////////
         static bool AppleGameCenter_isConnect()
         {
-            BOOL successful = [[AppleGameCenterApplicationDelegate sharedInstance] isConnect];
+            BOOL successful = [[AppleGameCenterPlugin sharedInstance] isConnect];
             
             return successful;
         }
@@ -68,7 +68,7 @@ namespace Mengine
             pybind::object copy_cb = _cb;
             pybind::args copy_args = _args;
             
-            BOOL result = [[AppleGameCenterApplicationDelegate sharedInstance] reportAchievement:_identifier
+            BOOL result = [[AppleGameCenterPlugin sharedInstance] reportAchievement:_identifier
                                                                                          percent:_percent
                                                                                         response:^(BOOL successful) {
                 copy_cb.call_args( successful == YES, copy_args );
@@ -79,7 +79,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool AppleGameCenter_checkAchievement( NSString * _identifier )
         {
-            BOOL successful = [[AppleGameCenterApplicationDelegate sharedInstance] checkAchievement:_identifier];
+            BOOL successful = [[AppleGameCenterPlugin sharedInstance] checkAchievement:_identifier];
             
             return successful;
         }
@@ -89,7 +89,7 @@ namespace Mengine
             pybind::object copy_cb = _cb;
             pybind::args copy_args = _args;
             
-            BOOL result = [[AppleGameCenterApplicationDelegate sharedInstance] resetAchievements:^(NSError * error) {
+            BOOL result = [[AppleGameCenterPlugin sharedInstance] resetAchievements:^(NSError * error) {
                 if (error != nil) {
                     copy_cb.call_args( false, copy_args );
                 } else {
@@ -105,7 +105,7 @@ namespace Mengine
             pybind::object copy_cb = _cb;
             pybind::args copy_args = _args;
             
-            BOOL result = [[AppleGameCenterApplicationDelegate sharedInstance] reportScore:_identifier score:_score response:^(NSError * error) {
+            BOOL result = [[AppleGameCenterPlugin sharedInstance] reportScore:_identifier score:_score response:^(NSError * error) {
                 if (error != nil) {
                     copy_cb.call_args( false, copy_args );
                 } else {

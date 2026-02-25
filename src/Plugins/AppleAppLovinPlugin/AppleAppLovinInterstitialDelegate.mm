@@ -11,7 +11,7 @@
 
 #import "Environment/iOS/iOSLog.h"
 
-#import "AppleAppLovinApplicationDelegate.h"
+#import "AppleAppLovinPlugin.h"
 
 @implementation AppleAppLovinInterstitialDelegate
 
@@ -201,7 +201,7 @@
     
     self.m_showing = NO;
     
-    id<AppleAdvertisementCallbackInterface> callback = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementInterstitialCallback];
+    id<AppleAdvertisementCallbackInterface> callback = [[AppleAppLovinPlugin sharedInstance] getAdvertisementInterstitialCallback];
     
     if (callback != nil) {
         [callback onAppleAdvertisementShowSuccess:ad.placement];
@@ -222,7 +222,7 @@
     
     self.m_showing = NO;
     
-    id<AppleAdvertisementCallbackInterface> callback = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementInterstitialCallback];
+    id<AppleAdvertisementCallbackInterface> callback = [[AppleAppLovinPlugin sharedInstance] getAdvertisementInterstitialCallback];
     
     if (callback != nil) {
         [callback onAppleAdvertisementShowFailed:ad.placement withError:error.code];
@@ -238,7 +238,7 @@
 
     [self eventRevenue:ad];
     
-    id<AppleAdvertisementCallbackInterface> callback = [[AppleAppLovinApplicationDelegate sharedInstance] getAdvertisementInterstitialCallback];
+    id<AppleAdvertisementCallbackInterface> callback = [[AppleAppLovinPlugin sharedInstance] getAdvertisementInterstitialCallback];
     
     if (callback != nil) {
         [callback onAppleAdvertisementRevenuePaid:ad.placement withRevenue:ad.revenue];

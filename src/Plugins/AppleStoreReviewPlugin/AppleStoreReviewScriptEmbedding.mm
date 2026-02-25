@@ -2,7 +2,7 @@
 
 #include "Environment/Python/PythonIncluder.h"
 
-#import "AppleStoreReviewApplicationDelegate.h"
+#import "AppleStoreReviewPlugin.h"
 
 namespace Mengine
 {
@@ -10,9 +10,9 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static void AppleStoreReviewApplicationDelegate_launchTheInAppReview()
+        static void AppleStoreReviewPlugin_launchTheInAppReview()
         {
-            [[AppleStoreReviewApplicationDelegate sharedInstance] launchTheInAppReview];
+            [[AppleStoreReviewPlugin sharedInstance] launchTheInAppReview];
         }
         //////////////////////////////////////////////////////////////////////////
     }
@@ -27,7 +27,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleStoreReviewScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
-        pybind::def_function( _kernel, "appleStoreReviewLaunchTheInAppReview", &Detail::AppleStoreReviewApplicationDelegate_launchTheInAppReview );
+        pybind::def_function( _kernel, "appleStoreReviewLaunchTheInAppReview", &Detail::AppleStoreReviewPlugin_launchTheInAppReview );
 
         return true;
     }

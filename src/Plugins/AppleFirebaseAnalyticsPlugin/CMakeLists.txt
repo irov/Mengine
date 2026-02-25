@@ -2,13 +2,13 @@ MENGINE_PROJECT(AppleFirebaseAnalyticsPlugin)
 
 ADD_FILTER(
 src
-    AppleFirebaseAnalyticsApplicationDelegate.h
-    AppleFirebaseAnalyticsApplicationDelegate.mm
+    AppleFirebaseAnalyticsPlugin.h
+    AppleFirebaseAnalyticsPlugin.mm
 )
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_APPLE_FIREBASE_ANALYTICS)
 
-ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleFirebaseAnalyticsApplicationDelegate")
+ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleFirebaseAnalyticsPlugin")
 
 ADD_MENGINE_COCOAPOD_GOOGLE_UTILITIES()
 ADD_MENGINE_COCOAPOD("FirebaseAnalytics" "NO-GIT" "12.9.0")

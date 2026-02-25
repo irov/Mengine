@@ -7,8 +7,8 @@ src
     AppleNativePythonCallbackDesc.h
     AppleNativePythonCallbackDesc.mm
 
-    AppleNativePythonApplicationDelegate.h
-    AppleNativePythonApplicationDelegate.mm
+    AppleNativePythonPlugin.h
+    AppleNativePythonPlugin.mm
     
     AppleNativePythonScriptEmbedding.h
     AppleNativePythonScriptEmbedding.mm
@@ -18,7 +18,7 @@ INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_APPLE_NATIVE_PYTHON)
 
-ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleNativePythonApplicationDelegate")
+ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleNativePythonPlugin")
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Python)

@@ -49,8 +49,8 @@ src
     AppleAppLovinBannerDelegate.h
     AppleAppLovinBannerDelegate.mm
     
-    AppleAppLovinApplicationDelegate.h
-    AppleAppLovinApplicationDelegate.mm
+    AppleAppLovinPlugin.h
+    AppleAppLovinPlugin.mm
 )
 
 if(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON)
@@ -124,7 +124,7 @@ ADD_APPLOVIN_MEDIATION(MYTARGET "AppLovinMediationMyTargetAdapter" "5.35.1.0") #
 ADD_APPLOVIN_MEDIATION(YANDEX "AppLovinMediationYandexAdapter" "7.16.1.0")
 ADD_APPLOVIN_MEDIATION(YSO "AppLovinMediationYSONetworkAdapter" "1.1.31.1")
 
-ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleAppLovinApplicationDelegate")
+ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleAppLovinPlugin")
 
 ADD_MENGINE_DOWNLOAD_SKADNETWORKITEMS_PLIST("https://skadnetwork-ids.applovin.com/v1/skadnetworkids.xml")
 

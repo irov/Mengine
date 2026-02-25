@@ -13,7 +13,7 @@
 #import "Environment/iOS/iOSLog.h"
 #import "Environment/iOS/iOSNetwork.h"
 
-#import "AppleAdMobApplicationDelegate.h"
+#import "AppleAdMobPlugin.h"
 
 @implementation AppleAdMobRewardedDelegate
 
@@ -117,7 +117,7 @@
             @"amount": @(reward.amount.doubleValue)
         }];
         
-        id<AppleAdvertisementCallbackInterface> callback = [[AppleAdMobApplicationDelegate sharedInstance] getAdvertisementRewardedCallback];
+        id<AppleAdvertisementCallbackInterface> callback = [[AppleAdMobPlugin sharedInstance] getAdvertisementRewardedCallback];
         
         if (callback != nil) {
             NSString * label = reward.type != nil ? reward.type : @"";
@@ -209,7 +209,7 @@
     
     self.m_showing = NO;
     
-    id<AppleAdvertisementCallbackInterface> callback = [[AppleAdMobApplicationDelegate sharedInstance] getAdvertisementRewardedCallback];
+    id<AppleAdvertisementCallbackInterface> callback = [[AppleAdMobPlugin sharedInstance] getAdvertisementRewardedCallback];
     
     if (callback != nil) {
         [callback onAppleAdvertisementShowFailed:@"unknown" withError:error.code];
@@ -229,7 +229,7 @@
     
     self.m_showing = NO;
     
-    id<AppleAdvertisementCallbackInterface> callback = [[AppleAdMobApplicationDelegate sharedInstance] getAdvertisementRewardedCallback];
+    id<AppleAdvertisementCallbackInterface> callback = [[AppleAdMobPlugin sharedInstance] getAdvertisementRewardedCallback];
     
     if (callback != nil) {
         [callback onAppleAdvertisementShowSuccess:@"unknown"];

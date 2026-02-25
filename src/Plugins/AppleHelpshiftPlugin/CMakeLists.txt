@@ -7,12 +7,12 @@ src
     AppleHelpshiftDelegate.h
     AppleHelpshiftDelegate.mm
     
-    AppleHelpshiftApplicationDelegate.h
-    AppleHelpshiftApplicationDelegate.mm
+    AppleHelpshiftPlugin.h
+    AppleHelpshiftPlugin.mm
 )
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_APPLE_HELPSHIFT)
 
 ADD_MENGINE_COCOAPOD("HelpshiftX" "NO-GIT" "10.2.1")
 
-ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleHelpshiftApplicationDelegate")
+ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleHelpshiftPlugin")

@@ -4,8 +4,8 @@ ADD_FILTER(
 src
     AppleFacebookInterface.h
 
-    AppleFacebookApplicationDelegate.h
-    AppleFacebookApplicationDelegate.mm
+    AppleFacebookPlugin.h
+    AppleFacebookPlugin.mm
 
     AppleFacebookShareDelegate.h
     AppleFacebookShareDelegate.mm
@@ -27,7 +27,7 @@ ADD_MENGINE_COCOAPOD("FBSDKCoreKit" "NO-GIT" "17.4.0")
 ADD_MENGINE_COCOAPOD("FBSDKLoginKit" "NO-GIT" "17.4.0")
 ADD_MENGINE_COCOAPOD("FBSDKShareKit" "NO-GIT" "17.4.0")
 
-ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleFacebookApplicationDelegate")
+ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleFacebookPlugin")
 
 if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
     TARGET_LINK_LIBRARIES(${PROJECT_NAME} Python)

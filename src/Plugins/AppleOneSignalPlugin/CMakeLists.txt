@@ -2,15 +2,15 @@ MENGINE_PROJECT(AppleOneSignalPlugin)
 
 ADD_FILTER(
 src
-    AppleOneSignalApplicationDelegate.h
-    AppleOneSignalApplicationDelegate.mm
+    AppleOneSignalPlugin.h
+    AppleOneSignalPlugin.mm
 )
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_APPLE_ONESIGNAL)
 
 ADD_MENGINE_COCOAPOD("OneSignalXCFramework" "NO-GIT" ">= 3.0.0")
 
-ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleOneSignalApplicationDelegate")
+ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleOneSignalPlugin")
 
 MENGINE_PROJECT(AppleOneSignalNotificationServiceExtension)
 

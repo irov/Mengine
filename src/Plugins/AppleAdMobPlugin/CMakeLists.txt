@@ -20,8 +20,8 @@ src
     AppleAdMobBannerDelegate.h
     AppleAdMobBannerDelegate.mm
     
-    AppleAdMobApplicationDelegate.h
-    AppleAdMobApplicationDelegate.mm
+    AppleAdMobPlugin.h
+    AppleAdMobPlugin.mm
 )
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_APPLE_ADMOB)
@@ -29,7 +29,7 @@ ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_APPLE_ADMOB)
 ADD_MENGINE_COCOAPOD_GOOGLE_UTILITIES()
 ADD_MENGINE_COCOAPOD("Google-Mobile-Ads-SDK" "NO-GIT" "13.0.0")
 
-ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleAdMobApplicationDelegate")
+ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleAdMobPlugin")
 
 ADD_MENGINE_SKADNETWORKITEMS_PLIST_FILE("${CMAKE_CURRENT_SOURCE_DIR}/SKAdNetworkItems.plist")
 

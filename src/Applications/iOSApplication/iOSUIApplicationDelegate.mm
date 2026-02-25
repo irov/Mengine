@@ -21,7 +21,7 @@
 - (instancetype)init {
     if (self = [super init]) {
         self.m_pluginDelegates = [NSMutableArray<id> array];
-        self.m_pluginApplicationDelegates = [NSMutableArray<iOSPluginApplicationDelegateInterface> array];
+        self.m_pluginApplicationDelegates = [NSMutableArray<iOSPluginInterface> array];
         self.m_pluginLoggerDelegates = [NSMutableArray<iOSPluginLoggerDelegateInterface> array];
         self.m_pluginConfigDelegates = [NSMutableArray<iOSPluginConfigDelegateInterface> array];
         self.m_pluginAnalyticDelegates = [NSMutableArray<iOSPluginAnalyticDelegateInterface> array];
@@ -46,7 +46,7 @@
             
             [self.m_pluginDelegates addObject:delegate];
             
-            if ([delegate conformsToProtocol:@protocol(iOSPluginApplicationDelegateInterface)] == YES) {
+            if ([delegate conformsToProtocol:@protocol(iOSPluginInterface)] == YES) {
                 [self.m_pluginApplicationDelegates addObject:delegate];
             }
             
@@ -85,7 +85,7 @@
 
 #pragma mark - iOSUIMainApplicationDelegateInterface Protocol
 
-- (NSArray<iOSPluginApplicationDelegateInterface> *)getPluginApplicationDelegates {
+- (NSArray<iOSPluginInterface> *)getPluginApplicationDelegates {
     return self.m_pluginApplicationDelegates;
 }
 
@@ -158,7 +158,7 @@
 
 - (void)notify:(AppleEvent *)event arrayArgs:(NSArray<id> *)args {
     @autoreleasepool {
-        for (NSObject<iOSPluginApplicationDelegateInterface> * delegate in self.m_pluginApplicationDelegates) {
+        for (NSObject<iOSPluginInterface> * delegate in self.m_pluginApplicationDelegates) {
             if ([delegate respondsToSelector:@selector(onEvent: args:)] == YES) {
                 [delegate onEvent:event args:args];
             }

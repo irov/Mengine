@@ -11,8 +11,8 @@ MESSAGE("Apple Firebase RemoteConfig plist name: ${MENGINE_APPLICATION_DEPLOY_FI
 
 ADD_FILTER(
 src
-    AppleFirebaseRemoteConfigApplicationDelegate.h
-    AppleFirebaseRemoteConfigApplicationDelegate.mm
+    AppleFirebaseRemoteConfigPlugin.h
+    AppleFirebaseRemoteConfigPlugin.mm
     
     AppleFirebaseRemoteConfigInterface.h
 )
@@ -34,7 +34,7 @@ ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_APPLE_FIREBASE_REMOTECONFIG)
 ADD_MENGINE_COCOAPOD_GOOGLE_UTILITIES()
 ADD_MENGINE_COCOAPOD("FirebaseRemoteConfig" "NO-GIT" "12.9.0")
 
-ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleFirebaseRemoteConfigApplicationDelegate")
+ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleFirebaseRemoteConfigPlugin")
 
 ADD_MENGINE_APPLE_RESOURCES(${MENGINE_APPLICATION_DEPLOY_FIREBASE_REMOTECONFIG_PLIST_PATH})
 

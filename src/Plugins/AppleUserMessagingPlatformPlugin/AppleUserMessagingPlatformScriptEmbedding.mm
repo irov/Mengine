@@ -2,7 +2,7 @@
 
 #include "Environment/Python/PythonIncluder.h"
 
-#import "AppleUserMessagingPlatformApplicationDelegate.h"
+#import "AppleUserMessagingPlatformPlugin.h"
 
 namespace Mengine
 {
@@ -12,12 +12,12 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void appleUserMessagingPlatform_showConsentFlow()
         {
-            [[AppleUserMessagingPlatformApplicationDelegate sharedInstance] showConsentFlow];
+            [[AppleUserMessagingPlatformPlugin sharedInstance] showConsentFlow];
         }
         //////////////////////////////////////////////////////////////////////////
         static bool appleUserMessagingPlatform_isConsentFlowUserGeographyGDPR()
         {
-            return [[AppleUserMessagingPlatformApplicationDelegate sharedInstance] isConsentFlowUserGeographyGDPR];
+            return [[AppleUserMessagingPlatformPlugin sharedInstance] isConsentFlowUserGeographyGDPR];
         }
         //////////////////////////////////////////////////////////////////////////
     }

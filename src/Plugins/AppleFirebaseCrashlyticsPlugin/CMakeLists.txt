@@ -9,13 +9,13 @@ src
     AppleFirebaseCrashlyticsANRMonitor.h
     AppleFirebaseCrashlyticsANRMonitor.mm
 
-    AppleFirebaseCrashlyticsApplicationDelegate.h
-    AppleFirebaseCrashlyticsApplicationDelegate.mm
+    AppleFirebaseCrashlyticsPlugin.h
+    AppleFirebaseCrashlyticsPlugin.mm
 )
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_APPLE_FIREBASE_CRASHLYTICS)
 
-ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleFirebaseCrashlyticsApplicationDelegate")
+ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleFirebaseCrashlyticsPlugin")
 
 ADD_MENGINE_COCOAPOD_GOOGLE_UTILITIES()
 ADD_MENGINE_COCOAPOD("FirebaseCrashlytics" "NO-GIT" "12.9.0")

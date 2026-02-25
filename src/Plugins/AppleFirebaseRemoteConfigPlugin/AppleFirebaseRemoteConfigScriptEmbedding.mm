@@ -7,7 +7,7 @@
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonDocument.h"
 
-#import "AppleFirebaseRemoteConfigApplicationDelegate.h"
+#import "AppleFirebaseRemoteConfigPlugin.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/ConstStringHelper.h"
@@ -22,7 +22,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool AppleFirebaseRemoteConfigService_hasRemoteConfig( NSString * _key )
         {
-            if( [[AppleFirebaseRemoteConfigApplicationDelegate sharedInstance] hasRemoteConfig:_key] == NO )
+            if( [[AppleFirebaseRemoteConfigPlugin sharedInstance] hasRemoteConfig:_key] == NO )
             {
                 return false;
             }
@@ -32,7 +32,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static NSDictionary * AppleFirebaseRemoteConfigService_getRemoteConfigValue( NSString * _key )
         {
-            NSDictionary * params = [[AppleFirebaseRemoteConfigApplicationDelegate sharedInstance] getRemoteConfigValue:_key];
+            NSDictionary * params = [[AppleFirebaseRemoteConfigPlugin sharedInstance] getRemoteConfigValue:_key];
             
             return params;
         }

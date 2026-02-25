@@ -8,7 +8,7 @@
 #import "Environment/Python/ApplePythonProvider.h"
 #import "Environment/Apple/AppleDetail.h"
 
-#import "AppleFacebookApplicationDelegate.h"
+#import "AppleFacebookPlugin.h"
 
 #include "Kernel/VectorConstString.h"
 
@@ -116,29 +116,29 @@ namespace Mengine
         {
             id<AppleFacebookProviderInterface> provider = [[PythonAppleFacebookProvider alloc] initWithCbs:_cbs args:_args];
 
-            [[AppleFacebookApplicationDelegate sharedInstance] setProvider:provider];
+            [[AppleFacebookPlugin sharedInstance] setProvider:provider];
         }
         //////////////////////////////////////////////////////////////////////////
         static bool AppleFacebook_login( const VectorConstString & _permissions )
         {
             NSArray<NSString *> * permissions = [AppleDetail getNSArrayFromVectorConstString:_permissions];
 
-            return [[AppleFacebookApplicationDelegate sharedInstance] login:permissions];
+            return [[AppleFacebookPlugin sharedInstance] login:permissions];
         }
         //////////////////////////////////////////////////////////////////////////
         static void AppleFacebook_logout()
         {
-            [[AppleFacebookApplicationDelegate sharedInstance] logout];
+            [[AppleFacebookPlugin sharedInstance] logout];
         }
         //////////////////////////////////////////////////////////////////////////
         static bool AppleFacebook_isLoggedIn()
         {
-            return [[AppleFacebookApplicationDelegate sharedInstance] isLoggedIn];
+            return [[AppleFacebookPlugin sharedInstance] isLoggedIn];
         }
         //////////////////////////////////////////////////////////////////////////
         static PyObject * AppleFacebook_getAccessToken( pybind::kernel_interface * _kernel )
         {
-            NSString * accessToken = [[AppleFacebookApplicationDelegate sharedInstance] getAccessToken];
+            NSString * accessToken = [[AppleFacebookPlugin sharedInstance] getAccessToken];
 
             if( accessToken == nil )
             {
@@ -150,7 +150,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static PyObject * AppleFacebook_getUserId( pybind::kernel_interface * _kernel )
         {
-            NSString * userId = [[AppleFacebookApplicationDelegate sharedInstance] getUserId];
+            NSString * userId = [[AppleFacebookPlugin sharedInstance] getUserId];
 
             if( userId == nil )
             {
@@ -175,12 +175,12 @@ namespace Mengine
                 picture = @"";
             }
 
-            [[AppleFacebookApplicationDelegate sharedInstance] shareLink:link picture:picture];
+            [[AppleFacebookPlugin sharedInstance] shareLink:link picture:picture];
         }
         //////////////////////////////////////////////////////////////////////////
         static void AppleFacebook_getProfilePictureLink()
         {
-            [[AppleFacebookApplicationDelegate sharedInstance] getProfilePictureLink];
+            [[AppleFacebookPlugin sharedInstance] getProfilePictureLink];
         }
         //////////////////////////////////////////////////////////////////////////
     }

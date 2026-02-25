@@ -1,7 +1,7 @@
 #pragma once
 
 #import "Environment/Apple/AppleIncluder.h"
-#import "Environment/iOS/iOSPluginApplicationDelegateInterface.h"
+#import "Environment/iOS/iOSPluginInterface.h"
 #import "Environment/iOS/iOSPluginLoggerDelegateInterface.h"
 #import "Environment/iOS/iOSPluginConfigDelegateInterface.h"
 #import "Environment/iOS/iOSPluginUserIdDelegateInterface.h"
@@ -12,7 +12,7 @@
 
 @protocol iOSUIMainApplicationDelegateInterface <NSObject>
 
-- (NSArray<iOSPluginApplicationDelegateInterface> * _Nonnull)getPluginApplicationDelegates;
+- (NSArray<iOSPluginInterface> * _Nonnull)getPluginApplicationDelegates;
 - (NSArray<iOSPluginLoggerDelegateInterface> * _Nonnull)getPluginLoggerDelegates;
 - (NSArray<iOSPluginConfigDelegateInterface> * _Nonnull)getPluginConfigDelegates;
 - (NSArray<iOSPluginUserIdDelegateInterface> * _Nonnull)getPluginUserIdDelegates;

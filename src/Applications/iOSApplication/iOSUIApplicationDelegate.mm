@@ -529,7 +529,7 @@
         return;
     }
 
-    if( SERVICE_IS_INITIALIZE( PluginServiceInterface ) == true ) {
+    if( SERVICE_IS_INITIALIZE( Mengine::PluginServiceInterface ) == true ) {
         NSArray<NSString *> * delegates = [iOSApplicationDelegates getApplicationDelegates];
 
         for( NSString * pluginNameString in delegates ) {

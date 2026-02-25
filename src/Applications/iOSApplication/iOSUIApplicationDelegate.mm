@@ -6,13 +6,12 @@
 #include "Environment/SDL3/SDL3Includer.h"
 #include "Environment/SDL3/SDL3PlatformServiceExtensionInterface.h"
 
-#include "Kernel/ConstStringHelper.h"
-
 #import "iOSApplicationDelegates.h"
 
 #import "Environment/Apple/AppleUserDefaults.h"
 #import "Environment/Apple/AppleDetail.h"
 #import "Environment/Apple/AppleLog.h"
+#import "Environment/Apple/AppleString.h"
 #import "Environment/iOS/iOSApplication.h"
 #import "Environment/iOS/iOSNetwork.h"
 #import "Environment/iOS/iOSDetail.h"
@@ -533,7 +532,7 @@
         NSArray<NSString *> * delegates = [iOSApplicationDelegates getApplicationDelegates];
 
         for( NSString * pluginNameString in delegates ) {
-            const Mengine::ConstString pluginName = Mengine::Helper::stringizeString( [pluginNameString UTF8String] );
+            Mengine::ConstString pluginName = [AppleString NSStringToConstString:pluginNameString];
 
             PLUGIN_SERVICE()
                 ->setAvailablePlugin( pluginName, true );

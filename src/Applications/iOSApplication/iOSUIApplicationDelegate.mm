@@ -21,7 +21,7 @@
 - (instancetype)init {
     if (self = [super init]) {
         self.m_pluginDelegates = [NSMutableArray<id> array];
-        self.m_pluginApplicationDelegates = [NSMutableArray<iOSPluginInterface> array];
+        self.m_plugins = [NSMutableArray<iOSPluginInterface> array];
         self.m_pluginLoggerDelegates = [NSMutableArray<iOSPluginLoggerDelegateInterface> array];
         self.m_pluginConfigDelegates = [NSMutableArray<iOSPluginConfigDelegateInterface> array];
         self.m_pluginAnalyticDelegates = [NSMutableArray<iOSPluginAnalyticDelegateInterface> array];
@@ -47,7 +47,7 @@
             [self.m_pluginDelegates addObject:delegate];
             
             if ([delegate conformsToProtocol:@protocol(iOSPluginInterface)] == YES) {
-                [self.m_pluginApplicationDelegates addObject:delegate];
+                [self.m_plugins addObject:delegate];
             }
             
             if ([delegate conformsToProtocol:@protocol(iOSPluginLoggerDelegateInterface)] == YES) {
@@ -86,7 +86,7 @@
 #pragma mark - iOSUIMainApplicationDelegateInterface Protocol
 
 - (NSArray<iOSPluginInterface> *)getPluginApplicationDelegates {
-    return self.m_pluginApplicationDelegates;
+    return self.m_plugins;
 }
 
 - (NSArray<iOSPluginLoggerDelegateInterface> *)getPluginLoggerDelegates {
@@ -158,7 +158,7 @@
 
 - (void)notify:(AppleEvent *)event arrayArgs:(NSArray<id> *)args {
     @autoreleasepool {
-        for (NSObject<iOSPluginInterface> * delegate in self.m_pluginApplicationDelegates) {
+        for (NSObject<iOSPluginInterface> * delegate in self.m_plugins) {
             if ([delegate respondsToSelector:@selector(onEvent: args:)] == YES) {
                 [delegate onEvent:event args:args];
             }
@@ -323,9 +323,9 @@
     [self setWindow:window];
     
     @autoreleasepool {
-        for (id delegate in self.m_pluginApplicationDelegates) {
-            if ([delegate application:application didFinishLaunchingWithOptions:launchOptions] == NO) {
-                [AppleLog withFormat:@"🔴 [ERROR] Mengine application didFinishLaunchingWithOptions plugin %@ failed", NSStringFromClass([delegate class])];
+        for (id plugin in self.m_plugins) {
+            if ([plugin application:application didFinishLaunchingWithOptions:launchOptions] == NO) {
+                [AppleLog withFormat:@"🔴 [ERROR] Mengine application didFinishLaunchingWithOptions plugin %@ failed", NSStringFromClass([plugin class])];
                 
                 return NO;
             }
@@ -333,13 +333,13 @@
     }
     
     @autoreleasepool {
-        for (id delegate in self.m_pluginApplicationDelegates) {
-            if ([delegate respondsToSelector:@selector(application: didPostLaunchingWithOptions:)] == NO) {
+        for (id plugin in self.m_plugins) {
+            if ([plugin respondsToSelector:@selector(application: didPostLaunchingWithOptions:)] == NO) {
                 continue;
             }
             
-            if ([delegate application:application didPostLaunchingWithOptions:launchOptions] == NO) {
-                [AppleLog withFormat:@"🔴 [ERROR] Mengine application didPostLaunchingWithOptions plugin %@ failed", NSStringFromClass([delegate class])];
+            if ([plugin application:application didPostLaunchingWithOptions:launchOptions] == NO) {
+                [AppleLog withFormat:@"🔴 [ERROR] Mengine application didPostLaunchingWithOptions plugin %@ failed", NSStringFromClass([plugin class])];
                 
                 return NO;
             }
@@ -355,12 +355,12 @@
     [AppleLog withFormat:@"Mengine application didRegisterForRemoteNotificationsWithDeviceToken"];
 
     @autoreleasepool {
-        for (id delegate in self.m_pluginApplicationDelegates) {
-            if ([delegate respondsToSelector:@selector(application: didRegisterForRemoteNotificationsWithDeviceToken:)] == NO) {
+        for (id plugin in self.m_plugins) {
+            if ([plugin respondsToSelector:@selector(application: didRegisterForRemoteNotificationsWithDeviceToken:)] == NO) {
                 continue;
             }
             
-            [delegate application:application didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
+            [plugin application:application didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
         }
     }
 }
@@ -369,12 +369,12 @@
     [AppleLog withFormat:@"Mengine application didReceiveRemoteNotification"];
     
     @autoreleasepool {
-        for (id delegate in self.m_pluginApplicationDelegates) {
-            if ([delegate respondsToSelector:@selector(application: didReceiveRemoteNotification: fetchCompletionHandler:)] == NO) {
+        for (id plugin in self.m_plugins) {
+            if ([plugin respondsToSelector:@selector(application: didReceiveRemoteNotification: fetchCompletionHandler:)] == NO) {
                 continue;
             }
             
-            [delegate application:application didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
+            [plugin application:application didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
         }
     }
 }
@@ -385,12 +385,12 @@
     [self processNextOperation];
     
     @autoreleasepool {
-        for (id delegate in self.m_pluginApplicationDelegates) {
-            if ([delegate respondsToSelector:@selector(applicationDidBecomeActive:)] == NO) {
+        for (id plugin in self.m_plugins) {
+            if ([plugin respondsToSelector:@selector(applicationDidBecomeActive:)] == NO) {
                 continue;
             }
             
-            [delegate applicationDidBecomeActive:application];
+            [plugin applicationDidBecomeActive:application];
         }
     }
 }
@@ -399,12 +399,12 @@
     [AppleLog withFormat:@"Mengine application applicationWillEnterForeground"];
     
     @autoreleasepool {
-        for (id delegate in self.m_pluginApplicationDelegates) {
-            if ([delegate respondsToSelector:@selector(applicationWillEnterForeground:)] == NO) {
+        for (id plugin in self.m_plugins) {
+            if ([plugin respondsToSelector:@selector(applicationWillEnterForeground:)] == NO) {
                 continue;
             }
             
-            [delegate applicationWillEnterForeground:application];
+            [plugin applicationWillEnterForeground:application];
         }
     }
 }
@@ -413,12 +413,12 @@
     [AppleLog withFormat:@"Mengine application applicationDidEnterBackground"];
     
     @autoreleasepool {
-        for (id delegate in self.m_pluginApplicationDelegates) {
-            if ([delegate respondsToSelector:@selector(applicationDidEnterBackground:)] == NO) {
+        for (id plugin in self.m_plugins) {
+            if ([plugin respondsToSelector:@selector(applicationDidEnterBackground:)] == NO) {
                 continue;
             }
             
-            [delegate applicationDidEnterBackground:application];
+            [plugin applicationDidEnterBackground:application];
         }
     }
 }
@@ -427,12 +427,12 @@
     [AppleLog withFormat:@"Mengine application applicationWillResignActive"];
     
     @autoreleasepool {
-        for (id delegate in self.m_pluginApplicationDelegates) {
-            if ([delegate respondsToSelector:@selector(applicationWillResignActive:)] == NO) {
+        for (id plugin in self.m_plugins) {
+            if ([plugin respondsToSelector:@selector(applicationWillResignActive:)] == NO) {
                 continue;
             }
             
-            [delegate applicationWillResignActive:application];
+            [plugin applicationWillResignActive:application];
         }
     }
 }
@@ -441,12 +441,12 @@
     [AppleLog withFormat:@"Mengine application applicationWillTerminate"];
     
     @autoreleasepool {
-        for (id delegate in self.m_pluginApplicationDelegates) {
-            if ([delegate respondsToSelector:@selector(applicationWillTerminate:)] == NO) {
+        for (id plugin in self.m_plugins) {
+            if ([plugin respondsToSelector:@selector(applicationWillTerminate:)] == NO) {
                 continue;
             }
             
-            [delegate applicationWillTerminate:application];
+            [plugin applicationWillTerminate:application];
         }
     }
     
@@ -455,13 +455,13 @@
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey, id> *)options API_AVAILABLE(ios(9.0)) {
     @autoreleasepool {
-        for (id delegate in self.m_pluginApplicationDelegates) {
-            if ([delegate respondsToSelector:@selector(application: openURL: options: handled:)] == NO) {
+        for (id plugin in self.m_plugins) {
+            if ([plugin respondsToSelector:@selector(application: openURL: options: handled:)] == NO) {
                 continue;
             }
             
             BOOL handler = NO;
-            BOOL result = [delegate application:application openURL:url options:options handled:&handler];
+            BOOL result = [plugin application:application openURL:url options:options handled:&handler];
             
             if (handler == YES) {
                 return result;
@@ -499,12 +499,12 @@
     }
     
     @autoreleasepool {
-        for (id delegate in self.m_pluginApplicationDelegates) {
-            if ([delegate respondsToSelector:@selector(onBootstrapBegin:)] == NO) {
+        for (id plugin in self.m_plugins) {
+            if ([plugin respondsToSelector:@selector(onBootstrapBegin:)] == NO) {
                 continue;
             }
             
-            [delegate onBootstrapBegin:arguments];
+            [plugin onBootstrapBegin:arguments];
         }
     }
     
@@ -527,22 +527,22 @@
     }
     
     @autoreleasepool {
-        for (id delegate in self.m_pluginApplicationDelegates) {
-            if ([delegate respondsToSelector:@selector(onBootstrapEnd)] == NO) {
+        for (id plugin in self.m_plugins) {
+            if ([plugin respondsToSelector:@selector(onBootstrapEnd)] == NO) {
                 continue;
             }
             
-            [delegate onBootstrapEnd];
+            [plugin onBootstrapEnd];
         }
     }
     
     @autoreleasepool {
-        for (id delegate in self.m_pluginApplicationDelegates) {
-            if ([delegate respondsToSelector:@selector(onInitializeBegin)] == NO) {
+        for (id plugin in self.m_plugins) {
+            if ([plugin respondsToSelector:@selector(onInitializeBegin)] == NO) {
                 continue;
             }
             
-            [delegate onInitializeBegin];
+            [plugin onInitializeBegin];
         }
     }
 
@@ -565,22 +565,22 @@
     }
     
     @autoreleasepool {
-        for (id delegate in self.m_pluginApplicationDelegates) {
-            if ([delegate respondsToSelector:@selector(onInitializeEnd)] == NO) {
+        for (id plugin in self.m_plugins) {
+            if ([plugin respondsToSelector:@selector(onInitializeEnd)] == NO) {
                 continue;
             }
             
-            [delegate onInitializeEnd];
+            [plugin onInitializeEnd];
         }
     }
     
     @autoreleasepool {
-        for (id delegate in self.m_pluginApplicationDelegates) {
-            if ([delegate respondsToSelector:@selector(onRunBegin)] == NO) {
+        for (id plugin in self.m_plugins) {
+            if ([plugin respondsToSelector:@selector(onRunBegin)] == NO) {
                 continue;
             }
             
-            [delegate onRunBegin];
+            [plugin onRunBegin];
         }
     }
     
@@ -603,68 +603,68 @@
     }
     
     @autoreleasepool {
-        for (id delegate in self.m_pluginApplicationDelegates) {
-            if ([delegate respondsToSelector:@selector(onRunEnd)] == NO) {
+        for (id plugin in self.m_plugins) {
+            if ([plugin respondsToSelector:@selector(onRunEnd)] == NO) {
                 continue;
             }
             
-            [delegate onRunEnd];
+            [plugin onRunEnd];
         }
     }
     
     @autoreleasepool {
-        for (id delegate in self.m_pluginApplicationDelegates) {
-            if ([delegate respondsToSelector:@selector(onLoopBegin)] == NO) {
+        for (id plugin in self.m_plugins) {
+            if ([plugin respondsToSelector:@selector(onLoopBegin)] == NO) {
                 continue;
             }
             
-            [delegate onLoopBegin];
+            [plugin onLoopBegin];
         }
     }
     
     application.loop();
     
     @autoreleasepool {
-        for (id delegate in self.m_pluginApplicationDelegates) {
-            if ([delegate respondsToSelector:@selector(onLoopEnd)] == NO) {
+        for (id plugin in self.m_plugins) {
+            if ([plugin respondsToSelector:@selector(onLoopEnd)] == NO) {
                 continue;
             }
             
-            [delegate onLoopEnd];
+            [plugin onLoopEnd];
         }
     }
     
     [AppleDetail cancelAllQueueOperations];
     
     @autoreleasepool {
-        for (id delegate in self.m_pluginApplicationDelegates) {
-            if ([delegate respondsToSelector:@selector(onStopBegin)] == NO) {
+        for (id plugin in self.m_plugins) {
+            if ([plugin respondsToSelector:@selector(onStopBegin)] == NO) {
                 continue;
             }
             
-            [delegate onStopBegin];
+            [plugin onStopBegin];
         }
     }
     
     application.stop();
     
     @autoreleasepool {
-        for (id delegate in self.m_pluginApplicationDelegates) {
-            if ([delegate respondsToSelector:@selector(onStopEnd)] == NO) {
+        for (id plugin in self.m_plugins) {
+            if ([plugin respondsToSelector:@selector(onStopEnd)] == NO) {
                 continue;
             }
             
-            [delegate onStopEnd];
+            [plugin onStopEnd];
         }
     }
     
     @autoreleasepool {
-        for (id delegate in self.m_pluginApplicationDelegates) {
-            if ([delegate respondsToSelector:@selector(onFinalize)] == NO) {
+        for (id plugin in self.m_plugins) {
+            if ([plugin respondsToSelector:@selector(onFinalize)] == NO) {
                 continue;
             }
             
-            [delegate onFinalize];
+            [plugin onFinalize];
         }
     }
     

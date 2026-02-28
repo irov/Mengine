@@ -30,7 +30,7 @@ public class MengineService implements MengineServiceInterface {
         m_embedding = embedding;
 
         m_serviceTag = MengineTag.of("MNG" + m_serviceName);
-        m_embeddingName = "Mengine" + m_serviceName;
+        m_embeddingName = "Android" + m_serviceName + "Plugin";
     }
 
     @Override

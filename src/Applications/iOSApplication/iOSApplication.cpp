@@ -148,7 +148,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool iOSApplication::initialize()
+    bool iOSApplication::run()
     {
         if( ::API_MengineRun() == false )
         {
@@ -198,12 +198,7 @@ namespace Mengine
 
             return false;
         }
-        
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool iOSApplication::run()
-    {
+
         APPLICATION_SERVICE()
             ->turnSound( true );
 

@@ -15,8 +15,6 @@
 @optional
 - (void)onBootstrapBegin:(NSArray<NSString *> *)arguments;
 - (void)onBootstrapEnd;
-- (void)onInitializeBegin;
-- (void)onInitializeEnd;
 - (void)onRunBegin;
 - (void)onRunEnd;
 - (void)onLoopBegin;

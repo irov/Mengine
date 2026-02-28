@@ -14,14 +14,13 @@ namespace Mengine
 
     public:
         bool bootstrap( int32_t _argc, Char ** const _argv );
-
-    public:
-        bool initialize();
-        void finalize();
         
     public:
         bool run();
         void stop();
+        
+    public:
+        void finalize();
 
     public:
         void loop();

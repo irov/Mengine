@@ -87,7 +87,7 @@
 
 #pragma mark - iOSUIMainApplicationDelegateInterface Protocol
 
-- (NSArray<iOSPluginInterface> *)getPluginApplicationDelegates {
+- (NSArray<iOSPluginInterface> *)getPlugins {
     return self.m_plugins;
 }
 
@@ -515,8 +515,6 @@
         
         [AppleDetail cancelAllQueueOperations];
         
-        application.finalize();
-        
         SDL_SetiOSEventPump( false );
         
         [iOSDetail showOkAlertWithTitle:@"Failed..."
@@ -548,45 +546,7 @@
             [plugin onBootstrapEnd];
         }
     }
-    
-    @autoreleasepool {
-        for (id plugin in self.m_plugins) {
-            if ([plugin respondsToSelector:@selector(onInitializeBegin)] == NO) {
-                continue;
-            }
-            
-            [plugin onInitializeBegin];
-        }
-    }
-
-    if( application.initialize() == false ) {
-        [AppleLog withFormat:@"🔴 [ERROR] Mengine application initialize [Failed]"];
         
-        [AppleDetail cancelAllQueueOperations];
-        
-        application.finalize();
-        
-        SDL_SetiOSEventPump( false );
-        
-        [iOSDetail showOkAlertWithTitle:@"Failed..."
-                                message:@"Mengine initialized application"
-                                     ok:^{
-            ::exit( EXIT_FAILURE );
-        }];
-        
-        return;
-    }
-    
-    @autoreleasepool {
-        for (id plugin in self.m_plugins) {
-            if ([plugin respondsToSelector:@selector(onInitializeEnd)] == NO) {
-                continue;
-            }
-            
-            [plugin onInitializeEnd];
-        }
-    }
-    
     @autoreleasepool {
         for (id plugin in self.m_plugins) {
             if ([plugin respondsToSelector:@selector(onRunBegin)] == NO) {
@@ -601,8 +561,6 @@
         [AppleLog withFormat:@"🔴 [ERROR] Mengine application run [Failed]"];
         
         [AppleDetail cancelAllQueueOperations];
-        
-        application.finalize();
         
         SDL_SetiOSEventPump( false );
         

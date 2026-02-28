@@ -12,7 +12,7 @@
 
 @protocol iOSUIMainApplicationDelegateInterface <NSObject>
 
-- (NSArray<iOSPluginInterface> * _Nonnull)getPluginApplicationDelegates;
+- (NSArray<iOSPluginInterface> * _Nonnull)getPlugins;
 - (NSArray<iOSPluginLoggerDelegateInterface> * _Nonnull)getPluginLoggerDelegates;
 - (NSArray<iOSPluginConfigDelegateInterface> * _Nonnull)getPluginConfigDelegates;
 - (NSArray<iOSPluginUserIdDelegateInterface> * _Nonnull)getPluginUserIdDelegates;

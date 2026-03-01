@@ -555,6 +555,244 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Bootstrapper::finalize()
+    {
+        SERVICE_PROVIDER_STOP();
+
+        if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
+        {
+            NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_STOP_SERVICES );
+        }
+        
+        if( SERVICE_IS_INITIALIZE( RenderServiceInterface ) == true )
+        {
+            RENDER_SERVICE()
+                ->destroyRenderWindow();
+        }
+        
+        if( SERVICE_IS_INITIALIZE( ThreadServiceInterface ) == true )
+        {
+            THREAD_SERVICE()
+                ->stopTasks();
+        }
+
+        SERVICE_FINALIZE( HttpService );
+        SERVICE_FINALIZE( GameService );
+        SERVICE_FINALIZE( ArrowService );
+        SERVICE_FINALIZE( Application );
+
+        SERVICE_FINALIZE( SecureService );
+        SERVICE_FINALIZE( AccountService );
+        SERVICE_FINALIZE( ChronometerService );
+        SERVICE_FINALIZE( PrefetcherService );
+        SERVICE_FINALIZE( PackageService );
+        SERVICE_FINALIZE( UserdataService );
+        SERVICE_FINALIZE( GraveyardService );
+        SERVICE_FINALIZE( ResourceService );
+        SERVICE_FINALIZE( TextService );
+        SERVICE_FINALIZE( FontService );
+        SERVICE_FINALIZE( SettingsService );
+        SERVICE_FINALIZE( DataService );
+        SERVICE_FINALIZE( ConfigService );
+
+        if( SERVICE_IS_INITIALIZE( PluginServiceInterface ) == true )
+        {
+            PLUGIN_SERVICE()
+                ->unloadPlugins();
+        }
+
+        SERVICE_FINALIZE( LoaderService );
+        SERVICE_FINALIZE( TimerService );
+        SERVICE_FINALIZE( TimelineService );
+        SERVICE_FINALIZE( WatchdogService );
+        SERVICE_FINALIZE( ModuleService );
+        SERVICE_FINALIZE( PlayerService );
+        SERVICE_FINALIZE( AmplifierService );
+        SERVICE_FINALIZE( PickerService );
+        SERVICE_FINALIZE( UpdateService );
+        SERVICE_FINALIZE( InputService );
+        SERVICE_FINALIZE( CodecService );
+        SERVICE_FINALIZE( SoundService );
+
+#if defined(MENGINE_MASTER_RELEASE_DISABLE)
+        SERVICE_FINALIZE( ConverterService );
+#endif
+
+        SERVICE_FINALIZE( RenderService );
+        SERVICE_FINALIZE( RenderMaterialService );
+        SERVICE_FINALIZE( RenderTextureService );
+        SERVICE_FINALIZE( ArchiveService );
+        SERVICE_FINALIZE( ThreadService );
+        SERVICE_FINALIZE( EasingService );
+
+        MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ) );
+
+        SERVICE_FINALIZE( PluginService );
+        SERVICE_FINALIZE( TimepipeService );
+
+        LOGGER_SERVICE()
+            ->setCurrentContentLog( nullptr );
+
+        if( m_loggerFile != nullptr )
+        {
+            LOGGER_MESSAGE( "finish log success" );
+
+            LOGGER_SERVICE()
+                ->unregisterLogger( m_loggerFile );
+
+            m_loggerFile = nullptr;
+        }
+
+        PLATFORM_SERVICE()
+            ->finalizeFileService();
+
+        if( SERVICE_IS_INITIALIZE( FileServiceInterface ) == true )
+        {
+            FILE_SERVICE()
+                ->unmountFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
+        }
+
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "user" ) );
+
+        SERVICE_FINALIZE( FileService );
+        SERVICE_FINALIZE( RenderSystem );
+        SERVICE_FINALIZE( SoundSystem );
+        SERVICE_FINALIZE( FileSystem );
+
+#if defined(MENGINE_SYSTEM_HTTP)
+        SERVICE_FINALIZE( HttpSystem );
+#endif
+
+#if defined(MENGINE_PLATFORM_WINDOWS)
+        SERVICE_FINALIZE( Win32KernelService );
+#endif
+
+#if defined(MENGINE_PLATFORM_ANDROID)
+        SERVICE_FINALIZE( AndroidAssetService );
+        SERVICE_FINALIZE( AndroidKernelService );
+#endif
+
+#if defined(MENGINE_VENDOR_APPLE)
+        SERVICE_FINALIZE( AppleKernelService );
+#endif
+
+#if defined(MENGINE_PLATFORM_IOS)
+        SERVICE_FINALIZE( iOSKernelService );
+#endif
+
+        SERVICE_FINALIZE( PlatformService );
+
+        SERVICE_FINALIZE( EnvironmentService );
+
+        this->unregisterBaseTypes_();
+
+        SERVICE_FINALIZE( AnalyticsService );
+        SERVICE_FINALIZE( StatisticService );
+
+        SERVICE_FINALIZE( LoggerService );
+        SERVICE_FINALIZE( MemoryService );
+        SERVICE_FINALIZE( OptionsService );
+        SERVICE_FINALIZE( VocabularyService );
+        SERVICE_FINALIZE( NotificationService );
+        SERVICE_FINALIZE( PrototypeService );
+        SERVICE_FINALIZE( FactoryService );
+        SERVICE_FINALIZE( DateTimeSystem );
+        SERVICE_FINALIZE( ThreadSystem );
+        SERVICE_FINALIZE( TimeSystem );
+        SERVICE_FINALIZE( CryptographySystem );
+        SERVICE_FINALIZE( PlatformSystem );
+
+
+#if defined(MENGINE_SYSTEM_HTTP)
+        SERVICE_DESTROY( HttpSystem );
+#endif
+
+        SERVICE_DESTROY( FileSystem );
+
+        SERVICE_DESTROY( HttpService );
+        SERVICE_DESTROY( SceneService );
+        SERVICE_DESTROY( GameService );
+        SERVICE_DESTROY( AmplifierService );
+        SERVICE_DESTROY( Application );
+        SERVICE_DESTROY( SecureService );
+        SERVICE_DESTROY( AccountService );
+        SERVICE_DESTROY( ChronometerService );
+        SERVICE_DESTROY( PrefetcherService );
+        SERVICE_DESTROY( PackageService );
+        SERVICE_DESTROY( UserdataService );
+        SERVICE_DESTROY( GraveyardService );
+        SERVICE_DESTROY( ResourceService );
+        SERVICE_DESTROY( TextService );
+        SERVICE_DESTROY( FontService );
+        SERVICE_DESTROY( DataService );
+        SERVICE_DESTROY( LoaderService );
+        SERVICE_DESTROY( TimerService );
+        SERVICE_DESTROY( TimelineService );
+        SERVICE_DESTROY( WatchdogService );
+        SERVICE_DESTROY( ModuleService );
+        SERVICE_DESTROY( PlayerService );
+        SERVICE_DESTROY( PickerService );
+        SERVICE_DESTROY( UpdateService );
+        SERVICE_DESTROY( InputService );
+        SERVICE_DESTROY( CodecService );
+        SERVICE_DESTROY( SoundService );
+        SERVICE_DESTROY( SoundSystem );
+
+#if defined(MENGINE_MASTER_RELEASE_DISABLE)
+        SERVICE_DESTROY( ConverterService );
+#endif
+
+        SERVICE_DESTROY( RenderService );
+        SERVICE_DESTROY( PrototypeService );
+        SERVICE_DESTROY( RenderMaterialService );
+        SERVICE_DESTROY( RenderTextureService );
+        SERVICE_DESTROY( RenderSystem );
+        SERVICE_DESTROY( ConfigService );
+        SERVICE_DESTROY( SettingsService );
+        SERVICE_DESTROY( ArchiveService );
+        SERVICE_DESTROY( MemoryService );
+        SERVICE_DESTROY( ThreadService );
+        SERVICE_DESTROY( DateTimeSystem );
+        SERVICE_DESTROY( EasingService );
+        SERVICE_DESTROY( VocabularyService );
+        SERVICE_DESTROY( PluginService );
+        SERVICE_DESTROY( ArrowService );
+        SERVICE_DESTROY( FileService );
+        SERVICE_DESTROY( TimeSystem );
+        SERVICE_DESTROY( TimepipeService );
+        SERVICE_DESTROY( AnalyticsService );
+        SERVICE_DESTROY( StatisticService );
+
+#if defined(MENGINE_PLATFORM_WINDOWS)
+        SERVICE_DESTROY( Win32KernelService );
+#endif
+
+#if defined(MENGINE_PLATFORM_ANDROID)
+        SERVICE_DESTROY( AndroidAssetService );
+        SERVICE_DESTROY( AndroidKernelService );
+#endif
+
+#if defined(MENGINE_VENDOR_APPLE)
+        SERVICE_DESTROY( AppleKernelService );
+#endif
+
+#if defined(MENGINE_PLATFORM_IOS)
+        SERVICE_DESTROY( iOSKernelService );
+#endif
+
+        SERVICE_DESTROY( EnvironmentService );
+
+        SERVICE_DESTROY( PlatformService );
+        SERVICE_DESTROY( NotificationService );
+        SERVICE_DESTROY( LoggerService );
+        SERVICE_DESTROY( FactoryService );
+        SERVICE_DESTROY( OptionsService );
+        SERVICE_DESTROY( LifecycleService );
+        SERVICE_DESTROY( CryptographySystem );
+        SERVICE_DESTROY( PlatformSystem );
+        SERVICE_DESTROY( ThreadSystem );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::run()
     {
         THREAD_SERVICE()
@@ -1927,247 +2165,6 @@ namespace Mengine
 
         this->stopModules_();
         this->stopDevModules_();
-
-        SERVICE_PROVIDER_STOP();
-
-        if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
-        {
-            NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_STOP_SERVICES );
-        }  
-
-        if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
-        {
-            NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_STOP_THREADS );
-        }
-
-        if( SERVICE_IS_INITIALIZE( ThreadServiceInterface ) == true )
-        {
-            THREAD_SERVICE()
-                ->stopTasks();
-        }
-
-        if( SERVICE_IS_INITIALIZE( RenderServiceInterface ) == true )
-        {
-            RENDER_SERVICE()
-                ->destroyRenderWindow();
-        }
-
-        SERVICE_FINALIZE( HttpService );
-        SERVICE_FINALIZE( GameService );
-        SERVICE_FINALIZE( ArrowService );
-        SERVICE_FINALIZE( Application );
-
-        SERVICE_FINALIZE( SecureService );
-        SERVICE_FINALIZE( AccountService );
-        SERVICE_FINALIZE( ChronometerService );
-        SERVICE_FINALIZE( PrefetcherService );
-        SERVICE_FINALIZE( PackageService );
-        SERVICE_FINALIZE( UserdataService );
-        SERVICE_FINALIZE( GraveyardService );
-        SERVICE_FINALIZE( ResourceService );
-        SERVICE_FINALIZE( TextService );
-        SERVICE_FINALIZE( FontService );
-        SERVICE_FINALIZE( SettingsService );
-        SERVICE_FINALIZE( DataService );
-        SERVICE_FINALIZE( ConfigService );
-
-        if( SERVICE_IS_INITIALIZE( PluginServiceInterface ) == true )
-        {
-            PLUGIN_SERVICE()
-                ->unloadPlugins();
-        }
-
-        SERVICE_FINALIZE( LoaderService );
-        SERVICE_FINALIZE( TimerService );
-        SERVICE_FINALIZE( TimelineService );
-        SERVICE_FINALIZE( WatchdogService );
-        SERVICE_FINALIZE( ModuleService );
-        SERVICE_FINALIZE( PlayerService );
-        SERVICE_FINALIZE( AmplifierService );
-        SERVICE_FINALIZE( PickerService );
-        SERVICE_FINALIZE( UpdateService );
-        SERVICE_FINALIZE( InputService );
-        SERVICE_FINALIZE( CodecService );
-        SERVICE_FINALIZE( SoundService );
-
-#if defined(MENGINE_MASTER_RELEASE_DISABLE)
-        SERVICE_FINALIZE( ConverterService );
-#endif
-
-        SERVICE_FINALIZE( RenderService );
-        SERVICE_FINALIZE( RenderMaterialService );
-        SERVICE_FINALIZE( RenderTextureService );
-        SERVICE_FINALIZE( ArchiveService );
-        SERVICE_FINALIZE( ThreadService );
-        SERVICE_FINALIZE( EasingService );
-
-        MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ) );
-
-        SERVICE_FINALIZE( PluginService );
-        SERVICE_FINALIZE( TimepipeService );
-
-        LOGGER_SERVICE()
-            ->setCurrentContentLog( nullptr );
-
-
-        if( m_loggerFile != nullptr )
-        {
-            LOGGER_MESSAGE( "finish log success" );
-
-            LOGGER_SERVICE()
-                ->unregisterLogger( m_loggerFile );
-
-            m_loggerFile = nullptr;
-        }
-
-        PLATFORM_SERVICE()
-            ->finalizeFileService();
-
-        if( SERVICE_IS_INITIALIZE( FileServiceInterface ) == true )
-        {
-            FILE_SERVICE()
-                ->unmountFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
-        }
-
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "user" ) );
-
-        SERVICE_FINALIZE( FileService );
-        SERVICE_FINALIZE( RenderSystem );
-        SERVICE_FINALIZE( SoundSystem );
-        SERVICE_FINALIZE( FileSystem );
-
-#if defined(MENGINE_SYSTEM_HTTP)
-        SERVICE_FINALIZE( HttpSystem );
-#endif
-
-#if defined(MENGINE_PLATFORM_WINDOWS)
-        SERVICE_FINALIZE( Win32KernelService );
-#endif
-
-#if defined(MENGINE_PLATFORM_ANDROID)
-        SERVICE_FINALIZE( AndroidAssetService );
-        SERVICE_FINALIZE( AndroidKernelService );
-#endif
-
-#if defined(MENGINE_VENDOR_APPLE)
-        SERVICE_FINALIZE( AppleKernelService );
-#endif
-
-#if defined(MENGINE_PLATFORM_IOS)
-        SERVICE_FINALIZE( iOSKernelService );
-#endif
-
-        SERVICE_FINALIZE( PlatformService );
-
-        SERVICE_FINALIZE( EnvironmentService );
-
-        this->unregisterBaseTypes_();
-
-        SERVICE_FINALIZE( AnalyticsService );
-        SERVICE_FINALIZE( StatisticService );
-
-        SERVICE_FINALIZE( LoggerService );
-        SERVICE_FINALIZE( MemoryService );
-        SERVICE_FINALIZE( OptionsService );
-        SERVICE_FINALIZE( VocabularyService );
-        SERVICE_FINALIZE( NotificationService );
-        SERVICE_FINALIZE( PrototypeService );
-        SERVICE_FINALIZE( FactoryService );
-        SERVICE_FINALIZE( DateTimeSystem );
-        SERVICE_FINALIZE( ThreadSystem );
-        SERVICE_FINALIZE( TimeSystem );
-        SERVICE_FINALIZE( CryptographySystem );
-        SERVICE_FINALIZE( PlatformSystem );
-
-
-#if defined(MENGINE_SYSTEM_HTTP)
-        SERVICE_DESTROY( HttpSystem );
-#endif
-
-        SERVICE_DESTROY( FileSystem );
-
-        SERVICE_DESTROY( HttpService );
-        SERVICE_DESTROY( SceneService );
-        SERVICE_DESTROY( GameService );
-        SERVICE_DESTROY( AmplifierService );
-        SERVICE_DESTROY( Application );
-        SERVICE_DESTROY( SecureService );
-        SERVICE_DESTROY( AccountService );
-        SERVICE_DESTROY( ChronometerService );
-        SERVICE_DESTROY( PrefetcherService );
-        SERVICE_DESTROY( PackageService );
-        SERVICE_DESTROY( UserdataService );
-        SERVICE_DESTROY( GraveyardService );
-        SERVICE_DESTROY( ResourceService );
-        SERVICE_DESTROY( TextService );
-        SERVICE_DESTROY( FontService );
-        SERVICE_DESTROY( DataService );
-        SERVICE_DESTROY( LoaderService );
-        SERVICE_DESTROY( TimerService );
-        SERVICE_DESTROY( TimelineService );
-        SERVICE_DESTROY( WatchdogService );
-        SERVICE_DESTROY( ModuleService );
-        SERVICE_DESTROY( PlayerService );
-        SERVICE_DESTROY( PickerService );
-        SERVICE_DESTROY( UpdateService );
-        SERVICE_DESTROY( InputService );
-        SERVICE_DESTROY( CodecService );
-        SERVICE_DESTROY( SoundService );
-        SERVICE_DESTROY( SoundSystem );
-
-#if defined(MENGINE_MASTER_RELEASE_DISABLE)
-        SERVICE_DESTROY( ConverterService );
-#endif
-
-        SERVICE_DESTROY( RenderService );
-        SERVICE_DESTROY( PrototypeService );
-        SERVICE_DESTROY( RenderMaterialService );
-        SERVICE_DESTROY( RenderTextureService );
-        SERVICE_DESTROY( RenderSystem );
-        SERVICE_DESTROY( ConfigService );
-        SERVICE_DESTROY( SettingsService );
-        SERVICE_DESTROY( ArchiveService );
-        SERVICE_DESTROY( MemoryService );
-        SERVICE_DESTROY( ThreadService );
-        SERVICE_DESTROY( DateTimeSystem );
-        SERVICE_DESTROY( EasingService );
-        SERVICE_DESTROY( VocabularyService );
-        SERVICE_DESTROY( PluginService );
-        SERVICE_DESTROY( ArrowService );
-        SERVICE_DESTROY( FileService );
-        SERVICE_DESTROY( TimeSystem );
-        SERVICE_DESTROY( TimepipeService );
-        SERVICE_DESTROY( AnalyticsService );
-        SERVICE_DESTROY( StatisticService );
-
-#if defined(MENGINE_PLATFORM_WINDOWS)
-        SERVICE_DESTROY( Win32KernelService );
-#endif
-
-#if defined(MENGINE_PLATFORM_ANDROID)
-        SERVICE_DESTROY( AndroidAssetService );
-        SERVICE_DESTROY( AndroidKernelService );
-#endif
-
-#if defined(MENGINE_VENDOR_APPLE)
-        SERVICE_DESTROY( AppleKernelService );
-#endif
-
-#if defined(MENGINE_PLATFORM_IOS)
-        SERVICE_DESTROY( iOSKernelService );
-#endif
-
-        SERVICE_DESTROY( EnvironmentService );
-
-        SERVICE_DESTROY( PlatformService );
-        SERVICE_DESTROY( NotificationService );
-        SERVICE_DESTROY( LoggerService );
-        SERVICE_DESTROY( FactoryService );
-        SERVICE_DESTROY( OptionsService );
-        SERVICE_DESTROY( LifecycleService );
-        SERVICE_DESTROY( CryptographySystem );
-        SERVICE_DESTROY( PlatformSystem );
-        SERVICE_DESTROY( ThreadSystem );
     }
     //////////////////////////////////////////////////////////////////////////
 }

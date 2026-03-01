@@ -229,8 +229,8 @@ namespace Mengine
             PLATFORM_SERVICE()
                 ->stopPlatform();
         }
-
-        if( SERVICE_IS_INITIALIZE( Mengine::BootstrapperInterface ) == true )
+        
+        if( SERVICE_IS_INITIALIZE( Mengine::PlatformServiceInterface ) == true )
         {
             BOOTSTRAPPER_SERVICE()
                 ->stop();
@@ -242,6 +242,12 @@ namespace Mengine
         if( SERVICE_PROVIDER_EXIST() == false )
         {
             return;
+        }
+        
+        if( SERVICE_IS_INITIALIZE( Mengine::BootstrapperInterface ) == true )
+        {
+            BOOTSTRAPPER_SERVICE()
+                ->finalize();
         }
         
         ::API_MengineFinalize();

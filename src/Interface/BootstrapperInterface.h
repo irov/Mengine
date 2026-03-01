@@ -14,6 +14,7 @@ namespace Mengine
 
     public:
         virtual bool initialize() = 0;
+        virtual void finalize() = 0;
         virtual bool run() = 0;
         virtual void stop() = 0;
     };

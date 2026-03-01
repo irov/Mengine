@@ -22,7 +22,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static void * treadJob(void * _userData )
+        static void * treadJob( void * _userData )
         {
             POSIXThreadIdentity * thread = reinterpret_cast<POSIXThreadIdentity *>(_userData);
 

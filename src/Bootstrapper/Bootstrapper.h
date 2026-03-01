@@ -22,6 +22,7 @@ namespace Mengine
 
     public:
         bool initialize() override;
+        void finalize() override;
         bool run() override;
         void stop() override;
 

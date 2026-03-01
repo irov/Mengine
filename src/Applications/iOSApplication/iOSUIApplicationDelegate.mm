@@ -513,13 +513,15 @@
     if( application.bootstrap( argc, argv ) == false ) {
         [AppleLog withFormat:@"🔴 [ERROR] Mengine application bootstrap [Failed]"];
         
-        [AppleDetail cancelAllQueueOperations];
+        application.finalize();
         
         SDL_SetiOSEventPump( false );
         
         [iOSDetail showOkAlertWithTitle:@"Failed..."
                                 message:@"Mengine bootstraped application"
                                      ok:^{
+            [AppleDetail cancelAllQueueOperations];
+            
             ::exit( EXIT_FAILURE );
         }];
         
@@ -560,13 +562,15 @@
     if( application.run() == false ) {
         [AppleLog withFormat:@"🔴 [ERROR] Mengine application run [Failed]"];
         
-        [AppleDetail cancelAllQueueOperations];
+        application.finalize();
         
         SDL_SetiOSEventPump( false );
         
         [iOSDetail showOkAlertWithTitle:@"Failed..."
                                 message:@"Mengine run application"
                                      ok:^{
+            [AppleDetail cancelAllQueueOperations];
+            
             ::exit( EXIT_FAILURE );
         }];
         

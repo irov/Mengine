@@ -17,6 +17,8 @@
 }
 
 - (void) sharer:(id <FBSDKSharing> _Nonnull) sharer didCompleteWithResults:(NSDictionary<NSString *, id> * _Nonnull) results {
+    (void)sharer;
+
     id<AppleFacebookProviderInterface> provider = [self.m_facebook getProvider];
 
     if( provider == nil )
@@ -24,10 +26,22 @@
         return;
     }
 
-    NSString * message = sharer.shareContent == nil ? @"" : sharer.shareContent.placeID;
-    if( message == nil )
+    id postId = results[@"postId"];
+
+    if( postId == nil )
     {
-        message = @"";
+        postId = results[@"post_id"];
+    }
+
+    NSString * message = @"";
+
+    if( [postId isKindOfClass:[NSString class]] == YES )
+    {
+        message = (NSString *)postId;
+    }
+    else if( postId != nil )
+    {
+        message = [postId description];
     }
 
     [AppleDetail addMainQueueOperation:^{

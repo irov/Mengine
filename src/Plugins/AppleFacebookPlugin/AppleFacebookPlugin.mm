@@ -24,6 +24,7 @@
         self.m_provider = nil;
         self.m_loginManager = [[FBSDKLoginManager alloc] init];
         self.m_shareDelegate = [[AppleFacebookShareDelegate alloc] initWithFacebook:self];
+        self.m_userId = nil;
     }
 
     return self;
@@ -47,6 +48,7 @@
     self.m_provider = nil;
     self.m_loginManager = nil;
     self.m_shareDelegate = nil;
+    self.m_userId = nil;
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
@@ -146,6 +148,8 @@
             {
                 if( profile.userID != nil )
                 {
+                    strongSelf.m_userId = profile.userID;
+                    
                     [params setObject:profile.userID forKey:@"profile.userID"];
                 }
 
@@ -181,6 +185,8 @@
 
     [FBSDKAuthenticationToken setCurrentAuthenticationToken:nil];
     [FBSDKProfile setCurrentProfile:nil];
+    
+    self.m_userId = nil;
 }
 
 - (BOOL)isLoggedIn {
@@ -203,12 +209,18 @@
 - (NSString *)getUserId {
     FBSDKProfile * profile = [FBSDKProfile currentProfile];
 
-    if( profile == nil )
+    if( profile != nil && profile.userID != nil )
     {
-        return nil;
+        self.m_userId = profile.userID;
+        return profile.userID;
     }
 
-    return profile.userID;
+    if( self.m_userId != nil )
+    {
+        return self.m_userId;
+    }
+
+    return nil;
 }
 
 - (void)shareLink:(NSString *)link picture:(NSString *)picture {
@@ -248,8 +260,14 @@
     if( strPicture.length <= 0 )
     {
         dispatch_async( dispatch_get_main_queue(), ^{
-            FBSDKShareLinkContent * content = [FBSDKShareLinkContent alloc];
-            content.contentURL = [NSURL URLWithString:strLink];
+            FBSDKShareLinkContent * content = [[FBSDKShareLinkContent alloc] init];
+
+            NSURL * linkURL = [NSURL URLWithString:strLink];
+
+            if( linkURL != nil )
+            {
+                content.contentURL = linkURL;
+            }
 
             UIViewController * viewController = [iOSDetail getRootViewController];
 
@@ -279,53 +297,65 @@
         return;
     }
 
-    NSData * data = [NSData dataWithContentsOfURL:url];
+    NSURLSessionDataTask * task = [[NSURLSession sharedSession] dataTaskWithURL:url
+                                                               completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        (void)response;
 
-    if( data == nil )
-    {
-        IOS_LOGGER_ERROR( @"Facebook picture not convert to NSData" );
-
-        if( provider != nil )
+        if( error != nil || data == nil )
         {
-            [AppleDetail addMainQueueOperation:^{
-                [provider onFacebookShareError:-4 message:@"empty NSURL to NSData"];
-            }];
+            IOS_LOGGER_ERROR( @"Facebook picture not convert to NSData" );
+
+            if( provider != nil )
+            {
+                [AppleDetail addMainQueueOperation:^{
+                    [provider onFacebookShareError:-4 message:@"empty NSURL to NSData"];
+                }];
+            }
+
+            return;
         }
 
-        return;
-    }
+        UIImage * img = [UIImage imageWithData:data];
 
-    UIImage * img = [UIImage imageWithData:data];
-
-    if( img == nil )
-    {
-        IOS_LOGGER_ERROR( @"Facebook picture not convert to UIImage" );
-
-        if( provider != nil )
+        if( img == nil )
         {
-            [AppleDetail addMainQueueOperation:^{
-                [provider onFacebookShareError:-5 message:@"empty NSData to UIImage"];
-            }];
+            IOS_LOGGER_ERROR( @"Facebook picture not convert to UIImage" );
+
+            if( provider != nil )
+            {
+                [AppleDetail addMainQueueOperation:^{
+                    [provider onFacebookShareError:-5 message:@"empty NSData to UIImage"];
+                }];
+            }
+
+            return;
         }
 
-        return;
-    }
+        dispatch_async( dispatch_get_main_queue(), ^{
+            FBSDKSharePhoto * sharePhoto = [[FBSDKSharePhoto alloc] initWithImage:img isUserGenerated:true];
 
-    dispatch_async( dispatch_get_main_queue(), ^{
-        FBSDKSharePhoto * sharePhoto = [[FBSDKSharePhoto alloc] initWithImage:img isUserGenerated:true];
+            FBSDKShareMediaContent * content = [[FBSDKShareMediaContent alloc] init];
 
-        FBSDKShareMediaContent * content = [FBSDKShareMediaContent alloc];
-        content.contentURL = [NSURL URLWithString:strLink];
-        content.media = @[sharePhoto];
+            NSURL * linkURL = [NSURL URLWithString:strLink];
 
-        UIViewController * viewController = [iOSDetail getRootViewController];
+            if( linkURL != nil )
+            {
+                content.contentURL = linkURL;
+            }
 
-        FBSDKShareDialog * dialog = [FBSDKShareDialog dialogWithViewController:viewController
-                                                                    withContent:content
-                                                                       delegate:self.m_shareDelegate];
+            content.media = @[sharePhoto];
 
-        [dialog show];
-    });
+            UIViewController * viewController = [iOSDetail getRootViewController];
+
+            FBSDKShareDialog * dialog = [FBSDKShareDialog dialogWithViewController:viewController
+                                                                        withContent:content
+                                                                           delegate:self.m_shareDelegate];
+
+            [dialog show];
+        });
+    }];
+
+    [task resume];
 }
 
 - (void)getProfilePictureLink {
@@ -341,6 +371,12 @@
     if( profile != nil )
     {
         NSString * userId = profile.userID != nil ? profile.userID : @"";
+        
+        if( userId.length > 0 )
+        {
+            self.m_userId = userId;
+        }
+
         NSString * imageURL = @"";
 
         if( profile.imageURL != nil )
@@ -406,6 +442,12 @@
         }
 
         NSString * userId = loadedProfile.userID != nil ? loadedProfile.userID : @"";
+        
+        if( userId.length > 0 )
+        {
+            self.m_userId = userId;
+        }
+
         NSString * imageURL = loadedProfile.imageURL.absoluteURL.absoluteString != nil
             ? loadedProfile.imageURL.absoluteURL.absoluteString
             : @"";

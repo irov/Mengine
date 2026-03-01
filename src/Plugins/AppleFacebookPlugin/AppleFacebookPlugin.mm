@@ -10,6 +10,8 @@
 #import <FBSDKCoreKit/FBSDKCoreKit-Swift.h>
 
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+#   include "Kernel/ScriptEmbeddingHelper.h"
+
 #   include "AppleFacebookScriptEmbedding.h"
 #endif
 
@@ -18,8 +20,7 @@
 - (instancetype)init {
     self = [super init];
 
-    if( self != nil )
-    {
+    if( self != nil ) {
         self.m_provider = nil;
         self.m_loginManager = [[FBSDKLoginManager alloc] init];
         self.m_shareDelegate = [[AppleFacebookShareDelegate alloc] initWithFacebook:self];
@@ -32,7 +33,7 @@
 
 - (void)onRunBegin {
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-    Mengine::Helper::addScriptEmbedding<Mengine::AppleFacebookScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE );
+    Mengine::Helper::addScriptEmbedding<Mengine::AppleFacebookScriptEmbedding>( MENGINE_DOCUMENT_FUNCTION );
 #endif
 }
 
@@ -188,7 +189,7 @@
     return authenticationToken != nil;
 }
 
-- (NSString * _Nullable)getAccessToken {
+- (NSString *)getAccessToken {
     FBSDKAuthenticationToken * authenticationToken = [FBSDKAuthenticationToken currentAuthenticationToken];
 
     if( authenticationToken == nil )
@@ -199,7 +200,7 @@
     return authenticationToken.tokenString;
 }
 
-- (NSString * _Nullable)getUserId {
+- (NSString *)getUserId {
     FBSDKProfile * profile = [FBSDKProfile currentProfile];
 
     if( profile == nil )

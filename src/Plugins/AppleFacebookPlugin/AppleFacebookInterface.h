@@ -28,8 +28,8 @@
 - (BOOL)login:(NSArray<NSString *> *)permissions;
 - (void)logout;
 - (BOOL)isLoggedIn;
-- (NSString * _Nullable)getAccessToken;
-- (NSString * _Nullable)getUserId;
+- (NSString *)getAccessToken;
+- (NSString *)getUserId;
 - (void)shareLink:(NSString *)link picture:(NSString *)picture;
 - (void)getProfilePictureLink;
 

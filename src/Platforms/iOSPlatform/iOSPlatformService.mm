@@ -940,15 +940,14 @@ namespace Mengine
         {
             NSString * userPathString = [NSString stringWithUTF8String:userPath];
 
-            NSFileManager * fileManager = [NSFileManager defaultManager];
-            NSDirectoryEnumerator<NSString *> * enumerator = [fileManager enumeratorAtPath:userPathString];
+            NSDirectoryEnumerator<NSString *> * enumerator = [[NSFileManager defaultManager] enumeratorAtPath:userPathString];
 
             for( NSString * relativePath in enumerator )
             {
                 NSString * fullPath = [userPathString stringByAppendingPathComponent:relativePath];
 
                 BOOL isDirectory = NO;
-                if( [fileManager fileExistsAtPath:fullPath isDirectory:&isDirectory] == NO || isDirectory == YES )
+                if( [[NSFileManager defaultManager] fileExistsAtPath:fullPath isDirectory:&isDirectory] == NO || isDirectory == YES )
                 {
                     continue;
                 }

@@ -19,6 +19,7 @@
 #include "Config/Path.h"
 
 #include <sys/stat.h>
+#include <fnmatch.h>
 #include <dlfcn.h>
 
 //////////////////////////////////////////////////////////////////////////
@@ -58,6 +59,94 @@ namespace Mengine
             }
 
             return isDirectory;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool listDirectoryContents( NSString * _base, NSString * _path, const Char * _mask, const LambdaFilePath & _lambda, bool * const _stop )
+        {
+            NSString * directoryPath = _path.length == 0
+                ? _base
+                : [_base stringByAppendingPathComponent:_path];
+
+            NSError * error = nil;
+            NSArray<NSString *> * contents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:directoryPath error:&error];
+
+            if( contents == nil )
+            {
+                *_stop = false;
+
+                return true;
+            }
+
+            NSMutableArray<NSString *> * directories = [NSMutableArray array];
+
+            for( NSString * fileName in contents )
+            {
+                if( [fileName isEqualToString:@"."] == YES || [fileName isEqualToString:@".."] == YES )
+                {
+                    continue;
+                }
+
+                NSString * fullPath = [directoryPath stringByAppendingPathComponent:fileName];
+
+                BOOL isDirectory = NO;
+                if( [[NSFileManager defaultManager] fileExistsAtPath:fullPath isDirectory:&isDirectory] == NO )
+                {
+                    continue;
+                }
+
+                if( isDirectory == YES )
+                {
+                    [directories addObject:fileName];
+
+                    continue;
+                }
+
+                if( ::fnmatch( _mask, [fileName UTF8String], 0 ) != 0 )
+                {
+                    continue;
+                }
+
+                NSString * relativePath = _path.length == 0
+                    ? fileName
+                    : [_path stringByAppendingPathComponent:fileName];
+
+                Path utf8_filepath = {'\0'};
+                StdString::strcpy_safe( utf8_filepath, [relativePath UTF8String], MENGINE_MAX_PATH );
+                Helper::pathCorrectForwardslashA( utf8_filepath );
+
+                FilePath fp = Helper::stringizeFilePath( utf8_filepath );
+
+                if( _lambda( fp ) == false )
+                {
+                    *_stop = true;
+
+                    return true;
+                }
+            }
+
+            for( NSString * folderName in directories )
+            {
+                NSString * nextPath = _path.length == 0
+                    ? folderName
+                    : [_path stringByAppendingPathComponent:folderName];
+
+                bool stop;
+                if( Detail::listDirectoryContents( _base, nextPath, _mask, _lambda, &stop ) == false )
+                {
+                    return false;
+                }
+
+                if( stop == true )
+                {
+                    *_stop = true;
+
+                    return true;
+                }
+            }
+
+            *_stop = false;
+
+            return true;
         }
         //////////////////////////////////////////////////////////////////////////
     }
@@ -268,14 +357,33 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleFileSystem::findFiles( const Char * _base, const Char * _path, const Char * _mask, const LambdaFilePath & _lambda ) const
     {
-        MENGINE_UNUSED( _base );
-        MENGINE_UNUSED( _path );
-        MENGINE_UNUSED( _mask );
-        MENGINE_UNUSED( _lambda );
+        Path correctBase = {'\0'};
+        Helper::pathCorrectBackslashToA( correctBase, _base );
 
-        LOGGER_WARNING("SDLPlatformService::findFiles not support");
+        Path correctPath = {'\0'};
+        Helper::pathCorrectBackslashToA( correctPath, _path );
 
-        return false;
+        Path correctMask = {'\0'};
+        Helper::pathCorrectBackslashToA( correctMask, _mask );
+
+        const Char * path = correctPath;
+        while( *path == MENGINE_PATH_FORWARDSLASH )
+        {
+            ++path;
+        }
+
+        NSString * base = @(correctBase);
+        NSString * relPath = @(path);
+
+        bool stop;
+        if( Detail::listDirectoryContents( base, relPath, correctMask, _lambda, &stop ) == false )
+        {
+            return false;
+        }
+
+        MENGINE_UNUSED( stop );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     uint64_t AppleFileSystem::getFileTime( const Char * _filePath ) const

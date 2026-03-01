@@ -70,7 +70,7 @@
         [self.m_achievementsComplete removeAllObjects];
         
         [AppleDetail addMainQueueOperation:^{
-            [callback onAppleGameCenterSynchronizate:NO];
+            [callback onAppleGameCenterSynchronize:NO];
         }];
         
         [self loadCompletedAchievements:^(NSError * _error, NSArray * _completedAchievements) {
@@ -82,7 +82,7 @@
                 );
                 
                 [AppleDetail addMainQueueOperation:^{
-                    [callback onAppleGameCenterSynchronizate:NO];
+                    [callback onAppleGameCenterSynchronize:NO];
                 }];
                 
                 return;
@@ -102,7 +102,7 @@
             
             if (callback != nil) {
                 [AppleDetail addMainQueueOperation:^{
-                    [callback onAppleGameCenterSynchronizate:YES];
+                    [callback onAppleGameCenterSynchronize:YES];
                 }];
             }
         }] ;

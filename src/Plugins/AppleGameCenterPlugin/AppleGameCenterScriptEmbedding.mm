@@ -30,8 +30,8 @@
     py_cb.call_args( successful == YES, self.m_args );
 }
 
-- (void)onAppleGameCenterSynchronizate:(BOOL)successful {
-    pybind::object py_cb = [self getMethod:@"onAppleGameCenterSynchronizate"];
+- (void)onAppleGameCenterSynchronize:(BOOL)successful {
+    pybind::object py_cb = [self getMethod:@"onAppleGameCenterSynchronize"];
         
     if( py_cb.is_callable() == false )
     {

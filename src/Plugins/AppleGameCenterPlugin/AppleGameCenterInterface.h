@@ -4,7 +4,7 @@
 
 @protocol AppleGameCenterConnectCallbackInterface <NSObject>
 - (void)onAppleGameCenterAuthenticate:(BOOL)successful;
-- (void)onAppleGameCenterSynchronizate:(BOOL)successful;
+- (void)onAppleGameCenterSynchronize:(BOOL)successful;
 @end
 
 @protocol AppleGameCenterInterface <NSObject>

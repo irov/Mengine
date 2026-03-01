@@ -12,5 +12,6 @@
 @property (nonatomic, strong) id<AppleFacebookProviderInterface> m_provider;
 @property (nonatomic, strong) FBSDKLoginManager * m_loginManager;
 @property (nonatomic, strong) AppleFacebookShareDelegate * m_shareDelegate;
+@property (nonatomic, strong) NSString * m_userId;
 
 @end

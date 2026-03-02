@@ -538,6 +538,18 @@ namespace Mengine
             this->addGlobalModuleT( "_DEBUG", false );
 #endif
 
+#if defined(MENGINE_MASTER_RELEASE_ENABLE)
+            this->addGlobalModuleT( "_MASTER_RELEASE", true );
+#else
+            this->addGlobalModuleT( "_MASTER_RELEASE", false );
+#endif
+
+#if defined(MENGINE_BUILD_PUBLISH_ENABLE)
+            this->addGlobalModuleT( "_BUILD_PUBLISH", true );
+#else
+            this->addGlobalModuleT( "_BUILD_PUBLISH", false );
+#endif
+
 #if defined(MENGINE_PLATFORM_WINDOWS)
             this->addGlobalModuleT( "_WINDOWS", true );
             this->addGlobalModuleT( "_VENDOR", "MICROSOFT" );
@@ -558,11 +570,11 @@ namespace Mengine
             this->addGlobalModuleT( "_WIN64", false );
 #endif
 
-#if defined(MENGINE_PLATFORM_MACOS)
-            this->addGlobalModuleT( "_MACOS", true );
-            this->addGlobalModuleT( "_PLATFORM", "MACOS" );
+#if defined(MENGINE_PLATFORM_LINUX)
+            this->addGlobalModuleT( "_LINUX", true );
+            this->addGlobalModuleT( "_PLATFORM", "LINUX" );
 #else
-            this->addGlobalModuleT( "_MACOS", false );
+            this->addGlobalModuleT( "_LINUX", false );
 #endif
 
 #if defined(MENGINE_DEVICE_DESKTOP)
@@ -570,13 +582,6 @@ namespace Mengine
             this->addGlobalModuleT( "_DEVICE", "DESKTOP" );
 #else
             this->addGlobalModuleT( "_DESKTOP", false );
-#endif
-
-#if defined(MENGINE_PLATFORM_LINUX)
-            this->addGlobalModuleT( "_LINUX", true );
-            this->addGlobalModuleT( "_PLATFORM", "LINUX" );
-#else
-            this->addGlobalModuleT( "_LINUX", false );
 #endif
 
 #if defined(MENGINE_PLATFORM_ANDROID)
@@ -587,8 +592,17 @@ namespace Mengine
             this->addGlobalModuleT( "_ANDROID", false );
 #endif
 
+#if defined(MENGINE_PLATFORM_MACOS)
+            this->addGlobalModuleT( "_MACOS", true );
+            this->addGlobalModuleT( "_VENDOR", "APPLE" );
+            this->addGlobalModuleT( "_PLATFORM", "MACOS" );
+#else
+            this->addGlobalModuleT( "_MACOS", false );
+#endif
+
 #if defined(MENGINE_PLATFORM_IOS)
             this->addGlobalModuleT( "_IOS", true );
+            this->addGlobalModuleT( "_VENDOR", "APPLE" );
             this->addGlobalModuleT( "_PLATFORM", "IOS" );
 #else
             this->addGlobalModuleT( "_IOS", false );
@@ -596,7 +610,6 @@ namespace Mengine
 
 #if defined(MENGINE_VENDOR_APPLE)
             this->addGlobalModuleT( "_APPLE", true );
-            this->addGlobalModuleT( "_VENDOR", "APPLE" );
 #else
             this->addGlobalModuleT( "_APPLE", false );
 #endif
@@ -613,18 +626,6 @@ namespace Mengine
             this->addGlobalModuleT( "_DEVICE", "MOBILE" );
 #else
             this->addGlobalModuleT( "_MOBILE", false );
-#endif
-
-#if defined(MENGINE_MASTER_RELEASE_ENABLE)
-            this->addGlobalModuleT( "_MASTER_RELEASE", true );
-#else
-            this->addGlobalModuleT( "_MASTER_RELEASE", false );
-#endif
-
-#if defined(MENGINE_BUILD_PUBLISH_ENABLE)
-            this->addGlobalModuleT( "_BUILD_PUBLISH", true );
-#else
-            this->addGlobalModuleT( "_BUILD_PUBLISH", false );
 #endif
         }
 

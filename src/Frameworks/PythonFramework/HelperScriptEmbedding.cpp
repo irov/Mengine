@@ -4011,7 +4011,7 @@ namespace Mengine
             .def( "TC_TOUCH15", TC_TOUCH15 )
             ;
 
-        pybind::const_<uint32_t>( _kernel, "MENGINE_INPUT_MAX_TOUCH", MENGINE_INPUT_MAX_TOUCH );
+        pybind::def_const<uint32_t>( _kernel, "MENGINE_INPUT_MAX_TOUCH", MENGINE_INPUT_MAX_TOUCH );
 
         pybind::registration_stl_optional_type_cast<Optional<mt::box2f>>(_kernel);
 

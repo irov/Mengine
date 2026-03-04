@@ -640,6 +640,16 @@ namespace Mengine
             return _rad * mt::constant::rad2deg;
         }
         //////////////////////////////////////////////////////////////////////////
+        static float ceilf( float a )
+        {
+            return StdMath::ceilf( a );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static float floorf( float a )
+        {
+            return StdMath::floorf( a );
+        }
+        //////////////////////////////////////////////////////////////////////////
         static float sqrtf( float a )
         {
             return StdMath::sqrtf( a );
@@ -649,6 +659,11 @@ namespace Mengine
         {
             return StdMath::powf( a, b );
         }
+        //////////////////////////////////////////////////////////////////////////
+        static float expf( float a )
+        {
+            return StdMath::expf( a );
+        }        
         //////////////////////////////////////////////////////////////////////////
         static float fabsf( float a )
         {
@@ -687,7 +702,12 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static float atanf( float _x )
         {
-            return StdMath::atan( _x );
+            return StdMath::atanf( _x );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static float atan2f( float _x, float _y )
+        {
+            return StdMath::atan2f( _x, _y );
         }
         //////////////////////////////////////////////////////////////////////////
         static float logf( float _x )
@@ -1019,8 +1039,11 @@ namespace Mengine
         pybind::def_function( _kernel, "deg2rad", &Detail::deg2rad );
         pybind::def_function( _kernel, "rad2deg", &Detail::rad2deg );
 
+        pybind::def_function( _kernel, "ceilf", &Detail::ceilf );
+        pybind::def_function( _kernel, "floorf", &Detail::floorf );
         pybind::def_function( _kernel, "sqrtf", &Detail::sqrtf );
         pybind::def_function( _kernel, "powf", &Detail::powf );
+        pybind::def_function( _kernel, "expf", &Detail::expf );
         pybind::def_function( _kernel, "fabsf", &Detail::fabsf );
         pybind::def_function( _kernel, "cosf", &Detail::cosf );
         pybind::def_function( _kernel, "sinf", &Detail::sinf );
@@ -1029,6 +1052,7 @@ namespace Mengine
         pybind::def_function( _kernel, "sinf_deg", &Detail::sinf_deg );
         pybind::def_function( _kernel, "acosf", &Detail::acosf );
         pybind::def_function( _kernel, "atanf", &Detail::atanf );
+        pybind::def_function( _kernel, "atan2f", &Detail::atan2f );
         pybind::def_function( _kernel, "logf", &Detail::logf );
         pybind::def_function( _kernel, "log10f", &Detail::log10f );
         pybind::def_function( _kernel, "log10", &Detail::log10 );
@@ -1058,6 +1082,8 @@ namespace Mengine
         pybind::def_function( _kernel, "angle_length", &mt::angle_length );
         pybind::def_function( _kernel, "perp_v2", &mt::perp );
         pybind::def_function( _kernel, "perp_left", &mt::perp_left );
+
+        pybind::def_const( _kernel, "pi", mt::constant::pi );
 
         return true;
     }

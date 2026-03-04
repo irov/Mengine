@@ -54,6 +54,7 @@ namespace Mengine
         using std::fabsf;
         using std::logf;
         using std::log10f;
+        using std::expf;
         using std::roundf;
         using std::ceilf;
         using std::modff;

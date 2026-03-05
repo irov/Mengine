@@ -1296,7 +1296,7 @@ namespace Mengine
         PLATFORM_SERVICE()
             ->getCurrentPath( currentPath );
 
-        LOGGER_INFO_PROTECTED( "bootstrapper", "current folder '%s'"
+        LOGGER_MESSAGE_PROTECTED( "current folder '%s'"
             , currentPath
         );
 #endif

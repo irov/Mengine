@@ -334,6 +334,10 @@ namespace Mengine
 
                 return false;
             }
+
+            LOGGER_MESSAGE( "set workdir: %s"
+                , currentPath
+            );
         }
 #endif
 

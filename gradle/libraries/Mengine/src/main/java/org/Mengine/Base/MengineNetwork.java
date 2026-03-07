@@ -273,14 +273,18 @@ public class MengineNetwork {
         }
 
         for (String header : headers) {
-            List<String> parts = MengineUtils.splitToList(header, ":");
+            int separatorIndex = header.indexOf(':');
 
-            if (parts.size() != 2) {
+            if (separatorIndex <= 0) {
                 continue;
             }
 
-            String key = parts.get(0);
-            String value = parts.get(1);
+            String key = header.substring(0, separatorIndex).trim();
+            String value = header.substring(separatorIndex + 1).trim();
+
+            if (key.isEmpty() == true) {
+                continue;
+            }
 
             connection.setRequestProperty(key, value);
         }

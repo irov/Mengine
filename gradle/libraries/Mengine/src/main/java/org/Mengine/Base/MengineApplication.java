@@ -465,7 +465,8 @@ public abstract class MengineApplication extends Application {
         String nativeLibraryDir = applicationInfo.nativeLibraryDir;
         String options = this.getApplicationOptions();
 
-        String[] optionsArgs = options.split(" ");
+        List<String> optionsList = MengineUtils.splitToList(options, " ");
+        String[] optionsArgs = optionsList.toArray(new String[0]);
 
         Object nativeApplication = MengineNative.AndroidMain_bootstrap(nativeLibraryDir, optionsArgs);
 
@@ -1098,8 +1099,10 @@ public abstract class MengineApplication extends Application {
 
         MenginePlatformEventQueue.pushQuitEvent();
 
-        m_main.stop();
-        m_main = null;
+        if (m_main != null) {
+            m_main.stop();
+            m_main = null;
+        }
 
         this.destroyNativeApplication();
 

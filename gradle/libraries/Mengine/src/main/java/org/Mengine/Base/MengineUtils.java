@@ -845,6 +845,10 @@ public class MengineUtils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             LocaleList locales = configuration.getLocales();
 
+            if (locales.isEmpty() == true) {
+                return Locale.getDefault();
+            }
+
             Locale locale = locales.get(0);
 
             return locale;

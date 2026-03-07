@@ -460,22 +460,43 @@
 }
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey, id> *)options API_AVAILABLE(ios(9.0)) {
+    BOOL anySuccess = NO;
+
     @autoreleasepool {
         for (id plugin in self.m_plugins) {
-            if ([plugin respondsToSelector:@selector(application: openURL: options: handled:)] == NO) {
+            if ([plugin respondsToSelector:@selector(application: openURL: options:)] == NO) {
                 continue;
             }
-            
-            BOOL handler = NO;
-            BOOL result = [plugin application:application openURL:url options:options handled:&handler];
-            
-            if (handler == YES) {
-                return result;
+
+            BOOL result = [plugin application:application openURL:url options:options];
+
+            if (result == YES) {
+                anySuccess = YES;
             }
         }
     }
-    
-    return NO;
+
+    return anySuccess;
+}
+
+- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray<id<UIUserActivityRestoring>> * _Nullable restorableObjects))restorationHandler {
+    BOOL anySuccess = NO;
+
+    @autoreleasepool {
+        for (id plugin in self.m_plugins) {
+            if ([plugin respondsToSelector:@selector(application:continueUserActivity:restorationHandler:)] == NO) {
+                continue;
+            }
+
+            BOOL result = [plugin application:application continueUserActivity:userActivity restorationHandler:restorationHandler];
+
+            if (result == YES) {
+                anySuccess = YES;
+            }
+        }
+    }
+
+    return anySuccess;
 }
 
 - (UIWindow *)window {

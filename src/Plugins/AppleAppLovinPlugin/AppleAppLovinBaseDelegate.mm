@@ -148,7 +148,7 @@
     
     NSTimeInterval seconds = pow(2, MIN(6, self.m_requestAttempt));
     
-    [AppleDetail addMainQueueOperation:^{        
+    [AppleDetail addMainQueueOperation:^{
         [self loadAd];
     } afterSeconds:seconds];
 }
@@ -185,7 +185,7 @@
 }
 
 - (void) eventRevenue:(MAAd * _Nonnull) ad {
-    iOSAdRevenueParam * revenue = [iOSAdRevenueParam alloc];
+    iOSAdRevenueParam * revenue = [[iOSAdRevenueParam alloc] init];
     
     revenue.REVENUE_PLATFORM = @"AppLovin";
     revenue.REVENUE_COUNTRY_CODE = [ALSdk shared].configuration.countryCode;

@@ -143,8 +143,8 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
             @Override
             protected void onCurrentAccessTokenChanged(AccessToken oldToken, AccessToken newToken) {
                 MengineFacebookPlugin.this.logInfo("onCurrentAccessTokenChanged old token: %s new token: %s"
-                    , MengineUtils.getRedactedValue(oldToken.getToken())
-                    , MengineUtils.getRedactedValue(newToken.getToken())
+                    , oldToken != null ? MengineUtils.getRedactedValue(oldToken.getToken()) : "[null]"
+                    , newToken != null ? MengineUtils.getRedactedValue(newToken.getToken()) : "[null]"
                 );
 
                 String oldTokenString = oldToken != null ? oldToken.getToken() : "";
@@ -399,6 +399,32 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
 
         GraphRequest request = new GraphRequest(accessToken, "/me/permissions/", null, HttpMethod.DELETE, graphResponse -> {
             this.logInfo("GraphRequest DELETE onCompleted");
+
+            if (graphResponse == null) {
+                this.logError("[ERROR] GraphRequest DELETE returned null response");
+
+                this.nativeCall("onFacebookLogoutError", ERROR_CODE_UNKNOWN, new RuntimeException("null response"));
+
+                return;
+            }
+
+            FacebookRequestError responseError = graphResponse.getError();
+
+            if (responseError != null) {
+                int errorCode = responseError.getErrorCode();
+                int subErrorCode = responseError.getSubErrorCode();
+                String errorMessage = responseError.getErrorMessage();
+
+                this.logError("[ERROR] logout facebook error code: %d subCode: %d message: %s"
+                    , errorCode
+                    , subErrorCode
+                    , errorMessage
+                );
+
+                this.nativeCall("onFacebookLogoutError", ERROR_CODE_UNKNOWN, new RuntimeException(errorMessage));
+
+                return;
+            }
 
             LoginManager.getInstance().logOut();
 

@@ -18,6 +18,10 @@
 
 #include "iOSApplication.h"
 
+#idndef MENGINE_IOS_LAUNCH_ARGUMENTS_CAPACITY
+#define MENGINE_IOS_LAUNCH_ARGUMENTS_CAPACITY 32
+#endif
+
 @implementation iOSUIApplicationDelegate
 
 - (instancetype)init {
@@ -149,8 +153,8 @@
     
     NSMutableArray * send_args = [[NSMutableArray alloc] init];
 
-    for( NSString *arg = firstArg; arg != nil; arg = va_arg(args, NSString*) ) {
-        [send_args addObject:firstArg];
+    for( id arg = firstArg; arg != nil; arg = va_arg(args, id) ) {
+        [send_args addObject:arg];
     }
 
     va_end(args);
@@ -492,14 +496,6 @@
     
     NSArray<NSString *> * arguments = [[NSProcessInfo processInfo] arguments];
     
-    int32_t argc = 0;
-    Mengine::Char * argv[32];
-    
-    for( NSString * arg : arguments )
-    {
-        argv[argc++] = (Mengine::Char *)[arg UTF8String];
-    }
-    
     @autoreleasepool {
         for (id plugin in self.m_plugins) {
             if ([plugin respondsToSelector:@selector(onBootstrapBegin:)] == NO) {
@@ -509,6 +505,23 @@
             [plugin onBootstrapBegin:arguments];
         }
     }
+    
+    int32_t argc = 0;
+    Mengine::Char * argv[MENGINE_IOS_LAUNCH_ARGUMENTS_CAPACITY]= {nullptr};
+    
+    for( NSString * arg : arguments )
+    {
+        if( (size_t)argc >= MENGINE_IOS_LAUNCH_ARGUMENTS_CAPACITY ) {
+            [AppleLog withFormat:@"🔴 [ERROR] Mengine application too many launch arguments (%lu), truncated to %lu"
+                , (unsigned long)[arguments count]
+                , (unsigned long)MENGINE_IOS_LAUNCH_ARGUMENTS_CAPACITY
+            ];
+
+            break;
+        }
+
+        argv[argc++] = (Mengine::Char *)[arg UTF8String];
+    }    
     
     if( application.bootstrap( argc, argv ) == false ) {
         [AppleLog withFormat:@"🔴 [ERROR] Mengine application bootstrap [Failed]"];

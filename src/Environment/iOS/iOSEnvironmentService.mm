@@ -64,6 +64,10 @@ namespace Mengine
         NSString * installId = [iOSApplication.sharedInstance getInstallId];
         
         m_installId.assign( [installId UTF8String] );
+
+        NSString * installVersion = [iOSApplication.sharedInstance getInstallVersion];
+
+        m_installVersion.assign( [installVersion UTF8String] );
         
         NSInteger installRND = [iOSApplication.sharedInstance getInstallRND];
         

@@ -8,7 +8,6 @@ extern "C"
     typedef _object PyObject;
 }
 
-//////////////////////////////////////////////////////////////////////////
 namespace pybind
 {
     class kernel_interface;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/ScriptEmbeddingInterface.h"
+#include "Interface/DocumentInterface.h"
 
 namespace Mengine
 {

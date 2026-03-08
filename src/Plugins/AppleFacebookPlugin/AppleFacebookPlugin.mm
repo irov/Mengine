@@ -59,10 +59,10 @@
 
 #pragma mark - UISceneSession lifecycle
 
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<NSString *, id> *)options handled:(BOOL *)handler {
-    *handler = YES;
-    
-    return [FBSDKApplicationDelegate.sharedInstance application:application openURL:url options:options];
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<NSString *, id> *)options {
+    BOOL result = [FBSDKApplicationDelegate.sharedInstance application:application openURL:url options:options];
+
+    return result;
 }
 
 #pragma mark - AppleFacebookInterface

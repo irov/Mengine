@@ -90,27 +90,29 @@
     [Adjust setDeviceToken:deviceToken];
 }
 
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation handled:(BOOL *)handler {
-    *handler = YES;
-    
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<NSString *,id> *)options {
+
     [Adjust appWillOpenUrl:url];
-    
+
     return YES;
 }
 
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<NSString *,id> *)options handled:(BOOL *)handler {
-    *handler = YES;
-    
-    [Adjust appWillOpenUrl:url];
-    
-    return YES;
-}
+- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray<id<UIUserActivityRestoring>> * _Nullable restorableObjects))restorationHandler {
+    MENGINE_UNUSED( application );
+    MENGINE_UNUSED( restorationHandler );
 
-- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url handled:(BOOL *)handler {
-    *handler = YES;
-    
-    [Adjust appWillOpenUrl:url];
-    
+    if ([userActivity.activityType isEqualToString:NSUserActivityTypeBrowsingWeb] == NO) {
+        return NO;
+    }
+
+    NSURL * incomingUrl = userActivity.webpageURL;
+
+    if (incomingUrl == nil) {
+        return NO;
+    }
+
+    [Adjust appWillOpenUrl:incomingUrl];
+
     return YES;
 }
 

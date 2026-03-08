@@ -373,14 +373,14 @@ namespace Mengine
 
         this->finalizeRenderResources();
 
+        EVENTABLE_METHOD( EVENT_GAME_FINALIZE )
+            ->onGameFinalize();
+
         if( SERVICE_IS_INITIALIZE( ScriptServiceInterface ) == true )
         {
             SCRIPT_SERVICE()
                 ->finalizeModules();
         }
-
-        EVENTABLE_METHOD( EVENT_GAME_FINALIZE )
-            ->onGameFinalize();
 
         EVENTABLE_METHOD( EVENT_GAME_DESTROY )
             ->onGameDestroy();

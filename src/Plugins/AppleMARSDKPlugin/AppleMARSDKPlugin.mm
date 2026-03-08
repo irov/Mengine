@@ -104,10 +104,10 @@
     [[MARSDK sharedInstance] application:application didReceiveRemoteNotification: userInfo fetchCompletionHandler:completionHandler];
 }
 
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<NSString *,id> *)options handled:(BOOL *)handler {
-    *handler = YES;
-    
-    return [[MARSDK sharedInstance] application:application openURL:url options:options];
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<NSString *,id> *)options {
+    BOOL result = [[MARSDK sharedInstance] application:application openURL:url options:options];
+
+    return result;
 }
 
 #pragma mark - AppleMARSDKInterface

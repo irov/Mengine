@@ -175,7 +175,6 @@ public class MengineActivity extends AppCompatActivity {
         ActivityResultLauncher[] launcher = new ActivityResultLauncher[1];
 
         launcher[0] = registry.register(name
-            , this
             , new ActivityResultContracts.RequestPermission()
             , isGranted -> {
                 if (isGranted == true) {
@@ -218,6 +217,8 @@ public class MengineActivity extends AppCompatActivity {
                     MengineLog.logInfo(TAG, "checkPermission: %s show rationale [denied]"
                         , permission
                     );
+
+                    launcher[0].unregister();
 
                     if (onFailure != null) {
                         onFailure.run();

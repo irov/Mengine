@@ -18,6 +18,10 @@
 
 #include "iOSApplication.h"
 
+#idndef MENGINE_IOS_LAUNCH_ARGUMENTS_CAPACITY
+#define MENGINE_IOS_LAUNCH_ARGUMENTS_CAPACITY 32
+#endif
+
 @implementation iOSUIApplicationDelegate
 
 - (instancetype)init {
@@ -149,8 +153,8 @@
     
     NSMutableArray * send_args = [[NSMutableArray alloc] init];
 
-    for( NSString *arg = firstArg; arg != nil; arg = va_arg(args, NSString*) ) {
-        [send_args addObject:firstArg];
+    for( id arg = firstArg; arg != nil; arg = va_arg(args, id) ) {
+        [send_args addObject:arg];
     }
 
     va_end(args);
@@ -456,22 +460,43 @@
 }
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey, id> *)options API_AVAILABLE(ios(9.0)) {
+    BOOL anySuccess = NO;
+
     @autoreleasepool {
         for (id plugin in self.m_plugins) {
-            if ([plugin respondsToSelector:@selector(application: openURL: options: handled:)] == NO) {
+            if ([plugin respondsToSelector:@selector(application: openURL: options:)] == NO) {
                 continue;
             }
-            
-            BOOL handler = NO;
-            BOOL result = [plugin application:application openURL:url options:options handled:&handler];
-            
-            if (handler == YES) {
-                return result;
+
+            BOOL result = [plugin application:application openURL:url options:options];
+
+            if (result == YES) {
+                anySuccess = YES;
             }
         }
     }
-    
-    return NO;
+
+    return anySuccess;
+}
+
+- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray<id<UIUserActivityRestoring>> * _Nullable restorableObjects))restorationHandler {
+    BOOL anySuccess = NO;
+
+    @autoreleasepool {
+        for (id plugin in self.m_plugins) {
+            if ([plugin respondsToSelector:@selector(application:continueUserActivity:restorationHandler:)] == NO) {
+                continue;
+            }
+
+            BOOL result = [plugin application:application continueUserActivity:userActivity restorationHandler:restorationHandler];
+
+            if (result == YES) {
+                anySuccess = YES;
+            }
+        }
+    }
+
+    return anySuccess;
 }
 
 - (UIWindow *)window {
@@ -492,14 +517,6 @@
     
     NSArray<NSString *> * arguments = [[NSProcessInfo processInfo] arguments];
     
-    int32_t argc = 0;
-    Mengine::Char * argv[32];
-    
-    for( NSString * arg : arguments )
-    {
-        argv[argc++] = (Mengine::Char *)[arg UTF8String];
-    }
-    
     @autoreleasepool {
         for (id plugin in self.m_plugins) {
             if ([plugin respondsToSelector:@selector(onBootstrapBegin:)] == NO) {
@@ -509,6 +526,23 @@
             [plugin onBootstrapBegin:arguments];
         }
     }
+    
+    int32_t argc = 0;
+    Mengine::Char * argv[MENGINE_IOS_LAUNCH_ARGUMENTS_CAPACITY]= {nullptr};
+    
+    for( NSString * arg : arguments )
+    {
+        if( (size_t)argc >= MENGINE_IOS_LAUNCH_ARGUMENTS_CAPACITY ) {
+            [AppleLog withFormat:@"🔴 [ERROR] Mengine application too many launch arguments (%lu), truncated to %lu"
+                , (unsigned long)[arguments count]
+                , (unsigned long)MENGINE_IOS_LAUNCH_ARGUMENTS_CAPACITY
+            ];
+
+            break;
+        }
+
+        argv[argc++] = (Mengine::Char *)[arg UTF8String];
+    }    
     
     if( application.bootstrap( argc, argv ) == false ) {
         [AppleLog withFormat:@"🔴 [ERROR] Mengine application bootstrap [Failed]"];

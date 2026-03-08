@@ -313,6 +313,12 @@ namespace Mengine
             BOOTSTRAPPER_SERVICE()
                 ->stop();
         }
+        
+        if( SERVICE_IS_INITIALIZE( Mengine::BootstrapperInterface ) == true )
+        {
+            BOOTSTRAPPER_SERVICE()
+                ->finalize();
+        }
 
 #if defined(MENGINE_PLUGIN_MENGINE_SHARED)
 #   error "MENGINE_PLUGIN_MENGINE_SHARED for SDL2 not implemented"

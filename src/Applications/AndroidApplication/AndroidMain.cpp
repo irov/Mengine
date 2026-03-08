@@ -46,6 +46,8 @@ extern "C"
         {
             __android_log_print( ANDROID_LOG_ERROR, "Mengine", "[ERROR] Android bootstrap too many arguments" );
 
+            _env->ReleaseStringUTFChars( _nativeLibraryDir, nativeLibraryDir_str );
+
             delete application;
 
             return nullptr;

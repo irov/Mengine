@@ -43,7 +43,7 @@ public class MenginePreferences {
 
     static public boolean hasPreference(@NonNull String name) {
         synchronized (MenginePreferences.SETTINGS_SYNC) {
-            boolean has = MenginePreferences.SETTINGS.containsValue(name);
+            boolean has = MenginePreferences.SETTINGS.containsKey(name);
 
             return has;
         }

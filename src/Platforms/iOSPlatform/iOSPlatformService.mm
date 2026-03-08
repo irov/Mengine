@@ -188,6 +188,18 @@ namespace Mengine
         
         const Char * localeLanguage_str = [localeLanguage UTF8String];
 
+        if( localeLanguage_str == nullptr )
+        {
+            return false;
+        }
+
+        size_t localeLanguageLen = StdString::strlen( localeLanguage_str );
+
+        if( localeLanguageLen < 2 )
+        {
+            return false;
+        }
+
         _userLocaleLanguage[0] = localeLanguage_str[0];
         _userLocaleLanguage[1] = localeLanguage_str[1];
         _userLocaleLanguage[2] = '\0';

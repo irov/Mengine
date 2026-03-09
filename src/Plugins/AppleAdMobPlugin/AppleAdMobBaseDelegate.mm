@@ -142,6 +142,38 @@
     [iOSAnalytics eventSystem:name params:total_params];
 }
 
+- (void) eventRevenue:(GADAdValue * _Nonnull)adValue responseInfo:(GADResponseInfo * _Nullable)responseInfo placement:(NSString * _Nullable)placement format:(NSString * _Nonnull)format {
+    GADAdNetworkResponseInfo * loadedInfo = responseInfo.loadedAdNetworkResponseInfo;
+
+    NSString * revenueSource = @"AdMob";
+    NSString * revenueNetworkPlacement = @"";
+
+    if (loadedInfo != nil) {
+        if (loadedInfo.adSourceName != nil) {
+            revenueSource = loadedInfo.adSourceName;
+        } else if (loadedInfo.adNetworkClassName != nil) {
+            revenueSource = loadedInfo.adNetworkClassName;
+        }
+
+        if (loadedInfo.adSourceInstanceName != nil) {
+            revenueNetworkPlacement = loadedInfo.adSourceInstanceName;
+        }
+    }
+
+    iOSAdRevenueParam * revenue = [[iOSAdRevenueParam alloc] init];
+    revenue.REVENUE_PLATFORM = @"AdMob";
+    revenue.REVENUE_COUNTRY_CODE = @"";
+    revenue.REVENUE_PLACEMENT = placement;
+    revenue.REVENUE_NETWORK_PLACEMENT = revenueNetworkPlacement;
+    revenue.REVENUE_SOURCE = revenueSource;
+    revenue.REVENUE_FORMAT = format;
+    revenue.REVENUE_UNIT = self.m_adUnitId;
+    revenue.REVENUE_CURRENCY = adValue.currencyCode;
+    revenue.REVENUE_VALUE = adValue.value;
+
+    [iOSDetail adRevenue:revenue];
+}
+
 - (GADRequest *) createAdRequest {
     GADRequest * request = [GADRequest request];
     request.requestAgent = @"Mengine";

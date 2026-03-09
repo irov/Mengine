@@ -92,6 +92,8 @@
     if (ready == NO) {
         return NO;
     }
+
+    self.m_placement = placement;
     
     self.m_showing = YES;
     
@@ -174,6 +176,28 @@
             return;
         }
         
+        __weak AppleAdMobRewardedDelegate * weakSelf2 = strongSelf;
+        rewardedAd.paidEventHandler = ^(GADAdValue * _Nonnull adValue) {
+            AppleAdMobRewardedDelegate * strongSelf2 = weakSelf2;
+
+            if (strongSelf2 == nil) {
+                return;
+            }
+
+            [strongSelf2 log:@"paidEventHandler" withParams:@{
+                @"value": adValue.value,
+                @"currencyCode": adValue.currencyCode
+            }];
+
+            [strongSelf2 eventRevenue:adValue responseInfo:rewardedAd.responseInfo placement:strongSelf2.m_placement format:@"ADFORMAT_REWARDED"];
+
+            id<AppleAdvertisementCallbackInterface> callback = [[AppleAdMobPlugin sharedInstance] getAdvertisementRewardedCallback];
+
+            if (callback != nil) {
+                [callback onAppleAdvertisementRevenuePaid:strongSelf2.m_placement withRevenue:adValue.value.doubleValue];
+            }
+        };
+
         rewardedAd.fullScreenContentDelegate = strongSelf;
         strongSelf.m_rewardedAd = rewardedAd;
         
@@ -212,8 +236,10 @@
     id<AppleAdvertisementCallbackInterface> callback = [[AppleAdMobPlugin sharedInstance] getAdvertisementRewardedCallback];
     
     if (callback != nil) {
-        [callback onAppleAdvertisementShowFailed:@"unknown" withError:error.code];
+        [callback onAppleAdvertisementShowFailed:self.m_placement withError:error.code];
     }
+
+    self.m_placement = nil;
     
     [self loadAd];
 }
@@ -232,8 +258,10 @@
     id<AppleAdvertisementCallbackInterface> callback = [[AppleAdMobPlugin sharedInstance] getAdvertisementRewardedCallback];
     
     if (callback != nil) {
-        [callback onAppleAdvertisementShowSuccess:@"unknown"];
+        [callback onAppleAdvertisementShowSuccess:self.m_placement];
     }
+
+    self.m_placement = nil;
     
     [self loadAd];
 }

@@ -27,6 +27,7 @@
 - (CGFloat)getWidthPx;
 
 @property (nonatomic, strong) GADBannerView * _Nullable m_bannerView;
+@property (nonatomic, strong) NSString * _Nonnull m_placement;
 
 @property (assign) BOOL m_bannerAdaptive;
 

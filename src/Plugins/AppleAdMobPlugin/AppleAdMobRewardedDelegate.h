@@ -20,6 +20,7 @@
 - (void) loadAd;
 
 @property (nonatomic, strong) GADRewardedAd * _Nullable m_rewardedAd;
+@property (nonatomic, strong) NSString * _Nullable m_placement;
 
 @property (atomic, assign) BOOL m_showing;
 

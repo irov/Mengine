@@ -3,6 +3,7 @@
 #import "AppleAdMobInterface.h"
 
 #import "Environment/Apple/AppleIncluder.h"
+#import "Environment/iOS/iOSAdRevenueParam.h"
 
 #import "Plugins/AppleAdvertisementPlugin/AppleAdvertisementInterface.h"
 
@@ -26,6 +27,8 @@
 - (void) log:(NSString * _Nonnull) callback withError:(NSError * _Nonnull) error;
 
 - (void) event:(NSString * _Nonnull)name params:(NSDictionary<NSString*, id> * _Nonnull)params;
+
+- (void) eventRevenue:(GADAdValue * _Nonnull)adValue responseInfo:(GADResponseInfo * _Nullable)responseInfo placement:(NSString * _Nullable)placement format:(NSString * _Nonnull)format;
 
 - (GADRequest * _Nonnull) createAdRequest;
 

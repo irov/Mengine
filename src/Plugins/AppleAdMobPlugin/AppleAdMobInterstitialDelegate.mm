@@ -74,6 +74,8 @@
     if (ready == NO) {
         return NO;
     }
+
+    self.m_placement = placement;
     
     self.m_showing = YES;
     
@@ -128,6 +130,28 @@
             return;
         }
         
+        __weak AppleAdMobInterstitialDelegate * weakSelf2 = strongSelf;
+        interstitialAd.paidEventHandler = ^(GADAdValue * _Nonnull adValue) {
+            AppleAdMobInterstitialDelegate * strongSelf2 = weakSelf2;
+
+            if (strongSelf2 == nil) {
+                return;
+            }
+
+            [strongSelf2 log:@"paidEventHandler" withParams:@{
+                @"value": adValue.value,
+                @"currencyCode": adValue.currencyCode
+            }];
+
+            [strongSelf2 eventRevenue:adValue responseInfo:interstitialAd.responseInfo placement:strongSelf2.m_placement format:@"ADFORMAT_INTERSTITIAL"];
+
+            id<AppleAdvertisementCallbackInterface> callback = [[AppleAdMobPlugin sharedInstance] getAdvertisementInterstitialCallback];
+
+            if (callback != nil) {
+                [callback onAppleAdvertisementRevenuePaid:strongSelf2.m_placement withRevenue:adValue.value.doubleValue];
+            }
+        };
+
         interstitialAd.fullScreenContentDelegate = strongSelf;
         strongSelf.m_interstitialAd = interstitialAd;
         
@@ -166,8 +190,10 @@
     id<AppleAdvertisementCallbackInterface> callback = [[AppleAdMobPlugin sharedInstance] getAdvertisementInterstitialCallback];
     
     if (callback != nil) {
-        [callback onAppleAdvertisementShowFailed:@"unknown" withError:error.code];
+        [callback onAppleAdvertisementShowFailed:self.m_placement withError:error.code];
     }
+
+    self.m_placement = nil;
     
     [self loadAd];
 }
@@ -186,8 +212,10 @@
     id<AppleAdvertisementCallbackInterface> callback = [[AppleAdMobPlugin sharedInstance] getAdvertisementInterstitialCallback];
     
     if (callback != nil) {
-        [callback onAppleAdvertisementShowSuccess:@"unknown"];
+        [callback onAppleAdvertisementShowSuccess:self.m_placement];
     }
+
+    self.m_placement = nil;
     
     [self loadAd];
 }

@@ -19,6 +19,7 @@
 - (void) loadAd;
 
 @property (nonatomic, strong) GADInterstitialAd * _Nullable m_interstitialAd;
+@property (nonatomic, strong) NSString * _Nullable m_placement;
 
 @property (atomic, assign) BOOL m_showing;
 

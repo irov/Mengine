@@ -22,6 +22,7 @@
     }
     
     self.m_bannerAdaptive = adaptive;
+    self.m_placement = placement;
     
     GADAdSize adSize;
     if (self.m_bannerAdaptive == YES) {
@@ -89,6 +90,28 @@
     bannerView.hidden = YES;
     
     self.m_bannerView = bannerView;
+
+    __weak AppleAdMobBannerDelegate * weakSelf = self;
+    bannerView.paidEventHandler = ^(GADAdValue * _Nonnull adValue) {
+        AppleAdMobBannerDelegate * strongSelf = weakSelf;
+
+        if (strongSelf == nil) {
+            return;
+        }
+
+        [strongSelf log:@"paidEventHandler" withParams:@{
+            @"value": adValue.value,
+            @"currencyCode": adValue.currencyCode
+        }];
+
+        [strongSelf eventRevenue:adValue responseInfo:strongSelf.m_bannerView.responseInfo placement:strongSelf.m_placement format:@"ADFORMAT_BANNER"];
+
+        id<AppleAdvertisementCallbackInterface> callback = [[AppleAdMobPlugin sharedInstance] getAdvertisementBannerCallback];
+
+        if (callback != nil) {
+            [callback onAppleAdvertisementRevenuePaid:strongSelf.m_placement withRevenue:adValue.value.doubleValue];
+        }
+    };
     
     [self loadAd];
     
@@ -161,14 +184,18 @@
 
 - (CGFloat) getHeightPx {
     CGSize banner_size = [self getSize];
-    
-    return banner_size.height;
+
+    CGFloat banner_scale = UIScreen.mainScreen.scale;
+
+    return banner_size.height * banner_scale;
 }
 
 - (CGFloat) getWidthPx {
     CGSize banner_size = [self getSize];
-    
-    return banner_size.width;
+
+    CGFloat banner_scale = UIScreen.mainScreen.scale;
+
+    return banner_size.width * banner_scale;
 }
 
 #pragma mark - GADBannerViewDelegate

@@ -223,6 +223,12 @@
     [self setAdFreeze:YES];
 }
 
+- (void)adWillDismissFullScreenContent:(id<GADFullScreenPresentingAd>)ad {
+    [self log:@"adWillDismissFullScreenContent"];
+
+    [self eventRewarded:@"will_dismiss" params:@{}];
+}
+
 - (void)ad:(id<GADFullScreenPresentingAd>)ad didFailToPresentFullScreenContentWithError:(NSError *)error {
     [self log:@"ad:didFailToPresentFullScreenContentWithError" withError:error];
         

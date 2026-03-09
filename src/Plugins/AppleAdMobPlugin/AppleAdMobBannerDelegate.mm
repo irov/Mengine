@@ -62,6 +62,7 @@
     }
     
     bannerView.delegate = self;
+    bannerView.adSizeDelegate = self;
     
     CGSize size = adSize.size;
     
@@ -121,6 +122,7 @@
 - (void) dealloc {
     if (self.m_bannerView != nil) {
         self.m_bannerView.delegate = nil;
+        self.m_bannerView.adSizeDelegate = nil;
         
         [self.m_bannerView removeFromSuperview];
         self.m_bannerView = nil;
@@ -229,6 +231,12 @@
     [self eventBanner:@"impression" params:@{}];
 }
 
+- (void)bannerViewDidRecordClick:(GADBannerView *)bannerView {
+    [self log:@"bannerViewDidRecordClick"];
+
+    [self eventBanner:@"clicked" params:@{}];
+}
+
 - (void)bannerViewWillPresentScreen:(GADBannerView *)bannerView {
     [self log:@"bannerViewWillPresentScreen"];
     
@@ -245,6 +253,19 @@
     [self log:@"bannerViewDidDismissScreen"];
     
     [self eventBanner:@"dismissed" params:@{}];
+}
+
+#pragma mark - GADAdSizeDelegate
+
+- (void)adView:(GADBannerView *)bannerView willChangeAdSizeTo:(GADAdSize)size {
+    NSDictionary<NSString *, id> * params = @{
+        @"width": @(size.size.width),
+        @"height": @(size.size.height)
+    };
+
+    [self log:@"adView:willChangeAdSizeTo" withParams:params];
+
+    [self eventBanner:@"will_change_size" params:params];
 }
 
 @end

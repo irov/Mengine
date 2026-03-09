@@ -8,7 +8,7 @@
 
 #import <GoogleMobileAds/GoogleMobileAds.h>
 
-@interface AppleAdMobBannerDelegate : AppleAdMobBaseDelegate<GADBannerViewDelegate>
+@interface AppleAdMobBannerDelegate : AppleAdMobBaseDelegate<GADBannerViewDelegate, GADAdSizeDelegate>
 
 - (instancetype _Nullable)initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
                                      advertisement:(id<AppleAdvertisementInterface> _Nonnull)advertisement

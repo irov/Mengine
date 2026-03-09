@@ -184,12 +184,14 @@
                 return;
             }
 
+            GADResponseInfo * responseInfo = strongSelf2.m_rewardedAd.responseInfo;
+
             [strongSelf2 log:@"paidEventHandler" withParams:@{
                 @"value": adValue.value,
                 @"currencyCode": adValue.currencyCode
             }];
 
-            [strongSelf2 eventRevenue:adValue responseInfo:rewardedAd.responseInfo placement:strongSelf2.m_placement format:@"ADFORMAT_REWARDED"];
+            [strongSelf2 eventRevenue:adValue responseInfo:responseInfo placement:strongSelf2.m_placement format:@"ADFORMAT_REWARDED"];
 
             id<AppleAdvertisementCallbackInterface> callback = [[AppleAdMobPlugin sharedInstance] getAdvertisementRewardedCallback];
 

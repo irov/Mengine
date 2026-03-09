@@ -138,12 +138,14 @@
                 return;
             }
 
+            GADResponseInfo * responseInfo = strongSelf2.m_interstitialAd.responseInfo;
+
             [strongSelf2 log:@"paidEventHandler" withParams:@{
                 @"value": adValue.value,
                 @"currencyCode": adValue.currencyCode
             }];
 
-            [strongSelf2 eventRevenue:adValue responseInfo:interstitialAd.responseInfo placement:strongSelf2.m_placement format:@"ADFORMAT_INTERSTITIAL"];
+            [strongSelf2 eventRevenue:adValue responseInfo:responseInfo placement:strongSelf2.m_placement format:@"ADFORMAT_INTERSTITIAL"];
 
             id<AppleAdvertisementCallbackInterface> callback = [[AppleAdMobPlugin sharedInstance] getAdvertisementInterstitialCallback];
 

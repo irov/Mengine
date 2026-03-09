@@ -1219,8 +1219,8 @@ public class MengineActivity extends AppCompatActivity {
         return result;
     }
 
-    public boolean linkingOpenMail(String email, String subject, String body) {
-        boolean result = MengineProcedureManager.execute(this, "sendMail", email, subject, body);
+    public boolean linkingOpenMail(String email, String subject, String technically) {
+        boolean result = MengineProcedureManager.execute(this, "sendMail", email, subject, technically);
 
         return result;
     }

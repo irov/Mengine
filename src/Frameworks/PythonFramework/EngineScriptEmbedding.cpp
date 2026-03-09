@@ -4073,91 +4073,91 @@ namespace Mengine
                 return mode;
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_hasGameParam( const ConstString & _paramName )
+            bool s_hasGameParam( const Char * _paramName )
             {
                 const ConfigInterfacePtr & config = CONFIG_SERVICE()
                     ->getMainConfig();
 
-                bool result = config->existValue( "Params", _paramName.c_str() );
+                bool result = config->existValue( "Params", _paramName );
 
                 return result;
             }
             //////////////////////////////////////////////////////////////////////////
-            PyObject * s_getGameParamString( pybind::kernel_interface * _kernel, const ConstString & _paramName )
+            PyObject * s_getGameParamString( pybind::kernel_interface * _kernel, const Char * _paramName )
             {
                 const ConfigInterfacePtr & config = CONFIG_SERVICE()
                     ->getMainConfig();
 
-                String param_value;
-                if( config->hasValue( "Params", _paramName.c_str(), "", &param_value ) == false )
+                String value;
+                if( config->hasValue( "Params", _paramName, "", &value ) == false )
                 {
                     return _kernel->ret_none();
                 }
 
-                PyObject * py_param = _kernel->string_from_char( param_value.c_str() );
+                PyObject * py_param = _kernel->string_from_char( value.c_str() );
 
                 return py_param;
             }
             //////////////////////////////////////////////////////////////////////////
-            PyObject * s_getGameParamUnicode( pybind::kernel_interface * _kernel, const ConstString & _paramName )
+            PyObject * s_getGameParamUnicode( pybind::kernel_interface * _kernel, const Char * _paramName )
             {
                 const ConfigInterfacePtr & config = CONFIG_SERVICE()
                     ->getMainConfig();
 
-                String param_value;
-                if( config->hasValue( "Params", _paramName.c_str(), "", &param_value ) == false )
+                String value;
+                if( config->hasValue( "Params", _paramName, "", &value ) == false )
                 {
                     return _kernel->ret_none();
                 }
 
-                PyObject * py_param = _kernel->unicode_from_utf8( param_value.c_str() );
+                PyObject * py_param = _kernel->unicode_from_utf8( value.c_str() );
 
                 return py_param;
             }
             //////////////////////////////////////////////////////////////////////////
-            PyObject * s_getGameParamFloat( pybind::kernel_interface * _kernel, const ConstString & _paramName )
+            PyObject * s_getGameParamFloat( pybind::kernel_interface * _kernel, const Char * _paramName )
             {
                 const ConfigInterfacePtr & config = CONFIG_SERVICE()
                     ->getMainConfig();
 
-                float param_value;
-                if( config->hasValueFloat( "Params", _paramName.c_str(), 0.f, &param_value ) == false )
+                float value;
+                if( config->hasValueFloat( "Params", _paramName, 0.f, &value ) == false )
                 {
                     return _kernel->ret_none();
                 }
 
-                return pybind::ptr( _kernel, param_value );
+                return pybind::ptr( _kernel, value );
             }
             //////////////////////////////////////////////////////////////////////////
-            PyObject * s_getGameParamInt( pybind::kernel_interface * _kernel, const ConstString & _paramName )
+            PyObject * s_getGameParamInt( pybind::kernel_interface * _kernel, const Char * _paramName )
             {
                 const ConfigInterfacePtr & config = CONFIG_SERVICE()
                     ->getMainConfig();
 
-                int32_t param_value;
-                if( config->hasValueInteger( "Params", _paramName.c_str(), 0, &param_value ) == false )
+                int32_t value;
+                if( config->hasValueInteger( "Params", _paramName, 0, &value ) == false )
                 {
                     return _kernel->ret_none();
                 }
 
-                return pybind::ptr( _kernel, param_value );
+                return pybind::ptr( _kernel, value );
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_getGameParamBool( const ConstString & _paramName, bool _default )
+            bool s_getGameParamBool( const Char * _paramName, bool _default )
             {
                 const ConfigInterfacePtr & config = CONFIG_SERVICE()
                     ->getMainConfig();
 
-                bool param_value;
-                config->hasValue( "Params", _paramName.c_str(), _default, &param_value );
+                bool value;
+                config->hasValue( "Params", _paramName, _default, &value );
 
-                return param_value;
+                return value;
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_openUrlInDefaultBrowser( const WString & _url )
             {
-                Char utf8_url[4096 + 1] = {'\0'};
-                Helper::unicodeToUtf8( _url, utf8_url, 4096 );
+                Char utf8_url[MENGINE_MAX_URL + 1] = {'\0'};
+                Helper::unicodeToUtf8( _url, utf8_url, MENGINE_MAX_URL );
 
                 bool val = PLATFORM_SERVICE()
                     ->openUrlInDefaultBrowser( utf8_url );
@@ -4165,7 +4165,7 @@ namespace Mengine
                 return val;
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_openMail( const WString & _email, const WString & _subject, const WString & _body )
+            bool s_openMail( const WString & _email, const WString & _subject, const WString & _technically )
             {
                 Char utf8_email[4096 + 1] = {'\0'};
                 Helper::unicodeToUtf8( _email, utf8_email, 4096 );
@@ -4173,11 +4173,11 @@ namespace Mengine
                 Char utf8_subject[4096 + 1] = {'\0'};
                 Helper::unicodeToUtf8( _subject, utf8_subject, 4096 );
 
-                Char utf8_body[4096 + 1] = {'\0'};
-                Helper::unicodeToUtf8( _body, utf8_body, 4096 );
+                Char utf8_technically[4096 + 1] = {'\0'};
+                Helper::unicodeToUtf8( _technically, utf8_technically, 4096 );
 
                 bool val = PLATFORM_SERVICE()
-                    ->openMail( utf8_email, utf8_subject, utf8_body );
+                    ->openMail( utf8_email, utf8_subject, utf8_technically );
 
                 return val;
             }
@@ -4331,6 +4331,7 @@ namespace Mengine
 
                 return valid;
             }
+            //////////////////////////////////////////////////////////////////////////
         };
         //////////////////////////////////////////////////////////////////////////
         typedef IntrusivePtr<EngineScriptMethod> EngineScriptMethodPtr;

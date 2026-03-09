@@ -20,20 +20,20 @@ public class MengineProcedureSendMail implements MengineProcedureInterface {
 
     private final String m_email;
     private final String m_subject;
-    private final String m_body;
+    private final String m_technically;
 
-    public MengineProcedureSendMail(@NonNull String email, @NonNull String subject, @NonNull String body) {
+    public MengineProcedureSendMail(@NonNull String email, @NonNull String subject, @NonNull String technically) {
         this.m_email = email;
         this.m_subject = subject;
-        this.m_body = body;
+        this.m_technically = technically;
     }
 
     @Override
     public boolean execute(@NonNull MengineActivity activity) {
-        MengineLog.logInfo(TAG, "linkingOpenMail mail: %s subject: %s body: %s"
+        MengineLog.logInfo(TAG, "linkingOpenMail mail: %s subject: %s technically: %s"
             , m_email
             , m_subject
-            , m_body
+            , m_technically
         );
 
         MengineApplication application = MengineApplication.INSTANCE;
@@ -50,7 +50,7 @@ public class MengineProcedureSendMail implements MengineProcedureInterface {
 
         intent.setType("application/zip");
 
-        StringBuilder body_builder = new StringBuilder(m_body);
+        StringBuilder body_builder = new StringBuilder(4096);
 
         String lineSeparator = System.lineSeparator();
         String indent = "        ";
@@ -59,6 +59,11 @@ public class MengineProcedureSendMail implements MengineProcedureInterface {
         body_builder.append(lineSeparator);
         body_builder.append("----- Please Describe Your Message Above Here -----").append(lineSeparator);
         body_builder.append(lineSeparator);
+
+        if (m_technically.isEmpty() == false) {
+            body_builder.append(m_technically);
+            body_builder.append(lineSeparator);
+        }
 
         MengineUtils.buildPrintApplicationInfo(body_builder, indent, application);
         MengineUtils.buildPrintAccountInfo(body_builder, indent, application);

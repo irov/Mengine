@@ -853,7 +853,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool iOSPlatformService::openMail( const Char * _email, const Char * _subject, const Char * _body )
     {
-        LOGGER_INFO( "platform", "open mail '%s' subject '%s' body '%s'"
+        LOGGER_INFO( "platform", "open mail '%s' subject '%s' technically '%s'"
             , _email
             , _subject
             , _body
@@ -871,23 +871,27 @@ namespace Mengine
             return false;
         }
 
-        MFMailComposeViewController * mailCompose = [[MFMailComposeViewController alloc] init];
+        if( viewController == nil )
+        {
+            LOGGER_WARNING( "platform", "open mail invalid top view controller" );
 
-        [mailCompose setModalPresentationStyle:UIModalPresentationFormSheet];
+            return false;
+        }
 
-        static iOSMailComposeDelegate * mailComposeDelegate = [[iOSMailComposeDelegate alloc] initWithCompletion:^ {
-            //ToDo callback
-        }];
+        NSString * email = [NSString stringWithUTF8String:_email];
+        NSString * subject = [NSString stringWithUTF8String:_subject];
+        NSString * technically = [NSString stringWithUTF8String:_body];
 
-        [mailCompose setMailComposeDelegate:mailComposeDelegate];
-
-        [mailCompose setToRecipients:[NSArray arrayWithObjects:@(_email), nil]];
-        [mailCompose setSubject:@(_subject)];
-
-        NSMutableString * mailBodyBuilder = [NSMutableString stringWithUTF8String:_body];
+        NSMutableString * mailBodyBuilder = [NSMutableString stringWithCapacity:4096];
 
         [mailBodyBuilder appendString:@"\n\n"];
         [mailBodyBuilder appendString:@"----- Please Describe Your Message Above Here -----\n\n"];
+
+        if( [technically length] != 0 )
+        {
+            [mailBodyBuilder appendString:technically];
+            [mailBodyBuilder appendString:@"\n"];
+        }
 
         {
             Mengine::Char userName[MENGINE_ENVIRONMENT_USER_MAXNAME] = {'\0'};
@@ -943,10 +947,10 @@ namespace Mengine
             [mailBodyBuilder appendString:@"\n"];
         }
 
-        [mailCompose setMessageBody:mailBodyBuilder isHTML:NO];
-
         Mengine::Char userPath[MENGINE_MAX_PATH] = {'\0'};
         size_t userPathLen = this->getUserPath( userPath );
+
+        NSMutableArray<NSDictionary<NSString *, id> *> * attachments = [NSMutableArray array];
 
         if( userPathLen != 0 )
         {
@@ -993,17 +997,58 @@ namespace Mengine
                     mimeType = @"application/zip";
                 }
 
+                NSDictionary<NSString *, id> * attachment = @{
+                    @"data" : fileData,
+                    @"mimeType" : mimeType,
+                    @"fileName" : fileName
+                };
+
+                [attachments addObject:attachment];
+            }
+        }
+
+        NSString * mailBody = [mailBodyBuilder copy];
+
+        [AppleDetail addMainQueueOperation:^ {
+            UIViewController * presentationController = [iOSDetail getRootViewController];
+
+            if( presentationController == nil )
+            {
+                IOS_LOGGER_ERROR( @"open mail invalid top view controller" );
+
+                return;
+            }
+
+            MFMailComposeViewController * mailCompose = [[MFMailComposeViewController alloc] init];
+
+            [mailCompose setModalPresentationStyle:UIModalPresentationFormSheet];
+
+            static iOSMailComposeDelegate * mailComposeDelegate = [[iOSMailComposeDelegate alloc] initWithCompletion:^ {
+                //ToDo callback
+            }];
+
+            [mailCompose setMailComposeDelegate:mailComposeDelegate];
+            [mailCompose setToRecipients:[NSArray arrayWithObjects:email, nil]];
+            [mailCompose setSubject:subject];
+            [mailCompose setMessageBody:mailBody isHTML:NO];
+
+            for( NSDictionary<NSString *, id> * attachment in attachments )
+            {
+                NSData * fileData = attachment[@"data"];
+                NSString * mimeType = attachment[@"mimeType"];
+                NSString * fileName = attachment[@"fileName"];
+
                 [mailCompose addAttachmentData:fileData
                                       mimeType:mimeType
                                       fileName:fileName];
             }
-        }
 
-        [viewController presentViewController:mailCompose
-                                     animated:YES
-                                   completion:^ {
-            //ToDo callback
-        }] ;
+            [presentationController presentViewController:mailCompose
+                                                 animated:YES
+                                               completion:^ {
+                IOS_LOGGER_MESSAGE( @"open mail composer presented" );
+            }];
+        }];
 
         return true;
     }

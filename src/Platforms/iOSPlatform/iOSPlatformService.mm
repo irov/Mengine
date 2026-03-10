@@ -851,12 +851,12 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool iOSPlatformService::openMail( const Char * _email, const Char * _subject, const Char * _body )
+    bool iOSPlatformService::openMail( const Char * _email, const Char * _subject, const Char * _technically )
     {
         LOGGER_INFO( "platform", "open mail '%s' subject '%s' technically '%s'"
             , _email
             , _subject
-            , _body
+            , _technically
         );
 
         UIViewController * viewController = [iOSDetail getRootViewController];
@@ -890,7 +890,7 @@ namespace Mengine
         [mailBodyBuilder appendString:@"----- Please Describe Your Message Above Here -----\n\n"];
         [mailBodyBuilder appendString:@"\n"];
 
-        if( [(@_technically) length] != 0 )
+        if( [@(_technically) length] != 0 )
         {
             [mailBodyBuilder appendString:@(_technically)];
             [mailBodyBuilder appendString:@"\n"];

@@ -871,13 +871,6 @@ namespace Mengine
             return false;
         }
 
-        if( viewController == nil )
-        {
-            LOGGER_WARNING( "platform", "open mail invalid top view controller" );
-
-            return false;
-        }
-
         NSString * email = [NSString stringWithUTF8String:_email];
         NSString * subject = [NSString stringWithUTF8String:_subject];
         NSString * technically = [NSString stringWithUTF8String:_body];
@@ -1012,14 +1005,7 @@ namespace Mengine
         [AppleDetail addMainQueueOperation:^ {
             UIViewController * presentationController = [iOSDetail getRootViewController];
 
-            if( presentationController == nil )
-            {
-                IOS_LOGGER_ERROR( @"open mail invalid top view controller" );
-
-                return;
-            }
-
-            MFMailComposeViewController * mailCompose = [[MFMailComposeViewController alloc] init];
+            static MFMailComposeViewController * mailCompose = [[MFMailComposeViewController alloc] init];
 
             [mailCompose setModalPresentationStyle:UIModalPresentationFormSheet];
 
@@ -1042,7 +1028,7 @@ namespace Mengine
                                       mimeType:mimeType
                                       fileName:fileName];
             }
-
+            
             [presentationController presentViewController:mailCompose
                                                  animated:YES
                                                completion:^ {
@@ -1061,7 +1047,7 @@ namespace Mengine
                                               message:@"Click 'YES' will delete all account data. All game progress, virtual goods, and currency will be permanently removed and unrecoverable."
                                                 delay:3000
                                                   yes:^() {
-            LOGGER_MESSAGE("delete account [YES]");
+            IOS_LOGGER_MESSAGE(@"delete account [YES]");
             
             [iOSApplication.sharedInstance removeUserData];
             
@@ -1076,7 +1062,7 @@ namespace Mengine
             }];
         }
                                                cancel: ^() {
-            LOGGER_MESSAGE("delete account [CANCEL]");
+            IOS_LOGGER_MESSAGE(@"delete account [CANCEL]");
             
         }];
 

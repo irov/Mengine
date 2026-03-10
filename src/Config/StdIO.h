@@ -18,16 +18,16 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE int32_t __mengine_VSNPRINTF( Char * const _buffer, size_t const _bufferCount, Char const * const _format, MENGINE_VA_LIST_TYPE _argList )
+        MENGINE_INLINE int32_t __mengine_VSNPRINTF( Char * const _buffer, size_t const _capacity, Char const * const _format, MENGINE_VA_LIST_TYPE _argList )
         {
-            int32_t size_vsnprintf = std::vsnprintf( _buffer, _bufferCount, _format, _argList );
+            int32_t size_vsnprintf = std::vsnprintf( _buffer, _capacity, _format, _argList );
 
             if( size_vsnprintf < 0 )
             {
                 return size_vsnprintf;
             }
 
-            int32_t size_correct = MENGINE_MIN_MAX( size_vsnprintf, 0, (int32_t)_bufferCount - 1 );
+            int32_t size_correct = MENGINE_MIN_MAX( size_vsnprintf, 0, (int32_t)_capacity - 1 );
 
             return size_correct;
         }

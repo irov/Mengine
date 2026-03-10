@@ -871,18 +871,28 @@ namespace Mengine
             return false;
         }
 
-        NSString * email = [NSString stringWithUTF8String:_email];
-        NSString * subject = [NSString stringWithUTF8String:_subject];
-        NSString * technically = [NSString stringWithUTF8String:_body];
+        MFMailComposeViewController * mailCompose = [[MFMailComposeViewController alloc] init];
+
+        [mailCompose setModalPresentationStyle:UIModalPresentationFormSheet];
+
+        static iOSMailComposeDelegate * mailComposeDelegate = [[iOSMailComposeDelegate alloc] initWithCompletion:^ {
+            //ToDo callback
+        }];
+
+        [mailCompose setMailComposeDelegate:mailComposeDelegate];
+
+        [mailCompose setToRecipients:[NSArray arrayWithObjects:@(_email), nil]];
+        [mailCompose setSubject:@(_subject)];
 
         NSMutableString * mailBodyBuilder = [NSMutableString stringWithCapacity:4096];
 
         [mailBodyBuilder appendString:@"\n\n"];
         [mailBodyBuilder appendString:@"----- Please Describe Your Message Above Here -----\n\n"];
+        [mailBodyBuilder appendString:@"\n"];
 
-        if( [technically length] != 0 )
+        if( [(@_technically) length] != 0 )
         {
-            [mailBodyBuilder appendString:technically];
+            [mailBodyBuilder appendString:@(_technically)];
             [mailBodyBuilder appendString:@"\n"];
         }
 
@@ -940,10 +950,10 @@ namespace Mengine
             [mailBodyBuilder appendString:@"\n"];
         }
 
+        [mailCompose setMessageBody:mailBodyBuilder isHTML:NO];
+
         Mengine::Char userPath[MENGINE_MAX_PATH] = {'\0'};
         size_t userPathLen = this->getUserPath( userPath );
-
-        NSMutableArray<NSDictionary<NSString *, id> *> * attachments = [NSMutableArray array];
 
         if( userPathLen != 0 )
         {
@@ -990,51 +1000,17 @@ namespace Mengine
                     mimeType = @"application/zip";
                 }
 
-                NSDictionary<NSString *, id> * attachment = @{
-                    @"data" : fileData,
-                    @"mimeType" : mimeType,
-                    @"fileName" : fileName
-                };
-
-                [attachments addObject:attachment];
-            }
-        }
-
-        NSString * mailBody = [mailBodyBuilder copy];
-
-        [AppleDetail addMainQueueOperation:^ {
-            UIViewController * presentationController = [iOSDetail getRootViewController];
-
-            static MFMailComposeViewController * mailCompose = [[MFMailComposeViewController alloc] init];
-
-            [mailCompose setModalPresentationStyle:UIModalPresentationFormSheet];
-
-            static iOSMailComposeDelegate * mailComposeDelegate = [[iOSMailComposeDelegate alloc] initWithCompletion:^ {
-                //ToDo callback
-            }];
-
-            [mailCompose setMailComposeDelegate:mailComposeDelegate];
-            [mailCompose setToRecipients:[NSArray arrayWithObjects:email, nil]];
-            [mailCompose setSubject:subject];
-            [mailCompose setMessageBody:mailBody isHTML:NO];
-
-            for( NSDictionary<NSString *, id> * attachment in attachments )
-            {
-                NSData * fileData = attachment[@"data"];
-                NSString * mimeType = attachment[@"mimeType"];
-                NSString * fileName = attachment[@"fileName"];
-
                 [mailCompose addAttachmentData:fileData
                                       mimeType:mimeType
                                       fileName:fileName];
             }
-            
-            [presentationController presentViewController:mailCompose
-                                                 animated:YES
-                                               completion:^ {
-                IOS_LOGGER_MESSAGE( @"open mail composer presented" );
-            }];
-        }];
+        }
+
+        [viewController presentViewController:mailCompose
+                                     animated:YES
+                                   completion:^ {
+            IOS_LOGGER_MESSAGE( @"open mail composer presented" );
+        }] ;
 
         return true;
     }

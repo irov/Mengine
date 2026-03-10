@@ -80,6 +80,7 @@
     self.m_showing = YES;
     
     UIViewController * viewController = [iOSDetail getRootViewController];
+    
     [self.m_interstitialAd presentFromRootViewController:viewController];
     
     return YES;

@@ -142,20 +142,6 @@
 
     id<UIApplicationDelegate> delegate = application.delegate;
     window = delegate.window;
-
-    if (window != nil) {
-        return window;
-    }
-
-    for (UIWindow * candidateWindow in application.windows) {
-        if (candidateWindow.isKeyWindow == YES) {
-            return candidateWindow;
-        }
-
-        if (window == nil && candidateWindow.hidden == NO) {
-            window = candidateWindow;
-        }
-    }
     
     return window;
 }

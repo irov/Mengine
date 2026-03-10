@@ -82,8 +82,80 @@
 
 + (UIWindow *) getRootWindow {
     UIApplication * application = [UIApplication sharedApplication];
+    UIWindow * window = nil;
+
+    if (@available(iOS 13.0, *)) {
+        NSSet<UIScene *> * connectedScenes = application.connectedScenes;
+
+        for (UIScene * scene in connectedScenes) {
+            if ([scene isKindOfClass:[UIWindowScene class]] == NO) {
+                continue;
+            }
+
+            UIWindowScene * windowScene = (UIWindowScene *)scene;
+
+            if (windowScene.activationState != UISceneActivationStateForegroundActive) {
+                continue;
+            }
+
+            for (UIWindow * candidateWindow in windowScene.windows) {
+                if (candidateWindow.isKeyWindow == YES) {
+                    return candidateWindow;
+                }
+
+                if (window == nil && candidateWindow.hidden == NO) {
+                    window = candidateWindow;
+                }
+            }
+        }
+
+        if (window != nil) {
+            return window;
+        }
+
+        for (UIScene * scene in connectedScenes) {
+            if ([scene isKindOfClass:[UIWindowScene class]] == NO) {
+                continue;
+            }
+
+            UIWindowScene * windowScene = (UIWindowScene *)scene;
+
+            if (windowScene.activationState != UISceneActivationStateForegroundInactive) {
+                continue;
+            }
+
+            for (UIWindow * candidateWindow in windowScene.windows) {
+                if (candidateWindow.isKeyWindow == YES) {
+                    return candidateWindow;
+                }
+
+                if (window == nil && candidateWindow.hidden == NO) {
+                    window = candidateWindow;
+                }
+            }
+        }
+
+        if (window != nil) {
+            return window;
+        }
+    }
+
     id<UIApplicationDelegate> delegate = application.delegate;
-    UIWindow * window = delegate.window;
+    window = delegate.window;
+
+    if (window != nil) {
+        return window;
+    }
+
+    for (UIWindow * candidateWindow in application.windows) {
+        if (candidateWindow.isKeyWindow == YES) {
+            return candidateWindow;
+        }
+
+        if (window == nil && candidateWindow.hidden == NO) {
+            window = candidateWindow;
+        }
+    }
     
     return window;
 }

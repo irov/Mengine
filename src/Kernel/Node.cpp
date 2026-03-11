@@ -181,7 +181,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Node::enable()
     {
-        if( this->isActivate() == true )
+        if( (m_state & EN_STATE_ENABLE) == EN_STATE_ENABLE )
         {
             return true;
         }
@@ -261,6 +261,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::disable()
     {
+        if( (m_state & EN_STATE_ENABLE) != EN_STATE_ENABLE )
+        {
+            return;
+        }
+
         IntrusivePtrScope ankh( this );
 
         this->deactivate();
@@ -621,6 +626,20 @@ namespace Mengine
             picker->setPickerFreeze( _value );
         }
     }
+    //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_DEBUG)
+    //////////////////////////////////////////////////////////////////////////
+    void Node::setDebugTag( const ConstString & _debugTag )
+    {
+        m_debugTag = _debugTag;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & Node::getDebugTag() const
+    {
+        return m_debugTag;
+    }
+    //////////////////////////////////////////////////////////////////////////
+#endif
     //////////////////////////////////////////////////////////////////////////
     bool Node::_activate()
     {

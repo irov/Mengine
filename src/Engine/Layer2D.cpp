@@ -239,6 +239,7 @@ namespace Mengine
         );
 
         RenderInterface * render = this->getRender();
+
         render->setRenderTarget( renderTarget );
 
         RenderImageInterfacePtr renderTargetImage = RENDER_SYSTEM()

@@ -150,6 +150,13 @@ namespace Mengine
     protected:
         virtual void _freeze( bool _value );
 
+
+#if defined(MENGINE_DEBUG)
+    public:
+        void setDebugTag( const ConstString & _debugTag );
+        const ConstString & getDebugTag() const;
+#endif
+
     public:
         void _hierarchySetParent( Node * _newParent, EHierarchyInsert _hint ) override;
         void _hierarchyRemoveParent( Node * _oldParent ) override;
@@ -167,6 +174,11 @@ namespace Mengine
 
     protected:
         uint32_t m_state;
+
+#if defined(MENGINE_DEBUG)
+    protected:
+        ConstString m_debugTag;
+#endif
 
     protected:
         friend class Hierarchy;

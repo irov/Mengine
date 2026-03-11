@@ -2815,6 +2815,11 @@ namespace Mengine
 
             .def_proxy_static( "removeEventListener", scriptMethod, &KernelScriptMethod::s_Node_removeEventListener )
             .def_proxy_interface<TransformationInterface>( &Transformable::getTransformation )
+
+#if defined(MENGINE_DEBUG)
+            .def( "setDebugTag", &Node::setDebugTag )
+            .def( "getDebugTag", &Node::getDebugTag )
+#endif
             ;
 
         pybind::interface_<Affector, pybind::bases<Factorable, Updatable>>( _kernel, "Affector", true )

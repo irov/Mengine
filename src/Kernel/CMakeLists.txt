@@ -217,6 +217,7 @@ Scene
 
 ADD_FILTER(
 Layer
+    LayerEventReceiverInterface.h
     Layer.cpp
     Layer.h
 )
@@ -923,6 +924,8 @@ Core
     DummyGameEventReceiver.cpp
     DummyEntityEventReceiver.h
     DummyEntityEventReceiver.cpp
+    DummyLayerEventReceiver.h
+    DummyLayerEventReceiver.cpp
     DummySceneEventReceiver.h
     DummySceneEventReceiver.cpp
     

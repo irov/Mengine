@@ -66,7 +66,7 @@ namespace Mengine
             this->clearRenderTarget_();
         }
 
-        Node::_deactivate();
+        Layer::_deactivate();
     }
     //////////////////////////////////////////////////////////////////////////
     void Layer2D::_dispose()

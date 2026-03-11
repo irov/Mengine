@@ -19,6 +19,8 @@
 
 #include "PythonScriptModuleLoader.h"
 #include "PythonEntityEventReceiver.h"
+#include "PythonLayerEventReceiver.h"
+#include "PythonSceneEventReceiver.h"
 
 #include "DataflowPY.h"
 #include "DataflowPYZ.h"
@@ -897,6 +899,84 @@ namespace Mengine
         Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, _type, eventable, STRINGIZE_STRING_LOCAL( "onDeactivate" ), EVENT_ENTITY_DEACTIVATE, MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, _type, eventable, STRINGIZE_STRING_LOCAL( "onCompile" ), EVENT_ENTITY_COMPILE, MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, _type, eventable, STRINGIZE_STRING_LOCAL( "onRelease" ), EVENT_ENTITY_RELEASE, MENGINE_DOCUMENT_FACTORABLE );
+
+        return eventable;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    EventablePtr PythonScriptService::eventableLayer( const pybind::object & _type )
+    {
+        if( _type.is_invalid() == true || _type.is_none() == true )
+        {
+            LOGGER_ERROR( "type invalid" );
+
+            return nullptr;
+        }
+
+        if( _type.is_type_class() == true )
+        {
+            PyObject * py_type_ptr = _type.ptr();
+
+            if( m_kernel->type_initialize( py_type_ptr ) == false )
+            {
+                LOGGER_ERROR( "type '%s' invalid initialize"
+                    , _type.repr().c_str()
+                );
+
+                return nullptr;
+            }
+        }
+
+        EntityEventablePtr eventable = m_factoryEntityEventable->createObject( MENGINE_DOCUMENT_FACTORABLE );
+
+        Helper::registerPythonEventReceiverMethod<PythonLayerEventReceiver>( m_kernel, _type, eventable, STRINGIZE_STRING_LOCAL( "onCreate" ), EVENT_ENTITY_CREATE, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerPythonEventReceiverMethod<PythonLayerEventReceiver>( m_kernel, _type, eventable, STRINGIZE_STRING_LOCAL( "onDestroy" ), EVENT_ENTITY_DESTROY, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerPythonEventReceiverMethod<PythonLayerEventReceiver>( m_kernel, _type, eventable, STRINGIZE_STRING_LOCAL( "onPreparation" ), EVENT_ENTITY_PREPARATION, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerPythonEventReceiverMethod<PythonLayerEventReceiver>( m_kernel, _type, eventable, STRINGIZE_STRING_LOCAL( "onActivate" ), EVENT_ENTITY_ACTIVATE, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerPythonEventReceiverMethod<PythonLayerEventReceiver>( m_kernel, _type, eventable, STRINGIZE_STRING_LOCAL( "onPreparationDeactivate" ), EVENT_ENTITY_PREPARATION_DEACTIVATE, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerPythonEventReceiverMethod<PythonLayerEventReceiver>( m_kernel, _type, eventable, STRINGIZE_STRING_LOCAL( "onDeactivate" ), EVENT_ENTITY_DEACTIVATE, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerPythonEventReceiverMethod<PythonLayerEventReceiver>( m_kernel, _type, eventable, STRINGIZE_STRING_LOCAL( "onCompile" ), EVENT_ENTITY_COMPILE, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerPythonEventReceiverMethod<PythonLayerEventReceiver>( m_kernel, _type, eventable, STRINGIZE_STRING_LOCAL( "onRelease" ), EVENT_ENTITY_RELEASE, MENGINE_DOCUMENT_FACTORABLE );
+
+        return eventable;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    EventablePtr PythonScriptService::eventableScene( const pybind::object & _type )
+    {
+        if( _type.is_invalid() == true || _type.is_none() == true )
+        {
+            LOGGER_ERROR( "type invalid" );
+
+            return nullptr;
+        }
+
+        if( _type.is_type_class() == true )
+        {
+            PyObject * py_type_ptr = _type.ptr();
+
+            if( m_kernel->type_initialize( py_type_ptr ) == false )
+            {
+                LOGGER_ERROR( "type '%s' invalid initialize"
+                    , _type.repr().c_str()
+                );
+
+                return nullptr;
+            }
+        }
+
+        EntityEventablePtr eventable = m_factoryEntityEventable->createObject( MENGINE_DOCUMENT_FACTORABLE );
+
+        Helper::registerPythonEventReceiverMethod<PythonSceneEventReceiver>( m_kernel, _type, eventable, STRINGIZE_STRING_LOCAL( "onCreate" ), EVENT_ENTITY_CREATE, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerPythonEventReceiverMethod<PythonSceneEventReceiver>( m_kernel, _type, eventable, STRINGIZE_STRING_LOCAL( "onDestroy" ), EVENT_ENTITY_DESTROY, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerPythonEventReceiverMethod<PythonSceneEventReceiver>( m_kernel, _type, eventable, STRINGIZE_STRING_LOCAL( "onPreparation" ), EVENT_ENTITY_PREPARATION, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerPythonEventReceiverMethod<PythonSceneEventReceiver>( m_kernel, _type, eventable, STRINGIZE_STRING_LOCAL( "onActivate" ), EVENT_ENTITY_ACTIVATE, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerPythonEventReceiverMethod<PythonSceneEventReceiver>( m_kernel, _type, eventable, STRINGIZE_STRING_LOCAL( "onPreparationDeactivate" ), EVENT_ENTITY_PREPARATION_DEACTIVATE, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerPythonEventReceiverMethod<PythonSceneEventReceiver>( m_kernel, _type, eventable, STRINGIZE_STRING_LOCAL( "onDeactivate" ), EVENT_ENTITY_DEACTIVATE, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerPythonEventReceiverMethod<PythonSceneEventReceiver>( m_kernel, _type, eventable, STRINGIZE_STRING_LOCAL( "onCompile" ), EVENT_ENTITY_COMPILE, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerPythonEventReceiverMethod<PythonSceneEventReceiver>( m_kernel, _type, eventable, STRINGIZE_STRING_LOCAL( "onRelease" ), EVENT_ENTITY_RELEASE, MENGINE_DOCUMENT_FACTORABLE );
+
+        Helper::registerPythonEventReceiverMethod<PythonSceneEventReceiver>( m_kernel, _type, eventable, STRINGIZE_STRING_LOCAL( "onAppMouseLeave" ), EVENT_SCENE_APP_MOUSE_LEAVE, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerPythonEventReceiverMethod<PythonSceneEventReceiver>( m_kernel, _type, eventable, STRINGIZE_STRING_LOCAL( "onAppMouseEnter" ), EVENT_SCENE_APP_MOUSE_ENTER, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerPythonEventReceiverMethod<PythonSceneEventReceiver>( m_kernel, _type, eventable, STRINGIZE_STRING_LOCAL( "onFocus" ), EVENT_SCENE_FOCUS, MENGINE_DOCUMENT_FACTORABLE );
 
         return eventable;
     }

@@ -1,14 +1,14 @@
 #pragma once
 
-#include "Kernel/Node.h"
+#include "Kernel/Entity.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class Layer
-        : public Node
+        : public Entity
     {
-        DECLARE_VISITABLE( Node );
+        DECLARE_VISITABLE( Entity );
         DECLARE_FACTORABLE( Layer );
 
     public:

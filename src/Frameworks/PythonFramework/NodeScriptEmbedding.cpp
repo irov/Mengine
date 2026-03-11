@@ -997,7 +997,7 @@ namespace Mengine
                 .def( "getWeight", &Line::getWeight )
                 ;
 
-            pybind::interface_<Layer, pybind::bases<Node>>( _kernel, "Layer", false )
+            pybind::interface_<Layer, pybind::bases<Entity>>( _kernel, "Layer", false )
                 ;
 
             pybind::interface_<Layer2D, pybind::bases<Layer>>( _kernel, "Layer2D", false )

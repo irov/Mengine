@@ -63,6 +63,8 @@ namespace Mengine
 
     public:
         EventablePtr eventableEntity( const pybind::object & _type ) override;
+        EventablePtr eventableLayer( const pybind::object & _type ) override;
+        EventablePtr eventableScene( const pybind::object & _type ) override;
 
     public:
         bool bootstrapModules() override;

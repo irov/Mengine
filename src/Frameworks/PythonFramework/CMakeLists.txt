@@ -110,6 +110,10 @@ ADD_FILTER(
 EventReceiver
     PythonEntityEventReceiver.h
     PythonEntityEventReceiver.cpp
+    PythonLayerEventReceiver.h
+    PythonLayerEventReceiver.cpp
+    PythonSceneEventReceiver.h
+    PythonSceneEventReceiver.cpp
 )
 
 ADD_FILTER(

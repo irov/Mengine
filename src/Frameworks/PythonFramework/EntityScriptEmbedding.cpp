@@ -11,7 +11,9 @@
 #include "PythonEntityPrototypeGenerator.h"
 
 #include "Kernel/Entity.h"
+#include "Kernel/Layer.h"
 #include "Kernel/Scene.h"
+#include "Engine/Layer2D.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -165,9 +167,125 @@ namespace Mengine
                 return py_entity;
             }
             //////////////////////////////////////////////////////////////////////////
+            ScenePtr s_createScene( const ConstString & _name, const pybind::object & _type )
+            {
+                ScenePtr scene = Helper::generateNodeFactorable<Scene>( MENGINE_DOCUMENT_PYTHON );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( scene, "invalid create scene '%s'"
+                    , _name.c_str()
+                );
+
+                scene->setName( _name );
+
+                if( _type.is_none() == false )
+                {
+                    EventablePtr eventable = SCRIPT_SERVICE()
+                        ->eventable( Scene::getFactorableType(), _type );
+
+                    MENGINE_ASSERTION_MEMORY_PANIC( eventable, "scene '%s' invalid eventable '%s'"
+                        , _name.c_str()
+                        , _type.repr().c_str()
+                    );
+
+                    scene->setBehaviorEventable( eventable );
+
+                    pybind::object py_scene = _type.call();
+
+                    if( py_scene.is_invalid() == true )
+                    {
+                        LOGGER_ERROR( "scene '%s' invalid create type '%s'"
+                            , _name.c_str()
+                            , _type.repr().c_str()
+                        );
+
+                        return nullptr;
+                    }
+
+                    PythonEntityBehaviorPtr behavior = Helper::makeFactorableUnique<PythonEntityBehavior>( MENGINE_DOCUMENT_PYTHON );
+                    behavior->setScriptObject( py_scene );
+
+                    scene->setBehavior( behavior );
+                }
+
+                if( scene->create() == false )
+                {
+                    LOGGER_ERROR( "invalid create scene '%s'"
+                        , _name.c_str()
+                    );
+
+                    return nullptr;
+                }
+
+                return scene;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            LayerPtr s_createLayer( const ConstString & _prototype, const ConstString & _name, const pybind::object & _type )
+            {
+                LayerPtr layer = PROTOTYPE_SERVICE()
+                    ->generatePrototype( Node::getFactorableType(), _prototype, MENGINE_DOCUMENT_PYTHON );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( layer, "invalid create layer '%s' type '%s'"
+                    , _name.c_str()
+                    , _prototype.c_str()
+                );
+
+                layer->setName( _name );
+
+                if( _type.is_none() == false )
+                {
+                    EventablePtr eventable = SCRIPT_SERVICE()
+                        ->eventable( Layer::getFactorableType(), _type );
+
+                    MENGINE_ASSERTION_MEMORY_PANIC( eventable, "layer '%s' invalid eventable '%s'"
+                        , _name.c_str()
+                        , _type.repr().c_str()
+                    );
+
+                    layer->setBehaviorEventable( eventable );
+
+                    pybind::object py_layer = _type.call();
+
+                    if( py_layer.is_invalid() == true )
+                    {
+                        LOGGER_ERROR( "layer '%s' invalid create type '%s'"
+                            , _name.c_str()
+                            , _type.repr().c_str()
+                        );
+
+                        return nullptr;
+                    }
+
+                    PythonEntityBehaviorPtr behavior = Helper::makeFactorableUnique<PythonEntityBehavior>( MENGINE_DOCUMENT_PYTHON );
+                    behavior->setScriptObject( py_layer );
+
+                    layer->setBehavior( behavior );
+                }
+
+                if( layer->create() == false )
+                {
+                    LOGGER_ERROR( "invalid create layer '%s'"
+                        , _name.c_str()
+                    );
+
+                    return nullptr;
+                }
+
+                return layer;
+            }
+            //////////////////////////////////////////////////////////////////////////
             void s_destroyEntity( const EntityPtr & _entity )
             {
                 _entity->dispose();
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_destroyScene( const ScenePtr & _scene )
+            {
+                _scene->dispose();
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_destroyLayer( const LayerPtr & _layer )
+            {
+                _layer->dispose();
             }
             //////////////////////////////////////////////////////////////////////////
             pybind::object s_importEntity( pybind::kernel_interface * _kernel, const ConstString & _prototype )
@@ -298,6 +416,18 @@ namespace Mengine
             .def_constructor( pybind::init<>() )
             ;
 
+        pybind::interface_<Layer, pybind::bases<Entity>>( _kernel, "Layer", false )
+            ;
+
+        pybind::interface_<Layer2D, pybind::bases<Layer>>( _kernel, "Layer2D", false )
+            .def( "setSize", &Layer2D::setSize )
+            .def( "getSize", &Layer2D::getSize )
+            .def( "setViewport", &Layer2D::setViewport )
+            .def( "removeViewport", &Layer2D::removeViewport )
+            .def( "setImageMask", &Layer2D::setImageMask )
+            .def( "removeImageMask", &Layer2D::removeImageMask )
+            ;
+
         EntityScriptMethodPtr entityScriptMethod = Helper::makeFactorableUnique<EntityScriptMethod>( MENGINE_DOCUMENT_FACTORABLE );
 
         if( entityScriptMethod->initialize() == false )
@@ -321,10 +451,18 @@ namespace Mengine
         pybind::def_functor( _kernel, "destroyEntity", entityScriptMethod, &EntityScriptMethod::s_destroyEntity );
         pybind::def_functor_kernel( _kernel, "importEntity", entityScriptMethod, &EntityScriptMethod::s_importEntity );
 
+        pybind::def_functor( _kernel, "createScene", entityScriptMethod, &EntityScriptMethod::s_createScene );
+        pybind::def_functor( _kernel, "destroyScene", entityScriptMethod, &EntityScriptMethod::s_destroyScene );
+
+        pybind::def_functor( _kernel, "createLayer", entityScriptMethod, &EntityScriptMethod::s_createLayer );
+        pybind::def_functor( _kernel, "destroyLayer", entityScriptMethod, &EntityScriptMethod::s_destroyLayer );
+
         m_implement = entityScriptMethod;
 
         Helper::registerScriptWrapping<Entity>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerScriptWrapping<Scene>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<Layer>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<Layer2D>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -340,6 +478,8 @@ namespace Mengine
 
         Helper::unregisterScriptWrapping<Entity>();
         Helper::unregisterScriptWrapping<Scene>();
+        Helper::unregisterScriptWrapping<Layer>();
+        Helper::unregisterScriptWrapping<Layer2D>();
     }
     //////////////////////////////////////////////////////////////////////////
 }

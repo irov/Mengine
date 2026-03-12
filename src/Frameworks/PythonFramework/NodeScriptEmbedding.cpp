@@ -997,18 +997,6 @@ namespace Mengine
                 .def( "getWeight", &Line::getWeight )
                 ;
 
-            pybind::interface_<Layer, pybind::bases<Entity>>( _kernel, "Layer", false )
-                ;
-
-            pybind::interface_<Layer2D, pybind::bases<Layer>>( _kernel, "Layer2D", false )
-                .def( "setSize", &Layer2D::setSize )
-                .def( "getSize", &Layer2D::getSize )
-                .def( "setViewport", &Layer2D::setViewport )
-                .def( "removeViewport", &Layer2D::removeViewport )
-                .def( "setImageMask", &Layer2D::setImageMask )
-                .def( "removeImageMask", &Layer2D::removeImageMask )
-                ;
-
             //pybind::interface_<Parallax, pybind::bases<Node>>( kernel, "Parallax", false )
             //    .def( "setParallaxFactor", &Parallax::setParallaxFactor )
             //    .def( "getParallaxFactor", &Parallax::getParallaxFactor )
@@ -1175,15 +1163,12 @@ namespace Mengine
                 ;
         }
 
-        Helper::registerScriptWrappingEx<Node>( _kernel, Node::getFactorableType(), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrappingEx<Layer>( _kernel, Layer::getFactorableType(), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrappingEx<HotSpot>( _kernel, HotSpot::getFactorableType(), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrappingEx<Surface>( _kernel, Surface::getFactorableType(), MENGINE_DOCUMENT_FACTORABLE );
-
 #define SCRIPT_CLASS_WRAPPING( Class )\
     Helper::registerScriptWrapping<Class>(_kernel, MENGINE_DOCUMENT_FACTORABLE)
 
-        SCRIPT_CLASS_WRAPPING( Layer2D );
+        SCRIPT_CLASS_WRAPPING( Node );
+        SCRIPT_CLASS_WRAPPING( HotSpot );
+        SCRIPT_CLASS_WRAPPING( Surface );
 
         SCRIPT_CLASS_WRAPPING( HotSpotPolygon );
         SCRIPT_CLASS_WRAPPING( HotSpotGlobal );
@@ -1239,16 +1224,12 @@ namespace Mengine
     {
         MENGINE_UNUSED( _kernel );
 
-        Helper::unregisterScriptWrappingEx( Node::getFactorableType() );
-        Helper::unregisterScriptWrappingEx( Resource::getFactorableType() );
-        Helper::unregisterScriptWrappingEx( Layer::getFactorableType() );
-        Helper::unregisterScriptWrappingEx( HotSpot::getFactorableType() );
-        Helper::unregisterScriptWrappingEx( Surface::getFactorableType() );
-
 #define UNSCRIPT_CLASS_WRAPPING( Class )\
     Helper::unregisterScriptWrapping<Class>()
 
-        UNSCRIPT_CLASS_WRAPPING( Layer2D );
+		UNSCRIPT_CLASS_WRAPPING( Node );
+		UNSCRIPT_CLASS_WRAPPING( HotSpot );
+		UNSCRIPT_CLASS_WRAPPING( Surface );
         UNSCRIPT_CLASS_WRAPPING( HotSpotPolygon );
         UNSCRIPT_CLASS_WRAPPING( HotSpotGlobal );
         UNSCRIPT_CLASS_WRAPPING( HotSpotCircle );

@@ -121,6 +121,7 @@ Mixin\\\\Materialable
 ADD_FILTER(
 Mixin\\\\Observable
     Observable.h
+    Observable.cpp
 )
 
 ADD_FILTER(

@@ -8,6 +8,9 @@ namespace Mengine
     class Observable
         : public Mixin
     {
+    public:
+        Observable();
+        ~Observable() override;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Observable> ObservablePtr;

@@ -181,12 +181,12 @@ namespace Mengine
         pybind::interface_<ResourceHIT, pybind::bases<ResourceTestPick>>( _kernel, "ResourceHIT", false )
             ;
 
-        Helper::registerScriptWrappingEx<Resource>( _kernel, Resource::getFactorableType(), MENGINE_DOCUMENT_FACTORABLE );
-
 #define SCRIPT_CLASS_WRAPPING( Class )\
     Helper::registerScriptWrapping<Class>(_kernel, MENGINE_DOCUMENT_FACTORABLE)
 
-        SCRIPT_CLASS_WRAPPING( ResourceImage );        
+		SCRIPT_CLASS_WRAPPING( Resource );
+
+        SCRIPT_CLASS_WRAPPING( ResourceImage );
         SCRIPT_CLASS_WRAPPING( ResourceImageData );
         SCRIPT_CLASS_WRAPPING( ResourceImageDefault );
         SCRIPT_CLASS_WRAPPING( ResourceImageEmpty );
@@ -214,14 +214,10 @@ namespace Mengine
     {
         MENGINE_UNUSED( _kernel );
 
-        Helper::unregisterScriptWrappingEx( Node::getFactorableType() );
-        Helper::unregisterScriptWrappingEx( Resource::getFactorableType() );
-        Helper::unregisterScriptWrappingEx( Layer::getFactorableType() );
-        Helper::unregisterScriptWrappingEx( HotSpot::getFactorableType() );
-        Helper::unregisterScriptWrappingEx( Surface::getFactorableType() );
-
 #define UNSCRIPT_CLASS_WRAPPING( Class )\
     Helper::unregisterScriptWrapping<Class>()
+
+		UNSCRIPT_CLASS_WRAPPING( Resource );
 
         UNSCRIPT_CLASS_WRAPPING( ResourceImage );
         UNSCRIPT_CLASS_WRAPPING( ResourceImageEmpty );

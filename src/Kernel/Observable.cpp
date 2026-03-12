@@ -1,0 +1,19 @@
+#include "Kernel/Observable.h"
+
+#if defined(MENGINE_ASSERTION_DEBUG_ENABLE)
+#   include "Kernel/AssertionObservable.h"
+#endif
+
+namespace Mengine
+{
+    //////////////////////////////////////////////////////////////////////////
+    Observable::Observable()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Observable::~Observable()
+    {
+        MENGINE_ASSERTION_OBSERVABLE( this, "leaked observer at destroy" );
+    }
+    //////////////////////////////////////////////////////////////////////////
+}

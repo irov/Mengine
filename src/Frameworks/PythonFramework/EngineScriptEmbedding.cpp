@@ -879,7 +879,7 @@ namespace Mengine
                 if( _type.is_none() == false )
                 {
                     EventablePtr eventable = SCRIPT_SERVICE()
-                        ->eventableScene( _type );
+                        ->eventable( Scene::getFactorableType(), _type );
 
                     MENGINE_ASSERTION_MEMORY_PANIC( eventable, "scene '%s' invalid eventable '%s'"
                         , _name.c_str()

@@ -117,6 +117,19 @@ EventReceiver
 )
 
 ADD_FILTER(
+EventableProvider
+    PythonEventableProvider.h
+    PythonEventableProviderHelper.h
+    PythonEventableProviderHelper.cpp
+    PythonEntityEventableProvider.h
+    PythonEntityEventableProvider.cpp
+    PythonLayerEventableProvider.h
+    PythonLayerEventableProvider.cpp
+    PythonSceneEventableProvider.h
+    PythonSceneEventableProvider.cpp
+)
+
+ADD_FILTER(
 ScriptProviderService
     PythonScriptProviderService.h
     PythonScriptProviderService.cpp

@@ -14,6 +14,7 @@
 #include "PythonScriptLogger.h"
 #include "PythonScriptModule.h"
 #include "PythonScriptModuleFinder.h"
+#include "PythonEventableProvider.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Entity.h"
@@ -62,9 +63,7 @@ namespace Mengine
         void removeScriptEmbedding( const ConstString & _name ) override;
 
     public:
-        EventablePtr eventableEntity( const pybind::object & _type ) override;
-        EventablePtr eventableLayer( const pybind::object & _type ) override;
-        EventablePtr eventableScene( const pybind::object & _type ) override;
+        EventablePtr eventable( const ConstString & _category, const pybind::object & _type ) override;
 
     public:
         bool bootstrapModules() override;
@@ -140,6 +139,9 @@ namespace Mengine
         typedef Map<ConstString, PyObject *> MapModules;
         typedef Map<ConstString, MapModules> MapCategoryPrototypies;
         MapCategoryPrototypies m_prototypies;
+
+        typedef Hashtable<ConstString, PythonEventableProviderInterfacePtr> HashtableEventableProviders;
+        HashtableEventableProviders m_eventableProviders;
 
         typedef Pool<ConstStringHolderPythonString, 256> PoolConstStringHolderPythonString;
         PoolConstStringHolderPythonString m_poolPythonString;

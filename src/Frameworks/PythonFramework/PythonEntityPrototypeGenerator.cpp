@@ -7,9 +7,6 @@
 
 #include "PythonEntityBehavior.h"
 
-#include "Kernel/Layer.h"
-#include "Kernel/Scene.h"
-
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -100,27 +97,13 @@ namespace Mengine
             , m_prototype.c_str()
         );
 
-        EventablePtr eventable;
+        EventablePtr eventable = SCRIPT_SERVICE()
+            ->eventable( m_category, py_type );
 
-        if( m_category == Layer::getFactorableType() )
-        {
-            eventable = SCRIPT_SERVICE()
-                ->eventableLayer( py_type );
-        }
-        else if( m_category == Scene::getFactorableType() )
-        {
-            eventable = SCRIPT_SERVICE()
-                ->eventableScene( py_type );
-        }
-        else
-        {
-            eventable = SCRIPT_SERVICE()
-                ->eventableEntity( py_type );
-        }
-
-        MENGINE_ASSERTION_MEMORY_PANIC( eventable, "type '%s' prototype '%s' invalid eventable entity"
+        MENGINE_ASSERTION_MEMORY_PANIC( eventable, "type '%s' prototype '%s' invalid eventable category '%s'"
             , m_category.c_str()
             , m_prototype.c_str()
+            , m_category.c_str()
         );
 
         m_eventable = eventable;

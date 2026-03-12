@@ -60,9 +60,7 @@ namespace Mengine
         virtual void removeScriptEmbedding( const ConstString & _name ) = 0;
 
     public:
-        virtual EventablePtr eventableEntity( const pybind::object & _type ) = 0;
-        virtual EventablePtr eventableLayer( const pybind::object & _type ) = 0;
-        virtual EventablePtr eventableScene( const pybind::object & _type ) = 0;
+        virtual EventablePtr eventable( const ConstString & _category, const pybind::object & _type ) = 0;
 
     public:
         virtual void stringize( PyObject * _object, ConstString * const _str ) = 0;

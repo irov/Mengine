@@ -918,6 +918,58 @@ namespace Mengine
                 return scene;
             }
             //////////////////////////////////////////////////////////////////////////
+            LayerPtr s_createLayer( const ConstString & _name, const pybind::object & _type )
+            {
+                LayerPtr layer = Helper::generateNodeFactorable<Layer>( MENGINE_DOCUMENT_PYTHON );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( layer, "invalid create layer '%s'"
+                    , _name.c_str()
+                );
+
+                layer->setName( _name );
+
+                if( _type.is_none() == false )
+                {
+                    EventablePtr eventable = SCRIPT_SERVICE()
+                        ->eventable( Layer::getFactorableType(), _type );
+
+                    MENGINE_ASSERTION_MEMORY_PANIC( eventable, "layer '%s' invalid eventable '%s'"
+                        , _name.c_str()
+                        , _type.repr().c_str()
+                    );
+
+                    layer->setBehaviorEventable( eventable );
+
+                    pybind::object py_layer = _type.call();
+
+                    if( py_layer.is_invalid() == true )
+                    {
+                        LOGGER_ERROR( "layer '%s' invalid create type '%s'"
+                            , _name.c_str()
+                            , _type.repr().c_str()
+                        );
+
+                        return nullptr;
+                    }
+
+                    PythonEntityBehaviorPtr behavior = Helper::makeFactorableUnique<PythonEntityBehavior>( MENGINE_DOCUMENT_PYTHON );
+                    behavior->setScriptObject( py_layer );
+
+                    layer->setBehavior( behavior );
+                }
+
+                if( layer->create() == false )
+                {
+                    LOGGER_ERROR( "invalid create layer '%s'"
+                        , _name.c_str()
+                    );
+
+                    return nullptr;
+                }
+
+                return layer;
+            }
+            //////////////////////////////////////////////////////////////////////////
             bool createGlobalScene()
             {
                 if( SERVICE_IS_INITIALIZE( SceneServiceInterface ) == false )
@@ -4362,6 +4414,7 @@ namespace Mengine
         pybind::def_functor( _kernel, "getGlobalScene", nodeScriptMethod, &EngineScriptMethod::getGlobalScene );
 
         pybind::def_functor( _kernel, "createScene", nodeScriptMethod, &EngineScriptMethod::s_createScene );
+        pybind::def_functor( _kernel, "createLayer", nodeScriptMethod, &EngineScriptMethod::s_createLayer );
 
         pybind::def_functor( _kernel, "getCamera2DPosition", nodeScriptMethod, &EngineScriptMethod::s_getCamera2DPosition );
 

@@ -251,14 +251,8 @@ int main( int argc, char * argv[] )
 
     std::vector<AtlasImageDesc> atlas_images;
 
-    for( Files::const_iterator
-        it = files.begin(),
-        it_end = files.end();
-        it != it_end;
-        ++it )
+    for( const std::wstring & path : files )
     {
-        const std::wstring & path = *it;
-
         WCHAR sheetPath[MAX_PATH];
         PathCombine( sheetPath, dataTempDir, path.c_str() );
 
@@ -391,6 +385,9 @@ int main( int argc, char * argv[] )
 
             atlas_images.push_back( image );
         }
+
+        json_decref( root );
+        free( buff );
     }
 
     WCHAR infoCanonicalizeQuote[MAX_PATH];

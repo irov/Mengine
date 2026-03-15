@@ -177,6 +177,8 @@ public class MengineProcedureSendMail implements MengineProcedureInterface {
                     );
                 }
             } else {
+                logFileStream.close();
+
                 body_builder.append("\n\n[ERROR] invalid write current log file");
 
                 MengineLog.logMessage(TAG, "linkingOpenMail invalid write current log file for mail: %s subject: %s"
@@ -234,6 +236,8 @@ public class MengineProcedureSendMail implements MengineProcedureInterface {
                     );
                 }
             } else {
+                oldLogFileStream.close();
+
                 body_builder.append("\n\nNOT_FOUND_OLD_LOG");
 
                 MengineLog.logMessage(TAG, "linkingOpenMail not found old log file for mail: %s subject: %s"

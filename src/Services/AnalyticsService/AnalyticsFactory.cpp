@@ -64,6 +64,12 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAnalyticsEventConstParameterInteger );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAnalyticsEventConstParameterDouble );
 
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAnalyticsEventGetterParameterBoolean );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAnalyticsEventGetterParameterConstString );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAnalyticsEventGetterParameterString );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAnalyticsEventGetterParameterInteger );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAnalyticsEventGetterParameterDouble );
+
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAnalyticsContext );        
 
         m_factoryAnalyticsEventBuilder = nullptr;
@@ -74,6 +80,12 @@ namespace Mengine
         m_factoryAnalyticsEventConstParameterString = nullptr;
         m_factoryAnalyticsEventConstParameterInteger = nullptr;
         m_factoryAnalyticsEventConstParameterDouble = nullptr;
+
+        m_factoryAnalyticsEventGetterParameterBoolean = nullptr;
+        m_factoryAnalyticsEventGetterParameterConstString = nullptr;
+        m_factoryAnalyticsEventGetterParameterString = nullptr;
+        m_factoryAnalyticsEventGetterParameterInteger = nullptr;
+        m_factoryAnalyticsEventGetterParameterDouble = nullptr;
 
         m_factoryAnalyticsContext = nullptr;
     }

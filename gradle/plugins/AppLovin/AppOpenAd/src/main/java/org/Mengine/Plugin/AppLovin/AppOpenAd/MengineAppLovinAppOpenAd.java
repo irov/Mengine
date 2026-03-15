@@ -87,6 +87,12 @@ public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements Men
         super.onActivityDestroy(activity);
 
         if (m_appOpenAd != null) {
+            m_appOpenAd.setListener(null);
+            m_appOpenAd.setRequestListener(null);
+            m_appOpenAd.setExpirationListener(null);
+            m_appOpenAd.setRevenueListener(null);
+            m_appOpenAd.setAdReviewListener(null);
+
             m_appOpenAd.destroy();
             m_appOpenAd = null;
         }

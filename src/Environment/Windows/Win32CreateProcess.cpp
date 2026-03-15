@@ -97,6 +97,8 @@ namespace Mengine
                         , Helper::Win32GetLastErrorMessageW()
                     );
 
+                    ::CloseHandle( hWriteTempFile );
+
                     return false;
                 }
 

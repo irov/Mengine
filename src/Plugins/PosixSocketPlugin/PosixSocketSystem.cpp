@@ -2,6 +2,7 @@
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/DocumentHelper.h"
 
 #include "PosixSocket.h"
 
@@ -21,7 +22,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PosixSocketSystem::_initializeService()
     {
-        m_factorySocket = new FactoryPool<PosixSocket, 16>();
+        m_factorySocket = Helper::makeFactoryPool<PosixSocket, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -39,4 +40,5 @@ namespace Mengine
 
         return socket;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

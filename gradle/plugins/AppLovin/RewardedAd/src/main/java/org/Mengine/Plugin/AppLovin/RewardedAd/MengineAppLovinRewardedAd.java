@@ -85,11 +85,11 @@ public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements Me
         super.onActivityDestroy(activity);
 
         if (m_rewardedAd != null) {
-            m_rewardedAd.setListener(this);
-            m_rewardedAd.setRequestListener(this);
-            m_rewardedAd.setRevenueListener(this);
-            m_rewardedAd.setExpirationListener(this);
-            m_rewardedAd.setAdReviewListener(this);
+            m_rewardedAd.setListener(null);
+            m_rewardedAd.setRequestListener(null);
+            m_rewardedAd.setRevenueListener(null);
+            m_rewardedAd.setExpirationListener(null);
+            m_rewardedAd.setAdReviewListener(null);
 
             m_rewardedAd.destroy();
             m_rewardedAd = null;

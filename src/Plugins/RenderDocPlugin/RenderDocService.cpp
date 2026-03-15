@@ -75,6 +75,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderDocService::_finalizeService()
     {
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RENDER_SCENE_BEGIN );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RENDER_SCENE_END );
+
         ::FreeLibrary( m_renderDocModule );
 
         m_renderDocAPI = nullptr;

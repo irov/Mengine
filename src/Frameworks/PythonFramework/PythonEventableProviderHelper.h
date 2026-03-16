@@ -22,7 +22,7 @@ namespace Mengine
             Helper::registerPythonEventReceiverMethod<TReceiver>( _kernel, _type, _eventable, STRINGIZE_STRING_LOCAL( "onDestroy" ), EVENT_ENTITY_DESTROY, _doc );
             Helper::registerPythonEventReceiverMethod<TReceiver>( _kernel, _type, _eventable, STRINGIZE_STRING_LOCAL( "onPreparation" ), EVENT_ENTITY_PREPARATION, _doc );
             Helper::registerPythonEventReceiverMethod<TReceiver>( _kernel, _type, _eventable, STRINGIZE_STRING_LOCAL( "onActivate" ), EVENT_ENTITY_ACTIVATE, _doc );
-            Helper::registerPythonEventReceiverMethod<TReceiver>( _kernel, _type, _eventable, STRINGIZE_STRING_LOCAL( "onPreparationDeactivate" ), EVENT_ENTITY_PREPARATION_DEACTIVATE, _doc );
+            Helper::registerPythonEventReceiverMethod<TReceiver>( _kernel, _type, _eventable, STRINGIZE_STRING_LOCAL( "onPassivate" ), EVENT_ENTITY_PASSIVATE, _doc );
             Helper::registerPythonEventReceiverMethod<TReceiver>( _kernel, _type, _eventable, STRINGIZE_STRING_LOCAL( "onDeactivate" ), EVENT_ENTITY_DEACTIVATE, _doc );
             Helper::registerPythonEventReceiverMethod<TReceiver>( _kernel, _type, _eventable, STRINGIZE_STRING_LOCAL( "onCompile" ), EVENT_ENTITY_COMPILE, _doc );
             Helper::registerPythonEventReceiverMethod<TReceiver>( _kernel, _type, _eventable, STRINGIZE_STRING_LOCAL( "onRelease" ), EVENT_ENTITY_RELEASE, _doc );

@@ -69,7 +69,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonSceneEventReceiver::onEntityPreparationDeactivate( const EntityBehaviorInterfacePtr & _behavior )
+    void PythonSceneEventReceiver::onEntityPassivate( const EntityBehaviorInterfacePtr & _behavior )
     {
         Detail::callSceneBehavior( m_cb, _behavior );
     }

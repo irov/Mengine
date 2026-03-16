@@ -38,7 +38,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DummyLayerEventReceiver::onEntityPreparationDeactivate( const EntityBehaviorInterfacePtr & _behavior )
+    void DummyLayerEventReceiver::onEntityPassivate( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
     }

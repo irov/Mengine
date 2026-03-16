@@ -82,7 +82,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DummySceneEventReceiver::onEntityPreparationDeactivate( const EntityBehaviorInterfacePtr & _behavior )
+    void DummySceneEventReceiver::onEntityPassivate( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
 

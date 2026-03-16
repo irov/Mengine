@@ -139,8 +139,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Entity::_deactivate()
     {
-        EVENTABLE_METHOD( EVENT_ENTITY_PREPARATION_DEACTIVATE )
-            ->onEntityPreparationDeactivate( m_behavior );
+        EVENTABLE_METHOD( EVENT_ENTITY_PASSIVATE )
+            ->onEntityPassivate( m_behavior );
 
         Node::_deactivate();
     }

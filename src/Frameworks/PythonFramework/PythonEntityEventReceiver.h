@@ -19,7 +19,7 @@ namespace Mengine
     protected:
         bool onEntityPreparation( const EntityBehaviorInterfacePtr & _behavior ) override;
         bool onEntityActivate( const EntityBehaviorInterfacePtr & _behavior ) override;
-        void onEntityPreparationDeactivate( const EntityBehaviorInterfacePtr & _behavior ) override;
+        void onEntityPassivate( const EntityBehaviorInterfacePtr & _behavior ) override;
         void onEntityDeactivate( const EntityBehaviorInterfacePtr & _behavior ) override;
         void onEntityCompile( const EntityBehaviorInterfacePtr & _behavior ) override;
         void onEntityRelease( const EntityBehaviorInterfacePtr & _behavior ) override;

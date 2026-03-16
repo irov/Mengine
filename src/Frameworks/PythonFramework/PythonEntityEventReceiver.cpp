@@ -38,7 +38,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonEntityEventReceiver::onEntityPreparationDeactivate( const EntityBehaviorInterfacePtr & _behavior )
+    void PythonEntityEventReceiver::onEntityPassivate( const EntityBehaviorInterfacePtr & _behavior )
     {
         Detail::callBehavior( m_cb, _behavior );
     }

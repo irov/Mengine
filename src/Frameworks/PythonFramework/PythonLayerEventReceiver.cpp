@@ -38,7 +38,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonLayerEventReceiver::onEntityPreparationDeactivate( const EntityBehaviorInterfacePtr & _behavior )
+    void PythonLayerEventReceiver::onEntityPassivate( const EntityBehaviorInterfacePtr & _behavior )
     {
         Detail::callLayerBehavior( m_cb, _behavior );
     }

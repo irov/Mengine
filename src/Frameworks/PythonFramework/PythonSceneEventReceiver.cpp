@@ -45,6 +45,16 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void PythonSceneEventReceiver::onSceneRestartBegin( const EntityBehaviorInterfacePtr & _behavior )
+    {
+        Detail::callSceneBehavior( m_cb, _behavior );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PythonSceneEventReceiver::onSceneRestartEnd( const EntityBehaviorInterfacePtr & _behavior )
+    {
+        Detail::callSceneBehavior( m_cb, _behavior );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool PythonSceneEventReceiver::onEntityPreparation( const EntityBehaviorInterfacePtr & _behavior )
     {
         Detail::callSceneBehavior( m_cb, _behavior );

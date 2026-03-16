@@ -74,4 +74,16 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    void Scene::onRestartBegin()
+    {
+        EVENTABLE_METHOD( EVENT_SCENE_RESTART_BEGIN )
+            ->onSceneRestartBegin( m_behavior );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Scene::onRestartEnd()
+    {
+        EVENTABLE_METHOD( EVENT_SCENE_RESTART_END )
+            ->onSceneRestartEnd( m_behavior );
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

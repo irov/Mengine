@@ -21,6 +21,10 @@ namespace Mengine
 
     public:
         void onFocus( bool _focus );
+
+    public:
+        void onRestartBegin();
+        void onRestartEnd();
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveNodePtr<Scene> ScenePtr;

@@ -253,6 +253,11 @@ namespace Mengine
             resource->compile();
         }
 
+        if( m_currentScene != nullptr )
+        {
+            m_currentScene->onRestartBegin();
+        }        
+
         NOTIFICATION_NOTIFY( NOTIFICATOR_RESTART_SCENE_PREPARE_DISABLE, m_currentScene );
 
         if( m_currentScene != nullptr )
@@ -289,6 +294,11 @@ namespace Mengine
 
                 return;
             }
+        }
+
+        if( m_currentScene != nullptr )
+        {
+            m_currentScene->onRestartEnd();
         }
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_RESTART_SCENE_ENABLE, m_currentScene );

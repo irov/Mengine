@@ -22,6 +22,10 @@ namespace Mengine
         bool onSceneAppFocus( const EntityBehaviorInterfacePtr & _behavior, bool _focus ) override;
 
     protected:
+        void onSceneRestartBegin( const EntityBehaviorInterfacePtr & _behavior ) override;
+        void onSceneRestartEnd( const EntityBehaviorInterfacePtr & _behavior ) override;
+
+    protected:
         bool onEntityPreparation( const EntityBehaviorInterfacePtr & _behavior ) override;
         bool onEntityActivate( const EntityBehaviorInterfacePtr & _behavior ) override;
         void onEntityPreparationDeactivate( const EntityBehaviorInterfacePtr & _behavior ) override;

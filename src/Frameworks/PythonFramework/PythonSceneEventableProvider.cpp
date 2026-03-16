@@ -21,6 +21,8 @@ namespace Mengine
         Helper::registerPythonEventReceiverMethod<PythonSceneEventReceiver>( _kernel, _type, eventable, STRINGIZE_STRING_LOCAL( "onAppMouseLeave" ), EVENT_SCENE_APP_MOUSE_LEAVE, _doc );
         Helper::registerPythonEventReceiverMethod<PythonSceneEventReceiver>( _kernel, _type, eventable, STRINGIZE_STRING_LOCAL( "onAppMouseEnter" ), EVENT_SCENE_APP_MOUSE_ENTER, _doc );
         Helper::registerPythonEventReceiverMethod<PythonSceneEventReceiver>( _kernel, _type, eventable, STRINGIZE_STRING_LOCAL( "onFocus" ), EVENT_SCENE_FOCUS, _doc );
+        Helper::registerPythonEventReceiverMethod<PythonSceneEventReceiver>( _kernel, _type, eventable, STRINGIZE_STRING_LOCAL( "onRestartBegin" ), EVENT_SCENE_RESTART_BEGIN, _doc );
+        Helper::registerPythonEventReceiverMethod<PythonSceneEventReceiver>( _kernel, _type, eventable, STRINGIZE_STRING_LOCAL( "onRestartEnd" ), EVENT_SCENE_RESTART_END, _doc );
 
         return eventable;
     }

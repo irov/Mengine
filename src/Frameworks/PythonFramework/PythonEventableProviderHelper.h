@@ -5,6 +5,7 @@
 #include "Environment/Python/PythonEventReceiver.h"
 
 #include "Kernel/EntityEventable.h"
+#include "Kernel/EntityEventReceiverInterface.h"
 #include "Kernel/ConstStringHelper.h"
 
 namespace Mengine

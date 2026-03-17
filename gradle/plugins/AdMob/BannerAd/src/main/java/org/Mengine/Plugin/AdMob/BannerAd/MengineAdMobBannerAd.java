@@ -1,7 +1,9 @@
 package org.Mengine.Plugin.AdMob.BannerAd;
 
+import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Display;
 import android.widget.RelativeLayout;
 import android.graphics.Color;
 
@@ -13,6 +15,7 @@ import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdValue;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.OnPaidEventListener;
@@ -54,8 +57,38 @@ public class MengineAdMobBannerAd extends MengineAdMobBase implements MengineAdM
         m_placement = MengineAdMobPlugin_Banner_Placement;
     }
 
+    protected int getBannerWidthDp(@NonNull MengineActivity activity) {
+        final int defaultWidthDp = 320;
+
+        Display display = MengineUtils.getDefaultDisplay(activity);
+
+        if (display == null) {
+            return defaultWidthDp;
+        }
+
+        Rect windowRect = MengineUtils.getDeviceWindowRect(activity, display);
+
+        int widthPx = windowRect.width();
+
+        if (widthPx <= 0) {
+            return defaultWidthDp;
+        }
+
+        float density = activity.getResources().getDisplayMetrics().density;
+
+        if (density <= 0.f) {
+            return defaultWidthDp;
+        }
+
+        int widthDp = Math.max(1, Math.round(widthPx / density));
+
+        return widthDp;
+    }
+
     protected AdSize getBannerSize(@NonNull MengineActivity activity) {
-        AdSize adSize = AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(activity, 320);
+        int widthDp = this.getBannerWidthDp(activity);
+
+        AdSize adSize = AdSize.getLargeAnchoredAdaptiveBannerAdSize(activity, widthDp);
 
         return adSize;
     }
@@ -357,17 +390,23 @@ public class MengineAdMobBannerAd extends MengineAdMobBase implements MengineAdM
 
 
     @Override
-    public void onPaidEvent(@NonNull com.google.android.gms.ads.AdValue adValue) {
+    public void onPaidEvent(@NonNull AdValue adValue) {
         this.log("onPaidEvent");
+
+        if (m_adView == null) {
+            return;
+        }
 
         ResponseInfo responseInfo = m_adView.getResponseInfo();
 
-        if (responseInfo != null) {
-            long valueMicros = adValue.getValueMicros();
-            double value = valueMicros / 1000000.0;
-
-            this.revenuePaid(responseInfo, MengineAdFormat.ADFORMAT_BANNER, m_placement, value);
+        if (responseInfo == null) {
+            return;
         }
+
+        long valueMicros = adValue.getValueMicros();
+        double value = valueMicros / 1000000.0;
+
+        this.revenuePaid(responseInfo, MengineAdFormat.ADFORMAT_BANNER, m_placement, value);
     }
 }
 

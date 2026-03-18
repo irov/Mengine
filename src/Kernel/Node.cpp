@@ -781,11 +781,11 @@ namespace Mengine
 
         UpdationInterface * updation = this->getUpdation();
 
-        if( _newParent != nullptr && updation != nullptr )
+        if( updation != nullptr )
         {
             uint32_t deep = this->getLeafDeep();
 
-            updation->replace( deep );
+            updation->replace( deep );            
         }
     }
     //////////////////////////////////////////////////////////////////////////

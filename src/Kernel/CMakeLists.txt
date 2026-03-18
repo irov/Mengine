@@ -980,9 +980,6 @@ Core
     FileContent.h
     FileContent.cpp
     
-    BaseComponentHub.h
-    BaseComponentHub.cpp
-    
     ConfigHelper.h
     ConfigHelper.cpp
     

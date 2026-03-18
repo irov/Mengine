@@ -21,6 +21,7 @@
 #include "Environment/iOS/iOSPlatformServiceExtensionInterface.h"
 
 #import "iOSMailComposeDelegate.h"
+#import "iOSOpenGLView.h"
 
 #import <UIKit/UIKit.h>
 #import <OpenGLES/EAGL.h>
@@ -196,6 +197,8 @@ namespace Mengine
         UIWindow * m_uiWindow;
 
         EAGLContext * m_glContext;
+
+        iOSOpenGLView * m_glView;
 
         iOSInputPtr m_iOSInput;
 

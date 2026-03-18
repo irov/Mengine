@@ -94,6 +94,7 @@ namespace Mengine
         , m_desktop( false )
         , m_touchpad( false )
         , m_glContext( nil )
+        , m_glView( nil )
         , m_mainScreenScale( 1.f )
     {
     }
@@ -512,7 +513,7 @@ namespace Mengine
 
         [EAGLContext setCurrentContext:m_glContext];
 
-        glBindRenderbuffer( GL_RENDERBUFFER, 1 );
+        glBindRenderbuffer( GL_RENDERBUFFER, [m_glView colorRenderbuffer] );
         [m_glContext presentRenderbuffer:GL_RENDERBUFFER];
         
         return true;
@@ -877,8 +878,37 @@ namespace Mengine
         CGRect screenBounds = mainScreen.bounds;
         CGFloat screenScale = mainScreen.scale;
 
-        int drawable_width = (int)(screenBounds.size.width * screenScale);
-        int drawable_height = (int)(screenBounds.size.height * screenScale);
+        UIViewController * rootViewController = m_uiWindow.rootViewController;
+
+        iOSOpenGLView * glView = [[iOSOpenGLView alloc] initWithFrame:screenBounds context:m_glContext];
+
+        if( glView == nil )
+        {
+            LOGGER_ERROR( "invalid create iOSOpenGLView" );
+
+            return false;
+        }
+
+        if( rootViewController != nil )
+        {
+            rootViewController.view = glView;
+        }
+        else
+        {
+            [m_uiWindow addSubview:glView];
+        }
+
+        if( [glView createFramebuffer] == NO )
+        {
+            LOGGER_ERROR( "invalid create framebuffer for iOSOpenGLView" );
+
+            return false;
+        }
+
+        m_glView = glView;
+
+        int drawable_width = [glView backingWidth];
+        int drawable_height = [glView backingHeight];
 
         LOGGER_INFO( "platform", "iOS drawable size [%d, %d]"
             , drawable_width
@@ -1253,10 +1283,26 @@ namespace Mengine
         MENGINE_UNUSED( _windowResolution );
         MENGINE_UNUSED( _fullscreen );
 
-        UIScreen * mainScreen = [UIScreen mainScreen];
-        CGRect screenBounds = mainScreen.bounds;
+        UIWindow * existingWindow = nil;
 
-        m_uiWindow = [[UIWindow alloc] initWithFrame:screenBounds];
+        NSArray<UIWindow *> * windows = [[UIApplication sharedApplication] windows];
+
+        if( [windows count] > 0 )
+        {
+            existingWindow = [windows firstObject];
+        }
+
+        if( existingWindow != nil )
+        {
+            m_uiWindow = existingWindow;
+        }
+        else
+        {
+            UIScreen * mainScreen = [UIScreen mainScreen];
+            CGRect screenBounds = mainScreen.bounds;
+
+            m_uiWindow = [[UIWindow alloc] initWithFrame:screenBounds];
+        }
 
         if( m_uiWindow == nil )
         {
@@ -1265,9 +1311,11 @@ namespace Mengine
             return false;
         }
 
+        CGRect windowBounds = m_uiWindow.frame;
+
         LOGGER_INFO( "platform", "iOS window created [%d, %d]"
-            , (int)screenBounds.size.width
-            , (int)screenBounds.size.height
+            , (int)windowBounds.size.width
+            , (int)windowBounds.size.height
         );
 
         return true;
@@ -1276,6 +1324,13 @@ namespace Mengine
     void iOSPlatformService::destroyWindow_()
     {
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_DETACH_WINDOW );
+
+        if( m_glView != nil )
+        {
+            [m_glView destroyFramebuffer];
+            [m_glView removeFromSuperview];
+            m_glView = nil;
+        }
 
         if( m_glContext != nil )
         {

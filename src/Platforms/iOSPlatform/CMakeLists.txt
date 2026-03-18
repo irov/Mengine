@@ -9,6 +9,9 @@ src
     iOSInput.h
     iOSInput.mm
     
+    iOSOpenGLView.h
+    iOSOpenGLView.mm
+    
     iOSMailComposeDelegate.h
     iOSMailComposeDelegate.mm
     

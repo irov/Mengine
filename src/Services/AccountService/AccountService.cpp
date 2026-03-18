@@ -182,14 +182,14 @@ namespace Mengine
 
         if( m_accountProvider != nullptr )
         {
-            m_accountProvider->onCreateAccount( m_currentAccountId, false );
+            m_accountProvider->onCreateAccount( newAccount, false );
         }
 
         newAccount->apply();
 
         if( m_accountProvider != nullptr )
         {
-            m_accountProvider->onSelectAccount( m_currentAccountId );
+            m_accountProvider->onSelectAccount( newAccount );
         }
 
         m_invalidateAccounts = true;
@@ -229,7 +229,7 @@ namespace Mengine
 
         if( m_accountProvider != nullptr )
         {
-            m_accountProvider->onCreateAccount( m_globalAccountId, true );
+            m_accountProvider->onCreateAccount( newAccount, true );
         }
 
         newAccount->apply();
@@ -250,7 +250,9 @@ namespace Mengine
 
         if( m_accountProvider != nullptr )
         {
-            m_accountProvider->onUnselectAccount( currentAccount );
+            const AccountInterfacePtr & account = m_accounts.find( currentAccount );
+
+            m_accountProvider->onUnselectAccount( account );
         }
 
         if( m_currentAccountId == currentAccount )
@@ -313,12 +315,7 @@ namespace Mengine
             }
         }
 
-        if( m_accountProvider != nullptr )
-        {
-            m_accountProvider->onDeleteAccount( _accountId );
-        }
-
-        AccountPtr account = m_accounts.erase( _accountId );
+        AccountPtr account = m_accounts.erase( _accountId );        
 
         if( account == nullptr )
         {
@@ -333,6 +330,11 @@ namespace Mengine
             , account->getAccountId().c_str()
             , account->getUID().data
         );
+
+        if( m_accountProvider != nullptr )
+        {
+            m_accountProvider->onDeleteAccount( account );
+        }
 
         account->finalize();
 
@@ -375,7 +377,7 @@ namespace Mengine
 
         if( m_accountProvider != nullptr )
         {
-            m_accountProvider->onSelectAccount( _accountId );
+            m_accountProvider->onSelectAccount( account );
         }
 
         m_invalidateAccounts = true;
@@ -545,7 +547,7 @@ namespace Mengine
         if( m_accountProvider != nullptr )
         {
             m_currentAccountId = accountId;
-            m_accountProvider->onCreateAccount( accountId, m_globalAccountId == accountId );
+            m_accountProvider->onCreateAccount( _account, m_globalAccountId == accountId );
             m_currentAccountId.clear();
         }
 

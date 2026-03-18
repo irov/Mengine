@@ -1,7 +1,6 @@
 #include "ImGUIFrameworkPlugin.h"
 
 #include "Kernel/ConstStringHelper.h"
-#include "Kernel/FrameworkFactory.h"
 #include "Kernel/VocabularyHelper.h"
 #include "Kernel/PluginHelper.h"
 #include "Kernel/AssertionAllocator.h"

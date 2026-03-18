@@ -50,10 +50,10 @@ namespace Mengine
         void onGameCreateDefaultAccount() override;
         void onGameCreateGlobalAccount() override;
         void onGameLoadAccounts() override;
-        void onGameCreateAccount( const ConstString & _accountId, bool _global ) override;
-        void onGameDeleteAccount( const ConstString & _accountId ) override;
-        void onGameSelectAccount( const ConstString & _accountId ) override;
-        void onGameUselectAccount( const ConstString & _accountId ) override;
+        void onGameCreateAccount( const AccountInterfacePtr & _account, bool _global ) override;
+        void onGameDeleteAccount( const AccountInterfacePtr & _account ) override;
+        void onGameSelectAccount( const AccountInterfacePtr & _account ) override;
+        void onGameUnselectAccount( const AccountInterfacePtr & _account ) override;
         void onGameTurnSound( bool _turn ) override;
         void onGameChangeSoundVolume( float _sound, float _music, float _voice ) override;
         void onGameCursorMode( bool _mode ) override;

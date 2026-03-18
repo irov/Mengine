@@ -229,30 +229,30 @@ namespace Mengine
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void DummyGameEventReceiver::onGameCreateAccount( const ConstString & _accountId, bool _global )
+    void DummyGameEventReceiver::onGameCreateAccount( const AccountInterfacePtr & _account, bool _global )
     {
-        MENGINE_UNUSED( _accountId );
+        MENGINE_UNUSED( _account );
         MENGINE_UNUSED( _global );
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void DummyGameEventReceiver::onGameDeleteAccount( const ConstString & _accountId )
+    void DummyGameEventReceiver::onGameDeleteAccount( const AccountInterfacePtr & _account )
     {
-        MENGINE_UNUSED( _accountId );
+        MENGINE_UNUSED( _account );
 
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void DummyGameEventReceiver::onGameSelectAccount( const ConstString & _accountId )
+    void DummyGameEventReceiver::onGameSelectAccount( const AccountInterfacePtr & _account )
     {
-        MENGINE_UNUSED( _accountId );
+        MENGINE_UNUSED( _account );
 
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void DummyGameEventReceiver::onGameUselectAccount( const ConstString & _accountId )
+    void DummyGameEventReceiver::onGameUnselectAccount( const AccountInterfacePtr & _account )
     {
-        MENGINE_UNUSED( _accountId );
+        MENGINE_UNUSED( _account );
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////

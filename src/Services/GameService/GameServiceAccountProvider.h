@@ -21,10 +21,10 @@ namespace Mengine
         const EventablePtr & getEventable() const;
 
     protected:
-        void onCreateAccount( const ConstString & _accountId, bool _global ) override;
-        void onDeleteAccount( const ConstString & _accountId ) override;
-        void onSelectAccount( const ConstString & _accountId ) override;
-        void onUnselectAccount( const ConstString & _accountId ) override;
+        void onCreateAccount( const AccountInterfacePtr & _account, bool _global ) override;
+        void onDeleteAccount( const AccountInterfacePtr & _account ) override;
+        void onSelectAccount( const AccountInterfacePtr & _account ) override;
+        void onUnselectAccount( const AccountInterfacePtr & _account ) override;
 
     protected:
         EventablePtr m_eventable;

@@ -228,24 +228,32 @@ namespace Mengine
         m_cb.call();
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonGameEventReceiver::onGameCreateAccount( const ConstString & _accountId, bool _global )
+    void PythonGameEventReceiver::onGameCreateAccount( const AccountInterfacePtr & _account, bool _global )
     {
-        m_cb.call( _accountId, _global );
+        const ConstString & accountId = _account->getAccountId();
+
+        m_cb.call( accountId, _global );
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonGameEventReceiver::onGameDeleteAccount( const ConstString & _accountId )
+    void PythonGameEventReceiver::onGameDeleteAccount( const AccountInterfacePtr & _account )
     {
-        m_cb.call( _accountId );
+        const ConstString & accountId = _account->getAccountId();
+
+        m_cb.call( accountId );
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonGameEventReceiver::onGameSelectAccount( const ConstString & _accountId )
+    void PythonGameEventReceiver::onGameSelectAccount( const AccountInterfacePtr & _account )
     {
-        m_cb.call( _accountId );
+        const ConstString & accountId = _account->getAccountId();
+
+        m_cb.call( accountId );
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonGameEventReceiver::onGameUselectAccount( const ConstString & _accountId )
+    void PythonGameEventReceiver::onGameUnselectAccount( const AccountInterfacePtr & _account )
     {
-        m_cb.call( _accountId );
+        const ConstString & accountId = _account->getAccountId();
+
+        m_cb.call( accountId );
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonGameEventReceiver::onGameTurnSound( bool _turn )

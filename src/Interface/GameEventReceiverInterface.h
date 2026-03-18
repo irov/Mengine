@@ -4,6 +4,7 @@
 #include "Interface/SettingInterface.h"
 #include "Interface/InputHandlerInterface.h"
 #include "Interface/AnalyticsServiceInterface.h"
+#include "Interface/AccountInterface.h"
 
 #include "Kernel/Params.h"
 #include "Kernel/KeyCode.h"
@@ -109,10 +110,10 @@ namespace Mengine
         virtual void onGameCreateDefaultAccount() = 0;
         virtual void onGameCreateGlobalAccount() = 0;
         virtual void onGameLoadAccounts() = 0;
-        virtual void onGameCreateAccount( const ConstString & _accountId, bool _global ) = 0;
-        virtual void onGameDeleteAccount( const ConstString & _accountId ) = 0;
-        virtual void onGameSelectAccount( const ConstString & _accountId ) = 0;
-        virtual void onGameUselectAccount( const ConstString & _accountId ) = 0;
+        virtual void onGameCreateAccount( const AccountInterfacePtr & _account, bool _global ) = 0;
+        virtual void onGameDeleteAccount( const AccountInterfacePtr & _account ) = 0;
+        virtual void onGameSelectAccount( const AccountInterfacePtr & _account ) = 0;
+        virtual void onGameUnselectAccount( const AccountInterfacePtr & _account ) = 0;
         virtual void onGameTurnSound( bool _turn ) = 0;
         virtual void onGameChangeSoundVolume( float _sound, float _music, float _voice ) = 0;
         virtual void onGameCursorMode( bool _mode ) = 0;

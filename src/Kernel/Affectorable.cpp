@@ -33,7 +33,7 @@ namespace Mengine
         {
             AffectorHubInterfacePtr affectorHub = Helper::generatePrototype<BaseAffectorHub>( ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
-            AffectorHubProviderInterface * provider = const_cast<Affectorable *>(this)->getAffectorHubProvider();
+            const AffectorHubProviderInterface * provider = this->getAffectorHubProvider();
 
             affectorHub->setAffectorHubProvider( provider );
 

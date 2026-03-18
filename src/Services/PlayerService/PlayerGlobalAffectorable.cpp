@@ -11,7 +11,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    AffectorHubProviderInterface * PlayerGlobalAffectorable::getAffectorHubProvider()
+    const AffectorHubProviderInterface * PlayerGlobalAffectorable::getAffectorHubProvider() const
     {
         return this;
     }

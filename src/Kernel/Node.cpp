@@ -832,7 +832,7 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    AffectorHubProviderInterface * Node::getAffectorHubProvider()
+    const AffectorHubProviderInterface * Node::getAffectorHubProvider() const
     {
         return this;
     }

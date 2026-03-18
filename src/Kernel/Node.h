@@ -166,7 +166,7 @@ namespace Mengine
         void _hierarchyRemoveChild( const NodePtr & _node ) override;
 
     protected:
-        AffectorHubProviderInterface * getAffectorHubProvider() override;
+        const AffectorHubProviderInterface * getAffectorHubProvider() const override;
 
     protected:
         EUpdateMode getAffectorableUpdatableMode() const override;

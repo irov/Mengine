@@ -19,7 +19,7 @@ namespace Mengine
         ~PlayerGlobalAffectorable() override;
 
     public:
-        AffectorHubProviderInterface * getAffectorHubProvider() override;
+        const AffectorHubProviderInterface * getAffectorHubProvider() const override;
 
     protected:
         EUpdateMode getAffectorableUpdatableMode() const override;

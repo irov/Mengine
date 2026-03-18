@@ -1,7 +1,7 @@
 post_install do |installer|
   work_dir = Dir.pwd
   installer.aggregate_targets.each do |target|
-    if target.name != "Pods-SDLApplication"
+    if target.name != "Pods-@PROJECT_NAME@"
       next
     end
     target.user_build_configurations.each do |key, name|

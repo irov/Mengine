@@ -3,10 +3,8 @@
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/PluginServiceInterface.h"
 
-#include "Environment/SDL3/SDL3Includer.h"
-#include "Environment/SDL3/SDL3PlatformServiceExtensionInterface.h"
-
 #import "iOSApplicationDelegates.h"
+#import "iOSViewController.h"
 
 #import "Environment/Apple/AppleUserDefaults.h"
 #import "Environment/Apple/AppleDetail.h"
@@ -321,7 +319,7 @@
     }
     
     UIWindow * window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    UIViewController * viewController = [[UIViewController alloc] init];
+    iOSViewController * viewController = [[iOSViewController alloc] init];
     window.rootViewController = viewController;
     
     [window makeKeyAndVisible];
@@ -509,10 +507,6 @@
 
 
 - (void)postFinishLaunch {
-    SDL_SetMainReady();
-    
-    SDL_SetiOSEventPump( true );
-    
     Mengine::iOSApplication application;
     
     NSArray<NSString *> * arguments = [[NSProcessInfo processInfo] arguments];
@@ -548,8 +542,6 @@
         [AppleLog withFormat:@"🔴 [ERROR] Mengine application bootstrap [Failed]"];
         
         application.finalize();
-        
-        SDL_SetiOSEventPump( false );
         
         [iOSDetail showOkAlertWithTitle:@"Failed..."
                                 message:@"Mengine bootstraped application"
@@ -597,8 +589,6 @@
         [AppleLog withFormat:@"🔴 [ERROR] Mengine application run [Failed]"];
         
         application.finalize();
-        
-        SDL_SetiOSEventPump( false );
         
         [iOSDetail showOkAlertWithTitle:@"Failed..."
                                 message:@"Mengine run application"
@@ -678,8 +668,6 @@
     }
     
     application.finalize();
-    
-    SDL_SetiOSEventPump( false );
     
     [AppleLog withFormat:@"Mengine application finish"];
     

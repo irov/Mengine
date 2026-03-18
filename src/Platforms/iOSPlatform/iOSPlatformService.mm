@@ -53,11 +53,18 @@
 #include "Config/Switch.h"
 #include "Config/Path.h"
 
+#import <OpenGLES/ES2/gl.h>
+#import <OpenGLES/ES2/glext.h>
+#import <QuartzCore/QuartzCore.h>
+#import <sys/utsname.h>
+
 #include <clocale>
 #include <ctime>
 #include <iomanip>
+#include <unistd.h>
 
 #include <sys/stat.h>
+#include <sys/sysctl.h>
 
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_SETLOCALE_ENABLE
@@ -72,10 +79,6 @@
 #define MENGINE_DEVELOPMENT_USER_FOLDER_NAME "User"
 #endif
 //////////////////////////////////////////////////////////////////////////
-#ifndef SDL_IPHONE_MAX_GFORCE
-#define SDL_IPHONE_MAX_GFORCE 5.0f
-#endif
-//////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PlatformService, Mengine::iOSPlatformService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
@@ -83,14 +86,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     iOSPlatformService::iOSPlatformService()
         : m_beginTime( 0 )
-        , m_sdlWindow( nullptr )
-        , m_sdlInput( nullptr )
+        , m_uiWindow( nil )
+        , m_iOSInput( nullptr )
         , m_prevTime( 0.0 )
         , m_pauseUpdatingTime( -1.f )
         , m_active( false )
         , m_desktop( false )
         , m_touchpad( false )
-        , m_glContext( nullptr )
+        , m_glContext( nil )
+        , m_mainScreenScale( 1.f )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -236,116 +240,6 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    namespace Detail
-    {
-        //////////////////////////////////////////////////////////////////////////
-        static bool SDL_EventFilter_RemoveMouse( void * userdata, SDL_Event * event )
-        {
-            MENGINE_UNUSED( userdata );
-
-            switch( event->type )
-            {
-            case SDL_EVENT_MOUSE_MOTION:
-            case SDL_EVENT_MOUSE_BUTTON_DOWN:
-            case SDL_EVENT_MOUSE_BUTTON_UP:
-                {
-                    return false;
-                }break;
-            default: break;
-            };
-
-            return true;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static bool SDL_EventFilter_EnterBackground( void * userdata, SDL_Event * event )
-        {
-            MENGINE_UNUSED( userdata );
-
-            switch( event->type )
-            {
-            case SDL_EVENT_WILL_ENTER_BACKGROUND:
-                {
-                    return false;
-                }break;
-            case SDL_EVENT_DID_ENTER_BACKGROUND:
-                {
-                    return false;
-                }break;
-            default: break;
-            };
-
-            return true;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static const Char * SDL_GetLoggerCategoryString( int category )
-        {
-            switch( category )
-            {
-            case SDL_LOG_CATEGORY_APPLICATION:
-                return "application";
-            case SDL_LOG_CATEGORY_ERROR:
-                return "error";
-            case SDL_LOG_CATEGORY_ASSERT:
-                return "assert";
-            case SDL_LOG_CATEGORY_SYSTEM:
-                return "system";
-            case SDL_LOG_CATEGORY_AUDIO:
-                return "audio";
-            case SDL_LOG_CATEGORY_VIDEO:
-                return "video";
-            case SDL_LOG_CATEGORY_RENDER:
-                return "render";
-            case SDL_LOG_CATEGORY_INPUT:
-                return "input";
-            case SDL_LOG_CATEGORY_TEST:
-                return "test";
-            case SDL_LOG_CATEGORY_CUSTOM:
-                return "custom";
-            default:
-                break;
-            }
-
-            return "unknown";
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static ELoggerLevel SDL_GetLoggerLevel( SDL_LogPriority priority )
-        {
-            switch( priority )
-            {
-            case SDL_LOG_PRIORITY_VERBOSE:
-                return LM_VERBOSE;
-            case SDL_LOG_PRIORITY_DEBUG:
-                return LM_DEBUG;
-            case SDL_LOG_PRIORITY_INFO:
-                return LM_INFO;
-            case SDL_LOG_PRIORITY_WARN:
-                return LM_WARNING;
-            case SDL_LOG_PRIORITY_ERROR:
-                return LM_ERROR;
-            case SDL_LOG_PRIORITY_CRITICAL:
-                return LM_FATAL;
-            default:
-                break;
-            }
-
-            return LM_ERROR;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static void SDL_LogOutputFunction( void * userdata, int category, SDL_LogPriority priority, const char * message )
-        {
-            MENGINE_UNUSED( userdata );
-
-            ELoggerLevel level = Detail::SDL_GetLoggerLevel( priority );
-            const Char * category_str = Detail::SDL_GetLoggerCategoryString( category );
-
-            LOGGER_VERBOSE_LEVEL( "sdl", level, LFILTER_NONE, LCOLOR_RED, nullptr, 0, nullptr, LFLAG_SHORT )("[%s] %s"
-                , category_str
-                , message
-            );
-        }
-        //////////////////////////////////////////////////////////////////////////
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool iOSPlatformService::_initializeService()
     {
         m_beginTime = Helper::getSystemTimestamp();
@@ -354,30 +248,18 @@ namespace Mengine
         ::setlocale( LC_ALL, MENGINE_SETLOCALE_VALUE );
 #endif
 
-        int version = SDL_GetVersion();
+        UIDevice * device = [UIDevice currentDevice];
 
-        const char * revision = SDL_GetRevision();
-
-        LOGGER_INFO( "platform", "SDL3 version: %d.%d.%d revision: %s"
-            , SDL_VERSIONNUM_MAJOR( version )
-            , SDL_VERSIONNUM_MINOR( version )
-            , SDL_VERSIONNUM_MICRO( version )
-            , revision
+        LOGGER_INFO( "platform", "iOS platform: %s %s"
+            , [[device systemName] UTF8String]
+            , [[device systemVersion] UTF8String]
         );
 
-        bool isTablet = SDL_IsTablet();
+        bool isTablet = (device.userInterfaceIdiom == UIUserInterfaceIdiomPad);
 
-        LOGGER_INFO( "platform", "SDL3 Tablet: %s"
+        LOGGER_INFO( "platform", "iOS Tablet: %s"
             , isTablet == true ? "true" : "false"
         );
-
-#if defined(MENGINE_DEBUG)
-        SDL_SetLogPriorities( SDL_LOG_PRIORITY_VERBOSE );
-#else
-        SDL_SetLogPriorities( SDL_LOG_PRIORITY_ERROR );
-#endif
-
-        SDL_SetLogOutputFunction( &Detail::SDL_LogOutputFunction, nullptr );
 
         m_platformTags.clear();
 
@@ -396,29 +278,6 @@ namespace Mengine
                 m_platformTags.addTag( Helper::stringizeString( option_platform ) );
             }
         }
-        else if( HAS_OPTION( "win32" ) )
-        {
-            m_touchpad = false;
-            m_desktop = true;
-
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
-        }
-        else if( HAS_OPTION( "win64" ) )
-        {
-            m_touchpad = false;
-            m_desktop = true;
-
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
-        }
-        else if( HAS_OPTION( "mac" ) )
-        {
-            m_touchpad = false;
-            m_desktop = true;
-
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "MAC" ) );
-        }
         else if( HAS_OPTION( "ios" ) )
         {
             m_touchpad = true;
@@ -426,103 +285,20 @@ namespace Mengine
 
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "IOS" ) );
         }
-        else if( HAS_OPTION( "android" ) )
-        {
-            m_touchpad = true;
-            m_desktop = false;
-
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "ANDROID" ) );
-        }
-        else if( HAS_OPTION( "linux" ) )
-        {
-            m_touchpad = false;
-            m_desktop = true;
-
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "LINUX" ) );
-        }
-        else if( HAS_OPTION( "wp" ) )
-        {
-            m_touchpad = true;
-            m_desktop = false;
-
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WP" ) );
-        }
         else
         {
-            const Char * sdlPlatform = SDL_GetPlatform();
+            m_desktop = false;
+            m_touchpad = true;
 
-            if( StdString::strcmp( sdlPlatform, "Windows" ) == 0 )
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "IOS" ) );
+
+            if( isTablet == true )
             {
-                m_desktop = true;
-                m_touchpad = false;
-
-                m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
-            }
-            else if( StdString::strcmp( sdlPlatform, "WinRT" ) == 0 )
-            {
-                m_desktop = true;
-                m_touchpad = false;
-
-                m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
-                m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WinRT" ) );
-
-                SDL_SetEventFilter( &Detail::SDL_EventFilter_EnterBackground, nullptr );
-            }
-            else if( StdString::strcmp( sdlPlatform, "macOS" ) == 0 || StdString::strcmp( sdlPlatform, "Mac OS X" ) == 0 )
-            {
-                m_desktop = true;
-                m_touchpad = false;
-
-                m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "MAC" ) );
-            }
-            else if( StdString::strcmp( sdlPlatform, "Android" ) == 0 )
-            {
-                m_desktop = false;
-                m_touchpad = true;
-
-                m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "ANDROID" ) );
-
-                if( isTablet == true )
-                {
-                    m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "TABLET" ) );
-                }
-                else
-                {
-                    m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PHONE" ) );
-                }
-
-                SDL_SetEventFilter( &Detail::SDL_EventFilter_RemoveMouse, nullptr );
-            }
-            else if( StdString::strcmp( sdlPlatform, "iOS" ) == 0 )
-            {
-                m_desktop = false;
-                m_touchpad = true;
-
-                m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "IOS" ) );
-
-                if( isTablet == true )
-                {
-                    m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "TABLET" ) );
-                }
-                else
-                {
-                    m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PHONE" ) );
-                }
-
-                SDL_SetEventFilter( &Detail::SDL_EventFilter_RemoveMouse, nullptr );
-            }
-            else if( StdString::strcmp( sdlPlatform, "Linux" ) == 0 )
-            {
-                m_desktop = true;
-                m_touchpad = false;
-
-                m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "LINUX" ) );
+                m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "TABLET" ) );
             }
             else
             {
-                LOGGER_ERROR( "platform '%s' unspecified"
-                    , sdlPlatform
-                );
+                m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PHONE" ) );
             }
         }
 
@@ -565,14 +341,14 @@ namespace Mengine
             , m_desktop
         );
 
-        iOSInputPtr sdlInput = Helper::makeFactorableUnique<iOSInput>( MENGINE_DOCUMENT_FACTORABLE );
+        iOSInputPtr iOSInput = Helper::makeFactorableUnique<Mengine::iOSInput>( MENGINE_DOCUMENT_FACTORABLE );
 
-        if( sdlInput->initialize() == false )
+        if( iOSInput->initialize() == false )
         {
             return false;
         }
 
-        m_sdlInput = sdlInput;
+        m_iOSInput = iOSInput;
         
         m_analyticsEventProvider = Helper::makeFactorableUnique<iOSAnalyticsEventProvider>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -601,65 +377,27 @@ namespace Mengine
 
         LOGGER_INFO( "platform", "[Device info]" );
 
-        LOGGER_INFO( "platform", "  Platform: %s"
-            , SDL_GetPlatform()
+        LOGGER_INFO( "platform", "  Platform: iOS" );
+
+        UIDevice * device = [UIDevice currentDevice];
+        
+        struct utsname systemInfo;
+        uname( &systemInfo );
+
+        LOGGER_INFO_PROTECTED( "platform", "  Device: %s (%s)"
+            , [[device model] UTF8String]
+            , systemInfo.machine
         );
 
-        LOGGER_INFO_PROTECTED( "platform", "  CPU: %d Count %d CacheLineSize"
-            , SDL_GetNumLogicalCPUCores()
-            , SDL_GetCPUCacheLineSize()
-        );
+        NSProcessInfo * processInfo = [NSProcessInfo processInfo];
 
-        LOGGER_INFO_PROTECTED( "platform", "  CPU AltiVec: %d"
-            , SDL_HasAltiVec()
-        );
-
-        LOGGER_INFO_PROTECTED( "platform", "  CPU MMX: %d"
-            , SDL_HasMMX()
-        );
-
-        LOGGER_INFO_PROTECTED( "platform", "  CPU SSE: %d"
-            , SDL_HasSSE()
-        );
-
-        LOGGER_INFO_PROTECTED( "platform", "  CPU SSE2: %d"
-            , SDL_HasSSE2()
-        );
-
-        LOGGER_INFO_PROTECTED( "platform", "  CPU SSE3: %d"
-            , SDL_HasSSE3()
-        );
-
-        LOGGER_INFO_PROTECTED( "platform", "  CPU SSE41: %d"
-            , SDL_HasSSE41()
-        );
-
-        LOGGER_INFO_PROTECTED( "platform", "  CPU SSE42: %d"
-            , SDL_HasSSE42()
-        );
-
-        LOGGER_INFO_PROTECTED( "platform", "  CPU AVX: %d"
-            , SDL_HasAVX()
-        );
-
-        LOGGER_INFO_PROTECTED( "platform", "  CPU AVX2: %d"
-            , SDL_HasAVX2()
-        );
-
-        LOGGER_INFO_PROTECTED( "platform", "  CPU AVX512F: %d"
-            , SDL_HasAVX512F()
-        );
-
-        LOGGER_INFO_PROTECTED( "platform", "  CPU NEON: %d"
-            , SDL_HasNEON()
+        LOGGER_INFO_PROTECTED( "platform", "  CPU: %d cores"
+            , (int)[processInfo processorCount]
         );
 
         LOGGER_INFO_PROTECTED( "platform", "  RAM: %dMB"
-            , SDL_GetSystemRAM()
+            , (int)([processInfo physicalMemory] / (1024 * 1024))
         );
-
-        // SDL_Joystick/accelerometer support removed in SDL3
-        LOGGER_INFO( "platform", "accelerometer support removed in SDL3" );
 
         return true;
     }
@@ -695,10 +433,10 @@ namespace Mengine
 
         this->destroyWindow_();
 
-        if( m_sdlInput != nullptr )
+        if( m_iOSInput != nullptr )
         {
-            m_sdlInput->finalize();
-            m_sdlInput = nullptr;
+            m_iOSInput->finalize();
+            m_iOSInput = nullptr;
         }   
 
         m_platformTags.clear();
@@ -767,17 +505,15 @@ namespace Mengine
         APPLICATION_SERVICE()
             ->flush();
 
-        if( m_sdlWindow == nullptr )
+        if( m_glContext == nil )
         {
             return false;
         }
 
-        SDL_ShowWindow( m_sdlWindow );
+        [EAGLContext setCurrentContext:m_glContext];
 
-        if( SDL_GetWindowFlags( m_sdlWindow ) & SDL_WINDOW_OPENGL )
-        {
-            SDL_GL_SwapWindow( m_sdlWindow );
-        }
+        glBindRenderbuffer( GL_RENDERBUFFER, 1 );
+        [m_glContext presentRenderbuffer:GL_RENDERBUFFER];
         
         return true;
     }
@@ -801,7 +537,7 @@ namespace Mengine
             
             if( m_active == false )
             {
-                SDL_Delay( 100 );
+                ::usleep( 100000 );
 
                 continue;
             }
@@ -810,7 +546,7 @@ namespace Mengine
             
             if( this->renderPlatform() == false )
             {
-                SDL_Delay( 100 );
+                ::usleep( 100000 );
                 
                 continue;
             }
@@ -1049,11 +785,6 @@ namespace Mengine
     {
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_STOP );
 
-        if( m_sdlWindow != nullptr )
-        {
-            SDL_HideWindow( m_sdlWindow );
-        }
-        
         this->pushQuitEvent_();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1124,217 +855,44 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool iOSPlatformService::applyWindow_()
     {
-        SDL_GLContext glContext = SDL_GL_CreateContext( m_sdlWindow );
+        EAGLContext * glContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
 
-        if( glContext == nullptr )
+        if( glContext == nil )
         {
-            LOGGER_ERROR( "invalid create GL context error: %s"
-                , SDL_GetError()
-            );
-
-            SDL_DestroyWindow( m_sdlWindow );
-            m_sdlWindow = nullptr;
+            LOGGER_ERROR( "invalid create EAGLContext for OpenGL ES 2.0" );
 
             return false;
         }
 
-        int attribute_GL_CONTEXT_PROFILE_MASK = 0;
-        if( SDL_GL_GetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, &attribute_GL_CONTEXT_PROFILE_MASK ) == false )
+        if( [EAGLContext setCurrentContext:glContext] == NO )
         {
-            LOGGER_WARNING( "get attribute SDL_GL_CONTEXT_PROFILE_MASK error: %s"
-                , SDL_GetError()
-            );
+            LOGGER_ERROR( "invalid set current EAGLContext" );
+
+            return false;
         }
-
-        int attribute_GL_CONTEXT_MAJOR_VERSION = 0;
-        if( SDL_GL_GetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, &attribute_GL_CONTEXT_MAJOR_VERSION ) == false )
-        {
-            LOGGER_WARNING( "get attribute SDL_GL_CONTEXT_MAJOR_VERSION error: %s"
-                , SDL_GetError()
-            );
-        }
-
-        int attribute_GL_CONTEXT_MINOR_VERSION = 0;
-        if( SDL_GL_GetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, &attribute_GL_CONTEXT_MINOR_VERSION ) == false )
-        {
-            LOGGER_WARNING( "get attribute SDL_GL_CONTEXT_MINOR_VERSION error: %s"
-                , SDL_GetError()
-            );
-        }
-
-        int attribute_SDL_GL_RED_SIZE = 0;
-        if( SDL_GL_GetAttribute( SDL_GL_RED_SIZE, &attribute_SDL_GL_RED_SIZE ) == false )
-        {
-            LOGGER_WARNING( "get attribute SDL_GL_RED_SIZE error: %s"
-                , SDL_GetError()
-            );
-        }
-
-        int attribute_SDL_GL_GREEN_SIZE = 0;
-        if( SDL_GL_GetAttribute( SDL_GL_GREEN_SIZE, &attribute_SDL_GL_GREEN_SIZE ) == false )
-        {
-            LOGGER_WARNING( "get attribute SDL_GL_GREEN_SIZE error: %s"
-                , SDL_GetError()
-            );
-        }
-
-        int attribute_SDL_GL_BLUE_SIZE = 0;
-        if( SDL_GL_GetAttribute( SDL_GL_BLUE_SIZE, &attribute_SDL_GL_BLUE_SIZE ) == false )
-        {
-            LOGGER_WARNING( "get attribute SDL_GL_BLUE_SIZE error: %s"
-                , SDL_GetError()
-            );
-        }
-
-        int attribute_SDL_GL_ALPHA_SIZE = 0;
-        if( SDL_GL_GetAttribute( SDL_GL_ALPHA_SIZE, &attribute_SDL_GL_ALPHA_SIZE ) == false )
-        {
-            LOGGER_WARNING( "get attribute SDL_GL_ALPHA_SIZE error: %s"
-                , SDL_GetError()
-            );
-        }
-
-        int attribute_SDL_GL_DEPTH_SIZE = 0;
-        if( SDL_GL_GetAttribute( SDL_GL_DEPTH_SIZE, &attribute_SDL_GL_DEPTH_SIZE ) == false )
-        {
-            LOGGER_WARNING( "set attribute SDL_GL_DEPTH_SIZE error: %s"
-                , SDL_GetError()
-            );
-        }
-
-        int attribute_SDL_GL_DOUBLEBUFFER = 0;
-        if( SDL_GL_GetAttribute( SDL_GL_DOUBLEBUFFER, &attribute_SDL_GL_DOUBLEBUFFER ) == false )
-        {
-            LOGGER_WARNING( "get attribute SDL_GL_DOUBLEBUFFER error: %s"
-                , SDL_GetError()
-            );
-        }
-
-        LOGGER_INFO( "platform", "SDL_GL_CONTEXT_PROFILE_MASK: %d"
-            , attribute_GL_CONTEXT_PROFILE_MASK
-        );
-
-        LOGGER_INFO( "platform", "SDL_GL_CONTEXT_MAJOR_VERSION: %d"
-            , attribute_GL_CONTEXT_MAJOR_VERSION
-        );
-
-        LOGGER_INFO( "platform", "SDL_GL_CONTEXT_MINOR_VERSION: %d"
-            , attribute_GL_CONTEXT_MINOR_VERSION
-        );
-
-        LOGGER_INFO( "platform", "SDL_GL_RED_SIZE: %d"
-            , attribute_SDL_GL_RED_SIZE
-        );
-
-        LOGGER_INFO( "platform", "SDL_GL_GREEN_SIZE: %d"
-            , attribute_SDL_GL_GREEN_SIZE
-        );
-
-        LOGGER_INFO( "platform", "SDL_GL_BLUE_SIZE: %d"
-            , attribute_SDL_GL_BLUE_SIZE
-        );
-
-        LOGGER_INFO( "platform", "SDL_GL_ALPHA_SIZE: %d"
-            , attribute_SDL_GL_ALPHA_SIZE
-        );
-
-        LOGGER_INFO( "platform", "SDL_GL_DEPTH_SIZE: %d"
-            , attribute_SDL_GL_DEPTH_SIZE
-        );
-
-        LOGGER_INFO( "platform", "SDL_GL_DOUBLEBUFFER: %d"
-            , attribute_SDL_GL_DOUBLEBUFFER
-        );
 
         m_glContext = glContext;
 
-        int drawable_width;
-        int drawable_height;
-        SDL_GetWindowSizeInPixels( m_sdlWindow, &drawable_width, &drawable_height );
+        UIScreen * mainScreen = [UIScreen mainScreen];
+        CGRect screenBounds = mainScreen.bounds;
+        CGFloat screenScale = mainScreen.scale;
 
-        LOGGER_INFO( "platform", "SDL3 drawable size [%d, %d]"
+        int drawable_width = (int)(screenBounds.size.width * screenScale);
+        int drawable_height = (int)(screenBounds.size.height * screenScale);
+
+        LOGGER_INFO( "platform", "iOS drawable size [%d, %d]"
             , drawable_width
             , drawable_height
         );
 
-        int win_width;
-        int win_height;
-        SDL_GetWindowSize( m_sdlWindow, &win_width, &win_height );
+        int win_width = (int)screenBounds.size.width;
+        int win_height = (int)screenBounds.size.height;
 
-        LOGGER_INFO( "platform", "SDL window size [%d, %d]"
+        LOGGER_INFO( "platform", "iOS window size [%d, %d] scale [%.1f]"
             , win_width
             , win_height
+            , (float)screenScale
         );
-
-        int win_min_width;
-        int win_min_height;
-        SDL_GetWindowMinimumSize( m_sdlWindow, &win_min_width, &win_min_height );
-
-        LOGGER_INFO( "platform", "SDL window min size [%d, %d]"
-            , win_min_width
-            , win_min_height
-        );
-
-        int win_max_width;
-        int win_max_height;
-        SDL_GetWindowMaximumSize( m_sdlWindow, &win_max_width, &win_max_height );
-
-        LOGGER_INFO( "platform", "SDL window max size [%d, %d]"
-            , win_max_width
-            , win_max_height
-        );
-
-        SDL_WindowFlags flags = SDL_GetWindowFlags( m_sdlWindow );
-
-        if( (flags & SDL_WINDOW_FULLSCREEN) != SDL_WINDOW_FULLSCREEN )
-        {
-            SDL_DisplayID displayID = SDL_GetDisplayForWindow( m_sdlWindow );
-
-            if( displayID != 0 )
-            {
-                SDL_Rect displayBounds;
-                if( SDL_GetDisplayBounds( displayID, &displayBounds ) == true )
-                {
-                    LOGGER_INFO( "platform", "SDL3 display bounds [%d, %d] size [%d, %d]"
-                        , displayBounds.x
-                        , displayBounds.y
-                        , displayBounds.w
-                        , displayBounds.h
-                    );
-                }
-                else
-                {
-                    LOGGER_WARNING( "SDL3 display bounds get error: %s"
-                        , SDL_GetError()
-                    );
-                }
-
-                SDL_Rect usableBounds;
-                if( SDL_GetDisplayUsableBounds( displayID, &usableBounds ) == true )
-                {
-                    LOGGER_INFO( "platform", "SDL3 display usable bounds [%d, %d] size [%d, %d]"
-                        , usableBounds.x
-                        , usableBounds.y
-                        , usableBounds.w
-                        , usableBounds.h
-                    );
-                }
-                else
-                {
-                    LOGGER_WARNING( "SDL3 display usable bounds get error: %s"
-                        , SDL_GetError()
-                    );
-                }
-            }
-            else
-            {
-                LOGGER_ERROR( "invalid get window display: %s"
-                    , SDL_GetError()
-                );
-
-                return false;
-            }
-        }
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_ATACH_WINDOW );
 
@@ -1345,35 +903,18 @@ namespace Mengine
     {
         this->setupWindow_();
 
-        SDL_PropertiesID props = SDL_CreateProperties();
-        if( props == 0 )
+        UIWindow * uiWindow = (__bridge UIWindow *)_hWND;
+
+        if( uiWindow == nil )
         {
-            LOGGER_ERROR( "create properties failed: %s"
-                , SDL_GetError()
-            );
-            return false;
-        }
-
-#if defined(SDL_PROP_WINDOW_CREATE_UIKIT_WINDOW_POINTER)
-        SDL_SetPointerProperty( props, SDL_PROP_WINDOW_CREATE_UIKIT_WINDOW_POINTER, _hWND );
-#else
-        SDL_SetPointerProperty( props, SDL_PROP_WINDOW_CREATE_COCOA_WINDOW_POINTER, _hWND );
-#endif
-
-        SDL_Window * sdlWindow = SDL_CreateWindowWithProperties( props );
-        SDL_DestroyProperties( props );
-
-        if( sdlWindow == nullptr )
-        {
-            LOGGER_ERROR( "create window from [%p] failed: %s"
+            LOGGER_ERROR( "attach window from [%p] failed: nil UIWindow"
                 , _hWND
-                , SDL_GetError()
             );
 
             return false;
         }
 
-        m_sdlWindow = sdlWindow;
+        m_uiWindow = uiWindow;
 
         if( this->applyWindow_() == false )
         {
@@ -1438,11 +979,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool iOSPlatformService::getDesktopResolution( Resolution * const _resolution ) const
     {
-        int drawable_width;
-        int drawable_height;
-        SDL_GetWindowSizeInPixels( m_sdlWindow, &drawable_width, &drawable_height );
+        UIScreen * mainScreen = [UIScreen mainScreen];
+        CGRect screenBounds = mainScreen.bounds;
+        CGFloat screenScale = mainScreen.scale;
 
-        *_resolution = Resolution( (uint32_t)drawable_width, (uint32_t)drawable_height );
+        uint32_t drawable_width = (uint32_t)(screenBounds.size.width * screenScale);
+        uint32_t drawable_height = (uint32_t)(screenBounds.size.height * screenScale);
+
+        *_resolution = Resolution( drawable_width, drawable_height );
 
         return true;
     }
@@ -1469,35 +1013,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::closeWindow()
     {
-        if( m_sdlWindow != nullptr )
-        {
-            SDL_HideWindow( m_sdlWindow );
-        }
-        
         this->pushQuitEvent_();
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::minimizeWindow()
     {
-        SDL_MinimizeWindow( m_sdlWindow );
+        //Empty - not applicable on iOS
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::setCursorPosition( const mt::vec2f & _pos )
     {
-        Resolution resolution;
-        if( this->getDesktopResolution( &resolution ) == false )
-        {
-            return;
-        }
+        MENGINE_UNUSED( _pos );
 
-        uint32_t width = resolution.getWidth();
-        uint32_t height = resolution.getHeight();
-
-        int32_t wndPosX = static_cast<int32_t>(_pos.x * width);
-        int32_t wndPosY = static_cast<int32_t>(_pos.y * height);
-
-        // ! This function generates a mouse motion event !
-        SDL_WarpMouseInWindow( m_sdlWindow, wndPosX, wndPosY );
+        //Empty - not applicable on iOS
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::setCursorIcon( const ConstString & _icon )
@@ -1518,40 +1046,25 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::showKeyboard()
     {
-        SDL_StartTextInput( m_sdlWindow );
+        //ToDo: implement native keyboard show
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::hideKeyboard()
     {
-        SDL_StopTextInput( m_sdlWindow );
+        //ToDo: implement native keyboard hide
     }
     //////////////////////////////////////////////////////////////////////////
     bool iOSPlatformService::isShowKeyboard() const
     {
-        bool active = SDL_TextInputActive( m_sdlWindow );
-
-        return active;
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool iOSPlatformService::notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen )
     {
-        if( m_sdlWindow == nullptr )
-        {
-            return true;
-        }
+        MENGINE_UNUSED( _resolution );
+        MENGINE_UNUSED( _fullscreen );
 
-        SDL_WindowFlags flags = SDL_GetWindowFlags( m_sdlWindow );
-
-        bool alreadyFullscreen = (flags & SDL_WINDOW_FULLSCREEN) == SDL_WINDOW_FULLSCREEN;
-
-        if( _fullscreen != alreadyFullscreen )
-        {
-            if( this->changeWindow_( _resolution, _fullscreen ) == false )
-            {
-                return false;
-            }
-        }
-
+        //iOS is always fullscreen
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1559,50 +1072,14 @@ namespace Mengine
     {
         MENGINE_UNUSED( _vsync );
 
-        if( SDL_GetWindowFlags( m_sdlWindow ) & SDL_WINDOW_OPENGL )
-        {
-            int profile;
-            if( SDL_GL_GetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, &profile ) == false )
-            {
-                return;
-            }
-
-            if( profile == SDL_GL_CONTEXT_PROFILE_ES )
-            {
-                return;
-            }
-
-            if( _vsync == false )
-            {
-                if( SDL_GL_SetSwapInterval( 0 ) == false )
-                {
-                    LOGGER_WARNING( "notify vsync changed error: %s"
-                        , SDL_GetError()
-                    );
-                }
-            }
-            else
-            {
-                if( SDL_GL_SetSwapInterval( 1 ) == false )
-                {
-                    LOGGER_WARNING( "notify vsync changed error: %s"
-                        , SDL_GetError()
-                    );
-                }
-            }
-        }
+        //Empty - iOS uses CADisplayLink for vsync
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::notifyCursorModeChanged( bool _mode )
     {
-        if( _mode == true )
-        {
-            SDL_ShowCursor();
-        }
-        else
-        {
-            SDL_HideCursor();
-        }
+        MENGINE_UNUSED( _mode );
+
+        //Empty - no cursor on iOS
     }
     //////////////////////////////////////////////////////////////////////////
     bool iOSPlatformService::notifyCursorIconSetup( const ConstString & _name, const ContentInterfacePtr & _content, const MemoryInterfacePtr & _buffer )
@@ -1671,99 +1148,86 @@ namespace Mengine
                 , _format
             );
 
-            SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_INFORMATION, _caption, "invalid message box format message", nullptr );
-
             return;
         }
 
-        SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_INFORMATION, _caption, str, nullptr );
+        NSString * nsCaption = @(_caption);
+        NSString * nsMessage = @(str);
+
+        dispatch_async( dispatch_get_main_queue(), ^{
+            [iOSDetail showOkAlertWithTitle:nsCaption
+                                    message:nsMessage
+                                         ok:^{}];
+        });
     }
     //////////////////////////////////////////////////////////////////////////
     bool iOSPlatformService::setClipboardText( const Char * _value ) const
     {
-        if( SDL_SetClipboardText( _value ) == false )
-        {
-            LOGGER_WARNING( "set clipboard text [%s] error: %s"
-                , _value
-                , SDL_GetError()
-            );
-
-            return false;
-        }
+        UIPasteboard * pasteboard = [UIPasteboard generalPasteboard];
+        pasteboard.string = @(_value);
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool iOSPlatformService::getClipboardText( Char * _value, size_t _capacity ) const
     {
-        char * text = SDL_GetClipboardText();
+        UIPasteboard * pasteboard = [UIPasteboard generalPasteboard];
+        NSString * text = pasteboard.string;
 
-        if( text == nullptr )
+        if( text == nil )
         {
             return false;
         }
 
-        StdString::strcpy_safe( _value, text, _capacity );
-
-        SDL_free( text );
+        StdString::strcpy_safe( _value, [text UTF8String], _capacity );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    SDL_Window * iOSPlatformService::getWindow() const
-    {
-        return m_sdlWindow;
-    }
-    //////////////////////////////////////////////////////////////////////////
     UIWindow * iOSPlatformService::getUIWindow() const
     {
-        SDL_PropertiesID props = SDL_GetWindowProperties( m_sdlWindow );
-        void * window = nullptr;
-
-#if defined(SDL_PROP_WINDOW_UIKIT_WINDOW_POINTER)
-        window = SDL_GetPointerProperty( props, SDL_PROP_WINDOW_UIKIT_WINDOW_POINTER, nullptr );
-#else
-        window = SDL_GetPointerProperty( props, SDL_PROP_WINDOW_COCOA_WINDOW_POINTER, nullptr );
-#endif
-
-        return (__bridge UIWindow *)window;
+        return m_uiWindow;
     }
     //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
     //////////////////////////////////////////////////////////////////////////
-    SDL_GLContext iOSPlatformService::getGLContext() const
+    EAGLContext * iOSPlatformService::getEAGLContext() const
     {
         return m_glContext;
     }
     //////////////////////////////////////////////////////////////////////////
 #endif
     //////////////////////////////////////////////////////////////////////////
-    UniqueId iOSPlatformService::addSDLEventHandler( const LambdaSDLEventHandler & _handler )
+    void iOSPlatformService::handleTouchBegan( NSSet<UITouch *> * _touches, UIView * _view )
     {
-        UniqueId id = ENUMERATOR_SERVICE()
-            ->generateUniqueIdentity();
-
-        SDLEventHandlerDesc desc;
-        desc.id = id;
-        desc.handler = _handler;
-
-        m_sdlEventHandlers.emplace_back( desc );
-
-        return id;
+        if( m_iOSInput != nullptr )
+        {
+            m_iOSInput->handleTouchBegan( _touches, _view );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
-    void iOSPlatformService::removeSDLEventHandler( UniqueId _handlerId )
+    void iOSPlatformService::handleTouchMoved( NSSet<UITouch *> * _touches, UIView * _view )
     {
-        VectorSDLEventHandlers::iterator it_found = StdAlgorithm::find_if( m_sdlEventHandlers.begin(), m_sdlEventHandlers.end(), [_handlerId]( const SDLEventHandlerDesc & _desc )
+        if( m_iOSInput != nullptr )
         {
-            return _desc.id == _handlerId;
-        } );
-
-        MENGINE_ASSERTION_FATAL( it_found != m_sdlEventHandlers.end(), "not found handler '%u'"
-            , _handlerId
-        );
-
-        m_sdlEventHandlers.erase( it_found );
+            m_iOSInput->handleTouchMoved( _touches, _view );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void iOSPlatformService::handleTouchEnded( NSSet<UITouch *> * _touches, UIView * _view )
+    {
+        if( m_iOSInput != nullptr )
+        {
+            m_iOSInput->handleTouchEnded( _touches, _view );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void iOSPlatformService::handleTouchCancelled( NSSet<UITouch *> * _touches, UIView * _view )
+    {
+        if( m_iOSInput != nullptr )
+        {
+            m_iOSInput->handleTouchCancelled( _touches, _view );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool iOSPlatformService::changeWindow_( const Resolution & _resolution, bool _fullscreen )
@@ -1781,129 +1245,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::setupWindow_()
     {
-        uint32_t Engine_SDL_GL_RED_SIZE = CONFIG_VALUE_INTEGER( "SDL", "SDL_GL_RED_SIZE", 8U );
-
-        if( SDL_GL_SetAttribute( SDL_GL_RED_SIZE, Engine_SDL_GL_RED_SIZE ) == false )
-        {
-            LOGGER_WARNING( "set attribute SDL_GL_RED_SIZE to [%u] error: %s"
-                , Engine_SDL_GL_RED_SIZE
-                , SDL_GetError()
-            );
-        }
-
-        uint32_t Engine_SDL_GL_GREEN_SIZE = CONFIG_VALUE_INTEGER( "SDL", "SDL_GL_GREEN_SIZE", 8U );
-
-        if( SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, Engine_SDL_GL_GREEN_SIZE ) == false )
-        {
-            LOGGER_WARNING( "set attribute SDL_GL_GREEN_SIZE to [%u] error: %s"
-                , Engine_SDL_GL_GREEN_SIZE
-                , SDL_GetError()
-            );
-        }
-
-        uint32_t Engine_SDL_GL_BLUE_SIZE = CONFIG_VALUE_INTEGER( "SDL", "SDL_GL_BLUE_SIZE", 8U );
-
-        if( SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, Engine_SDL_GL_BLUE_SIZE ) == false )
-        {
-            LOGGER_WARNING( "set attribute SDL_GL_BLUE_SIZE to [%u] error: %s"
-                , Engine_SDL_GL_BLUE_SIZE
-                , SDL_GetError()
-            );
-        }
-
-        uint32_t Engine_SDL_GL_ALPHA_SIZE = CONFIG_VALUE_INTEGER( "SDL", "SDL_GL_ALPHA_SIZE", 0U );
-
-        if( SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, Engine_SDL_GL_ALPHA_SIZE ) == false )
-        {
-            LOGGER_WARNING( "set attribute SDL_GL_ALPHA_SIZE to [%u] error: %s"
-                , Engine_SDL_GL_ALPHA_SIZE
-                , SDL_GetError()
-            );
-        }
-
-        uint32_t Engine_SDL_GL_DEPTH_SIZE = CONFIG_VALUE_INTEGER( "SDL", "SDL_GL_DEPTH_SIZE", 24U );
-
-        if( SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, Engine_SDL_GL_DEPTH_SIZE ) == false )
-        {
-            LOGGER_WARNING( "set attribute SDL_GL_DEPTH_SIZE to [%u] error: %s"
-                , Engine_SDL_GL_DEPTH_SIZE
-                , SDL_GetError()
-            );
-        }
-
-        uint32_t Engine_SDL_GL_DOUBLEBUFFER = CONFIG_VALUE_INTEGER( "SDL", "SDL_GL_DOUBLEBUFFER", 1U );
-
-        if( SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, Engine_SDL_GL_DOUBLEBUFFER ) == false )
-        {
-            LOGGER_WARNING( "set attribute SDL_GL_DOUBLEBUFFER to [%u] error: %s"
-                , Engine_SDL_GL_DOUBLEBUFFER
-                , SDL_GetError()
-            );
-        }
-
-        SDL_SetHint( SDL_HINT_RENDER_DRIVER, "opengles2" );
-
-        uint32_t Engine_SDL_GL_CONTEXT_PROFILE_MASK = CONFIG_VALUE_INTEGER( "SDL", "SDL_GL_CONTEXT_PROFILE_MASK", (uint32_t)SDL_GL_CONTEXT_PROFILE_ES );
-
-        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, Engine_SDL_GL_CONTEXT_PROFILE_MASK ) == false )
-        {
-            LOGGER_WARNING( "set attribute SDL_GL_CONTEXT_PROFILE_MASK to [%u] error: %s"
-                , Engine_SDL_GL_CONTEXT_PROFILE_MASK
-                , SDL_GetError()
-            );
-        }
-
-        uint32_t Engine_SDL_GL_CONTEXT_MAJOR_VERSION = CONFIG_VALUE_INTEGER( "SDL", "SDL_GL_CONTEXT_MAJOR_VERSION", 2U );
-
-        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, Engine_SDL_GL_CONTEXT_MAJOR_VERSION ) == false )
-        {
-            LOGGER_WARNING( "set attribute SDL_GL_CONTEXT_MAJOR_VERSION to [%u] error: %s"
-                , Engine_SDL_GL_CONTEXT_MAJOR_VERSION
-                , SDL_GetError()
-            );
-        }
-
-        uint32_t Engine_SDL_GL_CONTEXT_MINOR_VERSION = CONFIG_VALUE_INTEGER( "SDL", "Engine_SDL_GL_CONTEXT_MINOR_VERSION", 0U );
-
-        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, Engine_SDL_GL_CONTEXT_MINOR_VERSION ) == false )
-        {
-            LOGGER_WARNING( "set attribute SDL_GL_CONTEXT_MINOR_VERSION to [%u] error: %s"
-                , Engine_SDL_GL_CONTEXT_MINOR_VERSION
-                , SDL_GetError()
-            );
-        }
-
-#if defined(SDL_HINT_RENDER_SCALE_QUALITY)
-        PathString Engine_SDL_HINT_RENDER_SCALE_QUALITY = CONFIG_VALUE_PATHSTRING( "SDL", "SDL_HINT_RENDER_SCALE_QUALITY", "linear" );
-
-        if( SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, Engine_SDL_HINT_RENDER_SCALE_QUALITY.c_str() ) == false )
-        {
-            LOGGER_WARNING( "set hint SDL_HINT_RENDER_SCALE_QUALITY to [%s] error: %s"
-                , Engine_SDL_HINT_RENDER_SCALE_QUALITY.c_str()
-                , SDL_GetError()
-            );
-        }
-#endif
-
-        PathString Engine_SDL_HINT_ORIENTATIONS = CONFIG_VALUE_PATHSTRING( "SDL", "SDL_HINT_ORIENTATIONS", "Portrait" );
-
-        if( SDL_SetHint( SDL_HINT_ORIENTATIONS, Engine_SDL_HINT_ORIENTATIONS.c_str() ) == false )
-        {
-            LOGGER_WARNING( "set hint SDL_HINT_ORIENTATIONS to [%s] error: %s"
-                , Engine_SDL_HINT_ORIENTATIONS.c_str()
-                , SDL_GetError()
-            );
-        }
-
-        PathString Engine_SDL_HINT_IOS_HIDE_HOME_INDICATOR = CONFIG_VALUE_PATHSTRING( "SDL", "SDL_HINT_IOS_HIDE_HOME_INDICATOR", "1" );
-
-        if( SDL_SetHint( SDL_HINT_IOS_HIDE_HOME_INDICATOR, Engine_SDL_HINT_IOS_HIDE_HOME_INDICATOR.c_str() ) == false )
-        {
-            LOGGER_WARNING( "set hint SDL_HINT_IOS_HIDE_HOME_INDICATOR to [%s] error: %s"
-                , Engine_SDL_HINT_IOS_HIDE_HOME_INDICATOR.c_str()
-                , SDL_GetError()
-            );
-        }
+        //Empty - iOS window setup is handled natively
     }
     //////////////////////////////////////////////////////////////////////////
     bool iOSPlatformService::createWindow_( const Resolution & _windowResolution, bool _fullscreen )
@@ -1911,66 +1253,22 @@ namespace Mengine
         MENGINE_UNUSED( _windowResolution );
         MENGINE_UNUSED( _fullscreen );
 
-        SDL_GL_SetAttribute( SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1 );
+        UIScreen * mainScreen = [UIScreen mainScreen];
+        CGRect screenBounds = mainScreen.bounds;
 
-        Uint32 windowFlags = 0;
+        m_uiWindow = [[UIWindow alloc] initWithFrame:screenBounds];
 
-        windowFlags |= SDL_WINDOW_OPENGL;
-        windowFlags |= SDL_WINDOW_RESIZABLE;
-        windowFlags |= SDL_WINDOW_FULLSCREEN;
-        windowFlags |= SDL_WINDOW_BORDERLESS;
-        windowFlags |= SDL_WINDOW_HIGH_PIXEL_DENSITY;
-
-        int numDisplays = 0;
-        SDL_DisplayID * displays = SDL_GetDisplays( &numDisplays );
-
-        LOGGER_INFO( "platform", "num video displays: %d"
-            , numDisplays
-        );
-
-        if( displays != nullptr )
+        if( m_uiWindow == nil )
         {
-            SDL_free( displays );
-        }
-
-        const Char * projectTitle_str = m_projectTitle.c_str();
-
-        SDL_DisplayID displayID = 0;
-        if( numDisplays > 0 )
-        {
-            displays = SDL_GetDisplays( &numDisplays );
-            if( displays != nullptr && numDisplays > 0 )
-            {
-                displayID = displays[0];
-                SDL_free( displays );
-            }
-        }
-
-        const SDL_DisplayMode * mode = SDL_GetDesktopDisplayMode( displayID );
-        int width = ( mode != nullptr ) ? mode->w : 0;
-        int height = ( mode != nullptr ) ? mode->h : 0;
-
-        SDL_Window * window = SDL_CreateWindow( projectTitle_str
-            , width
-            , height
-            , windowFlags );
-
-        if( window == nullptr )
-        {
-            LOGGER_ERROR( "create window failed: %s"
-                , SDL_GetError()
-            );
+            LOGGER_ERROR( "create UIWindow failed" );
 
             return false;
         }
 
-        m_sdlWindow = window;
-
-        LOGGER_INFO( "platform", "SDL_HINT_RENDER_DRIVER: %s", SDL_GetHint( SDL_HINT_RENDER_DRIVER ) );
-#if defined(SDL_HINT_RENDER_SCALE_QUALITY)
-        LOGGER_INFO( "platform", "SDL_HINT_RENDER_SCALE_QUALITY: %s", SDL_GetHint( SDL_HINT_RENDER_SCALE_QUALITY ) );
-#endif
-        LOGGER_INFO( "platform", "SDL_HINT_ORIENTATIONS: %s", SDL_GetHint( SDL_HINT_ORIENTATIONS ) );
+        LOGGER_INFO( "platform", "iOS window created [%d, %d]"
+            , (int)screenBounds.size.width
+            , (int)screenBounds.size.height
+        );
 
         return true;
     }
@@ -1979,165 +1277,27 @@ namespace Mengine
     {
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_DETACH_WINDOW );
 
-        if( m_glContext != nullptr )
+        if( m_glContext != nil )
         {
-            SDL_GL_DestroyContext( m_glContext );
-            m_glContext = nullptr;
+            [EAGLContext setCurrentContext:nil];
+            m_glContext = nil;
         }
 
-        if( m_sdlWindow != nullptr )
-        {
-            SDL_DestroyWindow( m_sdlWindow );
-            m_sdlWindow = nullptr;
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    namespace Detail
-    {
-        //////////////////////////////////////////////////////////////////////////
-        static const Char * getPlatformEventMessage( Uint32 _eventId )
-        {
-            switch( _eventId )
-            {
-                MENGINE_MESSAGE_CASE( SDL_EVENT_QUIT, "User - requested quit" );
-                MENGINE_MESSAGE_CASE( SDL_EVENT_TERMINATING, "Application is being terminated by the OS" );
-                MENGINE_MESSAGE_CASE( SDL_EVENT_LOW_MEMORY, "Application is low on memory" );
-                MENGINE_MESSAGE_CASE( SDL_EVENT_WILL_ENTER_BACKGROUND, "Application about to enter background" );
-                MENGINE_MESSAGE_CASE( SDL_EVENT_DID_ENTER_BACKGROUND, "Application did enter background" );
-                MENGINE_MESSAGE_CASE( SDL_EVENT_WILL_ENTER_FOREGROUND, "Application about to enter foreground" );
-                MENGINE_MESSAGE_CASE( SDL_EVENT_DID_ENTER_FOREGROUND, "Application is now interactive" );
-                MENGINE_MESSAGE_CASE( SDL_EVENT_WINDOW_RESIZED, "Window resized" );
-                MENGINE_MESSAGE_CASE( SDL_EVENT_WINDOW_FOCUS_GAINED, "Window focus gained" );
-                MENGINE_MESSAGE_CASE( SDL_EVENT_WINDOW_FOCUS_LOST, "Window focus lost" );
-                MENGINE_MESSAGE_CASE( SDL_EVENT_WINDOW_CLOSE_REQUESTED, "Window close requested" );
-            default:
-                break;
-            }
-
-            if( _eventId >= SDL_EVENT_USER && _eventId <= SDL_EVENT_LAST )
-            {
-                static MENGINE_THREAD_LOCAL Char userEventMessage[32 + 1] = {'\0'};
-                MENGINE_SNPRINTF( userEventMessage, 32, "[User event: %u]"
-                    , _eventId
-                );
-
-                return userEventMessage;
-            }
-
-            return "UNKNOWN";
-        }
-        //////////////////////////////////////////////////////////////////////////
+        m_uiWindow = nil;
     }
     //////////////////////////////////////////////////////////////////////////
     bool iOSPlatformService::processEvents_()
     {
-        bool shouldQuit = false;
-        
-        SDL_Event sdlEvent;
-        while( SDL_PollEvent( &sdlEvent ) == true )
-        {
-            LOGGER_INFO( "platform", "platform event: %s (%u)"
-                , Detail::getPlatformEventMessage( sdlEvent.type )
-                , sdlEvent.type
-            );
-
-            for( const SDLEventHandlerDesc & desc : m_sdlEventHandlers )
-            {
-                desc.handler( &sdlEvent );
-            }
-
-            m_sdlInput->handleEvent( m_sdlWindow, sdlEvent );
-
-            if( sdlEvent.type >= SDL_EVENT_WINDOW_FIRST && sdlEvent.type <= SDL_EVENT_WINDOW_LAST )
-            {
-                if( sdlEvent.window.windowID != SDL_GetWindowID( m_sdlWindow ) )
-                {
-                    continue;
-                }
-            }
-
-            switch( sdlEvent.type )
-            {
-            case SDL_EVENT_WINDOW_RESIZED:
-                {
-                    Sint32 width = sdlEvent.window.data1;
-                    Sint32 height = sdlEvent.window.data2;
-
-                    Resolution windowResolution( width, height );
-
-                    APPLICATION_SERVICE()
-                        ->setWindowResolution( windowResolution );
-                }break;
-            case SDL_EVENT_WINDOW_FOCUS_GAINED:
-            case SDL_EVENT_WINDOW_MAXIMIZED:
-            case SDL_EVENT_WINDOW_RESTORED:
-            case SDL_EVENT_WINDOW_MOUSE_ENTER:
-                {
-                    this->setActive_( true );
-                }break;
-            case SDL_EVENT_WINDOW_FOCUS_LOST:
-            case SDL_EVENT_WINDOW_MINIMIZED:
-            case SDL_EVENT_WINDOW_MOUSE_LEAVE:
-                {
-                    this->setActive_( false );
-                }break;
-            case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
-                {
-                    this->pushQuitEvent_();
-                }break;
-            case SDL_EVENT_QUIT:
-                {
-                    shouldQuit = true;
-                }break;
-            case SDL_EVENT_TERMINATING:
-                {
-                    NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_TERMINATE );
-                }break;
-            case SDL_EVENT_LOW_MEMORY:
-                {
-                    NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_RECEIVE_MEMORY_WARNING );
-                }break;
-            case SDL_EVENT_WILL_ENTER_BACKGROUND:
-                {
-                    NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_RESIGN_ACTIVE );
-                }break;
-            case SDL_EVENT_DID_ENTER_BACKGROUND:
-                {
-                    NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_ENTER_BACKGROUND );
-                }break;
-            case SDL_EVENT_WILL_ENTER_FOREGROUND:
-                {
-                    NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_ENTER_FOREGROUND );
-                }break;
-            case SDL_EVENT_DID_ENTER_FOREGROUND:
-                {
-                    NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_BECOME_ACTIVE );
-                }break;
-            default:
-                break;
-            }
-        }
-
-        if( shouldQuit == true )
-        {
-            return true;
-        }
+        //iOS manages its own event loop via UIApplication/UIKit run loop
+        //Touch events are forwarded through iOSInput from the view controller
 
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::pushQuitEvent_()
     {
-        SDL_Event e;
-        e.type = SDL_EVENT_QUIT;
-        e.quit.timestamp = SDL_GetTicks();
-
-        if( SDL_PushEvent( &e ) == false )
-        {
-            LOGGER_WARNING( "invalid push event [SDL_EVENT_QUIT] error: %s"
-                , SDL_GetError()
-            );
-        }
+        APPLICATION_SERVICE()
+            ->quit();
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::setActive_( bool _active )
@@ -2153,7 +1313,7 @@ namespace Mengine
             ->getNopause();
 
         mt::vec2f point;
-        m_sdlInput->getCursorPosition( m_sdlWindow, &point );
+        m_iOSInput->getCursorPosition( &point );
 
         if( m_active == false )
         {

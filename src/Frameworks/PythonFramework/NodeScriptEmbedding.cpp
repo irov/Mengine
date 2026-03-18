@@ -548,29 +548,21 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
 
-                const AffectorHubInterfacePtr & affectorHub = _shape->getAffectorHub();
-
-                affectorHub->stopAffectors( EAFFECTORTYPE_VISIBILITY );
+                _shape->stopAffectors( EAFFECTORTYPE_VISIBILITY );
 
                 if( _shape->isActivate() == false )
                 {
                     return nullptr;
                 }
 
-                affectorHub->addAffector( affector );
+                _shape->addAffector( affector );
 
                 return affector;
             }
             //////////////////////////////////////////////////////////////////////////
             void ShapeQuadFlex_setPercentVisibilityStop( ShapeQuadFlex * _shape )
             {
-                const AffectorHubInterfacePtr & affectorHub = _shape->getAffectorHub();
-
-                MENGINE_ASSERTION_MEMORY_PANIC( affectorHub, "shape '%s' not setup affector hub"
-                    , _shape->getName().c_str()
-                );
-
-                affectorHub->stopAffectors( EAFFECTORTYPE_VISIBILITY );
+                _shape->stopAffectors( EAFFECTORTYPE_VISIBILITY );
             }
             //////////////////////////////////////////////////////////////////////////
             uint32_t s_Animation_play( AnimationInterface * _animation )

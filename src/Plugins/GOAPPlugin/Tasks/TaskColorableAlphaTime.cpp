@@ -118,9 +118,7 @@ namespace Mengine
 
         affector->setEasing( m_easing );
 
-        const AffectorHubInterfacePtr & affectorHub = m_affectorable->getAffectorHub();
-
-        affectorHub->addAffector( affector );
+        m_affectorable->addAffector( affector );
 
         m_affector = affector;
 

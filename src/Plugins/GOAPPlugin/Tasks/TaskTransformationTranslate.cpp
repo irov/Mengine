@@ -107,9 +107,7 @@ namespace Mengine
 
         AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskTransformationTranslateAffector>( MENGINE_DOCUMENT_VALUE( m_doc, nullptr ), _node, m_transformable, delta, m_to, m_speed );
 
-        const AffectorHubInterfacePtr & affectorHub = m_affectorable->getAffectorHub();
-
-        affectorHub->addAffector( affector );
+        m_affectorable->addAffector( affector );
 
         m_affector = affector;
 

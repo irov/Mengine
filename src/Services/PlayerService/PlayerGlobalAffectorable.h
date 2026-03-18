@@ -11,15 +11,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class PlayerGlobalAffectorable
         : public Affectorable
-        , public AffectorHubProviderInterface
         , public Factorable
     {
     public:
         PlayerGlobalAffectorable();
         ~PlayerGlobalAffectorable() override;
-
-    public:
-        const AffectorHubProviderInterface * getAffectorHubProvider() const override;
 
     protected:
         EUpdateMode getAffectorableUpdatableMode() const override;

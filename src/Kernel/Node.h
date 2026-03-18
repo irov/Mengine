@@ -42,7 +42,6 @@ namespace Mengine
         , public Hierarchy
         , public Visitable
         , public Affectorable
-        , public AffectorHubProviderInterface
         , public Updatable
         , public Renderable
         , public Transformable
@@ -164,9 +163,6 @@ namespace Mengine
         void _hierarchyRefreshChild( const NodePtr & _node, EHierarchyInsert _hint ) override;
         void _hierarchyAddChild( const NodePtr & _node ) override;
         void _hierarchyRemoveChild( const NodePtr & _node ) override;
-
-    protected:
-        const AffectorHubProviderInterface * getAffectorHubProvider() const override;
 
     protected:
         EUpdateMode getAffectorableUpdatableMode() const override;

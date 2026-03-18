@@ -207,24 +207,14 @@ namespace Mengine
 
         if( m_affectorable != nullptr )
         {
-            if( m_affectorable->availableAffectorHub() == true )
-            {
-                const AffectorHubInterfacePtr & affectorHub = m_affectorable->getAffectorHub();
-
-                affectorHub->stopAllAffectors();
-                m_affectorable->clearAffectorHub();
-            }
+            m_affectorable->stopAllAffectors();
+            m_affectorable->clearAffectorHub();
         }
 
         if( m_affectorableGlobal != nullptr )
         {
-            if( m_affectorableGlobal->availableAffectorHub() == true )
-            {
-                const AffectorHubInterfacePtr & affectorHub = m_affectorableGlobal->getAffectorHub();
-
-                affectorHub->stopAllAffectors();
-                m_affectorableGlobal->clearAffectorHub();
-            }
+            m_affectorableGlobal->stopAllAffectors();
+            m_affectorableGlobal->clearAffectorHub();
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -773,12 +763,7 @@ namespace Mengine
 
         if( m_affectorable != nullptr )
         {
-            if( m_affectorable->availableAffectorHub() == true )
-            {
-                const AffectorHubInterfacePtr & affectorHub = m_affectorable->getAffectorHub();
-
-                affectorHub->stopAllAffectors();
-            }
+            m_affectorable->stopAllAffectors();
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -834,12 +819,7 @@ namespace Mengine
 
         if( m_affectorable != nullptr )
         {
-            if( m_affectorable->availableAffectorHub() == true )
-            {
-                const AffectorHubInterfacePtr & affectorHub = m_affectorable->getAffectorHub();
-
-                affectorHub->stopAllAffectors();
-            }
+            m_affectorable->stopAllAffectors();
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -881,12 +861,7 @@ namespace Mengine
 
         if( m_affectorable != nullptr )
         {
-            if( m_affectorable->availableAffectorHub() == true )
-            {
-                const AffectorHubInterfacePtr & affectorHub = m_affectorable->getAffectorHub();
-
-                affectorHub->stopAllAffectors();
-            }
+            m_affectorable->stopAllAffectors();
         }
     }
     //////////////////////////////////////////////////////////////////////////

@@ -701,9 +701,7 @@ namespace Mengine
 
         if( this->availableAffectorHub() == true )
         {
-            const AffectorHubInterfacePtr & affectorHub = this->getAffectorHub();
-
-            affectorHub->stopAllAffectors();
+            this->stopAllAffectors();
             this->clearAffectorHub();
         }
     }
@@ -830,11 +828,6 @@ namespace Mengine
         MENGINE_UNUSED( _node );
 
         //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const AffectorHubProviderInterface * Node::getAffectorHubProvider() const
-    {
-        return this;
     }
     //////////////////////////////////////////////////////////////////////////
     EUpdateMode Node::getAffectorableUpdatableMode() const

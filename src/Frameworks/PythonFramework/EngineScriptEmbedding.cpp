@@ -2559,9 +2559,7 @@ namespace Mengine
 
                 affector->initialize( _node, _targer, _coeff );
 
-                const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
-
-                affectorHub->addAffector( affector );
+                _node->addAffector( affector );
 
                 return affector;
             }
@@ -2696,9 +2694,7 @@ namespace Mengine
 
                 affector->initialize( _grid, _pos, _time, _radius, _ellipse, _penumbra, _cb );
 
-                const AffectorHubInterfacePtr & affectorHub = _grid->getAffectorHub();
-
-                affectorHub->addAffector( affector );
+                _grid->addAffector( affector );
 
                 return affector;
             }
@@ -2902,9 +2898,7 @@ namespace Mengine
                         return nullptr;
                     }
 
-                    const AffectorHubInterfacePtr & affectorHub = _affectorable->getAffectorHub();
-
-                    affectorHub->addAffector( affector );
+                    _affectorable->addAffector( affector );
 
                     return affector;
                 }

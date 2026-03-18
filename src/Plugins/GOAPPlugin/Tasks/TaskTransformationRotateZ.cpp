@@ -43,9 +43,7 @@ namespace Mengine
 
         AffectorPtr affector = Helper::makeFactorableUnique<AffectorTransformationRotate>( MENGINE_DOCUMENT_VALUE( m_doc, nullptr ), _node, transformCb, correct_rotate_from, correct_rotate_to, m_speed );
 
-        const AffectorHubInterfacePtr & affectorHub = m_affectorable->getAffectorHub();
-
-        affectorHub->addAffector( affector );
+        m_affectorable->addAffector( affector );
 
         m_affector = affector;
 

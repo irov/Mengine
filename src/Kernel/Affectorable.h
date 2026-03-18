@@ -2,17 +2,27 @@
 
 #include "Interface/AffectorHubInterface.h"
 
-#include "Kernel/Mixin.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class Affectorable
-        : public Mixin
+        : public AffectorHubProviderInterface
     {
     public:
         Affectorable();
         ~Affectorable() override;
+
+    public:
+        void addAffector( const AffectorPtr & _affector );
+        void stopAffectors( EAffectorType _type );
+        void stopAllAffectors();
+
+    public:
+        void setLinearSpeed( const mt::vec3f & _linearSpeed );
+        const mt::vec3f & getLinearSpeed() const;
+
+        void setAngularSpeed( float _angular );
+        float getAngularSpeed() const;
 
     public:
         bool availableAffectorHub() const;
@@ -20,9 +30,6 @@ namespace Mengine
 
     public:
         const AffectorHubInterfacePtr & getAffectorHub() const;
-
-    protected:
-        virtual const AffectorHubProviderInterface * getAffectorHubProvider() const = 0;
 
     public:
         mutable AffectorHubInterfacePtr m_affectorHub;

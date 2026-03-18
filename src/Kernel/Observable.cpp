@@ -1,8 +1,6 @@
-#include "Kernel/Observable.h"
+#include "Observable.h"
 
-#if defined(MENGINE_ASSERTION_DEBUG_ENABLE)
-#   include "Kernel/AssertionObservable.h"
-#endif
+#include "Kernel/AssertionObservable.h"
 
 namespace Mengine
 {

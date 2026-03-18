@@ -114,4 +114,20 @@ SET_MENGINE_SOLUTIONS_OUTPUT_DIRECTORY()
 
 ADD_SUBDIRECTORY(${MENGINE_SOURCE_DIR} ${CMAKE_TEMP_DIR}/src)
 
+if(MENGINE_EXTERNAL_SOURCE)
+    if(NOT MENGINE_EXTERNAL_SOURCE_PATH)
+        message(FATAL_ERROR "External source enabled but MENGINE_EXTERNAL_SOURCE_PATH is empty")
+    endif()
+
+    if(NOT MENGINE_EXTERNAL_TEMP_PATH)
+        message(FATAL_ERROR "External source enabled but MENGINE_EXTERNAL_TEMP_PATH is empty")
+    endif()
+
+    if(NOT EXISTS ${MENGINE_EXTERNAL_SOURCE_PATH}/CMakeLists.txt)
+        message(FATAL_ERROR "External source path '${MENGINE_EXTERNAL_SOURCE_PATH}' does not contain CMakeLists.txt")
+    endif()
+
+    ADD_SUBDIRECTORY(${MENGINE_EXTERNAL_SOURCE_PATH} ${MENGINE_EXTERNAL_TEMP_PATH})
+endif()
+
 ADD_SUBDIRECTORY(${MENGINE_SOURCE_DIR}/Applications/Win32Application ${CMAKE_TEMP_DIR}/Applications/Win32Application)

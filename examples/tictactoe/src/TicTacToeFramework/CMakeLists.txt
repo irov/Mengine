@@ -1,11 +1,11 @@
-MENGINE_PROJECT(TicTacToeFramework)
+MENGINE_PROJECT(TicTacToeGame)
 
 ADD_FILTER(
-TicTacToeFramework
-    TicTacToeFramework.cpp
-    TicTacToeFramework.h
-    TicTacToeFrameworkPlugin.cpp
-    TicTacToeFrameworkPlugin.h
+TicTacToeGame
+    TicTacToeGame.cpp
+    TicTacToeGame.h
+    TicTacToeGamePlugin.cpp
+    TicTacToeGamePlugin.h
     TicTacToeSceneEventReceiver.cpp
     TicTacToeSceneEventReceiver.h
 )
@@ -13,10 +13,10 @@ TicTacToeFramework
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/GOAP/include)
 INCLUDE_DIRECTORIES(${MENGINE_CMAKE_DEPENDENCIES_DIR}/GOAP/Config)
 
-ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_EXAMPLEFRAMEWORK)
+ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_EXAMPLEFRAMEWORK Game OFF)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
-    FOLDER Frameworks
+    FOLDER Game
 )
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)

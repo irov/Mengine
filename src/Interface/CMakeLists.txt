@@ -51,6 +51,7 @@ Common
     EasingServiceInterface.h
     BootstrapperInterface.h
     SecureServiceInterface.h
+    GameInterface.h
     ConverterInterface.h
     ConverterServiceInterface.h
     ComponentInterface.h

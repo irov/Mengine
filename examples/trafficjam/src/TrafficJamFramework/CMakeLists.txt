@@ -1,11 +1,11 @@
-MENGINE_PROJECT(TrafficJamFramework)
+MENGINE_PROJECT(TrafficJamGame)
 
 ADD_FILTER(
-TrafficJamFramework
-    TrafficJamFramework.cpp
-    TrafficJamFramework.h
-    TrafficJamFrameworkPlugin.cpp
-    TrafficJamFrameworkPlugin.h
+TrafficJamGame
+    TrafficJamGame.cpp
+    TrafficJamGame.h
+    TrafficJamGamePlugin.cpp
+    TrafficJamGamePlugin.h
     TrafficJamSceneEventReceiver.cpp
     TrafficJamSceneEventReceiver.h
     TrafficMap.cpp
@@ -15,10 +15,10 @@ TrafficJamFramework
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/GOAP/include)
 INCLUDE_DIRECTORIES(${MENGINE_CMAKE_DEPENDENCIES_DIR}/GOAP/Config)
 
-ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_EXAMPLEFRAMEWORK)
+ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_EXAMPLEFRAMEWORK Game OFF)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
-    FOLDER Frameworks
+    FOLDER Game
 )
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)

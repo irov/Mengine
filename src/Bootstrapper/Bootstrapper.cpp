@@ -177,8 +177,8 @@ SERVICE_EXTERN( AppleKernelService );
 SERVICE_EXTERN( iOSKernelService );
 #endif
 //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_EXTERNAL_BOOTSTRAPPER)
-PLUGIN_EXPORT( ExternalBootstrapper );
+#if defined(MENGINE_EXTERNAL_PLUGIN)
+PLUGIN_EXPORT( MENGINE_EXTERNAL_PLUGIN );
 #endif
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_ZIP_STATIC)
@@ -575,6 +575,20 @@ namespace Mengine
             THREAD_SERVICE()
                 ->stopTasks();
         }
+
+#if defined(MENGINE_EXTERNAL_PLUGIN)
+        if( SERVICE_IS_INITIALIZE( PluginServiceInterface ) == true )
+        {
+            const ConstString pluginName = STRINGIZE_STRING_LOCAL( MENGINE_PP_STRINGIZE( MENGINE_EXTERNAL_PLUGIN ) );
+
+            if( PLUGIN_SERVICE()->hasPlugin( pluginName ) == true )
+            {
+                const PluginInterfacePtr & plugin = PLUGIN_SERVICE()->getPlugin( pluginName );
+
+                PLUGIN_SERVICE()->removePlugin( plugin );
+            }
+        }
+#endif
 
         SERVICE_FINALIZE( HttpService );
         SERVICE_FINALIZE( GameService );
@@ -1487,8 +1501,8 @@ namespace Mengine
     {
         LOGGER_INFO( "bootstrapper", "create plugins..." );
 
-#if defined(MENGINE_EXTERNAL_BOOTSTRAPPER)
-        MENGINE_ADD_PLUGIN( ExternalBootstrapper, "initialize external Bootstrapper [" MENGINE_PP_STRINGIZE( MENGINE_EXTERNAL_BOOTSTRAPPER ) "]...", MENGINE_DOCUMENT_FACTORABLE );
+#if defined(MENGINE_EXTERNAL_PLUGIN)
+        MENGINE_ADD_PLUGIN( MENGINE_EXTERNAL_PLUGIN, "initialize external Game plugin [" MENGINE_PP_STRINGIZE( MENGINE_EXTERNAL_PLUGIN ) "]...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #if defined(MENGINE_PLUGIN_NODEDEBUGRENDER_STATIC)

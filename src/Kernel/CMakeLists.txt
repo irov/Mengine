@@ -921,6 +921,8 @@ Core
     
     CodecDataInfo.h
 
+    GameBase.h
+    GameBase.cpp
     DummyGameEventReceiver.h
     DummyGameEventReceiver.cpp
     DummyEntityEventReceiver.h

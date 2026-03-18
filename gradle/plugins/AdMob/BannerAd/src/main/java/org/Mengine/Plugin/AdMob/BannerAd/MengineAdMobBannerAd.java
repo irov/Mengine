@@ -43,6 +43,7 @@ public class MengineAdMobBannerAd extends MengineAdMobBase implements MengineAdM
     protected final String m_placement;
 
     protected AdView m_adView;
+    protected AdSize m_adSize;
 
     protected volatile boolean m_visible = false;
     protected volatile boolean m_loaded = false;
@@ -105,37 +106,33 @@ public class MengineAdMobBannerAd extends MengineAdMobBase implements MengineAdM
     }
 
     public int getWidthPx() {
+        if (m_adSize == null) {
+            return 0;
+        }
+
         MengineActivity activity = m_plugin.getMengineActivity();
 
-        if (m_adView == null || activity == null) {
+        if (activity == null) {
             return 0;
         }
 
-        AdSize adSize = m_adView.getAdSize();
-
-        if (adSize == null) {
-            return 0;
-        }
-
-        int widthPx = adSize.getWidthInPixels(activity);
+        int widthPx = m_adSize.getWidthInPixels(activity);
 
         return widthPx;
     }
 
     public int getHeightPx() {
+        if (m_adSize == null) {
+            return 0;
+        }
+
         MengineActivity activity = m_plugin.getMengineActivity();
 
-        if (m_adView == null || activity == null) {
+        if (activity == null) {
             return 0;
         }
 
-        AdSize adSize = m_adView.getAdSize();
-
-        if (adSize == null) {
-            return 0;
-        }
-
-        int heightPx = adSize.getHeightInPixels(activity);
+        int heightPx = m_adSize.getHeightInPixels(activity);
 
         return heightPx;
     }
@@ -235,6 +232,7 @@ public class MengineAdMobBannerAd extends MengineAdMobBase implements MengineAdM
                 MengineAdMobBannerAd.this.retryLoadAd();
             }
         });
+
         adView.setOnPaidEventListener(this);
 
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -249,9 +247,10 @@ public class MengineAdMobBannerAd extends MengineAdMobBase implements MengineAdM
         viewGroup.addView(adView);
 
         m_adView = adView;
+        m_adSize = adSize;
 
-        int widthDp = adSize.getWidth();
-        int heightDp = adSize.getHeight();
+        int widthDp = m_adSize.getWidth();
+        int heightDp = m_adSize.getHeight();
 
         this.log("create", Map.of("placement", m_placement, "width", widthDp, "height", heightDp));
 

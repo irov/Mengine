@@ -1,29 +1,29 @@
-MENGINE_PROJECT(JewelryFramework)
+MENGINE_PROJECT(JewelryGame)
 
 ADD_FILTER(
-JewelryFramework
+JewelryGame
     Jewelry.cpp
     Jewelry.h
     JewelryMatrix.cpp
     JewelryMatrix.h
     JewelryChain.cpp
     JewelryChain.h
-    JewelryFramework.cpp
-    JewelryFramework.h
-    JewelryFrameworkPlugin.cpp
-    JewelryFrameworkPlugin.h
-    JewelryEventReceiver.cpp
-    JewelryEventReceiver.h
+    JewelryGame.cpp
+    JewelryGame.h
+    JewelryGamePlugin.cpp
+    JewelryGamePlugin.h
+    JewelrySceneEventReceiver.cpp
+    JewelrySceneEventReceiver.h
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/jpp/include)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/GOAP/include)
 INCLUDE_DIRECTORIES(${MENGINE_CMAKE_DEPENDENCIES_DIR}/GOAP/Config)
 
-ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_EXAMPLEFRAMEWORK Frameworks)
+ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_EXAMPLEFRAMEWORK Game OFF)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
-    FOLDER Frameworks
+    FOLDER Game
 )
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Engine)

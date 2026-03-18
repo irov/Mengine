@@ -22,7 +22,7 @@
 
     "Frameworks": {
         "Name": [
-            "Box2DFramework"
+            "Box2DGame"
         ]
     },
 
@@ -36,11 +36,8 @@
 
     "DevPlugins-PC": {
         "Name": [
-            "Win32AntifreezeMonitorPlugin.dll",
-            "Win32ConsoleLoggerPlugin.dll",
             "XmlToBinPlugin.dll",
-            "DevelopmentConverterPlugin.dll",
-            "NodeDebuggerPlugin.dll"
+            "DevelopmentConverterPlugin.dll"
         ]
     },
     
@@ -60,9 +57,6 @@
     },
 
     "DevModules": {
-        "Name": [
-            "ModuleNodeDebugger",
-            "ModuleCameraDebugGizmo"
-        ]
+        "Name": []
     }
 }

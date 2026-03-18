@@ -210,7 +210,7 @@ namespace Mengine
         {
             Cook::addTask<TaskGlobalKeyPress>( _source, _code, _isDown, _filter, _cb, _doc );
         }
-        //////////////////////////////////////////////////////////////////////////    
+        //////////////////////////////////////////////////////////////////////////
         void addGlobalMouseButton( const GOAP::SourceInterfacePtr & _source, EMouseButtonCode _button, bool _isDown, const LambdaInputMouseButtonFilter & _filter, const LambdaInputMouseButtonComplete & _cb, const DocumentInterfacePtr & _doc )
         {
             Cook::addTask<TaskGlobalMouseButton>( _source, _button, _isDown, _filter, _cb, _doc );

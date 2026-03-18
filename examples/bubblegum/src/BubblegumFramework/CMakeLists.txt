@@ -1,22 +1,22 @@
-MENGINE_PROJECT(BubblegumFramework)
+MENGINE_PROJECT(BubblegumGame)
 
 ADD_FILTER(
-BubblegumFramework
-    BubblegumFramework.cpp
-    BubblegumFramework.h
-    BubblegumFrameworkPlugin.cpp
-    BubblegumFrameworkPlugin.h
-    BubblegumEventReceiver.cpp
-    BubblegumEventReceiver.h
+BubblegumGame
+    BubblegumGame.cpp
+    BubblegumGame.h
+    BubblegumGamePlugin.cpp
+    BubblegumGamePlugin.h
+    BubblegumSceneEventReceiver.cpp
+    BubblegumSceneEventReceiver.h
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/GOAP/include)
 INCLUDE_DIRECTORIES(${MENGINE_CMAKE_DEPENDENCIES_DIR}/GOAP/Config)
 
-ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_EXAMPLEFRAMEWORK)
+ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_EXAMPLEFRAMEWORK Game OFF)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
-    FOLDER Frameworks
+    FOLDER Game
 )
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)

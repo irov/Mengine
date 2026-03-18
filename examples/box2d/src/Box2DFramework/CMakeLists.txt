@@ -1,19 +1,19 @@
-MENGINE_PROJECT(Box2DFramework)
+MENGINE_PROJECT(Box2DGame)
 
 ADD_FILTER(
 Box2DFramework
-    Box2DFramework.cpp
-    Box2DFramework.h
-    Box2DFrameworkPlugin.cpp
-    Box2DFrameworkPlugin.h
-    Box2DEventReceiver.cpp
-    Box2DEventReceiver.h
+    Box2DGame.cpp
+    Box2DGame.h
+    Box2DGamePlugin.cpp
+    Box2DGamePlugin.h
+    Box2DSceneEventReceiver.cpp
+    Box2DSceneEventReceiver.h
 )
 
 INCLUDE_DIRECTORIES(${MENGINE_CMAKE_DEPENDENCIES_DIR}/GOAP/Config)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/GOAP/include)
 
-ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_EXAMPLEFRAMEWORK Frameworks)
+ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_EXAMPLEFRAMEWORK Game OFF)
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Engine)

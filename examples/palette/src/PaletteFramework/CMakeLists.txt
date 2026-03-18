@@ -1,11 +1,11 @@
-MENGINE_PROJECT(PaletteFramework)
+MENGINE_PROJECT(PaletteGame)
 
 ADD_FILTER(
-PaletteFramework
-    PaletteFramework.cpp
-    PaletteFramework.h
-    PaletteFrameworkPlugin.cpp
-    PaletteFrameworkPlugin.h
+PaletteGame
+    PaletteGame.cpp
+    PaletteGame.h
+    PaletteGamePlugin.cpp
+    PaletteGamePlugin.h
     PaletteSceneEventReceiver.cpp
     PaletteSceneEventReceiver.h
 )
@@ -13,7 +13,7 @@ PaletteFramework
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_PALETTEFRAMEWORK)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
-    FOLDER Frameworks
+    FOLDER Game
 )
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)

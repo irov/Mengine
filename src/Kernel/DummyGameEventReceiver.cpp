@@ -73,6 +73,15 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool DummyGameEventReceiver::onGameAccelerometer( const InputAccelerometerEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        // Empty
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool DummyGameEventReceiver::onGameMouseButton( const InputMouseButtonEvent & _event )
     {
         MENGINE_UNUSED( _event );

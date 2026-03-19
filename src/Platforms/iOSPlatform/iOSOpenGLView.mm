@@ -45,6 +45,46 @@
     return self;
 }
 
+- (BOOL)beginRender
+{
+    if( _context == nil || _framebuffer == 0 || _colorRenderbuffer == 0 )
+    {
+        return NO;
+    }
+
+    if( [EAGLContext setCurrentContext:_context] == NO )
+    {
+        return NO;
+    }
+
+    glBindFramebuffer( GL_FRAMEBUFFER, _framebuffer );
+    glBindRenderbuffer( GL_RENDERBUFFER, _colorRenderbuffer );
+
+    return YES;
+}
+
+- (BOOL)endRender
+{
+    if( _context == nil || _colorRenderbuffer == 0 )
+    {
+        return NO;
+    }
+
+    if( [EAGLContext setCurrentContext:_context] == NO )
+    {
+        return NO;
+    }
+
+    glBindRenderbuffer( GL_RENDERBUFFER, _colorRenderbuffer );
+
+    if( [_context presentRenderbuffer:GL_RENDERBUFFER] == NO )
+    {
+        return NO;
+    }
+
+    return YES;
+}
+
 - (BOOL)createFramebuffer
 {
     [EAGLContext setCurrentContext:_context];
@@ -90,16 +130,6 @@
 
     _backingWidth = 0;
     _backingHeight = 0;
-}
-
-- (GLuint)colorRenderbuffer
-{
-    return _colorRenderbuffer;
-}
-
-- (GLuint)framebuffer
-{
-    return _framebuffer;
 }
 
 - (GLint)backingWidth

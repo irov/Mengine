@@ -514,10 +514,10 @@ namespace Mengine
             return false;
         }
 
-        [EAGLContext setCurrentContext:m_glContext];
-
-        glBindFramebuffer( GL_FRAMEBUFFER, [m_glView framebuffer] );
-        glBindRenderbuffer( GL_RENDERBUFFER, [m_glView colorRenderbuffer] );
+        if( [m_glView beginRender] == NO )
+        {
+            return false;
+        }
 
         bool sucessful = APPLICATION_SERVICE()
             ->render();
@@ -530,8 +530,10 @@ namespace Mengine
         APPLICATION_SERVICE()
             ->flush();
 
-        glBindRenderbuffer( GL_RENDERBUFFER, [m_glView colorRenderbuffer] );
-        [m_glContext presentRenderbuffer:GL_RENDERBUFFER];
+        if( [m_glView endRender] == NO )
+        {
+            return false;
+        }
         
         return true;
     }
@@ -924,7 +926,7 @@ namespace Mengine
         [glView setNeedsLayout];
         [glView layoutIfNeeded];
 
-        if( [glView framebuffer] == 0 || [glView backingWidth] == 0 || [glView backingHeight] == 0 )
+        if( [glView backingWidth] == 0 || [glView backingHeight] == 0 )
         {
             if( [glView createFramebuffer] == NO )
             {

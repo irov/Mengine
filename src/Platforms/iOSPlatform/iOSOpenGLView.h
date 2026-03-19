@@ -16,11 +16,12 @@
 
 - (instancetype)initWithFrame:(CGRect)frame context:(EAGLContext *)context;
 
+- (BOOL)beginRender;
+- (BOOL)endRender;
+
 - (BOOL)createFramebuffer;
 - (void)destroyFramebuffer;
 
-- (GLuint)colorRenderbuffer;
-- (GLuint)framebuffer;
 - (GLint)backingWidth;
 - (GLint)backingHeight;
 

@@ -1,4 +1,5 @@
 #import "iOSUIApplicationDelegate.h"
+#import "iOSSceneDelegate.h"
 
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/PluginServiceInterface.h"
@@ -330,14 +331,6 @@
         }
     }
     
-    UIWindow * window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    iOSViewController * viewController = [[iOSViewController alloc] init];
-    window.rootViewController = viewController;
-    
-    [window makeKeyAndVisible];
-    
-    [self setWindow:window];
-    
     @autoreleasepool {
         for (id plugin in self.m_plugins) {
             if ([plugin application:application didFinishLaunchingWithOptions:launchOptions] == NO) {
@@ -365,6 +358,19 @@
     [self performSelector:@selector(postFinishLaunch) withObject:nil afterDelay:0.0];
     
     return YES;
+}
+
+#pragma mark - UISceneSession lifecycle
+
+- (UISceneConfiguration *)application:(UIApplication *)application configurationForConnectingSceneSession:(UISceneSession *)connectingSceneSession options:(UISceneConnectionOptions *)options API_AVAILABLE(ios(13.0)) {
+    UISceneConfiguration * configuration = [[UISceneConfiguration alloc] initWithName:@"Default Configuration" sessionRole:connectingSceneSession.role];
+    configuration.delegateClass = [iOSSceneDelegate class];
+    
+    return configuration;
+}
+
+- (void)application:(UIApplication *)application didDiscardSceneSessions:(NSSet<UISceneSession *> *)sceneSessions API_AVAILABLE(ios(13.0)) {
+    // Called when the user discards a scene session
 }
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken API_AVAILABLE(ios(3.0)) {

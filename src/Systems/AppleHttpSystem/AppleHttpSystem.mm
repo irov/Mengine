@@ -2,7 +2,7 @@
 
 #import "Environment/Apple/AppleBundle.h"
 
-#import "AppleHttpNetwork.h"
+#include "AppleHttpNetwork.h"
 #include "AppleHttpRequestPing.h"
 #include "AppleHttpRequestGetMessage.h"
 #include "AppleHttpRequestPostMessage.h"

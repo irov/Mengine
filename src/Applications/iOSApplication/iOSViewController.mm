@@ -6,6 +6,10 @@
 
 @implementation iOSViewController
 
+- (BOOL)prefersStatusBarHidden {
+    return YES;
+}
+
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     MENGINE_UNUSED( event );
     

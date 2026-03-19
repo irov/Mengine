@@ -1,6 +1,6 @@
 #import "AppleAdjustPlugin.h"
 
-#include "Environment/Apple/AppleBundle.h"
+#import "Environment/Apple/AppleBundle.h"
 #import "Environment/iOS/iOSDetail.h"
 #import "Environment/iOS/iOSLog.h"
 

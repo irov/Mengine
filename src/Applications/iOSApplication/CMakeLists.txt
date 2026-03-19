@@ -26,6 +26,9 @@ src
     
     iOSAlertLogger.mm
     iOSAlertLogger.h
+
+    iOSApplicationOrientation.mm
+    iOSApplicationOrientation.h
     
     iOSViewController.mm
     iOSViewController.h

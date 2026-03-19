@@ -4,6 +4,7 @@
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/PluginServiceInterface.h"
 
+#import "iOSApplicationOrientation.h"
 #import "iOSApplicationDelegates.h"
 #import "iOSViewController.h"
 
@@ -447,6 +448,13 @@
     }
 }
 
+- (UIInterfaceOrientationMask)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window {
+    MENGINE_UNUSED(application);
+    MENGINE_UNUSED(window);
+
+    return [iOSApplicationOrientation getSupportedInterfaceOrientationMask];
+}
+
 - (void)applicationWillResignActive:(UIApplication *)application {
     [AppleLog withFormat:@"Mengine application applicationWillResignActive"];
     
@@ -523,6 +531,19 @@
 
 - (void)setWindow:(UIWindow *)window {
     self.m_window = window;
+
+    UIViewController * rootViewController = window.rootViewController;
+
+    if (rootViewController == nil) {
+        return;
+    }
+
+    if (@available(iOS 16.0, *)) {
+        [rootViewController setNeedsUpdateOfSupportedInterfaceOrientations];
+    }
+    else {
+        [UIViewController attemptRotationToDeviceOrientation];
+    }
 }
 
 - (void)startEngineLoop {

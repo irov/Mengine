@@ -237,8 +237,11 @@
         return NO;
     }
     
-    *width = [self.m_bannerAd getWidthPx];
-    *height = [self.m_bannerAd getHeightPx];
+    CGFloat withPx = [self.m_bannerAd getWidthPx];
+    CGFloat heightPx = [self.m_bannerAd getHeightPx];
+    
+    *width = withPx;
+    *height = heightPx;
     
     return YES;
 }

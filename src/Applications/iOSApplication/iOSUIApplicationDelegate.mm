@@ -20,10 +20,22 @@
 #define MENGINE_IOS_LAUNCH_ARGUMENTS_CAPACITY 32
 #endif
 
+@interface iOSUIApplicationDelegate ()
+
+- (void)startEngineLoop;
+- (void)stopEngineLoop;
+- (void)engineFrame:(CADisplayLink *)displayLink;
+- (void)finishApplication;
+
+@end
+
 @implementation iOSUIApplicationDelegate
 
 - (instancetype)init {
     if (self = [super init]) {
+        self.m_application = nullptr;
+        self.m_displayLink = nil;
+        self.m_prevTimestamp = 0.0;
         self.m_pluginDelegates = [NSMutableArray<id> array];
         self.m_plugins = [NSMutableArray<iOSPluginInterface> array];
         self.m_pluginLoggerDelegates = [NSMutableArray<iOSPluginLoggerDelegateInterface> array];
@@ -505,9 +517,123 @@
     self.m_window = window;
 }
 
+- (void)startEngineLoop {
+    if (self.m_displayLink != nil) {
+        return;
+    }
+
+    self.m_prevTimestamp = 0.0;
+
+    CADisplayLink * displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(engineFrame:)];
+    [displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
+
+    self.m_displayLink = displayLink;
+}
+
+- (void)stopEngineLoop {
+    if (self.m_displayLink == nil) {
+        return;
+    }
+
+    [self.m_displayLink invalidate];
+    self.m_displayLink = nil;
+    self.m_prevTimestamp = 0.0;
+}
+
+- (void)engineFrame:(CADisplayLink *)displayLink {
+    if (self.m_application == nullptr) {
+        [self stopEngineLoop];
+
+        return;
+    }
+
+    if( PLATFORM_SERVICE()
+        ->updatePlatform() == false )
+    {
+        [self finishApplication];
+
+        return;
+    }
+
+    float frameTime = (self.m_prevTimestamp > 0.0)
+        ? (float)(displayLink.timestamp - self.m_prevTimestamp)
+        : (float)displayLink.duration;
+
+    self.m_prevTimestamp = displayLink.timestamp;
+
+    PLATFORM_SERVICE()
+        ->tickPlatform( frameTime );
+
+    PLATFORM_SERVICE()
+        ->renderPlatform();
+}
+
+- (void)finishApplication {
+    if (self.m_application == nullptr) {
+        return;
+    }
+
+    [self stopEngineLoop];
+
+    Mengine::iOSApplication * application = static_cast<Mengine::iOSApplication *>(self.m_application);
+
+    @autoreleasepool {
+        for (id plugin in self.m_plugins) {
+            if ([plugin respondsToSelector:@selector(onLoopEnd)] == NO) {
+                continue;
+            }
+
+            [plugin onLoopEnd];
+        }
+    }
+
+    @autoreleasepool {
+        for (id plugin in self.m_plugins) {
+            if ([plugin respondsToSelector:@selector(onStopBegin)] == NO) {
+                continue;
+            }
+
+            [plugin onStopBegin];
+        }
+    }
+
+    application->stop();
+
+    @autoreleasepool {
+        for (id plugin in self.m_plugins) {
+            if ([plugin respondsToSelector:@selector(onStopEnd)] == NO) {
+                continue;
+            }
+
+            [plugin onStopEnd];
+        }
+    }
+
+    @autoreleasepool {
+        for (id plugin in self.m_plugins) {
+            if ([plugin respondsToSelector:@selector(onFinalize)] == NO) {
+                continue;
+            }
+
+            [plugin onFinalize];
+        }
+    }
+
+    application->finalize();
+    delete application;
+    self.m_application = nullptr;
+
+    [AppleLog withFormat:@"Mengine application finish"];
+
+    [AppleDetail cancelAllQueueOperations];
+
+    ::exit( EXIT_SUCCESS );
+}
+
 
 - (void)postFinishLaunch {
-    Mengine::iOSApplication application;
+    Mengine::iOSApplication * application = new Mengine::iOSApplication();
+    self.m_application = application;
     
     NSArray<NSString *> * arguments = [[NSProcessInfo processInfo] arguments];
     
@@ -538,10 +664,12 @@
         argv[argc++] = (Mengine::Char *)[arg UTF8String];
     }    
     
-    if( application.bootstrap( argc, argv ) == false ) {
+    if( application->bootstrap( argc, argv ) == false ) {
         [AppleLog withFormat:@"🔴 [ERROR] Mengine application bootstrap [Failed]"];
         
-        application.finalize();
+        application->finalize();
+        delete application;
+        self.m_application = nullptr;
         
         [iOSDetail showOkAlertWithTitle:@"Failed..."
                                 message:@"Mengine bootstraped application"
@@ -585,10 +713,12 @@
         }
     }
     
-    if( application.run() == false ) {
+    if( application->run() == false ) {
         [AppleLog withFormat:@"🔴 [ERROR] Mengine application run [Failed]"];
         
-        application.finalize();
+        application->finalize();
+        delete application;
+        self.m_application = nullptr;
         
         [iOSDetail showOkAlertWithTitle:@"Failed..."
                                 message:@"Mengine run application"
@@ -620,58 +750,8 @@
             [plugin onLoopBegin];
         }
     }
-    
-    application.loop();
-    
-    @autoreleasepool {
-        for (id plugin in self.m_plugins) {
-            if ([plugin respondsToSelector:@selector(onLoopEnd)] == NO) {
-                continue;
-            }
-            
-            [plugin onLoopEnd];
-        }
-    }
-    
-    [AppleDetail cancelAllQueueOperations];
-    
-    @autoreleasepool {
-        for (id plugin in self.m_plugins) {
-            if ([plugin respondsToSelector:@selector(onStopBegin)] == NO) {
-                continue;
-            }
-            
-            [plugin onStopBegin];
-        }
-    }
-    
-    application.stop();
-    
-    @autoreleasepool {
-        for (id plugin in self.m_plugins) {
-            if ([plugin respondsToSelector:@selector(onStopEnd)] == NO) {
-                continue;
-            }
-            
-            [plugin onStopEnd];
-        }
-    }
-    
-    @autoreleasepool {
-        for (id plugin in self.m_plugins) {
-            if ([plugin respondsToSelector:@selector(onFinalize)] == NO) {
-                continue;
-            }
-            
-            [plugin onFinalize];
-        }
-    }
-    
-    application.finalize();
-    
-    [AppleLog withFormat:@"Mengine application finish"];
-    
-    ::exit( EXIT_SUCCESS );
+
+    [self startEngineLoop];
 }
 
 @end

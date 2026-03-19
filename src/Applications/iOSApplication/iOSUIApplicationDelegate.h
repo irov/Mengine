@@ -18,6 +18,9 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
 @interface iOSUIApplicationDelegate : NSObject<UIApplicationDelegate, iOSUIMainApplicationDelegateInterface>
 
 @property (nonatomic, strong) UIWindow * m_window;
+@property (nonatomic, strong) CADisplayLink * m_displayLink;
+@property (nonatomic, assign) CFTimeInterval m_prevTimestamp;
+@property (nonatomic, assign) void * m_application;
 
 @property (nonatomic, strong) NSMutableArray<id> * m_pluginDelegates;
 @property (nonatomic, strong) NSMutableArray<iOSPluginInterface> * m_plugins;

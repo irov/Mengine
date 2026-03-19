@@ -6,12 +6,11 @@
 
 + (UIInterfaceOrientationMask)getSupportedInterfaceOrientationMask {
     NSArray<NSString *> * orientations = nil;
+    
+    UIUserInterfaceIdiom userInterfaceIdiom = UIDevice.currentDevice.userInterfaceIdiom;
 
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        orientations = [AppleBundle getApplicationConfigValue:@"SupportedInterfaceOrientationsPad"];
-    }
-    else if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        orientations = [AppleBundle getApplicationConfigValue:@"SupportedInterfaceOrientationsPhone"];
+    if (userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+        orientations = [AppleBundle getApplicationConfigValue:@"SupportedInterfaceOrientations~ipad"];
     }
 
     if (orientations == nil || [orientations count] == 0) {

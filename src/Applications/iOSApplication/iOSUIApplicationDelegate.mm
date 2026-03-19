@@ -547,6 +547,8 @@
         return;
     }
 
+    NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_UPDATE );
+
     if( PLATFORM_SERVICE()
         ->updatePlatform() == false )
     {

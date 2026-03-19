@@ -184,6 +184,12 @@ namespace Mengine
         }
 
         if( PLATFORM_SERVICE()
+            ->updatePlatform() == false )
+        {
+            return false;
+        }
+
+        if( PLATFORM_SERVICE()
             ->createWindow( Resolution( 0, 0 ), true ) == false )
         {
             LOGGER_FATAL( "invalid create window" );
@@ -205,8 +211,13 @@ namespace Mengine
         GAME_SERVICE()
             ->run();
 
-        PLATFORM_SERVICE()
-            ->runPlatform();
+        if( PLATFORM_SERVICE()
+            ->runPlatform() == false )
+        {
+            LOGGER_ERROR( "invalid run platform" );
+
+            return false;
+        }
 
         return true;
     }

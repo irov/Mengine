@@ -392,6 +392,12 @@ namespace Mengine
             return true;
         }
 
+        if( PLATFORM_SERVICE()
+            ->updatePlatform() == false )
+        {
+            return false;
+        }
+
         Win32PlatformServiceExtensionInterface * win32PlatformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 

@@ -1285,11 +1285,32 @@ namespace Mengine
 
         UIWindow * existingWindow = nil;
 
-        NSArray<UIWindow *> * windows = [[UIApplication sharedApplication] windows];
-
-        if( [windows count] > 0 )
+        for( UIWindowScene * scene in [UIApplication sharedApplication].connectedScenes )
         {
-            existingWindow = [windows firstObject];
+            if( scene.activationState != UISceneActivationStateForegroundActive &&
+                scene.activationState != UISceneActivationStateForegroundInactive )
+            {
+                continue;
+            }
+
+            for( UIWindow * window in scene.windows )
+            {
+                if( window.isKeyWindow == YES )
+                {
+                    existingWindow = window;
+                    break;
+                }
+            }
+
+            if( existingWindow == nil && [scene.windows count] > 0 )
+            {
+                existingWindow = [scene.windows firstObject];
+            }
+
+            if( existingWindow != nil )
+            {
+                break;
+            }
         }
 
         if( existingWindow != nil )

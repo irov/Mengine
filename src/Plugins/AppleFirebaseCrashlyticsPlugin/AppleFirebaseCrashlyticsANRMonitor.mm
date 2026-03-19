@@ -29,18 +29,21 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
-        self.m_monitoringEnabled = YES;
-        [self runANRMainWatcher];
+        self.m_monitoringEnabled = NO;
     }
     return self;
 }
 
 - (void)runANRMainWatcher {
-    [AppleDetail addMainQueueOperation:^{
-        pthread_t thread = pthread_self();
+    if ([AppleDetail hasOption:@"anr.enable"] == YES) {
+        self.m_monitoringEnabled = YES;
         
-        [self runANRWatcher:thread withName:@"Main"];
-    }];
+        [AppleDetail addMainQueueOperation:^{
+            pthread_t thread = pthread_self();
+            
+            [self runANRWatcher:thread withName:@"Main"];
+        }];
+    }
 }
 
 static void RunLoopObserverCallback(CFRunLoopObserverRef observer, CFRunLoopActivity activity, void *info) {

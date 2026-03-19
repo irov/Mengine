@@ -1,5 +1,7 @@
 #import "AppleHttpNetwork.h"
 
+#import "Environment/iOS/iOSLog.h"
+
 @implementation AppleHttpRequestParam
 
 @end
@@ -128,7 +130,7 @@
         
         return responseParam;
     } @catch (NSException *exception) {
-        NSLog(@"[HTTP] httpRequestGetMessage caught an exception: %@", exception.reason);
+        IOS_LOGGER_ERROR(@"[HTTP] httpRequestGetMessage caught an exception: %@", exception.reason);
     }
     
     return nil;
@@ -144,7 +146,7 @@
         
         return responseParam;
     } @catch (NSException *exception) {
-        NSLog(@"[HTTP] httpRequestPostMessage caught an exception: %@", exception.reason);
+        IOS_LOGGER_ERROR(@"[HTTP] httpRequestPostMessage caught an exception: %@", exception.reason);
     }
     
     return nil;
@@ -160,7 +162,7 @@
         
         return responseParam;
     } @catch (NSException *exception) {
-        NSLog(@"[HTTP] httpRequestHeaderData caught an exception: %@", exception.reason);
+        IOS_LOGGER_ERROR(@"[HTTP] httpRequestHeaderData caught an exception: %@", exception.reason);
     }
     
     return nil;
@@ -174,7 +176,7 @@
         
         return responseParam;
     } @catch (NSException *exception) {
-        NSLog(@"[HTTP] httpRequestGetMessage caught an exception: %@", exception.reason);
+        IOS_LOGGER_ERROR(@"[HTTP] httpRequestGetMessage caught an exception: %@", exception.reason);
     }
     
     return nil;
@@ -188,7 +190,7 @@
         
         return responseParam;
     } @catch (NSException *exception) {
-        NSLog(@"[HTTP] httpRequestDeleteMessage caught an exception: %@", exception.reason);
+        IOS_LOGGER_ERROR(@"[HTTP] httpRequestDeleteMessage caught an exception: %@", exception.reason);
     }
     
     return nil;
@@ -204,7 +206,7 @@
         
         return responseParam;
     } @catch (NSException *exception) {
-        NSLog(@"[HTTP] httpRequestGetAsset caught an exception: %@", exception.reason);
+        IOS_LOGGER_ERROR(@"[HTTP] httpRequestGetAsset caught an exception: %@", exception.reason);
     }
     
     return nil;

@@ -17,6 +17,8 @@
 
 #include "iOSApplication.h"
 
+#include "Kernel/NotificationHelper.h"
+
 #ifndef MENGINE_IOS_LAUNCH_ARGUMENTS_CAPACITY
 #define MENGINE_IOS_LAUNCH_ARGUMENTS_CAPACITY 32
 #endif
@@ -553,7 +555,7 @@
         return;
     }
 
-    NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_UPDATE );
+    NOTIFICATION_NOTIFY( Mengine::NOTIFICATOR_PLATFORM_UPDATE );
 
     if( PLATFORM_SERVICE()
         ->updatePlatform() == false )

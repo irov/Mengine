@@ -458,7 +458,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     bool iOSPlatformService::runPlatform()
-    {        
+    {
         this->setActive_( true );
 
         if( this->updatePlatform() == false )
@@ -954,31 +954,6 @@ namespace Mengine
         );
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_ATACH_WINDOW );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool iOSPlatformService::attachWindow( void * _hWND )
-    {
-        this->setupWindow_();
-
-        UIWindow * uiWindow = (__bridge UIWindow *)_hWND;
-
-        if( uiWindow == nil )
-        {
-            LOGGER_ERROR( "attach window from [%p] failed: nil UIWindow"
-                , _hWND
-            );
-
-            return false;
-        }
-
-        m_uiWindow = uiWindow;
-
-        if( this->applyWindow_() == false )
-        {
-            return false;
-        }
 
         return true;
     }

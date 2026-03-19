@@ -4,16 +4,10 @@
 
 #include "Environment/iOS/iOSPlatformServiceExtensionInterface.h"
 
-#import "iOSApplicationOrientation.h"
-
 @implementation iOSViewController
 
 - (BOOL)prefersStatusBarHidden {
     return YES;
-}
-
-- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
-    return [iOSApplicationOrientation getSupportedInterfaceOrientationMask];
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {

@@ -1,5 +1,4 @@
 #import "iOSSceneDelegate.h"
-#import "iOSApplicationOrientation.h"
 #import "iOSUIApplicationDelegate.h"
 #import "iOSViewController.h"
 
@@ -23,22 +22,7 @@
     iOSUIApplicationDelegate * appDelegate = (iOSUIApplicationDelegate *)[UIApplication sharedApplication].delegate;
     [appDelegate setWindow:window];
 
-    if (@available(iOS 16.0, *)) {
-        UIInterfaceOrientationMask supportedOrientations = [iOSApplicationOrientation getSupportedInterfaceOrientationMask];
 
-        [viewController setNeedsUpdateOfSupportedInterfaceOrientations];
-
-        if (supportedOrientations != UIInterfaceOrientationMaskAll) {
-            UIWindowSceneGeometryPreferencesIOS * preferences = [[UIWindowSceneGeometryPreferencesIOS alloc] initWithInterfaceOrientations:supportedOrientations];
-
-            [windowScene requestGeometryUpdateWithPreferences:preferences errorHandler:^(NSError * error) {
-                [AppleLog withFormat:@"Mengine scene requestGeometryUpdate failed: %@", error.localizedDescription];
-            }];
-        }
-    }
-    else {
-        [UIViewController attemptRotationToDeviceOrientation];
-    }
 }
 
 - (void)sceneDidDisconnect:(UIScene *)scene API_AVAILABLE(ios(13.0)) {

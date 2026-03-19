@@ -557,14 +557,16 @@
         return;
     }
 
-    float frameTime = (self.m_prevTimestamp > 0.0)
-        ? (float)(displayLink.timestamp - self.m_prevTimestamp)
-        : (float)displayLink.duration;
+    CFTimeInterval frameTime = (self.m_prevTimestamp > 0.0)
+        ? ((displayLink.timestamp - self.m_prevTimestamp) * 1000.0)
+        : (displayLink.duration * 1000.0);
 
     self.m_prevTimestamp = displayLink.timestamp;
 
+    float frameTimeF = (float)frameTime;
+
     PLATFORM_SERVICE()
-        ->tickPlatform( frameTime );
+        ->tickPlatform( frameTimeF );
 
     PLATFORM_SERVICE()
         ->renderPlatform();

@@ -225,8 +225,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool iOSPlatformService::getMaxClientResolution( Resolution * const _resolution ) const
     {
+        if( m_glView != nil )
+        {
+            GLint backingWidth = [m_glView backingWidth];
+            GLint backingHeight = [m_glView backingHeight];
+
+            if( backingWidth > 0 && backingHeight > 0 )
+            {
+                *_resolution = Resolution( (uint32_t)backingWidth, (uint32_t)backingHeight );
+
+                return true;
+            }
+        }
+
         UIScreen * mainScreen = [UIScreen mainScreen];
-        
+
         if( mainScreen == nil )
         {
             LOGGER_ERROR( "unable to access main screen" );
@@ -234,9 +247,10 @@ namespace Mengine
             return false;
         }
 
-        CGRect screenRect = mainScreen.bounds;
-        
-        *_resolution = Resolution( screenRect.size.width, screenRect.size.height );
+        CGRect screenRect = (m_uiWindow != nil) ? m_uiWindow.bounds : mainScreen.bounds;
+        CGFloat screenScale = mainScreen.scale;
+
+        *_resolution = Resolution( (uint32_t)(screenRect.size.width * screenScale), (uint32_t)(screenRect.size.height * screenScale) );
         
         return true;
     }
@@ -892,6 +906,9 @@ namespace Mengine
             return false;
         }
 
+        glView.frame = m_uiWindow.bounds;
+        glView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+
         if( rootViewController != nil )
         {
             rootViewController.view = glView;
@@ -901,11 +918,20 @@ namespace Mengine
             [m_uiWindow addSubview:glView];
         }
 
-        if( [glView createFramebuffer] == NO )
-        {
-            LOGGER_ERROR( "invalid create framebuffer for iOSOpenGLView" );
+        [m_uiWindow makeKeyAndVisible];
+        [m_uiWindow setNeedsLayout];
+        [m_uiWindow layoutIfNeeded];
+        [glView setNeedsLayout];
+        [glView layoutIfNeeded];
 
-            return false;
+        if( [glView framebuffer] == 0 || [glView backingWidth] == 0 || [glView backingHeight] == 0 )
+        {
+            if( [glView createFramebuffer] == NO )
+            {
+                LOGGER_ERROR( "invalid create framebuffer for iOSOpenGLView" );
+
+                return false;
+            }
         }
 
         m_glView = glView;
@@ -1012,8 +1038,27 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool iOSPlatformService::getDesktopResolution( Resolution * const _resolution ) const
     {
+        if( m_glView != nil )
+        {
+            GLint backingWidth = [m_glView backingWidth];
+            GLint backingHeight = [m_glView backingHeight];
+
+            if( backingWidth > 0 && backingHeight > 0 )
+            {
+                *_resolution = Resolution( (uint32_t)backingWidth, (uint32_t)backingHeight );
+
+                return true;
+            }
+        }
+
         UIScreen * mainScreen = [UIScreen mainScreen];
-        CGRect screenBounds = mainScreen.bounds;
+
+        if( mainScreen == nil )
+        {
+            return false;
+        }
+
+        CGRect screenBounds = (m_uiWindow != nil) ? m_uiWindow.bounds : mainScreen.bounds;
         CGFloat screenScale = mainScreen.scale;
 
         uint32_t drawable_width = (uint32_t)(screenBounds.size.width * screenScale);

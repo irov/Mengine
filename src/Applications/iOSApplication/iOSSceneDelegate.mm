@@ -47,18 +47,30 @@
 
 - (void)sceneDidBecomeActive:(UIScene *)scene API_AVAILABLE(ios(13.0)) {
     [AppleLog withFormat:@"Mengine scene sceneDidBecomeActive"];
+
+    iOSUIApplicationDelegate * appDelegate = (iOSUIApplicationDelegate *)[UIApplication sharedApplication].delegate;
+    [appDelegate handleApplicationDidBecomeActive:[UIApplication sharedApplication]];
 }
 
 - (void)sceneWillResignActive:(UIScene *)scene API_AVAILABLE(ios(13.0)) {
     [AppleLog withFormat:@"Mengine scene sceneWillResignActive"];
+
+    iOSUIApplicationDelegate * appDelegate = (iOSUIApplicationDelegate *)[UIApplication sharedApplication].delegate;
+    [appDelegate handleApplicationWillResignActive:[UIApplication sharedApplication]];
 }
 
 - (void)sceneWillEnterForeground:(UIScene *)scene API_AVAILABLE(ios(13.0)) {
     [AppleLog withFormat:@"Mengine scene sceneWillEnterForeground"];
+
+    iOSUIApplicationDelegate * appDelegate = (iOSUIApplicationDelegate *)[UIApplication sharedApplication].delegate;
+    [appDelegate handleApplicationWillEnterForeground:[UIApplication sharedApplication]];
 }
 
 - (void)sceneDidEnterBackground:(UIScene *)scene API_AVAILABLE(ios(13.0)) {
     [AppleLog withFormat:@"Mengine scene sceneDidEnterBackground"];
+
+    iOSUIApplicationDelegate * appDelegate = (iOSUIApplicationDelegate *)[UIApplication sharedApplication].delegate;
+    [appDelegate handleApplicationDidEnterBackground:[UIApplication sharedApplication]];
 }
 
 @end

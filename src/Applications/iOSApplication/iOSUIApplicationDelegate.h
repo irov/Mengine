@@ -17,6 +17,12 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
 
 @interface iOSUIApplicationDelegate : NSObject<UIApplicationDelegate, iOSUIMainApplicationDelegateInterface>
 
+- (void)handleApplicationDidBecomeActive:(UIApplication *)application;
+- (void)handleApplicationWillEnterForeground:(UIApplication *)application;
+- (void)handleApplicationDidEnterBackground:(UIApplication *)application;
+- (void)handleApplicationWillResignActive:(UIApplication *)application;
+- (void)handleApplicationWillTerminate:(UIApplication *)application;
+
 @property (nonatomic, strong) UIWindow * m_window;
 @property (nonatomic, strong) CADisplayLink * m_displayLink;
 @property (nonatomic, assign) CFTimeInterval m_prevTimestamp;
@@ -34,5 +40,8 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
 
 @property (nonatomic, strong) NSMutableArray<iOSDidBecomeActiveOperationBlock> * m_didBecomeActiveOperations;
 @property (nonatomic, assign) BOOL m_isProcessingDidBecomeActiveOperation;
+@property (nonatomic, assign) BOOL m_isApplicationForeground;
+@property (nonatomic, assign) BOOL m_isApplicationActive;
+@property (nonatomic, assign) BOOL m_isApplicationTerminating;
 
 @end

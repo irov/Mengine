@@ -241,7 +241,7 @@ namespace Mengine
                 ->stopPlatform();
         }
         
-        if( SERVICE_IS_INITIALIZE( Mengine::PlatformServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( Mengine::BootstrapperInterface ) == true )
         {
             BOOTSTRAPPER_SERVICE()
                 ->stop();

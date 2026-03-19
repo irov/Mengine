@@ -12,6 +12,13 @@ namespace Mengine
         : virtual public UnknownInterface
     {
     public:
+        virtual void handleApplicationDidBecomeActive() = 0;
+        virtual void handleApplicationWillEnterForeground() = 0;
+        virtual void handleApplicationDidEnterBackground() = 0;
+        virtual void handleApplicationWillResignActive() = 0;
+        virtual void handleApplicationWillTerminate() = 0;
+
+    public:
         virtual UIWindow * getUIWindow() const = 0;
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)

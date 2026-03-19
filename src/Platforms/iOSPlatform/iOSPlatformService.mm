@@ -1237,6 +1237,35 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void iOSPlatformService::handleApplicationDidBecomeActive()
+    {
+        this->setActive_( true );
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_BECOME_ACTIVE );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void iOSPlatformService::handleApplicationWillEnterForeground()
+    {
+        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_ENTER_FOREGROUND );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void iOSPlatformService::handleApplicationDidEnterBackground()
+    {
+        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_ENTER_BACKGROUND );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void iOSPlatformService::handleApplicationWillResignActive()
+    {
+        this->setActive_( false );
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_RESIGN_ACTIVE );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void iOSPlatformService::handleApplicationWillTerminate()
+    {
+        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_TERMINATE );
+    }
+    //////////////////////////////////////////////////////////////////////////
     UIWindow * iOSPlatformService::getUIWindow() const
     {
         return m_uiWindow;

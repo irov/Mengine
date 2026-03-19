@@ -156,6 +156,13 @@ namespace Mengine
         bool getClipboardText( Char * _value, size_t _capacity ) const override;
 
     public:
+        void handleApplicationDidBecomeActive() override;
+        void handleApplicationWillEnterForeground() override;
+        void handleApplicationDidEnterBackground() override;
+        void handleApplicationWillResignActive() override;
+        void handleApplicationWillTerminate() override;
+
+    public:
         UIWindow * getUIWindow() const override;
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)

@@ -495,6 +495,16 @@ namespace Mengine
             return false;
         }
 
+        if( m_glContext == nil || m_glView == nil )
+        {
+            return false;
+        }
+
+        [EAGLContext setCurrentContext:m_glContext];
+
+        glBindFramebuffer( GL_FRAMEBUFFER, [m_glView framebuffer] );
+        glBindRenderbuffer( GL_RENDERBUFFER, [m_glView colorRenderbuffer] );
+
         bool sucessful = APPLICATION_SERVICE()
             ->render();
 
@@ -505,13 +515,6 @@ namespace Mengine
 
         APPLICATION_SERVICE()
             ->flush();
-
-        if( m_glContext == nil )
-        {
-            return false;
-        }
-
-        [EAGLContext setCurrentContext:m_glContext];
 
         glBindRenderbuffer( GL_RENDERBUFFER, [m_glView colorRenderbuffer] );
         [m_glContext presentRenderbuffer:GL_RENDERBUFFER];

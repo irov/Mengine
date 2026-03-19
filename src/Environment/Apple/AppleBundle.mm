@@ -10,6 +10,28 @@
     return bundleIdentifier;
 }
 
++ (NSDictionary *)getApplicationConfig {
+    static NSDictionary * cachedConfig = nil;
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^{
+        NSBundle * mainBundle = [NSBundle mainBundle];
+        cachedConfig = [mainBundle objectForInfoDictionaryKey:@"MengineApplication"];
+    });
+    
+    return cachedConfig;
+}
+
++ (id)getApplicationConfigValue:(NSString *) _key {
+    NSDictionary * applicationConfig = [AppleBundle getApplicationConfig];
+    
+    if (applicationConfig == nil) {
+        return nil;
+    }
+    
+    return [applicationConfig objectForKey:_key];
+}
+
 + (BOOL)hasPluginConfig:(NSString *) _plugin {
     NSBundle * mainBundle = [NSBundle mainBundle];
     

@@ -20,19 +20,22 @@ public class MengineProcedureSendMail implements MengineProcedureInterface {
 
     private final String m_email;
     private final String m_subject;
+    private final String m_body;
     private final String m_technically;
 
-    public MengineProcedureSendMail(@NonNull String email, @NonNull String subject, @NonNull String technically) {
+    public MengineProcedureSendMail(@NonNull String email, @NonNull String subject, @NonNull String body, @NonNull String technically) {
         this.m_email = email;
         this.m_subject = subject;
+        this.m_body = body;
         this.m_technically = technically;
     }
 
     @Override
     public boolean execute(@NonNull MengineActivity activity) {
-        MengineLog.logInfo(TAG, "linkingOpenMail mail: %s subject: %s technically: %s"
+        MengineLog.logInfo(TAG, "linkingOpenMail mail: %s subject: %s body: %s technically: %s"
             , m_email
             , m_subject
+            , m_body
             , m_technically
         );
 
@@ -56,6 +59,12 @@ public class MengineProcedureSendMail implements MengineProcedureInterface {
         String indent = "        ";
 
         body_builder.append(lineSeparator);
+
+        if (m_body.isEmpty() == false) {
+            body_builder.append(m_body);
+            body_builder.append(lineSeparator);
+        }
+
         body_builder.append(lineSeparator);
         body_builder.append("----- Please Describe Your Message Above Here -----").append(lineSeparator);
         body_builder.append(lineSeparator);
@@ -370,6 +379,6 @@ public class MengineProcedureSendMail implements MengineProcedureInterface {
     }
 
     static {
-        MengineFactoryManager.registerClazz("sendMail", MengineProcedureSendMail.class, String.class, String.class, String.class);
+        MengineFactoryManager.registerClazz("sendMail", MengineProcedureSendMail.class, String.class, String.class, String.class, String.class);
     }
 }

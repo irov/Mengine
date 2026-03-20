@@ -4107,7 +4107,7 @@ namespace Mengine
                 return val;
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_openMail( const WString & _email, const WString & _subject, const WString & _technically )
+            bool s_openMail( const WString & _email, const WString & _subject, const WString & _body, const WString & _technically )
             {
                 Char utf8_email[4096 + 1] = {'\0'};
                 Helper::unicodeToUtf8( _email, utf8_email, 4096 );
@@ -4115,11 +4115,14 @@ namespace Mengine
                 Char utf8_subject[4096 + 1] = {'\0'};
                 Helper::unicodeToUtf8( _subject, utf8_subject, 4096 );
 
+                Char utf8_body[4096 + 1] = {'\0'};
+                Helper::unicodeToUtf8( _body, utf8_body, 4096 );
+
                 Char utf8_technically[4096 + 1] = {'\0'};
                 Helper::unicodeToUtf8( _technically, utf8_technically, 4096 );
 
                 bool val = PLATFORM_SERVICE()
-                    ->openMail( utf8_email, utf8_subject, utf8_technically );
+                    ->openMail( utf8_email, utf8_subject, utf8_body, utf8_technically );
 
                 return val;
             }

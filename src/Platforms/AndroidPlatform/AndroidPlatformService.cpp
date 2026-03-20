@@ -1111,12 +1111,13 @@ namespace Mengine
         return jresult;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidPlatformService::openMail( const Char * _email, const Char * _subject, const Char * _body )
+    bool AndroidPlatformService::openMail( const Char * _email, const Char * _subject, const Char * _body, const Char * _technically )
     {
-        LOGGER_MESSAGE( "open mail '%s' subject '%s' body '%s'"
+        LOGGER_MESSAGE( "open mail '%s' subject '%s' body '%s' technically '%s'"
             , _email
             , _subject
             , _body
+            , _technically
         );
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
@@ -1126,12 +1127,14 @@ namespace Mengine
         jstring jstring_email = Mengine_JNI_NewStringUTF( jenv, _email );
         jstring jstring_subject = Mengine_JNI_NewStringUTF( jenv, _subject );
         jstring jstring_body = Mengine_JNI_NewStringUTF( jenv, _body );
+        jstring jstring_technically = Mengine_JNI_NewStringUTF( jenv, _technically );
 
-        jboolean jresult = Helper::AndroidCallBooleanActivityMethod( jenv, "linkingOpenMail", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Z", jstring_email, jstring_subject, jstring_body );
+        jboolean jresult = Helper::AndroidCallBooleanActivityMethod( jenv, "linkingOpenMail", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Z", jstring_email, jstring_subject, jstring_body, jstring_technically );
 
         Mengine_JNI_DeleteLocalRef( jenv, jstring_email );
         Mengine_JNI_DeleteLocalRef( jenv, jstring_subject );
         Mengine_JNI_DeleteLocalRef( jenv, jstring_body );
+        Mengine_JNI_DeleteLocalRef( jenv, jstring_technically );
 
         return jresult;
     }

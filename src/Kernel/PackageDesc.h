@@ -25,5 +25,6 @@ namespace Mengine
         bool dev;
         bool immediately;
         bool preload;
+        bool all_locales;
     };
 }

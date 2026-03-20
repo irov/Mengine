@@ -3686,10 +3686,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32PlatformService::openMail( const Char * _email, const Char * _subject, const Char * _technically )
+    bool Win32PlatformService::openMail( const Char * _email, const Char * _subject, const Char * _body, const Char * _technically )
     {
         MENGINE_UNUSED( _email );
         MENGINE_UNUSED( _subject );
+        MENGINE_UNUSED( _body );
         MENGINE_UNUSED( _technically );
 
         MENGINE_ASSERTION_NOT_IMPLEMENTED();

@@ -16,7 +16,7 @@ namespace Mengine
 
         if( imageContent->exist( true ) == false )
         {
-            LOGGER_ERROR( "bitmap font glyph '%s' not found image file '%s'"
+            LOGGER_ERROR( "bitmap glyph '%s' not found image file '%s'"
                 , fontGlyph->getName().c_str()
                 , Helper::getContentFullPath( imageContent ).c_str()
             );
@@ -28,7 +28,7 @@ namespace Mengine
 
         if( licenseContent->exist( true ) == false )
         {
-            LOGGER_ERROR( "bitmap font glyph '%s' not found license file '%s'"
+            LOGGER_ERROR( "bitmap glyph '%s' not found license file '%s'"
                 , fontGlyph->getName().c_str()
                 , Helper::getContentFullPath( licenseContent ).c_str()
             );

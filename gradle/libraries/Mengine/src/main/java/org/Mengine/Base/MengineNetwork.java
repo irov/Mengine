@@ -77,7 +77,9 @@ public class MengineNetwork {
 
         String userId = application.getUserId();
 
-        connection.setRequestProperty("Mengine-User-Id", userId);
+        if (userId != null) {
+            connection.setRequestProperty("Mengine-User-Id", userId);
+        }
 
         MengineNetwork.setTimeout(connection, request.HTTP_TIMEOUT);
         MengineNetwork.setHeaders(connection, request.HTTP_HEADERS);

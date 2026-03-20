@@ -36,18 +36,40 @@ namespace Mengine
             _config->hasValue( _name.c_str(), "Name", ConstString::none(), &_pack->name );
             _config->hasValue( _name.c_str(), "Type", STRINGIZE_STRING_LOCAL( "dir" ), &_pack->type );
             
-            _config->getValues( _name.c_str(), "Locales", &_pack->locales );
+            _pack->all_locales = false;
+
+            ConstString all = STRINGIZE_STRING_LOCAL( "all" );
 
             ConstString locale;
-            _config->hasValue( _name.c_str(), "Locale", ConstString::none(), &locale );
-
-            if( locale.empty() == false )
+            if( _config->hasValue( _name.c_str(), "Locale", ConstString::none(), &locale ) == true )
             {
                 LOGGER_MESSAGE( "[Deprecated] Package '%s' use 'Locales' instead of 'Locale'"
-                    , _name.c_str() 
+                    , _name.c_str()
                 );
 
+                if( locale == all )
+                {
+                    _pack->all_locales = true;
+                }
+
                 _pack->locales.emplace_back( locale );
+            }
+            else
+            {
+                VectorConstString locales;
+                _config->getValues( _name.c_str(), "Locales", &locales );
+
+                MENGINE_ASSERTION_FATAL( locales.size() == 1 || StdAlgorithm::find( locales.begin(), locales.end(), all ) == locales.end()
+                    , "invalid package '%s' setup locales: if locale contains 'all' it must not contain any other locales"
+                    , _name.c_str()
+                );
+
+                if( locales.empty() == false && locales[0] == all )
+                {
+                    _pack->all_locales = true;
+                }
+
+                _pack->locales = std::move( locales );
             }
             
             _config->hasValue( _name.c_str(), "Platform", Tags(), &_pack->platform );
@@ -458,12 +480,40 @@ namespace Mengine
                 continue;
             }
 
+            if( desc.all_locales == true )
+            {
+                continue;
+            }
+
+            if( desc.locales.empty() == true )
+            {
+                continue;
+            }
+
             localesSet.insert( desc.locales.begin(), desc.locales.end() );
         }
 
-        localesSet.erase( STRINGIZE_STRING_LOCAL( "all" ) );
-
         *_locales = {localesSet.begin(), localesSet.end()};
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PackageService::loadAllLocalePacksByName_( const Tags & _platformTags, VectorPackages * const _packs ) const
+    {
+        for( const PackageInterfacePtr & package : m_packages )
+        {
+            const PackageDesc & desc = package->getPackageDesc();
+
+            if( _platformTags.hasTags( desc.platform ) == false )
+            {
+                continue;
+            }
+
+            if( desc.all_locales == false )
+            {
+                continue;
+            }
+
+            _packs->emplace_back( package );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool PackageService::loadLocalePacksByName_( const ConstString & _locale, const Tags & _platformTags, VectorPackages * const _packs ) const
@@ -595,9 +645,12 @@ namespace Mengine
                 continue;
             }
 
-            if( StdAlgorithm::find( desc.locales.begin(), desc.locales.end(), _locale ) == desc.locales.end() )
+            if( desc.all_locales == false )
             {
-                continue;
+                if( StdAlgorithm::find( desc.locales.begin(), desc.locales.end(), _locale ) == desc.locales.end() )
+                {
+                    continue;
+                }
             }
 
             packages.emplace_back( package );
@@ -622,8 +675,10 @@ namespace Mengine
     {
         VectorPackages packages;
 
-        for( const PackageInterfacePtr & package : m_packages )
+        for( VectorPackages::const_reverse_iterator it = m_packages.rbegin(); it != m_packages.rend(); ++it )
         {
+            const PackageInterfacePtr & package = *it;
+
             const PackageDesc & desc = package->getPackageDesc();
 
             if( _platformTag.hasTags( desc.platform ) == false )
@@ -631,9 +686,12 @@ namespace Mengine
                 continue;
             }
 
-            if( StdAlgorithm::find( desc.locales.begin(), desc.locales.end(), _locale ) == desc.locales.end() )
+            if( desc.all_locales == false )
             {
-                continue;
+                if( StdAlgorithm::find( desc.locales.begin(), desc.locales.end(), _locale ) == desc.locales.end() )
+                {
+                    continue;
+                }
             }
 
             packages.emplace_back( package );
@@ -658,8 +716,10 @@ namespace Mengine
     {
         VectorPackages packages;
 
-        for( const PackageInterfacePtr & package : m_packages )
+        for( VectorPackages::const_reverse_iterator it = m_packages.rbegin(); it != m_packages.rend(); ++it )
         {
+            const PackageInterfacePtr & package = *it;
+
             if( package->isEnable() == false )
             {
                 continue;

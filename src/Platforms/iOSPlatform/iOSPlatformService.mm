@@ -607,11 +607,12 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool iOSPlatformService::openMail( const Char * _email, const Char * _subject, const Char * _technically )
+    bool iOSPlatformService::openMail( const Char * _email, const Char * _subject, const Char * _body, const Char * _technically )
     {
-        LOGGER_INFO( "platform", "open mail '%s' subject '%s' technically '%s'"
+        LOGGER_INFO( "platform", "open mail '%s' subject '%s' body '%s' technically '%s'"
             , _email
             , _subject
+            , _body
             , _technically
         );
 
@@ -643,6 +644,13 @@ namespace Mengine
         NSMutableString * mailBodyBuilder = [NSMutableString stringWithCapacity:4096];
 
         [mailBodyBuilder appendString:@"\n\n"];
+
+        if( [@(_body) length] != 0 )
+        {
+            [mailBodyBuilder appendString:@(_body)];
+            [mailBodyBuilder appendString:@"\n"];
+        }
+
         [mailBodyBuilder appendString:@"----- Please Describe Your Message Above Here -----\n\n"];
         [mailBodyBuilder appendString:@"\n"];
 

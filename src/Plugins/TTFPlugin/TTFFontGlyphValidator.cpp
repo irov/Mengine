@@ -34,7 +34,7 @@ namespace Mengine
 
         if( FT_IS_SCALABLE( face ) == false )
         {
-            LOGGER_ERROR( "ttf font glyph '%s' should be scalable"
+            LOGGER_ERROR( "ttf glyph '%s' should be scalable"
                 , _glyph->getName().c_str()
             );
 
@@ -49,7 +49,7 @@ namespace Mengine
         {
             const Char * err_message = FT_Error_String( err_load_glyph );
 
-            LOGGER_ERROR( "ttf font glyph '%s' invalid load glyph code '%u' error [%s]"
+            LOGGER_ERROR( "ttf glyph '%s' invalid load glyph code '%u' error [%s]"
                 , _glyph->getName().c_str()
                 , MENGINE_TTF_METRICS_SYMBOL
                 , err_message

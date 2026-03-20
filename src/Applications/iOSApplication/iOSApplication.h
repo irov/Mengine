@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/LoggerInterface.h"
+#include "Interface/ArgumentsInterface.h"
 
 #include "Config/Char.h"
 
@@ -13,7 +14,7 @@ namespace Mengine
         ~iOSApplication();
 
     public:
-        bool bootstrap( int32_t _argc, Char ** const _argv );
+        bool bootstrap( const ArgumentsInterfacePtr & _arguments );
         
     public:
         bool run();
@@ -22,11 +23,8 @@ namespace Mengine
     public:
         void finalize();
 
-    public:
-        void loop();
-
     protected:
-        bool initializeOptionsService_( int32_t argc, Char ** const _argv );
+        bool initializeOptionsService_( const ArgumentsInterfacePtr & _arguments );
         bool initializeLoggerService_();
 
     protected:

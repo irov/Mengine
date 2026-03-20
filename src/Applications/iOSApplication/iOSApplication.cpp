@@ -17,7 +17,6 @@
 #include "iOSAlertLogger.h"
 
 #include "Kernel/ConfigHelper.h"
-#include "Kernel/StringArguments.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Error.h"
@@ -38,19 +37,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool iOSApplication::initializeOptionsService_( int32_t _argc, Char ** const _argv )
+    bool iOSApplication::initializeOptionsService_( const ArgumentsInterfacePtr & _arguments )
     {
-        ArgumentsInterfacePtr arguments = Helper::makeFactorableUnique<StringArguments>( MENGINE_DOCUMENT_FUNCTION );
-
-        for( int32_t i = 1; i < _argc; ++i )
-        {
-            const Char * arg = _argv[i];
-
-            arguments->addArgument( arg );
-        }
-
         if( OPTIONS_SERVICE()
-            ->setArguments( arguments ) == false )
+            ->setArguments( _arguments ) == false )
         {
             return false;
         }
@@ -108,16 +98,16 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool iOSApplication::bootstrap( int32_t _argc, Char ** const _argv )
+    bool iOSApplication::bootstrap( const ArgumentsInterfacePtr & _arguments )
     {
         ServiceProviderInterface * serviceProvider = ::API_MengineCreate();
 
         SERVICE_PROVIDER_SETUP( serviceProvider );
 
         SERVICE_PROVIDER_GET()
-            ->waitService( "iOSApplication", SERVICE_ID( OptionsServiceInterface ), [this, _argc, _argv]()
+            ->waitService( "iOSApplication", SERVICE_ID( OptionsServiceInterface ), [this, _arguments]()
         {
-            if( this->initializeOptionsService_( _argc, _argv ) == false )
+            if( this->initializeOptionsService_( _arguments ) == false )
             {
                 return false;
             }
@@ -220,12 +210,6 @@ namespace Mengine
         }
 
         return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void iOSApplication::loop()
-    {
-        PLATFORM_SERVICE()
-            ->loopPlatform();
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSApplication::stop()

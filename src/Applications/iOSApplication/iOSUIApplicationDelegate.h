@@ -2,18 +2,7 @@
 
 #import "Environment/iOS/iOSUIMainApplicationDelegateInterface.h"
 
-#import "Environment/iOS/iOSPluginInterface.h"
-#import "Environment/iOS/iOSPluginLoggerDelegateInterface.h"
-#import "Environment/iOS/iOSPluginConfigDelegateInterface.h"
-#import "Environment/iOS/iOSPluginAnalyticDelegateInterface.h"
-#import "Environment/iOS/iOSPluginUserIdDelegateInterface.h"
-#import "Environment/iOS/iOSPluginAdRevenueDelegateInterface.h"
-#import "Environment/iOS/iOSPluginAppTrackingTransparencyDelegateInterface.h"
-#import "Environment/iOS/iOSPluginTransparencyConsentDelegateInterface.h"
-
 #import <UIKit/UIKit.h>
-
-typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
 
 @interface iOSUIApplicationDelegate : NSObject<UIApplicationDelegate, iOSUIMainApplicationDelegateInterface>
 
@@ -22,26 +11,5 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
 - (void)handleApplicationDidEnterBackground:(UIApplication *)application;
 - (void)handleApplicationWillResignActive:(UIApplication *)application;
 - (void)handleApplicationWillTerminate:(UIApplication *)application;
-
-@property (nonatomic, strong) UIWindow * m_window;
-@property (nonatomic, strong) CADisplayLink * m_displayLink;
-@property (nonatomic, assign) CFTimeInterval m_prevTimestamp;
-@property (nonatomic, assign) void * m_application;
-
-@property (nonatomic, strong) NSMutableArray<id> * m_pluginDelegates;
-@property (nonatomic, strong) NSMutableArray<iOSPluginInterface> * m_plugins;
-@property (nonatomic, strong) NSMutableArray<iOSPluginLoggerDelegateInterface> * m_pluginLoggerDelegates;
-@property (nonatomic, strong) NSMutableArray<iOSPluginConfigDelegateInterface> * m_pluginConfigDelegates;
-@property (nonatomic, strong) NSMutableArray<iOSPluginAnalyticDelegateInterface> * m_pluginAnalyticDelegates;
-@property (nonatomic, strong) NSMutableArray<iOSPluginUserIdDelegateInterface> * m_pluginUserIdDelegates;
-@property (nonatomic, strong) NSMutableArray<iOSPluginAdRevenueDelegateInterface> * m_pluginAdRevenueDelegates;
-@property (nonatomic, strong) NSMutableArray<iOSPluginAppTrackingTransparencyDelegateInterface> * m_pluginAppTrackingTransparencyDelegates;
-@property (nonatomic, strong) NSMutableArray<iOSPluginTransparencyConsentDelegateInterface> * m_pluginTransparencyConsentDelegates;
-
-@property (nonatomic, strong) NSMutableArray<iOSDidBecomeActiveOperationBlock> * m_didBecomeActiveOperations;
-@property (nonatomic, assign) BOOL m_isProcessingDidBecomeActiveOperation;
-@property (nonatomic, assign) BOOL m_isApplicationForeground;
-@property (nonatomic, assign) BOOL m_isApplicationActive;
-@property (nonatomic, assign) BOOL m_isApplicationTerminating;
 
 @end

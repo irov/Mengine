@@ -540,37 +540,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::loopPlatform()
     {
-        m_prevTime = Helper::getElapsedTime();
-
-        for( ;; )
-        {
-            if( this->updatePlatform() == false )
-            {
-                break;
-            }
-
-            double currentTime = Helper::getElapsedTime();
-
-            float frameTime = (float)(currentTime - m_prevTime);
-            
-            m_prevTime = currentTime;
-            
-            if( m_active == false )
-            {
-                ::usleep( 100000 );
-
-                continue;
-            }
-
-            this->tickPlatform( frameTime );
-            
-            if( this->renderPlatform() == false )
-            {
-                ::usleep( 100000 );
-                
-                continue;
-            }
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool iOSPlatformService::updatePlatform()

@@ -18,13 +18,34 @@
 
 #include "iOSApplication.h"
 
+#include "Kernel/StringArguments.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/FactorableUnique.h"
 
-#ifndef MENGINE_IOS_LAUNCH_ARGUMENTS_CAPACITY
-#define MENGINE_IOS_LAUNCH_ARGUMENTS_CAPACITY 32
-#endif
+typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
 
 @interface iOSUIApplicationDelegate ()
+
+@property (nonatomic, strong) UIWindow * m_window;
+@property (nonatomic, strong) CADisplayLink * m_displayLink;
+@property (nonatomic, assign) CFTimeInterval m_prevTimestamp;
+@property (nonatomic, assign) void * m_application;
+
+@property (nonatomic, strong) NSMutableArray<id> * m_pluginDelegates;
+@property (nonatomic, strong) NSMutableArray<iOSPluginInterface> * m_plugins;
+@property (nonatomic, strong) NSMutableArray<iOSPluginLoggerDelegateInterface> * m_pluginLoggerDelegates;
+@property (nonatomic, strong) NSMutableArray<iOSPluginConfigDelegateInterface> * m_pluginConfigDelegates;
+@property (nonatomic, strong) NSMutableArray<iOSPluginAnalyticDelegateInterface> * m_pluginAnalyticDelegates;
+@property (nonatomic, strong) NSMutableArray<iOSPluginUserIdDelegateInterface> * m_pluginUserIdDelegates;
+@property (nonatomic, strong) NSMutableArray<iOSPluginAdRevenueDelegateInterface> * m_pluginAdRevenueDelegates;
+@property (nonatomic, strong) NSMutableArray<iOSPluginAppTrackingTransparencyDelegateInterface> * m_pluginAppTrackingTransparencyDelegates;
+@property (nonatomic, strong) NSMutableArray<iOSPluginTransparencyConsentDelegateInterface> * m_pluginTransparencyConsentDelegates;
+
+@property (nonatomic, strong) NSMutableArray<iOSDidBecomeActiveOperationBlock> * m_didBecomeActiveOperations;
+@property (nonatomic, assign) BOOL m_isProcessingDidBecomeActiveOperation;
+@property (nonatomic, assign) BOOL m_isApplicationForeground;
+@property (nonatomic, assign) BOOL m_isApplicationActive;
+@property (nonatomic, assign) BOOL m_isApplicationTerminating;
 
 - (void)startEngineLoop;
 - (void)stopEngineLoop;
@@ -396,6 +417,8 @@
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler API_AVAILABLE(ios(7.0)) {
     [AppleLog withFormat:@"Mengine application didReceiveRemoteNotification"];
     
+    BOOL handled = NO;
+    
     @autoreleasepool {
         for (id plugin in self.m_plugins) {
             if ([plugin respondsToSelector:@selector(application: didReceiveRemoteNotification: fetchCompletionHandler:)] == NO) {
@@ -403,7 +426,13 @@
             }
             
             [plugin application:application didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
+            
+            handled = YES;
         }
+    }
+    
+    if (handled == NO) {
+        completionHandler( UIBackgroundFetchResultNoData );
     }
 }
 
@@ -764,24 +793,16 @@
         }
     }
     
-    int32_t argc = 0;
-    Mengine::Char * argv[MENGINE_IOS_LAUNCH_ARGUMENTS_CAPACITY]= {nullptr};
+    Mengine::ArgumentsInterfacePtr args = Mengine::Helper::makeFactorableUnique<Mengine::StringArguments>( MENGINE_DOCUMENT_FUNCTION );
     
-    for( NSString * arg : arguments )
+    for( NSUInteger i = 1; i != [arguments count]; ++i )
     {
-        if( (size_t)argc >= MENGINE_IOS_LAUNCH_ARGUMENTS_CAPACITY ) {
-            [AppleLog withFormat:@"🔴 [ERROR] Mengine application too many launch arguments (%lu), truncated to %lu"
-                , (unsigned long)[arguments count]
-                , (unsigned long)MENGINE_IOS_LAUNCH_ARGUMENTS_CAPACITY
-            ];
-
-            break;
-        }
-
-        argv[argc++] = (Mengine::Char *)[arg UTF8String];
-    }    
+        NSString * arg = [arguments objectAtIndex:i];
+        
+        args->addArgument( [arg UTF8String] );
+    }
     
-    if( application->bootstrap( argc, argv ) == false ) {
+    if( application->bootstrap( args ) == false ) {
         [AppleLog withFormat:@"🔴 [ERROR] Mengine application bootstrap [Failed]"];
         
         application->finalize();

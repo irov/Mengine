@@ -81,7 +81,7 @@
     
     [AppleKeyChain setStringForKey:@"mengine.app.user_id" value:self.m_userId];
     
-    iOSUserParam * param = [iOSUserParam alloc];
+    iOSUserParam * param = [[iOSUserParam alloc] init];
     param.USER_ID = self.m_userId;
     
     [iOSDetail setUserId:param];

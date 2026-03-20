@@ -18,9 +18,7 @@
 
 #include "iOSApplication.h"
 
-#include "Kernel/StringArguments.h"
 #include "Kernel/NotificationHelper.h"
-#include "Kernel/FactorableUnique.h"
 
 typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
 
@@ -793,16 +791,7 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
         }
     }
     
-    Mengine::ArgumentsInterfacePtr args = Mengine::Helper::makeFactorableUnique<Mengine::StringArguments>( MENGINE_DOCUMENT_FUNCTION );
-    
-    for( NSUInteger i = 1; i != [arguments count]; ++i )
-    {
-        NSString * arg = [arguments objectAtIndex:i];
-        
-        args->addArgument( [arg UTF8String] );
-    }
-    
-    if( application->bootstrap( args ) == false ) {
+    if( application->bootstrap( arguments ) == false ) {
         [AppleLog withFormat:@"🔴 [ERROR] Mengine application bootstrap [Failed]"];
         
         application->finalize();

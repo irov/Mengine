@@ -1,9 +1,10 @@
 #pragma once
 
 #include "Interface/LoggerInterface.h"
-#include "Interface/ArgumentsInterface.h"
 
 #include "Config/Char.h"
+
+#import <Foundation/Foundation.h>
 
 namespace Mengine
 {
@@ -14,7 +15,7 @@ namespace Mengine
         ~iOSApplication();
 
     public:
-        bool bootstrap( const ArgumentsInterfacePtr & _arguments );
+        bool bootstrap( NSArray<NSString *> * _arguments );
         
     public:
         bool run();
@@ -24,7 +25,7 @@ namespace Mengine
         void finalize();
 
     protected:
-        bool initializeOptionsService_( const ArgumentsInterfacePtr & _arguments );
+        bool initializeOptionsService_( NSArray<NSString *> * _arguments );
         bool initializeLoggerService_();
 
     protected:

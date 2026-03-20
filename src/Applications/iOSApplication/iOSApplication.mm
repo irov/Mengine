@@ -17,6 +17,7 @@
 #include "iOSAlertLogger.h"
 
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/StringArguments.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Error.h"
@@ -37,10 +38,19 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool iOSApplication::initializeOptionsService_( const ArgumentsInterfacePtr & _arguments )
+    bool iOSApplication::initializeOptionsService_( NSArray<NSString *> * _arguments )
     {
+        ArgumentsInterfacePtr arguments = Helper::makeFactorableUnique<StringArguments>( MENGINE_DOCUMENT_FUNCTION );
+
+        for( NSUInteger i = 1; i != [_arguments count]; ++i )
+        {
+            NSString * arg = [_arguments objectAtIndex:i];
+
+            arguments->addArgument( [arg UTF8String] );
+        }
+
         if( OPTIONS_SERVICE()
-            ->setArguments( _arguments ) == false )
+            ->setArguments( arguments ) == false )
         {
             return false;
         }
@@ -98,7 +108,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool iOSApplication::bootstrap( const ArgumentsInterfacePtr & _arguments )
+    bool iOSApplication::bootstrap( NSArray<NSString *> * _arguments )
     {
         ServiceProviderInterface * serviceProvider = ::API_MengineCreate();
 

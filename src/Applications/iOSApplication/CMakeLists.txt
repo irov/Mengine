@@ -10,7 +10,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/iOSApplicationDelegates.mm.in ${MENGI
 
 ADD_FILTER(
 src
-    iOSApplication.cpp
+    iOSApplication.mm
     iOSApplication.h
 
     iOSMain.mm

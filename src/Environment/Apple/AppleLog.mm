@@ -24,14 +24,7 @@
     NSLogv(format, args);
 }
 
-+ (void) withRecord:(AppleLogRecordParam * _Nonnull)record {
-#if defined(MENGINE_MASTER_RELEASE)
-    if( record.LOG_LEVEL >= Mengine::LM_INFO )
-    {
-        return;
-    }
-#endif
-    
++ (void) withRecord:(AppleLogRecordParam * _Nonnull)record {   
     NSMutableString * buffer = [[NSMutableString alloc] initWithCapacity:512];
 
 #if defined(MENGINE_DEBUG)

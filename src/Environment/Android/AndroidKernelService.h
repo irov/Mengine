@@ -1,16 +1,12 @@
 #pragma once
 
-#include "Interface/ThreadMutexInterface.h"
-
 #include "Environment/Android/AndroidKernelServiceInterface.h"
 
-#include "ConstStringHolderJString.h"
-
 #include "Kernel/ServiceBase.h"
-#include "Kernel/Pool.h"
 #include "Kernel/Vector.h"
 #include "Kernel/Map.h"
-#include "Kernel/IntrusiveList.h"
+
+#include "Interface/ThreadMutexInterface.h"
 
 namespace Mengine
 {
@@ -26,9 +22,6 @@ namespace Mengine
     public:
         bool _initializeService() override;
         void _finalizeService() override;
-
-    public:
-        void stringize( JNIEnv * _jenv, jstring _value, ConstString * const _cstr ) override;
 
     public:
         void addPlugin( const ConstString & _plugin, jobject _jmodule ) override;
@@ -51,14 +44,6 @@ namespace Mengine
         void _update() override;
 
     protected:
-        ThreadMutexInterfacePtr m_mutexJStrings;
-
-        typedef Pool<ConstStringHolderJString, 256> PoolConstStringHolderJString;
-        PoolConstStringHolderJString m_poolJStrings;
-
-        typedef IntrusiveList<ConstStringHolderJString> IntrusiveListConstStringHolderJString;
-        IntrusiveListConstStringHolderJString m_holdersJStrings;
-
         ThreadMutexInterfacePtr m_semaphoresMutex;
         ThreadMutexInterfacePtr m_callbacksMutex;
         ThreadMutexInterfacePtr m_pluginsMutex;

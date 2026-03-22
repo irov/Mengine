@@ -1,6 +1,5 @@
 #include "AndroidKernelService.h"
 
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/PluginServiceInterface.h"
 
 #include "Environment/Android/AndroidEnv.h"
@@ -87,10 +86,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidKernelService::_initializeService()
     {
-        ThreadMutexInterfacePtr mutexJStrings = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
-
-        m_mutexJStrings = mutexJStrings;
-
         m_semaphoresMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
         m_callbacksMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
         m_pluginsMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
@@ -100,30 +95,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidKernelService::_finalizeService()
     {
-        m_mutexJStrings = nullptr;
-
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
-
-        for( IntrusiveListConstStringHolderJString::iterator
-             it = m_holdersJStrings.begin();
-             it != m_holdersJStrings.end(); )
-        {
-            IntrusiveListConstStringHolderJString::iterator it_erase = it;
-
-            ConstStringHolderJString * holder = *it;
-            ++it;
-
-            m_holdersJStrings.erase(it_erase );
-
-            holder->removeJString( jenv );
-
-            m_poolJStrings.destroyT(holder );
-        }
-
-        m_holdersJStrings.clear();
-        m_poolJStrings.clear();
 
         m_semaphoresMutex = nullptr;
         m_callbacksMutex = nullptr;
@@ -138,36 +112,6 @@ namespace Mengine
         }
 
         m_plugins.clear();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidKernelService::stringize( JNIEnv * _jenv, jstring _value, ConstString * const _cstr )
-    {
-        jsize value_length = Mengine_JNI_GetStringUTFLength( _jenv, _value );
-
-        if( value_length == 0 )
-        {
-            *_cstr = ConstString::none();
-
-            return;
-        }
-
-        MENGINE_THREAD_MUTEX_SCOPE( m_mutexJStrings );
-
-        ConstStringHolderJString * holder = m_poolJStrings.createT();
-
-        holder->setJString( _jenv, _value );
-
-        if( STRINGIZE_SERVICE()
-            ->stringizeExternal( holder, _cstr ) == false )
-        {
-            holder->removeJString( _jenv );
-
-            m_poolJStrings.destroyT(holder );
-
-            return;
-        }
-
-        m_holdersJStrings.push_back(holder );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidKernelService::addPlugin( const ConstString & _pluginName, jobject _jmodule )

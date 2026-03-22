@@ -14,7 +14,10 @@
 
 #   define GL_GLEXT_PROTOTYPES
 
-#   if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3)
+#   if defined(MENGINE_ENVIRONMENT_PLATFORM_IOS)
+#       include <OpenGLES/ES2/gl.h>
+#       include <OpenGLES/ES2/glext.h>
+#   elif defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3)
 #       include "SDL3/SDL_opengles.h"
 #       include "SDL3/SDL_opengles2.h"
 #   elif defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)

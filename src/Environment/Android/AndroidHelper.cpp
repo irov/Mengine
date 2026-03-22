@@ -1,8 +1,8 @@
 #include "AndroidHelper.h"
 
-#include "Environment/Android/AndroidKernelServiceInterface.h"
-
 #include "AndroidEnv.h"
+
+#include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionUtf8.h"
@@ -504,18 +504,21 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         ConstString AndroidMakeConstStringFromJString( JNIEnv * _jenv, jstring _value )
         {
+            const Char * value_str = Mengine_JNI_GetStringUTFChars( _jenv, _value, nullptr );
+            jsize value_size = Mengine_JNI_GetStringUTFLength( _jenv, _value );
+
             ConstString value_cstr;
-            ANDROID_KERNEL_SERVICE()
-                ->stringize( _jenv, _value, &value_cstr );
+            STRINGIZE_SERVICE()
+                ->stringize( value_str, value_size, MENGINE_STRINGIZE_UNKNOWN_HASH, &value_cstr );
+
+            Mengine_JNI_ReleaseStringUTFChars( _jenv, _value, value_str );
 
             return value_cstr;
         }
         //////////////////////////////////////////////////////////////////////////
         FilePath AndroidMakeFilePathFromJString( JNIEnv * _jenv, jstring _value )
         {
-            ConstString value_cstr;
-            ANDROID_KERNEL_SERVICE()
-                ->stringize( _jenv, _value, &value_cstr );
+            ConstString value_cstr = Helper::AndroidMakeConstStringFromJString( _jenv, _value );
 
             return FilePath( value_cstr );
         }

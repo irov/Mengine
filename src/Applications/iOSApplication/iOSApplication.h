@@ -4,6 +4,8 @@
 
 #include "Config/Char.h"
 
+#import <Foundation/Foundation.h>
+
 namespace Mengine
 {
     class iOSApplication
@@ -13,7 +15,7 @@ namespace Mengine
         ~iOSApplication();
 
     public:
-        bool bootstrap( int32_t _argc, Char ** const _argv );
+        bool bootstrap( NSArray<NSString *> * _arguments );
         
     public:
         bool run();
@@ -22,11 +24,8 @@ namespace Mengine
     public:
         void finalize();
 
-    public:
-        void loop();
-
     protected:
-        bool initializeOptionsService_( int32_t argc, Char ** const _argv );
+        bool initializeOptionsService_( NSArray<NSString *> * _arguments );
         bool initializeLoggerService_();
 
     protected:

@@ -32,9 +32,6 @@ src
     AndroidPluginCallbackInterface.h
     AndroidSemaphoreListenerInterface.h
     
-    ConstStringHolderJString.h
-    ConstStringHolderJString.cpp
-    
     AndroidLogger.h
     AndroidLogger.cpp
     

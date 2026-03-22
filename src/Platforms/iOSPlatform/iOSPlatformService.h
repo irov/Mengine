@@ -18,11 +18,13 @@
 #include "Interface/FactoryInterface.h"
 #include "Interface/AnalyticsEventProviderInterface.h"
 
-#include "Environment/SDL3/SDL3PlatformServiceExtensionInterface.h"
+#include "Environment/iOS/iOSPlatformServiceExtensionInterface.h"
 
 #import "iOSMailComposeDelegate.h"
+#import "iOSOpenGLView.h"
 
-#include "Environment/SDL3/SDL3Includer.h"
+#import <UIKit/UIKit.h>
+#import <OpenGLES/EAGL.h>
 
 #include "iOSInput.h"
 
@@ -36,7 +38,7 @@ namespace Mengine
 {
     class iOSPlatformService
         : public ServiceBase<PlatformServiceInterface>
-        , public SDL3PlatformServiceExtensionInterface
+        , public iOSPlatformServiceExtensionInterface
     {
         DECLARE_UNKNOWABLE();
 
@@ -55,12 +57,12 @@ namespace Mengine
         void finalizeFileService() override;
 
     public:
-        bool runPlatform()	override;
+        bool runPlatform()override;
         void loopPlatform() override;
         bool updatePlatform() override;
         void tickPlatform( float _frameTime ) override;
         bool renderPlatform() override;
-        void stopPlatform()	override;
+        void stopPlatform()override;
 
     public:
 
@@ -76,8 +78,7 @@ namespace Mengine
 
     public:
         bool createWindow( const Resolution & _resolution, bool _fullscreen ) override;
-        bool attachWindow( void * _hWND ) override;
-
+        
     public:
         bool hasPlatformTag( const ConstString & _tag ) const override;
         const Tags & getPlatformTags() const override;
@@ -137,7 +138,7 @@ namespace Mengine
 
     public:
         bool openUrlInDefaultBrowser( const Char * _url ) override;
-        bool openMail( const Char * _email, const Char * _subject, const Char * _body ) override;
+        bool openMail( const Char * _email, const Char * _subject, const Char * _body, const Char * _technically ) override;
         bool openDeleteAccount() override;
 
     public:
@@ -155,19 +156,25 @@ namespace Mengine
         bool getClipboardText( Char * _value, size_t _capacity ) const override;
 
     public:
-        SDL_Window * getWindow() const override;
+        void handleApplicationDidBecomeActive() override;
+        void handleApplicationWillEnterForeground() override;
+        void handleApplicationDidEnterBackground() override;
+        void handleApplicationWillResignActive() override;
+        void handleApplicationWillTerminate() override;
 
     public:
         UIWindow * getUIWindow() const override;
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
     public:
-        SDL_GLContext getGLContext() const override;
+        EAGLContext * getEAGLContext() const override;
 #endif
 
     public:
-        UniqueId addSDLEventHandler( const LambdaSDLEventHandler & _handler ) override;
-        void removeSDLEventHandler( UniqueId _handlerId ) override;
+        void handleTouchBegan( NSSet<UITouch *> * _touches, UIView * _view ) override;
+        void handleTouchMoved( NSSet<UITouch *> * _touches, UIView * _view ) override;
+        void handleTouchEnded( NSSet<UITouch *> * _touches, UIView * _view ) override;
+        void handleTouchCancelled( NSSet<UITouch *> * _touches, UIView * _view ) override;
 
     protected:
         bool changeWindow_( const Resolution & _resolution, bool _fullscreen );
@@ -193,20 +200,13 @@ namespace Mengine
 
         Tags m_platformTags;
 
-        SDL_Window * m_sdlWindow;
+        UIWindow * m_uiWindow;
 
-        struct SDLEventHandlerDesc
-        {
-            UniqueId id;
-            LambdaSDLEventHandler handler;
-        };
+        EAGLContext * m_glContext;
 
-        typedef Vector<SDLEventHandlerDesc> VectorSDLEventHandlers;
-        VectorSDLEventHandlers m_sdlEventHandlers;
+        iOSOpenGLView * m_glView;
 
-        SDL_GLContext m_glContext;
-
-        iOSInputPtr m_sdlInput;
+        iOSInputPtr m_iOSInput;
 
         StaticString<MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME> m_projectTitle;
         

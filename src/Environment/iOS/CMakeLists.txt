@@ -55,6 +55,8 @@ src
     iOSPluginLoggerDelegateInterface.h
 	iOSPluginConfigDelegateInterface.h
     iOSPluginAnalyticDelegateInterface.h
+
+    iOSPlatformServiceExtensionInterface.h
 )
 
 ADD_MENGINE_LIBRARY(Environment)

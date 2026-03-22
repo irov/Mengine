@@ -1,10 +1,10 @@
-#include "AppleSentryNotificationObserver.h"
+#import "AppleSentryNotificationObserver.h"
 
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/ServiceInterface.h"
 
-#include "Environment/Apple/AppleBundle.h"
+#import "Environment/Apple/AppleBundle.h"
 
 #include "Kernel/BuildMode.h"
 #include "Kernel/Logger.h"

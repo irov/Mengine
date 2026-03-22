@@ -2,10 +2,10 @@
 
 #import "Environment/Apple/AppleDetail.h"
 
-#include "Environment/Apple/AppleBundle.h"
-#include "Environment/Apple/AppleString.h"
-#include "Environment/Apple/AppleErrorHelper.h"
-#include "Environment/iOS/iOSDetail.h"
+#import "Environment/Apple/AppleBundle.h"
+#import "Environment/Apple/AppleString.h"
+#import "Environment/Apple/AppleErrorHelper.h"
+#import "Environment/iOS/iOSDetail.h"
 
 #include "Kernel/Logger.h"
 

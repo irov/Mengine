@@ -4,6 +4,7 @@
 #import "Environment/iOS/iOSPluginInterface.h"
 #import "Environment/iOS/iOSPluginLoggerDelegateInterface.h"
 #import "Environment/iOS/iOSPluginConfigDelegateInterface.h"
+#import "Environment/iOS/iOSPluginAnalyticDelegateInterface.h"
 #import "Environment/iOS/iOSPluginUserIdDelegateInterface.h"
 #import "Environment/iOS/iOSPluginAdRevenueDelegateInterface.h"
 #import "Environment/iOS/iOSPluginAppTrackingTransparencyDelegateInterface.h"
@@ -15,6 +16,7 @@
 - (NSArray<iOSPluginInterface> * _Nonnull)getPlugins;
 - (NSArray<iOSPluginLoggerDelegateInterface> * _Nonnull)getPluginLoggerDelegates;
 - (NSArray<iOSPluginConfigDelegateInterface> * _Nonnull)getPluginConfigDelegates;
+- (NSArray<iOSPluginAnalyticDelegateInterface> * _Nonnull)getPluginAnalyticDelegates;
 - (NSArray<iOSPluginUserIdDelegateInterface> * _Nonnull)getPluginUserIdDelegates;
 - (NSArray<iOSPluginAdRevenueDelegateInterface> * _Nonnull)getPluginAdRevenueDelegates;
 - (NSArray<iOSPluginAppTrackingTransparencyDelegateInterface> *_Nonnull)getPluginAppTrackingTransparencyDelegates;

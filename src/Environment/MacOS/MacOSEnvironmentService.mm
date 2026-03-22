@@ -165,11 +165,14 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MacOSEnvironmentService::openMail( const Char * _email, const Char * _subject, const Char * _body )
+    bool MacOSEnvironmentService::openMail( const Char * _email, const Char * _subject, const Char * _body, const Char * _technically )
     {
         NSString * email = [NSString stringWithUTF8String:_email];
         NSString * subject = [NSString stringWithUTF8String:_subject];
         NSString * body = [NSString stringWithUTF8String:_body];
+        NSString * technically = [NSString stringWithUTF8String:_technically];
+
+        MENGINE_UNUSED( technically );
         
         NSString * mailString = [NSString stringWithFormat:@"mailto:%@?subject=%@&body=%@"
                                 , email

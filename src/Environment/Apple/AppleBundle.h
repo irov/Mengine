@@ -6,6 +6,9 @@
 
 + (NSString *) getIdentifier;
 
++ (NSDictionary *)getApplicationConfig;
++ (id)getApplicationConfigValue:(NSString *) _key;
+
 + (BOOL)hasPluginConfig:(NSString *) _plugin;
 + (NSDictionary *)getPluginConfig:(NSString *) _plugin;
 + (NSString *)getPluginConfigString:(NSString *) _plugin withKey:(NSString *) _key withDefault:(NSString *) _default;

@@ -973,12 +973,13 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDL2PlatformService::openMail( const Char * _email, const Char * _subject, const Char * _body )
+    bool SDL2PlatformService::openMail( const Char * _email, const Char * _subject, const Char * _body, const Char * _technically )
     {
-        LOGGER_ERROR( "not supported open mail '%s' subject '%s' body '%s'"
+        LOGGER_ERROR( "not supported open mail '%s' subject '%s' body '%s' technically '%s'"
             , _email
             , _subject
             , _body
+            , _technically
         );
 
         return false;

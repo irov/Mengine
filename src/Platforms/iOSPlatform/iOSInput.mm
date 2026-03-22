@@ -2,7 +2,6 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/InputServiceHelper.h"
-#include "Kernel/UnicodeHelper.h"
 
 #include "Config/StdAlgorithm.h"
 
@@ -12,9 +11,9 @@ namespace Mengine
     iOSInput::iOSInput()
     {
         StdAlgorithm::fill_n( m_keyDown, MENGINE_INPUT_MAX_KEY_CODE, false );
-        StdAlgorithm::fill_n( m_keys, SDL_SCANCODE_COUNT, KC_UNASSIGNED );
-        StdAlgorithm::fill_n( m_codes, MENGINE_INPUT_MAX_KEY_CODE, SDL_SCANCODE_UNKNOWN );
-        StdAlgorithm::fill_n( m_fingers, MENGINE_INPUT_MAX_TOUCH, (SDL_FingerID)-1 );
+        StdAlgorithm::fill_n( m_fingers, MENGINE_INPUT_MAX_TOUCH, (UITouch *)nil );
+
+        m_lastCursorPosition = mt::vec2f( 0.f, 0.f );
     }
     //////////////////////////////////////////////////////////////////////////
     iOSInput::~iOSInput()
@@ -23,8 +22,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool iOSInput::initialize()
     {
-        this->fillKeys_();
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -32,25 +29,29 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void iOSInput::calcCursorPosition_( SDL_Window * _sdlWindow, float _mx, float _my, mt::vec2f * const _point ) const
+    void iOSInput::calcCursorPosition_( UIView * _view, CGPoint _location, mt::vec2f * const _point ) const
     {
-        int win_width;
-        int win_height;
-        SDL_GetWindowSize( _sdlWindow, &win_width, &win_height );
+        CGSize viewSize = _view.bounds.size;
 
-        _point->x = _mx / float(win_width);
-        _point->y = _my / float(win_height);
+        if( viewSize.width <= 0.f || viewSize.height <= 0.f )
+        {
+            _point->x = 0.f;
+            _point->y = 0.f;
+
+            return;
+        }
+
+        _point->x = static_cast<float>(_location.x / viewSize.width);
+        _point->y = static_cast<float>(_location.y / viewSize.height);
     }
     //////////////////////////////////////////////////////////////////////////
-    ETouchCode iOSInput::acquireFingerIndex_( SDL_FingerID _fingerId )
+    ETouchCode iOSInput::acquireFingerIndex_( UITouch * _touch )
     {
         for( uint32_t index = 0; index != MENGINE_INPUT_MAX_TOUCH; ++index )
         {
-            SDL_FingerID fingerId = m_fingers[index];
-
-            if( fingerId == -1 )
+            if( m_fingers[index] == nil )
             {
-                m_fingers[index] = _fingerId;
+                m_fingers[index] = _touch;
 
                 return static_cast<ETouchCode>(index);
             }
@@ -59,15 +60,13 @@ namespace Mengine
         return TC_TOUCH_INVALID;
     }
     //////////////////////////////////////////////////////////////////////////
-    ETouchCode iOSInput::releaseFingerIndex_( SDL_FingerID _fingerId )
+    ETouchCode iOSInput::releaseFingerIndex_( UITouch * _touch )
     {
         for( uint32_t index = 0; index != MENGINE_INPUT_MAX_TOUCH; ++index )
         {
-            SDL_FingerID fingerId = m_fingers[index];
-
-            if( fingerId == _fingerId )
+            if( m_fingers[index] == _touch )
             {
-                m_fingers[index] = -1;
+                m_fingers[index] = nil;
 
                 return static_cast<ETouchCode>(index);
             }
@@ -76,13 +75,11 @@ namespace Mengine
         return TC_TOUCH_INVALID;
     }
     //////////////////////////////////////////////////////////////////////////
-    ETouchCode iOSInput::getFingerIndex_( SDL_FingerID _fingerId ) const
+    ETouchCode iOSInput::getFingerIndex_( UITouch * _touch ) const
     {
         for( uint32_t index = 0; index != MENGINE_INPUT_MAX_TOUCH; ++index )
         {
-            SDL_FingerID fingerId = m_fingers[index];
-
-            if( fingerId == _fingerId )
+            if( m_fingers[index] == _touch )
             {
                 return static_cast<ETouchCode>(index);
             }
@@ -91,192 +88,109 @@ namespace Mengine
         return TC_TOUCH_INVALID;
     }
     //////////////////////////////////////////////////////////////////////////
-    void iOSInput::handleEvent( SDL_Window * _sdlWindow, const SDL_Event & _event )
+    void iOSInput::handleTouchBegan( NSSet<UITouch *> * _touches, UIView * _view )
     {
-        switch( _event.type )
+        for( UITouch * touch in _touches )
         {
-        case SDL_EVENT_MOUSE_WHEEL:
+            ETouchCode fingerIndex = this->acquireFingerIndex_( touch );
+
+            if( fingerIndex == TC_TOUCH_INVALID )
             {
-                float mouseX = _event.wheel.mouse_x;
-                float mouseY = _event.wheel.mouse_y;
+                LOGGER_INFO( "platform", "touch began: no free touch" );
 
-                mt::vec2f point;
-                this->calcCursorPosition_( _sdlWindow, mouseX, mouseY, &point );
+                continue;
+            }
 
-                float wheel_vertically = _event.wheel.y;
+            CGPoint location = [touch locationInView:_view];
 
-                Helper::pushMouseWheelEvent( point.x, point.y, 0.f, WC_CENTRAL, (Sint32)wheel_vertically );
-            }break;
-        case SDL_EVENT_KEY_DOWN:
-        case SDL_EVENT_KEY_UP:
+            mt::vec2f point;
+            this->calcCursorPosition_( _view, location, &point );
+
+            float pressure = static_cast<float>(touch.force / touch.maximumPossibleForce);
+
+            if( touch.maximumPossibleForce <= 0.f )
             {
-                float x;
-                float y;
-                SDL_MouseButtonFlags state = SDL_GetMouseState( &x, &y );
-                MENGINE_UNUSED( state );
+                pressure = 1.f;
+            }
 
-                mt::vec2f point;
-                this->calcCursorPosition_( _sdlWindow, x, y, &point );
+            m_lastCursorPosition = point;
 
-                SDL_Scancode scancode = _event.key.scancode;
-
-                EKeyCode code = this->getKeyCode_( scancode );
-
-                if( code == KC_UNASSIGNED )
-                {
-                    return;
-                }
-
-                bool isDown = _event.key.down;
-
-                m_keyDown[code] = isDown;
-
-                Helper::pushKeyEvent( point.x, point.y, 0.f, code, isDown, _event.key.repeat );
-
-#if defined(MENGINE_DEVICE_MOBILE)
-                if( code == KC_RETURN )
-                {
-                    SDL_StopTextInput( _sdlWindow );
-                }
-#endif
-            } break;
-        case SDL_EVENT_TEXT_INPUT:
-            {
-                float x;
-                float y;
-                SDL_MouseButtonFlags state = SDL_GetMouseState( &x, &y );
-                MENGINE_UNUSED( state );
-
-                mt::vec2f point;
-                this->calcCursorPosition_( _sdlWindow, x, y, &point );
-
-                const Char * text = _event.text.text;
-
-                if( text == nullptr )
-                {
-                    return;
-                }
-
-                WChar text_code[256 + 1] = {L'\0'};
-                size_t text_code_size;
-                Helper::utf8ToUnicode( text, text_code, 256, &text_code_size );
-
-                Helper::pushTextEvent( point.x, point.y, 0.f, text_code );
-            }break;
-        case SDL_EVENT_MOUSE_MOTION:
-            {
-                float x = _event.motion.x;
-                float y = _event.motion.y;
-
-                mt::vec2f point;
-                this->calcCursorPosition_( _sdlWindow, x, y, &point );
-
-                float xrel = _event.motion.xrel;
-                float yrel = _event.motion.yrel;
-
-                mt::vec2f delta;
-                this->calcCursorPosition_( _sdlWindow, xrel, yrel, &delta );
-
-                Helper::pushMouseMoveEvent( TC_TOUCH0, point.x, point.y, delta.x, delta.y, 0.f, 0.f );
-            }break;
-        case SDL_EVENT_MOUSE_BUTTON_DOWN:
-        case SDL_EVENT_MOUSE_BUTTON_UP:
-            {
-                float x = _event.button.x;
-                float y = _event.button.y;
-
-                mt::vec2f point;
-                this->calcCursorPosition_( _sdlWindow, x, y, &point );
-
-                EMouseButtonCode button;
-
-                switch( _event.button.button )
-                {
-                case SDL_BUTTON_LEFT:
-                    button = MC_LBUTTON;
-                    break;
-                case SDL_BUTTON_MIDDLE:
-                    button = MC_MBUTTON;
-                    break;
-                case SDL_BUTTON_RIGHT:
-                    button = MC_RBUTTON;
-                    break;
-                case SDL_BUTTON_X1:
-                    button = MC_X1BUTTON;
-                    break;
-                case SDL_BUTTON_X2:
-                    button = MC_X2BUTTON;
-                    break;
-                default:
-                    return;
-                };
-
-                bool isDown = _event.button.down;
-
-                Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, button, 0.f, isDown );
-            }break;
-        case SDL_EVENT_FINGER_MOTION:
-            {
-                SDL_FingerID fingerId = _event.tfinger.fingerID;
-
-                ETouchCode fingerIndex = this->getFingerIndex_( fingerId );
-
-                if( fingerIndex == TC_TOUCH_INVALID )
-                {
-                    LOGGER_INFO( "platform", "SDL_EVENT_FINGER_MOTION unknown touch" );
-
-                    return;
-                }
-
-                float x = _event.tfinger.x;
-                float y = _event.tfinger.y;
-                float dx = _event.tfinger.dx;
-                float dy = _event.tfinger.dy;
-                float pressure = _event.tfinger.pressure;
-
-                Helper::pushMouseMoveEvent( fingerIndex, x, y, dx, dy, pressure, 0.f );
-            }break;
-        case SDL_EVENT_FINGER_DOWN:
-            {
-                SDL_FingerID fingerId = _event.tfinger.fingerID;
-
-                ETouchCode fingerIndex = this->acquireFingerIndex_( fingerId );
-
-                if( fingerIndex == TC_TOUCH_INVALID )
-                {
-                    LOGGER_INFO( "platform", "SDL_EVENT_FINGER_DOWN no free touch" );
-
-                    return;
-                }
-
-                float x = _event.tfinger.x;
-                float y = _event.tfinger.y;
-                float pressure = _event.tfinger.pressure;
-
-                Helper::pushMouseButtonEvent( fingerIndex, x, y, MC_LBUTTON, pressure, true );
-            }break;
-        case SDL_EVENT_FINGER_UP:
-            {
-                SDL_FingerID fingerId = _event.tfinger.fingerID;
-
-                ETouchCode fingerIndex = this->releaseFingerIndex_( fingerId );
-
-                if( fingerIndex == TC_TOUCH_INVALID )
-                {
-                    LOGGER_INFO( "platform", "SDL_EVENT_FINGER_UP too many touches" );
-
-                    return;
-                }
-
-                float x = _event.tfinger.x;
-                float y = _event.tfinger.y;
-                float pressure = _event.tfinger.pressure;
-
-                Helper::pushMouseButtonEvent( fingerIndex, x, y, MC_LBUTTON, pressure, false );
-            }break;
-        default:
-            break;
+            Helper::pushMouseButtonEvent( fingerIndex, point.x, point.y, MC_LBUTTON, pressure, true );
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void iOSInput::handleTouchMoved( NSSet<UITouch *> * _touches, UIView * _view )
+    {
+        for( UITouch * touch in _touches )
+        {
+            ETouchCode fingerIndex = this->getFingerIndex_( touch );
+
+            if( fingerIndex == TC_TOUCH_INVALID )
+            {
+                LOGGER_INFO( "platform", "touch moved: unknown touch" );
+
+                continue;
+            }
+
+            CGPoint location = [touch locationInView:_view];
+            CGPoint prevLocation = [touch previousLocationInView:_view];
+
+            mt::vec2f point;
+            this->calcCursorPosition_( _view, location, &point );
+
+            mt::vec2f prevPoint;
+            this->calcCursorPosition_( _view, prevLocation, &prevPoint );
+
+            float dx = point.x - prevPoint.x;
+            float dy = point.y - prevPoint.y;
+
+            float pressure = static_cast<float>(touch.force / touch.maximumPossibleForce);
+
+            if( touch.maximumPossibleForce <= 0.f )
+            {
+                pressure = 1.f;
+            }
+
+            m_lastCursorPosition = point;
+
+            Helper::pushMouseMoveEvent( fingerIndex, point.x, point.y, dx, dy, pressure, 0.f );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void iOSInput::handleTouchEnded( NSSet<UITouch *> * _touches, UIView * _view )
+    {
+        for( UITouch * touch in _touches )
+        {
+            ETouchCode fingerIndex = this->releaseFingerIndex_( touch );
+
+            if( fingerIndex == TC_TOUCH_INVALID )
+            {
+                LOGGER_INFO( "platform", "touch ended: unknown touch" );
+
+                continue;
+            }
+
+            CGPoint location = [touch locationInView:_view];
+
+            mt::vec2f point;
+            this->calcCursorPosition_( _view, location, &point );
+
+            float pressure = static_cast<float>(touch.force / touch.maximumPossibleForce);
+
+            if( touch.maximumPossibleForce <= 0.f )
+            {
+                pressure = 1.f;
+            }
+
+            m_lastCursorPosition = point;
+
+            Helper::pushMouseButtonEvent( fingerIndex, point.x, point.y, MC_LBUTTON, pressure, false );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void iOSInput::handleTouchCancelled( NSSet<UITouch *> * _touches, UIView * _view )
+    {
+        this->handleTouchEnded( _touches, _view );
     }
     //////////////////////////////////////////////////////////////////////////
     bool iOSInput::isKeyDown( EKeyCode _code ) const
@@ -303,153 +217,9 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void iOSInput::getCursorPosition( SDL_Window * _sdlWindow, mt::vec2f * const _point ) const
+    void iOSInput::getCursorPosition( mt::vec2f * const _point ) const
     {
-        float x = 0.f;
-        float y = 0.f;
-        SDL_MouseButtonFlags state = SDL_GetMouseState( &x, &y );
-        MENGINE_UNUSED( state );
-
-        this->calcCursorPosition_( _sdlWindow, x, y, _point );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void iOSInput::fillKeys_()
-    {
-        m_keys[SDL_SCANCODE_RETURN] = Mengine::KC_RETURN;
-        m_keys[SDL_SCANCODE_ESCAPE] = Mengine::KC_ESCAPE;
-        m_keys[SDL_SCANCODE_BACKSPACE] = Mengine::KC_BACK;
-        m_keys[SDL_SCANCODE_TAB] = Mengine::KC_TAB;
-        m_keys[SDL_SCANCODE_SPACE] = Mengine::KC_SPACE;
-
-        m_keys[SDL_SCANCODE_MENU] = Mengine::KC_MENU;
-
-
-        m_keys[SDL_SCANCODE_LSHIFT] = Mengine::KC_LSHIFT;
-        m_keys[SDL_SCANCODE_RSHIFT] = Mengine::KC_RSHIFT;
-        m_keys[SDL_SCANCODE_LCTRL] = Mengine::KC_LCONTROL;
-        m_keys[SDL_SCANCODE_RCTRL] = Mengine::KC_RCONTROL;
-        m_keys[SDL_SCANCODE_LALT] = Mengine::KC_LMENU;
-        m_keys[SDL_SCANCODE_RALT] = Mengine::KC_RMENU;
-        m_keys[SDL_SCANCODE_PAUSE] = Mengine::KC_PAUSE;
-        m_keys[SDL_SCANCODE_CAPSLOCK] = Mengine::KC_CAPITAL;
-
-        m_keys[SDL_SCANCODE_PAGEUP] = Mengine::KC_PRIOR;
-        m_keys[SDL_SCANCODE_PAGEDOWN] = Mengine::KC_NEXT;
-        m_keys[SDL_SCANCODE_END] = Mengine::KC_END;
-        m_keys[SDL_SCANCODE_HOME] = Mengine::KC_HOME;
-        m_keys[SDL_SCANCODE_LEFT] = Mengine::KC_LEFT;
-        m_keys[SDL_SCANCODE_UP] = Mengine::KC_UP;
-        m_keys[SDL_SCANCODE_RIGHT] = Mengine::KC_RIGHT;
-        m_keys[SDL_SCANCODE_DOWN] = Mengine::KC_DOWN;
-        m_keys[SDL_SCANCODE_INSERT] = Mengine::KC_INSERT;
-        m_keys[SDL_SCANCODE_DELETE] = Mengine::KC_DELETE;
-
-        m_keys[SDL_SCANCODE_0] = Mengine::KC_0;
-        m_keys[SDL_SCANCODE_1] = Mengine::KC_1;
-        m_keys[SDL_SCANCODE_2] = Mengine::KC_2;
-        m_keys[SDL_SCANCODE_3] = Mengine::KC_3;
-        m_keys[SDL_SCANCODE_4] = Mengine::KC_4;
-        m_keys[SDL_SCANCODE_5] = Mengine::KC_5;
-        m_keys[SDL_SCANCODE_6] = Mengine::KC_6;
-        m_keys[SDL_SCANCODE_7] = Mengine::KC_7;
-        m_keys[SDL_SCANCODE_8] = Mengine::KC_8;
-        m_keys[SDL_SCANCODE_9] = Mengine::KC_9;
-
-        m_keys[SDL_SCANCODE_A] = Mengine::KC_A;
-        m_keys[SDL_SCANCODE_B] = Mengine::KC_B;
-        m_keys[SDL_SCANCODE_C] = Mengine::KC_C;
-        m_keys[SDL_SCANCODE_D] = Mengine::KC_D;
-        m_keys[SDL_SCANCODE_E] = Mengine::KC_E;
-        m_keys[SDL_SCANCODE_F] = Mengine::KC_F;
-        m_keys[SDL_SCANCODE_G] = Mengine::KC_G;
-        m_keys[SDL_SCANCODE_H] = Mengine::KC_H;
-        m_keys[SDL_SCANCODE_I] = Mengine::KC_I;
-        m_keys[SDL_SCANCODE_J] = Mengine::KC_J;
-        m_keys[SDL_SCANCODE_K] = Mengine::KC_K;
-        m_keys[SDL_SCANCODE_L] = Mengine::KC_L;
-        m_keys[SDL_SCANCODE_M] = Mengine::KC_M;
-        m_keys[SDL_SCANCODE_N] = Mengine::KC_N;
-        m_keys[SDL_SCANCODE_O] = Mengine::KC_O;
-        m_keys[SDL_SCANCODE_P] = Mengine::KC_P;
-        m_keys[SDL_SCANCODE_Q] = Mengine::KC_Q;
-        m_keys[SDL_SCANCODE_R] = Mengine::KC_R;
-        m_keys[SDL_SCANCODE_S] = Mengine::KC_S;
-        m_keys[SDL_SCANCODE_T] = Mengine::KC_T;
-        m_keys[SDL_SCANCODE_U] = Mengine::KC_U;
-        m_keys[SDL_SCANCODE_V] = Mengine::KC_V;
-        m_keys[SDL_SCANCODE_W] = Mengine::KC_W;
-        m_keys[SDL_SCANCODE_X] = Mengine::KC_X;
-        m_keys[SDL_SCANCODE_Y] = Mengine::KC_Y;
-        m_keys[SDL_SCANCODE_Z] = Mengine::KC_Z;
-
-        m_keys[SDL_SCANCODE_KP_1] = Mengine::KC_NUMPAD0;
-        m_keys[SDL_SCANCODE_KP_2] = Mengine::KC_NUMPAD1;
-        m_keys[SDL_SCANCODE_KP_3] = Mengine::KC_NUMPAD2;
-        m_keys[SDL_SCANCODE_KP_4] = Mengine::KC_NUMPAD3;
-        m_keys[SDL_SCANCODE_KP_5] = Mengine::KC_NUMPAD4;
-        m_keys[SDL_SCANCODE_KP_6] = Mengine::KC_NUMPAD5;
-        m_keys[SDL_SCANCODE_KP_7] = Mengine::KC_NUMPAD6;
-        m_keys[SDL_SCANCODE_KP_8] = Mengine::KC_NUMPAD7;
-        m_keys[SDL_SCANCODE_KP_9] = Mengine::KC_NUMPAD8;
-        m_keys[SDL_SCANCODE_KP_0] = Mengine::KC_NUMPAD9;
-
-        m_keys[SDL_SCANCODE_KP_MINUS] = Mengine::KC_SUBTRACT;
-        m_keys[SDL_SCANCODE_KP_PLUS] = Mengine::KC_ADD;
-
-        m_keys[SDL_SCANCODE_KP_DIVIDE] = Mengine::KC_DIVIDE;
-
-        m_keys[SDL_SCANCODE_F1] = Mengine::KC_F1;
-        m_keys[SDL_SCANCODE_F2] = Mengine::KC_F2;
-        m_keys[SDL_SCANCODE_F3] = Mengine::KC_F3;
-        m_keys[SDL_SCANCODE_F4] = Mengine::KC_F4;
-        m_keys[SDL_SCANCODE_F5] = Mengine::KC_F5;
-        m_keys[SDL_SCANCODE_F6] = Mengine::KC_F6;
-        m_keys[SDL_SCANCODE_F7] = Mengine::KC_F7;
-        m_keys[SDL_SCANCODE_F8] = Mengine::KC_F8;
-        m_keys[SDL_SCANCODE_F9] = Mengine::KC_F9;
-        m_keys[SDL_SCANCODE_F10] = Mengine::KC_F10;
-        m_keys[SDL_SCANCODE_F11] = Mengine::KC_F11;
-        m_keys[SDL_SCANCODE_F12] = Mengine::KC_F12;
-
-        m_keys[SDL_SCANCODE_LEFTBRACKET] = Mengine::KC_OEM_4;
-        m_keys[SDL_SCANCODE_RIGHTBRACKET] = Mengine::KC_OEM_6;
-        m_keys[SDL_SCANCODE_EQUALS] = Mengine::KC_OEM_PLUS;
-        m_keys[SDL_SCANCODE_MINUS] = Mengine::KC_OEM_MINUS;
-
-        m_keys[SDL_SCANCODE_NUMLOCKCLEAR] = Mengine::KC_NUMLOCK;
-
-        m_keys[SDL_SCANCODE_AC_BACK] = Mengine::KC_BROWSER_BACK;
-
-        for( uint32_t i = 0; i != SDL_SCANCODE_COUNT; ++i )
-        {
-            EKeyCode code = m_keys[i];
-
-            if( code == KC_UNASSIGNED )
-            {
-                continue;
-            }
-
-            m_codes[code] = (SDL_Scancode)i;
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    EKeyCode iOSInput::getKeyCode_( SDL_Scancode _key ) const
-    {
-        if( _key >= SDL_SCANCODE_COUNT )
-        {
-            return KC_UNASSIGNED;
-        }
-
-        EKeyCode code = m_keys[_key];
-
-        return code;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    SDL_Scancode iOSInput::getSDLKey_( EKeyCode _code ) const
-    {
-        SDL_Scancode key = m_codes[_code];
-
-        return key;
+        *_point = m_lastCursorPosition;
     }
     //////////////////////////////////////////////////////////////////////////
 }

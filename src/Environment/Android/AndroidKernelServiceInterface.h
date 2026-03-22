@@ -17,9 +17,6 @@ namespace Mengine
         SERVICE_DECLARE( "AndroidKernelService" )
 
     public:
-        virtual void stringize( JNIEnv * _jenv, jstring _value, ConstString * const _cstr ) = 0;
-
-    public:
         virtual void addPlugin( const ConstString & _plugin, jobject _jmodule ) = 0;
         virtual jobject getPlugin( const ConstString & _plugin ) = 0;
         virtual jobject removePlugin( const ConstString & _plugin ) = 0;

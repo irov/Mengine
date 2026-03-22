@@ -84,14 +84,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     FontGlyphInterfacePtr FontService::createGlyph( const ConstString & _glyphName, const ConstString & _glyphType, const DocumentInterfacePtr & _doc )
     {
-        MENGINE_ASSERTION_FATAL( m_fontGlyphs.find( _glyphName ) == nullptr, "already exist font glyph '%s'"
+        MENGINE_ASSERTION_FATAL( m_fontGlyphs.find( _glyphName ) == nullptr, "already exist glyph '%s'"
             , _glyphName.c_str()
         );
 
         FontGlyphInterfacePtr glyph = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "FontGlyph" ), _glyphType, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( glyph, "invalid create font glyph '%s' type '%s' (doc: %s)"
+        MENGINE_ASSERTION_MEMORY_PANIC( glyph, "invalid create glyph '%s' type '%s' (doc: %s)"
             , _glyphName.c_str()
             , _glyphType.c_str()
             , MENGINE_DOCUMENT_STR( _doc )
@@ -145,7 +145,7 @@ namespace Mengine
     {
         const FontGlyphInterfacePtr & glyph = m_fontGlyphs.find( _glyphName );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( glyph, "not found font glyph '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( glyph, "not found glyph '%s'"
             , _glyphName.c_str()
         );
 
@@ -245,7 +245,7 @@ namespace Mengine
             ConstString glyphType;
             config->hasValue( glyphName.c_str(), "Type", ConstString::none(), &glyphType );
 
-            MENGINE_ASSERTION_FATAL( glyphType != ConstString::none(), "config '%s' font glyph '%s' not setup [Type]"
+            MENGINE_ASSERTION_FATAL( glyphType != ConstString::none(), "config '%s' glyph '%s' not setup [Type]"
                 , Helper::getContentFullPath( _content ).c_str()
                 , glyphName.c_str()
             );
@@ -325,7 +325,7 @@ namespace Mengine
 
             FontGlyphInterfacePtr glyph = m_fontGlyphs.erase( glyphName );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( glyph, "not found glyph '%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( glyph, "invalid remove glyph '%s' not found"
                 , glyphName.c_str()
             );
 

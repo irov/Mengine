@@ -62,6 +62,7 @@ namespace Mengine
         ConstString m_defaultLocale;
 
     protected:
+        void loadAllLocalePacksByName_( const Tags & _platformTags, VectorPackages * const _packs ) const;
         bool loadLocalePacksByName_( const ConstString & _locale, const Tags & _platformTags, VectorPackages * const _packs ) const;
     };
 }

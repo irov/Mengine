@@ -1071,7 +1071,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool GDKPlatformService::openMail( const Char * _email, const Char * _subject, const Char * _body )
+    bool GDKPlatformService::openMail( const Char * _email, const Char * _subject, const Char * _body, const Char * _technically )
     {
         MENGINE_UNUSED( _email );
         MENGINE_UNUSED( _subject );

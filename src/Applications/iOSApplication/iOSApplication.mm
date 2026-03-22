@@ -14,7 +14,7 @@
 
 #include "Mengine/MenginePlugin.h"
 
-#include "Environment/SDL3/SDL3MessageBoxLogger.h"
+#include "iOSAlertLogger.h"
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/StringArguments.h"
@@ -38,15 +38,15 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool iOSApplication::initializeOptionsService_( int32_t _argc, Char ** const _argv )
+    bool iOSApplication::initializeOptionsService_( NSArray<NSString *> * _arguments )
     {
         ArgumentsInterfacePtr arguments = Helper::makeFactorableUnique<StringArguments>( MENGINE_DOCUMENT_FUNCTION );
 
-        for( int32_t i = 1; i < _argc; ++i )
+        for( NSUInteger i = 1; i != [_arguments count]; ++i )
         {
-            const Char * arg = _argv[i];
+            NSString * arg = [_arguments objectAtIndex:i];
 
-            arguments->addArgument( arg );
+            arguments->addArgument( [arg UTF8String] );
         }
 
         if( OPTIONS_SERVICE()
@@ -76,7 +76,7 @@ namespace Mengine
             m_loggerStdio = loggerStdio;
         }
 
-        LoggerInterfacePtr loggerMessageBox = Helper::makeFactorableUnique<SDL3MessageBoxLogger>( MENGINE_DOCUMENT_FUNCTION );
+        LoggerInterfacePtr loggerMessageBox = Helper::makeFactorableUnique<iOSAlertLogger>( MENGINE_DOCUMENT_FUNCTION );
 
         loggerMessageBox->setVerboseLevel( LM_FATAL );
 
@@ -108,16 +108,16 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool iOSApplication::bootstrap( int32_t _argc, Char ** const _argv )
+    bool iOSApplication::bootstrap( NSArray<NSString *> * _arguments )
     {
         ServiceProviderInterface * serviceProvider = ::API_MengineCreate();
 
         SERVICE_PROVIDER_SETUP( serviceProvider );
 
         SERVICE_PROVIDER_GET()
-            ->waitService( "iOSApplication", SERVICE_ID( OptionsServiceInterface ), [this, _argc, _argv]()
+            ->waitService( "iOSApplication", SERVICE_ID( OptionsServiceInterface ), [this, _arguments]()
         {
-            if( this->initializeOptionsService_( _argc, _argv ) == false )
+            if( this->initializeOptionsService_( _arguments ) == false )
             {
                 return false;
             }
@@ -184,6 +184,12 @@ namespace Mengine
         }
 
         if( PLATFORM_SERVICE()
+            ->updatePlatform() == false )
+        {
+            return false;
+        }
+
+        if( PLATFORM_SERVICE()
             ->createWindow( Resolution( 0, 0 ), true ) == false )
         {
             LOGGER_FATAL( "invalid create window" );
@@ -205,16 +211,15 @@ namespace Mengine
         GAME_SERVICE()
             ->run();
 
-        PLATFORM_SERVICE()
-            ->runPlatform();
+        if( PLATFORM_SERVICE()
+            ->runPlatform() == false )
+        {
+            LOGGER_ERROR( "invalid run platform" );
+
+            return false;
+        }
 
         return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void iOSApplication::loop()
-    {
-        PLATFORM_SERVICE()
-            ->loopPlatform();
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSApplication::stop()
@@ -230,7 +235,7 @@ namespace Mengine
                 ->stopPlatform();
         }
         
-        if( SERVICE_IS_INITIALIZE( Mengine::PlatformServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( Mengine::BootstrapperInterface ) == true )
         {
             BOOTSTRAPPER_SERVICE()
                 ->stop();

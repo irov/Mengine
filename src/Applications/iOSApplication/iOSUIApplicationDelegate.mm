@@ -1,12 +1,11 @@
 #import "iOSUIApplicationDelegate.h"
+#import "iOSSceneDelegate.h"
 
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/PluginServiceInterface.h"
 
-#include "Environment/SDL3/SDL3Includer.h"
-#include "Environment/SDL3/SDL3PlatformServiceExtensionInterface.h"
-
 #import "iOSApplicationDelegates.h"
+#import "iOSViewController.h"
 
 #import "Environment/Apple/AppleUserDefaults.h"
 #import "Environment/Apple/AppleDetail.h"
@@ -15,17 +14,51 @@
 #import "Environment/iOS/iOSApplication.h"
 #import "Environment/iOS/iOSNetwork.h"
 #import "Environment/iOS/iOSDetail.h"
+#include "Environment/iOS/iOSPlatformServiceExtensionInterface.h"
 
 #include "iOSApplication.h"
 
-#ifndef MENGINE_IOS_LAUNCH_ARGUMENTS_CAPACITY
-#define MENGINE_IOS_LAUNCH_ARGUMENTS_CAPACITY 32
-#endif
+#include "Kernel/NotificationHelper.h"
+
+typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
+
+@interface iOSUIApplicationDelegate ()
+
+@property (nonatomic, strong) UIWindow * m_window;
+@property (nonatomic, strong) CADisplayLink * m_displayLink;
+@property (nonatomic, assign) CFTimeInterval m_prevTimestamp;
+@property (nonatomic, assign) void * m_application;
+
+@property (nonatomic, strong) NSMutableArray<id> * m_pluginDelegates;
+@property (nonatomic, strong) NSMutableArray<iOSPluginInterface> * m_plugins;
+@property (nonatomic, strong) NSMutableArray<iOSPluginLoggerDelegateInterface> * m_pluginLoggerDelegates;
+@property (nonatomic, strong) NSMutableArray<iOSPluginConfigDelegateInterface> * m_pluginConfigDelegates;
+@property (nonatomic, strong) NSMutableArray<iOSPluginAnalyticDelegateInterface> * m_pluginAnalyticDelegates;
+@property (nonatomic, strong) NSMutableArray<iOSPluginUserIdDelegateInterface> * m_pluginUserIdDelegates;
+@property (nonatomic, strong) NSMutableArray<iOSPluginAdRevenueDelegateInterface> * m_pluginAdRevenueDelegates;
+@property (nonatomic, strong) NSMutableArray<iOSPluginAppTrackingTransparencyDelegateInterface> * m_pluginAppTrackingTransparencyDelegates;
+@property (nonatomic, strong) NSMutableArray<iOSPluginTransparencyConsentDelegateInterface> * m_pluginTransparencyConsentDelegates;
+
+@property (nonatomic, strong) NSMutableArray<iOSDidBecomeActiveOperationBlock> * m_didBecomeActiveOperations;
+@property (nonatomic, assign) BOOL m_isProcessingDidBecomeActiveOperation;
+@property (nonatomic, assign) BOOL m_isApplicationForeground;
+@property (nonatomic, assign) BOOL m_isApplicationActive;
+@property (nonatomic, assign) BOOL m_isApplicationTerminating;
+
+- (void)startEngineLoop;
+- (void)stopEngineLoop;
+- (void)engineFrame:(CADisplayLink *)displayLink;
+- (void)finishApplication;
+
+@end
 
 @implementation iOSUIApplicationDelegate
 
 - (instancetype)init {
     if (self = [super init]) {
+        self.m_application = nullptr;
+        self.m_displayLink = nil;
+        self.m_prevTimestamp = 0.0;
         self.m_pluginDelegates = [NSMutableArray<id> array];
         self.m_plugins = [NSMutableArray<iOSPluginInterface> array];
         self.m_pluginLoggerDelegates = [NSMutableArray<iOSPluginLoggerDelegateInterface> array];
@@ -38,6 +71,9 @@
         
         self.m_didBecomeActiveOperations = [NSMutableArray<iOSDidBecomeActiveOperationBlock> array];
         self.m_isProcessingDidBecomeActiveOperation = NO;
+        self.m_isApplicationForeground = NO;
+        self.m_isApplicationActive = NO;
+        self.m_isApplicationTerminating = NO;
         
         NSArray * proxysClassed = [iOSApplicationDelegates getApplicationDelegates];
         
@@ -320,14 +356,6 @@
         }
     }
     
-    UIWindow * window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    UIViewController * viewController = [[UIViewController alloc] init];
-    window.rootViewController = viewController;
-    
-    [window makeKeyAndVisible];
-    
-    [self setWindow:window];
-    
     @autoreleasepool {
         for (id plugin in self.m_plugins) {
             if ([plugin application:application didFinishLaunchingWithOptions:launchOptions] == NO) {
@@ -357,6 +385,19 @@
     return YES;
 }
 
+#pragma mark - UISceneSession lifecycle
+
+- (UISceneConfiguration *)application:(UIApplication *)application configurationForConnectingSceneSession:(UISceneSession *)connectingSceneSession options:(UISceneConnectionOptions *)options API_AVAILABLE(ios(13.0)) {
+    UISceneConfiguration * configuration = [[UISceneConfiguration alloc] initWithName:@"Default Configuration" sessionRole:connectingSceneSession.role];
+    configuration.delegateClass = [iOSSceneDelegate class];
+    
+    return configuration;
+}
+
+- (void)application:(UIApplication *)application didDiscardSceneSessions:(NSSet<UISceneSession *> *)sceneSessions API_AVAILABLE(ios(13.0)) {
+    // Called when the user discards a scene session
+}
+
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken API_AVAILABLE(ios(3.0)) {
     [AppleLog withFormat:@"Mengine application didRegisterForRemoteNotificationsWithDeviceToken"];
 
@@ -374,6 +415,8 @@
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler API_AVAILABLE(ios(7.0)) {
     [AppleLog withFormat:@"Mengine application didReceiveRemoteNotification"];
     
+    BOOL handled = NO;
+    
     @autoreleasepool {
         for (id plugin in self.m_plugins) {
             if ([plugin respondsToSelector:@selector(application: didReceiveRemoteNotification: fetchCompletionHandler:)] == NO) {
@@ -381,82 +424,187 @@
             }
             
             [plugin application:application didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
+            
+            handled = YES;
         }
+    }
+    
+    if (handled == NO) {
+        completionHandler( UIBackgroundFetchResultNoData );
     }
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
+    [self handleApplicationDidBecomeActive:application];
+}
+
+- (void)applicationWillEnterForeground:(UIApplication *)application {
+    [self handleApplicationWillEnterForeground:application];
+}
+
+- (void)applicationDidEnterBackground:(UIApplication *)application {
+    [self handleApplicationDidEnterBackground:application];
+}
+
+- (void)applicationWillResignActive:(UIApplication *)application {
+    [self handleApplicationWillResignActive:application];
+}
+
+- (void)applicationWillTerminate:(UIApplication *)application {
+    [self handleApplicationWillTerminate:application];
+
+    [[iOSNetwork sharedInstance] stopMonitoring];
+}
+
+- (void)handleApplicationDidBecomeActive:(UIApplication *)application {
+    if (self.m_isApplicationActive == YES) {
+        return;
+    }
+
+    self.m_isApplicationActive = YES;
+
     [AppleLog withFormat:@"Mengine application applicationDidBecomeActive"];
-    
-    [self processNextOperation];
-    
+
+    if (self.m_isApplicationTerminating == NO) {
+        [self processNextOperation];
+    }
+
     @autoreleasepool {
         for (id plugin in self.m_plugins) {
             if ([plugin respondsToSelector:@selector(applicationDidBecomeActive:)] == NO) {
                 continue;
             }
-            
+
             [plugin applicationDidBecomeActive:application];
+        }
+    }
+
+    if( SERVICE_PROVIDER_EXIST() == true && SERVICE_IS_INITIALIZE( Mengine::PlatformServiceInterface ) == true ) {
+        Mengine::iOSPlatformServiceExtensionInterface * extension = PLATFORM_SERVICE()
+            ->getDynamicUnknown();
+
+        if( extension != nullptr ) {
+            extension->handleApplicationDidBecomeActive();
         }
     }
 }
 
-- (void)applicationWillEnterForeground:(UIApplication *)application {
+- (void)handleApplicationWillEnterForeground:(UIApplication *)application {
+    if (self.m_isApplicationForeground == YES) {
+        return;
+    }
+
+    self.m_isApplicationForeground = YES;
+
     [AppleLog withFormat:@"Mengine application applicationWillEnterForeground"];
-    
+
     @autoreleasepool {
         for (id plugin in self.m_plugins) {
             if ([plugin respondsToSelector:@selector(applicationWillEnterForeground:)] == NO) {
                 continue;
             }
-            
+
             [plugin applicationWillEnterForeground:application];
+        }
+    }
+
+    if( SERVICE_PROVIDER_EXIST() == true && SERVICE_IS_INITIALIZE( Mengine::PlatformServiceInterface ) == true ) {
+        Mengine::iOSPlatformServiceExtensionInterface * extension = PLATFORM_SERVICE()
+            ->getDynamicUnknown();
+
+        if( extension != nullptr ) {
+            extension->handleApplicationWillEnterForeground();
         }
     }
 }
 
-- (void)applicationDidEnterBackground:(UIApplication *)application {
+- (void)handleApplicationDidEnterBackground:(UIApplication *)application {
+    if (self.m_isApplicationForeground == NO) {
+        return;
+    }
+
+    self.m_isApplicationForeground = NO;
+
     [AppleLog withFormat:@"Mengine application applicationDidEnterBackground"];
-    
+
     @autoreleasepool {
         for (id plugin in self.m_plugins) {
             if ([plugin respondsToSelector:@selector(applicationDidEnterBackground:)] == NO) {
                 continue;
             }
-            
+
             [plugin applicationDidEnterBackground:application];
+        }
+    }
+
+    if( SERVICE_PROVIDER_EXIST() == true && SERVICE_IS_INITIALIZE( Mengine::PlatformServiceInterface ) == true ) {
+        Mengine::iOSPlatformServiceExtensionInterface * extension = PLATFORM_SERVICE()
+            ->getDynamicUnknown();
+
+        if( extension != nullptr ) {
+            extension->handleApplicationDidEnterBackground();
         }
     }
 }
 
-- (void)applicationWillResignActive:(UIApplication *)application {
+- (void)handleApplicationWillResignActive:(UIApplication *)application {
+    if (self.m_isApplicationActive == NO) {
+        return;
+    }
+
+    self.m_isApplicationActive = NO;
+
     [AppleLog withFormat:@"Mengine application applicationWillResignActive"];
-    
+
     @autoreleasepool {
         for (id plugin in self.m_plugins) {
             if ([plugin respondsToSelector:@selector(applicationWillResignActive:)] == NO) {
                 continue;
             }
-            
+
             [plugin applicationWillResignActive:application];
+        }
+    }
+
+    if( SERVICE_PROVIDER_EXIST() == true && SERVICE_IS_INITIALIZE( Mengine::PlatformServiceInterface ) == true ) {
+        Mengine::iOSPlatformServiceExtensionInterface * extension = PLATFORM_SERVICE()
+            ->getDynamicUnknown();
+
+        if( extension != nullptr ) {
+            extension->handleApplicationWillResignActive();
         }
     }
 }
 
-- (void)applicationWillTerminate:(UIApplication *)application {
+- (void)handleApplicationWillTerminate:(UIApplication *)application {
+    if (self.m_isApplicationTerminating == YES) {
+        return;
+    }
+
+    self.m_isApplicationTerminating = YES;
+    self.m_isApplicationActive = NO;
+    self.m_isApplicationForeground = NO;
+
     [AppleLog withFormat:@"Mengine application applicationWillTerminate"];
-    
+
     @autoreleasepool {
         for (id plugin in self.m_plugins) {
             if ([plugin respondsToSelector:@selector(applicationWillTerminate:)] == NO) {
                 continue;
             }
-            
+
             [plugin applicationWillTerminate:application];
         }
     }
-    
-    [[iOSNetwork sharedInstance] stopMonitoring];
+
+    if( SERVICE_PROVIDER_EXIST() == true && SERVICE_IS_INITIALIZE( Mengine::PlatformServiceInterface ) == true ) {
+        Mengine::iOSPlatformServiceExtensionInterface * extension = PLATFORM_SERVICE()
+            ->getDynamicUnknown();
+
+        if( extension != nullptr ) {
+            extension->handleApplicationWillTerminate();
+        }
+    }
 }
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey, id> *)options API_AVAILABLE(ios(9.0)) {
@@ -507,13 +655,129 @@
     self.m_window = window;
 }
 
+- (void)startEngineLoop {
+    if (self.m_displayLink != nil) {
+        return;
+    }
+
+    self.m_prevTimestamp = 0.0;
+
+    CADisplayLink * displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(engineFrame:)];
+    [displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
+
+    self.m_displayLink = displayLink;
+}
+
+- (void)stopEngineLoop {
+    if (self.m_displayLink == nil) {
+        return;
+    }
+
+    [self.m_displayLink invalidate];
+    self.m_displayLink = nil;
+    self.m_prevTimestamp = 0.0;
+}
+
+- (void)engineFrame:(CADisplayLink *)displayLink {
+    if (self.m_application == nullptr) {
+        [self stopEngineLoop];
+
+        return;
+    }
+
+    NOTIFICATION_NOTIFY( Mengine::NOTIFICATOR_PLATFORM_UPDATE );
+
+    if( PLATFORM_SERVICE()
+        ->updatePlatform() == false )
+    {
+        [self finishApplication];
+
+        return;
+    }
+
+    CFTimeInterval frameTime = (self.m_prevTimestamp > 0.0)
+        ? ((displayLink.timestamp - self.m_prevTimestamp) * 1000.0)
+        : (displayLink.duration * 1000.0);
+
+    self.m_prevTimestamp = displayLink.timestamp;
+
+    float frameTimeF = (float)frameTime;
+
+    PLATFORM_SERVICE()
+        ->tickPlatform( frameTimeF );
+
+    PLATFORM_SERVICE()
+        ->renderPlatform();
+}
+
+- (void)finishApplication {
+    if (self.m_application == nullptr) {
+        return;
+    }
+
+    [self handleApplicationWillTerminate:[UIApplication sharedApplication]];
+
+    [self stopEngineLoop];
+
+    Mengine::iOSApplication * application = static_cast<Mengine::iOSApplication *>(self.m_application);
+
+    @autoreleasepool {
+        for (id plugin in self.m_plugins) {
+            if ([plugin respondsToSelector:@selector(onLoopEnd)] == NO) {
+                continue;
+            }
+
+            [plugin onLoopEnd];
+        }
+    }
+
+    @autoreleasepool {
+        for (id plugin in self.m_plugins) {
+            if ([plugin respondsToSelector:@selector(onStopBegin)] == NO) {
+                continue;
+            }
+
+            [plugin onStopBegin];
+        }
+    }
+
+    application->stop();
+
+    @autoreleasepool {
+        for (id plugin in self.m_plugins) {
+            if ([plugin respondsToSelector:@selector(onStopEnd)] == NO) {
+                continue;
+            }
+
+            [plugin onStopEnd];
+        }
+    }
+
+    @autoreleasepool {
+        for (id plugin in self.m_plugins) {
+            if ([plugin respondsToSelector:@selector(onFinalize)] == NO) {
+                continue;
+            }
+
+            [plugin onFinalize];
+        }
+    }
+
+    application->finalize();
+    delete application;
+    self.m_application = nullptr;
+
+    [AppleLog withFormat:@"Mengine application finish"];
+
+    [AppleDetail cancelAllQueueOperations];
+
+    ::exit( EXIT_SUCCESS );
+}
+
 
 - (void)postFinishLaunch {
-    SDL_SetMainReady();
-    
-    SDL_SetiOSEventPump( true );
-    
-    Mengine::iOSApplication application;
+    Mengine::iOSApplication * application = new Mengine::iOSApplication();
+    self.m_application = application;
     
     NSArray<NSString *> * arguments = [[NSProcessInfo processInfo] arguments];
     
@@ -527,29 +791,12 @@
         }
     }
     
-    int32_t argc = 0;
-    Mengine::Char * argv[MENGINE_IOS_LAUNCH_ARGUMENTS_CAPACITY]= {nullptr};
-    
-    for( NSString * arg : arguments )
-    {
-        if( (size_t)argc >= MENGINE_IOS_LAUNCH_ARGUMENTS_CAPACITY ) {
-            [AppleLog withFormat:@"🔴 [ERROR] Mengine application too many launch arguments (%lu), truncated to %lu"
-                , (unsigned long)[arguments count]
-                , (unsigned long)MENGINE_IOS_LAUNCH_ARGUMENTS_CAPACITY
-            ];
-
-            break;
-        }
-
-        argv[argc++] = (Mengine::Char *)[arg UTF8String];
-    }    
-    
-    if( application.bootstrap( argc, argv ) == false ) {
+    if( application->bootstrap( arguments ) == false ) {
         [AppleLog withFormat:@"🔴 [ERROR] Mengine application bootstrap [Failed]"];
         
-        application.finalize();
-        
-        SDL_SetiOSEventPump( false );
+        application->finalize();
+        delete application;
+        self.m_application = nullptr;
         
         [iOSDetail showOkAlertWithTitle:@"Failed..."
                                 message:@"Mengine bootstraped application"
@@ -593,12 +840,12 @@
         }
     }
     
-    if( application.run() == false ) {
+    if( application->run() == false ) {
         [AppleLog withFormat:@"🔴 [ERROR] Mengine application run [Failed]"];
         
-        application.finalize();
-        
-        SDL_SetiOSEventPump( false );
+        application->finalize();
+        delete application;
+        self.m_application = nullptr;
         
         [iOSDetail showOkAlertWithTitle:@"Failed..."
                                 message:@"Mengine run application"
@@ -630,60 +877,8 @@
             [plugin onLoopBegin];
         }
     }
-    
-    application.loop();
-    
-    @autoreleasepool {
-        for (id plugin in self.m_plugins) {
-            if ([plugin respondsToSelector:@selector(onLoopEnd)] == NO) {
-                continue;
-            }
-            
-            [plugin onLoopEnd];
-        }
-    }
-    
-    [AppleDetail cancelAllQueueOperations];
-    
-    @autoreleasepool {
-        for (id plugin in self.m_plugins) {
-            if ([plugin respondsToSelector:@selector(onStopBegin)] == NO) {
-                continue;
-            }
-            
-            [plugin onStopBegin];
-        }
-    }
-    
-    application.stop();
-    
-    @autoreleasepool {
-        for (id plugin in self.m_plugins) {
-            if ([plugin respondsToSelector:@selector(onStopEnd)] == NO) {
-                continue;
-            }
-            
-            [plugin onStopEnd];
-        }
-    }
-    
-    @autoreleasepool {
-        for (id plugin in self.m_plugins) {
-            if ([plugin respondsToSelector:@selector(onFinalize)] == NO) {
-                continue;
-            }
-            
-            [plugin onFinalize];
-        }
-    }
-    
-    application.finalize();
-    
-    SDL_SetiOSEventPump( false );
-    
-    [AppleLog withFormat:@"Mengine application finish"];
-    
-    ::exit( EXIT_SUCCESS );
+
+    [self startEngineLoop];
 }
 
 @end

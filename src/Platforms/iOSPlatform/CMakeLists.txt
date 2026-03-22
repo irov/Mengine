@@ -9,6 +9,9 @@ src
     iOSInput.h
     iOSInput.mm
     
+    iOSOpenGLView.h
+    iOSOpenGLView.mm
+    
     iOSMailComposeDelegate.h
     iOSMailComposeDelegate.mm
     
@@ -16,14 +19,8 @@ src
     iOSAnalyticsEventProvider.mm
 )
 
-INCLUDE_DIRECTORIES(${THIRDPARTY_CONFIG_DIR}/SDL3/include/include-config-$<LOWER_CASE:$<CONFIG>>)
-INCLUDE_DIRECTORIES(${THIRDPARTY_CONFIG_DIR}/SDL3/include)
-INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/SDL3/include)
-
 ADD_MENGINE_LIBRARY(Platforms)
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} iOS)
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Apple)
-
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} SDL3)

@@ -117,7 +117,7 @@ namespace Mengine
 
     public:
         virtual bool openUrlInDefaultBrowser( const Char * _url ) = 0;
-        virtual bool openMail( const Char * _email, const Char * _subject, const Char * _technically ) = 0;
+        virtual bool openMail( const Char * _email, const Char * _subject, const Char * _body, const Char * _technically ) = 0;
         virtual bool openDeleteAccount() = 0;
 
     public:

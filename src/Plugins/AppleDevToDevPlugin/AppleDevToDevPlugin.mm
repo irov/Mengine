@@ -13,11 +13,6 @@
 @implementation AppleDevToDevPlugin
 
 - (void)sendEvent:(NSString *)eventName parameters:(NSDictionary<NSString *, id> *)parameters {
-    IOS_LOGGER_MESSAGE( @"sendEvent name: %@ parameters: %@"
-        , eventName
-        , [NSString stringWithFormat:@"%@", parameters]
-    );
-
     DTDCustomEventParameters * devtodev_parameters = [[DTDCustomEventParameters alloc] init];
 
     [AppleDetail visitParameters:parameters forBool:^(NSString * key, BOOL value) {

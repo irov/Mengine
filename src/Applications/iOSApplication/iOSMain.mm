@@ -3,7 +3,7 @@
 #import <UIKit/UIKit.h>
 
 int main( int argc, char * argv[] ) {
-    NSLog(@"🟢 Launch Megnine application");
+    NSLog(@"🟢 Launch Mengine application");
 
     int result;
     
@@ -13,11 +13,11 @@ int main( int argc, char * argv[] ) {
         } @catch (NSException * ex) {
             result = EXIT_FAILURE;
             
-            NSLog(@"🔴 [ERROR] Exception Megnine application: %@ [%@]", ex.description, ex.reason);
+            NSLog(@"🔴 [ERROR] Exception Mengine application: %@ [%@]", ex.description, ex.reason);
         }
     }
     
-    NSLog(@"🟢 Finish Megnine application: %d", result);
+    NSLog(@"🟢 Finish Mengine application: %d", result);
     
     return result;
 }

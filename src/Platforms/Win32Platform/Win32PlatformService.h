@@ -131,7 +131,7 @@ namespace Mengine
 
     public:
         bool openUrlInDefaultBrowser( const Char * _url ) override;
-        bool openMail( const Char * _email, const Char * _subject, const Char * _technically ) override;
+        bool openMail( const Char * _email, const Char * _subject, const Char * _body, const Char * _technically ) override;
         bool openDeleteAccount() override;
 
     protected:

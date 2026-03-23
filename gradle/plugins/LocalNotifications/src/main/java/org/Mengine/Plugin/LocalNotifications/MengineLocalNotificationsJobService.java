@@ -8,15 +8,11 @@ import android.content.Context;
 import android.os.PersistableBundle;
 
 public class MengineLocalNotificationsJobService extends JobService {
-    private static final String KEY_TITLE = "title";
-    private static final String KEY_CONTENT = "content";
-    private static final String KEY_ID = "id";
-
     public static PersistableBundle notificationBundle(int id, String title, String content){
         PersistableBundle bundle = new PersistableBundle();
-        bundle.putInt(KEY_ID, id);
-        bundle.putString(KEY_CONTENT, content);
-        bundle.putString(KEY_TITLE, title);
+        bundle.putInt(MengineLocalNotificationsConstants.KEY_ID, id);
+        bundle.putString(MengineLocalNotificationsConstants.KEY_CONTENT, content);
+        bundle.putString(MengineLocalNotificationsConstants.KEY_TITLE, title);
 
         return bundle;
     }
@@ -24,9 +20,9 @@ public class MengineLocalNotificationsJobService extends JobService {
     @Override
     public boolean onStartJob(JobParameters params) {
         PersistableBundle bundle = params.getExtras();
-        String title = bundle.getString(KEY_TITLE);
-        String content = bundle.getString(KEY_CONTENT);
-        int id = bundle.getInt(KEY_ID);
+        String title = bundle.getString(MengineLocalNotificationsConstants.KEY_TITLE);
+        String content = bundle.getString(MengineLocalNotificationsConstants.KEY_CONTENT);
+        int id = bundle.getInt(MengineLocalNotificationsConstants.KEY_ID);
 
         Context context = this.getApplicationContext();
 

@@ -32,9 +32,11 @@ import android.os.Bundle;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 public class MengineLocalNotificationsPlugin extends MengineService implements MengineListenerActivity {
     public static final String SERVICE_NAME = "LNotifications";
@@ -51,6 +53,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
     }
 
     private List<LocalNotificationDesc> m_internalLocalNotifications = new ArrayList<>();
+    private final Set<Integer> m_scheduledAlarmNotificationIds = new HashSet<>();
 
     private boolean m_notificationPermissionGranted = false;
 
@@ -141,18 +144,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
             return;
         }
         
-        Intent notificationIntent = new Intent(activity, MengineLocalNotificationsPublisher.class);
-
-        notificationIntent.putExtra(MengineLocalNotificationsPublisher.NOTIFICATION_ID, id);
-        notificationIntent.putExtra(MengineLocalNotificationsPublisher.NOTIFICATION, notification);
-
-        int pendingFlags = PendingIntent.FLAG_UPDATE_CURRENT;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            pendingFlags |= PendingIntent.FLAG_IMMUTABLE;
-        }
-
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(activity, 0, notificationIntent, pendingFlags);
+        PendingIntent pendingIntent = this.makePublisherPendingIntent(activity, id, notification, PendingIntent.FLAG_UPDATE_CURRENT);
 
         AlarmManager alarmManager = activity.getSystemService(AlarmManager.class);
 
@@ -163,6 +155,8 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
         long futureInMillis = SystemClock.elapsedRealtime() + delay;
 
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+
+        m_scheduledAlarmNotificationIds.add(id);
     }
 
     public void instantlyPresentNotification(Notification notification, int id) {
@@ -244,6 +238,21 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
             notificationManager.cancelAll();
         }
 
+        AlarmManager alarmManager = activity.getSystemService(AlarmManager.class);
+
+        if (alarmManager != null) {
+            for (int id : m_scheduledAlarmNotificationIds) {
+                PendingIntent pendingIntent = this.makePublisherPendingIntent(activity, id, null, PendingIntent.FLAG_NO_CREATE);
+
+                if (pendingIntent != null) {
+                    alarmManager.cancel(pendingIntent);
+                    pendingIntent.cancel();
+                }
+            }
+        }
+
+        m_scheduledAlarmNotificationIds.clear();
+
         JobScheduler jobScheduler = activity.getSystemService(JobScheduler.class);
 
         if (jobScheduler != null) {
@@ -252,6 +261,8 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
     }
 
     protected void parseInternalLocalNotifications(@NonNull MengineActivity activity) {
+        m_internalLocalNotifications.clear();
+
         String packageName = activity.getPackageName();
         Resources resources = activity.getResources();
 
@@ -353,16 +364,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public static Notification getNotification(Context context, int id, String title, String content) {
-        Intent intent = new Intent(context, MengineActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        intent.putExtra(MengineLocalNotificationsPublisher.NOTIFICATION_ID, id);
-
-        int pendingFlags = PendingIntent.FLAG_UPDATE_CURRENT;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            pendingFlags |= PendingIntent.FLAG_IMMUTABLE;
-        }
-
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, pendingFlags);
+        PendingIntent pendingIntent = MengineLocalNotificationsPlugin.makeContentPendingIntent(context, id, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
             .setContentTitle(title)
@@ -380,6 +382,36 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
         return notification;
     }
 
+    private PendingIntent makePublisherPendingIntent(@NonNull Context context, int id, Notification notification, int pendingFlags) {
+        Intent notificationIntent = new Intent(context, MengineLocalNotificationsPublisher.class);
+        notificationIntent.setAction(MengineLocalNotificationsPublisher.NOTIFICATION + ":" + id);
+        notificationIntent.putExtra(MengineLocalNotificationsPublisher.NOTIFICATION_ID, id);
+
+        if (notification != null) {
+            notificationIntent.putExtra(MengineLocalNotificationsPublisher.NOTIFICATION, notification);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            pendingFlags |= PendingIntent.FLAG_IMMUTABLE;
+        }
+
+        return PendingIntent.getBroadcast(context, id, notificationIntent, pendingFlags);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private static PendingIntent makeContentPendingIntent(@NonNull Context context, int id, int pendingFlags) {
+        Intent intent = new Intent(context, MengineActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.setAction(MengineLocalNotificationsPublisher.NOTIFICATION_ID + ":" + id);
+        intent.putExtra(MengineLocalNotificationsPublisher.NOTIFICATION_ID, id);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            pendingFlags |= PendingIntent.FLAG_IMMUTABLE;
+        }
+
+        return PendingIntent.getActivity(context, id, intent, pendingFlags);
+    }
+
     private void scheduleJobNotification(long delayMillis, PersistableBundle bundle){
         this.logInfo("schedule notification with delay: %d", delayMillis);
 
@@ -395,7 +427,16 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
             return;
         }
 
-        int jobId = (int)SystemClock.elapsedRealtime();
+        int jobId = bundle.getInt(MengineLocalNotificationsConstants.KEY_ID);
+
+        if (jobId <= 0) {
+            this.logWarning("scheduleJobNotification invalid id: %d"
+                , jobId
+            );
+
+            return;
+        }
+
         ComponentName jobService = new ComponentName(activity, MengineLocalNotificationsJobService.class);
 
         JobInfo.Builder builder = new JobInfo.Builder(jobId, jobService);

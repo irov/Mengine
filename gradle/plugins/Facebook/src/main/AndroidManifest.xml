@@ -4,14 +4,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <queries>
-        <!-- Facebook App -->
         <package android:name="com.facebook.katana" />
-        <!-- Instagram -->
         <package android:name="com.instagram.android" />
-        <!-- Facebook Messenger -->
         <package android:name="com.facebook.orca" />
 
-        <!-- Facebook и Messenger content providers -->
         <provider android:authorities="com.facebook.katana.provider.PlatformProvider" />
         <provider android:authorities="com.facebook.orca.provider.PlatformProvider" />
     </queries>

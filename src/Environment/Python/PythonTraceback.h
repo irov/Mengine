@@ -8,7 +8,7 @@ namespace Mengine
 {
     namespace Helper
     {
-        const Char * getPythonStatetrace();
+        const Char * getPythonTraceback();
 
         void getPythonTracebackMessage( Char * const _message, size_t _capacity, pybind::kernel_interface * _kernel, PyObject * _traceback );
     }

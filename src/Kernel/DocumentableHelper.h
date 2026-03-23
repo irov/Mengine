@@ -29,10 +29,14 @@ namespace Mengine
         const Char * getDocumentableThreadLocalMessage( const D * _documentable, const I * _identity, const Char * _message )
         {
             static MENGINE_THREAD_LOCAL Char message[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
+            
+            message[0] = '\0';
+
             Detail::getDocumentableMessage( _documentable, _identity, message, MENGINE_LOGGER_MAX_MESSAGE );
             StdString::strcat_safe( message, " [", MENGINE_LOGGER_MAX_MESSAGE );
             StdString::strcat_safe( message, _message, MENGINE_LOGGER_MAX_MESSAGE );
             StdString::strcat_safe( message, "]", MENGINE_LOGGER_MAX_MESSAGE );
+
             return message;
 
         }

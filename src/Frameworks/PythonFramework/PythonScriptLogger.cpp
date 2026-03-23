@@ -100,7 +100,7 @@ namespace Mengine
             Path file = {'\0'};
             Char function[MENGINE_CODE_MAX_FUNCTION_NAME + 1] = {'\0'};
             uint32_t lineno = 0;
-            _kernel->get_statetrace_top( file, MENGINE_MAX_PATH, function, MENGINE_CODE_MAX_FUNCTION_NAME, &lineno );
+            _kernel->get_traceback_top( file, MENGINE_MAX_PATH, function, MENGINE_CODE_MAX_FUNCTION_NAME, &lineno );
 
             LOGGER_VERBOSE_LEVEL( "python", m_level, LFILTER_NONE, color, file, lineno, function, LFLAG_SHORT | LFLAG_FILESTAMP | LFLAG_FUNCTIONSTAMP )("%s", m_message);
         }

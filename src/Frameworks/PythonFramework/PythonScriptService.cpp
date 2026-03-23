@@ -79,10 +79,13 @@ namespace Mengine
             pybind::kernel_interface * kernel = SCRIPTPROVIDER_SERVICE()
                 ->getKernel();
 
-            Char traceback[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
-            kernel->get_statetrace( traceback, MENGINE_LOGGER_MAX_MESSAGE, false );
+            static MENGINE_THREAD_LOCAL Char traceback[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
+            
+            traceback[0] = '\0';
 
-            MENGINE_ERROR_FATAL( "invalid parameter detected in function %ls.\nFile: %ls Line: %u\nExpression: %ls\nTrackeback:\n%s"
+            kernel->get_traceback( traceback, MENGINE_LOGGER_MAX_MESSAGE, false );
+
+            MENGINE_ERROR_FATAL( "invalid parameter detected in function %ls.\nfile: %ls Line: %u\nexpression: %ls\ntraceback:\n%s"
                 , _function
                 , _file
                 , _line
@@ -250,8 +253,11 @@ namespace Mengine
                     , ss_kwds.str().c_str()
                     );
 
-                Char traceback[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
-                _kernel->get_statetrace( traceback, MENGINE_LOGGER_MAX_MESSAGE, false );
+                static MENGINE_THREAD_LOCAL Char traceback[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
+                
+                traceback[0] = '\0';
+
+                _kernel->get_traceback( traceback, MENGINE_LOGGER_MAX_MESSAGE, false );
 
                 LOGGER_VERBOSE_LEVEL( "python", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_RED, MENGINE_CODE_FILE, MENGINE_CODE_LINE, MENGINE_CODE_FUNCTION, LFLAG_SHORT )("traceback:\n%s"
                     , traceback
@@ -1242,8 +1248,11 @@ namespace Mengine
             return;
         }
 
-        Char traceback[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
-        if( m_kernel->get_statetrace( traceback, MENGINE_LOGGER_MAX_MESSAGE, false ) == false )
+        static MENGINE_THREAD_LOCAL Char traceback[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
+
+        traceback[0] = '\0';
+
+        if( m_kernel->get_traceback( traceback, MENGINE_LOGGER_MAX_MESSAGE, false ) == false )
         {
             return;
         }
@@ -1253,13 +1262,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptService::handleException_( PyTypeObject * _exctype, PyObject * _value, PyObject * _traceback )
     {
-        Char traceback_str[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
-        Helper::getPythonTracebackMessage( traceback_str, MENGINE_LOGGER_MAX_MESSAGE, m_kernel, _traceback );
+        static MENGINE_THREAD_LOCAL Char statetrace[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
+
+        statetrace[0] = '\0';
+
+        Helper::getPythonTracebackMessage( statetrace, MENGINE_LOGGER_MAX_MESSAGE, m_kernel, _traceback );
 
         LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_ERROR, Mengine::LFILTER_EXCEPTION, Mengine::LCOLOR_RED, Mengine::LFLAG_SHORT )("[Python] exception [%s] %s\n%s"
             , (_exctype != nullptr) ? m_kernel->type_name( _exctype ) : "UnknownException"
             , (_value != nullptr) ? m_kernel->object_str( _value ).c_str() : ""
-            , traceback_str
+            , statetrace
         );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1323,8 +1335,11 @@ namespace Mengine
 
             if( _desc.className.empty() == true )
             {
-                Char traceback[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
-                m_kernel->get_statetrace( traceback, MENGINE_LOGGER_MAX_MESSAGE, false );
+                static MENGINE_THREAD_LOCAL Char traceback[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
+                
+                traceback[0] = '\0';
+
+                m_kernel->get_traceback( traceback, MENGINE_LOGGER_MAX_MESSAGE, false );
 
                 LOGGER_INFO( "python", "debug call '%s' args '%s' kwds '%s':\n%s"
                     , _functionName

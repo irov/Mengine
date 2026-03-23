@@ -402,7 +402,7 @@ namespace Mengine
                     const uint32_t aliveMinutes = (uint32_t)(aliveSeconds / 60);
                     const uint32_t aliveSecondsRemainder = (uint32_t)(aliveSeconds % 60);
                     const Char * displayName = desc.filePath.empty() == false ? desc.filePath.c_str() : "runtime";
-                    Char memStr[32] = {'\0'};
+                    Char memStr[32 + 1] = {'\0'};
                     if( desc.memorySize < 1024 )
                         MENGINE_SNPRINTF( memStr, 32, "%u b", desc.memorySize );
                     else if( desc.memorySize < 1024 * 1024 )

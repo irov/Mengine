@@ -11,16 +11,18 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        const Char * getPythonStatetrace()
+        const Char * getPythonTraceback()
         {
-            static MENGINE_THREAD_LOCAL Char statetrace[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
+            static MENGINE_THREAD_LOCAL Char traceback[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
+
+            traceback[0] = '\0';
 
             pybind::kernel_interface * kernel = SCRIPTPROVIDER_SERVICE()
                 ->getKernel();
 
-            kernel->get_statetrace( statetrace, MENGINE_LOGGER_MAX_MESSAGE, false );
+            kernel->get_traceback( traceback, MENGINE_LOGGER_MAX_MESSAGE, false );
 
-            return statetrace;
+            return traceback;
         }
         //////////////////////////////////////////////////////////////////////////
         void getPythonTracebackMessage( Char * const _message, size_t _capacity, pybind::kernel_interface * _kernel, PyObject * _traceback )

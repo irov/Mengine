@@ -26,7 +26,7 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( _cb.is_dict() == true || _cb.is_callable() == true, "callback must be callable or dict, but is '%s' type '%s'\ntraceback:\n%s"
             , _cb.repr().c_str()
             , _cb.repr_type().c_str()
-            , Helper::getPythonStatetrace()
+            , Helper::getPythonTraceback()
         );
 
         m_cb = _cb;

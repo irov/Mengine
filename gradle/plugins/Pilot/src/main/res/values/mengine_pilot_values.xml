@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mengine_pilot_api_url" translatable="false">http://localhost:8000</string>
+    <string name="mengine_pilot_api_token" translatable="false"></string>
+</resources>

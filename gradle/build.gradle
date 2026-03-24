@@ -108,6 +108,8 @@ allprojects {
         mavenCentral()
         maven { url = 'https://plugins.gradle.org/m2/' }
 
+        maven { url = 'https://jitpack.io' }
+
         if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN") == true) {
             if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_BIDMACHINE") == true) {
                 maven { url = "https://artifactory.bidmachine.io/bidmachine" }

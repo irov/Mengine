@@ -57,6 +57,7 @@ final Boolean MENGINE_APP_PLUGIN_LEANPLUM = Utils.existAppPlugin("MENGINE_APP_PL
 final Boolean MENGINE_APP_PLUGIN_DATADOG = Utils.existAppPlugin("MENGINE_APP_PLUGIN_DATADOG")
 final Boolean MENGINE_APP_PLUGIN_VIBRATOR = Utils.existAppPlugin("MENGINE_APP_PLUGIN_VIBRATOR")
 final Boolean MENGINE_APP_PLUGIN_AMPLITUDE = Utils.existAppPlugin("MENGINE_APP_PLUGIN_AMPLITUDE")
+final Boolean MENGINE_APP_PLUGIN_PILOT = Utils.existAppPlugin("MENGINE_APP_PLUGIN_PILOT")
 
 Utils.logString("ANDROID_APP_DELIVERY_PACKAGES", ANDROID_APP_DELIVERY_PACKAGES)
 Utils.logAvailable("ANDROID_APP_BUILD_PUBLISH", ANDROID_APP_BUILD_PUBLISH)
@@ -552,6 +553,16 @@ if (MENGINE_APP_PLUGIN_DATADOG == true) {
 
     dependencies {
         implementation project(':plugins:DataDog')
+    }
+}
+
+Utils.logAvailable("MENGINE_APP_PLUGIN_PILOT", MENGINE_APP_PLUGIN_PILOT)
+
+if (MENGINE_APP_PLUGIN_PILOT == true) {
+    android.ext.plugins += 'org.Mengine.Plugin.Pilot.MenginePilotPlugin'
+
+    dependencies {
+        implementation project(':plugins:Pilot')
     }
 }
 

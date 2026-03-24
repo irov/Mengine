@@ -217,5 +217,6 @@ includePlugin("MENGINE_APP_PLUGIN_LEANPLUM", ":plugins:Leanplum")
 includePlugin("MENGINE_APP_PLUGIN_DATADOG", ":plugins:DataDog")
 includePlugin("MENGINE_APP_PLUGIN_VIBRATOR", ":plugins:Vibrator")
 includePlugin("MENGINE_APP_PLUGIN_AMPLITUDE", ":plugins:Amplitude")
+includePlugin("MENGINE_APP_PLUGIN_PILOT", ":plugins:Pilot")
 
 println("Mengine complete settings")

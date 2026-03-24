@@ -1,0 +1,4 @@
+-keep class org.Mengine.Plugin.Pilot.** { *; }
+-keep class org.pilot.sdk.** { *; }
+-dontwarn okhttp3.**
+-dontwarn okio.**

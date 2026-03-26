@@ -176,6 +176,14 @@ public class MengineAdPointBase {
         return (String)value;
     }
 
+    public boolean isEnabled() {
+        return m_enabled;
+    }
+
+    public long getLastShowTime() {
+        return m_lastShowTime;
+    }
+
     public void showAd() {
         m_lastShowTime = MengineUtils.getTimestamp();
 

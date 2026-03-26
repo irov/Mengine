@@ -25,6 +25,30 @@ public class MengineAdPointInterstitial extends MengineAdPointBase {
         m_sessionOffset = this.parseAdPointLong(values, "trigger_session_offset", false, -1);
     }
 
+    public int getActionOffset() {
+        return m_actionOffset;
+    }
+
+    public int getActionCooldown() {
+        return m_actionCooldown;
+    }
+
+    public long getTimeOffset() {
+        return m_timeOffset;
+    }
+
+    public long getTimeCooldown() {
+        return m_timeCooldown;
+    }
+
+    public long getInstallTimeOffset() {
+        return m_installTimeOffset;
+    }
+
+    public long getSessionOffset() {
+        return m_sessionOffset;
+    }
+
     public boolean canYouShowAd(@NonNull MengineApplication application) {
         if (BuildConfig.DEBUG == true) {
             if (MengineUtils.hasOption(application, "adservice.always_interstitial_point") == true) {

@@ -15,8 +15,6 @@ public final class MenginePluginExtensionManager {
 
     public static void registerExtension(@NonNull String serviceName, @NonNull Class<? extends MenginePluginExtensionInterface> clazz) {
         m_extensions.computeIfAbsent(serviceName, k -> new ArrayList<>()).add(clazz);
-
-        MengineLog.logInfo(TAG, "register extension %s for service %s", clazz.getName(), serviceName);
     }
 
     public static void loadExtensions(@NonNull String[] classNames) {

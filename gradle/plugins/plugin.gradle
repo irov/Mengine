@@ -9,8 +9,6 @@ apply from: rootProject.projectDir.getAbsolutePath() + '/minify.gradle'
 final Boolean MENGINE_APP_LIBRARY_MENGINE = Utils.existAppLibrary("MENGINE_APP_LIBRARY_MENGINE")
 
 android {
-    ext.extensions = []
-
     sourceSets {
         main {
             if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR") == true) {

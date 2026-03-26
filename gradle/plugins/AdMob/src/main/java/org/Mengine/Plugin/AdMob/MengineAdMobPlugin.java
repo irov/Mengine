@@ -42,6 +42,21 @@ public class MengineAdMobPlugin extends MengineService implements MengineAdMobPl
 
     private final List<MengineAdMobAdInterface> m_ads = new ArrayList<>();
 
+    @Override
+    public MengineAdMobBannerAdInterface getBannerAd() {
+        return m_bannerAd;
+    }
+
+    @Override
+    public MengineAdMobInterstitialAdInterface getInterstitialAd() {
+        return m_interstitialAd;
+    }
+
+    @Override
+    public MengineAdMobRewardedAdInterface getRewardedAd() {
+        return m_rewardedAd;
+    }
+
     @SuppressWarnings("unchecked")
     protected <T extends MengineAdMobAdInterface> T createAd(@NonNull MengineAdService adService, @NonNull String className) throws MengineServiceInvalidInitializeException {
         T ad = (T)this.newInstance(className, true, adService, this);

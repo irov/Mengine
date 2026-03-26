@@ -9,9 +9,13 @@ import org.json.JSONObject;
 
 import java.util.Map;
 
-import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineFragmentAnalytics;
 import org.Mengine.Base.MengineListenerApplication;
+import org.Mengine.Base.MengineListenerLogger;
+import org.Mengine.Base.MengineLog;
+import org.Mengine.Base.MengineParamLoggerException;
+import org.Mengine.Base.MengineParamLoggerMessage;
 import org.Mengine.Base.MenginePluginExtensionManager;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
@@ -21,8 +25,10 @@ import org.pilot.sdk.PilotAction;
 import org.pilot.sdk.PilotActionListener;
 import org.pilot.sdk.PilotConfig;
 import org.pilot.sdk.PilotException;
+import org.pilot.sdk.PilotLogAttributeBuilder;
 import org.pilot.sdk.PilotLogLevel;
 import org.pilot.sdk.PilotLogger;
+import org.pilot.sdk.PilotSessionAttributeBuilder;
 import org.pilot.sdk.PilotSessionListener;
 
 /**
@@ -35,7 +41,7 @@ import org.pilot.sdk.PilotSessionListener;
  * Register in getAndroidPlugins():
  *   "org.Mengine.Plugin.Pilot.MenginePilotPlugin"
  */
-public class MenginePilotPlugin extends MengineService implements MengineListenerApplication, PilotSessionListener, PilotActionListener {
+public class MenginePilotPlugin extends MengineService implements MengineListenerApplication, MengineListenerLogger, PilotSessionListener, PilotActionListener {
 
     public static final String SERVICE_NAME = "Pilot";
     public static final boolean SERVICE_EMBEDDING = true;
@@ -63,13 +69,31 @@ public class MenginePilotPlugin extends MengineService implements MengineListene
             , MengineUtils.getRedactedValue(apiToken)
         );
 
-        this.logInfo("Initializing Pilot SDK");
+        this.logInfo("Initializing Pilot SDK v%s", Pilot.VERSION);
+
+        PilotSessionAttributeBuilder sessionAttrs = new PilotSessionAttributeBuilder()
+            .put("is_publish", application.isBuildPublish())
+            .put("is_debug", BuildConfig.DEBUG)
+            .put("install_id", application.getInstallId())
+            .put("install_timestamp", application.getInstallTimestamp())
+            .put("install_version", application.getInstallVersion())
+            .put("install_rnd", application.getInstallRND())
+            .put("session_index", application.getSessionIndex())
+            .put("session_timestamp", application.getSessionTimestamp())
+            .putProvider("acquisition_network", application::getAcquisitionNetwork)
+            .putProvider("acquisition_campaign", application::getAcquisitionCampaign);
+
+        PilotLogAttributeBuilder logAttrs = new PilotLogAttributeBuilder()
+            .putProvider("screen_type", MengineFragmentAnalytics::getScreenType)
+            .putProvider("screen_name", MengineFragmentAnalytics::getScreenName);
 
         PilotConfig config = new PilotConfig.Builder(apiUrl, apiToken)
             .setLogLevel(PilotLogLevel.INFO)
             .setLogger(new MenginePilotLogger())
             .setSessionListener(this)
             .setActionListener(this)
+            .setSessionAttributes(sessionAttrs)
+            .setLogAttributes(logAttrs)
             .build();
 
         Pilot.initialize(config);
@@ -90,8 +114,8 @@ public class MenginePilotPlugin extends MengineService implements MengineListene
 
     // ── Public API ──
 
-    public void sendLog(@NonNull String level, @NonNull String message) {
-        Pilot.log(PilotLogLevel.valueOf(level.toUpperCase()), message);
+    public void sendLog(@NonNull PilotLogLevel level, @NonNull String message) {
+        Pilot.log(level, message);
     }
 
     public void acknowledgeAction(@NonNull String actionId, @Nullable JSONObject payload) {
@@ -149,6 +173,47 @@ public class MenginePilotPlugin extends MengineService implements MengineListene
     public void onPilotSessionError(@NonNull PilotException exception) {
         this.logException(exception, Map.of());
         this.nativeCall("onPilotSessionError", exception.getMessage());
+    }
+
+    // ── MengineListenerLogger ──
+
+    @Override
+    public void onMengineLog(@NonNull MengineApplication application, @NonNull MengineParamLoggerMessage message) {
+        PilotLogLevel level;
+
+        switch (message.MESSAGE_LEVEL) {
+            case MengineLog.LM_FATAL:
+                level = PilotLogLevel.CRITICAL;
+                break;
+            case MengineLog.LM_ERROR:
+                if (MengineLog.isFilter(message.MESSAGE_FILTER, MengineLog.LFILTER_EXCEPTION)) {
+                    level = PilotLogLevel.EXCEPTION;
+                } else {
+                    level = PilotLogLevel.ERROR;
+                }
+                break;
+            case MengineLog.LM_WARNING:
+                level = PilotLogLevel.WARNING;
+                break;
+            case MengineLog.LM_MESSAGE_RELEASE:
+            case MengineLog.LM_MESSAGE:
+            case MengineLog.LM_INFO:
+                level = PilotLogLevel.INFO;
+                break;
+            case MengineLog.LM_DEBUG:
+            case MengineLog.LM_VERBOSE:
+                level = PilotLogLevel.DEBUG;
+                break;
+            default:
+                return;
+        }
+
+        Pilot.log(level, message.MESSAGE_DATA, message.MESSAGE_CATEGORY.toString(), message.MESSAGE_THREAD);
+    }
+
+    @Override
+    public void onMengineException(@NonNull MengineApplication application, @NonNull MengineParamLoggerException exception) {
+        Pilot.log(PilotLogLevel.EXCEPTION, exception.EXCEPTION_THROWABLE.getMessage(), exception.EXCEPTION_CATEGORY.toString(), exception.EXCEPTION_THREAD);
     }
 
     // ── Logger redirect ──

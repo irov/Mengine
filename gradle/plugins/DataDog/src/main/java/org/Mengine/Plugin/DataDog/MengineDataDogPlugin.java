@@ -128,6 +128,8 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
 
         TrackingConsent consent = this.getTrackingConsent(consentParam);
 
+        this.logInfo("Initializing Datadog SDK");
+
         if (Datadog.initialize(context, config, consent) == null) {
             this.logError("Datadog initialize failed");
 

@@ -802,6 +802,14 @@ android {
     }
 }
 
+gradle.projectsEvaluated {
+    android {
+        defaultConfig {
+            buildConfigField "String[]", "MENGINE_ANDROID_EXTENSIONS", '{' + rootProject.ext.plugin_extensions.collect {"\"${it}\""}.join(",") + '}'
+        }
+    }
+}
+
 if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true && MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS_NATIVE_SYMBOL_UPLOAD_ENABLE == true) {
     tasks.register('checkDebugUnstrippedNativeLibsDir') {
         doLast {

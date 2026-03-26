@@ -12,6 +12,11 @@ public class FinalApplication extends org.Mengine.Base.MengineApplication {
     }
 
     @Override
+    public String[] getAndroidExtensions() {
+        return BuildConfig.MENGINE_ANDROID_EXTENSIONS;
+    }
+
+    @Override
     public String getApplicationId() {
         return BuildConfig.APPLICATION_ID;
     }

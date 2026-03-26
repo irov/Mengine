@@ -147,7 +147,9 @@ public class MengineLog {
         String lineSeparator = System.lineSeparator();
         MengineLog.logError(category, "%s%s%s", message, lineSeparator, trace);
 
-        MengineParamLoggerException exception = new MengineParamLoggerException(category, e, attributes);
+        String thread = MengineUtils.getCurrentThreadName();
+        
+        MengineParamLoggerException exception = new MengineParamLoggerException(category, e, thread, attributes);
 
         MengineFragmentLogger.INSTANCE.exception(exception);
     }

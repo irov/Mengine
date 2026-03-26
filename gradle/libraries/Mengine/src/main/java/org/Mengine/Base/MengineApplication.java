@@ -98,6 +98,7 @@ public abstract class MengineApplication extends Application {
 
     public abstract String[] getAndroidPlugins();
     public abstract String[] getAndroidActivities();
+    public abstract String[] getAndroidExtensions();
     public abstract String getApplicationId();
     public abstract int getVersionCode();
     public abstract String getVersionName();
@@ -170,6 +171,10 @@ public abstract class MengineApplication extends Application {
                 return;
             }
         }
+
+        String[] extensions = this.getAndroidExtensions();
+
+        MenginePluginExtensionManager.loadExtensions(extensions);
     }
 
     public String getAndroidId() {

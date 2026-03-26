@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Consumer;
 
 public class MengineAdService extends MengineService implements DefaultLifecycleObserver, MengineAdProviderInterface, MengineAdResponseInterface, MengineListenerApplication, MengineListenerActivity, MengineListenerRemoteConfig, MengineListenerInAppPurchase {
     public static final String SERVICE_NAME = "AdService";
@@ -116,21 +117,45 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         }
     }
 
-    private MengineAdPointInterstitial getAdInterstitialPoint(String adPointName) {
+    public MengineAdPointInterstitial getAdInterstitialPoint(String adPointName) {
         synchronized (m_syncronizationAdPoints) {
             return m_adInterstitialPoints.getOrDefault(adPointName, null);
         }
     }
 
-    private MengineAdPointRewarded getAdRewardedPoint(String adPointName) {
+    public MengineAdPointRewarded getAdRewardedPoint(String adPointName) {
         synchronized (m_syncronizationAdPoints) {
             return m_adRewardedPoints.getOrDefault(adPointName, null);
         }
     }
 
-    private MengineAdPointAppOpen getAdAppOpenPoint(String adPointName) {
+    public MengineAdPointAppOpen getAdAppOpenPoint(String adPointName) {
         synchronized (m_syncronizationAdPoints) {
             return m_adAppOpenPoints.getOrDefault(adPointName, null);
+        }
+    }
+
+    public void forEachAdInterstitialPoint(@NonNull Consumer<MengineAdPointInterstitial> consumer) {
+        synchronized (m_syncronizationAdPoints) {
+            for (MengineAdPointInterstitial point : m_adInterstitialPoints.values()) {
+                consumer.accept(point);
+            }
+        }
+    }
+
+    public void forEachAdRewardedPoint(@NonNull Consumer<MengineAdPointRewarded> consumer) {
+        synchronized (m_syncronizationAdPoints) {
+            for (MengineAdPointRewarded point : m_adRewardedPoints.values()) {
+                consumer.accept(point);
+            }
+        }
+    }
+
+    public void forEachAdAppOpenPoint(@NonNull Consumer<MengineAdPointAppOpen> consumer) {
+        synchronized (m_syncronizationAdPoints) {
+            for (MengineAdPointAppOpen point : m_adAppOpenPoints.values()) {
+                consumer.accept(point);
+            }
         }
     }
 

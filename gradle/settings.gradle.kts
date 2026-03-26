@@ -195,6 +195,7 @@ includePlugin("MENGINE_APP_PLUGIN_ADMOB", ":plugins:AdMob:Core", listOf("MENGINE
 includePlugin("MENGINE_APP_PLUGIN_ADMOB_BANNERAD", ":plugins:AdMob:BannerAd", listOf("MENGINE_APP_PLUGIN_ADMOB"))
 includePlugin("MENGINE_APP_PLUGIN_ADMOB_INTERSTITIALAD", ":plugins:AdMob:InterstitialAd", listOf("MENGINE_APP_PLUGIN_ADMOB"))
 includePlugin("MENGINE_APP_PLUGIN_ADMOB_REWARDEDAD", ":plugins:AdMob:RewardedAd", listOf("MENGINE_APP_PLUGIN_ADMOB"))
+includePlugin("MENGINE_APP_PLUGIN_ADMOB", ":plugins:AdMob:AdMobPilot", listOf("MENGINE_APP_PLUGIN_PILOT"))
 includePlugin("MENGINE_APP_PLUGIN_AMAZON", ":plugins:Amazon")
 includePlugin("MENGINE_APP_PLUGIN_APPLOVIN", ":plugins:AppLovin")
 includePlugin("MENGINE_APP_PLUGIN_APPLOVIN", ":plugins:AppLovin:Core")

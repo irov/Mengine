@@ -1,19 +1,18 @@
 package org.Mengine.Plugin.Pilot;
 
-import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 
+import org.Mengine.Base.MengineUtils;
 import org.json.JSONObject;
 
 import java.util.Map;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MengineListenerActivity;
 import org.Mengine.Base.MengineListenerApplication;
+import org.Mengine.Base.MenginePluginExtensionManager;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 
@@ -24,7 +23,6 @@ import org.pilot.sdk.PilotConfig;
 import org.pilot.sdk.PilotException;
 import org.pilot.sdk.PilotLogLevel;
 import org.pilot.sdk.PilotLogger;
-import org.pilot.sdk.PilotPanel;
 import org.pilot.sdk.PilotSessionListener;
 
 /**
@@ -37,7 +35,7 @@ import org.pilot.sdk.PilotSessionListener;
  * Register in getAndroidPlugins():
  *   "org.Mengine.Plugin.Pilot.MenginePilotPlugin"
  */
-public class MenginePilotPlugin extends MengineService implements MengineListenerApplication, MengineListenerActivity, PilotSessionListener, PilotActionListener {
+public class MenginePilotPlugin extends MengineService implements MengineListenerApplication, PilotSessionListener, PilotActionListener {
 
     public static final String SERVICE_NAME = "Pilot";
     public static final boolean SERVICE_EMBEDDING = true;
@@ -55,47 +53,42 @@ public class MenginePilotPlugin extends MengineService implements MengineListene
             return;
         }
 
-        this.logInfo("Initializing Pilot SDK: %s", apiUrl);
+        this.logInfo("%s: %s"
+            , this.getResourceName(METADATA_API_URL)
+            , MengineUtils.getRedactedValue(apiUrl)
+        );
+
+        this.logInfo("%s: %s"
+            , this.getResourceName(METADATA_API_TOKEN)
+            , MengineUtils.getRedactedValue(apiToken)
+        );
+
+        this.logInfo("Initializing Pilot SDK");
 
         PilotConfig config = new PilotConfig.Builder(apiUrl, apiToken)
             .setLogLevel(PilotLogLevel.INFO)
             .setLogger(new MenginePilotLogger())
+            .setSessionListener(this)
+            .setActionListener(this)
             .build();
 
         Pilot.initialize(config);
-        Pilot.addSessionListener(this);
-        Pilot.addActionListener(this);
     }
 
     @Override
-    public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
-        if (Pilot.isInitialized()) {
-            Pilot.connect();
-        }
-    }
-
-    @Override
-    public void onDestroy(@NonNull MengineActivity activity) {
-        if (Pilot.isInitialized()) {
-            Pilot.disconnect();
-        }
+    public void onAppPost(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
+        MenginePluginExtensionManager.createExtensions("Pilot", application);
     }
 
     @Override
     public void onAppFinalize(@NonNull MengineApplication application) {
+        MenginePluginExtensionManager.finalizeExtensions("Pilot", application);
+
         Pilot.shutdown();
         super.onAppFinalize(application);
     }
 
     // ── Public API ──
-
-    public void submitPanel(@NonNull PilotPanel panel) {
-        Pilot.submitPanel(panel);
-    }
-
-    public void updatePanel() {
-        Pilot.updatePanel();
-    }
 
     public void sendLog(@NonNull String level, @NonNull String message) {
         Pilot.log(PilotLogLevel.valueOf(level.toUpperCase()), message);
@@ -111,7 +104,7 @@ public class MenginePilotPlugin extends MengineService implements MengineListene
     public void onPilotActionReceived(@NonNull PilotAction action) {
         this.logInfo("Action received: widget=%s type=%s", action.getWidgetId(), action.getActionType());
 
-        this.nativeCall("onPilotActionReceived", action.getId(), action.getWidgetId(), action.getActionType());
+        this.nativeCall("onPilotActionReceived", action.getId(), action.getWidgetId(), action.getActionType().getValue());
     }
 
     // ── PilotSessionListener ──
@@ -144,6 +137,12 @@ public class MenginePilotPlugin extends MengineService implements MengineListene
     public void onPilotSessionRejected() {
         this.logWarning("Connection rejected");
         this.nativeCall("onPilotSessionRejected");
+    }
+
+    @Override
+    public void onPilotSessionAuthFailed() {
+        this.logError("Authentication failed: invalid API token");
+        this.nativeCall("onPilotSessionAuthFailed");
     }
 
     @Override

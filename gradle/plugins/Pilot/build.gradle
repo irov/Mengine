@@ -5,5 +5,5 @@ android {
 }
 
 dependencies {
-    implementation 'com.github.irov:javapilot:1.0.4'
+    api 'com.github.irov:javapilot:1.0.7'
 }

@@ -26,8 +26,10 @@ import org.pilot.sdk.PilotActionListener;
 import org.pilot.sdk.PilotConfig;
 import org.pilot.sdk.PilotException;
 import org.pilot.sdk.PilotLogAttributeBuilder;
+import org.pilot.sdk.PilotLogConfigBuilder;
 import org.pilot.sdk.PilotLogLevel;
-import org.pilot.sdk.PilotLogger;
+import org.pilot.sdk.PilotLoggerListener;
+import org.pilot.sdk.PilotMetricConfigBuilder;
 import org.pilot.sdk.PilotSessionAttributeBuilder;
 import org.pilot.sdk.PilotSessionListener;
 
@@ -41,7 +43,7 @@ import org.pilot.sdk.PilotSessionListener;
  * Register in getAndroidPlugins():
  *   "org.Mengine.Plugin.Pilot.MenginePilotPlugin"
  */
-public class MenginePilotPlugin extends MengineService implements MengineListenerApplication, MengineListenerLogger, PilotSessionListener, PilotActionListener {
+public class MenginePilotPlugin extends MengineService implements MengineListenerApplication, MengineListenerLogger, PilotSessionListener, PilotActionListener, PilotLoggerListener {
 
     public static final String SERVICE_NAME = "Pilot";
     public static final boolean SERVICE_EMBEDDING = true;
@@ -80,6 +82,7 @@ public class MenginePilotPlugin extends MengineService implements MengineListene
             .put("install_rnd", application.getInstallRND())
             .put("session_index", application.getSessionIndex())
             .put("session_timestamp", application.getSessionTimestamp())
+            .putProvider("user_id", application::getUserId)
             .putProvider("acquisition_network", application::getAcquisitionNetwork)
             .putProvider("acquisition_campaign", application::getAcquisitionCampaign);
 
@@ -87,16 +90,24 @@ public class MenginePilotPlugin extends MengineService implements MengineListene
             .putProvider("screen_type", MengineFragmentAnalytics::getScreenType)
             .putProvider("screen_name", MengineFragmentAnalytics::getScreenName);
 
-        PilotConfig config = new PilotConfig.Builder(apiUrl, apiToken)
+        PilotLogConfigBuilder logConfig = new PilotLogConfigBuilder()
             .setLogLevel(PilotLogLevel.INFO)
-            .setLogger(new MenginePilotLogger())
+            .setLoggerListener(this)
+            .setAttributes(logAttrs);
+
+        PilotMetricConfigBuilder metricConfig = new PilotMetricConfigBuilder()
+            .setEnabled(true)
+            .setSampleIntervalMs(200);
+
+        PilotConfig config = new PilotConfig.Builder(apiUrl, apiToken)
             .setSessionListener(this)
             .setActionListener(this)
             .setSessionAttributes(sessionAttrs)
-            .setLogAttributes(logAttrs)
+            .setLogConfig(logConfig)
+            .setMetricConfig(metricConfig)
             .build();
 
-        Pilot.initialize(config);
+        Pilot.initialize(config, application.getApplicationContext());
     }
 
     @Override
@@ -216,32 +227,27 @@ public class MenginePilotPlugin extends MengineService implements MengineListene
         Pilot.log(PilotLogLevel.EXCEPTION, exception.EXCEPTION_THROWABLE.getMessage(), exception.EXCEPTION_CATEGORY.toString(), exception.EXCEPTION_THREAD);
     }
 
-    // ── Logger redirect ──
+    // ── PilotLoggerListener ──
 
-    /**
-     * Routes Pilot SDK logs through Mengine logging system.
-     */
-    private class MenginePilotLogger implements PilotLogger {
-        @Override
-        public void log(@NonNull PilotLogLevel level, @NonNull String tag, @NonNull String message, @Nullable Throwable throwable) {
-            switch (level) {
-                case DEBUG:
-                    MenginePilotPlugin.this.logDebug("[%s] %s", tag, message);
-                    break;
-                case INFO:
-                    MenginePilotPlugin.this.logInfo("[%s] %s", tag, message);
-                    break;
-                case WARNING:
-                    MenginePilotPlugin.this.logWarning("[%s] %s", tag, message);
-                    break;
-                case ERROR:
-                case CRITICAL:
-                    MenginePilotPlugin.this.logError("[%s] %s", tag, message);
-                    break;
-                case EXCEPTION:
-                    MenginePilotPlugin.this.logException(throwable, Map.of("tag", tag, "message", message));
-                    break;
-            }
+    @Override
+    public void onPilotLoggerMessage(@NonNull PilotLogLevel level, @NonNull String tag, @NonNull String message, @Nullable Throwable throwable) {
+        switch (level) {
+            case DEBUG:
+                this.logDebug("[%s] %s", tag, message);
+                break;
+            case INFO:
+                this.logInfo("[%s] %s", tag, message);
+                break;
+            case WARNING:
+                this.logWarning("[%s] %s", tag, message);
+                break;
+            case ERROR:
+            case CRITICAL:
+                this.logError("[%s] %s", tag, message);
+                break;
+            case EXCEPTION:
+                this.logException(throwable, Map.of("tag", tag, "message", message));
+                break;
         }
     }
 }

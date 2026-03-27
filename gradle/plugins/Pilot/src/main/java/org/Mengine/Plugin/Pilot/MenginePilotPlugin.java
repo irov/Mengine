@@ -7,18 +7,26 @@ import androidx.annotation.StringRes;
 import org.Mengine.Base.MengineUtils;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineFragmentInAppPurchase;
 import org.Mengine.Base.MengineFragmentAnalytics;
 import org.Mengine.Base.MengineListenerAdRevenue;
 import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineListenerAnalytics;
+import org.Mengine.Base.MengineListenerInAppPurchase;
 import org.Mengine.Base.MengineListenerLogger;
 import org.Mengine.Base.MengineLog;
 import org.Mengine.Base.MengineAdFormat;
 import org.Mengine.Base.MengineAdMediation;
+import org.Mengine.Base.MengineParamInAppProduct;
+import org.Mengine.Base.MengineParamInAppPurchase;
 import org.Mengine.Base.MengineParamAdRevenue;
 import org.Mengine.Base.MengineParamAnalyticsEvent;
 import org.Mengine.Base.MengineParamLoggerException;
@@ -50,7 +58,7 @@ import org.pilot.sdk.PilotSessionListener;
  * Register in getAndroidPlugins():
  *   "org.Mengine.Plugin.Pilot.MenginePilotPlugin"
  */
-public class MenginePilotPlugin extends MengineService implements MengineListenerApplication, MengineListenerLogger, MengineListenerAnalytics, MengineListenerAdRevenue, PilotSessionListener, PilotActionListener, PilotLoggerListener {
+public class MenginePilotPlugin extends MengineService implements MengineListenerApplication, MengineListenerLogger, MengineListenerAnalytics, MengineListenerAdRevenue, MengineListenerInAppPurchase, PilotSessionListener, PilotActionListener, PilotLoggerListener {
 
     public static final String SERVICE_NAME = "Pilot";
     public static final boolean SERVICE_EMBEDDING = true;
@@ -217,6 +225,51 @@ public class MenginePilotPlugin extends MengineService implements MengineListene
         );
     }
 
+    public void sendInAppProducts(@NonNull List<MengineParamInAppProduct> products) {
+        List<Map<String, Object>> catalog = new ArrayList<>(products.size());
+
+        for (MengineParamInAppProduct product : products) {
+            Map<String, Object> entry = new LinkedHashMap<>();
+            putIfNotNull(entry, "product_id", product.INAPPPRODUCT_ID);
+            putIfNotNull(entry, "product_type", product.INAPPPRODUCT_TYPE);
+            putIfNotNull(entry, "name", product.INAPPPRODUCT_NAME);
+            putIfNotNull(entry, "title", product.INAPPPRODUCT_TITLE);
+            putIfNotNull(entry, "description", product.INAPPPRODUCT_DESCRIPTION);
+            entry.put("price_amount_micros", product.INAPPPRODUCT_PRICE_AMOUNT_MICROS);
+            putIfNotNull(entry, "formatted_price", product.INAPPPRODUCT_PRICE_FORMATTED);
+            putIfNotNull(entry, "price_currency_code", product.INAPPPRODUCT_PRICE_CURRENCY_CODE);
+            catalog.add(entry);
+        }
+
+        Pilot.setInAppProducts(catalog);
+    }
+
+    public void sendOwnedInAppProducts(@NonNull Set<String> products) {
+        List<String> ownedProducts = new ArrayList<>(products);
+        Collections.sort(ownedProducts);
+
+        Pilot.setOwnedInAppProducts(ownedProducts);
+    }
+
+    public void sendInAppPurchase(@NonNull MengineParamInAppPurchase purchase) {
+        List<String> productIds = new ArrayList<>();
+
+        if (purchase.INAPPPURCHASE_PRODUCTS != null) {
+            productIds.addAll(purchase.INAPPPURCHASE_PRODUCTS);
+        }
+
+        Map<String, Object> metadata = new LinkedHashMap<>();
+        metadata.put("quantity", purchase.INAPPPURCHASE_QUANTITY);
+        metadata.put("acknowledged", purchase.INAPPPURCHASE_ACKNOWLEDGED);
+        metadata.put("consumable", purchase.INAPPPURCHASE_CONSUMABLE);
+
+        Pilot.purchaseInApp(
+            purchase.INAPPPURCHASE_TRANSACTION,
+            productIds,
+            metadata
+        );
+    }
+
     public void acknowledgeAction(@NonNull String actionId, @Nullable JSONObject payload) {
         Pilot.acknowledgeAction(actionId, payload);
     }
@@ -238,6 +291,23 @@ public class MenginePilotPlugin extends MengineService implements MengineListene
     @Override
     public void onMengineAdRevenue(@NonNull MengineApplication application, @NonNull MengineParamAdRevenue revenue) {
         this.sendAdRevenue(revenue);
+    }
+
+    // ── MengineListenerInAppPurchase ──
+
+    @Override
+    public void onMengineSetInAppProducts(@NonNull MengineApplication application, @NonNull List<MengineParamInAppProduct> products) {
+        this.sendInAppProducts(products);
+    }
+
+    @Override
+    public void onMenginePurchaseInAppProduct(@NonNull MengineApplication application, @NonNull MengineParamInAppPurchase purchase) {
+        this.sendInAppPurchase(purchase);
+    }
+
+    @Override
+    public void onMengineOwnedInAppProducts(@NonNull MengineApplication application, @NonNull Set<String> products) {
+        this.sendOwnedInAppProducts(products);
     }
 
     // ── PilotActionListener ──

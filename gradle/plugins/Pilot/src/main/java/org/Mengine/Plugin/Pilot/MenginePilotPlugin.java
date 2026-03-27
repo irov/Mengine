@@ -91,8 +91,8 @@ public class MenginePilotPlugin extends MengineService implements MengineListene
             .putProvider("screen_name", MengineFragmentAnalytics::getScreenName);
 
         PilotLogConfigBuilder logConfig = new PilotLogConfigBuilder()
+            .setEnabled(true)
             .setLogLevel(PilotLogLevel.INFO)
-            .setLoggerListener(this)
             .setAttributes(logAttrs);
 
         PilotMetricConfigBuilder metricConfig = new PilotMetricConfigBuilder()
@@ -100,6 +100,7 @@ public class MenginePilotPlugin extends MengineService implements MengineListene
             .setSampleIntervalMs(200);
 
         PilotConfig config = new PilotConfig.Builder(apiUrl, apiToken)
+            .setLoggerListener(this)
             .setSessionListener(this)
             .setActionListener(this)
             .setSessionAttributes(sessionAttrs)

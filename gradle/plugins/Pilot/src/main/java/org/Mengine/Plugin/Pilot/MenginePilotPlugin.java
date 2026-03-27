@@ -7,13 +7,20 @@ import androidx.annotation.StringRes;
 import org.Mengine.Base.MengineUtils;
 import org.json.JSONObject;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineFragmentAnalytics;
+import org.Mengine.Base.MengineListenerAdRevenue;
 import org.Mengine.Base.MengineListenerApplication;
+import org.Mengine.Base.MengineListenerAnalytics;
 import org.Mengine.Base.MengineListenerLogger;
 import org.Mengine.Base.MengineLog;
+import org.Mengine.Base.MengineAdFormat;
+import org.Mengine.Base.MengineAdMediation;
+import org.Mengine.Base.MengineParamAdRevenue;
+import org.Mengine.Base.MengineParamAnalyticsEvent;
 import org.Mengine.Base.MengineParamLoggerException;
 import org.Mengine.Base.MengineParamLoggerMessage;
 import org.Mengine.Base.MenginePluginExtensionManager;
@@ -43,7 +50,7 @@ import org.pilot.sdk.PilotSessionListener;
  * Register in getAndroidPlugins():
  *   "org.Mengine.Plugin.Pilot.MenginePilotPlugin"
  */
-public class MenginePilotPlugin extends MengineService implements MengineListenerApplication, MengineListenerLogger, PilotSessionListener, PilotActionListener, PilotLoggerListener {
+public class MenginePilotPlugin extends MengineService implements MengineListenerApplication, MengineListenerLogger, MengineListenerAnalytics, MengineListenerAdRevenue, PilotSessionListener, PilotActionListener, PilotLoggerListener {
 
     public static final String SERVICE_NAME = "Pilot";
     public static final boolean SERVICE_EMBEDDING = true;
@@ -130,8 +137,107 @@ public class MenginePilotPlugin extends MengineService implements MengineListene
         Pilot.log(level, message);
     }
 
+    private static void putIfNotNull(@NonNull Map<String, Object> map, @NonNull String key, @Nullable Object value) {
+        if (value != null) {
+            map.put(key, value);
+        }
+    }
+
+    private static void putAllIfNotNull(@NonNull Map<String, Object> target, @Nullable Map<String, Object> values) {
+        if (values == null || values.isEmpty()) {
+            return;
+        }
+
+        for (Map.Entry<String, Object> entry : values.entrySet()) {
+            Object value = entry.getValue();
+
+            if (value != null) {
+                target.put(entry.getKey(), value);
+            }
+        }
+    }
+
+    private static String getPilotAdFormat(@Nullable MengineAdFormat adFormat) {
+        if (adFormat == MengineAdFormat.ADFORMAT_BANNER) {
+            return "BANNER";
+        } else if (adFormat == MengineAdFormat.ADFORMAT_MREC) {
+            return "MREC";
+        } else if (adFormat == MengineAdFormat.ADFORMAT_LEADER) {
+            return "LEADER";
+        } else if (adFormat == MengineAdFormat.ADFORMAT_INTERSTITIAL) {
+            return "INTERSTITIAL";
+        } else if (adFormat == MengineAdFormat.ADFORMAT_APPOPEN) {
+            return "APPOPEN";
+        } else if (adFormat == MengineAdFormat.ADFORMAT_REWARDED) {
+            return "REWARDED";
+        } else if (adFormat == MengineAdFormat.ADFORMAT_NATIVE) {
+            return "NATIVE";
+        }
+
+        return "UNKNOWN";
+    }
+
+    private static String getPilotAdMediation(@Nullable MengineAdMediation adMediation) {
+        if (adMediation == MengineAdMediation.ADMEDIATION_APPLOVINMAX) {
+            return "appLovin";
+        }
+
+        if (adMediation == MengineAdMediation.ADMEDIATION_ADMOB) {
+            return "adMob";
+        }
+
+        return "unknown";
+    }
+
+    public void sendAnalyticsEvent(@NonNull MengineParamAnalyticsEvent param) {
+        Map<String, Object> metadata = new LinkedHashMap<>();
+        putAllIfNotNull(metadata, param.ANALYTICS_BASES);
+        putAllIfNotNull(metadata, param.ANALYTICS_PARAMETERS);
+
+        Pilot.event(
+            param.ANALYTICS_NAME,
+            metadata
+        );
+    }
+
+    public void sendAdRevenue(@NonNull MengineParamAdRevenue revenue) {
+        Map<String, Object> metadata = new LinkedHashMap<>();
+        putIfNotNull(metadata, "ad_platform", getPilotAdMediation(revenue.ADREVENUE_MEDIATION));
+        putIfNotNull(metadata, "ad_unit_name", revenue.ADREVENUE_ADUNITID);
+        putIfNotNull(metadata, "ad_source", revenue.ADREVENUE_NETWORK);
+        putIfNotNull(metadata, "ad_format", getPilotAdFormat(revenue.ADREVENUE_FORMAT));
+        putIfNotNull(metadata, "placement", revenue.ADREVENUE_PLACEMENT);
+        putIfNotNull(metadata, "precision", revenue.ADREVENUE_REVENUE_PRECISION);
+        metadata.put("value", revenue.ADREVENUE_REVENUE_VALUE);
+        putIfNotNull(metadata, "currency", revenue.ADREVENUE_REVENUE_CURRENCY);
+
+        Pilot.revenue(
+            "ad_impression",
+            metadata
+        );
+    }
+
     public void acknowledgeAction(@NonNull String actionId, @Nullable JSONObject payload) {
         Pilot.acknowledgeAction(actionId, payload);
+    }
+
+    // ── MengineListenerAnalytics ──
+
+    @Override
+    public void onMengineAnalyticsEvent(@NonNull MengineApplication application, @NonNull MengineParamAnalyticsEvent param) {
+        this.sendAnalyticsEvent(param);
+    }
+
+    @Override
+    public void onMengineAnalyticsScreenView(@NonNull MengineApplication application, @NonNull String screenType, @NonNull String screenName) {
+        Pilot.changeScreen(screenType, screenName);
+    }
+
+    // ── MengineListenerAdRevenue ──
+
+    @Override
+    public void onMengineAdRevenue(@NonNull MengineApplication application, @NonNull MengineParamAdRevenue revenue) {
+        this.sendAdRevenue(revenue);
     }
 
     // ── PilotActionListener ──

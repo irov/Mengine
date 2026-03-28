@@ -401,7 +401,11 @@ public class MenginePilotPlugin extends MengineService implements MengineListene
 
     @Override
     public void onMengineException(@NonNull MengineApplication application, @NonNull MengineParamLoggerException exception) {
-        Pilot.log(PilotLogLevel.EXCEPTION, exception.EXCEPTION_THROWABLE.getMessage(), exception.EXCEPTION_CATEGORY.toString(), exception.EXCEPTION_THREAD);
+        String message = exception.EXCEPTION_THROWABLE.getMessage();
+        if (message == null) {
+            message = exception.EXCEPTION_THROWABLE.toString();
+        }
+        Pilot.log(PilotLogLevel.EXCEPTION, message, exception.EXCEPTION_CATEGORY.toString(), exception.EXCEPTION_THREAD);
     }
 
     // ── PilotLoggerListener ──

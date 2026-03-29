@@ -85,7 +85,7 @@
     [config setLogConfig:logConfig];
     [config setMetricConfig:metricConfig];
 
-    [PilotBridge initialize:[config build]];
+    [PilotBridge initialize:config];
 
     return YES;
 }

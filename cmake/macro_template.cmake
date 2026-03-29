@@ -448,6 +448,12 @@ MACRO(ADD_PLUGIN Plugin Toggle DLL MSG)
         ENDIF()
     ENDIF()
     
+    SET(_ADD_PLUGIN_DEPENDENCY ${ARGN})
+    
+    IF(NOT "${_ADD_PLUGIN_DEPENDENCY}" STREQUAL "" AND NOT ${_ADD_PLUGIN_DEPENDENCY})
+        SET(${Plugin} OFF CACHE BOOL ${MSG} FORCE)
+    ENDIF()
+    
     IF(${Plugin})
         SET(${Plugin}_SHARED ${DLL} CACHE BOOL ${MSG} FORCE)
         

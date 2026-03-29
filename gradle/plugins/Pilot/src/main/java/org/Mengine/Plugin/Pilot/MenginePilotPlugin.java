@@ -16,7 +16,6 @@ import java.util.Set;
 
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineFragmentInAppPurchase;
-import org.Mengine.Base.MengineFragmentAnalytics;
 import org.Mengine.Base.MengineListenerAdRevenue;
 import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineListenerAnalytics;
@@ -40,7 +39,6 @@ import org.pilot.sdk.PilotAction;
 import org.pilot.sdk.PilotActionListener;
 import org.pilot.sdk.PilotConfig;
 import org.pilot.sdk.PilotException;
-import org.pilot.sdk.PilotLogAttributeBuilder;
 import org.pilot.sdk.PilotLogConfigBuilder;
 import org.pilot.sdk.PilotLogLevel;
 import org.pilot.sdk.PilotLoggerListener;
@@ -101,14 +99,9 @@ public class MenginePilotPlugin extends MengineService implements MengineListene
             .putProvider("acquisition_network", application::getAcquisitionNetwork)
             .putProvider("acquisition_campaign", application::getAcquisitionCampaign);
 
-        PilotLogAttributeBuilder logAttrs = new PilotLogAttributeBuilder()
-            .putProvider("screen_type", MengineFragmentAnalytics::getScreenType)
-            .putProvider("screen_name", MengineFragmentAnalytics::getScreenName);
-
         PilotLogConfigBuilder logConfig = new PilotLogConfigBuilder()
             .setEnabled(true)
-            .setLogLevel(PilotLogLevel.INFO)
-            .setAttributes(logAttrs);
+            .setLogLevel(PilotLogLevel.INFO);
 
         PilotMetricConfigBuilder metricConfig = new PilotMetricConfigBuilder()
             .setEnabled(true)

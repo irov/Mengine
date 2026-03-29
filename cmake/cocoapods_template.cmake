@@ -2,6 +2,43 @@ MACRO(ADD_MENGINE_COCOAPOD_GOOGLE_UTILITIES)
     ADD_MENGINE_COCOAPOD("GoogleUtilities" "NO-GIT" "8.1.0")
 ENDMACRO()
 
+MACRO(_MENGINE_COCOAPOD_PARSE_FIELDS LIST_VAR BASE_IDX)
+    math(EXPR _IDX1 "${BASE_IDX}+1")
+    math(EXPR _IDX2 "${BASE_IDX}+2")
+    math(EXPR _IDX3 "${BASE_IDX}+3")
+    math(EXPR _IDX4 "${BASE_IDX}+4")
+    list(GET ${LIST_VAR} ${BASE_IDX} COCOAPOD_PROJECT_NAME)
+    list(GET ${LIST_VAR} ${_IDX1} COCOAPOD_NAME)
+    list(GET ${LIST_VAR} ${_IDX2} COCOAPOD_GIT)
+    list(GET ${LIST_VAR} ${_IDX3} COCOAPOD_TAG)
+    list(GET ${LIST_VAR} ${_IDX4} COCOAPOD_PATCH)
+ENDMACRO()
+
+MACRO(_MENGINE_COCOAPOD_APPEND_POD_LINE)
+    string(COMPARE EQUAL ${COCOAPOD_GIT} "NO-GIT" COCOAPOD_NO_GIT)
+    string(COMPARE EQUAL ${COCOAPOD_TAG} "NO-TAG" COCOAPOD_NO_TAG)
+    string(COMPARE EQUAL ${COCOAPOD_PATCH} "NO-PATCH" COCOAPOD_NO_PATCH)
+
+    STRING(APPEND PODFILE_BUFFER "  pod '" ${COCOAPOD_NAME} "'")
+
+    if(NOT COCOAPOD_NO_GIT)
+        STRING(APPEND PODFILE_BUFFER ", :git => '" ${COCOAPOD_GIT} "'")
+        if(NOT COCOAPOD_NO_TAG)
+            STRING(APPEND PODFILE_BUFFER ", :tag => '" ${COCOAPOD_TAG} "'")
+        endif()
+    else()
+        if(NOT COCOAPOD_NO_TAG)
+            STRING(APPEND PODFILE_BUFFER ", '" ${COCOAPOD_TAG} "'")
+        endif()
+    endif()
+
+    if(NOT COCOAPOD_NO_PATCH)
+        STRING(APPEND PODFILE_BUFFER ", " ${COCOAPOD_PATCH})
+    endif()
+
+    STRING(APPEND PODFILE_BUFFER "\n")
+ENDMACRO()
+
 MACRO(MENGINE_GENERATE_COCOAPODS)
     SET(PODFILE_BUFFER "")
     
@@ -21,45 +58,21 @@ MACRO(MENGINE_GENERATE_COCOAPODS)
     STRING(APPEND PODFILE_BUFFER "inhibit_all_warnings!\n")
     STRING(APPEND PODFILE_BUFFER "\n")
 
-    SET(LENGTH_APPLICATION_APPLE_COCOAPODS)
     list(LENGTH APPLICATION_APPLE_COCOAPODS LENGTH_APPLICATION_APPLE_COCOAPODS)
-    
     math(EXPR LENGTH_APPLICATION_APPLE_COCOAPODS "${LENGTH_APPLICATION_APPLE_COCOAPODS}-1")
     
-    SET(LENGTH_APPLICATION_APPLE_GLOBAL_COCOAPODS)
     list(LENGTH APPLICATION_APPLE_GLOBAL_COCOAPODS LENGTH_APPLICATION_APPLE_GLOBAL_COCOAPODS)
-    
     math(EXPR LENGTH_APPLICATION_APPLE_GLOBAL_COCOAPODS "${LENGTH_APPLICATION_APPLE_GLOBAL_COCOAPODS}-1")
     
-    SET(LENGTH_APPLICATION_APPLE_SCRIPT_PHASES)
     list(LENGTH APPLICATION_APPLE_SCRIPT_PHASES LENGTH_APPLICATION_APPLE_SCRIPT_PHASES)
-    
     math(EXPR LENGTH_APPLICATION_APPLE_SCRIPT_PHASES "${LENGTH_APPLICATION_APPLE_SCRIPT_PHASES}-1")
     
     if(NOT ${LENGTH_APPLICATION_APPLE_COCOAPODS} EQUAL -1)
         SET(APPLICATION_APPLE_COCOAPODS_PROJECTS)
 
         foreach(INDEX RANGE 0 ${LENGTH_APPLICATION_APPLE_COCOAPODS} 5)
-            SET(COCOAPOD_PROJECT_NAME)
-            list(GET APPLICATION_APPLE_COCOAPODS ${INDEX} COCOAPOD_PROJECT_NAME)
-            math(EXPR INDEX "${INDEX}+1")
-        
-            SET(COCOAPOD_NAME)
-            list(GET APPLICATION_APPLE_COCOAPODS ${INDEX} COCOAPOD_NAME)
-            math(EXPR INDEX "${INDEX}+1")
-            
-            SET(COCOAPOD_GIT)
-            list(GET APPLICATION_APPLE_COCOAPODS ${INDEX} COCOAPOD_GIT)
-            math(EXPR INDEX "${INDEX}+1")
-            
-            SET(COCOAPOD_TAG)
-            list(GET APPLICATION_APPLE_COCOAPODS ${INDEX} COCOAPOD_TAG)
-            math(EXPR INDEX "${INDEX}+1")
-            
-            SET(COCOAPOD_PATCH)
-            list(GET APPLICATION_APPLE_COCOAPODS ${INDEX} COCOAPOD_PATCH)
-            math(EXPR INDEX "${INDEX}+1")
-            
+            _MENGINE_COCOAPOD_PARSE_FIELDS(APPLICATION_APPLE_COCOAPODS ${INDEX})
+
             SET(APPLICATION_APPLE_COCOAPODS_PROJECT_${COCOAPOD_PROJECT_NAME})
             LIST(APPEND APPLICATION_APPLE_COCOAPODS_PROJECTS "APPLICATION_APPLE_COCOAPODS_PROJECT_${COCOAPOD_PROJECT_NAME}")
         endforeach()
@@ -67,84 +80,22 @@ MACRO(MENGINE_GENERATE_COCOAPODS)
         list(REMOVE_DUPLICATES APPLICATION_APPLE_COCOAPODS_PROJECTS)
         
         foreach(INDEX RANGE 0 ${LENGTH_APPLICATION_APPLE_COCOAPODS} 5)
-            SET(COCOAPOD_PROJECT_NAME)
-            list(GET APPLICATION_APPLE_COCOAPODS ${INDEX} COCOAPOD_PROJECT_NAME)
-            math(EXPR INDEX "${INDEX}+1")
-        
-            SET(COCOAPOD_NAME)
-            list(GET APPLICATION_APPLE_COCOAPODS ${INDEX} COCOAPOD_NAME)
-            math(EXPR INDEX "${INDEX}+1")
-            
-            SET(COCOAPOD_GIT)
-            list(GET APPLICATION_APPLE_COCOAPODS ${INDEX} COCOAPOD_GIT)
-            math(EXPR INDEX "${INDEX}+1")
-            
-            SET(COCOAPOD_TAG)
-            list(GET APPLICATION_APPLE_COCOAPODS ${INDEX} COCOAPOD_TAG)
-            math(EXPR INDEX "${INDEX}+1")
-            
-            SET(COCOAPOD_PATCH)
-            list(GET APPLICATION_APPLE_COCOAPODS ${INDEX} COCOAPOD_PATCH)
-            math(EXPR INDEX "${INDEX}+1")
-            
+            _MENGINE_COCOAPOD_PARSE_FIELDS(APPLICATION_APPLE_COCOAPODS ${INDEX})
+
             LIST(APPEND APPLICATION_APPLE_COCOAPODS_PROJECT_${COCOAPOD_PROJECT_NAME} ${COCOAPOD_PROJECT_NAME} ${COCOAPOD_NAME} ${COCOAPOD_GIT} ${COCOAPOD_TAG} ${COCOAPOD_PATCH})
         endforeach()
         
         foreach(APPLICATION_APPLE_COCOAPODS_PROJECT ${APPLICATION_APPLE_COCOAPODS_PROJECTS})
-            SET(LENGTH_APPLICATION_APPLE_COCOAPODS_PROJECT)
             list(LENGTH ${APPLICATION_APPLE_COCOAPODS_PROJECT} LENGTH_APPLICATION_APPLE_COCOAPODS_PROJECT)
-        
             math(EXPR LENGTH_APPLICATION_APPLE_COCOAPODS_PROJECT "${LENGTH_APPLICATION_APPLE_COCOAPODS_PROJECT}-1")
             
-            SET(COCOAPOD_PROJECT_NAME_0)
             list(GET ${APPLICATION_APPLE_COCOAPODS_PROJECT} 0 COCOAPOD_PROJECT_NAME_0)
             
             STRING(APPEND PODFILE_BUFFER "target '" ${COCOAPOD_PROJECT_NAME_0} "' do\n")
             
             foreach(INDEX RANGE 0 ${LENGTH_APPLICATION_APPLE_COCOAPODS_PROJECT} 5)
-                SET(COCOAPOD_PROJECT_NAME)
-                list(GET ${APPLICATION_APPLE_COCOAPODS_PROJECT} ${INDEX} COCOAPOD_PROJECT_NAME)
-                math(EXPR INDEX "${INDEX}+1")
-            
-                SET(COCOAPOD_NAME)
-                list(GET ${APPLICATION_APPLE_COCOAPODS_PROJECT} ${INDEX} COCOAPOD_NAME)
-                math(EXPR INDEX "${INDEX}+1")
-                
-                SET(COCOAPOD_GIT)
-                list(GET ${APPLICATION_APPLE_COCOAPODS_PROJECT} ${INDEX} COCOAPOD_GIT)
-                math(EXPR INDEX "${INDEX}+1")
-                
-                SET(COCOAPOD_TAG)
-                list(GET ${APPLICATION_APPLE_COCOAPODS_PROJECT} ${INDEX} COCOAPOD_TAG)
-                math(EXPR INDEX "${INDEX}+1")
-                
-                SET(COCOAPOD_PATCH)
-                list(GET ${APPLICATION_APPLE_COCOAPODS_PROJECT} ${INDEX} COCOAPOD_PATCH)
-                math(EXPR INDEX "${INDEX}+1")
-
-                string(COMPARE EQUAL ${COCOAPOD_GIT} "NO-GIT" COCOAPOD_NO_GIT)
-                string(COMPARE EQUAL ${COCOAPOD_TAG} "NO-TAG" COCOAPOD_NO_TAG)
-                string(COMPARE EQUAL ${COCOAPOD_PATCH} "NO-PATCH" COCOAPOD_NO_PATCH)
-                
-                STRING(APPEND PODFILE_BUFFER "  pod '" ${COCOAPOD_NAME} "'")
-                
-                if(NOT COCOAPOD_NO_GIT)
-                    STRING(APPEND PODFILE_BUFFER ", :git => '" ${COCOAPOD_GIT} "'")
-                    
-                    if(NOT COCOAPOD_NO_TAG)
-                        STRING(APPEND PODFILE_BUFFER ", :tag => '" ${COCOAPOD_TAG} "'")
-                    endif()
-                else()
-                    if(NOT COCOAPOD_NO_TAG)
-                        STRING(APPEND PODFILE_BUFFER ", '" ${COCOAPOD_TAG} "'")
-                    endif()
-                endif()
-                
-                if(NOT COCOAPOD_NO_PATCH)
-                    STRING(APPEND PODFILE_BUFFER ", " ${COCOAPOD_PATCH})
-                endif()
-                
-                STRING(APPEND PODFILE_BUFFER "\n")
+                _MENGINE_COCOAPOD_PARSE_FIELDS(${APPLICATION_APPLE_COCOAPODS_PROJECT} ${INDEX})
+                _MENGINE_COCOAPOD_APPEND_POD_LINE()
             endforeach()
             
             STRING(APPEND PODFILE_BUFFER "end\n")
@@ -156,97 +107,15 @@ MACRO(MENGINE_GENERATE_COCOAPODS)
 
     if(NOT ${LENGTH_APPLICATION_APPLE_GLOBAL_COCOAPODS} EQUAL -1)
         foreach(INDEX RANGE 0 ${LENGTH_APPLICATION_APPLE_GLOBAL_COCOAPODS} 5)
-            SET(COCOAPOD_PROJECT_NAME)
-            list(GET APPLICATION_APPLE_GLOBAL_COCOAPODS ${INDEX} COCOAPOD_PROJECT_NAME)
-            math(EXPR INDEX "${INDEX}+1")
-        
-            SET(COCOAPOD_NAME)
-            list(GET APPLICATION_APPLE_GLOBAL_COCOAPODS ${INDEX} COCOAPOD_NAME)
-            math(EXPR INDEX "${INDEX}+1")
-            
-            SET(COCOAPOD_GIT)
-            list(GET APPLICATION_APPLE_GLOBAL_COCOAPODS ${INDEX} COCOAPOD_GIT)
-            math(EXPR INDEX "${INDEX}+1")
-            
-            SET(COCOAPOD_TAG)
-            list(GET APPLICATION_APPLE_GLOBAL_COCOAPODS ${INDEX} COCOAPOD_TAG)
-            math(EXPR INDEX "${INDEX}+1")
-            
-            SET(COCOAPOD_PATCH)
-            list(GET APPLICATION_APPLE_GLOBAL_COCOAPODS ${INDEX} COCOAPOD_PATCH)
-            math(EXPR INDEX "${INDEX}+1")
-
-            string(COMPARE EQUAL ${COCOAPOD_GIT} "NO-GIT" COCOAPOD_NO_GIT)
-            string(COMPARE EQUAL ${COCOAPOD_TAG} "NO-TAG" COCOAPOD_NO_TAG)
-            string(COMPARE EQUAL ${COCOAPOD_PATCH} "NO-PATCH" COCOAPOD_NO_PATCH)
-        
-            STRING(APPEND PODFILE_BUFFER "  pod '" ${COCOAPOD_NAME} "'")
-            
-            if(NOT COCOAPOD_NO_GIT)
-                STRING(APPEND PODFILE_BUFFER ", :git => '" ${COCOAPOD_GIT} "'")
-                
-                if(NOT COCOAPOD_NO_TAG)
-                    STRING(APPEND PODFILE_BUFFER ", :tag => '" ${COCOAPOD_TAG} "'")
-                endif()
-            else()
-                if(NOT COCOAPOD_NO_TAG)
-                    STRING(APPEND PODFILE_BUFFER ", '" ${COCOAPOD_TAG} "'")
-                endif()
-            endif()
-            
-            if(NOT COCOAPOD_NO_PATCH)
-                STRING(APPEND PODFILE_BUFFER ", " ${COCOAPOD_PATCH})
-            endif()
-            
-            STRING(APPEND PODFILE_BUFFER "\n")
+            _MENGINE_COCOAPOD_PARSE_FIELDS(APPLICATION_APPLE_GLOBAL_COCOAPODS ${INDEX})
+            _MENGINE_COCOAPOD_APPEND_POD_LINE()
         endforeach()
     endif()
     
     if(NOT ${LENGTH_APPLICATION_APPLE_COCOAPODS} EQUAL -1)
         foreach(INDEX RANGE 0 ${LENGTH_APPLICATION_APPLE_COCOAPODS} 5)
-            SET(COCOAPOD_PROJECT_NAME)
-            list(GET APPLICATION_APPLE_COCOAPODS ${INDEX} COCOAPOD_PROJECT_NAME)
-            math(EXPR INDEX "${INDEX}+1")
-        
-            SET(COCOAPOD_NAME)
-            list(GET APPLICATION_APPLE_COCOAPODS ${INDEX} COCOAPOD_NAME)
-            math(EXPR INDEX "${INDEX}+1")
-            
-            SET(COCOAPOD_GIT)
-            list(GET APPLICATION_APPLE_COCOAPODS ${INDEX} COCOAPOD_GIT)
-            math(EXPR INDEX "${INDEX}+1")
-            
-            SET(COCOAPOD_TAG)
-            list(GET APPLICATION_APPLE_COCOAPODS ${INDEX} COCOAPOD_TAG)
-            math(EXPR INDEX "${INDEX}+1")
-            
-            SET(COCOAPOD_PATCH)
-            list(GET APPLICATION_APPLE_COCOAPODS ${INDEX} COCOAPOD_PATCH)
-            math(EXPR INDEX "${INDEX}+1")
-
-            string(COMPARE EQUAL ${COCOAPOD_GIT} "NO-GIT" COCOAPOD_NO_GIT)
-            string(COMPARE EQUAL ${COCOAPOD_TAG} "NO-TAG" COCOAPOD_NO_TAG)
-            string(COMPARE EQUAL ${COCOAPOD_PATCH} "NO-PATCH" COCOAPOD_NO_PATCH)
-        
-            STRING(APPEND PODFILE_BUFFER "  pod '" ${COCOAPOD_NAME} "'")
-            
-            if(NOT COCOAPOD_NO_GIT)
-                STRING(APPEND PODFILE_BUFFER ", :git => '" ${COCOAPOD_GIT} "'")
-                
-                if(NOT COCOAPOD_NO_TAG)
-                    STRING(APPEND PODFILE_BUFFER ", :tag => '" ${COCOAPOD_TAG} "'")
-                endif()
-            else()
-                if(NOT COCOAPOD_NO_TAG)
-                    STRING(APPEND PODFILE_BUFFER ", '" ${COCOAPOD_TAG} "'")
-                endif()
-            endif()
-            
-            if(NOT COCOAPOD_NO_PATCH)
-                STRING(APPEND PODFILE_BUFFER ", " ${COCOAPOD_PATCH})
-            endif()
-            
-            STRING(APPEND PODFILE_BUFFER "\n")
+            _MENGINE_COCOAPOD_PARSE_FIELDS(APPLICATION_APPLE_COCOAPODS ${INDEX})
+            _MENGINE_COCOAPOD_APPEND_POD_LINE()
         endforeach()
     else()
         STRING(APPEND PODFILE_BUFFER "  pod 'Null'\n")
@@ -254,21 +123,13 @@ MACRO(MENGINE_GENERATE_COCOAPODS)
     
     if(NOT ${LENGTH_APPLICATION_APPLE_SCRIPT_PHASES} EQUAL -1)
         foreach(INDEX RANGE 0 ${LENGTH_APPLICATION_APPLE_SCRIPT_PHASES} 4)
-            SET(SCRIPT_PHASES_PROJECT_NAME)
+            math(EXPR _SP_IDX1 "${INDEX}+1")
+            math(EXPR _SP_IDX2 "${INDEX}+2")
+            math(EXPR _SP_IDX3 "${INDEX}+3")
             list(GET APPLICATION_APPLE_SCRIPT_PHASES ${INDEX} SCRIPT_PHASES_PROJECT_NAME)
-            math(EXPR INDEX "${INDEX}+1")
-        
-            SET(SCRIPT_PHASES_NAME)
-            list(GET APPLICATION_APPLE_SCRIPT_PHASES ${INDEX} SCRIPT_PHASES_NAME)
-            math(EXPR INDEX "${INDEX}+1")
-            
-            SET(SCRIPT_PHASES_SCRIPT)
-            list(GET APPLICATION_APPLE_SCRIPT_PHASES ${INDEX} SCRIPT_PHASES_SCRIPT)
-            math(EXPR INDEX "${INDEX}+1")
-            
-            SET(SCRIPT_PHASES_INPUT_FILES)
-            list(GET APPLICATION_APPLE_SCRIPT_PHASES ${INDEX} SCRIPT_PHASES_INPUT_FILES)
-            math(EXPR INDEX "${INDEX}+1")
+            list(GET APPLICATION_APPLE_SCRIPT_PHASES ${_SP_IDX1} SCRIPT_PHASES_NAME)
+            list(GET APPLICATION_APPLE_SCRIPT_PHASES ${_SP_IDX2} SCRIPT_PHASES_SCRIPT)
+            list(GET APPLICATION_APPLE_SCRIPT_PHASES ${_SP_IDX3} SCRIPT_PHASES_INPUT_FILES)
             
             string(COMPARE EQUAL ${SCRIPT_PHASES_INPUT_FILES} "NO-INPUT-FILES" SCRIPT_PHASES_NO_INPUT_FILES)
             
@@ -292,12 +153,6 @@ MACRO(MENGINE_GENERATE_COCOAPODS)
     STRING(APPEND PODFILE_BUFFER "\n")
 
     SET(PODS_END_PATCH)
-    
-    if(APPLE AND IOS)
-        #configure_file("iOSPods.patch.in" "${MENGINE_SOLUTIONS_CONFIG_DIR}/include/Configuration/iOSPods.patch" @ONLY)
-        
-        #file(STRINGS "${MENGINE_SOLUTIONS_CONFIG_DIR}/include/Configuration/iOSPods.patch" PODS_END_PATCH NEWLINE_CONSUME)
-    endif()
     
     if(APPLE AND NOT IOS)
         configure_file("MacOSPods.patch.in" "${MENGINE_SOLUTIONS_CONFIG_DIR}/include/Configuration/MacOSPods.patch" @ONLY)

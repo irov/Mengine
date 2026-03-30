@@ -5,10 +5,12 @@
 
 @implementation iOSMailComposeDelegate
 
-- (instancetype)initWithCompletion:(FBlockMailComposeCompletion _Nonnull)completion {
+- (nullable instancetype)initWithCompletion:(FBlockMailComposeCompletion _Nonnull)completion {
     self = [super init];
     
-    self.m_completion = completion;
+    if (self != nil) {
+        self.m_completion = completion;
+    }
     
     return self;
 }

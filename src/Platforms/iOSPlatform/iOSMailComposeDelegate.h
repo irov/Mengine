@@ -8,8 +8,7 @@
 typedef void (^FBlockMailComposeCompletion)(void);
 
 @interface iOSMailComposeDelegate : NSObject<MFMailComposeViewControllerDelegate>
-- (instancetype)initWithCompletion:(FBlockMailComposeCompletion)completion;
-- (void)dealloc;
+- (instancetype)initWithCompletion:(FBlockMailComposeCompletion _Nonnull)completion;
 
-@property(nonatomic, strong) FBlockMailComposeCompletion m_completion;
+@property(nonatomic, copy, nonnull) FBlockMailComposeCompletion m_completion;
 @end

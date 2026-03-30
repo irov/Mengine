@@ -12,9 +12,7 @@
 @import PilotSDK;
 
 #define PLUGIN_BUNDLE_NAME "MengineApplePilotPlugin"
-
 @interface ApplePilotPlugin () <PilotObjCSessionDelegate, PilotObjCActionDelegate, PilotObjCLoggerDelegate>
-
 @end
 
 @implementation ApplePilotPlugin

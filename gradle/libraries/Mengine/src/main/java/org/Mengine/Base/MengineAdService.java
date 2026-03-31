@@ -135,7 +135,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         }
     }
 
-    public void forEachAdInterstitialPoint(@NonNull Consumer<MengineAdPointInterstitial> consumer) {
+    public void forEachAdInterstitialPoint(@NonNull Consumer<? super MengineAdPointInterstitial> consumer) {
         synchronized (m_syncronizationAdPoints) {
             for (MengineAdPointInterstitial point : m_adInterstitialPoints.values()) {
                 consumer.accept(point);
@@ -143,7 +143,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         }
     }
 
-    public void forEachAdRewardedPoint(@NonNull Consumer<MengineAdPointRewarded> consumer) {
+    public void forEachAdRewardedPoint(@NonNull Consumer<? super MengineAdPointRewarded> consumer) {
         synchronized (m_syncronizationAdPoints) {
             for (MengineAdPointRewarded point : m_adRewardedPoints.values()) {
                 consumer.accept(point);
@@ -151,7 +151,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         }
     }
 
-    public void forEachAdAppOpenPoint(@NonNull Consumer<MengineAdPointAppOpen> consumer) {
+    public void forEachAdAppOpenPoint(@NonNull Consumer<? super MengineAdPointAppOpen> consumer) {
         synchronized (m_syncronizationAdPoints) {
             for (MengineAdPointAppOpen point : m_adAppOpenPoints.values()) {
                 consumer.accept(point);

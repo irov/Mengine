@@ -46,6 +46,20 @@ namespace Mengine
         return timestamp;
     }
     //////////////////////////////////////////////////////////////////////////
+    Timestamp Win32TimeSystem::getPlatformTimestamp() const
+    {
+        Timestamp timestamp = static_cast<Timestamp>(static_cast<DWORD>(::GetTickCount()));
+
+        return timestamp;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Timestamp Win32TimeSystem::getBootTimestamp() const
+    {
+        Timestamp timestamp = static_cast<Timestamp>(::GetTickCount64());
+
+        return timestamp;
+    }
+    //////////////////////////////////////////////////////////////////////////
     double Win32TimeSystem::getElapsedTime() const
     {
         LARGE_INTEGER currentCounter;

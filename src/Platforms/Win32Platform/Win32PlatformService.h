@@ -39,6 +39,7 @@ namespace Mengine
 
     public:
         Timestamp getPlatfomTime() const override;
+        Timestamp getInputTimestamp() const override;
 
     public:
         bool runPlatform() override;
@@ -173,7 +174,7 @@ namespace Mengine
         bool calcWindowsRect_( const Resolution & _resolution, bool _fullsreen, RECT * const _rect ) const;
 
     protected:
-        bool sendChar_( WPARAM wParam );
+        bool sendChar_( WPARAM wParam, Timestamp _timestamp );
 
     protected:
         void setActive_( bool _active );

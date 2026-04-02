@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Config/Config.h"
+
 #include <type_traits>
 
 #include <cfloat>
@@ -9,7 +11,7 @@ namespace Mengine
     namespace Helper
     {
         template<class T>
-        constexpr size_t decimalDigitsCount()
+        MENGINE_CONSTEXPR size_t decimalDigitsCount()
         {
             static_assert(std::is_arithmetic_v<T> == true);
 

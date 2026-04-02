@@ -17,11 +17,11 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    static constexpr uint16_t ETC1_PKM_FORMAT_OFFSET = 6;
-    static constexpr uint16_t ETC1_PKM_ENCODED_WIDTH_OFFSET = 8;
-    static constexpr uint16_t ETC1_PKM_ENCODED_HEIGHT_OFFSET = 10;
-    static constexpr uint16_t ETC1_PKM_WIDTH_OFFSET = 12;
-    static constexpr uint16_t ETC1_PKM_HEIGHT_OFFSET = 14;
+    static MENGINE_CONSTEXPR uint16_t ETC1_PKM_FORMAT_OFFSET = 6;
+    static MENGINE_CONSTEXPR uint16_t ETC1_PKM_ENCODED_WIDTH_OFFSET = 8;
+    static MENGINE_CONSTEXPR uint16_t ETC1_PKM_ENCODED_HEIGHT_OFFSET = 10;
+    static MENGINE_CONSTEXPR uint16_t ETC1_PKM_WIDTH_OFFSET = 12;
+    static MENGINE_CONSTEXPR uint16_t ETC1_PKM_HEIGHT_OFFSET = 14;
     //////////////////////////////////////////////////////////////////////////
     ImageDecoderETC1::ImageDecoderETC1()
     {

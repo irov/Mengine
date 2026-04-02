@@ -28,14 +28,14 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
 #define MENGINE_STATISTIC_DECLARE_BEGIN()\
-    static constexpr StatisticId MENGINE_STATISTIC_ENUMERATOR_BEGIN = MENGINE_CODE_LINE
+    static MENGINE_CONSTEXPR StatisticId MENGINE_STATISTIC_ENUMERATOR_BEGIN = MENGINE_CODE_LINE
         //////////////////////////////////////////////////////////////////////////
 #define MENGINE_STATISTIC_DECLARE_END()\
-    static constexpr StatisticId MENGINE_STATISTIC_ENUMERATOR_COUNT = MENGINE_CODE_LINE - MENGINE_STATISTIC_ENUMERATOR_BEGIN - 1;\
+    static MENGINE_CONSTEXPR StatisticId MENGINE_STATISTIC_ENUMERATOR_COUNT = MENGINE_CODE_LINE - MENGINE_STATISTIC_ENUMERATOR_BEGIN - 1;\
     static_assert(MENGINE_STATISTIC_ENUMERATOR_COUNT < MENGINE_STATISTIC_MAX_COUNT)
     //////////////////////////////////////////////////////////////////////////
 #define MENGINE_STATISTIC_DECLARE(NAME, ENABLED)\
-    static constexpr StatisticId NAME = MENGINE_CODE_LINE - MENGINE_STATISTIC_ENUMERATOR_BEGIN;\
+    static MENGINE_CONSTEXPR StatisticId NAME = MENGINE_CODE_LINE - MENGINE_STATISTIC_ENUMERATOR_BEGIN;\
     template<> struct Statistic<NAME> { static const Char * getName() { return #NAME; } static bool isDefaultEnabled() { return ENABLED; } }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_STATISTIC_DECLARE_BEGIN();

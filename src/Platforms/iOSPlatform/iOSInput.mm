@@ -7,6 +7,18 @@
 
 namespace Mengine
 {
+    namespace Detail
+    {
+        static Timestamp getTouchTimestamp( const UITouch * _touch )
+        {
+            NSTimeInterval touchTimestamp = _touch.timestamp;
+
+            Timestamp timestamp = static_cast<Timestamp>(touchTimestamp * 1000.0);
+
+            return timestamp;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////
     iOSInput::iOSInput()
     {
@@ -115,7 +127,9 @@ namespace Mengine
 
             m_lastCursorPosition = point;
 
-            Helper::pushMouseButtonEvent( fingerIndex, point.x, point.y, MC_LBUTTON, pressure, true );
+            Timestamp timestamp = Detail::getTouchTimestamp( touch );
+
+            Helper::pushMouseButtonEvent( timestamp, fingerIndex, point.x, point.y, MC_LBUTTON, pressure, true );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -153,7 +167,9 @@ namespace Mengine
 
             m_lastCursorPosition = point;
 
-            Helper::pushMouseMoveEvent( fingerIndex, point.x, point.y, dx, dy, pressure, 0.f );
+            Timestamp timestamp = Detail::getTouchTimestamp( touch );
+
+            Helper::pushMouseMoveEvent( timestamp, fingerIndex, point.x, point.y, dx, dy, pressure, 0.f );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -184,7 +200,9 @@ namespace Mengine
 
             m_lastCursorPosition = point;
 
-            Helper::pushMouseButtonEvent( fingerIndex, point.x, point.y, MC_LBUTTON, pressure, false );
+            Timestamp timestamp = Detail::getTouchTimestamp( touch );
+
+            Helper::pushMouseButtonEvent( timestamp, fingerIndex, point.x, point.y, MC_LBUTTON, pressure, false );
         }
     }
     //////////////////////////////////////////////////////////////////////////

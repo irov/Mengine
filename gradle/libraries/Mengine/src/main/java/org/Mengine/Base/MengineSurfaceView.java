@@ -219,19 +219,20 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
 
         int action = event.getAction();
         int repeatCount = event.getRepeatCount();
+        long eventTime = event.getEventTime();
 
         if (action == KeyEvent.ACTION_DOWN) {
-            MengineNative.AndroidPlatform_keyEvent(true, keyCode, repeatCount);
+            MengineNative.AndroidPlatform_keyEvent(eventTime, true, keyCode, repeatCount);
 
             if (MengineSurfaceView.isKeyEventHasText(event) == true) {
                 int unicode = event.getUnicodeChar();
 
-                MengineNative.AndroidPlatform_textEvent(unicode);
+                MengineNative.AndroidPlatform_textEvent(eventTime, unicode);
             }
 
             return true;
         } else if (action == KeyEvent.ACTION_UP) {
-            MengineNative.AndroidPlatform_keyEvent(false, keyCode, repeatCount);
+            MengineNative.AndroidPlatform_keyEvent(eventTime, false, keyCode, repeatCount);
 
             return true;
         }
@@ -240,20 +241,26 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
     }
 
     protected void nativeTouchEvent(MotionEvent event, int index, int action) {
+        long eventTime = event.getEventTime();
+
+        this.nativeTouchEvent(eventTime, event, index, action);
+    }
+
+    protected void nativeTouchEvent(long eventTime, MotionEvent event, int index, int action) {
         int pointerId = event.getPointerId(index);
         float x = event.getX(index);
         float y = event.getY(index);
         float p = event.getPressure(index);
 
-        this.nativeTouchEvent(pointerId, x, y, p, action);
+        this.nativeTouchEvent(eventTime, pointerId, x, y, p, action);
     }
 
-    protected void nativeTouchEvent(int pointerId, float x, float y, float p, int action) {
+    protected void nativeTouchEvent(long eventTime, int pointerId, float x, float y, float p, int action) {
         float xn = x / m_surfaceWidthF;
         float yn = y / m_surfaceHeightF;
         float pn = Math.min(p, 1.f);
 
-        MengineNative.AndroidPlatform_touchEvent(action, pointerId, xn, yn, pn);
+        MengineNative.AndroidPlatform_touchEvent(eventTime, action, pointerId, xn, yn, pn);
     }
 
     @Override
@@ -266,13 +273,15 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
                 final int historySize = event.getHistorySize();
 
                 for (int historyIndex = 0; historyIndex != historySize; ++historyIndex) {
+                    long historicalEventTime = event.getHistoricalEventTime(historyIndex);
+
                     for (int pointerIndex = 0; pointerIndex != pointerCount; ++pointerIndex) {
                         int pointerId = event.getPointerId(pointerIndex);
                         float x  = event.getHistoricalX(pointerIndex, historyIndex);
                         float y  = event.getHistoricalY(pointerIndex, historyIndex);
                         float p = event.getHistoricalPressure(pointerIndex, historyIndex);
 
-                        this.nativeTouchEvent(pointerId, x, y, p, MotionEvent.ACTION_MOVE);
+                        this.nativeTouchEvent(historicalEventTime, pointerId, x, y, p, MotionEvent.ACTION_MOVE);
                     }
                 }
 
@@ -318,6 +327,8 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
 
         switch (type) {
             case Sensor.TYPE_ACCELEROMETER: {
+                long eventTime = event.timestamp;
+
                 float x = event.values[0];
                 float y = event.values[1];
                 float z = event.values[2];
@@ -326,10 +337,9 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
                 float yn = y / SensorManager.GRAVITY_EARTH;
                 float zn = z / SensorManager.GRAVITY_EARTH;
 
-                MengineNative.AndroidPlatform_accelerationEvent(xn, yn, zn);
+                MengineNative.AndroidPlatform_accelerationEvent(eventTime, xn, yn, zn);
             }break;
             case Sensor.TYPE_LINEAR_ACCELERATION: {
-                //AndroidPlatform_accelerationEvent(xn, yn, zn);
             }break;
         }
     }

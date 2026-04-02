@@ -16,13 +16,13 @@ namespace Mengine
         T stringTerminalChar();
         //////////////////////////////////////////////////////////////////////////
         template<>
-        constexpr Char stringTerminalChar()
+        MENGINE_CONSTEXPR Char stringTerminalChar()
         {
             return '\0';
         }
         //////////////////////////////////////////////////////////////////////////
         template<>
-        constexpr WChar stringTerminalChar()
+        MENGINE_CONSTEXPR WChar stringTerminalChar()
         {
             return L'\0';
         }

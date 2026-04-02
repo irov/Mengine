@@ -373,6 +373,13 @@ namespace Mengine
         return platformTime;
     }
     //////////////////////////////////////////////////////////////////////////
+    Timestamp GDKPlatformService::getInputTimestamp() const
+    {
+        Timestamp timestamp = Helper::getPlatformTimestamp();
+
+        return timestamp;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool GDKPlatformService::runPlatform()
     {
         if( m_close == true )

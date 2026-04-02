@@ -5,6 +5,7 @@
 #include "Kernel/WheelCode.h"
 #include "Kernel/TouchCode.h"
 
+#include "Config/Timestamp.h"
 #include "Config/Char.h"
 
 #include "math/vec2.h"
@@ -13,6 +14,11 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    struct InputBaseData
+    {
+        Timestamp timestamp;
+    };
     //////////////////////////////////////////////////////////////////////////
     struct InputSpecialData
     {
@@ -30,6 +36,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct InputKeyEvent
     {
+        InputBaseData base;
         InputSpecialData special;
         InputPositionData position;
 
@@ -42,6 +49,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct InputTextEvent
     {
+        InputBaseData base;
         InputSpecialData special;
         InputPositionData position;
 
@@ -53,7 +61,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct InputAccelerometerEvent
     {
+        InputBaseData base;
         InputSpecialData special;
+
+        Timestamp timestampSensor;
 
         float dx;
         float dy;
@@ -62,6 +73,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct InputMouseButtonEvent
     {
+        InputBaseData base;
         InputSpecialData special;
         InputPositionData position;
 
@@ -76,6 +88,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct InputMouseWheelEvent
     {
+        InputBaseData base;
         InputSpecialData special;
         InputPositionData position;
 
@@ -87,6 +100,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct InputMouseMoveEvent
     {
+        InputBaseData base;
         InputSpecialData special;
         InputPositionData position;
 
@@ -101,6 +115,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct InputMouseEnterEvent
     {
+        InputBaseData base;
         InputSpecialData special;
         InputPositionData position;
 
@@ -111,6 +126,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct InputMouseLeaveEvent
     {
+        InputBaseData base;
         InputSpecialData special;
         InputPositionData position;
 

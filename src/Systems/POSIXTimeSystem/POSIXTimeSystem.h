@@ -21,6 +21,8 @@ namespace Mengine
 
     public:
         Timestamp getSystemTimestamp() const override;
+        Timestamp getPlatformTimestamp() const override;
+        Timestamp getBootTimestamp() const override;
 
     public:
         double getElapsedTime() const override;

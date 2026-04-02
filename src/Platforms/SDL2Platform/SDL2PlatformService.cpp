@@ -829,7 +829,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDL2PlatformService::runPlatform()
     {
-        this->setActive_( true );
+        Timestamp timestamp = this->getInputTimestamp();
+
+        this->setActive_( true, timestamp );
 
         if( this->updatePlatform() == false )
         {
@@ -1013,6 +1015,13 @@ namespace Mengine
         Timestamp platformTime = currentTime - m_beginTime;
 
         return platformTime;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Timestamp SDL2PlatformService::getInputTimestamp() const
+    {
+        Timestamp timestamp = static_cast<Timestamp>( SDL_GetTicks() );
+
+        return timestamp;
     }
     //////////////////////////////////////////////////////////////////////////
     void SDL2PlatformService::setProjectTitle( const Char * _projectTitle )
@@ -2511,13 +2520,17 @@ namespace Mengine
                     case SDL_WINDOWEVENT_RESTORED:
                     case SDL_WINDOWEVENT_ENTER:
                         {
-                            this->setActive_( true );
+                            Timestamp timestamp = static_cast<Timestamp>( sdlEvent.window.timestamp );
+
+                            this->setActive_( true, timestamp );
                         }break;
                     case SDL_WINDOWEVENT_FOCUS_LOST:
                     case SDL_WINDOWEVENT_MINIMIZED:
                     case SDL_WINDOWEVENT_LEAVE:
                         {
-                            this->setActive_( false );
+                            Timestamp timestamp = static_cast<Timestamp>( sdlEvent.window.timestamp );
+
+                            this->setActive_( false, timestamp );
                         }break;
                     case SDL_WINDOWEVENT_CLOSE:
                         {
@@ -2562,7 +2575,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDL2PlatformService::setActive_( bool _active )
+    void SDL2PlatformService::setActive_( bool _active, Timestamp _timestamp )
     {
         if( m_active == _active )
         {
@@ -2581,12 +2594,12 @@ namespace Mengine
         {
             if( nopause == false )
             {
-                Helper::pushMouseLeaveEvent( TC_TOUCH0, point.x, point.y, 0.f );
+                Helper::pushMouseLeaveEvent( _timestamp, TC_TOUCH0, point.x, point.y, 0.f );
             }
         }
         else
         {
-            Helper::pushMouseEnterEvent( TC_TOUCH0, point.x, point.y, 0.f );
+            Helper::pushMouseEnterEvent( _timestamp, TC_TOUCH0, point.x, point.y, 0.f );
         }
 
         if( nopause == false )

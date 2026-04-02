@@ -65,6 +65,7 @@ namespace Mengine
 
     public:
         Timestamp getPlatfomTime() const override;
+        Timestamp getInputTimestamp() const override;
 
     public:
         void setProjectTitle( const Char * _projectTitle ) override;
@@ -200,7 +201,7 @@ namespace Mengine
         void pushQuitEvent_();
 
     protected:
-        void setActive_( bool _active );
+        void setActive_( bool _active, Timestamp _timestamp );
 
     protected:
         bool isNeedWindowRender() const;

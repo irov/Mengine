@@ -48,14 +48,14 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
 #define MENGINE_NOTIFICATOR_DECLARE_BEGIN()\
-    static constexpr uint32_t MENGINE_NOTIFICATOR_ENUMERATOR_BEGIN = MENGINE_CODE_LINE
+    static MENGINE_CONSTEXPR uint32_t MENGINE_NOTIFICATOR_ENUMERATOR_BEGIN = MENGINE_CODE_LINE
         //////////////////////////////////////////////////////////////////////////
 #define MENGINE_NOTIFICATOR_DECLARE_END()\
-    static constexpr uint32_t MENGINE_NOTIFICATOR_ENUMERATOR_COUNT = MENGINE_CODE_LINE - MENGINE_NOTIFICATOR_ENUMERATOR_BEGIN - 1;\
+    static MENGINE_CONSTEXPR uint32_t MENGINE_NOTIFICATOR_ENUMERATOR_COUNT = MENGINE_CODE_LINE - MENGINE_NOTIFICATOR_ENUMERATOR_BEGIN - 1;\
     static_assert(MENGINE_NOTIFICATOR_ENUMERATOR_COUNT < MENGINE_NOTIFICATOR_MAX_COUNT)
     //////////////////////////////////////////////////////////////////////////
 #define MENGINE_NOTIFICATOR_DECLARE(NAME, ...)\
-    static constexpr NotificatorId NAME = MENGINE_CODE_LINE - MENGINE_NOTIFICATOR_ENUMERATOR_BEGIN;\
+    static MENGINE_CONSTEXPR NotificatorId NAME = MENGINE_CODE_LINE - MENGINE_NOTIFICATOR_ENUMERATOR_BEGIN;\
     template<> struct Notificator<NAME> { typedef Tuple<__VA_ARGS__> args_type; static const Char * getName() { return #NAME; } }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_NOTIFICATOR_DECLARE_BEGIN();

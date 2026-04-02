@@ -11,7 +11,7 @@ namespace Mengine
         {
             //////////////////////////////////////////////////////////////////////////
             template<size_t Index>
-            constexpr const Char * createNotificationNameTableFunction()
+            MENGINE_CONSTEXPR const Char * createNotificationNameTableFunction()
             {
                 const Char * name = Notificator<Index>::getName();
 
@@ -19,13 +19,13 @@ namespace Mengine
             }
             //////////////////////////////////////////////////////////////////////////
             template<size_t ... Index>
-            constexpr auto createNotificationNameTable( std::index_sequence<Index ...> )
+            MENGINE_CONSTEXPR auto createNotificationNameTable( std::index_sequence<Index ...> )
             {
                 return Array<const Char *, sizeof ... (Index)>{{Detail::createNotificationNameTableFunction<Index>() ...}};
             }
             //////////////////////////////////////////////////////////////////////////
             template<size_t Size>
-            constexpr auto createNotificationNameTable()
+            MENGINE_CONSTEXPR auto createNotificationNameTable()
             {
                 return Detail::createNotificationNameTable( std::make_index_sequence<Size>{} );
             }

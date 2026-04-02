@@ -330,6 +330,14 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        static bool appleAdvertisement_getNoAds() {
+            if ([[AppleAdvertisementPlugin sharedInstance] getNoAds] == NO) {
+                return false;
+            }
+            
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     AppleAdvertisementScriptEmbedding::AppleAdvertisementScriptEmbedding()
@@ -363,6 +371,8 @@ namespace Mengine
         pybind::def_function( _kernel, "appleAdvertisementShowRewarded", &Detail::appleAdvertisement_showRewarded );
         pybind::def_function( _kernel, "appleAdvertisementIsShowingRewarded", &Detail::appleAdvertisement_isShowingRewarded );
 
+        pybind::def_function( _kernel, "appleAdvertisementGetNoAds", &Detail::appleAdvertisement_getNoAds );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -382,6 +392,7 @@ namespace Mengine
         _kernel->remove_from_module( "appleAdvertisementCanYouShowRewarded", nullptr );
         _kernel->remove_from_module( "appleAdvertisementShowRewarded", nullptr );
         _kernel->remove_from_module( "appleAdvertisementIsShowingRewarded", nullptr );
+        _kernel->remove_from_module( "appleAdvertisementGetNoAds", nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
 }

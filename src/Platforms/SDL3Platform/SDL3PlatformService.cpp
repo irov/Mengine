@@ -783,7 +783,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDL3PlatformService::runPlatform()
     {
-        this->setActive_( true );
+        Timestamp timestamp = this->getInputTimestamp();
+
+        this->setActive_( true, timestamp );
 
         if( this->updatePlatform() == false )
         {
@@ -967,6 +969,13 @@ namespace Mengine
         Timestamp platformTime = currentTime - m_beginTime;
 
         return platformTime;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Timestamp SDL3PlatformService::getInputTimestamp() const
+    {
+        Timestamp timestamp = static_cast<Timestamp>( SDL_GetTicks() );
+
+        return timestamp;
     }
     //////////////////////////////////////////////////////////////////////////
     void SDL3PlatformService::setProjectTitle( const Char * _projectTitle )
@@ -2523,13 +2532,17 @@ namespace Mengine
             case SDL_EVENT_WINDOW_RESTORED:
             case SDL_EVENT_WINDOW_MOUSE_ENTER:
                 {
-                    this->setActive_( true );
+                    Timestamp timestamp = sdlEvent.window.timestamp / 1000000ULL;
+
+                    this->setActive_( true, timestamp );
                 }break;
             case SDL_EVENT_WINDOW_FOCUS_LOST:
             case SDL_EVENT_WINDOW_MINIMIZED:
             case SDL_EVENT_WINDOW_MOUSE_LEAVE:
                 {
-                    this->setActive_( false );
+                    Timestamp timestamp = sdlEvent.window.timestamp / 1000000ULL;
+
+                    this->setActive_( false, timestamp );
                 }break;
             case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
                 {
@@ -2566,7 +2579,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDL3PlatformService::setActive_( bool _active )
+    void SDL3PlatformService::setActive_( bool _active, Timestamp _timestamp )
     {
         if( m_active == _active )
         {
@@ -2585,12 +2598,12 @@ namespace Mengine
         {
             if( nopause == false )
             {
-                Helper::pushMouseLeaveEvent( TC_TOUCH0, point.x, point.y, 0.f );
+                Helper::pushMouseLeaveEvent( _timestamp, TC_TOUCH0, point.x, point.y, 0.f );
             }
         }
         else
         {
-            Helper::pushMouseEnterEvent( TC_TOUCH0, point.x, point.y, 0.f );
+            Helper::pushMouseEnterEvent( _timestamp, TC_TOUCH0, point.x, point.y, 0.f );
         }
 
         if( nopause == false )

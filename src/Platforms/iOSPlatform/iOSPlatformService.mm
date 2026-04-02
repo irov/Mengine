@@ -795,6 +795,13 @@ namespace Mengine
         return platformTime;
     }
     //////////////////////////////////////////////////////////////////////////
+    Timestamp iOSPlatformService::getInputTimestamp() const
+    {
+        Timestamp timestamp = Helper::getPlatformTimestamp();
+
+        return timestamp;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::setProjectTitle( const Char * _projectTitle )
     {
         if( _projectTitle == nullptr )
@@ -1422,16 +1429,19 @@ namespace Mengine
         mt::vec2f point;
         m_iOSInput->getCursorPosition( &point );
 
+        // Match UITouch.timestamp time base: seconds since system startup.
+        Timestamp timestamp = this->getInputTimestamp();
+
         if( m_active == false )
         {
             if( nopause == false )
             {
-                Helper::pushMouseLeaveEvent( TC_TOUCH0, point.x, point.y, 0.f );
+                Helper::pushMouseLeaveEvent( timestamp, TC_TOUCH0, point.x, point.y, 0.f );
             }
         }
         else
         {
-            Helper::pushMouseEnterEvent( TC_TOUCH0, point.x, point.y, 0.f );
+            Helper::pushMouseEnterEvent( timestamp, TC_TOUCH0, point.x, point.y, 0.f );
         }
 
         if( nopause == false )

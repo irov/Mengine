@@ -46,6 +46,7 @@ namespace Mengine
 
     public:
         virtual Timestamp getPlatfomTime() const = 0;
+        virtual Timestamp getInputTimestamp() const = 0;
 
     public:
         virtual void setProjectTitle( const Char * _projectTitle ) = 0;

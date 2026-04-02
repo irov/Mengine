@@ -39,6 +39,7 @@ namespace Mengine
 
     public:
         Timestamp getPlatfomTime() const override;
+        Timestamp getInputTimestamp() const override;
 
     public:
         bool runPlatform() override;

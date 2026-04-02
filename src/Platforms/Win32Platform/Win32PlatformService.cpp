@@ -601,6 +601,13 @@ namespace Mengine
         return platformTime;
     }
     //////////////////////////////////////////////////////////////////////////
+    Timestamp Win32PlatformService::getInputTimestamp() const
+    {
+        Timestamp timestamp = Helper::getPlatformTimestamp();
+
+        return timestamp;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Win32PlatformService::runPlatform()
     {
         if( m_close == true )
@@ -1373,7 +1380,9 @@ namespace Mengine
 
                 EKeyCode code = (EKeyCode)vkc;
 
-                Helper::pushKeyEvent( point.x, point.y, 0.f, code, true, false );
+                const Timestamp messageTimestamp = static_cast<Timestamp>(static_cast<DWORD>(::GetMessageTime()));
+
+                Helper::pushKeyEvent( messageTimestamp, point.x, point.y, 0.f, code, true, false );
             }break;
         case WM_SYSKEYUP:
             {
@@ -1394,7 +1403,9 @@ namespace Mengine
 
                 EKeyCode code = (EKeyCode)vkc;
 
-                Helper::pushKeyEvent( point.x, point.y, 0.f, code, false, false );
+                const Timestamp messageTimestamp = static_cast<Timestamp>(static_cast<DWORD>(::GetMessageTime()));
+
+                Helper::pushKeyEvent( messageTimestamp, point.x, point.y, 0.f, code, false, false );
             }break;
         case WM_SYSCOMMAND:
             {
@@ -1560,6 +1571,7 @@ namespace Mengine
     bool Win32PlatformService::wndProcInput( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT * const _result )
     {
         bool handle = false;
+        const Timestamp messageTimestamp = static_cast<Timestamp>(static_cast<DWORD>(::GetMessageTime()));
 
         switch( uMsg )
         {
@@ -1605,7 +1617,7 @@ namespace Mengine
                         return false;
                     }
 
-                    Helper::pushMouseLeaveEvent( TC_TOUCH0, point.x, point.y, 0.f );
+                    Helper::pushMouseLeaveEvent( messageTimestamp, TC_TOUCH0, point.x, point.y, 0.f );
 
                     if( (::GetKeyState( VK_LBUTTON ) & 0x8000) != 0 )
                     {
@@ -1659,7 +1671,7 @@ namespace Mengine
 
                     if( (::GetKeyState( VK_LBUTTON ) & 0x8000) == 0 )
                     {
-                        Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, MC_LBUTTON, 0.f, false );
+                        Helper::pushMouseButtonEvent( messageTimestamp, TC_TOUCH0, point.x, point.y, MC_LBUTTON, 0.f, false );
                     }
                 }
 
@@ -1669,7 +1681,7 @@ namespace Mengine
 
                     if( (::GetKeyState( VK_RBUTTON ) & 0x8000) == 0 )
                     {
-                        Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, MC_RBUTTON, 0.f, false );
+                        Helper::pushMouseButtonEvent( messageTimestamp, TC_TOUCH0, point.x, point.y, MC_RBUTTON, 0.f, false );
                     }
                 }
 
@@ -1679,7 +1691,7 @@ namespace Mengine
 
                     if( (::GetKeyState( VK_MBUTTON ) & 0x8000) == 0 )
                     {
-                        Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, MC_MBUTTON, 0.f, false );
+                        Helper::pushMouseButtonEvent( messageTimestamp, TC_TOUCH0, point.x, point.y, MC_MBUTTON, 0.f, false );
                     }
                 }
 
@@ -1692,7 +1704,7 @@ namespace Mengine
                     ::InvalidateRect( hWnd, NULL, FALSE );
                     ::UpdateWindow( hWnd );
 
-                    Helper::pushMouseEnterEvent( TC_TOUCH0, point.x, point.y, 0.f );
+                    Helper::pushMouseEnterEvent( messageTimestamp, TC_TOUCH0, point.x, point.y, 0.f );
                 }
 
                 if( m_lastMouse == false )
@@ -1743,7 +1755,7 @@ namespace Mengine
                 fdx /= width;
                 fdy /= height;
 
-                Helper::pushMouseMoveEvent( TC_TOUCH0, point.x, point.y, fdx, fdy, 0.f, 0.f );
+                Helper::pushMouseMoveEvent( messageTimestamp, TC_TOUCH0, point.x, point.y, fdx, fdy, 0.f, 0.f );
 
                 handle = true;
                 *_result = 0;
@@ -1774,7 +1786,7 @@ namespace Mengine
 
                 int32_t scroll = zDelta / WHEEL_DELTA;
 
-                Helper::pushMouseWheelEvent( point.x, point.y, 0.f, WC_CENTRAL, scroll );
+                Helper::pushMouseWheelEvent( messageTimestamp, point.x, point.y, 0.f, WC_CENTRAL, scroll );
 
                 handle = true;
                 *_result = 0;
@@ -1858,7 +1870,7 @@ namespace Mengine
                     return false;
                 }
 
-                Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, MC_LBUTTON, 0.f, true );
+                Helper::pushMouseButtonEvent( messageTimestamp, TC_TOUCH0, point.x, point.y, MC_LBUTTON, 0.f, true );
 
                 handle = true;
                 *_result = 0;
@@ -1885,7 +1897,7 @@ namespace Mengine
                         return false;
                     }
 
-                    Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, MC_LBUTTON, 0.f, false );
+                    Helper::pushMouseButtonEvent( messageTimestamp, TC_TOUCH0, point.x, point.y, MC_LBUTTON, 0.f, false );
                 }
 
                 m_isDoubleClick[MC_LBUTTON] = false;
@@ -1912,7 +1924,7 @@ namespace Mengine
                     return false;
                 }
 
-                Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, MC_RBUTTON, 0.f, true );
+                Helper::pushMouseButtonEvent( messageTimestamp, TC_TOUCH0, point.x, point.y, MC_RBUTTON, 0.f, true );
 
                 handle = true;
                 *_result = 0;
@@ -1938,7 +1950,7 @@ namespace Mengine
                         return false;
                     }
 
-                    Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, MC_RBUTTON, 0.f, false );
+                    Helper::pushMouseButtonEvent( messageTimestamp, TC_TOUCH0, point.x, point.y, MC_RBUTTON, 0.f, false );
                 }
 
                 m_isDoubleClick[MC_RBUTTON] = false;
@@ -1965,7 +1977,7 @@ namespace Mengine
                     return false;
                 }
 
-                Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, MC_MBUTTON, 0.f, true );
+                Helper::pushMouseButtonEvent( messageTimestamp, TC_TOUCH0, point.x, point.y, MC_MBUTTON, 0.f, true );
 
                 handle = true;
                 *_result = 0;
@@ -1991,7 +2003,7 @@ namespace Mengine
                         return false;
                     }
 
-                    Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, MC_MBUTTON, 0.f, false );
+                    Helper::pushMouseButtonEvent( messageTimestamp, TC_TOUCH0, point.x, point.y, MC_MBUTTON, 0.f, false );
                 }
 
                 m_isDoubleClick[MC_MBUTTON] = false;
@@ -2022,7 +2034,7 @@ namespace Mengine
 
                 EMouseButtonCode code = Detail::getXButtonCode( XButton );
 
-                Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, code, 0.f, true );
+                Helper::pushMouseButtonEvent( messageTimestamp, TC_TOUCH0, point.x, point.y, code, 0.f, true );
 
                 handle = true;
                 *_result = 0;
@@ -2052,7 +2064,7 @@ namespace Mengine
                         return false;
                     }
 
-                    Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, code, 0.f, false );
+                    Helper::pushMouseButtonEvent( messageTimestamp, TC_TOUCH0, point.x, point.y, code, 0.f, false );
                 }
 
                 m_isDoubleClick[code] = false;
@@ -2079,7 +2091,7 @@ namespace Mengine
 
                 EKeyCode code = (EKeyCode)vkc;
 
-                Helper::pushKeyEvent( point.x, point.y, 0.f, code, true, false );
+                Helper::pushKeyEvent( messageTimestamp, point.x, point.y, 0.f, code, true, false );
 
                 handle = true;
                 *_result = 0;
@@ -2103,7 +2115,7 @@ namespace Mengine
 
                 EKeyCode code = (EKeyCode)vkc;
 
-                Helper::pushKeyEvent( point.x, point.y, 0.f, code, false, false );
+                Helper::pushKeyEvent( messageTimestamp, point.x, point.y, 0.f, code, false, false );
 
                 handle = true;
                 *_result = 0;
@@ -2125,7 +2137,7 @@ namespace Mengine
                     break;
                 }
 
-                if( this->sendChar_( wParam ) == false )
+                if( this->sendChar_( wParam, messageTimestamp ) == false )
                 {
                     return false;
                 }
@@ -2142,7 +2154,7 @@ namespace Mengine
                     , ::IsWindowVisible( hWnd )
                 );
 
-                if( this->sendChar_( wParam ) == false )
+                if( this->sendChar_( wParam, messageTimestamp ) == false )
                 {
                     return false;
                 }
@@ -2158,7 +2170,7 @@ namespace Mengine
         return handle;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32PlatformService::sendChar_( WPARAM wParam )
+    bool Win32PlatformService::sendChar_( WPARAM wParam, Timestamp _timestamp )
     {
         Char utf8_code[5 + 1] = {'\0'};
         if( Helper::utf32ToUtf8( (Utf32)wParam, utf8_code ) == false )
@@ -2178,7 +2190,7 @@ namespace Mengine
             return false;
         }
 
-        Helper::pushTextEvent( point.x, point.y, 0.f, unicode_text );
+        Helper::pushTextEvent( _timestamp, point.x, point.y, 0.f, unicode_text );
 
         return true;
     }
@@ -3745,9 +3757,11 @@ namespace Mengine
         mt::vec2f point( 0.f, 0.f );
         this->calcCursorPosition_( &point );
 
+        Timestamp timestamp = this->getInputTimestamp();
+
         if( m_active == true )
         {
-            Helper::pushMouseEnterEvent( TC_TOUCH0, point.x, point.y, 0.f );
+            Helper::pushMouseEnterEvent( timestamp, TC_TOUCH0, point.x, point.y, 0.f );
 
             if( m_cursorMode == true )
             {
@@ -3763,7 +3777,7 @@ namespace Mengine
         {
             if( nopause == false )
             {
-                Helper::pushMouseLeaveEvent( TC_TOUCH0, point.x, point.y, 0.f );
+                Helper::pushMouseLeaveEvent( timestamp, TC_TOUCH0, point.x, point.y, 0.f );
             }
 
             if( m_cursorMode == true )

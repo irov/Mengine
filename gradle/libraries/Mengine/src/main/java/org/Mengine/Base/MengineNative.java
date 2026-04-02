@@ -33,10 +33,10 @@ public class MengineNative {
     public static native void AndroidPlatform_surfaceCreatedEvent(Surface surface);
     public static native void AndroidPlatform_surfaceDestroyedEvent();
     public static native void AndroidPlatform_surfaceChangedEvent(Surface surface, int surfaceWidth, int surfaceHeight, int deviceWidth, int deviceHeight, float rate);
-    public static native void AndroidPlatform_keyEvent(boolean isDown, int keyCode, int repeatCount);
-    public static native void AndroidPlatform_textEvent(int unicode);
-    public static native void AndroidPlatform_touchEvent(int action, int pointerId, float x, float y, float pressure);
-    public static native void AndroidPlatform_accelerationEvent(float x, float y, float z);
+    public static native void AndroidPlatform_keyEvent(long eventTime, boolean isDown, int keyCode, int repeatCount);
+    public static native void AndroidPlatform_textEvent(long eventTime, int unicode);
+    public static native void AndroidPlatform_touchEvent(long eventTime, int action, int pointerId, float x, float y, float pressure);
+    public static native void AndroidPlatform_accelerationEvent(long eventTime, float x, float y, float z);
     public static native void AndroidPlatform_pauseEvent(float x, float y);
     public static native void AndroidPlatform_resumeEvent(float x, float y);
     public static native float AndroidPlatform_getLastFingerX();

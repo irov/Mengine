@@ -63,6 +63,7 @@ namespace Mengine
 
     public:
         Timestamp getPlatfomTime() const override;
+        Timestamp getInputTimestamp() const override;
 
     public:
         void setProjectTitle( const Char * _projectTitle ) override;
@@ -175,10 +176,10 @@ namespace Mengine
         ETouchCode getFingerIndex_( jint _fingerId ) const;
 
     protected:
-        void androidNativeTouchEvent( jint _action, jint _pointerId, jfloat _x, jfloat _y, jfloat _pressure ) override;
-        void androidNativeAccelerationEvent( jfloat _x, jfloat _y, jfloat _z ) override;
-        void androidNativeKeyEvent( jboolean _isDown, jint _keyCode, jint _repeatCount ) override;
-        void androidNativeTextEvent( jint _unicode ) override;
+        void androidNativeTouchEvent( jlong _eventTime, jint _action, jint _pointerId, jfloat _x, jfloat _y, jfloat _pressure ) override;
+        void androidNativeAccelerationEvent( jlong _eventTimestamp, jfloat _x, jfloat _y, jfloat _z ) override;
+        void androidNativeKeyEvent( jlong _eventTime, jboolean _isDown, jint _keyCode, jint _repeatCount ) override;
+        void androidNativeTextEvent( jlong _eventTime, jint _unicode ) override;
         void androidNativePauseEvent( jfloat _x, jfloat _y ) override;
         void androidNativeResumeEvent( jfloat _x, jfloat _y ) override;
         void androidNativeStopEvent() override;

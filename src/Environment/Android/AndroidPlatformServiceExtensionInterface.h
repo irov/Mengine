@@ -21,10 +21,10 @@ namespace Mengine
         virtual void androidNativeSurfaceChangedEvent( ANativeWindow * _nativeWindow, jint surfaceWidth, jint surfaceHeight, jint deviceWidth, jint deviceHeight, jfloat rate ) = 0;
 
     public:
-        virtual void androidNativeKeyEvent( jboolean _isDown, jint _keyCode, jint _repeatCount ) = 0;
-        virtual void androidNativeTextEvent( jint unicode ) = 0;
-        virtual void androidNativeTouchEvent( jint _action, jint _pointerId, jfloat _x, jfloat _y, jfloat _pressure ) = 0;
-        virtual void androidNativeAccelerationEvent( jfloat _x, jfloat _y, jfloat _z ) = 0;
+        virtual void androidNativeKeyEvent( jlong _eventTime, jboolean _isDown, jint _keyCode, jint _repeatCount ) = 0;
+        virtual void androidNativeTextEvent( jlong _eventTime, jint unicode ) = 0;
+        virtual void androidNativeTouchEvent( jlong _eventTime, jint _action, jint _pointerId, jfloat _x, jfloat _y, jfloat _pressure ) = 0;
+        virtual void androidNativeAccelerationEvent( jlong _eventTime, jfloat _x, jfloat _y, jfloat _z ) = 0;
         virtual void androidNativePauseEvent( jfloat _x, jfloat _y ) = 0;
         virtual void androidNativeResumeEvent( jfloat _x, jfloat _y ) = 0;
         virtual void androidNativeStopEvent() = 0;

@@ -273,7 +273,7 @@ namespace Mengine
                 bool haveSomeData = m_socket->waitForData( 100u );
                 if( haveSomeData == true )
                 {
-                    static constexpr size_t BUFFER_SIZE = 4096;
+                    static MENGINE_CONSTEXPR size_t BUFFER_SIZE = 4096;
                     uint8_t buffer[BUFFER_SIZE];
 
                     size_t bytesReceived = 0;

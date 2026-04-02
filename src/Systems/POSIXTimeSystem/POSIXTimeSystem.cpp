@@ -41,6 +41,38 @@ namespace Mengine
         return milliseconds;
     }
     //////////////////////////////////////////////////////////////////////////
+    Timestamp POSIXTimeSystem::getPlatformTimestamp() const
+    {
+        struct timespec tv;
+
+#if defined(MENGINE_PLATFORM_ANDROID) || defined(MENGINE_VENDOR_APPLE)
+        ::clock_gettime( CLOCK_MONOTONIC, &tv );
+#else
+        ::timespec_get( &tv, TIME_UTC );
+#endif
+
+        Timestamp milliseconds = tv.tv_sec * MENGINE_INT64_C( 1000 ) + tv.tv_nsec / MENGINE_INT64_C( 1000000 );
+
+        return milliseconds;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Timestamp POSIXTimeSystem::getBootTimestamp() const
+    {
+        struct timespec tv;
+
+#if defined(MENGINE_PLATFORM_ANDROID)
+        ::clock_gettime( CLOCK_BOOTTIME, &tv );
+#elif defined(MENGINE_VENDOR_APPLE)
+        ::clock_gettime( CLOCK_MONOTONIC, &tv );
+#else
+        ::timespec_get( &tv, TIME_UTC );
+#endif
+
+        Timestamp milliseconds = tv.tv_sec * MENGINE_INT64_C( 1000 ) + tv.tv_nsec / MENGINE_INT64_C( 1000000 );
+
+        return milliseconds;
+    }
+    //////////////////////////////////////////////////////////////////////////
     double POSIXTimeSystem::getElapsedTime() const
     {
         struct timespec tv;

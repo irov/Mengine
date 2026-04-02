@@ -66,6 +66,7 @@
 #include <clocale>
 #include <ctime>
 #include <iomanip>
+#include <time.h>
 
 #include <sys/stat.h>
 #include <dlfcn.h>
@@ -302,7 +303,7 @@ extern "C"
         platformExtension->androidNativeSurfaceChangedEvent( nativeWindow, surfaceWidth, surfaceHeight, deviceWidth, deviceHeight, rate );
     }
     ///////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1keyEvent )(JNIEnv * env, jclass cls, jboolean isDown, jint keyCode, jint repeatCount)
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1keyEvent )(JNIEnv * env, jclass cls, jlong eventTime, jboolean isDown, jint keyCode, jint repeatCount)
     {
         if( g_androidPlatformActived == false )
         {
@@ -312,10 +313,10 @@ extern "C"
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
-        platformExtension->androidNativeKeyEvent( isDown, keyCode, repeatCount );
+        platformExtension->androidNativeKeyEvent( eventTime, isDown, keyCode, repeatCount );
     }
     ///////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1textEvent )(JNIEnv * env, jclass cls, jint unicode)
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1textEvent )(JNIEnv * env, jclass cls, jlong eventTime, jint unicode)
     {
         if( g_androidPlatformActived == false )
         {
@@ -325,10 +326,10 @@ extern "C"
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
-        platformExtension->androidNativeTextEvent( unicode );
+        platformExtension->androidNativeTextEvent( eventTime, unicode );
     }
     ///////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1touchEvent )(JNIEnv * env, jclass cls, jint action, jint pointerId, jfloat x, jfloat y, jfloat pressure)
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1touchEvent )(JNIEnv * env, jclass cls, jlong eventTime, jint action, jint pointerId, jfloat x, jfloat y, jfloat pressure)
     {
         if( g_androidPlatformActived == false )
         {
@@ -338,10 +339,10 @@ extern "C"
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
-        platformExtension->androidNativeTouchEvent( action, pointerId, x, y, pressure );
+        platformExtension->androidNativeTouchEvent( eventTime, action, pointerId, x, y, pressure );
     }
     ///////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1accelerationEvent )(JNIEnv * env, jclass cls, jfloat x, jfloat y, jfloat z)
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1accelerationEvent )(JNIEnv * env, jclass cls, jlong eventTimestamp, jfloat x, jfloat y, jfloat z)
     {
         if( g_androidPlatformActived == false )
         {
@@ -351,7 +352,7 @@ extern "C"
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
-        platformExtension->androidNativeAccelerationEvent( x, y, z );
+        platformExtension->androidNativeAccelerationEvent( eventTimestamp, x, y, z );
     }
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1pauseEvent )(JNIEnv * env, jclass cls, jfloat x, jfloat y)
@@ -1190,6 +1191,13 @@ namespace Mengine
         return platformTime;
     }
     //////////////////////////////////////////////////////////////////////////
+    Timestamp AndroidPlatformService::getInputTimestamp() const
+    {
+        Timestamp timestamp = Helper::getPlatformTimestamp();
+
+        return timestamp;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::setProjectTitle( const Char * _projectTitle )
     {
         if( _projectTitle == nullptr )
@@ -1660,16 +1668,18 @@ namespace Mengine
         bool nopause = APPLICATION_SERVICE()
             ->getNopause();
 
+        Timestamp timestamp = this->getInputTimestamp();
+
         if( m_active == false )
         {
             if( nopause == false )
             {
-                Helper::pushMouseLeaveEvent( TC_TOUCH0, _x, _y, 0.f );
+                Helper::pushMouseLeaveEvent( timestamp, TC_TOUCH0, _x, _y, 0.f );
             }
         }
         else
         {
-            Helper::pushMouseEnterEvent( TC_TOUCH0, _x, _y, 0.f );
+            Helper::pushMouseEnterEvent( timestamp, TC_TOUCH0, _x, _y, 0.f );
         }
 
         if( nopause == false )
@@ -2129,8 +2139,10 @@ namespace Mengine
         return TC_TOUCH_INVALID;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::androidNativeTouchEvent( jint _action, jint _pointerId, jfloat _x, jfloat _y, jfloat _pressure )
+    void AndroidPlatformService::androidNativeTouchEvent( jlong _eventTime, jint _action, jint _pointerId, jfloat _x, jfloat _y, jfloat _pressure )
     {
+        Timestamp eventTime = static_cast<Timestamp>(_eventTime);
+
         switch( _action )
         {
         case 0: //ACTION_DOWN
@@ -2162,7 +2174,7 @@ namespace Mengine
                     , _pressure
                 );
 
-                Helper::pushMouseButtonEvent( fingerIndex, _x, _y, MC_LBUTTON, _pressure, true );
+                Helper::pushMouseButtonEvent( eventTime, fingerIndex, _x, _y, MC_LBUTTON, _pressure, true );
             }break;
         case 1: //ACTION_UP
         case 6: //ACTION_POINTER_UP
@@ -2193,7 +2205,7 @@ namespace Mengine
                     , _pressure
                 );
 
-                Helper::pushMouseButtonEvent( fingerIndex, _x, _y, MC_LBUTTON, _pressure, false );
+                Helper::pushMouseButtonEvent( eventTime, fingerIndex, _x, _y, MC_LBUTTON, _pressure, false );
             }break;
         case 2: //ACTION_MOVE
             {
@@ -2234,19 +2246,28 @@ namespace Mengine
                     , dpressure
                 );
 
-                Helper::pushMouseMoveEvent( fingerIndex, _x, _y, dx, dy, _pressure, dpressure );
+                Helper::pushMouseMoveEvent( eventTime, fingerIndex, _x, _y, dx, dy, _pressure, dpressure );
             }break;
         default:
             break;
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::androidNativeAccelerationEvent( jfloat _dx, jfloat _dy, jfloat _dz )
+    void AndroidPlatformService::androidNativeAccelerationEvent( jlong _eventTimestamp, jfloat _dx, jfloat _dy, jfloat _dz )
     {
-        Helper::pushAccelerometerEvent( _dx, _dy, _dz );
+        Timestamp timestampSensor = static_cast<Timestamp>(_eventTimestamp);
+
+        Timestamp timestampSensorMs = Helper::convertTimestampNanosecondsToMilliseconds( timestampSensor );
+
+        Timestamp bootTimestamp = Helper::getBootTimestamp();
+        Timestamp platformTimestamp = Helper::getPlatformTimestamp();
+
+        Timestamp timestamp = Helper::convertTimestampTimebase( timestampSensorMs, bootTimestamp, platformTimestamp );
+
+        Helper::pushAccelerometerEvent( timestamp, timestampSensor, _dx, _dy, _dz );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::androidNativeKeyEvent( jboolean _isDown, jint _keyCode, jint _repeatCount )
+    void AndroidPlatformService::androidNativeKeyEvent( jlong _eventTime, jboolean _isDown, jint _keyCode, jint _repeatCount )
     {
         static EKeyCode Android_Keycodes[] = {
             KC_UNASSIGNED,          /* AKEYCODE_UNKNOWN */
@@ -2553,10 +2574,12 @@ namespace Mengine
             , _repeatCount
         );
 
-        Helper::pushKeyEvent( x, y, pressure, keyCode, _isDown, false );
+        Timestamp timestamp = static_cast<Timestamp>(_eventTime);
+
+        Helper::pushKeyEvent( timestamp, x, y, pressure, keyCode, _isDown, false );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::androidNativeTextEvent( jint _unicode )
+    void AndroidPlatformService::androidNativeTextEvent( jlong _eventTime, jint _unicode )
     {
         jfloat x = m_lastFingerX;
         jfloat y = m_lastFingerY;
@@ -2568,7 +2591,9 @@ namespace Mengine
             , text
         );
 
-        Helper::pushTextEvent( x, y, pressure, text );
+        Timestamp timestamp = static_cast<Timestamp>(_eventTime);
+
+        Helper::pushTextEvent( timestamp, x, y, pressure, text );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativePauseEvent( jfloat _x, jfloat _y )

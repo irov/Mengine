@@ -9,6 +9,15 @@
 
 namespace Mengine
 {
+    namespace Detail
+    {
+        constexpr Timestamp MENGINE_SDL_TIMESTAMP_NS_PER_MS = 1000000ULL;
+
+        Timestamp getEventTimestamp( Uint64 _timestampNs )
+        {
+            return _timestampNs / MENGINE_SDL_TIMESTAMP_NS_PER_MS;
+        }
+    }
     //////////////////////////////////////////////////////////////////////////
     SDL3Input::SDL3Input()
     {
@@ -105,8 +114,9 @@ namespace Mengine
                 this->calcCursorPosition_( _sdlWindow, mouseX, mouseY, &point );
 
                 float wheel_vertically = _event.wheel.y;
+                Timestamp timestamp = Detail::getEventTimestamp( _event.wheel.timestamp );
 
-                Helper::pushMouseWheelEvent( point.x, point.y, 0.f, WC_CENTRAL, (Sint32)wheel_vertically );
+                Helper::pushMouseWheelEvent( timestamp, point.x, point.y, 0.f, WC_CENTRAL, (Sint32)wheel_vertically );
             }break;
         case SDL_EVENT_KEY_DOWN:
         case SDL_EVENT_KEY_UP:
@@ -131,8 +141,9 @@ namespace Mengine
                 bool isDown = _event.key.down;
 
                 m_keyDown[code] = isDown;
+                Timestamp timestamp = Detail::getEventTimestamp( _event.key.timestamp );
 
-                Helper::pushKeyEvent( point.x, point.y, 0.f, code, isDown, _event.key.repeat );
+                Helper::pushKeyEvent( timestamp, point.x, point.y, 0.f, code, isDown, _event.key.repeat );
 
 #if defined(MENGINE_DEVICE_MOBILE)
                 if( code == KC_RETURN )
@@ -161,8 +172,9 @@ namespace Mengine
                 WChar text_code[256 + 1] = {L'\0'};
                 size_t text_code_size;
                 Helper::utf8ToUnicode( text, text_code, 256, &text_code_size );
+                Timestamp timestamp = Detail::getEventTimestamp( _event.text.timestamp );
 
-                Helper::pushTextEvent( point.x, point.y, 0.f, text_code );
+                Helper::pushTextEvent( timestamp, point.x, point.y, 0.f, text_code );
             }break;
         case SDL_EVENT_MOUSE_MOTION:
             {
@@ -177,8 +189,9 @@ namespace Mengine
 
                 mt::vec2f delta;
                 this->calcCursorPosition_( _sdlWindow, xrel, yrel, &delta );
+                Timestamp timestamp = Detail::getEventTimestamp( _event.motion.timestamp );
 
-                Helper::pushMouseMoveEvent( TC_TOUCH0, point.x, point.y, delta.x, delta.y, 0.f, 0.f );
+                Helper::pushMouseMoveEvent( timestamp, TC_TOUCH0, point.x, point.y, delta.x, delta.y, 0.f, 0.f );
             }break;
         case SDL_EVENT_MOUSE_BUTTON_DOWN:
         case SDL_EVENT_MOUSE_BUTTON_UP:
@@ -213,8 +226,9 @@ namespace Mengine
                 };
 
                 bool isDown = _event.button.down;
+                Timestamp timestamp = Detail::getEventTimestamp( _event.button.timestamp );
 
-                Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, button, 0.f, isDown );
+                Helper::pushMouseButtonEvent( timestamp, TC_TOUCH0, point.x, point.y, button, 0.f, isDown );
             }break;
         case SDL_EVENT_FINGER_MOTION:
             {
@@ -234,8 +248,9 @@ namespace Mengine
                 float dx = _event.tfinger.dx;
                 float dy = _event.tfinger.dy;
                 float pressure = _event.tfinger.pressure;
+                Timestamp timestamp = Detail::getEventTimestamp( _event.tfinger.timestamp );
 
-                Helper::pushMouseMoveEvent( fingerIndex, x, y, dx, dy, pressure, 0.f );
+                Helper::pushMouseMoveEvent( timestamp, fingerIndex, x, y, dx, dy, pressure, 0.f );
             }break;
         case SDL_EVENT_FINGER_DOWN:
             {
@@ -253,8 +268,9 @@ namespace Mengine
                 float x = _event.tfinger.x;
                 float y = _event.tfinger.y;
                 float pressure = _event.tfinger.pressure;
+                Timestamp timestamp = Detail::getEventTimestamp( _event.tfinger.timestamp );
 
-                Helper::pushMouseButtonEvent( fingerIndex, x, y, MC_LBUTTON, pressure, true );
+                Helper::pushMouseButtonEvent( timestamp, fingerIndex, x, y, MC_LBUTTON, pressure, true );
             }break;
         case SDL_EVENT_FINGER_UP:
             {
@@ -272,8 +288,9 @@ namespace Mengine
                 float x = _event.tfinger.x;
                 float y = _event.tfinger.y;
                 float pressure = _event.tfinger.pressure;
+                Timestamp timestamp = Detail::getEventTimestamp( _event.tfinger.timestamp );
 
-                Helper::pushMouseButtonEvent( fingerIndex, x, y, MC_LBUTTON, pressure, false );
+                Helper::pushMouseButtonEvent( timestamp, fingerIndex, x, y, MC_LBUTTON, pressure, false );
             }break;
         default:
             break;

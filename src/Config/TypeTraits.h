@@ -8,7 +8,7 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         template <class B, class D>
-        constexpr bool is_base_of = std::is_base_of_v<B, std::remove_pointer_t<D>>;
+        MENGINE_CONSTEXPR bool is_base_of = std::is_base_of_v<B, std::remove_pointer_t<D>>;
         //////////////////////////////////////////////////////////////////////////
     }
 }

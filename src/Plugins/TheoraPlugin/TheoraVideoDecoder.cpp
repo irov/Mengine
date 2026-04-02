@@ -32,7 +32,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        constexpr int32_t createCoefYTableFunction( size_t index )
+        static MENGINE_CONSTEXPR int32_t createCoefYTableFunction( size_t index )
         {
             const int32_t scale = (1L << 13);
 
@@ -44,18 +44,18 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<size_t ... index>
-        constexpr auto createCoefYTable( std::index_sequence<index ...> )
+        static MENGINE_CONSTEXPR auto createCoefYTable( std::index_sequence<index ...> )
         {
             return Array<int32_t, sizeof ... (index)>{{Detail::createCoefYTableFunction( index ) ...}};
         }
         //////////////////////////////////////////////////////////////////////////
         template<size_t size>
-        constexpr auto createCoefYTable()
+        static MENGINE_CONSTEXPR auto createCoefYTable()
         {
             return Detail::createCoefYTable( std::make_index_sequence<size>{} );
         }
         //////////////////////////////////////////////////////////////////////////
-        constexpr int32_t createCoefUVTableFunction( float coeff, size_t index )
+        static MENGINE_CONSTEXPR int32_t createCoefUVTableFunction( float coeff, size_t index )
         {
             const int32_t scale = (1L << 13);
 
@@ -67,23 +67,23 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<size_t ... index>
-        constexpr auto createCoefUVTable( float coeff, std::index_sequence<index ...> )
+        static MENGINE_CONSTEXPR auto createCoefUVTable( float coeff, std::index_sequence<index ...> )
         {
             return Array<int32_t, sizeof ... (index)>{{Detail::createCoefUVTableFunction( coeff, index ) ...}};
         }
         //////////////////////////////////////////////////////////////////////////
         template<size_t size>
-        constexpr auto createCoefUVTable( float coeff )
+        static MENGINE_CONSTEXPR auto createCoefUVTable( float coeff )
         {
             return Detail::createCoefUVTable( coeff, std::make_index_sequence<size>{} );
         }
         //////////////////////////////////////////////////////////////////////////
-        static const Array<int32_t, 256> YTable = Detail::createCoefYTable<256>();
-        static const Array<int32_t, 256> RVTable = Detail::createCoefUVTable<256>( 1.596f );
-        static const Array<int32_t, 256> GUTable = Detail::createCoefUVTable<256>( 0.391f );
-        static const Array<int32_t, 256> GVTable = Detail::createCoefUVTable<256>( 0.813f );
-        static const Array<int32_t, 256> BUTable = Detail::createCoefUVTable<256>( 2.018f );
-        static const Char * pixelformats[] = {"OC_PF_420", "OC_PF_RSVD", "OC_PF_422", "OC_PF_444"};
+        static MENGINE_CONSTEXPR Array<int32_t, 256> YTable = Detail::createCoefYTable<256>();
+        static MENGINE_CONSTEXPR Array<int32_t, 256> RVTable = Detail::createCoefUVTable<256>( 1.596f );
+        static MENGINE_CONSTEXPR Array<int32_t, 256> GUTable = Detail::createCoefUVTable<256>( 0.391f );
+        static MENGINE_CONSTEXPR Array<int32_t, 256> GVTable = Detail::createCoefUVTable<256>( 0.813f );
+        static MENGINE_CONSTEXPR Array<int32_t, 256> BUTable = Detail::createCoefUVTable<256>( 2.018f );
+        static MENGINE_CONSTEXPR const Char * pixelformats[] = {"OC_PF_420", "OC_PF_RSVD", "OC_PF_422", "OC_PF_444"};
         //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////

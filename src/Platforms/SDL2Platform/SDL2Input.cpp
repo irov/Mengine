@@ -107,8 +107,9 @@ namespace Mengine
                 this->calcCursorPosition_( _sdlWindow, mouseX, mouseY, &point );
 
                 Sint32 wheel_vertically = _event.wheel.y;
+                Timestamp timestamp = static_cast<Timestamp>( _event.wheel.timestamp );
 
-                Helper::pushMouseWheelEvent( point.x, point.y, 0.f, WC_CENTRAL, wheel_vertically );
+                Helper::pushMouseWheelEvent( timestamp, point.x, point.y, 0.f, WC_CENTRAL, wheel_vertically );
             }break;
         case SDL_KEYDOWN:
         case SDL_KEYUP:
@@ -133,8 +134,9 @@ namespace Mengine
                 bool isDown = _event.key.type == SDL_KEYDOWN;
 
                 m_keyDown[code] = isDown;
+                Timestamp timestamp = static_cast<Timestamp>( _event.key.timestamp );
 
-                Helper::pushKeyEvent( point.x, point.y, 0.f, code, isDown, false );
+                Helper::pushKeyEvent( timestamp, point.x, point.y, 0.f, code, isDown, false );
 
 #if defined(MENGINE_DEVICE_MOBILE)
                 if( code == KC_RETURN )
@@ -158,8 +160,9 @@ namespace Mengine
                 WChar text_code[SDL_TEXTINPUTEVENT_TEXT_SIZE + 1] = {L'\0'};
                 size_t text_code_size;
                 Helper::utf8ToUnicode( text, text_code, SDL_TEXTINPUTEVENT_TEXT_SIZE, &text_code_size );
+                Timestamp timestamp = static_cast<Timestamp>( _event.text.timestamp );
 
-                Helper::pushTextEvent( point.x, point.y, 0.f, text_code );
+                Helper::pushTextEvent( timestamp, point.x, point.y, 0.f, text_code );
             }break;
         case SDL_MOUSEMOTION:
             {
@@ -174,8 +177,9 @@ namespace Mengine
 
                 mt::vec2f delta;
                 this->calcCursorPosition_( _sdlWindow, xrel, yrel, &delta );
+                Timestamp timestamp = static_cast<Timestamp>( _event.motion.timestamp );
 
-                Helper::pushMouseMoveEvent( TC_TOUCH0, point.x, point.y, delta.x, delta.y, 0.f, 0.f );
+                Helper::pushMouseMoveEvent( timestamp, TC_TOUCH0, point.x, point.y, delta.x, delta.y, 0.f, 0.f );
             }break;
         case SDL_MOUSEBUTTONDOWN:
         case SDL_MOUSEBUTTONUP:
@@ -210,8 +214,9 @@ namespace Mengine
                 };
 
                 bool isDown = _event.type == SDL_MOUSEBUTTONDOWN;
+                Timestamp timestamp = static_cast<Timestamp>( _event.button.timestamp );
 
-                Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, button, 0.f, isDown );
+                Helper::pushMouseButtonEvent( timestamp, TC_TOUCH0, point.x, point.y, button, 0.f, isDown );
             }break;
         case SDL_FINGERMOTION:
             {
@@ -231,8 +236,9 @@ namespace Mengine
                 float dx = _event.tfinger.dx;
                 float dy = _event.tfinger.dy;
                 float pressure = _event.tfinger.pressure;
+                Timestamp timestamp = static_cast<Timestamp>( _event.tfinger.timestamp );
 
-                Helper::pushMouseMoveEvent( fingerIndex, x, y, dx, dy, pressure, 0.f );
+                Helper::pushMouseMoveEvent( timestamp, fingerIndex, x, y, dx, dy, pressure, 0.f );
             }break;
         case SDL_FINGERDOWN:
             {
@@ -250,8 +256,9 @@ namespace Mengine
                 float x = _event.tfinger.x;
                 float y = _event.tfinger.y;
                 float pressure = _event.tfinger.pressure;
+                Timestamp timestamp = static_cast<Timestamp>( _event.tfinger.timestamp );
 
-                Helper::pushMouseButtonEvent( fingerIndex, x, y, MC_LBUTTON, pressure, true );
+                Helper::pushMouseButtonEvent( timestamp, fingerIndex, x, y, MC_LBUTTON, pressure, true );
             }break;
         case SDL_FINGERUP:
             {
@@ -269,8 +276,9 @@ namespace Mengine
                 float x = _event.tfinger.x;
                 float y = _event.tfinger.y;
                 float pressure = _event.tfinger.pressure;
+                Timestamp timestamp = static_cast<Timestamp>( _event.tfinger.timestamp );
 
-                Helper::pushMouseButtonEvent( fingerIndex, x, y, MC_LBUTTON, pressure, false );
+                Helper::pushMouseButtonEvent( timestamp, fingerIndex, x, y, MC_LBUTTON, pressure, false );
             }break;
         default:
             break;

@@ -15,13 +15,13 @@ namespace Mengine
         template<typename T>
         struct FlagGenerator
         {
-            static constexpr uint32_t value()
+            static MENGINE_CONSTEXPR uint32_t value()
             {
                 return 1U << FlagGenerator<T>::FlagIndex;
             }
 
         private:
-            static constexpr uint32_t FlagIndex = __COUNTER__;
+            static MENGINE_CONSTEXPR uint32_t FlagIndex = __COUNTER__;
         };
 
     public:

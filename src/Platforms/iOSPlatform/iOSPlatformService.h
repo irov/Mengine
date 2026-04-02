@@ -68,6 +68,7 @@ namespace Mengine
 
     public:
         Timestamp getPlatfomTime() const override;
+        Timestamp getInputTimestamp() const override;
 
     public:
         void setProjectTitle( const Char * _projectTitle ) override;

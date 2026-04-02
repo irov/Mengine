@@ -16,8 +16,9 @@ namespace Mengine
 {
     namespace Helper
     {
+        //////////////////////////////////////////////////////////////////////////
         template<class ... Args>
-        constexpr void secureStaticString( uint32_t * const _data, uint32_t _token, Args ... _args )
+        MENGINE_CONSTEXPR void secureStaticString( uint32_t * const _data, uint32_t _token, Args ... _args )
         {
             _data[0] = sizeof...(Args);
             _data[1] = _token;
@@ -29,7 +30,8 @@ namespace Mengine
                 _data[index + 2] = secure_buff[index];
             }
         }
-
+        //////////////////////////////////////////////////////////////////////////
         void unsecureStaticString( const uint32_t * _data, Char * const _str );
+        //////////////////////////////////////////////////////////////////////////
     }
 }

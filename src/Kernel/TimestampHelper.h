@@ -9,6 +9,12 @@ namespace Mengine
         double getElapsedTime();
 
         Timestamp getSystemTimestamp();
+        Timestamp getPlatformTimestamp();
+        Timestamp getBootTimestamp();
+
+        Timestamp convertTimestampTimebase( Timestamp _timestamp, Timestamp _currentSourceTimestamp, Timestamp _currentTargetTimestamp );
+        Timestamp convertTimestampNanosecondsToMilliseconds( Timestamp _timestampNanoseconds );
+
         Timestamp getLocalTimestamp();
 
         Timestamp getSystemDurationTimestamp( Timestamp _timestamp );

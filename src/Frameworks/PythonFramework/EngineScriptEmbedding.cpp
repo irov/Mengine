@@ -39,6 +39,8 @@
 #include "Environment/Python/PythonDocument.h"
 #include "Environment/Python/PythonTraceback.h"
 
+#include "Kernel/TimestampHelper.h"
+
 #include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
 
 #include "Services/SecureService/SecureUnsignedValue.h"
@@ -1629,7 +1631,10 @@ namespace Mengine
 
                 mt::vec2f mp = screenPosition - cursorPosition;
 
-                Helper::pushMouseMoveEvent( _touchId, cursorPosition.x, cursorPosition.y, mp.x, mp.y, 0.f, 0.f );
+                Timestamp timestamp = PLATFORM_SERVICE()
+                    ->getInputTimestamp();
+
+                Helper::pushMouseMoveEvent( timestamp, _touchId, cursorPosition.x, cursorPosition.y, mp.x, mp.y, 0.f, 0.f );
             }
             //////////////////////////////////////////////////////////////////////////
             void s_pushMouseButtonEvent( ETouchCode _touchId, const mt::vec2f & _pos, EMouseButtonCode _button, bool _isDown )
@@ -1640,7 +1645,10 @@ namespace Mengine
                     return;
                 }
 
-                Helper::pushMouseButtonEvent( _touchId, pos_screen.x, pos_screen.y, _button, 0.f, _isDown );
+                Timestamp timestamp = PLATFORM_SERVICE()
+                    ->getInputTimestamp();
+
+                Helper::pushMouseButtonEvent( timestamp, _touchId, pos_screen.x, pos_screen.y, _button, 0.f, _isDown );
             }
             //////////////////////////////////////////////////////////////////////////
             void s_platformEvent( const ConstString & _event, const Params & _params )
@@ -4589,6 +4597,10 @@ namespace Mengine
         pybind::interface_<PythonValueFollower, pybind::bases<Affector, Scriptable>>( _kernel, "PythonValueFollower" )
             ;
 
+        pybind::struct_<InputBaseData>( _kernel, "InputBaseData" )
+            .def_member( "timestamp", &InputBaseData::timestamp )
+            ;
+
         pybind::struct_<InputSpecialData>( _kernel, "InputSpecialData" )
             .def_member( "isAlt", &InputSpecialData::isAlt )
             .def_member( "isShift", &InputSpecialData::isShift )
@@ -4602,6 +4614,7 @@ namespace Mengine
             ;
 
         pybind::struct_<InputKeyEvent>( _kernel, "InputKeyEvent" )
+            .def_member( "base", &InputKeyEvent::base )
             .def_member( "special", &InputKeyEvent::special )
             .def_member( "position", &InputKeyEvent::position )
             .def_member( "pressure", &InputKeyEvent::pressure )
@@ -4611,6 +4624,7 @@ namespace Mengine
             ;
 
         pybind::struct_<InputTextEvent>( _kernel, "InputTextEvent" )
+            .def_member( "base", &InputTextEvent::base )
             .def_member( "special", &InputTextEvent::special )
             .def_member( "position", &InputTextEvent::position )
             .def_member( "pressure", &InputTextEvent::pressure )
@@ -4619,13 +4633,16 @@ namespace Mengine
             ;
 
         pybind::struct_<InputAccelerometerEvent>( _kernel, "InputAccelerometerEvent" )
+            .def_member( "base", &InputAccelerometerEvent::base )
             .def_member( "special", &InputAccelerometerEvent::special )
+            .def_member( "timestampSensor", &InputAccelerometerEvent::timestampSensor )
             .def_member( "dx", &InputAccelerometerEvent::dx )
             .def_member( "dy", &InputAccelerometerEvent::dy )
             .def_member( "dz", &InputAccelerometerEvent::dz )
             ;
 
         pybind::struct_<InputMouseButtonEvent>( _kernel, "InputMouseButtonEvent" )
+            .def_member( "base", &InputMouseButtonEvent::base )
             .def_member( "special", &InputMouseButtonEvent::special )
             .def_member( "position", &InputMouseButtonEvent::position )
             .def_member( "touchId", &InputMouseButtonEvent::touchId )
@@ -4636,6 +4653,7 @@ namespace Mengine
             ;
 
         pybind::struct_<InputMouseWheelEvent>( _kernel, "InputMouseWheelEvent" )
+            .def_member( "base", &InputMouseWheelEvent::base )
             .def_member( "special", &InputMouseWheelEvent::special )
             .def_member( "position", &InputMouseWheelEvent::position )
             .def_member( "pressure", &InputMouseWheelEvent::pressure )
@@ -4644,6 +4662,7 @@ namespace Mengine
             ;
 
         pybind::struct_<InputMouseMoveEvent>( _kernel, "InputMouseMoveEvent" )
+            .def_member( "base", &InputMouseMoveEvent::base )
             .def_member( "special", &InputMouseMoveEvent::special )
             .def_member( "position", &InputMouseMoveEvent::position )
             .def_member( "touchId", &InputMouseMoveEvent::touchId )
@@ -4654,6 +4673,7 @@ namespace Mengine
             ;
 
         pybind::struct_<InputMouseEnterEvent>( _kernel, "InputMouseEnterEvent" )
+            .def_member( "base", &InputMouseEnterEvent::base )
             .def_member( "special", &InputMouseEnterEvent::special )
             .def_member( "position", &InputMouseEnterEvent::position )
             .def_member( "touchId", &InputMouseEnterEvent::touchId )
@@ -4661,6 +4681,7 @@ namespace Mengine
             ;
 
         pybind::struct_<InputMouseLeaveEvent>( _kernel, "InputMouseLeaveEvent" )
+            .def_member( "base", &InputMouseLeaveEvent::base )
             .def_member( "special", &InputMouseLeaveEvent::special )
             .def_member( "position", &InputMouseLeaveEvent::position )
             .def_member( "touchId", &InputMouseLeaveEvent::touchId )

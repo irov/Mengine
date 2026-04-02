@@ -1,5 +1,7 @@
 #include "InputServiceHelper.h"
 
+#include "TimestampHelper.h"
+
 #include "Interface/InputServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
 
@@ -64,7 +66,7 @@ namespace Mengine
                 ->isMouseButtonDown( _button );
         }
         //////////////////////////////////////////////////////////////////////////
-        void pushMouseMoveEvent( ETouchCode _touchId, float _x, float _y, float _dx, float _dy, float _pressure, float _dpressure )
+        void pushMouseMoveEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, float _dx, float _dy, float _pressure, float _dpressure )
         {
             float vx;
             float vy;
@@ -75,6 +77,7 @@ namespace Mengine
             }
 
             InputMouseMoveEvent ev;
+            ev.base.timestamp = _timestamp;
 
             INPUT_SERVICE()
                 ->getSpecial( &ev.special );
@@ -93,7 +96,7 @@ namespace Mengine
                 ->pushEvent( ev );
         }
         //////////////////////////////////////////////////////////////////////////
-        void pushMouseButtonEvent( ETouchCode _touchId, float _x, float _y, EMouseButtonCode _button, float _pressure, bool _isDown )
+        void pushMouseButtonEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, EMouseButtonCode _button, float _pressure, bool _isDown )
         {
             float vx;
             float vy;
@@ -101,6 +104,7 @@ namespace Mengine
                 ->validCursorPosition( _x, _y, &vx, &vy );
 
             InputMouseButtonEvent ev;
+            ev.base.timestamp = _timestamp;
 
             INPUT_SERVICE()
                 ->getSpecial( &ev.special );
@@ -119,7 +123,7 @@ namespace Mengine
                 ->pushEvent( ev );
         }
         //////////////////////////////////////////////////////////////////////////
-        void pushKeyEvent( float _x, float _y, float _pressure, EKeyCode _code, bool _isDown, bool _repeating )
+        void pushKeyEvent( Timestamp _timestamp, float _x, float _y, float _pressure, EKeyCode _code, bool _isDown, bool _repeating )
         {
             float vx;
             float vy;
@@ -127,6 +131,7 @@ namespace Mengine
                 ->validCursorPosition( _x, _y, &vx, &vy );
 
             InputKeyEvent ev;
+            ev.base.timestamp = _timestamp;
 
             INPUT_SERVICE()
                 ->getSpecial( &ev.special );
@@ -146,7 +151,7 @@ namespace Mengine
                 ->pushEvent( ev );
         }
         //////////////////////////////////////////////////////////////////////////
-        void pushTextEvent( float _x, float _y, float _pressure, const WChar * _text )
+        void pushTextEvent( Timestamp _timestamp, float _x, float _y, float _pressure, const WChar * _text )
         {
             MENGINE_ASSERTION_FATAL( StdString::wcslen( _text ) >= 1, "text event must have at least one character" );
 
@@ -156,6 +161,7 @@ namespace Mengine
                 ->validCursorPosition( _x, _y, &vx, &vy );
 
             InputTextEvent ev;
+            ev.base.timestamp = _timestamp;
 
             INPUT_SERVICE()
                 ->getSpecial( &ev.special );
@@ -172,7 +178,7 @@ namespace Mengine
                 ->pushEvent( ev );
         }
         //////////////////////////////////////////////////////////////////////////
-        void pushMouseLeaveEvent( ETouchCode _touchId, float _x, float _y, float _pressure )
+        void pushMouseLeaveEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, float _pressure )
         {
             float vx;
             float vy;
@@ -180,6 +186,7 @@ namespace Mengine
                 ->validCursorPosition( _x, _y, &vx, &vy );
 
             InputMouseLeaveEvent ev;
+            ev.base.timestamp = _timestamp;
 
             INPUT_SERVICE()
                 ->getSpecial( &ev.special );
@@ -194,7 +201,7 @@ namespace Mengine
                 ->pushEvent( ev );
         }
         //////////////////////////////////////////////////////////////////////////
-        void pushMouseEnterEvent( ETouchCode _touchId, float _x, float _y, float _pressure )
+        void pushMouseEnterEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, float _pressure )
         {
             float vx;
             float vy;
@@ -202,6 +209,7 @@ namespace Mengine
                 ->validCursorPosition( _x, _y, &vx, &vy );
 
             InputMouseEnterEvent ev;
+            ev.base.timestamp = _timestamp;
 
             INPUT_SERVICE()
                 ->getSpecial( &ev.special );
@@ -216,7 +224,7 @@ namespace Mengine
                 ->pushEvent( ev );
         }
         //////////////////////////////////////////////////////////////////////////
-        void pushMouseWheelEvent( float _x, float _y, float _pressure, EWheelCode _wheel, int32_t _scroll )
+        void pushMouseWheelEvent( Timestamp _timestamp, float _x, float _y, float _pressure, EWheelCode _wheel, int32_t _scroll )
         {
             float vx;
             float vy;
@@ -224,6 +232,7 @@ namespace Mengine
                 ->validCursorPosition( _x, _y, &vx, &vy );
 
             InputMouseWheelEvent ev;
+            ev.base.timestamp = _timestamp;
 
             INPUT_SERVICE()
                 ->getSpecial( &ev.special );
@@ -239,9 +248,11 @@ namespace Mengine
                 ->pushEvent( ev );
         }
         //////////////////////////////////////////////////////////////////////////
-        void pushAccelerometerEvent( float _dx, float _dy, float _dz )
+        void pushAccelerometerEvent( Timestamp _timestamp, Timestamp _timestampSensor, float _dx, float _dy, float _dz )
         {
             InputAccelerometerEvent ev;
+            ev.base.timestamp = _timestamp;
+            ev.timestampSensor = _timestampSensor;
 
             INPUT_SERVICE()
                 ->getSpecial( &ev.special );

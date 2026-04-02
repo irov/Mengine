@@ -11,7 +11,7 @@ namespace Mengine
         {
             //////////////////////////////////////////////////////////////////////////
             template<size_t Index>
-            constexpr const Char * createStatisticNameTableFunction()
+            MENGINE_CONSTEXPR const Char * createStatisticNameTableFunction()
             {
                 const Char * name = Statistic<Index>::getName();
 
@@ -19,19 +19,19 @@ namespace Mengine
             }
             //////////////////////////////////////////////////////////////////////////
             template<size_t ... Index>
-            constexpr auto createStatisticNameTable( std::index_sequence<Index ...> )
+            MENGINE_CONSTEXPR auto createStatisticNameTable( std::index_sequence<Index ...> )
             {
                 return Array<const Char *, sizeof ... (Index)>{{Detail::createStatisticNameTableFunction<Index>() ...}};
             }
             //////////////////////////////////////////////////////////////////////////
             template<size_t Size>
-            constexpr auto createStatisticNameTable()
+            MENGINE_CONSTEXPR auto createStatisticNameTable()
             {
                 return Detail::createStatisticNameTable( std::make_index_sequence<Size>{} );
             }
             //////////////////////////////////////////////////////////////////////////
             template<size_t Index>
-            constexpr bool createStatisticDefaultEnabledTableFunction()
+            MENGINE_CONSTEXPR bool createStatisticDefaultEnabledTableFunction()
             {
                 bool defaultEnabled = Statistic<Index>::isDefaultEnabled();
 
@@ -39,13 +39,13 @@ namespace Mengine
             }
             //////////////////////////////////////////////////////////////////////////
             template<size_t ... Index>
-            constexpr auto createStatisticDefaultEnabledTable( std::index_sequence<Index ...> )
+            MENGINE_CONSTEXPR auto createStatisticDefaultEnabledTable( std::index_sequence<Index ...> )
             {
                 return Array<bool, sizeof ... (Index)>{{Detail::createStatisticDefaultEnabledTableFunction<Index>() ...}};
             }
             //////////////////////////////////////////////////////////////////////////
             template<size_t Size>
-            constexpr auto createStatisticDefaultEnabledTable()
+            MENGINE_CONSTEXPR auto createStatisticDefaultEnabledTable()
             {
                 return Detail::createStatisticDefaultEnabledTable( std::make_index_sequence<Size>{} );
             }

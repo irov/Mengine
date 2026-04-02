@@ -5,7 +5,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    constexpr float bounding_max = (StdLimits::numeric_limits<float>::max)();
+    static MENGINE_CONSTEXPR float bounding_max = (StdLimits::numeric_limits<float>::max)();
     //////////////////////////////////////////////////////////////////////////
     BoundingBox::BoundingBox()
         : m_boundingBox( -bounding_max, -bounding_max, bounding_max, bounding_max )

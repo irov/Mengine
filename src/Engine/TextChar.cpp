@@ -14,7 +14,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        static constexpr VectorTextLineChunks::size_type TextChunkNPos = MENGINE_UNKNOWN_SIZE;
+        static MENGINE_CONSTEXPR VectorTextLineChunks::size_type TextChunkNPos = MENGINE_UNKNOWN_SIZE;
         //////////////////////////////////////////////////////////////////////////
         static bool test2( VectorTextLineChunks * const _out, const U32String & _in, VectorCacheFonts * const _cacheFonts, uint32_t _font, const U32String & _pre, const U32String & _post, const U32String & _end, U32String::size_type _offset, U32String::size_type _size )
         {

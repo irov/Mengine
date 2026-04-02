@@ -13,6 +13,8 @@ namespace Mengine
 
     public:
         virtual Timestamp getSystemTimestamp() const = 0;
+        virtual Timestamp getPlatformTimestamp() const = 0;
+        virtual Timestamp getBootTimestamp() const = 0;
 
     public:
         virtual double getElapsedTime() const = 0;

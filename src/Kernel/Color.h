@@ -9,14 +9,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef uint32_t ColorValue_ARGB;
     //////////////////////////////////////////////////////////////////////////
-    constexpr const float MENGINE_COLOR_MINIMAL_ALPHA = 0.00390625f;
+    static MENGINE_CONSTEXPR float MENGINE_COLOR_MINIMAL_ALPHA = 0.00390625f;
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
-        const uint32_t COLOR_INVALIDATE_IDENTITY = 0;
-        const uint32_t COLOR_INVALIDATE_FALSE = 1;
-        const uint32_t COLOR_INVALIDATE_TRUE = 2;
-        const uint32_t COLOR_IDENTITY_VALUE = 0xFFFFFFFF;
+        static MENGINE_CONSTEXPR uint32_t COLOR_INVALIDATE_IDENTITY = 0;
+        static MENGINE_CONSTEXPR uint32_t COLOR_INVALIDATE_FALSE = 1;
+        static MENGINE_CONSTEXPR uint32_t COLOR_INVALIDATE_TRUE = 2;
+        static MENGINE_CONSTEXPR uint32_t COLOR_IDENTITY_VALUE = 0xFFFFFFFF;
     }
     //////////////////////////////////////////////////////////////////////////
     class Color

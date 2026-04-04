@@ -742,6 +742,17 @@ namespace Mengine
 
             const ThreadWorkerSoundBufferUpdatePtr & worker = identity->getWorkerUpdateBuffer();
 
+            const SoundSourceInterfacePtr & source = identity->getSoundSource();
+
+            if( source != nullptr && source->isFinished() == true )
+            {
+                identity->setState( ESS_STOP );
+
+                m_soundIdentitiesEndAux.emplace_back( identity );
+
+                continue;
+            }
+
             float time_left = identity->getTimeLeft();
             float time_new = time_left - _context->time;
 

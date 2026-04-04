@@ -2,24 +2,35 @@
 
 #include "Interface/SoundSystemInterface.h"
 
-#include "AndroidSoundBufferBase.h"
+#include "AppleSoundBufferBase.h"
 
 #include "Kernel/Factorable.h"
+#include "Kernel/SpinLock.h"
+
+#include "Config/Atomic.h"
+
+#include <AudioUnit/AudioUnit.h>
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class AndroidSoundSystem;
+    class AppleSoundSystem;
     //////////////////////////////////////////////////////////////////////////
-    class AndroidSoundSource
+    class AppleSoundSource
         : public SoundSourceInterface
         , public Factorable
     {
-        DECLARE_FACTORABLE( AndroidSoundSource );
+        DECLARE_FACTORABLE( AppleSoundSource );
+
+    protected:
+        enum
+        {
+            INVALID_BUS_INDEX = 0xFFFFFFFFu
+        };
 
     public:
-        AndroidSoundSource();
-        ~AndroidSoundSource() override;
+        AppleSoundSource();
+        ~AppleSoundSource() override;
 
     public:
         bool initialize();
@@ -54,21 +65,35 @@ namespace Mengine
         void setHeadMode( bool _headMode );
         bool getHeadMode() const;
 
+    public:
+        OSStatus renderMixerFrames( UInt32 _frames, AudioBufferList * _ioData );
+
     protected:
         void unloadBuffer_();
 
     protected:
-        float m_volume;
-        float m_time;
+        AppleSoundBufferBasePtr getSoundBuffer_() const;
 
-        AndroidSoundBufferBasePtr m_soundBuffer;
+        bool acquireSourceBus_( uint32_t _frequency, uint32_t _channels, float _gain );
+        void releaseSourceBus_();
+        uint32_t detachBusIndex_();
+
+    protected:
+        mutable SpinLock m_lock;
+
+        AtomicFloat m_volume;
+        AtomicUInt32 m_framePosition;
+
+        AppleSoundBufferBasePtr m_soundBuffer;
 
         bool m_headMode;
-        bool m_playing;
-        bool m_pausing;
-        bool m_loop;
+        AtomicBool m_playing;
+        AtomicBool m_pausing;
+        AtomicBool m_loop;
+        AtomicBool m_finished;
+        uint32_t m_busIndex;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<AndroidSoundSource, SoundSourceInterface> AndroidSoundSourcePtr;
+    typedef IntrusivePtr<AppleSoundSource, SoundSourceInterface> AppleSoundSourcePtr;
     //////////////////////////////////////////////////////////////////////////
 }

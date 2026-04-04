@@ -34,6 +34,7 @@ namespace Mengine
     public:
         bool isPlay() const override;
         bool isPause() const override;
+        bool isFinished() const override;
 
         void setVolume( float _volume ) override;
         float getVolume() const override;

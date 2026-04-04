@@ -186,6 +186,11 @@ namespace Mengine
         return m_pausing;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool AndroidSoundSource::isFinished() const
+    {
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void AndroidSoundSource::setVolume( float _volume )
     {
         if( mt::equal_f_f( m_volume, _volume ) == true )

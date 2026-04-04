@@ -28,6 +28,7 @@ namespace Mengine
     public:
         virtual bool isPlay() const = 0;
         virtual bool isPause() const = 0;
+        virtual bool isFinished() const = 0;
 
     public:
         virtual void setVolume( float _volume ) = 0;

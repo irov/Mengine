@@ -198,6 +198,11 @@ namespace Mengine
         return m_pausing;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool OpenALSoundSource::isFinished() const
+    {
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void OpenALSoundSource::setVolume( float _volume )
     {
         if( mt::equal_f_f( m_volume, _volume ) == true )

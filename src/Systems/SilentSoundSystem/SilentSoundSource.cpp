@@ -159,6 +159,11 @@ namespace Mengine
         return m_pausing;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool SilentSoundSource::isFinished() const
+    {
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void SilentSoundSource::setVolume( float _volume )
     {
         m_volume = _volume;

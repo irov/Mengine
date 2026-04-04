@@ -16,7 +16,6 @@ final String ANDROID_APP_DELIVERY_PACKAGES = Utils.getStringProperty("ANDROID_AP
 final String ANDROID_APP_MAIN_PROJECT = Utils.getStringProperty("ANDROID_APP_MAIN_PROJECT", "app")
 
 final Boolean MENGINE_APP_LIBRARY_MENGINE = Utils.existAppLibrary("MENGINE_APP_LIBRARY_MENGINE")
-final Boolean MENGINE_APP_LIBRARY_OPENAL32 = Utils.existAppLibrary("MENGINE_APP_LIBRARY_OPENAL32")
 
 final Boolean MENGINE_APP_SERVICE_AD = Utils.existAppService("MENGINE_APP_SERVICE_AD")
 final Boolean MENGINE_APP_SERVICE_MONITORCONNECTIVITYSTATUS = Utils.existAppService("MENGINE_APP_SERVICE_MONITORCONNECTIVITYSTATUS")
@@ -332,10 +331,6 @@ android {
     packagingOptions {
         jniLibs {
             pickFirsts += ['lib/**/libc++_shared.so']
-
-            if(MENGINE_APP_LIBRARY_OPENAL32) {
-                pickFirsts += ['lib/**/libopenal.so']
-            }
         }
     }
 
@@ -358,14 +353,6 @@ if (ANDROID_APP_SPLIT_ENABLE == true) {
                 output.versionCodeOverride = baseAbiVersionCode * 1000000 + variant.versionCode
             }
         }
-    }
-}
-
-Utils.logAvailable("MENGINE_APP_LIBRARY_OPENAL32", MENGINE_APP_LIBRARY_OPENAL32)
-
-if (MENGINE_APP_LIBRARY_OPENAL32 == true) {
-    dependencies {
-        implementation project(':libraries:OpenAL32')
     }
 }
 

@@ -47,6 +47,11 @@ namespace Mengine
             return Helper::allocateMemory( _size, "json" );
         }
         //////////////////////////////////////////////////////////////////////////
+        static void * my_jpp_realloc( void * _ptr, size_t _size )
+        {
+            return Helper::reallocateMemory( _ptr, _size, "json" );
+        }
+        //////////////////////////////////////////////////////////////////////////
         static void my_jpp_free( void * _ptr )
         {
             Helper::deallocateMemory( _ptr, "json" );
@@ -75,7 +80,7 @@ namespace Mengine
             , JSON_Seed
         );
 
-        jpp::set_alloc_funcs( &Detail::my_jpp_malloc, &Detail::my_jpp_free );
+        jpp::set_alloc_funcs( &Detail::my_jpp_malloc, &Detail::my_jpp_realloc, &Detail::my_jpp_free );
 
         if( SERVICE_CREATE( JSONService, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {

@@ -4,10 +4,12 @@
 #include "Environment/Windows/Win32Helper.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/LoggerMessage.h"
 #include "Kernel/UnicodeHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/Path.h"
+#include "Config/Char.h"
 
 namespace Mengine
 {
@@ -44,40 +46,27 @@ namespace Mengine
                 sa.lpSecurityDescriptor = NULL;
                 sa.bInheritHandle = TRUE;
 
-                WPath tempPathBuffer = {L'\0'};
-                ::GetTempPathW( MENGINE_MAX_PATH, tempPathBuffer );
+                HANDLE hReadPipe = NULL;
+                HANDLE hWritePipe = NULL;
 
-                WPath tempFileNameBuffer = {L'\0'};
-                ::GetTempFileNameW( tempPathBuffer
-                    , L"Process"
-                    , 0
-                    , tempFileNameBuffer );
-
-                HANDLE hWriteTempFile = ::CreateFileW( tempFileNameBuffer
-                    , FILE_APPEND_DATA
-                    , FILE_SHARE_WRITE | FILE_SHARE_READ
-                    , &sa
-                    , OPEN_ALWAYS
-                    , FILE_ATTRIBUTE_TEMPORARY
-                    , NULL );
-
-                if( hWriteTempFile == INVALID_HANDLE_VALUE )
+                if( ::CreatePipe( &hReadPipe, &hWritePipe, &sa, 0 ) == FALSE )
                 {
-                    LOGGER_ERROR( "CreateFile '%ls' get error %ls"
-                        , tempFileNameBuffer
+                    LOGGER_ERROR( "CreatePipe get error %ls"
                         , Helper::Win32GetLastErrorMessageW()
                     );
 
                     return false;
                 }
 
+                ::SetHandleInformation( hReadPipe, HANDLE_FLAG_INHERIT, 0 );
+
                 STARTUPINFO startupInfo;
                 ::ZeroMemory( &startupInfo, sizeof( STARTUPINFO ) );
 
                 startupInfo.cb = sizeof( STARTUPINFO );
                 startupInfo.dwFlags = STARTF_USESTDHANDLES;
-                startupInfo.hStdOutput = hWriteTempFile;
-                startupInfo.hStdError = hWriteTempFile;
+                startupInfo.hStdOutput = hWritePipe;
+                startupInfo.hStdError = hWritePipe;
                 startupInfo.hStdInput = NULL;
 
                 PROCESS_INFORMATION processInfo;
@@ -97,10 +86,40 @@ namespace Mengine
                         , Helper::Win32GetLastErrorMessageW()
                     );
 
-                    ::CloseHandle( hWriteTempFile );
+                    ::CloseHandle( hWritePipe );
+                    ::CloseHandle( hReadPipe );
 
                     return false;
                 }
+
+                ::CloseHandle( hWritePipe );
+
+                Char outputBuffer[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
+                DWORD outputOffset = 0;
+
+                for( ;; )
+                {
+                    DWORD nNumberOfBytesToRead = MENGINE_MIN( MENGINE_LOGGER_MAX_MESSAGE - outputOffset, (DWORD)MENGINE_LOGGER_MAX_MESSAGE );
+
+                    if( nNumberOfBytesToRead == 0 )
+                    {
+                        break;
+                    }
+
+                    DWORD dwBytesRead = 0;
+                    BOOL readResult = ::ReadFile( hReadPipe, outputBuffer + outputOffset, nNumberOfBytesToRead, &dwBytesRead, NULL );
+
+                    if( readResult == FALSE || dwBytesRead == 0 )
+                    {
+                        break;
+                    }
+
+                    outputOffset += dwBytesRead;
+                }
+
+                ::CloseHandle( hReadPipe );
+
+                outputBuffer[outputOffset] = '\0';
 
                 ::WaitForSingleObject( processInfo.hProcess, INFINITE );
 
@@ -109,7 +128,6 @@ namespace Mengine
 
                 ::CloseHandle( processInfo.hProcess );
                 ::CloseHandle( processInfo.hThread );
-                ::CloseHandle( hWriteTempFile );
 
                 if( result == FALSE )
                 {
@@ -127,61 +145,17 @@ namespace Mengine
                     , exitCode
                 );
 
-                HANDLE hReadTempFile = ::CreateFileW( tempFileNameBuffer
-                    , FILE_GENERIC_READ
-                    , FILE_SHARE_WRITE | FILE_SHARE_READ
-                    , &sa
-                    , OPEN_ALWAYS
-                    , FILE_ATTRIBUTE_TEMPORARY
-                    , NULL );
-
-                if( hReadTempFile == INVALID_HANDLE_VALUE )
+                if( outputOffset != 0 )
                 {
-                    LOGGER_ERROR( "process '%ls' command '%ls' CreateFile '%ls' get error %ls"
-                        , _process
-                        , _command
-                        , tempFileNameBuffer
-                        , Helper::Win32GetLastErrorMessageW()
-                    );
-
-                    return false;
-                }
-
-                DWORD tempFileSizeHigh;
-                DWORD tempFileSize = ::GetFileSize( hReadTempFile, &tempFileSizeHigh );
-
-                if( tempFileSize != 0 )
-                {
-                    Char tempFileBuffer[4096 + 1] = {'\0'};
-
-                    DWORD dwBytesRead;
-                    DWORD nNumberOfBytesToRead = MENGINE_MIN( tempFileSize, 4095 );
-                    BOOL successful = ::ReadFile( hReadTempFile, tempFileBuffer, nNumberOfBytesToRead, &dwBytesRead, NULL );
-
-                    if( successful == TRUE )
+                    if( exitCode == 0 )
                     {
-                        if( exitCode == 0 )
-                        {
-                            LOGGER_INFO( "platform", "%s"
-                                , tempFileBuffer
-                            );
-                        }
-                        else
-                        {
-                            LOGGER_ERROR( "%s"
-                                , tempFileBuffer
-                            );
-                        }
+                        LOGGER_MESSAGE( "%s", outputBuffer );
                     }
                     else
                     {
-                        LOGGER_ERROR( "invalid read file '%ls'"
-                            , tempFileNameBuffer
-                        );
+                        LOGGER_ERROR( "%s", outputBuffer );
                     }
                 }
-
-                ::CloseHandle( hReadTempFile );
 
                 if( _exitCode != nullptr )
                 {

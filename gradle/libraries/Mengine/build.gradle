@@ -19,8 +19,6 @@ final Boolean ANDROID_APP_REQUIRED_HARDWARE_SENSOR_ACCELEROMETER = Utils.getBool
 final Boolean ANDROID_APP_REQUIRED_HARDWARE_CAMERA = Utils.getBooleanProperty("ANDROID_APP_REQUIRED_HARDWARE_CAMERA", false)
 final Boolean ANDROID_APP_REQUIRED_HARDWARE_WIFI = Utils.getBooleanProperty("ANDROID_APP_REQUIRED_HARDWARE_WIFI", false)
 
-final Boolean MENGINE_APP_LIBRARY_OPENAL32 = Utils.existAppLibrary("MENGINE_APP_LIBRARY_OPENAL32")
-
 println("MENGINE_APP_SECURE_VALUE: $MENGINE_APP_SECURE_VALUE")
 println("MENGINE_APP_DEPLOY_PATH: $MENGINE_APP_DEPLOY_PATH")
 
@@ -116,17 +114,7 @@ android {
         }
     }
 
-    if (MENGINE_APP_LIBRARY_OPENAL32 == true) {
-        preBuild.dependsOn ":libraries:OpenAL32:build"
-    }
-
     namespace "org.Mengine.Base"
-}
-
-dependencies {
-    if (MENGINE_APP_LIBRARY_OPENAL32 == true) {
-        implementation project(':libraries:OpenAL32')
-    }
 }
 
 android {

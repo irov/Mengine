@@ -155,6 +155,8 @@ namespace Mengine
             return false;
         }
 
+        LOGGER_MESSAGE( "xls export complete" );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

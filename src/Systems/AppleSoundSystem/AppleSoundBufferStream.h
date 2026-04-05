@@ -61,25 +61,40 @@ namespace Mengine
         void resetRingBuffer_();
         void writeMixerFrames_( AudioBufferList * _ioData, uint32_t _frameOffset, const int16_t * _src, uint32_t _frames ) const;
 
-        void beginMutableState_();
-        void endMutableState_();
-        bool tryEnterRender_();
-        void leaveRender_();
+        uint32_t getReadableBytes_() const;
+        uint32_t getWritableBytes_() const;
 
     protected:
         AtomicBool m_looped;
         AtomicBool m_updating;
         AtomicBool m_finished;
-        AtomicBool m_renderBarrier;
-        AtomicUInt32 m_readOffset;
-        AtomicUInt32 m_writeOffset;
-        AtomicUInt32 m_availableBytes;
         AtomicUInt32 m_playCursorBytes;
-        AtomicUInt32 m_activeRenders;
-        AtomicBool m_loggedRenderLayout;
-        AtomicBool m_loggedUnderflow;
+
+        // SPSC ring buffer counters — separated to avoid false sharing
+        // Writer (prebuffer_ / update thread) only writes m_writeCount
+        // Reader (renderMixerFrames / audio thread) only writes m_readCount
+        alignas(64) AtomicUInt32 m_writeCount;
+        alignas(64) AtomicUInt32 m_readCount;
+
         AtomicFloat m_basePositionMs;
 
+#if defined(MENGINE_DEBUG)
+        AtomicUInt32 m_renderCalls;
+        AtomicUInt32 m_updateTicks;
+        AtomicUInt32 m_lastRenderFramesRequested;
+        AtomicUInt32 m_lastRenderFramesProduced;
+        AtomicUInt32 m_lastRenderBufferCount;
+        AtomicUInt32 m_lastRenderBuffer0Channels;
+        AtomicUInt32 m_lastRenderBuffer1Channels;
+        AtomicUInt32 m_lastRenderBuffer0Size;
+        AtomicUInt32 m_lastRenderBuffer1Size;
+        AtomicBool m_loggedRenderLayout;
+        AtomicBool m_loggedRenderMissing;
+        AtomicBool m_loggedUnderflow;
+        AtomicBool m_renderObservedUnderflow;
+#endif
+
+        uint32_t m_ringBufferSizeMask;
         size_t m_ringBufferSize;
 
         ThreadMutexInterfacePtr m_mutexDecoder;

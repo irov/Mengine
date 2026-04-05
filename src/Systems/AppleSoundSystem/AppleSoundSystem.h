@@ -10,6 +10,7 @@
 #include "Kernel/Unknowable.h"
 
 #include <AudioToolbox/AudioToolbox.h>
+#include <TargetConditionals.h>
 
 #ifndef MENGINE_APPLE_MIXER_INPUT_BUS_COUNT
 #define MENGINE_APPLE_MIXER_INPUT_BUS_COUNT (32)
@@ -83,6 +84,14 @@ namespace Mengine
 
     protected:
         void onDestroyAppleSoundSource_( AppleSoundSource * _soundSource );
+
+#if TARGET_OS_IPHONE
+    public:
+        void handleAudioInterruption_( bool _began );
+
+    protected:
+        id m_interruptionObserver;
+#endif
 
     protected:
         AudioUnit m_outputUnit;

@@ -14,14 +14,15 @@ namespace Mengine
 
             if( _destinationChannels == 1 && _sourceChannels > 1 )
             {
-                int32_t accumulator = 0;
+                // Downmix in float to avoid integer truncation and DC bias
+                float sum = 0.f;
 
                 for( uint32_t channel = 0; channel != _sourceChannels; ++channel )
                 {
-                    accumulator += _srcFrame[channel];
+                    sum += (float)_srcFrame[channel];
                 }
 
-                return (Float32)(accumulator / (int32_t)_sourceChannels) / 32768.f;
+                return (sum / (float)_sourceChannels) * (1.f / 32768.f);
             }
 
             UInt32 sourceChannel = _destinationChannel;
@@ -31,7 +32,7 @@ namespace Mengine
                 sourceChannel = _sourceChannels - 1;
             }
 
-            return (Float32)_srcFrame[sourceChannel] / 32768.f;
+            return (Float32)_srcFrame[sourceChannel] * (1.f / 32768.f);
         }
         //////////////////////////////////////////////////////////////////////////
     }

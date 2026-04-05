@@ -13,7 +13,6 @@
 
 #include "Config/StdAlgorithm.h"
 #include "Config/StdMath.h"
-#include "Config/StdThread.h"
 
 namespace Mengine
 {
@@ -22,15 +21,26 @@ namespace Mengine
         : m_looped( false )
         , m_updating( false )
         , m_finished( false )
-        , m_renderBarrier( false )
-        , m_readOffset( 0 )
-        , m_writeOffset( 0 )
-        , m_availableBytes( 0 )
         , m_playCursorBytes( 0 )
-        , m_activeRenders( 0 )
-        , m_loggedRenderLayout( false )
-        , m_loggedUnderflow( false )
+        , m_writeCount( 0 )
+        , m_readCount( 0 )
         , m_basePositionMs( 0.f )
+#if defined(MENGINE_DEBUG)
+        , m_renderCalls( 0 )
+        , m_updateTicks( 0 )
+        , m_lastRenderFramesRequested( 0 )
+        , m_lastRenderFramesProduced( 0 )
+        , m_lastRenderBufferCount( 0 )
+        , m_lastRenderBuffer0Channels( 0 )
+        , m_lastRenderBuffer1Channels( 0 )
+        , m_lastRenderBuffer0Size( 0 )
+        , m_lastRenderBuffer1Size( 0 )
+        , m_loggedRenderLayout( false )
+        , m_loggedRenderMissing( false )
+        , m_loggedUnderflow( false )
+        , m_renderObservedUnderflow( false )
+#endif
+        , m_ringBufferSizeMask( 0 )
         , m_ringBufferSize( 0 )
         , m_ringBuffer( nullptr )
     {
@@ -59,11 +69,20 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid create memory" );
 
-        size_t totalSize = MENGINE_APPLE_STREAM_BUFFER_SIZE * MENGINE_APPLE_STREAM_BUFFER_COUNT;
-        memory->newBuffer( totalSize );
+        size_t requestedSize = MENGINE_APPLE_STREAM_BUFFER_SIZE * MENGINE_APPLE_STREAM_BUFFER_COUNT;
+
+        // Round up to power of two for efficient masking (like OpenAL Soft ring buffer)
+        size_t powerOfTwo = 1;
+        while( powerOfTwo < requestedSize )
+        {
+            powerOfTwo <<= 1;
+        }
+
+        memory->newBuffer( powerOfTwo );
 
         m_memory = memory;
-        m_ringBufferSize = totalSize;
+        m_ringBufferSize = powerOfTwo;
+        m_ringBufferSizeMask = (uint32_t)(powerOfTwo - 1);
         m_ringBuffer = m_memory->getBuffer();
 
         return true;
@@ -71,17 +90,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleSoundBufferStream::_releaseSoundBuffer()
     {
-        this->beginMutableState_();
-
         {
             MENGINE_THREAD_MUTEX_SCOPE( m_mutexUpdating );
             MENGINE_THREAD_MUTEX_SCOPE( m_mutexDecoder );
 
             m_updating = false;
             m_finished = true;
-            m_readOffset = 0;
-            m_writeOffset = 0;
-            m_availableBytes = 0;
+
+            this->resetRingBuffer_();
+
             m_playCursorBytes = 0;
             m_basePositionMs = 0.f;
 
@@ -89,12 +106,11 @@ namespace Mengine
             m_memory = nullptr;
             m_ringBuffer = nullptr;
             m_ringBufferSize = 0;
+            m_ringBufferSizeMask = 0;
         }
 
         m_mutexDecoder = nullptr;
         m_mutexUpdating = nullptr;
-
-        this->endMutableState_();
     }
     //////////////////////////////////////////////////////////////////////////
     bool AppleSoundBufferStream::load( const SoundDecoderInterfacePtr & _soundDecoder )
@@ -128,16 +144,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleSoundBufferStream::playSource( bool _looped, float _position )
     {
-        this->beginMutableState_();
-
         if( _position > m_duration )
         {
             LOGGER_ASSERTION( "pos %f > length %f"
                 , _position
                 , m_duration
             );
-
-            this->endMutableState_();
 
             return false;
         }
@@ -148,10 +160,24 @@ namespace Mengine
             m_looped = _looped;
             m_updating = false;
             m_finished = false;
-            m_loggedRenderLayout = false;
-            m_loggedUnderflow = false;
             m_basePositionMs = _position;
             m_playCursorBytes = 0;
+
+#if defined(MENGINE_DEBUG)
+            m_renderCalls = 0;
+            m_updateTicks = 0;
+            m_lastRenderFramesRequested = 0;
+            m_lastRenderFramesProduced = 0;
+            m_lastRenderBufferCount = 0;
+            m_lastRenderBuffer0Channels = 0;
+            m_lastRenderBuffer1Channels = 0;
+            m_lastRenderBuffer0Size = 0;
+            m_lastRenderBuffer1Size = 0;
+            m_loggedRenderLayout = false;
+            m_loggedRenderMissing = false;
+            m_loggedUnderflow = false;
+            m_renderObservedUnderflow = false;
+#endif
 
             this->resetRingBuffer_();
 
@@ -163,24 +189,20 @@ namespace Mengine
                     , _position
                 );
 
-                this->endMutableState_();
-
                 return false;
             }
 
             if( this->prebuffer_() == false )
             {
-                this->endMutableState_();
-
                 return false;
             }
 
-            LOGGER_MESSAGE( "[apple] stream prebuffer freq: %u channels: %u duration: %f position: %f available: %u finished: %u loop: %u"
+            LOGGER_MESSAGE( "[apple] stream prebuffer freq: %u channels: %u duration: %f position: %f readable: %u finished: %u loop: %u"
                 , m_frequency
                 , m_channels
                 , m_duration
                 , _position
-                , m_availableBytes.load()
+                , this->getReadableBytes_()
                 , m_finished.load()
                 , m_looped.load()
             );
@@ -188,29 +210,37 @@ namespace Mengine
 
         m_updating = true;
 
-        this->endMutableState_();
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleSoundBufferStream::stopSource()
     {
-        this->beginMutableState_();
-
         {
             MENGINE_THREAD_MUTEX_SCOPE( m_mutexUpdating );
 
             m_updating = false;
             m_finished = true;
-            m_loggedRenderLayout = false;
-            m_loggedUnderflow = false;
             m_basePositionMs = 0.f;
             m_playCursorBytes = 0;
 
+#if defined(MENGINE_DEBUG)
+            m_renderCalls = 0;
+            m_updateTicks = 0;
+            m_lastRenderFramesRequested = 0;
+            m_lastRenderFramesProduced = 0;
+            m_lastRenderBufferCount = 0;
+            m_lastRenderBuffer0Channels = 0;
+            m_lastRenderBuffer1Channels = 0;
+            m_lastRenderBuffer0Size = 0;
+            m_lastRenderBuffer1Size = 0;
+            m_loggedRenderLayout = false;
+            m_loggedRenderMissing = false;
+            m_loggedUnderflow = false;
+            m_renderObservedUnderflow = false;
+#endif
+
             this->resetRingBuffer_();
         }
-
-        this->endMutableState_();
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleSoundBufferStream::pauseSource()
@@ -225,15 +255,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleSoundBufferStream::setTimePosition( float _position )
     {
-        this->beginMutableState_();
-
         MENGINE_THREAD_MUTEX_SCOPE( m_mutexUpdating );
         MENGINE_THREAD_MUTEX_SCOPE( m_mutexDecoder );
 
         if( m_soundDecoder->seek( _position ) == false )
         {
-            this->endMutableState_();
-
             return false;
         }
 
@@ -242,17 +268,27 @@ namespace Mengine
         m_basePositionMs = _position;
         m_playCursorBytes = 0;
         m_finished = false;
+
+#if defined(MENGINE_DEBUG)
+        m_renderCalls = 0;
+        m_updateTicks = 0;
+        m_lastRenderFramesRequested = 0;
+        m_lastRenderFramesProduced = 0;
+        m_lastRenderBufferCount = 0;
+        m_lastRenderBuffer0Channels = 0;
+        m_lastRenderBuffer1Channels = 0;
+        m_lastRenderBuffer0Size = 0;
+        m_lastRenderBuffer1Size = 0;
         m_loggedRenderLayout = false;
+        m_loggedRenderMissing = false;
         m_loggedUnderflow = false;
+        m_renderObservedUnderflow = false;
+#endif
 
         if( this->prebuffer_() == false )
         {
-            this->endMutableState_();
-
             return false;
         }
-
-        this->endMutableState_();
 
         return true;
     }
@@ -301,7 +337,54 @@ namespace Mengine
             return false;
         }
 
-        if( m_finished.load() == true && m_availableBytes.load() == 0 )
+#if defined(MENGINE_DEBUG)
+        uint32_t updateTicks = m_updateTicks.fetch_add( 1 ) + 1;
+
+        if( m_loggedRenderLayout.load() == false && m_renderCalls.load() != 0 )
+        {
+            LOGGER_MESSAGE( "[apple] stream render layout freq: %u channels: %u req: %u got: %u calls: %u buffers: %u b0[ch:%u size:%u] b1[ch:%u size:%u]"
+                , m_frequency
+                , m_channels
+                , m_lastRenderFramesRequested.load()
+                , m_lastRenderFramesProduced.load()
+                , m_renderCalls.load()
+                , m_lastRenderBufferCount.load()
+                , m_lastRenderBuffer0Channels.load()
+                , m_lastRenderBuffer0Size.load()
+                , m_lastRenderBuffer1Channels.load()
+                , m_lastRenderBuffer1Size.load()
+            );
+
+            m_loggedRenderLayout = true;
+        }
+
+        if( m_loggedRenderMissing.load() == false && updateTicks >= 10 && m_renderCalls.load() == 0 && this->getReadableBytes_() != 0 && m_finished.load() == false )
+        {
+            LOGGER_WARNING( "[apple] stream callback missing freq: %u channels: %u readable: %u updates: %u loop: %u"
+                , m_frequency
+                , m_channels
+                , this->getReadableBytes_()
+                , updateTicks
+                , m_looped.load()
+            );
+
+            m_loggedRenderMissing = true;
+        }
+
+        if( m_loggedUnderflow.load() == false && m_renderObservedUnderflow.exchange( false ) == true )
+        {
+            LOGGER_WARNING( "[apple] stream render underflow freq: %u channels: %u req: %u position: %f"
+                , m_frequency
+                , m_channels
+                , m_lastRenderFramesRequested.load()
+                , m_basePositionMs.load()
+            );
+
+            m_loggedUnderflow = true;
+        }
+#endif
+
+        if( m_finished.load() == true && this->getReadableBytes_() == 0 )
         {
             return false;
         }
@@ -323,56 +406,44 @@ namespace Mengine
             return true;
         }
 
-        if( this->tryEnterRender_() == false )
-        {
-            return true;
-        }
-
         uint32_t frameSize = this->getFrameSize();
 
         if( frameSize == 0 || m_ringBuffer == nullptr )
         {
-            this->leaveRender_();
-
             return true;
         }
 
         UInt32 renderedFrames = 0;
 
-        if( m_loggedRenderLayout.exchange( true ) == false )
+#if defined(MENGINE_DEBUG)
+        UInt32 bufferCount = _ioData->mNumberBuffers;
+        UInt32 buffer0Channels = bufferCount > 0 ? _ioData->mBuffers[0].mNumberChannels : 0;
+        UInt32 buffer0Size = bufferCount > 0 ? _ioData->mBuffers[0].mDataByteSize : 0;
+        UInt32 buffer1Channels = bufferCount > 1 ? _ioData->mBuffers[1].mNumberChannels : 0;
+        UInt32 buffer1Size = bufferCount > 1 ? _ioData->mBuffers[1].mDataByteSize : 0;
+
+        m_renderCalls.fetch_add( 1, StdAtomic::memory_order_relaxed );
+        m_lastRenderFramesRequested.store( _frames, StdAtomic::memory_order_relaxed );
+        m_lastRenderBufferCount.store( bufferCount, StdAtomic::memory_order_relaxed );
+        m_lastRenderBuffer0Channels.store( buffer0Channels, StdAtomic::memory_order_relaxed );
+        m_lastRenderBuffer0Size.store( buffer0Size, StdAtomic::memory_order_relaxed );
+        m_lastRenderBuffer1Channels.store( buffer1Channels, StdAtomic::memory_order_relaxed );
+        m_lastRenderBuffer1Size.store( buffer1Size, StdAtomic::memory_order_relaxed );
+#endif
+
+        // SPSC: reader loads writeCount with acquire, reads own readCount relaxed
+        uint32_t w = m_writeCount.load( StdAtomic::memory_order_acquire );
+        uint32_t r = m_readCount.load( StdAtomic::memory_order_relaxed );
+        uint32_t readable = w - r;
+
+        while( renderedFrames != _frames && readable != 0 )
         {
-            UInt32 bufferCount = _ioData->mNumberBuffers;
-            UInt32 buffer0Channels = bufferCount > 0 ? _ioData->mBuffers[0].mNumberChannels : 0;
-            UInt32 buffer0Size = bufferCount > 0 ? _ioData->mBuffers[0].mDataByteSize : 0;
-            UInt32 buffer1Channels = bufferCount > 1 ? _ioData->mBuffers[1].mNumberChannels : 0;
-            UInt32 buffer1Size = bufferCount > 1 ? _ioData->mBuffers[1].mDataByteSize : 0;
-
-            LOGGER_MESSAGE( "[apple] stream render layout freq: %u channels: %u frames: %u buffers: %u b0[ch:%u size:%u] b1[ch:%u size:%u]"
-                , m_frequency
-                , m_channels
-                , _frames
-                , bufferCount
-                , buffer0Channels
-                , buffer0Size
-                , buffer1Channels
-                , buffer1Size
-            );
-        }
-
-        while( renderedFrames != _frames )
-        {
-            uint32_t availableBytes = m_availableBytes.load();
-
-            if( availableBytes == 0 )
-            {
-                break;
-            }
-
-            uint32_t readOffset = m_readOffset.load();
-            uint32_t tailBytes = (uint32_t)(m_ringBufferSize - readOffset);
-            uint32_t bytesToCopy = availableBytes;
+            uint32_t readIdx = r & m_ringBufferSizeMask;
+            uint32_t tailBytes = (uint32_t)(m_ringBufferSize) - readIdx;
             uint32_t framesLeft = _frames - renderedFrames;
             uint32_t maxBytes = framesLeft * frameSize;
+
+            uint32_t bytesToCopy = readable;
 
             if( bytesToCopy > maxBytes )
             {
@@ -391,31 +462,31 @@ namespace Mengine
                 break;
             }
 
-            const int16_t * srcSamples = reinterpret_cast<const int16_t *>(m_ringBuffer + readOffset);
+            const int16_t * srcSamples = reinterpret_cast<const int16_t *>(m_ringBuffer + readIdx);
             uint32_t copyFrames = bytesToCopy / frameSize;
 
             this->writeMixerFrames_( _ioData, renderedFrames, srcSamples, copyFrames );
 
-            m_readOffset.store( (readOffset + bytesToCopy) % (uint32_t)m_ringBufferSize );
-            m_availableBytes.fetch_sub( bytesToCopy );
-            m_playCursorBytes.fetch_add( bytesToCopy );
+            r += bytesToCopy;
+            readable -= bytesToCopy;
+            m_playCursorBytes.fetch_add( bytesToCopy, StdAtomic::memory_order_relaxed );
 
             renderedFrames += copyFrames;
         }
 
+        // SPSC: reader stores readCount with release
+        m_readCount.store( r, StdAtomic::memory_order_release );
+
         *_renderedFrames = renderedFrames;
 
-        if( renderedFrames == 0 && m_finished.load() == false && m_availableBytes.load() == 0 && m_loggedUnderflow.exchange( true ) == false )
-        {
-            LOGGER_WARNING( "[apple] stream render underflow freq: %u channels: %u frames: %u position: %f"
-                , m_frequency
-                , m_channels
-                , _frames
-                , m_basePositionMs.load()
-            );
-        }
+#if defined(MENGINE_DEBUG)
+        m_lastRenderFramesProduced.store( renderedFrames, StdAtomic::memory_order_relaxed );
 
-        this->leaveRender_();
+        if( renderedFrames == 0 && m_finished.load() == false && readable == 0 )
+        {
+            m_renderObservedUnderflow = true;
+        }
+#endif
 
         return true;
     }
@@ -431,8 +502,11 @@ namespace Mengine
 
         for( ;; )
         {
-            uint32_t availableBytes = m_availableBytes.load();
-            size_t freeBytes = m_ringBufferSize - availableBytes;
+            // SPSC: writer loads readCount with acquire, reads own writeCount relaxed
+            uint32_t r = m_readCount.load( StdAtomic::memory_order_acquire );
+            uint32_t w = m_writeCount.load( StdAtomic::memory_order_relaxed );
+            uint32_t readable = w - r;
+            size_t freeBytes = m_ringBufferSize - readable;
 
             freeBytes -= freeBytes % frameSize;
 
@@ -441,8 +515,8 @@ namespace Mengine
                 break;
             }
 
-            uint32_t writeOffset = m_writeOffset.load();
-            size_t capacity = m_ringBufferSize - writeOffset;
+            uint32_t writeIdx = w & m_ringBufferSizeMask;
+            size_t capacity = m_ringBufferSize - writeIdx;
 
             if( capacity > freeBytes )
             {
@@ -453,13 +527,11 @@ namespace Mengine
 
             if( capacity == 0 )
             {
-                m_writeOffset = 0;
-
-                continue;
+                break;
             }
 
             size_t written = 0;
-            if( this->decodeSegment_( m_ringBuffer + writeOffset, capacity, &written ) == false )
+            if( this->decodeSegment_( m_ringBuffer + writeIdx, capacity, &written ) == false )
             {
                 return false;
             }
@@ -469,8 +541,8 @@ namespace Mengine
                 break;
             }
 
-            m_writeOffset.store( (writeOffset + (uint32_t)written) % (uint32_t)m_ringBufferSize );
-            m_availableBytes.fetch_add( (uint32_t)written );
+            // SPSC: writer stores writeCount with release
+            m_writeCount.store( w + (uint32_t)written, StdAtomic::memory_order_release );
 
             if( written < capacity )
             {
@@ -537,9 +609,24 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleSoundBufferStream::resetRingBuffer_()
     {
-        m_readOffset = 0;
-        m_writeOffset = 0;
-        m_availableBytes = 0;
+        m_writeCount.store( 0, StdAtomic::memory_order_relaxed );
+        m_readCount.store( 0, StdAtomic::memory_order_relaxed );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t AppleSoundBufferStream::getReadableBytes_() const
+    {
+        uint32_t w = m_writeCount.load( StdAtomic::memory_order_acquire );
+        uint32_t r = m_readCount.load( StdAtomic::memory_order_relaxed );
+
+        return w - r;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t AppleSoundBufferStream::getWritableBytes_() const
+    {
+        uint32_t r = m_readCount.load( StdAtomic::memory_order_acquire );
+        uint32_t w = m_writeCount.load( StdAtomic::memory_order_relaxed );
+
+        return (uint32_t)m_ringBufferSize - (w - r);
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleSoundBufferStream::writeMixerFrames_( AudioBufferList * _ioData, uint32_t _frameOffset, const int16_t * _src, uint32_t _frames ) const
@@ -599,46 +686,6 @@ namespace Mengine
                 dst[frame] = Helper::resolveAppleSoundPCM16Sample( srcFrame, m_channels, channel, bufferCount );
             }
         }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AppleSoundBufferStream::beginMutableState_()
-    {
-        m_renderBarrier = true;
-
-        while( m_activeRenders.load() != 0 )
-        {
-            StdThread::yield();
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AppleSoundBufferStream::endMutableState_()
-    {
-        m_renderBarrier = false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool AppleSoundBufferStream::tryEnterRender_()
-    {
-        for( ;; )
-        {
-            if( m_renderBarrier.load() == true )
-            {
-                return false;
-            }
-
-            m_activeRenders.fetch_add( 1 );
-
-            if( m_renderBarrier.load() == false )
-            {
-                return true;
-            }
-
-            m_activeRenders.fetch_sub( 1 );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AppleSoundBufferStream::leaveRender_()
-    {
-        m_activeRenders.fetch_sub( 1 );
     }
     //////////////////////////////////////////////////////////////////////////
 }

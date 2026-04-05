@@ -33,6 +33,9 @@ namespace Mengine
         , m_mixerUnit( nullptr )
         , m_outputSampleRate( 44100.0 )
         , m_outputChannels( 2 )
+#if TARGET_OS_IPHONE
+        , m_interruptionObserver( nil )
+#endif
     {
         for( uint32_t index = 0; index != MENGINE_APPLE_MIXER_INPUT_BUS_COUNT; ++index )
         {
@@ -66,6 +69,29 @@ namespace Mengine
             {
                 m_outputSampleRate = sampleRate;
             }
+
+            AppleSoundSystem * self = this;
+
+            m_interruptionObserver = [[NSNotificationCenter defaultCenter]
+                addObserverForName:AVAudioSessionInterruptionNotification
+                object:session
+                queue:nil
+                usingBlock:^( NSNotification * notification )
+                {
+                    NSDictionary * info = notification.userInfo;
+                    AVAudioSessionInterruptionType type = (AVAudioSessionInterruptionType)
+                        [info[AVAudioSessionInterruptionTypeKey] unsignedIntegerValue];
+
+                    if( type == AVAudioSessionInterruptionTypeBegan )
+                    {
+                        self->handleAudioInterruption_( true );
+                    }
+                    else if( type == AVAudioSessionInterruptionTypeEnded )
+                    {
+                        self->handleAudioInterruption_( false );
+                    }
+                }
+            ];
         }
 #endif
 
@@ -90,6 +116,14 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAppleSoundBuffer );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAppleSoundBufferStream );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAppleSoundSource );
+
+#if TARGET_OS_IPHONE
+        if( m_interruptionObserver != nil )
+        {
+            [[NSNotificationCenter defaultCenter] removeObserver:m_interruptionObserver];
+            m_interruptionObserver = nil;
+        }
+#endif
 
         this->destroyAudioMixer_();
 
@@ -638,5 +672,49 @@ namespace Mengine
     {
         _soundSource->finalize();
     }
+    //////////////////////////////////////////////////////////////////////////
+#if TARGET_OS_IPHONE
+    void AppleSoundSystem::handleAudioInterruption_( bool _began )
+    {
+        if( _began == true )
+        {
+            LOGGER_MESSAGE( "audio session interruption began, stopping output" );
+
+            if( m_outputUnit != nullptr )
+            {
+                AudioOutputUnitStop( m_outputUnit );
+            }
+        }
+        else
+        {
+            LOGGER_MESSAGE( "audio session interruption ended, restarting output" );
+
+            @autoreleasepool
+            {
+                AVAudioSession * session = [AVAudioSession sharedInstance];
+                NSError * error = nil;
+
+                if( [session setActive:YES error:&error] == NO )
+                {
+                    LOGGER_WARNING( "failed to reactivate AVAudioSession [%s]"
+                        , error.localizedDescription.UTF8String
+                    );
+                }
+            }
+
+            if( m_outputUnit != nullptr )
+            {
+                OSStatus status = AudioOutputUnitStart( m_outputUnit );
+
+                if( status != noErr )
+                {
+                    LOGGER_WARNING( "failed to restart output unit after interruption [%d]"
+                        , (int)status
+                    );
+                }
+            }
+        }
+    }
+#endif
     //////////////////////////////////////////////////////////////////////////
 }

@@ -152,9 +152,16 @@ namespace Mengine
                 return false;
             }
 
+            m_playing = true;
+            m_pausing = false;
+            m_finished = false;
+
             if( this->acquireSourceBus_( soundBuffer->getFrequency(), soundBuffer->getChannels(), gain ) == false )
             {
                 soundBuffer->stopSource();
+                m_playing = false;
+                m_pausing = false;
+                m_finished = false;
 
                 LOGGER_ASSERTION( "invalid acquire source bus" );
 

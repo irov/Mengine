@@ -377,7 +377,7 @@ namespace Mengine
         }
 
         AudioStreamBasicDescription mixFormat;
-        AppleSoundSystem::makeFormat_( &mixFormat, m_outputSampleRate, m_outputChannels, false );
+        AppleSoundSystem::makeFormat_( &mixFormat, m_outputSampleRate, m_outputChannels );
 
         status = AudioUnitSetProperty( m_mixerUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Output, 0, &mixFormat, sizeof( mixFormat ) );
 
@@ -444,7 +444,7 @@ namespace Mengine
             }
 
             AudioStreamBasicDescription inputFormat;
-            AppleSoundSystem::makeFormat_( &inputFormat, m_outputSampleRate, 1, true );
+            AppleSoundSystem::makeFormat_( &inputFormat, m_outputSampleRate, 1 );
 
             status = AudioUnitSetProperty( m_mixerUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, index, &inputFormat, sizeof( inputFormat ) );
 
@@ -540,14 +540,18 @@ namespace Mengine
     bool AppleSoundSystem::configureSourceBus_( uint32_t _busIndex, uint32_t _frequency, uint32_t _channels )
     {
         AudioStreamBasicDescription inputFormat;
-        AppleSoundSystem::makeFormat_( &inputFormat, (Float64)_frequency, _channels, true );
+        AppleSoundSystem::makeFormat_( &inputFormat, (Float64)_frequency, _channels );
 
         OSStatus status = AudioUnitSetProperty( m_mixerUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, _busIndex, &inputFormat, sizeof( inputFormat ) );
 
         if( status != noErr )
         {
-            LOGGER_ASSERTION( "failed to configure mixer bus format [%u] [%d]"
+            LOGGER_ASSERTION( "failed to configure mixer bus format [%u] freq [%u] channels [%u] output [%g:%u] [%d]"
                 , _busIndex
+                , _frequency
+                , _channels
+                , m_outputSampleRate
+                , m_outputChannels
                 , (int)status
             );
 
@@ -575,29 +579,16 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleSoundSystem::makeFormat_( AudioStreamBasicDescription * const _format, Float64 _sampleRate, UInt32 _channels, bool _interleaved )
+    void AppleSoundSystem::makeFormat_( AudioStreamBasicDescription * const _format, Float64 _sampleRate, UInt32 _channels )
     {
         StdAlgorithm::fill_n( reinterpret_cast<uint8_t *>( _format ), sizeof( AudioStreamBasicDescription ), 0 );
 
         _format->mSampleRate = _sampleRate;
         _format->mFormatID = kAudioFormatLinearPCM;
-        _format->mFormatFlags = kAudioFormatFlagsNativeFloatPacked;
-
-        if( _interleaved == false )
-        {
-            _format->mFormatFlags |= kAudioFormatFlagIsNonInterleaved;
-        }
-
-        UInt32 frameBytes = sizeof( Float32 );
-
-        if( _interleaved == true )
-        {
-            frameBytes *= _channels;
-        }
-
-        _format->mBytesPerPacket = frameBytes;
+        _format->mFormatFlags = kAudioFormatFlagsNativeFloatPacked | kAudioFormatFlagIsNonInterleaved;
+        _format->mBytesPerPacket = sizeof( Float32 );
         _format->mFramesPerPacket = 1;
-        _format->mBytesPerFrame = frameBytes;
+        _format->mBytesPerFrame = sizeof( Float32 );
         _format->mChannelsPerFrame = _channels;
         _format->mBitsPerChannel = sizeof( Float32 ) * 8;
     }

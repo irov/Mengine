@@ -76,6 +76,8 @@ namespace Mengine
         AtomicUInt32 m_availableBytes;
         AtomicUInt32 m_playCursorBytes;
         AtomicUInt32 m_activeRenders;
+        AtomicBool m_loggedRenderLayout;
+        AtomicBool m_loggedUnderflow;
         AtomicFloat m_basePositionMs;
 
         size_t m_ringBufferSize;

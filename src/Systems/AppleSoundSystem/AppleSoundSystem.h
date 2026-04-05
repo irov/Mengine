@@ -76,7 +76,7 @@ namespace Mengine
         bool configureSourceBus_( uint32_t _busIndex, uint32_t _frequency, uint32_t _channels );
         bool enableSourceBus_( uint32_t _busIndex, bool _enable );
 
-        static void makeFormat_( AudioStreamBasicDescription * const _format, Float64 _sampleRate, UInt32 _channels, bool _interleaved );
+        static void makeFormat_( AudioStreamBasicDescription * const _format, Float64 _sampleRate, UInt32 _channels );
         static void zeroBufferList_( AudioBufferList * _ioData );
 
         static OSStatus mixerRenderCallback_( void * _refCon, AudioUnitRenderActionFlags * _flags, const AudioTimeStamp * _timeStamp, UInt32 _busNumber, UInt32 _numberFrames, AudioBufferList * _ioData );

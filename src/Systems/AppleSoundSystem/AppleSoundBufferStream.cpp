@@ -28,6 +28,8 @@ namespace Mengine
         , m_availableBytes( 0 )
         , m_playCursorBytes( 0 )
         , m_activeRenders( 0 )
+        , m_loggedRenderLayout( false )
+        , m_loggedUnderflow( false )
         , m_basePositionMs( 0.f )
         , m_ringBufferSize( 0 )
         , m_ringBuffer( nullptr )
@@ -146,6 +148,8 @@ namespace Mengine
             m_looped = _looped;
             m_updating = false;
             m_finished = false;
+            m_loggedRenderLayout = false;
+            m_loggedUnderflow = false;
             m_basePositionMs = _position;
             m_playCursorBytes = 0;
 
@@ -170,6 +174,16 @@ namespace Mengine
 
                 return false;
             }
+
+            LOGGER_MESSAGE( "[apple] stream prebuffer freq: %u channels: %u duration: %f position: %f available: %u finished: %u loop: %u"
+                , m_frequency
+                , m_channels
+                , m_duration
+                , _position
+                , m_availableBytes.load()
+                , m_finished.load()
+                , m_looped.load()
+            );
         }
 
         m_updating = true;
@@ -188,6 +202,8 @@ namespace Mengine
 
             m_updating = false;
             m_finished = true;
+            m_loggedRenderLayout = false;
+            m_loggedUnderflow = false;
             m_basePositionMs = 0.f;
             m_playCursorBytes = 0;
 
@@ -226,6 +242,8 @@ namespace Mengine
         m_basePositionMs = _position;
         m_playCursorBytes = 0;
         m_finished = false;
+        m_loggedRenderLayout = false;
+        m_loggedUnderflow = false;
 
         if( this->prebuffer_() == false )
         {
@@ -321,6 +339,26 @@ namespace Mengine
 
         UInt32 renderedFrames = 0;
 
+        if( m_loggedRenderLayout.exchange( true ) == false )
+        {
+            UInt32 bufferCount = _ioData->mNumberBuffers;
+            UInt32 buffer0Channels = bufferCount > 0 ? _ioData->mBuffers[0].mNumberChannels : 0;
+            UInt32 buffer0Size = bufferCount > 0 ? _ioData->mBuffers[0].mDataByteSize : 0;
+            UInt32 buffer1Channels = bufferCount > 1 ? _ioData->mBuffers[1].mNumberChannels : 0;
+            UInt32 buffer1Size = bufferCount > 1 ? _ioData->mBuffers[1].mDataByteSize : 0;
+
+            LOGGER_MESSAGE( "[apple] stream render layout freq: %u channels: %u frames: %u buffers: %u b0[ch:%u size:%u] b1[ch:%u size:%u]"
+                , m_frequency
+                , m_channels
+                , _frames
+                , bufferCount
+                , buffer0Channels
+                , buffer0Size
+                , buffer1Channels
+                , buffer1Size
+            );
+        }
+
         while( renderedFrames != _frames )
         {
             uint32_t availableBytes = m_availableBytes.load();
@@ -366,6 +404,16 @@ namespace Mengine
         }
 
         *_renderedFrames = renderedFrames;
+
+        if( renderedFrames == 0 && m_finished.load() == false && m_availableBytes.load() == 0 && m_loggedUnderflow.exchange( true ) == false )
+        {
+            LOGGER_WARNING( "[apple] stream render underflow freq: %u channels: %u frames: %u position: %f"
+                , m_frequency
+                , m_channels
+                , _frames
+                , m_basePositionMs.load()
+            );
+        }
 
         this->leaveRender_();
 

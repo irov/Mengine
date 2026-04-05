@@ -671,11 +671,6 @@ namespace Mengine
         {
             UInt32 renderedFrames = 0;
             streamBuffer->renderMixerFrames( _ioData, _frames, &renderedFrames );
-
-            if( renderedFrames < _frames && m_loop.load() == false )
-            {
-                m_finished = true;
-            }
         }
 
         return noErr;

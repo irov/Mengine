@@ -147,13 +147,17 @@ namespace Mengine
 
             const MetalRenderVertexAttribute::VectorAttribute & attributes = m_vertexAttribute->getAttributes();
 
+            uint32_t attrIndex = 0;
+
             for( const MetalRenderVertexAttribute::AttributeDesc & attr : attributes )
             {
                 MTLVertexFormat format = Helper::toMTLVertexFormat( attr.type, attr.size );
 
-                vertexDesc.attributes[attr.index].format = format;
-                vertexDesc.attributes[attr.index].offset = attr.offset;
-                vertexDesc.attributes[attr.index].bufferIndex = 0;
+                vertexDesc.attributes[attrIndex].format = format;
+                vertexDesc.attributes[attrIndex].offset = attr.offset;
+                vertexDesc.attributes[attrIndex].bufferIndex = 0;
+
+                ++attrIndex;
             }
 
             if( !attributes.empty() )
@@ -216,6 +220,17 @@ namespace Mengine
     id<MTLRenderPipelineState> MetalRenderProgram::getPipelineState() const
     {
         return m_pipelineState;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MetalRenderProgram::bindMatrix( id<MTLRenderCommandEncoder> _encoder, const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalWVPMatrix ) const
+    {
+        MENGINE_UNUSED( _worldMatrix );
+        MENGINE_UNUSED( _viewMatrix );
+        MENGINE_UNUSED( _projectionMatrix );
+
+        [_encoder setVertexBytes:_totalWVPMatrix.buff()
+                          length:sizeof( mt::mat4f )
+                         atIndex:1];
     }
     //////////////////////////////////////////////////////////////////////////
     void MetalRenderProgram::onRenderReset()

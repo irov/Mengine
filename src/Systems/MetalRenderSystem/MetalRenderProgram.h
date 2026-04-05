@@ -57,6 +57,9 @@ namespace Mengine
         id<MTLRenderPipelineState> getPipelineState() const;
 
     public:
+        void bindMatrix( id<MTLRenderCommandEncoder> _encoder, const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalWVPMatrix ) const;
+
+    public:
         void onRenderReset() override;
         bool onRenderRestore() override;
 

@@ -6,6 +6,8 @@
 #include "Kernel/Factorable.h"
 #include "Kernel/ReferenceCounter.h"
 
+#include <AudioToolbox/AudioToolbox.h>
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -41,6 +43,12 @@ namespace Mengine
 
     public:
         virtual void setVolume( float _gain ) = 0;
+
+    public:
+        virtual uint32_t renderMixerFrames( AudioBufferList * _ioData, uint32_t _frameOffset, uint32_t _frames, uint32_t _framePosition, bool _loop, uint32_t * const _outFramePosition ) = 0;
+
+    public:
+        virtual uint32_t getFrameCount() const;
 
     public:
         bool isStereo() const;

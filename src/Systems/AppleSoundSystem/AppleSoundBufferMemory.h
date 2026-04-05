@@ -40,8 +40,11 @@ namespace Mengine
         void setVolume( float _gain ) override;
 
     public:
+        uint32_t renderMixerFrames( AudioBufferList * _ioData, uint32_t _frameOffset, uint32_t _frames, uint32_t _framePosition, bool _loop, uint32_t * const _outFramePosition ) override;
+
+    public:
         const MemoryInterfacePtr & getPCMMemory() const;
-        uint32_t getFrameCount() const;
+        uint32_t getFrameCount() const override;
 
     protected:
         MemoryInterfacePtr m_pcmMemory;

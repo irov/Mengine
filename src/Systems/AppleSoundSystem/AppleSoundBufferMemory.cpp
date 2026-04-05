@@ -2,6 +2,8 @@
 
 #include "Interface/SoundCodecInterface.h"
 
+#include "AppleSoundPCMHelper.h"
+
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Assertion.h"
@@ -154,6 +156,112 @@ namespace Mengine
         }
 
         return (uint32_t)(m_pcmDataSize / this->getFrameSize());
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t AppleSoundBufferMemory::renderMixerFrames( AudioBufferList * _ioData, uint32_t _frameOffset, uint32_t _frames, uint32_t _framePosition, bool _loop, uint32_t * const _outFramePosition )
+    {
+        *_outFramePosition = _framePosition;
+
+        if( _ioData == nullptr || _frames == 0 || m_channels == 0 )
+        {
+            return 0;
+        }
+
+        uint32_t totalFrames = this->getFrameCount();
+
+        if( totalFrames == 0 )
+        {
+            *_outFramePosition = 0;
+
+            return 0;
+        }
+
+        const int16_t * base = m_pcmMemory->getBuffer();
+
+        uint32_t currentFrame = _framePosition;
+        uint32_t framesLeft = _frames;
+        uint32_t renderedFrames = 0;
+
+        UInt32 bufferCount = _ioData->mNumberBuffers;
+
+        if( bufferCount == 0 )
+        {
+            return 0;
+        }
+
+        while( framesLeft != 0 )
+        {
+            if( currentFrame >= totalFrames )
+            {
+                if( _loop == true )
+                {
+                    currentFrame = 0;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            uint32_t copyFrames = totalFrames - currentFrame;
+
+            if( copyFrames > framesLeft )
+            {
+                copyFrames = framesLeft;
+            }
+
+            const int16_t * src = base + currentFrame * m_channels;
+
+            if( bufferCount == 1 )
+            {
+                AudioBuffer & buffer = _ioData->mBuffers[0];
+
+                if( buffer.mData != nullptr && buffer.mNumberChannels != 0 )
+                {
+                    UInt32 destinationChannels = buffer.mNumberChannels;
+                    Float32 * dst = static_cast<Float32 *>( buffer.mData ) + (_frameOffset + renderedFrames) * destinationChannels;
+
+                    for( uint32_t frame = 0; frame != copyFrames; ++frame )
+                    {
+                        const int16_t * srcFrame = src + frame * m_channels;
+
+                        for( UInt32 channel = 0; channel != destinationChannels; ++channel )
+                        {
+                            dst[frame * destinationChannels + channel] = Helper::resolveAppleSoundPCM16Sample( srcFrame, m_channels, channel, destinationChannels );
+                        }
+                    }
+                }
+            }
+            else
+            {
+                for( UInt32 channel = 0; channel != bufferCount; ++channel )
+                {
+                    AudioBuffer & buffer = _ioData->mBuffers[channel];
+
+                    if( buffer.mData == nullptr )
+                    {
+                        continue;
+                    }
+
+                    Float32 * dst = static_cast<Float32 *>( buffer.mData ) + (_frameOffset + renderedFrames);
+
+                    for( uint32_t frame = 0; frame != copyFrames; ++frame )
+                    {
+                        const int16_t * srcFrame = src + frame * m_channels;
+
+                        dst[frame] = Helper::resolveAppleSoundPCM16Sample( srcFrame, m_channels, channel, bufferCount );
+                    }
+                }
+            }
+
+            currentFrame += copyFrames;
+            renderedFrames += copyFrames;
+            framesLeft -= copyFrames;
+        }
+
+        *_outFramePosition = currentFrame;
+
+        return renderedFrames;
     }
     //////////////////////////////////////////////////////////////////////////
 }

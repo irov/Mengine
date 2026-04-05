@@ -53,6 +53,9 @@ namespace Mengine
         bool renderMixerFrames( AudioBufferList * _ioData, UInt32 _frames, UInt32 * const _renderedFrames );
 
     public:
+        uint32_t renderMixerFrames( AudioBufferList * _ioData, uint32_t _frameOffset, uint32_t _frames, uint32_t _framePosition, bool _loop, uint32_t * const _outFramePosition ) override;
+
+    public:
         bool updateSoundBuffer() override;
 
     protected:

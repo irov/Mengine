@@ -491,6 +491,19 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    uint32_t AppleSoundBufferStream::renderMixerFrames( AudioBufferList * _ioData, uint32_t _frameOffset, uint32_t _frames, uint32_t _framePosition, bool _loop, uint32_t * const _outFramePosition )
+    {
+        MENGINE_UNUSED( _framePosition );
+        MENGINE_UNUSED( _loop );
+
+        *_outFramePosition = _framePosition;
+
+        UInt32 renderedFrames = 0;
+        this->renderMixerFrames( _ioData, (UInt32)_frames, &renderedFrames );
+
+        return (uint32_t)renderedFrames;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool AppleSoundBufferStream::prebuffer_()
     {
         uint32_t frameSize = this->getFrameSize();

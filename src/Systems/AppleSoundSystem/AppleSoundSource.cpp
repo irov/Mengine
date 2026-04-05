@@ -2,11 +2,6 @@
 
 #include "AppleSoundSystemExtensionInterface.h"
 
-#include "AppleSoundBufferBase.h"
-#include "AppleSoundBufferMemory.h"
-#include "AppleSoundBufferStream.h"
-#include "AppleSoundPCMHelper.h"
-
 #include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
 #include "Kernel/SpinLockScope.h"
@@ -26,65 +21,6 @@ namespace Mengine
             float gain = StdMath::powf( _volume, 2.f );
 
             return gain;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static void writeMemoryFrames( AudioBufferList * const _ioData, UInt32 _frameOffset, const int16_t * _src, uint32_t _sourceChannels, UInt32 _frames )
-        {
-            if( _ioData == nullptr || _src == nullptr || _sourceChannels == 0 || _frames == 0 )
-            {
-                return;
-            }
-
-            UInt32 bufferCount = _ioData->mNumberBuffers;
-
-            if( bufferCount == 0 )
-            {
-                return;
-            }
-
-            if( bufferCount == 1 )
-            {
-                AudioBuffer & buffer = _ioData->mBuffers[0];
-
-                if( buffer.mData == nullptr || buffer.mNumberChannels == 0 )
-                {
-                    return;
-                }
-
-                UInt32 destinationChannels = buffer.mNumberChannels;
-                Float32 * dst = static_cast<Float32 *>( buffer.mData ) + _frameOffset * destinationChannels;
-
-                for( UInt32 frame = 0; frame != _frames; ++frame )
-                {
-                    const int16_t * srcFrame = _src + frame * _sourceChannels;
-
-                    for( UInt32 channel = 0; channel != destinationChannels; ++channel )
-                    {
-                        dst[frame * destinationChannels + channel] = Helper::resolveAppleSoundPCM16Sample( srcFrame, _sourceChannels, channel, destinationChannels );
-                    }
-                }
-
-                return;
-            }
-
-            for( UInt32 channel = 0; channel != bufferCount; ++channel )
-            {
-                AudioBuffer & buffer = _ioData->mBuffers[channel];
-
-                if( buffer.mData == nullptr )
-                {
-                    continue;
-                }
-
-                Float32 * dst = static_cast<Float32 *>( buffer.mData ) + _frameOffset;
-
-                for( UInt32 frame = 0; frame != _frames; ++frame )
-                {
-                    const int16_t * srcFrame = _src + frame * _sourceChannels;
-
-                    dst[frame] = Helper::resolveAppleSoundPCM16Sample( srcFrame, _sourceChannels, channel, bufferCount );
-                }
-            }
         }
         //////////////////////////////////////////////////////////////////////////
     }
@@ -443,75 +379,38 @@ namespace Mengine
             return false;
         }
 
-        if( m_playing.load() == false && m_pausing.load() == false )
-        {
-            AppleSoundBufferMemoryPtr memoryBuffer = AppleSoundBufferMemoryPtr::from( soundBuffer );
-
-            if( memoryBuffer != nullptr )
-            {
-                float position = _position;
-
-                if( position < 0.f )
-                {
-                    position = 0.f;
-                }
-
-                uint32_t frequency = memoryBuffer->getFrequency();
-                uint32_t positionFrame = (uint32_t)(position * (float)frequency / 1000.f);
-
-                if( positionFrame > memoryBuffer->getFrameCount() )
-                {
-                    positionFrame = memoryBuffer->getFrameCount();
-                }
-
-                m_framePosition = positionFrame;
-
-                return true;
-            }
-
-            AppleSoundBufferStreamPtr streamBuffer = AppleSoundBufferStreamPtr::from( soundBuffer );
-
-            if( streamBuffer != nullptr )
-            {
-                return streamBuffer->setTimePosition( _position );
-            }
-
-            return true;
-        }
-
         float position = _position;
-
-        float total = soundBuffer->getTimeDuration();
-
-        if( position > total )
-        {
-            LOGGER_ASSERTION( "pos %f total %f"
-                , position
-                , total
-            );
-
-            return false;
-        }
 
         if( position < 0.f )
         {
-            LOGGER_ASSERTION( "pos %f less zero"
-                , position
-            );
-
             position = 0.f;
         }
 
-        AppleSoundBufferMemoryPtr memoryBuffer = AppleSoundBufferMemoryPtr::from( soundBuffer );
+        uint32_t totalFrames = soundBuffer->getFrameCount();
 
-        if( memoryBuffer != nullptr )
+        if( totalFrames != 0 )
         {
-            uint32_t frequency = memoryBuffer->getFrequency();
+            if( m_playing.load() == true || m_pausing.load() == true )
+            {
+                float total = soundBuffer->getTimeDuration();
+
+                if( position > total )
+                {
+                    LOGGER_ASSERTION( "pos %f total %f"
+                        , position
+                        , total
+                    );
+
+                    return false;
+                }
+            }
+
+            uint32_t frequency = soundBuffer->getFrequency();
             uint32_t positionFrame = (uint32_t)(position * (float)frequency / 1000.f);
 
-            if( positionFrame > memoryBuffer->getFrameCount() )
+            if( positionFrame > totalFrames )
             {
-                positionFrame = memoryBuffer->getFrameCount();
+                positionFrame = totalFrames;
             }
 
             m_framePosition = positionFrame;
@@ -519,16 +418,22 @@ namespace Mengine
             return true;
         }
 
-        AppleSoundBufferStreamPtr streamBuffer = AppleSoundBufferStreamPtr::from( soundBuffer );
-
-        if( streamBuffer == nullptr )
+        if( m_playing.load() == true || m_pausing.load() == true )
         {
-            LOGGER_ASSERTION( "invalid buffer type for position update" );
+            float total = soundBuffer->getTimeDuration();
 
-            return false;
+            if( position > total )
+            {
+                LOGGER_ASSERTION( "pos %f total %f"
+                    , position
+                    , total
+                );
+
+                return false;
+            }
         }
 
-        if( streamBuffer->setTimePosition( position ) == false )
+        if( soundBuffer->setTimePosition( position ) == false )
         {
             LOGGER_ASSERTION( "invalid set time position %f (play %u)"
                 , position
@@ -552,11 +457,11 @@ namespace Mengine
             return 0.f;
         }
 
-        AppleSoundBufferMemoryPtr memoryBuffer = AppleSoundBufferMemoryPtr::from( soundBuffer );
+        uint32_t totalFrames = soundBuffer->getFrameCount();
 
-        if( memoryBuffer != nullptr )
+        if( totalFrames != 0 )
         {
-            uint32_t frequency = memoryBuffer->getFrequency();
+            uint32_t frequency = soundBuffer->getFrequency();
 
             if( frequency == 0 )
             {
@@ -565,9 +470,9 @@ namespace Mengine
 
             float position = (float)m_framePosition.load() * 1000.f / (float)frequency;
 
-            if( position > memoryBuffer->getTimeDuration() )
+            if( position > soundBuffer->getTimeDuration() )
             {
-                position = memoryBuffer->getTimeDuration();
+                position = soundBuffer->getTimeDuration();
             }
 
             return position;
@@ -575,16 +480,7 @@ namespace Mengine
 
         float position = 0.f;
 
-        AppleSoundBufferStreamPtr streamBuffer = AppleSoundBufferStreamPtr::from( soundBuffer );
-
-        if( streamBuffer == nullptr )
-        {
-            LOGGER_ASSERTION( "invalid sound buffer type" );
-
-            return 0.f;
-        }
-
-        if( streamBuffer->getTimePosition( &position ) == false )
+        if( soundBuffer->getTimePosition( &position ) == false )
         {
             LOGGER_ASSERTION( "invalid get time position (play %u)"
                 , m_playing.load()
@@ -657,66 +553,18 @@ namespace Mengine
             return noErr;
         }
 
-        AppleSoundBufferMemoryPtr memoryBuffer = AppleSoundBufferMemoryPtr::from( soundBuffer );
+        uint32_t currentFrame = m_framePosition.load();
+        uint32_t newFrame = currentFrame;
 
-        if( memoryBuffer != nullptr )
+        uint32_t renderedFrames = soundBuffer->renderMixerFrames( _ioData, 0, (uint32_t)_frames, currentFrame, m_loop.load(), &newFrame );
+
+        m_framePosition = newFrame;
+
+        uint32_t totalFrames = soundBuffer->getFrameCount();
+
+        if( totalFrames != 0 && renderedFrames < (uint32_t)_frames && m_loop.load() == false )
         {
-            uint32_t channels = memoryBuffer->getChannels();
-            uint32_t totalFrames = memoryBuffer->getFrameCount();
-            uint32_t currentFrame = m_framePosition.load();
-            uint32_t framesLeft = _frames;
-            UInt32 frameOffset = 0;
-
-            while( framesLeft != 0 )
-            {
-                if( currentFrame >= totalFrames )
-                {
-                    if( m_loop.load() == true && totalFrames != 0 )
-                    {
-                        currentFrame = 0;
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-
-                uint32_t copyFrames = totalFrames - currentFrame;
-
-                if( copyFrames > framesLeft )
-                {
-                    copyFrames = framesLeft;
-                }
-                
-                const MemoryInterfacePtr & memory = memoryBuffer->getPCMMemory();
-                
-                const int16_t * base = memory->getBuffer();
-
-                const int16_t * src = base + currentFrame * channels;
-
-                Detail::writeMemoryFrames( _ioData, frameOffset, src, channels, copyFrames );
-
-                currentFrame += copyFrames;
-                frameOffset += copyFrames;
-                framesLeft -= copyFrames;
-            }
-
-            m_framePosition = currentFrame;
-
-            if( currentFrame >= totalFrames && m_loop.load() == false )
-            {
-                m_finished = true;
-            }
-
-            return noErr;
-        }
-
-        AppleSoundBufferStreamPtr streamBuffer = AppleSoundBufferStreamPtr::from( soundBuffer );
-
-        if( streamBuffer != nullptr )
-        {
-            UInt32 renderedFrames = 0;
-            streamBuffer->renderMixerFrames( _ioData, _frames, &renderedFrames );
+            m_finished = true;
         }
 
         return noErr;

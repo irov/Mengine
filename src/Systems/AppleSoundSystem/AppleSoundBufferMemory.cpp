@@ -141,9 +141,9 @@ namespace Mengine
         MENGINE_UNUSED( _gain );
     }
     //////////////////////////////////////////////////////////////////////////
-    const int16_t * AppleSoundBufferMemory::getPCMData() const
+    const MemoryInterfacePtr & AppleSoundBufferMemory::getPCMMemory() const
     {
-        return reinterpret_cast<const int16_t *>(m_pcmMemory->getBuffer());
+        return m_pcmMemory;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t AppleSoundBufferMemory::getFrameCount() const

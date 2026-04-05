@@ -39,6 +39,8 @@
 - (BOOL)isShowingInterstitial;
 - (BOOL)isShowingRewarded;
 
+- (BOOL)getNoAds;
+
 - (void)setBannerCallback:(id<AppleAdvertisementCallbackInterface>)callback;
 - (id<AppleAdvertisementCallbackInterface>)getBannerCallback;
 

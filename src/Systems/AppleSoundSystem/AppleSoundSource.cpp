@@ -641,8 +641,12 @@ namespace Mengine
                 {
                     copyFrames = framesLeft;
                 }
+                
+                const MemoryInterfacePtr & memory = memoryBuffer->getPCMMemory();
+                
+                const int16_t * base = memory->getBuffer();
 
-                const int16_t * src = memoryBuffer->getPCMData() + currentFrame * channels;
+                const int16_t * src = base + currentFrame * channels;
 
                 Detail::writeMemoryFrames( _ioData, frameOffset, src, channels, copyFrames );
 

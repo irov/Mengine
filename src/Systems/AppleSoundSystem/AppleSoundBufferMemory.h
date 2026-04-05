@@ -40,7 +40,7 @@ namespace Mengine
         void setVolume( float _gain ) override;
 
     public:
-        const int16_t * getPCMData() const;
+        const MemoryInterfacePtr & getPCMMemory() const;
         uint32_t getFrameCount() const;
 
     protected:

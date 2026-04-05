@@ -58,6 +58,7 @@ namespace Mengine
         using std::roundf;
         using std::ceilf;
         using std::modff;
+        using std::fmodf;
         using std::abs;
         using std::floor;
         using std::acos;

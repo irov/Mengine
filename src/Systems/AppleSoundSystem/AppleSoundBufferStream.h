@@ -7,7 +7,7 @@
 
 #include "Config/Atomic.h"
 
-#include <AudioUnit/AudioUnit.h>
+#include <AudioToolbox/AudioToolbox.h>
 
 #ifndef MENGINE_APPLE_STREAM_BUFFER_COUNT
 #define MENGINE_APPLE_STREAM_BUFFER_COUNT (4)

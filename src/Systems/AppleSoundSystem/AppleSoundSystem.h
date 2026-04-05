@@ -9,7 +9,7 @@
 #include "Kernel/SpinLock.h"
 #include "Kernel/Unknowable.h"
 
-#include <AudioUnit/AudioUnit.h>
+#include <AudioToolbox/AudioToolbox.h>
 
 #ifndef MENGINE_APPLE_MIXER_INPUT_BUS_COUNT
 #define MENGINE_APPLE_MIXER_INPUT_BUS_COUNT (32)

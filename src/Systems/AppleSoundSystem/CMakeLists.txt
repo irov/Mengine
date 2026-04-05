@@ -10,6 +10,8 @@ src
     AppleSoundBufferBase.h
     AppleSoundBufferMemory.cpp
     AppleSoundBufferMemory.h
+    AppleSoundPCMHelper.cpp
+    AppleSoundPCMHelper.h
     AppleSoundBufferStream.cpp
     AppleSoundBufferStream.h
     AppleSoundSource.cpp

@@ -5,6 +5,7 @@
 #include "AppleSoundBufferBase.h"
 #include "AppleSoundBufferMemory.h"
 #include "AppleSoundBufferStream.h"
+#include "AppleSoundPCMHelper.h"
 
 #include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
@@ -29,21 +30,59 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void writeMemoryFrames( AudioBufferList * const _ioData, UInt32 _frameOffset, const int16_t * _src, uint32_t _sourceChannels, UInt32 _frames )
         {
+            if( _ioData == nullptr || _src == nullptr || _sourceChannels == 0 || _frames == 0 )
+            {
+                return;
+            }
+
             UInt32 bufferCount = _ioData->mNumberBuffers;
 
-            if( bufferCount > _sourceChannels )
+            if( bufferCount == 0 )
             {
-                bufferCount = _sourceChannels;
+                return;
+            }
+
+            if( bufferCount == 1 )
+            {
+                AudioBuffer & buffer = _ioData->mBuffers[0];
+
+                if( buffer.mData == nullptr || buffer.mNumberChannels == 0 )
+                {
+                    return;
+                }
+
+                UInt32 destinationChannels = buffer.mNumberChannels;
+                Float32 * dst = static_cast<Float32 *>( buffer.mData ) + _frameOffset * destinationChannels;
+
+                for( UInt32 frame = 0; frame != _frames; ++frame )
+                {
+                    const int16_t * srcFrame = _src + frame * _sourceChannels;
+
+                    for( UInt32 channel = 0; channel != destinationChannels; ++channel )
+                    {
+                        dst[frame * destinationChannels + channel] = Helper::resolveAppleSoundPCM16Sample( srcFrame, _sourceChannels, channel, destinationChannels );
+                    }
+                }
+
+                return;
             }
 
             for( UInt32 channel = 0; channel != bufferCount; ++channel )
             {
-                Float32 * dst = static_cast<Float32 *>( _ioData->mBuffers[channel].mData ) + _frameOffset;
-                const int16_t * src = _src + channel;
+                AudioBuffer & buffer = _ioData->mBuffers[channel];
+
+                if( buffer.mData == nullptr )
+                {
+                    continue;
+                }
+
+                Float32 * dst = static_cast<Float32 *>( buffer.mData ) + _frameOffset;
 
                 for( UInt32 frame = 0; frame != _frames; ++frame )
                 {
-                    dst[frame] = (Float32)src[frame * _sourceChannels] / 32768.f;
+                    const int16_t * srcFrame = _src + frame * _sourceChannels;
+
+                    dst[frame] = Helper::resolveAppleSoundPCM16Sample( srcFrame, _sourceChannels, channel, bufferCount );
                 }
             }
         }

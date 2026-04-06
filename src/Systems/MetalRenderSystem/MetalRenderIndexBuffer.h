@@ -23,7 +23,7 @@ namespace Mengine
         ~MetalRenderIndexBuffer() override;
 
     public:
-        bool initialize( uint32_t _indexSize, EBufferType _bufferType ) override;
+        bool initialize( uint32_t _indexSize, EBufferType _bufferType );
         void finalize() override;
 
     public:

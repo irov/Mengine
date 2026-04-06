@@ -4,6 +4,10 @@
 
 #import <UIKit/UIKit.h>
 
+#if defined(MENGINE_ENVIRONMENT_RENDER_METAL)
+#   import <Metal/Metal.h>
+#endif
+
 #include "Config/UniqueId.h"
 
 namespace Mengine
@@ -26,6 +30,7 @@ namespace Mengine
         virtual EAGLContext * getEAGLContext() const = 0;
 #elif defined(MENGINE_ENVIRONMENT_RENDER_METAL)
     public:
+        virtual id<MTLDevice> getMetalDevice() const = 0;
         virtual UIView * getMetalView() const = 0;
 #endif
 

@@ -6,15 +6,15 @@ src
     AppleSoundSystem.h
     AppleSoundSystemExtensionInterface.h
 
-    AppleSoundBufferBase.cpp
+    AppleSoundBufferBase.mm
     AppleSoundBufferBase.h
-    AppleSoundBufferMemory.cpp
+    AppleSoundBufferMemory.mm
     AppleSoundBufferMemory.h
-    AppleSoundPCMHelper.cpp
+    AppleSoundPCMHelper.mm
     AppleSoundPCMHelper.h
-    AppleSoundBufferStream.cpp
+    AppleSoundBufferStream.mm
     AppleSoundBufferStream.h
-    AppleSoundSource.cpp
+    AppleSoundSource.mm
     AppleSoundSource.h
 )
 

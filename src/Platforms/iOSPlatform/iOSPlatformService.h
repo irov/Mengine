@@ -176,6 +176,7 @@ namespace Mengine
         EAGLContext * getEAGLContext() const override;
 #elif defined(MENGINE_ENVIRONMENT_RENDER_METAL)
     public:
+        id<MTLDevice> getMetalDevice() const override;
         UIView * getMetalView() const override;
 #endif
 
@@ -215,6 +216,7 @@ namespace Mengine
         EAGLContext * m_glContext;
         iOSOpenGLView * m_glView;
 #elif defined(MENGINE_ENVIRONMENT_RENDER_METAL)
+        id<MTLDevice> m_metalDevice;
         iOSMetalView * m_metalView;
 #endif
 

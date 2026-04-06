@@ -1,7 +1,5 @@
 #include "MetalRenderProgram.h"
 
-#include "Environment/Metal/MetalRenderSystemExtensionInterface.h"
-
 #include "MetalRenderEnum.h"
 
 #include "Kernel/Logger.h"
@@ -109,11 +107,6 @@ namespace Mengine
             }
         }
 
-        MetalRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
-            ->getUnknown();
-
-        id<MTLDevice> device = extension->getMetalDevice();
-
         MTLRenderPipelineDescriptor * pipelineDesc = [[MTLRenderPipelineDescriptor alloc] init];
         pipelineDesc.label = [NSString stringWithUTF8String:m_name.c_str()];
 
@@ -171,7 +164,7 @@ namespace Mengine
         }
 
         NSError * error = nil;
-        id<MTLRenderPipelineState> pipelineState = [device newRenderPipelineStateWithDescriptor:pipelineDesc error:&error];
+        id<MTLRenderPipelineState> pipelineState = [m_device newRenderPipelineStateWithDescriptor:pipelineDesc error:&error];
 
         if( pipelineState == nil )
         {

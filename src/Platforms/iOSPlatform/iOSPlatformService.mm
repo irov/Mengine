@@ -102,6 +102,7 @@ namespace Mengine
         , m_glContext( nil )
         , m_glView( nil )
 #elif defined(MENGINE_ENVIRONMENT_RENDER_METAL)
+        , m_metalDevice( nil )
         , m_metalView( nil )
 #endif
         , m_mainScreenScale( 1.f )
@@ -987,7 +988,9 @@ namespace Mengine
             return false;
         }
 
-        iOSMetalView * metalView = [[iOSMetalView alloc] initWithFrame:screenBounds device:metalDevice];
+        m_metalDevice = metalDevice;
+
+        iOSMetalView * metalView = [[iOSMetalView alloc] initWithFrame:screenBounds device:m_metalDevice];
 
         if( metalView == nil )
         {
@@ -1376,6 +1379,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 #elif defined(MENGINE_ENVIRONMENT_RENDER_METAL)
     //////////////////////////////////////////////////////////////////////////
+    id<MTLDevice> iOSPlatformService::getMetalDevice() const
+    {
+        return m_metalDevice;
+    }
+    //////////////////////////////////////////////////////////////////////////
     UIView * iOSPlatformService::getMetalView() const
     {
         return m_metalView;
@@ -1520,6 +1528,8 @@ namespace Mengine
             [m_metalView removeFromSuperview];
             m_metalView = nil;
         }
+
+        m_metalDevice = nil;
 #endif
 
         m_uiWindow = nil;

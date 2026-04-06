@@ -1,7 +1,5 @@
 #include "MetalRenderVertexShader.h"
 
-#include "Environment/Metal/MetalRenderSystemExtensionInterface.h"
-
 #include "Kernel/Logger.h"
 
 #import <Metal/Metal.h>
@@ -50,11 +48,6 @@ namespace Mengine
             , m_name.c_str()
         );
 
-        MetalRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
-            ->getUnknown();
-
-        id<MTLDevice> device = extension->getMetalDevice();
-
         const Char * str_source = m_memory->getBuffer();
         NSUInteger str_size = (NSUInteger)m_memory->getSize();
 
@@ -63,7 +56,7 @@ namespace Mengine
         NSError * error = nil;
         MTLCompileOptions * options = [[MTLCompileOptions alloc] init];
 
-        id<MTLLibrary> library = [device newLibraryWithSource:source options:options error:&error];
+        id<MTLLibrary> library = [m_device newLibraryWithSource:source options:options error:&error];
 
         if( library == nil )
         {

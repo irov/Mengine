@@ -1,9 +1,6 @@
 #include "MetalRenderIndexBuffer.h"
 
 #include "Interface/MemoryServiceInterface.h"
-#include "Interface/RenderSystemInterface.h"
-
-#include "Environment/Metal/MetalRenderSystemExtensionInterface.h"
 
 #include "MetalRenderEnum.h"
 
@@ -76,14 +73,9 @@ namespace Mengine
 
         const uint32_t bufferSize = m_indexCapacity * m_indexSize;
 
-        MetalRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
-            ->getUnknown();
-
-        id<MTLDevice> device = extension->getMetalDevice();
-
         MTLResourceOptions options = Helper::toMTLBufferOptions( m_bufferType );
 
-        id<MTLBuffer> newBuffer = [device newBufferWithLength:bufferSize options:options];
+        id<MTLBuffer> newBuffer = [m_device newBufferWithLength:bufferSize options:options];
 
         if( newBuffer == nil )
         {

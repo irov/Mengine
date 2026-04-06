@@ -7,6 +7,10 @@
 #include "MetalRenderVertexShader.h"
 #include "MetalRenderFragmentShader.h"
 
+#include "Environment/iOS/iOSPlatformServiceExtensionInterface.h"
+
+#include "Interface/PlatformServiceInterface.h"
+
 #include "Kernel/FactoryDefault.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryPoolWithListener.h"
@@ -167,11 +171,14 @@ namespace Mengine
         m_windowResolution.calcSize( &windowSize );
         m_windowViewport = Viewport( mt::vec2f::identity(), windowSize );
 
-        m_device = MTLCreateSystemDefaultDevice();
+        iOSPlatformServiceExtensionInterface * iOSPlatformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        m_device = iOSPlatformExtension->getMetalDevice();
 
         if( m_device == nil )
         {
-            LOGGER_ERROR( "failed to create Metal device" );
+            LOGGER_ERROR( "failed to get Metal device from platform" );
 
             return false;
         }
@@ -219,7 +226,9 @@ namespace Mengine
 
         for( const MetalRenderProgramPtr & program : m_deferredCompilePrograms )
         {
-            if( program->compile( m_device ) == false )
+            program->setMetalDevice( m_device );
+
+            if( program->compile() == false )
             {
                 return false;
             }
@@ -368,7 +377,7 @@ namespace Mengine
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
-        if( buffer->initialize( m_device, _vertexSize, _bufferType ) == false )
+        if( buffer->initialize( _vertexSize, _bufferType ) == false )
         {
             LOGGER_ERROR( "invalid initialize vertex buffer [%u] type [%u]"
                 , _vertexSize
@@ -399,7 +408,7 @@ namespace Mengine
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
-        if( buffer->initialize( m_device, _indexSize, _bufferType ) == false )
+        if( buffer->initialize( _indexSize, _bufferType ) == false )
         {
             LOGGER_ERROR( "invalid initialize index buffer (doc: %s)"
                 , MENGINE_DOCUMENT_STR( _doc )
@@ -429,6 +438,8 @@ namespace Mengine
             , _name.c_str()
         );
 
+        vertexAttribute->setMetalDevice( m_device );
+
         if( vertexAttribute->initialize( _name, _elementSize ) == false )
         {
             LOGGER_ERROR( "invalid initialize vertex attribute '%s' (doc: %s)"
@@ -452,7 +463,9 @@ namespace Mengine
             , _name.c_str()
         );
 
-        if( fragmentShader->initialize( _name, _memory, m_device ) == false )
+        fragmentShader->setMetalDevice( m_device );
+
+        if( fragmentShader->initialize( _name, _memory ) == false )
         {
             LOGGER_ERROR( "invalid initialize shader '%s' (doc: %s)"
                 , _name.c_str()
@@ -475,7 +488,9 @@ namespace Mengine
             , _name.c_str()
         );
 
-        if( vertexShader->initialize( _name, _memory, m_device ) == false )
+        vertexShader->setMetalDevice( m_device );
+
+        if( vertexShader->initialize( _name, _memory ) == false )
         {
             LOGGER_ERROR( "invalid initialize shader '%s' (doc: %s)"
                 , _name.c_str()
@@ -496,6 +511,8 @@ namespace Mengine
             , _name.c_str()
         );
 
+        program->setMetalDevice( m_device );
+
         if( program->initialize( _name, _vertexShader, _fragmentShader, _vertexAttribute, _samplerCount ) == false )
         {
             LOGGER_ERROR( "invalid initialize program '%s'"
@@ -507,7 +524,7 @@ namespace Mengine
 
         if( m_renderWindowCreate == true )
         {
-            if( program->compile( m_device ) == false )
+            if( program->compile() == false )
             {
                 LOGGER_ERROR( "invalid compile program '%s'"
                     , _name.c_str()
@@ -822,7 +839,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( image, "invalid create" );
 
-        if( image->initialize( m_device, _mipmaps, _width, _height, hwFormat ) == false )
+        if( image->initialize( _mipmaps, _width, _height, hwFormat ) == false )
         {
             LOGGER_ERROR( "invalid initialize" );
 
@@ -978,7 +995,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( renderTarget, "invalid create render target texture" );
 
-        if( renderTarget->initialize( m_device, _width, _height, hwFormat ) == false )
+        if( renderTarget->initialize( _width, _height, hwFormat ) == false )
         {
             LOGGER_ERROR( "invalid initialize" );
 

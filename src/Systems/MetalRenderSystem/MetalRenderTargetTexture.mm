@@ -1,9 +1,5 @@
 #include "MetalRenderTargetTexture.h"
 
-#include "Interface/RenderSystemInterface.h"
-
-#include "Environment/Metal/MetalRenderSystemExtensionInterface.h"
-
 #include "MetalRenderEnum.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
@@ -74,11 +70,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MetalRenderTargetTexture::create()
     {
-        MetalRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
-            ->getUnknown();
-
-        id<MTLDevice> device = extension->getMetalDevice();
-
         MTLPixelFormat pixelFormat = Helper::toMTLPixelFormat( m_hwPixelFormat );
 
         if( pixelFormat == MTLPixelFormatInvalid )
@@ -95,7 +86,7 @@ namespace Mengine
         descriptor.usage = MTLTextureUsageRenderTarget | MTLTextureUsageShaderRead;
         descriptor.storageMode = MTLStorageModePrivate;
 
-        id<MTLTexture> texture = [device newTextureWithDescriptor:descriptor];
+        id<MTLTexture> texture = [m_device newTextureWithDescriptor:descriptor];
 
         if( texture == nil )
         {

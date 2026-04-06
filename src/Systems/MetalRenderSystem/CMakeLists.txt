@@ -6,7 +6,7 @@ src
     MetalRenderSystem.h
     MetalRenderEnum.mm
     MetalRenderEnum.h
-    MetalRenderResourceHandler.cpp
+    MetalRenderResourceHandler.mm
     MetalRenderResourceHandler.h
     MetalRenderFragmentShader.mm
     MetalRenderFragmentShader.h
@@ -16,7 +16,7 @@ src
     MetalRenderProgram.h
     MetalRenderProgramVariable.mm
     MetalRenderProgramVariable.h
-    MetalRenderVertexAttribute.cpp
+    MetalRenderVertexAttribute.mm
     MetalRenderVertexAttribute.h
     MetalRenderVertexBuffer.mm
     MetalRenderVertexBuffer.h
@@ -26,7 +26,7 @@ src
     MetalRenderImage.h
     MetalRenderImageTarget.mm
     MetalRenderImageTarget.h
-    MetalRenderImageLocked.cpp
+    MetalRenderImageLocked.mm
     MetalRenderImageLocked.h
     MetalRenderImageLockedFactoryStorage.h
     MetalRenderTargetTexture.mm

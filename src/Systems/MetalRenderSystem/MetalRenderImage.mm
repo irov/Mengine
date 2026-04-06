@@ -1,9 +1,5 @@
 #include "MetalRenderImage.h"
 
-#include "Interface/RenderSystemInterface.h"
-
-#include "Environment/Metal/MetalRenderSystemExtensionInterface.h"
-
 #include "MetalRenderImageLockedFactoryStorage.h"
 #include "MetalRenderEnum.h"
 
@@ -143,11 +139,6 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL( m_texture == nil, "texture already created" );
 
-        MetalRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
-            ->getUnknown();
-
-        id<MTLDevice> device = extension->getMetalDevice();
-
         MTLPixelFormat pixelFormat = Helper::toMTLPixelFormat( m_hwPixelFormat );
 
         if( pixelFormat == MTLPixelFormatInvalid )
@@ -168,7 +159,7 @@ namespace Mengine
         descriptor.usage = MTLTextureUsageShaderRead;
         descriptor.storageMode = MTLStorageModeShared;
 
-        id<MTLTexture> texture = [device newTextureWithDescriptor:descriptor];
+        id<MTLTexture> texture = [m_device newTextureWithDescriptor:descriptor];
 
         if( texture == nil )
         {

@@ -23,7 +23,7 @@ namespace Mengine
         ~MetalRenderVertexBuffer() override;
 
     public:
-        bool initialize( uint32_t _elementSize, EBufferType _bufferType );
+        bool initialize( uint32_t _elementSize, EBufferType _bufferType ) override;
         void finalize() override;
 
     public:

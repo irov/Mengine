@@ -247,7 +247,7 @@
             return;
         }
         
-        IOS_LOGGER_INFO( @"registerAppForAdNetworkAttribution" );
+        IOS_LOGGER_INFO( @"skadnetwork", @"registerAppForAdNetworkAttribution" );
         
         @synchronized (self) {
             self.m_time = [[NSDate date] timeIntervalSince1970];
@@ -404,7 +404,7 @@
             return;
         }
         
-        IOS_LOGGER_INFO( @"updatePostbackConversionValue fine: %ld coarse: %@"
+        IOS_LOGGER_INFO( @"skadnetwork", @"updatePostbackConversionValue fine: %ld coarse: %@"
             , fine
             , coarse
         );

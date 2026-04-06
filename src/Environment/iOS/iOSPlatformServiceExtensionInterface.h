@@ -13,7 +13,7 @@
 namespace Mengine
 {
     class iOSPlatformServiceExtensionInterface
-        : virtual public UnknownInterface
+        : public UnknownInterface
     {
     public:
         virtual void handleApplicationDidBecomeActive() = 0;

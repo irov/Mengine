@@ -21,10 +21,15 @@
 #include "Environment/iOS/iOSPlatformServiceExtensionInterface.h"
 
 #import "iOSMailComposeDelegate.h"
-#import "iOSOpenGLView.h"
+
+#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
+#   import "iOSOpenGLView.h"
+#   import <OpenGLES/EAGL.h>
+#elif defined(MENGINE_ENVIRONMENT_RENDER_METAL)
+#   import "iOSMetalView.h"
+#endif
 
 #import <UIKit/UIKit.h>
-#import <OpenGLES/EAGL.h>
 
 #include "iOSInput.h"
 
@@ -169,6 +174,9 @@ namespace Mengine
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
     public:
         EAGLContext * getEAGLContext() const override;
+#elif defined(MENGINE_ENVIRONMENT_RENDER_METAL)
+    public:
+        UIView * getMetalView() const override;
 #endif
 
     public:
@@ -203,9 +211,12 @@ namespace Mengine
 
         UIWindow * m_uiWindow;
 
+#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
         EAGLContext * m_glContext;
-
         iOSOpenGLView * m_glView;
+#elif defined(MENGINE_ENVIRONMENT_RENDER_METAL)
+        iOSMetalView * m_metalView;
+#endif
 
         iOSInputPtr m_iOSInput;
 

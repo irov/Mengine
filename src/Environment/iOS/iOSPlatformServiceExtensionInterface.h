@@ -24,6 +24,9 @@ namespace Mengine
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
     public:
         virtual EAGLContext * getEAGLContext() const = 0;
+#elif defined(MENGINE_ENVIRONMENT_RENDER_METAL)
+    public:
+        virtual UIView * getMetalView() const = 0;
 #endif
 
     public:

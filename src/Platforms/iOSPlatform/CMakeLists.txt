@@ -12,6 +12,9 @@ src
     iOSOpenGLView.h
     iOSOpenGLView.mm
     
+    iOSMetalView.h
+    iOSMetalView.mm
+    
     iOSMailComposeDelegate.h
     iOSMailComposeDelegate.mm
     

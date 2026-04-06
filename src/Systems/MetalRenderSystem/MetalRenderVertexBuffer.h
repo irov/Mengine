@@ -26,18 +26,18 @@ namespace Mengine
         bool initialize( uint32_t _elementSize, EBufferType _bufferType ) override;
         void finalize() override;
 
-    protected:
+    public:
         uint32_t getVertexCount() const override;
         uint32_t getVertexSize() const override;
 
-    protected:
+    public:
         bool resize( uint32_t _vertexCount ) override;
 
-    protected:
+    public:
         MemoryInterfacePtr lock( uint32_t _offset, uint32_t _count ) override;
         bool unlock() override;
 
-    protected:
+    public:
         bool draw( const void * _buffer, uint32_t _offset, uint32_t _size ) override;
 
     public:

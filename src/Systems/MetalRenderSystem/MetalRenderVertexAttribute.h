@@ -25,11 +25,11 @@ namespace Mengine
         bool initialize( const ConstString & _name, uint32_t _elementSize );
         void finalize();
 
-    protected:
+    public:
         const ConstString & getName() const override;
         uint32_t getElementSize() const override;
 
-    protected:
+    public:
         void addAttribute( const ConstString & _uniform, uint32_t _index, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset ) override;
 
     protected:

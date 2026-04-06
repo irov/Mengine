@@ -30,10 +30,10 @@ namespace Mengine
         uint32_t getIndexCount() const override;
         uint32_t getIndexSize() const override;
 
-    protected:
+    public:
         bool resize( uint32_t _indexCount ) override;
 
-    protected:
+    public:
         MemoryInterfacePtr lock( uint32_t _offset, uint32_t _count ) override;
         bool unlock() override;
         bool draw( const void * _buffer, uint32_t _offset, uint32_t _count ) override;

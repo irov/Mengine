@@ -974,9 +974,17 @@ namespace Mengine
         }
 
         m_glView = glView;
+        
+        IOS_LOGGER_INFO( @"platform", @"iOS OpenGL drawable size [%d, %d]"
+            , [glView backingWidth]
+            , [glView backingWidth]
+        );
 
-        int drawable_width = [glView backingWidth];
-        int drawable_height = [glView backingHeight];
+        IOS_LOGGER_INFO( @"platform", @"iOS OpenGL window size [%f, %f] scale [%.1f]"
+            , screenBounds.size.width
+            , screenBounds.size.height
+            , (float)screenScale
+        );
 #elif defined(MENGINE_ENVIRONMENT_RENDER_METAL)
         id<MTLDevice> metalDevice = MTLCreateSystemDefaultDevice();
 
@@ -1016,23 +1024,17 @@ namespace Mengine
 
         m_metalView = metalView;
 
-        int drawable_width = [metalView drawableWidth];
-        int drawable_height = [metalView drawableHeight];
-#endif
-
-        LOGGER_INFO( "platform", "iOS drawable size [%d, %d]"
-            , drawable_width
-            , drawable_height
+        IOS_LOGGER_INFO( @"platform", @"iOS Metal drawable size [%ld, %ld]"
+            , [metalView drawableWidth]
+            , [metalView drawableHeight]
         );
 
-        int win_width = (int)screenBounds.size.width;
-        int win_height = (int)screenBounds.size.height;
-
-        LOGGER_INFO( "platform", "iOS window size [%d, %d] scale [%.1f]"
-            , win_width
-            , win_height
+        IOS_LOGGER_INFO( @"platform", @"iOS Metal window size [%f, %f] scale [%.1f]"
+            , screenBounds.size.width
+            , screenBounds.size.height
             , (float)screenScale
         );
+#endif
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_ATACH_WINDOW );
 
@@ -1110,8 +1112,8 @@ namespace Mengine
 #elif defined(MENGINE_ENVIRONMENT_RENDER_METAL)
         if( m_metalView != nil )
         {
-            int drawableWidth = [m_metalView drawableWidth];
-            int drawableHeight = [m_metalView drawableHeight];
+            NSInteger drawableWidth = [m_metalView drawableWidth];
+            NSInteger drawableHeight = [m_metalView drawableHeight];
 
             if( drawableWidth > 0 && drawableHeight > 0 )
             {

@@ -27,7 +27,7 @@ namespace Mengine
         const ConstString & getName() const override;
 
     public:
-        bool initialize( const ConstString & _name, const MemoryInterfacePtr & _memory );
+        bool initialize( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _precompiled );
         void finalize();
 
     public:
@@ -50,6 +50,7 @@ namespace Mengine
         id<MTLLibrary> m_library;
 
         bool m_compile;
+        bool m_precompiled;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<MetalRenderFragmentShader, RenderFragmentShaderInterface> MetalRenderFragmentShaderPtr;

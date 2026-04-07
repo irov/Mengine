@@ -11,6 +11,7 @@ namespace Mengine
         : m_function( nil )
         , m_library( nil )
         , m_compile( false )
+        , m_precompiled( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -24,10 +25,11 @@ namespace Mengine
         return m_name;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MetalRenderFragmentShader::initialize( const ConstString & _name, const MemoryInterfacePtr & _memory )
+    bool MetalRenderFragmentShader::initialize( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _precompiled )
     {
         m_name = _name;
         m_memory = _memory;
+        m_precompiled = _precompiled;
 
         return true;
     }
@@ -44,28 +46,54 @@ namespace Mengine
             return true;
         }
 
-        LOGGER_INFO( "render", "compile fragment shader '%s'"
+        LOGGER_INFO( "render", "compile fragment shader '%s' precompiled [%u]"
             , m_name.c_str()
+            , m_precompiled
         );
 
-        const Char * str_source = m_memory->getBuffer();
-        NSUInteger str_size = (NSUInteger)m_memory->getSize();
+        const void * buffer = m_memory->getBuffer();
+        NSUInteger bufferSize = (NSUInteger)m_memory->getSize();
 
-        NSString * source = [[NSString alloc] initWithBytes:str_source length:str_size encoding:NSUTF8StringEncoding];
+        id<MTLLibrary> library = nil;
 
-        NSError * error = nil;
-        MTLCompileOptions * options = [[MTLCompileOptions alloc] init];
-
-        id<MTLLibrary> library = [m_device newLibraryWithSource:source options:options error:&error];
-
-        if( library == nil )
+        if( m_precompiled == true )
         {
-            LOGGER_ERROR( "fragment shader '%s' compilation error: %s"
-                , m_name.c_str()
-                , [[error localizedDescription] UTF8String]
-            );
+            NSError * error = nil;
 
-            return false;
+            dispatch_data_t data = dispatch_data_create( buffer, bufferSize, nil, DISPATCH_DATA_DESTRUCTOR_DEFAULT );
+
+            library = [m_device newLibraryWithData:data error:&error];
+
+            if( library == nil )
+            {
+                LOGGER_ERROR( "fragment shader '%s' precompiled library load error: %s"
+                    , m_name.c_str()
+                    , [[error localizedDescription] UTF8String]
+                );
+
+                return false;
+            }
+        }
+        else
+        {
+            const Char * str_source = (const Char *)buffer;
+
+            NSString * source = [[NSString alloc] initWithBytes:str_source length:bufferSize encoding:NSUTF8StringEncoding];
+
+            NSError * error = nil;
+            MTLCompileOptions * options = [[MTLCompileOptions alloc] init];
+
+            library = [m_device newLibraryWithSource:source options:options error:&error];
+
+            if( library == nil )
+            {
+                LOGGER_ERROR( "fragment shader '%s' compilation error: %s"
+                    , m_name.c_str()
+                    , [[error localizedDescription] UTF8String]
+                );
+
+                return false;
+            }
         }
 
         id<MTLFunction> function = [library newFunctionWithName:@"fragmentShader"];

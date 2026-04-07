@@ -1,0 +1,59 @@
+#include <metal_stdlib>
+using namespace metal;
+
+struct FragmentIn
+{
+    float4 position [[position]];
+    half4  color;
+    float2 uv0;
+    float2 uv1;
+};
+
+struct FragmentUniforms
+{
+    float4 uvsl;
+    float4 u_color0;
+    float4 u_color1;
+    float u_scale0x;
+    float u_scale0y;
+    float u_scale1x;
+    float u_scale1y;
+    float u_timefactor;
+    float u_timescale;
+    float u_timeamplitude;
+};
+
+half sRGB_h(half t)
+{
+    return mix(1.055h * pow(t, 1.0h / 2.4h) - 0.055h, 12.92h * t, step(t, 0.0031308h));
+}
+
+half3 sRGB_h3(half3 c)
+{
+    return half3(sRGB_h(c.x), sRGB_h(c.y), sRGB_h(c.z));
+}
+
+fragment half4 fragmentShader(FragmentIn in [[stage_in]],
+                              texture2d<half> inSampler0 [[texture(0)]],
+                              texture2d<half> inSampler1 [[texture(1)]],
+                              sampler sampler0 [[sampler(0)]],
+                              sampler sampler1 [[sampler(1)]],
+                              constant FragmentUniforms & uniforms [[buffer(1)]])
+{
+    half4 c = inSampler0.sample(sampler0, in.uv0);
+    half a = inSampler1.sample(sampler1, in.uv1).w;
+
+    float ux = (in.uv0.x + uniforms.uvsl.x) * uniforms.uvsl.z;
+    float uy = (in.uv0.y + uniforms.uvsl.y) * uniforms.uvsl.w;
+
+    float tx = (ux - 0.5) * cos(uniforms.u_timefactor * uniforms.u_timeamplitude) * uniforms.u_timescale;
+    float ty = (uy - 0.5) * sin(uniforms.u_timefactor * uniforms.u_timeamplitude) * uniforms.u_timescale;
+    half3 col1 = half3(uniforms.u_color0.xyz) + half3(half(uniforms.u_scale0x * tx), half(uniforms.u_scale0y * ty), 0.0h);
+    half3 col2 = half3(uniforms.u_color1.xyz) + half3(half(uniforms.u_scale1x * ty), half(uniforms.u_scale1y * tx), 0.0h);
+
+    half3 col = mix(col2, col1, half(ux * uy));
+
+    col = sRGB_h3(col);
+
+    return in.color * c * half4(col, a);
+}

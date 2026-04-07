@@ -455,8 +455,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderFragmentShaderInterfacePtr MetalRenderSystem::createFragmentShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile, const DocumentInterfacePtr & _doc )
     {
-        MENGINE_UNUSED( _compile );
-
         MetalRenderFragmentShaderPtr fragmentShader = m_factoryRenderFragmentShader->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( fragmentShader, "invalid create shader '%s'"
@@ -465,7 +463,7 @@ namespace Mengine
 
         fragmentShader->setMetalDevice( m_device );
 
-        if( fragmentShader->initialize( _name, _memory ) == false )
+        if( fragmentShader->initialize( _name, _memory, _compile ) == false )
         {
             LOGGER_ERROR( "invalid initialize shader '%s' (doc: %s)"
                 , _name.c_str()
@@ -480,8 +478,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderVertexShaderInterfacePtr MetalRenderSystem::createVertexShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile, const DocumentInterfacePtr & _doc )
     {
-        MENGINE_UNUSED( _compile );
-
         MetalRenderVertexShaderPtr vertexShader = m_factoryRenderVertexShader->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( vertexShader, "invalid create shader '%s'"
@@ -490,7 +486,7 @@ namespace Mengine
 
         vertexShader->setMetalDevice( m_device );
 
-        if( vertexShader->initialize( _name, _memory ) == false )
+        if( vertexShader->initialize( _name, _memory, _compile ) == false )
         {
             LOGGER_ERROR( "invalid initialize shader '%s' (doc: %s)"
                 , _name.c_str()

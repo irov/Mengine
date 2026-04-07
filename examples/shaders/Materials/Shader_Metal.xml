@@ -1,0 +1,102 @@
+<DataBlock Name="Shaders_Standart">
+    <VertexAttribute Name = "Vertex2D_UV0" RenderPlatform = "Metal">
+        <Element Size = "32"/>
+        <Attribute Uniform = "inVert" Index = "0" Size = "3" Type = "FLOAT" Normalized = "0" Stride = "32" Offset = "0"/>
+        <Attribute Uniform = "inCol" Index = "0" Size = "4" Type = "UNSIGNED_BYTE" Normalized = "1" Stride = "32" Offset = "12"/>
+    </VertexAttribute>
+    
+    <VertexAttribute Name = "Vertex2D_UV1" RenderPlatform = "Metal">
+        <Element Size = "32"/>
+        <Attribute Uniform = "inVert" Index = "0" Size = "3" Type = "FLOAT" Normalized = "0" Stride = "32" Offset = "0"/>
+        <Attribute Uniform = "inCol" Index = "0" Size = "4" Type = "UNSIGNED_BYTE" Normalized = "1" Stride = "32" Offset = "12"/>
+        <Attribute Uniform = "inUV0" Index = "0" Size = "2" Type = "FLOAT" Normalized = "0" Stride = "32" Offset = "16"/>
+    </VertexAttribute>
+
+    <VertexAttribute Name = "Vertex2D_UV2" RenderPlatform = "Metal">
+        <Element Size = "32"/>
+        <Attribute Uniform = "inVert" Index = "0" Size = "3" Type = "FLOAT" Normalized = "0" Stride = "32" Offset = "0"/>
+        <Attribute Uniform = "inCol" Index = "0" Size = "4" Type = "UNSIGNED_BYTE" Normalized = "1" Stride = "32" Offset = "12"/>
+        <Attribute Uniform = "inUV0" Index = "0" Size = "2" Type = "FLOAT" Normalized = "0" Stride = "32" Offset = "16"/>
+        <Attribute Uniform = "inUV1" Index = "1" Size = "2" Type = "FLOAT" Normalized = "0" Stride = "32" Offset = "24"/>
+    </VertexAttribute>
+    
+    <VertexShader Name = "Vertex_Blend" RenderPlatform = "Metal">
+        <File Path = "Materials/Metal_Vertex_Blend.txt"/>
+    </VertexShader>
+    
+    <VertexShader Name = "Vertex_Blend_ExternalAlpha" RenderPlatform = "Metal">
+        <File Path = "Materials/Metal_Vertex_Blend_ExternalAlpha.txt"/>
+    </VertexShader>
+    
+    <VertexShader Name = "Vertex_Color" RenderPlatform = "Metal">
+        <File Path = "Materials/Metal_Vertex_Color.txt"/>
+    </VertexShader>
+    
+    <FragmentShader Name = "Fragment_Blend" RenderPlatform = "Metal">
+        <File Path = "Materials/Metal_Fragment_Blend.txt"/>
+    </FragmentShader>
+
+    <FragmentShader Name = "Fragment_Blend_Premultiply" RenderPlatform = "Metal">
+        <File Path = "Materials/Metal_Fragment_Blend_Premultiply.txt"/>
+    </FragmentShader>
+
+    <FragmentShader Name = "Fragment_Blend_ExternalAlpha" RenderPlatform = "Metal">
+        <File Path = "Materials/Metal_Fragment_Blend_ExternalAlpha.txt"/>
+    </FragmentShader>
+    
+    <FragmentShader Name = "Fragment_Blend_ExternalAlpha_OnlyColor" RenderPlatform = "Metal">
+        <File Path = "Materials/Metal_Fragment_Blend_ExternalAlpha_OnlyColor.txt"/>
+    </FragmentShader>
+
+    <FragmentShader Name = "Fragment_Blend_OnlyColor" RenderPlatform = "Metal">
+        <File Path = "Materials/Metal_Fragment_Blend_OnlyColor.txt"/>
+    </FragmentShader>
+    
+    <FragmentShader Name = "Fragment_Accumulator" RenderPlatform = "Metal">
+        <File Path = "Materials/Metal_Fragment_Accumulator.txt"/>
+    </FragmentShader>
+    
+    <FragmentShader Name = "Fragment_TrackMatte" RenderPlatform = "Metal">
+        <File Path = "Materials/Metal_Fragment_TrackMatte.txt"/>
+    </FragmentShader>
+       
+    <FragmentShader Name = "Fragment_TrackMatteInverted" RenderPlatform = "Metal">
+        <File Path = "Materials/Metal_Fragment_TrackMatteInverted.txt"/>
+    </FragmentShader>
+    
+    <FragmentShader Name = "Fragment_TrackMatte_ExternalAlpha" RenderPlatform = "Metal">
+        <File Path = "Materials/Metal_Fragment_TrackMatte_ExternalAlpha.txt"/>
+    </FragmentShader>
+    
+    <FragmentShader Name = "Fragment_TrackMatteInverted_ExternalAlpha" RenderPlatform = "Metal">
+        <File Path = "Materials/Metal_Fragment_TrackMatteInverted_ExternalAlpha.txt"/>
+    </FragmentShader>
+    
+    <FragmentShader Name = "Fragment_AlphaMask" RenderPlatform = "Metal">
+        <File Path = "Materials/Metal_Fragment_AlphaMask.txt"/>
+    </FragmentShader>
+    
+    <FragmentShader Name = "Fragment_Color" RenderPlatform = "Metal">
+        <File Path = "Materials/Metal_Fragment_Color.txt"/>
+    </FragmentShader>
+    
+    <FragmentShader Name = "Fragment_Color_Premultiply" RenderPlatform = "Metal">
+        <File Path = "Materials/Metal_Fragment_Color_Premultiply.txt"/>
+    </FragmentShader>
+    
+    <FragmentShader Name = "Fragment_Desaturate" RenderPlatform = "Metal">
+        <File Path = "Materials/Metal_Fragment_Desaturate.txt"/>
+    </FragmentShader>
+    
+    <FragmentShader Name = "Fragment_Legendary" RenderPlatform = "Metal">
+        <File Path = "Materials/Metal_Fragment_Legendary.txt"/>
+    </FragmentShader>
+    
+    <FragmentShader Name = "Fragment_Legendary_ExternalAlpha" RenderPlatform = "Metal">
+        <File Path = "Materials/Metal_Fragment_Legendary_ExternalAlpha.txt"/>
+    </FragmentShader>
+    
+    <FragmentShader Name = "Ozz_Fragment_Blend" RenderPlatform = "Metal">
+        <File Path = "Materials/Metal_Ozz_Fragment_Blend.txt" Compile="1"/>
+    </FragmentShader>
+</DataBlock>

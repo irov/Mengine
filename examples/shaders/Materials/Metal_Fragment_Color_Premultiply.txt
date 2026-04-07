@@ -1,0 +1,13 @@
+#include <metal_stdlib>
+using namespace metal;
+
+struct FragmentIn
+{
+    float4 position [[position]];
+    half4  color;
+};
+
+fragment half4 fragmentShader(FragmentIn in [[stage_in]])
+{
+    return in.color * in.color.w;
+}

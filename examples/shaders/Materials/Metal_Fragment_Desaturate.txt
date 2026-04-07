@@ -1,0 +1,30 @@
+#include <metal_stdlib>
+using namespace metal;
+
+struct FragmentIn
+{
+    float4 position [[position]];
+    half4  color;
+    float2 uv0;
+};
+
+struct FragmentUniforms
+{
+    float u_factor;
+    float _pad0;
+    float _pad1;
+    float _pad2;
+    float4 u_color;
+};
+
+fragment half4 fragmentShader(FragmentIn in [[stage_in]],
+                              texture2d<half> inSampler0 [[texture(0)]],
+                              sampler sampler0 [[sampler(0)]],
+                              constant FragmentUniforms & uniforms [[buffer(1)]])
+{
+    half4 color = inSampler0.sample(sampler0, in.uv0) * half4(half3(uniforms.u_color.xyz), 1.0h);
+    half l = color.x * 0.3h + color.y * 0.59h + color.z * 0.11h;
+    half4 d = half4(l, l, l, color.w);
+
+    return in.color * mix(color, d, half(uniforms.u_factor));
+}

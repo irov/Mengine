@@ -13,9 +13,9 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:9.0.0'
+        classpath 'com.android.tools.build:gradle:9.1.0'
 
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.2.21'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.3.10'
 
         if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_GOOGLE_SERVICE") == true) {
             classpath 'com.google.gms:google-services:4.4.4'
@@ -71,7 +71,7 @@ allprojects {
         if (ANDROID_APP_BUILD_TOOLS_VERSION != null) {
             buildToolsVersion = ANDROID_APP_BUILD_TOOLS_VERSION
         } else {
-            buildToolsVersion = "36.1.0"
+            buildToolsVersion = "37.0.0"
         }
 
         if (ANDROID_APP_MIN_SDK_VERSION != null) {

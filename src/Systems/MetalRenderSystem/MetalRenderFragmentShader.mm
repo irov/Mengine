@@ -1,5 +1,6 @@
 #include "MetalRenderFragmentShader.h"
 
+#include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
 
 #import <Metal/Metal.h>
@@ -10,7 +11,6 @@ namespace Mengine
     MetalRenderFragmentShader::MetalRenderFragmentShader()
         : m_function( nil )
         , m_library( nil )
-        , m_compile( false )
         , m_precompiled( false )
     {
     }
@@ -41,93 +41,98 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MetalRenderFragmentShader::compile()
     {
-        if( m_compile == true )
+        uint32_t referenceCount = m_compileReferenceCount.increfReferenceCount();
+
+        if( referenceCount == 0 )
         {
-            return true;
-        }
+            MENGINE_ASSERTION_FATAL( m_function == nil, "fragment shader is already compile" );
 
-        LOGGER_INFO( "render", "compile fragment shader '%s' precompiled [%u]"
-            , m_name.c_str()
-            , m_precompiled
-        );
-
-        const void * buffer = m_memory->getBuffer();
-        NSUInteger bufferSize = (NSUInteger)m_memory->getSize();
-
-        id<MTLLibrary> library = nil;
-
-        if( m_precompiled == true )
-        {
-            NSError * error = nil;
-
-            dispatch_data_t data = dispatch_data_create( buffer, bufferSize, nil, DISPATCH_DATA_DESTRUCTOR_DEFAULT );
-
-            library = [m_device newLibraryWithData:data error:&error];
-
-            if( library == nil )
-            {
-                LOGGER_ERROR( "fragment shader '%s' precompiled library load error: %s"
-                    , m_name.c_str()
-                    , [[error localizedDescription] UTF8String]
-                );
-
-                return false;
-            }
-        }
-        else
-        {
-            const Char * str_source = (const Char *)buffer;
-
-            NSString * source = [[NSString alloc] initWithBytes:str_source length:bufferSize encoding:NSUTF8StringEncoding];
-
-            NSError * error = nil;
-            MTLCompileOptions * options = [[MTLCompileOptions alloc] init];
-
-            library = [m_device newLibraryWithSource:source options:options error:&error];
-
-            if( library == nil )
-            {
-                LOGGER_ERROR( "fragment shader '%s' compilation error: %s"
-                    , m_name.c_str()
-                    , [[error localizedDescription] UTF8String]
-                );
-
-                return false;
-            }
-        }
-
-        id<MTLFunction> function = [library newFunctionWithName:@"fragmentShader"];
-
-        if( function == nil )
-        {
-            LOGGER_ERROR( "fragment shader '%s' function 'fragmentShader' not found"
+            LOGGER_INFO( "render", "compile fragment shader '%s' precompiled [%u]"
                 , m_name.c_str()
+                , m_precompiled
             );
 
-            return false;
-        }
+            const void * buffer = m_memory->getBuffer();
+            NSUInteger bufferSize = (NSUInteger)m_memory->getSize();
 
-        m_library = library;
-        m_function = function;
-        m_compile = true;
+            id<MTLLibrary> library = nil;
+
+            if( m_precompiled == true )
+            {
+                NSError * error = nil;
+
+                dispatch_data_t data = dispatch_data_create( buffer, bufferSize, nil, DISPATCH_DATA_DESTRUCTOR_DEFAULT );
+
+                library = [m_device newLibraryWithData:data error:&error];
+
+                if( library == nil )
+                {
+                    LOGGER_ERROR( "fragment shader '%s' precompiled library load error: %s"
+                        , m_name.c_str()
+                        , [[error localizedDescription] UTF8String]
+                    );
+
+                    return false;
+                }
+            }
+            else
+            {
+                const Char * str_source = (const Char *)buffer;
+
+                NSString * source = [[NSString alloc] initWithBytes:str_source length:bufferSize encoding:NSUTF8StringEncoding];
+
+                if( source == nil )
+                {
+                    LOGGER_ERROR( "fragment shader '%s' source is not valid UTF-8 (buffer may contain precompiled data, check 'Compile' attribute)"
+                        , m_name.c_str()
+                    );
+
+                    return false;
+                }
+
+                NSError * error = nil;
+                MTLCompileOptions * options = [[MTLCompileOptions alloc] init];
+
+                library = [m_device newLibraryWithSource:source options:options error:&error];
+
+                if( library == nil )
+                {
+                    LOGGER_ERROR( "fragment shader '%s' compilation error: %s"
+                        , m_name.c_str()
+                        , [[error localizedDescription] UTF8String]
+                    );
+
+                    return false;
+                }
+            }
+
+            id<MTLFunction> function = [library newFunctionWithName:@"fragmentShader"];
+
+            if( function == nil )
+            {
+                LOGGER_ERROR( "fragment shader '%s' function 'fragmentShader' not found"
+                    , m_name.c_str()
+                );
+
+                return false;
+            }
+
+            m_library = library;
+            m_function = function;
+        }
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void MetalRenderFragmentShader::release()
     {
-        LOGGER_INFO( "render", "release fragment shader '%s'"
-            , m_name.c_str()
-        );
+        uint32_t referenceCount = m_compileReferenceCount.decrefReferenceCount();
 
-        m_function = nil;
-        m_library = nil;
-        m_compile = false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MetalRenderFragmentShader::isCompile() const
-    {
-        return m_compile;
+        if( referenceCount == 0 )
+        {
+            m_function = nil;
+            m_library = nil;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     id<MTLFunction> MetalRenderFragmentShader::getFunction() const

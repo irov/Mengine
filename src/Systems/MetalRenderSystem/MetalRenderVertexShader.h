@@ -6,6 +6,7 @@
 #include "MetalRenderResourceHandler.h"
 
 #include "Kernel/Factorable.h"
+#include "Kernel/ReferenceCounter.h"
 
 #import <Metal/Metal.h>
 
@@ -33,7 +34,6 @@ namespace Mengine
     public:
         bool compile();
         void release();
-        bool isCompile() const;
 
     public:
         id<MTLFunction> getFunction() const;
@@ -49,7 +49,8 @@ namespace Mengine
         id<MTLFunction> m_function;
         id<MTLLibrary> m_library;
 
-        bool m_compile;
+        ReferenceCounter m_compileReferenceCount;
+
         bool m_precompiled;
     };
     //////////////////////////////////////////////////////////////////////////

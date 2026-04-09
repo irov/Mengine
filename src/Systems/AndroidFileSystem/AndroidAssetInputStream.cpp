@@ -104,7 +104,7 @@ namespace Mengine
             int64_t result = ANDROID_ASSET_SERVICE()
                 ->seek( m_asset, m_offset, SEEK_SET );
 
-            if( result <= 0 )
+            if( result < 0 )
             {
                 LOGGER_ERROR( "invalid file '%s' seek offset %zu size %zu"
                     , fullPath

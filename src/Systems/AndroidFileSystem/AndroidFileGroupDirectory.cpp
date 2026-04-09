@@ -199,7 +199,7 @@ namespace Mengine
             return false;
         }
 
-        return false;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     InputStreamInterfacePtr AndroidFileGroupDirectory::createInputFile( const FilePath & _filePath, bool _streaming, FileGroupInterface ** const _fileGroup, const DocumentInterfacePtr & _doc )

@@ -52,8 +52,26 @@ namespace Mengine
                 , m_precompiled
             );
 
+            if( m_device == nil )
+            {
+                LOGGER_ERROR( "fragment shader '%s' Metal device is nil"
+                    , m_name.c_str()
+                );
+
+                return false;
+            }
+
             const void * buffer = m_memory->getBuffer();
             NSUInteger bufferSize = (NSUInteger)m_memory->getSize();
+
+            if( bufferSize == 0 )
+            {
+                LOGGER_ERROR( "fragment shader '%s' source buffer is empty (size 0)"
+                    , m_name.c_str()
+                );
+
+                return false;
+            }
 
             id<MTLLibrary> library = nil;
 
@@ -67,10 +85,20 @@ namespace Mengine
 
                 if( library == nil )
                 {
-                    LOGGER_ERROR( "fragment shader '%s' precompiled library load error: %s"
-                        , m_name.c_str()
-                        , [[error localizedDescription] UTF8String]
-                    );
+                    if( error != nil )
+                    {
+                        LOGGER_ERROR( "fragment shader '%s' precompiled library load error: %s"
+                            , m_name.c_str()
+                            , [[error localizedDescription] UTF8String]
+                        );
+                    }
+                    else
+                    {
+                        LOGGER_ERROR( "fragment shader '%s' precompiled library load failed with no error (buffer size: %u)"
+                            , m_name.c_str()
+                            , (uint32_t)bufferSize
+                        );
+                    }
 
                     return false;
                 }
@@ -97,10 +125,20 @@ namespace Mengine
 
                 if( library == nil )
                 {
-                    LOGGER_ERROR( "fragment shader '%s' compilation error: %s"
-                        , m_name.c_str()
-                        , [[error localizedDescription] UTF8String]
-                    );
+                    if( error != nil )
+                    {
+                        LOGGER_ERROR( "fragment shader '%s' compilation error: %s"
+                            , m_name.c_str()
+                            , [[error localizedDescription] UTF8String]
+                        );
+                    }
+                    else
+                    {
+                        LOGGER_ERROR( "fragment shader '%s' compilation failed with no error (source length: %u)"
+                            , m_name.c_str()
+                            , (uint32_t)[source length]
+                        );
+                    }
 
                     return false;
                 }

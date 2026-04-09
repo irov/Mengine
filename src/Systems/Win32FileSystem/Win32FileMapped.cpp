@@ -40,7 +40,7 @@ namespace Mengine
 
         MENGINE_UNUSED( fullPathLen );
 
-        MENGINE_ASSERTION_FATAL( fullPathLen != MENGINE_PATH_INVALID_LENGTH, "invlalid concatenate filePath '%s%s%s'"
+        MENGINE_ASSERTION_FATAL( fullPathLen != MENGINE_PATH_INVALID_LENGTH, "invalid concatenate filePath '%s%s%s'"
             , _relationPath.c_str()
             , _folderPath.c_str()
             , _filePath.c_str()
@@ -53,7 +53,7 @@ namespace Mengine
             sharedMode |= FILE_SHARE_WRITE | FILE_SHARE_DELETE;
         }
 
-        HANDLE hFile = Helper::Win32CreateFile( fullPath, GENERIC_READ, FILE_SHARE_READ, OPEN_EXISTING );
+        HANDLE hFile = Helper::Win32CreateFile( fullPath, GENERIC_READ, sharedMode, OPEN_EXISTING );
 
         if( hFile == INVALID_HANDLE_VALUE )
         {

@@ -186,7 +186,7 @@ namespace Mengine
         int64_t result = ANDROID_ASSET_SERVICE()
             ->seek( asset, pos, SEEK_SET );
 
-        if( result <= 0 )
+        if( result < 0 )
         {
             LOGGER_ERROR( "error seek pos: %zu size: %zu"
                 , pos

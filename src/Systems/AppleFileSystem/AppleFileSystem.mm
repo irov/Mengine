@@ -22,6 +22,10 @@
 #include <fnmatch.h>
 #include <dlfcn.h>
 
+#ifndef MENGINE_APPLE_CREATE_DIRECTORY_MAX_DEPTH
+#define MENGINE_APPLE_CREATE_DIRECTORY_MAX_DEPTH 16
+#endif
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( FileSystem, Mengine::AppleFileSystem );
 //////////////////////////////////////////////////////////////////////////
@@ -247,10 +251,19 @@ namespace Mengine
         Helper::pathRemoveSlashA( correctDirectory, MENGINE_PATH_FORWARDSLASH );
 
         uint32_t paths_count = 0;
-        Path paths[16];
+        Path paths[MENGINE_APPLE_CREATE_DIRECTORY_MAX_DEPTH];
 
         for( ;; )
         {
+            if( paths_count >= MENGINE_APPLE_CREATE_DIRECTORY_MAX_DEPTH )
+            {
+                LOGGER_ERROR( "too many directories in path '%s'"
+                    , correctDirectory
+                );
+
+                return false;
+            }
+
             StdString::strcpy_safe( paths[paths_count++], correctDirectory, MENGINE_MAX_PATH );
 
             if( Helper::pathRemoveFileSpecA( correctDirectory, MENGINE_PATH_FORWARDSLASH ) == false )

@@ -115,10 +115,6 @@ namespace Mengine
         }
 #endif
 
-#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
-        Helper::removeDebugFilePath( this );
-#endif
-
         int error = ::fclose( m_file );
         m_file = nullptr;
 
@@ -131,7 +127,14 @@ namespace Mengine
                 , m_filePath.c_str()
                 , errno
             );
+        }
 
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+        Helper::removeDebugFilePath( this );
+#endif
+
+        if( error != 0 )
+        {
             return false;
         }
 
@@ -202,7 +205,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidFileOutputStream::flush()
     {
-        ::fflush( m_file );
+        if( ::fflush( m_file ) != 0 )
+        {
+            LOGGER_ERROR( "invalid flush file '%s:%s' error: %d"
+                , m_folderPath.c_str()
+                , m_filePath.c_str()
+                , errno
+            );
+
+            return false;
+        }
 
         return true;
     }

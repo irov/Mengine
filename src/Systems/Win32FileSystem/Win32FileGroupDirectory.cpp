@@ -67,7 +67,7 @@ namespace Mengine
 
         MENGINE_UNUSED( fullPathLen );
 
-        MENGINE_ASSERTION_FATAL( fullPathLen != MENGINE_PATH_INVALID_LENGTH, "invlalid concatenate fullPath '%s%s%s'"
+        MENGINE_ASSERTION_FATAL( fullPathLen != MENGINE_PATH_INVALID_LENGTH, "invalid concatenate fullPath '%s%s%s'"
             , m_relationPath.c_str()
             , m_folderPath.c_str()
             , _filePath.c_str()

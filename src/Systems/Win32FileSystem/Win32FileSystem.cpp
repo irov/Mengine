@@ -204,7 +204,7 @@ namespace Mengine
         if( oldFileAttributes != INVALID_FILE_ATTRIBUTES && (oldFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY )
         {
             LOGGER_WARNING( "invalid move old file '%ls' it's directory"
-                , unicode_correctNewFilePath
+                , unicode_correctOldFilePath
             );
 
             return false;
@@ -301,7 +301,10 @@ namespace Mengine
     uint64_t Win32FileSystem::getFileTime( const Char * _filePath ) const
     {
         WPath unicode_filePath = {L'\0'};
-        Helper::utf8ToUnicode( _filePath, unicode_filePath, MENGINE_MAX_PATH );
+        if( Helper::utf8ToUnicode( _filePath, unicode_filePath, MENGINE_MAX_PATH ) == false )
+        {
+            return MENGINE_UINT64_C(0);
+        }
 
         HANDLE handle = ::CreateFileW( unicode_filePath, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL );
 

@@ -167,14 +167,14 @@ namespace Mengine
         }
 #endif
 
-#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
-        Helper::removeDebugFilePath( this );
-#endif
-
         ::fclose( m_file );
         m_file = nullptr;
 
         m_size = 0;
+
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+        Helper::removeDebugFilePath( this );
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     size_t AndroidFileInputStream::read( void * const _buf, size_t _count )

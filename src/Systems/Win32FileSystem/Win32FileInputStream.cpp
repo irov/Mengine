@@ -51,7 +51,7 @@ namespace Mengine
 
         MENGINE_UNUSED( fullPathLen );
 
-        MENGINE_ASSERTION_FATAL( fullPathLen != MENGINE_PATH_INVALID_LENGTH, "invlalid concatenate filePath '%s%s%s'"
+        MENGINE_ASSERTION_FATAL( fullPathLen != MENGINE_PATH_INVALID_LENGTH, "invalid concatenate filePath '%s%s%s'"
             , _relationPath.c_str()
             , _folderPath.c_str()
             , _filePath.c_str()
@@ -182,10 +182,6 @@ namespace Mengine
         }
 #endif
 
-#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
-        Helper::removeDebugFilePath( this );
-#endif
-
         BOOL successful = ::CloseHandle( m_hFile );
         m_hFile = INVALID_HANDLE_VALUE;
 
@@ -198,6 +194,10 @@ namespace Mengine
                 , Helper::Win32GetLastErrorMessageW()
             );
         }
+
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+        Helper::removeDebugFilePath( this );
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     size_t Win32FileInputStream::read( void * const _buf, size_t _count )

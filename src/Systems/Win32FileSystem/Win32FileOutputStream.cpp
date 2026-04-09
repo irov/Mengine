@@ -46,7 +46,7 @@ namespace Mengine
 
             MENGINE_UNUSED( fullPathTempLen );
 
-            MENGINE_ASSERTION_FATAL( fullPathTempLen != MENGINE_PATH_INVALID_LENGTH, "invlalid concatenate filePathTemp '%s%s%s'"
+            MENGINE_ASSERTION_FATAL( fullPathTempLen != MENGINE_PATH_INVALID_LENGTH, "invalid concatenate filePathTemp '%s%s%s'"
                 , m_relationPath.c_str()
                 , m_folderPath.c_str()
                 , m_filePath.c_str()
@@ -58,7 +58,7 @@ namespace Mengine
 
             MENGINE_UNUSED( fullPathTempLen );
 
-            MENGINE_ASSERTION_FATAL( fullPathTempLen != MENGINE_PATH_INVALID_LENGTH, "invlalid concatenate filePathTemp '%s%s%s'"
+            MENGINE_ASSERTION_FATAL( fullPathTempLen != MENGINE_PATH_INVALID_LENGTH, "invalid concatenate filePathTemp '%s%s%s'"
                 , m_relationPath.c_str()
                 , m_folderPath.c_str()
                 , m_filePath.c_str()

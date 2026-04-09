@@ -56,6 +56,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32FileMappedInputStream::unmap()
     {
+        if( m_memoryGranularity == NULL )
+        {
+            return;
+        }
+
         if( ::UnmapViewOfFile( m_memoryGranularity ) == FALSE )
         {
             LOGGER_ERROR( "invalid UnmapViewOfFile [%p] get error %ls"
@@ -137,10 +142,12 @@ namespace Mengine
 
         if( m_carriage + _offset > m_end )
         {
-            _offset = 0;
+            m_carriage = m_end;
         }
-
-        m_carriage += _offset;
+        else
+        {
+            m_carriage += _offset;
+        }
 
         return true;
     }

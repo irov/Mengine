@@ -111,10 +111,26 @@ namespace Mengine
         if( m_withTemp == true )
         {
             Path fullPathTemp = {'\0'};
-            Helper::concatenateFilePath( {m_relationPath, m_folderPath, m_filePath, STRINGIZE_FILEPATH_LOCAL( ".~tmp" )}, fullPathTemp );
+            if( Helper::concatenateFilePath( {m_relationPath, m_folderPath, m_filePath, STRINGIZE_FILEPATH_LOCAL( ".~tmp" )}, fullPathTemp ) == false )
+            {
+                LOGGER_ERROR( "invalid concatenate filePath '%s:%s' [temp]"
+                    , m_folderPath.c_str()
+                    , m_filePath.c_str()
+                );
+
+                return false;
+            }
 
             Path fullPath = {'\0'};
-            Helper::concatenateFilePath( {m_relationPath, m_folderPath, m_filePath}, fullPath );
+            if( Helper::concatenateFilePath( {m_relationPath, m_folderPath, m_filePath}, fullPath ) == false )
+            {
+                LOGGER_ERROR( "invalid concatenate filePath '%s:%s'"
+                    , m_folderPath.c_str()
+                    , m_filePath.c_str()
+                );
+
+                return false;
+            }
 
             if( FILE_SYSTEM()
                 ->moveFile( fullPathTemp, fullPath ) == false )

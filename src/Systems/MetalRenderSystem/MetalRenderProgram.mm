@@ -210,6 +210,16 @@ namespace Mengine
         return m_vertexAttribute;
     }
     //////////////////////////////////////////////////////////////////////////
+    const MetalRenderVertexShaderPtr & MetalRenderProgram::getMetalVertexShader() const
+    {
+        return m_vertexShader;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const MetalRenderFragmentShaderPtr & MetalRenderProgram::getMetalFragmentShader() const
+    {
+        return m_fragmentShader;
+    }
+    //////////////////////////////////////////////////////////////////////////
     id<MTLRenderPipelineState> MetalRenderProgram::getPipelineState() const
     {
         return m_pipelineState;

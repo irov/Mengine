@@ -228,6 +228,27 @@ namespace Mengine
         {
             program->setMetalDevice( m_device );
 
+            const MetalRenderVertexShaderPtr & vertexShader = program->getMetalVertexShader();
+
+            if( vertexShader != nullptr )
+            {
+                vertexShader->setMetalDevice( m_device );
+            }
+
+            const MetalRenderFragmentShaderPtr & fragmentShader = program->getMetalFragmentShader();
+
+            if( fragmentShader != nullptr )
+            {
+                fragmentShader->setMetalDevice( m_device );
+            }
+
+            const MetalRenderVertexAttributePtr & vertexAttribute = program->getMetalVertexAttribute();
+
+            if( vertexAttribute != nullptr )
+            {
+                vertexAttribute->setMetalDevice( m_device );
+            }
+
             if( program->compile() == false )
             {
                 return false;

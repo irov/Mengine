@@ -52,6 +52,8 @@ namespace Mengine
 
     public:
         const MetalRenderVertexAttributePtr & getMetalVertexAttribute() const;
+        const MetalRenderVertexShaderPtr & getMetalVertexShader() const;
+        const MetalRenderFragmentShaderPtr & getMetalFragmentShader() const;
 
     public:
         id<MTLRenderPipelineState> getPipelineState() const;

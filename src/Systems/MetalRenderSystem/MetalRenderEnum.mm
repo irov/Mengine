@@ -189,7 +189,7 @@ namespace Mengine
             return MTLTriangleFillModeFill;
         }
         //////////////////////////////////////////////////////////////////////////
-        MTLVertexFormat toMTLVertexFormat( EVertexAttributeType _type, uint32_t _size )
+        MTLVertexFormat toMTLVertexFormat( EVertexAttributeType _type, uint32_t _size, bool _normalized )
         {
             switch( _type )
             {
@@ -205,7 +205,7 @@ namespace Mengine
             case VAT_UNSIGNED_BYTE:
                 switch( _size )
                 {
-                case 4: return MTLVertexFormatUChar4Normalized;
+                case 4: return _normalized ? MTLVertexFormatUChar4Normalized : MTLVertexFormatUChar4;
                 default: return MTLVertexFormatInvalid;
                 }
             default:;

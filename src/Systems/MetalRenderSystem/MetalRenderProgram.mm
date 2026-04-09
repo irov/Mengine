@@ -144,7 +144,7 @@ namespace Mengine
 
             for( const MetalRenderVertexAttribute::AttributeDesc & attr : attributes )
             {
-                MTLVertexFormat format = Helper::toMTLVertexFormat( attr.type, attr.size );
+                MTLVertexFormat format = Helper::toMTLVertexFormat( attr.type, attr.size, attr.normalized );
 
                 vertexDesc.attributes[attrIndex].format = format;
                 vertexDesc.attributes[attrIndex].offset = attr.offset;

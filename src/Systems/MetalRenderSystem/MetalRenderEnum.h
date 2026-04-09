@@ -18,7 +18,7 @@ namespace Mengine
         MTLPrimitiveType toMTLPrimitiveType( EPrimitiveType _mode );
         MTLSamplerAddressMode toMTLAddressMode( ETextureAddressMode _mode );
         MTLTriangleFillMode toMTLFillMode( EFillMode _op );
-        MTLVertexFormat toMTLVertexFormat( EVertexAttributeType _type, uint32_t _size );
+        MTLVertexFormat toMTLVertexFormat( EVertexAttributeType _type, uint32_t _size, bool _normalized );
         MTLCullMode toMTLCullMode( ECullMode _mode );
         MTLIndexType toMTLIndexType( uint32_t _size );
         MTLResourceOptions toMTLBufferOptions( EBufferType _type );

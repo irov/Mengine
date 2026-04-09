@@ -224,8 +224,8 @@ namespace Mengine
                 {
                     Detail::errorRequest( _response );
 
-                    ::InternetCloseHandle( hConnect );
                     ::InternetCloseHandle( hRequest );
+                    ::InternetCloseHandle( hConnect );
 
                     return false;
                 }
@@ -240,8 +240,8 @@ namespace Mengine
                 {
                     Detail::errorRequest( _response );
 
-                    ::InternetCloseHandle( hConnect );
                     ::InternetCloseHandle( hRequest );
+                    ::InternetCloseHandle( hConnect );
 
                     return false;
                 }

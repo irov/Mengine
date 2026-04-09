@@ -120,7 +120,6 @@ namespace Mengine
             bool successful_stream_flush = stream->flush();
 
             bool successful_stream_close = content->closeOutputStreamFile( stream );
-            m_stream = nullptr;
 
             if( successful_stream_flush == false )
             {

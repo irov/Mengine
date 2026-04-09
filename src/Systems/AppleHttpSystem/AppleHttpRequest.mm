@@ -110,9 +110,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleHttpRequest::_onThreadTaskComplete( bool _successful )
     {
-        m_response->setSuccessful( _successful );
-
         m_mutex->lock();
+
+        m_response->setSuccessful( _successful );
 
         HttpResponseInterfacePtr response = std::move( m_response );
         HttpReceiverInterfacePtr receiver = std::move( m_receiver );

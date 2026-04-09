@@ -46,9 +46,11 @@
 
 + (void)setHeaders:(NSMutableURLRequest *)request headers:(NSArray<NSString *> *)headers {
     for (NSString * header in headers) {
-        NSArray * parts = [header componentsSeparatedByString:@":"];
-        if (parts.count == 2) {
-            [request setValue:[parts[1] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] forHTTPHeaderField:parts[0]];
+        NSRange range = [header rangeOfString:@":"];
+        if (range.location != NSNotFound) {
+            NSString * key = [header substringToIndex:range.location];
+            NSString * value = [[header substringFromIndex:range.location + 1] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+            [request setValue:value forHTTPHeaderField:key];
         }
     }
 }
@@ -98,7 +100,15 @@
 }
 
 + (NSMutableURLRequest *)makeRequest:(AppleHttpRequestParam *)request method:(NSString *)method {
-    NSMutableURLRequest * urlRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:request.HTTP_URL]];
+    NSURL * url = [NSURL URLWithString:request.HTTP_URL];
+    
+    if (url == nil) {
+        IOS_LOGGER_ERROR(@"[HTTP] invalid URL: %@", request.HTTP_URL);
+        
+        return nil;
+    }
+    
+    NSMutableURLRequest * urlRequest = [NSMutableURLRequest requestWithURL:url];
     urlRequest.HTTPMethod = method;
     [AppleHttpNetwork setTimeout:urlRequest timeout:request.HTTP_TIMEOUT];
     [AppleHttpNetwork setHeaders:urlRequest headers:request.HTTP_HEADERS];
@@ -126,11 +136,15 @@
     @try {
         NSMutableURLRequest * urlRequest = [AppleHttpNetwork makeRequest:request method:@"HEAD"];
         
+        if (urlRequest == nil) {
+            return nil;
+        }
+        
         AppleHttpResponseParam * responseParam = [AppleHttpNetwork processRequest:urlRequest];
         
         return responseParam;
     } @catch (NSException *exception) {
-        IOS_LOGGER_ERROR(@"[HTTP] httpRequestGetMessage caught an exception: %@", exception.reason);
+        IOS_LOGGER_ERROR(@"[HTTP] httpRequestPing caught an exception: %@", exception.reason);
     }
     
     return nil;
@@ -139,6 +153,10 @@
 + (nullable AppleHttpResponseParam *)httpRequestPostMessage:(AppleHttpRequestParam *)request properties:(NSDictionary<NSString *, NSString *> *)properties {
     @try {
         NSMutableURLRequest * urlRequest = [AppleHttpNetwork makeRequest:request method:@"POST"];
+        
+        if (urlRequest == nil) {
+            return nil;
+        }
         
         [AppleHttpNetwork setMultipartFormData:urlRequest properties:properties];
         
@@ -155,6 +173,10 @@
 + (nullable AppleHttpResponseParam *)httpRequestHeaderData:(AppleHttpRequestParam *)request data:(NSData *)data {
     @try {
         NSMutableURLRequest * urlRequest = [AppleHttpNetwork makeRequest:request method:@"POST"];
+        
+        if (urlRequest == nil) {
+            return nil;
+        }
 
         [AppleHttpNetwork setData:urlRequest data:data];
         
@@ -172,6 +194,10 @@
     @try {
         NSMutableURLRequest * urlRequest = [AppleHttpNetwork makeRequest:request method:@"GET"];
         
+        if (urlRequest == nil) {
+            return nil;
+        }
+        
         AppleHttpResponseParam * responseParam = [AppleHttpNetwork processRequest:urlRequest];
         
         return responseParam;
@@ -186,6 +212,10 @@
     @try {
         NSMutableURLRequest * urlRequest = [AppleHttpNetwork makeRequest:request method:@"DELETE"];
         
+        if (urlRequest == nil) {
+            return nil;
+        }
+        
         AppleHttpResponseParam * responseParam = [AppleHttpNetwork processRequest:urlRequest];
         
         return responseParam;
@@ -199,6 +229,10 @@
 + (nullable AppleHttpResponseParam *)httpRequestGetAsset:(AppleHttpRequestParam *)request login:(NSString *)login password:(NSString *)password {
     @try {
         NSMutableURLRequest * urlRequest = [AppleHttpNetwork makeRequest:request method:@"GET"];
+        
+        if (urlRequest == nil) {
+            return nil;
+        }
         
         [AppleHttpNetwork setBasicAuthorization:urlRequest login:login password:password];
         

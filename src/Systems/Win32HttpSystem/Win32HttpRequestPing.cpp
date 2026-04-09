@@ -18,7 +18,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32HttpRequestPing::_onHttp()
     {
-        bool successful = Helper::httpRequestGetMessage( this, m_response );
+        bool successful = Helper::httpRequestPing( this, m_response );
 
         return successful;
     }

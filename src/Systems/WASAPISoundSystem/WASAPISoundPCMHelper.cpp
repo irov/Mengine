@@ -6,7 +6,8 @@ namespace Mengine
     {
         namespace Detail
         {
-            static int16_t clampPCM16_( float _value )
+            //////////////////////////////////////////////////////////////////////////
+            static int16_t clampPCM16( float _value )
             {
                 if( _value > 32767.f )
                 {
@@ -20,6 +21,7 @@ namespace Mengine
 
                 return (int16_t)_value;
             }
+            //////////////////////////////////////////////////////////////////////////
         }
         //////////////////////////////////////////////////////////////////////////
         float resolveWASAPISoundPCM16Sample( const int16_t * _srcFrame, uint32_t _sourceChannels, uint32_t _destinationChannel, uint32_t _destinationChannels )
@@ -69,7 +71,7 @@ namespace Mengine
             float sample1 = (float)_frame1[channel];
             float sample = sample0 + (sample1 - sample0) * _alpha;
 
-            return Detail::clampPCM16_( sample );
+            return Detail::clampPCM16( sample );
         }
         //////////////////////////////////////////////////////////////////////////
     }

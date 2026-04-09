@@ -16,6 +16,18 @@
 
 #include <cstring>
 
+#ifndef MENGINE_WASAPI_STREAM_BUFFER_COUNT
+#define MENGINE_WASAPI_STREAM_BUFFER_COUNT (4)
+#endif
+
+#ifndef MENGINE_WASAPI_STREAM_BUFFER_SIZE
+#define MENGINE_WASAPI_STREAM_BUFFER_SIZE (44100 * 2)
+#endif
+
+#ifndef MENGINE_WASAPI_STREAM_DECODE_BUFFER_SIZE
+#define MENGINE_WASAPI_STREAM_DECODE_BUFFER_SIZE (44100 * 2)
+#endif
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

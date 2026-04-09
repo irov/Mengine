@@ -1,9 +1,5 @@
 #include "ThreadWorkerSoundBufferUpdate.h"
 
-#include "SoundService.h"
-
-#include "Kernel/Logger.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

@@ -4,6 +4,7 @@
 #include "Interface/FactoryInterface.h"
 
 #include "WASAPISoundIncluder.h"
+#include "WASAPISoundSource.h"
 #include "WASAPISoundSystemExtensionInterface.h"
 
 #include "Kernel/ServiceBase.h"
@@ -18,30 +19,6 @@
 
 namespace Mengine
 {
-    class WASAPISoundSource;
-
-    struct WASAPISoundMixerBusDesc
-    {
-        WASAPISoundMixerBusDesc()
-            : index( 0 )
-            , frequency( 0 )
-            , channels( 0 )
-            , gain( 1.f )
-            , enabled( false )
-            , busy( false )
-        {
-        }
-
-        SpinLock lock;
-        SoundSourceInterfacePtr source;
-        uint32_t index;
-        uint32_t frequency;
-        uint32_t channels;
-        AtomicFloat gain;
-        AtomicBool enabled;
-        bool busy;
-    };
-
     class WASAPISoundSystem
         : public ServiceBase<SoundSystemInterface>
         , public WASAPISoundSystemExtensionInterface
@@ -95,6 +72,29 @@ namespace Mengine
         uint32_t m_outputChannels;
 
         SpinLock m_busLock;
+
+        struct WASAPISoundMixerBusDesc
+        {
+            WASAPISoundMixerBusDesc()
+                : index( 0 )
+                , frequency( 0 )
+                , channels( 0 )
+                , gain( 1.f )
+                , enabled( false )
+                , busy( false )
+            {
+            }
+
+            SpinLock lock;
+            SoundSourceInterfacePtr source;
+            uint32_t index;
+            uint32_t frequency;
+            uint32_t channels;
+            AtomicFloat gain;
+            AtomicBool enabled;
+            bool busy;
+        };
+
         WASAPISoundMixerBusDesc m_mixerBuses[MENGINE_WASAPI_MIXER_INPUT_BUS_COUNT];
 
         FactoryInterfacePtr m_factoryWASAPISoundBuffer;

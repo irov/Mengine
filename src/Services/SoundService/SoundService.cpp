@@ -32,6 +32,10 @@
 
 #define SOUNDBUFFERUPDATE_PROCESSOR_NAME "SoundBufferUpdate"
 
+#ifndef MENGINE_SOUND_BUFFER_UPDATE_JOB_DELAY
+#define MENGINE_SOUND_BUFFER_UPDATE_JOB_DELAY 25
+#endif
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( SoundService, Mengine::SoundService );
 //////////////////////////////////////////////////////////////////////////
@@ -81,7 +85,7 @@ namespace Mengine
         if( m_supportStream == true )
         {
             ThreadJobPtr threadJobSoundBufferUpdate = THREAD_SERVICE()
-                ->createJob( 25, MENGINE_DOCUMENT_FACTORABLE );
+                ->createJob( MENGINE_SOUND_BUFFER_UPDATE_JOB_DELAY, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( threadJobSoundBufferUpdate, "invalid create thread job" );
 

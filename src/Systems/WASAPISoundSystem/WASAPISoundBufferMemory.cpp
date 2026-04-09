@@ -12,7 +12,8 @@ namespace Mengine
 {
     namespace Detail
     {
-        static void resamplePCM16Linear_( const int16_t * _src, uint32_t _sourceFrames, uint32_t _channels, uint32_t _sourceFrequency, int16_t * _dst, uint32_t _targetFrames, uint32_t _targetFrequency )
+        //////////////////////////////////////////////////////////////////////////
+        static void resamplePCM16Linear( const int16_t * _src, uint32_t _sourceFrames, uint32_t _channels, uint32_t _sourceFrequency, int16_t * _dst, uint32_t _targetFrames, uint32_t _targetFrequency )
         {
             if( _src == nullptr || _dst == nullptr || _sourceFrames == 0 || _channels == 0 || _sourceFrequency == 0 || _targetFrequency == 0 || _targetFrames == 0 )
             {
@@ -50,6 +51,7 @@ namespace Mengine
                 }
             }
         }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     WASAPISoundBufferMemory::WASAPISoundBufferMemory()
@@ -166,7 +168,7 @@ namespace Mengine
         const int16_t * sourcePCM = sourceMemory->getBuffer();
         int16_t * targetPCM = targetMemory->getBuffer();
 
-        Detail::resamplePCM16Linear_( sourcePCM, sourceFrames, m_channels, m_sourceFrequency, targetPCM, targetFrames, playbackFrequency );
+        Detail::resamplePCM16Linear( sourcePCM, sourceFrames, m_channels, m_sourceFrequency, targetPCM, targetFrames, playbackFrequency );
 
         m_frequency = playbackFrequency;
         m_pcmMemory = targetMemory;

@@ -49,6 +49,7 @@ namespace Mengine
         MemoryInterfacePtr m_pcmMemory;
         size_t m_pcmDataSize;
     };
-
+    //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<WASAPISoundBufferMemory, SoundBufferInterface> WASAPISoundBufferMemoryPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

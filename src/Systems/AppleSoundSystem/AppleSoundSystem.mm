@@ -56,6 +56,13 @@ namespace Mengine
 
             NSError * error = nil;
 
+            if( [session setCategory:AVAudioSessionCategoryAmbient error:&error] == NO )
+            {
+                LOGGER_WARNING( "failed to set AVAudioSession category [%s]"
+                    , error.localizedDescription.UTF8String
+                );
+            }
+
             if( [session setActive:YES error:&error] == NO )
             {
                 LOGGER_WARNING( "failed to activate AVAudioSession [%s]"
@@ -126,6 +133,21 @@ namespace Mengine
 #endif
 
         this->destroyAudioMixer_();
+
+#if TARGET_OS_IPHONE
+        @autoreleasepool
+        {
+            AVAudioSession * session = [AVAudioSession sharedInstance];
+            NSError * error = nil;
+
+            if( [session setActive:NO withOptions:AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation error:&error] == NO )
+            {
+                LOGGER_WARNING( "failed to deactivate AVAudioSession [%s]"
+                    , error.localizedDescription.UTF8String
+                );
+            }
+        }
+#endif
 
         m_factoryAppleSoundBuffer = nullptr;
         m_factoryAppleSoundBufferStream = nullptr;
@@ -524,7 +546,25 @@ namespace Mengine
             return false;
         }
 
+        AudioUnitSetParameter( m_mixerUnit, kMultiChannelMixerParam_Volume, kAudioUnitScope_Output, 0, 0.f, 0 );
+
         status = AudioOutputUnitStart( m_outputUnit );
+
+        if( status != noErr )
+        {
+            LOGGER_ASSERTION( "failed to start output unit [%d]"
+                , (int)status
+            );
+
+            this->destroyAudioMixer_();
+
+            return false;
+        }
+
+        AudioUnitSetParameter( m_mixerUnit, kMultiChannelMixerParam_Volume, kAudioUnitScope_Output, 0, 1.f, 0 );
+
+        return true;
+    }
 
         if( status != noErr )
         {
@@ -555,6 +595,8 @@ namespace Mengine
 
         if( m_outputUnit != nullptr )
         {
+            AudioUnitSetParameter( m_mixerUnit, kMultiChannelMixerParam_Volume, kAudioUnitScope_Output, 0, 0.f, 0 );
+
             AudioOutputUnitStop( m_outputUnit );
             AudioUnitUninitialize( m_outputUnit );
             AudioComponentInstanceDispose( m_outputUnit );

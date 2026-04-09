@@ -565,20 +565,6 @@ namespace Mengine
 
         return true;
     }
-
-        if( status != noErr )
-        {
-            LOGGER_ASSERTION( "failed to start output unit [%d]"
-                , (int)status
-            );
-
-            this->destroyAudioMixer_();
-
-            return false;
-        }
-
-        return true;
-    }
     //////////////////////////////////////////////////////////////////////////
     void AppleSoundSystem::destroyAudioMixer_()
     {

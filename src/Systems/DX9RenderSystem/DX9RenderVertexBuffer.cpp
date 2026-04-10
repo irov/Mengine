@@ -134,7 +134,7 @@ namespace Mengine
                 , _count
                 , _offset
                 , m_vertexCount
-                , MENGINE_DOCUMENTABLE_STR( this, "DX9RenderIndexBuffer" )
+                , MENGINE_DOCUMENTABLE_STR( this, "DX9RenderVertexBuffer" )
             );
 
             return nullptr;
@@ -148,6 +148,7 @@ namespace Mengine
         case BT_STATIC:
             d3d_flag = 0;
             break;
+        case BT_STREAM:
         case BT_DYNAMIC:
             d3d_flag = D3DLOCK_DISCARD;
             break;
@@ -200,8 +201,8 @@ namespace Mengine
         {
             LOGGER_ASSERTION( "draw count %u more capacity %u (doc: %s)"
                 , _count
-                , m_vertexCount
-                , MENGINE_DOCUMENTABLE_STR( this, "DX9RenderIndexBuffer" )
+                , m_vertexCapacity
+                , MENGINE_DOCUMENTABLE_STR( this, "DX9RenderVertexBuffer" )
             );
 
             return false;

@@ -167,6 +167,13 @@ namespace Mengine
         D3DVIEWPORT9 VPOld;
         MENGINE_IF_DX9_CALL( m_pD3DDevice, GetViewport, (&VPOld) )
         {
+            pD3DSurface->Release();
+
+            if( pD3DSurfaceOld != nullptr )
+            {
+                pD3DSurfaceOld->Release();
+            }
+
             return false;
         }
 
@@ -187,6 +194,17 @@ namespace Mengine
 
         MENGINE_IF_DX9_CALL( m_pD3DDevice, SetViewport, (&VP) )
         {
+            MENGINE_DX9_CALL( m_pD3DDevice, SetRenderTarget, (0, m_pD3DSurfaceOld) );
+
+            m_pD3DSurfaceCurrent->Release();
+            m_pD3DSurfaceCurrent = nullptr;
+
+            if( m_pD3DSurfaceOld != nullptr )
+            {
+                m_pD3DSurfaceOld->Release();
+                m_pD3DSurfaceOld = nullptr;
+            }
+
             return false;
         }
 

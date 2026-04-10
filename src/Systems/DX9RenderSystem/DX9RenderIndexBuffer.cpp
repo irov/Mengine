@@ -150,6 +150,7 @@ namespace Mengine
         case BT_STATIC:
             d3d_flag = 0;
             break;
+        case BT_STREAM:
         case BT_DYNAMIC:
             d3d_flag = D3DLOCK_DISCARD;
             break;

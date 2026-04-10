@@ -4,7 +4,7 @@ using namespace metal;
 struct VertexIn
 {
     float3 position [[attribute(0)]];
-    uchar4 color    [[attribute(1)]];
+    float4 color    [[attribute(1)]];
 };
 
 struct VertexOut
@@ -23,6 +23,6 @@ vertex VertexOut vertexShader(VertexIn in [[stage_in]],
 {
     VertexOut out;
     out.position = uniforms.wvpMatrix * float4(in.position, 1.0);
-    out.color = half4(float4(in.color) / 255.0);
+    out.color = half4(in.color);
     return out;
 }

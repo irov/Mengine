@@ -119,7 +119,7 @@ namespace Mengine
             {
             case PF_A8R8G8B8:
             case PF_X8R8G8B8:
-                return MTLPixelFormatBGRA8Unorm;
+                return MTLPixelFormatRGBA8Unorm;
             case PF_R8G8B8A8:
             case PF_A8B8G8R8:
             case PF_X8B8G8R8:

@@ -159,12 +159,18 @@
     
     __weak AppleAdMobPlugin * weakSelf = self;
     
+    // Stop AudioUnit before AdMob init — WKWebView creation disrupts CoreAudio HAL
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"MengineAudioOutputStop" object:nil];
+    
     [[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus * _Nonnull status) {
         AppleAdMobPlugin * strongSelf = weakSelf;
         
         if (strongSelf == nil) {
             return;
         }
+        
+        // Restart AudioUnit after AdMob init completed
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"MengineAudioOutputStart" object:nil];
         
         [AppleDetail addMainQueueOperation:^{
 #if defined(MENGINE_PLUGIN_APPLE_ADMOB_BANNER)

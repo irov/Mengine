@@ -74,6 +74,8 @@ namespace Mengine
         id m_interruptionObserver;
         id m_routeChangeObserver;
         id m_mediaResetObserver;
+        id m_audioOutputStopObserver;
+        id m_audioOutputStartObserver;
 #endif
 
     protected:

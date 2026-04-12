@@ -37,6 +37,8 @@ namespace Mengine
         , m_interruptionObserver( nil )
         , m_routeChangeObserver( nil )
         , m_mediaResetObserver( nil )
+        , m_audioOutputStopObserver( nil )
+        , m_audioOutputStartObserver( nil )
 #endif
     {
         for( uint32_t index = 0; index != MENGINE_APPLE_MIXER_INPUT_BUS_COUNT; ++index )
@@ -61,14 +63,6 @@ namespace Mengine
             if( [session setCategory:AVAudioSessionCategoryAmbient error:&error] == NO )
             {
                 LOGGER_WARNING( "failed to set AVAudioSession category [%s]"
-                    , error.localizedDescription.UTF8String
-                );
-            }
-
-            // Request larger IO buffer to reduce sensitivity to CPU spikes (e.g. AdMob WebView init)
-            if( [session setPreferredIOBufferDuration:0.046 error:&error] == NO )
-            {
-                LOGGER_WARNING( "failed to set preferred IO buffer duration [%s]"
                     , error.localizedDescription.UTF8String
                 );
             }
@@ -158,6 +152,50 @@ namespace Mengine
                     LOGGER_MESSAGE_RELEASE( "[DIAG] AVAudioSession MEDIA_SERVICES_RESET" );
                 }
             ];
+
+            // Stop/start AudioUnit around external SDK init (AdMob WKWebView disrupts CoreAudio HAL)
+            m_audioOutputStopObserver = [[NSNotificationCenter defaultCenter]
+                addObserverForName:@"MengineAudioOutputStop"
+                object:nil
+                queue:[NSOperationQueue mainQueue]
+                usingBlock:^( NSNotification * notification )
+                {
+                    MENGINE_UNUSED( notification );
+
+                    LOGGER_MESSAGE_RELEASE( "[DIAG] MengineAudioOutputStop received" );
+
+                    if( self->m_outputUnit != nullptr )
+                    {
+                        AudioOutputUnitStop( self->m_outputUnit );
+                    }
+                }
+            ];
+
+            m_audioOutputStartObserver = [[NSNotificationCenter defaultCenter]
+                addObserverForName:@"MengineAudioOutputStart"
+                object:nil
+                queue:[NSOperationQueue mainQueue]
+                usingBlock:^( NSNotification * notification )
+                {
+                    MENGINE_UNUSED( notification );
+
+                    LOGGER_MESSAGE_RELEASE( "[DIAG] MengineAudioOutputStart received" );
+
+                    @autoreleasepool
+                    {
+                        AVAudioSession * s = [AVAudioSession sharedInstance];
+                        NSError * err = nil;
+
+                        [s setCategory:AVAudioSessionCategoryAmbient error:&err];
+                        [s setActive:YES error:&err];
+                    }
+
+                    if( self->m_outputUnit != nullptr )
+                    {
+                        AudioOutputUnitStart( self->m_outputUnit );
+                    }
+                }
+            ];
         }
 #endif
 
@@ -206,6 +244,18 @@ namespace Mengine
         {
             [[NSNotificationCenter defaultCenter] removeObserver:m_mediaResetObserver];
             m_mediaResetObserver = nil;
+        }
+
+        if( m_audioOutputStopObserver != nil )
+        {
+            [[NSNotificationCenter defaultCenter] removeObserver:m_audioOutputStopObserver];
+            m_audioOutputStopObserver = nil;
+        }
+
+        if( m_audioOutputStartObserver != nil )
+        {
+            [[NSNotificationCenter defaultCenter] removeObserver:m_audioOutputStartObserver];
+            m_audioOutputStartObserver = nil;
         }
 #endif
 

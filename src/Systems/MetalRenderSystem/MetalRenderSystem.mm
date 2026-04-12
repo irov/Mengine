@@ -398,6 +398,8 @@ namespace Mengine
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
+        buffer->setMetalDevice( m_device );
+
         if( buffer->initialize( _vertexSize, _bufferType ) == false )
         {
             LOGGER_ERROR( "invalid initialize vertex buffer [%u] type [%u]"
@@ -428,6 +430,8 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( buffer, "invalid create render index buffer (doc: %s)"
             , MENGINE_DOCUMENT_STR( _doc )
         );
+
+        buffer->setMetalDevice( m_device );
 
         if( buffer->initialize( _indexSize, _bufferType ) == false )
         {
@@ -856,6 +860,8 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( image, "invalid create" );
 
+        image->setMetalDevice( m_device );
+
         if( image->initialize( _mipmaps, _width, _height, hwFormat ) == false )
         {
             LOGGER_ERROR( "invalid initialize" );
@@ -1011,6 +1017,8 @@ namespace Mengine
         MetalRenderTargetTexturePtr renderTarget = m_factoryRenderTargetTexture->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( renderTarget, "invalid create render target texture" );
+
+        renderTarget->setMetalDevice( m_device );
 
         if( renderTarget->initialize( _width, _height, hwFormat ) == false )
         {

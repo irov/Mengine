@@ -460,16 +460,6 @@ namespace Mengine
         uint32_t r = m_readCount.load( StdAtomic::memory_order_relaxed );
         uint32_t readable = w - r;
 
-        if( readable == 0 && m_finished.load() == false )
-        {
-            LOGGER_MESSAGE_RELEASE( "[DIAG] stream::renderMixerFrames UNDERFLOW frames=%u w=%u r=%u updating=%u"
-                , (uint32_t)_frames
-                , w
-                , r
-                , m_updating.load()
-            );
-        }
-
         while( renderedFrames != _frames && readable != 0 )
         {
             uint32_t readIdx = r & m_ringBufferSizeMask;
@@ -512,51 +502,6 @@ namespace Mengine
         m_readCount.store( r, StdAtomic::memory_order_release );
 
         *_renderedFrames = renderedFrames;
-
-        uint32_t diagCall = m_diagRenderCount.fetch_add( 1 );
-        if( renderedFrames != 0 && _ioData->mNumberBuffers > 0 )
-        {
-            Float32 * buf0 = static_cast<Float32 *>( _ioData->mBuffers[0].mData );
-
-            if( diagCall < 5 )
-            {
-                Float32 s0 = buf0 != nullptr ? buf0[0] : -999.f;
-                Float32 s1 = buf0 != nullptr && renderedFrames > 1 ? buf0[1] : -999.f;
-                Float32 s2 = buf0 != nullptr && renderedFrames > 2 ? buf0[2] : -999.f;
-                Float32 s3 = buf0 != nullptr && renderedFrames > 3 ? buf0[3] : -999.f;
-
-                LOGGER_MESSAGE_RELEASE( "[DIAG] stream render #%u frames=%u/%u readable_after=%u samples=[%.6f, %.6f, %.6f, %.6f]"
-                    , diagCall
-                    , renderedFrames
-                    , (uint32_t)_frames
-                    , w - r
-                    , s0, s1, s2, s3
-                );
-            }
-
-            // Detect first non-zero sample
-            if( diagCall >= 5 && diagCall < 500 && buf0 != nullptr )
-            {
-                Float32 maxSample = 0.f;
-                for( UInt32 i = 0; i < renderedFrames && i < 32; ++i )
-                {
-                    Float32 abs_s = buf0[i] < 0.f ? -buf0[i] : buf0[i];
-                    if( abs_s > maxSample ) maxSample = abs_s;
-                }
-
-                if( maxSample > 0.0001f )
-                {
-                    LOGGER_MESSAGE_RELEASE( "[DIAG] stream FIRST_NONZERO render #%u maxSample=%.6f playCursor=%u"
-                        , diagCall
-                        , maxSample
-                        , (uint32_t)m_playCursorBytes.load()
-                    );
-
-                    // Stop checking after first detection
-                    m_diagRenderCount.store( 500 );
-                }
-            }
-        }
 
 #if defined(MENGINE_DEBUG)
         m_lastRenderFramesProduced.store( renderedFrames, StdAtomic::memory_order_relaxed );

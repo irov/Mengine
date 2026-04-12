@@ -554,10 +554,6 @@ namespace Mengine
 
         if( this->tryEnterRender_() == false )
         {
-            LOGGER_MESSAGE_RELEASE( "[DIAG] renderMixerFrames BLOCKED by barrier frames=%u"
-                , (uint32_t)_frames
-            );
-
             return noErr;
         }
 
@@ -674,25 +670,10 @@ namespace Mengine
         }
 #endif
 
-        if( renderedFrames != 0 && renderedFrames < (uint32_t)_frames )
-        {
-            LOGGER_MESSAGE_RELEASE( "[DIAG] renderMixerFrames PARTIAL rendered=%u/%u frame=%u"
-                , renderedFrames
-                , (uint32_t)_frames
-                , newFrame
-            );
-        }
-
         uint32_t totalFrames = soundBuffer->getFrameCount();
 
         if( totalFrames != 0 && renderedFrames < (uint32_t)_frames && m_loop.load() == false )
         {
-            LOGGER_MESSAGE_RELEASE( "[DIAG] renderMixerFrames FINISHED rendered=%u/%u totalFrames=%u"
-                , renderedFrames
-                , (uint32_t)_frames
-                , totalFrames
-            );
-
             m_finished = true;
         }
 

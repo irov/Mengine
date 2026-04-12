@@ -103,8 +103,6 @@
         return NO;
     }
     
-    [GADMobileAds sharedInstance].audioVideoManager.audioSessionIsApplicationManaged = YES;
-    
     return YES;
 }
 
@@ -156,6 +154,8 @@
 #if defined(MENGINE_PLUGIN_APPLE_ADMOB_REWARDED)
     MengineAppleAdMobPlugin_RewardedAdUnitId = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"RewardedAdUnitId" withDefault:nil];
 #endif
+    
+    [GADMobileAds sharedInstance].audioVideoManager.audioSessionIsApplicationManaged = YES;
     
     __weak AppleAdMobPlugin * weakSelf = self;
     

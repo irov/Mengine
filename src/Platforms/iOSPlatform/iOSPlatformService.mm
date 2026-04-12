@@ -58,6 +58,7 @@
 #   import <OpenGLES/ES2/glext.h>
 #elif defined(MENGINE_ENVIRONMENT_RENDER_METAL)
 #   import <Metal/Metal.h>
+#   include "Environment/Metal/MetalRenderSystemExtensionInterface.h"
 #endif
 
 #import <QuartzCore/QuartzCore.h>
@@ -571,21 +572,27 @@ namespace Mengine
             return false;
         }
 
+        id<CAMetalDrawable> drawable = [m_metalView currentDrawable];
+
+        MetalRenderSystemExtensionInterface * renderSystemExtension = RENDER_SYSTEM()
+            ->getUnknown();
+
+        renderSystemExtension->setCurrentDrawable( drawable, drawable.texture );
+
         bool sucessful = APPLICATION_SERVICE()
             ->render();
 
         if( sucessful == false )
         {
+            [m_metalView endRender];
+
             return false;
         }
 
         APPLICATION_SERVICE()
             ->flush();
 
-        if( [m_metalView endRender] == NO )
-        {
-            return false;
-        }
+        [m_metalView endRender];
 #endif
         
         return true;

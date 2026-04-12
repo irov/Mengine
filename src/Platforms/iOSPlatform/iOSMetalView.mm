@@ -5,11 +5,7 @@
 @implementation iOSMetalView
 {
     id<MTLDevice> _device;
-    id<MTLCommandQueue> _commandQueue;
-    id<MTLCommandBuffer> _commandBuffer;
     id<CAMetalDrawable> _currentDrawable;
-    id<MTLRenderCommandEncoder> _renderEncoder;
-    MTLRenderPassDescriptor * _renderPassDescriptor;
 }
 
 + (Class)layerClass
@@ -24,11 +20,7 @@
     if( self != nil )
     {
         _device = device;
-        _commandQueue = [device newCommandQueue];
-        _commandBuffer = nil;
         _currentDrawable = nil;
-        _renderEncoder = nil;
-        _renderPassDescriptor = nil;
 
         CAMetalLayer * metalLayer = (CAMetalLayer *)self.layer;
         metalLayer.device = _device;
@@ -45,7 +37,7 @@
 
 - (BOOL)beginRender
 {
-    if( _device == nil || _commandQueue == nil )
+    if( _device == nil )
     {
         return NO;
     }
@@ -58,50 +50,12 @@
         return NO;
     }
 
-    _commandBuffer = [_commandQueue commandBuffer];
-
-    if( _commandBuffer == nil )
-    {
-        _currentDrawable = nil;
-
-        return NO;
-    }
-
-    _renderPassDescriptor = [MTLRenderPassDescriptor renderPassDescriptor];
-    _renderPassDescriptor.colorAttachments[0].texture = _currentDrawable.texture;
-    _renderPassDescriptor.colorAttachments[0].loadAction = MTLLoadActionClear;
-    _renderPassDescriptor.colorAttachments[0].storeAction = MTLStoreActionStore;
-    _renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColorMake( 0.0, 0.0, 0.0, 1.0 );
-
-    _renderEncoder = [_commandBuffer renderCommandEncoderWithDescriptor:_renderPassDescriptor];
-
-    if( _renderEncoder == nil )
-    {
-        _currentDrawable = nil;
-        _commandBuffer = nil;
-        _renderPassDescriptor = nil;
-
-        return NO;
-    }
-
     return YES;
 }
 
 - (BOOL)endRender
 {
-    if( _renderEncoder == nil || _commandBuffer == nil || _currentDrawable == nil )
-    {
-        return NO;
-    }
-
-    [_renderEncoder endEncoding];
-    [_commandBuffer presentDrawable:_currentDrawable];
-    [_commandBuffer commit];
-
-    _renderEncoder = nil;
-    _commandBuffer = nil;
     _currentDrawable = nil;
-    _renderPassDescriptor = nil;
 
     return YES;
 }
@@ -128,21 +82,6 @@
 - (id<CAMetalDrawable>)currentDrawable
 {
     return _currentDrawable;
-}
-
-- (MTLRenderPassDescriptor *)currentRenderPassDescriptor
-{
-    return _renderPassDescriptor;
-}
-
-- (id<MTLCommandBuffer>)currentCommandBuffer
-{
-    return _commandBuffer;
-}
-
-- (id<MTLRenderCommandEncoder>)currentRenderEncoder
-{
-    return _renderEncoder;
 }
 
 - (void)layoutSubviews

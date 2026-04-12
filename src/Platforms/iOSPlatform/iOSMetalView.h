@@ -20,9 +20,6 @@
 
 - (id<MTLDevice>)metalDevice;
 - (id<CAMetalDrawable>)currentDrawable;
-- (MTLRenderPassDescriptor *)currentRenderPassDescriptor;
-- (id<MTLCommandBuffer>)currentCommandBuffer;
-- (id<MTLRenderCommandEncoder>)currentRenderEncoder;
 
 @end
 

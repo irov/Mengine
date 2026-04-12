@@ -136,6 +136,9 @@ namespace Mengine
     public:
         id<MTLDevice> getMetalDevice() const override;
 
+    public:
+        void setCurrentDrawable( id<MTLDrawable> _drawable, id<MTLTexture> _drawableTexture ) override;
+
     protected:
         void findFormatFromChannels_( EPixelFormat _format, EPixelFormat * const _hwFormat ) const;
 
@@ -228,6 +231,9 @@ namespace Mengine
         id<MTLCommandBuffer> m_commandBuffer;
         id<MTLRenderCommandEncoder> m_renderEncoder;
         id<MTLDepthStencilState> m_depthStencilState;
+
+        id<MTLDrawable> m_currentDrawable;
+        id<MTLTexture> m_currentDrawableTexture;
 
         FactoryInterfacePtr m_factoryRenderVertexBuffer;
         FactoryInterfacePtr m_factoryRenderIndexBuffer;

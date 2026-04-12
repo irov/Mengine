@@ -66,6 +66,8 @@ namespace Mengine
         , m_commandBuffer( nil )
         , m_renderEncoder( nil )
         , m_depthStencilState( nil )
+        , m_currentDrawable( nil )
+        , m_currentDrawableTexture( nil )
     {
         mt::ident_m4( &m_worldMatrix );
         mt::ident_m4( &m_viewMatrix );
@@ -148,6 +150,8 @@ namespace Mengine
         m_commandBuffer = nil;
         m_commandQueue = nil;
         m_depthStencilState = nil;
+        m_currentDrawable = nil;
+        m_currentDrawableTexture = nil;
         m_device = nil;
 
         MetalRenderImageLockedFactoryStorage::finalize();
@@ -877,10 +881,30 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MetalRenderSystem::beginScene()
     {
+        if( m_currentDrawableTexture == nil )
+        {
+            return false;
+        }
+
         m_commandBuffer = [m_commandQueue commandBuffer];
 
         if( m_commandBuffer == nil )
         {
+            return false;
+        }
+
+        MTLRenderPassDescriptor * renderPassDescriptor = [MTLRenderPassDescriptor renderPassDescriptor];
+        renderPassDescriptor.colorAttachments[0].texture = m_currentDrawableTexture;
+        renderPassDescriptor.colorAttachments[0].loadAction = MTLLoadActionClear;
+        renderPassDescriptor.colorAttachments[0].storeAction = MTLStoreActionStore;
+        renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColorMake( m_clearColor.getR(), m_clearColor.getG(), m_clearColor.getB(), m_clearColor.getA() );
+
+        m_renderEncoder = [m_commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
+
+        if( m_renderEncoder == nil )
+        {
+            m_commandBuffer = nil;
+
             return false;
         }
 
@@ -900,9 +924,17 @@ namespace Mengine
     {
         if( m_commandBuffer != nil )
         {
+            if( m_currentDrawable != nil )
+            {
+                [m_commandBuffer presentDrawable:m_currentDrawable];
+            }
+
             [m_commandBuffer commit];
             m_commandBuffer = nil;
         }
+
+        m_currentDrawable = nil;
+        m_currentDrawableTexture = nil;
     }
     //////////////////////////////////////////////////////////////////////////
     void MetalRenderSystem::clearFrameBuffer( uint32_t _frameBufferTypes, const Color & _color, double _depth, int32_t _stencil )
@@ -1079,6 +1111,12 @@ namespace Mengine
     id<MTLDevice> MetalRenderSystem::getMetalDevice() const
     {
         return m_device;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MetalRenderSystem::setCurrentDrawable( id<MTLDrawable> _drawable, id<MTLTexture> _drawableTexture )
+    {
+        m_currentDrawable = _drawable;
+        m_currentDrawableTexture = _drawableTexture;
     }
     //////////////////////////////////////////////////////////////////////////
     void MetalRenderSystem::onRenderVertexBufferDestroy_( MetalRenderVertexBuffer * _vertexBuffer )

@@ -584,6 +584,59 @@ namespace Mengine
 
         m_framePosition = newFrame;
 
+#ifndef MENGINE_APPLE_SOUND_DIAG_TONE
+#define MENGINE_APPLE_SOUND_DIAG_TONE (1)
+#endif
+
+#if MENGINE_APPLE_SOUND_DIAG_TONE
+        // [DIAG] Replace decoded audio with 440Hz sine tone to isolate render vs data issues
+        {
+            static float s_phase = 0.f;
+            const float freq = 440.f;
+            const float sampleRate = 44100.f;
+            const float phaseInc = freq / sampleRate;
+            const float amplitude = 0.25f;
+
+            for( UInt32 bufIdx = 0; bufIdx != _ioData->mNumberBuffers; ++bufIdx )
+            {
+                Float32 * dst = static_cast<Float32 *>(_ioData->mBuffers[bufIdx].mData);
+
+                if( dst == nullptr )
+                {
+                    continue;
+                }
+
+                UInt32 numChannels = _ioData->mBuffers[bufIdx].mNumberChannels;
+                float phase = s_phase;
+
+                for( uint32_t frame = 0; frame != (uint32_t)_frames; ++frame )
+                {
+                    Float32 sample = amplitude * StdMath::sinf( phase * 2.f * 3.14159265f );
+
+                    for( UInt32 ch = 0; ch != numChannels; ++ch )
+                    {
+                        dst[frame * numChannels + ch] = sample;
+                    }
+
+                    phase += phaseInc;
+
+                    if( phase >= 1.f )
+                    {
+                        phase -= 1.f;
+                    }
+                }
+            }
+
+            s_phase += phaseInc * (float)_frames;
+
+            while( s_phase >= 1.f )
+            {
+                s_phase -= 1.f;
+            }
+
+            renderedFrames = (uint32_t)_frames;
+        }
+#else
         // Per-sample gain ramp (volume applied here instead of AudioUnitSetParameter)
         {
             float targetGain = Detail::calcGain( m_volume.load() );
@@ -619,6 +672,7 @@ namespace Mengine
                 m_currentGain = targetGain;
             }
         }
+#endif
 
         if( renderedFrames != 0 && renderedFrames < (uint32_t)_frames )
         {

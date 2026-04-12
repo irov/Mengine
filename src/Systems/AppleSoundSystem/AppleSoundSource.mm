@@ -36,6 +36,7 @@ namespace Mengine
         , m_finished( false )
         , m_renderBarrier( false )
         , m_activeRenders( 0 )
+        , m_currentGain( 0.f )
         , m_busIndex( INVALID_BUS_INDEX )
     {
     }
@@ -75,10 +76,11 @@ namespace Mengine
             return false;
         }
 
-        float gain = Detail::calcGain( m_volume.load() );
+        float initialGain = Detail::calcGain( m_volume.load() );
+        m_currentGain = initialGain;
 
         LOGGER_MESSAGE_RELEASE( "[DIAG] AppleSoundSource::play() gain=%.3f pausing=%u loop=%u pos=%.1f"
-            , gain
+            , initialGain
             , m_pausing.load()
             , m_loop.load()
             , this->getPosition()
@@ -102,7 +104,7 @@ namespace Mengine
             m_pausing = false;
             m_finished = false;
 
-            if( this->acquireSourceBus_( soundBuffer->getFrequency(), soundBuffer->getChannels(), gain ) == false )
+            if( this->acquireSourceBus_( soundBuffer->getFrequency(), soundBuffer->getChannels(), 1.f ) == false )
             {
                 soundBuffer->stopSource();
                 m_playing = false;
@@ -131,7 +133,7 @@ namespace Mengine
 
             if( busIndex == INVALID_BUS_INDEX )
             {
-                if( this->acquireSourceBus_( soundBuffer->getFrequency(), soundBuffer->getChannels(), gain ) == false )
+                if( this->acquireSourceBus_( soundBuffer->getFrequency(), soundBuffer->getChannels(), 1.f ) == false )
                 {
                     LOGGER_ASSERTION( "invalid reacquire source bus" );
 
@@ -145,7 +147,7 @@ namespace Mengine
             AppleSoundSystemExtensionInterface * soundSystemExtension = SOUND_SYSTEM()
                 ->getUnknown();
 
-            if( soundSystemExtension->setSourceBusVolume( busIndex, gain ) == false )
+            if( soundSystemExtension->setSourceBusVolume( busIndex, 1.f ) == false )
             {
                 LOGGER_ASSERTION( "invalid restore source bus volume [%u]"
                     , busIndex
@@ -229,7 +231,8 @@ namespace Mengine
             return false;
         }
 
-        float gain = Detail::calcGain( m_volume.load() );
+        m_currentGain = Detail::calcGain( m_volume.load() );
+
         uint32_t busIndex;
 
         {
@@ -239,7 +242,7 @@ namespace Mengine
 
         if( busIndex == INVALID_BUS_INDEX )
         {
-            if( this->acquireSourceBus_( soundBuffer->getFrequency(), soundBuffer->getChannels(), gain ) == false )
+            if( this->acquireSourceBus_( soundBuffer->getFrequency(), soundBuffer->getChannels(), 1.f ) == false )
             {
                 LOGGER_ASSERTION( "invalid reacquire source bus" );
 
@@ -253,7 +256,7 @@ namespace Mengine
         AppleSoundSystemExtensionInterface * soundSystemExtension = SOUND_SYSTEM()
             ->getUnknown();
 
-        if( soundSystemExtension->setSourceBusVolume( busIndex, gain ) == false )
+        if( soundSystemExtension->setSourceBusVolume( busIndex, 1.f ) == false )
         {
             LOGGER_ASSERTION( "invalid restore source bus volume [%u]"
                 , busIndex
@@ -298,6 +301,7 @@ namespace Mengine
         m_playing = false;
         m_pausing = false;
         m_finished = false;
+        m_currentGain = 0.f;
 
         AppleSoundBufferBasePtr soundBuffer = this->getSoundBuffer_();
 
@@ -334,40 +338,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleSoundSource::setVolume( float _volume )
     {
-        if( mt::equal_f_f( m_volume.load(), _volume ) == true )
-        {
-            return;
-        }
-
-        float oldVolume = m_volume.load();
         m_volume = _volume;
-
-        LOGGER_MESSAGE_RELEASE( "[DIAG] setVolume %.4f -> %.4f gain=%.6f bus=%u playing=%u"
-            , oldVolume
-            , _volume
-            , Detail::calcGain( _volume )
-            , m_busIndex
-            , m_playing.load()
-        );
-
-        if( m_playing.load() == true && m_pausing.load() == false )
-        {
-            float gain = Detail::calcGain( m_volume.load() );
-            uint32_t busIndex;
-
-            {
-                MENGINE_SPINLOCK_SCOPE( m_lock );
-                busIndex = m_busIndex;
-            }
-
-            if( busIndex != INVALID_BUS_INDEX )
-            {
-                AppleSoundSystemExtensionInterface * soundSystemExtension = SOUND_SYSTEM()
-                    ->getUnknown();
-
-                soundSystemExtension->setSourceBusVolume( busIndex, gain );
-            }
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     float AppleSoundSource::getVolume() const
@@ -612,6 +583,42 @@ namespace Mengine
         uint32_t renderedFrames = soundBuffer->renderMixerFrames( _ioData, 0, (uint32_t)_frames, currentFrame, m_loop.load(), &newFrame );
 
         m_framePosition = newFrame;
+
+        // Per-sample gain ramp (volume applied here instead of AudioUnitSetParameter)
+        {
+            float targetGain = Detail::calcGain( m_volume.load() );
+            float startGain = m_currentGain.load();
+
+            if( renderedFrames != 0 )
+            {
+                float gainInc = (renderedFrames > 1) ? (targetGain - startGain) / (float)renderedFrames : 0.f;
+
+                for( UInt32 bufIdx = 0; bufIdx != _ioData->mNumberBuffers; ++bufIdx )
+                {
+                    Float32 * dst = static_cast<Float32 *>(_ioData->mBuffers[bufIdx].mData);
+
+                    if( dst == nullptr )
+                    {
+                        continue;
+                    }
+
+                    UInt32 numChannels = _ioData->mBuffers[bufIdx].mNumberChannels;
+                    float g = startGain;
+
+                    for( uint32_t frame = 0; frame != renderedFrames; ++frame )
+                    {
+                        for( UInt32 ch = 0; ch != numChannels; ++ch )
+                        {
+                            dst[frame * numChannels + ch] *= g;
+                        }
+
+                        g += gainInc;
+                    }
+                }
+
+                m_currentGain = targetGain;
+            }
+        }
 
         if( renderedFrames != 0 && renderedFrames < (uint32_t)_frames )
         {

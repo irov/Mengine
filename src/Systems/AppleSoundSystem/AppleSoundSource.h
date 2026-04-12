@@ -98,6 +98,7 @@ namespace Mengine
         AtomicBool m_finished;
         AtomicBool m_renderBarrier;
         AtomicUInt32 m_activeRenders;
+        AtomicFloat m_currentGain;
         uint32_t m_busIndex;
     };
     //////////////////////////////////////////////////////////////////////////

@@ -72,6 +72,8 @@ namespace Mengine
 
     protected:
         id m_interruptionObserver;
+        id m_routeChangeObserver;
+        id m_mediaResetObserver;
 #endif
 
     protected:

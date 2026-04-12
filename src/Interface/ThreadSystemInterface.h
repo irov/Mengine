@@ -29,7 +29,7 @@ namespace Mengine
         virtual ThreadConditionVariableInterfacePtr createConditionVariable( const DocumentInterfacePtr & _doc ) = 0;
 
     public:
-        virtual void sleep( uint32_t _ms ) = 0;
+        virtual void sleep( uint64_t _ms ) = 0;
 
     public:
         virtual ThreadId getCurrentThreadId() const = 0;

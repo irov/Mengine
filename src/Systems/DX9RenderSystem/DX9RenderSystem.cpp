@@ -4,6 +4,7 @@
 #include "Interface/PlatformServiceInterface.h"
 
 #include "Environment/Windows/Win32PlatformServiceExtensionInterface.h"
+#include "Environment/Windows/Win32Helper.h"
 
 #include "DX9RenderEnum.h"
 #include "DX9RenderErrorHelper.h"
@@ -471,7 +472,7 @@ namespace Mengine
                     , (uint32_t)hr
                 );
 
-                ::Sleep( 100 );
+                Helper::Win32Sleep( 100 );
 
                 hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle
                     , device_flags
@@ -487,7 +488,7 @@ namespace Mengine
                     , (uint32_t)hr
                 );
 
-                ::Sleep( 100 );
+                Helper::Win32Sleep( 100 );
 
                 hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle
                     , device_flags
@@ -503,7 +504,7 @@ namespace Mengine
                     , (uint32_t)hr
                 );
 
-                ::Sleep( 100 );
+                Helper::Win32Sleep( 100 );
 
                 hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle
                     , D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE
@@ -519,7 +520,7 @@ namespace Mengine
                     , (uint32_t)hr
                 );
 
-                ::Sleep( 100 );
+                Helper::Win32Sleep( 100 );
 
                 hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle
                     , D3DCREATE_MIXED_VERTEXPROCESSING
@@ -535,7 +536,7 @@ namespace Mengine
                     , (uint32_t)hr
                 );
 
-                ::Sleep( 100 );
+                Helper::Win32Sleep( 100 );
 
                 hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle
                     , D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE
@@ -551,7 +552,7 @@ namespace Mengine
                     , (uint32_t)hr
                 );
 
-                ::Sleep( 100 );
+                Helper::Win32Sleep( 100 );
 
                 hr = m_pD3D->CreateDevice( m_adapterToUse, D3DDEVTYPE_REF, windowHandle
                     , D3DCREATE_SOFTWARE_VERTEXPROCESSING
@@ -872,7 +873,7 @@ namespace Mengine
 
             LOGGER_MESSAGE( "device lost [begin scene]" );
 
-            ::Sleep( 200 );
+            Helper::Win32Sleep( 200 );
 
             return false;
         }
@@ -1308,7 +1309,7 @@ namespace Mengine
         {
             LOGGER_MESSAGE( "device lost [reset]" );
 
-            ::Sleep( 200 );
+            Helper::Win32Sleep( 200 );
 
             m_lostDevice = true;
 

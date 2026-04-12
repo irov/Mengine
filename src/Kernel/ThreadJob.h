@@ -52,7 +52,7 @@ namespace Mengine
         ~ThreadJob() override;
 
     public:
-        bool initialize( uint32_t _sleep );
+        bool initialize( uint64_t _sleep );
         void finalize();
 
     public:
@@ -67,7 +67,7 @@ namespace Mengine
         void _onThreadTaskFinally() override;
 
     protected:
-        uint32_t m_sleep;
+        uint64_t m_sleep;
 
         ThreadJobWorkerDesc m_workers[MENGINE_THREAD_JOB_WORK_COUNT];
     };

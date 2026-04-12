@@ -213,7 +213,7 @@ namespace Mengine
             }
 
 #if !defined(MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA)
-            ::Sleep( 10 );
+            Helper::Win32Sleep( 10 );
 #endif
         }
 

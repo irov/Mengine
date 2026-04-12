@@ -1,5 +1,7 @@
 #include "Win32ThreadSystem.h"
 
+#include "Environment/Windows/Win32Helper.h"
+
 #include "Win32ThreadIdentity.h"
 #include "Win32ThreadProcessor.h"
 #include "Win32ThreadMutex.h"
@@ -171,9 +173,9 @@ namespace Mengine
         return conditionVariable;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32ThreadSystem::sleep( uint32_t _ms )
+    void Win32ThreadSystem::sleep( uint64_t _ms )
     {
-        ::Sleep( _ms );
+        Helper::Win32Sleep( _ms );
     }
     //////////////////////////////////////////////////////////////////////////
     ThreadId Win32ThreadSystem::getCurrentThreadId() const

@@ -84,6 +84,7 @@ namespace Mengine
             }
 
             bool successful = false;
+            bool done = false;
 
             ThreadWorkerInterfacePtr worker;
             UniqueId id = INVALID_UNIQUE_ID;
@@ -104,10 +105,12 @@ namespace Mengine
                             Detail::threadWorkerFree( _desc );
 
                             successful = true;
+                            done = true;
                         }
                         else
                         {
                             _desc.remove = true;
+                            successful = true;
                         }
                     }break;
                 case ETS_DONE:
@@ -118,6 +121,7 @@ namespace Mengine
                         Detail::threadWorkerFree( _desc );
 
                         successful = true;
+                        done = true;
                     }break;
                 default:
                     break;
@@ -133,7 +137,7 @@ namespace Mengine
                 _desc.mutex_progress->unlock();
             }
 
-            if( successful == true )
+            if( done == true )
             {
                 worker->onThreadWorkerDone( id );
             }

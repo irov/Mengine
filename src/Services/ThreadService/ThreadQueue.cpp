@@ -72,15 +72,33 @@ namespace Mengine
         m_threadTasksMutex->unlock();
 
         m_currentThreadTasksMutex->lock();
+
+        if( m_cancel == true )
+        {
+            m_currentThreadTasksMutex->unlock();
+
+            m_threadTasksMutex->lock();
+            m_threadTasks.remove( _task );
+            m_threadTasksMutex->unlock();
+
+            _task->cancel();
+            _task->finally();
+
+            return;
+        }
+
         for( ThreadTaskInterfacePtr & currentTask : m_currentThreadTasks )
         {
             this->updateCurrentTask_( currentTask );
         }
+        
         m_currentThreadTasksMutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
     void ThreadQueue::cancel()
     {
+        m_cancel = true;
+
         m_currentThreadTasksMutex->lock();
         for( ThreadTaskInterfacePtr & currentTask : m_currentThreadTasks )
         {
@@ -108,9 +126,8 @@ namespace Mengine
             threadTasks.pop_front();
 
             threadTask->cancel();
+            threadTask->finally();
         }
-
-        m_cancel = true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ThreadQueue::update()

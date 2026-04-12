@@ -8,6 +8,8 @@
 
 #include "Kernel/List.h"
 
+#include "Config/Atomic.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -60,7 +62,7 @@ namespace Mengine
 
         FactoryInterfacePtr m_factoryPoolTaskPacket;
 
-        bool m_cancel;
+        AtomicBool m_cancel;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ThreadQueue, ThreadQueueInterface> ThreadQueuePtr;

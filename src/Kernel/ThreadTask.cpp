@@ -202,21 +202,34 @@ namespace Mengine
     void ThreadTask::join()
     {
         if( m_run == false ||
-            m_finish == true ||
             m_complete == true )
         {
             return;
         }
 
+        this->_onThreadTaskJoin();
+
         bool completeProcess = false;
 
-        m_mutex->lock();
+        ThreadMutexInterfacePtr mutex = m_mutex;
+
+        if( mutex != nullptr )
+        {
+            mutex->lock();
+        }
+
         if( m_complete == false )
         {
+            m_successful = false;
+            m_finish = true;
             m_complete = true;
             completeProcess = true;
         }
-        m_mutex->unlock();
+
+        if( mutex != nullptr )
+        {
+            mutex->unlock();
+        }
 
         m_mutex = nullptr;
 

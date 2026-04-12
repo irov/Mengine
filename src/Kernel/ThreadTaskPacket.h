@@ -36,6 +36,7 @@ namespace Mengine
     protected:
         void _onThreadTaskFinish() override;
         void _onThreadTaskComplete( bool _successful ) override;
+        void _onThreadTaskFinally() override;
 
     protected:
         typedef Vector<ThreadTaskPtr> VectorThreadTasks;

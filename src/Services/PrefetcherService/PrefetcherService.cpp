@@ -110,8 +110,6 @@ namespace Mengine
             return;
         }
 
-        m_threads.clear();
-
         for( const HashtablePrefetchReceiver::value_type & value : m_prefetchReceivers )
         {
             const PrefetchReceiverPtr & receiver = value.element;
@@ -121,12 +119,6 @@ namespace Mengine
 
         m_prefetchReceivers.clear();
 
-        for( const ConstString & threadName : m_threads )
-        {
-            THREAD_SERVICE()
-                ->destroyThreadProcessor( threadName );
-        }
-
         if( m_threadQueue != nullptr )
         {
             THREAD_SERVICE()
@@ -134,6 +126,14 @@ namespace Mengine
 
             m_threadQueue = nullptr;
         }
+
+        for( const ConstString & threadName : m_threads )
+        {
+            THREAD_SERVICE()
+                ->destroyThreadProcessor( threadName );
+        }
+
+        m_threads.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     bool PrefetcherService::prefetchImageDecoder( const ContentInterfacePtr & _content, const PrefetcherObserverInterfacePtr & _observer )

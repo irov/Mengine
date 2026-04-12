@@ -113,7 +113,18 @@ namespace Mengine
 
         m_childMutex = nullptr;
 
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ThreadTaskPacket::_onThreadTaskFinally()
+    {
+        for( const ThreadTaskPtr & task : m_tasks )
+        {
+            task->finally();
+        }
+
         m_tasks.clear();
+
+        m_childMutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
 }

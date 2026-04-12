@@ -54,13 +54,17 @@ namespace Mengine
         {
             const ThreadTaskInterfacePtr & task = desc.task;
 
-            task->cancel();
-
             if( desc.progress == true )
             {
                 const ThreadProcessorInterfacePtr & threadProcessor = desc.processor;
                 threadProcessor->removeTask();
             }
+            else
+            {
+                task->cancel();
+            }
+
+            task->join();
 
             task->finally();
         }
@@ -115,11 +119,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ThreadService::createThreadProcessor( const ConstString & _processorName, const ThreadDescription & _description, EThreadPriority _priority, const DocumentInterfacePtr & _doc )
     {
-        MENGINE_ASSERTION_FATAL( this->hasThreadProcessor( _processorName ) == false, "thread '%s' already exist"
-            , _processorName.c_str()
-        );
-
         MENGINE_THREAD_MUTEX_SCOPE( m_mutexThreads );
+
+        for( const ThreadProcessorDesc & td : m_threadProcessors )
+        {
+            if( td.name == _processorName )
+            {
+                MENGINE_ASSERTION_FATAL( false, "thread '%s' already exist"
+                    , _processorName.c_str()
+                );
+
+                return false;
+            }
+        }
 
         ThreadProcessorInterfacePtr threadProcessor = THREAD_SYSTEM()
             ->createThreadProcessor( _description, _priority, _doc );
@@ -167,6 +179,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ThreadService::hasThreadProcessor( const ConstString & _processorName ) const
     {
+        ThreadMutexInterfacePtr mutexThreads = m_mutexThreads;
+        MENGINE_THREAD_MUTEX_SCOPE( mutexThreads );
+
         for( const ThreadProcessorDesc & td : m_threadProcessors )
         {
             if( td.name == _processorName )
@@ -256,6 +271,12 @@ namespace Mengine
                 const ThreadProcessorInterfacePtr & threadProcessor = desc.processor;
                 threadProcessor->removeTask();
             }
+            else
+            {
+                task->cancel();
+            }
+
+            task->join();
 
             task->finally();
 
@@ -276,13 +297,17 @@ namespace Mengine
         {
             const ThreadTaskInterfacePtr & task = desc.task;
 
-            task->cancel();
-
             if( desc.progress == true )
             {
                 const ThreadProcessorInterfacePtr & threadIdentity = desc.processor;
                 threadIdentity->removeTask();
             }
+            else
+            {
+                task->cancel();
+            }
+
+            task->join();
 
             task->finally();
         }
@@ -382,6 +407,9 @@ namespace Mengine
             }
             else
             {
+                ThreadMutexInterfacePtr mutexThreads = m_mutexThreads;
+                MENGINE_THREAD_MUTEX_SCOPE( mutexThreads );
+
                 for( ThreadProcessorDesc & desc_thread : m_threadProcessors )
                 {
                     if( desc_thread.name != desc_task.processorName )
@@ -497,6 +525,9 @@ namespace Mengine
             return STRINGIZE_STRING_LOCAL( "MengineMain" );
         }
 
+        ThreadMutexInterfacePtr mutexThreads = m_mutexThreads;
+        MENGINE_THREAD_MUTEX_SCOPE( mutexThreads );
+
         for( const ThreadProcessorDesc & desc : m_threadProcessors )
         {
             if( desc.processor->isCurrentThread() == false )
@@ -517,9 +548,12 @@ namespace Mengine
             return STRINGIZE_STRING_LOCAL( "MengineMainThread" );
         }
 
+        ThreadMutexInterfacePtr mutexThreads = m_mutexThreads;
+        MENGINE_THREAD_MUTEX_SCOPE( mutexThreads );
+
         for( const ThreadProcessorDesc & desc : m_threadProcessors )
         {
-            if( desc.processor->isCurrentThread() == false )
+            if( desc.processor->getThreadId() != _id )
             {
                 continue;
             }
@@ -532,6 +566,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ThreadService::tryFastProcessTask_( ThreadTaskDesc & _desc )
     {
+        ThreadMutexInterfacePtr mutexThreads = m_mutexThreads;
+        MENGINE_THREAD_MUTEX_SCOPE( mutexThreads );
+
         for( ThreadProcessorDesc & desc_thread : m_threadProcessors )
         {
             if( desc_thread.name != _desc.processorName )

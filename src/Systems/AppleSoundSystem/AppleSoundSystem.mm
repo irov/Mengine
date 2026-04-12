@@ -111,6 +111,11 @@ namespace Mengine
 
         LOGGER_MESSAGE( "AppleSoundSystem initialized with shared AudioUnit mixer backend" );
 
+        LOGGER_MESSAGE_RELEASE( "[DIAG] device sampleRate=%.0f outputChannels=%u"
+            , m_outputSampleRate
+            , m_outputChannels
+        );
+
         m_factoryAppleSoundBuffer = Helper::makeFactoryPoolWithMutex<AppleSoundBufferMemory, 32>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryAppleSoundBufferStream = Helper::makeFactoryPoolWithMutex<AppleSoundBufferStream, 32>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryAppleSoundSource = Helper::makeFactoryPoolWithMutexAndListener<AppleSoundSource, 32>( this, &AppleSoundSystem::onDestroyAppleSoundSource_, MENGINE_DOCUMENT_FACTORABLE );
@@ -616,6 +621,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleSoundSystem::configureSourceBus_( uint32_t _busIndex, uint32_t _frequency, uint32_t _channels )
     {
+        LOGGER_MESSAGE_RELEASE( "[DIAG] configureSourceBus_ bus=%u freq=%u ch=%u (output=%.0f:%u)"
+            , _busIndex
+            , _frequency
+            , _channels
+            , m_outputSampleRate
+            , m_outputChannels
+        );
+
         AudioStreamBasicDescription inputFormat;
         AppleSoundSystem::makeFormat_( &inputFormat, (Float64)_frequency, _channels );
 

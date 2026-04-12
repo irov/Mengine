@@ -114,9 +114,11 @@ namespace Mengine
         return identity;
     }
     //////////////////////////////////////////////////////////////////////////
-    void POSIXThreadSystem::sleep( uint32_t _ms )
+    void POSIXThreadSystem::sleep( uint64_t _ms )
     {
-        ::usleep( _ms * 1000 );
+        useconds_t us = (useconds_t)( _ms * MENGINE_UINT64_C(1000) );
+        
+        ::usleep( us );
     }
     //////////////////////////////////////////////////////////////////////////
     ThreadMutexInterfacePtr POSIXThreadSystem::createMutex( const DocumentInterfacePtr & _doc )

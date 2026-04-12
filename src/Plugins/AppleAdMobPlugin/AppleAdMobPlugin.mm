@@ -198,7 +198,6 @@
             [advertisement readyAdProvider];
         }];
     }];
-#endif
 }
 
 #pragma mark - AppleAdvertisementProviderInterface

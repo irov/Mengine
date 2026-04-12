@@ -119,6 +119,13 @@
     
     mobileAds.audioVideoManager.audioSessionIsApplicationManaged = YES;
     
+    // Mute AdMob audio to prevent its WebView from reconfiguring AVAudioSession
+    [mobileAds setApplicationMuted:YES];
+    [mobileAds setApplicationVolume:0.0f];
+    
+    // Prevent AdMob SDK from auto-initing mediation adapters (reduces init side-effects)
+    [mobileAds disableMediationInitialization];
+    
     GADVersionNumber version = [mobileAds versionNumber];
     NSString * versionString = [NSString stringWithFormat:@"%lu.%lu.%lu", version.majorVersion, version.minorVersion, version.patchVersion];
     

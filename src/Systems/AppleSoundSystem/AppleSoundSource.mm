@@ -7,6 +7,7 @@
 #include "Kernel/SpinLockScope.h"
 
 #include "Config/StdMath.h"
+#include "Config/StdThread.h"
 
 #include "math/utils.h"
 
@@ -33,6 +34,8 @@ namespace Mengine
         , m_pausing( false )
         , m_loop( false )
         , m_finished( false )
+        , m_renderBarrier( false )
+        , m_activeRenders( 0 )
         , m_busIndex( INVALID_BUS_INDEX )
     {
     }
@@ -270,6 +273,8 @@ namespace Mengine
             return;
         }
 
+        this->beginMutableState_();
+
         m_playing = false;
         m_pausing = false;
         m_finished = false;
@@ -284,6 +289,8 @@ namespace Mengine
         this->releaseSourceBus_();
 
         m_framePosition = 0;
+
+        this->endMutableState_();
     }
     //////////////////////////////////////////////////////////////////////////
     bool AppleSoundSource::isPlay() const
@@ -541,8 +548,15 @@ namespace Mengine
             return noErr;
         }
 
+        if( this->tryEnterRender_() == false )
+        {
+            return noErr;
+        }
+
         if( m_playing.load() == false || m_pausing.load() == true )
         {
+            this->leaveRender_();
+
             return noErr;
         }
 
@@ -550,6 +564,8 @@ namespace Mengine
 
         if( soundBuffer == nullptr )
         {
+            this->leaveRender_();
+
             return noErr;
         }
 
@@ -566,6 +582,8 @@ namespace Mengine
         {
             m_finished = true;
         }
+
+        this->leaveRender_();
 
         return noErr;
     }
@@ -623,6 +641,46 @@ namespace Mengine
         m_busIndex = INVALID_BUS_INDEX;
 
         return busIndex;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AppleSoundSource::beginMutableState_()
+    {
+        m_renderBarrier = true;
+
+        while( m_activeRenders.load() != 0 )
+        {
+            StdThread::yield();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AppleSoundSource::endMutableState_()
+    {
+        m_renderBarrier = false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AppleSoundSource::tryEnterRender_()
+    {
+        for( ;; )
+        {
+            if( m_renderBarrier.load() == true )
+            {
+                return false;
+            }
+
+            m_activeRenders.fetch_add( 1 );
+
+            if( m_renderBarrier.load() == false )
+            {
+                return true;
+            }
+
+            m_activeRenders.fetch_sub( 1 );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AppleSoundSource::leaveRender_()
+    {
+        m_activeRenders.fetch_sub( 1 );
     }
     //////////////////////////////////////////////////////////////////////////
 }

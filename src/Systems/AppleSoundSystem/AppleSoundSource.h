@@ -78,6 +78,11 @@ namespace Mengine
         void releaseSourceBus_();
         uint32_t detachBusIndex_();
 
+        void beginMutableState_();
+        void endMutableState_();
+        bool tryEnterRender_();
+        void leaveRender_();
+
     protected:
         mutable SpinLock m_lock;
 
@@ -91,6 +96,8 @@ namespace Mengine
         AtomicBool m_pausing;
         AtomicBool m_loop;
         AtomicBool m_finished;
+        AtomicBool m_renderBarrier;
+        AtomicUInt32 m_activeRenders;
         uint32_t m_busIndex;
     };
     //////////////////////////////////////////////////////////////////////////

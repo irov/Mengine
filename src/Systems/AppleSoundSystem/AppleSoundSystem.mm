@@ -288,10 +288,6 @@ namespace Mengine
             return;
         }
 
-        this->enableSourceBus_( _busIndex, false );
-        this->setSourceBusVolume( _busIndex, 0.f );
-        AudioUnitReset( m_mixerUnit, kAudioUnitScope_Input, _busIndex );
-
         {
             AppleSoundMixerBusDesc & busDesc = m_mixerBuses[_busIndex];
             MENGINE_SPINLOCK_SCOPE( busDesc.lock );
@@ -300,6 +296,10 @@ namespace Mengine
             busDesc.frequency = 0;
             busDesc.channels = 0;
         }
+
+        this->setSourceBusVolume( _busIndex, 0.f );
+        this->enableSourceBus_( _busIndex, false );
+        AudioUnitReset( m_mixerUnit, kAudioUnitScope_Input, _busIndex );
 
         {
             MENGINE_SPINLOCK_SCOPE( m_busLock );

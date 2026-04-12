@@ -77,6 +77,13 @@ namespace Mengine
 
         float gain = Detail::calcGain( m_volume.load() );
 
+        LOGGER_MESSAGE_RELEASE( "[DIAG] AppleSoundSource::play() gain=%.3f pausing=%u loop=%u pos=%.1f"
+            , gain
+            , m_pausing.load()
+            , m_loop.load()
+            , this->getPosition()
+        );
+
         if( m_pausing.load() == false )
         {
             float position = this->getPosition();
@@ -106,6 +113,12 @@ namespace Mengine
 
                 return false;
             }
+
+            LOGGER_MESSAGE_RELEASE( "[DIAG] AppleSoundSource::play() bus acquired, busIndex=%u freq=%u ch=%u"
+                , m_busIndex
+                , soundBuffer->getFrequency()
+                , soundBuffer->getChannels()
+            );
         }
         else
         {
@@ -273,6 +286,13 @@ namespace Mengine
             return;
         }
 
+        LOGGER_MESSAGE_RELEASE( "[DIAG] AppleSoundSource::stop() BEGIN playing=%u pausing=%u busIndex=%u pos=%.1f"
+            , m_playing.load()
+            , m_pausing.load()
+            , busIndex
+            , this->getPosition()
+        );
+
         this->beginMutableState_();
 
         m_playing = false;
@@ -291,6 +311,10 @@ namespace Mengine
         m_framePosition = 0;
 
         this->endMutableState_();
+
+        LOGGER_MESSAGE_RELEASE( "[DIAG] AppleSoundSource::stop() END busIndex was %u"
+            , busIndex
+        );
     }
     //////////////////////////////////////////////////////////////////////////
     bool AppleSoundSource::isPlay() const
@@ -550,6 +574,10 @@ namespace Mengine
 
         if( this->tryEnterRender_() == false )
         {
+            LOGGER_MESSAGE_RELEASE( "[DIAG] renderMixerFrames BLOCKED by barrier frames=%u"
+                , (uint32_t)_frames
+            );
+
             return noErr;
         }
 
@@ -580,6 +608,12 @@ namespace Mengine
 
         if( totalFrames != 0 && renderedFrames < (uint32_t)_frames && m_loop.load() == false )
         {
+            LOGGER_MESSAGE_RELEASE( "[DIAG] renderMixerFrames FINISHED rendered=%u/%u totalFrames=%u"
+                , renderedFrames
+                , (uint32_t)_frames
+                , totalFrames
+            );
+
             m_finished = true;
         }
 

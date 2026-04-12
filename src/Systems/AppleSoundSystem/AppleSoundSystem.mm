@@ -276,6 +276,13 @@ namespace Mengine
             return false;
         }
 
+        LOGGER_MESSAGE_RELEASE( "[DIAG] acquireSourceBus bus=%u freq=%u ch=%u gain=%.3f"
+            , busIndex
+            , _frequency
+            , _channels
+            , _gain
+        );
+
         *_busIndex = busIndex;
 
         return true;
@@ -287,6 +294,10 @@ namespace Mengine
         {
             return;
         }
+
+        LOGGER_MESSAGE_RELEASE( "[DIAG] releaseSourceBus BEGIN bus=%u"
+            , _busIndex
+        );
 
         {
             AppleSoundMixerBusDesc & busDesc = m_mixerBuses[_busIndex];
@@ -305,6 +316,10 @@ namespace Mengine
             MENGINE_SPINLOCK_SCOPE( m_busLock );
             m_mixerBuses[_busIndex].busy = false;
         }
+
+        LOGGER_MESSAGE_RELEASE( "[DIAG] releaseSourceBus END bus=%u"
+            , _busIndex
+        );
     }
     //////////////////////////////////////////////////////////////////////////
     bool AppleSoundSystem::setSourceBusVolume( uint32_t _busIndex, float _gain )
@@ -693,7 +708,9 @@ namespace Mengine
 
         AppleSoundSource * appleSource = static_cast<AppleSoundSource *>( source.get() );
 
-        return appleSource->renderMixerFrames( _numberFrames, _ioData );
+        OSStatus result = appleSource->renderMixerFrames( _numberFrames, _ioData );
+
+        return result;
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleSoundSystem::onDestroyAppleSoundSource_( AppleSoundSource * _soundSource )

@@ -210,6 +210,14 @@ namespace Mengine
 
         m_updating = true;
 
+        LOGGER_MESSAGE_RELEASE( "[DIAG] AppleSoundBufferStream::playSource() pos=%.1f loop=%u readable=%u ringSize=%u finished=%u"
+            , _position
+            , _looped
+            , this->getReadableBytes_()
+            , (uint32_t)m_ringBufferSize
+            , m_finished.load()
+        );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -217,6 +225,13 @@ namespace Mengine
     {
         {
             MENGINE_THREAD_MUTEX_SCOPE( m_mutexUpdating );
+
+            LOGGER_MESSAGE_RELEASE( "[DIAG] AppleSoundBufferStream::stopSource() updating=%u readable=%u playCursor=%u finished=%u"
+                , m_updating.load()
+                , this->getReadableBytes_()
+                , (uint32_t)m_playCursorBytes.load()
+                , m_finished.load()
+            );
 
             m_updating = false;
             m_finished = true;
@@ -435,6 +450,16 @@ namespace Mengine
         uint32_t w = m_writeCount.load( StdAtomic::memory_order_acquire );
         uint32_t r = m_readCount.load( StdAtomic::memory_order_relaxed );
         uint32_t readable = w - r;
+
+        if( readable == 0 && m_finished.load() == false )
+        {
+            LOGGER_MESSAGE_RELEASE( "[DIAG] stream::renderMixerFrames UNDERFLOW frames=%u w=%u r=%u updating=%u"
+                , (uint32_t)_frames
+                , w
+                , r
+                , m_updating.load()
+            );
+        }
 
         while( renderedFrames != _frames && readable != 0 )
         {

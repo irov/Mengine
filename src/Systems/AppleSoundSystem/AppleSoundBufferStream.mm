@@ -25,6 +25,7 @@ namespace Mengine
         , m_writeCount( 0 )
         , m_readCount( 0 )
         , m_basePositionMs( 0.f )
+        , m_diagRenderCount( 0 )
 #if defined(MENGINE_DEBUG)
         , m_renderCalls( 0 )
         , m_updateTicks( 0 )
@@ -196,6 +197,8 @@ namespace Mengine
             {
                 return false;
             }
+
+            m_diagRenderCount = 0;
 
             LOGGER_MESSAGE( "[apple] stream prebuffer freq: %u channels: %u duration: %f position: %f readable: %u finished: %u loop: %u"
                 , m_frequency
@@ -503,6 +506,24 @@ namespace Mengine
         m_readCount.store( r, StdAtomic::memory_order_release );
 
         *_renderedFrames = renderedFrames;
+
+        uint32_t diagCall = m_diagRenderCount.fetch_add( 1 );
+        if( diagCall < 5 && renderedFrames != 0 && _ioData->mNumberBuffers > 0 )
+        {
+            Float32 * buf0 = static_cast<Float32 *>( _ioData->mBuffers[0].mData );
+            Float32 s0 = buf0 != nullptr ? buf0[0] : -999.f;
+            Float32 s1 = buf0 != nullptr && renderedFrames > 1 ? buf0[1] : -999.f;
+            Float32 s2 = buf0 != nullptr && renderedFrames > 2 ? buf0[2] : -999.f;
+            Float32 s3 = buf0 != nullptr && renderedFrames > 3 ? buf0[3] : -999.f;
+
+            LOGGER_MESSAGE_RELEASE( "[DIAG] stream render #%u frames=%u/%u readable_after=%u samples=[%.6f, %.6f, %.6f, %.6f]"
+                , diagCall
+                , renderedFrames
+                , (uint32_t)_frames
+                , w - r
+                , s0, s1, s2, s3
+            );
+        }
 
 #if defined(MENGINE_DEBUG)
         m_lastRenderFramesProduced.store( renderedFrames, StdAtomic::memory_order_relaxed );

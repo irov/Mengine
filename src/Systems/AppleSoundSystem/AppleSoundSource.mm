@@ -339,7 +339,16 @@ namespace Mengine
             return;
         }
 
+        float oldVolume = m_volume.load();
         m_volume = _volume;
+
+        LOGGER_MESSAGE_RELEASE( "[DIAG] setVolume %.4f -> %.4f gain=%.6f bus=%u playing=%u"
+            , oldVolume
+            , _volume
+            , Detail::calcGain( _volume )
+            , m_busIndex
+            , m_playing.load()
+        );
 
         if( m_playing.load() == true && m_pausing.load() == false )
         {
@@ -603,6 +612,15 @@ namespace Mengine
         uint32_t renderedFrames = soundBuffer->renderMixerFrames( _ioData, 0, (uint32_t)_frames, currentFrame, m_loop.load(), &newFrame );
 
         m_framePosition = newFrame;
+
+        if( renderedFrames != 0 && renderedFrames < (uint32_t)_frames )
+        {
+            LOGGER_MESSAGE_RELEASE( "[DIAG] renderMixerFrames PARTIAL rendered=%u/%u frame=%u"
+                , renderedFrames
+                , (uint32_t)_frames
+                , newFrame
+            );
+        }
 
         uint32_t totalFrames = soundBuffer->getFrameCount();
 

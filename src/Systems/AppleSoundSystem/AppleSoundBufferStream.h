@@ -81,6 +81,8 @@ namespace Mengine
 
         AtomicFloat m_basePositionMs;
 
+        AtomicUInt32 m_diagRenderCount;
+
 #if defined(MENGINE_DEBUG)
         AtomicUInt32 m_renderCalls;
         AtomicUInt32 m_updateTicks;

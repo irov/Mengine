@@ -65,9 +65,11 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
         }
         //////////////////////////////////////////////////////////////////////////
-        void Win32Sleep( uint32_t _ms )
+        void Win32Sleep( uint64_t _ms )
         {
-            ::Sleep( _ms );
+            DWORD dwMilliseconds = (DWORD)_ms;
+
+            ::Sleep( dwMilliseconds );
         }
         //////////////////////////////////////////////////////////////////////////
         PathString Win32GetCurrentDllPath()

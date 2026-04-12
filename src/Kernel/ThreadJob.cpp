@@ -279,7 +279,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadJob::initialize( uint32_t _sleep )
+    bool ThreadJob::initialize( uint64_t _sleep )
     {
         m_sleep = _sleep;
 
@@ -449,7 +449,7 @@ namespace Mengine
             }
             else
             {
-                for( uint32_t sleep = 0; sleep <= m_sleep; sleep += sleep_partition )
+                for( uint64_t sleep = 0; sleep <= m_sleep; sleep += sleep_partition )
                 {
                     if( this->isCancel() == true )
                     {

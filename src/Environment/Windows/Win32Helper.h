@@ -10,7 +10,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        void Win32Sleep( uint32_t _ms );
+        void Win32Sleep( uint64_t _ms );
         PathString Win32GetCurrentDllPath();
         ThreadId Win32GetCurrentThreadId();
         void Win32ReadErrorMessageA( uint32_t _id, Char * const _message, size_t _capacity );

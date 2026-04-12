@@ -721,7 +721,7 @@ namespace Mengine
 #if defined(MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA)
             if( m_sessionLock == true )
             {
-                ::Sleep( 200 );
+                Helper::Win32Sleep( 200 );
 
                 continue;
             }
@@ -729,7 +729,7 @@ namespace Mengine
 
             if( m_active == false )
             {
-                ::Sleep( 100 );
+                Helper::Win32Sleep( 100 );
 
                 continue;
             }
@@ -738,7 +738,7 @@ namespace Mengine
 
             if( this->renderPlatform() == false )
             {
-                ::Sleep( 100 );
+                Helper::Win32Sleep( 100 );
 
                 continue;
             }
@@ -748,7 +748,7 @@ namespace Mengine
             if( APPLICATION_SERVICE()
                 ->getVSync() == false && OPTION_maxfps == false )
             {
-                ::Sleep( 1 );
+                Helper::Win32Sleep( 1 );
             }
         }
     }

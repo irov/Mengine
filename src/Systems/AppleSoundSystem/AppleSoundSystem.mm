@@ -764,43 +764,10 @@ namespace Mengine
     OSStatus AppleSoundSystem::mixerRenderCallback_( void * _refCon, AudioUnitRenderActionFlags * _flags, const AudioTimeStamp * _timeStamp, UInt32 _busNumber, UInt32 _numberFrames, AudioBufferList * _ioData )
     {
         MENGINE_UNUSED( _flags );
+        MENGINE_UNUSED( _timeStamp );
         MENGINE_UNUSED( _busNumber );
 
         AppleSoundMixerBusDesc * busDesc = static_cast<AppleSoundMixerBusDesc *>( _refCon );
-
-        // [DIAG] Detect timestamp discontinuities (gaps = missed callbacks)
-        {
-            static Float64 s_expectedSampleTime = -1.0;
-            static uint32_t s_diagGapCount = 0;
-
-            if( (_timeStamp->mFlags & kAudioTimeStampSampleTimeValid) != 0 )
-            {
-                Float64 sampleTime = _timeStamp->mSampleTime;
-
-                if( s_expectedSampleTime >= 0.0 )
-                {
-                    Float64 gap = sampleTime - s_expectedSampleTime;
-
-                    if( gap < -0.5 || gap > 0.5 )
-                    {
-                        if( s_diagGapCount < 50 )
-                        {
-                            LOGGER_MESSAGE_RELEASE( "[DIAG] RENDER GAP bus=%u expected=%.0f actual=%.0f gap=%.1f frames=%u"
-                                , _busNumber
-                                , s_expectedSampleTime
-                                , sampleTime
-                                , gap
-                                , _numberFrames
-                            );
-
-                            ++s_diagGapCount;
-                        }
-                    }
-                }
-
-                s_expectedSampleTime = sampleTime + (Float64)_numberFrames;
-            }
-        }
 
         AppleSoundSystem::zeroBufferList_( _ioData );
 

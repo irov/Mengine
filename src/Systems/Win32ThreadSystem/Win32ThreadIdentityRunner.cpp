@@ -29,9 +29,7 @@ namespace Mengine
     {
         if( m_sleep != 0 )
         {
-            uint32_t sleep = (uint32_t)m_sleep;
-
-            Helper::Win32Sleep( sleep );
+            Helper::Win32Sleep( m_sleep );
         }
     }
     //////////////////////////////////////////////////////////////////////////

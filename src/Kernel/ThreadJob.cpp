@@ -431,8 +431,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ThreadJob::_onThreadTaskProcess()
     {
-        while( this->isCancel() == false )
+        for( ;; )
         {
+            bool cancel = this->isCancel();
+            
+            if( cancel == true )
+            {
+                break;
+            }
+            
             for( uint32_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
             {
                 ThreadJobWorkerDesc & desc = m_workers[i];

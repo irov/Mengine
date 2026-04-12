@@ -101,7 +101,9 @@
         IOS_LOGGER_ERROR(@"[ERROR] AdMob plugin not found bundle config [%@]", @PLUGIN_BUNDLE_NAME);
         
         return NO;
-    }    
+    }
+    
+    [GADMobileAds sharedInstance].audioVideoManager.audioSessionIsApplicationManaged = YES;
     
     return YES;
 }
@@ -115,11 +117,7 @@
     
     IOS_LOGGER_MESSAGE(@"[AdMob] initializing after ATT completion");
     
-    GADMobileAds * mobileAds = [GADMobileAds sharedInstance];
-    
-    mobileAds.audioVideoManager.audioSessionIsApplicationManaged = YES;
-    
-    GADVersionNumber version = [mobileAds versionNumber];
+    GADVersionNumber version = [[GADMobileAds sharedInstance] versionNumber];
     NSString * versionString = [NSString stringWithFormat:@"%lu.%lu.%lu", version.majorVersion, version.minorVersion, version.patchVersion];
     
     IOS_LOGGER_MESSAGE(@"AdMob: %@", versionString);
@@ -128,7 +126,7 @@
     BOOL MengineAppleAdMobPlugin_RequestConfigurationTestDeviceIdsEnabled = [AppleBundle getPluginConfigBoolean:@PLUGIN_BUNDLE_NAME withKey:@"RequestConfigurationTestDeviceIdsEnabled" withDefault:NO];
     
     if (MengineAppleAdMobPlugin_RequestConfigurationTestDeviceIdsEnabled == YES) {
-        GADRequestConfiguration * requestConfiguration = mobileAds.requestConfiguration;
+        GADRequestConfiguration * requestConfiguration = [GADMobileAds sharedInstance].requestConfiguration;
         
         if ([AppleDetail hasOption:@"admob.test_device_advertising"] == YES) {
             NSString * testDeviceId = [[[ASIdentifierManager sharedManager] advertisingIdentifier] UUIDString];
@@ -161,7 +159,7 @@
     
     __weak AppleAdMobPlugin * weakSelf = self;
     
-    [mobileAds startWithCompletionHandler:^(GADInitializationStatus * _Nonnull status) {
+    [[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus * _Nonnull status) {
         AppleAdMobPlugin * strongSelf = weakSelf;
         
         if (strongSelf == nil) {
@@ -169,8 +167,6 @@
         }
         
         [AppleDetail addMainQueueOperation:^{
-            IOS_LOGGER_MESSAGE(@"[AdMob] plugin initialize complete");
-            
 #if defined(MENGINE_PLUGIN_APPLE_ADMOB_BANNER)
             if (MengineAppleAdMobPlugin_BannerAdUnitId != nil) {
                 NSString * MengineAppleAdMobPlugin_BannerPlacement = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"BannerPlacement" withDefault:@"banner"];
@@ -182,7 +178,7 @@
                 strongSelf.m_bannerAd = bannerAd;
             }
 #endif
-        
+                
 #if defined(MENGINE_PLUGIN_APPLE_ADMOB_INTERSTITIAL)
             if (MengineAppleAdMobPlugin_InterstitialAdUnitId != nil) {
                 AppleAdMobInterstitialDelegate * interstitialAd = [[AppleAdMobInterstitialDelegate alloc] initWithAdUnitIdentifier:MengineAppleAdMobPlugin_InterstitialAdUnitId advertisement:advertisement];
@@ -190,7 +186,7 @@
                 strongSelf.m_interstitialAd = interstitialAd;
             }
 #endif
-        
+                
 #if defined(MENGINE_PLUGIN_APPLE_ADMOB_REWARDED)
             if (MengineAppleAdMobPlugin_RewardedAdUnitId != nil) {
                 AppleAdMobRewardedDelegate * rewardedAd = [[AppleAdMobRewardedDelegate alloc] initWithAdUnitIdentifier:MengineAppleAdMobPlugin_RewardedAdUnitId advertisement:advertisement];
@@ -198,10 +194,11 @@
                 strongSelf.m_rewardedAd = rewardedAd;
             }
 #endif
-        
+                
             [advertisement readyAdProvider];
         }];
     }];
+#endif
 }
 
 #pragma mark - AppleAdvertisementProviderInterface

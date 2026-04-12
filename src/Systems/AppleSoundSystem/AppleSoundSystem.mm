@@ -65,6 +65,14 @@ namespace Mengine
                 );
             }
 
+            // Request larger IO buffer to reduce sensitivity to CPU spikes (e.g. AdMob WebView init)
+            if( [session setPreferredIOBufferDuration:0.046 error:&error] == NO )
+            {
+                LOGGER_WARNING( "failed to set preferred IO buffer duration [%s]"
+                    , error.localizedDescription.UTF8String
+                );
+            }
+
             if( [session setActive:YES error:&error] == NO )
             {
                 LOGGER_WARNING( "failed to activate AVAudioSession [%s]"

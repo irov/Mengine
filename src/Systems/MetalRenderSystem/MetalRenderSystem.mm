@@ -63,14 +63,10 @@ namespace Mengine
         , m_colorMaskA( true )
         , m_device( nil )
         , m_commandQueue( nil )
-        , m_commandBuffer( nil )
-        , m_renderEncoder( nil )
         , m_depthStencilState( nil )
-        , m_depthStencilTexture( nil )
         , m_depthStencilWidth( 0 )
         , m_depthStencilHeight( 0 )
         , m_currentDrawable( nil )
-        , m_currentDrawableTexture( nil )
     {
         mt::ident_m4( &m_worldMatrix );
         mt::ident_m4( &m_viewMatrix );
@@ -149,13 +145,13 @@ namespace Mengine
         m_factoryRenderProgram = nullptr;
         m_factoryRenderProgramVariable = nullptr;
 
-        m_renderEncoder = nil;
-        m_commandBuffer = nil;
+        m_frameContext.renderEncoder = nil;
+        m_frameContext.commandBuffer = nil;
         m_commandQueue = nil;
         m_depthStencilState = nil;
-        m_depthStencilTexture = nil;
+        m_frameContext.depthStencilTexture = nil;
         m_currentDrawable = nil;
-        m_currentDrawableTexture = nil;
+        m_frameContext.drawableTexture = nil;
         m_device = nil;
 
         MetalRenderImageLockedFactoryStorage::finalize();
@@ -318,7 +314,7 @@ namespace Mengine
         float width = right - left;
         float height = bottom - top;
 
-        if( m_renderEncoder != nil )
+        if( m_frameContext.renderEncoder != nil )
         {
             MTLScissorRect scissorRect;
             scissorRect.x = (NSUInteger)left;
@@ -326,13 +322,13 @@ namespace Mengine
             scissorRect.width = (NSUInteger)width;
             scissorRect.height = (NSUInteger)height;
 
-            [m_renderEncoder setScissorRect:scissorRect];
+            [m_frameContext.renderEncoder setScissorRect:scissorRect];
         }
     }
     //////////////////////////////////////////////////////////////////////////
     void MetalRenderSystem::removeScissor()
     {
-        if( m_renderEncoder != nil )
+        if( m_frameContext.renderEncoder != nil )
         {
             MTLScissorRect scissorRect;
             scissorRect.x = 0;
@@ -340,7 +336,7 @@ namespace Mengine
             scissorRect.width = (NSUInteger)m_viewport.getWidth();
             scissorRect.height = (NSUInteger)m_viewport.getHeight();
 
-            [m_renderEncoder setScissorRect:scissorRect];
+            [m_frameContext.renderEncoder setScissorRect:scissorRect];
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -348,7 +344,7 @@ namespace Mengine
     {
         m_viewport = _viewport;
 
-        if( m_renderEncoder != nil )
+        if( m_frameContext.renderEncoder != nil )
         {
             MTLViewport viewport;
             viewport.originX = (double)m_viewport.begin.x;
@@ -358,7 +354,7 @@ namespace Mengine
             viewport.znear = 0.0;
             viewport.zfar = 1.0;
 
-            [m_renderEncoder setViewport:viewport];
+            [m_frameContext.renderEncoder setViewport:viewport];
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -627,7 +623,7 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( m_currentIndexBuffer != nullptr, "index buffer not set" );
         MENGINE_ASSERTION_FATAL( m_currentVertexBuffer != nullptr, "vertex buffer not set" );
         MENGINE_ASSERTION_FATAL( m_currentProgram != nullptr, "program not set" );
-        MENGINE_ASSERTION_FATAL( m_renderEncoder != nil, "render encoder not set" );
+        MENGINE_ASSERTION_FATAL( m_frameContext.renderEncoder != nil, "render encoder not set" );
 
         MetalBlendStateKey blendKey;
         blendKey.alphaBlend = m_alphaBlend;
@@ -650,13 +646,13 @@ namespace Mengine
             return;
         }
 
-        [m_renderEncoder setRenderPipelineState:pipelineState];
+        [m_frameContext.renderEncoder setRenderPipelineState:pipelineState];
 
-        m_currentProgram->bindMatrix( m_renderEncoder, m_worldMatrix, m_viewMatrix, m_projectionMatrix, m_totalWVPMatrix );
+        m_currentProgram->bindMatrix( m_frameContext.renderEncoder, m_worldMatrix, m_viewMatrix, m_projectionMatrix, m_totalWVPMatrix );
 
         if( m_currentProgramVariable != nullptr )
         {
-            m_currentProgramVariable->apply( m_renderEncoder );
+            m_currentProgramVariable->apply( m_frameContext.renderEncoder );
         }
 
         for( uint32_t stageId = 0; stageId != MENGINE_MAX_TEXTURE_STAGES; ++stageId )
@@ -677,7 +673,7 @@ namespace Mengine
 
             if( mtlTexture != nil )
             {
-                [m_renderEncoder setFragmentTexture:mtlTexture atIndex:stageId];
+                [m_frameContext.renderEncoder setFragmentTexture:mtlTexture atIndex:stageId];
 
                 MTLSamplerDescriptor * samplerDesc = [[MTLSamplerDescriptor alloc] init];
                 samplerDesc.minFilter = Helper::toMTLMinFilter( textureStage.minFilter );
@@ -687,19 +683,19 @@ namespace Mengine
                 samplerDesc.tAddressMode = Helper::toMTLAddressMode( textureStage.wrapV );
 
                 id<MTLSamplerState> samplerState = [m_device newSamplerStateWithDescriptor:samplerDesc];
-                [m_renderEncoder setFragmentSamplerState:samplerState atIndex:stageId];
+                [m_frameContext.renderEncoder setFragmentSamplerState:samplerState atIndex:stageId];
             }
         }
 
         id<MTLBuffer> vertexBuffer = m_currentVertexBuffer->getMetalBuffer();
-        [m_renderEncoder setVertexBuffer:vertexBuffer offset:0 atIndex:0];
+        [m_frameContext.renderEncoder setVertexBuffer:vertexBuffer offset:0 atIndex:0];
 
-        [m_renderEncoder setDepthStencilState:m_depthStencilState];
+        [m_frameContext.renderEncoder setDepthStencilState:m_depthStencilState];
 
         MTLCullMode mtlCullMode = Helper::toMTLCullMode( m_cullMode );
-        [m_renderEncoder setCullMode:mtlCullMode];
+        [m_frameContext.renderEncoder setCullMode:mtlCullMode];
 
-        [m_renderEncoder setFrontFacingWinding:MTLWindingClockwise];
+        [m_frameContext.renderEncoder setFrontFacingWinding:MTLWindingClockwise];
 
         id<MTLBuffer> indexBuffer = m_currentIndexBuffer->getMetalBuffer();
         MTLIndexType indexType = Helper::toMTLIndexType( sizeof( RenderIndex ) );
@@ -707,7 +703,7 @@ namespace Mengine
 
         NSUInteger indexBufferOffset = _desc.startIndex * sizeof( RenderIndex );
 
-        [m_renderEncoder drawIndexedPrimitives:primitiveType
+        [m_frameContext.renderEncoder drawIndexedPrimitives:primitiveType
                                     indexCount:_desc.indexCount
                                      indexType:indexType
                                    indexBuffer:indexBuffer
@@ -815,10 +811,10 @@ namespace Mengine
     {
         m_fillMode = _mode;
 
-        if( m_renderEncoder != nil )
+        if( m_frameContext.renderEncoder != nil )
         {
             MTLTriangleFillMode mtlFillMode = Helper::toMTLFillMode( _mode );
-            [m_renderEncoder setTriangleFillMode:mtlFillMode];
+            [m_frameContext.renderEncoder setTriangleFillMode:mtlFillMode];
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -907,50 +903,50 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MetalRenderSystem::beginScene()
     {
-        if( m_currentDrawableTexture == nil )
+        if( m_frameContext.drawableTexture == nil )
         {
             return false;
         }
 
-        m_commandBuffer = [m_commandQueue commandBuffer];
+        m_frameContext.commandBuffer = [m_commandQueue commandBuffer];
 
-        if( m_commandBuffer == nil )
+        if( m_frameContext.commandBuffer == nil )
         {
             return false;
         }
 
-        NSUInteger drawableWidth = [m_currentDrawableTexture width];
-        NSUInteger drawableHeight = [m_currentDrawableTexture height];
+        NSUInteger drawableWidth = [m_frameContext.drawableTexture width];
+        NSUInteger drawableHeight = [m_frameContext.drawableTexture height];
 
-        if( m_depthStencilTexture == nil || m_depthStencilWidth != (uint32_t)drawableWidth || m_depthStencilHeight != (uint32_t)drawableHeight )
+        if( m_frameContext.depthStencilTexture == nil || m_depthStencilWidth != (uint32_t)drawableWidth || m_depthStencilHeight != (uint32_t)drawableHeight )
         {
             this->createDepthStencilTexture_( (uint32_t)drawableWidth, (uint32_t)drawableHeight );
         }
 
         MTLRenderPassDescriptor * renderPassDescriptor = [MTLRenderPassDescriptor renderPassDescriptor];
-        renderPassDescriptor.colorAttachments[0].texture = m_currentDrawableTexture;
+        renderPassDescriptor.colorAttachments[0].texture = m_frameContext.drawableTexture;
         renderPassDescriptor.colorAttachments[0].loadAction = MTLLoadActionClear;
         renderPassDescriptor.colorAttachments[0].storeAction = MTLStoreActionStore;
         renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColorMake( m_clearColor.getR(), m_clearColor.getG(), m_clearColor.getB(), m_clearColor.getA() );
 
-        if( m_depthStencilTexture != nil )
+        if( m_frameContext.depthStencilTexture != nil )
         {
-            renderPassDescriptor.depthAttachment.texture = m_depthStencilTexture;
+            renderPassDescriptor.depthAttachment.texture = m_frameContext.depthStencilTexture;
             renderPassDescriptor.depthAttachment.loadAction = MTLLoadActionClear;
             renderPassDescriptor.depthAttachment.storeAction = MTLStoreActionDontCare;
             renderPassDescriptor.depthAttachment.clearDepth = m_clearDepth;
 
-            renderPassDescriptor.stencilAttachment.texture = m_depthStencilTexture;
+            renderPassDescriptor.stencilAttachment.texture = m_frameContext.depthStencilTexture;
             renderPassDescriptor.stencilAttachment.loadAction = MTLLoadActionClear;
             renderPassDescriptor.stencilAttachment.storeAction = MTLStoreActionDontCare;
             renderPassDescriptor.stencilAttachment.clearStencil = (uint32_t)m_clearStencil;
         }
 
-        m_renderEncoder = [m_commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
+        m_frameContext.renderEncoder = [m_frameContext.commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
 
-        if( m_renderEncoder == nil )
+        if( m_frameContext.renderEncoder == nil )
         {
-            m_commandBuffer = nil;
+            m_frameContext.commandBuffer = nil;
 
             return false;
         }
@@ -960,28 +956,28 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MetalRenderSystem::endScene()
     {
-        if( m_renderEncoder != nil )
+        if( m_frameContext.renderEncoder != nil )
         {
-            [m_renderEncoder endEncoding];
-            m_renderEncoder = nil;
+            [m_frameContext.renderEncoder endEncoding];
+            m_frameContext.renderEncoder = nil;
         }
     }
     //////////////////////////////////////////////////////////////////////////
     void MetalRenderSystem::swapBuffers()
     {
-        if( m_commandBuffer != nil )
+        if( m_frameContext.commandBuffer != nil )
         {
             if( m_currentDrawable != nil )
             {
-                [m_commandBuffer presentDrawable:m_currentDrawable];
+                [m_frameContext.commandBuffer presentDrawable:m_currentDrawable];
             }
 
-            [m_commandBuffer commit];
-            m_commandBuffer = nil;
+            [m_frameContext.commandBuffer commit];
+            m_frameContext.commandBuffer = nil;
         }
 
         m_currentDrawable = nil;
-        m_currentDrawableTexture = nil;
+        m_frameContext.drawableTexture = nil;
     }
     //////////////////////////////////////////////////////////////////////////
     void MetalRenderSystem::clearFrameBuffer( uint32_t _frameBufferTypes, const Color & _color, double _depth, int32_t _stencil )
@@ -1098,7 +1094,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( renderTarget, "invalid create render target texture" );
 
         renderTarget->setMetalDevice( m_device );
-        renderTarget->setRenderEncoderContext( &m_commandBuffer, &m_renderEncoder, &m_currentDrawableTexture, &m_depthStencilTexture );
+        renderTarget->setFrameContext( &m_frameContext );
 
         if( renderTarget->initialize( _width, _height, hwFormat ) == false )
         {
@@ -1164,7 +1160,7 @@ namespace Mengine
     void MetalRenderSystem::setCurrentDrawable( id<MTLDrawable> _drawable, id<MTLTexture> _drawableTexture )
     {
         m_currentDrawable = _drawable;
-        m_currentDrawableTexture = _drawableTexture;
+        m_frameContext.drawableTexture = _drawableTexture;
     }
     //////////////////////////////////////////////////////////////////////////
     void MetalRenderSystem::onRenderVertexBufferDestroy_( MetalRenderVertexBuffer * _vertexBuffer )
@@ -1270,7 +1266,7 @@ namespace Mengine
             return;
         }
 
-        m_depthStencilTexture = dsTexture;
+        m_frameContext.depthStencilTexture = dsTexture;
         m_depthStencilWidth = _width;
         m_depthStencilHeight = _height;
     }

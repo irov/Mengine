@@ -3,6 +3,7 @@
 #include "Interface/RenderTargetInterface.h"
 
 #include "MetalRenderResourceHandler.h"
+#include "MetalRenderFrameContext.h"
 
 #include "Kernel/Factorable.h"
 
@@ -59,10 +60,7 @@ namespace Mengine
         id<MTLTexture> getMetalTexture() const;
 
     public:
-        void setRenderEncoderContext( id<MTLCommandBuffer> * _commandBufferRef
-            , id<MTLRenderCommandEncoder> * _renderEncoderRef
-            , id<MTLTexture> * _drawableTextureRef
-            , id<MTLTexture> * _depthStencilTextureRef );
+        void setFrameContext( MetalRenderFrameContext * _frameContext );
 
     public:
         void onRenderReset() override;
@@ -84,10 +82,7 @@ namespace Mengine
 
         id<MTLTexture> m_texture;
 
-        id<MTLCommandBuffer> * m_commandBufferRef;
-        id<MTLRenderCommandEncoder> * m_renderEncoderRef;
-        id<MTLTexture> * m_drawableTextureRef;
-        id<MTLTexture> * m_depthStencilTextureRef;
+        MetalRenderFrameContext * m_frameContext;
 
         bool m_pow2;
         bool m_upscalePow2;

@@ -229,16 +229,14 @@ namespace Mengine
 
         id<MTLDevice> m_device;
         id<MTLCommandQueue> m_commandQueue;
-        id<MTLCommandBuffer> m_commandBuffer;
-        id<MTLRenderCommandEncoder> m_renderEncoder;
         id<MTLDepthStencilState> m_depthStencilState;
-        id<MTLTexture> m_depthStencilTexture;
+
+        MetalRenderFrameContext m_frameContext;
 
         uint32_t m_depthStencilWidth;
         uint32_t m_depthStencilHeight;
 
         id<MTLDrawable> m_currentDrawable;
-        id<MTLTexture> m_currentDrawableTexture;
 
         FactoryInterfacePtr m_factoryRenderVertexBuffer;
         FactoryInterfacePtr m_factoryRenderIndexBuffer;

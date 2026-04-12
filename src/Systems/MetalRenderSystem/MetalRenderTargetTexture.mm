@@ -22,10 +22,7 @@ namespace Mengine
         , m_hwHeightInv( 0.f )
         , m_hwPixelFormat( PF_UNKNOWN )
         , m_texture( nil )
-        , m_commandBufferRef( nullptr )
-        , m_renderEncoderRef( nullptr )
-        , m_drawableTextureRef( nullptr )
-        , m_depthStencilTextureRef( nullptr )
+        , m_frameContext( nullptr )
         , m_pow2( false )
         , m_upscalePow2( false )
     {
@@ -158,15 +155,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MetalRenderTargetTexture::begin() const
     {
-        if( m_renderEncoderRef == nullptr || m_commandBufferRef == nullptr || m_texture == nil )
+        if( m_frameContext == nullptr || m_texture == nil )
         {
             return false;
         }
 
-        if( *m_renderEncoderRef != nil )
+        if( m_frameContext->renderEncoder != nil )
         {
-            [*m_renderEncoderRef endEncoding];
-            *m_renderEncoderRef = nil;
+            [m_frameContext->renderEncoder endEncoding];
+            m_frameContext->renderEncoder = nil;
         }
 
         MTLRenderPassDescriptor * desc = [MTLRenderPassDescriptor renderPassDescriptor];
@@ -175,46 +172,46 @@ namespace Mengine
         desc.colorAttachments[0].storeAction = MTLStoreActionStore;
         desc.colorAttachments[0].clearColor = MTLClearColorMake( 0.0, 0.0, 0.0, 0.0 );
 
-        *m_renderEncoderRef = [*m_commandBufferRef renderCommandEncoderWithDescriptor:desc];
+        m_frameContext->renderEncoder = [m_frameContext->commandBuffer renderCommandEncoderWithDescriptor:desc];
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void MetalRenderTargetTexture::end() const
     {
-        if( m_renderEncoderRef == nullptr || m_commandBufferRef == nullptr )
+        if( m_frameContext == nullptr )
         {
             return;
         }
 
-        if( *m_renderEncoderRef != nil )
+        if( m_frameContext->renderEncoder != nil )
         {
-            [*m_renderEncoderRef endEncoding];
-            *m_renderEncoderRef = nil;
+            [m_frameContext->renderEncoder endEncoding];
+            m_frameContext->renderEncoder = nil;
         }
 
-        if( m_drawableTextureRef == nullptr || *m_drawableTextureRef == nil )
+        if( m_frameContext->drawableTexture == nil )
         {
             return;
         }
 
         MTLRenderPassDescriptor * desc = [MTLRenderPassDescriptor renderPassDescriptor];
-        desc.colorAttachments[0].texture = *m_drawableTextureRef;
+        desc.colorAttachments[0].texture = m_frameContext->drawableTexture;
         desc.colorAttachments[0].loadAction = MTLLoadActionLoad;
         desc.colorAttachments[0].storeAction = MTLStoreActionStore;
 
-        if( m_depthStencilTextureRef != nullptr && *m_depthStencilTextureRef != nil )
+        if( m_frameContext->depthStencilTexture != nil )
         {
-            desc.depthAttachment.texture = *m_depthStencilTextureRef;
+            desc.depthAttachment.texture = m_frameContext->depthStencilTexture;
             desc.depthAttachment.loadAction = MTLLoadActionLoad;
             desc.depthAttachment.storeAction = MTLStoreActionDontCare;
 
-            desc.stencilAttachment.texture = *m_depthStencilTextureRef;
+            desc.stencilAttachment.texture = m_frameContext->depthStencilTexture;
             desc.stencilAttachment.loadAction = MTLLoadActionLoad;
             desc.stencilAttachment.storeAction = MTLStoreActionDontCare;
         }
 
-        *m_renderEncoderRef = [*m_commandBufferRef renderCommandEncoderWithDescriptor:desc];
+        m_frameContext->renderEncoder = [m_frameContext->commandBuffer renderCommandEncoderWithDescriptor:desc];
     }
     //////////////////////////////////////////////////////////////////////////
     const mt::uv4f & MetalRenderTargetTexture::getUV() const
@@ -235,15 +232,9 @@ namespace Mengine
         return m_texture;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MetalRenderTargetTexture::setRenderEncoderContext( id<MTLCommandBuffer> * _commandBufferRef
-        , id<MTLRenderCommandEncoder> * _renderEncoderRef
-        , id<MTLTexture> * _drawableTextureRef
-        , id<MTLTexture> * _depthStencilTextureRef )
+    void MetalRenderTargetTexture::setFrameContext( MetalRenderFrameContext * _frameContext )
     {
-        m_commandBufferRef = _commandBufferRef;
-        m_renderEncoderRef = _renderEncoderRef;
-        m_drawableTextureRef = _drawableTextureRef;
-        m_depthStencilTextureRef = _depthStencilTextureRef;
+        m_frameContext = _frameContext;
     }
     //////////////////////////////////////////////////////////////////////////
     void MetalRenderTargetTexture::onRenderReset()

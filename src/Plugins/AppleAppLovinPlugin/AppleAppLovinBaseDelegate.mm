@@ -76,7 +76,7 @@
 }
 
 - (void) log:(NSString * _Nonnull) method {
-    IOS_LOGGER_INFO(@"[%@] %@: adUnitId: %@ request: %ld"
+    IOS_LOGGER_INFO(@"applovin", @"[%@] %@: adUnitId: %@ request: %ld"
         , self.m_adFormat.label
         , method
         , self.m_adUnitId
@@ -86,7 +86,7 @@
 
 
 - (void) log:(NSString * _Nonnull) method withParams:(NSDictionary * _Nonnull) params {
-    IOS_LOGGER_INFO(@"[%@] %@: adUnitId: %@ request: %ld %@"
+    IOS_LOGGER_INFO(@"applovin", @"[%@] %@: adUnitId: %@ request: %ld %@"
         , self.m_adFormat.label
         , method
         , self.m_adUnitId
@@ -96,7 +96,7 @@
 }
 
 - (void) log:(NSString * _Nonnull) method withMAAd:(MAAd *) ad {
-    IOS_LOGGER_INFO(@"[%@] %@: adUnitId: %@ request: %ld ad: %@"
+    IOS_LOGGER_INFO(@"applovin", @"[%@] %@: adUnitId: %@ request: %ld ad: %@"
         , self.m_adFormat.label
         , method
         , self.m_adUnitId
@@ -106,7 +106,7 @@
 }
 
 - (void) log:(NSString * _Nonnull) method withMAAd:(MAAd * _Nonnull) ad withMAError:(MAError * _Nonnull) error {
-    IOS_LOGGER_INFO(@"[%@] %@: adUnitId: %@ request: %ld ad: %@ with error: %@"
+    IOS_LOGGER_INFO(@"applovin", @"[%@] %@: adUnitId: %@ request: %ld ad: %@ with error: %@"
         , ad.format.label
         , method
         , ad.adUnitIdentifier
@@ -117,7 +117,7 @@
 }
 
 - (void) log:(NSString * _Nonnull) method withMAError:(MAError * _Nonnull) error {
-    IOS_LOGGER_INFO(@"[%@] %@: adUnitId: %@ request: %ld with error: %@"
+    IOS_LOGGER_INFO(@"applovin", @"[%@] %@: adUnitId: %@ request: %ld with error: %@"
         , self.m_adFormat.label
         , method
         , self.m_adUnitId
@@ -127,7 +127,7 @@
 }
 
 - (void) log:(NSString * _Nonnull) method withMAAd:(MAAd * _Nonnull) ad withMAReward:(MAReward * _Nonnull) reward {
-    IOS_LOGGER_INFO(@"[%@] %@: adUnitId: %@ request: %ld with reward lable: %@ amount: %ld"
+    IOS_LOGGER_INFO(@"applovin", @"[%@] %@: adUnitId: %@ request: %ld with reward lable: %@ amount: %ld"
         , ad.format.label
         , method
         , ad.adUnitIdentifier

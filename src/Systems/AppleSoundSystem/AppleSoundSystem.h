@@ -3,6 +3,7 @@
 #include "Interface/SoundSystemInterface.h"
 #include "Interface/FactoryInterface.h"
 
+#include "AppleSoundSource.h"
 #include "AppleSoundSystemExtensionInterface.h"
 
 #include "Kernel/ServiceBase.h"
@@ -18,26 +19,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    class AppleSoundSource;
-    //////////////////////////////////////////////////////////////////////////
-    struct AppleSoundMixerBusDesc
-    {
-        AppleSoundMixerBusDesc()
-            : index( 0 )
-            , frequency( 0 )
-            , channels( 0 )
-            , busy( false )
-        {
-        }
-
-        SpinLock lock;
-        SoundSourceInterfacePtr source;
-        uint32_t index;
-        uint32_t frequency;
-        uint32_t channels;
-        bool busy;
-    };
     //////////////////////////////////////////////////////////////////////////
     class AppleSoundSystem
         : public ServiceBase<SoundSystemInterface>
@@ -100,6 +81,25 @@ namespace Mengine
         UInt32 m_outputChannels;
 
         SpinLock m_busLock;
+        
+        struct AppleSoundMixerBusDesc
+        {
+            AppleSoundMixerBusDesc()
+                : index( 0 )
+                , frequency( 0 )
+                , channels( 0 )
+                , busy( false )
+            {
+            }
+
+            SpinLock lock;
+            SoundSourceInterfacePtr source;
+            uint32_t index;
+            uint32_t frequency;
+            uint32_t channels;
+            bool busy;
+        };
+        
         AppleSoundMixerBusDesc m_mixerBuses[MENGINE_APPLE_MIXER_INPUT_BUS_COUNT];
 
         FactoryInterfacePtr m_factoryAppleSoundBuffer;

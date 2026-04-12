@@ -70,7 +70,7 @@
 }
 
 - (void) log:(NSString * _Nonnull) method {
-    IOS_LOGGER_INFO(@"[AdMob] %@: adUnitId: %@ request: %ld"
+    IOS_LOGGER_INFO(@"admob", @"[AdMob] %@: adUnitId: %@ request: %ld"
         , method
         , self.m_adUnitId
         , self.m_requestId
@@ -78,7 +78,7 @@
 }
 
 - (void) log:(NSString * _Nonnull) method withParams:(NSDictionary * _Nonnull) params {
-    IOS_LOGGER_INFO(@"[AdMob] %@: adUnitId: %@ request: %ld %@"
+    IOS_LOGGER_INFO(@"admob", @"[AdMob] %@: adUnitId: %@ request: %ld %@"
         , method
         , self.m_adUnitId
         , self.m_requestId
@@ -87,7 +87,7 @@
 }
 
 - (void) log:(NSString * _Nonnull) method withError:(NSError * _Nonnull) error {
-    IOS_LOGGER_INFO(@"[AdMob] %@: adUnitId: %@ request: %ld with error: %@"
+    IOS_LOGGER_INFO(@"admob", @"[AdMob] %@: adUnitId: %@ request: %ld with error: %@"
         , method
         , self.m_adUnitId
         , self.m_requestId

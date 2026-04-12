@@ -73,11 +73,10 @@
     NSTimeInterval time = [AppleKeyChain getTimeIntervalForKey:@"mengine.skadnetwork.time" defaultValue:0.0];
     double adRevenue = [AppleKeyChain getDoubleForKey:@"mengine.skadnetwork.adrevenue" defaultValue:0.0];
     
+    self.m_version = version;
     self.m_closed = closed;
-    
     self.m_sendFine = fine;
-    self.m_acceptFine = fine;
-    
+    self.m_acceptFine = fine;    
     self.m_time = time;
     self.m_adRevenue = adRevenue;
     

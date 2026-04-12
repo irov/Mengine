@@ -92,7 +92,7 @@ namespace Mengine
             m_threadJobSoundBufferUpdate = threadJobSoundBufferUpdate;
 
             if( THREAD_SERVICE()
-                ->createThreadProcessor( STRINGIZE_STRING_LOCAL_I( SOUNDBUFFERUPDATE_PROCESSOR_NAME ), MENGINE_THREAD_DESCRIPTION( "MNGSoundUpdate" ), ETP_NORMAL, MENGINE_DOCUMENT_FACTORABLE ) == false )
+                ->createThreadProcessor( STRINGIZE_STRING_LOCAL_I( SOUNDBUFFERUPDATE_PROCESSOR_NAME ), MENGINE_THREAD_DESCRIPTION( "MNGSoundUpdate" ), ETP_ABOVE_NORMAL, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 return false;
             }

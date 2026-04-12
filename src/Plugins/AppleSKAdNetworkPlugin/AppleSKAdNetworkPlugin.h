@@ -7,6 +7,7 @@
 
 + (instancetype)sharedInstance;
 
+@property (nonatomic) NSInteger m_version;
 @property (nonatomic) BOOL m_closed;
 
 @property (nonatomic) NSInteger m_sendFine;

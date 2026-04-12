@@ -117,6 +117,8 @@
     
     GADMobileAds * mobileAds = [GADMobileAds sharedInstance];
     
+    mobileAds.audioVideoManager.audioSessionIsApplicationManaged = YES;
+    
     GADVersionNumber version = [mobileAds versionNumber];
     NSString * versionString = [NSString stringWithFormat:@"%lu.%lu.%lu", version.majorVersion, version.minorVersion, version.patchVersion];
     

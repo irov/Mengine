@@ -155,6 +155,7 @@ namespace Mengine
     protected:
         void updatePMWMatrix_();
         void updateDepthStencilState_();
+        void createDepthStencilTexture_( uint32_t _width, uint32_t _height );
 
     protected:
         ConstString m_renderPlatform;
@@ -231,6 +232,10 @@ namespace Mengine
         id<MTLCommandBuffer> m_commandBuffer;
         id<MTLRenderCommandEncoder> m_renderEncoder;
         id<MTLDepthStencilState> m_depthStencilState;
+        id<MTLTexture> m_depthStencilTexture;
+
+        uint32_t m_depthStencilWidth;
+        uint32_t m_depthStencilHeight;
 
         id<MTLDrawable> m_currentDrawable;
         id<MTLTexture> m_currentDrawableTexture;

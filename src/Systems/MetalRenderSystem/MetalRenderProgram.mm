@@ -4,6 +4,8 @@
 
 #include "Kernel/Logger.h"
 
+#include "Config/StdAlgorithm.h"
+
 #import <Metal/Metal.h>
 
 namespace Mengine
@@ -107,6 +109,72 @@ namespace Mengine
             }
         }
 
+        m_pipelineStateCache.clear();
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MetalRenderProgram::release()
+    {
+        LOGGER_INFO( "render", "release program '%s'"
+            , m_name.c_str()
+        );
+
+        m_pipelineState = nil;
+
+        for( PipelineStateCacheEntry & entry : m_pipelineStateCache )
+        {
+            entry.pipelineState = nil;
+        }
+
+        m_pipelineStateCache.clear();
+
+        if( m_vertexShader != nullptr )
+        {
+            m_vertexShader->release();
+        }
+
+        if( m_fragmentShader != nullptr )
+        {
+            m_fragmentShader->release();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t MetalRenderProgram::getSamplerCount() const
+    {
+        return m_samplerCount;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const MetalRenderVertexAttributePtr & MetalRenderProgram::getMetalVertexAttribute() const
+    {
+        return m_vertexAttribute;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const MetalRenderVertexShaderPtr & MetalRenderProgram::getMetalVertexShader() const
+    {
+        return m_vertexShader;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const MetalRenderFragmentShaderPtr & MetalRenderProgram::getMetalFragmentShader() const
+    {
+        return m_fragmentShader;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    id<MTLRenderPipelineState> MetalRenderProgram::getPipelineState() const
+    {
+        return m_pipelineState;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    id<MTLRenderPipelineState> MetalRenderProgram::getOrCreatePipelineState( const MetalBlendStateKey & _key )
+    {
+        for( const PipelineStateCacheEntry & entry : m_pipelineStateCache )
+        {
+            if( entry.key == _key )
+            {
+                return entry.pipelineState;
+            }
+        }
+
         MTLRenderPipelineDescriptor * pipelineDesc = [[MTLRenderPipelineDescriptor alloc] init];
         pipelineDesc.label = [NSString stringWithUTF8String:m_name.c_str()];
 
@@ -122,18 +190,42 @@ namespace Mengine
 
         pipelineDesc.colorAttachments[0].pixelFormat = MTLPixelFormatBGRA8Unorm;
 
-        pipelineDesc.colorAttachments[0].blendingEnabled = YES;
-        pipelineDesc.colorAttachments[0].sourceRGBBlendFactor = MTLBlendFactorSourceAlpha;
-        pipelineDesc.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
-        pipelineDesc.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
-        pipelineDesc.colorAttachments[0].sourceAlphaBlendFactor = MTLBlendFactorOne;
-        pipelineDesc.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
-        pipelineDesc.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
+        if( _key.alphaBlend == true )
+        {
+            pipelineDesc.colorAttachments[0].blendingEnabled = YES;
+
+            pipelineDesc.colorAttachments[0].sourceRGBBlendFactor = Helper::toMTLBlendFactor( _key.blendSrc );
+            pipelineDesc.colorAttachments[0].destinationRGBBlendFactor = Helper::toMTLBlendFactor( _key.blendDst );
+            pipelineDesc.colorAttachments[0].rgbBlendOperation = Helper::toMTLBlendOp( _key.blendOp );
+
+            if( _key.blendSeparate == true )
+            {
+                pipelineDesc.colorAttachments[0].sourceAlphaBlendFactor = Helper::toMTLBlendFactor( _key.blendSeparateSrc );
+                pipelineDesc.colorAttachments[0].destinationAlphaBlendFactor = Helper::toMTLBlendFactor( _key.blendSeparateDst );
+                pipelineDesc.colorAttachments[0].alphaBlendOperation = Helper::toMTLBlendOp( _key.blendSeparateOp );
+            }
+            else
+            {
+                pipelineDesc.colorAttachments[0].sourceAlphaBlendFactor = Helper::toMTLBlendFactor( _key.blendSrc );
+                pipelineDesc.colorAttachments[0].destinationAlphaBlendFactor = Helper::toMTLBlendFactor( _key.blendDst );
+                pipelineDesc.colorAttachments[0].alphaBlendOperation = Helper::toMTLBlendOp( _key.blendOp );
+            }
+        }
+        else
+        {
+            pipelineDesc.colorAttachments[0].blendingEnabled = NO;
+        }
+
+        MTLColorWriteMask writeMask = MTLColorWriteMaskNone;
+        if( _key.colorMaskR == true ) writeMask |= MTLColorWriteMaskRed;
+        if( _key.colorMaskG == true ) writeMask |= MTLColorWriteMaskGreen;
+        if( _key.colorMaskB == true ) writeMask |= MTLColorWriteMaskBlue;
+        if( _key.colorMaskA == true ) writeMask |= MTLColorWriteMaskAlpha;
+        pipelineDesc.colorAttachments[0].writeMask = writeMask;
 
         pipelineDesc.depthAttachmentPixelFormat = MTLPixelFormatDepth32Float_Stencil8;
         pipelineDesc.stencilAttachmentPixelFormat = MTLPixelFormatDepth32Float_Stencil8;
 
-        // Build vertex descriptor from attributes
         if( m_vertexAttribute != nullptr )
         {
             MTLVertexDescriptor * vertexDesc = [[MTLVertexDescriptor alloc] init];
@@ -173,56 +265,16 @@ namespace Mengine
                 , [[error localizedDescription] UTF8String]
             );
 
-            return false;
+            return nil;
         }
 
-        m_pipelineState = pipelineState;
+        PipelineStateCacheEntry newEntry;
+        newEntry.key = _key;
+        newEntry.pipelineState = pipelineState;
 
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MetalRenderProgram::release()
-    {
-        LOGGER_INFO( "render", "release program '%s'"
-            , m_name.c_str()
-        );
+        m_pipelineStateCache.push_back( newEntry );
 
-        m_pipelineState = nil;
-
-        if( m_vertexShader != nullptr )
-        {
-            m_vertexShader->release();
-        }
-
-        if( m_fragmentShader != nullptr )
-        {
-            m_fragmentShader->release();
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t MetalRenderProgram::getSamplerCount() const
-    {
-        return m_samplerCount;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const MetalRenderVertexAttributePtr & MetalRenderProgram::getMetalVertexAttribute() const
-    {
-        return m_vertexAttribute;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const MetalRenderVertexShaderPtr & MetalRenderProgram::getMetalVertexShader() const
-    {
-        return m_vertexShader;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const MetalRenderFragmentShaderPtr & MetalRenderProgram::getMetalFragmentShader() const
-    {
-        return m_fragmentShader;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    id<MTLRenderPipelineState> MetalRenderProgram::getPipelineState() const
-    {
-        return m_pipelineState;
+        return pipelineState;
     }
     //////////////////////////////////////////////////////////////////////////
     void MetalRenderProgram::bindMatrix( id<MTLRenderCommandEncoder> _encoder, const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalWVPMatrix ) const

@@ -48,6 +48,9 @@ namespace Mengine
         m_lockMemory = nullptr;
 
         this->release();
+
+        m_indexCapacity = 0;
+        m_indexCount = 0;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t MetalRenderIndexBuffer::getIndexCount() const
@@ -149,7 +152,6 @@ namespace Mengine
     void MetalRenderIndexBuffer::release()
     {
         m_buffer = nil;
-        m_indexCapacity = 0;
     }
     //////////////////////////////////////////////////////////////////////////
     void MetalRenderIndexBuffer::onRenderReset()
@@ -159,6 +161,24 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MetalRenderIndexBuffer::onRenderRestore()
     {
+        if( m_indexCapacity == 0 )
+        {
+            return true;
+        }
+
+        const uint32_t bufferSize = m_indexCapacity * m_indexSize;
+
+        MTLResourceOptions options = Helper::toMTLBufferOptions( m_bufferType );
+
+        id<MTLBuffer> newBuffer = [m_device newBufferWithLength:bufferSize options:options];
+
+        if( newBuffer == nil )
+        {
+            return false;
+        }
+
+        m_buffer = newBuffer;
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

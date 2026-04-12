@@ -48,6 +48,9 @@ namespace Mengine
         m_lockMemory = nullptr;
 
         this->release();
+
+        m_vertexCapacity = 0;
+        m_vertexCount = 0;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t MetalRenderVertexBuffer::getVertexCount() const
@@ -149,7 +152,6 @@ namespace Mengine
     void MetalRenderVertexBuffer::release()
     {
         m_buffer = nil;
-        m_vertexCapacity = 0;
     }
     //////////////////////////////////////////////////////////////////////////
     bool MetalRenderVertexBuffer::reload()
@@ -164,6 +166,24 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MetalRenderVertexBuffer::onRenderRestore()
     {
+        if( m_vertexCapacity == 0 )
+        {
+            return true;
+        }
+
+        const uint32_t bufferSize = m_vertexCapacity * m_vertexSize;
+
+        MTLResourceOptions options = Helper::toMTLBufferOptions( m_bufferType );
+
+        id<MTLBuffer> newBuffer = [m_device newBufferWithLength:bufferSize options:options];
+
+        if( newBuffer == nil )
+        {
+            return false;
+        }
+
+        m_buffer = newBuffer;
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

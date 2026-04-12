@@ -66,6 +66,9 @@ namespace Mengine
         , m_commandBuffer( nil )
         , m_renderEncoder( nil )
         , m_depthStencilState( nil )
+        , m_depthStencilTexture( nil )
+        , m_depthStencilWidth( 0 )
+        , m_depthStencilHeight( 0 )
         , m_currentDrawable( nil )
         , m_currentDrawableTexture( nil )
     {
@@ -150,6 +153,7 @@ namespace Mengine
         m_commandBuffer = nil;
         m_commandQueue = nil;
         m_depthStencilState = nil;
+        m_depthStencilTexture = nil;
         m_currentDrawable = nil;
         m_currentDrawableTexture = nil;
         m_device = nil;
@@ -302,6 +306,14 @@ namespace Mengine
         float top = by;
         float right = ex;
         float bottom = ey;
+
+        if( left < 0.f ) left = 0.f;
+        if( top < 0.f ) top = 0.f;
+        if( right < left ) right = left;
+        if( bottom < top ) bottom = top;
+
+        if( right > vs.x ) right = vs.x;
+        if( bottom > vs.y ) bottom = vs.y;
 
         float width = right - left;
         float height = bottom - top;
@@ -617,7 +629,21 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( m_currentProgram != nullptr, "program not set" );
         MENGINE_ASSERTION_FATAL( m_renderEncoder != nil, "render encoder not set" );
 
-        id<MTLRenderPipelineState> pipelineState = m_currentProgram->getPipelineState();
+        MetalBlendStateKey blendKey;
+        blendKey.alphaBlend = m_alphaBlend;
+        blendKey.blendSrc = m_blendSrc;
+        blendKey.blendDst = m_blendDst;
+        blendKey.blendOp = m_blendOp;
+        blendKey.blendSeparateSrc = m_blendSeparateSrc;
+        blendKey.blendSeparateDst = m_blendSeparateDst;
+        blendKey.blendSeparateOp = m_blendSeparateOp;
+        blendKey.blendSeparate = m_blendSeparate;
+        blendKey.colorMaskR = m_colorMaskR;
+        blendKey.colorMaskG = m_colorMaskG;
+        blendKey.colorMaskB = m_colorMaskB;
+        blendKey.colorMaskA = m_colorMaskA;
+
+        id<MTLRenderPipelineState> pipelineState = m_currentProgram->getOrCreatePipelineState( blendKey );
 
         if( pipelineState == nil )
         {
@@ -893,11 +919,32 @@ namespace Mengine
             return false;
         }
 
+        NSUInteger drawableWidth = [m_currentDrawableTexture width];
+        NSUInteger drawableHeight = [m_currentDrawableTexture height];
+
+        if( m_depthStencilTexture == nil || m_depthStencilWidth != (uint32_t)drawableWidth || m_depthStencilHeight != (uint32_t)drawableHeight )
+        {
+            this->createDepthStencilTexture_( (uint32_t)drawableWidth, (uint32_t)drawableHeight );
+        }
+
         MTLRenderPassDescriptor * renderPassDescriptor = [MTLRenderPassDescriptor renderPassDescriptor];
         renderPassDescriptor.colorAttachments[0].texture = m_currentDrawableTexture;
         renderPassDescriptor.colorAttachments[0].loadAction = MTLLoadActionClear;
         renderPassDescriptor.colorAttachments[0].storeAction = MTLStoreActionStore;
         renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColorMake( m_clearColor.getR(), m_clearColor.getG(), m_clearColor.getB(), m_clearColor.getA() );
+
+        if( m_depthStencilTexture != nil )
+        {
+            renderPassDescriptor.depthAttachment.texture = m_depthStencilTexture;
+            renderPassDescriptor.depthAttachment.loadAction = MTLLoadActionClear;
+            renderPassDescriptor.depthAttachment.storeAction = MTLStoreActionDontCare;
+            renderPassDescriptor.depthAttachment.clearDepth = m_clearDepth;
+
+            renderPassDescriptor.stencilAttachment.texture = m_depthStencilTexture;
+            renderPassDescriptor.stencilAttachment.loadAction = MTLLoadActionClear;
+            renderPassDescriptor.stencilAttachment.storeAction = MTLStoreActionDontCare;
+            renderPassDescriptor.stencilAttachment.clearStencil = (uint32_t)m_clearStencil;
+        }
 
         m_renderEncoder = [m_commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
 
@@ -1051,6 +1098,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( renderTarget, "invalid create render target texture" );
 
         renderTarget->setMetalDevice( m_device );
+        renderTarget->setRenderEncoderContext( &m_commandBuffer, &m_renderEncoder, &m_currentDrawableTexture, &m_depthStencilTexture );
 
         if( renderTarget->initialize( _width, _height, hwFormat ) == false )
         {
@@ -1193,6 +1241,38 @@ namespace Mengine
         depthDesc.depthWriteEnabled = m_depthMask ? YES : NO;
 
         m_depthStencilState = [m_device newDepthStencilStateWithDescriptor:depthDesc];
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MetalRenderSystem::createDepthStencilTexture_( uint32_t _width, uint32_t _height )
+    {
+        if( _width == 0 || _height == 0 )
+        {
+            return;
+        }
+
+        MTLTextureDescriptor * dsDesc = [[MTLTextureDescriptor alloc] init];
+        dsDesc.textureType = MTLTextureType2D;
+        dsDesc.pixelFormat = MTLPixelFormatDepth32Float_Stencil8;
+        dsDesc.width = _width;
+        dsDesc.height = _height;
+        dsDesc.usage = MTLTextureUsageRenderTarget;
+        dsDesc.storageMode = MTLStorageModePrivate;
+
+        id<MTLTexture> dsTexture = [m_device newTextureWithDescriptor:dsDesc];
+
+        if( dsTexture == nil )
+        {
+            LOGGER_ERROR( "failed to create depth/stencil texture %u:%u"
+                , _width
+                , _height
+            );
+
+            return;
+        }
+
+        m_depthStencilTexture = dsTexture;
+        m_depthStencilWidth = _width;
+        m_depthStencilHeight = _height;
     }
     //////////////////////////////////////////////////////////////////////////
 }

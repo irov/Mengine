@@ -59,6 +59,12 @@ namespace Mengine
         id<MTLTexture> getMetalTexture() const;
 
     public:
+        void setRenderEncoderContext( id<MTLCommandBuffer> * _commandBufferRef
+            , id<MTLRenderCommandEncoder> * _renderEncoderRef
+            , id<MTLTexture> * _drawableTextureRef
+            , id<MTLTexture> * _depthStencilTextureRef );
+
+    public:
         void onRenderReset() override;
         bool onRenderRestore() override;
 
@@ -77,6 +83,11 @@ namespace Mengine
         EPixelFormat m_hwPixelFormat;
 
         id<MTLTexture> m_texture;
+
+        id<MTLCommandBuffer> * m_commandBufferRef;
+        id<MTLRenderCommandEncoder> * m_renderEncoderRef;
+        id<MTLTexture> * m_drawableTextureRef;
+        id<MTLTexture> * m_depthStencilTextureRef;
 
         bool m_pow2;
         bool m_upscalePow2;

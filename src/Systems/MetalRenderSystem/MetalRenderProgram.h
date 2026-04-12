@@ -9,10 +9,49 @@
 
 #include "Kernel/Factorable.h"
 
+#include "Kernel/Vector.h"
+
 #import <Metal/Metal.h>
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    struct MetalBlendStateKey
+    {
+        bool alphaBlend;
+        EBlendFactor blendSrc;
+        EBlendFactor blendDst;
+        EBlendOp blendOp;
+        EBlendFactor blendSeparateSrc;
+        EBlendFactor blendSeparateDst;
+        EBlendOp blendSeparateOp;
+        bool blendSeparate;
+        bool colorMaskR;
+        bool colorMaskG;
+        bool colorMaskB;
+        bool colorMaskA;
+
+        bool operator == ( const MetalBlendStateKey & _other ) const
+        {
+            return alphaBlend == _other.alphaBlend
+                && blendSrc == _other.blendSrc
+                && blendDst == _other.blendDst
+                && blendOp == _other.blendOp
+                && blendSeparateSrc == _other.blendSeparateSrc
+                && blendSeparateDst == _other.blendSeparateDst
+                && blendSeparateOp == _other.blendSeparateOp
+                && blendSeparate == _other.blendSeparate
+                && colorMaskR == _other.colorMaskR
+                && colorMaskG == _other.colorMaskG
+                && colorMaskB == _other.colorMaskB
+                && colorMaskA == _other.colorMaskA;
+        }
+
+        bool operator != ( const MetalBlendStateKey & _other ) const
+        {
+            return !(*this == _other);
+        }
+    };
     //////////////////////////////////////////////////////////////////////////
     class MetalRenderProgram
         : public RenderProgramInterface
@@ -57,6 +96,7 @@ namespace Mengine
 
     public:
         id<MTLRenderPipelineState> getPipelineState() const;
+        id<MTLRenderPipelineState> getOrCreatePipelineState( const MetalBlendStateKey & _key );
 
     public:
         void bindMatrix( id<MTLRenderCommandEncoder> _encoder, const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalWVPMatrix ) const;
@@ -75,6 +115,15 @@ namespace Mengine
         uint32_t m_samplerCount;
 
         id<MTLRenderPipelineState> m_pipelineState;
+
+        struct PipelineStateCacheEntry
+        {
+            MetalBlendStateKey key;
+            id<MTLRenderPipelineState> pipelineState;
+        };
+
+        typedef Vector<PipelineStateCacheEntry> VectorPipelineStateCache;
+        VectorPipelineStateCache m_pipelineStateCache;
 
         bool m_deferredCompile;
     };

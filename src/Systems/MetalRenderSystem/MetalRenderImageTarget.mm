@@ -105,23 +105,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MetalRenderImageTarget::onRenderReset()
     {
-        if( m_renderTarget != nullptr )
-        {
-            m_renderTarget->onRenderReset();
-        }
+        // m_renderTarget is registered as its own resource handler
+        // and will be reset by the render system directly
     }
     //////////////////////////////////////////////////////////////////////////
     bool MetalRenderImageTarget::onRenderRestore()
     {
-        if( m_renderTarget == nullptr )
-        {
-            return false;
-        }
-
-        if( m_renderTarget->onRenderRestore() == false )
-        {
-            return false;
-        }
+        // m_renderTarget is registered as its own resource handler
+        // and will be restored by the render system directly
 
         return true;
     }

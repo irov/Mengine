@@ -159,16 +159,15 @@
     
     __weak AppleAdMobPlugin * weakSelf = self;
     
-    dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), ^{
-        [[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus * _Nonnull status) {
-            AppleAdMobPlugin * strongSelf = weakSelf;
-            
-            if (strongSelf == nil) {
-                return;
-            }
-            
-            [AppleDetail addMainQueueOperation:^{
-                IOS_LOGGER_MESSAGE(@"[AdMob] plugin initialize complete");
+    [[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus * _Nonnull status) {
+        AppleAdMobPlugin * strongSelf = weakSelf;
+        
+        if (strongSelf == nil) {
+            return;
+        }
+        
+        [AppleDetail addMainQueueOperation:^{
+            IOS_LOGGER_MESSAGE(@"[AdMob] plugin initialize complete");
 #if defined(MENGINE_PLUGIN_APPLE_ADMOB_BANNER)
             if (MengineAppleAdMobPlugin_BannerAdUnitId != nil) {
                 NSString * MengineAppleAdMobPlugin_BannerPlacement = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"BannerPlacement" withDefault:@"banner"];
@@ -200,7 +199,6 @@
             [advertisement readyAdProvider];
         }];
     }];
-    }); // dispatch_async
 }
 
 #pragma mark - AppleAdvertisementProviderInterface

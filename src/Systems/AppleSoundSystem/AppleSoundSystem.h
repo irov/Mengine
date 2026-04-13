@@ -72,10 +72,6 @@ namespace Mengine
 
     protected:
         id m_interruptionObserver;
-        id m_routeChangeObserver;
-        id m_mediaResetObserver;
-        id m_audioOutputStopObserver;
-        id m_audioOutputStartObserver;
 #endif
 
     protected:
@@ -88,20 +84,12 @@ namespace Mengine
         
         struct AppleSoundMixerBusDesc
         {
-            AppleSoundMixerBusDesc()
-                : index( 0 )
-                , frequency( 0 )
-                , channels( 0 )
-                , busy( false )
-            {
-            }
-
             SpinLock lock;
             SoundSourceInterfacePtr source;
-            uint32_t index;
-            uint32_t frequency;
-            uint32_t channels;
-            bool busy;
+            uint32_t index = 0;
+            uint32_t frequency = 0;
+            uint32_t channels = 0;
+            bool busy = false;
         };
         
         AppleSoundMixerBusDesc m_mixerBuses[MENGINE_APPLE_MIXER_INPUT_BUS_COUNT];

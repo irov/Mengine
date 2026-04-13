@@ -25,22 +25,6 @@ namespace Mengine
         , m_writeCount( 0 )
         , m_readCount( 0 )
         , m_basePositionMs( 0.f )
-        , m_diagRenderCount( 0 )
-#if defined(MENGINE_DEBUG)
-        , m_renderCalls( 0 )
-        , m_updateTicks( 0 )
-        , m_lastRenderFramesRequested( 0 )
-        , m_lastRenderFramesProduced( 0 )
-        , m_lastRenderBufferCount( 0 )
-        , m_lastRenderBuffer0Channels( 0 )
-        , m_lastRenderBuffer1Channels( 0 )
-        , m_lastRenderBuffer0Size( 0 )
-        , m_lastRenderBuffer1Size( 0 )
-        , m_loggedRenderLayout( false )
-        , m_loggedRenderMissing( false )
-        , m_loggedUnderflow( false )
-        , m_renderObservedUnderflow( false )
-#endif
         , m_ringBufferSizeMask( 0 )
         , m_ringBufferSize( 0 )
         , m_ringBuffer( nullptr )
@@ -164,22 +148,6 @@ namespace Mengine
             m_basePositionMs = _position;
             m_playCursorBytes = 0;
 
-#if defined(MENGINE_DEBUG)
-            m_renderCalls = 0;
-            m_updateTicks = 0;
-            m_lastRenderFramesRequested = 0;
-            m_lastRenderFramesProduced = 0;
-            m_lastRenderBufferCount = 0;
-            m_lastRenderBuffer0Channels = 0;
-            m_lastRenderBuffer1Channels = 0;
-            m_lastRenderBuffer0Size = 0;
-            m_lastRenderBuffer1Size = 0;
-            m_loggedRenderLayout = false;
-            m_loggedRenderMissing = false;
-            m_loggedUnderflow = false;
-            m_renderObservedUnderflow = false;
-#endif
-
             this->resetRingBuffer_();
 
             MENGINE_THREAD_MUTEX_SCOPE( m_mutexDecoder );
@@ -198,8 +166,6 @@ namespace Mengine
                 return false;
             }
 
-            m_diagRenderCount = 0;
-
             LOGGER_MESSAGE( "[apple] stream prebuffer freq: %u channels: %u duration: %f position: %f readable: %u finished: %u loop: %u"
                 , m_frequency
                 , m_channels
@@ -210,22 +176,9 @@ namespace Mengine
                 , m_looped.load()
             );
 
-            LOGGER_MESSAGE_RELEASE( "[DIAG] playSource() inside mutex, about to exit scopes"
-            );
         }
 
-        LOGGER_MESSAGE_RELEASE( "[DIAG] playSource() mutex scopes exited"
-        );
-
         m_updating = true;
-
-        LOGGER_MESSAGE_RELEASE( "[DIAG] AppleSoundBufferStream::playSource() pos=%.1f loop=%u readable=%u ringSize=%u finished=%u"
-            , _position
-            , _looped
-            , this->getReadableBytes_()
-            , (uint32_t)m_ringBufferSize
-            , m_finished.load()
-        );
 
         return true;
     }
@@ -235,33 +188,10 @@ namespace Mengine
         {
             MENGINE_THREAD_MUTEX_SCOPE( m_mutexUpdating );
 
-            LOGGER_MESSAGE_RELEASE( "[DIAG] AppleSoundBufferStream::stopSource() updating=%u readable=%u playCursor=%u finished=%u"
-                , m_updating.load()
-                , this->getReadableBytes_()
-                , (uint32_t)m_playCursorBytes.load()
-                , m_finished.load()
-            );
-
             m_updating = false;
             m_finished = true;
             m_basePositionMs = 0.f;
             m_playCursorBytes = 0;
-
-#if defined(MENGINE_DEBUG)
-            m_renderCalls = 0;
-            m_updateTicks = 0;
-            m_lastRenderFramesRequested = 0;
-            m_lastRenderFramesProduced = 0;
-            m_lastRenderBufferCount = 0;
-            m_lastRenderBuffer0Channels = 0;
-            m_lastRenderBuffer1Channels = 0;
-            m_lastRenderBuffer0Size = 0;
-            m_lastRenderBuffer1Size = 0;
-            m_loggedRenderLayout = false;
-            m_loggedRenderMissing = false;
-            m_loggedUnderflow = false;
-            m_renderObservedUnderflow = false;
-#endif
 
             this->resetRingBuffer_();
         }
@@ -292,22 +222,6 @@ namespace Mengine
         m_basePositionMs = _position;
         m_playCursorBytes = 0;
         m_finished = false;
-
-#if defined(MENGINE_DEBUG)
-        m_renderCalls = 0;
-        m_updateTicks = 0;
-        m_lastRenderFramesRequested = 0;
-        m_lastRenderFramesProduced = 0;
-        m_lastRenderBufferCount = 0;
-        m_lastRenderBuffer0Channels = 0;
-        m_lastRenderBuffer1Channels = 0;
-        m_lastRenderBuffer0Size = 0;
-        m_lastRenderBuffer1Size = 0;
-        m_loggedRenderLayout = false;
-        m_loggedRenderMissing = false;
-        m_loggedUnderflow = false;
-        m_renderObservedUnderflow = false;
-#endif
 
         if( this->prebuffer_() == false )
         {
@@ -361,53 +275,6 @@ namespace Mengine
             return false;
         }
 
-#if defined(MENGINE_DEBUG)
-        uint32_t updateTicks = m_updateTicks.fetch_add( 1 ) + 1;
-
-        if( m_loggedRenderLayout.load() == false && m_renderCalls.load() != 0 )
-        {
-            LOGGER_MESSAGE( "[apple] stream render layout freq: %u channels: %u req: %u got: %u calls: %u buffers: %u b0[ch:%u size:%u] b1[ch:%u size:%u]"
-                , m_frequency
-                , m_channels
-                , m_lastRenderFramesRequested.load()
-                , m_lastRenderFramesProduced.load()
-                , m_renderCalls.load()
-                , m_lastRenderBufferCount.load()
-                , m_lastRenderBuffer0Channels.load()
-                , m_lastRenderBuffer0Size.load()
-                , m_lastRenderBuffer1Channels.load()
-                , m_lastRenderBuffer1Size.load()
-            );
-
-            m_loggedRenderLayout = true;
-        }
-
-        if( m_loggedRenderMissing.load() == false && updateTicks >= 10 && m_renderCalls.load() == 0 && this->getReadableBytes_() != 0 && m_finished.load() == false )
-        {
-            LOGGER_WARNING( "[apple] stream callback missing freq: %u channels: %u readable: %u updates: %u loop: %u"
-                , m_frequency
-                , m_channels
-                , this->getReadableBytes_()
-                , updateTicks
-                , m_looped.load()
-            );
-
-            m_loggedRenderMissing = true;
-        }
-
-        if( m_loggedUnderflow.load() == false && m_renderObservedUnderflow.exchange( false ) == true )
-        {
-            LOGGER_WARNING( "[apple] stream render underflow freq: %u channels: %u req: %u position: %f"
-                , m_frequency
-                , m_channels
-                , m_lastRenderFramesRequested.load()
-                , m_basePositionMs.load()
-            );
-
-            m_loggedUnderflow = true;
-        }
-#endif
-
         if( m_finished.load() == true && this->getReadableBytes_() == 0 )
         {
             return false;
@@ -438,22 +305,6 @@ namespace Mengine
         }
 
         UInt32 renderedFrames = 0;
-
-#if defined(MENGINE_DEBUG)
-        UInt32 bufferCount = _ioData->mNumberBuffers;
-        UInt32 buffer0Channels = bufferCount > 0 ? _ioData->mBuffers[0].mNumberChannels : 0;
-        UInt32 buffer0Size = bufferCount > 0 ? _ioData->mBuffers[0].mDataByteSize : 0;
-        UInt32 buffer1Channels = bufferCount > 1 ? _ioData->mBuffers[1].mNumberChannels : 0;
-        UInt32 buffer1Size = bufferCount > 1 ? _ioData->mBuffers[1].mDataByteSize : 0;
-
-        m_renderCalls.fetch_add( 1, StdAtomic::memory_order_relaxed );
-        m_lastRenderFramesRequested.store( _frames, StdAtomic::memory_order_relaxed );
-        m_lastRenderBufferCount.store( bufferCount, StdAtomic::memory_order_relaxed );
-        m_lastRenderBuffer0Channels.store( buffer0Channels, StdAtomic::memory_order_relaxed );
-        m_lastRenderBuffer0Size.store( buffer0Size, StdAtomic::memory_order_relaxed );
-        m_lastRenderBuffer1Channels.store( buffer1Channels, StdAtomic::memory_order_relaxed );
-        m_lastRenderBuffer1Size.store( buffer1Size, StdAtomic::memory_order_relaxed );
-#endif
 
         // SPSC: reader loads writeCount with acquire, reads own readCount relaxed
         uint32_t w = m_writeCount.load( StdAtomic::memory_order_acquire );
@@ -502,15 +353,6 @@ namespace Mengine
         m_readCount.store( r, StdAtomic::memory_order_release );
 
         *_renderedFrames = renderedFrames;
-
-#if defined(MENGINE_DEBUG)
-        m_lastRenderFramesProduced.store( renderedFrames, StdAtomic::memory_order_relaxed );
-
-        if( renderedFrames == 0 && m_finished.load() == false && readable == 0 )
-        {
-            m_renderObservedUnderflow = true;
-        }
-#endif
 
         return true;
     }

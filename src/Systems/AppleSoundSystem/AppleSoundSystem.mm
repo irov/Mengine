@@ -35,10 +35,6 @@ namespace Mengine
         , m_outputChannels( 2 )
 #if TARGET_OS_IPHONE
         , m_interruptionObserver( nil )
-        , m_routeChangeObserver( nil )
-        , m_mediaResetObserver( nil )
-        , m_audioOutputStopObserver( nil )
-        , m_audioOutputStartObserver( nil )
 #endif
     {
         for( uint32_t index = 0; index != MENGINE_APPLE_MIXER_INPUT_BUS_COUNT; ++index )
@@ -104,98 +100,6 @@ namespace Mengine
                 }
             ];
 
-            // [DIAG] Monitor route changes (AdMob WebView can trigger these)
-            m_routeChangeObserver = [[NSNotificationCenter defaultCenter]
-                addObserverForName:AVAudioSessionRouteChangeNotification
-                object:session
-                queue:nil
-                usingBlock:^( NSNotification * notification )
-                {
-                    NSDictionary * info = notification.userInfo;
-                    AVAudioSessionRouteChangeReason reason = (AVAudioSessionRouteChangeReason)
-                        [info[AVAudioSessionRouteChangeReasonKey] unsignedIntegerValue];
-
-                    const char * reasonStr = "unknown";
-
-                    switch( reason )
-                    {
-                    case AVAudioSessionRouteChangeReasonNewDeviceAvailable: reasonStr = "NewDevice"; break;
-                    case AVAudioSessionRouteChangeReasonOldDeviceUnavailable: reasonStr = "OldDeviceGone"; break;
-                    case AVAudioSessionRouteChangeReasonCategoryChange: reasonStr = "CategoryChange"; break;
-                    case AVAudioSessionRouteChangeReasonOverride: reasonStr = "Override"; break;
-                    case AVAudioSessionRouteChangeReasonWakeFromSleep: reasonStr = "WakeFromSleep"; break;
-                    case AVAudioSessionRouteChangeReasonNoSuitableRouteForCategory: reasonStr = "NoRoute"; break;
-                    case AVAudioSessionRouteChangeReasonRouteConfigurationChange: reasonStr = "ConfigChange"; break;
-                    default: break;
-                    }
-
-                    AVAudioSession * s = [AVAudioSession sharedInstance];
-
-                    LOGGER_MESSAGE_RELEASE( "[DIAG] AVAudioSession ROUTE_CHANGE reason=%s category=%s sampleRate=%.0f ioBufferDur=%.4f"
-                        , reasonStr
-                        , s.category.UTF8String
-                        , s.sampleRate
-                        , s.IOBufferDuration
-                    );
-                }
-            ];
-
-            // [DIAG] Monitor media services reset
-            m_mediaResetObserver = [[NSNotificationCenter defaultCenter]
-                addObserverForName:AVAudioSessionMediaServicesWereResetNotification
-                object:session
-                queue:nil
-                usingBlock:^( NSNotification * notification )
-                {
-                    MENGINE_UNUSED( notification );
-
-                    LOGGER_MESSAGE_RELEASE( "[DIAG] AVAudioSession MEDIA_SERVICES_RESET" );
-                }
-            ];
-
-            // Stop/start AudioUnit around external SDK init (AdMob WKWebView disrupts CoreAudio HAL)
-            m_audioOutputStopObserver = [[NSNotificationCenter defaultCenter]
-                addObserverForName:@"MengineAudioOutputStop"
-                object:nil
-                queue:[NSOperationQueue mainQueue]
-                usingBlock:^( NSNotification * notification )
-                {
-                    MENGINE_UNUSED( notification );
-
-                    LOGGER_MESSAGE_RELEASE( "[DIAG] MengineAudioOutputStop received" );
-
-                    if( self->m_outputUnit != nullptr )
-                    {
-                        AudioOutputUnitStop( self->m_outputUnit );
-                    }
-                }
-            ];
-
-            m_audioOutputStartObserver = [[NSNotificationCenter defaultCenter]
-                addObserverForName:@"MengineAudioOutputStart"
-                object:nil
-                queue:[NSOperationQueue mainQueue]
-                usingBlock:^( NSNotification * notification )
-                {
-                    MENGINE_UNUSED( notification );
-
-                    LOGGER_MESSAGE_RELEASE( "[DIAG] MengineAudioOutputStart received" );
-
-                    @autoreleasepool
-                    {
-                        AVAudioSession * s = [AVAudioSession sharedInstance];
-                        NSError * err = nil;
-
-                        [s setCategory:AVAudioSessionCategoryAmbient error:&err];
-                        [s setActive:YES error:&err];
-                    }
-
-                    if( self->m_outputUnit != nullptr )
-                    {
-                        AudioOutputUnitStart( self->m_outputUnit );
-                    }
-                }
-            ];
         }
 #endif
 
@@ -207,12 +111,6 @@ namespace Mengine
         }
 
         LOGGER_MESSAGE( "AppleSoundSystem initialized with shared AudioUnit mixer backend" );
-
-        LOGGER_MESSAGE_RELEASE( "[DIAG] device sampleRate=%.0f outputChannels=%u ioBufferDuration=%.4f"
-            , m_outputSampleRate
-            , m_outputChannels
-            , [AVAudioSession sharedInstance].IOBufferDuration
-        );
 
         m_factoryAppleSoundBuffer = Helper::makeFactoryPoolWithMutex<AppleSoundBufferMemory, 32>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryAppleSoundBufferStream = Helper::makeFactoryPoolWithMutex<AppleSoundBufferStream, 32>( MENGINE_DOCUMENT_FACTORABLE );
@@ -234,29 +132,6 @@ namespace Mengine
             m_interruptionObserver = nil;
         }
 
-        if( m_routeChangeObserver != nil )
-        {
-            [[NSNotificationCenter defaultCenter] removeObserver:m_routeChangeObserver];
-            m_routeChangeObserver = nil;
-        }
-
-        if( m_mediaResetObserver != nil )
-        {
-            [[NSNotificationCenter defaultCenter] removeObserver:m_mediaResetObserver];
-            m_mediaResetObserver = nil;
-        }
-
-        if( m_audioOutputStopObserver != nil )
-        {
-            [[NSNotificationCenter defaultCenter] removeObserver:m_audioOutputStopObserver];
-            m_audioOutputStopObserver = nil;
-        }
-
-        if( m_audioOutputStartObserver != nil )
-        {
-            [[NSNotificationCenter defaultCenter] removeObserver:m_audioOutputStartObserver];
-            m_audioOutputStartObserver = nil;
-        }
 #endif
 
         this->destroyAudioMixer_();
@@ -403,13 +278,6 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_MESSAGE_RELEASE( "[DIAG] acquireSourceBus bus=%u freq=%u ch=%u gain=%.3f"
-            , busIndex
-            , _frequency
-            , _channels
-            , _gain
-        );
-
         *_busIndex = busIndex;
 
         return true;
@@ -421,10 +289,6 @@ namespace Mengine
         {
             return;
         }
-
-        LOGGER_MESSAGE_RELEASE( "[DIAG] releaseSourceBus BEGIN bus=%u"
-            , _busIndex
-        );
 
         {
             AppleSoundMixerBusDesc & busDesc = m_mixerBuses[_busIndex];
@@ -443,10 +307,6 @@ namespace Mengine
             MENGINE_SPINLOCK_SCOPE( m_busLock );
             m_mixerBuses[_busIndex].busy = false;
         }
-
-        LOGGER_MESSAGE_RELEASE( "[DIAG] releaseSourceBus END bus=%u"
-            , _busIndex
-        );
     }
     //////////////////////////////////////////////////////////////////////////
     bool AppleSoundSystem::setSourceBusVolume( uint32_t _busIndex, float _gain )
@@ -743,14 +603,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleSoundSystem::configureSourceBus_( uint32_t _busIndex, uint32_t _frequency, uint32_t _channels )
     {
-        LOGGER_MESSAGE_RELEASE( "[DIAG] configureSourceBus_ bus=%u freq=%u ch=%u (output=%.0f:%u)"
-            , _busIndex
-            , _frequency
-            , _channels
-            , m_outputSampleRate
-            , m_outputChannels
-        );
-
         AudioStreamBasicDescription inputFormat;
         AppleSoundSystem::makeFormat_( &inputFormat, (Float64)_frequency, _channels );
 

@@ -1351,8 +1351,11 @@ namespace Mengine
         _identity->setTimeLeft( timeLeft );
 
         bool hasBufferUpdate = _identity->getWorkerUpdateBuffer() != nullptr;
+        bool playing = source->isPlay();
+        bool pausing = source->isPause();
+        bool resumeBufferUpdate = hasBufferUpdate == true && playing == true && pausing == false;
 
-        if( hasBufferUpdate == true )
+        if( resumeBufferUpdate == true )
         {
             this->pauseSoundBufferUpdate_( _identity );
         }
@@ -1361,18 +1364,10 @@ namespace Mengine
 
         if( mt::equal_f_f( current_position, _position ) == true )
         {
-            if( hasBufferUpdate == true )
-            {
-                this->resumeSoundBufferUpdate_( _identity );
-            }
-
             return true;
         }
 
-        bool playing = source->isPlay();
-        bool pausing = source->isPause();
-
-        if( hasBufferUpdate == true && playing == true && pausing == false )
+        if( resumeBufferUpdate == true )
         {
             source->pause();
         }
@@ -1384,7 +1379,7 @@ namespace Mengine
             );
         }
 
-        if( hasBufferUpdate == true && playing == true && pausing == false )
+        if( resumeBufferUpdate == true )
         {
             if( source->resume() == false )
             {
@@ -1398,7 +1393,7 @@ namespace Mengine
             }
         }
 
-        if( hasBufferUpdate == true )
+        if( resumeBufferUpdate == true )
         {
             this->resumeSoundBufferUpdate_( _identity );
         }

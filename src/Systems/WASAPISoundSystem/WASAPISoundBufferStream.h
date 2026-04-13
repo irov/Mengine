@@ -66,9 +66,8 @@ namespace Mengine
         AtomicUInt32 m_readOffset;
         AtomicUInt32 m_writeOffset;
         AtomicUInt32 m_availableBytes;
-        AtomicUInt32 m_playCursorBytes;
+        AtomicUInt32 m_playPositionBytes;
         AtomicUInt32 m_activeRenders;
-        AtomicFloat m_basePositionMs;
 
         size_t m_ringBufferSize;
 

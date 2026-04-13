@@ -71,15 +71,13 @@ namespace Mengine
         AtomicBool m_looped;
         AtomicBool m_updating;
         AtomicBool m_finished;
-        AtomicUInt32 m_playCursorBytes;
+        AtomicUInt32 m_playPositionBytes;
 
         // SPSC ring buffer counters — separated to avoid false sharing
         // Writer (prebuffer_ / update thread) only writes m_writeCount
         // Reader (renderMixerFrames / audio thread) only writes m_readCount
         alignas(64) AtomicUInt32 m_writeCount;
         alignas(64) AtomicUInt32 m_readCount;
-
-        AtomicFloat m_basePositionMs;
 
         uint32_t m_ringBufferSizeMask;
         size_t m_ringBufferSize;

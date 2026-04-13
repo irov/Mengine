@@ -6,6 +6,8 @@
 #include "Kernel/Factorable.h"
 #include "Kernel/ReferenceCounter.h"
 
+#include "Config/Atomic.h"
+
 #include <SLES/OpenSLES.h>
 #include <SLES/OpenSLES_Android.h>
 
@@ -48,6 +50,7 @@ namespace Mengine
     public:
         bool isStereo() const;
         float getTimeDuration() const;
+        bool isFinished() const;
 
     protected:
         bool createPlayer_();
@@ -65,6 +68,8 @@ namespace Mengine
         uint32_t m_channels;
         float m_duration;
         bool m_isStereo;
+
+        AtomicBool m_finished;
 
         SLObjectItf m_playerObject;
         SLPlayItf m_playItf;

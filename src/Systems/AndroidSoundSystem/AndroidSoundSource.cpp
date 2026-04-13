@@ -121,6 +121,13 @@ namespace Mengine
             return;
         }
 
+        float position = 0.f;
+
+        if( m_soundBuffer->getTimePosition( &position ) == true )
+        {
+            m_time = position;
+        }
+
         m_playing = true;
         m_pausing = true;
 
@@ -188,7 +195,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidSoundSource::isFinished() const
     {
-        return false;
+        if( m_soundBuffer == nullptr )
+        {
+            return false;
+        }
+
+        return m_soundBuffer->isFinished();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidSoundSource::setVolume( float _volume )
@@ -239,20 +251,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidSoundSource::setPosition( float _position )
     {
-        if( m_time == _position )
+        if( m_soundBuffer == nullptr )
         {
-            return true;
-        }
+            LOGGER_ASSERTION( "invalid sound buffer" );
 
-        m_time = _position;
-
-        if( m_playing == false && m_pausing == false )
-        {
-            return true;
+            return false;
         }
 
         float position = _position;
-
         float total = m_soundBuffer->getTimeDuration();
 
         if( position > total )
@@ -274,6 +280,27 @@ namespace Mengine
             position = 0.f;
         }
 
+        if( m_playing == false && m_pausing == false )
+        {
+            if( mt::equal_f_f( m_time, position ) == true )
+            {
+                return true;
+            }
+
+            m_time = position;
+
+            return true;
+        }
+
+        float currentPosition = this->getPosition();
+
+        if( mt::equal_f_f( currentPosition, position ) == true )
+        {
+            m_time = position;
+
+            return true;
+        }
+
         if( m_soundBuffer->setTimePosition( position ) == false )
         {
             LOGGER_ASSERTION( "invalid set time position %f (play %u)"
@@ -283,6 +310,8 @@ namespace Mengine
 
             return false;
         }
+
+        m_time = position;
 
         return true;
     }

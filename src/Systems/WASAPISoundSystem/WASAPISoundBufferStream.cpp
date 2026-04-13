@@ -39,9 +39,8 @@ namespace Mengine
         , m_readOffset( 0 )
         , m_writeOffset( 0 )
         , m_availableBytes( 0 )
-        , m_playCursorBytes( 0 )
+        , m_playPositionBytes( 0 )
         , m_activeRenders( 0 )
-        , m_basePositionMs( 0.f )
         , m_ringBufferSize( 0 )
         , m_ringBuffer( nullptr )
         , m_decodeBuffer( nullptr )
@@ -110,8 +109,7 @@ namespace Mengine
             m_readOffset = 0;
             m_writeOffset = 0;
             m_availableBytes = 0;
-            m_playCursorBytes = 0;
-            m_basePositionMs = 0.f;
+            m_playPositionBytes = 0;
 
             m_soundDecoder = nullptr;
             m_memory = nullptr;
@@ -184,8 +182,6 @@ namespace Mengine
             m_looped = _looped;
             m_updating = false;
             m_finished = false;
-            m_basePositionMs = _position;
-            m_playCursorBytes = 0;
 
             this->resetRingBuffer_();
 
@@ -210,6 +206,9 @@ namespace Mengine
 
                 return false;
             }
+
+            uint32_t bytesPerSecond = m_frequency * m_channels * 2;
+            m_playPositionBytes.store( (uint32_t)(_position / 1000.f * (float)bytesPerSecond) );
         }
 
         m_updating = true;
@@ -228,8 +227,7 @@ namespace Mengine
 
             m_updating = false;
             m_finished = true;
-            m_basePositionMs = 0.f;
-            m_playCursorBytes = 0;
+            m_playPositionBytes = 0;
 
             this->resetRingBuffer_();
 
@@ -267,8 +265,6 @@ namespace Mengine
         this->resetRingBuffer_();
         this->resetDecodeBuffer_();
 
-        m_basePositionMs = _position;
-        m_playCursorBytes = 0;
         m_finished = false;
 
         if( this->prebuffer_() == false )
@@ -277,6 +273,9 @@ namespace Mengine
 
             return false;
         }
+
+        uint32_t bytesPerSecond = m_frequency * m_channels * 2;
+        m_playPositionBytes.store( (uint32_t)(_position / 1000.f * (float)bytesPerSecond) );
 
         this->endMutableState_();
 
@@ -294,8 +293,8 @@ namespace Mengine
             return true;
         }
 
-        float playedMs = (float)m_playCursorBytes.load() * 1000.f / (float)bytesPerSecond;
-        float position = m_basePositionMs.load() + playedMs;
+        uint32_t absBytes = m_playPositionBytes.load();
+        float position = (float)absBytes * 1000.f / (float)bytesPerSecond;
 
         if( m_looped.load() == true && m_duration > 0.f )
         {
@@ -407,7 +406,7 @@ namespace Mengine
 
             m_readOffset.store( (readOffset + bytesToCopy) % (uint32_t)m_ringBufferSize );
             m_availableBytes.fetch_sub( bytesToCopy );
-            m_playCursorBytes.fetch_add( bytesToCopy );
+            m_playPositionBytes.fetch_add( bytesToCopy );
 
             renderedFrames += copyFrames;
         }
@@ -560,6 +559,8 @@ namespace Mengine
             m_decodeCursor = fraction;
         }
 
+        bool rewindAfterEmpty = false;
+
         while( m_decodeEOF == false && (m_decodeFrames - (uint32_t)m_decodeCursor) < _requiredFrames )
         {
             size_t usedBytes = (size_t)m_decodeFrames * frameSize;
@@ -581,10 +582,20 @@ namespace Mengine
             {
                 if( m_looped.load() == true )
                 {
+                    if( rewindAfterEmpty == true )
+                    {
+                        m_decodeEOF = true;
+                        m_finished = true;
+
+                        break;
+                    }
+
                     if( m_soundDecoder->rewind() == false )
                     {
                         return false;
                     }
+
+                    rewindAfterEmpty = true;
 
                     continue;
                 }
@@ -595,6 +606,7 @@ namespace Mengine
                 break;
             }
 
+            rewindAfterEmpty = false;
             m_decodeFrames += (uint32_t)(bytesWritten / frameSize);
 
             if( bytesWritten < decoderData.size )

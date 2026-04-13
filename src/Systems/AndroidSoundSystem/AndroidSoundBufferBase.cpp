@@ -18,6 +18,7 @@ namespace Mengine
         , m_channels( 0 )
         , m_duration( 0.f )
         , m_isStereo( false )
+        , m_finished( false )
         , m_playerObject( nullptr )
         , m_playItf( nullptr )
         , m_volumeItf( nullptr )
@@ -83,6 +84,11 @@ namespace Mengine
     float AndroidSoundBufferBase::getTimeDuration() const
     {
         return m_duration;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AndroidSoundBufferBase::isFinished() const
+    {
+        return m_finished.load();
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidSoundBufferBase::createPlayer_()

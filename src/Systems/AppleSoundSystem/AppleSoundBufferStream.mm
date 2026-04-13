@@ -21,10 +21,9 @@ namespace Mengine
         : m_looped( false )
         , m_updating( false )
         , m_finished( false )
-        , m_playCursorBytes( 0 )
+        , m_playPositionBytes( 0 )
         , m_writeCount( 0 )
         , m_readCount( 0 )
-        , m_basePositionMs( 0.f )
         , m_ringBufferSizeMask( 0 )
         , m_ringBufferSize( 0 )
         , m_ringBuffer( nullptr )
@@ -84,8 +83,7 @@ namespace Mengine
 
             this->resetRingBuffer_();
 
-            m_playCursorBytes = 0;
-            m_basePositionMs = 0.f;
+            m_playPositionBytes = 0;
 
             m_soundDecoder = nullptr;
             m_memory = nullptr;
@@ -145,8 +143,6 @@ namespace Mengine
             m_looped = _looped;
             m_updating = false;
             m_finished = false;
-            m_basePositionMs = _position;
-            m_playCursorBytes = 0;
 
             this->resetRingBuffer_();
 
@@ -165,6 +161,9 @@ namespace Mengine
             {
                 return false;
             }
+
+            uint32_t bytesPerSecond = m_frequency * m_channels * 2;
+            m_playPositionBytes.store( (uint32_t)(_position / 1000.f * (float)bytesPerSecond) );
 
             LOGGER_MESSAGE( "[apple] stream prebuffer freq: %u channels: %u duration: %f position: %f readable: %u finished: %u loop: %u"
                 , m_frequency
@@ -190,8 +189,7 @@ namespace Mengine
 
             m_updating = false;
             m_finished = true;
-            m_basePositionMs = 0.f;
-            m_playCursorBytes = 0;
+            m_playPositionBytes = 0;
 
             this->resetRingBuffer_();
         }
@@ -219,14 +217,15 @@ namespace Mengine
 
         this->resetRingBuffer_();
 
-        m_basePositionMs = _position;
-        m_playCursorBytes = 0;
         m_finished = false;
 
         if( this->prebuffer_() == false )
         {
             return false;
         }
+
+        uint32_t bytesPerSecond = m_frequency * m_channels * 2;
+        m_playPositionBytes.store( (uint32_t)(_position / 1000.f * (float)bytesPerSecond) );
 
         return true;
     }
@@ -242,8 +241,8 @@ namespace Mengine
             return true;
         }
 
-        float playedMs = (float)m_playCursorBytes.load() * 1000.f / (float)bytesPerSecond;
-        float position = m_basePositionMs.load() + playedMs;
+        uint32_t absBytes = m_playPositionBytes.load();
+        float position = (float)absBytes * 1000.f / (float)bytesPerSecond;
 
         if( m_looped.load() == true && m_duration > 0.f )
         {
@@ -344,7 +343,7 @@ namespace Mengine
 
             r += bytesToCopy;
             readable -= bytesToCopy;
-            m_playCursorBytes.fetch_add( bytesToCopy, StdAtomic::memory_order_relaxed );
+            m_playPositionBytes.fetch_add( bytesToCopy, StdAtomic::memory_order_relaxed );
 
             renderedFrames += copyFrames;
         }

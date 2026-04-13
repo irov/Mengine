@@ -8,6 +8,8 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/TimestampHelper.h"
 
+#include "Config/StdMath.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -122,9 +124,10 @@ namespace Mengine
             void * pcmBuffer = m_pcmMemory->getBuffer();
 
             (*m_bufferQueueItf)->Enqueue( m_bufferQueueItf, pcmBuffer, (SLuint32)m_pcmDataSize );
-
-            m_playTimestamp = Helper::getSystemTimestamp();
-            m_positionOffset = 0.f;
+        }
+        else
+        {
+            m_finished = true;
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -141,12 +144,15 @@ namespace Mengine
         }
 
         m_looped = _looped;
+        m_finished = false;
+        m_pauseTimestamp = MENGINE_UINT64_C(0);
 
         (*m_bufferQueueItf)->RegisterCallback( m_bufferQueueItf, &AndroidSoundBufferMemory::bufferQueueCallback_, this );
 
         void * pcmBuffer = m_pcmMemory->getBuffer();
         size_t dataSize = m_pcmDataSize;
         size_t dataOffset = 0;
+        uint32_t frameSize = m_channels * 2;
 
         if( _position > 0.f )
         {
@@ -154,13 +160,18 @@ namespace Mengine
             uint32_t bytesPerSecond = m_frequency * m_channels * 2;
             size_t byteOffset = (size_t)(positionSec * (float)bytesPerSecond);
 
-            uint32_t frameSize = m_channels * 2;
             byteOffset -= byteOffset % frameSize;
 
-            if( byteOffset < dataSize )
+            if( byteOffset >= dataSize )
             {
-                dataOffset = byteOffset;
+                m_playTimestamp = Helper::getSystemTimestamp();
+                m_positionOffset = m_duration;
+                m_finished = true;
+
+                return true;
             }
+
+            dataOffset = byteOffset;
         }
 
         uint8_t * startBuffer = static_cast<uint8_t *>(pcmBuffer) + dataOffset;
@@ -215,6 +226,7 @@ namespace Mengine
         m_playTimestamp = MENGINE_UINT64_C(0);
         m_pauseTimestamp = MENGINE_UINT64_C(0);
         m_positionOffset = 0.f;
+        m_finished = false;
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidSoundBufferMemory::pauseSource()
@@ -253,6 +265,8 @@ namespace Mengine
             return false;
         }
 
+        bool paused = m_pauseTimestamp != MENGINE_UINT64_C(0);
+
         (*m_playItf)->SetPlayState( m_playItf, SL_PLAYSTATE_STOPPED );
         (*m_bufferQueueItf)->Clear( m_bufferQueueItf );
 
@@ -268,7 +282,14 @@ namespace Mengine
 
         if( byteOffset >= dataSize )
         {
-            byteOffset = 0;
+            Timestamp currentTimestamp = Helper::getSystemTimestamp();
+
+            m_playTimestamp = currentTimestamp;
+            m_positionOffset = m_duration;
+            m_pauseTimestamp = paused == true ? currentTimestamp : MENGINE_UINT64_C(0);
+            m_finished = true;
+
+            return true;
         }
 
         uint8_t * startBuffer = static_cast<uint8_t *>(pcmBuffer) + byteOffset;
@@ -285,8 +306,10 @@ namespace Mengine
 
         m_playTimestamp = Helper::getSystemTimestamp();
         m_positionOffset = _position;
+        m_pauseTimestamp = paused == true ? m_playTimestamp : MENGINE_UINT64_C(0);
+        m_finished = false;
 
-        result = (*m_playItf)->SetPlayState( m_playItf, SL_PLAYSTATE_PLAYING );
+        result = (*m_playItf)->SetPlayState( m_playItf, paused == true ? SL_PLAYSTATE_PAUSED : SL_PLAYSTATE_PLAYING );
 
         if( result != SL_RESULT_SUCCESS )
         {
@@ -319,7 +342,11 @@ namespace Mengine
         float elapsedMs = (float)(currentTime - m_playTimestamp);
         float position = m_positionOffset + elapsedMs;
 
-        if( position > m_duration )
+        if( m_looped == true && m_duration > 0.f )
+        {
+            position = StdMath::fmodf( position, m_duration );
+        }
+        else if( position > m_duration )
         {
             position = m_duration;
         }

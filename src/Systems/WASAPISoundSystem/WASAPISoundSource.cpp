@@ -228,6 +228,7 @@ namespace Mengine
 
         m_playing = true;
         m_pausing = false;
+        m_finished = false;
 
         return true;
     }
@@ -388,6 +389,7 @@ namespace Mengine
             }
 
             m_framePosition = positionFrame;
+            m_finished = false;
 
             return true;
         }
@@ -416,6 +418,8 @@ namespace Mengine
 
             return false;
         }
+
+        m_finished = false;
 
         return true;
     }

@@ -58,16 +58,22 @@ namespace Mengine
     void AndroidSoundBufferStream::_releaseSoundBuffer()
     {
         this->setUpdating_( false );
-        this->destroyPlayer_();
 
-        for( uint32_t i = 0; i != MENGINE_ANDROID_STREAM_BUFFER_COUNT; ++i )
         {
-            m_bufferData[i] = nullptr;
+            MENGINE_THREAD_MUTEX_SCOPE( m_mutexUpdating );
+
+            this->destroyPlayer_();
+
+            for( uint32_t i = 0; i != MENGINE_ANDROID_STREAM_BUFFER_COUNT; ++i )
+            {
+                m_bufferData[i] = nullptr;
+            }
+
+            m_soundDecoder = nullptr;
+            m_memory = nullptr;
         }
 
-        m_soundDecoder = nullptr;
         m_mutexUpdating = nullptr;
-        m_memory = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidSoundBufferStream::load( const SoundDecoderInterfacePtr & _soundDecoder )
@@ -122,6 +128,7 @@ namespace Mengine
         m_looped = _looped;
         m_consumedCount = 0;
         m_currentBuffer = 0;
+        m_finished = false;
 
         if( this->createPlayer_() == false )
         {
@@ -223,6 +230,8 @@ namespace Mengine
         (*m_bufferQueueItf)->Clear( m_bufferQueueItf );
 
         this->destroyPlayer_();
+
+        m_finished = false;
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidSoundBufferStream::pauseSource()
@@ -263,9 +272,63 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidSoundBufferStream::setTimePosition( float _position )
     {
-        bool result = m_soundDecoder->seek( _position );
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutexUpdating );
 
-        return result;
+        bool updating = m_updating == true;
+
+        if( m_playerObject == nullptr )
+        {
+            return false;
+        }
+
+        (*m_playItf)->SetPlayState( m_playItf, SL_PLAYSTATE_STOPPED );
+        (*m_bufferQueueItf)->Clear( m_bufferQueueItf );
+
+        if( m_soundDecoder->seek( _position ) == false )
+        {
+            return false;
+        }
+
+        m_consumedCount = 0;
+        m_currentBuffer = 0;
+        m_finished = false;
+
+        for( uint32_t i = 0; i != MENGINE_ANDROID_STREAM_BUFFER_COUNT; ++i )
+        {
+            size_t bytesWritten;
+            if( this->fillBuffer_( i, &bytesWritten ) == false )
+            {
+                return false;
+            }
+
+            if( bytesWritten == 0 )
+            {
+                break;
+            }
+
+            SLresult result = (*m_bufferQueueItf)->Enqueue( m_bufferQueueItf, m_bufferData[i], (SLuint32)bytesWritten );
+
+            if( result != SL_RESULT_SUCCESS )
+            {
+                return false;
+            }
+
+            if( bytesWritten != MENGINE_ANDROID_STREAM_BUFFER_SIZE )
+            {
+                break;
+            }
+        }
+
+        m_currentBuffer = 0;
+
+        SLresult result = (*m_playItf)->SetPlayState( m_playItf, updating == true ? SL_PLAYSTATE_PLAYING : SL_PLAYSTATE_PAUSED );
+
+        if( result != SL_RESULT_SUCCESS )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidSoundBufferStream::getTimePosition( float * const _position ) const
@@ -344,6 +407,8 @@ namespace Mengine
 
                     if( state.count == 0 )
                     {
+                        m_finished = true;
+
                         return false;
                     }
                 }

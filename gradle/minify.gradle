@@ -2,43 +2,40 @@ final Boolean ANDROID_APP_DEBUG_MINIFY_ENABLE = Utils.getBooleanProperty("ANDROI
 final Boolean ANDROID_APP_RELEASE_MINIFY_ENABLE = Utils.getBooleanProperty("ANDROID_APP_RELEASE_MINIFY_ENABLE", false)
 
 final File proguardUserFile = project.file('proguard-rules.pro')
+final boolean isLibrary = project.plugins.hasPlugin('com.android.library')
 
 android {
     buildTypes {
-        if (ANDROID_APP_DEBUG_MINIFY_ENABLE) {
-            debug {
-                debuggable false
-                minifyEnabled true
+        debug {
+            minifyEnabled ANDROID_APP_DEBUG_MINIFY_ENABLE
 
+            if (ANDROID_APP_DEBUG_MINIFY_ENABLE == true) {
                 if (proguardUserFile.exists() == true) {
                     proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), proguardUserFile
-                    consumerProguardFiles proguardUserFile
                 } else {
                     proguardFiles getDefaultProguardFile('proguard-android.txt')
                 }
-            }
-        } else {
-            debug {
-                debuggable true
-                minifyEnabled false
             }
         }
 
-        if (ANDROID_APP_RELEASE_MINIFY_ENABLE) {
-            release {
-                minifyEnabled true
+        release {
+            minifyEnabled ANDROID_APP_RELEASE_MINIFY_ENABLE
 
+            if (ANDROID_APP_RELEASE_MINIFY_ENABLE == true) {
                 if (proguardUserFile.exists() == true) {
                     proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), proguardUserFile
-                    consumerProguardFiles proguardUserFile
                 } else {
                     proguardFiles getDefaultProguardFile('proguard-android.txt')
                 }
             }
-        } else {
-            release {
-                minifyEnabled false
-            }
+        }
+    }
+}
+
+if (isLibrary == true && proguardUserFile.exists() == true) {
+    android {
+        defaultConfig {
+            consumerProguardFiles proguardUserFile
         }
     }
 }

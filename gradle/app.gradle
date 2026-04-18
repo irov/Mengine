@@ -291,8 +291,6 @@ android {
     sourceSets {
         main {
 			manifest.srcFile 'src/main/AndroidManifest.xml'
-			
-            java.srcDirs += ['src']
 
             if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR") == true) {
                 println "ANDROID_APP_ASSETS_RES_DIR: $ANDROID_APP_ASSETS_RES_DIR"

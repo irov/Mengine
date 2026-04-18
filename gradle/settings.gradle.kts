@@ -5,15 +5,14 @@ fun getBooleanProperty(name: String, d: Boolean): Boolean {
         return d
     }
 
-    val value = extra[name].toString()
+    val value = extra[name].toString().trim()
 
-    if (value.toInt() == 0) {
-        return false
-    } else if (value.toInt() == 1) {
-        return true
+    when (value.lowercase()) {
+        "0", "false" -> return false
+        "1", "true" -> return true
     }
 
-    throw kotlin.Exception("Get boolean property error: $name unexpected value: $value")
+    throw kotlin.Exception("Get boolean property error: $name must be 0/1 or true/false, but got '$value'")
 }
 
 fun getStringProperty(name: String, d: String?): String? {

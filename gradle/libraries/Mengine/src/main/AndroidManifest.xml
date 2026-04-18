@@ -2,8 +2,6 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:versionCode="${ANDROID_APP_BUILD_NUMBER}"
-    android:versionName="${ANDROID_APP_BUILD_VERSION}"
     android:installLocation="auto">
     <!-- OpenGL ES 2.0 -->
     <uses-feature android:glEsVersion="0x00020000" />
@@ -26,6 +24,8 @@
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:allowBackup="true"
+        android:fullBackupContent="@xml/backup_descriptor"
+        android:dataExtractionRules="@xml/data_extraction_rules"
         android:theme="@style/MengineApplicationTheme"
         android:networkSecurityConfig="@xml/network_security_config"
         android:hardwareAccelerated="true">

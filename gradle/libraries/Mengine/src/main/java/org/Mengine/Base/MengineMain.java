@@ -24,11 +24,22 @@ public class MengineMain implements Runnable {
         m_runLatch.countDown();
     }
 
-    public void start() {
+    public boolean start() {
         MengineLog.logInfo(TAG, "main start");
 
         m_thread = new Thread(this, "MNGMain");
-        m_thread.start();
+
+        try {
+            m_thread.start();
+        } catch (final Exception e) {
+            MengineLog.logInfo(TAG, "main start exception: %s"
+                , e.getMessage()
+            );
+
+            return false;
+        }
+
+        return true;
     }
 
     public void stop() {

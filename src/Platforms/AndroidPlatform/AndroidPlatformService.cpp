@@ -63,6 +63,9 @@
 #include "Config/Switch.h"
 #include "Config/Path.h"
 
+#include <swappy/swappyGL.h>
+#include <swappy/swappyGL_extra.h>
+
 #include <clocale>
 #include <ctime>
 #include <iomanip>
@@ -640,6 +643,7 @@ namespace Mengine
         , m_active( false )
         , m_desktop( false )
         , m_touchpad( false )
+        , m_swappyInitialized( false )
     {
         StdAlgorithm::fill_n( m_fingers, MENGINE_INPUT_MAX_TOUCH, -1 );
 
@@ -1004,13 +1008,27 @@ namespace Mengine
             return false;
         }
 
-        if( ::eglSwapBuffers( m_eglDisplay, m_eglSurface ) == EGL_FALSE )
+        if( m_swappyInitialized == true )
         {
-            LOGGER_WARNING( "[egl] invalid swap buffers [%d]"
-                , ::eglGetError()
-            );
+            if( SwappyGL_swap( m_eglDisplay, m_eglSurface ) == false )
+            {
+                LOGGER_WARNING( "[swappy] invalid swap [%d]"
+                    , ::eglGetError()
+                );
 
-            return false;
+                return false;
+            }
+        }
+        else
+        {
+            if( ::eglSwapBuffers( m_eglDisplay, m_eglSurface ) == EGL_FALSE )
+            {
+                LOGGER_WARNING( "[egl] invalid swap buffers [%d]"
+                    , ::eglGetError()
+                );
+
+                return false;
+            }
         }
 
         return true;
@@ -1618,6 +1636,15 @@ namespace Mengine
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_DETACH_WINDOW );
 
+        if( m_swappyInitialized == true )
+        {
+            SwappyGL_destroy();
+
+            m_swappyInitialized = false;
+
+            LOGGER_INFO( "platform", "[swappy] destroyed" );
+        }
+
         if( ::eglTerminate( m_eglDisplay ) == EGL_FALSE )
         {
             LOGGER_WARNING( "[egl] invalid terminate [%d]"
@@ -1983,11 +2010,48 @@ namespace Mengine
             return;
         }
 
-        if( ::eglSwapInterval( m_eglDisplay, 1 ) == EGL_FALSE )
+        if( m_swappyInitialized == false )
         {
-            LOGGER_WARNING( "[egl] invalid set swap interval [%d]"
-                , ::eglGetError()
-            );
+            JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+            MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+
+            jobject jobject_MengineActivity = Mengine_JNI_GetObjectActivity( jenv );
+
+            MENGINE_ASSERTION_FATAL( jobject_MengineActivity != nullptr, "invalid get object activity" );
+
+            SwappyGL_init( jenv, jobject_MengineActivity );
+
+            SwappyGL_setAutoSwapInterval( false );
+            SwappyGL_setAutoPipelineMode( false );
+            SwappyGL_setSwapIntervalNS( SWAPPY_SWAP_60FPS );
+
+            m_swappyInitialized = SwappyGL_isEnabled();
+
+            if( m_swappyInitialized == true )
+            {
+                LOGGER_MESSAGE( "[swappy] initialized successfully" );
+            }
+            else
+            {
+                LOGGER_WARNING( "[swappy] failed to initialize, falling back to eglSwapBuffers" );
+            }
+
+            Mengine_JNI_DeleteLocalRef( jenv, jobject_MengineActivity );
+        }
+
+        if( m_swappyInitialized == false )
+        {
+            if( ::eglSwapInterval( m_eglDisplay, 1 ) == EGL_FALSE )
+            {
+                LOGGER_WARNING( "[egl] invalid set swap interval [%d]"
+                    , ::eglGetError()
+                );
+            }
+        }
+        else
+        {
+            SwappyGL_setWindow( m_nativeWindow );
         }
 
         if( RENDER_SERVICE()
@@ -2000,6 +2064,11 @@ namespace Mengine
     void AndroidPlatformService::androidNativeSurfaceDestroyedEvent()
     {
         MENGINE_ASSERTION_FATAL( m_nativeWindow != nullptr, "native window already destroyed" );
+
+        if( m_swappyInitialized == true )
+        {
+            SwappyGL_setWindow( nullptr );
+        }
 
         if( m_nativeWindow != nullptr )
         {

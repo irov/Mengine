@@ -30,40 +30,64 @@ public class MengineFirebaseCrashlyticsANRMonitor {
     };
 
     public static void start() {
-        m_watcherThread = new Thread(() -> {
-            while (Thread.currentThread().isInterrupted() == false) {
-                m_mainHandler.post(MAIN_CHECK_RUNNABLE);
+        m_watcherThread = new Thread() {
+            public void run() {
+                while (Thread.currentThread().isInterrupted() == false) {
+                    m_mainHandler.post(MAIN_CHECK_RUNNABLE);
 
-                try {
-                    if (m_semaphore.tryAcquire(TIMEOUT_MS, TimeUnit.MILLISECONDS) == true) {
-                        m_anrDetected = false;
+                    try {
+                        if (m_semaphore.tryAcquire(TIMEOUT_MS, TimeUnit.MILLISECONDS) == true) {
+                            m_anrDetected = false;
+                            continue;
+                        }
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        break;
+                    }
+
+                    if (m_anrDetected == true) {
                         continue;
                     }
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    break;
-                }
 
-                if (m_anrDetected == true) {
-                    continue;
-                }
+                    m_anrDetected = true;
 
-                m_anrDetected = true;
+                    Thread mainThread = Looper.getMainLooper().getThread();
+                    StackTraceElement[] mainStack = mainThread.getStackTrace();
+                    Map<Thread, StackTraceElement[]> allThreads = Thread.getAllStackTraces();
 
-                Thread mainThread = Looper.getMainLooper().getThread();
-                StackTraceElement[] mainStack = mainThread.getStackTrace();
-                Map<Thread, StackTraceElement[]> allThreads = Thread.getAllStackTraces();
+                    if (BuildConfig.DEBUG == true) {
+                        StringBuilder builder = new StringBuilder();
+                        builder.append("Main thread is unresponsive for ")
+                            .append(TIMEOUT_MS)
+                            .append(" ms. This may indicate an ANR (Application Not Responding) issue.\n");
+                        builder.append("Main thread stack trace (state: ").append(mainThread.getState()).append(")\n");
+                        for (StackTraceElement ste : mainStack) {
+                            builder.append("\tat ").append(ste.toString()).append("\n");
+                        }
+                        builder.append("All threads stack traces:\n");
+                        for (Map.Entry<Thread, StackTraceElement[]> entry : allThreads.entrySet()) {
+                            Thread thread = entry.getKey();
 
-                if (BuildConfig.DEBUG == true) {
-                    StringBuilder builder = new StringBuilder();
-                    builder.append("Main thread is unresponsive for ")
-                        .append(TIMEOUT_MS)
-                        .append(" ms. This may indicate an ANR (Application Not Responding) issue.\n");
-                    builder.append("Main thread stack trace (state: ").append(mainThread.getState()).append(")\n");
-                    for (StackTraceElement ste : mainStack) {
-                        builder.append("\tat ").append(ste.toString()).append("\n");
+                            if (thread == mainThread) {
+                                continue;
+                            }
+
+                            StackTraceElement[] threadStack = entry.getValue();
+
+                            builder.append("Thread: ").append(thread.getName()).append(" (state: ").append(thread.getState()).append(")\n");
+                            for (StackTraceElement ste : threadStack) {
+                                builder.append("\tat ").append(ste.toString()).append("\n");
+                            }
+                        }
+                        builder.append("Please check your main thread operations and ensure they are not blocking for too long.");
+                        String errorMessage = builder.toString();
+                        MengineLog.logError(MengineFirebaseCrashlyticsANRMonitor.TAG, errorMessage);
                     }
-                    builder.append("All threads stack traces:\n");
+
+                    FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
+                    Throwable anrThrowable = new Throwable("ANR detected on main thread: " + mainThread.getName() + " (state: " + mainThread.getState() + ")");
+                    anrThrowable.setStackTrace(mainStack);
+
                     for (Map.Entry<Thread, StackTraceElement[]> entry : allThreads.entrySet()) {
                         Thread thread = entry.getKey();
 
@@ -71,46 +95,27 @@ public class MengineFirebaseCrashlyticsANRMonitor {
                             continue;
                         }
 
-                        StackTraceElement[] threadStack = entry.getValue();
+                        StackTraceElement[] stack = entry.getValue();
 
-                        builder.append("Thread: ").append(thread.getName()).append(" (state: ").append(thread.getState()).append(")\n");
-                        for (StackTraceElement ste : threadStack) {
-                            builder.append("\tat ").append(ste.toString()).append("\n");
-                        }
-                    }
-                    builder.append("Please check your main thread operations and ensure they are not blocking for too long.");
-                    String errorMessage = builder.toString();
-                    MengineLog.logError(MengineFirebaseCrashlyticsANRMonitor.TAG, errorMessage);
-                }
+                        Throwable threadThrowable = new Throwable("Thread: " + thread.getName() + " (state: " + thread.getState() + ")");
+                        threadThrowable.setStackTrace(stack);
 
-                FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
-                Throwable anrThrowable = new Throwable("ANR detected on main thread: " + mainThread.getName() + " (state: " + mainThread.getState() + ")");
-                anrThrowable.setStackTrace(mainStack);
-
-                for (Map.Entry<Thread, StackTraceElement[]> entry : allThreads.entrySet()) {
-                    Thread thread = entry.getKey();
-
-                    if (thread == mainThread) {
-                        continue;
+                        anrThrowable.addSuppressed(threadThrowable);
                     }
 
-                    StackTraceElement[] stack = entry.getValue();
+                    CustomKeysAndValues params = new CustomKeysAndValues.Builder()
+                        .putString("MainThreadName", mainThread.getName())
+                        .putString("MainThreadState", mainThread.getState().toString())
+                        .build();
 
-                    Throwable threadThrowable = new Throwable("Thread: " + thread.getName() + " (state: " + thread.getState() + ")");
-                    threadThrowable.setStackTrace(stack);
-
-                    anrThrowable.addSuppressed(threadThrowable);
+                    crashlytics.recordException(anrThrowable, params);
                 }
-
-                CustomKeysAndValues params = new CustomKeysAndValues.Builder()
-                    .putString("MainThreadName", mainThread.getName())
-                    .putString("MainThreadState", mainThread.getState().toString())
-                    .build();
-
-                crashlytics.recordException(anrThrowable, params);
             }
-        }, "MNGANRMonitor");
+        };
 
+        m_watcherThread.setName("MNGANRMonitor");
+        m_watcherThread.setPriority(Thread.MIN_PRIORITY);
+        m_watcherThread.setDaemon(true);
         m_watcherThread.start();
     }
 

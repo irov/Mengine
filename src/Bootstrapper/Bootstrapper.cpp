@@ -365,6 +365,10 @@ PLUGIN_EXPORT( GOAP );
 PLUGIN_EXPORT( DevToDebug );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_PLUGIN_WIN32_PILOT_STATIC)
+PLUGIN_EXPORT( Win32Pilot );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_CACHALOT_STATIC)
 PLUGIN_EXPORT( Cachalot );
 #endif
@@ -1647,6 +1651,10 @@ namespace Mengine
 
 #if defined(MENGINE_PLUGIN_DEVTODEBUG_STATIC)
         MENGINE_ADD_PLUGIN( DevToDebug, "plugin DevToDebug...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#if defined(MENGINE_PLUGIN_WIN32_PILOT_STATIC)
+        MENGINE_ADD_PLUGIN( Win32Pilot, "plugin Win32Pilot...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #if defined(MENGINE_PLUGIN_CACHALOT_STATIC)

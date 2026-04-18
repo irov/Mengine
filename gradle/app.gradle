@@ -330,6 +330,8 @@ android {
 
     packagingOptions {
         jniLibs {
+            useLegacyPackaging = true
+
             pickFirsts += ['lib/**/libc++_shared.so']
         }
     }

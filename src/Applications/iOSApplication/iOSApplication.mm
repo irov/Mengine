@@ -110,7 +110,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool iOSApplication::bootstrap( NSArray<NSString *> * _arguments )
     {
-        ServiceProviderInterface * serviceProvider = ::API_MengineCreate();
+        ServiceProviderInterface * serviceProvider = ::API_MengineCreate( nullptr );
 
         SERVICE_PROVIDER_SETUP( serviceProvider );
 

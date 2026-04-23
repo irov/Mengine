@@ -123,7 +123,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _nativeLibraryDir );
 
-        ServiceProviderInterface * serviceProvider = API_MengineCreate();
+        ServiceProviderInterface * serviceProvider = API_MengineCreate( nullptr );
 
         if( serviceProvider == nullptr )
         {

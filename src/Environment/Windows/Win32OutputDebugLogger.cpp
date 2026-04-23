@@ -72,6 +72,12 @@ namespace Mengine
         }
 
         ::OutputDebugStringA( message.data );
+
+        if( message.size == MENGINE_LOGGER_MAX_MESSAGE )
+        {
+            ::OutputDebugStringA( "..." );
+        }
+
         ::OutputDebugStringA( "\n" );
     }
     //////////////////////////////////////////////////////////////////////////

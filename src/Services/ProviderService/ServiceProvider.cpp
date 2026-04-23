@@ -806,6 +806,16 @@ namespace Mengine
         return ServiceInterfacePtr::none();
     }
     //////////////////////////////////////////////////////////////////////////
+    void ServiceProvider::setConfiguration( const Configuration & _configuration )
+    {
+        m_configuration = _configuration;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const Configuration & ServiceProvider::getConfiguration() const
+    {
+        return m_configuration;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void ServiceProvider::destroy()
     {
         for( uint32_t index = 0; index != m_servicesCount; ++index )

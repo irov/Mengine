@@ -26,6 +26,7 @@
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/PathHelper.h"
 #include "Kernel/Logger.h"
+#include "Kernel/ConfigurationHelper.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -1139,6 +1140,16 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid message box format message '%s'"
                 , _format
+            );
+
+            return;
+        }
+
+        if( Helper::isSilentDialog() == true )
+        {
+            LOGGER_MESSAGE( "[messageBox] %s: %s"
+                , _caption
+                , str
             );
 
             return;

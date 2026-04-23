@@ -2,6 +2,8 @@
 
 #include "Interface/DocumentInterface.h"
 
+#include "Kernel/Configuration.h"
+
 #include "Kernel/IntrusivePtr.h"
 #include "Kernel/SingleHolder.h"
 #include "Kernel/Typename.h"
@@ -55,6 +57,15 @@ namespace Mengine
 
     public:
         virtual void stopServices() = 0;
+
+    public:
+        // Engine-wide configuration carried by the ServiceProvider for the
+        // entire process lifetime. Set ONCE by the host (via
+        // API_MengineCreate) before any service is created so even early
+        // services and Kernel-level helpers can read it without depending
+        // on a particular service.
+        virtual void setConfiguration( const Configuration & _configuration ) = 0;
+        virtual const Configuration & getConfiguration() const = 0;
 
     public:
         virtual void destroy() = 0;

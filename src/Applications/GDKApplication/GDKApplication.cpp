@@ -231,7 +231,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool GDKApplication::initialize()
+    bool GDKApplication::initialize( const Configuration & _configuration )
     {
 #if defined(MENGINE_PLUGIN_MENGINE_SHARED)
         HINSTANCE hInstance = ::LoadLibrary( MENGINE_DLL_NAME );
@@ -248,7 +248,10 @@ namespace Mengine
                 , error_code
             );
 
-            ::MessageBox( NULL, message, L"Mengine Error", MB_OK );
+            if( _configuration.silentDialog == false )
+            {
+                ::MessageBox( NULL, message, L"Mengine Error", MB_OK );
+            }
 
             return false;
         }
@@ -272,13 +275,16 @@ namespace Mengine
                 , error_code
             );
 
-            ::MessageBox( NULL, message, L"Mengine Error", MB_OK );
+            if( _configuration.silentDialog == false )
+            {
+                ::MessageBox( NULL, message, L"Mengine Error", MB_OK );
+            }
 
             return false;
         }
 #endif
 
-        ServiceProviderInterface * serviceProvider = API_MengineCreate();
+        ServiceProviderInterface * serviceProvider = API_MengineCreate( &_configuration );
 
         if( serviceProvider == nullptr )
         {

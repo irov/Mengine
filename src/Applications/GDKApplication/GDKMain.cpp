@@ -1,7 +1,35 @@
 #include "Environment/Windows/WindowsIncluder.h"
 
+#include "Kernel/Configuration.h"
+
 #include "GDKApplication.h"
 
+#include "Config/StdString.h"
+
+//////////////////////////////////////////////////////////////////////////
+namespace
+{
+    //////////////////////////////////////////////////////////////////////////
+    // Crude but sufficient cmdline scan: we only need this BEFORE any
+    // service / option parser exists, just to learn whether the host
+    // explicitly asked for silent mode.
+    //////////////////////////////////////////////////////////////////////////
+    static bool GDKCmdLineHasCLI( LPSTR _lpCmdLine )
+    {
+        if( _lpCmdLine == NULL )
+        {
+            return false;
+        }
+
+        if( Mengine::StdString::strstr( _lpCmdLine, "cli" ) == nullptr )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+}
 //////////////////////////////////////////////////////////////////////////
 //                          Entry point                                 //
 //////////////////////////////////////////////////////////////////////////
@@ -12,11 +40,26 @@ int APIENTRY WinMain( _In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _I
     MENGINE_UNUSED( lpCmdLine );
     MENGINE_UNUSED( nShowCmd );
 
+    Mengine::Configuration configuration;
+
+    bool CLI = GDKCmdLineHasCLI( lpCmdLine );
+
+    if( CLI == true )
+    {
+        // CLI mode currently implies silent-dialog behaviour. Other CLI-driven
+        // configuration knobs can be added here in the future, and silentDialog
+        // can also be enabled independently of CLI.
+        configuration.silentDialog = true;
+    }
+
     Mengine::GDKApplication app;
 
-    if( app.initialize() == false )
+    if( app.initialize( configuration ) == false )
     {
-        ::MessageBoxA( NULL, "Invalid initialization", "Mengine", MB_OK );
+        if( configuration.silentDialog == false )
+        {
+            ::MessageBoxA( NULL, "Invalid initialization", "Mengine", MB_OK );
+        }
 
         app.finalize();
 

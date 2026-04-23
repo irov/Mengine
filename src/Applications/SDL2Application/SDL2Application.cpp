@@ -150,7 +150,7 @@ namespace Mengine
 #if defined(MENGINE_PLUGIN_MENGINE_SHARED)
 #   error "MENGINE_PLUGIN_MENGINE_SHARED for SDL2 not implemented"
 #elif defined(MENGINE_PLUGIN_MENGINE_STATIC)
-        ServiceProviderInterface * serviceProvider = API_MengineCreate();
+        ServiceProviderInterface * serviceProvider = API_MengineCreate( nullptr );
 #else
         ServiceProviderInterface * serviceProvider = nullptr;
 #endif

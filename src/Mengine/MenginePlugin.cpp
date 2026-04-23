@@ -16,7 +16,7 @@ SERVICE_EXTERN( StringizeService );
 SERVICE_EXTERN( DocumentService );
 SERVICE_EXTERN( Bootstrapper );
 //////////////////////////////////////////////////////////////////////////
-extern "C" Mengine::ServiceProviderInterface * API_MengineCreate()
+extern "C" Mengine::ServiceProviderInterface * API_MengineCreate( const Mengine::Configuration * _configuration )
 {
     if( SERVICE_PROVIDER_EXIST() == true )
     {
@@ -30,6 +30,16 @@ extern "C" Mengine::ServiceProviderInterface * API_MengineCreate()
     }
 
     SERVICE_PROVIDER_SETUP( serviceProvider );
+
+    // Stash engine-wide configuration on the ServiceProvider BEFORE any
+    // service is created. From this point on every code path (including
+    // Kernel-level Helper::abort/Helper::crash) can read it via
+    // SERVICE_PROVIDER_GET()->getConfiguration() without depending on a
+    // particular service.
+    Mengine::Configuration defaultConfiguration;
+    serviceProvider->setConfiguration( _configuration != nullptr
+        ? *_configuration
+        : defaultConfiguration );
 
     if( SERVICE_CREATE( AllocatorSystem, nullptr ) == false )
     {

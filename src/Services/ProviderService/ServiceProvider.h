@@ -2,6 +2,8 @@
 
 #include "Interface/ServiceProviderInterface.h"
 
+#include "Kernel/Configuration.h"
+
 #include "Kernel/StaticString.h"
 #include "Kernel/SpinLock.h"
 
@@ -37,6 +39,10 @@ namespace Mengine
     public:
         ServiceProvider();
         ~ServiceProvider() override;
+
+    public:
+        void setConfiguration( const Configuration & _configuration ) override;
+        const Configuration & getConfiguration() const override;
 
     public:
         const bool * isExistServiceProvider( const Char * _name ) override;
@@ -123,6 +129,8 @@ namespace Mengine
         SpinLock m_spinLockDependencies;
         SpinLock m_spinLockLeaves;
         SpinLock m_spinLockWaits;
+
+        Configuration m_configuration;
 
 #if defined(MENGINE_DEBUG)
         const Char * m_initializeServiceName;

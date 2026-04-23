@@ -32,6 +32,7 @@
 #include "Kernel/PathHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/FactoryPool.h"
+#include "Kernel/ConfigurationHelper.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionNotImplemented.h"
@@ -2313,18 +2314,31 @@ namespace Mengine
 
         m_hWnd = _hWnd;
 
-        HWND hWndFgnd = ::GetForegroundWindow();
+        // CLI / headless mode: window must stay invisible. Skip foreground promotion entirely
+        // because SW_MINIMIZE/SW_RESTORE briefly flashes the window on screen.
+        bool OPTION_windowhidden = HAS_OPTION( "windowhidden" );
 
-        if( hWndFgnd != m_hWnd )
+        if( OPTION_windowhidden == true )
         {
-            LOGGER_INFO( "platform", "setup foreground window..." );
+            LOGGER_INFO( "platform", "window hidden mode" );
 
-            ::ShowWindow( m_hWnd, SW_MINIMIZE );
-            ::ShowWindow( m_hWnd, SW_RESTORE );
+            ::ShowWindow( m_hWnd, SW_HIDE );
         }
         else
         {
-            ::ShowWindow( m_hWnd, SW_SHOW );
+            HWND hWndFgnd = ::GetForegroundWindow();
+
+            if( hWndFgnd != m_hWnd )
+            {
+                LOGGER_INFO( "platform", "setup foreground window..." );
+
+                ::ShowWindow( m_hWnd, SW_MINIMIZE );
+                ::ShowWindow( m_hWnd, SW_RESTORE );
+            }
+            else
+            {
+                ::ShowWindow( m_hWnd, SW_SHOW );
+            }
         }
 
 #if defined(MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA)
@@ -3805,13 +3819,32 @@ namespace Mengine
         int32_t size_vsnprintf = MENGINE_VSNPRINTF( str, MENGINE_LOGGER_MAX_MESSAGE, _format, args );
         MENGINE_VA_LIST_END( args );
 
+        bool silent = Helper::isSilentDialog();
+
         if( size_vsnprintf < 0 )
         {
             LOGGER_ERROR( "invalid message box format message '%s'"
                 , _format
             );
 
-            ::MessageBoxA( NULL, "invalid message box format message", _caption, MB_OK );
+            if( silent == false )
+            {
+                ::MessageBoxA( NULL, "invalid message box format message", _caption, MB_OK );
+            }
+
+            return;
+        }
+
+        // Silent-dialog mode: route the message into the log instead of
+        // blocking the process with a modal popup. This is the single
+        // chokepoint used by Abort/Crash/Win32MessageBoxLogger and any
+        // gameplay code that calls PLATFORM_SERVICE()->messageBox(...).
+        if( silent == true )
+        {
+            LOGGER_MESSAGE( "[messageBox] %s: %s"
+                , _caption
+                , str
+            );
 
             return;
         }

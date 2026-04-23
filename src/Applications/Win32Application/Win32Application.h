@@ -8,6 +8,8 @@
 
 #include "Interface/LoggerInterface.h"
 
+#include "Kernel/Configuration.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -18,7 +20,7 @@ namespace Mengine
         ~Win32Application();
 
     public:
-        bool initialize();
+        bool initialize( const Configuration & _configuration );
         void finalize();
 
     public:

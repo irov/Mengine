@@ -57,7 +57,7 @@ namespace Mengine
 
         StdString::strzcpy_safe( m_data, _message.data, _message.size, MENGINE_LOGGER_MAX_MESSAGE );
 
-        m_size = _message.size;
+        m_size = MENGINE_MIN( _message.size, MENGINE_LOGGER_MAX_MESSAGE );
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerRecord::getMessage( LoggerMessage * const _message ) const

@@ -17,6 +17,7 @@
 #include "Interface/RenderServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/ConfigurationHelper.h"
 #include "Kernel/VectorConstString.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -1272,6 +1273,7 @@ namespace Mengine
         MENGINE_ADD_SERVICE( EnvironmentService, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ADD_SERVICE( PlatformService, MENGINE_DOCUMENT_FACTORABLE );
+
         MENGINE_ADD_SERVICE( FileService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( ConfigService, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -1342,7 +1344,11 @@ namespace Mengine
         bool OPTION_assertion = HAS_OPTION( "assertion" );
         bool Engine_AssertionDebugBreak = CONFIG_VALUE_BOOLEAN( "Engine", "AssertionDebugBreak", false );
 
-        bool Assertion_NoDebugBreak = OPTION_assertion == false && Engine_AssertionDebugBreak == false;
+        // Silent-dialog mode forces "no debug break" on top of the normal
+        // assertion logic so a headless / CI run can never freeze on a
+        // breakpoint coming from MENGINE_ASSERTION.
+        bool Assertion_NoDebugBreak = (OPTION_assertion == false && Engine_AssertionDebugBreak == false)
+            || Helper::isSilentDialog() == true;
 
         MENGINE_ASSERTION_SET_NOT_DEBUG_BREAK( Assertion_NoDebugBreak );
 

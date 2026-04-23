@@ -255,7 +255,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Application::initialize()
+    bool Win32Application::initialize( const Configuration & _configuration )
     {
 #if defined(MENGINE_PLUGIN_MENGINE_SHARED)
         HINSTANCE hInstance = ::LoadLibraryW( MENGINE_DLL_NAME );
@@ -264,15 +264,16 @@ namespace Mengine
         {
             DWORD error_code = ::GetLastError();
 
-            MENGINE_UNUSED( error_code );
-
-            WChar message[1024 + 1] = {L'\0'};
-            MENGINE_SWPRINTF( message, 1024, L"Invalid load %ls [%lu]"
+            Char message[1024 + 1] = {L'\0'};
+            MENGINE_SPRINTF( message, 1024, "Invalid load %ls [%lu]"
                 , MENGINE_DLL_NAME
                 , error_code
             );
 
-            ::MessageBox( NULL, message, L"Mengine Error", MB_OK );
+            if( _configuration.silentDialog == false )
+            {
+                ::MessageBoxA( NULL, message, "Mengine Error", MB_OK );
+            }
 
             return false;
         }
@@ -287,22 +288,23 @@ namespace Mengine
         {
             DWORD error_code = ::GetLastError();
 
-            MENGINE_UNUSED( error_code );
-
-            WChar message[1024 + 1] = {L'\0'};
-            MENGINE_SWPRINTF( message, 1024, L"Invalid get function '%hs' from dll '%ls' [%lu]"
+            Char message[1024 + 1] = {L'\0'};
+            MENGINE_SPRINTF( message, 1024, "Invalid get function '%hs' from dll '%ls' [%lu]"
                 , "initializeMengine"
                 , MENGINE_DLL_NAME
                 , error_code
             );
 
-            ::MessageBox( NULL, message, L"Mengine Error", MB_OK );
+            if( _configuration.silentDialog == false )
+            {
+                ::MessageBoxA( NULL, message, "Mengine Error", MB_OK );
+            }
 
             return false;
         }
 #endif
 
-        ServiceProviderInterface * serviceProvider = API_MengineCreate();
+        ServiceProviderInterface * serviceProvider = API_MengineCreate( &_configuration );
 
         if( serviceProvider == nullptr )
         {

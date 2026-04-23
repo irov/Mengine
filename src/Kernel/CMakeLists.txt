@@ -967,7 +967,11 @@ Core
     
     DebugBreak.h
     DebugBreak.cpp
-    
+
+    Configuration.h
+    ConfigurationHelper.h
+    ConfigurationHelper.cpp
+
     DevelopmentConverter.cpp
     DevelopmentConverter.h
     

@@ -1,5 +1,7 @@
 #include "Environment/Windows/WindowsIncluder.h"
 
+#include "Kernel/Configuration.h"
+
 #include "Win32Application.h"
 
 #include "Config/Config.h"
@@ -15,7 +17,9 @@ int main( int argc, char * argv[] )
 
     Mengine::Win32Application app;
 
-    bool initialize = app.initialize();
+    Mengine::Configuration configuration;
+
+    bool initialize = app.initialize( configuration );
 
     if( initialize == true )
     {
@@ -23,7 +27,10 @@ int main( int argc, char * argv[] )
     }
     else
     {
-        MessageBoxA( NULL, "Mengine invalid initialization", "Mengine", MB_OK );
+        if( configuration.silentDialog == false )
+        {
+            MessageBoxA( NULL, "Mengine invalid initialization", "Mengine", MB_OK );
+        }
     }
 
     app.finalize();

@@ -6,6 +6,7 @@
 
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/DebugBreak.h"
+#include "Kernel/ConfigurationHelper.h"
 
 #include "Config/StdInt.h"
 
@@ -25,9 +26,14 @@ namespace Mengine
 #endif
 
 #if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
-            ::MessageBoxA( NULL, _doc, "Mengine crash", MB_OK );
+            // Same rationale as Helper::abort: self-contained popup gated
+            // by the engine-wide silent-dialog flag on ServiceProvider.
+            if( Helper::isSilentDialog() == false )
+            {
+                ::MessageBoxA( NULL, _doc, "Mengine crash", MB_OK | MB_ICONERROR );
+            }
 #endif
-            
+
             volatile uint32_t * p = nullptr;
             
             // cppcheck-suppress nullPointer

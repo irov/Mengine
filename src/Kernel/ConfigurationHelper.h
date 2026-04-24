@@ -13,5 +13,14 @@ namespace Mengine
         // engine-wide Configuration is immutable for the lifetime of
         // the ServiceProvider.
         bool isSilentDialog();
+
+        // Convenience accessor used by platform window code to learn whether
+        // the main application window must stay hidden for the whole process
+        // lifetime (CLI / headless / automated runs). Returns false when the
+        // ServiceProvider is not available yet so callers default to "show
+        // window". The value is cached after the first successful read
+        // because the engine-wide Configuration is immutable for the lifetime
+        // of the ServiceProvider.
+        bool isHideWindow();
     }
 }

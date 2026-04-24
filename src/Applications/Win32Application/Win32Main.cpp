@@ -100,6 +100,11 @@ int APIENTRY WinMain( _In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _I
         // can also be enabled independently of CLI.
         configuration.silentDialog = true;
 
+        // CLI mode also implies a hidden main window: the engine still
+        // initializes (services, scripts, audio) but no visible window is
+        // ever shown. Can also be enabled independently of CLI.
+        configuration.hideWindow = true;
+
         // Suppress CRT/SEH/WER popups for this EXE module BEFORE the
         // Mengine DLL/static lib is touched. The DLL gets the same
         // configuration through ServiceProvider once Win32Application::

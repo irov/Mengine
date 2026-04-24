@@ -2316,9 +2316,13 @@ namespace Mengine
 
         // CLI / headless mode: window must stay invisible. Skip foreground promotion entirely
         // because SW_MINIMIZE/SW_RESTORE briefly flashes the window on screen.
+        // Triggered either by the CLI option `-windowhidden` or by the
+        // engine-wide Configuration::hideWindow flag (set, for example, from
+        // Win32Main when the host detects CLI mode before any service exists).
         bool OPTION_windowhidden = HAS_OPTION( "windowhidden" );
+        bool CONFIG_hideWindow = Helper::isHideWindow();
 
-        if( OPTION_windowhidden == true )
+        if( OPTION_windowhidden == true || CONFIG_hideWindow == true )
         {
             LOGGER_INFO( "platform", "window hidden mode" );
 

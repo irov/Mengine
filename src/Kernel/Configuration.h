@@ -24,5 +24,11 @@ namespace Mengine
         // process is terminated cleanly so an automated launcher / CI can
         // observe failures via log files instead of being blocked by a UI.
         bool silentDialog = false;
+
+        // Force the main application window to stay hidden for the entire
+        // process lifetime. Intended for CLI / headless / automated runs
+        // where the engine still needs to spin up (audio, scripts, services)
+        // but no visible window should ever appear on screen.
+        bool hideWindow = false;
     };
 }

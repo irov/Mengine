@@ -105,6 +105,13 @@ int APIENTRY WinMain( _In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _I
         // ever shown. Can also be enabled independently of CLI.
         configuration.hideWindow = true;
 
+        // CLI mode also implies the engine update loop must keep running
+        // even when the (hidden) main window has no focus: an automated
+        // agent driving the process via Win32MessagePipeBridge / DnD probes
+        // would otherwise deadlock waiting for the engine to tick. Can also
+        // be enabled independently of CLI.
+        configuration.nopause = true;
+
         // Suppress CRT/SEH/WER popups for this EXE module BEFORE the
         // Mengine DLL/static lib is touched. The DLL gets the same
         // configuration through ServiceProvider once Win32Application::

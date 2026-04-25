@@ -22,5 +22,14 @@ namespace Mengine
         // because the engine-wide Configuration is immutable for the lifetime
         // of the ServiceProvider.
         bool isHideWindow();
+
+        // Convenience accessor used by Application::beginUpdate to learn
+        // whether the engine update loop must keep running on focus loss
+        // (CLI / headless / automated runs). Returns false when the
+        // ServiceProvider is not available yet so callers default to the
+        // command-line value. The value is cached after the first successful
+        // read because the engine-wide Configuration is immutable for the
+        // lifetime of the ServiceProvider.
+        bool isNopause();
     }
 }

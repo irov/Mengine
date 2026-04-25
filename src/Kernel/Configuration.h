@@ -30,5 +30,13 @@ namespace Mengine
         // where the engine still needs to spin up (audio, scripts, services)
         // but no visible window should ever appear on screen.
         bool hideWindow = false;
+
+        // Keep the engine update loop running even when the main window
+        // loses focus / is minimized. Mirrors the existing `--nopause`
+        // command-line option but lives in Configuration so the host EXE
+        // can force it on for CLI / headless / CI runs where there is no
+        // user focus at all and pausing on focus loss would deadlock the
+        // automated agent.
+        bool nopause = false;
     };
 }

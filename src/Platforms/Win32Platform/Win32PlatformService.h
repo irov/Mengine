@@ -8,6 +8,7 @@
 
 #include "Win32MouseEvent.h"
 #include "Win32AlreadyRunningMonitor.h"
+#include "Win32MessagePipeBridge.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/MouseButtonCode.h"
@@ -229,6 +230,7 @@ namespace Mengine
         FactoryInterfacePtr m_factoryDynamicLibraries;
 
         Win32AlreadyRunningMonitorPtr m_alreadyRunningMonitor;
+        Win32MessagePipeBridgePtr m_messagePipeBridge;
 
         Win32MouseEvent m_mouseEvent;
 

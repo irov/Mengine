@@ -34,6 +34,7 @@
 #include "Interface/LifecycleServiceInterface.h"
 
 #include "Kernel/MixerBoolean.h"
+#include "Kernel/ConfigurationHelper.h"
 
 #include "Isometric.h"
 #include "HotSpotPolygon.h"
@@ -396,8 +397,9 @@ namespace Mengine
         }
 
         bool OPTION_nopause = HAS_OPTION( "nopause" );
+        bool CONFIG_nopause = Helper::isNopause();
 
-        this->setNopause( OPTION_nopause );
+        this->setNopause( OPTION_nopause || CONFIG_nopause );
 
         m_cursorMode = CONFIG_VALUE_BOOLEAN( "Platform", "Cursor", false );
 

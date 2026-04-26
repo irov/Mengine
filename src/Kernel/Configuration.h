@@ -38,5 +38,12 @@ namespace Mengine
         // user focus at all and pausing on focus loss would deadlock the
         // automated agent.
         bool nopause = false;
+
+        // Disable the already-running monitor / focus-forward behaviour.
+        // Mirrors the existing `--noalreadyrunning` command-line option but
+        // lives in Configuration so CLI / headless / CI launches can start
+        // independently even when a normal user-facing instance is already
+        // running.
+        bool noAlreadyRunning = false;
     };
 }

@@ -62,6 +62,11 @@ int APIENTRY WinMain( _In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _I
         // would otherwise deadlock waiting for the engine to tick. Can also
         // be enabled independently of CLI.
         configuration.nopause = true;
+
+        // CLI mode must not bounce into an already-open interactive instance:
+        // the agent needs an independent hidden process with its own message
+        // pipe, even while the user keeps a normal game window open.
+        configuration.noAlreadyRunning = true;
     }
 
     Mengine::GDKApplication app;

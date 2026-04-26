@@ -112,6 +112,11 @@ int APIENTRY WinMain( _In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _I
         // be enabled independently of CLI.
         configuration.nopause = true;
 
+        // CLI mode must not bounce into an already-open interactive instance:
+        // the agent needs an independent hidden process with its own message
+        // pipe, even while the user keeps a normal game window open.
+        configuration.noAlreadyRunning = true;
+
         // Suppress CRT/SEH/WER popups for this EXE module BEFORE the
         // Mengine DLL/static lib is touched. The DLL gets the same
         // configuration through ServiceProvider once Win32Application::

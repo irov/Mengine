@@ -2205,8 +2205,10 @@ namespace Mengine
     bool Win32PlatformService::alreadyRunningMonitor()
     {
         bool Platform_AlreadyRunning = CONFIG_VALUE_BOOLEAN( "Platform", "AlreadyRunning", true );
+        bool OPTION_noalreadyrunning = HAS_OPTION( "noalreadyrunning" );
+        bool CONFIG_noAlreadyRunning = Helper::isNoAlreadyRunning();
 
-        if( Platform_AlreadyRunning == true && HAS_OPTION( "noalreadyrunning" ) == false )
+        if( Platform_AlreadyRunning == true && OPTION_noalreadyrunning == false && CONFIG_noAlreadyRunning == false )
         {
             m_alreadyRunningMonitor = Helper::makeFactorableUnique<Win32AlreadyRunningMonitor>( MENGINE_DOCUMENT_FACTORABLE );
 

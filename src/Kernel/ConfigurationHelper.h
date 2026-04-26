@@ -31,5 +31,14 @@ namespace Mengine
         // read because the engine-wide Configuration is immutable for the
         // lifetime of the ServiceProvider.
         bool isNopause();
+
+        // Convenience accessor used by platform startup code to learn whether
+        // the already-running monitor / focus-forward behaviour must be
+        // disabled (CLI / headless / automated runs). Returns false when the
+        // ServiceProvider is not available yet so callers default to the
+        // command-line/config-file values. The value is cached after the first
+        // successful read because the engine-wide Configuration is immutable
+        // for the lifetime of the ServiceProvider.
+        bool isNoAlreadyRunning();
     }
 }

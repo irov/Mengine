@@ -224,6 +224,11 @@ namespace Mengine
             return true;
         }
 
+        if( m_texture == nil )
+        {
+            return false;
+        }
+
         const Rect & lockedRect = _locked->getLockedRect();
 
         size_t pitch;

@@ -148,7 +148,12 @@
 
 + (UIView *) getRootView {
     UIWindow * window = [iOSDetail getRootWindow];
-    UIView * view = [window.subviews objectAtIndex:0];
+    
+    if (window == nil || window.subviews.count == 0) {
+        return nil;
+    }
+    
+    UIView * view = window.subviews.firstObject;
     
     return view;
 }

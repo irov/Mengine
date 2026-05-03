@@ -25,7 +25,7 @@
     NSString * message = [[NSString alloc] initWithFormat:format arguments:args];
     MENGINE_VA_LIST_END( args );
         
-    AppleLogRecordParam * record = [AppleLogRecordParam alloc];
+    AppleLogRecordParam * record = [[AppleLogRecordParam alloc] init];
     
     record.LOG_TIMESTAMP = [AppleDetail getTimestamp];
     record.LOG_CATEGORY = category;

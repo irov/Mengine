@@ -114,6 +114,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MetalRenderVertexBuffer::unlock()
     {
+        if( m_buffer == nil )
+        {
+            return false;
+        }
+
         void * memory_buffer = m_lockMemory->getBuffer();
 
         const uint32_t bufferOffset = m_lockOffset * m_vertexSize;
@@ -130,6 +135,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MetalRenderVertexBuffer::draw( const void * _buffer, uint32_t _offset, uint32_t _count )
     {
+        if( m_buffer == nil )
+        {
+            return false;
+        }
+
         if( _offset + _count > m_vertexCount )
         {
             return false;

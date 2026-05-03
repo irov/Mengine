@@ -27,7 +27,7 @@ namespace Mengine
         LoggerMessage message;
         _record->getMessage( &message );
         
-        AppleLogRecordParam * record = [AppleLogRecordParam alloc];
+        AppleLogRecordParam * record = [[AppleLogRecordParam alloc] init];
         
         record.LOG_TIMESTAMP = message.timestamp;
         record.LOG_CATEGORY = [NSString stringWithUTF8String:message.category];

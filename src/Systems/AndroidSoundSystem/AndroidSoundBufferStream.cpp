@@ -297,10 +297,10 @@ namespace Mengine
         m_finished = false;
         m_decoderEOS = false;
 
-        for( uint32_t i = 0; i != MENGINE_ANDROID_STREAM_BUFFER_COUNT; ++i )
+        for( uint32_t bufIdx = 0; bufIdx != MENGINE_ANDROID_STREAM_BUFFER_COUNT; ++bufIdx )
         {
             size_t bytesWritten;
-            if( this->fillBuffer_( i, &bytesWritten ) == false )
+            if( this->fillBuffer_( bufIdx, &bytesWritten ) == false )
             {
                 return false;
             }
@@ -310,7 +310,9 @@ namespace Mengine
                 break;
             }
 
-            SLresult result = (*m_bufferQueueItf)->Enqueue( m_bufferQueueItf, m_bufferData[i], (SLuint32)bytesWritten );
+            const uint8_t * bufferData = m_bufferData[bufIdx];
+
+            SLresult result = (*m_bufferQueueItf)->Enqueue( m_bufferQueueItf, bufferData, (SLuint32)bytesWritten );
 
             if( result != SL_RESULT_SUCCESS )
             {
@@ -373,7 +375,8 @@ namespace Mengine
         for( uint32_t i = 0; i != consumed; ++i )
         {
             uint32_t bufIdx = m_currentBuffer;
-            m_currentBuffer = (m_currentBuffer + 1) % MENGINE_ANDROID_STREAM_BUFFER_COUNT;
+
+            m_currentBuffer = (bufIdx + 1) % MENGINE_ANDROID_STREAM_BUFFER_COUNT;
 
             size_t bytesWritten = 0;
             if( this->fillBuffer_( bufIdx, &bytesWritten ) == false )
@@ -386,7 +389,9 @@ namespace Mengine
                 continue;
             }
 
-            (*m_bufferQueueItf)->Enqueue( m_bufferQueueItf, m_bufferData[bufIdx], (SLuint32)bytesWritten );
+            const uint8_t * bufferData = m_bufferData[bufIdx];
+
+            (*m_bufferQueueItf)->Enqueue( m_bufferQueueItf, bufferData, (SLuint32)bytesWritten );
         }
 
         SLuint32 playState;

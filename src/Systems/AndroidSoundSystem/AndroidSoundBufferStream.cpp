@@ -389,23 +389,6 @@ namespace Mengine
             (*m_bufferQueueItf)->Enqueue( m_bufferQueueItf, m_bufferData[bufIdx], (SLuint32)bytesWritten );
         }
 
-        // Detect natural end-of-stream: OpenSL ES does not transition the play state to STOPPED
-        // when the buffer queue underruns, so we have to check it ourselves.
-        if( m_looped == false && m_decoderEOS == true )
-        {
-            SLAndroidSimpleBufferQueueState queueState;
-            (*m_bufferQueueItf)->GetState( m_bufferQueueItf, &queueState );
-
-            if( queueState.count == 0 )
-            {
-                (*m_playItf)->SetPlayState( m_playItf, SL_PLAYSTATE_STOPPED );
-
-                m_finished = true;
-
-                return false;
-            }
-        }
-
         SLuint32 playState;
         (*m_playItf)->GetPlayState( m_playItf, &playState );
 
@@ -413,7 +396,23 @@ namespace Mengine
         {
         case SL_PLAYSTATE_PLAYING:
             {
-                //Empty
+                // Detect natural end-of-stream: OpenSL ES does not transition the play state to
+                // STOPPED when the buffer queue underruns, so we have to check it ourselves once
+                // the decoder has reached EOF and all queued buffers have been consumed.
+                if( m_looped == false && m_decoderEOS == true )
+                {
+                    SLAndroidSimpleBufferQueueState queueState;
+                    (*m_bufferQueueItf)->GetState( m_bufferQueueItf, &queueState );
+
+                    if( queueState.count == 0 )
+                    {
+                        (*m_playItf)->SetPlayState( m_playItf, SL_PLAYSTATE_STOPPED );
+
+                        m_finished = true;
+
+                        return false;
+                    }
+                }
             }break;
         case SL_PLAYSTATE_PAUSED:
             {

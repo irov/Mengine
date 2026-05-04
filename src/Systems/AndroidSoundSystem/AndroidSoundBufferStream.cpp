@@ -19,6 +19,7 @@ namespace Mengine
         , m_looped( false )
         , m_updating( false )
         , m_consumedCount( 0 )
+        , m_decoderEOS( false )
     {
         StdAlgorithm::fill_n( m_bufferData, (size_t)MENGINE_ANDROID_STREAM_BUFFER_COUNT, nullptr );
     }
@@ -129,6 +130,7 @@ namespace Mengine
         m_consumedCount = 0;
         m_currentBuffer = 0;
         m_finished = false;
+        m_decoderEOS = false;
 
         if( this->createPlayer_() == false )
         {
@@ -232,6 +234,7 @@ namespace Mengine
         this->destroyPlayer_();
 
         m_finished = false;
+        m_decoderEOS = false;
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidSoundBufferStream::pauseSource()
@@ -292,6 +295,7 @@ namespace Mengine
         m_consumedCount = 0;
         m_currentBuffer = 0;
         m_finished = false;
+        m_decoderEOS = false;
 
         for( uint32_t i = 0; i != MENGINE_ANDROID_STREAM_BUFFER_COUNT; ++i )
         {
@@ -385,6 +389,23 @@ namespace Mengine
             (*m_bufferQueueItf)->Enqueue( m_bufferQueueItf, m_bufferData[bufIdx], (SLuint32)bytesWritten );
         }
 
+        // Detect natural end-of-stream: OpenSL ES does not transition the play state to STOPPED
+        // when the buffer queue underruns, so we have to check it ourselves.
+        if( m_looped == false && m_decoderEOS == true )
+        {
+            SLAndroidSimpleBufferQueueState queueState;
+            (*m_bufferQueueItf)->GetState( m_bufferQueueItf, &queueState );
+
+            if( queueState.count == 0 )
+            {
+                (*m_playItf)->SetPlayState( m_playItf, SL_PLAYSTATE_STOPPED );
+
+                m_finished = true;
+
+                return false;
+            }
+        }
+
         SLuint32 playState;
         (*m_playItf)->GetPlayState( m_playItf, &playState );
 
@@ -448,6 +469,12 @@ namespace Mengine
             size_t bytesWritten2 = m_soundDecoder->decode( &decoderDataTail );
 
             bytesWritten += bytesWritten2;
+        }
+        else if( m_looped == false && bytesWritten != MENGINE_ANDROID_STREAM_BUFFER_SIZE )
+        {
+            // Decoder reached the end of the stream and we are not looping; remember it so
+            // updateSoundBuffer() can finish playback once the queued buffers drain.
+            m_decoderEOS = true;
         }
 
         *_bytes = bytesWritten;

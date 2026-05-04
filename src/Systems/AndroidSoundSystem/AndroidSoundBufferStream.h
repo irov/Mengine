@@ -67,6 +67,7 @@ namespace Mengine
         AtomicBool m_looped;
         AtomicBool m_updating;
         AtomicUInt32 m_consumedCount;
+        bool m_decoderEOS;
 
         ThreadMutexInterfacePtr m_mutexUpdating;
         MemoryInterfacePtr m_memory;

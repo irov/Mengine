@@ -427,10 +427,10 @@ namespace Mengine
             {
                 if( m_looped == false )
                 {
-                    SLAndroidSimpleBufferQueueState state;
-                    (*m_bufferQueueItf)->GetState( m_bufferQueueItf, &state );
+                    SLAndroidSimpleBufferQueueState queueState;
+                    (*m_bufferQueueItf)->GetState( m_bufferQueueItf, &queueState );
 
-                    if( state.count == 0 )
+                    if( queueState.count == 0 )
                     {
                         m_finished = true;
 

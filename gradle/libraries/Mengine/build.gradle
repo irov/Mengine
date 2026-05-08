@@ -108,8 +108,13 @@ android {
 
     buildTypes {
         debug {
-            packagingOptions {
-                doNotStrip "**/libclang_rt.asan*.so"
+            packaging {
+                jniLibs {
+                    // Keep full DWARF in packaged .so so Android Studio's LLDB
+                    // can resolve symbols/source even when externalNativeBuild
+                    // uses a custom `buildStagingDirectory` outside the module.
+                    keepDebugSymbols += "**/*.so"
+                }
             }
         }
     }

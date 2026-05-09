@@ -85,7 +85,6 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Scene.h"
 #include "Kernel/FactoryDefault.h"
-#include "Kernel/FactoryPool.h"
 #include "Kernel/TagsHelper.h"
 #include "Kernel/Entity.h"
 #include "Kernel/Interender.h"

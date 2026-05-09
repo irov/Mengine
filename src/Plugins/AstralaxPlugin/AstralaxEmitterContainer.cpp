@@ -6,8 +6,6 @@
 #include "Kernel/Logger.h"
 #include "Kernel/StreamHelper.h"
 #include "Kernel/ResourceImage.h"
-#include "Kernel/FactoryPool.h"
-#include "Kernel/FactoryPoolWithListener.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/FileGroupHelper.h"

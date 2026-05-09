@@ -122,7 +122,6 @@
 #include "Kernel/ValueFollower.h"
 #include "Kernel/Rect.h"
 #include "Kernel/RenderContextHelper.h"
-#include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/ColorHelper.h"

@@ -76,7 +76,6 @@
 #include "Kernel/Polygon.h"
 #include "Kernel/ValueFollower.h"
 #include "Kernel/ValueInterpolatorParabolic.h"
-#include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 
 #include "math/angle.h"

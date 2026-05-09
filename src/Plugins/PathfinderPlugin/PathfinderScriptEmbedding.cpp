@@ -9,7 +9,6 @@
 
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
-#include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
 

@@ -4,7 +4,6 @@
 
 #include "Kernel/Affector.h"
 #include "Kernel/AffectorCallbackInterface.h"
-#include "Kernel/FactoryPool.h"
 #include "Kernel/ValueInterpolator.h"
 #include "Kernel/DocumentHelper.h"
 

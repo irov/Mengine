@@ -4,7 +4,7 @@
 #include "AnalyticsEventBuilder.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/FactoryPool.h"
+#include "Kernel/FactorableUnique.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionContainer.h"
 

@@ -326,7 +326,7 @@ android {
         }
     }
 
-    packagingOptions {
+    packaging {
         jniLibs {
             useLegacyPackaging = true
 
@@ -342,15 +342,26 @@ android {
 }
 
 if (ANDROID_APP_SPLIT_ENABLE == true) {
-    android.applicationVariants.configureEach { final variant ->
-        variant.outputs.each { final output ->
+    androidComponents {
+        onVariants(selector().all()) { final variant ->
             final def abiCodes = ["arm64-v8a": 1, "armeabi-v7a": 2, "x86": 3, "x86_64": 4]
 
-            final def filter = output.getFilter("ABI")
-            final def baseAbiVersionCode = abiCodes.get(filter)
+            variant.outputs.each { final output ->
+                final def filter = output.filters.find { it.filterType.name() == "ABI" }
 
-            if (baseAbiVersionCode != null) {
-                output.versionCodeOverride = baseAbiVersionCode * 1000000 + variant.versionCode
+                if (filter == null) {
+                    return
+                }
+
+                final def baseAbiVersionCode = abiCodes.get(filter.identifier)
+
+                if (baseAbiVersionCode == null) {
+                    return
+                }
+
+                final def baseVersionCode = output.versionCode.getOrElse(0)
+
+                output.versionCode.set(baseAbiVersionCode * 1000000 + baseVersionCode)
             }
         }
     }

@@ -8,7 +8,7 @@
 
 @interface AppleStoreInAppPurchaseProductsRequestDelegate : NSObject <SKProductsRequestDelegate>
 
-@property (nonatomic, weak) id<AppleStoreInAppPurchaseInterface> _Nonnull m_inAppPurchase;
+@property (nonatomic, weak) id<AppleStoreInAppPurchaseInterface> m_inAppPurchase;
 @property (assign) Mengine::AppleStoreInAppPurchaseProductsRequestInterfacePtr m_request;
 @property (assign) Mengine::AppleStoreInAppPurchaseProductsResponseInterfacePtr m_cb;
 

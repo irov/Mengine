@@ -8,69 +8,46 @@
 #include "AppleStoreInAppPurchaseProduct.h"
 #include "AppleStoreInAppPurchaseProductsRequest.h"
 
+#import "Environment/iOS/iOSDetail.h"
+#import "Environment/iOS/iOSLog.h"
+
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/DocumentHelper.h"
-#include "Kernel/ConfigHelper.h"
-#include "Kernel/OptionHelper.h"
 #include "Kernel/Logger.h"
 
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 #   include "AppleStoreInAppPurchaseScriptEmbedding.h"
+#   include "Kernel/ScriptEmbeddingHelper.h"
 #endif
 
-#import "Environment/iOS/iOSLog.h"
-
 @implementation AppleStoreInAppPurchasePlugin
-{
-    Mengine::AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr m_paymentTransactionProvider;
 
-    Mengine::FactoryInterfacePtr m_factoryPaymentTransaction;
-    Mengine::FactoryInterfacePtr m_factoryProduct;
-    Mengine::FactoryInterfacePtr m_factoryProductsRequest;
+- (instancetype)init {
+    self = [super init];
 
-    BOOL m_available;
-}
-
-#pragma mark - iOSPluginInterface
-
-static BOOL AppleStoreInAppPurchase_isAvailable() {
-    if( HAS_OPTION( "applestoreinapppurchase" ) == true )
+    if( self != nil )
     {
-        return YES;
+        self.m_paymentTransactionProvider = nullptr;
+        self.m_factoryPaymentTransaction = Mengine::Helper::makeFactoryPoolWithMutex<Mengine::AppleStoreInAppPurchasePaymentTransaction, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        self.m_factoryProduct = Mengine::Helper::makeFactoryPoolWithMutex<Mengine::AppleStoreInAppPurchaseProduct, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        self.m_factoryProductsRequest = Mengine::Helper::makeFactoryPoolWithMutex<Mengine::AppleStoreInAppPurchaseProductsRequest, 16>( MENGINE_DOCUMENT_FACTORABLE );
     }
 
-    if( HAS_OPTION( "noapplestoreinapppurchase" ) == true )
-    {
-        return NO;
-    }
-
-    bool available = CONFIG_VALUE_BOOLEAN( "AppleStoreInAppPurchasePlugin", "Available", true );
-
-    return available == true ? YES : NO;
+    return self;
 }
 
 + (instancetype)sharedInstance {
     static AppleStoreInAppPurchasePlugin * sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        sharedInstance = [[AppleStoreInAppPurchasePlugin alloc] init];
+        sharedInstance = [iOSDetail getPluginDelegateOfClass:[AppleStoreInAppPurchasePlugin class]];
     });
 
     return sharedInstance;
 }
 
-- (instancetype)init {
-    self = [super init];
-
-    m_paymentTransactionProvider = nullptr;
-    m_factoryPaymentTransaction = Mengine::Helper::makeFactoryPoolWithMutex<Mengine::AppleStoreInAppPurchasePaymentTransaction, 16>( MENGINE_DOCUMENT_FACTORABLE );
-    m_factoryProduct = Mengine::Helper::makeFactoryPoolWithMutex<Mengine::AppleStoreInAppPurchaseProduct, 16>( MENGINE_DOCUMENT_FACTORABLE );
-    m_factoryProductsRequest = Mengine::Helper::makeFactoryPoolWithMutex<Mengine::AppleStoreInAppPurchaseProductsRequest, 16>( MENGINE_DOCUMENT_FACTORABLE );
-    m_available = AppleStoreInAppPurchase_isAvailable();
-
-    return self;
-}
+#pragma mark - iOSPluginInterface
 
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 - (void)onRunBegin {
@@ -83,37 +60,19 @@ static BOOL AppleStoreInAppPurchase_isAvailable() {
 #endif
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    (void)application;
-    (void)launchOptions;
+    MENGINE_UNUSED( application );
+    MENGINE_UNUSED( launchOptions );
 
-    if( m_available == NO )
-    {
-        return YES;
-    }
-
-    // According to Apple documentation, the SKPaymentQueueDelegate must be set BEFORE adding transaction observers
-    // This is critical for proper IAP functionality on iPad devices
-    // The delegate implements paymentQueueShouldShowPriceConsent which is required for IAP to work correctly
+    // According to Apple documentation, the SKPaymentQueueDelegate must be set BEFORE adding transaction observers.
+    // This is critical for proper IAP functionality on iPad devices.
+    // The delegate implements paymentQueueShouldShowPriceConsent which is required for IAP to work correctly.
     [[SKPaymentQueue defaultQueue] setDelegate:self];
-    
+
     AppleStoreInAppPurchasePaymentTransactionObserver * paymentTransactionObserver = [AppleStoreInAppPurchasePaymentTransactionObserver sharedInstance];
-    
+
     [[SKPaymentQueue defaultQueue] addTransactionObserver:paymentTransactionObserver];
-    
+
     return YES;
-}
-
-- (void)applicationWillTerminate:(UIApplication *)application {
-    (void)application;
-
-    if( m_available == NO )
-    {
-        return;
-    }
-
-    AppleStoreInAppPurchasePaymentTransactionObserver * paymentTransactionObserver = [AppleStoreInAppPurchasePaymentTransactionObserver sharedInstance];
-    
-    [[SKPaymentQueue defaultQueue] removeTransactionObserver:paymentTransactionObserver];
 }
 
 - (void)onFinalize {
@@ -124,11 +83,15 @@ static BOOL AppleStoreInAppPurchase_isAvailable() {
 
     [paymentTransactionObserver deactivate];
 
-    m_paymentTransactionProvider = nullptr;
+    self.m_paymentTransactionProvider = nullptr;
 
-    MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPaymentTransaction );
-    MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryProduct );
-    MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryProductsRequest );
+    MENGINE_ASSERTION_FACTORY_EMPTY( self.m_factoryPaymentTransaction );
+    MENGINE_ASSERTION_FACTORY_EMPTY( self.m_factoryProduct );
+    MENGINE_ASSERTION_FACTORY_EMPTY( self.m_factoryProductsRequest );
+
+    self.m_factoryPaymentTransaction = nullptr;
+    self.m_factoryProduct = nullptr;
+    self.m_factoryProductsRequest = nullptr;
 }
 
 #pragma mark - SKPaymentQueueDelegate
@@ -140,7 +103,7 @@ static BOOL AppleStoreInAppPurchase_isAvailable() {
         , transaction
         , newStorefront
     );
-    
+
     return YES;
 }
 
@@ -150,26 +113,21 @@ static BOOL AppleStoreInAppPurchase_isAvailable() {
     IOS_LOGGER_MESSAGE( @"SKPaymentQueueDelegate paymentQueueShouldShowPriceConsent: %@"
         , paymentQueue
     );
-    
+
     return YES;
 }
 
 #pragma mark - AppleStoreInAppPurchaseInterface
 
 - (void)setPaymentTransactionProvider:(const Mengine::AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr &)paymentTransactionProvider {
-    m_paymentTransactionProvider = paymentTransactionProvider;
+    self.m_paymentTransactionProvider = paymentTransactionProvider;
 }
 
 - (const Mengine::AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr &)getPaymentTransactionProvider {
-    return m_paymentTransactionProvider;
+    return self.m_paymentTransactionProvider;
 }
 
 - (BOOL)canMakePayments {
-    if( m_available == NO )
-    {
-        return NO;
-    }
-
     if( [SKPaymentQueue canMakePayments] == NO )
     {
         return NO;
@@ -180,15 +138,13 @@ static BOOL AppleStoreInAppPurchase_isAvailable() {
 
 - (Mengine::AppleStoreInAppPurchaseProductsRequestInterfacePtr)requestProducts:(NSSet<NSString *> *)consumableIdentifiers
                                                       nonconsumableIdentifiers:(NSSet<NSString *> *)nonconsumableIdentifiers
-                                                                          cb:(const Mengine::AppleStoreInAppPurchaseProductsResponseInterfacePtr &)cb {
-    if( m_available == NO )
-    {
-        return nullptr;
-    }
-
+                                                                            cb:(const Mengine::AppleStoreInAppPurchaseProductsResponseInterfacePtr &)cb {
     if( [consumableIdentifiers intersectsSet:nonconsumableIdentifiers] == YES )
     {
-        IOS_LOGGER_ERROR( @"requestProducts: consumable: %@ nonconsumable: %@ not unique", consumableIdentifiers, nonconsumableIdentifiers );
+        IOS_LOGGER_ERROR( @"requestProducts: consumable: %@ nonconsumable: %@ not unique"
+            , consumableIdentifiers
+            , nonconsumableIdentifiers
+        );
 
         return nullptr;
     }
@@ -198,21 +154,24 @@ static BOOL AppleStoreInAppPurchase_isAvailable() {
         return nullptr;
     }
 
-    IOS_LOGGER_MESSAGE( @"requestProducts: consumable: %@ nonconsumable: %@", consumableIdentifiers, nonconsumableIdentifiers );
+    IOS_LOGGER_MESSAGE( @"requestProducts: consumable: %@ nonconsumable: %@"
+        , consumableIdentifiers
+        , nonconsumableIdentifiers
+    );
 
     [[AppleStoreInAppPurchasePaymentTransactionObserver sharedInstance] activateWithInAppPurchase:self
-                                                                             consumableIdentifiers:consumableIdentifiers
-                                                                          nonconsumableIdentifiers:nonconsumableIdentifiers];
+                                                                            consumableIdentifiers:consumableIdentifiers
+                                                                         nonconsumableIdentifiers:nonconsumableIdentifiers];
 
-    Mengine::AppleStoreInAppPurchaseProductsRequestPtr request = m_factoryProductsRequest->createObject( MENGINE_DOCUMENT_FACTORABLE );
+    Mengine::AppleStoreInAppPurchaseProductsRequestPtr request = self.m_factoryProductsRequest->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
     NSSet * productIdentifiers = [consumableIdentifiers setByAddingObjectsFromSet:nonconsumableIdentifiers];
 
     SKProductsRequest * skRequest = [[SKProductsRequest alloc] initWithProductIdentifiers:productIdentifiers];
 
     id<SKProductsRequestDelegate> delegate = [[AppleStoreInAppPurchaseProductsRequestDelegate alloc] initWithInAppPurchase:self
-                                                                                                                    request:request
-                                                                                                                         cb:cb];
+                                                                                                                   request:request
+                                                                                                                        cb:cb];
     skRequest.delegate = delegate;
 
     request->setSKProductsRequest( skRequest, delegate );
@@ -232,17 +191,14 @@ static BOOL AppleStoreInAppPurchase_isAvailable() {
 }
 
 - (BOOL)purchaseProduct:(const Mengine::AppleStoreInAppPurchaseProductInterfacePtr &)product {
-    if( m_available == NO )
-    {
-        return NO;
-    }
-
     if( [SKPaymentQueue canMakePayments] == NO )
     {
         return NO;
     }
 
-    IOS_LOGGER_MESSAGE( @"purchaseProduct: %@", product->getProductIdentifier() );
+    IOS_LOGGER_MESSAGE( @"purchaseProduct: %@"
+        , product->getProductIdentifier()
+    );
 
     Mengine::AppleStoreInAppPurchaseProductPtr inAppProduct = Mengine::AppleStoreInAppPurchaseProductPtr::from( product );
     SKProduct * skProduct = inAppProduct->getSKProduct();
@@ -254,21 +210,21 @@ static BOOL AppleStoreInAppPurchase_isAvailable() {
 }
 
 - (void)restoreCompletedTransactions {
-    LOGGER_MESSAGE( "restoreCompletedTransactions" );
+    IOS_LOGGER_MESSAGE( @"restoreCompletedTransactions" );
 
     [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
 }
 
 - (Mengine::AppleStoreInAppPurchaseProductInterfacePtr)makeProduct:(SKProduct *)skProduct {
-    Mengine::AppleStoreInAppPurchaseProductPtr product = m_factoryProduct->createObject( MENGINE_DOCUMENT_FACTORABLE );
+    Mengine::AppleStoreInAppPurchaseProductPtr product = self.m_factoryProduct->createObject( MENGINE_DOCUMENT_FACTORABLE );
     product->setSKProduct( skProduct );
 
     return product;
 }
 
 - (Mengine::AppleStoreInAppPurchasePaymentTransactionInterfacePtr)makePaymentTransaction:(SKPaymentTransaction *)skPaymentTransaction
-                                                                                  queue:(SKPaymentQueue *)skPaymentQueue {
-    Mengine::AppleStoreInAppPurchasePaymentTransactionPtr transaction = m_factoryPaymentTransaction->createObject( MENGINE_DOCUMENT_FACTORABLE );
+                                                                                   queue:(SKPaymentQueue *)skPaymentQueue {
+    Mengine::AppleStoreInAppPurchasePaymentTransactionPtr transaction = self.m_factoryPaymentTransaction->createObject( MENGINE_DOCUMENT_FACTORABLE );
     transaction->setSKPaymentTransaction( skPaymentTransaction );
     transaction->setSKPaymentQueue( skPaymentQueue );
 

@@ -22,16 +22,23 @@
 #endif
 
 @implementation AppleStoreInAppPurchasePlugin
+{
+    Mengine::AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr m_paymentTransactionProvider;
+
+    Mengine::FactoryInterfacePtr m_factoryPaymentTransaction;
+    Mengine::FactoryInterfacePtr m_factoryProduct;
+    Mengine::FactoryInterfacePtr m_factoryProductsRequest;
+}
 
 - (instancetype)init {
     self = [super init];
 
     if( self != nil )
     {
-        self.m_paymentTransactionProvider = nullptr;
-        self.m_factoryPaymentTransaction = Mengine::Helper::makeFactoryPoolWithMutex<Mengine::AppleStoreInAppPurchasePaymentTransaction, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        self.m_factoryProduct = Mengine::Helper::makeFactoryPoolWithMutex<Mengine::AppleStoreInAppPurchaseProduct, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        self.m_factoryProductsRequest = Mengine::Helper::makeFactoryPoolWithMutex<Mengine::AppleStoreInAppPurchaseProductsRequest, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_paymentTransactionProvider = nullptr;
+        m_factoryPaymentTransaction = Mengine::Helper::makeFactoryPoolWithMutex<Mengine::AppleStoreInAppPurchasePaymentTransaction, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryProduct = Mengine::Helper::makeFactoryPoolWithMutex<Mengine::AppleStoreInAppPurchaseProduct, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryProductsRequest = Mengine::Helper::makeFactoryPoolWithMutex<Mengine::AppleStoreInAppPurchaseProductsRequest, 16>( MENGINE_DOCUMENT_FACTORABLE );
     }
 
     return self;
@@ -83,15 +90,15 @@
 
     [paymentTransactionObserver deactivate];
 
-    self.m_paymentTransactionProvider = nullptr;
+    m_paymentTransactionProvider = nullptr;
 
-    MENGINE_ASSERTION_FACTORY_EMPTY( self.m_factoryPaymentTransaction );
-    MENGINE_ASSERTION_FACTORY_EMPTY( self.m_factoryProduct );
-    MENGINE_ASSERTION_FACTORY_EMPTY( self.m_factoryProductsRequest );
+    MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPaymentTransaction );
+    MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryProduct );
+    MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryProductsRequest );
 
-    self.m_factoryPaymentTransaction = nullptr;
-    self.m_factoryProduct = nullptr;
-    self.m_factoryProductsRequest = nullptr;
+    m_factoryPaymentTransaction = nullptr;
+    m_factoryProduct = nullptr;
+    m_factoryProductsRequest = nullptr;
 }
 
 #pragma mark - SKPaymentQueueDelegate
@@ -120,11 +127,11 @@
 #pragma mark - AppleStoreInAppPurchaseInterface
 
 - (void)setPaymentTransactionProvider:(const Mengine::AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr &)paymentTransactionProvider {
-    self.m_paymentTransactionProvider = paymentTransactionProvider;
+    m_paymentTransactionProvider = paymentTransactionProvider;
 }
 
 - (const Mengine::AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr &)getPaymentTransactionProvider {
-    return self.m_paymentTransactionProvider;
+    return m_paymentTransactionProvider;
 }
 
 - (BOOL)canMakePayments {
@@ -163,7 +170,7 @@
                                                                             consumableIdentifiers:consumableIdentifiers
                                                                          nonconsumableIdentifiers:nonconsumableIdentifiers];
 
-    Mengine::AppleStoreInAppPurchaseProductsRequestPtr request = self.m_factoryProductsRequest->createObject( MENGINE_DOCUMENT_FACTORABLE );
+    Mengine::AppleStoreInAppPurchaseProductsRequestPtr request = m_factoryProductsRequest->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
     NSSet * productIdentifiers = [consumableIdentifiers setByAddingObjectsFromSet:nonconsumableIdentifiers];
 
@@ -216,7 +223,7 @@
 }
 
 - (Mengine::AppleStoreInAppPurchaseProductInterfacePtr)makeProduct:(SKProduct *)skProduct {
-    Mengine::AppleStoreInAppPurchaseProductPtr product = self.m_factoryProduct->createObject( MENGINE_DOCUMENT_FACTORABLE );
+    Mengine::AppleStoreInAppPurchaseProductPtr product = m_factoryProduct->createObject( MENGINE_DOCUMENT_FACTORABLE );
     product->setSKProduct( skProduct );
 
     return product;
@@ -224,7 +231,7 @@
 
 - (Mengine::AppleStoreInAppPurchasePaymentTransactionInterfacePtr)makePaymentTransaction:(SKPaymentTransaction *)skPaymentTransaction
                                                                                    queue:(SKPaymentQueue *)skPaymentQueue {
-    Mengine::AppleStoreInAppPurchasePaymentTransactionPtr transaction = self.m_factoryPaymentTransaction->createObject( MENGINE_DOCUMENT_FACTORABLE );
+    Mengine::AppleStoreInAppPurchasePaymentTransactionPtr transaction = m_factoryPaymentTransaction->createObject( MENGINE_DOCUMENT_FACTORABLE );
     transaction->setSKPaymentTransaction( skPaymentTransaction );
     transaction->setSKPaymentQueue( skPaymentQueue );
 

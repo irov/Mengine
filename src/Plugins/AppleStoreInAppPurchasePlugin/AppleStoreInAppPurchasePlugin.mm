@@ -36,9 +36,6 @@
     if( self != nil )
     {
         m_paymentTransactionProvider = nullptr;
-        m_factoryPaymentTransaction = Mengine::Helper::makeFactoryPoolWithMutex<Mengine::AppleStoreInAppPurchasePaymentTransaction, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryProduct = Mengine::Helper::makeFactoryPoolWithMutex<Mengine::AppleStoreInAppPurchaseProduct, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryProductsRequest = Mengine::Helper::makeFactoryPoolWithMutex<Mengine::AppleStoreInAppPurchaseProductsRequest, 16>( MENGINE_DOCUMENT_FACTORABLE );
     }
 
     return self;
@@ -69,6 +66,10 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     MENGINE_UNUSED( application );
     MENGINE_UNUSED( launchOptions );
+
+    m_factoryPaymentTransaction = Mengine::Helper::makeFactoryPoolWithMutex<Mengine::AppleStoreInAppPurchasePaymentTransaction, 16>( MENGINE_DOCUMENT_FACTORABLE );
+    m_factoryProduct = Mengine::Helper::makeFactoryPoolWithMutex<Mengine::AppleStoreInAppPurchaseProduct, 16>( MENGINE_DOCUMENT_FACTORABLE );
+    m_factoryProductsRequest = Mengine::Helper::makeFactoryPoolWithMutex<Mengine::AppleStoreInAppPurchaseProductsRequest, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
     // According to Apple documentation, the SKPaymentQueueDelegate must be set BEFORE adding transaction observers.
     // This is critical for proper IAP functionality on iPad devices.

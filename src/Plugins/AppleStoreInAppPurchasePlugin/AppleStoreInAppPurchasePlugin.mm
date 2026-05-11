@@ -53,20 +53,18 @@
 
 #pragma mark - iOSPluginInterface
 
-#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-- (void)onRunBegin {
-    Mengine::Helper::addScriptEmbedding<Mengine::AppleStoreInAppPurchaseScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE );
-}
-
-- (void)onStopEnd {
-    Mengine::Helper::removeScriptEmbedding<Mengine::AppleStoreInAppPurchaseScriptEmbedding>();
-}
-#endif
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     MENGINE_UNUSED( application );
     MENGINE_UNUSED( launchOptions );
 
+    // NOTE: Mengine services (incl. ThreadSystem) are not yet initialized at this point;
+    // factory pools that depend on a thread mutex are created later in onBootstrapEnd.
+    return YES;
+}
+
+- (void)onBootstrapEnd {
+    // Mengine bootstrap is complete here, so it is safe to allocate factory pools
+    // that rely on ThreadSystemInterface (e.g. FactoryPoolWithMutex).
     m_factoryPaymentTransaction = Mengine::Helper::makeFactoryPoolWithMutex<Mengine::AppleStoreInAppPurchasePaymentTransaction, 16>( MENGINE_DOCUMENT_FACTORABLE );
     m_factoryProduct = Mengine::Helper::makeFactoryPoolWithMutex<Mengine::AppleStoreInAppPurchaseProduct, 16>( MENGINE_DOCUMENT_FACTORABLE );
     m_factoryProductsRequest = Mengine::Helper::makeFactoryPoolWithMutex<Mengine::AppleStoreInAppPurchaseProductsRequest, 16>( MENGINE_DOCUMENT_FACTORABLE );
@@ -79,9 +77,17 @@
     AppleStoreInAppPurchasePaymentTransactionObserver * paymentTransactionObserver = [AppleStoreInAppPurchasePaymentTransactionObserver sharedInstance];
 
     [[SKPaymentQueue defaultQueue] addTransactionObserver:paymentTransactionObserver];
-
-    return YES;
 }
+
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+- (void)onRunBegin {
+    Mengine::Helper::addScriptEmbedding<Mengine::AppleStoreInAppPurchaseScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE );
+}
+
+- (void)onStopEnd {
+    Mengine::Helper::removeScriptEmbedding<Mengine::AppleStoreInAppPurchaseScriptEmbedding>();
+}
+#endif
 
 - (void)onFinalize {
     AppleStoreInAppPurchasePaymentTransactionObserver * paymentTransactionObserver = [AppleStoreInAppPurchasePaymentTransactionObserver sharedInstance];

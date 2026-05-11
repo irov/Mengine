@@ -49,6 +49,7 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
 - (void)stopEngineLoop;
 - (void)engineFrame:(CADisplayLink *)displayLink;
 - (void)finishApplication;
+- (void)reportFatalLaunchFailure:(NSString *)format, ... NS_FORMAT_FUNCTION(1, 2);
 
 @end
 
@@ -339,6 +340,28 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
     }];
 }
 
+- (void)reportFatalLaunchFailure:(NSString *)format, ... {
+    va_list args;
+    va_start( args, format );
+    NSString * message = [[NSString alloc] initWithFormat:format arguments:args];
+    va_end( args );
+
+    [AppleLog withFormat:@"🔴 [FATAL] Mengine launch failed: %@", message];
+
+    // Returning NO from didFinishLaunchingWithOptions does not actually
+    // terminate the process; defer the alert until after launch finishes
+    // so the system has time to create the application's rootViewController.
+    [AppleDetail addMainQueueOperation:^{
+        [iOSDetail showOkAlertWithTitle:@"Mengine fatal error"
+                                message:message
+                                     ok:^{
+            [AppleDetail cancelAllQueueOperations];
+
+            ::exit( EXIT_FAILURE );
+        }];
+    }];
+}
+
 #pragma mark - UIApplicationDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(nullable NSDictionary<UIApplicationLaunchOptionsKey, id> *)launchOptions API_AVAILABLE(ios(3.0)) {
@@ -350,18 +373,20 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
     
     @autoreleasepool {
         if( [iOSApplication.sharedInstance didFinishLaunchingWithOptions:launchOptions] == NO) {
-            [AppleLog withFormat:@"🔴 [ERROR] Mengine application didFinishLaunchingWithOptions failed"];
-            
-            return NO;
+            [self reportFatalLaunchFailure:@"Mengine engine failed to start. The application cannot continue."];
+
+            return YES;
         }
     }
-    
+
     @autoreleasepool {
         for (id plugin in self.m_plugins) {
             if ([plugin application:application didFinishLaunchingWithOptions:launchOptions] == NO) {
-                [AppleLog withFormat:@"🔴 [ERROR] Mengine application didFinishLaunchingWithOptions plugin %@ failed", NSStringFromClass([plugin class])];
-                
-                return NO;
+                NSString * pluginName = NSStringFromClass([plugin class]);
+
+                [self reportFatalLaunchFailure:@"Plugin '%@' failed to start. The application cannot continue.", pluginName];
+
+                return YES;
             }
         }
     }
@@ -373,9 +398,11 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
             }
             
             if ([plugin application:application didPostLaunchingWithOptions:launchOptions] == NO) {
-                [AppleLog withFormat:@"🔴 [ERROR] Mengine application didPostLaunchingWithOptions plugin %@ failed", NSStringFromClass([plugin class])];
-                
-                return NO;
+                NSString * pluginName = NSStringFromClass([plugin class]);
+
+                [self reportFatalLaunchFailure:@"Plugin '%@' failed to finish initialization. The application cannot continue.", pluginName];
+
+                return YES;
             }
         }
     }

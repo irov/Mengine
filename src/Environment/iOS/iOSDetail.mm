@@ -320,7 +320,7 @@
 
 + (void) showOkAlertWithTitle:(NSString *)title message:(NSString *)message ok:(void (^)(void) _Nonnull)ok {
     UIViewController * viewController = [iOSDetail getRootViewController];
-    
+
     [iOSDetail showOkAlertWithViewController:viewController
                                  title:title
                                message:message

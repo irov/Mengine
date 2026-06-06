@@ -603,12 +603,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeOzzAnimation::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const
     {
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceMesh, "ozz animation render without mesh resource" );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_material, "ozz animation render without material" );
+
         ozz::span<const Detail::Mesh> ozz_meshes = m_resourceMesh->getMeshes();
 
         uint32_t ozz_mesh_index = 0;
         for( const Detail::Mesh & ozz_mesh : ozz_meshes )
         {
             const RenderMeshDesc & desc = m_renderMeshes[ozz_mesh_index++];
+
+            MENGINE_ASSERTION_MEMORY_PANIC( desc.vertexMemory, "ozz animation render without vertex memory" );
+            MENGINE_ASSERTION_MEMORY_PANIC( desc.vertexBuffer, "ozz animation render without vertex buffer" );
+            MENGINE_ASSERTION_MEMORY_PANIC( desc.indexBuffer, "ozz animation render without index buffer" );
 
             // Renders skin.
             uint32_t vertex_count = Detail::getMeshVertexCount( ozz_mesh );

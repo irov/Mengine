@@ -15,12 +15,14 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static ae_bool_t __ae_movie_resource_image_acquire( const Movie2Data * _data, const aeMovieLayerData * _layer, const aeMovieResourceImage * _resource )
+        static ae_bool_t __ae_movie_resource_image_acquire( const Movie2Data * _data, const aeMovieLayerData * _layer, const aeMovieResourceImage * _resourceImage )
         {
             MENGINE_UNUSED( _data );
             MENGINE_UNUSED( _layer );
 
-            Movie2Data::ImageDesc * image_desc = reinterpret_cast<Movie2Data::ImageDesc *>(ae_get_movie_resource_userdata( (const aeMovieResource *)_resource ));
+            const aeMovieResource * resource = reinterpret_cast<const aeMovieResource *>(_resourceImage);
+
+            Movie2Data::ImageDesc * image_desc = reinterpret_cast<Movie2Data::ImageDesc *>(ae_get_movie_resource_userdata( resource ));
 
             ResourceImage * resourceImage = image_desc->resourceImage;
 
@@ -54,7 +56,7 @@ namespace Mengine
                 {
                     const aeMovieResource * resource = ae_get_movie_layer_data_resource( _layer );
 
-                    const aeMovieResourceSequence * resource_sequence = (const aeMovieResourceSequence *)resource;
+                    const aeMovieResourceSequence * resource_sequence = reinterpret_cast<const aeMovieResourceSequence *>(resource);
 
                     for( ae_uint32_t index = 0; index != resource_sequence->image_count; ++index )
                     {
@@ -108,9 +110,11 @@ namespace Mengine
             return AE_TRUE;
         }
         //////////////////////////////////////////////////////////////////////////
-        static void __ae_movie_resource_image_release( const aeMovieResourceImage * _resource )
+        static void __ae_movie_resource_image_release( const aeMovieResourceImage * _resourceImage )
         {
-            ae_userdata_t ud = ae_get_movie_resource_userdata( (const aeMovieResource *)_resource );
+            const aeMovieResource * resource = reinterpret_cast<const aeMovieResource *>(_resourceImage);
+
+            ae_userdata_t ud = ae_get_movie_resource_userdata( resource );
 
             Movie2Data::ImageDesc * image_desc = reinterpret_cast<Movie2Data::ImageDesc *>(ud);
 
@@ -140,7 +144,7 @@ namespace Mengine
                 {
                     const aeMovieResource * resource = ae_get_movie_layer_data_resource( _layer );
 
-                    const aeMovieResourceSequence * resource_sequence = (const aeMovieResourceSequence *)resource;
+                    const aeMovieResourceSequence * resource_sequence = reinterpret_cast<const aeMovieResourceSequence *>(resource);
 
                     for( ae_uint32_t index = 0; index != resource_sequence->image_count; ++index )
                     {
@@ -201,13 +205,15 @@ namespace Mengine
                 {
                     const aeMovieResource * resource = ae_get_movie_layer_data_resource( _layer );
 
-                    const aeMovieResourceSequence * resource_sequence = (const aeMovieResourceSequence *)resource;
+                    const aeMovieResourceSequence * resource_sequence = reinterpret_cast<const aeMovieResourceSequence *>(resource);
 
                     for( ae_uint32_t index = 0; index != resource_sequence->image_count; ++index )
                     {
                         const aeMovieResourceImage * resource_image = resource_sequence->images[index];
 
-                        Movie2Data::ImageDesc * image_desc = reinterpret_cast<Movie2Data::ImageDesc *>(ae_get_movie_resource_userdata( (const aeMovieResource *)resource_image ));
+                        const aeMovieResource * resource_image_base = reinterpret_cast<const aeMovieResource *>(resource_image);
+
+                        Movie2Data::ImageDesc * image_desc = reinterpret_cast<Movie2Data::ImageDesc *>(ae_get_movie_resource_userdata( resource_image_base ));
 
                         ResourceImage * resourceImage = image_desc->resourceImage;
 
@@ -220,9 +226,7 @@ namespace Mengine
                 {
                     const aeMovieResource * resource = ae_get_movie_layer_data_resource( _layer );
 
-                    const aeMovieResourceImage * resource_image = reinterpret_cast<const aeMovieResourceImage *>(resource);
-
-                    Movie2Data::ImageDesc * image_desc = reinterpret_cast<Movie2Data::ImageDesc *>(ae_get_movie_resource_userdata( (const aeMovieResource *)resource_image ));
+                    Movie2Data::ImageDesc * image_desc = reinterpret_cast<Movie2Data::ImageDesc *>(ae_get_movie_resource_userdata( resource ));
 
                     ResourceImage * resourceImage = image_desc->resourceImage;
 

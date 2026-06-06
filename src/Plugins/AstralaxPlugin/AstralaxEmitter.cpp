@@ -377,10 +377,7 @@ namespace Mengine
             const RenderMaterialInterfacePtr & material = ASTRALAX_SERVICE()
                 ->getMaterial( mesh );
 
-            if( material == nullptr )
-            {
-                return;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( material, "astralax emitter render without material" );
 
             _renderPipeline->addRenderObject( _context, material, nullptr, m_renderVertices + mesh.vertexOffset, mesh.vertexCount, m_renderIndicies + mesh.indexOffset, mesh.indexCount, bb, false, MENGINE_DOCUMENT_FORWARD );
         }

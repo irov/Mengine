@@ -1598,7 +1598,13 @@ namespace Mengine
 
         bool alreadyFullscreen = (flags & SDL_WINDOW_FULLSCREEN) == SDL_WINDOW_FULLSCREEN;
 
-        if( _fullscreen != alreadyFullscreen )
+        int windowWidth;
+        int windowHeight;
+        SDL_GetWindowSize( m_sdlWindow, &windowWidth, &windowHeight );
+
+        bool alreadyResolution = (uint32_t)windowWidth == _resolution.getWidth() && (uint32_t)windowHeight == _resolution.getHeight();
+
+        if( _fullscreen != alreadyFullscreen || alreadyResolution == false )
         {
             if( this->changeWindow_( _resolution, _fullscreen ) == false )
             {

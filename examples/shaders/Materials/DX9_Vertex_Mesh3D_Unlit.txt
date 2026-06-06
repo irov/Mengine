@@ -1,0 +1,24 @@
+
+float4x4 ModelViewMatrix;
+
+struct a2v {
+    float3 pos      : POSITION;
+    float3 normal   : NORMAL;
+    float4 tangent  : TANGENT;
+    float4 color    : COLOR0;
+    float2 uv0      : TEXCOORD0;
+    float2 uv1      : TEXCOORD1;
+};
+
+struct v2p {
+    float4 pos      : POSITION;
+    float4 color    : COLOR0;
+    float2 uv0      : TEXCOORD0;
+};
+
+void main(in a2v IN, out v2p OUT)
+{
+    OUT.pos   = mul(float4(IN.pos, 1.0f), ModelViewMatrix);
+    OUT.color = IN.color;
+    OUT.uv0   = IN.uv0;
+}

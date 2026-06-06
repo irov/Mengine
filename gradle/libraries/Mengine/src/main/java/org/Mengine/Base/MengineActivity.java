@@ -172,7 +172,8 @@ public class MengineActivity extends AppCompatActivity {
 
         final String name = permission + MengineUtils.getRandomUUIDString();
 
-        ActivityResultLauncher[] launcher = new ActivityResultLauncher[1];
+        @SuppressWarnings("unchecked")
+        final ActivityResultLauncher<String>[] launcher = new ActivityResultLauncher[1];
 
         launcher[0] = registry.register(name
             , new ActivityResultContracts.RequestPermission()

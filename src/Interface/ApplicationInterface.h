@@ -96,6 +96,7 @@ namespace Mengine
         virtual const Resolution & getCurrentWindowResolution() const = 0;
         virtual const Viewport & getRenderViewport() const = 0;
 
+        virtual void setContentResolution( const Resolution & _resolution ) = 0;
         virtual const Resolution & getContentResolution() const = 0;
         virtual void getGameViewport( float * const _aspect, Viewport * const _viewport ) const = 0;
 

@@ -55,7 +55,7 @@ namespace Mengine
             }break;
         };
 
-        m_format = Helper::getD3DIndexFormat();
+        m_format = Helper::getD3DIndexFormat( m_indexSize );
 
         MemoryProxyInterfacePtr memory = MEMORY_SERVICE()
             ->createMemoryProxy( MENGINE_DOCUMENT_FACTORABLE );

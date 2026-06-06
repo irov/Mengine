@@ -1,0 +1,11 @@
+{
+    "GAME_GLYPHS": {
+        "Glyph": [ "RobotoGlyph" ]
+    },
+
+    "RobotoGlyph": {
+        "Type": "TTF",
+        "Path": ".downloads/fonts/Roboto-Bold.ttf",
+        "License": ".downloads/fonts/Roboto_license.txt"
+    }
+}

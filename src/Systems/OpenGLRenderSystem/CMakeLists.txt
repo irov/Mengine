@@ -18,8 +18,11 @@ src
     OpenGLRenderIndexBuffer.h
     OpenGLRenderProgram.cpp
     OpenGLRenderProgram.h
-    OpenGLRenderProgramVariable.cpp
-    OpenGLRenderProgramVariable.h
+    OpenGLRenderProgramVariableInterface.h
+    OpenGLRenderProgramVariableStatic.cpp
+    OpenGLRenderProgramVariableStatic.h
+    OpenGLRenderProgramVariableDynamic.cpp
+    OpenGLRenderProgramVariableDynamic.h
     OpenGLRenderVertexAttribute.cpp
     OpenGLRenderVertexAttribute.h
     OpenGLRenderVertexBuffer.cpp

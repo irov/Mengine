@@ -2139,7 +2139,7 @@ namespace Mengine
         desc->indexOffset = 0;
 
         RenderProgramVariableInterfacePtr programVariable = RENDER_SYSTEM()
-            ->createProgramVariable( 0, desc->indexOffset + _callbackData->parameter_count, MENGINE_DOCUMENT_FACTORABLE_PTR( movie2 ) );
+            ->createProgramVariableStatic( 0, desc->indexOffset + _callbackData->parameter_count, MENGINE_DOCUMENT_FACTORABLE_PTR( movie2 ) );
 
         if( (_callbackData->flags & AE_MOVIE_EXTENSION_SHADER_FLAG_UVSL) == AE_MOVIE_EXTENSION_SHADER_FLAG_UVSL )
         {

@@ -27,7 +27,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderIndexBuffer::initialize( uint32_t _indexSize, EBufferType _bufferType )
     {
-        m_format = Helper::getD3DIndexFormat();
+        m_format = Helper::getD3DIndexFormat( _indexSize );
 
         return this->initializeBuffer( _indexSize, _bufferType );
     }

@@ -61,7 +61,8 @@ namespace Mengine
         RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const DocumentInterfacePtr & _doc ) override;
         void setProgram( const RenderProgramInterfacePtr & _program ) override;
         void updateProgram( const RenderProgramInterfacePtr & _program ) override;
-        RenderProgramVariableInterfacePtr createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentInterfacePtr & _doc ) override;
+        RenderProgramVariableInterfacePtr createProgramVariableStatic( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentInterfacePtr & _doc ) override;
+        RenderProgramVariableInterfacePtr createProgramVariableDynamic( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentInterfacePtr & _doc ) override;
         bool setProgramVariable( const RenderProgramInterfacePtr & _program, const RenderProgramVariableInterfacePtr & _variable ) override;
 
     public:

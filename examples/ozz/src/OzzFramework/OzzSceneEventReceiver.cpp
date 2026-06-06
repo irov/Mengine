@@ -16,11 +16,12 @@
 #include "Kernel/ShapeQuadFixed.h"
 #include "Kernel/ShapeCircle.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/Surface.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/EntityHelper.h"
+#include "Kernel/NodeCast.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/SchedulerHelper.h"
 #include "Kernel/StringHelper.h"
@@ -83,7 +84,7 @@ namespace Mengine
         NodePtr node = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Interender" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( node );
+        MENGINE_ASSERTION_MEMORY_PANIC( node, "invalid node" );
 
         m_node = node;
 

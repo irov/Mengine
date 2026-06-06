@@ -38,7 +38,7 @@ public final class MenginePluginExtensionManager {
 
         for (Class<? extends MenginePluginExtensionInterface> clazz : classes) {
             try {
-                MenginePluginExtensionInterface extension = clazz.newInstance();
+                MenginePluginExtensionInterface extension = clazz.getDeclaredConstructor().newInstance();
                 extension.onExtensionInitialize(application);
 
                 instances.add(extension);

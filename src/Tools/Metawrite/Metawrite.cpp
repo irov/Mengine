@@ -49,7 +49,6 @@ SERVICE_EXTERN( EnumeratorService );
 SERVICE_EXTERN( DocumentService );
 SERVICE_EXTERN( OptionsService );
 SERVICE_EXTERN( FactoryService );
-SERVICE_EXTERN( UnicodeSystem );
 SERVICE_EXTERN( StringizeService );
 SERVICE_EXTERN( ArchiveService );
 SERVICE_EXTERN( LoggerService );
@@ -85,7 +84,6 @@ namespace Mengine
         SERVICE_CREATE( PlatformSystem, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( TimeSystem, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( ThreadSystem, MENGINE_DOCUMENT_FUNCTION );
-        SERVICE_CREATE( UnicodeSystem, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( DateTimeSystem, MENGINE_DOCUMENT_FUNCTION );
         
         SERVICE_CREATE( NotificationService, MENGINE_DOCUMENT_FUNCTION );

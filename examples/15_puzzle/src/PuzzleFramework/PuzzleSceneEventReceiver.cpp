@@ -7,6 +7,7 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
+#include "Interface/TextServiceInterface.h"
 
 #include "Plugins/GOAPPlugin/Tasks/GOAPCook.h"
 #include "Plugins/GraphicsPlugin/GraphicsInterface.h"
@@ -14,7 +15,7 @@
 #include "Engine/Engine.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/Surface.h"
 #include "Kernel/SurfaceSolidColor.h"
 #include "Kernel/ShapeQuadFixed.h"
@@ -34,7 +35,7 @@
 #include "Kernel/NodeCast.h"
 #include "Kernel/ColorHelper.h"
 
-#include "math/uv4_inline.h"
+#include "math/uv4.h"
 
 namespace Mengine
 {
@@ -75,7 +76,7 @@ namespace Mengine
 
             while( _vector->size() < _size )
             {
-                int32_t value = randomizer->getRandomRangei( _min, _max );
+                int32_t value = randomizer->getRandomRange32i( _min, _max );
 
                 if( std::find( _vector->begin(), _vector->end(), value ) != _vector->end() )
                 {
@@ -220,11 +221,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PuzzleSceneEventReceiver::onEntityPreparationDeactivate( const EntityBehaviorInterfacePtr & _behavior )
+    void PuzzleSceneEventReceiver::onEntityPassivate( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
 
-        LOGGER_MESSAGE( "Scene onEntityPreparationDeactivate [%s]"
+        LOGGER_MESSAGE( "Scene onEntityPassivate [%s]"
             , m_scene->getName().c_str()
         );
 
@@ -282,7 +283,7 @@ namespace Mengine
         SurfaceImagePtr surface = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( surface );
+        MENGINE_ASSERTION_MEMORY_PANIC( surface, "invalid surface" );
 
         surface->setName( _name );
         surface->setResourceImage( _resource );
@@ -290,7 +291,7 @@ namespace Mengine
         ShapeQuadFixedPtr shape = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( shape );
+        MENGINE_ASSERTION_MEMORY_PANIC( shape, "invalid shape" );
 
         shape->setName( _name );
         shape->setSurface( surface );
@@ -303,7 +304,7 @@ namespace Mengine
         HotSpotPolygonPtr hotspot = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( hotspot );
+        MENGINE_ASSERTION_MEMORY_PANIC( hotspot, "invalid hotspot" );
 
         hotspot->setName( _name );
 
@@ -324,7 +325,7 @@ namespace Mengine
         NodePtr graphicsNode = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Graphics" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( graphicsNode );
+        MENGINE_ASSERTION_MEMORY_PANIC( graphicsNode, "invalid graphicsNode" );
 
         graphicsNode->setName( _name );
 
@@ -342,7 +343,7 @@ namespace Mengine
         NodePtr graphicsNode = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Graphics" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( graphicsNode );
+        MENGINE_ASSERTION_MEMORY_PANIC( graphicsNode, "invalid graphicsNode" );
 
         graphicsNode->setName( _name );
 
@@ -361,9 +362,10 @@ namespace Mengine
     /////////////////////////////////////////////////////////////////////////
     TextFieldPtr PuzzleSceneEventReceiver::createTextField( const ConstString & _name, const ConstString & _id, const VectorString & _args )
     {
-        TextFieldPtr text = Helper::generateTextField( MENGINE_DOCUMENT_FACTORABLE );
+        TextFieldPtr text = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "TextField" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( text );
+        MENGINE_ASSERTION_MEMORY_PANIC( text, "invalid text" );
 
         text->setName( _name );
 
@@ -371,7 +373,17 @@ namespace Mengine
 
         if( _args.empty() == false )
         {
-            text->setTextFormatArgs( _args );
+            VectorTextArguments arguments;
+
+            for( const String & arg : _args )
+            {
+                TextArgumentInterfacePtr argument = TEXT_SERVICE()
+                    ->createTextArgumentValue( arg, MENGINE_DOCUMENT_FACTORABLE );
+
+                arguments.emplace_back( argument );
+            }
+
+            text->setTextArguments( arguments );
         }
 
         return text;
@@ -379,21 +391,28 @@ namespace Mengine
     /////////////////////////////////////////////////////////////////////////
     bool PuzzleSceneEventReceiver::getImageSize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, mt::vec2f * _out ) const
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _out );
+        MENGINE_ASSERTION_MEMORY_PANIC( _out, "invalid _out" );
         
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( stream );
-
         const ConstString & codecType = CODEC_SERVICE()
             ->findCodecType( _filePath );
+
+        ContentInterfacePtr content = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+
+        content->setFileGroup( _fileGroup );
+        content->setFilePath( _filePath );
+        content->setCodecType( codecType );
+
+        InputStreamInterfacePtr stream = content->openInputStreamFile( false, false, MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid stream" );
 
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
             ->createDecoder( codecType, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( imageDecoder );
+        MENGINE_ASSERTION_MEMORY_PANIC( imageDecoder, "invalid imageDecoder" );
 
-        if( imageDecoder->prepareData( stream ) == false )
+        if( imageDecoder->prepareData( content, stream ) == false )
         {
             return false;
         }
@@ -428,7 +447,7 @@ namespace Mengine
         ResourceImageDefaultPtr resource = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( resource );
+        MENGINE_ASSERTION_MEMORY_PANIC( resource, "invalid resource" );
 
         resource->setName( _resourceName );
 
@@ -454,8 +473,8 @@ namespace Mengine
         resource->setSize( maxSize );
         resource->setOffset( mt::vec2f( 0.f, 0.f ) );
 
-        resource->setUVImage( _uvImage );
-        resource->setUVAlpha( _uvAlpha );
+        resource->setUV( 0, _uvImage );
+        resource->setUV( 1, _uvAlpha );
 
         resource->setAlpha( true );
 
@@ -482,7 +501,7 @@ namespace Mengine
         NodePtr node = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Interender" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( node );
+        MENGINE_ASSERTION_MEMORY_PANIC( node, "invalid node" );
 
         node->setName( STRINGIZE_STRING_LOCAL( "Node_Game" ) );
 
@@ -537,7 +556,7 @@ namespace Mengine
 
                 Detail::convertIdxToRowCol( idx, &row_test, &col_test );
 
-                MENGINE_ASSERTION( row == row_test || col == col_test );
+                MENGINE_ASSERTION( row == row_test && col == col_test, "invalid row col conversion" );
 
                 m_indexes.emplace_back( idx );
 
@@ -570,7 +589,7 @@ namespace Mengine
 
                 mt::uv4f uv;
 
-                mt::uv4_from_mask( uv, uv_mask );
+                mt::uv4_from_mask( &uv, uv_mask );
 
                 ResourceImageDefaultPtr resourceImage = this->createImageResource(
                     STRINGIZE_STRING_LOCAL( "image" )
@@ -791,8 +810,8 @@ namespace Mengine
             // wait start
             auto && [race_btn_space, race_mouse_l] = Cook::addRace<2>( _scope_while );
 
-            Cook::addGlobalKeyPress( race_btn_space, EKeyCode::KC_SPACE, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
-            Cook::addGlobalMouseButton( race_mouse_l, EMouseButtonCode::MC_LBUTTON, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+            Cook::addGlobalKeyPress( race_btn_space, EKeyCode::KC_SPACE, true, nullptr, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+            Cook::addGlobalMouseButton( race_mouse_l, EMouseButtonCode::MC_LBUTTON, true, nullptr, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
             // start
             Cook::addFunction( _scope_while, this, &PuzzleSceneEventReceiver::enableBorders, true );
@@ -839,16 +858,16 @@ namespace Mengine
             // reset
             auto && [race_reset_btn_r, race_reset_btn_space] = Cook::addRace<2>( race_reset );
 
-            Cook::addGlobalKeyPress( race_reset_btn_r, EKeyCode::KC_R, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
-            Cook::addGlobalKeyPress( race_reset_btn_space, EKeyCode::KC_SPACE, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+            Cook::addGlobalKeyPress( race_reset_btn_r, EKeyCode::KC_R, true, nullptr, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+            Cook::addGlobalKeyPress( race_reset_btn_space, EKeyCode::KC_SPACE, true, nullptr, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
             Cook::addPrint( race_reset, "RESET GAME" );
 
             // quit
             auto && [race_quit_btn_q, race_quit_btn_esc] = Cook::addRace<2>( race_quit );
 
-            Cook::addGlobalKeyPress( race_quit_btn_q, EKeyCode::KC_Q, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
-            Cook::addGlobalKeyPress( race_quit_btn_esc, EKeyCode::KC_ESCAPE, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+            Cook::addGlobalKeyPress( race_quit_btn_q, EKeyCode::KC_Q, true, nullptr, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+            Cook::addGlobalKeyPress( race_quit_btn_esc, EKeyCode::KC_ESCAPE, true, nullptr, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
             Cook::addPrint( race_quit, "GOODBYE!" );
 
@@ -877,23 +896,23 @@ namespace Mengine
                 // turn arrows
                 auto && [race_turn_arrows_up, race_turn_arrows_down, race_turn_arrows_left, race_turn_arrows_right] = Cook::addRace<4>( race_turn_arrows );
 
-                Cook::addGlobalKeyPress( race_turn_arrows_up, EKeyCode::KC_UP, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+                Cook::addGlobalKeyPress( race_turn_arrows_up, EKeyCode::KC_UP, true, nullptr, nullptr, MENGINE_DOCUMENT_FACTORABLE );
                 Cook::addScope( race_turn_arrows_up, this, &PuzzleSceneEventReceiver::scopeMakeTurnToDirection, DIRECTION_DOWN );
 
-                Cook::addGlobalKeyPress( race_turn_arrows_down, EKeyCode::KC_DOWN, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+                Cook::addGlobalKeyPress( race_turn_arrows_down, EKeyCode::KC_DOWN, true, nullptr, nullptr, MENGINE_DOCUMENT_FACTORABLE );
                 Cook::addScope( race_turn_arrows_down, this, &PuzzleSceneEventReceiver::scopeMakeTurnToDirection, DIRECTION_UP );
 
-                Cook::addGlobalKeyPress( race_turn_arrows_left, EKeyCode::KC_LEFT, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+                Cook::addGlobalKeyPress( race_turn_arrows_left, EKeyCode::KC_LEFT, true, nullptr, nullptr, MENGINE_DOCUMENT_FACTORABLE );
                 Cook::addScope( race_turn_arrows_left, this, &PuzzleSceneEventReceiver::scopeMakeTurnToDirection, DIRECTION_RIGHT );
 
-                Cook::addGlobalKeyPress( race_turn_arrows_right, EKeyCode::KC_RIGHT, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+                Cook::addGlobalKeyPress( race_turn_arrows_right, EKeyCode::KC_RIGHT, true, nullptr, nullptr, MENGINE_DOCUMENT_FACTORABLE );
                 Cook::addScope( race_turn_arrows_right, this, &PuzzleSceneEventReceiver::scopeMakeTurnToDirection, DIRECTION_LEFT );
 
                 // text
                 auto && [race_text_btn_t, race_text_mouse_r] = Cook::addRace<2>( race_text );
 
-                Cook::addGlobalKeyPress( race_text_btn_t, EKeyCode::KC_T, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
-                Cook::addGlobalMouseButton( race_text_mouse_r, EMouseButtonCode::MC_RBUTTON, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+                Cook::addGlobalKeyPress( race_text_btn_t, EKeyCode::KC_T, true, nullptr, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+                Cook::addGlobalMouseButton( race_text_mouse_r, EMouseButtonCode::MC_RBUTTON, true, nullptr, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
                 Cook::addFunction( race_text, [this]()
                 {

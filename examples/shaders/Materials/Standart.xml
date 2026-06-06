@@ -143,6 +143,46 @@
         <Sampler Count = "1"/>
     </Program>
 
+    <Program Name = "Mesh3D_Unlit">
+        <VertexShader Name = "Vertex_Mesh3D_Unlit"/>
+        <FragmentShader Name = "Fragment_Mesh3D_Unlit"/>
+        <VertexAttribute Name = "Vertex3D_Static"/>
+
+        <Sampler Count = "1"/>
+    </Program>
+
+    <Program Name = "Mesh3D_Skinned_Unlit">
+        <VertexShader Name = "Vertex_Mesh3D_Skinned_Unlit"/>
+        <FragmentShader Name = "Fragment_Mesh3D_Unlit"/>
+        <VertexAttribute Name = "Vertex3D_Skinned"/>
+
+        <Sampler Count = "1"/>
+    </Program>
+
+    <Program Name = "Mesh3D_Lit">
+        <VertexShader Name = "Vertex_Mesh3D_Lit"/>
+        <FragmentShader Name = "Fragment_Mesh3D_Unlit"/>
+        <VertexAttribute Name = "Vertex3D_Static"/>
+
+        <Sampler Count = "1"/>
+    </Program>
+
+    <Program Name = "Mesh3D_Skinned_Lit">
+        <VertexShader Name = "Vertex_Mesh3D_Skinned_Lit"/>
+        <FragmentShader Name = "Fragment_Mesh3D_Unlit"/>
+        <VertexAttribute Name = "Vertex3D_Skinned"/>
+
+        <Sampler Count = "1"/>
+    </Program>
+
+    <Program Name = "PostProcessFx">
+        <VertexShader Name = "Vertex_Blend"/>
+        <FragmentShader Name = "Fragment_PostProcessFx"/>
+        <VertexAttribute Name = "Vertex2D_UV1"/>
+
+        <Sampler Count = "1"/>
+    </Program>
+
     <Program Name = "Color_Premultiply">
         <VertexShader Name = "Vertex_Color"/>
         <FragmentShader Name = "Fragment_Color_Premultiply"/>
@@ -150,7 +190,67 @@
         
         <Sampler Count = "0"/>
     </Program>    
-    
+
+    <Material Name = "Material_OpaqueUnlit">
+        <AlphaBlend Enable = "0"/>
+        <DepthBufferTest Enable = "1"/>
+        <DepthBufferWrite Enable = "1"/>
+
+        <BlendFactor Source = "ONE" Dest = "ZERO"/>
+
+        <Program Name = "Mesh3D_Unlit"/>
+    </Material>
+
+    <Material Name = "Material_SkinnedOpaqueUnlit">
+        <AlphaBlend Enable = "0"/>
+        <DepthBufferTest Enable = "1"/>
+        <DepthBufferWrite Enable = "1"/>
+
+        <BlendFactor Source = "ONE" Dest = "ZERO"/>
+
+        <Program Name = "Mesh3D_Skinned_Unlit"/>
+    </Material>
+
+    <Material Name = "Material_OpaqueLit">
+        <AlphaBlend Enable = "0"/>
+        <DepthBufferTest Enable = "1"/>
+        <DepthBufferWrite Enable = "1"/>
+
+        <BlendFactor Source = "ONE" Dest = "ZERO"/>
+
+        <Program Name = "Mesh3D_Lit"/>
+    </Material>
+
+    <Material Name = "Material_SkinnedOpaqueLit">
+        <AlphaBlend Enable = "0"/>
+        <DepthBufferTest Enable = "1"/>
+        <DepthBufferWrite Enable = "1"/>
+
+        <BlendFactor Source = "ONE" Dest = "ZERO"/>
+
+        <Program Name = "Mesh3D_Skinned_Lit"/>
+    </Material>
+
+    <Material Name = "Material_BlobShadow">
+        <AlphaBlend Enable = "1"/>
+        <DepthBufferTest Enable = "1"/>
+        <DepthBufferWrite Enable = "0"/>
+
+        <BlendFactor Source = "SOURCE_ALPHA" Dest = "ONE_MINUS_SOURCE_ALPHA"/>
+
+        <Program Name = "Mesh3D_Unlit"/>
+    </Material>
+
+    <Material Name = "Material_PostProcessFx">
+        <AlphaBlend Enable = "0"/>
+        <DepthBufferTest Enable = "0"/>
+        <DepthBufferWrite Enable = "0"/>
+
+        <BlendFactor Source = "ONE" Dest = "ZERO"/>
+
+        <Program Name = "PostProcessFx"/>
+    </Material>
+
 	<Material Name = "Texture_TrackMatte_Blend">
         <AlphaBlend Enable = "1"/>
         <DepthBufferWrite Enable = "0"/>

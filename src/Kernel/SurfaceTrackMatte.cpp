@@ -23,7 +23,7 @@ namespace Mengine
     bool SurfaceTrackMatte::_initialize()
     {
         RenderProgramVariableInterfacePtr programVariable = RENDER_SYSTEM()
-            ->createProgramVariable( 0, 1, MENGINE_DOCUMENT_FACTORABLE );
+            ->createProgramVariableStatic( 0, 1, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( programVariable, "'%s' invalid create program variable"
             , this->getName().c_str()

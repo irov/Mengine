@@ -3,10 +3,14 @@
 #include "Plugins/GOAPPlugin/GOAPInterface.h"
 #include "Plugins/GOAPPlugin/Tasks/GOAPCook.h"
 
+#include "Interface/PrototypeServiceInterface.h"
+
 #include "Engine/Engine.h"
 #include "Engine/HotSpotCircle.h"
 
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/FactorableUnique.h"
 #include "Kernel/SurfaceSolidColor.h"
 #include "Kernel/ShapeCircle.h"
 #include "Kernel/ShapeQuadFixed.h"
@@ -81,7 +85,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Jewelry::makeNodeActive_()
     {
-        SurfaceSolidColorPtr surface = Helper::generateSurfaceSolidColor( MENGINE_DOCUMENT_FACTORABLE );
+        SurfaceSolidColorPtr surface = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceSolidColor" ), MENGINE_DOCUMENT_FACTORABLE );
 
         Color jewelry_color = jewelry_colors[m_type];
 
@@ -90,7 +95,8 @@ namespace Mengine
         float width = m_size * 0.5f;
         surface->setSolidSize( {width, width} );
 
-        ShapeCirclePtr shape = Helper::generateShapeCircle( MENGINE_DOCUMENT_FACTORABLE );
+        ShapeCirclePtr shape = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ShapeCircle" ), MENGINE_DOCUMENT_FACTORABLE );
 
         shape->setSurface( surface );
 
@@ -101,7 +107,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Jewelry::makeNodeBlock_()
     {
-        SurfaceSolidColorPtr surface = Helper::generateSurfaceSolidColor( MENGINE_DOCUMENT_FACTORABLE );
+        SurfaceSolidColorPtr surface = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceSolidColor" ), MENGINE_DOCUMENT_FACTORABLE );
 
         Color jewelry_color = jewelry_colors[m_type] * 0.5f;
 
@@ -110,7 +117,8 @@ namespace Mengine
         float full_size = m_size + 10.f;
         surface->setSolidSize( {full_size, full_size} );
 
-        ShapeQuadFixedPtr shape = Helper::generateShapeQuadFixed( MENGINE_DOCUMENT_FACTORABLE );
+        ShapeQuadFixedPtr shape = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ), MENGINE_DOCUMENT_FACTORABLE );
 
         shape->setSurface( surface );
 
@@ -126,7 +134,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Jewelry::makeNodeBomb_()
     {
-        SurfaceSolidColorPtr surface = Helper::generateSurfaceSolidColor( MENGINE_DOCUMENT_FACTORABLE );
+        SurfaceSolidColorPtr surface = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceSolidColor" ), MENGINE_DOCUMENT_FACTORABLE );
 
         Color jewelry_color = jewelry_colors[m_type] * 0.5f;
 
@@ -135,7 +144,8 @@ namespace Mengine
         float full_size = m_size * 0.5f + 10.f;
         surface->setSolidSize( {full_size, full_size} );
 
-        ShapeCirclePtr shape = Helper::generateShapeCircle( MENGINE_DOCUMENT_FACTORABLE );
+        ShapeCirclePtr shape = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ShapeCircle" ), MENGINE_DOCUMENT_FACTORABLE );
 
         shape->setSurface( surface );
 
@@ -148,7 +158,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Jewelry::makePickerable_()
     {
-        HotSpotCirclePtr hotspot = Helper::generateHotSpotCircle( MENGINE_DOCUMENT_FACTORABLE );
+        HotSpotCirclePtr hotspot = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "HotSpotCircle" ), MENGINE_DOCUMENT_FACTORABLE );
 
         float radius = m_size * 0.5f;
         hotspot->setRadius( radius );
@@ -234,7 +245,7 @@ namespace Mengine
         m_size = _size;
         m_stride = _stride;
 
-        NodePtr node = Helper::generateNode( MENGINE_DOCUMENT_FACTORABLE );
+        NodePtr node = Helper::makeFactorableUnique<Node>( MENGINE_DOCUMENT_FACTORABLE );
 
         m_node = node;
 

@@ -1,10 +1,13 @@
 #pragma once
 
+#include "Interface/DocumentInterface.h"
+#include "Interface/FactoryInterface.h"
 #include "Interface/RandomizerInterface.h"
+#include "Interface/TimepipeInterface.h"
 
 #include "Plugins/JSONPlugin/JSONInterface.h"
 
-#include "Kernel/Factory.h"
+#include "Kernel/Factorable.h"
 #include "Kernel/DummySceneEventReceiver.h"
 #include "Kernel/Scene.h"
 
@@ -42,7 +45,7 @@ namespace Mengine
         NodePtr spawnExplosive_();
 
     protected:
-        JewelryPtr makeJewelry_( EJewelrySuper _super, uint32_t _type, uint32_t _column, uint32_t _row, const DocumentPtr & _doc );
+        JewelryPtr makeJewelry_( EJewelrySuper _super, uint32_t _type, uint32_t _column, uint32_t _row, const DocumentInterfacePtr & _doc );
 
     protected:
         void makeUI_();
@@ -71,7 +74,7 @@ namespace Mengine
 
         Settings m_settings;
 
-        UniqueId m_timepipeId;
+        TimepipeInterfacePtr m_timepipe;
 
         uint32_t m_stage;
         uint64_t m_timemillisecond;
@@ -79,7 +82,7 @@ namespace Mengine
         TextFieldPtr m_textStage;
         TextFieldPtr m_textTime;
 
-        FactoryPtr m_factoryJewelry;
+        FactoryInterfacePtr m_factoryJewelry;
 
         typedef Vector<JewelryPtr> VectorJewelryHand;
         VectorJewelryHand m_jewelryHand;
@@ -90,7 +93,7 @@ namespace Mengine
 
         RandomizerInterfacePtr m_randomizer;
 
-        JSONStorageInterfacePtr m_storageLevels;
+        jpp::object m_levels;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<JewelrySceneEventReceiver> JewelrySceneEventReceiverPtr;

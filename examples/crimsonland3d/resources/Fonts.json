@@ -1,0 +1,11 @@
+{
+    "GAME_FONTS": {
+        "Font": [ "DungeonFont" ]
+    },
+
+    "DungeonFont": {
+        "Type": "TTF",
+        "Glyph": "RobotoGlyph",
+        "Height": 36
+    }
+}

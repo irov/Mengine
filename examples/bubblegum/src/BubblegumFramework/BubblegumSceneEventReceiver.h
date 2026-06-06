@@ -2,6 +2,8 @@
 
 #include "Kernel/DummySceneEventReceiver.h"
 
+#include "Interface/TimepipeInterface.h"
+
 #include "Engine/HotSpotGlobal.h"
 #include "Engine/TextField.h"
 
@@ -34,7 +36,7 @@ namespace Mengine
     protected:
         Scene * m_scene;
 
-        UniqueId m_timepipeId;
+        TimepipeInterfacePtr m_timepipe;
 
         HotSpotGlobalPtr m_globalHotspot;
         GOAP::SemaphoreInterfacePtr m_semaphoreBurst;

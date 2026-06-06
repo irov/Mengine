@@ -11,6 +11,7 @@
 #include "VideoConverterFFMPEGToOGV.h"
 #include "VideoConverterFFMPEGToOGVA.h"
 #include "ShaderConverterTextToVSO.h"
+#include "ShaderConverterTextToVSO3.h"
 #include "ShaderConverterTextToPSO.h"
 #include "ShaderConverterTextToVSO11.h"
 #include "ShaderConverterTextToPSO11.h"
@@ -45,6 +46,7 @@ namespace Mengine
         Helper::registerConverter<ImageConverterDDSToHTF>( STRINGIZE_STRING_LOCAL( "dds2htf" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerConverter<ImageConverterPNGToACF>( STRINGIZE_STRING_LOCAL( "png2acf" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerConverter<ShaderConverterTextToVSO>( STRINGIZE_STRING_LOCAL( "text2vso" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerConverter<ShaderConverterTextToVSO3>( STRINGIZE_STRING_LOCAL( "text2vso3" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerConverter<ShaderConverterTextToPSO>( STRINGIZE_STRING_LOCAL( "text2pso" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerConverter<ShaderConverterTextToVSO11>( STRINGIZE_STRING_LOCAL( "text2vso11" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerConverter<ShaderConverterTextToPSO11>( STRINGIZE_STRING_LOCAL( "text2pso11" ), MENGINE_DOCUMENT_FACTORABLE );
@@ -63,6 +65,7 @@ namespace Mengine
         Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "dds2htf") );
         Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "png2acf") );
         Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "text2vso") );
+        Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "text2vso3") );
         Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "text2pso") );
         Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "text2vso11") );
         Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "text2pso11" ) );

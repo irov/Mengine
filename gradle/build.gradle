@@ -13,7 +13,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:9.1.1'
+        classpath 'com.android.tools.build:gradle:9.2.1'
 
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.3.10'
 
@@ -45,52 +45,23 @@ buildscript {
 
 ext.plugin_extensions = []
 
-final String ANDROID_APP_NDK_VERSION = Utils.getStringProperty("ANDROID_APP_NDK_VERSION", null)
-final String ANDROID_APP_CMAKE_VERSION = Utils.getStringProperty("ANDROID_APP_CMAKE_VERSION", null)
-final String ANDROID_APP_BUILD_TOOLS_VERSION = Utils.getStringProperty("ANDROID_APP_BUILD_TOOLS_VERSION", null)
-final Integer ANDROID_APP_MIN_SDK_VERSION = Utils.getIntegerProperty("ANDROID_APP_MIN_SDK_VERSION", null)
-final Integer ANDROID_APP_TARGET_SDK_VERSION = Utils.getIntegerProperty("ANDROID_APP_TARGET_SDK_VERSION", null)
-final Integer ANDROID_APP_COMPILE_SDK_VERSION = Utils.getIntegerProperty("ANDROID_APP_COMPILE_SDK_VERSION", null)
+final String ANDROID_APP_NDK_VERSION = Utils.getStringProperty("ANDROID_APP_NDK_VERSION", "29.0.14206865")
+final String ANDROID_APP_CMAKE_VERSION = Utils.getStringProperty("ANDROID_APP_CMAKE_VERSION", "3.31.6")
+final String ANDROID_APP_BUILD_TOOLS_VERSION = Utils.getStringProperty("ANDROID_APP_BUILD_TOOLS_VERSION", "36.0.0")
+final Integer ANDROID_APP_MIN_SDK_VERSION = Utils.getIntegerProperty("ANDROID_APP_MIN_SDK_VERSION", 23)
+final Integer ANDROID_APP_TARGET_SDK_VERSION = Utils.getIntegerProperty("ANDROID_APP_TARGET_SDK_VERSION", 37)
+final Integer ANDROID_APP_COMPILE_SDK_VERSION = Utils.getIntegerProperty("ANDROID_APP_COMPILE_SDK_VERSION", 37)
 
 allprojects {
     layout.buildDirectory.set(layout.projectDirectory.dir(rootProject.projectDir.getAbsolutePath() + "/../outputs/gradle/build/${rootProject.name}/${project.name}"))
 
     project.ext {
-        if (ANDROID_APP_NDK_VERSION != null) {
-            ndkVersion = ANDROID_APP_NDK_VERSION
-        } else {
-            ndkVersion = "29.0.14206865"
-        }
-
-        if (ANDROID_APP_CMAKE_VERSION != null) {
-            cmakeVersion = ANDROID_APP_CMAKE_VERSION
-        } else {
-            cmakeVersion = "3.31.6"
-        }
-
-        if (ANDROID_APP_BUILD_TOOLS_VERSION != null) {
-            buildToolsVersion = ANDROID_APP_BUILD_TOOLS_VERSION
-        } else {
-            buildToolsVersion = "36.0.0"
-        }
-
-        if (ANDROID_APP_MIN_SDK_VERSION != null) {
-            minSdkVersion = ANDROID_APP_MIN_SDK_VERSION
-        } else {
-            minSdkVersion = 23
-        }
-
-        if (ANDROID_APP_TARGET_SDK_VERSION != null) {
-            targetSdkVersion = ANDROID_APP_TARGET_SDK_VERSION
-        } else {
-            targetSdkVersion = 36
-        }
-
-        if (ANDROID_APP_COMPILE_SDK_VERSION != null) {
-            compileSdkVersion = ANDROID_APP_COMPILE_SDK_VERSION
-        } else {
-            compileSdkVersion = 36
-        }
+        ndkVersion = ANDROID_APP_NDK_VERSION
+        cmakeVersion = ANDROID_APP_CMAKE_VERSION
+        buildToolsVersion = ANDROID_APP_BUILD_TOOLS_VERSION
+        minSdkVersion = ANDROID_APP_MIN_SDK_VERSION
+        targetSdkVersion = ANDROID_APP_TARGET_SDK_VERSION
+        compileSdkVersion = ANDROID_APP_COMPILE_SDK_VERSION
 
         javaVersion = JavaVersion.VERSION_17
     }

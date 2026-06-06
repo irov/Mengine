@@ -20,6 +20,8 @@ src
     RenderMaterialService.cpp
     BatchRenderPipeline.h
     BatchRenderPipeline.cpp
+    Forward3DRenderPipeline.h
+    Forward3DRenderPipeline.cpp
 )
 
 ADD_MENGINE_LIBRARY(Services)

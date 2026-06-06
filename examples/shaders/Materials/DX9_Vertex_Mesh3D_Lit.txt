@@ -1,0 +1,67 @@
+
+#define POINT_LIGHT_MAX 4
+
+float4x4 ModelViewMatrix;
+float4x4 WorldMatrix                            : register(c4);
+
+float4   Ambient                                : register(c8);
+float4   DirLight_dirAndOn                      : register(c9);
+float4   DirLight_colorAndI                     : register(c10);
+float4   PointLight_posAndInvR[POINT_LIGHT_MAX] : register(c11);
+float4   PointLight_colorAndI[POINT_LIGHT_MAX]  : register(c15);
+
+struct a2v {
+    float3 pos      : POSITION;
+    float3 normal   : NORMAL;
+    float4 tangent  : TANGENT;
+    float4 color    : COLOR0;
+    float2 uv0      : TEXCOORD0;
+    float2 uv1      : TEXCOORD1;
+};
+
+struct v2p {
+    float4 pos      : POSITION;
+    float4 color    : COLOR0;
+    float2 uv0      : TEXCOORD0;
+};
+
+float3 ComputePointLight(float3 worldPos, float3 worldN, int i)
+{
+    float invR = PointLight_posAndInvR[i].w;
+    if (invR <= 0.0f) return float3(0,0,0);
+
+    float3 toLight = PointLight_posAndInvR[i].xyz - worldPos;
+    float dist = length(toLight);
+    float att = saturate(1.0f - dist * invR);
+    att = att * att;
+
+    float3 L = toLight / max(dist, 1e-4f);
+    float ndotl = max(0.0f, dot(worldN, L));
+
+    return PointLight_colorAndI[i].rgb * (PointLight_colorAndI[i].a * ndotl * att);
+}
+
+void main(in a2v IN, out v2p OUT)
+{
+    OUT.pos = mul(float4(IN.pos, 1.0f), ModelViewMatrix);
+
+    float3 worldPos = mul(float4(IN.pos, 1.0f), WorldMatrix).xyz;
+    float3 worldN = normalize(mul(float4(IN.normal, 0.0f), WorldMatrix).xyz);
+
+    float3 lit = Ambient.rgb;
+
+    if (DirLight_dirAndOn.w > 0.5f)
+    {
+        float ndotl = max(0.0f, dot(worldN, -DirLight_dirAndOn.xyz));
+        lit += DirLight_colorAndI.rgb * (DirLight_colorAndI.a * ndotl);
+    }
+
+    lit += ComputePointLight(worldPos, worldN, 0);
+    lit += ComputePointLight(worldPos, worldN, 1);
+    lit += ComputePointLight(worldPos, worldN, 2);
+    lit += ComputePointLight(worldPos, worldN, 3);
+
+    OUT.color.rgb = IN.color.rgb * lit;
+    OUT.color.a   = IN.color.a;
+    OUT.uv0       = IN.uv0;
+}

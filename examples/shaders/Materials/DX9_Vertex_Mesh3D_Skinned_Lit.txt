@@ -1,0 +1,105 @@
+
+#define POINT_LIGHT_MAX 4
+
+float4x4 ModelViewMatrix;
+float4   BonePalette[192];
+
+float4x4 WorldMatrix : register(c196);
+float4   Ambient                       : register(c200);
+float4   DirLight_dirAndOn             : register(c201);
+float4   DirLight_colorAndI            : register(c202);
+float4   PointLight_posAndInvR[POINT_LIGHT_MAX] : register(c203);
+float4   PointLight_colorAndI[POINT_LIGHT_MAX]  : register(c207);
+
+struct a2v {
+    float3 pos          : POSITION;
+    float3 normal       : NORMAL;
+    float4 tangent      : TANGENT;
+    float4 color        : COLOR0;
+    float2 uv0          : TEXCOORD0;
+    float2 uv1          : TEXCOORD1;
+    float4 boneIndices  : BLENDINDICES;
+    float4 boneWeights  : BLENDWEIGHT;
+};
+
+struct v2p {
+    float4 pos          : POSITION;
+    float4 color        : COLOR0;
+    float2 uv0          : TEXCOORD0;
+};
+
+float3 SkinVec3(float3 v, int4 idx, float4 w, float wRow)
+{
+    int b0 = idx.x * 3;
+    int b1 = idx.y * 3;
+    int b2 = idx.z * 3;
+    int b3 = idx.w * 3;
+
+    float4 V = float4(v, wRow);
+
+    float3 r = float3(0.0f, 0.0f, 0.0f);
+
+    r.x += dot(BonePalette[b0 + 0], V) * w.x;
+    r.y += dot(BonePalette[b0 + 1], V) * w.x;
+    r.z += dot(BonePalette[b0 + 2], V) * w.x;
+
+    r.x += dot(BonePalette[b1 + 0], V) * w.y;
+    r.y += dot(BonePalette[b1 + 1], V) * w.y;
+    r.z += dot(BonePalette[b1 + 2], V) * w.y;
+
+    r.x += dot(BonePalette[b2 + 0], V) * w.z;
+    r.y += dot(BonePalette[b2 + 1], V) * w.z;
+    r.z += dot(BonePalette[b2 + 2], V) * w.z;
+
+    r.x += dot(BonePalette[b3 + 0], V) * w.w;
+    r.y += dot(BonePalette[b3 + 1], V) * w.w;
+    r.z += dot(BonePalette[b3 + 2], V) * w.w;
+
+    return r;
+}
+
+float3 ComputePointLight(float3 worldPos, float3 worldN, int i)
+{
+    float invR = PointLight_posAndInvR[i].w;
+    if (invR <= 0.0f) return float3(0,0,0);
+
+    float3 toLight = PointLight_posAndInvR[i].xyz - worldPos;
+    float dist = length(toLight);
+    float att = saturate(1.0f - dist * invR);
+    att = att * att;
+
+    float3 L = toLight / max(dist, 1e-4f);
+    float ndotl = max(0.0f, dot(worldN, L));
+
+    return PointLight_colorAndI[i].rgb * (PointLight_colorAndI[i].a * ndotl * att);
+}
+
+void main(in a2v IN, out v2p OUT)
+{
+    int4 idx = int4(IN.boneIndices);
+
+    float3 skinnedPos    = SkinVec3(IN.pos,    idx, IN.boneWeights, 1.0f);
+    float3 skinnedNormal = SkinVec3(IN.normal, idx, IN.boneWeights, 0.0f);
+
+    OUT.pos = mul(float4(skinnedPos, 1.0f), ModelViewMatrix);
+
+    float3 worldPos = mul(float4(skinnedPos, 1.0f),    WorldMatrix).xyz;
+    float3 worldN   = normalize(mul(float4(skinnedNormal, 0.0f), WorldMatrix).xyz);
+
+    float3 lit = Ambient.rgb;
+
+    if (DirLight_dirAndOn.w > 0.5f)
+    {
+        float ndotl = max(0.0f, dot(worldN, -DirLight_dirAndOn.xyz));
+        lit += DirLight_colorAndI.rgb * (DirLight_colorAndI.a * ndotl);
+    }
+
+    lit += ComputePointLight(worldPos, worldN, 0);
+    lit += ComputePointLight(worldPos, worldN, 1);
+    lit += ComputePointLight(worldPos, worldN, 2);
+    lit += ComputePointLight(worldPos, worldN, 3);
+
+    OUT.color.rgb = IN.color.rgb * lit;
+    OUT.color.a   = IN.color.a;
+    OUT.uv0       = IN.uv0;
+}

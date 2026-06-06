@@ -28,9 +28,11 @@ namespace Mengine
         void unlock( const ID3D11DeviceContextPtr & _pImmediateContext, const ID3D11Texture2DPtr & _pD3DTexture );
 
     public:
-        Pointer getBuffer( size_t * const _pitch ) const override;
+        const Rect & getLockedRect() const override;
+        Pointer getLockedBuffer( size_t * const _pitch ) const override;
 
     protected:
+        Rect m_lockedRect;
         D3D11_MAPPED_SUBRESOURCE m_stagingTextureMemory;
 
         ID3D11Texture2DPtr m_pD3DStagingTexture;

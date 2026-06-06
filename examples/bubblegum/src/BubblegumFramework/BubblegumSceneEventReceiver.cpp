@@ -3,6 +3,7 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/PlayerServiceInterface.h"
+#include "Interface/TextServiceInterface.h"
 
 #include "Plugins/GOAPPlugin/GOAPInterface.h"
 #include "Plugins/GOAPPlugin/Tasks/GOAPCook.h"
@@ -15,7 +16,7 @@
 #include "Kernel/ShapeQuadFixed.h"
 #include "Kernel/ShapeCircle.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/Surface.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/EntityHelper.h"
@@ -32,7 +33,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     BubblegumSceneEventReceiver::BubblegumSceneEventReceiver()
         : m_scene( nullptr )
-        , m_timepipeId( INVALID_UNIQUE_ID )
+            , m_timepipe( nullptr )
         , m_score( 0 )
     {
     }
@@ -73,21 +74,21 @@ namespace Mengine
             , m_scene->getName().c_str()
         );
 
-        HotSpotGlobalPtr hotspot = Helper::generateHotSpotGlobal( MENGINE_DOCUMENT_FACTORABLE );
+        HotSpotGlobalPtr hotspot = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "HotSpotGlobal" ), MENGINE_DOCUMENT_FACTORABLE );
 
         m_scene->addChild( hotspot );
 
         m_globalHotspot = hotspot;
 
-        TextFieldPtr textScore = Helper::generateTextField( MENGINE_DOCUMENT_FACTORABLE );
+        TextFieldPtr textScore = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "TextField" ), MENGINE_DOCUMENT_FACTORABLE );
 
         textScore->setTextId( STRINGIZE_STRING_LOCAL( "ID_Score" ) );
 
-        VectorString empty_args;
-        empty_args.push_back( "" );
-        textScore->setTextFormatArgs( empty_args );
-
-        textScore->setTextFormatArgsContext( 0, [this]( String * _arg )
+        VectorTextArguments textScoreArguments;
+        TextArgumentInterfacePtr textScoreArgument = TEXT_SERVICE()
+            ->createTextArgumentContext( [this]( String * const _arg )
         {
             static uint32_t cache_score = ~0U;
 
@@ -104,7 +105,10 @@ namespace Mengine
             _arg->assign( arg_buff );
 
             return true;
-        } );
+        }, MENGINE_DOCUMENT_FACTORABLE );
+
+        textScoreArguments.emplace_back( textScoreArgument );
+        textScore->setTextArguments( textScoreArguments );
 
         TransformationInterface * textScoreTransformation = textScore->getTransformation();
         textScoreTransformation->setLocalPosition( {50.f, 50.f, 0.f} );
@@ -113,13 +117,14 @@ namespace Mengine
 
         m_scene->addChild( m_textScore );
 
-        TextFieldPtr textFinish = Helper::generateTextField( MENGINE_DOCUMENT_FACTORABLE );
+        TextFieldPtr textFinish = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "TextField" ), MENGINE_DOCUMENT_FACTORABLE );
 
         textFinish->setTextId( STRINGIZE_STRING_LOCAL( "ID_Finish" ) );
 
-        textFinish->setTextFormatArgs( empty_args );
-
-        textFinish->setTextFormatArgsContext( 0, [this]( String * _arg )
+        VectorTextArguments textFinishArguments;
+        TextArgumentInterfacePtr textFinishArgument = TEXT_SERVICE()
+            ->createTextArgumentContext( [this]( String * const _arg )
         {
             static uint32_t cache_score = ~0U;
 
@@ -136,7 +141,10 @@ namespace Mengine
             _arg->assign( arg_buffer );
 
             return true;
-        } );
+        }, MENGINE_DOCUMENT_FACTORABLE );
+
+        textFinishArguments.emplace_back( textFinishArgument );
+        textFinish->setTextArguments( textFinishArguments );
 
         TransformationInterface * textFinishTransformation = textFinish->getTransformation();
         textFinishTransformation->setLocalPosition( {300.f, 300.f, 0.f} );
@@ -156,7 +164,8 @@ namespace Mengine
         const RandomizerInterfacePtr & randomizer = PLAYER_SERVICE()
              ->getRandomizer();
 
-        SurfaceSolidColorPtr surface = Helper::generateSurfaceSolidColor( MENGINE_DOCUMENT_FACTORABLE );
+        SurfaceSolidColorPtr surface = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceSolidColor" ), MENGINE_DOCUMENT_FACTORABLE );
 
         float r = randomizer->getRandomRangef( 0.1f, 1.f );
         float g = randomizer->getRandomRangef( 0.2f, 1.f );
@@ -167,7 +176,8 @@ namespace Mengine
         float width = 50.f;
         surface->setSolidSize( {width, width} );
 
-        ShapeCirclePtr shape = Helper::generateShapeCircle( MENGINE_DOCUMENT_FACTORABLE );
+        ShapeCirclePtr shape = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ShapeCircle" ), MENGINE_DOCUMENT_FACTORABLE );
 
         shape->setSurface( surface );
 
@@ -183,7 +193,8 @@ namespace Mengine
         shapeTransformation->setLocalPosition( {x, y, 0.f} );
         shapeTransformation->setLocalScale( {0.f, 0.f, 0.f} );
 
-        HotSpotCirclePtr hotspot = Helper::generateHotSpotCircle( MENGINE_DOCUMENT_FACTORABLE );
+        HotSpotCirclePtr hotspot = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "HotSpotCircle" ), MENGINE_DOCUMENT_FACTORABLE );
 
         hotspot->setRadius( 50.f );
 
@@ -262,14 +273,14 @@ namespace Mengine
         GOAP::TimerInterfacePtr timer = GOAP_SERVICE()
             ->makeTimer();
 
-        UniqueId timepipeId = Helper::addTimepipe( [timer]( const UpdateContext * _context )
+        TimepipeInterfacePtr timepipe = Helper::addTimepipe( [timer]( const UpdateContext * _context )
         {
             float time = _context->time;
 
             timer->update( time );
         }, MENGINE_DOCUMENT_FACTORABLE );
 
-        m_timepipeId = timepipeId;
+        m_timepipe = timepipe;
 
         GOAP::SourceInterfacePtr source = GOAP_SERVICE()
             ->makeSource();
@@ -338,10 +349,10 @@ namespace Mengine
             m_chain = nullptr;
         }
         
-        if( m_timepipeId != 0 )
+        if( m_timepipe != nullptr )
         {
-            Helper::removeTimepipe( m_timepipeId );
-            m_timepipeId = 0;
+            Helper::removeTimepipe( m_timepipe );
+            m_timepipe = nullptr;
         }
 
         m_globalHotspot = nullptr;

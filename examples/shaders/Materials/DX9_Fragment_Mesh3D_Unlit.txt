@@ -1,0 +1,18 @@
+
+sampler2D tex0;
+
+struct v2p {
+    float4 position : POSITION;
+    float4 color    : COLOR0;
+    float2 uv0      : TEXCOORD0;
+};
+
+struct p2f {
+    float4 color    : COLOR0;
+};
+
+void main(in v2p IN, out p2f OUT)
+{
+    float4 albedo = tex2D(tex0, IN.uv0);
+    OUT.color = IN.color * albedo;
+}

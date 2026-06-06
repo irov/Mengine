@@ -16,11 +16,12 @@
 #include "Kernel/SurfaceImage.h"
 #include "Kernel/ResourceImageDefault.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/Surface.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/StringHelper.h"
 #include "Kernel/EntityHelper.h"
+#include "Kernel/NodeCast.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/SchedulerHelper.h"
 #include "Kernel/FilePathHelper.h"
@@ -143,11 +144,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void FifteenSceneEventReceiver::onEntityPreparationDeactivate( const EntityBehaviorInterfacePtr & _behavior )
+    void FifteenSceneEventReceiver::onEntityPassivate( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
 
-        LOGGER_MESSAGE( "Scene onEntityPreparationDeactivate [%s]"
+        LOGGER_MESSAGE( "Scene onEntityPassivate [%s]"
             , m_scene->getName().c_str()
         );
 
@@ -196,7 +197,7 @@ namespace Mengine
         SurfaceImagePtr surface = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( surface );
+        MENGINE_ASSERTION_MEMORY_PANIC( surface, "invalid create surface" );
 
         surface->setName( _name );
         surface->setResourceImage( _resource );
@@ -204,7 +205,7 @@ namespace Mengine
         ShapeQuadFixedPtr shape = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( shape );
+        MENGINE_ASSERTION_MEMORY_PANIC( shape, "invalid create shape" );
 
         shape->setName( _name );
         shape->setSurface( surface );
@@ -217,7 +218,7 @@ namespace Mengine
         HotSpotPolygonPtr hotspot = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( hotspot );
+        MENGINE_ASSERTION_MEMORY_PANIC( hotspot, "invalid create hotspot" );
 
         hotspot->setName( _name );
 
@@ -241,20 +242,27 @@ namespace Mengine
         const ConstString & codecType = CODEC_SERVICE()
             ->findCodecType( _filePath );
 
+        ContentInterfacePtr content = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+
+        content->setFileGroup( fileGroup );
+        content->setFilePath( _filePath );
+        content->setCodecType( codecType );
+
         mt::vec2f maxSize;
 
         if( _maxSize.x < 0.f || _maxSize.y < 0.f )
         {
-            InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+            InputStreamInterfacePtr stream = content->openInputStreamFile( false, false, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( stream );
+            MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid open file '%s'", _filePath.c_str() );
 
             ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
-                ->createDecoderT<ImageDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FACTORABLE );
+                ->createDecoder( codecType, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( imageDecoder );
+            MENGINE_ASSERTION_MEMORY_PANIC( imageDecoder, "invalid create image decoder '%s'", codecType.c_str() );
 
-            if( imageDecoder->prepareData( stream ) == false )
+            if( imageDecoder->prepareData( content, stream ) == false )
             {
                 return nullptr;
             }
@@ -272,7 +280,7 @@ namespace Mengine
         ResourceImageDefaultPtr resource = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( resource );
+        MENGINE_ASSERTION_MEMORY_PANIC( resource, "invalid create resource '%s'", _resourceName.c_str() );
 
         resource->setName( _resourceName );
 
@@ -280,24 +288,17 @@ namespace Mengine
         mt::uv4f uv_alpha;
 
         mt::vec4f uv_image_mask( _splitSize.x, _splitSize.y, _splitSize.z, _splitSize.w );
-        mt::uv4_from_mask( uv_image, uv_image_mask );
+    mt::uv4_from_mask( &uv_image, uv_image_mask );
 
         mt::vec2f gridSplit = {1.f / GRID_SIZE_Y, 1.f / GRID_SIZE_X};
 
         maxSize.x *= gridSplit.x;
         maxSize.y *= gridSplit.y;
 
-        ContentInterfacePtr content = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
-
-        content->setFileGroup( fileGroup );
-        content->setFilePath( _filePath );
-        content->setCodecType( codecType );
-
         resource->setContent( content );
 
-        resource->setUVImage( uv_image );
-        resource->setUVAlpha( uv_alpha );
+        resource->setUV( 0, uv_image );
+        resource->setUV( 1, uv_alpha );
         resource->setMaxSize( maxSize );
         resource->setSize( maxSize );
 
@@ -317,20 +318,27 @@ namespace Mengine
         const ConstString & codecType = CODEC_SERVICE()
             ->findCodecType( _filePath );
 
+        ContentInterfacePtr content = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+
+        content->setFileGroup( fileGroup );
+        content->setFilePath( _filePath );
+        content->setCodecType( codecType );
+
         mt::vec2f maxSize;
 
         if( _maxSize.x < 0.f || _maxSize.y < 0.f )
         {
-            InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+            InputStreamInterfacePtr stream = content->openInputStreamFile( false, false, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( stream );
+            MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid open file '%s'", _filePath.c_str() );
 
             ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
-                ->createDecoderT<ImageDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FACTORABLE );
+                ->createDecoder( codecType, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( imageDecoder );
+            MENGINE_ASSERTION_MEMORY_PANIC( imageDecoder, "invalid create image decoder '%s'", codecType.c_str() );
 
-            if( imageDecoder->prepareData( stream ) == false )
+            if( imageDecoder->prepareData( content, stream ) == false )
             {
                 return nullptr;
             }
@@ -348,24 +356,17 @@ namespace Mengine
         ResourceImageDefaultPtr resource = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( resource );
+        MENGINE_ASSERTION_MEMORY_PANIC( resource, "invalid create resource '%s'", _resourceName.c_str() );
 
         resource->setName( _resourceName );
 
         mt::uv4f uv_image;
         mt::uv4f uv_alpha;
 
-        ContentInterfacePtr content = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
-
-        content->setFileGroup( fileGroup );
-        content->setFilePath( _filePath );
-        content->setCodecType( codecType );
-
         resource->setContent( content );
 
-        resource->setUVImage( uv_image );
-        resource->setUVAlpha( uv_alpha );
+        resource->setUV( 0, uv_image );
+        resource->setUV( 1, uv_alpha );
         resource->setMaxSize( maxSize );
         resource->setSize( maxSize );
 
@@ -384,11 +385,11 @@ namespace Mengine
 
         for( int32_t row = 0; row != GRID_SIZE_Y; row++ )
         {
-            const int32_t randomIndexY = randomizer->getRandomRangei( 0, GRID_SIZE_Y );
+            const int32_t randomIndexY = randomizer->getRandomRange32i( 0, GRID_SIZE_Y );
 
             for( int32_t col = 0; col != GRID_SIZE_X; col++ )
             {
-                const int32_t randomIndexX = randomizer->getRandomRangei( 0, GRID_SIZE_X );
+                const int32_t randomIndexX = randomizer->getRandomRange32i( 0, GRID_SIZE_X );
                 std::swap( _vector[row][col], _vector[randomIndexY][randomIndexX] );
             }
         }
@@ -479,7 +480,7 @@ namespace Mengine
         NodePtr node = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Interender" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( node );
+        MENGINE_ASSERTION_MEMORY_PANIC( node, "invalid create game node" );
 
         node->setName( STRINGIZE_STRING_LOCAL( "Node_Game" ) );
 
@@ -515,7 +516,7 @@ namespace Mengine
 
         bool setupBackgroundResult = this->setupBackground( _imagePath );
 
-        MENGINE_ASSERTION_FATAL( setupBackgroundResult == true );
+        MENGINE_ASSERTION_FATAL( setupBackgroundResult == true, "invalid setup background" );
 
         return setupBackgroundResult;
     }
@@ -538,11 +539,11 @@ namespace Mengine
                 ResourceImageDefaultPtr substractResource = this->createImageSubstractResource( name, _fileGroup, _filePath,
                     {-1.f, -1.f}, {spriteShiftMin, spriteShiftMax} );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( substractResource );
+                MENGINE_ASSERTION_MEMORY_PANIC( substractResource, "invalid create background resource" );
 
                 ShapeQuadFixedPtr backgroundPart = this->createSprite( name, substractResource );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( backgroundPart );
+                MENGINE_ASSERTION_MEMORY_PANIC( backgroundPart, "invalid create background part" );
 
                 m_sprites.push_back( backgroundPart );
             }
@@ -570,7 +571,7 @@ namespace Mengine
 
         m_background = this->createSprite( STRINGIZE_STRING_LOCAL( "BG" ), resourceImage );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_background );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_background, "invalid create background" );
 
         this->createSplitBackgroundSprites( STRINGIZE_STRING_LOCAL( "Background_Sprites" ), STRINGIZE_STRING_LOCAL( "Assets" ), imagePath );
 
@@ -686,7 +687,7 @@ namespace Mengine
 
         for( auto && [race, hotspot] : Cook::addRaceZip( _scope, m_hotspotsAroundEmpty ) )
         {
-            Cook::addPickerableMouseButton( race, hotspot, EMouseCode::MC_LBUTTON, true, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+            Cook::addPickerableMouseButton( race, hotspot, EMouseButtonCode::MC_LBUTTON, true, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
             Cook::addScope( race, this, &FifteenSceneEventReceiver::makeTurn, hotspot );
         }

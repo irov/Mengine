@@ -15,11 +15,12 @@
 #include "Kernel/SurfaceImage.h"
 #include "Kernel/ResourceImageDefault.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/Surface.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/StringHelper.h"
 #include "Kernel/EntityHelper.h"
+#include "Kernel/NodeCast.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/SchedulerHelper.h"
 #include "Kernel/FilePathHelper.h"
@@ -125,11 +126,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TicTacToeSceneEventReceiver::onEntityPreparationDeactivate( const EntityBehaviorInterfacePtr & _behavior )
+    void TicTacToeSceneEventReceiver::onEntityPassivate( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
 
-        LOGGER_MESSAGE( "Scene onEntityPreparationDeactivate [%s]"
+        LOGGER_MESSAGE( "Scene onEntityPassivate [%s]"
             , m_scene->getName().c_str()
         );
 
@@ -176,7 +177,7 @@ namespace Mengine
         SurfaceImagePtr surface = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( surface );
+        MENGINE_ASSERTION_MEMORY_PANIC( surface, "invalid surface" );
 
         surface->setName( _name );
         surface->setResourceImage( _resource );
@@ -184,7 +185,7 @@ namespace Mengine
         ShapeQuadFixedPtr shape = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( shape );
+        MENGINE_ASSERTION_MEMORY_PANIC( shape, "invalid shape" );
 
         shape->setName( _name );
         shape->setSurface( surface );
@@ -197,7 +198,7 @@ namespace Mengine
         HotSpotPolygonPtr hotspot = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( hotspot );
+        MENGINE_ASSERTION_MEMORY_PANIC( hotspot, "invalid hotspot" );
 
         hotspot->setName( _name );
 
@@ -233,20 +234,27 @@ namespace Mengine
         const ConstString & codecType = CODEC_SERVICE()
             ->findCodecType( _filePath );
 
+        ContentInterfacePtr content = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+
+        content->setFileGroup( fileGroup );
+        content->setFilePath( _filePath );
+        content->setCodecType( codecType );
+
         mt::vec2f maxSize;
 
         if( _maxSize.x < 0.f || _maxSize.y < 0.f )
         {
-            InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+            InputStreamInterfacePtr stream = content->openInputStreamFile( false, false, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( stream );
+            MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid stream" );
 
             ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
-                ->createDecoderT<ImageDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FACTORABLE );
+                ->createDecoder( codecType, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( imageDecoder );
+            MENGINE_ASSERTION_MEMORY_PANIC( imageDecoder, "invalid imageDecoder" );
 
-            if( imageDecoder->prepareData( stream ) == false )
+            if( imageDecoder->prepareData( content, stream ) == false )
             {
                 return nullptr;
             }
@@ -264,23 +272,16 @@ namespace Mengine
         ResourceImageDefaultPtr resource = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( resource );
+        MENGINE_ASSERTION_MEMORY_PANIC( resource, "invalid resource" );
 
         resource->setName( _resourceName );
-
-        ContentInterfacePtr content = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
-
-        content->setFileGroup( fileGroup );
-        content->setFilePath( _filePath );
-        content->setCodecType( codecType );
 
         resource->setContent( content );
 
         mt::uv4f uv_image;
         mt::uv4f uv_alpha;
-        resource->setUVImage( uv_image );
-        resource->setUVAlpha( uv_alpha );
+        resource->setUV( 0, uv_image );
+        resource->setUV( 1, uv_alpha );
 
         resource->setMaxSize( maxSize );
         resource->setSize( maxSize );
@@ -299,7 +300,7 @@ namespace Mengine
         NodePtr node = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Interender" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( node );
+        MENGINE_ASSERTION_MEMORY_PANIC( node, "invalid node" );
 
         node->setName( STRINGIZE_STRING_LOCAL( "Node_Game" ) );
 
@@ -322,7 +323,7 @@ namespace Mengine
 
         MENGINE_UNUSED( setupBackgroundResult );
 
-        MENGINE_ASSERTION_FATAL( setupBackgroundResult == true );
+        MENGINE_ASSERTION_FATAL( setupBackgroundResult == true, "invalid assertion" );
 
         return true;
     }
@@ -333,14 +334,14 @@ namespace Mengine
         ResourceImageDefaultPtr resourceImage = this->createImageResource( STRINGIZE_STRING_LOCAL( "Background" ),
             STRINGIZE_STRING_LOCAL( "Assets" ), STRINGIZE_FILEPATH_LOCAL( "background.png" ), {-1.f, -1.f} );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( resourceImage );
+        MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, "invalid resourceImage" );
 
         m_backgroundSize = resourceImage->getMaxSize();
 
         // setup sprite
         ShapeQuadFixedPtr sprite = this->createSprite( STRINGIZE_STRING_LOCAL( "BG" ), resourceImage );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( sprite );
+        MENGINE_ASSERTION_MEMORY_PANIC( sprite, "invalid sprite" );
 
         m_background = sprite;
 
@@ -396,11 +397,11 @@ namespace Mengine
         ResourceImageDefaultPtr resourceImage = this->createImageResource( STRINGIZE_STRING_LOCAL( "Background" ),
             STRINGIZE_STRING_LOCAL( "Assets" ), path, {-1.f, -1.f} );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( resourceImage );
+        MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, "invalid resourceImage" );
 
         ShapeQuadFixedPtr sprite = this->createSprite( STRINGIZE_STRING_LOCAL( "BG" ), resourceImage );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( sprite );
+        MENGINE_ASSERTION_MEMORY_PANIC( sprite, "invalid sprite" );
 
         m_sprites.push_back( sprite );
 
@@ -438,7 +439,7 @@ namespace Mengine
             int32_t cellIdx = 0;
             for( auto && [race, hotpspot] : Cook::addParallelZip( race_play, m_hotspots ) )
             {
-                Cook::addPickerableMouseButton( race, hotpspot, EMouseCode::MC_LBUTTON, true, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+                Cook::addPickerableMouseButton( race, hotpspot, EMouseButtonCode::MC_LBUTTON, true, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
                 Cook::addPrint( race, "Click at cell '%d' hotspot", cellIdx );
 

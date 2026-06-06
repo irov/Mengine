@@ -1,29 +1,30 @@
 #pragma once
 
-#include "Interface/RenderProgramVariableInterface.h"
-#include "Interface/RenderProgramInterface.h"
+#include "MetalRenderProgramVariableInterface.h"
 
-#include "Environment/DirectX9/DX9RenderIncluder.h"
+#include "MetalRenderProgram.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/Vector.h"
 
+#import <Metal/Metal.h>
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class DX9RenderProgramVariable
-        : public RenderProgramVariableInterface
+    class MetalRenderProgramVariableStatic
+        : public MetalRenderProgramVariableInterface
         , public Factorable
     {
-        DECLARE_FACTORABLE( DX9RenderProgramVariable );
+        DECLARE_FACTORABLE( MetalRenderProgramVariableStatic );
 
     public:
-        DX9RenderProgramVariable();
-        ~DX9RenderProgramVariable() override;
+        MetalRenderProgramVariableStatic();
+        ~MetalRenderProgramVariableStatic() override;
 
     public:
-        bool initialize( uint32_t _vertexCount, uint32_t _pixelCount );
-        void finalize();
+        bool initialize( uint32_t _vertexCount, uint32_t _pixelCount ) override;
+        void finalize() override;
 
     public:
         void setVertexVariables( const Char * _uniform, uint32_t _index, const float * _values, uint32_t _size, uint32_t _count ) override;
@@ -33,11 +34,12 @@ namespace Mengine
         void updatePixelVariables( uint32_t _index, const float * _values, uint32_t _size, uint32_t _count ) override;
 
     public:
-        bool apply( IDirect3DDevice9 * _pD3DDevice, const RenderProgramInterfacePtr & _program );
+        bool apply( id<MTLRenderCommandEncoder> _encoder ) override;
 
     public:
         struct ProgramVariableDesc
         {
+            Char uniform[32 + 1] = {'\0'};
             uint32_t offset;
             uint32_t size;
             uint32_t count;
@@ -53,6 +55,6 @@ namespace Mengine
         VectorVariables m_pixelVariables;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DX9RenderProgramVariable, RenderProgramVariableInterface> DX9RenderProgramVariablePtr;
+    typedef IntrusivePtr<MetalRenderProgramVariableStatic, RenderProgramVariableInterface> MetalRenderProgramVariableStaticPtr;
     //////////////////////////////////////////////////////////////////////////
 }

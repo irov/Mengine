@@ -20,7 +20,9 @@
 #include "DX9RenderVertexAttribute.h"
 #include "DX9RenderVertexBuffer.h"
 #include "DX9RenderIndexBuffer.h"
-#include "DX9RenderProgramVariable.h"
+#include "DX9RenderProgramVariableInterface.h"
+#include "DX9RenderProgramVariableStatic.h"
+#include "DX9RenderProgramVariableDynamic.h"
 
 #include "DX9RenderImageLockedFactoryStorage.h"
 
@@ -205,7 +207,8 @@ namespace Mengine
         m_factoryRenderVertexShader = Helper::makeFactoryPoolWithListener<DX9RenderVertexShader, 16>( this, &DX9RenderSystem::onDestroyDX9VertexShader_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderFragmentShader = Helper::makeFactoryPoolWithListener<DX9RenderFragmentShader, 16>( this, &DX9RenderSystem::onDestroyDX9FragmentShader_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderProgram = Helper::makeFactoryPoolWithListener<DX9RenderProgram, 16>( this, &DX9RenderSystem::onDestroyDX9Program_, MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryRenderProgramVariable = Helper::makeFactoryPool<DX9RenderProgramVariable, 64>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderProgramVariableStatic = Helper::makeFactoryPool<DX9RenderProgramVariableStatic, 64>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderProgramVariableDynamic = Helper::makeFactoryPool<DX9RenderProgramVariableDynamic, 64>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryVertexBuffer = Helper::makeFactoryPoolWithListener<DX9RenderVertexBuffer, 8>( this, &DX9RenderSystem::onDestroyDX9VertexBuffer_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryIndexBuffer = Helper::makeFactoryPoolWithListener<DX9RenderIndexBuffer, 8>( this, &DX9RenderSystem::onDestroyDX9IndexBuffer_, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -236,7 +239,8 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderVertexShader );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderFragmentShader );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderProgram );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderProgramVariable );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderProgramVariableStatic );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderProgramVariableDynamic );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryVertexBuffer );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryIndexBuffer );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderImage );
@@ -248,7 +252,8 @@ namespace Mengine
         m_factoryRenderVertexShader = nullptr;
         m_factoryRenderFragmentShader = nullptr;
         m_factoryRenderProgram = nullptr;
-        m_factoryRenderProgramVariable = nullptr;
+        m_factoryRenderProgramVariableStatic = nullptr;
+        m_factoryRenderProgramVariableDynamic = nullptr;
         m_factoryVertexBuffer = nullptr;
         m_factoryIndexBuffer = nullptr;
         m_factoryRenderImage = nullptr;
@@ -1850,9 +1855,26 @@ namespace Mengine
         dx9_program->bindMatrix( m_pD3DDevice, m_worldMatrix, m_modelViewMatrix, m_projectionMatrix, m_totalWVPInvMatrix );
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderProgramVariableInterfacePtr DX9RenderSystem::createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentInterfacePtr & _doc )
+    RenderProgramVariableInterfacePtr DX9RenderSystem::createProgramVariableStatic( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentInterfacePtr & _doc )
     {
-        DX9RenderProgramVariablePtr variable = m_factoryRenderProgramVariable->createObject( _doc );
+        DX9RenderProgramVariableStaticPtr variable = m_factoryRenderProgramVariableStatic->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( variable, "invalid create program variable"
+        );
+
+        if( variable->initialize( _vertexCount, _pixelCount ) == false )
+        {
+            LOGGER_ERROR( "invalid initialize program variable" );
+
+            return nullptr;
+        }
+
+        return variable;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    RenderProgramVariableInterfacePtr DX9RenderSystem::createProgramVariableDynamic( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentInterfacePtr & _doc )
+    {
+        DX9RenderProgramVariableDynamicPtr variable = m_factoryRenderProgramVariableDynamic->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( variable, "invalid create program variable"
         );
@@ -1874,7 +1896,7 @@ namespace Mengine
             return true;
         }
 
-        DX9RenderProgramVariablePtr dx9_variable = stdex::intrusive_static_cast<DX9RenderProgramVariablePtr>(_variable);
+        DX9RenderProgramVariableInterfacePtr dx9_variable = stdex::intrusive_static_cast<DX9RenderProgramVariableInterfacePtr>(_variable);
 
         bool successful = dx9_variable->apply( m_pD3DDevice, _program );
 

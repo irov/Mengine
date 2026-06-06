@@ -40,8 +40,8 @@ namespace Mengine
         EventationInterface * gameEventation = GAME_SERVICE()
             ->getEventation();
 
-        gameEventation->removeEventReceiver( EVENT_GAME_INITIALIZE, m_game );
-        gameEventation->removeEventReceiver( EVENT_GAME_FINALIZE, m_game );
+        gameEventation->removeEventReceiver( EVENT_GAME_INITIALIZE );
+        gameEventation->removeEventReceiver( EVENT_GAME_FINALIZE );
 
         m_game = nullptr;
     }

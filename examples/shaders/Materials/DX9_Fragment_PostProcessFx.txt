@@ -1,0 +1,51 @@
+sampler2D tex0;
+
+float4 PostFx_ExpVigChrom : register(c0);
+float4 PostFx_HitFlash    : register(c1);
+float4 PostFx_ScreenInfo  : register(c2);
+
+struct v2p {
+    float4 position : POSITION;
+    float4 color    : COLOR0;
+    float2 tex0     : TEXCOORD0;
+};
+
+struct p2f {
+    float4 color : COLOR0;
+};
+
+void main(in v2p IN, out p2f OUT)
+{
+    float exposure        = PostFx_ExpVigChrom.x;
+    float vignetteStrength= PostFx_ExpVigChrom.y;
+    float vignetteSoftness= max(PostFx_ExpVigChrom.z, 0.0001);
+    float chromaticOffset = PostFx_ExpVigChrom.w;
+
+    float3 hitFlashColor  = PostFx_HitFlash.rgb;
+    float  hitFlashAmt    = PostFx_HitFlash.a;
+
+    float2 center         = PostFx_ScreenInfo.xy;
+    float2 texelSize      = PostFx_ScreenInfo.zw;
+
+    float2 dir            = IN.tex0 - center;
+
+    float2 chromaUV       = dir * chromaticOffset * texelSize.x;
+
+    float r = tex2D(tex0, IN.tex0 + chromaUV).r;
+    float g = tex2D(tex0, IN.tex0).g;
+    float b = tex2D(tex0, IN.tex0 - chromaUV).b;
+    float a = tex2D(tex0, IN.tex0).a;
+
+    float3 color = float3(r, g, b);
+
+    float3 lit = color * exposure;
+    color = lit / (1.0 + lit);
+
+    float dist = length(dir) * 1.4142136;
+    float v    = saturate((dist - (1.0 - vignetteSoftness)) / vignetteSoftness);
+    color *= 1.0 - v * vignetteStrength;
+
+    color = saturate(color + hitFlashColor * hitFlashAmt);
+
+    OUT.color = float4(color, a) * IN.color;
+}

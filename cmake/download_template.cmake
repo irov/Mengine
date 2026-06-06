@@ -33,6 +33,71 @@ macro(DOWNLOAD_FILE NAME URL FILE)
     endif()
 endmacro()
 
+macro(DOWNLOAD_GDRIVE_FOLDER NAME FOLDER_ID DEST)
+    # Downloads every file from a public Google Drive folder into DEST.
+    # The public 'embeddedfolderview' page is parsed to discover each file id and
+    # name, then every file is fetched through the direct 'uc?export=download'
+    # endpoint. Files already present in DEST are skipped.
+    MESSAGE("Download GDrive folder ${NAME}: ${FOLDER_ID}")
+
+    set(MENGINE_GDRIVE_LISTING "${CMAKE_CURRENT_BINARY_DIR}/${NAME}_gdrive_listing.html")
+
+    file(DOWNLOAD
+        "https://drive.google.com/embeddedfolderview?id=${FOLDER_ID}#list"
+        "${MENGINE_GDRIVE_LISTING}"
+        STATUS MENGINE_GDRIVE_STATUS
+    )
+
+    list(GET MENGINE_GDRIVE_STATUS 0 MENGINE_GDRIVE_CODE)
+
+    if(NOT MENGINE_GDRIVE_CODE EQUAL 0)
+        MESSAGE(WARNING "GDrive folder ${NAME}: listing download failed (${MENGINE_GDRIVE_STATUS})")
+    else()
+        file(READ "${MENGINE_GDRIVE_LISTING}" MENGINE_GDRIVE_HTML)
+
+        # Each entry exposes its file id as id="entry-<FILE_ID>" and its display
+        # name inside a <div class="flip-entry-title">NAME</div> element.
+        string(REGEX MATCHALL "id=\"entry-[-_A-Za-z0-9]+\"" MENGINE_GDRIVE_IDS "${MENGINE_GDRIVE_HTML}")
+        string(REGEX MATCHALL "flip-entry-title\">[^<]+<" MENGINE_GDRIVE_TITLES "${MENGINE_GDRIVE_HTML}")
+
+        list(LENGTH MENGINE_GDRIVE_IDS MENGINE_GDRIVE_COUNT)
+        list(LENGTH MENGINE_GDRIVE_TITLES MENGINE_GDRIVE_TITLE_COUNT)
+
+        if(NOT MENGINE_GDRIVE_COUNT EQUAL MENGINE_GDRIVE_TITLE_COUNT)
+            MESSAGE(WARNING "GDrive folder ${NAME}: id/title count mismatch (${MENGINE_GDRIVE_COUNT} vs ${MENGINE_GDRIVE_TITLE_COUNT})")
+        elseif(MENGINE_GDRIVE_COUNT EQUAL 0)
+            MESSAGE(WARNING "GDrive folder ${NAME}: no files found in listing")
+        else()
+            math(EXPR MENGINE_GDRIVE_LAST "${MENGINE_GDRIVE_COUNT}-1")
+
+            foreach(MENGINE_GDRIVE_I RANGE ${MENGINE_GDRIVE_LAST})
+                list(GET MENGINE_GDRIVE_IDS ${MENGINE_GDRIVE_I} MENGINE_GDRIVE_ID_RAW)
+                list(GET MENGINE_GDRIVE_TITLES ${MENGINE_GDRIVE_I} MENGINE_GDRIVE_TITLE_RAW)
+
+                string(REGEX REPLACE "^id=\"entry-(.+)\"$" "\\1" MENGINE_GDRIVE_FILE_ID "${MENGINE_GDRIVE_ID_RAW}")
+                string(REGEX REPLACE "^flip-entry-title\">(.+)<$" "\\1" MENGINE_GDRIVE_FILE_NAME "${MENGINE_GDRIVE_TITLE_RAW}")
+
+                if(NOT EXISTS "${DEST}/${MENGINE_GDRIVE_FILE_NAME}")
+                    MESSAGE("  GDrive ${NAME}: ${MENGINE_GDRIVE_FILE_NAME} (${MENGINE_GDRIVE_FILE_ID})")
+
+                    if(MENGINE_FILE_DOWNLOAD_SHOW_PROGRESS)
+                        file(DOWNLOAD
+                            "https://drive.google.com/uc?export=download&id=${MENGINE_GDRIVE_FILE_ID}"
+                            "${DEST}/${MENGINE_GDRIVE_FILE_NAME}"
+                            SHOW_PROGRESS
+                        )
+                    else()
+                        file(DOWNLOAD
+                            "https://drive.google.com/uc?export=download&id=${MENGINE_GDRIVE_FILE_ID}"
+                            "${DEST}/${MENGINE_GDRIVE_FILE_NAME}"
+                        )
+                    endif()
+                endif()
+            endforeach()
+        endif()
+    endif()
+endmacro()
+
 macro(DOWNLOAD_URL NAME URL)
 	if(NOT EXISTS ${THIRDPARTY_DIR}/${NAME})
 		MESSAGE("Download ${NAME}: ${URL}")

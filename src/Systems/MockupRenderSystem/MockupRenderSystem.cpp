@@ -757,7 +757,7 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderProgramVariableInterfacePtr MockupRenderSystem::createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentInterfacePtr & _doc )
+    RenderProgramVariableInterfacePtr MockupRenderSystem::createProgramVariableStatic( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentInterfacePtr & _doc )
     {
         MockupRenderProgramVariablePtr variable = m_factoryRenderProgramVariable->createObject( _doc );
 
@@ -772,6 +772,11 @@ namespace Mengine
         }
 
         return variable;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    RenderProgramVariableInterfacePtr MockupRenderSystem::createProgramVariableDynamic( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentInterfacePtr & _doc )
+    {
+        return this->createProgramVariableStatic( _vertexCount, _pixelCount, _doc );
     }
     //////////////////////////////////////////////////////////////////////////
     bool MockupRenderSystem::setProgramVariable( const RenderProgramInterfacePtr & _program, const RenderProgramVariableInterfacePtr & _variable )

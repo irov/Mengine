@@ -74,7 +74,8 @@ namespace Mengine
         m_factoryRenderFragmentShader = Helper::makeFactoryPoolWithListener<OpenGLRenderFragmentShader, 16>( this, &OpenGLRenderSystem::onRenderFragmentShaderDestroy_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderVertexShader = Helper::makeFactoryPoolWithListener<OpenGLRenderVertexShader, 16>( this, &OpenGLRenderSystem::onRenderVertexShaderDestroy_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderProgram = Helper::makeFactoryPoolWithListener<OpenGLRenderProgram, 16>( this, &OpenGLRenderSystem::onRenderProgramDestroy_, MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryRenderProgramVariable = Helper::makeFactoryPool<OpenGLRenderProgramVariable, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderProgramVariableStatic = Helper::makeFactoryPool<OpenGLRenderProgramVariableStatic, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderProgramVariableDynamic = Helper::makeFactoryPool<OpenGLRenderProgramVariableDynamic, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         OpenGLRenderImageLockedFactoryStorage::initialize( Helper::makeFactoryPool<OpenGLRenderImageLocked, 16>( MENGINE_DOCUMENT_FACTORABLE ) );
 
@@ -123,7 +124,8 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderFragmentShader );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderVertexShader );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderProgram );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderProgramVariable );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderProgramVariableStatic );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderProgramVariableDynamic );
 
         m_factoryRenderVertexBuffer = nullptr;
         m_factoryRenderIndexBuffer = nullptr;
@@ -134,7 +136,8 @@ namespace Mengine
         m_factoryRenderFragmentShader = nullptr;
         m_factoryRenderVertexShader = nullptr;
         m_factoryRenderProgram = nullptr;
-        m_factoryRenderProgramVariable = nullptr;
+        m_factoryRenderProgramVariableStatic = nullptr;
+        m_factoryRenderProgramVariableDynamic = nullptr;
 
         MENGINE_ASSERTION_STATISTIC_EMPTY( STATISTIC_RENDER_TEXTURE_ALLOC_COUNT );
         MENGINE_ASSERTION_STATISTIC_EMPTY( STATISTIC_RENDER_OPENGL_FRAMEBUFFER_COUNT );
@@ -581,9 +584,25 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderProgramVariableInterfacePtr OpenGLRenderSystem::createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentInterfacePtr & _doc )
+    RenderProgramVariableInterfacePtr OpenGLRenderSystem::createProgramVariableStatic( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentInterfacePtr & _doc )
     {
-        OpenGLRenderProgramVariablePtr variable = m_factoryRenderProgramVariable->createObject( _doc );
+        OpenGLRenderProgramVariableStaticPtr variable = m_factoryRenderProgramVariableStatic->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( variable, "invalid create program variable" );
+
+        if( variable->initialize( _vertexCount, _pixelCount ) == false )
+        {
+            LOGGER_ERROR( "invalid initialize program variable" );
+
+            return nullptr;
+        }
+
+        return variable;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    RenderProgramVariableInterfacePtr OpenGLRenderSystem::createProgramVariableDynamic( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentInterfacePtr & _doc )
+    {
+        OpenGLRenderProgramVariableDynamicPtr variable = m_factoryRenderProgramVariableDynamic->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( variable, "invalid create program variable" );
 
@@ -677,8 +696,9 @@ namespace Mengine
         vertexAttribute->enable();
 
         GLenum mode = Helper::toGLPrimitiveMode( _desc.primitiveType );
-        GLenum indexType = Helper::toGLIndexType( sizeof( RenderIndex ) );
-        const GLvoid * indices = reinterpret_cast<const GLvoid *>(_desc.startIndex * sizeof( RenderIndex ));
+        uint32_t indexSize = m_currentIndexBuffer->getIndexSize();
+        GLenum indexType = Helper::toGLIndexType( indexSize );
+        const GLvoid * indices = reinterpret_cast<const GLvoid *>(_desc.startIndex * indexSize);
 
         MENGINE_GLCALL( glDrawElements, (mode, _desc.indexCount, indexType, indices) );
 

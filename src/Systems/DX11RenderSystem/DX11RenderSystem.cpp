@@ -1459,7 +1459,7 @@ namespace Mengine
         dx9_program->bindMatrix( m_pD3DDeviceImmediateContext, m_worldMatrix, m_modelViewMatrix, m_projectionMatrix, m_totalWVPInvMatrix );
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderProgramVariableInterfacePtr DX11RenderSystem::createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentInterfacePtr & _doc )
+    RenderProgramVariableInterfacePtr DX11RenderSystem::createProgramVariableStatic( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentInterfacePtr & _doc )
     {
         DX11RenderProgramVariablePtr variable = m_factoryRenderProgramVariable->createObject( _doc );
 
@@ -1473,6 +1473,11 @@ namespace Mengine
         }
 
         return variable;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    RenderProgramVariableInterfacePtr DX11RenderSystem::createProgramVariableDynamic( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentInterfacePtr & _doc )
+    {
+        return this->createProgramVariableStatic( _vertexCount, _pixelCount, _doc );
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderSystem::setProgramVariable( const RenderProgramInterfacePtr & _program, const RenderProgramVariableInterfacePtr & _variable )

@@ -13,6 +13,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/NodeCast.h"
 
 namespace Mengine
 {
@@ -97,7 +98,7 @@ namespace Mengine
         {
             for( uint32_t j = 0; j != height; ++j )
             {
-                uint32_t r = Helper::getSimpleRandomizerRandom( 4 );
+                uint32_t r = Helper::getSimpleRandomizerRandom32( 4 );
 
                 if( r != 0 )
                 {

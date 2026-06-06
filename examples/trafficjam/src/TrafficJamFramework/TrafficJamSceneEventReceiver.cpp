@@ -16,11 +16,12 @@
 #include "Kernel/SurfaceImage.h"
 #include "Kernel/ResourceImageDefault.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/Surface.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/StringHelper.h"
 #include "Kernel/EntityHelper.h"
+#include "Kernel/NodeCast.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/SchedulerHelper.h"
 #include "Kernel/FilePathHelper.h"
@@ -144,11 +145,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TrafficJamSceneEventReceiver::onEntityPreparationDeactivate( const EntityBehaviorInterfacePtr & _behavior )
+    void TrafficJamSceneEventReceiver::onEntityPassivate( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
 
-        LOGGER_MESSAGE( "Scene onEntityPreparationDeactivate [%s]"
+        LOGGER_MESSAGE( "Scene onEntityPassivate [%s]"
             , m_scene->getName().c_str()
         );
 
@@ -193,7 +194,7 @@ namespace Mengine
         ShapeQuadFixedPtr shape = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( shape );
+        MENGINE_ASSERTION_MEMORY_PANIC( shape, "invalid shape" );
 
         shape->setName( _name );
         shape->setSurface( _resource );
@@ -206,7 +207,7 @@ namespace Mengine
         HotSpotPolygonPtr hotspot = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( hotspot );
+        MENGINE_ASSERTION_MEMORY_PANIC( hotspot, "invalid hotspot" );
 
         hotspot->setName( _name );
 
@@ -230,7 +231,7 @@ namespace Mengine
         NodePtr node = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Interender" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( node );
+        MENGINE_ASSERTION_MEMORY_PANIC( node, "invalid node" );
 
         node->setName( STRINGIZE_STRING_LOCAL( "Node_Game" ) );
 
@@ -246,7 +247,7 @@ namespace Mengine
         // setup background
         bool setupBackgroundResult = this->setupBackground();
 
-        MENGINE_ASSERTION_FATAL( setupBackgroundResult == true );
+        MENGINE_ASSERTION_FATAL( setupBackgroundResult == true, "invalid assertion" );
 
         m_trafficMap.initMap();
 
@@ -254,7 +255,7 @@ namespace Mengine
 
         MENGINE_UNUSED( setupCars );
 
-        MENGINE_ASSERTION_FATAL( setupCars == true );
+        MENGINE_ASSERTION_FATAL( setupCars == true, "invalid assertion" );
 
         return true;
     }
@@ -264,7 +265,7 @@ namespace Mengine
         SurfaceSolidColorPtr colorSolid = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceSolidColor" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( colorSolid );
+        MENGINE_ASSERTION_MEMORY_PANIC( colorSolid, "invalid colorSolid" );
 
         colorSolid->setSolidColor( BG_COLOR );
         colorSolid->setSolidSize( BG_SIZE );
@@ -274,7 +275,7 @@ namespace Mengine
         // setup sprite
         ShapeQuadFixedPtr sprite = this->createColor( STRINGIZE_STRING_LOCAL( "BG" ), colorSolid );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( sprite );
+        MENGINE_ASSERTION_MEMORY_PANIC( sprite, "invalid sprite" );
 
         m_background = sprite;
 
@@ -298,7 +299,7 @@ namespace Mengine
         const RandomizerInterfacePtr & randomizer = PLAYER_SERVICE()
             ->getRandomizer();
 
-        int32_t mapSelector = randomizer->getRandomRangei( 1, 4 );
+        int32_t mapSelector = randomizer->getRandomRange32i( 1, 4 );
 
         switch( mapSelector )
         {
@@ -392,14 +393,14 @@ namespace Mengine
             SurfaceSolidColorPtr colorSolid = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceSolidColor" ), MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( colorSolid );
+            MENGINE_ASSERTION_MEMORY_PANIC( colorSolid, "invalid colorSolid" );
 
             colorSolid->setSolidColor( PLAYER_COLOR );
             colorSolid->setSolidSize( PLAYER_SIZE );
 
             sprite = this->createColor( name, colorSolid );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( sprite );
+            MENGINE_ASSERTION_MEMORY_PANIC( sprite, "invalid sprite" );
             //create color and chose right size
             newCar.carType = _carID;
 
@@ -417,7 +418,7 @@ namespace Mengine
             SurfaceSolidColorPtr colorSolid = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceSolidColor" ), MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( colorSolid );
+            MENGINE_ASSERTION_MEMORY_PANIC( colorSolid, "invalid colorSolid" );
 
             colorSolid->setSolidColor( HORIZONTAL_CAR_COLOR );
             colorSolid->setSolidSize( HORIZONTAL_CAR_SIZE );
@@ -440,7 +441,7 @@ namespace Mengine
             SurfaceSolidColorPtr colorSolid = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceSolidColor" ), MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( colorSolid );
+            MENGINE_ASSERTION_MEMORY_PANIC( colorSolid, "invalid colorSolid" );
 
             colorSolid->setSolidColor( VERTICAL_CAR_COLOR );
             colorSolid->setSolidSize( VERTICAL_CAR_SIZE );
@@ -616,8 +617,8 @@ namespace Mengine
             {
                 auto && [race_left, race_right] = Cook::addRace<2>( pickable_race );
 
-                Cook::addPickerableMouseButton( race_left, element.hotspotFirst, EMouseCode::MC_LBUTTON, true, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
-                Cook::addPickerableMouseButton( race_right, element.hotspotSecond, EMouseCode::MC_LBUTTON, true, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+                Cook::addPickerableMouseButton( race_left, element.hotspotFirst, EMouseButtonCode::MC_LBUTTON, true, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+                Cook::addPickerableMouseButton( race_right, element.hotspotSecond, EMouseButtonCode::MC_LBUTTON, true, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
                 if( element.carType == HORIZONTAL_CAR_ID )
                 {

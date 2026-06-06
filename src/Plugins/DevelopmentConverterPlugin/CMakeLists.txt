@@ -20,6 +20,8 @@ src
     ShaderConverterTextToPSO.h
     ShaderConverterTextToVSO.cpp
     ShaderConverterTextToVSO.h
+    ShaderConverterTextToVSO3.cpp
+    ShaderConverterTextToVSO3.h
     ShaderConverterTextToPSO11.cpp
     ShaderConverterTextToPSO11.h
     ShaderConverterTextToVSO11.cpp

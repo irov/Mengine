@@ -9,10 +9,11 @@
 #include "Kernel/SurfaceSolidColor.h"
 #include "Kernel/ShapeQuadFixed.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/Surface.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/EntityHelper.h"
+#include "Kernel/NodeCast.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/SchedulerHelper.h"
 #include "Kernel/Vector.h"
@@ -168,11 +169,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PaletteSceneEventReceiver::onEntityPreparationDeactivate( const EntityBehaviorInterfacePtr & _behavior )
+    void PaletteSceneEventReceiver::onEntityPassivate( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
 
-        LOGGER_MESSAGE( "Scene onEntityPreparationDeactivate [%s]"
+        LOGGER_MESSAGE( "Scene onEntityPassivate [%s]"
             , m_scene->getName().c_str()
         );
     }

@@ -10,8 +10,8 @@ android {
 dependencies {
     implementation project(':plugins:Firebase')
 
-    implementation 'com.google.firebase:firebase-crashlytics:20.0.5'
-    implementation 'com.google.firebase:firebase-crashlytics-ndk:20.0.5'
+    implementation 'com.google.firebase:firebase-crashlytics:20.0.6'
+    implementation 'com.google.firebase:firebase-crashlytics-ndk:20.0.6'
 }
 
 android {

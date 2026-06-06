@@ -8,7 +8,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Scene.h"
 #include "Kernel/SceneHelper.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
 
 #include "OzzSceneEventReceiver.h"

@@ -313,6 +313,8 @@ RenderCamera
     RenderCameraOrthogonalTarget.h
     RenderCameraOrthogonalDefault.cpp
     RenderCameraOrthogonalDefault.h
+    RenderCameraTopDown.cpp
+    RenderCameraTopDown.h
     RenderViewport.h
     RenderViewport.cpp
     RenderViewportDefault.h
@@ -786,10 +788,16 @@ Core
     ValueHolder.h
     
     RenderVertex2D.h
+    RenderVertex3D.h
+    RenderVertexSkinned3D.h
     RenderIndex.h
+    RenderIndex32.h
     
     VectorRenderVertex2D.h
+    VectorRenderVertex3D.h
+    VectorRenderVertexSkinned3D.h
     VectorRenderIndex.h
+    VectorRenderIndex32.h
    
     Magic.h
     Mixin.h

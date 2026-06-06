@@ -105,7 +105,8 @@ namespace Mengine
     public:
         virtual void setProgram( const RenderProgramInterfacePtr & _program ) = 0;
         virtual void updateProgram( const RenderProgramInterfacePtr & _program ) = 0;
-        virtual RenderProgramVariableInterfacePtr createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentInterfacePtr & _doc ) = 0;
+        virtual RenderProgramVariableInterfacePtr createProgramVariableStatic( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentInterfacePtr & _doc ) = 0;
+        virtual RenderProgramVariableInterfacePtr createProgramVariableDynamic( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentInterfacePtr & _doc ) = 0;
         virtual bool setProgramVariable( const RenderProgramInterfacePtr & _program, const RenderProgramVariableInterfacePtr & _variable ) = 0;
 
     public:

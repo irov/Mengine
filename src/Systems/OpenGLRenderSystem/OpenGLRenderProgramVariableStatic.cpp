@@ -1,4 +1,4 @@
-#include "OpenGLRenderProgramVariable.h"
+#include "OpenGLRenderProgramVariableStatic.h"
 
 #include "OpenGLRenderErrorHelper.h"
 #include "OpenGLRenderEnum.h"
@@ -15,7 +15,7 @@ namespace Mengine
     namespace Detail
     {
         template<class T>
-        static void makeVariableData( OpenGLRenderProgramVariable::ProgramVariableDesc & _variable, Vector<T> & _container, const Char * _uniform, const T * _values, uint32_t _size, uint32_t _count )
+        static void makeVariableData( OpenGLRenderProgramVariableStatic::ProgramVariableDesc & _variable, Vector<T> & _container, const Char * _uniform, const T * _values, uint32_t _size, uint32_t _count )
         {
             StdString::strcpy_safe( _variable.uniform, _uniform, 32 );
             _variable.offset = (uint32_t)_container.size();
@@ -26,15 +26,15 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    OpenGLRenderProgramVariable::OpenGLRenderProgramVariable()
+    OpenGLRenderProgramVariableStatic::OpenGLRenderProgramVariableStatic()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    OpenGLRenderProgramVariable::~OpenGLRenderProgramVariable()
+    OpenGLRenderProgramVariableStatic::~OpenGLRenderProgramVariableStatic()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderProgramVariable::initialize( uint32_t _vertexCount, uint32_t _pixelCount )
+    bool OpenGLRenderProgramVariableStatic::initialize( uint32_t _vertexCount, uint32_t _pixelCount )
     {
         m_vertexVariables.resize( _vertexCount );
         m_pixelVariables.resize( _pixelCount );
@@ -42,7 +42,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderProgramVariable::finalize()
+    void OpenGLRenderProgramVariableStatic::finalize()
     {
         m_dataFloats.clear();
         m_pixelFloats.clear();
@@ -51,7 +51,7 @@ namespace Mengine
         m_pixelVariables.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderProgramVariable::setVertexVariables( const Char * _uniform, uint32_t _index, const float * _values, uint32_t _size, uint32_t _count )
+    void OpenGLRenderProgramVariableStatic::setVertexVariables( const Char * _uniform, uint32_t _index, const float * _values, uint32_t _size, uint32_t _count )
     {
         ProgramVariableDesc v;
         Detail::makeVariableData( v, m_dataFloats, _uniform, _values, _size, _count );
@@ -59,7 +59,7 @@ namespace Mengine
         m_vertexVariables[_index] = v;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderProgramVariable::setPixelVariables( const Char * _uniform, uint32_t _index, const float * _values, uint32_t _size, uint32_t _count )
+    void OpenGLRenderProgramVariableStatic::setPixelVariables( const Char * _uniform, uint32_t _index, const float * _values, uint32_t _size, uint32_t _count )
     {
         ProgramVariableDesc v;
         Detail::makeVariableData( v, m_pixelFloats, _uniform, _values, _size, _count );
@@ -67,7 +67,7 @@ namespace Mengine
         m_pixelVariables[_index] = v;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderProgramVariable::updatePixelVariables( uint32_t _index, const float * _values, uint32_t _size, uint32_t _count )
+    void OpenGLRenderProgramVariableStatic::updatePixelVariables( uint32_t _index, const float * _values, uint32_t _size, uint32_t _count )
     {
         ProgramVariableDesc & v = m_pixelVariables[_index];
 
@@ -75,7 +75,7 @@ namespace Mengine
         StdAlgorithm::copy( _values, _values + _size * _count, values );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderProgramVariable::apply( const RenderProgramInterfacePtr & _program )
+    bool OpenGLRenderProgramVariableStatic::apply( const RenderProgramInterfacePtr & _program )
     {
         OpenGLRenderProgram * openglProgram = stdex::intrusive_get<OpenGLRenderProgram *>( _program );
 

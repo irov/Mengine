@@ -92,6 +92,7 @@ namespace Mengine
         const Resolution & getCurrentWindowResolution() const override;
 
         const Viewport & getRenderViewport() const override;
+        void setContentResolution( const Resolution & _resolution ) override;
         const Resolution & getContentResolution() const override;
 
         void getGameViewport( float * const _aspect, Viewport * const _viewport ) const override;

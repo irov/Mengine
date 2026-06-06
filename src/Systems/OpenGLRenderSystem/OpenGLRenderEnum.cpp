@@ -12,7 +12,7 @@ namespace Mengine
             {
             case 1: return GL_UNSIGNED_BYTE;
             case 2: return GL_UNSIGNED_SHORT;
-            case 3: return GL_UNSIGNED_INT;
+            case 4: return GL_UNSIGNED_INT;
             default:;
             }
 

@@ -22,13 +22,6 @@ namespace Mengine
         RENDER_OBJECT_FLAG_DEBUG = 0x00000001
     };
     //////////////////////////////////////////////////////////////////////////
-    enum ERenderPassFlag
-    {
-        RENDER_PASS_FLAG_NONE = 0x00000000,
-        RENDER_PASS_FLAG_SINGLE = 0x00000001,
-        RENDER_PASS_FLAG_EXTERNAL = 0x00000002
-    };
-    //////////////////////////////////////////////////////////////////////////
     BatchRenderPipeline::BatchRenderPipeline()
         : m_renderService( nullptr )
         , m_batchMode( ERBM_NORMAL )

@@ -1,4 +1,4 @@
-#include "DX9RenderProgramVariable.h"
+#include "DX9RenderProgramVariableStatic.h"
 
 #include "DX9RenderErrorHelper.h"
 
@@ -10,7 +10,7 @@ namespace Mengine
     namespace Detail
     {
         template<class T>
-        static void makeVariableData( DX9RenderProgramVariable::ProgramVariableDesc * const _variable, Vector<T> & _container, const T * _values, uint32_t _size, uint32_t _count )
+        static void makeVariableData( DX9RenderProgramVariableStatic::ProgramVariableDesc * const _variable, Vector<T> & _container, const T * _values, uint32_t _size, uint32_t _count )
         {
             _variable->offset = (uint32_t)_container.size();
             _variable->size = _size;
@@ -20,15 +20,15 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    DX9RenderProgramVariable::DX9RenderProgramVariable()
+    DX9RenderProgramVariableStatic::DX9RenderProgramVariableStatic()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    DX9RenderProgramVariable::~DX9RenderProgramVariable()
+    DX9RenderProgramVariableStatic::~DX9RenderProgramVariableStatic()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderProgramVariable::initialize( uint32_t _vertexCount, uint32_t _pixelCount )
+    bool DX9RenderProgramVariableStatic::initialize( uint32_t _vertexCount, uint32_t _pixelCount )
     {
         m_vertexVariables.resize( _vertexCount );
         m_pixelVariables.resize( _pixelCount );
@@ -36,7 +36,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderProgramVariable::finalize()
+    void DX9RenderProgramVariableStatic::finalize()
     {
         m_dataFloats.clear();
         m_pixelFloats.clear();
@@ -45,7 +45,7 @@ namespace Mengine
         m_pixelVariables.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderProgramVariable::setVertexVariables( const Char * _uniform, uint32_t _index, const float * _values, uint32_t _size, uint32_t _count )
+    void DX9RenderProgramVariableStatic::setVertexVariables( const Char * _uniform, uint32_t _index, const float * _values, uint32_t _size, uint32_t _count )
     {
         MENGINE_UNUSED( _uniform );
 
@@ -55,7 +55,7 @@ namespace Mengine
         m_vertexVariables[_index] = v;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderProgramVariable::setPixelVariables( const Char * _uniform, uint32_t _index, const float * _values, uint32_t _size, uint32_t _count )
+    void DX9RenderProgramVariableStatic::setPixelVariables( const Char * _uniform, uint32_t _index, const float * _values, uint32_t _size, uint32_t _count )
     {
         MENGINE_UNUSED( _uniform );
 
@@ -65,7 +65,7 @@ namespace Mengine
         m_pixelVariables[_index] = v;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderProgramVariable::updatePixelVariables( uint32_t _index, const float * _values, uint32_t _size, uint32_t _count )
+    void DX9RenderProgramVariableStatic::updatePixelVariables( uint32_t _index, const float * _values, uint32_t _size, uint32_t _count )
     {
         const ProgramVariableDesc & v = m_pixelVariables[_index];
 
@@ -74,7 +74,7 @@ namespace Mengine
         StdAlgorithm::copy( _values, _values + _size * _count, values );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderProgramVariable::apply( IDirect3DDevice9 * _pD3DDevice, const RenderProgramInterfacePtr & _program )
+    bool DX9RenderProgramVariableStatic::apply( IDirect3DDevice9 * _pD3DDevice, const RenderProgramInterfacePtr & _program )
     {
         MENGINE_UNUSED( _program );
 

@@ -86,7 +86,6 @@ SERVICE_EXTERN( NotificationService );
 SERVICE_EXTERN( OptionsService );
 SERVICE_EXTERN( FactoryService );
 SERVICE_EXTERN( OptionsService );
-SERVICE_EXTERN( UnicodeSystem );
 SERVICE_EXTERN( StringizeService );
 SERVICE_EXTERN( ArchiveService );
 SERVICE_EXTERN( ArchiveService );
@@ -287,7 +286,6 @@ namespace Mengine
         SERVICE_CREATE( PlatformSystem, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( TimeSystem, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( ThreadSystem, MENGINE_DOCUMENT_FUNCTION );
-        SERVICE_CREATE( UnicodeSystem, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( DateTimeSystem, MENGINE_DOCUMENT_FUNCTION );
 
         SERVICE_CREATE( Win32KernelService, MENGINE_DOCUMENT_FUNCTION );
@@ -409,7 +407,6 @@ namespace Mengine
         SERVICE_FINALIZE( EnumeratorService );
         SERVICE_FINALIZE( Win32KernelService );
         SERVICE_FINALIZE( DateTimeSystem );
-        SERVICE_FINALIZE( UnicodeSystem );
         SERVICE_FINALIZE( ThreadSystem );
         SERVICE_FINALIZE( TimeSystem );
         SERVICE_FINALIZE( PlatformSystem );

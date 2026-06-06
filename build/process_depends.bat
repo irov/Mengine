@@ -3,7 +3,12 @@
 setlocal
 call :setESC
 
-for %%O in (%*) do for /f "tokens=1,2 delims==" %%a in (%%O) do set "%%~a=%%~b"
+:parseArguments
+if "%~1" == "" goto parseArgumentsEnd
+for /f "tokens=1,* delims==" %%a in ("%~1") do set "%%~a=%%~b"
+shift
+goto parseArguments
+:parseArgumentsEnd
 
 echo **********************************************************************
 echo SOLUTION_NAME: %SOLUTION_NAME%

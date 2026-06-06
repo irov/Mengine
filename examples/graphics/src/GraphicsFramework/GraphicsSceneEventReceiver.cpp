@@ -6,6 +6,7 @@
 
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Logger.h"
+#include "Kernel/NodeCast.h"
 
 namespace Mengine
 {

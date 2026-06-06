@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/RenderProgramVariableInterface.h"
+#include "OpenGLRenderProgramVariableInterface.h"
 
 #include "OpenGLRenderProgram.h"
 
@@ -10,19 +10,19 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class OpenGLRenderProgramVariable
-        : public RenderProgramVariableInterface
+    class OpenGLRenderProgramVariableStatic
+        : public OpenGLRenderProgramVariableInterface
         , public Factorable
     {
-        DECLARE_FACTORABLE( OpenGLRenderProgramVariable );
+        DECLARE_FACTORABLE( OpenGLRenderProgramVariableStatic );
 
     public:
-        OpenGLRenderProgramVariable();
-        ~OpenGLRenderProgramVariable() override;
+        OpenGLRenderProgramVariableStatic();
+        ~OpenGLRenderProgramVariableStatic() override;
 
     public:
-        bool initialize( uint32_t _vertexCount, uint32_t _pixelCount );
-        void finalize();
+        bool initialize( uint32_t _vertexCount, uint32_t _pixelCount ) override;
+        void finalize() override;
 
     public:
         void setVertexVariables( const Char * _uniform, uint32_t _index, const float * _values, uint32_t _size, uint32_t _count ) override;
@@ -32,7 +32,7 @@ namespace Mengine
         void updatePixelVariables( uint32_t _index, const float * _values, uint32_t _size, uint32_t _count ) override;
 
     public:
-        bool apply( const RenderProgramInterfacePtr & _program );
+        bool apply( const RenderProgramInterfacePtr & _program ) override;
 
     public:
         struct ProgramVariableDesc
@@ -54,6 +54,6 @@ namespace Mengine
         VectorVariables m_pixelVariables;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<OpenGLRenderProgramVariable, RenderProgramVariableInterface> OpenGLRenderProgramVariablePtr;
+    typedef IntrusivePtr<OpenGLRenderProgramVariableStatic, RenderProgramVariableInterface> OpenGLRenderProgramVariableStaticPtr;
     //////////////////////////////////////////////////////////////////////////
 }

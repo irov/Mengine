@@ -265,7 +265,7 @@ namespace Mengine
             DWORD error_code = ::GetLastError();
 
             Char message[1024 + 1] = {L'\0'};
-            MENGINE_SPRINTF( message, 1024, "Invalid load %ls [%lu]"
+            MENGINE_SNPRINTF( message, 1024, "Invalid load %ls [%lu]"
                 , MENGINE_DLL_NAME
                 , error_code
             );
@@ -289,7 +289,7 @@ namespace Mengine
             DWORD error_code = ::GetLastError();
 
             Char message[1024 + 1] = {L'\0'};
-            MENGINE_SPRINTF( message, 1024, "Invalid get function '%hs' from dll '%ls' [%lu]"
+            MENGINE_SNPRINTF( message, 1024, "Invalid get function '%hs' from dll '%ls' [%lu]"
                 , "initializeMengine"
                 , MENGINE_DLL_NAME
                 , error_code

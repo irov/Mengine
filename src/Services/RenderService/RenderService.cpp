@@ -6,6 +6,7 @@
 #include "Interface/PrototypeServiceInterface.h"
 
 #include "BatchRenderPipeline.h"
+#include "Forward3DRenderPipeline.h"
 
 #include "Kernel/EnumeratorHelper.h"
 #include "Kernel/ConfigHelper.h"
@@ -77,6 +78,12 @@ namespace Mengine
             return false;
         }
 
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "RenderPipeline" ), STRINGIZE_STRING_LOCAL( "Forward3D" ), Helper::makeDefaultPrototypeGenerator<Forward3DRenderPipeline, 4>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        {
+            return false;
+        }
+
         m_factoryRenderBatch = Helper::makeFactoryPool<RenderBatch, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         m_renderSystem = RENDER_SYSTEM();
@@ -88,6 +95,9 @@ namespace Mengine
     {
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "RenderPipeline" ), STRINGIZE_STRING_LOCAL( "Batch" ), nullptr );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "RenderPipeline" ), STRINGIZE_STRING_LOCAL( "Forward3D" ), nullptr );
 
         m_renderBatches.clear();
 

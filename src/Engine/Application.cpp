@@ -50,6 +50,14 @@
 #include "Grid2D.h"
 #include "TextField.h"
 #include "Meshget.h"
+#include "Mesh3D.h"
+#include "ResourceMesh3D.h"
+#include "SkinnedMesh3D.h"
+#include "ResourceSkinnedMesh3D.h"
+#include "DirectionalLight3D.h"
+#include "PointLight3D.h"
+#include "BlobShadow3D.h"
+#include "PostProcessFx3D.h"
 #include "Layer2D.h"
 #include "Window.h"
 #include "Landscape2D.h"
@@ -498,6 +506,11 @@ namespace Mengine
             return false;
         }
 
+        if( Helper::addDefaultPrototype<RenderResolution, 8>( ConstString::none(), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -535,6 +548,12 @@ namespace Mengine
         NODE_FACTORY( Grid2D );
         NODE_FACTORY( TextField );
         NODE_FACTORY( Meshget );
+        NODE_FACTORY( Mesh3D );
+        NODE_FACTORY( SkinnedMesh3D );
+        NODE_FACTORY( DirectionalLight3D );
+        NODE_FACTORY( PointLight3D );
+        NODE_FACTORY( BlobShadow3D );
+        NODE_FACTORY( PostProcessFx3D );
         NODE_FACTORY( Interender );
         NODE_FACTORY( Layer2D );
         NODE_FACTORY( Landscape2D );
@@ -553,11 +572,6 @@ namespace Mengine
         NODE_FACTORY( ShapeQuadFlex );
 
 #undef NODE_FACTORY
-
-        if( Helper::addDefaultPrototype<RenderResolution, 8>( ConstString::none(), MENGINE_DOCUMENT_FACTORABLE ) == false )
-        {
-            return false;
-        }
 
 #define SURFACE_FACTORY(Type)\
         if( Helper::addSurfacePrototype<Type, 128>( MENGINE_DOCUMENT_FACTORABLE ) == false )\
@@ -600,6 +614,12 @@ namespace Mengine
         NODE_FACTORY( Grid2D );
         NODE_FACTORY( TextField );
         NODE_FACTORY( Meshget );
+        NODE_FACTORY( Mesh3D );
+        NODE_FACTORY( SkinnedMesh3D );
+        NODE_FACTORY( DirectionalLight3D );
+        NODE_FACTORY( PointLight3D );
+        NODE_FACTORY( BlobShadow3D );
+        NODE_FACTORY( PostProcessFx3D );
         NODE_FACTORY( Interender );
         NODE_FACTORY( Layer2D );
         NODE_FACTORY( Landscape2D );
@@ -704,6 +724,8 @@ namespace Mengine
         ADD_PROTOTYPE( ResourceShape );
         ADD_PROTOTYPE( ResourceCursorICO );
         ADD_PROTOTYPE( ResourceCursorSystem );
+        ADD_PROTOTYPE( ResourceMesh3D );
+        ADD_PROTOTYPE( ResourceSkinnedMesh3D );
 
 #undef ADD_PROTOTYPE
 
@@ -734,6 +756,8 @@ namespace Mengine
         REMOVE_PROTOTYPE( ResourceShape );
         REMOVE_PROTOTYPE( ResourceCursorICO );
         REMOVE_PROTOTYPE( ResourceCursorSystem );
+        REMOVE_PROTOTYPE( ResourceMesh3D );
+        REMOVE_PROTOTYPE( ResourceSkinnedMesh3D );
 
 #undef REMOVE_PROTOTYPE
     }
@@ -2235,6 +2259,41 @@ namespace Mengine
     const Viewport & Application::getRenderViewport() const
     {
         return m_renderViewport;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Application::setContentResolution( const Resolution & _resolution )
+    {
+        if( m_contentResolution == _resolution )
+        {
+            return;
+        }
+
+        LOGGER_INFO( "system", "set change content resolution size %u:%u -> %u:%u aspect %f -> %f"
+            , m_contentResolution.getWidth()
+            , m_contentResolution.getHeight()
+            , _resolution.getWidth()
+            , _resolution.getHeight()
+            , m_contentResolution.getAspectRatio()
+            , _resolution.getAspectRatio()
+        );
+
+        m_contentResolution = _resolution;
+
+        if( SERVICE_IS_INITIALIZE( PlayerServiceInterface ) == true )
+        {
+            const RenderResolutionInterfacePtr & renderResolution = PLAYER_SERVICE()
+                ->getRenderResolution();
+
+            if( renderResolution != nullptr )
+            {
+                renderResolution->setContentResolution( m_contentResolution );
+            }
+        }
+
+        if( m_createRenderWindow == true )
+        {
+            this->invalidateWindow_();
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t Application::getDebugMask() const

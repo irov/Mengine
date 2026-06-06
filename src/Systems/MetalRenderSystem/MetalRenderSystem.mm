@@ -91,7 +91,8 @@ namespace Mengine
         m_factoryRenderFragmentShader = Helper::makeFactoryPoolWithListener<MetalRenderFragmentShader, 16>( this, &MetalRenderSystem::onRenderFragmentShaderDestroy_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderVertexShader = Helper::makeFactoryPoolWithListener<MetalRenderVertexShader, 16>( this, &MetalRenderSystem::onRenderVertexShaderDestroy_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderProgram = Helper::makeFactoryPoolWithListener<MetalRenderProgram, 16>( this, &MetalRenderSystem::onRenderProgramDestroy_, MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryRenderProgramVariable = Helper::makeFactoryPool<MetalRenderProgramVariable, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderProgramVariableStatic = Helper::makeFactoryPool<MetalRenderProgramVariableStatic, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderProgramVariableDynamic = Helper::makeFactoryPool<MetalRenderProgramVariableDynamic, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         MetalRenderImageLockedFactoryStorage::initialize( Helper::makeFactoryPool<MetalRenderImageLocked, 16>( MENGINE_DOCUMENT_FACTORABLE ) );
 
@@ -132,7 +133,8 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderFragmentShader );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderVertexShader );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderProgram );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderProgramVariable );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderProgramVariableStatic );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderProgramVariableDynamic );
 
         m_factoryRenderVertexBuffer = nullptr;
         m_factoryRenderIndexBuffer = nullptr;
@@ -143,7 +145,8 @@ namespace Mengine
         m_factoryRenderFragmentShader = nullptr;
         m_factoryRenderVertexShader = nullptr;
         m_factoryRenderProgram = nullptr;
-        m_factoryRenderProgramVariable = nullptr;
+        m_factoryRenderProgramVariableStatic = nullptr;
+        m_factoryRenderProgramVariableDynamic = nullptr;
 
         m_frameContext.renderEncoder = nil;
         m_frameContext.commandBuffer = nil;
@@ -591,9 +594,25 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderProgramVariableInterfacePtr MetalRenderSystem::createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentInterfacePtr & _doc )
+    RenderProgramVariableInterfacePtr MetalRenderSystem::createProgramVariableStatic( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentInterfacePtr & _doc )
     {
-        MetalRenderProgramVariablePtr variable = m_factoryRenderProgramVariable->createObject( _doc );
+        MetalRenderProgramVariableStaticPtr variable = m_factoryRenderProgramVariableStatic->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( variable, "invalid create program variable" );
+
+        if( variable->initialize( _vertexCount, _pixelCount ) == false )
+        {
+            LOGGER_ERROR( "invalid initialize program variable" );
+
+            return nullptr;
+        }
+
+        return variable;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    RenderProgramVariableInterfacePtr MetalRenderSystem::createProgramVariableDynamic( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentInterfacePtr & _doc )
+    {
+        MetalRenderProgramVariableDynamicPtr variable = m_factoryRenderProgramVariableDynamic->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( variable, "invalid create program variable" );
 
@@ -698,10 +717,11 @@ namespace Mengine
         [m_frameContext.renderEncoder setFrontFacingWinding:MTLWindingClockwise];
 
         id<MTLBuffer> indexBuffer = m_currentIndexBuffer->getMetalBuffer();
-        MTLIndexType indexType = Helper::toMTLIndexType( sizeof( RenderIndex ) );
+        uint32_t indexSize = m_currentIndexBuffer->getIndexSize();
+        MTLIndexType indexType = Helper::toMTLIndexType( indexSize );
         MTLPrimitiveType primitiveType = Helper::toMTLPrimitiveType( _desc.primitiveType );
 
-        NSUInteger indexBufferOffset = _desc.startIndex * sizeof( RenderIndex );
+        NSUInteger indexBufferOffset = _desc.startIndex * indexSize;
 
         [m_frameContext.renderEncoder drawIndexedPrimitives:primitiveType
                                     indexCount:_desc.indexCount

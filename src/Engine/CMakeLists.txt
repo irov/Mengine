@@ -87,6 +87,28 @@ Object\\\\Meshget
     Meshget.h
 )
 
+ADD_FILTER(
+Object\\\\Mesh3D
+    Mesh3D.cpp
+    Mesh3D.h
+    ResourceMesh3D.cpp
+    ResourceMesh3D.h
+    SkinnedMesh3D.cpp
+    SkinnedMesh3D.h
+    ResourceSkinnedMesh3D.cpp
+    ResourceSkinnedMesh3D.h
+    DirectionalLight3D.cpp
+    DirectionalLight3D.h
+    PointLight3D.cpp
+    PointLight3D.h
+    BlobShadow3D.cpp
+    BlobShadow3D.h
+    PostProcessFx3D.cpp
+    PostProcessFx3D.h
+    PostProcessFx3DRenderTarget.cpp
+    PostProcessFx3DRenderTarget.h
+)
+
 
 ADD_FILTER(
 Object\\\\Grid2D

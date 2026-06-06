@@ -55,6 +55,7 @@ GIT_CLONE(libtheora https://github.com/xiph/theora.git "v1.2.0")
 GIT_CLONE(openal-soft https://github.com/kcat/openal-soft.git "1.24.3")
 GIT_CLONE(python https://github.com/python/cpython.git "v2.7.18")
 GIT_CLONE(ozz https://github.com/guillaumeblanc/ozz-animation.git "0.15.0")
+GIT_CLONE(cgltf https://github.com/jkuhlmann/cgltf.git "v1.15")
 GIT_CLONE(glad https://github.com/Dav1dde/glad.git "v2.0.8")
 GIT_CLONE(glfw3 https://github.com/glfw/glfw.git "3.4")
 

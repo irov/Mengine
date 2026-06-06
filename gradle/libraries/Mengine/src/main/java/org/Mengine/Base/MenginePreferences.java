@@ -121,16 +121,16 @@ public class MenginePreferences {
         editor.apply();
     }
 
+    @SuppressWarnings("unchecked")
     static public Set<String> getPreferenceStrings(@NonNull String name, Set<String> defaultValue) {
         synchronized (MenginePreferences.SETTINGS_SYNC) {
-            Object v = MenginePreferences.SETTINGS.getOrDefault(name, defaultValue);
-
             Set<String> value = (Set<String>)MenginePreferences.SETTINGS.getOrDefault(name, defaultValue);
 
             return value;
         }
     }
 
+    @SuppressWarnings("unchecked")
     static public void setPreferenceStrings(@NonNull String name, Set<String> value) {
         synchronized (MenginePreferences.SETTINGS_SYNC) {
             Set<String> currentValue = (Set<String>)MenginePreferences.SETTINGS.getOrDefault(name, null);
@@ -147,6 +147,7 @@ public class MenginePreferences {
         editor.apply();
     }
 
+    @SuppressWarnings("unchecked")
     static public void addPreferenceStrings(@NonNull String name, Collection<String> value) {
         synchronized (MenginePreferences.SETTINGS_SYNC) {
             Set<String> currentValue = (Set<String>)MenginePreferences.SETTINGS.getOrDefault(name, null);

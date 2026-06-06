@@ -20,6 +20,13 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    enum ERenderPassFlag
+    {
+        RENDER_PASS_FLAG_NONE = 0x00000000,
+        RENDER_PASS_FLAG_SINGLE = 0x00000001,
+        RENDER_PASS_FLAG_EXTERNAL = 0x00000002
+    };
+    //////////////////////////////////////////////////////////////////////////
     struct RenderObject
     {
         uint32_t materialSmartId;

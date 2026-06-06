@@ -30,8 +30,11 @@ src
     DX9RenderEnum.h
     DX9RenderErrorHelper.h
     DX9RenderErrorHelper.cpp
-    DX9RenderProgramVariable.h
-    DX9RenderProgramVariable.cpp
+    DX9RenderProgramVariableInterface.h
+    DX9RenderProgramVariableStatic.h
+    DX9RenderProgramVariableStatic.cpp
+    DX9RenderProgramVariableDynamic.h
+    DX9RenderProgramVariableDynamic.cpp
     DX9RenderResourceHandler.h
     DX9RenderResourceHandler.cpp
 )

@@ -2204,7 +2204,7 @@ namespace Mengine
             float aspect;
         };
 
-        ResolutionDesc resolutions_iPhone[] =
+        static const ResolutionDesc resolutions_iPhone[] =
         {
             {"iPhone SE (1st Gen) 640x1136 [16:9]", 640, 1136, 640.f / 1136.f},
             {"iPhone 6/7/8 750x1334 [16:9]", 750, 1334, 750.f / 1334.f},
@@ -2230,7 +2230,7 @@ namespace Mengine
             {"iPhone 16 Pro Max 1320x2868 [~19.5:9]", 1320, 2868, 1320.f / 2868.f},
         };
 
-        ResolutionDesc resolutions_iPad[] =
+        static const ResolutionDesc resolutions_iPad[] =
         {
             {"iPad (1st-4th Gen) 1024x768 [4:3]", 1024, 768, 1024.f / 768.f},
             {"iPad Air (1st Gen) 2048x1536 [4:3]", 2048, 1536, 2048.f / 1536.f},
@@ -2247,6 +2247,17 @@ namespace Mengine
             {"iPad (5th-9th Gen) 2048x1536 [4:3]", 2048, 1536, 2048.f / 1536.f},
             {"iPad (10th Gen) 2360x1640 [4:3]", 2360, 1640, 2360.f / 1640.f},
             {"iPad Pro 11\" (2022) 2388x1668 [~4:3]", 2388, 1668, 2388.f / 1668.f},
+        };
+
+        static const ResolutionDesc resolutions_Android[] =
+        {
+            {"Android HD 720x1280 [16:9]", 720, 1280, 720.f / 1280.f},
+            {"Android HD+ 720x1600 [20:9]", 720, 1600, 720.f / 1600.f},
+            {"Android FHD 1080x1920 [16:9]", 1080, 1920, 1080.f / 1920.f},
+            {"Android FHD+ 1080x2160 [18:9]", 1080, 2160, 1080.f / 2160.f},
+            {"Android FHD+ 1080x2340 [19.5:9]", 1080, 2340, 1080.f / 2340.f},
+            {"Android FHD+ 1080x2400 [20:9]", 1080, 2400, 1080.f / 2400.f},
+            {"Android QHD+ 1440x3200 [20:9]", 1440, 3200, 1440.f / 3200.f},
         };
 
         static const ResolutionDesc * select_resolution = nullptr;
@@ -2283,6 +2294,30 @@ namespace Mengine
                 ImGui::TextDisabled( "iPad:" );
 
                 for( const ResolutionDesc & res : resolutions_iPad )
+                {
+                    if( apply_resolution == &res )
+                    {
+                        ImGui::PushStyleColor( ImGuiCol_Header, ImVec4( 1.0f, 0.5f, 0.0f, 1.0f ) );
+                        ImGui::PushStyleColor( ImGuiCol_HeaderHovered, ImVec4( 1.0f, 0.7f, 0.3f, 1.0f ) );
+                        ImGui::PushStyleColor( ImGuiCol_HeaderActive, ImVec4( 1.0f, 0.3f, 0.0f, 1.0f ) );
+                    }
+
+                    if( ImGui::Selectable( res.label, select_resolution == &res || apply_resolution == &res ) == true )
+                    {
+                        select_resolution = &res;
+                    }
+
+                    if( apply_resolution == &res )
+                    {
+                        ImGui::PopStyleColor( 3 );
+                    }
+                }
+
+                ImGui::Spacing();
+
+                ImGui::TextDisabled( "Android:" );
+
+                for( const ResolutionDesc & res : resolutions_Android )
                 {
                     if( apply_resolution == &res )
                     {
@@ -2703,10 +2738,9 @@ namespace Mengine
         auto uiEditorListBox = [_node]( const char * _caption, uint32_t & _prop, const std::initializer_list<String> & _items, uint32_t _count )
         {
             int32_t testValue = _prop;
-            bool input = ImGui::ListBox( _caption, &testValue, []( void * data, int idx, const char ** out_text )
+            bool input = ImGui::ListBox( _caption, &testValue, []( void * data, int idx ) -> const char *
             {
-                *out_text = ((String *)data + idx)->c_str();
-                return true;
+                return ((String *)data + idx)->c_str();
             }, (void *)_items.begin(), _count );
 
             if( input && _prop != static_cast<uint32_t>(testValue) )
@@ -2721,10 +2755,9 @@ namespace Mengine
             int32_t testValue = _prop;
             ImGui::PushItemFlag( ImGuiItemFlags_ReadOnly, true );
             ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
-            ImGui::ListBox( _caption, &testValue, []( void * data, int idx, const char ** out_text )
+            ImGui::ListBox( _caption, &testValue, []( void * data, int idx ) -> const char *
             {
-                *out_text = ((String *)data + idx)->c_str();
-                return true;
+                return ((String *)data + idx)->c_str();
             }, (void *)_items.begin(), _count );
             ImGui::PopStyleColor();
             ImGui::PopItemFlag();

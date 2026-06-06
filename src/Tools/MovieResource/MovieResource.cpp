@@ -3,6 +3,8 @@
 #include "Config/Config.h"
 
 #include "movie/movie.hpp"
+
+#define PUGIXML_NO_STL
 #include "pugixml.hpp"
 
 #include <vector>
@@ -152,7 +154,7 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
     {
     case AE_MOVIE_RESOURCE_IMAGE:
         {
-            const aeMovieResourceImage * resource_image = (const aeMovieResourceImage *)_resource;
+            const aeMovieResourceImage * resource_image = reinterpret_cast<const aeMovieResourceImage *>(_resource);
 
             if( resource_image->trim_width == 0.f || resource_image->trim_height == 0.f )
             {
@@ -303,7 +305,7 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
         }break;
     case AE_MOVIE_RESOURCE_SEQUENCE:
         {
-            const aeMovieResourceSequence * resource_sequence = (const aeMovieResourceSequence *)_resource;
+            const aeMovieResourceSequence * resource_sequence = reinterpret_cast<const aeMovieResourceSequence *>(_resource);
 
             pugi::xml_node xmlResource = xmlDataBlock->append_child( "Resource" );
             xmlResource.append_attribute( "Name" ).set_value( resource_sequence->name );
@@ -324,7 +326,7 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
         }break;
     case AE_MOVIE_RESOURCE_VIDEO:
         {
-            const aeMovieResourceVideo * resource_video = (const aeMovieResourceVideo *)_resource;
+            const aeMovieResourceVideo * resource_video = reinterpret_cast<const aeMovieResourceVideo *>(_resource);
 
             pugi::xml_node xmlResource = xmlDataBlock->append_child( "Resource" );
             xmlResource.append_attribute( "Name" ).set_value( resource_video->name );
@@ -355,7 +357,7 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
         }break;
     case AE_MOVIE_RESOURCE_SOUND:
         {
-            const aeMovieResourceSound * resource_sound = (const aeMovieResourceSound *)_resource;
+            const aeMovieResourceSound * resource_sound = reinterpret_cast<const aeMovieResourceSound *>(_resource);
 
             pugi::xml_node xmlResource = xmlDataBlock->append_child( "Resource" );
             xmlResource.append_attribute( "Name" ).set_value( resource_sound->name );
@@ -379,7 +381,7 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
         }break;
     case AE_MOVIE_RESOURCE_PARTICLE:
         {
-            const aeMovieResourceParticle * resource_particle = (const aeMovieResourceParticle *)_resource;
+            const aeMovieResourceParticle * resource_particle = reinterpret_cast<const aeMovieResourceParticle *>(_resource);
 
             pugi::xml_node xmlResource = xmlDataBlock->append_child( "Resource" );
             xmlResource.append_attribute( "Name" ).set_value( resource_particle->name );
@@ -630,9 +632,7 @@ static void my_copy_stream( const void * _src, void * _dst, size_t _size, ae_use
 //////////////////////////////////////////////////////////////////////////
 static bool save_xml( const pugi::xml_document & xmldoc, const std::wstring & out_path )
 {
-    FILE * f_out = _wfopen( out_path.c_str(), L"wb" );
-
-    if( f_out == NULL )
+    if( xmldoc.save_file( out_path.c_str() ) == false )
     {
         message_error( "invalid open out path '%ls'"
             , out_path.c_str()
@@ -640,14 +640,6 @@ static bool save_xml( const pugi::xml_document & xmldoc, const std::wstring & ou
 
         return false;
     }
-
-    std::stringstream ss;
-    xmldoc.save( ss );
-
-    std::string s = ss.str();
-
-    ::fprintf( f_out, "%s", s.c_str());
-    ::fclose( f_out );
 
     return true;
 }

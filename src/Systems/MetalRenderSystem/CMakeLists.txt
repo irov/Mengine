@@ -14,8 +14,11 @@ src
     MetalRenderIndexBuffer.h
     MetalRenderProgram.mm
     MetalRenderProgram.h
-    MetalRenderProgramVariable.mm
-    MetalRenderProgramVariable.h
+    MetalRenderProgramVariableInterface.h
+    MetalRenderProgramVariableStatic.mm
+    MetalRenderProgramVariableStatic.h
+    MetalRenderProgramVariableDynamic.mm
+    MetalRenderProgramVariableDynamic.h
     MetalRenderVertexAttribute.mm
     MetalRenderVertexAttribute.h
     MetalRenderVertexBuffer.mm

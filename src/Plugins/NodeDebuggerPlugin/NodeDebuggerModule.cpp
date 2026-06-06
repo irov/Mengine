@@ -77,6 +77,40 @@
 
 namespace Mengine
 {
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        static uint32_t ceilDivideResolution_( uint64_t _value, uint32_t _divider )
+        {
+            return (uint32_t)((_value + _divider - 1U) / _divider);
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static Resolution makeAspectContentResolution_( const Resolution & _contentResolution, const Resolution & _windowResolution )
+        {
+            uint32_t contentWidth = _contentResolution.getWidth();
+            uint32_t contentHeight = _contentResolution.getHeight();
+            uint32_t windowWidth = _windowResolution.getWidth();
+            uint32_t windowHeight = _windowResolution.getHeight();
+
+            if( contentWidth == 0U || contentHeight == 0U || windowWidth == 0U || windowHeight == 0U )
+            {
+                return _contentResolution;
+            }
+
+            uint32_t baseResolution = contentWidth < contentHeight ? contentWidth : contentHeight;
+
+            if( windowWidth < windowHeight )
+            {
+                uint32_t adaptiveHeight = Detail::ceilDivideResolution_( (uint64_t)baseResolution * windowHeight, windowWidth );
+
+                return Resolution( baseResolution, adaptiveHeight );
+            }
+
+            uint32_t adaptiveWidth = Detail::ceilDivideResolution_( (uint64_t)baseResolution * windowWidth, windowHeight );
+
+            return Resolution( adaptiveWidth, baseResolution );
+        }
+    }
     //////////////////////////////////////////////////////////////////////////
     NodeDebuggerModule::NodeDebuggerModule()
         : m_serverState( ENodeDebuggerServerState::Invalid )
@@ -2326,10 +2360,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::receiveResolutins( uint32_t _width, uint32_t _height )
     {
-        MENGINE_UNUSED( _width );
-        MENGINE_UNUSED( _height );
+        if( _width == 0U || _height == 0U )
+        {
+            return;
+        }
 
         Resolution newResolution( _width, _height );
+
+        const Resolution & contentResolution = APPLICATION_SERVICE()
+            ->getContentResolution();
+
+        Resolution newContentResolution = Detail::makeAspectContentResolution_( contentResolution, newResolution );
+
+        APPLICATION_SERVICE()
+            ->setContentResolution( newContentResolution );
 
         APPLICATION_SERVICE()
             ->setWindowResolution( newResolution );

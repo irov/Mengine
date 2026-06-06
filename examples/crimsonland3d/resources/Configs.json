@@ -1,0 +1,43 @@
+{
+    "Project": {
+        "Name": "Crimsonland3D",
+        "Codename": "Crimsonland3D",
+        "Company": "Mengine"
+    },
+
+    "Game": {
+        "ContentResolution": [1280, 720],
+        "PersonalityModule": "Personality"
+    },
+
+    "Window": {
+        "Fullscreen": false,
+        "Size": [1280, 720]
+    },
+
+    "Platform": {
+        "Cursor": true
+    },
+
+    "Engine": {
+        "ProtocolPath": "../../../src/Metacode/protocol.xml",
+        "RenderEnableAutoDepthStencil": true
+    },
+
+    "DevPlugins-PC": {
+        "Name": [
+            "XmlToBinPlugin.dll",
+            "DevelopmentConverterPlugin.dll"
+        ]
+    },
+
+    "Frameworks": {
+        "Name": [
+            "Crimsonland3DFramework"
+        ]
+    },
+
+    "Settings": {
+        "Game": "game.json"
+    }
+}

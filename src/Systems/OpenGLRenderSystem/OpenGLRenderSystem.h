@@ -12,7 +12,9 @@
 #include "OpenGLRenderVertexBuffer.h"
 #include "OpenGLRenderIndexBuffer.h"
 #include "OpenGLRenderProgram.h"
-#include "OpenGLRenderProgramVariable.h"
+#include "OpenGLRenderProgramVariableInterface.h"
+#include "OpenGLRenderProgramVariableStatic.h"
+#include "OpenGLRenderProgramVariableDynamic.h"
 #include "OpenGLRenderExtension.h"
 
 #include "Kernel/IntrusiveList.h"
@@ -87,7 +89,8 @@ namespace Mengine
         RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const DocumentInterfacePtr & _doc ) override;
         void setProgram( const RenderProgramInterfacePtr & _program ) override;
         void updateProgram( const RenderProgramInterfacePtr & _program ) override;
-        RenderProgramVariableInterfacePtr createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentInterfacePtr & _doc ) override;
+        RenderProgramVariableInterfacePtr createProgramVariableStatic( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentInterfacePtr & _doc ) override;
+        RenderProgramVariableInterfacePtr createProgramVariableDynamic( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentInterfacePtr & _doc ) override;
         bool setProgramVariable( const RenderProgramInterfacePtr & _program, const RenderProgramVariableInterfacePtr & _programVariable ) override;
 
     public:
@@ -177,7 +180,7 @@ namespace Mengine
         Viewport m_windowViewport;
 
         OpenGLRenderProgramPtr m_currentProgram;
-        OpenGLRenderProgramVariablePtr m_currentProgramVariable;
+        OpenGLRenderProgramVariableInterfacePtr m_currentProgramVariable;
         OpenGLRenderVertexAttributePtr m_currentVertexAttribute;
         OpenGLRenderIndexBufferPtr m_currentIndexBuffer;
         OpenGLRenderVertexBufferPtr m_currentVertexBuffer;
@@ -226,7 +229,8 @@ namespace Mengine
         FactoryInterfacePtr m_factoryRenderFragmentShader;
         FactoryInterfacePtr m_factoryRenderVertexShader;
         FactoryInterfacePtr m_factoryRenderProgram;
-        FactoryInterfacePtr m_factoryRenderProgramVariable;
+        FactoryInterfacePtr m_factoryRenderProgramVariableStatic;
+        FactoryInterfacePtr m_factoryRenderProgramVariableDynamic;
 
 #if defined(MENGINE_RENDER_OPENGL_NORMAL)
         GLuint m_vertexArrayId;

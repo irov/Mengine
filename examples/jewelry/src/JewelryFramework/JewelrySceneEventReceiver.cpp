@@ -7,6 +7,7 @@
 #include "Interface/SettingsServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/TimeSystemInterface.h"
+#include "Interface/TextServiceInterface.h"
 
 #include "Plugins/JSONPlugin/JSONInterface.h"
 #include "Plugins/GOAPPlugin/GOAPInterface.h"
@@ -17,10 +18,11 @@
 #include "Engine/HotSpotCircle.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/Surface.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/EntityHelper.h"
+#include "Kernel/NodeCast.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/SchedulerHelper.h"
 #include "Kernel/StringHelper.h"
@@ -29,6 +31,8 @@
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/Vector.h"
 #include "Kernel/Stringalized.h"
+#include "Kernel/JSONHelper.h"
+#include "Kernel/FactorableUnique.h"
 #include "Kernel/SurfaceSolidColor.h"
 #include "Kernel/ShapeQuadFixed.h"
 #include "Kernel/ShapeCircle.h"
@@ -38,7 +42,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     JewelrySceneEventReceiver::JewelrySceneEventReceiver()
         : m_scene( nullptr )
-        , m_timepipeId( INVALID_UNIQUE_ID )
+        , m_timepipe( nullptr )
         , m_stage( 0 )
         , m_timemillisecond( 0 )
     {
@@ -90,19 +94,18 @@ namespace Mengine
         const SettingInterfacePtr & game_setting = SETTINGS_SERVICE()
             ->getSetting( STRINGIZE_STRING_LOCAL( "Game" ) );
 
-        uint32_t column_count = game_setting->getValue( "jewelry_column_count", 6U );
-        uint32_t row_count = game_setting->getValue( "jewelry_row_count", 10U );
-        m_settings.m_jewelry_size = game_setting->getValue( "jewelry_size", 50.f );
-        m_settings.m_jewelry_stride = game_setting->getValue( "jewelry_stride", 10.f );
-        m_settings.m_jewelry_cell_explosive_time_ms = game_setting->getValue( "jewelry_cell_explosive_time_ms", 750.f );
-        m_settings.m_jewelry_cell_explosive_count = game_setting->getValue( "jewelry_cell_explosive_count", MENGINE_MAX( column_count, row_count ) );
-        m_settings.m_jewelry_collapse = game_setting->getValue( "jewelry_collapse", true );
+        uint32_t column_count = (uint32_t)game_setting->getValueInteger( "jewelry_column_count", 6 );
+        uint32_t row_count = (uint32_t)game_setting->getValueInteger( "jewelry_row_count", 10 );
+        m_settings.m_jewelry_size = (float)game_setting->getValueFloat( "jewelry_size", 50.0 );
+        m_settings.m_jewelry_stride = (float)game_setting->getValueFloat( "jewelry_stride", 10.0 );
+        m_settings.m_jewelry_cell_explosive_time_ms = (float)game_setting->getValueFloat( "jewelry_cell_explosive_time_ms", 750.0 );
+        m_settings.m_jewelry_cell_explosive_count = (uint32_t)game_setting->getValueInteger( "jewelry_cell_explosive_count", MENGINE_MAX( column_count, row_count ) );
+        m_settings.m_jewelry_collapse = game_setting->getValueBoolean( "jewelry_collapse", true );
 
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-            ->getDefaultFileGroup();
+            ->getFileGroup( STRINGIZE_STRING_LOCAL( "Assets" ) );
 
-        m_storageLevels = JSON_SERVICE()
-            ->loadJSON( fileGroup, STRINGIZE_FILEPATH_LOCAL( "levels.json" ), MENGINE_DOCUMENT_FACTORABLE );
+        m_levels = Helper::loadJSONFile( fileGroup, STRINGIZE_FILEPATH_LOCAL( "levels.json" ), MENGINE_DOCUMENT_FACTORABLE );
 
         m_jewelryMatrix = Helper::makeFactorableUnique<JewelryMatrix>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -116,7 +119,7 @@ namespace Mengine
 
         m_jewelryHand.clear();
 
-        m_base = Helper::generateNode( MENGINE_DOCUMENT_FACTORABLE );
+        m_base = Helper::makeFactorableUnique<Node>( MENGINE_DOCUMENT_FACTORABLE );
 
         TransformationInterface * transformation = m_base->getTransformation();
         transformation->setLocalPosition( {300.f, 100.f, 0.f} );
@@ -124,7 +127,7 @@ namespace Mengine
         m_scene->addChild( m_base );
 
         m_timemillisecond = TIME_SYSTEM()
-            ->getTimeMilliseconds();
+            ->getPlatformTimestamp();
 
         m_stage = 0;
 
@@ -133,7 +136,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    JewelryPtr JewelrySceneEventReceiver::makeJewelry_( EJewelrySuper _super, uint32_t _type, uint32_t _column, uint32_t _row, const DocumentPtr & _doc )
+    JewelryPtr JewelrySceneEventReceiver::makeJewelry_( EJewelrySuper _super, uint32_t _type, uint32_t _column, uint32_t _row, const DocumentInterfacePtr & _doc )
     {
         JewelryPtr jewelry = m_factoryJewelry->createObject( _doc );
 
@@ -159,15 +162,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void JewelrySceneEventReceiver::makeUITextStage_()
     {
-        TextFieldPtr textScore = Helper::generateTextField( MENGINE_DOCUMENT_FACTORABLE );
+        TextFieldPtr textScore = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "TextField" ), MENGINE_DOCUMENT_FACTORABLE );
 
         textScore->setTextId( STRINGIZE_STRING_LOCAL( "ID_Stage" ) );
 
-        VectorString empty_args;
-        empty_args.push_back( "" );
-        textScore->setTextFormatArgs( empty_args );
-
-        textScore->setTextFormatArgsContext( 0, [this]( String * _arg )
+        VectorTextArguments textScoreArguments;
+        TextArgumentInterfacePtr textScoreArgument = TEXT_SERVICE()
+            ->createTextArgumentContext( [this]( String * const _arg )
         {
             static uint32_t cache_stage = ~0U;
 
@@ -184,7 +186,10 @@ namespace Mengine
             _arg->assign( arg_buffer );
 
             return true;
-        } );
+        }, MENGINE_DOCUMENT_FACTORABLE );
+
+        textScoreArguments.emplace_back( textScoreArgument );
+        textScore->setTextArguments( textScoreArguments );
 
         TransformationInterface * textScoreTransformation = textScore->getTransformation();
         textScoreTransformation->setLocalPosition( {50.f, 50.f, 0.f} );
@@ -196,20 +201,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void JewelrySceneEventReceiver::makeUITextTime_()
     {
-        TextFieldPtr textTime = Helper::generateTextField( MENGINE_DOCUMENT_FACTORABLE );
+        TextFieldPtr textTime = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "TextField" ), MENGINE_DOCUMENT_FACTORABLE );
 
         textTime->setTextId( STRINGIZE_STRING_LOCAL( "ID_Time" ) );
 
-        VectorString empty_args;
-        empty_args.push_back( "" );
-        textTime->setTextFormatArgs( empty_args );
-
-        textTime->setTextFormatArgsContext( 0, [this]( String * _arg )
+        VectorTextArguments textTimeArguments;
+        TextArgumentInterfacePtr textTimeArgument = TEXT_SERVICE()
+            ->createTextArgumentContext( [this]( String * const _arg )
         {
             static uint64_t cache_time = ~0U;
 
             uint64_t timemillisecond = TIME_SYSTEM()
-                ->getTimeMilliseconds();
+                ->getPlatformTimestamp();
 
             uint64_t timesecond = (timemillisecond - m_timemillisecond) / 1000;
 
@@ -226,7 +230,10 @@ namespace Mengine
             _arg->assign( arg_buffer );
 
             return true;
-        } );
+        }, MENGINE_DOCUMENT_FACTORABLE );
+
+        textTimeArguments.emplace_back( textTimeArgument );
+        textTime->setTextArguments( textTimeArguments );
 
         TransformationInterface * textTimeTransformation = textTime->getTransformation();
         textTimeTransformation->setLocalPosition( {50.f, 150.f, 0.f} );
@@ -243,7 +250,7 @@ namespace Mengine
 
         uint32_t jewelry_matrix_column_count = m_jewelryMatrix->getColumnCount();
 
-        uint32_t jewelry_column = m_randomizer->getRandom( jewelry_matrix_column_count );
+        uint32_t jewelry_column = m_randomizer->getRandom32( jewelry_matrix_column_count );
 
         if( m_jewelryMatrix->existJewelry( jewelry_column, 0 ) == true )
         {
@@ -255,7 +262,7 @@ namespace Mengine
             return;
         }
 
-        uint32_t jewelry_type = m_randomizer->getRandom( m_settings.m_jewelry_type_count );
+        uint32_t jewelry_type = m_randomizer->getRandom32( m_settings.m_jewelry_type_count );
 
         JewelryPtr jewelry = this->makeJewelry_( _super, jewelry_type, jewelry_column, 0, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -267,13 +274,14 @@ namespace Mengine
 
             auto && [source_pick_click, source_pick_enter] = Cook::addRace<2>( _source_pick );
 
-            Cook::addPickerableMouseButton( source_pick_click, jewelry_pickerable, MC_LBUTTON, true, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
-            Cook::addPickerableMouseEnter( source_pick_enter, jewelry_pickerable, []( const InputMouseEnterEvent & _event, bool * _handle )
+            Cook::addPickerableMouseButton( source_pick_click, jewelry_pickerable, EMouseButtonCode::MC_LBUTTON, true, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+            Cook::addPickerableMouseEnter( source_pick_enter, jewelry_pickerable, []( const RenderContext * _context, const InputMouseEnterEvent & _event, bool * _handle )
             {
+                MENGINE_UNUSED( _context );
                 MENGINE_UNUSED( _event );
 
                 if( INPUT_SERVICE()
-                    ->isMouseButtonDown( MC_LBUTTON ) == false )
+                    ->isMouseButtonDown( EMouseButtonCode::MC_LBUTTON ) == false )
                 {
                     return false;
                 }
@@ -629,14 +637,14 @@ namespace Mengine
         GOAP::TimerInterfacePtr timer = GOAP_SERVICE()
             ->makeTimer();
 
-        UniqueId timepipeId = Helper::addTimepipe( [timer]( const UpdateContext * _context )
+        TimepipeInterfacePtr timepipe = Helper::addTimepipe( [timer]( const UpdateContext * _context )
         {
             float time = _context->time;
 
             timer->update( time );
         }, MENGINE_DOCUMENT_FACTORABLE );
 
-        m_timepipeId = timepipeId;
+        m_timepipe = timepipe;
 
         GOAP::SourceInterfacePtr source = GOAP_SERVICE()
             ->makeSource();
@@ -645,11 +653,12 @@ namespace Mengine
 
         auto && [source_stage, source_spawn, source_boom] = Cook::addParallel<3>( source );
 
-        const jpp::object & levels = m_storageLevels->getJSON();
+        const jpp::object & levels = m_levels;
 
-        const jpp::object & level_test = levels["test"];
+        jpp::object level_test = levels.get( "test" );
+        jpp::object level_stages = level_test.get( "stages" );
 
-        for( const jpp::object & stage : jpp::array( level_test["stages"] ) )
+        for( const jpp::object & stage : jpp::array( level_stages ) )
         {
             float time = stage["time"];
 
@@ -679,7 +688,7 @@ namespace Mengine
 
         Cook::addWhile( source_boom, [this]( const GOAP::SourceInterfacePtr & _source_boom )
         {
-            Cook::addGlobalMouseButton( _source_boom, MC_LBUTTON, false, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+            Cook::addGlobalMouseButton( _source_boom, EMouseButtonCode::MC_LBUTTON, false, nullptr, nullptr, MENGINE_DOCUMENT_FACTORABLE );
             Cook::addScope( _source_boom, [this]( const GOAP::SourceInterfacePtr & _source )
             {
                 VectorJewelryHand jewelryHand = std::move( m_jewelryHand );
@@ -744,8 +753,11 @@ namespace Mengine
     {
         MENGINE_UNUSED( _behavior );
 
-        Helper::removeTimepipe( m_timepipeId );
-        m_timepipeId = INVALIDATE_UNIQUE_ID;
+        if( m_timepipe != nullptr )
+        {
+            Helper::removeTimepipe( m_timepipe );
+            m_timepipe = nullptr;
+        }
 
         m_textStage->removeFromParent();
         m_textStage = nullptr;
@@ -774,14 +786,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     NodePtr JewelrySceneEventReceiver::spawnExplosive_()
     {
-        SurfaceSolidColorPtr surface = Helper::generateSurfaceSolidColor( MENGINE_DOCUMENT_FACTORABLE );
+        SurfaceSolidColorPtr surface = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceSolidColor" ), MENGINE_DOCUMENT_FACTORABLE );
 
         surface->setSolidColor( Color( 1.f, 1.f, 1.f, 0.25f ) );
 
         float width = 15.f;
         surface->setSolidSize( {width, width} );
 
-        ShapeCirclePtr shape = Helper::generateShapeCircle( MENGINE_DOCUMENT_FACTORABLE );
+        ShapeCirclePtr shape = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ShapeCircle" ), MENGINE_DOCUMENT_FACTORABLE );
 
         shape->setSurface( surface );
 

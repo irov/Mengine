@@ -43,6 +43,7 @@ namespace Mengine
 
         m_pD3DStagingTexture.Attach( pD3DStagingTexture );
 
+        m_lockedRect = Rect( _offsetX, _offsetY, _offsetX + _width, _offsetY + _height );
         m_stagingOffsetX = _offsetX;
         m_stagingOffsetY = _offsetY;
 
@@ -78,7 +79,12 @@ namespace Mengine
         _pImmediateContext->CopySubresourceRegion( _pD3DTexture.Get(), 0, m_stagingOffsetX, m_stagingOffsetY, 0, m_pD3DStagingTexture.Get(), 0, NULL );
     }
     //////////////////////////////////////////////////////////////////////////
-    Pointer DX11RenderImageLocked::getBuffer( size_t * const _pitch ) const
+    const Rect & DX11RenderImageLocked::getLockedRect() const
+    {
+        return m_lockedRect;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Pointer DX11RenderImageLocked::getLockedBuffer( size_t * const _pitch ) const
     {
         *_pitch = m_stagingTextureMemory.RowPitch;
 

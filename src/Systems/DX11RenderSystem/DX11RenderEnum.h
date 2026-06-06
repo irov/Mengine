@@ -373,9 +373,9 @@ namespace Mengine
             return 0;
         }
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE DXGI_FORMAT getD3DIndexFormat()
+        MENGINE_INLINE DXGI_FORMAT getD3DIndexFormat( uint32_t _indexSize )
         {
-            switch( sizeof( RenderIndex ) )
+            switch( _indexSize )
             {
             case 4:
                 return DXGI_FORMAT_R32_UINT;

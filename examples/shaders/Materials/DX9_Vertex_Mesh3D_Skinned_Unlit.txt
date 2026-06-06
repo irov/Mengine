@@ -1,0 +1,61 @@
+
+float4x4 ModelViewMatrix;
+float4   BonePalette[192];
+
+struct a2v {
+    float3 pos          : POSITION;
+    float3 normal       : NORMAL;
+    float4 tangent      : TANGENT;
+    float4 color        : COLOR0;
+    float2 uv0          : TEXCOORD0;
+    float2 uv1          : TEXCOORD1;
+    float4 boneIndices  : BLENDINDICES;
+    float4 boneWeights  : BLENDWEIGHT;
+};
+
+struct v2p {
+    float4 pos          : POSITION;
+    float4 color        : COLOR0;
+    float2 uv0          : TEXCOORD0;
+};
+
+float3 SkinPosition(float3 p, int4 idx, float4 w)
+{
+    int b0 = idx.x * 3;
+    int b1 = idx.y * 3;
+    int b2 = idx.z * 3;
+    int b3 = idx.w * 3;
+
+    float4 v = float4(p, 1.0f);
+
+    float3 r = float3(0.0f, 0.0f, 0.0f);
+
+    r.x += dot(BonePalette[b0 + 0], v) * w.x;
+    r.y += dot(BonePalette[b0 + 1], v) * w.x;
+    r.z += dot(BonePalette[b0 + 2], v) * w.x;
+
+    r.x += dot(BonePalette[b1 + 0], v) * w.y;
+    r.y += dot(BonePalette[b1 + 1], v) * w.y;
+    r.z += dot(BonePalette[b1 + 2], v) * w.y;
+
+    r.x += dot(BonePalette[b2 + 0], v) * w.z;
+    r.y += dot(BonePalette[b2 + 1], v) * w.z;
+    r.z += dot(BonePalette[b2 + 2], v) * w.z;
+
+    r.x += dot(BonePalette[b3 + 0], v) * w.w;
+    r.y += dot(BonePalette[b3 + 1], v) * w.w;
+    r.z += dot(BonePalette[b3 + 2], v) * w.w;
+
+    return r;
+}
+
+void main(in a2v IN, out v2p OUT)
+{
+    int4 idx = int4(IN.boneIndices);
+
+    float3 skinned = SkinPosition(IN.pos, idx, IN.boneWeights);
+
+    OUT.pos   = mul(float4(skinned, 1.0f), ModelViewMatrix);
+    OUT.color = IN.color;
+    OUT.uv0   = IN.uv0;
+}

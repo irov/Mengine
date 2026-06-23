@@ -14,6 +14,8 @@ final Boolean ANDROID_APP_SPLIT_ENABLE = Utils.getBooleanProperty("ANDROID_APP_S
 final Boolean ANDROID_APP_BUNDLE_ENABLE = Utils.getBooleanProperty("ANDROID_APP_BUNDLE_ENABLE", false)
 final String ANDROID_APP_DELIVERY_PACKAGES = Utils.getStringProperty("ANDROID_APP_DELIVERY_PACKAGES", null)
 final String ANDROID_APP_MAIN_PROJECT = Utils.getStringProperty("ANDROID_APP_MAIN_PROJECT", "app")
+final String ANDROID_APP_DEBUG_STORE_TYPE = Utils.getStringProperty("ANDROID_APP_DEBUG_STORE_TYPE", "jks")
+final String ANDROID_APP_RELEASE_STORE_TYPE = Utils.getStringProperty("ANDROID_APP_RELEASE_STORE_TYPE", "jks")
 
 final Boolean MENGINE_APP_LIBRARY_MENGINE = Utils.existAppLibrary("MENGINE_APP_LIBRARY_MENGINE")
 

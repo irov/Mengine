@@ -5,5 +5,5 @@ android {
 }
 
 dependencies {
-    api 'com.github.irov:kotlinpilot:1.0.34'
+    api 'com.github.irov:kotlinpilot:1.0.35'
 }

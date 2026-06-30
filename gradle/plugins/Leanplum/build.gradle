@@ -6,6 +6,6 @@ android {
 }
 
 dependencies {
-    implementation 'com.leanplum:leanplum-core:7.7.0'
-    implementation 'com.leanplum:leanplum-fcm:7.7.0'
+    implementation 'com.leanplum:leanplum-core:7.8.0'
+    implementation 'com.leanplum:leanplum-fcm:7.8.0'
 }

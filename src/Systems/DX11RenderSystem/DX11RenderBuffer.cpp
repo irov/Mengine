@@ -12,7 +12,7 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
-#include "stdex/memorycopy.h"
+#include "Kernel/MemoryCopy.h"
 
 namespace Mengine
 {
@@ -218,7 +218,7 @@ namespace Mengine
             return false;
         }
 
-        stdex::memorycopy( mappedResource.pData, 0, _buffer, _count * m_elementSize );
+        Helper::memoryCopy( mappedResource.pData, 0, _buffer, 0, _count * m_elementSize );
 
         pImmediateContext->Unmap( m_pD3DBuffer.Get(), 0 );
 

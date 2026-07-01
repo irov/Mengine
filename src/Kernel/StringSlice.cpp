@@ -4,7 +4,7 @@
 
 #include "Config/StdString.h"
 
-#include "stdex/memorycopy.h"
+#include "Kernel/MemoryCopy.h"
 
 namespace Mengine
 {
@@ -22,7 +22,7 @@ namespace Mengine
 
             for( ; data_index + _capacity < _size; data_index += _capacity )
             {
-                stdex::memorycopy( _buffer, 0, _in + data_index, _capacity );
+                Helper::memoryCopy( _buffer, 0, _in + data_index, 0, _capacity );
                 _buffer[_capacity] = '\0';
 
                 if( _lambda( _buffer ) == false )
@@ -38,7 +38,7 @@ namespace Mengine
 
             size_t tail_size = _size - data_index;
 
-            stdex::memorycopy( _buffer, 0, _in + data_index, tail_size );
+            Helper::memoryCopy( _buffer, 0, _in + data_index, 0, tail_size );
             _buffer[tail_size] = '\0';
 
             if( _lambda( _buffer ) == false )
@@ -76,7 +76,7 @@ namespace Mengine
 
                     size_t correct_size = it_correct - it_slice;
 
-                    stdex::memorycopy( _buffer, 0, it_slice, correct_size );
+                    Helper::memoryCopy( _buffer, 0, it_slice, 0, correct_size );
                     _buffer[correct_size] = '\0';
 
                     if( _lambda( _buffer ) == false )
@@ -99,7 +99,7 @@ namespace Mengine
 
             size_t tail_size = it_end - it_slice;
 
-            stdex::memorycopy( _buffer, 0, it_slice, tail_size );
+            Helper::memoryCopy( _buffer, 0, it_slice, 0, tail_size );
             _buffer[tail_size] = '\0';
 
             if( _lambda( _buffer ) == false )

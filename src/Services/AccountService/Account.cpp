@@ -19,7 +19,7 @@
 
 #include "Config/StdString.h"
 
-#include "stdex/memorycopy.h"
+#include "Kernel/MemoryCopy.h"
 
 #ifndef MENGINE_ACCOUNT_SETTINGS_JSON_PATH
 #define MENGINE_ACCOUNT_SETTINGS_JSON_PATH "settings.json"
@@ -245,7 +245,7 @@ namespace Mengine
             , uid.c_str()
         );
 
-        stdex::memorycopy( m_uid.data, 0, uid.c_str(), 20 );
+        Helper::memoryCopy( m_uid.data, 0, uid.c_str(), 0, 20 );
 
         LOGGER_INFO( "account", "load account '%s' projectVersion [%u] uid '%.20s' settings"
             , m_accountId.c_str()

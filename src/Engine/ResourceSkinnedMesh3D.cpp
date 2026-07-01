@@ -48,7 +48,7 @@ namespace Mengine
         return m_indices;
     }
     //////////////////////////////////////////////////////////////////////////
-    const Vector<mt::mat4f> & ResourceSkinnedMesh3D::getInverseBindMatrices() const
+    const VectorMat4f & ResourceSkinnedMesh3D::getInverseBindMatrices() const
     {
         return m_inverseBindMatrices;
     }
@@ -75,7 +75,7 @@ namespace Mengine
         m_indices = _indices;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceSkinnedMesh3D::setInverseBindMatrices( const Vector<mt::mat4f> & _matrices )
+    void ResourceSkinnedMesh3D::setInverseBindMatrices( const VectorMat4f & _matrices )
     {
         m_inverseBindMatrices = _matrices;
     }
@@ -143,7 +143,7 @@ namespace Mengine
         }
 
         Detail::MengSkinnedMeshHeader header;
-        StdString::memcpy( &header, buffer, sizeof( Detail::MengSkinnedMeshHeader ) );
+        StdString::memcpy_pod( &header, buffer );
 
         if( header.magic[0] != 'M' || header.magic[1] != 'M'
             || header.magic[2] != 'S' || header.magic[3] != 'K' )
@@ -191,19 +191,20 @@ namespace Mengine
 
         if( header.vertexCount > 0 )
         {
-            StdString::memcpy( m_vertices.data(), cursor, vbBytes );
+            StdString::memcpy_pod( m_vertices.data(), cursor, header.vertexCount );
             cursor += vbBytes;
         }
 
         if( header.indexCount > 0 )
         {
-            StdString::memcpy( m_indices.data(), cursor, ibBytes );
+            StdString::memcpy_pod( m_indices.data(), cursor, header.indexCount );
             cursor += ibBytes;
         }
 
         if( header.boneCount > 0 )
         {
-            StdString::memcpy( m_inverseBindMatrices.data(), cursor, ibmBytes );
+            StdString::memcpy_pod( m_inverseBindMatrices.data(), cursor, header.boneCount );
+            cursor += ibmBytes;
         }
 
         this->recomputeBoundingBox_();

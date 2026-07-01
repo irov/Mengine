@@ -31,6 +31,7 @@
  */
 
 #define BITS_IN_JSAMPLE  8	/* use 8, 9, 10, 11, or 12 */
+#define JPEG_DATA_PRECISION  8	/* use 8, 9, 10, 11, or 12 */
 
 
 /*

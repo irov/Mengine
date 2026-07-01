@@ -127,7 +127,7 @@ namespace Mengine
         }
 
         Detail::MengMeshHeader header;
-        StdString::memcpy( &header, buffer, sizeof( Detail::MengMeshHeader ) );
+        StdString::memcpy_pod( &header, buffer );
 
         if( header.magic[0] != 'M' || header.magic[1] != 'M'
             || header.magic[2] != '3' || header.magic[3] != 'D' )
@@ -171,12 +171,12 @@ namespace Mengine
 
         if( header.vertexCount > 0 )
         {
-            StdString::memcpy( m_vertices.data(), buffer + sizeof( Detail::MengMeshHeader ), vbBytes );
+            StdString::memcpy_pod( m_vertices.data(), buffer + sizeof( Detail::MengMeshHeader ), header.vertexCount );
         }
 
         if( header.indexCount > 0 )
         {
-            StdString::memcpy( m_indices.data(), buffer + sizeof( Detail::MengMeshHeader ) + vbBytes, ibBytes );
+            StdString::memcpy_pod( m_indices.data(), buffer + sizeof( Detail::MengMeshHeader ) + vbBytes, header.indexCount );
         }
 
         this->recomputeBoundingBox_();

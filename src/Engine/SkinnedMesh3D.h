@@ -14,7 +14,8 @@
 #include "Kernel/BaseTransformation.h"
 #include "Kernel/ResourceImage.h"
 #include "Kernel/ConstString.h"
-#include "Kernel/Vector.h"
+#include "Kernel/Floats.h"
+#include "Kernel/VectorMat4f.h"
 
 #include "math/mat4.h"
 
@@ -83,9 +84,9 @@ namespace Mengine
         uint32_t m_vertexCount;
         uint32_t m_indexCount;
 
-        Vector<mt::mat4f> m_boneMatrices;
+        VectorMat4f m_boneMatrices;
 
-        mutable Vector<float> m_paletteUpload;
+        mutable Floats m_paletteUpload;
 
         mutable mt::mat4f m_renderWorldMatrix;
     };

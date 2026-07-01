@@ -14,7 +14,7 @@
 #include "Kernel/BaseTransformation.h"
 #include "Kernel/ResourceImage.h"
 #include "Kernel/ConstString.h"
-#include "Kernel/Vector.h"
+#include "Kernel/Floats.h"
 
 #include "math/mat4.h"
 
@@ -68,7 +68,7 @@ namespace Mengine
 
         RenderProgramVariableInterfacePtr m_programVariable;
 
-        mutable Vector<float> m_uniformUpload;
+        mutable Floats m_uniformUpload;
 
         uint32_t m_vertexCount;
         uint32_t m_indexCount;

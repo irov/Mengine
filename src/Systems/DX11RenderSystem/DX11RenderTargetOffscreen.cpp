@@ -5,7 +5,7 @@
 
 #include "Kernel/Assertion.h"
 
-#include "stdex/memorycopy.h"
+#include "Kernel/MemoryCopy.h"
 
 namespace Mengine
 {
@@ -132,7 +132,7 @@ namespace Mengine
             return false;
         }
 
-        stdex::memorycopy( _buffer, 0, mappedResource.pData, _pitch );
+        Helper::memoryCopy( _buffer, 0, mappedResource.pData, 0, _pitch );
 
         pImmediateContext->Unmap( m_pD3DTexture.Get(), 0 );
 

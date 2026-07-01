@@ -8,6 +8,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Vector.h"
+#include "Kernel/VectorMat4f.h"
 
 #include "Config/StdString.h"
 
@@ -418,7 +419,7 @@ namespace Mengine
             }
         }
 
-        Vector<mt::mat4f> ibm;
+        VectorMat4f ibm;
 
         if( skin->inverse_bind_matrices != nullptr )
         {

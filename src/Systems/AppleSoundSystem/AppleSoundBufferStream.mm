@@ -21,9 +21,10 @@ namespace Mengine
         : m_looped( false )
         , m_updating( false )
         , m_finished( false )
-        , m_playPositionBytes( 0 )
+        , m_playCursorBytes( 0 )
         , m_writeCount( 0 )
         , m_readCount( 0 )
+        , m_basePositionMs( 0.f )
         , m_ringBufferSizeMask( 0 )
         , m_ringBufferSize( 0 )
         , m_ringBuffer( nullptr )
@@ -83,7 +84,8 @@ namespace Mengine
 
             this->resetRingBuffer_();
 
-            m_playPositionBytes = 0;
+            m_playCursorBytes = 0;
+            m_basePositionMs = 0.f;
 
             m_soundDecoder = nullptr;
             m_memory = nullptr;
@@ -162,8 +164,8 @@ namespace Mengine
                 return false;
             }
 
-            uint32_t bytesPerSecond = m_frequency * m_channels * 2;
-            m_playPositionBytes.store( (uint32_t)(_position / 1000.f * (float)bytesPerSecond) );
+            m_basePositionMs.store( _position, StdAtomic::memory_order_relaxed );
+            m_playCursorBytes.store( 0, StdAtomic::memory_order_relaxed );
 
             LOGGER_MESSAGE( "[apple] stream prebuffer freq: %u channels: %u duration: %f position: %f readable: %u finished: %u loop: %u"
                 , m_frequency
@@ -189,7 +191,8 @@ namespace Mengine
 
             m_updating = false;
             m_finished = true;
-            m_playPositionBytes = 0;
+            m_playCursorBytes = 0;
+            m_basePositionMs = 0.f;
 
             this->resetRingBuffer_();
         }
@@ -224,8 +227,8 @@ namespace Mengine
             return false;
         }
 
-        uint32_t bytesPerSecond = m_frequency * m_channels * 2;
-        m_playPositionBytes.store( (uint32_t)(_position / 1000.f * (float)bytesPerSecond) );
+        m_basePositionMs.store( _position, StdAtomic::memory_order_relaxed );
+        m_playCursorBytes.store( 0, StdAtomic::memory_order_relaxed );
 
         return true;
     }
@@ -241,8 +244,8 @@ namespace Mengine
             return true;
         }
 
-        uint32_t absBytes = m_playPositionBytes.load();
-        float position = (float)absBytes * 1000.f / (float)bytesPerSecond;
+        uint32_t cursorBytes = m_playCursorBytes.load( StdAtomic::memory_order_relaxed );
+        float position = m_basePositionMs.load( StdAtomic::memory_order_relaxed ) + (float)cursorBytes * 1000.f / (float)bytesPerSecond;
 
         if( m_looped.load() == true && m_duration > 0.f )
         {
@@ -343,7 +346,7 @@ namespace Mengine
 
             r += bytesToCopy;
             readable -= bytesToCopy;
-            m_playPositionBytes.fetch_add( bytesToCopy, StdAtomic::memory_order_relaxed );
+            m_playCursorBytes.fetch_add( bytesToCopy, StdAtomic::memory_order_relaxed );
 
             renderedFrames += copyFrames;
         }

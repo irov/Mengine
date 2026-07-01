@@ -12,8 +12,6 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
-#include "stdex/memorycopy.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

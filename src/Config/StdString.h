@@ -41,6 +41,24 @@ namespace Mengine
         using std::memcmp;
 
         //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        MENGINE_INLINE T * memcpy_pod( T * const _dst, const void * const _src, size_t _count )
+        {
+            void * dst_ptr = static_cast<void *>( _dst );
+            const void * src_ptr = static_cast<const void *>( _src );
+            size_t size = sizeof( T ) * _count;
+
+            void * ptr = std::memcpy( dst_ptr, src_ptr, size );
+
+            return static_cast<T *>(ptr);
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        MENGINE_INLINE T * memcpy_pod( T * const _dst, const void * const _src )
+        {
+            return StdString::memcpy_pod( _dst, _src, 1 );
+        }
+        //////////////////////////////////////////////////////////////////////////
         MENGINE_INLINE void strchrcat( Char * const _out, Char _ch )
         {
             assert( _out != nullptr && "strchrcat: output buffer is null" );

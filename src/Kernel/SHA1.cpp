@@ -7,7 +7,6 @@
 #include "Config/StdIO.h"
 
 #include "sha1/sha1.hpp"
-#include "stdex/memorycopy.h"
 
 namespace Mengine
 {

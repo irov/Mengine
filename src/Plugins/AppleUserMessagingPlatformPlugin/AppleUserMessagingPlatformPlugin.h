@@ -1,3 +1,5 @@
+#pragma once
+
 #import "Environment/iOS/iOSPluginInterface.h"
 
 @interface AppleUserMessagingPlatformPlugin : NSObject<iOSPluginInterface>

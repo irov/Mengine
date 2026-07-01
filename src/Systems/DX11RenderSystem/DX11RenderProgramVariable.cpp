@@ -2,7 +2,7 @@
 
 #include "DX11RenderErrorHelper.h"
 
-#include "stdex/memorycopy.h"
+#include "Kernel/MemoryCopy.h"
 
 namespace Mengine
 {
@@ -190,7 +190,7 @@ namespace Mengine
 
                 const float * values = m_pixelFloats.data() + v.offset;
 
-                stdex::memorycopy( mappedResource.pData, 0, values, v.count * v.size );
+                Helper::memoryCopy( mappedResource.pData, 0, values, 0, v.count * v.size );
 
                 _pImmediateContext->Unmap( d3dBuffer, 0 );
 

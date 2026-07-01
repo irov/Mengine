@@ -3,7 +3,7 @@
 
 #include "Kernel/Logger.h"
 
-#include "stdex/memorycopy.h"
+#include "Kernel/MemoryCopy.h"
 
 namespace Mengine
 {
@@ -175,7 +175,7 @@ namespace Mengine
             return;
         }
 
-        stdex::memorycopy( mappedResource.pData, 0, _totalPMWInvMatrix.buff(), sizeof( mt::mat4f ) );
+        Helper::memoryCopy( mappedResource.pData, 0, _totalPMWInvMatrix.buff(), 0, sizeof( mt::mat4f ) );
 
         _pImmediateContext->Unmap( m_bindMatrixBuffer.Get(), 0 );
 

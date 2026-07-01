@@ -3,9 +3,9 @@
 #include "Kernel/Resource.h"
 #include "Kernel/VectorRenderVertexSkinned3D.h"
 #include "Kernel/VectorRenderIndex32.h"
+#include "Kernel/VectorMat4f.h"
 
 #include "math/box3.h"
-#include "math/mat4.h"
 
 namespace Mengine
 {
@@ -24,7 +24,7 @@ namespace Mengine
     public:
         const VectorRenderVertexSkinned3D & getVertices() const;
         const VectorRenderIndex32 & getIndices() const;
-        const Vector<mt::mat4f> & getInverseBindMatrices() const;
+        const VectorMat4f & getInverseBindMatrices() const;
 
         const mt::box3f & getBoundingBox() const;
 
@@ -33,7 +33,7 @@ namespace Mengine
     public:
         void setVertices( const VectorRenderVertexSkinned3D & _vertices );
         void setIndices( const VectorRenderIndex32 & _indices );
-        void setInverseBindMatrices( const Vector<mt::mat4f> & _matrices );
+        void setInverseBindMatrices( const VectorMat4f & _matrices );
 
     protected:
         bool _compile() override;
@@ -45,7 +45,7 @@ namespace Mengine
     protected:
         VectorRenderVertexSkinned3D m_vertices;
         VectorRenderIndex32 m_indices;
-        Vector<mt::mat4f> m_inverseBindMatrices;
+        VectorMat4f m_inverseBindMatrices;
 
         mt::box3f m_boundingBox;
     };

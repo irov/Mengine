@@ -7,7 +7,7 @@
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/DebugFileHelper.h"
 
-#include "stdex/memorycopy.h"
+#include "Kernel/MemoryCopy.h"
 
 namespace Mengine
 {
@@ -190,7 +190,7 @@ namespace Mengine
 
             if( tail != 0 )
             {
-                stdex::memorycopy( _buf, 0, m_readCache + m_carriage, tail );
+                Helper::memoryCopy( _buf, 0, m_readCache + m_carriage, 0, tail );
             }
 
             size_t toRead = correct_count - tail;
@@ -211,7 +211,7 @@ namespace Mengine
 
         if( m_carriage + correct_count <= m_capacity )
         {
-            stdex::memorycopy( _buf, 0, m_readCache + m_carriage, correct_count );
+            Helper::memoryCopy( _buf, 0, m_readCache + m_carriage, 0, correct_count );
 
             m_carriage += correct_count;
 
@@ -222,7 +222,7 @@ namespace Mengine
 
         if( tail != 0 )
         {
-            stdex::memorycopy( _buf, 0, m_readCache + m_carriage, tail );
+            Helper::memoryCopy( _buf, 0, m_readCache + m_carriage, 0, tail );
         }
 
         size_t bytesRead;
@@ -233,7 +233,7 @@ namespace Mengine
 
         size_t readSize = MENGINE_MIN( correct_count - tail, bytesRead );
 
-        stdex::memorycopy( _buf, tail, m_readCache, readSize );
+        Helper::memoryCopy( _buf, tail, m_readCache, 0, readSize );
 
         m_carriage = readSize;
         m_capacity = bytesRead;

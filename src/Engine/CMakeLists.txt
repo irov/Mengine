@@ -30,6 +30,15 @@ Layer2D
 )
 
 ADD_FILTER(
+VirtualArea
+    VirtualArea.cpp
+    VirtualArea.h
+    VirtualAreaEventReceiverInterface.h
+    VirtualAreaGlobalInputHandler.cpp
+    VirtualAreaGlobalInputHandler.h
+)
+
+ADD_FILTER(
 Motor
     Motor.cpp
     Motor.h
@@ -189,6 +198,5 @@ INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/graphics/include)
 ADD_MENGINE_LIBRARY()
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} Metacode)
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}graphics${MENGINE_LIB_SUFFIX})

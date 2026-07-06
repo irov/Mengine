@@ -95,7 +95,6 @@ SERVICE_EXTERN( EasingService );
 SERVICE_EXTERN( PrototypeService );
 SERVICE_EXTERN( VocabularyService );
 SERVICE_EXTERN( UpdateService );
-SERVICE_EXTERN( LoaderService );
 SERVICE_EXTERN( RenderService );
 SERVICE_EXTERN( RenderMaterialService );
 SERVICE_EXTERN( RenderTextureService );
@@ -573,13 +572,13 @@ namespace Mengine
         {
             NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_STOP_SERVICES );
         }
-        
+
         if( SERVICE_IS_INITIALIZE( RenderServiceInterface ) == true )
         {
             RENDER_SERVICE()
                 ->destroyRenderWindow();
         }
-        
+
         if( SERVICE_IS_INITIALIZE( ThreadServiceInterface ) == true )
         {
             THREAD_SERVICE()
@@ -625,7 +624,6 @@ namespace Mengine
                 ->unloadPlugins();
         }
 
-        SERVICE_FINALIZE( LoaderService );
         SERVICE_FINALIZE( TimerService );
         SERVICE_FINALIZE( TimelineService );
         SERVICE_FINALIZE( WatchdogService );
@@ -750,7 +748,6 @@ namespace Mengine
         SERVICE_DESTROY( TextService );
         SERVICE_DESTROY( FontService );
         SERVICE_DESTROY( DataService );
-        SERVICE_DESTROY( LoaderService );
         SERVICE_DESTROY( TimerService );
         SERVICE_DESTROY( TimelineService );
         SERVICE_DESTROY( WatchdogService );
@@ -1455,7 +1452,6 @@ namespace Mengine
         BOOTSTRAPPER_SERVICE_CREATE( ChronometerService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( EasingService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( UpdateService, MENGINE_DOCUMENT_FACTORABLE );
-        BOOTSTRAPPER_SERVICE_CREATE( LoaderService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( SceneService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( Lighting3DService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( ResourceService, MENGINE_DOCUMENT_FACTORABLE );
@@ -1540,7 +1536,7 @@ namespace Mengine
 
 #if defined(MENGINE_PLUGIN_RESOURCECONVERT_STATIC)
         MENGINE_ADD_PLUGIN( ResourceConvert, "plugin ResourceConvert...", MENGINE_DOCUMENT_FACTORABLE );
-#endif        
+#endif
 
 #if defined(MENGINE_PLUGIN_RESOURCEVALIDATE_STATIC)
         MENGINE_ADD_PLUGIN( ResourceValidate, "plugin ResourceValidate...", MENGINE_DOCUMENT_FACTORABLE );

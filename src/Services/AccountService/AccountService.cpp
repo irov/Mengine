@@ -178,7 +178,7 @@ namespace Mengine
 
         m_accounts.emplace( _accountId, newAccount );
 
-        m_currentAccountId = _accountId;        
+        m_currentAccountId = _accountId;
 
         if( m_accountProvider != nullptr )
         {
@@ -315,7 +315,7 @@ namespace Mengine
             }
         }
 
-        AccountPtr account = m_accounts.erase( _accountId );        
+        AccountPtr account = m_accounts.erase( _accountId );
 
         if( account == nullptr )
         {
@@ -588,18 +588,18 @@ namespace Mengine
 
         if( config->hasValue( "SETTINGS", "GlobalAccountID", ConstString::none(), &m_globalAccountId ) == false )
         {
-            LOGGER_ERROR( "get [SETTINGS] GlobalAccountID failed" );
+            LOGGER_INFO( "account", "[SETTINGS] GlobalAccountID empty" );
         }
 
         if( config->hasValue( "SETTINGS", "DefaultAccountID", ConstString::none(), &m_defaultAccountId ) == false )
         {
-            LOGGER_ERROR( "get [SETTINGS] DefaultAccountID failed" );
+            LOGGER_INFO( "account", "[SETTINGS] DefaultAccountID empty" );
         }
 
         ConstString selectAccountId;
         if( config->hasValue( "SETTINGS", "SelectAccountID", ConstString::none(), &selectAccountId ) == false )
         {
-            LOGGER_ERROR( "get [SETTINGS] SelectAccountID failed" );
+            LOGGER_INFO( "account", "[SETTINGS] SelectAccountID empty" );
         }
 
         VectorConstString values;
@@ -698,7 +698,7 @@ namespace Mengine
         }
         else
         {
-            LOGGER_WARNING( "invalid set any accounts" );
+            LOGGER_INFO( "account", "no valid accounts found, creating new account" );
         }
 
         m_invalidateAccounts = true;
@@ -802,7 +802,7 @@ namespace Mengine
         for( const HashtableAccounts::value_type & value : m_accounts )
         {
             const ConstString & accountId = value.key;
-            
+
             j_list_account.push_back( accountId );
         }
 

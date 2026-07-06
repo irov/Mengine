@@ -1,20 +1,33 @@
 #include "AstralaxPlugin.h"
 
 #include "Interface/PrototypeServiceInterface.h"
-#include "Interface/LoaderServiceInterface.h"
+
+#if defined(MENGINE_PLUGIN_METABUF)
+#include "Interface/MetabufLoaderServiceInterface.h"
+#endif
+
 #include "Interface/ArchiveServiceInterface.h"
 
 #include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
 #include "Plugins/ResourcePrefetcherPlugin/ResourcePrefetcherServiceInterface.h"
 
 #include "ResourceAstralax.h"
+
+#if defined(MENGINE_PLUGIN_METABUF)
 #include "MetabufLoaderResourceAstralax.h"
+#endif
+
+#if defined(MENGINE_PLUGIN_JSON)
+#include "JSONLoaderResourceAstralax.h"
+#endif
 
 #include "AstralaxInterface.h"
 #include "AstralaxIncluder.h"
 #include "AstralaxEmitter.h"
 
-#include "ParticleConverterPTCToPTZ.h"
+#if defined(MENGINE_PLUGIN_METABUF)
+#   include "ParticleConverterPTCToPTZ.h"
+#endif
 
 #include "ResourceAstralaxValidator.h"
 
@@ -131,10 +144,17 @@ namespace Mengine
             VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), ResourceAstralax::getFactorableType() );
         } );
 
+#if defined(MENGINE_PLUGIN_METABUF)
         VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceAstralax::getFactorableType(), Helper::makeFactorableUnique<MetabufLoaderResourceAstralax>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
         VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ), Helper::makeFactorableUnique<MetabufLoaderResourceAstralax>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
         Helper::registerConverter<ParticleConverterPTCToPTZ>( STRINGIZE_STRING_LOCAL( "ptc2ptz" ), MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#if defined(MENGINE_PLUGIN_JSON)
+        VOCABULARY_SET( JSONLoaderInterface, STRINGIZE_STRING_LOCAL( "JSONLoader" ), ResourceAstralax::getFactorableType(), Helper::makeFactorableUnique<JSONLoaderResourceAstralax>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+        VOCABULARY_SET( JSONLoaderInterface, STRINGIZE_STRING_LOCAL( "JSONLoader" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ), Helper::makeFactorableUnique<JSONLoaderResourceAstralax>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+#endif
 
         return true;
     }
@@ -151,10 +171,17 @@ namespace Mengine
 
         Helper::removeResourcePrototype<ResourceAstralax>();
 
+#if defined(MENGINE_PLUGIN_METABUF)
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceAstralax::getFactorableType() );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );
 
         Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "ptc2ptz" ) );
+#endif
+
+#if defined(MENGINE_PLUGIN_JSON)
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "JSONLoader" ), ResourceAstralax::getFactorableType() );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "JSONLoader" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );
+#endif
 
         SERVICE_FINALIZE( AstralaxService );
     }

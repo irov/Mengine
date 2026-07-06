@@ -109,7 +109,6 @@ SERVICE_EXTERN( PluginService );
 SERVICE_EXTERN( PrototypeService );
 SERVICE_EXTERN( FileService );
 SERVICE_EXTERN( VocabularyService );
-SERVICE_EXTERN( LoaderService );
 
 //////////////////////////////////////////////////////////////////////////
 extern "C"
@@ -289,7 +288,7 @@ namespace Mengine
         SERVICE_CREATE( DateTimeSystem, MENGINE_DOCUMENT_FUNCTION );
 
         SERVICE_CREATE( Win32KernelService, MENGINE_DOCUMENT_FUNCTION );
-        
+
         SERVICE_CREATE( NotificationService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( OptionsService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( FactoryService, MENGINE_DOCUMENT_FUNCTION );
@@ -312,7 +311,7 @@ namespace Mengine
         SERVICE_CREATE( CodecService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( DataService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( ThreadService, MENGINE_DOCUMENT_FUNCTION );
-        SERVICE_CREATE( MemoryService, MENGINE_DOCUMENT_FUNCTION );        
+        SERVICE_CREATE( MemoryService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( TimelineService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( TimepipeService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( ModuleService, MENGINE_DOCUMENT_FUNCTION );
@@ -324,7 +323,6 @@ namespace Mengine
 
         SERVICE_CREATE( FileService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( ConfigService, MENGINE_DOCUMENT_FUNCTION );
-        SERVICE_CREATE( LoaderService, MENGINE_DOCUMENT_FUNCTION );
 
         SERVICE_CREATE( FileSystem, MENGINE_DOCUMENT_FUNCTION );
 
@@ -1338,7 +1336,7 @@ static bool run()
     WCHAR python3LibPathItem[MENGINE_MAX_PATH + 1] = {L'\0'};
     Mengine::StdString::wcscpy_safe( python3LibPathItem, python3LibPath, MENGINE_MAX_PATH );
 
-    wchar_t * token;    
+    wchar_t * token;
 
 #ifdef MENGINE_COMPILER_MSVC
     wchar_t * context;
@@ -1376,7 +1374,7 @@ static bool run()
 #else
     token = ::wcstok( python3LibPathItem, L";" );
 #endif
-    
+
     while( token != nullptr )
     {
         WCHAR token_site[MENGINE_MAX_PATH + 1] = {L'\0'};

@@ -2,8 +2,6 @@
 
 #include "Config/Config.h"
 
-#import "Environment/Apple/AppleEvent.h"
-
 #import <UIKit/UIKit.h>
 
 @protocol iOSPluginInterface <NSObject>
@@ -22,8 +20,6 @@
 - (void)onStopBegin;
 - (void)onStopEnd;
 - (void)onFinalize;
-
-- (void)onEvent:(AppleEvent *)event args:(NSArray *)args;
 
 #pragma mark - UISceneSession
 

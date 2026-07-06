@@ -1,18 +1,20 @@
 #import "MacOSEnvironmentService.h"
 
-#include "Interface/PlatformServiceInterface.h"
+#import "Interface/PlatformServiceInterface.h"
 
+#import "Environment/Apple/AppleBundle.h"
 #import "Environment/MacOS/MacOSApplication.h"
 
-#include "Kernel/Logger.h"
+#import "Kernel/Logger.h"
 
-#include "Config/StdString.h"
+#import "Config/StdString.h"
 
 #import <Foundation/Foundation.h>
 #import <SystemConfiguration/SystemConfiguration.h>
 #import <Cocoa/Cocoa.h>
 
 #include <sys/sysctl.h>
+#include <unistd.h>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( EnvironmentService, Mengine::MacOSEnvironmentService );
@@ -21,6 +23,11 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     MacOSEnvironmentService::MacOSEnvironmentService()
+        : m_installTimestamp( 0 )
+        , m_installRND( 0 )
+        , m_sessionTimestamp( 0 )
+        , m_sessionIndex( 0 )
+        , m_sessionRND( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -30,7 +37,53 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MacOSEnvironmentService::_initializeService()
     {
-        //Empty
+        Char hostName[MENGINE_ENVIRONMENT_USER_MAXNAME] = {'\0'};
+        if( ::gethostname( hostName, MENGINE_ENVIRONMENT_USER_MAXNAME ) == 0 )
+        {
+            m_userName.assign( hostName );
+        }
+
+        Char deviceModel[MENGINE_ENVIRONMENT_DEVICE_MODEL_MAXNAME] = {'\0'};
+        size_t deviceModelSize = MENGINE_ENVIRONMENT_DEVICE_MODEL_MAXNAME;
+        if( ::sysctlbyname( "hw.model", deviceModel, &deviceModelSize, NULL, 0 ) == 0 )
+        {
+            m_deviceModel.assign( deviceModel );
+        }
+
+        NSString * language = [[NSLocale preferredLanguages] firstObject];
+        m_deviceLanguage.assign( language != nil ? [language UTF8String] : "" );
+
+        m_osFamily.assign( "MacOS" );
+
+        NSString * systemVersion = [[NSProcessInfo processInfo] operatingSystemVersionString];
+        m_osVersion.assign( systemVersion != nil ? [systemVersion UTF8String] : "" );
+
+        NSString * bundleIdentifier = [AppleBundle getIdentifier];
+        m_bundleId.assign( bundleIdentifier != nil ? [bundleIdentifier UTF8String] : "" );
+
+        NSString * sessionId = [MacOSApplication.sharedInstance getSessionId];
+        m_sessionId.assign( sessionId != nil ? [sessionId UTF8String] : "" );
+
+        NSString * installId = [MacOSApplication.sharedInstance getInstallId];
+        m_installId.assign( installId != nil ? [installId UTF8String] : "" );
+
+        NSInteger installTimestamp = [MacOSApplication.sharedInstance getInstallTimestamp];
+        m_installTimestamp = (Timestamp)installTimestamp;
+
+        NSString * installVersion = [MacOSApplication.sharedInstance getInstallVersion];
+        m_installVersion.assign( installVersion != nil ? [installVersion UTF8String] : "" );
+
+        NSInteger installRND = [MacOSApplication.sharedInstance getInstallRND];
+        m_installRND = (int64_t)installRND;
+
+        NSInteger sessionTimestamp = [MacOSApplication.sharedInstance getSessionTimestamp];
+        m_sessionTimestamp = (Timestamp)sessionTimestamp;
+
+        NSInteger sessionIndex = [MacOSApplication.sharedInstance getSessionIndex];
+        m_sessionIndex = (int64_t)sessionIndex;
+
+        NSInteger sessionRND = [MacOSApplication.sharedInstance getSessionRND];
+        m_sessionRND = (int64_t)sessionRND;
 
         return true;
     }
@@ -40,123 +93,87 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t MacOSEnvironmentService::getDeviceName( Char * const _deviceName, size_t _capacity ) const
+    void MacOSEnvironmentService::getUserName( Char * const _userName ) const
     {
-        ::gethostname( _deviceName, _capacity );
-        
-        size_t len = MENGINE_STRLEN( _deviceName );
-
-        return len;
+        m_userName.copy( _userName );
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t MacOSEnvironmentService::getDeviceModel( Char * const _deviceModel, size_t _capacity ) const
+    void MacOSEnvironmentService::getDeviceModel( Char * const _deviceModel ) const
     {
-        size_t size;
-        ::sysctlbyname("hw.model", NULL, &size, NULL, 0);
-        
-        if( size >= _capacity )
-        {
-            return 0;
-        }
-        
-        ::sysctlbyname("hw.model", _deviceModel, &size, NULL, 0);
-
-        return size;
+        m_deviceModel.copy( _deviceModel );
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t MacOSEnvironmentService::getDeviceLanguage( Char * const _deviceName, size_t _capacity ) const
+    void MacOSEnvironmentService::getDeviceLanguage( Char * const _deviceLanguage ) const
     {
-        NSString * language = [[NSLocale preferredLanguages] firstObject];
-
-        MENGINE_STRNCPY( _deviceName, [language UTF8String], _capacity );
-
-        return language.length;
+        m_deviceLanguage.copy( _deviceLanguage );
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t MacOSEnvironmentService::getOSFamily( Char * _osFamily, size_t _capacity ) const
+    void MacOSEnvironmentService::getOSFamily( Char * const _osFamily ) const
     {
-        size_t len = MENGINE_STRCPY_STATIC( _osFamily, "MacOS", _capacity );
-
-        return len;
+        m_osFamily.copy( _osFamily );
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t MacOSEnvironmentService::getOSVersion( Char * const _deviceName, size_t _capacity ) const
+    void MacOSEnvironmentService::getOSVersion( Char * const _osVersion ) const
     {
-        NSString * systemVersion = [[NSProcessInfo processInfo] operatingSystemVersionString];
-
-        MENGINE_STRNCPY( _deviceName, [systemVersion UTF8String], _capacity );
-
-        return systemVersion.length;
+        m_osVersion.copy( _osVersion );
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t MacOSEnvironmentService::getBundleId( Char * const _bundleId, size_t _capacity ) const
+    void MacOSEnvironmentService::getBundleId( Char * const _bundleId ) const
     {
-        NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
-
-        MENGINE_STRNCPY( _bundleId, [bundleIdentifier UTF8String], _capacity );
-
-        return bundleIdentifier.length;
+        m_bundleId.copy( _bundleId );
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t MacOSEnvironmentService::getSessionId( Char * const _sessionId, size_t _capacity ) const
+    void MacOSEnvironmentService::getSessionId( Char * const _sessionId ) const
     {
-        NSString * sessionId = [MacOSApplication.sharedInstance getSessionId];
-        
-        MENGINE_STRNCPY( _sessionId, [sessionId UTF8String], _capacity );
-
-        return sessionId.length;
+        m_sessionId.copy( _sessionId );
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t MacOSEnvironmentService::getInstallId( Char * const _installId, size_t _capacity ) const
+    void MacOSEnvironmentService::getInstallId( Char * const _installId ) const
     {
-        NSString * installId = [MacOSApplication.sharedInstance getInstallId];
-        
-        MENGINE_STRNCPY( _installId, [installId UTF8String], _capacity );
-
-        return installId.length;
+        m_installId.copy( _installId );
     }
     //////////////////////////////////////////////////////////////////////////
-    int64_t MacOSEnvironmentService::getInstallTimestamp() const
+    Timestamp MacOSEnvironmentService::getInstallTimestamp() const
     {
-        NSInteger installTimestamp = [MacOSApplication.sharedInstance getInstallTimestamp];
-        
-        return installTimestamp;
+        return m_installTimestamp;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t MacOSEnvironmentService::getInstallVersion( Char * const _installVersion, size_t _capacity ) const
+    void MacOSEnvironmentService::getInstallVersion( Char * const _installVersion ) const
     {
-        NSString * installVersion = [MacOSApplication.sharedInstance getInstallVersion];
-        
-        MENGINE_STRNCPY( _installVersion, [installVersion UTF8String], _capacity );
-
-        return installVersion.length;
+        m_installVersion.copy( _installVersion );
     }
     //////////////////////////////////////////////////////////////////////////
     int64_t MacOSEnvironmentService::getInstallRND() const
     {
-        NSInteger installRND = [MacOSApplication.sharedInstance getInstallRND];
-        
-        return installRND;
+        return m_installRND;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Timestamp MacOSEnvironmentService::getSessionTimestamp() const
+    {
+        return m_sessionTimestamp;
     }
     //////////////////////////////////////////////////////////////////////////
     int64_t MacOSEnvironmentService::getSessionIndex() const
     {
-        NSInteger sessionIndex = [MacOSApplication.sharedInstance getSessionIndex];
-        
-        return sessionIndex;
+        return m_sessionIndex;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int64_t MacOSEnvironmentService::getSessionRND() const
+    {
+        return m_sessionRND;
     }
     //////////////////////////////////////////////////////////////////////////
     bool MacOSEnvironmentService::openUrlInDefaultBrowser( const Char * _url )
     {
         NSString * urlString = [NSString stringWithUTF8String:_url];
-        
+
         NSURL * url = [NSURL URLWithString:urlString];
-        
+
         if( url == nil )
         {
             return false;
         }
-        
+
         if( [[NSWorkspace sharedWorkspace] openURL:url] == NO )
         {
             return false;
@@ -173,24 +190,24 @@ namespace Mengine
         NSString * technically = [NSString stringWithUTF8String:_technically];
 
         MENGINE_UNUSED( technically );
-        
+
         NSString * mailString = [NSString stringWithFormat:@"mailto:%@?subject=%@&body=%@"
                                 , email
                                 , [subject stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]
                                 , [body stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
-        
+
         NSURL *url = [NSURL URLWithString:mailString];
-        
+
         if( url == nil )
         {
             return false;
         }
-        
+
         if( [[NSWorkspace sharedWorkspace] openURL:url] == NO )
         {
             return false;
         }
-        
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

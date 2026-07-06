@@ -1,0 +1,46 @@
+{
+    "Materials": {
+        "Material": [
+            {
+                "Path": "Materials/Shader_DX11.json",
+                "RenderPlatform": "DX11"
+            },
+            {
+                "Path": "Materials/Standart_DX11.json",
+                "RenderPlatform": "DX11"
+            },
+            {
+                "Path": "Materials/Shader_DX9.json",
+                "RenderPlatform": "DX9"
+            },
+            {
+                "Path": "Materials/Standart_DX9.json",
+                "RenderPlatform": "DX9"
+            },
+            {
+                "Path": "Materials/Shader_Metal.json",
+                "RenderPlatform": "Metal"
+            },
+            {
+                "Path": "Materials/Standart_Metal.json",
+                "RenderPlatform": "Metal"
+            },
+            {
+                "Path": "Materials/Shader_OpenGL.json",
+                "RenderPlatform": "OpenGL"
+            },
+            {
+                "Path": "Materials/Standart_OpenGL.json",
+                "RenderPlatform": "OpenGL"
+            },
+            {
+                "Path": "Materials/Shader_OpenGLES.json",
+                "RenderPlatform": "OpenGLES"
+            },
+            {
+                "Path": "Materials/Standart_OpenGLES.json",
+                "RenderPlatform": "OpenGLES"
+            }
+        ]
+    }
+}

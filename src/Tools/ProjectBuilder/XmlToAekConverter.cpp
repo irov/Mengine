@@ -9,7 +9,7 @@
 #include "Interface/FileServiceInterface.h"
 #include "Interface/PluginInterface.h"
 #include "Interface/ConfigServiceInterface.h"
-#include "Interface/LoaderServiceInterface.h"
+#include "Interface/MetabufLoaderServiceInterface.h"
 #include "Interface/ConverterServiceInterface.h"
 
 #include "Kernel/Logger.h"
@@ -42,7 +42,7 @@ namespace Mengine
 
         FilePath fp_protocolPath = Helper::stringizeFilePath( utf8_protocolPath );
 
-        LOADER_SERVICE()
+        METABUF_LOADER_SERVICE()
             ->setProtocolPath( fp_protocolPath );
 
         String framePackPath = utf8_xmlPath;
@@ -93,4 +93,3 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
 }
-

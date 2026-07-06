@@ -2,7 +2,11 @@
 
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
-#include "Interface/LoaderServiceInterface.h"
+
+#if defined(MENGINE_PLUGIN_METABUF)
+#include "Interface/MetabufLoaderServiceInterface.h"
+#endif
+
 #include "Interface/DebuggerBoundingBoxInterface.h"
 
 #include "ResourceSpineAtlasDefault.h"
@@ -13,9 +17,17 @@
 
 #include "Spine.h"
 
-#include "LoaderResourceSpineAtlasDefault.h"
-#include "LoaderResourceSpineAtlasTexturepacker.h"
-#include "LoaderResourceSpineSkeleton.h"
+#if defined(MENGINE_PLUGIN_METABUF)
+#include "MetabufLoaderResourceSpineAtlasDefault.h"
+#include "MetabufLoaderResourceSpineAtlasTexturepacker.h"
+#include "MetabufLoaderResourceSpineSkeleton.h"
+#endif
+
+#if defined(MENGINE_PLUGIN_JSON)
+#include "JSONLoaderResourceSpineAtlasDefault.h"
+#include "JSONLoaderResourceSpineAtlasTexturepacker.h"
+#include "JSONLoaderResourceSpineSkeleton.h"
+#endif
 
 #include "Kernel/AllocatorHelper.h"
 #include "Kernel/ResourcePrototypeGenerator.h"
@@ -104,21 +116,29 @@ namespace Mengine
             return false;
         }
 
-        PLUGIN_SERVICE_WAIT( LoaderServiceInterface, [this]()
+#if defined(MENGINE_PLUGIN_METABUF)
+        PLUGIN_SERVICE_WAIT( MetabufLoaderServiceInterface, [this]()
         {
-            VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceSpineAtlasDefault::getFactorableType(), Helper::makeFactorableUnique<LoaderResourceSpineAtlasDefault>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
-            VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceSpineAtlasTexturepacker::getFactorableType(), Helper::makeFactorableUnique<LoaderResourceSpineAtlasTexturepacker>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
-            VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceSpineSkeleton::getFactorableType(), Helper::makeFactorableUnique<LoaderResourceSpineSkeleton>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+            VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceSpineAtlasDefault::getFactorableType(), Helper::makeFactorableUnique<MetabufLoaderResourceSpineAtlasDefault>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+            VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceSpineAtlasTexturepacker::getFactorableType(), Helper::makeFactorableUnique<MetabufLoaderResourceSpineAtlasTexturepacker>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+            VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceSpineSkeleton::getFactorableType(), Helper::makeFactorableUnique<MetabufLoaderResourceSpineSkeleton>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
             return true;
         } );
 
-        PLUGIN_SERVICE_LEAVE( LoaderServiceInterface, [this]()
+        PLUGIN_SERVICE_LEAVE( MetabufLoaderServiceInterface, [this]()
         {
             VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceSpineAtlasDefault::getFactorableType() );
             VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceSpineAtlasTexturepacker::getFactorableType() );
             VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceSpineSkeleton::getFactorableType() );
         } );
+#endif
+
+#if defined(MENGINE_PLUGIN_JSON)
+        VOCABULARY_SET( JSONLoaderInterface, STRINGIZE_STRING_LOCAL( "JSONLoader" ), ResourceSpineAtlasDefault::getFactorableType(), Helper::makeFactorableUnique<JSONLoaderResourceSpineAtlasDefault>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+        VOCABULARY_SET( JSONLoaderInterface, STRINGIZE_STRING_LOCAL( "JSONLoader" ), ResourceSpineAtlasTexturepacker::getFactorableType(), Helper::makeFactorableUnique<JSONLoaderResourceSpineAtlasTexturepacker>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+        VOCABULARY_SET( JSONLoaderInterface, STRINGIZE_STRING_LOCAL( "JSONLoader" ), ResourceSpineSkeleton::getFactorableType(), Helper::makeFactorableUnique<JSONLoaderResourceSpineSkeleton>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+#endif
 
         VOCABULARY_SET( DebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), Spine::getFactorableType(), Helper::makeFactorableUnique<SpineDebuggerBoundingBox>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
@@ -133,6 +153,12 @@ namespace Mengine
     void SpinePlugin::_finalizePlugin()
     {
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), Spine::getFactorableType() );
+
+#if defined(MENGINE_PLUGIN_JSON)
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "JSONLoader" ), ResourceSpineAtlasDefault::getFactorableType() );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "JSONLoader" ), ResourceSpineAtlasTexturepacker::getFactorableType() );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "JSONLoader" ), ResourceSpineSkeleton::getFactorableType() );
+#endif
 
         Helper::removeResourcePrototype<ResourceSpineAtlasDefault>();
         Helper::removeResourcePrototype<ResourceSpineAtlasTexturepacker>();

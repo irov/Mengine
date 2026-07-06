@@ -2,9 +2,14 @@ MENGINE_PROJECT(MetabufPlugin)
 
 ADD_FILTER(
 src
+    MetabufLoaderService.cpp
+    MetabufLoaderService.h
+
     MetabufPackageLoader.cpp
     MetabufPackageLoader.h
-    
+    MetabufPackageContentLoader.cpp
+    MetabufPackageContentLoader.h
+
     MetabufLoaderResourceCursorICO.cpp
     MetabufLoaderResourceCursorICO.h
     MetabufLoaderResourceCursorSystem.cpp
@@ -49,5 +54,6 @@ ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_METABUF)
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}math${MENGINE_LIB_SUFFIX})
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}metabuf${MENGINE_LIB_SUFFIX})
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} Metacode)
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Engine)

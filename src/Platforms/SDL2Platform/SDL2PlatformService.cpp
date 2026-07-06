@@ -2,6 +2,7 @@
 
 #include "Interface/LoggerInterface.h"
 #include "Interface/FileServiceInterface.h"
+#include "Interface/FileSystemInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/InputServiceInterface.h"
 #include "Interface/RenderServiceInterface.h"
@@ -104,7 +105,7 @@ namespace Mengine
     SDL2PlatformService::~SDL2PlatformService()
     {
     }
-    //////////////////////////////////////////////////////////////////////////    
+    //////////////////////////////////////////////////////////////////////////
     size_t SDL2PlatformService::getCurrentPath( Char * const _currentPath ) const
     {
 #if defined(MENGINE_PLATFORM_WINDOWS)
@@ -218,7 +219,7 @@ namespace Mengine
         );
 
         StdString::strcpy_safe( _folderName, Project_ExtraPreferencesFolderName.c_str(), MENGINE_MAX_PATH );
-        
+
         size_t Project_ExtraPreferencesFolderNameLen = Project_ExtraPreferencesFolderName.size();
 
         return Project_ExtraPreferencesFolderNameLen;
@@ -227,7 +228,7 @@ namespace Mengine
     bool SDL2PlatformService::getUserLocaleLanguage( Char * const _userLocaleLanguage ) const
     {
         SDL_Locale * locale = SDL_GetPreferredLocales();
-        
+
         if( locale == nullptr )
         {
             LOGGER_ERROR( "invalid get preferred locales: %s"
@@ -260,7 +261,7 @@ namespace Mengine
     bool SDL2PlatformService::getMaxClientResolution( Resolution * const _resolution ) const
     {
         int displayIndex = -1;
-        
+
         if( m_sdlWindow == nullptr )
         {
             displayIndex = 0;
@@ -773,9 +774,9 @@ namespace Mengine
 
 #if defined(MENGINE_PLATFORM_MACOS)
         //cppcheck-suppress syntaxError
-        m_macOSWorkspace = [[MacOSWorkspace alloc] initialize];        
+        m_macOSWorkspace = [[MacOSWorkspace alloc] init];
 #endif
-        
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -816,7 +817,7 @@ namespace Mengine
             m_sdlInput->finalize();
             m_sdlInput = nullptr;
         }
-        
+
 #if defined(MENGINE_PLATFORM_MACOS)
         m_macOSWorkspace = nil;
 #endif
@@ -842,7 +843,7 @@ namespace Mengine
         this->tickPlatform( 0.f );
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_RUN );
-        
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -932,7 +933,7 @@ namespace Mengine
             }
 
             double currentTime = Helper::getElapsedTime();
-            
+
             float frameTime = (float)(currentTime - m_prevTime);
 
             m_prevTime = currentTime;
@@ -1005,7 +1006,7 @@ namespace Mengine
         {
             SDL_HideWindow( m_sdlWindow );
         }
-        
+
         this->pushQuitEvent_();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1526,7 +1527,7 @@ namespace Mengine
         {
             SDL_HideWindow( m_sdlWindow );
         }
-        
+
         this->pushQuitEvent_();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1689,10 +1690,10 @@ namespace Mengine
         if( Helper::MacOSGetPicturesDirectory( path_pictures ) == false )
         {
             LOGGER_ERROR( "invalid get pictures directory" );
-            
+
             return false;
         }
-        
+
         Path path_file = {'\0'};
         MENGINE_SNPRINTF( path_file, MENGINE_MAX_PATH, "%s%s%s", path_pictures, _directoryPath, _filePath );
 
@@ -1702,7 +1703,7 @@ namespace Mengine
                 , path_file
             );
         }
-        
+
         Uint32 flags = SDL_GetWindowFlags( m_sdlWindow );
 
         if( (flags & SDL_WINDOW_FULLSCREEN) == SDL_WINDOW_FULLSCREEN )
@@ -1723,11 +1724,12 @@ namespace Mengine
         if( Helper::MacOSGetPicturesDirectory( path_pictures ) == false )
         {
             LOGGER_ERROR( "invalid get pictures directory" );
-            
+
             return false;
         }
 
-        if( this->createDirectory( path_pictures, _directoryPath ) == false )
+        if( FILE_SYSTEM()
+            ->createDirectory( path_pictures, _directoryPath ) == false )
         {
             LOGGER_ERROR( "invalid create directory '%s%s'"
                 , path_pictures
@@ -1786,11 +1788,12 @@ namespace Mengine
         if( Helper::MacOSGetMusicDirectory( path_music ) == false )
         {
             LOGGER_ERROR( "invalid get music directory" );
-            
+
             return false;
         }
 
-        if( this->createDirectory( path_music, _directoryPath ) == false )
+        if( FILE_SYSTEM()
+            ->createDirectory( path_music, _directoryPath ) == false )
         {
             LOGGER_ERROR( "invalid create directory '%s%s'"
                 , path_music
@@ -2218,7 +2221,7 @@ namespace Mengine
         LOGGER_INFO( "platform", "num video displays: %d"
             , SDL_GetNumVideoDisplays()
         );
-        
+
         const Char * projectTitle_str = m_projectTitle.c_str();
 
         SDL_DisplayMode mode;
@@ -2314,7 +2317,7 @@ namespace Mengine
                 MENGINE_MESSAGE_CASE( SDL_APP_DIDENTERBACKGROUND, "The application did enter the background and may not get CPU for some time Called on iOS in applicationDidEnterBackground Called on Android in onPause" );
                 MENGINE_MESSAGE_CASE( SDL_APP_WILLENTERFOREGROUND, "The application is about to enter the foreground Called on iOS in applicationWillEnterForeground Called on Android in onResume" );
                 MENGINE_MESSAGE_CASE( SDL_APP_DIDENTERFOREGROUND, "The application is now interactive Called on iOS in applicationDidBecomeActive Called on Android in onResume" );
-                
+
                 MENGINE_MESSAGE_CASE( SDL_LOCALECHANGED, "The user's locale preferences have changed." );
 
                 /* Display events */
@@ -2439,7 +2442,7 @@ namespace Mengine
     bool SDL2PlatformService::processEvents_()
     {
         bool shouldQuit = false;
-        
+
         SDL_Event sdlEvent;
         while( SDL_PollEvent( &sdlEvent ) != 0 )
         {

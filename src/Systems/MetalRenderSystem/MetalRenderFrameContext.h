@@ -9,6 +9,7 @@ namespace Mengine
     {
         id<MTLCommandBuffer> commandBuffer;
         id<MTLRenderCommandEncoder> renderEncoder;
+        MTLRenderPassDescriptor * renderPassDescriptor;
         id<MTLTexture> drawableTexture;
         id<MTLTexture> depthStencilTexture;
     };

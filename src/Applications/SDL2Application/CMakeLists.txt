@@ -2,11 +2,11 @@ MENGINE_PROJECT(SDL2Application)
 
 if(MENGINE_TARGET_APPLE)
     SET(MENGINE_APPLE_APPLICATION_DELEGATE_STRING "")
-    
+
     foreach(DELEGATE ${APPLICATION_APPLE_APPLICATION_DELEGATE})
         STRING(APPEND MENGINE_APPLE_APPLICATION_DELEGATE_STRING "@\"${DELEGATE}\", ")
     endforeach()
-    
+
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/MacOSApplicationDelegates.mm.in ${MENGINE_SOLUTIONS_CONFIG_DIR}/src/Configuration/MacOSApplicationDelegates.mm @ONLY)
 endif()
 
@@ -67,7 +67,7 @@ LINK_DIRECTORIES(${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})
 
 if(MENGINE_TARGET_WINDOWS)
     set(CMAKE_CXX_STACK_SIZE 4194304)
-    
+
     ADD_MENGINE_EXECUTABLE_WIN32()
 endif()
 
@@ -85,37 +85,37 @@ if(MENGINE_TARGET_UWP)
                 ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_PACKAGE}
             )
         endif()
-        
+
         if(MENGINE_APPLICATION_DEPLOY_VISUAL_ASSETS)
             file(GLOB_RECURSE APPX_VISUAL_ASSETS ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_VISUAL_ASSETS}/*)
-            
+
             foreach(DATA ${APPX_VISUAL_ASSETS})
                 file(RELATIVE_PATH RELPATH ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_VISUAL_ASSETS} ${DATA})
                 get_filename_component(RES_LOC ${RELPATH} PATH)
-                
+
                 set_source_files_properties(${DATA} PROPERTIES VS_DEPLOYMENT_CONTENT 1)
-                
+
                 string(REPLACE "/" "\\" ide_group_name "AppXVisualAssets/${RES_LOC}")
                 source_group(${ide_group_name} FILES ${DATA})
             endforeach()
-            
+
             SET(SRC_FILES ${SRC_FILES} ${APPX_VISUAL_ASSETS})
         endif()
-        
+
         if(MENGINE_APPLICATION_DEPLOY_DATA)
             if(NOT EXISTS "${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_DATA}")
                 MESSAGE(FATAL_ERROR "Deploy data path setup invalid path '${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_DATA}'")
             endif()
 
             file(GLOB_RECURSE APPX_DATA ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_DATA}/*)
-            
+
             foreach(DATA ${APPX_DATA})
                 file(RELATIVE_PATH RELPATH ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_DATA} ${DATA})
                 get_filename_component(RES_LOC ${RELPATH} PATH)
-                
+
                 set_source_files_properties(${DATA} PROPERTIES VS_DEPLOYMENT_CONTENT 1)
                 set_source_files_properties(${DATA} PROPERTIES VS_DEPLOYMENT_LOCATION "${RES_LOC}")
-                
+
                 string(REPLACE "/" "\\" ide_group_name "AppXData/${RES_LOC}")
                 source_group(${ide_group_name} FILES ${DATA})
             endforeach()
@@ -123,9 +123,9 @@ if(MENGINE_TARGET_UWP)
             SET(SRC_FILES ${SRC_FILES} ${APPX_DATA})
         endif()
     endif()
-    
+
     ADD_MENGINE_EXECUTABLE_WIN32()
-    
+
     if(MENGINE_DEPLOY_PATH)
         if(EXISTS "${MENGINE_DEPLOY_PATH}/project_deploy.cmake")
             include("${MENGINE_DEPLOY_PATH}/project_deploy.cmake")
@@ -139,39 +139,39 @@ endif()
 
 if(MENGINE_TARGET_APPLE)
     set(MENGINE_APPLE_RESOURCES)
-    
+
     if(MENGINE_DEPLOY_PATH)
         if(EXISTS "${MENGINE_DEPLOY_PATH}/project_prepare.cmake")
             include("${MENGINE_DEPLOY_PATH}/project_prepare.cmake")
         endif()
     endif()
-    
+
     MESSAGE("MENGINE_APPLICATION_DEPLOY_PLIST: ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_PLIST}")
-    
+
     if(NOT EXISTS "${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_PLIST}")
         MESSAGE(FATAL_ERROR "Deploy plist path setup invalid path '${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_PLIST}'")
     endif()
-    
+
     find_package(Python3 REQUIRED COMPONENTS Interpreter)
-    
+
     if(NOT Python3_Interpreter_FOUND)
         message(FATAL_ERROR "PythonInterp not found.")
     endif()
-    
+
     set(MENGINE_MERGE_PLIST "${MENGINE_SOLUTIONS_CONFIG_DIR}/res/Configuration/info.plist.in")
-    
+
     if(APPLICATION_APPLE_SKADNETWORKITEMS_PLISTS)
         MESSAGE("APPLICATION_APPLE_SKADNETWORKITEMS_PLISTS: ${APPLICATION_APPLE_SKADNETWORKITEMS_PLISTS}")
-        
+
         set(PYTHON_MERGE_PLISTS_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/merge_skadnetworkitems_plists.py")
-    
+
         execute_process(
             COMMAND ${Python3_EXECUTABLE} ${PYTHON_MERGE_PLISTS_SCRIPT} ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_PLIST} ${APPLICATION_APPLE_SKADNETWORKITEMS_PLISTS} ${MENGINE_MERGE_PLIST}
             RESULT_VARIABLE MENGINE_PROCESS_MERGE_PLISTS_RESULT
             OUTPUT_VARIABLE MENGINE_PROCESS_MERGE_PLISTS_OUTPUT
             ERROR_VARIABLE MENGINE_PROCESS_MERGE_PLISTS_ERROR
         )
-        
+
         if(NOT MENGINE_PROCESS_MERGE_PLISTS_RESULT EQUAL 0)
             message(FATAL_ERROR "Python script failed with result: ${MENGINE_PROCESS_MERGE_PLISTS_RESULT} output: ${MENGINE_PROCESS_MERGE_PLISTS_OUTPUT} error: ${MENGINE_PROCESS_MERGE_PLISTS_ERROR}")
         else()
@@ -180,19 +180,19 @@ if(MENGINE_TARGET_APPLE)
     else()
         configure_file(${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_PLIST} ${MENGINE_MERGE_PLIST} COPYONLY)
     endif()
-    
+
     if(NOT EXISTS ${MENGINE_MERGE_PLIST})
         message(FATAL_ERROR "File ${MENGINE_MERGE_PLIST} does not exist.")
     endif()
-    
+
     get_filename_component(MENGINE_MERGE_PLIST_PATH ${MENGINE_MERGE_PLIST} PATH)
     get_filename_component(MENGINE_MERGE_PLIST_NAME ${MENGINE_MERGE_PLIST} NAME)
 
     message("MENGINE_MERGE_PLIST_PATH: ${MENGINE_MERGE_PLIST_PATH}")
     message("MENGINE_MERGE_PLIST_NAME: ${MENGINE_MERGE_PLIST_NAME}")
-    
+
     set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${MENGINE_MERGE_PLIST_PATH})
-    
+
     if(APPLICATION_APPLE_RESOURCES)
         foreach(RESOURCE ${APPLICATION_APPLE_RESOURCES})
             MESSAGE("Add deploy resources: ${MENGINE_DEPLOY_PATH}/${RESOURCE}")
@@ -201,38 +201,38 @@ if(MENGINE_TARGET_APPLE)
             source_group("deploy_resources" FILES ${MENGINE_DEPLOY_PATH}/${RESOURCE})
         endforeach()
     endif()
-    
+
     if(MENGINE_APPLICATION_DEPLOY_ICONS)
         MESSAGE("Add deploy icons: ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_ICONS}")
-        
+
         if(NOT EXISTS "${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_ICONS}")
             MESSAGE(FATAL_ERROR "Deploy icons path setup invalid path '${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_ICONS}'")
         endif()
-        
+
         set_source_files_properties(${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_ICONS} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
         set(MENGINE_APPLE_RESOURCES ${MENGINE_APPLE_RESOURCES} ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_ICONS})
         source_group("deploy_icons" FILES ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_ICONS})
     endif()
-    
+
     if(MENGINE_APPLICATION_DEPLOY_MEDIA)
         MESSAGE("Add deploy media: ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_MEDIA}")
-        
+
         if(NOT EXISTS "${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_MEDIA}")
             MESSAGE(FATAL_ERROR "Deploy media path setup invalid path '${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_MEDIA}'")
         endif()
-        
+
         set_source_files_properties(${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_MEDIA} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
         set(MENGINE_APPLE_RESOURCES ${MENGINE_APPLE_RESOURCES} ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_MEDIA})
         source_group("deploy_media" FILES ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_MEDIA})
     endif()
-        
+
     if(MENGINE_APPLICATION_DEPLOY_STORYBOARD)
         MESSAGE("Add deploy storyboard: ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_STORYBOARD_RESOURCE}")
-        
+
         if(NOT EXISTS "${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_STORYBOARD_RESOURCE}")
             MESSAGE(FATAL_ERROR "Deploy storyboard path setup invalid path '${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_STORYBOARD_RESOURCE}'")
         endif()
-        
+
         file(GLOB_RECURSE FILES ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_STORYBOARD_RESOURCE}/*)
         list(FILTER FILES EXCLUDE REGEX ".*.DS_Store$")
         foreach(FILE ${FILES})
@@ -241,18 +241,18 @@ if(MENGINE_TARGET_APPLE)
             set(MENGINE_APPLE_RESOURCES ${MENGINE_APPLE_RESOURCES} ${FILE})
         endforeach()
     endif()
-    
+
     if(MENGINE_APPLICATION_DEPLOY_DATA)
         if(NOT EXISTS "${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_DATA}")
             MESSAGE(FATAL_ERROR "Deploy data path setup invalid path '${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_DATA}'")
         endif()
-    
+
         file(GLOB_RECURSE FILES ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_DATA}/*)
         list(FILTER FILES EXCLUDE REGEX ".*.DS_Store$")
         foreach(FILE ${FILES})
             file(RELATIVE_PATH RES ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_DATA} ${FILE})
             get_filename_component(RES_LOC ${RES} PATH)
-            
+
             set_source_files_properties(${FILE} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources/Data/${RES_LOC}" HEADER_FILE_ONLY TRUE)
             string(REPLACE "/" "\\" ide_group_name "deploy_data/${RES_LOC}")
             source_group(${ide_group_name} FILES ${FILE})
@@ -261,7 +261,7 @@ if(MENGINE_TARGET_APPLE)
         MESSAGE("Add data: ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_DATA}")
         set(MENGINE_APPLE_RESOURCES ${MENGINE_APPLE_RESOURCES} ${FILES})
     endif()
-    
+
     if(MENGINE_TARGET_MACOS)
         foreach(DYLIB ${APPLICATION_MACOS_DYLIB})
             MESSAGE("Add macos dylib: ${DYLIB}")
@@ -269,7 +269,7 @@ if(MENGINE_TARGET_APPLE)
             set(MENGINE_APPLE_RESOURCES ${MENGINE_APPLE_RESOURCES} ${DYLIB})
             source_group("deploy_dylib" FILES ${DYLIB})
         endforeach()
-        
+
         foreach(DYLIB_WITH_SIGN ${APPLICATION_MACOS_DYLIB_WITH_SIGN})
             MESSAGE("Add macos dylib with sign: ${DYLIB_WITH_SIGN}")
             set_source_files_properties(${DYLIB_WITH_SIGN} PROPERTIES MACOSX_PACKAGE_LOCATION "MacOS")
@@ -278,9 +278,9 @@ if(MENGINE_TARGET_APPLE)
             source_group("deploy_dylib_with_sign" FILES ${DYLIB_WITH_SIGN})
         endforeach()
     endif()
-    
+
     MESSAGE("Bundle Version: ${MENGINE_BUILD_VERSION} [${MENGINE_BUILD_NUMBER}]")
-    
+
     SET(SRC_FILES ${SRC_FILES} ${MENGINE_APPLE_RESOURCES})
 
     if(MENGINE_TARGET_MACOS)
@@ -292,15 +292,17 @@ if(MENGINE_TARGET_APPLE)
     if(MENGINE_APPLICATION_DEPLOY_CODE_SIGN_ENTITLEMENTS)
         SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES XCODE_ATTRIBUTE_CODE_SIGN_ENTITLEMENTS "${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_CODE_SIGN_ENTITLEMENTS}")
     endif()
-    
+
+    if(MENGINE_APPLICATION_DEPLOY_BUNDLE_IDENTIFIER)
+        SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER ${MENGINE_APPLICATION_DEPLOY_BUNDLE_IDENTIFIER})
+    endif()
+
     if(MENGINE_DEPLOY_PATH)
         if(EXISTS "${MENGINE_DEPLOY_PATH}/project_deploy.cmake")
             include("${MENGINE_DEPLOY_PATH}/project_deploy.cmake")
         endif()
     endif()
-    
-    get_target_property(MACOSX_BUNDLE_GUI_IDENTIFIER ${PROJECT_NAME} XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER)
-    
+
     SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES XCODE_ATTRIBUTE_GCC_GENERATE_DEBUGGING_SYMBOLS YES)
 
     if(MENGINE_BUILD_TYPE_DEBUG)
@@ -311,7 +313,7 @@ if(MENGINE_TARGET_APPLE)
 
     if(MENGINE_APPLICATION_DEPLOY_ICONS)
         get_filename_component(MENGINE_APPLICATION_DEPLOY_ICONS_NAME ${MENGINE_APPLICATION_DEPLOY_ICONS} NAME)
-    
+
         SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_ICON_FILE ${MENGINE_APPLICATION_DEPLOY_ICONS_NAME})
     endif()
 
@@ -326,7 +328,7 @@ if(MENGINE_TARGET_APPLE)
     SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES XCODE_ATTRIBUTE_SKIP_INSTALL NO)
     SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES XCODE_GENERATE_SCHEME YES)
     SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE YES)
-    
+
     set(CMAKE_XCODE_ATTRIBUTE_ONLY_ACTIVE_ARCH[variant=Release] NO CACHE STRING "CMAKE_XCODE_ATTRIBUTE_ONLY_ACTIVE_ARCH" FORCE)
     set(CMAKE_XCODE_ATTRIBUTE_ONLY_ACTIVE_ARCH[variant=Debug] YES CACHE STRING "CMAKE_XCODE_ATTRIBUTE_ONLY_ACTIVE_ARCH" FORCE)
 
@@ -397,7 +399,7 @@ if(MENGINE_PLUGIN_MENGINE_STATIC)
     if(APPLICATION_LINK_LIBRARIES)
         TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${APPLICATION_LINK_LIBRARIES})
     endif()
-    
+
     if(APPLICATION_DEPENDENCIES)
         ADD_DEPENDENCIES(${PROJECT_NAME} ${APPLICATION_DEPENDENCIES})
     endif()
@@ -405,7 +407,7 @@ endif()
 
 IF(MENGINE_TOOLCHAIN_MSVC)
     set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
-    
+
     set_property(DIRECTORY ${CMAKE_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
 ENDIF()
 

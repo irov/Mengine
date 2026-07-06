@@ -2,6 +2,16 @@
 
 #if defined(MENGINE_RENDER_OPENGL_NORMAL)
 
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
+namespace Mengine
+{
+    void initialize_GLEXT()
+    {
+        // Native macOS OpenGL exposes core symbols through the framework.
+    }
+}
+#else
+
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
 #include "Environment/SDL2/SDL2Includer.h"
 #elif defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3)
@@ -260,4 +270,5 @@ namespace Mengine
 #   undef GETGLPROC_
     }
 }
+#endif
 #endif

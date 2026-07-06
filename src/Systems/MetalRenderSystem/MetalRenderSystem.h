@@ -138,6 +138,9 @@ namespace Mengine
 
     public:
         id<MTLDevice> getMetalDevice() const override;
+        id<MTLCommandBuffer> getMetalCommandBuffer() const override;
+        id<MTLRenderCommandEncoder> getMetalRenderCommandEncoder() const override;
+        MTLRenderPassDescriptor * getMetalRenderPassDescriptor() const override;
 
     public:
         void setCurrentDrawable( id<MTLDrawable> _drawable, id<MTLTexture> _drawableTexture ) override;

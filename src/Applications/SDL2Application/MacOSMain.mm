@@ -1,4 +1,4 @@
-#include "Environment/SDL/SDLIncluder.h"
+#include "Environment/SDL2/SDL2Includer.h"
 
 #import "Environment/MacOS/MacOSProxyApplicationDelegateInterface.h"
 #import "Environment/MacOS/MacOSApplication.h"
@@ -7,14 +7,14 @@
 
 #import <Foundation/Foundation.h>
 
-#include "SDLApplication.h"
+#include "SDL2Application.h"
 
 int main( int argc, char * argv[] )
 {
     NSLog(@"🟢 Launch Megnine application");
-    
+
     [MacOSApplication.sharedInstance initialize];
-    
+
     NSArray * proxysClassed = [MacOSApplicationDelegates getApplicationDelegates];
 
     for( NSString * className in proxysClassed )
@@ -26,10 +26,10 @@ int main( int argc, char * argv[] )
             NSLog( @"🔴 [ERROR] Invalid found application delegate: %@"
                 , className
             );
-            
+
             return EXIT_FAILURE;
         }
-        
+
         id<MacOSProxyApplicationDelegateInterface> delegate = [clazz alloc];
 
         if( [delegate application] == NO )
@@ -37,12 +37,12 @@ int main( int argc, char * argv[] )
             NSLog( @"🔴 [ERROR] Invalid initialize application delegate: %@"
                 , className
             );
-            
+
             return EXIT_FAILURE;
         }
     }
-    
-    Mengine::SDLApplication application;
+
+    Mengine::SDL2Application application;
 
     if( application.bootstrap( argc, argv ) == false )
     {
@@ -67,6 +67,6 @@ int main( int argc, char * argv[] )
     application.finalize();
 
     NSLog(@"🟢 Mengine application finish");
-    
+
     return EXIT_SUCCESS;
 }

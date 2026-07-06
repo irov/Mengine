@@ -41,6 +41,8 @@
 #include "Engine/ResourceCursorICO.h"
 #include "Engine/ResourceCursorSystem.h"
 #include "Engine/ResourceWindow.h"
+#include "Engine/ResourceMesh3D.h"
+#include "Engine/ResourceSkinnedMesh3D.h"
 
 #include "Kernel/Eventable.h"
 #include "Kernel/ThreadTask.h"
@@ -180,6 +182,13 @@ namespace Mengine
         pybind::interface_<ResourceHIT, pybind::bases<ResourceTestPick>>( _kernel, "ResourceHIT", false )
             ;
 
+        pybind::interface_<ResourceMesh3D, pybind::bases<Resource>>( _kernel, "ResourceMesh3D", false )
+            ;
+
+        pybind::interface_<ResourceSkinnedMesh3D, pybind::bases<Resource>>( _kernel, "ResourceSkinnedMesh3D", false )
+            .def( "getBoneCount", &ResourceSkinnedMesh3D::getBoneCount )
+            ;
+
 #define SCRIPT_CLASS_WRAPPING( Class )\
     Helper::registerScriptWrapping<Class>(_kernel, MENGINE_DOCUMENT_FACTORABLE)
 
@@ -204,6 +213,8 @@ namespace Mengine
 
         SCRIPT_CLASS_WRAPPING( ResourceTestPick );
         SCRIPT_CLASS_WRAPPING( ResourceHIT );
+        SCRIPT_CLASS_WRAPPING( ResourceMesh3D );
+        SCRIPT_CLASS_WRAPPING( ResourceSkinnedMesh3D );
 #undef SCRIPT_CLASS_WRAPPING
 
         return true;
@@ -237,6 +248,8 @@ namespace Mengine
 
         UNSCRIPT_CLASS_WRAPPING( ResourceTestPick );
         UNSCRIPT_CLASS_WRAPPING( ResourceHIT );
+        UNSCRIPT_CLASS_WRAPPING( ResourceMesh3D );
+        UNSCRIPT_CLASS_WRAPPING( ResourceSkinnedMesh3D );
 
 #undef UNSCRIPT_CLASS_WRAPPING
     }

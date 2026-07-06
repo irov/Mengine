@@ -111,9 +111,9 @@ namespace Mengine
         return identity;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDL2ThreadSystem::sleep( uint32_t _ms )
+    void SDL2ThreadSystem::sleep( uint64_t _ms )
     {
-        SDL_Delay( _ms );
+        SDL_Delay( static_cast<Uint32>(_ms) );
     }
     //////////////////////////////////////////////////////////////////////////
     ThreadMutexInterfacePtr SDL2ThreadSystem::createMutex( const DocumentInterfacePtr & _doc )

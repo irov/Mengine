@@ -67,6 +67,12 @@
 #   elif defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
 #       include "SDL_opengl.h"
 #       include "SDL_opengl_glext.h"
+#   elif defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
+#       ifndef GL_SILENCE_DEPRECATION
+#           define GL_SILENCE_DEPRECATION
+#       endif
+#       include <OpenGL/gl3.h>
+#       include <OpenGL/gl3ext.h>
 #   else
 #       error "OpenGL not supported"
 #   endif

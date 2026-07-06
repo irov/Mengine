@@ -11,6 +11,7 @@
 
 #include "ImGUIInterface.h"
 
+#include "ImGUIRender.h"
 #include "ImGUIScriptRender.h"
 
 #include "Kernel/Logger.h"
@@ -33,11 +34,19 @@ namespace Mengine
         pybind::interface_<ImGUIScriptRender, pybind::bases<Factorable>>( _kernel, "ImGUIScriptRender", false )
             ;
 
+        pybind::interface_<ImGUIRender, pybind::bases<Node>>( _kernel, "ImGUIRender", false )
+            ;
+
+        Helper::registerScriptWrapping<ImGUIRender>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ImGUIScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
+        Helper::unregisterScriptWrapping<ImGUIRender>();
+
+        _kernel->remove_scope<ImGUIRender>();
         _kernel->remove_scope<ImGUIScriptRender>();
     }
     //////////////////////////////////////////////////////////////////////////

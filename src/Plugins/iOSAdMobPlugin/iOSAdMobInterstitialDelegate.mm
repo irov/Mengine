@@ -1,0 +1,244 @@
+#import "iOSAdMobInterstitialDelegate.h"
+
+#include "Interface/PlatformServiceInterface.h"
+#include "Interface/ApplicationInterface.h"
+#include "Interface/SoundServiceInterface.h"
+
+#include "Kernel/ConstStringHelper.h"
+
+#import "Environment/Apple/AppleDetail.h"
+#import "Environment/Apple/AppleString.h"
+
+#import "Environment/iOS/iOSDetail.h"
+#import "Environment/iOS/iOSLog.h"
+
+#import "iOSAdMobPlugin.h"
+
+@implementation iOSAdMobInterstitialDelegate
+
+- (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull)adUnitId advertisement:(id<iOSAdvertisementInterface> _Nonnull)advertisement {
+    self = [super initWithAdUnitIdentifier:adUnitId advertisement:advertisement];
+
+    self.m_interstitialAd = nil;
+
+    self.m_showing = NO;
+
+    [self loadAd];
+
+    return self;
+}
+
+- (void) dealloc {
+    [self destroyInterstitialAd];
+}
+
+- (void) destroyInterstitialAd {
+    if (self.m_interstitialAd != nil) {
+        self.m_interstitialAd.fullScreenContentDelegate = nil;
+
+        self.m_interstitialAd = nil;
+    }
+}
+
+- (void) eventInterstitial:(NSString * _Nonnull) eventName params:(NSDictionary<NSString *, id> * _Nullable) params {
+    [self event:[@"mng_admob_interstitial_" stringByAppendingString:eventName] params:params];
+}
+
+- (BOOL) canYouShow:(NSString * _Nonnull)placement {
+    BOOL ready = (self.m_interstitialAd != nil);
+
+    [self log:@"canYouShow" withParams:@{@"placement":placement, @"ready":@(ready)}];
+
+    if (ready == NO) {
+        [self eventInterstitial:@"show" params:@{
+            @"placement": placement,
+            @"ready": @(NO)
+        }];
+
+        return NO;
+    }
+
+    return YES;
+}
+
+- (BOOL) show:(NSString * _Nonnull)placement {
+    BOOL ready = (self.m_interstitialAd != nil);
+
+    [self log:@"show" withParams:@{@"placement":placement, @"ready":@(ready)}];
+
+    [self eventInterstitial:@"show" params:@{
+        @"placement": placement,
+        @"ready": @(ready)
+    }];
+
+    if (ready == NO) {
+        return NO;
+    }
+
+    self.m_placement = placement;
+
+    self.m_showing = YES;
+
+    UIViewController * viewController = [iOSDetail getRootViewController];
+
+    [self.m_interstitialAd presentFromRootViewController:viewController];
+
+    return YES;
+}
+
+- (BOOL) isShowing {
+    return self.m_showing;
+}
+
+- (void) loadAd {
+    if (self.m_adUnitId == nil) {
+        return;
+    }
+
+    [self increaseRequestId];
+
+    [self log:@"loadAd"];
+
+    [self eventInterstitial:@"load" params:@{}];
+
+    GADRequest * request = [self createAdRequest];
+
+    __weak iOSAdMobInterstitialDelegate * weakSelf = self;
+
+    [GADInterstitialAd loadWithAdUnitID:self.m_adUnitId
+                                request:request
+                      completionHandler:^(GADInterstitialAd * _Nullable interstitialAd, NSError * _Nullable error) {
+        __strong iOSAdMobInterstitialDelegate * strongSelf = weakSelf;
+
+        if (strongSelf == nil) {
+            return;
+        }
+
+        if (error != nil) {
+            [strongSelf log:@"loadWithAdUnitID:completionHandler" withError:error];
+
+            [strongSelf eventInterstitial:@"load_failed" params:@{
+                @"error": [strongSelf getGADAdErrorParams:error],
+                @"error_code": @(error.code)
+            }];
+
+            [strongSelf retryLoadAd];
+
+            return;
+        }
+
+        if (interstitialAd == nil) {
+            return;
+        }
+
+        __weak iOSAdMobInterstitialDelegate * weakSelf2 = strongSelf;
+        interstitialAd.paidEventHandler = ^(GADAdValue * _Nonnull adValue) {
+            iOSAdMobInterstitialDelegate * strongSelf2 = weakSelf2;
+
+            if (strongSelf2 == nil) {
+                return;
+            }
+
+            GADResponseInfo * responseInfo = strongSelf2.m_interstitialAd.responseInfo;
+
+            [strongSelf2 log:@"paidEventHandler" withParams:@{
+                @"value": adValue.value,
+                @"currencyCode": adValue.currencyCode
+            }];
+
+            [strongSelf2 eventRevenue:adValue responseInfo:responseInfo placement:strongSelf2.m_placement format:@"ADFORMAT_INTERSTITIAL"];
+
+            id<iOSAdvertisementCallbackInterface> callback = [[iOSAdMobPlugin sharedInstance] getAdvertisementInterstitialCallback];
+
+            if (callback != nil) {
+                [callback oniOSAdvertisementRevenuePaid:strongSelf2.m_placement withRevenue:adValue.value.doubleValue];
+            }
+        };
+
+        interstitialAd.fullScreenContentDelegate = strongSelf;
+        strongSelf.m_interstitialAd = interstitialAd;
+
+        [strongSelf log:@"loadWithAdUnitID:completionHandler" withParams:[strongSelf getGADResponseInfoParams:interstitialAd.responseInfo]];
+
+        [strongSelf eventInterstitial:@"loaded" params:@{
+            @"response": [strongSelf getGADResponseInfoParams:interstitialAd.responseInfo]
+        }];
+
+        strongSelf.m_requestAttempt = 0;
+    }];
+}
+
+#pragma mark - GADFullScreenContentDelegate
+
+- (void)adWillPresentFullScreenContent:(id<GADFullScreenPresentingAd>)ad {
+    [self log:@"adWillPresentFullScreenContent"];
+
+    [self eventInterstitial:@"will_present" params:@{}];
+
+    [self setAdFreeze:YES];
+}
+
+- (void)adWillDismissFullScreenContent:(id<GADFullScreenPresentingAd>)ad {
+    [self log:@"adWillDismissFullScreenContent"];
+
+    [self eventInterstitial:@"will_dismiss" params:@{}];
+}
+
+- (void)ad:(id<GADFullScreenPresentingAd>)ad didFailToPresentFullScreenContentWithError:(NSError *)error {
+    [self log:@"ad:didFailToPresentFullScreenContentWithError" withError:error];
+
+    [self eventInterstitial:@"present_failed" params:@{
+        @"error": [self getGADAdErrorParams:error],
+        @"error_code": @(error.code)
+    }];
+
+    self.m_showing = NO;
+
+    [self destroyInterstitialAd];
+
+    id<iOSAdvertisementCallbackInterface> callback = [[iOSAdMobPlugin sharedInstance] getAdvertisementInterstitialCallback];
+
+    if (callback != nil) {
+        [callback oniOSAdvertisementShowFailed:self.m_placement withError:error.code];
+    }
+
+    self.m_placement = nil;
+
+    [self loadAd];
+}
+
+- (void)adDidDismissFullScreenContent:(id<GADFullScreenPresentingAd>)ad {
+    [self log:@"adDidDismissFullScreenContent"];
+
+    [self eventInterstitial:@"dismissed" params:@{}];
+
+    [self setAdFreeze:NO];
+
+    self.m_showing = NO;
+
+    [self destroyInterstitialAd];
+
+    id<iOSAdvertisementCallbackInterface> callback = [[iOSAdMobPlugin sharedInstance] getAdvertisementInterstitialCallback];
+
+    if (callback != nil) {
+        [callback oniOSAdvertisementShowSuccess:self.m_placement];
+    }
+
+    self.m_placement = nil;
+
+    [self loadAd];
+}
+
+- (void)adDidRecordImpression:(id<GADFullScreenPresentingAd>)ad {
+    [self log:@"adDidRecordImpression"];
+
+    [self eventInterstitial:@"impression" params:@{}];
+}
+
+- (void)adDidRecordClick:(id<GADFullScreenPresentingAd>)ad {
+    [self log:@"adDidRecordClick"];
+
+    [self eventInterstitial:@"clicked" params:@{}];
+}
+
+@end

@@ -151,8 +151,9 @@ namespace Mengine
             for( const jpp::object & item : json_Materials_Material )
             {
                 FilePath path = item["Path"];
+                ConstString renderPlatform = item["RenderPlatform"];
 
-                _package->addPackageMaterial( path, platform );
+                _package->addPackageMaterial( path, platform, renderPlatform );
             }
         }
 

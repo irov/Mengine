@@ -1,11 +1,13 @@
 #pragma once
 
 #include "Interface/ServantInterface.h"
+#include "Interface/ContentInterface.h"
 #include "Interface/FileGroupInterface.h"
 
 #include "Kernel/ConstString.h"
 #include "Kernel/Tags.h"
 #include "Kernel/FilePath.h"
+#include "Kernel/VectorConstString.h"
 
 #include "Kernel/PackageDesc.h"
 
@@ -13,6 +15,22 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class PackageInterface> PackageInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
+    struct PackageResourceDesc
+    {
+        ContentInterfacePtr content;
+        Tags tags;
+        Tags platform;
+        bool demand;
+        bool ignored;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    struct PackageMaterialDesc
+    {
+        ContentInterfacePtr content;
+        Tags platform;
+        ConstString renderPlatform;
+    };
     //////////////////////////////////////////////////////////////////////////
     class PackageInterface
         : public ServantInterface
@@ -48,6 +66,7 @@ namespace Mengine
         virtual void addPackageFontPath( const FilePath & _filePath, const Tags & _tags ) = 0;
         virtual void addPackageData( const ConstString & _name, const FilePath & _filePath, const Tags & _platform ) = 0;
         virtual void addPackageMaterial( const FilePath & _filePath, const Tags & _platform ) = 0;
+        virtual void addPackageMaterial( const FilePath & _filePath, const Tags & _platform, const ConstString & _renderPlatform ) = 0;
         virtual void addPackageSetting( const ConstString & _name, const FilePath & _filePath, const Tags & _platform ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
@@ -61,5 +80,17 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<PackageLoaderInterface> PackageLoaderInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
+    class PackageContentLoaderInterface
+        : public Mixin
+    {
+    public:
+        virtual bool enableResources( const PackageInterfacePtr & _package, const VectorConstString & _locales, const PackageResourceDesc & _desc ) = 0;
+        virtual bool disableResources( const PackageInterfacePtr & _package, const VectorConstString & _locales, const PackageResourceDesc & _desc ) = 0;
+        virtual bool enableMaterials( const PackageInterfacePtr & _package, const PackageMaterialDesc & _desc ) = 0;
+        virtual bool disableMaterials( const PackageInterfacePtr & _package, const PackageMaterialDesc & _desc ) = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<PackageContentLoaderInterface> PackageContentLoaderInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 }

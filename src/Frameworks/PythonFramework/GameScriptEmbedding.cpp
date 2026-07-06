@@ -105,6 +105,11 @@ namespace Mengine
 
         ConstString Game_PersonalityModule = CONFIG_VALUE_CONSTSTRING( "Game", "PersonalityModule", STRINGIZE_STRING_LOCAL( "Personality" ) );
 
+        if( Game_PersonalityModule.empty() == true )
+        {
+            return true;
+        }
+
         ScriptModuleInterfacePtr module = SCRIPT_SERVICE()
             ->importModule( Game_PersonalityModule );
 

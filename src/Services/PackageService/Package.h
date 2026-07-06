@@ -51,6 +51,7 @@ namespace Mengine
         void addPackageFontPath( const FilePath & _filePath, const Tags & _tags ) override;
         void addPackageData( const ConstString & _name, const FilePath & _filePath, const Tags & _platform ) override;
         void addPackageMaterial( const FilePath & _filePath, const Tags & _platform ) override;
+        void addPackageMaterial( const FilePath & _filePath, const Tags & _platform, const ConstString & _renderPlatform ) override;
         void addPackageSetting( const ConstString & _name, const FilePath & _filePath, const Tags & _platform ) override;
 
     protected:
@@ -61,15 +62,6 @@ namespace Mengine
         bool loadPackage_( const DocumentInterfacePtr & _doc );
 
     protected:
-        struct PackageResourceDesc
-        {
-            ContentInterfacePtr content;
-            Tags tags;
-            Tags platform;
-            bool demand;
-            bool ignored;
-        };
-
         typedef Vector<PackageResourceDesc> VectorPackageResourceDesc;
         VectorPackageResourceDesc m_resourcesDesc;
 
@@ -118,12 +110,6 @@ namespace Mengine
 
         typedef Vector<PackageDataDesc> VectorPackageDataDesc;
         VectorPackageDataDesc m_datasDesc;
-
-        struct PackageMaterialDesc
-        {
-            ContentInterfacePtr content;
-            Tags platform;
-        };
 
         typedef Vector<PackageMaterialDesc> VectorPackageMaterialDesc;
         VectorPackageMaterialDesc m_materialsDesc;

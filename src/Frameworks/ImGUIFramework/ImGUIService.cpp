@@ -15,6 +15,10 @@
 #include "Environment/SDL3/SDL3PlatformServiceExtensionInterface.h"
 #endif
 
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
+#include "Environment/MacOS/MacOSPlatformServiceExtensionInterface.h"
+#endif
+
 #if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
 #include "Environment/DirectX9/DX9RenderSystemExtensionInterface.h"
 #endif
@@ -25,6 +29,10 @@
 #include "ImGUIRender.h"
 #include "ImGUIRenderProvider.h"
 #include "ImGUIRenderPrototypeGenerator.h"
+
+#if defined(MENGINE_ENVIRONMENT_RENDER_METAL)
+#include "ImGUIMetalRenderBridge.h"
+#endif
 
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/NodePrototypeGenerator.h"
@@ -50,11 +58,17 @@
 #include "imgui_impl_sdl3.h"
 #endif
 
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
+#include "imgui_impl_osx.h"
+#endif
+
 #if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
 #include "imgui_impl_dx9.h"
 #endif
 
-#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
+#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
+#include "imgui_impl_opengl3.h"
+#elif defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
 #include "imgui_impl_opengl2.h"
 #endif
 
@@ -83,7 +97,7 @@ namespace Mengine
 
             return p;
         }
-        //////////////////////////////////////////////////////////////////////////    
+        //////////////////////////////////////////////////////////////////////////
         static void ImGUIPlugin_free_func( void * ptr, void * user_data )
         {
             MENGINE_UNUSED( user_data );
@@ -251,6 +265,13 @@ namespace Mengine
         ImGui_ImplSDL3_Shutdown();
 #endif
 
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
+        if( ImGui::GetIO().BackendPlatformUserData != nullptr )
+        {
+            ImGui_ImplOSX_Shutdown();
+        }
+#endif
+
         ImGui::DestroyContext();
 
         Helper::removeNodePrototype<ImGUIRender>();
@@ -352,6 +373,15 @@ namespace Mengine
 
         m_handlerId = handlerId;
 #endif
+
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
+        MacOSPlatformServiceExtensionInterface * macosPlatform = PLATFORM_SERVICE()
+            ->getDynamicUnknown();
+
+        NSView * view = macosPlatform->getNSView();
+
+        ImGui_ImplOSX_Init( view );
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void ImGUIService::notifyPlatformDetachWindow_()
@@ -394,12 +424,23 @@ namespace Mengine
 
         ImGui_ImplSDL3_Shutdown();
 #endif
+
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
+        if( ImGui::GetIO().BackendPlatformUserData != nullptr )
+        {
+            ImGui_ImplOSX_Shutdown();
+        }
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void ImGUIService::notifyRenderDeviceCreate_()
     {
-#if (defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2) || defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3)) && defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
+#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
+        ImGui_ImplOpenGL3_Init( "#version 150" );
+#elif defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
         ImGui_ImplOpenGL2_Init();
+#elif defined(MENGINE_ENVIRONMENT_RENDER_METAL)
+        Helper::ImGUIMetalRenderBridge_initialize();
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32) && defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
@@ -422,10 +463,16 @@ namespace Mengine
         ImGui_ImplDX9_Shutdown();
 #endif
 
-#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
+#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
+        ImGui_ImplOpenGL3_DestroyDeviceObjects();
+
+        ImGui_ImplOpenGL3_Shutdown();
+#elif defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
         ImGui_ImplOpenGL2_DestroyDeviceObjects();
 
         ImGui_ImplOpenGL2_Shutdown();
+#elif defined(MENGINE_ENVIRONMENT_RENDER_METAL)
+        Helper::ImGUIMetalRenderBridge_finalize();
 #endif
     }
     //////////////////////////////////////////////////////////////////////////

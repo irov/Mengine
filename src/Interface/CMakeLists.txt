@@ -88,8 +88,6 @@ Common
     ResourceServiceInterface.h
     NotificatorInterface.h
     ConfigLoaderInterface.h
-    MetabufLoaderInterface.h
-    LoaderServiceInterface.h
     RandomizerInterface.h
     DiceInterface.h
     AnimationInterface.h
@@ -140,6 +138,9 @@ Common
     Win32KernelServiceInterface.h
     ArrowServiceInterface.h
     AmplifierServiceInterface.h
+    MetabufLoaderInterface.h
+    MetabufLoaderServiceInterface.h
+    JSONLoaderInterface.h
 )
 
 ADD_FILTER(
@@ -194,7 +195,7 @@ File
     FileOutputStreamInterface.h
     FileMappedInterface.h
     FileGroupInterface.h
-)   
+)
 
 ADD_FILTER(
 Thread

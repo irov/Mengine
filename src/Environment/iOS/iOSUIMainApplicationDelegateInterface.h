@@ -25,9 +25,6 @@
 - (id _Nullable)getPluginDelegateOfClass:(Class _Nonnull)delegateClass;
 - (id _Nullable)getPluginDelegateOfProtocol:(Protocol * _Nonnull)protocol;
 
-- (void)notify:(AppleEvent * _Nonnull)event args:(id _Nonnull)firstArg, ... NS_REQUIRES_NIL_TERMINATION;
-- (void)notify:(AppleEvent * _Nonnull)event arrayArgs:(NSArray<id> * _Nonnull)args;
-
 - (void)eventLog:(AppleLogRecordParam * _Nonnull)record;
 
 - (void)eventConfig:(NSDictionary * _Nonnull)config ids:(NSDictionary * _Nonnull)ids;

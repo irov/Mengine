@@ -59,14 +59,14 @@ namespace Mengine
             );
 
             this->close();
-            
+
             return false;
         }
-        
+
         NSNumber * attribute_filesize = attributes[NSFileSize];
-        
+
         size_t size = attribute_filesize.unsignedLongLongValue;
-        
+
         if( _size != MENGINE_UNKNOWN_SIZE )
         {
             if( _offset + _size > (size_t)size )
@@ -109,7 +109,7 @@ namespace Mengine
                 return false;
             }
         }
-        
+
 #if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
         Helper::addDebugFilePath( this, _relationPath, _folderPath, _filePath, MENGINE_DOCUMENT_FACTORABLE );
 #endif
@@ -158,17 +158,17 @@ namespace Mengine
         {
             return;
         }
-        
+
 #if defined(MENGINE_DEBUG)
         if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
         {
             const FilePath & folderPath = Helper::getDebugFolderPath( this );
             const FilePath & filePath = Helper::getDebugFilePath( this );
-            
+
             NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CLOSE_FILE, folderPath, filePath, true, m_streaming );
         }
 #endif
-        
+
         NSError * error = nil;
         if( [m_fileHandle closeAndReturnError:&error] == NO )
         {
@@ -177,9 +177,9 @@ namespace Mengine
                 , [[AppleDetail getMessageFromNSError:error] UTF8String]
             );
         }
-        
+
         m_fileHandle = nil;
-        
+
 #if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
         Helper::removeDebugFilePath( this );
 #endif
@@ -263,39 +263,39 @@ namespace Mengine
             if( _size == 0 )
             {
                 *_read = 0;
-                
+
                 return true;
             }
-            
+
             uint8_t * buf_offset = MENGINE_PVOID_OFFSET( _buf, _offset );
-            
+
             NSError * error = nil;
             NSData * data = [m_fileHandle readDataUpToLength:_size error:&error];
-            
+
             if( data == nil )
             {
                 LOGGER_ERROR( "read file '%s' offset %zu size %zu:%zu get error %s"
-                             , Helper::getDebugFullPath( this ).c_str()
-                             , _offset
-                             , _size
-                             , m_size
-                             , [[AppleDetail getMessageFromNSError:error] UTF8String]
-                             );
-                
+                    , Helper::getDebugFullPath( this ).c_str()
+                    , _offset
+                    , _size
+                    , m_size
+                    , [[AppleDetail getMessageFromNSError:error] UTF8String]
+                );
+
                 return false;
             }
-            
+
             if( data.length == 0 )
             {
                 *_read = 0;
-                
+
                 return true;
             }
-            
+
             Helper::memoryCopy( buf_offset, 0, data.bytes, 0, data.length );
-            
+
             *_read = data.length;
-            
+
             return true;
         }
     }
@@ -350,7 +350,7 @@ namespace Mengine
 
             m_carriage = 0;
             m_capacity = 0;
-            
+
             size_t result_seek = [m_fileHandle offsetInFile];
 
             m_reading = result_seek - m_offset;

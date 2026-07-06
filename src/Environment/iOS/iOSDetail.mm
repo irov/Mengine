@@ -10,13 +10,13 @@
 
 + (NSString * _Nonnull)getBuildNumber {
     NSString * number = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
-    
+
     return number;
 }
 
 + (NSString * _Nonnull)getBuildVersion {
     NSString * version = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
-    
+
     return version;
 }
 
@@ -34,13 +34,13 @@
 
 + (NSString *) getDeviceModel {
     NSString * deviceModel = [[UIDevice currentDevice] model];
-    
+
     return deviceModel;
 }
 
 + (NSString * _Nonnull)getSystemVersion {
     NSString * systemVersion = [[UIDevice currentDevice] systemVersion];
-    
+
     return systemVersion;
 }
 
@@ -48,7 +48,7 @@
     if (ATTrackingManager.trackingAuthorizationStatus == ATTrackingManagerAuthorizationStatusAuthorized) {
         return YES;
     }
-    
+
     return NO;
 }
 
@@ -84,96 +84,94 @@
     UIApplication * application = [UIApplication sharedApplication];
     UIWindow * window = nil;
 
-    if (@available(iOS 13.0, *)) {
-        NSSet<UIScene *> * connectedScenes = application.connectedScenes;
+    NSSet<UIScene *> * connectedScenes = application.connectedScenes;
 
-        for (UIScene * scene in connectedScenes) {
-            if ([scene isKindOfClass:[UIWindowScene class]] == NO) {
-                continue;
-            }
-
-            UIWindowScene * windowScene = (UIWindowScene *)scene;
-
-            if (windowScene.activationState != UISceneActivationStateForegroundActive) {
-                continue;
-            }
-
-            for (UIWindow * candidateWindow in windowScene.windows) {
-                if (candidateWindow.isKeyWindow == YES) {
-                    return candidateWindow;
-                }
-
-                if (window == nil && candidateWindow.hidden == NO) {
-                    window = candidateWindow;
-                }
-            }
+    for (UIScene * scene in connectedScenes) {
+        if ([scene isKindOfClass:[UIWindowScene class]] == NO) {
+            continue;
         }
 
-        if (window != nil) {
-            return window;
+        UIWindowScene * windowScene = (UIWindowScene *)scene;
+
+        if (windowScene.activationState != UISceneActivationStateForegroundActive) {
+            continue;
         }
 
-        for (UIScene * scene in connectedScenes) {
-            if ([scene isKindOfClass:[UIWindowScene class]] == NO) {
-                continue;
+        for (UIWindow * candidateWindow in windowScene.windows) {
+            if (candidateWindow.isKeyWindow == YES) {
+                return candidateWindow;
             }
 
-            UIWindowScene * windowScene = (UIWindowScene *)scene;
-
-            if (windowScene.activationState != UISceneActivationStateForegroundInactive) {
-                continue;
-            }
-
-            for (UIWindow * candidateWindow in windowScene.windows) {
-                if (candidateWindow.isKeyWindow == YES) {
-                    return candidateWindow;
-                }
-
-                if (window == nil && candidateWindow.hidden == NO) {
-                    window = candidateWindow;
-                }
+            if (window == nil && candidateWindow.hidden == NO) {
+                window = candidateWindow;
             }
         }
+    }
 
-        if (window != nil) {
-            return window;
+    if (window != nil) {
+        return window;
+    }
+
+    for (UIScene * scene in connectedScenes) {
+        if ([scene isKindOfClass:[UIWindowScene class]] == NO) {
+            continue;
         }
+
+        UIWindowScene * windowScene = (UIWindowScene *)scene;
+
+        if (windowScene.activationState != UISceneActivationStateForegroundInactive) {
+            continue;
+        }
+
+        for (UIWindow * candidateWindow in windowScene.windows) {
+            if (candidateWindow.isKeyWindow == YES) {
+                return candidateWindow;
+            }
+
+            if (window == nil && candidateWindow.hidden == NO) {
+                window = candidateWindow;
+            }
+        }
+    }
+
+    if (window != nil) {
+        return window;
     }
 
     id<UIApplicationDelegate> delegate = application.delegate;
     window = delegate.window;
-    
+
     return window;
 }
 
 + (UIView *) getRootView {
     UIWindow * window = [iOSDetail getRootWindow];
-    
+
     if (window == nil || window.subviews.count == 0) {
         return nil;
     }
-    
+
     UIView * view = window.subviews.firstObject;
-    
+
     return view;
 }
 
 + (UIViewController *) getRootViewController {
     UIWindow * window = [iOSDetail getRootWindow];
     UIViewController *viewController = window.rootViewController;
-    
+
     return viewController;
 }
 
 + (NSUUID *) getAdIdentifier {
     NSUUID * idfa_uuid = [[ASIdentifierManager sharedManager] advertisingIdentifier];
-    
+
     return idfa_uuid;
 }
 
 + (NSObject<iOSUIMainApplicationDelegateInterface> *) getUIMainApplicationDelegate {
     NSObject<iOSUIMainApplicationDelegateInterface> *delegate = (NSObject<iOSUIMainApplicationDelegateInterface> *)[[UIApplication sharedApplication] delegate];
-    
+
     return delegate;
 }
 
@@ -187,22 +185,14 @@
 + (id _Nullable) getPluginDelegateOfProtocol:(Protocol *)protocol {
     NSObject<iOSUIMainApplicationDelegateInterface> * mainDelegate = [iOSDetail getUIMainApplicationDelegate];
     id pluginDelegate = [mainDelegate getPluginDelegateOfProtocol:protocol];
-    
-    return pluginDelegate;
-}
 
-+ (void) notify:(AppleEvent *)event args:(NSArray<id> *)args {
-    [AppleDetail addMainQueueOperation:^{
-        NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
-        
-        [delegate notify:event arrayArgs:args];
-    }];
+    return pluginDelegate;
 }
 
 + (void) setUserId:(iOSUserParam *)userId {
     [AppleDetail addMainQueueOperation:^{
         NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
-    
+
         [delegate eventSetUserId:userId];
     }];
 }
@@ -210,7 +200,7 @@
 + (void) removeUserData {
     [AppleDetail addMainQueueOperation:^{
         NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
-    
+
         [delegate eventRemoveUserData];
     }];
 }
@@ -218,7 +208,7 @@
 + (void) adRevenue:(iOSAdRevenueParam *)revenue {
     [AppleDetail addMainQueueOperation:^{
         NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
-    
+
         [delegate eventAdRevenue:revenue];
     }];
 }
@@ -226,7 +216,7 @@
 + (void) appTrackingTransparency:(iOSAppTrackingTransparencyParam * _Nonnull)tracking {
     [AppleDetail addMainQueueOperation:^{
         NSObject<iOSUIMainApplicationDelegateInterface> * delegate = [iOSDetail getUIMainApplicationDelegate];
-    
+
         [delegate eventAppTrackingTransparency:tracking];
     }];
 }
@@ -234,17 +224,17 @@
 + (void) transparencyConsent:(iOSTransparencyConsentParam *)consent {
     [AppleDetail addMainQueueOperation:^{
         NSObject<iOSUIMainApplicationDelegateInterface> * delegate = [iOSDetail getUIMainApplicationDelegate];
-    
+
         [delegate eventTransparencyConsent:consent];
     }];
 }
 
 + (void) log:(AppleLogRecordParam *)record {
     [AppleLog withRecord:record];
-    
+
     [AppleDetail addMainQueueOperation:^{
         NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
-        
+
         [delegate eventLog:record];
     }];
 }
@@ -252,22 +242,22 @@
 + (void) config:(NSDictionary * _Nonnull)config ids:(NSDictionary * _Nonnull)ids {
     [AppleDetail addMainQueueOperation:^{
         NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
-        
+
         [delegate eventConfig:config ids:ids];
     }];
 }
 
 + (void) addDidBecomeActiveOperationWithCompletion:(void (^ _Nonnull)(void (^ _Nonnull completion)(void)))block {
     NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
-    
+
     [delegate addDidBecomeActiveOperationWithCompletion:block];
 }
 
 + (BOOL)hasSystemWindows {
     UIApplication * application = [UIApplication sharedApplication];
-    
+
     NSMutableArray<UIWindow *> * all_windows = [NSMutableArray array];
-    
+
     for (UIScene * scene in application.connectedScenes) {
         if (scene.activationState != UISceneActivationStateForegroundActive) {
             continue;
@@ -278,30 +268,30 @@
         }
 
         UIWindowScene * window_scene = (UIWindowScene *)scene;
-        
+
         for (UIWindow *window in window_scene.windows) {
             if (window.isHidden) {
                 continue;
             }
-            
+
             [all_windows addObject:window];
         }
     }
-    
+
     if (all_windows.count > 1) {
         return YES;
     }
-    
+
     UIViewController * view = [iOSDetail getRootViewController];
-    
+
     if (view == nil) {
         return NO;
     }
-    
+
     if (view.presentedViewController == nil) {
         return NO;
     }
-    
+
     return YES;
 }
 
@@ -336,7 +326,7 @@
     }
 
     UIAlertController * alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
-    
+
     UIAlertAction * okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         [AppleDetail addMainQueueOperation:^{
             ok();
@@ -356,7 +346,7 @@
                                        yes:(void (^)(void) _Nonnull)yes
                                     cancel:(void (^)(void) _Nonnull)cancel {
     UIViewController * viewController = [iOSDetail getRootViewController];
-    
+
     [iOSDetail showAreYouSureAlertDialogWithContext:viewController
                                               title:title
                                             message:message
@@ -373,11 +363,11 @@
                                       cancel:(void (^)(void) _Nonnull)cancel {
     NSString * areYouSureText = @"\n\nAre you sure?";
     NSString * fullMessage = [message stringByAppendingString:areYouSureText];
-    
+
     UIAlertController * alert = [UIAlertController alertControllerWithTitle:title
                                                                    message:fullMessage
                                                             preferredStyle:UIAlertControllerStyleAlert];
-    
+
     UIAlertAction * yesAction = [UIAlertAction actionWithTitle:@"YES"
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction * _Nonnull action) {
@@ -385,7 +375,7 @@
             yes();
         }];
     }];
-    
+
     UIAlertAction * cancelAction = [UIAlertAction actionWithTitle:@"CANCEL"
                                                            style:UIAlertActionStyleCancel
                                                          handler:^(UIAlertAction * _Nonnull action) {
@@ -393,10 +383,10 @@
             cancel();
         }];
     }];
-    
+
     [alert addAction:cancelAction];
     [alert addAction:yesAction];
-    
+
     if (delayMillis > 0) {
         yesAction.enabled = NO;
         yesAction.accessibilityHint = @"Disabled temporarily";
@@ -406,7 +396,7 @@
             yesAction.accessibilityHint = nil;
         });
     }
-    
+
     [AppleDetail addMainQueueOperation:^{
         [viewController presentViewController:alert animated:YES completion:nil];
     }];

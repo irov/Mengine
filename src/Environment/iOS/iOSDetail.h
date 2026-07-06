@@ -1,7 +1,6 @@
 #pragma once
 
 #import "Environment/Apple/AppleIncluder.h"
-#import "Environment/Apple/AppleEvent.h"
 #import "Environment/Apple/AppleLogRecordParam.h"
 
 #import "Environment/iOS/iOSAdRevenueParam.h"
@@ -36,7 +35,6 @@
 + (id _Nullable)getPluginDelegateOfClass:(Class _Nonnull)delegateClass;
 + (id _Nullable)getPluginDelegateOfProtocol:(Protocol * _Nonnull)delegateProtocol;
 
-+ (void)notify:(AppleEvent * _Nonnull)event args:(NSArray<id> * _Nonnull)args;
 + (void)setUserId:(iOSUserParam * _Nonnull)userId;
 + (void)removeUserData;
 + (void)adRevenue:(iOSAdRevenueParam * _Nonnull)revenue;

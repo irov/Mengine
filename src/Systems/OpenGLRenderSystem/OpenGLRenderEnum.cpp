@@ -156,9 +156,17 @@ namespace Mengine
             case PF_R8G8B8:
                 return GL_RGB;
             case PF_A8:
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
+                return GL_R8;
+#else
                 return GL_ALPHA;
+#endif
             case PF_L8:
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
+                return GL_R8;
+#else
                 return GL_LUMINANCE;
+#endif
             case PF_ETC1:
                 return GL_ETC1_RGB8_OES;
             case PF_PVRTC4_RGB:
@@ -185,7 +193,11 @@ namespace Mengine
             case PF_A8R8G8B8:
                 return GL_RGBA;
             case PF_A8:
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
+                return GL_RED;
+#else
                 return GL_ALPHA;
+#endif
 
             case PF_ETC1:
                 return GL_ETC1_RGB8_OES;

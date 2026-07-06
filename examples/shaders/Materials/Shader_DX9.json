@@ -1,0 +1,522 @@
+{
+    "Name": "Shaders_Standart",
+    "VertexAttribute": [
+        {
+            "Name": "Vertex2D_UV0",
+            "RenderPlatform": "DX9",
+            "Element": {
+                "Size": 32
+            },
+            "Attribute": [
+                {
+                    "Uniform": "inVert",
+                    "Index": 0,
+                    "Size": 3,
+                    "Type": "FLOAT",
+                    "Normalized": false,
+                    "Stride": 32,
+                    "Offset": 0
+                },
+                {
+                    "Uniform": "inCol",
+                    "Index": 0,
+                    "Size": 4,
+                    "Type": "UNSIGNED_BYTE",
+                    "Normalized": true,
+                    "Stride": 32,
+                    "Offset": 12
+                }
+            ]
+        },
+        {
+            "Name": "Vertex2D_UV1",
+            "RenderPlatform": "DX9",
+            "Element": {
+                "Size": 32
+            },
+            "Attribute": [
+                {
+                    "Uniform": "inVert",
+                    "Index": 0,
+                    "Size": 3,
+                    "Type": "FLOAT",
+                    "Normalized": false,
+                    "Stride": 32,
+                    "Offset": 0
+                },
+                {
+                    "Uniform": "inCol",
+                    "Index": 0,
+                    "Size": 4,
+                    "Type": "UNSIGNED_BYTE",
+                    "Normalized": true,
+                    "Stride": 32,
+                    "Offset": 12
+                },
+                {
+                    "Uniform": "inUV0",
+                    "Index": 0,
+                    "Size": 2,
+                    "Type": "FLOAT",
+                    "Normalized": false,
+                    "Stride": 32,
+                    "Offset": 16
+                }
+            ]
+        },
+        {
+            "Name": "Vertex2D_UV2",
+            "RenderPlatform": "DX9",
+            "Element": {
+                "Size": 32
+            },
+            "Attribute": [
+                {
+                    "Uniform": "inVert",
+                    "Index": 0,
+                    "Size": 3,
+                    "Type": "FLOAT",
+                    "Normalized": false,
+                    "Stride": 32,
+                    "Offset": 0
+                },
+                {
+                    "Uniform": "inCol",
+                    "Index": 0,
+                    "Size": 4,
+                    "Type": "UNSIGNED_BYTE",
+                    "Normalized": true,
+                    "Stride": 32,
+                    "Offset": 12
+                },
+                {
+                    "Uniform": "inUV0",
+                    "Index": 0,
+                    "Size": 2,
+                    "Type": "FLOAT",
+                    "Normalized": false,
+                    "Stride": 32,
+                    "Offset": 16
+                },
+                {
+                    "Uniform": "inUV1",
+                    "Index": 1,
+                    "Size": 2,
+                    "Type": "FLOAT",
+                    "Normalized": false,
+                    "Stride": 32,
+                    "Offset": 24
+                }
+            ]
+        },
+        {
+            "Name": "Vertex3D_Static",
+            "RenderPlatform": "DX9",
+            "Element": {
+                "Size": 64
+            },
+            "Attribute": [
+                {
+                    "Uniform": "inVert",
+                    "Index": 0,
+                    "Size": 3,
+                    "Type": "FLOAT",
+                    "Normalized": false,
+                    "Stride": 64,
+                    "Offset": 0
+                },
+                {
+                    "Uniform": "inNormal",
+                    "Index": 0,
+                    "Size": 3,
+                    "Type": "FLOAT",
+                    "Normalized": false,
+                    "Stride": 64,
+                    "Offset": 12
+                },
+                {
+                    "Uniform": "inTangent",
+                    "Index": 0,
+                    "Size": 4,
+                    "Type": "FLOAT",
+                    "Normalized": false,
+                    "Stride": 64,
+                    "Offset": 24
+                },
+                {
+                    "Uniform": "inCol",
+                    "Index": 0,
+                    "Size": 4,
+                    "Type": "UNSIGNED_BYTE",
+                    "Normalized": true,
+                    "Stride": 64,
+                    "Offset": 40
+                },
+                {
+                    "Uniform": "inUV0",
+                    "Index": 0,
+                    "Size": 2,
+                    "Type": "FLOAT",
+                    "Normalized": false,
+                    "Stride": 64,
+                    "Offset": 44
+                },
+                {
+                    "Uniform": "inUV1",
+                    "Index": 1,
+                    "Size": 2,
+                    "Type": "FLOAT",
+                    "Normalized": false,
+                    "Stride": 64,
+                    "Offset": 52
+                }
+            ]
+        },
+        {
+            "Name": "Vertex3D_Skinned",
+            "RenderPlatform": "DX9",
+            "Element": {
+                "Size": 80
+            },
+            "Attribute": [
+                {
+                    "Uniform": "inVert",
+                    "Index": 0,
+                    "Size": 3,
+                    "Type": "FLOAT",
+                    "Normalized": false,
+                    "Stride": 80,
+                    "Offset": 0
+                },
+                {
+                    "Uniform": "inNormal",
+                    "Index": 0,
+                    "Size": 3,
+                    "Type": "FLOAT",
+                    "Normalized": false,
+                    "Stride": 80,
+                    "Offset": 12
+                },
+                {
+                    "Uniform": "inTangent",
+                    "Index": 0,
+                    "Size": 4,
+                    "Type": "FLOAT",
+                    "Normalized": false,
+                    "Stride": 80,
+                    "Offset": 24
+                },
+                {
+                    "Uniform": "inCol",
+                    "Index": 0,
+                    "Size": 4,
+                    "Type": "UNSIGNED_BYTE",
+                    "Normalized": true,
+                    "Stride": 80,
+                    "Offset": 40
+                },
+                {
+                    "Uniform": "inUV0",
+                    "Index": 0,
+                    "Size": 2,
+                    "Type": "FLOAT",
+                    "Normalized": false,
+                    "Stride": 80,
+                    "Offset": 44
+                },
+                {
+                    "Uniform": "inUV1",
+                    "Index": 1,
+                    "Size": 2,
+                    "Type": "FLOAT",
+                    "Normalized": false,
+                    "Stride": 80,
+                    "Offset": 52
+                },
+                {
+                    "Uniform": "inBoneIndices",
+                    "Index": 0,
+                    "Size": 4,
+                    "Type": "UNSIGNED_BYTE",
+                    "Normalized": false,
+                    "Stride": 80,
+                    "Offset": 60
+                },
+                {
+                    "Uniform": "inBoneWeights",
+                    "Index": 0,
+                    "Size": 4,
+                    "Type": "FLOAT",
+                    "Normalized": false,
+                    "Stride": 80,
+                    "Offset": 64
+                }
+            ]
+        }
+    ],
+    "VertexShader": [
+        {
+            "Name": "Vertex_Blend",
+            "RenderPlatform": "DX9",
+            "File": {
+                "Path": "Materials/DX9_Vertex_Blend.txt",
+                "Converter": "text2vso",
+                "Compile": true
+            }
+        },
+        {
+            "Name": "Vertex_Color",
+            "RenderPlatform": "DX9",
+            "File": {
+                "Path": "Materials/DX9_Vertex_Color.txt",
+                "Converter": "text2vso",
+                "Compile": true
+            }
+        },
+        {
+            "Name": "Vertex_Blend_ExternalAlpha",
+            "RenderPlatform": "DX9",
+            "File": {
+                "Path": "Materials/DX9_Vertex_Blend_ExternalAlpha.txt",
+                "Converter": "text2vso",
+                "Compile": true
+            }
+        },
+        {
+            "Name": "Vertex_Mesh3D_Unlit",
+            "RenderPlatform": "DX9",
+            "File": {
+                "Path": "Materials/DX9_Vertex_Mesh3D_Unlit.txt",
+                "Converter": "text2vso3",
+                "Compile": true
+            }
+        },
+        {
+            "Name": "Vertex_Mesh3D_Skinned_Unlit",
+            "RenderPlatform": "DX9",
+            "File": {
+                "Path": "Materials/DX9_Vertex_Mesh3D_Skinned_Unlit.txt",
+                "Converter": "text2vso3",
+                "Compile": true
+            }
+        },
+        {
+            "Name": "Vertex_Mesh3D_Lit",
+            "RenderPlatform": "DX9",
+            "File": {
+                "Path": "Materials/DX9_Vertex_Mesh3D_Lit.txt",
+                "Converter": "text2vso3",
+                "Compile": true
+            }
+        },
+        {
+            "Name": "Vertex_Mesh3D_Skinned_Lit",
+            "RenderPlatform": "DX9",
+            "File": {
+                "Path": "Materials/DX9_Vertex_Mesh3D_Skinned_Lit.txt",
+                "Converter": "text2vso3",
+                "Compile": true
+            }
+        }
+    ],
+    "FragmentShader": [
+        {
+            "Name": "Fragment_Mesh3D_Unlit",
+            "RenderPlatform": "DX9",
+            "File": {
+                "Path": "Materials/DX9_Fragment_Mesh3D_Unlit.txt",
+                "Converter": "text2pso",
+                "Compile": true
+            }
+        },
+        {
+            "Name": "Fragment_PostProcessFx",
+            "RenderPlatform": "DX9",
+            "File": {
+                "Path": "Materials/DX9_Fragment_PostProcessFx.txt",
+                "Converter": "text2pso",
+                "Compile": true
+            }
+        },
+        {
+            "Name": "Fragment_Blend",
+            "RenderPlatform": "DX9",
+            "File": {
+                "Path": "Materials/DX9_Fragment_Blend.txt",
+                "Converter": "text2pso",
+                "Compile": true
+            }
+        },
+        {
+            "Name": "Fragment_Blend_Premultiply",
+            "RenderPlatform": "DX9",
+            "File": {
+                "Path": "Materials/DX9_Fragment_Blend_Premultiply.txt",
+                "Converter": "text2pso",
+                "Compile": true
+            }
+        },
+        {
+            "Name": "Fragment_Blend_OnlyColor",
+            "RenderPlatform": "DX9",
+            "File": {
+                "Path": "Materials/DX9_Fragment_Blend_OnlyColor.txt",
+                "Converter": "text2pso",
+                "Compile": true
+            }
+        },
+        {
+            "Name": "Fragment_TrackMatte",
+            "RenderPlatform": "DX9",
+            "File": {
+                "Path": "Materials/DX9_Fragment_TrackMatte.txt",
+                "Converter": "text2pso",
+                "Compile": true
+            }
+        },
+        {
+            "Name": "Fragment_TrackMatteInverted",
+            "RenderPlatform": "DX9",
+            "File": {
+                "Path": "Materials/DX9_Fragment_TrackMatteInverted.txt",
+                "Converter": "text2pso",
+                "Compile": true
+            }
+        },
+        {
+            "Name": "Fragment_TrackMatte_ExternalAlpha",
+            "RenderPlatform": "DX9",
+            "File": {
+                "Path": "Materials/DX9_Fragment_TrackMatte_ExternalAlpha.txt",
+                "Converter": "text2pso",
+                "Compile": true
+            }
+        },
+        {
+            "Name": "Fragment_TrackMatteInverted_ExternalAlpha",
+            "RenderPlatform": "DX9",
+            "File": {
+                "Path": "Materials/DX9_Fragment_TrackMatteInverted_ExternalAlpha.txt",
+                "Converter": "text2pso",
+                "Compile": true
+            }
+        },
+        {
+            "Name": "Fragment_AlphaMask",
+            "RenderPlatform": "DX9",
+            "File": {
+                "Path": "Materials/DX9_Fragment_AlphaMask.txt",
+                "Converter": "text2pso",
+                "Compile": true
+            }
+        },
+        {
+            "Name": "Fragment_Accumulator",
+            "RenderPlatform": "DX9",
+            "File": {
+                "Path": "Materials/DX9_Fragment_Accumulator.txt",
+                "Converter": "text2pso",
+                "Compile": true
+            }
+        },
+        {
+            "Name": "Fragment_Blend_ExternalAlpha",
+            "RenderPlatform": "DX9",
+            "File": {
+                "Path": "Materials/DX9_Fragment_Blend_ExternalAlpha.txt",
+                "Converter": "text2pso",
+                "Compile": true
+            }
+        },
+        {
+            "Name": "Fragment_Blend_ExternalAlpha_OnlyColor",
+            "RenderPlatform": "DX9",
+            "File": {
+                "Path": "Materials/DX9_Fragment_Blend_ExternalAlpha_OnlyColor.txt",
+                "Converter": "text2pso",
+                "Compile": true
+            }
+        },
+        {
+            "Name": "Fragment_Color",
+            "RenderPlatform": "DX9",
+            "File": {
+                "Path": "Materials/DX9_Fragment_Color.txt",
+                "Converter": "text2pso",
+                "Compile": true
+            }
+        },
+        {
+            "Name": "Fragment_Color_Premultiply",
+            "RenderPlatform": "DX9",
+            "File": {
+                "Path": "Materials/DX9_Fragment_Color_Premultiply.txt",
+                "Converter": "text2pso",
+                "Compile": true
+            }
+        },
+        {
+            "Name": "Fragment_Desaturate",
+            "RenderPlatform": "DX9",
+            "File": {
+                "Path": "Materials/DX9_Fragment_Desaturate.txt",
+                "Converter": "text2pso",
+                "Compile": true
+            }
+        },
+        {
+            "Name": "Fragment_Legendary",
+            "RenderPlatform": "DX9",
+            "File": {
+                "Path": "Materials/DX9_Fragment_Legendary.txt",
+                "Converter": "text2pso",
+                "Compile": true
+            }
+        },
+        {
+            "Name": "Fragment_Legendary_ExternalAlpha",
+            "RenderPlatform": "DX9",
+            "File": {
+                "Path": "Materials/DX9_Fragment_Legendary_ExternalAlpha.txt",
+                "Converter": "text2pso",
+                "Compile": true
+            }
+        },
+        {
+            "Name": "Fragment_Alphapow",
+            "RenderPlatform": "DX9",
+            "File": {
+                "Path": "Materials/DX9_Fragment_Alphapow.txt",
+                "Converter": "text2pso",
+                "Compile": true
+            }
+        },
+        {
+            "Name": "Fragment_HSL",
+            "RenderPlatform": "DX9",
+            "File": {
+                "Path": "Materials/DX9_Fragment_HSL.txt",
+                "Converter": "text2pso",
+                "Compile": true
+            }
+        },
+        {
+            "Name": "Fragment_HSV",
+            "RenderPlatform": "DX9",
+            "File": {
+                "Path": "Materials/DX9_Fragment_HSV.txt",
+                "Converter": "text2pso",
+                "Compile": true
+            }
+        },
+        {
+            "Name": "Ozz_Fragment_Blend",
+            "RenderPlatform": "DX9",
+            "File": {
+                "Path": "Materials/DX9_Ozz_Fragment_Blend.txt",
+                "Converter": "text2pso",
+                "Compile": true
+            }
+        }
+    ]
+}

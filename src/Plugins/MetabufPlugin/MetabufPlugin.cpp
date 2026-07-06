@@ -1,6 +1,6 @@
 #include "MetabufPlugin.h"
 
-#include "Interface/LoaderServiceInterface.h"
+#include "Interface/MetabufLoaderServiceInterface.h"
 
 #include "MetabufLoaderResourceCursorICO.h"
 #include "MetabufLoaderResourceCursorSystem.h"
@@ -19,6 +19,8 @@
 #include "MetabufLoaderResourceSound.h"
 #include "MetabufLoaderResourceWindow.h"
 
+#include "MetabufLoaderService.h"
+#include "MetabufPackageContentLoader.h"
 #include "MetabufPackageLoader.h"
 
 #include "Kernel/AllocatorHelper.h"
@@ -42,6 +44,8 @@ void _metabuf_free( void * _ptr )
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Metabuf, Mengine::MetabufPlugin );
 //////////////////////////////////////////////////////////////////////////
+SERVICE_EXTERN( MetabufLoaderService );
+//////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -55,6 +59,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MetabufPlugin::_initializePlugin()
     {
+        if( SERVICE_CREATE( MetabufLoaderService, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
+
 #define SET_LOADER(T)\
         VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), T::getFactorableType(), Helper::makeFactorableUnique<MENGINE_PP_CONCATENATE(MetabufLoader, T)>(MENGINE_DOCUMENT_FACTORABLE), MENGINE_DOCUMENT_FACTORABLE )
 
@@ -77,6 +86,11 @@ namespace Mengine
 #undef SET_LOADER
 
         VOCABULARY_SET( PackageLoaderInterface, STRINGIZE_STRING_LOCAL( "PackageLoader" ), STRINGIZE_STRING_LOCAL( "xml" ), Helper::makeFactorableUnique<MetabufPackageLoader>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+        VOCABULARY_SET( PackageLoaderInterface, STRINGIZE_STRING_LOCAL( "PackageLoader" ), STRINGIZE_STRING_LOCAL( "bin" ), Helper::makeFactorableUnique<MetabufPackageLoader>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+
+        PackageContentLoaderInterfacePtr contentLoader = Helper::makeFactorableUnique<MetabufPackageContentLoader>( MENGINE_DOCUMENT_FACTORABLE );
+        VOCABULARY_SET( PackageContentLoaderInterface, STRINGIZE_STRING_LOCAL( "PackageContentLoader" ), STRINGIZE_STRING_LOCAL( "xml" ), contentLoader, MENGINE_DOCUMENT_FACTORABLE );
+        VOCABULARY_SET( PackageContentLoaderInterface, STRINGIZE_STRING_LOCAL( "PackageContentLoader" ), STRINGIZE_STRING_LOCAL( "bin" ), contentLoader, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -104,7 +118,18 @@ namespace Mengine
 
 #undef REMOVE_LOADER
 
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "PackageContentLoader" ), STRINGIZE_STRING_LOCAL( "xml" ) );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "PackageContentLoader" ), STRINGIZE_STRING_LOCAL( "bin" ) );
+
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "PackageLoader" ), STRINGIZE_STRING_LOCAL( "xml" ) );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "PackageLoader" ), STRINGIZE_STRING_LOCAL( "bin" ) );
+
+        SERVICE_FINALIZE( MetabufLoaderService );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MetabufPlugin::_destroyPlugin()
+    {
+        SERVICE_DESTROY( MetabufLoaderService );
     }
     //////////////////////////////////////////////////////////////////////////
 }

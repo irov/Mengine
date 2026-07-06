@@ -1,12 +1,21 @@
 #include "TexturepackerPlugin.h"
 
 #include "Interface/PrototypeServiceInterface.h"
-#include "Interface/LoaderServiceInterface.h"
+
+#if defined(MENGINE_PLUGIN_METABUF)
+#include "Interface/MetabufLoaderServiceInterface.h"
+#endif
 
 #include "ResourceTexturepacker.h"
 #include "ResourceMultiTexturepacker.h"
 
-#include "LoaderResourceTexturepacker.h"
+#if defined(MENGINE_PLUGIN_METABUF)
+#include "MetabufLoaderResourceTexturepacker.h"
+#endif
+
+#if defined(MENGINE_PLUGIN_JSON)
+#include "JSONLoaderResourceTexturepacker.h"
+#endif
 
 #include "Kernel/ResourcePrototypeGenerator.h"
 #include "Kernel/ConstStringHelper.h"
@@ -41,17 +50,23 @@ namespace Mengine
             return false;
         }
 
-        PLUGIN_SERVICE_WAIT( LoaderServiceInterface, [this]()
+#if defined(MENGINE_PLUGIN_METABUF)
+        PLUGIN_SERVICE_WAIT( MetabufLoaderServiceInterface, [this]()
         {
-            VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceTexturepacker::getFactorableType(), Helper::makeFactorableUnique<LoaderResourceTexturepacker>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+            VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceTexturepacker::getFactorableType(), Helper::makeFactorableUnique<MetabufLoaderResourceTexturepacker>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
             return true;
         } );
 
-        PLUGIN_SERVICE_LEAVE( LoaderServiceInterface, []()
+        PLUGIN_SERVICE_LEAVE( MetabufLoaderServiceInterface, []()
         {
             VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceTexturepacker::getFactorableType() );
         } );
+#endif
+
+#if defined(MENGINE_PLUGIN_JSON)
+        VOCABULARY_SET( JSONLoaderInterface, STRINGIZE_STRING_LOCAL( "JSONLoader" ), ResourceTexturepacker::getFactorableType(), Helper::makeFactorableUnique<JSONLoaderResourceTexturepacker>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+#endif
 
         return true;
     }
@@ -60,6 +75,10 @@ namespace Mengine
     {
         Helper::removeResourcePrototype<ResourceTexturepacker>();
         Helper::removeResourcePrototype<ResourceMultiTexturepacker>();
+
+#if defined(MENGINE_PLUGIN_JSON)
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "JSONLoader" ), ResourceTexturepacker::getFactorableType() );
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
 }

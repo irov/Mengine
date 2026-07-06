@@ -1,6 +1,5 @@
 #include "XmlToBinConverter.h"
 
-#include "Interface/LoaderServiceInterface.h"
 #include "Interface/MemoryServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"

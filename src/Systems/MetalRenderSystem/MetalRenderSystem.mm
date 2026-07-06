@@ -7,7 +7,11 @@
 #include "MetalRenderVertexShader.h"
 #include "MetalRenderFragmentShader.h"
 
-#include "Environment/iOS/iOSPlatformServiceExtensionInterface.h"
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_IOS)
+#   import "Environment/iOS/iOSPlatformServiceExtensionInterface.h"
+#elif defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
+#   import "Environment/MacOS/MacOSPlatformServiceExtensionInterface.h"
+#endif
 
 #include "Interface/PlatformServiceInterface.h"
 
@@ -68,6 +72,12 @@ namespace Mengine
         , m_depthStencilHeight( 0 )
         , m_currentDrawable( nil )
     {
+        m_frameContext.commandBuffer = nil;
+        m_frameContext.renderEncoder = nil;
+        m_frameContext.renderPassDescriptor = nil;
+        m_frameContext.drawableTexture = nil;
+        m_frameContext.depthStencilTexture = nil;
+
         mt::ident_m4( &m_worldMatrix );
         mt::ident_m4( &m_viewMatrix );
         mt::ident_m4( &m_projectionMatrix );
@@ -149,6 +159,7 @@ namespace Mengine
         m_factoryRenderProgramVariableDynamic = nullptr;
 
         m_frameContext.renderEncoder = nil;
+        m_frameContext.renderPassDescriptor = nil;
         m_frameContext.commandBuffer = nil;
         m_commandQueue = nil;
         m_depthStencilState = nil;
@@ -178,10 +189,19 @@ namespace Mengine
         m_windowResolution.calcSize( &windowSize );
         m_windowViewport = Viewport( mt::vec2f::identity(), windowSize );
 
-        iOSPlatformServiceExtensionInterface * iOSPlatformExtension = PLATFORM_SERVICE()
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_IOS)
+        iOSPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
-        m_device = iOSPlatformExtension->getMetalDevice();
+        m_device = platformExtension->getMetalDevice();
+#elif defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
+        MacOSPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        m_device = platformExtension->getMetalDevice();
+#else
+        m_device = nil;
+#endif
 
         if( m_device == nil )
         {
@@ -962,10 +982,13 @@ namespace Mengine
             renderPassDescriptor.stencilAttachment.clearStencil = (uint32_t)m_clearStencil;
         }
 
+        m_frameContext.renderPassDescriptor = renderPassDescriptor;
+
         m_frameContext.renderEncoder = [m_frameContext.commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
 
         if( m_frameContext.renderEncoder == nil )
         {
+            m_frameContext.renderPassDescriptor = nil;
             m_frameContext.commandBuffer = nil;
 
             return false;
@@ -981,6 +1004,8 @@ namespace Mengine
             [m_frameContext.renderEncoder endEncoding];
             m_frameContext.renderEncoder = nil;
         }
+
+        m_frameContext.renderPassDescriptor = nil;
     }
     //////////////////////////////////////////////////////////////////////////
     void MetalRenderSystem::swapBuffers()
@@ -997,6 +1022,7 @@ namespace Mengine
         }
 
         m_currentDrawable = nil;
+        m_frameContext.renderPassDescriptor = nil;
         m_frameContext.drawableTexture = nil;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1175,6 +1201,21 @@ namespace Mengine
     id<MTLDevice> MetalRenderSystem::getMetalDevice() const
     {
         return m_device;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    id<MTLCommandBuffer> MetalRenderSystem::getMetalCommandBuffer() const
+    {
+        return m_frameContext.commandBuffer;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    id<MTLRenderCommandEncoder> MetalRenderSystem::getMetalRenderCommandEncoder() const
+    {
+        return m_frameContext.renderEncoder;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MTLRenderPassDescriptor * MetalRenderSystem::getMetalRenderPassDescriptor() const
+    {
+        return m_frameContext.renderPassDescriptor;
     }
     //////////////////////////////////////////////////////////////////////////
     void MetalRenderSystem::setCurrentDrawable( id<MTLDrawable> _drawable, id<MTLTexture> _drawableTexture )

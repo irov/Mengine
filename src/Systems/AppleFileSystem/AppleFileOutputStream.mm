@@ -63,11 +63,11 @@ namespace Mengine
         }
 
         NSFileHandle * fileHandle = [NSFileHandle fileHandleForWritingAtPath:@(concatenatePath)];
-        
+
         if( fileHandle == nil )
         {
             [[NSFileManager defaultManager] createFileAtPath:@(concatenatePath) contents:nil attributes:nil];
-            
+
             fileHandle = [NSFileHandle fileHandleForWritingAtPath:@(concatenatePath)];
         }
 
@@ -83,7 +83,7 @@ namespace Mengine
         m_fileHandle = fileHandle;
 
         m_size = 0;
-        
+
 #if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
         Helper::addDebugFilePath( this, m_relationPath, m_folderPath, m_filePath, MENGINE_DOCUMENT_FACTORABLE );
 #endif
@@ -97,17 +97,28 @@ namespace Mengine
         {
             return true;
         }
-        
+
         MENGINE_ASSERTION_FATAL( m_size != 0, "file '%s:%s' is empty"
             , m_folderPath.c_str()
             , m_filePath.c_str()
         );
 
-        [m_fileHandle closeFile];
+        NSError * error = nil;
+        if( [m_fileHandle closeAndReturnError:&error] == NO )
+        {
+            LOGGER_ERROR( "invalid close file '%s:%s' get error: %s"
+                , m_folderPath.c_str()
+                , m_filePath.c_str()
+                , [[AppleDetail getMessageFromNSError:error] UTF8String]
+            );
+
+            return false;
+        }
+
         m_fileHandle = nil;
 
         m_size = 0;
-        
+
         if( m_withTemp == true )
         {
             Path fullPathTemp = {'\0'};
@@ -139,22 +150,22 @@ namespace Mengine
                     , fullPathTemp
                     , fullPath
                 );
-                
+
                 return false;
             }
         }
-        
+
 #if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
         Helper::removeDebugFilePath( this );
 #endif
-        
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t AppleFileOutputStream::write( const void * _data, size_t _size )
     {
         NSData * data = [NSData dataWithBytes:_data length:_size];
-        
+
         NSError * error = nil;
         if( [m_fileHandle writeData:data error:&error] == NO )
         {

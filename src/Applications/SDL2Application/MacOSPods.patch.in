@@ -1,7 +1,7 @@
 post_install do |installer|
   work_dir = Dir.pwd
   installer.aggregate_targets.each do |target|
-    if target.name != "Pods-SDLApplication"
+    if target.name != "Pods-SDL2Application"
       next
     end
     target.user_build_configurations.each do |key, name|
@@ -18,11 +18,13 @@ post_install do |installer|
 
         sh_path = "#{work_dir}/Pods/Target Support Files/#{target}/#{target}-frameworks.sh"
 
-        lines = File.read(sh_path)
-        lines = lines.gsub('install_framework "${BUILT_PRODUCTS_DIR}', 'install_framework "${PODS_CONFIGURATION_BUILD_DIR}')
+        if File.exist?(sh_path)
+            lines = File.read(sh_path)
+            lines = lines.gsub('install_framework "${BUILT_PRODUCTS_DIR}', 'install_framework "${PODS_CONFIGURATION_BUILD_DIR}')
 
-        File.open(sh_path, "w") do |file|
-            file << lines
+            File.open(sh_path, "w") do |file|
+                file << lines
+            end
         end
     end
   end

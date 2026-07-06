@@ -1,8 +1,8 @@
 #import "MacOSWorkspace.h"
 
-#import "Environment/Apple/AppleErrorHelper.h"
+#import "Environment/Apple/AppleDetail.h"
 
-#include "Kernel/Logger.h"
+#import "Kernel/Logger.h"
 
 #import <AppKit/AppKit.h>
 
@@ -10,11 +10,11 @@
 
 - (instancetype)init {
     self = [super init];
-    
+
     [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
                                                            selector:@selector(workspaceActiveSpaceDidChangeNotification:)
                                                                name:NSWorkspaceActiveSpaceDidChangeNotification object:nil];
-    
+
     return self;
 }
 
@@ -24,32 +24,32 @@
 
 - (void)changeDesktopWallpaper:(const char *) _path {
     NSString* urlString = [NSString stringWithUTF8String:_path];
-    
+
     if( urlString == nil )
     {
-        return false;
+        return;
     }
-    
+
     NSURL * url = [NSURL fileURLWithPath:urlString];
-    
+
     m_urlWallpaper = url;
 }
 
 - (void)workspaceActiveSpaceDidChangeNotification:(NSNotification*) notification {
     LOGGER_INFO("platform", "workspaceActiveSpaceDidChangeNotification");
-    
-    if( m_urlWallpaper != nil ) 
+
+    if( m_urlWallpaper != nil )
     {
         NSURL * url = m_urlWallpaper;
         m_urlWallpaper = nil;
-        
+
         NSScreen * mainScreen = [NSScreen mainScreen];
 
         if( mainScreen == nil )
         {
             return;
         }
-    
+
         NSDictionary * screenOptions = [[NSWorkspace sharedWorkspace] desktopImageOptionsForScreen:mainScreen];
 
         if( screenOptions == nil )
@@ -65,9 +65,9 @@
         {
             LOGGER_ERROR("invalid set desktop image url '%s' error '%s'"
                 , [url.absoluteString UTF8String]
-                , Mengine::Helper::AppleGetMessageFromNSError(error).c_str()
+                , [[AppleDetail getMessageFromNSError:error] UTF8String]
             );
-            
+
             return;
         }
     }

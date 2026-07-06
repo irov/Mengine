@@ -54,9 +54,17 @@
 #include "Engine/Point.h"
 #include "Engine/Line.h"
 #include "Engine/Layer2D.h"
+#include "Engine/VirtualArea.h"
+#include "Engine/VirtualAreaEventReceiverInterface.h"
 #include "Engine/Meshget.h"
 #include "Engine/Isometric.h"
 #include "Engine/Window.h"
+#include "Engine/Mesh3D.h"
+#include "Engine/SkinnedMesh3D.h"
+#include "Engine/DirectionalLight3D.h"
+#include "Engine/PointLight3D.h"
+#include "Engine/BlobShadow3D.h"
+#include "Engine/PostProcessFx3D.h"
 
 #include "Kernel/Eventable.h"
 #include "Kernel/ThreadTask.h"
@@ -711,6 +719,72 @@ namespace Mengine
                 return _kernel->ret_none();
             }
             //////////////////////////////////////////////////////////////////////////
+            class PythonVirtualAreaEventReceiver
+                : public PythonEventReceiver
+                , public VirtualAreaEventReceiverInterface
+                , public Factorable
+            {
+            public:
+                PythonVirtualAreaEventReceiver()
+                {
+                }
+
+                ~PythonVirtualAreaEventReceiver() override
+                {
+                }
+
+            public:
+                void onVirtualAreaDrag( const mt::vec2f & _position, const mt::vec2f & _percentage ) override
+                {
+                    m_cb.call( _position, _percentage );
+                }
+
+                void onVirtualAreaDragStart( const mt::vec2f & _position ) override
+                {
+                    m_cb.call( _position );
+                }
+
+                void onVirtualAreaDragMove( const mt::vec2f & _position, const mt::vec2f & _velocity ) override
+                {
+                    m_cb.call( _position, _velocity );
+                }
+
+                void onVirtualAreaDragEnd( const mt::vec2f & _position, const mt::vec2f & _velocity ) override
+                {
+                    m_cb.call( _position, _velocity );
+                }
+
+                void onVirtualAreaScale( float _scaleFactor ) override
+                {
+                    m_cb.call( _scaleFactor );
+                }
+
+                void onVirtualAreaTouch( uint32_t _touchCount ) override
+                {
+                    m_cb.call( _touchCount );
+                }
+            };
+            //////////////////////////////////////////////////////////////////////////
+            PyObject * VirtualArea_setEventListener( pybind::kernel_interface * _kernel, VirtualArea * _node, PyObject * _args, PyObject * _kwds )
+            {
+                MENGINE_UNUSED( _args );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( _kwds, "invalid set event listener" );
+
+                pybind::dict py_kwds( _kernel, _kwds );
+
+                Helper::registerPythonEventReceiver<PythonVirtualAreaEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onDrag" ), EVENT_VIRTUAL_AREA_DRAG, MENGINE_DOCUMENT_PYTHON );
+                Helper::registerPythonEventReceiver<PythonVirtualAreaEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onDragStart" ), EVENT_VIRTUAL_AREA_DRAG_START, MENGINE_DOCUMENT_PYTHON );
+                Helper::registerPythonEventReceiver<PythonVirtualAreaEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onDragMove" ), EVENT_VIRTUAL_AREA_DRAG_MOVE, MENGINE_DOCUMENT_PYTHON );
+                Helper::registerPythonEventReceiver<PythonVirtualAreaEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onDragEnd" ), EVENT_VIRTUAL_AREA_DRAG_END, MENGINE_DOCUMENT_PYTHON );
+                Helper::registerPythonEventReceiver<PythonVirtualAreaEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onScale" ), EVENT_VIRTUAL_AREA_SCALE, MENGINE_DOCUMENT_PYTHON );
+                Helper::registerPythonEventReceiver<PythonVirtualAreaEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onTouch" ), EVENT_VIRTUAL_AREA_TOUCH, MENGINE_DOCUMENT_PYTHON );
+
+                MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _node, py_kwds );
+
+                return _kernel->ret_none();
+            }
+            //////////////////////////////////////////////////////////////////////////
         };
         //////////////////////////////////////////////////////////////////////////
         typedef IntrusivePtr<NodeScriptMethod> NodeScriptMethodPtr;
@@ -1122,10 +1196,139 @@ namespace Mengine
                 .def( "getCountY", &Grid2D::getCountY )
                 ;
 
+            pybind::interface_<Mesh3D, pybind::bases<Node>>( _kernel, "Mesh3D", false )
+                .def( "setResourceMesh3D", &Mesh3D::setResourceMesh3D )
+                .def( "getResourceMesh3D", &Mesh3D::getResourceMesh3D )
+                .def( "setResourceImage", &Mesh3D::setResourceImage )
+                .def( "getResourceImage", &Mesh3D::getResourceImage )
+                .def( "setMaterialName", &Mesh3D::setMaterialName )
+                .def( "getMaterialName", &Mesh3D::getMaterialName )
+                ;
+
+            pybind::interface_<SkinnedMesh3D, pybind::bases<Node>>( _kernel, "SkinnedMesh3D", false )
+                .def( "setResourceSkinnedMesh3D", &SkinnedMesh3D::setResourceSkinnedMesh3D )
+                .def( "getResourceSkinnedMesh3D", &SkinnedMesh3D::getResourceSkinnedMesh3D )
+                .def( "setResourceImage", &SkinnedMesh3D::setResourceImage )
+                .def( "getResourceImage", &SkinnedMesh3D::getResourceImage )
+                .def( "setMaterialName", &SkinnedMesh3D::setMaterialName )
+                .def( "getMaterialName", &SkinnedMesh3D::getMaterialName )
+                .def( "getBoneMatrixCount", &SkinnedMesh3D::getBoneMatrixCount )
+                ;
+
+            pybind::interface_<DirectionalLight3D, pybind::bases<Node>>( _kernel, "DirectionalLight3D", false )
+                .def( "setLightDirection", &DirectionalLight3D::setLightDirection )
+                .def( "getLightDirection", &DirectionalLight3D::getLightDirection )
+                .def( "setLightColor", &DirectionalLight3D::setLightColor )
+                .def( "getLightColor", &DirectionalLight3D::getLightColor )
+                .def( "setLightIntensity", &DirectionalLight3D::setLightIntensity )
+                .def( "getLightIntensity", &DirectionalLight3D::getLightIntensity )
+                .def( "setLightAmbient", &DirectionalLight3D::setLightAmbient )
+                .def( "getLightAmbient", &DirectionalLight3D::getLightAmbient )
+                ;
+
+            pybind::interface_<PointLight3D, pybind::bases<Node>>( _kernel, "PointLight3D", false )
+                .def( "setLightRadius", &PointLight3D::setLightRadius )
+                .def( "getLightRadius", &PointLight3D::getLightRadius )
+                .def( "setLightColor", &PointLight3D::setLightColor )
+                .def( "getLightColor", &PointLight3D::getLightColor )
+                .def( "setLightIntensity", &PointLight3D::setLightIntensity )
+                .def( "getLightIntensity", &PointLight3D::getLightIntensity )
+                .def( "updateLightFromTransform", &PointLight3D::updateLightFromTransform )
+                ;
+
+            pybind::interface_<BlobShadow3D, pybind::bases<Node>>( _kernel, "BlobShadow3D", false )
+                .def( "setResourceImage", &BlobShadow3D::setResourceImage )
+                .def( "getResourceImage", &BlobShadow3D::getResourceImage )
+                .def( "setMaterialName", &BlobShadow3D::setMaterialName )
+                .def( "getMaterialName", &BlobShadow3D::getMaterialName )
+                .def( "setShadowSize", &BlobShadow3D::setShadowSize )
+                .def( "getShadowWidth", &BlobShadow3D::getShadowWidth )
+                .def( "getShadowDepth", &BlobShadow3D::getShadowDepth )
+                .def( "setShadowColor", &BlobShadow3D::setShadowColor )
+                ;
+
+            pybind::interface_<PostProcessFx3D, pybind::bases<Node>>( _kernel, "PostProcessFx3D", false )
+                .def( "setSize", &PostProcessFx3D::setSize )
+                .def( "getSize", &PostProcessFx3D::getSize )
+                .def( "setMaterialName", &PostProcessFx3D::setMaterialName )
+                .def( "getMaterialName", &PostProcessFx3D::getMaterialName )
+                .def( "setExposure", &PostProcessFx3D::setExposure )
+                .def( "getExposure", &PostProcessFx3D::getExposure )
+                .def( "setVignette", &PostProcessFx3D::setVignette )
+                .def( "getVignetteStrength", &PostProcessFx3D::getVignetteStrength )
+                .def( "getVignetteSoftness", &PostProcessFx3D::getVignetteSoftness )
+                .def( "setChromaticOffset", &PostProcessFx3D::setChromaticOffset )
+                .def( "getChromaticOffset", &PostProcessFx3D::getChromaticOffset )
+                .def( "setHitFlash", &PostProcessFx3D::setHitFlash )
+                .def( "getHitFlashColor", &PostProcessFx3D::getHitFlashColor )
+                .def( "getHitFlashIntensity", &PostProcessFx3D::getHitFlashIntensity )
+                ;
+
             pybind::interface_<Gyroscope, pybind::bases<Node>>( _kernel, "Gyroscope", false )
                 ;
 
             pybind::interface_<Interender, pybind::bases<Node>>( _kernel, "Interender", false )
+                ;
+
+            pybind::enum_<EVirtualAreaDragMode>( _kernel, "EVirtualAreaDragMode" )
+                .def( "EVADM_NONE", EVADM_NONE )
+                .def( "EVADM_FREE", EVADM_FREE )
+                .def( "EVADM_HORIZONTAL", EVADM_HORIZONTAL )
+                .def( "EVADM_VERTICAL", EVADM_VERTICAL )
+                ;
+
+            pybind::interface_<VirtualArea, pybind::bases<Node>>( _kernel, "VirtualArea", false )
+                .def( "setVirtualAreaViewport", &VirtualArea::setViewport )
+                .def( "getVirtualAreaViewport", &VirtualArea::getViewport )
+                .def( "hasVirtualAreaViewport", &VirtualArea::hasViewport )
+                .def( "setVirtualAreaViewportFromHotSpot", &VirtualArea::setViewportFromHotSpot )
+                .def( "setVirtualAreaContentSize", &VirtualArea::setContentSize )
+                .def( "getVirtualAreaContentSize", &VirtualArea::getContentSize )
+                .def( "addVirtualAreaContentNode", &VirtualArea::addContentNode )
+                .def( "setVirtualAreaPosition", &VirtualArea::setPosition )
+                .def( "getVirtualAreaPosition", &VirtualArea::getPosition )
+                .def( "setVirtualAreaAnchor", &VirtualArea::setAnchor )
+                .def( "getVirtualAreaAnchor", &VirtualArea::getAnchor )
+                .def( "setVirtualAreaPercentage", &VirtualArea::setPercentage )
+                .def( "setVirtualAreaPercentageX", &VirtualArea::setPercentageX )
+                .def( "setVirtualAreaPercentageY", &VirtualArea::setPercentageY )
+                .def( "getVirtualAreaPercentage", &VirtualArea::getPercentage )
+                .def( "scaleVirtualArea", &VirtualArea::scale )
+                .def( "setVirtualAreaScale", &VirtualArea::setScale )
+                .def( "getVirtualAreaScaleFactor", &VirtualArea::getScaleFactor )
+                .def( "setVirtualAreaMaxScaleFactor", &VirtualArea::setMaxScaleFactor )
+                .def( "getVirtualAreaMaxScaleFactor", &VirtualArea::getMaxScaleFactor )
+                .def( "setVirtualAreaScaleEnable", &VirtualArea::setScaleEnable )
+                .def( "getVirtualAreaScaleEnable", &VirtualArea::getScaleEnable )
+                .def( "setVirtualAreaWheelScaleFactor", &VirtualArea::setWheelScaleFactor )
+                .def( "getVirtualAreaWheelScaleFactor", &VirtualArea::getWheelScaleFactor )
+                .def( "setVirtualAreaDraggingMode", &VirtualArea::setDraggingMode )
+                .def( "getVirtualAreaDraggingMode", &VirtualArea::getDraggingMode )
+                .def( "setVirtualAreaDraggingModeName", &VirtualArea::setDraggingModeName )
+                .def( "getVirtualAreaDraggingModeName", &VirtualArea::getDraggingModeName )
+                .def( "setVirtualAreaFriction", &VirtualArea::setFriction )
+                .def( "getVirtualAreaFriction", &VirtualArea::getFriction )
+                .def( "setVirtualAreaRigidity", &VirtualArea::setRigidity )
+                .def( "getVirtualAreaRigidity", &VirtualArea::getRigidity )
+                .def( "setVirtualAreaAllowOutOfBounds", &VirtualArea::setAllowOutOfBounds )
+                .def( "getVirtualAreaAllowOutOfBounds", &VirtualArea::getAllowOutOfBounds )
+                .def( "setVirtualAreaDisableDragIfInvalid", &VirtualArea::setDisableDragIfInvalid )
+                .def( "getVirtualAreaDisableDragIfInvalid", &VirtualArea::getDisableDragIfInvalid )
+                .def( "setVirtualAreaDragStartThreshold", &VirtualArea::setDragStartThreshold )
+                .def( "getVirtualAreaDragStartThreshold", &VirtualArea::getDragStartThreshold )
+                .def( "setVirtualAreaDefaultHandle", &VirtualArea::setDefaultHandle )
+                .def( "getVirtualAreaDefaultHandle", &VirtualArea::getDefaultHandle )
+                .def( "setVirtualAreaFrozen", &VirtualArea::freeze )
+                .def( "isVirtualAreaFrozen", &VirtualArea::isFrozen )
+                .def( "getVirtualAreaVelocity", &VirtualArea::getVelocity )
+                .def( "isVirtualAreaDragging", &VirtualArea::isDragging )
+                .def( "getVirtualAreaTouchCount", &VirtualArea::getTouchCount )
+                .def( "getVirtualAreaViewportSize", &VirtualArea::getViewportSize )
+                .def( "getVirtualAreaContentSizeValue", &VirtualArea::getContentSizeValue )
+                .def( "getVirtualAreaRenderCameraNode", &VirtualArea::getRenderCameraNode )
+                .def( "getVirtualAreaRenderViewportNode", &VirtualArea::getRenderViewportNode )
+                .def( "getVirtualAreaRenderScissorNode", &VirtualArea::getRenderScissorNode )
+                .def_proxy_native_kernel( "setVirtualAreaEventListener", nodeScriptMethod, &NodeScriptMethod::VirtualArea_setEventListener )
                 ;
 
             pybind::interface_<Isometric, pybind::bases<Node>>( _kernel, "Isometric", false )
@@ -1172,6 +1375,7 @@ namespace Mengine
 
         SCRIPT_CLASS_WRAPPING( Gyroscope );
         SCRIPT_CLASS_WRAPPING( Interender );
+        SCRIPT_CLASS_WRAPPING( VirtualArea );
         SCRIPT_CLASS_WRAPPING( Isometric );
         SCRIPT_CLASS_WRAPPING( MatrixProxy );
         SCRIPT_CLASS_WRAPPING( TextField );
@@ -1181,6 +1385,12 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( Line );
         SCRIPT_CLASS_WRAPPING( Landscape2D );
         SCRIPT_CLASS_WRAPPING( Grid2D );
+        SCRIPT_CLASS_WRAPPING( Mesh3D );
+        SCRIPT_CLASS_WRAPPING( SkinnedMesh3D );
+        SCRIPT_CLASS_WRAPPING( DirectionalLight3D );
+        SCRIPT_CLASS_WRAPPING( PointLight3D );
+        SCRIPT_CLASS_WRAPPING( BlobShadow3D );
+        SCRIPT_CLASS_WRAPPING( PostProcessFx3D );
 
         SCRIPT_CLASS_WRAPPING( ShapeCircle );
         SCRIPT_CLASS_WRAPPING( ShapePacMan );
@@ -1232,6 +1442,7 @@ namespace Mengine
 
         UNSCRIPT_CLASS_WRAPPING( Gyroscope );
         UNSCRIPT_CLASS_WRAPPING( Interender );
+        UNSCRIPT_CLASS_WRAPPING( VirtualArea );
         UNSCRIPT_CLASS_WRAPPING( Isometric );
         UNSCRIPT_CLASS_WRAPPING( MatrixProxy );
         UNSCRIPT_CLASS_WRAPPING( TextField );
@@ -1241,6 +1452,12 @@ namespace Mengine
         UNSCRIPT_CLASS_WRAPPING( Line );
         UNSCRIPT_CLASS_WRAPPING( Landscape2D );
         UNSCRIPT_CLASS_WRAPPING( Grid2D );
+        UNSCRIPT_CLASS_WRAPPING( Mesh3D );
+        UNSCRIPT_CLASS_WRAPPING( SkinnedMesh3D );
+        UNSCRIPT_CLASS_WRAPPING( DirectionalLight3D );
+        UNSCRIPT_CLASS_WRAPPING( PointLight3D );
+        UNSCRIPT_CLASS_WRAPPING( BlobShadow3D );
+        UNSCRIPT_CLASS_WRAPPING( PostProcessFx3D );
 
         UNSCRIPT_CLASS_WRAPPING( ShapeCircle );
         UNSCRIPT_CLASS_WRAPPING( ShapePacMan );

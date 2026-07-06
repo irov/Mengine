@@ -11,7 +11,6 @@
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
 #include "Interface/PickerServiceInterface.h"
-#include "Interface/LoaderServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/AccountInterface.h"
 #include "Interface/GameServiceInterface.h"
@@ -59,6 +58,7 @@
 #include "BlobShadow3D.h"
 #include "PostProcessFx3D.h"
 #include "Layer2D.h"
+#include "VirtualArea.h"
 #include "Window.h"
 #include "Landscape2D.h"
 #include "ResourceMusic.h"
@@ -556,6 +556,7 @@ namespace Mengine
         NODE_FACTORY( PostProcessFx3D );
         NODE_FACTORY( Interender );
         NODE_FACTORY( Layer2D );
+        NODE_FACTORY( VirtualArea );
         NODE_FACTORY( Landscape2D );
         NODE_FACTORY( RenderViewport );
         NODE_FACTORY( RenderViewportDefault );
@@ -622,6 +623,7 @@ namespace Mengine
         NODE_FACTORY( PostProcessFx3D );
         NODE_FACTORY( Interender );
         NODE_FACTORY( Layer2D );
+        NODE_FACTORY( VirtualArea );
         NODE_FACTORY( Landscape2D );
         NODE_FACTORY( RenderViewport );
         NODE_FACTORY( RenderViewportDefault );
@@ -1870,7 +1872,7 @@ namespace Mengine
             ->render( m_renderPipeline );
 
         RENDER_SERVICE()
-            ->endScene( m_renderPipeline );        
+            ->endScene( m_renderPipeline );
 
         return true;
     }

@@ -4,7 +4,11 @@
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
-#include "Interface/LoaderServiceInterface.h"
+
+#if defined(MENGINE_PLUGIN_METABUF)
+#include "Interface/MetabufLoaderServiceInterface.h"
+#endif
+
 #include "Interface/DataServiceInterface.h"
 #include "Interface/ModuleServiceInterface.h"
 #include "Interface/AllocatorSystemInterface.h"
@@ -18,7 +22,15 @@
 
 #include "Movie2.h"
 #include "ResourceMovie2.h"
-#include "LoaderResourceMovie2.h"
+
+#if defined(MENGINE_PLUGIN_METABUF)
+#include "MetabufLoaderResourceMovie2.h"
+#endif
+
+#if defined(MENGINE_PLUGIN_JSON)
+#include "JSONLoaderResourceMovie2.h"
+#endif
+
 #include "Movie2Slot.h"
 
 #include "ResourceMovie2Validator.h"
@@ -239,17 +251,23 @@ namespace Mengine
             VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), ResourceMovie2::getFactorableType() );
         } );
 
-        PLUGIN_SERVICE_WAIT( LoaderServiceInterface, [MENGINE_DOCUMENT_ARGUMENTS( this )]()
+#if defined(MENGINE_PLUGIN_METABUF)
+        PLUGIN_SERVICE_WAIT( MetabufLoaderServiceInterface, [MENGINE_DOCUMENT_ARGUMENTS( this )]()
         {
-            VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceMovie2::getFactorableType(), Helper::makeFactorableUnique<LoaderResourceMovie2>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+            VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceMovie2::getFactorableType(), Helper::makeFactorableUnique<MetabufLoaderResourceMovie2>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
             return true;
         } );
 
-        PLUGIN_SERVICE_LEAVE( LoaderServiceInterface, []()
+        PLUGIN_SERVICE_LEAVE( MetabufLoaderServiceInterface, []()
         {
             VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceMovie2::getFactorableType() );
         } );
+#endif
+
+#if defined(MENGINE_PLUGIN_JSON)
+        VOCABULARY_SET( JSONLoaderInterface, STRINGIZE_STRING_LOCAL( "JSONLoader" ), ResourceMovie2::getFactorableType(), Helper::makeFactorableUnique<JSONLoaderResourceMovie2>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+#endif
 
         VOCABULARY_SET( DebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), Movie2::getFactorableType(), Helper::makeFactorableUnique<Movie2DebuggerBoundingBox>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
@@ -267,6 +285,10 @@ namespace Mengine
         Helper::removeResourcePrototype<ResourceMovie2>();
 
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), Movie2::getFactorableType() );
+
+#if defined(MENGINE_PLUGIN_JSON)
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "JSONLoader" ), ResourceMovie2::getFactorableType() );
+#endif
 
         MENGINE_ASSERTION_ALLOCATOR( "movie" );
     }

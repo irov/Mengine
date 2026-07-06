@@ -7,19 +7,19 @@ ImGUIFrameworkPlugin
     ImGUIFrameworkPlugin.def
 )
 
-ADD_FILTER(
-src
-    ImGUIInterface.h
+    ADD_FILTER(
+    src
+        ImGUIInterface.h
 
-    ImGUIService.cpp
-    ImGUIService.h
-    
-    ImGUIRenderPrototypeGenerator.cpp
-    ImGUIRenderPrototypeGenerator.h
-    
+        ImGUIService.cpp
+        ImGUIService.h
+
+        ImGUIRenderPrototypeGenerator.cpp
+        ImGUIRenderPrototypeGenerator.h
+
     ImGUIRenderProvider.cpp
     ImGUIRenderProvider.h
-    
+
     ImGUIRender.cpp
     ImGUIRender.h
 )
@@ -58,6 +58,16 @@ if(MENGINE_PLATFORM_SDL3)
     INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/SDL3/include)
 endif()
 
+if(MENGINE_PLATFORM_MACOS)
+    ADD_FILTER(
+    imgui_platform_ext
+        ${IMGUI_BACKENDS_SOURCE}/imgui_impl_osx.h
+        ${IMGUI_BACKENDS_SOURCE}/imgui_impl_osx.mm
+    )
+
+    ADD_DEFINITIONS(-DIMGUI_IMPL_METAL_CPP_EXTENSIONS)
+endif()
+
 if(MENGINE_RENDER_DIRECTX9)
     ADD_FILTER(
     imgui_render_ext
@@ -66,11 +76,29 @@ if(MENGINE_RENDER_DIRECTX9)
     )
 endif()
 
-if(MENGINE_RENDER_OPENGL)
+if(MENGINE_RENDER_OPENGL AND MENGINE_PLATFORM_MACOS)
+    ADD_FILTER(
+    imgui_render_ext
+        ${IMGUI_BACKENDS_SOURCE}/imgui_impl_opengl3.h
+        ${IMGUI_BACKENDS_SOURCE}/imgui_impl_opengl3.cpp
+    )
+elseif(MENGINE_RENDER_OPENGL)
     ADD_FILTER(
     imgui_render_ext
         ${IMGUI_BACKENDS_SOURCE}/imgui_impl_opengl2.h
         ${IMGUI_BACKENDS_SOURCE}/imgui_impl_opengl2.cpp
+    )
+elseif(MENGINE_RENDER_METAL)
+    ADD_FILTER(
+    src
+        ImGUIMetalRenderBridge.h
+        ImGUIMetalRenderBridge.mm
+    )
+
+    ADD_FILTER(
+    imgui_render_ext
+        ${IMGUI_BACKENDS_SOURCE}/imgui_impl_metal.h
+        ${IMGUI_BACKENDS_SOURCE}/imgui_impl_metal.mm
     )
 endif()
 
@@ -79,11 +107,11 @@ if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
     embedding
         ImGUIScriptEmbedding.cpp
         ImGUIScriptEmbedding.h
-        
+
         ImGUIScriptRender.cpp
         ImGUIScriptRender.h
     )
-        
+
     INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
 endif()
 
@@ -107,6 +135,11 @@ endif()
 
 if(MENGINE_PLATFORM_SDL3)
     TARGET_LINK_LIBRARIES(${PROJECT_NAME} SDL3)
+endif()
+
+if(MENGINE_PLATFORM_MACOS)
+    ADD_MENGINE_APPLE_FRAMEWORK(AppKit)
+    ADD_MENGINE_APPLE_FRAMEWORK(GameController)
 endif()
 
 IF(MENGINE_TARGET_WINDOWS)

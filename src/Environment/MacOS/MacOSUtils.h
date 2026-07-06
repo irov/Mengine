@@ -12,5 +12,7 @@ namespace Mengine
         bool MacOSGetMusicDirectory( Char * const _directory );
         bool MacOSGetPicturesDirectory( Char * const _directory );
         bool MacOSSetDesktopWallpaper( const Char * _path );
+        void MacOSShowAlert( const Char * _caption, const Char * _message );
+        void MacOSShowFatalAlert( const Char * _caption, const Char * _message );
     }
 }

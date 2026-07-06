@@ -2,7 +2,19 @@
 
 #include "Environment/OpenGL/OpenGLRenderIncluder.h"
 
-#if defined(MENGINE_RENDER_OPENGL_NORMAL)
+#if defined(MENGINE_RENDER_OPENGL_NORMAL) && defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
+#   define glActiveTexture_ glActiveTexture
+#   define glClientActiveTexture_ glClientActiveTexture
+#   define glCompressedTexImage2D_ glCompressedTexImage2D
+#   define glBlendEquation_ glBlendEquation
+#   define glBlendFuncSeparate_ glBlendFuncSeparate
+#   define glBlendEquationSeparate_ glBlendEquationSeparate
+
+namespace Mengine
+{
+    void initialize_GLEXT();
+}
+#elif defined(MENGINE_RENDER_OPENGL_NORMAL)
 // textures
 typedef void (APIENTRYP PFNGLACTIVETEXTUREPROC) (GLenum texture);
 typedef void (APIENTRYP PFNGLCLIENTACTIVETEXTUREPROC) (GLenum texture);
@@ -132,4 +144,3 @@ namespace Mengine
     void initialize_GLEXT();
 }
 #endif
-

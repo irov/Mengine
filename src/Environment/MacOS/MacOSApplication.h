@@ -16,6 +16,8 @@
 - (NSInteger)getInstallRND;
 - (NSInteger)getSessionIndex;
 - (NSString * _Nonnull)getSessionId;
+- (NSInteger)getSessionTimestamp;
+- (NSInteger)getSessionRND;
 
 @property (nonatomic, strong) NSString * _Nonnull m_installId;
 @property (nonatomic) NSInteger m_installTimestamp;
@@ -23,5 +25,7 @@
 @property (nonatomic) NSInteger m_installRND;
 @property (nonatomic) NSInteger m_sessionIndex;
 @property (nonatomic, strong) NSString * _Nonnull m_sessionId;
+@property (nonatomic) NSInteger m_sessionTimestamp;
+@property (nonatomic) NSInteger m_sessionRND;
 
 @end

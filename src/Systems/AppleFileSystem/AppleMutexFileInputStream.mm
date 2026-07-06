@@ -81,7 +81,7 @@ namespace Mengine
         m_carriage = 0;
         m_capacity = 0;
         m_reading = 0;
-        
+
 #if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
         Helper::addDebugFilePath( this, _relationPath, _folderPath, _filePath, MENGINE_DOCUMENT_FACTORABLE );
 #endif
@@ -93,7 +93,7 @@ namespace Mengine
     {
         m_stream = nullptr;
         m_mutex = nullptr;
-        
+
 #if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
         Helper::removeDebugFilePath( this );
 #endif
@@ -120,7 +120,7 @@ namespace Mengine
             }
 
             size_t toRead = correct_count - tail;
-            
+
             size_t bytesRead;
             if( this->read_( _buf, tail, toRead, &bytesRead ) == false )
             {
@@ -175,36 +175,36 @@ namespace Mengine
             if( _size == 0 )
             {
                 *_read = 0;
-                
+
                 return true;
             }
-            
+
             MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
-            
+
             NSFileHandle * fileHandle = m_stream->getFileHandle();
-            
+
             size_t current = m_reading - m_capacity + m_carriage;
-            
+
             size_t seek_pos = m_offset + current;
-            
-            NSError * seek_error = nil;
-            if( [fileHandle seekToOffset:seek_pos error:&seek_error] == NO )
+
+            NSError * seekError = nil;
+            if( [fileHandle seekToOffset:seek_pos error:&seekError] == NO )
             {
-                LOGGER_ERROR( "file '%s' seek %zu:%zu get [error: %s]"
+                LOGGER_ERROR( "file '%s' seek %zu:%zu get error: %s"
                     , Helper::getDebugFullPath( m_stream ).c_str()
                     , seek_pos
                     , m_size
-                    , [[AppleDetail getMessageFromNSError:seek_error] UTF8String]
+                    , [[AppleDetail getMessageFromNSError:seekError] UTF8String]
                 );
-                
+
                 return false;
             }
-            
+
             uint8_t * buf_offset = MENGINE_PVOID_OFFSET( _buf, _offset );
-            
-            NSError * read_error = nil;
-            NSData * data = [fileHandle readDataUpToLength:_size error:&read_error];
-            
+
+            NSError * readError = nil;
+            NSData * data = [fileHandle readDataUpToLength:_size error:&readError];
+
             if( data == nil )
             {
                 LOGGER_ERROR( "read file '%s' offset %zu size %zu:%zu get error %s"
@@ -212,23 +212,23 @@ namespace Mengine
                     , _offset
                     , _size
                     , m_size
-                    , [[AppleDetail getMessageFromNSError:read_error] UTF8String]
+                    , [[AppleDetail getMessageFromNSError:readError] UTF8String]
                 );
-                
+
                 return false;
             }
-            
+
             if( data.length == 0 )
             {
                 *_read = 0;
-                
+
                 return true;
             }
-            
+
             Helper::memoryCopy( buf_offset, 0, data.bytes, 0, data.length );
-            
+
             *_read = data.length;
-            
+
             return true;
         }
     }

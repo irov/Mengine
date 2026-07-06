@@ -26,7 +26,7 @@ namespace Mengine
         ThreadConditionVariableInterfacePtr createConditionVariable( const DocumentInterfacePtr & _doc ) override;
 
     public:
-        void sleep( uint32_t _ms ) override;
+        void sleep( uint64_t _ms ) override;
 
     public:
         ThreadId getCurrentThreadId() const override;

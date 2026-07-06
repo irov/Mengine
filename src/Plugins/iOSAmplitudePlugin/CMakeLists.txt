@@ -1,0 +1,13 @@
+MENGINE_PROJECT(iOSAmplitudePlugin)
+
+ADD_FILTER(
+src
+    iOSAmplitudePlugin.h
+    iOSAmplitudePlugin.mm
+)
+
+ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_IOS_AMPLITUDE)
+
+ADD_MENGINE_COCOAPOD("Amplitude" "NO-GIT" "8.22.2")
+
+ADD_MENGINE_APPLE_APPLICATION_DELEGATE("iOSAmplitudePlugin")

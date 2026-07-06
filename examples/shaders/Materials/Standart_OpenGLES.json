@@ -1,0 +1,1231 @@
+{
+    "Name": "Shaders_Standart",
+    "Program": [
+        {
+            "Name": "Blend",
+            "VertexShader": {
+                "Name": "Vertex_Blend"
+            },
+            "FragmentShader": {
+                "Name": "Fragment_Blend"
+            },
+            "VertexAttribute": {
+                "Name": "Vertex2D_UV1"
+            },
+            "Sampler": {
+                "Count": 1
+            }
+        },
+        {
+            "Name": "Blend_Premultiply",
+            "VertexShader": {
+                "Name": "Vertex_Blend"
+            },
+            "FragmentShader": {
+                "Name": "Fragment_Blend_Premultiply"
+            },
+            "VertexAttribute": {
+                "Name": "Vertex2D_UV1"
+            },
+            "Sampler": {
+                "Count": 1
+            }
+        },
+        {
+            "Name": "TrackMatte",
+            "VertexShader": {
+                "Name": "Vertex_Blend_ExternalAlpha"
+            },
+            "FragmentShader": {
+                "Name": "Fragment_TrackMatte"
+            },
+            "VertexAttribute": {
+                "Name": "Vertex2D_UV2"
+            },
+            "Sampler": {
+                "Count": 2
+            }
+        },
+        {
+            "Name": "TrackMatteInverted",
+            "VertexShader": {
+                "Name": "Vertex_Blend_ExternalAlpha"
+            },
+            "FragmentShader": {
+                "Name": "Fragment_TrackMatteInverted"
+            },
+            "VertexAttribute": {
+                "Name": "Vertex2D_UV2"
+            },
+            "Sampler": {
+                "Count": 2
+            }
+        },
+        {
+            "Name": "TrackMatteInverted_ExternalAlpha",
+            "VertexShader": {
+                "Name": "Vertex_Blend_ExternalAlpha"
+            },
+            "FragmentShader": {
+                "Name": "Fragment_TrackMatteInverted_ExternalAlpha"
+            },
+            "VertexAttribute": {
+                "Name": "Vertex2D_UV2"
+            },
+            "Sampler": {
+                "Count": 3
+            }
+        },
+        {
+            "Name": "TrackMatte_ExternalAlpha",
+            "VertexShader": {
+                "Name": "Vertex_Blend_ExternalAlpha"
+            },
+            "FragmentShader": {
+                "Name": "Fragment_TrackMatte_ExternalAlpha"
+            },
+            "VertexAttribute": {
+                "Name": "Vertex2D_UV2"
+            },
+            "Sampler": {
+                "Count": 3
+            }
+        },
+        {
+            "Name": "AlphaMask",
+            "VertexShader": {
+                "Name": "Vertex_Blend_ExternalAlpha"
+            },
+            "FragmentShader": {
+                "Name": "Fragment_AlphaMask"
+            },
+            "VertexAttribute": {
+                "Name": "Vertex2D_UV2"
+            },
+            "Sampler": {
+                "Count": 2
+            }
+        },
+        {
+            "Name": "Accumulator",
+            "VertexShader": {
+                "Name": "Vertex_Blend"
+            },
+            "FragmentShader": {
+                "Name": "Fragment_Accumulator"
+            },
+            "VertexAttribute": {
+                "Name": "Vertex2D_UV1"
+            },
+            "Sampler": {
+                "Count": 1
+            }
+        },
+        {
+            "Name": "Desaturate",
+            "VertexShader": {
+                "Name": "Vertex_Blend"
+            },
+            "FragmentShader": {
+                "Name": "Fragment_Desaturate"
+            },
+            "VertexAttribute": {
+                "Name": "Vertex2D_UV1"
+            },
+            "Sampler": {
+                "Count": 1
+            }
+        },
+        {
+            "Name": "Legendary",
+            "VertexShader": {
+                "Name": "Vertex_Blend"
+            },
+            "FragmentShader": {
+                "Name": "Fragment_Legendary"
+            },
+            "VertexAttribute": {
+                "Name": "Vertex2D_UV1"
+            },
+            "Sampler": {
+                "Count": 1
+            }
+        },
+        {
+            "Name": "Legendary_ExternalAlpha",
+            "VertexShader": {
+                "Name": "Vertex_Blend_ExternalAlpha"
+            },
+            "FragmentShader": {
+                "Name": "Fragment_Legendary_ExternalAlpha"
+            },
+            "VertexAttribute": {
+                "Name": "Vertex2D_UV2"
+            },
+            "Sampler": {
+                "Count": 2
+            }
+        },
+        {
+            "Name": "ExternalAlpha",
+            "VertexShader": {
+                "Name": "Vertex_Blend_ExternalAlpha"
+            },
+            "FragmentShader": {
+                "Name": "Fragment_Blend_ExternalAlpha"
+            },
+            "VertexAttribute": {
+                "Name": "Vertex2D_UV2"
+            },
+            "Sampler": {
+                "Count": 2
+            }
+        },
+        {
+            "Name": "ExternalAlpha_OnlyColor",
+            "VertexShader": {
+                "Name": "Vertex_Blend_ExternalAlpha"
+            },
+            "FragmentShader": {
+                "Name": "Fragment_Blend_ExternalAlpha_OnlyColor"
+            },
+            "VertexAttribute": {
+                "Name": "Vertex2D_UV2"
+            },
+            "Sampler": {
+                "Count": 2
+            }
+        },
+        {
+            "Name": "Blend_OnlyColor",
+            "VertexShader": {
+                "Name": "Vertex_Blend"
+            },
+            "FragmentShader": {
+                "Name": "Fragment_Blend_OnlyColor"
+            },
+            "VertexAttribute": {
+                "Name": "Vertex2D_UV1"
+            },
+            "Sampler": {
+                "Count": 1
+            }
+        },
+        {
+            "Name": "Color",
+            "VertexShader": {
+                "Name": "Vertex_Color"
+            },
+            "FragmentShader": {
+                "Name": "Fragment_Color"
+            },
+            "VertexAttribute": {
+                "Name": "Vertex2D_UV0"
+            },
+            "Sampler": {
+                "Count": 0
+            }
+        },
+        {
+            "Name": "Ozz_Blend",
+            "VertexShader": {
+                "Name": "Vertex_Blend"
+            },
+            "FragmentShader": {
+                "Name": "Ozz_Fragment_Blend"
+            },
+            "VertexAttribute": {
+                "Name": "Vertex2D_UV1"
+            },
+            "Sampler": {
+                "Count": 1
+            }
+        },
+        {
+            "Name": "Color_Premultiply",
+            "VertexShader": {
+                "Name": "Vertex_Color"
+            },
+            "FragmentShader": {
+                "Name": "Fragment_Color_Premultiply"
+            },
+            "VertexAttribute": {
+                "Name": "Vertex2D_UV0"
+            },
+            "Sampler": {
+                "Count": 0
+            }
+        }
+    ],
+    "Material": [
+        {
+            "Name": "Texture_TrackMatte_Blend",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "SOURCE_ALPHA",
+                "Dest": "ONE_MINUS_SOURCE_ALPHA"
+            },
+            "Program": {
+                "Name": "TrackMatte"
+            }
+        },
+        {
+            "Name": "Texture_TrackMatte_Blend_ExternalAlpha",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "SOURCE_ALPHA",
+                "Dest": "ONE_MINUS_SOURCE_ALPHA"
+            },
+            "Program": {
+                "Name": "TrackMatte_ExternalAlpha"
+            }
+        },
+        {
+            "Name": "Texture_TrackMatte_Blend_Premultiply",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "ONE",
+                "Dest": "ONE_MINUS_SOURCE_ALPHA"
+            },
+            "Program": {
+                "Name": "TrackMatte"
+            }
+        },
+        {
+            "Name": "Texture_TrackMatte_Intensive",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "SOURCE_ALPHA",
+                "Dest": "ONE"
+            },
+            "Program": {
+                "Name": "TrackMatte"
+            }
+        },
+        {
+            "Name": "Texture_TrackMatte_Intensive_Premultiply",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "ONE",
+                "Dest": "ONE"
+            },
+            "Program": {
+                "Name": "TrackMatte"
+            }
+        },
+        {
+            "Name": "Texture_TrackMatteInverted_Blend",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "SOURCE_ALPHA",
+                "Dest": "ONE_MINUS_SOURCE_ALPHA"
+            },
+            "Program": {
+                "Name": "TrackMatteInverted"
+            }
+        },
+        {
+            "Name": "Texture_TrackMatteInverted_Blend_ExternalAlpha",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "SOURCE_ALPHA",
+                "Dest": "ONE_MINUS_SOURCE_ALPHA"
+            },
+            "Program": {
+                "Name": "TrackMatteInverted_ExternalAlpha"
+            }
+        },
+        {
+            "Name": "Texture_TrackMatteInverted_Blend_Premultiply",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "ONE",
+                "Dest": "ONE_MINUS_SOURCE_ALPHA"
+            },
+            "Program": {
+                "Name": "TrackMatteInverted"
+            }
+        },
+        {
+            "Name": "Texture_TrackMatteInverted_Intensive",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "SOURCE_ALPHA",
+                "Dest": "ONE"
+            },
+            "Program": {
+                "Name": "TrackMatteInverted"
+            }
+        },
+        {
+            "Name": "Texture_TrackMatteInverted_Intensive_ExternalAlpha",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "SOURCE_ALPHA",
+                "Dest": "ONE"
+            },
+            "Program": {
+                "Name": "TrackMatteInverted_ExternalAlpha"
+            }
+        },
+        {
+            "Name": "Texture_TrackMatteInverted_Intensive_Premultiply",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "ONE",
+                "Dest": "ONE"
+            },
+            "Program": {
+                "Name": "TrackMatteInverted"
+            }
+        },
+        {
+            "Name": "Texture_TrackMatteInverted_Intensive_Premultiply_ExternalAlpha",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "ONE",
+                "Dest": "ONE"
+            },
+            "Program": {
+                "Name": "TrackMatteInverted_ExternalAlpha"
+            }
+        },
+        {
+            "Name": "Texture_TrackMatte_Intensive_ExternalAlpha",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "SOURCE_ALPHA",
+                "Dest": "ONE"
+            },
+            "Program": {
+                "Name": "TrackMatte_ExternalAlpha"
+            }
+        },
+        {
+            "Name": "Texture_AlphaMask_Blend",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "SOURCE_ALPHA",
+                "Dest": "ONE_MINUS_SOURCE_ALPHA"
+            },
+            "Program": {
+                "Name": "AlphaMask"
+            }
+        },
+        {
+            "Name": "Debug",
+            "Debug": true,
+            "AlphaBlend": {
+                "Enable": false
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "SOURCE_ALPHA",
+                "Dest": "ONE_MINUS_SOURCE_ALPHA"
+            },
+            "Program": {
+                "Name": "Color"
+            }
+        },
+        {
+            "Name": "Texture_Solid",
+            "AlphaBlend": {
+                "Enable": false
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "SOURCE_ALPHA",
+                "Dest": "ONE_MINUS_SOURCE_ALPHA"
+            },
+            "Program": {
+                "Name": "Blend"
+            }
+        },
+        {
+            "Name": "Texture_Blend",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "SOURCE_ALPHA",
+                "Dest": "ONE_MINUS_SOURCE_ALPHA"
+            },
+            "Program": {
+                "Name": "Blend"
+            }
+        },
+        {
+            "Name": "Texture_Blend_WC",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "SOURCE_ALPHA",
+                "Dest": "ONE_MINUS_SOURCE_ALPHA"
+            },
+            "TextureStages": [
+                {
+                    "Stage": 0,
+                    "AddressMode": {
+                        "U": "WRAP",
+                        "V": "CLAMP"
+                    }
+                }
+            ],
+            "Program": {
+                "Name": "Blend"
+            }
+        },
+        {
+            "Name": "Texture_Blend_WW",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "SOURCE_ALPHA",
+                "Dest": "ONE_MINUS_SOURCE_ALPHA"
+            },
+            "TextureStages": [
+                {
+                    "Stage": 0,
+                    "AddressMode": {
+                        "U": "WRAP",
+                        "V": "WRAP"
+                    }
+                }
+            ],
+            "Program": {
+                "Name": "Blend"
+            }
+        },
+        {
+            "Name": "Texture_Blend_CW",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "SOURCE_ALPHA",
+                "Dest": "ONE_MINUS_SOURCE_ALPHA"
+            },
+            "TextureStages": [
+                {
+                    "Stage": 0,
+                    "AddressMode": {
+                        "U": "CLAMP",
+                        "V": "WRAP"
+                    }
+                }
+            ],
+            "Program": {
+                "Name": "Blend"
+            }
+        },
+        {
+            "Name": "Texture_Blend_Premultiply",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "ONE",
+                "Dest": "ONE_MINUS_SOURCE_ALPHA"
+            },
+            "Program": {
+                "Name": "Blend_Premultiply"
+            }
+        },
+        {
+            "Name": "Texture_Intensive_Premultiply",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "ONE",
+                "Dest": "ONE"
+            },
+            "Program": {
+                "Name": "Blend_Premultiply"
+            }
+        },
+        {
+            "Name": "Texture_Intensive",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "SOURCE_ALPHA",
+                "Dest": "ONE"
+            },
+            "Program": {
+                "Name": "Blend"
+            }
+        },
+        {
+            "Name": "Texture_Multiply",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "ZERO",
+                "Dest": "ONE_MINUS_SOURCE_COLOUR"
+            },
+            "SeparateAlphaBlend": {
+                "Enable": true
+            },
+            "SeparateAlphaBlendFactor": {
+                "Source": "ZERO",
+                "Dest": "ONE_MINUS_SOURCE_ALPHA"
+            },
+            "Program": {
+                "Name": "Blend"
+            }
+        },
+        {
+            "Name": "Texture_Multiply_Premultiply",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "ZERO",
+                "Dest": "ONE_MINUS_SOURCE_COLOUR"
+            },
+            "SeparateAlphaBlend": {
+                "Enable": true
+            },
+            "SeparateAlphaBlendFactor": {
+                "Source": "ZERO",
+                "Dest": "ONE_MINUS_SOURCE_ALPHA"
+            },
+            "Program": {
+                "Name": "Blend_Premultiply"
+            }
+        },
+        {
+            "Name": "Texture_Screen",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "ONE",
+                "Dest": "ONE_MINUS_DEST_COLOUR"
+            },
+            "Program": {
+                "Name": "Blend"
+            }
+        },
+        {
+            "Name": "Texture_Screen_Premultiply",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "ONE",
+                "Dest": "ONE_MINUS_DEST_COLOUR"
+            },
+            "Program": {
+                "Name": "Blend_Premultiply"
+            }
+        },
+        {
+            "Name": "Texture_Blend_OnlyColor",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "SOURCE_ALPHA",
+                "Dest": "ONE_MINUS_SOURCE_ALPHA"
+            },
+            "Program": {
+                "Name": "Blend_OnlyColor"
+            }
+        },
+        {
+            "Name": "Texture_Intensive_OnlyColor",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "SOURCE_ALPHA",
+                "Dest": "ONE"
+            },
+            "Program": {
+                "Name": "Blend_OnlyColor"
+            }
+        },
+        {
+            "Name": "Texture_Multiply_OnlyColor",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "ZERO",
+                "Dest": "ONE_MINUS_SOURCE_COLOUR"
+            },
+            "SeparateAlphaBlend": {
+                "Enable": true
+            },
+            "SeparateAlphaBlendFactor": {
+                "Source": "ZERO",
+                "Dest": "ONE_MINUS_SOURCE_ALPHA"
+            },
+            "Program": {
+                "Name": "Blend_OnlyColor"
+            }
+        },
+        {
+            "Name": "Texture_Screen_OnlyColor",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "ONE",
+                "Dest": "ONE_MINUS_SOURCE_COLOUR"
+            },
+            "Program": {
+                "Name": "Blend_OnlyColor"
+            }
+        },
+        {
+            "Name": "Texture_Blend_ExternalAlpha",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "SOURCE_ALPHA",
+                "Dest": "ONE_MINUS_SOURCE_ALPHA"
+            },
+            "Program": {
+                "Name": "ExternalAlpha"
+            }
+        },
+        {
+            "Name": "Texture_Blend_ExternalAlpha_WC",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "SOURCE_ALPHA",
+                "Dest": "ONE_MINUS_SOURCE_ALPHA"
+            },
+            "TextureStages": [
+                {
+                    "Stage": 0,
+                    "AddressMode": {
+                        "U": "WRAP",
+                        "V": "CLAMP"
+                    }
+                },
+                {
+                    "Stage": 1,
+                    "AddressMode": {
+                        "U": "WRAP",
+                        "V": "CLAMP"
+                    }
+                }
+            ],
+            "Program": {
+                "Name": "ExternalAlpha"
+            }
+        },
+        {
+            "Name": "Texture_Blend_ExternalAlpha_WW",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "SOURCE_ALPHA",
+                "Dest": "ONE_MINUS_SOURCE_ALPHA"
+            },
+            "TextureStages": [
+                {
+                    "Stage": 0,
+                    "AddressMode": {
+                        "U": "WRAP",
+                        "V": "WRAP"
+                    }
+                },
+                {
+                    "Stage": 1,
+                    "AddressMode": {
+                        "U": "WRAP",
+                        "V": "WRAP"
+                    }
+                }
+            ],
+            "Program": {
+                "Name": "ExternalAlpha"
+            }
+        },
+        {
+            "Name": "Texture_Blend_ExternalAlpha_CW",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "SOURCE_ALPHA",
+                "Dest": "ONE_MINUS_SOURCE_ALPHA"
+            },
+            "TextureStages": [
+                {
+                    "Stage": 0,
+                    "AddressMode": {
+                        "U": "CLAMP",
+                        "V": "WRAP"
+                    }
+                },
+                {
+                    "Stage": 1,
+                    "AddressMode": {
+                        "U": "CLAMP",
+                        "V": "WRAP"
+                    }
+                }
+            ],
+            "Program": {
+                "Name": "ExternalAlpha"
+            }
+        },
+        {
+            "Name": "Texture_Intensive_ExternalAlpha",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "SOURCE_ALPHA",
+                "Dest": "ONE"
+            },
+            "Program": {
+                "Name": "ExternalAlpha"
+            }
+        },
+        {
+            "Name": "Texture_Multiply_ExternalAlpha",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "ZERO",
+                "Dest": "ONE_MINUS_SOURCE_COLOUR"
+            },
+            "SeparateAlphaBlend": {
+                "Enable": true
+            },
+            "SeparateAlphaBlendFactor": {
+                "Source": "ZERO",
+                "Dest": "ONE_MINUS_SOURCE_ALPHA"
+            },
+            "Program": {
+                "Name": "ExternalAlpha"
+            }
+        },
+        {
+            "Name": "Texture_Screen_ExternalAlpha",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "ONE",
+                "Dest": "ONE_MINUS_SOURCE_COLOUR"
+            },
+            "Program": {
+                "Name": "ExternalAlpha"
+            }
+        },
+        {
+            "Name": "Texture_Blend_ExternalAlpha_OnlyColor",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "SOURCE_ALPHA",
+                "Dest": "ONE_MINUS_SOURCE_ALPHA"
+            },
+            "Program": {
+                "Name": "ExternalAlpha_OnlyColor"
+            }
+        },
+        {
+            "Name": "Texture_Intensive_ExternalAlpha_OnlyColor",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "SOURCE_ALPHA",
+                "Dest": "ONE"
+            },
+            "Program": {
+                "Name": "ExternalAlpha_OnlyColor"
+            }
+        },
+        {
+            "Name": "Texture_Multiply_ExternalAlpha_OnlyColor",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "ZERO",
+                "Dest": "ONE_MINUS_SOURCE_COLOUR"
+            },
+            "SeparateAlphaBlend": {
+                "Enable": true
+            },
+            "SeparateAlphaBlendFactor": {
+                "Source": "ZERO",
+                "Dest": "ONE_MINUS_SOURCE_ALPHA"
+            },
+            "Program": {
+                "Name": "ExternalAlpha_OnlyColor"
+            }
+        },
+        {
+            "Name": "Texture_Screen_ExternalAlpha_OnlyColor",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "ONE",
+                "Dest": "ONE_MINUS_SOURCE_COLOUR"
+            },
+            "Program": {
+                "Name": "ExternalAlpha_OnlyColor"
+            }
+        },
+        {
+            "Name": "Color_Solid",
+            "AlphaBlend": {
+                "Enable": false
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "SOURCE_ALPHA",
+                "Dest": "ONE_MINUS_SOURCE_ALPHA"
+            },
+            "Program": {
+                "Name": "Color"
+            }
+        },
+        {
+            "Name": "Color_Blend",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "SOURCE_ALPHA",
+                "Dest": "ONE_MINUS_SOURCE_ALPHA"
+            },
+            "Program": {
+                "Name": "Color"
+            }
+        },
+        {
+            "Name": "Color_Blend_Premultiply",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "ONE",
+                "Dest": "ONE_MINUS_SOURCE_ALPHA"
+            },
+            "Program": {
+                "Name": "Color_Premultiply"
+            }
+        },
+        {
+            "Name": "Color_Intensive",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "SOURCE_ALPHA",
+                "Dest": "ONE"
+            },
+            "Program": {
+                "Name": "Color"
+            }
+        },
+        {
+            "Name": "Color_Multiply",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "ZERO",
+                "Dest": "ONE_MINUS_SOURCE_COLOUR"
+            },
+            "SeparateAlphaBlend": {
+                "Enable": true
+            },
+            "SeparateAlphaBlendFactor": {
+                "Source": "ZERO",
+                "Dest": "ONE_MINUS_SOURCE_ALPHA"
+            },
+            "Program": {
+                "Name": "Color"
+            }
+        },
+        {
+            "Name": "Color_Screen",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "ONE",
+                "Dest": "ONE_MINUS_SOURCE_COLOUR"
+            },
+            "Program": {
+                "Name": "Color"
+            }
+        },
+        {
+            "Name": "Texture_Accumulator",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "SOURCE_ALPHA",
+                "Dest": "ONE_MINUS_SOURCE_ALPHA"
+            },
+            "Program": {
+                "Name": "Accumulator"
+            }
+        },
+        {
+            "Name": "Texture_Desaturate",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "SOURCE_ALPHA",
+                "Dest": "ONE_MINUS_SOURCE_ALPHA"
+            },
+            "Program": {
+                "Name": "Desaturate"
+            }
+        },
+        {
+            "Name": "Texture_Legendary_Blend",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "SOURCE_ALPHA",
+                "Dest": "ONE_MINUS_SOURCE_ALPHA"
+            },
+            "Program": {
+                "Name": "Legendary"
+            }
+        },
+        {
+            "Name": "Texture_Legendary_Blend_ExternalAlpha",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "SOURCE_ALPHA",
+                "Dest": "ONE_MINUS_SOURCE_ALPHA"
+            },
+            "Program": {
+                "Name": "Legendary_ExternalAlpha"
+            }
+        },
+        {
+            "Name": "Ozz_Texture_Blend",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferTest": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": true
+            },
+            "BlendFactor": {
+                "Source": "SOURCE_ALPHA",
+                "Dest": "ONE_MINUS_SOURCE_ALPHA"
+            },
+            "Program": {
+                "Name": "Ozz_Blend"
+            }
+        }
+    ]
+}

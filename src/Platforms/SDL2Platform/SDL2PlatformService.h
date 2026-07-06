@@ -20,7 +20,7 @@
 #include "Environment/SDL2/SDL2PlatformServiceExtensionInterface.h"
 
 #if defined(MENGINE_PLATFORM_MACOS)
-#   import "MacOSWorkspace.h"
+#   import "Environment/MacOS/MacOSWorkspace.h"
 #endif
 
 #include "Environment/SDL2/SDL2Includer.h"
@@ -192,7 +192,7 @@ namespace Mengine
 
     protected:
         bool processEvents_();
-        
+
     protected:
         void pushQuitEvent_();
 

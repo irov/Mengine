@@ -1,6 +1,6 @@
 #include "MetabufPackageLoader.h"
 
-#include "Interface/LoaderServiceInterface.h"
+#include "Interface/MetabufLoaderServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/ContentHelper.h"
@@ -28,7 +28,7 @@ namespace Mengine
         Metacode::Meta_Data::Meta_Pak pak;
 
         bool exist = false;
-        if( LOADER_SERVICE()
+        if( METABUF_LOADER_SERVICE()
             ->load( descriptionContent, &pak, Metacode::Meta_Data::getVersion(), &exist, _doc ) == false )
         {
             LOGGER_ERROR( "invalid resource file '%s' name '%s' description '%s'"

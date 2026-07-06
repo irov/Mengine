@@ -1,6 +1,10 @@
 #import "AppleHttpNetwork.h"
 
-#import "Environment/iOS/iOSLog.h"
+#if defined(MENGINE_ENVIRONMENT_TARGET_IOS) || defined(MENGINE_ENVIRONMENT_TARGET_IOS_SIMULATOR)
+#   import "Environment/iOS/iOSLog.h"
+#else
+#   define IOS_LOGGER_ERROR(...) NSLog(__VA_ARGS__)
+#endif
 
 @implementation AppleHttpRequestParam
 
@@ -14,7 +18,7 @@
 
 + (void)httpRequestSetCacheWithMemoryCapacity:(NSUInteger)memoryCapacity diskCapacity:(NSUInteger)diskCapacity diskPath:(NSString * _Nonnull)diskPath {
     NSURLCache *sharedCache = [[NSURLCache alloc] initWithMemoryCapacity:memoryCapacity diskCapacity:diskCapacity diskPath:diskPath];
-    
+
     [NSURLCache setSharedURLCache:sharedCache];
 }
 
@@ -32,7 +36,7 @@
     if (login.length == 0) {
         return;
     }
-    
+
     NSString * userCredentials = [NSString stringWithFormat:@"%@:%@", login, password];
     NSData * data = [userCredentials dataUsingEncoding:NSUTF8StringEncoding];
     NSString * base64 = [data base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
@@ -59,7 +63,7 @@
     NSString * boundary = [[NSUUID UUID] UUIDString];
     NSString * contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];
     [request setValue:contentType forHTTPHeaderField:@"Content-Type"];
-    
+
     NSMutableData * body = [NSMutableData data];
     [properties enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSString *value, BOOL *stop) {
         [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
@@ -67,19 +71,19 @@
         [body appendData:[[NSString stringWithFormat:@"%@\r\n", value] dataUsingEncoding:NSUTF8StringEncoding]];
     }];
     [body appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-    
+
     request.HTTPBody = body;
 }
 
 + (AppleHttpResponseParam *)makeResponse:(NSHTTPURLResponse *)response data:(NSData *)data error:(NSError *)error {
     AppleHttpResponseParam * httpResponse = [[AppleHttpResponseParam alloc] init];
-    
+
     if (response != nil) {
         httpResponse.HTTP_RESPONSE_CODE = (int)response.statusCode;
     } else {
         httpResponse.HTTP_RESPONSE_CODE = 0;
     }
-    
+
     if (error != nil) {
         httpResponse.HTTP_ERROR_MESSAGE = error.domain;
         httpResponse.HTTP_ERROR_CODE = error.code;
@@ -87,7 +91,7 @@
         httpResponse.HTTP_ERROR_MESSAGE = nil;
         httpResponse.HTTP_ERROR_CODE = 0;
     }
-    
+
     if (data != nil) {
         httpResponse.HTTP_CONTENT_DATA = data;
         httpResponse.HTTP_CONTENT_LENGTH = (int)data.length;
@@ -95,154 +99,154 @@
         httpResponse.HTTP_CONTENT_DATA = nil;
         httpResponse.HTTP_CONTENT_LENGTH = 0;
     }
-    
+
     return httpResponse;
 }
 
 + (NSMutableURLRequest *)makeRequest:(AppleHttpRequestParam *)request method:(NSString *)method {
     NSURL * url = [NSURL URLWithString:request.HTTP_URL];
-    
+
     if (url == nil) {
         IOS_LOGGER_ERROR(@"[HTTP] invalid URL: %@", request.HTTP_URL);
-        
+
         return nil;
     }
-    
+
     NSMutableURLRequest * urlRequest = [NSMutableURLRequest requestWithURL:url];
     urlRequest.HTTPMethod = method;
     [AppleHttpNetwork setTimeout:urlRequest timeout:request.HTTP_TIMEOUT];
     [AppleHttpNetwork setHeaders:urlRequest headers:request.HTTP_HEADERS];
-    
+
     return urlRequest;
 }
 
 + (AppleHttpResponseParam *)processRequest:(NSMutableURLRequest *)urlRequest {
     __block AppleHttpResponseParam *responseParam = nil;
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-    
+
     NSURLSessionDataTask * dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:urlRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *)response;
         responseParam = [AppleHttpNetwork makeResponse:httpResponse data:data error:error];
         dispatch_semaphore_signal(semaphore);
     }];
-    
+
     [dataTask resume];
     dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-    
+
     return responseParam;
 }
 
 + (nullable AppleHttpResponseParam *)httpRequestPing:(AppleHttpRequestParam *)request {
     @try {
         NSMutableURLRequest * urlRequest = [AppleHttpNetwork makeRequest:request method:@"HEAD"];
-        
+
         if (urlRequest == nil) {
             return nil;
         }
-        
+
         AppleHttpResponseParam * responseParam = [AppleHttpNetwork processRequest:urlRequest];
-        
+
         return responseParam;
     } @catch (NSException *exception) {
         IOS_LOGGER_ERROR(@"[HTTP] httpRequestPing caught an exception: %@", exception.reason);
     }
-    
+
     return nil;
 }
 
 + (nullable AppleHttpResponseParam *)httpRequestPostMessage:(AppleHttpRequestParam *)request properties:(NSDictionary<NSString *, NSString *> *)properties {
     @try {
         NSMutableURLRequest * urlRequest = [AppleHttpNetwork makeRequest:request method:@"POST"];
-        
+
         if (urlRequest == nil) {
             return nil;
         }
-        
+
         [AppleHttpNetwork setMultipartFormData:urlRequest properties:properties];
-        
+
         AppleHttpResponseParam * responseParam = [AppleHttpNetwork processRequest:urlRequest];
-        
+
         return responseParam;
     } @catch (NSException *exception) {
         IOS_LOGGER_ERROR(@"[HTTP] httpRequestPostMessage caught an exception: %@", exception.reason);
     }
-    
+
     return nil;
 }
 
 + (nullable AppleHttpResponseParam *)httpRequestHeaderData:(AppleHttpRequestParam *)request data:(NSData *)data {
     @try {
         NSMutableURLRequest * urlRequest = [AppleHttpNetwork makeRequest:request method:@"POST"];
-        
+
         if (urlRequest == nil) {
             return nil;
         }
 
         [AppleHttpNetwork setData:urlRequest data:data];
-        
+
         AppleHttpResponseParam * responseParam = [AppleHttpNetwork processRequest:urlRequest];
-        
+
         return responseParam;
     } @catch (NSException *exception) {
         IOS_LOGGER_ERROR(@"[HTTP] httpRequestHeaderData caught an exception: %@", exception.reason);
     }
-    
+
     return nil;
 }
 
 + (nullable AppleHttpResponseParam *)httpRequestGetMessage:(AppleHttpRequestParam *)request {
     @try {
         NSMutableURLRequest * urlRequest = [AppleHttpNetwork makeRequest:request method:@"GET"];
-        
+
         if (urlRequest == nil) {
             return nil;
         }
-        
+
         AppleHttpResponseParam * responseParam = [AppleHttpNetwork processRequest:urlRequest];
-        
+
         return responseParam;
     } @catch (NSException *exception) {
         IOS_LOGGER_ERROR(@"[HTTP] httpRequestGetMessage caught an exception: %@", exception.reason);
     }
-    
+
     return nil;
 }
 
 + (nullable AppleHttpResponseParam *)httpRequestDeleteMessage:(AppleHttpRequestParam *)request {
     @try {
         NSMutableURLRequest * urlRequest = [AppleHttpNetwork makeRequest:request method:@"DELETE"];
-        
+
         if (urlRequest == nil) {
             return nil;
         }
-        
+
         AppleHttpResponseParam * responseParam = [AppleHttpNetwork processRequest:urlRequest];
-        
+
         return responseParam;
     } @catch (NSException *exception) {
         IOS_LOGGER_ERROR(@"[HTTP] httpRequestDeleteMessage caught an exception: %@", exception.reason);
     }
-    
+
     return nil;
 }
 
 + (nullable AppleHttpResponseParam *)httpRequestGetAsset:(AppleHttpRequestParam *)request login:(NSString *)login password:(NSString *)password {
     @try {
         NSMutableURLRequest * urlRequest = [AppleHttpNetwork makeRequest:request method:@"GET"];
-        
+
         if (urlRequest == nil) {
             return nil;
         }
-        
+
         [AppleHttpNetwork setBasicAuthorization:urlRequest login:login password:password];
-        
+
         AppleHttpResponseParam * responseParam = [AppleHttpNetwork processRequest:urlRequest];
-        
+
         return responseParam;
     } @catch (NSException *exception) {
         IOS_LOGGER_ERROR(@"[HTTP] httpRequestGetAsset caught an exception: %@", exception.reason);
     }
-    
+
     return nil;
 }
 

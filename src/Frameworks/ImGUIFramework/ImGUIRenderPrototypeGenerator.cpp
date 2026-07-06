@@ -23,7 +23,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     FactorablePointer ImGUIRenderPrototypeGenerator::generate( const DocumentInterfacePtr & _doc )
     {
-        ImGUIRenderPtr render = NodePrototypeGenerator<ImGUIRender, 16>::generate( _doc );
+        ImGUIRenderPtr render = DefaultPrototypeGenerator<ImGUIRender, 16>::generate( _doc );
 
         render->setImGUIRenderProvider( m_renderProvider );
 

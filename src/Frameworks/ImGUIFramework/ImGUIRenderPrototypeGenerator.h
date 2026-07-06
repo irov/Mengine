@@ -2,14 +2,14 @@
 
 #include "ImGUIInterface.h"
 
-#include "Kernel/NodePrototypeGenerator.h"
+#include "Kernel/DefaultPrototypeGenerator.h"
 
 #include "ImGUIRender.h"
 
 namespace Mengine
 {
     class ImGUIRenderPrototypeGenerator
-        : public NodePrototypeGenerator<ImGUIRender, 16>
+        : public DefaultPrototypeGenerator<ImGUIRender, 16>
     {
     public:
         ImGUIRenderPrototypeGenerator();

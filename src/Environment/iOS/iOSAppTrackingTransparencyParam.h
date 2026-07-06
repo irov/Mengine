@@ -6,7 +6,7 @@
 
 @interface iOSAppTrackingTransparencyParam : NSObject
 
-@property (nonatomic) EAppleAppTrackingAuthorization APPTRACKINGTRANSPARENCY_AUTHORIZATION;
+@property (nonatomic) EiOSAppTrackingAuthorization APPTRACKINGTRANSPARENCY_AUTHORIZATION;
 @property (nonatomic) NSString * APPTRACKINGTRANSPARENCY_IDFA;
 
 @end

@@ -177,7 +177,7 @@ namespace Mengine
         const Char * versionStr = reinterpret_cast<const Char *>(glGetString( GL_VERSION ));
 
         MENGINE_UNUSED( versionStr );
-        
+
         LOGGER_INFO( "opengl", "OpenGL version: %s"
             , versionStr
         );
@@ -187,15 +187,15 @@ namespace Mengine
         MENGINE_UNUSED( vendorStr );
 
         LOGGER_INFO( "opengl", "OpenGL vendor: %s"
-            , vendorStr 
+            , vendorStr
         );
 
         const Char * rendererStr = reinterpret_cast<const Char *>(glGetString( GL_RENDERER ));
 
         MENGINE_UNUSED( rendererStr );
-        
+
         LOGGER_INFO( "opengl", "OpenGL renderer: %s"
-            , rendererStr 
+            , rendererStr
         );
 
 #if defined(MENGINE_RENDER_OPENGL_ES)
@@ -204,7 +204,7 @@ namespace Mengine
         MENGINE_UNUSED( extensionsStr );
 
         LOGGER_INFO( "opengl", "OpenGL extensions: %s"
-            , extensionsStr 
+            , extensionsStr
         );
 #endif
 
@@ -213,7 +213,7 @@ namespace Mengine
         MENGINE_UNUSED( shadingLanguageVersion );
 
         LOGGER_INFO( "opengl", "OpenGL shading language version: %s"
-            , shadingLanguageVersion 
+            , shadingLanguageVersion
         );
 
         GLint maxCombinedTextureImageUnits;
@@ -316,13 +316,18 @@ namespace Mengine
         float ex = (e.x + 1.f) * 0.5f * vs.x;
         float ey = (1.f - (1.f - (e.y + 1.f) * 0.5f)) * vs.y;
 
-        uint32_t left = (uint32_t)bx;
-        uint32_t top = (uint32_t)by;
-        uint32_t right = (uint32_t)ex;
-        uint32_t bottom = (uint32_t)ey;
+        float local_left = bx < ex ? bx : ex;
+        float local_right = bx < ex ? ex : bx;
+        float local_top = by < ey ? ey : by;
+        float local_bottom = by < ey ? by : ey;
 
-        uint32_t width = right - left;
-        uint32_t height = top - bottom;
+        float windowHeight = m_windowResolution.getHeightF();
+        float viewport_bottom = windowHeight - m_viewport.begin.y - m_viewport.getHeight();
+
+        uint32_t left = (uint32_t)(m_viewport.begin.x + local_left);
+        uint32_t bottom = (uint32_t)(viewport_bottom + local_bottom);
+        uint32_t width = (uint32_t)(local_right - local_left);
+        uint32_t height = (uint32_t)(local_top - local_bottom);
 
         MENGINE_GLCALL( glEnable, (GL_SCISSOR_TEST) );
         MENGINE_GLCALL( glScissor, (left, bottom, width, height) );

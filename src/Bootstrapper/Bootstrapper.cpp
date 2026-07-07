@@ -190,6 +190,10 @@ PLUGIN_EXPORT( Zip );
 PLUGIN_EXPORT( LZ4 );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_PLUGIN_ZSTD_STATIC)
+PLUGIN_EXPORT( Zstd );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_INI_STATIC)
 PLUGIN_EXPORT( INI );
 #endif
@@ -1397,6 +1401,10 @@ namespace Mengine
 
 #if defined(MENGINE_PLUGIN_LZ4_STATIC)
         MENGINE_ADD_PLUGIN( LZ4, "plugin LZ4...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#if defined(MENGINE_PLUGIN_ZSTD_STATIC)
+        MENGINE_ADD_PLUGIN( Zstd, "plugin Zstd...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #if defined(MENGINE_SYSTEM_RENDER)

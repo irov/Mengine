@@ -1,0 +1,18 @@
+MENGINE_PROJECT(ZstdPlugin)
+
+ADD_FILTER(
+src
+    ZstdPlugin.h
+    ZstdPlugin.def
+    ZstdPlugin.cpp
+
+    ArchivatorZstd.h
+    ArchivatorZstd.cpp
+)
+
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/zstd/lib)
+
+ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_ZSTD)
+
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}zstd${MENGINE_LIB_SUFFIX})
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)

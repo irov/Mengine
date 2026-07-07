@@ -18,6 +18,10 @@ if(MENGINE_PLUGIN_LZ4)
     ADD_SUBDIRECTORY(LZ4Plugin)
 endif()
 
+if(MENGINE_PLUGIN_ZSTD)
+    ADD_SUBDIRECTORY(ZstdPlugin)
+endif()
+
 if(MENGINE_PLUGIN_INI)
     ADD_SUBDIRECTORY(INIPlugin)
 endif()

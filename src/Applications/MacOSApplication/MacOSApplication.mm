@@ -1,5 +1,7 @@
 #import "MacOSApplication.h"
 
+#import "Configuration/Configurations.h"
+
 #import "Interface/PlatformServiceInterface.h"
 #import "Interface/BootstrapperInterface.h"
 #import "Interface/TextServiceInterface.h"

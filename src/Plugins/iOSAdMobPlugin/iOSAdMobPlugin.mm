@@ -14,7 +14,7 @@
 
 #include "Config/Version.h"
 
-#include "Configuration/Configurations.h"
+#import "Configuration/Configurations.h"
 
 #if defined(MENGINE_DEBUG)
 #   import <AdSupport/AdSupport.h>

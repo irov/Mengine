@@ -1,5 +1,7 @@
 #include "Win32PlatformService.h"
 
+#include "Configuration/Configurations.h"
+
 #include "Interface/ApplicationInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/InputServiceInterface.h"

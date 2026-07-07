@@ -10,6 +10,8 @@
 #import "iOSAppLovinInterstitialDelegate.h"
 #import "iOSAppLovinRewardedDelegate.h"
 
+#import "Configuration/Configurations.h"
+
 #import <AppLovinSDK/AppLovinSDK.h>
 
 #define PLUGIN_BUNDLE_NAME "MengineiOSAppLovinPlugin"

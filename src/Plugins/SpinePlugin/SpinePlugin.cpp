@@ -1,5 +1,7 @@
 #include "SpinePlugin.h"
 
+#include "Configuration/Configurations.h"
+
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 

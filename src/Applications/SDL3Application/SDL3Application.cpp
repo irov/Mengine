@@ -1,5 +1,7 @@
 #include "SDL3Application.h"
 
+#include "Configuration/Configurations.h"
+
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/BootstrapperInterface.h"
 #include "Interface/TextServiceInterface.h"

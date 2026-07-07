@@ -1,5 +1,7 @@
 #include "AstralaxPlugin.h"
 
+#include "Configuration/Configurations.h"
+
 #include "Interface/PrototypeServiceInterface.h"
 
 #if defined(MENGINE_PLUGIN_METABUF)

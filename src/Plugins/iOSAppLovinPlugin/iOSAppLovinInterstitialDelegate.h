@@ -4,7 +4,7 @@
 
 #import "Environment/Apple/AppleIncluder.h"
 
-#include "Configuration/Configurations.h"
+#import "Configuration/Configurations.h"
 
 #if defined(MENGINE_PLUGIN_IOS_APPLOVIN_MEDIATION_AMAZON)
 #import "iOSAppLovinInterstitialAmazonLoader.h"

@@ -42,6 +42,10 @@ if(MENGINE_PLUGIN_MOVIE)
     ADD_SUBDIRECTORY(MoviePlugin)
 endif()
 
+if(MENGINE_PLUGIN_FIGMA)
+    ADD_SUBDIRECTORY(FigmaPlugin)
+endif()
+
 if(MENGINE_PLUGIN_NODEDEBUGGER)
     ADD_SUBDIRECTORY(NodeDebuggerPlugin)
 endif()

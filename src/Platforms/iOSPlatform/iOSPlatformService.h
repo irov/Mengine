@@ -36,6 +36,7 @@
 #include "Kernel/ServiceBase.h"
 #include "Kernel/SHA1.h"
 #include "Kernel/StaticString.h"
+#include "Kernel/Vector.h"
 
 #include "Config/Timestamp.h"
 
@@ -170,6 +171,7 @@ namespace Mengine
 
     public:
         UIWindow * getUIWindow() const override;
+        UIView * getUIView() const override;
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
     public:
@@ -179,6 +181,10 @@ namespace Mengine
         id<MTLDevice> getMetalDevice() const override;
         UIView * getMetalView() const override;
 #endif
+
+    public:
+        UniqueId addIOSTouchHandler( const LambdaIOSTouchHandler & _lambda, const DocumentInterfacePtr & _doc ) override;
+        void removeIOSTouchHandler( UniqueId _id ) override;
 
     public:
         void handleTouchBegan( NSSet<UITouch *> * _touches, UIView * _view ) override;
@@ -195,6 +201,7 @@ namespace Mengine
 
     protected:
         bool processEvents_();
+        bool dispatchTouchEvent_( NSSet<UITouch *> * _touches, UIView * _view, UITouchPhase _phase );
         
     protected:
         void pushQuitEvent_();
@@ -221,6 +228,19 @@ namespace Mengine
 #endif
 
         iOSInputPtr m_iOSInput;
+
+        struct iOSTouchHandlerDesc
+        {
+            UniqueId id;
+            LambdaIOSTouchHandler lambda;
+
+#if defined(MENGINE_DOCUMENT_ENABLE)
+            DocumentInterfacePtr doc;
+#endif
+        };
+
+        typedef Vector<iOSTouchHandlerDesc> VectoriOSTouchHandlers;
+        VectoriOSTouchHandlers m_touchHandlers;
 
         StaticString<MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME> m_projectTitle;
         

@@ -2,19 +2,16 @@
 
 #include "Interface/UnknownInterface.h"
 
+#include "Kernel/DocumentHelper.h"
+
+#include "Config/Lambda.h"
 #include "Config/UniqueId.h"
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_METAL)
 #   import <Metal/Metal.h>
 #endif
 
-#if defined(__OBJC__)
-@class NSWindow;
-@class NSView;
-#else
-typedef struct objc_object NSWindow;
-typedef struct objc_object NSView;
-#endif
+#import <AppKit/AppKit.h>
 
 namespace Mengine
 {
@@ -37,6 +34,12 @@ namespace Mengine
     public:
         virtual NSWindow * getNSWindow() const = 0;
         virtual NSView * getNSView() const = 0;
+
+    public:
+        typedef Lambda<bool( NSView * _view, NSEvent * _event )> LambdaMacOSEventHandler;
+
+        virtual UniqueId addMacOSEventHandler( const LambdaMacOSEventHandler & _lambda, const DocumentInterfacePtr & _doc ) = 0;
+        virtual void removeMacOSEventHandler( UniqueId _id ) = 0;
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_METAL)
     public:

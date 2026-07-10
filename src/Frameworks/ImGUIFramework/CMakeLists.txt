@@ -1,21 +1,18 @@
 MENGINE_PROJECT(ImGUIFramework)
 
 ADD_FILTER(
-ImGUIFrameworkPlugin
+src
     ImGUIFrameworkPlugin.cpp
     ImGUIFrameworkPlugin.h
     ImGUIFrameworkPlugin.def
-)
 
-    ADD_FILTER(
-    src
-        ImGUIInterface.h
+    ImGUIInterface.h
 
-        ImGUIService.cpp
-        ImGUIService.h
+    ImGUIService.cpp
+    ImGUIService.h
 
-        ImGUIRenderPrototypeGenerator.cpp
-        ImGUIRenderPrototypeGenerator.h
+    ImGUIRenderPrototypeGenerator.cpp
+    ImGUIRenderPrototypeGenerator.h
 
     ImGUIRenderProvider.cpp
     ImGUIRenderProvider.h
@@ -28,15 +25,15 @@ SET(IMGUI_BACKENDS_SOURCE ${THIRDPARTY_DIR}/imgui/backends)
 
 if(MENGINE_PLATFORM_WIN32)
     ADD_FILTER(
-    imgui_platform_ext
-        ${IMGUI_BACKENDS_SOURCE}/imgui_impl_win32.h
-        ${IMGUI_BACKENDS_SOURCE}/imgui_impl_win32.cpp
+    src
+        ImGUIWin32Platform.h
+        ImGUIWin32Platform.cpp
     )
 endif()
 
 if(MENGINE_PLATFORM_SDL2)
     ADD_FILTER(
-    imgui_platform_ext
+    src
         ${IMGUI_BACKENDS_SOURCE}/imgui_impl_sdl2.h
         ${IMGUI_BACKENDS_SOURCE}/imgui_impl_sdl2.cpp
     )
@@ -48,7 +45,7 @@ endif()
 
 if(MENGINE_PLATFORM_SDL3)
     ADD_FILTER(
-    imgui_platform_ext
+    src
         ${IMGUI_BACKENDS_SOURCE}/imgui_impl_sdl3.h
         ${IMGUI_BACKENDS_SOURCE}/imgui_impl_sdl3.cpp
     )
@@ -60,45 +57,57 @@ endif()
 
 if(MENGINE_PLATFORM_MACOS)
     ADD_FILTER(
-    imgui_platform_ext
-        ${IMGUI_BACKENDS_SOURCE}/imgui_impl_osx.h
-        ${IMGUI_BACKENDS_SOURCE}/imgui_impl_osx.mm
+    src
+        ImGUIMacOSPlatform.h
+        ImGUIMacOSPlatform.mm
     )
+endif()
 
-    ADD_DEFINITIONS(-DIMGUI_IMPL_METAL_CPP_EXTENSIONS)
+if(MENGINE_PLATFORM_IOS)
+    ADD_FILTER(
+    src
+        ImGUIiOSPlatform.h
+        ImGUIiOSPlatform.mm
+    )
 endif()
 
 if(MENGINE_RENDER_DIRECTX9)
     ADD_FILTER(
-    imgui_render_ext
-        ${IMGUI_BACKENDS_SOURCE}/imgui_impl_dx9.h
-        ${IMGUI_BACKENDS_SOURCE}/imgui_impl_dx9.cpp
+    src
+        ImGUIDX9Render.h
+        ImGUIDX9Render.cpp
     )
 endif()
 
-if(MENGINE_RENDER_OPENGL AND MENGINE_PLATFORM_MACOS)
+if(MENGINE_RENDER_OPENGL AND (MENGINE_PLATFORM_MACOS OR MENGINE_PLATFORM_IOS))
     ADD_FILTER(
-    imgui_render_ext
-        ${IMGUI_BACKENDS_SOURCE}/imgui_impl_opengl3.h
-        ${IMGUI_BACKENDS_SOURCE}/imgui_impl_opengl3.cpp
+    src
+        ImGUIOpenGL3Render.h
+        ImGUIOpenGL3Render.cpp
     )
+
+    if(MENGINE_PLATFORM_IOS)
+        ADD_DEFINITIONS(-DIMGUI_IMPL_OPENGL_ES2)
+    endif()
 elseif(MENGINE_RENDER_OPENGL)
     ADD_FILTER(
-    imgui_render_ext
-        ${IMGUI_BACKENDS_SOURCE}/imgui_impl_opengl2.h
-        ${IMGUI_BACKENDS_SOURCE}/imgui_impl_opengl2.cpp
+    src
+        ImGUIOpenGL2Render.h
+        ImGUIOpenGL2Render.cpp
     )
 elseif(MENGINE_RENDER_METAL)
     ADD_FILTER(
     src
-        ImGUIMetalRenderBridge.h
-        ImGUIMetalRenderBridge.mm
-    )
-
-    ADD_FILTER(
-    imgui_render_ext
-        ${IMGUI_BACKENDS_SOURCE}/imgui_impl_metal.h
-        ${IMGUI_BACKENDS_SOURCE}/imgui_impl_metal.mm
+        ImGUIFramebufferDescriptor.h
+        ImGUIFramebufferDescriptor.mm
+        ImGUIMetalBuffer.h
+        ImGUIMetalBuffer.mm
+        ImGUIMetalContext.h
+        ImGUIMetalContext.mm
+        ImGUIMetalRender.h
+        ImGUIMetalRender.mm
+        ImGUIMetalTexture.h
+        ImGUIMetalTexture.mm
     )
 endif()
 
@@ -140,6 +149,10 @@ endif()
 if(MENGINE_PLATFORM_MACOS)
     ADD_MENGINE_APPLE_FRAMEWORK(AppKit)
     ADD_MENGINE_APPLE_FRAMEWORK(GameController)
+endif()
+
+if(MENGINE_PLATFORM_IOS)
+    ADD_MENGINE_APPLE_FRAMEWORK(UIKit)
 endif()
 
 IF(MENGINE_TARGET_WINDOWS)

@@ -47,6 +47,7 @@
 #include "Kernel/TimestampHelper.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/VocabularyHelper.h"
+#include "Kernel/EnumeratorHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -474,6 +475,23 @@ namespace Mengine
         m_active = false;
 
         this->destroyWindow_();
+
+#if defined(MENGINE_DEBUG)
+#   if defined(MENGINE_DOCUMENT_ENABLE)
+        for( const iOSTouchHandlerDesc & desc : m_touchHandlers )
+        {
+            MENGINE_UNUSED( desc );
+
+            LOGGER_ASSERTION( "forgot remove iOS touch handler (doc: %s)"
+                , MENGINE_DOCUMENT_STR( desc.doc )
+            );
+        }
+#   else
+        MENGINE_ASSERTION_FATAL( m_touchHandlers.empty() == true, "forgot remove iOS touch handlers" );
+#   endif
+#endif
+
+        m_touchHandlers.clear();
 
         if( m_iOSInput != nullptr )
         {
@@ -1390,6 +1408,17 @@ namespace Mengine
         return m_uiWindow;
     }
     //////////////////////////////////////////////////////////////////////////
+    UIView * iOSPlatformService::getUIView() const
+    {
+#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
+        return m_glView;
+#elif defined(MENGINE_ENVIRONMENT_RENDER_METAL)
+        return m_metalView;
+#else
+        return m_uiWindow.rootViewController.view;
+#endif
+    }
+    //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
     //////////////////////////////////////////////////////////////////////////
     EAGLContext * iOSPlatformService::getEAGLContext() const
@@ -1411,9 +1440,55 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 #endif
     //////////////////////////////////////////////////////////////////////////
+    UniqueId iOSPlatformService::addIOSTouchHandler( const LambdaIOSTouchHandler & _lambda, const DocumentInterfacePtr & _doc )
+    {
+        UniqueId id = Helper::generateUniqueIdentity();
+
+        iOSTouchHandlerDesc desc;
+        desc.id = id;
+        desc.lambda = _lambda;
+
+#if defined(MENGINE_DOCUMENT_ENABLE)
+        desc.doc = _doc;
+#else
+        MENGINE_UNUSED( _doc );
+#endif
+
+        m_touchHandlers.emplace_back( desc );
+
+        return id;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void iOSPlatformService::removeIOSTouchHandler( UniqueId _id )
+    {
+        VectoriOSTouchHandlers::iterator it_found = StdAlgorithm::find_if( m_touchHandlers.begin(), m_touchHandlers.end(), [_id]( const iOSTouchHandlerDesc & _desc )
+        {
+            return _desc.id == _id;
+        } );
+
+        MENGINE_ASSERTION_FATAL( it_found != m_touchHandlers.end(), "not found iOS touch handler '%u'"
+            , _id
+        );
+
+        m_touchHandlers.erase( it_found );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool iOSPlatformService::dispatchTouchEvent_( NSSet<UITouch *> * _touches, UIView * _view, UITouchPhase _phase )
+    {
+        for( const iOSTouchHandlerDesc & desc : m_touchHandlers )
+        {
+            if( desc.lambda( _touches, _view, _phase ) == true )
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::handleTouchBegan( NSSet<UITouch *> * _touches, UIView * _view )
     {
-        if( m_iOSInput != nullptr )
+        if( this->dispatchTouchEvent_( _touches, _view, UITouchPhaseBegan ) == false && m_iOSInput != nullptr )
         {
             m_iOSInput->handleTouchBegan( _touches, _view );
         }
@@ -1421,7 +1496,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::handleTouchMoved( NSSet<UITouch *> * _touches, UIView * _view )
     {
-        if( m_iOSInput != nullptr )
+        if( this->dispatchTouchEvent_( _touches, _view, UITouchPhaseMoved ) == false && m_iOSInput != nullptr )
         {
             m_iOSInput->handleTouchMoved( _touches, _view );
         }
@@ -1429,7 +1504,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::handleTouchEnded( NSSet<UITouch *> * _touches, UIView * _view )
     {
-        if( m_iOSInput != nullptr )
+        if( this->dispatchTouchEvent_( _touches, _view, UITouchPhaseEnded ) == false && m_iOSInput != nullptr )
         {
             m_iOSInput->handleTouchEnded( _touches, _view );
         }
@@ -1437,7 +1512,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::handleTouchCancelled( NSSet<UITouch *> * _touches, UIView * _view )
     {
-        if( m_iOSInput != nullptr )
+        if( this->dispatchTouchEvent_( _touches, _view, UITouchPhaseCancelled ) == false && m_iOSInput != nullptr )
         {
             m_iOSInput->handleTouchCancelled( _touches, _view );
         }

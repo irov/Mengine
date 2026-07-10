@@ -8,6 +8,9 @@
 #   import <Metal/Metal.h>
 #endif
 
+#include "Kernel/DocumentHelper.h"
+
+#include "Config/Lambda.h"
 #include "Config/UniqueId.h"
 
 namespace Mengine
@@ -24,6 +27,7 @@ namespace Mengine
 
     public:
         virtual UIWindow * getUIWindow() const = 0;
+        virtual UIView * getUIView() const = 0;
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
     public:
@@ -33,6 +37,12 @@ namespace Mengine
         virtual id<MTLDevice> getMetalDevice() const = 0;
         virtual UIView * getMetalView() const = 0;
 #endif
+
+    public:
+        typedef Lambda<bool( NSSet<UITouch *> * _touches, UIView * _view, UITouchPhase _phase )> LambdaIOSTouchHandler;
+
+        virtual UniqueId addIOSTouchHandler( const LambdaIOSTouchHandler & _lambda, const DocumentInterfacePtr & _doc ) = 0;
+        virtual void removeIOSTouchHandler( UniqueId _id ) = 0;
 
     public:
         virtual void handleTouchBegan( NSSet<UITouch *> * _touches, UIView * _view ) = 0;

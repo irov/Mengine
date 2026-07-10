@@ -25,6 +25,7 @@
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/StaticString.h"
+#include "Kernel/Vector.h"
 
 #include "Config/Timestamp.h"
 
@@ -158,6 +159,8 @@ namespace Mengine
     public:
         NSWindow * getNSWindow() const override;
         NSView * getNSView() const override;
+        UniqueId addMacOSEventHandler( const LambdaMacOSEventHandler & _lambda, const DocumentInterfacePtr & _doc ) override;
+        void removeMacOSEventHandler( UniqueId _id ) override;
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_METAL)
     public:
@@ -194,6 +197,19 @@ namespace Mengine
 
         MacOSWorkspace * m_macOSWorkspace;
         MacOSInputPtr m_input;
+
+        struct MacOSEventHandlerDesc
+        {
+            UniqueId id;
+            LambdaMacOSEventHandler lambda;
+
+#if defined(MENGINE_DOCUMENT_ENABLE)
+            DocumentInterfacePtr doc;
+#endif
+        };
+
+        typedef Vector<MacOSEventHandlerDesc> VectorMacOSEventHandlers;
+        VectorMacOSEventHandlers m_eventHandlers;
 
         StaticString<MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME> m_projectTitle;
 

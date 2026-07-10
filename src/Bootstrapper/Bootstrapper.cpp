@@ -294,6 +294,10 @@ PLUGIN_EXPORT( Spine );
 PLUGIN_EXPORT( Movie );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_PLUGIN_FIGMA_STATIC)
+PLUGIN_EXPORT( Figma );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_TTF_STATIC)
 PLUGIN_EXPORT( TTF );
 #endif
@@ -1632,6 +1636,10 @@ namespace Mengine
 
 #if defined(MENGINE_PLUGIN_MOVIE_STATIC)
         MENGINE_ADD_PLUGIN( Movie, "plugin Movie...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#if defined(MENGINE_PLUGIN_FIGMA_STATIC)
+        MENGINE_ADD_PLUGIN( Figma, "plugin Figma...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #if defined(MENGINE_PLUGIN_ASTRALAX_STATIC)

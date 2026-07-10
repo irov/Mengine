@@ -4,7 +4,15 @@
 #include "Interface/PlatformServiceInterface.h"
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_METAL)
-#include "ImGUIMetalRenderBridge.h"
+#include "ImGUIMetalRender.h"
+#endif
+
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
+#include "ImGUIMacOSPlatform.h"
+#endif
+
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_IOS)
+#include "ImGUIiOSPlatform.h"
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
@@ -17,6 +25,10 @@
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
 #include "Environment/MacOS/MacOSPlatformServiceExtensionInterface.h"
+#endif
+
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_IOS)
+#include "Environment/iOS/iOSPlatformServiceExtensionInterface.h"
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
@@ -32,7 +44,7 @@
 #include "imgui.h"
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
-#include "imgui_impl_win32.h"
+#include "ImGUIWin32Platform.h"
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
@@ -43,18 +55,14 @@
 #include "imgui_impl_sdl3.h"
 #endif
 
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
-#include "imgui_impl_osx.h"
-#endif
-
 #if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
-#include "imgui_impl_dx9.h"
+#include "ImGUIDX9Render.h"
 #endif
 
-#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
-#include "imgui_impl_opengl3.h"
+#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && (defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS) || defined(MENGINE_ENVIRONMENT_PLATFORM_IOS))
+#include "ImGUIOpenGL3Render.h"
 #elif defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
-#include "imgui_impl_opengl2.h"
+#include "ImGUIOpenGL2Render.h"
 #endif
 
 namespace Mengine
@@ -85,7 +93,7 @@ namespace Mengine
 
         return MENGINE_UINT32_TO_POINTER( ImTextureID, UID );
 #elif defined(MENGINE_ENVIRONMENT_RENDER_METAL)
-        return Helper::ImGUIMetalRenderBridge_getTexture( _texture );
+        return [MengineImGUIMetalRender textureForRenderTexture:_texture];
 #else
         MENGINE_UNUSED( image );
 
@@ -96,19 +104,19 @@ namespace Mengine
     void ImGUIRenderProvider::newFrame()
     {
 #if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
-        ImGui_ImplDX9_NewFrame();
+        MengineImGUIDX9Render_NewFrame();
 #endif
 
-#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
-        ImGui_ImplOpenGL3_NewFrame();
+#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && (defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS) || defined(MENGINE_ENVIRONMENT_PLATFORM_IOS))
+        MengineImGUIOpenGL3Render_NewFrame();
 #elif defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
-        ImGui_ImplOpenGL2_NewFrame();
+        MengineImGUIOpenGL2Render_NewFrame();
 #elif defined(MENGINE_ENVIRONMENT_RENDER_METAL)
-        Helper::ImGUIMetalRenderBridge_newFrame();
+        [MengineImGUIMetalRender newFrame];
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
-        ImGui_ImplWin32_NewFrame();
+        MengineImGUIWin32Platform_NewFrame();
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
@@ -123,7 +131,14 @@ namespace Mengine
         MacOSPlatformServiceExtensionInterface * macosPlatform = PLATFORM_SERVICE()
             ->getDynamicUnknown();
 
-        ImGui_ImplOSX_NewFrame( macosPlatform->getNSView() );
+        [MengineImGUIMacOSPlatform newFrameWithView:macosPlatform->getNSView()];
+#endif
+
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_IOS)
+        iOSPlatformServiceExtensionInterface * iosPlatform = PLATFORM_SERVICE()
+            ->getDynamicUnknown();
+
+        [MengineImGUIiOSPlatform newFrameWithView:iosPlatform->getUIView()];
 #endif
 
         ImGui::NewFrame();
@@ -140,15 +155,15 @@ namespace Mengine
         MENGINE_UNUSED( imData );
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
-        ImGui_ImplDX9_RenderDrawData( imData );
+        MengineImGUIDX9Render_RenderDrawData( imData );
 #endif
 
-#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
-        ImGui_ImplOpenGL3_RenderDrawData( imData );
+#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && (defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS) || defined(MENGINE_ENVIRONMENT_PLATFORM_IOS))
+        MengineImGUIOpenGL3Render_RenderDrawData( imData );
 #elif defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
-        ImGui_ImplOpenGL2_RenderDrawData( imData );
+        MengineImGUIOpenGL2Render_RenderDrawData( imData );
 #elif defined(MENGINE_ENVIRONMENT_RENDER_METAL)
-        Helper::ImGUIMetalRenderBridge_renderDrawData( imData );
+        [MengineImGUIMetalRender renderDrawData:imData];
 #endif
     }
     //////////////////////////////////////////////////////////////////////////

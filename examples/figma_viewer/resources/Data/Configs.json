@@ -1,0 +1,33 @@
+{
+    "Project": {
+        "Name": "FigmaViewerExample",
+        "Codename": "FigmaViewerExample",
+        "Company": "Mengine"
+    },
+
+    "Game": {
+        "ContentResolution": [1024, 768],
+        "PersonalityModule": ""
+    },
+
+    "Window": {
+        "Fullscreen": false,
+        "Size": [1024, 768]
+    },
+
+    "Platform": {
+        "Cursor": true
+    },
+
+    "DevPlugins-PC": {
+        "Name": [
+            "Win32ConsoleLogger.dll"
+        ]
+    },
+
+    "Frameworks": {
+        "Name": [
+            "FigmaViewerExampleFramework"
+        ]
+    }
+}

@@ -32,6 +32,7 @@
 #import "Kernel/TimestampHelper.h"
 #import "Kernel/NotificationHelper.h"
 #import "Kernel/VocabularyHelper.h"
+#import "Kernel/EnumeratorHelper.h"
 
 #import "Config/StdString.h"
 #import "Config/StdIO.h"
@@ -346,6 +347,23 @@ namespace Mengine
         m_active = false;
 
         this->destroyWindow_();
+
+#if defined(MENGINE_DEBUG)
+#   if defined(MENGINE_DOCUMENT_ENABLE)
+        for( const MacOSEventHandlerDesc & desc : m_eventHandlers )
+        {
+            MENGINE_UNUSED( desc );
+
+            LOGGER_ASSERTION( "forgot remove macOS event handler (doc: %s)"
+                , MENGINE_DOCUMENT_STR( desc.doc )
+            );
+        }
+#   else
+        MENGINE_ASSERTION_FATAL( m_eventHandlers.empty() == true, "forgot remove macOS event handlers" );
+#   endif
+#endif
+
+        m_eventHandlers.clear();
 
         if( m_input != nullptr )
         {
@@ -1077,6 +1095,39 @@ namespace Mengine
         return m_metalView;
     }
     //////////////////////////////////////////////////////////////////////////
+    UniqueId MacOSPlatformService::addMacOSEventHandler( const LambdaMacOSEventHandler & _lambda, const DocumentInterfacePtr & _doc )
+    {
+        UniqueId id = Helper::generateUniqueIdentity();
+
+        MacOSEventHandlerDesc desc;
+        desc.id = id;
+        desc.lambda = _lambda;
+
+#if defined(MENGINE_DOCUMENT_ENABLE)
+        desc.doc = _doc;
+#else
+        MENGINE_UNUSED( _doc );
+#endif
+
+        m_eventHandlers.emplace_back( desc );
+
+        return id;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MacOSPlatformService::removeMacOSEventHandler( UniqueId _id )
+    {
+        VectorMacOSEventHandlers::iterator it_found = StdAlgorithm::find_if( m_eventHandlers.begin(), m_eventHandlers.end(), [_id]( const MacOSEventHandlerDesc & _desc )
+        {
+            return _desc.id == _id;
+        } );
+
+        MENGINE_ASSERTION_FATAL( it_found != m_eventHandlers.end(), "not found macOS event handler '%u'"
+            , _id
+        );
+
+        m_eventHandlers.erase( it_found );
+    }
+    //////////////////////////////////////////////////////////////////////////
     id<MTLDevice> MacOSPlatformService::getMetalDevice() const
     {
         return m_metalDevice;
@@ -1282,12 +1333,24 @@ namespace Mengine
                     break;
                 }
 
-                if( m_input != nullptr )
+                NSView * view = this->getNSView();
+                bool handled = false;
+
+                for( const MacOSEventHandlerDesc & desc : m_eventHandlers )
                 {
-                    m_input->handleEvent( this->getNSView(), event );
+                    if( desc.lambda( view, event ) == true )
+                    {
+                        handled = true;
+                        break;
+                    }
                 }
 
-                if( [event type] == NSEventTypeKeyDown )
+                if( handled == false && m_input != nullptr )
+                {
+                    m_input->handleEvent( view, event );
+                }
+
+                if( handled == false && [event type] == NSEventTypeKeyDown )
                 {
                     unsigned short keyCode = [event keyCode];
                     NSEventModifierFlags modifierFlags = [event modifierFlags];

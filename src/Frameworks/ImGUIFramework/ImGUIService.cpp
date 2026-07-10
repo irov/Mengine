@@ -19,6 +19,10 @@
 #include "Environment/MacOS/MacOSPlatformServiceExtensionInterface.h"
 #endif
 
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_IOS)
+#include "Environment/iOS/iOSPlatformServiceExtensionInterface.h"
+#endif
+
 #if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
 #include "Environment/DirectX9/DX9RenderSystemExtensionInterface.h"
 #endif
@@ -30,8 +34,30 @@
 #include "ImGUIRenderProvider.h"
 #include "ImGUIRenderPrototypeGenerator.h"
 
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
+#include "ImGUIWin32Platform.h"
+#endif
+
+#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
+#include "ImGUIDX9Render.h"
+#endif
+
+#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && (defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS) || defined(MENGINE_ENVIRONMENT_PLATFORM_IOS))
+#include "ImGUIOpenGL3Render.h"
+#elif defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
+#include "ImGUIOpenGL2Render.h"
+#endif
+
 #if defined(MENGINE_ENVIRONMENT_RENDER_METAL)
-#include "ImGUIMetalRenderBridge.h"
+#include "ImGUIMetalRender.h"
+#endif
+
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
+#include "ImGUIMacOSPlatform.h"
+#endif
+
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_IOS)
+#include "ImGUIiOSPlatform.h"
 #endif
 
 #include "Kernel/ConstStringHelper.h"
@@ -46,10 +72,6 @@
 
 #include "imgui.h"
 
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
-#include "imgui_impl_win32.h"
-#endif
-
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
 #include "imgui_impl_sdl2.h"
 #endif
@@ -58,26 +80,8 @@
 #include "imgui_impl_sdl3.h"
 #endif
 
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
-#include "imgui_impl_osx.h"
-#endif
-
-#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
-#include "imgui_impl_dx9.h"
-#endif
-
-#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
-#include "imgui_impl_opengl3.h"
-#elif defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
-#include "imgui_impl_opengl2.h"
-#endif
-
 #ifndef MENGINE_IMGUI_INI_FILE
 #define MENGINE_IMGUI_INI_FILE "imgui.ini"
-#endif
-
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
-extern LRESULT ImGui_ImplWin32_WndProcHandler( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam );
 #endif
 
 //////////////////////////////////////////////////////////////////////////
@@ -234,6 +238,28 @@ namespace Mengine
         }
 #endif
 
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
+        if( m_handlerId != INVALID_UNIQUE_ID )
+        {
+            MacOSPlatformServiceExtensionInterface * macosPlatform = PLATFORM_SERVICE()
+                ->getDynamicUnknown();
+
+            macosPlatform->removeMacOSEventHandler( m_handlerId );
+            m_handlerId = INVALID_UNIQUE_ID;
+        }
+#endif
+
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_IOS)
+        if( m_handlerId != INVALID_UNIQUE_ID )
+        {
+            iOSPlatformServiceExtensionInterface * iosPlatform = PLATFORM_SERVICE()
+                ->getDynamicUnknown();
+
+            iosPlatform->removeIOSTouchHandler( m_handlerId );
+            m_handlerId = INVALID_UNIQUE_ID;
+        }
+#endif
+
         size_t imIniSettingsSize = 0;
         const char * imIniSettings = ImGui::SaveIniSettingsToMemory( &imIniSettingsSize );
 
@@ -266,9 +292,16 @@ namespace Mengine
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
-        if( ImGui::GetIO().BackendPlatformUserData != nullptr )
+        if( [MengineImGUIMacOSPlatform isInitialized] == YES )
         {
-            ImGui_ImplOSX_Shutdown();
+            [MengineImGUIMacOSPlatform finalizeBackend];
+        }
+#endif
+
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_IOS)
+        if( [MengineImGUIiOSPlatform isInitialized] == YES )
+        {
+            [MengineImGUIiOSPlatform finalizeBackend];
         }
 #endif
 
@@ -292,7 +325,7 @@ namespace Mengine
 
         HWND hWnd = win32Platform->getWindowHandle();
 
-        ImGui_ImplWin32_Init( hWnd );
+        MengineImGUIWin32Platform_Init( hWnd );
 
         UniqueId handlerId = win32Platform->addWin32ProcessHandler( []( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, BOOL * const pHandled )
         {
@@ -332,7 +365,7 @@ namespace Mengine
                 *pHandled = FALSE;
             }
 
-            LRESULT result = ImGui_ImplWin32_WndProcHandler( hwnd, msg, wParam, lParam );
+            LRESULT result = MengineImGUIWin32Platform_WndProcHandler( hwnd, msg, wParam, lParam );
 
             return result;
         }, MENGINE_DOCUMENT_FACTORABLE );
@@ -380,7 +413,32 @@ namespace Mengine
 
         NSView * view = macosPlatform->getNSView();
 
-        ImGui_ImplOSX_Init( view );
+        if( [MengineImGUIMacOSPlatform initializeWithView:view] == YES )
+        {
+            UniqueId handlerId = macosPlatform->addMacOSEventHandler( []( NSView * _view, NSEvent * _event )
+            {
+                return [MengineImGUIMacOSPlatform handleEvent:_event view:_view];
+            }, MENGINE_DOCUMENT_FACTORABLE );
+
+            m_handlerId = handlerId;
+        }
+#endif
+
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_IOS)
+        iOSPlatformServiceExtensionInterface * iosPlatform = PLATFORM_SERVICE()
+            ->getDynamicUnknown();
+
+        UIView * view = iosPlatform->getUIView();
+
+        if( [MengineImGUIiOSPlatform initializeWithView:view] == YES )
+        {
+            UniqueId handlerId = iosPlatform->addIOSTouchHandler( []( NSSet<UITouch *> * _touches, UIView * _view, UITouchPhase _phase )
+            {
+                return [MengineImGUIiOSPlatform handleTouches:_touches view:_view phase:_phase];
+            }, MENGINE_DOCUMENT_FACTORABLE );
+
+            m_handlerId = handlerId;
+        }
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
@@ -396,7 +454,7 @@ namespace Mengine
             m_handlerId = INVALID_UNIQUE_ID;
         }
 
-        ImGui_ImplWin32_Shutdown();
+        MengineImGUIWin32Platform_Shutdown();
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
@@ -426,9 +484,34 @@ namespace Mengine
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
-        if( ImGui::GetIO().BackendPlatformUserData != nullptr )
+        MacOSPlatformServiceExtensionInterface * macosPlatform = PLATFORM_SERVICE()
+            ->getDynamicUnknown();
+
+        if( m_handlerId != INVALID_UNIQUE_ID )
         {
-            ImGui_ImplOSX_Shutdown();
+            macosPlatform->removeMacOSEventHandler( m_handlerId );
+            m_handlerId = INVALID_UNIQUE_ID;
+        }
+
+        if( [MengineImGUIMacOSPlatform isInitialized] == YES )
+        {
+            [MengineImGUIMacOSPlatform finalizeBackend];
+        }
+#endif
+
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_IOS)
+        iOSPlatformServiceExtensionInterface * iosPlatform = PLATFORM_SERVICE()
+            ->getDynamicUnknown();
+
+        if( m_handlerId != INVALID_UNIQUE_ID )
+        {
+            iosPlatform->removeIOSTouchHandler( m_handlerId );
+            m_handlerId = INVALID_UNIQUE_ID;
+        }
+
+        if( [MengineImGUIiOSPlatform isInitialized] == YES )
+        {
+            [MengineImGUIiOSPlatform finalizeBackend];
         }
 #endif
     }
@@ -436,11 +519,13 @@ namespace Mengine
     void ImGUIService::notifyRenderDeviceCreate_()
     {
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
-        ImGui_ImplOpenGL3_Init( "#version 150" );
+        MengineImGUIOpenGL3Render_Init( "#version 150" );
+#elif defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && defined(MENGINE_ENVIRONMENT_PLATFORM_IOS)
+        MengineImGUIOpenGL3Render_Init( nullptr );
 #elif defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
-        ImGui_ImplOpenGL2_Init();
+        MengineImGUIOpenGL2Render_Init();
 #elif defined(MENGINE_ENVIRONMENT_RENDER_METAL)
-        Helper::ImGUIMetalRenderBridge_initialize();
+        [MengineImGUIMetalRender initializeRenderer];
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32) && defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
@@ -451,8 +536,8 @@ namespace Mengine
         {
             IDirect3DDevice9 * d3dDevice = extension->getDirect3DDevice9();
 
-            ImGui_ImplDX9_Init( d3dDevice );
-            ImGui_ImplDX9_CreateDeviceObjects();
+            MengineImGUIDX9Render_Init( d3dDevice );
+            MengineImGUIDX9Render_CreateDeviceObjects();
         }
 #endif
     }
@@ -460,33 +545,33 @@ namespace Mengine
     void ImGUIService::notifyRenderDeviceDestroy_()
     {
 #if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
-        ImGui_ImplDX9_Shutdown();
+        MengineImGUIDX9Render_Shutdown();
 #endif
 
-#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
-        ImGui_ImplOpenGL3_DestroyDeviceObjects();
+#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && (defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS) || defined(MENGINE_ENVIRONMENT_PLATFORM_IOS))
+        MengineImGUIOpenGL3Render_DestroyDeviceObjects();
 
-        ImGui_ImplOpenGL3_Shutdown();
+        MengineImGUIOpenGL3Render_Shutdown();
 #elif defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
-        ImGui_ImplOpenGL2_DestroyDeviceObjects();
+        MengineImGUIOpenGL2Render_DestroyDeviceObjects();
 
-        ImGui_ImplOpenGL2_Shutdown();
+        MengineImGUIOpenGL2Render_Shutdown();
 #elif defined(MENGINE_ENVIRONMENT_RENDER_METAL)
-        Helper::ImGUIMetalRenderBridge_finalize();
+        [MengineImGUIMetalRender finalizeRenderer];
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
     void ImGUIService::notifyRenderDeviceLostPrepare_()
     {
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32) && defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
-        ImGui_ImplDX9_InvalidateDeviceObjects();
+        MengineImGUIDX9Render_InvalidateDeviceObjects();
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
     void ImGUIService::notifyRenderDeviceLostRestore_()
     {
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32) && defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
-        ImGui_ImplDX9_CreateDeviceObjects();
+        MengineImGUIDX9Render_CreateDeviceObjects();
 #endif
     }
     //////////////////////////////////////////////////////////////////////////

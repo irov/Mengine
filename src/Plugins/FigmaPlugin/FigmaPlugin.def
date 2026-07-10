@@ -1,0 +1,3 @@
+LIBRARY "FigmaPlugin"
+EXPORTS
+   dllMengineCreatePlugin @1

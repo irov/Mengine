@@ -2,6 +2,8 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
 
 PROJECT(Depends_Unix)
 
+MESSAGE(FATAL_ERROR "Native Unix platform integration is not implemented")
+
 SET(MENGINE_REPOSITORY ${CMAKE_CURRENT_LIST_DIR}/../..)
 
 INCLUDE(${MENGINE_REPOSITORY}/cmake/build_options_template.cmake)
@@ -9,8 +11,6 @@ INCLUDE(${MENGINE_REPOSITORY}/cmake/base_template.cmake)
 INCLUDE(${MENGINE_REPOSITORY}/cmake/macro_template.cmake)
 INCLUDE(${MENGINE_REPOSITORY}/cmake/unix_template.cmake)
 INCLUDE(${MENGINE_REPOSITORY}/cmake/dependencies_template.cmake)
-
-SET_MENGINE_ENVIRONMENT(UNIX OPENGL SDL2 GCC)
 
 SET_MENGINE_DEPENDENCIES_OUTPUT_DIRECTORY()
 

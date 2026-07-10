@@ -1,5 +1,7 @@
 #! /bin/bash
 
+CMAKE=cmake
+
 if test -f "/usr/local/bin/cmake"; then
     CMAKE=/usr/local/bin/cmake
 fi
@@ -35,7 +37,7 @@ fi
 
 SOLUTION_NAME=solution_xcode_ios_simulator
 SOLUTION_DIR=$PWD/../../solutions/$SOLUTION_NAME/$CONFIGURATION
-SOURCE_DIRECTORY=$PWD/../../../cmake/Xcode_iOS_Simulator
+SOURCE_DIRECTORY=$PWD/../../cmake/Xcode_iOS_Simulator
 DEPENDENCIES_PROJECT=Depends_Xcode_iOS_Simulator
 
 mkdir -p $SOLUTION_DIR

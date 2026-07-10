@@ -14,18 +14,12 @@
 
 #   define GL_GLEXT_PROTOTYPES
 
-#   if defined(MENGINE_ENVIRONMENT_PLATFORM_IOS)
-#       include <OpenGLES/ES2/gl.h>
-#       include <OpenGLES/ES2/glext.h>
-#   elif defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3)
-#       include "SDL3/SDL_opengles.h"
-#       include "SDL3/SDL_opengles2.h"
-#   elif defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
-#       include "SDL_opengles.h"
-#       include "SDL_opengles2.h"
-#   else
+#   if !defined(MENGINE_ENVIRONMENT_PLATFORM_IOS)
 #       error "OpenGL ES not supported"
 #   endif
+
+#   include <OpenGLES/ES2/gl.h>
+#   include <OpenGLES/ES2/glext.h>
 
 #   define MENGINE_RENDER_OPENGL_ES
 #   define MENGINE_RENDER_OPENGL_ES_IOS
@@ -38,44 +32,20 @@
 #   define MENGINE_RENDER_OPENGL_ES
 #   define MENGINE_RENDER_OPENGL_ES_ANDROID
 #elif defined(MENGINE_PLATFORM_WINDOWS)
-#   if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3)
-#       include "SDL3/SDL_opengl.h"
-#   elif defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
-#       include "SDL_opengl.h"
-#       include "SDL_opengl_glext.h"
-#   else
-#       error "OpenGL not supported"
-#   endif
-
-#   define MENGINE_RENDER_OPENGL_NORMAL
-#   define MENGINE_RENDER_OPENGL_NORMAL_WINDOWS
+#   error "OpenGL not supported"
 #elif defined(MENGINE_PLATFORM_LINUX)
-#   if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3)
-#       include "SDL3/SDL_opengl.h"
-#   elif defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
-#       include "SDL_opengl.h"
-#       include "SDL_opengl_glext.h"
-#   else
+#   error "OpenGL not supported"
+#elif defined(MENGINE_PLATFORM_MACOS)
+#   if !defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
 #       error "OpenGL not supported"
 #   endif
 
-#   define MENGINE_RENDER_OPENGL_NORMAL
-#   define MENGINE_RENDER_OPENGL_NORMAL_LINUX
-#elif defined(MENGINE_PLATFORM_MACOS)
-#   if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3)
-#       include "SDL3/SDL_opengl.h"
-#   elif defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
-#       include "SDL_opengl.h"
-#       include "SDL_opengl_glext.h"
-#   elif defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
-#       ifndef GL_SILENCE_DEPRECATION
-#           define GL_SILENCE_DEPRECATION
-#       endif
-#       include <OpenGL/gl3.h>
-#       include <OpenGL/gl3ext.h>
-#   else
-#       error "OpenGL not supported"
+#   ifndef GL_SILENCE_DEPRECATION
+#       define GL_SILENCE_DEPRECATION
 #   endif
+
+#   include <OpenGL/gl3.h>
+#   include <OpenGL/gl3ext.h>
 
 #   define MENGINE_RENDER_OPENGL_NORMAL
 #   define MENGINE_RENDER_OPENGL_NORMAL_OSX

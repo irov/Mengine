@@ -1,7 +1,7 @@
 // dear imgui: Renderer Backend for modern OpenGL with shaders / programmatic pipeline
 // - Desktop GL: 2.x 3.x 4.x
 // - Embedded GL: ES 2.0 (WebGL 1.0), ES 3.0 (WebGL 2.0)
-// This needs to be used along with a Platform Backend (e.g. GLFW, SDL, Win32, custom..)
+// This needs to be used along with a native or custom Platform Backend.
 
 // Implemented features:
 //  [X] Renderer: User texture binding. Use 'GLuint' OpenGL texture as texture identifier. Read the FAQ about ImTextureID/ImTextureRef!

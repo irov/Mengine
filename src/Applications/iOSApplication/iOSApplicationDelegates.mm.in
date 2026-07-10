@@ -3,7 +3,7 @@
 @implementation iOSApplicationDelegates
 
 + (NSArray *)getApplicationDelegates {
-    NSArray * proxysClassed = [[NSArray alloc] initWithObjects:@MENGINE_APPLE_APPLICATION_DELEGATE_STRING@ nil];
+    NSArray * proxysClassed = @[@MENGINE_APPLE_APPLICATION_DELEGATE_STRING@];
     
     return proxysClassed;
 }

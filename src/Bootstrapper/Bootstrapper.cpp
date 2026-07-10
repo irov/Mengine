@@ -310,10 +310,6 @@ PLUGIN_EXPORT( FE );
 PLUGIN_EXPORT( Win32Socket );
 #endif
 //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_SDL2_SOCKET_STATIC)
-PLUGIN_EXPORT( SDL2Socket );
-#endif
-//////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_NODEDEBUGGER_STATIC)
 PLUGIN_EXPORT( NodeDebugger );
 #endif
@@ -1668,10 +1664,6 @@ namespace Mengine
 
 #if defined(MENGINE_PLUGIN_WIN32_SOCKET_STATIC)
         MENGINE_ADD_PLUGIN( Win32Socket, "plugin Win32Socket...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-#if defined(MENGINE_PLUGIN_SDL2_SOCKET_STATIC)
-        MENGINE_ADD_PLUGIN( SDL2Socket, "plugin SDL2Socket...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #if defined(MENGINE_PLUGIN_GOAP_STATIC)

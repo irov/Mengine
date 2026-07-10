@@ -1,7 +1,7 @@
 // dear imgui: Renderer Backend for modern OpenGL with shaders / programmatic pipeline
 // - Desktop GL: 2.x 3.x 4.x
 // - Embedded GL: ES 2.0 (WebGL 1.0), ES 3.0 (WebGL 2.0)
-// This needs to be used along with a Platform Backend (e.g. GLFW, SDL, Win32, custom..)
+// This needs to be used along with a native or custom Platform Backend.
 
 // Implemented features:
 //  [X] Renderer: User texture binding. Use 'GLuint' OpenGL texture as texture identifier. Read the FAQ about ImTextureID/ImTextureRef!
@@ -89,19 +89,19 @@
 //  2018-08-09: OpenGL: Default to OpenGL ES 3 on iOS and Android. GLSL version default to "#version 300 ES".
 //  2018-07-30: OpenGL: Support for GLSL 300 ES and 410 core. Fixes for Emscripten compilation.
 //  2018-07-10: OpenGL: Support for more GLSL versions (based on the GLSL version string). Added error output when shaders fail to compile/link.
-//  2018-06-08: Misc: Extracted imgui_impl_opengl3.cpp/.h away from the old combined GLFW/SDL+OpenGL3 examples.
+//  2018-06-08: Misc: Extracted the OpenGL3 renderer away from the old combined platform examples.
 //  2018-06-08: OpenGL: Use draw_data->DisplayPos and draw_data->DisplaySize to setup projection matrix and clipping rectangle.
 //  2018-05-25: OpenGL: Removed unnecessary backup/restore of GL_ELEMENT_ARRAY_BUFFER_BINDING since this is part of the VAO state.
 //  2018-05-14: OpenGL: Making the call to glBindSampler() optional so 3.2 context won't fail if the function is a nullptr pointer.
 //  2018-03-06: OpenGL: Added const char* glsl_version parameter to MengineImGUIOpenGL3Render_Init() so user can override the GLSL version e.g. "#version 150".
 //  2018-02-23: OpenGL: Create the VAO in the render function so the setup can more easily be used with multiple shared GL context.
-//  2018-02-16: Misc: Obsoleted the io.RenderDrawListsFn callback and exposed ImGui_ImplSdlGL3_RenderDrawData() in the .h file so you can call it yourself.
+//  2018-02-16: Misc: Obsoleted the io.RenderDrawListsFn callback and exposed the renderer callback in the header.
 //  2018-01-07: OpenGL: Changed GLSL shader version from 330 to 150.
 //  2017-09-01: OpenGL: Save and restore current bound sampler. Save and restore current polygon mode.
 //  2017-05-01: OpenGL: Fixed save and restore of current blend func state.
 //  2017-05-01: OpenGL: Fixed save and restore of current GL_ACTIVE_TEXTURE.
 //  2016-09-05: OpenGL: Fixed save and restore of current scissor rectangle.
-//  2016-07-29: OpenGL: Explicitly setting GL_UNPACK_ROW_LENGTH to reduce issues because SDL changes it. (#752)
+//  2016-07-29: OpenGL: Explicitly setting GL_UNPACK_ROW_LENGTH because windowing backends may change it. (#752)
 
 //----------------------------------------
 // OpenGL    GLSL      GLSL

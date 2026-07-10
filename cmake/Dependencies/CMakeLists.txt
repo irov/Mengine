@@ -34,8 +34,6 @@ MENGINE_ENABLE_DEPENDENCE(MENGINE_DEPENDENCE_MATH "libmath" ON)
 MENGINE_ENABLE_DEPENDENCE(MENGINE_DEPENDENCE_TINYINI "tinyini" ON)
 MENGINE_ENABLE_DEPENDENCE(MENGINE_DEPENDENCE_FREETYPE "freetype" ON)
 MENGINE_ENABLE_DEPENDENCE(MENGINE_DEPENDENCE_OPENSSL "openssl" ON)
-MENGINE_ENABLE_DEPENDENCE(MENGINE_DEPENDENCE_SDL2 "SDL2" ON)
-MENGINE_ENABLE_DEPENDENCE(MENGINE_DEPENDENCE_SDL3 "SDL3" ON)
 MENGINE_ENABLE_DEPENDENCE(MENGINE_DEPENDENCE_OPENAL_SOFT "openal-soft" ON)
 MENGINE_ENABLE_DEPENDENCE(MENGINE_DEPENDENCE_PNG "libpng" ON)
 MENGINE_ENABLE_DEPENDENCE(MENGINE_DEPENDENCE_PYBIND "pybind" ON)
@@ -603,180 +601,6 @@ if(MENGINE_TARGET_WINDOWS AND MENGINE_TOOLCHAIN_MSVC)
     endif()
 endif()
 
-if(MENGINE_DEPENDENCE_SDL2)
-    message("================SDL2================")
-    configure_file(${CMAKE_CURRENT_LIST_DIR}/SDL2/SDL2Config.cmake.in ${THIRDPARTY_DIR}/SDL2/SDL2Config.cmake.in COPYONLY)
-    configure_file(${CMAKE_CURRENT_LIST_DIR}/SDL2/src/SDL_error.c ${THIRDPARTY_DIR}/SDL2/src/SDL_error.c COPYONLY)
-    configure_file(${CMAKE_CURRENT_LIST_DIR}/SDL2/include/SDL_error.h ${THIRDPARTY_DIR}/SDL2/include/SDL_error.h COPYONLY)
-    configure_file(${CMAKE_CURRENT_LIST_DIR}/SDL2/src/dynapi/SDL_dynapi_procs.h ${THIRDPARTY_DIR}/SDL2/src/dynapi/SDL_dynapi_procs.h COPYONLY)
-    configure_file(${CMAKE_CURRENT_LIST_DIR}/SDL2/src/dynapi/SDL_dynapi_overrides.h ${THIRDPARTY_DIR}/SDL2/src/dynapi/SDL_dynapi_overrides.h COPYONLY)
-    configure_file(${CMAKE_CURRENT_LIST_DIR}/SDL2/src/video/uikit/SDL_uikitwindow.m ${THIRDPARTY_DIR}/SDL2/src/video/uikit/SDL_uikitwindow.m COPYONLY)
-    
-    set(SDL_CMAKE_DEBUG_POSTFIX "d" CACHE STRING "Name suffix for debug builds" FORCE)
-    
-    SET(SDL2_DISABLE_INSTALL ON CACHE BOOL "Disable installation of SDL2" FORCE)
-    SET(SDL2_DISABLE_UNINSTALL ON CACHE BOOL "Disable installation of SDL2" FORCE)
-    SET(SDL_INSTALL_CMAKEDIR "${THIRDPARTY_CONFIG_DIR}/SDL2" CACHE STRING "Location where to install SDL2Config.cmake" FORCE)
-    
-    if(MENGINE_TOOLCHAIN_MSVC)
-        set(SDL_FORCE_STATIC_VCRT ${MENGINE_STATIC_CRT} CACHE BOOL "Force /MT for static VC runtimes" FORCE)
-    endif()
-    
-    if(MENGINE_TARGET_UWP)
-        set(WINDOWS_STORE ON CACHE BOOL "WINDOWS_STORE" FORCE)
-        set(HAVE_SENSORSAPI_H OFF CACHE BOOL "HAVE_SENSORSAPI_H" FORCE)
-    endif()
-    
-    if(MENGINE_TARGET_UWP)
-        set(SDL_SHARED OFF CACHE BOOL "Build a static version of the library" FORCE)
-        set(SDL_STATIC ON CACHE BOOL "Build a static version of the library" FORCE)
-    endif()
-
-    if(MENGINE_TARGET_WINDOWS)
-        set(SDL_SHARED OFF CACHE BOOL "Build a static version of the library" FORCE)
-        set(SDL_STATIC ON CACHE BOOL "Build a static version of the library" FORCE)
-    endif()
-    
-    if(MENGINE_TARGET_ANDROID)
-        set(SDL_SHARED ON CACHE BOOL "Build a static version of the library" FORCE)
-        set(SDL_STATIC OFF CACHE BOOL "Build a static version of the library" FORCE)
-    endif()
-
-    if(MENGINE_TARGET_IOS OR MENGINE_TARGET_IOS_SIMULATOR)
-        set(SDL_SHARED OFF CACHE BOOL "Build a static version of the library" FORCE)
-        set(SDL_STATIC ON CACHE BOOL "Build a static version of the library" FORCE)
-    endif()
-
-    if(MENGINE_TARGET_MACOS)
-        set(SDL_SHARED OFF CACHE BOOL "Build a static version of the library" FORCE)
-        set(SDL_STATIC ON CACHE BOOL "Build a static version of the library" FORCE)
-    endif()
-    
-    if(MENGINE_TARGET_UNIX)
-        set(SDL_SHARED OFF CACHE BOOL "Build a static version of the library" FORCE)
-        set(SDL_STATIC ON CACHE BOOL "Build a static version of the library" FORCE)
-    endif()
-
-	set(SDL_HIDAPI OFF CACHE BOOL "SDL_JOYSTICK" FORCE)
-	set(SDL_HIDAPI_ENABLED_BY_DEFAULT OFF CACHE BOOL "SDL_JOYSTICK" FORCE)
-    set(SDL_JOYSTICK OFF CACHE BOOL "SDL_JOYSTICK" FORCE)
-    set(SDL_JOYSTICK_ENABLED_BY_DEFAULT ON CACHE BOOL "SDL_JOYSTICK_ENABLED_BY_DEFAULT" FORCE)
-    set(SDL_HAPTIC OFF CACHE BOOL "SDL_HAPTIC" FORCE)
-    set(SDL_HAPTIC_ENABLED_BY_DEFAULT ON CACHE BOOL "SDL_HAPTIC_ENABLED_BY_DEFAULT" FORCE)
-    set(SDL_POWER OFF CACHE BOOL "SDL_POWER" FORCE)
-    set(SDL_POWER_ENABLED_BY_DEFAULT ON CACHE BOOL "SDL_POWER_ENABLED_BY_DEFAULT" FORCE)
-	set(SDL_CAMERA OFF CACHE BOOL "Disable SDL camera support" FORCE)
-    set(SDL_CAMERA_ENABLED_BY_DEFAULT OFF CACHE BOOL "Disable SDL camera support" FORCE)
-    set(SDL_SHARED_ENABLED_BY_DEFAULT OFF CACHE BOOL "Build a shared version of the library" FORCE)
-    set(SDL_STATIC_ENABLED_BY_DEFAULT ON CACHE BOOL "Build a static version of the library" FORCE)
-    set(SDL_TEST_ENABLED_BY_DEFAULT OFF CACHE BOOL "SDL_TEST_ENABLED_BY_DEFAULT" FORCE)
-
-    set(SDL_LIBC ON CACHE BOOL "SDL_LIBC" FORCE)
-    
-    ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/SDL2 ${THIRDPARTY_CONFIG_DIR}/SDL2)
-    
-    if(MENGINE_TARGET_IOS OR MENGINE_TARGET_IOS_SIMULATOR)
-        target_compile_definitions(SDL2-static PUBLIC -DSDL_MAIN_HANDLED)
-    endif()
-
-    set(SDL2_DIR "${THIRDPARTY_CONFIG_DIR}/SDL2" CACHE STRING "SDL2_DIR" FORCE)
-    
-    if(MENGINE_TARGET_UWP)
-        set(SDL2_LIBRARIES ${MENGINE_LIB_PREFIX}SDL2-static${MENGINE_LIB_SUFFIX} CACHE STRING "SDL2_LIBRARIES" FORCE)
-    endif()
-    
-    set(SDL2_INCLUDE_DIRS "${THIRDPARTY_CONFIG_DIR}/SDL2/include/include-config-$<LOWER_CASE:$<CONFIG>>" "${THIRDPARTY_CONFIG_DIR}/SDL2/include" "${THIRDPARTY_DIR}/SDL2/include" CACHE STRING "SDL2_INCLUDE_DIRS" FORCE)
-    
-    set(SDL2_LIBRARY ${SDL2_LIBRARIES} CACHE STRING "SDL2_LIBRARY" FORCE)
-    set(SDL2_INCLUDE_DIR ${SDL2_INCLUDE_DIR} CACHE STRING "SDL2_INCLUDE_DIR" FORCE)
-endif()
-
-if(MENGINE_DEPENDENCE_SDL3)
-    message("================SDL3================")
-    
-    SET(SDL3_DISABLE_INSTALL ON CACHE BOOL "Disable installation of SDL3" FORCE)
-    SET(SDL3_DISABLE_UNINSTALL ON CACHE BOOL "Disable installation of SDL3" FORCE)
-    SET(SDL_TEST_LIBRARY OFF CACHE BOOL "Build the SDL3_test library" FORCE)
-    
-    SET(SDL_INSTALL_CMAKEDIR "${THIRDPARTY_CONFIG_DIR}/SDL3" CACHE STRING "Location where to install SDL3Config.cmake" FORCE)
-    
-    if(MENGINE_TOOLCHAIN_MSVC)
-        set(SDL_FORCE_STATIC_VCRT ${MENGINE_STATIC_CRT} CACHE BOOL "Force /MT for static VC runtimes" FORCE)
-    endif()
-    
-    if(MENGINE_TARGET_UWP)
-        set(WINDOWS_STORE ON CACHE BOOL "WINDOWS_STORE" FORCE)
-        set(HAVE_SENSORSAPI_H OFF CACHE BOOL "HAVE_SENSORSAPI_H" FORCE)
-    endif()
-    
-    if(MENGINE_TARGET_UWP)
-        set(SDL_SHARED OFF CACHE BOOL "Build a static version of the library" FORCE)
-        set(SDL_STATIC ON CACHE BOOL "Build a static version of the library" FORCE)
-    endif()
-
-    if(MENGINE_TARGET_WINDOWS)
-        set(SDL_SHARED OFF CACHE BOOL "Build a static version of the library" FORCE)
-        set(SDL_STATIC ON CACHE BOOL "Build a static version of the library" FORCE)
-    endif()
-    
-    if(MENGINE_TARGET_ANDROID)
-        set(SDL_SHARED ON CACHE BOOL "Build a static version of the library" FORCE)
-        set(SDL_STATIC OFF CACHE BOOL "Build a static version of the library" FORCE)
-    endif()
-
-    if(MENGINE_TARGET_IOS OR MENGINE_TARGET_IOS_SIMULATOR)
-        set(SDL_SHARED OFF CACHE BOOL "Build a static version of the library" FORCE)
-        set(SDL_STATIC ON CACHE BOOL "Build a static version of the library" FORCE)
-    endif()
-
-    if(MENGINE_TARGET_MACOS)
-        set(SDL_SHARED OFF CACHE BOOL "Build a static version of the library" FORCE)
-        set(SDL_STATIC ON CACHE BOOL "Build a static version of the library" FORCE)
-    endif()
-    
-    if(MENGINE_TARGET_UNIX)
-        set(SDL_SHARED OFF CACHE BOOL "Build a static version of the library" FORCE)
-        set(SDL_STATIC ON CACHE BOOL "Build a static version of the library" FORCE)
-    endif()
-
-    set(SDL_JOYSTICK ON CACHE BOOL "SDL_JOYSTICK" FORCE)
-    set(SDL_JOYSTICK_ENABLED_BY_DEFAULT ON CACHE BOOL "SDL_JOYSTICK_ENABLED_BY_DEFAULT" FORCE)
-    set(SDL_HAPTIC ON CACHE BOOL "SDL_HAPTIC" FORCE)
-    set(SDL_HAPTIC_ENABLED_BY_DEFAULT ON CACHE BOOL "SDL_HAPTIC_ENABLED_BY_DEFAULT" FORCE)
-    set(SDL_POWER ON CACHE BOOL "SDL_POWER" FORCE)
-    set(SDL_POWER_ENABLED_BY_DEFAULT ON CACHE BOOL "SDL_POWER_ENABLED_BY_DEFAULT" FORCE)
-    set(SDL_SHARED_ENABLED_BY_DEFAULT OFF CACHE BOOL "Build a shared version of the library" FORCE)
-    set(SDL_STATIC_ENABLED_BY_DEFAULT ON CACHE BOOL "Build a static version of the library" FORCE)
-    set(SDL_TEST_ENABLED_BY_DEFAULT OFF CACHE BOOL "SDL_TEST_ENABLED_BY_DEFAULT" FORCE)
-
-    set(SDL_LIBC ON CACHE BOOL "SDL_LIBC" FORCE)
-    
-    ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/SDL3 ${THIRDPARTY_CONFIG_DIR}/SDL3)
-    
-    if(MENGINE_TARGET_IOS OR MENGINE_TARGET_IOS_SIMULATOR)
-        if(TARGET SDL3-static)
-            target_compile_definitions(SDL3-static PUBLIC -DSDL_MAIN_HANDLED)
-        endif()
-    endif()
-
-    set(SDL3_DIR "${THIRDPARTY_CONFIG_DIR}/SDL3" CACHE STRING "SDL3_DIR" FORCE)
-    
-    if(TARGET SDL3-static)
-        set(SDL3_LIBRARIES SDL3::SDL3-static CACHE STRING "SDL3_LIBRARIES" FORCE)
-    elseif(TARGET SDL3-shared)
-        set(SDL3_LIBRARIES SDL3::SDL3-shared CACHE STRING "SDL3_LIBRARIES" FORCE)
-    elseif(TARGET SDL3::SDL3)
-        set(SDL3_LIBRARIES SDL3::SDL3 CACHE STRING "SDL3_LIBRARIES" FORCE)
-    else()
-        set(SDL3_LIBRARIES ${MENGINE_LIB_PREFIX}SDL3-static${MENGINE_LIB_SUFFIX} CACHE STRING "SDL3_LIBRARIES" FORCE)
-    endif()
-    
-    set(SDL3_INCLUDE_DIRS "${THIRDPARTY_CONFIG_DIR}/SDL3/include/include-config-$<LOWER_CASE:$<CONFIG>>" "${THIRDPARTY_CONFIG_DIR}/SDL3/include" "${THIRDPARTY_DIR}/SDL3/include" CACHE STRING "SDL3_INCLUDE_DIRS" FORCE)
-    
-    set(SDL3_LIBRARY ${SDL3_LIBRARIES} CACHE STRING "SDL3_LIBRARY" FORCE)
-    set(SDL3_INCLUDE_DIR ${SDL3_INCLUDE_DIRS} CACHE STRING "SDL3_INCLUDE_DIR" FORCE)
-endif()
-
 if(MENGINE_DEPENDENCE_OPENAL_SOFT)
     message("================openal-soft================")
     
@@ -848,22 +672,7 @@ if(MENGINE_DEPENDENCE_OPENAL_SOFT)
     SET(ALSOFT_BACKEND_WINMM OFF CACHE BOOL "Enable Windows Multimedia backend" FORCE)
     SET(ALSOFT_BACKEND_DSOUND OFF CACHE BOOL "Enable DirectSound backend" FORCE)
     SET(ALSOFT_BACKEND_WASAPI OFF CACHE BOOL "Enable WASAPI backend" FORCE)
-    SET(ALSOFT_BACKEND_SDL2 OFF CACHE BOOL "Enable SDL2 backend" FORCE)
-    SET(ALSOFT_REQUIRE_SDL2 OFF CACHE BOOL "Require SDL2 backend" FORCE)
-    SET(ALSOFT_BACKEND_SDL3 OFF CACHE BOOL "Require SDL3 backend" FORCE)
-    SET(ALSOFT_REQUIRE_SDL3 OFF CACHE BOOL "Require SDL3 backend" FORCE)
-    
-    if(MENGINE_TARGET_UWP)
-        if(MENGINE_PLATFORM_SDL2)
-            SET(ALSOFT_BACKEND_SDL2 ON CACHE BOOL "Enable SDL2 backend" FORCE)
-            SET(ALSOFT_REQUIRE_SDL2 OFF CACHE BOOL "Require SDL2 backend" FORCE)
-        endif()
-        
-        if(MENGINE_PLATFORM_SDL3)
-            SET(ALSOFT_BACKEND_SDL3 ON CACHE BOOL "Enable SDL3 backend" FORCE)
-            SET(ALSOFT_REQUIRE_SDL3 OFF CACHE BOOL "Require SDL3 backend" FORCE)
-        endif()
-    else()
+    if(NOT MENGINE_TARGET_UWP)
         SET(ALSOFT_BACKEND_WINMM ON CACHE BOOL "Enable Windows Multimedia backend" FORCE)
         SET(ALSOFT_BACKEND_DSOUND ON CACHE BOOL "Enable DirectSound backend" FORCE)
         SET(ALSOFT_BACKEND_WASAPI ON CACHE BOOL "Enable WASAPI backend" FORCE)

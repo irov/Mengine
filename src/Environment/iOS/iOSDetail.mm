@@ -45,8 +45,8 @@
 }
 
 + (BOOL) isAppTrackingTransparencyAllowed {
-    if (ATTrackingManager.trackingAuthorizationStatus == ATTrackingManagerAuthorizationStatusAuthorized) {
-        return YES;
+    if (@available(iOS 14.0, *)) {
+        return ATTrackingManager.trackingAuthorizationStatus == ATTrackingManagerAuthorizationStatusAuthorized;
     }
 
     return NO;

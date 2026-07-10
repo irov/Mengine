@@ -1,5 +1,5 @@
 // dear imgui: Renderer Backend for OpenGL2 (legacy OpenGL, fixed pipeline)
-// This needs to be used along with a Platform Backend (e.g. GLFW, SDL, Win32, custom..)
+// This needs to be used along with a native or custom Platform Backend.
 
 // Implemented features:
 //  [X] Renderer: User texture binding. Use 'GLuint' OpenGL texture as texture identifier. Read the FAQ about ImTextureID/ImTextureRef!

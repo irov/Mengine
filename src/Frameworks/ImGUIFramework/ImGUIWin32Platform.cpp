@@ -41,7 +41,7 @@
 //  2024-09-16: [Viewports] Inputs: fixed an issue where a viewport destroyed while clicking would hog mouse tracking and temporary lead to incorrect update of HoveredWindow. (#7971)
 //  2024-07-08: Inputs: Fixed ImGuiMod_Super being mapped to VK_APPS instead of VK_LWIN||VK_RWIN. (#7768)
 //  2023-10-05: Inputs: Added support for extra ImGuiKey values: F13 to F24 function keys, app back/forward keys.
-//  2023-09-25: Inputs: Synthesize key-down event on key-up for VK_SNAPSHOT / ImGuiKey_PrintScreen as Windows doesn't emit it (same behavior as GLFW/SDL).
+//  2023-09-25: Inputs: Synthesize key-down event on key-up for VK_SNAPSHOT / ImGuiKey_PrintScreen as Windows doesn't emit it.
 //  2023-09-07: Inputs: Added support for keyboard codepage conversion for when application is compiled in MBCS mode and using a non-Unicode window.
 //  2023-04-19: Added MengineImGUIWin32Platform_InitForOpenGL() to facilitate combining raw Win32/Winapi with OpenGL. (#3218)
 //  2023-04-04: Inputs: Added support for io.AddMouseSourceEvent() to discriminate ImGuiMouseSource_Mouse/ImGuiMouseSource_TouchScreen/ImGuiMouseSource_Pen. (#2702)
@@ -950,7 +950,7 @@ IMGUI_IMPL_API LRESULT MengineImGUIWin32Platform_WndProcHandlerEx(HWND hwnd, UIN
         return 0;
     case WM_DPICHANGED:
     {
-        // FIXME-DPI: see SDL3's WM_GETDPISCALEDSIZE handler.
+        // FIXME-DPI: account for WM_GETDPISCALEDSIZE handling.
         const RECT* suggested_rect = (RECT*)lParam;
         if (io.ConfigDpiScaleViewports)
             ::SetWindowPos(hwnd, nullptr, suggested_rect->left, suggested_rect->top, suggested_rect->right - suggested_rect->left, suggested_rect->bottom - suggested_rect->top, SWP_NOZORDER | SWP_NOACTIVATE);

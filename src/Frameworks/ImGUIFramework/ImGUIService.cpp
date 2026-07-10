@@ -7,14 +7,6 @@
 #include "Environment/Windows/Win32PlatformServiceExtensionInterface.h"
 #endif
 
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
-#include "Environment/SDL2/SDL2PlatformServiceExtensionInterface.h"
-#endif
-
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3)
-#include "Environment/SDL3/SDL3PlatformServiceExtensionInterface.h"
-#endif
-
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
 #include "Environment/MacOS/MacOSPlatformServiceExtensionInterface.h"
 #endif
@@ -71,14 +63,6 @@
 #include "Kernel/PrototypeHelper.h"
 
 #include "imgui.h"
-
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
-#include "imgui_impl_sdl2.h"
-#endif
-
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3)
-#include "imgui_impl_sdl3.h"
-#endif
 
 #ifndef MENGINE_IMGUI_INI_FILE
 #define MENGINE_IMGUI_INI_FILE "imgui.ini"
@@ -169,30 +153,6 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE, &ImGUIService::notifyRenderDeviceLostPrepare_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_RESTORE, &ImGUIService::notifyRenderDeviceLostRestore_, MENGINE_DOCUMENT_FACTORABLE );
 
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
-        SDL2PlatformServiceExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
-            ->getDynamicUnknown();
-
-        uint32_t handlerId = sdlPlatform->addSDLEventHandler( []( SDL_Event * _event )
-        {
-            ImGui_ImplSDL2_ProcessEvent( _event );
-        } );
-
-        m_handlerId = handlerId;
-#endif
-
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3)
-        SDL3PlatformServiceExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
-            ->getDynamicUnknown();
-
-        uint32_t handlerId = sdlPlatform->addSDLEventHandler( []( SDL_Event * _event )
-        {
-            ImGui_ImplSDL3_ProcessEvent( _event );
-        } );
-
-        m_handlerId = handlerId;
-#endif
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -212,28 +172,6 @@ namespace Mengine
                 ->getDynamicUnknown();
 
             win32Platform->removeWin32ProcessHandler( m_handlerId );
-            m_handlerId = INVALID_UNIQUE_ID;
-        }
-#endif
-
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
-        if( m_handlerId != INVALID_UNIQUE_ID )
-        {
-            SDL2PlatformServiceExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
-                ->getDynamicUnknown();
-
-            sdlPlatform->removeSDLEventHandler( m_handlerId );
-            m_handlerId = INVALID_UNIQUE_ID;
-        }
-#endif
-
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3)
-        if( m_handlerId != INVALID_UNIQUE_ID )
-        {
-            SDL3PlatformServiceExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
-                ->getDynamicUnknown();
-
-            sdlPlatform->removeSDLEventHandler( m_handlerId );
             m_handlerId = INVALID_UNIQUE_ID;
         }
 #endif
@@ -282,14 +220,6 @@ namespace Mengine
                 userFileGroup->removeFile( STRINGIZE_FILEPATH_LOCAL( MENGINE_IMGUI_INI_FILE ) );
             }
         }
-
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
-        ImGui_ImplSDL2_Shutdown();
-#endif
-
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3)
-        ImGui_ImplSDL3_Shutdown();
-#endif
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
         if( [MengineImGUIMacOSPlatform isInitialized] == YES )
@@ -373,40 +303,6 @@ namespace Mengine
         m_handlerId = handlerId;
 #endif
 
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
-        SDL2PlatformServiceExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
-            ->getDynamicUnknown();
-
-        SDL_Window * window = sdlPlatform->getWindow();
-        SDL_GLContext gl_context = sdlPlatform->getGLContext();
-
-        ImGui_ImplSDL2_InitForOpenGL( window, gl_context );
-
-        UniqueId handlerId = sdlPlatform->addSDLEventHandler( []( SDL_Event * _event )
-        {
-            ImGui_ImplSDL2_ProcessEvent( _event );
-        } );
-
-        m_handlerId = handlerId;
-#endif
-
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3)
-        SDL3PlatformServiceExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
-            ->getDynamicUnknown();
-
-        SDL_Window * window = sdlPlatform->getWindow();
-        SDL_GLContext gl_context = sdlPlatform->getGLContext();
-
-        ImGui_ImplSDL3_InitForOpenGL( window, gl_context );
-
-        UniqueId handlerId = sdlPlatform->addSDLEventHandler( []( SDL_Event * _event )
-        {
-            ImGui_ImplSDL3_ProcessEvent( _event );
-        } );
-
-        m_handlerId = handlerId;
-#endif
-
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
         MacOSPlatformServiceExtensionInterface * macosPlatform = PLATFORM_SERVICE()
             ->getDynamicUnknown();
@@ -455,32 +351,6 @@ namespace Mengine
         }
 
         MengineImGUIWin32Platform_Shutdown();
-#endif
-
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
-        if( m_handlerId != INVALID_UNIQUE_ID )
-        {
-            SDL2PlatformServiceExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
-                ->getDynamicUnknown();
-
-            sdlPlatform->removeSDLEventHandler( m_handlerId );
-            m_handlerId = INVALID_UNIQUE_ID;
-        }
-
-        ImGui_ImplSDL2_Shutdown();
-#endif
-
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3)
-        if( m_handlerId != INVALID_UNIQUE_ID )
-        {
-            SDL3PlatformServiceExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
-                ->getDynamicUnknown();
-
-            sdlPlatform->removeSDLEventHandler( m_handlerId );
-            m_handlerId = INVALID_UNIQUE_ID;
-        }
-
-        ImGui_ImplSDL3_Shutdown();
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)

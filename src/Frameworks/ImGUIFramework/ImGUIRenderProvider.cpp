@@ -15,14 +15,6 @@
 #include "ImGUIiOSPlatform.h"
 #endif
 
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
-#include "Environment/SDL2/SDL2PlatformServiceExtensionInterface.h"
-#endif
-
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3)
-#include "Environment/SDL3/SDL3PlatformServiceExtensionInterface.h"
-#endif
-
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
 #include "Environment/MacOS/MacOSPlatformServiceExtensionInterface.h"
 #endif
@@ -45,14 +37,6 @@
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
 #include "ImGUIWin32Platform.h"
-#endif
-
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
-#include "imgui_impl_sdl2.h"
-#endif
-
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3)
-#include "imgui_impl_sdl3.h"
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
@@ -117,14 +101,6 @@ namespace Mengine
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
         MengineImGUIWin32Platform_NewFrame();
-#endif
-
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL2)
-        ImGui_ImplSDL2_NewFrame();
-#endif
-
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL3)
-        ImGui_ImplSDL3_NewFrame();
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)

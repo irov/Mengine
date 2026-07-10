@@ -1,5 +1,5 @@
 // dear imgui: Renderer Backend for OpenGL2 (legacy OpenGL, fixed pipeline)
-// This needs to be used along with a Platform Backend (e.g. GLFW, SDL, Win32, custom..)
+// This needs to be used along with a native or custom Platform Backend.
 
 // Implemented features:
 //  [X] Renderer: User texture binding. Use 'GLuint' OpenGL texture as texture identifier. Read the FAQ about ImTextureID/ImTextureRef!
@@ -45,7 +45,7 @@
 //  2019-02-11: OpenGL: Projecting clipping rectangles correctly using draw_data->FramebufferScale to allow multi-viewports for retina display.
 //  2018-11-30: Misc: Setting up io.BackendRendererName so it can be displayed in the About Window.
 //  2018-08-03: OpenGL: Disabling/restoring GL_LIGHTING and GL_COLOR_MATERIAL to increase compatibility with legacy OpenGL applications.
-//  2018-06-08: Misc: Extracted imgui_impl_opengl2.cpp/.h away from the old combined GLFW/SDL+OpenGL2 examples.
+//  2018-06-08: Misc: Extracted the OpenGL2 renderer away from the old combined platform examples.
 //  2018-06-08: OpenGL: Use draw_data->DisplayPos and draw_data->DisplaySize to setup projection matrix and clipping rectangle.
 //  2018-02-16: Misc: Obsoleted the io.RenderDrawListsFn callback and exposed MengineImGUIOpenGL2Render_RenderDrawData() in the .h file so you can call it yourself.
 //  2017-09-01: OpenGL: Save and restore current polygon mode.

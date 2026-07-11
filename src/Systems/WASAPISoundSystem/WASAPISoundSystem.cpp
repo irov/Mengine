@@ -75,6 +75,11 @@ namespace Mengine
                 return false;
             }
 
+            if( _format->wBitsPerSample != sizeof( float ) * 8 )
+            {
+                return false;
+            }
+
             if( _format->wFormatTag == WAVE_FORMAT_IEEE_FLOAT )
             {
                 return true;
@@ -208,15 +213,27 @@ namespace Mengine
             }
         }
 
-        static bool initializeRenderDevice_( WASAPIRenderDeviceContext * const _context )
+        static bool initializeRenderDevice_( WASAPIRenderDeviceContext * const _context, uint32_t _requiredSampleRate, bool _reportErrors )
         {
             HRESULT hr = ::CoCreateInstance( __uuidof(MMDeviceEnumerator), nullptr, CLSCTX_ALL, __uuidof(IMMDeviceEnumerator), reinterpret_cast<void **>(&_context->deviceEnumerator) );
 
             if( FAILED( hr ) )
             {
-                LOGGER_ASSERTION( "failed to create MMDeviceEnumerator [%u]"
-                    , (uint32_t)hr
-                );
+                if( _reportErrors == true )
+                {
+                    if( _requiredSampleRate == 0 )
+                    {
+                        LOGGER_ASSERTION( "failed to create MMDeviceEnumerator [%u]"
+                            , (uint32_t)hr
+                        );
+                    }
+                    else
+                    {
+                        LOGGER_WARNING( "failed to recreate MMDeviceEnumerator [%u]"
+                            , (uint32_t)hr
+                        );
+                    }
+                }
 
                 return false;
             }
@@ -225,9 +242,21 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ASSERTION( "failed to get default audio endpoint [%u]"
-                    , (uint32_t)hr
-                );
+                if( _reportErrors == true )
+                {
+                    if( _requiredSampleRate == 0 )
+                    {
+                        LOGGER_ASSERTION( "failed to get default audio endpoint [%u]"
+                            , (uint32_t)hr
+                        );
+                    }
+                    else
+                    {
+                        LOGGER_WARNING( "failed to recover default audio endpoint [%u]"
+                            , (uint32_t)hr
+                        );
+                    }
+                }
 
                 return false;
             }
@@ -236,9 +265,21 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ASSERTION( "failed to activate IAudioClient [%u]"
-                    , (uint32_t)hr
-                );
+                if( _reportErrors == true )
+                {
+                    if( _requiredSampleRate == 0 )
+                    {
+                        LOGGER_ASSERTION( "failed to activate IAudioClient [%u]"
+                            , (uint32_t)hr
+                        );
+                    }
+                    else
+                    {
+                        LOGGER_WARNING( "failed to reactivate IAudioClient [%u]"
+                            , (uint32_t)hr
+                        );
+                    }
+                }
 
                 return false;
             }
@@ -248,9 +289,21 @@ namespace Mengine
 
             if( FAILED( hr ) || mixFormat == nullptr )
             {
-                LOGGER_ASSERTION( "failed to get mix format [%u]"
-                    , (uint32_t)hr
-                );
+                if( _reportErrors == true )
+                {
+                    if( _requiredSampleRate == 0 )
+                    {
+                        LOGGER_ASSERTION( "failed to get mix format [%u]"
+                            , (uint32_t)hr
+                        );
+                    }
+                    else
+                    {
+                        LOGGER_WARNING( "failed to get recovered mix format [%u]"
+                            , (uint32_t)hr
+                        );
+                    }
+                }
 
                 return false;
             }
@@ -260,7 +313,7 @@ namespace Mengine
 
             desiredFormat.Format.wFormatTag = WAVE_FORMAT_EXTENSIBLE;
             desiredFormat.Format.nChannels = mixFormat->nChannels;
-            desiredFormat.Format.nSamplesPerSec = mixFormat->nSamplesPerSec;
+            desiredFormat.Format.nSamplesPerSec = _requiredSampleRate != 0 ? _requiredSampleRate : mixFormat->nSamplesPerSec;
             desiredFormat.Format.wBitsPerSample = sizeof( float ) * 8;
             desiredFormat.Format.nBlockAlign = desiredFormat.Format.nChannels * sizeof( float );
             desiredFormat.Format.nAvgBytesPerSec = desiredFormat.Format.nBlockAlign * desiredFormat.Format.nSamplesPerSec;
@@ -290,11 +343,25 @@ namespace Mengine
 
             if( selectedFloat == false && isWaveFormatPCM16_( selectedFormat ) == false )
             {
-                LOGGER_ASSERTION( "unsupported shared-mode output format tag [%u] bits [%u] channels [%u]"
-                    , selectedFormat->wFormatTag
-                    , selectedFormat->wBitsPerSample
-                    , selectedFormat->nChannels
-                );
+                if( _reportErrors == true )
+                {
+                    if( _requiredSampleRate == 0 )
+                    {
+                        LOGGER_ASSERTION( "unsupported shared-mode output format tag [%u] bits [%u] channels [%u]"
+                            , selectedFormat->wFormatTag
+                            , selectedFormat->wBitsPerSample
+                            , selectedFormat->nChannels
+                        );
+                    }
+                    else
+                    {
+                        LOGGER_WARNING( "unsupported recovered output format tag [%u] bits [%u] channels [%u]"
+                            , selectedFormat->wFormatTag
+                            , selectedFormat->wBitsPerSample
+                            , selectedFormat->nChannels
+                        );
+                    }
+                }
 
                 if( closestFormat != nullptr )
                 {
@@ -311,6 +378,61 @@ namespace Mengine
             WORD bitsPerSample = selectedFormat->wBitsPerSample;
             UINT32 frameBytes = selectedFormat->nBlockAlign;
             UINT32 sampleRate = selectedFormat->nSamplesPerSec;
+            UINT32 expectedFrameBytes = selectedChannels * (outputFloat == true ? (UINT32)sizeof( float ) : (UINT32)sizeof( int16_t ));
+
+            if( selectedChannels == 0 || sampleRate == 0 || frameBytes != expectedFrameBytes )
+            {
+                if( _reportErrors == true )
+                {
+                    if( _requiredSampleRate == 0 )
+                    {
+                        LOGGER_ASSERTION( "invalid shared-mode output layout rate [%u] channels [%u] frame bytes [%u] expected [%u]"
+                            , sampleRate
+                            , selectedChannels
+                            , frameBytes
+                            , expectedFrameBytes
+                        );
+                    }
+                    else
+                    {
+                        LOGGER_WARNING( "invalid recovered output layout rate [%u] channels [%u] frame bytes [%u] expected [%u]"
+                            , sampleRate
+                            , selectedChannels
+                            , frameBytes
+                            , expectedFrameBytes
+                        );
+                    }
+                }
+
+                if( closestFormat != nullptr )
+                {
+                    ::CoTaskMemFree( closestFormat );
+                }
+
+                ::CoTaskMemFree( mixFormat );
+
+                return false;
+            }
+
+            if( _requiredSampleRate != 0 && sampleRate != _requiredSampleRate )
+            {
+                if( _reportErrors == true )
+                {
+                    LOGGER_WARNING( "recovered WASAPI endpoint sample rate mismatch required: %u actual: %u"
+                        , _requiredSampleRate
+                        , sampleRate
+                    );
+                }
+
+                if( closestFormat != nullptr )
+                {
+                    ::CoTaskMemFree( closestFormat );
+                }
+
+                ::CoTaskMemFree( mixFormat );
+
+                return false;
+            }
 
             REFERENCE_TIME defaultDevicePeriod = 0;
             _context->audioClient->GetDevicePeriod( &defaultDevicePeriod, nullptr );
@@ -335,9 +457,21 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ASSERTION( "failed to initialize IAudioClient [%u]"
-                    , (uint32_t)hr
-                );
+                if( _reportErrors == true )
+                {
+                    if( _requiredSampleRate == 0 )
+                    {
+                        LOGGER_ASSERTION( "failed to initialize IAudioClient [%u]"
+                            , (uint32_t)hr
+                        );
+                    }
+                    else
+                    {
+                        LOGGER_WARNING( "failed to reinitialize IAudioClient [%u]"
+                            , (uint32_t)hr
+                        );
+                    }
+                }
 
                 return false;
             }
@@ -352,7 +486,17 @@ namespace Mengine
 
             if( _context->samplesReadyEvent == nullptr )
             {
-                LOGGER_ASSERTION( "failed to create WASAPI ready event" );
+                if( _reportErrors == true )
+                {
+                    if( _requiredSampleRate == 0 )
+                    {
+                        LOGGER_ASSERTION( "failed to create WASAPI ready event" );
+                    }
+                    else
+                    {
+                        LOGGER_WARNING( "failed to recreate WASAPI ready event" );
+                    }
+                }
 
                 return false;
             }
@@ -361,9 +505,21 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ASSERTION( "failed to set IAudioClient event handle [%u]"
-                    , (uint32_t)hr
-                );
+                if( _reportErrors == true )
+                {
+                    if( _requiredSampleRate == 0 )
+                    {
+                        LOGGER_ASSERTION( "failed to set IAudioClient event handle [%u]"
+                            , (uint32_t)hr
+                        );
+                    }
+                    else
+                    {
+                        LOGGER_WARNING( "failed to set recovered IAudioClient event handle [%u]"
+                            , (uint32_t)hr
+                        );
+                    }
+                }
 
                 return false;
             }
@@ -372,9 +528,21 @@ namespace Mengine
 
             if( FAILED( hr ) || _context->bufferFrameCount == 0 )
             {
-                LOGGER_ASSERTION( "failed to get device buffer size [%u]"
-                    , (uint32_t)hr
-                );
+                if( _reportErrors == true )
+                {
+                    if( _requiredSampleRate == 0 )
+                    {
+                        LOGGER_ASSERTION( "failed to get device buffer size [%u]"
+                            , (uint32_t)hr
+                        );
+                    }
+                    else
+                    {
+                        LOGGER_WARNING( "failed to get recovered device buffer size [%u]"
+                            , (uint32_t)hr
+                        );
+                    }
+                }
 
                 return false;
             }
@@ -383,9 +551,21 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ASSERTION( "failed to get IAudioRenderClient [%u]"
-                    , (uint32_t)hr
-                );
+                if( _reportErrors == true )
+                {
+                    if( _requiredSampleRate == 0 )
+                    {
+                        LOGGER_ASSERTION( "failed to get IAudioRenderClient [%u]"
+                            , (uint32_t)hr
+                        );
+                    }
+                    else
+                    {
+                        LOGGER_WARNING( "failed to recover IAudioRenderClient [%u]"
+                            , (uint32_t)hr
+                        );
+                    }
+                }
 
                 return false;
             }
@@ -743,29 +923,6 @@ namespace Mengine
             return;
         }
 
-        Detail::WASAPIRenderDeviceContext context;
-
-        if( Detail::initializeRenderDevice_( &context ) == false )
-        {
-            if( m_initializeEvent != nullptr )
-            {
-                m_initializeSuccess = false;
-                ::SetEvent( m_initializeEvent );
-            }
-
-            Detail::finalizeRenderDevice_( &context );
-
-            if( needCoUninitialize == true )
-            {
-                ::CoUninitialize();
-            }
-
-            return;
-        }
-
-        m_outputSampleRate = context.outputSampleRate;
-        m_outputChannels = context.outputChannels;
-
         DWORD avrtTaskIndex = 0;
         HANDLE avrtHandle = ::AvSetMmThreadCharacteristicsW( L"Pro Audio", &avrtTaskIndex );
 
@@ -776,190 +933,295 @@ namespace Mengine
             );
         }
 
-        BYTE * initialBuffer = nullptr;
-        HRESULT hr = context.renderClient->GetBuffer( context.bufferFrameCount, &initialBuffer );
-
-        if( FAILED( hr ) || initialBuffer == nullptr )
+        auto signalInitialization = [this]( bool _successful )
         {
-            LOGGER_ASSERTION( "failed to lock initial render buffer [%u]"
-                , (uint32_t)hr
-            );
-
-            if( avrtHandle != nullptr )
+            if( m_initializeEvent == nullptr )
             {
-                ::AvRevertMmThreadCharacteristics( avrtHandle );
-                avrtHandle = nullptr;
+                return;
             }
 
-            if( m_initializeEvent != nullptr )
-            {
-                m_initializeSuccess = false;
-                ::SetEvent( m_initializeEvent );
-            }
-
-            Detail::finalizeRenderDevice_( &context );
-
-            if( needCoUninitialize == true )
-            {
-                ::CoUninitialize();
-            }
-
-            return;
-        }
-
-        this->mixOutputFrames_( context.mixBuffer, context.bufferFrameCount, context.outputChannels );
-        Detail::writeDeviceBuffer_( context, initialBuffer, context.bufferFrameCount );
-
-        hr = context.renderClient->ReleaseBuffer( context.bufferFrameCount, 0 );
-
-        if( FAILED( hr ) )
-        {
-            LOGGER_ASSERTION( "failed to release initial render buffer [%u]"
-                , (uint32_t)hr
-            );
-
-            if( avrtHandle != nullptr )
-            {
-                ::AvRevertMmThreadCharacteristics( avrtHandle );
-                avrtHandle = nullptr;
-            }
-
-            if( m_initializeEvent != nullptr )
-            {
-                m_initializeSuccess = false;
-                ::SetEvent( m_initializeEvent );
-            }
-
-            Detail::finalizeRenderDevice_( &context );
-
-            if( needCoUninitialize == true )
-            {
-                ::CoUninitialize();
-            }
-
-            return;
-        }
-
-        ::ResetEvent( context.samplesReadyEvent );
-
-        hr = context.audioClient->Start();
-
-        if( FAILED( hr ) )
-        {
-            LOGGER_ASSERTION( "failed to start IAudioClient [%u]"
-                , (uint32_t)hr
-            );
-
-            if( avrtHandle != nullptr )
-            {
-                ::AvRevertMmThreadCharacteristics( avrtHandle );
-                avrtHandle = nullptr;
-            }
-
-            if( m_initializeEvent != nullptr )
-            {
-                m_initializeSuccess = false;
-                ::SetEvent( m_initializeEvent );
-            }
-
-            Detail::finalizeRenderDevice_( &context );
-
-            if( needCoUninitialize == true )
-            {
-                ::CoUninitialize();
-            }
-
-            return;
-        }
-
-        LOGGER_MESSAGE( "WASAPISoundSystem initialized sample rate: %u channels: %u float: %u"
-            , m_outputSampleRate
-            , m_outputChannels
-            , context.outputFloat == true ? 1U : 0U
-        );
-
-        if( m_initializeEvent != nullptr )
-        {
-            m_initializeSuccess = true;
+            m_initializeSuccess = _successful;
             ::SetEvent( m_initializeEvent );
-        }
+        };
 
-        HANDLE waitHandles[2] = {m_stopEvent, context.samplesReadyEvent};
-        bool running = true;
+        HANDLE stopEvent = m_stopEvent;
 
-        while( running == true )
+        auto waitRecoveryBackoff = [stopEvent]() -> bool
         {
-            DWORD waitResult = ::WaitForMultipleObjects( 2, waitHandles, FALSE, 2000 );
-
-            switch( waitResult )
+            if( stopEvent == nullptr )
             {
-            case WAIT_OBJECT_0:
-                {
-                    running = false;
-                }break;
-            case WAIT_OBJECT_0 + 1:
-                {
-                    UINT32 padding = 0;
-                    HRESULT hrRender = context.audioClient->GetCurrentPadding( &padding );
+                return false;
+            }
 
-                    if( FAILED( hrRender ) )
+            DWORD waitResult = ::WaitForSingleObject( stopEvent, 500 );
+
+            if( waitResult == WAIT_TIMEOUT )
+            {
+                return true;
+            }
+
+            if( waitResult != WAIT_OBJECT_0 )
+            {
+                LOGGER_WARNING( "unexpected WASAPI recovery wait result [%u]"
+                    , (uint32_t)waitResult
+                );
+            }
+
+            return false;
+        };
+
+        bool initialized = false;
+        bool stopRequested = false;
+        uint32_t fixedSampleRate = 0;
+        uint32_t recoveryAttempt = 0;
+
+        while( stopRequested == false )
+        {
+            bool reportErrors = initialized == false || recoveryAttempt <= 1 || recoveryAttempt % 20 == 0;
+
+            Detail::WASAPIRenderDeviceContext context;
+
+            if( Detail::initializeRenderDevice_( &context, fixedSampleRate, reportErrors ) == false )
+            {
+                Detail::finalizeRenderDevice_( &context );
+
+                if( initialized == false )
+                {
+                    signalInitialization( false );
+
+                    break;
+                }
+
+                ++recoveryAttempt;
+
+                if( waitRecoveryBackoff() == false )
+                {
+                    stopRequested = true;
+                }
+
+                continue;
+            }
+
+            bool startSuccessful = true;
+            BYTE * initialBuffer = nullptr;
+            HRESULT hr = context.renderClient->GetBuffer( context.bufferFrameCount, &initialBuffer );
+
+            if( FAILED( hr ) || initialBuffer == nullptr )
+            {
+                if( reportErrors == true )
+                {
+                    if( initialized == false )
                     {
-                        LOGGER_WARNING( "failed to get current padding [%u]"
-                            , (uint32_t)hrRender
+                        LOGGER_ASSERTION( "failed to lock initial render buffer [%u]"
+                            , (uint32_t)hr
+                        );
+                    }
+                    else
+                    {
+                        LOGGER_WARNING( "failed to lock recovered WASAPI render buffer [%u]"
+                            , (uint32_t)hr
+                        );
+                    }
+                }
+
+                startSuccessful = false;
+            }
+            else
+            {
+                // Prime with silence so failed recovery attempts never advance
+                // active sources before the replacement client has started.
+                hr = context.renderClient->ReleaseBuffer( context.bufferFrameCount, AUDCLNT_BUFFERFLAGS_SILENT );
+
+                if( FAILED( hr ) )
+                {
+                    if( reportErrors == true )
+                    {
+                        if( initialized == false )
+                        {
+                            LOGGER_ASSERTION( "failed to release initial render buffer [%u]"
+                                , (uint32_t)hr
+                            );
+                        }
+                        else
+                        {
+                            LOGGER_WARNING( "failed to release recovered WASAPI render buffer [%u]"
+                                , (uint32_t)hr
+                            );
+                        }
+                    }
+
+                    startSuccessful = false;
+                }
+            }
+
+            if( startSuccessful == true )
+            {
+                ::ResetEvent( context.samplesReadyEvent );
+
+                hr = context.audioClient->Start();
+
+                if( FAILED( hr ) )
+                {
+                    if( reportErrors == true )
+                    {
+                        if( initialized == false )
+                        {
+                            LOGGER_ASSERTION( "failed to start IAudioClient [%u]"
+                                , (uint32_t)hr
+                            );
+                        }
+                        else
+                        {
+                            LOGGER_WARNING( "failed to restart IAudioClient [%u]"
+                                , (uint32_t)hr
+                            );
+                        }
+                    }
+
+                    startSuccessful = false;
+                }
+            }
+
+            if( startSuccessful == false )
+            {
+                Detail::finalizeRenderDevice_( &context );
+
+                if( initialized == false )
+                {
+                    signalInitialization( false );
+
+                    break;
+                }
+
+                ++recoveryAttempt;
+
+                if( waitRecoveryBackoff() == false )
+                {
+                    stopRequested = true;
+                }
+
+                continue;
+            }
+
+            if( initialized == false )
+            {
+                fixedSampleRate = context.outputSampleRate;
+                m_outputSampleRate = fixedSampleRate;
+                m_outputChannels = context.outputChannels;
+
+                LOGGER_MESSAGE( "WASAPISoundSystem initialized sample rate: %u channels: %u float: %u"
+                    , m_outputSampleRate
+                    , m_outputChannels
+                    , context.outputFloat == true ? 1U : 0U
+                );
+
+                initialized = true;
+                signalInitialization( true );
+            }
+            else
+            {
+                LOGGER_MESSAGE( "WASAPISoundSystem recovered sample rate: %u channels: %u float: %u"
+                    , fixedSampleRate
+                    , context.outputChannels
+                    , context.outputFloat == true ? 1U : 0U
+                );
+            }
+
+            recoveryAttempt = 0;
+
+            HANDLE waitHandles[2] = {stopEvent, context.samplesReadyEvent};
+            bool recoverDevice = false;
+
+            while( stopRequested == false && recoverDevice == false )
+            {
+                DWORD waitResult = ::WaitForMultipleObjects( 2, waitHandles, FALSE, 2000 );
+
+                switch( waitResult )
+                {
+                case WAIT_OBJECT_0:
+                    {
+                        stopRequested = true;
+                    }break;
+                case WAIT_OBJECT_0 + 1:
+                    {
+                        UINT32 padding = 0;
+                        HRESULT hrRender = context.audioClient->GetCurrentPadding( &padding );
+
+                        if( FAILED( hrRender ) )
+                        {
+                            LOGGER_WARNING( "failed to get current padding [%u], recovering WASAPI endpoint"
+                                , (uint32_t)hrRender
+                            );
+
+                            recoverDevice = true;
+
+                            break;
+                        }
+
+                        UINT32 framesToWrite = context.bufferFrameCount - padding;
+
+                        if( framesToWrite == 0 )
+                        {
+                            break;
+                        }
+
+                        BYTE * data = nullptr;
+                        hrRender = context.renderClient->GetBuffer( framesToWrite, &data );
+
+                        if( FAILED( hrRender ) || data == nullptr )
+                        {
+                            LOGGER_WARNING( "failed to get WASAPI render buffer [%u], recovering endpoint"
+                                , (uint32_t)hrRender
+                            );
+
+                            recoverDevice = true;
+
+                            break;
+                        }
+
+                        this->mixOutputFrames_( context.mixBuffer, framesToWrite, context.outputChannels );
+                        Detail::writeDeviceBuffer_( context, data, framesToWrite );
+
+                        hrRender = context.renderClient->ReleaseBuffer( framesToWrite, 0 );
+
+                        if( FAILED( hrRender ) )
+                        {
+                            LOGGER_WARNING( "failed to release WASAPI render buffer [%u], recovering endpoint"
+                                , (uint32_t)hrRender
+                            );
+
+                            recoverDevice = true;
+                        }
+                    }break;
+                case WAIT_TIMEOUT:
+                    {
+                        LOGGER_WARNING( "WASAPI wait timeout, recovering endpoint" );
+
+                        recoverDevice = true;
+                    }break;
+                default:
+                    {
+                        LOGGER_WARNING( "unexpected WASAPI wait result [%u], recovering endpoint"
+                            , (uint32_t)waitResult
                         );
 
-                        running = false;
+                        recoverDevice = true;
+                    }break;
+                }
+            }
 
-                        break;
-                    }
+            Detail::finalizeRenderDevice_( &context );
 
-                    UINT32 framesToWrite = context.bufferFrameCount - padding;
+            if( stopRequested == true )
+            {
+                break;
+            }
 
-                    if( framesToWrite == 0 )
-                    {
-                        break;
-                    }
+            ++recoveryAttempt;
 
-                    BYTE * data = nullptr;
-                    hrRender = context.renderClient->GetBuffer( framesToWrite, &data );
-
-                    if( FAILED( hrRender ) || data == nullptr )
-                    {
-                        LOGGER_WARNING( "failed to get WASAPI render buffer [%u]"
-                            , (uint32_t)hrRender
-                        );
-
-                        running = false;
-
-                        break;
-                    }
-
-                    this->mixOutputFrames_( context.mixBuffer, framesToWrite, context.outputChannels );
-                    Detail::writeDeviceBuffer_( context, data, framesToWrite );
-
-                    hrRender = context.renderClient->ReleaseBuffer( framesToWrite, 0 );
-
-                    if( FAILED( hrRender ) )
-                    {
-                        LOGGER_WARNING( "failed to release WASAPI render buffer [%u]"
-                            , (uint32_t)hrRender
-                        );
-
-                        running = false;
-                    }
-                }break;
-            case WAIT_TIMEOUT:
-                {
-                    LOGGER_WARNING( "WASAPI wait timeout, device may be unavailable" );
-                }break;
-            default:
-                {
-                    LOGGER_WARNING( "unexpected WASAPI wait result [%u]"
-                        , (uint32_t)waitResult
-                    );
-
-                    running = false;
-                }break;
+            if( waitRecoveryBackoff() == false )
+            {
+                stopRequested = true;
             }
         }
 
@@ -968,8 +1230,6 @@ namespace Mengine
             ::AvRevertMmThreadCharacteristics( avrtHandle );
             avrtHandle = nullptr;
         }
-
-        Detail::finalizeRenderDevice_( &context );
 
         if( needCoUninitialize == true )
         {
@@ -996,11 +1256,6 @@ namespace Mengine
             }
 
             float gain = busDesc.gain.load();
-
-            if( gain <= 0.f )
-            {
-                continue;
-            }
 
             SoundSourceInterfacePtr source;
 

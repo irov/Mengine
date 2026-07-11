@@ -1188,10 +1188,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::setLoop( const SoundIdentityInterfacePtr & _identity, bool _looped )
     {
-        _identity->setLoop( _looped );
-
         const SoundSourceInterfacePtr & source = _identity->getSoundSource();
         source->setLoop( _looped );
+
+        bool effectiveLoop = source->getLoop();
+        _identity->setLoop( effectiveLoop );
+
+        if( effectiveLoop != _looped )
+        {
+            return false;
+        }
 
         return true;
     }

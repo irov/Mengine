@@ -30,6 +30,7 @@ namespace Mengine
         void stopSource() override;
         void pauseSource() override;
         void resumeSource() override;
+        bool setLoopSource( bool _looped ) override;
 
     public:
         bool setTimePosition( float _position ) override;
@@ -43,9 +44,11 @@ namespace Mengine
 
     public:
         bool updateSoundBuffer() override;
+        bool isEndOfStream() const override;
 
     protected:
         bool prebuffer_();
+        bool seekPosition_( float _position );
         bool decodeSegment_( uint8_t * _buffer, size_t _capacity, size_t * const _written );
         bool ensureDecodeFrames_( uint32_t _requiredFrames );
 
@@ -66,7 +69,7 @@ namespace Mengine
         AtomicUInt32 m_readOffset;
         AtomicUInt32 m_writeOffset;
         AtomicUInt32 m_availableBytes;
-        AtomicUInt32 m_playPositionBytes;
+        Atomic<uint64_t> m_playPositionBytes;
         AtomicUInt32 m_activeRenders;
 
         size_t m_ringBufferSize;

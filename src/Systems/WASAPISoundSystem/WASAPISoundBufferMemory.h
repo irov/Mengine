@@ -30,6 +30,7 @@ namespace Mengine
         void stopSource() override;
         void pauseSource() override;
         void resumeSource() override;
+        bool setLoopSource( bool _looped ) override;
 
     public:
         bool setTimePosition( float _position ) override;

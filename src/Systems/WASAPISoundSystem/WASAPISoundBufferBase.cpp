@@ -26,7 +26,14 @@ namespace Mengine
             return true;
         }
 
-        return this->_acquireSoundBuffer();
+        if( this->_acquireSoundBuffer() == false )
+        {
+            m_refacquire.decrefReferenceCount();
+
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void WASAPISoundBufferBase::releaseSoundBuffer()
@@ -98,6 +105,11 @@ namespace Mengine
     uint32_t WASAPISoundBufferBase::getFrameCount() const
     {
         return 0;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool WASAPISoundBufferBase::isEndOfStream() const
+    {
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
 }

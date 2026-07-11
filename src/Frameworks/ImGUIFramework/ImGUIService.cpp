@@ -15,6 +15,10 @@
 #include "Environment/iOS/iOSPlatformServiceExtensionInterface.h"
 #endif
 
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_UNIX)
+#include "Environment/Unix/UnixPlatformServiceExtensionInterface.h"
+#endif
+
 #if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
 #include "Environment/DirectX9/DX9RenderSystemExtensionInterface.h"
 #endif
@@ -34,7 +38,7 @@
 #include "ImGUIDX9Render.h"
 #endif
 
-#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && (defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS) || defined(MENGINE_ENVIRONMENT_PLATFORM_IOS))
+#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && (defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS) || defined(MENGINE_ENVIRONMENT_PLATFORM_IOS) || defined(MENGINE_ENVIRONMENT_PLATFORM_UNIX))
 #include "ImGUIOpenGL3Render.h"
 #elif defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
 #include "ImGUIOpenGL2Render.h"
@@ -50,6 +54,10 @@
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_IOS)
 #include "ImGUIiOSPlatform.h"
+#endif
+
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_UNIX)
+#include "ImGUIUnixPlatform.h"
 #endif
 
 #include "Kernel/ConstStringHelper.h"
@@ -198,6 +206,17 @@ namespace Mengine
         }
 #endif
 
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_UNIX)
+        if( m_handlerId != INVALID_UNIQUE_ID )
+        {
+            UnixPlatformServiceExtensionInterface * unixPlatform = PLATFORM_SERVICE()
+                ->getDynamicUnknown();
+
+            unixPlatform->removeUnixEventHandler( m_handlerId );
+            m_handlerId = INVALID_UNIQUE_ID;
+        }
+#endif
+
         size_t imIniSettingsSize = 0;
         const char * imIniSettings = ImGui::SaveIniSettingsToMemory( &imIniSettingsSize );
 
@@ -233,6 +252,10 @@ namespace Mengine
         {
             [MengineImGUIiOSPlatform finalizeBackend];
         }
+#endif
+
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_UNIX)
+        MengineImGUIUnixPlatform_Shutdown();
 #endif
 
         ImGui::DestroyContext();
@@ -336,6 +359,31 @@ namespace Mengine
             m_handlerId = handlerId;
         }
 #endif
+
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_UNIX)
+        if( m_handlerId != INVALID_UNIQUE_ID )
+        {
+            return;
+        }
+
+        if( MengineImGUIUnixPlatform_IsInitialized() == true )
+        {
+            MengineImGUIUnixPlatform_Shutdown();
+        }
+
+        UnixPlatformServiceExtensionInterface * unixPlatform = PLATFORM_SERVICE()
+            ->getDynamicUnknown();
+
+        if( MengineImGUIUnixPlatform_Init( unixPlatform->getX11Display(), unixPlatform->getX11Window() ) == true )
+        {
+            UniqueId handlerId = unixPlatform->addUnixEventHandler( []( const XEvent & _event, const Char * _text )
+            {
+                return MengineImGUIUnixPlatform_ProcessEvent( _event, _text );
+            }, MENGINE_DOCUMENT_FACTORABLE );
+
+            m_handlerId = handlerId;
+        }
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void ImGUIService::notifyPlatformDetachWindow_()
@@ -384,6 +432,19 @@ namespace Mengine
             [MengineImGUIiOSPlatform finalizeBackend];
         }
 #endif
+
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_UNIX)
+        UnixPlatformServiceExtensionInterface * unixPlatform = PLATFORM_SERVICE()
+            ->getDynamicUnknown();
+
+        if( m_handlerId != INVALID_UNIQUE_ID )
+        {
+            unixPlatform->removeUnixEventHandler( m_handlerId );
+            m_handlerId = INVALID_UNIQUE_ID;
+        }
+
+        MengineImGUIUnixPlatform_Shutdown();
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void ImGUIService::notifyRenderDeviceCreate_()
@@ -392,6 +453,8 @@ namespace Mengine
         MengineImGUIOpenGL3Render_Init( "#version 150" );
 #elif defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && defined(MENGINE_ENVIRONMENT_PLATFORM_IOS)
         MengineImGUIOpenGL3Render_Init( nullptr );
+#elif defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && defined(MENGINE_ENVIRONMENT_PLATFORM_UNIX)
+        MengineImGUIOpenGL3Render_Init( "#version 330 core" );
 #elif defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
         MengineImGUIOpenGL2Render_Init();
 #elif defined(MENGINE_ENVIRONMENT_RENDER_METAL)
@@ -418,7 +481,7 @@ namespace Mengine
         MengineImGUIDX9Render_Shutdown();
 #endif
 
-#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && (defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS) || defined(MENGINE_ENVIRONMENT_PLATFORM_IOS))
+#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && (defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS) || defined(MENGINE_ENVIRONMENT_PLATFORM_IOS) || defined(MENGINE_ENVIRONMENT_PLATFORM_UNIX))
         MengineImGUIOpenGL3Render_DestroyDeviceObjects();
 
         MengineImGUIOpenGL3Render_Shutdown();

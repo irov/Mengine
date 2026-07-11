@@ -7,6 +7,7 @@
 #include "Kernel/SpinLockScope.h"
 
 #include "Config/StdMath.h"
+#include "Config/StdThread.h"
 
 #include "math/utils.h"
 
@@ -28,6 +29,8 @@ namespace Mengine
         , m_pausing( false )
         , m_loop( false )
         , m_finished( false )
+        , m_renderBarrier( false )
+        , m_activeRenders( 0 )
         , m_busIndex( INVALID_BUS_INDEX )
     {
     }
@@ -247,6 +250,8 @@ namespace Mengine
             return;
         }
 
+        this->beginMutableState_();
+
         m_playing = false;
         m_pausing = false;
         m_finished = false;
@@ -261,6 +266,8 @@ namespace Mengine
         this->releaseSourceBus_();
 
         m_framePosition = 0;
+
+        this->endMutableState_();
     }
     //////////////////////////////////////////////////////////////////////////
     bool WASAPISoundSource::isPlay() const
@@ -314,7 +321,24 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void WASAPISoundSource::setLoop( bool _loop )
     {
-        m_loop = _loop;
+        bool previousLoop = m_loop.exchange( _loop );
+        bool previousFinished = m_finished.load();
+
+        if( _loop == true )
+        {
+            m_finished = false;
+        }
+
+        WASAPISoundBufferBasePtr soundBuffer = this->getSoundBuffer_();
+
+        if( soundBuffer != nullptr )
+        {
+            if( soundBuffer->setLoopSource( _loop ) == false )
+            {
+                m_loop = previousLoop;
+                m_finished = previousFinished;
+            }
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool WASAPISoundSource::getLoop() const
@@ -338,13 +362,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool WASAPISoundSource::setPosition( float _position )
     {
-        float currentPosition = this->getPosition();
-
-        if( mt::equal_f_f( currentPosition, _position ) == true )
-        {
-            return true;
-        }
-
         WASAPISoundBufferBasePtr soundBuffer = this->getSoundBuffer_();
 
         if( soundBuffer == nullptr )
@@ -354,6 +371,17 @@ namespace Mengine
             return false;
         }
 
+        this->beginMutableState_();
+
+        float currentPosition = this->getPosition();
+
+        if( mt::equal_f_f( currentPosition, _position ) == true )
+        {
+            this->endMutableState_();
+
+            return true;
+        }
+
         float position = _position;
 
         if( position < 0.f )
@@ -361,52 +389,47 @@ namespace Mengine
             position = 0.f;
         }
 
+        float total = soundBuffer->getTimeDuration();
+
+        if( position > total )
+        {
+            LOGGER_ASSERTION( "pos %f total %f"
+                , position
+                , total
+            );
+
+            this->endMutableState_();
+
+            return false;
+        }
+
         uint32_t totalFrames = soundBuffer->getFrameCount();
 
         if( totalFrames != 0 )
         {
-            if( m_playing.load() == true || m_pausing.load() == true )
-            {
-                float total = soundBuffer->getTimeDuration();
-
-                if( position > total )
-                {
-                    LOGGER_ASSERTION( "pos %f total %f"
-                        , position
-                        , total
-                    );
-
-                    return false;
-                }
-            }
-
             uint32_t frequency = soundBuffer->getFrequency();
-            uint32_t positionFrame = (uint32_t)(position * (float)frequency / 1000.f);
+            uint32_t positionFrame;
 
-            if( positionFrame > totalFrames )
+            if( total > 0.f && position >= total )
             {
                 positionFrame = totalFrames;
             }
+            else
+            {
+                positionFrame = (uint32_t)(position * (float)frequency / 1000.f);
+
+                if( positionFrame > totalFrames )
+                {
+                    positionFrame = totalFrames;
+                }
+            }
 
             m_framePosition = positionFrame;
-            m_finished = false;
+            m_finished = m_loop.load() == false && total > 0.f && position >= total;
+
+            this->endMutableState_();
 
             return true;
-        }
-
-        if( m_playing.load() == true || m_pausing.load() == true )
-        {
-            float total = soundBuffer->getTimeDuration();
-
-            if( position > total )
-            {
-                LOGGER_ASSERTION( "pos %f total %f"
-                    , position
-                    , total
-                );
-
-                return false;
-            }
         }
 
         if( soundBuffer->setTimePosition( position ) == false )
@@ -416,10 +439,14 @@ namespace Mengine
                 , m_playing.load()
             );
 
+            this->endMutableState_();
+
             return false;
         }
 
-        m_finished = false;
+        m_finished = m_loop.load() == false && total > 0.f && position >= total;
+
+        this->endMutableState_();
 
         return true;
     }
@@ -500,8 +527,15 @@ namespace Mengine
             return;
         }
 
+        if( this->tryEnterRender_() == false )
+        {
+            return;
+        }
+
         if( m_playing.load() == false || m_pausing.load() == true )
         {
+            this->leaveRender_();
+
             return;
         }
 
@@ -509,6 +543,8 @@ namespace Mengine
 
         if( soundBuffer == nullptr )
         {
+            this->leaveRender_();
+
             return;
         }
 
@@ -521,10 +557,12 @@ namespace Mengine
 
         uint32_t totalFrames = soundBuffer->getFrameCount();
 
-        if( totalFrames != 0 && renderedFrames < _frames && m_loop.load() == false )
+        if( renderedFrames < _frames && m_loop.load() == false && (totalFrames != 0 || soundBuffer->isEndOfStream() == true) )
         {
             m_finished = true;
         }
+
+        this->leaveRender_();
     }
     //////////////////////////////////////////////////////////////////////////
     void WASAPISoundSource::unloadBuffer_()
@@ -599,6 +637,46 @@ namespace Mengine
         m_busIndex = INVALID_BUS_INDEX;
 
         return busIndex;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void WASAPISoundSource::beginMutableState_()
+    {
+        m_renderBarrier = true;
+
+        while( m_activeRenders.load() != 0 )
+        {
+            StdThread::yield();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void WASAPISoundSource::endMutableState_()
+    {
+        m_renderBarrier = false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool WASAPISoundSource::tryEnterRender_()
+    {
+        for( ;; )
+        {
+            if( m_renderBarrier.load() == true )
+            {
+                return false;
+            }
+
+            m_activeRenders.fetch_add( 1 );
+
+            if( m_renderBarrier.load() == false )
+            {
+                return true;
+            }
+
+            m_activeRenders.fetch_sub( 1 );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void WASAPISoundSource::leaveRender_()
+    {
+        m_activeRenders.fetch_sub( 1 );
     }
     //////////////////////////////////////////////////////////////////////////
 }

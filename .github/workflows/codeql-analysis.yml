@@ -1,0 +1,56 @@
+name: CodeQL Unix
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "src/**"
+      - "cmake/**"
+      - "build/unix/**"
+      - "build/downloads/**"
+      - ".github/workflows/codeql-analysis.yml"
+  pull_request:
+    branches: [master]
+  schedule:
+    - cron: "32 22 * * 6"
+
+jobs:
+  analyze:
+    name: Analyze native Unix
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    env:
+      CMAKE_BUILD_PARALLEL_LEVEL: 4
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install Unix build prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes build-essential cmake git pkg-config python3-jinja2 libx11-dev libgl1-mesa-dev libasound2-dev libssl-dev
+
+      - name: Download dependencies
+        run: bash build/downloads/downloads_unix.bash
+
+      - name: Build dependencies
+        run: bash build/unix/build_depends_unix_debug.bash
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: c-cpp
+          build-mode: manual
+
+      - name: Build native Unix target
+        run: bash build/unix/build_solution_unix_debug.bash
+
+      - name: Perform CodeQL analysis
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: /language:c-cpp

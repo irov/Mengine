@@ -277,7 +277,7 @@ namespace Mengine
         case GL_ETC1_RGB8_OES:
         case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
         case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
-#if defined(MENGINE_PLATFORM_WINDOWS)
+#if defined(MENGINE_RENDER_OPENGL_NORMAL_LINUX)
         case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
 #endif
             {

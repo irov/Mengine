@@ -156,13 +156,13 @@ namespace Mengine
             case PF_R8G8B8:
                 return GL_RGB;
             case PF_A8:
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
+#if defined(MENGINE_RENDER_OPENGL_NORMAL)
                 return GL_R8;
 #else
                 return GL_ALPHA;
 #endif
             case PF_L8:
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
+#if defined(MENGINE_RENDER_OPENGL_NORMAL)
                 return GL_R8;
 #else
                 return GL_LUMINANCE;
@@ -173,8 +173,13 @@ namespace Mengine
                 return GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG;
             case PF_PVRTC4_RGBA:
                 return GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG;
-#if defined(MENGINE_PLATFORM_WINDOWS)
+#if defined(MENGINE_RENDER_OPENGL_NORMAL_LINUX)
             case PF_DXT1:
+                if( Mengine::isGLTextureCompressionS3TCSupported() == false )
+                {
+                    return 0;
+                }
+
                 return GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
 #endif
             default:;
@@ -193,7 +198,7 @@ namespace Mengine
             case PF_A8R8G8B8:
                 return GL_RGBA;
             case PF_A8:
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
+#if defined(MENGINE_RENDER_OPENGL_NORMAL)
                 return GL_RED;
 #else
                 return GL_ALPHA;
@@ -205,8 +210,13 @@ namespace Mengine
                 return GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG;
             case PF_PVRTC4_RGBA:
                 return GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG;
-#if defined(MENGINE_PLATFORM_WINDOWS)
+#if defined(MENGINE_RENDER_OPENGL_NORMAL_LINUX)
             case PF_DXT1:
+                if( Mengine::isGLTextureCompressionS3TCSupported() == false )
+                {
+                    return 0;
+                }
+
                 return GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
 #endif
             default:;

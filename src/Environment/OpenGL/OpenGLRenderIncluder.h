@@ -34,7 +34,14 @@
 #elif defined(MENGINE_PLATFORM_WINDOWS)
 #   error "OpenGL not supported"
 #elif defined(MENGINE_PLATFORM_LINUX)
-#   error "OpenGL not supported"
+#   if !defined(MENGINE_ENVIRONMENT_PLATFORM_UNIX)
+#       error "OpenGL not supported"
+#   endif
+
+#   include <glad/gl.h>
+
+#   define MENGINE_RENDER_OPENGL_NORMAL
+#   define MENGINE_RENDER_OPENGL_NORMAL_LINUX
 #elif defined(MENGINE_PLATFORM_MACOS)
 #   if !defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
 #       error "OpenGL not supported"

@@ -1,8 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-CONFIGURATION=$1
+set -euo pipefail
 
-mkdir -p ../../solutions/solution_unix/$CONFIGURATION
-pushd ../../solutions/solution_unix/$CONFIGURATION
-cmake -G "Unix Makefiles" -S "%CD%/../../../cmake/Unix" -DCMAKE_BUILD_TYPE:STRING=$CONFIGURATION -DCMAKE_CONFIGURATION_TYPES:STRING=$CONFIGURATION
-popd
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+
+exec /bin/bash "${SCRIPT_DIR}/make_solution.bash" Debug

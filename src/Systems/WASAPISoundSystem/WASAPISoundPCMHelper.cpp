@@ -43,14 +43,22 @@ namespace Mengine
                 return (float)(accumulator / (int32_t)_sourceChannels) / 32768.f;
             }
 
-            uint32_t sourceChannel = _destinationChannel;
-
-            if( sourceChannel >= _sourceChannels )
+            if( _sourceChannels == 1 )
             {
-                sourceChannel = _sourceChannels - 1;
+                if( _destinationChannels > 2 && _destinationChannel >= 2 )
+                {
+                    return 0.f;
+                }
+
+                return (float)_srcFrame[0] / 32768.f;
             }
 
-            return (float)_srcFrame[sourceChannel] / 32768.f;
+            if( _destinationChannel >= _sourceChannels )
+            {
+                return 0.f;
+            }
+
+            return (float)_srcFrame[_destinationChannel] / 32768.f;
         }
         //////////////////////////////////////////////////////////////////////////
         int16_t interpolateWASAPISoundPCM16Sample( const int16_t * _frame0, const int16_t * _frame1, uint32_t _channels, uint32_t _channel, float _alpha )

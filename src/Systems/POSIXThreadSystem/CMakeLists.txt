@@ -19,3 +19,10 @@ src
 )
 
 ADD_MENGINE_LIBRARY(Systems)
+
+find_package(Threads REQUIRED)
+target_link_libraries(${PROJECT_NAME} Threads::Threads)
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    target_compile_definitions(${PROJECT_NAME} PRIVATE _GNU_SOURCE)
+endif()

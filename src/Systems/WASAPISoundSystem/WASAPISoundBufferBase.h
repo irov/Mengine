@@ -32,6 +32,7 @@ namespace Mengine
         virtual void stopSource() = 0;
         virtual void pauseSource() = 0;
         virtual void resumeSource() = 0;
+        virtual bool setLoopSource( bool _looped ) = 0;
 
     public:
         virtual bool setTimePosition( float _position ) = 0;
@@ -45,6 +46,7 @@ namespace Mengine
 
     public:
         virtual uint32_t getFrameCount() const;
+        virtual bool isEndOfStream() const;
 
     public:
         void setOutputFrequency( uint32_t _frequency );

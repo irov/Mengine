@@ -1507,13 +1507,10 @@ namespace Mengine
 
                 ESettingType type = _setting->getValueType( _key );
 
-                if( type == EST_NONE )
-                {
-                    return;
-                }
-
                 switch( type )
                 {
+                case EST_NONE:
+                    return;
                 case EST_BOOL:
                     {
                         xml_key.append_attribute( "type" ).set_value( "bool" );
@@ -2395,6 +2392,8 @@ namespace Mengine
 
         switch( type )
         {
+        case EST_NONE:
+            return;
         case EST_BOOL:
             {
                 bool value;

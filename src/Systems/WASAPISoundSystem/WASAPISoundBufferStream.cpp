@@ -75,7 +75,15 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid create stream memory" );
 
+        uint32_t frameSize = this->getFrameSize();
+
+        if( frameSize == 0 )
+        {
+            return false;
+        }
+
         size_t totalSize = MENGINE_WASAPI_STREAM_BUFFER_SIZE * MENGINE_WASAPI_STREAM_BUFFER_COUNT;
+        totalSize -= totalSize % frameSize;
         memory->newBuffer( totalSize );
 
         m_memory = memory;
@@ -87,11 +95,13 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( decodeMemory, "invalid create decode memory" );
 
-        decodeMemory->newBuffer( MENGINE_WASAPI_STREAM_DECODE_BUFFER_SIZE );
+        size_t decodeBufferSize = MENGINE_WASAPI_STREAM_DECODE_BUFFER_SIZE;
+        decodeBufferSize -= decodeBufferSize % frameSize;
+        decodeMemory->newBuffer( decodeBufferSize );
 
         m_memoryDecode = decodeMemory;
         m_decodeBuffer = m_memoryDecode->getBuffer();
-        m_decodeBufferSize = MENGINE_WASAPI_STREAM_DECODE_BUFFER_SIZE;
+        m_decodeBufferSize = decodeBufferSize;
 
         return true;
     }
@@ -141,11 +151,21 @@ namespace Mengine
         m_channels = dataInfo->channels;
         m_duration = dataInfo->duration;
 
-        if( m_channels == 0 || m_sourceFrequency == 0 )
+        if( m_channels == 0 || m_channels > 2 || m_sourceFrequency == 0 || dataInfo->bits != 2 )
         {
-            LOGGER_ERROR( "invalid stream format frequency: %u channels: %u"
+            LOGGER_ERROR( "invalid PCM16 stream format frequency: %u channels: %u sample bytes: %u"
                 , m_sourceFrequency
                 , m_channels
+                , dataInfo->bits
+            );
+
+            return false;
+        }
+
+        if( dataInfo->size < (size_t)m_channels * 2 )
+        {
+            LOGGER_ERROR( "invalid stream data size: %zu"
+                , dataInfo->size
             );
 
             return false;
@@ -164,7 +184,7 @@ namespace Mengine
     {
         this->beginMutableState_();
 
-        if( _position > m_duration )
+        if( _position < 0.f || _position > m_duration )
         {
             LOGGER_ASSERTION( "pos %f > length %f"
                 , _position
@@ -181,34 +201,15 @@ namespace Mengine
 
             m_looped = _looped;
             m_updating = false;
-            m_finished = false;
-
-            this->resetRingBuffer_();
 
             MENGINE_THREAD_MUTEX_SCOPE( m_mutexDecoder );
 
-            this->resetDecodeBuffer_();
-
-            if( m_soundDecoder->seek( _position ) == false )
-            {
-                LOGGER_ASSERTION( "invalid seek '%f'"
-                    , _position
-                );
-
-                this->endMutableState_();
-
-                return false;
-            }
-
-            if( this->prebuffer_() == false )
+            if( this->seekPosition_( _position ) == false )
             {
                 this->endMutableState_();
 
                 return false;
             }
-
-            uint32_t bytesPerSecond = m_frequency * m_channels * 2;
-            m_playPositionBytes.store( (uint32_t)(_position / 1000.f * (float)bytesPerSecond) );
         }
 
         m_updating = true;
@@ -250,36 +251,98 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool WASAPISoundBufferStream::setTimePosition( float _position )
     {
+        if( _position < 0.f || _position > m_duration )
+        {
+            return false;
+        }
+
         this->beginMutableState_();
 
-        MENGINE_THREAD_MUTEX_SCOPE( m_mutexUpdating );
-        MENGINE_THREAD_MUTEX_SCOPE( m_mutexDecoder );
-
-        if( m_soundDecoder->seek( _position ) == false )
         {
-            this->endMutableState_();
+            MENGINE_THREAD_MUTEX_SCOPE( m_mutexUpdating );
+            MENGINE_THREAD_MUTEX_SCOPE( m_mutexDecoder );
 
-            return false;
+            if( this->seekPosition_( _position ) == false )
+            {
+                this->endMutableState_();
+
+                return false;
+            }
         }
-
-        this->resetRingBuffer_();
-        this->resetDecodeBuffer_();
-
-        m_finished = false;
-
-        if( this->prebuffer_() == false )
-        {
-            this->endMutableState_();
-
-            return false;
-        }
-
-        uint32_t bytesPerSecond = m_frequency * m_channels * 2;
-        m_playPositionBytes.store( (uint32_t)(_position / 1000.f * (float)bytesPerSecond) );
 
         this->endMutableState_();
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool WASAPISoundBufferStream::setLoopSource( bool _looped )
+    {
+        if( m_mutexUpdating == nullptr || m_mutexDecoder == nullptr )
+        {
+            m_looped = _looped;
+
+            return true;
+        }
+
+        this->beginMutableState_();
+
+        bool successful = true;
+
+        {
+            MENGINE_THREAD_MUTEX_SCOPE( m_mutexUpdating );
+            MENGINE_THREAD_MUTEX_SCOPE( m_mutexDecoder );
+
+            bool previousLooped = m_looped.exchange( _looped );
+
+            if( previousLooped == true && _looped == false && m_duration > 0.f )
+            {
+                uint32_t bytesPerSecond = m_frequency * m_channels * 2;
+                uint64_t playPositionBytes = m_playPositionBytes.load();
+                float position = (float)((double)playPositionBytes * 1000.0 / (double)bytesPerSecond);
+                position = StdMath::fmodf( position, m_duration );
+
+                if( this->seekPosition_( position ) == false )
+                {
+                    m_looped = previousLooped;
+                    successful = false;
+
+                    LOGGER_ERROR( "failed to disable stream loop at position %f"
+                        , position
+                    );
+                }
+            }
+            else if( previousLooped == false && _looped == true && m_decodeEOF == true )
+            {
+                bool previousFinished = m_finished.load();
+
+                if( m_soundDecoder->rewind() == false )
+                {
+                    m_looped = previousLooped;
+                    successful = false;
+
+                    LOGGER_ERROR( "failed to rewind stream after enabling loop" );
+                }
+                else
+                {
+                    m_decodeEOF = false;
+                    m_finished = false;
+
+                    if( this->prebuffer_() == false )
+                    {
+                        m_looped = previousLooped;
+                        m_decodeEOF = true;
+                        m_finished = previousFinished;
+                        successful = false;
+
+                        LOGGER_ERROR( "failed to prebuffer stream after enabling loop" );
+                    }
+                }
+            }
+        }
+
+        this->endMutableState_();
+
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
     bool WASAPISoundBufferStream::getTimePosition( float * const _position ) const
@@ -293,8 +356,8 @@ namespace Mengine
             return true;
         }
 
-        uint32_t absBytes = m_playPositionBytes.load();
-        float position = (float)absBytes * 1000.f / (float)bytesPerSecond;
+        uint64_t absBytes = m_playPositionBytes.load();
+        float position = (float)((double)absBytes * 1000.0 / (double)bytesPerSecond);
 
         if( m_looped.load() == true && m_duration > 0.f )
         {
@@ -326,12 +389,19 @@ namespace Mengine
             return false;
         }
 
+        // Keep the worker alive until SoundService stops the source. This lets a
+        // non-looping stream be switched back to looping after reaching EOF.
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool WASAPISoundBufferStream::isEndOfStream() const
+    {
         if( m_finished.load() == true && m_availableBytes.load() == 0 )
         {
-            return false;
+            return true;
         }
 
-        return true;
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void WASAPISoundBufferStream::setVolume( float _gain )
@@ -475,6 +545,55 @@ namespace Mengine
             }
         }
 
+        bool decodeDrained = m_decodeEOF == true && (uint32_t)m_decodeCursor >= m_decodeFrames;
+        m_finished = decodeDrained;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool WASAPISoundBufferStream::seekPosition_( float _position )
+    {
+        float position = _position;
+
+        if( m_looped.load() == true && m_duration > 0.f && position >= m_duration )
+        {
+            position = 0.f;
+        }
+
+        uint32_t bytesPerSecond = m_frequency * m_channels * 2;
+
+        if( m_looped.load() == false && m_duration > 0.f && position >= m_duration )
+        {
+            this->resetRingBuffer_();
+            this->resetDecodeBuffer_();
+
+            m_decodeEOF = true;
+            m_finished = true;
+            m_playPositionBytes.store( (uint64_t)((double)m_duration / 1000.0 * (double)bytesPerSecond) );
+
+            return true;
+        }
+
+        if( m_soundDecoder->seek( position ) == false )
+        {
+            LOGGER_ASSERTION( "invalid seek '%f'"
+                , position
+            );
+
+            return false;
+        }
+
+        this->resetRingBuffer_();
+        this->resetDecodeBuffer_();
+        m_finished = false;
+
+        if( this->prebuffer_() == false )
+        {
+            return false;
+        }
+
+        m_playPositionBytes.store( (uint64_t)((double)position / 1000.0 * (double)bytesPerSecond) );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -544,6 +663,13 @@ namespace Mengine
 
         uint32_t frameSize = this->getFrameSize();
         uint32_t baseFrame = (uint32_t)m_decodeCursor;
+        uint32_t availableFrames = m_decodeFrames > baseFrame ? m_decodeFrames - baseFrame : 0;
+
+        if( availableFrames >= _requiredFrames )
+        {
+            return true;
+        }
+
         double fraction = m_decodeCursor - (double)baseFrame;
 
         if( baseFrame != 0 )
@@ -585,7 +711,6 @@ namespace Mengine
                     if( rewindAfterEmpty == true )
                     {
                         m_decodeEOF = true;
-                        m_finished = true;
 
                         break;
                     }
@@ -601,7 +726,6 @@ namespace Mengine
                 }
 
                 m_decodeEOF = true;
-                m_finished = true;
 
                 break;
             }
@@ -622,15 +746,19 @@ namespace Mengine
                 }
 
                 m_decodeEOF = true;
-                m_finished = true;
 
                 break;
             }
         }
 
-        uint32_t availableFrames = m_decodeFrames - (uint32_t)m_decodeCursor;
+        availableFrames = m_decodeFrames - (uint32_t)m_decodeCursor;
 
-        return availableFrames >= _requiredFrames;
+        if( availableFrames >= _requiredFrames )
+        {
+            return true;
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void WASAPISoundBufferStream::resetRingBuffer_()

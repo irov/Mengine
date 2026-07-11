@@ -31,6 +31,10 @@
 #include "Environment/OpenGL/OpenGLRenderImageExtensionInterface.h"
 #endif
 
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_UNIX)
+#include "ImGUIUnixPlatform.h"
+#endif
+
 #include "Config/UInt32ToPointer.h"
 
 #include "imgui.h"
@@ -43,7 +47,7 @@
 #include "ImGUIDX9Render.h"
 #endif
 
-#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && (defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS) || defined(MENGINE_ENVIRONMENT_PLATFORM_IOS))
+#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && (defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS) || defined(MENGINE_ENVIRONMENT_PLATFORM_IOS) || defined(MENGINE_ENVIRONMENT_PLATFORM_UNIX))
 #include "ImGUIOpenGL3Render.h"
 #elif defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
 #include "ImGUIOpenGL2Render.h"
@@ -91,7 +95,7 @@ namespace Mengine
         MengineImGUIDX9Render_NewFrame();
 #endif
 
-#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && (defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS) || defined(MENGINE_ENVIRONMENT_PLATFORM_IOS))
+#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && (defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS) || defined(MENGINE_ENVIRONMENT_PLATFORM_IOS) || defined(MENGINE_ENVIRONMENT_PLATFORM_UNIX))
         MengineImGUIOpenGL3Render_NewFrame();
 #elif defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
         MengineImGUIOpenGL2Render_NewFrame();
@@ -117,6 +121,10 @@ namespace Mengine
         [MengineImGUIiOSPlatform newFrameWithView:iosPlatform->getUIView()];
 #endif
 
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_UNIX)
+        MengineImGUIUnixPlatform_NewFrame();
+#endif
+
         ImGui::NewFrame();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -134,7 +142,7 @@ namespace Mengine
         MengineImGUIDX9Render_RenderDrawData( imData );
 #endif
 
-#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && (defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS) || defined(MENGINE_ENVIRONMENT_PLATFORM_IOS))
+#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && (defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS) || defined(MENGINE_ENVIRONMENT_PLATFORM_IOS) || defined(MENGINE_ENVIRONMENT_PLATFORM_UNIX))
         MengineImGUIOpenGL3Render_RenderDrawData( imData );
 #elif defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
         MengineImGUIOpenGL2Render_RenderDrawData( imData );

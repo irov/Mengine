@@ -171,7 +171,12 @@ namespace Mengine
         m_windowViewport = Viewport( mt::vec2f::identity(), windowSize );
 
 #if defined(MENGINE_RENDER_OPENGL_NORMAL)
-        Mengine::initialize_GLEXT();
+        if( Mengine::initialize_GLEXT() == false )
+        {
+            LOGGER_ERROR( "failed to initialize OpenGL 3.3 functions" );
+
+            return false;
+        }
 #endif
 
         const Char * versionStr = reinterpret_cast<const Char *>(glGetString( GL_VERSION ));

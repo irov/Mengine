@@ -88,17 +88,27 @@ namespace Mengine
         m_channels = dataInfo->channels;
         m_duration = dataInfo->duration;
 
-        if( m_channels == 0 || m_sourceFrequency == 0 )
+        if( m_channels == 0 || m_channels > 2 || m_sourceFrequency == 0 || dataInfo->bits != 2 )
         {
-            LOGGER_WARNING( "invalid sound format frequency: %u channels: %u"
+            LOGGER_WARNING( "invalid PCM16 sound format frequency: %u channels: %u sample bytes: %u"
                 , m_sourceFrequency
                 , m_channels
+                , dataInfo->bits
             );
 
             return false;
         }
 
         size_t size = dataInfo->size;
+
+        if( size < (size_t)m_channels * 2 )
+        {
+            LOGGER_WARNING( "invalid sound data size: %zu"
+                , size
+            );
+
+            return false;
+        }
 
         MemoryInterfacePtr sourceMemory = Helper::createMemoryCacheBuffer( size, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -195,6 +205,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void WASAPISoundBufferMemory::resumeSource()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool WASAPISoundBufferMemory::setLoopSource( bool _looped )
+    {
+        MENGINE_UNUSED( _looped );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool WASAPISoundBufferMemory::setTimePosition( float _position )

@@ -22,7 +22,9 @@ namespace Mengine
         , m_hwHeightInv( 0.f )
         , m_hwPixelFormat( PF_UNKNOWN )
         , m_texture( nil )
+        , m_depthStencilTexture( nil )
         , m_frameContext( nullptr )
+        , m_lastFrameId( MENGINE_UINT64_C(~0) )
         , m_pow2( false )
         , m_upscalePow2( false )
     {
@@ -31,6 +33,7 @@ namespace Mengine
     MetalRenderTargetTexture::~MetalRenderTargetTexture()
     {
         MENGINE_ASSERTION_FATAL( m_texture == nil, "texture is not released" );
+        MENGINE_ASSERTION_FATAL( m_depthStencilTexture == nil, "depth stencil texture is not released" );
     }
     //////////////////////////////////////////////////////////////////////////
     bool MetalRenderTargetTexture::initialize( uint32_t _width, uint32_t _height, EPixelFormat _pixelFormat )
@@ -51,7 +54,7 @@ namespace Mengine
         float u = float( m_width ) / float( m_hwWidth );
         float v = float( m_height ) / float( m_hwHeight );
 
-        mt::uv4_from_mask( &m_uv, mt::vec4f( 0.f, v, u, 0.f ) );
+        mt::uv4_from_mask( &m_uv, mt::vec4f( 0.f, 0.f, u, v ) );
 
         m_pow2 = Helper::isTexturePow2( _width ) == true && Helper::isTexturePow2( _height ) == true;
         m_upscalePow2 = _width != m_hwWidth || _height != m_hwHeight;
@@ -101,6 +104,31 @@ namespace Mengine
 
         m_texture = texture;
 
+        MTLTextureDescriptor * depthStencilDescriptor = [[MTLTextureDescriptor alloc] init];
+        depthStencilDescriptor.textureType = MTLTextureType2D;
+        depthStencilDescriptor.pixelFormat = MTLPixelFormatDepth32Float_Stencil8;
+        depthStencilDescriptor.width = m_hwWidth;
+        depthStencilDescriptor.height = m_hwHeight;
+        depthStencilDescriptor.mipmapLevelCount = 1;
+        depthStencilDescriptor.usage = MTLTextureUsageRenderTarget;
+        depthStencilDescriptor.storageMode = MTLStorageModePrivate;
+
+        id<MTLTexture> depthStencilTexture = [m_device newTextureWithDescriptor:depthStencilDescriptor];
+
+        if( depthStencilTexture == nil )
+        {
+            LOGGER_ERROR( "invalid create render target depth stencil texture size %u:%u"
+                , m_hwWidth
+                , m_hwHeight
+            );
+
+            m_texture = nil;
+
+            return false;
+        }
+
+        m_depthStencilTexture = depthStencilTexture;
+
         STATISTIC_ADD_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE, m_hwWidth * m_hwHeight * Helper::getPixelFormatChannels( m_hwPixelFormat ) );
 
         return true;
@@ -116,6 +144,7 @@ namespace Mengine
         STATISTIC_DEL_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE, m_hwWidth * m_hwHeight * Helper::getPixelFormatChannels( m_hwPixelFormat ) );
 
         m_texture = nil;
+        m_depthStencilTexture = nil;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t MetalRenderTargetTexture::getHWMipmaps() const
@@ -166,11 +195,31 @@ namespace Mengine
             m_frameContext->renderEncoder = nil;
         }
 
+        const bool clear = m_lastFrameId != m_frameContext->frameId;
+        m_lastFrameId = m_frameContext->frameId;
+
+        MTLLoadAction loadAction = MTLLoadActionLoad;
+
+        if( clear == true )
+        {
+            loadAction = MTLLoadActionClear;
+        }
+
         MTLRenderPassDescriptor * desc = [MTLRenderPassDescriptor renderPassDescriptor];
         desc.colorAttachments[0].texture = m_texture;
-        desc.colorAttachments[0].loadAction = MTLLoadActionClear;
+        desc.colorAttachments[0].loadAction = loadAction;
         desc.colorAttachments[0].storeAction = MTLStoreActionStore;
         desc.colorAttachments[0].clearColor = MTLClearColorMake( 0.0, 0.0, 0.0, 0.0 );
+
+        desc.depthAttachment.texture = m_depthStencilTexture;
+        desc.depthAttachment.loadAction = loadAction;
+        desc.depthAttachment.storeAction = MTLStoreActionDontCare;
+        desc.depthAttachment.clearDepth = 1.0;
+
+        desc.stencilAttachment.texture = m_depthStencilTexture;
+        desc.stencilAttachment.loadAction = loadAction;
+        desc.stencilAttachment.storeAction = MTLStoreActionDontCare;
+        desc.stencilAttachment.clearStencil = 0;
 
         m_frameContext->renderEncoder = [m_frameContext->commandBuffer renderCommandEncoderWithDescriptor:desc];
 

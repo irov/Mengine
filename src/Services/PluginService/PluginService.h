@@ -41,6 +41,8 @@ namespace Mengine
     protected:
         bool autoPreRegistration_( const PluginInterfacePtr & _plugin ) const;
         bool autoPostRegistration_( const PluginInterfacePtr & _plugin ) const;
+        void autoUnregisterPlugin_( const PluginInterfacePtr & _plugin ) const;
+        void autoUnregisterPlugins_() const;
 
     protected:
         struct PluginDesc

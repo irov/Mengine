@@ -491,33 +491,36 @@ namespace Mengine
 
         for( ;; )
         {
-            if( this->updatePlatform() == false )
+            @autoreleasepool
             {
-                break;
-            }
+                if( this->updatePlatform() == false )
+                {
+                    break;
+                }
 
-            double currentTime = Helper::getElapsedTime();
+                double currentTime = Helper::getElapsedTime();
 
-            float frameTime = (float)(currentTime - m_prevTime);
+                float frameTime = (float)(currentTime - m_prevTime);
 
-            m_prevTime = currentTime;
+                m_prevTime = currentTime;
 
-            if( m_active == false )
-            {
-                THREAD_SYSTEM()
-                    ->sleep( 100 );
+                if( m_active == false )
+                {
+                    THREAD_SYSTEM()
+                        ->sleep( 100 );
 
-                continue;
-            }
+                    continue;
+                }
 
-            this->tickPlatform( frameTime );
+                this->tickPlatform( frameTime );
 
-            if( this->renderPlatform() == false )
-            {
-                THREAD_SYSTEM()
-                    ->sleep( 100 );
+                if( this->renderPlatform() == false )
+                {
+                    THREAD_SYSTEM()
+                        ->sleep( 100 );
 
-                continue;
+                    continue;
+                }
             }
         }
     }
@@ -840,7 +843,28 @@ namespace Mengine
         }
         else if( _fullscreen == false )
         {
-            NSSize contentSize = NSMakeSize( _resolution.getWidthF(), _resolution.getHeightF() );
+            if( m_metalView != nil )
+            {
+                NSInteger drawableWidth = [m_metalView drawableWidth];
+                NSInteger drawableHeight = [m_metalView drawableHeight];
+
+                if( drawableWidth == (NSInteger)_resolution.getWidth() && drawableHeight == (NSInteger)_resolution.getHeight() )
+                {
+                    return true;
+                }
+            }
+
+            CGFloat width = _resolution.getWidthF();
+            CGFloat height = _resolution.getHeightF();
+            CGFloat scale = [m_window backingScaleFactor];
+
+            if( scale > 0.0 )
+            {
+                width /= scale;
+                height /= scale;
+            }
+
+            NSSize contentSize = NSMakeSize( width, height );
             [m_window setContentSize:contentSize];
             this->updateWindowResolution_();
         }

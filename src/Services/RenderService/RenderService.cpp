@@ -913,6 +913,19 @@ namespace Mengine
         , const RenderProgramVariableInterfacePtr & _programVariable
         , const RenderContext * _context )
     {
+        const RenderTargetInterface * target = _context->target;
+        const bool resetRenderPassStates = target != nullptr || m_currentRenderContext.target != nullptr;
+
+        if( target != nullptr )
+        {
+            if( target->begin() == false )
+            {
+                return false;
+            }
+        }
+
+        m_currentRenderContext.target = target;
+
         if( m_currentRenderVertexBuffer != _vertexBuffer )
         {
             m_currentRenderVertexBuffer = _vertexBuffer;
@@ -932,7 +945,7 @@ namespace Mengine
 
         if( viewport != nullptr )
         {
-            if( m_currentRenderContext.viewport != viewport )
+            if( resetRenderPassStates == true || m_currentRenderContext.viewport != viewport )
             {
                 const Viewport & v = viewport->getViewportWM();
 
@@ -946,7 +959,7 @@ namespace Mengine
         }
         else
         {
-            if( m_currentRenderContext.viewport != nullptr )
+            if( resetRenderPassStates == true || m_currentRenderContext.viewport != nullptr )
             {
                 m_renderSystem->setViewport( m_renderViewport );
 
@@ -1018,7 +1031,7 @@ namespace Mengine
 
         if( scissor != nullptr )
         {
-            if( m_currentRenderContext.scissor != scissor )
+            if( resetRenderPassStates == true || m_currentRenderContext.scissor != scissor )
             {
                 const Viewport & v = scissor->getScissorViewportWM();
 
@@ -1029,7 +1042,7 @@ namespace Mengine
         }
         else
         {
-            if( m_currentRenderContext.scissor != nullptr )
+            if( resetRenderPassStates == true || m_currentRenderContext.scissor != nullptr )
             {
                 m_renderSystem->removeScissor();
 
@@ -1042,16 +1055,6 @@ namespace Mengine
             m_currentRenderProgramVariable = _programVariable;
 
             //ToDo
-        }
-
-        const RenderTargetInterface * target = _context->target;
-
-        if( target != nullptr )
-        {
-            if( target->begin() == false )
-            {
-                return false;
-            }
         }
 
         return true;

@@ -31,6 +31,8 @@ namespace Mengine
                 return "NotFound";
             case ::Figma::EResult::InvalidState:
                 return "InvalidState";
+            case ::Figma::EResult::VersionMismatch:
+                return "VersionMismatch";
             }
 
             return "Unknown";
@@ -83,7 +85,7 @@ namespace Mengine
         runtimeDesc.allocator.userData = nullptr;
 
         ::Figma::RuntimeInterface * runtime = nullptr;
-        ::Figma::EResult createRuntimeResult = ::Figma::createRuntime( runtimeDesc, &runtime );
+        ::Figma::EResult createRuntimeResult = ::Figma::createRuntime( ::Figma::FIGMA_SDK_VERSION, runtimeDesc, &runtime );
 
         if( createRuntimeResult != ::Figma::EResult::Ok )
         {

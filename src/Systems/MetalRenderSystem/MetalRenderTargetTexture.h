@@ -81,8 +81,10 @@ namespace Mengine
         EPixelFormat m_hwPixelFormat;
 
         id<MTLTexture> m_texture;
+        id<MTLTexture> m_depthStencilTexture;
 
         MetalRenderFrameContext * m_frameContext;
+        mutable uint64_t m_lastFrameId;
 
         bool m_pow2;
         bool m_upscalePow2;

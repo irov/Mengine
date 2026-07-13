@@ -3,6 +3,7 @@ MENGINE_PROJECT(FigmaPlugin)
 ADD_FILTER(
 src
     FigmaInterface.h
+    FigmaEventReceiverInterface.h
     FigmaDataInterface.h
 
     FigmaPlugin.h

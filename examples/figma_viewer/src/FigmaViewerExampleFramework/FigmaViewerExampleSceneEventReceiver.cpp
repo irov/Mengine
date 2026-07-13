@@ -21,6 +21,8 @@
 #include "Kernel/NodeCast.h"
 #include "Kernel/VocabularyHelper.h"
 
+#include "Figma/Types.h"
+
 #include "imgui.h"
 
 #include <algorithm>
@@ -48,6 +50,12 @@ namespace Mengine
             uint32_t entryCount;
         };
         //////////////////////////////////////////////////////////////////////////
+        struct FigmaViewerPlaybackRateDesc
+        {
+            const Char * label;
+            float rate;
+        };
+        //////////////////////////////////////////////////////////////////////////
         static const FigmaViewerEntryDesc s_figmaViewerEntries[] = {
             {"Prototype start", "screen", "", 1024.f, 768.f, 1.f},
             {"Screen", "screen", "", 1024.f, 768.f, 1.f},
@@ -64,6 +72,16 @@ namespace Mengine
             {"Meta UI kit", 4, 3},
         };
         //////////////////////////////////////////////////////////////////////////
+        static const FigmaViewerPlaybackRateDesc s_figmaViewerPlaybackRates[] = {
+            {"x1", 1.f},
+            {"x2", 1.f / 2.f},
+            {"x4", 1.f / 4.f},
+            {"x8", 1.f / 8.f},
+            {"x16", 1.f / 16.f},
+            {"x32", 1.f / 32.f},
+            {"x64", 1.f / 64.f},
+        };
+        //////////////////////////////////////////////////////////////////////////
         static uint32_t s_figmaViewerFileCount()
         {
             return sizeof( s_figmaViewerFiles ) / sizeof( s_figmaViewerFiles[0] );
@@ -77,6 +95,16 @@ namespace Mengine
         static const FigmaViewerEntryDesc & s_figmaViewerEntry( const FigmaViewerFileDesc & _file, int32_t _entryIndex )
         {
             return s_figmaViewerEntries[_file.entryOffset + _entryIndex];
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static uint32_t s_figmaViewerPlaybackRateCount()
+        {
+            return sizeof( s_figmaViewerPlaybackRates ) / sizeof( s_figmaViewerPlaybackRates[0] );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static const FigmaViewerPlaybackRateDesc & s_figmaViewerPlaybackRate( int32_t _index )
+        {
+            return s_figmaViewerPlaybackRates[_index];
         }
         //////////////////////////////////////////////////////////////////////////
         static String s_normalizePathString( const Char * _path )
@@ -293,22 +321,19 @@ namespace Mengine
             s_appendSettingValue( _settings, _key, buffer );
         }
         //////////////////////////////////////////////////////////////////////////
-        static float s_calcOutputScale( float _contentWidth, float _contentHeight, float _viewportWidth, float _viewportHeight, float _requestedScale )
+        static float s_calcAutoOutputScale( float _contentWidth, float _contentHeight, float _viewportWidth, float _viewportHeight )
         {
-            constexpr float PreviewHorizontalPadding = 32.f;
-            constexpr float PreviewVerticalPadding = 48.f;
+            constexpr float PreviewFactor = 0.9f;
 
             if( _contentWidth <= 0.f || _contentHeight <= 0.f || _viewportWidth <= 0.f || _viewportHeight <= 0.f )
             {
                 return 1.f;
             }
 
-            const float availableWidth = std::max( 1.f, _contentWidth - PreviewHorizontalPadding * 2.f );
-            const float availableHeight = std::max( 1.f, _contentHeight - PreviewVerticalPadding * 2.f );
-            const float fitScale = std::min( availableWidth / _viewportWidth, availableHeight / _viewportHeight );
-            const float requestedScale = std::max( 0.01f, _requestedScale );
+            const float availableWidth = _contentWidth * PreviewFactor;
+            const float availableHeight = _contentHeight * PreviewFactor;
 
-            return std::min( requestedScale, fitScale );
+            return std::min( availableWidth / _viewportWidth, availableHeight / _viewportHeight );
         }
         //////////////////////////////////////////////////////////////////////////
     }
@@ -320,6 +345,7 @@ namespace Mengine
         , m_autoViewportInput( true )
         , m_fileIndex( 0 )
         , m_entryIndex( 0 )
+        , m_playbackRateIndex( 0 )
     {
         this->syncPathInputs_();
 
@@ -361,6 +387,10 @@ namespace Mengine
     {
         MENGINE_UNUSED( _behavior );
 
+        APPLICATION_SERVICE()->setFixedContentResolution( false );
+        APPLICATION_SERVICE()->setFixedDisplayResolution( false );
+        APPLICATION_SERVICE()->setFixedViewportResolution( false );
+
         ImGUIRenderPtr imguiRender = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ImGUIRender" ), MENGINE_DOCUMENT_FACTORABLE );
 
@@ -394,6 +424,8 @@ namespace Mengine
     void FigmaViewerExampleSceneEventReceiver::renderControls_( const ImGUIRenderProviderInterfacePtr & _provider )
     {
         MENGINE_UNUSED( _provider );
+
+        this->updateFigmaViewport_();
 
         ImGui::SetNextWindowSize( ImVec2( 620.f, 440.f ), ImGuiCond_FirstUseEver );
 
@@ -479,7 +511,43 @@ namespace Mengine
         settingsChanged |= ImGui::Checkbox( "Auto viewport", &m_autoViewportInput );
         settingsChanged |= ImGui::DragFloat2( "Viewport", m_viewportInput, 1.f, 1.f, 4096.f, "%.0f" );
         settingsChanged |= ImGui::DragFloat2( "Offset", m_positionInput, 1.f, -4096.f, 4096.f, "%.0f" );
+        ImGui::BeginDisabled( m_autoViewportInput );
         settingsChanged |= ImGui::SliderFloat( "Scale", &m_scaleInput, 0.1f, 4.f, "%.2f", ImGuiSliderFlags_Logarithmic | ImGuiSliderFlags_NoRoundToFormat );
+        ImGui::EndDisabled();
+
+        const uint32_t playbackRateCount = s_figmaViewerPlaybackRateCount();
+        if( m_playbackRateIndex < 0 || (uint32_t)m_playbackRateIndex >= playbackRateCount )
+        {
+            m_playbackRateIndex = 0;
+            settingsChanged = true;
+        }
+
+        const FigmaViewerPlaybackRateDesc & playbackRate = s_figmaViewerPlaybackRate( m_playbackRateIndex );
+        if( ImGui::BeginCombo( "Slowdown", playbackRate.label ) == true )
+        {
+            for( uint32_t index = 0; index != playbackRateCount; ++index )
+            {
+                const bool selected = m_playbackRateIndex == (int32_t)index;
+
+                if( ImGui::Selectable( s_figmaViewerPlaybackRates[index].label, selected ) == true )
+                {
+                    m_playbackRateIndex = (int32_t)index;
+                    settingsChanged = true;
+
+                    if( m_figmaUnknown != nullptr )
+                    {
+                        m_figmaUnknown->setPlaybackRate( s_figmaViewerPlaybackRates[index].rate );
+                    }
+                }
+
+                if( selected == true )
+                {
+                    ImGui::SetItemDefaultFocus();
+                }
+            }
+
+            ImGui::EndCombo();
+        }
 
         const bool openSelection = ImGui::Button( "Open" );
 
@@ -501,8 +569,27 @@ namespace Mengine
             m_status = "Closed";
         }
 
+        ImGui::SameLine();
+
+        if( ImGui::Button( "Replay" ) == true )
+        {
+            if( m_figmaUnknown == nullptr )
+            {
+                m_status = "Nothing to replay";
+            }
+            else if( m_figmaUnknown->replay() == false )
+            {
+                m_status = "Replay failed";
+            }
+            else
+            {
+                m_status = "Replaying";
+            }
+        }
+
         ImGui::Separator();
 
+        ImGui::Text( "Figma SDK version: %u", ::Figma::FIGMA_SDK_VERSION );
         ImGui::Text( "Status: %s", m_status.c_str() );
         ImGui::Text( "File: %s", m_figPathInput );
         ImGui::Text( "Fonts: %s", m_fontsPathInput[0] != '\0' ? m_fontsPathInput : "default" );
@@ -612,6 +699,11 @@ namespace Mengine
         {
             s_parseSettingFloat( value, &m_scaleInput );
         }
+
+        if( s_findSettingValue( settings, "playback_rate_index", &value ) == true )
+        {
+            s_parseSettingInt32( value, &m_playbackRateIndex );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void FigmaViewerExampleSceneEventReceiver::saveSettings_() const
@@ -636,6 +728,7 @@ namespace Mengine
         s_appendSettingFloat( &settings, "position_x", m_positionInput[0] );
         s_appendSettingFloat( &settings, "position_y", m_positionInput[1] );
         s_appendSettingFloat( &settings, "scale", m_scaleInput );
+        s_appendSettingInt32( &settings, "playback_rate_index", m_playbackRateIndex );
 
         OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( userFileGroup, STRINGIZE_FILEPATH_LOCAL( "figma_viewer.ini" ), true, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -719,30 +812,64 @@ namespace Mengine
         figmaUnknown->setViewportScale( m_scaleInput );
         figmaUnknown->setStartFrameId( m_startFrameIdInput );
         figmaUnknown->setFontSearchPath( m_fontsPathInput );
+        figmaUnknown->setPlaybackRate( s_figmaViewerPlaybackRate( m_playbackRateIndex ).rate );
         figmaUnknown->setResourceFigma( resource );
-
-        TransformationInterface * transformation = figmaNode->getTransformation();
-
-        const Resolution & contentResolution = APPLICATION_SERVICE()
-            ->getContentResolution();
-
-        const float contentWidth = contentResolution.getWidthF();
-        const float contentHeight = contentResolution.getHeightF();
-        const float outputScale = s_calcOutputScale( contentWidth, contentHeight, m_viewportInput[0], m_viewportInput[1], m_scaleInput );
-        const float outputWidth = m_viewportInput[0] * outputScale;
-        const float outputHeight = m_viewportInput[1] * outputScale;
-        const float positionX = (contentWidth - outputWidth) * 0.5f + m_positionInput[0];
-        const float positionY = (contentHeight - outputHeight) * 0.5f + m_positionInput[1];
-
-        transformation->setLocalPosition( mt::vec3f( positionX, positionY, 0.f ) );
-        transformation->setLocalScale( mt::vec3f( outputScale, outputScale, 1.f ) );
 
         m_scene->addChildFront( figmaNode );
 
         m_figmaNode = figmaNode;
         m_figmaResource = resource;
         m_figmaUnknown = figmaUnknown;
+        this->updateFigmaViewport_();
         m_status = "Opened";
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void FigmaViewerExampleSceneEventReceiver::updateFigmaViewport_()
+    {
+        const Resolution & windowResolution = APPLICATION_SERVICE()
+            ->getCurrentWindowResolution();
+
+        const Resolution & currentContentResolution = APPLICATION_SERVICE()
+            ->getContentResolution();
+
+        if( currentContentResolution != windowResolution )
+        {
+            APPLICATION_SERVICE()->setContentResolution( windowResolution );
+        }
+
+        if( m_figmaNode == nullptr || m_figmaUnknown == nullptr )
+        {
+            return;
+        }
+
+        const Resolution & contentResolution = APPLICATION_SERVICE()
+            ->getContentResolution();
+
+        const float contentWidth = contentResolution.getWidthF();
+        const float contentHeight = contentResolution.getHeightF();
+        float outputScale = std::max( 0.01f, m_scaleInput );
+        float positionX = (contentWidth - m_viewportInput[0] * outputScale) * 0.5f;
+        float positionY = (contentHeight - m_viewportInput[1] * outputScale) * 0.5f;
+
+        if( m_autoViewportInput == true )
+        {
+            outputScale = s_calcAutoOutputScale( contentWidth, contentHeight, m_viewportInput[0], m_viewportInput[1] );
+
+            const float outputWidth = m_viewportInput[0] * outputScale;
+            const float outputHeight = m_viewportInput[1] * outputScale;
+
+            positionX = (contentWidth - outputWidth) * 0.5f;
+            positionY = (contentHeight - outputHeight) * 0.5f;
+            m_scaleInput = outputScale;
+        }
+
+        m_figmaUnknown->setViewportSize( mt::vec2f( m_viewportInput[0], m_viewportInput[1] ) );
+        m_figmaUnknown->setViewportScale( outputScale );
+
+        TransformationInterface * transformation = m_figmaNode->getTransformation();
+
+        transformation->setLocalPosition( mt::vec3f( positionX + m_positionInput[0], positionY + m_positionInput[1], 0.f ) );
+        transformation->setLocalScale( mt::vec3f( outputScale, outputScale, 1.f ) );
     }
     //////////////////////////////////////////////////////////////////////////
     bool FigmaViewerExampleSceneEventReceiver::resolveInputPaths_( FileGroupInterfacePtr * const _fileGroup, FileGroupInterfacePtr * const _mountedFileGroup, FilePath * const _figPath )

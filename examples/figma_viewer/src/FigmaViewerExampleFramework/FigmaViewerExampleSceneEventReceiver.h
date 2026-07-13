@@ -37,6 +37,7 @@ namespace Mengine
         void loadSettings_();
         void saveSettings_() const;
         void applySelection_();
+        void updateFigmaViewport_();
         void clearFigma_();
         void clearMountedFileGroup_();
         bool resolveInputPaths_( FileGroupInterfacePtr * const _fileGroup, FileGroupInterfacePtr * const _mountedFileGroup, FilePath * const _figPath );
@@ -62,6 +63,7 @@ namespace Mengine
         bool m_autoViewportInput;
         int32_t m_fileIndex;
         int32_t m_entryIndex;
+        int32_t m_playbackRateIndex;
         String m_status;
     };
     //////////////////////////////////////////////////////////////////////////

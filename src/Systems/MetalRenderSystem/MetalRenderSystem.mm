@@ -72,6 +72,7 @@ namespace Mengine
         , m_depthStencilHeight( 0 )
         , m_currentDrawable( nil )
     {
+        m_frameContext.frameId = 0;
         m_frameContext.commandBuffer = nil;
         m_frameContext.renderEncoder = nil;
         m_frameContext.renderPassDescriptor = nil;
@@ -321,18 +322,18 @@ namespace Mengine
         float ex = (e.x + 1.f) * 0.5f * vs.x;
         float ey = (1.f - (e.y + 1.f) * 0.5f) * vs.y;
 
-        float left = bx;
-        float top = by;
-        float right = ex;
-        float bottom = ey;
+        float left = m_viewport.begin.x + bx;
+        float top = m_viewport.begin.y + by;
+        float right = m_viewport.begin.x + ex;
+        float bottom = m_viewport.begin.y + ey;
 
-        if( left < 0.f ) left = 0.f;
-        if( top < 0.f ) top = 0.f;
+        if( left < m_viewport.begin.x ) left = m_viewport.begin.x;
+        if( top < m_viewport.begin.y ) top = m_viewport.begin.y;
         if( right < left ) right = left;
         if( bottom < top ) bottom = top;
 
-        if( right > vs.x ) right = vs.x;
-        if( bottom > vs.y ) bottom = vs.y;
+        if( right > m_viewport.end.x ) right = m_viewport.end.x;
+        if( bottom > m_viewport.end.y ) bottom = m_viewport.end.y;
 
         float width = right - left;
         float height = bottom - top;
@@ -354,8 +355,8 @@ namespace Mengine
         if( m_frameContext.renderEncoder != nil )
         {
             MTLScissorRect scissorRect;
-            scissorRect.x = 0;
-            scissorRect.y = 0;
+            scissorRect.x = (NSUInteger)m_viewport.begin.x;
+            scissorRect.y = (NSUInteger)m_viewport.begin.y;
             scissorRect.width = (NSUInteger)m_viewport.getWidth();
             scissorRect.height = (NSUInteger)m_viewport.getHeight();
 
@@ -954,6 +955,8 @@ namespace Mengine
         {
             return false;
         }
+
+        ++m_frameContext.frameId;
 
         NSUInteger drawableWidth = [m_frameContext.drawableTexture width];
         NSUInteger drawableHeight = [m_frameContext.drawableTexture height];

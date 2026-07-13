@@ -7,6 +7,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct MetalRenderFrameContext
     {
+        uint64_t frameId;
         id<MTLCommandBuffer> commandBuffer;
         id<MTLRenderCommandEncoder> renderEncoder;
         MTLRenderPassDescriptor * renderPassDescriptor;

@@ -1,9 +1,11 @@
 #include "Figma.h"
 
 #include "Interface/CodecServiceInterface.h"
+#include "Interface/ApplicationInterface.h"
 #include "Interface/FileSystemInterface.h"
 #include "Interface/MemoryServiceInterface.h"
 #include "Interface/RenderMaterialServiceInterface.h"
+#include "Interface/RenderSystemInterface.h"
 #include "Interface/RenderTextureServiceInterface.h"
 #include "Interface/RenderImageInterface.h"
 #include "Interface/RenderImageLockedInterface.h"
@@ -16,8 +18,10 @@
 #include "Kernel/MemoryCopy.h"
 #include "Kernel/MouseButtonCode.h"
 #include "Kernel/PixelFormatHelper.h"
+#include "Kernel/EventableHelper.h"
 
 #include "Config/StdString.h"
+#include "Config/StdIO.h"
 
 #include "freetype/freetype.h"
 
@@ -61,6 +65,18 @@ namespace Mengine
                 {
                     const Viewport & parentViewport = _parent->getScissorViewportWM();
                     m_viewportWM.clamp( parentViewport );
+                }
+
+                if( m_viewportWM.end.x > m_viewportWM.begin.x )
+                {
+                    m_viewportWM.begin.x = std::floor( m_viewportWM.begin.x );
+                    m_viewportWM.end.x = std::ceil( m_viewportWM.end.x );
+                }
+
+                if( m_viewportWM.end.y > m_viewportWM.begin.y )
+                {
+                    m_viewportWM.begin.y = std::floor( m_viewportWM.begin.y );
+                    m_viewportWM.end.y = std::ceil( m_viewportWM.end.y );
                 }
             }
 
@@ -188,6 +204,389 @@ namespace Mengine
             return std::max( 0.f, std::min( 1.f, _value ) );
         }
         //////////////////////////////////////////////////////////////////////////
+        static float linearToSRGB_( float _value )
+        {
+            const float value = Detail::clamp01( _value );
+
+            if( value <= 0.0031308f )
+            {
+                return value * 12.92f;
+            }
+
+            return 1.055f * std::pow( value, 1.f / 2.4f ) - 0.055f;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        struct HsvColor
+        {
+            float h = 0.f;
+            float s = 0.f;
+            float v = 0.f;
+        };
+        //////////////////////////////////////////////////////////////////////////
+        static HsvColor rgbToHsv_( float _red, float _green, float _blue )
+        {
+            const float maxValue = std::max( _red, std::max( _green, _blue ) );
+            const float minValue = std::min( _red, std::min( _green, _blue ) );
+            const float delta = maxValue - minValue;
+
+            HsvColor result;
+            result.v = maxValue;
+            result.s = maxValue > 0.f ? delta / maxValue : 0.f;
+
+            if( delta <= 0.000001f )
+            {
+                return result;
+            }
+
+            if( maxValue == _red )
+            {
+                result.h = (_green - _blue) / delta;
+
+                if( result.h < 0.f )
+                {
+                    result.h += 6.f;
+                }
+            }
+            else if( maxValue == _green )
+            {
+                result.h = 2.f + (_blue - _red) / delta;
+            }
+            else
+            {
+                result.h = 4.f + (_red - _green) / delta;
+            }
+
+            result.h /= 6.f;
+
+            return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void hsvToRgb_( const HsvColor & _hsv, float * const _red, float * const _green, float * const _blue )
+        {
+            if( _hsv.s <= 0.000001f )
+            {
+                *_red = _hsv.v;
+                *_green = _hsv.v;
+                *_blue = _hsv.v;
+                return;
+            }
+
+            const float hue = std::fmod( std::max( 0.f, _hsv.h ), 1.f ) * 6.f;
+            const int32_t sector = static_cast<int32_t>(std::floor( hue ));
+            const float fraction = hue - static_cast<float>(sector);
+            const float p = _hsv.v * (1.f - _hsv.s);
+            const float q = _hsv.v * (1.f - _hsv.s * fraction);
+            const float t = _hsv.v * (1.f - _hsv.s * (1.f - fraction));
+
+            switch( sector )
+            {
+            case 0:
+                *_red = _hsv.v;
+                *_green = t;
+                *_blue = p;
+                break;
+            case 1:
+                *_red = q;
+                *_green = _hsv.v;
+                *_blue = p;
+                break;
+            case 2:
+                *_red = p;
+                *_green = _hsv.v;
+                *_blue = t;
+                break;
+            case 3:
+                *_red = p;
+                *_green = q;
+                *_blue = _hsv.v;
+                break;
+            case 4:
+                *_red = t;
+                *_green = p;
+                *_blue = _hsv.v;
+                break;
+            default:
+                *_red = _hsv.v;
+                *_green = p;
+                *_blue = q;
+                break;
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void applyExposure_( float * const _red, float * const _green, float * const _blue, float _exposure )
+        {
+            if( std::fabs( _exposure ) <= 0.0001f )
+            {
+                return;
+            }
+
+            HsvColor hsv = Detail::rgbToHsv_( *_red, *_green, *_blue );
+            const float value = std::max( -1.f, std::min( 1.f, _exposure ) );
+
+            if( value > 0.f )
+            {
+                const float lift = value * 0.65f;
+                hsv.v = hsv.v + (1.f - hsv.v) * lift;
+                hsv.s *= 1.f - value * 0.22f;
+            }
+            else
+            {
+                hsv.v *= 1.f + value;
+            }
+
+            hsv.v = Detail::clamp01( hsv.v );
+            hsv.s = Detail::clamp01( hsv.s );
+            Detail::hsvToRgb_( hsv, _red, _green, _blue );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void applyBrightness_( float * const _red, float * const _green, float * const _blue, float _brightness )
+        {
+            if( std::fabs( _brightness ) <= 0.0001f )
+            {
+                return;
+            }
+
+            const float value = std::max( -1.f, std::min( 1.f, _brightness ) );
+            *_red = Detail::clamp01( *_red + value );
+            *_green = Detail::clamp01( *_green + value );
+            *_blue = Detail::clamp01( *_blue + value );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void applyContrast_( float * const _red, float * const _green, float * const _blue, float _contrast )
+        {
+            if( std::fabs( _contrast ) <= 0.0001f )
+            {
+                return;
+            }
+
+            const float factor = std::max( 0.f, 1.f + std::max( -1.f, std::min( 1.f, _contrast ) ) );
+            *_red = Detail::clamp01( (*_red - 0.5f) * factor + 0.5f );
+            *_green = Detail::clamp01( (*_green - 0.5f) * factor + 0.5f );
+            *_blue = Detail::clamp01( (*_blue - 0.5f) * factor + 0.5f );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static float applyMaskedLift_( float _component, float _amount, float _mask, float _scale )
+        {
+            const float value = std::max( -1.f, std::min( 1.f, _amount ) ) * _mask * _scale;
+
+            if( value > 0.f )
+            {
+                return Detail::clamp01( _component + (1.f - _component) * value );
+            }
+
+            return Detail::clamp01( _component * (1.f + value) );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void applyShadowsHighlights_( float * const _red, float * const _green, float * const _blue, float _shadows, float _highlights )
+        {
+            if( std::fabs( _shadows ) <= 0.0001f && std::fabs( _highlights ) <= 0.0001f )
+            {
+                return;
+            }
+
+            const float luminance = Detail::clamp01( *_red * 0.2126f + *_green * 0.7152f + *_blue * 0.0722f );
+            const float shadowMask = (1.f - luminance) * (1.f - luminance);
+            const float highlightMask = luminance * luminance;
+
+            *_red = Detail::applyMaskedLift_( *_red, _shadows, shadowMask, 0.82f );
+            *_green = Detail::applyMaskedLift_( *_green, _shadows, shadowMask, 0.82f );
+            *_blue = Detail::applyMaskedLift_( *_blue, _shadows, shadowMask, 0.82f );
+
+            *_red = Detail::applyMaskedLift_( *_red, _highlights, highlightMask, 0.62f );
+            *_green = Detail::applyMaskedLift_( *_green, _highlights, highlightMask, 0.62f );
+            *_blue = Detail::applyMaskedLift_( *_blue, _highlights, highlightMask, 0.62f );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void applyTemperature_( float * const _red, float * const _green, float * const _blue, float _temperature )
+        {
+            if( std::fabs( _temperature ) <= 0.0001f )
+            {
+                return;
+            }
+
+            const float value = std::max( -1.f, std::min( 1.f, _temperature ) );
+            const float amount = std::fabs( value );
+
+            if( value > 0.f )
+            {
+                *_red = Detail::clamp01( *_red + (1.f - *_red) * amount * 0.18f );
+                *_green = Detail::clamp01( *_green + (1.f - *_green) * amount * 0.035f );
+                *_blue = Detail::clamp01( *_blue * (1.f - amount * 0.16f) );
+            }
+            else
+            {
+                *_red = Detail::clamp01( *_red * (1.f - amount * 0.16f) );
+                *_green = Detail::clamp01( *_green + (1.f - *_green) * amount * 0.025f );
+                *_blue = Detail::clamp01( *_blue + (1.f - *_blue) * amount * 0.18f );
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void applyVibrance_( float * const _red, float * const _green, float * const _blue, float _vibrance )
+        {
+            if( std::fabs( _vibrance ) <= 0.0001f )
+            {
+                return;
+            }
+
+            HsvColor hsv = Detail::rgbToHsv_( *_red, *_green, *_blue );
+            const float value = std::max( -1.f, std::min( 1.f, _vibrance ) );
+
+            if( value > 0.f )
+            {
+                const float lowSaturationWeight = 1.f - hsv.s;
+                hsv.s += (1.f - hsv.s) * value * (0.55f + lowSaturationWeight * 0.45f);
+            }
+            else
+            {
+                hsv.s *= 1.f + value;
+            }
+
+            hsv.s = Detail::clamp01( hsv.s );
+            Detail::hsvToRgb_( hsv, _red, _green, _blue );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void applyTint_( float * const _red, float * const _green, float * const _blue, float _tint )
+        {
+            if( std::fabs( _tint ) <= 0.0001f )
+            {
+                return;
+            }
+
+            const float amount = std::min( 1.f, std::fabs( _tint ) ) * 0.18f;
+            const float targetRed = _tint >= 0.f ? 1.f : 0.f;
+            const float targetGreen = _tint >= 0.f ? 0.f : 1.f;
+            const float targetBlue = _tint >= 0.f ? 1.f : 0.f;
+
+            *_red = Detail::clamp01( *_red * (1.f - amount) + targetRed * amount );
+            *_green = Detail::clamp01( *_green * (1.f - amount) + targetGreen * amount );
+            *_blue = Detail::clamp01( *_blue * (1.f - amount) + targetBlue * amount );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static float imageFilterValue_( const ::Figma::RenderBatchDesc & _batch, size_t _filterColorAdjustIndex, size_t _paintFilterIndex )
+        {
+            float value = 0.f;
+
+            if( _batch.hasFilterColorAdjustValue == true && _filterColorAdjustIndex < 8 )
+            {
+                value += _batch.filterColorAdjust[_filterColorAdjustIndex];
+            }
+
+            if( _batch.hasPaintFilterValue == true && _paintFilterIndex < 10 )
+            {
+                value += _batch.paintFilter[_paintFilterIndex];
+            }
+
+            return value;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool hasImageFilter_( const ::Figma::RenderBatchDesc & _batch )
+        {
+            const size_t indices[] = {0, 1, 2, 4, 6, 7};
+
+            for( size_t index : indices )
+            {
+                if( std::fabs( Detail::imageFilterValue_( _batch, index, index ) ) > 0.0001f )
+                {
+                    return true;
+                }
+            }
+
+            if( _batch.hasPaintFilterValue == true )
+            {
+                if( std::fabs( _batch.paintFilter[8] ) > 0.0001f )
+                {
+                    return true;
+                }
+
+                if( std::fabs( _batch.paintFilter[9] ) > 0.0001f )
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void applyImageFilter_( uint8_t * const _pixels, size_t _pitch, uint32_t _width, uint32_t _height, const ::Figma::RenderBatchDesc & _batch )
+        {
+            if( _pixels == nullptr || Detail::hasImageFilter_( _batch ) == false )
+            {
+                return;
+            }
+
+            const float tint = Detail::imageFilterValue_( _batch, 0, 0 );
+            const float shadows = Detail::imageFilterValue_( _batch, 1, 1 );
+            const float highlights = Detail::imageFilterValue_( _batch, 2, 2 );
+            const float exposure = Detail::imageFilterValue_( _batch, 4, 4 );
+            const float temperature = Detail::imageFilterValue_( _batch, 6, 6 );
+            const float vibrance = Detail::imageFilterValue_( _batch, 7, 7 );
+            const float contrast = _batch.hasPaintFilterValue == true ? _batch.paintFilter[8] : 0.f;
+            const float brightness = _batch.hasPaintFilterValue == true ? _batch.paintFilter[9] : 0.f;
+
+            for( uint32_t y = 0; y != _height; ++y )
+            {
+                uint8_t * row = _pixels + _pitch * y;
+
+                for( uint32_t x = 0; x != _width; ++x )
+                {
+                    uint8_t * pixel = row + x * 4;
+                    const float alpha = static_cast<float>(pixel[3]) / 255.f;
+
+                    if( alpha <= 0.f )
+                    {
+                        continue;
+                    }
+
+#if defined(MENGINE_RENDER_TEXTURE_RGBA)
+                    float red = Detail::clamp01( static_cast<float>(pixel[0]) / 255.f / alpha );
+                    float green = Detail::clamp01( static_cast<float>(pixel[1]) / 255.f / alpha );
+                    float blue = Detail::clamp01( static_cast<float>(pixel[2]) / 255.f / alpha );
+#else
+                    float red = Detail::clamp01( static_cast<float>(pixel[2]) / 255.f / alpha );
+                    float green = Detail::clamp01( static_cast<float>(pixel[1]) / 255.f / alpha );
+                    float blue = Detail::clamp01( static_cast<float>(pixel[0]) / 255.f / alpha );
+#endif
+
+                    Detail::applyBrightness_( &red, &green, &blue, brightness );
+                    Detail::applyExposure_( &red, &green, &blue, exposure );
+                    Detail::applyShadowsHighlights_( &red, &green, &blue, shadows, highlights );
+                    Detail::applyContrast_( &red, &green, &blue, contrast );
+                    Detail::applyTemperature_( &red, &green, &blue, temperature );
+                    Detail::applyTint_( &red, &green, &blue, tint );
+                    Detail::applyVibrance_( &red, &green, &blue, vibrance );
+
+#if defined(MENGINE_RENDER_TEXTURE_RGBA)
+                    pixel[0] = static_cast<uint8_t>(std::lround( Detail::clamp01( red * alpha ) * 255.f ));
+                    pixel[1] = static_cast<uint8_t>(std::lround( Detail::clamp01( green * alpha ) * 255.f ));
+                    pixel[2] = static_cast<uint8_t>(std::lround( Detail::clamp01( blue * alpha ) * 255.f ));
+#else
+                    pixel[0] = static_cast<uint8_t>(std::lround( Detail::clamp01( blue * alpha ) * 255.f ));
+                    pixel[1] = static_cast<uint8_t>(std::lround( Detail::clamp01( green * alpha ) * 255.f ));
+                    pixel[2] = static_cast<uint8_t>(std::lround( Detail::clamp01( red * alpha ) * 255.f ));
+#endif
+                }
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void appendImageFilterSignature_( String * const _signature, const ::Figma::RenderBatchDesc & _batch )
+        {
+            Char buffer[512];
+            const int32_t size = MENGINE_SNPRINTF( buffer, 512,
+                "|filter:%u:%.9g:%.9g:%.9g:%.9g:%.9g:%.9g:%.9g:%.9g|paint:%u:%.9g:%.9g:%.9g:%.9g:%.9g:%.9g:%.9g:%.9g:%.9g:%.9g",
+                _batch.hasFilterColorAdjustValue == true ? 1u : 0u,
+                _batch.filterColorAdjust[0], _batch.filterColorAdjust[1], _batch.filterColorAdjust[2], _batch.filterColorAdjust[3],
+                _batch.filterColorAdjust[4], _batch.filterColorAdjust[5], _batch.filterColorAdjust[6], _batch.filterColorAdjust[7],
+                _batch.hasPaintFilterValue == true ? 1u : 0u,
+                _batch.paintFilter[0], _batch.paintFilter[1], _batch.paintFilter[2], _batch.paintFilter[3], _batch.paintFilter[4],
+                _batch.paintFilter[5], _batch.paintFilter[6], _batch.paintFilter[7], _batch.paintFilter[8], _batch.paintFilter[9]
+            );
+
+            if( size > 0 )
+            {
+                _signature->append( buffer, static_cast<size_t>(size) );
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
         static float to26Dot6( FT_Pos _value )
         {
             return static_cast<float>(_value) / 64.f;
@@ -299,9 +698,50 @@ namespace Mengine
                 this->clearFaces_();
             }
 
-            bool makeTextPixels( const ::Figma::RenderListInterface * _renderList, uint32_t _batchIndex, const ::Figma::RenderGeneratedTextureDesc & _desc, float _rasterScale, Vector<uint8_t> * const _pixels, uint32_t * const _width, uint32_t * const _height, String * const _signature )
+            bool makeTextSignature( const ::Figma::RenderListInterface * _renderList, uint32_t _batchIndex, const ::Figma::RenderGeneratedTextureDesc & _desc, float _rasterScale, String * const _signature ) const
             {
-                if( m_library == nullptr || _pixels == nullptr || _width == nullptr || _height == nullptr || _signature == nullptr )
+                if( _renderList == nullptr || _signature == nullptr )
+                {
+                    return false;
+                }
+
+                if( _desc.text.empty() == true || _desc.color.a <= 0.f || _desc.fontSize <= 0.f || _desc.rect.w <= 0.f || _desc.rect.h <= 0.f )
+                {
+                    return false;
+                }
+
+                const float rasterScale = std::max( 1.f, _rasterScale );
+                const uint32_t width = static_cast<uint32_t>(std::ceil( std::max( 1.f, _desc.rect.w ) * rasterScale ));
+                const uint32_t height = static_cast<uint32_t>(std::ceil( std::max( 1.f, _desc.rect.h ) * rasterScale ));
+
+                if( width == 0 || height == 0 )
+                {
+                    return false;
+                }
+
+                Vector<::Figma::RenderGeneratedTextLineDesc> lines;
+                lines.reserve( _desc.textLineCount );
+
+                for( uint32_t lineIndex = 0; lineIndex != _desc.textLineCount; ++lineIndex )
+                {
+                    ::Figma::RenderGeneratedTextLineDesc line;
+
+                    if( _renderList->getGeneratedTextureTextLine( _batchIndex, lineIndex, &line ) != ::Figma::EResult::Ok )
+                    {
+                        return false;
+                    }
+
+                    lines.emplace_back( line );
+                }
+
+                *_signature = this->makeSignature_( _desc, lines, width, height );
+
+                return true;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            bool makeTextPixels( const ::Figma::RenderListInterface * _renderList, uint32_t _batchIndex, const ::Figma::RenderGeneratedTextureDesc & _desc, float _rasterScale, Vector<uint8_t> * const _pixels, uint32_t * const _width, uint32_t * const _height )
+            {
+                if( m_library == nullptr || _pixels == nullptr || _width == nullptr || _height == nullptr )
                 {
                     return false;
                 }
@@ -348,8 +788,6 @@ namespace Mengine
 
                     lines.emplace_back( line );
                 }
-
-                *_signature = this->makeSignature_( _desc, lines, width, height );
 
                 _pixels->assign( width * height * 4, 0 );
 
@@ -997,7 +1435,8 @@ namespace Mengine
                 }
 
                 const uint8_t coverage = this->coverageAt_( _bitmap, _sourceX, _sourceY );
-                const float sourceAlpha = static_cast<float>(coverage) / 255.f * commandAlpha;
+                const float linearCoverage = static_cast<float>(coverage) / 255.f;
+                const float sourceAlpha = Detail::linearToSRGB_( linearCoverage ) * commandAlpha;
 
                 this->blendStraightPixel_( _target, Detail::clamp01( _desc.color.r ), Detail::clamp01( _desc.color.g ), Detail::clamp01( _desc.color.b ), sourceAlpha );
             }
@@ -1105,6 +1544,8 @@ namespace Mengine
                 return "NotFound";
             case ::Figma::EResult::InvalidState:
                 return "InvalidState";
+            case ::Figma::EResult::VersionMismatch:
+                return "VersionMismatch";
             }
 
             return "Unknown";
@@ -1141,6 +1582,33 @@ namespace Mengine
             default:
                 return ::Figma::EPointerButton::Other;
             }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static ::Figma::InputModifierFlags getFigmaInputModifiers( const InputSpecialData & _special )
+        {
+            ::Figma::InputModifierFlags modifiers = ::Figma::EInputModifierFlag::None;
+
+            if( _special.isShift == true )
+            {
+                modifiers |= ::Figma::EInputModifierFlag::Shift;
+            }
+
+            if( _special.isControl == true )
+            {
+                modifiers |= ::Figma::EInputModifierFlag::Control;
+            }
+
+            if( _special.isAlt == true )
+            {
+                modifiers |= ::Figma::EInputModifierFlag::Alt;
+            }
+
+            if( _special.isSpecial == true )
+            {
+                modifiers |= ::Figma::EInputModifierFlag::Command;
+            }
+
+            return modifiers;
         }
         //////////////////////////////////////////////////////////////////////////
         static void transformFigmaVertex( RenderVertex2D * const _vertex, const ::Figma::RenderVertex & _figmaVertex, const mt::mat4f & _wm, const RenderTextureInterfacePtr & _texture, ColorValue_ARGB _color )
@@ -1196,6 +1664,7 @@ namespace Mengine
         : m_player( nullptr )
         , m_viewportSize( 1024.f, 768.f )
         , m_viewportScale( 1.f )
+        , m_playbackRate( 1.f )
         , m_textRasterizer( std::make_unique<Detail::FigmaTextRasterizer>() )
     {
     }
@@ -1238,12 +1707,9 @@ namespace Mengine
             return;
         }
 
-        this->recompile( [this, &_size]()
-        {
-            m_viewportSize = _size;
+        m_viewportSize = _size;
 
-            return true;
-        } );
+        this->updatePlayerViewport_();
     }
     //////////////////////////////////////////////////////////////////////////
     const mt::vec2f & Figma::getViewportSize() const
@@ -1258,17 +1724,43 @@ namespace Mengine
             return;
         }
 
-        this->recompile( [this, _scale]()
-        {
-            m_viewportScale = _scale;
+        m_viewportScale = _scale;
 
-            return true;
-        } );
+        this->clearTextureCache_();
+        this->updatePlayerViewport_();
     }
     //////////////////////////////////////////////////////////////////////////
     float Figma::getViewportScale() const
     {
         return m_viewportScale;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Figma::updatePlayerViewport_()
+    {
+        if( m_player == nullptr )
+        {
+            return true;
+        }
+
+        ::Figma::ViewportDesc viewport;
+        viewport.width = m_viewportSize.x;
+        viewport.height = m_viewportSize.y;
+        viewport.scale = m_viewportScale;
+
+        ::Figma::EResult result = m_player->setViewport( viewport );
+
+        if( result != ::Figma::EResult::Ok )
+        {
+            LOGGER_ERROR( "figma '%s' resource '%s' invalid viewport result '%s'"
+                , this->getName().c_str()
+                , m_resourceFigma->getName().c_str()
+                , Detail::getFigmaResultMessage( result )
+            );
+
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Figma::setStartFrameId( const String & _startFrameId )
@@ -1313,34 +1805,228 @@ namespace Mengine
         return m_fontSearchPath;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Figma::setPlaybackRate( float _playbackRate )
+    {
+        if( _playbackRate <= 0.f )
+        {
+            m_playbackRate = 1.f;
+            return;
+        }
+
+        m_playbackRate = _playbackRate;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float Figma::getPlaybackRate() const
+    {
+        return m_playbackRate;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Figma::replay()
+    {
+        if( m_player == nullptr )
+        {
+            return false;
+        }
+
+        ::Figma::EResult result = m_player->restart();
+
+        if( result != ::Figma::EResult::Ok )
+        {
+            LOGGER_ERROR( "figma '%s' resource '%s' invalid replay result '%s'"
+                , this->getName().c_str()
+                , m_resourceFigma->getName().c_str()
+                , Detail::getFigmaResultMessage( result )
+            );
+
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Figma::inputPointerMove( float _x, float _y )
     {
-        return this->inputPointer_( ::Figma::EPointerEventType::Move, _x, _y, ::Figma::EPointerButton::None );
+        return this->inputPointer_( ::Figma::EPointerEventType::Move, 0, _x, _y, ::Figma::EPointerButton::None, ::Figma::EInputModifierFlag::None, nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Figma::inputPointerDown( float _x, float _y, uint32_t _button )
     {
-        return this->inputPointer_( ::Figma::EPointerEventType::Down, _x, _y, Detail::getFigmaPointerButton( _button ) );
+        return this->inputPointer_( ::Figma::EPointerEventType::Down, 0, _x, _y, Detail::getFigmaPointerButton( _button ), ::Figma::EInputModifierFlag::None, nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Figma::inputPointerUp( float _x, float _y, uint32_t _button )
     {
-        return this->inputPointer_( ::Figma::EPointerEventType::Up, _x, _y, Detail::getFigmaPointerButton( _button ) );
+        return this->inputPointer_( ::Figma::EPointerEventType::Up, 0, _x, _y, Detail::getFigmaPointerButton( _button ), ::Figma::EInputModifierFlag::None, nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Figma::inputPointerCancel( float _x, float _y )
     {
-        return this->inputPointer_( ::Figma::EPointerEventType::Cancel, _x, _y, ::Figma::EPointerButton::None );
+        return this->inputPointer_( ::Figma::EPointerEventType::Cancel, 0, _x, _y, ::Figma::EPointerButton::None, ::Figma::EInputModifierFlag::None, nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Figma::inputKeyDown( uint32_t _keyCode )
     {
-        return this->inputKey_( ::Figma::EKeyEventType::Down, _keyCode );
+        return this->inputKey_( ::Figma::EKeyEventType::Down, _keyCode, ::Figma::EInputModifierFlag::None, nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Figma::inputKeyUp( uint32_t _keyCode )
     {
-        return this->inputKey_( ::Figma::EKeyEventType::Up, _keyCode );
+        return this->inputKey_( ::Figma::EKeyEventType::Up, _keyCode, ::Figma::EInputModifierFlag::None, nullptr );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Figma::setBindingText( const String & _key, const String & _value )
+    {
+        FigmaBindingValue value;
+        value.type = EFigmaBindingValueType::Text;
+        value.stringValue = _value;
+
+        return this->setBindingValue( _key, value );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Figma::setBindingNumber( const String & _key, double _value )
+    {
+        FigmaBindingValue value;
+        value.type = EFigmaBindingValueType::Number;
+        value.numberValue = _value;
+
+        return this->setBindingValue( _key, value );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Figma::setBindingVisible( const String & _key, bool _value )
+    {
+        FigmaBindingValue value;
+        value.type = EFigmaBindingValueType::Boolean;
+        value.boolValue = _value;
+
+        m_bindingValues[_key] = value;
+
+        if( m_player == nullptr )
+        {
+            return true;
+        }
+
+        const ::Figma::EResult result = m_player->setVisible( ::Figma::FigmaStringView( _key.data(), _key.size() ), _value );
+
+        return result == ::Figma::EResult::Ok;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Figma::setBindingEnabled( const String & _key, bool _value )
+    {
+        FigmaBindingValue value;
+        value.type = EFigmaBindingValueType::Boolean;
+        value.boolValue = _value;
+
+        m_bindingValues[_key] = value;
+
+        if( m_player == nullptr )
+        {
+            return true;
+        }
+
+        const ::Figma::EResult result = m_player->setEnabled( ::Figma::FigmaStringView( _key.data(), _key.size() ), _value );
+
+        return result == ::Figma::EResult::Ok;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Figma::setBindingImage( const String & _key, const String & _assetId )
+    {
+        FigmaBindingValue value;
+        value.type = EFigmaBindingValueType::Image;
+        value.stringValue = _assetId;
+
+        return this->setBindingValue( _key, value );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Figma::setBindingState( const String & _key, bool _value )
+    {
+        FigmaBindingValue value;
+        value.type = EFigmaBindingValueType::Boolean;
+        value.boolValue = _value;
+
+        m_bindingValues[_key] = value;
+
+        if( m_player == nullptr )
+        {
+            return true;
+        }
+
+        const ::Figma::EResult result = m_player->setState( ::Figma::FigmaStringView( _key.data(), _key.size() ), _value );
+
+        return result == ::Figma::EResult::Ok;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Figma::setBindingValue( const String & _key, const FigmaBindingValue & _value )
+    {
+        if( _key.empty() == true )
+        {
+            return false;
+        }
+
+        m_bindingValues[_key] = _value;
+
+        return this->applyBindingValue_( _key, _value );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Figma::clearBindingValue( const String & _key )
+    {
+        m_bindingValues.erase( _key );
+
+        if( m_player == nullptr )
+        {
+            return true;
+        }
+
+        const ::Figma::EResult result = m_player->clearBindingValue( ::Figma::FigmaStringView( _key.data(), _key.size() ) );
+
+        return result == ::Figma::EResult::Ok;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Figma::navigateToFrame( const String & _targetFrameId )
+    {
+        if( m_player == nullptr )
+        {
+            return false;
+        }
+
+        const ::Figma::EResult result = m_player->navigateToFrame( ::Figma::FigmaStringView( _targetFrameId.data(), _targetFrameId.size() ) );
+
+        return result == ::Figma::EResult::Ok;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Figma::openOverlay( const String & _targetFrameId )
+    {
+        if( m_player == nullptr )
+        {
+            return false;
+        }
+
+        const ::Figma::EResult result = m_player->openOverlay( ::Figma::FigmaStringView( _targetFrameId.data(), _targetFrameId.size() ) );
+
+        return result == ::Figma::EResult::Ok;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Figma::closeOverlay()
+    {
+        if( m_player == nullptr )
+        {
+            return false;
+        }
+
+        const ::Figma::EResult result = m_player->closeOverlay();
+
+        return result == ::Figma::EResult::Ok;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Figma::goBack()
+    {
+        if( m_player == nullptr )
+        {
+            return false;
+        }
+
+        const ::Figma::EResult result = m_player->goBack();
+
+        return result == ::Figma::EResult::Ok;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Figma::_compile()
@@ -1404,6 +2090,20 @@ namespace Mengine
 
         m_player = player;
 
+        m_player->setActionRouter( this );
+
+        for( const Map<String, FigmaBindingValue>::value_type & binding : m_bindingValues )
+        {
+            if( this->applyBindingValue_( binding.first, binding.second ) == false )
+            {
+                m_player->destroy();
+                m_player = nullptr;
+                m_resourceFigma->release();
+
+                return false;
+            }
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1420,6 +2120,7 @@ namespace Mengine
         m_renderMaterials.clear();
         m_renderScissors.clear();
         this->clearTextureCache_();
+        this->clearRenderLayerTargets_();
 
         if( m_resourceFigma != nullptr )
         {
@@ -1430,8 +2131,37 @@ namespace Mengine
     void Figma::_dispose()
     {
         m_resourceFigma = nullptr;
+        m_bindingValues.clear();
 
         Node::_dispose();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Figma::_activate()
+    {
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Figma::_afterActivate()
+    {
+        if( Node::_afterActivate() == false )
+        {
+            return false;
+        }
+
+        this->setPickerPicked( false );
+        this->setPickerPressed( false );
+        this->setPickerHandle( false );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Figma::_deactivate()
+    {
+        this->setPickerPicked( false );
+        this->setPickerPressed( false );
+        this->setPickerHandle( false );
+
+        Node::_deactivate();
     }
     //////////////////////////////////////////////////////////////////////////
     void Figma::update( const UpdateContext * _context )
@@ -1441,7 +2171,7 @@ namespace Mengine
             return;
         }
 
-        const float dt = _context->time * 0.001f;
+        const float dt = _context->time * 0.001f * m_playbackRate;
 
         ::Figma::EResult result = m_player->update( dt );
 
@@ -1468,6 +2198,110 @@ namespace Mengine
         }
 
         m_textureCache.clear();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Figma::RenderLayerTargetDesc * Figma::ensureRenderLayerTarget_( uint32_t _layerId, uint32_t _width, uint32_t _height, float _contentWidth, float _contentHeight ) const
+    {
+        if( _layerId == 0 || _width == 0 || _height == 0 )
+        {
+            return nullptr;
+        }
+
+        RenderLayerTargetDesc & desc = m_renderLayerTargets[_layerId];
+
+        if( desc.target != nullptr && desc.width == _width && desc.height == _height )
+        {
+            desc.vertices[1].position = mt::vec3f( _contentWidth, 0.f, 0.f );
+            desc.vertices[2].position = mt::vec3f( _contentWidth, _contentHeight, 0.f );
+            desc.vertices[3].position = mt::vec3f( 0.f, _contentHeight, 0.f );
+
+            return &desc;
+        }
+
+        desc.material = nullptr;
+        desc.texture = nullptr;
+        desc.target = nullptr;
+        desc.width = 0;
+        desc.height = 0;
+
+        RenderTargetInterfacePtr target = RENDER_SYSTEM()
+            ->createRenderTargetTexture( _width, _height, PF_B8G8R8A8, MENGINE_DOCUMENT_FACTORABLE );
+
+        if( target == nullptr )
+        {
+            return nullptr;
+        }
+
+        RenderImageInterfacePtr image = RENDER_SYSTEM()
+            ->createRenderImageTarget( target, MENGINE_DOCUMENT_FACTORABLE );
+
+        if( image == nullptr )
+        {
+            return nullptr;
+        }
+
+        RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
+            ->createRenderTexture( image, _width, _height, MENGINE_DOCUMENT_FACTORABLE );
+
+        if( texture == nullptr )
+        {
+            return nullptr;
+        }
+
+        RenderTextureInterfacePtr textures[] = {texture};
+        RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
+            ->getMaterial3( EM_TEXTURE_BLEND_PREMULTIPLY, PT_TRIANGLELIST, textures, 1, MENGINE_DOCUMENT_FACTORABLE );
+
+        if( material == nullptr )
+        {
+            return nullptr;
+        }
+
+        const mt::uv4f & uv = target->getUV();
+        desc.vertices[0].position = mt::vec3f( 0.f, 0.f, 0.f );
+        desc.vertices[1].position = mt::vec3f( _contentWidth, 0.f, 0.f );
+        desc.vertices[2].position = mt::vec3f( _contentWidth, _contentHeight, 0.f );
+        desc.vertices[3].position = mt::vec3f( 0.f, _contentHeight, 0.f );
+        desc.vertices[0].uv[0] = uv.p0;
+        desc.vertices[1].uv[0] = uv.p1;
+        desc.vertices[2].uv[0] = uv.p2;
+        desc.vertices[3].uv[0] = uv.p3;
+
+        for( RenderVertex2D & vertex : desc.vertices )
+        {
+            vertex.uv[1] = mt::vec2f( 0.f, 0.f );
+        }
+
+        desc.target = target;
+        desc.texture = texture;
+        desc.material = material;
+        desc.width = _width;
+        desc.height = _height;
+
+        return &desc;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Figma::clearRenderLayerTargets_() const
+    {
+        m_renderLayerTargets.clear();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Figma::renderLayerTarget_( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, RenderLayerTargetDesc * _target, float _opacity ) const
+    {
+        if( _target == nullptr || _target->material == nullptr || _opacity <= 0.f )
+        {
+            return;
+        }
+
+        const ColorValue_ARGB color = Helper::makeRGBAF( 1.f, 1.f, 1.f, Detail::clamp01( _opacity ) );
+
+        for( RenderVertex2D & vertex : _target->vertices )
+        {
+            vertex.color = color;
+        }
+
+        static const RenderIndex indices[] = {0, 1, 2, 0, 2, 3};
+        _renderPipeline->addRenderObject( _context, _target->material, nullptr, _target->vertices, 4, indices, 6, nullptr, false, MENGINE_DOCUMENT_FORWARD );
     }
     //////////////////////////////////////////////////////////////////////////
     RenderTextureInterfacePtr Figma::createTextureFromPixels_( uint32_t _width, uint32_t _height, const void * _pixels, size_t _pitch ) const
@@ -1683,6 +2517,11 @@ namespace Mengine
             successful = decoder->decode( &data ) != 0;
         }
 
+        if( successful == true )
+        {
+            Detail::applyImageFilter_( static_cast<uint8_t *>(textureMemory), pitch, width, height, _batch );
+        }
+
         image->unlock( locked, 0, successful );
 
         if( successful == false )
@@ -1694,16 +2533,9 @@ namespace Mengine
         return texture;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr Figma::createGeneratedTexture_( const ::Figma::RenderListInterface * _renderList, uint32_t _batchIndex, String * const _signature ) const
+    RenderTextureInterfacePtr Figma::createGeneratedTexture_( const ::Figma::RenderListInterface * _renderList, uint32_t _batchIndex, const ::Figma::RenderGeneratedTextureDesc & _desc ) const
     {
         if( _renderList == nullptr || m_textRasterizer == nullptr )
-        {
-            return nullptr;
-        }
-
-        ::Figma::RenderGeneratedTextureDesc desc;
-
-        if( _renderList->getGeneratedTexture( _batchIndex, &desc ) != ::Figma::EResult::Ok )
         {
             return nullptr;
         }
@@ -1712,7 +2544,7 @@ namespace Mengine
         uint32_t width = 0;
         uint32_t height = 0;
 
-        if( m_textRasterizer->makeTextPixels( _renderList, _batchIndex, desc, m_viewportScale, &pixels, &width, &height, _signature ) == false )
+        if( m_textRasterizer->makeTextPixels( _renderList, _batchIndex, _desc, m_viewportScale, &pixels, &width, &height ) == false )
         {
             return nullptr;
         }
@@ -1746,6 +2578,11 @@ namespace Mengine
 
         cacheKey.append( _batch.textureKey.data(), _batch.textureKey.size() );
 
+        if( _batch.textureType == ::Figma::ERenderTextureType::Asset )
+        {
+            Detail::appendImageFilterSignature_( &cacheKey, _batch );
+        }
+
         Map<String, TextureCacheDesc>::iterator it_found = m_textureCache.find( cacheKey );
 
         if( _batch.textureType == ::Figma::ERenderTextureType::Asset )
@@ -1771,8 +2608,26 @@ namespace Mengine
             return desc.texture;
         }
 
+        ::Figma::RenderGeneratedTextureDesc generatedDesc;
+
+        if( _renderList->getGeneratedTexture( _batchIndex, &generatedDesc ) != ::Figma::EResult::Ok )
+        {
+            return nullptr;
+        }
+
         String signature;
-        RenderTextureInterfacePtr generatedTexture = this->createGeneratedTexture_( _renderList, _batchIndex, &signature );
+
+        if( m_textRasterizer == nullptr || m_textRasterizer->makeTextSignature( _renderList, _batchIndex, generatedDesc, m_viewportScale, &signature ) == false )
+        {
+            return nullptr;
+        }
+
+        if( it_found != m_textureCache.end() && it_found->second.signature == signature )
+        {
+            return it_found->second.texture;
+        }
+
+        RenderTextureInterfacePtr generatedTexture = this->createGeneratedTexture_( _renderList, _batchIndex, generatedDesc );
 
         if( generatedTexture == nullptr )
         {
@@ -1782,12 +2637,6 @@ namespace Mengine
         if( it_found != m_textureCache.end() )
         {
             TextureCacheDesc & cached = it_found->second;
-
-            if( cached.signature == signature )
-            {
-                generatedTexture->release();
-                return cached.texture;
-            }
 
             if( cached.texture != nullptr )
             {
@@ -1847,6 +2696,26 @@ namespace Mengine
         scissorStack.reserve( batchCount );
         scissorStack.emplace_back( _context->scissor );
 
+        uint32_t activeRenderLayerId = 0;
+        float activeRenderLayerOpacity = 1.f;
+        RenderLayerTargetDesc * activeRenderLayerTarget = nullptr;
+
+        auto finishRenderLayer = [&]()
+        {
+            if( activeRenderLayerId == 0 || activeRenderLayerTarget == nullptr )
+            {
+                return;
+            }
+
+            RenderContext layerContext = context;
+            layerContext.target = _context->target;
+            this->renderLayerTarget_( _renderPipeline, &layerContext, activeRenderLayerTarget, activeRenderLayerOpacity );
+
+            activeRenderLayerId = 0;
+            activeRenderLayerOpacity = 1.f;
+            activeRenderLayerTarget = nullptr;
+        };
+
         for( uint32_t batchIndex = 0; batchIndex != batchCount; ++batchIndex )
         {
             ::Figma::RenderBatchDesc batch;
@@ -1855,6 +2724,42 @@ namespace Mengine
             if( result != ::Figma::EResult::Ok )
             {
                 continue;
+            }
+
+            if( batch.renderLayerId != activeRenderLayerId )
+            {
+                finishRenderLayer();
+
+                if( batch.renderLayerId != 0 )
+                {
+                    if( _context->resolution != nullptr )
+                    {
+                        const Resolution & contentResolution = _context->resolution->getContentResolution();
+                        const Resolution & windowResolution = APPLICATION_SERVICE()->getCurrentWindowResolution();
+                        activeRenderLayerTarget = this->ensureRenderLayerTarget_(
+                            batch.renderLayerId,
+                            windowResolution.getWidth(),
+                            windowResolution.getHeight(),
+                            contentResolution.getWidthF(),
+                            contentResolution.getHeightF()
+                        );
+                    }
+
+                    if( activeRenderLayerTarget != nullptr )
+                    {
+                        activeRenderLayerId = batch.renderLayerId;
+                        activeRenderLayerOpacity = batch.renderLayerOpacity;
+                    }
+                }
+            }
+
+            if( activeRenderLayerId != 0 && batch.renderLayerId == activeRenderLayerId && activeRenderLayerTarget != nullptr )
+            {
+                context.target = activeRenderLayerTarget->target.get();
+            }
+            else
+            {
+                context.target = _context->target;
             }
 
             if( batch.batchType == ::Figma::ERenderBatchType::ClipBegin )
@@ -1906,7 +2811,8 @@ namespace Mengine
                 continue;
             }
 
-            const float batchAlpha = batch.opacity * batch.renderLayerOpacity;
+            const bool renderToLayer = activeRenderLayerId != 0 && batch.renderLayerId == activeRenderLayerId && activeRenderLayerTarget != nullptr;
+            const float batchAlpha = renderToLayer == true ? batch.opacity : batch.opacity * batch.renderLayerOpacity;
 
             ColorValue_ARGB color = Helper::makeRGBAF(
                 totalColorR,
@@ -1985,9 +2891,11 @@ namespace Mengine
 
             _renderPipeline->addRenderObject( &context, material, nullptr, vertices.data(), batch.vertexCount, indices.data(), batch.indexCount, nullptr, false, MENGINE_DOCUMENT_FORWARD );
         }
+
+        finishRenderLayer();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Figma::inputPointer_( ::Figma::EPointerEventType _type, float _x, float _y, ::Figma::EPointerButton _button )
+    bool Figma::inputPointer_( ::Figma::EPointerEventType _type, uint32_t _pointerId, float _x, float _y, ::Figma::EPointerButton _button, ::Figma::InputModifierFlags _modifiers, ::Figma::InputDispatchResult * const _dispatch )
     {
         if( m_player == nullptr )
         {
@@ -1996,17 +2904,18 @@ namespace Mengine
 
         ::Figma::PointerEvent event;
         event.type = _type;
+        event.pointerId = _pointerId;
         event.x = _x;
         event.y = _y;
         event.button = _button;
-        event.modifiers = ::Figma::EInputModifierFlag::None;
+        event.modifiers = _modifiers;
 
-        ::Figma::EResult result = m_player->inputPointer( event );
+        ::Figma::EResult result = m_player->inputPointer( event, _dispatch );
 
         return result == ::Figma::EResult::Ok;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Figma::inputKey_( ::Figma::EKeyEventType _type, uint32_t _keyCode )
+    bool Figma::inputKey_( ::Figma::EKeyEventType _type, uint32_t _keyCode, ::Figma::InputModifierFlags _modifiers, ::Figma::InputDispatchResult * const _dispatch )
     {
         if( m_player == nullptr )
         {
@@ -2016,9 +2925,316 @@ namespace Mengine
         ::Figma::KeyEvent event;
         event.type = _type;
         event.keyCode = _keyCode;
-        event.modifiers = ::Figma::EInputModifierFlag::None;
+        event.modifiers = _modifiers;
 
-        ::Figma::EResult result = m_player->inputKey( event );
+        ::Figma::EResult result = m_player->inputKey( event, _dispatch );
+
+        return result == ::Figma::EResult::Ok;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Figma::screenToLocal_( const RenderContext * _context, const mt::vec2f & _screenPoint, mt::vec2f * const _localPoint ) const
+    {
+        if( _context == nullptr || _context->resolution == nullptr || _context->camera == nullptr || _context->viewport == nullptr || _localPoint == nullptr )
+        {
+            return false;
+        }
+
+        mt::vec2f pointViewport;
+        _context->resolution->fromScreenToContentPosition( _screenPoint, &pointViewport );
+
+        const Viewport & viewport = _context->viewport->getViewportWM();
+        pointViewport -= viewport.begin;
+
+        const mt::vec2f viewportSize = viewport.size();
+        if( viewportSize.x <= mt::constant::eps || viewportSize.y <= mt::constant::eps )
+        {
+            return false;
+        }
+
+        pointViewport /= viewportSize;
+
+        mt::vec2f pointNormalized;
+        pointNormalized.x = pointViewport.x * 2.f - 1.f;
+        pointNormalized.y = 1.f - pointViewport.y * 2.f;
+
+        mt::vec2f pointWorld;
+        mt::mul_v2_v2_m4( &pointWorld, pointNormalized, _context->camera->getCameraViewProjectionMatrixInv() );
+
+        mt::mat4f worldMatrixInv;
+        mt::inv_m4_m4( &worldMatrixInv, this->getWorldMatrix() );
+        mt::mul_v2_v2_m4( _localPoint, pointWorld, worldMatrixInv );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Figma::pick( const mt::vec2f & _point, const RenderContext * _context ) const
+    {
+        if( m_player == nullptr )
+        {
+            return false;
+        }
+
+        mt::vec2f localPoint;
+        if( this->screenToLocal_( _context, _point, &localPoint ) == false )
+        {
+            return false;
+        }
+
+        bool hit = false;
+        const ::Figma::EResult result = m_player->hitTest( localPoint.x, localPoint.y, &hit );
+        if( result != ::Figma::EResult::Ok )
+        {
+            return false;
+        }
+
+        return hit;
+    }
+    //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+    Scriptable * Figma::getPickerScriptable()
+    {
+        return this;
+    }
+    //////////////////////////////////////////////////////////////////////////
+#endif
+    Eventable * Figma::getPickerEventable()
+    {
+        return this;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    PickerInputHandlerInterface * Figma::getPickerInputHandler()
+    {
+        return this;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Figma::handleKeyEvent( const RenderContext * _context, const InputKeyEvent & _event )
+    {
+        MENGINE_UNUSED( _context );
+
+        ::Figma::InputDispatchResult dispatch;
+        const ::Figma::EKeyEventType type = _event.isDown == true ? ::Figma::EKeyEventType::Down : ::Figma::EKeyEventType::Up;
+        if( this->inputKey_( type, static_cast<uint32_t>(_event.code), Detail::getFigmaInputModifiers( _event.special ), &dispatch ) == false )
+        {
+            return false;
+        }
+
+        return dispatch.handled;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Figma::handleTextEvent( const RenderContext * _context, const InputTextEvent & _event )
+    {
+        MENGINE_UNUSED( _context );
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Figma::handleMouseButtonEvent( const RenderContext * _context, const InputMouseButtonEvent & _event )
+    {
+        mt::vec2f localPoint;
+        if( this->screenToLocal_( _context, _event.position.screen, &localPoint ) == false )
+        {
+            return false;
+        }
+
+        ::Figma::InputDispatchResult dispatch;
+        const ::Figma::EPointerEventType type = _event.isDown == true ? ::Figma::EPointerEventType::Down : ::Figma::EPointerEventType::Up;
+        if( this->inputPointer_( type, _event.touchId, localPoint.x, localPoint.y, Detail::getFigmaPointerButton( static_cast<uint32_t>(_event.button) ), Detail::getFigmaInputModifiers( _event.special ), &dispatch ) == false )
+        {
+            return false;
+        }
+
+        return dispatch.hit == true || dispatch.handled == true || dispatch.captured == true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Figma::handleMouseButtonEventBegin( const RenderContext * _context, const InputMouseButtonEvent & _event )
+    {
+        MENGINE_UNUSED( _context );
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Figma::handleMouseButtonEventEnd( const RenderContext * _context, const InputMouseButtonEvent & _event )
+    {
+        MENGINE_UNUSED( _context );
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Figma::handleMouseMove( const RenderContext * _context, const InputMouseMoveEvent & _event )
+    {
+        mt::vec2f localPoint;
+        if( this->screenToLocal_( _context, _event.position.screen, &localPoint ) == false )
+        {
+            return false;
+        }
+
+        ::Figma::InputDispatchResult dispatch;
+        if( this->inputPointer_( ::Figma::EPointerEventType::Move, _event.touchId, localPoint.x, localPoint.y, ::Figma::EPointerButton::None, Detail::getFigmaInputModifiers( _event.special ), &dispatch ) == false )
+        {
+            return false;
+        }
+
+        return dispatch.hit == true || dispatch.handled == true || dispatch.captured == true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Figma::handleMouseWheel( const RenderContext * _context, const InputMouseWheelEvent & _event )
+    {
+        MENGINE_UNUSED( _context );
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Figma::handleMouseEnter( const RenderContext * _context, const InputMouseEnterEvent & _event )
+    {
+        mt::vec2f localPoint;
+        if( this->screenToLocal_( _context, _event.position.screen, &localPoint ) == false )
+        {
+            return false;
+        }
+
+        ::Figma::InputDispatchResult dispatch;
+        if( this->inputPointer_( ::Figma::EPointerEventType::Move, _event.touchId, localPoint.x, localPoint.y, ::Figma::EPointerButton::None, Detail::getFigmaInputModifiers( _event.special ), &dispatch ) == false )
+        {
+            return false;
+        }
+
+        return dispatch.hit == true || dispatch.handled == true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Figma::handleMouseLeave( const RenderContext * _context, const InputMouseLeaveEvent & _event )
+    {
+        mt::vec2f localPoint;
+        if( this->screenToLocal_( _context, _event.position.screen, &localPoint ) == false )
+        {
+            return;
+        }
+
+        this->inputPointer_( ::Figma::EPointerEventType::Move, _event.touchId, localPoint.x, localPoint.y, ::Figma::EPointerButton::None, Detail::getFigmaInputModifiers( _event.special ), nullptr );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ::Figma::EResult Figma::routeTrigger( const ::Figma::TriggerEvent & _event )
+    {
+        FigmaTriggerEvent event;
+        event.inputKind = _event.inputKind;
+        event.triggerType = _event.triggerType;
+        event.interactionId = Detail::makeString( _event.interactionId );
+        event.sourceNodeId = Detail::makeString( _event.sourceNodeId );
+        event.currentFrameId = Detail::makeString( _event.currentFrameId );
+        event.pointerId = _event.pointer.pointerId;
+        event.x = _event.pointer.x;
+        event.y = _event.pointer.y;
+        event.button = static_cast<uint32_t>(_event.pointer.button);
+        event.keyCode = _event.key.keyCode;
+        event.modifiers = static_cast<uint32_t>(_event.inputKind == ::Figma::EActionInputKind::Key ? _event.key.modifiers : _event.pointer.modifiers);
+
+        EVENTABLE_METHOD( EVENT_FIGMA_TRIGGER )
+            ->onFigmaTrigger( event );
+
+        return ::Figma::EResult::Ok;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ::Figma::EResult Figma::routeAction( const ::Figma::ActionEvent & _event, ::Figma::ActionResponse * const _response )
+    {
+        FigmaActionEvent event;
+        event.inputKind = _event.inputKind;
+        event.triggerType = _event.triggerType;
+        event.connectionType = _event.connectionType;
+        event.navigationType = _event.navigationType;
+        event.actionId = Detail::makeString( _event.actionId );
+        event.interactionId = Detail::makeString( _event.interactionId );
+        event.sourceNodeId = Detail::makeString( _event.sourceNodeId );
+        event.currentFrameId = Detail::makeString( _event.currentFrameId );
+        event.targetFrameId = Detail::makeString( _event.targetFrameId );
+        event.pointerId = _event.pointer.pointerId;
+        event.x = _event.pointer.x;
+        event.y = _event.pointer.y;
+        event.button = static_cast<uint32_t>(_event.pointer.button);
+        event.keyCode = _event.key.keyCode;
+        event.modifiers = static_cast<uint32_t>(_event.inputKind == ::Figma::EActionInputKind::Key ? _event.key.modifiers : _event.pointer.modifiers);
+
+        FigmaActionResponse response;
+        response.result = _response->result;
+        response.targetFrameId = Detail::makeString( _response->targetFrameId );
+
+        EVENTABLE_METHOD( EVENT_FIGMA_ACTION )
+            ->onFigmaAction( event, &response );
+
+        _response->result = response.result;
+        m_actionTargetFrameId = response.targetFrameId;
+        _response->targetFrameId = ::Figma::FigmaStringView( m_actionTargetFrameId.data(), m_actionTargetFrameId.size() );
+
+        return ::Figma::EResult::Ok;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Figma::onFrameChanged( ::Figma::FigmaStringView _previousFrameId, ::Figma::FigmaStringView _currentFrameId )
+    {
+        const String previousFrameId = Detail::makeString( _previousFrameId );
+        const String currentFrameId = Detail::makeString( _currentFrameId );
+
+        EVENTABLE_METHOD( EVENT_FIGMA_FRAME_CHANGED )
+            ->onFigmaFrameChanged( previousFrameId, currentFrameId );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Figma::onOverlayOpened( ::Figma::FigmaStringView _frameId )
+    {
+        const String frameId = Detail::makeString( _frameId );
+
+        EVENTABLE_METHOD( EVENT_FIGMA_OVERLAY_OPENED )
+            ->onFigmaOverlayOpened( frameId );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Figma::onOverlayClosed( ::Figma::FigmaStringView _frameId )
+    {
+        const String frameId = Detail::makeString( _frameId );
+
+        EVENTABLE_METHOD( EVENT_FIGMA_OVERLAY_CLOSED )
+            ->onFigmaOverlayClosed( frameId );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Figma::onStateChanged( ::Figma::FigmaStringView _sourceNodeId, ::Figma::FigmaStringView _previousStateId, ::Figma::FigmaStringView _currentStateId )
+    {
+        const String sourceNodeId = Detail::makeString( _sourceNodeId );
+        const String previousStateId = Detail::makeString( _previousStateId );
+        const String currentStateId = Detail::makeString( _currentStateId );
+
+        EVENTABLE_METHOD( EVENT_FIGMA_STATE_CHANGED )
+            ->onFigmaStateChanged( sourceNodeId, previousStateId, currentStateId );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Figma::applyBindingValue_( const String & _key, const FigmaBindingValue & _value )
+    {
+        if( m_player == nullptr )
+        {
+            return true;
+        }
+
+        const ::Figma::FigmaStringView key( _key.data(), _key.size() );
+        ::Figma::EResult result = ::Figma::EResult::InvalidArgument;
+
+        switch( _value.type )
+        {
+        case EFigmaBindingValueType::Text:
+            result = m_player->setText( key, ::Figma::FigmaStringView( _value.stringValue.data(), _value.stringValue.size() ) );
+            break;
+        case EFigmaBindingValueType::Number:
+            result = m_player->setNumber( key, _value.numberValue );
+            break;
+        case EFigmaBindingValueType::Boolean:
+            {
+                ::Figma::BindingValue value;
+                value.type = ::Figma::EBindingValueType::Boolean;
+                value.boolValue = _value.boolValue;
+                result = m_player->setBindingValue( key, value );
+            }
+            break;
+        case EFigmaBindingValueType::Image:
+            result = m_player->setImage( key, ::Figma::FigmaStringView( _value.stringValue.data(), _value.stringValue.size() ) );
+            break;
+        }
 
         return result == ::Figma::EResult::Ok;
     }

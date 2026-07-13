@@ -128,6 +128,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PluginService::unloadPlugins()
     {
+        this->autoUnregisterPlugins_();
+
         VectorPlugins reverse_plugins;
         std::swap( reverse_plugins, m_plugins );
 
@@ -302,6 +304,8 @@ namespace Mengine
 
             this->setAvailablePlugin( pluginName, false );
 
+            this->autoUnregisterPlugin_( _plugin );
+
             desc.plugin->finalizePlugin();
             desc.plugin = nullptr;
 
@@ -431,6 +435,49 @@ namespace Mengine
         }
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PluginService::autoUnregisterPlugin_( const PluginInterfacePtr & _plugin ) const
+    {
+        for( const PluginDesc & desc : m_plugins )
+        {
+            const PluginInterfacePtr & plugin = desc.plugin;
+
+            if( plugin == nullptr || plugin == _plugin )
+            {
+                continue;
+            }
+
+            plugin->unregisterPlugin( _plugin );
+            _plugin->unregisterPlugin( plugin );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PluginService::autoUnregisterPlugins_() const
+    {
+        const VectorPlugins::size_type pluginCount = m_plugins.size();
+        for( VectorPlugins::size_type leftIndex = 0; leftIndex != pluginCount; ++leftIndex )
+        {
+            const PluginInterfacePtr & leftPlugin = m_plugins[leftIndex].plugin;
+
+            if( leftPlugin == nullptr )
+            {
+                continue;
+            }
+
+            for( VectorPlugins::size_type rightIndex = leftIndex + 1; rightIndex != pluginCount; ++rightIndex )
+            {
+                const PluginInterfacePtr & rightPlugin = m_plugins[rightIndex].plugin;
+
+                if( rightPlugin == nullptr )
+                {
+                    continue;
+                }
+
+                leftPlugin->unregisterPlugin( rightPlugin );
+                rightPlugin->unregisterPlugin( leftPlugin );
+            }
+        }
     }
     //////////////////////////////////////////////////////////////////////////
 }

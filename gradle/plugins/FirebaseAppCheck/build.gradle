@@ -8,5 +8,5 @@ android {
 dependencies {
     implementation project(':plugins:Firebase')
 
-    implementation 'com.google.firebase:firebase-appcheck-playintegrity:19.2.0'
+    implementation 'com.google.firebase:firebase-appcheck-playintegrity:19.3.0'
 }

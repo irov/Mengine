@@ -28,6 +28,22 @@ Here, we will find the main project `Win32Application`
 
 Good luck with the build and usage!
 
+## Android
+
+The Gradle Wrapper is generated locally and is not stored in the repository. Install Gradle 9.4.1 or newer and generate the wrapper before opening the project in Android Studio or running `gradlew`.
+
+Windows:
+
+`build\android_windows\make_gradle_wrapper.bat`
+
+macOS:
+
+`bash build/android_macos/make_gradle_wrapper.sh`
+
+Unix:
+
+`bash build/android_unix/make_gradle_wrapper.sh`
+
 -------
 
 To get [cppcheck](http://cppcheck.sourceforge.net/) working, you need to add the following to .git/config

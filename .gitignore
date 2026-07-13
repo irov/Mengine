@@ -3,6 +3,9 @@
 /outputs/
 /bin/
 /solutions/
+/gradle/gradlew
+/gradle/gradlew.bat
+/gradle/gradle/wrapper/
 /contributing/cppcheck/
 /contributing/doc/
 **.exe

@@ -25,7 +25,7 @@ set CMAKE_MAKE_PROGRAM=%CMAKE_PATH%\bin\ninja.exe
 set CMAKE_TOOLCHAIN_FILE=%ANDROID_NDK%\build\cmake\android.toolchain.cmake
 
 set CMAKELIST_PATH=%~dp0..\..\cmake\Depends_Android
-set BUILD_TEMP_DIR=%~dp0..\..\solutions\dependencies_android
+set BUILD_TEMP_DIR=%~dp0..\..\solutions\dependencies_android_windows
 
 for %%A in (x86 x86_64 armeabi-v7a arm64-v8a) do (
     @mkdir %BUILD_TEMP_DIR%\%CONFIGURATION%\%%A

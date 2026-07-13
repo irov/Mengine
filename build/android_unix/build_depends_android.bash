@@ -18,7 +18,7 @@ CMAKE_MAKE_PROGRAM=$CMAKE_PATH/bin/ninja
 CMAKE_TOOLCHAIN_FILE=$ANDROID_NDK/build/cmake/android.toolchain.cmake
 
 CMAKELIST_PATH=$PWD/../../cmake/Depends_Android
-SOLUTION_DIR=$PWD/../../solutions/dependencies_unix_android
+SOLUTION_DIR=$PWD/../../solutions/dependencies_android_unix
 
 function build_dependencies {
     NEON=$1

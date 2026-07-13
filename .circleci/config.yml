@@ -38,7 +38,16 @@ jobs:
       - run:
           name: install gradle
           command: |
-            sudo apt-get install gradle
+            source gradle/gradle-wrapper-version.properties
+            GRADLE_ARCHIVE=/tmp/gradle-${GRADLE_VERSION}-bin.zip
+            curl -fsSL -o ${GRADLE_ARCHIVE} https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip
+            echo "${GRADLE_DISTRIBUTION_SHA256}  ${GRADLE_ARCHIVE}" | sha256sum --check
+            sudo mkdir -p /opt/gradle
+            sudo rm -rf /opt/gradle/gradle-${GRADLE_VERSION}
+            sudo unzip -q ${GRADLE_ARCHIVE} -d /opt/gradle
+            echo "export PATH=/opt/gradle/gradle-${GRADLE_VERSION}/bin:\$PATH" >> ${BASH_ENV}
+            export PATH=/opt/gradle/gradle-${GRADLE_VERSION}/bin:$PATH
+            gradle --version
 
       - run:
           name: install ninja-build
@@ -64,7 +73,7 @@ jobs:
       - run:
           name: build dependencies
           command: |
-            pushd build/unix_android
+            pushd build/android_unix
             sudo bash build_depends_android.bash Debug
             popd
             
@@ -73,9 +82,9 @@ jobs:
           no_output_timeout: 1h
           command: |
             sudo chown -R circleci:circleci /home/circleci/project
+            bash build/android_unix/make_gradle_wrapper.sh
             pushd gradle
             cp gradle.properties.ci gradle.properties
-            sudo chmod +x gradlew
             ./gradlew --version
             ./gradlew assembleDebug -Dorg.gradle.java.home=/usr/lib/jvm/java-17-openjdk-amd64
             popd

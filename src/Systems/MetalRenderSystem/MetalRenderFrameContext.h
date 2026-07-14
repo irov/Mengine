@@ -13,6 +13,9 @@ namespace Mengine
         MTLRenderPassDescriptor * renderPassDescriptor;
         id<MTLTexture> drawableTexture;
         id<MTLTexture> depthStencilTexture;
+        MTLPixelFormat colorAttachmentPixelFormat;
+        MTLPixelFormat depthAttachmentPixelFormat;
+        MTLPixelFormat stencilAttachmentPixelFormat;
     };
     //////////////////////////////////////////////////////////////////////////
 }

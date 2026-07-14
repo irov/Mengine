@@ -78,6 +78,9 @@ namespace Mengine
         m_frameContext.renderPassDescriptor = nil;
         m_frameContext.drawableTexture = nil;
         m_frameContext.depthStencilTexture = nil;
+        m_frameContext.colorAttachmentPixelFormat = MTLPixelFormatInvalid;
+        m_frameContext.depthAttachmentPixelFormat = MTLPixelFormatInvalid;
+        m_frameContext.stencilAttachmentPixelFormat = MTLPixelFormatInvalid;
 
         mt::ident_m4( &m_worldMatrix );
         mt::ident_m4( &m_viewMatrix );
@@ -679,7 +682,10 @@ namespace Mengine
         blendKey.colorMaskB = m_colorMaskB;
         blendKey.colorMaskA = m_colorMaskA;
 
-        id<MTLRenderPipelineState> pipelineState = m_currentProgram->getOrCreatePipelineState( blendKey );
+        id<MTLRenderPipelineState> pipelineState = m_currentProgram->getOrCreatePipelineState( blendKey
+            , m_frameContext.colorAttachmentPixelFormat
+            , m_frameContext.depthAttachmentPixelFormat
+            , m_frameContext.stencilAttachmentPixelFormat );
 
         if( pipelineState == nil )
         {
@@ -965,6 +971,14 @@ namespace Mengine
         {
             this->createDepthStencilTexture_( (uint32_t)drawableWidth, (uint32_t)drawableHeight );
         }
+
+        m_frameContext.colorAttachmentPixelFormat = m_frameContext.drawableTexture.pixelFormat;
+        m_frameContext.depthAttachmentPixelFormat = m_frameContext.depthStencilTexture != nil
+            ? m_frameContext.depthStencilTexture.pixelFormat
+            : MTLPixelFormatInvalid;
+        m_frameContext.stencilAttachmentPixelFormat = m_frameContext.depthStencilTexture != nil
+            ? m_frameContext.depthStencilTexture.pixelFormat
+            : MTLPixelFormatInvalid;
 
         MTLRenderPassDescriptor * renderPassDescriptor = [MTLRenderPassDescriptor renderPassDescriptor];
         renderPassDescriptor.colorAttachments[0].texture = m_frameContext.drawableTexture;

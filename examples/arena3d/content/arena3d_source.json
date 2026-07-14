@@ -1,0 +1,67 @@
+{
+  "format_version": 1,
+  "level": {
+    "id": "arena01",
+    "size": ["64", "16", "64"],
+    "spawn_points": [
+      {"id": 1, "position": ["-24", "0", "-24"], "yaw": "0.7853981633974483"},
+      {"id": 2, "position": ["24", "0", "-24"], "yaw": "2.356194490192345"},
+      {"id": 3, "position": ["24", "0", "24"], "yaw": "-2.356194490192345"},
+      {"id": 4, "position": ["-24", "0", "24"], "yaw": "-0.7853981633974483"}
+    ],
+    "turrets": [
+      {"id": 100, "archetype": "nailgun", "position": ["0", "1", "-26"], "yaw": "0"},
+      {"id": 101, "archetype": "plasmagun", "position": ["18", "1", "-18"], "yaw": "-0.7853981633974483"},
+      {"id": 102, "archetype": "rocket", "position": ["26", "5", "0"], "yaw": "-1.5707963267948966"},
+      {"id": 103, "archetype": "railgun", "position": ["18", "5", "18"], "yaw": "-2.356194490192345"},
+      {"id": 104, "archetype": "grenade", "position": ["0", "1", "26"], "yaw": "3.141592653589793"},
+      {"id": 105, "archetype": "shotgun", "position": ["-18", "1", "18"], "yaw": "2.356194490192345"},
+      {"id": 106, "archetype": "nailgun", "position": ["-26", "5", "0"], "yaw": "1.5707963267948966"},
+      {"id": 107, "archetype": "plasmagun", "position": ["-18", "1", "-18"], "yaw": "0.7853981633974483"},
+      {"id": 108, "archetype": "rocket", "position": ["8", "1", "8"], "yaw": "-2.356194490192345"},
+      {"id": 109, "archetype": "railgun", "position": ["-8", "1", "-8"], "yaw": "0.7853981633974483"}
+    ],
+    "jump_pads": [
+      {"id": 300, "position": ["-22", "0", "0"], "size": ["3", "0.5", "3"], "velocity": ["12", "13", "0"]}
+    ],
+    "pickups": [
+      {"id": 200, "type": "health", "position": ["-20", "0.45", "-12"], "amount": 25},
+      {"id": 201, "type": "health", "position": ["20", "0.45", "12"], "amount": 25},
+      {"id": 202, "type": "health", "position": ["0", "0.45", "20"], "amount": 25},
+      {"id": 203, "type": "armor", "position": ["20", "0.45", "-12"], "amount": 25},
+      {"id": 204, "type": "armor", "position": ["-20", "0.45", "12"], "amount": 25},
+      {"id": 205, "type": "armor", "position": ["0", "0.45", "-10"], "amount": 25},
+      {"id": 206, "type": "ammo", "weapon": "nailgun", "position": ["-14", "0.45", "0"], "amount": 60},
+      {"id": 207, "type": "ammo", "weapon": "rocket", "position": ["14", "0.45", "0"], "amount": 8},
+      {"id": 208, "type": "ammo", "weapon": "railgun", "position": ["0", "0.45", "14"], "amount": 5},
+      {"id": 209, "type": "ammo", "weapon": "plasmagun", "position": ["0", "0.45", "-14"], "amount": 30},
+      {"id": 210, "type": "ammo", "weapon": "grenade", "position": ["-14", "0.45", "14"], "amount": 8},
+      {"id": 211, "type": "ammo", "weapon": "shotgun", "position": ["14", "0.45", "-14"], "amount": 10}
+    ]
+  },
+  "movement": {
+    "ground_acceleration": "75",
+    "air_acceleration": "12",
+    "friction": "0.82",
+    "gravity": "20",
+    "jump_impulse": "7.5",
+    "standing_height": "1.8",
+    "crouched_height": "1.2",
+    "player_radius": "0.35",
+    "step_height": "0.35",
+    "maximum_slope_cosine": "0.6946583704589973",
+    "crouched_speed_scale": "0.65",
+    "slide_minimum_speed": "5.5",
+    "slide_friction": "0.985",
+    "slide_acceleration_scale": "0.2",
+    "slide_maximum_speed": "12"
+  },
+  "weapons": {
+    "nailgun": {"damage": 12, "cooldown_ticks": 5, "speed": "60", "gravity": "1.5", "lifetime_ticks": 300, "pellet_count": 1, "splash_radius": "0", "knockback": "0.08", "ammo": 200},
+    "rocket": {"damage": 100, "cooldown_ticks": 80, "speed": "22", "gravity": "0", "lifetime_ticks": 500, "pellet_count": 1, "splash_radius": "4", "knockback": "1.8", "ammo": 30},
+    "railgun": {"damage": 100, "cooldown_ticks": 100, "charge_ticks": 150, "speed": "0", "gravity": "0", "lifetime_ticks": 0, "pellet_count": 1, "splash_radius": "0", "knockback": "1.2", "ammo": 20},
+    "plasmagun": {"damage": 20, "cooldown_ticks": 10, "speed": "35", "gravity": "0", "lifetime_ticks": 300, "pellet_count": 1, "splash_radius": "1.5", "knockback": "0.35", "ammo": 150},
+    "grenade": {"damage": 100, "cooldown_ticks": 80, "speed": "18", "gravity": "20", "lifetime_ticks": 250, "pellet_count": 1, "splash_radius": "4", "knockback": "1.5", "ammo": 30},
+    "shotgun": {"damage": 8, "cooldown_ticks": 100, "speed": "90", "gravity": "15", "lifetime_ticks": 70, "pellet_count": 12, "splash_radius": "0", "knockback": "0.06", "ammo": 40}
+  }
+}

@@ -221,6 +221,10 @@ namespace Mengine
         desc.stencilAttachment.storeAction = MTLStoreActionDontCare;
         desc.stencilAttachment.clearStencil = 0;
 
+        m_frameContext->colorAttachmentPixelFormat = m_texture.pixelFormat;
+        m_frameContext->depthAttachmentPixelFormat = m_depthStencilTexture.pixelFormat;
+        m_frameContext->stencilAttachmentPixelFormat = m_depthStencilTexture.pixelFormat;
+
         m_frameContext->renderEncoder = [m_frameContext->commandBuffer renderCommandEncoderWithDescriptor:desc];
 
         return true;
@@ -259,6 +263,14 @@ namespace Mengine
             desc.stencilAttachment.loadAction = MTLLoadActionLoad;
             desc.stencilAttachment.storeAction = MTLStoreActionDontCare;
         }
+
+        m_frameContext->colorAttachmentPixelFormat = m_frameContext->drawableTexture.pixelFormat;
+        m_frameContext->depthAttachmentPixelFormat = m_frameContext->depthStencilTexture != nil
+            ? m_frameContext->depthStencilTexture.pixelFormat
+            : MTLPixelFormatInvalid;
+        m_frameContext->stencilAttachmentPixelFormat = m_frameContext->depthStencilTexture != nil
+            ? m_frameContext->depthStencilTexture.pixelFormat
+            : MTLPixelFormatInvalid;
 
         m_frameContext->renderEncoder = [m_frameContext->commandBuffer renderCommandEncoderWithDescriptor:desc];
     }

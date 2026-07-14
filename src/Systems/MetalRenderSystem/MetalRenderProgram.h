@@ -96,7 +96,10 @@ namespace Mengine
 
     public:
         id<MTLRenderPipelineState> getPipelineState() const;
-        id<MTLRenderPipelineState> getOrCreatePipelineState( const MetalBlendStateKey & _key );
+        id<MTLRenderPipelineState> getOrCreatePipelineState( const MetalBlendStateKey & _key
+            , MTLPixelFormat _colorAttachmentPixelFormat
+            , MTLPixelFormat _depthAttachmentPixelFormat
+            , MTLPixelFormat _stencilAttachmentPixelFormat );
 
     public:
         void bindMatrix( id<MTLRenderCommandEncoder> _encoder, const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalWVPMatrix ) const;
@@ -119,6 +122,9 @@ namespace Mengine
         struct PipelineStateCacheEntry
         {
             MetalBlendStateKey key;
+            MTLPixelFormat colorAttachmentPixelFormat;
+            MTLPixelFormat depthAttachmentPixelFormat;
+            MTLPixelFormat stencilAttachmentPixelFormat;
             id<MTLRenderPipelineState> pipelineState;
         };
 

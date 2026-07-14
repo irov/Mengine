@@ -99,7 +99,8 @@ namespace Mengine
         void drawPrimitive_( const RenderPrimitive * _primitive );
 
     protected:
-        void calcRenderViewport_( const RenderResolutionInterface * _resolution, const Viewport & _viewport, Viewport * const _renderViewport ) const;
+        void calcRenderTargetViewport_( const RenderTargetInterface * _target, Viewport * const _renderViewport ) const;
+        void calcRenderViewport_( const RenderResolutionInterface * _resolution, const Viewport & _viewport, const RenderTargetInterface * _target, Viewport * const _renderViewport ) const;
 
     protected:
         bool makeBatches_( const RenderPipelineInterfacePtr & _pipeline );

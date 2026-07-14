@@ -832,12 +832,65 @@ namespace Mengine
         m_renderSystem->setBlendFactor( m_currentBlendSrc, m_currentBlendDst, m_currentBlendOp, m_currentSeparateAlphaBlendSrc, m_currentSeparateAlphaBlendDst, m_currentSeparateAlphaBlendOp, m_currentSeparateAlphaBlendEnable );
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderService::calcRenderViewport_( const RenderResolutionInterface * _resolution, const Viewport & _viewport, Viewport * const _renderViewport ) const
+    void RenderService::calcRenderTargetViewport_( const RenderTargetInterface * _target, Viewport * const _renderViewport ) const
     {
-        const Viewport & renderViewport = this->getRenderViewport();
+        const mt::uv4f & uv = _target->getUV();
 
-        float renderWidth = renderViewport.getWidth();
-        float renderHeight = renderViewport.getHeight();
+        float minU = uv.p0.x;
+        float maxU = uv.p0.x;
+        float minV = uv.p0.y;
+        float maxV = uv.p0.y;
+
+        const mt::vec2f * points[] = {&uv.p1, &uv.p2, &uv.p3};
+
+        for( const mt::vec2f * point : points )
+        {
+            if( point->x < minU )
+            {
+                minU = point->x;
+            }
+
+            if( point->x > maxU )
+            {
+                maxU = point->x;
+            }
+
+            if( point->y < minV )
+            {
+                minV = point->y;
+            }
+
+            if( point->y > maxV )
+            {
+                maxV = point->y;
+            }
+        }
+
+        const float width = (maxU - minU) * (float)_target->getHWWidth();
+        const float height = (maxV - minV) * (float)_target->getHWHeight();
+
+        _renderViewport->begin = mt::vec2f::identity();
+        _renderViewport->end = mt::vec2f( width, height );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void RenderService::calcRenderViewport_( const RenderResolutionInterface * _resolution, const Viewport & _viewport, const RenderTargetInterface * _target, Viewport * const _renderViewport ) const
+    {
+        Viewport targetViewport;
+        const Viewport * renderViewport;
+
+        if( _target != nullptr )
+        {
+            this->calcRenderTargetViewport_( _target, &targetViewport );
+
+            renderViewport = &targetViewport;
+        }
+        else
+        {
+            renderViewport = &this->getRenderViewport();
+        }
+
+        float renderWidth = renderViewport->getWidth();
+        float renderHeight = renderViewport->getHeight();
 
         const Resolution & contentResolution = _resolution->getContentResolution();
 
@@ -853,8 +906,8 @@ namespace Mengine
         scaleViewport.end.x = _viewport.end.x * scale_width;
         scaleViewport.end.y = _viewport.end.y * scale_height;
 
-        scaleViewport.begin += renderViewport.begin;
-        scaleViewport.end += renderViewport.begin;
+        scaleViewport.begin += renderViewport->begin;
+        scaleViewport.end += renderViewport->begin;
 
         float vp_x = StdMath::floorf( scaleViewport.begin.x + 0.5f );
         float vp_y = StdMath::floorf( scaleViewport.begin.y + 0.5f );
@@ -869,11 +922,10 @@ namespace Mengine
         //float vp_width = width;
         //float vp_height = height;
 
-        mt::vec2f windowSize;
-        m_windowResolution.calcSize( &windowSize );
+        mt::vec2f renderSize = renderViewport->end;
 
-        if( vp_x >= windowSize.x ||
-            vp_y >= windowSize.y ||
+        if( vp_x >= renderSize.x ||
+            vp_y >= renderSize.y ||
             vp_x + vp_width <= 0.f ||
             vp_y + vp_height <= 0.f )
         {
@@ -889,9 +941,9 @@ namespace Mengine
                 scaleViewport.begin.x = 0.f;
             }
 
-            if( vp_x + vp_width > windowSize.x )
+            if( vp_x + vp_width > renderSize.x )
             {
-                scaleViewport.end.x = windowSize.x;
+                scaleViewport.end.x = renderSize.x;
             }
 
             if( vp_y < 0.f )
@@ -899,9 +951,9 @@ namespace Mengine
                 scaleViewport.begin.y = 0.f;
             }
 
-            if( vp_y + vp_height > windowSize.y )
+            if( vp_y + vp_height > renderSize.y )
             {
-                scaleViewport.end.y = windowSize.y;
+                scaleViewport.end.y = renderSize.y;
             }
         }
 
@@ -950,7 +1002,7 @@ namespace Mengine
                 const Viewport & v = viewport->getViewportWM();
 
                 Viewport rv;
-                this->calcRenderViewport_( resolution, v, &rv );
+                this->calcRenderViewport_( resolution, v, target, &rv );
 
                 m_renderSystem->setViewport( rv );
 
@@ -961,7 +1013,17 @@ namespace Mengine
         {
             if( resetRenderPassStates == true || m_currentRenderContext.viewport != nullptr )
             {
-                m_renderSystem->setViewport( m_renderViewport );
+                if( target != nullptr )
+                {
+                    Viewport targetViewport;
+                    this->calcRenderTargetViewport_( target, &targetViewport );
+
+                    m_renderSystem->setViewport( targetViewport );
+                }
+                else
+                {
+                    m_renderSystem->setViewport( m_renderViewport );
+                }
 
                 m_currentRenderContext.viewport = nullptr;
             }

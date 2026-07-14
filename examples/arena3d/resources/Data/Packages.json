@@ -1,0 +1,22 @@
+{
+    "GAME_PACKAGES": {
+        "FrameworkPack": ["Shaders", "Arena3DShaders"],
+        "ResourcePack": ["Arena3DGenerated"]
+    },
+    "Shaders": {
+        "Name": "Shaders",
+        "Path": "shaders/",
+        "Description": "Pak.json",
+        "Format": "json"
+    },
+    "Arena3DShaders": {
+        "Name": "Arena3DShaders",
+        "Path": "arena_shaders/",
+        "Description": "Pak.json",
+        "Format": "json"
+    },
+    "Arena3DGenerated": {
+        "Name": "Arena3DGenerated",
+        "Path": "generated/"
+    }
+}

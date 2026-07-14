@@ -165,14 +165,29 @@ namespace Mengine
         return m_pipelineState;
     }
     //////////////////////////////////////////////////////////////////////////
-    id<MTLRenderPipelineState> MetalRenderProgram::getOrCreatePipelineState( const MetalBlendStateKey & _key )
+    id<MTLRenderPipelineState> MetalRenderProgram::getOrCreatePipelineState( const MetalBlendStateKey & _key
+        , MTLPixelFormat _colorAttachmentPixelFormat
+        , MTLPixelFormat _depthAttachmentPixelFormat
+        , MTLPixelFormat _stencilAttachmentPixelFormat )
     {
         for( const PipelineStateCacheEntry & entry : m_pipelineStateCache )
         {
-            if( entry.key == _key )
+            if( entry.key == _key
+                && entry.colorAttachmentPixelFormat == _colorAttachmentPixelFormat
+                && entry.depthAttachmentPixelFormat == _depthAttachmentPixelFormat
+                && entry.stencilAttachmentPixelFormat == _stencilAttachmentPixelFormat )
             {
                 return entry.pipelineState;
             }
+        }
+
+        if( _colorAttachmentPixelFormat == MTLPixelFormatInvalid )
+        {
+            LOGGER_ERROR( "program '%s' invalid color attachment pixel format"
+                , m_name.c_str()
+            );
+
+            return nil;
         }
 
         MTLRenderPipelineDescriptor * pipelineDesc = [[MTLRenderPipelineDescriptor alloc] init];
@@ -188,7 +203,7 @@ namespace Mengine
             pipelineDesc.fragmentFunction = m_fragmentShader->getFunction();
         }
 
-        pipelineDesc.colorAttachments[0].pixelFormat = MTLPixelFormatBGRA8Unorm;
+        pipelineDesc.colorAttachments[0].pixelFormat = _colorAttachmentPixelFormat;
 
         if( _key.alphaBlend == true )
         {
@@ -223,8 +238,8 @@ namespace Mengine
         if( _key.colorMaskA == true ) writeMask |= MTLColorWriteMaskAlpha;
         pipelineDesc.colorAttachments[0].writeMask = writeMask;
 
-        pipelineDesc.depthAttachmentPixelFormat = MTLPixelFormatDepth32Float_Stencil8;
-        pipelineDesc.stencilAttachmentPixelFormat = MTLPixelFormatDepth32Float_Stencil8;
+        pipelineDesc.depthAttachmentPixelFormat = _depthAttachmentPixelFormat;
+        pipelineDesc.stencilAttachmentPixelFormat = _stencilAttachmentPixelFormat;
 
         if( m_vertexAttribute != nullptr )
         {
@@ -270,6 +285,9 @@ namespace Mengine
 
         PipelineStateCacheEntry newEntry;
         newEntry.key = _key;
+        newEntry.colorAttachmentPixelFormat = _colorAttachmentPixelFormat;
+        newEntry.depthAttachmentPixelFormat = _depthAttachmentPixelFormat;
+        newEntry.stencilAttachmentPixelFormat = _stencilAttachmentPixelFormat;
         newEntry.pipelineState = pipelineState;
 
         m_pipelineStateCache.push_back( newEntry );

@@ -1,0 +1,59 @@
+{
+    "Name": "Arena3DShaders",
+    "VertexAttribute": [
+        {
+            "Name": "Arena3D_Vertex3D_Static",
+            "RenderPlatform": "Metal",
+            "Element": { "Size": 64 },
+            "Attribute": [
+                { "Uniform": "position", "Index": 0, "Size": 3, "Type": "FLOAT", "Normalized": false, "Stride": 64, "Offset": 0 },
+                { "Uniform": "normal", "Index": 1, "Size": 3, "Type": "FLOAT", "Normalized": false, "Stride": 64, "Offset": 12 },
+                { "Uniform": "tangent", "Index": 2, "Size": 4, "Type": "FLOAT", "Normalized": false, "Stride": 64, "Offset": 24 },
+                { "Uniform": "color", "Index": 3, "Size": 4, "Type": "UNSIGNED_BYTE", "Normalized": true, "Stride": 64, "Offset": 40 },
+                { "Uniform": "uv0", "Index": 4, "Size": 2, "Type": "FLOAT", "Normalized": false, "Stride": 64, "Offset": 44 },
+                { "Uniform": "uv1", "Index": 5, "Size": 2, "Type": "FLOAT", "Normalized": false, "Stride": 64, "Offset": 52 }
+            ]
+        },
+        {
+            "Name": "Arena3D_Vertex2D_UV1",
+            "RenderPlatform": "Metal",
+            "Element": { "Size": 32 },
+            "Attribute": [
+                { "Uniform": "position", "Index": 0, "Size": 3, "Type": "FLOAT", "Normalized": false, "Stride": 32, "Offset": 0 },
+                { "Uniform": "color", "Index": 1, "Size": 4, "Type": "UNSIGNED_BYTE", "Normalized": true, "Stride": 32, "Offset": 12 },
+                { "Uniform": "uv0", "Index": 2, "Size": 2, "Type": "FLOAT", "Normalized": false, "Stride": 32, "Offset": 16 }
+            ]
+        }
+    ],
+    "VertexShader": [
+        { "Name": "Arena3D_Vertex_Lit", "RenderPlatform": "Metal", "File": { "Path": "Materials/Metal_Vertex_Lit.metal" } },
+        { "Name": "Arena3D_Vertex_Unlit", "RenderPlatform": "Metal", "File": { "Path": "Materials/Metal_Vertex_Unlit.metal" } },
+        { "Name": "Arena3D_Vertex_Post", "RenderPlatform": "Metal", "File": { "Path": "Materials/Metal_Vertex_Post.metal" } }
+    ],
+    "FragmentShader": [
+        { "Name": "Arena3D_Fragment_Lit2", "RenderPlatform": "Metal", "File": { "Path": "Materials/Metal_Fragment_Lit2.metal" } },
+        { "Name": "Arena3D_Fragment_Lit4", "RenderPlatform": "Metal", "File": { "Path": "Materials/Metal_Fragment_Lit4.metal" } },
+        { "Name": "Arena3D_Fragment_Lit8", "RenderPlatform": "Metal", "File": { "Path": "Materials/Metal_Fragment_Lit8.metal" } },
+        { "Name": "Arena3D_Fragment_LitContinuous", "RenderPlatform": "Metal", "File": { "Path": "Materials/Metal_Fragment_LitContinuous.metal" } },
+        { "Name": "Arena3D_Fragment_Unlit", "RenderPlatform": "Metal", "File": { "Path": "Materials/Metal_Fragment_Unlit.metal" } },
+        { "Name": "Arena3D_Fragment_Post", "RenderPlatform": "Metal", "File": { "Path": "Materials/Metal_Fragment_Post.metal" } }
+    ],
+    "Program": [
+        { "Name": "Arena3D_Program_Lit2", "VertexShader": { "Name": "Arena3D_Vertex_Lit" }, "FragmentShader": { "Name": "Arena3D_Fragment_Lit2" }, "VertexAttribute": { "Name": "Arena3D_Vertex3D_Static" }, "Sampler": { "Count": 1 } },
+        { "Name": "Arena3D_Program_Lit4", "VertexShader": { "Name": "Arena3D_Vertex_Lit" }, "FragmentShader": { "Name": "Arena3D_Fragment_Lit4" }, "VertexAttribute": { "Name": "Arena3D_Vertex3D_Static" }, "Sampler": { "Count": 1 } },
+        { "Name": "Arena3D_Program_Lit8", "VertexShader": { "Name": "Arena3D_Vertex_Lit" }, "FragmentShader": { "Name": "Arena3D_Fragment_Lit8" }, "VertexAttribute": { "Name": "Arena3D_Vertex3D_Static" }, "Sampler": { "Count": 1 } },
+        { "Name": "Arena3D_Program_LitContinuous", "VertexShader": { "Name": "Arena3D_Vertex_Lit" }, "FragmentShader": { "Name": "Arena3D_Fragment_LitContinuous" }, "VertexAttribute": { "Name": "Arena3D_Vertex3D_Static" }, "Sampler": { "Count": 1 } },
+        { "Name": "Arena3D_Program_Unlit", "VertexShader": { "Name": "Arena3D_Vertex_Unlit" }, "FragmentShader": { "Name": "Arena3D_Fragment_Unlit" }, "VertexAttribute": { "Name": "Arena3D_Vertex3D_Static" }, "Sampler": { "Count": 1 } },
+        { "Name": "Arena3D_Program_Post", "VertexShader": { "Name": "Arena3D_Vertex_Post" }, "FragmentShader": { "Name": "Arena3D_Fragment_Post" }, "VertexAttribute": { "Name": "Arena3D_Vertex2D_UV1" }, "Sampler": { "Count": 1 } }
+    ],
+    "Material": [
+        { "Name": "Arena3D_OpaqueLit2", "AlphaBlend": { "Enable": false }, "DepthBufferTest": { "Enable": true }, "DepthBufferWrite": { "Enable": true }, "BlendFactor": { "Source": "ONE", "Dest": "ZERO" }, "Program": { "Name": "Arena3D_Program_Lit2" } },
+        { "Name": "Arena3D_OpaqueLit4", "AlphaBlend": { "Enable": false }, "DepthBufferTest": { "Enable": true }, "DepthBufferWrite": { "Enable": true }, "BlendFactor": { "Source": "ONE", "Dest": "ZERO" }, "Program": { "Name": "Arena3D_Program_Lit4" } },
+        { "Name": "Arena3D_OpaqueLit8", "AlphaBlend": { "Enable": false }, "DepthBufferTest": { "Enable": true }, "DepthBufferWrite": { "Enable": true }, "BlendFactor": { "Source": "ONE", "Dest": "ZERO" }, "Program": { "Name": "Arena3D_Program_Lit8" } },
+        { "Name": "Arena3D_OpaqueLitContinuous", "AlphaBlend": { "Enable": false }, "DepthBufferTest": { "Enable": true }, "DepthBufferWrite": { "Enable": true }, "BlendFactor": { "Source": "ONE", "Dest": "ZERO" }, "Program": { "Name": "Arena3D_Program_LitContinuous" } },
+        { "Name": "Arena3D_Emissive", "AlphaBlend": { "Enable": false }, "DepthBufferTest": { "Enable": true }, "DepthBufferWrite": { "Enable": true }, "BlendFactor": { "Source": "ONE", "Dest": "ZERO" }, "Program": { "Name": "Arena3D_Program_Unlit" } },
+        { "Name": "Arena3D_ViewModel", "AlphaBlend": { "Enable": false }, "DepthBufferTest": { "Enable": false }, "DepthBufferWrite": { "Enable": false }, "BlendFactor": { "Source": "ONE", "Dest": "ZERO" }, "Program": { "Name": "Arena3D_Program_Unlit" } },
+        { "Name": "Arena3D_Trail", "AlphaBlend": { "Enable": true }, "DepthBufferTest": { "Enable": true }, "DepthBufferWrite": { "Enable": false }, "BlendFactor": { "Source": "SOURCE_ALPHA", "Dest": "ONE" }, "Program": { "Name": "Arena3D_Program_Unlit" } },
+        { "Name": "Arena3D_PostProcess", "AlphaBlend": { "Enable": false }, "DepthBufferTest": { "Enable": false }, "DepthBufferWrite": { "Enable": false }, "BlendFactor": { "Source": "ONE", "Dest": "ZERO" }, "Program": { "Name": "Arena3D_Program_Post" } }
+    ]
+}

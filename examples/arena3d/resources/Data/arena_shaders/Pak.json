@@ -1,0 +1,8 @@
+{
+    "Materials": {
+        "Material": [
+            { "Path": "Materials/Arena3D_DX11.json", "RenderPlatform": "DX11" },
+            { "Path": "Materials/Arena3D_Metal.json", "RenderPlatform": "Metal" }
+        ]
+    }
+}

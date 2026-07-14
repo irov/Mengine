@@ -1,0 +1,28 @@
+{
+    "Project": {
+        "Name": "Arena3D",
+        "Codename": "Arena3D",
+        "Company": "Mengine"
+    },
+    "Game": {
+        "ContentResolution": [1280, 720],
+        "PersonalityModule": ""
+    },
+    "Window": {
+        "Fullscreen": false,
+        "Size": [1280, 720]
+    },
+    "Platform": { "Cursor": true },
+    "Engine": {
+        "ProtocolPath": "../../../src/Metacode/protocol.xml",
+        "RenderEnableAutoDepthStencil": true
+    },
+    "DevPlugins-PC": {
+        "Name": ["XmlToBinPlugin.dll", "DevelopmentConverterPlugin.dll"]
+    },
+    "Frameworks": { "Name": ["Arena3DFramework"] },
+    "Arena3D": {
+        "LightQuantization": 4,
+        "Seed": 20260714
+    }
+}

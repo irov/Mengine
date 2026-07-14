@@ -209,6 +209,14 @@ namespace Mengine
         Viewport projectViewport;
         this->makeViewport_( &projectViewport );
 
+        // makeViewport_ describes the view plane at unit distance, while
+        // make_projection_frustum_m4 expects its bounds on the near plane.
+        // Without this scaling the effective FOV depends on cameraNear (and
+        // becomes almost 180 degrees for the small near planes used by FPS
+        // cameras).
+        projectViewport.begin *= m_cameraNear;
+        projectViewport.end *= m_cameraNear;
+
         mt::make_projection_frustum_m4( &m_projectionMatrix, projectViewport.begin.x, projectViewport.end.x, projectViewport.begin.y, projectViewport.end.y, m_cameraNear, m_cameraFar );
 
         mt::inv_m4_m4( &m_projectionMatrixInv, m_projectionMatrix );

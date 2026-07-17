@@ -2,7 +2,7 @@
 using namespace metal;
 
 struct VertexIn { float3 position [[attribute(0)]]; float3 normal [[attribute(1)]]; float4 tangent [[attribute(2)]]; float4 color [[attribute(3)]]; float2 uv0 [[attribute(4)]]; float2 uv1 [[attribute(5)]]; };
-struct VertexOut { float4 position [[position]]; half4 color; float2 uv0; };
+struct VertexOut { float4 position [[position]]; half4 color; half3 lighting; float2 uv0; };
 struct CameraUniforms { float4x4 wvp; };
 struct MeshUniforms { float4x4 world; float4 ambient; float4 directional; float4 directionalColor; float4 pointPosition[4]; float4 pointColor[4]; };
 
@@ -23,7 +23,8 @@ vertex VertexOut vertexShader(VertexIn in [[stage_in]], constant CameraUniforms 
         attenuation *= attenuation;
         lighting += mesh.pointColor[index].xyz * (mesh.pointColor[index].w * max(0.0, dot(worldNormal, toLight / max(distance, 0.0001))) * attenuation);
     }
-    out.color = half4(half3(in.color.rgb * lighting), half(in.color.a));
+    out.color = half4(in.color);
+    out.lighting = half3(max(lighting, float3(0.0)));
     out.uv0 = in.uv0;
     return out;
 }

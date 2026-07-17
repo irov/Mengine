@@ -21,7 +21,6 @@ if [ $? -ne 0 ]; then
 fi
 
 PROJECT="$SOLUTION_DIR/Arena3D_Xcode_MacOS.xcodeproj"
-XCODE_CODE_SIGNING_ALLOWED=${CODE_SIGNING_ALLOWED:-NO}
 
 if test ! -d "$PROJECT"; then
     echo "Arena3D Xcode project was not generated: $PROJECT"
@@ -29,7 +28,22 @@ if test ! -d "$PROJECT"; then
 fi
 
 xcodebuild -project "$PROJECT" \
-    -target MacOSApplication \
+    -target Arena3DServer \
+    -target Arena3DBotClient \
+    -target Arena3DNetProxy \
     -configuration "$CONFIGURATION" \
-    CODE_SIGNING_ALLOWED="$XCODE_CODE_SIGNING_ALLOWED" \
+    CODE_SIGNING_ALLOWED=NO \
     build
+
+if test -n "$CODE_SIGNING_ALLOWED"; then
+    xcodebuild -project "$PROJECT" \
+        -target MacOSApplication \
+        -configuration "$CONFIGURATION" \
+        CODE_SIGNING_ALLOWED="$CODE_SIGNING_ALLOWED" \
+        build
+else
+    xcodebuild -project "$PROJECT" \
+        -target MacOSApplication \
+        -configuration "$CONFIGURATION" \
+        build
+fi

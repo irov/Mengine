@@ -12,6 +12,7 @@
 
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ColorHelper.h"
+#include "Kernel/Data.h"
 #include "Kernel/Factorable.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Logger.h"
@@ -19,19 +20,20 @@
 #include "Kernel/MouseButtonCode.h"
 #include "Kernel/PixelFormatHelper.h"
 #include "Kernel/EventableHelper.h"
+#include "Kernel/StringHelper.h"
+#include "Kernel/StringView.h"
+#include "Kernel/VectorString.h"
 
-#include "Config/StdString.h"
+#include "Config/StdAlgorithm.h"
+#include "Config/StdCType.h"
 #include "Config/StdIO.h"
+#include "Config/StdLib.h"
+#include "Config/StdMath.h"
+#include "Config/StdString.h"
 
 #include "freetype/freetype.h"
 
 #include "math/uv4.h"
-
-#include <algorithm>
-#include <cctype>
-#include <cmath>
-#include <cstdlib>
-#include <string_view>
 
 #if !defined(MENGINE_PLATFORM_WINDOWS)
 #   include <dirent.h>
@@ -69,14 +71,14 @@ namespace Mengine
 
                 if( m_viewportWM.end.x > m_viewportWM.begin.x )
                 {
-                    m_viewportWM.begin.x = std::floor( m_viewportWM.begin.x );
-                    m_viewportWM.end.x = std::ceil( m_viewportWM.end.x );
+                    m_viewportWM.begin.x = StdMath::floor( m_viewportWM.begin.x );
+                    m_viewportWM.end.x = StdMath::ceil( m_viewportWM.end.x );
                 }
 
                 if( m_viewportWM.end.y > m_viewportWM.begin.y )
                 {
-                    m_viewportWM.begin.y = std::floor( m_viewportWM.begin.y );
-                    m_viewportWM.end.y = std::ceil( m_viewportWM.end.y );
+                    m_viewportWM.begin.y = StdMath::floor( m_viewportWM.begin.y );
+                    m_viewportWM.end.y = StdMath::ceil( m_viewportWM.end.y );
                 }
             }
 
@@ -90,6 +92,7 @@ namespace Mengine
         };
         //////////////////////////////////////////////////////////////////////////
         typedef IntrusivePtr<FigmaRenderScissor, RenderScissorInterface> FigmaRenderScissorPtr;
+        typedef Vector<const RenderScissorInterface *> VectorRenderScissorInterface;
         //////////////////////////////////////////////////////////////////////////
         static String makeString( ::Figma::FigmaStringView _value )
         {
@@ -111,9 +114,9 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static String toLowerString( String _value )
         {
-            std::transform( _value.begin(), _value.end(), _value.begin(), []( unsigned char _ch )
+            StdAlgorithm::transform( _value.begin(), _value.end(), _value.begin(), []( unsigned char _ch )
             {
-                return static_cast<Char>(std::tolower( _ch ));
+                return static_cast<Char>(StdCType::tolower( _ch ));
             } );
 
             return _value;
@@ -162,7 +165,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
 #endif
         //////////////////////////////////////////////////////////////////////////
-        static void addUniqueDirectory( Vector<String> * const _directories, const Char * _directory )
+        static void addUniqueDirectory( VectorString * const _directories, const Char * _directory )
         {
             if( _directory == nullptr || _directory[0] == '\0' )
             {
@@ -181,7 +184,7 @@ namespace Mengine
                 directory += '/';
             }
 
-            if( std::find( _directories->begin(), _directories->end(), directory ) != _directories->end() )
+            if( StdAlgorithm::find( _directories->begin(), _directories->end(), directory ) != _directories->end() )
             {
                 return;
             }
@@ -191,7 +194,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static String normalizeFontName( String _value )
         {
-            _value.erase( std::remove_if( _value.begin(), _value.end(), []( Char _ch )
+            _value.erase( StdAlgorithm::remove_if( _value.begin(), _value.end(), []( Char _ch )
             {
                 return _ch == ' ' || _ch == '-';
             } ), _value.end() );
@@ -201,7 +204,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static float clamp01( float _value )
         {
-            return std::max( 0.f, std::min( 1.f, _value ) );
+            return StdAlgorithm::max( 0.f, StdAlgorithm::min( 1.f, _value ) );
         }
         //////////////////////////////////////////////////////////////////////////
         static float linearToSRGB_( float _value )
@@ -213,7 +216,7 @@ namespace Mengine
                 return value * 12.92f;
             }
 
-            return 1.055f * std::pow( value, 1.f / 2.4f ) - 0.055f;
+            return 1.055f * StdMath::pow( value, 1.f / 2.4f ) - 0.055f;
         }
         //////////////////////////////////////////////////////////////////////////
         struct HsvColor
@@ -225,8 +228,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static HsvColor rgbToHsv_( float _red, float _green, float _blue )
         {
-            const float maxValue = std::max( _red, std::max( _green, _blue ) );
-            const float minValue = std::min( _red, std::min( _green, _blue ) );
+            const float maxValue = StdAlgorithm::max( _red, StdAlgorithm::max( _green, _blue ) );
+            const float minValue = StdAlgorithm::min( _red, StdAlgorithm::min( _green, _blue ) );
             const float delta = maxValue - minValue;
 
             HsvColor result;
@@ -271,8 +274,8 @@ namespace Mengine
                 return;
             }
 
-            const float hue = std::fmod( std::max( 0.f, _hsv.h ), 1.f ) * 6.f;
-            const int32_t sector = static_cast<int32_t>(std::floor( hue ));
+            const float hue = StdMath::fmod( StdAlgorithm::max( 0.f, _hsv.h ), 1.f ) * 6.f;
+            const int32_t sector = static_cast<int32_t>(StdMath::floor( hue ));
             const float fraction = hue - static_cast<float>(sector);
             const float p = _hsv.v * (1.f - _hsv.s);
             const float q = _hsv.v * (1.f - _hsv.s * fraction);
@@ -315,13 +318,13 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void applyExposure_( float * const _red, float * const _green, float * const _blue, float _exposure )
         {
-            if( std::fabs( _exposure ) <= 0.0001f )
+            if( StdMath::fabs( _exposure ) <= 0.0001f )
             {
                 return;
             }
 
             HsvColor hsv = Detail::rgbToHsv_( *_red, *_green, *_blue );
-            const float value = std::max( -1.f, std::min( 1.f, _exposure ) );
+            const float value = StdAlgorithm::max( -1.f, StdAlgorithm::min( 1.f, _exposure ) );
 
             if( value > 0.f )
             {
@@ -341,12 +344,12 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void applyBrightness_( float * const _red, float * const _green, float * const _blue, float _brightness )
         {
-            if( std::fabs( _brightness ) <= 0.0001f )
+            if( StdMath::fabs( _brightness ) <= 0.0001f )
             {
                 return;
             }
 
-            const float value = std::max( -1.f, std::min( 1.f, _brightness ) );
+            const float value = StdAlgorithm::max( -1.f, StdAlgorithm::min( 1.f, _brightness ) );
             *_red = Detail::clamp01( *_red + value );
             *_green = Detail::clamp01( *_green + value );
             *_blue = Detail::clamp01( *_blue + value );
@@ -354,12 +357,12 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void applyContrast_( float * const _red, float * const _green, float * const _blue, float _contrast )
         {
-            if( std::fabs( _contrast ) <= 0.0001f )
+            if( StdMath::fabs( _contrast ) <= 0.0001f )
             {
                 return;
             }
 
-            const float factor = std::max( 0.f, 1.f + std::max( -1.f, std::min( 1.f, _contrast ) ) );
+            const float factor = StdAlgorithm::max( 0.f, 1.f + StdAlgorithm::max( -1.f, StdAlgorithm::min( 1.f, _contrast ) ) );
             *_red = Detail::clamp01( (*_red - 0.5f) * factor + 0.5f );
             *_green = Detail::clamp01( (*_green - 0.5f) * factor + 0.5f );
             *_blue = Detail::clamp01( (*_blue - 0.5f) * factor + 0.5f );
@@ -367,7 +370,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static float applyMaskedLift_( float _component, float _amount, float _mask, float _scale )
         {
-            const float value = std::max( -1.f, std::min( 1.f, _amount ) ) * _mask * _scale;
+            const float value = StdAlgorithm::max( -1.f, StdAlgorithm::min( 1.f, _amount ) ) * _mask * _scale;
 
             if( value > 0.f )
             {
@@ -379,7 +382,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void applyShadowsHighlights_( float * const _red, float * const _green, float * const _blue, float _shadows, float _highlights )
         {
-            if( std::fabs( _shadows ) <= 0.0001f && std::fabs( _highlights ) <= 0.0001f )
+            if( StdMath::fabs( _shadows ) <= 0.0001f && StdMath::fabs( _highlights ) <= 0.0001f )
             {
                 return;
             }
@@ -399,13 +402,13 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void applyTemperature_( float * const _red, float * const _green, float * const _blue, float _temperature )
         {
-            if( std::fabs( _temperature ) <= 0.0001f )
+            if( StdMath::fabs( _temperature ) <= 0.0001f )
             {
                 return;
             }
 
-            const float value = std::max( -1.f, std::min( 1.f, _temperature ) );
-            const float amount = std::fabs( value );
+            const float value = StdAlgorithm::max( -1.f, StdAlgorithm::min( 1.f, _temperature ) );
+            const float amount = StdMath::fabs( value );
 
             if( value > 0.f )
             {
@@ -423,13 +426,13 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void applyVibrance_( float * const _red, float * const _green, float * const _blue, float _vibrance )
         {
-            if( std::fabs( _vibrance ) <= 0.0001f )
+            if( StdMath::fabs( _vibrance ) <= 0.0001f )
             {
                 return;
             }
 
             HsvColor hsv = Detail::rgbToHsv_( *_red, *_green, *_blue );
-            const float value = std::max( -1.f, std::min( 1.f, _vibrance ) );
+            const float value = StdAlgorithm::max( -1.f, StdAlgorithm::min( 1.f, _vibrance ) );
 
             if( value > 0.f )
             {
@@ -447,12 +450,12 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void applyTint_( float * const _red, float * const _green, float * const _blue, float _tint )
         {
-            if( std::fabs( _tint ) <= 0.0001f )
+            if( StdMath::fabs( _tint ) <= 0.0001f )
             {
                 return;
             }
 
-            const float amount = std::min( 1.f, std::fabs( _tint ) ) * 0.18f;
+            const float amount = StdAlgorithm::min( 1.f, StdMath::fabs( _tint ) ) * 0.18f;
             const float targetRed = _tint >= 0.f ? 1.f : 0.f;
             const float targetGreen = _tint >= 0.f ? 0.f : 1.f;
             const float targetBlue = _tint >= 0.f ? 1.f : 0.f;
@@ -485,7 +488,7 @@ namespace Mengine
 
             for( size_t index : indices )
             {
-                if( std::fabs( Detail::imageFilterValue_( _batch, index, index ) ) > 0.0001f )
+                if( StdMath::fabs( Detail::imageFilterValue_( _batch, index, index ) ) > 0.0001f )
                 {
                     return true;
                 }
@@ -493,12 +496,12 @@ namespace Mengine
 
             if( _batch.hasPaintFilterValue == true )
             {
-                if( std::fabs( _batch.paintFilter[8] ) > 0.0001f )
+                if( StdMath::fabs( _batch.paintFilter[8] ) > 0.0001f )
                 {
                     return true;
                 }
 
-                if( std::fabs( _batch.paintFilter[9] ) > 0.0001f )
+                if( StdMath::fabs( _batch.paintFilter[9] ) > 0.0001f )
                 {
                     return true;
                 }
@@ -556,13 +559,13 @@ namespace Mengine
                     Detail::applyVibrance_( &red, &green, &blue, vibrance );
 
 #if defined(MENGINE_RENDER_TEXTURE_RGBA)
-                    pixel[0] = static_cast<uint8_t>(std::lround( Detail::clamp01( red * alpha ) * 255.f ));
-                    pixel[1] = static_cast<uint8_t>(std::lround( Detail::clamp01( green * alpha ) * 255.f ));
-                    pixel[2] = static_cast<uint8_t>(std::lround( Detail::clamp01( blue * alpha ) * 255.f ));
+                    pixel[0] = static_cast<uint8_t>(StdMath::lround( Detail::clamp01( red * alpha ) * 255.f ));
+                    pixel[1] = static_cast<uint8_t>(StdMath::lround( Detail::clamp01( green * alpha ) * 255.f ));
+                    pixel[2] = static_cast<uint8_t>(StdMath::lround( Detail::clamp01( blue * alpha ) * 255.f ));
 #else
-                    pixel[0] = static_cast<uint8_t>(std::lround( Detail::clamp01( blue * alpha ) * 255.f ));
-                    pixel[1] = static_cast<uint8_t>(std::lround( Detail::clamp01( green * alpha ) * 255.f ));
-                    pixel[2] = static_cast<uint8_t>(std::lround( Detail::clamp01( red * alpha ) * 255.f ));
+                    pixel[0] = static_cast<uint8_t>(StdMath::lround( Detail::clamp01( blue * alpha ) * 255.f ));
+                    pixel[1] = static_cast<uint8_t>(StdMath::lround( Detail::clamp01( green * alpha ) * 255.f ));
+                    pixel[2] = static_cast<uint8_t>(StdMath::lround( Detail::clamp01( red * alpha ) * 255.f ));
 #endif
                 }
             }
@@ -632,7 +635,15 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         class FigmaTextRasterizer
+            : public Factorable
         {
+            DECLARE_FACTORABLE( FigmaTextRasterizer );
+
+        private:
+            typedef Vector<::Figma::RenderGeneratedTextLineDesc> VectorTextLine;
+            typedef Vector<char32_t> VectorCodepoint;
+            typedef Map<String, FT_Face> MapFace;
+
         public:
             FigmaTextRasterizer()
                 : m_library( nullptr )
@@ -645,7 +656,7 @@ namespace Mengine
                 this->setFontSearchPath( "" );
             }
 
-            ~FigmaTextRasterizer()
+            ~FigmaTextRasterizer() override
             {
                 this->clearFaces_();
 
@@ -663,7 +674,7 @@ namespace Mengine
 
                 Detail::addUniqueDirectory( &m_directories, _path.c_str() );
 
-                const Char * env = std::getenv( "FIGMA_VIEWER_FONT_DIRS" );
+                const Char * env = StdLib::getenv( "FIGMA_VIEWER_FONT_DIRS" );
                 if( env != nullptr )
                 {
                     String value = env;
@@ -710,16 +721,16 @@ namespace Mengine
                     return false;
                 }
 
-                const float rasterScale = std::max( 1.f, _rasterScale );
-                const uint32_t width = static_cast<uint32_t>(std::ceil( std::max( 1.f, _desc.rect.w ) * rasterScale ));
-                const uint32_t height = static_cast<uint32_t>(std::ceil( std::max( 1.f, _desc.rect.h ) * rasterScale ));
+                const float rasterScale = StdAlgorithm::max( 1.f, _rasterScale );
+                const uint32_t width = static_cast<uint32_t>(StdMath::ceil( StdAlgorithm::max( 1.f, _desc.rect.w ) * rasterScale ));
+                const uint32_t height = static_cast<uint32_t>(StdMath::ceil( StdAlgorithm::max( 1.f, _desc.rect.h ) * rasterScale ));
 
                 if( width == 0 || height == 0 )
                 {
                     return false;
                 }
 
-                Vector<::Figma::RenderGeneratedTextLineDesc> lines;
+                VectorTextLine lines;
                 lines.reserve( _desc.textLineCount );
 
                 for( uint32_t lineIndex = 0; lineIndex != _desc.textLineCount; ++lineIndex )
@@ -739,7 +750,7 @@ namespace Mengine
                 return true;
             }
             //////////////////////////////////////////////////////////////////////////
-            bool makeTextPixels( const ::Figma::RenderListInterface * _renderList, uint32_t _batchIndex, const ::Figma::RenderGeneratedTextureDesc & _desc, float _rasterScale, Vector<uint8_t> * const _pixels, uint32_t * const _width, uint32_t * const _height )
+            bool makeTextPixels( const ::Figma::RenderListInterface * _renderList, uint32_t _batchIndex, const ::Figma::RenderGeneratedTextureDesc & _desc, float _rasterScale, Data * const _pixels, uint32_t * const _width, uint32_t * const _height )
             {
                 if( m_library == nullptr || _pixels == nullptr || _width == nullptr || _height == nullptr )
                 {
@@ -758,23 +769,23 @@ namespace Mengine
                     return false;
                 }
 
-                const float rasterScale = std::max( 1.f, _rasterScale );
-                const FT_UInt pixelSize = static_cast<FT_UInt>(std::max<long>( 1, std::lround( _desc.fontSize * rasterScale ) ));
+                const float rasterScale = StdAlgorithm::max( 1.f, _rasterScale );
+                const FT_UInt pixelSize = static_cast<FT_UInt>(StdAlgorithm::max<long>( 1, StdMath::lround( _desc.fontSize * rasterScale ) ));
 
                 if( FT_Set_Pixel_Sizes( face, 0, pixelSize ) != FT_Err_Ok )
                 {
                     return false;
                 }
 
-                const uint32_t width = static_cast<uint32_t>(std::ceil( std::max( 1.f, _desc.rect.w ) * rasterScale ));
-                const uint32_t height = static_cast<uint32_t>(std::ceil( std::max( 1.f, _desc.rect.h ) * rasterScale ));
+                const uint32_t width = static_cast<uint32_t>(StdMath::ceil( StdAlgorithm::max( 1.f, _desc.rect.w ) * rasterScale ));
+                const uint32_t height = static_cast<uint32_t>(StdMath::ceil( StdAlgorithm::max( 1.f, _desc.rect.h ) * rasterScale ));
 
                 if( width == 0 || height == 0 )
                 {
                     return false;
                 }
 
-                Vector<::Figma::RenderGeneratedTextLineDesc> lines;
+                VectorTextLine lines;
                 lines.reserve( _desc.textLineCount );
 
                 for( uint32_t lineIndex = 0; lineIndex != _desc.textLineCount; ++lineIndex )
@@ -794,8 +805,8 @@ namespace Mengine
                 for( uint32_t lineIndex = 0; lineIndex != _desc.textLineCount; ++lineIndex )
                 {
                     const ::Figma::RenderGeneratedTextLineDesc & line = lines[lineIndex];
-                    std::string_view lineText = this->textLineView_( _desc, lines, lineIndex );
-                    Vector<char32_t> codepoints = this->decodeUtf8_( lineText );
+                    StringView lineText = this->textLineView_( _desc, lines, lineIndex );
+                    VectorCodepoint codepoints = this->decodeUtf8_( lineText );
 
                     if( codepoints.empty() == true )
                     {
@@ -821,7 +832,7 @@ namespace Mengine
         protected:
             void clearFaces_()
             {
-                for( const Map<String, FT_Face>::value_type & value : m_faces )
+                for( const MapFace::value_type & value : m_faces )
                 {
                     if( value.second != nullptr )
                     {
@@ -832,7 +843,7 @@ namespace Mengine
                 m_faces.clear();
             }
 
-            String makeSignature_( const ::Figma::RenderGeneratedTextureDesc & _desc, const Vector<::Figma::RenderGeneratedTextLineDesc> & _lines, uint32_t _width, uint32_t _height ) const
+            String makeSignature_( const ::Figma::RenderGeneratedTextureDesc & _desc, const VectorTextLine & _lines, uint32_t _width, uint32_t _height ) const
             {
                 String signature;
                 Detail::appendSignature( &signature, _desc.key );
@@ -840,31 +851,31 @@ namespace Mengine
                 Detail::appendSignature( &signature, _desc.fontFamily );
                 Detail::appendSignature( &signature, _desc.fontStyle );
                 Detail::appendSignature( &signature, _desc.fontPostscriptName );
-                signature += std::to_string( _desc.fontSize );
+                signature += Helper::stringFloat( _desc.fontSize );
                 signature.push_back( '|' );
-                signature += std::to_string( _desc.color.r );
+                signature += Helper::stringFloat( _desc.color.r );
                 signature.push_back( ',' );
-                signature += std::to_string( _desc.color.g );
+                signature += Helper::stringFloat( _desc.color.g );
                 signature.push_back( ',' );
-                signature += std::to_string( _desc.color.b );
+                signature += Helper::stringFloat( _desc.color.b );
                 signature.push_back( ',' );
-                signature += std::to_string( _desc.color.a );
+                signature += Helper::stringFloat( _desc.color.a );
                 signature.push_back( '|' );
-                signature += std::to_string( _width );
+                signature += Helper::stringFormat( "%u", _width );
                 signature.push_back( 'x' );
-                signature += std::to_string( _height );
+                signature += Helper::stringFormat( "%u", _height );
                 signature.push_back( '|' );
 
                 for( const ::Figma::RenderGeneratedTextLineDesc & line : _lines )
                 {
                     Detail::appendSignature( &signature, line.text );
-                    signature += std::to_string( line.x );
+                    signature += Helper::stringFloat( line.x );
                     signature.push_back( ',' );
-                    signature += std::to_string( line.y );
+                    signature += Helper::stringFloat( line.y );
                     signature.push_back( ',' );
-                    signature += std::to_string( line.width );
+                    signature += Helper::stringFloat( line.width );
                     signature.push_back( ',' );
-                    signature += std::to_string( line.lineAscent );
+                    signature += Helper::stringFloat( line.lineAscent );
                     signature.push_back( '|' );
                 }
 
@@ -880,7 +891,7 @@ namespace Mengine
                     return nullptr;
                 }
 
-                Map<String, FT_Face>::iterator it_found = m_faces.find( key );
+                MapFace::iterator it_found = m_faces.find( key );
 
                 if( it_found != m_faces.end() )
                 {
@@ -1093,9 +1104,9 @@ namespace Mengine
                 return nullptr;
             }
 
-            Vector<char32_t> decodeUtf8_( std::string_view _text ) const
+            VectorCodepoint decodeUtf8_( StringView _text ) const
             {
-                Vector<char32_t> result;
+                VectorCodepoint result;
                 result.reserve( _text.size() );
 
                 const unsigned char * cursor = reinterpret_cast<const unsigned char *>(_text.data());
@@ -1151,13 +1162,13 @@ namespace Mengine
                 return result;
             }
 
-            std::string_view sourceTextView_( const ::Figma::RenderGeneratedTextureDesc & _desc, const ::Figma::RenderGeneratedTextLineDesc & _line ) const
+            StringView sourceTextView_( const ::Figma::RenderGeneratedTextureDesc & _desc, const ::Figma::RenderGeneratedTextLineDesc & _line ) const
             {
                 const ::Figma::FigmaStringView source = _line.text.empty() == false ? _line.text : _desc.text;
-                return std::string_view( source.data(), source.size() );
+                return StringView( source.data(), source.size() );
             }
 
-            std::string_view trimTrailingWhitespace_( std::string_view _value ) const
+            StringView trimTrailingWhitespace_( StringView _value ) const
             {
                 while( _value.empty() == false && (_value.back() == ' ' || _value.back() == '\t' || _value.back() == '\r' || _value.back() == '\n') )
                 {
@@ -1167,7 +1178,7 @@ namespace Mengine
                 return _value;
             }
 
-            std::string_view explicitLineSegment_( std::string_view _value, size_t _lineIndex ) const
+            StringView explicitLineSegment_( StringView _value, size_t _lineIndex ) const
             {
                 size_t begin = 0;
                 size_t index = 0;
@@ -1178,10 +1189,10 @@ namespace Mengine
 
                     if( index == _lineIndex )
                     {
-                        return end == std::string_view::npos ? _value.substr( begin ) : _value.substr( begin, end - begin );
+                        return end == StringView::npos ? _value.substr( begin ) : _value.substr( begin, end - begin );
                     }
 
-                    if( end == std::string_view::npos )
+                    if( end == StringView::npos )
                     {
                         break;
                     }
@@ -1199,27 +1210,27 @@ namespace Mengine
                 return {};
             }
 
-            std::string_view textLineView_( const ::Figma::RenderGeneratedTextureDesc & _desc, const Vector<::Figma::RenderGeneratedTextLineDesc> & _lines, size_t _lineIndex ) const
+            StringView textLineView_( const ::Figma::RenderGeneratedTextureDesc & _desc, const VectorTextLine & _lines, size_t _lineIndex ) const
             {
                 const ::Figma::RenderGeneratedTextLineDesc & line = _lines[_lineIndex];
-                std::string_view view = this->sourceTextView_( _desc, line );
+                StringView view = this->sourceTextView_( _desc, line );
 
-                if( view.find_first_of( "\r\n" ) == std::string_view::npos )
+                if( view.find_first_of( "\r\n" ) == StringView::npos )
                 {
                     if( _lineIndex + 1 < _lines.size() )
                     {
-                        std::string_view nextView = this->sourceTextView_( _desc, _lines[_lineIndex + 1] );
+                        StringView nextView = this->sourceTextView_( _desc, _lines[_lineIndex + 1] );
 
-                        if( nextView.find_first_of( "\r\n" ) != std::string_view::npos )
+                        if( nextView.find_first_of( "\r\n" ) != StringView::npos )
                         {
                             nextView = this->explicitLineSegment_( nextView, _lineIndex + 1 );
                         }
 
                         nextView = this->trimTrailingWhitespace_( nextView );
 
-                        const size_t suffix = nextView.empty() == false ? view.rfind( nextView ) : std::string_view::npos;
+                        const size_t suffix = nextView.empty() == false ? view.rfind( nextView ) : StringView::npos;
 
-                        if( suffix != std::string_view::npos && suffix > 0 )
+                        if( suffix != StringView::npos && suffix > 0 )
                         {
                             return this->trimTrailingWhitespace_( view.substr( 0, suffix ) );
                         }
@@ -1243,7 +1254,7 @@ namespace Mengine
                 return glyphIndex;
             }
 
-            float measureLineAdvance_( FT_Face _face, const Vector<char32_t> & _codepoints ) const
+            float measureLineAdvance_( FT_Face _face, const VectorCodepoint & _codepoints ) const
             {
                 float advance = 0.f;
                 FT_UInt previousGlyph = 0;
@@ -1278,7 +1289,7 @@ namespace Mengine
                 return advance;
             }
 
-            float horizontalScaleForLine_( FT_Face _face, const Vector<char32_t> & _codepoints, float _targetWidth ) const
+            float horizontalScaleForLine_( FT_Face _face, const VectorCodepoint & _codepoints, float _targetWidth ) const
             {
                 const float measuredWidth = this->measureLineAdvance_( _face, _codepoints );
 
@@ -1294,7 +1305,7 @@ namespace Mengine
                     return 1.f;
                 }
 
-                return std::max( 0.25f, std::min( 4.f, scale ) );
+                return StdAlgorithm::max( 0.25f, StdAlgorithm::min( 4.f, scale ) );
             }
 
             uint8_t coverageAt_( const FT_Bitmap & _bitmap, int32_t _x, int32_t _y ) const
@@ -1350,15 +1361,15 @@ namespace Mengine
             void writeTargetPixel_( uint8_t * const _target, float _red, float _green, float _blue, float _alpha ) const
             {
 #if defined(MENGINE_RENDER_TEXTURE_RGBA)
-                _target[0] = static_cast<uint8_t>(std::lround( Detail::clamp01( _red ) * 255.f ));
-                _target[1] = static_cast<uint8_t>(std::lround( Detail::clamp01( _green ) * 255.f ));
-                _target[2] = static_cast<uint8_t>(std::lround( Detail::clamp01( _blue ) * 255.f ));
-                _target[3] = static_cast<uint8_t>(std::lround( Detail::clamp01( _alpha ) * 255.f ));
+                _target[0] = static_cast<uint8_t>(StdMath::lround( Detail::clamp01( _red ) * 255.f ));
+                _target[1] = static_cast<uint8_t>(StdMath::lround( Detail::clamp01( _green ) * 255.f ));
+                _target[2] = static_cast<uint8_t>(StdMath::lround( Detail::clamp01( _blue ) * 255.f ));
+                _target[3] = static_cast<uint8_t>(StdMath::lround( Detail::clamp01( _alpha ) * 255.f ));
 #else
-                _target[0] = static_cast<uint8_t>(std::lround( Detail::clamp01( _blue ) * 255.f ));
-                _target[1] = static_cast<uint8_t>(std::lround( Detail::clamp01( _green ) * 255.f ));
-                _target[2] = static_cast<uint8_t>(std::lround( Detail::clamp01( _red ) * 255.f ));
-                _target[3] = static_cast<uint8_t>(std::lround( Detail::clamp01( _alpha ) * 255.f ));
+                _target[0] = static_cast<uint8_t>(StdMath::lround( Detail::clamp01( _blue ) * 255.f ));
+                _target[1] = static_cast<uint8_t>(StdMath::lround( Detail::clamp01( _green ) * 255.f ));
+                _target[2] = static_cast<uint8_t>(StdMath::lround( Detail::clamp01( _red ) * 255.f ));
+                _target[3] = static_cast<uint8_t>(StdMath::lround( Detail::clamp01( _alpha ) * 255.f ));
 #endif
             }
 
@@ -1424,9 +1435,9 @@ namespace Mengine
                     if( pixel[3] != 0 && pixel[3] != 255 )
                     {
                         const float invAlpha = 255.f / static_cast<float>(pixel[3]);
-                        red = std::min( 1.f, red * invAlpha );
-                        green = std::min( 1.f, green * invAlpha );
-                        blue = std::min( 1.f, blue * invAlpha );
+                        red = StdAlgorithm::min( 1.f, red * invAlpha );
+                        green = StdAlgorithm::min( 1.f, green * invAlpha );
+                        blue = StdAlgorithm::min( 1.f, blue * invAlpha );
                     }
 
                     this->blendStraightPixel_( _target, red, green, blue, sourceAlpha );
@@ -1441,11 +1452,11 @@ namespace Mengine
                 this->blendStraightPixel_( _target, Detail::clamp01( _desc.color.r ), Detail::clamp01( _desc.color.g ), Detail::clamp01( _desc.color.b ), sourceAlpha );
             }
 
-            void rasterizeLine_( FT_Face _face, const ::Figma::RenderGeneratedTextureDesc & _desc, const Vector<char32_t> & _codepoints, float _baselineX, float _baselineY, float _horizontalScale, uint8_t * const _pixels, uint32_t _width, uint32_t _height, uint32_t _stride ) const
+            void rasterizeLine_( FT_Face _face, const ::Figma::RenderGeneratedTextureDesc & _desc, const VectorCodepoint & _codepoints, float _baselineX, float _baselineY, float _horizontalScale, uint8_t * const _pixels, uint32_t _width, uint32_t _height, uint32_t _stride ) const
             {
                 float penX = _baselineX;
                 FT_UInt previousGlyph = 0;
-                const float horizontalScale = std::max( 0.001f, _horizontalScale );
+                const float horizontalScale = StdAlgorithm::max( 0.001f, _horizontalScale );
 
                 for( char32_t codepoint : _codepoints )
                 {
@@ -1479,9 +1490,9 @@ namespace Mengine
                     {
                         const float glyphX = _baselineX + (penX + Detail::to26Dot6( glyph->metrics.horiBearingX ) - _baselineX) * horizontalScale;
                         const float glyphY = _baselineY - Detail::to26Dot6( glyph->metrics.horiBearingY );
-                        const int32_t destinationX = static_cast<int32_t>(std::lround( glyphX ));
-                        const int32_t destinationY = static_cast<int32_t>(std::lround( glyphY ));
-                        const int32_t destinationWidth = std::max<int32_t>( 1, static_cast<int32_t>(std::lround( static_cast<float>(bitmap.width) * horizontalScale )) );
+                        const int32_t destinationX = static_cast<int32_t>(StdMath::lround( glyphX ));
+                        const int32_t destinationY = static_cast<int32_t>(StdMath::lround( glyphY ));
+                        const int32_t destinationWidth = StdAlgorithm::max<int32_t>( 1, static_cast<int32_t>(StdMath::lround( static_cast<float>(bitmap.width) * horizontalScale )) );
                         const int32_t destinationHeight = static_cast<int32_t>(bitmap.rows);
 
                         for( int32_t scaledY = 0; scaledY != destinationHeight; ++scaledY )
@@ -1498,7 +1509,7 @@ namespace Mengine
 
                             for( int32_t scaledX = 0; scaledX != destinationWidth; ++scaledX )
                             {
-                                const int32_t sourceX = std::min<int32_t>( static_cast<int32_t>(bitmap.width) - 1, std::max<int32_t>( 0, static_cast<int32_t>(std::floor( (static_cast<float>(scaledX) + 0.5f) / horizontalScale )) ) );
+                                const int32_t sourceX = StdAlgorithm::min<int32_t>( static_cast<int32_t>(bitmap.width) - 1, StdAlgorithm::max<int32_t>( 0, static_cast<int32_t>(StdMath::floor( (static_cast<float>(scaledX) + 0.5f) / horizontalScale )) ) );
                                 const int32_t targetX = destinationX + scaledX;
 
                                 if( targetX < 0 || targetX >= static_cast<int32_t>(_width) )
@@ -1518,8 +1529,8 @@ namespace Mengine
 
         protected:
             FT_Library m_library;
-            Vector<String> m_directories;
-            Map<String, FT_Face> m_faces;
+            VectorString m_directories;
+            MapFace m_faces;
         };
         //////////////////////////////////////////////////////////////////////////
         static const Char * getFigmaResultMessage( ::Figma::EResult _result )
@@ -1665,7 +1676,7 @@ namespace Mengine
         , m_viewportSize( 1024.f, 768.f )
         , m_viewportScale( 1.f )
         , m_playbackRate( 1.f )
-        , m_textRasterizer( std::make_unique<Detail::FigmaTextRasterizer>() )
+        , m_textRasterizer( Helper::makeFactorableUnique<Detail::FigmaTextRasterizer>( MENGINE_DOCUMENT_FACTORABLE ) )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -2092,7 +2103,7 @@ namespace Mengine
 
         m_player->setActionRouter( this );
 
-        for( const Map<String, FigmaBindingValue>::value_type & binding : m_bindingValues )
+        for( const MapFigmaBindingValue::value_type & binding : m_bindingValues )
         {
             if( this->applyBindingValue_( binding.first, binding.second ) == false )
             {
@@ -2187,7 +2198,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Figma::clearTextureCache_() const
     {
-        for( const Map<String, TextureCacheDesc>::value_type & value : m_textureCache )
+        for( const MapTextureCache::value_type & value : m_textureCache )
         {
             const TextureCacheDesc & desc = value.second;
 
@@ -2486,7 +2497,7 @@ namespace Mengine
         if( format == PF_R8G8B8 && codecType != STRINGIZE_STRING_LOCAL( "pngImage" ) )
         {
             const size_t sourcePitch = (size_t)width * 3;
-            Vector<uint8_t> sourcePixels;
+            Data sourcePixels;
             sourcePixels.resize( sourcePitch * height );
 
             ImageDecoderData data;
@@ -2540,7 +2551,7 @@ namespace Mengine
             return nullptr;
         }
 
-        Vector<uint8_t> pixels;
+        Data pixels;
         uint32_t width = 0;
         uint32_t height = 0;
 
@@ -2583,7 +2594,7 @@ namespace Mengine
             Detail::appendImageFilterSignature_( &cacheKey, _batch );
         }
 
-        Map<String, TextureCacheDesc>::iterator it_found = m_textureCache.find( cacheKey );
+        MapTextureCache::iterator it_found = m_textureCache.find( cacheKey );
 
         if( _batch.textureType == ::Figma::ERenderTextureType::Asset )
         {
@@ -2692,7 +2703,7 @@ namespace Mengine
         const float totalColorA = totalColor.getA();
 
         RenderContext context = *_context;
-        Vector<const RenderScissorInterface *> scissorStack;
+        Detail::VectorRenderScissorInterface scissorStack;
         scissorStack.reserve( batchCount );
         scissorStack.emplace_back( _context->scissor );
 

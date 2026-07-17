@@ -211,14 +211,17 @@ namespace Mengine
         desc.colorAttachments[0].storeAction = MTLStoreActionStore;
         desc.colorAttachments[0].clearColor = MTLClearColorMake( 0.0, 0.0, 0.0, 0.0 );
 
+        // RenderService opens the same target once per render pass. Preserve
+        // depth and stencil so later passes can load the occlusion produced by
+        // earlier meshes in the same frame.
         desc.depthAttachment.texture = m_depthStencilTexture;
         desc.depthAttachment.loadAction = loadAction;
-        desc.depthAttachment.storeAction = MTLStoreActionDontCare;
+        desc.depthAttachment.storeAction = MTLStoreActionStore;
         desc.depthAttachment.clearDepth = 1.0;
 
         desc.stencilAttachment.texture = m_depthStencilTexture;
         desc.stencilAttachment.loadAction = loadAction;
-        desc.stencilAttachment.storeAction = MTLStoreActionDontCare;
+        desc.stencilAttachment.storeAction = MTLStoreActionStore;
         desc.stencilAttachment.clearStencil = 0;
 
         m_frameContext->colorAttachmentPixelFormat = m_texture.pixelFormat;

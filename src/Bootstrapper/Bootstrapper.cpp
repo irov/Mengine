@@ -111,6 +111,7 @@ SERVICE_EXTERN( PickerService );
 SERVICE_EXTERN( PlayerService );
 SERVICE_EXTERN( AccountService );
 SERVICE_EXTERN( HttpService );
+SERVICE_EXTERN( SocketService );
 SERVICE_EXTERN( GameService );
 SERVICE_EXTERN( TimerService );
 SERVICE_EXTERN( TimelineService );
@@ -153,6 +154,10 @@ SERVICE_EXTERN( DateTimeSystem );
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_SYSTEM_HTTP)
 SERVICE_EXTERN( HttpSystem );
+#endif
+//////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_SYSTEM_SOCKET)
+SERVICE_EXTERN( SocketSystem );
 #endif
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLATFORM)
@@ -304,10 +309,6 @@ PLUGIN_EXPORT( TTF );
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_FE_STATIC)
 PLUGIN_EXPORT( FE );
-#endif
-//////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_WIN32_SOCKET_STATIC)
-PLUGIN_EXPORT( Win32Socket );
 #endif
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_NODEDEBUGGER_STATIC)
@@ -689,6 +690,12 @@ namespace Mengine
         SERVICE_FINALIZE( HttpSystem );
 #endif
 
+        SERVICE_FINALIZE( SocketService );
+
+#if defined(MENGINE_SYSTEM_SOCKET)
+        SERVICE_FINALIZE( SocketSystem );
+#endif
+
 #if defined(MENGINE_PLATFORM_WINDOWS)
         SERVICE_FINALIZE( Win32KernelService );
 #endif
@@ -731,6 +738,12 @@ namespace Mengine
 
 #if defined(MENGINE_SYSTEM_HTTP)
         SERVICE_DESTROY( HttpSystem );
+#endif
+
+        SERVICE_DESTROY( SocketService );
+
+#if defined(MENGINE_SYSTEM_SOCKET)
+        SERVICE_DESTROY( SocketSystem );
 #endif
 
         SERVICE_DESTROY( FileSystem );
@@ -1444,6 +1457,11 @@ namespace Mengine
         BOOTSTRAPPER_SERVICE_CREATE( HttpSystem, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
+#if defined(MENGINE_SYSTEM_SOCKET)
+        BOOTSTRAPPER_SERVICE_CREATE( SocketSystem, MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+        BOOTSTRAPPER_SERVICE_CREATE( SocketService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( HttpService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( SoundService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( ModuleService, MENGINE_DOCUMENT_FACTORABLE );
@@ -1660,10 +1678,6 @@ namespace Mengine
 
 #if defined(MENGINE_PLUGIN_STEAM_STATIC)
         MENGINE_ADD_PLUGIN( Steam, "plugin Steam...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-#if defined(MENGINE_PLUGIN_WIN32_SOCKET_STATIC)
-        MENGINE_ADD_PLUGIN( Win32Socket, "plugin Win32Socket...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #if defined(MENGINE_PLUGIN_GOAP_STATIC)

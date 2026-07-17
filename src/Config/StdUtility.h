@@ -10,5 +10,7 @@ namespace Mengine
     {
         using std::pair;
         using std::make_pair;
+        using std::move;
+        using std::forward;
     }
 }

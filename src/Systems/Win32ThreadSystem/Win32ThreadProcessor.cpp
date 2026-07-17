@@ -84,8 +84,11 @@ namespace Mengine
             return false;
         }
 
-        WIN32_KERNEL_SERVICE()
-            ->setThreadDescription( thread, m_description );
+        if( SERVICE_IS_INITIALIZE( Win32KernelServiceInterface ) == true )
+        {
+            WIN32_KERNEL_SERVICE()
+                ->setThreadDescription( thread, m_description );
+        }
 
         switch( m_priority )
         {
@@ -152,15 +155,18 @@ namespace Mengine
         ALLOCATOR_SYSTEM()
             ->beginThread( (ThreadId)m_threadId );
 
-        if( PLATFORM_SYSTEM()
-            ->beginThread( (ThreadId)m_threadId ) == false )
+        if( SERVICE_IS_INITIALIZE( PlatformSystemInterface ) == true )
         {
-            LOGGER_ERROR( "invalid begin thread '%s' id: %ld"
-                , m_description.nameA
-                , m_threadId
-            );
+            if( PLATFORM_SYSTEM()
+                ->beginThread( (ThreadId)m_threadId ) == false )
+            {
+                LOGGER_ERROR( "invalid begin thread '%s' id: %ld"
+                    , m_description.nameA
+                    , m_threadId
+                );
 
-            return;
+                return;
+            }
         }
 
         LOGGER_INFO( "thread", "create thread name: %s id: %ld priority: %d"
@@ -217,8 +223,11 @@ namespace Mengine
 #endif
         }
 
-        PLATFORM_SYSTEM()
-            ->endThread( (ThreadId)m_threadId );
+        if( SERVICE_IS_INITIALIZE( PlatformSystemInterface ) == true )
+        {
+            PLATFORM_SYSTEM()
+                ->endThread( (ThreadId)m_threadId );
+        }
 
         ALLOCATOR_SYSTEM()
             ->endThread( (ThreadId)m_threadId );

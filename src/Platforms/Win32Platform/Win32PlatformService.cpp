@@ -117,6 +117,8 @@ namespace Mengine
         , m_prevTime( 0.0 )
         , m_cursorInArea( false )
         , m_cursorMode( false )
+        , m_cursorCaptureRequested( false )
+        , m_cursorCaptureApplied( false )
         , m_cursor( NULL )
         , m_lastMouse( false )
         , m_lastMouseX( 0 )
@@ -349,6 +351,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32PlatformService::_finalizeService()
     {
+        m_cursorCaptureRequested = false;
+        this->updateCursorCapture_();
+
         m_active = false;
 
         m_platformTags.clear();
@@ -1716,16 +1721,36 @@ namespace Mengine
                     Helper::pushMouseEnterEvent( messageTimestamp, TC_TOUCH0, point.x, point.y, 0.f );
                 }
 
-                if( m_lastMouse == false )
+                int32_t dx;
+                int32_t dy;
+
+                if( m_cursorCaptureApplied == true )
                 {
-                    m_lastMouseX = p.x;
-                    m_lastMouseY = p.y;
+                    RECT captureRect;
+                    if( ::GetClientRect( m_hWnd, &captureRect ) == FALSE )
+                    {
+                        return false;
+                    }
 
-                    m_lastMouse = true;
+                    const int32_t centerX = (captureRect.left + captureRect.right) / 2;
+                    const int32_t centerY = (captureRect.top + captureRect.bottom) / 2;
+
+                    dx = p.x - centerX;
+                    dy = p.y - centerY;
                 }
+                else
+                {
+                    if( m_lastMouse == false )
+                    {
+                        m_lastMouseX = p.x;
+                        m_lastMouseY = p.y;
 
-                int32_t dx = p.x - m_lastMouseX;
-                int32_t dy = p.y - m_lastMouseY;
+                        m_lastMouse = true;
+                    }
+
+                    dx = p.x - m_lastMouseX;
+                    dy = p.y - m_lastMouseY;
+                }
 
                 if( dx == 0 && dy == 0 )
                 {
@@ -1765,6 +1790,22 @@ namespace Mengine
                 fdy /= height;
 
                 Helper::pushMouseMoveEvent( messageTimestamp, TC_TOUCH0, point.x, point.y, fdx, fdy, 0.f, 0.f );
+
+                if( m_cursorCaptureApplied == true )
+                {
+                    POINT center;
+                    center.x = (rect.left + rect.right) / 2;
+                    center.y = (rect.top + rect.bottom) / 2;
+
+                    m_lastMouseX = center.x;
+                    m_lastMouseY = center.y;
+                    m_lastMouse = true;
+
+                    if( ::ClientToScreen( m_hWnd, &center ) == TRUE )
+                    {
+                        ::SetCursorPos( center.x, center.y );
+                    }
+                }
 
                 handle = true;
                 *_result = 0;
@@ -2731,6 +2772,11 @@ namespace Mengine
             , SWP_NOCOPYBITS | SWP_NOACTIVATE
         );
 
+        if( this->updateCursorCapture_() == false )
+        {
+            return false;
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -3653,6 +3699,77 @@ namespace Mengine
         ::SetCursorPos( cPosition.x, cPosition.y );
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Win32PlatformService::setCursorCapture( bool _capture )
+    {
+        m_cursorCaptureRequested = _capture;
+
+        return this->updateCursorCapture_();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32PlatformService::updateCursorCapture_()
+    {
+        const bool capture = m_cursorCaptureRequested == true && m_active == true && m_hWnd != NULL;
+
+        if( capture == false )
+        {
+            if( m_cursorCaptureApplied == false )
+            {
+                return true;
+            }
+
+            ::ClipCursor( NULL );
+
+            if( ::GetCapture() == m_hWnd )
+            {
+                ::ReleaseCapture();
+            }
+
+            m_cursorCaptureApplied = false;
+            m_lastMouse = false;
+
+            return true;
+        }
+
+        RECT clientRect;
+        if( ::GetClientRect( m_hWnd, &clientRect ) == FALSE )
+        {
+            return false;
+        }
+
+        POINT upperLeft = {clientRect.left, clientRect.top};
+        POINT lowerRight = {clientRect.right, clientRect.bottom};
+
+        if( ::ClientToScreen( m_hWnd, &upperLeft ) == FALSE || ::ClientToScreen( m_hWnd, &lowerRight ) == FALSE )
+        {
+            return false;
+        }
+
+        RECT captureRect = {upperLeft.x, upperLeft.y, lowerRight.x, lowerRight.y};
+        if( ::ClipCursor( &captureRect ) == FALSE )
+        {
+            return false;
+        }
+
+        ::SetCapture( m_hWnd );
+
+        POINT center;
+        center.x = (clientRect.left + clientRect.right) / 2;
+        center.y = (clientRect.top + clientRect.bottom) / 2;
+
+        m_lastMouseX = center.x;
+        m_lastMouseY = center.y;
+        m_lastMouse = true;
+
+        if( ::ClientToScreen( m_hWnd, &center ) == TRUE )
+        {
+            ::SetCursorPos( center.x, center.y );
+        }
+
+        m_cursorCaptureApplied = true;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Win32PlatformService::setCursorIcon( const ConstString & _icon )
     {
         LOGGER_INFO( "platform", "set cursor icon '%s'"
@@ -3773,6 +3890,8 @@ namespace Mengine
         }
 
         m_active = _active;
+
+        this->updateCursorCapture_();
 
         if( m_active == false )
         {

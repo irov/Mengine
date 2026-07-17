@@ -83,7 +83,9 @@ Common
     TimepipeInterface.h
     TimepipeServiceInterface.h
     SocketInterface.h
+    DatagramInterface.h
     SocketSystemInterface.h
+    SocketServiceInterface.h
     FactoryServiceInterface.h
     ResourceServiceInterface.h
     NotificatorInterface.h

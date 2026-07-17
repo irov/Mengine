@@ -143,6 +143,7 @@ src
     Abs.h
     StdInt.h
     StdDef.h
+    StdErrno.h
     StdIntTypes.h
     StdArg.h
     StdIO.h
@@ -161,6 +162,7 @@ src
     StdThread.h
     StdAssert.h
     StdRandom.h
+    StdSignal.h
     Limits.h
     UInt32ToPointer.h
     Metaprogramming.h

@@ -1373,9 +1373,12 @@ namespace Mengine
         ::XRaiseWindow( m_display, m_window );
         ::XFlush( m_display );
 
-        if( SERVICE_IS_INITIALIZE( RenderSystemInterface ) == true && RENDER_SYSTEM()->onWindowChangeFullscreen( _fullscreen ) == false )
+        if( SERVICE_IS_INITIALIZE( RenderSystemInterface ) == true )
         {
-            return false;
+            if( RENDER_SYSTEM()->onWindowChangeFullscreen( _fullscreen ) == false )
+            {
+                return false;
+            }
         }
 
         return true;
@@ -1469,6 +1472,13 @@ namespace Mengine
 
         ::XWarpPointer( m_display, None, m_window, 0, 0, 0, 0, x, y );
         ::XFlush( m_display );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool UnixPlatformService::setCursorCapture( bool _capture )
+    {
+        MENGINE_UNUSED( _capture );
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void UnixPlatformService::setCursorIcon( const ConstString & _icon )

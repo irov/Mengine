@@ -107,6 +107,7 @@ namespace Mengine
         void minimizeWindow() override;
 
         void setCursorPosition( const mt::vec2f & _pos ) override;
+        bool setCursorCapture( bool _capture ) override;
         void setCursorIcon( const ConstString & _icon ) override;
         bool hasCursorIcon( const ConstString & _icon ) const override;
 
@@ -178,6 +179,7 @@ namespace Mengine
         bool processEvents_();
         void pushQuitEvent_();
         void setActive_( bool _active, Timestamp _timestamp );
+        bool updateCursorCapture_();
         bool isNeedWindowRender() const;
         void updateWindowResolution_();
 
@@ -222,5 +224,7 @@ namespace Mengine
         bool m_touchpad;
         bool m_quitRequested;
         bool m_cursorVisible;
+        bool m_cursorCaptureRequested;
+        bool m_cursorCaptureApplied;
     };
 }

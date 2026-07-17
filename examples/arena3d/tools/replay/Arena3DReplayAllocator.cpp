@@ -1,0 +1,38 @@
+#include "Kernel/AllocatorHelper.h"
+
+#include "Config/StdLib.h"
+
+//////////////////////////////////////////////////////////////////////////
+namespace Mengine
+{
+    //////////////////////////////////////////////////////////////////////////
+    namespace Helper
+    {
+        //////////////////////////////////////////////////////////////////////////
+        void * allocateMemory( size_t _size, const Char * _doc )
+        {
+            (void)_doc;
+            return StdLib::malloc( _size );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void * callocateMemory( size_t _count, size_t _size, const Char * _doc )
+        {
+            (void)_doc;
+            return StdLib::calloc( _count, _size );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void * reallocateMemory( void * _buffer, size_t _size, const Char * _doc )
+        {
+            (void)_doc;
+            return StdLib::realloc( _buffer, _size );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void deallocateMemory( void * _memory, const Char * _doc )
+        {
+            (void)_doc;
+            StdLib::free( _memory );
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
+    //////////////////////////////////////////////////////////////////////////
+}

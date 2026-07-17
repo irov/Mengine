@@ -250,17 +250,20 @@ namespace
     {
         ImGuiIO & io = ImGui::GetIO();
 
-        if( SERVICE_IS_INITIALIZE( Mengine::ApplicationInterface ) == true && APPLICATION_SERVICE()->getCursorMode() == false )
+        if( SERVICE_IS_INITIALIZE( Mengine::ApplicationInterface ) == true )
         {
-            if( _data->lastCursor != ImGuiMouseCursor_None )
+            if( APPLICATION_SERVICE()->getCursorMode() == false )
             {
-                PLATFORM_SERVICE()
-                    ->notifyCursorModeChanged( false );
+                if( _data->lastCursor != ImGuiMouseCursor_None )
+                {
+                    PLATFORM_SERVICE()
+                        ->notifyCursorModeChanged( false );
 
-                _data->lastCursor = ImGuiMouseCursor_None;
+                    _data->lastCursor = ImGuiMouseCursor_None;
+                }
+
+                return;
             }
-
-            return;
         }
 
         if( (io.ConfigFlags & ImGuiConfigFlags_NoMouseCursorChange) != 0 )

@@ -2,19 +2,24 @@
 
 #include "Arena3DSimulation.h"
 
-#include <cstdint>
-#include <filesystem>
-#include <vector>
+#include "Kernel/Data.h"
+#include "Kernel/String.h"
+#include "Kernel/Vector.h"
+
+#include "Config/StdInt.h"
 
 namespace Arena3D
 {
+    //////////////////////////////////////////////////////////////////////////
     struct ReplayCheckpoint
     {
         uint64_t tick = 0;
         StateChecksum checksum;
-        std::vector<uint8_t> snapshot;
+        Mengine::Data snapshot;
     };
-
+    //////////////////////////////////////////////////////////////////////////
+    typedef Mengine::Vector<ReplayCheckpoint> VectorReplayCheckpoint;
+    //////////////////////////////////////////////////////////////////////////
     struct ReplayRecord
     {
         uint64_t matchId = 0;
@@ -24,15 +29,15 @@ namespace Arena3D
         uint32_t configCrc = 0;
         uint32_t collisionCrc = 0;
         StateChecksum finalChecksum;
-        std::vector<CommandEnvelope> commands;
-        std::vector<ServerEvent> events;
-        std::vector<ReplayCheckpoint> checkpoints;
+        VectorCommandEnvelope commands;
+        VectorServerEvent events;
+        VectorReplayCheckpoint checkpoints;
     };
-
-    ReplayRecord makeReplayRecord( const Simulation & simulation, uint64_t seed, const std::vector<CommandEnvelope> & journal,
-        const std::vector<ServerEvent> & events = {} );
-    bool writeReplay( const std::filesystem::path & path, const ReplayRecord & replay );
-    bool readReplay( const std::filesystem::path & path, ReplayRecord * replay );
-    bool runReplay( const ReplayRecord & replay, Simulation * simulation, StateChecksum * finalChecksum = nullptr,
-        uint64_t faultInjectionTick = UINT64_MAX );
+    //////////////////////////////////////////////////////////////////////////
+    ReplayRecord makeReplayRecord( const Simulation & simulation, uint64_t seed, const VectorCommandEnvelope & journal, const VectorServerEvent & events = {} );
+    bool writeReplay( const Mengine::String & path, const ReplayRecord & replay );
+    bool readReplay( const Mengine::String & path, ReplayRecord * replay );
+    bool runReplay( const ReplayRecord & replay, Simulation * simulation, StateChecksum * finalChecksum = nullptr );
+    //////////////////////////////////////////////////////////////////////////
 }
+//////////////////////////////////////////////////////////////////////////

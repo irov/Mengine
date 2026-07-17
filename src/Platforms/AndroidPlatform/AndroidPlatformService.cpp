@@ -1426,6 +1426,13 @@ namespace Mengine
             ->setCursorPosition( TC_TOUCH0, _pos, 0.f );
     }
     //////////////////////////////////////////////////////////////////////////
+    bool AndroidPlatformService::setCursorCapture( bool _capture )
+    {
+        MENGINE_UNUSED( _capture );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::setCursorIcon( const ConstString & _icon )
     {
         MENGINE_UNUSED( _icon );

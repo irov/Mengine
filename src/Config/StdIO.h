@@ -8,6 +8,21 @@
 #include <cstdio>
 #include <cwchar>
 
+namespace Mengine
+{
+    namespace StdIO
+    {
+        using std::FILE;
+        using std::fopen;
+        using std::fclose;
+        using std::fread;
+        using std::fwrite;
+        using std::fseek;
+        using std::ftell;
+        using std::fprintf;
+        using std::printf;
+    }
+}
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_VSNPRINTF
 //////////////////////////////////////////////////////////////////////////

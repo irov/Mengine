@@ -122,6 +122,7 @@ namespace Mengine
         void minimizeWindow() override;
 
         void setCursorPosition( const mt::vec2f & _pos ) override;
+        bool setCursorCapture( bool _capture ) override;
         void setCursorIcon( const ConstString & _icon ) override;
         bool hasCursorIcon( const ConstString & _icon ) const override;
 

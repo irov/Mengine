@@ -74,7 +74,9 @@ namespace Mengine
         using std::log;
         using std::log10;
         using std::round;
+        using std::lround;
         using std::ceil;
+        using std::fmod;
     }
 }
 

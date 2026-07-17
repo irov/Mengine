@@ -956,6 +956,13 @@ namespace Mengine
         //GDK implementation
     }
     //////////////////////////////////////////////////////////////////////////
+    bool GDKPlatformService::setCursorCapture( bool _capture )
+    {
+        MENGINE_UNUSED( _capture );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void GDKPlatformService::setCursorIcon( const ConstString & _cursorIcon )
     {
         MENGINE_UNUSED( _cursorIcon );

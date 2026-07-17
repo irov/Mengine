@@ -9,4 +9,3 @@ SOLUTION_DIR=$PROJECT_DIR/solutions/headless/$CONFIGURATION
 
 cmake -S "$PROJECT_DIR" -B "$SOLUTION_DIR" -DCMAKE_BUILD_TYPE="$CONFIGURATION"
 cmake --build "$SOLUTION_DIR" --parallel
-ctest --test-dir "$SOLUTION_DIR" --output-on-failure

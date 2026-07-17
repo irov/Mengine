@@ -146,16 +146,19 @@ namespace Mengine
         ALLOCATOR_SYSTEM()
             ->beginThread( _threadId );
 
-        if( PLATFORM_SYSTEM()
-            ->beginThread( _threadId ) == false )
+        if( SERVICE_IS_INITIALIZE( PlatformSystemInterface ) == true )
         {
-            LOGGER_ERROR( "invalid begin thread identity name: %s id: %" MENGINE_PRIu64 " priority: %d"
-                , m_description.nameA
-                , _threadId
-                , m_priority
-            );
+            if( PLATFORM_SYSTEM()
+                ->beginThread( _threadId ) == false )
+            {
+                LOGGER_ERROR( "invalid begin thread identity name: %s id: %" MENGINE_PRIu64 " priority: %d"
+                    , m_description.nameA
+                    , _threadId
+                    , m_priority
+                );
 
-            return;
+                return;
+            }
         }
 
         LOGGER_INFO( "thread", "begin thread name: %s id: %" MENGINE_PRIu64 " priority: %d"
@@ -173,8 +176,11 @@ namespace Mengine
             runner->sleep();
         }
 
-        PLATFORM_SYSTEM()
-            ->endThread( _threadId );
+        if( SERVICE_IS_INITIALIZE( PlatformSystemInterface ) == true )
+        {
+            PLATFORM_SYSTEM()
+                ->endThread( _threadId );
+        }
 
         ALLOCATOR_SYSTEM()
             ->endThread( _threadId );

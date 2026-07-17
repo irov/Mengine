@@ -10,8 +10,10 @@
 #include "Kernel/Scene.h"
 #include "Kernel/SceneHelper.h"
 
+//////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     bool Arena3DGame::_initializeGame()
     {
         Arena3DSceneEventReceiverPtr receiver = Helper::makeFactorableUnique<Arena3DSceneEventReceiver>( MENGINE_DOCUMENT_FACTORABLE );
@@ -20,9 +22,10 @@ namespace Mengine
         SCENE_SERVICE()->setCurrentScene( scene, false, false, nullptr );
         return true;
     }
-
+    //////////////////////////////////////////////////////////////////////////
     void Arena3DGame::_finalizeGame()
     {
         SCENE_SERVICE()->removeCurrentScene( true, nullptr );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

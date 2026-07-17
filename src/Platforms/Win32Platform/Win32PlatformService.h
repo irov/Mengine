@@ -105,6 +105,7 @@ namespace Mengine
         void minimizeWindow() override;
 
         void setCursorPosition( const mt::vec2f & _cursorPosition ) override;
+        bool setCursorCapture( bool _capture ) override;
         void setCursorIcon( const ConstString & _cursorIcon ) override;
         bool hasCursorIcon( const ConstString & _cursorIcon ) const override;
 
@@ -118,6 +119,7 @@ namespace Mengine
         bool notifyCursorIconSetup( const ConstString & _name, const ContentInterfacePtr & _content, const MemoryInterfacePtr & _buffer ) override;
 
     protected:
+        bool updateCursorCapture_();
         HCURSOR loadCursorICO_( const FilePath & _filePath, const MemoryInterfacePtr & _buffer ) const;
         HCURSOR getCursorICO_( const ConstString & _name, const FilePath & _filePath, const MemoryInterfacePtr & _buffer );
 
@@ -267,6 +269,8 @@ namespace Mengine
         bool m_cursorInArea;
         bool m_clickOutArea[MENGINE_INPUT_MAX_MOUSE_BUTTON_CODE];
         bool m_cursorMode;
+        bool m_cursorCaptureRequested;
+        bool m_cursorCaptureApplied;
 
         HCURSOR m_cursor;
 

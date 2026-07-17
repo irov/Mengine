@@ -1,9 +1,10 @@
 #pragma once
 
 #include <array>
+#include <cstddef>
 
 namespace Mengine
 {
-    template<class T, size_t Count>
+    template<class T, std::size_t Count>
     using Array = std::array<T, Count>;
 }

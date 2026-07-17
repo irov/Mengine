@@ -1208,6 +1208,13 @@ namespace Mengine
         //Empty - not applicable on iOS
     }
     //////////////////////////////////////////////////////////////////////////
+    bool iOSPlatformService::setCursorCapture( bool _capture )
+    {
+        MENGINE_UNUSED( _capture );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::setCursorIcon( const ConstString & _icon )
     {
         MENGINE_UNUSED( _icon );

@@ -16,14 +16,13 @@
 #include "Kernel/BaseTransformation.h"
 #include "Kernel/BaseEventation.h"
 #include "Kernel/BasePicker.h"
+#include "Kernel/IntrusivePtr.h"
 #include "Kernel/VectorRenderVertex2D.h"
 #include "Kernel/VectorRenderIndex.h"
 #include "Kernel/Vector.h"
 #include "Kernel/Map.h"
 
 #include "Figma/Figma.h"
-
-#include <memory>
 
 namespace Mengine
 {
@@ -169,6 +168,14 @@ namespace Mengine
             uint32_t width = 0;
             uint32_t height = 0;
         };
+        typedef Map<String, FigmaBindingValue> MapFigmaBindingValue;
+        typedef IntrusivePtr<Detail::FigmaTextRasterizer> FigmaTextRasterizerPtr;
+        typedef Vector<VectorRenderVertex2D> VectorRenderVertexBuffer;
+        typedef Vector<VectorRenderIndex> VectorRenderIndexBuffer;
+        typedef Vector<RenderMaterialInterfacePtr> VectorRenderMaterial;
+        typedef Vector<RenderScissorInterfacePtr> VectorRenderScissor;
+        typedef Map<String, TextureCacheDesc> MapTextureCache;
+        typedef Map<uint32_t, RenderLayerTargetDesc> MapRenderLayerTarget;
 
         RenderTextureInterfacePtr getBatchTexture_( const ::Figma::RenderListInterface * _renderList, const ::Figma::RenderBatchDesc & _batch, uint32_t _batchIndex ) const;
         RenderTextureInterfacePtr createAssetTexture_( ::Figma::DocumentInterface * _document, const ::Figma::RenderBatchDesc & _batch ) const;
@@ -188,15 +195,15 @@ namespace Mengine
         String m_startFrameId;
         String m_fontSearchPath;
         String m_actionTargetFrameId;
-        Map<String, FigmaBindingValue> m_bindingValues;
-        mutable std::unique_ptr<Detail::FigmaTextRasterizer> m_textRasterizer;
+        MapFigmaBindingValue m_bindingValues;
+        mutable FigmaTextRasterizerPtr m_textRasterizer;
 
-        mutable Vector<VectorRenderVertex2D> m_renderVertices;
-        mutable Vector<VectorRenderIndex> m_renderIndices;
-        mutable Vector<RenderMaterialInterfacePtr> m_renderMaterials;
-        mutable Vector<RenderScissorInterfacePtr> m_renderScissors;
-        mutable Map<String, TextureCacheDesc> m_textureCache;
-        mutable Map<uint32_t, RenderLayerTargetDesc> m_renderLayerTargets;
+        mutable VectorRenderVertexBuffer m_renderVertices;
+        mutable VectorRenderIndexBuffer m_renderIndices;
+        mutable VectorRenderMaterial m_renderMaterials;
+        mutable VectorRenderScissor m_renderScissors;
+        mutable MapTextureCache m_textureCache;
+        mutable MapRenderLayerTarget m_renderLayerTargets;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveNodePtr<Figma> FigmaPtr;

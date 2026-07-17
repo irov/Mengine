@@ -1,4 +1,4 @@
-add_executable(Arena3DReplayTool Arena3DReplayMain.cpp)
+add_executable(Arena3DReplayTool Arena3DReplayMain.cpp Arena3DReplayAllocator.cpp)
 target_link_libraries(Arena3DReplayTool PRIVATE Arena3DSimulation)
 target_compile_features(Arena3DReplayTool PRIVATE cxx_std_17)
 add_dependencies(Arena3DReplayTool Arena3DContent)

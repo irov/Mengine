@@ -19,9 +19,11 @@ namespace Mengine
         using std::free;
         using std::calloc;
         using std::realloc;
+        using std::strtoul;
+        using std::strtoull;
+        using std::getenv;
     }
 }
-
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_MALLOC_SIZE
 #   if defined(MENGINE_PLATFORM_WINDOWS)

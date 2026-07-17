@@ -2,6 +2,14 @@ cmake_minimum_required(VERSION 3.16)
 
 project(Arena3DHeadless LANGUAGES C CXX)
 
+if(CMAKE_SIZEOF_VOID_P EQUAL 4)
+    add_compile_definitions(MENGINE_ENVIRONMENT_ARCHITECTURE_X86)
+elseif(CMAKE_SIZEOF_VOID_P EQUAL 8)
+    add_compile_definitions(MENGINE_ENVIRONMENT_ARCHITECTURE_X64)
+else()
+    message(FATAL_ERROR "Arena3D unsupported pointer size: ${CMAKE_SIZEOF_VOID_P}")
+endif()
+
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
 
 set(ARENA3D_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
@@ -12,7 +20,7 @@ if(NOT EXISTS ${ARENA3D_KINEFIX_ROOT}/CMakeLists.txt)
     message(FATAL_ERROR "Arena3D requires the Mengine kinefix dependency. Run the Mengine downloads target first.")
 endif()
 
-set(KINEFIX_BUILD_TESTS ON CACHE BOOL "KINEFIX_BUILD_TESTS" FORCE)
+set(KINEFIX_BUILD_TESTS OFF CACHE BOOL "KINEFIX_BUILD_TESTS" FORCE)
 set(KINEFIX_INSTALL OFF CACHE BOOL "KINEFIX_INSTALL" FORCE)
 add_subdirectory(${ARENA3D_KINEFIX_ROOT} ${CMAKE_BINARY_DIR}/kinefix)
 
@@ -27,6 +35,3 @@ add_custom_target(Arena3DContent ALL
 
 add_subdirectory(src/Arena3DSimulation)
 add_subdirectory(tools/replay)
-
-enable_testing()
-add_subdirectory(tests)

@@ -83,6 +83,8 @@ namespace Mengine
         , m_touchpad( false )
         , m_quitRequested( false )
         , m_cursorVisible( true )
+        , m_cursorCaptureRequested( false )
+        , m_cursorCaptureApplied( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -344,6 +346,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MacOSPlatformService::_finalizeService()
     {
+        m_cursorCaptureRequested = false;
+        this->updateCursorCapture_();
+
         m_active = false;
 
         this->destroyWindow_();
@@ -797,6 +802,13 @@ namespace Mengine
         CGPoint cgPoint = CGPointMake( screenRect.origin.x, screenHeight - screenRect.origin.y );
 
         CGWarpMouseCursorPosition( cgPoint );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool MacOSPlatformService::setCursorCapture( bool _capture )
+    {
+        m_cursorCaptureRequested = _capture;
+
+        return this->updateCursorCapture_();
     }
     //////////////////////////////////////////////////////////////////////////
     void MacOSPlatformService::setCursorIcon( const ConstString & _icon )
@@ -1427,6 +1439,8 @@ namespace Mengine
 
         m_active = _active;
 
+        this->updateCursorCapture_();
+
         bool nopause = APPLICATION_SERVICE()
             ->getNopause();
 
@@ -1474,6 +1488,37 @@ namespace Mengine
             APPLICATION_SERVICE()
                 ->turnSound( true );
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool MacOSPlatformService::updateCursorCapture_()
+    {
+        const bool capture = m_cursorCaptureRequested == true && m_active == true && m_window != nil;
+
+        if( m_cursorCaptureApplied == capture )
+        {
+            return true;
+        }
+
+        if( capture == true )
+        {
+            this->setCursorPosition( mt::vec2f( 0.5f, 0.5f ) );
+        }
+
+        CGError result = CGAssociateMouseAndMouseCursorPosition( capture == true ? false : true );
+
+        if( result != kCGErrorSuccess )
+        {
+            LOGGER_ERROR( "invalid set macOS cursor capture [%u] error [%d]"
+                , capture
+                , result
+            );
+
+            return false;
+        }
+
+        m_cursorCaptureApplied = capture;
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool MacOSPlatformService::isNeedWindowRender() const

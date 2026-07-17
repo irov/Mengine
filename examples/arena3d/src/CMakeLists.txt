@@ -14,6 +14,11 @@ add_custom_target(Arena3DContent ALL
 )
 
 add_subdirectory(Arena3DSimulation)
+add_subdirectory(Arena3DNetworking)
+add_subdirectory(Arena3DHeadless)
+add_subdirectory(Arena3DServer)
+add_subdirectory(Arena3DBotClient)
+add_subdirectory(Arena3DNetProxy)
 
 ADD_PLUGIN(MENGINE_PLUGIN_EXAMPLEFRAMEWORK ON OFF "MENGINE_PLUGIN_EXAMPLEFRAMEWORK")
 ADD_SUBDIRECTORY(Arena3DFramework)

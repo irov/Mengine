@@ -8,10 +8,12 @@
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/PluginHelper.h"
 
+//////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Arena3DGame, Mengine::Arena3DGamePlugin );
-
+//////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     bool Arena3DGamePlugin::_initializePlugin()
     {
         m_game = Helper::makeFactorableUnique<Arena3DGame>( MENGINE_DOCUMENT_FACTORABLE );
@@ -22,7 +24,7 @@ namespace Mengine
         eventation->addEventReceiver( EVENT_GAME_FINALIZE, m_game );
         return true;
     }
-
+    //////////////////////////////////////////////////////////////////////////
     void Arena3DGamePlugin::_finalizePlugin()
     {
         EventationInterface * eventation = GAME_SERVICE()->getEventation();
@@ -30,4 +32,5 @@ namespace Mengine
         eventation->removeEventReceiver( EVENT_GAME_FINALIZE );
         m_game = nullptr;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

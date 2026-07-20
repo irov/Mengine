@@ -72,6 +72,7 @@ namespace Mengine
 
         size_t arg_str_size;
         const Char * arg_str;
+        pybind::object utf8_arg;
 
         if( _kernel->string_check( arg ) == true )
         {
@@ -79,7 +80,15 @@ namespace Mengine
         }
         else if( _kernel->unicode_check( arg ) == true )
         {
-            arg_str = _kernel->unicode_to_utf8_and_size( arg, &arg_str_size );
+            PyObject * py_utf8_arg = _kernel->unicode_encode_utf8( arg );
+
+            if( py_utf8_arg == nullptr )
+            {
+                return nullptr;
+            }
+
+            utf8_arg = pybind::object( _kernel, py_utf8_arg, pybind::borrowed );
+            arg_str = _kernel->string_to_char_and_size( py_utf8_arg, &arg_str_size );
         }
         else
         {

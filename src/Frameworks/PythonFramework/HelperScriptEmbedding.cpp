@@ -1691,7 +1691,15 @@ namespace Mengine
 
                 PyAccountSettingProviderPtr provider = Helper::makeFactorableUnique<PythonAccountSettingProvider>( MENGINE_DOCUMENT_PYTHON, _kernel, _accountId, _cb, _args );
 
-                const Char * utf8_defaultValue = _kernel->unicode_to_utf8( _defaultValue );
+                PyObject * py_utf8_defaultValue = _kernel->unicode_encode_utf8( _defaultValue );
+
+                if( py_utf8_defaultValue == nullptr )
+                {
+                    return false;
+                }
+
+                pybind::object utf8_defaultValueObject( _kernel, py_utf8_defaultValue, pybind::borrowed );
+                const Char * utf8_defaultValue = _kernel->string_to_char( py_utf8_defaultValue );
 
                 bool result = account->addSetting( _setting, utf8_defaultValue, provider );
 
@@ -1749,7 +1757,15 @@ namespace Mengine
                     return false;
                 }
 
-                const Char * utf8_defaultValue = _kernel->unicode_to_utf8( _value );
+                PyObject * py_utf8_defaultValue = _kernel->unicode_encode_utf8( _value );
+
+                if( py_utf8_defaultValue == nullptr )
+                {
+                    return false;
+                }
+
+                pybind::object utf8_defaultValueObject( _kernel, py_utf8_defaultValue, pybind::borrowed );
+                const Char * utf8_defaultValue = _kernel->string_to_char( py_utf8_defaultValue );
 
                 bool result = account->changeSetting( _setting, utf8_defaultValue );
 

@@ -61,7 +61,7 @@ namespace Mengine
                 {
                     NSMutableDictionary * dict = [NSMutableDictionary dictionary];
 
-                    size_t pos;
+                    size_t pos = 0;
                     PyObject * key;
                     PyObject * value;
 
@@ -118,23 +118,30 @@ namespace Mengine
             PyObject * wrap( pybind::kernel_interface * _kernel, pybind::type_cast_result<value_type>::TCastRef _value ) override
             {
                 PyObject * py_dict = _kernel->dict_new();
+                pybind::object dict_owner( _kernel, py_dict, pybind::borrowed );
                 __block bool error = false;
 
                 [AppleDetail visitParameters:_value forBool:^(NSString * key, BOOL value) {
                     PyObject * py_key = pybind::ptr( _kernel, key );
+                    pybind::object key_owner( _kernel, py_key, pybind::borrowed );
                     pybind::dict_setobject_t( _kernel, py_dict, py_key, (bool)value );
                 } forInteger:^(NSString * key, int64_t value) {
                     PyObject * py_key = pybind::ptr( _kernel, key );
+                    pybind::object key_owner( _kernel, py_key, pybind::borrowed );
                     pybind::dict_setobject_t( _kernel, py_dict, py_key, value );
                 } forDouble:^(NSString * key, double value) {
                     PyObject * py_key = pybind::ptr( _kernel, key );
+                    pybind::object key_owner( _kernel, py_key, pybind::borrowed );
                     pybind::dict_setobject_t( _kernel, py_dict, py_key, value );
                 } forString:^(NSString * key, NSString * value) {
                     PyObject * py_key = pybind::ptr( _kernel, key );
+                    pybind::object key_owner( _kernel, py_key, pybind::borrowed );
                     pybind::dict_setobject_t( _kernel, py_dict, py_key, value );
                 } forNull:^(NSString * key) {
                     PyObject * py_key = pybind::ptr( _kernel, key );
+                    pybind::object key_owner( _kernel, py_key, pybind::borrowed );
                     PyObject * py_none = _kernel->ret_none();
+                    pybind::object none_owner( _kernel, py_none, pybind::borrowed );
                     pybind::dict_setobject_t( _kernel, py_dict, py_key, py_none );
                 } forUnknown:^(NSString * key, id value) {
                     error = true;
@@ -144,7 +151,7 @@ namespace Mengine
                     return nullptr;
                 }
 
-                return py_dict;
+                return dict_owner.ret();
             }
         };
         //////////////////////////////////////////////////////////////////////////
@@ -157,42 +164,46 @@ namespace Mengine
 
                 NSMutableSet * set = [NSMutableSet set];
 
-                PyObject * it;
-                if( _kernel->iterator_get( _obj, &it ) == false )
+                PyObject * py_iterator;
+                if( _kernel->iterator_get( _obj, &py_iterator ) == false )
                 {
                     return false;
                 }
 
-                PyObject * value;
-                while( _kernel->iterator_next( it, &value ) )
+                pybind::object iterator_owner( _kernel, py_iterator, pybind::borrowed );
+
+                PyObject * py_value;
+                while( _kernel->iterator_next( py_iterator, &py_value ) == true )
                 {
-                    if( _kernel->bool_check( value ) == true )
+                    pybind::object value_owner( _kernel, py_value, pybind::borrowed );
+
+                    if( _kernel->bool_check( py_value ) == true )
                     {
-                        bool value_bool = pybind::extract_t( _kernel, value );
+                        bool value_bool = pybind::extract_t( _kernel, py_value );
 
                         [set addObject:@(value_bool)];
                     }
-                    else if ( _kernel->int_check( value ) == true )
+                    else if ( _kernel->int_check( py_value ) == true )
                     {
-                        int32_t value_int = pybind::extract_t( _kernel, value );
+                        int32_t value_int = pybind::extract_t( _kernel, py_value );
 
                         [set addObject:@(value_int)];
                     }
-                    else if ( _kernel->long_check( value ) == true )
+                    else if ( _kernel->long_check( py_value ) == true )
                     {
-                        int64_t value_long = pybind::extract_t( _kernel, value );
+                        int64_t value_long = pybind::extract_t( _kernel, py_value );
 
                         [set addObject:@(value_long)];
                     }
-                    else if ( _kernel->float_check( value ) == true )
+                    else if ( _kernel->float_check( py_value ) == true )
                     {
-                        float value_float = pybind::extract_t( _kernel, value );
+                        float value_float = pybind::extract_t( _kernel, py_value );
 
                         [set addObject:@(value_float)];
                     }
-                    else if ( _kernel->string_check( value ) == true )
+                    else if ( _kernel->string_check( py_value ) == true )
                     {
-                        NSString * value_str = pybind::extract_t( _kernel, value );
+                        NSString * value_str = pybind::extract_t( _kernel, py_value );
 
                         [set addObject:value_str];
                     }
@@ -202,8 +213,6 @@ namespace Mengine
                     }
                 }
 
-                _kernel->iterator_end( it );
-
                 _value = set;
 
                 return true;
@@ -212,6 +221,7 @@ namespace Mengine
             PyObject * wrap( pybind::kernel_interface * _kernel, pybind::type_cast_result<value_type>::TCastRef _value ) override
             {
                 PyObject * py_set = _kernel->set_new();
+                pybind::object set_owner( _kernel, py_set, pybind::borrowed );
                 __block bool error = false;
 
                 [AppleDetail visitValues:_value forBool:^(BOOL value) {
@@ -224,6 +234,7 @@ namespace Mengine
                     pybind::set_set_t( _kernel, py_set, value );
                 } forNull:^(void) {
                     PyObject * py_none = _kernel->ret_none();
+                    pybind::object none_owner( _kernel, py_none, pybind::borrowed );
                     pybind::set_set_t( _kernel, py_set, py_none );
                 } forUnknown:^(id value) {
                     error = true;
@@ -233,7 +244,7 @@ namespace Mengine
                     return nullptr;
                 }
 
-                return py_set;
+                return set_owner.ret();
             }
         };
         //////////////////////////////////////////////////////////////////////////

@@ -1776,7 +1776,7 @@ namespace Mengine
             if( clicked == true )
             {
                 String jppstr;
-                jpp::dump( responseJpp, []( const char * _buffer, jpp::jpp_size_t _size, void * _ud )
+                jpp::dump( responseJpp, 2, []( const char * _buffer, jpp::jpp_size_t _size, void * _ud )
                 {
                     String * jppstr = (String *)_ud;
 

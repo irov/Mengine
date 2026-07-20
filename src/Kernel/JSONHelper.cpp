@@ -28,8 +28,9 @@ namespace Mengine
 #endif
             };
             //////////////////////////////////////////////////////////////////////////
-            static void __jpp_error( int32_t _line, int32_t _column, int32_t _position, const char * _source, const char * _text, void * _ud )
+            static void __jpp_error( int32_t _line, int32_t _column, int32_t _position, const char * _source, const char * _text, jpp::load_error_code_e _code, void * _ud )
             {
+                MENGINE_UNUSED( _code );
                 MENGINE_UNUSED( _ud );
 
                 json_load_data * jd = static_cast<json_load_data *>(_ud);
@@ -220,7 +221,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool writeJSONStream( const jpp::object & _j, const OutputStreamInterfacePtr & _stream )
         {
-            if( jpp::dump( _j, &Detail::__jpp_dump_stream_callback, _stream.get() ) == false )
+            if( jpp::dump( _j, 2, &Detail::__jpp_dump_stream_callback, _stream.get() ) == false )
             {
                 return false;
             }
@@ -240,7 +241,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool writeJSONString( const jpp::object & _j, String * const _string )
         {
-            if( jpp::dump( _j, &Detail::__jpp_dump_string_callback, _string ) == false )
+            if( jpp::dump( _j, 2, &Detail::__jpp_dump_string_callback, _string ) == false )
             {
                 return false;
             }
@@ -260,7 +261,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool writeJSONData( const jpp::object & _j, Data * const _data )
         {
-            if( jpp::dump( _j, &Detail::__jpp_dump_data_callback, _data ) == false )
+            if( jpp::dump( _j, 2, &Detail::__jpp_dump_data_callback, _data ) == false )
             {
                 return false;
             }

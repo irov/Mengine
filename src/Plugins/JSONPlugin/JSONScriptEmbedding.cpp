@@ -536,7 +536,7 @@ namespace Mengine
             String output;
             bool successful = compact == true
                 ? jpp::dump_compact( json, &__json_dump_string, &output )
-                : jpp::dump_indent( json, indent, &__json_dump_string, &output );
+                : jpp::dump( json, indent, &__json_dump_string, &output );
 
             if( successful == false )
             {
@@ -578,7 +578,7 @@ namespace Mengine
             }
 
             json_decode_error_t parseError = {0, 0, 0, jpp::load_error_code_e::invalid, {}};
-            jpp::object json = jpp::load_ex( utf8, size, jpp::JPP_LOAD_MODE_DECODE_ANY | jpp::JPP_LOAD_MODE_ALLOW_NUL, &__json_decode_error, &parseError );
+            jpp::object json = jpp::load( utf8, size, jpp::JPP_LOAD_MODE_DECODE_ANY | jpp::JPP_LOAD_MODE_ALLOW_NUL, &__json_decode_error, &parseError );
 
             if( json.invalid() == true )
             {

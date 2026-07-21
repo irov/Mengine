@@ -121,9 +121,12 @@ namespace Mengine
 
         pybind::allocator_interface * allocator = Helper::newT<Detail::PybindAllocator>();
 
-        bool debugMode = Detail::getPythonDebugMode();
-
-        pybind::kernel_interface * kernel = pybind::initialize( allocator, nullptr, debugMode, false, true );
+        pybind::kernel_config_t config;
+        config.path = nullptr;
+        config.debug = Detail::getPythonDebugMode();
+        config.install_signals = false;
+        config.no_site = true;
+        pybind::kernel_interface * kernel = pybind::initialize( allocator, config );
 
 #if defined(MENGINE_WINDOWS_DEBUG) && !defined(MENGINE_TOOLCHAIN_MINGW)
         _CrtSetReportMode( _CRT_WARN, crt_warn );
@@ -169,7 +172,7 @@ namespace Mengine
         m_threadId = THREAD_SYSTEM()
             ->getCurrentThreadId();
 
-        pybind::update_main_thread();
+        m_kernel->update_main_thread();
     }
     //////////////////////////////////////////////////////////////////////////
     ThreadId PythonScriptProviderService::getScriptThreadId() const

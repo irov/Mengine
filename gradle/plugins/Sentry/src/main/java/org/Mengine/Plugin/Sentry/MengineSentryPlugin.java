@@ -168,8 +168,10 @@ public class MengineSentryPlugin extends MengineService implements MengineListen
     }
 
     @Override
-    public void onAppState(@NonNull MengineApplication application, String name, Object value) {
-        this.setCustomKey("." + name, value);
+    public void onAppState(@NonNull MengineApplication application, @NonNull Map<String, Object> states, String name, Object value) {
+        String states_value = MengineUtils.jsonStringFromMap(states);
+
+        this.setCustomKey("states", states_value);
     }
 
     static private SentryLogLevel getSentryLogLevel(@NonNull MengineParamLoggerMessage message) {

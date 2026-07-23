@@ -84,7 +84,10 @@ namespace Mengine
 
             const RenderContext * context = &renderPass.context;
 
-            m_renderService->beginRenderPass( vertexBuffer, indexBuffer, programVariable, context );
+            if( m_renderService->beginRenderPass( vertexBuffer, indexBuffer, programVariable, context ) == false )
+            {
+                continue;
+            }
 
             const RenderDrawPrimitiveInterfacePtr & drawPrimitive = renderPass.drawPrimitive;
 

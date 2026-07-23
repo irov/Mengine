@@ -29,8 +29,7 @@ namespace Mengine
     bool PythonScriptModule::onInitialize( const ConstString & _method )
     {
 #if defined(MENGINE_DEBUG)
-        //FixMe python2.7 don't support non native string key
-        if( m_module.has_attr( _method.c_str() ) == false )
+        if( m_module.has_attr( _method ) == false )
         {
             LOGGER_ERROR( "module '%s' invalid has initializer '%s'"
                 , m_module.repr().c_str()
@@ -41,7 +40,7 @@ namespace Mengine
         }
 #endif
 
-        pybind::object module_function = m_module.get_attr( _method.c_str() );
+        pybind::object module_function = m_module.get_attr( _method );
 
         if( module_function.is_invalid() == true )
         {
@@ -55,7 +54,6 @@ namespace Mengine
 
         pybind::object py_result = module_function.call();
 
-#if defined(MENGINE_DEBUG)
         if( py_result.is_invalid() == true )
         {
             LOGGER_ERROR( "module '%s' invalid call initializer '%s'"
@@ -66,6 +64,7 @@ namespace Mengine
             return false;
         }
 
+#if defined(MENGINE_DEBUG)
         if( py_result.is_bool() == false )
         {
             LOGGER_ERROR( "module '%s' invalid call initializer '%s' need return bool [True|False] but return is '%s'"
@@ -86,7 +85,7 @@ namespace Mengine
     bool PythonScriptModule::onFinalize( const ConstString & _method )
     {
 #if defined(MENGINE_DEBUG)
-        if( m_module.has_attr( _method.c_str() ) == false )
+        if( m_module.has_attr( _method ) == false )
         {
             LOGGER_ERROR( "invalid has finalizer '%s'"
                 , _method.c_str()
@@ -96,7 +95,7 @@ namespace Mengine
         }
 #endif
 
-        pybind::object module_function = m_module.get_attr( _method.c_str() );
+        pybind::object module_function = m_module.get_attr( _method );
 
         if( module_function.is_invalid() == true )
         {

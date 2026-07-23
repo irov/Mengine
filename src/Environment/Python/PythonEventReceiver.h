@@ -88,13 +88,12 @@ namespace Mengine
                 return;
             }
 
-            //FixMe python2.7 don't support non native string key
-            if( _module.has_attr( _method.c_str() ) == false )
+            if( _module.has_attr( _method ) == false )
             {
                 return;
             }
 
-            pybind::object py_method = _module.get_attr( _method.c_str() );
+            pybind::object py_method = _module.get_attr( _method );
 
             if( py_method.is_none() == true )
             {
@@ -120,13 +119,12 @@ namespace Mengine
                 return;
             }
 
-            //FixMe python2.7 don't support non native string key
-            if( _obj.has_attr( _method.c_str() ) == false )
+            if( _obj.has_attr( _method ) == false )
             {
                 return;
             }
 
-            pybind::object py_method = _obj.get_attr( _method.c_str() );
+            pybind::object py_method = _obj.get_attr( _method );
 
             if( py_method.is_none() == true )
             {

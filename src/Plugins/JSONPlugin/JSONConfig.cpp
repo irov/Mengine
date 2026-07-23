@@ -230,8 +230,12 @@ namespace Mengine
         _stream->read( memory_buffer, size );
         memory_buffer[size] = '\0';
 
+        bool protectedData = false;
+
         if( size >= 4 && memory_buffer[0] == 'R' && memory_buffer[1] == 'G' && memory_buffer[2] == 'C' && memory_buffer[3] == 'D' )
         {
+            protectedData = true;
+
             memory_buffer += 4;
             size -= 4;
 
@@ -243,10 +247,19 @@ namespace Mengine
 
         if( j.invalid() == true )
         {
-            LOGGER_ERROR( "invalid json config: %s data: %s"
-                , Helper::getDebugFullPath( _stream ).c_str()
-                , memory_buffer
-            );
+            if( protectedData == true )
+            {
+                LOGGER_ERROR( "invalid encrypted json config '%s': incorrect secure value"
+                    , Helper::getDebugFullPath( _stream ).c_str()
+                );
+            }
+            else
+            {
+                LOGGER_ERROR( "invalid json config: %s data: %s"
+                    , Helper::getDebugFullPath( _stream ).c_str()
+                    , memory_buffer
+                );
+            }
             
             return false;
         }

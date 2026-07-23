@@ -2304,7 +2304,13 @@ namespace Mengine
             return;
         }
 
-        const ColorValue_ARGB color = Helper::makeRGBAF( 1.f, 1.f, 1.f, Detail::clamp01( _opacity ) );
+        // Fragment_Blend_Premultiply multiplies the sampled RGBA by both the
+        // vertex color and its alpha. Feed sqrt(opacity) into every channel so
+        // the offscreen layer's premultiplied RGB and alpha are each scaled by
+        // opacity exactly once. Using white RGB with alpha=opacity leaves the
+        // destination weighted by 1-opacity^2 and visibly doubles shared UI.
+        const float premultiplyOpacity = StdMath::sqrtf( Detail::clamp01( _opacity ) );
+        const ColorValue_ARGB color = Helper::makeRGBAF( premultiplyOpacity, premultiplyOpacity, premultiplyOpacity, premultiplyOpacity );
 
         for( RenderVertex2D & vertex : _target->vertices )
         {
@@ -2708,6 +2714,7 @@ namespace Mengine
         scissorStack.emplace_back( _context->scissor );
 
         uint32_t activeRenderLayerId = 0;
+        uint32_t renderLayerSegmentIndex = 0;
         float activeRenderLayerOpacity = 1.f;
         RenderLayerTargetDesc * activeRenderLayerTarget = nullptr;
 
@@ -2745,10 +2752,15 @@ namespace Mengine
                 {
                     if( _context->resolution != nullptr )
                     {
+                        // Figma render layers are contiguous command ranges. The same
+                        // layer id may occur again after regular geometry and each
+                        // range must start with a fresh transparent target.
+                        ++renderLayerSegmentIndex;
+
                         const Resolution & contentResolution = _context->resolution->getContentResolution();
                         const Resolution & windowResolution = APPLICATION_SERVICE()->getCurrentWindowResolution();
                         activeRenderLayerTarget = this->ensureRenderLayerTarget_(
-                            batch.renderLayerId,
+                            renderLayerSegmentIndex,
                             windowResolution.getWidth(),
                             windowResolution.getHeight(),
                             contentResolution.getWidthF(),

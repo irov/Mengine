@@ -230,6 +230,15 @@ namespace Mengine
 
         m_frameContext->renderEncoder = [m_frameContext->commandBuffer renderCommandEncoderWithDescriptor:desc];
 
+        if( m_frameContext->renderEncoder == nil )
+        {
+            LOGGER_ERROR( "invalid create render target encoder" );
+
+            this->end();
+
+            return false;
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -260,11 +269,11 @@ namespace Mengine
         {
             desc.depthAttachment.texture = m_frameContext->depthStencilTexture;
             desc.depthAttachment.loadAction = MTLLoadActionLoad;
-            desc.depthAttachment.storeAction = MTLStoreActionDontCare;
+            desc.depthAttachment.storeAction = MTLStoreActionStore;
 
             desc.stencilAttachment.texture = m_frameContext->depthStencilTexture;
             desc.stencilAttachment.loadAction = MTLLoadActionLoad;
-            desc.stencilAttachment.storeAction = MTLStoreActionDontCare;
+            desc.stencilAttachment.storeAction = MTLStoreActionStore;
         }
 
         m_frameContext->colorAttachmentPixelFormat = m_frameContext->drawableTexture.pixelFormat;
@@ -276,6 +285,11 @@ namespace Mengine
             : MTLPixelFormatInvalid;
 
         m_frameContext->renderEncoder = [m_frameContext->commandBuffer renderCommandEncoderWithDescriptor:desc];
+
+        if( m_frameContext->renderEncoder == nil )
+        {
+            LOGGER_ERROR( "invalid restore drawable render encoder" );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     const mt::uv4f & MetalRenderTargetTexture::getUV() const

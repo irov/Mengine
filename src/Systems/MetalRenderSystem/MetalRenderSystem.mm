@@ -990,12 +990,12 @@ namespace Mengine
         {
             renderPassDescriptor.depthAttachment.texture = m_frameContext.depthStencilTexture;
             renderPassDescriptor.depthAttachment.loadAction = MTLLoadActionClear;
-            renderPassDescriptor.depthAttachment.storeAction = MTLStoreActionDontCare;
+            renderPassDescriptor.depthAttachment.storeAction = MTLStoreActionStore;
             renderPassDescriptor.depthAttachment.clearDepth = m_clearDepth;
 
             renderPassDescriptor.stencilAttachment.texture = m_frameContext.depthStencilTexture;
             renderPassDescriptor.stencilAttachment.loadAction = MTLLoadActionClear;
-            renderPassDescriptor.stencilAttachment.storeAction = MTLStoreActionDontCare;
+            renderPassDescriptor.stencilAttachment.storeAction = MTLStoreActionStore;
             renderPassDescriptor.stencilAttachment.clearStencil = (uint32_t)m_clearStencil;
         }
 

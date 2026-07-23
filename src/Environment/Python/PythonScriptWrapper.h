@@ -9,6 +9,7 @@
 #include "Kernel/Node.h"
 #include "Kernel/Factorable.h"
 #include "Kernel/Scriptable.h"
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionType.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FactorableUnique.h"
@@ -91,6 +92,10 @@ namespace Mengine
             T * obj = static_cast<T *>(_scriptable);
 
             PyObject * py_obj = m_kernel->scope_create_holder_t( obj );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( py_obj, "invalid wrap object type '%s'"
+                , MENGINE_TYPEINFO_NAME( T )
+            );
 
             //pybind::set_attr( py_embedded, "Mengine_name", pybind::ptr(_node->getName()) );
             //pybind::set_attr( py_embedded, "Mengine_type", pybind::ptr(_node->getType()) );

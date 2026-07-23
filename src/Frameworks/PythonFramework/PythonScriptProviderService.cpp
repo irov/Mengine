@@ -14,30 +14,6 @@
 #   include <crtdbg.h>
 #endif
 
-extern "C"
-{
-    //////////////////////////////////////////////////////////////////////////
-    void * _python_malloc( size_t _size )
-    {
-        void * p = Mengine::Helper::allocateMemory( _size, "python" );
-
-        return p;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void * _python_realloc( void * _ptr, size_t _size )
-    {
-        void * p = Mengine::Helper::reallocateMemory( _ptr, _size, "python" );
-
-        return p;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void _python_free( void * _ptr )
-    {
-        Mengine::Helper::deallocateMemory( _ptr, "python" );
-    }
-    //////////////////////////////////////////////////////////////////////////
-}
-//////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ScriptProviderService, Mengine::PythonScriptProviderService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
@@ -159,7 +135,6 @@ namespace Mengine
         Helper::deleteT( static_cast<Detail::PybindAllocator *>(allocator) );
 
         MENGINE_ASSERTION_ALLOCATOR( "pybind" );
-        MENGINE_ASSERTION_ALLOCATOR( "python" );
     }
     //////////////////////////////////////////////////////////////////////////
     pybind::kernel_interface * PythonScriptProviderService::getKernel() const

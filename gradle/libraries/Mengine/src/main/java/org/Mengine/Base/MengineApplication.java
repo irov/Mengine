@@ -283,7 +283,7 @@ public abstract class MengineApplication extends Application {
                     continue;
                 }
 
-                listener.onAppState(this, name, value);
+                listener.onAppState(this, m_states, name, value);
             }
         }
     }

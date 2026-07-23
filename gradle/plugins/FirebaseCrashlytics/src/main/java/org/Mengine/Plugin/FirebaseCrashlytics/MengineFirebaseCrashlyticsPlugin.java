@@ -120,8 +120,10 @@ public class MengineFirebaseCrashlyticsPlugin extends MengineService implements 
     }
 
     @Override
-    public void onAppState(@NonNull MengineApplication application, String name, Object value) {
-        this.setCustomKey(name, value);
+    public void onAppState(@NonNull MengineApplication application, @NonNull Map<String, Object> states, String name, Object value) {
+        String states_value = MengineUtils.jsonStringFromMap(states);
+
+        FirebaseCrashlytics.getInstance().setCustomKey("states", states_value);
     }
 
     @Override

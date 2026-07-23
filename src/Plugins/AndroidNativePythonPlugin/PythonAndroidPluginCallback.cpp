@@ -5,6 +5,8 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/DocumentHelper.h"
 
+#include <utility>
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -51,13 +53,12 @@ namespace Mengine
             m_kernel->tuple_setitem( py_args, args_size + index, cb_arg );
         }
 
-        pybind::object py_result = m_cb.call_native( pybind::tuple( m_kernel, py_args, pybind::borrowed ) );
+        pybind::tuple call_args( m_kernel, py_args, pybind::borrowed );
+        pybind::object py_result = m_cb.call_native( std::move( call_args ) );
 
         MENGINE_ASSERTION_FATAL( py_result != nullptr, "android plugin method '%s' invalid call"
             , m_cb.repr().c_str()
         );
-
-        m_kernel->decref( py_args );
     }
     //////////////////////////////////////////////////////////////////////////
 }

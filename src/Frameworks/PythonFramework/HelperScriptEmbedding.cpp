@@ -844,6 +844,13 @@ namespace Mengine
                 return true;
             }
             //////////////////////////////////////////////////////////////////////////
+            uint32_t s_makeCRC32( const StringView & _data )
+            {
+                uint32_t crc32 = Helper::makeCRC32( _data.c_str(), _data.size() );
+
+                return crc32;
+            }
+            //////////////////////////////////////////////////////////////////////////
             PyObject * s_compressBase64( pybind::kernel_interface * _kernel, const ConstString & _archivatorType, const StringView & _data )
             {
                 const Char * str = _data.c_str();
@@ -4341,6 +4348,7 @@ namespace Mengine
         pybind::def_functor( _kernel, "setClipboardText", helperScriptMethod, &HelperScriptMethod::s_setClipboardText );
         pybind::def_functor_kernel( _kernel, "getClipboardText", helperScriptMethod, &HelperScriptMethod::s_getClipboardText );
 
+        pybind::def_functor( _kernel, "makeCRC32", helperScriptMethod, &HelperScriptMethod::s_makeCRC32 );
         pybind::def_functor_kernel( _kernel, "compressBase64", helperScriptMethod, &HelperScriptMethod::s_compressBase64 );
         pybind::def_functor_kernel( _kernel, "decompressBase64", helperScriptMethod, &HelperScriptMethod::s_decompressBase64 );
 

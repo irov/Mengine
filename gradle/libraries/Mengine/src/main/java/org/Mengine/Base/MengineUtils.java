@@ -760,7 +760,7 @@ public class MengineUtils {
         return true;
     }
 
-    public static Map<String, Object> jsonObjectToMap(JSONObject obj) {
+    public static Map<String, Object> jsonObjectToMap(@NonNull JSONObject obj) {
         Map<String, Object> map = new HashMap<>();
 
         if (obj == null) {
@@ -783,7 +783,7 @@ public class MengineUtils {
         return map;
     }
 
-    private static List<Object> jsonArrayToList(JSONArray array) {
+    private static List<Object> jsonArrayToList(@NonNull JSONArray array) {
         List<Object> list = new ArrayList<>();
 
         int array_length = array.length();
@@ -801,7 +801,7 @@ public class MengineUtils {
         return list;
     }
 
-    private static Object parseJsonValue(Object value) {
+    private static Object parseJsonValue(@NonNull Object value) {
         if (value instanceof JSONArray) {
             return MengineUtils.jsonArrayToList((JSONArray) value);
         } else if (value instanceof JSONObject) {
@@ -811,6 +811,16 @@ public class MengineUtils {
         } else {
             return value;
         }
+    }
+
+    public static JSONObject jsonObjectFromMap(@NonNull Map<String, Object> map) {
+        return new JSONObject(map);
+    }
+
+    public static String jsonStringFromMap(@NonNull Map<String, Object> map) {
+        JSONObject jsonObject = MengineUtils.jsonObjectFromMap(map);
+
+        return jsonObject.toString();
     }
 
     public static void loadLibrary(Context context, String libraryName) throws UnsatisfiedLinkError, SecurityException {

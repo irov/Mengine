@@ -86,50 +86,50 @@ namespace Mengine
     bool FigmaScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         pybind::enum_<::Figma::EActionInputKind>( _kernel, "FigmaActionInputKind" )
-            .def( "Pointer", ::Figma::EActionInputKind::Pointer )
-            .def( "Key", ::Figma::EActionInputKind::Key )
-            .def( "Timer", ::Figma::EActionInputKind::Timer )
-            .def( "Programmatic", ::Figma::EActionInputKind::Programmatic )
+            .def( "FIGMA_ACTION_INPUT_POINTER", ::Figma::EActionInputKind::Pointer )
+            .def( "FIGMA_ACTION_INPUT_KEY", ::Figma::EActionInputKind::Key )
+            .def( "FIGMA_ACTION_INPUT_TIMER", ::Figma::EActionInputKind::Timer )
+            .def( "FIGMA_ACTION_INPUT_PROGRAMMATIC", ::Figma::EActionInputKind::Programmatic )
             ;
 
         pybind::enum_<::Figma::ETriggerType>( _kernel, "FigmaTriggerType" )
-            .def( "Click", ::Figma::ETriggerType::Click )
-            .def( "HoverEnter", ::Figma::ETriggerType::HoverEnter )
-            .def( "HoverLeave", ::Figma::ETriggerType::HoverLeave )
-            .def( "Press", ::Figma::ETriggerType::Press )
-            .def( "PointerDown", ::Figma::ETriggerType::PointerDown )
-            .def( "PointerUp", ::Figma::ETriggerType::PointerUp )
-            .def( "AfterTimeout", ::Figma::ETriggerType::AfterTimeout )
-            .def( "KeyDown", ::Figma::ETriggerType::KeyDown )
+            .def( "FIGMA_TRIGGER_CLICK", ::Figma::ETriggerType::Click )
+            .def( "FIGMA_TRIGGER_HOVER_ENTER", ::Figma::ETriggerType::HoverEnter )
+            .def( "FIGMA_TRIGGER_HOVER_LEAVE", ::Figma::ETriggerType::HoverLeave )
+            .def( "FIGMA_TRIGGER_PRESS", ::Figma::ETriggerType::Press )
+            .def( "FIGMA_TRIGGER_POINTER_DOWN", ::Figma::ETriggerType::PointerDown )
+            .def( "FIGMA_TRIGGER_POINTER_UP", ::Figma::ETriggerType::PointerUp )
+            .def( "FIGMA_TRIGGER_AFTER_TIMEOUT", ::Figma::ETriggerType::AfterTimeout )
+            .def( "FIGMA_TRIGGER_KEY_DOWN", ::Figma::ETriggerType::KeyDown )
             ;
 
         pybind::enum_<::Figma::EActionResult>( _kernel, "FigmaActionResult" )
-            .def( "AllowDefault", ::Figma::EActionResult::AllowDefault )
-            .def( "Consume", ::Figma::EActionResult::Consume )
-            .def( "NavigateFrame", ::Figma::EActionResult::NavigateFrame )
-            .def( "OpenOverlay", ::Figma::EActionResult::OpenOverlay )
-            .def( "CloseOverlay", ::Figma::EActionResult::CloseOverlay )
+            .def( "FIGMA_ACTION_RESULT_ALLOW_DEFAULT", ::Figma::EActionResult::AllowDefault )
+            .def( "FIGMA_ACTION_RESULT_CONSUME", ::Figma::EActionResult::Consume )
+            .def( "FIGMA_ACTION_RESULT_NAVIGATE_FRAME", ::Figma::EActionResult::NavigateFrame )
+            .def( "FIGMA_ACTION_RESULT_OPEN_OVERLAY", ::Figma::EActionResult::OpenOverlay )
+            .def( "FIGMA_ACTION_RESULT_CLOSE_OVERLAY", ::Figma::EActionResult::CloseOverlay )
             ;
 
         pybind::enum_<::Figma::EConnectionType>( _kernel, "FigmaConnectionType" )
-            .def( "None", ::Figma::EConnectionType::None )
-            .def( "InternalNode", ::Figma::EConnectionType::InternalNode )
-            .def( "Back", ::Figma::EConnectionType::Back )
-            .def( "Close", ::Figma::EConnectionType::Close )
+            .def( "FIGMA_CONNECTION_NONE", ::Figma::EConnectionType::None )
+            .def( "FIGMA_CONNECTION_INTERNAL_NODE", ::Figma::EConnectionType::InternalNode )
+            .def( "FIGMA_CONNECTION_BACK", ::Figma::EConnectionType::Back )
+            .def( "FIGMA_CONNECTION_CLOSE", ::Figma::EConnectionType::Close )
             ;
 
         pybind::enum_<::Figma::ENavigationType>( _kernel, "FigmaNavigationType" )
-            .def( "Navigate", ::Figma::ENavigationType::Navigate )
-            .def( "Overlay", ::Figma::ENavigationType::Overlay )
-            .def( "Swap", ::Figma::ENavigationType::Swap )
-            .def( "ScrollTo", ::Figma::ENavigationType::ScrollTo )
+            .def( "FIGMA_NAVIGATION_NAVIGATE", ::Figma::ENavigationType::Navigate )
+            .def( "FIGMA_NAVIGATION_OVERLAY", ::Figma::ENavigationType::Overlay )
+            .def( "FIGMA_NAVIGATION_SWAP", ::Figma::ENavigationType::Swap )
+            .def( "FIGMA_NAVIGATION_SCROLL_TO", ::Figma::ENavigationType::ScrollTo )
             ;
 
         pybind::enum_<EFigmaBindingValueType>( _kernel, "FigmaBindingValueType" )
-            .def( "Text", EFigmaBindingValueType::Text )
-            .def( "Number", EFigmaBindingValueType::Number )
-            .def( "Boolean", EFigmaBindingValueType::Boolean )
-            .def( "Image", EFigmaBindingValueType::Image )
+            .def( "FIGMA_BINDING_VALUE_TEXT", EFigmaBindingValueType::Text )
+            .def( "FIGMA_BINDING_VALUE_NUMBER", EFigmaBindingValueType::Number )
+            .def( "FIGMA_BINDING_VALUE_BOOLEAN", EFigmaBindingValueType::Boolean )
+            .def( "FIGMA_BINDING_VALUE_IMAGE", EFigmaBindingValueType::Image )
             ;
 
         pybind::struct_<FigmaBindingValue>( _kernel, "FigmaBindingValue" )
@@ -205,6 +205,36 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FigmaScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
+        _kernel->remove_from_module( "FIGMA_ACTION_INPUT_POINTER", nullptr );
+        _kernel->remove_from_module( "FIGMA_ACTION_INPUT_KEY", nullptr );
+        _kernel->remove_from_module( "FIGMA_ACTION_INPUT_TIMER", nullptr );
+        _kernel->remove_from_module( "FIGMA_ACTION_INPUT_PROGRAMMATIC", nullptr );
+        _kernel->remove_from_module( "FIGMA_TRIGGER_CLICK", nullptr );
+        _kernel->remove_from_module( "FIGMA_TRIGGER_HOVER_ENTER", nullptr );
+        _kernel->remove_from_module( "FIGMA_TRIGGER_HOVER_LEAVE", nullptr );
+        _kernel->remove_from_module( "FIGMA_TRIGGER_PRESS", nullptr );
+        _kernel->remove_from_module( "FIGMA_TRIGGER_POINTER_DOWN", nullptr );
+        _kernel->remove_from_module( "FIGMA_TRIGGER_POINTER_UP", nullptr );
+        _kernel->remove_from_module( "FIGMA_TRIGGER_AFTER_TIMEOUT", nullptr );
+        _kernel->remove_from_module( "FIGMA_TRIGGER_KEY_DOWN", nullptr );
+        _kernel->remove_from_module( "FIGMA_ACTION_RESULT_ALLOW_DEFAULT", nullptr );
+        _kernel->remove_from_module( "FIGMA_ACTION_RESULT_CONSUME", nullptr );
+        _kernel->remove_from_module( "FIGMA_ACTION_RESULT_NAVIGATE_FRAME", nullptr );
+        _kernel->remove_from_module( "FIGMA_ACTION_RESULT_OPEN_OVERLAY", nullptr );
+        _kernel->remove_from_module( "FIGMA_ACTION_RESULT_CLOSE_OVERLAY", nullptr );
+        _kernel->remove_from_module( "FIGMA_CONNECTION_NONE", nullptr );
+        _kernel->remove_from_module( "FIGMA_CONNECTION_INTERNAL_NODE", nullptr );
+        _kernel->remove_from_module( "FIGMA_CONNECTION_BACK", nullptr );
+        _kernel->remove_from_module( "FIGMA_CONNECTION_CLOSE", nullptr );
+        _kernel->remove_from_module( "FIGMA_NAVIGATION_NAVIGATE", nullptr );
+        _kernel->remove_from_module( "FIGMA_NAVIGATION_OVERLAY", nullptr );
+        _kernel->remove_from_module( "FIGMA_NAVIGATION_SWAP", nullptr );
+        _kernel->remove_from_module( "FIGMA_NAVIGATION_SCROLL_TO", nullptr );
+        _kernel->remove_from_module( "FIGMA_BINDING_VALUE_TEXT", nullptr );
+        _kernel->remove_from_module( "FIGMA_BINDING_VALUE_NUMBER", nullptr );
+        _kernel->remove_from_module( "FIGMA_BINDING_VALUE_BOOLEAN", nullptr );
+        _kernel->remove_from_module( "FIGMA_BINDING_VALUE_IMAGE", nullptr );
+
         _kernel->remove_scope<Figma>();
         _kernel->remove_scope<ResourceFigma>();
         _kernel->remove_scope<FigmaBindingValue>();

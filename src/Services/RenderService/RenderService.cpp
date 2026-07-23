@@ -968,6 +968,8 @@ namespace Mengine
         const RenderTargetInterface * target = _context->target;
         const bool resetRenderPassStates = target != nullptr || m_currentRenderContext.target != nullptr;
 
+        m_currentRenderContext.target = target;
+
         if( target != nullptr )
         {
             if( target->begin() == false )
@@ -975,8 +977,6 @@ namespace Mengine
                 return false;
             }
         }
-
-        m_currentRenderContext.target = target;
 
         if( m_currentRenderVertexBuffer != _vertexBuffer )
         {

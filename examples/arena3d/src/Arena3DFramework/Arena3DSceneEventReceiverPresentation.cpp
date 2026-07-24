@@ -152,7 +152,7 @@ namespace Mengine
                 continue;
             }
             const bool playerProjectile = projectile.ownerId == this->localPlayer_( m_currentState ).id;
-            const float traveledDistance = kf_fixed_to_float( projectile.traveledDistance );
+            const float traveledDistance = Helper::kinefixFixedToFloat( projectile.traveledDistance );
             // The view-model is a depth-hacked HUD layer, so it cannot occlude
             // world projectiles. Do not expose the projectile until it has
             // cleared the virtual barrel.

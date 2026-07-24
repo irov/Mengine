@@ -1137,9 +1137,9 @@ namespace Mengine
             const kf_fixed_t maximumStep = kf_fixed_add( this->activeSimulation_().config().stepHeight, kf_fixed_from_float( 0.02f ) );
             if( kf_fixed_abs( stepDelta ) > kf_fixed_from_float( 0.001f ) && kf_fixed_abs( stepDelta ) <= maximumStep )
             {
-                const float maximumOffset = kf_fixed_to_float( this->activeSimulation_().config().stepHeight ) * 2.f;
+                const float maximumOffset = Helper::kinefixFixedToFloat( this->activeSimulation_().config().stepHeight ) * 2.f;
                 m_stepCameraOffset = Mengine::StdAlgorithm::max( -maximumOffset, Mengine::StdAlgorithm::min( maximumOffset,
-                    m_stepCameraOffset + kf_fixed_to_float( stepDelta ) ) );
+                    m_stepCameraOffset + Helper::kinefixFixedToFloat( stepDelta ) ) );
                 m_stepCameraTime = 0.2f;
             }
         }
@@ -1321,7 +1321,7 @@ namespace Mengine
         const uint64_t reconciliations = m_networkMode == true ? m_networkClient->reconciliationCount() : m_session.reconciliationCount();
         LOGGER_MESSAGE( "Arena3D mode=%s tick=%llu crc=%08X hp=%d speed=%.3f draws=%u chunks=%u projectiles=%u pools=%u reconciliations=%llu",
             m_networkMode == true ? "network" : "local", static_cast<unsigned long long>(simulation.state().tick), checksum.full,
-            player.health, kf_fixed_to_float( kf_vec3_length( player.velocity ) ),
+            player.health, Helper::kinefixFixedToFloat( kf_vec3_length( player.velocity ) ),
             m_drawCalls, m_visibleChunks, m_visibleProjectiles,
             static_cast<uint32_t>(m_projectilePools[0].size() + m_projectilePools[1].size() + m_projectilePools[2].size() +
                 m_projectilePools[3].size() + m_projectilePools[4].size() + m_projectilePools[5].size()),

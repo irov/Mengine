@@ -208,7 +208,7 @@ namespace Mengine
         const float health = Mengine::StdAlgorithm::max( 0.f, Mengine::StdAlgorithm::min( 1.f, static_cast<float>(_player.health) / 100.f ) );
         const float armor = Mengine::StdAlgorithm::max( 0.f, Mengine::StdAlgorithm::min( 1.f, static_cast<float>(_player.armor) / 100.f ) );
         const kf_fixed_t horizontalSpeed = kf_vec3_length( {_player.velocity.x, 0, _player.velocity.z} );
-        const float speed = Mengine::StdAlgorithm::max( 0.f, Mengine::StdAlgorithm::min( 1.f, kf_fixed_to_float( horizontalSpeed ) / 12.f ) );
+        const float speed = Mengine::StdAlgorithm::max( 0.f, Mengine::StdAlgorithm::min( 1.f, Helper::kinefixFixedToFloat( horizontalSpeed ) / 12.f ) );
         m_healthFillSurface->setSolidSize( {240.f * health, 14.f} );
         m_armorFillSurface->setSolidSize( {160.f * armor, 8.f} );
         m_speedFillSurface->setSolidSize( {200.f * speed, 6.f} );

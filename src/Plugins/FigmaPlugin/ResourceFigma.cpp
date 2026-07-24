@@ -49,7 +49,7 @@ namespace Mengine
         if( m_data != nullptr )
         {
             ::Figma::DocumentInterface * document = m_data->getFigmaDocument();
-            ::Figma::Rectf frameRect;
+            ::Figma::Rectf frameRect{};
             bool found = false;
 
             if( document != nullptr )

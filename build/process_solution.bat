@@ -1,7 +1,9 @@
 @echo off
 
-setlocal
+setlocal EnableExtensions EnableDelayedExpansion
 call :setESC
+
+set "MENGINE_RESULT=0"
 
 :parseArguments
 if "%~1" == "" goto parseArgumentsEnd
@@ -118,8 +120,10 @@ if defined VERBOSITY (
 
 @pushd "%SOLUTION_DIR%"
 CMake -G "%GENERATOR%" %CMAKE_PLATFORM_TOOLSET% %CMAKE_ARCHITECTURE% -S "%SOURCE_DIRECTORY%" "-DMENGINE_DEPENDENCIES_PROJECT:STRING='%DEPENDENCIES_PROJECT%'" "-DCMAKE_CONFIGURATION_TYPES:STRING='%CONFIGURATION%'" "-DCMAKE_BUILD_TYPE:STRING=%CONFIGURATION%" %MENGINE_DEPLOY_PATH% %MENGINE_EXTERNAL_PDB% %MENGINE_EXTERNAL_PDB_PATH% %MENGINE_BUILD_NUMBER% %MENGINE_BUILD_VERSION% %MENGINE_BUILD_MENGINE_BUILD_PUBLISH%
+set "MENGINE_RESULT=!errorlevel!"
+@popd
 
-if %errorlevel% NEQ 0 (
+if !MENGINE_RESULT! NEQ 0 (
     @echo %ESC%[91m*****************************************%ESC%[0m
     @echo %ESC%[91m***************  Failure  ***************%ESC%[0m
     @echo %ESC%[91m*****************************************%ESC%[0m
@@ -129,14 +133,15 @@ if %errorlevel% NEQ 0 (
     @echo %ESC%[92m=============  Successful  ==============%ESC%[0m
     @echo %ESC%[92m=========================================%ESC%[0m
 )
-@popd
 
 if defined BUILD (
     if %BUILD% NEQ 0 (
         @pushd "%SOLUTION_DIR%"
         CMake --build .\ --parallel 8 --config %CONFIGURATION% %CMAKE_VERBOSITY%
+        set "MENGINE_RESULT=!errorlevel!"
+        @popd
 
-        if %errorlevel% NEQ 0 (
+        if !MENGINE_RESULT! NEQ 0 (
             @echo %ESC%[91m*****************************************%ESC%[0m
             @echo %ESC%[91m***************  Failure  ***************%ESC%[0m
             @echo %ESC%[91m*****************************************%ESC%[0m
@@ -146,13 +151,12 @@ if defined BUILD (
             @echo %ESC%[92m=============  Successful  ==============%ESC%[0m
             @echo %ESC%[92m=========================================%ESC%[0m
         )
-        @popd
     )
 )
 
 :end
 
-exit /b %errorlevel%
+exit /b !MENGINE_RESULT!
 
 :setESC
 for /F "tokens=1,2 delims=#" %%a in ('"prompt #$H#$E# & echo on & for %%b in (1) do rem"') do (

@@ -65,9 +65,9 @@
 - (void)onBootstrapEnd {
     // Mengine bootstrap is complete here, so it is safe to allocate factory pools
     // that rely on ThreadSystemInterface (e.g. FactoryPoolWithMutex).
-    m_factoryPaymentTransaction = Mengine::Helper::makeFactoryPoolWithMutex<Mengine::iOSStoreInAppPurchasePaymentTransaction, 16>( MENGINE_DOCUMENT_FACTORABLE );
-    m_factoryProduct = Mengine::Helper::makeFactoryPoolWithMutex<Mengine::iOSStoreInAppPurchaseProduct, 16>( MENGINE_DOCUMENT_FACTORABLE );
-    m_factoryProductsRequest = Mengine::Helper::makeFactoryPoolWithMutex<Mengine::iOSStoreInAppPurchaseProductsRequest, 16>( MENGINE_DOCUMENT_FACTORABLE );
+    m_factoryPaymentTransaction = Mengine::Helper::makeFactoryPoolWithMutex<Mengine::iOSStoreInAppPurchasePaymentTransaction, 16>( MENGINE_DOCUMENT_FUNCTION );
+    m_factoryProduct = Mengine::Helper::makeFactoryPoolWithMutex<Mengine::iOSStoreInAppPurchaseProduct, 16>( MENGINE_DOCUMENT_FUNCTION );
+    m_factoryProductsRequest = Mengine::Helper::makeFactoryPoolWithMutex<Mengine::iOSStoreInAppPurchaseProductsRequest, 16>( MENGINE_DOCUMENT_FUNCTION );
 
     // According to Apple documentation, the SKPaymentQueueDelegate must be set BEFORE adding transaction observers.
     // This is critical for proper IAP functionality on iPad devices.
@@ -81,7 +81,7 @@
 
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 - (void)onRunBegin {
-    Mengine::Helper::addScriptEmbedding<Mengine::iOSStoreInAppPurchaseScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE );
+    Mengine::Helper::addScriptEmbedding<Mengine::iOSStoreInAppPurchaseScriptEmbedding>( MENGINE_DOCUMENT_FUNCTION );
 }
 
 - (void)onStopEnd {
@@ -177,7 +177,7 @@
                                                                             consumableIdentifiers:consumableIdentifiers
                                                                          nonconsumableIdentifiers:nonconsumableIdentifiers];
 
-    Mengine::iOSStoreInAppPurchaseProductsRequestPtr request = m_factoryProductsRequest->createObject( MENGINE_DOCUMENT_FACTORABLE );
+    Mengine::iOSStoreInAppPurchaseProductsRequestPtr request = m_factoryProductsRequest->createObject( MENGINE_DOCUMENT_FUNCTION );
 
     NSSet * productIdentifiers = [consumableIdentifiers setByAddingObjectsFromSet:nonconsumableIdentifiers];
 
@@ -230,7 +230,7 @@
 }
 
 - (Mengine::iOSStoreInAppPurchaseProductInterfacePtr)makeProduct:(SKProduct *)skProduct {
-    Mengine::iOSStoreInAppPurchaseProductPtr product = m_factoryProduct->createObject( MENGINE_DOCUMENT_FACTORABLE );
+    Mengine::iOSStoreInAppPurchaseProductPtr product = m_factoryProduct->createObject( MENGINE_DOCUMENT_FUNCTION );
     product->setSKProduct( skProduct );
 
     return product;
@@ -238,7 +238,7 @@
 
 - (Mengine::iOSStoreInAppPurchasePaymentTransactionInterfacePtr)makePaymentTransaction:(SKPaymentTransaction *)skPaymentTransaction
                                                                                    queue:(SKPaymentQueue *)skPaymentQueue {
-    Mengine::iOSStoreInAppPurchasePaymentTransactionPtr transaction = m_factoryPaymentTransaction->createObject( MENGINE_DOCUMENT_FACTORABLE );
+    Mengine::iOSStoreInAppPurchasePaymentTransactionPtr transaction = m_factoryPaymentTransaction->createObject( MENGINE_DOCUMENT_FUNCTION );
     transaction->setSKPaymentTransaction( skPaymentTransaction );
     transaction->setSKPaymentQueue( skPaymentQueue );
 

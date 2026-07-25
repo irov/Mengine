@@ -692,6 +692,10 @@ if(MENGINE_TARGET_WINDOWS)
 
         ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/pilot ${THIRDPARTY_CONFIG_DIR}/pilot)
 
+        if(MINGW)
+            set_target_properties(winpilot PROPERTIES IMPORT_SUFFIX "${MENGINE_LIB_SUFFIX}")
+        endif()
+
         set(PILOT_LIBRARIES winpilot CACHE STRING "PILOT_LIBRARIES" FORCE)
         set(PILOT_INCLUDE_DIRS "${THIRDPARTY_DIR}/pilot/include" CACHE STRING "PILOT_INCLUDE_DIRS" FORCE)
 

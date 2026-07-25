@@ -10,6 +10,8 @@
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
 
+#include <cstring>
+
 #if defined(MENGINE_WINDOWS_DEBUG) && !defined(MENGINE_TOOLCHAIN_MINGW)
 #   include <crtdbg.h>
 #endif
@@ -77,7 +79,25 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void reportTinypyCycleDiagnostic( void * _userData, const char * _message, size_t _messageSize )
         {
+            static constexpr char successfulMessage[] = "[tinypy cycle] diagnostics OK: no unreachable owning cycles found";
+
             (void)_userData;
+
+            if( _messageSize == sizeof( successfulMessage ) - 1
+                && std::memcmp( _message, successfulMessage, _messageSize ) == 0 )
+            {
+                LOGGER_CATEGORY_VERBOSE_LEVEL(
+                    Mengine::LM_INFO,
+                    Mengine::LFILTER_NONE,
+                    Mengine::LCOLOR_GREEN,
+                    Mengine::LFLAG_SHORT
+                )( "%.*s"
+                    , (int32_t)_messageSize
+                    , _message
+                );
+
+                return;
+            }
 
             LOGGER_CATEGORY_VERBOSE_LEVEL(
                 Mengine::LM_ERROR,

@@ -122,9 +122,20 @@ namespace Mengine
         );
 
         const Polygon & polygon = _hotSpot->getPolygon();
+        const VectorPoints & points = polygon.getPoints();
+        const TransformationInterface * transformation = _hotSpot->getTransformation();
+        const mt::mat4f & wm = transformation->getWorldMatrix();
 
         mt::box2f box;
-        polygon.to_box2f( &box );
+        mt::box2_insideout( &box );
+
+        for( const mt::vec2f & point : points )
+        {
+            mt::vec2f worldPoint;
+            mt::mul_v2_v2_m4( &worldPoint, point, wm );
+
+            mt::box2_add_internal_point( &box, worldPoint );
+        }
 
         this->setViewport( Viewport( box.minimum, box.maximum ) );
     }

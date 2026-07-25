@@ -79,7 +79,12 @@ namespace Mengine
         {
             (void)_userData;
 
-            LOGGER_ERROR( "%.*s"
+            LOGGER_CATEGORY_VERBOSE_LEVEL(
+                Mengine::LM_ERROR,
+                Mengine::LFILTER_NONE,
+                Mengine::LCOLOR_RED,
+                Mengine::LFLAG_SHORT
+            )( "%.*s"
                 , (int32_t)_messageSize
                 , _message
             );
@@ -115,10 +120,10 @@ namespace Mengine
 
         bool OPTION_pythoncyclediag = HAS_OPTION( "pythoncyclediag" );
 
-        if( OPTION_pythoncyclediag == true )
-        {
-            config.cycle_diagnostic_handler = &Detail::reportTinypyCycleDiagnostic;
-        }
+        config.cycle_diagnostics = OPTION_pythoncyclediag;
+        config.cycle_diagnostic_handler = config.cycle_diagnostics == true
+            ? &Detail::reportTinypyCycleDiagnostic
+            : nullptr;
 
         pybind::kernel_interface * kernel = pybind::initialize( allocator, config );
 
